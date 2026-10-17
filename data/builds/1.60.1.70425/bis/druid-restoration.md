@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-00000000000000000000-5050010000000000)
 
-Set DPS (verified): 46.4. Weights run: 4.2s. Verify run: 14.6s. 188 eligible items had no known source.
+Set DPS (verified): 46.4. Weights run: 6.4s. Verify run: 22.8s. 186 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=1.289 ± 0.004, spirit=1.552 ± 0.008, mp5=3.307 ± 0.015, crit=0.044 ± 0.003 per rating point (14 rating = 1%, 0.609 per %), spell_haste=-5.588 ± 0.106
 
@@ -34,11 +34,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 20:** head: Pristine Circlet; neck: Tarnished Locket; shoulder: Magician's Mantle; back: Caretaker's Cape; chest: Wisdom's Leather Armor; wrist: Mindthrust Bracers; hands: Pristine Gloves; waist: Pristine Sash; legs: Wisdom's Leather Pants; feet: Black Whelp Slippers; finger1: Band of Purification; finger2: Deep Fathom Ring; main_hand: Staff of the Blessed Seer
 
-No-known-source sample (15 of 188, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5821 Darkstalker Boots; 6478 Rat Stompers; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads
+No-known-source sample (15 of 186, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5821 Darkstalker Boots; 6478 Rat Stompers; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads
 
 ### Band 30 (night-elf, 0000000000000000-00000000000000000000-5050035110010000)
 
-Set DPS (verified): 89.0. Weights run: 5.9s. Verify run: 20.3s. 341 eligible items had no known source.
+Set DPS (verified): 89.0. Weights run: 9.0s. Verify run: 31.8s. 339 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.454 ± 0.014, spirit=2.917 ± 0.018, mp5=4.441 ± 0.027, crit=0.052 ± 0.005 per rating point (14 rating = 1%, 0.735 per %), spell_haste=not significant (-1.023 ± 0.259)
 
@@ -64,11 +64,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 30:** head: Holy Shroud; neck: Pendant of Myzrael; shoulder: Mantle of Honor; back: Glowing Thresher Cape; chest: Wisdom's Leather Tunic; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Electrocutioner Lagnut; finger2: Runemender's Seal; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
-No-known-source sample (15 of 341, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 339, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring
 
 ### Band 40 (night-elf, 0000000000000000-00000000000000000000-5050035153112000)
 
-Set DPS (verified): 134.0. Weights run: 6.7s. Verify run: 22.6s. 452 eligible items had no known source.
+Set DPS (verified): 134.0. Weights run: 10.3s. Verify run: 35.7s. 450 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=1.347 ± 0.016, spirit=2.509 ± 0.011, mp5=4.854 ± 0.034, crit=0.056 ± 0.005 per rating point (14 rating = 1%, 0.782 per %), spell_haste=not significant (0.538 ± 0.314)
 
@@ -94,11 +94,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 40:** head: Papal Fez; neck: Necklace of Calisea; shoulder: Earthen Silk Shoulders; back: Caretaker's Cape; chest: Stormcloth Vest; wrist: Enchanted Kodo Bracers; hands: Earthen Silk Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger1: Darkspear Signet; finger2: Welken Ring; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life; main_hand: Hand of Righteousness
 
-No-known-source sample (15 of 452, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape
+No-known-source sample (15 of 450, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape
 
 ### Band 50 (night-elf, 4300000000000000-00000000000000000000-5050035153113200)
 
-Set DPS (verified): 200.5. Weights run: 6.7s. Verify run: 26.0s. 591 eligible items had no known source.
+Set DPS (verified): 200.5. Weights run: 10.4s. Verify run: 40.2s. 589 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.003, intellect=1.528 ± 0.017, spirit=2.753 ± 0.017, mp5=4.398 ± 0.016, crit=0.072 ± 0.007 per rating point (14 rating = 1%, 1.009 per %), spell_haste=0.983 ± 0.178
 
@@ -106,7 +106,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 |---|---|---|---|---|---|
 | head | Gemburst Circlet (10751) | The God Hakkar [quest] | 84.5 healing_power points (8.38 DPS) | yes | Knight-Lieutenant's Restored Leather Helm (220874, -0.48 DPS) [vendor]; Engineer's Guild Headpiece (9534, -0.49 DPS) [quest]; Cassandra's Grace (13102, -1.56 DPS) [world_drop] |
 | neck | Darkmoon Necklace (19303) | Lhara [vendor] | 35.6 healing_power points (3.53 DPS) | yes | Horizon Choker (13085, -0.44 DPS, sim-verified) [world_drop]; Necklace of Calisea (1714, -0.55 DPS) [dungeon]; Amberglow Talisman (10824, -0.80 DPS) [quest] |
-| shoulder | Living Shoulders (15061) | Leatherworking [crafted] | 66.8 healing_power points (6.62 DPS) | yes | Knight-Lieutenant's Restored Leather Spaulders (220876, -0.37 DPS, sim-verified) [vendor]; Mender's Leather Shoulder (252538, -0.97 DPS) [crafted]; Nethergeld Shoulders (254049, -1.19 DPS) [crafted] |
+| shoulder | Living Shoulders (15061) | Leatherworking [crafted] | 66.8 healing_power points (6.62 DPS) | yes | Knight-Lieutenant's Restored Leather Spaulders (220876, -0.37 DPS, sim-verified) [vendor]; Mender's Leather Shoulders (252538, -0.97 DPS) [crafted]; Nethergeld Shoulders (254049, -1.19 DPS) [crafted] |
 | back | Caretaker's Cape (19531) | Silverwing Sentinels [rep] | 38.5 healing_power points (3.82 DPS) | yes | Darkspear Raider's Cloak (272076, -0.33 DPS) [vendor]; Arcane Cloak (8286, -0.54 DPS) [world_drop]; Wingveil Cloak (10802, -0.78 DPS, sim-verified) [dungeon] |
 | chest | Ghostweave Vest (14141) | Tailoring [crafted] | 90.2 healing_power points (8.95 DPS) | yes | Stormcloth Vest (10020, -1.01 DPS) [crafted]; Feathered Breastplate (8349, -1.06 DPS, sim-verified) [crafted]; Knight's Restored Leather Jerkin (220878, -1.45 DPS) [vendor] |
 | wrist | Mender's Leather Bracers (252543) | Leatherworking [crafted] | 46.2 healing_power points (4.58 DPS) | yes | Nethergeld Cuffs (254061, -0.66 DPS, sim-verified) [crafted]; Enchanted Kodo Bracers (13119, -1.25 DPS) [world_drop]; Venomshroud Armguards (14439, -1.79 DPS) [world_drop] |
@@ -124,11 +124,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Gemburst Circlet; neck: Darkmoon Necklace; shoulder: Living Shoulders; back: Caretaker's Cape; chest: Ghostweave Vest; wrist: Mender's Leather Bracers; hands: Feralheart Gauntlets; waist: Earthenweave Cord; legs: Senior Designer's Pantaloons; feet: Sandals of the Insurgent; finger1: Eye of Adaegus; finger2: Choking Band; trinket1: Darkspear Voodoo Seal; main_hand: Charstone Dirk; off_hand: Twisting Essence Jar
 
-No-known-source sample (15 of 591, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 589, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60 (night-elf, 4532200100000000-00000000000000000000-5050035153113200)
 
-Set DPS (verified): 341.3. Weights run: 7.0s. Verify run: 51.1s. 1235 eligible items had no known source.
+Set DPS (verified): 341.3. Weights run: 10.4s. Verify run: 77.4s. 1235 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.022, intellect=2.234 ± 0.044, spirit=4.276 ± 0.034, mp5=6.865 ± 0.033, crit=0.098 ± 0.010 per rating point (14 rating = 1%, 1.366 per %), spell_haste=not significant (-0.039 ± 0.480)
 
@@ -158,28 +158,28 @@ No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 4532200100000000-00000000000000000000-5050035153113200)
 
-Set DPS (verified): 642.2. Weights run: 5.1s. Verify run: 49.5s. 1235 eligible items had no known source.
+Set DPS (verified): 641.5. Weights run: 7.7s. Verify run: 72.7s. 1235 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.204, intellect=2.451 ± 0.080, spirit=2.281 ± 0.075, mp5=3.336 ± 0.099, crit=0.327 ± 0.030 per rating point (14 rating = 1%, 4.573 per %), spell_haste=not significant (-0.743 ± 1.216)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Living Crown (252561) | Leatherworking [crafted] | 149.0 healing_power points (24.64 DPS) | yes | Lieutenant Commander's Dragonhide Headdress (227199, -4.67 DPS) [vendor]; Sanctified Leather Helm (22689, -5.80 DPS) [quest]; Feralheart Headdress (226786, -8.17 DPS, sim-verified) [vendor] |
-| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 65.4 healing_power points (10.81 DPS) | yes | Enchanted South Seas Kelp (19612, -3.37 DPS) [quest]; Pristine Enchanted South Seas Kelp (19613, -3.37 DPS) [quest]; Drake Tooth Necklace (21531, -4.07 DPS, sim-verified) [quest] |
-| shoulder | Argent Elite Shoulders (227888) | Argent Quartermaster Hasana [vendor] | 101.8 healing_power points (16.83 DPS) | yes | Lieutenant Commander's Dragonhide Pauldrons (227201, -1.16 DPS) [vendor]; Field Marshal's Dragonhide Pauldrons (231705, -1.32 DPS) [vendor]; Devout Mantle (16695, -11.51 DPS, sim-verified) [dungeon] |
-| back | Hide of the Wild (18510) | Leatherworking [crafted] | 66.5 healing_power points (10.99 DPS) | yes | Darkspear Raider's Cloak (272076, -3.44 DPS) [vendor]; Drape of Recovery (272413, -3.66 DPS) [vendor] |
-| chest | Mooncloth Vest (14138) | Tailoring [crafted] | 118.4 healing_power points (19.57 DPS) | yes | Feralheart Embrace (226783, -1.31 DPS) [vendor]; Field Marshal's Dragonhide Tunic (231702, -1.39 DPS) [vendor]; Devout Robe (16690, -1.86 DPS, sim-verified) [dungeon] |
-| wrist | Feralheart Bindings (226782) | Mokvar [vendor] | sim-verified (642.2 DPS) | yes | Marshal's Dragonhide Bracers (16445, +0.00 DPS) [pvp]; Devout Bracers (16697, -1.94 DPS) [dungeon]; Bracers of Hope (22667, -8.01 DPS, sim-verified) [quest] |
-| hands | Feralheart Gauntlets (226784) | Mokvar [vendor] | 92.0 healing_power points (15.21 DPS) | yes | Wildheart Gloves (16717, -1.83 DPS) [dungeon]; Marshal's Dragonhide Gauntlets (231706, -2.22 DPS) [pvp]; Raider Handwraps (272097, -12.86 DPS, sim-verified) [vendor] |
-| waist | Feralheart Cord (226780) | Mokvar [vendor] | 85.9 healing_power points (14.20 DPS) | yes | Marshal's Dragonhide Waistguard (16447, -0.30 DPS) [pvp]; Devout Belt (16696, -0.89 DPS) [dungeon]; Wisdom of the Timbermaw (19047, -7.92 DPS, sim-verified) [crafted] |
-| legs | Knight-Captain's Dragonhide Legguards (227200) | Captain Dirgehammer [vendor] | 119.4 healing_power points (19.74 DPS) | yes | Feralheart Pants (226787, -1.35 DPS) [vendor]; Devout Skirt (16694, -1.88 DPS, sim-verified) [dungeon]; Marshal's Dragonhide Legguards (231703, -3.19 DPS) [pvp] |
-| feet | Feralheart Sandals (226781) | Mokvar [vendor] | sim-verified (642.2 DPS) | yes | Mooncloth Boots (15802, -2.68 DPS) [crafted]; Devout Sandals (16691, -4.94 DPS) [dungeon]; Incandescent Mooncloth Boots (227862, -6.46 DPS, sim-verified) [vendor] |
+| head | Living Crown (252561) | Leatherworking [crafted] | 149.0 healing_power points (24.64 DPS) | yes | Lieutenant Commander's Dragonhide Headdress (227199, -4.67 DPS) [vendor]; Feralheart Headdress (226786, -5.51 DPS) [vendor]; Sanctified Leather Helm (22689, -5.80 DPS) [quest] |
+| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 65.4 healing_power points (10.81 DPS) | yes | Drake Tooth Necklace (21531, -1.65 DPS) [quest]; Enchanted South Seas Kelp (19612, -3.37 DPS) [quest]; Pristine Enchanted South Seas Kelp (19613, -3.37 DPS) [quest] |
+| shoulder | Argent Elite Shoulders (227888) | Argent Quartermaster Hasana [vendor] | 101.8 healing_power points (16.83 DPS) | yes | Lieutenant Commander's Dragonhide Pauldrons (227201, -1.16 DPS) [vendor]; Field Marshal's Dragonhide Pauldrons (231705, -1.32 DPS) [vendor]; Devout Mantle (16695, -3.11 DPS) [dungeon] |
+| back | Hide of the Wild (18510) | Leatherworking [crafted] | 66.5 healing_power points (10.99 DPS) | yes | Darkspear Raider's Cloak (272063, -2.25 DPS) [vendor]; Drape of Recovery (272413, -3.66 DPS) [vendor] |
+| chest | Mooncloth Vest (14138) | Tailoring [crafted] | 118.4 healing_power points (19.57 DPS) | yes | Devout Robe (16690, -0.88 DPS) [dungeon]; Feralheart Embrace (226783, -1.31 DPS) [vendor]; Field Marshal's Dragonhide Tunic (231702, -1.39 DPS) [vendor] |
+| wrist | Feralheart Bindings (226782) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Dragonhide Bracers (16445, +0.00 DPS) [pvp]; Bracers of Hope (22667, +0.00 DPS) [quest]; Devout Bracers (16697, -1.94 DPS) [dungeon] |
+| hands | Feralheart Gauntlets (226784) | Mokvar [vendor] | 92.0 healing_power points (15.21 DPS) | yes | Raider Handwraps (272097, -0.31 DPS) [vendor]; Wildheart Gloves (16717, -1.83 DPS) [dungeon]; Marshal's Dragonhide Gauntlets (231706, -2.22 DPS) [pvp] |
+| waist | Feralheart Cord (226780) | Mokvar [vendor] | 85.9 healing_power points (14.20 DPS) | yes | Wisdom of the Timbermaw (19047, -0.01 DPS) [crafted]; Marshal's Dragonhide Waistguard (16447, -0.30 DPS) [pvp]; Devout Belt (16696, -0.89 DPS) [dungeon] |
+| legs | Knight-Captain's Dragonhide Legguards (227200) | Captain Dirgehammer [vendor] | 119.4 healing_power points (19.74 DPS) | yes | Devout Skirt (16694, -1.03 DPS) [dungeon]; Feralheart Pants (226787, -1.35 DPS) [vendor]; Marshal's Dragonhide Legguards (231703, -3.19 DPS) [pvp] |
+| feet | Feralheart Sandals (226781) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Incandescent Mooncloth Boots (227862, +0.00 DPS) [vendor]; Mooncloth Boots (15802, -2.68 DPS) [crafted]; Devout Sandals (16691, -4.94 DPS) [dungeon] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234033) | Anachronos [vendor] | 73.7 healing_power points (12.19 DPS) | yes | Channeler's Ring (272406, -3.50 DPS) [vendor]; Band of the Hierophant (13096, -3.99 DPS) [world_drop]; Blessed Band of Light (272407, -4.05 DPS) [vendor] |
-| finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 59.8 healing_power points (9.89 DPS) | yes | Band of the Hierophant (13096, -1.69 DPS) [world_drop]; Blessed Band of Light (272407, -1.75 DPS) [vendor]; Channeler's Ring (272406, -3.18 DPS, sim-verified) [vendor] |
-| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (642.2 DPS) | yes | Ankh of Life (1713, -3.75 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -4.50 DPS) [quest]; Shard of the Splithooves (10659, -4.96 DPS) [quest] |
-| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (642.2 DPS) | yes | Evonice's Landin' Pilla (18951, -3.17 DPS) [quest]; Shard of the Splithooves (10659, -3.63 DPS) [quest]; Ankh of Life (1713, -4.69 DPS, sim-verified) [world_drop] |
-| main_hand | Charstone Dirk (17710) | Maraudon: Princess Theradras [dungeon] | sim-verified (642.2 DPS) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Hand of Righteousness (7721, -6.18 DPS) [dungeon]; Staff of Hale Magefire (13000, -6.31 DPS) [world_drop] |
-| off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | 56.7 healing_power points (9.37 DPS) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Arcane Star (15931, -2.30 DPS) [world_drop]; Lapidis Tankard of Tidesippe (4696, -5.96 DPS, sim-verified) [world_drop] |
+| finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 59.8 healing_power points (9.89 DPS) | yes | Channeler's Ring (272406, -1.21 DPS) [vendor]; Band of the Hierophant (13096, -1.69 DPS) [world_drop]; Blessed Band of Light (272407, -1.75 DPS) [vendor] |
+| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, -3.75 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -4.50 DPS) [quest]; Shard of the Splithooves (10659, -4.96 DPS) [quest] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (641.6 DPS) | yes | Ankh of Life (1713, -2.42 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -3.17 DPS) [quest]; Shard of the Splithooves (10659, -3.63 DPS) [quest] |
+| main_hand | Charstone Dirk (17710) | Maraudon: Princess Theradras [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Righteousness (7721, -6.18 DPS) [dungeon]; Staff of Hale Magefire (13000, -6.31 DPS) [world_drop]; Spellshifter Rod (9527, -6.49 DPS) [quest] |
+| off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | 53.7 healing_power points (8.87 DPS) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Lapidis Tankard of Tidesippe (4696, -0.81 DPS) [world_drop]; Arcane Star (15931, -1.81 DPS) [world_drop] |
 | ranged | - | - |  |  |  |
 
 **New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Mooncloth Vest; wrist: Feralheart Bindings; waist: Feralheart Cord; legs: Knight-Captain's Dragonhide Legguards; feet: Feralheart Sandals; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; off_hand: Lei of the Lifegiver
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-00000000000000000000-5050010000000000)
 
-Set DPS (verified): 47.6. Weights run: 4.2s. Verify run: 13.7s. 178 eligible items had no known source.
+Set DPS (verified): 47.6. Weights run: 6.4s. Verify run: 21.5s. 176 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=1.289 ± 0.004, spirit=1.552 ± 0.008, mp5=3.307 ± 0.015, crit=0.044 ± 0.003 per rating point (14 rating = 1%, 0.609 per %), spell_haste=-5.588 ± 0.106
 
@@ -216,11 +216,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 20:** head: Pristine Circlet; neck: Roadwatcher's Confidence; shoulder: Magician's Mantle; back: Battle Healer's Cloak; chest: Wisdom's Leather Armor; wrist: Mindthrust Bracers; hands: Blight Gloves; waist: Pristine Sash; legs: Wisdom's Leather Pants; feet: Wisdom's Leather Boots; finger1: Band of Purification; finger2: Deep Fathom Ring; main_hand: Staff of Orgrimmar
 
-No-known-source sample (15 of 178, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 5821 Darkstalker Boots; 6478 Rat Stompers; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18863 Insignia of the Alliance; 209617 Insignia of the Alliance; 241089 Scarlet Dagger; 248005 Northshire Hammer; 248007 Militia Shortblade; 248008 Apprentice's Spellstaff; 263006 Scout Ranger's Tunic; 263007 Skyseer's Vest
+No-known-source sample (15 of 176, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 5821 Darkstalker Boots; 6478 Rat Stompers; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18863 Insignia of the Alliance; 209617 Insignia of the Alliance; 241089 Scarlet Dagger; 248005 Northshire Hammer; 248007 Militia Shortblade; 248008 Apprentice's Spellstaff; 263006 Scout Ranger's Tunic; 263007 Skyseer's Vest
 
 ### Band 30 (tauren, 0000000000000000-00000000000000000000-5050035110010000)
 
-Set DPS (verified): 88.3. Weights run: 5.9s. Verify run: 20.5s. 331 eligible items had no known source.
+Set DPS (verified): 88.3. Weights run: 9.0s. Verify run: 32.2s. 329 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.454 ± 0.014, spirit=2.917 ± 0.018, mp5=4.441 ± 0.027, crit=0.052 ± 0.005 per rating point (14 rating = 1%, 0.735 per %), spell_haste=not significant (-1.023 ± 0.259)
 
@@ -246,11 +246,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Ghostly Mantle; back: Glowing Thresher Cape; chest: Wisdom's Leather Tunic; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Electrocutioner Lagnut; finger2: Runemender's Seal; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
-No-known-source sample (15 of 331, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
+No-known-source sample (15 of 329, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
 
 ### Band 40 (tauren, 0000000000000000-00000000000000000000-5050035153112000)
 
-Set DPS (verified): 132.7. Weights run: 6.7s. Verify run: 24.8s. 436 eligible items had no known source.
+Set DPS (verified): 132.7. Weights run: 10.3s. Verify run: 38.8s. 434 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=1.347 ± 0.016, spirit=2.509 ± 0.011, mp5=4.854 ± 0.034, crit=0.056 ± 0.005 per rating point (14 rating = 1%, 0.782 per %), spell_haste=not significant (0.538 ± 0.314)
 
@@ -276,11 +276,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 40:** head: Papal Fez; neck: Necklace of Calisea; shoulder: Earthen Silk Shoulders; back: Cloak of Blight; chest: Stormcloth Vest; wrist: Enchanted Kodo Bracers; hands: Earthen Silk Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger1: Darkspear Signet; finger2: Welken Ring; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life; main_hand: Hand of Righteousness
 
-No-known-source sample (15 of 436, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
+No-known-source sample (15 of 434, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
 
 ### Band 50 (tauren, 4300000000000000-00000000000000000000-5050035153113200)
 
-Set DPS (verified): 198.3. Weights run: 6.7s. Verify run: 25.1s. 571 eligible items had no known source.
+Set DPS (verified): 198.3. Weights run: 10.4s. Verify run: 38.7s. 569 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.003, intellect=1.528 ± 0.017, spirit=2.753 ± 0.017, mp5=4.398 ± 0.016, crit=0.072 ± 0.007 per rating point (14 rating = 1%, 1.009 per %), spell_haste=0.983 ± 0.178
 
@@ -288,7 +288,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 |---|---|---|---|---|---|
 | head | Gemburst Circlet (10751) | The God Hakkar [quest] | 84.5 healing_power points (8.38 DPS) | yes | Blood Guard's Restored Leather Helm (220875, -0.48 DPS) [vendor]; Engineer's Guild Headpiece (9534, -1.31 DPS, sim-verified) [quest]; Cassandra's Grace (13102, -1.56 DPS) [world_drop] |
 | neck | Darkmoon Necklace (19303) | Lhara [vendor] | 35.6 healing_power points (3.53 DPS) | yes | Necklace of Calisea (1714, -0.55 DPS) [dungeon]; Choker of the High Shaman (4112, -0.58 DPS) [quest]; Horizon Choker (13085, -0.84 DPS, sim-verified) [world_drop] |
-| shoulder | Living Shoulders (15061) | Leatherworking [crafted] | 66.8 healing_power points (6.62 DPS) | yes | Blood Guard's Restored Leather Spaulders (220877, -0.20 DPS) [vendor]; Mender's Leather Shoulder (252538, -0.74 DPS, sim-verified) [crafted]; Nethergeld Shoulders (254049, -1.19 DPS) [crafted] |
+| shoulder | Living Shoulders (15061) | Leatherworking [crafted] | 66.8 healing_power points (6.62 DPS) | yes | Blood Guard's Restored Leather Spaulders (220877, -0.20 DPS) [vendor]; Mender's Leather Shoulders (252538, -0.74 DPS, sim-verified) [crafted]; Nethergeld Shoulders (254049, -1.19 DPS) [crafted] |
 | back | Battle Healer's Cloak (19527) | Warsong Outriders [rep] | 38.5 healing_power points (3.82 DPS) | yes | Wingveil Cloak (10802, -0.32 DPS) [dungeon]; Darkspear Raider's Cloak (272076, -0.33 DPS) [vendor]; Cloak of Blight (6832, -0.51 DPS, sim-verified) [quest] |
 | chest | Ghostweave Vest (14141) | Tailoring [crafted] | 90.2 healing_power points (8.95 DPS) | yes | Feathered Breastplate (8349, -0.92 DPS, sim-verified) [crafted]; Stormcloth Vest (10020, -1.01 DPS) [crafted]; Stone Guard's Restored Leather Jerkin (220879, -1.45 DPS) [vendor] |
 | wrist | Mender's Leather Bracers (252543) | Leatherworking [crafted] | 46.2 healing_power points (4.58 DPS) | yes | Nethergeld Cuffs (254061, +0.00 DPS, sim-verified) [crafted]; Enchanted Kodo Bracers (13119, -1.25 DPS) [world_drop]; Venomshroud Armguards (14439, -1.79 DPS) [world_drop] |
@@ -306,11 +306,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Gemburst Circlet; neck: Darkmoon Necklace; shoulder: Living Shoulders; back: Battle Healer's Cloak; chest: Ghostweave Vest; wrist: Mender's Leather Bracers; hands: Feralheart Gauntlets; waist: Earthenweave Cord; legs: Senior Designer's Pantaloons; feet: Sandals of the Insurgent; finger1: Eye of Adaegus; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; main_hand: Charstone Dirk; off_hand: Twisting Essence Jar
 
-No-known-source sample (15 of 571, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 569, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
 
 ### Band 60 (tauren, 4532200100000000-00000000000000000000-5050035153113200)
 
-Set DPS (verified): 339.5. Weights run: 7.0s. Verify run: 48.8s. 1229 eligible items had no known source.
+Set DPS (verified): 339.5. Weights run: 10.4s. Verify run: 75.3s. 1229 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.022, intellect=2.234 ± 0.044, spirit=4.276 ± 0.034, mp5=6.865 ± 0.033, crit=0.098 ± 0.010 per rating point (14 rating = 1%, 1.366 per %), spell_haste=not significant (-0.039 ± 0.480)
 
@@ -340,28 +340,28 @@ No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 4532200100000000-00000000000000000000-5050035153113200)
 
-Set DPS (verified): 639.2. Weights run: 5.1s. Verify run: 47.6s. 1229 eligible items had no known source.
+Set DPS (verified): 638.4. Weights run: 7.7s. Verify run: 71.0s. 1229 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.204, intellect=2.451 ± 0.080, spirit=2.281 ± 0.075, mp5=3.336 ± 0.099, crit=0.327 ± 0.030 per rating point (14 rating = 1%, 4.573 per %), spell_haste=not significant (-0.743 ± 1.216)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Living Crown (252561) | Leatherworking [crafted] | 149.0 healing_power points (24.64 DPS) | yes | Champion's Dragonhide Headdress (227205, -4.67 DPS) [vendor]; Sanctified Leather Helm (22689, -5.80 DPS) [quest]; Feralheart Headdress (226786, -8.87 DPS, sim-verified) [vendor] |
-| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 65.4 healing_power points (10.81 DPS) | yes | Enchanted South Seas Kelp (19612, -3.37 DPS) [quest]; Pristine Enchanted South Seas Kelp (19613, -3.37 DPS) [quest]; Drake Tooth Necklace (21531, -4.52 DPS, sim-verified) [quest] |
-| shoulder | Argent Elite Shoulders (227888) | Argent Quartermaster Hasana [vendor] | 101.8 healing_power points (16.83 DPS) | yes | Champion's Dragonhide Pauldrons (227207, -1.16 DPS) [vendor]; Warlord's Dragonhide Pauldrons (231672, -1.32 DPS) [vendor]; Devout Mantle (16695, -11.26 DPS, sim-verified) [dungeon] |
-| back | Hide of the Wild (18510) | Leatherworking [crafted] | 66.5 healing_power points (10.99 DPS) | yes | Darkspear Raider's Cloak (272076, -3.44 DPS) [vendor]; Drape of Recovery (272413, -3.66 DPS) [vendor] |
-| chest | Mooncloth Vest (14138) | Tailoring [crafted] | 118.4 healing_power points (19.57 DPS) | yes | Feralheart Embrace (226783, -1.31 DPS) [vendor]; Warlord's Dragonhide Tunic (231674, -1.39 DPS) [vendor]; Devout Robe (16690, -3.30 DPS, sim-verified) [dungeon] |
-| wrist | Bracers of Hope (22667) | Epic Armaments of Battle - Friend of the Dawn [quest] | 72.3 healing_power points (11.96 DPS) | yes | General's Dragonhide Bracers (16553, -0.49 DPS) [pvp]; Feralheart Bindings (226782, -1.34 DPS, sim-verified) [vendor]; Devout Bracers (16697, -3.13 DPS) [dungeon] |
-| hands | Feralheart Gauntlets (226784) | Mokvar [vendor] | 92.0 healing_power points (15.21 DPS) | yes | Wildheart Gloves (16717, -1.83 DPS) [dungeon]; General's Dragonhide Gauntlets (231676, -2.22 DPS) [vendor]; Raider Handwraps (272097, -12.96 DPS, sim-verified) [vendor] |
-| waist | Feralheart Cord (226780) | Mokvar [vendor] | 85.9 healing_power points (14.20 DPS) | yes | General's Dragonhide Belt (16556, -0.30 DPS) [pvp]; Devout Belt (16696, -0.89 DPS) [dungeon]; Wisdom of the Timbermaw (19047, -9.35 DPS, sim-verified) [crafted] |
-| legs | Feralheart Pants (226787) | Mokvar [vendor] | sim-verified (639.3 DPS) | yes | Legionnaire's Dragonhide Legguards (227206, +0.00 DPS) [vendor]; General's Dragonhide Legguards (231673, -1.84 DPS) [vendor]; Devout Skirt (16694, -9.38 DPS, sim-verified) [dungeon] |
-| feet | Feralheart Sandals (226781) | Mokvar [vendor] | sim-verified (639.3 DPS) | yes | Mooncloth Boots (15802, -2.68 DPS) [crafted]; Devout Sandals (16691, -4.94 DPS) [dungeon]; Incandescent Mooncloth Boots (227862, -7.26 DPS, sim-verified) [vendor] |
+| head | Living Crown (252561) | Leatherworking [crafted] | 149.0 healing_power points (24.64 DPS) | yes | Champion's Dragonhide Headdress (227205, -4.67 DPS) [vendor]; Feralheart Headdress (226786, -5.51 DPS) [vendor]; Sanctified Leather Helm (22689, -5.80 DPS) [quest] |
+| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 65.4 healing_power points (10.81 DPS) | yes | Drake Tooth Necklace (21531, -1.65 DPS) [quest]; Enchanted South Seas Kelp (19612, -3.37 DPS) [quest]; Pristine Enchanted South Seas Kelp (19613, -3.37 DPS) [quest] |
+| shoulder | Argent Elite Shoulders (227888) | Argent Quartermaster Hasana [vendor] | 101.8 healing_power points (16.83 DPS) | yes | Champion's Dragonhide Pauldrons (227207, -1.16 DPS) [vendor]; Warlord's Dragonhide Pauldrons (231672, -1.32 DPS) [vendor]; Devout Mantle (16695, -3.11 DPS) [dungeon] |
+| back | Hide of the Wild (18510) | Leatherworking [crafted] | 66.5 healing_power points (10.99 DPS) | yes | Darkspear Raider's Cloak (272063, -2.25 DPS) [vendor]; Drape of Recovery (272413, -3.66 DPS) [vendor] |
+| chest | Mooncloth Vest (14138) | Tailoring [crafted] | 118.4 healing_power points (19.57 DPS) | yes | Devout Robe (16690, -0.88 DPS) [dungeon]; Feralheart Embrace (226783, -1.31 DPS) [vendor]; Warlord's Dragonhide Tunic (231674, -1.39 DPS) [vendor] |
+| wrist | Bracers of Hope (22667) | Epic Armaments of Battle - Friend of the Dawn [quest] | 72.3 healing_power points (11.96 DPS) | yes | General's Dragonhide Bracers (16553, -0.49 DPS) [pvp]; Feralheart Bindings (226782, -1.19 DPS) [vendor]; Devout Bracers (16697, -3.13 DPS) [dungeon] |
+| hands | Feralheart Gauntlets (226784) | Mokvar [vendor] | 92.0 healing_power points (15.21 DPS) | yes | Raider Handwraps (272097, -0.31 DPS) [vendor]; Wildheart Gloves (16717, -1.83 DPS) [dungeon]; General's Dragonhide Gauntlets (231676, -2.22 DPS) [vendor] |
+| waist | Feralheart Cord (226780) | Mokvar [vendor] | 85.9 healing_power points (14.20 DPS) | yes | Wisdom of the Timbermaw (19047, -0.01 DPS) [crafted]; General's Dragonhide Belt (16556, -0.30 DPS) [pvp]; Devout Belt (16696, -0.89 DPS) [dungeon] |
+| legs | Feralheart Pants (226787) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Devout Skirt (16694, +0.00 DPS) [dungeon]; Legionnaire's Dragonhide Legguards (227206, +0.00 DPS) [vendor]; General's Dragonhide Legguards (231673, -1.84 DPS) [vendor] |
+| feet | Feralheart Sandals (226781) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Incandescent Mooncloth Boots (227862, +0.00 DPS) [vendor]; Mooncloth Boots (15802, -2.68 DPS) [crafted]; Devout Sandals (16691, -4.94 DPS) [dungeon] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234033) | Anachronos [vendor] | 73.7 healing_power points (12.19 DPS) | yes | Channeler's Ring (272406, -3.50 DPS) [vendor]; Band of the Hierophant (13096, -3.99 DPS) [world_drop]; Blessed Band of Light (272407, -4.05 DPS) [vendor] |
-| finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 59.8 healing_power points (9.89 DPS) | yes | Band of the Hierophant (13096, -1.69 DPS) [world_drop]; Blessed Band of Light (272407, -1.75 DPS) [vendor]; Channeler's Ring (272406, -3.72 DPS, sim-verified) [vendor] |
-| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (639.3 DPS) | yes | Ankh of Life (1713, -3.75 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -4.50 DPS) [quest]; Shard of the Splithooves (10659, -4.96 DPS) [quest] |
-| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (639.3 DPS) | yes | Ankh of Life (1713, -2.42 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -3.17 DPS) [quest]; Darkmoon Card: Blue Dragon (19288, -5.22 DPS, sim-verified) [quest] |
-| main_hand | Charstone Dirk (17710) | Maraudon: Princess Theradras [dungeon] | sim-verified (639.3 DPS) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Hand of Righteousness (7721, -6.18 DPS) [dungeon]; Staff of Hale Magefire (13000, -6.31 DPS) [world_drop] |
-| off_hand | Lei of the Lifegiver (19312) | Frostwolf Clan [rep] | 56.7 healing_power points (9.37 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; Arcane Star (15931, -2.30 DPS) [world_drop]; Lapidis Tankard of Tidesippe (4696, -6.26 DPS, sim-verified) [world_drop] |
+| finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 59.8 healing_power points (9.89 DPS) | yes | Channeler's Ring (272406, -1.21 DPS) [vendor]; Band of the Hierophant (13096, -1.69 DPS) [world_drop]; Blessed Band of Light (272407, -1.75 DPS) [vendor] |
+| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, -3.75 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -4.50 DPS) [quest]; Shard of the Splithooves (10659, -4.96 DPS) [quest] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (638.5 DPS) | yes | Ankh of Life (1713, -2.42 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -3.17 DPS) [quest]; Shard of the Splithooves (10659, -3.63 DPS) [quest] |
+| main_hand | Charstone Dirk (17710) | Maraudon: Princess Theradras [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Righteousness (7721, -6.18 DPS) [dungeon]; Staff of Hale Magefire (13000, -6.31 DPS) [world_drop]; Spellshifter Rod (9527, -6.49 DPS) [quest] |
+| off_hand | Lei of the Lifegiver (19312) | Frostwolf Clan [rep] | 53.7 healing_power points (8.87 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; Lapidis Tankard of Tidesippe (4696, -0.81 DPS) [world_drop]; Arcane Star (15931, -1.81 DPS) [world_drop] |
 | ranged | - | - |  |  |  |
 
 **New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Mooncloth Vest; wrist: Bracers of Hope; waist: Feralheart Cord; legs: Feralheart Pants; feet: Feralheart Sandals; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; off_hand: Lei of the Lifegiver

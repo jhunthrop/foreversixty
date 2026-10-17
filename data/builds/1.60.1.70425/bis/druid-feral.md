@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 67.3. Weights run: 3.1s. Verify run: 3.7s. 188 eligible items had no known source.
+Set DPS (verified): 67.3. Weights run: 4.2s. Verify run: 4.3s. 186 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=2.098 ± 0.013, crit=0.679 ± 0.012 per rating point (14 rating = 1%, 9.508 per %), hit=0.913 ± 0.030 per rating point (10 rating = 1%, 9.134 per %), melee_haste=5.966 ± 0.364
 
@@ -34,11 +34,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 20:** head: Defender's Leather Hood; neck: Sentinel's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Blackened Defias Armor; wrist: Bravo's Armbands; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Feet of the Lynx; finger1: Protector's Band; finger2: Demon Band; main_hand: Smite's Mighty Hammer
 
-No-known-source sample (15 of 188, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5821 Darkstalker Boots; 6478 Rat Stompers; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads
+No-known-source sample (15 of 186, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5821 Darkstalker Boots; 6478 Rat Stompers; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads
 
 ### Band 30 (night-elf, 0000000000000000-55232031000000000000-0000000000000000)
 
-Set DPS (verified): 121.9. Weights run: 3.4s. Verify run: 2.3s. 341 eligible items had no known source.
+Set DPS (verified): 121.9. Weights run: 4.7s. Verify run: 2.6s. 339 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.984 ± 0.015, crit=0.780 ± 0.016 per rating point (14 rating = 1%, 10.922 per %), hit=0.963 ± 0.032 per rating point (10 rating = 1%, 9.634 per %), melee_haste=5.524 ± 0.453
 
@@ -64,11 +64,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Defender's Leather Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Brawler's Leather Tunic; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Prowler's Leather Belt; legs: Brawler's Leather Legguards; finger1: Protector's Band; finger2: Thunderbrow Ring; main_hand: Manual Crowd Pummeler
 
-No-known-source sample (15 of 341, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 339, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring
 
 ### Band 40 (night-elf, 0000000000000000-55232032121032000000-0000000000000000)
 
-Set DPS (verified): 166.5. Weights run: 3.7s. Verify run: 2.3s. 452 eligible items had no known source.
+Set DPS (verified): 166.5. Weights run: 5.3s. Verify run: 2.9s. 450 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.938 ± 0.021, crit=0.933 ± 0.025 per rating point (14 rating = 1%, 13.058 per %), hit=0.951 ± 0.039 per rating point (10 rating = 1%, 9.512 per %), melee_haste=5.776 ± 0.555
 
@@ -94,11 +94,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 40:** head: White Bandit Mask; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Sergeant Major's Cape; chest: Wolffear Harness; hands: Prowler's Leather Gloves; waist: Ogron's Sash; legs: Triprunner Dungarees; feet: Prowler's Leather Shoes; finger1: Protector's Band; finger2: Falcon's Hook
 
-No-known-source sample (15 of 452, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape
+No-known-source sample (15 of 450, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape
 
 ### Band 50 (night-elf, 0100000000000000-55232032121032012001-5000000000000000)
 
-Set DPS (verified): 216.8. Weights run: 3.8s. Verify run: 3.0s. 591 eligible items had no known source.
+Set DPS (verified): 216.8. Weights run: 5.3s. Verify run: 3.5s. 589 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.863 ± 0.025, crit=1.029 ± 0.032 per rating point (14 rating = 1%, 14.413 per %), hit=1.063 ± 0.049 per rating point (10 rating = 1%, 10.627 per %), melee_haste=6.044 ± 0.770
 
@@ -106,7 +106,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | White Bandit Mask (10008) | Tailoring [crafted] | 44.7 attack_power points (3.59 DPS) | yes | Knight-Lieutenant's Leather Headband (220850, -0.29 DPS) [vendor]; Scorpashi Skullcap (14658, -0.97 DPS) [world_drop]; Helm of Fire (8348, -1.05 DPS) [crafted] |
 | neck | Skibi's Pendant (13089) | World drop [world_drop] | 35.2 attack_power points (2.83 DPS) | yes | Sentinel's Medallion (19540, -1.18 DPS) [rep]; Kaleidoscope Chain (13084, -1.53 DPS) [world_drop] |
-| shoulder | Prowler's Leather Shoulder (252534) | Leatherworking [crafted] | 41.0 attack_power points (3.29 DPS) | yes | Skulker's Leather Shoulder (252535, -0.05 DPS) [crafted]; Knight-Lieutenant's Leather Shoulders (220852, -0.64 DPS) [vendor]; Failed Flying Experiment (9647, -0.95 DPS, sim-verified) [quest] |
+| shoulder | Prowler's Leather Shoulders (252534) | Leatherworking [crafted] | 41.0 attack_power points (3.29 DPS) | yes | Skulker's Leather Shoulder (252535, -0.05 DPS) [crafted]; Knight-Lieutenant's Leather Shoulders (220852, -0.64 DPS) [vendor]; Failed Flying Experiment (9647, -0.95 DPS, sim-verified) [quest] |
 | back | Dark Phantom Cape (13122) | World drop [world_drop] | 27.9 attack_power points (2.25 DPS) | yes | Sergeant Major's Cape (16336, -0.29 DPS) [pvp]; Pridelord Cape (14673, -0.37 DPS) [world_drop]; Blackflame Cape (13109, -0.45 DPS) [world_drop] |
 | chest | Warbear Harness (15064) | Leatherworking [crafted] | 57.7 attack_power points (4.64 DPS) | yes | Blazewind Breastplate (11193, -0.87 DPS, sim-verified) [quest]; Knight's Leather Armor (220854, -1.18 DPS) [vendor]; Charred Leather Tunic (19127, -1.95 DPS) [quest] |
 | wrist | Deepfury Bracers (13120) | World drop [world_drop] | 36.7 attack_power points (2.95 DPS) | yes | Prowler's Leather Bracers (252539, -0.31 DPS) [crafted]; Skulker's Leather Bracers (252540, -0.37 DPS) [crafted]; Pridelord Bands (14672, -0.57 DPS) [world_drop] |
@@ -122,13 +122,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulder; back: Dark Phantom Cape; chest: Warbear Harness; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Prowler's Leather Waistguard; legs: Gryphon Rider's Leggings; feet: Prowler's Leather Boots; finger1: Protector's Band; finger2: Masons Fraternity Ring; trinket1: Molten Heart of the Mountain; trinket2: Frozen Heart of the Mountain
+**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulders; back: Dark Phantom Cape; chest: Warbear Harness; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Prowler's Leather Waistguard; legs: Gryphon Rider's Leggings; feet: Prowler's Leather Boots; finger1: Protector's Band; finger2: Masons Fraternity Ring; trinket1: Molten Heart of the Mountain; trinket2: Frozen Heart of the Mountain
 
-No-known-source sample (15 of 591, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 589, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60 (night-elf, 0100000000000000-55232032121032012001-5053200000000000)
 
-Set DPS (verified): 286.2. Weights run: 3.8s. Verify run: 8.7s. 1235 eligible items had no known source.
+Set DPS (verified): 286.0. Weights run: 5.1s. Verify run: 10.0s. 1235 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.789 ± 0.028, crit=1.127 ± 0.040 per rating point (14 rating = 1%, 15.772 per %), hit=1.129 ± 0.063 per rating point (10 rating = 1%, 11.291 per %), melee_haste=5.837 ± 1.062
 
@@ -136,21 +136,21 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | Feralheart Cap (226792) | Mokvar [vendor] | 81.8 attack_power points (6.99 DPS) | yes | Field Marshal's Dragonhide Helmet (16451, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Headguard (231689, +0.00 DPS) [vendor]; Blue Suede Hat (252482, -6.16 DPS, sim-verified) [crafted] |
 | neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 56.0 attack_power points (4.78 DPS) | yes | Medallion of the Dawn (22659, -1.56 DPS, sim-verified) [quest]; Beads of Ogre Might (22150, -1.77 DPS) [quest]; Skibi's Pendant (13089, -1.86 DPS) [world_drop] |
-| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (286.2 DPS) | yes | Field Marshal's Dragonhide Shoulders (231693, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, +0.00 DPS) [vendor]; Stormshroud Shoulders (15058, -7.50 DPS, sim-verified) [crafted] |
+| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (286.0 DPS) | yes | Field Marshal's Dragonhide Shoulders (231693, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, +0.00 DPS) [vendor]; Stormshroud Shoulders (15058, -7.50 DPS, sim-verified) [crafted] |
 | back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 46.8 attack_power points (4.00 DPS) | yes | Cloak of the Honor Guard (20073, -0.33 DPS) [rep]; Howler's Furs (272414, -0.64 DPS) [vendor]; Sergeant Major's Cape (16337, -1.27 DPS) [pvp] |
 | chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 120.6 attack_power points (10.30 DPS) | yes | Field Marshal's Dragonhide Chestpiece (231690, -2.09 DPS) [vendor]; Field Marshal's Dragonhide Breastplate (16452, -2.11 DPS) [vendor]; Dawn Armor (252483, -2.28 DPS, sim-verified) [crafted] |
-| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (286.2 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
-| hands | Feralheart Fists (226793) | Mokvar [vendor] | sim-verified (286.2 DPS) | yes | Timbermaw Brawlers (19049, +0.00 DPS) [crafted]; Raider Gloves (272099, +0.00 DPS) [vendor]; Stormshroud Gloves (21278, -6.23 DPS, sim-verified) [crafted] |
+| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (286.0 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
+| hands | Feralheart Fists (226793) | Mokvar [vendor] | sim-verified (286.0 DPS) | yes | Timbermaw Brawlers (19049, +0.00 DPS) [crafted]; Raider Gloves (272099, +0.00 DPS) [vendor]; Stormshroud Gloves (21278, -6.23 DPS, sim-verified) [crafted] |
 | waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 87.6 attack_power points (7.48 DPS) | yes | Shifter's Belt (272396, -1.30 DPS, sim-verified) [vendor]; Might of the Timbermaw (19044, -1.40 DPS) [crafted]; Belt of Preserved Heads (20216, -1.60 DPS) [quest] |
-| legs | Feralheart Trousers (226791) | Mokvar [vendor] | sim-verified (286.2 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; Marshal's Dragonhide Leggings (231691, +0.00 DPS) [vendor]; Stormshroud Pants (15057, -6.38 DPS, sim-verified) [crafted] |
-| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (286.2 DPS) | yes | Knight-Lieutenant's Dragonhide Treads (227182, +0.00 DPS) [vendor]; Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Drudge Boots (21532, -3.24 DPS, sim-verified) [quest] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 64.1 attack_power points (5.47 DPS) | yes | Don Julio's Band (19325, -1.80 DPS) [rep]; Cutthroat's Signet (272408, -2.37 DPS) [vendor]; Masons Fraternity Ring (9533, -3.34 DPS) [quest] |
-| finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | 46.1 attack_power points (3.94 DPS) | yes | Don Julio's Band (19325, -0.26 DPS) [rep]; Cutthroat's Signet (272408, -0.83 DPS) [vendor]; Masons Fraternity Ring (9533, -1.80 DPS) [quest] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (286.2 DPS) | yes | - |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (286.2 DPS) | yes | Darkmoon Card: Heroism (19287, -1.91 DPS, sim-verified) [quest] |
-| main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | sim-verified (286.2 DPS) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Electrified Dagger (19100, -6.74 DPS, sim-verified) [rep] |
+| legs | Feralheart Trousers (226791) | Mokvar [vendor] | sim-verified (286.0 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; Marshal's Dragonhide Leggings (231691, +0.00 DPS) [vendor]; Stormshroud Pants (15057, -6.38 DPS, sim-verified) [crafted] |
+| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (286.0 DPS) | yes | Knight-Lieutenant's Dragonhide Treads (227182, +0.00 DPS) [pvp]; Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Drudge Boots (21532, -3.24 DPS, sim-verified) [quest] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 64.1 attack_power points (5.47 DPS) | yes | Don Julio's Band (19325, -1.97 DPS) [rep]; Cutthroat's Signet (272408, -2.37 DPS) [vendor]; Masons Fraternity Ring (9533, -3.34 DPS) [quest] |
+| finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | 46.1 attack_power points (3.94 DPS) | yes | Don Julio's Band (19325, -0.43 DPS) [rep]; Cutthroat's Signet (272408, -0.83 DPS) [vendor]; Masons Fraternity Ring (9533, -1.80 DPS) [quest] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (286.0 DPS) | yes | - |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (286.0 DPS) | yes | Darkmoon Card: Heroism (19287, -1.91 DPS, sim-verified) [quest] |
+| main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | sim-verified (286.0 DPS) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Electrified Dagger (19100, -6.52 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (286.2 DPS) | yes | Howling Idol (272427, -7.29 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (286.0 DPS) | yes | Howling Idol (272427, -7.28 DPS, sim-verified) [vendor] |
 
 **New at 60:** head: Feralheart Cap; neck: Amulet of the Darkmoon; shoulder: Feralheart Epaulets; back: Cape of the Black Baron; chest: Timbermaw Tunic; wrist: Feralheart Bands; hands: Feralheart Fists; waist: Ferocity of the Timbermaw; legs: Feralheart Trousers; feet: Feralheart Walkers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Protector's Band; trinket1: Darkmoon Card: Maelstrom; main_hand: The Unstoppable Force; ranged: Idol of the Dream
 
@@ -158,31 +158,31 @@ No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0500200000000000-45211031021032212001-5053000000000000)
 
-Set DPS (verified): 658.7. Weights run: 3.7s. Verify run: 8.4s. 1235 eligible items had no known source.
+Set DPS (verified): 658.1. Weights run: 5.0s. Verify run: 9.4s. 1235 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.420 ± 0.002, agility=2.289 ± 0.035, crit=1.554 ± 0.047 per rating point (14 rating = 1%, 21.756 per %), hit=1.821 ± 0.084 per rating point (10 rating = 1%, 18.214 per %), melee_haste=12.856 ± 1.295
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Feralheart Cap (226792) | Mokvar [vendor] | 99.5 attack_power points (15.26 DPS) | yes | Field Marshal's Dragonhide Helmet (16451, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Headguard (231689, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -22.44 DPS, sim-verified) [crafted] |
-| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 67.7 attack_power points (10.38 DPS) | yes | Medallion of the Dawn (22659, -3.83 DPS, sim-verified) [quest]; Beads of Ogre Might (22150, -3.91 DPS) [quest]; Skibi's Pendant (13089, -3.96 DPS) [world_drop] |
-| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (658.7 DPS) | yes | Highlander's Leather Shoulders (20059, +0.00 DPS) [rep]; Field Marshal's Dragonhide Shoulders (231693, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, -14.93 DPS, sim-verified) [vendor] |
+| head | Feralheart Cap (226792) | Mokvar [vendor] | 99.5 attack_power points (15.26 DPS) | yes | Field Marshal's Dragonhide Helmet (16451, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Headguard (231689, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -23.07 DPS, sim-verified) [crafted] |
+| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 67.7 attack_power points (10.38 DPS) | yes | Medallion of the Dawn (22659, -3.77 DPS, sim-verified) [quest]; Beads of Ogre Might (22150, -3.91 DPS) [quest]; Skibi's Pendant (13089, -3.96 DPS) [world_drop] |
+| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (658.1 DPS) | yes | Highlander's Leather Shoulders (20059, +0.00 DPS) [rep]; Field Marshal's Dragonhide Shoulders (231693, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, -14.90 DPS, sim-verified) [vendor] |
 | back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 54.3 attack_power points (8.33 DPS) | yes | Howler's Furs (272414, -1.24 DPS) [vendor]; Cloak of the Honor Guard (20073, -1.36 DPS) [rep]; Shifting Cloak (18511, -2.36 DPS) [crafted] |
-| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 142.8 attack_power points (21.90 DPS) | yes | Dawn Armor (252483, -2.78 DPS) [crafted]; Field Marshal's Dragonhide Chestpiece (231690, -3.43 DPS) [vendor]; Field Marshal's Dragonhide Breastplate (16452, -4.37 DPS) [vendor] |
-| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (658.7 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
-| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 88.4 attack_power points (13.56 DPS) | yes | Timbermaw Brawlers (19049, -0.85 DPS) [crafted]; Marshal's Dragonhide Grips (231694, -1.15 DPS) [vendor]; Knight-Lieutenant's Dragonhide Grips (227183, -2.43 DPS) [vendor] |
-| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 101.8 attack_power points (15.61 DPS) | yes | Shifter's Belt (272396, -1.96 DPS, sim-verified) [vendor]; Belt of Preserved Heads (20216, -2.36 DPS) [quest]; Might of the Timbermaw (19044, -2.91 DPS) [crafted] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 142.8 attack_power points (21.90 DPS) | yes | Dawn Armor (252483, -2.58 DPS, sim-verified) [crafted]; Field Marshal's Dragonhide Chestpiece (231690, -3.43 DPS) [vendor]; Field Marshal's Dragonhide Breastplate (16452, -4.37 DPS) [vendor] |
+| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (658.1 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
+| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 88.4 attack_power points (13.56 DPS) | yes | Timbermaw Brawlers (19049, -0.85 DPS) [crafted]; Marshal's Dragonhide Grips (231694, -1.15 DPS) [vendor]; Knight-Lieutenant's Dragonhide Grips (227183, -2.43 DPS) [pvp] |
+| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 101.8 attack_power points (15.61 DPS) | yes | Belt of Preserved Heads (20216, -2.36 DPS) [quest]; Shifter's Belt (272396, -2.48 DPS, sim-verified) [vendor]; Might of the Timbermaw (19044, -2.91 DPS) [crafted] |
 | legs | Warbear Woolies (15065) | Leatherworking [crafted] | 109.0 attack_power points (16.71 DPS) | yes | Marshal's Dragonhide Leggings (231691, +0.00 DPS) [vendor]; Sentinel's Leather Pants (237818, -0.56 DPS) [vendor]; Knight-Captain's Dragonhide Leggings (227178, -1.91 DPS) [vendor] |
-| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (658.7 DPS) | yes | Knight-Lieutenant's Dragonhide Treads (227182, +0.00 DPS) [vendor]; Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Drudge Boots (21532, -16.72 DPS, sim-verified) [quest] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 76.3 attack_power points (11.70 DPS) | yes | Protector's Band (19514, -3.39 DPS) [rep]; Cutthroat's Signet (272408, -3.99 DPS) [vendor] |
-| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | 56.0 attack_power points (8.58 DPS) | yes | Protector's Band (19514, -0.27 DPS) [rep]; Cutthroat's Signet (272408, -0.88 DPS) [vendor] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (658.7 DPS) | yes | - |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (658.7 DPS) | yes | Molten Heart of the Mountain (249470, -2.45 DPS, sim-verified) [crafted] |
-| main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | sim-verified (658.7 DPS) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Electrified Dagger (19100, -12.11 DPS, sim-verified) [rep] |
+| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (658.1 DPS) | yes | Knight-Lieutenant's Dragonhide Treads (227182, +0.00 DPS) [pvp]; Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Drudge Boots (21532, -16.95 DPS, sim-verified) [quest] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 76.3 attack_power points (11.70 DPS) | yes | Don Julio's Band (19325, -3.42 DPS) [rep]; Cutthroat's Signet (272408, -3.99 DPS) [vendor]; Masons Fraternity Ring (9533, -6.79 DPS) [quest] |
+| finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | 54.2 attack_power points (8.31 DPS) | yes | Don Julio's Band (19325, -0.04 DPS) [rep]; Cutthroat's Signet (272408, -0.61 DPS) [vendor]; Masons Fraternity Ring (9533, -3.40 DPS) [quest] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (658.1 DPS) | yes | - |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (658.1 DPS) | yes | Molten Heart of the Mountain (249470, -3.45 DPS, sim-verified) [crafted] |
+| main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | sim-verified (658.1 DPS) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Electrified Dagger (19100, -12.22 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (658.7 DPS) | yes | Idol of the Moon (23197, -5.03 DPS, sim-verified) [world_drop] |
+| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (658.1 DPS) | yes | Idol of the Moon (23197, -5.78 DPS, sim-verified) [world_drop] |
 
-**New at 60:** head: Feralheart Cap; neck: Amulet of the Darkmoon; shoulder: Feralheart Epaulets; back: Cape of the Black Baron; chest: Timbermaw Tunic; wrist: Feralheart Bands; hands: Raider Gloves; waist: Ferocity of the Timbermaw; legs: Warbear Woolies; feet: Feralheart Walkers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; main_hand: The Unstoppable Force; ranged: Idol of the Dream
+**New at 60:** head: Feralheart Cap; neck: Amulet of the Darkmoon; shoulder: Feralheart Epaulets; back: Cape of the Black Baron; chest: Timbermaw Tunic; wrist: Feralheart Bands; hands: Raider Gloves; waist: Ferocity of the Timbermaw; legs: Warbear Woolies; feet: Feralheart Walkers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Protector's Band; trinket1: Darkmoon Card: Maelstrom; main_hand: The Unstoppable Force; ranged: Idol of the Dream
 
 No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 66.0. Weights run: 3.1s. Verify run: 3.6s. 178 eligible items had no known source.
+Set DPS (verified): 66.0. Weights run: 4.2s. Verify run: 4.2s. 176 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=2.098 ± 0.013, crit=0.679 ± 0.012 per rating point (14 rating = 1%, 9.508 per %), hit=0.913 ± 0.030 per rating point (10 rating = 1%, 9.134 per %), melee_haste=5.966 ± 0.364
 
@@ -216,11 +216,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 20:** head: Defender's Leather Hood; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Blackened Defias Armor; wrist: Bristlebark Bindings; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Feet of the Lynx; finger1: Legionnaire's Band; finger2: Demon Band; main_hand: Smite's Mighty Hammer
 
-No-known-source sample (15 of 178, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 5821 Darkstalker Boots; 6478 Rat Stompers; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18863 Insignia of the Alliance; 209617 Insignia of the Alliance; 241089 Scarlet Dagger; 248005 Northshire Hammer; 248007 Militia Shortblade; 248008 Apprentice's Spellstaff; 263006 Scout Ranger's Tunic; 263007 Skyseer's Vest
+No-known-source sample (15 of 176, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 5821 Darkstalker Boots; 6478 Rat Stompers; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18863 Insignia of the Alliance; 209617 Insignia of the Alliance; 241089 Scarlet Dagger; 248005 Northshire Hammer; 248007 Militia Shortblade; 248008 Apprentice's Spellstaff; 263006 Scout Ranger's Tunic; 263007 Skyseer's Vest
 
 ### Band 30 (tauren, 0000000000000000-55232031000000000000-0000000000000000)
 
-Set DPS (verified): 119.7. Weights run: 3.4s. Verify run: 2.2s. 331 eligible items had no known source.
+Set DPS (verified): 119.7. Weights run: 4.7s. Verify run: 2.6s. 329 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.984 ± 0.015, crit=0.780 ± 0.016 per rating point (14 rating = 1%, 10.922 per %), hit=0.963 ± 0.032 per rating point (10 rating = 1%, 9.634 per %), melee_haste=5.524 ± 0.453
 
@@ -246,11 +246,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Defender's Leather Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Brawler's Leather Tunic; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Prowler's Leather Belt; legs: Brawler's Leather Legguards; finger1: Legionnaire's Band; finger2: Thunderbrow Ring; main_hand: Manual Crowd Pummeler
 
-No-known-source sample (15 of 331, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
+No-known-source sample (15 of 329, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
 
 ### Band 40 (tauren, 0000000000000000-55232032121032000000-0000000000000000)
 
-Set DPS (verified): 162.9. Weights run: 3.7s. Verify run: 2.3s. 436 eligible items had no known source.
+Set DPS (verified): 162.9. Weights run: 5.3s. Verify run: 2.9s. 434 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.938 ± 0.021, crit=0.933 ± 0.025 per rating point (14 rating = 1%, 13.058 per %), hit=0.951 ± 0.039 per rating point (10 rating = 1%, 9.512 per %), melee_haste=5.776 ± 0.555
 
@@ -276,11 +276,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 40:** head: White Bandit Mask; neck: Scout's Medallion; shoulder: Sunburn Spaulders; chest: Wolffear Harness; hands: Prowler's Leather Gloves; waist: Ogron's Sash; legs: Triprunner Dungarees; feet: Prowler's Leather Shoes; finger1: Legionnaire's Band; finger2: Falcon's Hook
 
-No-known-source sample (15 of 436, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
+No-known-source sample (15 of 434, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
 
 ### Band 50 (tauren, 0100000000000000-55232032121032012001-5000000000000000)
 
-Set DPS (verified): 220.7. Weights run: 3.8s. Verify run: 2.8s. 571 eligible items had no known source.
+Set DPS (verified): 220.7. Weights run: 5.3s. Verify run: 3.3s. 569 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.863 ± 0.025, crit=1.029 ± 0.032 per rating point (14 rating = 1%, 14.413 per %), hit=1.063 ± 0.049 per rating point (10 rating = 1%, 10.627 per %), melee_haste=6.044 ± 0.770
 
@@ -288,7 +288,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 |---|---|---|---|---|---|
 | head | White Bandit Mask (10008) | Tailoring [crafted] | 44.7 attack_power points (3.59 DPS) | yes | Undercity Reservist's Cap (20643, -0.18 DPS) [quest]; Blood Guard's Leather Headband (220851, -0.29 DPS) [vendor]; Scorpashi Skullcap (14658, -0.97 DPS) [world_drop] |
 | neck | Skibi's Pendant (13089) | World drop [world_drop] | 35.2 attack_power points (2.83 DPS) | yes | Woven Ivy Necklace (19159, -0.65 DPS, sim-verified) [quest]; Scout's Medallion (19535, -1.03 DPS) [rep] |
-| shoulder | Prowler's Leather Shoulder (252534) | Leatherworking [crafted] | 41.0 attack_power points (3.29 DPS) | yes | Skulker's Leather Shoulder (252535, -0.05 DPS) [crafted]; Blood Guard's Leather Shoulders (220853, -0.64 DPS) [vendor]; Failed Flying Experiment (9647, -1.15 DPS, sim-verified) [quest] |
+| shoulder | Prowler's Leather Shoulders (252534) | Leatherworking [crafted] | 41.0 attack_power points (3.29 DPS) | yes | Skulker's Leather Shoulder (252535, -0.05 DPS) [crafted]; Blood Guard's Leather Shoulders (220853, -0.64 DPS) [vendor]; Failed Flying Experiment (9647, -1.15 DPS, sim-verified) [quest] |
 | back | Dark Phantom Cape (13122) | World drop [world_drop] | 27.9 attack_power points (2.25 DPS) | yes | Blackflame Cape (13109, -0.45 DPS) [world_drop]; Serpentskin Cloak (8259, -0.60 DPS) [world_drop]; Pridelord Cape (14673, -0.79 DPS, sim-verified) [world_drop] |
 | chest | Warbear Harness (15064) | Leatherworking [crafted] | 57.7 attack_power points (4.64 DPS) | yes | Blazewind Breastplate (11193, -0.92 DPS, sim-verified) [quest]; Stone Guard's Leather Armor (220855, -1.18 DPS) [vendor]; Charred Leather Tunic (19127, -1.95 DPS) [quest] |
 | wrist | Deepfury Bracers (13120) | World drop [world_drop] | 36.7 attack_power points (2.95 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [pvp]; Prowler's Leather Bracers (252539, -0.31 DPS) [crafted] |
@@ -304,35 +304,35 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulder; back: Dark Phantom Cape; chest: Warbear Harness; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Prowler's Leather Waistguard; legs: Serpentskin Leggings; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: Masons Fraternity Ring; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain
+**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulders; back: Dark Phantom Cape; chest: Warbear Harness; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Prowler's Leather Waistguard; legs: Serpentskin Leggings; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: Masons Fraternity Ring; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain
 
-No-known-source sample (15 of 571, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 569, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
 
 ### Band 60 (tauren, 0100000000000000-55232032121032012001-5053200000000000)
 
-Set DPS (verified): 290.2. Weights run: 3.8s. Verify run: 8.3s. 1229 eligible items had no known source.
+Set DPS (verified): 289.9. Weights run: 5.1s. Verify run: 9.4s. 1229 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.789 ± 0.028, crit=1.127 ± 0.040 per rating point (14 rating = 1%, 15.772 per %), hit=1.129 ± 0.063 per rating point (10 rating = 1%, 11.291 per %), melee_haste=5.837 ± 1.062
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Feralheart Cap (226792) | Mokvar [vendor] | 81.8 attack_power points (6.99 DPS) | yes | Warlord's Dragonhide Helmet (16550, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor]; Blue Suede Hat (252482, -6.33 DPS, sim-verified) [crafted] |
+| head | Feralheart Cap (226792) | Mokvar [vendor] | 81.8 attack_power points (6.99 DPS) | yes | Warlord's Dragonhide Helmet (16550, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor]; Blue Suede Hat (252482, -6.32 DPS, sim-verified) [crafted] |
 | neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 56.0 attack_power points (4.78 DPS) | yes | Medallion of the Dawn (22659, -1.59 DPS, sim-verified) [quest]; Beads of Ogre Might (22150, -1.77 DPS) [quest]; Skibi's Pendant (13089, -1.86 DPS) [world_drop] |
-| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (290.2 DPS) | yes | Warlord's Dragonhide Shoulders (231684, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, +0.00 DPS) [vendor]; Stormshroud Shoulders (15058, -7.44 DPS, sim-verified) [crafted] |
+| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (289.9 DPS) | yes | Warlord's Dragonhide Shoulders (231684, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, +0.00 DPS) [vendor]; Stormshroud Shoulders (15058, -7.44 DPS, sim-verified) [crafted] |
 | back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 46.8 attack_power points (4.00 DPS) | yes | Deathguard's Cloak (20068, -0.33 DPS) [rep]; Howler's Furs (272414, -0.64 DPS) [vendor]; Shifting Cloak (18511, -1.40 DPS) [crafted] |
-| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 120.6 attack_power points (10.30 DPS) | yes | Dawn Armor (252483, -1.70 DPS, sim-verified) [crafted]; Warlord's Dragonhide Chestpiece (231686, -2.09 DPS) [vendor]; Warlord's Dragonhide Hauberk (16549, -2.11 DPS) [vendor] |
-| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (290.2 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
-| hands | Feralheart Fists (226793) | Mokvar [vendor] | sim-verified (290.2 DPS) | yes | Timbermaw Brawlers (19049, +0.00 DPS) [crafted]; Raider Gloves (272099, +0.00 DPS) [vendor]; Stormshroud Gloves (21278, -5.59 DPS, sim-verified) [crafted] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 120.6 attack_power points (10.30 DPS) | yes | Dawn Armor (252483, -1.71 DPS, sim-verified) [crafted]; Warlord's Dragonhide Chestpiece (231686, -2.09 DPS) [vendor]; Warlord's Dragonhide Hauberk (16549, -2.11 DPS) [vendor] |
+| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (289.9 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
+| hands | Feralheart Fists (226793) | Mokvar [vendor] | sim-verified (289.9 DPS) | yes | Timbermaw Brawlers (19049, +0.00 DPS) [crafted]; Raider Gloves (272099, +0.00 DPS) [vendor]; Stormshroud Gloves (21278, -5.59 DPS, sim-verified) [crafted] |
 | waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 87.6 attack_power points (7.48 DPS) | yes | Might of the Timbermaw (19044, -1.40 DPS) [crafted]; Shifter's Belt (272396, -1.43 DPS, sim-verified) [vendor]; Belt of Preserved Heads (20216, -1.60 DPS) [quest] |
-| legs | Feralheart Trousers (226791) | Mokvar [vendor] | sim-verified (290.2 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; General's Dragonhide Leggings (231685, +0.00 DPS) [pvp]; Stormshroud Pants (15057, -6.75 DPS, sim-verified) [crafted] |
-| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (290.2 DPS) | yes | Blood Guard's Dragonhide Treads (227181, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor]; Drudge Boots (21532, -3.26 DPS, sim-verified) [quest] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 64.1 attack_power points (5.47 DPS) | yes | Don Julio's Band (19325, -1.80 DPS) [rep]; Cutthroat's Signet (272408, -2.37 DPS) [vendor]; Masons Fraternity Ring (9533, -3.34 DPS) [quest] |
-| finger2 | Legionnaire's Band (19510) | Warsong Outriders [rep] | 46.1 attack_power points (3.94 DPS) | yes | Don Julio's Band (19325, -0.26 DPS) [rep]; Cutthroat's Signet (272408, -0.83 DPS) [vendor]; Masons Fraternity Ring (9533, -1.80 DPS) [quest] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (290.2 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (290.2 DPS) | yes | Frozen Heart of the Mountain (249469, -3.65 DPS, sim-verified) [crafted] |
-| main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-verified (290.2 DPS) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; Glacial Blade (19099, -6.59 DPS, sim-verified) [rep] |
+| legs | Feralheart Trousers (226791) | Mokvar [vendor] | sim-verified (289.9 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; General's Dragonhide Leggings (231685, +0.00 DPS) [pvp]; Stormshroud Pants (15057, -6.75 DPS, sim-verified) [crafted] |
+| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (289.9 DPS) | yes | Blood Guard's Dragonhide Treads (227181, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor]; Drudge Boots (21532, -3.26 DPS, sim-verified) [quest] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 64.1 attack_power points (5.47 DPS) | yes | Don Julio's Band (19325, -1.97 DPS) [rep]; Cutthroat's Signet (272408, -2.37 DPS) [vendor]; Masons Fraternity Ring (9533, -3.34 DPS) [quest] |
+| finger2 | Legionnaire's Band (19510) | Warsong Outriders [rep] | 46.1 attack_power points (3.94 DPS) | yes | Don Julio's Band (19325, -0.43 DPS) [rep]; Cutthroat's Signet (272408, -0.83 DPS) [vendor]; Masons Fraternity Ring (9533, -1.80 DPS) [quest] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (289.9 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (289.9 DPS) | yes | Frozen Heart of the Mountain (249469, -3.65 DPS, sim-verified) [crafted] |
+| main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-verified (289.9 DPS) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; Glacial Blade (19099, -6.37 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (290.2 DPS) | yes | Howling Idol (272427, -7.14 DPS, sim-verified) [vendor] |
+| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (289.9 DPS) | yes | Howling Idol (272427, -7.13 DPS, sim-verified) [vendor] |
 
 **New at 60:** head: Feralheart Cap; neck: Amulet of the Darkmoon; shoulder: Feralheart Epaulets; back: Cape of the Black Baron; chest: Timbermaw Tunic; wrist: Feralheart Bands; hands: Feralheart Fists; waist: Ferocity of the Timbermaw; legs: Feralheart Trousers; feet: Feralheart Walkers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Legionnaire's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: The Unstoppable Force; ranged: Idol of the Dream
 
@@ -340,31 +340,31 @@ No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0500200000000000-45211031021032212001-5053000000000000)
 
-Set DPS (verified): 666.8. Weights run: 3.7s. Verify run: 8.0s. 1229 eligible items had no known source.
+Set DPS (verified): 664.7. Weights run: 5.0s. Verify run: 9.1s. 1229 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.420 ± 0.002, agility=2.289 ± 0.035, crit=1.554 ± 0.047 per rating point (14 rating = 1%, 21.756 per %), hit=1.821 ± 0.084 per rating point (10 rating = 1%, 18.214 per %), melee_haste=12.856 ± 1.295
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Feralheart Cap (226792) | Mokvar [vendor] | 99.5 attack_power points (15.26 DPS) | yes | Warlord's Dragonhide Helmet (16550, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -24.55 DPS, sim-verified) [crafted] |
-| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 67.7 attack_power points (10.38 DPS) | yes | Medallion of the Dawn (22659, -3.65 DPS, sim-verified) [quest]; Beads of Ogre Might (22150, -3.91 DPS) [quest]; Skibi's Pendant (13089, -3.96 DPS) [world_drop] |
-| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (666.8 DPS) | yes | Defiler's Leather Shoulders (20194, +0.00 DPS) [rep]; Warlord's Dragonhide Shoulders (231684, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, -15.78 DPS, sim-verified) [vendor] |
+| head | Feralheart Cap (226792) | Mokvar [vendor] | 99.5 attack_power points (15.26 DPS) | yes | Warlord's Dragonhide Helmet (16550, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor]; Outlaw's Collar (279253, -20.99 DPS, sim-verified) [crafted] |
+| neck | Amulet of the Darkmoon (19491) | 1200 Tickets - Amulet of the Darkmoon [quest] | 67.7 attack_power points (10.38 DPS) | yes | Medallion of the Dawn (22659, -3.81 DPS, sim-verified) [quest]; Beads of Ogre Might (22150, -3.91 DPS) [quest]; Skibi's Pendant (13089, -3.96 DPS) [world_drop] |
+| shoulder | Feralheart Epaulets (226790) | Mokvar [vendor] | sim-verified (664.7 DPS) | yes | Defiler's Leather Shoulders (20194, +0.00 DPS) [rep]; Warlord's Dragonhide Shoulders (231684, +0.00 DPS) [vendor]; Darkspear Pauldrons (272105, -14.37 DPS, sim-verified) [vendor] |
 | back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 54.3 attack_power points (8.33 DPS) | yes | Howler's Furs (272414, -1.24 DPS) [vendor]; Deathguard's Cloak (20068, -1.36 DPS) [rep]; Shifting Cloak (18511, -2.36 DPS) [crafted] |
-| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 142.8 attack_power points (21.90 DPS) | yes | Dawn Armor (252483, -2.42 DPS, sim-verified) [crafted]; Warlord's Dragonhide Chestpiece (231686, -3.43 DPS) [vendor]; Warlord's Dragonhide Hauberk (16549, -4.37 DPS) [vendor] |
-| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (666.8 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
+| chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | 142.8 attack_power points (21.90 DPS) | yes | Dawn Armor (252483, -2.22 DPS, sim-verified) [crafted]; Warlord's Dragonhide Chestpiece (231686, -3.43 DPS) [vendor]; Warlord's Dragonhide Hauberk (16549, -4.37 DPS) [vendor] |
+| wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (664.7 DPS) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
 | hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 88.4 attack_power points (13.56 DPS) | yes | Timbermaw Brawlers (19049, -0.85 DPS) [crafted]; General's Dragonhide Grips (231688, -1.15 DPS) [vendor]; Blood Guard's Dragonhide Grips (227180, -2.43 DPS) [pvp] |
-| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 101.8 attack_power points (15.61 DPS) | yes | Belt of Preserved Heads (20216, -2.36 DPS) [quest]; Shifter's Belt (272396, -2.38 DPS, sim-verified) [vendor]; Might of the Timbermaw (19044, -2.91 DPS) [crafted] |
+| waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 101.8 attack_power points (15.61 DPS) | yes | Shifter's Belt (272396, -1.81 DPS, sim-verified) [vendor]; Belt of Preserved Heads (20216, -2.36 DPS) [quest]; Might of the Timbermaw (19044, -2.91 DPS) [crafted] |
 | legs | Warbear Woolies (15065) | Leatherworking [crafted] | 109.0 attack_power points (16.71 DPS) | yes | General's Dragonhide Leggings (231685, +0.00 DPS) [pvp]; Sentinel's Leather Pants (237818, -0.56 DPS) [vendor]; Legionnaire's Dragonhide Leggings (227177, -1.91 DPS) [pvp] |
-| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (666.8 DPS) | yes | Blood Guard's Dragonhide Treads (227181, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor]; Drudge Boots (21532, -18.77 DPS, sim-verified) [quest] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 76.3 attack_power points (11.70 DPS) | yes | Legionnaire's Band (19510, -3.39 DPS) [rep]; Cutthroat's Signet (272408, -3.99 DPS) [vendor] |
-| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 56.0 attack_power points (8.58 DPS) | yes | Cutthroat's Signet (272408, -0.88 DPS) [vendor]; Legionnaire's Band (19510, -1.68 DPS, sim-verified) [rep] |
-| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (666.8 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (666.8 DPS) | yes | Frozen Heart of the Mountain (249469, -6.04 DPS, sim-verified) [crafted] |
-| main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-verified (666.8 DPS) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; Hand of Edward the Odd (2243, -18.86 DPS, sim-verified) [world_drop] |
+| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-verified (664.7 DPS) | yes | Blood Guard's Dragonhide Treads (227181, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor]; Drudge Boots (21532, -14.95 DPS, sim-verified) [quest] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | 76.3 attack_power points (11.70 DPS) | yes | Don Julio's Band (19325, -3.42 DPS) [rep]; Cutthroat's Signet (272408, -3.99 DPS) [vendor]; Masons Fraternity Ring (9533, -6.79 DPS) [quest] |
+| finger2 | Legionnaire's Band (19510) | Warsong Outriders [rep] | 54.2 attack_power points (8.31 DPS) | yes | Don Julio's Band (19325, -0.04 DPS) [rep]; Cutthroat's Signet (272408, -0.61 DPS) [vendor]; Masons Fraternity Ring (9533, -3.40 DPS) [quest] |
+| trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (664.7 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (664.7 DPS) | yes | Frozen Heart of the Mountain (249469, -6.72 DPS, sim-verified) [crafted] |
+| main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-verified (664.7 DPS) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; Glacial Blade (19099, -11.78 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (666.8 DPS) | yes | Idol of the Moon (23197, -5.69 DPS, sim-verified) [world_drop] |
+| ranged | Idol of the Dream (220606) | The Temple of Atal'Hakkar: Hazzas [dungeon] | sim-verified (664.7 DPS) | yes | Idol of the Moon (23197, -5.47 DPS, sim-verified) [world_drop] |
 
-**New at 60:** head: Feralheart Cap; neck: Amulet of the Darkmoon; shoulder: Feralheart Epaulets; back: Cape of the Black Baron; chest: Timbermaw Tunic; wrist: Feralheart Bands; hands: Raider Gloves; waist: Ferocity of the Timbermaw; legs: Warbear Woolies; feet: Feralheart Walkers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: The Unstoppable Force; ranged: Idol of the Dream
+**New at 60:** head: Feralheart Cap; neck: Amulet of the Darkmoon; shoulder: Feralheart Epaulets; back: Cape of the Black Baron; chest: Timbermaw Tunic; wrist: Feralheart Bands; hands: Raider Gloves; waist: Ferocity of the Timbermaw; legs: Warbear Woolies; feet: Feralheart Walkers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Legionnaire's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: The Unstoppable Force; ranged: Idol of the Dream
 
 No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
 

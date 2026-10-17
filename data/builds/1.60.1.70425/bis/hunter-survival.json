@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70425",
-  "engine_version": "a73988d91",
-  "generated_at": "2026-10-15T12:04:24Z",
+  "engine_version": "171b9ff7f",
+  "generated_at": "2026-10-16T23:27:03Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -298,7 +298,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 73.22589782939619,
+          "sim_dps": 73.22589782939616,
           "verified": true,
           "alternatives": [
             {
@@ -395,7 +395,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 73.22589782939619,
+          "sim_dps": 73.22589782939616,
           "verified": true,
           "alternatives": [
             {
@@ -446,7 +446,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 73.22589782939619,
+          "sim_dps": 73.22589782939616,
           "verified": true,
           "alternatives": [
             {
@@ -499,7 +499,7 @@
           "score": 13.113105747,
           "verified": true,
           "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +0.6 DPS (73.2 vs 72.6 set DPS)",
-          "dps_delta": 0.5808599480582899,
+          "dps_delta": 0.5808599480583183,
           "alternatives": [
             {
               "item_id": 1156,
@@ -599,7 +599,7 @@
           "score": 248.92,
           "verified": true,
           "swap_note": "confirmed by the sim against Butcher's Cleaver (id 1292): kept the pick, +5.7 DPS (73.2 vs 67.5 set DPS)",
-          "dps_delta": 5.710078217851645,
+          "dps_delta": 5.7100782178515885,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -709,8 +709,8 @@
           ]
         }
       ],
-      "set_dps": 73.22589782939619,
-      "no_source_count": 212,
+      "set_dps": 73.22589782939616,
+      "no_source_count": 207,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -745,13 +745,13 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.682473436,
-      "verify_run_seconds": 3.70601555,
+      "weights_run_seconds": 3.636257539,
+      "verify_run_seconds": 4.480820592,
       "coverage": {
         "back": {
-          "eligible": 98,
-          "sourced": 80,
-          "rare_spawn_skipped": 11
+          "eligible": 100,
+          "sourced": 82,
+          "rare_spawn_skipped": 13
         },
         "chest": {
           "eligible": 136,
@@ -759,9 +759,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 92,
-          "sourced": 81,
-          "rare_spawn_skipped": 3
+          "eligible": 94,
+          "sourced": 83,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 32,
@@ -774,9 +774,9 @@
           "rare_spawn_skipped": 3
         },
         "hands": {
-          "eligible": 100,
-          "sourced": 88,
-          "rare_spawn_skipped": 6
+          "eligible": 101,
+          "sourced": 89,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 23,
@@ -788,7 +788,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 242,
+          "eligible": 238,
           "sourced": 171,
           "rare_spawn_skipped": 25
         },
@@ -797,7 +797,7 @@
           "sourced": 4
         },
         "off_hand": {
-          "eligible": 25,
+          "eligible": 24,
           "sourced": 18,
           "rare_spawn_skipped": 11
         },
@@ -818,14 +818,14 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 84,
-          "sourced": 78,
-          "rare_spawn_skipped": 5
+          "eligible": 85,
+          "sourced": 79,
+          "rare_spawn_skipped": 6
         },
         "wrist": {
-          "eligible": 62,
-          "sourced": 48,
-          "rare_spawn_skipped": 3
+          "eligible": 64,
+          "sourced": 50,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.043677825062419816,
@@ -1048,7 +1048,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 73.63779972378853,
+          "sim_dps": 73.63779972378852,
           "verified": true,
           "alternatives": [
             {
@@ -1234,7 +1234,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 73.63779972378853,
+          "sim_dps": 73.63779972378852,
           "verified": true,
           "alternatives": [
             {
@@ -1285,7 +1285,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 73.63779972378853,
+          "sim_dps": 73.63779972378852,
           "verified": true,
           "alternatives": [
             {
@@ -1438,7 +1438,7 @@
           "score": 248.92,
           "verified": true,
           "swap_note": "confirmed by the sim against Butcher's Cleaver (id 1292): kept the pick, +5.9 DPS (73.6 vs 67.7 set DPS)",
-          "dps_delta": 5.941442534581725,
+          "dps_delta": 5.941442534581682,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -1548,8 +1548,8 @@
           ]
         }
       ],
-      "set_dps": 73.63779972378853,
-      "no_source_count": 201,
+      "set_dps": 73.63779972378852,
+      "no_source_count": 196,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1584,13 +1584,13 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.682473436,
-      "verify_run_seconds": 3.543214217,
+      "weights_run_seconds": 3.636257539,
+      "verify_run_seconds": 4.261261021,
       "coverage": {
         "back": {
-          "eligible": 99,
-          "sourced": 85,
-          "rare_spawn_skipped": 11
+          "eligible": 101,
+          "sourced": 87,
+          "rare_spawn_skipped": 13
         },
         "chest": {
           "eligible": 134,
@@ -1598,9 +1598,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 92,
-          "sourced": 78,
-          "rare_spawn_skipped": 3
+          "eligible": 94,
+          "sourced": 80,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 33,
@@ -1613,9 +1613,9 @@
           "rare_spawn_skipped": 3
         },
         "hands": {
-          "eligible": 94,
-          "sourced": 81,
-          "rare_spawn_skipped": 6
+          "eligible": 95,
+          "sourced": 82,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 23,
@@ -1627,7 +1627,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 243,
+          "eligible": 239,
           "sourced": 185,
           "rare_spawn_skipped": 25
         },
@@ -1636,7 +1636,7 @@
           "sourced": 4
         },
         "off_hand": {
-          "eligible": 25,
+          "eligible": 24,
           "sourced": 15,
           "rare_spawn_skipped": 11
         },
@@ -1657,14 +1657,14 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 83,
-          "sourced": 74,
-          "rare_spawn_skipped": 5
+          "eligible": 84,
+          "sourced": 75,
+          "rare_spawn_skipped": 6
         },
         "wrist": {
-          "eligible": 64,
-          "sourced": 54,
-          "rare_spawn_skipped": 3
+          "eligible": 66,
+          "sourced": 56,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.043677825062419816,
@@ -2216,7 +2216,7 @@
           "score": 18.257640097,
           "verified": true,
           "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +0.7 DPS over it",
-          "dps_delta": 0.6845952078147519,
+          "dps_delta": 0.6845952078147661,
           "alternatives": [
             {
               "item_id": 1491,
@@ -2359,10 +2359,10 @@
           "source": "Scarlet Monastery: Interrogator Vishas",
           "source_kind": "dungeon",
           "chance": 0.9,
-          "sim_dps": 98.15540619626066,
+          "sim_dps": 98.1554061962606,
           "verified": true,
           "swap_note": "beat the scored pick Swinetusk Shank (id 6691) in the sim: +16.8 DPS (98.2 vs 81.4 set DPS)",
-          "dps_delta": 16.78751658558535,
+          "dps_delta": 16.78751658558528,
           "alternatives": [
             {
               "item_id": 9608,
@@ -2438,8 +2438,8 @@
           ]
         }
       ],
-      "set_dps": 98.15540619626066,
-      "no_source_count": 382,
+      "set_dps": 98.1554061962606,
+      "no_source_count": 377,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2474,13 +2474,13 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.9099137859999997,
-      "verify_run_seconds": 2.119941353,
+      "weights_run_seconds": 4.142732153,
+      "verify_run_seconds": 2.57396312,
       "coverage": {
         "back": {
-          "eligible": 179,
-          "sourced": 143,
-          "rare_spawn_skipped": 14
+          "eligible": 181,
+          "sourced": 145,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 227,
@@ -2488,9 +2488,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 149,
-          "sourced": 130,
-          "rare_spawn_skipped": 3
+          "eligible": 151,
+          "sourced": 132,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 86,
@@ -2503,9 +2503,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 159,
-          "sourced": 139,
-          "rare_spawn_skipped": 7
+          "eligible": 160,
+          "sourced": 140,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 76,
@@ -2518,7 +2518,7 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 403,
+          "eligible": 399,
           "sourced": 297,
           "rare_spawn_skipped": 37
         },
@@ -2528,7 +2528,7 @@
           "rare_spawn_skipped": 3
         },
         "off_hand": {
-          "eligible": 55,
+          "eligible": 54,
           "sourced": 38,
           "rare_spawn_skipped": 19
         },
@@ -2551,14 +2551,14 @@
           "sourced": 8
         },
         "waist": {
-          "eligible": 152,
-          "sourced": 137,
-          "rare_spawn_skipped": 7
+          "eligible": 153,
+          "sourced": 138,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 115,
-          "sourced": 92,
-          "rare_spawn_skipped": 5
+          "eligible": 117,
+          "sourced": 94,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.051069816366360855,
@@ -3110,7 +3110,7 @@
           "score": 18.257640097,
           "verified": true,
           "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +0.7 DPS over it",
-          "dps_delta": 0.6684827737473853,
+          "dps_delta": 0.6684827737473995,
           "alternatives": [
             {
               "item_id": 17694,
@@ -3253,10 +3253,10 @@
           "source": "Scarlet Monastery: Interrogator Vishas",
           "source_kind": "dungeon",
           "chance": 0.9,
-          "sim_dps": 99.11164279078544,
+          "sim_dps": 99.1116427907854,
           "verified": true,
           "swap_note": "beat the scored pick Swinetusk Shank (id 6691) in the sim: +17.2 DPS (99.1 vs 81.9 set DPS)",
-          "dps_delta": 17.214076376560868,
+          "dps_delta": 17.21407637656081,
           "alternatives": [
             {
               "item_id": 6691,
@@ -3320,8 +3320,8 @@
           ]
         }
       ],
-      "set_dps": 99.11164279078544,
-      "no_source_count": 365,
+      "set_dps": 99.1116427907854,
+      "no_source_count": 360,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3356,13 +3356,13 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.9099137859999997,
-      "verify_run_seconds": 2.072413655,
+      "weights_run_seconds": 4.142732153,
+      "verify_run_seconds": 2.402547378,
       "coverage": {
         "back": {
-          "eligible": 179,
-          "sourced": 146,
-          "rare_spawn_skipped": 14
+          "eligible": 181,
+          "sourced": 148,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 224,
@@ -3370,9 +3370,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 154,
-          "sourced": 130,
-          "rare_spawn_skipped": 3
+          "eligible": 156,
+          "sourced": 132,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 87,
@@ -3385,9 +3385,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 154,
-          "sourced": 132,
-          "rare_spawn_skipped": 7
+          "eligible": 155,
+          "sourced": 133,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 76,
@@ -3400,7 +3400,7 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 395,
+          "eligible": 391,
           "sourced": 309,
           "rare_spawn_skipped": 37
         },
@@ -3410,7 +3410,7 @@
           "rare_spawn_skipped": 3
         },
         "off_hand": {
-          "eligible": 51,
+          "eligible": 50,
           "sourced": 32,
           "rare_spawn_skipped": 19
         },
@@ -3433,14 +3433,14 @@
           "sourced": 8
         },
         "waist": {
-          "eligible": 156,
-          "sourced": 139,
-          "rare_spawn_skipped": 7
+          "eligible": 157,
+          "sourced": 140,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 118,
-          "sourced": 97,
-          "rare_spawn_skipped": 5
+          "eligible": 120,
+          "sourced": 99,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.051069816366360855,
@@ -3587,7 +3587,7 @@
           "score": 20.334487287,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Medallion (ilvl 33) (id 19541): kept the pick, +0.5 DPS (142.0 vs 141.5 set DPS)",
-          "dps_delta": 0.48488735042420217,
+          "dps_delta": 0.4848873504241453,
           "alternatives": [
             {
               "item_id": 13084,
@@ -3990,7 +3990,7 @@
           "score": 24.468718027,
           "verified": true,
           "swap_note": "confirmed by the sim against Ring of the Underwood (id 2951): kept the pick, +1.8 DPS (142.0 vs 140.2 set DPS)",
-          "dps_delta": 1.7535965613002134,
+          "dps_delta": 1.753596561300185,
           "alternatives": [
             {
               "item_id": 7552,
@@ -4087,7 +4087,7 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 141.95289197964036,
+          "sim_dps": 141.95289197964033,
           "verified": true,
           "alternatives": [
             {
@@ -4170,7 +4170,7 @@
           "item_name": "The Silencer",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 141.95289197964036,
+          "sim_dps": 141.95289197964033,
           "verified": true,
           "alternatives": [
             {
@@ -4210,8 +4210,8 @@
           ]
         }
       ],
-      "set_dps": 141.95289197964036,
-      "no_source_count": 602,
+      "set_dps": 141.95289197964033,
+      "no_source_count": 601,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4246,13 +4246,13 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.021242747,
-      "verify_run_seconds": 2.532786407,
+      "weights_run_seconds": 4.132454609,
+      "verify_run_seconds": 2.873559284,
       "coverage": {
         "back": {
-          "eligible": 243,
-          "sourced": 204,
-          "rare_spawn_skipped": 16
+          "eligible": 245,
+          "sourced": 206,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 406,
@@ -4260,9 +4260,9 @@
           "rare_spawn_skipped": 16
         },
         "feet": {
-          "eligible": 307,
-          "sourced": 266,
-          "rare_spawn_skipped": 7
+          "eligible": 309,
+          "sourced": 268,
+          "rare_spawn_skipped": 8
         },
         "finger1": {
           "eligible": 123,
@@ -4276,8 +4276,8 @@
         },
         "hands": {
           "eligible": 327,
-          "sourced": 292,
-          "rare_spawn_skipped": 9
+          "sourced": 293,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 190,
@@ -4290,7 +4290,7 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 525,
+          "eligible": 526,
           "sourced": 381,
           "rare_spawn_skipped": 41
         },
@@ -4300,8 +4300,8 @@
           "rare_spawn_skipped": 4
         },
         "off_hand": {
-          "eligible": 75,
-          "sourced": 52,
+          "eligible": 74,
+          "sourced": 51,
           "rare_spawn_skipped": 23
         },
         "ranged": {
@@ -4323,14 +4323,14 @@
           "sourced": 18
         },
         "waist": {
-          "eligible": 295,
-          "sourced": 263,
-          "rare_spawn_skipped": 11
+          "eligible": 297,
+          "sourced": 265,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 244,
-          "sourced": 199,
-          "rare_spawn_skipped": 7
+          "eligible": 245,
+          "sourced": 201,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.07108922159446386,
@@ -4477,7 +4477,7 @@
           "score": 20.334487287,
           "verified": true,
           "swap_note": "confirmed by the sim against Scout's Medallion (ilvl 33) (id 19537): kept the pick, +0.4 DPS (141.9 vs 141.4 set DPS)",
-          "dps_delta": 0.42055678813719055,
+          "dps_delta": 0.4205567881372758,
           "alternatives": [
             {
               "item_id": 4430,
@@ -4976,7 +4976,7 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 141.8661195575016,
+          "sim_dps": 141.86611955750163,
           "verified": true,
           "alternatives": [
             {
@@ -5047,7 +5047,7 @@
           "item_name": "The Silencer",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 141.8661195575016,
+          "sim_dps": 141.86611955750163,
           "verified": true,
           "alternatives": [
             {
@@ -5087,8 +5087,8 @@
           ]
         }
       ],
-      "set_dps": 141.8661195575016,
-      "no_source_count": 566,
+      "set_dps": 141.86611955750163,
+      "no_source_count": 565,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5122,13 +5122,13 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.021242747,
-      "verify_run_seconds": 2.509570707,
+      "weights_run_seconds": 4.132454609,
+      "verify_run_seconds": 2.794050806,
       "coverage": {
         "back": {
-          "eligible": 245,
-          "sourced": 208,
-          "rare_spawn_skipped": 16
+          "eligible": 247,
+          "sourced": 210,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 399,
@@ -5136,9 +5136,9 @@
           "rare_spawn_skipped": 16
         },
         "feet": {
-          "eligible": 307,
-          "sourced": 261,
-          "rare_spawn_skipped": 7
+          "eligible": 309,
+          "sourced": 263,
+          "rare_spawn_skipped": 8
         },
         "finger1": {
           "eligible": 122,
@@ -5152,8 +5152,8 @@
         },
         "hands": {
           "eligible": 325,
-          "sourced": 285,
-          "rare_spawn_skipped": 9
+          "sourced": 286,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 190,
@@ -5166,7 +5166,7 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 517,
+          "eligible": 518,
           "sourced": 396,
           "rare_spawn_skipped": 41
         },
@@ -5176,8 +5176,8 @@
           "rare_spawn_skipped": 4
         },
         "off_hand": {
-          "eligible": 70,
-          "sourced": 46,
+          "eligible": 69,
+          "sourced": 45,
           "rare_spawn_skipped": 23
         },
         "ranged": {
@@ -5199,14 +5199,14 @@
           "sourced": 18
         },
         "waist": {
-          "eligible": 297,
-          "sourced": 263,
-          "rare_spawn_skipped": 11
+          "eligible": 299,
+          "sourced": 265,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 249,
-          "sourced": 215,
-          "rare_spawn_skipped": 7
+          "eligible": 250,
+          "sourced": 217,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.07108922159446386,
@@ -5353,7 +5353,7 @@
           "score": 28.942913754,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Medallion (id 19539): kept the pick, +0.8 DPS (189.6 vs 188.8 set DPS)",
-          "dps_delta": 0.8042441654811228,
+          "dps_delta": 0.8042441654810943,
           "alternatives": [
             {
               "item_id": 19540,
@@ -5467,7 +5467,7 @@
           "item_name": "Knight's Chain Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -5562,7 +5562,7 @@
           "item_name": "Sergeant Major's Chain Gauntlets",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "vendor",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -5656,7 +5656,7 @@
           "item_name": "Knight's Chain Legplates",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -5706,7 +5706,7 @@
           "item_name": "Sergeant Major's Chain Sabatons",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "vendor",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -5759,7 +5759,7 @@
           "score": 27.948940291,
           "verified": true,
           "swap_note": "confirmed by the sim against Masons Fraternity Ring (id 9533): kept the pick, +2.9 DPS (189.6 vs 186.7 set DPS)",
-          "dps_delta": 2.88126041730996,
+          "dps_delta": 2.8812604173098464,
           "alternatives": [
             {
               "item_id": 2951,
@@ -5846,10 +5846,10 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.5 DPS (189.6 vs 188.1 set DPS)",
-          "dps_delta": 1.4784625013371908
+          "dps_delta": 1.4784625013372477
         },
         {
           "slot": "trinket2",
@@ -5857,7 +5857,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -5883,7 +5883,7 @@
           "item_name": "Thorium Cestus",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -5973,7 +5973,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 189.62484577237367,
+          "sim_dps": 189.62484577237362,
           "verified": true,
           "alternatives": [
             {
@@ -6013,8 +6013,8 @@
           ]
         }
       ],
-      "set_dps": 189.62484577237367,
-      "no_source_count": 758,
+      "set_dps": 189.62484577237362,
+      "no_source_count": 757,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6051,13 +6051,13 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.004450131,
-      "verify_run_seconds": 5.204740777,
+      "weights_run_seconds": 4.172485898,
+      "verify_run_seconds": 5.98216286,
       "coverage": {
         "back": {
-          "eligible": 310,
-          "sourced": 261,
-          "rare_spawn_skipped": 16
+          "eligible": 312,
+          "sourced": 263,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 500,
@@ -6065,9 +6065,9 @@
           "rare_spawn_skipped": 17
         },
         "feet": {
-          "eligible": 398,
-          "sourced": 346,
-          "rare_spawn_skipped": 8
+          "eligible": 400,
+          "sourced": 348,
+          "rare_spawn_skipped": 9
         },
         "finger1": {
           "eligible": 148,
@@ -6081,8 +6081,8 @@
         },
         "hands": {
           "eligible": 412,
-          "sourced": 370,
-          "rare_spawn_skipped": 9
+          "sourced": 371,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 273,
@@ -6095,7 +6095,7 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 619,
+          "eligible": 620,
           "sourced": 453,
           "rare_spawn_skipped": 42
         },
@@ -6105,8 +6105,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 96,
-          "sourced": 66,
+          "eligible": 95,
+          "sourced": 65,
           "rare_spawn_skipped": 24
         },
         "ranged": {
@@ -6128,14 +6128,14 @@
           "sourced": 42
         },
         "waist": {
-          "eligible": 384,
-          "sourced": 345,
-          "rare_spawn_skipped": 11
+          "eligible": 386,
+          "sourced": 347,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 327,
-          "sourced": 270,
-          "rare_spawn_skipped": 7
+          "eligible": 328,
+          "sourced": 272,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.07841582712161901,
@@ -6667,7 +6667,7 @@
           "score": 27.948940291,
           "verified": true,
           "swap_note": "confirmed by the sim against Masons Fraternity Ring (id 9533): kept the pick, +2.6 DPS (191.1 vs 188.5 set DPS)",
-          "dps_delta": 2.6368670998436983,
+          "dps_delta": 2.6368670998436414,
           "alternatives": [
             {
               "item_id": 11862,
@@ -6754,7 +6754,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 191.13177767610418,
+          "sim_dps": 191.13177767610415,
           "verified": true,
           "alternatives": [
             {
@@ -6780,7 +6780,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 191.13177767610418,
+          "sim_dps": 191.13177767610415,
           "verified": true,
           "alternatives": [
             {
@@ -6806,7 +6806,7 @@
           "item_name": "Thrash Blade",
           "source": "Corruption of Earth and Seed",
           "source_kind": "quest",
-          "sim_dps": 191.13177767610418,
+          "sim_dps": 191.13177767610415,
           "verified": true,
           "alternatives": [
             {
@@ -6895,7 +6895,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 191.13177767610418,
+          "sim_dps": 191.13177767610415,
           "verified": true,
           "alternatives": [
             {
@@ -6935,8 +6935,8 @@
           ]
         }
       ],
-      "set_dps": 191.13177767610418,
-      "no_source_count": 715,
+      "set_dps": 191.13177767610415,
+      "no_source_count": 714,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6971,13 +6971,13 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.004450131,
-      "verify_run_seconds": 2.801463635,
+      "weights_run_seconds": 4.172485898,
+      "verify_run_seconds": 3.136521743,
       "coverage": {
         "back": {
-          "eligible": 315,
-          "sourced": 268,
-          "rare_spawn_skipped": 16
+          "eligible": 317,
+          "sourced": 270,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 493,
@@ -6985,9 +6985,9 @@
           "rare_spawn_skipped": 17
         },
         "feet": {
-          "eligible": 401,
-          "sourced": 343,
-          "rare_spawn_skipped": 8
+          "eligible": 403,
+          "sourced": 345,
+          "rare_spawn_skipped": 9
         },
         "finger1": {
           "eligible": 149,
@@ -7001,8 +7001,8 @@
         },
         "hands": {
           "eligible": 412,
-          "sourced": 365,
-          "rare_spawn_skipped": 9
+          "sourced": 366,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 273,
@@ -7015,7 +7015,7 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 614,
+          "eligible": 615,
           "sourced": 474,
           "rare_spawn_skipped": 42
         },
@@ -7025,8 +7025,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 92,
-          "sourced": 61,
+          "eligible": 91,
+          "sourced": 60,
           "rare_spawn_skipped": 24
         },
         "ranged": {
@@ -7048,14 +7048,14 @@
           "sourced": 42
         },
         "waist": {
-          "eligible": 387,
-          "sourced": 346,
-          "rare_spawn_skipped": 11
+          "eligible": 389,
+          "sourced": 348,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 331,
-          "sourced": 289,
-          "rare_spawn_skipped": 7
+          "eligible": 332,
+          "sourced": 291,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.07841582712161901,
@@ -7154,7 +7154,7 @@
           "item_name": "Beastmaster's Cap",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7177,7 +7177,7 @@
               "item_name": "Beaststalker's Cap",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -5.220217076,
+              "dps_delta": -5.219617382,
               "verified": true
             }
           ],
@@ -7250,7 +7250,7 @@
           "item_name": "Beastmaster's Mantle",
           "source": "Anthion's Parting Words",
           "source_kind": "quest",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7272,7 +7272,7 @@
               "item_name": "Beaststalker's Mantle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Overlord Wyrmthalak",
-              "dps_delta": -5.262517696,
+              "dps_delta": -5.262348136,
               "verified": true
             }
           ],
@@ -7389,7 +7389,7 @@
           "item_name": "Beastmaster's Bindings",
           "source": "An Earnest Proposition",
           "source_kind": "quest",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7404,7 +7404,7 @@
               "item_name": "Beaststalker's Bindings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -5.907381454,
+              "dps_delta": -5.906835814,
               "verified": true
             }
           ],
@@ -7432,7 +7432,7 @@
           "item_name": "Beastmaster's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7455,7 +7455,7 @@
               "item_name": "Beaststalker's Gloves",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: War Master Voone",
-              "dps_delta": -3.789824407,
+              "dps_delta": -3.789770585,
               "verified": true
             }
           ],
@@ -7483,7 +7483,7 @@
           "item_name": "Beastmaster's Belt",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7505,7 +7505,7 @@
               "item_name": "Beaststalker's Belt",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Smolderthorn Headhunter",
-              "dps_delta": -3.80727424,
+              "dps_delta": -3.807228837,
               "verified": true
             }
           ],
@@ -7535,8 +7535,8 @@
           "source_kind": "vendor",
           "score": 145.811314306,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +1.5 DPS (288.8 vs 287.3 set DPS)",
-          "dps_delta": 1.4543710064492643,
+          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +1.5 DPS (288.6 vs 287.1 set DPS)",
+          "dps_delta": 1.4525904658087256,
           "alternatives": [
             {
               "item_id": 231558,
@@ -7579,7 +7579,7 @@
           "item_name": "Beastmaster's Treads",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7602,7 +7602,7 @@
               "item_name": "Knight-Lieutenant's Chain Sabatons",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -5.047341448,
+              "dps_delta": -5.045768896,
               "verified": true
             }
           ],
@@ -7668,7 +7668,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "score": 67.66942147,
+          "score": 65.66942147,
           "verified": true,
           "alternatives": [
             {
@@ -7676,14 +7676,14 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.960634235
+              "dps_delta": -0.821439357
             },
             {
               "item_id": 19514,
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -2.193868658
+              "dps_delta": -2.054673779
             }
           ],
           "runners_up": [
@@ -7705,7 +7705,7 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7713,7 +7713,7 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -8.285445422,
+              "dps_delta": -8.285773169,
               "verified": true
             }
           ],
@@ -7731,7 +7731,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7768,7 +7768,7 @@
           "item_name": "Teebu's Blazing Longsword",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7790,7 +7790,7 @@
               "item_name": "Annihilator",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -7.454096564,
+              "dps_delta": -7.457668076,
               "verified": true
             }
           ],
@@ -7828,7 +7828,7 @@
               "item_name": "Ironwood Blade",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -4.200176473,
+              "dps_delta": -4.200953334,
               "verified": true
             },
             {
@@ -7858,7 +7858,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 288.75495727332486,
+          "sim_dps": 288.5637024480758,
           "verified": true,
           "alternatives": [
             {
@@ -7880,7 +7880,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.991350676,
+              "dps_delta": -1.991066465,
               "verified": true
             }
           ],
@@ -7898,8 +7898,8 @@
           ]
         }
       ],
-      "set_dps": 288.75495727332486,
-      "no_source_count": 1388,
+      "set_dps": 288.5637024480758,
+      "no_source_count": 1389,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7934,13 +7934,13 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.959551318,
-      "verify_run_seconds": 9.208552433,
+      "weights_run_seconds": 4.030452501,
+      "verify_run_seconds": 9.897428812,
       "coverage": {
         "back": {
-          "eligible": 381,
-          "sourced": 304,
-          "rare_spawn_skipped": 17
+          "eligible": 383,
+          "sourced": 306,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 650,
@@ -7948,9 +7948,9 @@
           "rare_spawn_skipped": 17
         },
         "feet": {
-          "eligible": 515,
-          "sourced": 444,
-          "rare_spawn_skipped": 9
+          "eligible": 517,
+          "sourced": 446,
+          "rare_spawn_skipped": 10
         },
         "finger1": {
           "eligible": 314,
@@ -7963,9 +7963,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 535,
-          "sourced": 449,
-          "rare_spawn_skipped": 9
+          "eligible": 536,
+          "sourced": 450,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 390,
@@ -7978,7 +7978,7 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 812,
+          "eligible": 813,
           "sourced": 565,
           "rare_spawn_skipped": 42
         },
@@ -7988,8 +7988,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 133,
-          "sourced": 85,
+          "eligible": 132,
+          "sourced": 84,
           "rare_spawn_skipped": 24
         },
         "ranged": {
@@ -8011,14 +8011,14 @@
           "sourced": 74
         },
         "waist": {
-          "eligible": 492,
-          "sourced": 424,
-          "rare_spawn_skipped": 11
+          "eligible": 493,
+          "sourced": 425,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 411,
-          "sourced": 327,
-          "rare_spawn_skipped": 7
+          "eligible": 413,
+          "sourced": 329,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.06959743948869578,
@@ -8117,7 +8117,7 @@
           "item_name": "Beastmaster's Cap",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8140,7 +8140,7 @@
               "item_name": "Beaststalker's Cap",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -6.841908284,
+              "dps_delta": -6.840353668,
               "verified": true
             }
           ],
@@ -8212,7 +8212,7 @@
           "item_name": "Beastmaster's Mantle",
           "source": "Anthion's Parting Words",
           "source_kind": "quest",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "alternatives": [
             {
@@ -8234,7 +8234,7 @@
               "item_name": "Beaststalker's Mantle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Overlord Wyrmthalak",
-              "dps_delta": -5.49147948,
+              "dps_delta": -5.490850291,
               "verified": true
             }
           ],
@@ -8321,7 +8321,7 @@
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.305588209,
+              "dps_delta": -1.303032053,
               "verified": true
             },
             {
@@ -8351,7 +8351,7 @@
           "item_name": "Beastmaster's Bindings",
           "source": "An Earnest Proposition",
           "source_kind": "quest",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "alternatives": [
             {
@@ -8366,7 +8366,7 @@
               "item_name": "Beaststalker's Bindings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -6.568890777,
+              "dps_delta": -6.567688863,
               "verified": true
             }
           ],
@@ -8394,7 +8394,7 @@
           "item_name": "Beastmaster's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8417,7 +8417,7 @@
               "item_name": "Beaststalker's Gloves",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: War Master Voone",
-              "dps_delta": -3.565565679,
+              "dps_delta": -3.565673135,
               "verified": true
             }
           ],
@@ -8445,7 +8445,7 @@
           "item_name": "Beastmaster's Belt",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "alternatives": [
             {
@@ -8467,7 +8467,7 @@
               "item_name": "Beaststalker's Belt",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Smolderthorn Headhunter",
-              "dps_delta": -3.783933091,
+              "dps_delta": -3.783837504,
               "verified": true
             }
           ],
@@ -8503,7 +8503,7 @@
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.78172276,
+              "dps_delta": -1.780037845,
               "verified": true
             },
             {
@@ -8540,7 +8540,7 @@
           "item_name": "Beastmaster's Treads",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8563,7 +8563,7 @@
               "item_name": "Beaststalker's Boots",
               "source_kind": "dungeon",
               "source": "Stratholme: Nerub'enkan",
-              "dps_delta": -5.60483205,
+              "dps_delta": -5.603979063,
               "verified": true
             }
           ],
@@ -8629,7 +8629,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "score": 67.66942147,
+          "score": 65.66942147,
           "verified": true,
           "alternatives": [
             {
@@ -8637,14 +8637,14 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.960634235
+              "dps_delta": -0.821439357
             },
             {
               "item_id": 19510,
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.193868658
+              "dps_delta": -2.054673779
             }
           ],
           "runners_up": [
@@ -8666,10 +8666,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +9.5 DPS (294.1 vs 284.7 set DPS)",
-          "dps_delta": 9.486027788174056,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +9.5 DPS (293.9 vs 284.5 set DPS)",
+          "dps_delta": 9.486319631811114,
           "alternatives": [
             {
               "item_id": 249469,
@@ -8693,7 +8693,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "alternatives": [
             {
@@ -8708,7 +8708,7 @@
               "item_name": "Molten Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -4.706739405,
+              "dps_delta": -4.706300411,
               "verified": true
             }
           ],
@@ -8731,7 +8731,7 @@
           "item_name": "Teebu's Blazing Longsword",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "alternatives": [
             {
@@ -8753,7 +8753,7 @@
               "item_name": "Annihilator",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -7.476544372,
+              "dps_delta": -7.481122742,
               "verified": true
             }
           ],
@@ -8791,7 +8791,7 @@
               "item_name": "Ironwood Blade",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -5.021383399,
+              "dps_delta": -5.022684181,
               "verified": true
             },
             {
@@ -8821,7 +8821,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 294.1382326687054,
+          "sim_dps": 293.9459888980574,
           "verified": true,
           "alternatives": [
             {
@@ -8843,7 +8843,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -2.497984732,
+              "dps_delta": -2.49726515,
               "verified": true
             }
           ],
@@ -8861,8 +8861,8 @@
           ]
         }
       ],
-      "set_dps": 294.1382326687054,
-      "no_source_count": 1368,
+      "set_dps": 293.9459888980574,
+      "no_source_count": 1369,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8898,13 +8898,13 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.959551318,
-      "verify_run_seconds": 9.352193947,
+      "weights_run_seconds": 4.030452501,
+      "verify_run_seconds": 9.939263971,
       "coverage": {
         "back": {
-          "eligible": 386,
-          "sourced": 310,
-          "rare_spawn_skipped": 17
+          "eligible": 388,
+          "sourced": 312,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 645,
@@ -8912,9 +8912,9 @@
           "rare_spawn_skipped": 17
         },
         "feet": {
-          "eligible": 518,
-          "sourced": 442,
-          "rare_spawn_skipped": 9
+          "eligible": 520,
+          "sourced": 444,
+          "rare_spawn_skipped": 10
         },
         "finger1": {
           "eligible": 315,
@@ -8927,9 +8927,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 535,
-          "sourced": 445,
-          "rare_spawn_skipped": 9
+          "eligible": 536,
+          "sourced": 446,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 390,
@@ -8942,7 +8942,7 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 810,
+          "eligible": 811,
           "sourced": 577,
           "rare_spawn_skipped": 42
         },
@@ -8952,8 +8952,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 130,
-          "sourced": 81,
+          "eligible": 129,
+          "sourced": 80,
           "rare_spawn_skipped": 24
         },
         "ranged": {
@@ -8975,14 +8975,14 @@
           "sourced": 74
         },
         "waist": {
-          "eligible": 495,
-          "sourced": 425,
-          "rare_spawn_skipped": 11
+          "eligible": 496,
+          "sourced": 426,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 415,
-          "sourced": 340,
-          "rare_spawn_skipped": 7
+          "eligible": 417,
+          "sourced": 342,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.06959743948869578,
@@ -9103,7 +9103,7 @@
               "item_name": "Beastmaster's Cap",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -4.669301237,
+              "dps_delta": -4.662516164,
               "verified": true
             }
           ],
@@ -9242,7 +9242,7 @@
               "item_name": "Cape of the Black Baron",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -6.920572017,
+              "dps_delta": -6.91412572,
               "verified": true
             }
           ],
@@ -9287,7 +9287,7 @@
               "item_name": "Knight-Captain's Chain Armor",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -10.443630572,
+              "dps_delta": -10.437213025,
               "verified": true
             }
           ],
@@ -9420,7 +9420,7 @@
               "item_name": "Highlander's Chain Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -6.608539874,
+              "dps_delta": -6.604176641,
               "verified": true
             }
           ],
@@ -9445,8 +9445,8 @@
           "source_kind": "vendor",
           "score": 188.520098294,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +7.2 DPS (766.2 vs 759.0 set DPS)",
-          "dps_delta": 7.205666776709222,
+          "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +7.2 DPS (765.8 vs 758.6 set DPS)",
+          "dps_delta": 7.199848824074024,
           "alternatives": [
             {
               "item_id": 231558,
@@ -9511,7 +9511,7 @@
               "item_name": "Shadowcraft Boots",
               "source_kind": "dungeon",
               "source": "Scholomance: Rattlegore",
-              "dps_delta": -4.620726188,
+              "dps_delta": -4.616487394,
               "verified": true
             }
           ],
@@ -9536,8 +9536,8 @@
           "source_kind": "vendor",
           "score": 93.655656645,
           "verified": true,
-          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, +18.2 DPS (766.2 vs 748.0 set DPS)",
-          "dps_delta": 18.22101681286506,
+          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, +18.2 DPS (765.8 vs 747.6 set DPS)",
+          "dps_delta": 18.212400623233634,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -9581,7 +9581,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "score": 92.17652488,
+          "score": 90.17652488,
           "verified": true,
           "alternatives": [
             {
@@ -9589,7 +9589,7 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -4.362679163,
+              "dps_delta": -3.948389889,
               "verified": true
             },
             {
@@ -9597,14 +9597,14 @@
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.221507863
+              "dps_delta": -6.940132714
             },
             {
               "item_id": 272407,
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.221507863
+              "dps_delta": -6.940132714
             }
           ],
           "runners_up": [
@@ -9626,7 +9626,7 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 766.2051888205891,
+          "sim_dps": 765.790899547064,
           "verified": true,
           "alternatives": [
             {
@@ -9634,7 +9634,7 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -23.472683071,
+              "dps_delta": -23.46858557,
               "verified": true
             }
           ],
@@ -9652,7 +9652,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 766.2051888205891,
+          "sim_dps": 765.790899547064,
           "verified": true,
           "alternatives": [
             {
@@ -9689,7 +9689,7 @@
           "item_name": "Teebu's Blazing Longsword",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 766.2051888205891,
+          "sim_dps": 765.790899547064,
           "verified": true,
           "alternatives": [
             {
@@ -9711,7 +9711,7 @@
               "item_name": "Annihilator",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -49.404081885,
+              "dps_delta": -49.386988109,
               "verified": true
             }
           ],
@@ -9749,7 +9749,7 @@
               "item_name": "Ironwood Blade",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -14.429592636,
+              "dps_delta": -14.426567012,
               "verified": true
             },
             {
@@ -9779,7 +9779,7 @@
           "item_name": "The Purifier",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 766.2051888205891,
+          "sim_dps": 765.790899547064,
           "verified": true,
           "alternatives": [
             {
@@ -9801,7 +9801,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -7.205666777,
+              "dps_delta": -7.199848824,
               "verified": true
             }
           ],
@@ -9819,8 +9819,8 @@
           ]
         }
       ],
-      "set_dps": 766.2051888205891,
-      "no_source_count": 1388,
+      "set_dps": 765.790899547064,
+      "no_source_count": 1389,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9856,13 +9856,13 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.591367668,
-      "verify_run_seconds": 6.471942319,
+      "weights_run_seconds": 3.3345653029999998,
+      "verify_run_seconds": 6.2551276,
       "coverage": {
         "back": {
-          "eligible": 381,
-          "sourced": 304,
-          "rare_spawn_skipped": 17
+          "eligible": 383,
+          "sourced": 306,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 650,
@@ -9870,9 +9870,9 @@
           "rare_spawn_skipped": 17
         },
         "feet": {
-          "eligible": 515,
-          "sourced": 444,
-          "rare_spawn_skipped": 9
+          "eligible": 517,
+          "sourced": 446,
+          "rare_spawn_skipped": 10
         },
         "finger1": {
           "eligible": 314,
@@ -9885,9 +9885,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 535,
-          "sourced": 449,
-          "rare_spawn_skipped": 9
+          "eligible": 536,
+          "sourced": 450,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 390,
@@ -9900,7 +9900,7 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 812,
+          "eligible": 813,
           "sourced": 565,
           "rare_spawn_skipped": 42
         },
@@ -9910,8 +9910,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 133,
-          "sourced": 85,
+          "eligible": 132,
+          "sourced": 84,
           "rare_spawn_skipped": 24
         },
         "ranged": {
@@ -9933,14 +9933,14 @@
           "sourced": 74
         },
         "waist": {
-          "eligible": 492,
-          "sourced": 424,
-          "rare_spawn_skipped": 11
+          "eligible": 493,
+          "sourced": 425,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 411,
-          "sourced": 327,
-          "rare_spawn_skipped": 7
+          "eligible": 413,
+          "sourced": 329,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.14068757446964586,
@@ -10243,7 +10243,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.15677967,
+              "dps_delta": -5.151101843,
               "verified": true
             }
           ],
@@ -10421,7 +10421,7 @@
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -8.523717367,
+              "dps_delta": -8.51742904,
               "verified": true
             }
           ],
@@ -10490,8 +10490,8 @@
           "source_kind": "vendor",
           "score": 93.655656645,
           "verified": true,
-          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, +17.1 DPS (776.8 vs 759.7 set DPS)",
-          "dps_delta": 17.10362702524992,
+          "swap_note": "confirmed by the sim against Don Julio's Band (id 19325): kept the pick, +17.1 DPS (776.4 vs 759.3 set DPS)",
+          "dps_delta": 17.096038580222512,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -10535,7 +10535,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "score": 92.17652488,
+          "score": 90.17652488,
           "verified": true,
           "alternatives": [
             {
@@ -10543,7 +10543,7 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -6.395169494,
+              "dps_delta": -5.97866189,
               "verified": true
             },
             {
@@ -10551,14 +10551,14 @@
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.221507863
+              "dps_delta": -6.940132714
             },
             {
               "item_id": 272407,
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.221507863
+              "dps_delta": -6.940132714
             }
           ],
           "runners_up": [
@@ -10580,10 +10580,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 776.7742544739021,
+          "sim_dps": 776.3577468704871,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +22.5 DPS (776.8 vs 754.2 set DPS)",
-          "dps_delta": 22.537717607401873,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +22.5 DPS (776.4 vs 753.8 set DPS)",
+          "dps_delta": 22.533920034406947,
           "alternatives": [
             {
               "item_id": 249469,
@@ -10607,7 +10607,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 776.7742544739021,
+          "sim_dps": 776.3577468704871,
           "verified": true,
           "alternatives": [
             {
@@ -10622,7 +10622,7 @@
               "item_name": "Molten Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -11.627261574,
+              "dps_delta": -11.6246193,
               "verified": true
             }
           ],
@@ -10645,7 +10645,7 @@
           "item_name": "Teebu's Blazing Longsword",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 776.7742544739021,
+          "sim_dps": 776.3577468704871,
           "verified": true,
           "alternatives": [
             {
@@ -10667,7 +10667,7 @@
               "item_name": "Annihilator",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -45.914646833,
+              "dps_delta": -45.900340152,
               "verified": true
             }
           ],
@@ -10705,7 +10705,7 @@
               "item_name": "Ironwood Blade",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -12.331259799,
+              "dps_delta": -12.329654326,
               "verified": true
             },
             {
@@ -10735,7 +10735,7 @@
           "item_name": "The Purifier",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 776.7742544739021,
+          "sim_dps": 776.3577468704871,
           "verified": true,
           "alternatives": [
             {
@@ -10757,7 +10757,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -8.523717367,
+              "dps_delta": -8.51742904,
               "verified": true
             }
           ],
@@ -10775,8 +10775,8 @@
           ]
         }
       ],
-      "set_dps": 776.7742544739021,
-      "no_source_count": 1368,
+      "set_dps": 776.3577468704871,
+      "no_source_count": 1369,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10813,13 +10813,13 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.591367668,
-      "verify_run_seconds": 6.508034411,
+      "weights_run_seconds": 3.3345653029999998,
+      "verify_run_seconds": 6.319421477,
       "coverage": {
         "back": {
-          "eligible": 386,
-          "sourced": 310,
-          "rare_spawn_skipped": 17
+          "eligible": 388,
+          "sourced": 312,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 645,
@@ -10827,9 +10827,9 @@
           "rare_spawn_skipped": 17
         },
         "feet": {
-          "eligible": 518,
-          "sourced": 442,
-          "rare_spawn_skipped": 9
+          "eligible": 520,
+          "sourced": 444,
+          "rare_spawn_skipped": 10
         },
         "finger1": {
           "eligible": 315,
@@ -10842,9 +10842,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 535,
-          "sourced": 445,
-          "rare_spawn_skipped": 9
+          "eligible": 536,
+          "sourced": 446,
+          "rare_spawn_skipped": 10
         },
         "head": {
           "eligible": 390,
@@ -10857,7 +10857,7 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 810,
+          "eligible": 811,
           "sourced": 577,
           "rare_spawn_skipped": 42
         },
@@ -10867,8 +10867,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 130,
-          "sourced": 81,
+          "eligible": 129,
+          "sourced": 80,
           "rare_spawn_skipped": 24
         },
         "ranged": {
@@ -10890,14 +10890,14 @@
           "sourced": 74
         },
         "waist": {
-          "eligible": 495,
-          "sourced": 425,
-          "rare_spawn_skipped": 11
+          "eligible": 496,
+          "sourced": 426,
+          "rare_spawn_skipped": 13
         },
         "wrist": {
-          "eligible": 415,
-          "sourced": 340,
-          "rare_spawn_skipped": 7
+          "eligible": 417,
+          "sourced": 342,
+          "rare_spawn_skipped": 9
         }
       },
       "reference_dps_per_point": 0.14068757446964586,

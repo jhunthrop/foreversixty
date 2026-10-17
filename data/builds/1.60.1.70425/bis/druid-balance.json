@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70425",
-  "engine_version": "a73988d91",
-  "generated_at": "2026-10-15T11:48:26Z",
+  "engine_version": "171b9ff7f",
+  "generated_at": "2026-10-16T23:05:40Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -382,7 +382,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Stormrider's Leather Belt (id 252432) in the sim: +0.7 DPS over it",
-          "dps_delta": 0.7222268435746422,
+          "dps_delta": 0.7222268435746386,
           "alternatives": [
             {
               "item_id": 253885,
@@ -518,7 +518,7 @@
           "score": 6.564940186,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 20431): kept the pick, +1.8 DPS over it",
-          "dps_delta": 1.8051640224929173,
+          "dps_delta": 1.8051640224929244,
           "alternatives": [
             {
               "item_id": 1156,
@@ -669,7 +669,7 @@
         }
       ],
       "set_dps": 30.20594871573209,
-      "no_source_count": 188,
+      "no_source_count": 186,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -701,13 +701,13 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.38480665,
-      "verify_run_seconds": 0.82790376,
+      "weights_run_seconds": 1.766109921,
+      "verify_run_seconds": 0.69163504,
       "coverage": {
         "back": {
-          "eligible": 98,
-          "sourced": 80,
-          "rare_spawn_skipped": 11
+          "eligible": 100,
+          "sourced": 82,
+          "rare_spawn_skipped": 13
         },
         "chest": {
           "eligible": 136,
@@ -715,9 +715,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 92,
-          "sourced": 81,
-          "rare_spawn_skipped": 3
+          "eligible": 94,
+          "sourced": 83,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 32,
@@ -730,9 +730,9 @@
           "rare_spawn_skipped": 3
         },
         "hands": {
-          "eligible": 100,
-          "sourced": 88,
-          "rare_spawn_skipped": 6
+          "eligible": 101,
+          "sourced": 89,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 23,
@@ -744,7 +744,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 189,
+          "eligible": 188,
           "sourced": 132,
           "rare_spawn_skipped": 20
         },
@@ -753,7 +753,7 @@
           "sourced": 4
         },
         "off_hand": {
-          "eligible": 26,
+          "eligible": 25,
           "sourced": 19,
           "rare_spawn_skipped": 2
         },
@@ -774,14 +774,14 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 85,
-          "sourced": 79,
-          "rare_spawn_skipped": 5
+          "eligible": 86,
+          "sourced": 80,
+          "rare_spawn_skipped": 6
         },
         "wrist": {
-          "eligible": 62,
-          "sourced": 48,
-          "rare_spawn_skipped": 3
+          "eligible": 64,
+          "sourced": 50,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.13275770789296337,
@@ -1030,7 +1030,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Stormrider's Leather Armor (id 252492) in the sim: +0.4 DPS over it",
-          "dps_delta": 0.38690835736501583,
+          "dps_delta": 0.38690835736503004,
           "alternatives": [
             {
               "item_id": 253901,
@@ -1174,7 +1174,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Stormrider's Leather Belt (id 252432) in the sim: +0.7 DPS over it",
-          "dps_delta": 0.7093319885025409,
+          "dps_delta": 0.7093319885025551,
           "alternatives": [
             {
               "item_id": 253885,
@@ -1264,7 +1264,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Spidersilk Boots (id 4320) in the sim: +0.3 DPS over it",
-          "dps_delta": 0.3146350871503216,
+          "dps_delta": 0.3146350871503252,
           "alternatives": [
             {
               "item_id": 252444,
@@ -1311,7 +1311,7 @@
           "score": 5,
           "verified": true,
           "swap_note": "confirmed by the sim against Lavishly Jeweled Ring (id 1156): kept the pick, +1.4 DPS over it",
-          "dps_delta": 1.4010789431713206,
+          "dps_delta": 1.4010789431713064,
           "alternatives": [
             {
               "item_id": 281673,
@@ -1462,8 +1462,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 29.03572953268919,
-      "no_source_count": 178,
+      "set_dps": 29.035729532689178,
+      "no_source_count": 176,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1495,13 +1495,13 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.38480665,
-      "verify_run_seconds": 0.819156108,
+      "weights_run_seconds": 1.766109921,
+      "verify_run_seconds": 0.697868684,
       "coverage": {
         "back": {
-          "eligible": 99,
-          "sourced": 85,
-          "rare_spawn_skipped": 11
+          "eligible": 101,
+          "sourced": 87,
+          "rare_spawn_skipped": 13
         },
         "chest": {
           "eligible": 134,
@@ -1509,9 +1509,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 92,
-          "sourced": 78,
-          "rare_spawn_skipped": 3
+          "eligible": 94,
+          "sourced": 80,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 33,
@@ -1524,9 +1524,9 @@
           "rare_spawn_skipped": 3
         },
         "hands": {
-          "eligible": 94,
-          "sourced": 81,
-          "rare_spawn_skipped": 6
+          "eligible": 95,
+          "sourced": 82,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 23,
@@ -1538,7 +1538,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 194,
+          "eligible": 193,
           "sourced": 148,
           "rare_spawn_skipped": 20
         },
@@ -1547,7 +1547,7 @@
           "sourced": 4
         },
         "off_hand": {
-          "eligible": 26,
+          "eligible": 25,
           "sourced": 16,
           "rare_spawn_skipped": 2
         },
@@ -1568,14 +1568,14 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 84,
-          "sourced": 75,
-          "rare_spawn_skipped": 5
+          "eligible": 85,
+          "sourced": 76,
+          "rare_spawn_skipped": 6
         },
         "wrist": {
-          "eligible": 64,
-          "sourced": 54,
-          "rare_spawn_skipped": 3
+          "eligible": 66,
+          "sourced": 56,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.13275770789296337,
@@ -1873,10 +1873,10 @@
           "item_name": "Beguiler Robes",
           "source": "Scarlet Monastery",
           "source_kind": "dungeon",
-          "sim_dps": 62.37050324615025,
+          "sim_dps": 62.37050324615022,
           "verified": true,
           "swap_note": "beat the scored pick Green Silk Armor (id 7065) in the sim: +1.2 DPS (62.4 vs 61.1 set DPS)",
-          "dps_delta": 1.2285530431159941,
+          "dps_delta": 1.2285530431159657,
           "alternatives": [
             {
               "item_id": 9508,
@@ -2147,7 +2147,7 @@
           "score": 8.740021089,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 19525): kept the pick, +2.2 DPS over it",
-          "dps_delta": 2.198549045118469,
+          "dps_delta": 2.198549045118483,
           "alternatives": [
             {
               "item_id": 1449,
@@ -2295,8 +2295,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 62.37050324615025,
-      "no_source_count": 341,
+      "set_dps": 62.37050324615022,
+      "no_source_count": 339,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2328,13 +2328,13 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 1.6027386,
-      "verify_run_seconds": 1.008020367,
+      "weights_run_seconds": 2.043693636,
+      "verify_run_seconds": 0.850043224,
       "coverage": {
         "back": {
-          "eligible": 179,
-          "sourced": 143,
-          "rare_spawn_skipped": 14
+          "eligible": 181,
+          "sourced": 145,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 227,
@@ -2342,9 +2342,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 149,
-          "sourced": 130,
-          "rare_spawn_skipped": 3
+          "eligible": 151,
+          "sourced": 132,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 86,
@@ -2357,9 +2357,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 159,
-          "sourced": 139,
-          "rare_spawn_skipped": 7
+          "eligible": 160,
+          "sourced": 140,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 76,
@@ -2372,7 +2372,7 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 293,
+          "eligible": 292,
           "sourced": 210,
           "rare_spawn_skipped": 31
         },
@@ -2382,7 +2382,7 @@
           "rare_spawn_skipped": 3
         },
         "off_hand": {
-          "eligible": 55,
+          "eligible": 54,
           "sourced": 38,
           "rare_spawn_skipped": 3
         },
@@ -2404,14 +2404,14 @@
           "sourced": 8
         },
         "waist": {
-          "eligible": 153,
-          "sourced": 138,
-          "rare_spawn_skipped": 7
+          "eligible": 154,
+          "sourced": 139,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 115,
-          "sourced": 92,
-          "rare_spawn_skipped": 5
+          "eligible": 117,
+          "sourced": 94,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.1883311646024212,
@@ -2989,7 +2989,7 @@
           "score": 8.740021089,
           "verified": true,
           "swap_note": "confirmed by the sim against Advisor's Ring (id 19521): kept the pick, +2.8 DPS (61.2 vs 58.4 set DPS)",
-          "dps_delta": 2.8294520708499533,
+          "dps_delta": 2.829452070849932,
           "alternatives": [
             {
               "item_id": 273030,
@@ -3087,7 +3087,7 @@
           "item_name": "Spine of the Devourer",
           "source": "Mana Devourer",
           "source_kind": "world",
-          "sim_dps": 61.21740714483997,
+          "sim_dps": 61.21740714483995,
           "verified": true,
           "alternatives": [
             {
@@ -3138,8 +3138,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 61.21740714483997,
-      "no_source_count": 331,
+      "set_dps": 61.21740714483995,
+      "no_source_count": 329,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3172,13 +3172,13 @@
         "finger2: Advisor's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 1.6027386,
-      "verify_run_seconds": 0.906410118,
+      "weights_run_seconds": 2.043693636,
+      "verify_run_seconds": 0.787654915,
       "coverage": {
         "back": {
-          "eligible": 179,
-          "sourced": 146,
-          "rare_spawn_skipped": 14
+          "eligible": 181,
+          "sourced": 148,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 224,
@@ -3186,9 +3186,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 154,
-          "sourced": 130,
-          "rare_spawn_skipped": 3
+          "eligible": 156,
+          "sourced": 132,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 87,
@@ -3201,9 +3201,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 154,
-          "sourced": 132,
-          "rare_spawn_skipped": 7
+          "eligible": 155,
+          "sourced": 133,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 76,
@@ -3216,7 +3216,7 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 293,
+          "eligible": 292,
           "sourced": 224,
           "rare_spawn_skipped": 31
         },
@@ -3226,7 +3226,7 @@
           "rare_spawn_skipped": 3
         },
         "off_hand": {
-          "eligible": 52,
+          "eligible": 51,
           "sourced": 33,
           "rare_spawn_skipped": 3
         },
@@ -3248,14 +3248,14 @@
           "sourced": 8
         },
         "waist": {
-          "eligible": 157,
-          "sourced": 140,
-          "rare_spawn_skipped": 7
+          "eligible": 158,
+          "sourced": 141,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 118,
-          "sourced": 97,
-          "rare_spawn_skipped": 5
+          "eligible": 120,
+          "sourced": 99,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.1883311646024212,
@@ -3563,7 +3563,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Robe of the Magi (id 1716) in the sim: +1.5 DPS over it",
-          "dps_delta": 1.4937481802078878,
+          "dps_delta": 1.493748180207831,
           "alternatives": [
             {
               "item_id": 9434,
@@ -3610,7 +3610,7 @@
           "chance": 0.4,
           "verified": true,
           "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: +1.3 DPS over it",
-          "dps_delta": 1.2659129759636585,
+          "dps_delta": 1.26591297596363,
           "alternatives": [
             {
               "item_id": 4260,
@@ -3836,7 +3836,7 @@
           "score": 11.990106868,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 19524): kept the pick, +3.2 DPS over it",
-          "dps_delta": 3.2246451758124834,
+          "dps_delta": 3.2246451758125687,
           "alternatives": [
             {
               "item_id": 2043,
@@ -3973,51 +3973,47 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 7685,
-          "item_name": "Orb of the Forgotten Seer",
-          "source": "Scarlet Monastery: Bloodmage Thalnos",
-          "source_kind": "dungeon",
-          "score": 14,
+          "item_id": 11262,
+          "item_name": "Orb of Lorica",
+          "source": "In the Name of the Light",
+          "source_kind": "quest",
           "verified": true,
-          "ties": [
-            {
-              "item_id": 276204,
-              "item_name": "Thrash's Trash"
-            }
-          ],
+          "swap_note": "beat the scored pick Orb of the Forgotten Seer (id 7685) in the sim: +1.1 DPS over it",
+          "dps_delta": 1.1188213276131762,
           "alternatives": [
-            {
-              "item_id": 276204,
-              "item_name": "Thrash's Trash",
-              "source_kind": "vendor",
-              "source": "Friz Frazzlespark",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 11262,
-              "item_name": "Orb of Lorica",
-              "source_kind": "quest",
-              "source": "In the Name of the Light",
-              "dps_delta": -0.821601384
-            },
             {
               "item_id": 249394,
               "item_name": "Orb of Mystic Insight",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -0.942617336
+              "dps_delta": -0.121015952
+            },
+            {
+              "item_id": 9393,
+              "item_name": "Beacon of Hope",
+              "source_kind": "dungeon",
+              "source": "Uldaman",
+              "dps_delta": -0.40473454
+            },
+            {
+              "item_id": 7685,
+              "item_name": "Orb of the Forgotten Seer",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Bloodmage Thalnos",
+              "dps_delta": -1.118821328,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 276204,
-              "source_kind": "vendor",
-              "source": "Friz Frazzlespark"
+              "item_id": 249394,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             {
-              "item_id": 11262,
-              "source_kind": "quest",
-              "source": "In the Name of the Light"
+              "item_id": 9393,
+              "source_kind": "dungeon",
+              "source": "Uldaman"
             }
           ]
         },
@@ -4027,8 +4023,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 83.02863019503265,
-      "no_source_count": 452,
+      "set_dps": 83.7949518409109,
+      "no_source_count": 450,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4058,15 +4054,15 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring",
         "main_hand: Hypnotic Blade",
-        "off_hand: Orb of the Forgotten Seer"
+        "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 1.692998683,
-      "verify_run_seconds": 1.025011288,
+      "weights_run_seconds": 2.483646798,
+      "verify_run_seconds": 0.874446174,
       "coverage": {
         "back": {
-          "eligible": 243,
-          "sourced": 204,
-          "rare_spawn_skipped": 16
+          "eligible": 245,
+          "sourced": 206,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 299,
@@ -4074,9 +4070,9 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 205,
-          "sourced": 179,
-          "rare_spawn_skipped": 4
+          "eligible": 207,
+          "sourced": 181,
+          "rare_spawn_skipped": 5
         },
         "finger1": {
           "eligible": 123,
@@ -4090,8 +4086,8 @@
         },
         "hands": {
           "eligible": 231,
-          "sourced": 205,
-          "rare_spawn_skipped": 7
+          "sourced": 206,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 138,
@@ -4114,8 +4110,8 @@
           "rare_spawn_skipped": 4
         },
         "off_hand": {
-          "eligible": 75,
-          "sourced": 52,
+          "eligible": 74,
+          "sourced": 51,
           "rare_spawn_skipped": 3
         },
         "ranged": {
@@ -4136,14 +4132,14 @@
           "sourced": 18
         },
         "waist": {
-          "eligible": 207,
-          "sourced": 189,
-          "rare_spawn_skipped": 7
+          "eligible": 208,
+          "sourced": 190,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 161,
-          "sourced": 130,
-          "rare_spawn_skipped": 5
+          "eligible": 162,
+          "sourced": 132,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.20438932064865015,
@@ -4449,10 +4445,10 @@
           "item_name": "Dreamweave Vest",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 82.68509068223503,
+          "sim_dps": 82.685090682235,
           "verified": true,
           "swap_note": "beat the scored pick Robe of the Magi (id 1716) in the sim: +1.7 DPS (82.7 vs 81.0 set DPS)",
-          "dps_delta": 1.6992334880820437,
+          "dps_delta": 1.699233488082001,
           "alternatives": [
             {
               "item_id": 9434,
@@ -4724,7 +4720,7 @@
           "score": 11.990106868,
           "verified": true,
           "swap_note": "confirmed by the sim against Advisor's Ring (id 19520): kept the pick, +3.1 DPS over it",
-          "dps_delta": 3.0963145783144768,
+          "dps_delta": 3.0963145783144626,
           "alternatives": [
             {
               "item_id": 6750,
@@ -4867,20 +4863,7 @@
           "source_kind": "dungeon",
           "score": 14,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 276204,
-              "item_name": "Thrash's Trash"
-            }
-          ],
           "alternatives": [
-            {
-              "item_id": 276204,
-              "item_name": "Thrash's Trash",
-              "source_kind": "vendor",
-              "source": "Friz Frazzlespark",
-              "dps_delta": 0
-            },
             {
               "item_id": 249394,
               "item_name": "Orb of Mystic Insight",
@@ -4894,18 +4877,25 @@
               "source_kind": "quest",
               "source": "Compendium of the Fallen",
               "dps_delta": -1.021946603
+            },
+            {
+              "item_id": 9393,
+              "item_name": "Beacon of Hope",
+              "source_kind": "dungeon",
+              "source": "Uldaman",
+              "dps_delta": -1.226335924
             }
           ],
           "runners_up": [
             {
-              "item_id": 276204,
-              "source_kind": "vendor",
-              "source": "Friz Frazzlespark"
-            },
-            {
               "item_id": 249394,
               "source_kind": "crafted",
               "source": "Enchanting"
+            },
+            {
+              "item_id": 7749,
+              "source_kind": "quest",
+              "source": "Compendium of the Fallen"
             }
           ]
         },
@@ -4915,8 +4905,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 82.68509068223503,
-      "no_source_count": 436,
+      "set_dps": 82.685090682235,
+      "no_source_count": 434,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4948,13 +4938,13 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.692998683,
-      "verify_run_seconds": 1.048289002,
+      "weights_run_seconds": 2.483646798,
+      "verify_run_seconds": 0.924927468,
       "coverage": {
         "back": {
-          "eligible": 245,
-          "sourced": 208,
-          "rare_spawn_skipped": 16
+          "eligible": 247,
+          "sourced": 210,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 295,
@@ -4962,9 +4952,9 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 210,
-          "sourced": 179,
-          "rare_spawn_skipped": 4
+          "eligible": 212,
+          "sourced": 181,
+          "rare_spawn_skipped": 5
         },
         "finger1": {
           "eligible": 122,
@@ -4978,8 +4968,8 @@
         },
         "hands": {
           "eligible": 226,
-          "sourced": 197,
-          "rare_spawn_skipped": 7
+          "sourced": 198,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 139,
@@ -5002,8 +4992,8 @@
           "rare_spawn_skipped": 4
         },
         "off_hand": {
-          "eligible": 71,
-          "sourced": 47,
+          "eligible": 70,
+          "sourced": 46,
           "rare_spawn_skipped": 3
         },
         "ranged": {
@@ -5024,14 +5014,14 @@
           "sourced": 18
         },
         "waist": {
-          "eligible": 211,
-          "sourced": 191,
-          "rare_spawn_skipped": 7
+          "eligible": 212,
+          "sourced": 192,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 166,
-          "sourced": 139,
-          "rare_spawn_skipped": 5
+          "eligible": 167,
+          "sourced": 141,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.20438932064865015,
@@ -5256,7 +5246,7 @@
             },
             {
               "item_id": 252537,
-              "item_name": "Skycaller's Leather Shoulder",
+              "item_name": "Skycaller's Leather Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -1.354596251
@@ -5678,10 +5668,10 @@
           "item_name": "Uther's Strength",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 136.62741695812358,
+          "sim_dps": 136.6274169581236,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +3.2 DPS (136.6 vs 133.4 set DPS)",
-          "dps_delta": 3.184841131193764,
+          "dps_delta": 3.1848411311937355,
           "effect_unmodelled": true
         },
         {
@@ -5690,7 +5680,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 136.62741695812358,
+          "sim_dps": 136.6274169581236,
           "verified": true,
           "alternatives": [
             {
@@ -5717,7 +5707,7 @@
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 136.62741695812358,
+          "sim_dps": 136.6274169581236,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5768,8 +5758,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 136.62741695812358,
-      "no_source_count": 591,
+      "set_dps": 136.6274169581236,
+      "no_source_count": 589,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5802,13 +5792,13 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.961356307,
-      "verify_run_seconds": 1.239592001,
+      "weights_run_seconds": 2.48133185,
+      "verify_run_seconds": 1.101603562,
       "coverage": {
         "back": {
-          "eligible": 310,
-          "sourced": 261,
-          "rare_spawn_skipped": 16
+          "eligible": 312,
+          "sourced": 263,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 368,
@@ -5816,9 +5806,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 274,
-          "sourced": 238,
-          "rare_spawn_skipped": 5
+          "eligible": 276,
+          "sourced": 240,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 148,
@@ -5832,8 +5822,8 @@
         },
         "hands": {
           "eligible": 299,
-          "sourced": 267,
-          "rare_spawn_skipped": 7
+          "sourced": 268,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 204,
@@ -5846,8 +5836,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 458,
-          "sourced": 323,
+          "eligible": 459,
+          "sourced": 324,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -5856,8 +5846,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 96,
-          "sourced": 66,
+          "eligible": 95,
+          "sourced": 65,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -5878,14 +5868,14 @@
           "sourced": 41
         },
         "waist": {
-          "eligible": 266,
-          "sourced": 243,
-          "rare_spawn_skipped": 7
+          "eligible": 267,
+          "sourced": 244,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 216,
-          "sourced": 178,
-          "rare_spawn_skipped": 5
+          "eligible": 217,
+          "sourced": 180,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.18943896485656375,
@@ -6109,7 +6099,7 @@
             },
             {
               "item_id": 252537,
-              "item_name": "Skycaller's Leather Shoulder",
+              "item_name": "Skycaller's Leather Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -1.354596251
@@ -6630,7 +6620,7 @@
         }
       ],
       "set_dps": 134.98935824098734,
-      "no_source_count": 571,
+      "no_source_count": 569,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6663,13 +6653,13 @@
         "trinket2: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.961356307,
-      "verify_run_seconds": 1.1962788,
+      "weights_run_seconds": 2.48133185,
+      "verify_run_seconds": 1.033703875,
       "coverage": {
         "back": {
-          "eligible": 315,
-          "sourced": 268,
-          "rare_spawn_skipped": 16
+          "eligible": 317,
+          "sourced": 270,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 365,
@@ -6677,9 +6667,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 280,
-          "sourced": 239,
-          "rare_spawn_skipped": 5
+          "eligible": 282,
+          "sourced": 241,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 149,
@@ -6693,8 +6683,8 @@
         },
         "hands": {
           "eligible": 297,
-          "sourced": 262,
-          "rare_spawn_skipped": 7
+          "sourced": 263,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 205,
@@ -6707,8 +6697,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 461,
-          "sourced": 344,
+          "eligible": 462,
+          "sourced": 345,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -6717,8 +6707,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 93,
-          "sourced": 62,
+          "eligible": 92,
+          "sourced": 61,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -6739,14 +6729,14 @@
           "sourced": 41
         },
         "waist": {
-          "eligible": 270,
-          "sourced": 245,
-          "rare_spawn_skipped": 7
+          "eligible": 271,
+          "sourced": 246,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 220,
-          "sourced": 188,
-          "rare_spawn_skipped": 5
+          "eligible": 221,
+          "sourced": 190,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.18943896485656375,
@@ -6958,7 +6948,7 @@
           "item_name": "Feralheart Spaulders",
           "source": "Anthion's Parting Words",
           "source_kind": "quest",
-          "sim_dps": 242.43181278464618,
+          "sim_dps": 242.431812784646,
           "verified": true,
           "alternatives": [
             {
@@ -7097,10 +7087,10 @@
           "item_name": "Feralheart Wraps",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 242.43181278464618,
+          "sim_dps": 242.431812784646,
           "verified": true,
           "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +4.9 DPS (242.4 vs 237.6 set DPS)",
-          "dps_delta": 4.854389271856064,
+          "dps_delta": 4.854389271855922,
           "alternatives": [
             {
               "item_id": 19596,
@@ -7222,7 +7212,7 @@
           "score": 52.024766673,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (id 237815): kept the pick, +3.7 DPS (242.4 vs 238.7 set DPS)",
-          "dps_delta": 3.707998951750511,
+          "dps_delta": 3.707998951750369,
           "alternatives": [
             {
               "item_id": 237817,
@@ -7393,10 +7383,10 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 242.43181278464618,
+          "sim_dps": 242.431812784646,
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +14.4 DPS (242.4 vs 228.0 set DPS)",
-          "dps_delta": 14.397041780973893,
+          "dps_delta": 14.397041780973666,
           "alternatives": [
             {
               "item_id": 11302,
@@ -7439,7 +7429,7 @@
           "item_name": "Serenity Field",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 242.43181278464618,
+          "sim_dps": 242.431812784646,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7484,7 +7474,7 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 242.43181278464618,
+          "sim_dps": 242.431812784646,
           "verified": true,
           "alternatives": [
             {
@@ -7543,7 +7533,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 242.43181278464618,
+      "set_dps": 242.431812784646,
       "no_source_count": 1235,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -7578,13 +7568,13 @@
         "trinket2: Serenity Field",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.806354889,
-      "verify_run_seconds": 3.8548311330000002,
+      "weights_run_seconds": 2.422599419,
+      "verify_run_seconds": 3.248220109,
       "coverage": {
         "back": {
-          "eligible": 382,
-          "sourced": 305,
-          "rare_spawn_skipped": 17
+          "eligible": 384,
+          "sourced": 307,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 499,
@@ -7592,9 +7582,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 380,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 382,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 319,
@@ -7607,9 +7597,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 400,
-          "sourced": 321,
-          "rare_spawn_skipped": 7
+          "eligible": 401,
+          "sourced": 322,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 314,
@@ -7622,8 +7612,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 592,
-          "sourced": 394,
+          "eligible": 593,
+          "sourced": 395,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -7632,8 +7622,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 133,
-          "sourced": 85,
+          "eligible": 132,
+          "sourced": 84,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -7656,12 +7646,12 @@
         "waist": {
           "eligible": 362,
           "sourced": 304,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 294,
-          "sourced": 220,
-          "rare_spawn_skipped": 5
+          "eligible": 296,
+          "sourced": 222,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.20138724037797445,
@@ -8325,7 +8315,7 @@
           "sim_dps": 238.887272674182,
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +13.9 DPS (238.9 vs 225.0 set DPS)",
-          "dps_delta": 13.916064194509147,
+          "dps_delta": 13.916064194509232,
           "alternatives": [
             {
               "item_id": 11302,
@@ -8507,13 +8497,13 @@
         "trinket2: Serenity Field",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.806354889,
-      "verify_run_seconds": 3.016341767,
+      "weights_run_seconds": 2.422599419,
+      "verify_run_seconds": 2.414899123,
       "coverage": {
         "back": {
-          "eligible": 387,
-          "sourced": 311,
-          "rare_spawn_skipped": 17
+          "eligible": 389,
+          "sourced": 313,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 497,
@@ -8521,9 +8511,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 385,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 387,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 320,
@@ -8536,9 +8526,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 399,
-          "sourced": 317,
-          "rare_spawn_skipped": 7
+          "eligible": 400,
+          "sourced": 318,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 315,
@@ -8551,8 +8541,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 597,
-          "sourced": 409,
+          "eligible": 598,
+          "sourced": 410,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -8561,8 +8551,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 131,
-          "sourced": 82,
+          "eligible": 130,
+          "sourced": 81,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -8585,12 +8575,12 @@
         "waist": {
           "eligible": 365,
           "sourced": 305,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 297,
-          "sourced": 225,
-          "rare_spawn_skipped": 5
+          "eligible": 299,
+          "sourced": 227,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.20138724037797445,
@@ -8713,7 +8703,7 @@
           "item_name": "Living Crown",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 533.4293976031635,
+          "sim_dps": 533.4293976031636,
           "verified": true,
           "alternatives": [
             {
@@ -8896,7 +8886,7 @@
           "item_name": "Knight-Captain's Dragonhide Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 533.4293976031635,
+          "sim_dps": 533.4293976031636,
           "verified": true,
           "alternatives": [
             {
@@ -9124,7 +9114,7 @@
           "item_name": "Knight-Lieutenant's Dragonhide Boots",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 533.4293976031635,
+          "sim_dps": 533.4293976031636,
           "verified": true,
           "alternatives": [
             {
@@ -9264,10 +9254,10 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 533.4293976031635,
+          "sim_dps": 533.4293976031636,
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +24.7 DPS (533.4 vs 508.8 set DPS)",
-          "dps_delta": 24.670830936329878,
+          "dps_delta": 24.670830936329935,
           "alternatives": [
             {
               "item_id": 11302,
@@ -9310,7 +9300,7 @@
           "item_name": "Serenity Field",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 533.4293976031635,
+          "sim_dps": 533.4293976031636,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -9357,7 +9347,7 @@
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 533.4293976031635,
+          "sim_dps": 533.4293976031636,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -9417,7 +9407,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 533.4293976031635,
+      "set_dps": 533.4293976031636,
       "no_source_count": 1235,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -9452,13 +9442,13 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 1.063706545,
-      "verify_run_seconds": 3.709930053,
+      "weights_run_seconds": 1.135647856,
+      "verify_run_seconds": 2.73071702,
       "coverage": {
         "back": {
-          "eligible": 382,
-          "sourced": 305,
-          "rare_spawn_skipped": 17
+          "eligible": 384,
+          "sourced": 307,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 499,
@@ -9466,9 +9456,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 380,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 382,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 319,
@@ -9481,9 +9471,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 400,
-          "sourced": 321,
-          "rare_spawn_skipped": 7
+          "eligible": 401,
+          "sourced": 322,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 314,
@@ -9496,8 +9486,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 592,
-          "sourced": 394,
+          "eligible": 593,
+          "sourced": 395,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -9506,8 +9496,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 133,
-          "sourced": 85,
+          "eligible": 132,
+          "sourced": 84,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -9530,12 +9520,12 @@
         "waist": {
           "eligible": 362,
           "sourced": 304,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 294,
-          "sourced": 220,
-          "rare_spawn_skipped": 5
+          "eligible": 296,
+          "sourced": 222,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.4663007050291661,
@@ -9658,10 +9648,10 @@
           "item_name": "Living Crown",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 520.9933026140526,
+          "sim_dps": 520.9933026140527,
           "verified": true,
           "swap_note": "beat the scored pick Feralheart Cowl (id 226773) in the sim: +8.1 DPS (521.0 vs 512.9 set DPS)",
-          "dps_delta": 8.114863092323162,
+          "dps_delta": 8.114863092323276,
           "alternatives": [
             {
               "item_id": 231678,
@@ -10201,7 +10191,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +24.4 DPS over it",
-          "dps_delta": 24.39461887657086,
+          "dps_delta": 24.394618876570973,
           "alternatives": [
             {
               "item_id": 11302,
@@ -10349,7 +10339,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 520.9933026140526,
+      "set_dps": 520.9933026140527,
       "no_source_count": 1229,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -10384,13 +10374,13 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 1.063706545,
-      "verify_run_seconds": 2.818093693,
+      "weights_run_seconds": 1.135647856,
+      "verify_run_seconds": 2.02446127,
       "coverage": {
         "back": {
-          "eligible": 387,
-          "sourced": 311,
-          "rare_spawn_skipped": 17
+          "eligible": 389,
+          "sourced": 313,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 497,
@@ -10398,9 +10388,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 385,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 387,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 320,
@@ -10413,9 +10403,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 399,
-          "sourced": 317,
-          "rare_spawn_skipped": 7
+          "eligible": 400,
+          "sourced": 318,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 315,
@@ -10428,8 +10418,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 597,
-          "sourced": 409,
+          "eligible": 598,
+          "sourced": 410,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -10438,8 +10428,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 131,
-          "sourced": 82,
+          "eligible": 130,
+          "sourced": 81,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -10462,12 +10452,12 @@
         "waist": {
           "eligible": 365,
           "sourced": 305,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 297,
-          "sourced": 225,
-          "rare_spawn_skipped": 5
+          "eligible": 299,
+          "sourced": 227,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 0.4663007050291661,

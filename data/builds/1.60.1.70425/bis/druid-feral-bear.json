@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral-bear",
   "build": "1.60.1.70425",
-  "engine_version": "a73988d91",
-  "generated_at": "2026-10-15T11:51:28Z",
+  "engine_version": "171b9ff7f",
+  "generated_at": "2026-10-16T23:09:10Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -25,47 +25,47 @@
         },
         {
           "stat": "armor",
-          "weight": 0.082057303356614,
+          "weight": 0.08205730335661399,
           "error": 0.002237767132376868,
           "insignificant": false,
-          "weight_per_percent": 0.082057303356614,
-          "scale_factor": 0.553943827239788,
-          "dps_per_point": 1.561836116067263,
+          "weight_per_percent": 0.08205730335661399,
+          "scale_factor": 0.5539438272397879,
+          "dps_per_point": 1.5618361160672627,
           "scale_error": 0.015106483385068896
         },
         {
           "stat": "defense",
-          "weight": 0.13996956811554795,
+          "weight": 0.13996956811554792,
           "error": 0.026176028362652377,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.13996956811554795,
-          "scale_factor": 0.9448918632149678,
-          "dps_per_point": 2.6641081011782872,
+          "weight_per_percent": 0.13996956811554792,
+          "scale_factor": 0.9448918632149675,
+          "dps_per_point": 2.6641081011782863,
           "scale_error": 0.17670638371003894
         },
         {
           "stat": "dodge",
-          "weight": 0.09570104862964855,
+          "weight": 0.09570104862964852,
           "error": 0.008107428533166915,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 1.1484125835557826,
-          "scale_factor": 0.6460485901953007,
-          "dps_per_point": 1.8215240811133355,
+          "weight_per_percent": 1.1484125835557824,
+          "scale_factor": 0.6460485901953005,
+          "dps_per_point": 1.821524081113335,
           "scale_error": 0.05473077723767962
         },
         {
           "stat": "strength",
-          "weight": 0.05211265635879848,
-          "error": 0.00010564816422432903,
+          "weight": 0.052112656358798484,
+          "error": 0.00010564816422432906,
           "insignificant": false,
-          "weight_per_percent": 0.05211265635879848,
-          "scale_factor": 0.35179664856361526,
-          "dps_per_point": 0.9918852494049627,
-          "scale_error": 0.0007131985336752524
+          "weight_per_percent": 0.052112656358798484,
+          "scale_factor": 0.3517966485636153,
+          "dps_per_point": 0.9918852494049629,
+          "scale_error": 0.0007131985336752526
         },
         {
           "stat": "agility",
@@ -79,37 +79,37 @@
         },
         {
           "stat": "attack_power",
-          "weight": 0.026056328179399273,
-          "error": 0.000052824082112164515,
+          "weight": 0.026056328179399277,
+          "error": 0.00005282408211216453,
           "insignificant": false,
-          "weight_per_percent": 0.026056328179399273,
+          "weight_per_percent": 0.026056328179399277,
           "scale_factor": 0.17589832428180788,
-          "dps_per_point": 0.495942624702482,
-          "scale_error": 0.0003565992668376262
+          "dps_per_point": 0.49594262470248207,
+          "scale_error": 0.0003565992668376263
         },
         {
           "stat": "hit",
-          "weight": 0.044886858540522954,
-          "error": 0.005170244605272474,
+          "weight": 0.04488685854052297,
+          "error": 0.0051702446052724746,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.44886858540522956,
-          "scale_factor": 0.30301749138218653,
-          "dps_per_point": 0.8543531646502777,
+          "weight_per_percent": 0.44886858540522967,
+          "scale_factor": 0.30301749138218664,
+          "dps_per_point": 0.8543531646502779,
           "scale_error": 0.034902744390267054
         },
         {
           "stat": "crit",
-          "weight": 0.018677987017925807,
-          "error": 0.0011135941719076152,
+          "weight": 0.018677987017925814,
+          "error": 0.0011135941719076154,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.2614918182509613,
-          "scale_factor": 0.12608939351662157,
-          "dps_per_point": 0.35550710913875866,
-          "scale_error": 0.0075175346050255715
+          "weight_per_percent": 0.2614918182509614,
+          "scale_factor": 0.12608939351662163,
+          "dps_per_point": 0.35550710913875877,
+          "scale_error": 0.007517534605025573
         },
         {
           "stat": "expertise",
@@ -593,7 +593,7 @@
           "score": 6,
           "verified": true,
           "swap_note": "confirmed by the sim against Slain Baron's Signet (id 279867): kept the pick, +96.5 DPS (2168.8 vs 2072.4 set DPS)",
-          "dps_delta": 96.47138718460155,
+          "dps_delta": 96.4713871846011,
           "alternatives": [
             {
               "item_id": 4998,
@@ -680,10 +680,10 @@
           "item_name": "Rune of Perfection",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 2168.8358544693274,
+          "sim_dps": 2168.8358544693265,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of Duty (id 21568): kept the pick, +64.3 DPS (2168.8 vs 2104.5 set DPS)",
-          "dps_delta": 64.31296162293847
+          "dps_delta": 64.31296162293802
         },
         {
           "slot": "trinket2",
@@ -749,8 +749,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 35.19749724500973,
-      "no_source_count": 188,
+      "set_dps": 35.19749724500969,
+      "no_source_count": 186,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -785,13 +785,13 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.66831549,
-      "verify_run_seconds": 1.37134827,
+      "weights_run_seconds": 3.2756308069999998,
+      "verify_run_seconds": 1.308268565,
       "coverage": {
         "back": {
-          "eligible": 98,
-          "sourced": 80,
-          "rare_spawn_skipped": 11
+          "eligible": 100,
+          "sourced": 82,
+          "rare_spawn_skipped": 13
         },
         "chest": {
           "eligible": 136,
@@ -799,9 +799,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 92,
-          "sourced": 81,
-          "rare_spawn_skipped": 3
+          "eligible": 94,
+          "sourced": 83,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 32,
@@ -814,9 +814,9 @@
           "rare_spawn_skipped": 3
         },
         "hands": {
-          "eligible": 100,
-          "sourced": 88,
-          "rare_spawn_skipped": 6
+          "eligible": 101,
+          "sourced": 89,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 23,
@@ -828,7 +828,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 189,
+          "eligible": 188,
           "sourced": 132,
           "rare_spawn_skipped": 20
         },
@@ -837,7 +837,7 @@
           "sourced": 4
         },
         "off_hand": {
-          "eligible": 26,
+          "eligible": 25,
           "sourced": 19,
           "rare_spawn_skipped": 2
         },
@@ -858,14 +858,14 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 85,
-          "sourced": 79,
-          "rare_spawn_skipped": 5
+          "eligible": 86,
+          "sourced": 80,
+          "rare_spawn_skipped": 6
         },
         "wrist": {
-          "eligible": 62,
-          "sourced": 48,
-          "rare_spawn_skipped": 3
+          "eligible": 64,
+          "sourced": 50,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 19.033480899069485,
@@ -884,11 +884,11 @@
       "role": "tank",
       "metrics": {
         "dtps": 103.36157030278889,
-        "tmi": 35.711937475208416,
-        "chance_of_death": 0.9713333333333333,
-        "tps": 53.3322903452277,
+        "tmi": 35.71193747520839,
+        "chance_of_death": 0.9713333333333334,
+        "tps": 53.33229034522769,
         "effective_health": 3041.635237578832,
-        "dps": 35.19749724500973
+        "dps": 35.19749724500969
       }
     },
     {
@@ -912,47 +912,47 @@
         },
         {
           "stat": "armor",
-          "weight": 0.082057303356614,
+          "weight": 0.08205730335661399,
           "error": 0.002237767132376868,
           "insignificant": false,
-          "weight_per_percent": 0.082057303356614,
-          "scale_factor": 0.553943827239788,
-          "dps_per_point": 1.561836116067263,
+          "weight_per_percent": 0.08205730335661399,
+          "scale_factor": 0.5539438272397879,
+          "dps_per_point": 1.5618361160672627,
           "scale_error": 0.015106483385068896
         },
         {
           "stat": "defense",
-          "weight": 0.13996956811554795,
+          "weight": 0.13996956811554792,
           "error": 0.026176028362652377,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.13996956811554795,
-          "scale_factor": 0.9448918632149678,
-          "dps_per_point": 2.6641081011782872,
+          "weight_per_percent": 0.13996956811554792,
+          "scale_factor": 0.9448918632149675,
+          "dps_per_point": 2.6641081011782863,
           "scale_error": 0.17670638371003894
         },
         {
           "stat": "dodge",
-          "weight": 0.09570104862964855,
+          "weight": 0.09570104862964852,
           "error": 0.008107428533166915,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 1.1484125835557826,
-          "scale_factor": 0.6460485901953007,
-          "dps_per_point": 1.8215240811133355,
+          "weight_per_percent": 1.1484125835557824,
+          "scale_factor": 0.6460485901953005,
+          "dps_per_point": 1.821524081113335,
           "scale_error": 0.05473077723767962
         },
         {
           "stat": "strength",
-          "weight": 0.05211265635879848,
-          "error": 0.00010564816422432903,
+          "weight": 0.052112656358798484,
+          "error": 0.00010564816422432906,
           "insignificant": false,
-          "weight_per_percent": 0.05211265635879848,
-          "scale_factor": 0.35179664856361526,
-          "dps_per_point": 0.9918852494049627,
-          "scale_error": 0.0007131985336752524
+          "weight_per_percent": 0.052112656358798484,
+          "scale_factor": 0.3517966485636153,
+          "dps_per_point": 0.9918852494049629,
+          "scale_error": 0.0007131985336752526
         },
         {
           "stat": "agility",
@@ -966,37 +966,37 @@
         },
         {
           "stat": "attack_power",
-          "weight": 0.026056328179399273,
-          "error": 0.000052824082112164515,
+          "weight": 0.026056328179399277,
+          "error": 0.00005282408211216453,
           "insignificant": false,
-          "weight_per_percent": 0.026056328179399273,
+          "weight_per_percent": 0.026056328179399277,
           "scale_factor": 0.17589832428180788,
-          "dps_per_point": 0.495942624702482,
-          "scale_error": 0.0003565992668376262
+          "dps_per_point": 0.49594262470248207,
+          "scale_error": 0.0003565992668376263
         },
         {
           "stat": "hit",
-          "weight": 0.044886858540522954,
-          "error": 0.005170244605272474,
+          "weight": 0.04488685854052297,
+          "error": 0.0051702446052724746,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.44886858540522956,
-          "scale_factor": 0.30301749138218653,
-          "dps_per_point": 0.8543531646502777,
+          "weight_per_percent": 0.44886858540522967,
+          "scale_factor": 0.30301749138218664,
+          "dps_per_point": 0.8543531646502779,
           "scale_error": 0.034902744390267054
         },
         {
           "stat": "crit",
-          "weight": 0.018677987017925807,
-          "error": 0.0011135941719076152,
+          "weight": 0.018677987017925814,
+          "error": 0.0011135941719076154,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.2614918182509613,
-          "scale_factor": 0.12608939351662157,
-          "dps_per_point": 0.35550710913875866,
-          "scale_error": 0.0075175346050255715
+          "weight_per_percent": 0.2614918182509614,
+          "scale_factor": 0.12608939351662163,
+          "dps_per_point": 0.35550710913875877,
+          "scale_error": 0.007517534605025573
         },
         {
           "stat": "expertise",
@@ -1471,7 +1471,7 @@
           "score": 5.279939136,
           "verified": true,
           "swap_note": "confirmed by the sim against Blood Ring (id 4998): kept the pick, +90.2 DPS (2229.7 vs 2139.5 set DPS)",
-          "dps_delta": 90.21082380997905,
+          "dps_delta": 90.2108238099795,
           "alternatives": [
             {
               "item_id": 3235,
@@ -1559,10 +1559,10 @@
           "item_name": "Rune of Perfection",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 2229.725358602667,
+          "sim_dps": 2229.7253586026677,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of Duty (id 21568): kept the pick, +67.0 DPS (2229.7 vs 2162.7 set DPS)",
-          "dps_delta": 66.99844776668442
+          "dps_delta": 66.99844776668488
         },
         {
           "slot": "trinket2",
@@ -1629,8 +1629,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 36.01834971851623,
-      "no_source_count": 178,
+      "set_dps": 36.018349718516184,
+      "no_source_count": 176,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1665,13 +1665,13 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.66831549,
-      "verify_run_seconds": 1.413577859,
+      "weights_run_seconds": 3.2756308069999998,
+      "verify_run_seconds": 1.338447121,
       "coverage": {
         "back": {
-          "eligible": 99,
-          "sourced": 85,
-          "rare_spawn_skipped": 11
+          "eligible": 101,
+          "sourced": 87,
+          "rare_spawn_skipped": 13
         },
         "chest": {
           "eligible": 134,
@@ -1679,9 +1679,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 92,
-          "sourced": 78,
-          "rare_spawn_skipped": 3
+          "eligible": 94,
+          "sourced": 80,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 33,
@@ -1694,9 +1694,9 @@
           "rare_spawn_skipped": 3
         },
         "hands": {
-          "eligible": 94,
-          "sourced": 81,
-          "rare_spawn_skipped": 6
+          "eligible": 95,
+          "sourced": 82,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 23,
@@ -1708,7 +1708,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 194,
+          "eligible": 193,
           "sourced": 148,
           "rare_spawn_skipped": 20
         },
@@ -1717,7 +1717,7 @@
           "sourced": 4
         },
         "off_hand": {
-          "eligible": 26,
+          "eligible": 25,
           "sourced": 16,
           "rare_spawn_skipped": 2
         },
@@ -1738,14 +1738,14 @@
           "sourced": 5
         },
         "waist": {
-          "eligible": 84,
-          "sourced": 75,
-          "rare_spawn_skipped": 5
+          "eligible": 85,
+          "sourced": 76,
+          "rare_spawn_skipped": 6
         },
         "wrist": {
-          "eligible": 64,
-          "sourced": 54,
-          "rare_spawn_skipped": 3
+          "eligible": 66,
+          "sourced": 56,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 19.033480899069485,
@@ -1764,11 +1764,11 @@
       "role": "tank",
       "metrics": {
         "dtps": 104.84548702247557,
-        "tmi": 34.82663658585567,
+        "tmi": 34.82663658585568,
         "chance_of_death": 0.9856666666666667,
-        "tps": 54.56818945574854,
+        "tps": 54.56818945574852,
         "effective_health": 3090.179304496083,
-        "dps": 36.01834971851623
+        "dps": 36.018349718516184
       }
     },
     {
@@ -1783,110 +1783,110 @@
         {
           "stat": "stamina",
           "weight": 1,
-          "error": 0.0009421182818456762,
+          "error": 0.0009421182818456763,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 6.647558805281402,
-          "dps_per_point": 19.43066424215372,
+          "scale_factor": 6.6475588052814,
+          "dps_per_point": 19.430664242153707,
           "scale_error": 0.006262786680099809
         },
         {
           "stat": "armor",
-          "weight": 0.08448386655109226,
-          "error": 0.004113511940119855,
+          "weight": 0.08448386655109227,
+          "error": 0.004113511940119856,
           "insignificant": false,
-          "weight_per_percent": 0.08448386655109226,
+          "weight_per_percent": 0.08448386655109227,
           "scale_factor": 0.5616114709959322,
-          "dps_per_point": 1.6415776448331951,
-          "scale_error": 0.02734481251817392
+          "dps_per_point": 1.6415776448331942,
+          "scale_error": 0.027344812518173927
         },
         {
           "stat": "defense",
-          "weight": 0.23975967756704283,
-          "error": 0.05415400227658801,
+          "weight": 0.2397596775670429,
+          "error": 0.05415400227658803,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.23975967756704283,
+          "weight_per_percent": 0.2397596775670429,
           "scale_factor": 1.5938165557622253,
-          "dps_per_point": 4.658689793612245,
-          "scale_error": 0.35999191467496167
+          "dps_per_point": 4.6586897936122424,
+          "scale_error": 0.3599919146749617
         },
         {
           "stat": "dodge",
-          "weight": 0.10567794499154433,
-          "error": 0.013257693053013497,
+          "weight": 0.10567794499154436,
+          "error": 0.013257693053013503,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 1.268135339898532,
-          "scale_factor": 0.702500353752584,
-          "dps_per_point": 2.0533926669314884,
-          "scale_error": 0.08813129419227794
+          "weight_per_percent": 1.2681353398985322,
+          "scale_factor": 0.7025003537525841,
+          "dps_per_point": 2.0533926669314875,
+          "scale_error": 0.08813129419227796
         },
         {
           "stat": "strength",
-          "weight": 0.04946096449478492,
-          "error": 0.00009974657661275115,
+          "weight": 0.04946096449478497,
+          "error": 0.00009974657661275127,
           "insignificant": false,
-          "weight_per_percent": 0.04946096449478492,
-          "scale_factor": 0.3287946700450182,
-          "dps_per_point": 0.9610593941912521,
-          "scale_error": 0.0006630712336587697
+          "weight_per_percent": 0.04946096449478497,
+          "scale_factor": 0.32879467004501856,
+          "dps_per_point": 0.9610593941912524,
+          "scale_error": 0.0006630712336587705
         },
         {
           "stat": "agility",
-          "weight": 0.15043116267065026,
-          "error": 0.00836344212569097,
+          "weight": 0.1504311626706503,
+          "error": 0.008363442125690974,
           "insignificant": false,
-          "weight_per_percent": 0.15043116267065026,
+          "weight_per_percent": 0.1504311626706503,
           "scale_factor": 1,
-          "dps_per_point": 2.922977413410214,
-          "scale_error": 0.05559647334509841
+          "dps_per_point": 2.922977413410212,
+          "scale_error": 0.05559647334509842
         },
         {
           "stat": "attack_power",
-          "weight": 0.024730482247392438,
-          "error": 0.0000498732883063762,
+          "weight": 0.024730482247392466,
+          "error": 0.00004987328830637625,
           "insignificant": false,
-          "weight_per_percent": 0.024730482247392438,
-          "scale_factor": 0.16439733502250897,
-          "dps_per_point": 0.48052969709562565,
-          "scale_error": 0.00033153561682938904
+          "weight_per_percent": 0.024730482247392466,
+          "scale_factor": 0.16439733502250914,
+          "dps_per_point": 0.4805296970956258,
+          "scale_error": 0.0003315356168293893
         },
         {
           "stat": "hit",
-          "weight": 0.04656678168711228,
-          "error": 0.009391045464193944,
+          "weight": 0.04656678168711233,
+          "error": 0.009391045464193951,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.4656678168711228,
-          "scale_factor": 0.30955541963777994,
-          "dps_per_point": 0.9048234997999512,
-          "scale_error": 0.06242752696630042
+          "weight_per_percent": 0.4656678168711233,
+          "scale_factor": 0.3095554196377802,
+          "dps_per_point": 0.9048234997999516,
+          "scale_error": 0.06242752696630045
         },
         {
           "stat": "crit",
-          "weight": 0.01973414079786712,
-          "error": 0.0012285547594740008,
+          "weight": 0.019734140797867145,
+          "error": 0.0012285547594740019,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.2762779711701397,
-          "scale_factor": 0.13118386142552452,
-          "dps_per_point": 0.3834474639507436,
-          "scale_error": 0.008166890009111768
+          "weight_per_percent": 0.27627797117014,
+          "scale_factor": 0.13118386142552466,
+          "dps_per_point": 0.38344746395074375,
+          "scale_error": 0.008166890009111773
         },
         {
           "stat": "expertise",
-          "weight": 1.5562600365963997,
-          "error": 0.10596246253936822,
+          "weight": 1.5562600365964006,
+          "error": 0.10596246253936827,
           "insignificant": false,
-          "weight_per_percent": 1.5562600365963997,
-          "scale_factor": 10.345330109583953,
-          "dps_per_point": 30.239166244586503,
-          "scale_error": 0.7043917008828778
+          "weight_per_percent": 1.5562600365964006,
+          "scale_factor": 10.345330109583957,
+          "dps_per_point": 30.2391662445865,
+          "scale_error": 0.7043917008828781
         }
       ],
       "slots": [
@@ -2347,7 +2347,7 @@
           "score": 8.22257434,
           "verified": true,
           "swap_note": "confirmed by the sim against Darkspear Signet (id 272071): kept the pick, +148.5 DPS (3281.7 vs 3133.2 set DPS)",
-          "dps_delta": 148.45675517241034,
+          "dps_delta": 148.4567551724117,
           "alternatives": [
             {
               "item_id": 2039,
@@ -2440,10 +2440,10 @@
           "item_name": "Talisman of Arathor",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "sim_dps": 3281.654772328007,
+          "sim_dps": 3281.6547723280078,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of Perfection (id 21566): kept the pick, +107.3 DPS (3281.7 vs 3174.4 set DPS)",
-          "dps_delta": 107.27417055468823,
+          "dps_delta": 107.27417055468777,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -2468,7 +2468,7 @@
           "item_name": "Rune of Perfection",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 3281.654772328007,
+          "sim_dps": 3281.6547723280078,
           "verified": true,
           "alternatives": [
             {
@@ -2493,7 +2493,7 @@
           "item_name": "Staff of the Shade",
           "source": "Razorfen Kraul",
           "source_kind": "dungeon",
-          "sim_dps": 3281.654772328007,
+          "sim_dps": 3281.6547723280078,
           "verified": true,
           "alternatives": [
             {
@@ -2544,8 +2544,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 41.618283144501135,
-      "no_source_count": 341,
+      "set_dps": 41.61828314450113,
+      "no_source_count": 339,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2580,13 +2580,13 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 2.626321264,
-      "verify_run_seconds": 1.393875039,
+      "weights_run_seconds": 3.181001955,
+      "verify_run_seconds": 1.349653644,
       "coverage": {
         "back": {
-          "eligible": 179,
-          "sourced": 143,
-          "rare_spawn_skipped": 14
+          "eligible": 181,
+          "sourced": 145,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 227,
@@ -2594,9 +2594,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 149,
-          "sourced": 130,
-          "rare_spawn_skipped": 3
+          "eligible": 151,
+          "sourced": 132,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 86,
@@ -2609,9 +2609,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 159,
-          "sourced": 139,
-          "rare_spawn_skipped": 7
+          "eligible": 160,
+          "sourced": 140,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 76,
@@ -2624,7 +2624,7 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 293,
+          "eligible": 292,
           "sourced": 210,
           "rare_spawn_skipped": 31
         },
@@ -2634,7 +2634,7 @@
           "rare_spawn_skipped": 3
         },
         "off_hand": {
-          "eligible": 55,
+          "eligible": 54,
           "sourced": 38,
           "rare_spawn_skipped": 3
         },
@@ -2656,17 +2656,17 @@
           "sourced": 8
         },
         "waist": {
-          "eligible": 153,
-          "sourced": 138,
-          "rare_spawn_skipped": 7
+          "eligible": 154,
+          "sourced": 139,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 115,
-          "sourced": 92,
-          "rare_spawn_skipped": 5
+          "eligible": 117,
+          "sourced": 94,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 19.43066424215372,
+      "reference_dps_per_point": 19.430664242153707,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -2681,12 +2681,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 220.56704296916973,
-        "tmi": 54.9877176661075,
+        "dtps": 220.56704296916988,
+        "tmi": 54.98771766610744,
         "chance_of_death": 1,
-        "tps": 65.22385549493936,
-        "effective_health": 4803.17394991818,
-        "dps": 41.618283144501135
+        "tps": 65.22385549493934,
+        "effective_health": 4803.173949918178,
+        "dps": 41.61828314450113
       }
     },
     {
@@ -2701,110 +2701,110 @@
         {
           "stat": "stamina",
           "weight": 1,
-          "error": 0.0009421182818456762,
+          "error": 0.0009421182818456763,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 6.647558805281402,
-          "dps_per_point": 19.43066424215372,
+          "scale_factor": 6.6475588052814,
+          "dps_per_point": 19.430664242153707,
           "scale_error": 0.006262786680099809
         },
         {
           "stat": "armor",
-          "weight": 0.08448386655109226,
-          "error": 0.004113511940119855,
+          "weight": 0.08448386655109227,
+          "error": 0.004113511940119856,
           "insignificant": false,
-          "weight_per_percent": 0.08448386655109226,
+          "weight_per_percent": 0.08448386655109227,
           "scale_factor": 0.5616114709959322,
-          "dps_per_point": 1.6415776448331951,
-          "scale_error": 0.02734481251817392
+          "dps_per_point": 1.6415776448331942,
+          "scale_error": 0.027344812518173927
         },
         {
           "stat": "defense",
-          "weight": 0.23975967756704283,
-          "error": 0.05415400227658801,
+          "weight": 0.2397596775670429,
+          "error": 0.05415400227658803,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.23975967756704283,
+          "weight_per_percent": 0.2397596775670429,
           "scale_factor": 1.5938165557622253,
-          "dps_per_point": 4.658689793612245,
-          "scale_error": 0.35999191467496167
+          "dps_per_point": 4.6586897936122424,
+          "scale_error": 0.3599919146749617
         },
         {
           "stat": "dodge",
-          "weight": 0.10567794499154433,
-          "error": 0.013257693053013497,
+          "weight": 0.10567794499154436,
+          "error": 0.013257693053013503,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 1.268135339898532,
-          "scale_factor": 0.702500353752584,
-          "dps_per_point": 2.0533926669314884,
-          "scale_error": 0.08813129419227794
+          "weight_per_percent": 1.2681353398985322,
+          "scale_factor": 0.7025003537525841,
+          "dps_per_point": 2.0533926669314875,
+          "scale_error": 0.08813129419227796
         },
         {
           "stat": "strength",
-          "weight": 0.04946096449478492,
-          "error": 0.00009974657661275115,
+          "weight": 0.04946096449478497,
+          "error": 0.00009974657661275127,
           "insignificant": false,
-          "weight_per_percent": 0.04946096449478492,
-          "scale_factor": 0.3287946700450182,
-          "dps_per_point": 0.9610593941912521,
-          "scale_error": 0.0006630712336587697
+          "weight_per_percent": 0.04946096449478497,
+          "scale_factor": 0.32879467004501856,
+          "dps_per_point": 0.9610593941912524,
+          "scale_error": 0.0006630712336587705
         },
         {
           "stat": "agility",
-          "weight": 0.15043116267065026,
-          "error": 0.00836344212569097,
+          "weight": 0.1504311626706503,
+          "error": 0.008363442125690974,
           "insignificant": false,
-          "weight_per_percent": 0.15043116267065026,
+          "weight_per_percent": 0.1504311626706503,
           "scale_factor": 1,
-          "dps_per_point": 2.922977413410214,
-          "scale_error": 0.05559647334509841
+          "dps_per_point": 2.922977413410212,
+          "scale_error": 0.05559647334509842
         },
         {
           "stat": "attack_power",
-          "weight": 0.024730482247392438,
-          "error": 0.0000498732883063762,
+          "weight": 0.024730482247392466,
+          "error": 0.00004987328830637625,
           "insignificant": false,
-          "weight_per_percent": 0.024730482247392438,
-          "scale_factor": 0.16439733502250897,
-          "dps_per_point": 0.48052969709562565,
-          "scale_error": 0.00033153561682938904
+          "weight_per_percent": 0.024730482247392466,
+          "scale_factor": 0.16439733502250914,
+          "dps_per_point": 0.4805296970956258,
+          "scale_error": 0.0003315356168293893
         },
         {
           "stat": "hit",
-          "weight": 0.04656678168711228,
-          "error": 0.009391045464193944,
+          "weight": 0.04656678168711233,
+          "error": 0.009391045464193951,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.4656678168711228,
-          "scale_factor": 0.30955541963777994,
-          "dps_per_point": 0.9048234997999512,
-          "scale_error": 0.06242752696630042
+          "weight_per_percent": 0.4656678168711233,
+          "scale_factor": 0.3095554196377802,
+          "dps_per_point": 0.9048234997999516,
+          "scale_error": 0.06242752696630045
         },
         {
           "stat": "crit",
-          "weight": 0.01973414079786712,
-          "error": 0.0012285547594740008,
+          "weight": 0.019734140797867145,
+          "error": 0.0012285547594740019,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.2762779711701397,
-          "scale_factor": 0.13118386142552452,
-          "dps_per_point": 0.3834474639507436,
-          "scale_error": 0.008166890009111768
+          "weight_per_percent": 0.27627797117014,
+          "scale_factor": 0.13118386142552466,
+          "dps_per_point": 0.38344746395074375,
+          "scale_error": 0.008166890009111773
         },
         {
           "stat": "expertise",
-          "weight": 1.5562600365963997,
-          "error": 0.10596246253936822,
+          "weight": 1.5562600365964006,
+          "error": 0.10596246253936827,
           "insignificant": false,
-          "weight_per_percent": 1.5562600365963997,
-          "scale_factor": 10.345330109583953,
-          "dps_per_point": 30.239166244586503,
-          "scale_error": 0.7043917008828778
+          "weight_per_percent": 1.5562600365964006,
+          "scale_factor": 10.345330109583957,
+          "dps_per_point": 30.2391662445865,
+          "scale_error": 0.7043917008828781
         }
       ],
       "slots": [
@@ -3265,7 +3265,7 @@
           "score": 8.22257434,
           "verified": true,
           "swap_note": "confirmed by the sim against Seal of Sylvanas (id 6414): kept the pick, +154.1 DPS (3498.1 vs 3344.0 set DPS)",
-          "dps_delta": 154.12317223458695,
+          "dps_delta": 154.12317223458786,
           "alternatives": [
             {
               "item_id": 2039,
@@ -3352,10 +3352,10 @@
           "item_name": "Defiler's Talisman",
           "source": "The Defilers",
           "source_kind": "rep",
-          "sim_dps": 3498.0939793983175,
+          "sim_dps": 3498.093979398319,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of Perfection (id 21566): kept the pick, +111.3 DPS (3498.1 vs 3386.8 set DPS)",
-          "dps_delta": 111.2821100785568,
+          "dps_delta": 111.28211007855725,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -3380,7 +3380,7 @@
           "item_name": "Rune of Perfection",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 3498.0939793983175,
+          "sim_dps": 3498.093979398319,
           "verified": true,
           "alternatives": [
             {
@@ -3405,7 +3405,7 @@
           "item_name": "Staff of the Shade",
           "source": "Razorfen Kraul",
           "source_kind": "dungeon",
-          "sim_dps": 3498.0939793983175,
+          "sim_dps": 3498.093979398319,
           "verified": true,
           "alternatives": [
             {
@@ -3456,8 +3456,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 41.928527848277874,
-      "no_source_count": 331,
+      "set_dps": 41.92852784827789,
+      "no_source_count": 329,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3492,13 +3492,13 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 2.626321264,
-      "verify_run_seconds": 1.423245882,
+      "weights_run_seconds": 3.181001955,
+      "verify_run_seconds": 1.369131336,
       "coverage": {
         "back": {
-          "eligible": 179,
-          "sourced": 146,
-          "rare_spawn_skipped": 14
+          "eligible": 181,
+          "sourced": 148,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 224,
@@ -3506,9 +3506,9 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 154,
-          "sourced": 130,
-          "rare_spawn_skipped": 3
+          "eligible": 156,
+          "sourced": 132,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 87,
@@ -3521,9 +3521,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 154,
-          "sourced": 132,
-          "rare_spawn_skipped": 7
+          "eligible": 155,
+          "sourced": 133,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 76,
@@ -3536,7 +3536,7 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 293,
+          "eligible": 292,
           "sourced": 224,
           "rare_spawn_skipped": 31
         },
@@ -3546,7 +3546,7 @@
           "rare_spawn_skipped": 3
         },
         "off_hand": {
-          "eligible": 52,
+          "eligible": 51,
           "sourced": 33,
           "rare_spawn_skipped": 3
         },
@@ -3568,17 +3568,17 @@
           "sourced": 8
         },
         "waist": {
-          "eligible": 157,
-          "sourced": 140,
-          "rare_spawn_skipped": 7
+          "eligible": 158,
+          "sourced": 141,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 118,
-          "sourced": 97,
-          "rare_spawn_skipped": 5
+          "eligible": 120,
+          "sourced": 99,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 19.43066424215372,
+      "reference_dps_per_point": 19.430664242153707,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -3593,12 +3593,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 223.56461117026998,
-        "tmi": 51.588847024392,
+        "dtps": 223.56461117027,
+        "tmi": 51.588847024392095,
         "chance_of_death": 1,
-        "tps": 65.74030235456715,
-        "effective_health": 5037.266521543987,
-        "dps": 41.928527848277874
+        "tps": 65.7403023545672,
+        "effective_health": 5037.2665215439865,
+        "dps": 41.92852784827789
       }
     },
     {
@@ -3613,110 +3613,110 @@
         {
           "stat": "stamina",
           "weight": 1,
-          "error": 0.01826180694760571,
+          "error": 0.018261806947605708,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 7.335638207508197,
-          "dps_per_point": 28.23905393802653,
-          "scale_error": 0.1339620087829951
+          "scale_factor": 7.3356382075082,
+          "dps_per_point": 28.239053938026533,
+          "scale_error": 0.13396200878299513
         },
         {
           "stat": "armor",
-          "weight": 0.10673478931985349,
-          "error": 0.006228711452399381,
+          "weight": 0.10673478931985346,
+          "error": 0.006228711452399379,
           "insignificant": false,
-          "weight_per_percent": 0.10673478931985349,
-          "scale_factor": 0.782967798605055,
-          "dps_per_point": 3.0140894726672407,
-          "scale_error": 0.04569157371376477
+          "weight_per_percent": 0.10673478931985346,
+          "scale_factor": 0.7829677986050552,
+          "dps_per_point": 3.0140894726672403,
+          "scale_error": 0.045691573713764776
         },
         {
           "stat": "defense",
-          "weight": 0.3281302808058765,
-          "error": 0.07983258499644466,
+          "weight": 0.3281302808058763,
+          "error": 0.07983258499644463,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.3281302808058765,
+          "weight_per_percent": 0.3281302808058763,
           "scale_factor": 2.407045024919981,
-          "dps_per_point": 9.266088698376937,
-          "scale_error": 0.585622960704065
+          "dps_per_point": 9.266088698376933,
+          "scale_error": 0.5856229607040652
         },
         {
           "stat": "dodge",
-          "weight": 0.11336307226865643,
-          "error": 0.01787764145426169,
+          "weight": 0.11336307226865637,
+          "error": 0.017877641454261683,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 1.360356867223877,
-          "scale_factor": 0.831590484254469,
-          "dps_per_point": 3.2012659123749883,
-          "scale_error": 0.13114390971201445
+          "weight_per_percent": 1.3603568672238764,
+          "scale_factor": 0.8315904842544689,
+          "dps_per_point": 3.201265912374987,
+          "scale_error": 0.13114390971201448
         },
         {
           "stat": "strength",
-          "weight": 0.046026856745434865,
-          "error": 0.00008745352687444646,
+          "weight": 0.04602685674543484,
+          "error": 0.0000874535268744464,
           "insignificant": false,
-          "weight_per_percent": 0.046026856745434865,
-          "scale_factor": 0.3376363689133184,
-          "dps_per_point": 1.2997548902321554,
-          "scale_error": 0.0006415274331215343
+          "weight_per_percent": 0.04602685674543484,
+          "scale_factor": 0.33763636891331833,
+          "dps_per_point": 1.2997548902321547,
+          "scale_error": 0.0006415274331215342
         },
         {
           "stat": "agility",
-          "weight": 0.13632079059957955,
-          "error": 0.011119524968523678,
+          "weight": 0.1363207905995795,
+          "error": 0.011119524968523675,
           "insignificant": false,
-          "weight_per_percent": 0.13632079059957955,
+          "weight_per_percent": 0.1363207905995795,
           "scale_factor": 1,
-          "dps_per_point": 3.849570158615947,
-          "scale_error": 0.08156881220844367
+          "dps_per_point": 3.8495701586159456,
+          "scale_error": 0.08156881220844368
         },
         {
           "stat": "attack_power",
-          "weight": 0.023013428372717405,
-          "error": 0.00004372676343722638,
+          "weight": 0.023013428372717394,
+          "error": 0.00004372676343722636,
           "insignificant": false,
-          "weight_per_percent": 0.023013428372717405,
+          "weight_per_percent": 0.023013428372717394,
           "scale_factor": 0.16881818445665897,
-          "dps_per_point": 0.6498774451160769,
-          "scale_error": 0.0003207637165607903
+          "dps_per_point": 0.6498774451160767,
+          "scale_error": 0.00032076371656079026
         },
         {
           "stat": "hit",
-          "weight": 0.055014677787209296,
+          "weight": 0.05501467778720927,
           "error": 0.014480281596387038,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.550146777872093,
+          "weight_per_percent": 0.5501467778720927,
           "scale_factor": 0.403567772349605,
-          "dps_per_point": 1.5535624534161534,
-          "scale_error": 0.10622210693393455
+          "dps_per_point": 1.5535624534161527,
+          "scale_error": 0.10622210693393459
         },
         {
           "stat": "crit",
-          "weight": 0.029092124727478925,
-          "error": 0.005795491026486947,
+          "weight": 0.029092124727478907,
+          "error": 0.005795491026486945,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.4072897461847049,
-          "scale_factor": 0.2134093016884884,
-          "dps_per_point": 0.8215340793510727,
+          "weight_per_percent": 0.4072897461847047,
+          "scale_factor": 0.21340930168848835,
+          "dps_per_point": 0.8215340793510724,
           "scale_error": 0.04251362540516855
         },
         {
           "stat": "expertise",
-          "weight": 1.7207409433423373,
-          "error": 0.15983705758839567,
+          "weight": 1.7207409433423366,
+          "error": 0.1598370575883957,
           "insignificant": false,
-          "weight_per_percent": 1.7207409433423373,
+          "weight_per_percent": 1.7207409433423366,
           "scale_factor": 12.622733009205747,
-          "dps_per_point": 48.59209631241492,
-          "scale_error": 1.1725068266211234
+          "dps_per_point": 48.5920963124149,
+          "scale_error": 1.172506826621124
         }
       ],
       "slots": [
@@ -4175,7 +4175,7 @@
           "score": 11.322187997,
           "verified": true,
           "swap_note": "confirmed by the sim against Insurgent's Band (id 272066): kept the pick, +309.5 DPS (6277.4 vs 5968.0 set DPS)",
-          "dps_delta": 309.46002393418075,
+          "dps_delta": 309.46002393417984,
           "alternatives": [
             {
               "item_id": 272070,
@@ -4262,7 +4262,7 @@
           "item_name": "Rune of Perfection",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 6277.423451417479,
+          "sim_dps": 6277.423451417478,
           "verified": true,
           "alternatives": [
             {
@@ -4306,7 +4306,7 @@
           "item_name": "Rune of Duty",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 6277.423451417479,
+          "sim_dps": 6277.423451417478,
           "verified": true,
           "alternatives": [
             {
@@ -4351,7 +4351,7 @@
           "source": "Uldaman: Ironaya",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 6277.423451417479,
+          "sim_dps": 6277.423451417478,
           "verified": true,
           "alternatives": [
             {
@@ -4401,8 +4401,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 73.23398495730282,
-      "no_source_count": 452,
+      "set_dps": 73.23398495730288,
+      "no_source_count": 450,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4436,13 +4436,13 @@
         "trinket2: Rune of Duty",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 3.027046437,
-      "verify_run_seconds": 1.548643049,
+      "weights_run_seconds": 3.921832068,
+      "verify_run_seconds": 1.622005808,
       "coverage": {
         "back": {
-          "eligible": 243,
-          "sourced": 204,
-          "rare_spawn_skipped": 16
+          "eligible": 245,
+          "sourced": 206,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 299,
@@ -4450,9 +4450,9 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 205,
-          "sourced": 179,
-          "rare_spawn_skipped": 4
+          "eligible": 207,
+          "sourced": 181,
+          "rare_spawn_skipped": 5
         },
         "finger1": {
           "eligible": 123,
@@ -4466,8 +4466,8 @@
         },
         "hands": {
           "eligible": 231,
-          "sourced": 205,
-          "rare_spawn_skipped": 7
+          "sourced": 206,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 138,
@@ -4490,8 +4490,8 @@
           "rare_spawn_skipped": 4
         },
         "off_hand": {
-          "eligible": 75,
-          "sourced": 52,
+          "eligible": 74,
+          "sourced": 51,
           "rare_spawn_skipped": 3
         },
         "ranged": {
@@ -4512,17 +4512,17 @@
           "sourced": 18
         },
         "waist": {
-          "eligible": 207,
-          "sourced": 189,
-          "rare_spawn_skipped": 7
+          "eligible": 208,
+          "sourced": 190,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 161,
-          "sourced": 130,
-          "rare_spawn_skipped": 5
+          "eligible": 162,
+          "sourced": 132,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 28.23905393802653,
+      "reference_dps_per_point": 28.239053938026533,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -4537,12 +4537,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 325.10019336530075,
-        "tmi": 62.009227998594405,
+        "dtps": 325.1001933653009,
+        "tmi": 62.00922799859439,
         "chance_of_death": 1,
-        "tps": 142.7909438104158,
-        "effective_health": 7786.172271718142,
-        "dps": 73.23398495730282
+        "tps": 142.79094381041574,
+        "effective_health": 7786.172271718138,
+        "dps": 73.23398495730288
       }
     },
     {
@@ -4557,110 +4557,110 @@
         {
           "stat": "stamina",
           "weight": 1,
-          "error": 0.01826180694760571,
+          "error": 0.018261806947605708,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 7.335638207508197,
-          "dps_per_point": 28.23905393802653,
-          "scale_error": 0.1339620087829951
+          "scale_factor": 7.3356382075082,
+          "dps_per_point": 28.239053938026533,
+          "scale_error": 0.13396200878299513
         },
         {
           "stat": "armor",
-          "weight": 0.10673478931985349,
-          "error": 0.006228711452399381,
+          "weight": 0.10673478931985346,
+          "error": 0.006228711452399379,
           "insignificant": false,
-          "weight_per_percent": 0.10673478931985349,
-          "scale_factor": 0.782967798605055,
-          "dps_per_point": 3.0140894726672407,
-          "scale_error": 0.04569157371376477
+          "weight_per_percent": 0.10673478931985346,
+          "scale_factor": 0.7829677986050552,
+          "dps_per_point": 3.0140894726672403,
+          "scale_error": 0.045691573713764776
         },
         {
           "stat": "defense",
-          "weight": 0.3281302808058765,
-          "error": 0.07983258499644466,
+          "weight": 0.3281302808058763,
+          "error": 0.07983258499644463,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.3281302808058765,
+          "weight_per_percent": 0.3281302808058763,
           "scale_factor": 2.407045024919981,
-          "dps_per_point": 9.266088698376937,
-          "scale_error": 0.585622960704065
+          "dps_per_point": 9.266088698376933,
+          "scale_error": 0.5856229607040652
         },
         {
           "stat": "dodge",
-          "weight": 0.11336307226865643,
-          "error": 0.01787764145426169,
+          "weight": 0.11336307226865637,
+          "error": 0.017877641454261683,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 1.360356867223877,
-          "scale_factor": 0.831590484254469,
-          "dps_per_point": 3.2012659123749883,
-          "scale_error": 0.13114390971201445
+          "weight_per_percent": 1.3603568672238764,
+          "scale_factor": 0.8315904842544689,
+          "dps_per_point": 3.201265912374987,
+          "scale_error": 0.13114390971201448
         },
         {
           "stat": "strength",
-          "weight": 0.046026856745434865,
-          "error": 0.00008745352687444646,
+          "weight": 0.04602685674543484,
+          "error": 0.0000874535268744464,
           "insignificant": false,
-          "weight_per_percent": 0.046026856745434865,
-          "scale_factor": 0.3376363689133184,
-          "dps_per_point": 1.2997548902321554,
-          "scale_error": 0.0006415274331215343
+          "weight_per_percent": 0.04602685674543484,
+          "scale_factor": 0.33763636891331833,
+          "dps_per_point": 1.2997548902321547,
+          "scale_error": 0.0006415274331215342
         },
         {
           "stat": "agility",
-          "weight": 0.13632079059957955,
-          "error": 0.011119524968523678,
+          "weight": 0.1363207905995795,
+          "error": 0.011119524968523675,
           "insignificant": false,
-          "weight_per_percent": 0.13632079059957955,
+          "weight_per_percent": 0.1363207905995795,
           "scale_factor": 1,
-          "dps_per_point": 3.849570158615947,
-          "scale_error": 0.08156881220844367
+          "dps_per_point": 3.8495701586159456,
+          "scale_error": 0.08156881220844368
         },
         {
           "stat": "attack_power",
-          "weight": 0.023013428372717405,
-          "error": 0.00004372676343722638,
+          "weight": 0.023013428372717394,
+          "error": 0.00004372676343722636,
           "insignificant": false,
-          "weight_per_percent": 0.023013428372717405,
+          "weight_per_percent": 0.023013428372717394,
           "scale_factor": 0.16881818445665897,
-          "dps_per_point": 0.6498774451160769,
-          "scale_error": 0.0003207637165607903
+          "dps_per_point": 0.6498774451160767,
+          "scale_error": 0.00032076371656079026
         },
         {
           "stat": "hit",
-          "weight": 0.055014677787209296,
+          "weight": 0.05501467778720927,
           "error": 0.014480281596387038,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.550146777872093,
+          "weight_per_percent": 0.5501467778720927,
           "scale_factor": 0.403567772349605,
-          "dps_per_point": 1.5535624534161534,
-          "scale_error": 0.10622210693393455
+          "dps_per_point": 1.5535624534161527,
+          "scale_error": 0.10622210693393459
         },
         {
           "stat": "crit",
-          "weight": 0.029092124727478925,
-          "error": 0.005795491026486947,
+          "weight": 0.029092124727478907,
+          "error": 0.005795491026486945,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.4072897461847049,
-          "scale_factor": 0.2134093016884884,
-          "dps_per_point": 0.8215340793510727,
+          "weight_per_percent": 0.4072897461847047,
+          "scale_factor": 0.21340930168848835,
+          "dps_per_point": 0.8215340793510724,
           "scale_error": 0.04251362540516855
         },
         {
           "stat": "expertise",
-          "weight": 1.7207409433423373,
-          "error": 0.15983705758839567,
+          "weight": 1.7207409433423366,
+          "error": 0.1598370575883957,
           "insignificant": false,
-          "weight_per_percent": 1.7207409433423373,
+          "weight_per_percent": 1.7207409433423366,
           "scale_factor": 12.622733009205747,
-          "dps_per_point": 48.59209631241492,
-          "scale_error": 1.1725068266211234
+          "dps_per_point": 48.5920963124149,
+          "scale_error": 1.172506826621124
         }
       ],
       "slots": [
@@ -5121,7 +5121,7 @@
           "score": 11.322187997,
           "verified": true,
           "swap_note": "confirmed by the sim against Insurgent's Band (id 272066): kept the pick, +328.6 DPS (6753.8 vs 6425.3 set DPS)",
-          "dps_delta": 328.59326139515906,
+          "dps_delta": 328.59326139515815,
           "alternatives": [
             {
               "item_id": 272070,
@@ -5208,7 +5208,7 @@
           "item_name": "Rune of Perfection",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 6753.847387423018,
+          "sim_dps": 6753.8473874230185,
           "verified": true,
           "alternatives": [
             {
@@ -5252,7 +5252,7 @@
           "item_name": "Rune of Duty",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 6753.847387423018,
+          "sim_dps": 6753.8473874230185,
           "verified": true,
           "alternatives": [
             {
@@ -5296,7 +5296,7 @@
           "item_name": "Cragwood Maul",
           "source": "Nothing But The Truth",
           "source_kind": "quest",
-          "sim_dps": 6753.847387423018,
+          "sim_dps": 6753.8473874230185,
           "verified": true,
           "alternatives": [
             {
@@ -5346,8 +5346,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 72.81539229838961,
-      "no_source_count": 436,
+      "set_dps": 72.81539229838957,
+      "no_source_count": 434,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5381,13 +5381,13 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 3.027046437,
-      "verify_run_seconds": 1.580516196,
+      "weights_run_seconds": 3.921832068,
+      "verify_run_seconds": 1.5737925289999999,
       "coverage": {
         "back": {
-          "eligible": 245,
-          "sourced": 208,
-          "rare_spawn_skipped": 16
+          "eligible": 247,
+          "sourced": 210,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 295,
@@ -5395,9 +5395,9 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 210,
-          "sourced": 179,
-          "rare_spawn_skipped": 4
+          "eligible": 212,
+          "sourced": 181,
+          "rare_spawn_skipped": 5
         },
         "finger1": {
           "eligible": 122,
@@ -5411,8 +5411,8 @@
         },
         "hands": {
           "eligible": 226,
-          "sourced": 197,
-          "rare_spawn_skipped": 7
+          "sourced": 198,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 139,
@@ -5435,8 +5435,8 @@
           "rare_spawn_skipped": 4
         },
         "off_hand": {
-          "eligible": 71,
-          "sourced": 47,
+          "eligible": 70,
+          "sourced": 46,
           "rare_spawn_skipped": 3
         },
         "ranged": {
@@ -5457,17 +5457,17 @@
           "sourced": 18
         },
         "waist": {
-          "eligible": 211,
-          "sourced": 191,
-          "rare_spawn_skipped": 7
+          "eligible": 212,
+          "sourced": 192,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 166,
-          "sourced": 139,
-          "rare_spawn_skipped": 5
+          "eligible": 167,
+          "sourced": 141,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 28.23905393802653,
+      "reference_dps_per_point": 28.239053938026533,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -5483,11 +5483,11 @@
       "role": "tank",
       "metrics": {
         "dtps": 330.15211392694016,
-        "tmi": 57.48232853821869,
+        "tmi": 57.482328538218724,
         "chance_of_death": 1,
-        "tps": 141.87933409201005,
+        "tps": 141.8793340920102,
         "effective_health": 8223.286485657512,
-        "dps": 72.81539229838961
+        "dps": 72.81539229838957
       }
     },
     {
@@ -5505,107 +5505,107 @@
           "error": 0.031949846881485444,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 3.9692343045092056,
-          "dps_per_point": 35.616860190614375,
-          "scale_error": 0.1268164282658085
+          "scale_factor": 3.9692343045092064,
+          "dps_per_point": 35.61686019061435,
+          "scale_error": 0.12681642826580852
         },
         {
           "stat": "armor",
-          "weight": 0.15129156010934655,
+          "weight": 0.15129156010934647,
           "error": 0.012196021062436146,
           "insignificant": false,
-          "weight_per_percent": 0.15129156010934655,
-          "scale_factor": 0.6005116503687349,
-          "dps_per_point": 5.388530344434527,
-          "scale_error": 0.04840886517953836
+          "weight_per_percent": 0.15129156010934647,
+          "scale_factor": 0.6005116503687347,
+          "dps_per_point": 5.388530344434519,
+          "scale_error": 0.04840886517953837
         },
         {
           "stat": "defense",
-          "weight": 0.45159905663053385,
-          "error": 0.14818784401359883,
+          "weight": 0.4515990566305335,
+          "error": 0.1481878440135988,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.45159905663053385,
-          "scale_factor": 1.7925024674619103,
-          "dps_per_point": 16.084540462223067,
+          "weight_per_percent": 0.4515990566305335,
+          "scale_factor": 1.7925024674619094,
+          "dps_per_point": 16.084540462223043,
           "scale_error": 0.5881922739700356
         },
         {
           "stat": "dodge",
-          "weight": 0.25470963900500976,
-          "error": 0.03128173727071334,
+          "weight": 0.2547096390050096,
+          "error": 0.03128173727071333,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 3.056515668060117,
-          "scale_factor": 1.0110022368278408,
-          "dps_per_point": 9.071957601643291,
+          "weight_per_percent": 3.0565156680601153,
+          "scale_factor": 1.0110022368278404,
+          "dps_per_point": 9.071957601643277,
           "scale_error": 0.12416454467955955
         },
         {
           "stat": "strength",
-          "weight": 0.05705965008644987,
-          "error": 0.00010483412440015682,
+          "weight": 0.057059650086449906,
+          "error": 0.00010483412440015688,
           "insignificant": false,
-          "weight_per_percent": 0.05705965008644987,
-          "scale_factor": 0.2264831205264285,
-          "dps_per_point": 2.0322855796544625,
-          "scale_error": 0.000416111202852288
+          "weight_per_percent": 0.057059650086449906,
+          "scale_factor": 0.2264831205264287,
+          "dps_per_point": 2.032285579654462,
+          "scale_error": 0.00041611120285228834
         },
         {
           "stat": "agility",
-          "weight": 0.2519377601024865,
+          "weight": 0.2519377601024864,
           "error": 0.019816733028484076,
           "insignificant": false,
-          "weight_per_percent": 0.2519377601024865,
+          "weight_per_percent": 0.2519377601024864,
           "scale_factor": 1,
-          "dps_per_point": 8.973231978306805,
-          "scale_error": 0.0786572565399596
+          "dps_per_point": 8.973231978306796,
+          "scale_error": 0.07865725653995961
         },
         {
           "stat": "attack_power",
-          "weight": 0.028529825043224905,
-          "error": 0.00005241706220007534,
+          "weight": 0.028529825043224922,
+          "error": 0.00005241706220007536,
           "insignificant": false,
-          "weight_per_percent": 0.028529825043224905,
-          "scale_factor": 0.11324156026321412,
-          "dps_per_point": 1.0161427898272302,
-          "scale_error": 0.0002080556014261318
+          "weight_per_percent": 0.028529825043224922,
+          "scale_factor": 0.11324156026321422,
+          "dps_per_point": 1.01614278982723,
+          "scale_error": 0.00020805560142613195
         },
         {
           "stat": "hit",
-          "weight": 0.0959093286410432,
+          "weight": 0.09590932864104325,
           "error": 0.02692662943432354,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.9590932864104321,
-          "scale_factor": 0.38068659736447596,
-          "dps_per_point": 3.415989149183723,
-          "scale_error": 0.1068781012555243
+          "weight_per_percent": 0.9590932864104325,
+          "scale_factor": 0.38068659736447624,
+          "dps_per_point": 3.4159891491837215,
+          "scale_error": 0.10687810125552433
         },
         {
           "stat": "crit",
-          "weight": 0.03483447619308079,
-          "error": 0.010684279282804656,
+          "weight": 0.0348344761930808,
+          "error": 0.010684279282804654,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.48768266670313104,
-          "scale_factor": 0.13826619788518552,
-          "dps_per_point": 1.2406946683822433,
-          "scale_error": 0.04240840784826525
+          "weight_per_percent": 0.4876826667031312,
+          "scale_factor": 0.13826619788518557,
+          "dps_per_point": 1.2406946683822426,
+          "scale_error": 0.04240840784826526
         },
         {
           "stat": "expertise",
-          "weight": 3.4241020334855623,
+          "weight": 3.424102033485562,
           "error": 0.29476725971090295,
           "insignificant": false,
-          "weight_per_percent": 3.4241020334855623,
-          "scale_factor": 13.591063253450622,
-          "dps_per_point": 121.95576340505366,
-          "scale_error": 1.1700003190906902
+          "weight_per_percent": 3.424102033485562,
+          "scale_factor": 13.591063253450624,
+          "dps_per_point": 121.95576340505355,
+          "scale_error": 1.1700003190906905
         }
       ],
       "slots": [
@@ -5704,7 +5704,7 @@
           "item_name": "Knight-Lieutenant's Leather Shoulders",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 11735.1953067954,
+          "sim_dps": 11735.195306795396,
           "verified": true,
           "alternatives": [
             {
@@ -5716,7 +5716,7 @@
             },
             {
               "item_id": 252536,
-              "item_name": "Warden's Leather Shoulder",
+              "item_name": "Warden's Leather Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -53.994989907
@@ -6023,7 +6023,7 @@
           "item_name": "Sergeant Major's Leather Boots",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "vendor",
-          "sim_dps": 11735.1953067954,
+          "sim_dps": 11735.195306795396,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6174,7 +6174,7 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 11735.1953067954,
+          "sim_dps": 11735.195306795396,
           "verified": true,
           "alternatives": [
             {
@@ -6218,7 +6218,7 @@
           "item_name": "Relentless Raider's Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 11735.1953067954,
+          "sim_dps": 11735.195306795396,
           "verified": true,
           "alternatives": [
             {
@@ -6262,7 +6262,7 @@
           "item_name": "Radiant Staff",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 11735.1953067954,
+          "sim_dps": 11735.195306795396,
           "verified": true,
           "alternatives": [
             {
@@ -6312,8 +6312,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 116.98489124575778,
-      "no_source_count": 591,
+      "set_dps": 116.98489124575761,
+      "no_source_count": 589,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6348,13 +6348,13 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 3.349250638,
-      "verify_run_seconds": 3.388055878,
+      "weights_run_seconds": 4.46633205,
+      "verify_run_seconds": 3.468618753,
       "coverage": {
         "back": {
-          "eligible": 310,
-          "sourced": 261,
-          "rare_spawn_skipped": 16
+          "eligible": 312,
+          "sourced": 263,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 368,
@@ -6362,9 +6362,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 274,
-          "sourced": 238,
-          "rare_spawn_skipped": 5
+          "eligible": 276,
+          "sourced": 240,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 148,
@@ -6378,8 +6378,8 @@
         },
         "hands": {
           "eligible": 299,
-          "sourced": 267,
-          "rare_spawn_skipped": 7
+          "sourced": 268,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 204,
@@ -6392,8 +6392,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 458,
-          "sourced": 323,
+          "eligible": 459,
+          "sourced": 324,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -6402,8 +6402,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 96,
-          "sourced": 66,
+          "eligible": 95,
+          "sourced": 65,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -6424,17 +6424,17 @@
           "sourced": 41
         },
         "waist": {
-          "eligible": 266,
-          "sourced": 243,
-          "rare_spawn_skipped": 7
+          "eligible": 267,
+          "sourced": 244,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 216,
-          "sourced": 178,
-          "rare_spawn_skipped": 5
+          "eligible": 217,
+          "sourced": 180,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 35.616860190614375,
+      "reference_dps_per_point": 35.61686019061435,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -6449,12 +6449,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 435.3034739506795,
-        "tmi": 63.51371696888218,
+        "dtps": 435.30347395067986,
+        "tmi": 63.513716968882235,
         "chance_of_death": 0.9986666666666667,
-        "tps": 250.88142680677296,
-        "effective_health": 12800.676201531487,
-        "dps": 116.98489124575778
+        "tps": 250.88142680677322,
+        "effective_health": 12800.676201531478,
+        "dps": 116.98489124575761
       }
     },
     {
@@ -6472,107 +6472,107 @@
           "error": 0.031949846881485444,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 3.9692343045092056,
-          "dps_per_point": 35.616860190614375,
-          "scale_error": 0.1268164282658085
+          "scale_factor": 3.9692343045092064,
+          "dps_per_point": 35.61686019061435,
+          "scale_error": 0.12681642826580852
         },
         {
           "stat": "armor",
-          "weight": 0.15129156010934655,
+          "weight": 0.15129156010934647,
           "error": 0.012196021062436146,
           "insignificant": false,
-          "weight_per_percent": 0.15129156010934655,
-          "scale_factor": 0.6005116503687349,
-          "dps_per_point": 5.388530344434527,
-          "scale_error": 0.04840886517953836
+          "weight_per_percent": 0.15129156010934647,
+          "scale_factor": 0.6005116503687347,
+          "dps_per_point": 5.388530344434519,
+          "scale_error": 0.04840886517953837
         },
         {
           "stat": "defense",
-          "weight": 0.45159905663053385,
-          "error": 0.14818784401359883,
+          "weight": 0.4515990566305335,
+          "error": 0.1481878440135988,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 0.45159905663053385,
-          "scale_factor": 1.7925024674619103,
-          "dps_per_point": 16.084540462223067,
+          "weight_per_percent": 0.4515990566305335,
+          "scale_factor": 1.7925024674619094,
+          "dps_per_point": 16.084540462223043,
           "scale_error": 0.5881922739700356
         },
         {
           "stat": "dodge",
-          "weight": 0.25470963900500976,
-          "error": 0.03128173727071334,
+          "weight": 0.2547096390050096,
+          "error": 0.03128173727071333,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
-          "weight_per_percent": 3.056515668060117,
-          "scale_factor": 1.0110022368278408,
-          "dps_per_point": 9.071957601643291,
+          "weight_per_percent": 3.0565156680601153,
+          "scale_factor": 1.0110022368278404,
+          "dps_per_point": 9.071957601643277,
           "scale_error": 0.12416454467955955
         },
         {
           "stat": "strength",
-          "weight": 0.05705965008644987,
-          "error": 0.00010483412440015682,
+          "weight": 0.057059650086449906,
+          "error": 0.00010483412440015688,
           "insignificant": false,
-          "weight_per_percent": 0.05705965008644987,
-          "scale_factor": 0.2264831205264285,
-          "dps_per_point": 2.0322855796544625,
-          "scale_error": 0.000416111202852288
+          "weight_per_percent": 0.057059650086449906,
+          "scale_factor": 0.2264831205264287,
+          "dps_per_point": 2.032285579654462,
+          "scale_error": 0.00041611120285228834
         },
         {
           "stat": "agility",
-          "weight": 0.2519377601024865,
+          "weight": 0.2519377601024864,
           "error": 0.019816733028484076,
           "insignificant": false,
-          "weight_per_percent": 0.2519377601024865,
+          "weight_per_percent": 0.2519377601024864,
           "scale_factor": 1,
-          "dps_per_point": 8.973231978306805,
-          "scale_error": 0.0786572565399596
+          "dps_per_point": 8.973231978306796,
+          "scale_error": 0.07865725653995961
         },
         {
           "stat": "attack_power",
-          "weight": 0.028529825043224905,
-          "error": 0.00005241706220007534,
+          "weight": 0.028529825043224922,
+          "error": 0.00005241706220007536,
           "insignificant": false,
-          "weight_per_percent": 0.028529825043224905,
-          "scale_factor": 0.11324156026321412,
-          "dps_per_point": 1.0161427898272302,
-          "scale_error": 0.0002080556014261318
+          "weight_per_percent": 0.028529825043224922,
+          "scale_factor": 0.11324156026321422,
+          "dps_per_point": 1.01614278982723,
+          "scale_error": 0.00020805560142613195
         },
         {
           "stat": "hit",
-          "weight": 0.0959093286410432,
+          "weight": 0.09590932864104325,
           "error": 0.02692662943432354,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 0.9590932864104321,
-          "scale_factor": 0.38068659736447596,
-          "dps_per_point": 3.415989149183723,
-          "scale_error": 0.1068781012555243
+          "weight_per_percent": 0.9590932864104325,
+          "scale_factor": 0.38068659736447624,
+          "dps_per_point": 3.4159891491837215,
+          "scale_error": 0.10687810125552433
         },
         {
           "stat": "crit",
-          "weight": 0.03483447619308079,
-          "error": 0.010684279282804656,
+          "weight": 0.0348344761930808,
+          "error": 0.010684279282804654,
           "insignificant": true,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 0.48768266670313104,
-          "scale_factor": 0.13826619788518552,
-          "dps_per_point": 1.2406946683822433,
-          "scale_error": 0.04240840784826525
+          "weight_per_percent": 0.4876826667031312,
+          "scale_factor": 0.13826619788518557,
+          "dps_per_point": 1.2406946683822426,
+          "scale_error": 0.04240840784826526
         },
         {
           "stat": "expertise",
-          "weight": 3.4241020334855623,
+          "weight": 3.424102033485562,
           "error": 0.29476725971090295,
           "insignificant": false,
-          "weight_per_percent": 3.4241020334855623,
-          "scale_factor": 13.591063253450622,
-          "dps_per_point": 121.95576340505366,
-          "scale_error": 1.1700003190906902
+          "weight_per_percent": 3.424102033485562,
+          "scale_factor": 13.591063253450624,
+          "dps_per_point": 121.95576340505355,
+          "scale_error": 1.1700003190906905
         }
       ],
       "slots": [
@@ -6690,7 +6690,7 @@
             },
             {
               "item_id": 252536,
-              "item_name": "Warden's Leather Shoulder",
+              "item_name": "Warden's Leather Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -76.876191491
@@ -7031,7 +7031,7 @@
           "score": 14.427947376,
           "verified": true,
           "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +533.0 DPS (12157.7 vs 11624.8 set DPS)",
-          "dps_delta": 532.97847220125,
+          "dps_delta": 532.9784722012519,
           "alternatives": [
             {
               "item_id": 1447,
@@ -7266,8 +7266,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 115.96625155456476,
-      "no_source_count": 571,
+      "set_dps": 115.96625155456475,
+      "no_source_count": 569,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -7301,13 +7301,13 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal"
       ],
-      "weights_run_seconds": 3.349250638,
-      "verify_run_seconds": 1.828643552,
+      "weights_run_seconds": 4.46633205,
+      "verify_run_seconds": 1.850457273,
       "coverage": {
         "back": {
-          "eligible": 315,
-          "sourced": 268,
-          "rare_spawn_skipped": 16
+          "eligible": 317,
+          "sourced": 270,
+          "rare_spawn_skipped": 18
         },
         "chest": {
           "eligible": 365,
@@ -7315,9 +7315,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 280,
-          "sourced": 239,
-          "rare_spawn_skipped": 5
+          "eligible": 282,
+          "sourced": 241,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 149,
@@ -7331,8 +7331,8 @@
         },
         "hands": {
           "eligible": 297,
-          "sourced": 262,
-          "rare_spawn_skipped": 7
+          "sourced": 263,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 205,
@@ -7345,8 +7345,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 461,
-          "sourced": 344,
+          "eligible": 462,
+          "sourced": 345,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -7355,8 +7355,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 93,
-          "sourced": 62,
+          "eligible": 92,
+          "sourced": 61,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -7377,17 +7377,17 @@
           "sourced": 41
         },
         "waist": {
-          "eligible": 270,
-          "sourced": 245,
-          "rare_spawn_skipped": 7
+          "eligible": 271,
+          "sourced": 246,
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 220,
-          "sourced": 188,
-          "rare_spawn_skipped": 5
+          "eligible": 221,
+          "sourced": 190,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 35.616860190614375,
+      "reference_dps_per_point": 35.61686019061435,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -7402,12 +7402,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 440.13795826313725,
-        "tmi": 61.024574147491585,
-        "chance_of_death": 0.9986666666666667,
-        "tps": 248.49558784775724,
-        "effective_health": 13119.374339362186,
-        "dps": 115.96625155456476
+        "dtps": 440.13795826313714,
+        "tmi": 61.02457414749157,
+        "chance_of_death": 0.9986666666666666,
+        "tps": 248.49558784775726,
+        "effective_health": 13119.37433936219,
+        "dps": 115.96625155456475
       }
     },
     {
@@ -7442,36 +7442,36 @@
         {
           "stat": "defense",
           "weight": 0.9852579575211137,
-          "error": 0.2390062151367948,
+          "error": 0.23900621513679476,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
           "weight_per_percent": 0.9852579575211137,
           "scale_factor": 1.940942434136203,
           "dps_per_point": 63.75049069469417,
-          "scale_error": 0.47083842504398177
+          "scale_error": 0.4708384250439817
         },
         {
           "stat": "dodge",
           "weight": 0.618610341741152,
-          "error": 0.04828274872423464,
+          "error": 0.04828274872423463,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
           "weight_per_percent": 7.423324100893824,
           "scale_factor": 1.2186524892443407,
           "dps_per_point": 40.02678946540331,
-          "scale_error": 0.09511624353827598
+          "scale_error": 0.09511624353827597
         },
         {
           "stat": "strength",
-          "weight": 0.1106887455298876,
-          "error": 0.00019866677755675305,
+          "weight": 0.11068874552988758,
+          "error": 0.00019866677755675302,
           "insignificant": false,
-          "weight_per_percent": 0.1106887455298876,
-          "scale_factor": 0.2180550601395765,
-          "dps_per_point": 7.162045013738703,
-          "scale_error": 0.0003913703775437272
+          "weight_per_percent": 0.11068874552988758,
+          "scale_factor": 0.21805506013957648,
+          "dps_per_point": 7.162045013738702,
+          "scale_error": 0.00039137037754372717
         },
         {
           "stat": "agility",
@@ -7485,47 +7485,47 @@
         },
         {
           "stat": "attack_power",
-          "weight": 0.055344372764943896,
-          "error": 0.0000993333887783896,
+          "weight": 0.05534437276494389,
+          "error": 0.00009933338877838959,
           "insignificant": false,
-          "weight_per_percent": 0.055344372764943896,
-          "scale_factor": 0.10902753006978845,
-          "dps_per_point": 3.5810225068693575,
-          "scale_error": 0.00019568518877188936
+          "weight_per_percent": 0.05534437276494389,
+          "scale_factor": 0.10902753006978844,
+          "dps_per_point": 3.581022506869357,
+          "scale_error": 0.00019568518877188934
         },
         {
           "stat": "hit",
-          "weight": 0.15979775951190814,
+          "weight": 0.15979775951190808,
           "error": 0.038617215177216634,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 1.5979775951190813,
-          "scale_factor": 0.3147990330338519,
-          "dps_per_point": 10.339612588796138,
+          "weight_per_percent": 1.5979775951190809,
+          "scale_factor": 0.3147990330338518,
+          "dps_per_point": 10.339612588796134,
           "scale_error": 0.07607529688388448
         },
         {
           "stat": "crit",
-          "weight": 0.07461611334834181,
+          "weight": 0.07461611334834177,
           "error": 0.01616940801147074,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 1.0446255868767853,
-          "scale_factor": 0.14699255110051707,
-          "dps_per_point": 4.827988247520217,
+          "weight_per_percent": 1.0446255868767849,
+          "scale_factor": 0.14699255110051698,
+          "dps_per_point": 4.8279882475202145,
           "scale_error": 0.0318534754322478
         },
         {
           "stat": "expertise",
           "weight": 5.806152739489604,
-          "error": 0.4216091274323374,
+          "error": 0.42160912743233736,
           "insignificant": false,
           "weight_per_percent": 5.806152739489604,
           "scale_factor": 11.438028127684557,
           "dps_per_point": 375.68342723369784,
-          "scale_error": 0.830563244687141
+          "scale_error": 0.8305632446871409
         }
       ],
       "slots": [
@@ -7645,7 +7645,7 @@
               "item_name": "Highlander's Leather Shoulders",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -446.201660489,
+              "dps_delta": -440.750177775,
               "verified": true
             }
           ],
@@ -7734,7 +7734,7 @@
               "item_name": "Feralheart Armor",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -389.905744684,
+              "dps_delta": -428.203620684,
               "verified": true
             }
           ],
@@ -7761,18 +7761,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22668,
-              "item_name": "Bracers of Subterfuge",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -83.408609585
-            },
-            {
               "item_id": 19587,
               "item_name": "Forest Stalker's Bracers",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -143.971000352
+            },
+            {
+              "item_id": 22668,
+              "item_name": "Bracers of Subterfuge",
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn",
+              "dps_delta": -229.577693878,
+              "verified": true
             },
             {
               "item_id": 18454,
@@ -7784,14 +7785,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 22668,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            {
               "item_id": 19587,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
+            },
+            {
+              "item_id": 22668,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           ]
         },
@@ -7823,7 +7824,7 @@
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -240.618443147,
+              "dps_delta": -237.446550019,
               "verified": true
             }
           ],
@@ -7854,7 +7855,7 @@
               "item_name": "Shifter's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -481.04200195,
+              "dps_delta": -498.63215718,
               "verified": true
             },
             {
@@ -7981,8 +7982,8 @@
           "source_kind": "vendor",
           "score": 32.335759395,
           "verified": true,
-          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (ilvl 75) (id 234031): kept the pick, +269.6 DPS (20857.2 vs 20587.6 set DPS)",
-          "dps_delta": 269.61712133235415,
+          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (ilvl 75) (id 234031): kept the pick, +286.8 DPS (20969.1 vs 20682.3 set DPS)",
+          "dps_delta": 286.83913786459743,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -8070,7 +8071,7 @@
           "item_name": "Defender's Grip Stabilizer",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 20857.23706553188,
+          "sim_dps": 20969.099419042,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8115,7 +8116,7 @@
           "item_name": "Talisman of Arathor",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "sim_dps": 20857.23706553188,
+          "sim_dps": 20969.099419042,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8160,7 +8161,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 20857.23706553188,
+          "sim_dps": 20969.099419042,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8183,7 +8184,7 @@
               "item_name": "The Lobotomizer",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -679.407871041,
+              "dps_delta": -791.270224551,
               "verified": true
             }
           ],
@@ -8220,7 +8221,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 148.74021394862916,
+      "set_dps": 148.59098564554955,
       "no_source_count": 1235,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -8255,13 +8256,13 @@
         "trinket2: Talisman of Arathor",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 3.339758755,
-      "verify_run_seconds": 4.672517996,
+      "weights_run_seconds": 4.355398465,
+      "verify_run_seconds": 4.396678258,
       "coverage": {
         "back": {
-          "eligible": 382,
-          "sourced": 305,
-          "rare_spawn_skipped": 17
+          "eligible": 384,
+          "sourced": 307,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 499,
@@ -8269,9 +8270,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 380,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 382,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 319,
@@ -8284,9 +8285,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 400,
-          "sourced": 321,
-          "rare_spawn_skipped": 7
+          "eligible": 401,
+          "sourced": 322,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 314,
@@ -8299,8 +8300,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 592,
-          "sourced": 394,
+          "eligible": 593,
+          "sourced": 395,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -8309,8 +8310,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 133,
-          "sourced": 85,
+          "eligible": 132,
+          "sourced": 84,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -8333,12 +8334,12 @@
         "waist": {
           "eligible": 362,
           "sourced": 304,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 294,
-          "sourced": 220,
-          "rare_spawn_skipped": 5
+          "eligible": 296,
+          "sourced": 222,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 64.70436519496776,
@@ -8356,12 +8357,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 477.6308967781381,
-        "tmi": 59.54598540700182,
-        "chance_of_death": 0.842,
-        "tps": 320.4403182128371,
-        "effective_health": 21070.964667251927,
-        "dps": 148.74021394862916
+        "dtps": 477.66510950588156,
+        "tmi": 59.304517368673864,
+        "chance_of_death": 0.8396666666666667,
+        "tps": 320.13920778375916,
+        "effective_health": 21142.623878153798,
+        "dps": 148.59098564554955
       }
     },
     {
@@ -8396,36 +8397,36 @@
         {
           "stat": "defense",
           "weight": 0.9852579575211137,
-          "error": 0.2390062151367948,
+          "error": 0.23900621513679476,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
           "weight_per_percent": 0.9852579575211137,
           "scale_factor": 1.940942434136203,
           "dps_per_point": 63.75049069469417,
-          "scale_error": 0.47083842504398177
+          "scale_error": 0.4708384250439817
         },
         {
           "stat": "dodge",
           "weight": 0.618610341741152,
-          "error": 0.04828274872423464,
+          "error": 0.04828274872423463,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 12,
           "weight_per_percent": 7.423324100893824,
           "scale_factor": 1.2186524892443407,
           "dps_per_point": 40.02678946540331,
-          "scale_error": 0.09511624353827598
+          "scale_error": 0.09511624353827597
         },
         {
           "stat": "strength",
-          "weight": 0.1106887455298876,
-          "error": 0.00019866677755675305,
+          "weight": 0.11068874552988758,
+          "error": 0.00019866677755675302,
           "insignificant": false,
-          "weight_per_percent": 0.1106887455298876,
-          "scale_factor": 0.2180550601395765,
-          "dps_per_point": 7.162045013738703,
-          "scale_error": 0.0003913703775437272
+          "weight_per_percent": 0.11068874552988758,
+          "scale_factor": 0.21805506013957648,
+          "dps_per_point": 7.162045013738702,
+          "scale_error": 0.00039137037754372717
         },
         {
           "stat": "agility",
@@ -8439,47 +8440,47 @@
         },
         {
           "stat": "attack_power",
-          "weight": 0.055344372764943896,
-          "error": 0.0000993333887783896,
+          "weight": 0.05534437276494389,
+          "error": 0.00009933338877838959,
           "insignificant": false,
-          "weight_per_percent": 0.055344372764943896,
-          "scale_factor": 0.10902753006978845,
-          "dps_per_point": 3.5810225068693575,
-          "scale_error": 0.00019568518877188936
+          "weight_per_percent": 0.05534437276494389,
+          "scale_factor": 0.10902753006978844,
+          "dps_per_point": 3.581022506869357,
+          "scale_error": 0.00019568518877188934
         },
         {
           "stat": "hit",
-          "weight": 0.15979775951190814,
+          "weight": 0.15979775951190808,
           "error": 0.038617215177216634,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 1.5979775951190813,
-          "scale_factor": 0.3147990330338519,
-          "dps_per_point": 10.339612588796138,
+          "weight_per_percent": 1.5979775951190809,
+          "scale_factor": 0.3147990330338518,
+          "dps_per_point": 10.339612588796134,
           "scale_error": 0.07607529688388448
         },
         {
           "stat": "crit",
-          "weight": 0.07461611334834181,
+          "weight": 0.07461611334834177,
           "error": 0.01616940801147074,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 1.0446255868767853,
-          "scale_factor": 0.14699255110051707,
-          "dps_per_point": 4.827988247520217,
+          "weight_per_percent": 1.0446255868767849,
+          "scale_factor": 0.14699255110051698,
+          "dps_per_point": 4.8279882475202145,
           "scale_error": 0.0318534754322478
         },
         {
           "stat": "expertise",
           "weight": 5.806152739489604,
-          "error": 0.4216091274323374,
+          "error": 0.42160912743233736,
           "insignificant": false,
           "weight_per_percent": 5.806152739489604,
           "scale_factor": 11.438028127684557,
           "dps_per_point": 375.68342723369784,
-          "scale_error": 0.830563244687141
+          "scale_error": 0.8305632446871409
         }
       ],
       "slots": [
@@ -8599,7 +8600,7 @@
               "item_name": "Defiler's Leather Shoulders",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -975.824330648,
+              "dps_delta": -1183.248019846,
               "verified": true
             }
           ],
@@ -8626,14 +8627,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 279269,
-              "item_name": "Fel Cape",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -282.889855731,
-              "verified": true
-            },
-            {
               "item_id": 18461,
               "item_name": "Sergeant's Cloak",
               "source_kind": "vendor",
@@ -8646,18 +8639,26 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -497.168607909
+            },
+            {
+              "item_id": 279269,
+              "item_name": "Fel Cape",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -563.874622935,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 279269,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            {
               "item_id": 18461,
               "source_kind": "vendor",
               "source": "PvP rank 7 · Sergeant · Horde"
+            },
+            {
+              "item_id": 279270,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             }
           ]
         },
@@ -8689,7 +8690,7 @@
               "item_name": "Feralheart Armor",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -508.970618599,
+              "dps_delta": -876.099582933,
               "verified": true
             }
           ],
@@ -8716,18 +8717,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22668,
-              "item_name": "Bracers of Subterfuge",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -83.408609585
-            },
-            {
               "item_id": 19587,
               "item_name": "Forest Stalker's Bracers",
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -143.971000352
+            },
+            {
+              "item_id": 22668,
+              "item_name": "Bracers of Subterfuge",
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn",
+              "dps_delta": -370.586307786,
+              "verified": true
             },
             {
               "item_id": 18434,
@@ -8739,14 +8741,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 22668,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            {
               "item_id": 19587,
               "source_kind": "rep",
               "source": "Warsong Outriders"
+            },
+            {
+              "item_id": 22668,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             }
           ]
         },
@@ -8778,7 +8780,8 @@
               "item_name": "Raider Gloves",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": 0
+              "dps_delta": -318.046038462,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -8804,14 +8807,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272396,
-              "item_name": "Shifter's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -309.406996889,
-              "verified": true
-            },
-            {
               "item_id": 275614,
               "item_name": "Hivethrasher's Girdle",
               "source_kind": "crafted",
@@ -8824,18 +8819,26 @@
               "source_kind": "quest",
               "source": "A Collection of Heads",
               "dps_delta": -505.575954136
+            },
+            {
+              "item_id": 272396,
+              "item_name": "Shifter's Belt",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -711.127708506,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 272396,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix"
-            },
-            {
               "item_id": 275614,
               "source_kind": "crafted",
               "source": "Leatherworking"
+            },
+            {
+              "item_id": 20216,
+              "source_kind": "quest",
+              "source": "A Collection of Heads"
             }
           ]
         },
@@ -8867,7 +8870,8 @@
               "item_name": "Dire Warbear Woolies",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -547.765129857
+              "dps_delta": -367.987236824,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -8911,7 +8915,7 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -547.585630634,
+              "dps_delta": -725.810515043,
               "verified": true
             }
           ],
@@ -8936,6 +8940,8 @@
           "source_kind": "vendor",
           "score": 32.335759395,
           "verified": true,
+          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (ilvl 75) (id 234031): kept the pick, +342.6 DPS (22279.3 vs 21936.7 set DPS)",
+          "dps_delta": 342.6093003381502,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -8987,7 +8993,8 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -205.336598692
+              "dps_delta": -361.139207438,
+              "verified": true
             },
             {
               "item_id": 272064,
@@ -9023,7 +9030,7 @@
           "item_name": "Frostwolf Insignia Rank 6",
           "source": "The Eye of Command",
           "source_kind": "quest",
-          "sim_dps": 22302.227614292053,
+          "sim_dps": 22279.338136080416,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -9068,7 +9075,7 @@
           "item_name": "Defiler's Talisman",
           "source": "The Defilers",
           "source_kind": "rep",
-          "sim_dps": 22302.227614292053,
+          "sim_dps": 22279.338136080416,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -9109,12 +9116,13 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 19101,
-          "item_name": "Whiteout Staff",
+          "item_id": 19323,
+          "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 22302.227614292053,
+          "sim_dps": 22279.338136080416,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 234545,
@@ -9135,7 +9143,7 @@
               "item_name": "Glacial Blade",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -1073.584752842,
+              "dps_delta": -1050.695274631,
               "verified": true
             }
           ],
@@ -9172,7 +9180,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 146.19750948672925,
+      "set_dps": 151.5282865853576,
       "no_source_count": 1229,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -9205,15 +9213,15 @@
         "finger2: Band of Resolution",
         "trinket1: Frostwolf Insignia Rank 6",
         "trinket2: Defiler's Talisman",
-        "main_hand: Whiteout Staff"
+        "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 3.339758755,
-      "verify_run_seconds": 4.420905951,
+      "weights_run_seconds": 4.355398465,
+      "verify_run_seconds": 4.217909448,
       "coverage": {
         "back": {
-          "eligible": 387,
-          "sourced": 311,
-          "rare_spawn_skipped": 17
+          "eligible": 389,
+          "sourced": 313,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 497,
@@ -9221,9 +9229,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 385,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 387,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 320,
@@ -9236,9 +9244,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 399,
-          "sourced": 317,
-          "rare_spawn_skipped": 7
+          "eligible": 400,
+          "sourced": 318,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 315,
@@ -9251,8 +9259,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 597,
-          "sourced": 409,
+          "eligible": 598,
+          "sourced": 410,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -9261,8 +9269,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 131,
-          "sourced": 82,
+          "eligible": 130,
+          "sourced": 81,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -9285,12 +9293,12 @@
         "waist": {
           "eligible": 365,
           "sourced": 305,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 297,
-          "sourced": 225,
-          "rare_spawn_skipped": 5
+          "eligible": 299,
+          "sourced": 227,
+          "rare_spawn_skipped": 7
         }
       },
       "reference_dps_per_point": 64.70436519496776,
@@ -9308,12 +9316,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 490.24545964936453,
-        "tmi": 56.32733989511059,
-        "chance_of_death": 0.864,
-        "tps": 315.4624712129642,
-        "effective_health": 22041.784324180444,
-        "dps": 146.19750948672925
+        "dtps": 490.3697067409407,
+        "tmi": 57.18154866278497,
+        "chance_of_death": 0.8623333333333334,
+        "tps": 326.5561813647033,
+        "effective_health": 21736.85393076521,
+        "dps": 151.5282865853576
       }
     },
     {
@@ -9328,34 +9336,34 @@
         {
           "stat": "stamina",
           "weight": 1,
-          "error": 0.015127876485324926,
+          "error": 0.015127876485324921,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 1.3131061128674675,
-          "dps_per_point": 86.74764348519606,
+          "scale_factor": 1.313106112867468,
+          "dps_per_point": 86.74764348519605,
           "scale_error": 0.01986450708758418
         },
         {
           "stat": "armor",
           "weight": 0.20670118180508945,
-          "error": 0.018470379700455862,
+          "error": 0.01847037970045586,
           "insignificant": false,
           "weight_per_percent": 0.20670118180508945,
-          "scale_factor": 0.2714205853651927,
-          "dps_per_point": 17.930840427196596,
-          "scale_error": 0.024253568491651775
+          "scale_factor": 0.2714205853651928,
+          "dps_per_point": 17.930840427196593,
+          "scale_error": 0.024253568491651778
         },
         {
           "stat": "defense",
-          "weight": 1.5324098044139742,
-          "error": 0.3101529617509418,
+          "weight": 1.5324098044139738,
+          "error": 0.31015296175094176,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 1.5324098044139742,
+          "weight_per_percent": 1.5324098044139738,
           "scale_factor": 2.0122166815940297,
-          "dps_per_point": 132.93293938652246,
-          "scale_error": 0.4072637499991115
+          "dps_per_point": 132.9329393865224,
+          "scale_error": 0.4072637499991116
         },
         {
           "stat": "dodge",
@@ -9365,73 +9373,73 @@
           "unit": "rating",
           "rating_factor": 12,
           "weight_per_percent": 10.292784223989923,
-          "scale_factor": 1.12629315691225,
-          "dps_per_point": 74.40623136106069,
-          "scale_error": 0.07765463368874644
+          "scale_factor": 1.1262931569122505,
+          "dps_per_point": 74.40623136106068,
+          "scale_error": 0.07765463368874645
         },
         {
           "stat": "strength",
-          "weight": 0.12022064735188616,
-          "error": 0.0002170061371003337,
+          "weight": 0.12022064735188615,
+          "error": 0.0002170061371003336,
           "insignificant": false,
-          "weight_per_percent": 0.12022064735188616,
-          "scale_factor": 0.15786246693064585,
-          "dps_per_point": 10.428857856040901,
-          "scale_error": 0.0002849520851562039
+          "weight_per_percent": 0.12022064735188615,
+          "scale_factor": 0.15786246693064587,
+          "dps_per_point": 10.428857856040898,
+          "scale_error": 0.00028495208515620386
         },
         {
           "stat": "agility",
-          "weight": 0.761553076480827,
+          "weight": 0.7615530764808268,
           "error": 0.038116803578288116,
           "insignificant": false,
-          "weight_per_percent": 0.761553076480827,
+          "weight_per_percent": 0.7615530764808268,
           "scale_factor": 1,
-          "dps_per_point": 66.06293477361304,
-          "scale_error": 0.050051407781618686
+          "dps_per_point": 66.06293477361301,
+          "scale_error": 0.0500514077816187
         },
         {
           "stat": "attack_power",
-          "weight": 0.054645748796311976,
-          "error": 0.00009863915322744224,
+          "weight": 0.05464574879631196,
+          "error": 0.00009863915322744221,
           "insignificant": false,
-          "weight_per_percent": 0.054645748796311976,
-          "scale_factor": 0.0717556667866573,
-          "dps_per_point": 4.740389934564053,
+          "weight_per_percent": 0.05464574879631196,
+          "scale_factor": 0.07175566678665732,
+          "dps_per_point": 4.740389934564051,
           "scale_error": 0.0001295236750710252
         },
         {
           "stat": "hit",
-          "weight": 0.262327981880299,
-          "error": 0.04399583123116221,
+          "weight": 0.26232798188029893,
+          "error": 0.0439958312311622,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 2.62327981880299,
-          "scale_factor": 0.34446447658320684,
-          "dps_per_point": 22.75633424834315,
-          "scale_error": 0.05777119493032453
+          "weight_per_percent": 2.6232798188029895,
+          "scale_factor": 0.3444644765832069,
+          "dps_per_point": 22.75633424834314,
+          "scale_error": 0.05777119493032454
         },
         {
           "stat": "crit",
-          "weight": 0.1253754504151508,
-          "error": 0.01928753957859638,
+          "weight": 0.12537545041515077,
+          "error": 0.019287539578596375,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 1.7552563058121113,
-          "scale_factor": 0.16463127034364658,
-          "dps_per_point": 10.876024874409378,
-          "scale_error": 0.025326586122828124
+          "weight_per_percent": 1.755256305812111,
+          "scale_factor": 0.1646312703436466,
+          "dps_per_point": 10.876024874409374,
+          "scale_error": 0.025326586122828128
         },
         {
           "stat": "expertise",
-          "weight": 7.918651943358769,
-          "error": 0.4817129340179361,
+          "weight": 7.9186519433587685,
+          "error": 0.48171293401793613,
           "insignificant": false,
-          "weight_per_percent": 7.918651943358769,
-          "scale_factor": 10.398030272494251,
-          "dps_per_point": 686.9243956658415,
-          "scale_error": 0.632540198306275
+          "weight_per_percent": 7.9186519433587685,
+          "scale_factor": 10.398030272494253,
+          "dps_per_point": 686.9243956658413,
+          "scale_error": 0.6325401983062752
         }
       ],
       "slots": [
@@ -9445,13 +9453,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 226801,
-              "item_name": "Feralheart Faceguard",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": 0
-            },
-            {
               "item_id": 231689,
               "item_name": "Field Marshal's Dragonhide Headguard",
               "source_kind": "vendor",
@@ -9464,16 +9465,24 @@
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
               "dps_delta": 0
+            },
+            {
+              "item_id": 226801,
+              "item_name": "Feralheart Faceguard",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -586.480225662,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 226801,
+              "item_id": 231689,
               "source_kind": "vendor",
-              "source": "Mokvar"
+              "source": "PvP rank 17 · Field Marshal · Alliance"
             },
             {
-              "item_id": 231689,
+              "item_id": 231701,
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance"
             }
@@ -9533,19 +9542,19 @@
               "dps_delta": -259.011873133
             },
             {
+              "item_id": 272105,
+              "item_name": "Darkspear Pauldrons",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -1183.830989723,
+              "verified": true
+            },
+            {
               "item_id": 231699,
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
               "dps_delta": -1197.771100341
-            },
-            {
-              "item_id": 272105,
-              "item_name": "Darkspear Pauldrons",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1336.324588119,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -9555,9 +9564,9 @@
               "source": "PvP rank 17 · Field Marshal · Alliance"
             },
             {
-              "item_id": 231699,
-              "source_kind": "pvp",
-              "source": "PvP rank 17 · Field Marshal · Alliance"
+              "item_id": 272105,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             }
           ]
         },
@@ -9571,19 +9580,19 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 279269,
-              "item_name": "Fel Cape",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -570.824982888,
-              "verified": true
-            },
-            {
               "item_id": 20073,
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
               "dps_delta": -1228.352124524
+            },
+            {
+              "item_id": 279269,
+              "item_name": "Fel Cape",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -1242.277036854,
+              "verified": true
             },
             {
               "item_id": 279270,
@@ -9595,14 +9604,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 279269,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            {
               "item_id": 20073,
               "source_kind": "rep",
               "source": "The League of Arathor"
+            },
+            {
+              "item_id": 279269,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             }
           ]
         },
@@ -9634,7 +9643,7 @@
               "item_name": "Feralheart Armor",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -596.232885369,
+              "dps_delta": -1399.847512767,
               "verified": true
             }
           ],
@@ -9746,7 +9755,8 @@
               "item_name": "Shifter's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -479.671804074
+              "dps_delta": -481.079190943,
+              "verified": true
             },
             {
               "item_id": 20216,
@@ -9841,7 +9851,7 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -631.551798322,
+              "dps_delta": -928.667589341,
               "verified": true
             },
             {
@@ -9956,43 +9966,41 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 272440,
-          "item_name": "Defender's Grip Stabilizer",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "sim_dps": 41472.08467163488,
+          "item_id": 17904,
+          "item_name": "Stormpike Insignia Rank 6",
+          "source": "The Eye of Command",
+          "source_kind": "quest",
+          "sim_dps": 39819.90248429452,
           "verified": true,
-          "swap_note": "confirmed by the sim against Stormpike Insignia Rank 6 (id 17904): kept the pick, +1427.9 DPS (41472.1 vs 40044.2 set DPS)",
-          "dps_delta": 1427.9040930969422,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20071,
-              "item_name": "Talisman of Arathor",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -687.156490169
+              "item_id": 272440,
+              "item_name": "Defender's Grip Stabilizer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -57.621340676
             },
             {
               "item_id": 4130,
               "item_name": "Smotts' Compass",
               "source_kind": "quest",
               "source": "Facing Negolash",
-              "dps_delta": -835.253435658
+              "dps_delta": -892.874776334
             },
             {
               "item_id": 19024,
               "item_name": "Arena Grand Master",
               "source_kind": "quest",
               "source": "Arena Grandmaster",
-              "dps_delta": -835.253435658
+              "dps_delta": -892.874776334
             }
           ],
           "runners_up": [
             {
-              "item_id": 20071,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 272440,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             {
               "item_id": 4130,
@@ -10003,42 +10011,41 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 17904,
-          "item_name": "Stormpike Insignia Rank 6",
-          "source": "The Eye of Command",
-          "source_kind": "quest",
-          "sim_dps": 41472.08467163488,
+          "item_id": 20071,
+          "item_name": "Talisman of Arathor",
+          "source": "The League of Arathor",
+          "source_kind": "rep",
+          "sim_dps": 39819.90248429452,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20071,
-              "item_name": "Talisman of Arathor",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -494.029606426,
-              "verified": true
+              "item_id": 272440,
+              "item_name": "Defender's Grip Stabilizer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
             },
             {
               "item_id": 4130,
               "item_name": "Smotts' Compass",
               "source_kind": "quest",
               "source": "Facing Negolash",
-              "dps_delta": -892.874776334
+              "dps_delta": -148.096945489
             },
             {
               "item_id": 19024,
               "item_name": "Arena Grand Master",
               "source_kind": "quest",
               "source": "Arena Grandmaster",
-              "dps_delta": -892.874776334
+              "dps_delta": -148.096945489
             }
           ],
           "runners_up": [
             {
-              "item_id": 20071,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 272440,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             {
               "item_id": 4130,
@@ -10049,20 +10056,14 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 21522,
-          "item_name": "Shadowsong's Sorrow",
-          "source": "Treasure of the Timeless One",
-          "source_kind": "quest",
-          "sim_dps": 41472.08467163488,
+          "item_id": 19323,
+          "item_name": "The Unstoppable Force",
+          "source": "Stormpike Guard",
+          "source_kind": "rep",
+          "sim_dps": 39819.90248429452,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 19100,
-              "item_name": "Electrified Dagger",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": 0
-            },
             {
               "item_id": 234567,
               "item_name": "Grand Marshal's Battle Hammer",
@@ -10076,16 +10077,24 @@
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
               "dps_delta": 0
+            },
+            {
+              "item_id": 2243,
+              "item_name": "Hand of Edward the Odd",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1178.947535591,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 19100,
-              "source_kind": "rep",
-              "source": "Stormpike Guard"
+              "item_id": 234567,
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · Grand Marshal · Alliance"
             },
             {
-              "item_id": 234567,
+              "item_id": 234571,
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance"
             }
@@ -10093,47 +10102,8 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 272087,
-          "item_name": "Tome of the Darkspear Prophecy",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 17,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 234589,
-              "item_name": "Grand Marshal's Tome of Power",
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 234590,
-              "item_name": "Grand Marshal's Tome of Restoration",
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19312,
-              "item_name": "Lei of the Lifegiver",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -433.738217426
-            }
-          ],
-          "runners_up": [
-            {
-              "item_id": 234589,
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · Grand Marshal · Alliance"
-            },
-            {
-              "item_id": 234590,
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · Grand Marshal · Alliance"
-            }
-          ]
+          "verified": false,
+          "empty_reason": "two_hand_equipped"
         },
         {
           "slot": "ranged",
@@ -10150,7 +10120,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 373.9093096166856,
+      "set_dps": 333.3934924601261,
       "no_source_count": 1235,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -10181,18 +10151,17 @@
         "feet: Fine Dawn Treaders",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Band of Resolution",
-        "trinket1: Defender's Grip Stabilizer",
-        "trinket2: Stormpike Insignia Rank 6",
-        "main_hand: Shadowsong's Sorrow",
-        "off_hand: Tome of the Darkspear Prophecy"
+        "trinket1: Stormpike Insignia Rank 6",
+        "trinket2: Talisman of Arathor",
+        "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 3.449635035,
-      "verify_run_seconds": 5.014752807,
+      "weights_run_seconds": 4.525025202,
+      "verify_run_seconds": 4.577895786,
       "coverage": {
         "back": {
-          "eligible": 382,
-          "sourced": 305,
-          "rare_spawn_skipped": 17
+          "eligible": 384,
+          "sourced": 307,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 499,
@@ -10200,9 +10169,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 380,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 382,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 319,
@@ -10215,9 +10184,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 400,
-          "sourced": 321,
-          "rare_spawn_skipped": 7
+          "eligible": 401,
+          "sourced": 322,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 314,
@@ -10230,8 +10199,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 592,
-          "sourced": 394,
+          "eligible": 593,
+          "sourced": 395,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -10240,8 +10209,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 133,
-          "sourced": 85,
+          "eligible": 132,
+          "sourced": 84,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -10264,15 +10233,15 @@
         "waist": {
           "eligible": 362,
           "sourced": 304,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 294,
-          "sourced": 220,
-          "rare_spawn_skipped": 5
+          "eligible": 296,
+          "sourced": 222,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 86.74764348519606,
+      "reference_dps_per_point": 86.74764348519605,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -10287,12 +10256,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 461.64655480652505,
-        "tmi": 38.95248717977151,
-        "chance_of_death": 0.29,
-        "tps": 771.7148005706948,
-        "effective_health": 30298.680027758543,
-        "dps": 373.9093096166856
+        "dtps": 478.0949830453768,
+        "tmi": 39.50224252120262,
+        "chance_of_death": 0.43733333333333335,
+        "tps": 691.4286265531498,
+        "effective_health": 29738.758519142528,
+        "dps": 333.3934924601261
       }
     },
     {
@@ -10307,34 +10276,34 @@
         {
           "stat": "stamina",
           "weight": 1,
-          "error": 0.015127876485324926,
+          "error": 0.015127876485324921,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 1.3131061128674675,
-          "dps_per_point": 86.74764348519606,
+          "scale_factor": 1.313106112867468,
+          "dps_per_point": 86.74764348519605,
           "scale_error": 0.01986450708758418
         },
         {
           "stat": "armor",
           "weight": 0.20670118180508945,
-          "error": 0.018470379700455862,
+          "error": 0.01847037970045586,
           "insignificant": false,
           "weight_per_percent": 0.20670118180508945,
-          "scale_factor": 0.2714205853651927,
-          "dps_per_point": 17.930840427196596,
-          "scale_error": 0.024253568491651775
+          "scale_factor": 0.2714205853651928,
+          "dps_per_point": 17.930840427196593,
+          "scale_error": 0.024253568491651778
         },
         {
           "stat": "defense",
-          "weight": 1.5324098044139742,
-          "error": 0.3101529617509418,
+          "weight": 1.5324098044139738,
+          "error": 0.31015296175094176,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 1,
-          "weight_per_percent": 1.5324098044139742,
+          "weight_per_percent": 1.5324098044139738,
           "scale_factor": 2.0122166815940297,
-          "dps_per_point": 132.93293938652246,
-          "scale_error": 0.4072637499991115
+          "dps_per_point": 132.9329393865224,
+          "scale_error": 0.4072637499991116
         },
         {
           "stat": "dodge",
@@ -10344,73 +10313,73 @@
           "unit": "rating",
           "rating_factor": 12,
           "weight_per_percent": 10.292784223989923,
-          "scale_factor": 1.12629315691225,
-          "dps_per_point": 74.40623136106069,
-          "scale_error": 0.07765463368874644
+          "scale_factor": 1.1262931569122505,
+          "dps_per_point": 74.40623136106068,
+          "scale_error": 0.07765463368874645
         },
         {
           "stat": "strength",
-          "weight": 0.12022064735188616,
-          "error": 0.0002170061371003337,
+          "weight": 0.12022064735188615,
+          "error": 0.0002170061371003336,
           "insignificant": false,
-          "weight_per_percent": 0.12022064735188616,
-          "scale_factor": 0.15786246693064585,
-          "dps_per_point": 10.428857856040901,
-          "scale_error": 0.0002849520851562039
+          "weight_per_percent": 0.12022064735188615,
+          "scale_factor": 0.15786246693064587,
+          "dps_per_point": 10.428857856040898,
+          "scale_error": 0.00028495208515620386
         },
         {
           "stat": "agility",
-          "weight": 0.761553076480827,
+          "weight": 0.7615530764808268,
           "error": 0.038116803578288116,
           "insignificant": false,
-          "weight_per_percent": 0.761553076480827,
+          "weight_per_percent": 0.7615530764808268,
           "scale_factor": 1,
-          "dps_per_point": 66.06293477361304,
-          "scale_error": 0.050051407781618686
+          "dps_per_point": 66.06293477361301,
+          "scale_error": 0.0500514077816187
         },
         {
           "stat": "attack_power",
-          "weight": 0.054645748796311976,
-          "error": 0.00009863915322744224,
+          "weight": 0.05464574879631196,
+          "error": 0.00009863915322744221,
           "insignificant": false,
-          "weight_per_percent": 0.054645748796311976,
-          "scale_factor": 0.0717556667866573,
-          "dps_per_point": 4.740389934564053,
+          "weight_per_percent": 0.05464574879631196,
+          "scale_factor": 0.07175566678665732,
+          "dps_per_point": 4.740389934564051,
           "scale_error": 0.0001295236750710252
         },
         {
           "stat": "hit",
-          "weight": 0.262327981880299,
-          "error": 0.04399583123116221,
+          "weight": 0.26232798188029893,
+          "error": 0.0439958312311622,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 2.62327981880299,
-          "scale_factor": 0.34446447658320684,
-          "dps_per_point": 22.75633424834315,
-          "scale_error": 0.05777119493032453
+          "weight_per_percent": 2.6232798188029895,
+          "scale_factor": 0.3444644765832069,
+          "dps_per_point": 22.75633424834314,
+          "scale_error": 0.05777119493032454
         },
         {
           "stat": "crit",
-          "weight": 0.1253754504151508,
-          "error": 0.01928753957859638,
+          "weight": 0.12537545041515077,
+          "error": 0.019287539578596375,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 1.7552563058121113,
-          "scale_factor": 0.16463127034364658,
-          "dps_per_point": 10.876024874409378,
-          "scale_error": 0.025326586122828124
+          "weight_per_percent": 1.755256305812111,
+          "scale_factor": 0.1646312703436466,
+          "dps_per_point": 10.876024874409374,
+          "scale_error": 0.025326586122828128
         },
         {
           "stat": "expertise",
-          "weight": 7.918651943358769,
-          "error": 0.4817129340179361,
+          "weight": 7.9186519433587685,
+          "error": 0.48171293401793613,
           "insignificant": false,
-          "weight_per_percent": 7.918651943358769,
-          "scale_factor": 10.398030272494251,
-          "dps_per_point": 686.9243956658415,
-          "scale_error": 0.632540198306275
+          "weight_per_percent": 7.9186519433587685,
+          "scale_factor": 10.398030272494253,
+          "dps_per_point": 686.9243956658413,
+          "scale_error": 0.6325401983062752
         }
       ],
       "slots": [
@@ -10424,13 +10393,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 226801,
-              "item_name": "Feralheart Faceguard",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": 0
-            },
-            {
               "item_id": 231675,
               "item_name": "Warlord's Dragonhide Headdress",
               "source_kind": "vendor",
@@ -10443,16 +10405,24 @@
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
               "dps_delta": 0
+            },
+            {
+              "item_id": 226801,
+              "item_name": "Feralheart Faceguard",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -577.205678234,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 226801,
+              "item_id": 231675,
               "source_kind": "vendor",
-              "source": "Mokvar"
+              "source": "PvP rank 17 · Warlord · Horde"
             },
             {
-              "item_id": 231675,
+              "item_id": 231687,
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde"
             }
@@ -10468,19 +10438,18 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 13091,
+              "item_name": "Medallion of Grand Marshal Morris",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -290.397875892
+            },
+            {
               "item_id": 19534,
               "item_name": "Scout's Medallion",
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -368.540317703
-            },
-            {
-              "item_id": 13091,
-              "item_name": "Medallion of Grand Marshal Morris",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -649.419236467,
-              "verified": true
             },
             {
               "item_id": 19159,
@@ -10492,14 +10461,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 19534,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
-            },
-            {
               "item_id": 13091,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            {
+              "item_id": 19534,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             }
           ]
         },
@@ -10520,19 +10489,19 @@
               "dps_delta": -259.011873133
             },
             {
-              "item_id": 272105,
-              "item_name": "Darkspear Pauldrons",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1163.484659927,
-              "verified": true
-            },
-            {
               "item_id": 231681,
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
               "dps_delta": -1197.771100341
+            },
+            {
+              "item_id": 272105,
+              "item_name": "Darkspear Pauldrons",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -1290.527581031,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -10542,9 +10511,9 @@
               "source": "PvP rank 17 · Warlord · Horde"
             },
             {
-              "item_id": 272105,
+              "item_id": 231681,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "PvP rank 17 · Warlord · Horde"
             }
           ]
         },
@@ -10562,7 +10531,7 @@
               "item_name": "Fel Cape",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1126.362683021,
+              "dps_delta": -693.438054549,
               "verified": true
             },
             {
@@ -10621,7 +10590,7 @@
               "item_name": "Feralheart Armor",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1092.95304889,
+              "dps_delta": -1005.380666039,
               "verified": true
             }
           ],
@@ -10692,19 +10661,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 272099,
+              "item_name": "Raider Gloves",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -233.184050141
+            },
+            {
               "item_id": 231677,
               "item_name": "General's Dragonhide Gloves",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": -651.077668913
-            },
-            {
-              "item_id": 272099,
-              "item_name": "Raider Gloves",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -718.178673366,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -10714,9 +10682,9 @@
               "source": "PvP rank 16 · General · Horde"
             },
             {
-              "item_id": 231677,
-              "source_kind": "pvp",
-              "source": "PvP rank 16 · General · Horde"
+              "item_id": 272099,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             }
           ]
         },
@@ -10730,6 +10698,14 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 272396,
+              "item_name": "Shifter's Belt",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -544.782358188,
+              "verified": true
+            },
+            {
               "item_id": 20216,
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
@@ -10742,26 +10718,18 @@
               "source_kind": "vendor",
               "source": "Meilosh",
               "dps_delta": -864.945457152
-            },
-            {
-              "item_id": 272396,
-              "item_name": "Shifter's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -979.300677217,
-              "verified": true
             }
           ],
           "runners_up": [
             {
+              "item_id": 272396,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            {
               "item_id": 20216,
               "source_kind": "quest",
               "source": "A Collection of Heads"
-            },
-            {
-              "item_id": 227805,
-              "source_kind": "vendor",
-              "source": "Meilosh"
             }
           ]
         },
@@ -10786,7 +10754,7 @@
               "item_name": "Dire Warbear Woolies",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -652.993205829,
+              "dps_delta": -786.758897875,
               "verified": true
             },
             {
@@ -10831,7 +10799,7 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -882.776633881,
+              "dps_delta": -888.503357111,
               "verified": true
             },
             {
@@ -10863,8 +10831,6 @@
           "source_kind": "vendor",
           "score": 36.289737046,
           "verified": true,
-          "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (ilvl 80) (id 234202): kept the pick, +767.3 DPS (43667.2 vs 42899.9 set DPS)",
-          "dps_delta": 767.2689293424846,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -10948,59 +10914,59 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 272440,
-          "item_name": "Defender's Grip Stabilizer",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "sim_dps": 43667.191701018404,
+          "item_id": 17909,
+          "item_name": "Frostwolf Insignia Rank 6",
+          "source": "The Eye of Command",
+          "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Frostwolf Insignia Rank 6 (id 17909): kept the pick, +1753.9 DPS (43667.2 vs 41913.3 set DPS)",
-          "dps_delta": 1753.9028788274954,
           "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 20072,
-              "item_name": "Defiler's Talisman",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -687.156490169
-            },
             {
               "item_id": 4130,
               "item_name": "Smotts' Compass",
               "source_kind": "quest",
               "source": "Facing Negolash",
-              "dps_delta": -835.253435658
+              "dps_delta": -892.874776334
             },
             {
               "item_id": 19024,
               "item_name": "Arena Grand Master",
               "source_kind": "quest",
               "source": "Arena Grandmaster",
-              "dps_delta": -835.253435658
+              "dps_delta": -892.874776334
+            },
+            {
+              "item_id": 20072,
+              "item_name": "Defiler's Talisman",
+              "source_kind": "rep",
+              "source": "The Defilers",
+              "dps_delta": -1092.910734026,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 20072,
-              "source_kind": "rep",
-              "source": "The Defilers"
-            },
-            {
               "item_id": 4130,
               "source_kind": "quest",
               "source": "Facing Negolash"
+            },
+            {
+              "item_id": 19024,
+              "source_kind": "quest",
+              "source": "Arena Grandmaster"
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 17909,
-          "item_name": "Frostwolf Insignia Rank 6",
-          "source": "The Eye of Command",
-          "source_kind": "quest",
-          "sim_dps": 43667.191701018404,
+          "item_id": 272440,
+          "item_name": "Defender's Grip Stabilizer",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 42330.25564883091,
           "verified": true,
+          "swap_note": "beat the scored pick Defiler's Talisman (id 20072) in the sim: +748.7 DPS (42330.3 vs 41581.5 set DPS)",
+          "dps_delta": 748.7152485282786,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -11008,7 +10974,7 @@
               "item_name": "Defiler's Talisman",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -784.431315424,
+              "dps_delta": -748.715248528,
               "verified": true
             },
             {
@@ -11016,14 +10982,14 @@
               "item_name": "Smotts' Compass",
               "source_kind": "quest",
               "source": "Facing Negolash",
-              "dps_delta": -892.874776334
+              "dps_delta": -835.253435658
             },
             {
               "item_id": 19024,
               "item_name": "Arena Grand Master",
               "source_kind": "quest",
               "source": "Arena Grandmaster",
-              "dps_delta": -892.874776334
+              "dps_delta": -835.253435658
             }
           ],
           "runners_up": [
@@ -11041,20 +11007,13 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 21522,
-          "item_name": "Shadowsong's Sorrow",
-          "source": "Treasure of the Timeless One",
-          "source_kind": "quest",
-          "sim_dps": 43667.191701018404,
+          "item_id": 19323,
+          "item_name": "The Unstoppable Force",
+          "source": "Frostwolf Clan",
+          "source_kind": "rep",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 19099,
-              "item_name": "Glacial Blade",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": 0
-            },
             {
               "item_id": 234545,
               "item_name": "High Warlord's Pulverizer",
@@ -11068,16 +11027,24 @@
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
+            },
+            {
+              "item_id": 12794,
+              "item_name": "Masterwork Stormhammer",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -1079.480401371,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 19099,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan"
+              "item_id": 234545,
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · High Warlord · Horde"
             },
             {
-              "item_id": 234545,
+              "item_id": 234549,
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde"
             }
@@ -11085,47 +11052,8 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 272087,
-          "item_name": "Tome of the Darkspear Prophecy",
-          "source": "Creeg Bothunk",
-          "source_kind": "vendor",
-          "score": 17,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 234563,
-              "item_name": "High Warlord's Tome of Destruction",
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 234564,
-              "item_name": "High Warlord's Tome of Mending",
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · High Warlord · Horde",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19312,
-              "item_name": "Lei of the Lifegiver",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -433.738217426
-            }
-          ],
-          "runners_up": [
-            {
-              "item_id": 234563,
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · High Warlord · Horde"
-            },
-            {
-              "item_id": 234564,
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · High Warlord · Horde"
-            }
-          ]
+          "verified": false,
+          "empty_reason": "two_hand_equipped"
         },
         {
           "slot": "ranged",
@@ -11142,7 +11070,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 374.65687537627974,
+      "set_dps": 336.82349375925435,
       "no_source_count": 1229,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -11173,18 +11101,17 @@
         "feet: Fine Dawn Treaders",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Band of Resolution",
-        "trinket1: Defender's Grip Stabilizer",
-        "trinket2: Frostwolf Insignia Rank 6",
-        "main_hand: Shadowsong's Sorrow",
-        "off_hand: Tome of the Darkspear Prophecy"
+        "trinket1: Frostwolf Insignia Rank 6",
+        "trinket2: Defender's Grip Stabilizer",
+        "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 3.449635035,
-      "verify_run_seconds": 4.746097067,
+      "weights_run_seconds": 4.525025202,
+      "verify_run_seconds": 4.352658973,
       "coverage": {
         "back": {
-          "eligible": 387,
-          "sourced": 311,
-          "rare_spawn_skipped": 17
+          "eligible": 389,
+          "sourced": 313,
+          "rare_spawn_skipped": 19
         },
         "chest": {
           "eligible": 497,
@@ -11192,9 +11119,9 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 385,
-          "sourced": 314,
-          "rare_spawn_skipped": 6
+          "eligible": 387,
+          "sourced": 316,
+          "rare_spawn_skipped": 7
         },
         "finger1": {
           "eligible": 320,
@@ -11207,9 +11134,9 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 399,
-          "sourced": 317,
-          "rare_spawn_skipped": 7
+          "eligible": 400,
+          "sourced": 318,
+          "rare_spawn_skipped": 8
         },
         "head": {
           "eligible": 315,
@@ -11222,8 +11149,8 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 597,
-          "sourced": 409,
+          "eligible": 598,
+          "sourced": 410,
           "rare_spawn_skipped": 35
         },
         "neck": {
@@ -11232,8 +11159,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 131,
-          "sourced": 82,
+          "eligible": 130,
+          "sourced": 81,
           "rare_spawn_skipped": 4
         },
         "ranged": {
@@ -11256,15 +11183,15 @@
         "waist": {
           "eligible": 365,
           "sourced": 305,
-          "rare_spawn_skipped": 7
+          "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 297,
-          "sourced": 225,
-          "rare_spawn_skipped": 5
+          "eligible": 299,
+          "sourced": 227,
+          "rare_spawn_skipped": 7
         }
       },
-      "reference_dps_per_point": 86.74764348519606,
+      "reference_dps_per_point": 86.74764348519605,
       "score_unit": "tank_score",
       "scale_reference_stat": "agility",
       "hit_to_cap": {
@@ -11279,12 +11206,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 469.7164631899355,
-        "tmi": 36.83052048367324,
-        "chance_of_death": 0.2813333333333333,
-        "tps": 773.2161353649476,
-        "effective_health": 31395.95339569095,
-        "dps": 374.65687537627974
+        "dtps": 472.5658458702661,
+        "tmi": 37.039730213974245,
+        "chance_of_death": 0.32399999999999995,
+        "tps": 697.3855514475381,
+        "effective_health": 31206.648377945956,
+        "dps": 336.82349375925435
       }
     }
   ],
