@@ -2,7 +2,7 @@
   "spec": "paladin-holy",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-17T11:29:02Z",
+  "generated_at": "2026-10-18T11:54:38Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -706,8 +706,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.23049699,
-      "verify_run_seconds": 13.537732684,
+      "weights_run_seconds": 4.245667934,
+      "verify_run_seconds": 13.546066896,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1505,8 +1505,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.23049699,
-      "verify_run_seconds": 13.648427035,
+      "weights_run_seconds": 4.245667934,
+      "verify_run_seconds": 13.66039675,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2366,8 +2366,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.22888475,
-      "verify_run_seconds": 14.127019609,
+      "weights_run_seconds": 4.271150392,
+      "verify_run_seconds": 14.119815203,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3223,8 +3223,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.22888475,
-      "verify_run_seconds": 14.375533456,
+      "weights_run_seconds": 4.271150392,
+      "verify_run_seconds": 14.356574634,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4089,8 +4089,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 7.417618928,
-      "verify_run_seconds": 26.745371618,
+      "weights_run_seconds": 7.422302813,
+      "verify_run_seconds": 26.811647134,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4956,8 +4956,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Forcestone Buckler"
       ],
-      "weights_run_seconds": 7.417618928,
-      "verify_run_seconds": 26.710642877,
+      "weights_run_seconds": 7.422302813,
+      "verify_run_seconds": 26.713596212,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5900,8 +5900,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Uther's Strength"
       ],
-      "weights_run_seconds": 7.912519048,
-      "verify_run_seconds": 36.628506056,
+      "weights_run_seconds": 7.902342647,
+      "verify_run_seconds": 36.561895011,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6849,8 +6849,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 7.912519048,
-      "verify_run_seconds": 34.381042645,
+      "weights_run_seconds": 7.902342647,
+      "verify_run_seconds": 34.305593909,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7812,8 +7812,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 8.957776226,
-      "verify_run_seconds": 114.257000434,
+      "weights_run_seconds": 9.009551343,
+      "verify_run_seconds": 114.593227692,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8760,8 +8760,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 8.957776226,
-      "verify_run_seconds": 110.698904273,
+      "weights_run_seconds": 9.009551343,
+      "verify_run_seconds": 110.834874312,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -9695,8 +9695,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 5.340362588,
-      "verify_run_seconds": 32.622456785,
+      "weights_run_seconds": 5.279308043,
+      "verify_run_seconds": 32.569752397,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10628,8 +10628,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 5.340362588,
-      "verify_run_seconds": 31.571500596,
+      "weights_run_seconds": 5.279308043,
+      "verify_run_seconds": 31.526102614,
       "coverage": {
         "back": {
           "eligible": 389,

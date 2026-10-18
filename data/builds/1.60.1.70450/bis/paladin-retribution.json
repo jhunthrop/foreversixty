@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-17T11:34:08Z",
+  "generated_at": "2026-10-18T11:59:49Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -717,8 +717,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.989164012,
-      "verify_run_seconds": 3.112097027,
+      "weights_run_seconds": 2.000374725,
+      "verify_run_seconds": 3.170962407,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1530,8 +1530,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.989164012,
-      "verify_run_seconds": 3.231987409,
+      "weights_run_seconds": 2.000374725,
+      "verify_run_seconds": 3.289724118,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2361,8 +2361,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.030617213,
-      "verify_run_seconds": 3.632973023,
+      "weights_run_seconds": 2.04470933,
+      "verify_run_seconds": 3.708834906,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3171,8 +3171,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.030617213,
-      "verify_run_seconds": 1.956161567,
+      "weights_run_seconds": 2.04470933,
+      "verify_run_seconds": 1.959111321,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3997,8 +3997,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.043764019,
-      "verify_run_seconds": 3.721616517,
+      "weights_run_seconds": 2.053227314,
+      "verify_run_seconds": 3.774820316,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4822,8 +4822,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.043764019,
-      "verify_run_seconds": 3.7297457510000003,
+      "weights_run_seconds": 2.053227314,
+      "verify_run_seconds": 3.725206779,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5685,8 +5685,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.222647802,
-      "verify_run_seconds": 4.78163832,
+      "weights_run_seconds": 2.235600511,
+      "verify_run_seconds": 4.781310629,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6560,8 +6560,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.222647802,
-      "verify_run_seconds": 4.429883311,
+      "weights_run_seconds": 2.235600511,
+      "verify_run_seconds": 4.461566979,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7465,8 +7465,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.192581766,
-      "verify_run_seconds": 10.472122504,
+      "weights_run_seconds": 2.207542553,
+      "verify_run_seconds": 10.696578683,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8397,8 +8397,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.192581766,
-      "verify_run_seconds": 10.34423411,
+      "weights_run_seconds": 2.207542553,
+      "verify_run_seconds": 10.318007303,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -9276,8 +9276,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Arcanite Champion"
       ],
-      "weights_run_seconds": 2.614224912,
-      "verify_run_seconds": 11.952122853,
+      "weights_run_seconds": 2.636059285,
+      "verify_run_seconds": 12.187816736,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10164,8 +10164,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Arcanite Champion"
       ],
-      "weights_run_seconds": 2.614224912,
-      "verify_run_seconds": 9.06592066,
+      "weights_run_seconds": 2.636059285,
+      "verify_run_seconds": 9.277753737,
       "coverage": {
         "back": {
           "eligible": 389,

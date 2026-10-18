@@ -2,7 +2,7 @@
   "spec": "priest-holy",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-17T11:56:31Z",
+  "generated_at": "2026-10-18T12:22:18Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -732,8 +732,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.151291286,
-      "verify_run_seconds": 28.241636294,
+      "weights_run_seconds": 10.238654133,
+      "verify_run_seconds": 28.359759612,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1558,8 +1558,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.151291286,
-      "verify_run_seconds": 28.282563027,
+      "weights_run_seconds": 10.238654133,
+      "verify_run_seconds": 28.464346699,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2416,8 +2416,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.148172724,
-      "verify_run_seconds": 31.403134167,
+      "weights_run_seconds": 10.381003479,
+      "verify_run_seconds": 31.58072759,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3279,8 +3279,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.148172724,
-      "verify_run_seconds": 31.90967324,
+      "weights_run_seconds": 10.381003479,
+      "verify_run_seconds": 32.677126329000004,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4207,8 +4207,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.414213567000001,
-      "verify_run_seconds": 67.984389012,
+      "weights_run_seconds": 10.598780252,
+      "verify_run_seconds": 68.191299038,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5116,8 +5116,8 @@
         "off_hand: Witch's Finger",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.414213567000001,
-      "verify_run_seconds": 41.705452852,
+      "weights_run_seconds": 10.598780252,
+      "verify_run_seconds": 41.904848756,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6060,8 +6060,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.643000309,
-      "verify_run_seconds": 35.944014362,
+      "weights_run_seconds": 10.757630293,
+      "verify_run_seconds": 35.818420105,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7004,8 +7004,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.643000309,
-      "verify_run_seconds": 34.177555981,
+      "weights_run_seconds": 10.757630293,
+      "verify_run_seconds": 34.095841088,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7953,8 +7953,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.514176356,
-      "verify_run_seconds": 65.396302558,
+      "weights_run_seconds": 9.519761578,
+      "verify_run_seconds": 65.012060628,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8887,8 +8887,8 @@
         "trinket2: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.514176356,
-      "verify_run_seconds": 64.878912859,
+      "weights_run_seconds": 9.519761578,
+      "verify_run_seconds": 65.007931944,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9818,8 +9818,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.181077578,
-      "verify_run_seconds": 13.230546228,
+      "weights_run_seconds": 6.167569233,
+      "verify_run_seconds": 13.367980626,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10750,8 +10750,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.181077578,
-      "verify_run_seconds": 13.486987668,
+      "weights_run_seconds": 6.167569233,
+      "verify_run_seconds": 13.518268716,
       "coverage": {
         "back": {
           "eligible": 390,
