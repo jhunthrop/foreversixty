@@ -183,6 +183,10 @@ type Patch struct {
 	Title      *string `json:"title"`
 	Visibility *string `json:"visibility"`
 	GuildID    *int64  `json:"guild_id"`
+	// LoggingCharacter is who wrote the log. The handler validates it
+	// and keeps the key it makes in loggingKey for Update.
+	LoggingCharacter *CharacterInput `json:"logging_character"`
+	loggingKey       *string
 }
 
 // Update applies a patch and returns the report as it now stands.
@@ -191,8 +195,9 @@ func (s *Store) Update(ctx context.Context, id string, p Patch) (Report, error) 
 		`update reports set
 		   title = coalesce($2, title),
 		   visibility = coalesce($3, visibility),
-		   guild_id = coalesce($4, guild_id)
-		 where id = $1 returning `+reportColumns, id, p.Title, p.Visibility, p.GuildID))
+		   guild_id = coalesce($4, guild_id),
+		   logging_character = coalesce($5, logging_character)
+		 where id = $1 returning `+reportColumns, id, p.Title, p.Visibility, p.GuildID, p.loggingKey))
 }
 
 // SetStatus moves a report to a new status, recording the engine version

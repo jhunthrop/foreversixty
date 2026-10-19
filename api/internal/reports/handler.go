@@ -112,15 +112,36 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 
 // CreateInput is the body of POST /v1/reports.
 type CreateInput struct {
-	Title            string `json:"title"`
-	Visibility       string `json:"visibility"`
-	Zone             string `json:"zone"`
-	LoggingCharacter *struct {
-		Region  string `json:"region"`
-		Ruleset string `json:"ruleset"`
-		Name    string `json:"name"`
-	} `json:"logging_character"`
+	Title            string          `json:"title"`
+	Visibility       string          `json:"visibility"`
+	Zone             string          `json:"zone"`
+	LoggingCharacter *CharacterInput `json:"logging_character"`
 }
+
+// CharacterInput is a character as a client names it: the logging
+// character of a report, on create and on patch.
+type CharacterInput struct {
+	Region  string `json:"region"`
+	Ruleset string `json:"ruleset"`
+	Name    string `json:"name"`
+}
+
+// loggingKey validates a client's logging character and returns its
+// key. A nil or nameless character is no character and no error; a
+// region or ruleset the API does not know is valid false, so create
+// and patch refuse it in one voice.
+func loggingKey(c *CharacterInput) (key *string, valid bool) {
+	if c == nil || c.Name == "" {
+		return nil, true
+	}
+	if !character.ValidRegion(c.Region) || !character.ValidRuleset(c.Ruleset) {
+		return nil, false
+	}
+	k := character.Key(c.Region, c.Ruleset, c.Name)
+	return &k, true
+}
+
+const msgBadCharacter = "region must be one of us, eu, kr, tw, cn and ruleset one of normal, pvp, rp, hardcore"
 
 func (s *Service) create(w http.ResponseWriter, r *http.Request) {
 	var in CreateInput
@@ -139,15 +160,13 @@ func (s *Service) create(w http.ResponseWriter, r *http.Request) {
 		ID: auth.NewReportID(), OwnerID: &owner, Title: strings.TrimSpace(in.Title),
 		Visibility: in.Visibility, Zone: strings.TrimSpace(in.Zone), Status: StatusLive,
 	}
-	if c := in.LoggingCharacter; c != nil && c.Name != "" {
-		if !character.ValidRegion(c.Region) || !character.ValidRuleset(c.Ruleset) {
-			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a character",
-				map[string]string{"logging_character": "region must be one of us, eu, kr, tw, cn and ruleset one of normal, pvp, rp, hardcore"})
-			return
-		}
-		key := character.Key(c.Region, c.Ruleset, c.Name)
-		rep.LoggingCharacter = &key
+	key, valid := loggingKey(in.LoggingCharacter)
+	if !valid {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a character",
+			map[string]string{"logging_character": msgBadCharacter})
+		return
 	}
+	rep.LoggingCharacter = key
 	stored, err := s.Store.Create(r.Context(), rep)
 	if err != nil {
 		s.fail(w, r, "create", err, "could not start that report just now")
@@ -381,6 +400,18 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 			map[string]string{"visibility": "one of public, unlisted, private, guild"})
 		return
 	}
+	// The companion reads who is logging from the combat log, which can
+	// be after the report exists (the addon's record of the character
+	// may arrive on a later logout), so the logging character can be
+	// set here with the validation create applies. The caller already
+	// passed mayEdit: the report's owner, which a device token is.
+	key, valid := loggingKey(p.LoggingCharacter)
+	if !valid {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a character",
+			map[string]string{"logging_character": msgBadCharacter})
+		return
+	}
+	p.loggingKey = key
 	if p.GuildID != nil {
 		// Setting guild_id hands that guild's officers edit rights on
 		// this report (via mayEdit) and its members read rights once
