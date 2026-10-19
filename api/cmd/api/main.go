@@ -140,8 +140,13 @@ func main() {
 }
 
 // start loads the configuration, migrates, and connects. Both the
-// service and the job need exactly this much.
+// service and the job need exactly this much. Each step logs how long it
+// took: a cold start of the service was measured at 13 s end to end
+// (2026-10-19) and the split between the database waking, the migration
+// pass and the pool's first connection is what decides where to fix it.
 func start(ctx context.Context) (config.Config, *pgxpool.Pool, error) {
+	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	began := time.Now()
 	cfg, err := config.Load(os.Getenv)
 	if err != nil {
 		return config.Config{}, nil, err
@@ -149,13 +154,20 @@ func start(ctx context.Context) (config.Config, *pgxpool.Pool, error) {
 	if err := cfg.ValidateStripeKeyEnvironment(); err != nil {
 		return config.Config{}, nil, err
 	}
+	log.Info("startup", "step", "config", "ms", time.Since(began).Milliseconds())
+
+	began = time.Now()
 	if err := db.Migrate(cfg.MigrateDatabaseURL); err != nil {
 		return config.Config{}, nil, fmt.Errorf("migrate: %w", err)
 	}
+	log.Info("startup", "step", "migrate", "ms", time.Since(began).Milliseconds())
+
+	began = time.Now()
 	pool, err := db.Connect(ctx, cfg.DatabaseURL)
 	if err != nil {
 		return config.Config{}, nil, err
 	}
+	log.Info("startup", "step", "connect", "ms", time.Since(began).Milliseconds())
 	return cfg, pool, nil
 }
 
