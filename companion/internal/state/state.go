@@ -40,7 +40,19 @@ type Report struct {
 	// LoggingCharacter attributes the report, captured when it starts
 	// so a settings change mid-raid does not rewrite history.
 	LoggingCharacter *character.Character `json:"logging_character,omitempty"`
-	Zone             string               `json:"zone,omitempty"`
+	// Auto is true when the report was started with no character
+	// chosen in Settings, so the combat log says whose it is. The
+	// four fields below belong to that: who the log named, as the
+	// log spells it (DetectedName keeps the spaces of a Forever name,
+	// DetectedRealm has none) and the class COMBATANT_INFO gave it,
+	// and Credited, whether the server has the logging character
+	// (sent on creation or patched since).
+	Auto          bool   `json:"auto,omitempty"`
+	DetectedName  string `json:"detected_name,omitempty"`
+	DetectedRealm string `json:"detected_realm,omitempty"`
+	DetectedClass string `json:"detected_class,omitempty"`
+	Credited      bool   `json:"credited,omitempty"`
+	Zone          string `json:"zone,omitempty"`
 	Title            string               `json:"title,omitempty"`
 	StartedAt        time.Time            `json:"started_at"`
 	LastAppend       time.Time            `json:"last_append"`

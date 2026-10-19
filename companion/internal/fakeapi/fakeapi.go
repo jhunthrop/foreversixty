@@ -68,6 +68,12 @@ type Report struct {
 	Live       map[int]client.Live
 	Raw        map[int64][]byte
 	Complete   *client.Complete
+	// LoggingCharacter is who the report is credited to: what create
+	// sent, then what the last patch set. Created is what create sent.
+	LoggingCharacter *client.Character
+	Created          *client.Character
+	// Patches are the bodies PATCH /v1/reports/{id} received, in order.
+	Patches []json.RawMessage
 }
 
 // Server is a fake ingest API.
@@ -136,6 +142,7 @@ func New() *Server {
 	mux.HandleFunc("POST /v1/devices/connect/deny", s.connectDeny)
 	mux.HandleFunc("DELETE /v1/devices/self", s.revokeSelf)
 	mux.HandleFunc("POST /v1/reports", s.createReport)
+	mux.HandleFunc("PATCH /v1/reports/{id}", s.patchReport)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}", s.putFight)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}/live", s.putLive)
 	mux.HandleFunc("PUT /v1/reports/{id}/raw", s.putRaw)
@@ -369,10 +376,49 @@ func (s *Server) createReport(w http.ResponseWriter, r *http.Request) {
 	s.nextID++
 	id := fmt.Sprintf("rpt%09d", s.nextID)
 	s.reports[id] = &Report{ID: id, Visibility: in.Visibility, Title: in.Title,
+		LoggingCharacter: in.LoggingCharacter, Created: in.LoggingCharacter,
 		Fights: map[int]Fight{}, Live: map[int]client.Live{}, Raw: map[int64][]byte{}}
 	s.order = append(s.order, "report "+id)
 	s.mu.Unlock()
 	ok(w, http.StatusCreated, map[string]any{"id": id, "created_at": "2026-12-09T20:00:00Z"})
+}
+
+// patchReport records the body and applies the logging character, as
+// the API does when it validates it: a character with no region or
+// ruleset is refused with a 400 naming the field.
+func (s *Server) patchReport(w http.ResponseWriter, r *http.Request) {
+	if s.shouldFail("PATCH /v1/reports/{id}") {
+		fail(w, http.StatusInternalServerError, "injected failure")
+		return
+	}
+	raw, err := io.ReadAll(r.Body)
+	if err != nil {
+		fail(w, http.StatusBadRequest, "malformed body")
+		return
+	}
+	var in client.UpdateReport
+	if err := json.Unmarshal(raw, &in); err != nil {
+		fail(w, http.StatusBadRequest, "malformed body")
+		return
+	}
+	if c := in.LoggingCharacter; c != nil && !c.Valid() {
+		fail(w, http.StatusBadRequest, "that is not a character",
+			map[string]string{"logging_character": "region and ruleset are required"})
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	rep, found := s.reports[r.PathValue("id")]
+	if !found {
+		fail(w, http.StatusNotFound, "no such report")
+		return
+	}
+	rep.Patches = append(rep.Patches, raw)
+	if in.LoggingCharacter != nil {
+		rep.LoggingCharacter = in.LoggingCharacter
+	}
+	s.order = append(s.order, "patch "+rep.ID)
+	ok(w, http.StatusOK, map[string]any{"id": rep.ID})
 }
 
 func (s *Server) report(w http.ResponseWriter, r *http.Request) (*Report, bool) {

@@ -58,3 +58,32 @@ func TestTheFixtureParsesIntoWholeFights(t *testing.T) {
 		}
 	}
 }
+
+// The logger is the one player whose flags carry MINE: the fixture
+// writes its first player that way and the rest of the group as PARTY,
+// which is what the companion's logging-character detection reads.
+func TestTheFixtureLogsAsOnePlayerAndThePartyAroundIt(t *testing.T) {
+	s := session.New(session.Options{
+		ReportID: "fixture", Base: time.Date(2026, 9, 26, 0, 0, 0, 0, time.UTC),
+		Units: units.Options{ClassBySpec: units.RetailSpecClass},
+		Fight: fight.DefaultOptions(), Summary: summary.DefaultOptions(),
+	})
+	if _, err := s.Feed([]byte(Log(1)), 0); err != nil {
+		t.Fatal(err)
+	}
+	var mine, party []string
+	for _, u := range s.Units().Players() {
+		switch {
+		case u.Flags&units.FlagAffiliationMine != 0:
+			mine = append(mine, u.Name)
+		case u.Flags&units.FlagAffiliationParty != 0:
+			party = append(party, u.Name)
+		}
+	}
+	if len(mine) != 1 || !strings.HasPrefix(mine[0], Logger+"-") {
+		t.Errorf("MINE players = %v, want only %s", mine, Logger)
+	}
+	if len(party) != 1 || !strings.HasPrefix(party[0], "Brannic-") {
+		t.Errorf("PARTY players = %v, want Brannic", party)
+	}
+}

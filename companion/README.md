@@ -92,7 +92,7 @@ The **Reports** page lists the newest reports the moment they have an id, live o
 |---|---|
 | New reports are | public, unlisted, private or guild — the visibility a report starts with |
 | Game folders | the folders it found on its own, and any you add with **Add a folder...** (the system folder dialog); only the ones you add are saved, and **Remove** takes one back out. Pick a flavour folder such as `_classic_era_` or the folder above it |
-| Logging character | who reports are attributed to, picked from the characters the addon has seen |
+| Reports are credited to | Automatic by default: the companion reads who is logging from the combat log itself (the game marks the logging player's own units in every line), then finds that character among the ones the addon has exported, so a report is credited to the right region and ruleset with nothing to pick. If the addon has not exported the character yet, the report is credited the moment it has (log out once with the addon loaded). Pick a character from the list only if Automatic is wrong; the Status page and this setting both show who it currently reads |
 
 The companion watches the install you played most recently; the Status page tags it Watching.
 

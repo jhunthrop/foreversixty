@@ -31,3 +31,20 @@ func TestValidNeedsAllThreeSegments(t *testing.T) {
 		}
 	}
 }
+
+func TestTheRulesetIsReadFromTheWordTheRealmSpellsItWith(t *testing.T) {
+	for realm, want := range map[string]string{
+		"ClassicBetaPvP":     "pvp",
+		"Classic Beta PvP":   "pvp",
+		"ClassicBetaPvE2":    "normal",
+		"Classic Beta PvE 2": "normal",
+		"Hardcore":           "hardcore",
+		"ForeverRP":          "rp",
+		"Ashbringer":         "normal",
+		"":                   "normal",
+	} {
+		if got := RulesetFromRealm(realm); got != want {
+			t.Errorf("RulesetFromRealm(%q) = %q, want %q", realm, got, want)
+		}
+	}
+}

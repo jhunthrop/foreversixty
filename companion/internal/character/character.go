@@ -33,3 +33,43 @@ func (c Character) Key() string {
 	slug := strings.ToLower(strings.ReplaceAll(strings.TrimSpace(c.Name), " ", "-"))
 	return strings.ToLower(c.Region) + "/" + strings.ToLower(c.Ruleset) + "/" + slug
 }
+
+// RulesetFromRealm is the API's mapping of a realm segment onto a
+// ruleset, kept in step with api/internal/character.RulesetFromRealm:
+// a realm names its ruleset by a word in it ("Hardcore", "Classic Beta
+// PvP", the normalised "ClassicBetaPvP2"), and a realm with no such
+// word is a normal one.
+func RulesetFromRealm(realm string) string {
+	words := strings.FieldsFunc(realm, func(r rune) bool {
+		return !(r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9')
+	})
+	for _, word := range words {
+		// Trailing digits number a realm ("PvE 2", "ClassicBetaPvE2").
+		trimmed := strings.TrimRight(strings.ToLower(word), "0123456789")
+		camel := camelCase(word)
+		for _, w := range rulesetWords {
+			if trimmed == w.word || camel && strings.HasSuffix(trimmed, w.word) {
+				return w.ruleset
+			}
+		}
+	}
+	return "normal"
+}
+
+// rulesetWords are the words a realm spells a ruleset with, longest
+// first so a camel-case suffix match tries "hardcore" before "hc".
+var rulesetWords = []struct{ word, ruleset string }{
+	{"hardcore", "hardcore"}, {"roleplay", "rp"}, {"normal", "normal"},
+	{"pvp", "pvp"}, {"pve", "normal"}, {"rp", "rp"}, {"hc", "hardcore"},
+}
+
+// camelCase reports whether word joins several words in the normalised
+// form: a capital after a lower-case letter ("ClassicBetaPvP").
+func camelCase(word string) bool {
+	for i := 1; i < len(word); i++ {
+		if word[i] >= 'A' && word[i] <= 'Z' && word[i-1] >= 'a' && word[i-1] <= 'z' {
+			return true
+		}
+	}
+	return false
+}

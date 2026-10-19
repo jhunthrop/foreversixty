@@ -187,3 +187,9 @@ func Message(code string) string {
 	}
 	return messages[CodeInternal]
 }
+
+// CopyLoggingSubAs is the Logging headline's sub line once the combat log
+// has named its logger: the same words, then who it is.
+func CopyLoggingSubAs(name string) string {
+	return CopyLoggingSub[:len(CopyLoggingSub)-1] + " · logging as " + name
+}

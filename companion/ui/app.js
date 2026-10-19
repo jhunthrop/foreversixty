@@ -549,16 +549,12 @@ function fillSettings(s) {
   baseline = { visibility: s.visibility, character: charValue(s) };
   $('visibility').value = s.visibility;
   const select = $('logging-character');
-  select.replaceChildren(h('option', { value: '', text: COPY.settings.characterNone }));
+  select.replaceChildren(h('option', { value: '', text: FORMAT.automaticLabel(s.detected_character, COPY.settings) }));
   for (const c of s.characters) {
     select.append(h('option', { value: FORMAT.characterValue(c), text: FORMAT.characterLabel(c, COPY.settings.rulesets) }));
   }
   select.value = baseline.character;
   if (select.value !== baseline.character) select.value = '';
-  const none = s.characters.length === 0;
-  select.hidden = none;
-  $('character-empty').hidden = !none;
-  $('character-empty').textContent = none ? COPY.settings.characterEmpty : '';
   syncSave();
 }
 
@@ -569,7 +565,7 @@ function resetSettings() {
 function renderSettings(s) {
   // The form is rewritten from the snapshot only when nothing has been
   // changed: unsaved edits are never overwritten by the poll.
-  const formKey = { v: s.visibility, c: s.characters, l: charValue(s) };
+  const formKey = { v: s.visibility, c: s.characters, l: charValue(s), d: s.detected_character };
   if (!dirty() && JSON.stringify(formKey) !== cache['settings-form']) {
     cache['settings-form'] = JSON.stringify(formKey);
     fillSettings(s);
@@ -670,6 +666,7 @@ $('visibility-label').textContent = COPY.settings.visibility;
 for (const o of $('visibility').options) o.textContent = COPY.settings.visibilityOptions[o.value];
 $('folders-label').textContent = COPY.settings.folders;
 $('character-label').textContent = COPY.settings.character;
+$('character-help').textContent = COPY.settings.characterHelp;
 $('save').textContent = COPY.settings.save;
 $('add-folder').textContent = COPY.settings.addFolder;
 

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
+	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/queue"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
@@ -33,11 +34,8 @@ func (p *Pipeline) Drain(ctx context.Context) error {
 	// first pull have somewhere to go. It is copied out from under
 	// the lock first: create talks to the network, and Status must
 	// not wait on that.
-	if rep, ok := p.openWithoutID(); ok {
-		if err := p.create(ctx, &rep); err != nil {
-			return err
-		}
-		if err := state.Save(p.o.StateDir, rep); err != nil {
+	if rep, ok := p.openCopy(); ok && !awaitingLogger(rep) {
+		if err := p.settle(ctx, &rep); err != nil {
 			return err
 		}
 	}
@@ -58,18 +56,127 @@ func (p *Pipeline) Drain(ctx context.Context) error {
 	}
 }
 
-// openWithoutID copies the open report when it has no server id yet.
-func (p *Pipeline) openWithoutID() (state.Report, bool) {
+// awaitingLogger is true for an automatic report that has no id yet,
+// has not seen its logger and has closed no fight. Creating it now
+// would mean crediting it later by a patch; the logger's first line,
+// which is also the first line of the first pull, is moments away. A
+// report whose first fight closed without ever naming a logger is
+// created anyway, and so is any report whose queue is being drained
+// (send does not wait).
+func awaitingLogger(rep state.Report) bool {
+	return rep.ReportID == "" && rep.Auto && rep.DetectedName == "" && rep.Fights == 0
+}
+
+// openCopy copies the open report out from under the lock, so what
+// settle does with the network does not hold it.
+func (p *Pipeline) openCopy() (state.Report, bool) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	if p.cur == nil || p.cur.ReportID != "" {
+	if p.cur == nil {
 		return state.Report{}, false
 	}
 	return *p.cur, true
 }
 
-// create asks the API for a report id and records it on rep and, when
-// rep is the open report, on the pipeline.
+// settle brings a report's server side up to date: it is created when
+// it has no id, and its logging character is worked out and sent. The
+// character goes with the creation when the combat log and the addon
+// already name it, and by one PATCH later when the log named the
+// logger before the addon's record of the character had arrived (the
+// record is written when the player logs out). What changed is saved
+// and handed back to the open report. A failure that waiting can fix
+// is returned and nothing is lost: the next drain tries again.
+func (p *Pipeline) settle(ctx context.Context, rep *state.Report) error {
+	was := *rep
+	p.resolve(rep)
+	if rep.ReportID == "" {
+		if err := p.create(ctx, rep); err != nil {
+			return err
+		}
+	}
+	if err := p.credit(ctx, rep); err != nil {
+		return err
+	}
+	if rep.ReportID != was.ReportID || rep.Credited != was.Credited || rep.Auto != was.Auto ||
+		rep.LoggingCharacter != was.LoggingCharacter {
+		if err := state.Save(p.o.StateDir, *rep); err != nil {
+			return err
+		}
+	}
+	p.adopt(*rep)
+	return nil
+}
+
+// resolve names the character an automatic report is credited to from
+// what the combat log said and the addon has exported. It says so once
+// per report when it cannot.
+func (p *Pipeline) resolve(rep *state.Report) {
+	if !rep.Auto || rep.LoggingCharacter != nil || rep.DetectedName == "" {
+		return
+	}
+	var records []logger.Record
+	if p.o.Records != nil {
+		records = p.o.Records()
+	}
+	d := logger.Detected{Name: rep.DetectedName, Realm: rep.DetectedRealm, Class: rep.DetectedClass}
+	if c, ok := logger.Resolve(d, records); ok {
+		rep.LoggingCharacter = &c
+		p.o.Log.Info("the log is a known character's", "component", "uploader",
+			"report", rep.Key, "character", c.Key())
+		return
+	}
+	p.mu.Lock()
+	first := !p.noted[rep.Key]
+	p.noted[rep.Key] = true
+	p.mu.Unlock()
+	if first {
+		p.o.Log.Info("the log is "+rep.DetectedName+"'s, but no addon record names the realm; "+
+			"log out once with the addon loaded", "component", "uploader", "report", rep.Key)
+	}
+}
+
+// credit sends the logging character of a report that already exists
+// and was created without it. A refusal the server will repeat gives
+// the attempt up: the report stays uncredited rather than being asked
+// again on every tick.
+func (p *Pipeline) credit(ctx context.Context, rep *state.Report) error {
+	if !rep.Auto || rep.Credited || rep.LoggingCharacter == nil || rep.ReportID == "" {
+		return nil
+	}
+	err := p.o.Client.UpdateReport(ctx, rep.ReportID, client.UpdateReport{LoggingCharacter: rep.LoggingCharacter})
+	var ae *client.Error
+	switch {
+	case err == nil:
+		rep.Credited = true
+		p.o.Log.Info("a report was credited to its logger", "component", "uploader",
+			"report", rep.Key, "report_id", rep.ReportID, "character", rep.LoggingCharacter.Key())
+		return nil
+	case client.Retryable(err) || errors.As(err, &ae) && ae.Status == 401:
+		return err
+	}
+	p.o.Log.Error("the server refused the logging character; the report stays uncredited",
+		"component", "uploader", "report", rep.Key, "character", rep.LoggingCharacter.Key(),
+		"err", err.Error())
+	rep.Auto = false
+	return nil
+}
+
+// adopt copies what settle changed onto the open report, which Tick
+// may have moved on since it was copied.
+func (p *Pipeline) adopt(rep state.Report) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.cur == nil || p.cur.Key != rep.Key {
+		return
+	}
+	p.cur.ReportID, p.cur.LoggingCharacter = rep.ReportID, rep.LoggingCharacter
+	p.cur.Credited, p.cur.Auto = rep.Credited, rep.Auto
+	if name := detectedLabel(*p.cur); name != "" {
+		p.lastDetected = name
+	}
+}
+
+// create asks the API for a report id and records it on rep.
 func (p *Pipeline) create(ctx context.Context, rep *state.Report) error {
 	created, err := p.o.Client.CreateReport(ctx, client.CreateReport{
 		Title:      rep.Title,
@@ -83,11 +190,7 @@ func (p *Pipeline) create(ctx context.Context, rep *state.Report) error {
 		return err
 	}
 	rep.ReportID = created.ID
-	p.mu.Lock()
-	if p.cur != nil && p.cur.Key == rep.Key {
-		p.cur.ReportID = created.ID
-	}
-	p.mu.Unlock()
+	rep.Credited = rep.LoggingCharacter != nil
 	p.o.Log.Info("a report was created", "component", "uploader",
 		"report", rep.Key, "report_id", rep.ReportID)
 	return nil
@@ -122,13 +225,8 @@ func (p *Pipeline) send(ctx context.Context, l *queue.Lease) error {
 		}
 		return fmt.Errorf("read the state of report %s: %w", l.Item.ReportKey, err)
 	}
-	if rep.ReportID == "" {
-		if cerr := p.create(ctx, &rep); cerr != nil {
-			return p.failed(l, cerr)
-		}
-		if err := state.Save(p.o.StateDir, rep); err != nil {
-			return err
-		}
+	if serr := p.settle(ctx, &rep); serr != nil {
+		return p.failed(l, serr)
 	}
 
 	// stored stays Created for anything the API does not answer
@@ -200,6 +298,10 @@ type Status struct {
 	Offset     int64     `json:"offset"`
 	LastAppend time.Time `json:"last_append,omitzero"`
 	Queued     int       `json:"queued"`
+	// Detected is who the combat log says is logging: the report's
+	// character once the addon has named it, else the name the log
+	// gave. It is the last one seen when no report is open.
+	Detected string `json:"detected,omitempty"`
 }
 
 // Status reports what the pipeline is doing right now.
@@ -210,6 +312,7 @@ func (p *Pipeline) Status() Status {
 	}
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	s.Detected = p.lastDetected
 	if p.cur == nil {
 		return s
 	}

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
+	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
@@ -314,6 +315,81 @@ func TestTheSnapshotShowsInstallsCharactersAndAdvancedLogging(t *testing.T) {
 	}
 	if s.Pipeline.Logging {
 		t.Error("nothing has been logged yet")
+	}
+}
+
+// The logging character is read from the combat log: the snapshot
+// names it, the Status headline says so, and a report is credited to
+// the addon's record of that character without anyone picking it.
+func TestTheLogNamesTheCharacterTheReportIsCreditedTo(t *testing.T) {
+	h := newHarness(t)
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+	sv := filepath.Join(h.game, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
+	if err := os.WriteFile(sv, []byte(`ForeverSixtyDB = { ["characters"] = { `+
+		`["Morrowlyn-Hardcore"] = { ["name"] = "Morrowlyn", ["realm"] = "Hardcore", `+
+		`["region"] = "us", ["export"] = "FS1:1.60.1.70291:paladin:human:0/0/0:head=1" } } }`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), t0)
+	if s := h.app.Snapshot(); s.DetectedCharacter != "" || s.LoggingCharacter != nil {
+		t.Fatalf("before any log: detected %q, chosen %+v", s.DetectedCharacter, s.LoggingCharacter)
+	}
+	if err := os.WriteFile(h.log, []byte(aNight()), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), t0.Add(time.Second))
+
+	s := h.app.Snapshot()
+	if s.DetectedCharacter != "Morrowlyn" {
+		t.Errorf("detected_character = %q", s.DetectedCharacter)
+	}
+	if s.LoggingCharacter != nil {
+		t.Errorf("the chosen character is %+v; Automatic must stay unset", s.LoggingCharacter)
+	}
+	if s.Headline.Key != "logging" ||
+		s.Headline.Sub != "Uploading your fights as they end · logging as Morrowlyn" {
+		t.Errorf("headline = %+v", s.Headline)
+	}
+	reps := h.srv.Reports()
+	if len(reps) != 1 {
+		t.Fatalf("%d reports", len(reps))
+	}
+	for _, rep := range reps {
+		want := character.Character{Region: "us", Ruleset: "hardcore", Name: "Morrowlyn"}
+		if rep.Created == nil || *rep.Created != want {
+			t.Errorf("the report was created for %+v, want %+v", rep.Created, want)
+		}
+	}
+}
+
+func TestPickingAndClearingTheLoggingCharacterRoundTrips(t *testing.T) {
+	h := newHarness(t)
+	base := h.url("")
+	pick := &character.Character{Region: "us", Ruleset: "hardcore", Name: "Morrowlyn"}
+	if code, body := h.call(http.MethodPost, base+"/api/settings", app.Settings{
+		Visibility: "public", LoggingCharacter: pick}); code != http.StatusOK {
+		t.Fatalf("saving a pick = %d %v", code, body)
+	}
+	if s := h.app.Snapshot(); s.LoggingCharacter == nil || *s.LoggingCharacter != *pick {
+		t.Fatalf("after a pick: %+v", s.LoggingCharacter)
+	}
+	// Automatic is null on the wire.
+	if code, body := h.call(http.MethodPost, base+"/api/settings",
+		map[string]any{"visibility": "public", "logging_character": nil}); code != http.StatusOK {
+		t.Fatalf("saving Automatic = %d %v", code, body)
+	}
+	if s := h.app.Snapshot(); s.LoggingCharacter != nil {
+		t.Errorf("after Automatic the snapshot still has %+v", s.LoggingCharacter)
+	}
+	stored, err := config.Load(h.dirs.ConfigFile())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stored.LoggingCharacter != nil {
+		t.Errorf("config.json still holds %+v", stored.LoggingCharacter)
 	}
 }
 
