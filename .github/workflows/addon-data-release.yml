@@ -144,6 +144,9 @@ jobs:
           tag_name: ${{ steps.tag.outputs.tag }}
           files: ${{ env.zip }}
           generate_release_notes: true
+          # Never the repo's "latest": that is the companion release, which the
+          # site's download links and the companion updater resolve through.
+          make_latest: false
 
       - name: publish to CurseForge and Wago Addons
         if: steps.targets.outputs.publish == 'yes' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true))
