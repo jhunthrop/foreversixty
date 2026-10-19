@@ -237,6 +237,9 @@ jobs:
         with:
           files: ${{ env.zip }}
           generate_release_notes: true
+          # Never the repo's "latest": that is the companion release, which the
+          # site's download links and the companion updater resolve through.
+          make_latest: false
 
       - name: publish to CurseForge and Wago Addons
         # No GITHUB_OAUTH here: the packager's own GitHub-release path

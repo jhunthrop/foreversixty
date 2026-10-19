@@ -433,7 +433,13 @@ jobs:
         run: |
           # --target makes gh create the tag at this commit when it does not exist yet,
           # which is every automatic release; a hand-pushed tag already exists and is used.
+          # --latest keeps this the release GitHub serves at releases/latest: the
+          # site's download links and the companion's own updater both resolve
+          # through it, and the addon and nightly data releases in the same repo
+          # publish with make_latest off so they never take it (2026-10-19: the
+          # data-v release had, and every companion link on the site was a 404).
           gh release create "$TAG" staged/* \
+            --latest \
             --target "$GITHUB_SHA" \
             --title "Companion ${TAG#companion-v}" \
             --notes "Desktop companion ${TAG#companion-v} for macOS, Windows and Linux. \
