@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Rank struct {
@@ -212,20 +213,62 @@ func (b *Build) Classes() []Class {
 	return out
 }
 
-// Data holds every build found under the tree data directory.
+// Data holds every build found under the tree data directory. Only the
+// newest client build is parsed when the directory is loaded; every other
+// build is parsed the first time something asks for it. The image carries
+// every build the data lane ever fetched (ten directories, each with ten
+// megabytes of item JSON), and parsing them all on a one-vCPU cold start
+// was eleven of the thirteen seconds a visitor waited after an idle gap
+// (2026-10-19); nearly every request reads the newest build alone.
 type Data struct {
-	builds  map[string]*Build
+	entries map[string]*entry
+	mu      sync.Mutex // guards skipped once Load has returned
 	skipped []string
 }
 
-func (d *Data) Build(version string) (*Build, bool) {
-	b, ok := d.builds[version]
-	return b, ok
+// entry is one build directory, parsed at most once.
+type entry struct {
+	dir      string
+	once     sync.Once
+	build    *Build
+	err      error
+	reported bool
 }
 
+// load parses the build on first use and returns the same result after.
+func (d *Data) load(version string) (*Build, error) {
+	e, ok := d.entries[version]
+	if !ok {
+		return nil, nil
+	}
+	e.once.Do(func() { e.build, e.err = loadBuild(e.dir, version) })
+	return e.build, e.err
+}
+
+// Build is the build with that version, parsed now if this is its first
+// use. A build whose files do not parse reads as absent, and the reason
+// joins Skipped so a later look at the startup state sees it; the newest
+// client build never reaches this path, because Load parses it up front
+// and fails on it.
+func (d *Data) Build(version string) (*Build, bool) {
+	b, err := d.load(version)
+	if err != nil {
+		d.mu.Lock()
+		if e := d.entries[version]; !e.reported {
+			e.reported = true
+			d.skipped = append(d.skipped, e.dir+": "+err.Error())
+		}
+		d.mu.Unlock()
+		return nil, false
+	}
+	return b, b != nil
+}
+
+// Versions lists every build directory found, parsed or not, in string
+// order.
 func (d *Data) Versions() []string {
-	out := make([]string, 0, len(d.builds))
-	for v := range d.builds {
+	out := make([]string, 0, len(d.entries))
+	for v := range d.entries {
 		out = append(out, v)
 	}
 	sort.Strings(out)
@@ -233,12 +276,17 @@ func (d *Data) Versions() []string {
 }
 
 // Skipped lists directories that were not loaded because they predate the
-// Phase 1 pipeline outputs (no combos.json or no talents directory), and the
-// root directory itself when it does not exist. Startup logs these: the API
+// Phase 1 pipeline outputs (no combos.json or no talents directory), the
+// root directory itself when it does not exist, and any older build whose
+// files failed to parse when first asked for. Startup logs these: the API
 // still serves health, version, and subscribe without any tree data, and
 // every save then fails validation on tree_version, which is the right
 // behaviour while the data pipeline is catching up.
-func (d *Data) Skipped() []string { return d.skipped }
+func (d *Data) Skipped() []string {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return append([]string(nil), d.skipped...)
+}
 
 // Latest is the newest build's data, which is what the rankings infer
 // specs from: talent ids are stable across client builds, and a report
@@ -254,7 +302,7 @@ func (d *Data) Latest() (*Build, bool) {
 	if len(versions) == 0 {
 		return nil, false
 	}
-	return d.builds[newestVersion(versions)], true
+	return d.Build(newestVersion(versions))
 }
 
 // isClientBuild reports whether a version looks like a client build string
@@ -343,7 +391,7 @@ func compareVersions(a, b string) int {
 // like a Phase 1 build is skipped (see Skipped); a directory that does look
 // like one but contains bad data fails the load.
 func Load(dir string) (*Data, error) {
-	d := &Data{builds: map[string]*Build{}}
+	d := &Data{entries: map[string]*entry{}}
 	entries, err := os.ReadDir(dir)
 	if errors.Is(err, fs.ErrNotExist) {
 		d.skipped = append(d.skipped, dir+": directory does not exist")
@@ -361,11 +409,15 @@ func Load(dir string) (*Data, error) {
 			d.skipped = append(d.skipped, path+": no combos.json or talents directory")
 			continue
 		}
-		b, err := loadBuild(path, e.Name())
-		if err != nil {
+		d.entries[e.Name()] = &entry{dir: path}
+	}
+	// The newest client build is what nearly every caller reads and what
+	// a save is validated against, so it is parsed here: a build that does
+	// not parse fails the boot rather than the first request.
+	if versions := d.Versions(); len(versions) > 0 {
+		if _, err := d.load(newestVersion(versions)); err != nil {
 			return nil, err
 		}
-		d.builds[e.Name()] = b
 	}
 	return d, nil
 }
