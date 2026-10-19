@@ -9,10 +9,10 @@
 #
 #   1. web/src/data/active-build.json names the new build.
 #   2. The ranking's outputs that no fetch produces are carried forward from the build
-#      that was active (bis/, dps-per-point.json, addon-builds.json), each only where
-#      the new build has none, so the site has picks the same morning; the nightly
-#      ranking (bis.yml, dispatched with force at the end) replaces bis/ with the new
-#      build's own within hours.
+#      that was active (bis/, dps-per-point.json), each only where the new build has
+#      none, so the site has picks the same morning; the nightly ranking (bis.yml,
+#      dispatched with force at the end) replaces bis/ with the new build's own within
+#      hours. addon-builds.json is NOT carried: it is rebuilt from the moved guides.
 #   3. The build's stat-weights copy, addon-data.json and addon/ForeverSixty/Data.lua
 #      are rendered for the new build (the documented exception to "nightly owns
 #      generated data": Data.lua tracks the ACTIVE build).
@@ -66,8 +66,18 @@ echo "activating $NEW (was $ACTIVE); Interface $OLD_IFACE -> $NEW_IFACE"
 carried=()
 if [ ! -d "$NEW_DIR/bis" ] && [ -d "$OLD_DIR/bis" ]; then
   cp -R "$OLD_DIR/bis" "$NEW_DIR/bis"; carried+=("bis/")
+  # The carried files now stand for the new build (web/src/lib/bis reads them from its
+  # directory and expects their build field to agree); generated_at and engine_version
+  # keep saying which ranking they came from.
+  python3 - "$ACTIVE" "$NEW" "$NEW_DIR"/bis/*.json <<'PYEOF'
+import sys
+old, new, *paths = sys.argv[1:]
+for path in paths:
+    text = open(path, encoding="utf-8").read()
+    open(path, "w", encoding="utf-8").write(text.replace(f'"build": "{old}"', f'"build": "{new}"', 1))
+PYEOF
 fi
-for f in dps-per-point.json addon-builds.json; do
+for f in dps-per-point.json; do
   if [ ! -e "$NEW_DIR/$f" ] && [ -e "$OLD_DIR/$f" ]; then cp "$OLD_DIR/$f" "$NEW_DIR/$f"; carried+=("$f"); fi
 done
 [ ${#carried[@]} -eq 0 ] || echo "carried forward from $ACTIVE: ${carried[*]}"
@@ -75,14 +85,23 @@ done
 # 1. The active build.
 printf '{\n  "build": "%s"\n}\n' "$NEW" > "$ACTIVE_JSON"
 
-# 3. The build's weights copy, addon-data.json and the addon's Data.lua.
-( cd data && uv run python -m pipeline weights --build "$NEW" && uv run python -m pipeline addon-data --build "$NEW" )
-
-# 4. The guides: FS1 codes re-stamped, data links moved.
+# 3. The guides: FS1 codes carried onto the new trees by talent name (the script
+#    exits non-zero and writes nothing when a tree changed shape in a way a person
+#    has to resolve, which stops the move before anything is committed), data
+#    links moved.
 node web/scripts/reencode-guide-builds.mjs
 grep -rl "foreversixty.gg/data/$ACTIVE/" web/src/content/guides | while read -r f; do
   sed -i.bak "s#foreversixty.gg/data/$ACTIVE/#foreversixty.gg/data/$NEW/#g" "$f" && rm -f "$f.bak"
 done
+
+# 4. The addon's default builds, from the guides just moved, then the build's
+#    weights copy, addon-data.json and the addon's Data.lua.
+go run ./sim/cmd/addon-builds -repo-root .
+( cd data && uv run python -m pipeline weights --build "$NEW" && uv run python -m pipeline addon-data --build "$NEW" )
+
+# 4b. The API's Battle.net import fixture is stamped with the active build.
+sed -i.bak "s/^FS1:$ACTIVE:/FS1:$NEW:/" api/internal/bnetbuild/testdata/era-kiloz.fs1 && rm -f api/internal/bnetbuild/testdata/era-kiloz.fs1.bak
+grep -q "^FS1:$NEW:" api/internal/bnetbuild/testdata/era-kiloz.fs1 || { echo "the API fixture was not re-stamped"; exit 1; }
 
 # 5. The addon: Interface, version, changelog.
 for toc in addon/ForeverSixty/ForeverSixty.toc addon/ForeverSixtyData/ForeverSixtyData.toc addon/ForeverSixtyInbox/ForeverSixtyInbox.toc; do
@@ -108,7 +127,7 @@ PY
 # 6. The gates data.yml runs, before anything is committed.
 ( cd data && uv run python -m pipeline weights --build "$NEW" --check && uv run python -m pipeline addon-data --build "$NEW" --check )
 
-git add "$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox web/src/content/guides
+git add "$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox web/src/content/guides api/internal/bnetbuild/testdata/era-kiloz.fs1
 git status --short | head -40
 [ "$MODE" != inspect ] || { echo "--no-commit: stopping with the tree changed and staged"; exit 0; }
 
@@ -119,10 +138,12 @@ chore(client): activate build $NEW
 The client watcher (client.yml) found $NEW on wago.tools, newer than the
 active $ACTIVE, and data.yml's fetch landed its tables. This commit moves
 the site, the addon and the guides to it: active-build.json, the build's
-weights copy, addon-data.json and Data.lua, every guide's FS1 stamp and
-data links, the addon TOCs' Interface ($OLD_IFACE -> $NEW_IFACE) and the
-addon version ($OLD_VER -> $NEW_VER). Carried forward from $ACTIVE until
-the next ranking replaces them: ${carried[*]:-nothing}.
+weights copy, every guide's FS1 code carried onto the new trees by talent
+name and its data links, the addon's default builds from those guides,
+addon-data.json and Data.lua, the addon TOCs' Interface ($OLD_IFACE ->
+$NEW_IFACE), the addon version ($OLD_VER -> $NEW_VER) and the API's import
+fixture stamp. Carried forward from $ACTIVE until the next ranking
+replaces them: ${carried[*]:-nothing}.
 EOF
 git -c user.name=forever-client-bot -c user.email=bot@foreversixty.gg commit --quiet --file="$MSG"
 rm -f "$MSG"
@@ -140,6 +161,15 @@ TAG="addon-v$NEW_VER"
 git tag -a "$TAG" -m "Forever Sixty $NEW_VER: data for client build $NEW" && git push --quiet origin "$TAG"
 echo "tagged $TAG (addon-release.yml publishes it to CurseForge and Wago)"
 
+# A push made with GITHUB_TOKEN triggers no workflow (the 2026-10-16 move landed
+# with no deploy, no addon publish and no ranking until each was dispatched by
+# hand), so every consumer of the new build is dispatched here: the site, the
+# API image (its simdb), the sim artifacts, the addon release for the tag, and
+# the ranking that replaces the carried-forward picks.
 if command -v gh >/dev/null 2>&1; then
+  gh workflow run web.yml --ref main && echo "dispatched the site deploy"
+  gh workflow run api.yml --ref main && echo "dispatched the API build and deploy"
+  gh workflow run sim.yml --ref main && echo "dispatched the sim artifacts"
+  gh workflow run addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true && echo "dispatched the addon release for $TAG"
   gh workflow run bis.yml --ref main -f force=true && echo "dispatched the ranking for $NEW"
 fi

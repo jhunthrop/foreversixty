@@ -175,6 +175,10 @@ jobs:
       # wowhead payload fetch-wowhead wrote above; a build with no wowhead
       # payload still gets spellranks.json.
       - run: uv run python -m pipeline simconst --build "$BUILD"
+      # trainables reads the raw SkillLineAbility and Spell* tables fetch wrote, so it
+      # runs here while they are on disk; the engine fork's conformance fixtures are
+      # copied from its output (sim/conformance/trainables.go).
+      - run: uv run python -m pipeline trainables --build "$BUILD"
       - run: uv run python -m pipeline levels --build "$BUILD"
       - run: uv run python -m pipeline icons --build "$BUILD"
       - run: uv run python -m pipeline tree-art --build "$BUILD"
@@ -238,5 +242,17 @@ jobs:
           git config user.email "bot@foreversixty.gg"
           git add builds
           git add diffs
-          git commit -m "data: build $BUILD ($PRODUCT)" || echo "nothing to commit"
-          git push
+          if ! git commit -m "data: build $BUILD ($PRODUCT)"; then
+            echo "nothing to commit"; exit 0
+          fi
+          # main moves while this job runs (the client watcher's 2026-10-16 fetch
+          # lost its push to a commit that landed mid-job): rebase the one build
+          # commit onto whatever main is now and retry, as bis.yml does.
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase --autostash --quiet origin main && git push --quiet; then
+              exit 0
+            fi
+            echo "push attempt $attempt failed; retrying"
+            sleep 20
+          done
+          exit 1

@@ -30,9 +30,7 @@ def test_every_request_pins_the_build(tmp_path: Path):
     combatratings.txt is 12,144 bytes on 1.60.1.69893 and 31,614 on Classic
     Era -- and a bare request silently serves whatever wago defaults to."""
     calls: list[str] = []
-    fetch_casc_file(
-        1391669, BUILD, cache_dir=tmp_path, client=client_for(transport(calls))
-    )
+    fetch_casc_file(1391669, BUILD, cache_dir=tmp_path, client=client_for(transport(calls)))
     assert calls == [f"https://wago.tools/api/casc/1391669?version={BUILD}"]
 
 
@@ -100,3 +98,39 @@ def test_any_other_failure_stays_an_httpx_error(tmp_path: Path):
     client = client_for(transport([], body=b"boom", status=500))
     with pytest.raises(httpx.HTTPStatusError):
         fetch_casc_file(1391669, BUILD, cache_dir=tmp_path, client=client)
+
+
+def test_a_dropped_connection_is_retried_before_it_propagates(tmp_path: Path, monkeypatch):
+    """2026-10-16: the client watcher's fetch of 1.60.1.70425 died in `icons` on one
+    "Server disconnected without sending a response". A transport failure is
+    retried; the pauses are patched to nothing so the test does not sleep."""
+    import pipeline.casc as casc
+
+    monkeypatch.setattr(casc, "RETRY_PAUSES_S", (0.0, 0.0, 0.0))
+    attempts: list[int] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        attempts.append(1)
+        if len(attempts) < 3:
+            raise httpx.RemoteProtocolError("Server disconnected without sending a response.")
+        return httpx.Response(200, content=b"payload")
+
+    data = fetch_casc_file(
+        7, BUILD, cache_dir=tmp_path, client=client_for(httpx.MockTransport(handler))
+    )
+    assert data == b"payload"
+    assert len(attempts) == 3
+
+
+def test_a_connection_that_keeps_dropping_still_fails(tmp_path: Path, monkeypatch):
+    import pipeline.casc as casc
+
+    monkeypatch.setattr(casc, "RETRY_PAUSES_S", (0.0, 0.0))
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.RemoteProtocolError("Server disconnected without sending a response.")
+
+    with pytest.raises(httpx.RemoteProtocolError):
+        fetch_casc_file(
+            7, BUILD, cache_dir=tmp_path, client=client_for(httpx.MockTransport(handler))
+        )

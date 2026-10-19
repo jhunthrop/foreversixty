@@ -857,6 +857,30 @@ def test_the_level_60_armour_cap_admits_the_real_item_that_motivated_raising_it(
     assert item.armor == 2057
 
 
+def test_the_level_60_armour_cap_admits_the_immovable_object():
+    """MAX_LEVEL_60_ARMOR was raised from 2,100 to 2,400 for build 1.60.1.70425
+    (2026-10-16): Forever moved item 19321, "The Immovable Object" -- a real epic
+    shield with 2,291 armour -- from item level 65 to 60, where the cap applies,
+    and the first automated fetch of that build stopped on it. Pinned at 2,291
+    the same way the Crest of Retribution case above is pinned at 2,057."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    row = next(r for r in rows if r["ID"] == "16866")  # Helm of Might, AllowableClass warrior
+    row["ItemLevel"] = "60"
+    row["RequiredLevel"] = "60"
+    row["OverallQualityID"] = "4"
+    row["Resistances_0"] = "2291"
+    records = build_class_items(
+        rows,
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+    )
+    (warrior,) = (r for r in records if r.class_slug == "warrior")
+    (item,) = (i for i in warrior.items if i.id == 16866)
+    assert item.armor == 2291
+
+
 def test_the_sanity_cap_also_guards_the_curve_resolved_path():
     """The same guard applies whether armour/stats came from a literal column or
     from item_curves.py's formula: a malformed StatPercentEditor on a 1.60-shaped

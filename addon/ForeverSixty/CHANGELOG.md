@@ -1,8 +1,19 @@
 # Forever Sixty
 
-## 2.0.4
+## 2.0.7
 
 - Your characters reach the site again through the companion. The 1.60 beta client does not name its region, so every saved character carried an empty one and the site refused the whole list ("region must be one of us, eu, kr, tw, cn"; the companion's log said "The site refused the character list"). The addon now records "us" when the client cannot say (the beta realms are one world, hosted in the US) and moves the records it saved before under that region, so the next logout syncs everything.
+## 2.0.6
+
+Data for client build 1.60.1.70450: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
+
+## 2.0.5
+
+- The default builds for client 1.60.1.70425 are rebuilt from the guides, carried onto the new talent trees by talent name. 2.0.4 derived them from codes carried by node id, which put ranks on the wrong talents where the client had moved them (Tidal and Totemic Focus, Elemental, the mage and priest reshuffles), and every mage, priest, warlock and shaman default refused to load.
+
+## 2.0.4
+
+Data for client build 1.60.1.70425: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
 
 ## 2.0.3
 

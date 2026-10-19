@@ -53,6 +53,13 @@ APPLY_AURA = "6"
 
 AURA_DAMAGE_DONE = 13
 AURA_RESISTANCE = 22
+#: Build 1.60.1.70425 (2026-10-16) moved the flat armour bonus off AURA_RESISTANCE:
+#: 234 effects that read aura 22 with school mask 1 (physical, i.e. armour) in
+#: 1.60.1.70374 -- every "Item +AC" enchant spell (15390 "Item +AC Leg R1", the
+#: Armor +125 leg enchant), Devotion Aura, Inner Fire, the armour elixirs -- read
+#: aura 674 there, still with school mask 1 and the same amounts. Forever's own
+#: id for a flat armour modifier, read exactly as the physical branch of aura 22.
+AURA_ARMOR = 674
 AURA_MOD_STAT = 29
 AURA_MOD_SKILL = 30
 AURA_SPELL_CRIT_SCHOOL = 552
@@ -183,15 +190,86 @@ STAT_AURAS: dict[int, str] = {
 #: in STAT_AURAS.
 IGNORED_AURAS = frozenset(
     {
-        3, 4, 8, 10, 14, 15, 17, 19, 23, 31, 33, 34, 35, 42, 43, 56, 57, 58,
-        59, 64, 69, 77, 79, 80, 82, 87, 89, 98, 102, 107, 108, 109, 112, 117,
-        122, 129, 130, 131, 134, 137, 139, 140, 142, 144, 154, 155, 161, 168,
-        180, 187, 194, 197, 213, 226, 232, 234, 262, 272, 275, 290, 319, 328,
-        332, 342, 395, 436, 466, 470, 561, 576, 593, 598, 601, 608,
+        3,
+        4,
+        8,
+        10,
+        14,
+        15,
+        17,
+        19,
+        23,
+        31,
+        33,
+        34,
+        35,
+        42,
+        43,
+        56,
+        57,
+        58,
+        59,
+        64,
+        69,
+        77,
+        79,
+        80,
+        82,
+        87,
+        89,
+        98,
+        102,
+        107,
+        108,
+        109,
+        112,
+        117,
+        122,
+        129,
+        130,
+        131,
+        134,
+        137,
+        139,
+        140,
+        142,
+        144,
+        154,
+        155,
+        161,
+        168,
+        180,
+        187,
+        194,
+        197,
+        213,
+        226,
+        232,
+        234,
+        262,
+        272,
+        275,
+        290,
+        319,
+        328,
+        332,
+        342,
+        395,
+        436,
+        466,
+        470,
+        561,
+        576,
+        593,
+        598,
+        601,
+        608,
     }
 )
 
-_BY_MISC_VALUE = frozenset({AURA_DAMAGE_DONE, AURA_RESISTANCE, AURA_MOD_STAT, AURA_MOD_SKILL})
+_BY_MISC_VALUE = frozenset(
+    {AURA_DAMAGE_DONE, AURA_RESISTANCE, AURA_ARMOR, AURA_MOD_STAT, AURA_MOD_SKILL}
+)
 
 
 class EquipEffectError(ValueError):
@@ -300,7 +378,7 @@ def spell_bonus(
                         physical += amount
                     elif bit in SCHOOL_POWER:
                         _add(stats, SCHOOL_POWER[bit], amount)
-            elif aura == AURA_RESISTANCE:
+            elif aura in (AURA_RESISTANCE, AURA_ARMOR):
                 for bit in _bits(misc):
                     if bit == SCHOOL_PHYSICAL:
                         _add(stats, "armor", amount)

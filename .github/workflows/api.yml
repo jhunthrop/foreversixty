@@ -148,7 +148,11 @@ jobs:
   deploy:
     needs: [test, image]
     # Deploys only once the Google Cloud variables from api/README.md "First-time setup" exist.
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.GCP_WIF_PROVIDER != ''
+    # A dispatch deploys too: a push made with GITHUB_TOKEN (the data bot's build
+    # commit, the client watcher's activation) triggers no workflow, so
+    # tools/activate-build.sh dispatches this one to carry the new build's
+    # simdb into the service image.
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.GCP_WIF_PROVIDER != ''
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions: { contents: read, id-token: write }

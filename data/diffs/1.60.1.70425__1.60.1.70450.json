@@ -1,0 +1,1381 @@
+{
+  "from": "1.60.1.70425",
+  "to": "1.60.1.70450",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [
+        {
+          "id": 98550,
+          "name": "Blossoming Ancient",
+          "quality": 3,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 15,
+          "subclass_id": 2,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 229368,
+          "name": "Gill'el",
+          "quality": 3,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 15,
+          "subclass_id": 2,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 244228,
+          "name": "Sash of the Tipsy Sage",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 4,
+          "subclass_id": 5,
+          "inventory_type": 6,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 244229,
+          "name": "Angler's Mantle",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 4,
+          "subclass_id": 5,
+          "inventory_type": 3,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 244230,
+          "name": "Strawhat of Frosted Currents",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 4,
+          "subclass_id": 5,
+          "inventory_type": 1,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 244231,
+          "name": "Ensemble: Stillwater Fisher Attire",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 0,
+          "subclass_id": 0,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 244352,
+          "name": "Cloak of the Veiled Paws",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 4,
+          "subclass_id": 5,
+          "inventory_type": 16,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 275818,
+          "name": "Pinky",
+          "quality": 4,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 15,
+          "subclass_id": 2,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 284587,
+          "name": "Ankle Slicers",
+          "quality": 4,
+          "item_level": 63,
+          "required_level": 58,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286724,
+          "name": "Verdant Sea Turtle",
+          "quality": 4,
+          "item_level": 60,
+          "required_level": 60,
+          "class_id": 15,
+          "subclass_id": 5,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286727,
+          "name": "Crimson Rooster",
+          "quality": 4,
+          "item_level": 60,
+          "required_level": 60,
+          "class_id": 15,
+          "subclass_id": 5,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286756,
+          "name": "Spectral Wolf Pack",
+          "quality": 4,
+          "item_level": 60,
+          "required_level": 60,
+          "class_id": 15,
+          "subclass_id": 5,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286982,
+          "name": "Unearthed Barrier",
+          "quality": 3,
+          "item_level": 32,
+          "required_level": 27,
+          "class_id": 4,
+          "subclass_id": 6,
+          "inventory_type": 14,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286983,
+          "name": "Ancient Cleaver",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 2,
+          "subclass_id": 1,
+          "inventory_type": 17,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286984,
+          "name": "Mark of the Marsh",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 2,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286985,
+          "name": "Thicket Bindings",
+          "quality": 3,
+          "item_level": 31,
+          "required_level": 26,
+          "class_id": 4,
+          "subclass_id": 2,
+          "inventory_type": 9,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286986,
+          "name": "Abandoned Leggings",
+          "quality": 3,
+          "item_level": 31,
+          "required_level": 26,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 7,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286990,
+          "name": "Arcane Remnant Leggings",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 4,
+          "subclass_id": 2,
+          "inventory_type": 7,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286991,
+          "name": "Roused Nature Footwraps",
+          "quality": 3,
+          "item_level": 32,
+          "required_level": 27,
+          "class_id": 4,
+          "subclass_id": 2,
+          "inventory_type": 8,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286992,
+          "name": "Construct's Grips",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 4,
+          "subclass_id": 3,
+          "inventory_type": 10,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286993,
+          "name": "Suffused Bindings",
+          "quality": 3,
+          "item_level": 32,
+          "required_level": 27,
+          "class_id": 4,
+          "subclass_id": 3,
+          "inventory_type": 6,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286994,
+          "name": "Tattered Kirin Tor Cloak",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 16,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286995,
+          "name": "Guardian's Emblem",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 2,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286996,
+          "name": "City Guard's Tarnished Blade",
+          "quality": 3,
+          "item_level": 34,
+          "required_level": 29,
+          "class_id": 2,
+          "subclass_id": 7,
+          "inventory_type": 13,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287059,
+          "name": "Footman's Pocketknife",
+          "quality": 2,
+          "item_level": 10,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287060,
+          "name": "Rezlak's Spare Knife",
+          "quality": 2,
+          "item_level": 11,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287061,
+          "name": "Cheese Knife",
+          "quality": 2,
+          "item_level": 12,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287062,
+          "name": "Darnassian Knife",
+          "quality": 2,
+          "item_level": 14,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287063,
+          "name": "Serrated Knife",
+          "quality": 2,
+          "item_level": 17,
+          "required_level": 12,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287064,
+          "name": "Beastculler's Knife",
+          "quality": 2,
+          "item_level": 23,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287066,
+          "name": "Wizlo's Tuning Wrench",
+          "quality": 2,
+          "item_level": 30,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287067,
+          "name": "Dragonmaw Skinflayer",
+          "quality": 2,
+          "item_level": 32,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287068,
+          "name": "Excavated Dagger",
+          "quality": 3,
+          "item_level": 33,
+          "required_level": 28,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287069,
+          "name": "Yeti Skinner",
+          "quality": 2,
+          "item_level": 34,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287070,
+          "name": "Skypierce Javelin",
+          "quality": 3,
+          "item_level": 45,
+          "required_level": 40,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287071,
+          "name": "Goblin Switchblade",
+          "quality": 2,
+          "item_level": 41,
+          "required_level": 1,
+          "class_id": 2,
+          "subclass_id": 16,
+          "inventory_type": 25,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 287647,
+          "name": "Ensemble: Gilded Blademaster's Armor",
+          "quality": 3,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 0,
+          "subclass_id": 8,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 288185,
+          "name": "Adventurer's Tent",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 15,
+          "subclass_id": 4,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 7720,
+          "before": {
+            "id": 7720,
+            "name": "Whitemane's Chapeau",
+            "quality": 3,
+            "item_level": 44,
+            "required_level": 39,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 7720,
+            "name": "Whitemane's Chapeau",
+            "quality": 3,
+            "item_level": 44,
+            "required_level": 39,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 9398,
+          "before": {
+            "id": 9398,
+            "name": "Worn Running Boots",
+            "quality": 2,
+            "item_level": 40,
+            "required_level": 35,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9398,
+            "name": "Worn Running Boots",
+            "quality": 3,
+            "item_level": 42,
+            "required_level": 37,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "item_level",
+            "quality",
+            "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 9404,
+          "before": {
+            "id": 9404,
+            "name": "Olaf's All Purpose Shield",
+            "quality": 3,
+            "item_level": 42,
+            "required_level": 37,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9404,
+            "name": "Olaf's All Purpose Shield",
+            "quality": 3,
+            "item_level": 42,
+            "required_level": 37,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 9412,
+          "before": {
+            "id": 9412,
+            "name": "Galgann's Fireblaster",
+            "quality": 3,
+            "item_level": 47,
+            "required_level": 42,
+            "class_id": 2,
+            "subclass_id": 3,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9412,
+            "name": "Galgann's Fireblaster",
+            "quality": 3,
+            "item_level": 47,
+            "required_level": 42,
+            "class_id": 2,
+            "subclass_id": 3,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 11311,
+          "before": {
+            "id": 11311,
+            "name": "Emberscale Cape",
+            "quality": 2,
+            "item_level": 46,
+            "required_level": 41,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 11311,
+            "name": "Emberscale Cape",
+            "quality": 3,
+            "item_level": 47,
+            "required_level": 42,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "item_level",
+            "quality",
+            "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 17007,
+          "before": {
+            "id": 17007,
+            "name": "Stonerender Gauntlets",
+            "quality": 4,
+            "item_level": 51,
+            "required_level": 46,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 17007,
+            "name": "Stonerender Gauntlets",
+            "quality": 4,
+            "item_level": 51,
+            "required_level": 46,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287620,
+          "before": {
+            "id": 287620,
+            "name": "Rugged Totemic Backpack",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287620,
+            "name": "Rugged Totemic Backpack",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287621,
+          "before": {
+            "id": 287621,
+            "name": "Gilded Blademaster's Chestpiece",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 5,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287621,
+            "name": "Gilded Blademaster's Chestpiece",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 5,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287622,
+          "before": {
+            "id": 287622,
+            "name": "Gilded Blademaster's Belt",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287622,
+            "name": "Gilded Blademaster's Belt",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287623,
+          "before": {
+            "id": 287623,
+            "name": "Gilded Blademaster's Legguards",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287623,
+            "name": "Gilded Blademaster's Legguards",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287624,
+          "before": {
+            "id": 287624,
+            "name": "Gilded Blademaster's Boots",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287624,
+            "name": "Gilded Blademaster's Boots",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287625,
+          "before": {
+            "id": 287625,
+            "name": "Gilded Blademaster's Gloves",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287625,
+            "name": "Gilded Blademaster's Gloves",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287626,
+          "before": {
+            "id": 287626,
+            "name": "Gilded Blademaster's Banner",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287626,
+            "name": "Gilded Blademaster's Banner",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287627,
+          "before": {
+            "id": 287627,
+            "name": "Gilded Blademaster's Collar",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287627,
+            "name": "Gilded Blademaster's Collar",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287628,
+          "before": {
+            "id": 287628,
+            "name": "Gilded Blademaster's Shoulders",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287628,
+            "name": "Gilded Blademaster's Shoulders",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 5,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 287648,
+          "before": {
+            "id": 287648,
+            "name": "Gilded Blademaster's Greatsword",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 8,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 287648,
+            "name": "Gilded Blademaster's Greatsword",
+            "quality": 3,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 8,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [
+        {
+          "id": 142880,
+          "name": "Blossoming Ancient"
+        },
+        {
+          "id": 142899,
+          "name": "Blossoming Ancient Visual Chooser"
+        },
+        {
+          "id": 142903,
+          "name": "Blossoming Ancient Passive"
+        },
+        {
+          "id": 142904,
+          "name": "Blossoming Ancient Passive Effect"
+        },
+        {
+          "id": 308853,
+          "name": "Battle Pet Periodic"
+        },
+        {
+          "id": 464808,
+          "name": "Gill'el"
+        },
+        {
+          "id": 464847,
+          "name": "Summon"
+        },
+        {
+          "id": 1236676,
+          "name": "Ensemble: Stillwater Fisher Attire"
+        },
+        {
+          "id": 1297823,
+          "name": "Pinky"
+        },
+        {
+          "id": 1321200,
+          "name": "Verdant Sea Turtle"
+        },
+        {
+          "id": 1321221,
+          "name": "Crimson Rooster"
+        },
+        {
+          "id": 1321233,
+          "name": "Spectral Wolf Pack"
+        },
+        {
+          "id": 1322724,
+          "name": "Spectral Wolf Pack"
+        },
+        {
+          "id": 1323449,
+          "name": "Spectral Wolf Pack"
+        },
+        {
+          "id": 1323476,
+          "name": "Spirit of the Spectral Wolf Pack"
+        },
+        {
+          "id": 1323493,
+          "name": "[DNT] Summon Spectral Wolf"
+        },
+        {
+          "id": 1323877,
+          "name": "Spectral Wolf Pack"
+        },
+        {
+          "id": 1323902,
+          "name": "Spirit of the Spectral Wolf Pack"
+        },
+        {
+          "id": 1323903,
+          "name": "Spirit of the Spectral Wolf Pack"
+        },
+        {
+          "id": 1323998,
+          "name": "Ensemble: Gilded Blademaster's Armor"
+        },
+        {
+          "id": 1325145,
+          "name": "Adventurer's Tent"
+        },
+        {
+          "id": 1325147,
+          "name": "Adventurer's Tent"
+        }
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}

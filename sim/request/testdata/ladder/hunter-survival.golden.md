@@ -93,8 +93,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-0000000000000000-100000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 53.5 | 1 | other:attack/2=129.9, other:attack/1=46.5, spell:14260=23.7 | - |
-| 20 | 0000000000000000-0000000000000000-500230100000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 64.7 | 2 | other:attack/2=121.3, other:attack/1=44.8, spell:14261=22.9, spell:13795=6.6 | {SpellID: 10610} |
+| 10 | 0000000000000000-0000000000000000-100000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 53.5 | 1 | other:attack/2=129.9, other:attack/1=46.5, spell:14260=23.7 | {SpellID: 1317257} |
+| 20 | 0000000000000000-0000000000000000-500230100000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 64.7 | 2 | other:attack/2=121.3, other:attack/1=44.8, spell:14261=22.9, spell:13795=6.6 | {SpellID: 10610}, {SpellID: 1317257} |
 | 30 | 0000000000000000-0000000000000000-500230131051000000 | main_hand:6692 off_hand:23168 ranged:274748 | 86.8 | 4 | other:attack/2=129.9, other:attack/1=55.1, spell:14262=20.9, spell:24118=9.7, spell:14302=4.2 | {SpellID: 10610}, {SpellID: 1317257} |
 | 38 | 0000000000000000-0000000000000000-500230131051120140 | main_hand:869 off_hand:6829 ranged:2825 | 109.8 | 6 | other:attack/1=93.9, other:attack/2=82.9, spell:14269=14.7, spell:14263=13.3, spell:1317257=12.8 | {SpellID: 10610} |
 | 40 | 0000000000000000-0000000000000000-500230131051120151 | main_hand:2164 off_hand:9465 ranged:2825 | 119.8 | 7 | other:attack/2=101.2, other:attack/1=90.6, spell:14269=15.7, spell:1317257=12.5, spell:14264=10.6 | {SpellID: 10610} |
@@ -154,7 +154,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Scorpid Poison (spell 24583)
 - Serpent Sting (spell 13551)
 - Sonic Blast (spell 1264479)
-- Strider Kick (spell 1317257)
 - Summon Hawk (spell 1293241)
 - Swipe (spell 1264497)
 - Tendon Rip (spell 1265039)

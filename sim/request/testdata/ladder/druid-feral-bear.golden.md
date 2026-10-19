@@ -117,6 +117,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 5570)
 - Moonfire (spell 8925)
 - Rip (spell 1079)
+- Shred (spell 5221)
 - Starfire (spell 2912)
 - Wrath (spell 5178)
 

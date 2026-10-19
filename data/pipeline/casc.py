@@ -18,6 +18,7 @@ a file the build does not ship, and a redirect is neither.
 from __future__ import annotations
 
 import logging
+import time
 from enum import Enum
 from pathlib import Path
 
@@ -62,6 +63,36 @@ class CascMissing(CascError):
         self.reason = reason
 
 
+#: Transport failures (a dropped connection, a read timeout, a refused connect)
+#: are retried this many times with these pauses before they propagate. The
+#: client watcher's 2026-10-16 fetch of 1.60.1.70425 died in `icons` on one
+#: "Server disconnected without sending a response" a few hundred icons in;
+#: an unattended nightly must ride out a blip. HTTP statuses are never retried
+#: here: the caller reads them.
+RETRY_PAUSES_S = (2.0, 5.0, 10.0)
+
+
+def _get_with_retries(client: httpx.Client, path: str, params: dict[str, str]) -> httpx.Response:
+    attempt = 0
+    while True:
+        try:
+            return client.get(path, params=params, timeout=60)
+        except httpx.TransportError as error:
+            if attempt >= len(RETRY_PAUSES_S):
+                raise
+            pause = RETRY_PAUSES_S[attempt]
+            attempt += 1
+            logger.warning(
+                "casc %s: %s; retry %d of %d in %.0fs",
+                path,
+                error,
+                attempt,
+                len(RETRY_PAUSES_S),
+                pause,
+            )
+            time.sleep(pause)
+
+
 def fetch_casc_file(
     file_id: int,
     build: str,
@@ -77,7 +108,7 @@ def fetch_casc_file(
     if client is None:
         client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
     try:
-        response = client.get(f"/api/casc/{file_id}", params={"version": build}, timeout=60)
+        response = _get_with_retries(client, f"/api/casc/{file_id}", {"version": build})
         if response.is_redirect:
             raise CascError(
                 f"file data id {file_id} for build {build} redirected to "

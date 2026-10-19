@@ -3,8 +3,8 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70374:mage:gnome:2050151/23552100130103051/005:'
-raidBuild: 'FS1:1.60.1.70374:mage:gnome:2050151/23252100130133051/005:'
+build: 'FS1:1.60.1.70450:mage:gnome:20500151/23552100130105031/005:'
+raidBuild: 'FS1:1.60.1.70450:mage:gnome:20500151/23252100130135031/005:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -39,8 +39,8 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Improved Fireball** — up to 0.5 seconds off Fireball's and Frostfire Bolt's cast time at rank 5, a direct throughput gain taken early.
 - **Ignite** — Fire critical strikes burn the target for a further 40% of the spell's damage over 4 seconds at rank 5, turning every crit into extra sustained damage.
 - **Improved Scorch** — up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target.
-- **Critical Mass** — up to 6% more Fire critical strike chance at rank 3, feeding both Ignite and Combustion.
-- **Fire Power** — a flat 10% more Fire damage at rank 5, the tree's biggest raw damage talent.
+- **Critical Mass** — more Fire critical strike chance, feeding both Ignite and Combustion. The current client gives it five ranks and makes all five the prerequisite for Combustion, so the build takes it at 5/5.
+- **Fire Power** — a flat Fire damage bonus, the tree's biggest raw damage talent, now capped at three ranks; the two points it no longer holds are the two that went into Critical Mass.
 - **Pyroblast** and **Heating Up** — a pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack.
 - **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land three non-periodic Fire crits.
 
