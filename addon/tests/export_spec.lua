@@ -257,3 +257,70 @@ describe("Export", function()
 		assert.are.equal("|Hitem:1|h", Export.containerLink(0, 1))
 	end)
 end)
+
+-- Seen live on the 1.60 beta (19 Oct 2026, companion.log): the site refused every
+-- character list with "region must be one of us, eu, kr, tw, cn" because the client
+-- answers GetCurrentRegion() = 110 and GetCurrentRegionName() = "", and the record
+-- carried region "". The beta realms are one world, hosted in the US.
+describe("Export.regionSegment on a client with no region", function()
+	local Export
+	before_each(function() Export = helper.load("Export") end)
+	after_each(function() mock.uninstall() end)
+
+	it("falls back to the site's first region", function()
+		assert.are.equal("us", Export.regionSegment(nil, 110))
+		assert.are.equal("us", Export.regionSegment("", 110))
+		assert.are.equal("us", Export.regionSegment(nil, nil))
+		assert.are.equal("eu", Export.regionSegment("EU", 110))
+		assert.are.equal("kr", Export.regionSegment(nil, 2))
+	end)
+
+	it("saves the record under a region the site accepts", function()
+		character({ region = 110 })
+		_G.GetCurrentRegionName = function() return "" end
+		_G.ForeverSixtyDB = nil
+		Export.save(DATA)
+		local key, record = next(_G.ForeverSixtyDB.characters)
+		assert.are.equal("us", record.region)
+		assert.are.equal("us/", key:sub(1, 3))
+		_G.GetCurrentRegionName = nil
+	end)
+end)
+
+describe("Export.migrateRegions", function()
+	local Export
+	before_each(function() Export = helper.load("Export") end)
+	after_each(function() mock.uninstall() end)
+
+	it("moves records saved with an empty region under the fallback, keeping a newer full record", function()
+		local characters = {
+			["/Classic Beta PvP/Obnoxious"] = { name = "Obnoxious", region = "", export = "FS1:old" },
+			["/Classic Beta PvE 2/Lightning"] = { name = "Lightning", region = "", export = "FS1:a" },
+			["us/Classic Beta PvP/Obnoxious"] = { name = "Obnoxious", region = "us", export = "FS1:new" },
+			["us/Ashbringer/Thrall"] = { name = "Thrall", region = "us", export = "FS1:b" },
+		}
+		assert.are.equal(2, Export.migrateRegions(characters, "us"))
+		assert.is_nil(characters["/Classic Beta PvP/Obnoxious"])
+		assert.is_nil(characters["/Classic Beta PvE 2/Lightning"])
+		assert.are.equal("FS1:new", characters["us/Classic Beta PvP/Obnoxious"].export)
+		assert.are.equal("us", characters["us/Classic Beta PvE 2/Lightning"].region)
+		assert.are.equal("FS1:a", characters["us/Classic Beta PvE 2/Lightning"].export)
+		assert.are.equal(3, (function() local n = 0 for _ in pairs(characters) do n = n + 1 end return n end)())
+	end)
+
+	it("does nothing without a region or a table", function()
+		assert.are.equal(0, Export.migrateRegions(nil, "us"))
+		assert.are.equal(0, Export.migrateRegions({ ["/r/n"] = {} }, ""))
+	end)
+
+	it("runs on save, so a stale record never reaches the companion", function()
+		character({ region = 110 })
+		_G.GetCurrentRegionName = function() return "" end
+		_G.ForeverSixtyDB = { characters = {
+			["/Classic Beta PvE 2/Lightning"] = { name = "Lightning", region = "", export = "FS1:a" } } }
+		Export.save(DATA)
+		assert.is_nil(_G.ForeverSixtyDB.characters["/Classic Beta PvE 2/Lightning"])
+		assert.are.equal("us", _G.ForeverSixtyDB.characters["us/Classic Beta PvE 2/Lightning"].region)
+		_G.GetCurrentRegionName = nil
+	end)
+end)

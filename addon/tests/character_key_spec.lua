@@ -16,8 +16,10 @@ describe("Export.keyFor", function()
 	it("reads the region from the client's name for it, else its number", function()
 		assert.are.equal("eu", Export.regionSegment("EU", 1))
 		assert.are.equal("us", Export.regionSegment(nil, 1))
-		assert.are.equal("", Export.regionSegment(nil, 72))
-		assert.are.equal("", Export.regionSegment("", nil))
+		-- The beta answers a number no table names (72 on the PTR, 110 on the 1.60 beta): the
+		-- site's first region, never "", because the site refuses a record without one.
+		assert.are.equal("us", Export.regionSegment(nil, 72))
+		assert.are.equal("us", Export.regionSegment("", nil))
 	end)
 end)
 

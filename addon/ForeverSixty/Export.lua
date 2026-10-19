@@ -239,16 +239,48 @@ end
 
 --- The key's region segment: the client's own region name (Compat.regionName,
 --- "US"), else its region number through REGION_NAMES, lowercased ("us");
---- "" when the client gives neither (seen on the beta: GetCurrentRegion
---- answering a number no table names). An empty region matches any region
---- (Follow.sameCharacter), so a key saved before the client said one still
---- finds its character.
+--- the site's first region ("us") when the client gives neither, the same
+--- fallback Compat.siteRegion uses for links. Seen on the beta (16 Oct 2026):
+--- GetCurrentRegion answers 110, GetCurrentRegionName "", and the portal
+--- cvar "test"; the beta realms are one world, hosted in the US, and the
+--- site refuses a record with no region at all. Keys saved before this
+--- carried "" there; Export.migrateRegions moves them, and an empty region
+--- still matches any region in Follow.sameCharacter.
 function Export.regionSegment(regionName, regionIndex)
 	if type(regionName) == "string" and regionName ~= "" then
 		return regionName:lower()
 	end
 	local named = Export.REGION_NAMES[regionIndex]
-	return named ~= nil and named:lower() or ""
+	return named ~= nil and named:lower() or Compat.SITE_REGIONS[1]
+end
+
+--- Re-key every saved character record whose region segment is empty under
+--- `region` ("/realm/name" becomes "us/realm/name"), stamping the record's
+--- region field too, so the companion never posts a record the site refuses.
+--- A record already saved under the full key wins; the stale one is dropped.
+--- Returns the number of records moved or dropped. Pure.
+function Export.migrateRegions(characters, region)
+	if type(characters) ~= "table" or type(region) ~= "string" or region == "" then
+		return 0
+	end
+	local moved = 0
+	local stale = {}
+	for key, record in pairs(characters) do
+		if type(key) == "string" and key:sub(1, 1) == "/" and type(record) == "table" then
+			stale[#stale + 1] = key
+		end
+	end
+	for _, key in ipairs(stale) do
+		local record = characters[key]
+		local target = region .. key
+		characters[key] = nil
+		if characters[target] == nil then
+			record.region = region
+			characters[target] = record
+		end
+		moved = moved + 1
+	end
+	return moved
 end
 
 --- name, realm, region as both Export.characterKey and Export.save need
@@ -358,6 +390,7 @@ function Export.save(data)
 	-- one "last saved" line, and a player with four characters wants the
 	-- last time anything was written, not the last time this one was.
 	ForeverSixtyDB.savedAt = date(Export.SAVED_AT_FORMAT)
+	Export.migrateRegions(ForeverSixtyDB.characters, region)
 	ForeverSixtyDB.characters[characterKeyOf(name, realm, region)] = {
 		name = name,
 		class = UnitClass("player"),
