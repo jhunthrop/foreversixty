@@ -317,3 +317,74 @@ func TestLatestPrefersAClientBuildOverANamedDataSet(t *testing.T) {
 		}
 	}
 }
+
+// Only the newest client build is parsed by Load; an older build whose
+// files do not parse is found but not opened, so the boot succeeds, and
+// its first use reads as absent with the reason recorded in Skipped.
+func TestLoadParsesOnlyTheNewestBuildUpFront(t *testing.T) {
+	bad := strings.Replace(oneTree, `"max_rank":2`, `"max_rank":3`, 1)
+	root := writeBuild(t, map[string]string{
+		"1.0.0.1/classes.json": oneClass, "1.0.0.1/races.json": oneRace, "1.0.0.1/combos.json": oneCombo,
+		"1.0.0.1/talents/warrior.json": bad,
+		"1.0.0.2/classes.json":         oneClass, "1.0.0.2/races.json": oneRace, "1.0.0.2/combos.json": oneCombo,
+		"1.0.0.2/talents/warrior.json": oneTree,
+	})
+	d, err := Load(root)
+	if err != nil {
+		t.Fatalf("a malformed OLDER build must not fail the load: %v", err)
+	}
+	if got := d.Versions(); len(got) != 2 {
+		t.Fatalf("versions = %v, want both directories listed before either is parsed", got)
+	}
+	if latest, ok := d.Latest(); !ok || latest.Version != "1.0.0.2" {
+		t.Fatalf("Latest = %v ok=%v, want 1.0.0.2", latest, ok)
+	}
+	if len(d.Skipped()) != 0 {
+		t.Fatalf("skipped = %v before the older build is asked for, want none", d.Skipped())
+	}
+	if _, ok := d.Build("1.0.0.1"); ok {
+		t.Fatal("the malformed older build must read as absent")
+	}
+	if _, ok := d.Build("1.0.0.1"); ok {
+		t.Fatal("a second ask must read the same way")
+	}
+	skipped := d.Skipped()
+	if len(skipped) != 1 || !strings.Contains(skipped[0], "1.0.0.1") || !strings.Contains(skipped[0], "ranks") {
+		t.Fatalf("skipped = %v, want the older build named once with its parse error", skipped)
+	}
+}
+
+// A malformed NEWEST build still fails the load, the way every build did.
+func TestLoadFailsOnAMalformedNewestBuild(t *testing.T) {
+	bad := strings.Replace(oneTree, `"max_rank":2`, `"max_rank":3`, 1)
+	root := writeBuild(t, map[string]string{
+		"1.0.0.1/classes.json": oneClass, "1.0.0.1/races.json": oneRace, "1.0.0.1/combos.json": oneCombo,
+		"1.0.0.1/talents/warrior.json": oneTree,
+		"1.0.0.2/classes.json":         oneClass, "1.0.0.2/races.json": oneRace, "1.0.0.2/combos.json": oneCombo,
+		"1.0.0.2/talents/warrior.json": bad,
+	})
+	if _, err := Load(root); err == nil || !strings.Contains(err.Error(), "ranks") {
+		t.Fatalf("err = %v, want the newest build's ranks/max_rank mismatch", err)
+	}
+}
+
+// An older build that parses is opened on its first use and kept.
+func TestBuildOpensAnOlderBuildOnFirstUse(t *testing.T) {
+	root := writeBuild(t, map[string]string{
+		"1.0.0.1/classes.json": oneClass, "1.0.0.1/races.json": oneRace, "1.0.0.1/combos.json": oneCombo,
+		"1.0.0.1/talents/warrior.json": oneTree,
+		"1.0.0.2/classes.json":         oneClass, "1.0.0.2/races.json": oneRace, "1.0.0.2/combos.json": oneCombo,
+		"1.0.0.2/talents/warrior.json": oneTree,
+	})
+	d, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, ok := d.Build("1.0.0.1")
+	if !ok || first.Version != "1.0.0.1" {
+		t.Fatalf("Build(1.0.0.1) = %v ok=%v", first, ok)
+	}
+	if again, _ := d.Build("1.0.0.1"); again != first {
+		t.Fatal("a build must be parsed once and the same value returned after")
+	}
+}
