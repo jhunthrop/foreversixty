@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-18T12:22:53Z",
+  "generated_at": "2026-10-19T14:34:59Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -703,8 +703,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.073281767,
-      "verify_run_seconds": 0.769287353,
+      "weights_run_seconds": 1.026125784,
+      "verify_run_seconds": 0.737926259,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1515,8 +1515,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.073281767,
-      "verify_run_seconds": 0.87296079,
+      "weights_run_seconds": 1.026125784,
+      "verify_run_seconds": 0.831987279,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2398,8 +2398,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.101718943,
-      "verify_run_seconds": 0.746854507,
+      "weights_run_seconds": 1.041484174,
+      "verify_run_seconds": 0.776675733,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3280,8 +3280,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.101718943,
-      "verify_run_seconds": 0.819374917,
+      "weights_run_seconds": 1.041484174,
+      "verify_run_seconds": 0.78428723,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4180,8 +4180,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.082740849,
-      "verify_run_seconds": 0.90872725,
+      "weights_run_seconds": 1.119672408,
+      "verify_run_seconds": 0.8982566,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5083,8 +5083,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.082740849,
-      "verify_run_seconds": 0.947950027,
+      "weights_run_seconds": 1.119672408,
+      "verify_run_seconds": 0.952193376,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5978,8 +5978,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.0707779020000001,
-      "verify_run_seconds": 1.15673769,
+      "weights_run_seconds": 1.079376039,
+      "verify_run_seconds": 1.154776142,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6878,8 +6878,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.0707779020000001,
-      "verify_run_seconds": 1.100092853,
+      "weights_run_seconds": 1.079376039,
+      "verify_run_seconds": 1.1116367600000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7892,8 +7892,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.188809576,
-      "verify_run_seconds": 3.458603419,
+      "weights_run_seconds": 1.19051766,
+      "verify_run_seconds": 3.367378895,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8904,8 +8904,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.188809576,
-      "verify_run_seconds": 3.398745259,
+      "weights_run_seconds": 1.19051766,
+      "verify_run_seconds": 3.293092682,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9902,8 +9902,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.312364539,
-      "verify_run_seconds": 2.585530862,
+      "weights_run_seconds": 1.278857673,
+      "verify_run_seconds": 2.487065444,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10897,8 +10897,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.312364539,
-      "verify_run_seconds": 2.4702922,
+      "weights_run_seconds": 1.278857673,
+      "verify_run_seconds": 2.384730688,
       "coverage": {
         "back": {
           "eligible": 390,

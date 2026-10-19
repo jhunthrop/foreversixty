@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 5420000000000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 110.9. Weights run: 2.8s. Verify run: 2.4s. 217 eligible items had no known source.
+Set DPS (verified): 110.9. Weights run: 2.7s. Verify run: 2.3s. 217 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.108 ± 0.014, crit=0.593 ± 0.016 per rating point (14 rating = 1%, 8.308 per %), hit=1.006 ± 0.048 per rating point (10 rating = 1%, 10.061 per %), melee_haste=6.817 ± 0.760
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 624, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 5420001505001251-0053200000000000-000000000000000000)
 
-Set DPS (verified): 222.2. Weights run: 3.3s. Verify run: 4.2s. 780 eligible items had no known source.
+Set DPS (verified): 222.2. Weights run: 3.3s. Verify run: 4.0s. 780 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.780 ± 0.013, crit=0.900 ± 0.024 per rating point (14 rating = 1%, 12.605 per %), hit=1.591 ± 0.103 per rating point (10 rating = 1%, 15.905 per %), melee_haste=8.863 ± 1.477
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 780, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 296.3. Weights run: 3.2s. Verify run: 11.6s. 1413 eligible items had no known source.
+Set DPS (verified): 296.3. Weights run: 3.2s. Verify run: 11.3s. 1413 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.834 ± 0.016, crit=1.303 ± 0.033 per rating point (14 rating = 1%, 18.241 per %), hit=2.211 ± 0.133 per rating point (10 rating = 1%, 22.112 per %), melee_haste=16.633 ± 1.839
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1413, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 762.4. Weights run: 3.2s. Verify run: 11.4s. 1413 eligible items had no known source.
+Set DPS (verified): 762.4. Weights run: 3.2s. Verify run: 11.1s. 1413 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.895 ± 0.016, crit=1.437 ± 0.032 per rating point (14 rating = 1%, 20.112 per %), hit=3.022 ± 0.185 per rating point (10 rating = 1%, 30.224 per %), melee_haste=15.374 ± 2.399
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1413, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 5420000000000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 110.5. Weights run: 2.8s. Verify run: 4.4s. 206 eligible items had no known source.
+Set DPS (verified): 110.5. Weights run: 2.7s. Verify run: 4.3s. 206 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.108 ± 0.014, crit=0.593 ± 0.016 per rating point (14 rating = 1%, 8.308 per %), hit=1.006 ± 0.048 per rating point (10 rating = 1%, 10.061 per %), melee_haste=6.817 ± 0.760
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 737, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 307.2. Weights run: 3.2s. Verify run: 11.2s. 1393 eligible items had no known source.
+Set DPS (verified): 307.2. Weights run: 3.2s. Verify run: 11.1s. 1393 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.834 ± 0.016, crit=1.303 ± 0.033 per rating point (14 rating = 1%, 18.241 per %), hit=2.211 ± 0.133 per rating point (10 rating = 1%, 22.112 per %), melee_haste=16.633 ± 1.839
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1393, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 786.3. Weights run: 3.2s. Verify run: 11.1s. 1393 eligible items had no known source.
+Set DPS (verified): 786.3. Weights run: 3.2s. Verify run: 10.9s. 1393 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.895 ± 0.016, crit=1.437 ± 0.032 per rating point (14 rating = 1%, 20.112 per %), hit=3.022 ± 0.185 per rating point (10 rating = 1%, 30.224 per %), melee_haste=15.374 ± 2.399
 
