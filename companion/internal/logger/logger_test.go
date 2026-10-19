@@ -179,3 +179,26 @@ func TestRecordsCarryTheClassOutOfTheExportString(t *testing.T) {
 }
 
 func at(n int) time.Time { return time.Date(2026, 10, 19, 20, 0, n, 0, time.UTC) }
+
+// The owner's real log (19 Oct 2026) names the logger "Bow-ClassicBetaPvP-" while the addon
+// saved "Bow Jackzon": the log and the WTF folder carry only the first word of a two-word
+// Forever name. A one-word log name matches the record whose first word it is; a two-word log
+// name never matches by its first word alone.
+func TestAOneWordLogNameMatchesTheRecordsFirstWord(t *testing.T) {
+	records := []Record{
+		rec("Bow Jackzon", "Classic Beta PvP", "us", "hunter", true),
+		rec("Booty Twerk", "Classic Beta PvE 2", "us", "paladin", false),
+	}
+	got, ok := Resolve(Detected{Name: "Bow", Realm: "ClassicBetaPvP"}, records)
+	want := character.Character{Region: "us", Ruleset: "pvp", Name: "Bow Jackzon"}
+	if !ok || got != want {
+		t.Errorf("Resolve(Bow) = %+v, %v; want %+v", got, ok, want)
+	}
+	if _, ok := Resolve(Detected{Name: "Bow Smith", Realm: "ClassicBetaPvP"}, records); ok {
+		t.Errorf("a two-word log name must not match by its first word")
+	}
+	twins := []Record{rec("Bow Jackzon", "Classic Beta PvP", "us", "", false), rec("Bow Arrow", "Classic Beta PvP", "us", "", false)}
+	if _, ok := Resolve(Detected{Name: "Bow"}, twins); ok {
+		t.Errorf("two records sharing the first word on the same realm are no answer")
+	}
+}

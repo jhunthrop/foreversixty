@@ -114,11 +114,20 @@ func exportClass(export string) string {
 // survivor with a region is a character. Anything else is no answer,
 // because crediting a report to the wrong character is worse than to
 // none.
+//
+// Forever characters can carry a two-word name ("Bow Jackzon"); the
+// addon records the full name from UnitName, but the combat log and the
+// WTF folder carry only the first word ("Bow-ClassicBetaPvP-", seen in
+// the owner's log on 19 Oct 2026). A one-word log name therefore also
+// matches a record whose first word it is, and the full name is never
+// matched by its first word alone when the log itself had two.
 func Resolve(d Detected, records []Record) (character.Character, bool) {
+	oneWord := !strings.ContainsRune(strings.TrimSpace(d.Name), ' ')
 	match := func(name string) []Record {
 		var out []Record
 		for _, r := range records {
-			if strings.EqualFold(strings.TrimSpace(r.Name), name) {
+			full := strings.TrimSpace(r.Name)
+			if strings.EqualFold(full, name) || (oneWord && strings.EqualFold(firstWord(full), name)) {
 				out = append(out, r)
 			}
 		}
@@ -173,6 +182,16 @@ func narrow(rs []Record, f func(Record) bool) []Record {
 // sameWord compares two spellings of a class or realm: case, spaces
 // and punctuation do not count.
 func sameWord(a, b string) bool { return flat(a) == flat(b) }
+
+// firstWord is the part of a name before its first space: what the
+// combat log and the WTF folder call a two-word Forever character.
+func firstWord(name string) string {
+	name = strings.TrimSpace(name)
+	if i := strings.IndexRune(name, ' '); i >= 0 {
+		return name[:i]
+	}
+	return name
+}
 
 func flat(s string) string {
 	var b strings.Builder
