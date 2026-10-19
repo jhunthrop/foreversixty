@@ -20,12 +20,11 @@ beforeAll(async () => {
 });
 
 describe('/logs', () => {
-  it('names the four companion builds the release workflow produces', () => {
+  // Owner, 2026-10-19: Windows is the only supported platform at launch (the macOS
+  // targets left the release matrix on 2026-10-15), so the site offers one download.
+  it('names the one companion build the site offers', () => {
     expect(companion.downloads.map((entry) => entry.asset)).toEqual([
-      'foreversixty-companion_darwin_arm64',
-      'foreversixty-companion_darwin_amd64',
       'foreversixty-companion_windows_amd64.exe',
-      'foreversixty-companion_linux_amd64',
     ]);
     for (const entry of companion.downloads) {
       expect(companion.releasesUrl).toBe('https://github.com/jhunthrop/foreversixty/releases');
