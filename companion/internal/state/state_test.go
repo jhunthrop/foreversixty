@@ -16,6 +16,8 @@ func TestAReportStateRoundTrips(t *testing.T) {
 		LogPath: "/w/Logs/WoWCombatLog.txt", StartOffset: 10, Offset: 4096, RawSent: 4096,
 		Visibility: "public", StartedAt: t0, LastAppend: t0.Add(time.Minute),
 		Fights: 3, Session: []byte{1, 2, 3}, EngineVersion: "0.1.0",
+		Auto: true, DetectedName: "Bow Jackzon", DetectedRealm: "ClassicBetaPvP",
+		DetectedClass: "Warrior", Credited: true,
 	}
 	if err := Save(dir, want); err != nil {
 		t.Fatal(err)
@@ -28,6 +30,10 @@ func TestAReportStateRoundTrips(t *testing.T) {
 		got.Fights != want.Fights || string(got.Session) != string(want.Session) ||
 		!got.LastAppend.Equal(want.LastAppend) {
 		t.Fatalf("Load = %+v", got)
+	}
+	if !got.Auto || got.DetectedName != "Bow Jackzon" || got.DetectedRealm != "ClassicBetaPvP" ||
+		got.DetectedClass != "Warrior" || !got.Credited {
+		t.Fatalf("the detection did not survive the round trip: %+v", got)
 	}
 }
 

@@ -28,6 +28,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/queue"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 	"github.com/jhunthrop/foreversixty/companion/internal/watch"
@@ -56,6 +57,10 @@ type Options struct {
 	Watch    *watch.Watcher
 	Config   config.Config
 	Log      *slog.Logger
+	// Records are the characters the addon has exported, asked for
+	// when a report needs to know which of them the combat log is
+	// for. Nil means none are known.
+	Records func() []logger.Record
 
 	RawChunk   int
 	LiveEvery  time.Duration
@@ -80,6 +85,12 @@ type Pipeline struct {
 	rawAt    int64
 	lastLive time.Time
 	lastSave time.Time
+	// lastDetected is who the combat log last named as the logger, for
+	// the status page after the report that learned it has closed.
+	lastDetected string
+	// noted is the reports whose unresolved logger was already said
+	// so in the log, so the line is written once per report.
+	noted map[string]bool
 }
 
 // New builds a pipeline and resumes the report that was open when the
@@ -107,11 +118,71 @@ func New(o Options) (*Pipeline, error) {
 	if err != nil {
 		return nil, err
 	}
-	p := &Pipeline{o: o, enc: enc}
+	p := &Pipeline{o: o, enc: enc, noted: map[string]bool{}}
 	if err := p.resume(); err != nil {
 		return nil, err
 	}
+	p.recallDetected()
 	return p, nil
+}
+
+// recallDetected restores the last logger the combat log named from
+// the newest report that named one, open or closed.
+func (p *Pipeline) recallDetected() {
+	reports, err := state.List(p.o.StateDir)
+	if err != nil {
+		return
+	}
+	for i := len(reports) - 1; i >= 0; i-- {
+		if name := detectedLabel(reports[i]); name != "" {
+			p.lastDetected = name
+			return
+		}
+	}
+}
+
+// detectedLabel is who a report's combat log is for, in the player's
+// words: the character the addon resolved, else the name the log gave.
+func detectedLabel(r state.Report) string {
+	if !r.Auto {
+		return ""
+	}
+	if r.LoggingCharacter != nil && r.LoggingCharacter.Name != "" {
+		return r.LoggingCharacter.Name
+	}
+	return r.DetectedName
+}
+
+// detect reads who is logging from the units the engine has seen. The
+// logger's own units carry the MINE affiliation flag from their first
+// line, so this knows before the first fight closes; the class
+// follows when COMBATANT_INFO supplies it. It runs under p.mu.
+func (p *Pipeline) detect() {
+	if p.cur == nil || p.sess == nil || !p.cur.Auto {
+		return
+	}
+	if p.cur.DetectedName != "" && p.cur.DetectedClass != "" {
+		return
+	}
+	d, ok := logger.Detect(p.sess.Units().Players())
+	if !ok {
+		return
+	}
+	switch {
+	case p.cur.DetectedName == "":
+		p.cur.DetectedName, p.cur.DetectedRealm, p.cur.DetectedClass = d.Name, d.Realm, d.Class
+	case d.Name == p.cur.DetectedName && d.Class != "":
+		p.cur.DetectedClass = d.Class
+	default:
+		return
+	}
+	p.lastDetected = detectedLabel(*p.cur)
+	p.o.Log.Debug("the combat log named its logger", "component", "pipeline",
+		"report", p.cur.Key, "name", d.Name, "realm", d.Realm, "class", d.Class)
+	if err := p.save(); err != nil {
+		p.o.Log.Error("could not save the detected logger", "component", "pipeline",
+			"report", p.cur.Key, "err", err.Error())
+	}
 }
 
 // Close releases the compressor.
@@ -270,6 +341,8 @@ func (p *Pipeline) start(e watch.Event, now time.Time) error {
 	p.cur = &state.Report{
 		Key: key, LogPath: e.Path, StartOffset: e.Offset,
 		Visibility: p.o.Config.ReportVisibility, LoggingCharacter: p.o.Config.LoggingCharacter,
+		// Nothing chosen in Settings means the log says whose it is.
+		Auto:      p.o.Config.LoggingCharacter == nil,
 		StartedAt: now, LastAppend: now,
 		EngineVersion: session.Version,
 	}
@@ -292,6 +365,7 @@ func (p *Pipeline) append(e watch.Event, now time.Time) error {
 	p.bufferRaw(rel, e.Data)
 	p.cur.Offset = p.sess.Offset()
 	p.cur.LastAppend = now
+	p.detect()
 	for _, c := range res.Closed {
 		if err := p.enqueueFight(c); err != nil {
 			return err

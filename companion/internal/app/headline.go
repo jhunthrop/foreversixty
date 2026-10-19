@@ -25,7 +25,7 @@ type HeadlineAction struct {
 // headlineFor picks the state, first match wins: waiting on a
 // sign-in, not paired, no game folder, any install with advanced
 // logging off, paired and not logging, logging.
-func headlineFor(paired, connecting, logging bool, installs []InstallStatus) Headline {
+func headlineFor(paired, connecting, logging bool, detected string, installs []InstallStatus) Headline {
 	switch {
 	case connecting && !paired:
 		return Headline{Key: "connecting", Tone: "off", Title: CopyConnectingTitle,
@@ -47,7 +47,11 @@ func headlineFor(paired, connecting, logging bool, installs []InstallStatus) Hea
 		}
 	}
 	if logging {
-		return Headline{Key: "logging", Tone: "on", Title: CopyLoggingTitle, Sub: CopyLoggingSub}
+		sub := CopyLoggingSub
+		if detected != "" {
+			sub = CopyLoggingSubAs(detected)
+		}
+		return Headline{Key: "logging", Tone: "on", Title: CopyLoggingTitle, Sub: sub}
 	}
 	return Headline{Key: "ready", Tone: "off", Title: CopyReadyTitle, Sub: CopyReadySub}
 }

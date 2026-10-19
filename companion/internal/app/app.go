@@ -28,6 +28,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/picker"
 	"github.com/jhunthrop/foreversixty/companion/internal/pipeline"
@@ -176,6 +177,7 @@ func New(o Options) (*App, error) {
 		Watch:    watch.New(watch.Options{Dir: a.watching}),
 		Config:   a.cfg,
 		Log:      a.log,
+		Records:  a.addonRecords,
 	})
 	if err != nil {
 		return nil, err
@@ -348,6 +350,33 @@ func (a *App) savedVariables() []string {
 			continue
 		}
 		out = append(out, paths...)
+	}
+	return out
+}
+
+// addonRecords is every character the addon has exported, from every
+// install's account files, for working out which of them a combat log
+// belongs to. The watched install's own records win a tie. It reads
+// through the cache, so a log that is open for hours costs one parse
+// per logout.
+func (a *App) addonRecords() []logger.Record {
+	a.mu.Lock()
+	installs := slices.Clone(a.installs)
+	watching := a.watching
+	a.mu.Unlock()
+	var out []logger.Record
+	for _, in := range installs {
+		paths, err := in.SavedVariables(addon.SavedVariablesName)
+		if err != nil {
+			continue
+		}
+		for _, p := range paths {
+			found, _, err := a.exports.Exports(p)
+			if err != nil {
+				continue
+			}
+			out = append(out, logger.Records(found, in.Logs == watching)...)
+		}
 	}
 	return out
 }
@@ -581,8 +610,13 @@ type Snapshot struct {
 	APIBaseURL       string               `json:"api_base_url"`
 	SiteBaseURL      string               `json:"site_base_url"`
 	Visibility       string               `json:"visibility"`
-	LoggingCharacter *character.Character `json:"logging_character,omitempty"`
-	Installs         []InstallStatus      `json:"installs"`
+	// LoggingCharacter is the character picked in Settings to override
+	// the log; nil is Automatic. DetectedCharacter is who the combat
+	// log says is logging (the last one seen when no report is open),
+	// empty before any log has named one.
+	LoggingCharacter  *character.Character `json:"logging_character,omitempty"`
+	DetectedCharacter string               `json:"detected_character"`
+	Installs          []InstallStatus      `json:"installs"`
 	// WatchPending is true while the tail has not yet moved to the
 	// first install, because a report is open.
 	WatchPending bool            `json:"watch_pending"`
@@ -673,7 +707,8 @@ func (a *App) installStatuses() (rows []InstallStatus, watchPending bool) {
 func (a *App) Headline() Headline {
 	installs, _ := a.installStatuses()
 	connecting := a.connectView().State == ConnectWaiting || a.connectView().State == ConnectBlocked
-	return headlineFor(a.deviceToken() != "", connecting, a.pipe.Status().Logging, installs)
+	st := a.pipe.Status()
+	return headlineFor(a.deviceToken() != "", connecting, st.Logging, st.Detected, installs)
 }
 
 // ReportsURL is the player's reports on the site.
@@ -713,7 +748,8 @@ func (a *App) Snapshot() Snapshot {
 	}
 	s.Installs, s.WatchPending = a.installStatuses()
 	connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
-	s.Headline = headlineFor(paired, connecting, s.Pipeline.Logging, s.Installs)
+	s.DetectedCharacter = s.Pipeline.Detected
+	s.Headline = headlineFor(paired, connecting, s.Pipeline.Logging, s.Pipeline.Detected, s.Installs)
 	reports, err := state.List(a.o.Dirs.State)
 	if err != nil {
 		a.log.Warn("could not list the reports", "component", "app", "err", err.Error())

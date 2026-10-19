@@ -328,6 +328,65 @@ func TestPatchIsForTheOwnerAndGuildOfficers(t *testing.T) {
 	}
 }
 
+// The companion reads who is logging from the combat log, which can be
+// after the report exists, so PATCH sets the logging character with the
+// validation create applies, and only for someone who may edit.
+func TestPatchSetsTheLoggingCharacterAsCreateValidatesIt(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	logged := func() string {
+		t.Helper()
+		rep, err := h.store.Get(t.Context(), id)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if rep.LoggingCharacter == nil {
+			return ""
+		}
+		return *rep.LoggingCharacter
+	}
+	if got := logged(); got != "us/hardcore/baelgrim" {
+		t.Fatalf("created with %q", got)
+	}
+
+	res := h.json(http.MethodPatch, "/v1/reports/"+id,
+		`{"logging_character":{"region":"eu","ruleset":"pvp","name":"Bow Jackzon"}}`)
+	var view View
+	h.data(res, &view)
+	if got := logged(); got != "eu/pvp/bow-jackzon" {
+		t.Fatalf("after patch the logging character = %q", got)
+	}
+
+	// A patch that does not mention it leaves it alone.
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Thursday"}`)
+	h.data(res, &view)
+	if got := logged(); got != "eu/pvp/bow-jackzon" {
+		t.Fatalf("a title patch moved the logging character to %q", got)
+	}
+
+	// A character the API would refuse on create is refused here too.
+	res = h.json(http.MethodPatch, "/v1/reports/"+id,
+		`{"logging_character":{"region":"us","ruleset":"nightslayer","name":"Baelgrim"}}`)
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("a bad ruleset = %d, want 400", res.StatusCode)
+	}
+	if h.errorFields(res)["logging_character"] == "" {
+		t.Fatal("the 400 should name the character field")
+	}
+	if got := logged(); got != "eu/pvp/bow-jackzon" {
+		t.Fatalf("a refused patch changed it to %q", got)
+	}
+
+	// Someone who may not edit the report may not credit it.
+	h.actor = auth.Actor{UserID: h.owner + 50, Role: "user", Method: "session"}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id,
+		`{"logging_character":{"region":"us","ruleset":"pvp","name":"Thief"}}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("a stranger patching the character = %d, want 403", res.StatusCode)
+	}
+}
+
 // A private report answers 404 to a read it refuses; PATCH must refuse
 // the same way rather than confirming existence with a 403.
 func TestPatchingAPrivateReportIsInvisibleToAStranger(t *testing.T) {

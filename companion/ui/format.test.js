@@ -23,6 +23,14 @@ test('a time is today, yesterday or a short date', () => {
   assert.strictEqual(FORMAT.when('not a date', now, COPY.reports), '');
 });
 
+test('Automatic names who the log says is logging once it knows', () => {
+  assert.strictEqual(FORMAT.automaticLabel('', COPY.settings), 'Automatic (read from the log)');
+  assert.strictEqual(FORMAT.automaticLabel(undefined, COPY.settings), 'Automatic (read from the log)');
+  assert.strictEqual(FORMAT.automaticLabel('Bow Jackzon', COPY.settings), 'Automatic (currently Bow Jackzon)');
+  assert.strictEqual(COPY.settings.characterHelp,
+    'Automatic reads who is logging from the combat log itself. Pick a character only if that is wrong.');
+});
+
 test('a character is named with its ruleset in words', () => {
   const rs = COPY.settings.rulesets;
   assert.strictEqual(FORMAT.characterLabel({ name: 'Thrall', ruleset: 'hardcore', region: 'us' }, rs), 'Thrall \u00b7 Hardcore \u00b7 US');

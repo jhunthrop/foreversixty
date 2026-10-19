@@ -1,8 +1,10 @@
 package pipeline_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"slices"
@@ -12,10 +14,12 @@ import (
 
 	"github.com/klauspost/compress/zstd"
 
+	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
 	"github.com/jhunthrop/foreversixty/companion/internal/fakeapi"
 	"github.com/jhunthrop/foreversixty/companion/internal/fixture"
+	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/pipeline"
 	"github.com/jhunthrop/foreversixty/companion/internal/queue"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
@@ -35,6 +39,13 @@ type rig struct {
 	q        *queue.Queue
 	clock    time.Time
 	rawChunk int
+
+	// records are what the addon has exported, as the pipeline asks
+	// for them; chosen is the character picked in Settings, nil for
+	// Automatic; logs is what the pipeline logged.
+	records []logger.Record
+	chosen  *character.Character
+	logs    bytes.Buffer
 }
 
 func newRig(t *testing.T, rawChunk int) *rig {
@@ -86,7 +97,10 @@ func (r *rig) open() {
 		Client:   c,
 		Queue:    q,
 		Watch:    watch.New(watch.Options{Dir: r.dirs.logs}),
-		Config:   config.Config{APIBaseURL: r.srv.URL, SiteBaseURL: r.srv.URL, ReportVisibility: "public"},
+		Config: config.Config{APIBaseURL: r.srv.URL, SiteBaseURL: r.srv.URL,
+			ReportVisibility: "public", LoggingCharacter: r.chosen},
+		Records:  func() []logger.Record { return r.records },
+		Log:      slog.New(slog.NewTextHandler(&r.logs, nil)),
 		RawChunk: r.rawChunk,
 		// Save the session on every tick so a restart in a test
 		// resumes from the same place a long-running companion would.

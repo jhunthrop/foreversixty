@@ -35,6 +35,14 @@ type CreateReport struct {
 	LoggingCharacter *Character `json:"logging_character,omitempty"`
 }
 
+// UpdateReport is the body of PATCH /v1/reports/{id}: the fields the
+// companion changes after a report exists. Today that is who is
+// logging, which the combat log can name before the addon's record of
+// the character has arrived.
+type UpdateReport struct {
+	LoggingCharacter *Character `json:"logging_character,omitempty"`
+}
+
 // Report is the API's answer to a report creation.
 type Report struct {
 	ID        string    `json:"id"`
@@ -192,6 +200,21 @@ func (c *Client) CreateReport(ctx context.Context, in CreateReport) (Report, err
 		return Report{}, fmt.Errorf("POST /v1/reports: the response carried no report id")
 	}
 	return out, nil
+}
+
+// UpdateReport changes a report that exists. The API validates the
+// logging character as it does on creation.
+func (c *Client) UpdateReport(ctx context.Context, reportID string, in UpdateReport) error {
+	body, err := json.Marshal(in)
+	if err != nil {
+		return err
+	}
+	_, err = c.do(ctx, request{
+		Method: http.MethodPatch,
+		Path:   "/v1/reports/" + url.PathEscape(reportID),
+		Body:   body, Type: "application/json",
+	})
+	return err
 }
 
 // PutFight uploads one closed fight. The body is pre-encoded so the

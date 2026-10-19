@@ -50,13 +50,19 @@ const FORMAT = (() => {
 
   const characterValue = (c) => [c.region, c.ruleset, c.name].join('|');
 
+  // automaticLabel is the select's first option: the log decides, and
+  // once it has named a character the option says who.
+  function automaticLabel(detected, settings) {
+    return detected ? settings.characterAutoNow(detected) : settings.characterAuto;
+  }
+
   // countdown is the whole minutes and seconds left, never negative.
   function countdown(expiresISO, now) {
     const left = Math.max(0, Math.floor((new Date(expiresISO).getTime() - now.getTime()) / 1000));
     return { m: Math.floor(left / 60), s: left % 60 };
   }
 
-  return { midTruncate, when, lastPlayed, characterLabel, characterValue, countdown };
+  return { midTruncate, when, lastPlayed, characterLabel, characterValue, automaticLabel, countdown };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

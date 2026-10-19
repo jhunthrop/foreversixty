@@ -1,5 +1,10 @@
 # Companion changelog
 
+## 0.2.3
+
+- Reports are credited to the character that wrote the log, read from the combat log itself; pick
+  one in Settings only to override.
+
 ## 0.2.2
 
 - The companion now watches the game install you played most recently, not the first one it

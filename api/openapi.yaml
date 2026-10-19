@@ -1556,7 +1556,13 @@ paths:
                     properties: { data: { $ref: '#/components/schemas/Report' } }
         '404': { description: "Unknown, or not visible to you", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     patch:
-      summary: Change a report's title, visibility, or guild
+      summary: Change a report's title, visibility, guild, or logging character
+      description: >-
+        logging_character is validated as on create (region us/eu/kr/tw/cn, ruleset
+        normal/pvp/rp/hardcore) and answers 400 otherwise. The companion sets it once, after
+        the report exists, when it has read who is logging from the combat log and the addon
+        record that names the character arrives late. Fights ingested before the change keep
+        the region and ruleset they were keyed under.
       parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
       requestBody:
         required: true
@@ -1568,6 +1574,12 @@ paths:
                 title: { type: string }
                 visibility: { type: string, enum: [public, unlisted, private, guild] }
                 guild_id: { type: integer, format: int64 }
+                logging_character:
+                  type: object
+                  properties:
+                    region: { type: string }
+                    ruleset: { type: string }
+                    name: { type: string }
       responses:
         '200': { description: "The report as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '403': { description: "Not the owner, a guild officer, or a moderator", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }

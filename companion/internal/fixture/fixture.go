@@ -19,8 +19,18 @@ const Header = "9/26 20:10:00.000  COMBAT_LOG_VERSION,16,ADVANCED_LOG_ENABLED,1,
 const Zone = "9/26 20:10:00.500  ZONE_CHANGE,2284,\"Sanguine Depths\",8\n"
 
 // player and boss are invented; see logs/README.md for the cast.
+// The game writes the logging player's own units with the
+// COMBATLOG_OBJECT_AFFILIATION_MINE bit (0x1) and everyone else in the
+// group with PARTY (0x2): the owner's real log writes its own character
+// as 0x511 and the players around it as 0x518. player is the logger,
+// ally is in the group.
 const (
-	player   = `Player-4184-000000A3,"Morrowlyn-Nightslayer",0x512,0x0`
+	// Logger is the name the fixture's logging player carries, without
+	// the realm segment.
+	Logger = "Morrowlyn"
+
+	player   = `Player-4184-000000A3,"Morrowlyn-Nightslayer",0x511,0x0`
+	ally     = `Player-4184-000000A4,"Brannic-Nightslayer",0x512,0x0`
 	boss     = `Creature-0-2085-2284-7855-169753-0000AA0001,"Hollow Sentinel",0xa48,0x0`
 	advanced = `Creature-0-2085-2284-7855-169753-0000AA0001,0000000000000000,41320,44000,` +
 		`612,0,1955,0,0,0,0,0,-1487.02,6409.71,1675,1.2044,45`
@@ -41,8 +51,12 @@ func Encounter(n int) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "%sENCOUNTER_START,%d,%q,8,5,2284\n", at(0), id, name)
 	for i := range 3 {
+		src := player
+		if i == 1 {
+			src = ally
+		}
 		fmt.Fprintf(&b, "%sSPELL_DAMAGE,%s,%s,116,\"Frostbolt\",0x10,%s,%s\n",
-			at(time.Duration(i+1)*time.Second), player, boss, advanced, damage)
+			at(time.Duration(i+1)*time.Second), src, boss, advanced, damage)
 	}
 	fmt.Fprintf(&b, "%sUNIT_DIED,0000000000000000,nil,0x80000000,0x80000000,%s,0\n", at(30*time.Second), boss)
 	fmt.Fprintf(&b, "%sENCOUNTER_END,%d,%q,8,5,1\n", at(31*time.Second), id, name)
