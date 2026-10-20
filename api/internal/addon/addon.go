@@ -233,13 +233,19 @@ func (s *Store) deleteCharacter(ctx context.Context, userID int64, key string) e
 // that is unclaimed or already userID's own, and a claim that touches no
 // row (RowsAffected() == 0) is refused as ErrCharacterClaimed rather than
 // stealing it.
+//
+// seen_at moves on every accepted upload, because the inbox ack tells the addon when the site
+// last received the character; updated_at moves only when the export text differs, so it still
+// means "the export changed" (the ack carries it as export_changed_at).
 func (s *Store) putOneExport(ctx context.Context, tx pgx.Tx, userID int64, key, region, ruleset string, e Export) error {
 	tag, err := tx.Exec(ctx,
-		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, source, captured_at, updated_at)
-		 values ($1, $2, $3, $4, $5, $6, 'addon', now(), now())
+		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, source, captured_at, updated_at, seen_at)
+		 values ($1, $2, $3, $4, $5, $6, 'addon', now(), now(), now())
 		 on conflict (character_key) do update set
 		   user_id = excluded.user_id, export = excluded.export,
-		   source = 'addon', captured_at = now(), updated_at = now()
+		   source = 'addon', captured_at = now(), seen_at = now(),
+		   updated_at = case when addon_exports.export is distinct from excluded.export
+		                     then now() else addon_exports.updated_at end
 		 where addon_exports.user_id = excluded.user_id`,
 		key, userID, region, ruleset, e.Name, e.Export)
 	if err != nil {

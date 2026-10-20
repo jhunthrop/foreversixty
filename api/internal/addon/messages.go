@@ -126,10 +126,13 @@ type MessageEntry struct {
 	PendingApprovals int    `json:"pending_approvals,omitempty"`
 	Rank             string `json:"rank,omitempty"`
 
-	// messageAck: when the site stored the character's export. On a weights message from an
+	// messageAck: when the site last received the character's export. On a weights message from an
 	// in-game run it is the export that request was made on (the ack's value back then);
 	// absent on a website run and a request recorded before migration 0038.
 	ExportSeenAt string `json:"export_seen_at,omitempty"`
+	// ExportChangedAt is, on an ack, when the export text last changed (addon_exports.updated_at),
+	// so the addon can tell "the site saw it again" from "the site has something new".
+	ExportChangedAt string `json:"export_changed_at,omitempty"`
 	// SimRequestState is what became of the character's newest in-game sim
 	// request (sims.SimRequestState*); absent when it never asked.
 	SimRequestState string `json:"sim_request_state,omitempty"`
@@ -642,7 +645,8 @@ func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, expo
 }
 
 // ackMessages is one "ack" per exported character when the account has a companion paired:
-// when the site stored the export, what became of the character's newest in-game sim
+// when the site last received an upload for it (export_seen_at, changed or not), when the export
+// last changed (export_changed_at), what became of the character's newest in-game sim
 // request (its run's done or failed once the run ended), and when the site received it.
 func (s *Service) ackMessages(ctx context.Context, userID int64) []MessageEntry {
 	rows, err := s.Store.acks(ctx, userID)
@@ -654,7 +658,8 @@ func (s *Service) ackMessages(ctx context.Context, userID int64) []MessageEntry 
 	for _, r := range rows {
 		m := MessageEntry{
 			Type: messageAck, Character: r.CharacterKey,
-			ExportSeenAt: r.SeenAt.UTC().Format(time.RFC3339), SimRequestState: r.SimRequestState,
+			ExportSeenAt: r.SeenAt.UTC().Format(time.RFC3339), ExportChangedAt: r.ChangedAt.UTC().Format(time.RFC3339),
+			SimRequestState: r.SimRequestState,
 		}
 		if r.RequestedAt != nil {
 			m.RequestedAt = r.RequestedAt.UTC().Format(time.RFC3339)

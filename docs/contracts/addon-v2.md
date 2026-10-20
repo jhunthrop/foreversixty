@@ -314,8 +314,11 @@ Notes for the reader:
   reference stat's points, else `"score"`; an off-hand item is left out while the character
   wears a two-hander, and a two-hander is weighed against both hands together;
   `planned` is true for the spec's level-60 best-in-slot pick.
-- `ack.export_seen_at` is when the site last saw the character's export, an RFC 3339 time in
-  UTC; the build dialog shows it as "Seen by the site 14:03" in local time. `ack` is sent only
+- `ack.export_seen_at` is when the site last received an upload for the character, an RFC 3339
+  time in UTC, whether or not the export had changed since the one before (a re-upload of the
+  same export moves it); `ack.export_changed_at` is when the export text last changed, so the
+  addon can tell "the site saw it again" from "the site has something new" (optional; the
+  addon ignores it when absent); the build dialog shows it as "Seen by the site 14:03" in local time. `ack` is sent only
   to an account with a companion paired. Its optional `sim_request_state` is what became of
   the character's newest in-game sim request: `"queued"` (a run started), `"needs_premium"`
   (server sims are a premium feature), `"duplicate"` (another request started a run within
