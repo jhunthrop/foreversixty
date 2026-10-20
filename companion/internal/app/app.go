@@ -606,10 +606,10 @@ type Snapshot struct {
 	TokenBackend     string      `json:"token_backend"`
 	TokenBackendName string      `json:"token_backend_name"`
 	// TokenBackendNote is the sub line under the file fallback.
-	TokenBackendNote string               `json:"token_backend_note,omitempty"`
-	APIBaseURL       string               `json:"api_base_url"`
-	SiteBaseURL      string               `json:"site_base_url"`
-	Visibility       string               `json:"visibility"`
+	TokenBackendNote string `json:"token_backend_note,omitempty"`
+	APIBaseURL       string `json:"api_base_url"`
+	SiteBaseURL      string `json:"site_base_url"`
+	Visibility       string `json:"visibility"`
 	// LoggingCharacter is the character picked in Settings to override
 	// the log; nil is Automatic. DetectedCharacter is who the combat
 	// log says is logging (the last one seen when no report is open),

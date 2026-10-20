@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
-	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
+	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
 	"github.com/jhunthrop/foreversixty/companion/internal/fakeapi"
