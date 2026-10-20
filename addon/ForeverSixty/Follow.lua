@@ -425,37 +425,11 @@ function Follow.dismissedSet()
 	return currentEntry().dismissed or {}
 end
 
---- Fold one "/"-separated key segment to a form both the addon's own key
---- format and the site's agree on: lower-cased, with runs of whitespace
---- turned into a single hyphen (how the site slugifies a display name).
-local function normaliseSegment(segment)
-	return (segment or ""):lower():gsub("%s+", "-")
-end
-
---- Whether `a` and `b` name the same character. Either may be the addon's
---- own key (region/realm/Display Name, Export.characterKey) or the
---- site's (region/ruleset/slugified-name, e.g. "us/pvp/bow-jackzon",
---- companion/internal/addon/addon.go's Build.Character): each of the
---- three "/"-separated segments is compared through normaliseSegment, so
---- "US/Ashbringer/Bow Jackzon" and "us/ashbringer/bow-jackzon" match.
---- The realm/ruleset segment gets no further translation -- on this
---- client the realm name doubles as the ruleset already (Export.save's
---- own `ruleset = realm`), so a straight case-fold is the whole rule.
+--- Whether `a` and `b` name the same character, the addon's own key (region/realm/Display Name)
+--- or the site's (region/ruleset/name-slug) in either position: Codec.sameCharacter, the one
+--- matcher, which also reads a realm name ("Classic Beta PvP") as the ruleset it spells ("pvp").
 function Follow.sameCharacter(a, b)
-	if type(a) ~= "string" or type(b) ~= "string" then
-		return false
-	end
-	local aRegion, aMid, aName = a:match("^([^/]*)/([^/]*)/(.*)$")
-	local bRegion, bMid, bName = b:match("^([^/]*)/([^/]*)/(.*)$")
-	if aRegion == nil or bRegion == nil then
-		return false
-	end
-	-- An empty region on either side matches any region: a key saved before
-	-- the client said its region (seen on the beta: "/Classic Beta PvP/...").
-	local sameRegion = aRegion == "" or bRegion == "" or normaliseSegment(aRegion) == normaliseSegment(bRegion)
-	return sameRegion
-		and normaliseSegment(aMid) == normaliseSegment(bMid)
-		and normaliseSegment(aName) == normaliseSegment(bName)
+	return Codec.sameCharacter(a, b)
 end
 
 --- The companion's builds usable by the character at `key`, in the order

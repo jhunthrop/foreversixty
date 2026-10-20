@@ -804,17 +804,77 @@ end
 -- existing .builds (companion/internal/addon/addon.go's Message), each
 -- one carrying an optional `character` exactly like a build does.
 --
--- normaliseSegment/sameCharacter below are a deliberate, small
--- duplication of Follow.sameCharacter rather than a require of Follow:
--- Follow.lua already requires Codec (for Codec.loadBuild), so the other
--- direction would be a circular require, and Follow.lua is a different
--- lane's file this wave. If the two ever want one copy, the controller
--- is the one positioned to move it.
+--- The words a realm's name spells a ruleset with, as the site reads them
+--- (web/src/lib/characters.ts RULESET_WORDS): the ruleset itself on Forever, PvE/PvP on the beta.
+Codec.RULESET_WORDS = {
+	normal = "normal", pve = "normal", pvp = "pvp", rp = "rp", roleplay = "rp",
+	hardcore = "hardcore", hc = "hardcore",
+}
+
+--- The first ruleset word among `words`, each word alone or run together with the next
+--- (a run-together realm's "PvP" opens into "Pv" and "P"). nil for none.
+local function rulesetIn(words, pairsToo)
+	for index, word in ipairs(words) do
+		local ruleset = Codec.RULESET_WORDS[word]
+		if ruleset == nil and pairsToo and words[index + 1] ~= nil then
+			ruleset = Codec.RULESET_WORDS[word .. words[index + 1]]
+		end
+		if ruleset ~= nil then
+			return ruleset
+		end
+	end
+	return nil
+end
+
+--- The ruleset segment of a site path for a realm's name, as the site's rulesetFromRealm reads
+--- it: the first of its words (split at anything not a letter or a digit, lower-cased) that
+--- names a ruleset. A realm as a sender spells it, its words run together ("ClassicBetaPvP"),
+--- is opened at its capitals and digits first. "normal" where no word names one. Pure.
+function Codec.rulesetFromRealm(realm)
+	realm = type(realm) == "string" and realm or ""
+	local words = {}
+	for word in realm:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	local ruleset = rulesetIn(words, false)
+	if ruleset ~= nil then
+		return ruleset
+	end
+	local opened = realm:gsub("(%l)(%u)", "%1 %2"):gsub("(%a)(%d)", "%1 %2"):gsub("(%d)(%a)", "%1 %2")
+	words = {}
+	for word in opened:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	return rulesetIn(words, true) or "normal"
+end
+
+--- Fold one "/"-separated key segment to a form both the addon's own key format and the site's
+--- agree on: lower-cased, with runs of whitespace turned into a single hyphen (how the site
+--- slugifies a display name).
 local function normaliseSegment(segment)
 	return (segment or ""):lower():gsub("%s+", "-")
 end
 
-local function sameCharacter(a, b)
+--- The ruleset a key's middle segment stands for: the segment itself when it is already one of
+--- the site's rulesets ("pvp" in "us/pvp/bow-jackzon"), else the ruleset the realm name's words
+--- spell ("Classic Beta PvP" is "pvp"; an unrelated realm is "normal").
+local function rulesetOfSegment(segment)
+	local folded = segment:lower()
+	if folded == "normal" or folded == "pvp" or folded == "rp" or folded == "hardcore" then
+		return folded
+	end
+	return Codec.rulesetFromRealm(segment)
+end
+
+--- Whether `a` and `b` name the same character. Either may be the addon's own key
+--- (region/realm display name/Display Name, Export.characterKey) or the site's
+--- (region/ruleset/name-slug, e.g. "us/pvp/bow-jackzon": companion/internal/addon/addon.go's
+--- Build.Character). The region matches when either is empty (a key saved before the client said
+--- its region) or both fold equal; the name when both fold equal; the middle segment when both
+--- fold equal or both stand for the same ruleset, so "us/Classic Beta PvP/Bow Jackzon" is
+--- "us/pvp/bow-jackzon" while "US/Ashbringer/Bow Jackzon" (a "normal" realm) is not. The one
+--- matcher: Follow.sameCharacter and Codec.inboxMessages both read it. Pure.
+function Codec.sameCharacter(a, b)
 	if type(a) ~= "string" or type(b) ~= "string" then
 		return false
 	end
@@ -823,12 +883,10 @@ local function sameCharacter(a, b)
 	if aRegion == nil or bRegion == nil then
 		return false
 	end
-	-- An empty region on either side matches any region: a key saved before
-	-- the client said its region (seen on the beta: "/Classic Beta PvP/...").
 	local sameRegion = aRegion == "" or bRegion == "" or normaliseSegment(aRegion) == normaliseSegment(bRegion)
-	return sameRegion
-		and normaliseSegment(aMid) == normaliseSegment(bMid)
-		and normaliseSegment(aName) == normaliseSegment(bName)
+	local sameMiddle = normaliseSegment(aMid) == normaliseSegment(bMid)
+		or rulesetOfSegment(aMid) == rulesetOfSegment(bMid)
+	return sameRegion and sameMiddle and normaliseSegment(aName) == normaliseSegment(bName)
 end
 
 --- The message kinds this addon build understands. A message whose
@@ -860,7 +918,7 @@ function Codec.inboxMessages(inbox, key, kind)
 	for _, message in ipairs(inbox.messages) do
 		if type(message) == "table" and message.type == kind then
 			local addressed = message.character
-			if addressed == nil or sameCharacter(addressed, key) then
+			if addressed == nil or Codec.sameCharacter(addressed, key) then
 				usable[#usable + 1] = message
 			end
 		end
