@@ -45,13 +45,22 @@ const COPY = {
       yesterday: 'yesterday',
       days: (n) => n + ' days ago',
     },
-    // Who a report is credited to; the unmatched reason comes from the snapshot.
+    // Who a report is credited to. Two states: the name-versus-realm split of
+    // why it is not stays in companion.log, because the player's step is the same.
     credit: {
       credited: (name) => 'credited to ' + name,
-      unmatched: (reason) => 'not credited: ' + reason,
-      none: 'not credited',
+      notYet: 'not credited yet',
+      // The second line of the Current report row while it is not credited.
+      notYetHelp: 'Log out once in game with the addon loaded. The companion credits this report then.',
       separator: ' · ',
     },
+    // The Addon row's Check for builds now button and the line it leaves.
+    checkBuilds: 'Check for builds now',
+    checking: 'Checking…',
+    checked: (when, found) => 'Checked ' + when + ' · ' + found,
+    checkedJustNow: 'just now',
+    checkedBuilds: (n, who) => n + (n === 1 ? ' build' : ' builds') + (who.length ? ' for ' + who.join(', ') : ''),
+    checkedNothing: 'nothing new',
     noReport: 'None yet',
     starting: 'Starting...',
     folders: 'Game folders',
@@ -60,7 +69,9 @@ const COPY = {
     lastPlayed: 'Last played',
     notPlayed: 'Not played yet',
     watchingTitle: 'The companion reads this folder’s combat log',
-    advancedOff: 'Advanced logging: OFF',
+    // The watched install is a fault and shouts; any other is just a fact.
+    advancedOffWatched: 'Advanced logging: OFF',
+    advancedOff: 'Advanced logging: off',
     advancedOn: 'Advanced logging: on',
     advancedUnknown: 'Not checked yet. Log in once.',
     // The line a folder row keeps comes from the snapshot (copy.go).

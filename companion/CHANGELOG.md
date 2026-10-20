@@ -3,6 +3,7 @@
 ## 0.2.8
 
 - A report opened before this update is credited after the update too: the stored logger name is re-read the new way.
+- Status says plainly whether the current report is credited, and to whom; installs you are not logging no longer warn about advanced logging; the companion checks for builds right after you log out, and the Addon row has a Check-for-builds-now button.
 
 ## 0.2.7
 

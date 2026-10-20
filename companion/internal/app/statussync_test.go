@@ -121,10 +121,13 @@ func TestAReportSaysWhoItIsCreditedTo(t *testing.T) {
 	}
 	h.app.Step(t.Context(), t0.Add(time.Second))
 	s := h.app.Snapshot()
-	if s.Credit.State != app.CreditUnmatched || s.Credit.Name != "Morrowlyn" ||
-		s.Credit.Reason != "the log names Morrowlyn, but the addon has not exported that character — "+
-			"log out once with the addon loaded on it" {
+	if s.Credit != (app.Credit{Name: "Morrowlyn", State: app.CreditUnmatched}) {
 		t.Fatalf("unmatched: %+v", s.Credit)
+	}
+	// The window reads the two-state copy; the name-versus-realm split is the log's
+	// (pipeline's logger_test checks that line).
+	if s.Headline.Tone != "on" || s.Headline.Sub != "Uploading your fights as they end · character not matched yet" {
+		t.Errorf("headline = %+v", s.Headline)
 	}
 	if len(s.Reports) != 1 || s.Reports[0].Credit != s.Credit {
 		t.Errorf("the Reports row differs from the Current report: %+v", s.Reports)
@@ -138,8 +141,12 @@ func TestAReportSaysWhoItIsCreditedTo(t *testing.T) {
 	}
 	h.app.Step(t.Context(), t0.Add(2*time.Second))
 	h.app.Step(t.Context(), t0.Add(3*time.Second))
-	if c := h.app.Snapshot().Credit; c.State != app.CreditCredited || c.Name != "Morrowlyn" || c.Reason != "" {
-		t.Errorf("matched: %+v", c)
+	s = h.app.Snapshot()
+	if s.Credit != (app.Credit{Name: "Morrowlyn", State: app.CreditCredited}) {
+		t.Errorf("matched: %+v", s.Credit)
+	}
+	if s.Headline.Tone != "on" || s.Headline.Sub != "Uploading your fights as they end · logging as Morrowlyn" {
+		t.Errorf("headline = %+v", s.Headline)
 	}
 }
 
@@ -195,7 +202,42 @@ func TestAReportStoredUnderTheOldTwoWordNameShowsTheSpacedName(t *testing.T) {
 		t.Fatalf("%d reports", len(s.Reports))
 	}
 	c := s.Reports[0].Credit
-	if c.Name != "Bow Jackzon" || !strings.Contains(c.Reason, "names Bow Jackzon,") {
+	if c != (app.Credit{Name: "Bow Jackzon", State: app.CreditUnmatched}) {
 		t.Errorf("credit = %+v", c)
+	}
+}
+
+// The Check for builds now button: one inbox fetch, and the Addon row's second line has what it found.
+func TestCheckForBuildsNowFetchesOnceAndSaysWhatItFound(t *testing.T) {
+	h := newHarness(t)
+	if code, body := h.call(http.MethodPost, h.url("/api/builds/check"), nil); code != http.StatusBadRequest ||
+		errorCode(body) != "not_paired" {
+		t.Fatalf("before pairing = %d %v", code, body)
+	}
+	h.pairAndPrime()
+	before := h.srv.InboxFetches()
+	if s := h.app.Snapshot(); s.BuildsChecked != nil {
+		t.Fatalf("checked before anyone pressed the button: %+v", s.BuildsChecked)
+	}
+
+	h.srv.SetInbox(`{"format":2,"generated_at":"2026-12-09T20:00:00Z","builds":[` +
+		`{"id":"b1","name":"Beast Mastery build","character":"us/pvp/bow-jackzon","code":"FSB1:x"}],"messages":[]}`)
+	code, body := h.call(http.MethodPost, h.url("/api/builds/check"), nil)
+	if code != http.StatusOK {
+		t.Fatalf("check = %d %v", code, body)
+	}
+	if n := h.srv.InboxFetches() - before; n != 1 {
+		t.Errorf("the button fetched %d times, want 1", n)
+	}
+	got := body["data"].(map[string]any)["builds_checked"].(map[string]any)
+	if got["new_builds"] != float64(1) || got["for"].([]any)[0] != "Bow Jackzon" {
+		t.Errorf("builds_checked = %v", got)
+	}
+
+	// A second press with the same inbox finds nothing new.
+	_, body = h.call(http.MethodPost, h.url("/api/builds/check"), nil)
+	got = body["data"].(map[string]any)["builds_checked"].(map[string]any)
+	if got["new_builds"] != float64(0) {
+		t.Errorf("an unchanged inbox reported %v new", got["new_builds"])
 	}
 }

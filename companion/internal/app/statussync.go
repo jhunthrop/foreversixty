@@ -5,12 +5,12 @@
 package app
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
-	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
 
@@ -47,28 +47,40 @@ const (
 	CreditNone      = "none"
 )
 
-// Credit is who a report is credited to. Reason is the part after "not
-// credited:" for the unmatched state.
+// Credit is who a report is credited to. The window reads two states and
+// no reason: whether the addon lacks the name or only the realm is the
+// resolver's to log (logger.Reason, in companion.log), because the player's
+// step is the same either way. Name is in its space form.
 type Credit struct {
-	Name   string `json:"name,omitempty"`
-	State  string `json:"state"`
-	Reason string `json:"reason,omitempty"`
+	Name  string `json:"name,omitempty"`
+	State string `json:"state"`
 }
 
 // creditOf reads the credit off a report: the character it carries
 // (detected or chosen), else the name the log gave that no addon record
-// matched, else nothing. records are what the addon has exported, so an
-// unmatched report can say whether the name or the realm is missing.
-func creditOf(r state.Report, records []logger.Record) Credit {
+// matched, else nothing.
+func creditOf(r state.Report) Credit {
 	switch {
 	case r.LoggingCharacter != nil && r.LoggingCharacter.Name != "":
-		return Credit{Name: r.LoggingCharacter.Name, State: CreditCredited}
+		return Credit{Name: SpacedName(r.LoggingCharacter.Name), State: CreditCredited}
 	case r.Auto && r.DetectedName != "":
-		d := logger.Detected{Name: r.DetectedName, Realm: r.DetectedRealm, Class: r.DetectedClass}
-		_, why := logger.Judge(d, records)
-		return Credit{Name: r.DetectedName, State: CreditUnmatched, Reason: CopyCreditUnmatched(r.DetectedName, why)}
+		return Credit{Name: SpacedName(r.DetectedName), State: CreditUnmatched}
 	}
 	return Credit{State: CreditNone}
+}
+
+// currentCredit is the credit of the report the pipeline has open, none
+// when it has none or the report cannot be read. The tray's headline asks
+// on a timer, so it loads the one report rather than listing them all.
+func (a *App) currentCredit(key string) Credit {
+	if key == "" {
+		return Credit{State: CreditNone}
+	}
+	r, err := state.Load(a.o.Dirs.State, key)
+	if err != nil {
+		return Credit{State: CreditNone}
+	}
+	return creditOf(r)
 }
 
 // addonInstalled reports whether any install has the addon's folder or
@@ -105,4 +117,38 @@ func (a *App) lastSyncView(st addon.Status, now time.Time) LastSyncView {
 		return LastSyncView{State: SyncAbsent}
 	}
 	return LastSyncView{State: SyncNone, Line: CopyNoCharactersSent}
+}
+
+// BuildsChecked is the Addon row's second line after the Check for builds
+// now button: when it ran, how many builds it found that the inbox did
+// not hold before, and for whom. The window words it, so the time keeps
+// moving between snapshots.
+type BuildsChecked struct {
+	At  time.Time `json:"at"`
+	New int       `json:"new_builds"`
+	For []string  `json:"for,omitempty"`
+}
+
+// CheckBuilds fetches the inbox once, at the player's asking, and writes
+// it as soon as the game folder is quiet. It is the Check for builds now
+// button. A failure is a Fault the window words (offline, or the site's
+// problem); an unpaired device has nothing to ask.
+func (a *App) CheckBuilds(ctx context.Context) error {
+	a.mu.Lock()
+	signedOut := a.signedOut != nil
+	a.mu.Unlock()
+	if !a.paired(signedOut) {
+		return fault(CodeNotPaired, nil)
+	}
+	tok := a.deviceToken()
+	found, err := a.sync.CheckNow(ctx, a.now())
+	if err != nil {
+		if a.signOutIfRefused(err, tok) {
+			return fault(CodeNotPaired, err)
+		}
+		a.log.Warn("checking for builds failed", "component", "app", "err", err.Error())
+		return fault(netCode(err, CodeServer), err)
+	}
+	a.log.Info("checked for builds", "component", "app", "new", found.New)
+	return nil
 }

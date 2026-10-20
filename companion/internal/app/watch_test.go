@@ -158,3 +158,37 @@ func TestARemovedWatchedFolderRetargetsOnTheNextTick(t *testing.T) {
 		t.Fatalf("after removing the watched folder, watching %q, want %q", got, h.game)
 	}
 }
+
+// Only the watched install carries the advanced-logging instruction; an
+// install the player is not logging is "off" and nothing more, and the
+// instruction moves with the watch.
+func TestOnlyTheWatchedInstallCarriesTheAdvancedLoggingInstruction(t *testing.T) {
+	h := newHarness(t)
+	second := twoGames(t, h)
+	for _, game := range []string{h.game, second} {
+		if err := os.WriteFile(filepath.Join(game, "WTF", "Config.wtf"), []byte("SET advancedCombatLogging \"0\"\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	help := func() map[string]string {
+		got := map[string]string{}
+		for _, in := range h.app.Snapshot().Installs {
+			if !in.AdvancedKnown || in.Advanced {
+				t.Fatalf("%s: advanced logging should read as known and off: %+v", in.Path, in)
+			}
+			got[in.Path] = in.AdvancedLogHelp
+		}
+		return got
+	}
+	played(t, h.game, t0.Add(-time.Hour))
+	played(t, second, t0.Add(-48*time.Hour))
+	h.app.Step(t.Context(), t0)
+	if got := help(); got[h.game] != app.CopyAdvancedRowHelp || got[second] != "" {
+		t.Fatalf("with %q watched, help = %v", h.game, got)
+	}
+	played(t, second, t0.Add(time.Minute))
+	h.app.Step(t.Context(), t0.Add(2*time.Second))
+	if got := help(); got[second] != app.CopyAdvancedRowHelp || got[h.game] != "" {
+		t.Fatalf("after watching %q, help = %v", second, got)
+	}
+}

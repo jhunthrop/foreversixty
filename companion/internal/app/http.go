@@ -34,6 +34,7 @@ func (a *App) Handler() http.Handler {
 	inner.HandleFunc("POST /api/connect/cancel", a.handleConnectCancel)
 	inner.HandleFunc("POST /api/connect/reopen", a.handleConnectReopen)
 	inner.HandleFunc("POST /api/open", a.handleOpen)
+	inner.HandleFunc("POST /api/builds/check", a.handleBuildsCheck)
 	inner.HandleFunc("POST /api/folders/pick", a.handleFolderPick)
 	inner.HandleFunc("POST /api/folders/remove", a.handleFolderRemove)
 
@@ -187,6 +188,12 @@ func (a *App) handleOpen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.answer(w, nil)
+}
+
+// handleBuildsCheck is the Check for builds now button: one inbox fetch,
+// answered with the snapshot that carries what it found.
+func (a *App) handleBuildsCheck(w http.ResponseWriter, r *http.Request) {
+	a.answer(w, a.CheckBuilds(r.Context()))
 }
 
 func (a *App) handleFolderPick(w http.ResponseWriter, r *http.Request) {

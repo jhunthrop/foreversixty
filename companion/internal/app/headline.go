@@ -25,7 +25,10 @@ type HeadlineAction struct {
 // headlineFor picks the state, first match wins: waiting on a
 // sign-in, signed out by the site, not paired, no game folder, the judged
 // install with advanced logging off, paired and not logging, logging.
-func headlineFor(paired, connecting, signedOut, logging bool, detected string, installs []InstallStatus) Headline {
+// credit is the open report's: the Logging sub line says who it is
+// credited to, that it is not matched yet, or nothing when the log has
+// named no one.
+func headlineFor(paired, connecting, signedOut, logging bool, credit Credit, installs []InstallStatus) Headline {
 	switch {
 	case connecting && !paired:
 		return Headline{Key: "connecting", Tone: "off", Title: CopyConnectingTitle,
@@ -52,8 +55,11 @@ func headlineFor(paired, connecting, signedOut, logging bool, detected string, i
 	}
 	if logging {
 		sub := CopyLoggingSub
-		if detected != "" {
-			sub = CopyLoggingSubAs(detected)
+		switch credit.State {
+		case CreditCredited:
+			sub = CopyLoggingSubAs(credit.Name)
+		case CreditUnmatched:
+			sub = CopyLoggingSubNotMatched
 		}
 		return Headline{Key: "logging", Tone: "on", Title: CopyLoggingTitle, Sub: sub}
 	}
