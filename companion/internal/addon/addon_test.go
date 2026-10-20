@@ -291,6 +291,9 @@ func TestTheSyncUploadsOnAModificationAndWritesTheInboxOnItsTimer(t *testing.T) 
 	if len(api.posted) != 2 {
 		t.Fatalf("posted %+v", api.posted)
 	}
+	if err := s.Poll(t.Context(), t0.Add(QuietSaved)); err != nil {
+		t.Fatal(err)
+	}
 	if _, err := os.Stat(InboxPath(path)); err != nil {
 		t.Fatalf("the inbox was not written: %v", err)
 	}

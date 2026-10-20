@@ -134,6 +134,12 @@ type Sync struct {
 	messages []Message
 	body     []byte
 	rendered bool
+	// pending is, per SavedVariables file, the inbox write that is due
+	// but has not happened yet; one per folder, coalesced: a newer inbox
+	// replaces the body, not the entry, so deferred_ms counts from the
+	// first time a write was due.
+	pending map[string]*pendingWrite
+	counts  [2]int // builds, messages of the body pending
 
 	// mu guards status, which the status page reads from the loopback
 	// server's goroutine while Poll runs on the ticker's.
@@ -156,7 +162,8 @@ func New(o Options) *Sync {
 		o.Now = time.Now
 	}
 	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{},
-		skipLogged: map[string]bool{}, formatLogged: map[int]bool{}}
+		skipLogged: map[string]bool{}, formatLogged: map[int]bool{},
+		pending: map[string]*pendingWrite{}}
 	if o.StateDir != "" {
 		sent, err := state.LoadOutboxSent(o.StateDir)
 		if err != nil {
@@ -203,8 +210,16 @@ func (s *Sync) Status() Status {
 // Poll does one pass. It is called on the same ticker as the pipeline
 // and does nothing expensive when nothing has changed.
 func (s *Sync) Poll(ctx context.Context, now time.Time) error {
-	var errs []error
 	paths := s.o.Paths()
+	err := s.pass(ctx, now, paths)
+	return errors.Join(err, s.flush(now, paths))
+}
+
+// pass is Poll without the inbox writes: uploads, the inbox fetch and
+// the render. A render that is due marks every folder for a write; flush
+// decides when the write happens.
+func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
+	var errs []error
 	// outboxUp is set when an outbox reached the site this pass: its
 	// ack is waiting, so the inbox is fetched now rather than when the
 	// ten-minute timer comes round, and the player sees "Seen by the
@@ -259,16 +274,11 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 		s.body, s.rendered = RenderInbox(inbox, now), true
 	}
 	for _, p := range paths {
-		wrote, err := WriteInbox(InboxPath(p), s.body)
-		if err != nil {
-			errs = append(errs, err)
-			continue
-		}
-		if wrote {
-			s.o.Log.Info("wrote the addon inbox", "component", "addon",
-				"path", InboxPath(p), "builds", len(inbox.Builds), "messages", len(inbox.Messages))
+		if _, held := s.pending[p]; !held {
+			s.pending[p] = &pendingWrite{since: now}
 		}
 	}
+	s.counts = [2]int{len(inbox.Builds), len(inbox.Messages)}
 	return errors.Join(errs...)
 }
 
