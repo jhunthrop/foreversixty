@@ -23,8 +23,8 @@ type HeadlineAction struct {
 }
 
 // headlineFor picks the state, first match wins: waiting on a
-// sign-in, signed out by the site, not paired, no game folder, any install with advanced
-// logging off, paired and not logging, logging.
+// sign-in, signed out by the site, not paired, no game folder, the judged
+// install with advanced logging off, paired and not logging, logging.
 func headlineFor(paired, connecting, signedOut, logging bool, detected string, installs []InstallStatus) Headline {
 	switch {
 	case connecting && !paired:
@@ -44,7 +44,7 @@ func headlineFor(paired, connecting, signedOut, logging bool, detected string, i
 			Sub:    CopyNoFolderSub,
 			Action: &HeadlineAction{Label: CopyNoFolderBtn, Page: "settings"}}
 	}
-	for _, in := range installs {
+	for _, in := range judgedInstalls(installs) {
 		if in.AdvancedKnown && !in.Advanced {
 			return Headline{Key: "advanced_off", Tone: "warn",
 				Title: CopyAdvancedOffTitle, Sub: CopyAdvancedOffSub}
@@ -58,4 +58,26 @@ func headlineFor(paired, connecting, signedOut, logging bool, detected string, i
 		return Headline{Key: "logging", Tone: "on", Title: CopyLoggingTitle, Sub: sub}
 	}
 	return Headline{Key: "ready", Tone: "off", Title: CopyReadyTitle, Sub: CopyReadySub}
+}
+
+// judgedInstalls are the installs the headline (and so the tray) holds to
+// the advanced-logging switch: the one being watched, since that is the game
+// whose raids are going to be uploaded. Before any game has been played
+// nothing is watched, and the folders the player added stand in; folders
+// merely found on the disk are never judged. The per-install rows on Status
+// keep every install's own flag.
+func judgedInstalls(installs []InstallStatus) []InstallStatus {
+	var watched, added []InstallStatus
+	for _, in := range installs {
+		if in.Watching {
+			watched = append(watched, in)
+		}
+		if in.Added {
+			added = append(added, in)
+		}
+	}
+	if len(watched) > 0 {
+		return watched
+	}
+	return added
 }

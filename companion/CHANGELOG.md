@@ -3,6 +3,7 @@
 ## 0.2.6
 
 - After an update, the companion starts the new build itself instead of exiting; the log says what it launched.
+- The Status headline and the tray warn about advanced logging only for the game folder the companion is watching, not for every install on the disk.
 
 ## 0.2.5
 
