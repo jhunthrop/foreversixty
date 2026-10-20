@@ -10,6 +10,21 @@ export interface SessionGuild {
   readonly href: string;
 }
 
+/**
+ * The guild the header's Roster and Guild settings doors lead to: any guild `/v1/me` lists
+ * (a member waiting for an officer to verify them still has a guild page), the main
+ * character's when it has one, else the first. `null` signed out or guildless.
+ */
+export function memberGuildOf(me: Me | null | undefined): SessionGuild | null {
+  if (me === null || me === undefined) return null;
+  const mainKey = me.main_character_key;
+  const mainGuildId =
+    mainKey === undefined ? undefined : me.characters?.find((c) => c.key === mainKey)?.guild?.id;
+  const guild = me.guilds.find((entry) => entry.id === mainGuildId) ?? me.guilds[0];
+  if (guild === undefined) return null;
+  return { name: guild.name, href: guildHref(guild.region, guild.ruleset, guild.name) };
+}
+
 /** `null` for a signed-out visitor or an account with no verified guild. */
 export function sessionGuildOf(me: Me | null | undefined): SessionGuild | null {
   const guild = me?.guilds.find((entry) => entry.verified);

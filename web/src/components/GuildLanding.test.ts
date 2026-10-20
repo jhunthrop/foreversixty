@@ -28,4 +28,8 @@ describe('GuildLanding', () => {
     expect(body).toContain('role="status"');
     expect(body).toContain(guildLandingCopy.officerLine);
   });
+
+  it('puts the #claim anchor on the claim sentence, where the header’s Claim your guild lands', () => {
+    expect(body).toMatch(/<p id="claim"[^>]*>\s*Run a guild\?/);
+  });
 });

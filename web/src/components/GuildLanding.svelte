@@ -95,5 +95,7 @@
     <HomeTopGuilds />
   </section>
 
-  <p class="text-muted text-[13px]">{copy.officerLine}</p>
+  <p id="claim" class="text-muted scroll-mt-24 text-[13px]" data-testid="guild-landing-claim">
+    {copy.officerLine}
+  </p>
 </div>

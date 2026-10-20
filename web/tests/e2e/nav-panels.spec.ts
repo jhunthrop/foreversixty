@@ -119,7 +119,7 @@ for (const width of [1280, 1440]) {
       );
       await expect(panel(page, 'guild').getByTestId('site-panel-foot-guild')).toHaveAttribute(
         'href',
-        `${base}#settings`,
+        `${base}/settings`,
       );
     });
   });

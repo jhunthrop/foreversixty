@@ -105,6 +105,21 @@ export const NAV_GROUPS: readonly NavGroup[] = [
 /** Where the Guild group sits in NAV_GROUPS: the session fills its rows (spec section 2). */
 export const GUILD_GROUP_INDEX = 2;
 
+/**
+ * What the Guild panel's two member-only doors say for a visitor with no guild of their own
+ * (signed out or guildless), keyed by the tab they open for a member. The rows above are the
+ * member's: the header script swaps these in when the session lists no guild, so neither door is
+ * a link to a section the landing page does not have.
+ */
+export const GUILDLESS_SWAPS: Readonly<Record<string, NavItem & { readonly description?: string }>> = {
+  roster: {
+    label: 'Find a guild',
+    href: '/guild',
+    description: 'Look up a guild by name, or open one of the top guilds',
+  },
+  settings: { label: 'Claim your guild', href: '/guild#claim' },
+};
+
 /** The Guild row without a hash: the guild's overview (`data-guild-tab` in the header). */
 export const GUILD_OVERVIEW_TAB = 'overview';
 
