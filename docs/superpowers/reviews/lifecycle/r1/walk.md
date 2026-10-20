@@ -1,0 +1,37 @@
+# Lifecycle walk, round 1 (19 Oct 2026): a first-time user on a fresh database
+
+The owner reset the production database and signed in with Battle.net (user 71, no characters, no devices). The walk runs in the owner's own Chrome (signed-in session) through the Claude-in-Chrome extension, the companion on the owner's PC (0.2.2 at the start), and the 1.60 beta client with the CurseForge addon (2.0.6 installed; 2.0.7 published two hours earlier).
+
+## Steps and what was found
+
+| # | Step | Seen | Finding |
+|---|---|---|---|
+| 1 | Sign in with Battle.net, land on /account | "hunthrop#1894 · Signed in with Battle.net"; Characters "No characters yet … paste an export"; Devices "No devices paired · Pair a device" | The first-run copy leads with pasting exports and pairing codes; the companion now signs in itself and syncs after a logout. → W.1 |
+| 2 | The header on every page | "Sign in / or paste an export" while signed in; `/v1/me` answers the user; the private cache holds it | The character selector treats "signed in, no characters" as signed out. → W.1 |
+| 3 | /setup | Step 1 "Signed in. Paste an addon export…"; step 3 "Pair it on your account" | Same ordering problem; the companion step should say Sign in with Battle.net inside the app. → W.1 |
+| 4 | The companion after the reset | Window closed to tray; log: `401 that device token is not valid` once per second; Status would still read Connected | A revoked token is never surfaced; the sync retries every tick. → C.8 |
+| 5 | Companion 0.2.3 | CI run 733 failed on gofmt (CRLF-hidden); fixed in eaee3b47, run 734 building | The logger and Automatic crediting were not in the owner's hands yet. |
+| 6 | Addon on the client | 2.0.6 installed; CurseForge has v2.0.7-forever (2 h old) | The region fix reaches the owner only after the CurseForge app updates and one logout. |
+
+## Not yet walked
+
+Companion sign-in on the real site (the window must be opened from the tray by the owner); the first logout sync with 2.0.7; picking a build on the site and seeing it in game; the first logged fight and its report; the guild path; sign-out/forget.
+
+## Later in round 1 (after the owner went to sleep; the controller drove the companion window and the owner's browser)
+
+| # | Step | Seen | Finding |
+|---|---|---|---|
+| 7 | Companion 0.2.3: Forget the dead device, Sign in with Battle.net, press Connect on /connect in the browser | "Connected as hunthrop#1894" within two seconds; the device listed on /account and /logs ("last seen 2 minutes ago") | Works end to end on production. The real `/connect` page showed device, platform, code and the consent line. |
+| 8 | `/reload` then `/logout` with addon 2.0.7 | The saved file re-keyed all ten records under `us`; the companion posted them: "uploaded character exports characters=10"; /account listed them a minute later; the header's selector then showed "Obnoxious Yell" as the current character | The region fix and the migration both work live. |
+| 9 | /account characters | Ten characters, four of them phantoms ("Booty", "Lightning", "Bow", "Obnoxious": one-word copies saved by an older addon before surnames) | → X.1 (addon drops them on save; the API removes the alias rows on sync). |
+| 10 | Upload a log on /logs (an 8 MB cut of the 17 Sep beta log) | The form accepted it; the redirect to /reports/<id> first showed "No report with that id · Try again"; 30 s later the page rendered "0 fights · processing" with an empty title and zone | The report page must treat a just-created report as "processing", never as missing; and the promise "the first fight is readable within ten seconds" was not kept (checked again below). → L.1 |
+| 11 | The finished report (42 trash fights, 102 players) | Players listed as "Name-ClassicBetaPvP" with spec "Unknown" throughout (the beta log has no COMBATANT_INFO); the Performance rating panel says "Ratings did not load."; the fight list is 42 "Trash" rows with kill counts | → L.2: strip the realm suffix when it is the report's own realm; show the inferred class where the spec is unknown; find why ratings fail on a fresh report. |
+| 12 | /planner as the synced warrior, "Load the 20 to 29 build", then "Send this build to the addon" | The action is a plain link to /addon → /setup; nothing reaches the inbox (the companion's inbox fetches stay at builds=0). The planner also kept Race = Human for a Gnome character. | → W.2 (the button saves the build and queues it through `POST /v1/addon/inbox`); the race mismatch to the planner carry list. |
+| 13 | /sim for the synced warrior | Every slot "Empty", "0 Talent Points"; the stored export has no gear section and 0/0/0 — as does every record the addon ever saved at logout on this client | The export is read live at PLAYER_LOGOUT and the 1.60 client answers empty then. → X.2 (build the export while in the world; never overwrite a gear-bearing record with an empty read). |
+| 14 | /character/us/pvp/obnoxious-yell as the owner | Score "No logs yet"; every gear slot "Empty · No pick for your band yet" (the export carried no gear or talents, so no spec and no band picks); the page ends with "To update this page: in game, type /fs copy, press Ctrl+C, then paste it here." | Downstream of X.2; the closing line is stale now that the companion syncs on logout → fold into the first-run copy carry (W.1 follow-up). |
+| 15 | /rankings | "No encounters have been ranked yet." with the character card and filters | Fine for a fresh database; a trash-only report ranks nothing, as designed. |
+| 16 | In game, `/fs diag` on the warrior (CurseForge 2.0.7) | "Everything is working. Build: Arms raid (saved). Chip: shown, short form. Bag marks: not checked yet (open your bags). Panel: closed, 1 targets, rotation 6 rows. Guild tab: closed, 8 rows (1 live), officer no. Group panel: closed, not in a group. Loot: none." | The addon side is healthy; the character is in a guild with eight members on the tab. |
+| 17 | `/v1/me` after the sync | Ten characters, none with a guild; `guilds: []` — although the warrior's guild tab lists eight members in game | The guild segment and the outbox roster are read at logout too → folded into X.2. The guild path on the site (claim, roster, officer views) cannot be walked until it lands. |
+| 18 | `/reload` with addon 2.0.9 (repo junction) at 21:14:50 | The client crashed (BREAKPOINT, `Errors/2026-10-19_21.14.50_Error_40728.txt`); the companion wrote `ForeverSixtyInbox.lua` into the same SavedVariables folder in the same second (it reacts to the `ForeverSixty.lua` mtime change the reload causes) | Causation unproven, but the write-during-reload race must go → C.10 (quiet period + atomic writes). The game is closed; in-game verification of 2.0.9 waits for the owner. |
+| 19 | The save the `/reload` triggered (2.0.7 code, 21:14:47) | Carried gear and talents (`0/05052/0:head=250528,…`), unlike every logout save; the companion posted it at 21:14:50 and the site's sim-input now holds it | The empty reads are specific to the logout moment; X.2's in-world copy covers both. |
+| 20 | /character after the gear landed | Worn items listed, every slot still "No pick for your band yet"; `sim-input` says `spec: ""` | The API takes the spec only from logged fights; a new player has none. → A.2 (spec from the export's talents, then the class default). |
