@@ -80,6 +80,8 @@
   import RaidCooldowns from './RaidCooldowns.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
   import { reportHeading } from '../../lib/report/heading';
+  import { quietMinutes } from '../../lib/report/quiet';
+  import { pageTitle } from '../../lib/seo';
   import { reportCredit } from '../../lib/report/credit';
   import { homeRealmOf, setHomeRealm } from '../../lib/report/names.svelte';
   import { unitClassMap } from '../../lib/report/roster-class';
@@ -786,6 +788,18 @@
       scope, and Mechanics draws the whole raid however the scope is set. */
   const unitClasses = $derived(unitClassMap(file?.units ?? []));
   const credit = $derived(reportCredit(meta));
+  /** The heading: leads with the logging character when the report is credited. */
+  const heading = $derived(
+    meta === null ? '' : reportHeading(meta, credit.credited ? credit.name : undefined),
+  );
+  /** The page clock, re-read on every poll tick so "quiet" is judged against now, not against when the page loaded. */
+  let now = $state(Date.now());
+  /** Minutes since the companion was last heard, once past the threshold; null while it is fresh or unknown. */
+  const quiet = $derived(quietMinutes(meta, now));
+  $effect(() => {
+    // A credited report names its character in the tab as well; the others keep the title the shell gave them.
+    if (credit.credited && heading !== '') document.title = pageTitle(`/reports/${reportId}`, heading);
+  });
   const classOf = $derived(
     new Map(
       (base?.roster ?? [])
@@ -1345,6 +1359,7 @@
     if (dataBase === '' || !(waiting || (isLive && status === 'ready'))) return;
 
     const poller = createPoller(async () => {
+      now = Date.now();
       if (waiting) {
         const first = await fromDataBase((base) => fetchReportFileFor(meta?.status ?? 'live', base, 'fresh'));
         if (first !== null) {
@@ -1471,12 +1486,14 @@
     <header class="flex flex-col gap-1 px-[18px] md:px-0">
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="section-title text-[18px]" data-testid="report-title">
-          {#if status === 'waiting' && meta !== null}{reportHeading(meta)}{:else}{meta?.title ||
+          {#if status === 'waiting' && meta !== null}{heading}{:else}{meta?.title ||
               meta?.zone ||
               reportCopy.yourUpload}{/if}
         </h1>
         {#if status === 'waiting'}
-          <span class="pill pill-site" data-testid="report-live">Live</span>
+          <span class="pill pill-site" data-testid="report-live"
+            >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
+          >
         {/if}
       </div>
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
@@ -1521,11 +1538,18 @@
             data-testid={status === 'waiting' ? 'report-waiting' : 'report-parsing'}
           >
             <span
-              class="border-line-warm border-t-text inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 motion-reduce:animate-none"
+              class="border-line-warm border-t-text inline-block h-4 w-4 shrink-0 rounded-full border-2 {status ===
+                'waiting' && quiet !== null
+                ? ''
+                : 'animate-spin motion-reduce:animate-none'}"
               aria-hidden="true"
               data-testid="report-spinner"
             ></span>
-            {status === 'waiting' ? reportCopy.waiting : reportCopy.parsing}
+            {status === 'waiting'
+              ? quiet === null
+                ? reportCopy.waiting
+                : reportCopy.quiet(quiet)
+              : reportCopy.parsing}
           </p>
         {:else}
           <p class="text-[14px]" role="alert" data-testid="report-parse-failed">
@@ -1552,7 +1576,7 @@
     <header class="flex flex-col gap-1 px-[18px] md:px-0">
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="section-title text-[18px]" data-testid="report-title">
-          {reportHeading(meta)}
+          {heading}
         </h1>
         <!-- Announced politely, not stolen focus: a fight going live or settling is worth a
            screen reader hearing about on its own time, not interrupting whatever the
@@ -1560,7 +1584,9 @@
            SummaryBar.svelte uses for its own background result. -->
         <span role="status" aria-live="polite">
           {#if fightIsLive}
-            <span class="pill pill-site" data-testid="report-live">Live</span>
+            <span class="pill pill-site" data-testid="report-live"
+              >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
+            >
           {/if}
         </span>
         <!-- Sim first, Copy link second, both the same secondary button (design review

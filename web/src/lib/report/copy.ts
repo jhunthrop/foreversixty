@@ -22,4 +22,9 @@ export const reportCopy = {
   /** The fights strip of a live report whose first fight has not been uploaded yet. */
   waiting:
     'Logging · waiting for the first fight. The companion uploads a fight when it ends; this page updates by itself.',
+  /** The waiting screen once the companion has not been heard from for a while; the minutes are rounded. */
+  quiet: (minutes: number) =>
+    `Not heard from the companion for ${minutes} minutes. Check that it is running.`,
+  /** The badge that replaces "Live" while the companion is quiet. */
+  quietBadge: 'Quiet',
 } as const;

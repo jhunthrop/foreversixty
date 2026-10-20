@@ -26,4 +26,10 @@ describe('reportHeading', () => {
       /^19 Oct 2026 · 0 fights$/,
     );
   });
+  it('leads with the logging character when the report is credited, and only then', () => {
+    const meta = { title: '', zone: '', created_at: '2026-10-20T09:00:00Z', fights: [] };
+    expect(reportHeading(meta, 'Bow Jackzon')).toMatch(/^Bow Jackzon · 20 Oct 2026 · 0 fights$/);
+    expect(reportHeading(meta)).toMatch(/^20 Oct 2026 · 0 fights$/);
+    expect(reportHeading({ ...meta, title: 'Friday raid' }, 'Bow Jackzon')).toBe('Friday raid');
+  });
 });

@@ -483,6 +483,10 @@ export interface ReportMeta {
   created_at: string;
   /** Where report.json and the fight files are served from, with no trailing slash. */
   data_base_url: string;
+  /** RFC 3339: the newest fight upload, else the report's creation. Absent or null from an API that predates it. */
+  last_upload_at?: string | null;
+  /** RFC 3339: the companion's last heartbeat while tailing. Absent or null when it has sent none. */
+  heartbeat_at?: string | null;
   /** The content-phase name the API derives from `fought_at` (e.g. "launch", "raids-1"). */
   phase?: string;
 }
