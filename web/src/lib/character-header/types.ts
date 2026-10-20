@@ -26,7 +26,7 @@ export type HeaderAction =
 /** The one status line a picker action can carry under its button. */
 export interface HeaderNote {
   text: string;
-  tone: 'ok' | 'error';
+  tone: 'ok' | 'error' | 'muted';
   /** A link ending the line ("Sign in", "Run the companion"). */
   link?: { label: string; href: string };
 }

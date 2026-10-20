@@ -74,6 +74,8 @@ export const plannerCharacterCardCopy = {
   noDeviceLink: 'Set up the companion',
   noDeviceHref: '/setup#companion',
   failed: 'Could not send just now. Try again.',
+  /** An empty draft is never sent; a muted hint, not an error (nothing went wrong). */
+  spendFirst: "Spend some points first, or load the band's build.",
 } as const;
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own

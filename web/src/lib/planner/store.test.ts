@@ -62,6 +62,51 @@ describe('level', () => {
   });
 });
 
+describe('followRace', () => {
+  it('starts the race picker on the character’s race', () => {
+    const store = loaded();
+    store.followRace('Gnome');
+    expect(store.raceSlug).toBe('gnome');
+    expect(store.raceRow?.name).toBe('Gnome');
+  });
+
+  it('applies when the reference data lands after the character', () => {
+    const store = createPlannerStore({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'human' });
+    store.followRace('Gnome');
+    store.setReference({
+      classes: fixtureClasses as ClassRow[],
+      races: fixtureRaces as RaceRow[],
+      combos: fixtureCombos as Combo[],
+    });
+    expect(store.raceSlug).toBe('gnome');
+  });
+
+  it('leaves a race the planner does not know alone', () => {
+    const store = loaded();
+    store.followRace('Draenei');
+    expect(store.raceSlug).toBe('human');
+    store.followRace(null);
+    expect(store.raceSlug).toBe('human');
+  });
+
+  it('lets a manual pick win for the session, until another character is selected', () => {
+    const store = loaded();
+    store.followRace('Gnome');
+    store.selectRace('orc');
+    store.followRace('Gnome');
+    expect(store.raceSlug).toBe('orc');
+    store.followRace('Dwarf');
+    expect(store.raceSlug).toBe('dwarf');
+  });
+
+  it('keeps the character’s race across a class switch when it is legal there', () => {
+    const store = loaded();
+    store.followRace('Gnome');
+    store.selectClass('mage');
+    expect(store.raceSlug).toBe('gnome');
+  });
+});
+
 describe('spending points', () => {
   it('adds a legal point, tracks the level and the split, and clears the refusal', () => {
     const store = loaded();

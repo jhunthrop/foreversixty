@@ -238,6 +238,9 @@
     if (session === null || linkNamesBuild) return;
     const hero = session.data === null ? null : selectedCharacter(readCurrent(), session.data);
     store.setCharacterLevel(hero?.level ?? null);
+    // The race picker starts on the character's race, as the class already follows it.
+    // A link or a saved build names its own race; a manual pick wins (store.followRace).
+    if (record === null) untrack(() => store.followRace(hero?.race ?? null));
   });
 
   // The chip's "Copy for the game" link; shared with SharePanel's own buttons (Task 10, L8.1).

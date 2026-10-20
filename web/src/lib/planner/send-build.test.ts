@@ -103,6 +103,21 @@ describe('sendActionFor', () => {
     );
   });
 
+  it('is disabled with a muted hint at zero points, and never a promise of sending', () => {
+    const action = sendActionFor(ME, { kind: 'idle' }, 0);
+    expect(action).toMatchObject({ kind: 'picker', label: 'Send this build to the addon', disabled: true });
+    expect('note' in action && action.note).toEqual({
+      tone: 'muted',
+      text: "Spend some points first, or load the band's build.",
+    });
+  });
+
+  it('sends a partial build as-is: one point is enough', () => {
+    const action = sendActionFor(ME, { kind: 'idle' }, 1);
+    expect('disabled' in action && action.disabled).toBeFalsy();
+    expect('note' in action && action.note).toBeFalsy();
+  });
+
   it('words each failure', () => {
     const note = (kind: 'sign-in' | 'no-device' | 'failed') => {
       const a = sendActionFor(ME, { kind });

@@ -59,7 +59,7 @@
     if (sendState.kind === 'sent' && sent?.key !== currentKey) sendState = { kind: 'idle' };
   });
 
-  const action = $derived(sendActionFor(character, sendState));
+  const action = $derived(sendActionFor(character, sendState, store.spent));
   /** The card's character has an addon export that carried no gear and no talents (W.3): the
    *  card says so instead of leaving the empty tree to read as the character's build. */
   const unread = $derived(
@@ -68,7 +68,7 @@
 
   async function send(): Promise<void> {
     const key = currentKey;
-    if (character === null || key === null || sendState.kind === 'sending') return;
+    if (character === null || key === null || sendState.kind === 'sending' || store.spent === 0) return;
     const target = character.key;
     sendState = { kind: 'sending' };
     const known = sent?.key === key ? sent.buildId : null;

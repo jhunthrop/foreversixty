@@ -29,6 +29,25 @@ function me() {
   };
 }
 
+// A leveling list for the 20 to 29 band, so "Load the 20 to 29 build" has a build to load.
+const ARMS_LIST = {
+  spec: 'warrior-arms',
+  build: '1.60.1.70450',
+  engine_version: 'test',
+  generated_at: '2026-10-01T00:00:00Z',
+  bands: (['alliance', 'horde'] as const).map((faction) => ({
+    spec: 'warrior-arms',
+    band: 20,
+    faction,
+    race: faction === 'horde' ? 'orc' : 'human',
+    talents: '3-0-0',
+    talent_points: 3,
+    set_dps: 100,
+    weights: [],
+    slots: [],
+  })),
+};
+
 async function signIn(page: Page, devices: unknown[] = [{ id: 'd1', name: 'Desk', platform: 'windows' }]) {
   await page.route('**/v1/me', (route) => route.fulfill(ok(me())));
   await page.route('**/v1/devices', (route) => route.fulfill(ok(devices)));
@@ -51,12 +70,24 @@ test.describe('Send this build to the addon', () => {
     });
 
     await page.setViewportSize({ width: 1280, height: 900 });
+    await page.route('**/data/*/bis/warrior-arms.json', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ARMS_LIST) }),
+    );
     await page.goto('/planner');
     const action = page.getByTestId('character-header-action');
     await expect(action).toHaveText('Send this build to the addon');
     await page.getByTestId('planner-header-band').screenshot({
       path: process.env.W2_CAPTURES ? `${process.env.W2_CAPTURES}/send-build-before.png` : undefined,
     });
+
+    // An empty build is never sent: the button is disabled until points are spent.
+    await expect(action).toBeDisabled();
+    await expect(page.getByTestId('character-header-note')).toHaveText(
+      "Spend some points first, or load the band's build.",
+    );
+    await page.getByTestId('band-compare-load').click();
+    await expect(action).toBeEnabled();
+    await expect(page.getByTestId('character-header-note')).toHaveCount(0);
 
     await action.click();
 
@@ -72,7 +103,7 @@ test.describe('Send this build to the addon', () => {
     });
 
     // Changing the build puts the button back; a second send reuses nothing stale.
-    await page.getByTestId('talent-1001').click();
+    await page.getByTestId('talent-1002').click();
     await expect(action).toHaveText('Send this build to the addon');
     await expect(action).toBeEnabled();
   });
@@ -85,6 +116,7 @@ test.describe('Send this build to the addon', () => {
       return route.fulfill(ok(SAVED, 201));
     });
     await page.goto('/planner');
+    await page.getByTestId('talent-1001').click();
     await page.getByTestId('character-header-action').click();
     await expect(page.getByTestId('character-header-note')).toContainText(
       'Run the companion once so builds can reach your addon.',
@@ -105,6 +137,7 @@ test.describe('Send this build to the addon', () => {
       }),
     );
     await page.goto('/planner');
+    await page.getByTestId('talent-1001').click();
     const action = page.getByTestId('character-header-action');
     await action.click();
     await expect(page.getByTestId('character-header-note')).toContainText(
