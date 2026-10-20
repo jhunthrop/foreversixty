@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.7
+
+- The update check finds the newest companion release even when the repository's latest release is the nightly data addon.
+
 ## 0.2.6
 
 - After an update, the companion starts the new build itself instead of exiting; the log says what it launched.

@@ -46,7 +46,7 @@ const MaxAsset = 128 << 20
 var PublicKey string
 
 // Version is the running build, set the same way. It is compared
-// against the latest release tag.
+// against the newest companion release tag.
 var Version = "0.0.0"
 
 // Asset is one file on a release.
@@ -57,8 +57,10 @@ type Asset struct {
 
 // Release is the part of the GitHub payload the updater reads.
 type Release struct {
-	TagName string  `json:"tag_name"`
-	Assets  []Asset `json:"assets"`
+	TagName    string  `json:"tag_name"`
+	Draft      bool    `json:"draft"`
+	Prerelease bool    `json:"prerelease"`
+	Assets     []Asset `json:"assets"`
 }
 
 // Options configures an Updater.
@@ -156,27 +158,67 @@ func part(s []string, i int) int {
 	return n
 }
 
-// Latest reads the newest release.
+// PerPage is how many releases one check reads. The repository also
+// publishes a data release every night, so the newest companion release
+// is rarely the newest release of all; 30 rows cover a month of nightly
+// data releases plus the companion and addon releases between them, so
+// one page nearly always holds it.
+const PerPage = 30
+
+// Latest finds the newest companion release that carries this
+// platform's asset. It lists releases rather than asking for GitHub's
+// "latest": that is simply the newest non-prerelease of any kind, and
+// most days it is the nightly data release, which would hide every
+// companion release from the check. Drafts, prereleases, other tag
+// families and releases without this platform's binary are skipped. A
+// second page is read only when the first was full and held no match.
+// When nothing qualifies the zero Release comes back with no error:
+// that is "no update", not a failure.
 func (u *Updater) Latest(ctx context.Context) (Release, error) {
-	url := u.o.APIBase + "/repos/" + Repo + "/releases/latest"
+	want := AssetName(u.o.GOOS, u.o.GOARCH)
+	for page := 1; page <= 2; page++ {
+		rels, err := u.list(ctx, page)
+		if err != nil {
+			return Release{}, err
+		}
+		for _, rel := range rels {
+			if !strings.HasPrefix(rel.TagName, TagPrefix) || rel.Draft || rel.Prerelease {
+				continue
+			}
+			for _, a := range rel.Assets {
+				if a.Name == want {
+					return rel, nil
+				}
+			}
+		}
+		if len(rels) < PerPage {
+			break
+		}
+	}
+	return Release{}, nil
+}
+
+// list reads one page of the repository's releases, newest first.
+func (u *Updater) list(ctx context.Context, page int) ([]Release, error) {
+	url := fmt.Sprintf("%s/repos/%s/releases?per_page=%d&page=%d", u.o.APIBase, Repo, PerPage, page)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return Release{}, err
+		return nil, err
 	}
 	req.Header.Set("Accept", "application/vnd.github+json")
 	resp, err := u.o.HTTP.Do(req)
 	if err != nil {
-		return Release{}, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return Release{}, fmt.Errorf("GitHub answered %d for the latest release", resp.StatusCode)
+		return nil, fmt.Errorf("GitHub answered %d for the release list", resp.StatusCode)
 	}
-	var rel Release
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&rel); err != nil {
-		return Release{}, err
+	var rels []Release
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 4<<20)).Decode(&rels); err != nil {
+		return nil, err
 	}
-	return rel, nil
+	return rels, nil
 }
 
 // ErrNoKey says the build carries no public key, so updates are off.
@@ -283,7 +325,14 @@ func (u *Updater) Poll(ctx context.Context, now time.Time) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	if rel.TagName == "" {
+		u.o.Log.Info("the update check found no companion release for this platform",
+			"component", "updater", "running", u.o.Version)
+		return false, nil
+	}
 	if !Newer(rel.TagName, u.o.Version) {
+		u.o.Log.Info(fmt.Sprintf("the update check found nothing newer: newest companion release %s is not newer than %s",
+			strings.TrimPrefix(rel.TagName, TagPrefix), u.o.Version), "component", "updater")
 		return false, nil
 	}
 	return u.Stage(ctx, rel)
