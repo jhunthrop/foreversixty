@@ -582,7 +582,7 @@ end
 --- The /fs diag lines: "Not working:" and only the broken things, or
 --- "Everything is working."; then the surfaces' own lines (`chipLine`, a
 --- line or a list of them, when given) and the findings, outside the heading.
-function Theme.diagReport(broken, chipLine, info)
+function Theme.diagReport(broken, chipLine, info, headline)
 	local lines = {}
 	if #broken > 0 then
 		lines[1] = L.diagHeading
@@ -590,7 +590,8 @@ function Theme.diagReport(broken, chipLine, info)
 			lines[#lines + 1] = note
 		end
 	else
-		lines[1] = L.diagAllWorking
+		-- X.3: the green sentence only when the caller says nothing is missing; else its own line.
+		lines[1] = headline or L.diagAllWorking
 	end
 	local status = {}
 	if type(chipLine) == "table" then

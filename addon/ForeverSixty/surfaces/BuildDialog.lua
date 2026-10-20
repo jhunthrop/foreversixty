@@ -1119,6 +1119,9 @@ local function liveClock()
 	}
 end
 
+--- The same clock for the other surfaces that tell a time (the site-status lines, X.3).
+BuildDialog.liveClock = liveClock
+
 --- The character logged in, for Codec.loadBuild's class check; nil where the client cannot say.
 function BuildDialog.player()
 	local ok, slug = pcall(Talents.playerClassSlug)

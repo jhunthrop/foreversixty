@@ -1436,6 +1436,29 @@ L.diagLootDrop = "%s %s, %s"
 -- /fs diag: what the site will get from this character's record.
 L.diagExport = "Export: built %s, %d slots, talents %s"
 L.diagExportNone = "Export: not built yet"
+-- /fs diag (X.3): what the site has of this character and what the inbox holds.
+L.diagNotSeenHeadline = "Addon running; the site has not seen this character yet."
+L.diagSiteSeen = "Site: seen %s (%d characters)"
+L.diagSiteSeenOne = "Site: seen %s (1 character)"
+L.diagSiteNever = "Site: not seen yet \226\128\148 is the companion running and signed in?"
+L.diagSiteOld = "Site: last seen %s, %d days ago"
+L.diagSiteOldOne = "Site: last seen %s, 1 day ago"
+L.diagInboxEmpty = "Inbox: empty"
+L.diagInboxBuilds = "Inbox: %d builds waiting (%s) \194\183 %s"
+L.diagInboxBuildOne = "Inbox: 1 build waiting (%s) \194\183 %s"
+L.diagInboxNoBuilds = "Inbox: no builds waiting \194\183 %s"
+L.diagInboxMessages = "%d messages"
+L.diagInboxMessageOne = "1 message"
+-- The one chat line at login, when it is true (X.3).
+L.siteLoginNever = "the site has not seen this character yet. Keep the companion running and signed in; "
+	.. "log out once from the world."
+L.siteLoginGear = "your gear is on its way to the site; check it after your next logout."
+L.siteLoginBuild = "a build from the site is waiting: %s. /fs opens it."
+L.siteLoginBuilds = "%d builds from the site are waiting: %s. /fs opens them."
+L.siteLoginSilent = "the companion has not picked up your data since %s. "
+	.. "Start it, or paste an export at foreversixty.gg/setup."
+-- The chip's hover when a build waits and none is followed (X.3).
+L.chipInboxWaiting = "A build from the site is waiting. Click to open."
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel

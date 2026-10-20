@@ -505,6 +505,11 @@ function Export.write(data)
 		build = data.build,
 		export = code,
 		builtAt = date(Export.SAVED_AT_FORMAT),
+		-- When this record first carried gear (X.3): the login line tells a player whose last
+		-- upload the site saw before that, that their gear is on its way. Kept while the record
+		-- keeps its gear; nil on a record that predates the field.
+		gearAt = Export.hasGear(code) and not (before ~= nil and Export.hasGear(before.export))
+			and date(Export.SAVED_AT_FORMAT) or (before ~= nil and before.gearAt or nil),
 	}
 	return code
 end

@@ -39,6 +39,7 @@ surfaces\TalentMarks.lua
 surfaces\SlotMarks.lua
 surfaces\RewardMarks.lua
 surfaces\BuildDialog.lua
+surfaces\SiteStatus.lua
 surfaces\Settings.lua
 surfaces\PanelTab.lua
 surfaces\GuildTab.lua
