@@ -23,7 +23,10 @@ function betaText(text: string): string {
   return text.replaceAll('-Nightslayer', '-ClassicBetaPvP').replaceAll('-Hardcore', '-ClassicBetaPvP2');
 }
 
-async function serveBetaReport(page: Page, options: { zone: string; credit?: string }) {
+async function serveBetaReport(
+  page: Page,
+  options: { zone: string; credit?: { key: string; name: string } },
+) {
   const report = JSON.parse(betaText(await readFile(path.join(FIXTURES, 'report.json'), 'utf8')));
   const meta = JSON.parse(betaText(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8')));
   const classes: Record<string, string> = {
@@ -197,17 +200,23 @@ test.describe('a beta-log report', () => {
   test('the subtitle credits the logging character, or says none is set and how to set one', async ({
     page,
   }) => {
-    await serveBetaReport(page, { zone: '', credit: 'us/normal/bow-jackzon' });
+    await serveBetaReport(page, { zone: '', credit: { key: 'us/pvp/bow-jackzon', name: 'Bow Jackzon' } });
     await page.goto(`/reports/${ID}?fight=3`);
-    await expect(page.getByTestId('report-credit')).toHaveText('Credited to Bow Jackzon');
+    const credit = page.getByTestId('report-credit');
+    await expect(credit).toHaveText('Credited to Bow Jackzon');
+    await expect(credit.getByRole('link', { name: 'Bow Jackzon' })).toHaveAttribute(
+      'href',
+      '/character/us/pvp/bow-jackzon',
+    );
   });
 
-  test('no logging character reads as not credited, with the fix on hover', async ({ page }) => {
+  test('no logging character reads as not credited, with the reason as visible text', async ({ page }) => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
     const credit = page.getByTestId('report-credit');
-    await expect(credit).toHaveText('Not credited to a character');
-    await expect(credit).toHaveAttribute('title', /Set the logging character in the companion/);
+    await expect(credit).toHaveText('Not credited yet. Log out once in game; the companion credits it then.');
+    await expect(credit).not.toHaveAttribute('title', /.+/);
+    await expect(credit.getByRole('link')).toHaveCount(0);
   });
 
   test('a trash fight’s Parse column is a muted dash, not a rankings error', async ({ page }) => {

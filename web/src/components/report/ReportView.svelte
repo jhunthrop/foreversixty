@@ -1443,7 +1443,12 @@
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
         {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
         {status === 'processing' ? 'Processing' : 'Could not be parsed'}
-        · <span title={credit.title} data-testid="report-credit">{credit.text}</span>
+        ·
+        <span data-testid="report-credit"
+          >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
+              >{credit.name}</a
+            >{:else}{credit.name}{/if}</span
+        >
       </p>
     </header>
     <div class="flex flex-col gap-4 px-[18px] pt-4 md:px-0">
@@ -1533,7 +1538,11 @@
         {#if meta.zone !== ''}{meta.zone} ·{/if}
         {#if fights.length > 0}<span class="tabular font-mono">{formatDate(fights[0].start)}</span> ·{/if}
         <span class="tabular font-mono">{fights.length} fights</span> · {meta.status} ·
-        <span title={credit.title} data-testid="report-credit">{credit.text}</span>
+        <span data-testid="report-credit"
+          >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
+              >{credit.name}</a
+            >{:else}{credit.name}{/if}</span
+        >
         {#if nightMode}· All boss pulls{/if}
         {#if fight}· {fight.name}
           {#if fight.kind === 'encounter' && !fight.in_progress}
