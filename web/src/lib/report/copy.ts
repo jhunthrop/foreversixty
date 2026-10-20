@@ -19,4 +19,7 @@ export const reportCopy = {
   parsing: 'Parsing your log… this takes a minute or two for a long night',
   parseFailed: 'This log could not be parsed.',
   parseFailedLink: 'Check your logging setup',
+  /** The fights strip of a live report whose first fight has not been uploaded yet. */
+  waiting:
+    'Logging · waiting for the first fight. The companion uploads a fight when it ends; this page updates by itself.',
 } as const;

@@ -14,6 +14,7 @@
     fetchAccessUrl,
     fetchLive,
     fetchReportFile,
+    fetchReportFileFor,
     fetchReportMeta,
     fetchReportMetaAfterUpload,
     eventsUrl,
@@ -141,8 +142,11 @@
   /** The engine that wrote the report's files, riding on their urls so a re-parse is a cache miss. */
   const engineVersion = $derived(file?.engine_version ?? '');
   let summary = $state<Summary | null>(null);
-  /** 'processing' and 'unparsed' are the two screens of a report whose files do not exist (yet, or ever). */
-  let status = $state<'loading' | 'ready' | 'failed' | 'processing' | 'unparsed'>('loading');
+  /**
+   * 'processing', 'waiting' and 'unparsed' are the screens of a report whose files do not exist
+   * (yet, or ever): 'waiting' is a live report whose first fight has not been uploaded.
+   */
+  let status = $state<'loading' | 'ready' | 'failed' | 'processing' | 'waiting' | 'unparsed'>('loading');
   let error = $state('');
   /** Where report.json and the fight files come from: /logs-data/… or a signed url. */
   let dataBase = $state('');
@@ -1085,7 +1089,7 @@
     writeUrl(pushes);
   }
 
-  async function loadReport(continuing = false): Promise<void> {
+  async function loadReport(continuing = false, known: ReportMeta | null = null): Promise<void> {
     if (!continuing) status = 'loading';
     error = '';
     try {
@@ -1093,7 +1097,10 @@
       // a dependency of the effect below and run the whole load a second time.
       let resolved: ReportMeta;
       const uploadedAt = justUploadedAt(reportId);
-      if (inlineMeta !== null) {
+      if (known !== null) {
+        // A poll has just read a newer meta than the one the page shipped with.
+        resolved = known;
+      } else if (inlineMeta !== null) {
         resolved = inlineMeta;
       } else if (uploadedAt === null) {
         resolved = await fetchReportMeta(reportId);
@@ -1124,7 +1131,14 @@
         base = await fetchAccessUrl(reportId);
       }
       dataBase = base;
-      file = await fetchReportFile(base);
+      const loaded = await fetchReportFileFor(resolved.status, base);
+      if (loaded === null) {
+        // A live report with no fight uploaded yet: the poll below keeps asking for report.json.
+        file = null;
+        status = 'waiting';
+        return;
+      }
+      file = loaded;
       readUrl();
       // A report with no fights at all has nothing to summarise, and asking for
       // fights/0/summary.json would fail the whole page over a file that cannot exist.
@@ -1148,7 +1162,7 @@
     const poller = createPoller(async () => {
       const next = await fetchReportMeta(reportId);
       meta = next;
-      if (next.status !== 'processing') await loadReport(true);
+      if (next.status !== 'processing') await loadReport(true, next);
     }, POLL_INTERVAL_MS);
     poller.start();
     return () => poller.stop();
@@ -1227,7 +1241,7 @@
     if (status === 'loading') return;
     document.getElementById('report')?.classList.remove('min-h-[200svh]');
     // The shell's reservation is sized for a full report; a report with no fights has none.
-    if (status === 'processing' || status === 'unparsed') {
+    if (status === 'processing' || status === 'waiting' || status === 'unparsed') {
       document
         .getElementById('report')
         ?.classList.remove('min-h-[2460px]', 'md:min-h-[1556px]', 'lg:min-h-[1325px]');
@@ -1319,14 +1333,32 @@
    * unmounts (Svelte tears down every live effect on destroy, so the poller is stopped with
    * it); `isLive` turning false (the fight on screen closed and report.json has nothing
    * else open) reruns this effect, which runs the same cleanup and then returns before a
-   * new poller starts; and a failed report load (`status !== 'ready'`) or a report with no
-   * data base yet never starts one. A closed report never enters this effect at all, so it
-   * costs nothing.
+   * new poller starts; and a failed report load or a report with no data base yet never
+   * starts one. A closed report never enters this effect at all, so it costs nothing.
+   *
+   * The waiting screen (a live report whose first fight has not been uploaded) rides the
+   * same poller rather than a second timer: its tick asks for report.json and, once that
+   * exists, hands over to a normal load.
    */
   $effect(() => {
-    if (!isLive || dataBase === '' || status !== 'ready') return;
+    const waiting = status === 'waiting';
+    if (dataBase === '' || !(waiting || (isLive && status === 'ready'))) return;
 
     const poller = createPoller(async () => {
+      if (waiting) {
+        const first = await fromDataBase((base) => fetchReportFileFor(meta?.status ?? 'live', base, 'fresh'));
+        if (first !== null) {
+          await loadReport(true, meta);
+          return;
+        }
+        // Nothing yet. The meta may have moved on (the log ended with no fight in it, or
+        // failed), and then the waiting screen would be a lie.
+        const latest = await fetchReportMeta(reportId);
+        meta = latest;
+        if (latest.status === 'failed') status = 'unparsed';
+        else if (latest.status === 'complete') await loadReport(true, latest);
+        return;
+      }
       // report.json first: it is what turns a live fight into a closed one and adds the
       // next fight to the selector.
       const next = await fromDataBase((base) => fetchReportFile(base, 'fresh'));
@@ -1434,16 +1466,27 @@
   <div class="px-[18px] md:px-0">
     <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
   </div>
-{:else if status === 'processing' || status === 'unparsed'}
+{:else if status === 'processing' || status === 'waiting' || status === 'unparsed'}
   <div class="reveal" data-testid="report-processing" data-state={status}>
     <header class="flex flex-col gap-1 px-[18px] md:px-0">
-      <h1 class="section-title text-[18px]" data-testid="report-title">
-        {meta?.title || meta?.zone || reportCopy.yourUpload}
-      </h1>
+      <div class="flex flex-wrap items-center gap-2">
+        <h1 class="section-title text-[18px]" data-testid="report-title">
+          {#if status === 'waiting' && meta !== null}{reportHeading(meta)}{:else}{meta?.title ||
+              meta?.zone ||
+              reportCopy.yourUpload}{/if}
+        </h1>
+        {#if status === 'waiting'}
+          <span class="pill pill-site" data-testid="report-live">Live</span>
+        {/if}
+      </div>
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
         {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
-        {status === 'processing' ? 'Processing' : 'Could not be parsed'}
-        ·
+        {#if status === 'waiting'}
+          {#if meta?.owner}<span data-testid="report-owner">{meta.owner.battletag}</span> ·{/if}
+        {:else}
+          {status === 'processing' ? 'Processing' : 'Could not be parsed'}
+          ·
+        {/if}
         <span data-testid="report-credit"
           >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
               >{credit.name}</a
@@ -1457,7 +1500,11 @@
           <button
             type="button"
             disabled
-            title={status === 'processing' ? reportCopy.parsing : reportCopy.parseFailed}
+            title={status === 'processing'
+              ? reportCopy.parsing
+              : status === 'waiting'
+                ? reportCopy.waiting
+                : reportCopy.parseFailed}
             class="text-muted inline-flex min-h-9 cursor-not-allowed items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase opacity-60"
             >{tab.label}</button
           >
@@ -1467,14 +1514,18 @@
         class="border-line-soft rounded-control flex flex-col gap-2 border p-4"
         data-testid="report-fights-strip"
       >
-        {#if status === 'processing'}
-          <p class="flex items-center gap-3 text-[14px]" role="status" data-testid="report-parsing">
+        {#if status === 'processing' || status === 'waiting'}
+          <p
+            class="flex items-center gap-3 text-[14px]"
+            role="status"
+            data-testid={status === 'waiting' ? 'report-waiting' : 'report-parsing'}
+          >
             <span
               class="border-line-warm border-t-text inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 motion-reduce:animate-none"
               aria-hidden="true"
               data-testid="report-spinner"
             ></span>
-            {reportCopy.parsing}
+            {status === 'waiting' ? reportCopy.waiting : reportCopy.parsing}
           </p>
         {:else}
           <p class="text-[14px]" role="alert" data-testid="report-parse-failed">

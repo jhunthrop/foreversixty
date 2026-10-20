@@ -10,11 +10,12 @@
 // events.parquet are immutable and take the default.
 import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
-import { asArray, type ReportFile, type ReportMeta, type Summary } from './types';
+import { asArray, type ReportFile, type ReportMeta, type ReportStatus, type Summary } from './types';
 
 export const REPORT_LOAD_FAILED = 'Report data did not load';
 export const REPORT_NOT_FOUND = 'No report with that id';
 export const REPORT_FORBIDDEN = 'That report is not public';
+export const REPORT_DATA_MISSING = "This report's data is missing";
 
 /** Spec §0/§3.2's "a public report's meta and fights" class: public, 5 minutes. */
 const REPORT_META_TTL_MS = 5 * 60 * 1000;
@@ -172,6 +173,28 @@ async function dataGet<T>(url: string, cache: RequestCache): Promise<T> {
     return (await response.json()) as T;
   } catch {
     throw new ReportLoadError(REPORT_LOAD_FAILED, response.status);
+  }
+}
+
+/**
+ * report.json for a report whose meta has already answered, or null when it simply does not
+ * exist yet. The companion opens a report the moment the game starts a combat log, ten
+ * minutes before the first fight is uploaded, so a live (or processing) report with a 404
+ * here is "waiting for the first fight", not a missing report: the meta decides whether the
+ * report exists. The same 404 on a finished report is a data error with its own wording,
+ * never "No report with that id".
+ */
+export async function fetchReportFileFor(
+  status: ReportStatus,
+  dataBaseUrl: string,
+  freshness: 'cached' | 'fresh' = 'cached',
+): Promise<ReportFile | null> {
+  try {
+    return await fetchReportFile(dataBaseUrl, freshness);
+  } catch (thrown) {
+    if (!(thrown instanceof ReportLoadError) || thrown.status !== 404) throw thrown;
+    if (status === 'live' || status === 'processing') return null;
+    throw new ReportLoadError(REPORT_DATA_MISSING, 404);
   }
 }
 
