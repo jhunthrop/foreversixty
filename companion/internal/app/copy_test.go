@@ -106,3 +106,11 @@ func TestEveryFailureCodeHasASentenceThatCarriesNoCause(t *testing.T) {
 		t.Errorf("not wow = %q", got)
 	}
 }
+
+func TestTheSignedOutCopyIsTheDesignersWords(t *testing.T) {
+	if app.CopySignedOutTitle != "Signed out by the site" ||
+		app.CopySignedOutSub != "This computer was removed from your account, or the account was reset. "+
+			"Nothing uploads until you sign in again." {
+		t.Errorf("copy = %q / %q", app.CopySignedOutTitle, app.CopySignedOutSub)
+	}
+}

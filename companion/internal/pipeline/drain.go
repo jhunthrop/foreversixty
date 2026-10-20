@@ -144,14 +144,13 @@ func (p *Pipeline) credit(ctx context.Context, rep *state.Report) error {
 		return nil
 	}
 	err := p.o.Client.UpdateReport(ctx, rep.ReportID, client.UpdateReport{LoggingCharacter: rep.LoggingCharacter})
-	var ae *client.Error
 	switch {
 	case err == nil:
 		rep.Credited = true
 		p.o.Log.Info("a report was credited to its logger", "component", "uploader",
 			"report", rep.Key, "report_id", rep.ReportID, "character", rep.LoggingCharacter.Key())
 		return nil
-	case client.Retryable(err) || errors.As(err, &ae) && ae.Status == 401:
+	case client.Retryable(err) || client.Unauthorized(err):
 		return err
 	}
 	p.o.Log.Error("the server refused the logging character; the report stays uncredited",

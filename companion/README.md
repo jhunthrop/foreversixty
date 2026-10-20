@@ -72,6 +72,7 @@ companion is doing in a line at the top (the same words as the Status headline, 
 tooltip), **Open Forever Sixty**, **Open my reports on the site** and **Quit**. Quit is the only way
 to stop it. On macOS and Linux, closing the window quits the companion; keep it open while logging. The
 close-to-tray behaviour is Windows-only in the first release.
+Launching the companion again just opens the running one.
 
 ## Log a raid
 

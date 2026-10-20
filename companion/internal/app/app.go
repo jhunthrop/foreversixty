@@ -85,9 +85,12 @@ type App struct {
 	tokKnown bool
 	tok      string
 
-	mu       sync.Mutex
-	cfg      config.Config
-	installs []wow.Install
+	mu  sync.Mutex
+	cfg config.Config
+	// signedOut is set when the site refused the device token, until the
+	// next sign-in succeeds; guarded by mu.
+	signedOut *SignedOut
+	installs  []wow.Install
 	// watching is the Logs directory the tail is pointed at. The
 	// settings page can move it; retarget does the move.
 	watching string
@@ -430,6 +433,7 @@ func (a *App) saveDevice(token, label string) error {
 		return fault(CodeSave, err)
 	}
 	a.forgetToken()
+	a.signedOut = nil
 	if err := a.writeLabel(label); err != nil {
 		// The token is saved and the device works; only the "connected
 		// as" line is lost.
@@ -479,6 +483,7 @@ func (a *App) clearLocal() error {
 	defer a.mu.Unlock()
 	err := a.o.Secret.Clear()
 	a.forgetToken()
+	a.signedOut = nil
 	if err != nil {
 		a.log.Error("could not forget the device token", "component", "app", "err", err.Error())
 		return fault(CodeSave, err)
@@ -599,6 +604,10 @@ type Snapshot struct {
 	AccountLabel string `json:"account_label"`
 	// DeviceName is what the site lists this device as.
 	DeviceName string `json:"device_name"`
+	// SignedOut is present from the moment the site refuses this device's
+	// token until the next sign-in succeeds. AccountLabel stays empty then;
+	// the label the sign-in had is in here.
+	SignedOut *SignedOut `json:"signed_out,omitempty"`
 	// Headline is the Status page's opening line (headline.go).
 	Headline Headline `json:"headline"`
 	// Connect is the Battle.net sign-in in progress (connect.go).
@@ -708,7 +717,10 @@ func (a *App) Headline() Headline {
 	installs, _ := a.installStatuses()
 	connecting := a.connectView().State == ConnectWaiting || a.connectView().State == ConnectBlocked
 	st := a.pipe.Status()
-	return headlineFor(a.deviceToken() != "", connecting, st.Logging, st.Detected, installs)
+	a.mu.Lock()
+	signedOut := a.signedOut != nil
+	a.mu.Unlock()
+	return headlineFor(a.paired(signedOut), connecting, signedOut, st.Logging, st.Detected, installs)
 }
 
 // ReportsURL is the player's reports on the site.
@@ -724,11 +736,15 @@ func (a *App) Snapshot() Snapshot {
 	cfg := a.cfg
 	a.mu.Unlock()
 
-	paired := a.deviceToken() != ""
+	a.mu.Lock()
+	so := a.signedOut
+	a.mu.Unlock()
+	paired := a.paired(so != nil)
 	s := Snapshot{
 		AppVersion:       updater.Version,
 		EngineVersion:    session.Version,
 		Paired:           paired,
+		SignedOut:        so,
 		AccountLabel:     cfg.AccountLabel,
 		DeviceName:       deviceName(),
 		Connect:          a.connectView(),
@@ -749,7 +765,7 @@ func (a *App) Snapshot() Snapshot {
 	s.Installs, s.WatchPending = a.installStatuses()
 	connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
 	s.DetectedCharacter = s.Pipeline.Detected
-	s.Headline = headlineFor(paired, connecting, s.Pipeline.Logging, s.Pipeline.Detected, s.Installs)
+	s.Headline = headlineFor(paired, connecting, so != nil, s.Pipeline.Logging, s.Pipeline.Detected, s.Installs)
 	reports, err := state.List(a.o.Dirs.State)
 	if err != nil {
 		a.log.Warn("could not list the reports", "component", "app", "err", err.Error())
@@ -796,20 +812,36 @@ func (a *App) Snapshot() Snapshot {
 // addon sync and the update check. It returns no error because the
 // companion must keep logging through every one of them failing.
 func (a *App) Step(ctx context.Context, now time.Time) {
+	tok := a.deviceToken()
 	a.retarget()
 	if err := a.pipe.Tick(now); err != nil {
 		a.log.Error("the tail failed", "component", "app", "err", err.Error())
 	}
 	if err := a.pipe.Live(ctx, now); err != nil {
+		if a.signOutIfRefused(err, tok) {
+			return
+		}
+		if client.Unauthorized(err) {
+			return // already signed out; the pipeline logged the attempt
+		}
 		a.log.Error("a live snapshot failed", "component", "app", "err", err.Error())
 	}
-	if a.deviceToken() == "" {
+	a.mu.Lock()
+	signedOut := a.signedOut != nil
+	a.mu.Unlock()
+	if signedOut || a.deviceToken() == "" {
 		return // nothing below here works unpaired
 	}
 	if err := a.pipe.Drain(ctx); err != nil && !errors.Is(err, context.Canceled) {
+		if a.signOutIfRefused(err, tok) {
+			return
+		}
 		a.log.Warn("uploads are behind", "component", "app", "err", err.Error())
 	}
 	if err := a.sync.Poll(ctx, now); err != nil {
+		if a.signOutIfRefused(err, tok) {
+			return
+		}
 		a.log.Warn("the addon sync did not complete", "component", "app", "err", err.Error())
 	}
 	if staged, err := a.updater.Poll(ctx, now); err != nil {
@@ -877,4 +909,50 @@ func (a *App) Serve() (*UI, error) {
 		}
 	}()
 	return u, nil
+}
+
+// SignedOutRevoked is why a device is signed out: the site stopped
+// accepting its token, because the device was removed from the account or
+// the account was reset.
+const SignedOutRevoked = "revoked"
+
+// SignedOut says the site no longer accepts this device's sign-in.
+type SignedOut struct {
+	Reason string `json:"reason"`
+	// AccountLabel is who the device was connected as, for the message.
+	AccountLabel string    `json:"account_label"`
+	At           time.Time `json:"at"`
+}
+
+// paired is true when a device token is held and the site has not
+// refused it.
+func (a *App) paired(signedOut bool) bool {
+	return !signedOut && a.deviceToken() != ""
+}
+
+// signOutIfRefused marks the device signed out when err is the site
+// refusing the token tok, which was the one in use when the call began.
+// A token is either valid or revoked, so the first refusal is final:
+// the token is forgotten (the uploads stay queued on disk, to resume
+// after the next sign-in) and the cause is logged once. It reports
+// whether err was such a refusal.
+func (a *App) signOutIfRefused(err error, tok string) bool {
+	if err == nil || tok == "" || !client.Unauthorized(err) {
+		return false
+	}
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if a.signedOut != nil || a.deviceToken() != tok {
+		// Already said, or a new sign-in replaced the token this call
+		// used; the refusal belongs to the old one.
+		return true
+	}
+	a.signedOut = &SignedOut{Reason: SignedOutRevoked, AccountLabel: a.cfg.AccountLabel, At: a.now()}
+	if cerr := a.o.Secret.Clear(); cerr != nil {
+		a.log.Error("could not forget the refused device token", "component", "app", "err", cerr.Error())
+	}
+	a.forgetToken()
+	a.log.Warn("the site no longer accepts this device's sign-in; sign in again",
+		"component", "app", "err", err.Error())
+	return true
 }

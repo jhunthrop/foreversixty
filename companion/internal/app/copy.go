@@ -102,6 +102,10 @@ const (
 	CopyNotConnectedSub   = "Nothing is uploading until you sign in."
 	CopyNotConnectedBtn   = "Sign in with Battle.net"
 
+	CopySignedOutTitle = "Signed out by the site"
+	CopySignedOutSub   = "This computer was removed from your account, or the account was reset. " +
+		"Nothing uploads until you sign in again."
+
 	CopyNoFolderTitle = "No game folder found"
 	CopyNoFolderSub   = "Add your World of Warcraft folder."
 	CopyNoFolderBtn   = "Add a folder"

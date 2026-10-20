@@ -574,6 +574,11 @@ func (p *Pipeline) Live(ctx context.Context, now time.Time) error {
 	if err != nil {
 		p.o.Log.Debug("a live snapshot did not land", "component", "pipeline",
 			"report", reportID, "fight", f.Index, "err", err.Error())
+		// A live snapshot may be lost, but a dead device token is not a
+		// lost packet: it is said to the caller.
+		if client.Unauthorized(err) {
+			return err
+		}
 	}
 	return nil
 }
