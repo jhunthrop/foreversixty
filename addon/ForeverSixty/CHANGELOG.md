@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.9
+
+- Your gear, talents and guild reach the site again. The export is now kept up to date while you play and written at logout from that copy, because the 1.60 client answers empty gear, talents and guild at the moment of logout.
+
 ## 2.0.8
 
 - Old one-word copies of your characters (saved before the addon learned Forever surnames) are dropped on the next save, so the site stops listing them twice.
