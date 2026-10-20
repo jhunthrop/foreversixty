@@ -197,3 +197,23 @@ func Message(code string) string {
 func CopyLoggingSubAs(name string) string {
 	return CopyLoggingSub[:len(CopyLoggingSub)-1] + " · logging as " + name
 }
+
+// The Last sync row's lines, and why a report is not credited.
+const (
+	// CopyNoCharactersSent is the row when the addon is installed and
+	// no character list has reached the site.
+	CopyNoCharactersSent = "No characters sent yet. In game, log out once."
+)
+
+// CopySiteRefused is the row when the site read the character list and
+// refused it; reason is the API's own message.
+func CopySiteRefused(reason string) string {
+	return "The site refused the last character list: " + reason
+}
+
+// CopyCreditUnmatched is why a report with a detected logger has no
+// character: the log named one, but no addon record carries its realm.
+func CopyCreditUnmatched(name string) string {
+	return "the log names " + name + ", but no addon record carries that realm — " +
+		"log out once with the addon loaded"
+}

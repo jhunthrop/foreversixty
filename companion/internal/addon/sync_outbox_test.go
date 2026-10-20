@@ -144,6 +144,7 @@ func (r *rig) restart() {
 		API:      r.api,
 		Log:      slog.New(slog.NewTextHandler(r.logs, nil)),
 		StateDir: r.state,
+		Now:      func() time.Time { return r.at },
 	})
 }
 

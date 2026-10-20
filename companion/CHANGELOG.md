@@ -1,5 +1,10 @@
 # Companion changelog
 
+## 0.2.5
+
+- Status shows your last sync and who each report is credited to; the stopped-responding note says
+  where the tray icon is.
+
 ## 0.2.4
 
 - When the site no longer accepts this computer's sign-in (the device was removed, or the account

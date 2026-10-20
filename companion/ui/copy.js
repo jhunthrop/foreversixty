@@ -14,7 +14,7 @@ const COPY = {
 
   // Shown when the companion's own service does not answer. The cause
   // is never printed.
-  localDown: 'The companion stopped responding. Quit it from the tray icon and open it again.',
+  localDown: 'The companion stopped responding. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.',
   trayNotice: 'Still running in the tray. Use Quit from the tray icon to stop logging.',
   dismiss: 'Dismiss',
 
@@ -32,6 +32,25 @@ const COPY = {
       fights: 'Fights uploaded',
       queued: 'Queued',
       addon: 'Addon',
+      lastSync: 'Last sync',
+    },
+    // The Last sync row's sent line; the other lines come from the snapshot.
+    lastSyncSent: (n, ago) => n + (n === 1 ? ' character, ' : ' characters, ') + ago,
+    // How long ago, in the Addon row's words (copy.go since).
+    ago: {
+      lessThanMinute: 'less than a minute ago',
+      oneMinute: '1 minute ago',
+      minutes: (n) => n + ' minutes ago',
+      today: (clock) => 'today at ' + clock,
+      yesterday: 'yesterday',
+      days: (n) => n + ' days ago',
+    },
+    // Who a report is credited to; the unmatched reason comes from the snapshot.
+    credit: {
+      credited: (name) => 'credited to ' + name,
+      unmatched: (reason) => 'not credited: ' + reason,
+      none: 'not credited',
+      separator: ' · ',
     },
     noReport: 'None yet',
     starting: 'Starting...',

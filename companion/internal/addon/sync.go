@@ -36,6 +36,24 @@ type refusal interface {
 	Refuses(field string) bool
 }
 
+// reasoned is an error that can say, in the site's own words, why it
+// was refused: client.Error's message.
+type reasoned interface {
+	Reason() string
+}
+
+// reasonOf is the site's reason for err, or the error's text when the
+// site gave none.
+func reasonOf(err error) string {
+	var r reasoned
+	if errors.As(err, &r) {
+		if why := r.Reason(); why != "" {
+			return why
+		}
+	}
+	return err.Error()
+}
+
 // refused reports whether err is the site refusing one part of the
 // body: "outbox" (the outbox cannot be used) or "characters" (the
 // character list was the wrong shape). Neither is worth sending again
@@ -63,6 +81,9 @@ type Options struct {
 	// sends one twice (state.LoadOutboxSent). Empty keeps them in
 	// memory only.
 	StateDir string
+	// Now is the clock the status page's "last sync" is stamped with;
+	// nil is time.Now.
+	Now func() time.Time
 }
 
 // Status is what the status page shows of the sync: when the site last
@@ -72,6 +93,15 @@ type Options struct {
 type Status struct {
 	SeenAt          time.Time
 	SimRequestState string
+	// Sent is the newest character list the site accepted: how many
+	// characters it held and when it went up. Zero until one has.
+	SentCount int
+	SentAt    time.Time
+	// Refusal is the site's reason when it refused the newest list
+	// (a 400 naming the characters), and RefusedAt when. It is empty
+	// again once a later list is accepted.
+	Refusal   string
+	RefusedAt time.Time
 }
 
 // Sync moves strings between the addon and the API.
@@ -122,6 +152,9 @@ func New(o Options) *Sync {
 	if o.Cache == nil {
 		o.Cache = &Cache{}
 	}
+	if o.Now == nil {
+		o.Now = time.Now
+	}
 	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{},
 		skipLogged: map[string]bool{}, formatLogged: map[int]bool{}}
 	if o.StateDir != "" {
@@ -135,6 +168,13 @@ func New(o Options) *Sync {
 		if sent != nil {
 			s.sent = sent
 		}
+		last, err := state.LoadLastSync(o.StateDir)
+		if err != nil {
+			o.Log.Warn("could not read when the characters last went up; starting over",
+				"component", "addon", "err", err.Error())
+		}
+		s.status.SentCount, s.status.SentAt = last.Count, last.At
+		s.status.Refusal, s.status.RefusedAt = last.Refusal, last.RefusedAt
 	}
 	return s
 }
@@ -304,6 +344,7 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 		// would be refused again on every pass. This version of the file
 		// is done with; the next logout writes a new one.
 		s.o.Log.Warn(CopyCharactersRefused, "component", "addon", "path", p, "err", err.Error())
+		s.refusedList(reasonOf(err))
 		s.uploaded[p] = at
 		return outboxUp, nil
 	}
@@ -313,6 +354,7 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	s.uploaded[p] = at
 	s.o.Log.Info("uploaded character exports", "component", "addon",
 		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
+	s.sentList(len(saved.Exports))
 	if dropped != nil {
 		// The smallest post that could have carried it: the outbox with
 		// its own character (which it must ride with) and nothing else.
@@ -323,6 +365,44 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 		s.markSent(p, dropped.key())
 	}
 	return outboxUp, nil
+}
+
+// sentList records that the site accepted a character list of n, in
+// memory and in the state directory. It clears an earlier refusal: the
+// newest word on the list is the good one.
+func (s *Sync) sentList(n int) {
+	s.mu.Lock()
+	s.status.SentCount, s.status.SentAt = n, s.o.Now()
+	s.status.Refusal, s.status.RefusedAt = "", time.Time{}
+	last := s.lastSync()
+	s.mu.Unlock()
+	s.saveLastSync(last)
+}
+
+// refusedList records the site's reason for refusing a character
+// list. What it accepted before stays: the page says both.
+func (s *Sync) refusedList(reason string) {
+	s.mu.Lock()
+	s.status.Refusal, s.status.RefusedAt = reason, s.o.Now()
+	last := s.lastSync()
+	s.mu.Unlock()
+	s.saveLastSync(last)
+}
+
+// lastSync is the status as the state file keeps it; mu is held.
+func (s *Sync) lastSync() state.LastSync {
+	return state.LastSync{Count: s.status.SentCount, At: s.status.SentAt,
+		Refusal: s.status.Refusal, RefusedAt: s.status.RefusedAt}
+}
+
+func (s *Sync) saveLastSync(last state.LastSync) {
+	if s.o.StateDir == "" {
+		return
+	}
+	if err := state.SaveLastSync(s.o.StateDir, last); err != nil {
+		s.o.Log.Warn("could not record when the characters last went up",
+			"component", "addon", "err", err.Error())
+	}
 }
 
 // answered logs the site's answer for an outbox, one plain line per
