@@ -213,6 +213,7 @@ func TestAnOutboxSimRequestGoesUpWithTheCharactersAndTheAckComesBack(t *testing.
 	}
 
 	// The inbox came down in the same pass, v2, with the fake's ack for the stored export.
+	r.settle()
 	body, err := os.ReadFile(addon.InboxPath(r.path))
 	if err != nil {
 		t.Fatalf("the inbox was not written: %v", err)
@@ -394,6 +395,7 @@ func TestTheAckLandsInTheSamePassAsTheOutbox(t *testing.T) {
 	if got := r.srv.InboxFetches(); got != fetches+1 {
 		t.Fatalf("the outbox upload did not fetch the inbox in the same pass: %d fetches", got)
 	}
+	r.settle()
 	body, err := os.ReadFile(addon.InboxPath(r.path))
 	if err != nil || !strings.Contains(string(body), `["export_seen_at"] = "2026-11-04T14:03:00Z"`) {
 		t.Fatalf("the ack is not in the inbox (%v):\n%s", err, body)
@@ -515,6 +517,7 @@ func TestAnInboxOfAFormatTheCompanionDoesNotKnowIsNotWritten(t *testing.T) {
 	if err := r.poll(); err != nil {
 		t.Fatal(err)
 	}
+	r.settle()
 	before, err := os.ReadFile(addon.InboxPath(r.path))
 	if err != nil {
 		t.Fatal(err)
@@ -811,5 +814,14 @@ func TestOnlyA400OnTheCharactersStopsTheRetries(t *testing.T) {
 	}
 	if n := strings.Count(r.logs.String(), "The site refused the character list"); n != 1 {
 		t.Errorf("a 400 was logged %d times", n)
+	}
+}
+
+// settle is a pass a minute after the game last wrote, when the inbox the last pass
+// fetched is free to land.
+func (r *rig) settle() {
+	r.t.Helper()
+	if err := r.sync.Poll(r.t.Context(), r.at.Add(addon.QuietSaved)); err != nil {
+		r.t.Fatal(err)
 	}
 }

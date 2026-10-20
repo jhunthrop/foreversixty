@@ -2,6 +2,8 @@
 
 ## 0.2.5
 
+- The companion waits for the game to finish writing its saved variables before it delivers the inbox, and
+  writes the file atomically.
 - Status shows your last sync and who each report is credited to; the stopped-responding note says
   where the tray icon is.
 

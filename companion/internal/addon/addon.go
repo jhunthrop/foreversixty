@@ -11,6 +11,7 @@ package addon
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -573,14 +574,30 @@ func InboxPath(savedVariables string) string {
 // It writes ForeverSixtyInbox.lua and nothing else: any other path is
 // refused, so the game's own ForeverSixty.lua (ForeverSixtyDB, which
 // the game owns and rewrites at logout) can never be overwritten by a
-// path mistake. The write goes to a temporary file in the same folder
-// and is renamed over the inbox, so the game never reads half a file.
+// path mistake. The write goes to ForeverSixtyInbox.lua.tmp in the same folder,
+// is synced, and is renamed over the inbox, so the game never reads half a file.
 //
 // The game rewrites its own SavedVariables at logout, so an inbox
 // written while the player is online may be replaced; the next
 // ten-minute pass puts it back, and the addon reads it at the
 // following load.
 func WriteInbox(path string, body []byte) (bool, error) {
+	return writeInbox(path, body, false)
+}
+
+// WriteInboxCopy is WriteInbox for the last resort: when the rename is
+// refused because the game still holds the file, the bytes are copied
+// over it and the temporary file is deleted. Only the sync calls it,
+// after ErrBusy has held a write off several times.
+func WriteInboxCopy(path string, body []byte) (bool, error) {
+	return writeInbox(path, body, true)
+}
+
+// ErrBusy is returned (wrapped) when the inbox cannot be replaced
+// because another process, normally the game, has it open.
+var ErrBusy = errors.New("addon: the inbox is held open by another process")
+
+func writeInbox(path string, body []byte, copyFallback bool) (bool, error) {
 	if filepath.Base(path) != InboxName+".lua" {
 		return false, fmt.Errorf("addon: refusing to write %s: the companion writes only %s.lua",
 			path, InboxName)
@@ -591,21 +608,32 @@ func WriteInbox(path string, body []byte) (bool, error) {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return false, err
 	}
-	tmp, err := os.CreateTemp(filepath.Dir(path), ".inbox-*.lua")
+	name := path + ".tmp"
+	tmp, err := os.OpenFile(name, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
 	if err != nil {
 		return false, err
 	}
-	name := tmp.Name()
 	defer os.Remove(name)
 	if _, err := tmp.Write(body); err != nil {
+		tmp.Close()
+		return false, err
+	}
+	if err := tmp.Sync(); err != nil {
 		tmp.Close()
 		return false, err
 	}
 	if err := tmp.Close(); err != nil {
 		return false, err
 	}
-	if err := os.Chmod(name, 0o644); err != nil {
+	err = os.Rename(name, path)
+	if err == nil {
+		return true, nil
+	}
+	if !isSharingViolation(err) {
 		return false, err
 	}
-	return true, os.Rename(name, path)
+	if !copyFallback {
+		return false, fmt.Errorf("%w: %v", ErrBusy, err)
+	}
+	return true, os.WriteFile(path, body, 0o644)
 }
