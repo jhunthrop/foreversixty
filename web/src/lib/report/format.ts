@@ -155,7 +155,7 @@ export function outcomeLabel(
   phase = '',
 ): string {
   if (fight.in_progress) return 'Live';
-  if (fight.kind !== 'encounter') return `${fight.npc_kills} killed`;
+  if (fight.kind !== 'encounter') return `${fight.npc_kills} ${fight.npc_kills === 1 ? 'kill' : 'kills'}`;
   if (fight.kill) return 'Kill';
   // "Wipe 23%": how far the pull got, which is what separates one wipe from the next.
   // With phases curated for the boss, how far is also which phase it died in.

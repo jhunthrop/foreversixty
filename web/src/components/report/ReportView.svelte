@@ -75,6 +75,9 @@
   import Glossary from './Glossary.svelte';
   import RaidCooldowns from './RaidCooldowns.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
+  import { reportHeading } from '../../lib/report/heading';
+  import { homeRealmOf, setHomeRealm } from '../../lib/report/names.svelte';
+  import { unitClassMap } from '../../lib/report/roster-class';
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
@@ -769,9 +772,21 @@
   /** GUID to class, for the tables whose rows are not Actors. Off the whole fight rather
       than the scoped one: a colour is a property of the player, not of the current source
       scope, and Mechanics draws the whole raid however the scope is set. */
+  const unitClasses = $derived(unitClassMap(file?.units ?? []));
   const classOf = $derived(
-    new Map((base?.roster ?? []).filter((row) => row.class).map((row) => [row.guid, row.class as string])),
+    new Map(
+      (base?.roster ?? [])
+        .map((row) => [row.guid, row.class || unitClasses.get(row.guid)?.class] as const)
+        .filter((entry): entry is [string, string] => Boolean(entry[1])),
+    ),
   );
+  // The log writes each player's realm after the name; the report's own realm is the one most
+  // of them carry, and only a player from elsewhere shows theirs.
+  $effect(() => {
+    setHomeRealm(
+      homeRealmOf((file?.units ?? []).filter((unit) => playerSet.has(unit.guid)).map((unit) => unit.name)),
+    );
+  });
 
   /**
    * Talents per tree, per class, fetched once per class the fight actually contains. The
@@ -1374,7 +1389,7 @@
     <header class="flex flex-col gap-1 px-[18px] md:px-0">
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="section-title text-[18px]" data-testid="report-title">
-          {meta.title === '' ? meta.zone : meta.title}
+          {reportHeading(meta)}
         </h1>
         <!-- Announced politely, not stolen focus: a fight going live or settling is worth a
            screen reader hearing about on its own time, not interrupting whatever the
@@ -1536,6 +1551,7 @@
               <NightView
                 {night}
                 loading={nightLoading}
+                {unitClasses}
                 onSelect={(index) => patch({ fight: index })}
                 onSelectPlayer={(guid) => patch({ source: guid })}
               />
@@ -1551,6 +1567,7 @@
               approximate={!windowIsWhole}
               dataBuild={activeBuild.build}
               {classOf}
+              {unitClasses}
               {treeSizesFor}
               onSelectPlayer={(guid) => patch({ source: guid })}
               players={playerSet}

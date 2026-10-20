@@ -6,7 +6,7 @@
      report's already-loaded summary.json (see docs/superpowers/plans/2026-09-21-rating-web
      .md Ruling 8 on why this is its own component rather than a SummaryPanels addition). -->
 <script lang="ts">
-  import { splitUnitName } from '../../lib/characters';
+  import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
   import { ratingCopy, componentLabel } from '../../lib/rating/copy';
@@ -55,6 +55,8 @@
     </div>
   {:else if fetcher.status === 'flagged'}
     <p class="text-muted text-[13px]" data-testid="rating-panel-flagged">{ratingCopy.flagged}</p>
+  {:else if fetcher.status === 'none'}
+    <p class="text-muted text-[13px]" data-testid="rating-panel-none">{ratingCopy.noRatingForTrash}</p>
   {:else if fetcher.status === 'failed'}
     <p class="text-muted text-[13px]" role="alert" data-testid="rating-panel-error">
       {ratingCopy.fetchFailed}
@@ -75,10 +77,10 @@
                 class="inline-flex min-h-11 items-center truncate underline-offset-2 hover:underline md:min-h-0"
                 style={`color: ${classColorVar(classForPlayer(guid, player.class, roster))}`}
                 title="Show only this player"
-                onclick={() => onSelectPlayer(guid)}>{splitUnitName(player.player_name).name}</button
+                onclick={() => onSelectPlayer(guid)}>{unitLabel(player.player_name).text}</button
               >
             {:else}
-              {splitUnitName(player.player_name).name}
+              {unitLabel(player.player_name).text}
             {/if}
           </span>
           <span

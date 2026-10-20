@@ -9,9 +9,11 @@
 import { RankingsError, fetchReportRatings } from '../rankings/api';
 import type { ReportRatings } from './types';
 
-/** `flagged`: the API answered 404 with error code "flagged", a flagged report that has no
+/** `none`: the API answered 404 "no ratings for that fight", which is by design for trash: ratings
+ *  are made for boss encounters only. Not a failure and not styled as one.
+ *  `flagged`: the API answered 404 with error code "flagged", a flagged report that has no
  *  ratings to show; not a failure (L8.6 fix round 6 item 5). Any other error is `failed`. */
-export type ReportRatingsStatus = 'idle' | 'loading' | 'ready' | 'flagged' | 'failed';
+export type ReportRatingsStatus = 'idle' | 'loading' | 'ready' | 'flagged' | 'none' | 'failed';
 
 export interface ReportRatingsFetch {
   readonly data: ReportRatings | null;
@@ -21,6 +23,9 @@ export interface ReportRatingsFetch {
    *  the same pair; safe to call on every render/effect run. */
   load(reportId: string, fightIndex: number): void;
 }
+
+/** The API's own message for a fight that has no ratings (api/internal/rating/handler.go). */
+const NO_RATINGS_MESSAGE = 'no ratings for that fight';
 
 export function createReportRatingsFetch(apiBase?: string): ReportRatingsFetch {
   let data = $state<ReportRatings | null>(null);
@@ -57,6 +62,15 @@ export function createReportRatingsFetch(apiBase?: string): ReportRatingsFetch {
           data = null;
           if (thrown instanceof RankingsError && thrown.status === 404 && thrown.code === 'flagged') {
             status = 'flagged';
+            return;
+          }
+          if (
+            thrown instanceof RankingsError &&
+            thrown.status === 404 &&
+            thrown.code === 'not_found' &&
+            thrown.message === NO_RATINGS_MESSAGE
+          ) {
+            status = 'none';
             return;
           }
           status = 'failed';

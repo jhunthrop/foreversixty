@@ -48,6 +48,7 @@ test('trash is folded away behind a count, and unfolds', async ({ page }) => {
   await page.goto(REPORT);
   await expect(page.getByTestId('fight-1')).toHaveCount(0);
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await expect(page.getByTestId('fight-1')).toBeVisible();
 });
 
@@ -56,6 +57,7 @@ test('every control the spec names writes itself into the URL and reads back', a
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   if (phone) await page.getByTestId('tab-select').selectOption('healing');
   else await page.getByTestId('tab-healing').click();
@@ -117,6 +119,7 @@ test('a fight whose summary does not load says so instead of passing off the las
   await page.route('**/fights/2/summary.json*', (route) => route.abort());
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
 
   await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
@@ -151,6 +154,7 @@ test('a stale fight failure does not fail the fight that is on screen', async ({
 
   const slow = await heldFightRoute(page, 2, 'abort');
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await slow.started;
 
@@ -178,6 +182,7 @@ test('a stale fight success neither clears the current error nor paints its rost
   await page.route('**/fights/3/summary.json*', (route) => route.abort());
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await slow.started;
 

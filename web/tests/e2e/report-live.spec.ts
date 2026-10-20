@@ -242,6 +242,7 @@ test('a stale live response does not trigger a second fetch for the fight the vi
   await livePolled;
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
   // Fight 2's own summary request has started (held, uncached) but not yet resolved.
@@ -335,6 +336,7 @@ test('an expired signed base is re-signed and the same request retried', async (
   live.delete(1);
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
 
   // Fight 2 renders from a freshly signed base rather than "That report is not public".
@@ -392,6 +394,7 @@ test('a stale fight error is cleared by the live poll', async ({ page }) => {
   await expect(page.getByTestId('report-live')).toBeVisible();
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-2').click();
   await expect(page.getByTestId('report-fight-error')).toBeVisible();
 

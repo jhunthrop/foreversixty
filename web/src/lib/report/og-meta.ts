@@ -17,6 +17,7 @@ import { confidenceBand, formatMargin } from '../sim/estimate';
 import { specLabel } from '../sim/spec-label';
 import type { SimResult } from '../sim/types';
 import { statLabel } from '../sim/weights';
+import { reportHeading } from './heading';
 import type { ReportMeta } from './types';
 
 export const SITE_BASE_URL = 'https://foreversixty.gg';
@@ -64,7 +65,7 @@ export function titleize(slug: string): string {
 export function reportShellMeta(meta: ReportMeta, apiBase: string): ShellMeta {
   const kills = meta.fights.filter((fight) => fight.kill).length;
   const killPhrase = kills === 0 ? 'no boss kills' : plural(kills, 'boss kill', 'boss kills');
-  const heading = meta.title === '' ? meta.zone : meta.title;
+  const heading = reportHeading(meta);
   return {
     heading,
     title: `${heading} · Forever Sixty`,

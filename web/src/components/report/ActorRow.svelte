@@ -19,6 +19,7 @@
      target/boss filter scale by a ratio. -->
 <script lang="ts">
   import { characterHref, splitUnitName } from '../../lib/characters';
+  import { unitLabel } from '../../lib/report/names.svelte';
   import {
     approximateAriaLabel,
     approximateMark,
@@ -240,6 +241,7 @@
   const detailTitle = $derived(exact === null ? title : 'Measured from the fight’s events for this window');
   const color = $derived(classColorVar(actor.class));
   const display = $derived(splitUnitName(actor.name));
+  const label = $derived(unitLabel(actor.name));
   const activitySeconds = $derived(Math.round(actor.active_ms / 1000));
   const activityPct = $derived.by(() => {
     const over = actor.time_ms ?? durationMs;
@@ -374,7 +376,7 @@
     <span
       class="flex min-w-0 flex-wrap items-center gap-x-2 overflow-hidden font-semibold [&>*]:truncate"
       style={`color: ${color}`}
-      title={splitUnitName(actor.name).name}
+      title={label.title}
       data-testid="row-name"
     >
       <ClassIcon className={actor.class} />
@@ -388,6 +390,7 @@
       {:else}
         {display.name}
       {/if}
+      {#if label.realm !== ''}<span class="text-muted text-[11px] font-normal">· {label.realm}</span>{/if}
       {#if deadSince !== null}
         <span
           class="text-death label basis-full text-[10px] whitespace-nowrap"

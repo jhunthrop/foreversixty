@@ -7,6 +7,7 @@
      last-ten list is the whole point of the view. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
+  import { unitLabel } from '../../lib/report/names.svelte';
   import {
     classColorVar,
     formatAmount,
@@ -316,10 +317,10 @@
                 class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
                 style={`color: ${classColorVar(death.class ?? classOf.get(death.guid))}`}
                 title="Show only this player"
-                onclick={() => onSelectPlayer(death.guid)}>{splitUnitName(death.name).name}</button
+                onclick={() => onSelectPlayer(death.guid)}>{unitLabel(death.name).text}</button
               >
             {:else}
-              {splitUnitName(death.name).name}
+              {unitLabel(death.name).text}
             {/if}
           </span>
           {#if death.label}

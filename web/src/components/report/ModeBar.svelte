@@ -8,7 +8,7 @@
      Mechanics both have a meaning across pulls, and hiding the row hid the way back out
      of Mechanics. Compare and Rankings are one pull's, so they are disabled there. -->
 <script lang="ts">
-  import { splitUnitName } from '../../lib/characters';
+  import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { reportCopy } from '../../lib/report/copy';
   import {
@@ -160,7 +160,7 @@
             <option value={SOURCE_ENEMIES}>All enemies</option>
             {#each roster as unit (unit.guid)}
               <option value={unit.guid} style={`color: ${classColorVar(unit.class)}`}>
-                {splitUnitName(unit.name).name}
+                {unitLabel(unit.name).text}
               </option>
             {/each}
           </select>
