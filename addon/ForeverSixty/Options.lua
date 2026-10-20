@@ -465,8 +465,9 @@ end
 function Options.onEvent(_, event, ...)
 	Options.keepExport(event)
 	if event == "PLAYER_ENTERING_WORLD" then
-		-- X.3: after the export's own refresh (queued above), the one login line that is true.
-		SiteStatus.afterEnteringWorld(Options.data)
+		-- X.3: after the export's own refresh (queued above), the one login line that is true
+		-- (X.5: told whether this is a login, a /reload or a loading screen, the event's own arguments).
+		SiteStatus.afterEnteringWorld(Options.data, ...)
 	end
 	if Options.REWARD_EVENTS[event] then
 		RewardMarks.onEvent(event, ...)

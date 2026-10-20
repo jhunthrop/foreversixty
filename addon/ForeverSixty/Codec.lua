@@ -889,6 +889,33 @@ function Codec.sameCharacter(a, b)
 	return sameRegion and sameMiddle and normaliseSegment(aName) == normaliseSegment(bName)
 end
 
+--- Whether two keys that name the same character (Codec.sameCharacter) also agree on the realm, where
+--- both carry one by name: "us/Classic Beta PvP/Bow Jackzon" and "us/Classic Beta PvE/Bow Jackzon"
+--- are two realms of one ruleset, while a key that carries only a ruleset ("us/pvp/bow-jackzon", what
+--- the companion writes today) has no realm name to compare and agrees with any realm of that
+--- ruleset. Realm names compare folded, spaces and punctuation dropped ("ClassicBetaPvP"). Pure.
+function Codec.sameRealmLabel(a, b)
+	if type(a) ~= "string" or type(b) ~= "string" then
+		return false
+	end
+	local aMid = a:match("^[^/]*/([^/]*)/")
+	local bMid = b:match("^[^/]*/([^/]*)/")
+	if aMid == nil or bMid == nil then
+		return false
+	end
+	local function isRuleset(segment)
+		local folded = segment:lower()
+		return folded == "normal" or folded == "pvp" or folded == "rp" or folded == "hardcore"
+	end
+	if isRuleset(aMid) or isRuleset(bMid) then
+		return true
+	end
+	local function folded(segment)
+		return (segment:lower():gsub("[^%w]", ""))
+	end
+	return folded(aMid) == folded(bMid)
+end
+
 --- The message kinds this addon build understands. A message whose
 --- `type` is not one of these -- a future kind the site started sending
 --- before this addon was updated -- is silently dropped by

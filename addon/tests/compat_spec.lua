@@ -391,4 +391,65 @@ describe("Compat.spellbookRank", function()
 		_G.GetSpellBookItemName = function() end
 		assert.is_nil(Compat.spellbookRank("Multi-Shot"))
 	end)
+
+	-- X.5: every time the addon prints is in the chat's own clock.
+	describe("the clock", function()
+		local savedFormat, savedLocale
+
+		before_each(function()
+			savedFormat, savedLocale = _G.CHAT_TIMESTAMP_FORMAT, _G.GetLocale
+			_G.CHAT_TIMESTAMP_FORMAT = nil
+			_G.GetLocale = function()
+				return "deDE"
+			end
+		end)
+
+		after_each(function()
+			_G.CHAT_TIMESTAMP_FORMAT, _G.GetLocale = savedFormat, savedLocale
+		end)
+
+		it("prints 24-hour where the chat timestamps are, and with no chat format on a 24-hour locale", function()
+			assert.is_false(Compat.twelveHour())
+			assert.are.equal("18:20", Compat.clockText(18, 20))
+			assert.are.equal("00:05", Compat.clockText(0, 5))
+			_G.CHAT_TIMESTAMP_FORMAT = "%H:%M:%S "
+			assert.is_false(Compat.twelveHour())
+			assert.are.equal("18:20", Compat.clockText(18, 20))
+		end)
+
+		it("prints 12-hour with am and pm where the chat format is 12-hour", function()
+			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
+			assert.is_true(Compat.twelveHour())
+			assert.are.equal("06:20 pm", Compat.clockText(18, 20))
+			assert.are.equal("12:05 am", Compat.clockText(0, 5))
+			assert.are.equal("12:30 pm", Compat.clockText(12, 30))
+			assert.are.equal("09:00 am", Compat.clockText(9, 0))
+			-- The chat's "%I:%M " (no marker, as the walk's capture showed) is 12-hour too.
+			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M "
+			assert.are.equal("06:21 pm", Compat.clockText(18, 21))
+		end)
+
+		it("follows the locale when the player set no chat format", function()
+			_G.GetLocale = function()
+				return "enUS"
+			end
+			assert.is_true(Compat.twelveHour())
+			assert.are.equal("06:20 pm", Compat.clockText(18, 20))
+			-- A chat format the player set wins over the locale.
+			_G.CHAT_TIMESTAMP_FORMAT = "%H:%M "
+			assert.are.equal("18:20", Compat.clockText(18, 20))
+			-- A client with neither answer is 24-hour.
+			_G.CHAT_TIMESTAMP_FORMAT, _G.GetLocale = nil, nil
+			assert.is_false(Compat.twelveHour())
+		end)
+
+		it("prints the export's own wall time in the same clock, and leaves what is not a time alone", function()
+			assert.are.equal("18:21", Compat.clockOf("18:21"))
+			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
+			assert.are.equal("06:21 pm", Compat.clockOf("18:21"))
+			assert.are.equal("?", Compat.clockOf("?"))
+			assert.are.equal("25:99", Compat.clockOf("25:99"))
+			assert.is_nil(Compat.clockOf(nil))
+		end)
+	end)
 end)

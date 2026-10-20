@@ -538,19 +538,38 @@ describe("BuildDialog, round 5 frame checks", function()
 		assert.are.equal(-(first + advance + Theme.SIZES.gap * 2), mock.lastCall(copy.field, "SetPoint")[5])
 	end)
 
-	it("fits the Replaces line through the preview's own measure (fix 5, 16)", function()
-		local Follow = require("Follow")
-		Follow.build = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
-		Follow.build.name = "A very long build name the site sent for this character, an old patch one"
-		BuildDialog.open("paste")
-		mock.runTimers(state)
-		local replaces = BuildDialog.paste.replaces
-		replaces.GetStringWidth = function(region)
-			return utf8.len(region:GetText() or "") * 5
-		end
-		paste("FSB1:1.60.1.70291:warrior:112:")
-		assert.is_true(utf8.len(replaces:GetText()) * 5 <= 388, replaces:GetText())
-	end)
+	it("wraps the Replaces sentence whole through the preview's own measure, and grows the dialog (fix 5, 16; X.5)",
+		function()
+			local Follow = require("Follow")
+			Follow.build = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
+			local name = "A very long build name the site sent for this character, an old patch one"
+			Follow.build.name = name
+			BuildDialog.open("paste")
+			mock.runTimers(state)
+			local replaces = BuildDialog.paste.replaces
+			-- 5 px a letter, wrapped at the content width, 14 px a line.
+			replaces.GetStringHeight = function(region)
+				return math.ceil(utf8.len(region:GetText() or "") * 5 / 388) * 14
+			end
+			paste("FSB1:1.60.1.70291:warrior:112:")
+			local text = replaces:GetText()
+			assert.is_truthy(text:find(name, 1, true), text)
+			assert.is_nil(text:find(require("Locale").ellipsis, 1, true), text)
+			assert.are.equal(2, replaces:GetStringHeight() / 14)
+			-- It is a wrapping region: no one-line cap, and the content width.
+			assert.is_nil(mock.lastCall(replaces, "SetWordWrap"))
+			assert.is_nil(mock.lastCall(replaces, "SetMaxLines"))
+			assert.are.equal(388, mock.lastCall(replaces, "SetWidth")[1])
+			-- Taller still, and the dialog is taller than its 300 by what the sentence needs.
+			replaces.GetStringHeight = function()
+				return 140
+			end
+			paste("FSB1:1.60.1.70291:warrior:113:")
+			assert.is_true(BuildDialog.height > Theme.SIZES.dialogHeight, BuildDialog.height)
+			assert.are.equal(BuildDialog.height, mock.lastCall(BuildDialog.frame, "SetHeight")[1])
+			assert.are.equal(BuildDialog.height - BuildDialog.chrome.top - BuildDialog.chrome.bottom,
+				BuildDialog.contentHeight)
+		end)
 end)
 
 describe("BuildDialog, round 6 frame checks", function()
@@ -630,11 +649,14 @@ describe("BuildDialog, round 6 frame checks", function()
 		assert.is_false(paste.badge:IsShown())
 	end)
 
-	it("starts a row's text at the content margin and draws its edge outside the row (fix 7, 3)", function()
+	it("starts a row's icon at the content margin and draws its edge outside the row (fix 7, 3; X.5)", function()
 		BuildDialog.open("paste")
 		local row = BuildDialog.paste.rows[1]
-		local at = lastCall(row.label, "SetPoint")
-		assert.are.same({ "LEFT", row.frame, "LEFT", 0, 0 }, { at[1], at[2], at[3], at[4], at[5] })
+		local at = lastCall(row.icon, "SetPoint")
+		assert.are.same({ "TOPLEFT", row.frame, "TOPLEFT", 0, 0 }, { at[1], at[2], at[3], at[4], at[5] })
+		local S = Theme.SIZES
+		local name = lastCall(row.name, "SetPoint")
+		assert.are.same({ "TOPLEFT", row.icon, "TOPRIGHT", S.gap * 2, 0 }, { name[1], name[2], name[3], name[4], name[5] })
 		local edge = lastCall(row.edge, "SetPoint")
 		assert.are.equal(row.frame, edge[2])
 		assert.is_true(edge[4] < 0)
@@ -645,7 +667,8 @@ describe("BuildDialog, round 6 frame checks", function()
 		mock.runTimers(state)
 		local row = BuildDialog.paste.rows[1]
 		row.frame:GetScript("OnClick")(row.frame)
-		assert.is_true(row.edge:IsShown())
+		-- A build from the site previewing has no row of its own: the preview's header is it (X.5).
+		assert.is_false(row.frame:IsShown())
 		assert.is_true(BuildDialog.paste.box:HasFocus())
 		local box = BuildDialog.paste.box
 		box:SetText("FSB1:1.60.1.70291:warrior:112:")
@@ -713,21 +736,25 @@ describe("BuildDialog, round 6 frame checks", function()
 		assert.are.equal("Your next step: Take Deflection (1 of 2)", copy.simNext:GetText())
 	end)
 
-	it("measures a row's label in its own font string, to the content width (fix 6, 10)", function()
+	it("measures a row's name in its own font string, to the width the icon leaves (fix 6, 10; X.5)", function()
 		_G.ForeverSixtyInbox.messages[1].name = "A very long build name the site sent, for an old patch of the game"
+			.. " and some more words past the row"
 		BuildDialog.open("paste")
 		local row = BuildDialog.paste.rows[1]
-		row.label.GetStringWidth = function(region)
+		row.name.GetStringWidth = function(region)
 			return utf8.len(region:GetText() or "") * 5
 		end
 		BuildDialog.drawPaste()
-		assert.is_true(utf8.len(row.label:GetText()) * 5 <= 388, row.label:GetText())
-		assert.is_truthy(row.label:GetText():find(L.ellipsis, 1, true))
+		local inner = 388 - Theme.SIZES.dialogClassIcon - Theme.SIZES.gap * 2
+		assert.is_true(utf8.len(row.name:GetText()) * 5 <= inner, row.name:GetText())
+		assert.is_truthy(row.name:GetText():find(L.ellipsis, 1, true))
 	end)
 
-	-- L3.7 item 28: the empty space under the empty paste box holds the Tab hint and a companion line.
+	-- L3.7 item 28: the empty space under the empty paste box holds the Tab hint and a companion line
+	-- (X.5: only while no build waits; a waiting build is the news, and the tabs are the switch).
 	it("puts the Tab hint and a companion line under the empty paste box, and the hint back at the corner otherwise",
 		function()
+			_G.ForeverSixtyInbox = nil
 			BuildDialog.open("paste")
 			local paste = BuildDialog.paste
 			assert.are.equal(L.dialogPasteCompanion, paste.companion:GetText())
@@ -834,5 +861,296 @@ describe("BuildDialog, polish round B fix round 1", function()
 		assert.are.equal(L.dialogCopyLinkShort, label:GetText())
 		assert.are.equal("Copy link", label:GetText())
 		assert.is_true(mock.lastCall(copy, "SetWidth")[1] <= available)
+	end)
+end)
+
+-- X.5: the builds the site sent are rows above the paste box, the preview never cuts a sentence, a build
+-- that is a prefix of the plan cannot be used, and the dialog grows downward for what it holds.
+describe("BuildDialog, X.5 builds from the site", function()
+	local state, BuildDialog, Theme, L, Follow
+
+	local A = { tab = 1, tier = 1, column = 1 }
+	local B = { tab = 1, tier = 1, column = 2 }
+
+	--- An FSB1 code for a warrior with `order`'s cells, in order.
+	local function fsb(order)
+		return require("Codec").encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = order, gear = {} })
+	end
+
+	local THREE = fsb({ A, A, A })
+	local TWO = fsb({ A, A })
+	local OTHER = fsb({ A, A, B })
+	local ODD = fsb({ B, A })
+
+	local function inbox(...)
+		_G.ForeverSixtyInbox = { format = 2, messages = { ... } }
+	end
+
+	local function sent(name, code, character)
+		return { type = "build", character = character or "us/normal/bob", name = name, code = code }
+	end
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		Theme = require("Theme")
+		Theme.reset()
+		L = require("Locale")
+		_G.ForeverSixtyDB = {}
+		inbox(sent("20 to 29 \226\128\148 Arms", THREE))
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		Follow = helper.load("Follow")
+		helper.load("Chip")
+		helper.load("ItemTooltip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+	end)
+
+	after_each(function()
+		_G.ForeverSixtyInbox = nil
+		mock.uninstall()
+	end)
+
+	local function rgbOf(texture)
+		local call = mock.lastCall(texture, "SetColorTexture")
+		return call and { call[1], call[2], call[3] } or nil
+	end
+
+	local function rgb(key)
+		local r, g, b = Theme.rgb(Theme.HEX[key])
+		return { r, g, b }
+	end
+
+	local function yOf(frame)
+		return -mock.lastCall(frame, "SetPoint")[5]
+	end
+
+	local function open()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		return BuildDialog.paste
+	end
+
+	it("shows a waiting build as a row above the box: icon, name, detail and who it is for (X.5)", function()
+		local paste = open()
+		local row = paste.rows[1]
+		assert.is_true(row.frame:IsShown())
+		assert.are.equal("20 to 29 \226\128\148 Arms", row.name:GetText())
+		assert.are.equal("Warrior \194\183 Arms 3 \194\183 3 points", row.detail:GetText())
+		assert.is_nil(row.detail:GetText():find("|", 1, true))
+		assert.are.equal("For Bob \194\183 Ashbringer \194\183 from the site", row.target:GetText())
+		assert.is_not_nil(mock.lastCall(row.icon, "SetTexture"))
+		-- Above the box, which sits below it.
+		assert.is_true(yOf(row.frame) < yOf(paste.field))
+		assert.is_false(paste.rows[2].frame:IsShown())
+	end)
+
+	it("highlights the first row, and the foot hint says Enter previews it (X.5)", function()
+		local paste = open()
+		local row = paste.rows[1]
+		assert.is_true(row.edge:IsShown())
+		assert.is_true(row.highlight:IsShown())
+		local color = mock.lastCall(row.name, "SetTextColor")
+		local r, g, b = Theme.rgb(Theme.HEX.gold)
+		assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
+		assert.are.equal("Enter to preview", BuildDialog.enterHint:GetText())
+		assert.is_true(BuildDialog.enterHint:IsShown())
+		assert.are.equal("Enter to preview", L.dialogEnterPreview)
+	end)
+
+	it("drops the companion paragraph and Tab hint while a build waits, and shows them when none does (X.5)", function()
+		local paste = open()
+		assert.is_false(paste.companion:IsShown())
+		assert.is_false(BuildDialog.tabHint:IsShown())
+		BuildDialog.close()
+		_G.ForeverSixtyInbox = nil
+		paste = open()
+		assert.is_true(paste.companion:IsShown())
+		assert.are.equal(L.dialogPasteCompanion, paste.companion:GetText())
+		assert.is_true(BuildDialog.tabHint:IsShown())
+		assert.are.equal("Tab to switch", BuildDialog.tabHint:GetText())
+		assert.is_false(paste.rows[1].frame:IsShown())
+		assert.are.equal("Enter to use", L.dialogEnterHint)
+		assert.is_false(BuildDialog.enterHint:IsShown())
+	end)
+
+	it("names the tab Builds, with the waiting count in its badge (X.5)", function()
+		open()
+		assert.are.equal("Builds", BuildDialog.tabs.paste.foreverSixtyLabel:GetText())
+		assert.are.equal("\194\183 1 waiting", BuildDialog.tabs.paste.badge:GetText())
+		assert.are.equal("Builds \194\183 1 waiting", "Builds " .. BuildDialog.tabs.paste.badge:GetText())
+	end)
+
+	it("keeps the paste box's border quiet until the player works in it (X.5)", function()
+		local paste = open()
+		local edge = paste.field.foreverSixtyBorder[1]
+		local function focus(box)
+			box:GetScript("OnEditFocusGained")(box)
+		end
+		focus(paste.box)
+		assert.is_true(paste.box:HasFocus())
+		assert.are.same(rgb("border"), rgbOf(edge))
+		-- A click in the box, or a key typed in it, is the player's: the border goes gold.
+		paste.box:GetScript("OnMouseDown")(paste.box)
+		assert.are.same(rgb("gold"), rgbOf(edge))
+		BuildDialog.close()
+		paste = open()
+		focus(paste.box)
+		assert.are.same(rgb("border"), rgbOf(paste.field.foreverSixtyBorder[1]))
+		paste.box:SetText("x")
+		paste.box:GetScript("OnTextChanged")(paste.box, true)
+		BuildDialog.clearPaste()
+		-- Cleared, the dialog rests again; with no build waiting it was always gold.
+		assert.are.same(rgb("border"), rgbOf(paste.field.foreverSixtyBorder[1]))
+		BuildDialog.close()
+		_G.ForeverSixtyInbox = nil
+		paste = open()
+		focus(paste.box)
+		assert.are.same(rgb("gold"), rgbOf(paste.field.foreverSixtyBorder[1]))
+	end)
+
+	it("previews the highlighted build on Enter, with the character it is for, in place of its row (X.5)", function()
+		local paste = open()
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		assert.are.equal(BuildDialog.rows[1].id, BuildDialog.verdict.inboxId)
+		assert.is_true(paste.preview.frame:IsShown())
+		assert.is_false(paste.rows[1].frame:IsShown())
+		assert.are.equal("20 to 29 \226\128\148 Arms", paste.preview.name:GetText())
+		assert.are.equal("For Bob \194\183 Ashbringer \194\183 from the site", paste.preview.target:GetText())
+		assert.is_true(paste.preview.target:IsShown())
+		assert.is_true(paste.use:IsShown())
+		assert.are.equal("Enter to use", BuildDialog.enterHint:GetText())
+		-- Escape goes back to the rows.
+		paste.box:GetScript("OnEscapePressed")(paste.box)
+		assert.is_nil(BuildDialog.verdict)
+		assert.is_true(paste.rows[1].frame:IsShown())
+	end)
+
+	it("moves the highlight with the arrow keys and on hover, and previews the one it is on (X.5)", function()
+		inbox(sent("First", THREE), sent("Second", OTHER))
+		local paste = open()
+		assert.are.equal("Second", paste.rows[1].name:GetText())
+		assert.are.equal("First", paste.rows[2].name:GetText())
+		paste.box:GetScript("OnArrowPressed")(paste.box, "DOWN")
+		assert.is_false(paste.rows[1].edge:IsShown())
+		assert.is_true(paste.rows[2].edge:IsShown())
+		paste.box:GetScript("OnArrowPressed")(paste.box, "DOWN")
+		assert.is_true(paste.rows[2].edge:IsShown())
+		paste.box:GetScript("OnArrowPressed")(paste.box, "UP")
+		assert.is_true(paste.rows[1].edge:IsShown())
+		paste.rows[2].frame:GetScript("OnEnter")(paste.rows[2].frame)
+		assert.is_true(paste.rows[2].edge:IsShown())
+		assert.is_false(paste.rows[1].edge:IsShown())
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		assert.are.equal("First", paste.preview.name:GetText())
+	end)
+
+	it("previews a clicked row", function()
+		inbox(sent("First", THREE), sent("Second", OTHER))
+		local paste = open()
+		paste.rows[2].frame:GetScript("OnClick")(paste.rows[2].frame)
+		assert.are.equal("First", paste.preview.name:GetText())
+	end)
+
+	it("says it holds nothing back for a build that differs from the plan, and Use works (X.5)", function()
+		Follow.build = require("Codec").loadBuild(OTHER, DATA)
+		Follow.build.name = "Arms raid"
+		local paste = open()
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		assert.is_true(paste.use:IsEnabled())
+		assert.is_false(paste.useReason:IsShown())
+		assert.is_nil(BuildDialog.useBlocked)
+	end)
+
+	it("disables Use for a build that is a prefix of the plan, with the reason beside the button (X.5)", function()
+		Follow.build = require("Codec").loadBuild(THREE, DATA)
+		Follow.build.name = "Arms raid"
+		inbox(sent("Short", TWO))
+		local paste = open()
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		assert.is_false(paste.use:IsEnabled())
+		assert.is_true(paste.useReason:IsShown())
+		assert.are.equal("Your plan is further along.", paste.useReason:GetText())
+		assert.is_truthy(paste.replaces:GetText():find("Same as your plan for 2 points. Yours goes on with", 1, true))
+		-- Neither the button nor Enter loads it.
+		local before = Follow.build
+		paste.use:GetScript("OnClick")(paste.use)
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		assert.are.equal(before, Follow.build)
+		assert.is_true(BuildDialog.frame:IsShown())
+	end)
+
+	it("says where a shorter build stops against the points spent, above the differs sentence (X.5)", function()
+		Follow.build = require("Codec").loadBuild(THREE, DATA)
+		Follow.build.name = "Arms raid"
+		require("Talents").readStagedRanks = function()
+			return { [1] = { ["1:1"] = 5 } }
+		end
+		inbox(sent("Odd", ODD))
+		local paste = open()
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		assert.is_true(paste.short:IsShown())
+		assert.are.equal("This build ends at 2 points; you have spent 5. It keeps following from point 3.",
+			paste.short:GetText())
+		assert.is_truthy(paste.replaces:GetText():find("first differs at point 1", 1, true))
+		-- Bottom-up from the button: the replaces sentence sits under the stop-short sentence.
+		assert.are.equal(paste.replaces, mock.lastCall(paste.short, "SetPoint")[2])
+		assert.is_true(paste.use:IsEnabled())
+	end)
+
+	it("keeps the dialog's top where it was when the content makes it taller (X.5)", function()
+		Follow.build = require("Codec").loadBuild(THREE, DATA)
+		Follow.build.name = "Arms raid"
+		local paste = open()
+		local frame = BuildDialog.frame
+		assert.are.equal(Theme.SIZES.dialogHeight, BuildDialog.height)
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		paste.replaces.GetStringHeight = function()
+			return 120
+		end
+		BuildDialog.drawPaste()
+		local grown = BuildDialog.height - Theme.SIZES.dialogHeight
+		assert.is_true(grown > 0)
+		local at = mock.lastCall(frame, "SetPoint")
+		assert.are.same({ "CENTER", UIParent, "CENTER", 0, -grown / 2 }, { at[1], at[2], at[3], at[4], at[5] })
+		-- Back to the ordinary height on the copy tab, and centred again.
+		BuildDialog.setMode("copy")
+		assert.are.equal(Theme.SIZES.dialogHeight, BuildDialog.height)
+		at = mock.lastCall(frame, "SetPoint")
+		assert.are.same({ "CENTER", UIParent, "CENTER", 0, 0 }, { at[1], at[2], at[3], at[4], at[5] })
+	end)
+
+	it("saves the position of the ordinary-height frame, whatever it has grown to (X.5)", function()
+		local paste = open()
+		Follow.build = require("Codec").loadBuild(THREE, DATA)
+		paste.box:GetScript("OnEnterPressed")(paste.box)
+		paste.replaces.GetStringHeight = function()
+			return 120
+		end
+		BuildDialog.drawPaste()
+		local grown = BuildDialog.height - Theme.SIZES.dialogHeight
+		BuildDialog.frame.GetCenter = function()
+			return 500, 400 - grown / 2
+		end
+		UIParent.GetCenter = function()
+			return 500, 400
+		end
+		BuildDialog.savePosition()
+		assert.are.equal(0, require("Prefs").get("dialog", "x"))
+		assert.are.equal(0, require("Prefs").get("dialog", "y"))
+	end)
+
+	it("keeps a same-named character's build off the row when its realm differs (X.5)", function()
+		inbox(sent("Theirs", THREE, "US/Whitemane/Bob"), sent("Mine", OTHER, "US/Ashbringer/Bob"))
+		open()
+		assert.are.equal(1, #BuildDialog.rows)
+		assert.are.equal("Mine", BuildDialog.rows[1].name)
 	end)
 end)

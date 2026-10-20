@@ -738,7 +738,9 @@ function Export.diagLine()
 		return L.diagExportNone
 	end
 	local slots, talents = Export.describe(record.export)
-	local stamp = type(record.builtAt) == "string" and record.builtAt:match(" (%d+:%d+)$") or "?"
+	local stamp = type(record.builtAt) == "string" and record.builtAt:match(" (%d+:%d+)$") or nil
+	-- In the chat's own clock (Compat.clockText), so it never sits beside a differing one (X.5).
+	stamp = stamp ~= nil and Compat.clockOf(stamp) or "?"
 	return string.format(L.diagExport, stamp, slots or 0, talents or "?")
 end
 

@@ -28,7 +28,7 @@ describe("/fs diag on a fresh session", function()
 		GROUP = string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone)
 		LOOT = string.format(L.diagLoot, L.diagLootNone)
 		EXPORT = L.diagExportNone
-		SITE, INBOX = L.diagSiteNever, L.diagInboxEmpty
+		SITE, INBOX = L.diagSiteNever, L.diagInboxEmptyNoLogin
 		_G.ForeverSixtyDB = nil
 	end
 

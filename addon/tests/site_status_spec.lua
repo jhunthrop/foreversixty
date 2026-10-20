@@ -50,8 +50,8 @@ describe("what the site has and what the inbox holds", function()
 		} } }
 	end
 
-	local function fire(event)
-		Options.onEvent(Options.frame, event)
+	local function fire(event, ...)
+		Options.onEvent(Options.frame, event, ...)
 	end
 
 	local function timersAt(seconds)
@@ -117,6 +117,7 @@ describe("what the site has and what the inbox holds", function()
 
 	after_each(function()
 		_G.time = savedTime
+		_G.CHAT_TIMESTAMP_FORMAT = nil
 		_G.ForeverSixtyDB, _G.ForeverSixtyInbox = nil, nil
 		mock.uninstall()
 	end)
@@ -157,35 +158,97 @@ describe("what the site has and what the inbox holds", function()
 			inbox(ack(10 * 3600), ack(3600, "US/Ashbringer/Alice"))
 			assert.are.equal("Site: seen 02:00 (2 characters)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
+
+		-- X.5: the addon's times are the chat's clock, so "06:21" in chat and "18:20" here never sit side by side.
+		it("prints the time in the chat's 24-hour clock, and 12-hour with am and pm where the chat is (X.5)", function()
+			inbox(ack(2 * 3600), ack(30 * 60))
+			_G.CHAT_TIMESTAMP_FORMAT = nil
+			assert.are.equal("Site: seen 11:30 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
+			assert.are.equal("Site: seen 11:30 am (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			inbox(ack(0))
+			assert.are.equal("Site: seen 12:00 pm (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			NOW = Civil.civilSeconds(2026, 10, 19, 18, 25, 0)
+			inbox(ack(5 * 60))
+			assert.are.equal("Site: seen 06:20 pm (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			_G.CHAT_TIMESTAMP_FORMAT = nil
+			assert.are.equal("Site: seen 18:20 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+		end)
+
+		it("prints the Export line's build time and the login time in the same clock (X.5)", function()
+			record(GEAR)
+			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
+			assert.is_truthy(require("Export").diagLine():find("built 11:30 am,", 1, true))
+			_G.CHAT_TIMESTAMP_FORMAT = nil
+			assert.is_truthy(require("Export").diagLine():find("built 11:30,", 1, true))
+			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
+			inbox()
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			assert.is_truthy(SiteStatus.inboxLine(DATA):find("as of your login at 12:00 pm.", 1, true))
+		end)
 	end)
 
 	describe("the Inbox line", function()
-		it("is empty with nothing for this character", function()
+		it("is empty with nothing for this character, as of the login, and says /reload does not read it (X.5)", function()
 			inbox(ack(3600), build("Fury", FURY, "US/Ashbringer/Alice"))
-			assert.are.equal("Inbox: empty", SiteStatus.inboxLine(DATA))
-			_G.ForeverSixtyInbox = nil
-			assert.are.equal("Inbox: empty", SiteStatus.inboxLine(DATA))
-		end)
-
-		it("counts a build waiting, named, and the messages", function()
-			inbox(ack(3600), build("Human Warrior", ARMS))
-			assert.are.equal("Inbox: 1 build waiting (Human Warrior) \194\183 0 messages", SiteStatus.inboxLine(DATA))
-			inbox(build("Human Warrior", ARMS), { type = "last_raid", character = KEY, date = "2026-10-18", bosses = {} })
-			assert.are.equal("Inbox: 1 build waiting (Human Warrior) \194\183 1 message", SiteStatus.inboxLine(DATA))
-		end)
-
-		it("names several builds and says messages alone without builds", function()
-			inbox(build("Arms raid", ARMS), build("Fury leveling", FURY))
-			assert.are.equal("Inbox: 2 builds waiting (Fury leveling, Arms raid) \194\183 0 messages",
+			-- No login on record yet (a first run, or an old saved variable): no time to name.
+			assert.are.equal("Inbox: empty. Builds arrive when you log in, not on /reload.", SiteStatus.inboxLine(DATA))
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			assert.are.equal("Inbox: empty, as of your login at 12:00. Builds arrive when you log in, not on /reload.",
 				SiteStatus.inboxLine(DATA))
+			_G.ForeverSixtyInbox = nil
+			assert.are.equal("Inbox: empty, as of your login at 12:00. Builds arrive when you log in, not on /reload.",
+				SiteStatus.inboxLine(DATA))
+			-- A /reload keeps the login's time, and a later login moves it.
+			NOW = NOW + 3600
+			fire("PLAYER_ENTERING_WORLD", false, true)
+			assert.are.equal("Inbox: empty, as of your login at 12:00. Builds arrive when you log in, not on /reload.",
+				SiteStatus.inboxLine(DATA))
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			assert.are.equal("Inbox: empty, as of your login at 13:00. Builds arrive when you log in, not on /reload.",
+				SiteStatus.inboxLine(DATA))
+		end)
+
+		it("says the day of a login that was not today, in the chat's clock", function()
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			NOW = NOW + 86400
+			assert.is_truthy(SiteStatus.inboxLine(DATA):find("as of your login at yesterday 12:00.", 1, true))
+		end)
+
+		it("counts a build waiting, named, and the messages by kind (X.5)", function()
+			inbox(ack(3600), build("Human Warrior", ARMS))
+			assert.are.equal("Inbox: 1 build waiting (Human Warrior)", SiteStatus.inboxLine(DATA))
+			inbox(build("Human Warrior", ARMS), { type = "guild", character = KEY, text = "Raid at 8" })
+			assert.are.equal("Inbox: 1 build waiting (Human Warrior) \194\183 1 guild message", SiteStatus.inboxLine(DATA))
+			inbox(build("Human Warrior", ARMS), { type = "guild", character = KEY, text = "Raid at 8" },
+				{ type = "guild", text = "Bring flasks" })
+			assert.are.equal("Inbox: 1 build waiting (Human Warrior) \194\183 2 guild messages",
+				SiteStatus.inboxLine(DATA))
+			-- Kinds that mix are only "messages".
+			inbox(build("Human Warrior", ARMS), { type = "guild", character = KEY, text = "Raid at 8" },
+				{ type = "last_raid", character = KEY, date = "2026-10-18", bosses = {} })
+			assert.are.equal("Inbox: 1 build waiting (Human Warrior) \194\183 2 messages", SiteStatus.inboxLine(DATA))
 			inbox({ type = "last_raid", character = KEY, date = "2026-10-18", bosses = {} })
-			assert.are.equal("Inbox: no builds waiting \194\183 1 message", SiteStatus.inboxLine(DATA))
+			assert.are.equal("Inbox: no builds waiting \194\183 1 raid recap", SiteStatus.inboxLine(DATA))
+		end)
+
+		it("names several builds", function()
+			inbox(build("Arms raid", ARMS), build("Fury leveling", FURY))
+			assert.are.equal("Inbox: 2 builds waiting (Fury leveling, Arms raid)", SiteStatus.inboxLine(DATA))
+			inbox(build("Arms raid", ARMS), build("Fury leveling", FURY), { type = "guild", character = KEY, text = "x" })
+			assert.are.equal("Inbox: 2 builds waiting (Fury leveling, Arms raid) \194\183 1 guild message",
+				SiteStatus.inboxLine(DATA))
 		end)
 
 		it("does not count a dismissed or used build", function()
 			inbox(build("Arms raid", ARMS))
 			require("Follow").dismissInbox(ARMS)
-			assert.are.equal("Inbox: empty", SiteStatus.inboxLine(DATA))
+			assert.are.equal("Inbox: empty. Builds arrive when you log in, not on /reload.", SiteStatus.inboxLine(DATA))
+		end)
+
+		it("does not count a build for a same-named character on another realm that names its realm (X.5)", function()
+			inbox(build("Theirs", ARMS, "US/Whitemane/Bob"), build("Mine", FURY, "us/normal/bob"))
+			assert.are.equal("Inbox: 1 build waiting (Mine)", SiteStatus.inboxLine(DATA))
 		end)
 	end)
 
@@ -209,7 +272,7 @@ describe("what the site has and what the inbox holds", function()
 			local export = at(list, require("Export").diagLine())
 			assert.is_truthy(export)
 			assert.are.equal("Site: seen 11:00 (1 character)", list[export + 1])
-			assert.are.equal("Inbox: 1 build waiting (Arms raid) \194\183 0 messages", list[export + 2])
+			assert.are.equal("Inbox: 1 build waiting (Arms raid)", list[export + 2])
 		end)
 
 		it("says everything is working only with gear and a site that saw the character within a day", function()
@@ -244,8 +307,20 @@ describe("what the site has and what the inbox holds", function()
 	end)
 
 	describe("the login line", function()
+		--- A login from the character screen (the event's isInitialLogin), and the line's timer run.
 		local function login()
-			fire("PLAYER_ENTERING_WORLD")
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			mock.runTimers(state)
+		end
+
+		--- A /reload (isReloadingUi), and a loading screen in the world (neither).
+		local function reload()
+			fire("PLAYER_ENTERING_WORLD", false, true)
+			mock.runTimers(state)
+		end
+
+		local function zone()
+			fire("PLAYER_ENTERING_WORLD", false, false)
 			mock.runTimers(state)
 		end
 
@@ -277,20 +352,20 @@ describe("what the site has and what the inbox holds", function()
 			assert.are.same({}, state.printed)
 		end)
 
-		it("says a build is waiting, by name", function()
+		it("says a build is waiting, by name and for whom (X.5)", function()
 			record(GEAR)
 			inbox(ack(3600), build("Human Warrior", ARMS))
 			login()
-			only(string.format(L.siteLoginBuild, "Human Warrior"))
-			assert.are.equal("a build from the site is waiting: Human Warrior. /fs opens it.",
-				string.format(L.siteLoginBuild, "Human Warrior"))
+			only("a build for Bob is waiting: Human Warrior. /fs opens it.")
+			assert.are.equal("a build for Bob is waiting: Human Warrior. /fs opens it.",
+				string.format(L.siteLoginBuild, "Bob", "Human Warrior"))
 		end)
 
 		it("says several builds wait in the one line", function()
 			record(GEAR)
 			inbox(ack(3600), build("Arms raid", ARMS), build("Fury leveling", FURY))
 			login()
-			only(string.format(L.siteLoginBuilds, 2, "Fury leveling, Arms raid"))
+			only("2 builds for Bob are waiting: Fury leveling, Arms raid. /fs opens them.")
 		end)
 
 		it("says the companion has gone quiet after three days, with the day it last picked up", function()
@@ -317,25 +392,152 @@ describe("what the site has and what the inbox holds", function()
 			only(L.siteLoginNever)
 			-- Silent for days and a build waiting: the build.
 			state.printed = {}
-			SiteStatus.announced = nil
 			inbox(ack(6 * 86400), build("Arms raid", ARMS))
 			login()
-			only(string.format(L.siteLoginBuild, "Arms raid"))
+			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
 		end)
 
-		it("waits five seconds, after the export's refresh, and says it once a session", function()
+		it("waits five seconds, after the export's refresh", function()
 			record(GEAR)
 			inbox()
-			fire("PLAYER_ENTERING_WORLD")
+			fire("PLAYER_ENTERING_WORLD", true, false)
 			assert.are.same({}, state.printed)
 			assert.are.equal(2, timersAt(5))
-			fire("PLAYER_ENTERING_WORLD")
-			assert.are.equal(3, timersAt(5))
 			mock.runTimers(state)
 			only(L.siteLoginNever)
+		end)
+
+		-- X.5: once per login. A login says its line; a /reload says it only when it changed; a
+		-- loading screen never says it.
+		it("says its line at every login, never after a /reload or a loading screen for the same inbox", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
+			login()
+			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
+			state.printed = {}
+			reload()
+			zone()
+			reload()
+			assert.are.same({}, state.printed)
+			-- The next login is a new reading of the inbox: the build still waits, and is said again.
+			login()
+			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
+		end)
+
+		it("says a /reload's line when it is not the one said last, and then not again", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
+			login()
+			state.printed = {}
+			inbox(ack(3600), build("Arms raid", ARMS), build("Fury leveling", FURY))
+			reload()
+			only(string.format(L.siteLoginBuilds, 2, "Bob", "Fury leveling, Arms raid"))
+			state.printed = {}
+			reload()
+			assert.are.same({}, state.printed)
+		end)
+
+		it("remembers the line across a /reload in the saved variable, per character", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
+			login()
+			assert.are.equal(string.format(L.siteLoginBuild, "Bob", "Arms raid"),
+				_G.ForeverSixtyDB.site[KEY].said)
+			assert.is_number(_G.ForeverSixtyDB.site[KEY].loginAt)
+			-- A new Lua state after the /reload: the module's own memory is gone, the saved variable stays.
+			SiteStatus.announced = nil
+			state.printed = {}
+			reload()
+			assert.are.same({}, state.printed)
+		end)
+
+		it("never says it for pressing Use this build (the line is for entering the world only)", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
+			login()
+			state.printed = {}
+			BuildDialog.data = DATA
+			BuildDialog.open("paste")
+			mock.runTimers(state)
+			BuildDialog.useCurrent()
+			BuildDialog.choose(BuildDialog.rows[1])
+			BuildDialog.useCurrent()
+			mock.runTimers(state)
+			for _, line in ipairs(state.printed) do
+				assert.is_nil(line:find("is waiting", 1, true), line)
+			end
+		end)
+
+		it("treats a client that passes neither flag as a login the first time, a /reload after", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
 			fire("PLAYER_ENTERING_WORLD")
 			mock.runTimers(state)
-			only(L.siteLoginNever)
+			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
+			state.printed = {}
+			fire("PLAYER_ENTERING_WORLD")
+			mock.runTimers(state)
+			assert.are.same({}, state.printed)
+		end)
+
+		-- X.5: "the site has your gear" settles an earlier "on its way", once.
+		it("says the site has the gear, once, after it said the gear was on its way", function()
+			record(GEAR, { gearAt = "2026-10-19 11:00" })
+			inbox(ack(2 * 3600))
+			login()
+			only(L.siteLoginGear)
+			assert.is_true(_G.ForeverSixtyDB.site[KEY].gearPending)
+			-- The companion uploads: the ack is newer than the export's build time (11:30).
+			state.printed = {}
+			inbox(ack(10 * 60))
+			login()
+			only("the site has your gear (seen 11:50).")
+			assert.is_nil(_G.ForeverSixtyDB.site[KEY].gearPending)
+			state.printed = {}
+			login()
+			assert.are.same({}, state.printed)
+		end)
+
+		it("keeps saying the gear is on its way while the ack is older than the export's build time", function()
+			record(GEAR, { gearAt = "2026-10-19 11:00" })
+			inbox(ack(2 * 3600))
+			login()
+			state.printed = {}
+			-- 11:10 is after the gear first appeared (11:00) but before the export was last built (11:30).
+			inbox(ack(50 * 60))
+			login()
+			assert.are.same({}, state.printed)
+			assert.is_true(_G.ForeverSixtyDB.site[KEY].gearPending)
+		end)
+
+		it("does not say the site has the gear when it never said it was on its way", function()
+			record(GEAR, { gearAt = "2026-10-19 09:00" })
+			inbox(ack(10 * 60))
+			login()
+			assert.are.same({}, state.printed)
+		end)
+
+		it("names a waiting build before the settled gear, and keeps the gear for a quieter login", function()
+			record(GEAR, { gearAt = "2026-10-19 11:00" })
+			inbox(ack(2 * 3600))
+			login()
+			state.printed = {}
+			inbox(ack(10 * 60), build("Arms raid", ARMS))
+			login()
+			only(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
+			state.printed = {}
+			inbox(ack(10 * 60))
+			login()
+			only("the site has your gear (seen 11:50).")
+		end)
+
+		it("reads the ack's receive time and ignores the export's own change time", function()
+			record(GEAR, { gearAt = "2026-10-19 11:00" })
+			local acked = ack(10 * 60)
+			acked.export_changed_at = ago(5 * 3600)
+			inbox(acked)
+			assert.are.equal(NOW - 600, SiteStatus.facts().seen)
+			assert.are.equal("Site: seen 11:50 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
 		it("reads the record after the refresh has run", function()
