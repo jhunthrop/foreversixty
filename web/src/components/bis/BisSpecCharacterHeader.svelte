@@ -18,8 +18,8 @@
     classSlug,
     specName,
     build,
-    sendListHref = '/addon',
-  }: SpecPage & { sendListHref?: string } = $props();
+    plannerHref = '/planner',
+  }: SpecPage & { plannerHref?: string } = $props();
 
   const session = createCharacterCardState();
 
@@ -61,6 +61,6 @@
   source={session}
   layout="card"
   emphasis="secondary"
-  action={specPageAction(sendListHref)}
+  action={specPageAction(plannerHref)}
   answer={specPageAnswerSpec({ specKey, classSlug, specName, build })}
 />

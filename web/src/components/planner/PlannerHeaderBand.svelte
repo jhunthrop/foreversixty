@@ -18,7 +18,8 @@
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
-  import { plannerCharacterCardCopy } from '../../lib/planner/copy';
+  import type { MeCharacter } from '../../lib/account/api';
+  import { sendActionFor, sendBuildToAddon, type SendState } from '../../lib/planner/send-build';
   import CharacterHeader from '../character/CharacterHeader.svelte';
   import PlannerHeader from './PlannerHeader.svelte';
 
@@ -34,7 +35,50 @@
     onshowdps: () => void;
   } = $props();
 
-  const SEND_BUILD_ACTION = { label: plannerCharacterCardCopy.sendBuildToAddon, href: '/addon' };
+  /** The card's current character: the send is aimed at it. Null signed out or with none synced. */
+  let character = $state<MeCharacter | null>(null);
+  let sendState = $state<SendState>({ kind: 'idle' });
+  /** The build + character the last successful send was for, and the id that build saved under. */
+  let sent = $state<{ key: string; buildId: string } | null>(null);
+
+  /** This build aimed at this character, or null while there is nothing sendable. */
+  function sendKey(): string | null {
+    if (character === null) return null;
+    try {
+      return `${character.key}|${JSON.stringify(store.toDraft())}`;
+    } catch {
+      return null;
+    }
+  }
+  const currentKey = $derived(sendKey());
+
+  // "Sent" holds only until the build (or the character) changes.
+  $effect(() => {
+    if (sendState.kind === 'sent' && sent?.key !== currentKey) sendState = { kind: 'idle' };
+  });
+
+  const action = $derived(sendActionFor(character, sendState));
+
+  async function send(): Promise<void> {
+    const key = currentKey;
+    if (character === null || key === null || sendState.kind === 'sending') return;
+    const target = character.key;
+    sendState = { kind: 'sending' };
+    const known = sent?.key === key ? sent.buildId : null;
+    const outcome = await sendBuildToAddon(store.toDraft(), target, known);
+    // The grid stays editable while this runs: a result for a build that has since changed
+    // is not a result for the build on screen.
+    if (sendKey() !== key) {
+      sendState = { kind: 'idle' };
+      return;
+    }
+    if (outcome.kind === 'sent') {
+      sent = { key, buildId: outcome.buildId };
+      sendState = { kind: 'sent' };
+    } else {
+      sendState = { kind: outcome.kind };
+    }
+  }
 
   /** The dominant tree's own index -- the same "most points, ties to the first tree"
    *  inference the h1 suffix (`PlannerHeader.svelte`) already uses, read here for the
@@ -79,7 +123,13 @@
   <div class="planner-header-band-inner page-column">
     <div class="planner-header-band-grid">
       <PlannerHeader {store} {live} {gate} {onshowdps} />
-      <CharacterHeader layout="card" emphasis="secondary" action={SEND_BUILD_ACTION} />
+      <CharacterHeader
+        layout="card"
+        emphasis="secondary"
+        {action}
+        onCharacterChange={(next) => (character = next)}
+        onPick={() => void send()}
+      />
     </div>
   </div>
 </div>

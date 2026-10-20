@@ -15,6 +15,7 @@
     fetchLive,
     fetchReportFile,
     fetchReportMeta,
+    fetchReportMetaAfterUpload,
     eventsUrl,
     fetchSummary,
     withFreshBase,
@@ -34,6 +35,7 @@
     MISSING_FIGHT,
     SOURCE_ENEMIES,
     SOURCE_FRIENDLIES,
+    TABS,
     type FlagKey,
     defaultState,
     parseReportState,
@@ -114,6 +116,7 @@
   import { splitUnitName } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
   import { reportCopy } from '../../lib/report/copy';
+  import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   // Value imports from exact.ts are deliberately absent: it pulls in the DuckDB query layer
   // (src/lib/report/query.ts), which dynamically imports the multi-hundred-KB duckdb-wasm
@@ -136,7 +139,8 @@
   /** The engine that wrote the report's files, riding on their urls so a re-parse is a cache miss. */
   const engineVersion = $derived(file?.engine_version ?? '');
   let summary = $state<Summary | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed'>('loading');
+  /** 'processing' and 'unparsed' are the two screens of a report whose files do not exist (yet, or ever). */
+  let status = $state<'loading' | 'ready' | 'failed' | 'processing' | 'unparsed'>('loading');
   let error = $state('');
   /** Where report.json and the fight files come from: /logs-data/… or a signed url. */
   let dataBase = $state('');
@@ -1075,14 +1079,38 @@
     writeUrl(pushes);
   }
 
-  async function loadReport(): Promise<void> {
-    status = 'loading';
+  async function loadReport(continuing = false): Promise<void> {
+    if (!continuing) status = 'loading';
     error = '';
     try {
       // inlineMeta, not `meta`: reading the state this function also writes would make it
       // a dependency of the effect below and run the whole load a second time.
-      const resolved = inlineMeta ?? (await fetchReportMeta(reportId));
+      let resolved: ReportMeta;
+      const uploadedAt = justUploadedAt(reportId);
+      if (inlineMeta !== null) {
+        resolved = inlineMeta;
+      } else if (uploadedAt === null) {
+        resolved = await fetchReportMeta(reportId);
+      } else {
+        // Just uploaded from this tab: a 404 is "not visible yet" for a short while, and
+        // the page shows the processing screen meanwhile rather than an error.
+        resolved = await fetchReportMetaAfterUpload(reportId, {
+          uploadedAt,
+          onWaiting: () => {
+            if (status === 'loading') status = 'processing';
+          },
+        });
+      }
       meta = resolved;
+      // A report still being parsed has no files to read; a failed one never will.
+      if (resolved.status === 'processing') {
+        status = 'processing';
+        return;
+      }
+      if (resolved.status === 'failed') {
+        status = 'unparsed';
+        return;
+      }
       let base = resolved.data_base_url;
       // Private and guild reports are refused at /logs-data/, so they carry a signed base
       // url the API hands out to people who may read them.
@@ -1102,6 +1130,23 @@
       error = thrown instanceof Error ? thrown.message : REPORT_LOAD_FAILED;
     }
   }
+
+  /**
+   * The parse poll: while the report is processing, ask for it again every five seconds
+   * (the answer is never cached while processing, see load.ts) and carry on into the normal
+   * load the moment it is anything else, so the page fills in without a reload. Stops when
+   * `status` leaves 'processing' (this effect's cleanup) or the component unmounts.
+   */
+  $effect(() => {
+    if (status !== 'processing' || meta === null) return;
+    const poller = createPoller(async () => {
+      const next = await fetchReportMeta(reportId);
+      meta = next;
+      if (next.status !== 'processing') await loadReport(true);
+    }, POLL_INTERVAL_MS);
+    poller.start();
+    return () => poller.stop();
+  });
 
   /**
    * Every read of a fight file, through the one re-signing retry.
@@ -1175,6 +1220,12 @@
   $effect(() => {
     if (status === 'loading') return;
     document.getElementById('report')?.classList.remove('min-h-[200svh]');
+    // The shell's reservation is sized for a full report; a report with no fights has none.
+    if (status === 'processing' || status === 'unparsed') {
+      document
+        .getElementById('report')
+        ?.classList.remove('min-h-[2460px]', 'md:min-h-[1556px]', 'lg:min-h-[1325px]');
+    }
   });
 
   // Re-read the URL when the visitor uses the browser's own back and forward.
@@ -1274,7 +1325,9 @@
       // next fight to the selector.
       const next = await fromDataBase((base) => fetchReportFile(base, 'fresh'));
       file = next;
-      if (meta !== null) meta = { ...meta, fights: next.fights };
+      // The report's own status moves too (live to complete); it is not cached while live.
+      const latest = await fetchReportMeta(reportId).catch(() => null);
+      if (meta !== null) meta = { ...(latest ?? meta), fights: next.fights };
 
       const selected = next.fights.find((entry) => entry.index === state.fight);
       if (selected === undefined) return;
@@ -1374,6 +1427,52 @@
 {#if status === 'failed'}
   <div class="px-[18px] md:px-0">
     <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
+  </div>
+{:else if status === 'processing' || status === 'unparsed'}
+  <div class="reveal" data-testid="report-processing" data-state={status}>
+    <header class="flex flex-col gap-1 px-[18px] md:px-0">
+      <h1 class="section-title text-[18px]" data-testid="report-title">
+        {meta?.title || meta?.zone || reportCopy.yourUpload}
+      </h1>
+      <p class="text-muted text-[13px]" data-testid="report-subtitle">
+        {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
+        {status === 'processing' ? 'Processing' : 'Could not be parsed'}
+      </p>
+    </header>
+    <div
+      class="grid grid-cols-1 gap-[22px] px-[18px] pt-4 md:grid-cols-[300px_minmax(0,1fr)] md:items-start md:gap-8 md:px-0"
+    >
+      <div class="border-line-soft rounded-control flex flex-col gap-2 border p-4" data-testid="report-fights-strip">
+        {#if status === 'processing'}
+          <p class="flex items-center gap-3 text-[14px]" role="status" data-testid="report-parsing">
+            <span
+              class="border-line-warm border-t-text inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 motion-reduce:animate-none"
+              aria-hidden="true"
+              data-testid="report-spinner"
+            ></span>
+            {reportCopy.parsing}
+          </p>
+        {:else}
+          <p class="text-[14px]" role="alert" data-testid="report-parse-failed">
+            {reportCopy.parseFailed}
+            <a class="text-strong underline" href="/setup#logging" data-testid="report-parse-failed-link"
+              >{reportCopy.parseFailedLink}</a
+            >
+          </p>
+        {/if}
+      </div>
+      <div class="flex min-w-0 flex-wrap gap-1" data-testid="report-tabs-disabled">
+        {#each TABS as tab (tab.id)}
+          <button
+            type="button"
+            disabled
+            title={status === 'processing' ? reportCopy.parsing : reportCopy.parseFailed}
+            class="text-muted inline-flex min-h-9 cursor-not-allowed items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase opacity-60"
+            >{tab.label}</button
+          >
+        {/each}
+      </div>
+    </div>
   </div>
 {:else if status === 'loading' || meta === null}
   <!-- Static, trusted markup of our own (skeleton.ts): no data goes into it. -->

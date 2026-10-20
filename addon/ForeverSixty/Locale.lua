@@ -1433,6 +1433,9 @@ L.lootWhy = {
 L.diagLoot = "Loot: %s"
 L.diagLootNone = "none"
 L.diagLootDrop = "%s %s, %s"
+-- /fs diag: what the site will get from this character's record.
+L.diagExport = "Export: built %s, %d slots, talents %s"
+L.diagExportNone = "Export: not built yet"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
