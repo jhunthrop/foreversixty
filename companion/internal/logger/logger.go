@@ -4,9 +4,11 @@
 // player's own units carry COMBATLOG_OBJECT_AFFILIATION_MINE: the
 // player-kind unit with that bit is the logger, with no guessing and
 // from the first fight. The log names it "Name-Realm-" (the realm with
-// its spaces removed, then a trailing hyphen); the addon's exports,
-// which the companion already reads, say which region and ruleset that
-// name lives on.
+// its spaces removed, then a trailing hyphen), and a two-word Forever
+// name arrives with its words joined by a hyphen too:
+// "Bow-Jackzon-ClassicBetaPvP-". The addon's exports, which the
+// companion already reads, say which region and ruleset that name
+// lives on.
 package logger
 
 import (
@@ -19,8 +21,9 @@ import (
 
 // Detected is who the combat log says is logging.
 type Detected struct {
-	// Name is the character's name as the log spells it, spaces kept
-	// ("Bow Jackzon"), without the realm.
+	// Name is the character's name with its words separated by single
+	// spaces ("Bow Jackzon", though the log writes "Bow-Jackzon"),
+	// without the realm.
 	Name string
 	// Realm is the log's realm segment with its spaces removed; empty
 	// when the unit carried none.
@@ -60,17 +63,26 @@ func Detect(players []units.Unit) (Detected, bool) {
 }
 
 // Split separates a log unit name into the character's name and the
-// normalised realm. The log writes "Xuen-ClassicBetaPvP-": the name,
-// the realm, a trailing hyphen. The realm is whatever follows the last
-// hyphen once the trailing one is gone, with its spaces removed; a name
-// with no hyphen is all name.
+// normalised realm. The current client writes "Xuen-ClassicBetaPvP-"
+// for a one-word name and "Bow-Jackzon-ClassicBetaPvP-" for a two-word
+// one: the words of the name, the realm, a trailing hyphen. The realm
+// is the last segment once the trailing hyphen is gone, with its spaces
+// removed; the name is every segment before it, joined with single
+// spaces, which is how the addon spells it. A unit with no hyphen is
+// all name.
 func Split(unit string) (name, realm string) {
 	unit = strings.TrimRight(strings.TrimSpace(unit), "-")
-	i := strings.LastIndex(unit, "-")
-	if i < 0 {
-		return unit, ""
+	parts := strings.Split(unit, "-")
+	if len(parts) == 1 {
+		return strings.TrimSpace(unit), ""
 	}
-	return strings.TrimSpace(unit[:i]), strings.ReplaceAll(unit[i+1:], " ", "")
+	words := make([]string, 0, len(parts)-1)
+	for _, w := range parts[:len(parts)-1] {
+		if w = strings.TrimSpace(w); w != "" {
+			words = append(words, w)
+		}
+	}
+	return strings.Join(words, " "), strings.ReplaceAll(parts[len(parts)-1], " ", "")
 }
 
 // Record is one character the addon has exported.
@@ -107,33 +119,73 @@ func exportClass(export string) string {
 	return parts[2]
 }
 
-// Resolve names the character the log is for out of the addon's
-// records. It matches on the name (case-insensitively, spaces kept),
-// then on class where both sides have one, then on the realm where
-// that narrows, then on the watched install; only exactly one
-// survivor with a region is a character. Anything else is no answer,
-// because crediting a report to the wrong character is worse than to
-// none.
-//
-// Forever characters can carry a two-word name ("Bow Jackzon"); the
-// addon records the full name from UnitName, but the combat log and the
-// WTF folder carry only the first word ("Bow-ClassicBetaPvP-", seen in
-// the owner's log on 19 Oct 2026). A one-word log name therefore also
-// matches a record whose first word it is, and the full name is never
-// matched by its first word alone when the log itself had two.
-func Resolve(d Detected, records []Record) (character.Character, bool) {
-	oneWord := !strings.ContainsRune(strings.TrimSpace(d.Name), ' ')
-	match := func(name string) []Record {
-		var out []Record
-		for _, r := range records {
-			full := strings.TrimSpace(r.Name)
-			if strings.EqualFold(full, name) || (oneWord && strings.EqualFold(firstWord(full), name)) {
-				out = append(out, r)
-			}
-		}
-		return out
+// Reason is why a log could not be credited to a character.
+type Reason int
+
+const (
+	// Matched means the log resolved to one character.
+	Matched Reason = iota
+	// NoRecord means no addon record carries the name: the addon has
+	// not exported that character.
+	NoRecord
+	// NoMatch means records carry the name but none, or more than one,
+	// fits the log's class and realm (or has a region to credit).
+	NoMatch
+)
+
+// Unmatched is the sentence that says what the addon has not sent for
+// a log naming name, given why Judge found no character: the Status
+// row, the tray and the companion log all repeat it. It is empty for
+// Matched.
+func (r Reason) Unmatched(name string) string {
+	switch r {
+	case NoRecord:
+		return "the log names " + name + ", but the addon has not exported that character — " +
+			"log out once with the addon loaded on it"
+	case NoMatch:
+		return "the log names " + name + ", but no addon record carries that realm — " +
+			"log out once with the addon loaded"
 	}
-	found := match(d.Name)
+	return ""
+}
+
+// Resolve names the character the log is for out of the addon's
+// records; ok is false when it cannot. See Judge for the rules.
+func Resolve(d Detected, records []Record) (c character.Character, ok bool) {
+	c, why := Judge(d, records)
+	return c, why == Matched
+}
+
+// Judge names the character the log is for out of the addon's
+// records, and says why when it cannot, so the pipeline's log line and
+// the Status row give the same reason. It matches on the name
+// (case-insensitively, spaces kept), then on class where both sides
+// have one, then on the realm where that narrows, then on the watched
+// install; only exactly one survivor with a region is a character.
+// Anything else is no answer, because crediting a report to the wrong
+// character is worse than to none.
+//
+// Forever characters can carry a two-word name ("Bow Jackzon"), which
+// the addon records in full from UnitName. The current client's log
+// carries the full name too ("Bow-Jackzon-ClassicBetaPvP-", which Split
+// reads as Bow Jackzon), but an older log and the WTF folder carry only
+// the first word ("Bow-ClassicBetaPvP-", seen on 19 Oct 2026). Both
+// shapes must work, so a one-word log name also matches a record whose
+// first word it is, while a two-word log name matches only the full
+// name and is never matched by its first word alone.
+func Judge(d Detected, records []Record) (character.Character, Reason) {
+	name := strings.Join(strings.Fields(d.Name), " ")
+	oneWord := !strings.ContainsRune(name, ' ')
+	var found []Record
+	for _, r := range records {
+		full := strings.Join(strings.Fields(r.Name), " ")
+		if strings.EqualFold(full, name) || (oneWord && strings.EqualFold(firstWord(full), name)) {
+			found = append(found, r)
+		}
+	}
+	if len(found) == 0 {
+		return character.Character{}, NoRecord
+	}
 	if d.Class != "" {
 		found = keep(found, func(r Record) bool { return r.Class == "" || sameWord(r.Class, d.Class) })
 	}
@@ -142,7 +194,7 @@ func Resolve(d Detected, records []Record) (character.Character, bool) {
 	}
 	found = narrow(found, func(r Record) bool { return r.Preferred })
 	if len(found) != 1 {
-		return character.Character{}, false
+		return character.Character{}, NoMatch
 	}
 	r := found[0]
 	realm := r.Realm
@@ -154,7 +206,10 @@ func Resolve(d Detected, records []Record) (character.Character, bool) {
 		Ruleset: character.RulesetFromRealm(realm),
 		Name:    strings.TrimSpace(r.Name),
 	}
-	return c, c.Valid()
+	if !c.Valid() {
+		return character.Character{}, NoMatch
+	}
+	return c, Matched
 }
 
 func keep(rs []Record, f func(Record) bool) []Record {

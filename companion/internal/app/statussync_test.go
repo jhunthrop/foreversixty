@@ -121,8 +121,8 @@ func TestAReportSaysWhoItIsCreditedTo(t *testing.T) {
 	h.app.Step(t.Context(), t0.Add(time.Second))
 	s := h.app.Snapshot()
 	if s.Credit.State != app.CreditUnmatched || s.Credit.Name != "Morrowlyn" ||
-		s.Credit.Reason != "the log names Morrowlyn, but no addon record carries that realm — "+
-			"log out once with the addon loaded" {
+		s.Credit.Reason != "the log names Morrowlyn, but the addon has not exported that character — "+
+			"log out once with the addon loaded on it" {
 		t.Fatalf("unmatched: %+v", s.Credit)
 	}
 	if len(s.Reports) != 1 || s.Reports[0].Credit != s.Credit {

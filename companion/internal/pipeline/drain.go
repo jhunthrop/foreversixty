@@ -119,7 +119,8 @@ func (p *Pipeline) resolve(rep *state.Report) {
 		records = p.o.Records()
 	}
 	d := logger.Detected{Name: rep.DetectedName, Realm: rep.DetectedRealm, Class: rep.DetectedClass}
-	if c, ok := logger.Resolve(d, records); ok {
+	c, why := logger.Judge(d, records)
+	if why == logger.Matched {
 		rep.LoggingCharacter = &c
 		p.o.Log.Info("the log is a known character's", "component", "uploader",
 			"report", rep.Key, "character", c.Key())
@@ -130,8 +131,7 @@ func (p *Pipeline) resolve(rep *state.Report) {
 	p.noted[rep.Key] = true
 	p.mu.Unlock()
 	if first {
-		p.o.Log.Info("the log is "+rep.DetectedName+"'s, but no addon record names the realm; "+
-			"log out once with the addon loaded", "component", "uploader", "report", rep.Key)
+		p.o.Log.Info(why.Unmatched(rep.DetectedName), "component", "uploader", "report", rep.Key)
 	}
 }
 

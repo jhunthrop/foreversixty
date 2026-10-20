@@ -72,6 +72,10 @@ func TestTheUnitNameSplitsIntoNameAndRealm(t *testing.T) {
 		{"Thrall-Ashbringer", "Thrall", "Ashbringer"},
 		{"  Thrall-Ashbringer-  ", "Thrall", "Ashbringer"},
 		{"", "", ""},
+		{"Bow-Jackzon-ClassicBetaPvP-", "Bow Jackzon", "ClassicBetaPvP"},
+		{"Mörk-ClassicBetaPvP", "Mörk", "ClassicBetaPvP"},
+		{"Xuen", "Xuen", ""},
+		{"На-Бутылку-ClassicBetaPvP2-", "На Бутылку", "ClassicBetaPvP2"},
 	} {
 		name, realm := Split(tc.in)
 		if name != tc.name || realm != tc.realm {
@@ -200,5 +204,51 @@ func TestAOneWordLogNameMatchesTheRecordsFirstWord(t *testing.T) {
 	twins := []Record{rec("Bow Jackzon", "Classic Beta PvP", "us", "", false), rec("Bow Arrow", "Classic Beta PvP", "us", "", false)}
 	if _, ok := Resolve(Detected{Name: "Bow"}, twins); ok {
 		t.Errorf("two records sharing the first word on the same realm are no answer")
+	}
+}
+
+// The beta client's record shape against each shape the log has had: the full two-word name
+// (current client), the first word alone (the September log), and the spaced spelling.
+func TestABetaRecordResolvesFromEveryLogShape(t *testing.T) {
+	records := []Record{
+		rec("Bow Jackzon", "Classic Beta PvP", "us", "hunter", false),
+		rec("Finnias Falcon", "Classic Beta PvP", "us", "mage", false),
+	}
+	want := character.Character{Region: "us", Ruleset: "pvp", Name: "Bow Jackzon"}
+	for _, unit := range []string{"Bow-Jackzon-ClassicBetaPvP-", "Bow Jackzon-ClassicBetaPvP-", "Bow-ClassicBetaPvP-"} {
+		name, realm := Split(unit)
+		got, ok := Resolve(Detected{Name: name, Realm: realm}, records)
+		if !ok || got != want {
+			t.Errorf("Resolve(%q) = %+v, %v; want %+v", unit, got, ok, want)
+		}
+	}
+}
+
+func TestTheUnmatchedReasonSaysWhetherTheNameOrTheRealmIsMissing(t *testing.T) {
+	bow := Detected{Name: "Bow Jackzon", Realm: "ClassicBetaPvP"}
+	for _, tc := range []struct {
+		desc    string
+		d       Detected
+		records []Record
+		want    Reason
+		text    string
+	}{
+		{"no records", bow, nil, NoRecord,
+			"the log names Bow Jackzon, but the addon has not exported that character — log out once with the addon loaded on it"},
+		{"another character", bow, []Record{rec("Finnias Falcon", "Classic Beta PvP", "us", "", false)}, NoRecord,
+			"the log names Bow Jackzon, but the addon has not exported that character — log out once with the addon loaded on it"},
+		{"the first word is not the name", bow, []Record{rec("Bow Smith", "Classic Beta PvP", "us", "", false)}, NoRecord,
+			"the log names Bow Jackzon, but the addon has not exported that character — log out once with the addon loaded on it"},
+		{"two records, neither on the realm", bow, []Record{
+			rec("Bow Jackzon", "Hardcore", "us", "", false), rec("Bow Jackzon", "Hardcore", "eu", "", false)}, NoMatch,
+			"the log names Bow Jackzon, but no addon record carries that realm — log out once with the addon loaded"},
+		{"a record with no region", bow, []Record{rec("Bow Jackzon", "Classic Beta PvP", "", "", false)}, NoMatch,
+			"the log names Bow Jackzon, but no addon record carries that realm — log out once with the addon loaded"},
+		{"a match", bow, []Record{rec("Bow Jackzon", "Classic Beta PvP", "us", "", false)}, Matched, ""},
+	} {
+		_, why := Judge(tc.d, tc.records)
+		if why != tc.want || why.Unmatched(tc.d.Name) != tc.text {
+			t.Errorf("%s: Judge = %v, %q; want %v, %q", tc.desc, why, why.Unmatched(tc.d.Name), tc.want, tc.text)
+		}
 	}
 }
