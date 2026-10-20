@@ -52,7 +52,20 @@ describe('playerLabel', () => {
     expect(playerLabel('Cy-ClassicBetaPvP2', '').text).toBe('Cy');
     expect(playerLabel('Cy', 'ClassicBetaPvP').text).toBe('Cy');
   });
-  it('keeps a hyphenated first name whole', () => {
-    expect(playerLabel('Jean-Luc-ClassicBetaPvP', 'ClassicBetaPvP').text).toBe('Jean-Luc');
+  it('reads a two-word name out of the log’s First-Last-Realm- unit', () => {
+    expect(playerLabel('Finnias-Falcon-ClassicBetaPvP-', 'ClassicBetaPvP')).toEqual({
+      name: 'Finnias Falcon',
+      realm: '',
+      text: 'Finnias Falcon',
+      title: 'Finnias-Falcon-ClassicBetaPvP-',
+    });
+    expect(playerLabel('На-Бутылку-ClassicBetaPvP2-', 'ClassicBetaPvP').text).toBe(
+      'На Бутылку · Classic Beta PvP 2',
+    );
+  });
+  it('counts the realm of a two-word unit, not its second word', () => {
+    expect(homeRealmOf(['Bow-Jackzon-ClassicBetaPvP-', 'Finnias-Falcon-ClassicBetaPvP-', 'Boss'])).toBe(
+      'ClassicBetaPvP',
+    );
   });
 });

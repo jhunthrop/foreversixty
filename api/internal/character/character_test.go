@@ -82,6 +82,7 @@ func TestRealmTakesTheFirstSourceThatHasOne(t *testing.T) {
 		{"  ", " Classic Beta PvP ", "Mörk-ClassicBetaPvE2", "Classic Beta PvP"},
 		{"", "", " Mörk-ClassicBetaPvP ", "ClassicBetaPvP"},
 		{"", "", "Mörk", ""},
+		{"", "", "Bow-Jackzon-ClassicBetaPvP-", "ClassicBetaPvP"},
 		{"", "", "", ""},
 	} {
 		if got := Realm(tc.bnet, tc.export, tc.unit); got != tc.want {
@@ -90,7 +91,29 @@ func TestRealmTakesTheFirstSourceThatHasOne(t *testing.T) {
 	}
 }
 
+// A fresh log writes a Forever character as "First-Last-Realm-"; older logs wrote the first
+// word only, or no trailing hyphen. Every shape reads to the export's name and the client's realm.
+func TestSplitUnitReadsEveryShapeTheLogWrites(t *testing.T) {
+	for _, tc := range []struct{ unit, name, realm string }{
+		{"Bow-Jackzon-ClassicBetaPvP-", "Bow Jackzon", "ClassicBetaPvP"},
+		{"Bow-ClassicBetaPvP-", "Bow", "ClassicBetaPvP"},
+		{"Mörk-ClassicBetaPvP", "Mörk", "ClassicBetaPvP"},
+		{"Xuen", "Xuen", ""},
+		{"На-Бутылку-ClassicBetaPvP2-", "На Бутылку", "ClassicBetaPvP2"},
+		{"", "", ""},
+	} {
+		name, realm := SplitUnit(tc.unit)
+		if name != tc.name || realm != tc.realm {
+			t.Errorf("SplitUnit(%q) = %q, %q; want %q, %q", tc.unit, name, realm, tc.name, tc.realm)
+		}
+	}
+}
+
 func TestKeyFromUnitSplitsTheLoggedName(t *testing.T) {
+	if got := KeyFromUnit("us", "normal", "Bow-Jackzon-ClassicBetaPvP-"); got != "us/pvp/bow-jackzon" {
+		t.Errorf("a two-word unit must key as the export does: %q", got)
+	}
+
 	if got := KeyFromUnit("us", "hardcore", "Baelgrim-Nightslayer"); got != "us/hardcore/baelgrim" {
 		t.Errorf("KeyFromUnit = %q", got)
 	}

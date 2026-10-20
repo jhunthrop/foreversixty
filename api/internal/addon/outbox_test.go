@@ -479,3 +479,28 @@ func TestABadSimRequestIsAnsweredInvalidNotRefused(t *testing.T) {
 		t.Fatalf("sim requests = %d, job calls = %d, want none", n, h.jobs.count())
 	}
 }
+
+// The log names a two-word character First-Last-Realm-, and the outbox carries that unit; it
+// must find the export of the same two-word name, not a half-name phantom.
+func TestResolveOwnMatchesATwoWordUnit(t *testing.T) {
+	exports := []Export{
+		{Name: "Bow Jackzon", Ruleset: "pvp", Region: "us"},
+		{Name: "Bow", Ruleset: "pvp", Region: "us"},
+	}
+	for _, tc := range []struct {
+		unit, want string
+		ok         bool
+	}{
+		{"Bow-Jackzon-ClassicBetaPvP-", "Bow Jackzon", true},
+		{"Bow-ClassicBetaPvP-", "Bow", true},
+		{"Nobody-Here-ClassicBetaPvP-", "", false},
+	} {
+		got, ok := resolveOwn(exports, tc.unit)
+		if ok != tc.ok || got.Name != tc.want {
+			t.Errorf("resolveOwn(%q) = %q, %v; want %q, %v", tc.unit, got.Name, ok, tc.want, tc.ok)
+		}
+		if tc.ok && !validUnit(tc.unit) {
+			t.Errorf("validUnit(%q) = false", tc.unit)
+		}
+	}
+}

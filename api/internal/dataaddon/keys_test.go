@@ -31,6 +31,7 @@ func TestNameAndRealmTakeTheFirstSourceThatHasOne(t *testing.T) {
 			"Obnoxious Yell", "Classic Beta PvE 2"},
 		{identity{Name: "Quiet Fern", PlayerName: "Quiet Fern-ClassicBetaPvP"}, who, "Quiet Fern", "Classic Beta PvE 2"},
 		{identity{PlayerName: "Mörk-ClassicBetaPvP"}, "", "Mörk", "ClassicBetaPvP"},
+		{identity{PlayerName: "Bow-Jackzon-ClassicBetaPvP-"}, "", "Bow Jackzon", "ClassicBetaPvP"},
 		{identity{Name: "Thoradin"}, "FS1:1.60.1.70291:warrior:human:0/05320/0:", "Thoradin", ""},
 		{identity{}, "", "", ""},
 	} {
