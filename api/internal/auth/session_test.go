@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
 // newCSRFRequest builds a state-changing request carrying sess as the
@@ -108,6 +110,33 @@ func TestDeviceTokenThatDoesNotResolveIsRejected(t *testing.T) {
 	h.ServeHTTP(w, r)
 	if w.Code != http.StatusUnauthorized {
 		t.Fatalf("status = %d, want 401", w.Code)
+	}
+}
+
+func TestAnUnknownDeviceTokenIsCutToTheDeadBudgetAfterItsFirst401(t *testing.T) {
+	store := testStore(t)
+	a := &Authenticator{Store: store}
+	frozen := time.Date(2026, time.October, 19, 0, 0, 0, 0, time.UTC)
+	httpx.Now = func() time.Time { return frozen }
+	t.Cleanup(func() { httpx.Now = time.Now })
+	h := httpx.Chain(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("the handler should not be reached for an unknown device token")
+	}), httpx.RateLimitByCredential(120, 120, 2, 1, nil), a.Middleware)
+	token := DeviceTokenPrefix + Base32ID(DeviceTokenChars)
+	var codes []int
+	for i := 0; i < 5; i++ {
+		r := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+		r.RemoteAddr = "203.0.113.9:1000"
+		r.Header.Set("Authorization", "Bearer "+token)
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		codes = append(codes, w.Code)
+	}
+	want := []int{401, 401, 401, 429, 429}
+	for i := range want {
+		if codes[i] != want[i] {
+			t.Fatalf("codes = %v, want %v", codes, want)
+		}
 	}
 }
 

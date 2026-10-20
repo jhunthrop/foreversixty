@@ -267,3 +267,128 @@ func TestRateLimitExceptLetsAnExemptPathPastTheSpentBudget(t *testing.T) {
 		t.Fatalf("non-exempt request past the budget code = %d, want 429", code)
 	}
 }
+
+// credReq builds a request from one address, optionally carrying a device bearer.
+func credReq(ip, token string) *http.Request {
+	req := httptest.NewRequest("GET", "/v1/x", nil)
+	req.RemoteAddr = ip + ":1234"
+	if token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	return req
+}
+
+func credCode(h http.Handler, ip, token string) int {
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, credReq(ip, token))
+	return rec.Code
+}
+
+func frozenClock(t *testing.T) {
+	t.Helper()
+	frozen := time.Date(2026, time.October, 19, 0, 0, 0, 0, time.UTC)
+	Now = func() time.Time { return frozen }
+	t.Cleanup(func() { Now = time.Now })
+}
+
+func TestRateLimitByCredentialDeviceTrafficLeavesTheIPBucketAlone(t *testing.T) {
+	frozenClock(t)
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(120, 120, 10, 1, nil))
+	for i := 0; i < 121; i++ {
+		credCode(h, "10.1.0.1", "fsd_aaaaaaaa")
+	}
+	if code := credCode(h, "10.1.0.1", ""); code != 200 {
+		t.Fatalf("browser GET after 121 device requests = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByCredentialDeviceOverBudgetDoesNotStarveTheBrowser(t *testing.T) {
+	frozenClock(t)
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(120, 120, 10, 1, nil))
+	for i := 0; i < 120; i++ {
+		if code := credCode(h, "10.1.0.2", "fsd_bbbbbbbb"); code != 200 {
+			t.Fatalf("device request %d = %d, want 200", i+1, code)
+		}
+	}
+	if code := credCode(h, "10.1.0.2", "fsd_bbbbbbbb"); code != 429 {
+		t.Fatalf("device request past its budget = %d, want 429", code)
+	}
+	if code := credCode(h, "10.1.0.2", ""); code != 200 {
+		t.Fatalf("browser from the same IP = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByCredentialBrowserBucketIsStillPerIP(t *testing.T) {
+	frozenClock(t)
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(3, 120, 10, 1, nil))
+	for i := 0; i < 3; i++ {
+		credCode(h, "10.1.0.3", "")
+	}
+	if code := credCode(h, "10.1.0.3", ""); code != 429 {
+		t.Fatalf("browser past the IP budget = %d, want 429", code)
+	}
+	if code := credCode(h, "10.1.0.3", "fsd_cccccccc"); code != 200 {
+		t.Fatalf("device from the spent IP = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByCredentialTwoDevicesOnOneIPHaveSeparateBudgets(t *testing.T) {
+	frozenClock(t)
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(120, 5, 2, 1, nil))
+	for i := 0; i < 5; i++ {
+		credCode(h, "10.1.0.4", "fsd_dddddddd")
+	}
+	if code := credCode(h, "10.1.0.4", "fsd_dddddddd"); code != 429 {
+		t.Fatalf("first device past budget = %d, want 429", code)
+	}
+	if code := credCode(h, "10.1.0.4", "fsd_eeeeeeee"); code != 200 {
+		t.Fatalf("second device = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByCredentialADeadTokenDropsToTheDeadBudget(t *testing.T) {
+	frozenClock(t)
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(120, 120, 3, 1, nil))
+	tok := "fsd_deadtoken1"
+	if code := credCode(h, "10.1.0.5", tok); code != 200 {
+		t.Fatalf("first request = %d, want 200", code)
+	}
+	MarkDeadToken(sha256Sum(tok))
+	n := 0
+	for i := 0; i < 10; i++ {
+		if credCode(h, "10.1.0.5", tok) == 200 {
+			n++
+		}
+	}
+	if n != 3 {
+		t.Fatalf("dead token served %d requests, want its dead budget of 3", n)
+	}
+	if code := credCode(h, "10.1.0.5", "fsd_livetoken1"); code != 200 {
+		t.Fatalf("other token = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByCredentialMalformedTokensCountAgainstTheirOwnBucket(t *testing.T) {
+	frozenClock(t)
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(2, 2, 1, 1, nil))
+	for i := 0; i < 5; i++ {
+		credCode(h, "10.1.0.6", "fsd_")
+	}
+	if code := credCode(h, "10.1.0.6", ""); code != 200 {
+		t.Fatalf("browser after a flood of bad tokens = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByCredentialExemptRequestsPass(t *testing.T) {
+	frozenClock(t)
+	exempt := func(r *http.Request) bool { return strings.HasPrefix(r.URL.Path, "/b/") }
+	h := Chain(okHandler(), RequestID(), RateLimitByCredential(1, 1, 1, 1, exempt))
+	credCode(h, "10.1.0.7", "")
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/b/x", nil)
+	req.RemoteAddr = "10.1.0.7:1"
+	h.ServeHTTP(rec, req)
+	if rec.Code != 200 {
+		t.Fatalf("exempt request = %d, want 200", rec.Code)
+	}
+}
