@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-19T14:55:14Z",
+  "generated_at": "2026-10-20T12:51:20Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -702,8 +702,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 4.705619946,
-      "verify_run_seconds": 17.786252333,
+      "weights_run_seconds": 3.586118966,
+      "verify_run_seconds": 13.333827523,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1498,8 +1498,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 4.705619946,
-      "verify_run_seconds": 16.734659528,
+      "weights_run_seconds": 3.586118966,
+      "verify_run_seconds": 12.575967553,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2351,8 +2351,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.826724232,
-      "verify_run_seconds": 17.26527437,
+      "weights_run_seconds": 3.667732784,
+      "verify_run_seconds": 13.013205502,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3209,8 +3209,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.826724232,
-      "verify_run_seconds": 16.506432399,
+      "weights_run_seconds": 3.667732784,
+      "verify_run_seconds": 12.35881708,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4079,8 +4079,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 5.721350685,
-      "verify_run_seconds": 24.532804276,
+      "weights_run_seconds": 4.248981462,
+      "verify_run_seconds": 17.901889268,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4948,8 +4948,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 5.721350685,
-      "verify_run_seconds": 23.478812475,
+      "weights_run_seconds": 4.248981462,
+      "verify_run_seconds": 17.074602079,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5852,8 +5852,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.76567362,
-      "verify_run_seconds": 41.880435525,
+      "weights_run_seconds": 7.467784515,
+      "verify_run_seconds": 31.577330653,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6756,8 +6756,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.76567362,
-      "verify_run_seconds": 40.994751815,
+      "weights_run_seconds": 7.467784515,
+      "verify_run_seconds": 30.863645409,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7666,8 +7666,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 11.355628446,
-      "verify_run_seconds": 131.785849253,
+      "weights_run_seconds": 8.323474488,
+      "verify_run_seconds": 99.168558323,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8576,8 +8576,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 11.355628446,
-      "verify_run_seconds": 128.728972075,
+      "weights_run_seconds": 8.323474488,
+      "verify_run_seconds": 96.69284916,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9474,8 +9474,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 8.27143294,
-      "verify_run_seconds": 54.069273734,
+      "weights_run_seconds": 6.293043673,
+      "verify_run_seconds": 40.930387074,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10373,8 +10373,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 8.27143294,
-      "verify_run_seconds": 53.033729538,
+      "weights_run_seconds": 6.293043673,
+      "verify_run_seconds": 40.156374593,
       "coverage": {
         "back": {
           "eligible": 391,
