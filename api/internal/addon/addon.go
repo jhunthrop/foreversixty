@@ -122,6 +122,102 @@ func (s *Store) PutExports(ctx context.Context, userID int64, exports []Export) 
 			return fmt.Errorf("addon: store export %s: commit: %w", key, err)
 		}
 	}
+	dropped, err := s.dropAliasRows(ctx, userID, exports)
+	if dropped > 0 {
+		s.logger().Info("addon", "op", "drop_aliases", "user_id", userID, "dropped", dropped)
+	}
+	return err
+}
+
+// dropAliasRows removes the rows an older addon build left behind for a
+// two-word character: it saved the first word only ("Booty" beside "Booty
+// Twerk"), and the companion posted those records with the rest. For each
+// export whose name has a space, the same user's addon_exports and
+// characters rows on the same region and ruleset whose name slug is the
+// slug of its first word go, when the row's class matches the export's (or
+// its export carries no level section, which only the old copies lack) and
+// the batch does not carry it itself. Returns how many characters went.
+func (s *Store) dropAliasRows(ctx context.Context, userID int64, exports []Export) (int, error) {
+	inBatch := make(map[string]bool, len(exports))
+	for _, e := range exports {
+		inBatch[character.Key(e.Region, character.RulesetFromRealm(e.Ruleset, ""), e.Name)] = true
+	}
+	dropped := 0
+	for _, e := range exports {
+		first, _, spaced := strings.Cut(strings.TrimSpace(e.Name), " ")
+		if !spaced || first == "" {
+			continue
+		}
+		ruleset := character.RulesetFromRealm(e.Ruleset, "")
+		aliasKey := character.Key(e.Region, ruleset, first)
+		if inBatch[aliasKey] {
+			continue
+		}
+		var aliasExport *string
+		var aliasClass *string
+		err := s.Pool.QueryRow(ctx,
+			`select c.class, x.export
+			   from characters c
+			   left join addon_exports x on x.character_key = c.key
+			  where c.key = $1 and c.user_id = $2`, aliasKey, userID).Scan(&aliasClass, &aliasExport)
+		if errors.Is(err, pgx.ErrNoRows) {
+			continue
+		}
+		if err != nil {
+			return dropped, fmt.Errorf("addon: read alias %s: %w", aliasKey, err)
+		}
+		class := ""
+		if aliasExport != nil {
+			class, _ = ParseFS1Class(*aliasExport)
+		}
+		if class == "" && aliasClass != nil {
+			class = *aliasClass
+		}
+		want, _ := ParseFS1Class(e.Export)
+		hasLevel := aliasExport != nil && strings.Contains("|"+*aliasExport, "|level=")
+		if hasLevel && !strings.EqualFold(class, want) {
+			continue
+		}
+		if err := s.deleteCharacter(ctx, userID, aliasKey); err != nil {
+			return dropped, err
+		}
+		dropped++
+	}
+	return dropped, nil
+}
+
+// deleteCharacter removes one of userID's characters and its export in one
+// transaction, clearing its guild row the way an unguilded export would.
+func (s *Store) deleteCharacter(ctx context.Context, userID int64, key string) error {
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("addon: drop alias %s: begin: %w", key, err)
+	}
+	var guildID *int64
+	err = tx.QueryRow(ctx,
+		`delete from guild_characters where character_key = $1 and user_id = $2 returning guild_id`,
+		key, userID).Scan(&guildID)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		_ = tx.Rollback(ctx)
+		return fmt.Errorf("addon: drop alias %s: guild: %w", key, err)
+	}
+	if _, err := tx.Exec(ctx, `delete from addon_exports where character_key = $1 and user_id = $2`, key, userID); err != nil {
+		_ = tx.Rollback(ctx)
+		return fmt.Errorf("addon: drop alias %s: export: %w", key, err)
+	}
+	if _, err := tx.Exec(ctx, `delete from characters where key = $1 and user_id = $2`, key, userID); err != nil {
+		_ = tx.Rollback(ctx)
+		return fmt.Errorf("addon: drop alias %s: character: %w", key, err)
+	}
+	if guildID != nil {
+		if err := guilds.AfterGuildChange(ctx, tx, *guildID, userID); err != nil {
+			_ = tx.Rollback(ctx)
+			return err
+		}
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("addon: drop alias %s: commit: %w", key, err)
+	}
 	return nil
 }
 

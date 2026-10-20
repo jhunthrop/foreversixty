@@ -287,6 +287,67 @@ describe("Export.regionSegment on a client with no region", function()
 	end)
 end)
 
+describe("Export.dropAliases", function()
+	local Export
+	before_each(function() Export = helper.load("Export") end)
+	after_each(function() mock.uninstall() end)
+
+	local function count(t) local n = 0 for _ in pairs(t) do n = n + 1 end return n end
+
+	it("drops the one-word copies of the four live characters", function()
+		local characters = {
+			["us/Normal US/Booty"] = { name = "Booty", class = "Paladin", realm = "Normal US" },
+			["us/Normal US/Booty Twerk"] = { name = "Booty Twerk", class = "Paladin", realm = "Normal US" },
+			["us//Lightning"] = { name = "Lightning", class = "Shaman", realm = "" },
+			["us/Normal US/Lightning Bolltz"] = { name = "Lightning Bolltz", class = "SHAMAN", realm = "Normal US" },
+			["us/Classic Beta PvP/Bow"] = { name = "Bow", class = "hunter", realm = "Classic Beta PvP" },
+			["us/Classic Beta PvP/Bow Jackzon"] = { name = "Bow Jackzon", class = "Hunter", realm = "Classic Beta PvP" },
+			["us/Classic Beta PvP/Obnoxious"] = { name = "Obnoxious", class = "warrior", realm = "Classic Beta PvP" },
+			["us/Classic Beta PvP/Obnoxious Yell"] = { name = "Obnoxious Yell", class = "Warrior", realm = "Classic Beta PvP" },
+		}
+		assert.are.equal(4, Export.dropAliases(characters))
+		assert.are.equal(4, count(characters))
+		assert.is_nil(characters["us/Normal US/Booty"])
+		assert.is_nil(characters["us//Lightning"])
+		assert.is_nil(characters["us/Classic Beta PvP/Bow"])
+		assert.is_nil(characters["us/Classic Beta PvP/Obnoxious"])
+	end)
+
+	it("keeps a one-word character with no two-word twin", function()
+		local characters = {
+			["us/Normal US/Thrall"] = { name = "Thrall", class = "Shaman", realm = "Normal US" },
+			["us/Normal US/Booty Twerk"] = { name = "Booty Twerk", class = "Paladin", realm = "Normal US" },
+		}
+		assert.are.equal(0, Export.dropAliases(characters))
+		assert.are.equal(2, count(characters))
+	end)
+
+	it("keeps a one-word character when the two-word one is another class or realm", function()
+		local characters = {
+			["us/Normal US/Bow"] = { name = "Bow", class = "Hunter", realm = "Normal US" },
+			["us/Normal US/Bow Jackzon"] = { name = "Bow Jackzon", class = "Warrior", realm = "Normal US" },
+			["us/Other/Booty"] = { name = "Booty", class = "Paladin", realm = "Other" },
+			["us/Normal US/Booty Twerk"] = { name = "Booty Twerk", class = "Paladin", realm = "Normal US" },
+		}
+		assert.are.equal(0, Export.dropAliases(characters))
+		assert.are.equal(4, count(characters))
+	end)
+
+	it("does nothing without a table", function()
+		assert.are.equal(0, Export.dropAliases(nil))
+	end)
+
+	it("runs on save", function()
+		character({ region = 110 })
+		_G.ForeverSixtyDB = { characters = {
+			["us/Normal US/Booty"] = { name = "Booty", class = "Paladin", realm = "Normal US" },
+			["us/Normal US/Booty Twerk"] = { name = "Booty Twerk", class = "Paladin", realm = "Normal US" } } }
+		Export.save(DATA)
+		assert.is_nil(_G.ForeverSixtyDB.characters["us/Normal US/Booty"])
+		assert.is_not_nil(_G.ForeverSixtyDB.characters["us/Normal US/Booty Twerk"])
+	end)
+end)
+
 describe("Export.migrateRegions", function()
 	local Export
 	before_each(function() Export = helper.load("Export") end)

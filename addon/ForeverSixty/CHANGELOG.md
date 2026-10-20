@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.8
+
+- Old one-word copies of your characters (saved before the addon learned Forever surnames) are dropped on the next save, so the site stops listing them twice.
+
 ## 2.0.7
 
 - Your characters reach the site again through the companion. The 1.60 beta client does not name its region, so every saved character carried an empty one and the site refused the whole list ("region must be one of us, eu, kr, tw, cn"; the companion's log said "The site refused the character list"). The addon now records "us" when the client cannot say (the beta realms are one world, hosted in the US) and moves the records it saved before under that region, so the next logout syncs everything.

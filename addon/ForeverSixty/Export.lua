@@ -283,6 +283,41 @@ function Export.migrateRegions(characters, region)
 	return moved
 end
 
+--- Drop the one-word copies an older addon build saved of a two-word Forever
+--- character ("Booty" beside "Booty Twerk"): a record whose name has no space
+--- goes when another record's name starts with that name plus a space, with
+--- the same class (case-insensitive) and either the same realm or an empty
+--- realm on the one-word side. A one-word record with no such twin, or whose
+--- twin is another class, stays. Returns the number dropped. Pure.
+function Export.dropAliases(characters)
+	if type(characters) ~= "table" then
+		return 0
+	end
+	local function lower(v)
+		return type(v) == "string" and v:lower() or ""
+	end
+	local doomed = {}
+	for key, short in pairs(characters) do
+		if type(short) == "table" and type(short.name) == "string" and short.name ~= ""
+			and not short.name:find(" ", 1, true) then
+			local prefix = short.name .. " "
+			for otherKey, long in pairs(characters) do
+				if otherKey ~= key and type(long) == "table" and type(long.name) == "string"
+					and long.name:sub(1, #prefix) == prefix
+					and lower(long.class) == lower(short.class)
+					and (short.realm == nil or short.realm == "" or short.realm == long.realm) then
+					doomed[#doomed + 1] = key
+					break
+				end
+			end
+		end
+	end
+	for _, key in ipairs(doomed) do
+		characters[key] = nil
+	end
+	return #doomed
+end
+
 --- name, realm, region as both Export.characterKey and Export.save need
 --- them -- one path, so the key ForeverSixtyDB.characters and
 --- ForeverSixtyDB.follows both index by can never drift from the record
@@ -391,6 +426,7 @@ function Export.save(data)
 	-- last time anything was written, not the last time this one was.
 	ForeverSixtyDB.savedAt = date(Export.SAVED_AT_FORMAT)
 	Export.migrateRegions(ForeverSixtyDB.characters, region)
+	Export.dropAliases(ForeverSixtyDB.characters)
 	ForeverSixtyDB.characters[characterKeyOf(name, realm, region)] = {
 		name = name,
 		class = UnitClass("player"),
