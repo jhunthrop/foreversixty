@@ -16,7 +16,15 @@ function me() {
   return {
     ...meAddonFixture,
     characters: [
-      { ...own, key: KEY, region: 'us', ruleset: 'hardcore', name: 'Obnoxious Yell', class: 'Warrior', level: 21 },
+      {
+        ...own,
+        key: KEY,
+        region: 'us',
+        ruleset: 'hardcore',
+        name: 'Obnoxious Yell',
+        class: 'Warrior',
+        level: 21,
+      },
     ],
   };
 }

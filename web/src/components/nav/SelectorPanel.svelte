@@ -229,7 +229,9 @@
     <div class="csel-message" data-testid="selector-none">
       <div class="csel-message-body" data-testid="selector-none-body">{selectorCopy.accountPanelBody}</div>
       <div class="csel-message-links">
-        <a href={selectorCopy.accountSetUpHref} data-testid="selector-get-set-up">{selectorCopy.accountSetUp}</a>
+        <a href={selectorCopy.accountSetUpHref} data-testid="selector-get-set-up"
+          >{selectorCopy.accountSetUp}</a
+        >
         <a href={selectorCopy.accountLinkHref} data-testid="selector-account">{selectorCopy.accountLink}</a>
       </div>
     </div>

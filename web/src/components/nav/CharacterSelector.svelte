@@ -382,7 +382,12 @@
     </button>
   {/if}
 
-  <SelectorMenuRow closed={selector.closed} {current} accountName={selector.accountName} onopen={openFromMenuRow} />
+  <SelectorMenuRow
+    closed={selector.closed}
+    {current}
+    accountName={selector.accountName}
+    onopen={openFromMenuRow}
+  />
 
   {#if open}
     {#if sheet}

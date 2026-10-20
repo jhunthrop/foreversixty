@@ -462,7 +462,9 @@
       <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(pairedDevice.name)}</p>
     {:else if pairing === null}
       <p class="text-muted text-[13px]" data-testid="pairing-companion-first">{pairingCopy.companionFirst}</p>
-      <p class="text-[14px]">Signed in as {displayName}. For the fallback, show a code and type it into the companion.</p>
+      <p class="text-[14px]">
+        Signed in as {displayName}. For the fallback, show a code and type it into the companion.
+      </p>
       <button
         class="text-nav inline-flex min-h-11 items-center text-[13px] underline md:min-h-0"
         onclick={onPair}

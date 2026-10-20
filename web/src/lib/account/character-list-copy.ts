@@ -23,8 +23,7 @@ export const characterListCopy = {
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',
   /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
-  introBattlenetLine:
-    'Characters come from the addon; the companion syncs them after you log out.',
+  introBattlenetLine: 'Characters come from the addon; the companion syncs them after you log out.',
   introInstallAddonLink: 'Install the addon',
   introAddonTail: 'to export gear, talents, bags and bank, then',
   introPasteLink: 'paste an export',

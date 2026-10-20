@@ -70,7 +70,9 @@ test.describe('/setup and /logs first-run copy', () => {
   test('/setup says the companion pairs itself', async ({ page }) => {
     await signInWith(page, []);
     await page.goto('/setup');
-    await expect(page.getByTestId('setup-signed-in')).toContainText('Signed in. Next: the addon, then the companion.');
+    await expect(page.getByTestId('setup-signed-in')).toContainText(
+      'Signed in. Next: the addon, then the companion.',
+    );
     await expect(page.getByTestId('setup-companion-pair')).toHaveText(
       'Sign in with Battle.net inside the companion; it pairs itself.',
     );

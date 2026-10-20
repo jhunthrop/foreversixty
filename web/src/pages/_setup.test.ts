@@ -432,7 +432,9 @@ describe('/setup: what it does in the game (L8.3)', () => {
 describe('/setup first-run copy', () => {
   it('leads with the addon and the companion, and the companion pairs itself', () => {
     expect(addonCopy.setupSignedInLine).toBe('Signed in. Next: the addon, then the companion.');
-    expect(addonCopy.setupCompanionPair).toBe('Sign in with Battle.net inside the companion; it pairs itself.');
+    expect(addonCopy.setupCompanionPair).toBe(
+      'Sign in with Battle.net inside the companion; it pairs itself.',
+    );
     expect(html).toContain(addonCopy.setupCompanionPair);
   });
 });

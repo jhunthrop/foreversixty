@@ -449,15 +449,27 @@ describe('a signed-in account with no characters', () => {
   });
 
   it('stays signed in with no current character', () => {
-    const model = buildSelectorModel({ me: empty('Hunt#1234'), pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
+    const model = buildSelectorModel({
+      me: empty('Hunt#1234'),
+      pointer: null,
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
     expect(model).toMatchObject({ session: 'signed-in', rows: [], current: null });
   });
 
   it('closes as the account, never as Sign in', () => {
-    const model = buildSelectorModel({ me: empty('Hunt#1234'), pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
+    const model = buildSelectorModel({
+      me: empty('Hunt#1234'),
+      pointer: null,
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
     expect(closedKindOf({ mounted: true, model, loadStatus: 'ready', sessionHint: true })).toBe('account');
     const out = buildSelectorModel({ me: null, pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
-    expect(closedKindOf({ mounted: true, model: out, loadStatus: 'ready', sessionHint: false })).toBe('signed-out');
+    expect(closedKindOf({ mounted: true, model: out, loadStatus: 'ready', sessionHint: false })).toBe(
+      'signed-out',
+    );
     expect(closedKindOf({ mounted: false, model, loadStatus: 'ready', sessionHint: true })).toBe('pre');
   });
 

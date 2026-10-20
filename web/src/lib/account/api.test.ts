@@ -481,7 +481,10 @@ describe('queueBuildToAddon', () => {
     expect(request.url).toBe(`${API}/v1/addon/inbox`);
     expect(request.headers.get('x-csrf-token')).toBe('tok');
     expect(request.credentials).toBe('include');
-    expect(await request.json()).toEqual({ build_id: 'k7x2qm4a', character_key: 'us/hardcore/obnoxious-yell' });
+    expect(await request.json()).toEqual({
+      build_id: 'k7x2qm4a',
+      character_key: 'us/hardcore/obnoxious-yell',
+    });
   });
 
   it('omits the character key when none is given', async () => {

@@ -20,7 +20,10 @@ function deps(over: Partial<SendDeps> = {}): SendDeps {
 describe('sendBuildToAddon', () => {
   it('saves the build, then queues its id for the character', async () => {
     const d = deps();
-    await expect(sendBuildToAddon(DRAFT, KEY, null, d)).resolves.toEqual({ kind: 'sent', buildId: 'k7x2qm4a' });
+    await expect(sendBuildToAddon(DRAFT, KEY, null, d)).resolves.toEqual({
+      kind: 'sent',
+      buildId: 'k7x2qm4a',
+    });
     expect(d.save).toHaveBeenCalledWith(DRAFT);
     expect(d.queue).toHaveBeenCalledWith('k7x2qm4a', KEY);
   });
@@ -59,10 +62,20 @@ describe('sendBuildToAddon', () => {
       ),
     ).resolves.toEqual({ kind: 'failed' });
     await expect(
-      sendBuildToAddon(DRAFT, KEY, null, deps({ queue: vi.fn().mockRejectedValue(new AccountError('x', 400)) })),
+      sendBuildToAddon(
+        DRAFT,
+        KEY,
+        null,
+        deps({ queue: vi.fn().mockRejectedValue(new AccountError('x', 400)) }),
+      ),
     ).resolves.toEqual({ kind: 'failed' });
     await expect(
-      sendBuildToAddon(DRAFT, KEY, null, deps({ queue: vi.fn().mockRejectedValue(new AccountError('x', 0)) })),
+      sendBuildToAddon(
+        DRAFT,
+        KEY,
+        null,
+        deps({ queue: vi.fn().mockRejectedValue(new AccountError('x', 0)) }),
+      ),
     ).resolves.toEqual({ kind: 'failed' });
   });
 });

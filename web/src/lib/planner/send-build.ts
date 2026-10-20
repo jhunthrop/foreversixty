@@ -9,10 +9,7 @@ import { saveBuild } from './share';
 import type { BuildDraft } from './types';
 
 export type SendOutcome =
-  | { kind: 'sent'; buildId: string }
-  | { kind: 'sign-in' }
-  | { kind: 'no-device' }
-  | { kind: 'failed' };
+  { kind: 'sent'; buildId: string } | { kind: 'sign-in' } | { kind: 'no-device' } | { kind: 'failed' };
 
 export interface SendDeps {
   save: typeof saveBuild;
@@ -78,7 +75,11 @@ export function sendActionFor(character: MeCharacter | null, state: SendState): 
       return {
         ...base,
         label: copy.sendBuildToAddon,
-        note: { tone: 'error' as const, text: copy.signIn, link: { label: copy.signInLink, href: copy.signInHref } },
+        note: {
+          tone: 'error' as const,
+          text: copy.signIn,
+          link: { label: copy.signInLink, href: copy.signInHref },
+        },
       };
     case 'no-device':
       return {

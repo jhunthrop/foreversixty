@@ -301,7 +301,9 @@ const crossScopeCss =
                   classSlug={specEntry.class_slug}
                   specName={specEntry.name}
                   build={build}
-                  plannerHref={bandViewsByFaction.alliance.at(-1)?.plannerHref ?? `/planner?spec=${specEntry.spec}`}
+                  plannerHref={
+                    bandViewsByFaction.alliance.at(-1)?.plannerHref ?? `/planner?spec=${specEntry.spec}`
+                  }
                 />
               </div>
             </div>

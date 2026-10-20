@@ -494,7 +494,8 @@ export async function queueBuildToAddon(
 ): Promise<void> {
   await call('/v1/addon/inbox', apiBase, {
     method: 'POST',
-    body: characterKey === undefined ? { build_id: buildId } : { build_id: buildId, character_key: characterKey },
+    body:
+      characterKey === undefined ? { build_id: buildId } : { build_id: buildId, character_key: characterKey },
   });
 }
 

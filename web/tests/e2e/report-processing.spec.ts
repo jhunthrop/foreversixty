@@ -29,7 +29,7 @@ test('a processing report shows the parsing screen, then fills in without naviga
   });
 
   await page.goto(`/reports/${ID}`);
-  await page.evaluate(() => (window as unknown as { __kept: boolean }).__kept = true);
+  await page.evaluate(() => ((window as unknown as { __kept: boolean }).__kept = true));
 
   await expect(page.getByTestId('report-processing')).toBeVisible();
   await expect(page.getByTestId('report-title')).toHaveText('Your upload');
