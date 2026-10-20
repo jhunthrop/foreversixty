@@ -193,7 +193,16 @@ components:
           properties:
             type: { type: string, enum: [ack] }
             character: { type: string }
-            export_seen_at: { type: string, format: date-time }
+            export_seen_at:
+              type: string
+              format: date-time
+              description: >-
+                When the site last received an upload for the character, whether or not the export
+                changed
+            export_changed_at:
+              type: string
+              format: date-time
+              description: When the export text last changed; never later than export_seen_at
             sim_request_state:
               type: string
               enum: [queued, needs_premium, duplicate, invalid, done, failed]
@@ -292,6 +301,19 @@ components:
           items: { $ref: '#/components/schemas/FightEntry' }
         players: { type: array, items: { type: string } }
         created_at: { type: string, format: date-time }
+        last_upload_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: >-
+            The newest of the report's fight uploads and its creation. A fight sent again counts.
+            The waiting screen of a live report reads it.
+        heartbeat_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: >-
+            When the companion last called POST /v1/reports/{id}/heartbeat; null before the first.
         logging_character:
           type: object
           nullable: true
@@ -1606,6 +1628,19 @@ paths:
       responses:
         '200': { description: "The report as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '403': { description: "Not the owner, a guild officer, or a moderator", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/heartbeat:
+    post:
+      summary: The companion says it is still tailing the report
+      description: >-
+        Device bearer only; no body. Records heartbeat_at, which GET /v1/reports/{id} answers.
+        Limited to one a minute per device. A report that is not the calling device's account's
+        answers 404.
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '204': { description: "Recorded" }
+        '401': { description: "Not a device bearer", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown report, or not yours", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '429': { description: "More than one a minute from this device", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/reports/{id}/visibility:
     get:
       summary: A report's visibility, for the site Worker

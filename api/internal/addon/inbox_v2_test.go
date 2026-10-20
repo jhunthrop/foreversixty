@@ -571,3 +571,48 @@ func TestLastRaidSendsAZeroAdherence(t *testing.T) {
 		t.Fatalf("boss = %s, want \"adherence\":0", b)
 	}
 }
+
+// An upload the site already has still moves export_seen_at, because the ack tells the addon
+// when the site last received the character; export_changed_at stays where the export last
+// changed, and moves again when the export text differs.
+func TestAckSeenAtMovesOnAnUnchangedReupload(t *testing.T) {
+	h := newHarness(t)
+	cleanL63(t, h)
+	h.exportL63(l63Export)
+	h.pairDevice("l63-dev", false)
+	ctx := context.Background()
+	old := time.Now().Add(-12 * time.Hour).UTC().Truncate(time.Second)
+	if _, err := h.pool.Exec(ctx,
+		`update addon_exports set seen_at = $2, updated_at = $2 where character_key = $1`, l63Key, old); err != nil {
+		t.Fatal(err)
+	}
+	s := &Service{Store: h.store, Log: quietLog()}
+	ack := func() MessageEntry {
+		got := messagesOf(s.messages(ctx, h.owner, time.Now()), messageAck)
+		if len(got) != 1 {
+			t.Fatalf("ack = %+v, want one", got)
+		}
+		return got[0]
+	}
+	oldText := old.Format(time.RFC3339)
+	if a := ack(); a.ExportSeenAt != oldText || a.ExportChangedAt != oldText {
+		t.Fatalf("ack before = %+v, want both %s", a, oldText)
+	}
+
+	h.exportL63(l63Export)
+	a := ack()
+	seen, err := time.Parse(time.RFC3339, a.ExportSeenAt)
+	if err != nil || !seen.After(old.Add(time.Hour)) {
+		t.Fatalf("export_seen_at after an unchanged re-upload = %q, want a time just now", a.ExportSeenAt)
+	}
+	if a.ExportChangedAt != oldText {
+		t.Fatalf("export_changed_at = %q after an unchanged re-upload, want it left at %s", a.ExportChangedAt, oldText)
+	}
+
+	h.exportL63(l63Export + "|changed")
+	a = ack()
+	changed, err := time.Parse(time.RFC3339, a.ExportChangedAt)
+	if err != nil || !changed.After(old.Add(time.Hour)) {
+		t.Fatalf("export_changed_at after a changed upload = %q, want a time just now", a.ExportChangedAt)
+	}
+}

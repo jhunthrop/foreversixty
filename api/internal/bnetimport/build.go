@@ -56,7 +56,8 @@ func (s *Service) buildAndWriteExport(ctx context.Context, tx pgx.Tx, userID int
 		 values ($1, $2, $3, $4, $5, $6, 'blizzard', $7, now())
 		 on conflict (character_key) do update set
 		   user_id = excluded.user_id, region = excluded.region, ruleset = excluded.ruleset, name = excluded.name,
-		   export = excluded.export, source = 'blizzard', captured_at = excluded.captured_at, updated_at = now()
+		   export = excluded.export, source = 'blizzard', captured_at = excluded.captured_at, updated_at = now(),
+		   seen_at = now()
 		 where addon_exports.user_id = excluded.user_id
 		   and (addon_exports.source = 'blizzard' or excluded.captured_at > addon_exports.captured_at)`,
 		key, userID, region, ruleset, profile.Name, code, capturedAt)

@@ -255,7 +255,8 @@ func (s *Store) UpsertFight(ctx context.Context, f FightRecord) (bool, error) {
 		   verified = excluded.verified, players = excluded.players,
 		   deaths = excluded.deaths, npc_kills = excluded.npc_kills,
 		   raw_start_offset = excluded.raw_start_offset, raw_end_offset = excluded.raw_end_offset,
-		   raw_sha256 = excluded.raw_sha256, boss_health_pct = excluded.boss_health_pct`,
+		   raw_sha256 = excluded.raw_sha256, boss_health_pct = excluded.boss_health_pct,
+		   uploaded_at = now()`,
 		f.ReportID, f.Index, f.EncounterID, f.Name, f.Difficulty, f.Size, f.Kill,
 		f.DurationMS, f.StartMS, f.Verified, f.Players, f.Deaths, f.NPCKills,
 		f.RawStart, f.RawEnd, f.RawSHA256, f.BossHealthPct)
@@ -493,3 +494,47 @@ func (s *Store) FinishUpload(ctx context.Context, id, reportID string) error {
 // Keys is the object-key builder for a report, so callers do not have to
 // import the engine's store package for one type.
 func Keys(reportID string) store.Keys { return store.Keys{ReportID: reportID} }
+
+// LastUpload is when the newest of a report's fights was written, or the report's own creation
+// when it has none: the time a live report's waiting screen can say the companion last sent
+// something. A re-sent fight counts, since it is the companion talking.
+func (s *Store) LastUpload(ctx context.Context, reportID string) (time.Time, error) {
+	var t time.Time
+	err := s.Pool.QueryRow(ctx,
+		`select greatest(r.created_at, coalesce((select max(f.uploaded_at) from fights f where f.report_id = r.id), r.created_at))
+		   from reports r where r.id = $1`, reportID).Scan(&t)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return time.Time{}, ErrNotFound
+	}
+	if err != nil {
+		return time.Time{}, fmt.Errorf("reports: last upload %s: %w", reportID, err)
+	}
+	return t, nil
+}
+
+// Heartbeat records that the companion is still tailing the report, now. It is its own column
+// because a quiet raid night uploads no fights for long stretches and the waiting screen still
+// has to tell "logging" from "the companion went away".
+func (s *Store) Heartbeat(ctx context.Context, reportID string) error {
+	tag, err := s.Pool.Exec(ctx, `update reports set heartbeat_at = now() where id = $1`, reportID)
+	if err != nil {
+		return fmt.Errorf("reports: heartbeat %s: %w", reportID, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+// HeartbeatAt is when the companion last sent a heartbeat for the report, nil before the first.
+func (s *Store) HeartbeatAt(ctx context.Context, reportID string) (*time.Time, error) {
+	var t *time.Time
+	err := s.Pool.QueryRow(ctx, `select heartbeat_at from reports where id = $1`, reportID).Scan(&t)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("reports: read heartbeat %s: %w", reportID, err)
+	}
+	return t, nil
+}

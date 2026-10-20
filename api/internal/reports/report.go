@@ -129,7 +129,12 @@ type View struct {
 	Fights        []FightEntry `json:"fights"`
 	Players       []string     `json:"players"`
 	CreatedAt     time.Time    `json:"created_at"`
-	DataBaseURL   string       `json:"data_base_url"`
+	// LastUploadAt is the newest of the report's fight uploads and its creation; HeartbeatAt is the
+	// companion's last "still tailing" ping, null until the first. Both are what a live report's
+	// waiting screen shows instead of "Logging" forever.
+	LastUploadAt *time.Time `json:"last_upload_at"`
+	HeartbeatAt  *time.Time `json:"heartbeat_at"`
+	DataBaseURL  string     `json:"data_base_url"`
 	// LoggingCharacter is the character whose client wrote the log; null when the report names
 	// none.
 	LoggingCharacter *LoggingCharacter `json:"logging_character"`

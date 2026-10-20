@@ -124,7 +124,7 @@ func TestAnInGameRequestsWeightsCarryTheirTimeAndExport(t *testing.T) {
 	if ack.SimRequestState != sims.SimRequestStateDone || ack.RequestedAt != wantRequested {
 		t.Fatalf("ack = %+v, want state done and requested_at %s (the site's receive time)", ack, wantRequested)
 	}
-	if ack.ExportSeenAt != rfc3339(t, h, `select updated_at from addon_exports where character_key = $1`, obnoxiousKey) {
+	if ack.ExportSeenAt != rfc3339(t, h, `select seen_at from addon_exports where character_key = $1`, obnoxiousKey) {
 		t.Fatalf("ack export_seen_at = %s, want the stored export's time", ack.ExportSeenAt)
 	}
 

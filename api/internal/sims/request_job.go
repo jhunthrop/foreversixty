@@ -237,7 +237,7 @@ func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, 
 	}
 	if _, err := tx.Exec(ctx,
 		`insert into addon_sim_requests (character_key, requested_at, user_id, sim_id, state, export_seen_at)
-		 values ($1, $2, $3, $4, $5, (select updated_at from addon_exports where character_key = $1))
+		 values ($1, $2, $3, $4, $5, (select seen_at from addon_exports where character_key = $1))
 		 on conflict (character_key, requested_at) do update set
 		   user_id = excluded.user_id, sim_id = excluded.sim_id, state = excluded.state,
 		   export_seen_at = excluded.export_seen_at, created_at = now()`,
@@ -262,7 +262,7 @@ func (s *Store) RecordAddonRequest(ctx context.Context, userID int64, characterK
 func recordAddonRequest(ctx context.Context, db execer, userID int64, characterKey, requestedAt, state string) error {
 	if _, err := db.Exec(ctx,
 		`insert into addon_sim_requests (character_key, requested_at, user_id, state, export_seen_at)
-		 values ($1, $2, $3, $4, (select updated_at from addon_exports where character_key = $1))
+		 values ($1, $2, $3, $4, (select seen_at from addon_exports where character_key = $1))
 		 on conflict (character_key, requested_at) do update set
 		   user_id = excluded.user_id, state = excluded.state, export_seen_at = excluded.export_seen_at,
 		   created_at = now()

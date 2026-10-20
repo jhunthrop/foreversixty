@@ -123,12 +123,14 @@ func (s *Store) simResults(ctx context.Context, userID int64) ([]simResultRow, e
 	return out, rows.Err()
 }
 
-// ackRow is when the site stored one character's newest export, and what became of the
+// ackRow is when the site last received an upload for one character (SeenAt, whether or not the
+// export changed) and when the export last changed (ChangedAt), and what became of the
 // character's newest in-game sim request ("" when it never asked) and when the site received
 // it (nil when it never asked).
 type ackRow struct {
 	CharacterKey    string
 	SeenAt          time.Time
+	ChangedAt       time.Time
 	SimRequestState string
 	RequestedAt     *time.Time
 }
@@ -140,7 +142,7 @@ type ackRow struct {
 // until then.
 func (s *Store) acks(ctx context.Context, userID int64) ([]ackRow, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select e.character_key, e.updated_at, coalesce(n.state, ''), n.created_at
+		`select e.character_key, e.seen_at, e.updated_at, coalesce(n.state, ''), n.created_at
 		   from addon_exports e
 		   left join lateral (
 		     select case sm.state when 'done' then 'done' when 'error' then 'failed'
@@ -160,7 +162,7 @@ func (s *Store) acks(ctx context.Context, userID int64) ([]ackRow, error) {
 	var out []ackRow
 	for rows.Next() {
 		var r ackRow
-		if err := rows.Scan(&r.CharacterKey, &r.SeenAt, &r.SimRequestState, &r.RequestedAt); err != nil {
+		if err := rows.Scan(&r.CharacterKey, &r.SeenAt, &r.ChangedAt, &r.SimRequestState, &r.RequestedAt); err != nil {
 			return nil, fmt.Errorf("addon: read acks: %w", err)
 		}
 		out = append(out, r)

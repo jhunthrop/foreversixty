@@ -92,6 +92,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/guilds/{id}/reports", auth.RequireSession(s.guildReports))
 	mux.HandleFunc("GET /v1/reports/{id}", s.get)
 	mux.HandleFunc("PATCH /v1/reports/{id}", auth.Require(s.patch))
+	mux.Handle("POST /v1/reports/{id}/heartbeat", httpx.RateLimitByKey(1, time.Minute, deviceRateLimitKey)(auth.RequireDevice(s.heartbeat)))
 	mux.HandleFunc("GET /v1/reports/{id}/visibility", s.visibility)
 	mux.HandleFunc("GET /v1/reports/{id}/access", auth.RequireSession(s.access))
 	mux.HandleFunc("GET /v1/reports/{id}/files/{path...}", s.file)
@@ -318,6 +319,14 @@ func (s *Service) view(ctx context.Context, rep Report) (View, error) {
 		ID: rep.ID, Title: rep.Title, Visibility: rep.Visibility, Zone: rep.Zone,
 		Status: rep.Status, EngineVersion: rep.EngineVersion, Fights: fights, Players: players,
 		CreatedAt: rep.CreatedAt, DataBaseURL: s.dataBaseURL(rep),
+	}
+	last, err := s.Store.LastUpload(ctx, rep.ID)
+	if err != nil {
+		return View{}, err
+	}
+	v.LastUploadAt = &last
+	if v.HeartbeatAt, err = s.Store.HeartbeatAt(ctx, rep.ID); err != nil {
+		return View{}, err
 	}
 	if rep.Flagged != nil {
 		v.Flagged = *rep.Flagged
@@ -701,4 +710,35 @@ func (s *Service) mayEdit(ctx context.Context, a auth.Actor, rep Report) (bool, 
 		}
 	}
 	return true, nil
+}
+
+// deviceRateLimitKey keys a limiter by the calling device, so one companion's budget is its own
+// and a second device on the same account does not spend it. A request with no device is exempt
+// here and refused by RequireDevice.
+func deviceRateLimitKey(r *http.Request) (string, bool) {
+	id := auth.ActorFrom(r.Context()).DeviceID
+	return id, id != ""
+}
+
+// heartbeat is POST /v1/reports/{id}/heartbeat: the companion says it is still tailing the
+// report. Only the device of the report's owner may; any other report answers 404, as a private
+// one does elsewhere, so the route does not say which ids exist. The device limiter allows one
+// a minute.
+func (s *Service) heartbeat(w http.ResponseWriter, r *http.Request) {
+	rep, err := s.Store.Get(r.Context(), r.PathValue("id"))
+	if err == nil && (rep.OwnerID == nil || *rep.OwnerID != auth.ActorFrom(r.Context()).UserID) {
+		err = ErrNotFound
+	}
+	if errors.Is(err, ErrNotFound) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such report", nil)
+		return
+	}
+	if err == nil {
+		err = s.Store.Heartbeat(r.Context(), rep.ID)
+	}
+	if err != nil {
+		s.fail(w, r, "heartbeat", err, "could not record that just now")
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
