@@ -82,6 +82,19 @@ describe('Header', () => {
     expect(doc.querySelector('[data-testid="site-panel-row-upload-a-log"]')).not.toBeNull();
   });
 
+  it('carries what the Roster and Guild settings doors say without a guild, for the header script', async () => {
+    const doc = await renderDoc('/');
+    const roster = doc.querySelector('#site-panel-guild [data-guild-tab="roster"]')!;
+    expect(roster.getAttribute('data-guildless-label')).toBe('Find a guild');
+    expect(roster.getAttribute('data-guildless-href')).toBe('/guild');
+    const foot = doc.querySelector('#site-panel-guild .site-panel-foot')!;
+    expect(foot.getAttribute('data-guildless-label')).toBe('Claim your guild');
+    expect(foot.getAttribute('data-guildless-href')).toBe('/guild#claim');
+    expect(
+      doc.querySelector('#site-panel-guild [data-guild-tab="loot"]')?.hasAttribute('data-guildless-label'),
+    ).toBe(false);
+  });
+
   it('renders the Guides grid from classes.json with crests and spec names', async () => {
     const doc = await renderDoc('/');
     const tiles = [...doc.querySelectorAll('#site-panel-guides a[href^="/guides/"]')];

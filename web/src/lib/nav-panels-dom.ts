@@ -196,6 +196,26 @@ export function wireNavPanels(header: HTMLElement, options: NavPanelOptions = {}
 const guildGroup = NAV_GROUPS[GUILD_GROUP_INDEX];
 
 /**
+ * A member-only door says something else without a guild (`data-guildless-*`, rendered by
+ * HeaderPanel from GUILDLESS_SWAPS): the member's own text is kept on first swap so the next
+ * session guild can put it back.
+ */
+function swapText(link: HTMLElement, guildless: boolean): void {
+  const label = link.dataset.guildlessLabel;
+  if (label === undefined) return;
+  const title = link.querySelector<HTMLElement>('.site-panel-title') ?? link;
+  const desc = link.querySelector<HTMLElement>('.site-panel-desc');
+  if (link.dataset.memberLabel === undefined) {
+    link.dataset.memberLabel = title.textContent ?? '';
+    link.dataset.memberDescription = desc?.textContent ?? '';
+  }
+  title.textContent = guildless ? label : link.dataset.memberLabel;
+  if (desc !== null && link.dataset.guildlessDescription !== undefined) {
+    desc.textContent = guildless ? link.dataset.guildlessDescription : (link.dataset.memberDescription ?? '');
+  }
+}
+
+/**
  * Points the Guild panel's rows at the session's guild and names it, or restores the
  * find-or-claim defaults (`/guild`, "Your guild") for `null`.
  */
@@ -203,7 +223,15 @@ export function applySessionGuild(header: HTMLElement, guild: SessionGuild | nul
   const base = guild?.href ?? guildGroup.href;
   for (const link of header.querySelectorAll<HTMLElement>('[data-guild-tab]')) {
     const tab = link.dataset.guildTab;
-    link.setAttribute('href', tab === GUILD_OVERVIEW_TAB ? base : `${base}#${tab}`);
+    swapText(link, guild === null);
+    if (guild === null && link.dataset.guildlessHref !== undefined) {
+      link.setAttribute('href', link.dataset.guildlessHref);
+    } else if (tab === GUILD_OVERVIEW_TAB) {
+      link.setAttribute('href', base);
+    } else {
+      // Settings is a page of its own (`<guild>/settings`); every other tab is a hash.
+      link.setAttribute('href', tab === 'settings' ? `${base}/settings` : `${base}#${tab}`);
+    }
   }
   for (const name of header.querySelectorAll<HTMLElement>('[data-guild-name]')) {
     name.textContent = guild?.name ?? guildGroup.rows[0].label;

@@ -6,7 +6,7 @@
 // two shells, so the rows, the Guides grid and the foot never drift apart.
 import type { HTMLAttributes } from 'astro/types';
 import { classCrestSrc } from '../lib/class-crest';
-import { GUILD_OVERVIEW_TAB, navKey, type NavGroup, type NavItem } from '../lib/nav';
+import { GUILD_OVERVIEW_TAB, GUILDLESS_SWAPS, navKey, type NavGroup, type NavItem } from '../lib/nav';
 import type { GuideClass } from '../lib/nav-guides';
 import { NAV_ROW_ICON_PATHS } from './nav-row-icons';
 
@@ -33,6 +33,9 @@ const shellProps: HTMLAttributes<'div'> = inBar
 /** The tab a Guild row opens: the hash, or the overview for the bare /guild row. */
 const guildTab = (item: NavItem): string | undefined =>
   isGuild ? (item.href.split('#')[1] ?? GUILD_OVERVIEW_TAB) : undefined;
+
+/** What a member-only door says without a guild (applySessionGuild reads these). */
+const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUILDLESS_SWAPS[tab]);
 ---
 
 <Shell {...shellProps}>
@@ -43,6 +46,9 @@ const guildTab = (item: NavItem): string | undefined =>
       role={itemRole}
       data-testid={`${testScope}-row-${navKey(row.label)}`}
       data-guild-tab={guildTab(row)}
+      data-guildless-label={swapOf(guildTab(row))?.label}
+      data-guildless-href={swapOf(guildTab(row))?.href}
+      data-guildless-description={swapOf(guildTab(row))?.description}
     >
       <svg
         class="site-panel-icon"
@@ -101,6 +107,8 @@ const guildTab = (item: NavItem): string | undefined =>
       role={itemRole}
       data-testid={`${testScope}-foot-${navKey(group.label)}`}
       data-guild-tab={isGuild ? 'settings' : undefined}
+      data-guildless-label={isGuild ? swapOf('settings')?.label : undefined}
+      data-guildless-href={isGuild ? swapOf('settings')?.href : undefined}
     >
       {group.foot.label}
     </a>

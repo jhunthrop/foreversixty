@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Me, MeGuild } from '../account/api';
-import { sessionGuildOf } from './session-guild';
+import { memberGuildOf, sessionGuildOf } from './session-guild';
 
 const guild = (overrides: Partial<MeGuild>): MeGuild => ({
   id: 1,
@@ -27,5 +27,41 @@ describe('sessionGuildOf', () => {
 
   it('is null when no guild is verified', () => {
     expect(sessionGuildOf(meWith([guild({ verified: false })]))).toBeNull();
+  });
+});
+
+describe('memberGuildOf', () => {
+  const olympus = { name: 'OLYMPUS XXVII', href: '/guild/us/pvp/olympus-xxvii' };
+  const other = { name: 'Second Guild', href: '/guild/us/pvp/second-guild' };
+  const withChars = (guilds: MeGuild[], main?: string, chars: unknown[] = []): Me =>
+    ({ guilds, characters: chars, main_character_key: main }) as unknown as Me;
+
+  it('is null signed out, loading, or with no guild', () => {
+    expect(memberGuildOf(null)).toBeNull();
+    expect(memberGuildOf(undefined)).toBeNull();
+    expect(memberGuildOf(withChars([]))).toBeNull();
+  });
+
+  it('names a guild the account belongs to even before an officer verifies it', () => {
+    expect(memberGuildOf(withChars([guild({ verified: false })]))).toEqual(olympus);
+  });
+
+  it('is the first guild when there is no main character', () => {
+    const me = withChars([guild({}), guild({ id: 2, name: 'Second Guild' })]);
+    expect(memberGuildOf(me)).toEqual(olympus);
+  });
+
+  it("is the main character's guild when the account has several", () => {
+    const me = withChars([guild({}), guild({ id: 2, name: 'Second Guild' })], 'us/pvp/alt-main', [
+      { key: 'us/pvp/alt-main', guild: { id: 2, name: 'Second Guild', verified: true } },
+    ]);
+    expect(memberGuildOf(me)).toEqual(other);
+  });
+
+  it('falls back to the first guild when the main character has none', () => {
+    const me = withChars([guild({}), guild({ id: 2, name: 'Second Guild' })], 'us/pvp/loner', [
+      { key: 'us/pvp/loner' },
+    ]);
+    expect(memberGuildOf(me)).toEqual(olympus);
   });
 });

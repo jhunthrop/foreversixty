@@ -47,12 +47,14 @@
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
   import { guildMarkSrc } from '../lib/guild/mark';
+  import { claimEntryCopy, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import GuildOfficerStrip from './guild/GuildOfficerStrip.svelte';
+  import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import GuildOverview from './guild/GuildOverview.svelte';
@@ -120,6 +122,8 @@
   /** True once /v1/me has answered (signed in or not), so the public sign-in prompt never
    *  flashes for a member during the first render. */
   let meResolved = $state(false);
+  /** `/v1/me` answered with a session (not a 401 or a failure). */
+  let signedIn = $state(false);
   let rosterBusy = $state<string | null>(null);
   let rosterActionError = $state('');
   let contestBusy = $state(false);
@@ -155,6 +159,7 @@
         isModerator = result?.user.role === 'moderator' || result?.user.role === 'admin';
         myBattletag = result?.user.battletag ?? null;
         meResolved = true;
+        signedIn = result !== null;
         if (membership === undefined) {
           homeStatus = 'idle';
           return null;
@@ -171,6 +176,24 @@
         meResolved = true;
         homeStatus = 'idle';
       });
+  });
+
+  /** The roster is closed to everyone but verified members (`/home` answers them alone), so
+   *  anyone else -- a visitor, another guild's member, a member waiting on an officer -- gets
+   *  the `#roster` section's one sentence instead. A verified member whose `/home` merely
+   *  failed gets nothing: they are not who that sentence is for. */
+  const rosterGate = $derived(
+    meResolved && home === null && homeStatus === 'idle' && myGuildMembership?.verified !== true
+      ? rosterGateState({ signedIn, member: myGuildMembership !== null })
+      : null,
+  );
+
+  /** The guild's own `#roster` link is followed before this section exists (the page renders
+   *  after its fetches), so the browser's anchor jump has nothing to land on; do it here once
+   *  the section is on the page. */
+  $effect(() => {
+    if (rosterGate === null || typeof window === 'undefined' || window.location.hash !== '#roster') return;
+    document.getElementById('roster')?.scrollIntoView({ block: 'start' });
   });
 
   const canManage = $derived(
@@ -616,6 +639,19 @@
             />
           {/if}
 
+          <!-- Any signed-in viewer who is not a verified officer can start a claim from here;
+               the claim page states the rules and who may claim. A verified officer gets
+               their Guild settings link in the role line below instead. -->
+          {#if meResolved && signedIn && !canManage}
+            <p class="text-muted text-[13px]" data-testid="guild-claim-entry">
+              {claimEntryCopy.question}
+              <a
+                href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
+                data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
+              >
+            </p>
+          {/if}
+
           <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
                settings, still above the tab strip. "Contest this claim" moved out of here
                entirely (fix round 1, item 2) -- it now lives in the Settings tab, under
@@ -844,6 +880,10 @@
         <Skeleton lines={6} minHeight="min-h-[400px]" testid="guild-settings-skeleton" />
         {@render lazyFallback(settingsLazy)}
       {/if}
+    {/if}
+
+    {#if rosterGate !== null}
+      <GuildRosterGate state={rosterGate} />
     {/if}
   </div>
 {/if}

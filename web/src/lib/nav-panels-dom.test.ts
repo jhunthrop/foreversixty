@@ -25,8 +25,8 @@ function mount(): HTMLElement {
     ${group(
       'guild',
       row('/guild', 'data-guild-tab="overview"') +
-        row('/guild#roster', 'data-guild-tab="roster"') +
-        '<a class="site-panel-foot" role="menuitem" href="/guild#settings" data-guild-tab="settings">Guild settings</a>',
+        '<a class="site-panel-row" role="menuitem" href="/guild#roster" data-guild-tab="roster" data-guildless-label="Find a guild" data-guildless-href="/guild" data-guildless-description="Look one up"><span class="site-panel-title">Roster</span><span class="site-panel-desc">Everyone the addon has seen</span></a>' +
+        '<a class="site-panel-foot" role="menuitem" href="/guild#settings" data-guild-tab="settings" data-guildless-label="Claim your guild" data-guildless-href="/guild#claim">Guild settings</a>',
     )}
   </header><p id="outside">outside</p>`;
   return document.querySelector('header') as HTMLElement;
@@ -189,6 +189,10 @@ describe('applySessionGuild', () => {
   const hrefs = (): (string | null)[] =>
     [...document.querySelectorAll('[data-guild-tab]')].map((el) => el.getAttribute('href'));
   const nameText = (): string | null | undefined => document.querySelector('[data-guild-name]')?.textContent;
+  const rosterText = (): string | null | undefined =>
+    document.querySelector('[data-guild-tab="roster"] .site-panel-title')?.textContent;
+  const footText = (): string | null | undefined =>
+    document.querySelector('.site-panel-foot')?.textContent?.trim();
   const olympus = { name: 'OLYMPUS XXVII', href: '/guild/us/pvp/olympus-xxvii' };
 
   it('rewrites the guild rows to the session guild and names it', () => {
@@ -196,16 +200,44 @@ describe('applySessionGuild', () => {
     expect(hrefs()).toEqual([
       '/guild/us/pvp/olympus-xxvii',
       '/guild/us/pvp/olympus-xxvii#roster',
-      '/guild/us/pvp/olympus-xxvii#settings',
+      '/guild/us/pvp/olympus-xxvii/settings',
     ]);
     expect(nameText()).toBe('OLYMPUS XXVII');
+    expect(rosterText()).toBe('Roster');
+    expect(footText()).toBe('Guild settings');
+  });
+
+  it('offers Find a guild and Claim your guild, not dead links, with no guild', () => {
+    applySessionGuild(document.querySelector('header')!, null);
+    expect(hrefs()).toEqual(['/guild', '/guild', '/guild#claim']);
+    expect(rosterText()).toBe('Find a guild');
+    expect(document.querySelector('[data-guild-tab="roster"] .site-panel-desc')?.textContent).toBe(
+      'Look one up',
+    );
+    expect(footText()).toBe('Claim your guild');
+  });
+
+  it('puts the member rows back when a guild arrives after the guildless pass', () => {
+    const header = document.querySelector('header')!;
+    applySessionGuild(header, null);
+    applySessionGuild(header, olympus);
+    expect(hrefs()).toEqual([
+      '/guild/us/pvp/olympus-xxvii',
+      '/guild/us/pvp/olympus-xxvii#roster',
+      '/guild/us/pvp/olympus-xxvii/settings',
+    ]);
+    expect(rosterText()).toBe('Roster');
+    expect(document.querySelector('[data-guild-tab="roster"] .site-panel-desc')?.textContent).toBe(
+      'Everyone the addon has seen',
+    );
+    expect(footText()).toBe('Guild settings');
   });
 
   it('restores the default rows and name for no guild', () => {
     const header = document.querySelector('header')!;
     applySessionGuild(header, olympus);
     applySessionGuild(header, null);
-    expect(hrefs()).toEqual(['/guild', '/guild#roster', '/guild#settings']);
+    expect(hrefs()).toEqual(['/guild', '/guild', '/guild#claim']);
     expect(nameText()).toBe('Your guild');
   });
 });
