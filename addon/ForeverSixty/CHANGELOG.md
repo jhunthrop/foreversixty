@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.12
+
+- Builds from the site are rows you can pick in /fs, with the character they are for and what they change; the preview never cuts a sentence; /fs diag says when the inbox was read and that builds arrive at login, not on /reload; the addon's times match the chat's clock.
+
 ## 2.0.11
 
 - Builds sent from the site, the site's acknowledgements and guild notes now reach characters on realms whose name is not the ruleset word (the beta's Classic Beta PvP and PvE realms): /fs diag's Site line, the login line and the inbox read them.
