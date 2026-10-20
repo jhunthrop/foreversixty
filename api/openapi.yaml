@@ -292,6 +292,17 @@ components:
           items: { $ref: '#/components/schemas/FightEntry' }
         players: { type: array, items: { type: string } }
         created_at: { type: string, format: date-time }
+        logging_character:
+          type: object
+          nullable: true
+          description: >-
+            The character whose client wrote the log; null when the report names none. name is
+            the characters table's when the key resolves, else the key's last segment
+            title-cased.
+          required: [key, name]
+          properties:
+            key: { type: string, description: "region/ruleset/slug, e.g. us/pvp/bow-jackzon" }
+            name: { type: string }
         data_base_url:
           type: string
           description: >-
@@ -861,11 +872,11 @@ components:
       type: object
       description: >-
         The gear panel fields of GET /v1/characters/{region}/{ruleset}/{name}, beside the
-        Forever Score. The spec, level and band are the Gear component's own: the spec of the
-        character's newest rated fight in a public report, the level in the export's level=
+        Forever Score. The spec is the newest rated fight's in a public report, else the one the
+        export's talents name (gear_spec, gear_spec_source); the level is the export's level=
         section (60 when it has none), and the band that level falls in (the highest of 20, 30,
         40, 50 and 60 at or below it that the spec has a best-in-slot set for).
-      required: [gear, gear_gap_total]
+      required: [gear, gear_gap_total, gear_spec, gear_spec_source]
       properties:
         gear:
           type: array
@@ -875,6 +886,18 @@ components:
             neck, shoulder, back, chest, wrist, hands, waist, legs, feet, finger1, finger2,
             trinket1, trinket2, main_hand, off_hand, ranged) when the character has an export;
             [] when it has none (never null).
+        gear_spec:
+          type: string
+          nullable: true
+          description: >-
+            The spec the gear picks are for, the site's slug ("warrior-fury"): the spec of the
+            newest rated fight, else the one the export's talents name, else (no points spent) the
+            class's first spec. Null when the character has no export or the data knows no spec.
+        gear_spec_source:
+          type: string
+          nullable: true
+          enum: [fight, talents, default]
+          description: Where gear_spec came from; null exactly when gear_spec is.
         gear_gap_total:
           type: number
           nullable: true
@@ -1985,6 +2008,13 @@ paths:
                         type: object
                         properties:
                           spec: { type: string }
+                          spec_source:
+                            type: string
+                            enum: [fight, talents, default, ""]
+                            description: >-
+                              Where spec came from: fight (a logged fight named it), talents (the
+                              dominant tree of the export's talent points) or default (no points
+                              spent: the class's first spec). Empty when spec is.
                           gear: { type: object }
                           talents: { type: string }
                           buffs:

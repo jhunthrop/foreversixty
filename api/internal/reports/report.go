@@ -108,6 +108,13 @@ type GuildRef struct {
 	Ruleset string `json:"ruleset"`
 }
 
+// LoggingCharacter is the character a report was logged by: its key (region/ruleset/slug) and
+// display name.
+type LoggingCharacter struct {
+	Key  string `json:"key"`
+	Name string `json:"name"`
+}
+
 // View is the body of GET /v1/reports/{id}.
 type View struct {
 	ID            string       `json:"id"`
@@ -123,4 +130,7 @@ type View struct {
 	Players       []string     `json:"players"`
 	CreatedAt     time.Time    `json:"created_at"`
 	DataBaseURL   string       `json:"data_base_url"`
+	// LoggingCharacter is the character whose client wrote the log; null when the report names
+	// none.
+	LoggingCharacter *LoggingCharacter `json:"logging_character"`
 }

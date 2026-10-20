@@ -1012,3 +1012,41 @@ func seedKeyedBossFight(t *testing.T, pool *pgxpool.Pool, reportID, key string) 
 		t.Fatal(err)
 	}
 }
+
+// The report body names the character that logged it: the characters table's name when the
+// key resolves, else the key's last segment title-cased; null when the report names none.
+func TestTheReportNamesItsLoggingCharacter(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public) // us/hardcore/baelgrim, in no characters row
+	var view View
+	h.data(h.do(http.MethodGet, "/v1/reports/"+id, "", nil), &view)
+	if view.LoggingCharacter == nil || view.LoggingCharacter.Key != "us/hardcore/baelgrim" ||
+		view.LoggingCharacter.Name != "Baelgrim" {
+		t.Fatalf("logging_character = %+v, want us/hardcore/baelgrim, Baelgrim", view.LoggingCharacter)
+	}
+
+	h.json(http.MethodPatch, "/v1/reports/"+id,
+		`{"logging_character":{"region":"eu","ruleset":"pvp","name":"Bow Jackzon"}}`).Body.Close()
+	h.data(h.do(http.MethodGet, "/v1/reports/"+id, "", nil), &view)
+	if view.LoggingCharacter == nil || view.LoggingCharacter.Key != "eu/pvp/bow-jackzon" ||
+		view.LoggingCharacter.Name != "Bow Jackzon" {
+		t.Fatalf("logging_character = %+v, want eu/pvp/bow-jackzon, Bow Jackzon", view.LoggingCharacter)
+	}
+
+	// Unset: a report created with no logging character answers null.
+	res := h.json(http.MethodPost, "/v1/reports", `{"title":"Anon","visibility":"public","zone":"Blackrock Spire"}`)
+	var out struct {
+		ID string `json:"id"`
+	}
+	h.data(res, &out)
+	res = h.do(http.MethodGet, "/v1/reports/"+out.ID, "", nil)
+	var raw struct {
+		Data map[string]json.RawMessage `json:"data"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&raw); err != nil {
+		t.Fatal(err)
+	}
+	if got := string(raw.Data["logging_character"]); got != "null" {
+		t.Fatalf("logging_character = %s, want null", got)
+	}
+}

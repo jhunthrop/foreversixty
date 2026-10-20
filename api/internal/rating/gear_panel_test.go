@@ -464,3 +464,71 @@ func TestTheScoreAndTheGearPanelReadTheExportAndTheFightsOnce(t *testing.T) {
 		t.Errorf("%d reads of the rated fights, want 1", n)
 	}
 }
+
+// seedExportOnly writes a level-21 human warrior with an addon export whose talents are
+// talents ("0/05052/0": twelve Fury points) and no logged fight at all.
+func (fx *gearPanelFixture) seedExportOnly(t *testing.T, name, talents string) {
+	t.Helper()
+	ctx := context.Background()
+	key := "us/normal/" + strings.ToLower(name)
+	var userID int64
+	if err := fx.pool.QueryRow(ctx, `insert into users (email) values ($1) returning id`,
+		"gp67-"+strings.ToLower(name)+"@example.com").Scan(&userID); err != nil {
+		t.Fatal(err)
+	}
+	mustExec(t, fx.pool, `insert into characters (key, region, ruleset, name, class, user_id)
+		values ($1, 'us', 'normal', $2, 'Warrior', $3)`, key, name, userID)
+	export := "FS1:" + gp67Build + ":warrior:human:" + talents + ":head=12640|level=21"
+	mustExec(t, fx.pool, `insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at)
+		values ($1, $2, 'us', 'normal', $3, $4, now())`, key, userID, name, export)
+}
+
+// A character with an export and no logged fight gets picks for the spec its talents name,
+// and the panel says so.
+func TestTheGearPanelReadsTheSpecFromTheExportsTalentsWhenNoFightNamedOne(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seedExportOnly(t, "Gp67nologs", "0/05052/0")
+	body := fx.read(t, "gp67nologs")
+	var spec, source string
+	if err := json.Unmarshal(body.raw["gear_spec"], &spec); err != nil || spec != "warrior-fury" {
+		t.Errorf("gear_spec = %s, want warrior-fury", body.raw["gear_spec"])
+	}
+	if err := json.Unmarshal(body.raw["gear_spec_source"], &source); err != nil || source != "talents" {
+		t.Errorf("gear_spec_source = %s, want talents", body.raw["gear_spec_source"])
+	}
+	picks := 0
+	for _, s := range body.Gear {
+		if s.Pick != nil {
+			picks++
+		}
+	}
+	if picks == 0 {
+		t.Errorf("no slot has a pick for a level-21 Fury warrior: %+v", body.Gear)
+	}
+}
+
+// With no points spent the class's first spec answers, as the default.
+func TestTheGearPanelFallsBackToTheClassDefaultWithNoPointsSpent(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seedExportOnly(t, "Gp67nopoints", "0/0/0")
+	body := fx.read(t, "gp67nopoints")
+	if got := string(body.raw["gear_spec"]); got != `"warrior-arms"` {
+		t.Errorf("gear_spec = %s, want warrior-arms", got)
+	}
+	if got := string(body.raw["gear_spec_source"]); got != `"default"` {
+		t.Errorf("gear_spec_source = %s, want default", got)
+	}
+}
+
+// A rated fight's spec wins over the talents.
+func TestTheGearPanelPrefersTheFightsSpecToTheTalents(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seed(t, "Gp67fight", map[string]int{"head": 12640})
+	body := fx.read(t, "gp67fight")
+	if got := string(body.raw["gear_spec"]); got != `"warrior-arms"` {
+		t.Errorf("gear_spec = %s, want warrior-arms", got)
+	}
+	if got := string(body.raw["gear_spec_source"]); got != `"fight"` {
+		t.Errorf("gear_spec_source = %s, want fight", got)
+	}
+}

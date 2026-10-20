@@ -41,6 +41,10 @@ type GearSlot struct {
 type CharacterGear struct {
 	Slots    []GearSlot
 	GapTotal *float64
+	// Spec is the spec the picks are for (the site's slug, "warrior-fury") and SpecSource where
+	// it came from: "fight", "talents" or "default" (character.SpecFor). Both are empty when the
+	// character has no export or no spec the data knows.
+	Spec, SpecSource string
 }
 
 // ScoreGearReader reads a character's Forever Score and gear panel together by character

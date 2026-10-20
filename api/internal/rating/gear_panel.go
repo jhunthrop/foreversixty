@@ -6,8 +6,10 @@ package rating
 // addon's pick for the spec, band and faction), and the gap: the Gear component's points
 // the pick would add over the worn item.
 //
-// The spec, the level and the band are the Gear component's own (gearScore): the newest
-// rated fight's spec, the export's level= section (else 60) and sims.GearBand. The gap uses
+// The spec is the newest rated fight's, else the one the export's talents name, else the
+// class's first spec (character.SpecFor; the panel returns it with its source). The level and
+// the band are the Gear component's own (gearScore): the export's level= section (else 60)
+// and sims.GearBand. The gap uses
 // the component's own scale, GearMax * (pick - worn) / full, where pick and worn are each
 // item's sims.ItemGearScore (the per-item term GearScore and FullGearScore sum) and full is
 // sims.FullGearScore for the band. The gaps do not add up to the component's distance to
@@ -36,6 +38,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
@@ -95,7 +98,8 @@ func (s *Store) characterGear(ctx context.Context, key string, in characterInput
 		s.logger().Warn("rating", "op", "gear_panel", "character", key, "err", "the stored export is not an FS1 code")
 		return out, nil
 	}
-	spec := in.fights.spec
+	spec, source := character.SpecFor(decoded.ClassSlug, in.fights.spec, decoded.Talents.Points)
+	out.Spec, out.SpecSource = spec, source
 	faction := sims.RaceFaction(decoded.DataBuild, decoded.RaceSlug)
 	if faction == "" {
 		faction = in.faction
