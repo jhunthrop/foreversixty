@@ -6,7 +6,7 @@
 // number can miss: 0 (fight_index is 1-based, so no report ever has one), a number past
 // the end, and a gap.
 import { describe, expect, it } from 'vitest';
-import { defaultFightIndex, pullNumbers, resolveFightIndex } from './fights';
+import { defaultFightIndex, fightRows, fightTitle, pullNumbers, resolveFightIndex } from './fights';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS } from './url';
 
@@ -80,5 +80,50 @@ describe('defaultFightIndex', () => {
   it('accepts the whole night only when the report has a boss pull', () => {
     expect(resolveFightIndex([fight(1), fight(2)], ALL_FIGHTS, 1)).toBe(ALL_FIGHTS);
     expect(resolveFightIndex([{ ...fight(1), kind: 'trash' }], ALL_FIGHTS, 1)).toBe(1);
+  });
+});
+
+describe('fightTitle and fightRows', () => {
+  const trash = (index: number, zone: string | undefined, ms = 206_000, kills = 10): FightEntry => ({
+    ...fight(index),
+    kind: 'trash',
+    name: 'Trash',
+    zone,
+    duration_ms: ms,
+    npc_kills: kills,
+  });
+
+  it('titles trash by its length and keeps a boss name', () => {
+    expect(fightTitle(trash(1, undefined))).toBe('Trash · 3:26');
+    expect(fightTitle(fight(2))).toBe('Fight 2');
+  });
+
+  it('folds consecutive trash of one zone into one row, summing kills and time', () => {
+    const rows = fightRows([
+      trash(1, 'Zone A', 60_000, 5),
+      trash(2, 'Zone A', 60_000, 7),
+      fight(3),
+      trash(4, 'Zone A'),
+    ]);
+    expect(rows).toHaveLength(3);
+    expect(rows[0]).toMatchObject({
+      type: 'trash-group',
+      key: 1,
+      zone: 'Zone A',
+      kills: 12,
+      duration_ms: 120_000,
+    });
+    expect(rows[1]).toMatchObject({ type: 'fight' });
+    expect(rows[2]).toMatchObject({ type: 'fight' });
+  });
+
+  it('starts a new group when the zone changes', () => {
+    const rows = fightRows([trash(1, 'A'), trash(2, 'A'), trash(3, 'B'), trash(4, 'B')]);
+    expect(rows.map((row) => row.type)).toEqual(['trash-group', 'trash-group']);
+  });
+
+  it('leaves trash with no zone as its own rows', () => {
+    const rows = fightRows([trash(1, undefined), trash(2, undefined)]);
+    expect(rows.map((row) => row.type)).toEqual(['fight', 'fight']);
   });
 });

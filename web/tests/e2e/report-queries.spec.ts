@@ -196,6 +196,7 @@ test('an answer for the fight that was left behind is dropped, not painted', asy
   await started;
 
   await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-group-1').click();
   await page.getByTestId('fight-1').click();
   await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');
 

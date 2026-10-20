@@ -474,6 +474,8 @@ export interface ReportMeta {
   owner: { id: number; battletag: string } | null;
   guild?: { id: number; name: string; ruleset: string; region: string };
   zone: string;
+  /** The character the upload was logged by: a "region/ruleset/slug" key or an object with its name; absent when none was set. */
+  logging_character?: string | { name?: string } | null;
   status: ReportStatus;
   engine_version: string;
   fights: FightEntry[];

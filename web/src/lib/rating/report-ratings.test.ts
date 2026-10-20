@@ -87,6 +87,33 @@ describe('createReportRatingsFetch', () => {
     expect(missing.error).toBe('from the API');
   });
 
+  it('a 404 "no ratings for that fight" is the trash answer, not a failure; a 5xx still fails', async () => {
+    const answer = (status: number, code: string, message: string): Response =>
+      new Response(JSON.stringify({ ok: false, data: null, error: { code, message }, request_id: 'r' }), {
+        status,
+        headers: { 'content-type': 'application/json' },
+      });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => answer(404, 'not_found', 'no ratings for that fight')),
+    );
+    const trash = createReportRatingsFetch(API);
+    trash.load('trashreport', 7);
+    await flush();
+    expect(trash.status).toBe('none');
+    expect(trash.data).toBeNull();
+    expect(trash.error).toBe('');
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => answer(503, 'unavailable', 'try later')),
+    );
+    const down = createReportRatingsFetch(API);
+    down.load('trashreport', 7);
+    await flush();
+    expect(down.status).toBe('failed');
+  });
+
   it('switching fight while a request is in flight drops the stale response', async () => {
     let resolveFirst: ((r: Response) => void) | undefined;
     const upstream = vi.fn<GlobalFetch>(

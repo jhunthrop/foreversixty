@@ -42,7 +42,10 @@ describe('the report cache rule', () => {
   });
 
   it('never persists a live answer either', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(meta('live'))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(meta('live'))),
+    );
     await fetchReportMeta('fixture2abcd', API);
     expect(localStorage.getItem(storageKey(KEY))).toBeNull();
   });
@@ -58,7 +61,10 @@ describe('the report cache rule', () => {
   });
 
   it('persists a failed answer', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(meta('failed'))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(meta('failed'))),
+    );
     await fetchReportMeta('fixture2abcd', API);
     expect(localStorage.getItem(storageKey(KEY))).not.toBeNull();
   });
@@ -77,7 +83,10 @@ describe('the report cache rule', () => {
 
   it('moves from processing to complete and then caches', async () => {
     let status = 'processing';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(meta(status))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(meta(status))),
+    );
     expect((await fetchReportMeta('fixture2abcd', API)).status).toBe('processing');
     status = 'complete';
     expect((await fetchReportMeta('fixture2abcd', API)).status).toBe('complete');
@@ -118,7 +127,10 @@ describe('the 404 grace after an upload', () => {
   });
 
   it('gives up with "No report with that id" once thirty seconds have passed', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 404)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 404)),
+    );
     let clock = 0;
     const sleep = async (ms: number) => {
       clock += ms;

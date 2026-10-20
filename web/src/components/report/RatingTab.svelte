@@ -91,6 +91,8 @@
     <p class="text-muted text-[14px]" data-testid="rating-tab-loading">Loading ratings.</p>
   {:else if fetcher.status === 'flagged'}
     <p class="text-muted text-[14px]" data-testid="rating-tab-flagged">{ratingCopy.flagged}</p>
+  {:else if fetcher.status === 'none'}
+    <p class="text-muted text-[14px]" data-testid="rating-tab-none">{ratingCopy.noRatingForTrash}</p>
   {:else if fetcher.status === 'failed'}
     <p class="text-[14px]" role="alert" data-testid="rating-tab-error">{ratingCopy.fetchFailed}</p>
   {:else if source === SOURCE_ENEMIES}

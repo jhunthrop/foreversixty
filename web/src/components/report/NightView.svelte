@@ -4,7 +4,8 @@
      the evening -- and each figure links back to the pull it came from. Trash is left out
      for the reason the rankings leave it out. -->
 <script lang="ts">
-  import { splitUnitName } from '../../lib/characters';
+  import { unitLabel } from '../../lib/report/names.svelte';
+  import { specCell, type UnitClass } from '../../lib/report/roster-class';
   import { classColorVar, formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
   import type { Night, NightPlayer } from '../../lib/report/night';
   import ClassIcon from './ClassIcon.svelte';
@@ -14,12 +15,14 @@
     loading,
     onSelect,
     onSelectPlayer,
+    unitClasses = new Map<string, UnitClass>(),
   }: {
     night: Night;
     loading: boolean;
     onSelect: (index: number) => void;
     /** Narrows the page to one player, the way the summary's names do. */
     onSelectPlayer: (guid: string) => void;
+    unitClasses?: ReadonlyMap<string, UnitClass>;
   } = $props();
 
   let open = $state<string | null>(null);
@@ -164,7 +167,8 @@
     </div>
     <ul class="flex flex-col" data-testid="night-players">
       {#each night.players as player (player.guid)}
-        {@const display = splitUnitName(player.name)}
+        {@const display = unitLabel(player.name)}
+        {@const cell = specCell(player, unitClasses)}
         {@const headline = roleFigure(player)}
         <li class="border-line-soft border-b" data-testid={`night-player-${player.guid}`}>
           <button
@@ -175,8 +179,9 @@
           >
             <span
               class="flex min-w-0 items-center gap-2 truncate font-semibold"
-              style={`color: ${classColorVar(player.class)}`}
-              ><ClassIcon className={player.class} /><span
+              style={`color: ${classColorVar(cell.class)}`}
+              title={display.title}
+              ><ClassIcon className={cell.class} /><span
                 class="mr-1 inline-block w-3 transition-transform"
                 class:rotate-90={open === player.guid}
                 aria-hidden="true">›</span
@@ -195,11 +200,14 @@
                     event.stopPropagation();
                     onSelectPlayer(player.guid);
                   }
-                }}>{display.name}</span
+                }}>{display.text}</span
               ></span
             >
-            <span class="text-muted text-[13px]"
-              >{player.spec ?? player.class ?? 'Unknown'}
+            <span
+              class={cell.classColoured ? 'text-[13px] font-semibold' : 'text-muted text-[13px]'}
+              style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
+              title={cell.title}
+              >{cell.text}
               <span class="label ml-2 text-[10px]">{open === player.guid ? 'hide pulls' : 'per pull ›'}</span
               ></span
             >

@@ -11,7 +11,8 @@
      with a note explaining why -- the pattern Task 12 should reuse for interrupts, dispels,
      resource totals and aura max_stacks, which are whole-fight for the same reason. -->
 <script lang="ts">
-  import { splitUnitName } from '../../lib/characters';
+  import { unitLabel } from '../../lib/report/names.svelte';
+  import { specCell, type UnitClass } from '../../lib/report/roster-class';
   import {
     classColorVar,
     formatDuration,
@@ -50,6 +51,7 @@
     approximate = false,
     dataBuild = '',
     classOf = new Map<string, string>(),
+    unitClasses = new Map<string, UnitClass>(),
     treeSizesFor = () => [],
     onSelectPlayer = undefined,
     players = new Set<string>(),
@@ -67,6 +69,8 @@
     approximate?: boolean;
     dataBuild?: string;
     classOf?: Map<string, string>;
+    /** Class and where it came from per GUID, off the report's units: what a row without a spec shows. */
+    unitClasses?: ReadonlyMap<string, UnitClass>;
     treeSizesFor?: (className: string | undefined) => number[];
     /** Narrows the page to one player; the name becomes a button when this is given. */
     onSelectPlayer?: (guid: string) => void;
@@ -151,7 +155,8 @@
     </div>
     <ul class="flex flex-col">
       {#each roster as row (row.guid)}
-        {@const display = splitUnitName(row.name)}
+        {@const display = unitLabel(row.name)}
+        {@const cell = specCell(row, unitClasses)}
         {@const percentile = percentiles.get(row.guid) ?? null}
         <li
           class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px]"
@@ -177,27 +182,37 @@
               )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
           </span>
           <span
-            class="flex min-w-0 items-center gap-2 truncate font-semibold"
-            style={`color: ${classColorVar(row.class)}`}
+            class="flex min-w-0 flex-wrap items-center gap-x-2 font-semibold"
+            style={`color: ${classColorVar(cell.class)}`}
+            title={display.title}
           >
-            <ClassIcon className={row.class} />
+            <ClassIcon className={cell.class} />
             {#if onSelectPlayer}
               <button
                 type="button"
                 class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                style={`color: ${classColorVar(row.class)}`}
+                style={`color: ${classColorVar(cell.class)}`}
                 title="Show only this player"
                 data-testid="roster-name"
                 onclick={() => onSelectPlayer(row.guid)}
               >
-                {display.name}
+                {display.name}{#if display.realm !== ''}<span class="text-muted ml-1 text-[11px] font-normal"
+                    >· {display.realm}</span
+                  >{/if}
               </button>
             {:else}
-              {display.name}
+              {display.name}{#if display.realm !== ''}<span class="text-muted ml-1 text-[11px] font-normal"
+                  >· {display.realm}</span
+                >{/if}
             {/if}
           </span>
-          <span class="text-muted col-span-2 text-[13px] md:col-span-1">
-            {row.spec ?? row.class ?? 'Unknown'}
+          <span
+            class="col-span-2 text-[13px] md:col-span-1 {cell.classColoured ? 'font-semibold' : 'text-muted'}"
+            style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
+            title={cell.title}
+            data-testid="roster-spec"
+          >
+            {cell.text}
           </span>
           <!-- Total on top, per-second underneath: a raid leader compares totals across
                the roster, and a player compares their per-second figure with their
@@ -288,7 +303,7 @@
       <h2 class="label text-muted">At pull</h2>
       <ul class="flex flex-col" data-testid="combatants">
         {#each summary.combatants as combatant (combatant.guid)}
-          {@const display = splitUnitName(combatant.name)}
+          {@const display = unitLabel(combatant.name)}
           {@const link = plannerLinkFor({
             dataBuild,
             className: classOf.get(combatant.guid),
@@ -302,9 +317,9 @@
           <li
             class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
           >
-            <span class="font-semibold">{display.name}</span>
+            <span class="font-semibold" title={display.title}>{display.text}</span>
             <span class="text-muted text-[13px]">
-              {combatant.spec ?? 'Unknown spec'} · item level
+              {combatant.spec ?? classOf.get(combatant.guid) ?? '—'} · item level
               <span class="tabular font-mono">{combatant.item_level ?? 0}</span>
             </span>
             <button

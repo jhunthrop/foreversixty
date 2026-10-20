@@ -7,6 +7,7 @@
 // query string is read before report.json arrives, so the real list of fights is not
 // known there. `?fight=0` therefore parses even though fight_index is 1-based and no
 // report has a fight 0, and so does `?fight=999` and a number that falls in a gap.
+import { formatDuration } from './format';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS } from './url';
 
@@ -57,4 +58,59 @@ export function pullNumbers(fights: readonly FightEntry[]): Map<number, PullNumb
 export function defaultFightIndex(fights: readonly FightEntry[]): number {
   const encounter = fights.find((fight) => fight.kind === 'encounter');
   return encounter?.index ?? fights[0]?.index ?? 1;
+}
+
+/** What a fight's row is called: a boss keeps its name; trash is "Trash · 3:26", its length, since every trash pull is named "Trash". */
+export function fightTitle(fight: Pick<FightEntry, 'kind' | 'name' | 'duration_ms'>): string {
+  return fight.kind === 'encounter' ? fight.name : `Trash · ${formatDuration(fight.duration_ms)}`;
+}
+
+export type FightRow =
+  | { type: 'fight'; fight: FightEntry }
+  | {
+      type: 'trash-group';
+      /** The first pull's index: the group's key and its test id. */
+      key: number;
+      zone: string;
+      fights: FightEntry[];
+      kills: number;
+      duration_ms: number;
+      deaths: number;
+    };
+
+/**
+ * The strip's rows: consecutive trash pulls in the same zone fold into one row, so forty-two
+ * pulls of "Trash" read as a few zones. Trash the engine gave no zone, a lone pull and every
+ * boss stay their own row.
+ */
+export function fightRows(fights: readonly FightEntry[]): FightRow[] {
+  const rows: FightRow[] = [];
+  let run: FightEntry[] = [];
+  const flush = (): void => {
+    if (run.length === 1) rows.push({ type: 'fight', fight: run[0] });
+    else if (run.length > 1) {
+      rows.push({
+        type: 'trash-group',
+        key: run[0].index,
+        zone: run[0].zone ?? '',
+        fights: run,
+        kills: run.reduce((sum, entry) => sum + entry.npc_kills, 0),
+        duration_ms: run.reduce((sum, entry) => sum + entry.duration_ms, 0),
+        deaths: run.reduce((sum, entry) => sum + entry.deaths, 0),
+      });
+    }
+    run = [];
+  };
+  for (const fight of fights) {
+    const zone = fight.zone ?? '';
+    if (fight.kind !== 'encounter' && zone !== '') {
+      if (run.length > 0 && (run[0].zone ?? '') !== zone) flush();
+      run.push(fight);
+      continue;
+    }
+    flush();
+    rows.push({ type: 'fight', fight });
+  }
+  flush();
+  return rows;
 }

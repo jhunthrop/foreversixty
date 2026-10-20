@@ -11,6 +11,7 @@ import {
   ordinal,
   outcomeLabel,
   parseTitle,
+  TRASH_PARSE,
   percentileToken,
   phaseReached,
   schoolName,
@@ -84,6 +85,10 @@ describe('report formatting', () => {
     expect(outcomeLabel({ ...base, boss_health_pct: 23.4 })).toBe('Wipe 23%');
     expect(outcomeLabel({ ...base, boss_health_pct: -1 })).toBe('Wipe');
     expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
+    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: false, npc_kills: 115 })).toBe(
+      '115 kills',
+    );
+    expect(outcomeLabel({ kind: 'trash', kill: false, in_progress: false, npc_kills: 1 })).toBe('1 kill');
     expect(parseTitle(80, 12)).toContain('80th percentile among 12 ranked kills');
     expect(parseTitle(100, 1)).toContain('first of one');
     expect(parseTitle('none')).toContain('no parse');
@@ -125,5 +130,13 @@ describe('formatAmountLike', () => {
     expect(formatAmountLike(1_500, 239_200)).toBe('1.5k');
     expect(formatAmountLike(239_200, 239_200)).toBe('239.2k');
     expect(formatAmountLike(80_993, 90_000)).toBe('80,993');
+  });
+});
+
+describe('the trash parse', () => {
+  it('is a muted dash that says parses are for bosses, not an error', () => {
+    expect(TRASH_PARSE).toBe('—');
+    expect(parseTitle(TRASH_PARSE)).toBe('No parse for trash; parses are made for boss fights.');
+    expect(parseTitle(TRASH_PARSE)).not.toMatch(/could not be reached/);
   });
 });
