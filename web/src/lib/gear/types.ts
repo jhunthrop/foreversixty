@@ -65,4 +65,8 @@ export interface CharacterGear {
   /** The plain sum of every non-null gap, one decimal; null when no slot has a gap. It is not
    *  the Gear component's distance to its top (that is measured against the band's best set). */
   gear_gap_total: number | null;
+  /** The spec the picks are for, the site's slug ("warrior-fury"); null with no export. */
+  gear_spec?: string | null;
+  /** Where `gear_spec` came from: a logged fight, the export's talents, or the class default. */
+  gear_spec_source?: 'fight' | 'talents' | 'default' | null;
 }

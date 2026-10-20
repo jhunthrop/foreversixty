@@ -65,6 +65,7 @@
     bisHref = null,
     spec = null,
     band = null,
+    specLine = null,
     preloaded = undefined,
   }: {
     /** `gear`: all 17 slots, or `[]` when the character has no export. */
@@ -81,6 +82,8 @@
     /** The spec the link names ("Holy") and the band ("60"). */
     spec?: string | null;
     band?: number | null;
+    /** `gearSpecLine`: the spec the picks are for and where it came from, muted after the heading. */
+    specLine?: string | null;
     /** The items file already read (a table) or failed (null); left out, the section reads it. */
     preloaded?: GearItemTable | null;
   } = $props();
@@ -247,6 +250,11 @@
       <span
         class="text-strong font-body text-[15px] font-semibold max-[480px]:block max-[480px]:basis-full"
         data-testid="character-gear-summary">{summary}</span
+      >
+    {/if}
+    {#if specLine !== null}
+      <span class="text-muted font-body text-[13px] font-normal" data-testid="character-gear-spec"
+        >{specLine}</span
       >
     {/if}
   </h2>

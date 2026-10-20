@@ -434,3 +434,18 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(text(line?.[2] ?? '')).toBe(gearCopy.noGear);
   });
 });
+
+describe('the spec the picks are for (A.2)', () => {
+  it('names the spec and its source after the heading when the talents named it', () => {
+    const body = render(CharacterGearPanel, {
+      props: { ...PROPS, specLine: 'Fury · from your talents' },
+    }).body;
+    expect(bare(body)).toContain('data-testid="character-gear-spec"');
+    expect(text(body)).toContain('Fury · from your talents');
+  });
+
+  it('draws nothing extra when a fight named the spec', () => {
+    const body = render(CharacterGearPanel, { props: PROPS }).body;
+    expect(bare(body)).not.toContain('character-gear-spec');
+  });
+});

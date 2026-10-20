@@ -159,6 +159,8 @@ export interface CharacterPage extends Partial<ForeverScore> {
    *  section at all. */
   gear?: CharacterGear['gear'];
   gear_gap_total?: CharacterGear['gear_gap_total'];
+  gear_spec?: CharacterGear['gear_spec'];
+  gear_spec_source?: CharacterGear['gear_spec_source'];
 }
 
 export interface GuildProgressionRow {
