@@ -31,6 +31,7 @@
     name = '',
     fights = [],
     onrated = undefined,
+    onshown = undefined,
   }: {
     path: CharacterPath;
     apiBase?: string;
@@ -56,6 +57,9 @@
     /** Told the latest rated fight and its rating once the rating loads (null when there is
      *  none), so "Every ranked fight" can mark that row "rated 65" (L8.5 fix round 2 item 3). */
     onrated?: (rated: { report_id: string; fight_index: number; overall: number } | null) => void;
+    /** Told whether the panel has any rating to show (a fight rated), so the account page can
+     *  leave its "Your ratings" section out when there is nothing in it (W.3). */
+    onshown?: (shown: boolean) => void;
   } = $props();
 
   let data = $state<CharacterRating | null>(null);
@@ -71,6 +75,7 @@
         if (path !== requested) return;
         data = result;
         status = 'ready';
+        onshown?.(result.sample_size > 0);
         const newest = latestRatedFight(result.trend, []);
         onrated?.(
           newest === null || result.latest === null
@@ -94,6 +99,7 @@
         }
         data = null;
         status = 'hidden';
+        onshown?.(false);
         onrated?.(null);
       });
   });

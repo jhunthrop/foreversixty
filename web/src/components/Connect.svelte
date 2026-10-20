@@ -240,13 +240,18 @@
       <h1 class="section-title text-[18px]">{connectCopy.successTitle}</h1>
     </div>
     <p class="text-[14px]">{connectCopy.successBody}</p>
-    <a
-      class="{PRIMARY_BUTTON_FIXED} justify-center self-start px-5"
-      href="/logs"
-      data-testid="connect-reports"
-    >
-      {connectCopy.openReports}
-    </a>
+    <div class="flex flex-wrap gap-3">
+      <a class="{PRIMARY_BUTTON_FIXED} justify-center px-5" href="/account" data-testid="connect-account">
+        {connectCopy.yourAccount}
+      </a>
+      <a
+        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong justify-center px-4"
+        href="/setup"
+        data-testid="connect-setup"
+      >
+        {connectCopy.getSetUp}
+      </a>
+    </div>
   {:else if state === 'cancelled'}
     <h1 class="section-title text-[18px]">{connectCopy.cancelledTitle}</h1>
     <p class="text-[14px]">{connectCopy.cancelledBody}</p>

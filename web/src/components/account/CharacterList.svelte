@@ -105,11 +105,13 @@
   {#if setMainError !== ''}
     <p class="text-[13px]" role="alert" data-testid="character-set-main-error">{setMainError}</p>
   {/if}
-  <p class="text-muted text-[13px]">
-    {characterListCopy.introBattlenetLine}
-    <a class="text-text underline" href="/setup">{characterListCopy.introInstallAddonLink}</a>
-    {characterListCopy.introAddonTail}
-    <a class="text-text underline" href="/setup#paste">{characterListCopy.introPasteLink}</a>
-    {characterListCopy.introPasteTail}
-  </p>
+  {#if characters.length > 0}
+    <p class="text-muted text-[13px]">
+      {characterListCopy.introBattlenetLine}
+      <a class="text-text underline" href="/setup">{characterListCopy.introInstallAddonLink}</a>
+      {characterListCopy.introAddonTail}
+      <a class="text-text underline" href="/setup#paste">{characterListCopy.introPasteLink}</a>
+      {characterListCopy.introPasteTail}
+    </p>
+  {/if}
 </StatePanel>

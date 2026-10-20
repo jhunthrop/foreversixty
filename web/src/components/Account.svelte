@@ -141,6 +141,8 @@
       : (heroCharacter(currentCharacter, me.characters) ??
           mainCharacter(me.characters, me.main_character_key)),
   );
+  /** "Your ratings" shows only once the hero character has a rated fight. */
+  let ratingsShown = $state(false);
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
   // spec 2026-09-22 §3.1: "the sentence that Blizzard serves no data for this realm type
   // when no character has a build" -- account-wide, not just the hero, since it is telling
@@ -616,11 +618,18 @@
 
           <div class="flex flex-col gap-8 lg:col-span-4">
             {#if heroPath !== null}
-              <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
-                <div class="p-[18px]">
-                  <CharacterRatingPanel path={heroPath} heading={false} />
-                </div>
-              </StatePanel>
+              <!-- Hidden (not unmounted: the panel's own fetch decides) until a rating exists. -->
+              <div hidden={!ratingsShown} data-testid="account-ratings-slot">
+                <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
+                  <div class="p-[18px]">
+                    <CharacterRatingPanel
+                      path={heroPath}
+                      heading={false}
+                      onshown={(shown) => (ratingsShown = shown)}
+                    />
+                  </div>
+                </StatePanel>
+              </div>
             {/if}
 
             <div id="devices">

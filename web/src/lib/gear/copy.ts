@@ -11,6 +11,28 @@ export function points(value: number): string {
   return Number.isInteger(tenths) ? String(tenths) : tenths.toFixed(1);
 }
 
+/** An export that carried no gear and no talents (W.3): said plainly, in place of the slot list,
+ *  the "Empty" rows and the "0 talent points" an unread export used to draw as fact. */
+export const notReadCopy = {
+  lead: 'Your gear has not been read yet.',
+  /** "The last sync from the game (19 Oct, 21:40) carried no gear or talents." */
+  synced: (stamp: string): string =>
+    stamp === ''
+      ? 'The last sync from the game carried no gear or talents.'
+      : `The last sync from the game (${stamp}) carried no gear or talents.`,
+  steps: 'In game, log in, wait for the world to load, then log out once; it appears here within a minute.',
+  /** Someone else's character: the steps are the owner's to take. */
+  visitorLead: 'This character’s gear has not been read yet.',
+  visitorSynced: 'Its last sync from the game carried no gear or talents.',
+  /** The band's list under the panel: "Best in slot for level 20 to 29". */
+  bestInSlot: (band: number | null): string =>
+    band === null
+      ? 'Best in slot'
+      : band >= 60
+        ? 'Best in slot for level 60'
+        : `Best in slot for level ${band} to ${band + 9}`,
+} as const;
+
 export const gearCopy = {
   heading: 'Gear',
   /** The list's accessible name (fix round 2 ruling 9). */

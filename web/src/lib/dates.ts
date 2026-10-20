@@ -68,3 +68,11 @@ export function formatDayMonthYear(d: Date): string {
   if (Number.isNaN(d.getTime())) return '';
   return `${d.getUTCDate()} ${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
+
+/** "19 Oct, 21:40", in the viewer's own time zone: when a sync from the game arrived. An
+ *  unreadable date renders as nothing. */
+export function formatSyncStamp(d: Date): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (value: number): string => String(value).padStart(2, '0');
+  return `${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}

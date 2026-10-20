@@ -137,7 +137,7 @@ export const addonCopy = {
    *  copy-module convention rather than reaching into the home page's module. */
   setupSignInAction: 'Sign in with Battle.net',
   setupCompanionBody:
-    'The companion logs live from your desktop: turn on advanced combat logging, type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
+    'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
   /** The page as a checklist (design loop, setup round): its own title, a status row
    *  under it, a done line for each step a visitor has already finished, the addon's
    *  how-it-works cards behind one disclosure, and the companion's downloads. */

@@ -22,12 +22,9 @@ function sources(dir: string): string[] {
 }
 
 describe('the site’s instruction for the addon’s copy mode (L8.5 ruling 5)', () => {
-  it('says "type /fs copy, press Ctrl+C, then paste it here" on the profile’s In game section', () => {
-    expect(scoreCopy.inGamePlannerLead).toBe(
-      'To update this page: in game, type /fs copy, press Ctrl+C, then',
-    );
+  it('says the page updates by itself, and /fs copy only without the companion, on the profile’s In game section', () => {
     expect(`${scoreCopy.inGamePlannerLead} ${scoreCopy.inGamePasteLink}.`).toBe(
-      'To update this page: in game, type /fs copy, press Ctrl+C, then paste it here.',
+      'This page updates by itself each time you log out with the addon and the companion running. Without the companion: /fs copy in game, then paste it on the setup page.',
     );
   });
 

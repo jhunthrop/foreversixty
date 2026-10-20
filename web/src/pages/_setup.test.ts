@@ -78,6 +78,12 @@ describe('/setup', () => {
     expect(source).toContain('addonCopy.currentDataBuild(');
   });
 
+  it('tells the visitor the in-game setting by its exact path, in step 3', () => {
+    expect(html).toContain(
+      'Turn on Options &gt; Network &gt; Advanced Combat Logging once, then restart the game.',
+    );
+  });
+
   it('derives the GitHub release link from links.json, not a second copy of the repo URL', () => {
     expect(source).toContain('communityLinks.githubRepo');
     expect(source).not.toContain('jhunthrop/forever/releases');

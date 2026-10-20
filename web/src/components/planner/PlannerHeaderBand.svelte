@@ -20,7 +20,9 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { sendActionFor, sendBuildToAddon, type SendState } from '../../lib/planner/send-build';
+  import { buildHasGear } from '../../lib/addon-export';
   import CharacterHeader from '../character/CharacterHeader.svelte';
+  import ExportNotRead from '../character/ExportNotRead.svelte';
   import PlannerHeader from './PlannerHeader.svelte';
 
   let {
@@ -58,6 +60,11 @@
   });
 
   const action = $derived(sendActionFor(character, sendState));
+  /** The card's character has an addon export that carried no gear and no talents (W.3): the
+   *  card says so instead of leaving the empty tree to read as the character's build. */
+  const unread = $derived(
+    character?.build !== undefined && character.build.source === 'addon' && !buildHasGear(character.build),
+  );
 
   async function send(): Promise<void> {
     const key = currentKey;
@@ -123,13 +130,21 @@
   <div class="planner-header-band-inner page-column">
     <div class="planner-header-band-grid">
       <PlannerHeader {store} {live} {gate} {onshowdps} />
-      <CharacterHeader
-        layout="card"
-        emphasis="secondary"
-        {action}
-        onCharacterChange={(next) => (character = next)}
-        onPick={() => void send()}
-      />
+      <div class="flex flex-col gap-3">
+        <CharacterHeader
+          layout="card"
+          emphasis="secondary"
+          {action}
+          onCharacterChange={(next) => (character = next)}
+          onPick={() => void send()}
+        />
+        {#if unread}
+          <ExportNotRead
+            capturedAt={character?.build?.captured_at ?? null}
+            testid="planner-export-not-read"
+          />
+        {/if}
+      </div>
     </div>
   </div>
 </div>

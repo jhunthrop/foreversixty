@@ -129,6 +129,12 @@ describe('CharacterList', () => {
     );
   });
 
+  it('says the setup story once on an empty account: the intro line is left out under the empty state', () => {
+    const { body } = render(CharacterList, { props: { characters: [] } });
+    expect(body).not.toContain(characterListCopy.introBattlenetLine);
+    expect(body.split('href="/setup"').length - 1).toBe(1);
+  });
+
   it('shows the imported-from line and the refresh link only when bnetImportedAt is set', () => {
     const withImport = render(CharacterList, {
       props: { characters: [GUILDED], bnetImportedAt: '2026-09-20T00:00:00Z' },

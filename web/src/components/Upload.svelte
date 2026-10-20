@@ -21,6 +21,7 @@
     uploadParts,
   } from '../lib/upload/multipart';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { checkLog, logWarningCopy, type LogCheck } from '../lib/upload/log-check';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
   /** The one line a player ever sees on a failed upload (logs build review, fix round 1,
@@ -61,6 +62,25 @@
   let inFlight: AbortController | null = null;
   let fileInput = $state<HTMLInputElement | null>(null);
   let dragging = $state(false);
+  /** What reading the chosen file's header and boss markers found; null until it has been read.
+   *  Advisory: it never blocks the Upload button. */
+  let logCheck = $state<LogCheck | null>(null);
+  let checkToken = 0;
+
+  /** Reads the chosen file in the background (its first 64 KB, then a stream for boss fights);
+   *  a newer choice makes an older read's answer stale, so it is dropped. */
+  function inspect(chosen: File | null): void {
+    const token = ++checkToken;
+    logCheck = null;
+    if (chosen === null) return;
+    checkLog(chosen)
+      .then((result) => {
+        if (token === checkToken) logCheck = result;
+      })
+      .catch(() => {
+        // An unreadable file gets no advice; the upload says what it needs to.
+      });
+  }
 
   /** The header action's handler: opens the system file picker from the click that called it. */
   export function openPicker(): void {
@@ -80,6 +100,7 @@
   function pick(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     file = input.files?.[0] ?? null;
+    inspect(file);
     uploaded = 0;
     error = tooLarge ? UPLOAD_TOO_LARGE : '';
     phase = 'idle';
@@ -89,6 +110,7 @@
     event.preventDefault();
     dragging = false;
     file = event.dataTransfer?.files?.[0] ?? null;
+    inspect(file);
     uploaded = 0;
     error = tooLarge ? UPLOAD_TOO_LARGE : '';
   }
@@ -247,6 +269,18 @@
         </div>
         <p class="text-muted text-[13px]" data-testid="upload-visibility-note">{visibilityNote}</p>
       </fieldset>
+
+      {#if logCheck !== null && (logCheck.advancedOff || logCheck.noEncounters)}
+        <!-- Advice, never a gate: the Upload button below stays live. -->
+        <div class="flex flex-col gap-1" data-testid="upload-warnings">
+          {#if logCheck.advancedOff}
+            <p class="text-[13px]" data-testid="upload-warning-advanced">{logWarningCopy.advancedOff}</p>
+          {/if}
+          {#if logCheck.noEncounters}
+            <p class="text-[13px]" data-testid="upload-warning-encounters">{logWarningCopy.noEncounters}</p>
+          {/if}
+        </div>
+      {/if}
 
       <div class="flex flex-wrap items-center gap-3">
         <button
