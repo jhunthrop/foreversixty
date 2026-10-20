@@ -18,7 +18,9 @@ on:
 permissions: { contents: read }
 concurrency:
   group: companion-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push supersedes a pull request's run; a release run on main or a tag is
+  # left to finish, or two pushes in a minute lose the release in between.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 env:
   # The module is tested as it ships, not through the repo-root
   # workspace: a companion that only builds inside go.work is a
@@ -136,25 +138,29 @@ jobs:
             echo "releasing the pushed tag $GITHUB_REF_NAME"
             exit 0
           fi
+          # The base of the "did anything change" diff is the newest release tag, not
+          # the push's `before` commit: a release run that a later push cancelled
+          # (2026-10-20: fe7893e0's 0.2.6 run, cancelled by a docs push a minute later,
+          # and the docs push then diffed only itself and released nothing) is picked
+          # up by the next push, because the tree still differs from the last tag.
+          last=$(git tag --list 'companion-v*' --sort=-v:refname | head -1)
           changed=false
           if [ "$FORCE" = "true" ]; then
             changed=true
-          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
-            if git diff --name-only "$BEFORE" "$GITHUB_SHA" \
+          elif [ -n "$last" ]; then
+            if git diff --name-only "$last" "$GITHUB_SHA" \
                 | grep -qE '^(companion/|logs/|\.github/workflows/companion\.yml)'; then
               changed=true
             fi
           else
-            # No usable base commit (a force push, or the first push): release rather
-            # than guess that nothing changed.
+            # No release yet: release rather than guess that nothing changed.
             changed=true
           fi
           if [ "$changed" != true ]; then
             echo "release=false" >> "$GITHUB_OUTPUT"
-            echo "nothing under companion/ or logs/ changed; no release"
+            echo "nothing under companion/ or logs/ changed since $last; no release"
             exit 0
           fi
-          last=$(git tag --list 'companion-v*' --sort=-v:refname | head -1)
           if [ -z "$last" ]; then
             next=companion-v0.1.0
           else
