@@ -100,8 +100,18 @@ test('the account page lists devices, pairs one, and shows the character', async
     page.getByTestId('account-characters').getByRole('link', { name: 'Elyra Duskvale' }),
   ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
 
-  await page.getByRole('button', { name: 'Get a pairing code' }).click();
+  // One device is paired, so the entry is the quiet "Pair another computer", and the code
+  // comes with the line that says it is only the fallback.
+  await expect(page.getByRole('button', { name: 'Get a pairing code' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Pair another computer' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
+  await expect(page.getByTestId('pairing-fallback-line')).toContainText('cannot open a browser');
+
+  // Revoke asks first, and Cancel leaves the device alone.
+  await page.getByTestId('revoke').click();
+  await expect(page.getByTestId('revoke-question')).toHaveText('Revoke Raid PC? The companion signs out.');
+  await page.getByTestId('revoke-cancel').click();
+  await expect(page.getByTestId('revoke')).toBeVisible();
 });
 
 test('every control on the account page clears 44px on phone', async ({ page }, testInfo) => {

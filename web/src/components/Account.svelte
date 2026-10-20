@@ -43,6 +43,7 @@
   import { mainCharacter, pointerForCharacter } from '../lib/account/main-character';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
+  import { devicesCopy, pairingEntryLabel } from '../lib/account/devices-copy';
   import { pairingCopy } from '../lib/reports/copy';
   import { createPairingPoll, type PairingPoll } from '../lib/reports/pairing-poll';
   import { API_BASE_URL } from '../lib/planner/config';
@@ -103,6 +104,8 @@
   // without a second fetch); `activePoll` is not `$state` -- it is plumbing, never read by
   // a template, and `$state`-wrapping a mutable timer handle would gain nothing.
   let pairedDevice = $state<Device | null>(null);
+  /** The device whose Revoke is asking "Revoke <name>?"; null when no row is asking. */
+  let revoking = $state<string | null>(null);
   let activePoll: PairingPoll | null = null;
 
   $effect(() => {
@@ -646,17 +649,44 @@
                       <li
                         class="border-line-soft flex min-h-11 items-center justify-between gap-4 border-b py-2"
                       >
-                        <span class="text-[14px]">
-                          {device.name}
-                          <span class="text-muted">· {device.platform}</span>
-                        </span>
-                        <button
-                          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                          onclick={() => onRevoke(device.id)}
-                          disabled={busy}
-                        >
-                          Revoke
-                        </button>
+                        {#if revoking === device.id}
+                          <span class="text-[14px]" data-testid="revoke-question">
+                            {devicesCopy.revokeQuestion(device.name)}
+                          </span>
+                          <span class="flex gap-2">
+                            <button
+                              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                              onclick={() => {
+                                revoking = null;
+                                onRevoke(device.id);
+                              }}
+                              disabled={busy}
+                              data-testid="revoke-confirm"
+                            >
+                              {devicesCopy.revoke}
+                            </button>
+                            <button
+                              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                              onclick={() => (revoking = null)}
+                              data-testid="revoke-cancel"
+                            >
+                              {devicesCopy.cancel}
+                            </button>
+                          </span>
+                        {:else}
+                          <span class="text-[14px]">
+                            {device.name}
+                            <span class="text-muted">· {device.platform}</span>
+                          </span>
+                          <button
+                            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                            onclick={() => (revoking = device.id)}
+                            disabled={busy}
+                            data-testid="revoke"
+                          >
+                            {devicesCopy.revoke}
+                          </button>
+                        {/if}
                       </li>
                     {/each}
                   </ul>
@@ -672,9 +702,12 @@
                     disabled={busy}
                     data-testid="account-get-pairing-code"
                   >
-                    {accountPageCopy.pairADevice}
+                    {pairingEntryLabel(devices.length, accountPageCopy.pairADevice)}
                   </button>
                 {:else}
+                  <p class="text-muted text-[13px]" data-testid="pairing-fallback-line">
+                    {devicesCopy.codeFallbackLine}
+                  </p>
                   <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">
                     {pairing.code}
                   </p>

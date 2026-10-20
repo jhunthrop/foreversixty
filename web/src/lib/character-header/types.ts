@@ -27,6 +27,8 @@ export type HeaderAction =
 export interface HeaderNote {
   text: string;
   tone: 'ok' | 'error' | 'muted';
+  /** A second, quieter line under the first ("The companion checks every 10 minutes ..."). */
+  detail?: string;
   /** A link ending the line ("Sign in", "Run the companion"). */
   link?: { label: string; href: string };
 }

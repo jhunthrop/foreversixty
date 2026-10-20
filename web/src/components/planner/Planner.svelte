@@ -15,7 +15,7 @@
   import { clearCurrent, onCurrentCharacterChange, readCurrent } from '../../lib/current-character';
   import { API_BASE_URL, DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import type { BandDiffView } from '../../lib/planner/band-compare';
-  import { loadFromBand } from '../../lib/planner/band-compare';
+  import { bandTitleForDraft, loadFromBand } from '../../lib/planner/band-compare';
   import {
     decidePlannerLoad,
     followPointerInPlanner,
@@ -544,6 +544,7 @@
         const rebuilt = loadFromBand(store.talentIndex, talentsParam);
         store.applyOrder(rebuilt.order, {});
         const bandLabel = bisCopy.bandRangeLabel(bandForLevel(levelReached(rebuilt.order)));
+        store.nameBandBuild(bandTitleForDraft(bandLabel, store.classSlug, store.split));
         codeNote = { kind: 'band', bandLabel };
       }
 

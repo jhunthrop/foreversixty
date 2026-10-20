@@ -606,6 +606,8 @@ export interface MyReport {
   created_at: string;
   fight_count: number;
   kill_count: number;
+  /** The character the log is credited to (`{ key, name }`); absent or null when none is. The list endpoint does not send it yet. */
+  logging_character?: string | { key?: string; name?: string } | null;
   /** The night's length; the list endpoint does not send it yet, and the row leaves it out until it does. */
   duration_ms?: number;
 }
