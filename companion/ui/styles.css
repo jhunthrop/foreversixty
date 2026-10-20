@@ -165,6 +165,10 @@ h3 {
 .row .v.amber { color: var(--warn); font-weight: 600; }
 .row .v.muted { color: var(--muted); }
 .row .v .sub { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+.row .v .sub.warn { color: var(--warn); }
+.row .v .warn { color: var(--warn); font-weight: 600; }
+.row .v .help13 { display: block; font-size: 13px; font-weight: 400; color: var(--muted); }
+.row .v .check-builds { display: block; margin: 6px 0 0 auto; }
 
 .note { color: var(--muted); font-size: 13px; margin: 8px 0 0; min-height: 0; }
 .note:empty { display: none; }

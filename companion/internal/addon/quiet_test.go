@@ -2,6 +2,7 @@ package addon
 
 import (
 	"bytes"
+	"context"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -28,7 +29,7 @@ func newQuietRig(t *testing.T, savedAt time.Time) *quietRig {
 	}
 	r := &quietRig{t: t, dir: dir, path: filepath.Join(dir, SavedVariablesName+".lua"), logs: &bytes.Buffer{}}
 	r.touch(SavedVariablesName+".lua", savedAt)
-	api := &fakeAPI{inbox: Inbox{Builds: []Build{{ID: "b1", Name: "Holy", Code: "FSB1:x"}}}}
+	api := &countingAPI{fakeAPI: fakeAPI{inbox: Inbox{Builds: []Build{{ID: "b1", Name: "Holy", Code: "FSB1:x"}}}}}
 	r.s = New(Options{Paths: func() []string { return []string{r.path} }, API: api,
 		Log: slog.New(slog.NewTextHandler(r.logs, nil))})
 	return r
@@ -137,4 +138,83 @@ func TestTheInboxIsWrittenThroughATemporaryFileThatDoesNotLinger(t *testing.T) {
 	if len(entries) != 1 {
 		t.Errorf("folder holds %d entries, want only the inbox", len(entries))
 	}
+}
+
+// A logout's export is followed by one inbox fetch at the first quiet pass, so the file the next
+// login reads is fresh, and the fetch's own inbox write does not ask for another.
+func TestALogoutExportIsFollowedByOneInboxFetchWhenTheFolderGoesQuiet(t *testing.T) {
+	r := newQuietRig(t, t0)
+	api := r.s.o.API.(*countingAPI)
+	r.poll(t0.Add(time.Second)) // the export goes up; the first ever pass also fetches
+	if api.fetches != 1 {
+		t.Fatalf("first pass fetched %d times", api.fetches)
+	}
+	r.poll(t0.Add(30 * time.Second)) // not quiet, timer not due
+	if api.fetches != 1 {
+		t.Fatalf("fetched inside the quiet period: %d", api.fetches)
+	}
+	r.poll(t0.Add(QuietSaved + time.Second)) // quiet: the logout fetch, and the write lands
+	if api.fetches != 2 || !r.written() {
+		t.Fatalf("fetches = %d, written = %v after the folder went quiet", api.fetches, r.written())
+	}
+	for _, sec := range []int{70, 90, 200, 400} { // the inbox write is not an export: no loop
+		r.poll(t0.Add(time.Duration(sec) * time.Second))
+	}
+	if api.fetches != 2 {
+		t.Errorf("fetches = %d, want exactly the one extra per logout", api.fetches)
+	}
+	// The next logout is one more.
+	r.touch(SavedVariablesName+".lua", t0.Add(500*time.Second))
+	r.poll(t0.Add(501 * time.Second))
+	r.poll(t0.Add(500*time.Second + QuietSaved + time.Second))
+	if api.fetches != 3 {
+		t.Errorf("fetches = %d after a second logout, want 3", api.fetches)
+	}
+}
+
+// Check for builds now fetches at once, whatever the timer says, and reports what was new.
+func TestCheckNowFetchesAtOnceAndReportsWhatIsNew(t *testing.T) {
+	r := newQuietRig(t, t0.Add(-time.Hour))
+	api := r.s.o.API.(*countingAPI)
+	r.poll(t0)
+	got, err := r.s.CheckNow(t.Context(), t0.Add(time.Second))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if api.fetches != 2 || got.New != 0 {
+		t.Fatalf("fetches = %d, found %+v: the build was already rendered", api.fetches, got)
+	}
+	api.inbox.Builds = append(api.inbox.Builds, Build{ID: "b2", Name: "Beast Mastery build",
+		Character: "us/pvp/bow-jackzon", Code: "FSB1:y"})
+	got, err = r.s.CheckNow(t.Context(), t0.Add(2*time.Second))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.New != 1 || len(got.For) != 1 || got.For[0] != "Bow Jackzon" {
+		t.Errorf("found %+v", got)
+	}
+	if r.s.Status().Checked.New != 1 {
+		t.Errorf("status = %+v", r.s.Status().Checked)
+	}
+}
+
+func TestACharacterKeyReadsAsTheNameThePlayerKnows(t *testing.T) {
+	for key, want := range map[string]string{
+		"us/pvp/bow-jackzon": "Bow Jackzon", "us/normal/obnoxious": "Obnoxious", "": "", "us/pvp/": "",
+	} {
+		if got := characterName(key); got != want {
+			t.Errorf("characterName(%q) = %q, want %q", key, got, want)
+		}
+	}
+}
+
+// countingAPI is the fixed-inbox API that counts the inbox fetches.
+type countingAPI struct {
+	fakeAPI
+	fetches int
+}
+
+func (c *countingAPI) AddonInbox(ctx context.Context) (Inbox, error) {
+	c.fetches++
+	return c.fakeAPI.AddonInbox(ctx)
 }

@@ -658,6 +658,9 @@ type Snapshot struct {
 	// Credit is who the current report is credited to; none when no
 	// report is open.
 	Credit Credit `json:"credit"`
+	// BuildsChecked is what the last Check for builds now found; absent
+	// until the player has pressed it.
+	BuildsChecked *BuildsChecked `json:"builds_checked,omitempty"`
 }
 
 // InstallStatus is one game folder as the status page shows it.
@@ -676,9 +679,14 @@ type InstallStatus struct {
 	LastPlayed *time.Time `json:"last_played,omitempty"`
 	// Advanced is true, false, or unknown when Config.wtf could not
 	// be read — which is the normal state before the first login.
+	// AdvancedLogHelp is the instruction line for a switch that is off,
+	// and only the watched install carries it: an install the player is
+	// not logging is not a fault, so the window shows it "off" in the
+	// muted token with no instruction. It moves to another install the
+	// moment the player watches that one.
 	Advanced        bool   `json:"advanced_logging"`
 	AdvancedKnown   bool   `json:"advanced_logging_known"`
-	AdvancedLogHelp string `json:"advanced_logging_help"`
+	AdvancedLogHelp string `json:"advanced_logging_help,omitempty"`
 }
 
 // ReportRow is one report in the reports page.
@@ -706,8 +714,10 @@ func (a *App) installStatuses() (rows []InstallStatus, watchPending bool) {
 	rows = make([]InstallStatus, 0, len(installs))
 	for _, in := range installs {
 		row := InstallStatus{Path: in.Path, Flavor: in.Flavor, FlavorName: wow.FlavorName(in.Flavor),
-			Watching: in.Logs == watching, Added: added[in.Path],
-			AdvancedLogHelp: CopyAdvancedRowHelp}
+			Watching: in.Logs == watching, Added: added[in.Path]}
+		if row.Watching {
+			row.AdvancedLogHelp = CopyAdvancedRowHelp
+		}
 		if at, ok := wow.LastActivity(in); ok {
 			row.LastPlayed = &at
 		}
@@ -728,7 +738,7 @@ func (a *App) Headline() Headline {
 	a.mu.Lock()
 	signedOut := a.signedOut != nil
 	a.mu.Unlock()
-	return headlineFor(a.paired(signedOut), connecting, signedOut, st.Logging, st.Detected, installs)
+	return headlineFor(a.paired(signedOut), connecting, signedOut, st.Logging, a.currentCredit(st.ReportKey), installs)
 }
 
 // ReportsURL is the player's reports on the site.
@@ -774,16 +784,14 @@ func (a *App) Snapshot() Snapshot {
 	s.Installs, s.WatchPending = a.installStatuses()
 	connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
 	s.DetectedCharacter = s.Pipeline.Detected
-	s.Headline = headlineFor(paired, connecting, so != nil, s.Pipeline.Logging, s.Pipeline.Detected, s.Installs)
 	reports, err := state.List(a.o.Dirs.State)
 	if err != nil {
 		a.log.Warn("could not list the reports", "component", "app", "err", err.Error())
 	}
-	records := a.addonRecords()
 	for i := len(reports) - 1; i >= 0; i-- {
 		r := reports[i]
 		row := ReportRow{Key: r.Key, ReportID: r.ReportID, Zone: r.Zone,
-			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done, Credit: creditOf(r, records)}
+			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done, Credit: creditOf(r)}
 		if r.Key == s.Pipeline.ReportKey {
 			s.Credit = row.Credit
 		}
@@ -792,6 +800,7 @@ func (a *App) Snapshot() Snapshot {
 		}
 		s.Reports = append(s.Reports, row)
 	}
+	s.Headline = headlineFor(paired, connecting, so != nil, s.Pipeline.Logging, s.Credit, s.Installs)
 	for _, p := range a.savedVariables() {
 		// Through the cache: this runs on a two-second poll and the
 		// file behind it is megabytes of Lua. The stamp is the sync's
@@ -808,6 +817,9 @@ func (a *App) Snapshot() Snapshot {
 	}
 	now := a.now()
 	st := a.sync.Status()
+	if c := st.Checked; !c.At.IsZero() {
+		s.BuildsChecked = &BuildsChecked{At: c.At.In(now.Location()), New: c.New, For: c.For}
+	}
 	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
 	s.AddonNever = st.SeenAt.IsZero()
 	s.LastSync = a.lastSyncView(st, now)

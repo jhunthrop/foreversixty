@@ -10,10 +10,10 @@ package app
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
-	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 )
 
 // The addon line's words.
@@ -119,7 +119,7 @@ const (
 	CopyReadySub   = "Waiting for a combat log. Type /combatlog in game, or leave combat logging on."
 
 	CopyLoggingTitle = "Logging"
-	CopyLoggingSub   = "Uploading your fights as they end."
+	CopyLoggingSub   = "Uploading your fights as they end"
 
 	// CopyAdvancedHow is the menu path, and what to do after.
 	CopyAdvancedHow = "Turn it on in Options > Network > Advanced Combat Logging, then restart the game."
@@ -160,6 +160,7 @@ const (
 	CodeBadRequest  = "bad_request"
 	CodeInternal    = "internal"
 	CodeNotAdded    = "not_added"
+	CodeNotPaired   = "not_paired"
 )
 
 var messages = map[string]string{
@@ -182,6 +183,7 @@ var messages = map[string]string{
 	CodeNoBrowser:   "Could not open your browser.",
 	CodeBadRequest:  "The companion could not read that request.",
 	CodeNotAdded:    "That folder was found automatically, so there is nothing to remove.",
+	CodeNotPaired:   "Sign in first. There is nothing to check until this computer is connected.",
 	CodeInternal:    "The companion hit a problem. Details are in logs/companion.log.",
 }
 
@@ -193,13 +195,28 @@ func Message(code string) string {
 	return messages[CodeInternal]
 }
 
-// CopyLoggingSubAs is the Logging headline's sub line once the combat log
-// has named its logger: the same words, then who it is.
+// CopyLoggingSubNotMatched is the Logging headline's sub line once the
+// combat log has named its logger and no addon record fits yet. The dot
+// stays green: the fights are uploading either way, only the credit
+// waits for a logout with the addon loaded.
+const CopyLoggingSubNotMatched = CopyLoggingSub + CopySeparator + "character not matched yet"
+
+// CopyLoggingSubAs is the Logging headline's sub line for a report
+// credited to a character: the same words, then who it is. The name is
+// printed in its space form, whatever form it was stored in, because the
+// hyphenated one is the log's and never the player's.
 func CopyLoggingSubAs(name string) string {
-	return CopyLoggingSub[:len(CopyLoggingSub)-1] + " · logging as " + name
+	return CopyLoggingSub + CopySeparator + "logging as " + SpacedName(name)
 }
 
-// The Last sync row's lines, and why a report is not credited.
+// SpacedName is a character name as a player reads it: "Bow Jackzon",
+// never the log's "Bow-Jackzon". A WoW name has no hyphen of its own, so
+// every hyphen is a joint between words.
+func SpacedName(name string) string {
+	return strings.Join(strings.FieldsFunc(name, func(r rune) bool { return r == '-' || r == ' ' }), " ")
+}
+
+// The Last sync row's lines.
 const (
 	// CopyNoCharactersSent is the row when the addon is installed and
 	// no character list has reached the site.
@@ -210,17 +227,4 @@ const (
 // refused it; reason is the API's own message.
 func CopySiteRefused(reason string) string {
 	return "The site refused the last character list: " + reason
-}
-
-// CopyCreditUnmatched is why a report with a detected logger has no
-// character, given what the resolver reported: either the addon has
-// not exported that character at all, or it has but no record fits the
-// log's realm. The sentences live with the resolver so the pipeline's
-// log line says the same. A report that would match on the next tick
-// (why is Matched) keeps the realm sentence for that moment.
-func CopyCreditUnmatched(name string, why logger.Reason) string {
-	if why == logger.Matched {
-		why = logger.NoMatch
-	}
-	return why.Unmatched(name)
 }

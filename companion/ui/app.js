@@ -158,7 +158,7 @@ function region(name, container, data, render) {
 
 let page = null;
 let snap = null;
-const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, copied: false, busyPair: false, starting: false };
+const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, copied: false, busyPair: false, starting: false, checkError: '' };
 
 function show(name, focus) {
   const leaving = page;
@@ -207,6 +207,13 @@ function renderStatus(s) {
     // region only redraws when what it holds changes.
     lastSync: lastSyncRow(s.last_sync),
     fights: p.fights, queued: p.queued, addon: s.addon_line, stale: s.addon_stale, never: s.addon_never, help: s.addon_help, title: s.addon_seen_title,
+    // The Check for builds now button and the line it leaves. The words are
+    // computed here, like the Last sync row's, so they move on their own.
+    paired: s.paired,
+    checked: s.builds_checked ? FORMAT.checkedLine(s.builds_checked, new Date(), COPY.status, COPY.status.ago) : '',
+    checking: checkBuilds.running,
+    canCheck: checkBuilds.canPress(),
+    checkError: local.checkError,
   };
   region('status-rows', $('status-rows'), rows, (el) => {
     el.replaceChildren();
@@ -214,8 +221,12 @@ function renderStatus(s) {
     if (rows.report === 'none') report = h('span', { class: 'v', text: COPY.status.noReport });
     else if (rows.report === 'starting') report = h('span', { class: 'v', text: COPY.status.starting });
     else {
-      report = h('span', { class: 'v', text: (rows.report.zone || COPY.status.inProgress) +
-        COPY.status.credit.separator + FORMAT.creditText(rows.report.credit, COPY.status.credit) });
+      // "In progress · credited to Bow Jackzon", or "... · not credited yet" in
+      // the warning token with the one muted line that says what to do.
+      const cr = FORMAT.currentReport(rows.report, COPY.status);
+      report = h('span', { class: 'v' }, cr.lead + cr.separator,
+        cr.credited ? cr.credit : h('span', { class: 'warn', text: cr.credit }),
+        cr.help ? h('span', { class: 'help13', text: cr.help }) : null);
     }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.report }), report));
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
@@ -226,6 +237,13 @@ function renderStatus(s) {
     }
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     if (s.addon_stale && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
+    if (rows.checked) v.append(h('span', { class: 'sub', text: rows.checked }));
+    if (rows.checkError) v.append(h('span', { class: 'sub warn', text: rows.checkError }));
+    if (rows.paired) {
+      v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'check-builds',
+        disabled: rows.checking || !rows.canCheck, onclick: onCheckBuilds },
+      rows.checking ? COPY.status.checking : COPY.status.checkBuilds));
+    }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.addon }), v));
     const ls = rows.lastSync;
     if (ls) {
@@ -256,30 +274,46 @@ function lastSyncRow(ls) {
   return null;
 }
 
+// checkBuilds is the Check for builds now button's state: one press at a
+// time and one every half minute (FORMAT.checker).
+const checkBuilds = FORMAT.checker(async () => {
+  local.checkError = '';
+  const r = await api('api/builds/check', {});
+  if (r.ok) applySnapshot(r.data);
+  else local.checkError = r.error.message;
+}, Date.now);
+
+async function onCheckBuilds() {
+  const pressed = checkBuilds.press();
+  if (snap) renderStatus(snap); // "Checking…" now, not when the poll next comes round
+  await pressed;
+  if (snap) renderStatus(snap);
+}
+
 function installRow(i, headlineKey) {
   const top = h('div', { class: 'top-line' },
     h('div', { class: 'name' }, i.flavor_name || i.flavor,
       i.watching ? h('span', { class: 'tag', title: COPY.status.watchingTitle, text: COPY.status.watching }) : null),
-    advancedLabel(i));
+    advancedLabel(i, headlineKey));
   const row = h('div', { class: 'install' }, top,
     h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) }),
     h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 62) }));
   // The instruction lives in the headline when the headline is about
-  // advanced logging; a row only keeps its short line when it is not.
-  if (i.advanced_logging_known && !i.advanced_logging && headlineKey !== 'advanced_off') {
-    row.append(h('p', { class: 'help-line', text: i.advanced_logging_help }));
-  }
+  // advanced logging; a row keeps its short line only for the watched
+  // install, and an install the player is not logging has none.
+  const adv = FORMAT.advancedView(i, headlineKey, COPY.status);
+  if (adv.help) row.append(h('p', { class: 'help-line', text: adv.help }));
   return row;
 }
 
-function advancedLabel(i) {
-  if (!i.advanced_logging_known) {
-    return h('span', { class: 'adv', text: COPY.status.advancedUnknown });
+function advancedLabel(i, headlineKey) {
+  const adv = FORMAT.advancedView(i, headlineKey, COPY.status);
+  if (adv.kind === 'unknown') return h('span', { class: 'adv', text: adv.text });
+  if (adv.kind === 'on') {
+    return h('span', { class: 'adv' }, h('span', { class: 'glyph', 'aria-hidden': 'true', text: '✓' }), adv.text);
   }
-  if (i.advanced_logging) {
-    return h('span', { class: 'adv' }, h('span', { class: 'glyph', 'aria-hidden': 'true', text: '✓' }), COPY.status.advancedOn);
-  }
-  return h('span', { class: 'adv off' }, h('span', { class: 'glyph', 'aria-hidden': 'true', text: '⚠' }), COPY.status.advancedOff);
+  if (adv.kind === 'muted') return h('span', { class: 'adv', text: adv.text });
+  return h('span', { class: 'adv off' }, h('span', { class: 'glyph', 'aria-hidden': 'true', text: '⚠' }), adv.text);
 }
 
 // ---- Reports ---------------------------------------------------------

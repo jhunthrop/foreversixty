@@ -12,6 +12,7 @@ import (
 	"log/slog"
 	"reflect"
 	"slices"
+	"strings"
 	"sync"
 	"time"
 
@@ -102,12 +103,36 @@ type Status struct {
 	// again once a later list is accepted.
 	Refusal   string
 	RefusedAt time.Time
+	// Checked is the newest inbox fetch the player asked for with the
+	// Check for builds now button; zero until one has run.
+	Checked Checked
+}
+
+// Checked is what one asked-for inbox fetch found: when it ran, how many
+// builds were new since the inbox the sync last rendered, and for which
+// characters (display names, in the order the inbox lists them).
+type Checked struct {
+	At  time.Time
+	New int
+	For []string
 }
 
 // Sync moves strings between the addon and the API.
 type Sync struct {
-	o         Options
+	o Options
+	// run serializes the passes: Poll runs on the ticker's goroutine and
+	// CheckNow on the loopback server's, and both touch everything below
+	// except status.
+	run       sync.Mutex
 	lastInbox time.Time
+	// fresh holds the SavedVariables files whose newest export went up
+	// but whose inbox has not been fetched since the folder went quiet.
+	// The game writes that file at a logout, and the file the next login
+	// reads must carry the inbox as it is after the logout, so the first
+	// quiet pass fetches it once, whatever the ten-minute timer says. The
+	// fetch's own write is to the inbox file, which is not a SavedVariables
+	// file and never sets this again, so it cannot loop.
+	fresh map[string]bool
 	// uploaded is the version of each SavedVariables file whose
 	// exports the API has accepted. It is the sync's own record
 	// rather than a question put to the shared cache, because the
@@ -161,7 +186,7 @@ func New(o Options) *Sync {
 	if o.Now == nil {
 		o.Now = time.Now
 	}
-	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{},
+	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{}, fresh: map[string]bool{},
 		skipLogged: map[string]bool{}, formatLogged: map[int]bool{},
 		pending: map[string]*pendingWrite{}}
 	if o.StateDir != "" {
@@ -210,6 +235,8 @@ func (s *Sync) Status() Status {
 // Poll does one pass. It is called on the same ticker as the pipeline
 // and does nothing expensive when nothing has changed.
 func (s *Sync) Poll(ctx context.Context, now time.Time) error {
+	s.run.Lock()
+	defer s.run.Unlock()
 	paths := s.o.Paths()
 	err := s.pass(ctx, now, paths)
 	return errors.Join(err, s.flush(now, paths))
@@ -233,12 +260,51 @@ func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
 		outboxUp = outboxUp || sent
 	}
 
-	if !outboxUp && !s.lastInbox.IsZero() && now.Sub(s.lastInbox) < s.o.Every {
+	// settled are the files whose logout fetch is due: exported, and the
+	// folder has gone quiet since. One fetch serves them all.
+	var settled []string
+	for _, p := range paths {
+		if s.fresh[p] && quiet(p, now) {
+			settled = append(settled, p)
+		}
+	}
+	if !outboxUp && len(settled) == 0 && !s.lastInbox.IsZero() && now.Sub(s.lastInbox) < s.o.Every {
 		return errors.Join(errs...)
 	}
+	if _, err := s.fetchInbox(ctx, now, paths); err != nil {
+		return errors.Join(append(errs, err)...)
+	}
+	for _, p := range settled {
+		delete(s.fresh, p)
+	}
+	return errors.Join(errs...)
+}
+
+// CheckNow fetches the inbox once, at the player's asking, and renders
+// it; the write waits for the quiet period like any other (flush). It
+// remembers what it found for the status page. A failure is the
+// caller's to word.
+func (s *Sync) CheckNow(ctx context.Context, now time.Time) (Checked, error) {
+	s.run.Lock()
+	defer s.run.Unlock()
+	paths := s.o.Paths()
+	found, err := s.fetchInbox(ctx, now, paths)
+	if err != nil {
+		return Checked{}, err
+	}
+	s.mu.Lock()
+	s.status.Checked = found
+	s.mu.Unlock()
+	return found, s.flush(now, paths)
+}
+
+// fetchInbox fetches the inbox and renders it, marking every folder for
+// a write; flush decides when the write happens. It reports what the
+// fetch found, for the Check for builds now button.
+func (s *Sync) fetchInbox(ctx context.Context, now time.Time, paths []string) (Checked, error) {
 	inbox, err := s.o.API.AddonInbox(ctx)
 	if err != nil {
-		return errors.Join(append(errs, err)...)
+		return Checked{}, err
 	}
 	s.lastInbox = now
 	if inbox.Format != 0 && inbox.Format != InboxFormat {
@@ -251,7 +317,7 @@ func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
 				"the addon keeps the inbox it has until the companion is updated",
 				"component", "addon", "format", inbox.Format)
 		}
-		return errors.Join(errs...)
+		return Checked{At: now}, nil
 	}
 	for _, sk := range inbox.Skipped {
 		key := fmt.Sprintf("%s\x00%d", sk.Type, sk.Position)
@@ -263,6 +329,20 @@ func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
 			"type", sk.Type, "position", sk.Position, "why", sk.Why)
 	}
 	s.acked(inbox.Messages)
+	found := Checked{At: now}
+	known := map[string]bool{}
+	for _, b := range s.builds {
+		known[b.ID] = true
+	}
+	for _, b := range inbox.Builds {
+		if known[b.ID] {
+			continue
+		}
+		found.New++
+		if name := characterName(b.Character); name != "" && !slices.Contains(found.For, name) {
+			found.For = append(found.For, name)
+		}
+	}
 	// Message carries slices and maps of its own, which are not
 	// comparable with slices.Equal's default ==, so the messages half
 	// of this check is a deep-equal rather than the builds half's
@@ -279,7 +359,19 @@ func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
 		}
 	}
 	s.counts = [2]int{len(inbox.Builds), len(inbox.Messages)}
-	return errors.Join(errs...)
+	return found, nil
+}
+
+// characterName is the player's words for an inbox character key such
+// as "us/pvp/bow-jackzon": the last segment with each word capitalised,
+// "Bow Jackzon". A key without a name gives none.
+func characterName(key string) string {
+	name := key[strings.LastIndex(key, "/")+1:]
+	words := strings.FieldsFunc(name, func(r rune) bool { return r == '-' || r == ' ' })
+	for i, w := range words {
+		words[i] = strings.ToUpper(w[:1]) + w[1:]
+	}
+	return strings.Join(words, " ")
 }
 
 // upload sends one SavedVariables file's exports, with its outbox when
@@ -356,12 +448,14 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 		s.o.Log.Warn(CopyCharactersRefused, "component", "addon", "path", p, "err", err.Error())
 		s.refusedList(reasonOf(err))
 		s.uploaded[p] = at
+		s.fresh[p] = true
 		return outboxUp, nil
 	}
 	if err != nil {
 		return outboxUp, err // unrecorded, so the next pass retries what is not yet answered
 	}
 	s.uploaded[p] = at
+	s.fresh[p] = true
 	s.o.Log.Info("uploaded character exports", "component", "addon",
 		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
 	s.sentList(len(saved.Exports))

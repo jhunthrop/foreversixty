@@ -59,12 +59,80 @@ const FORMAT = (() => {
   }
 
   // creditText is the suffix after a report's zone: who it is credited to,
-  // or why it is not.
+  // or that it is not yet. Never a hyphenated name: the log's form is the
+  // companion's to log, the player reads "Bow Jackzon".
   function creditText(credit, words) {
     const c = credit || {};
-    if (c.state === 'credited') return words.credited(c.name);
-    if (c.state === 'unmatched') return words.unmatched(c.reason);
-    return words.none;
+    if (c.state === 'credited') return words.credited(spaced(c.name));
+    return words.notYet;
+  }
+
+  const spaced = (name) => String(name || '').replace(/-/g, ' ');
+
+  // currentReport is the Current report row's value: the lead ("In progress",
+  // or the zone once known), the credit words, and the muted help line that
+  // only a report not credited yet carries.
+  function currentReport(report, status) {
+    const credited = !!report.credit && report.credit.state === 'credited';
+    return {
+      lead: report.zone || status.inProgress,
+      separator: status.credit.separator,
+      credit: creditText(report.credit, status.credit),
+      credited,
+      help: credited ? '' : status.credit.notYetHelp,
+    };
+  }
+
+  // advancedView is how a game folder's advanced-logging switch reads. Only
+  // the watched install, whose raids are going to be uploaded, shouts when it
+  // is off (a warning glyph, and the instruction unless the headline already
+  // gave it); any other install is "off" in the muted token and nothing more.
+  function advancedView(install, headlineKey, words) {
+    if (!install.advanced_logging_known) return { kind: 'unknown', text: words.advancedUnknown, help: '' };
+    if (install.advanced_logging) return { kind: 'on', text: words.advancedOn, help: '' };
+    if (!install.watching) return { kind: 'muted', text: words.advancedOff, help: '' };
+    return {
+      kind: 'warn',
+      text: words.advancedOffWatched,
+      help: headlineKey === 'advanced_off' ? '' : (install.advanced_logging_help || ''),
+    };
+  }
+
+  // The button asks for at most one check a half minute.
+  const CHECK_GAP_MS = 30000;
+
+  // checker is the Check for builds now button's brain: one press at a
+  // time, one every half minute. post is the request; clock is Date.now.
+  // press() answers 'ignored' when it did not ask the companion anything.
+  function checker(post, clock) {
+    let last = null;
+    let running = false;
+    const canPress = () => !running && (last === null || clock() - last >= CHECK_GAP_MS);
+    return {
+      get running() { return running; },
+      canPress,
+      async press() {
+        if (!canPress()) return 'ignored';
+        running = true;
+        last = clock();
+        try {
+          return await post();
+        } finally {
+          running = false;
+        }
+      },
+    };
+  }
+
+  // checkedLine is "Checked just now · 1 build for Bow Jackzon", or
+  // "... · nothing new"; the time is the Addon row's words.
+  function checkedLine(checked, now, words, agoWords) {
+    const mins = Math.floor((now.getTime() - new Date(checked.at).getTime()) / 60000);
+    const when = mins < 1 ? words.checkedJustNow : ago(checked.at, now, agoWords);
+    const found = checked.new_builds > 0
+      ? words.checkedBuilds(checked.new_builds, (checked.for || []).map(spaced))
+      : words.checkedNothing;
+    return words.checked(when, found);
   }
 
   // characterLabel is "Thrall · Hardcore · US": the ruleset in words.
@@ -87,7 +155,7 @@ const FORMAT = (() => {
     return { m: Math.floor(left / 60), s: left % 60 };
   }
 
-  return { midTruncate, when, lastPlayed, ago, creditText, characterLabel, characterValue, automaticLabel, countdown };
+  return { midTruncate, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;
