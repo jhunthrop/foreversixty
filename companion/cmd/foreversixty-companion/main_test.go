@@ -46,3 +46,27 @@ func TestASecondLaunchOpensTheRunningOneAndExits(t *testing.T) {
 		t.Error("the second launch started the companion")
 	}
 }
+
+// The first thing a launch does is write to the log, so a launch that
+// then exits quietly still leaves a trace.
+func TestALaunchWritesItsLogLineFirst(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv(paths.HomeEnv, home)
+	first, err := instance.Acquire(home)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer first.Release()
+	openURL = func(string) error { return nil }
+	defer func() { openURL = defaultOpen }()
+	out, _ := os.CreateTemp(t.TempDir(), "out")
+	defer out.Close()
+	if err := run(nil, out); err != nil {
+		t.Fatal(err)
+	}
+	log, _ := os.ReadFile(filepath.Join(home, "logs", "companion.log"))
+	i, j := strings.Index(string(log), `"msg":"launching"`), strings.Index(string(log), "already running")
+	if i < 0 || j < 0 || i > j {
+		t.Errorf("launching is not the first line:\n%s", log)
+	}
+}

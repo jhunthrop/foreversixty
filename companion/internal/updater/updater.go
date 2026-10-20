@@ -15,6 +15,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -345,14 +346,14 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 	// are same-directory renames this way.
 	previous := exe + ".previous"
 	os.Remove(previous)
-	if err := os.Rename(exe, previous); err != nil {
+	if err := rename(exe, previous); err != nil {
 		return false, fmt.Errorf("move the running binary aside: %w", err)
 	}
-	if err := os.Rename(tmpPath, exe); err != nil {
+	if err := rename(tmpPath, exe); err != nil {
 		// The target is free now, so this should be rare, but leaving
 		// nothing at exe is worse than a stale binary: restore it, and
 		// report a restore failure rather than swallow it.
-		if restoreErr := os.Rename(previous, exe); restoreErr != nil {
+		if restoreErr := rename(previous, exe); restoreErr != nil {
 			return false, fmt.Errorf("swap in the new binary: %w; restoring the previous binary also failed: %w", err, restoreErr)
 		}
 		return false, fmt.Errorf("swap in the new binary: %w", err)
@@ -362,7 +363,72 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 	return true, nil
 }
 
+// rename is os.Rename; a test replaces it to make one half of the swap fail.
+var rename = os.Rename
+
 func clearPending(dir string) {
 	os.Remove(PendingPath(dir))
 	os.Remove(pendingSig(dir))
+}
+
+// Starter starts the program at path with args in dir and returns once
+// it is started, not once it ends.
+type Starter func(path string, args []string, dir string) error
+
+// StartDetached is the Starter the companion uses: the new process is
+// its own, so it outlives this one.
+func StartDetached(path string, args []string, dir string) error {
+	cmd := exec.Command(path, args...)
+	cmd.Dir = dir
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+	return cmd.Process.Release()
+}
+
+// LaunchOptions is what ApplyAndRelaunch needs.
+type LaunchOptions struct {
+	Dir, PublicKey, Exe string
+	// Args and WorkDir are what the new build is started with: the
+	// ones this process got.
+	Args    []string
+	WorkDir string
+	Log     *slog.Logger
+	Start   Starter
+	// BeforeStart runs just before the new build is started (the
+	// companion lets go of its one-copy claim there, or the new build
+	// would take it for a running copy). AfterFailedStart runs when the
+	// start failed and this process carries on.
+	BeforeStart, AfterFailedStart func()
+}
+
+// ApplyAndRelaunch swaps a staged update in and starts the new build.
+// It reports true only when the new build is running, and then the
+// caller must exit without doing anything else. Every other outcome
+// leaves a log line and a runnable binary, and the caller carries on
+// with the build it is.
+func ApplyAndRelaunch(o LaunchOptions) bool {
+	swapped, err := ApplyPending(o.Dir, o.PublicKey, o.Exe)
+	if err != nil {
+		o.Log.Warn("the staged update was not installed; staying on this build",
+			"component", "updater", "err", err.Error())
+		return false
+	}
+	if !swapped {
+		return false
+	}
+	o.Log.Info("installed the staged update; starting the new build",
+		"component", "updater", "path", o.Exe)
+	if o.BeforeStart != nil {
+		o.BeforeStart()
+	}
+	if err := o.Start(o.Exe, o.Args, o.WorkDir); err != nil {
+		o.Log.Warn("the update was installed; it starts on the next launch",
+			"component", "updater", "err", err.Error())
+		if o.AfterFailedStart != nil {
+			o.AfterFailedStart()
+		}
+		return false
+	}
+	return true
 }

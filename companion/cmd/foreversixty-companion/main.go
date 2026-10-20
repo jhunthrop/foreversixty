@@ -13,6 +13,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -30,6 +31,9 @@ import (
 
 // openURL shows a link in the system browser; tests replace it.
 var openURL = defaultOpen
+
+// startNew starts the new build after an update; tests replace it.
+var startNew updater.Starter = updater.StartDetached
 
 func defaultOpen(u string) error { return browser.Open(u) }
 
@@ -61,31 +65,45 @@ func run(args []string, out *os.File) error {
 	// One companion per home directory: two would tail the same log and
 	// upload every fight twice. The claim comes before the update swap,
 	// which cannot happen under a running copy on Windows anyway.
-	lock, err := instance.Acquire(dirs.Home)
-	if errors.Is(err, instance.ErrRunning) {
-		return handOff(dirs, *debug)
-	}
-	if err != nil {
-		return err
-	}
-	defer lock.Release()
-	// Before anything else: a staged update becomes the program. It
-	// cannot happen while the binary is running on Windows, so it
-	// happens here and takes effect on the next launch.
-	if exe, err := os.Executable(); err == nil {
-		if swapped, err := updater.ApplyPending(dirs.Update, updater.PublicKey, exe); err != nil {
-			fmt.Fprintln(os.Stderr, "foreversixty-companion: the staged update was refused:", err)
-		} else if swapped {
-			fmt.Fprintln(out, "An update was applied. Start the companion again to run it.")
-			return nil
-		}
-	}
-
+	// The log comes first: whatever happens after this line, a launch
+	// leaves a trace, so a silent exit cannot go unnoticed.
 	log, logFile, err := logging.New(dirs.Logs, *debug)
 	if err != nil {
 		return err
 	}
 	defer logFile.Close()
+	log.Info("launching", "component", "main", "version", updater.Version, "pid", os.Getpid())
+
+	// One companion per home directory: two would tail the same log and
+	// upload every fight twice. The claim comes before the update swap,
+	// which cannot happen under a running copy on Windows anyway.
+	lock, err := instance.Acquire(dirs.Home)
+	if errors.Is(err, instance.ErrRunning) {
+		return handOff(log, dirs)
+	}
+	if err != nil {
+		return err
+	}
+	defer func() { lock.Release() }()
+	// Before anything else: a staged update becomes the program, and
+	// the new build is started here, so one double-click after an update
+	// is enough. The claim is let go just before, or the new build would
+	// find it held and take this for a running copy.
+	if exe, err := os.Executable(); err == nil {
+		wd, _ := os.Getwd()
+		if updater.ApplyAndRelaunch(updater.LaunchOptions{
+			Dir: dirs.Update, PublicKey: updater.PublicKey, Exe: exe,
+			Args: args, WorkDir: wd, Log: log, Start: startNew,
+			BeforeStart: func() { lock.Release() },
+			AfterFailedStart: func() {
+				if l, err := instance.Acquire(dirs.Home); err == nil {
+					lock = l
+				}
+			},
+		}) {
+			return nil
+		}
+	}
 
 	cfg, err := config.Load(dirs.ConfigFile())
 	if err != nil {
@@ -152,12 +170,7 @@ func run(args []string, out *os.File) error {
 
 // handOff is what a second launch does: say so in the log, open the
 // running copy's window and succeed. Nothing of the companion starts.
-func handOff(dirs paths.Dirs, debug bool) error {
-	log, logFile, err := logging.New(dirs.Logs, debug)
-	if err != nil {
-		return err
-	}
-	defer logFile.Close()
+func handOff(log *slog.Logger, dirs paths.Dirs) error {
 	log.Info("the companion is already running; showing its window", "component", "main")
 	url := instance.RunningURL(dirs.Home)
 	if url == "" {
