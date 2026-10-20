@@ -69,8 +69,18 @@ describe('logged unit names', () => {
     expect(splitUnitName('')).toEqual({ name: '', segment: '' });
   });
 
-  it('splits on the last hyphen, which is the game’s own rule', () => {
-    expect(splitUnitName('Anne-Marie Vale-Normal')).toEqual({ name: 'Anne-Marie Vale', segment: 'Normal' });
+  it('reads a two-word name the client joined with a hyphen, and the trailing hyphen', () => {
+    expect(splitUnitName('Bow-Jackzon-ClassicBetaPvP-')).toEqual({
+      name: 'Bow Jackzon',
+      segment: 'ClassicBetaPvP',
+    });
+    expect(splitUnitName('Bow-ClassicBetaPvP-')).toEqual({ name: 'Bow', segment: 'ClassicBetaPvP' });
+    expect(splitUnitName('Mörk-ClassicBetaPvP')).toEqual({ name: 'Mörk', segment: 'ClassicBetaPvP' });
+    expect(splitUnitName('Xuen')).toEqual({ name: 'Xuen', segment: '' });
+    expect(splitUnitName('На-Бутылку-ClassicBetaPvP2-')).toEqual({
+      name: 'На Бутылку',
+      segment: 'ClassicBetaPvP2',
+    });
   });
 });
 

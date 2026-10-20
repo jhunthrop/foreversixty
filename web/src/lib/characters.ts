@@ -72,13 +72,15 @@ export interface UnitName {
 }
 
 /**
- * Splits on the last hyphen, which is the game's own rule: a hyphenated first name is
- * common and a hyphenated realm segment is not.
+ * Reads a logged unit the way `character.SplitUnit` does. The client writes a two-word Forever
+ * name with a hyphen between the words and ends the unit with the realm and a trailing hyphen
+ * ("Bow-Jackzon-ClassicBetaPvP-"), so the trailing hyphen is dropped, the last segment is the
+ * realm and the segments before it are the name, joined with spaces. One segment is all name.
  */
 export function splitUnitName(logged: string): UnitName {
-  const cut = logged.lastIndexOf('-');
-  if (cut <= 0) return { name: logged, segment: '' };
-  return { name: logged.slice(0, cut), segment: logged.slice(cut + 1) };
+  const segments = logged.replace(/-$/, '').split('-');
+  if (segments.length < 2) return { name: segments[0] ?? '', segment: '' };
+  return { name: segments.slice(0, -1).join(' '), segment: segments[segments.length - 1] ?? '' };
 }
 
 /** `Elyra Duskvale` becomes `elyra-duskvale`; runs of whitespace collapse to one hyphen. */

@@ -104,11 +104,20 @@ func Key(region, ruleset, name string) string {
 	return strings.ToLower(region) + "/" + strings.ToLower(ruleset) + "/" + Slug(name)
 }
 
-// SplitUnit separates a combat log's "Name-Realm" into its two halves.
-// A unit with no hyphen is all name.
+// SplitUnit separates a combat log's unit into the character's name and the realm segment.
+// The client writes a Forever character's two-word name with a hyphen between the words and
+// ends the unit with the normalised realm and a trailing hyphen ("Bow-Jackzon-ClassicBetaPvP-"),
+// while older logs wrote "Bow-ClassicBetaPvP-" or "Mörk-ClassicBetaPvP". So the trailing
+// hyphen is dropped and the last segment is the realm; the segments before it are the name,
+// joined with single spaces so Slug gives the export's key ("bow-jackzon"). A unit with one
+// segment is all name and has no realm.
 func SplitUnit(unit string) (name, realm string) {
-	name, realm, _ = strings.Cut(unit, "-")
-	return name, realm
+	segments := strings.Split(strings.TrimSuffix(strings.TrimSpace(unit), "-"), "-")
+	if len(segments) == 1 {
+		return segments[0], ""
+	}
+	last := len(segments) - 1
+	return strings.Join(segments[:last], " "), segments[last]
 }
 
 // Realm is the realm a character lives on as the client names it, from the first source

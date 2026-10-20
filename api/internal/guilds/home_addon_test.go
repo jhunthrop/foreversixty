@@ -293,18 +293,20 @@ func TestHomePendingRowCarriesTheAddonLine(t *testing.T) {
 	}
 }
 
-func TestHomeAddonMatchesAHyphenatedRealm(t *testing.T) {
+// The client writes the normalised realm, hyphens dropped ("AzjolNerub"), and a unit's last
+// hyphen-separated segment is its realm, so a name is never cut at a realm's own hyphen.
+func TestHomeAddonMatchesANormalisedMultiWordRealm(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid, reader := addonGuild(t, h)
 	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/Thorgrim", `[
-	  {"name":"Thorgrim-Azjol-Nerub","level":33,"spec":"warrior-arms","gear_gap":1,"build":"","seen_at":"2026-11-04 09:00"}]`, time.Now())
+	  {"name":"Thorgrim-AzjolNerub-","level":33,"spec":"warrior-arms","gear_gap":1,"build":"","seen_at":"2026-11-04 09:00"}]`, time.Now())
 
 	view, _ := readHomeRaw(t, h, gid, reader)
 
 	for _, row := range view.Roster {
 		if row.Name == "Thorgrim" {
 			if row.Addon == nil || row.Addon.Level == nil || *row.Addon.Level != 33 {
-				t.Fatalf("Thorgrim's addon = %+v, want the Azjol-Nerub line (level 33)", row.Addon)
+				t.Fatalf("Thorgrim's addon = %+v, want the AzjolNerub line (level 33)", row.Addon)
 			}
 			return
 		}

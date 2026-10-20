@@ -11,7 +11,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
-	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
@@ -478,6 +477,8 @@ func TestARowCarriesItsTrinketsBuffsAndFaction(t *testing.T) {
 		t.Fatal(err)
 	}
 	rows := metrics.Derive(fx.Fight, fx.Summary)
+	// The log writes a two-word Forever name as First-Last-Realm-; the row must key as the export does.
+	rows[0].Name = "Bow-Jackzon-ClassicBetaPvP-"
 	gear := make([]event.Item, 14)
 	gear[12] = event.Item{ID: 19406}
 	gear[13] = event.Item{ID: 18820}
@@ -498,7 +499,7 @@ func TestARowCarriesItsTrinketsBuffsAndFaction(t *testing.T) {
 	if err := h.pool.QueryRow(t.Context(),
 		`select trinkets, buff_count, coalesce(faction, '') from fight_metrics
 		 where report_id = 'report-one' and player_key = $1`,
-		character.KeyFromUnit("us", "hardcore", rows[0].Name)).Scan(&trinkets, &buffs, &faction); err != nil {
+		"us/pvp/bow-jackzon").Scan(&trinkets, &buffs, &faction); err != nil {
 		t.Fatal(err)
 	}
 	if len(trinkets) != 2 || trinkets[0] != 19406 || trinkets[1] != 18820 {
