@@ -24,6 +24,14 @@ import (
 // routerRequestsPerMinute is the router-wide per-IP request budget.
 const routerRequestsPerMinute = 120
 
+// deviceRequestsPerMinute is each device token's own budget, so a companion's
+// traffic is never counted against the browser on the same IP.
+// deadTokenRequestsPerMinute is what a token already answered 401 is cut to.
+const (
+	deviceRequestsPerMinute    = 120
+	deadTokenRequestsPerMinute = 10
+)
+
 type Deps struct {
 	Version       string
 	Log           *slog.Logger
@@ -111,7 +119,7 @@ func NewRouter(d Deps) http.Handler {
 	})
 	mws := []func(http.Handler) http.Handler{
 		httpx.RequestID(), httpx.Recover(d.Log), httpx.Logger(d.Log), httpx.CORS(d.AllowedOrigin),
-		httpx.RateLimitExcept(routerRequestsPerMinute, d.TrustedProxyHops, sharedRead),
+		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, sharedRead),
 	}
 	if d.Auth != nil {
 		mws = append(mws, d.Auth.Middleware)

@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"log/slog"
 	"net"
@@ -173,6 +174,105 @@ func RateLimitExcept(perMinute, trustedHops int, exempt func(*http.Request) bool
 				return
 			}
 			limited.ServeHTTP(w, r)
+		})
+	}
+}
+
+// deviceTokenPrefix marks a device bearer. It mirrors auth.DeviceTokenPrefix;
+// httpx cannot import auth (auth depends on httpx).
+const deviceTokenPrefix = "fsd_"
+
+// deadTokens remembers device tokens the auth layer has answered 401, keyed by
+// the hex SHA-256 of the token. An entry lives limiterIdleTimeout from its
+// last mark, and the set is capped at limiterMaxEntries.
+var deadTokens = struct {
+	mu sync.Mutex
+	m  map[string]time.Time
+}{m: map[string]time.Time{}}
+
+func sha256Sum(token string) []byte {
+	sum := sha256.Sum256([]byte(token))
+	return sum[:]
+}
+
+// MarkDeadToken records that the device token whose SHA-256 is hash was
+// refused with a 401, so RateLimitByCredential cuts it to the dead budget.
+func MarkDeadToken(hash []byte) {
+	key := hex.EncodeToString(hash)
+	now := Now()
+	deadTokens.mu.Lock()
+	defer deadTokens.mu.Unlock()
+	if _, ok := deadTokens.m[key]; !ok && len(deadTokens.m) >= limiterMaxEntries {
+		for k, t := range deadTokens.m {
+			if now.Sub(t) > limiterIdleTimeout {
+				delete(deadTokens.m, k)
+			}
+		}
+		if len(deadTokens.m) >= limiterMaxEntries {
+			return
+		}
+	}
+	deadTokens.m[key] = now
+}
+
+func isDeadToken(key string, now time.Time) bool {
+	deadTokens.mu.Lock()
+	defer deadTokens.mu.Unlock()
+	t, ok := deadTokens.m[key]
+	if ok && now.Sub(t) > limiterIdleTimeout {
+		delete(deadTokens.m, key)
+		return false
+	}
+	return ok
+}
+
+// deviceKey returns the hex SHA-256 of the request's device bearer, if it
+// carries one (the fsd_ prefix, malformed or not).
+func deviceKey(r *http.Request) (string, bool) {
+	h := r.Header.Get("Authorization")
+	if !strings.HasPrefix(h, "Bearer ") {
+		return "", false
+	}
+	token := strings.TrimSpace(strings.TrimPrefix(h, "Bearer "))
+	if !strings.HasPrefix(token, deviceTokenPrefix) {
+		return "", false
+	}
+	return hex.EncodeToString(sha256Sum(token)), true
+}
+
+// RateLimitByCredential budgets a request by the kind of credential it
+// carries. A request with a device bearer is counted in a bucket keyed by the
+// token's hash (devicePerMinute), never in the IP bucket, so one companion
+// cannot spend the budget of the browser on the same address. A token the
+// auth layer has refused (MarkDeadToken) drops to deadPerMinute. Everything
+// else is counted per client IP (ipPerMinute). Requests where except reports
+// true skip the limiter entirely.
+func RateLimitByCredential(ipPerMinute, devicePerMinute, deadPerMinute, trustedHops int, except func(*http.Request) bool) func(http.Handler) http.Handler {
+	ipL := newIPLimiter(ipPerMinute, time.Minute)
+	devL := newIPLimiter(devicePerMinute, time.Minute)
+	deadL := newIPLimiter(deadPerMinute, time.Minute)
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if except != nil && except(r) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			now := Now()
+			var ok bool
+			if key, isDev := deviceKey(r); isDev {
+				if isDeadToken(key, now) {
+					ok = deadL.allow(key, now)
+				} else {
+					ok = devL.allow(key, now)
+				}
+			} else {
+				ok = ipL.allow(clientIP(r, trustedHops), now)
+			}
+			if !ok {
+				WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
+				return
+			}
+			next.ServeHTTP(w, r)
 		})
 	}
 }

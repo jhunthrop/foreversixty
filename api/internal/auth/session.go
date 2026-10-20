@@ -92,6 +92,7 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 			if err != ErrNotFound {
 				a.logger().Error("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "device", "err", err)
 			}
+			httpx.MarkDeadToken(TokenHash(token))
 			httpx.WriteError(w, r, http.StatusUnauthorized, "unauthorized", "that device token is not valid", nil)
 			return
 		}

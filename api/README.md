@@ -130,6 +130,12 @@ Both `GET /b/...` routes are exempt from the router-wide per-IP rate limit: they
 through the site's Cloudflare Worker, whose egress IP would otherwise collapse every visitor into one
 bucket, and they are read-only and cached.
 
+The router-wide limit keeps two buckets by credential kind: a request with a device bearer
+(`Authorization: Bearer fsd_...`) is counted against that token's own 120-per-minute bucket (keyed by
+the token's hash), never against the per-IP bucket, so a companion cannot starve a browser on the
+same address; a token the API has answered 401 is cut to 10 per minute. Requests without a device
+bearer stay in the 120-per-minute per-IP bucket.
+
 Builds are validated against the tree data for their `tree_version` before they are stored; the rules
 are in `internal/builds/validate.go` and come from the Phase 1 interface contract, which has the web
 planner mirror them in `web/src/lib/planner/rules.ts`.

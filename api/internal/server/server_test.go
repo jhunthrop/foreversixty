@@ -152,3 +152,36 @@ func TestSharedBuildPageStaysServedAfterTheRouterWideBudgetIsSpent(t *testing.T)
 		t.Fatalf("/version past the budget code = %d, want 429", code)
 	}
 }
+
+func TestDeviceTrafficIsBudgetedPerDeviceNotAgainstTheBrowserOnTheSameIP(t *testing.T) {
+	h := NewRouter(Deps{Version: "test-1", TrustedProxyHops: 1})
+	frozen := time.Date(2026, time.October, 19, 0, 0, 0, 0, time.UTC)
+	httpx.Now = func() time.Time { return frozen }
+	t.Cleanup(func() { httpx.Now = time.Now })
+
+	get := func(token string) int {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodGet, "/version", nil)
+		req.RemoteAddr = "198.51.100.8:4321"
+		if token != "" {
+			req.Header.Set("Authorization", "Bearer "+token)
+		}
+		h.ServeHTTP(rec, req)
+		return rec.Code
+	}
+
+	for i := 0; i < deviceRequestsPerMinute; i++ {
+		if code := get("fsd_serverdevice1"); code != http.StatusOK {
+			t.Fatalf("device request %d code = %d, want 200", i+1, code)
+		}
+	}
+	if code := get("fsd_serverdevice1"); code != http.StatusTooManyRequests {
+		t.Fatalf("device past its budget code = %d, want 429", code)
+	}
+	if code := get(""); code != http.StatusOK {
+		t.Fatalf("browser from the same IP code = %d, want 200", code)
+	}
+	if code := get("fsd_serverdevice2"); code != http.StatusOK {
+		t.Fatalf("second device code = %d, want 200", code)
+	}
+}
