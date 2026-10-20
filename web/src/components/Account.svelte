@@ -30,6 +30,7 @@
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
   import { accountPageCopy } from '../lib/account/account-page-copy';
+  import { accountNameOf } from '../lib/character-selector/rows';
   import { heroCharacter } from '../lib/account/hero-character';
   import { characterHref, guildHref, parseCharacterPath } from '../lib/characters';
   import {
@@ -248,6 +249,8 @@
       writeCurrent(pointer);
       window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
       signedInBanner = accountPageCopy.signedInBanner(main.name);
+    } else {
+      signedInBanner = accountPageCopy.signedInBannerEmpty(accountNameOf(me));
     }
     window.history.replaceState({}, '', window.location.pathname);
   });
@@ -459,9 +462,9 @@
       <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(pairedDevice.name)}</p>
     {:else if pairing === null}
       <p class="text-muted text-[13px]" data-testid="pairing-companion-first">{pairingCopy.companionFirst}</p>
-      <p class="text-[14px]">Signed in as {displayName}. Show a code, then type it into the companion.</p>
+      <p class="text-[14px]">Signed in as {displayName}. For the fallback, show a code and type it into the companion.</p>
       <button
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
+        class="text-nav inline-flex min-h-11 items-center text-[13px] underline md:min-h-0"
         onclick={onPair}
         disabled={busy}
       >
@@ -653,9 +656,10 @@
                   </p>
                 {:else if pairing === null}
                   <button
-                    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+                    class="text-nav inline-flex min-h-11 w-fit items-center text-[13px] underline md:min-h-0"
                     onclick={onPair}
                     disabled={busy}
+                    data-testid="account-get-pairing-code"
                   >
                     {accountPageCopy.pairADevice}
                   </button>

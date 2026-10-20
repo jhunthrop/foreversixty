@@ -55,7 +55,7 @@
   const scrolls = $derived(model.rows.length > VISIBLE_ROWS);
   const showFilter = $derived(model.rows.length > FILTER_AFTER_CHARACTERS);
   const offerAddon = $derived(
-    signedOutEmpty || showNone || (model.session === 'signed-in' && !model.hasAddonCharacter),
+    !showNone && (signedOutEmpty || (model.session === 'signed-in' && !model.hasAddonCharacter)),
   );
   const offerSignIn = $derived(model.session === 'signed-out' || model.session === 'expired');
   const showManage = $derived(!signedOutEmpty);
@@ -227,8 +227,11 @@
     </div>
   {:else if showNone}
     <div class="csel-message" data-testid="selector-none">
-      <div class="csel-message-title">{selectorCopy.noneTitle}</div>
-      <div class="csel-message-body">{selectorCopy.noneBody}</div>
+      <div class="csel-message-body" data-testid="selector-none-body">{selectorCopy.accountPanelBody}</div>
+      <div class="csel-message-links">
+        <a href={selectorCopy.accountSetUpHref} data-testid="selector-get-set-up">{selectorCopy.accountSetUp}</a>
+        <a href={selectorCopy.accountLinkHref} data-testid="selector-account">{selectorCopy.accountLink}</a>
+      </div>
     </div>
   {:else if showList}
     <div class="csel-list-wrap">

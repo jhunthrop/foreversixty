@@ -54,6 +54,7 @@
   import { classCrestSrc } from '../../lib/class-crest';
   import { answerViewFor, type AnswerPhase, type AnswerView } from '../../lib/character-header/answer-view';
   import { characterHeaderCopy } from '../../lib/character-header/copy';
+  import { accountNameOf } from '../../lib/character-selector/rows';
   import { descriptorLines } from '../../lib/character-header/descriptor';
   import { PLACEHOLDER_CHARACTER, placeholderAnswer } from '../../lib/character-header/placeholder';
   import { planAnswer } from '../../lib/character-header/answer-plan';
@@ -104,12 +105,14 @@
 
   const session = untrack(() => source) ?? createCharacterCardState();
   const character = $derived(session.character);
-  const view = $derived<'loading' | 'signed-out' | 'ready'>(
+  const view = $derived<'loading' | 'signed-out' | 'no-characters' | 'ready'>(
     character !== null
       ? 'ready'
       : session.status === 'idle' || session.status === 'loading'
         ? 'loading'
-        : 'signed-out',
+        : session.me !== null && session.status === 'ready'
+          ? 'no-characters'
+          : 'signed-out',
   );
 
   // The selected character's clock-dependent reads (sync age, stale) are taken when the
@@ -338,6 +341,8 @@
   >
     {@render panel(character, answerView, resolvedAction, sync, false)}
   </section>
+{:else if view === 'no-characters'}
+  {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut account={accountNameOf(session.me)} />{/if}
 {:else if view === 'signed-out'}
   {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut />{/if}
 {:else if view === 'loading'}

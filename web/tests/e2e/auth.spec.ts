@@ -100,7 +100,7 @@ test('the account page lists devices, pairs one, and shows the character', async
     page.getByTestId('account-characters').getByRole('link', { name: 'Elyra Duskvale' }),
   ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
 
-  await page.getByRole('button', { name: 'Pair a device' }).click();
+  await page.getByRole('button', { name: 'Get a pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
 });
 

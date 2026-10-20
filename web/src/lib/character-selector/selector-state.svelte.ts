@@ -9,13 +9,13 @@ import { sessionHinted } from '../data/query';
 import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../current-character';
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
-import { buildSelectorModel, type SelectorModel } from './rows';
+import { accountNameOf, buildSelectorModel, closedKindOf, type ClosedKind, type SelectorModel } from './rows';
 import { sessionGuildOf, type SessionGuild } from './session-guild';
 
 export type LoadStatus = 'loading' | 'ready' | 'failed';
 
 /** What the closed control shows: the server-rendered link, a character, or the sign-in slot. */
-export type ClosedKind = 'pre' | 'character' | 'signed-out';
+export type { ClosedKind };
 
 export interface SelectorState {
   /** False until the island has hydrated and read the browser: the server-rendered link state. */
@@ -23,6 +23,8 @@ export interface SelectorState {
   readonly model: SelectorModel;
   readonly loadStatus: LoadStatus;
   readonly closed: ClosedKind;
+  /** The battletag (or the email's local part) of a signed-in account; empty until `/v1/me` answered. */
+  readonly accountName: string;
   /** The readable half of the session cookie is present: someone is probably signed in. */
   readonly sessionHint: boolean;
   /** The session's first verified guild once `/v1/me` answered; null signed out or without one. */
@@ -81,20 +83,21 @@ export function createSelectorState(): SelectorState {
     }),
   );
 
+  const accountName = $derived(loadStatus === 'ready' && session.data ? accountNameOf(session.data) : '');
+
   const sessionGuild = $derived(loadStatus === 'ready' ? sessionGuildOf(session.data) : null);
 
   // Until the browser has been read, and while a signed-in visitor's character is still
   // unknown, the closed control stays the pre-paint link (its skeleton variant); a visitor
   // with nothing to show gets the sign-in slot at once.
-  const closed = $derived.by((): ClosedKind => {
-    if (!mounted) return 'pre';
-    if (model.current !== null) return 'character';
-    return model.session === 'loading' && loadStatus === 'loading' && sessionHint ? 'pre' : 'signed-out';
-  });
+  const closed = $derived(closedKindOf({ mounted, model, loadStatus, sessionHint }));
 
   return {
     get closed() {
       return closed;
+    },
+    get accountName() {
+      return accountName;
     },
     get mounted() {
       return mounted;

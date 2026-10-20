@@ -13,8 +13,12 @@
   import { classColorVar } from '../../lib/report/format';
   import SelectorCrest from './SelectorCrest.svelte';
 
-  let { closed, current, onopen }: { closed: ClosedKind; current: SelectorRow | null; onopen: () => void } =
-    $props();
+  let {
+    closed,
+    current,
+    accountName = '',
+    onopen,
+  }: { closed: ClosedKind; current: SelectorRow | null; accountName?: string; onopen: () => void } = $props();
 </script>
 
 {#snippet chevron()}
@@ -96,6 +100,21 @@
     <span class="csel-menu-text">
       <span class="csel-menu-name" style:color={classColorVar(current.classSlug)}>{current.name}</span>
       <span class="csel-menu-sub">{closedSecondLine(current, true)}</span>
+    </span>
+    {@render chevron()}
+  </button>
+{:else if closed === 'account'}
+  <button
+    type="button"
+    class="site-menu-character"
+    data-testid="menu-character"
+    aria-haspopup="dialog"
+    onclick={onopen}
+  >
+    {@render ghost()}
+    <span class="csel-menu-text">
+      <span class="csel-menu-name">{accountName}</span>
+      <span class="csel-menu-sub">{selectorCopy.accountSub}</span>
     </span>
     {@render chevron()}
   </button>

@@ -12,8 +12,9 @@ export const accountPageCopy = {
   guildLabel: 'Guild',
   planLabel: 'Plan',
   currentCharacterLabel: 'Current character',
-  noDevices: 'No devices paired.',
-  pairADevice: 'Pair a device',
+  noDevices:
+    'No devices yet. The companion signs in with Battle.net from its Device page; a code is only for the fallback.',
+  pairADevice: 'Get a pairing code',
   pseudonymLabel: 'Show a pseudonym instead of my character names',
   pseudonymNote:
     'Applies everywhere your characters appear, on reports and rankings alike. Reports themselves are never deleted or rewritten.',
@@ -24,6 +25,9 @@ export const accountPageCopy = {
   /** The hub-arrival banner, shown once per `?signed_in=1` visit. */
   signedInBanner: (name: string): string =>
     `Signed in. ${name} is your current character; change it from any row below.`,
+  /** The same banner for an account the site has no characters for yet. */
+  signedInBannerEmpty: (who: string): string =>
+    `Signed in as ${who}. Install the addon and the companion to bring your characters here.`,
   /** Shown in the hero band instead of the handoff links when no character on the account
    *  has a build at all (spec 2026-09-22 §3.1). */
   noBattlenetDataForRealm: 'Blizzard serves no data for this realm type yet.',

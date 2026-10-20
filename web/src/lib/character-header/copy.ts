@@ -7,6 +7,11 @@ export const characterHeaderCopy = {
   label: 'Your character',
   /** The one shared signed-out band: no button, the nav selector is the only sign-in control. */
   signedOut: 'Sign in or paste an export to see your character here',
+  /** A signed-in account whose characters the site has not seen yet. */
+  noCharacters: (who: string): string =>
+    `Signed in as ${who}. No characters yet: install the addon and the companion, then log out once in game.`,
+  getSetUp: 'Get set up',
+  getSetUpHref: '/setup',
   /** Only the words past the sync age go ember (nav selector spec 2.11 threshold). */
   staleTail: 'Log out in the game to sync',
   tryAgain: 'Try again',

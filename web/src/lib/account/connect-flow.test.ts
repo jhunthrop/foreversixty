@@ -40,6 +40,6 @@ describe('connectCopy', () => {
     expect(connectCopy.consent).toBe(
       'Forever Sixty will see your BattleTag and character list. It cannot see your password or play for you.',
     );
-    expect(pairingCopy.companionFirst).toContain('Press Sign in with Battle.net in it instead.');
+    expect(pairingCopy.companionFirst).toContain('Press Sign in with Battle.net in it.');
   });
 });
