@@ -2,13 +2,13 @@
 
 ## 0.2.7
 
+- Reports are credited to two-word Forever names: the log writes "Bow-Jackzon-ClassicBetaPvP-", and the companion now reads it as Bow Jackzon. When a log cannot be credited, Status says whether the name or the realm is what the addon has not sent.
 - The update check finds the newest companion release even when the repository's latest release is the nightly data addon.
 
 ## 0.2.6
 
 - After an update, the companion starts the new build itself instead of exiting; the log says what it launched.
 - The Status headline and the tray warn about advanced logging only for the game folder the companion is watching, not for every install on the disk.
-- Reports are credited to two-word Forever names: the log writes "Bow-Jackzon-ClassicBetaPvP-", and the companion now reads it as Bow Jackzon. When a log cannot be credited, Status says whether the name or the realm is what the addon has not sent.
 
 ## 0.2.5
 
