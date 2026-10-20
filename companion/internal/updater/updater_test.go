@@ -48,20 +48,53 @@ func sign(t *testing.T, sk minisign.PrivateKey, body []byte) []byte {
 	return sig.Encode()
 }
 
-// release serves a GitHub-shaped latest release with one asset.
-func release(t *testing.T, tag string, binary, signature []byte) *httptest.Server {
+// listed is one row of a GitHub-shaped release list.
+type listed struct {
+	tag        string
+	draft      bool
+	prerelease bool
+	noAsset    bool
+}
+
+// releaseList serves the release list one page at a time, plus the
+// download paths, and records the pages asked for. It answers 404 for
+// the old "latest" endpoint so a check that still used it would fail.
+func releaseList(t *testing.T, pages [][]listed, binary, signature []byte) (*httptest.Server, *[]string) {
 	t.Helper()
+	var asked []string
 	mux := http.NewServeMux()
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
 	name := AssetName("linux", "amd64")
-	mux.HandleFunc("/repos/"+Repo+"/releases/latest", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, `{"tag_name":%q,"assets":[{"name":%q,"browser_download_url":"%s/a"},`+
-			`{"name":"%s.minisig","browser_download_url":"%s/a.minisig"}]}`,
-			tag, name, srv.URL, name, srv.URL)
+	mux.HandleFunc("/repos/"+Repo+"/releases", func(w http.ResponseWriter, r *http.Request) {
+		asked = append(asked, r.URL.RawQuery)
+		page := 1
+		fmt.Sscan(r.URL.Query().Get("page"), &page)
+		rows := []string{}
+		if page <= len(pages) {
+			for _, l := range pages[page-1] {
+				assets := fmt.Sprintf(`[{"name":%q,"browser_download_url":"%s/a"},`+
+					`{"name":"%s.minisig","browser_download_url":"%s/a.minisig"}]`,
+					name, srv.URL, name, srv.URL)
+				if l.noAsset {
+					assets = "[]"
+				}
+				rows = append(rows, fmt.Sprintf(`{"tag_name":%q,"draft":%v,"prerelease":%v,"assets":%s}`,
+					l.tag, l.draft, l.prerelease, assets))
+			}
+		}
+		fmt.Fprintf(w, "[%s]", strings.Join(rows, ","))
 	})
 	mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) { w.Write(binary) })
 	mux.HandleFunc("/a.minisig", func(w http.ResponseWriter, r *http.Request) { w.Write(signature) })
+	return srv, &asked
+}
+
+// release serves a repository whose newest release is the companion
+// release at tag, with one asset for linux/amd64.
+func release(t *testing.T, tag string, binary, signature []byte) *httptest.Server {
+	t.Helper()
+	srv, _ := releaseList(t, [][]listed{{{tag: tag}}}, binary, signature)
 	return srv
 }
 
@@ -137,8 +170,13 @@ func TestAReleaseThatIsNotNewerIsIgnored(t *testing.T) {
 	srv := release(t, "companion-v1.0.0", binary, sign(t, sk, binary))
 	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
 		GOOS: "linux", GOARCH: "amd64"})
+	var buf bytes.Buffer
+	u.o.Log = slog.New(slog.NewTextHandler(&buf, nil))
 	if staged, err := u.Poll(t.Context(), t0); err != nil || staged {
 		t.Fatalf("Poll = %v, %v", staged, err)
+	}
+	if !strings.Contains(buf.String(), "newest companion release 1.0.0 is not newer than 1.0.0") {
+		t.Errorf("log:\n%s", buf.String())
 	}
 }
 
@@ -153,14 +191,117 @@ func TestABuildWithNoKeyNeverUpdates(t *testing.T) {
 	}
 }
 
-func TestAReleaseMissingThisPlatformIsAnError(t *testing.T) {
+func TestAReleaseMissingThisPlatformIsNotAnUpdate(t *testing.T) {
 	sk, pub := keypair(t)
 	binary := []byte("linux only")
 	srv := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
 	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
 		GOOS: "windows", GOARCH: "amd64"})
+	if staged, err := u.Poll(t.Context(), t0); err != nil || staged {
+		t.Fatalf("Poll = %v, %v; a release with no Windows asset is skipped, not an error", staged, err)
+	}
+}
+
+func TestADataReleaseAheadOfTheCompanionReleaseIsSteppedOver(t *testing.T) {
+	sk, pub := keypair(t)
+	binary := []byte("the new companion")
+	srv, _ := releaseList(t, [][]listed{{
+		{tag: "data-v2026.10.20"}, {tag: "addon-v2.0.11"}, {tag: "data-v2026.10.19"},
+		{tag: "companion-v0.2.6"}, {tag: "companion-v0.2.5"},
+	}}, binary, sign(t, sk, binary))
+	dir := t.TempDir()
+	u := New(Options{Dir: dir, APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64"})
+	rel, err := u.Latest(t.Context())
+	if err != nil || rel.TagName != "companion-v0.2.6" {
+		t.Fatalf("Latest = %q, %v", rel.TagName, err)
+	}
+	if staged, err := u.Poll(t.Context(), t0); err != nil || !staged {
+		t.Fatalf("Poll = %v, %v", staged, err)
+	}
+	if got, _ := os.ReadFile(PendingPath(dir)); string(got) != string(binary) {
+		t.Fatalf("staged %q", got)
+	}
+}
+
+func TestOnlyDataReleasesIsNoUpdateAndNoError(t *testing.T) {
+	sk, pub := keypair(t)
+	srv, _ := releaseList(t, [][]listed{{
+		{tag: "data-v2026.10.20"}, {tag: "addon-v2.0.11"}, {tag: "data-v2026.10.19"},
+	}}, []byte("x"), sign(t, sk, []byte("x")))
+	var buf bytes.Buffer
+	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64", Log: slog.New(slog.NewTextHandler(&buf, nil))})
+	if staged, err := u.Poll(t.Context(), t0); err != nil || staged {
+		t.Fatalf("Poll = %v, %v", staged, err)
+	}
+	if !strings.Contains(buf.String(), "no companion release") {
+		t.Errorf("log:\n%s", buf.String())
+	}
+}
+
+func TestDraftsPrereleasesAndAssetlessReleasesAreSkipped(t *testing.T) {
+	sk, pub := keypair(t)
+	binary := []byte("the stable one")
+	srv, _ := releaseList(t, [][]listed{{
+		{tag: "companion-v0.4.0", draft: true},
+		{tag: "companion-v0.3.0", prerelease: true},
+		{tag: "companion-v0.2.9", noAsset: true},
+		{tag: "companion-v0.2.8"},
+	}}, binary, sign(t, sk, binary))
+	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64"})
+	rel, err := u.Latest(t.Context())
+	if err != nil || rel.TagName != "companion-v0.2.8" {
+		t.Fatalf("Latest = %q, %v", rel.TagName, err)
+	}
+}
+
+func TestTheSecondPageIsReadOnlyWhenTheFirstWasFullWithNoMatch(t *testing.T) {
+	sk, pub := keypair(t)
+	binary := []byte("found on page two")
+	var full []listed
+	for i := range PerPage {
+		full = append(full, listed{tag: fmt.Sprintf("data-v2026.09.%02d", i+1)})
+	}
+	srv, asked := releaseList(t, [][]listed{full, {{tag: "companion-v0.2.6"}}}, binary, sign(t, sk, binary))
+	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64"})
+	rel, err := u.Latest(t.Context())
+	if err != nil || rel.TagName != "companion-v0.2.6" {
+		t.Fatalf("Latest = %q, %v", rel.TagName, err)
+	}
+	if len(*asked) != 2 {
+		t.Errorf("pages asked for: %v", *asked)
+	}
+
+	// A short first page with no match ends the search; a full first
+	// page that does match never asks for a second.
+	short, askedShort := releaseList(t, [][]listed{{{tag: "data-v1"}}, {{tag: "companion-v9.9.9"}}}, binary, sign(t, sk, binary))
+	u = New(Options{Dir: t.TempDir(), APIBase: short.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64"})
+	if rel, err := u.Latest(t.Context()); err != nil || rel.TagName != "" || len(*askedShort) != 1 {
+		t.Errorf("short page: %q, %v, asked %v", rel.TagName, err, *askedShort)
+	}
+	hit := append(append([]listed{}, full[:PerPage-1]...), listed{tag: "companion-v0.2.6"})
+	hitSrv, askedHit := releaseList(t, [][]listed{hit}, binary, sign(t, sk, binary))
+	u = New(Options{Dir: t.TempDir(), APIBase: hitSrv.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64"})
+	if rel, err := u.Latest(t.Context()); err != nil || rel.TagName != "companion-v0.2.6" || len(*askedHit) != 1 {
+		t.Errorf("full matching page: %q, %v, asked %v", rel.TagName, err, *askedHit)
+	}
+}
+
+func TestAHTTPErrorFromTheListIsAnError(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "rate limited", http.StatusForbidden)
+	}))
+	t.Cleanup(srv.Close)
+	_, pub := keypair(t)
+	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+		GOOS: "linux", GOARCH: "amd64"})
 	if _, err := u.Poll(t.Context(), t0); err == nil {
-		t.Fatal("a release with no Windows asset was accepted")
+		t.Fatal("a 403 from GitHub was not an error")
 	}
 }
 
