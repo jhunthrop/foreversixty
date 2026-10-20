@@ -11,6 +11,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
 	"github.com/jhunthrop/foreversixty/companion/internal/fakeapi"
+	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
 
@@ -171,5 +172,30 @@ func TestAChosenCharacterIsTheCredit(t *testing.T) {
 	h.app.Step(t.Context(), t0.Add(time.Second))
 	if c := h.app.Snapshot().Credit; c.State != app.CreditCredited || c.Name != "Bow Jackzon" {
 		t.Errorf("chosen: %+v", c)
+	}
+}
+
+// A report an older companion stored under "Bow-Jackzon" reads as
+// "Bow Jackzon" in the headline and the credit row once the update
+// starts, with the reason that names the right character.
+func TestAReportStoredUnderTheOldTwoWordNameShowsTheSpacedName(t *testing.T) {
+	h := newHarnessSeeded(t, func(d paths.Dirs) {
+		if err := state.Save(d.State, state.Report{Key: state.NewKey(t0), Auto: true,
+			DetectedName: "Bow-Jackzon", DetectedRealm: "ClassicBetaPvP",
+			StartedAt: t0, Closed: true, Done: true}); err != nil {
+			t.Fatal(err)
+		}
+	})
+	h.pairAndPrime()
+	s := h.app.Snapshot()
+	if s.DetectedCharacter != "Bow Jackzon" {
+		t.Errorf("detected_character = %q", s.DetectedCharacter)
+	}
+	if len(s.Reports) != 1 {
+		t.Fatalf("%d reports", len(s.Reports))
+	}
+	c := s.Reports[0].Credit
+	if c.Name != "Bow Jackzon" || !strings.Contains(c.Reason, "names Bow Jackzon,") {
+		t.Errorf("credit = %+v", c)
 	}
 }
