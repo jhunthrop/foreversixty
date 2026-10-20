@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-19T14:57:09Z",
+  "generated_at": "2026-10-20T12:52:48Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -728,8 +728,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.375152529,
-      "verify_run_seconds": 1.1921802,
+      "weights_run_seconds": 1.766149237,
+      "verify_run_seconds": 0.923416775,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1554,8 +1554,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.375152529,
-      "verify_run_seconds": 1.189321359,
+      "weights_run_seconds": 1.766149237,
+      "verify_run_seconds": 0.954194298,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2438,8 +2438,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.372659685,
-      "verify_run_seconds": 1.214750881,
+      "weights_run_seconds": 1.783864128,
+      "verify_run_seconds": 0.921323759,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3323,8 +3323,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.372659685,
-      "verify_run_seconds": 1.235191454,
+      "weights_run_seconds": 1.783864128,
+      "verify_run_seconds": 0.996668755,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4229,8 +4229,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.919909887,
-      "verify_run_seconds": 1.274861557,
+      "weights_run_seconds": 1.5064077949999999,
+      "verify_run_seconds": 0.995989224,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5136,8 +5136,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.919909887,
-      "verify_run_seconds": 1.21564605,
+      "weights_run_seconds": 1.5064077949999999,
+      "verify_run_seconds": 0.938928277,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6055,8 +6055,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.014421323,
-      "verify_run_seconds": 1.438369587,
+      "weights_run_seconds": 3.796584,
+      "verify_run_seconds": 1.131520835,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6990,8 +6990,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.014421323,
-      "verify_run_seconds": 1.413665891,
+      "weights_run_seconds": 3.796584,
+      "verify_run_seconds": 1.0769455940000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7953,8 +7953,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.857133801,
-      "verify_run_seconds": 2.747578508,
+      "weights_run_seconds": 4.401810062,
+      "verify_run_seconds": 2.084997999,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8914,8 +8914,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.857133801,
-      "verify_run_seconds": 2.695213116,
+      "weights_run_seconds": 4.401810062,
+      "verify_run_seconds": 2.085182289,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9880,8 +9880,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.07332879,
-      "verify_run_seconds": 3.008038016,
+      "weights_run_seconds": 5.193594018,
+      "verify_run_seconds": 2.322475154,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10839,8 +10839,8 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 7.07332879,
-      "verify_run_seconds": 3.052482347,
+      "weights_run_seconds": 5.193594018,
+      "verify_run_seconds": 2.3473070480000002,
       "coverage": {
         "back": {
           "eligible": 390,
