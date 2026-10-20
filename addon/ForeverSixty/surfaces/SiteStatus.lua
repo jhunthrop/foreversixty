@@ -65,19 +65,66 @@ function SiteStatus.waitingCount(data)
 	return #SiteStatus.waiting(data)
 end
 
---- The messages (other than builds and acks) addressed to this character or to none.
-local function messageCount()
-	local count = 0
+--- The messages (other than builds and acks) addressed to this character or to none, counted by
+--- kind: { guild = 1 }.
+local function messageCounts()
+	local counts = {}
 	for kind in pairs(Codec.MESSAGE_TYPES) do
 		if kind ~= "ack" and kind ~= "build" then
-			count = count + #Codec.inboxMessages(ForeverSixtyInbox, Export.characterKey(), kind)
+			local found = #Codec.inboxMessages(ForeverSixtyInbox, Export.characterKey(), kind)
+			if found > 0 then
+				counts[kind] = found
+			end
 		end
 	end
-	return count
+	return counts
 end
 
---- Everything the lines need, read once: { seen (epoch of the newest ack or nil), age (seconds),
---- characters, gear (the record carries gear), gearAt (epoch the record first had gear), clock }.
+--- The messages in words: "1 guild message", "2 guild messages" while one kind waits, "2 messages"
+--- where kinds mix (or a kind has no word of its own).
+local function messageWords(counts)
+	local kinds, total = {}, 0
+	for kind, found in pairs(counts) do
+		kinds[#kinds + 1] = kind
+		total = total + found
+	end
+	local words = #kinds == 1 and L.diagInboxKinds[kinds[1]] or nil
+	if words ~= nil then
+		return string.format("%d %s", total, total == 1 and words[1] or words[2])
+	end
+	return string.format(total == 1 and L.diagInboxMessageOne or L.diagInboxMessages, total)
+end
+
+--- What the addon remembers of this character's logins, in ForeverSixtyDB.site[key] so a /reload
+--- keeps it: { loginAt (epoch of the last login), said (the login line said last), gearPending (the
+--- "on its way" line was said and not yet settled) }. Nil when nothing is kept and `create` is not
+--- set.
+function SiteStatus.memory(create)
+	if type(ForeverSixtyDB) ~= "table" then
+		if not create then
+			return nil
+		end
+		ForeverSixtyDB = {}
+	end
+	if type(ForeverSixtyDB.site) ~= "table" then
+		if not create then
+			return nil
+		end
+		ForeverSixtyDB.site = {}
+	end
+	local key = Export.characterKey()
+	local mine = ForeverSixtyDB.site[key]
+	if type(mine) ~= "table" and create then
+		mine = {}
+		ForeverSixtyDB.site[key] = mine
+	end
+	return type(mine) == "table" and mine or nil
+end
+
+--- Everything the lines need, read once: { seen (epoch of the newest ack or nil: the site's receive
+--- time, whatever `export_changed_at` says), age (seconds), characters, gear (the record carries gear),
+--- gearAt (epoch the record first had gear), builtAt (epoch the record was last built), loginAt (epoch
+--- of the last login), gearPending, clock }.
 function SiteStatus.facts(clock)
 	clock = clock or BuildDialog.liveClock()
 	local mine = record()
@@ -93,6 +140,13 @@ function SiteStatus.facts(clock)
 	}
 	if mine ~= nil and type(mine.gearAt) == "string" then
 		facts.gearAt = BuildDialog.parseLocal(mine.gearAt, clock)
+	end
+	if mine ~= nil and type(mine.builtAt) == "string" then
+		facts.builtAt = BuildDialog.parseLocal(mine.builtAt, clock)
+	end
+	local remembered = SiteStatus.memory(false)
+	if remembered ~= nil then
+		facts.loginAt, facts.gearPending = remembered.loginAt, remembered.gearPending == true
 	end
 	return facts
 end
@@ -127,13 +181,25 @@ local function nameList(rows)
 	return table.concat(names, ", ")
 end
 
---- "Inbox: ..." for /fs diag.
-function SiteStatus.inboxLine(data)
-	local rows, messages = SiteStatus.waiting(data), messageCount()
-	if #rows == 0 and messages == 0 then
-		return L.diagInboxEmpty
+--- "Inbox: ..." for /fs diag. The inbox is read at login only, so an empty one says as of when (the
+--- client clock at login, in the chat's own format) and that /reload does not read it again.
+function SiteStatus.inboxLine(data, facts)
+	local rows, counts = SiteStatus.waiting(data), messageCounts()
+	if #rows == 0 and next(counts) == nil then
+		facts = facts or SiteStatus.facts()
+		if facts.loginAt == nil then
+			return L.diagInboxEmptyNoLogin
+		end
+		return string.format(L.diagInboxEmpty, BuildDialog.when(facts.loginAt, facts.clock))
 	end
-	local words = string.format(messages == 1 and L.diagInboxMessageOne or L.diagInboxMessages, messages)
+	-- With no message to count, the builds alone (never "0 messages").
+	if next(counts) == nil then
+		if #rows == 1 then
+			return string.format(L.diagInboxBuildAlone, nameList(rows))
+		end
+		return string.format(L.diagInboxBuildsAlone, #rows, nameList(rows))
+	end
+	local words = messageWords(counts)
 	if #rows == 0 then
 		return string.format(L.diagInboxNoBuilds, words)
 	elseif #rows == 1 then
@@ -151,42 +217,76 @@ end
 --- The /fs diag lines after the Export line, and the headline for the all-clear.
 function SiteStatus.diag(data)
 	local facts = SiteStatus.facts()
-	return { SiteStatus.siteLine(facts), SiteStatus.inboxLine(data) }, SiteStatus.healthy(facts)
+	return { SiteStatus.siteLine(facts), SiteStatus.inboxLine(data, facts) }, SiteStatus.healthy(facts)
 end
 
---- The one chat line at login (the text after the addon's prefix), the first that applies, or nil.
+--- The one chat line at login (the text after the addon's prefix), the first that applies, or nil:
+--- the site has not seen the character; the gear "on its way" (the site's last copy was seen before
+--- this record first had gear and before it was last built); the builds waiting, named with the
+--- character they are for; the gear the site has after all (the ack is no older than the export's
+--- build time, and an "on its way" was said before: once); the companion silent for days.
 function SiteStatus.loginLine(data, facts)
 	facts = facts or SiteStatus.facts()
 	if facts.seen == nil then
-		return L.siteLoginNever
+		return L.siteLoginNever, "never"
 	end
-	-- The site's last copy was seen before this record first carried gear.
-	if facts.gear and facts.gearAt ~= nil and facts.seen < facts.gearAt then
-		return L.siteLoginGear
+	-- The site's last copy was seen before this record first carried gear, and before it was last built.
+	if facts.gear and facts.gearAt ~= nil and facts.seen < facts.gearAt
+		and (facts.builtAt == nil or facts.seen < facts.builtAt) then
+		return L.siteLoginGear, "gear"
 	end
 	local rows = SiteStatus.waiting(data)
-	if #rows == 1 then
-		return string.format(L.siteLoginBuild, nameList(rows))
-	elseif #rows > 1 then
-		return string.format(L.siteLoginBuilds, #rows, nameList(rows))
+	if #rows > 0 then
+		local who = BuildDialog.player()
+		who = who ~= nil and who.name or nil
+		who = who ~= nil and who ~= "" and who or L.siteLoginSelf
+		if #rows == 1 then
+			return string.format(L.siteLoginBuild, who, nameList(rows)), "build"
+		end
+		return string.format(L.siteLoginBuilds, #rows, who, nameList(rows)), "build"
+	end
+	if facts.gear and facts.gearPending and (facts.builtAt == nil or facts.seen >= facts.builtAt) then
+		return string.format(L.siteLoginGearSeen, BuildDialog.when(facts.seen, facts.clock)), "gearSeen"
 	end
 	if facts.hasRecord and facts.age > SiteStatus.SILENT_SECONDS then
-		return string.format(L.siteLoginSilent, dayOf(facts.seen, facts.clock))
+		return string.format(L.siteLoginSilent, dayOf(facts.seen, facts.clock)), "silent"
 	end
 	return nil
 end
 
---- PLAYER_ENTERING_WORLD: once a session, five seconds in (after the export's refresh, queued
---- first), say the one line that is true, if any.
-function SiteStatus.afterEnteringWorld(data)
-	if SiteStatus.announced then
+--- PLAYER_ENTERING_WORLD (`initial`: a login from the character screen, `reloading`: a /reload; both
+--- false: a loading screen in the world, which says nothing): five seconds in (after the export's
+--- refresh, queued first), say the one line that is true, if any. The rule, so the same line is
+--- never said twice in a row for the same inbox: a login always says its line (the inbox was just
+--- read, and a build waiting is news at every login until it is used); a /reload says it only when
+--- it differs from the line said last (the client writes the old inbox back on a reload, so nothing
+--- new can have arrived, and the walk's "it never arrives on /reload" must not be answered with the
+--- same sentence again). Using a build says nothing here: this runs on entering the world only. A
+--- client that passes neither flag counts as a login once, and as a reload after.
+function SiteStatus.afterEnteringWorld(data, initial, reloading)
+	local legacy = initial == nil and reloading == nil
+	if initial == false and reloading == false then
 		return
 	end
+	local login = initial == true or (legacy and not SiteStatus.announced)
 	SiteStatus.announced = true
+	local remembered = SiteStatus.memory(true)
+	if login then
+		remembered.loginAt = BuildDialog.liveClock().now
+	end
 	Theme.after(SiteStatus.LOGIN_DELAY, function()
-		local line = SiteStatus.loginLine(data)
-		if line ~= nil then
+		local line, kind = SiteStatus.loginLine(data)
+		local again = not login and line == remembered.said
+		if line ~= nil and not again then
 			Theme.say(line)
+			if kind == "gear" then
+				remembered.gearPending = true
+			elseif kind == "gearSeen" then
+				remembered.gearPending = nil
+			end
+		end
+		if line ~= nil or login then
+			remembered.said = line
 		end
 	end)
 end

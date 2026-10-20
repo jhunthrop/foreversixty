@@ -542,6 +542,48 @@ function Compat.shortDate(text)
 	return tonumber(day) .. " " .. name
 end
 
+-- The clock ---------------------------------------------------------------------------------
+
+--- The locales whose chat timestamps are 12-hour when the player has not chosen a format.
+local TWELVE_HOUR_LOCALES = { enUS = true, esMX = true, ptBR = true, koKR = true }
+
+--- Whether the client's own chat clock is 12-hour: the format the player's chat timestamps use
+--- (CHAT_TIMESTAMP_FORMAT, "%I:%M %p" is 12-hour, "%H:%M:%S" is not) while one is set, else the
+--- client's locale. A client that says neither is 24-hour.
+function Compat.twelveHour()
+	local format = _G.CHAT_TIMESTAMP_FORMAT
+	if type(format) == "string" and format ~= "" then
+		return format:find("%%[IlpP]") ~= nil
+	end
+	local locale = type(_G.GetLocale) == "function" and _G.GetLocale() or nil
+	return TWELVE_HOUR_LOCALES[locale] == true
+end
+
+--- A time of day as the chat prints it ("18:20", or "06:20 pm" on a 12-hour client): every time
+--- the addon says (Site: seen, Export: built, as of your login) goes through here, so "06:21" in
+--- the chat and "18:20" from the addon never sit side by side (X.5).
+function Compat.clockText(hour, minute)
+	local L = ns.L or require("Locale")
+	if not Compat.twelveHour() then
+		return string.format(L.timeTwentyFour, hour, minute)
+	end
+	local shown = hour % 12
+	if shown == 0 then
+		shown = 12
+	end
+	return string.format(L.timeTwelve, shown, minute, hour >= 12 and L.timePm or L.timeAm)
+end
+
+--- "18:21" (the export's own wall time) as Compat.clockText prints it; the text itself when it
+--- is not a 24-hour "HH:MM".
+function Compat.clockOf(text)
+	local hour, minute = tostring(text or ""):match("^(%d%d?):(%d%d)$")
+	if hour == nil or tonumber(hour) > 23 or tonumber(minute) > 59 then
+		return text
+	end
+	return Compat.clockText(tonumber(hour), tonumber(minute))
+end
+
 -- Chat ------------------------------------------------------------------------------------
 
 --- Add a chat message filter for `event`: ChatFrame_AddMessageEventFilter, else

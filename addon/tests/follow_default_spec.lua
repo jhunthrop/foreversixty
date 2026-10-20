@@ -58,6 +58,23 @@ describe("Follow.ensureDefault", function()
 		assert.are.equal(build, Follow.build)
 	end)
 
+	-- X.5: one noun. The data names its defaults "Arms leveling" and "Arms raid"; every surface that names
+	-- the build says "Arms build", the word a build from the site and any other carries.
+	it("names a default build with the one noun, 'build', whatever the data calls its kind", function()
+		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 12 })
+		assert.are.equal("Arms leveling", leveling.name)
+		assert.are.equal("Arms build", Follow.buildName(DATA, leveling))
+		Follow.build = nil
+		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 60 })
+		assert.are.equal("Arms build", Follow.buildName(DATA, raid))
+		-- A build with a name of its own that merely ends in a kind word keeps it.
+		local named = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
+		named.name = "Arms leveling"
+		assert.are.equal("Arms leveling", Follow.buildName(DATA, named))
+		named.name = nil
+		assert.are.equal("Arms build", Follow.buildName(DATA, named))
+	end)
+
 	it("loads the raid default at level 60", function()
 		local build = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = {}, level = 60 })
 		assert.are.equal("Arms raid", build.name)

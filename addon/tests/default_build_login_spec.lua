@@ -296,7 +296,7 @@ describe("/fs diag's build line", function()
 
 	it("names a default build and the spec it is the default for", function()
 		local Options = login("hunter", { configID = 7, ranks = traitRanks("hunter", { [2] = 10 }) })
-		assert.are.equal("Build: Marksmanship leveling (default for Marksmanship)", buildLine(Options.handle("diag")))
+		assert.are.equal("Build: Marksmanship build (default for Marksmanship)", buildLine(Options.handle("diag")))
 	end)
 
 	it("names a saved build as saved", function()
@@ -326,7 +326,7 @@ describe("the chip's hover with a build in force", function()
 		assert.are.equal("idle", Chip.current.chosen.kind)
 		assert.are.equal("", Chip.current.chosen.text)
 		assert.are.equal("|cff" .. Theme.HEX.gold .. L.addonName .. "|r|cff" .. Theme.HEX.muted
-			.. " · Marksmanship leveling|r", Chip.tooltipLines(Chip.current)[1])
+			.. " · Marksmanship build|r", Chip.tooltipLines(Chip.current)[1])
 	end)
 end)
 
@@ -443,7 +443,7 @@ describe("the default build's reasons and kinds", function()
 		local build = require("Follow").build
 		assert.are.equal("Beast Mastery raid", build.name)
 		assert.are.equal("raid", build.kind)
-		assert.are.equal("Build: Beast Mastery raid (default for Beast Mastery)", buildLine(Options.handle("diag")))
+		assert.are.equal("Build: Beast Mastery build (default for Beast Mastery)", buildLine(Options.handle("diag")))
 	end)
 
 	it("names the winning tree for a mixed spend: Marksmanship with most", function()

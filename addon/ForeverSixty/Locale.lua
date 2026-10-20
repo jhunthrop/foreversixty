@@ -893,9 +893,11 @@ local L = {
 }
 
 -- The build dialog (spec section 4.10): the one frame of the addon's own.
-L.dialogTabPaste = "Paste a build"
--- The paste tab's badge, muted in its own slot after the label, while the site has sent builds.
-L.dialogWaitingCount = "%d waiting"
+-- X.5: the tab holds the builds the site sent and the paste box, so it is named for both.
+L.dialogTabPaste = "Builds"
+-- The paste tab's badge, muted in its own slot after the label, while the site has sent builds:
+-- "Builds · 1 waiting".
+L.dialogWaitingCount = "\194\183 %d waiting"
 -- The site's own words (L8.2): the copy tab is named this (copy mode has no button).
 L.dialogCopy = "Copy my character"
 -- L3.7 item 29: the copy tab's label while the box holds a /fs link ("%s" the linked player).
@@ -918,8 +920,9 @@ L.dialogNextTalent = "Next talent: %s"
 L.dialogTalentTree = "%s (%s)"
 L.dialogTalentTreeRank = "%s (%s, %d of %d)"
 L.dialogUnnamedTalent = "a talent with no name in this data"
--- Dim, at the bottom right while a preview shows.
+-- Dim, at the bottom right while a preview shows ("Enter to preview" while builds wait, none chosen).
 L.dialogEnterHint = "Enter to use"
+L.dialogEnterPreview = "Enter to preview"
 -- The preview's second line, its parts joined by dialogSeparator:
 -- "Warrior · Arms 33 / Fury 16 / Protection 2 · 51 points"; then, on its own line in body colour,
 -- "You can place 12 now." while points wait.
@@ -943,6 +946,13 @@ L.dialogReplaces = "Replaces %s"
 L.dialogReplacesSameAll = "Replaces %s · same points and gear · nothing changes"
 L.dialogReplacesSameOrder = "Replaces %s · same points, different gear list"
 L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
+-- X.5: the incoming build is a prefix of the plan ("%s" its points, then the plan's next talent), and
+-- why "Use this build" is held back then.
+L.dialogSameAsPlan = "Same as your plan for %s. Yours goes on with %s."
+L.dialogUseFurther = "Your plan is further along."
+-- The incoming build stops short of the points spent and is not a prefix: "%s" its points, then the
+-- points spent and the point it keeps following from; above the "first differs at" sentence.
+L.dialogEndsShort = "This build ends at %s; you have spent %d. It keeps following from point %d."
 L.dialogNextWould = "Next talent would be: %s"
 -- A refusal's last line, muted.
 L.dialogStillFollowing = "You are still following %s."
@@ -956,10 +966,9 @@ L.buildUsage = "/fs build raid, leveling or pvp switches between your saved buil
 -- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
 L.dialogNowFollowing = "Now following %s."
 L.dialogNowFollowingNext = "Now following %s. Next: %s."
--- A build the site sent: "Arms raid (old patch) · 33/16/2 · from the site" (the name shortens to fit,
--- never the points; the source is muted; with no split, the bare form).
-L.dialogInboxRow = "%s · %s · %s"
-L.dialogInboxRowBare = "%s · %s"
+-- A build the site sent is a row of three lines (X.5): its name, "Hunter · Beast Mastery 11 · 11 points",
+-- and a muted "For Bow Jackzon · Classic Beta PvP · from the site" (the name shortens to fit).
+L.dialogForCharacter = "For %s"
 L.dialogFromSite = "from the site"
 -- A build an officer pushed to the guild or group (L3.7 item 44; "%s" the officer), and the
 -- one chat line when it arrives.
@@ -1443,22 +1452,46 @@ L.diagSiteSeenOne = "Site: seen %s (1 character)"
 L.diagSiteNever = "Site: not seen yet \226\128\148 is the companion running and signed in?"
 L.diagSiteOld = "Site: last seen %s, %d days ago"
 L.diagSiteOldOne = "Site: last seen %s, 1 day ago"
-L.diagInboxEmpty = "Inbox: empty"
+-- X.5: the inbox is read at login only, so an empty one says when (the client clock at login, in the
+-- chat's own format) and that /reload does not read it again.
+L.diagInboxEmpty = "Inbox: empty, as of your login at %s. Builds arrive when you log in, not on /reload."
+L.diagInboxEmptyNoLogin = "Inbox: empty. Builds arrive when you log in, not on /reload."
 L.diagInboxBuilds = "Inbox: %d builds waiting (%s) \194\183 %s"
 L.diagInboxBuildOne = "Inbox: 1 build waiting (%s) \194\183 %s"
 L.diagInboxNoBuilds = "Inbox: no builds waiting \194\183 %s"
+L.diagInboxBuildAlone = "Inbox: 1 build waiting (%s)"
+L.diagInboxBuildsAlone = "Inbox: %d builds waiting (%s)"
+-- The messages by kind: "1 guild message", "2 guild messages"; "2 messages" only where kinds mix.
 L.diagInboxMessages = "%d messages"
 L.diagInboxMessageOne = "1 message"
+L.diagInboxKinds = {
+	guild = { "guild message", "guild messages" },
+	upgrade = { "upgrade message", "upgrade messages" },
+	weights = { "weights message", "weights messages" },
+	last_raid = { "raid recap", "raid recaps" },
+	loot_values = { "loot values message", "loot values messages" },
+	sim_result = { "sim result", "sim results" },
+}
 -- The one chat line at login, when it is true (X.3).
 L.siteLoginNever = "the site has not seen this character yet. Keep the companion running and signed in; "
 	.. "log out once from the world."
 L.siteLoginGear = "your gear is on its way to the site; check it after your next logout."
-L.siteLoginBuild = "a build from the site is waiting: %s. /fs opens it."
-L.siteLoginBuilds = "%d builds from the site are waiting: %s. /fs opens them."
+-- X.5: the ack is newer than the export's build time, so the earlier "on its way" is settled (once).
+L.siteLoginGearSeen = "the site has your gear (seen %s)."
+L.siteLoginSelf = "this character"
+L.siteLoginBuild = "a build for %s is waiting: %s. /fs opens it."
+L.siteLoginBuilds = "%d builds for %s are waiting: %s. /fs opens them."
 L.siteLoginSilent = "the companion has not picked up your data since %s. "
 	.. "Start it, or paste an export at foreversixty.gg/setup."
 -- The chip's hover when a build waits and none is followed (X.3).
 L.chipInboxWaiting = "A build from the site is waiting. Click to open."
+
+-- X.5: every time the addon prints is in the chat's own clock (Compat.clockText): 24-hour "18:20", or
+-- 12-hour "06:20 pm" where the client's chat timestamps (or its locale) are 12-hour.
+L.timeTwentyFour = "%02d:%02d"
+L.timeTwelve = "%02d:%02d %s"
+L.timeAm = "am"
+L.timePm = "pm"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel

@@ -1,12 +1,12 @@
 -- addon/ForeverSixty/surfaces/BuildDialog.lua
 -- The build dialog (spec section 4.10): the one frame of the addon's own, 420x300.
--- Two tabs, one job each: paste a build in ("Paste a build"), copy the character out
--- ("Copy my character", the site's own words).
+-- Two tabs, one job each: take a build in ("Builds": the ones the site sent as rows, and the paste
+-- box under them), copy the character out ("Copy my character", the site's own words).
 --
 -- Pure model, thin frame. BuildDialog.evaluate is the paste box's whole verdict
 -- (Codec.loadBuild's own answer, the codec's own reason on a refusal); pasteView,
 -- refusal, preview, followingLine and nextTalent are what paste mode shows; copyModel
--- is the whole of copy mode with the clock handed in; inboxRows and rowsView are the
+-- is the whole of copy mode with the clock handed in; inboxRows, rowText and rowsView are the
 -- "from the site" list. The frame is built on the first open, never at load, and every
 -- number on it comes from the function that owns it (Progress.planSplit for the split,
 -- Progress.unspentPoints for the points to place, Follow.buildName for the name, the
@@ -86,12 +86,14 @@ end
 --- How the paste box sits: two lines while empty or edited, collapsed to one muted line for a
 --- preview or a refusal (opened again while the player edits), the refusal's lines and red
 --- border until the box is edited, the gold border only while it has the keyboard, and a good
---- paste highlighted so a second Ctrl+V replaces it.
-function BuildDialog.pasteView(verdict, editing, focused)
+--- paste highlighted so a second Ctrl+V replaces it. `resting` (builds wait, the player has not
+--- touched the box): the box holds the keyboard for Enter and the arrow keys but is not what the
+--- player is working in, so its border stays quiet until a click or a key of theirs (X.5).
+function BuildDialog.pasteView(verdict, editing, focused, resting)
 	local ok = verdict ~= nil and verdict.ok == true
 	local refused = verdict ~= nil and not ok and verdict.reason ~= nil
 	local showReason = refused and not editing
-	local border = focused and "gold" or "border"
+	local border = focused and not resting and "gold" or "border"
 	if showReason then
 		border = "warning"
 	end
@@ -256,6 +258,17 @@ local function escaped(name)
 	return (tostring(name or ""):gsub("|", "||"))
 end
 
+--- "Warrior · Arms 33 / Fury 16 · 51 points", the line under a build's name in the preview and in a
+--- row from the site.
+function BuildDialog.detailLine(build, data)
+	local points = #build.order
+	return joined(
+		Talents.titleCase(build.classSlug),
+		points > 0 and BuildDialog.split(build, data) or nil,
+		pointsWord(points)
+	)
+end
+
 --- What the preview shows for a build the codec loaded: the class token (for
 --- Theme.classIcon), the name (Follow.buildName: the build's own, else its trees; escaped),
 --- the line "Warrior · Arms 33 / Fury 16 · 51 points", "You can place 12 now." while points
@@ -266,11 +279,7 @@ function BuildDialog.preview(build, data, context)
 	context = context or {}
 	local points = #build.order
 	local unspent = math.min(context.unspent or 0, points)
-	local detail = joined(
-		Talents.titleCase(build.classSlug),
-		points > 0 and BuildDialog.split(build, data) or nil,
-		pointsWord(points)
-	)
+	local detail = BuildDialog.detailLine(build, data)
 	local wordOf = context.slotWord or function(slot)
 		return BuildDialog.slotWord(slot, {})
 	end
@@ -379,31 +388,14 @@ local function cutName(raw, bytes)
 	return escaped((cut(raw, bytes):gsub("%s+$", ""))) .. L.ellipsis
 end
 
---- The build name keeps at least this many bytes before the Replaces line drops the talent's tree.
-BuildDialog.NAME_FLOOR = 8
-
---- The Replaces line: "Replaces Arms raid · same points and gear · nothing changes" / "· same
---- points, different gear list" / "· first differs at point N: <talent (tree)>", fitted to `width` by cutting the
---- build name first, then dropping the talent's tree, never the talent itself.
-local function replacesLine(raw, at, parts, sameFormat, measure, width)
-	local function line(bytes, talent)
-		if at == nil then
-			return string.format(sameFormat, cutName(raw, bytes))
-		end
-		return string.format(L.dialogReplacesDiffers, cutName(raw, bytes), at, talent)
+--- The Replaces sentence: "Replaces Arms raid · same points and gear · nothing changes" / "· same
+--- points, different gear list" / "· first differs at point N: <talent (tree)>". Whole, never cut: the
+--- frame wraps it onto a second line and the dialog grows (X.5: "Replaces Beast Ma…" decided a click).
+local function replacesLine(raw, at, parts, sameFormat)
+	if at == nil then
+		return string.format(sameFormat, escaped(raw))
 	end
-	local talent = parts ~= nil and talentText(parts, nil, false) or nil
-	local bytes = #raw
-	while bytes > BuildDialog.NAME_FLOOR and not fitsWidth(line(bytes, talent), measure, width) do
-		bytes = #cut(raw, bytes - 1)
-	end
-	if not fitsWidth(line(bytes, talent), measure, width) and parts ~= nil and parts.tree then
-		talent = talentText(parts, false, false)
-	end
-	while bytes > 1 and not fitsWidth(line(bytes, talent), measure, width) do
-		bytes = #cut(raw, bytes - 1)
-	end
-	return line(bytes, talent)
+	return string.format(L.dialogReplacesDiffers, escaped(raw), at, talentText(parts, nil, false))
 end
 
 --- The Next line: "Next talent would be: Take <talent (tree, rank)>", fitted to `width` by
@@ -460,24 +452,36 @@ local function sameGear(a, b)
 	return true
 end
 
---- The muted lines above "Use this build". `replaces`: what Use replaces and what differs
---- (same points and gear, same points with a different gear list, or the first point the
---- orders part at, with its talent); absent with nothing followed. `nextWould`: the next talent
---- the candidate gives on this character now. Both fitted to `width` as `measure` measures
---- them (no measure: whole).
+--- The muted lines above "Use this build", each whole (the frame wraps them; X.5). `replaces`: what
+--- Use replaces and what differs (same points and gear, same points with a different gear list, or
+--- the first point the orders part at, with its talent); absent with nothing followed. When the
+--- candidate is a strict prefix of the followed plan the sentence is "Same as your plan for 11
+--- points. Yours goes on with Bestial Swiftness." instead, and `blocked` says why Use is held
+--- back ("Your plan is further along."). `short`, for a candidate that ends before the points
+--- `ranks` have spent and is not a prefix: "This build ends at 11 points; you have spent 15. It
+--- keeps following from point 12.", above `replaces`. `nextWould`: the next talent the candidate
+--- gives on this character now, fitted to `width` as `measure` measures it (no measure: whole).
 function BuildDialog.previewContext(followed, candidate, ranks, data, level, measure, width)
 	local context = {}
+	local prefix = false
 	if followed ~= nil and candidate ~= nil then
 		local raw = Follow.buildName(data, followed)
 		local at = BuildDialog.firstDifference(followed.order, candidate.order)
 		if at == nil then
 			local same = sameGear(followed, candidate) and L.dialogReplacesSameAll or L.dialogReplacesSameOrder
-			context.replaces = replacesLine(raw, nil, nil, same, measure, width)
+			context.replaces = replacesLine(raw, nil, nil, same)
+		elseif candidate.order[at] == nil then
+			prefix = true
+			context.replaces = string.format(L.dialogSameAsPlan, pointsWord(#candidate.order),
+				talentText(talentParts(followed, data, followed.order[at]), false, false))
+			context.blocked = L.dialogUseFurther
 		else
-			local cell = candidate.order[at] or followed.order[at]
-			local owner = candidate.order[at] ~= nil and candidate or followed
-			context.replaces = replacesLine(raw, at, talentParts(owner, data, cell), nil, measure, width)
+			context.replaces = replacesLine(raw, at, talentParts(candidate, data, candidate.order[at]), nil)
 		end
+	end
+	local spent = Progress.pointsSpent(ranks)
+	if candidate ~= nil and not prefix and #candidate.order < spent then
+		context.short = string.format(L.dialogEndsShort, pointsWord(#candidate.order), spent, #candidate.order + 1)
 	end
 	local label, _, parts = BuildDialog.dialogTalent(candidate, ranks, data, level)
 	if label ~= nil then
@@ -487,20 +491,24 @@ function BuildDialog.previewContext(followed, candidate, ranks, data, level, mea
 end
 
 --- The preview's worst case laid out at `line` px a text line (Theme.SIZES and LAYOUT): the
---- title and tabs, a chosen inbox row or the collapsed code (never both), the name, spec and
---- "You can place N now." beside the class icon, the gear heading and three rows at
---- GEAR_PITCH, 8 px, "Replaces" and "Next talent would be", the button, and the hint under
---- it with its clearance. The total, and the parts by name.
-function BuildDialog.previewLayout(line)
+--- title and tabs, the collapsed code (a pasted build) or none (a build from the site, whose
+--- header takes a fourth line for the character it is for), the name, spec and "You can place N
+--- now." beside the class icon, the gear heading and three rows at GEAR_PITCH, 8 px, `contextLines`
+--- of "Replaces" and "Next talent would be" (two; each wrapped line of the replace sentence and the
+--- "ends at" sentence adds one, and the dialog grows by it, BuildDialog.fitHeight), the button,
+--- and the hint under it with its clearance. The total, and the parts by name.
+function BuildDialog.previewLayout(line, contextLines, fromSite)
 	local S, G = Theme.SIZES, BuildDialog.LAYOUT
+	contextLines = contextLines or 2
+	local headerLines = fromSite and 4 or 3
 	local parts = {
 		top = S.titleBarHeight + S.tabHeight + G.tabGap,
-		code = math.max(S.rowHeight, line + S.gap * 2) + G.codeGap,
-		header = math.max(S.dialogClassIcon, line * 3 + S.gap / 2 * 2) + G.previewGap,
+		code = fromSite and 0 or math.max(S.rowHeight, line + S.gap * 2) + G.codeGap,
+		header = math.max(S.dialogClassIcon, line * headerLines + S.gap / 2 * (headerLines - 1)) + G.previewGap,
 		gearHeading = S.dialogGearRow,
 		gearRows = BuildDialog.GEAR_PICKS * BuildDialog.GEAR_PITCH,
 		aboveReplaces = G.aboveReplaces,
-		context = line * 2 + S.gap / 2,
+		context = line * contextLines + S.gap / 2 * (contextLines - 1),
 		buttonGap = G.buttonGap,
 		button = S.buttonHeight + S.gap,
 		hintClearance = G.hintClearance,
@@ -726,8 +734,9 @@ function BuildDialog.parseLocal(text, clock)
 	return clock.epoch({ year = year, month = month, day = day, hour = hour, min = minute, sec = 0 })
 end
 
+--- A time of day in the chat's own clock (Compat.clockText), every printed time's one form.
 local function hhmm(fields)
-	return string.format("%02d:%02d", fields.hour, fields.min)
+	return Compat.clockText(fields.hour, fields.min)
 end
 
 --- Which day `seconds` was, in local time ("today", "yesterday" or "date"), its "14:02", and
@@ -914,14 +923,14 @@ function BuildDialog.savedAtFor(db, outboxName)
 end
 
 
--- Pure rules: builds from the site -------------------------------------------------------
-
 --- The "from the site" rows: one per build in `builds` (Follow.inboxBuilds) whose id and
 --- code are both unused (`dismissed`, Follow.dismissedSet) and whose code loads for this
---- player, as { id, name, code, split, label }, the label "Arms raid · Arms 31 / Fury 20 · from
---- the site" (BuildDialog.rowLabel fits it). Another class's build is left out without a word (it was sent
---- for another character of the account). The second value is the first other refusal met,
---- for /fs inbox.
+--- player, as { id, name, code, from, classToken, detail, target }: the name (the title the site
+--- sent, verbatim, else the build's own trees), the detail "Hunter · Beast Mastery 11 · 11 points"
+--- and, for a build addressed to a character, the muted line "For Bow Jackzon · Classic Beta PvP ·
+--- from the site" (`player` carries the character's `name` and `realm`; a site-wide build says only
+--- where it is from). Another class's build is left out without a word (it was sent for another
+--- character of the account). The second value is the first other refusal met, for /fs inbox.
 function BuildDialog.inboxRows(builds, dismissed, data, player)
 	local rows, refusal = {}, nil
 	dismissed = dismissed or {}
@@ -932,14 +941,14 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 			if verdict.ok then
 				local name = type(entry.name) == "string" and entry.name ~= "" and entry.name
 					or Follow.buildName(data, verdict.build)
-				local split = BuildDialog.shortSplit(verdict.build, data)
 				rows[#rows + 1] = {
 					id = entry.id,
 					name = name,
 					code = entry.code,
-					split = split,
 					from = entry.from,
-					label = BuildDialog.rowLabel(name, split, nil, nil, entry.from),
+					classToken = verdict.build.classSlug:upper(),
+					detail = BuildDialog.detailLine(verdict.build, data),
+					target = BuildDialog.rowTarget(entry, player),
 				}
 			elseif refusal == nil and not otherClass then
 				refusal = verdict.reason
@@ -949,74 +958,64 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 	return rows, refusal
 end
 
---- A row's source, muted, so the row reads as two levels.
-BuildDialog.ROW_SOURCE = Theme.inlineColor("muted", L.dialogFromSite)
-
---- The points per tree in the players' form, in tree order: "33/16/2".
-function BuildDialog.shortSplit(build, data)
-	local counts = Progress.planSplit(build)
-	local class = data ~= nil and data.classes ~= nil and data.classes[build.classSlug] or nil
-	local trees = class ~= nil and #class.tabs or 0
-	for tab in pairs(counts) do
-		trees = math.max(trees, tab)
+--- The muted line under a row's detail: "For Bow Jackzon · Classic Beta PvP · from the site", the
+--- source "pushed by <officer>" for a build an officer pushed (L3.7 item 44). The "For ..." part
+--- only for a build addressed to a character (`entry.character`) while the player's name is known;
+--- the realm is the one the player is on, which the build was matched to (Follow.offeredTo).
+function BuildDialog.rowTarget(entry, player)
+	local source = L.dialogFromSite
+	if type(entry.from) == "string" and entry.from ~= "" then
+		source = string.format(L.dialogFromPush, entry.from)
 	end
-	local parts = {}
-	for tab = 1, trees do
-		parts[tab] = tostring(counts[tab] or 0)
+	local who, realm
+	if entry.character ~= nil and type(player) == "table" and type(player.name) == "string" and player.name ~= "" then
+		who = string.format(L.dialogForCharacter, player.name)
+		realm = player.realm
 	end
-	return table.concat(parts, "/")
+	return joined(who, realm, source)
 end
 
---- A row's label: "Arms raid (old patch) · 33/16/2 · from the site", fitted to `width` as
---- `measure` measures it by shortening the name with an ellipsis, never the split; the bare
---- "Arms raid · from the site" with no split. Without a measure, the whole label.
-function BuildDialog.rowLabel(name, split, measure, width, from)
-	local raw = tostring(name or "")
-	-- "from the site", or "pushed by <officer>" for a build an officer pushed (L3.7 item 44).
-	local source = BuildDialog.ROW_SOURCE
-	if type(from) == "string" and from ~= "" then
-		source = Theme.inlineColor("muted", string.format(L.dialogFromPush, escaped(from)))
-	end
-	local function line(bytes)
-		if split == nil or split == "" then
-			return string.format(L.dialogInboxRowBare, cutName(raw, bytes), source)
-		end
-		return string.format(L.dialogInboxRow, cutName(raw, bytes), split, source)
-	end
+--- `raw` as a row shows it, escaped and cut with an ellipsis to `width` as `measure` measures it
+--- (no measure: whole).
+function BuildDialog.rowText(raw, measure, width)
+	raw = tostring(raw or "")
 	local bytes = #raw
-	while bytes > 1 and not fitsWidth(line(bytes), measure, width) do
+	while bytes > 1 and not fitsWidth(cutName(raw, bytes), measure, width) do
 		bytes = #cut(raw, bytes - 1)
 	end
-	return line(bytes)
+	return cutName(raw, bytes)
 end
 
---- The rows paste mode shows: with nothing previewed, at most `limit` and "and 2 more" for
---- the rest; while a row's build previews (`verdict.inboxId`), that row alone; while a pasted
---- code previews or is refused, none.
-function BuildDialog.rowsView(rows, limit, verdict)
+--- A row's height: the class icon's, or the three lines (name, detail, target) and the gap
+--- between them, whichever is taller, at `line` px a text line.
+function BuildDialog.rowHeight(line)
+	local S = Theme.SIZES
+	return math.max(S.dialogClassIcon, line * 3 + S.gap)
+end
+
+--- The rows paste mode shows: with nothing previewed, at most `limit` and "and 2 more" for the
+--- rest, the one at `cursor` (the first by default) as `active`, the highlighted row Enter
+--- previews; while any build previews or a pasted code is refused, none (the preview carries the
+--- build's own icon, name and detail).
+function BuildDialog.rowsView(rows, limit, verdict, cursor)
 	if verdict ~= nil then
-		local chosen = {}
-		for _, row in ipairs(rows) do
-			if verdict.inboxId ~= nil and row.id == verdict.inboxId then
-				chosen[1] = row
-			end
-		end
-		return { shown = chosen, active = chosen[1] ~= nil and chosen[1].id or nil }
+		return { shown = {} }
 	end
 	local shown = {}
 	for index = 1, math.min(limit, #rows) do
 		shown[index] = rows[index]
 	end
 	local more = #rows > limit and string.format(L.dialogInboxMore, #rows - limit) or nil
-	return { shown = shown, more = more }
+	local active = shown[math.max(1, math.min(cursor or 1, #shown))]
+	return { shown = shown, more = more, active = active ~= nil and active.id or nil }
 end
 
---- The row that feeds the preview: a 2 px gold edge at its left. Every row hovers in the
---- secondary buttons' hover ground, the cue that it can be clicked.
+--- The highlighted row: a 2 px gold edge at its left. Every row hovers in the secondary buttons'
+--- hover ground, the cue that it can be clicked.
 BuildDialog.ROW_ACTIVE_EDGE = { width = 2, token = "gold" }
 BuildDialog.ROW_HOVER = Theme.CONTROL_STATES.secondary.hover
 
---- The paste tab's badge while builds wait ("1 waiting"), in its own slot after the label in
+--- The paste tab's badge while builds wait ("· 1 waiting"), in its own slot after the label in
 --- both modes; nil when none wait.
 function BuildDialog.pasteBadge(count)
 	if (count or 0) > 0 then
@@ -1025,7 +1024,7 @@ function BuildDialog.pasteBadge(count)
 	return nil
 end
 
---- The paste tab's width: wide enough for "Paste a build  1 waiting" whenever a build waits (in
+--- The paste tab's width: wide enough for "Builds · 1 waiting" whenever a build waits (in
 --- both modes, so the copy tab never moves), else for its label alone.
 function BuildDialog.pasteTabWidth(labelWidth, badgeWidth, waiting)
 	local S = Theme.SIZES
@@ -1128,7 +1127,11 @@ function BuildDialog.player()
 	if not ok or type(slug) ~= "string" then
 		return nil
 	end
-	return { classSlug = slug, classNames = Compat.classNames() }
+	local found, realm = pcall(function()
+		return type(GetRealmName) == "function" and GetRealmName() or nil
+	end)
+	return { classSlug = slug, classNames = Compat.classNames(), name = Compat.playerName(),
+		realm = found and type(realm) == "string" and realm ~= "" and realm or nil }
 end
 
 local function liveLevel()
@@ -1256,7 +1259,7 @@ end
 --- A "from the site" row was clicked: preview it in the same place a paste previews.
 function BuildDialog.choose(row)
 	local verdict = BuildDialog.evaluate(row.code, dataOf(), BuildDialog.player())
-	verdict.name, verdict.inboxId = row.name, row.id
+	verdict.name, verdict.inboxId, verdict.target = row.name, row.id, row.target
 	if verdict.build ~= nil then
 		-- The preview names it as the site does (Follow.buildName reads the build's own name).
 		verdict.build.name = row.name
@@ -1270,11 +1273,37 @@ function BuildDialog.choose(row)
 	return BuildDialog.drawPaste()
 end
 
---- The Use button, and Enter in the paste box: only while a preview shows. Loads the
---- verdict's own trimmed code, never the box's text.
+--- The highlight to the `index`th row shown (kept within the rows there are), and the dialog redrawn.
+function BuildDialog.setCursor(index)
+	local shown = math.min(#(BuildDialog.rows or {}), Theme.SIZES.dialogInboxRows)
+	BuildDialog.cursor = math.max(1, math.min(index, math.max(1, shown)))
+	return BuildDialog.drawPaste()
+end
+
+--- Up or Down in the paste box: the highlight moves a row while builds wait and none is previewed.
+function BuildDialog.moveCursor(step)
+	if BuildDialog.verdict ~= nil or BuildDialog.mode ~= "paste" or #(BuildDialog.rows or {}) == 0 then
+		return nil
+	end
+	return BuildDialog.setCursor((BuildDialog.cursor or 1) + step)
+end
+
+--- Enter with builds waiting and none previewed: the highlighted build previews.
+function BuildDialog.previewCursor()
+	local rows = BuildDialog.rows or {}
+	local row = rows[BuildDialog.cursor or 1] or rows[1]
+	if row == nil then
+		return nil
+	end
+	return BuildDialog.choose(row)
+end
+
+--- The Use button, and Enter in the paste box: only while a preview shows, and not while the build
+--- is a prefix of the plan (`useBlocked`, the reason on the screen). Loads the verdict's own
+--- trimmed code, never the box's text.
 function BuildDialog.useCurrent()
 	local verdict = BuildDialog.verdict
-	if verdict == nil or not verdict.ok then
+	if verdict == nil or not verdict.ok or BuildDialog.useBlocked ~= nil then
 		return nil
 	end
 	local name = verdict.name or Follow.buildName(dataOf(), verdict.build)
@@ -1370,12 +1399,19 @@ function BuildDialog.place()
 		return nil
 	end
 	frame:ClearAllPoints()
+	-- Taller than its ordinary height (BuildDialog.fitHeight), the dialog keeps its top edge where it
+	-- was: a centred frame moves down by half of what it grew.
+	local lower = ((BuildDialog.height or Theme.SIZES.dialogHeight) - Theme.SIZES.dialogHeight) / 2
 	local point = Prefs.get("dialog", "point")
 	if type(point) == "string" and point ~= "" then
-		frame:SetPoint(point, UIParent, point, Prefs.get("dialog", "x"), Prefs.get("dialog", "y"))
+		local y = Prefs.get("dialog", "y")
+		if point == "CENTER" and type(y) == "number" then
+			y = y - lower
+		end
+		frame:SetPoint(point, UIParent, point, Prefs.get("dialog", "x"), y)
 		return point
 	end
-	frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	frame:SetPoint("CENTER", UIParent, "CENTER", 0, -lower)
 	return "CENTER"
 end
 
@@ -1394,7 +1430,9 @@ function BuildDialog.savePosition()
 	end
 	Prefs.set("dialog", "point", "CENTER")
 	Prefs.set("dialog", "x", x - parentX)
-	Prefs.set("dialog", "y", y - parentY)
+	-- The centre of the ordinary-height frame, whatever the dialog has grown to (BuildDialog.place).
+	Prefs.set("dialog", "y", y - parentY + ((BuildDialog.height or Theme.SIZES.dialogHeight)
+		- Theme.SIZES.dialogHeight) / 2)
 	BuildDialog.place()
 	return true
 end
@@ -1413,6 +1451,14 @@ local function bindKeys(box, onEnter)
 	end)
 	box:SetScript("OnTabPressed", function()
 		BuildDialog.setMode(BuildDialog.nextMode(BuildDialog.mode))
+	end)
+	-- Up and Down move the highlight among the builds waiting (paste mode, nothing previewed).
+	box:SetScript("OnArrowPressed", function(_, key)
+		if key == "UP" then
+			BuildDialog.moveCursor(-1)
+		elseif key == "DOWN" then
+			BuildDialog.moveCursor(1)
+		end
 	end)
 	box:SetScript("OnEnterPressed", onEnter)
 end
@@ -1552,6 +1598,13 @@ local function buildPreview(content)
 	local detail = text(preview, "muted", inner)
 	detail:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -S.gap / 2)
 	setMaxLines(detail, 2)
+	-- A build from the site: "For Bow Jackzon · Classic Beta PvP · from the site", muted.
+	local target = text(preview, "muted", inner)
+	target:SetPoint("TOPLEFT", detail, "BOTTOMLEFT", 0, -S.gap / 2)
+	if type(target.SetWordWrap) == "function" then
+		target:SetWordWrap(false)
+	end
+	target:Hide()
 	-- "You can place 12 now." on its own line, in body colour.
 	local placeNow = text(preview, "body", inner)
 	local headingFrame = Theme.createFrame("Frame", nil, preview)
@@ -1571,15 +1624,21 @@ local function buildPreview(content)
 	end
 	preview:Hide()
 	return {
-		frame = preview, icon = icon, name = name, detail = detail, placeNow = placeNow,
+		frame = preview, icon = icon, name = name, detail = detail, target = target, placeNow = placeNow,
 		headingFrame = headingFrame, heading = heading, picks = picks,
 	}
 end
 
+--- One build from the site as a row (X.5): the class icon, the name, the detail ("Hunter · Beast
+--- Mastery 11 · 11 points") and the muted "For Bow Jackzon · Classic Beta PvP · from the site" under
+--- it, the same arrangement as the preview's header. The highlighted row has a gold edge outside its
+--- left side and the hover ground; hovering a row highlights it, clicking previews it.
 local function buildRow(content)
 	local S = Theme.SIZES
+	local width = contentWidth()
+	local inner = width - S.dialogClassIcon - S.gap * 2
 	local row = { frame = Theme.createFrame("Button", nil, content) }
-	row.frame:SetSize(contentWidth(), S.rowHeight)
+	row.frame:SetSize(width, BuildDialog.rowHeight(lineHeight()))
 	local highlight = Theme.texture(row.frame, "BACKGROUND", BuildDialog.ROW_HOVER)
 	highlight:SetAllPoints(row.frame)
 	highlight:Hide()
@@ -1590,18 +1649,23 @@ local function buildRow(content)
 	row.edge:SetPoint("BOTTOMRIGHT", row.frame, "BOTTOMLEFT", -S.gap, 0)
 	row.edge:SetWidth(E.width)
 	row.edge:Hide()
-	row.label = text(row.frame, "body", contentWidth() - S.gap * 2)
-	-- The text starts at the content margin, like "Following".
-	row.label:SetPoint("LEFT", row.frame, "LEFT", 0, 0)
-	if type(row.label.SetWordWrap) == "function" then
-		row.label:SetWordWrap(false)
+	row.icon = row.frame:CreateTexture(nil, "ARTWORK")
+	row.icon:SetSize(S.dialogClassIcon, S.dialogClassIcon)
+	row.icon:SetPoint("TOPLEFT", row.frame, "TOPLEFT", 0, 0)
+	row.name = text(row.frame, "body", inner)
+	row.name:SetPoint("TOPLEFT", row.icon, "TOPRIGHT", S.gap * 2, 0)
+	row.detail = text(row.frame, "muted", inner)
+	row.detail:SetPoint("TOPLEFT", row.name, "BOTTOMLEFT", 0, -S.gap / 2)
+	row.target = text(row.frame, "muted", inner)
+	row.target:SetPoint("TOPLEFT", row.detail, "BOTTOMLEFT", 0, -S.gap / 2)
+	for _, region in ipairs({ row.name, row.detail, row.target }) do
+		if type(region.SetWordWrap) == "function" then
+			region:SetWordWrap(false)
+		end
 	end
 	row.frame:SetScript("OnEnter", function()
-		highlight:Show()
-	end)
-	row.frame:SetScript("OnLeave", function()
-		if not row.selected then
-			highlight:Hide()
+		if row.index ~= nil and BuildDialog.cursor ~= row.index then
+			BuildDialog.setCursor(row.index)
 		end
 	end)
 	row.frame:SetScript("OnClick", function()
@@ -1647,12 +1711,18 @@ local function buildPaste(frame, top, bottom)
 	end
 	box:SetScript("OnTextChanged", function(self, userInput)
 		if userInput then
+			BuildDialog.touched = true
 			BuildDialog.onPaste(self:GetText())
 		else
 			BuildDialog.drawPaste()
 		end
 	end)
 	local function startEditing()
+		if BuildDialog.touched ~= true then
+			-- A click in the box is the player working in it: its border goes gold (X.5).
+			BuildDialog.touched = true
+			BuildDialog.drawPaste()
+		end
 		if not BuildDialog.editing and BuildDialog.verdict ~= nil then
 			BuildDialog.editing = true
 			BuildDialog.drawPaste()
@@ -1682,15 +1752,14 @@ local function buildPaste(frame, top, bottom)
 			BuildDialog.drawPaste()
 			return
 		end
+		if BuildDialog.verdict == nil and #(BuildDialog.rows or {}) > 0 then
+			-- Builds wait and nothing is previewed: Enter previews the highlighted one.
+			BuildDialog.previewCursor()
+			return
+		end
 		BuildDialog.useCurrent()
 	end)
 	paste.box, paste.field, paste.clip = box, field, clip
-	-- A chosen row sits where the collapsed code would, above the (then invisible) box.
-	if type(field.GetFrameLevel) == "function" then
-		for _, row in ipairs(paste.rows) do
-			row.frame:SetFrameLevel((field:GetFrameLevel() or 0) + 3)
-		end
-	end
 	paste.lead = text(content, "warning", width)
 	setMaxLines(paste.lead, 2)
 	paste.body = text(content, "body", width)
@@ -1707,16 +1776,18 @@ local function buildPaste(frame, top, bottom)
 	paste.preview.frame:SetFrameLevel((boxLevel or 0) + 4)
 	paste.use:SetFrameLevel((boxLevel or 0) + 5)
 	paste.use:Hide()
-	-- Above the button: what Use replaces, and the next talent the candidate gives.
+	-- Above the button, laid out bottom-up by drawPreview: the next talent the candidate gives (one
+	-- line, fitted), what Use replaces and, above it, where the candidate stops short; the last two
+	-- wrap whole (X.5). Beside the button, why it is held back.
 	paste.nextWould = text(content, "muted", width)
-	paste.nextWould:SetPoint("BOTTOMLEFT", paste.use, "TOPLEFT", 0, BuildDialog.LAYOUT.buttonGap)
 	paste.replaces = text(content, "muted", width)
-	paste.replaces:SetPoint("BOTTOMLEFT", paste.nextWould, "TOPLEFT", 0, S.gap / 2)
-	for _, region in ipairs({ paste.nextWould, paste.replaces }) do
-		if type(region.SetWordWrap) == "function" then
-			region:SetWordWrap(false)
-		end
+	paste.short = text(content, "muted", width)
+	if type(paste.nextWould.SetWordWrap) == "function" then
+		paste.nextWould:SetWordWrap(false)
 	end
+	paste.useReason = text(content, "muted", width - Theme.SIZES.buttonWidth - S.gap * 2)
+	paste.useReason:SetPoint("LEFT", paste.use, "RIGHT", S.gap * 2, 0)
+	paste.useReason:Hide()
 	return paste
 end
 
@@ -1876,6 +1947,8 @@ function BuildDialog.ensure()
 	BuildDialog.enterHint = enter
 	local top = S.titleBarHeight + S.tabHeight + G.tabGap
 	local bottom = G.hintMargin + lineHeight() + G.hintClearance
+	BuildDialog.chrome = { top = top, bottom = bottom }
+	BuildDialog.height = S.dialogHeight
 	BuildDialog.contentHeight = S.dialogHeight - top - bottom
 	BuildDialog.paste = buildPaste(frame, top, bottom)
 	BuildDialog.copyTab = buildCopy(frame, top, bottom)
@@ -1959,10 +2032,21 @@ local function drawPreview(verdict, y)
 	preview.name:SetText(model.name)
 	preview.detail:SetText(model.detail)
 	local textY = textHeight(preview.name) + S.gap / 2 + textHeight(preview.detail)
+	-- A build from the site names the character it is for, as its row did.
+	local lastLine = preview.detail
+	if type(verdict.target) == "string" and verdict.target ~= "" then
+		preview.target:SetText(BuildDialog.rowText(verdict.target, widthOf(preview.target),
+			contentWidth() - S.dialogClassIcon - S.gap * 2))
+		preview.target:Show()
+		textY = textY + S.gap / 2 + textHeight(preview.target)
+		lastLine = preview.target
+	else
+		preview.target:Hide()
+	end
 	if model.placeNow ~= nil then
 		preview.placeNow:SetText(model.placeNow)
 		preview.placeNow:ClearAllPoints()
-		preview.placeNow:SetPoint("TOPLEFT", preview.detail, "BOTTOMLEFT", 0, -S.gap / 2)
+		preview.placeNow:SetPoint("TOPLEFT", lastLine, "BOTTOMLEFT", 0, -S.gap / 2)
 		preview.placeNow:Show()
 		textY = textY + S.gap / 2 + textHeight(preview.placeNow)
 	else
@@ -2012,25 +2096,63 @@ local function drawPreview(verdict, y)
 		end
 	end
 	local ok, context = pcall(BuildDialog.previewContext, followed, verdict.build, ranks, data, liveLevel(),
-		widthOf(paste.replaces), contentWidth())
+		widthOf(paste.nextWould), contentWidth())
 	if not ok then
 		context = {}
 	end
-	for key, region in pairs({ replaces = paste.replaces, nextWould = paste.nextWould }) do
+	-- The three lines above the button, bottom-up from it: the next talent, what Use replaces, and
+	-- where the build stops short. The sentences wrap whole; their height is what the dialog grows by.
+	local G = BuildDialog.LAYOUT
+	local anchor, gap, contextHeight = paste.use, G.buttonGap, 0
+	for _, key in ipairs({ "nextWould", "replaces", "short" }) do
+		local region = paste[key]
 		if context[key] ~= nil then
 			region:SetText(context[key])
+			region:ClearAllPoints()
+			region:SetPoint("BOTTOMLEFT", anchor, "TOPLEFT", 0, gap)
 			region:Show()
+			contextHeight = contextHeight + (anchor == paste.use and 0 or S.gap / 2) + textHeight(region)
+			anchor, gap = region, S.gap / 2
 		else
 			region:SetText("")
 			region:Hide()
 		end
 	end
+	-- A build that is a prefix of the plan cannot be used, and says why beside the button.
+	BuildDialog.useBlocked = context.blocked
+	Widgets.setEnabled(paste.use, context.blocked == nil)
+	if context.blocked ~= nil then
+		paste.useReason:SetText(context.blocked)
+		paste.useReason:Show()
+	else
+		paste.useReason:Hide()
+	end
+	return y + headY + G.aboveReplaces + contextHeight + G.buttonGap + S.buttonHeight + S.gap
+end
+
+--- Grow the dialog downward to hold `used` px of paste content under the tabs: never below
+--- Theme.SIZES.dialogHeight, and the content area (anchored to both of the panel's corners) follows.
+--- The dialog keeps its top where it was at its ordinary height (BuildDialog.place). The height.
+function BuildDialog.fitHeight(used)
+	local frame, chrome = BuildDialog.frame, BuildDialog.chrome
+	if frame == nil or chrome == nil then
+		return nil
+	end
+	local height = math.max(Theme.SIZES.dialogHeight, math.ceil(chrome.top + used + chrome.bottom))
+	if height ~= BuildDialog.height then
+		BuildDialog.height = height
+		frame:SetHeight(height)
+		BuildDialog.place()
+	end
+	BuildDialog.contentHeight = height - chrome.top - chrome.bottom
+	return height
 end
 
 --- Redraw paste mode from the verdict: with nothing pasted, "Following" and "Next talent"
---- together above a two-line box; the rows from the site (only the chosen one while it
---- previews); the box, one muted line once a code loads; the refusal's three lines or the
---- preview with what Use replaces; and the gold Use button.
+--- together above the builds the site sent (a row each, the first highlighted) and a two-line
+--- box; the box, one muted line once a code loads; the refusal's three lines or the preview with
+--- what Use replaces (a build from the site shows no row: the preview's header is it); and the
+--- gold Use button. The dialog grows downward for what the content needs.
 function BuildDialog.drawPaste()
 	local paste = BuildDialog.paste
 	if paste == nil then
@@ -2039,14 +2161,17 @@ function BuildDialog.drawPaste()
 	local S = Theme.SIZES
 	local data = dataOf()
 	local verdict = BuildDialog.verdict
-	local view = BuildDialog.pasteView(verdict, BuildDialog.editing == true, BuildDialog.focused == true)
+	local waiting = #(BuildDialog.rows or {}) > 0
+	local resting = waiting and verdict == nil and BuildDialog.touched ~= true
+	local view = BuildDialog.pasteView(verdict, BuildDialog.editing == true, BuildDialog.focused == true, resting)
 	local content = paste.content
 	for _, region in ipairs({ paste.following, paste.next, paste.more, paste.lead, paste.body, paste.still,
-		paste.replaces, paste.nextWould, paste.companion }) do
+		paste.replaces, paste.short, paste.nextWould, paste.companion, paste.useReason }) do
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
 	paste.use:Hide()
+	BuildDialog.useBlocked = nil
 	BuildDialog.enterHint:Hide()
 	local y = 0
 	if verdict == nil then
@@ -2064,49 +2189,55 @@ function BuildDialog.drawPaste()
 			y = y + S.gap * 2
 		end
 	end
-	local rows = BuildDialog.rowsView(BuildDialog.rows or {}, S.dialogInboxRows, verdict)
-	-- A chosen row stands in for the collapsed code: one line, never both.
-	local rowY = y
-	local chosen = verdict ~= nil and verdict.inboxId ~= nil and #rows.shown > 0
+	local rows = BuildDialog.rowsView(BuildDialog.rows or {}, S.dialogInboxRows, verdict, BuildDialog.cursor)
+	local rowHeight = BuildDialog.rowHeight(lineHeight())
+	local inner = contentWidth() - S.dialogClassIcon - S.gap * 2
 	for index, row in ipairs(paste.rows) do
 		local entry = rows.shown[index]
-		row.entry = entry
+		row.entry, row.index = entry, entry ~= nil and index or nil
 		if entry == nil then
 			row.frame:Hide()
 		else
-			row.label:SetText(BuildDialog.rowLabel(entry.name, entry.split, widthOf(row.label),
-				contentWidth() - S.gap * 2, entry.from))
-			row.selected = verdict ~= nil and verdict.inboxId == entry.id
-			if rows.active ~= nil and rows.active == entry.id then
-				row.edge:Show()
-			else
-				row.edge:Hide()
+			local path, coords = Theme.classIcon(entry.classToken)
+			row.icon:SetTexture(path)
+			if type(row.icon.SetTexCoord) == "function" then
+				row.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4])
 			end
+			row.selected = rows.active == entry.id
+			row.name:SetTextColor(Theme.rgb(Theme.HEX[row.selected and "gold" or "body"]))
+			row.name:SetText(BuildDialog.rowText(entry.name, widthOf(row.name), inner))
+			row.detail:SetText(BuildDialog.rowText(entry.detail, widthOf(row.detail), inner))
+			row.target:SetText(BuildDialog.rowText(entry.target, widthOf(row.target), inner))
 			if row.selected then
+				row.edge:Show()
 				row.highlight:Show()
 			else
+				row.edge:Hide()
 				row.highlight:Hide()
 			end
-			y = stack(row.frame, content, y, S.rowHeight)
+			y = stack(row.frame, content, y, rowHeight + S.gap)
 		end
 	end
 	if rows.more ~= nil then
 		paste.more:SetText(rows.more)
 		y = stack(paste.more, content, y, textHeight(paste.more))
 	end
-	if #rows.shown > 0 and not chosen then
+	if #rows.shown > 0 then
 		y = y + S.gap
 	end
 	-- The box, in whole lines: two while empty or edited, one muted line once a code loads.
 	local first, advance = lineMetrics()
 	local boxText = paste.box:GetText() or ""
 	local fieldHeight = sizeField(paste.field, paste.clip, paste.box, first + (view.lines - 1) * advance)
-	if chosen then
-		stack(paste.field, content, rowY, fieldHeight)
+	if verdict ~= nil and verdict.inboxId ~= nil then
+		-- A build from the site previewing: the box stays under the preview's header, unseen and
+		-- deaf to the mouse, still holding the keyboard for Enter and Escape.
+		stack(paste.field, content, y, fieldHeight)
 		paste.field:SetAlpha(0)
-		y = math.max(y, rowY + fieldHeight) + BuildDialog.LAYOUT.codeGap
+		paste.field:EnableMouse(false)
 	else
 		paste.field:SetAlpha(1)
+		paste.field:EnableMouse(true)
 		y = stack(paste.field, content, y, fieldHeight) + BuildDialog.LAYOUT.codeGap
 	end
 	paste.box:EnableMouse(not view.collapsed)
@@ -2136,6 +2267,7 @@ function BuildDialog.drawPaste()
 		end
 	end
 	paintEdges(paste.field.foreverSixtyBorder, view.border)
+	local used = y
 	if view.reason then
 		local followed = Follow.build ~= nil and Follow.buildName(data, Follow.build) or nil
 		local refusal = BuildDialog.refusal(verdict.reason, followed and followed:gsub("|", "||") or nil)
@@ -2147,15 +2279,21 @@ function BuildDialog.drawPaste()
 		end
 		if refusal.following ~= nil then
 			paste.still:SetText(refusal.following)
-			stack(paste.still, content, y, textHeight(paste.still))
+			y = stack(paste.still, content, y, textHeight(paste.still))
 		end
+		used = y
 	elseif view.preview then
-		drawPreview(verdict, y)
+		used = drawPreview(verdict, y)
 		paste.use:Show()
 		if BuildDialog.mode == "paste" then
+			BuildDialog.enterHint:SetText(L.dialogEnterHint)
 			BuildDialog.enterHint:Show()
 		end
+	elseif waiting and BuildDialog.mode == "paste" then
+		BuildDialog.enterHint:SetText(L.dialogEnterPreview)
+		BuildDialog.enterHint:Show()
 	end
+	BuildDialog.fitHeight(used)
 	BuildDialog.placeHint(verdict == nil and not view.collapsed and y or nil)
 	return verdict
 end
@@ -2163,6 +2301,7 @@ end
 --- Where the "Tab to switch" hint sits (L3.7 item 28): at the panel's corner, except on the empty
 --- paste tab, where the empty space under the box holds a muted companion line and then the hint
 --- (`y`, the content's y under the box); the corner again when that space is not there for both.
+--- While builds wait neither shows: the tabs are the switch, and the builds are the news (X.5).
 function BuildDialog.placeHint(y)
 	local hint, paste = BuildDialog.tabHint, BuildDialog.paste
 	if hint == nil then
@@ -2170,6 +2309,15 @@ function BuildDialog.placeHint(y)
 	end
 	local S, G = Theme.SIZES, BuildDialog.LAYOUT
 	hint:ClearAllPoints()
+	if #(BuildDialog.rows or {}) > 0 then
+		hint:Hide()
+		hint:SetPoint(BuildDialog.HINT_POINT, BuildDialog.frame, BuildDialog.HINT_POINT, S.padding, G.hintMargin)
+		if paste ~= nil then
+			paste.companion:Hide()
+		end
+		return
+	end
+	hint:Show()
 	if y ~= nil and paste ~= nil and BuildDialog.mode == "paste" then
 		local companion = paste.companion
 		local height = textHeight(companion)
@@ -2190,7 +2338,7 @@ end
 
 --- Back to the empty paste tab: no verdict, an empty box with the keyboard.
 function BuildDialog.clearPaste()
-	BuildDialog.verdict, BuildDialog.editing = nil, false
+	BuildDialog.verdict, BuildDialog.editing, BuildDialog.touched = nil, false, false
 	if BuildDialog.paste ~= nil then
 		BuildDialog.paste.box:SetText("")
 		BuildDialog.drawPaste()
@@ -2412,6 +2560,8 @@ function BuildDialog.setMode(mode)
 		paste.box:ClearFocus()
 		paste.content:Hide()
 		copy.content:Show()
+		-- Copy mode is laid out for the ordinary height.
+		BuildDialog.fitHeight(0)
 		BuildDialog.enterHint:Hide()
 		BuildDialog.placeHint(nil)
 		-- A copy claim stays until the dialog closes (OnHide clears it), across tab switches.
@@ -2436,6 +2586,7 @@ function BuildDialog.open(mode, link)
 	local frame = BuildDialog.ensure()
 	BuildDialog.place()
 	BuildDialog.verdict, BuildDialog.editing = nil, false
+	BuildDialog.cursor, BuildDialog.touched = 1, false
 	BuildDialog.rows = currentRows()
 	BuildDialog.paste.box:SetText("")
 	frame:Show()
@@ -2469,6 +2620,7 @@ end
 --- (L3.7 item 44: an officer's push just arrived).
 function BuildDialog.refreshRows()
 	BuildDialog.rows = currentRows()
+	BuildDialog.cursor = math.max(1, math.min(BuildDialog.cursor or 1, math.max(1, #BuildDialog.rows)))
 	if BuildDialog.frame ~= nil and BuildDialog.frame:IsShown() and BuildDialog.mode == "paste" then
 		BuildDialog.drawPaste()
 	end

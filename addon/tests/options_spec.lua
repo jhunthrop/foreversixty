@@ -176,7 +176,7 @@ describe("Options", function()
 			local rows = BuildDialog.rows
 			assert.are.equal(1, #rows)
 			assert.are.equal("BM raid", rows[1].name)
-			assert.is_truthy(rows[1].label:find("pushed by Boss", 1, true))
+			assert.is_truthy(rows[1].target:find("pushed by Boss", 1, true))
 			assert.is_truthy(state.printed[#state.printed]:find("Boss", 1, true))
 		end)
 

@@ -179,9 +179,9 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 	it("says who pushed a pushed build, in place of 'from the site'", function()
 		local rows = BuildDialog.inboxRows({ { id = "x", name = "BM raid", code = ARMS, from = "Boss" },
 			{ id = "y", name = "Site build", code = ARMS .. "" } }, {}, DATA)
-		assert.is_truthy(rows[1].label:find(string.format(L.dialogFromPush, "Boss"), 1, true))
-		assert.is_nil(rows[1].label:find(L.dialogFromSite, 1, true))
-		assert.is_truthy(rows[2].label:find(L.dialogFromSite, 1, true))
+		assert.is_truthy(rows[1].target:find(string.format(L.dialogFromPush, "Boss"), 1, true))
+		assert.is_nil(rows[1].target:find(L.dialogFromSite, 1, true))
+		assert.is_truthy(rows[2].target:find(L.dialogFromSite, 1, true))
 		assert.are.equal("pushed by Boss", string.format(L.dialogFromPush, "Boss"))
 	end)
 
@@ -363,33 +363,63 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal(string.format(L.dialogReplacesSameAll, "A||B"), piped.replaces)
 	end)
 
-	it("cuts a name before it escapes it, so a cut never leaves a lone pipe (fix 5, 14)", function()
+	it("cuts a row's name before it escapes it, so a cut never leaves a lone pipe (fix 5, 14)", function()
 		local measure = function(text)
 			return utf8.len(text) * 5
 		end
-		local piped = ordered("DDI", string.rep("A|", 60))
 		-- Fix 6, 8: a sweep of widths, so escaping before cutting (which halves a "||" at some
-		-- width) fails here; the row label gets the same sweep.
+		-- width) fails here.
 		for width = 150, 400, 5 do
-			local context = BuildDialog.previewContext(piped, ordered("IDD"), {}, DATA, 21, measure, width)
-			assert.is_nil(context.replaces:gsub("||", ""):find("|", 1, true), width .. ": " .. context.replaces)
-			local row = BuildDialog.rowLabel(string.rep("A|", 60), "33/16/2", measure, width)
-			assert.is_nil(row:gsub("||", ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):find("|", 1, true),
-				width .. ": " .. row)
+			local row = BuildDialog.rowText(string.rep("A|", 60), measure, width)
+			assert.is_nil(row:gsub("||", ""):find("|", 1, true), width .. ": " .. row)
+			assert.is_true(measure(row) <= width, width .. ": " .. row)
 		end
+		assert.are.equal("Arms||raid", BuildDialog.rowText("Arms|raid"))
 	end)
 
-	it("keeps the build name to NAME_FLOOR before it drops the talent's tree (fix 6, 9)", function()
-		local measure = function(text)
-			return utf8.len(text) * 5
-		end
-		assert.are.equal(8, BuildDialog.NAME_FLOOR)
-		local name = "Abcdefghijklmnop"
-		local floor = name:sub(1, BuildDialog.NAME_FLOOR)
-		local expected = string.format(L.dialogReplacesDiffers, floor .. L.ellipsis, 1, "Improved Heroic Strike")
-		local context = BuildDialog.previewContext(ordered("DDI", name), ordered("IDD"), {}, DATA, 21, measure,
-			measure(expected))
-		assert.are.equal(expected, context.replaces)
+	it("never cuts the Replaces sentence: the name and the talent with its tree stay whole (X.5)", function()
+		local name = "A very long build name the site sent for this character, an old patch one"
+		local context = BuildDialog.previewContext(ordered("DDI", name), ordered("IDD"), {}, DATA, 21)
+		assert.are.equal(string.format(L.dialogReplacesDiffers, name, 1, "Improved Heroic Strike (Arms)"),
+			context.replaces)
+		assert.is_nil(context.replaces:find(L.ellipsis, 1, true))
+		-- The pipes of a site-sent name are doubled, whole.
+		local piped = BuildDialog.previewContext(ordered("DDI", string.rep("A|", 60)), ordered("IDD"), {}, DATA, 21)
+		assert.is_truthy(piped.replaces:find(string.rep("A||", 60), 1, true))
+	end)
+
+	it("says a prefix of the plan is the same, where the plan goes on, and holds Use back (X.5)", function()
+		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DD"), {}, DATA, 21)
+		assert.are.equal("Same as your plan for 2 points. Yours goes on with Improved Heroic Strike.",
+			context.replaces)
+		assert.are.equal("Your plan is further along.", context.blocked)
+		assert.is_nil(context.short)
+		-- A one-point prefix says "1 point"; an identical order keeps the old sentence and is not blocked.
+		assert.are.equal("Same as your plan for 1 point. Yours goes on with Deflection.",
+			BuildDialog.previewContext(ordered("DDI"), ordered("D"), {}, DATA, 21).replaces)
+		local same = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DDI"), {}, DATA, 21)
+		assert.is_nil(same.blocked)
+		assert.are.equal("Replaces Arms raid · same points and gear · nothing changes", same.replaces)
+		-- A longer build, or one that parts earlier, is never blocked.
+		assert.is_nil(BuildDialog.previewContext(ordered("DD"), ordered("DDI"), {}, DATA, 21).blocked)
+		assert.is_nil(BuildDialog.previewContext(ordered("DDI"), ordered("IDD"), {}, DATA, 21).blocked)
+	end)
+
+	it("says where a shorter build that is no prefix stops against the points spent (X.5)", function()
+		-- Eleven points against fifteen spent, the walk's case, in small: two against three.
+		local ranks = { [1] = { ["1:2"] = 2, ["1:1"] = 1 } }
+		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("ID"), ranks, DATA, 21)
+		assert.are.equal("This build ends at 2 points; you have spent 3. It keeps following from point 3.",
+			context.short)
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
+			context.replaces)
+		assert.is_nil(context.blocked)
+		-- Not said for a build as long as the spend, or for a prefix (its own sentence says it).
+		assert.is_nil(BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), ranks, DATA, 21).short)
+		assert.is_nil(BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DD"), ranks, DATA, 21).short)
+		-- With nothing followed it still says where the build stops.
+		assert.are.equal(context.short, BuildDialog.previewContext(nil, ordered("ID"), ranks, DATA, 21).short)
+		assert.is_nil(BuildDialog.previewContext(nil, ordered("ID"), {}, DATA, 21).short)
 	end)
 
 	it("fits the Next line by shortening the tree, then the rank, never the talent (fix 5, 15)", function()
@@ -534,6 +564,14 @@ describe("BuildDialog, paste mode's model", function()
 		end
 	end)
 
+	it("says 'build' in the plan line for a default build, never leveling or raid (X.5)", function()
+		local plan = ordered("DDI", "Arms leveling")
+		plan.default, plan.kind = true, "leveling"
+		assert.are.equal("Following: Arms build \194\183 Warrior \194\183 3 points", BuildDialog.followingLine(plan, DATA))
+		plan.name, plan.default = "Arms raid", false
+		assert.are.equal("Following: Arms raid \194\183 Warrior \194\183 3 points", BuildDialog.followingLine(plan, DATA))
+	end)
+
 	it("says what the player now follows and the next talent in one chat line, pipes escaped", function()
 		assert.are.equal(string.format(L.dialogNowFollowingNext, "Arms raid", "Deflection (1 of 2)"),
 			BuildDialog.chatLine("Arms raid", "Deflection (1 of 2)"))
@@ -557,7 +595,25 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal(20, BuildDialog.GEAR_PITCH)
 	end)
 
-	it("fits the Replaces line in the content width by cutting the build name, never the talent (fix 4, 6)", function()
+	it("lays a build from the site out with a fourth header line and no code, and grows by each wrapped line (X.5)",
+		function()
+			local S = require("Theme").SIZES
+			for _, line in ipairs({ 12, 13, 14 }) do
+				local site, parts = BuildDialog.previewLayout(line, 2, true)
+				assert.is_true(site <= S.dialogHeight, line .. " px lines: " .. site)
+				assert.are.equal(0, parts.code)
+				assert.are.equal(math.max(S.dialogClassIcon, line * 4 + S.gap / 2 * 3) + BuildDialog.LAYOUT.previewGap,
+					parts.header)
+				-- Five context lines (a two-line Replaces, a two-line "ends at" and the next talent) take
+				-- the dialog past its 300: it grows by the three more.
+				local tall, tallParts = BuildDialog.previewLayout(line, 5, true)
+				assert.are.equal(line * 5 + S.gap / 2 * 4, tallParts.context)
+				assert.are.equal(3 * line + S.gap / 2 * 3, tall - site)
+				assert.is_true(tall > S.dialogHeight, tall)
+			end
+		end)
+
+	it("fits the Next line in the content width, the Replaces sentence being left to wrap (fix 4, 6; X.5)", function()
 		-- About 5 px a letter at 12 px, counted in letters (the "·" and "…" are several bytes).
 		local measure = function(text)
 			return utf8.len(text) * 5
@@ -565,9 +621,9 @@ describe("BuildDialog, paste mode's model", function()
 		local width = 388
 		local long = ordered("DDI", "A very long build name the site sent for this character")
 		local context = BuildDialog.previewContext(long, ordered("IDD"), {}, DATA, 21, measure, width)
-		assert.is_true(measure(context.replaces) <= width, context.replaces)
+		assert.is_true(measure(context.replaces) > width, "the sentence is whole, wider than one line")
+		assert.is_truthy(context.replaces:find("A very long build name the site sent for this character", 1, true))
 		assert.is_truthy(context.replaces:find("Improved Heroic Strike (Arms)", 1, true))
-		assert.is_truthy(context.replaces:find(L.ellipsis, 1, true))
 		assert.is_true(measure(context.nextWould) <= width)
 		local short = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21, measure, width)
 		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
@@ -855,10 +911,32 @@ describe("BuildDialog, builds from the site", function()
 			},
 		}
 		assert.are.same({
-			{ id = "a", name = "Arms raid", code = MINE },
-			{ id = OTHER, name = "Fury leveling", code = OTHER },
-			{ id = "c", name = "Old one", code = code(5, 0) },
+			{ id = "a", name = "Arms raid", code = MINE, character = KEY },
+			{ id = OTHER, name = "Fury leveling", code = OTHER, character = "us/ashbringer/bob" },
+			{ id = "c", name = "Old one", code = code(5, 0), character = KEY },
 		}, Follow.inboxBuilds(inbox, KEY))
+	end)
+
+	it("does not offer a build to a same-named character on another realm that names its realm (X.5)", function()
+		local mine = "US/Ashbringer/Bow Jackzon"
+		local inbox = {
+			builds = { { id = "x", name = "Other realm", character = "US/Whitemane/Bow Jackzon", code = MINE } },
+			messages = {
+				{ type = "build", character = "US/Whitemane/Bow Jackzon", name = "Also other", code = OTHER },
+				-- The same realm, folded; a bare ruleset (what the companion writes today) has no realm to compare.
+				{ type = "build", character = "us/ASHBRINGER/bow-jackzon", name = "Same realm", code = code(5, 0) },
+				{ type = "build", character = "us/normal/bow-jackzon", name = "By ruleset", code = code(6, 0) },
+			},
+		}
+		local names = {}
+		for _, offered in ipairs(Follow.inboxBuilds(inbox, mine)) do
+			names[#names + 1] = offered.name
+		end
+		table.sort(names)
+		assert.are.same({ "By ruleset", "Same realm" }, names)
+		assert.is_true(Codec.sameRealmLabel("us/normal/bow-jackzon", mine))
+		assert.is_false(Codec.sameRealmLabel("US/Whitemane/Bow Jackzon", mine))
+		assert.is_false(Codec.sameRealmLabel("us", mine))
 	end)
 
 	it("drops another character's builds and entries with no code", function()
@@ -870,7 +948,7 @@ describe("BuildDialog, builds from the site", function()
 		assert.are.same({}, Follow.inboxBuilds(nil, KEY))
 	end)
 
-	it("makes one row per build not yet used, by its id or its code, with the split in its label", function()
+	it("makes one row per build not yet used, by its id or its code, with its detail and target (X.5)", function()
 		local builds = {
 			{ id = "a", name = "Arms raid", code = MINE },
 			{ id = OTHER, name = nil, code = OTHER },
@@ -879,13 +957,33 @@ describe("BuildDialog, builds from the site", function()
 		}
 		local rows = BuildDialog.inboxRows(builds, { c = true, [code(5, 0)] = true }, DATA)
 		assert.are.equal(2, #rows)
-		assert.are.same({ id = "a", name = "Arms raid", code = MINE, split = "31/20/0",
-			label = string.format(L.dialogInboxRow, "Arms raid", "31/20/0", BuildDialog.ROW_SOURCE) }, rows[1])
-		-- Fix 6, 5: "from the site" in the muted token, so the row reads as two levels.
-		assert.are.equal(require("Theme").inlineColor("muted", L.dialogFromSite), BuildDialog.ROW_SOURCE)
-		assert.are.equal("Arms raid · 31/20/0 · " .. BuildDialog.ROW_SOURCE, rows[1].label)
+		assert.are.same({ id = "a", name = "Arms raid", code = MINE, classToken = "WARRIOR",
+			detail = "Warrior · Arms 31 / Fury 20 · 51 points", target = "from the site" }, rows[1])
 		local fury = Follow.buildName(DATA, build(OTHER))
 		assert.are.equal(fury, rows[2].name)
+	end)
+
+	it("names the character a build is for, and the realm it matched on, in the row's muted line (X.5)", function()
+		local player = { classSlug = "warrior", classNames = WARRIOR.classNames, name = "Bow Jackzon",
+			realm = "Classic Beta PvP" }
+		local rows = BuildDialog.inboxRows({
+			{ id = "a", name = "20 to 29 \226\128\148 Beast Mastery", code = MINE, character = "us/pvp/bow-jackzon" },
+			{ id = "b", name = "For anyone", code = code(5, 0) },
+			{ id = "c", name = "Pushed", code = code(6, 0), from = "Boss", character = "us/Classic Beta PvP/Bow Jackzon" },
+		}, {}, DATA, player)
+		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP \194\183 from the site", rows[1].target)
+		-- The title the site sent is the name, verbatim.
+		assert.are.equal("20 to 29 \226\128\148 Beast Mastery", rows[1].name)
+		-- A build addressed to no one is not "for" anyone in particular.
+		assert.are.equal("from the site", rows[2].target)
+		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP \194\183 pushed by Boss", rows[3].target)
+		assert.are.equal("Warrior \194\183 Arms 31 / Fury 20 \194\183 51 points", rows[1].detail)
+	end)
+
+	it("lays a row out three lines tall, never under the class icon's height (X.5)", function()
+		local S = require("Theme").SIZES
+		assert.are.equal(S.dialogClassIcon, BuildDialog.rowHeight(8))
+		assert.are.equal(14 * 3 + S.gap, BuildDialog.rowHeight(14))
 	end)
 
 	it("never makes a row of another class's build, silently, and hands back any other reason", function()
@@ -906,46 +1004,38 @@ describe("BuildDialog, builds from the site", function()
 		assert.is_nil(BuildDialog.rowsView({ { id = 1 } }, 2).more)
 	end)
 
-	it("keeps only the chosen row while a preview shows, and none for a pasted code", function()
+	it("shows no row while any build previews or a pasted code is refused (X.5: the preview header is it)", function()
 		local rows = { { id = 1 }, { id = 2 }, { id = 3 } }
-		local chosen = BuildDialog.rowsView(rows, 2, { ok = true, inboxId = 2 })
-		assert.are.same({ { id = 2 } }, chosen.shown)
-		assert.is_nil(chosen.more)
+		assert.are.same({}, BuildDialog.rowsView(rows, 2, { ok = true, inboxId = 2 }).shown)
+		assert.is_nil(BuildDialog.rowsView(rows, 2, { ok = true, inboxId = 2 }).active)
 		assert.are.same({}, BuildDialog.rowsView(rows, 2, { ok = true }).shown)
 		assert.are.same({}, BuildDialog.rowsView(rows, 2, { ok = false, reason = "x" }).shown)
 	end)
 
-	it("writes a row's split as digits and fits the row by shortening the name, never the split (fix 5, 2)", function()
+	it("fits a row's text by shortening it with an ellipsis, never past the width (fix 5, 2; X.5)", function()
 		local measure = function(text)
 			return utf8.len(text) * 5
 		end
-		assert.are.equal("33/16/2", BuildDialog.shortSplit({ order = (function()
-			local order = {}
-			for tab, count in ipairs({ 33, 16, 2 }) do
-				for _ = 1, count do
-					order[#order + 1] = { tab = tab, tier = 1, column = 1 }
-				end
-			end
-			return order
-		end)(), classSlug = "warrior" }, DATA))
-		local full = BuildDialog.rowLabel("Arms raid (old patch)", "33/16/2", measure, 388)
-		assert.are.equal("Arms raid (old patch) · 33/16/2 · " .. BuildDialog.ROW_SOURCE, full)
-		local cut = BuildDialog.rowLabel("A very long build name from the site, old patch", "33/16/2", measure, 200)
-		assert.is_true(measure(cut) <= 200, cut)
-		assert.is_truthy(cut:find(" · 33/16/2 · " .. BuildDialog.ROW_SOURCE, 1, true))
+		assert.are.equal("Arms raid (old patch)", BuildDialog.rowText("Arms raid (old patch)", measure, 388))
+		local cut = BuildDialog.rowText("A very long build name from the site, old patch", measure, 100)
+		assert.is_true(measure(cut) <= 100, cut)
 		assert.is_truthy(cut:find(L.ellipsis, 1, true))
+		assert.are.equal("", BuildDialog.rowText(nil))
 	end)
 
-	it("marks the row that feeds the preview with a 2 px gold edge, and every row hovers (fix 5, 10)", function()
-		local rows = { { id = 1 }, { id = 2 } }
-		assert.are.equal(2, BuildDialog.rowsView(rows, 2, { ok = true, inboxId = 2 }).active)
-		assert.is_nil(BuildDialog.rowsView(rows, 2).active)
+	it("highlights the first row by default, or the one the cursor is on, with a 2 px gold edge (X.5)", function()
+		local rows = { { id = 1 }, { id = 2 }, { id = 3 } }
+		assert.are.equal(1, BuildDialog.rowsView(rows, 2).active)
+		assert.are.equal(2, BuildDialog.rowsView(rows, 2, nil, 2).active)
+		-- Past the rows shown, the last one shown; with no rows, none.
+		assert.are.equal(2, BuildDialog.rowsView(rows, 2, nil, 9).active)
+		assert.is_nil(BuildDialog.rowsView({}, 2).active)
 		assert.are.same({ width = 2, token = "gold" }, BuildDialog.ROW_ACTIVE_EDGE)
 		assert.are.equal(require("Theme").CONTROL_STATES.secondary.hover, BuildDialog.ROW_HOVER)
 	end)
 
 	it("puts the waiting count in the paste tab's own badge slot, in both modes (fix 6, 1)", function()
-		assert.are.equal("2 waiting", BuildDialog.pasteBadge(2))
+		assert.are.equal("\194\183 2 waiting", BuildDialog.pasteBadge(2))
 		assert.is_nil(BuildDialog.pasteBadge(0))
 		assert.is_nil(BuildDialog.pasteBadge(nil))
 	end)

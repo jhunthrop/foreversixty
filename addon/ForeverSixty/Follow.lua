@@ -432,6 +432,14 @@ function Follow.sameCharacter(a, b)
 	return Codec.sameCharacter(a, b)
 end
 
+--- Whether a build addressed to `addressed` is offered to the character at `key`: the same character
+--- (Follow.sameCharacter) and, where both keys name their realm, the same realm (Codec.sameRealmLabel:
+--- a same-named character on another realm of the ruleset is not offered it; X.5). The inbox carries
+--- the ruleset only today ("us/pvp/bow-jackzon"), so the realm check holds once a key names a realm.
+function Follow.offeredTo(addressed, key)
+	return Follow.sameCharacter(addressed, key) and Codec.sameRealmLabel(addressed, key)
+end
+
 --- The companion's builds usable by the character at `key`, in the order
 --- the companion wrote them. Pure: the inbox is the companion's file and
 --- this never writes it. An entry with no `code` is a truncated or
@@ -446,8 +454,8 @@ function Follow.inbox(inbox, key)
 	end
 	for _, build in ipairs(inbox.builds) do
 		local addressed = build.character
-		if build.code ~= nil and (addressed == nil or Follow.sameCharacter(addressed, key)) then
-			usable[#usable + 1] = { id = build.id, name = build.name, code = build.code }
+		if build.code ~= nil and (addressed == nil or Follow.offeredTo(addressed, key)) then
+			usable[#usable + 1] = { id = build.id, name = build.name, code = build.code, character = addressed }
 		end
 	end
 	return usable
@@ -505,22 +513,23 @@ function Follow.inboxBuilds(inbox, key)
 		end
 	end
 	local builds, seen = {}, {}
-	local function add(code, name, from)
+	local function add(code, name, from, character)
 		if type(code) ~= "string" or code == "" or seen[code] then
 			return
 		end
 		seen[code] = true
-		builds[#builds + 1] = { id = legacyId[code] or code, name = name, code = code, from = from }
+		builds[#builds + 1] = { id = legacyId[code] or code, name = name, code = code, from = from,
+			character = character }
 	end
-	-- An officer's push (L3.7 item 44) leads: the newest news.
+	-- An officer's push (L3.7 item 44) leads: the newest news, queued for this character by definition.
 	for _, pushed in ipairs(Follow.pushedBuilds(key)) do
-		add(pushed.code, pushed.name, pushed.from)
+		add(pushed.code, pushed.name, pushed.from, key)
 	end
 	for _, message in ipairs(Follow.messages(inbox, key, "build")) do
-		add(message.code, message.name)
+		add(message.code, message.name, nil, message.character)
 	end
 	for _, build in ipairs(legacy) do
-		add(build.code, build.name)
+		add(build.code, build.name, nil, build.character)
 	end
 	return builds
 end
@@ -530,9 +539,20 @@ end
 --- Codec.newestFirst (Wave C's messages carry no per-message timestamp,
 --- so the companion's own append order is the only signal "newest" can
 --- mean). Follow.inbox's own contract for builds, extended to the typed
---- inbox messages Codec.inboxMessages reads beside them.
+--- inbox messages Codec.inboxMessages reads beside them. A `build` is also held to the player's
+--- realm (Follow.offeredTo).
 function Follow.messages(inbox, key, kind)
-	return Codec.newestFirst(Codec.inboxMessages(inbox, key, kind))
+	local found = Codec.inboxMessages(inbox, key, kind)
+	if kind == "build" then
+		local offered = {}
+		for _, message in ipairs(found) do
+			if message.character == nil or Codec.sameRealmLabel(message.character, key) then
+				offered[#offered + 1] = message
+			end
+		end
+		found = offered
+	end
+	return Codec.newestFirst(found)
 end
 
 local function cellKey(point)
@@ -556,6 +576,13 @@ local builtNames = setmetatable({}, { __mode = "k" })
 --- surface that names a build reads this, so none can disagree.
 function Follow.buildName(data, build)
 	if type(build.name) == "string" and build.name ~= "" then
+		-- One noun (X.5): the data's own default is "Beast Mastery leveling" / "Arms raid", and the
+		-- player reads "Beast Mastery build", the word every other build carries.
+		local stem = build.default and type(build.kind) == "string"
+			and build.name:match("^(.-) " .. build.kind .. "$") or nil
+		if stem ~= nil and stem ~= "" then
+			return string.format(L.followBuildName, stem)
+		end
 		return build.name
 	end
 	local cached = builtNames[build]
