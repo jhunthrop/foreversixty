@@ -59,6 +59,21 @@ export const plannerHeaderCopy = {
 /** The planner's action on the shared character header (spec 2026-10-11 section 4). */
 export const plannerCharacterCardCopy = {
   sendBuildToAddon: 'Send this build to the addon',
+  sending: 'Sending',
+  sent: 'Sent',
+  /** A visitor with no current character cannot be sent anything: the button is the way in. */
+  getTheAddon: 'Get the addon to use this build in game',
+  getTheAddonHref: '/setup#addon',
+  /** The companion fetches the inbox at start and every ten minutes (ruling 4). */
+  sentLine: (characterName: string): string =>
+    `Sent to ${characterName}’s addon. It arrives the next time you log in; the companion delivers it within ten minutes.`,
+  signIn: 'Sign in to send builds to your addon.',
+  signInLink: 'Sign in',
+  signInHref: '/login',
+  noDevice: 'Run the companion once so builds can reach your addon.',
+  noDeviceLink: 'Set up the companion',
+  noDeviceHref: '/setup#companion',
+  failed: 'Could not send just now. Try again.',
 } as const;
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own

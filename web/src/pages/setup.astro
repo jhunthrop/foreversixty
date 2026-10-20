@@ -98,7 +98,7 @@ const flows = [
     </Panel>
 
     <Panel title={addonCopy.setupStep2Title}>
-      <div class="flex flex-col gap-4 p-[18px]">
+      <div id="addon" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
         <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
         <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
           {links.map((link) => (
@@ -216,7 +216,7 @@ const flows = [
     </Panel>
 
     <Panel title={addonCopy.setupStep3Title}>
-      <div class="flex flex-col gap-4 p-[18px]">
+      <div id="companion" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
         <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupCompanionBody}</p>
         <div class="flex flex-col gap-2">
           <h3 class="label text-muted">{addonCopy.setupCompanionDownloadLead}</h3>

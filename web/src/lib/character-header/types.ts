@@ -12,7 +12,24 @@ export type SignedOutMode = 'band' | 'none';
 
 /** The page's one action. `link` opens a page or jumps to an anchor; `picker` runs the page's `onPick`. */
 export type HeaderAction =
-  { kind?: 'link'; label: string; href: string } | { kind: 'picker'; label: string; href: string };
+  | { kind?: 'link'; label: string; href: string }
+  | {
+      kind: 'picker';
+      label: string;
+      href: string;
+      /** The button is shown but cannot be pressed (a send that already went out). */
+      disabled?: boolean;
+      /** A line under the button: what the press did, or why it could not. */
+      note?: HeaderNote;
+    };
+
+/** The one status line a picker action can carry under its button. */
+export interface HeaderNote {
+  text: string;
+  tone: 'ok' | 'error';
+  /** A link ending the line ("Sign in", "Run the companion"). */
+  link?: { label: string; href: string };
+}
 
 export interface ActionContext {
   character: MeCharacter;

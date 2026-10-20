@@ -479,6 +479,25 @@ export async function refreshDevices(apiBase: string = API_BASE_URL): Promise<De
   return listDevices(apiBase);
 }
 
+/**
+ * Queues a saved build in the signed-in account's addon inbox (`POST /v1/addon/inbox`). The
+ * companion fetches the inbox at start and every ten minutes and writes it for the addon,
+ * which shows it on the next login. `buildId` must be a saved build's id (the share flow's
+ * `POST /v1/builds`); `characterKey` aims it at one character, omitted for the whole account.
+ * Throws `AccountError`: 401 for a visitor who is not signed in, 400 for an id or key the API
+ * refuses.
+ */
+export async function queueBuildToAddon(
+  buildId: string,
+  characterKey?: string,
+  apiBase: string = API_BASE_URL,
+): Promise<void> {
+  await call('/v1/addon/inbox', apiBase, {
+    method: 'POST',
+    body: characterKey === undefined ? { build_id: buildId } : { build_id: buildId, character_key: characterKey },
+  });
+}
+
 export async function pairDevice(apiBase: string = API_BASE_URL): Promise<PairingCode> {
   const code = await call<PairingCode>('/v1/devices/pair', apiBase, { method: 'POST' });
   if (code === null) throw new AccountError(ACCOUNT_FAILED, 0);

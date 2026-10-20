@@ -308,9 +308,28 @@
 
 {#snippet button(act: HeaderAction, ghost: boolean)}
   {#if act.kind === 'picker'}
-    <button type="button" class="ch-cta" onclick={() => onPick?.()} data-testid="character-header-action"
-      >{@render txt(act.label, ghost)}</button
+    <button
+      type="button"
+      class="ch-cta"
+      disabled={act.disabled === true}
+      onclick={() => onPick?.()}
+      data-testid="character-header-action">{@render txt(act.label, ghost)}</button
     >
+    {#if act.note !== undefined}
+      <p
+        class="ch-note"
+        class:ch-note-error={act.note.tone === 'error'}
+        role={act.note.tone === 'error' ? 'alert' : 'status'}
+        data-testid="character-header-note"
+      >
+        {act.note.text}
+        {#if act.note.link !== undefined}
+          <a class="ch-note-link" href={act.note.link.href} data-testid="character-header-note-link"
+            >{act.note.link.label}</a
+          >
+        {/if}
+      </p>
+    {/if}
   {:else}
     <a class="ch-cta" href={act.href} data-testid="character-header-action">{@render txt(act.label, ghost)}</a
     >
@@ -693,6 +712,29 @@
     border-color: var(--color-gold-hover);
     color: var(--color-gold-hover);
     background: color-mix(in srgb, var(--color-gold) 8%, transparent);
+  }
+  .ch-cta:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+  .ch-secondary .ch-cta:disabled:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background: transparent;
+  }
+  .ch-note {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+  .ch-note-error {
+    color: var(--color-ember, #d66e28);
+  }
+  .ch-note-link {
+    color: var(--color-gold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
   .ch-secondary .ch-cta:active {
     background: color-mix(in srgb, var(--color-gold) 4%, transparent);
