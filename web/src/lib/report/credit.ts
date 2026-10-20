@@ -5,7 +5,8 @@
 import { nameFromSlug } from '../characters';
 import type { ReportMeta } from './types';
 
-export const NOT_CREDITED = 'Not credited yet. Log out once in game; the companion credits it then.';
+export const NOT_CREDITED =
+  'Not credited yet. The companion credits it when it matches the log to a character the addon has synced.';
 
 export interface Credit {
   /** Plain text before the name ("Credited to "), or the whole not-credited sentence. */

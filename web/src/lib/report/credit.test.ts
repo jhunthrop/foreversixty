@@ -40,6 +40,8 @@ describe('reportCredit', () => {
         credited: false,
       });
     }
-    expect(NOT_CREDITED).toBe('Not credited yet. Log out once in game; the companion credits it then.');
+    expect(NOT_CREDITED).toBe(
+      'Not credited yet. The companion credits it when it matches the log to a character the addon has synced.',
+    );
   });
 });

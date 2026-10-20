@@ -54,7 +54,8 @@ test('a live report with no fight yet waits for the first fight, then fills in o
   await expect(page.getByTestId('report-waiting')).toContainText('waiting for the first fight');
   await expect(page.getByTestId('report-waiting')).toContainText('this page updates by itself');
   await expect(page.getByTestId('report-live')).toBeVisible();
-  await expect(page.getByTestId('report-title')).toContainText('20 Oct 2026 · 0 fights');
+  await expect(page.getByTestId('report-title')).toContainText('Baelgrim · 20 Oct 2026 · 0 fights');
+  await expect(page).toHaveTitle(/^Baelgrim · 20 Oct 2026 · 0 fights · /);
   await expect(page.getByTestId('report-credit')).toContainText('Credited to Baelgrim');
   await expect(page.getByTestId('report-error')).toHaveCount(0);
   await expect(page.getByText('No report with that id')).toHaveCount(0);
@@ -78,6 +79,64 @@ test('the waiting screen on a phone, with no one credited yet', async ({ page })
   await expect(page.getByTestId('report-waiting')).toBeVisible();
   await expect(page.getByTestId('report-credit')).toContainText('Not credited yet');
   if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l4-live-waiting-390.png') });
+});
+
+const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000).toISOString();
+
+test('the waiting screen says the companion has gone quiet, and recovers when it is heard from', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const stale = {
+    ...(await emptyLiveMeta({ key: 'classic/era/baelgrim', name: 'Baelgrim' })),
+    last_upload_at: minutesAgo(20),
+    heartbeat_at: null,
+  };
+  let recovered = false;
+  await page.route(`**/v1/reports/${ID}`, (route) =>
+    route.fulfill(envelope(recovered ? { ...stale, heartbeat_at: minutesAgo(0) } : stale)),
+  );
+  await page.route('**/logs-data/reports/fixture2abcd/report.json', (route) =>
+    route.fulfill({ status: 404, body: '' }),
+  );
+
+  await page.goto(`/reports/${ID}`);
+  await expect(page.getByTestId('report-waiting')).toContainText(
+    'Not heard from the companion for 20 minutes. Check that it is running.',
+  );
+  await expect(page.getByTestId('report-waiting')).not.toContainText('Logging');
+  await expect(page.getByTestId('report-live')).toHaveText('Quiet');
+  await expect(page.getByTestId('report-spinner')).not.toHaveClass(/animate-spin/);
+  if (CAPTURES) await page.waitForTimeout(800); // the reveal fade finishes
+  if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l5-quiet-1280.png') });
+
+  // A heartbeat arrives: the next poll brings the logging sentence, the badge and the spinner back.
+  recovered = true;
+  await expect(page.getByTestId('report-waiting')).toContainText('Logging · waiting for the first fight', {
+    timeout: 15_000,
+  });
+  await expect(page.getByTestId('report-live')).toHaveText('Live');
+  await expect(page.getByTestId('report-spinner')).toHaveClass(/animate-spin/);
+});
+
+test('the quiet waiting screen on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const stale = {
+    ...(await emptyLiveMeta(null)),
+    last_upload_at: minutesAgo(35),
+    heartbeat_at: minutesAgo(20),
+  };
+  await page.route(`**/v1/reports/${ID}`, (route) => route.fulfill(envelope(stale)));
+  await page.route('**/logs-data/reports/fixture2abcd/report.json', (route) =>
+    route.fulfill({ status: 404, body: '' }),
+  );
+  await page.goto(`/reports/${ID}`);
+  await expect(page.getByTestId('report-waiting')).toContainText(
+    'Not heard from the companion for 20 minutes',
+  );
+  await expect(page.getByTestId('report-live')).toHaveText('Quiet');
+  if (CAPTURES) await page.waitForTimeout(800); // the reveal fade finishes
+  if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l5-quiet-390.png') });
 });
 
 test('a finished report whose data is missing is a data error, not a missing report', async ({ page }) => {

@@ -214,7 +214,9 @@ test.describe('a beta-log report', () => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
     const credit = page.getByTestId('report-credit');
-    await expect(credit).toHaveText('Not credited yet. Log out once in game; the companion credits it then.');
+    await expect(credit).toHaveText(
+      'Not credited yet. The companion credits it when it matches the log to a character the addon has synced.',
+    );
     await expect(credit).not.toHaveAttribute('title', /.+/);
     await expect(credit.getByRole('link')).toHaveCount(0);
   });
