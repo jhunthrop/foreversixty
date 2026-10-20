@@ -67,7 +67,8 @@
   {#if characters.length === 0}
     <EmptyState
       message={characterListCopy.empty}
-      action={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
+      action={{ label: characterListCopy.getSetUp, href: characterListCopy.getSetUpHref }}
+      secondary={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
       testid="account-characters-empty"
     />
   {:else}

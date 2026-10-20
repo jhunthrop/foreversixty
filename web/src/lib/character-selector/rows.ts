@@ -148,6 +148,35 @@ function accountCharacterOfPointer(me: Me, pointer: PastedPointer): MeCharacter 
   return me.characters.find((character) => sameCharacter(character, name, pointer.classSlug)) ?? null;
 }
 
+/** What the closed control calls a signed-in account with no character: the battletag, else the
+ *  email's local part, else a plain "Signed in". */
+export function accountNameOf(me: Me | null | undefined): string {
+  const battletag = me?.user.battletag?.trim();
+  if (battletag !== undefined && battletag !== '') return battletag;
+  const local = me?.user.email?.split('@')[0]?.trim();
+  return local === undefined || local === '' ? 'Signed in' : local;
+}
+
+/** What the closed control shows: the server-rendered link, a character, a signed-in account with
+ *  no character yet, or the sign-in slot. */
+export type ClosedKind = 'pre' | 'character' | 'account' | 'signed-out';
+
+/** Until the browser has been read, and while a signed-in visitor's character is still unknown,
+ *  the closed control stays the pre-paint link; a signed-in account with no character is its own
+ *  kind, never "Sign in"; a visitor with nothing to show gets the sign-in slot at once. */
+export function closedKindOf(input: {
+  mounted: boolean;
+  model: SelectorModel;
+  loadStatus: 'loading' | 'ready' | 'failed';
+  sessionHint: boolean;
+}): ClosedKind {
+  const { mounted, model, loadStatus, sessionHint } = input;
+  if (!mounted) return 'pre';
+  if (model.current !== null) return 'character';
+  if (model.session === 'signed-in') return 'account';
+  return model.session === 'loading' && loadStatus === 'loading' && sessionHint ? 'pre' : 'signed-out';
+}
+
 function signedInModel(me: Me, input: ModelInput, now: Date): SelectorModel {
   const { pointer } = input;
   const hasAddonCharacter = me.characters.some((character) => character.build?.source === 'addon');

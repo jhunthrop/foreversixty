@@ -583,16 +583,20 @@ test.describe('signed out and expired', () => {
     await expect(panel(page).getByTestId('selector-paste')).toBeVisible();
   });
 
-  test('a signed-in account with no characters shows the none state with both setup rows', async ({
+  test('a signed-in account with no characters shows the signed-in empty panel with two links', async ({
     page,
   }) => {
     await signInWith(page, []);
     await page.goto('/guides');
-    await expect(selector(page)).toHaveAttribute('aria-label', 'Sign in or choose a character');
+    await expect(selector(page)).toContainText('Fixture#1');
+    await expect(selector(page)).not.toContainText('Sign in');
     await selector(page).click();
-    await expect(panel(page).getByTestId('selector-none')).toContainText('No characters yet.');
+    await expect(panel(page).getByTestId('selector-none')).toContainText(
+      'Your characters appear here once the addon has seen them.',
+    );
+    await expect(panel(page).getByTestId('selector-get-set-up')).toHaveAttribute('href', '/setup');
+    await expect(panel(page).getByTestId('selector-account')).toHaveAttribute('href', '/account');
     await expect(panel(page).getByTestId('selector-paste')).toBeVisible();
-    await expect(panel(page).getByTestId('selector-addon')).toBeVisible();
   });
 });
 

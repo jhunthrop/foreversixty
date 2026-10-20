@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { MeCharacter } from '../account/api';
 import { planAnswer } from './answer-plan';
+import { characterHeaderCopy } from './copy';
 import { descriptorLines } from './descriptor';
 import { hasGearOnFile, syncText, syncView } from './sync';
 
@@ -155,5 +156,15 @@ describe('planAnswer', () => {
 
   it('does not guess a floor for an unknown level', () => {
     expect(planAnswer(character({ level: undefined }), bis)).toBe('load');
+  });
+});
+
+describe('the signed-in-empty line', () => {
+  it('says who is signed in and what to do, and links to /setup', () => {
+    expect(characterHeaderCopy.noCharacters('Hunt#1234')).toBe(
+      'Signed in as Hunt#1234. No characters yet: install the addon and the companion, then log out once in game.',
+    );
+    expect(characterHeaderCopy.getSetUp).toBe('Get set up');
+    expect(characterHeaderCopy.getSetUpHref).toBe('/setup');
   });
 });

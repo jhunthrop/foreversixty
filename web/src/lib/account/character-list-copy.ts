@@ -7,7 +7,9 @@ export const characterListCopy = {
   /** Blizzard serves no Forever character data yet (the API's import is off until it
    *  does), so the empty state sends people to the addon's paste box, not to Battle.net. */
   empty:
-    'No characters yet. Blizzard does not serve Forever character data yet, so paste an export from the addon.',
+    'No characters yet. Install the addon and the companion, then log out once in game; your characters appear here within a minute. Or paste an export.',
+  getSetUp: 'Get set up',
+  getSetUpHref: '/setup',
   pasteAnExport: 'Paste an export',
   pasteHref: '/setup#paste',
   refreshFromBattlenet: 'Refresh from Battle.net',
@@ -22,7 +24,7 @@ export const characterListCopy = {
   refreshedToast: 'Characters refreshed from Battle.net.',
   /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
   introBattlenetLine:
-    'Characters come from the addon for now: Blizzard serves no Forever character data yet.',
+    'Characters come from the addon; the companion syncs them after you log out.',
   introInstallAddonLink: 'Install the addon',
   introAddonTail: 'to export gear, talents, bags and bank, then',
   introPasteLink: 'paste an export',

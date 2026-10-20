@@ -35,7 +35,7 @@ export const pairingCopy = {
   signedOut: 'Pairing needs a signed-in account.',
   /** One line above the code button: the companion's own Battle.net sign-in is the way in. */
   companionFirst:
-    'Using the companion app? Press Sign in with Battle.net in it instead. The code below is the fallback.',
+    'Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.',
   success: (deviceName: string): string =>
     `${deviceName} paired. It starts uploading as soon as you are logging.`,
 } as const;

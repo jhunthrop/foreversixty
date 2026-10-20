@@ -288,6 +288,52 @@
     {#if mark !== null}
       <span class="csel-tip" role="tooltip" id={TIP_ID}>{markTooltip(mark, current)}</span>
     {/if}
+  {:else if selector.closed === 'account'}
+    <button
+      type="button"
+      class="csel-btn is-signed-out is-account"
+      aria-haspopup="dialog"
+      aria-expanded={open}
+      aria-label={selectorCopy.accountAria(selector.accountName)}
+      bind:this={trigger}
+      onclick={toggle}
+      onkeydown={onTriggerKeydown}
+      data-testid="character-selector"
+    >
+      <span class="csel-ghost">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
+        </svg>
+      </span>
+      <span class="csel-text">
+        <span class="csel-name" data-testid="selector-name">{selector.accountName}</span>
+        <span class="csel-sub" data-testid="selector-sub">{selectorCopy.accountSub}</span>
+      </span>
+      <svg
+        class="csel-chev"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 9l6 6 6-6"></path>
+      </svg>
+    </button>
   {:else}
     <button
       type="button"
@@ -336,7 +382,7 @@
     </button>
   {/if}
 
-  <SelectorMenuRow closed={selector.closed} {current} onopen={openFromMenuRow} />
+  <SelectorMenuRow closed={selector.closed} {current} accountName={selector.accountName} onopen={openFromMenuRow} />
 
   {#if open}
     {#if sheet}

@@ -8,7 +8,9 @@ import { chooseCharacter, urlForChosenPointer, type ChooseDeps } from './choose'
 import { CHARACTER_ORDER_STORAGE_KEY, MAX_CHOSEN_KEYS } from './config';
 import { orderCharacters, readChosenKeys, recordChosenKey, withChosenFirst } from './order';
 import {
+  accountNameOf,
   buildSelectorModel,
+  closedKindOf,
   closedAriaLabel,
   closedSecondLine,
   filterRows,
@@ -437,4 +439,31 @@ describe('choosing a character', () => {
     writeCurrent(pointer, storage);
     return pointer;
   }
+});
+
+describe('a signed-in account with no characters', () => {
+  const empty = (battletag: string | null, email: string | null = null): Me => ({
+    user: { id: 71, battletag, email, role: 'user', anonymize: false },
+    characters: [],
+    guilds: [],
+  });
+
+  it('stays signed in with no current character', () => {
+    const model = buildSelectorModel({ me: empty('Hunt#1234'), pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
+    expect(model).toMatchObject({ session: 'signed-in', rows: [], current: null });
+  });
+
+  it('closes as the account, never as Sign in', () => {
+    const model = buildSelectorModel({ me: empty('Hunt#1234'), pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
+    expect(closedKindOf({ mounted: true, model, loadStatus: 'ready', sessionHint: true })).toBe('account');
+    const out = buildSelectorModel({ me: null, pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
+    expect(closedKindOf({ mounted: true, model: out, loadStatus: 'ready', sessionHint: false })).toBe('signed-out');
+    expect(closedKindOf({ mounted: false, model, loadStatus: 'ready', sessionHint: true })).toBe('pre');
+  });
+
+  it('names the account by battletag, else the email local part', () => {
+    expect(accountNameOf(empty('Hunt#1234', 'a@b.c'))).toBe('Hunt#1234');
+    expect(accountNameOf(empty(null, 'hunt@example.com'))).toBe('hunt');
+    expect(accountNameOf(empty(null))).toBe('Signed in');
+  });
 });
