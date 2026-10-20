@@ -187,7 +187,7 @@ func New(o Options) (*App, error) {
 	}
 	a.sync = addon.New(addon.Options{
 		Paths: a.savedVariables, API: a.client, Log: a.log, Cache: a.exports,
-		StateDir: o.Dirs.State,
+		StateDir: o.Dirs.State, Now: a.now,
 	})
 	uo := o.Updater
 	uo.Dir, uo.Log = o.Dirs.Update, a.log
@@ -652,6 +652,12 @@ type Snapshot struct {
 	AddonHelp  string `json:"addon_help,omitempty"`
 	// AddonSeenTitle is the absolute time, for a tooltip.
 	AddonSeenTitle string `json:"addon_seen_title,omitempty"`
+	// LastSync is the Last sync row: what the newest character list
+	// put on the site, or the site's reason for refusing it.
+	LastSync LastSyncView `json:"last_sync"`
+	// Credit is who the current report is credited to; none when no
+	// report is open.
+	Credit Credit `json:"credit"`
 }
 
 // InstallStatus is one game folder as the status page shows it.
@@ -684,6 +690,8 @@ type ReportRow struct {
 	StartedAt time.Time `json:"started_at"`
 	Done      bool      `json:"done"`
 	URL       string    `json:"url,omitempty"`
+	// Credit is who the report is credited to.
+	Credit Credit `json:"credit"`
 }
 
 // installStatuses is the installs as the window shows them.
@@ -758,6 +766,7 @@ func (a *App) Snapshot() Snapshot {
 		Pipeline:         a.pipe.Status(),
 		Reports:          []ReportRow{},
 		Characters:       []addon.Export{},
+		Credit:           Credit{State: CreditNone},
 	}
 	if !paired {
 		s.AccountLabel = ""
@@ -773,7 +782,10 @@ func (a *App) Snapshot() Snapshot {
 	for i := len(reports) - 1; i >= 0; i-- {
 		r := reports[i]
 		row := ReportRow{Key: r.Key, ReportID: r.ReportID, Zone: r.Zone,
-			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done}
+			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done, Credit: creditOf(r)}
+		if r.Key == s.Pipeline.ReportKey {
+			s.Credit = row.Credit
+		}
 		if r.ReportID != "" {
 			row.URL = cfg.SiteBaseURL + "/reports/" + r.ReportID
 		}
@@ -797,6 +809,7 @@ func (a *App) Snapshot() Snapshot {
 	st := a.sync.Status()
 	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
 	s.AddonNever = st.SeenAt.IsZero()
+	s.LastSync = a.lastSyncView(st, now)
 	if !st.SeenAt.IsZero() {
 		local := st.SeenAt.In(now.Location())
 		s.AddonSeenAt, s.SimRequestState = &local, st.SimRequestState

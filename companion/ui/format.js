@@ -42,6 +42,31 @@ const FORMAT = (() => {
     return words.lastPlayed + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + clock;
   }
 
+  // ago is how long since iso, in the Addon row's words: minutes under
+  // an hour, the clock later the same day, then yesterday and days.
+  // Unreadable time is an empty string.
+  function ago(iso, now, words) {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const mins = Math.floor((now.getTime() - d.getTime()) / 60000);
+    if (mins < 1) return words.lessThanMinute;
+    if (mins < 2) return words.oneMinute;
+    if (mins < 60) return words.minutes(mins);
+    if (sameDay(d, now)) return words.today(pad(d.getHours()) + ':' + pad(d.getMinutes()));
+    const days = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
+      new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000);
+    return days <= 1 ? words.yesterday : words.days(days);
+  }
+
+  // creditText is the suffix after a report's zone: who it is credited to,
+  // or why it is not.
+  function creditText(credit, words) {
+    const c = credit || {};
+    if (c.state === 'credited') return words.credited(c.name);
+    if (c.state === 'unmatched') return words.unmatched(c.reason);
+    return words.none;
+  }
+
   // characterLabel is "Thrall · Hardcore · US": the ruleset in words.
   function characterLabel(c, rulesets) {
     const ruleset = rulesets[String(c.ruleset).toLowerCase()] || c.ruleset;
@@ -62,7 +87,7 @@ const FORMAT = (() => {
     return { m: Math.floor(left / 60), s: left % 60 };
   }
 
-  return { midTruncate, when, lastPlayed, characterLabel, characterValue, automaticLabel, countdown };
+  return { midTruncate, when, lastPlayed, ago, creditText, characterLabel, characterValue, automaticLabel, countdown };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

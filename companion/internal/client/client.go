@@ -87,6 +87,9 @@ func (e *Error) Refuses(field string) bool {
 	return e.Status == http.StatusBadRequest && e.Fields[field] != ""
 }
 
+// Reason is the API's own message, the site's reason for a refusal.
+func (e *Error) Reason() string { return e.Message }
+
 // Retryable reports whether err is worth another attempt. Transport
 // errors always are: the player closed a laptop lid, not a contract.
 func Retryable(err error) bool {

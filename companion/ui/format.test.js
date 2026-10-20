@@ -70,3 +70,36 @@ test('the Device page says whose sign-in the site stopped accepting', () => {
   assert.strictEqual(COPY.device.signedOutBar(''),
     'Your sign-in is no longer valid. Sign in again to keep uploading.');
 });
+
+test('how long ago says minutes, then the clock, then days', () => {
+  const now = new Date(2026, 9, 19, 15, 0, 30);
+  const at = (d, h, m, s) => new Date(2026, 9, d, h, m, s || 0).toISOString();
+  const w = COPY.status.ago;
+  assert.strictEqual(FORMAT.ago(at(19, 14, 59, 50), now, w), 'less than a minute ago');
+  assert.strictEqual(FORMAT.ago(at(19, 14, 58, 40), now, w), '1 minute ago');
+  assert.strictEqual(FORMAT.ago(at(19, 14, 58), now, w), '2 minutes ago');
+  assert.strictEqual(FORMAT.ago(at(19, 9, 5), now, w), 'today at 09:05');
+  assert.strictEqual(FORMAT.ago(at(18, 23, 50), now, w), 'yesterday');
+  assert.strictEqual(FORMAT.ago(at(1, 12, 0), now, w), '18 days ago');
+  assert.strictEqual(FORMAT.ago('garbage', now, w), '');
+});
+
+test('the Last sync row counts characters and says how long ago', () => {
+  assert.strictEqual(COPY.status.lastSyncSent(10, '2 minutes ago'), '10 characters, 2 minutes ago');
+  assert.strictEqual(COPY.status.lastSyncSent(1, 'yesterday'), '1 character, yesterday');
+});
+
+test('a report says who it is credited to, or why it is not', () => {
+  const w = COPY.status.credit;
+  assert.strictEqual(FORMAT.creditText({ state: 'credited', name: 'Bow Jackzon' }, w), 'credited to Bow Jackzon');
+  assert.strictEqual(FORMAT.creditText({ state: 'unmatched', name: 'Bow',
+    reason: 'the log names Bow, but no addon record carries that realm — log out once with the addon loaded' }, w),
+  'not credited: the log names Bow, but no addon record carries that realm — log out once with the addon loaded');
+  assert.strictEqual(FORMAT.creditText({ state: 'none' }, w), 'not credited');
+  assert.strictEqual(FORMAT.creditText(undefined, w), 'not credited');
+});
+
+test('the stopped-responding note says where the tray icon is', () => {
+  assert.strictEqual(COPY.localDown,
+    'The companion stopped responding. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.');
+});

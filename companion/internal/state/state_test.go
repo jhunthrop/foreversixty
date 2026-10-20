@@ -169,3 +169,29 @@ func TestSaveLoadRoundTripsAnEmptySession(t *testing.T) {
 		t.Fatalf("Load = %+v, want %+v", got, want)
 	}
 }
+
+func TestTheLastSyncSurvivesARestartAndIsNotAReport(t *testing.T) {
+	dir := t.TempDir()
+	if got, err := LoadLastSync(dir); err != nil || got != (LastSync{}) {
+		t.Fatalf("an empty state = %+v, %v", got, err)
+	}
+	at := time.Date(2026, 10, 19, 14, 3, 0, 0, time.UTC)
+	want := LastSync{Count: 10, At: at, Refusal: "that export cannot be stored", RefusedAt: at.Add(time.Hour)}
+	if err := SaveLastSync(dir, want); err != nil {
+		t.Fatal(err)
+	}
+	got, err := LoadLastSync(dir)
+	if err != nil || got.Count != 10 || !got.At.Equal(at) || got.Refusal != want.Refusal || !got.RefusedAt.Equal(want.RefusedAt) {
+		t.Fatalf("reloaded = %+v, %v", got, err)
+	}
+	reports, err := List(dir)
+	if err != nil || len(reports) != 0 {
+		t.Fatalf("the record was listed as a report: %d, %v", len(reports), err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, LastSyncFile), []byte("{"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := LoadLastSync(dir); err == nil {
+		t.Error("a corrupt file was read as empty without an error")
+	}
+}

@@ -202,7 +202,10 @@ function renderStatus(s) {
   });
 
   const rows = {
-    report: p.report_id ? { zone: ((s.reports || []).find((r) => r.key === p.report_key) || {}).zone || '' } : (p.report_key ? 'starting' : 'none'),
+    report: p.report_id ? { zone: ((s.reports || []).find((r) => r.key === p.report_key) || {}).zone || '', credit: s.credit } : (p.report_key ? 'starting' : 'none'),
+    // The words, not the time: the relative time moves on its own, and the
+    // region only redraws when what it holds changes.
+    lastSync: lastSyncRow(s.last_sync),
     fights: p.fights, queued: p.queued, addon: s.addon_line, stale: s.addon_stale, never: s.addon_never, help: s.addon_help, title: s.addon_seen_title,
   };
   region('status-rows', $('status-rows'), rows, (el) => {
@@ -210,7 +213,10 @@ function renderStatus(s) {
     let report;
     if (rows.report === 'none') report = h('span', { class: 'v', text: COPY.status.noReport });
     else if (rows.report === 'starting') report = h('span', { class: 'v', text: COPY.status.starting });
-    else report = h('span', { class: 'v', text: rows.report.zone || COPY.status.inProgress });
+    else {
+      report = h('span', { class: 'v', text: (rows.report.zone || COPY.status.inProgress) +
+        COPY.status.credit.separator + FORMAT.creditText(rows.report.credit, COPY.status.credit) });
+    }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.report }), report));
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
       h('span', { class: 'v mono', text: String(p.fights) })));
@@ -221,6 +227,11 @@ function renderStatus(s) {
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     if (s.addon_stale && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.addon }), v));
+    const ls = rows.lastSync;
+    if (ls) {
+      el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.lastSync }),
+        h('span', { class: 'v' + (ls.tone ? ' ' + ls.tone : ''), title: ls.title || null, text: ls.text })));
+    }
   });
 
   region('installs', $('installs'), { installs: s.installs, key: hd.key }, (el) => {
@@ -231,6 +242,18 @@ function renderStatus(s) {
     }
     for (const i of s.installs) el.append(installRow(i, hd.key));
   });
+}
+
+// lastSyncRow is the Last sync row's words, or null when the Addon row's
+// install line says it all.
+function lastSyncRow(ls) {
+  if (!ls) return null;
+  if (ls.state === 'sent') {
+    return { text: COPY.status.lastSyncSent(ls.count, FORMAT.ago(ls.at, new Date(), COPY.status.ago)), title: ls.title };
+  }
+  if (ls.state === 'refused') return { text: ls.line, tone: 'amber' };
+  if (ls.state === 'none') return { text: ls.line, tone: 'muted' };
+  return null;
 }
 
 function installRow(i, headlineKey) {
@@ -293,7 +316,8 @@ function reportRow(r, now) {
     r.done ? null : dot('on'),
     [FORMAT.when(r.started_at, now, COPY.reports), COPY.reports.fights(r.fights)]
       .concat(r.done ? [] : [COPY.reports.inProgress])
-      .concat(r.url ? [] : [COPY.reports.notUploaded]).join(' · '));
+      .concat(r.url ? [] : [COPY.reports.notUploaded])
+      .concat([FORMAT.creditText(r.credit, COPY.status.credit)]).join(' · '));
   const li = h('li', {}, h('div', { class: 'what' }, h('div', { class: 'zone' }, title), meta));
   if (r.url) {
     const btn = h('button', { class: 'ghost small', type: 'button', 'data-fid': 'copy-' + r.key }, COPY.reports.copyLink);
