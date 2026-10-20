@@ -81,6 +81,11 @@ export function createPlannerStore(init: PlannerInit) {
    *  reader of `level` must agree with it instead of silently recomputing a different
    *  answer. */
   let characterLevel = $state<number | null>(null);
+  /** The current character's race, by name, once one is loaded beside this page. The race
+   *  picker starts on it; `raceChosen` is the player's own say (a manual pick or an import)
+   *  and wins for the rest of the session. */
+  let followedRace = $state<string | null>(null);
+  let raceChosen = $state(false);
 
   let talents = $state<TalentFile | null>(null);
   let itemFile = $state<ItemFile | null>(null);
@@ -126,6 +131,17 @@ export function createPlannerStore(init: PlannerInit) {
     if (comboIsLegal(combos, currentRaceId, classId)) return;
     const first = races.find((race) => comboIsLegal(combos, race.id, classId));
     if (first) raceSlug = first.slug;
+  }
+
+  /** Moves the race to the followed character's, when it is legal for the class and the
+   *  player has not chosen one. A race the planner does not know changes nothing. */
+  function applyFollowedRace(): void {
+    if (followedRace === null || raceChosen || classRow === null) return;
+    const wanted = followedRace;
+    const match = races.find(
+      (race) => race.name.toLowerCase() === wanted && comboIsLegal(combos, race.id, classRow.id),
+    );
+    if (match) raceSlug = match.slug;
   }
 
   return {
@@ -220,6 +236,7 @@ export function createPlannerStore(init: PlannerInit) {
       combos = data.combos;
       const current = classes.find((c) => c.slug === classSlug);
       if (current) repairRaceForClass(current.id);
+      applyFollowedRace();
     },
 
     setTalents(file: TalentFile): void {
@@ -265,6 +282,7 @@ export function createPlannerStore(init: PlannerInit) {
       // the race select cannot even show).
       const imported = classes.find((c) => c.slug === build.classSlug);
       if (imported) repairRaceForClass(imported.id);
+      raceChosen = true;
     },
 
     setItems(file: ItemFile): void {
@@ -287,11 +305,13 @@ export function createPlannerStore(init: PlannerInit) {
       refusal = null;
       const next = classes.find((c) => c.slug === slug);
       if (next) repairRaceForClass(next.id);
+      applyFollowedRace();
     },
 
     selectRace(slug: string): void {
       if (!editable()) return;
       raceSlug = slug;
+      raceChosen = true;
     },
 
     addPoint(talentId: number): void {
@@ -351,6 +371,16 @@ export function createPlannerStore(init: PlannerInit) {
      *  `level` reports, and it has to keep working on a read-only shared build too. */
     setCharacterLevel(level: number | null): void {
       characterLevel = level;
+    },
+
+    /** The current character's race name ("Gnome"), or `null`. The race picker moves to it
+     *  unless the player has chosen one; a different character hands the choice back. Like
+     *  `setCharacterLevel`, never a build mutation, so a read-only build is not refused. */
+    followRace(name: string | null): void {
+      const next = name === null || name.trim() === '' ? null : name.trim().toLowerCase();
+      if (next !== followedRace) raceChosen = false;
+      followedRace = next;
+      applyFollowedRace();
     },
 
     reset(): void {

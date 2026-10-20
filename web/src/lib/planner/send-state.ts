@@ -15,11 +15,24 @@ export type SendState =
   | { kind: 'failed' };
 
 /** The card's action: a real send when a character is current, otherwise a way to get the addon. */
-export function sendActionFor(character: MeCharacter | null, state: SendState): HeaderAction {
+export function sendActionFor(
+  character: MeCharacter | null,
+  state: SendState,
+  pointsSpent = 1,
+): HeaderAction {
   if (character === null) {
     return { label: copy.getTheAddon, href: copy.getTheAddonHref };
   }
   const base = { kind: 'picker' as const, href: copy.getTheAddonHref };
+  // An empty build is never sent. A partial one is: a player may send a plan on purpose.
+  if (pointsSpent <= 0 && state.kind !== 'sending') {
+    return {
+      ...base,
+      label: copy.sendBuildToAddon,
+      disabled: true,
+      note: { tone: 'muted' as const, text: copy.spendFirst },
+    };
+  }
   switch (state.kind) {
     case 'sending':
       return { ...base, label: copy.sending, disabled: true };
