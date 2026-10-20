@@ -73,8 +73,10 @@ func TestApprovalStoresTheTokenAndWhoItBelongsTo(t *testing.T) {
 	h := newHarness(t)
 	h.startConnect()
 	h.srv.ConnectDecide("approved")
-	until(t, "the device to be paired", func() bool { return h.app.Snapshot().Paired })
-
+	until(t, "the device to be paired and the connect to settle", func() bool {
+		s := h.app.Snapshot()
+		return s.Paired && s.Connect.State == "idle"
+	})
 	s := h.app.Snapshot()
 	if s.AccountLabel != fakeapi.AccountLabel {
 		t.Errorf("account label = %q", s.AccountLabel)
