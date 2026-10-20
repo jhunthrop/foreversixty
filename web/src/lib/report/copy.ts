@@ -13,4 +13,10 @@ export const reportCopy = {
   table: 'Table',
   /** The merged preset/slider row's select, which replaced the old six-button preset row. */
   window: 'Window',
+  /** The header of a report whose title is not known yet. */
+  yourUpload: 'Your upload',
+  /** The fights strip of a report being parsed, and the hover of every tab that needs fights. */
+  parsing: 'Parsing your log… this takes a minute or two for a long night',
+  parseFailed: 'This log could not be parsed.',
+  parseFailedLink: 'Check your logging setup',
 } as const;

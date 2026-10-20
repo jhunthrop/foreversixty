@@ -61,12 +61,57 @@ async function apiGet<T>(path: string, apiBase: string): Promise<T> {
   return envelope.data;
 }
 
+/** A report is remembered only once its parse is over: complete, or failed for good. */
+export function reportMetaCacheable(meta: ReportMeta): boolean {
+  return meta.status === 'complete' || meta.status === 'failed';
+}
+
 export function fetchReportMeta(id: string, apiBase: string = API_BASE_URL): Promise<ReportMeta> {
   const path = `/v1/reports/${encodeURIComponent(id)}`;
   return query<ReportMeta>(`${apiBase}${path}`, () => apiGet<ReportMeta>(path, apiBase), {
     scope: 'public',
     ttlMs: REPORT_META_TTL_MS,
+    // A processing or live snapshot is true for seconds: fetch-only, never persisted.
+    cacheable: reportMetaCacheable,
   });
+}
+
+/** How long a just-uploaded report's 404 is read as "not visible yet", and how often it is retried. */
+export const UPLOAD_GRACE_MS = 30_000;
+export const UPLOAD_GRACE_RETRY_MS = 2000;
+
+export interface GraceOptions {
+  apiBase?: string;
+  /** When the upload finished (ms since the epoch); the grace window runs from here. */
+  uploadedAt: number;
+  graceMs?: number;
+  retryMs?: number;
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+  /** Called on each retry, so the page can show the processing screen rather than an error. */
+  onWaiting?: () => void;
+}
+
+/**
+ * Right after an upload the id can answer 404 (or 429) for a few seconds: a replica that
+ * has not seen the row, or a limiter. Inside the grace window that is "not visible yet" and
+ * is retried; only after it does the 404 become "No report with that id".
+ */
+export async function fetchReportMetaAfterUpload(id: string, options: GraceOptions): Promise<ReportMeta> {
+  const now = options.now ?? Date.now;
+  const sleep = options.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+  const graceMs = options.graceMs ?? UPLOAD_GRACE_MS;
+  const retryMs = options.retryMs ?? UPLOAD_GRACE_RETRY_MS;
+  for (;;) {
+    try {
+      return await fetchReportMeta(id, options.apiBase);
+    } catch (thrown) {
+      const notYet = thrown instanceof ReportLoadError && (thrown.status === 404 || thrown.status === 429);
+      if (!notYet || now() - options.uploadedAt >= graceMs) throw thrown;
+      options.onWaiting?.();
+      await sleep(retryMs);
+    }
+  }
 }
 
 /**

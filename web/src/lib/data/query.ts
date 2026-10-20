@@ -11,6 +11,14 @@ export interface QueryOptions<T> {
   ttlMs: number;
   version?: number;
   parse?: (raw: unknown) => T;
+  /**
+   * Whether an answer may be remembered. False means fetch-only: the answer is shown, but
+   * never persisted, never served as fresh to the next read, and a persisted copy of the
+   * same shape found in storage is ignored and removed. A report still being parsed uses
+   * it: its snapshot is true for seconds, and served from a cache it read "0 fights" long
+   * after the API said complete.
+   */
+  cacheable?: (data: T) => boolean;
 }
 
 export interface QueryState<T> {
@@ -136,6 +144,14 @@ function writePersisted(key: string, entry: Entry<unknown>): void {
   evictOldest(storage);
 }
 
+function forgetPersisted(key: string): void {
+  try {
+    localStorageOrNull()?.removeItem(storageKey(key));
+  } catch {
+    // Best-effort.
+  }
+}
+
 function everyPersisted(storage: Storage): { storageKey: string; entry: Persisted }[] {
   const rows: { storageKey: string; entry: Persisted }[] = [];
   for (let i = 0; i < storage.length; i++) {
@@ -196,7 +212,11 @@ function getOrCreateEntry<T>(key: string, options: QueryOptions<T>): Entry<T> {
   const existing = store.get(key) as Entry<T> | undefined;
   if (existing !== undefined) return existing;
   const version = options.version ?? 0;
-  const persisted = readPersisted(key, { scope: options.scope, version });
+  let persisted = readPersisted(key, { scope: options.scope, version });
+  if (persisted !== null && options.cacheable !== undefined && !options.cacheable(persisted.data as T)) {
+    forgetPersisted(key);
+    persisted = null;
+  }
   const entry: Entry<T> = {
     state:
       persisted === null
@@ -240,6 +260,12 @@ function revalidate<T>(
       entry.ttlMs = options.ttlMs;
       entry.validated = true;
       setState(key, entry, { data, status: 'ready', error: '', stale: false });
+      if (options.cacheable !== undefined && !options.cacheable(data)) {
+        // Shown, not remembered: the next read asks the network again.
+        entry.savedAt = 0;
+        forgetPersisted(key);
+        return data;
+      }
       writePersisted(key, entry as Entry<unknown>);
       return data;
     })
