@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.11
+
+- Builds sent from the site, the site's acknowledgements and guild notes now reach characters on realms whose name is not the ruleset word (the beta's Classic Beta PvP and PvE realms): /fs diag's Site line, the login line and the inbox read them.
+
 ## 2.0.10
 
 - /fs diag now says whether the site has seen this character and what is waiting in the inbox; at login one line tells you when a build is waiting, when the site has not seen you yet, or when the companion has gone quiet.
