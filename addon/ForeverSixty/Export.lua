@@ -223,8 +223,17 @@ function Export.guildInfo()
 	if name == nil then
 		return nil
 	end
+	-- The last guild read in the world (X.2): the 1.60 client answers nothing at logout.
+	Export.lastGuild = { name = name, rankIndex = rankIndex }
+	Export.guildGone = false
 	return { name = name, rankIndex = rankIndex }
 end
+
+--- The guild read in the world, kept for the logout.
+Export.lastGuild = nil
+--- Whether the player left their guild this session (Export.onGuildUpdate): no guild is then
+--- carried over from the last read or from the record on file.
+Export.guildGone = false
 
 --- Who this is: the site shows the name on the character it loads from the
 --- string, instead of the class alone. The name is first and last where the
@@ -373,8 +382,9 @@ function Export.adoptKey(db, key)
 	return db
 end
 
---- The export string, or nil and the reason.
-function Export.string(data)
+--- The export string, or nil and the reason. `fallbackGuild` ({ name, rankIndex }) stands in
+--- when the client answers no guild (X.2: it does not at logout).
+function Export.string(data, fallbackGuild)
 	-- The class slug comes from the locale-neutral class token (see
 	-- Talents.playerClassSlug); slugifying the display name on a non-English
 	-- client would produce a slug data.classes does not carry. Race gets the
@@ -397,9 +407,54 @@ function Export.string(data)
 		bags = Export.itemsInBags(Export.CARRIED_BAGS),
 		bank = Export.itemsInBags(Export.BANK_BAGS),
 		professions = Export.professionSlugs(),
-		guild = Export.guildInfo(),
+		guild = Export.guildInfo() or fallbackGuild,
 		character = Export.characterInfo(),
 	})
+end
+
+--- Whether an export code carries at least one gear slot: its head's sixth field (what follows
+--- the talents, up to the first section) names a slot. Pure.
+function Export.hasGear(code)
+	if type(code) ~= "string" then
+		return false
+	end
+	local head = code:match("^[^|]*")
+	local gear = head:match("^[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:(.*)$")
+	return gear ~= nil and gear:find("=", 1, true) ~= nil
+end
+
+--- How many gear slots an export code carries and its talent ranks ("a/b/c"), for /fs diag;
+--- nil for anything that is not a code. Pure.
+function Export.describe(code)
+	if type(code) ~= "string" then
+		return nil
+	end
+	local head = code:match("^[^|]*")
+	local talents, gear = head:match("^[^:]*:[^:]*:[^:]*:[^:]*:([^:]*):?(.*)$")
+	if talents == nil then
+		return nil
+	end
+	local slots = 0
+	for _ in gear:gmatch("[^,]+=") do
+		slots = slots + 1
+	end
+	return slots, talents
+end
+
+--- The guild to carry when the client answers none: the one read earlier in the world, else the
+--- one on the record on file, unless the player left the guild this session.
+local function keptGuild(record)
+	if Export.guildGone then
+		return nil
+	end
+	if Export.lastGuild ~= nil then
+		return Export.lastGuild
+	end
+	if type(record) == "table" and type(record.export) == "string" then
+		local build = Codec.decodeFS1(record.export)
+		return build and build.guild or nil
+	end
+	return nil
 end
 
 --- Write the record the companion reads out of SavedVariables.
@@ -410,15 +465,25 @@ end
 --- ruleset (spike check 12); the companion falls back to `realm` for an
 --- older addon, and this writes both so neither side has to guess.
 function Export.save(data)
-	local code, message = Export.string(data)
-	if code == nil then
-		return nil, message
-	end
+	return Export.write(data)
+end
+
+--- Build the export and write the character record: the one writer behind Export.save (logout)
+--- and Export.refresh (in the world). A read with no gear never replaces a record that has
+--- gear (the 1.60 client answers empty at PLAYER_LOGOUT); that record's export is kept (the
+--- DB's `savedAt` stamped) and returned.
+function Export.write(data)
 	-- UnitName("player") always succeeds in the real client; the "player"
 	-- fallback only fires in a test double (wow_mock.lua does not stub
 	-- UnitName) or a future client that drops the API, so the record is
 	-- still written rather than erroring.
 	local name, realm, region = characterParts()
+	local key = characterKeyOf(name, realm, region)
+	local before = ForeverSixtyDB and ForeverSixtyDB.characters and ForeverSixtyDB.characters[key]
+	local code, message = Export.string(data, keptGuild(before))
+	if code == nil then
+		return nil, message
+	end
 	ForeverSixtyDB = ForeverSixtyDB or {}
 	ForeverSixtyDB.characters = ForeverSixtyDB.characters or {}
 	-- Stamped on the DB, not on the character record: the Export tab shows
@@ -427,7 +492,11 @@ function Export.save(data)
 	ForeverSixtyDB.savedAt = date(Export.SAVED_AT_FORMAT)
 	Export.migrateRegions(ForeverSixtyDB.characters, region)
 	Export.dropAliases(ForeverSixtyDB.characters)
-	ForeverSixtyDB.characters[characterKeyOf(name, realm, region)] = {
+	before = ForeverSixtyDB.characters[key] or before
+	if not Export.hasGear(code) and before ~= nil and Export.hasGear(before.export) then
+		return before.export
+	end
+	ForeverSixtyDB.characters[key] = {
 		name = name,
 		class = UnitClass("player"),
 		realm = realm,
@@ -435,6 +504,7 @@ function Export.save(data)
 		region = region,
 		build = data.build,
 		export = code,
+		builtAt = date(Export.SAVED_AT_FORMAT),
 	}
 	return code
 end
@@ -597,13 +667,16 @@ function Export.saveOutbox(data, code)
 		return nil, message
 	end
 	local name, realm = characterParts()
-	local guild = Export.guildInfo()
+	local live = Export.guildInfo()
+	local key = characterKeyOf(characterParts())
+	local record = ForeverSixtyDB and ForeverSixtyDB.characters and ForeverSixtyDB.characters[key]
+	local guild = live or keptGuild(record)
 	-- Comms loads after this file; by logout it is there.
 	local Comms = ns.Comms or require("Comms")
 	local now = Theme.now()
 	Comms.prune(now)
 	ForeverSixtyDB = ForeverSixtyDB or {}
-	ForeverSixtyDB.outbox = Export.outbox({
+	local outbox = Export.outbox({
 		character = Export.outboxName(name, realm),
 		code = code,
 		wallNow = time(),
@@ -612,7 +685,95 @@ function Export.saveOutbox(data, code)
 		seen = Comms.seen,
 		now = now,
 	})
-	return ForeverSixtyDB.outbox
+	-- The roster heard in the world stands when logout finds none to read (X.2).
+	if outbox.roster_snapshot == nil and guild ~= nil and Export.lastRoster ~= nil
+		and Export.lastRoster.guild == guild.name then
+		outbox.roster_snapshot = Export.lastRoster
+	end
+	ForeverSixtyDB.outbox = outbox
+	return outbox
+end
+
+-- The export kept while in the world (X.2) ---------------------------------------------------
+
+--- The least seconds between two builds on equipment, bag and guild events.
+Export.REFRESH_INTERVAL = 10
+--- Seconds after PLAYER_ENTERING_WORLD of the first build, and of the one retry.
+Export.WORLD_BUILD_DELAY = 5
+Export.WORLD_RETRY_DELAY = 20
+
+--- The roster the outbox would carry now, kept for the logout.
+Export.lastRoster = nil
+local lastBuild, pending
+
+local function snapshotRoster()
+	local guild = Export.lastGuild
+	if guild == nil then
+		return
+	end
+	local Comms = ns.Comms or require("Comms")
+	local members = rosterMembers(Comms.seen, Theme.now(), time())
+	if #members > 0 then
+		Export.lastRoster = { guild = guild.name, members = members }
+	end
+end
+
+--- Build the export and write the character record now (no outbox); the code, or nil and the reason.
+function Export.refresh(data)
+	lastBuild = Theme.now()
+	local code, message = Export.write(data)
+	snapshotRoster()
+	return code, message
+end
+
+--- Refresh now, or at most once per Export.REFRESH_INTERVAL: a build inside the window is
+--- deferred to its end (one at a time, however many events ask), never dropped.
+function Export.refreshSoon(data)
+	local now = Theme.now()
+	if lastBuild == nil or now - lastBuild >= Export.REFRESH_INTERVAL then
+		return Export.refresh(data)
+	end
+	if not pending then
+		pending = Theme.after(Export.REFRESH_INTERVAL - (now - lastBuild), function()
+			pending = false
+			Export.refresh(data)
+		end)
+	end
+end
+
+--- PLAYER_ENTERING_WORLD: build five seconds in, once the item cache is warm; retry once at
+--- twenty seconds if a slot still read nothing.
+function Export.afterEnteringWorld(data)
+	Theme.after(Export.WORLD_BUILD_DELAY, function()
+		Export.refresh(data)
+		if #Export.equippedSlots() < #Export.INVENTORY_SLOTS then
+			Theme.after(Export.WORLD_RETRY_DELAY - Export.WORLD_BUILD_DELAY, function()
+				Export.refresh(data)
+			end)
+		end
+	end)
+end
+
+--- PLAYER_GUILD_UPDATE: the guild is read again; a client that says the player is in none (and
+--- answers no guild) means they left, so the last guild is dropped rather than carried.
+function Export.onGuildUpdate(data)
+	if Export.guildInfo() == nil and Theme.inGuild() == false then
+		Export.lastGuild = nil
+		Export.lastRoster = nil
+		Export.guildGone = true
+	end
+	Export.refreshSoon(data)
+end
+
+--- /fs diag's line: when the record on file was built, how many slots it carries, the talents.
+function Export.diagLine()
+	local record = ForeverSixtyDB and ForeverSixtyDB.characters and ForeverSixtyDB.characters[Export.characterKey()]
+	if type(record) ~= "table" or type(record.export) ~= "string" then
+		return L.diagExportNone
+	end
+	local slots, talents = Export.describe(record.export)
+	local stamp = type(record.builtAt) == "string" and record.builtAt:match(" (%d+:%d+)$") or "?"
+	return string.format(L.diagExport, stamp, slots or 0, talents or "?")
 end
 
 ns.Export = Export

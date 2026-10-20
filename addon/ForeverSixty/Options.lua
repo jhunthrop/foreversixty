@@ -253,6 +253,8 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = GroupPanel.diagLine()
 		-- The loot council helper (L5.3 ruling 7): the last drop asked about and how many answered.
 		surfaces[#surfaces + 1] = LootCouncil.diagLine()
+		-- What the site will get (X.2 ruling 4): when the export was built, its slots and talents.
+		surfaces[#surfaces + 1] = Export.diagLine()
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -434,7 +436,28 @@ Options.TRAIT_EVENTS = { "TRAIT_NODE_CHANGED", "TRAIT_TREE_CURRENCY_INFO_UPDATED
 Options.REWARD_EVENTS = { QUEST_COMPLETE = true, QUEST_ITEM_UPDATE = true, QUEST_FINISHED = true,
 	START_LOOT_ROLL = true }
 
+--- Keep the export current while in the world (X.2): the 1.60 client answers empty gear and
+--- talents at PLAYER_LOGOUT, so the record the logout keeps is written here. Nothing is
+--- written while the auto-save pref is off. (The export carries the bags, so a bag change is
+--- an equipment change; there is no separate switch for them.)
+function Options.keepExport(event)
+	if not Prefs.flag("autoSave") then
+		return
+	end
+	if event == "PLAYER_ENTERING_WORLD" then
+		Export.afterEnteringWorld(Options.data)
+	elseif event == "PLAYER_EQUIPMENT_CHANGED" or event == "BAG_UPDATE_DELAYED"
+		or event == "GUILD_ROSTER_UPDATE" then
+		Export.refreshSoon(Options.data)
+	elseif event == "PLAYER_GUILD_UPDATE" then
+		Export.onGuildUpdate(Options.data)
+	elseif event == "PLAYER_LEVEL_UP" or event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
+		Export.refresh(Options.data)
+	end
+end
+
 function Options.onEvent(_, event, ...)
+	Options.keepExport(event)
 	if Options.REWARD_EVENTS[event] then
 		RewardMarks.onEvent(event, ...)
 		return
