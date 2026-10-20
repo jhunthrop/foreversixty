@@ -70,6 +70,16 @@ describe("Codec.inboxMessages", function()
 		} }, "us/ashbringer/bow-jackzon", "guild")
 		assert.are.equal(1, #usable)
 	end)
+
+	it("matches the site's ruleset segment against the beta's realm name", function()
+		local inbox = { messages = {
+			{ type = "guild", character = "us/pvp/bow-jackzon", guild_name = "Sanguine" },
+			{ type = "guild", character = "us/normal/bow-jackzon", guild_name = "Other" },
+		} }
+		local usable = Codec.inboxMessages(inbox, "us/Classic Beta PvP/Bow Jackzon", "guild")
+		assert.are.equal(1, #usable)
+		assert.are.equal("Sanguine", usable[1].guild_name)
+	end)
 end)
 
 -- Codec.newestFirst: the inbox readers (Follow.messages, and through it

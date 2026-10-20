@@ -133,6 +133,14 @@ describe("what the site has and what the inbox holds", function()
 			assert.are.equal("Site: seen 10:00 (3 characters)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
+		it("reads the site's ruleset key as this beta character", function()
+			_G.ForeverSixtyDB = { characters = { ["us/Classic Beta PvP/Bow Jackzon"] = {
+				name = "Bow Jackzon", class = "Warrior", realm = "Classic Beta PvP", region = "us" } } }
+			state.realm, state.playerName = "Classic Beta PvP", "Bow Jackzon"
+			inbox(ack(2 * 3600, "us/pvp/bow-jackzon"))
+			assert.are.equal("Site: seen 10:00 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+		end)
+
 		it("says one character in the singular", function()
 			inbox(ack(2 * 3600))
 			assert.are.equal("Site: seen 10:00 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))

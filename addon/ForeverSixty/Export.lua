@@ -581,49 +581,10 @@ function Export.outboxName(name, realm)
 	return name .. "-" .. compact
 end
 
---- The words a realm's name spells a ruleset with, as the site reads them
---- (web/src/lib/characters.ts RULESET_WORDS): the ruleset itself on Forever, PvE/PvP on the beta.
-Export.RULESET_WORDS = {
-	normal = "normal", pve = "normal", pvp = "pvp", rp = "rp", roleplay = "rp",
-	hardcore = "hardcore", hc = "hardcore",
-}
-
---- The first ruleset word among `words`, each word alone or run together with the next
---- (a run-together realm's "PvP" opens into "Pv" and "P"). nil for none.
-local function rulesetIn(words, pairsToo)
-	for index, word in ipairs(words) do
-		local ruleset = Export.RULESET_WORDS[word]
-		if ruleset == nil and pairsToo and words[index + 1] ~= nil then
-			ruleset = Export.RULESET_WORDS[word .. words[index + 1]]
-		end
-		if ruleset ~= nil then
-			return ruleset
-		end
-	end
-	return nil
-end
-
---- The ruleset segment of a site path for a realm's name, as the site's rulesetFromRealm reads
---- it: the first of its words (split at anything not a letter or a digit, lower-cased) that
---- names a ruleset. A realm as a sender spells it, its words run together ("ClassicBetaPvP"),
---- is opened at its capitals and digits first. "normal" where no word names one. Pure.
-function Export.rulesetFromRealm(realm)
-	realm = type(realm) == "string" and realm or ""
-	local words = {}
-	for word in realm:lower():gmatch("[%a%d]+") do
-		words[#words + 1] = word
-	end
-	local ruleset = rulesetIn(words, false)
-	if ruleset ~= nil then
-		return ruleset
-	end
-	local opened = realm:gsub("(%l)(%u)", "%1 %2"):gsub("(%a)(%d)", "%1 %2"):gsub("(%d)(%a)", "%1 %2")
-	words = {}
-	for word in opened:lower():gmatch("[%a%d]+") do
-		words[#words + 1] = word
-	end
-	return rulesetIn(words, true) or "normal"
-end
+--- The words a realm's name spells a ruleset with, and the ruleset segment of a site path for a
+--- realm's name: Codec's (the one copy, which the key matcher reads too). Pure.
+Export.RULESET_WORDS = Codec.RULESET_WORDS
+Export.rulesetFromRealm = Codec.rulesetFromRealm
 
 --- A character's slug as the site and the API write it (characters.ts characterSlug,
 --- api/internal/character Slug): the name alone, trimmed, lower-cased, each run of spaces

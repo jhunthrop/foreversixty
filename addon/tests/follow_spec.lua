@@ -283,6 +283,20 @@ describe("Follow.sameCharacter", function()
 		assert.is_false(Follow.sameCharacter("US/Ashbringer/Bow Jackzon", "us/pvp/bow-jackzon"))
 	end)
 
+	it("reads a realm name as the ruleset it spells, against the site's ruleset segment", function()
+		assert.is_true(Follow.sameCharacter("us/Classic Beta PvP/Bow Jackzon", "us/pvp/bow-jackzon"))
+		assert.is_true(Follow.sameCharacter("us/pvp/bow-jackzon", "us/Classic Beta PvP/Bow Jackzon"))
+		assert.is_true(Follow.sameCharacter("us/Classic Beta PvE 2/Booty Twerk", "us/normal/booty-twerk"))
+		assert.is_true(Follow.sameCharacter("us/ClassicBetaPvP/Bow Jackzon", "us/pvp/bow-jackzon"))
+		assert.is_true(Follow.sameCharacter("us/Hardcore/Yell", "us/hardcore/yell"))
+	end)
+
+	it("still tells a pvp realm from a normal one, and a name or region apart", function()
+		assert.is_false(Follow.sameCharacter("us/Classic Beta PvP/Bow Jackzon", "us/normal/bow-jackzon"))
+		assert.is_false(Follow.sameCharacter("us/Classic Beta PvP/Bow Jackzon", "us/pvp/someone-else"))
+		assert.is_false(Follow.sameCharacter("eu/Classic Beta PvP/Bow Jackzon", "us/pvp/bow-jackzon"))
+	end)
+
 	it("refuses a value with no character-key shape", function()
 		assert.is_false(Follow.sameCharacter("not-a-key", "US/Ashbringer/Bow Jackzon"))
 		assert.is_false(Follow.sameCharacter(nil, "US/Ashbringer/Bow Jackzon"))
@@ -459,5 +473,27 @@ describe("Follow, comparing two builds", function()
 		local summary = Follow.arrivalSummary(DATA, current, CODE)
 		local Locale = require("Locale")
 		assert.are.equal(string.format(Locale.buildArrivedDiff, 1), summary)
+	end)
+end)
+
+describe("Follow.inboxBuilds on the beta's realm names", function()
+	local Follow
+
+	before_each(function()
+		Follow = helper.load("Follow")
+	end)
+
+	it("offers a build addressed to the site's key to the addon's own key", function()
+		local inbox = { messages = { { type = "build", character = "us/pvp/obnoxious-yell", name = "Arms raid",
+			code = "FSB1:1.60.1.70291:warrior:111:" } } }
+		local builds = Follow.inboxBuilds(inbox, "us/Classic Beta PvP/Obnoxious Yell")
+		assert.are.equal(1, #builds)
+		assert.are.equal("Arms raid", builds[1].name)
+	end)
+
+	it("offers a guild note addressed to the site's key likewise", function()
+		local inbox = { messages = { { type = "guild", character = "us/pvp/obnoxious-yell", guild_name = "Sanguine" } } }
+		assert.are.equal(1, #Follow.messages(inbox, "us/Classic Beta PvP/Obnoxious Yell", "guild"))
+		assert.are.equal(0, #Follow.messages(inbox, "us/Classic Beta PvP/Someone Else", "guild"))
 	end)
 end)
