@@ -100,6 +100,9 @@ export const gearCopy = {
   /** The worn item is the pick (or as good as it): no arrow. */
   best: 'Best for your band',
   /** The band has no pick for the slot (fix round 2 ruling 6: capitalised everywhere). */
+  /** The muted words after the heading when the spec was not named by a fight. */
+  specFromTalents: 'from your talents',
+  specDefault: 'no points spent yet',
   noPick: 'No pick for your band yet',
   /** The off hand under a worn two-hander: its pick comes with the main hand's (ruling 9). It is
    *  drawn as `swapLead` then `swapKept` on one unbroken line, so "main-hand swap" never splits at

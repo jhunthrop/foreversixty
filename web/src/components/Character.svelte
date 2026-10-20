@@ -34,7 +34,7 @@
   import { componentGaps, foreverOf, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
-  import { GEAR_ANCHOR } from '../lib/gear/panel';
+  import { GEAR_ANCHOR, gearSpecLine } from '../lib/gear/panel';
   import { classSlugFromName } from '../lib/report/tree-sizes';
   import CharacterGearPanel from './character/CharacterGearPanel.svelte';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
@@ -248,6 +248,7 @@
           : classSlugFromName(data.character.class)}
         bisHref={specBis}
         spec={profileSpec(data)}
+        specLine={gearSpecLine(data.gear_spec, data.gear_spec_source)}
         band={typeof data.character.level === 'number' ? bandForLevel(data.character.level) : null}
         unread={gearUnread}
         capturedAt={own?.build?.captured_at ?? null}

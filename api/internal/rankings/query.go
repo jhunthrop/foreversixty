@@ -330,6 +330,10 @@ type Character struct {
 	// GearGapTotal of its rows: null when no row has a gap.
 	Gear         []GearSlot `json:"gear"`
 	GearGapTotal *float64   `json:"gear_gap_total"`
+	// GearSpec is the spec the gear picks are for and GearSpecSource where it came from
+	// ("fight", "talents" or "default"); null when the panel has no spec.
+	GearSpec       *string `json:"gear_spec"`
+	GearSpecSource *string `json:"gear_spec_source"`
 }
 
 // ForeverScore is the character page's Forever Score (api/internal/rating's ScoreV2, the

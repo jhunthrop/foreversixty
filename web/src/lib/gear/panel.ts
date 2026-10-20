@@ -135,6 +135,25 @@ export function gearRows(
   });
 }
 
+/**
+ * The spec the picks are for, in muted words after the heading: "Fury · from your talents", or
+ * "Arms · no points spent yet" when nothing is spent. Null when a fight named the spec (the
+ * usual case, nothing to explain) or the API sent no spec. "warrior-beast-mastery" style slugs
+ * lose their class: "Beast Mastery".
+ */
+export function gearSpecLine(
+  spec: string | null | undefined,
+  source: string | null | undefined,
+): string | null {
+  if (!spec || (source !== 'talents' && source !== 'default')) return null;
+  const name = spec
+    .slice(spec.indexOf('-') + 1)
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  return `${name} · ${source === 'talents' ? gearCopy.specFromTalents : gearCopy.specDefault}`;
+}
+
 /** How many slots have something to gain: a gap above 0. */
 export function gearGapCount(gear: readonly CharacterGearSlot[]): number {
   return gear.filter((slot) => slot.gap !== null && slot.gap > 0).length;

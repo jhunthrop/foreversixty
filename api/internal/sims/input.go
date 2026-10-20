@@ -11,6 +11,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
@@ -28,6 +29,10 @@ const inputMaxAge = 60
 // the comparison below and this shape does not change.
 type Input struct {
 	Spec string `json:"spec"`
+	// SpecSource says where Spec came from: "fight" (a logged fight named it), "talents" (the
+	// export's talent points, the dominant tree) or "default" (no points spent: the class's
+	// first spec). Empty when Spec is.
+	SpecSource string `json:"spec_source"`
 	// Gear is the source's own shape: the addon's export string for an
 	// addon read, {"trinkets": […]} for a fight. web/src/lib/sim/character.ts
 	// turns either into the envelope's CharacterSpec, which is where
@@ -114,6 +119,22 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 	}
 	if split != nil {
 		out.Talents = *split
+	}
+	// A character no fight has named a spec for is read from its export's talents, then the
+	// class's first spec (character.SpecFor, the one place that order lives).
+	{
+		class, ranks := "", []int(nil)
+		if fightClass != nil {
+			class = strings.ToLower(*fightClass)
+		}
+		if export != nil {
+			if d, ok := fs1.Decode(*export); ok {
+				class, ranks = d.ClassSlug, d.Talents.Points
+			}
+		}
+		if class != "" {
+			out.Spec, out.SpecSource = character.SpecFor(class, out.Spec, ranks)
+		}
 	}
 	if reportID != nil && fightIndex != nil {
 		ref = FightRef{ReportID: *reportID, FightIndex: *fightIndex}

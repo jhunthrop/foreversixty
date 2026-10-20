@@ -5,7 +5,15 @@
 import { describe, expect, it } from 'vitest';
 import { GEAR_FIXTURE, GEAR_PANEL_FIXTURE } from '../../fixtures/character-gear';
 import { gearCopy } from './copy';
-import { gearGapCount, gearRows, gearTitle, gearTitleSummary, gearTotalsLine, type GearRow } from './panel';
+import {
+  gearGapCount,
+  gearRows,
+  gearSpecLine,
+  gearTitle,
+  gearTitleSummary,
+  gearTotalsLine,
+  type GearRow,
+} from './panel';
 import type { CharacterGearSlot } from './types';
 
 /** The title as read: its no-break spaces (which keep each dot on the line before it) as spaces. */
@@ -267,5 +275,25 @@ describe('gearCopy (L8.6 fix round 1)', () => {
     expect(gearCopy.bisLink('Arms', 30)).toBe('Full Arms BiS list at 30 to 39');
     expect(gearCopy.bisLink('Holy', null)).toBe('Full Holy BiS list');
     expect(gearCopy.bisArrow).toBe('→');
+  });
+});
+
+describe('gearSpecLine (A.2)', () => {
+  it('names the spec and says the talents named it', () => {
+    expect(gearSpecLine('warrior-fury', 'talents')).toBe('Fury · from your talents');
+  });
+
+  it('says no points are spent when the class default answers', () => {
+    expect(gearSpecLine('warrior-arms', 'default')).toBe('Arms · no points spent yet');
+  });
+
+  it('title-cases a spec of several words', () => {
+    expect(gearSpecLine('hunter-beast-mastery', 'talents')).toBe('Beast Mastery · from your talents');
+  });
+
+  it('says nothing when a fight named the spec, or the API sent none', () => {
+    expect(gearSpecLine('warrior-fury', 'fight')).toBeNull();
+    expect(gearSpecLine(null, null)).toBeNull();
+    expect(gearSpecLine(undefined, undefined)).toBeNull();
   });
 });

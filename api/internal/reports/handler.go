@@ -332,6 +332,9 @@ func (s *Service) view(ctx context.Context, rep Report) (View, error) {
 		}
 		v.Owner = &owner
 	}
+	if rep.LoggingCharacter != nil {
+		v.LoggingCharacter = s.loggingCharacter(ctx, *rep.LoggingCharacter)
+	}
 	if rep.GuildID != nil {
 		g, err := s.guild(ctx, *rep.GuildID)
 		if err != nil {
@@ -340,6 +343,22 @@ func (s *Service) view(ctx context.Context, rep Report) (View, error) {
 		v.Guild = g
 	}
 	return v, nil
+}
+
+// loggingCharacter names the character key: its name from the characters table when the key
+// resolves, else the key's last segment title-cased ("bow-jackzon" is "Bow Jackzon"). A name
+// that cannot be read is never an error on the report page.
+func (s *Service) loggingCharacter(ctx context.Context, key string) *LoggingCharacter {
+	var name string
+	if err := s.Store.Pool.QueryRow(ctx, `select name from characters where key = $1`, key).Scan(&name); err == nil && name != "" {
+		return &LoggingCharacter{Key: key, Name: name}
+	}
+	slug := key[strings.LastIndex(key, "/")+1:]
+	words := strings.Fields(strings.ReplaceAll(slug, "-", " "))
+	for i, w := range words {
+		words[i] = strings.ToUpper(w[:1]) + w[1:]
+	}
+	return &LoggingCharacter{Key: key, Name: strings.Join(words, " ")}
 }
 
 func (s *Service) guild(ctx context.Context, id int64) (*GuildRef, error) {

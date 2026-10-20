@@ -148,8 +148,12 @@ func TestAnExportOnlyCharacterHasGearAndNoTalents(t *testing.T) {
 	if in.Source != "addon" || string(in.Gear) != `"FS1:1.60.1.69893:rogue:human:0/0/0:head=7"` {
 		t.Fatalf("export only: %+v", in)
 	}
-	if in.Talents != "" || in.Spec != "" {
-		t.Fatalf("talents or spec appeared from nowhere: %+v", in)
+	if in.Talents != "" {
+		t.Fatalf("talents appeared from nowhere: %+v", in)
+	}
+	// No points spent: the class's first spec, as the default.
+	if in.Spec == "" || in.SpecSource != "default" {
+		t.Fatalf("spec = %q (%s), want the rogue default", in.Spec, in.SpecSource)
 	}
 	if in.Buffs == nil {
 		t.Fatal("buffs must be an empty list, never null")
@@ -219,5 +223,34 @@ func TestSimInputIsNeverCachedForASignedInCaller(t *testing.T) {
 	want := "public, max-age=60, stale-while-revalidate=600"
 	if cc := res.Header.Get("Cache-Control"); cc != want {
 		t.Errorf("anonymous: Cache-Control %q, want %q", cc, want)
+	}
+}
+
+// A character with an export and no logged fight is read from the export's talents:
+// twelve points in the second tree is Fury.
+func TestAnExportOnlyCharacterGetsItsSpecFromTheTalents(t *testing.T) {
+	h := newHarness(t)
+	h.service.Summaries = dirGetter{root: h.dir}
+	seedExport(h, "us/pvp/obnoxious-yell", "us", "pvp", "Obnoxious Yell",
+		"FS1:1.60.1.70450:warrior:gnome:0/05052/0:head=250528", time.Now().UTC())
+	var in Input
+	h.data(h.do(http.MethodGet, "/v1/characters/us/pvp/obnoxious-yell/sim-input", "", nil), &in)
+	if in.Spec != "warrior-fury" || in.SpecSource != "talents" {
+		t.Fatalf("spec = %q (%s), want warrior-fury (talents)", in.Spec, in.SpecSource)
+	}
+}
+
+// A fight that named the spec wins over the export's talents.
+func TestAFightsSpecWinsOverTheExportsTalents(t *testing.T) {
+	h := newHarness(t)
+	h.service.Summaries = dirGetter{root: h.dir}
+	at := time.Now().UTC()
+	seedExport(h, "us/normal/fightwins", "us", "normal", "Fightwins",
+		"FS1:1.60.1.70450:warrior:gnome:0/05052/0:head=250528", at.Add(time.Hour))
+	seedFightRow(h, "us/normal/fightwins", "Fightwins", "Warrior", "warrior-arms", at)
+	var in Input
+	h.data(h.do(http.MethodGet, "/v1/characters/us/normal/fightwins/sim-input", "", nil), &in)
+	if in.Spec != "warrior-arms" || in.SpecSource != "fight" {
+		t.Fatalf("spec = %q (%s), want warrior-arms (fight)", in.Spec, in.SpecSource)
 	}
 }

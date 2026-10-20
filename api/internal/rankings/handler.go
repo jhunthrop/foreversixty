@@ -325,6 +325,10 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 		}
 		if gear.Slots != nil {
 			c.Gear, c.GearGapTotal = gear.Slots, gear.GapTotal
+			if gear.Spec != "" {
+				spec, source := gear.Spec, gear.SpecSource
+				c.GearSpec, c.GearSpecSource = &spec, &source
+			}
 		}
 	case s.Scores != nil:
 		score, err := s.Scores.ForeverScore(r.Context(), c.Character.Key)
