@@ -1156,3 +1156,79 @@ func TestPutExportsLeavesAnotherAccountsOneWordRowAlone(t *testing.T) {
 		t.Fatalf("characters=%d exports=%d, want another account's row kept", c, x)
 	}
 }
+
+// seedBuildWith stores a warrior build with the given title and spend
+// order, for the inbox's naming and refusal rules.
+func (h *harness) seedBuildWith(title string, order []int) string {
+	h.t.Helper()
+	b, err := builds.New(builds.Input{
+		ClassID: 1, RaceID: 1, TreeVersion: "test-1",
+		PointOrder: order, Gear: map[string]int{"head": 12640}, Title: title,
+	})
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	if _, _, err := h.builds.Save(context.Background(), b, nil); err != nil {
+		h.t.Fatal(err)
+	}
+	return b.ID
+}
+
+// An untitled build is sent with an empty name, so the addon names it
+// from the trees instead of showing the site's race-and-class heading.
+func TestAnUntitledBuildIsQueuedWithNoName(t *testing.T) {
+	h := newHarness(t)
+	buildID := h.seedBuildWith("", []int{101, 101, 102})
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, "/v1/addon/inbox", `{"build_id":"`+buildID+`"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("status = %d, want 201", res.StatusCode)
+	}
+
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "device", DeviceID: "device-1"}
+	var out struct {
+		Builds []InboxEntry `json:"builds"`
+	}
+	h.data(h.do(http.MethodGet, "/v1/addon/inbox", ""), &out)
+	if len(out.Builds) != 1 {
+		t.Fatalf("inbox = %+v", out.Builds)
+	}
+	if out.Builds[0].Name != "" {
+		t.Fatalf("name = %q, want empty for an untitled build", out.Builds[0].Name)
+	}
+	if want := "FSB1:test-1:warrior:111111112:"; !strings.HasPrefix(out.Builds[0].Code, want) {
+		t.Fatalf("code = %q, want it to start %q", out.Builds[0].Code, want)
+	}
+}
+
+// A build with no talent points would reach the addon with nothing to
+// follow, so the route refuses it and stores nothing.
+func TestQueueingABuildWithNoTalentPointsIsRefused(t *testing.T) {
+	h := newHarness(t)
+	buildID := h.seedBuildWith("Empty", nil)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, "/v1/addon/inbox", `{"build_id":"`+buildID+`"}`)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusUnprocessableEntity {
+		t.Fatalf("status = %d, want 422", res.StatusCode)
+	}
+	var env struct {
+		Error struct {
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&env); err != nil {
+		t.Fatal(err)
+	}
+	if env.Error.Message != "that build has no talent points" {
+		t.Fatalf("message = %q", env.Error.Message)
+	}
+	rows, err := h.store.Inbox(t.Context(), h.owner)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rows) != 0 {
+		t.Fatalf("inbox = %+v, want nothing queued", rows)
+	}
+}

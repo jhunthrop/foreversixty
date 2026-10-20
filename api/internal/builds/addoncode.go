@@ -52,6 +52,13 @@ func AddonCode(data *trees.Data, b Build) (string, error) {
 
 // addonOrder renders one base-36 (tab, tier, column) triple per point in
 // b.PointOrder, concatenated in the order the points were spent.
+//
+// The triples are 1-based, like the web planner's pointsOf and like the
+// WoW client's own GetTalentInfo, which the addon compares them against.
+// The pipeline's talents.json is 0-based (tier 0 is the top row, tree
+// position 0 the first tab), so every value is written one higher. A
+// leading 0 is malformed by design in the format, which is how the addon
+// came to drop every build this wrote 0-based.
 func addonOrder(tb *trees.Build, b Build) (string, error) {
 	var sb strings.Builder
 	for _, id := range b.PointOrder {
@@ -60,7 +67,7 @@ func addonOrder(tb *trees.Build, b Build) (string, error) {
 			return "", fmt.Errorf("builds: addon code: unknown talent %d in tree data %s", id, tb.Version)
 		}
 		for _, v := range [3]int{t.TreePosition, t.Tier, t.Column} {
-			digit, err := base36Digit(v)
+			digit, err := base36Digit(v + 1)
 			if err != nil {
 				return "", err
 			}

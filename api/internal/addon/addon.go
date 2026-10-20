@@ -720,7 +720,10 @@ func (s *Service) entries(ctx context.Context, rows []queued) ([]InboxEntry, err
 	for _, q := range rows {
 		e := InboxEntry{ID: q.BuildID, Character: q.CharacterKey}
 		if b, ok := records[q.BuildID]; ok {
-			e.Name = builds.Describe(s.Data, b).Title
+			// Only a name the player gave. Describe's race-and-class
+			// fallback is for the site's pages; left empty, the addon names
+			// the build from its trees ("Beast Mastery build").
+			e.Name = b.Title
 			if code, err := builds.AddonCode(s.Data, b); err == nil {
 				e.Code = code
 			} else {
@@ -730,6 +733,38 @@ func (s *Service) entries(ctx context.Context, rows []queued) ([]InboxEntry, err
 		out = append(out, e)
 	}
 	return out, nil
+}
+
+// unsendable says why a saved build cannot be queued, or "" when it can.
+// A build with no talent points would reach the addon as an empty code
+// it has nothing to follow, and one whose code cannot be rendered would
+// be dropped silently, so both are refused here rather than queued to
+// vanish. A build id the store does not have is not refused: a deleted
+// build is queued and carried without a code, as entries documents. With
+// no build source or tree data wired in there is nothing to check.
+func (s *Service) unsendable(ctx context.Context, id string) string {
+	if s.Builds == nil || s.Data == nil {
+		return ""
+	}
+	records, err := s.Builds.GetMany(ctx, []string{id})
+	if err != nil {
+		// A read failure is not the build's fault; queue it and let the
+		// inbox read report on it.
+		s.logger().Warn("addon", "op", "queue", "build", id, "err", err)
+		return ""
+	}
+	b, ok := records[id]
+	if !ok {
+		return ""
+	}
+	if len(b.PointOrder) == 0 {
+		return "that build has no talent points"
+	}
+	if _, err := builds.AddonCode(s.Data, b); err != nil {
+		s.logger().Warn("addon", "op", "queue", "build", id, "err", err)
+		return "that build cannot be sent to the game"
+	}
+	return ""
 }
 
 // QueueInput is the body of POST /v1/addon/inbox.
@@ -768,6 +803,11 @@ func (s *Service) queueBuild(w http.ResponseWriter, r *http.Request) {
 	if in.CharacterKey != "" && !character.ValidKey(in.CharacterKey) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a character",
 			map[string]string{"character_key": "<region>/<ruleset>/<name-slug>, or omitted"})
+		return
+	}
+	if msg := s.unsendable(r.Context(), in.BuildID); msg != "" {
+		httpx.WriteError(w, r, http.StatusUnprocessableEntity, "invalid", msg,
+			map[string]string{"build_id": "a build with talent points the addon can read"})
 		return
 	}
 	if err := s.Store.AddInbox(r.Context(), auth.ActorFrom(r.Context()).UserID,

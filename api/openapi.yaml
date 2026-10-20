@@ -2314,6 +2314,7 @@ paths:
       responses:
         '201': { description: "queued", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '400': { description: "build_id or character_key is not the right shape", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '422': { description: "that build has no talent points, or its code cannot be rendered", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /reports/{id}/card.png:
     get:
       summary: A report's unfurl card
