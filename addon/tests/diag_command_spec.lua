@@ -10,7 +10,7 @@
 local helper = require("spec_helper")
 
 describe("/fs diag on a fresh session", function()
-	local saved, L, Options, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT
+	local saved, L, Options, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, SITE, INBOX
 
 	local function fresh(data)
 		_G.ForeverSixtyData = data
@@ -28,6 +28,7 @@ describe("/fs diag on a fresh session", function()
 		GROUP = string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone)
 		LOOT = string.format(L.diagLoot, L.diagLootNone)
 		EXPORT = L.diagExportNone
+		SITE, INBOX = L.diagSiteNever, L.diagInboxEmpty
 		_G.ForeverSixtyDB = nil
 	end
 
@@ -41,7 +42,8 @@ describe("/fs diag on a fresh session", function()
 
 	it("says the data addon is not installed, as a finding under Everything is working", function()
 		fresh(nil)
-		assert.are.same({ L.diagAllWorking, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, L.diagDataAddonMissingInfo },
+		assert.are.same({ L.diagNotSeenHeadline, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, SITE, INBOX,
+			L.diagDataAddonMissingInfo },
 			Options.handle("diag"))
 	end)
 
@@ -49,14 +51,15 @@ describe("/fs diag on a fresh session", function()
 		fresh({ format = 1, characters = {}, guilds = {} })
 		-- L4.1 fix round 5: the status lines under their own "Working:" heading.
 		assert.are.same({ L.diagHeading, L.diagDataAddonOld, L.diagWorkingHeading, NO_BUILD, PANEL, GUILD, GROUP, LOOT,
-			EXPORT },
+			EXPORT, SITE, INBOX },
 			Options.handle("diag"))
 	end)
 
 	it("says it once however often /fs diag is asked", function()
 		fresh(nil)
 		Options.handle("diag")
-		assert.are.same({ L.diagAllWorking, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, L.diagDataAddonMissingInfo },
+		assert.are.same({ L.diagNotSeenHeadline, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, SITE, INBOX,
+			L.diagDataAddonMissingInfo },
 			Options.handle("diag"))
 	end)
 
@@ -64,12 +67,14 @@ describe("/fs diag on a fresh session", function()
 	it("keeps the verbose findings for /fs diag verbose", function()
 		fresh(nil)
 		require("Theme").noteVerbose("Talent window found: PlayerSpellsFrame (trait mapping)")
-		assert.are.same({ L.diagAllWorking, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, L.diagDataAddonMissingInfo },
+		assert.are.same({ L.diagNotSeenHeadline, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, SITE, INBOX,
+			L.diagDataAddonMissingInfo },
 			Options.handle("diag"))
 		local verbose = Options.handle("diag verbose")
 		-- L9.2 B3: the last verbose line is the memory the addon holds.
 		assert.is_truthy(table.remove(verbose):match("^memory: %d+ KB$"))
-		assert.are.same({ L.diagAllWorking, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, L.diagDataAddonMissingInfo,
+		assert.are.same({ L.diagNotSeenHeadline, NO_BUILD, PANEL, GUILD, GROUP, LOOT, EXPORT, SITE, INBOX,
+			L.diagDataAddonMissingInfo,
 			"Talent window found: PlayerSpellsFrame (trait mapping)" }, verbose)
 	end)
 end)

@@ -808,6 +808,12 @@ describe("Options", function()
 
 	it("says everything is working on /fs diag when nothing is broken", function()
 		require("Theme").reset()
+		-- X.3: only with gear in the export and a site that saw this character within a day.
+		local key = require("Export").characterKey()
+		local now = type(_G.time) == "function" and _G.time() or os.time()
+		_G.ForeverSixtyDB = { characters = { [key] = { export = "FS1:1.60.1.70450:warrior:human:0/0/0:head=1" } } }
+		_G.ForeverSixtyInbox = { messages = { { type = "ack", character = key,
+			export_seen_at = os.date("!%Y-%m-%dT%H:%M:%SZ", now - 600) } } }
 		-- The first line is the verdict; a once-only info line about the
 		-- data addon may follow it depending on which case ran first.
 		assert.are.equal(require("Locale").diagAllWorking, Options.handle("diag")[1])

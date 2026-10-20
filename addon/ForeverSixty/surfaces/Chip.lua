@@ -463,8 +463,14 @@ function Chip.model(input)
 		end
 	end
 	-- Idle: the class icon, no text; a click opens the talent window.
+	-- X.3: a build waits in the inbox, none is followed and the chip has nothing else to say: the
+	-- idle chip opens the dialog, and its hover says so.
+	local inboxWaiting = input.build == nil and (input.inboxWaiting or 0) > 0 and states[1] == nil
 	local chosen = states[1]
 		or { kind = "idle", icon = input.classIcon, text = "", action = "talents", hint = L.chipHintTalents }
+	if inboxWaiting then
+		chosen = { kind = "idle", icon = input.classIcon, text = "", action = "inbox" }
+	end
 	local hiddenByLevel = input.hiddenUntilLevel ~= nil and (input.level or 0) < input.hiddenUntilLevel
 	local hiddenBy
 	if input.shown == false or hiddenByLevel then
@@ -487,6 +493,7 @@ function Chip.model(input)
 		chosen = chosen,
 		buildName = input.buildName,
 		marksLegend = input.marksLegend == true,
+		inboxWaiting = inboxWaiting,
 		waiting = waiting,
 		nextLine = nextLine(input),
 		picksStart = input.picksStart,
@@ -533,6 +540,9 @@ function Chip.tooltipLines(model)
 		if state.tipExtra ~= nil then
 			lines[#lines + 1] = colored("muted", state.tipExtra)
 		end
+	end
+	if model.inboxWaiting then
+		lines[#lines + 1] = colored("body", L.chipInboxWaiting)
 	end
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
@@ -860,6 +870,29 @@ local function lastRaid()
 	return messages[1]
 end
 
+--- How many builds from the site wait for this character (X.3); 0 where the status module
+--- is not loaded.
+function Chip.inboxWaiting(data)
+	local status = ns.SiteStatus
+	if status == nil and type(require) == "function" then
+		-- Specs load modules apart (the client shares one ns table; it has no require).
+		local loaded, module = pcall(require, "SiteStatus")
+		status = loaded and module or nil
+	end
+	if status == nil then
+		return 0
+	end
+	local ok, count = pcall(status.waitingCount, data)
+	return ok and type(count) == "number" and count or 0
+end
+
+--- The idle chip's click while a build waits: the build dialog, on its "from the site" rows.
+function Chip.openInbox()
+	local dialog = ns.BuildDialog or require("BuildDialog")
+	dialog.data = Chip.data or dialog.data
+	dialog.open("paste")
+end
+
 --- The model's inputs, read from the live modules and the client.
 function Chip.inputs(data)
 	local level = Chip.level()
@@ -896,6 +929,8 @@ function Chip.inputs(data)
 		-- The legend follows the slot marks themselves (L4.1 fix rounds 5-6): off with "Gear tips on
 		-- item tooltips", and off once the marks have turned themselves off (Chip.marksShown).
 		marksLegend = Chip.marksShown ~= nil and Chip.marksShown() == true or false,
+		-- Builds from the site waiting in the inbox (X.3): the idle chip says so while none is followed.
+		inboxWaiting = build == nil and Chip.inboxWaiting(data) or 0,
 	}
 	local point = progress.point
 	if point ~= nil and build ~= nil then
@@ -1023,6 +1058,8 @@ function Chip.handlerFor(chosen)
 		return function()
 			Chip.printLastNight(chosen)
 		end
+	elseif action == "inbox" then
+		return Chip.openInbox
 	elseif action == "path" then
 		return Chip.togglePath
 	end

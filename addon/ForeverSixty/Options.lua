@@ -38,6 +38,7 @@ local PanelTab = ns.PanelTab or require("PanelTab")
 local GuildTab = ns.GuildTab or require("GuildTab")
 local GroupPanel = ns.GroupPanel or require("GroupPanel")
 local LootCouncil = ns.LootCouncil or require("LootCouncil")
+local SiteStatus = ns.SiteStatus or require("SiteStatus")
 
 local Options = {}
 Options.data = Data
@@ -255,6 +256,11 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = LootCouncil.diagLine()
 		-- What the site will get (X.2 ruling 4): when the export was built, its slots and talents.
 		surfaces[#surfaces + 1] = Export.diagLine()
+		-- What the site has and what waits in the inbox (X.3 ruling 1).
+		local siteLines, siteHealthy = SiteStatus.diag(Options.data)
+		for _, line in ipairs(siteLines) do
+			surfaces[#surfaces + 1] = line
+		end
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -268,7 +274,7 @@ function Options.handle(input)
 			end
 			info[#info + 1] = string.format(L.diagMemory, Theme.memoryKB())
 		end
-		return Theme.diagReport(broken, surfaces, info)
+		return Theme.diagReport(broken, surfaces, info, not siteHealthy and L.diagNotSeenHeadline or nil)
 	end
 	-- Anything /fs does not know: the player's commands.
 	return Options.helpLines()
@@ -458,6 +464,10 @@ end
 
 function Options.onEvent(_, event, ...)
 	Options.keepExport(event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		-- X.3: after the export's own refresh (queued above), the one login line that is true.
+		SiteStatus.afterEnteringWorld(Options.data)
+	end
 	if Options.REWARD_EVENTS[event] then
 		RewardMarks.onEvent(event, ...)
 		return

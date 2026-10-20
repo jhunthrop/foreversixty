@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.10
+
+- /fs diag now says whether the site has seen this character and what is waiting in the inbox; at login one line tells you when a build is waiting, when the site has not seen you yet, or when the companion has gone quiet.
+
 ## 2.0.9
 
 - Your gear, talents and guild reach the site again. The export is now kept up to date while you play and written at logout from that copy, because the 1.60 client answers empty gear, talents and guild at the moment of logout.

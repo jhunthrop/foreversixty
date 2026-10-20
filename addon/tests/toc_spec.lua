@@ -25,6 +25,8 @@ describe("the TOC", function()
 		"surfaces/RewardMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
 		"surfaces/BuildDialog.lua",
+		-- The site-status lines (X.3): /fs diag, the login line and the chip read the inbox and the clock.
+		"surfaces/SiteStatus.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.
 		"surfaces/Settings.lua",
 		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
