@@ -97,10 +97,10 @@ func (c *Client) AccountCharacters(ctx context.Context, region, userToken string
 // data, readable with an app token, used both by the initial import and
 // by the nightly refresh.
 type CharacterProfile struct {
-	Name               string
-	Level              int
-	Faction            string
-	ClassSlug          string
+	Name      string
+	Level     int
+	Faction   string
+	ClassSlug string
 	// RaceName is Blizzard's race.name, verbatim (title case, e.g. "Night Elf") — the same
 	// string data/builds/<build>/races.json keys its own race rows by (spec
 	// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2).

@@ -114,8 +114,8 @@ func TestRecentHandlerFiltersLinksAndCounts(t *testing.T) {
 		t.Fatal(err)
 	}
 	h.reportID = "public00zone"
-	h.seedFight(1, 9001, 0, 500)  // an encounter kill
-	h.seedFight(2, 0, 500, 900)   // trash, not counted as a kill
+	h.seedFight(1, 9001, 0, 500) // an encounter kill
+	h.seedFight(2, 0, 500, 900)  // trash, not counted as a kill
 
 	res := h.do(http.MethodGet, "/v1/reports/recent", "", nil)
 	var page RecentPage
