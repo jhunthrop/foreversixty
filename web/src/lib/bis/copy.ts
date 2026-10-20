@@ -414,7 +414,8 @@ export const bisCopy = {
   togetherDpsValue: (delta: number): string => `+${delta.toFixed(1)} DPS`,
   equippedLabel: 'Equipped',
   equippedValue: (n: number, total: number): string => `${n} / ${total}`,
-  sendListToAddon: 'Send this list to the addon',
+  /** The addon's inbox carries builds, not lists, so the spec page's card offers the planner. */
+  openInPlanner: 'Open in the planner',
   /** The list row's own "You" column (spec §4.D/§7 `GearRow`'s `you` slot) -- unused today
    *  (the column itself is omitted entirely while the worn-gear gap is open, §9), kept here
    *  so the component that renders it needs no second copy module once a future lane

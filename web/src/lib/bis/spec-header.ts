@@ -2,7 +2,7 @@
 // The BiS spec page's mount of the shared character header (spec 2026-10-11 section 4): the same
 // worn-slot count the landing shows, but only for a character of THIS page's spec (a warrior's
 // gear counted against a mage list would be a meaningless zero), and the secondary action that
-// sends this list to the addon.
+// opens the band's build in the planner (the addon's inbox carries builds, not lists).
 import type { MeCharacter } from '../account/api';
 import type { AnswerSpec, HeaderAction } from '../character-header/types';
 import { classSlugFromName } from '../report/tree-sizes';
@@ -38,6 +38,6 @@ export function specPageAnswerSpec(page: SpecPage): AnswerSpec {
   });
 }
 
-export function specPageAction(sendListHref: string): HeaderAction {
-  return { label: bisCopy.sendListToAddon, href: sendListHref };
+export function specPageAction(plannerHref: string): HeaderAction {
+  return { label: bisCopy.openInPlanner, href: plannerHref };
 }

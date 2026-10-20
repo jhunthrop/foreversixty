@@ -41,7 +41,10 @@ describe('the spec page’s answer and action', () => {
     expect(await spec.load(character({ spec: 'Arms' }))).toEqual({ kind: 'none' });
   });
 
-  it('sends the list to the addon', () => {
-    expect(specPageAction('/addon')).toEqual({ label: 'Send this list to the addon', href: '/addon' });
+  it('opens the band build in the planner, not a send to the addon', () => {
+    expect(specPageAction('/planner?spec=warrior-fury')).toEqual({
+      label: 'Open in the planner',
+      href: '/planner?spec=warrior-fury',
+    });
   });
 });

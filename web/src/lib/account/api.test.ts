@@ -17,6 +17,7 @@ import {
   listDevices,
   pairDevice,
   postMyExports,
+  queueBuildToAddon,
   REPORTS_PER_PAGE,
   requestEmailLink,
   requestEnvelope,
@@ -464,5 +465,44 @@ describe('companion connect calls', () => {
       email: 'a@b.co',
       next: '/connect?code=KQ4-7TM',
     });
+  });
+});
+
+describe('queueBuildToAddon', () => {
+  it('posts the build id and character key with the CSRF header, and resolves on 201', async () => {
+    document.cookie = 'fs_csrf=tok';
+    const upstream = vi.fn<GlobalFetch>().mockResolvedValue(envelope({ build_id: 'k7x2qm4a' }, 201));
+    vi.stubGlobal('fetch', upstream);
+
+    await expect(queueBuildToAddon('k7x2qm4a', 'us/hardcore/obnoxious-yell', API)).resolves.toBeUndefined();
+
+    const request = upstream.mock.calls[0][0] as Request;
+    expect(request.method).toBe('POST');
+    expect(request.url).toBe(`${API}/v1/addon/inbox`);
+    expect(request.headers.get('x-csrf-token')).toBe('tok');
+    expect(request.credentials).toBe('include');
+    expect(await request.json()).toEqual({ build_id: 'k7x2qm4a', character_key: 'us/hardcore/obnoxious-yell' });
+  });
+
+  it('omits the character key when none is given', async () => {
+    const upstream = vi.fn<GlobalFetch>().mockResolvedValue(envelope({ build_id: 'k7x2qm4a' }, 201));
+    vi.stubGlobal('fetch', upstream);
+    await queueBuildToAddon('k7x2qm4a', undefined, API);
+    expect(await (upstream.mock.calls[0][0] as Request).json()).toEqual({ build_id: 'k7x2qm4a' });
+  });
+
+  it('throws an AccountError carrying 401 for a signed-out visitor', async () => {
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>().mockResolvedValue(envelope(null, 401)));
+    await expect(queueBuildToAddon('k7x2qm4a', 'us/hardcore/x', API)).rejects.toMatchObject({
+      name: 'AccountError',
+      status: 401,
+    });
+  });
+
+  it('throws an AccountError carrying 400 for an id the API refuses', async () => {
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>().mockResolvedValue(envelope(null, 400)));
+    const failure = await queueBuildToAddon('nope', undefined, API).catch((e: unknown) => e);
+    expect(failure).toBeInstanceOf(AccountError);
+    expect((failure as AccountError).status).toBe(400);
   });
 });
