@@ -73,7 +73,7 @@
     HeaderLayout,
     SignedOutMode,
   } from '../../lib/character-header/types';
-  import { factionLogoSrc, factionName } from '../../lib/faction-mark';
+  import { factionLogoSmallSrc, factionName } from '../../lib/faction-mark';
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import CharacterHeaderSignedOut from './CharacterHeaderSignedOut.svelte';
@@ -221,7 +221,7 @@
             {/if}
             {#if lines.faction !== null}
               <span class="ch-faction">
-                <img src={factionLogoSrc(lines.faction)} alt="" width="16" height="16" />
+                <img src={factionLogoSmallSrc(lines.faction)} alt="" width="16" height="16" />
                 {@render txt(factionName(lines.faction), ghost)}
               </span>
             {/if}

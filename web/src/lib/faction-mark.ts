@@ -22,6 +22,15 @@ export function factionMarkSrc(faction: Faction): string {
   return `/icons/hd/faction/${faction}.webp`;
 }
 
+/** The same flat logo at 64px, for the 16px marks (the character header's faction line, the
+ *  selector's character rows). The 512px file is 34-40KB, and the character header's
+ *  server-rendered faction line fetches it on every BiS and planner page before first paint,
+ *  where it counted against the Lighthouse LCP budget; a 16px mark at 4x density needs 64px
+ *  (about 2KB). Resampled from the 512px file with Lanczos, WebP lossy quality 90, alpha kept. */
+export function factionLogoSmallSrc(faction: Faction): string {
+  return `/icons/hd/faction/${faction}-logo-64.webp`;
+}
+
 // Guild header art round (design/specs/2026-10-04-guild-page.md §12.2, owner's final build
 // decision): the flat iconic faction logo (Alliance lion-in-shield, Horde tusked "H") --
 // FactionMark.astro's own second provenance note -- is the ONE emblem the guild header

@@ -265,7 +265,12 @@ const crossScopeCss =
           id="bis-tooltip-models"
           set:html={tooltipModelsJson}
         ></script>
-        <BisTooltipHost client:idle build={build} />
+        {/* Both islands on this page hydrate with `client:idle-after-load`, not `client:idle`: a
+            plain idle callback can land before the header's first paint in the trace Lighthouse
+            records, and its module fetches (the island runtime, the character header's chunks)
+            then count toward the simulated LCP, which flipped this page between ~1.95 s and
+            ~2.7 s run to run against the 1.9 s budget. See src/directives/idle-after-load.ts. */}
+        <BisTooltipHost client:idle-after-load build={build} />
 
         <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
         <input type="radio" name="faction" id="faction-horde" class="sr-only" />
@@ -296,7 +301,7 @@ const crossScopeCss =
               ))}
               <div class="header-character-card">
                 <BisSpecCharacterHeader
-                  client:idle
+                  client:idle-after-load
                   specKey={specEntry.spec}
                   classSlug={specEntry.class_slug}
                   specName={specEntry.name}
