@@ -120,11 +120,19 @@ describe('CharacterList', () => {
     expect(body).toContain('data-testid="account-characters-empty"');
     expect(body).toContain(characterListCopy.getSetUp);
     expect(body).toContain(characterListCopy.getSetUpHref);
-    expect(body.indexOf(characterListCopy.getSetUp)).toBeLessThan(body.indexOf(characterListCopy.pasteAnExport));
+    expect(body.indexOf(characterListCopy.getSetUp)).toBeLessThan(
+      body.indexOf(characterListCopy.pasteAnExport),
+    );
     expect(body).toContain(characterListCopy.pasteHref);
     expect(characterListCopy.empty).toBe(
       'No characters yet. Install the addon and the companion, then log out once in game; your characters appear here within a minute. Or paste an export.',
     );
+  });
+
+  it('says the setup story once on an empty account: the intro line is left out under the empty state', () => {
+    const { body } = render(CharacterList, { props: { characters: [] } });
+    expect(body).not.toContain(characterListCopy.introBattlenetLine);
+    expect(body.split('href="/setup"').length - 1).toBe(1);
   });
 
   it('shows the imported-from line and the refresh link only when bnetImportedAt is set', () => {

@@ -141,6 +141,8 @@
       : (heroCharacter(currentCharacter, me.characters) ??
           mainCharacter(me.characters, me.main_character_key)),
   );
+  /** "Your ratings" shows only once the hero character has a rated fight. */
+  let ratingsShown = $state(false);
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
   // spec 2026-09-22 §3.1: "the sentence that Blizzard serves no data for this realm type
   // when no character has a build" -- account-wide, not just the hero, since it is telling
@@ -462,7 +464,9 @@
       <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(pairedDevice.name)}</p>
     {:else if pairing === null}
       <p class="text-muted text-[13px]" data-testid="pairing-companion-first">{pairingCopy.companionFirst}</p>
-      <p class="text-[14px]">Signed in as {displayName}. For the fallback, show a code and type it into the companion.</p>
+      <p class="text-[14px]">
+        Signed in as {displayName}. For the fallback, show a code and type it into the companion.
+      </p>
       <button
         class="text-nav inline-flex min-h-11 items-center text-[13px] underline md:min-h-0"
         onclick={onPair}
@@ -614,11 +618,18 @@
 
           <div class="flex flex-col gap-8 lg:col-span-4">
             {#if heroPath !== null}
-              <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
-                <div class="p-[18px]">
-                  <CharacterRatingPanel path={heroPath} heading={false} />
-                </div>
-              </StatePanel>
+              <!-- Hidden (not unmounted: the panel's own fetch decides) until a rating exists. -->
+              <div hidden={!ratingsShown} data-testid="account-ratings-slot">
+                <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
+                  <div class="p-[18px]">
+                    <CharacterRatingPanel
+                      path={heroPath}
+                      heading={false}
+                      onshown={(shown) => (ratingsShown = shown)}
+                    />
+                  </div>
+                </StatePanel>
+              </div>
             {/if}
 
             <div id="devices">

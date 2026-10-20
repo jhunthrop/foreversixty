@@ -8,7 +8,7 @@ import { compile } from 'svelte/compiler';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { GEAR_FIXTURE, GEAR_FIXTURE_ITEMS, GEAR_FIXTURE_LONG_NAME } from '../../fixtures/character-gear';
-import { gearCopy } from '../../lib/gear/copy';
+import { gearCopy, notReadCopy } from '../../lib/gear/copy';
 import type { GearItemTable } from '../../lib/gear/qualities';
 import CharacterGearPanel from './CharacterGearPanel.svelte';
 
@@ -432,5 +432,50 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(classesOf(body, 'character-gear-heading')).not.toContain(TRAILING_DOT);
     const line = /<p class="([^"]*)" id="gear" data-testid="character-gear-none">([\s\S]*?)<\/p>/.exec(body);
     expect(text(line?.[2] ?? '')).toBe(gearCopy.noGear);
+  });
+});
+
+describe('CharacterGearPanel on an export that carried no gear and no talents (W.3)', () => {
+  const UNREAD = GEAR_FIXTURE.map((slot) => ({ ...slot, worn: null, gap: slot.pick === null ? null : 5 }));
+  const props = { ...PROPS, gear: UNREAD, unread: true, capturedAt: '2026-10-19T21:40:00', band: 20 };
+
+  it('says the gear has not been read, in place of the slot list, the Empty rows and the totals', () => {
+    const body = bare(render(CharacterGearPanel, { props }).body);
+    expect(body).toContain('data-testid="export-not-read"');
+    expect(text(body)).toContain(notReadCopy.lead);
+    expect(text(body)).toContain('carried no gear or talents.');
+    expect(text(body)).toContain(notReadCopy.steps);
+    expect(body).not.toContain('character-gear-empty');
+    expect(body).not.toContain('character-gear-totals');
+    expect(body).not.toContain('character-gear-gap');
+    expect(text(body)).not.toContain(gearCopy.empty);
+    expect(text(body)).not.toContain(gearCopy.noPick);
+    expect(text(body)).not.toContain('pts');
+  });
+
+  it('keeps the band’s best in slot below it, titled for the band, picks only', () => {
+    const body = bare(render(CharacterGearPanel, { props }).body);
+    expect(text(/data-testid="character-gear-title"[\s\S]*?<\/h2>/.exec(body)?.[0] ?? '')).toContain(
+      'Best in slot for level 20 to 29',
+    );
+    expect(body.indexOf('export-not-read')).toBeLessThan(body.indexOf('character-gear-title'));
+    expect(body).toContain('character-gear-row-head');
+    expect(body).toContain('Halo of Transcendence');
+    expect(body).not.toContain('character-gear-worn');
+  });
+
+  it('speaks to a visitor without the owner’s steps', () => {
+    const body = text(bare(render(CharacterGearPanel, { props: { ...props, owned: false } }).body));
+    expect(body).toContain(notReadCopy.visitorLead);
+    expect(body).not.toContain(notReadCopy.steps);
+  });
+
+  it('titles the list by band: 60 alone, a range below it, plain with none', () => {
+    expect(notReadCopy.bestInSlot(60)).toBe('Best in slot for level 60');
+    expect(notReadCopy.bestInSlot(20)).toBe('Best in slot for level 20 to 29');
+    expect(notReadCopy.bestInSlot(null)).toBe('Best in slot');
+    expect(notReadCopy.synced('19 Oct, 21:40')).toBe(
+      'The last sync from the game (19 Oct, 21:40) carried no gear or talents.',
+    );
   });
 });

@@ -40,7 +40,7 @@
      draws nothing at all for an API that sends no `gear`. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { gearCopy } from '../../lib/gear/copy';
+  import { gearCopy, notReadCopy } from '../../lib/gear/copy';
   import { SvelteSet } from 'svelte/reactivity';
   import {
     GEAR_ANCHOR,
@@ -56,6 +56,7 @@
   import { rarityBorderColorFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
   import BisTooltipHost from '../BisTooltipHost.svelte';
+  import ExportNotRead from './ExportNotRead.svelte';
 
   let {
     gear,
@@ -66,6 +67,9 @@
     spec = null,
     band = null,
     preloaded = undefined,
+    unread = false,
+    capturedAt = null,
+    owned = true,
   }: {
     /** `gear`: all 17 slots, or `[]` when the character has no export. */
     gear: readonly CharacterGearSlot[];
@@ -83,6 +87,13 @@
     band?: number | null;
     /** The items file already read (a table) or failed (null); left out, the section reads it. */
     preloaded?: GearItemTable | null;
+    /** The export carried no gear and no talents (W.3): the slot list gives way to the "not read
+     *  yet" panel, and the band's best in slot stays below it, picks only. */
+    unread?: boolean;
+    /** The sync's ISO time, when the page knows it, for the panel's "(19 Oct, 21:40)". */
+    capturedAt?: string | null;
+    /** The viewer's own character; the panel's steps are the owner's. */
+    owned?: boolean;
   } = $props();
 
   const build = activeBuild.build;
@@ -119,6 +130,8 @@
   const brokenIcons = new SvelteSet<number>();
 
   const totalsLine = $derived(gearTotalsLine(cardGap, total));
+  /** The unread panel's list: the band's picks only, a row for each slot that has one. */
+  const pickRows = $derived(rows.filter((row) => row.pick !== null));
 
   /** The landing (fix round 1 ruling 11): when the address is #gear, focus moves to the heading,
    *  whether the link was clicked, pressed or the page opened on it. */
@@ -149,6 +162,8 @@
    *  [slot | items | source or note | gap]. */
   const ROW =
     'border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] transition-colors duration-[120ms] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[rgba(255,255,255,0.04)] has-[:focus-visible]:bg-[rgba(255,255,255,0.04)] lg:grid-cols-[104px_minmax(0,5fr)_minmax(0,4fr)_88px] lg:items-center lg:py-0';
+  const ROW_PICKS =
+    'border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)] items-start gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] transition-colors duration-[120ms] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[rgba(255,255,255,0.04)] has-[:focus-visible]:bg-[rgba(255,255,255,0.04)] lg:grid-cols-[104px_minmax(0,5fr)_minmax(0,4fr)] lg:items-center lg:py-0';
   const SLOT = 'text-muted col-start-1 row-start-1 text-[13px] leading-5';
   const LINE = 'col-span-2 row-start-2 flex min-w-0 flex-wrap items-baseline gap-x-1 gap-y-1 lg:contents';
   const ITEMS = 'min-w-0 break-words lg:col-start-2 lg:row-start-1';
@@ -252,7 +267,67 @@
   </h2>
 {/snippet}
 
-{#if gear.length === 0}
+{#if unread && gear.length > 0}
+  <section
+    class="-order-2 flex scroll-mt-24 flex-col gap-4"
+    id={GEAR_ANCHOR}
+    data-testid="character-gear-unread"
+  >
+    <ExportNotRead {capturedAt} {owned} />
+    <div class="flex flex-col">
+      <h2 class={HEADING} tabindex="-1" bind:this={heading} data-testid="character-gear-title">
+        <span class="section-title text-[18px]" data-testid="character-gear-heading"
+          >{notReadCopy.bestInSlot(band)}</span
+        >
+      </h2>
+      <ul
+        class="mt-4 flex flex-col"
+        aria-label={gearCopy.listLabel}
+        aria-busy={loading ? 'true' : undefined}
+        data-testid="character-gear-list"
+      >
+        {#each pickRows as row (row.slot)}
+          <li
+            class={ROW_PICKS}
+            aria-labelledby={`gear-slot-${row.slot}`}
+            data-testid={`character-gear-row-${row.slot}`}
+          >
+            <span class={SLOT} id={`gear-slot-${row.slot}`} data-testid="character-gear-slot"
+              >{row.label}</span
+            >
+            <span class={LINE} data-testid="character-gear-line">
+              <span class={ITEMS} data-testid="character-gear-items"
+                >{#if row.pick !== null}{@render item(row.pick, 'character-gear-pick')}{/if}</span
+              >
+              <span class={`${META} basis-full`} data-testid="character-gear-meta"
+                >{row.source}{#if row.chance !== null}<span
+                    class="gear-dot-before whitespace-nowrap"
+                    data-testid="character-gear-chance">{row.chance}</span
+                  >{/if}</span
+              >
+            </span>
+          </li>
+        {/each}
+      </ul>
+      {#if bisHref !== null && spec !== null}
+        <footer data-testid="character-gear-footer">
+          <a class={loading ? `${LINK} invisible` : LINK} href={bisHref} data-testid="character-gear-bis"
+            >{gearCopy.bisLink(spec, band)}{gearCopy.bisGlue}<span aria-hidden="true"
+              >{gearCopy.bisArrow}</span
+            ></a
+          >
+        </footer>
+      {/if}
+    </div>
+  </section>
+  {#if classSlug !== null}
+    <BisTooltipHost
+      {build}
+      modelsElementId="gear-tooltip-models"
+      resolve={(id) => fetchItemTooltipModel(build, classSlug ?? '', id)}
+    />
+  {/if}
+{:else if gear.length === 0}
   <section class="-order-2 flex flex-col gap-2" data-testid="character-gear-empty-section">
     {@render title()}
     <p class="text-muted scroll-mt-[132px] text-[14px]" id={GEAR_ANCHOR} data-testid="character-gear-none">

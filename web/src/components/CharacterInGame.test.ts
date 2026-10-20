@@ -65,8 +65,9 @@ describe('CharacterInGame', () => {
     expect(owner).toContain('data-testid="character-in-game-planner"');
     // L8.5 ruling 5: the addon's copy mode has no button; `/fs copy`, then Ctrl+C.
     expect(scoreCopy.inGamePlannerLead).toBe(
-      'To update this page: in game, type /fs copy, press Ctrl+C, then',
+      'This page updates by itself each time you log out with the addon and the companion running. Without the companion: /fs copy in game, then',
     );
+    expect(scoreCopy.inGamePasteHref).toBe('/setup');
     expect(owner).toContain(`href="${scoreCopy.inGamePasteHref}"`);
     expect(owner).toContain(scoreCopy.inGamePasteLink);
   });

@@ -28,7 +28,10 @@ export const connectCopy = {
   connecting: 'Connecting...',
   cancel: 'Cancel',
   successTitle: 'Connected.',
-  successBody: 'Go back to the companion. It is ready, and you can close this tab.',
+  successBody:
+    'Connected. Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.',
+  yourAccount: 'Your account',
+  getSetUp: 'Get set up',
   openReports: 'Open my reports',
   cancelledTitle: 'Not connected.',
   cancelledBody: 'Nothing was connected.',

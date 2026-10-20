@@ -79,9 +79,15 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   release();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Connected.');
   await expect(
-    page.getByText('Go back to the companion. It is ready, and you can close this tab.'),
+    page.getByText(
+      'Connected. Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.',
+    ),
   ).toBeVisible();
-  await expect(page.getByTestId('connect-reports')).toHaveText('Open my reports');
+  await expect(page.getByTestId('connect-account')).toHaveText('Your account');
+  await expect(page.getByTestId('connect-account')).toHaveAttribute('href', '/account');
+  await expect(page.getByTestId('connect-setup')).toHaveText('Get set up');
+  await expect(page.getByTestId('connect-setup')).toHaveAttribute('href', '/setup');
+  await expect(page.getByTestId('connect-reports')).toHaveCount(0);
   expect(approveBody).toEqual({ code: 'KQ4-7TM' });
 });
 

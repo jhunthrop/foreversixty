@@ -78,6 +78,12 @@ describe('/setup', () => {
     expect(source).toContain('addonCopy.currentDataBuild(');
   });
 
+  it('tells the visitor the in-game setting by its exact path, in step 3', () => {
+    expect(html).toContain(
+      'Turn on Options &gt; Network &gt; Advanced Combat Logging once, then restart the game.',
+    );
+  });
+
   it('derives the GitHub release link from links.json, not a second copy of the repo URL', () => {
     expect(source).toContain('communityLinks.githubRepo');
     expect(source).not.toContain('jhunthrop/forever/releases');
@@ -432,7 +438,9 @@ describe('/setup: what it does in the game (L8.3)', () => {
 describe('/setup first-run copy', () => {
   it('leads with the addon and the companion, and the companion pairs itself', () => {
     expect(addonCopy.setupSignedInLine).toBe('Signed in. Next: the addon, then the companion.');
-    expect(addonCopy.setupCompanionPair).toBe('Sign in with Battle.net inside the companion; it pairs itself.');
+    expect(addonCopy.setupCompanionPair).toBe(
+      'Sign in with Battle.net inside the companion; it pairs itself.',
+    );
     expect(html).toContain(addonCopy.setupCompanionPair);
   });
 });

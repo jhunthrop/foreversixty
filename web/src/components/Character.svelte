@@ -33,6 +33,7 @@
   import { factionOfRace } from '../lib/race-faction';
   import { componentGaps, foreverOf, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
+  import { slotsHaveGear } from '../lib/addon-export';
   import { GEAR_ANCHOR } from '../lib/gear/panel';
   import { classSlugFromName } from '../lib/report/tree-sizes';
   import CharacterGearPanel from './character/CharacterGearPanel.svelte';
@@ -153,6 +154,16 @@
    *  minutes ago", the stale words in ember past the nav spec's limit; none for a visitor. The
    *  profile reads no gear, so the line stands whenever a build exists (fix round 3 item 3). */
   const sync = $derived(own === null ? null : syncView(own, now, { needsGear: false }));
+  /** The export carried no gear and no talents (W.3): all 17 slots empty and no talent points
+   *  spent in the character's newest build. The gear section says "not read yet" instead of
+   *  seventeen "Empty" rows. A character with no export at all (`gear: []`) is not this. */
+  const gearUnread = $derived(
+    data !== null &&
+      data.gear !== undefined &&
+      data.gear.length > 0 &&
+      !slotsHaveGear(data.gear) &&
+      (own?.build?.talents === undefined || !own.build.talents.points.some((points) => points > 0)),
+  );
 </script>
 
 {#if status === 'missing'}
@@ -238,6 +249,9 @@
         bisHref={specBis}
         spec={profileSpec(data)}
         band={typeof data.character.level === 'number' ? bandForLevel(data.character.level) : null}
+        unread={gearUnread}
+        capturedAt={own?.build?.captured_at ?? null}
+        {owned}
       />
     {/if}
 

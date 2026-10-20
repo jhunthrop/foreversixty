@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 const fetchSimInput = vi.fn();
 vi.mock('./sim/api', () => ({ fetchSimInput: (...args: unknown[]) => fetchSimInput(...args) }));
 
-const { lookupAddonExport } = await import('./addon-export');
+const addonExport = await import('./addon-export');
+const { lookupAddonExport } = addonExport;
 
 const PATH = { region: 'us' as const, ruleset: 'normal' as const, slug: 'thrallgar' };
 
@@ -56,5 +57,41 @@ describe('lookupAddonExport', () => {
 
     const result = await lookupAddonExport(PATH);
     expect(result.code).toBeNull();
+  });
+});
+
+describe('exportHasGear', () => {
+  const { exportHasGear, slotsHaveGear, buildHasGear, simCharacterHasGear } = addonExport;
+
+  it('is true for an export with a worn item', () => {
+    expect(exportHasGear('FS1:1.60.1.69893:warrior:human:0/0/0:head=12640')).toBe(true);
+  });
+
+  it('is true for an export with talent points and no gear', () => {
+    expect(exportHasGear('FS1:1.60.1.69893:warrior:human:5/0/0:')).toBe(true);
+  });
+
+  it('is false for an export with neither gear nor talents', () => {
+    expect(exportHasGear('FS1:1.60.1.69893:warrior:human:0/0/0:')).toBe(false);
+  });
+
+  it('is false for nothing, an empty string or a string that does not decode', () => {
+    expect(exportHasGear(null)).toBe(false);
+    expect(exportHasGear(undefined)).toBe(false);
+    expect(exportHasGear('')).toBe(false);
+    expect(exportHasGear('not a code')).toBe(false);
+  });
+
+  it('reads the API gear panel, a /v1/me build and a sim character by the same rule', () => {
+    expect(slotsHaveGear([{ worn: null }, { worn: null }])).toBe(false);
+    expect(slotsHaveGear([{ worn: null }, { worn: { id: 1 } }])).toBe(true);
+    expect(buildHasGear(undefined)).toBe(false);
+    expect(buildHasGear({})).toBe(false);
+    expect(buildHasGear({ gear: {}, talents: { points: [0, 0, 0] } })).toBe(false);
+    expect(buildHasGear({ gear: { head: 5 } })).toBe(true);
+    expect(buildHasGear({ talents: { points: [0, 3, 0] } })).toBe(true);
+    expect(simCharacterHasGear({ gear: {}, point_order: [] })).toBe(false);
+    expect(simCharacterHasGear({ gear: { head: 5 }, point_order: [] })).toBe(true);
+    expect(simCharacterHasGear({ gear: {}, point_order: [0] })).toBe(true);
   });
 });

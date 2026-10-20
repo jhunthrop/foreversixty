@@ -42,6 +42,37 @@ const requiredProps = { items: new Map(), onchange: () => {}, onrace: () => {} }
 const underLeveled: SimCharacter = { ...base, talent_level: 39, point_order: new Array(30).fill(0) };
 const fullBuild: SimCharacter = { ...base, talent_level: 60, point_order: new Array(51).fill(0) };
 
+describe('CharacterStrip on an addon export that carried no gear and no talents (W.3)', () => {
+  it('says the gear has not been read, with no slot grid and no talent row', () => {
+    const { body } = render(CharacterStrip, { props: { character: base, ...requiredProps } });
+    expect(body).toContain('data-testid="sim-export-not-read"');
+    expect(body).toContain('Your gear has not been read yet.');
+    expect(body).not.toContain('data-testid="sim-gear"');
+    expect(body).not.toContain('sim-talent-count');
+    expect(body).not.toContain('Empty');
+  });
+
+  it('draws the slot grid once the export carries a worn item or a point', () => {
+    const geared = { ...base, gear: { head: 12640 } };
+    expect(render(CharacterStrip, { props: { character: geared, ...requiredProps } }).body).toContain(
+      'data-testid="sim-gear"',
+    );
+    const talented = { ...base, point_order: [0] };
+    expect(render(CharacterStrip, { props: { character: talented, ...requiredProps } }).body).toContain(
+      'data-testid="sim-gear"',
+    );
+  });
+
+  it('does not call a saved sim or a hand-built build unread', () => {
+    const saved = render(CharacterStrip, { props: { character: base, ...requiredProps, readonly: true } });
+    expect(saved.body).not.toContain('sim-export-not-read');
+    const manual = { ...base, source: { ...source, kind: 'manual' as const } };
+    expect(render(CharacterStrip, { props: { character: manual, ...requiredProps } }).body).not.toContain(
+      'sim-export-not-read',
+    );
+  });
+});
+
 describe('CharacterStrip’s honest "simmed at a level" note', () => {
   it('says the character is simmed at its own level when it has fewer than 51 points', () => {
     const { body } = render(CharacterStrip, { props: { character: underLeveled, ...requiredProps } });
@@ -111,7 +142,9 @@ describe('CharacterStrip’s plannerHref override', () => {
   });
 
   it('falls back to its own class+race-only link when no plannerHref is given (unchanged default)', () => {
-    const { body } = render(CharacterStrip, { props: { character: base, ...requiredProps } });
+    const { body } = render(CharacterStrip, {
+      props: { character: { ...base, gear: { head: 12640 } }, ...requiredProps },
+    });
     // No TalentIndex resolves during an SSR render (onMount never fires), so the default
     // path's own null-index fallback is what a fresh render always shows first -- exactly
     // the live page's own first paint, `CharacterStrip`'s file header already documents.

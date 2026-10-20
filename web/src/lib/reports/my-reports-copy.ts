@@ -4,7 +4,7 @@
 // the public feed, a different component with a different failure and empty case.
 export const myReportsCopy = {
   failed: 'Your reports did not load.',
-  empty: 'No reports yet. Upload a log, or log live with the companion.',
+  empty: 'No reports yet. Upload a log, or let the companion send your next raid.',
   signedOut: 'Reports you own appear here once you are signed in.',
   uploadAction: 'Upload a log',
 } as const;

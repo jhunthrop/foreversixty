@@ -10,6 +10,8 @@
   import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import ExportNotRead from '../character/ExportNotRead.svelte';
+  import { simCharacterHasGear } from '../../lib/addon-export';
   import { rarityClassFor, wornItemLabel } from '../../lib/planner/items';
   import { dataUrl, loadItemNames, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
@@ -98,6 +100,17 @@
   const talentIndex = $derived<TalentIndex | null>(talents === null ? null : indexTalents(talents));
 
   const colour = $derived(classColorVar(character.class_slug));
+  /** An addon export that carried no gear and no talents (W.3): said as "not read yet" in place
+   *  of the slot grid and the talent row, never drawn as seventeen empty slots. A saved sim
+   *  (readonly) and a gearless weights result are not exports being read. */
+  const unread = $derived(
+    !readonly &&
+      gearKnown &&
+      character.source.kind === 'addon' &&
+      !simCharacterHasGear(character) &&
+      (talentPoints ?? 0) === 0 &&
+      plannerHref === undefined,
+  );
 
   // Names for worn items the per-class files leave out, fetched once and only when a slot
   // needs one (a quality-1 keepsake ring, a totem): the row then names the item and says it
@@ -189,7 +202,9 @@
     {/if}
   </div>
 
-  {#if !gearKnown}
+  {#if unread}
+    <ExportNotRead capturedAt={character.source.captured_at} testid="sim-export-not-read" />
+  {:else if !gearKnown}
     <p class="text-muted text-[13px]" data-testid="sim-no-gear">{simCopy.savedNoGear}</p>
   {:else}
     <div class="grid grid-cols-2 gap-2 md:grid-cols-4" data-testid="sim-gear">
@@ -226,9 +241,10 @@
     </div>
   {/if}
 
-  <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
-    <span class="text-muted label">Talents</span>
-    <!-- A saved sim's stored request carries the engine's talent *string*, not the
+  {#if !unread}
+    <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
+      <span class="text-muted label">Talents</span>
+      <!-- A saved sim's stored request carries the engine's talent *string*, not the
          planner's point order (Task 17), so its `point_order` is always empty --
          `talentPoints` (the caller's own digit-sum of that string, SavedSim.svelte) is what
          keeps `split` honest there instead (2026-09-21 result-page review round 3). Neither
@@ -237,21 +253,22 @@
          showing "0 points" would claim a build spent none, which this guard still avoids
          for the one remaining case (character/talentPoints both absent) where the count is
          simply unknown. -->
-    {#if split > 0}
-      <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
-    {/if}
-    <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)
+      {#if split > 0}
+        <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
+      {/if}
+      <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)
          does not. `h-11` gives the link itself a real 44px box (what the touch-target check
          measures); the matching negative `-my-3` cancels that growth back out of this row's
          own layout contribution, so the fix stays local to the link's hit area rather than
          growing the strip and shifting the /sim skeleton's CLS-tuned reserved height
          ([id].astro's own comment) or anything mounted below it. -->
-    <a
-      class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
-      href={plannerHref ?? plannerHrefFor(character, talentIndex)}
-      data-testid="sim-open-planner"
-    >
-      {simCopy.openInPlanner}
-    </a>
-  </div>
+      <a
+        class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
+        href={plannerHref ?? plannerHrefFor(character, talentIndex)}
+        data-testid="sim-open-planner"
+      >
+        {simCopy.openInPlanner}
+      </a>
+    </div>
+  {/if}
 </section>

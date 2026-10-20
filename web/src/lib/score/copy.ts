@@ -164,9 +164,10 @@ export const scoreCopy = {
   inGameSetupHref: '/setup',
   /** The addon's copy mode (L8.5 ruling 5; the addon's L3.4 fix 2 removed its button): `/fs copy`
    *  opens it with the box selected, and Ctrl+C is the action. */
-  inGamePlannerLead: 'To update this page: in game, type /fs copy, press Ctrl+C, then',
-  inGamePasteLink: 'paste it here',
-  inGamePasteHref: '/setup#paste',
+  inGamePlannerLead:
+    'This page updates by itself each time you log out with the addon and the companion running. Without the companion: /fs copy in game, then',
+  inGamePasteLink: 'paste it on the setup page',
+  inGamePasteHref: '/setup',
 
   explainerPageTitle: 'Forever Score and ratings',
   explainerJumpLabel: 'On this page',
