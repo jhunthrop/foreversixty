@@ -11,6 +11,7 @@
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
   import { formatAmount } from '../lib/report/format';
+  import { markJustUploaded } from '../lib/reports/just-uploaded';
   import {
     MAX_UPLOAD_BYTES,
     UPLOAD_CANCELLED,
@@ -126,6 +127,7 @@
       );
       phase = 'finishing';
       const reportId = await completeUpload(uploadId, etags, { title: title.trim(), visibility });
+      markJustUploaded(reportId);
       window.location.assign(`/reports/${reportId}`);
     } catch (thrown) {
       const message = thrown instanceof Error ? thrown.message : UPLOAD_TOO_LARGE;
@@ -151,8 +153,8 @@
 <!-- The panel and its title belong to the page (LogsLanding.svelte); this is the form inside it. -->
 <div class="flex flex-col gap-3" data-testid="upload">
   <p class="text-[14px]">
-    A whole <code class="font-mono">WoWCombatLog.txt</code>. The first fight is readable within ten seconds of
-    the upload finishing, and the rest appear as they are parsed.
+    A whole <code class="font-mono">WoWCombatLog.txt</code>. Your report appears as soon as the parse starts,
+    usually within a minute or two; the fights fill in as they are read.
   </p>
 
   <p class="text-muted text-[13px]">
