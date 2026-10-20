@@ -41,7 +41,7 @@ export function sendActionFor(
         ...base,
         label: copy.sent,
         disabled: true,
-        note: { tone: 'ok' as const, text: copy.sentLine(character.name) },
+        note: { tone: 'ok' as const, text: copy.sentLine(character.name), detail: copy.sentDetail },
       };
     case 'sign-in':
       return {

@@ -3,6 +3,8 @@
 // many bosses died and how long the night ran, "Blackrock Depths · 4 bosses · 2 h 10 m". A part
 // the API did not send is left out rather than guessed; the list endpoint does not carry the
 // length yet, so it prints when it does.
+import { reportCredit } from '../report/credit';
+
 const MS_PER_MINUTE = 60_000;
 const MINUTES_PER_HOUR = 60;
 const SEPARATOR = ' · ';
@@ -46,4 +48,41 @@ export interface PublicReportFacts {
 /** A public report: the zone when known, the kills, the guild when it has one. */
 export function publicReportSummary({ zone, killCount, guildName }: PublicReportFacts): string {
   return join([zone, plural(killCount, 'kill', 'kills'), guildName]);
+}
+
+export interface AccountReportFacts {
+  zone: string;
+  fightCount: number;
+  killCount: number;
+}
+
+/**
+ * The account page's and /logs' own-report summary: where, then the figures that mean
+ * something to the player. "Darnassus · 0 fights", "Blackrock Depths · 3 bosses · 14 fights";
+ * bosses print only when there are any, and a report with no zone says so.
+ */
+export function accountReportSummary({ zone, fightCount, killCount }: AccountReportFacts): string {
+  return join([
+    zone === '' ? 'No zone yet' : zone,
+    killCount > 0 ? plural(killCount, 'boss', 'bosses') : undefined,
+    plural(fightCount, 'fight', 'fights'),
+  ]);
+}
+
+/** The row's badge: "Live" while the log is still being written, "Processing" while it is read. Nothing once complete. */
+export function reportStatusLabel(status: string): string {
+  if (status === '' || status === 'complete') return '';
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+export const NOT_CREDITED_LABEL = 'Not credited';
+/** Shown on a live row the viewer owns that no character is credited to yet. */
+export const LOG_OUT_HINT = 'Log out once in game.';
+
+/** The character a row names, from `logging_character` as the API sends it; null when not credited. */
+export function creditedName(
+  loggingCharacter: string | { key?: string; name?: string } | null | undefined,
+): string | null {
+  const credit = reportCredit({ logging_character: loggingCharacter });
+  return credit.credited ? credit.name : null;
 }

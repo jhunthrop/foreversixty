@@ -13,6 +13,9 @@
 //  - `loadFromBand` reconstructs a legal point order for a band's own ranks with
 //    `orderFromRanks` (fs1.ts), the exact same reconstruction an addon import already runs.
 import type { TalentIndex } from './rules';
+import { specKeyFor } from '../addon/score';
+import { specDisplayName, specRow } from '../sim/spec-label';
+import { bandBuildTitle } from './band-title';
 import { orderFromRanks } from './fs1';
 
 /** One base-36 digit per talent, tab order -- the convention every tree-rank string on the
@@ -84,4 +87,10 @@ export interface BandLoad {
 export function loadFromBand(index: TalentIndex, bandTalents: string): BandLoad {
   const { order, dropped } = orderFromRanks(index, bandTreeRanksFrom(bandTalents));
   return { order, dropped };
+}
+
+/** The title for a band build just applied to a draft of `classSlug` with `split` points per tree. */
+export function bandTitleForDraft(bandLabel: string, classSlug: string, split: readonly number[]): string {
+  const key = specKeyFor(classSlug, split);
+  return bandBuildTitle(bandLabel, specRow(key) === null ? null : specDisplayName(key));
 }

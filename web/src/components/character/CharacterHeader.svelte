@@ -328,6 +328,9 @@
             >{act.note.link.label}</a
           >
         {/if}
+        {#if act.note.detail !== undefined}
+          <span class="ch-note-detail" data-testid="character-header-note-detail">{act.note.detail}</span>
+        {/if}
       </p>
     {/if}
   {:else}
@@ -727,6 +730,11 @@
     font-size: 12px;
     line-height: 1.5;
     color: var(--color-muted);
+  }
+  .ch-note-detail {
+    display: block;
+    margin-top: 2px;
+    opacity: 0.85;
   }
   .ch-note-error {
     color: var(--color-ember, #d66e28);

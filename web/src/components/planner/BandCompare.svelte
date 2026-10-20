@@ -18,7 +18,12 @@
 <script lang="ts">
   import { bandForLevel, bandEntryFor, bisPageHref, fetchBisFile } from '../../lib/bis/hover';
   import type { BisFile, Faction } from '../../lib/bis/types';
-  import { diffAgainstBand, loadFromBand, type BandDiffView } from '../../lib/planner/band-compare';
+  import {
+    bandTitleForDraft,
+    diffAgainstBand,
+    loadFromBand,
+    type BandDiffView,
+  } from '../../lib/planner/band-compare';
   import { bandCompareCopy } from '../../lib/planner/copy';
   import { slotScoreUnitFor, tankHeadlineForBand } from '../../lib/bis/tank-view';
   import { plannerScoreCopy } from '../../lib/planner/score-unit';
@@ -138,6 +143,7 @@
     if (store.talentIndex === null || bandEntry === undefined) return;
     const result = loadFromBand(store.talentIndex, bandEntry.talents);
     store.applyOrder(result.order, {});
+    store.nameBandBuild(bandTitleForDraft(bandLabel, store.classSlug, store.split));
     onloaded?.(bandLabel);
   }
 

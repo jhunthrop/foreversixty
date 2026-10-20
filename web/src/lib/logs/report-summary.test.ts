@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { formatReportLength, ownReportSummary, publicReportSummary } from './report-summary';
+import {
+  accountReportSummary,
+  creditedName,
+  formatReportLength,
+  ownReportSummary,
+  publicReportSummary,
+  reportStatusLabel,
+} from './report-summary';
 
 const MINUTE = 60_000;
 
@@ -48,5 +55,45 @@ describe('publicReportSummary', () => {
     expect(publicReportSummary({ killCount: 1, guildName: 'The Last Watch' })).toBe(
       '1 kill · The Last Watch',
     );
+  });
+});
+
+describe('accountReportSummary', () => {
+  it('reads zone and fights, with no bosses part when none died', () => {
+    expect(accountReportSummary({ zone: 'Darnassus', fightCount: 0, killCount: 0 })).toBe(
+      'Darnassus · 0 fights',
+    );
+  });
+
+  it('adds bosses before fights once there are any', () => {
+    expect(accountReportSummary({ zone: 'Blackrock Depths', fightCount: 14, killCount: 3 })).toBe(
+      'Blackrock Depths · 3 bosses · 14 fights',
+    );
+    expect(accountReportSummary({ zone: 'Ragefire Chasm', fightCount: 1, killCount: 1 })).toBe(
+      'Ragefire Chasm · 1 boss · 1 fight',
+    );
+  });
+
+  it('says so when the zone is not known yet', () => {
+    expect(accountReportSummary({ zone: '', fightCount: 2, killCount: 0 })).toBe('No zone yet · 2 fights');
+  });
+});
+
+describe('reportStatusLabel', () => {
+  it('names live and processing, and says nothing once complete', () => {
+    expect(reportStatusLabel('live')).toBe('Live');
+    expect(reportStatusLabel('processing')).toBe('Processing');
+    expect(reportStatusLabel('complete')).toBe('');
+    expect(reportStatusLabel('')).toBe('');
+  });
+});
+
+describe('creditedName', () => {
+  it('reads the name from the API object, spaced', () => {
+    expect(creditedName({ key: 'us/pvp/bow-jackzon', name: 'Bow Jackzon' })).toBe('Bow Jackzon');
+  });
+
+  it('is null when the report has no logging character', () => {
+    for (const value of [undefined, null, '', { key: '', name: '' }]) expect(creditedName(value)).toBeNull();
   });
 });

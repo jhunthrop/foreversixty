@@ -64,9 +64,11 @@ export const plannerCharacterCardCopy = {
   /** A visitor with no current character cannot be sent anything: the button is the way in. */
   getTheAddon: 'Get the addon to use this build in game',
   getTheAddonHref: '/setup#addon',
-  /** The companion fetches the inbox at start and every ten minutes (ruling 4). */
+  /** A /reload never picks a delivery up: the build arrives at a login from the character screen. */
   sentLine: (characterName: string): string =>
-    `Sent to ${characterName}’s addon. It arrives the next time you log in; the companion delivers it within ten minutes.`,
+    `Sent to ${characterName}. Log out to the character screen and back in to see it. /reload will not show it.`,
+  /** The second, muted line: the companion fetches the inbox every ten minutes and after a logout. */
+  sentDetail: 'The companion checks every 10 minutes, and again when you log out.',
   signIn: 'Sign in to send builds to your addon.',
   signInLink: 'Sign in',
   signInHref: '/login',

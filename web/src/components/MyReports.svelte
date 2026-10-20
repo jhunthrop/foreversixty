@@ -10,7 +10,7 @@
      page already titles the block, as /logs' panel does. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listGuildReports, listMyReports, type MyReport } from '../lib/account/api';
-  import { ownReportSummary } from '../lib/logs/report-summary';
+  import { LOG_OUT_HINT, accountReportSummary, creditedName } from '../lib/logs/report-summary';
   import { logsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { myReportsCopy } from '../lib/reports/my-reports-copy';
@@ -67,6 +67,8 @@
     void load(1);
   });
 
+  /** The "Mine" tab lists reports the viewer owns; a guild's tab lists other people's. */
+  const ownsRows = $derived(activeGuild === null);
   const hasMore = $derived(rows.length > 0 && page * REPORTS_PER_PAGE < total);
   const activeGuildName = $derived(guilds.find((guild) => guild.id === activeGuild)?.name ?? '');
   const emptyMessage = $derived(
@@ -142,12 +144,16 @@
           href={`/reports/${report.id}`}
           title={report.title === '' ? report.zone : report.title}
           createdAt={report.created_at}
-          summary={ownReportSummary({
+          summary={accountReportSummary({
             zone: report.zone,
+            fightCount: report.fight_count,
             killCount: report.kill_count,
-            durationMs: report.duration_ms,
           })}
           status={report.status}
+          character={creditedName(report.logging_character)}
+          creditHint={ownsRows && report.status === 'live' && creditedName(report.logging_character) === null
+            ? LOG_OUT_HINT
+            : ''}
         />
       {/each}
     </ul>

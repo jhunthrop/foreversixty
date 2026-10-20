@@ -4,6 +4,7 @@
 //
 // Every mutation goes through rules.ts. A refused move sets `refusal` and changes nothing
 // else, which is exactly what the UI shows inline.
+import { titleAfterBandLoad } from './band-title';
 import {
   activeSetBonuses,
   equippedItems,
@@ -67,6 +68,8 @@ export function createPlannerStore(init: PlannerInit) {
   let order = $state<number[]>(init.order ? [...init.order] : []);
   let gear = $state<Gear>({ ...(init.gear ?? {}) });
   let title = $state((init.title ?? '').trim().slice(0, MAX_TITLE_LENGTH));
+  /** The title the last band load gave the draft; a title still equal to it is not the player's own. */
+  let bandTitle = '';
   let readOnly = $state(init.readOnly ?? false);
   let sourceId = $state<string | null>(init.sourceId ?? null);
   let refusal = $state<string | null>(null);
@@ -273,6 +276,7 @@ export function createPlannerStore(init: PlannerInit) {
       order = [...build.order];
       gear = { ...build.gear };
       title = '';
+      bandTitle = '';
       sourceId = null;
       refusal = null;
       // The third writer of classSlug/raceSlug, so it repairs the pair exactly as
@@ -356,6 +360,17 @@ export function createPlannerStore(init: PlannerInit) {
       refusal = null;
     },
 
+    /**
+     * Names the draft after the band build just loaded ("20 to 29 · Beast Mastery"). A title
+     * the player typed is kept; the previous band load's own title is replaced by this one.
+     */
+    nameBandBuild(next: string): void {
+      if (!editable()) return;
+      const bandName = next.trim().slice(0, MAX_TITLE_LENGTH);
+      title = titleAfterBandLoad(title, bandTitle, bandName);
+      bandTitle = bandName;
+    },
+
     setTitle(text: string): void {
       if (!editable()) return;
       title = text.trim().slice(0, MAX_TITLE_LENGTH);
@@ -395,6 +410,7 @@ export function createPlannerStore(init: PlannerInit) {
       readOnly = false;
       sourceId = null;
       title = '';
+      bandTitle = '';
       refusal = null;
     },
 

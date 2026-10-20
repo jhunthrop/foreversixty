@@ -36,12 +36,41 @@ describe('ReportRow', () => {
   it('shows a status pill only when the status is not complete', () => {
     const live = render(ReportRow, { props: { ...BASE, status: 'live' } }).body;
     expect(live).toContain('data-testid="report-status"');
-    expect(live).toContain('live');
+    expect(live).toContain('>Live<');
 
     const complete = render(ReportRow, { props: { ...BASE, status: 'complete' } }).body;
     expect(complete).not.toContain('data-testid="report-status"');
 
     const unset = render(ReportRow, { props: BASE }).body;
     expect(unset).not.toContain('data-testid="report-status"');
+  });
+
+  it('leads the summary line with the age and the credited character, then the badge', () => {
+    const { body } = render(ReportRow, {
+      props: { ...BASE, summary: 'Darnassus · 0 fights', status: 'live', character: 'Bow Jackzon' },
+    });
+    const when = body.indexOf('data-testid="report-row-when"');
+    const who = body.indexOf('Bow Jackzon');
+    const where = body.indexOf('Darnassus · 0 fights');
+    const badge = body.indexOf('data-testid="report-status"');
+    expect(when).toBeGreaterThan(-1);
+    expect(when).toBeLessThan(who);
+    expect(who).toBeLessThan(where);
+    expect(where).toBeLessThan(badge);
+  });
+
+  it('says Not credited when the character is null, with the hint only when given', () => {
+    const plain = render(ReportRow, { props: { ...BASE, character: null } }).body;
+    expect(plain).toContain('Not credited');
+    expect(plain).not.toContain('data-testid="report-row-hint"');
+    const hinted = render(ReportRow, {
+      props: { ...BASE, status: 'live', character: null, creditHint: 'Log out once in game.' },
+    }).body;
+    expect(hinted).toContain('Log out once in game.');
+  });
+
+  it('leaves the credit part out for the public feed, which passes no character', () => {
+    const { body } = render(ReportRow, { props: BASE });
+    expect(body).not.toContain('report-row-character');
   });
 });

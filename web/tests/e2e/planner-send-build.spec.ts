@@ -94,7 +94,10 @@ test.describe('Send this build to the addon', () => {
     await expect(action).toHaveText('Sent');
     await expect(action).toBeDisabled();
     await expect(page.getByTestId('character-header-note')).toContainText(
-      'Sent to Obnoxious Yell’s addon. It arrives the next time you log in; the companion delivers it within ten minutes.',
+      'Sent to Obnoxious Yell. Log out to the character screen and back in to see it. /reload will not show it.',
+    );
+    await expect(page.getByTestId('character-header-note-detail')).toHaveText(
+      'The companion checks every 10 minutes, and again when you log out.',
     );
     expect(saves).toHaveLength(1);
     expect(queued).toEqual([{ build_id: SAVED.id, character_key: KEY }]);
