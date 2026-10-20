@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 	"sync"
 	"time"
 
@@ -119,11 +120,58 @@ func New(o Options) (*Pipeline, error) {
 		return nil, err
 	}
 	p := &Pipeline{o: o, enc: enc, noted: map[string]bool{}}
+	p.migrateStoredNames()
 	if err := p.resume(); err != nil {
 		return nil, err
 	}
 	p.recallDetected()
 	return p, nil
+}
+
+// migrateStoredNames re-reads the logger name of every stored report
+// through the current rule, once, before anything else reads the state.
+// Companions 0.2.3 to 0.2.6 split "Bow-Jackzon-ClassicBetaPvP-" as
+// "Bow-Jackzon" and "ClassicBetaPvP", and a report opened by one of
+// them lives until the player restarts the game, since the client keeps
+// one combat log file per session. Left alone, it would keep asking for
+// an export of a name the addon never writes. A name with a hyphen and
+// no space can only have come from that split (the addon spells words
+// with spaces); one with no hyphen is untouched, and a corrected name
+// has a space, so running this again changes nothing. The corrected
+// fields are written back so the Status page, which reads the state
+// files directly, sees them too.
+func (p *Pipeline) migrateStoredNames() {
+	reports, err := state.List(p.o.StateDir)
+	if err != nil {
+		return
+	}
+	for _, r := range reports {
+		if !reread(&r) {
+			continue
+		}
+		if err := state.Save(p.o.StateDir, r); err != nil {
+			p.o.Log.Warn("could not save a re-read logger name", "component", "pipeline",
+				"report", r.Key, "err", err.Error())
+			continue
+		}
+		p.o.Log.Info("re-read a logger name stored by an older companion", "component", "pipeline",
+			"report", r.Key, "name", r.DetectedName, "realm", r.DetectedRealm)
+	}
+}
+
+// reread corrects a report's stored detection in place and says
+// whether it changed anything.
+func reread(r *state.Report) bool {
+	if r.DetectedName == "" || r.DetectedRealm == "" || strings.Contains(r.DetectedName, " ") ||
+		!strings.Contains(r.DetectedName, "-") {
+		return false
+	}
+	name, realm := logger.Split(r.DetectedName + "-" + r.DetectedRealm + "-")
+	if name == "" || (name == r.DetectedName && realm == r.DetectedRealm) {
+		return false
+	}
+	r.DetectedName, r.DetectedRealm = name, realm
+	return true
 }
 
 // recallDetected restores the last logger the combat log named from

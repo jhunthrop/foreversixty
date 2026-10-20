@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.8
+
+- A report opened before this update is credited after the update too: the stored logger name is re-read the new way.
+
 ## 0.2.7
 
 - Reports are credited to two-word Forever names: the log writes "Bow-Jackzon-ClassicBetaPvP-", and the companion now reads it as Bow Jackzon. When a log cannot be credited, Status says whether the name or the realm is what the addon has not sent.

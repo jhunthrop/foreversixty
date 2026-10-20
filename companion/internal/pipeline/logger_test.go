@@ -232,3 +232,68 @@ func TestACharacterTheAddonHasRecordedOnAnotherRealmIsToldApartFromOneItHasNot(t
 		t.Errorf("the log has no %q: %s", want, r.logs.String())
 	}
 }
+
+// storeDetected rewrites the open report's stored detection, the way
+// an older companion would have left it, and restarts the pipeline.
+func (r *rig) storeDetected(name, realm string) {
+	r.t.Helper()
+	reps, err := state.List(r.dirs.state)
+	if err != nil || len(reps) != 1 {
+		r.t.Fatalf("state: %v, %v", reps, err)
+	}
+	rep := reps[0]
+	rep.DetectedName, rep.DetectedRealm, rep.DetectedClass = name, realm, ""
+	if err := state.Save(r.dirs.state, rep); err != nil {
+		r.t.Fatal(err)
+	}
+	r.open()
+}
+
+// A report opened by companion 0.2.5 holds "Bow-Jackzon"; the new
+// rule reads the same log unit as "Bow Jackzon", and the report must
+// be credited to that character after the update rather than ask for
+// an export the addon already made.
+func TestAReportStoredUnderTheOldTwoWordNameIsCreditedAfterTheUpdate(t *testing.T) {
+	r := newRig(t, 1<<20)
+	r.play(1)
+	r.storeDetected("Bow-Jackzon", "ClassicBetaPvP")
+	if got := r.pipe.Status().Detected; got != "Bow Jackzon" {
+		t.Errorf("Status.Detected = %q after the update", got)
+	}
+	r.records = []logger.Record{{Name: "Bow Jackzon", Realm: "ClassicBetaPvP", Region: "us"}}
+	if err := r.tick(); err != nil {
+		t.Fatal(err)
+	}
+	want := character.Character{Region: "us", Ruleset: "pvp", Name: "Bow Jackzon"}
+	if _, now, _ := r.report(); now == nil || *now != want {
+		t.Errorf("credited to %+v, want %+v", now, want)
+	}
+}
+
+func TestAStoredLoggerNameIsReReadOnceAndOnlyWhenTheOldSplitMadeIt(t *testing.T) {
+	for _, tc := range []struct {
+		name, realm         string
+		wantName, wantRealm string
+	}{
+		{"Bow-Jackzon", "ClassicBetaPvP", "Bow Jackzon", "ClassicBetaPvP"},
+		{"Bow Jackzon", "ClassicBetaPvP", "Bow Jackzon", "ClassicBetaPvP"},
+		{"Xuen", "ClassicBetaPvP", "Xuen", "ClassicBetaPvP"},
+		{"Bow-Jackzon", "", "Bow-Jackzon", ""},
+	} {
+		t.Run(tc.name+"/"+tc.realm, func(t *testing.T) {
+			r := newRig(t, 1<<20)
+			r.play(1)
+			r.storeDetected(tc.name, tc.realm)
+			// A second restart finds nothing more to change.
+			r.open()
+			reps, err := state.List(r.dirs.state)
+			if err != nil || len(reps) != 1 {
+				t.Fatalf("state: %v, %v", reps, err)
+			}
+			if got := reps[0]; got.DetectedName != tc.wantName || got.DetectedRealm != tc.wantRealm {
+				t.Errorf("stored name %q realm %q, want %q and %q",
+					got.DetectedName, got.DetectedRealm, tc.wantName, tc.wantRealm)
+			}
+		})
+	}
+}
