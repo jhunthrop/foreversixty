@@ -1,5 +1,12 @@
 # Companion changelog
 
+## 0.2.4
+
+- When the site no longer accepts this computer's sign-in (the device was removed, or the account
+  reset), the companion says so and asks you to sign in again instead of showing Connected.
+- Launching the companion again just opens the running one, instead of starting a second copy that
+  tails the same log and uploads every fight twice.
+
 ## 0.2.3
 
 - Reports are credited to the character that wrote the log, read from the combat log itself; pick

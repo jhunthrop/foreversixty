@@ -314,7 +314,7 @@ function renderDevice(s) {
   const c = s.connect;
   const connecting = !s.paired && (c.state === 'waiting' || c.state === 'blocked');
   const data = {
-    paired: s.paired, who: s.account_label, backend: s.token_backend, backendName: s.token_backend_name,
+    paired: s.paired, who: s.account_label, signedOut: s.signed_out ? s.signed_out.account_label || true : null, backend: s.token_backend, backendName: s.token_backend_name,
     api: s.api_base_url, name: s.device_name, site: s.site_base_url,
     c: { state: c.state, code: c.user_code, url: c.url, trouble: c.trouble, message: c.message, expires: c.expires_at },
     l: { open: local.pairOpen, confirm: local.confirmForget, forgot: local.forgot, flash: local.flash, copied: local.copied, busy: local.busyPair, starting: local.starting },
@@ -334,6 +334,7 @@ function notConnectedView(s, c) {
     h('div', { class: 'state-line' }, dot('bad'), COPY.device.notConnected),
   ];
   if (failed && c.message) out.push(h('div', { class: 'reason', role: 'alert', text: c.message }));
+  if (s.signed_out) out.push(h('div', { class: 'reason', role: 'alert', text: COPY.device.signedOutBar(s.signed_out.account_label) }));
   out.push(h('p', { class: 'lede', text: COPY.device.intro }));
   const btn = h('button', { class: 'action primary big', type: 'button', id: 'connect', 'data-fid': 'connect',
     onclick: startConnect });

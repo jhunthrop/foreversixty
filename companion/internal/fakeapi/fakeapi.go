@@ -828,3 +828,11 @@ func (s *Server) RevokeToken() {
 	defer s.mu.Unlock()
 	s.revoked = true
 }
+
+// RestoreToken undoes RevokeToken, as a new sign-in from the site would
+// leave the device: the same token is accepted again.
+func (s *Server) RestoreToken() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.revoked = false
+}

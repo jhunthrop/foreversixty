@@ -10,6 +10,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -19,12 +20,18 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
 	"github.com/jhunthrop/foreversixty/companion/internal/browser"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/instance"
 	"github.com/jhunthrop/foreversixty/companion/internal/logging"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/secret"
 	"github.com/jhunthrop/foreversixty/companion/internal/shell"
 	"github.com/jhunthrop/foreversixty/companion/internal/updater"
 )
+
+// openURL shows a link in the system browser; tests replace it.
+var openURL = defaultOpen
+
+func defaultOpen(u string) error { return browser.Open(u) }
 
 func main() {
 	if err := run(os.Args[1:], os.Stdout); err != nil {
@@ -51,6 +58,17 @@ func run(args []string, out *os.File) error {
 	if err != nil {
 		return err
 	}
+	// One companion per home directory: two would tail the same log and
+	// upload every fight twice. The claim comes before the update swap,
+	// which cannot happen under a running copy on Windows anyway.
+	lock, err := instance.Acquire(dirs.Home)
+	if errors.Is(err, instance.ErrRunning) {
+		return handOff(dirs, *debug)
+	}
+	if err != nil {
+		return err
+	}
+	defer lock.Release()
 	// Before anything else: a staged update becomes the program. It
 	// cannot happen while the binary is running on Windows, so it
 	// happens here and takes effect on the next launch.
@@ -94,6 +112,10 @@ func run(args []string, out *os.File) error {
 	// whole authentication for the settings and pairing routes, and
 	// this file is one the troubleshooting section asks players to
 	// open and paste.
+	if err := lock.PublishURL(ui.URL); err != nil {
+		log.Warn("could not publish the window address for a second launch",
+			"component", "main", "err", err.Error())
+	}
 	log.Info("the companion is running", "component", "main",
 		"version", updater.Version, "home", dirs.Home, "ui", ui.Addr)
 	if *headless {
@@ -126,4 +148,23 @@ func run(args []string, out *os.File) error {
 	stop()
 	<-done
 	return err
+}
+
+// handOff is what a second launch does: say so in the log, open the
+// running copy's window and succeed. Nothing of the companion starts.
+func handOff(dirs paths.Dirs, debug bool) error {
+	log, logFile, err := logging.New(dirs.Logs, debug)
+	if err != nil {
+		return err
+	}
+	defer logFile.Close()
+	log.Info("the companion is already running; showing its window", "component", "main")
+	url := instance.RunningURL(dirs.Home)
+	if url == "" {
+		return nil // the first copy is still starting; its window is coming
+	}
+	if err := openURL(url); err != nil {
+		log.Warn("could not open the running companion's window", "component", "main", "err", err.Error())
+	}
+	return nil
 }

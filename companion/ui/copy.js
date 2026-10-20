@@ -66,6 +66,7 @@ const COPY = {
   device: {
     // Not connected
     notConnected: 'Not connected',
+    signedOutBar: (who) => (who ? 'Your sign-in as ' + who : 'Your sign-in') + ' is no longer valid. Sign in again to keep uploading.',
     intro: 'Sign in on foreversixty.gg so the companion can upload your fights and keep the addon up to date.',
     signIn: 'Sign in with Battle.net',
     signInNote: 'Opens your browser. Your Battle.net password never reaches this app.',

@@ -63,3 +63,10 @@ test('last played is a clock today, a short date otherwise, and honest when unkn
   assert.strictEqual(FORMAT.lastPlayed('', now, COPY.status), 'Not played yet');
   assert.strictEqual(FORMAT.lastPlayed('garbage', now, COPY.status), 'Not played yet');
 });
+
+test('the Device page says whose sign-in the site stopped accepting', () => {
+  assert.strictEqual(COPY.device.signedOutBar('Thrall#1234'),
+    'Your sign-in as Thrall#1234 is no longer valid. Sign in again to keep uploading.');
+  assert.strictEqual(COPY.device.signedOutBar(''),
+    'Your sign-in is no longer valid. Sign in again to keep uploading.');
+});
