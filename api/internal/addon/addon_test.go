@@ -1062,3 +1062,97 @@ func TestPostMyExportsRefusesNonsenseAndConflicts(t *testing.T) {
 		t.Fatalf("stealing a claimed character = %d, want 409", res.StatusCode)
 	}
 }
+
+// aliasCount counts the owner's characters and exports rows under key.
+func (h *harness) aliasCount(key string) (characters, exports int) {
+	h.t.Helper()
+	ctx := context.Background()
+	if err := h.pool.QueryRow(ctx, `select count(*) from characters where key = $1`, key).Scan(&characters); err != nil {
+		h.t.Fatal(err)
+	}
+	if err := h.pool.QueryRow(ctx, `select count(*) from addon_exports where character_key = $1`, key).Scan(&exports); err != nil {
+		h.t.Fatal(err)
+	}
+	return characters, exports
+}
+
+func TestPutExportsRemovesTheOneWordAliasOfATwoWordCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	old := []Export{
+		{Name: "Booty", Ruleset: "Normal US", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:|who=Booty:Normal US"},
+		{Name: "Bow", Ruleset: "Classic Beta PvP", Region: "us", Export: "FS1:1.60.1.70450:hunter:troll:0/0/0:"},
+	}
+	if err := h.store.PutExports(ctx, h.owner, old); err != nil {
+		t.Fatal(err)
+	}
+	fresh := []Export{
+		{Name: "Booty Twerk", Ruleset: "Normal US", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:|level=24|who=Booty Twerk:Normal US"},
+		{Name: "Bow Jackzon", Ruleset: "Classic Beta PvP", Region: "us", Export: "FS1:1.60.1.70450:hunter:troll:0/0/0:|level=24"},
+	}
+	if err := h.store.PutExports(ctx, h.owner, fresh); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"us/normal/booty", "us/pvp/bow"} {
+		if c, x := h.aliasCount(key); c != 0 || x != 0 {
+			t.Errorf("%s: characters=%d exports=%d, want both gone", key, c, x)
+		}
+	}
+	for _, key := range []string{"us/normal/booty-twerk", "us/pvp/bow-jackzon"} {
+		if c, x := h.aliasCount(key); c != 1 || x != 1 {
+			t.Errorf("%s: characters=%d exports=%d, want both kept", key, c, x)
+		}
+	}
+}
+
+func TestPutExportsKeepsALegitimateOneWordCharacterOfAnotherClass(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Bow", Ruleset: "pvp", Region: "us", Export: "FS1:1.60.1.70450:warrior:orc:0/0/0:|level=40"}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Bow Jackzon", Ruleset: "pvp", Region: "us", Export: "FS1:1.60.1.70450:hunter:troll:0/0/0:|level=24"}}); err != nil {
+		t.Fatal(err)
+	}
+	if c, x := h.aliasCount("us/pvp/bow"); c != 1 || x != 1 {
+		t.Fatalf("characters=%d exports=%d, want the warrior kept", c, x)
+	}
+}
+
+func TestPutExportsABatchWithoutTheTwoWordTwinDeletesNothing(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Booty", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:"}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Thrall", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:shaman:orc:0/0/0:|level=60"}}); err != nil {
+		t.Fatal(err)
+	}
+	if c, x := h.aliasCount("us/normal/booty"); c != 1 || x != 1 {
+		t.Fatalf("characters=%d exports=%d, want the lone one-word row kept", c, x)
+	}
+}
+
+func TestPutExportsLeavesAnotherAccountsOneWordRowAlone(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	other, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(ctx, "other@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, other.ID, []Export{
+		{Name: "Booty", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:"}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Booty Twerk", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:|level=24"}}); err != nil {
+		t.Fatal(err)
+	}
+	if c, x := h.aliasCount("us/normal/booty"); c != 1 || x != 1 {
+		t.Fatalf("characters=%d exports=%d, want another account's row kept", c, x)
+	}
+}
