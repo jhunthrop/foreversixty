@@ -87,7 +87,8 @@ func TestACharacterTheAddonHasNotRecordedIsPatchedOnceWhenItArrives(t *testing.T
 		t.Fatalf("credited to %+v before the addon named anyone", now)
 	}
 	// The log is Morrowlyn's, and the INFO line says what to do.
-	for _, want := range []string{"the log is Morrowlyn's", "log out once with the addon loaded"} {
+	for _, want := range []string{"the log names Morrowlyn, but the addon has not exported that character",
+		"log out once with the addon loaded on it"} {
 		if !strings.Contains(r.logs.String(), want) {
 			t.Errorf("the log has no %q: %s", want, r.logs.String())
 		}
@@ -95,7 +96,7 @@ func TestACharacterTheAddonHasNotRecordedIsPatchedOnceWhenItArrives(t *testing.T
 	if got := r.pipe.Status().Detected; got != "Morrowlyn" {
 		t.Errorf("Status.Detected = %q before the record arrives", got)
 	}
-	if n := strings.Count(r.logs.String(), "the log is Morrowlyn's"); n != 1 {
+	if n := strings.Count(r.logs.String(), "the log names Morrowlyn"); n != 1 {
 		t.Errorf("the notice was logged %d times", n)
 	}
 
@@ -211,5 +212,23 @@ func TestAnAutomaticReportWaitsForTheLoggerBeforeItIsCreated(t *testing.T) {
 	created, _, patches := r.report()
 	if created == nil || *created != morrowlynChar || len(patches) != 0 {
 		t.Errorf("created for %+v after %d patches", created, len(patches))
+	}
+}
+
+func TestACharacterTheAddonHasRecordedOnAnotherRealmIsToldApartFromOneItHasNot(t *testing.T) {
+	r := newRig(t, 1<<20)
+	// Two Morrowlyns, neither on the log's realm: the name is known, the realm is what is missing.
+	r.records = []logger.Record{
+		{Name: "Morrowlyn", Realm: "Hardcore", Region: "us", Class: "paladin"},
+		{Name: "Morrowlyn", Realm: "Hardcore", Region: "eu", Class: "paladin"},
+	}
+	r.play(1)
+
+	if _, now, _ := r.report(); now != nil {
+		t.Fatalf("credited to %+v with two candidates", now)
+	}
+	want := "the log names Morrowlyn, but no addon record carries that realm"
+	if !strings.Contains(r.logs.String(), want) || strings.Contains(r.logs.String(), "has not exported") {
+		t.Errorf("the log has no %q: %s", want, r.logs.String())
 	}
 }

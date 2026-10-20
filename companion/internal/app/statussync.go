@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
+	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
 
@@ -56,13 +57,16 @@ type Credit struct {
 
 // creditOf reads the credit off a report: the character it carries
 // (detected or chosen), else the name the log gave that no addon record
-// matched, else nothing.
-func creditOf(r state.Report) Credit {
+// matched, else nothing. records are what the addon has exported, so an
+// unmatched report can say whether the name or the realm is missing.
+func creditOf(r state.Report, records []logger.Record) Credit {
 	switch {
 	case r.LoggingCharacter != nil && r.LoggingCharacter.Name != "":
 		return Credit{Name: r.LoggingCharacter.Name, State: CreditCredited}
 	case r.Auto && r.DetectedName != "":
-		return Credit{Name: r.DetectedName, State: CreditUnmatched, Reason: CopyCreditUnmatched(r.DetectedName)}
+		d := logger.Detected{Name: r.DetectedName, Realm: r.DetectedRealm, Class: r.DetectedClass}
+		_, why := logger.Judge(d, records)
+		return Credit{Name: r.DetectedName, State: CreditUnmatched, Reason: CopyCreditUnmatched(r.DetectedName, why)}
 	}
 	return Credit{State: CreditNone}
 }

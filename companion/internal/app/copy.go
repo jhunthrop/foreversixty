@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
+	"github.com/jhunthrop/foreversixty/companion/internal/logger"
 )
 
 // The addon line's words.
@@ -212,8 +213,14 @@ func CopySiteRefused(reason string) string {
 }
 
 // CopyCreditUnmatched is why a report with a detected logger has no
-// character: the log named one, but no addon record carries its realm.
-func CopyCreditUnmatched(name string) string {
-	return "the log names " + name + ", but no addon record carries that realm — " +
-		"log out once with the addon loaded"
+// character, given what the resolver reported: either the addon has
+// not exported that character at all, or it has but no record fits the
+// log's realm. The sentences live with the resolver so the pipeline's
+// log line says the same. A report that would match on the next tick
+// (why is Matched) keeps the realm sentence for that moment.
+func CopyCreditUnmatched(name string, why logger.Reason) string {
+	if why == logger.Matched {
+		why = logger.NoMatch
+	}
+	return why.Unmatched(name)
 }

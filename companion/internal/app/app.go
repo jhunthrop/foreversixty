@@ -779,10 +779,11 @@ func (a *App) Snapshot() Snapshot {
 	if err != nil {
 		a.log.Warn("could not list the reports", "component", "app", "err", err.Error())
 	}
+	records := a.addonRecords()
 	for i := len(reports) - 1; i >= 0; i-- {
 		r := reports[i]
 		row := ReportRow{Key: r.Key, ReportID: r.ReportID, Zone: r.Zone,
-			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done, Credit: creditOf(r)}
+			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done, Credit: creditOf(r, records)}
 		if r.Key == s.Pipeline.ReportKey {
 			s.Credit = row.Credit
 		}
