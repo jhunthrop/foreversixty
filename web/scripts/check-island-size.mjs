@@ -33,7 +33,10 @@ const BUDGETS = [
   // 75 KB since 2026-09-30: the tooltip's PvP source line names the rank title and
   // faction (pvp-faction lane), measured at 75,793 bytes gzipped against the 73 KB line.
   // Debt: the tooltip copy tables should split out of the planner's boot chunk.
-  { file: 'dist/planner-island.js', limitBytes: 75 * 1024 },
+  // 77 KB since the lifecycle round of 2026-10-19: the selector's signed-in-empty state
+  // (W.1), the card's send-to-addon state machine (W.2; the send itself loads on the first
+  // press) and the unread-export panel (W.3) read 78,030 bytes on CI against 76,800.
+  { file: 'dist/planner-island.js', limitBytes: 77 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's

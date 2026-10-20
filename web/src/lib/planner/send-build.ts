@@ -2,9 +2,7 @@
 // "Send this build to the addon" on the planner's character card: saves the build when it has
 // no id yet, checks the account has a companion to carry it, and queues it in the addon inbox.
 // The pure half (`sendActionFor`) turns where the send stands into the card's one action.
-import { AccountError, queueBuildToAddon, refreshDevices, type MeCharacter } from '../account/api';
-import type { HeaderAction } from '../character-header/types';
-import { plannerCharacterCardCopy as copy } from './copy';
+import { AccountError, queueBuildToAddon, refreshDevices } from '../account/api';
 import { saveBuild } from './share';
 import type { BuildDraft } from './types';
 
@@ -47,53 +45,4 @@ export async function sendBuildToAddon(
   }
 }
 
-export type SendState =
-  | { kind: 'idle' }
-  | { kind: 'sending' }
-  | { kind: 'sent' }
-  | { kind: 'sign-in' }
-  | { kind: 'no-device' }
-  | { kind: 'failed' };
-
-/** The card's action: a real send when a character is current, otherwise a way to get the addon. */
-export function sendActionFor(character: MeCharacter | null, state: SendState): HeaderAction {
-  if (character === null) {
-    return { label: copy.getTheAddon, href: copy.getTheAddonHref };
-  }
-  const base = { kind: 'picker' as const, href: copy.getTheAddonHref };
-  switch (state.kind) {
-    case 'sending':
-      return { ...base, label: copy.sending, disabled: true };
-    case 'sent':
-      return {
-        ...base,
-        label: copy.sent,
-        disabled: true,
-        note: { tone: 'ok' as const, text: copy.sentLine(character.name) },
-      };
-    case 'sign-in':
-      return {
-        ...base,
-        label: copy.sendBuildToAddon,
-        note: {
-          tone: 'error' as const,
-          text: copy.signIn,
-          link: { label: copy.signInLink, href: copy.signInHref },
-        },
-      };
-    case 'no-device':
-      return {
-        ...base,
-        label: copy.sendBuildToAddon,
-        note: {
-          tone: 'error' as const,
-          text: copy.noDevice,
-          link: { label: copy.noDeviceLink, href: copy.noDeviceHref },
-        },
-      };
-    case 'failed':
-      return { ...base, label: copy.sendBuildToAddon, note: { tone: 'error' as const, text: copy.failed } };
-    case 'idle':
-      return { ...base, label: copy.sendBuildToAddon };
-  }
-}
+export { sendActionFor, type SendState } from './send-state';

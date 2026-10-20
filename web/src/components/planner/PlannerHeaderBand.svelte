@@ -19,7 +19,7 @@
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { MeCharacter } from '../../lib/account/api';
-  import { sendActionFor, sendBuildToAddon, type SendState } from '../../lib/planner/send-build';
+  import { sendActionFor, type SendState } from '../../lib/planner/send-state';
   import { buildHasGear } from '../../lib/addon-export';
   import CharacterHeader from '../character/CharacterHeader.svelte';
   import ExportNotRead from '../character/ExportNotRead.svelte';
@@ -72,6 +72,9 @@
     const target = character.key;
     sendState = { kind: 'sending' };
     const known = sent?.key === key ? sent.buildId : null;
+    // The account API, the save and the queue load with the first press, so the planner
+    // island stays under its boot budget.
+    const { sendBuildToAddon } = await import('../../lib/planner/send-build');
     const outcome = await sendBuildToAddon(store.toDraft(), target, known);
     // The grid stays editable while this runs: a result for a build that has since changed
     // is not a result for the build on screen.
