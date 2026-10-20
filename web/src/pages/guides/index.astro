@@ -122,6 +122,17 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
     padding: 24px var(--page-inset) 32px var(--page-inset);
   }
 
+  /* The callout's slot exists only for a visitor Base.astro's pre-paint script hints as signed
+     in (the readable half of the session cookie, <html data-session>). Without the hint the
+     visitor can only resolve to "no callout", so the 72px skeleton would paint and then
+     collapse, pulling the whole class grid up by the slot's height and gap: the 0.083
+     layout shift Lighthouse measured on this page. A visitor whose hint is wrong (a session
+     that has since ended) still collapses it once, the same trade-off global.css's
+     `.session-reserve` rule documents for /account. */
+  :global(html:not([data-session='1'])) #guides-signed-in-callout {
+    display: none;
+  }
+
   /* Signed-in callout: skeleton and ready state share the same box height (44px line +
      14px/18px padding = 72px) so the swap never shifts layout (spec §8's own rule). */
   .guides-callout-skeleton {

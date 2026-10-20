@@ -103,7 +103,7 @@
         <!-- A function binding rather than a plain `value` attribute: the value has to be
              applied after the options exist, and Svelte only does that for bindings. -->
         <select
-          class="planner-header-select"
+          class="planner-header-select planner-header-select-class"
           bind:value={() => store.classSlug, (slug) => store.selectClass(slug)}
           disabled={store.readOnly}
         >
@@ -115,7 +115,7 @@
       <label class="planner-header-select-label">
         <span class="label text-muted">Race</span>
         <select
-          class="planner-header-select"
+          class="planner-header-select planner-header-select-race"
           bind:value={() => store.raceSlug, (slug) => store.selectRace(slug)}
           disabled={store.readOnly}
           data-testid="planner-race-select"
@@ -287,6 +287,19 @@
     color: var(--color-text);
     font-size: 13px;
     font-family: var(--font-body);
+  }
+  /* The server-rendered selects hold no options until the talent data lands, so a select is only
+     as wide as its padding and arrow (46px) and then jumps to its hydrated width. That widened
+     pair pushed the faction note onto its own row below 560px and shifted everything under the
+     controls by 33px (0.086 of layout shift on /planner at 360px). A select is as wide as its
+     widest option, so these floors are the hydrated widths for the default class (Warrior)
+     at 13px Barlow: all nine classes, and the nine races a Warrior may be. The row is then
+     the same height before and after the data arrives. */
+  .planner-header-select-class {
+    min-width: 92px;
+  }
+  .planner-header-select-race {
+    min-width: 99px;
   }
   .planner-header-faction-note {
     font-size: 13px;

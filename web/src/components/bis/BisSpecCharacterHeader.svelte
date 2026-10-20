@@ -1,9 +1,10 @@
 <!-- web/src/components/bis/BisSpecCharacterHeader.svelte -->
 <!-- The BiS spec page's "Your character" card: the shared character header in its stacked card
      layout with the outline action (design/specs/2026-10-11-character-header.md section 4,
-     replacing the old CharacterCard.svelte). Mounted `client:idle` (never `client:load`): this
-     region sits well below the page's own h1, its LCP element, so a slightly deferred hydration
-     costs nothing there.
+     replacing the old CharacterCard.svelte). Mounted `client:idle-after-load` (never
+     `client:load`): this region sits well below the page's own h1, its LCP element, so a
+     slightly deferred hydration costs nothing there, and an island fetched before the first
+     paint would count toward the simulated LCP (src/directives/idle-after-load.ts).
 
      Also owns the page-level side effects the old card carried: the header race select defaults
      to the visitor's own character race once signed in (the two panels must agree, never the
