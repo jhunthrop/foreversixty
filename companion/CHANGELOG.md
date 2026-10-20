@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.6
+
+- After an update, the companion starts the new build itself instead of exiting; the log says what it launched.
+
 ## 0.2.5
 
 - The companion waits for the game to finish writing its saved variables before it delivers the inbox, and
