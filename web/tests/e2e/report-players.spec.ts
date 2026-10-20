@@ -23,7 +23,7 @@ function betaText(text: string): string {
   return text.replaceAll('-Nightslayer', '-ClassicBetaPvP').replaceAll('-Hardcore', '-ClassicBetaPvP2');
 }
 
-async function serveBetaReport(page: Page, options: { zone: string }) {
+async function serveBetaReport(page: Page, options: { zone: string; credit?: string }) {
   const report = JSON.parse(betaText(await readFile(path.join(FIXTURES, 'report.json'), 'utf8')));
   const meta = JSON.parse(betaText(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8')));
   const classes: Record<string, string> = {
@@ -73,6 +73,7 @@ async function serveBetaReport(page: Page, options: { zone: string }) {
         zone: '',
         data_base_url: DATA,
         created_at: '2026-10-19T09:00:00Z',
+        logging_character: options.credit ?? null,
         fights,
       }),
     ),
@@ -191,5 +192,43 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('fight-2')).toContainText('Trash · ');
     await page.getByTestId('fight-2').click();
     await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
+  });
+
+  test('the subtitle credits the logging character, or says none is set and how to set one', async ({
+    page,
+  }) => {
+    await serveBetaReport(page, { zone: '', credit: 'us/normal/bow-jackzon' });
+    await page.goto(`/reports/${ID}?fight=3`);
+    await expect(page.getByTestId('report-credit')).toHaveText('Credited to Bow Jackzon');
+  });
+
+  test('no logging character reads as not credited, with the fix on hover', async ({ page }) => {
+    await serveBetaReport(page, { zone: '' });
+    await page.goto(`/reports/${ID}?fight=3`);
+    const credit = page.getByTestId('report-credit');
+    await expect(credit).toHaveText('Not credited to a character');
+    await expect(credit).toHaveAttribute('title', /Set the logging character in the companion/);
+  });
+
+  test('a trash fight’s Parse column is a muted dash, not a rankings error', async ({ page }) => {
+    await serveBetaReport(page, { zone: '' });
+    await page.goto(`/reports/${ID}?fight=1`);
+    const cell = page.getByTestId('roster-Player-4184-000000A1').getByTestId('roster-percentile');
+    await expect(cell).toHaveText('—');
+    await expect(cell).toHaveAttribute('title', 'No parse for trash; parses are made for boss fights.');
+    await expect(page.getByTestId('parse-unavailable')).toHaveCount(0);
+  });
+
+  test('a report being processed shows the summary tab alone above the parsing strip', async ({ page }) => {
+    const meta = JSON.parse(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8'));
+    await page.route(`**/v1/reports/${ID}`, (route) =>
+      route.fulfill(
+        envelope({ ...meta, id: ID, status: 'processing', title: '', zone: '', fights: [], players: [] }),
+      ),
+    );
+    await page.goto(`/reports/${ID}`);
+    await expect(page.getByTestId('report-parsing')).toBeVisible();
+    await expect(page.getByTestId('report-tabs-disabled').getByRole('button')).toHaveCount(1);
+    await expect(page.getByTestId('report-tabs-disabled').getByRole('button')).toHaveText(/summary/i);
   });
 });

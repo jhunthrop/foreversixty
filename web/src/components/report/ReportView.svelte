@@ -28,6 +28,7 @@
     outcomeLabel,
     phaseReached,
     schoolToken,
+    TRASH_PARSE,
   } from '../../lib/report/format';
   import {
     ALL_FIGHTS,
@@ -78,6 +79,7 @@
   import RaidCooldowns from './RaidCooldowns.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
   import { reportHeading } from '../../lib/report/heading';
+  import { reportCredit } from '../../lib/report/credit';
   import { homeRealmOf, setHomeRealm } from '../../lib/report/names.svelte';
   import { unitClassMap } from '../../lib/report/roster-class';
   import SummaryTab from './SummaryTab.svelte';
@@ -754,19 +756,21 @@
    * ranked on yet.
    */
   const parseFallback = $derived(
-    fight?.encounter_id === undefined || fight.in_progress
-      ? ''
-      : !windowIsWhole
-        ? 'window'
-        : filtersScale
-          ? 'filter'
-          : fight.kill
-            ? percentilesPending
-              ? '…'
-              : percentilesUnavailable
-                ? '?'
-                : '–'
-            : 'wipe',
+    !nightMode && fight !== undefined && fight.kind !== 'encounter' && !fight.in_progress
+      ? TRASH_PARSE
+      : fight?.encounter_id === undefined || fight.in_progress
+        ? ''
+        : !windowIsWhole
+          ? 'window'
+          : filtersScale
+            ? 'filter'
+            : fight.kill
+              ? percentilesPending
+                ? '…'
+                : percentilesUnavailable
+                  ? '?'
+                  : '–'
+              : 'wipe',
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(
@@ -777,6 +781,7 @@
       than the scoped one: a colour is a property of the player, not of the current source
       scope, and Mechanics draws the whole raid however the scope is set. */
   const unitClasses = $derived(unitClassMap(file?.units ?? []));
+  const credit = $derived(reportCredit(meta));
   const classOf = $derived(
     new Map(
       (base?.roster ?? [])
@@ -959,6 +964,7 @@
     if (
       summary === null ||
       encounterId === undefined ||
+      fight?.kind !== 'encounter' ||
       !windowIsWhole ||
       fight?.in_progress === true ||
       fight?.kill !== true
@@ -1437,12 +1443,25 @@
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
         {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
         {status === 'processing' ? 'Processing' : 'Could not be parsed'}
+        · <span title={credit.title} data-testid="report-credit">{credit.text}</span>
       </p>
     </header>
-    <div
-      class="grid grid-cols-1 gap-[22px] px-[18px] pt-4 md:grid-cols-[300px_minmax(0,1fr)] md:items-start md:gap-8 md:px-0"
-    >
-      <div class="border-line-soft rounded-control flex flex-col gap-2 border p-4" data-testid="report-fights-strip">
+    <div class="flex flex-col gap-4 px-[18px] pt-4 md:px-0">
+      <div class="flex min-w-0 flex-wrap gap-1" data-testid="report-tabs-disabled">
+        {#each TABS.slice(0, 1) as tab (tab.id)}
+          <button
+            type="button"
+            disabled
+            title={status === 'processing' ? reportCopy.parsing : reportCopy.parseFailed}
+            class="text-muted inline-flex min-h-9 cursor-not-allowed items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase opacity-60"
+            >{tab.label}</button
+          >
+        {/each}
+      </div>
+      <div
+        class="border-line-soft rounded-control flex flex-col gap-2 border p-4"
+        data-testid="report-fights-strip"
+      >
         {#if status === 'processing'}
           <p class="flex items-center gap-3 text-[14px]" role="status" data-testid="report-parsing">
             <span
@@ -1460,17 +1479,6 @@
             >
           </p>
         {/if}
-      </div>
-      <div class="flex min-w-0 flex-wrap gap-1" data-testid="report-tabs-disabled">
-        {#each TABS as tab (tab.id)}
-          <button
-            type="button"
-            disabled
-            title={status === 'processing' ? reportCopy.parsing : reportCopy.parseFailed}
-            class="text-muted inline-flex min-h-9 cursor-not-allowed items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase opacity-60"
-            >{tab.label}</button
-          >
-        {/each}
       </div>
     </div>
   </div>
@@ -1524,7 +1532,8 @@
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
         {#if meta.zone !== ''}{meta.zone} ·{/if}
         {#if fights.length > 0}<span class="tabular font-mono">{formatDate(fights[0].start)}</span> ·{/if}
-        <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
+        <span class="tabular font-mono">{fights.length} fights</span> · {meta.status} ·
+        <span title={credit.title} data-testid="report-credit">{credit.text}</span>
         {#if nightMode}· All boss pulls{/if}
         {#if fight}· {fight.name}
           {#if fight.kind === 'encounter' && !fight.in_progress}

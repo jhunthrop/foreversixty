@@ -11,6 +11,7 @@ import {
   ordinal,
   outcomeLabel,
   parseTitle,
+  TRASH_PARSE,
   percentileToken,
   phaseReached,
   schoolName,
@@ -129,5 +130,13 @@ describe('formatAmountLike', () => {
     expect(formatAmountLike(1_500, 239_200)).toBe('1.5k');
     expect(formatAmountLike(239_200, 239_200)).toBe('239.2k');
     expect(formatAmountLike(80_993, 90_000)).toBe('80,993');
+  });
+});
+
+describe('the trash parse', () => {
+  it('is a muted dash that says parses are for bosses, not an error', () => {
+    expect(TRASH_PARSE).toBe('—');
+    expect(parseTitle(TRASH_PARSE)).toBe('No parse for trash; parses are made for boss fights.');
+    expect(parseTitle(TRASH_PARSE)).not.toMatch(/could not be reached/);
   });
 });

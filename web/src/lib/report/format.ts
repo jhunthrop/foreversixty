@@ -263,6 +263,9 @@ export function ordinal(n: number): string {
   return `${n}${last === 1 ? 'st' : last === 2 ? 'nd' : last === 3 ? 'rd' : 'th'}`;
 }
 
+/** A Parse cell's fallback on a trash fight: not computed, which is not a failure. */
+export const TRASH_PARSE = '—';
+
 /** The hover text behind a Parse cell: the number's meaning, or why the cell is empty. */
 export function parseTitle(value: number | string, ranked = 0): string {
   if (typeof value === 'number') {
@@ -270,6 +273,7 @@ export function parseTitle(value: number | string, ranked = 0): string {
     const note = ranked === 1 ? '; the only kill of its kind ranked so far, so it stands first of one' : '';
     return `${ordinal(Math.round(value))} percentile among ${among} of this boss by this spec on this ruleset${note}`;
   }
+  if (value === TRASH_PARSE) return 'No parse for trash; parses are made for boss fights.';
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
   if (value === '?')
