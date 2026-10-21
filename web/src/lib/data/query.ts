@@ -19,6 +19,19 @@ export interface QueryOptions<T> {
    * after the API said complete.
    */
   cacheable?: (data: T) => boolean;
+  /**
+   * Revalidate on every read, not only the first one this page makes of a storage-hydrated
+   * entry: the cached answer is returned at once and the network is asked in the background.
+   * A guild-scoped private read uses it, since the site is an MPA and each mount is the
+   * moment to ask again (a join, a grant or an approval may have happened since).
+   */
+  revalidateOnRead?: boolean;
+  /**
+   * Called when a background revalidation answers something different from what the
+   * caller was already shown. The promise `query()` returned has settled by then, so this
+   * is how the caller paints the fresh answer.
+   */
+  onRevalidated?: (data: T) => void;
 }
 
 export interface QueryState<T> {
@@ -259,7 +272,9 @@ function revalidate<T>(
       entry.savedAt = Date.now();
       entry.ttlMs = options.ttlMs;
       entry.validated = true;
+      const changed = background && data !== entry.state.data;
       setState(key, entry, { data, status: 'ready', error: '', stale: false });
+      if (changed) options.onRevalidated?.(data);
       if (options.cacheable !== undefined && !options.cacheable(data)) {
         // Shown, not remembered: the next read asks the network again.
         entry.savedAt = 0;
@@ -299,7 +314,7 @@ export function query<T>(key: string, load: () => Promise<T>, options: QueryOpti
     // stale-while-revalidate's promise that the cached answer alone is a complete, valid
     // response. A caller that wants to see the revalidation happen awaits an extra
     // microtask turn after that, same as the module's own tests do.
-    if (!entry.validated) {
+    if (!entry.validated || options.revalidateOnRead === true) {
       void Promise.resolve()
         .then(() => Promise.resolve())
         .then(() => revalidate(key, entry, load, options, true));
@@ -355,6 +370,32 @@ export function invalidate(prefix: string): void {
       // Best-effort.
     }
   }
+}
+
+/**
+ * Asks the network for one key now, whatever the freshness of what is held, and hands the
+ * answer to `onData`. What a window-focus handler calls: an operator grant or a Stripe
+ * webhook cannot notify the browser, so the page asks again when the player returns.
+ */
+export function refetch<T>(
+  key: string,
+  load: () => Promise<T>,
+  options: QueryOptions<T>,
+  onData: (data: T) => void,
+): void {
+  invalidate(key);
+  void query(key, load, options)
+    .then(onData)
+    .catch(() => {
+      // The answer already on screen stays; nothing visible logs.
+    });
+}
+
+/** Calls `fn` each time the window regains focus; returns the remover. */
+export function onWindowFocus(fn: () => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('focus', fn);
+  return () => window.removeEventListener('focus', fn);
 }
 
 export function forgetPrivate(): void {
