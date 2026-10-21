@@ -231,7 +231,9 @@ h3 {
 .panel.flush { padding: 0; overflow: hidden; }
 .panel.rows { padding: 10px var(--sp-5); }
 .panel.list { padding: 0 var(--sp-5); }
-.panel.dim, .dim { opacity: 0.5; }
+.panel.dim, .dim { opacity: 0.5; filter: grayscale(1); }
+/* The caption over the greyed numbers while Status is unavailable. */
+.stale-cap { margin: 0 0 var(--sp-2); color: var(--muted); font: 700 var(--fs-label)/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; }
 
 /* Bars: the poll failure and the tray notice sit between the header and
    the page; the update notice sits between the page and the footer.
@@ -247,7 +249,7 @@ h3 {
 }
 .bar.bad { background: var(--bad-bg); border-bottom-color: var(--bad-line); color: var(--bad-text); text-align: center; }
 .bar.bad svg { color: var(--bad); flex: none; }
-.bar button.ghost { margin-top: 0; }
+.bar button.ghost { margin-top: 0; min-height: 24px; padding: 0 10px; }
 .bar.update {
   justify-content: flex-start;
   border-bottom: 0; border-top: 1px solid var(--line);
@@ -308,7 +310,8 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; fill: none; 
 .row .v .sub.warn { color: var(--warn); }
 .row .v .warn { color: var(--warn); font-weight: 600; }
 .row .v .help13 { display: block; font-size: var(--fs-small); font-weight: 400; line-height: 1.5; color: var(--muted); }
-.row .v .check-builds { display: block; margin: 6px 0 0 auto; }
+/* The ghost button's side padding and border (11 px) are pulled back so its label ends on the value column's edge. */
+.row .v .check-builds { display: block; margin: 6px -11px 0 auto; }
 
 .note { color: var(--muted); font-size: var(--fs-small); margin: var(--sp-2) 0 0; min-height: 0; }
 .note:empty { display: none; }
@@ -434,8 +437,8 @@ button.link:hover { color: var(--gold-hover); border: 0; }
 .install { padding: var(--sp-3) 0; border-bottom: 1px solid var(--line-soft); }
 .install:last-child { border-bottom: 0; }
 .install .top-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-3); }
-.name { font-weight: 600; font-size: var(--fs-body); color: var(--strong); display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
-.path { display: block; font: 500 var(--fs-caption)/1.5 var(--font-mono); color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; }
+.name { white-space: nowrap; font-weight: 600; font-size: var(--fs-body); color: var(--strong); display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+.path { display: block; font: 500 var(--fs-caption)/1.5 var(--font-mono); color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .played { display: block; font-size: var(--fs-small); line-height: 1.5; color: var(--muted); margin-top: 2px; }
 .install .adv { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-small); color: var(--muted); white-space: nowrap; }
 .install .adv.on svg { color: var(--ok); }
@@ -503,7 +506,9 @@ ul.reports button { position: relative; z-index: 1; }
 .cta { margin-top: var(--sp-5); }
 .lede { color: var(--text); margin: var(--sp-3) 0 0; max-width: 56ch; }
 .fine { color: var(--muted); font-size: var(--fs-caption); margin: var(--sp-3) 0 0; }
-.fine .mono.late { color: var(--warn); }
+/* The countdown is one sentence in one face; the last minute turns all of it amber. */
+.fine.expires { font-variant-numeric: tabular-nums; }
+.fine.expires.late { color: var(--warn); }
 .reason { margin: var(--sp-3) 0 0; padding: 10px var(--sp-3); border: 1px solid var(--bad-line); border-radius: var(--radius-control); background: var(--bad-bg); color: var(--bad-text); font-size: var(--fs-small); }
 .spinner {
   display: inline-block; width: 16px; height: 16px; flex: none;
@@ -547,18 +552,25 @@ details .row { font-size: var(--fs-small); }
 /* ---- Settings -------------------------------------------------------- */
 
 .group + .group { margin-top: var(--sp-5); padding-top: var(--sp-5); border-top: 1px solid var(--line-soft); }
-/* Save sits after the third group. On a window too short for all three
-   fields it stays in view at the foot of the page instead of scrolling
-   away: it is the one thing the page is for. The negative margins let its
-   backing reach the panel's edge, so nothing shows through. */
+/* Save is a strip at the foot of the page, after the last group. On a window
+   too short for everything it stays in view, and the page scrolls clear of it
+   at the end: it is the section's last child, so it can never sit under a
+   field once the page is scrolled down. A 24 px fade above it turns a row the
+   strip is cutting into a fade, not a slice. The folder list, the only group
+   of variable length, is last, so it is the one that scrolls under the strip. */
+:root { --save-h: 64px; }
 .save-row {
   position: sticky; bottom: 0; z-index: 2;
   display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap;
-  margin: var(--sp-5) calc(-1 * var(--sp-5)) calc(-1 * var(--sp-5));
-  padding: var(--sp-4) var(--sp-5) var(--sp-5);
-  background: var(--raised);
+  min-height: var(--save-h);
+  padding: var(--sp-3) 0;
+  background: var(--bg);
   border-top: 1px solid var(--line-soft);
-  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+}
+.save-row::before {
+  content: ''; position: absolute; left: 0; right: 0; top: -25px; height: 24px;
+  background: linear-gradient(transparent, var(--bg));
+  pointer-events: none;
 }
 .save-row button, .save-row .note { margin: 0; }
 
@@ -570,7 +582,7 @@ footer .inner {
   display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
   height: 100%; max-width: var(--col); margin: 0 auto; padding: 0 var(--gutter);
 }
-footer .foot-left.updated { color: var(--gold); }
+footer .foot-left.updated { color: var(--ok); }
 footer a { transition: color var(--dur-fast) var(--ease); }
 
 /* ---- motion ---------------------------------------------------------- */
@@ -592,6 +604,10 @@ footer a { transition: color var(--dur-fast) var(--ease); }
   .spinner { animation: spin 2400ms linear infinite !important; }
 }
 
+@media (max-width: 600px) {
+  #poll-bar { font-size: var(--fs-caption); }
+}
+
 /* ---- narrow: a safety net, the window never opens under 560 ---------- */
 
 @media (max-width: 520px) {
@@ -610,5 +626,12 @@ footer a { transition: color var(--dur-fast) var(--ease); }
   .device-body { margin-left: 0; }
   .expiry { width: 100%; }
   .save-row { align-items: flex-start; flex-direction: column; gap: var(--sp-3); }
+  .install { display: flex; flex-direction: column; }
+  .install .top-line { display: contents; }
+  .install .name { order: 1; }
+  .install .played { order: 2; }
+  .install .adv { order: 3; margin-top: 2px; }
+  .install .path { order: 4; }
+  .install .help-line { order: 5; }
   ul.reports li { padding-left: var(--sp-4); padding-right: var(--sp-4); }
 }

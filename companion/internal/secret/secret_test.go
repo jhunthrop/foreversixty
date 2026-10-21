@@ -167,3 +167,17 @@ func TestTheFileFallbackNamesWhatWasNotAvailable(t *testing.T) {
 		}
 	}
 }
+
+func TestWindowsCredentialManagerIsExplained(t *testing.T) {
+	if got := StoreNote(Keychain, "windows"); got != "A private store in your user profile." {
+		t.Errorf("StoreNote(Keychain, windows) = %q", got)
+	}
+	for _, c := range []struct {
+		b    Backend
+		goos string
+	}{{Keychain, "darwin"}, {Keychain, "linux"}, {File, "windows"}} {
+		if got := StoreNote(c.b, c.goos); got != "" {
+			t.Errorf("StoreNote(%v, %s) = %q, want none", c.b, c.goos, got)
+		}
+	}
+}

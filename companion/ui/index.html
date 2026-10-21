@@ -16,7 +16,7 @@
   <header>
     <a class="wordmark" id="wordmark" href="https://foreversixty.gg" data-open><img class="seal" src="seal.svg" width="28" height="28" alt="">Forever Sixty</a>
     <nav aria-label="Pages">
-      <button data-page="status">Status</button>
+      <button data-page="status" aria-current="page">Status</button>
       <button data-page="reports">Reports</button>
       <button data-page="device">Device</button>
       <button data-page="settings">Settings</button>
@@ -66,22 +66,22 @@
         </div>
 
         <div class="group">
+          <label for="logging-character" id="character-label">Reports are credited to</label>
+          <select id="logging-character"></select>
+          <p class="help" id="character-help"></p>
+        </div>
+
+        <div class="group">
           <div class="label" id="folders-label">Game folders</div>
           <ul class="folders" id="folder-list" aria-labelledby="folders-label"></ul>
           <button class="action" id="add-folder" type="button">Add a folder...</button>
           <p class="note" id="folder-note" role="status"></p>
         </div>
 
-        <div class="group">
-          <label for="logging-character" id="character-label">Reports are credited to</label>
-          <select id="logging-character"></select>
-          <p class="help" id="character-help"></p>
-        </div>
-
-        <div class="save-row">
-          <button class="action primary big" id="save" type="button" disabled>Save changes</button>
-          <p class="note" id="settings-note" role="status"></p>
-        </div>
+      </div>
+      <div class="save-row">
+        <button class="action primary big" id="save" type="button" disabled>Save changes</button>
+        <p class="note" id="settings-note" role="status"></p>
       </div>
     </section>
   </div>

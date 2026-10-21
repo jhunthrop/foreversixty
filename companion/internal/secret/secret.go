@@ -177,3 +177,13 @@ func Name(b Backend, goos string) string {
 	}
 	return "Secret Service"
 }
+
+// StoreNote is the muted line under a working keychain: what the store is, in
+// the player's words. Only Windows has one, because "Credential Manager" is the
+// name a player cannot place; the other systems' names explain themselves.
+func StoreNote(b Backend, goos string) string {
+	if b == Keychain && goos == "windows" {
+		return "A private store in your user profile."
+	}
+	return ""
+}

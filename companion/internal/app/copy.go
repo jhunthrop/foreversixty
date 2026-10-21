@@ -123,6 +123,10 @@ const (
 
 	CopyLoggingTitle = "Logging"
 	CopyLoggingSub   = "Uploading your fights as they end"
+	// CopyLoggingTitleNotCredited is the Logging title while the open report is
+	// not credited to the player yet. The dot stays green: the headline's colour
+	// follows whether fights are uploading, not whom they are credited to.
+	CopyLoggingTitleNotCredited = CopyLoggingTitle + CopySeparator + "not credited to you yet"
 
 	// CopyAdvancedHow is the menu path, and what to do after.
 	CopyAdvancedHow = "Turn it on in Options > Network > Advanced Combat Logging, then restart the game."

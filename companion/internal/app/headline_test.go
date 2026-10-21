@@ -75,7 +75,11 @@ func TestTheLoggingSubLineFollowsTheCreditState(t *testing.T) {
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			got := headlineFor(true, false, false, true, c.credit, watched)
-			if got.Key != "logging" || got.Tone != "on" || got.Title != CopyLoggingTitle {
+			wantTitle := CopyLoggingTitle
+			if c.credit.State == CreditUnmatched {
+				wantTitle = "Logging · not credited to you yet"
+			}
+			if got.Key != "logging" || got.Tone != "on" || got.Title != wantTitle {
 				t.Errorf("headline = %+v, want the green Logging state", got)
 			}
 			if got.Sub != c.want {
@@ -113,8 +117,9 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 		}
 		s := Snapshot{
 			AppVersion: "0.2.8", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
-			DeviceName: "JH-DESKTOP", TokenBackend: "file", TokenBackendName: "A private file in your user folder",
-			APIBaseURL: "https://api.foreversixty.gg", SiteBaseURL: "https://foreversixty.gg",
+			DeviceName: "JH-DESKTOP", TokenBackend: "keychain", TokenBackendName: "Windows Credential Manager",
+			TokenBackendNote: "A private store in your user profile.",
+			APIBaseURL:       "https://api.foreversixty.gg", SiteBaseURL: "https://foreversixty.gg",
 			Visibility: "public", DetectedCharacter: credit.Name,
 			Installs: installs,
 			Pipeline: pipeline.Status{Logging: true, ReportKey: "20261020-174100", ReportID: "r_9f2c",
