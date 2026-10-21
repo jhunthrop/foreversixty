@@ -95,7 +95,20 @@ describe('guildSettingsCopy invite block', () => {
 describe('the Leave confirm for the guild master', () => {
   it('warns that leaving releases the claim and what the officers lose', () => {
     expect(guildConsentCopy.leaveReleasesClaim('Lifecycle Test')).toBe(
-      'Leaving Lifecycle Test releases your claim; your officers lose their roster and loot tools and access to your gear.',
+      'Leaving Lifecycle Test means you stop running it here. Your officers lose the roster and loot tools and can no longer see your gear.',
     );
+  });
+});
+
+describe('the Leave confirm for an officer and the hand-over line', () => {
+  it('tells a plain officer what they lose, and the guild master that nothing hands the guild over yet', () => {
+    expect(guildConsentCopy.leaveLosesOfficer('Lifecycle Test')).toBe(
+      'You lose your officer tools in Lifecycle Test.',
+    );
+    expect(guildConsentCopy.leaveNoHandOver).toBe(
+      'There is no hand-over yet; if you want an officer to run the guild after you, ask us on Discord before you leave.',
+    );
+    expect(guildConsentCopy.leaveConfirmButton).toBe('Leave guild');
+    expect(guildConsentCopy.shareLabel).toBe('Share with this guild');
   });
 });

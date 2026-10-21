@@ -68,4 +68,22 @@ describe('GuildLoot', () => {
     expect(panel).toContain('No one on the roster can use this.');
     expect(panel).not.toContain('data-testid="guild-loot-award-');
   });
+
+  it('reads each candidate as what they replace, their spec and their raid nights', () => {
+    const first = text(html(true).slice(html(true).indexOf('data-testid="guild-loot-candidate-line"')));
+    expect(first).toMatch(/^[^]*Replaces [A-Z][^·]+ · [A-Za-z ]+ · \d+ of 8 raid nights/);
+    expect(text(html(true))).not.toContain('over their current');
+  });
+
+  it('puts the awarded line on its own full-width row, no dot before Undo, and Awarded · Undo on the winner', () => {
+    const markup = html(true);
+    expect(markup).not.toMatch(/aria-hidden="true">·<\/span>\s*<button/);
+    const awardedAt = markup.indexOf(`data-testid="guild-loot-awarded-${awarded?.item_id}"`);
+    const chip = markup.slice(markup.lastIndexOf('<span', awardedAt), awardedAt);
+    expect(chip).toContain('basis-full');
+    expect(chip).not.toContain('uppercase');
+    expect(markup).toContain(`data-testid="guild-loot-row-undo-${awarded?.item_id}"`);
+    expect(text(html(false))).toContain('Awarded');
+    expect(html(false)).not.toContain('guild-loot-row-undo-');
+  });
 });

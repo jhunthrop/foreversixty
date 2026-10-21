@@ -389,10 +389,10 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
       'Roster from the addon · sent by Zulmara 3 minutes ago',
     );
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60 Survival\s+per addon\s+·\s+Gear gap 12 DPS\s+·\s+build: Survival raid\s+·\s+seen 6 minutes ago$/,
+      /^Level 60\s+·\s+Gear gap 12 DPS\s+·\s+Survival in game\s+·\s+Gear set: Survival \(raid\)\s+·\s+seen 6 minutes ago\s*$/,
     );
     await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60\s+·\s+Gear gap 4 DPS\s+·\s+build: Protection raid\s+·\s+seen 8 minutes ago$/,
+      /^Level 60\s+·\s+Gear gap 4 DPS\s+·\s+Gear set: Protection \(raid\)\s+·\s+seen 8 minutes ago\s*$/,
     );
     const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
     await expect(none).toHaveText('—');
@@ -689,6 +689,86 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   });
 });
 
+test.describe('roster at 390px: three blocks under the name, nothing past the edge (round 7)', () => {
+  test.use({ timezoneId: 'UTC' });
+
+  test('every row fits, the facts keep one order, Remove is a quiet text control that asks with a name', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
+    await expect(page.getByTestId('guild-roster-entries')).toBeVisible();
+
+    // Nothing reaches the edge: the page does not scroll sideways and no row's text runs past it.
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    const overflowing = await page.evaluate(() =>
+      [...document.querySelectorAll('[data-testid="guild-roster-rows"] *')]
+        .filter((el) => el.getBoundingClientRect().right > 390.5)
+        .map((el) => el.getAttribute('data-testid') ?? el.tagName),
+    );
+    expect(overflowing).toEqual([]);
+
+    // Block order under the name: chips, then professions on one line, then the in-game facts.
+    const zulmara = page
+      .getByTestId('guild-roster-rows')
+      .locator('.guild-roster-row')
+      .filter({ has: page.getByTestId('guild-roster-name').getByText('Zulmara') });
+    const [facts, prof, ingame] = await Promise.all([
+      zulmara.getByTestId('guild-roster-facts').boundingBox(),
+      zulmara.getByTestId('guild-roster-professions').boundingBox(),
+      zulmara.getByTestId('guild-roster-ingame-slot').boundingBox(),
+    ]);
+    expect(facts && prof && ingame).toBeTruthy();
+    if (facts && prof && ingame) {
+      expect(prof.y).toBeGreaterThanOrEqual(facts.y);
+      expect(ingame.y).toBeGreaterThanOrEqual(prof.y + prof.height - 1);
+      expect(prof.height).toBeLessThan(20);
+    }
+    // Spec words carry the class; units are named; "in game" and "Gear set:" replace the old words.
+    await expect(zulmara.getByTestId('guild-roster-spec')).toContainText('Marksmanship Hunter');
+    await expect(zulmara).toContainText('Rating');
+    await expect(zulmara).toContainText('Survival in game');
+    await expect(zulmara).toContainText('Gear set: Survival (raid)');
+    await expect(zulmara).not.toContainText('per addon');
+    await expect(zulmara).not.toContainText('build:');
+
+    // Remove: no border, muted, underlined, 44px high, sitting on the name row; it asks with a name.
+    const remove = page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Windtalon"]');
+    const style = await remove.evaluate((node) => {
+      const css = getComputedStyle(node);
+      return { border: css.borderTopWidth, underline: css.textDecorationLine, height: node.clientHeight };
+    });
+    expect(style.border).toBe('0px');
+    expect(style.underline).toContain('underline');
+    expect(style.height).toBeGreaterThanOrEqual(44);
+    const windtalon = page
+      .getByTestId('guild-roster-rows')
+      .locator('.guild-roster-row')
+      .filter({ has: page.getByTestId('guild-roster-name').getByText('Windtalon') });
+    const [nameBox, removeBox] = await Promise.all([
+      windtalon.getByTestId('guild-roster-name').boundingBox(),
+      remove.boundingBox(),
+    ]);
+    if (nameBox && removeBox)
+      expect(Math.abs(removeBox.y + removeBox.height / 2 - (nameBox.y + 10))).toBeLessThan(30);
+    await remove.click();
+    await expect(page.getByTestId('guild-roster-remove-confirm')).toContainText(
+      'Remove Windtalon from the roster?',
+    );
+  });
+
+  test('the ranks line sits above the roster while a row has no rank', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-ranks-pending')).toHaveText(
+      'Ranks show once the addon sends them.',
+    );
+  });
+});
+
 test.describe('settings: billing and release belong to the guild master', () => {
   // The settings page is prerendered for the fixture guild The Last Watch (id 501) only.
   async function openSettings(page: Page, rank: 'leader' | 'officer'): Promise<void> {
@@ -882,6 +962,16 @@ test.describe('loot: Award asks first and can be undone', () => {
     await expect(confirm).toHaveCount(0);
 
     await awardButton.click();
+    // While the confirm is open the Award buttons on the rows are disabled, so one live Award exists,
+    // and Cancel shows the focus ring.
+    for (const row of await panel.locator('[data-testid^="guild-loot-award-' + item.item_id + '-"]').all()) {
+      await expect(row).toBeDisabled();
+    }
+    await expect(page.getByTestId(`guild-loot-award-yes-${item.item_id}`)).toBeEnabled();
+    expect(await cancel.evaluate((node) => getComputedStyle(node).outlineStyle)).not.toBe('none');
+    await page.keyboard.press('Escape');
+    await expect(confirm).toHaveCount(0);
+    await awardButton.click();
     if (dir) await panel.screenshot({ path: `${dir}/g7-award-confirm-${page.viewportSize()?.width}.png` });
     await page.getByTestId(`guild-loot-award-yes-${item.item_id}`).click();
     await expect.poll(() => record.posts.length).toBe(1);
@@ -892,6 +982,8 @@ test.describe('loot: Award asks first and can be undone', () => {
       `Awarded to ${first.name} · today · by ${VIEWER_OFFICER}`,
     );
     await expect(page.getByTestId(`guild-loot-undo-${item.item_id}`)).toBeVisible();
+    // The winner's own row reads "Awarded · Undo"; the other candidates keep "Already awarded".
+    await expect(panel.getByTestId('guild-loot-winner-slot')).toHaveText(/^Awarded\s+·\s+Undo$/);
     await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
     await expect(panel.getByText('Already awarded')).toHaveCount(item.candidates.length - 1);
     if (dir) await panel.screenshot({ path: `${dir}/g7-award-done-${page.viewportSize()?.width}.png` });
@@ -901,6 +993,67 @@ test.describe('loot: Award asks first and can be undone', () => {
     await expect.poll(() => record.deletes).toEqual(['41']);
     await expect(page.getByTestId(`guild-loot-awarded-${item.item_id}`)).toHaveCount(0);
     await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(item.candidates.length);
+  });
+
+  test('at 390px the awarded line is its own row: its box holds its text and clears the title', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
+    await page.route(`**/v1/guilds/${GUILD_ID}/progression`, (route) =>
+      route.fulfill(envelope(buildMockProgression())),
+    );
+    await stubAwards(page);
+    const item = buildMockLoot().items.find((i) => i.name === 'Stormrage Cover');
+    const first = item?.candidates[0];
+    if (item === undefined || first === undefined) throw new Error('fixture lost Stormrage Cover');
+    await page.goto(`${GUILD_URL}#loot`);
+    const panel = page.getByTestId(`guild-loot-item-${item.item_id}`);
+    await panel.getByTestId(`guild-loot-award-${item.item_id}-${first.character_key}`).click();
+    await page.getByTestId(`guild-loot-award-yes-${item.item_id}`).click();
+    const chip = page.getByTestId(`guild-loot-awarded-${item.item_id}`);
+    await expect(chip).toBeVisible();
+    // Sentence case, 14px, and the box grows with its text: nothing overflows it.
+    await expect(chip).toHaveText(`Awarded to ${first.name} · today · by ${VIEWER_OFFICER}`);
+    const fit = await chip.evaluate((node) => ({
+      overflowY: node.scrollHeight - node.clientHeight,
+      overflowX: node.scrollWidth - node.clientWidth,
+      size: getComputedStyle(node).fontSize,
+      transform: getComputedStyle(node).textTransform,
+    }));
+    expect(fit.overflowY).toBeLessThanOrEqual(0);
+    expect(fit.overflowX).toBeLessThanOrEqual(0);
+    expect(fit.size).toBe('14px');
+    expect(fit.transform).toBe('none');
+    // The title's box and the chip's box do not intersect; the chip is under the title, full width.
+    const title = await panel.locator('span.font-display').first().boundingBox();
+    const box = await chip.boundingBox();
+    const undo = await page.getByTestId(`guild-loot-undo-${item.item_id}`).boundingBox();
+    expect(title && box && undo).toBeTruthy();
+    if (title && box && undo) {
+      expect(box.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
+      expect(box.width).toBeGreaterThan(300);
+      expect(undo.height).toBeGreaterThanOrEqual(44);
+      // Undo is a separate control below the chip, with the 12px gap, and no dot beside it.
+      expect(undo.y).toBeGreaterThanOrEqual(box.y + box.height + 11);
+    }
+    expect(await panel.getByText('·', { exact: true }).count()).toBe(0);
+    const scrolls = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrolls).toBeLessThanOrEqual(390);
+  });
+
+  test('a loot candidate reads what it replaces, the spec and the raid nights', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(`${GUILD_URL}#loot`);
+    const item = buildMockLoot().items.find((i) => i.name === 'Stormrage Cover');
+    const first = item?.candidates[0];
+    if (item === undefined || first === undefined) throw new Error('fixture lost Stormrage Cover');
+    const line = page.getByTestId(`guild-loot-item-${item.item_id}`).getByTestId('guild-loot-candidate-line');
+    await expect(line.first()).toContainText(`Replaces ${first.replaces} · ${first.spec} · `);
+    await expect(line.first()).toContainText('raid nights');
+    await expect(line.first()).not.toContainText('over their current');
   });
 
   test('a member sees an awarded item but no Undo and no Award', async ({ page }) => {
@@ -1225,6 +1378,10 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
     await page.goto(`${GUILD_URL}#roster`);
     const removeButton = page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Sunderfel"]');
     await removeButton.click();
+    await expect(page.getByTestId('guild-roster-remove-confirm')).toContainText(
+      'Remove Sunderfel from the roster?',
+    );
+    await page.getByTestId('guild-roster-remove-yes').click();
     await expect(page.getByTestId('guild-roster-action-error')).toHaveText(
       'you do not have standing to remove this character',
     );

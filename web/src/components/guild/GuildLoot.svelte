@@ -18,13 +18,14 @@
     NO_CANDIDATE,
     UNDO_AWARD,
     anyNotSimmed,
-    attendanceLabel,
     awardQuestion,
     awardedLine,
     bossPickerLabel,
     candidateAction,
     candidateGainLabel,
+    candidateLine,
   } from '../../lib/guild/loot-view';
+  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import EmptyState from '../ui/EmptyState.svelte';
 
   let {
@@ -91,24 +92,24 @@
           class="border-line-soft bg-raised flex flex-col gap-2 rounded-md border p-4"
           data-testid={`guild-loot-item-${item.item_id}`}
         >
-          <div class="flex items-center justify-between gap-2">
-            <span class="font-display text-[15px] font-bold"
+          <!-- Below lg the awarded line is its own full-width row under the title (a chip that
+               grows with its text, then Undo as a separate control); at lg it sits right of it. -->
+          <div class="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
+            <span class="font-display min-w-0 text-[15px] font-bold"
               >{item.name}{#if (item.copies ?? 1) > 1}
                 <span class="text-muted text-[12px]" data-testid={`guild-loot-copies-${item.item_id}`}
                   >x{item.copies}</span
                 >{/if}</span
             >
             {#if item.awarded_to !== null}
-              <span class="flex flex-wrap items-center justify-end gap-x-1">
+              <div class="flex min-w-0 flex-wrap items-center gap-3 lg:justify-end">
                 <span
-                  class="pill"
-                  style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
+                  class="min-w-0 basis-full rounded-md border border-[rgba(30,255,0,.25)] bg-[rgba(30,255,0,.10)] px-3 py-2 text-[14px] leading-snug text-[#7bff5c] lg:basis-auto"
                   data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
                 >
                 {#if officer}
-                  <span class="text-muted" aria-hidden="true">·</span>
                   <button
-                    class="text-muted inline-flex h-11 items-center px-2 text-[12px] underline md:h-7"
+                    class="text-muted inline-flex h-11 items-center text-[12px] underline lg:h-7"
                     onclick={() => onUndo(item)}
                     disabled={busyItemId === item.item_id}
                     aria-label={`Undo the award of ${item.name} to ${item.awarded_to.name}`}
@@ -117,7 +118,7 @@
                     {UNDO_AWARD}
                   </button>
                 {/if}
-              </span>
+              </div>
             {/if}
           </div>
           {#if item.candidates.length === 0}
@@ -128,11 +129,6 @@
           <div class="flex flex-col">
             {#each item.candidates as candidate (candidate.character_key)}
               {@const action = candidateAction(item, candidate.character_key)}
-              <!-- flex-wrap (live-fix round, defect 5): every real candidate carries
-                   `not_sim_checked` today (the tier-1 fallback, CONTROL_CENTRE.md), and
-                   that extra badge no longer fits this row's fixed-width items on one
-                   line at 390px -- wraps onto a second line there instead of overflowing
-                   the viewport sideways. -->
               <div class="border-line-soft flex flex-wrap items-center gap-x-3 gap-y-1 border-b py-1.5">
                 <ClassCrestRing characterClass={candidate.class} size={26} />
                 <span
@@ -141,9 +137,15 @@
                 >
                   {candidate.name}
                 </span>
-                <span class="tabular font-mono text-[12px]">{candidateGainLabel(candidate, item.slot)}</span>
-                <span class="text-muted tabular font-mono text-[12px]">
-                  {attendanceLabel(candidate.attendance.present, candidate.attendance.nights)}
+                <span
+                  class="min-w-0 basis-full text-[13px] sm:basis-auto"
+                  data-testid="guild-loot-candidate-line"
+                >
+                  {candidateLine(candidate)}
+                  <span
+                    class="text-muted tabular font-mono text-[11px]"
+                    data-testid="guild-loot-candidate-gain">{candidateGainLabel(candidate)}</span
+                  >
                 </span>
                 {#if candidate.already_equivalent}
                   <span
@@ -155,14 +157,24 @@
                 {/if}
                 <span class="ml-auto">
                   {#if action.kind === 'awarded'}
-                    <!-- The item header already says who got it, when and from whom. -->
+                    <span class="text-muted text-[12px]" data-testid="guild-loot-winner-slot">
+                      Awarded{#if officer}
+                        &nbsp;·
+                        <button
+                          class="inline-flex h-11 items-center underline lg:h-7"
+                          onclick={() => onUndo(item)}
+                          disabled={busyItemId === item.item_id}
+                          aria-label={`Undo the award of ${item.name} to ${candidate.name}`}
+                          data-testid={`guild-loot-row-undo-${item.item_id}`}>{UNDO_AWARD}</button
+                        >{/if}
+                    </span>
                   {:else if action.kind === 'awarded-to-other'}
                     <span class="text-muted text-[12px]">{action.label}</span>
                   {:else if officer}
                     <button
-                      class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase md:h-7"
+                      class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase disabled:opacity-50 md:h-7"
                       onclick={() => (confirming = { itemId: item.item_id, key: candidate.character_key })}
-                      disabled={busyItemId === item.item_id}
+                      disabled={busyItemId === item.item_id || confirming !== null}
                       aria-label={`Award ${item.name} to ${candidate.name}`}
                       data-testid={`guild-loot-award-${item.item_id}-${candidate.character_key}`}
                     >
@@ -175,7 +187,7 @@
               <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
               {#if officer && confirming !== null && confirming.itemId === item.item_id && confirming.key === candidate.character_key}
                 <div
-                  class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2"
+                  class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2 pl-[38px]"
                   role="group"
                   aria-label={awardQuestion(item.name, candidate.name)}
                   onkeydown={(event) => {
@@ -187,14 +199,14 @@
                     >{awardQuestion(item.name, candidate.name)}</span
                   >
                   <button
-                    class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-4 text-[11px] font-bold tracking-[0.06em] uppercase md:h-7"
+                    class="{PRIMARY_BUTTON_FIXED} justify-center px-4 md:h-7"
                     onclick={() => confirmAward(item, candidate.character_key)}
                     data-testid={`guild-loot-award-yes-${item.item_id}`}
                   >
                     Award
                   </button>
                   <button
-                    class="rounded-control text-muted inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-4 text-[11px] font-bold tracking-[0.06em] uppercase md:h-7"
+                    class="rounded-control text-muted inline-flex h-11 items-center justify-center bg-none px-4 text-[11px] font-bold tracking-[0.06em] uppercase focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)] md:h-7"
                     onclick={() => (confirming = null)}
                     use:focusOnMount
                     data-testid={`guild-loot-award-cancel-${item.item_id}`}

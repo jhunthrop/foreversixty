@@ -207,8 +207,15 @@ export const guildConsentCopy = {
    *  releases it, and the officers who work from it lose their tools. Shown when `/v1/me`'s
    *  entry for the guild carries the release capability. */
   leaveReleasesClaim: (guildName: string): string =>
-    `Leaving ${guildName} releases your claim; your officers lose their roster and loot tools and access to your gear.`,
-  leaveConfirmButton: 'Leave',
+    `Leaving ${guildName} means you stop running it here. Your officers lose the roster and loot tools and can no longer see your gear.`,
+  /** The muted line under it: no self-serve hand-over exists, so the way out is to ask first. */
+  leaveNoHandOver:
+    'There is no hand-over yet; if you want an officer to run the guild after you, ask us on Discord before you leave.',
+  /** The line a plain officer (tools, but no claim) reads in the confirm. */
+  leaveLosesOfficer: (guildName: string): string => `You lose your officer tools in ${guildName}.`,
+  /** The label on the consent select, which sets what the guild sees of this account. */
+  shareLabel: 'Share with this guild',
+  leaveConfirmButton: 'Leave guild',
   leaveCancel: 'Cancel',
   consentSaved: (characters: number): string => `Saved. Applies to ${characterCount(characters)}.`,
 } as const;
@@ -224,8 +231,6 @@ export const guildRosterAddonCopy = {
   notSeen: '—',
   notSeenHover: 'Not seen by the addon in the last snapshot',
   level: (level: number): string => `Level ${level}`,
-  /** Shown after the addon's spec, only when it differs from the site's or the site has none. */
-  addonTag: 'per addon',
   /** "Gear gap 12 DPS": the figure with the word, so it does not read as a bare number. */
   gap: (gap: number): string => `Gear gap ${gap} DPS`,
   /** "seen 2 hours ago": `when` is the relative phrase for the member's `seen_at`. */
@@ -234,8 +239,6 @@ export const guildRosterAddonCopy = {
   /** The hover on a row whose member shares nothing but the time the addon saw them. */
   withheldHover: 'Details withheld by the member',
   separator: '·',
-  /** The build name in the In game slot, so it does not read as a stray word. */
-  build: (name: string): string => `build: ${name}`,
   /** Who sent the newest snapshot and when; the counts live on their own line. */
   snapshotLine: (by: string, when: string): string => `Roster from the addon · sent by ${by} ${when}`,
   noSnapshot: 'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
@@ -289,6 +292,9 @@ export const guildRosterModelCopy = {
   approveExplains:
     'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
   decline: 'Decline',
+  /** Asked before a verified character is taken off the roster. */
+  removeQuestion: (name: string): string => `Remove ${name} from the roster?`,
+  removeButton: 'Remove',
   declineQuestion: (name: string): string => `Remove ${name} from the waiting list? They can ask again.`,
   /** "Approve 4, including 1 officer?" */
   approveAllQuestion: (total: number, officers: number): string =>

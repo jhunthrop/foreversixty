@@ -442,3 +442,46 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 		t.Errorf("tier = %d, want 1", c.tier)
 	}
 }
+
+// TestWornNameNamesTheItemInTheDropsSlot checks the "Replaces ..." name: the item the row wears
+// in the slot, empty for an empty slot or one the class table cannot name.
+func TestWornNameNamesTheItemInTheDropsSlot(t *testing.T) {
+	s := realTreesStore(t)
+	wearing := RosterRow{className: "warrior", gear: map[string]int{"head": 21524}}
+	if got := s.wornName(wearing, "head"); got != "Red Winter Hat" {
+		t.Errorf("wornName(head) = %q, want Red Winter Hat", got)
+	}
+	if got := s.wornName(wearing, "back"); got != "" {
+		t.Errorf("wornName(empty slot) = %q, want empty", got)
+	}
+	if got := s.wornName(RosterRow{className: "warrior", gear: map[string]int{"head": 1}}, "head"); got != "" {
+		t.Errorf("wornName(unknown item) = %q, want empty", got)
+	}
+}
+
+// TestAwardCountsAndTheCandidateLine checks the candidate's "Replaces ..." name and its tier count:
+// the count is the number of the guild's award rows naming that character, and the name is the item
+// worn in the drop's slot.
+func TestAwardCountsAndTheCandidateLine(t *testing.T) {
+	counts := awardCounts(map[int]*AwardedTo{
+		16963: {CharacterKey: "us/hardcore/a"},
+		16939: {CharacterKey: "us/hardcore/a"},
+		16947: {CharacterKey: "us/hardcore/b"},
+	})
+	if counts["us/hardcore/a"] != 2 || counts["us/hardcore/b"] != 1 || counts["us/hardcore/c"] != 0 {
+		t.Fatalf("awardCounts = %v, want a:2 b:1 c:0", counts)
+	}
+	if got := awardCounts(nil); len(got) != 0 {
+		t.Fatalf("awardCounts(nil) = %v, want empty", got)
+	}
+
+	s := realTreesStore(t)
+	roster := []RosterRow{{
+		CharacterKey: "us/hardcore/wearer", Name: "Wearer", Verified: true,
+		className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{"head": 21524},
+	}}
+	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"}, map[string]int{}, 8)
+	if len(cands) != 1 || cands[0].Replaces != "Red Winter Hat" {
+		t.Fatalf("candidates = %+v, want one replacing Red Winter Hat", cands)
+	}
+}

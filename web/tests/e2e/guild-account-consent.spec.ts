@@ -116,8 +116,17 @@ test('the guild master is warned that leaving releases the claim and what the of
     'Leave Lifecycle Test? This removes all 3 of your characters from its roster.',
   );
   await expect(page.getByTestId('account-guild-leave-releases')).toHaveText(
-    'Leaving Lifecycle Test releases your claim; your officers lose their roster and loot tools and access to your gear.',
+    'Leaving Lifecycle Test means you stop running it here. Your officers lose the roster and loot tools and can no longer see your gear.',
   );
+  await expect(page.getByTestId('account-guild-leave-no-handover')).toHaveText(
+    'There is no hand-over yet; if you want an officer to run the guild after you, ask us on Discord before you leave.',
+  );
+  // Leave is the red primary and Cancel the plain one, with focus on Cancel; the consent select is labelled.
+  const leave = page.getByTestId('account-guild-leave-confirm-button');
+  await expect(leave).toHaveText('Leave guild');
+  expect(await leave.evaluate((node) => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+  await expect(page.getByTestId('account-guild-leave-cancel')).toBeFocused();
+  await expect(page.getByLabel('Share with this guild')).toBeVisible();
   const dir = process.env.G7_SHOTS;
   if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-1280.png`, fullPage: true });
   // The confirm clears the plan card below it by a gutter, at a phone's width too.
@@ -129,4 +138,30 @@ test('the guild master is warned that leaving releases the claim and what the of
   expect(box && plan).toBeTruthy();
   if (box && plan) expect(plan.y - (box.y + box.height)).toBeGreaterThanOrEqual(12);
   if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-390.png`, fullPage: true });
+});
+
+test('a plain officer is told they lose their officer tools, and nothing about a claim', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      envelope({
+        ...meFor('gear', true),
+        guilds: [
+          {
+            ...GUILD,
+            name: 'Lifecycle Test',
+            rank: 'officer',
+            can: ['approve', 'remove', 'settings', 'award'],
+          },
+        ],
+      }),
+    ),
+  );
+  await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
+  await page.goto('/account');
+  await page.getByTestId('account-guild-leave').click();
+  await expect(page.getByTestId('account-guild-leave-officer')).toHaveText(
+    'You lose your officer tools in Lifecycle Test.',
+  );
+  await expect(page.getByTestId('account-guild-leave-releases')).toHaveCount(0);
+  await expect(page.getByTestId('account-guild-leave-no-handover')).toHaveCount(0);
 });

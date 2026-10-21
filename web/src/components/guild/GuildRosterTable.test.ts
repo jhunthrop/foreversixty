@@ -89,19 +89,18 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(names.slice(0, 3)).toEqual(['Zulmara', 'Windtalon', 'Pyrewisp']);
   });
 
-  it('a matched row shows the level, the spec tagged "per addon" only where it differs, "gap N DPS", the build and the seen time', () => {
+  it('a matched row reads Level, Gear gap, the in-game spec only where it differs, the gear set and seen, in that order', () => {
     const byName = rows(withSnapshot);
     // Zulmara: the site says Marksmanship, the addon says Survival.
     const zulmara = byName.get('Zulmara') ?? '';
     expect(zulmara).toContain('data-testid="guild-roster-ingame"');
     expect(text(zulmara)).toContain(
-      'Level 60 Survival per addon · Gear gap 12 DPS · build: Survival raid · seen 6 minutes ago',
+      'Level 60 · Gear gap 12 DPS · Survival in game · Gear set: Survival (raid) · seen 6 minutes ago',
     );
-    expect(zulmara).toMatch(/class="[^"]*text-muted[^"]*"[^>]*>per addon</);
     // Kraggor: the addon agrees with the site's Protection, so the level shows with no tag.
     const kraggor = text(byName.get('Kraggor') ?? '');
-    expect(kraggor).toContain('Level 60 · Gear gap 4 DPS · build: Protection raid · seen 8 minutes ago');
-    expect(kraggor).not.toContain('per addon');
+    expect(kraggor).toContain('Level 60 · Gear gap 4 DPS · Gear set: Protection (raid) · seen 8 minutes ago');
+    expect(kraggor).not.toContain('in game ·');
     expect(kraggor).not.toContain('(addon)');
     expect(withSnapshot).not.toContain('(addon)');
   });
@@ -120,7 +119,7 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     const dusk = rows(withSnapshot).get('Duskstrider') ?? '';
     expect(dusk).toContain('data-testid="guild-roster-ingame"');
     expect(dusk).not.toContain('guild-roster-ingame-gap');
-    expect(dusk).not.toContain('per addon');
+    expect(dusk).not.toContain(' in game');
     const cell = dusk.slice(
       dusk.indexOf('data-testid="guild-roster-ingame"'),
       dusk.indexOf('guild-roster-handoff'),
@@ -169,11 +168,29 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     }
   });
 
-  it('labels the build name in the In game slot from the copy file', () => {
-    expect(guildRosterAddonCopy.build('Survival raid')).toBe('build: Survival raid');
-    const zulmara = rows(withSnapshot).get('Zulmara') ?? '';
-    expect(text(zulmara)).toContain('build: Survival raid');
-    expect(text(zulmara)).not.toMatch(/Gear gap 12 DPS · Survival raid/);
+  it('words the gear set as "Gear set: Survival (raid)" and never "build:" or "per addon"', () => {
+    const zulmara = text(rows(withSnapshot).get('Zulmara') ?? '');
+    expect(zulmara).toContain('Gear set: Survival (raid)');
+    expect(zulmara).not.toContain('build:');
+    expect(zulmara).not.toContain('per addon');
+  });
+
+  it('names the unit on every stat chip and keeps the same fact order on every row', () => {
+    for (const [name, html] of rows(withSnapshot)) {
+      const line = text(html);
+      expect(line, name).not.toMatch(/\d rating\b/);
+      expect(line, name).not.toMatch(/\bilvl\b/);
+      const level = line.indexOf('Level 60');
+      const gap = line.indexOf('Gear gap');
+      const set = line.indexOf('Gear set:');
+      const seen = line.indexOf('seen ');
+      const present = [level, gap, set, seen].filter((at) => at >= 0);
+      expect(present, name).toEqual([...present].sort((a, b) => a - b));
+    }
+    const kraggor = text(rows(withSnapshot).get('Kraggor') ?? '');
+    expect(kraggor).toMatch(/Rating \d+/);
+    expect(kraggor).toMatch(/Item level \d+/);
+    expect(kraggor).toContain('Protection Warrior');
   });
 
   it('the In game header sits over the same slot', () => {
@@ -300,6 +317,24 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(text(invited)).toContain('Member');
   });
 
+  it('says once above the list that ranks show once the addon sends them, only when a row has none', () => {
+    expect(text(asOfficer)).toContain('Ranks show once the addon sends them.');
+    expect(asOfficer.split('Ranks show once the addon sends them.').length - 1).toBe(1);
+    const none = render(GuildRosterTable, {
+      props: { ...props(home), members: undefined, counts: undefined, can: [] },
+    }).body;
+    expect(none).not.toContain('guild-roster-ranks-pending');
+  });
+  it('stacks each account row as chips, one-line professions, then in-game facts, with Remove on the name row', () => {
+    const zulmara = rows(asOfficer).get('Zulmara') ?? '';
+    const chipsAt = zulmara.indexOf('data-testid="guild-roster-facts"');
+    const profAt = zulmara.indexOf('data-testid="guild-roster-professions"');
+    const factsAt = zulmara.indexOf('data-testid="guild-roster-ingame-slot"');
+    expect(chipsAt).toBeGreaterThan(0);
+    expect(profAt).toBeGreaterThan(chipsAt);
+    expect(factsAt).toBeGreaterThan(profAt);
+    expect(zulmara).toMatch(/class="[^"]*truncate[^"]*"[^>]*data-testid="guild-roster-professions"/);
+  });
   it('gives the viewer no Remove on their own row, guild master or officer, and keeps it on everyone else', () => {
     for (const viewer of [VIEWER_OFFICER, 'Sunderfel']) {
       const own = buildMockHome(viewer);

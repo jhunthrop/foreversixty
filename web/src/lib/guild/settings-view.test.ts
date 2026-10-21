@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildBillingView } from '../account/api';
-import { billedLine, canManageBilling, claimedByLine, guildPlanLine, settingsWords } from './settings-view';
+import {
+  billedLine,
+  billingState,
+  canManageBilling,
+  claimedByLine,
+  guildPlanLine,
+  notOnPlanLines,
+  settingsWords,
+} from './settings-view';
 
 function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
   return {
@@ -52,12 +60,51 @@ describe('billedLine and the Manage billing rule', () => {
   it('says who is billed', () => {
     expect(billedLine(billing())).toBe('Billed by hunthrop#1894');
     expect(billedLine(billing({ you_are_billing_contact: true }))).toBe('Billed to you.');
-    expect(billedLine(billing({ billed_by: '' }))).toBe(settingsWords.noBillingContact);
+    expect(billedLine(billing({ billed_by: '' }))).toBe('Granted by Forever Sixty.');
   });
 
   it('offers Manage billing only to the billing contact of a plan that has a Stripe customer', () => {
     expect(canManageBilling(billing({ you_are_billing_contact: true }))).toBe(true);
     expect(canManageBilling(billing())).toBe(false);
     expect(canManageBilling(billing({ billed_by: '', you_are_billing_contact: true }))).toBe(false);
+  });
+});
+
+describe('billing copy per state', () => {
+  it('not on the plan: the fact, then the real price and what officers get', () => {
+    const lines = notOnPlanLines();
+    expect(lines.headline).toBe('This guild is not on the guild plan yet.');
+    expect(lines.detail).toBe(
+      '$15 a month, cancel any time. Officers get the loot, readiness and progression tools.',
+    );
+    expect(notOnPlanLines(20).detail).toContain('$20 a month');
+  });
+
+  it('with no price it says monthly and prints no number', () => {
+    for (const none of [0, Number.NaN, -1]) {
+      const detail = notOnPlanLines(none).detail;
+      expect(detail).toBe(
+        'Monthly, cancel any time. Officers get the loot, readiness and progression tools.',
+      );
+      expect(detail).not.toMatch(/\d/);
+    }
+  });
+
+  it('an operator grant is told apart from a Stripe plan and from no plan', () => {
+    expect(billingState(null, false)).toBe('not-on-plan');
+    expect(billingState(billing(), false)).toBe('on-plan');
+    expect(billingState(billing({ billed_by: '' }), false)).toBe('granted');
+    expect(billingState(billing(), true)).toBe('unavailable');
+    const granted = billing({ billed_by: '', current_period_end: '2026-12-01T00:00:00Z' });
+    expect(guildPlanLine(granted)).toBe('Guild plan · until 1 Dec 2026');
+    expect(billedLine(granted)).toBe('Granted by Forever Sixty.');
+    expect(canManageBilling(granted)).toBe(false);
+  });
+
+  it('the unavailable state says so and offers Try again', () => {
+    expect(settingsWords.billingUnavailable).toBe(
+      'Billing is not available right now. Try again in a few minutes.',
+    );
+    expect(settingsWords.tryAgain).toBe('Try again');
   });
 });

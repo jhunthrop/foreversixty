@@ -11,6 +11,8 @@ import {
   bossPickerLabel,
   candidateAction,
   candidateGainLabel,
+  candidateLine,
+  itemsWonLabel,
   nextUnkilledEncounter,
 } from './loot-view';
 
@@ -111,13 +113,8 @@ describe('candidateGainLabel', () => {
     expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 1 }))).toBe('+1 item level');
   });
 
-  it('says what the item levels are over: the slot they wear now', () => {
-    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 76 }), 'head')).toBe(
-      '+76 item levels over their current Head',
-    );
-    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 5 }), 'main_hand')).toBe(
-      '+5 item levels over their current Main hand',
-    );
+  it('keeps the gain figure to itself: the slot is the candidate line, not this label', () => {
+    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 76 }))).toBe('+76 item levels');
   });
 
   it('reads an em dash when neither figure is present', () => {
@@ -198,5 +195,41 @@ describe('the words around a candidate', () => {
     expect(LOOT_FOOTNOTE).toBe(
       'Candidates are ranked by gain over what they wear now. A drop stays unawarded until an officer awards it.',
     );
+  });
+});
+
+describe('candidateLine', () => {
+  const base = {
+    character_key: 'a',
+    name: 'Earthhoof',
+    class: 'druid',
+    spec: 'Restoration',
+    gain_dps: null,
+    not_sim_checked: true,
+    ilvl_delta: 9,
+    attendance: { present: 5, nights: 8 },
+    already_equivalent: false,
+  };
+
+  it('reads what they replace, their spec and their raid nights', () => {
+    expect(candidateLine({ ...base, replaces: 'Cap of Prophecy' })).toBe(
+      'Replaces Cap of Prophecy · Restoration · 5 of 8 raid nights',
+    );
+  });
+
+  it('adds the tier count only when the guild has awarded them something', () => {
+    expect(candidateLine({ ...base, replaces: 'Cap of Prophecy', items_won: 1 })).toBe(
+      'Replaces Cap of Prophecy · Restoration · 5 of 8 raid nights · 1 item won this tier',
+    );
+    expect(candidateLine({ ...base, replaces: 'Cap of Prophecy', items_won: 0 })).not.toContain('won');
+    expect(itemsWonLabel(3)).toBe('3 items won this tier');
+  });
+
+  it('says Empty slot when they wear nothing there, and spells a joined spec', () => {
+    expect(candidateLine({ ...base, spec: 'BeastMastery', replaces: '' })).toBe(
+      'Empty slot · Beast Mastery · 5 of 8 raid nights',
+    );
+    // An API that sends no `replaces` at all is not an empty slot: the line just leaves it out.
+    expect(candidateLine(base)).toBe('Restoration · 5 of 8 raid nights');
   });
 });

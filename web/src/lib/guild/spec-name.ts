@@ -13,3 +13,18 @@ export function specName(spec: string): string {
     .map((word) => word[0].toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+/**
+ * A spec with its class, as the character panel says it: "Holy Priest", "Restoration Druid". The
+ * class may be a slug ("priest") or a name; with no spec it is the class alone, with no class the
+ * spec alone. A spec that already ends in the class ("Holy Priest") is not doubled.
+ */
+export function specClassName(spec: string, className: string | undefined): string {
+  const specWords = specName(spec);
+  const classWord = className === undefined ? '' : specName(className);
+  if (classWord === '') return specWords;
+  if (specWords === '' || specWords.toLowerCase().endsWith(classWord.toLowerCase())) {
+    return specWords === '' ? classWord : specWords;
+  }
+  return `${specWords} ${classWord}`;
+}
