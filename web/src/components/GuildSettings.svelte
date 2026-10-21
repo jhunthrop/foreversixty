@@ -6,13 +6,14 @@
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
   import type { CharacterPath } from '../lib/characters';
-  import { fetchMeOnce, type GuildBillingView } from '../lib/account/api';
+  import { fetchMeFresh, refetchMe, type GuildBillingView, type Me } from '../lib/account/api';
+  import { onWindowFocus } from '../lib/data/query';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
   import {
     GuildApiError,
     fetchGuildSettings,
-    rotateInvite,
+    refetchGuildSettings,
     updateGuildSettings,
     type GuildSettingsData,
     type GuildVisibility,
@@ -22,6 +23,7 @@
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import GuildInviteLink from './guild/GuildInviteLink.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
@@ -40,7 +42,6 @@
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
   let error = $state('');
-  let rotated = $state<{ token: string; url: string } | null>(null);
   let busy = $state(false);
   /**
    * A guild's billing view is not part of GET /v1/guilds/{id}/settings's own response (the
@@ -66,7 +67,7 @@
       const page = await fetchGuild(path);
       guildId = page.guild.id;
       guildName = page.guild.name;
-      settings = await fetchGuildSettings(page.guild.id);
+      settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
     } catch (thrown) {
       status = thrown instanceof GuildApiError && thrown.status === 403 ? 'forbidden' : 'failed';
@@ -76,18 +77,32 @@
     // loaded successfully -- the billing section just falls back to "not subscribed" until
     // a retry (page reload) succeeds, same as any other read this page treats as secondary.
     try {
-      const me = await fetchMeOnce();
-      const entry = me?.guilds.find((g) => g.id === guildId);
-      guildBilling = entry?.plan ?? null;
-      mayBill = entry === undefined ? null : can(entry.can, 'billing');
+      const me = await fetchMeFresh(applyBilling);
+      applyBilling(me);
     } catch {
       guildBilling = null;
       mayBill = null;
     }
   }
 
+  function applyBilling(me: Me | null): void {
+    const entry = me?.guilds.find((g) => g.id === guildId);
+    guildBilling = entry?.plan ?? null;
+    mayBill = entry === undefined ? null : can(entry.can, 'billing');
+  }
+
   $effect(() => {
     void load();
+  });
+
+  // A CLI grant or a Stripe webhook cannot notify the browser, so Settings (and the billing
+  // block on it) asks again when the player comes back to the window.
+  $effect(() => {
+    return onWindowFocus(() => {
+      if (guildId === null || status !== 'ready') return;
+      refetchGuildSettings(guildId, (fresh) => (settings = fresh));
+      refetchMe(applyBilling);
+    });
   });
 
   /**
@@ -119,14 +134,6 @@
           : { officer_max_rank_index: Number(value) };
       settings = await updateGuildSettings(guildId, patch);
       notice = guildSettingsCopy.saved;
-    });
-
-  const onRotate = (): void =>
-    void run(async () => {
-      if (guildId === null) return;
-      const result = await rotateInvite(guildId);
-      rotated = { token: result.token, url: result.url };
-      if (settings !== null) settings = { ...settings, invite: { rotated_at: result.rotated_at } };
     });
 
   const onManageBilling = (): void =>
@@ -255,20 +262,15 @@
     <section class="flex flex-col gap-3">
       <h2 class="section-title text-[18px]">{guildSettingsCopy.inviteHeading}</h2>
       <p class="text-muted text-[13px]">{guildSettingsCopy.inviteWarning}</p>
-      <button
-        class={`border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase ${busy ? BUSY_CLASS : ''}`}
-        onclick={onRotate}
-        disabled={busy || frozen}
-        aria-busy={busy}
-        data-testid="guild-invite-rotate"
-      >
-        {guildSettingsCopy.rotateButton}
-      </button>
-      {#if rotated !== null}
-        <p class="text-[13px]" data-testid="guild-invite-token">
-          {guildSettingsCopy.tokenShownOnce}
-          <code class="font-mono">{rotated.url}</code>
-        </p>
+      {#if guildId !== null}
+        <GuildInviteLink
+          {guildId}
+          rotatedAt={settings.invite.rotated_at}
+          disabled={busy || frozen}
+          onRotated={(rotatedAt) => {
+            if (settings !== null) settings = { ...settings, invite: { rotated_at: rotatedAt } };
+          }}
+        />
       {/if}
     </section>
     <div class="min-h-[21px]">

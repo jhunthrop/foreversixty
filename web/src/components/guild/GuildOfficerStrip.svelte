@@ -4,9 +4,7 @@
      the Settings tab (the same strip, restyled unchanged, spec §4.G: "the strip here is
      the glance, Settings is the editing surface"). -->
 <script lang="ts">
-  import { GuildApiError, rotateInvite } from '../../lib/guild/api';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+  import GuildInviteLink from './GuildInviteLink.svelte';
 
   let {
     guildId,
@@ -15,23 +13,6 @@
     onSelectRoster,
   }: { guildId: number; claimedByName: string | null; waitingCount: number; onSelectRoster: () => void } =
     $props();
-
-  let busy = $state(false);
-  let rotated = $state<{ url: string } | null>(null);
-  let error = $state('');
-
-  async function onRotate(): Promise<void> {
-    busy = true;
-    error = '';
-    try {
-      const result = await rotateInvite(guildId);
-      rotated = { url: result.url };
-    } catch (thrown) {
-      error = thrown instanceof GuildApiError ? thrown.message : 'That did not work; try again';
-    } finally {
-      busy = false;
-    }
-  }
 </script>
 
 <div
@@ -54,20 +35,6 @@
   <div class="flex flex-wrap items-center gap-3">
     <span class="label text-muted">Invite link</span>
     <span class="text-muted text-[12px]">Anyone with this link can join as a member.</span>
-    <button
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 ${busy ? BUSY_CLASS : ''}`}
-      onclick={() => void onRotate()}
-      disabled={busy}
-      aria-busy={busy}
-      data-testid="guild-officer-rotate-invite"
-    >
-      Rotate invite link
-    </button>
   </div>
-  {#if rotated !== null}
-    <p class="w-full text-[12px]" data-testid="guild-officer-invite-token">
-      This link is shown once. Copy it now. <code class="font-mono">{rotated.url}</code>
-    </p>
-  {/if}
-  {#if error !== ''}<p class="w-full text-[13px]" role="alert">{error}</p>{/if}
+  <GuildInviteLink {guildId} testidPrefix="guild-officer-invite" />
 </div>

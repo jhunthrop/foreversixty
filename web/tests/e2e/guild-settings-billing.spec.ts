@@ -45,6 +45,7 @@ function meWithGuildPlan(plan: unknown) {
           name: 'The Last Watch',
           rank: 'officer',
           verified: true,
+          can: ['approve', 'remove', 'settings', 'award', 'billing', 'release'],
           plan,
         },
       ],
@@ -62,7 +63,7 @@ async function routeCommon(page: import('@playwright/test').Page): Promise<void>
 
 test('not on the plan: shows the honest not-subscribed line and a real subscribe link', async ({ page }) => {
   await routeCommon(page);
-  await page.route('**/v1/me', (route) => route.fulfill({ ...envelope(meWithGuildPlan(null)), status: 200 }));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings-billing')).toContainText('not on the guild plan yet');
   await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(

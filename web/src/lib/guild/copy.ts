@@ -74,8 +74,24 @@ export const guildClaimCopy = {
   // back to a nameless form rather than the page ever hardcoding either half itself.
   heading: (guildName: string): string => (guildName === '' ? 'Claim this guild' : `Claim ${guildName}`),
   unclaimed: 'Nobody has claimed this guild yet.',
-  claimedByYou: 'You claimed this guild.',
-  claimedBySomeoneElse: (battletag: string): string => `Claimed by ${battletag}.`,
+  // What an officer who may claim reads: what claiming gets them.
+  unclaimedForOfficer:
+    'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+  // Claiming asks first, with the rules in one line.
+  claimConfirmLine: (guildName: string): string =>
+    `Claim ${guildName === '' ? 'this guild' : guildName}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`,
+  claimConfirmButton: 'Yes, claim it',
+  // After the claim: the page says what the viewer holds and where to go next.
+  youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
+  nextHeading: 'Next',
+  nextRoster: 'Approve your officers and members on the roster',
+  nextInvite: 'Make an invite link in settings',
+  releaseConfirmLine: (guildName: string): string =>
+    `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
+  releaseConfirmButton: 'Release',
+  cancel: 'Cancel',
+  claimedBySomeoneElse: (battletag: string, since?: string): string =>
+    since === undefined ? `Claimed by ${battletag}.` : `Claimed by ${battletag} since ${since}.`,
   // `expiresAt` is only known in the same session the viewer just triggered the pending
   // claim (the POST .../claim response) -- a pending claim loaded later from settings
   // carries no expiry, hence the optional form rather than a second, separate string.
@@ -119,7 +135,20 @@ export const guildSettingsCopy = {
   // Spec section 3.3, exact wording.
   inviteWarning: 'Anyone with this link can join as a member. Rotate it if it leaks.',
   rotateButton: 'Rotate invite link',
-  tokenShownOnce: 'This link is shown once. Copy it now.',
+  // The invite link: rotate asks first, then the full URL with a Copy button. The API keeps
+  // only a hash of the token, so the link can be shown once and never again; the page
+  // says so instead of offering a "show current link" it cannot honour.
+  rotateConfirmLine: 'Rotate the invite link? The old link stops working.',
+  rotateConfirmButton: 'Rotate',
+  rotateCancel: 'Cancel',
+  tokenShownOnce: 'Shown once. Copy it now.',
+  linkLabel: 'Invite link',
+  copyButton: 'Copy link',
+  copied: 'Copied',
+  copyFailed: 'Could not copy. Select the link and copy it.',
+  shareButton: 'Share',
+  currentLinkMade: (date: string): string =>
+    `Current link made ${date}. It cannot be shown again; rotate it for a new one.`,
   saved: 'Saved.',
   // Shown when a save or rotate action itself fails (as opposed to the initial load).
   actionFailed: 'That did not save; try again.',
@@ -143,10 +172,27 @@ export const guildCrestCopy = {
 
 export const guildJoinCopy = {
   failed: 'That invite link did not work.',
-  joinButton: 'Join as a member',
+  invitedYou: (guildName: string, realm: string): string => `${guildName} · ${realm} invited you.`,
+  consequence:
+    'Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.',
+  joinButton: (guildName: string): string => `Join ${guildName}`,
+  joining: 'Joining…',
   joined: 'You joined the guild.',
+  signInButton: 'Sign in with Battle.net to join',
   signInLine: 'Sign in to join this guild.',
+  notNow: 'Not now',
+  alreadyIn: (guildName: string): string => `You are already in ${guildName}.`,
+  openGuild: 'Open the guild',
+  invalid: 'This invite link no longer works. Ask a guild officer for a new one.',
 } as const;
+
+/** "all 3 of your characters" (consent and leave cover every character of the account in
+ *  the guild): counted when the account page knows the number, plain otherwise. */
+function characterCount(characters: number): string {
+  if (characters <= 0) return 'your characters';
+  if (characters === 1) return 'your character';
+  return `all ${characters} of your characters`;
+}
 
 export const guildConsentCopy = {
   heading: 'My guilds',
@@ -155,6 +201,11 @@ export const guildConsentCopy = {
   gearBags: 'Gear and bags',
   leave: 'Leave',
   left: 'Left.',
+  leaveConfirmLine: (guildName: string, characters: number): string =>
+    `Leave ${guildName}? This removes ${characterCount(characters)} from its roster.`,
+  leaveConfirmButton: 'Leave',
+  leaveCancel: 'Cancel',
+  consentSaved: (characters: number): string => `Saved. Applies to ${characterCount(characters)}.`,
 } as const;
 
 /** Task L8.3: the Roster tab's "In game" column and the line above the table, from the

@@ -124,6 +124,27 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 	return InviteAccept{GuildID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Rank: "member"}, nil
 }
 
+// InvitePeek is what PeekInvite answers with: the guild a token opens, and nothing
+// about who holds it or who is in it.
+type InvitePeek struct {
+	GuildID               int64
+	Region, Ruleset, Name string
+	Faction, CrestKey     *string
+}
+
+// PeekInvite looks a token up without redeeming it, so the invite page can name the
+// guild before anyone joins. Unknown and rotated-away tokens both answer ErrNotFound.
+func (s *Store) PeekInvite(ctx context.Context, token string) (InvitePeek, error) {
+	var p InvitePeek
+	err := s.Pool.QueryRow(ctx,
+		`select id, region, ruleset, name, faction, crest_key from guilds where invite_token_hash = $1`,
+		auth.TokenHash(token)).Scan(&p.GuildID, &p.Region, &p.Ruleset, &p.Name, &p.Faction, &p.CrestKey)
+	if err != nil {
+		return InvitePeek{}, ErrNotFound
+	}
+	return p, nil
+}
+
 func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 	guildID, ok := guildIDFrom(r)
 	if !ok {
@@ -157,6 +178,25 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 	s.logger().Info("guilds", "op", "invite_rotate", "guild_id", guildID, "user_id", actor.UserID)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
 		"token": token, "url": "/guild/invite/" + token, "rotated_at": rotatedAt,
+	})
+}
+
+// peekInvite answers GET /v1/guild-invites/{token}: the guild's name, realm, faction
+// and crest for a valid token, signed in or not. The token is the secret (a 32-char
+// random value only an officer can mint), so holding it is already the right to know
+// which guild it opens; the route is rate-limited like the redemption it precedes.
+func (s *Service) peekInvite(w http.ResponseWriter, r *http.Request) {
+	p, err := s.Store.PeekInvite(r.Context(), r.PathValue("token"))
+	if errors.Is(err, ErrNotFound) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "that invite link is not valid", nil)
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
+		"guild": map[string]any{
+			"id": p.GuildID, "region": p.Region, "ruleset": p.Ruleset, "name": p.Name,
+			"faction":   p.Faction,
+			"crest_url": CrestURL(s.Store.APIBaseURL, p.GuildID, p.CrestKey),
+		},
 	})
 }
 

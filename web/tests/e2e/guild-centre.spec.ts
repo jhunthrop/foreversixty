@@ -86,6 +86,28 @@ function meFixture(
   };
 }
 
+/** The home as the API answers it once `name` has left the waiting list (approved or declined): the
+ *  page re-reads the home after a mutation, so a stub has to change its answer too. */
+function withoutRow(home: ReturnType<typeof buildMockHome>, name: string) {
+  return {
+    ...home,
+    pending: (home.pending ?? []).filter((r) => r.name !== name),
+    roster: home.roster.map((r) => (r.name === name ? { ...r, verified: true } : r)),
+  };
+}
+
+/** The home once every waiting character is approved. */
+function approvedHome(viewer: string) {
+  const home = buildMockHome(viewer);
+  return {
+    ...home,
+    pending: [],
+    roster: home.roster.map((r) => ({ ...r, verified: true })),
+    members: home.members?.map((m) => (m.state === 'waiting' ? { ...m, state: 'approved' as const } : m)),
+    counts: home.counts && { ...home.counts, waiting: 0 },
+  };
+}
+
 /** Routes the public page endpoint plus /v1/me and .../home for the given viewer; the four
  *  depth endpoints (raids/progression/readiness/loot) are routed separately per test so a
  *  test that wants a 404 from one of them can override just that route. */
@@ -480,6 +502,9 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   test('Approve all goes straight through when no officer is waiting', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     let called = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(envelope(called ? approvedHome(VIEWER_OFFICER) : buildMockHome(VIEWER_OFFICER))),
+    );
     await page.route(`**/v1/guilds/${GUILD_ID}/roster/approve-all`, (route) => {
       called = true;
       return route.fulfill(
@@ -529,6 +554,13 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   test('Decline asks first, then removes the character from the waiting list', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     let removed = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(
+        envelope(
+          removed ? withoutRow(buildMockHome(VIEWER_OFFICER), 'Rootgall') : buildMockHome(VIEWER_OFFICER),
+        ),
+      ),
+    );
     await page.route('**/v1/guilds/*/characters/us/pvp/rootgall', (route) => {
       if (route.request().method() === 'DELETE') {
         removed = true;
@@ -606,22 +638,52 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
 });
 
 test.describe('settings: billing and release belong to the guild master', () => {
+  // The settings page is prerendered for the fixture guild The Last Watch (id 501) only.
   async function openSettings(page: Page, rank: 'leader' | 'officer'): Promise<void> {
-    await stubCore(page, VIEWER_OFFICER, rank);
-    await page.route(`**/v1/guilds/${GUILD_ID}/settings`, (route) =>
+    await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) =>
+      route.fulfill(
+        envelope({
+          guild: { id: 501, name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
+          progression: [],
+          roster_best: [],
+          reports: [],
+        }),
+      ),
+    );
+    await page.route('**/v1/me', (route) =>
+      route.fulfill(
+        envelope({
+          user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
+          characters: [],
+          guilds: [
+            {
+              id: 501,
+              region: 'us',
+              ruleset: 'hardcore',
+              name: 'The Last Watch',
+              rank,
+              verified: true,
+              can: canFor(rank),
+            },
+          ],
+        }),
+      ),
+    );
+    await page.route('**/v1/guilds/501/settings', (route) =>
       route.fulfill(
         envelope({
           default_visibility: 'guild',
           officer_max_rank_index: 2,
-          claimed_by: { battletag: 'Kraggor' },
+          claimed_by: { battletag: 'Fixture#1234' },
           claim_pending: null,
-          claim: { state: 'claimed', frozen: false },
+          claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
           invite: { rotated_at: null },
         }),
       ),
     );
-    await page.goto(`${GUILD_URL}/settings`);
-    await expect(page.getByTestId('guild-visibility-select')).toBeVisible();
+    await page.goto(`/guild/${FIXTURE_GUILD_PATH}/settings`);
+    await expect(page.getByTestId('guild-settings')).toBeVisible();
+    await expect(page.getByTestId('guild-invite-rotate')).toBeVisible();
   }
 
   test('the guild master sees the billing section', async ({ page }) => {
@@ -954,6 +1016,15 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     let approveCalled = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(
+        envelope(
+          approveCalled
+            ? withoutRow(buildMockHome(VIEWER_OFFICER), 'Rootgall')
+            : buildMockHome(VIEWER_OFFICER),
+        ),
+      ),
+    );
     await page.route(`**/v1/guilds/${GUILD_ID}/characters/us/pvp/rootgall/approve`, (route) => {
       approveCalled = true;
       return route.fulfill(envelope({ character_key: 'us/pvp/rootgall', status: 'approved' }));
