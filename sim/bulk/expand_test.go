@@ -1283,19 +1283,30 @@ func TestWalkGearChoicesDoesNotMaterialiseTheProduct(t *testing.T) {
 	var before runtime.MemStats
 	runtime.ReadMemStats(&before)
 
+	// The heap is read at the walk's midpoint, after a collection, so
+	// it is the LIVE heap while the walk is in flight: what an eager
+	// product would hold. Reading HeapAlloc after the walk instead
+	// counted whatever garbage the collector had not yet reached, which
+	// moved with the scheduler and the coverage build (22.6 MB against a
+	// 21 MB ceiling on a CI run, 0.2 MB locally).
 	var got int
+	var mid runtime.MemStats
 	// A budget with room for the whole product, so this measures
 	// laziness and nothing else. The shape is deliberately the
 	// historical one (262,144 leaves), which is above
 	// ExpandWorkBudget - the work budget is a separate property with
 	// its own tests.
 	b := &budget{cap: want, limit: want + 1}
-	if !walkGearChoices(slots, bySlot, b, func(chosen []placement) bool { got++; return true }) {
+	if !walkGearChoices(slots, bySlot, b, func(chosen []placement) bool {
+		got++
+		if got == want/2 {
+			runtime.GC()
+			runtime.ReadMemStats(&mid)
+		}
+		return true
+	}) {
 		t.Fatal("walkGearChoices stopped early for a yield that never asked it to")
 	}
-
-	var after runtime.MemStats
-	runtime.ReadMemStats(&after)
 
 	if got != want {
 		t.Fatalf("walkGearChoices yielded %d combinations, want %d", got, want)
@@ -1303,7 +1314,7 @@ func TestWalkGearChoicesDoesNotMaterialiseTheProduct(t *testing.T) {
 	// Two orders of magnitude below the 739.4 MB the eager product used
 	// to cost for this exact shape, and well above ordinary GC noise.
 	const ceiling = 20 << 20 // 20 MB
-	if delta := after.HeapAlloc - before.HeapAlloc; delta > ceiling {
+	if delta := mid.HeapAlloc - before.HeapAlloc; mid.HeapAlloc > before.HeapAlloc && delta > ceiling {
 		t.Errorf("walkGearChoices grew the heap by %d bytes (%.1f MB), want under %d (%.0f MB)",
 			delta, float64(delta)/1e6, ceiling, float64(ceiling)/1e6)
 	}
