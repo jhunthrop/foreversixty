@@ -31,6 +31,9 @@ jobs:
     permissions:
       contents: write
       id-token: write
+    env:
+      MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
+      MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 
@@ -137,12 +140,40 @@ jobs:
           unzip -Z1 "$zip" | grep -q 'ForeverSixtyData/Data.lua' || { echo "Data.lua is missing"; exit 1; }
           echo "zip=$zip" >> "$GITHUB_ENV"
 
+      - name: sign the zip with minisign
+        # The companion installs this zip into players' game folders and
+        # refuses anything it cannot verify against the public key compiled
+        # into it, so the zip is signed with the same key the companion's
+        # own releases use (the step is copied from companion.yml). The
+        # signature is attached beside the zip as <zip>.minisig. Without
+        # the secret the release still publishes, unsigned, and installed
+        # companions skip it.
+        if: env.MINISIGN_SECRET_KEY != ''
+        run: |
+          set -eu -o pipefail
+          sudo apt-get update
+          sudo apt-get install -y minisign
+          printf '%s\n' "$MINISIGN_SECRET_KEY" > "$RUNNER_TEMP/minisign.key"
+          printf '%s\n' "$MINISIGN_PASSWORD" | \
+            minisign -S -s "$RUNNER_TEMP/minisign.key" -m "${{ env.zip }}" \
+              -t "Forever Sixty data ${{ steps.tag.outputs.tag }}"
+          rm -f "$RUNNER_TEMP/minisign.key"
+          test -s "${{ env.zip }}.minisig"
+          echo "sig=${{ env.zip }}.minisig" >> "$GITHUB_ENV"
+
+      - name: unsigned zip
+        if: env.MINISIGN_SECRET_KEY == ''
+        run: |
+          echo "::notice::MINISIGN_SECRET_KEY is not set, so this zip carries no signature and installed companions will not install it."
+
       - name: attach it to the release
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          files: ${{ env.zip }}
+          files: |
+            ${{ env.zip }}
+            ${{ env.sig }}
           generate_release_notes: true
           # Never the repo's "latest": that is the companion release, which the
           # site's download links and the companion updater resolve through.
