@@ -119,6 +119,9 @@ type App struct {
 	added map[string]bool
 	// noticeShown is set once FirstClose has been asked in this process.
 	noticeShown bool
+	// updatedTo is the version when this process is the first launch of
+	// it after an update; empty otherwise (version.go).
+	updatedTo string
 }
 
 // ReportRetention is how long a finished report's state file is kept.
@@ -198,6 +201,7 @@ func New(o Options) (*App, error) {
 	uo := o.Updater
 	uo.Dir, uo.Log = o.Dirs.Update, a.log
 	a.updater = updater.New(uo)
+	a.noteVersion()
 	return a, nil
 }
 
@@ -642,6 +646,9 @@ type Snapshot struct {
 	Reports      []ReportRow     `json:"reports"`
 	Characters   []addon.Export  `json:"characters"`
 	UpdateStaged bool            `json:"update_staged"`
+	// UpdatedTo is the version this process is the first launch of, empty
+	// on every launch after it. The footer says so for half a minute.
+	UpdatedTo string `json:"updated_to"`
 	// AddonSeenAt is when the site last saw an export (the newest
 	// ack's export_seen_at across characters), in local time; absent
 	// until the site has acked one.
@@ -656,7 +663,8 @@ type Snapshot struct {
 	// is then muted rather than a fault.
 	AddonNever bool `json:"addon_never"`
 	// AddonStale is true when the last sync is over a day old, and
-	// AddonHelp then says what to do.
+	// AddonHelp then says what to do; before any sync it holds the
+	// install instruction instead.
 	AddonStale bool   `json:"addon_stale"`
 	AddonHelp  string `json:"addon_help,omitempty"`
 	// AddonSeenTitle is the absolute time, for a tooltip.
@@ -769,6 +777,7 @@ func (a *App) Snapshot() Snapshot {
 	paired := a.paired(so != nil)
 	s := Snapshot{
 		AppVersion:       updater.Version,
+		UpdatedTo:        a.updatedTo,
 		EngineVersion:    session.Version,
 		Paired:           paired,
 		SignedOut:        so,
@@ -831,6 +840,9 @@ func (a *App) Snapshot() Snapshot {
 	}
 	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
 	s.AddonNever = st.SeenAt.IsZero()
+	if s.AddonNever {
+		s.AddonHelp = CopyNeverSyncedHelp
+	}
 	s.LastSync = a.lastSyncView(st, now)
 	if !st.SeenAt.IsZero() {
 		local := st.SeenAt.In(now.Location())

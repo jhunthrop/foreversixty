@@ -75,25 +75,27 @@ func Run(ctx context.Context, o Options) error {
 	// platforms and hands the main loop back on others, and the
 	// webview owns the main loop here.
 	systray.Register(func() {
-		if runtime.GOOS == "windows" {
-			systray.SetIcon(icon.ICO())
-		} else {
-			// Colour, not a template image: a template is drawn from its
-			// alpha channel alone, which would turn the seal's navy disc
-			// into a solid blob in the menu bar.
-			systray.SetIcon(icon.PNG())
-		}
-		line := o.State()
-		systray.SetTooltip(line)
-		state := systray.AddMenuItem(line, line)
+		view := func() trayView { return trayView{Line: o.State(), Tone: o.Tone()} }
+		first := view()
+		// The icon and the tooltip are set before the menu is built, so the tray
+		// is never up without them.
+		setTrayIcon(first.Tone)
+		systray.SetTooltip(tooltip(first.Line))
+		state := systray.AddMenuItem(first.Line, first.Line)
 		state.Disable()
 		open := systray.AddMenuItem("Open Forever Sixty", "Show the companion window")
 		reports := systray.AddMenuItem("Open my reports on the site", "Open your reports in the browser")
 		systray.AddSeparator()
 		quitItem := systray.AddMenuItem("Quit", "Stop logging and quit")
-		go watchLine(ctx, TrayEvery, o.State, func(line string) {
-			systray.SetTooltip(line)
-			state.SetTitle(line)
+		// Each is rewritten only when what it shows changes.
+		shown := &first
+		go watchLine(ctx, TrayEvery, view, func(now trayView) {
+			applyTray(shown, now, trayApply{
+				Tooltip: systray.SetTooltip,
+				Title:   state.SetTitle,
+				Icon:    setTrayIcon,
+			})
+			shown = &now
 		})
 		go func() {
 			for {
@@ -134,10 +136,14 @@ func Run(ctx context.Context, o Options) error {
 	pendingNotice := false
 loop:
 	for {
+		prepareChrome()
 		w := webview.New(false)
 		w.SetTitle(o.Title)
 		setWindowIcons(w.Window())
 		w.SetSize(o.Width, o.Height, webview.HintNone)
+		w.SetSize(MinWidth, MinHeight, webview.HintMin)
+		// After the size, which the centring needs.
+		applyChrome(w.Window())
 		if pendingNotice && o.Notice != "" {
 			w.Init("window.__trayNotice = " + jsString(o.Notice) + ";")
 			pendingNotice = false
@@ -201,6 +207,18 @@ loop:
 	stopAll()
 	systray.Quit()
 	return nil
+}
+
+// setTrayIcon is the seal, with a dot in the headline's tone when it has
+// one. Windows takes an ICO; macOS and Linux take a colour PNG, not a
+// template image: a template is drawn from its alpha channel alone, which
+// would turn the seal's navy disc into a solid blob in the menu bar.
+func setTrayIcon(tone string) {
+	if runtime.GOOS == "windows" {
+		systray.SetIcon(icon.TrayICO(tone))
+		return
+	}
+	systray.SetIcon(icon.TrayPNG(tone))
 }
 
 // jsString is s as a JavaScript string literal.

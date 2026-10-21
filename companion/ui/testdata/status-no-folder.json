@@ -1,0 +1,66 @@
+{
+  "data": {
+    "app_version": "0.2.8",
+    "engine_version": "1.0.0",
+    "paired": true,
+    "account_label": "Jhunt",
+    "device_name": "JH-DESKTOP",
+    "headline": {
+      "key": "no_folder",
+      "tone": "bad",
+      "title": "No game folder found",
+      "sub": "Add your World of Warcraft folder.",
+      "action": {
+        "label": "Add a folder",
+        "page": "settings"
+      }
+    },
+    "connect": {
+      "state": "",
+      "trouble": false
+    },
+    "token_backend": "file",
+    "token_backend_name": "A private file in your user folder",
+    "api_base_url": "https://api.foreversixty.gg",
+    "site_base_url": "https://foreversixty.gg",
+    "visibility": "public",
+    "detected_character": "",
+    "installs": [],
+    "watch_pending": false,
+    "pipeline": {
+      "logging": false,
+      "fights": 0,
+      "offset": 0,
+      "queued": 0
+    },
+    "reports": [
+      {
+        "key": "20261020-174100",
+        "report_id": "r_9f2c",
+        "fights": 0,
+        "started_at": "2026-10-20T17:40:00Z",
+        "done": false,
+        "credit": {
+          "state": "none"
+        }
+      }
+    ],
+    "characters": [],
+    "update_staged": false,
+    "updated_to": "",
+    "addon_line": "Last synced 1 minute ago",
+    "addon_never": false,
+    "addon_stale": false,
+    "last_sync": {
+      "state": "sent",
+      "count": 2,
+      "at": "2026-10-20T17:40:00Z",
+      "title": "Tue 20 Oct 2026, 17:40"
+    },
+    "credit": {
+      "state": "none"
+    }
+  },
+  "error": null,
+  "ok": true
+}

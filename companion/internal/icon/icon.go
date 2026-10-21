@@ -11,7 +11,7 @@ import (
 	"fmt"
 )
 
-//go:embed assets/seal-*.png assets/seal.ico assets/seal.icns
+//go:embed assets/seal-*.png assets/seal.ico assets/seal.icns assets/seal-tray-*.ico
 var assets embed.FS
 
 // Sizes are the PNG edges shipped, in pixels.
@@ -40,6 +40,37 @@ func PNGSize(size int) []byte {
 
 // ICO is the multi-size icon for Windows (16 to 256 px).
 func ICO() []byte { return read("seal.ico") }
+
+// Tones are the headline tones that carry a dot on the tray icon. The
+// fourth, off, is the plain seal.
+var Tones = []string{"on", "warn", "bad"}
+
+func hasDot(tone string) bool {
+	for _, t := range Tones {
+		if t == tone {
+			return true
+		}
+	}
+	return false
+}
+
+// TrayICO is the Windows tray icon for a headline tone: the seal with a
+// green (on), amber (warn) or red (bad) dot at its lower right, 16 to 48
+// px. Tone off, and any tone this does not know, is the plain seal.
+func TrayICO(tone string) []byte {
+	if !hasDot(tone) {
+		return ICO()
+	}
+	return read("seal-tray-" + tone + ".ico")
+}
+
+// TrayPNG is the same at 32 px for macOS and Linux.
+func TrayPNG(tone string) []byte {
+	if !hasDot(tone) {
+		return PNG()
+	}
+	return read("seal-tray-" + tone + ".png")
+}
 
 // ICNS is the icon for the macOS app bundle (16 to 512 px with @2x).
 func ICNS() []byte { return read("seal.icns") }

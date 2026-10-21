@@ -1,0 +1,71 @@
+{
+  "data": {
+    "app_version": "0.2.8",
+    "engine_version": "1.0.0",
+    "paired": true,
+    "account_label": "Jhunt",
+    "device_name": "JH-DESKTOP",
+    "headline": {
+      "key": "ready",
+      "tone": "off",
+      "title": "Ready",
+      "sub": "Waiting for a combat log. Type /combatlog in game, or leave combat logging on."
+    },
+    "connect": {
+      "state": "",
+      "trouble": false
+    },
+    "token_backend": "file",
+    "token_backend_name": "A private file in your user folder",
+    "api_base_url": "https://api.foreversixty.gg",
+    "site_base_url": "https://foreversixty.gg",
+    "visibility": "public",
+    "detected_character": "",
+    "installs": [
+      {
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_",
+        "flavor": "_classic_era_",
+        "flavor_name": "Classic Era",
+        "watching": true,
+        "added": true,
+        "last_played": "2026-10-20T17:40:00Z",
+        "advanced_logging": true,
+        "advanced_logging_known": true
+      },
+      {
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_anniversary_",
+        "flavor": "_anniversary_",
+        "flavor_name": "Classic Anniversary",
+        "watching": false,
+        "added": false,
+        "advanced_logging": false,
+        "advanced_logging_known": true
+      }
+    ],
+    "watch_pending": false,
+    "pipeline": {
+      "logging": false,
+      "fights": 0,
+      "offset": 0,
+      "queued": 0
+    },
+    "reports": [],
+    "characters": [],
+    "update_staged": false,
+    "updated_to": "",
+    "addon_line": "Last synced 1 minute ago",
+    "addon_never": false,
+    "addon_stale": false,
+    "last_sync": {
+      "state": "sent",
+      "count": 2,
+      "at": "2026-10-20T17:40:00Z",
+      "title": "Tue 20 Oct 2026, 17:40"
+    },
+    "credit": {
+      "state": "none"
+    }
+  },
+  "error": null,
+  "ok": true
+}

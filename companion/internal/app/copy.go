@@ -21,8 +21,11 @@ const (
 	CopyLastSynced = "Last synced"
 	// CopyNeverSynced is the addon row before the site has acked an
 	// export. The row is shown, not hidden: a missing addon is the
-	// thing the player has to act on.
-	CopyNeverSynced = "Addon not synced yet. Install ForeverSixty, then log out once."
+	// thing the player has to act on. CopyNeverSyncedHelp is the muted
+	// line under it that says what to do, so the value column holds a
+	// short state and not a sentence.
+	CopyNeverSynced     = "Not synced yet"
+	CopyNeverSyncedHelp = "Install ForeverSixty, then log out once."
 	// CopyStaleHelp sits under a sync older than a day.
 	CopyStaleHelp       = "Log out of the game with the addon installed to sync."
 	CopySimQueued       = "Sim queued"

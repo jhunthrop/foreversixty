@@ -22,10 +22,16 @@ const COPY = {
     version: (v) => 'Companion ' + v,
     site: 'foreversixty.gg',
     updateReady: 'Update ready. It installs the next time you open the companion.',
+    // The first half minute after the first launch of a new version.
+    updatedTo: (v) => 'Updated to ' + v,
   },
 
   status: {
     reportLogging: 'Open this report on the site',
+    // The headline while the companion's own service does not answer; the
+    // cards under it keep the last numbers it sent, dimmed.
+    unavailableTitle: 'Status unavailable',
+    unavailableSub: 'The numbers below are the last ones the companion sent.',
     inProgress: 'In progress',
     rows: {
       report: 'Current report',

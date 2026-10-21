@@ -1,0 +1,76 @@
+{
+  "data": {
+    "app_version": "0.2.8",
+    "engine_version": "1.0.0",
+    "paired": false,
+    "account_label": "",
+    "device_name": "JH-DESKTOP",
+    "headline": {
+      "key": "connecting",
+      "tone": "off",
+      "title": "Waiting for you to sign in...",
+      "sub": "Finish in your browser. The companion connects by itself.",
+      "action": {
+        "label": "Show the sign-in",
+        "page": "device"
+      }
+    },
+    "connect": {
+      "state": "waiting",
+      "user_code": "KQ4-7TM",
+      "url": "https://foreversixty.gg/connect/KQ4-7TM",
+      "expires_at": "2026-10-20T17:41:40Z",
+      "trouble": false
+    },
+    "token_backend": "file",
+    "token_backend_name": "A private file in your user folder",
+    "api_base_url": "https://api.foreversixty.gg",
+    "site_base_url": "https://foreversixty.gg",
+    "visibility": "public",
+    "detected_character": "",
+    "installs": [
+      {
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_",
+        "flavor": "_classic_era_",
+        "flavor_name": "Classic Era",
+        "watching": true,
+        "added": true,
+        "last_played": "2026-10-20T17:40:00Z",
+        "advanced_logging": true,
+        "advanced_logging_known": true
+      },
+      {
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_anniversary_",
+        "flavor": "_anniversary_",
+        "flavor_name": "Classic Anniversary",
+        "watching": false,
+        "added": false,
+        "advanced_logging": false,
+        "advanced_logging_known": true
+      }
+    ],
+    "watch_pending": false,
+    "pipeline": {
+      "logging": false,
+      "fights": 0,
+      "offset": 0,
+      "queued": 0
+    },
+    "reports": [],
+    "characters": [],
+    "update_staged": false,
+    "updated_to": "",
+    "addon_line": "Not synced yet",
+    "addon_never": true,
+    "addon_stale": false,
+    "addon_help": "Install ForeverSixty, then log out once.",
+    "last_sync": {
+      "state": "absent"
+    },
+    "credit": {
+      "state": "none"
+    }
+  },
+  "error": null,
+  "ok": true
+}
