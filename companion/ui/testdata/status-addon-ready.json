@@ -1,0 +1,90 @@
+{
+  "data": {
+    "app_version": "0.2.13",
+    "engine_version": "1.0.0",
+    "paired": true,
+    "account_label": "Jhunt",
+    "device_name": "JH-DESKTOP",
+    "headline": {
+      "key": "logging",
+      "tone": "on",
+      "title": "Logging",
+      "sub": "Uploading your fights as they end. Your name is read from the first fight."
+    },
+    "connect": {
+      "state": "",
+      "trouble": false
+    },
+    "token_backend": "keychain",
+    "token_backend_name": "Windows Credential Manager",
+    "token_backend_note": "A private store in your user profile.",
+    "api_base_url": "https://api.foreversixty.gg",
+    "site_base_url": "https://foreversixty.gg",
+    "visibility": "public",
+    "detected_character": "",
+    "installs": [
+      {
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_",
+        "flavor": "_classic_era_",
+        "flavor_name": "Classic Era",
+        "watching": true,
+        "added": true,
+        "last_played": "2026-10-20T17:40:00Z",
+        "advanced_logging": true,
+        "advanced_logging_known": true
+      }
+    ],
+    "watch_pending": false,
+    "pipeline": {
+      "logging": true,
+      "report_key": "20261020-174100",
+      "report_id": "r_9f2c",
+      "fights": 0,
+      "offset": 0,
+      "queued": 0,
+      "queued_fights": 0
+    },
+    "reports": [
+      {
+        "key": "20261020-174100",
+        "report_id": "r_9f2c",
+        "fights": 0,
+        "started_at": "2026-10-20T17:40:00Z",
+        "done": false,
+        "credit": {
+          "state": "none"
+        }
+      }
+    ],
+    "characters": [],
+    "update_staged": false,
+    "updated_to": "",
+    "addon_line": "Last synced 1 minute ago",
+    "addon_never": false,
+    "addon_stale": false,
+    "last_sync": {
+      "state": "sent",
+      "count": 2,
+      "at": "2026-10-20T17:40:00Z",
+      "title": "Tue 20 Oct 2026, 17:40"
+    },
+    "credit": {
+      "state": "none"
+    },
+    "keep_addon_updated": true,
+    "addon_update": {
+      "enabled": true,
+      "lines": [
+        {
+          "text": "Addon 2.0.16 ready · installs when the game closes"
+        },
+        {
+          "text": "Data 2026.10.21 ready · installs when the game closes"
+        }
+      ],
+      "offers": []
+    }
+  },
+  "error": null,
+  "ok": true
+}

@@ -169,6 +169,10 @@ const (
 	CodeInternal    = "internal"
 	CodeNotAdded    = "not_added"
 	CodeNotPaired   = "not_paired"
+	// The Install the addon button's three ways to fail.
+	CodeGameRunning   = "game_running"
+	CodeAddonDownload = "addon_download"
+	CodeAddonInstall  = "addon_install"
 )
 
 var messages = map[string]string{
@@ -181,18 +185,21 @@ var messages = map[string]string{
 		"Nothing will upload. Details are in logs/companion.log.",
 	CodeNotWoW: "That folder is not a World of Warcraft folder. " +
 		"Choose the one that contains WTF and Logs, such as _classic_era_.",
-	CodeKnownFolder: "That folder is already in the list.",
-	CodeNoPicker:    "The companion could not open a folder dialog on this computer.",
-	CodeNoCharacter: "Choose a character from the list.",
-	CodeSettings:    "Could not save the settings. Details are in logs/companion.log.",
-	CodeConnected:   "This device is already connected.",
-	CodeNoConnect:   "There is no sign-in in progress.",
-	CodeBadURL:      "That link cannot be opened from here.",
-	CodeNoBrowser:   "Could not open your browser.",
-	CodeBadRequest:  "The companion could not read that request.",
-	CodeNotAdded:    "That folder was found automatically, so there is nothing to remove.",
-	CodeNotPaired:   "Sign in first. There is nothing to check until this computer is connected.",
-	CodeInternal:    "The companion hit a problem. Details are in logs/companion.log.",
+	CodeKnownFolder:   "That folder is already in the list.",
+	CodeNoPicker:      "The companion could not open a folder dialog on this computer.",
+	CodeNoCharacter:   "Choose a character from the list.",
+	CodeSettings:      "Could not save the settings. Details are in logs/companion.log.",
+	CodeConnected:     "This device is already connected.",
+	CodeNoConnect:     "There is no sign-in in progress.",
+	CodeBadURL:        "That link cannot be opened from here.",
+	CodeNoBrowser:     "Could not open your browser.",
+	CodeBadRequest:    "The companion could not read that request.",
+	CodeNotAdded:      "That folder was found automatically, so there is nothing to remove.",
+	CodeNotPaired:     "Sign in first. There is nothing to check until this computer is connected.",
+	CodeInternal:      "The companion hit a problem. Details are in logs/companion.log.",
+	CodeGameRunning:   "Close World of Warcraft first, then try again. The companion does not change addon files while the game is running.",
+	CodeAddonDownload: "The companion could not get the addon. Check your connection and try again in a minute.",
+	CodeAddonInstall:  "The addon could not be installed, and your game folder was left as it was. Details are in logs/companion.log.",
 }
 
 // Message is the sentence for a failure code.
@@ -241,3 +248,45 @@ const (
 func CopySiteRefused(reason string) string {
 	return "The site refused the last character list: " + reason
 }
+
+// The Addon row's version lines (addon_update in the snapshot). One line
+// per family per install, in the same words every time; none of them ever
+// shows a bare number, and none says manifest, asset or stage.
+const (
+	// CopyAddonName and CopyDataName start the lines.
+	CopyAddonName = "Addon"
+	CopyDataName  = "Data"
+	// CopyUpToDate ends a line for a version that is the newest.
+	CopyUpToDate = "up to date"
+	// CopyTakesEffect ends the line for a version the companion just put
+	// in, until the player's next login is seen in the log.
+	CopyTakesEffect = "takes effect at your next login"
+	// CopyInstallsWhenClosed ends the line for a version waiting for the
+	// game to close.
+	CopyInstallsWhenClosed = "installs when the game closes"
+)
+
+// CopyVersionLine words one family in one install: "Addon 2.0.15 · up to
+// date", "Addon 2.0.16 installed · takes effect at your next login" or
+// "Addon 2.0.16 ready · installs when the game closes". name is
+// CopyAddonName or CopyDataName.
+func CopyVersionLine(name, version string, state AddonState) string {
+	switch state {
+	case AddonInstalled:
+		return name + " " + version + " installed" + CopySeparator + CopyTakesEffect
+	case AddonReady:
+		return name + " " + version + " ready" + CopySeparator + CopyInstallsWhenClosed
+	}
+	return name + " " + version + CopySeparator + CopyUpToDate
+}
+
+// CopyAddonNotFound is the Addon row's line for an install with no addon.
+func CopyAddonNotFound(folder string) string { return "Addon not found in " + folder }
+
+// CopyInstallAddon is the label of the button that puts the addon into an
+// install that has none.
+func CopyInstallAddon(folder string) string { return "Install the addon into " + folder }
+
+// CopyForInstall puts an install's name before its lines when the Addon row
+// speaks for more than one.
+func CopyForInstall(folder, line string) string { return folder + ": " + line }

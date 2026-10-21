@@ -104,6 +104,10 @@ type Server struct {
 	acks         map[string]ack
 	inboxReads   int
 
+	// The GitHub release list (github.go).
+	releases     []GitHubRelease
+	releaseReads int
+
 	// The connect flow (device authorization), keyed by connect id.
 	connects   map[string]*connectRow
 	connectSeq int
@@ -160,6 +164,8 @@ func New() *Server {
 	mux.HandleFunc("POST /v1/reports/{id}/complete", s.complete)
 	mux.HandleFunc("POST /v1/addon/exports", s.addonExports)
 	mux.HandleFunc("GET /v1/addon/inbox", s.addonInbox)
+	mux.HandleFunc("GET /repos/{owner}/{repo}/releases", s.listReleases)
+	mux.HandleFunc("GET /releasedl/{release}/{asset}", s.downloadAsset)
 	s.Server = httptest.NewServer(s.wrap(mux))
 	return s
 }
@@ -309,7 +315,7 @@ func (s *Server) wrap(h http.Handler) http.Handler {
 			fail(w, http.StatusServiceUnavailable, "the network is down")
 			return
 		}
-		if r.URL.Path != "/v1/devices/claim" && !strings.HasPrefix(r.URL.Path, "/v1/devices/connect") {
+		if r.URL.Path != "/v1/devices/claim" && !strings.HasPrefix(r.URL.Path, "/v1/devices/connect") && !isGitHub(r.URL.Path) {
 			if r.Header.Get("Authorization") != "Bearer "+Token || s.isRevoked() {
 				fail(w, http.StatusUnauthorized, "unknown device token")
 				return

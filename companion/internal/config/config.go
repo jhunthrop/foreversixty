@@ -47,7 +47,15 @@ type Config struct {
 	// It is additive to the four keys the contract names and is
 	// omitted when the player has not chosen one.
 	LoggingCharacter *character.Character `json:"logging_character,omitempty"`
+	// KeepAddonUpdated is the switch "Keep the addon up to date". It is a
+	// pointer so a config.json from before it existed reads as the default,
+	// on; false is written only when the player turned it off.
+	KeepAddonUpdated *bool `json:"keep_addon_updated,omitempty"`
 }
+
+// AddonUpdates reports whether the companion keeps the addon and the data
+// addon up to date by itself. On unless the player turned it off.
+func (c Config) AddonUpdates() bool { return c.KeepAddonUpdated == nil || *c.KeepAddonUpdated }
 
 // Default is the configuration a fresh install starts from.
 func Default() Config {

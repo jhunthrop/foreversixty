@@ -83,6 +83,12 @@
     "credit": {
       "name": "Bow Jackzon",
       "state": "credited"
+    },
+    "keep_addon_updated": true,
+    "addon_update": {
+      "enabled": true,
+      "lines": [],
+      "offers": []
     }
   },
   "error": null,

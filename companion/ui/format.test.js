@@ -431,3 +431,63 @@ test('the Settings help sentences collapse to one line in a short window and the
   assert.match(css, /\.bar \{[^}]*text-wrap: pretty/);
   assert.match(css, /@media \(max-width: 520px\)[\s\S]*\.row \.v \.check-builds \{ margin: 6px 0 0 -11px; \}/);
 });
+
+// The Addon row's version lines and the install buttons arrive worded by the Go side (copy.go);
+// the window shows them as they are, one line per state, and builds nothing from a number.
+test('the Addon row shows the version line for each state and the install button where the addon is missing', () => {
+  const rows = (name) => FORMAT.addonRows(fixture(name).addon_update);
+  assert.deepStrictEqual(rows('status-addon-current.json').lines.map((l) => l.text),
+    ['Addon 2.0.15 · up to date', 'Data 2026.10.21 · up to date']);
+  assert.deepStrictEqual(rows('status-addon-installed.json').lines.map((l) => l.text),
+    ['Addon 2.0.16 installed · takes effect at your next login', 'Data 2026.10.21 installed · takes effect at your next login']);
+  assert.deepStrictEqual(rows('status-addon-ready.json').lines.map((l) => l.text),
+    ['Addon 2.0.16 ready · installs when the game closes', 'Data 2026.10.21 ready · installs when the game closes']);
+  const missing = rows('status-addon-missing.json');
+  assert.deepStrictEqual(missing.lines, [{ text: 'Addon not found in Classic Era', muted: true }]);
+  assert.deepStrictEqual(missing.offers.map((o) => o.label), ['Install the addon into Classic Era']);
+  assert.strictEqual(rows('status-addon-current.json').offers.length, 0);
+  // One button per install without the addon, and the install named on the lines when there are two.
+  const two = rows('status-addon-two-installs.json');
+  assert.deepStrictEqual(two.lines.map((l) => l.text), [
+    'Classic Era: Addon 2.0.15 · up to date', 'Classic Era: Data 2026.10.21 · up to date',
+    'Classic Anniversary: Addon 2.0.16 ready · installs when the game closes', 'Classic Anniversary: Data 2026.10.21 ready · installs when the game closes']);
+  assert.strictEqual(two.offers.length, 0);
+  const one = rows('status-addon-one-missing.json');
+  assert.deepStrictEqual(one.lines.map((l) => l.text), ['Addon 2.0.15 · up to date', 'Data 2026.10.21 · up to date', 'Addon not found in Classic Anniversary']);
+  assert.deepStrictEqual(one.offers.map((o) => o.label), ['Install the addon into Classic Anniversary']);
+});
+
+test('a snapshot with no addon_update, or with a line that has no words, shows nothing for it', () => {
+  assert.deepStrictEqual(FORMAT.addonRows(undefined), { lines: [], offers: [] });
+  assert.deepStrictEqual(FORMAT.addonRows({}), { lines: [], offers: [] });
+  assert.deepStrictEqual(FORMAT.addonRows({ lines: [{ text: '' }, null, { text: 'Addon 2.0.15 · up to date' }], offers: [{ path: '', label: 'x' }] }),
+    { lines: [{ text: 'Addon 2.0.15 · up to date', muted: false }], offers: [] });
+  // The older fixtures still render: they predate the field.
+  assert.deepStrictEqual(FORMAT.addonRows(fixture('status-ready.json').addon_update), { lines: [], offers: [] });
+});
+
+test('no version line or Settings sentence says manifest, asset or stage, or leaves a bare number', () => {
+  const words = [];
+  for (const name of fs.readdirSync(path.join(__dirname, 'testdata')).filter((n) => n.startsWith('status-addon-'))) {
+    const au = fixture(name).addon_update;
+    if (au) words.push(...au.lines.map((l) => l.text), ...au.offers.map((o) => o.label));
+  }
+  words.push(COPY.settings.keepAddon, COPY.settings.keepAddonHelp, COPY.settings.savedKeep.on, COPY.settings.savedKeep.off, COPY.status.installingAddon);
+  assert.ok(words.length > 12);
+  for (const w of words) {
+    assert.doesNotMatch(w, /manifest|asset|stage|minisign|signature/i, w);
+    assert.doesNotMatch(w, /^[\d. ]+$/, w);
+  }
+  for (const w of words.filter((x) => /^(Addon|Data) \d/.test(x) || /^[A-Za-z ]+: (Addon|Data) \d/.test(x))) {
+    assert.match(w, /(Addon|Data) [\d.]+( installed| ready)? · (up to date|takes effect at your next login|installs when the game closes)$/, w);
+  }
+});
+
+test('the Settings switch says what the ruling says, and the page carries it under the visibility group', () => {
+  assert.strictEqual(COPY.settings.keepAddon, 'Keep the addon up to date');
+  assert.strictEqual(COPY.settings.keepAddonHelp, 'Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed. CurseForge and Wago users can leave this on; they get the same files.');
+  const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+  const at = (id) => html.indexOf('id="' + id + '"');
+  assert.ok(at('visibility') > 0 && at('visibility') < at('keep-addon') && at('keep-addon') < at('logging-character'));
+  assert.match(html, /<input type="checkbox" role="switch" id="keep-addon" checked>/);
+});

@@ -96,3 +96,26 @@ func TestABaseURLMustBeHTTPOrHTTPS(t *testing.T) {
 		})
 	}
 }
+
+func TestTheAddonSwitchIsOnUnlessTheFileSaysOff(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.json")
+	got, err := Load(path)
+	if err != nil || !got.AddonUpdates() || got.KeepAddonUpdated != nil {
+		t.Fatalf("a fresh install: %+v, %v", got, err)
+	}
+	off := false
+	got.KeepAddonUpdated = &off
+	if err := Save(path, got); err != nil {
+		t.Fatal(err)
+	}
+	back, err := Load(path)
+	if err != nil || back.AddonUpdates() {
+		t.Fatalf("a switch turned off came back %+v, %v", back, err)
+	}
+	if err := os.WriteFile(path, []byte(`{"api_base_url":"http://127.0.0.1:1","site_base_url":"http://127.0.0.1:2","report_visibility":"public"}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if old, err := Load(path); err != nil || !old.AddonUpdates() {
+		t.Fatalf("a config.json from before the switch: %+v, %v", old, err)
+	}
+}

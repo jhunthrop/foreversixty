@@ -158,3 +158,41 @@ func TestAnExportWithAnOutboxIsAnsweredPerPartAndAcked(t *testing.T) {
 		t.Errorf("a refused post was recorded: %d", len(s.ExportPosts()))
 	}
 }
+
+func TestTheReleaseListAndItsDownloadsNeedNoToken(t *testing.T) {
+	s := New()
+	defer s.Close()
+	s.SetReleases(
+		GitHubRelease{Tag: "addon-v2.0.16", Assets: []GitHubAsset{{Name: "a.zip", Body: []byte("zip")}, {Name: "a.zip.minisig", Body: []byte("sig")}}},
+		GitHubRelease{Tag: "data-v2026.10.21", Prerelease: true},
+	)
+	code, body := get(t, s.URL+"/repos/jhunthrop/foreversixty/releases?per_page=1&page=1", "")
+	if code != http.StatusOK {
+		t.Fatalf("release list = %d %s", code, body)
+	}
+	var rows []struct {
+		Tag    string `json:"tag_name"`
+		Assets []struct{ Name, URL string }
+	}
+	rows2 := json.NewDecoder(strings.NewReader(body))
+	if err := rows2.Decode(&rows); err != nil || len(rows) != 1 || rows[0].Tag != "addon-v2.0.16" || len(rows[0].Assets) != 2 {
+		t.Fatalf("page 1 = %s (%v)", body, err)
+	}
+	_, page2 := get(t, s.URL+"/repos/jhunthrop/foreversixty/releases?per_page=1&page=2", "")
+	if !strings.Contains(page2, "data-v2026.10.21") || strings.Contains(page2, "addon-v") {
+		t.Errorf("page 2 = %s", page2)
+	}
+	if code, got := get(t, s.URL+"/releasedl/0/1", ""); code != http.StatusOK || got != "sig" {
+		t.Errorf("download = %d %q", code, got)
+	}
+	if code, _ := get(t, s.URL+"/releasedl/9/0", ""); code != http.StatusNotFound {
+		t.Errorf("a missing asset = %d", code)
+	}
+	if s.ReleaseListReads() != 2 {
+		t.Errorf("reads = %d", s.ReleaseListReads())
+	}
+	// The ingest routes still want the token.
+	if code, _ := get(t, s.URL+"/v1/addon/inbox", ""); code != http.StatusUnauthorized {
+		t.Errorf("inbox without a token = %d", code)
+	}
+}

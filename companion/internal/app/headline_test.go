@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
+	"github.com/jhunthrop/foreversixty/companion/internal/addonupdater"
 	"github.com/jhunthrop/foreversixty/companion/internal/pipeline"
 )
 
@@ -132,7 +133,9 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			Reports:    []ReportRow{{Key: "20261020-174100", ReportID: "r_9f2c", Fights: 0, StartedAt: watched, Credit: credit}},
 			Characters: []addon.Export{},
 			AddonLine:  "Last synced 1 minute ago", Credit: credit,
-			LastSync: LastSyncView{State: SyncSent, Count: 2, At: &watched, Title: "Tue 20 Oct 2026, 17:40"},
+			LastSync:         LastSyncView{State: SyncSent, Count: 2, At: &watched, Title: "Tue 20 Oct 2026, 17:40"},
+			KeepAddonUpdated: true,
+			AddonUpdate:      AddonUpdateView{Enabled: true, Lines: []AddonVersionLine{}, Offers: []AddonOffer{}},
 		}
 		s.Headline = headlineFor(true, false, false, true, credit, installs)
 		return s
@@ -177,6 +180,27 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			out = append(out, r)
 		}
 		return out
+	}
+
+	// addonView is one install's folders as the updater reads them.
+	addonView := func(present bool, addonVer, dataVer, addonReady, dataReady string, fresh bool) addonupdater.InstallView {
+		return addonupdater.InstallView{
+			Addon: addonupdater.FamilyView{Present: present, Version: addonVer, Ready: addonReady, Fresh: fresh},
+			Data:  addonupdater.FamilyView{Present: dataVer != "", Version: dataVer, Ready: dataReady, Fresh: fresh},
+		}
+	}
+	// addonRow gives a snapshot the Addon row the first n installs would show.
+	addonRow := func(s Snapshot, n int, views ...addonupdater.InstallView) Snapshot {
+		s.Installs = s.Installs[:n]
+		var in []addonInstall
+		for i, v := range views {
+			in = append(in, addonInstall{Path: s.Installs[min(i, n-1)].Path, Folder: s.Installs[min(i, n-1)].FlavorName, View: v})
+		}
+		if n == 2 {
+			in[1].Path, in[1].Folder = s.Installs[1].Path, s.Installs[1].FlavorName
+		}
+		s.AddonUpdate = buildAddonView(true, true, in)
+		return s
 	}
 
 	for _, c := range []struct {
@@ -237,6 +261,22 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			s := base(credited)
 			s.AddonLine, s.AddonStale, s.AddonHelp = "Last synced 3 days ago", true, CopyStaleHelp
 			return s
+		}},
+		// The Addon row's version lines, worded by the same code the companion runs.
+		{"status-addon-current.json", func() Snapshot {
+			return addonRow(base(none), 1, addonView(true, "2.0.15", "2026.10.21", "", "", false))
+		}},
+		{"status-addon-installed.json", func() Snapshot { return addonRow(base(none), 1, addonView(true, "2.0.16", "2026.10.21", "", "", true)) }},
+		{"status-addon-ready.json", func() Snapshot {
+			return addonRow(base(none), 1, addonView(true, "2.0.15", "2026.10.20", "2.0.16", "2026.10.21", false))
+		}},
+		{"status-addon-missing.json", func() Snapshot { return addonRow(base(none), 1, addonView(false, "", "", "", "", false)) }},
+		// Two installs with the addon: each line names its install. One without it: its own line and button.
+		{"status-addon-two-installs.json", func() Snapshot {
+			return addonRow(base(none), 2, addonView(true, "2.0.15", "2026.10.21", "", "", false), addonView(true, "2.0.15", "2026.10.20", "2.0.16", "2026.10.21", false))
+		}},
+		{"status-addon-one-missing.json", func() Snapshot {
+			return addonRow(base(none), 2, addonView(true, "2.0.15", "2026.10.21", "", "", false), addonView(false, "", "", "", "", false))
 		}},
 		{"reports-rows.json", func() Snapshot {
 			s := base(credited)
