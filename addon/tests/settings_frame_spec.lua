@@ -463,7 +463,7 @@ describe("SettingsPage, the canvas", function()
 		assert.is_false(toggleFor("autoSave").checked)
 	end)
 
-	it("reads Show the chip off while a right-click hides the chip (fix 1, item 20)", function()
+	it("reads Show the Forever Sixty line off while a right-click hides the chip (fix 1, item 20)", function()
 		start()
 		SettingsPage.register()
 		show()

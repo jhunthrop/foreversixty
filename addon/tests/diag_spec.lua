@@ -15,8 +15,8 @@ describe("Theme.diagReport", function()
 	end)
 
 	it("says everything is working when nothing is broken", function()
-		assert.are.same({ "Everything is working.", "Chip: shown, nothing cut off" },
-			Theme.diagReport(Theme.diagnostics(), "Chip: shown, nothing cut off", Theme.infoNotes()))
+		assert.are.same({ "Everything is working.", "Forever Sixty line: shown, nothing cut off" },
+			Theme.diagReport(Theme.diagnostics(), "Forever Sixty line: shown, nothing cut off", Theme.infoNotes()))
 		assert.are.equal("Everything is working.", L.diagAllWorking)
 	end)
 
@@ -25,8 +25,8 @@ describe("Theme.diagReport", function()
 	it("heads only the broken things, then the status lines under Working:, then the findings", function()
 		Theme.note("a broken thing")
 		Theme.noteInfo("a finding")
-		assert.are.same({ "Not working:", "a broken thing", "Working:", "Chip: hidden in combat", "a finding" },
-			Theme.diagReport(Theme.diagnostics(), "Chip: hidden in combat", Theme.infoNotes()))
+		assert.are.same({ "Not working:", "a broken thing", "Working:", "Forever Sixty line: hidden in combat", "a finding" },
+			Theme.diagReport(Theme.diagnostics(), "Forever Sixty line: hidden in combat", Theme.infoNotes()))
 		assert.are.same({ "Not working:", "a broken thing", "Working:", "Build: x", "Bag marks: y", "a finding" },
 			Theme.diagReport(Theme.diagnostics(), { "Build: x", "Bag marks: y" }, Theme.infoNotes()))
 		assert.are.same({ "Not working:", "a broken thing", "a finding" },

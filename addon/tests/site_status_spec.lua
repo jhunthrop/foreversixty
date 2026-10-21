@@ -640,11 +640,16 @@ describe("what the site has and what the inbox holds", function()
 			welcomed = true
 		end)
 
-		it("names the chip, /fs, /fs help and the logout, in three sentences", function()
-			assert.are.equal("ForeverSixty is on.", L.welcomeOn)
-			assert.are.equal("The chip by your minimap names your next step; /fs opens builds from foreversixty.gg; "
+		it("names the line you can see, /fs, /fs help and the logout, in three sentences", function()
+			assert.are.equal("Forever Sixty is on. The small Forever Sixty line beside your minimap shows your next step.",
+				L.welcomeOn)
+			assert.are.equal("/fs opens the build window; builds you send from the site wait there. "
 				.. "/fs help lists the commands.", L.welcomeNext)
-			assert.are.equal("Your character reaches the site after a logout with the companion running.", L.welcomeSite)
+			assert.are.equal("The addon saves your character when you log out; the Forever Sixty companion on your PC "
+				.. "sends it to foreversixty.gg.", L.welcomeSite)
+			for _, text in ipairs({ L.welcomeOn, L.welcomeNext, L.welcomeSite }) do
+				assert.is_nil(text:lower():find("chip", 1, true))
+			end
 		end)
 
 		it("is said five seconds in, once, and stamps the account", function()

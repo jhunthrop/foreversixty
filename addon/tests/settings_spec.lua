@@ -55,8 +55,8 @@ describe("SettingsPage, the switches", function()
 			words[#words + 1] = { switch.label, switch.hint }
 		end
 		assert.are.same({
-			{ "Show the chip", "The small icon and line beside the minimap with your next step." },
-			{ "Hide the chip in combat", "On: the chip hides when combat starts. Off: it stays, faded to 25%." },
+			{ "Show the Forever Sixty line", "The small icon and line beside the minimap with your next step." },
+			{ "Hide the Forever Sixty line in combat", "On: the line hides when combat starts. Off: it stays, faded to 25%." },
 			{ "Marks on the talent window",
 				"Numbers your build's talents in order, rings the next one and adds a progress strip." },
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
@@ -153,7 +153,7 @@ describe("SettingsPage, the switches", function()
 		assert.is_true(SettingsPage.read("tooltip"))
 	end)
 
-	it("shows Show the chip off while a right-click keeps the chip hidden (fix 1, item 20)", function()
+	it("shows Show the Forever Sixty line off while a right-click keeps the chip hidden (fix 1, item 20)", function()
 		local Chip = require("Chip")
 		Chip.isHidden = function()
 			return true
@@ -254,7 +254,7 @@ describe("SettingsPage, the command list", function()
 			"/fs: paste or copy a build",
 			"/fs copy: copy my character for the site",
 			"/fs build: switch between saved builds",
-			"/fs chip: show or hide the chip",
+			"/fs chip: show or hide the Forever Sixty line",
 			"/fs inspect: gear and talents of your target",
 			"/fs link: copy a player's site page",
 			"/fs group: your group's specs, gear and buffs",
@@ -638,7 +638,7 @@ describe("SettingsPage, Reset positions", function()
 	end)
 
 	it("words its sentence as the designer ruled", function()
-		assert.are.equal("Puts the chip, the minimap button and the build dialog back in their default places.",
+		assert.are.equal("Puts the Forever Sixty line, the minimap button and the build dialog back in their default places.",
 			L.settingsResetHint)
 	end)
 end)

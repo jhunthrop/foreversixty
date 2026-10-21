@@ -20,7 +20,7 @@ local L = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
 		"/fs build: switch between saved builds",
-		"/fs chip: show or hide the chip",
+		"/fs chip: show or hide the Forever Sixty line",
 		"/fs inspect: gear and talents of your target",
 		"/fs link: copy a player's site page",
 		"/fs group: your group's specs, gear and buffs",
@@ -55,7 +55,7 @@ local L = {
 	diagNoEvent = "This client refused the event %s.",
 	diagNoEquipApi = "This client has no equip function; the Equip buttons are off.",
 	diagNoTooltipApi = "This client has no %s; the item tooltip could not be shown.",
-	diagNoTalentButton = "No talent button matched the next point; the chip still names it.",
+	diagNoTalentButton = "No talent button matched the next point; the Forever Sixty line still names it.",
 	diagTalentTabUnknown = "This client does not say which talent tab is open; "
 		.. "the glow may be on the wrong tree.",
 	diagNoSettingsPanel = "This client has no Settings page API; right-click prints the commands instead.",
@@ -297,10 +297,10 @@ local L = {
 	-- the player ratings lines at the foot, which never print a build number (the first that
 	-- is not current repeated under the title). ASCII ">" only: this client's font has no
 	-- angle quote (fix round 2, item 1).
-	settingsChipShown = "Show the chip",
+	settingsChipShown = "Show the Forever Sixty line",
 	settingsChipShownHint = "The small icon and line beside the minimap with your next step.",
-	settingsCombatHide = "Hide the chip in combat",
-	settingsCombatHideHint = "On: the chip hides when combat starts. Off: it stays, faded to 25%.",
+	settingsCombatHide = "Hide the Forever Sixty line in combat",
+	settingsCombatHideHint = "On: the line hides when combat starts. Off: it stays, faded to 25%.",
 	settingsTalentMarks = "Marks on the talent window",
 	settingsTalentMarksHint = "Numbers your build's talents in order, rings the next one and adds a progress strip.",
 	settingsMinimap = "Show the minimap button",
@@ -331,7 +331,8 @@ local L = {
 	settingsCommandsHeading = "Commands",
 	settingsReset = "Reset positions",
 	settingsResetDone = "Positions reset",
-	settingsResetHint = "Puts the chip, the minimap button and the build dialog back in their default places.",
+	settingsResetHint = "Puts the Forever Sixty line, the minimap button and the build dialog back "
+		.. "in their default places.",
 	-- The data lines: one sentence per state, the foot's and the title line's alike (fix
 	-- round 3, item 3). The foot draws the subject (up to the first ": ") muted and the state
 	-- muted or (stale) in the warning colour, action first; the title line draws a warning
@@ -797,21 +798,21 @@ local L = {
 	chipPath = "Pick a path",
 	-- What the chip cut a too-long line with.
 	ellipsis = "…",
-	diagChipOff = "The chip is off: its text did not fit or it was off screen",
-	-- /fs diag's line for the chip's own render check: "Chip: anchored, 212 of 280 wide, not truncated".
+	diagChipOff = "The Forever Sixty line is off: its text did not fit or it was off screen",
+	-- /fs diag's line for the chip's own render check: "Forever Sixty line: anchored, 212 of 280 wide, not truncated".
 	-- /fs diag's line for the chip's own render check, outside "Not working:".
-	diagChipShown = "Chip: shown, nothing cut off",
-	diagChipShortened = "Chip: shown, the line was shortened",
-	diagChipShortForm = "Chip: shown, short form",
+	diagChipShown = "Forever Sixty line: shown, nothing cut off",
+	diagChipShortened = "Forever Sixty line: shown, the line was shortened",
+	diagChipShortForm = "Forever Sixty line: shown, short form",
 	-- /fs diag with nothing broken.
 	diagAllWorking = "Everything is working.",
 	diagDataAddonMissingInfo = "The Forever Sixty Data addon is not installed; scores show once it is.",
 	diagNoClickOutside = "Clicking outside the path card does not close it on this client; press Escape.",
-	diagChipHidden = "Chip: hidden. /fs chip brings it back.",
-	diagChipCombat = "Chip: hidden in combat",
+	diagChipHidden = "Forever Sixty line: hidden. /fs chip brings it back.",
+	diagChipCombat = "Forever Sixty line: hidden in combat",
 	-- L3.2 fix round 3: the ring and the strip replace it while the talent window is open.
-	diagChipTalents = "Chip: hidden while the talent window is open",
-	diagChipCinematic = "Chip: hidden during a cinematic",
+	diagChipTalents = "Forever Sixty line: hidden while the talent window is open",
+	diagChipCinematic = "Forever Sixty line: hidden during a cinematic",
 	diagDataAddonOld = "The Forever Sixty Data addon is too old. Update it from the site.",
 	diagDataAddonBroken = "The Forever Sixty Data addon's data is broken or missing. Reinstall it from the site.",
 	-- L3.8: /fs diag's one line for the build in force (Follow.diagLine), and why there is none.
@@ -847,9 +848,9 @@ local L = {
 	-- Hotfix 2.0.2: the hover's muted line until the spec's first gear band.
 	chipHintPicksStart = "Gear picks start at level %d.",
 	-- Right-click and /fs chip.
-	chipHiddenLine = "Chip hidden until level %d. /fs chip brings it back.",
-	chipHiddenMaxLine = "Chip hidden. /fs chip brings it back.",
-	chipShownLine = "Chip shown.",
+	chipHiddenLine = "Forever Sixty line hidden until level %d. /fs chip brings it back.",
+	chipHiddenMaxLine = "Forever Sixty line hidden. /fs chip brings it back.",
+	chipShownLine = "Forever Sixty line shown.",
 	-- The badge past nine waiting.
 	chipWaitingMany = "9+",
 	-- The "pick a path" card's heading: "Gnome Warrior. Pick a path:", all in the card's gold.
@@ -1481,10 +1482,10 @@ L.siteLoginGear = "your gear is on its way to the site; check it after your next
 L.siteLoginGearSeen = "the site has your gear (seen %s)."
 L.siteLoginSelf = "this character"
 -- X.7: the first login's welcome, once per account, one chat line per sentence (/fs welcome says it again).
-L.welcomeOn = "ForeverSixty is on."
-L.welcomeNext = "The chip by your minimap names your next step; /fs opens builds from " .. SITE
-	.. "; /fs help lists the commands."
-L.welcomeSite = "Your character reaches the site after a logout with the companion running."
+L.welcomeOn = "Forever Sixty is on. The small Forever Sixty line beside your minimap shows your next step."
+L.welcomeNext = "/fs opens the build window; builds you send from the site wait there. /fs help lists the commands."
+L.welcomeSite = "The addon saves your character when you log out; the Forever Sixty companion on your PC sends it to "
+	.. SITE .. "."
 L.siteLoginBuild = "a build for %s is waiting: %s. /fs opens it."
 L.siteLoginBuilds = "%d builds for %s are waiting: %s. /fs opens them."
 L.siteLoginSilent = "the companion has not picked up your data since %s. "
