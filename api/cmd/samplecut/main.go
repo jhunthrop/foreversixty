@@ -34,7 +34,7 @@ import (
 const (
 	reportID = "sample"
 	dataBase = "/sample-report/sample"
-	title    = "Beta night, 17 Sept 2026 · sample log"
+	title    = "Beta night, 17 Sept 2026"
 )
 
 func main() {

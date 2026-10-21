@@ -169,16 +169,21 @@ func (a *Accumulator) rosterRows(f fight.Fight, s Summary) []RosterRow {
 	out := make([]RosterRow, 0, len(f.Players))
 	for _, guid := range f.Players {
 		row := RosterRow{GUID: guid, Name: a.name(guid), Deaths: deaths[guid]}
+		inferredSpec := ""
 		if a.opt.Registry != nil {
 			if u, ok := a.opt.Registry.Get(guid); ok {
 				row.Class, row.ClassSource = u.Class, u.ClassSource
 				row.SpecID, row.ItemLevel = u.SpecID, u.ItemLevel
+				inferredSpec = u.Spec
 			}
 		}
 		if c, ok := specs[guid]; ok {
 			row.SpecID, row.ItemLevel = c.SpecID, c.ItemLevel
 		}
 		row.Spec = a.opt.SpecNames[row.SpecID]
+		if row.Spec == "" && row.SpecID == 0 {
+			row.Spec = inferredSpec // read off the spells cast; the log named no spec
+		}
 		row.DamageDone = dd[guid].Effective
 		row.HealingDone = hd[guid].Effective
 		row.DamageTaken = dt[guid].Effective

@@ -109,17 +109,17 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('source-scope')).not.toContainText('ClassicBetaPvP');
   });
 
-  test('the spec column shows the inferred class, or a dash, and never Unknown', async ({ page }) => {
+  test('a log with no spec has no Spec column; the class is the name’s colour, never a dash', async ({
+    page,
+  }) => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
-    const spec = (guid: string) => page.getByTestId(`roster-${guid}`).getByTestId('roster-spec');
-    await expect(spec('Player-4184-000000A1')).toHaveText('Warrior');
-    await expect(spec('Player-4184-000000A1')).toHaveAttribute(
-      'title',
-      'Class read from the spells cast; the log carried no spec',
+    const row = (guid: string) => page.getByTestId(`roster-${guid}`);
+    await expect(page.getByTestId('roster-spec')).toHaveCount(0);
+    await expect(row('Player-4184-000000A1').getByTestId('roster-name')).toHaveCSS(
+      'color',
+      'rgb(198, 155, 109)',
     );
-    await expect(spec('Player-4184-000000A1')).toHaveCSS('color', 'rgb(198, 155, 109)');
-    await expect(spec('Player-4184-000000A4')).toHaveText('—');
     await expect(page.getByTestId('summary-tab')).not.toContainText('Unknown');
     if (CAPTURES) {
       await page.getByTestId('summary-tab').screenshot({ path: path.join(CAPTURES, 'players-table.png') });

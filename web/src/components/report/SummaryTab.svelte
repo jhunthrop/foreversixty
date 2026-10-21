@@ -29,6 +29,7 @@
   import { simLinkFor } from '../../lib/report/sim-link';
   import GearList from './GearList.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
+  import { hasAnySpec } from '../../lib/report/columns';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
 
   // Lazy, like ReportView's own tabs: the panel fetches and renders after the summary has
@@ -48,6 +49,7 @@
     durationMs,
     percentiles = new Map<string, Placement>(),
     parseFallback = '',
+    showParse = true,
     approximate = false,
     dataBuild = '',
     classOf = new Map<string, string>(),
@@ -66,6 +68,8 @@
     percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
     parseFallback?: string;
+    /** False on a report with no ranked boss kill: a Parse column of dashes says nothing. */
+    showParse?: boolean;
     approximate?: boolean;
     dataBuild?: string;
     classOf?: Map<string, string>;
@@ -83,6 +87,11 @@
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
+  /** A crowd (the sample's 265-player pull) paints its biggest rows first; the rest is one press away. */
+  const CROWD = 100;
+  const FIRST_ROWS = 50;
+  let showEveryone = $state(false);
+  const shownRoster = $derived(roster.length > CROWD && !showEveryone ? roster.slice(0, FIRST_ROWS) : roster);
   /** Each amount column's largest figure, so every row in it reads in the same scale. */
   const columnMax = $derived({
     damage_done: Math.max(0, ...roster.map((row) => row.damage_done)),
@@ -109,6 +118,16 @@
    * here rather than written out five times in the markup so the phone strip cannot drift
    * from the desktop columns it stands in for.
    */
+  /** The Spec column exists only when some row has a spec; the class is the name's colour. */
+  const showSpec = $derived(hasAnySpec(summary.roster));
+  const GRIDS = {
+    both: 'md:grid-cols-[40px_minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px]',
+    noParse: 'md:grid-cols-[minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px]',
+    noSpec: 'md:grid-cols-[40px_minmax(120px,1.4fr)_96px_96px_96px_72px_56px]',
+    neither: 'md:grid-cols-[minmax(120px,1.4fr)_96px_96px_96px_72px_56px]',
+  } as const;
+  const grid = $derived(GRIDS[showParse ? (showSpec ? 'both' : 'noSpec') : showSpec ? 'noParse' : 'neither']);
+
   function figuresFor(row: RosterRow): Figure[] {
     // No Parse figure here: the card's top-right cell already shows it, and twice read as two numbers.
     return [
@@ -138,15 +157,13 @@
   </p>
 
   <div class="flex flex-col">
-    <div
-      class="text-muted label hidden grid-cols-[40px_minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px] gap-x-3 px-2 pb-1 md:grid"
-    >
-      <span
-        title="Percentile among ranked kills of the same boss by this spec: healers on healing per second, everyone else on damage per second. Empty on a wipe or while nothing is ranked yet."
-        >Parse</span
-      >
+    <div class="text-muted label hidden {grid} gap-x-3 px-2 pb-1 md:grid">
+      {#if showParse}<span
+          title="Percentile among ranked kills of the same boss by this spec: healers on healing per second, everyone else on damage per second. Empty on a wipe or while nothing is ranked yet."
+          >Parse</span
+        >{/if}
       <span>Name</span>
-      <span>Spec</span>
+      {#if showSpec}<span>Spec</span>{/if}
       <span class="text-right" title="Damage done, and per second over this window">Damage</span>
       <span class="text-right" title="Healing done, and per second over this window">Healing</span>
       <span class="text-right" title="Damage taken, and per second over this window">Taken</span>
@@ -154,33 +171,35 @@
       <span class="text-right">Deaths</span>
     </div>
     <ul class="flex flex-col">
-      {#each roster as row (row.guid)}
+      {#each shownRoster as row (row.guid)}
         {@const display = unitLabel(row.name)}
         {@const cell = specCell(row, unitClasses)}
         {@const percentile = percentiles.get(row.guid) ?? null}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px]"
+          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] {grid}"
           data-testid={`roster-${row.guid}`}
         >
-          <span
-            class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
-            class:text-muted={percentile === null || parseWithheld}
-            style={percentile === null || parseWithheld
-              ? undefined
-              : `color: ${percentileToken(percentile.percentile)}`}
-            title={percentile === null || parseWithheld
-              ? parseTitle(parseFallback)
-              : parseTitle(percentile.percentile, percentile.ranked)}
-            data-testid="roster-percentile"
-          >
-            {#if percentile === null || parseWithheld}{['none', 'night', 'window', 'filter'].includes(
-                parseFallback,
-              )
-                ? ''
-                : parseFallback}{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
-                percentile.percentile,
-              )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
-          </span>
+          {#if showParse}
+            <span
+              class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
+              class:text-muted={percentile === null || parseWithheld}
+              style={percentile === null || parseWithheld
+                ? undefined
+                : `color: ${percentileToken(percentile.percentile)}`}
+              title={percentile === null || parseWithheld
+                ? parseTitle(parseFallback)
+                : parseTitle(percentile.percentile, percentile.ranked)}
+              data-testid="roster-percentile"
+            >
+              {#if percentile === null || parseWithheld}{['none', 'night', 'window', 'filter'].includes(
+                  parseFallback,
+                )
+                  ? ''
+                  : parseFallback}{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
+                  percentile.percentile,
+                )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
+            </span>
+          {/if}
           <span
             class="flex min-w-0 flex-wrap items-center gap-x-2 font-semibold"
             style={`color: ${classColorVar(cell.class)}`}
@@ -206,14 +225,18 @@
                 >{/if}
             {/if}
           </span>
-          <span
-            class="col-span-2 text-[13px] md:col-span-1 {cell.classColoured ? 'font-semibold' : 'text-muted'}"
-            style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
-            title={cell.title}
-            data-testid="roster-spec"
-          >
-            {cell.text}
-          </span>
+          {#if showSpec}
+            <span
+              class="col-span-2 text-[13px] md:col-span-1 {cell.classColoured
+                ? 'font-semibold'
+                : 'text-muted'}"
+              style={cell.classColoured ? `color: ${classColorVar(cell.class)}` : undefined}
+              title={cell.title}
+              data-testid="roster-spec"
+            >
+              {cell.text}
+            </span>
+          {/if}
           <!-- Total on top, per-second underneath: a raid leader compares totals across
                the roster, and a player compares their per-second figure with their
                parse. Both are the window's own numbers. -->
@@ -271,6 +294,16 @@
         </li>
       {/each}
     </ul>
+    {#if shownRoster.length < roster.length}
+      <button
+        type="button"
+        class="text-nav hover:text-strong min-h-11 self-start px-2 text-left text-[13px] underline-offset-2 hover:underline"
+        data-testid="roster-show-all"
+        onclick={() => (showEveryone = true)}
+      >
+        Show all {roster.length} players
+      </button>
+    {/if}
   </div>
 
   {#if approximate}

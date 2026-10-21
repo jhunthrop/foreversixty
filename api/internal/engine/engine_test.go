@@ -156,3 +156,52 @@ func TestTheFixtureLogIsAvailableWhole(t *testing.T) {
 		t.Fatalf("lines = %d, want the fixture's nine", FixtureLines())
 	}
 }
+
+// The class and spec the API reads off the spells a player cast, for a log with no
+// COMBATANT_INFO (the sample report's beta night, any real report without an addon export).
+func TestUnitOptionsReadAClassAndSpecOffTheSpellsCast(t *testing.T) {
+	cast := func(r *units.Registry, guid string, ids ...int64) units.Unit {
+		for _, id := range ids {
+			r.Observe(event.Event{Kind: event.CastSuccess,
+				Source: event.Unit{GUID: guid, Name: "Test-Realm", Flags: 0x511},
+				Spell:  event.Spell{ID: id}})
+		}
+		u, _ := r.Get(guid)
+		return u
+	}
+	o := UnitOptions()
+	// Rend and Heroic Strike are a warrior's, and neither names a spec.
+	w := cast(units.NewRegistry(o), "Player-4184-00000001", 772, 78)
+	if w.Class != "Warrior" || w.ClassSource != "inferred" || w.Spec != "" {
+		t.Fatalf("warrior = %+v, want Warrior, inferred, no spec", w)
+	}
+	// Moonfire is a druid's; Swiftmend is a Restoration talent.
+	d := cast(units.NewRegistry(o), "Player-4184-00000002", 8921, 18562)
+	if d.Class != "Druid" || d.Spec != "Restoration" {
+		t.Fatalf("druid = %+v, want Druid, Restoration", d)
+	}
+	// An item's spell, a profession and a wand are no class's.
+	n := cast(units.NewRegistry(o), "Player-4184-00000003", 2881, 8613, 5019, 0)
+	if n.Class != "" || n.Spec != "" {
+		t.Fatalf("unknown spells gave %+v, want no class and no spec", n)
+	}
+	// COMBATANT_INFO still wins over the spells.
+	r := units.NewRegistry(o)
+	cast(r, "Player-4184-00000004", 8921)
+	r.Observe(event.Event{Kind: event.CombatantInfo, Combatant: &event.Combatant{GUID: "Player-4184-00000004", SpecID: 73}})
+	u, _ := r.Get("Player-4184-00000004")
+	if u.Class != "Warrior" || u.ClassSource != "combatant_info" {
+		t.Fatalf("combatant info lost to the spells: %+v", u)
+	}
+}
+
+func TestEverySpellIdIsOneClassesOnly(t *testing.T) {
+	if len(ClassBySpell()) < 3000 || len(SpecBySpell()) < 300 {
+		t.Fatalf("tables are thin: %d class spells, %d spec spells", len(ClassBySpell()), len(SpecBySpell()))
+	}
+	for id := range SpecBySpell() {
+		if _, ok := ClassBySpell()[id]; !ok {
+			t.Fatalf("spec spell %d has no class", id)
+		}
+	}
+}

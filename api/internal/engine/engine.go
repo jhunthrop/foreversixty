@@ -11,6 +11,8 @@
 package engine
 
 import (
+	_ "embed"
+	"encoding/json"
 	"errors"
 	"sort"
 	"strconv"
@@ -27,9 +29,59 @@ import (
 // Version is the engine version the API records on every report and fight.
 const Version = session.Version
 
-// UnitOptions is the registry configuration shared by every parse.
+// classSpells is the table tools/gen-class-spells.mjs cuts from a client build: the class that
+// owns each spell id, and the spec a talent's spell id defines.
+//
+//go:embed classspells.json
+var classSpellsJSON []byte
+
+var classSpells = func() (t struct {
+	Classes map[string][]int64            `json:"classes"`
+	Spec    map[string]map[string][]int64 `json:"spec"`
+}) {
+	if err := json.Unmarshal(classSpellsJSON, &t); err != nil {
+		panic("engine: classspells.json: " + err.Error())
+	}
+	return t
+}()
+
+// ClassBySpell maps a spell id to the one class that owns it, for a log whose players carry no
+// COMBATANT_INFO: a player who cast Rend is a Warrior. Spells shared by classes are absent.
+func ClassBySpell() map[int64]string { return classBySpell }
+
+var classBySpell = func() map[int64]string {
+	out := map[int64]string{}
+	for class, ids := range classSpells.Classes {
+		for _, id := range ids {
+			out[id] = class
+		}
+	}
+	return out
+}()
+
+// SpecBySpell maps a spec-defining spell id (a talent's) to its spec's name.
+func SpecBySpell() map[int64]string { return specBySpell }
+
+var specBySpell = func() map[int64]string {
+	out := map[int64]string{}
+	for _, specs := range classSpells.Spec {
+		for spec, ids := range specs {
+			for _, id := range ids {
+				out[id] = spec
+			}
+		}
+	}
+	return out
+}()
+
+// UnitOptions is the registry configuration shared by every parse. COMBATANT_INFO names a class
+// and spec when the log has it; otherwise the class and spec are read off the spells cast.
 func UnitOptions() units.Options {
-	return units.Options{ClassBySpec: units.RetailSpecClass}
+	return units.Options{
+		ClassBySpec:  units.RetailSpecClass,
+		ClassBySpell: ClassBySpell(),
+		SpecBySpell:  SpecBySpell(),
+	}
 }
 
 // SummaryOptions is the accumulator configuration shared by every parse.

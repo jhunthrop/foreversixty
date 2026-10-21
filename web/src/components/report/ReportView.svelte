@@ -21,10 +21,9 @@
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
-  import { defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
+  import { biggestFightIndex, defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
   import {
-    formatDate,
     formatDuration,
     outcomeLabel,
     phaseReached,
@@ -79,7 +78,8 @@
   import Glossary from './Glossary.svelte';
   import RaidCooldowns from './RaidCooldowns.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
-  import { reportHeading } from '../../lib/report/heading';
+  import { reportFacts, reportHeading } from '../../lib/report/heading';
+  import { hasRankedKill } from '../../lib/report/columns';
   import { quietMinutes } from '../../lib/report/quiet';
   import { isSampleReport } from '../../lib/report/sample';
   import { pageTitle } from '../../lib/seo';
@@ -143,7 +143,7 @@
   let meta = $state<ReportMeta | null>(untrack(() => inlineMeta));
   let file = $state<ReportFile | null>(null);
   /** The engine that wrote the report's files, riding on their urls so a re-parse is a cache miss. */
-  const engineVersion = $derived(file?.engine_version ?? '');
+  const engineVersion = $derived(file?.engine_version ?? meta?.engine_version ?? '');
   let summary = $state<Summary | null>(null);
   /**
    * 'processing', 'waiting' and 'unparsed' are the screens of a report whose files do not exist
@@ -166,7 +166,20 @@
 
   const fights = $derived<FightEntry[]>(meta?.fights ?? file?.fights ?? []);
   /** The fight a bare url opens on: the first boss pull, not the first trash. */
-  const firstFight = $derived(defaultFightIndex(fights));
+  const firstFight = $derived(
+    isSampleReport(reportId) ? biggestFightIndex(fights) : defaultFightIndex(fights),
+  );
+  /** A Parse column exists only on a report with a boss kill to rank; the sample has none. */
+  const showParse = $derived(hasRankedKill(fights));
+  /**
+   * The bundled sample paints its first table from the fight's own summary, before report.json
+   * (half a megabyte of units) has arrived: on a phone on a slow line the serial pair kept
+   * "Loading the report." up for seconds. The meta already names the players, which is all the
+   * first table needs of the units; the rest of them fill in behind it.
+   */
+  const summaryFirst = $derived(isSampleReport(reportId));
+  /** The subtitle's words, the same ones the /logs sample row reads (lib/report/heading.ts). */
+  const facts = $derived(reportFacts({ zone: meta?.zone ?? '', created_at: meta?.created_at ?? '', fights }));
   /** The whole night rather than one fight: every boss pull folded together. */
   const nightMode = $derived(state.fight === ALL_FIGHTS);
   let night = $state<Night | null>(null);
@@ -221,9 +234,13 @@
     return `${name} ${verb} nothing in this fight.${tail}`;
   }
   /** The player GUIDs from report.json, for the source scope and the filters. */
-  const playerSet = $derived(playerGuids(file?.units ?? []));
+  const playerSet = $derived(
+    file === null && summaryFirst ? new Set(meta?.players ?? []) : playerGuids(file?.units ?? []),
+  );
   /** The players and their pets and totems: what the enemies scope leaves out. */
-  const friendlySet = $derived(friendlyGuids(file?.units ?? []));
+  const friendlySet = $derived(
+    file === null && summaryFirst ? new Set(meta?.players ?? []) : friendlyGuids(file?.units ?? []),
+  );
   /**
    * Every table below reads this, never `summary`: one rescope per window change, then
    * the Source control's scope over it, so picking one player narrows the whole page.
@@ -1146,6 +1163,16 @@
         base = await fetchAccessUrl(reportId);
       }
       dataBase = base;
+      if (summaryFirst && continuing === false && resolved.fights.length > 0) {
+        // untracked: this runs before the first await, inside the load effect, and these
+        // read and write the state the effect must not depend on.
+        untrack(() => readUrl());
+        await untrack(() => loadFight(state.fight));
+        status = 'ready';
+        const rest = await fetchReportFileFor(resolved.status, base);
+        if (rest !== null) file = rest;
+        return;
+      }
       const loaded = await fetchReportFileFor(resolved.status, base);
       if (loaded === null) {
         // A live report with no fight uploaded yet: the poll below keeps asking for report.json.
@@ -1468,7 +1495,7 @@
 {/snippet}
 
 {#snippet parseRetry()}
-  {#if percentilesUnavailable}
+  {#if percentilesUnavailable && showParse}
     <p class="text-muted text-[13px]" data-testid="parse-unavailable">
       The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.
       <button type="button" class="text-strong ml-1 underline" onclick={() => (parseAttempt += 1)}
@@ -1574,16 +1601,25 @@
        with no gap of its own, so gathering these siblings under one div changes no
        spacing -- unlike the flex islands, where a wrapper would have to repeat the gap. -->
   <div class="reveal">
-    <header class="flex flex-col gap-1 px-[18px] md:px-0">
-      <div class="flex flex-wrap items-center gap-2">
-        <h1 class="section-title text-[18px]" data-testid="report-title">
+    <!-- A phone: the title on one line with its pill beside it, and under them the subtitle
+         with the two actions as 44px icon buttons at its right. From md the wrapper below is
+         an ordinary row and the header the ordinary column it always was. -->
+    <header
+      class="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 px-[18px] md:flex md:flex-col md:items-stretch md:px-0"
+    >
+      <div class="contents md:flex md:flex-wrap md:items-center md:gap-2">
+        <h1
+          class="section-title min-w-0 truncate text-[20px] md:overflow-visible md:text-[18px] md:whitespace-normal"
+          title={heading}
+          data-testid="report-title"
+        >
           {heading}
         </h1>
         <!-- Announced politely, not stolen focus: a fight going live or settling is worth a
            screen reader hearing about on its own time, not interrupting whatever the
            visitor is doing. role="status" plus aria-live="polite" is the same pairing
            SummaryBar.svelte uses for its own background result. -->
-        <span role="status" aria-live="polite">
+        <span role="status" aria-live="polite" class="justify-self-end md:justify-self-auto">
           {#if isSampleReport(reportId)}
             <span class="pill pill-site" data-testid="report-sample-badge">{reportCopy.sampleBadge}</span>
           {:else if fightIsLive}
@@ -1595,29 +1631,69 @@
         <!-- Sim first, Copy link second, both the same secondary button (design review
              2026-09-26 finding 5): the old inline gold link read as emphasis, not the one
              action a raider reaches for right after opening a fight. -->
-        <div class="ml-auto flex items-center gap-2">
+        <div
+          class="col-start-2 row-start-2 flex items-center gap-2 justify-self-end md:col-auto md:row-auto md:ml-auto md:justify-self-auto"
+        >
           {#if fight}
             <a
-              class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
+              class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
               href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
-              data-testid="report-sim-fight">{simCopy.simThisFight}</a
+              aria-label={simCopy.simThisFight}
+              title={simCopy.simThisFight}
+              data-testid="report-sim-fight"
+              ><svg
+                class="md:hidden"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                ><path d="M10 2v6.5L4.6 18a2 2 0 0 0 1.8 3h11.2a2 2 0 0 0 1.8-3L14 8.5V2" /><path
+                  d="M8.5 2h7"
+                /><path d="M7 15h10" /></svg
+              ><span class="hidden md:inline">{simCopy.simThisFight}</span></a
             >
           {/if}
           <button
             type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
+            class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
             title="Copy a link to exactly this view"
+            aria-label={copied === '' ? 'Copy link' : copied}
             data-testid="copy-link"
             onclick={() => void copyLink()}
           >
-            {copied === '' ? 'Copy link' : copied}
+            <svg
+              class="md:hidden"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" /><path
+                d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"
+              /></svg
+            ><span class={copied === '' ? 'hidden md:inline' : ''}
+              >{copied === '' ? 'Copy link' : copied}</span
+            >
           </button>
         </div>
       </div>
-      <p class="text-muted text-[13px]" data-testid="report-subtitle">
-        {#if meta.zone !== ''}{meta.zone} ·{/if}
-        {#if fights.length > 0}<span class="tabular font-mono">{formatDate(fights[0].start)}</span> ·{/if}
-        <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
+      <p
+        class="text-muted col-start-1 row-start-2 min-w-0 text-[13px] md:col-auto md:row-auto"
+        data-testid="report-subtitle"
+      >
+        {#if facts.zone !== ''}{facts.zone} ·{/if}
+        {#if fights.length > 0}<span class="tabular font-mono">{facts.date}</span> ·{/if}
+        <span class="tabular font-mono">{facts.fights}</span>{#if !isSampleReport(reportId)}
+          · {meta.status}{/if}
         <!-- The bundled sample was logged by no one the site knows: no credit line. -->
         {#if !isSampleReport(reportId)}
           ·
@@ -1643,6 +1719,11 @@
             {fight.deaths === 1 ? 'death' : 'deaths'}
           {/if}{/if}
       </p>
+      {#if isSampleReport(reportId)}
+        <p class="text-muted col-span-2 text-[13px] md:col-auto" data-testid="report-sample-note">
+          {reportCopy.sampleNote}
+        </p>
+      {/if}
     </header>
 
     {#if unknownSource !== null}
@@ -1702,7 +1783,8 @@
         <!-- On a phone the fight list sits above the mode bar, so a mode's content starts a
            screen or two down; a mode change scrolls here, the way a tab change scrolls to
            its table. -->
-        <div bind:this={modeAnchor} class="scroll-mt-2" aria-hidden="true"></div>
+        <!-- -mb: the anchor is an empty flex item, and its gap doubled the 22px between the fight list and the tab row. -->
+        <div bind:this={modeAnchor} class="scroll-mt-2 max-md:-mb-[22px]" aria-hidden="true"></div>
         <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
           <ModeBar {state} {roster} onPatch={patch} {nightMode} />
         </div>
@@ -1766,6 +1848,7 @@
               durationMs={scoped.duration_ms}
               {percentiles}
               {parseFallback}
+              {showParse}
               approximate={!windowIsWhole}
               dataBuild={activeBuild.build}
               {classOf}
@@ -1792,6 +1875,7 @@
               {metricLabel}
               {percentiles}
               parseFallback={tableParseFallback}
+              {showParse}
               pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
               mitigation={state.tab === 'damage-taken'}
               healing={state.tab === 'healing'}

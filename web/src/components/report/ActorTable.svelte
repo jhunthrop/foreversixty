@@ -13,6 +13,7 @@
     metricLabel,
     percentiles = new Map<string, Placement>(),
     parseFallback = '',
+    showParse = true,
     pairsLabel = 'Targets',
     approximate = false,
     amountApproximate = false,
@@ -33,6 +34,8 @@
     percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
     parseFallback?: string;
+    /** False on a report with no ranked boss kill: no Parse column at all. */
+    showParse?: boolean;
     pairsLabel?: string;
     approximate?: boolean;
     /** True when the amounts are prorated too: a window met by a target or boss filter. */
@@ -141,13 +144,15 @@
 {:else}
   <div class="flex flex-col" data-testid="actor-table">
     <div
-      class="text-muted label hidden grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px] gap-x-3 px-2 pb-1 md:grid"
+      class="text-muted label hidden gap-x-3 px-2 pb-1 md:grid {showParse
+        ? 'grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'
+        : 'grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
     >
       <span title="Rank in this table">#</span>
-      <span
-        title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Reads wipe on a wipe, – while nothing of this spec is ranked on this boss yet, … while the rankings are being asked, ? when they could not be reached; empty on Damage Taken and over the whole night."
-        >Parse</span
-      >
+      {#if showParse}<span
+          title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Reads wipe on a wipe, – while nothing of this spec is ranked on this boss yet, … while the rankings are being asked, ? when they could not be reached; empty on Damage Taken and over the whole night."
+          >Parse</span
+        >{/if}
       <span>Name</span>
       <span class="text-right" title="Share of this table's total">Share</span>
       <span title="Amount, split by ability. Hover a segment for the ability.">{metricLabel}</span>
@@ -170,6 +175,7 @@
           {healing}
           deadSince={deadAt.get(actor.guid) ?? null}
           {parseFallback}
+          {showParse}
           {pairsLabel}
           {measure}
           {onChart}
@@ -180,10 +186,12 @@
       {/each}
     </ul>
     <div
-      class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-t px-2 py-2 text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]"
+      class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-t px-2 py-2 text-[14px] {showParse
+        ? 'md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'
+        : 'md:grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
       data-testid="actor-total"
     >
-      <span class="text-muted label md:col-span-3">Total</span>
+      <span class="text-muted label {showParse ? 'md:col-span-3' : 'md:col-span-2'}">Total</span>
       <span class="tabular hidden text-right font-mono text-[12px] md:inline">100%</span>
       <span class="hidden md:inline"></span>
       <span

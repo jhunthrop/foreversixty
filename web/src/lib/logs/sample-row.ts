@@ -4,6 +4,7 @@
 // bundled with the site and read from its static meta (lib/report/sample.ts), shown once and labelled `A sample
 // report` above its row. It never doubles as a feed entry (the feed filters it out by id).
 import { formatDate } from '../report/format';
+import { reportFacts } from '../report/heading';
 import { fetchReportMeta } from '../report/load';
 import { SAMPLE_REPORT_ID } from '../report/sample';
 import type { ReportMeta } from '../report/types';
@@ -35,7 +36,7 @@ export function sampleRowFromMeta(meta: ReportMeta): SampleRow {
     id: meta.id,
     title: meta.title === '' ? meta.zone : meta.title,
     createdAt,
-    dateLabel: formatDate(createdAt),
+    dateLabel: reportFacts(meta).date || formatDate(createdAt),
     summary: recentReportSummary({ zone: meta.zone, killCount, fightCount: meta.fights.length }),
   };
 }

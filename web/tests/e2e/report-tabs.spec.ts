@@ -30,8 +30,8 @@ test('the report opens on its first fight with the chrome the spec sets', async 
     await expect(page.getByTestId(`mode-${mode}`)).toBeEnabled();
     await expect(page.getByTestId(`mode-${mode}`)).not.toContainText('later');
   }
-  await expect(page.getByTestId('mode-replay')).toBeDisabled();
-  await expect(page.getByTestId('mode-replay')).toContainText('later');
+  // Replay is not drawn until it exists: no "later" chip on the tab row.
+  await expect(page.getByTestId('mode-replay')).toHaveCount(0);
   for (const view of ['tables', 'timelines', 'events', 'queries']) {
     await expect(page.getByTestId(`view-${view}`)).toBeVisible();
   }

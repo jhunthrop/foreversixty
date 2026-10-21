@@ -46,7 +46,7 @@ describe('the bundled sample report data', () => {
   const report = read<{ units: Unit[]; fights: { index: number }[] }>('report.json');
 
   it('is the beta night, dated from its own log, with no owner or guild', () => {
-    expect(meta.title).toBe('Beta night, 17 Sept 2026 · sample log');
+    expect(meta.title).toBe('Beta night, 17 Sept 2026');
     expect(meta.created_at.startsWith('2026-09-17')).toBe(true);
     expect(meta.owner).toBeNull();
     expect(meta.guild).toBeUndefined();
@@ -80,5 +80,28 @@ describe('the bundled sample report data', () => {
 
   it('stays under the static asset budget', () => {
     expect(sizeOf(ROOT)).toBeLessThan(MAX_BYTES);
+  });
+});
+
+describe('the sample classes, read from the log', () => {
+  const report = read<{
+    units: { guid: string; kind: string; class?: string; class_source?: string; spec?: string }[];
+  }>('report.json');
+  const players = report.units.filter((unit) => PLAYER_GUID.test(unit.guid));
+
+  it('gives most players a class, read from the spells they cast', () => {
+    const classed = players.filter((unit) => unit.class);
+    expect(classed.length / players.length).toBeGreaterThan(0.85);
+    expect(classed.every((unit) => unit.class_source === 'inferred')).toBe(true);
+    expect(new Set(classed.map((unit) => unit.class)).size).toBeGreaterThanOrEqual(5);
+  });
+
+  it('has no spec to show, so the Spec column hides (no talent spell was cast)', () => {
+    expect(players.some((unit) => unit.spec)).toBe(false);
+  });
+
+  it('shows a class on the opening fight roster rows', () => {
+    const summary = read<{ roster: { class?: string }[] }>('fights/6/summary.json');
+    expect(summary.roster.filter((row) => row.class).length / summary.roster.length).toBeGreaterThan(0.85);
   });
 });
