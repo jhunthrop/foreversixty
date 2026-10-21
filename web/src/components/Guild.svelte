@@ -48,7 +48,8 @@
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
   import { guildMarkSrc } from '../lib/guild/mark';
-  import { bandCountsLine, showBandCounts, updatedLine } from '../lib/guild/overview-view';
+  import { bandFacts } from '../lib/guild/fact-line';
+  import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
   import { claimEntryCopy, claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
@@ -56,6 +57,7 @@
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
+  import FactLine from './guild/FactLine.svelte';
   import GuildOfficerStrip from './guild/GuildOfficerStrip.svelte';
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
@@ -694,14 +696,15 @@
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
             <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
           </div>
-          {#if home?.summary?.updated_at !== undefined && updatedLine(home.summary.updated_at) !== ''}
-            <span class="text-muted text-[12px]">{updatedLine(home.summary.updated_at)}</span>
-          {/if}
-          <p class="text-muted text-[13px]">
-            {rulesetLabel(resolved.ruleset)}
-            {resolved.region.toUpperCase()}{#if showCounts}&#32; · <span class="tabular font-mono"
-                >{bandCountsLine(killed, pulls)}</span
-              >{/if}
+          <p class="text-muted text-[13px]" data-testid="guild-header-facts">
+            <FactLine
+              facts={bandFacts(
+                rulesetLabel(resolved.ruleset),
+                resolved.region,
+                showCounts ? { killed, pulls } : null,
+                home?.summary?.updated_at === undefined ? '' : updatedLine(home.summary.updated_at),
+              )}
+            />
           </p>
 
           <!-- Spec §4.A.1 fourth branch (public visitor): one sign-in prompt in the hero,

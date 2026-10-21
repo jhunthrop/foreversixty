@@ -219,9 +219,9 @@ export const characterHeaderCopy = {
     const parts = [level === null ? '' : `Level ${level}`, race ?? ''].filter((part) => part !== '');
     return parts.length === 0 ? null : parts.join(' ');
   },
-  /** The realm named as a realm, so "Classic Beta PvP" beside a "Hardcore US" badge is never read as a
-   *  second ruleset (W.10): "Classic Beta PvP realm". */
-  realm: (realm: string): string => `${realm} realm`,
+  /** The realm field as the character carries it, and nothing else (P.1): the badge prints the ruleset, so
+   *  the line never has to explain itself. */
+  realm: (realm: string): string => realm,
   /** The trailing chip: "Hardcore US". */
   chip: (ruleset: string, region: string): string => `${rulesetLabel(ruleset)} ${region.toUpperCase()}`,
   /** The guild the way the client prints it, "<Olympus XXVII>" (fix round 2 item 4): the same

@@ -204,12 +204,12 @@ for (const size of SIZES) {
       );
       await page.goto(CHARACTER_PATH);
       await settle(page);
-      await expect(page.getByTestId('forever-score-empty-hint')).toHaveText(
-        'Log a raid with the companion and the score fills in.',
+      // P.1: a visitor to a character with nothing on it gets one sentence and the lookup box.
+      await expect(page.getByTestId('character-not-found-line')).toHaveText(
+        'Elyra Duskvale has no Forever Sixty data yet.',
       );
       await expect(page.getByText('Check the name and ruleset')).toHaveCount(0);
-      await expect(page.getByTestId('character-spec')).toHaveText(/^Priest|Priest$/);
-      await expect(page.getByTestId('character-in-game-descriptor')).not.toContainText('(Player)');
+      await expect(page.getByText('(Player)')).toHaveCount(0);
       await page.screenshot({ path: join(SHOTS, `w9-character-no-logs-${size.name}.png`), fullPage: true });
     });
 

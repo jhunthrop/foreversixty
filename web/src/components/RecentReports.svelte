@@ -77,6 +77,8 @@
       onRetry={() => void load(attemptedCursor)}
       testid="recent-reports-error"
     />
+  {:else if rows.length === 0 && compact}
+    <!-- The landing's panel with nothing in the feed shows only the sample row under it (P.1). -->
   {:else if rows.length === 0}
     <EmptyState message={recentReportsCopy.empty} testid="recent-reports-empty" />
   {:else}

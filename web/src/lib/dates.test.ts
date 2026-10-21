@@ -6,6 +6,8 @@ import {
   formatDayMonthYear,
   isPast,
   latest,
+  nightDate,
+  nightDateOnly,
   relativeDay,
   relativeTime,
   utcDayMonthYear,
@@ -143,5 +145,28 @@ describe("the guild pages' day words, in a zone west of Greenwich", () => {
   it('renders nothing for a value it cannot read', () => {
     expect(dayWord(new Date('nope'))).toBe('');
     expect(dateOnlyWord('soon')).toBe('');
+  });
+});
+
+describe('nightDate (P.1: one night, one date)', () => {
+  const now = new Date(2026, 9, 21, 9, 0);
+
+  it('reads the viewer-zone day as a weekday, day and month, never today or yesterday', () => {
+    expect(nightDate(new Date(2026, 9, 20, 23, 30), now)).toBe('Tue 20 Oct');
+    expect(nightDate(new Date(2026, 9, 21, 1, 0), now)).toBe('Wed 21 Oct');
+  });
+
+  it('is the same words whichever day it is read on', () => {
+    const night = new Date(2026, 9, 20, 20, 0);
+    expect(nightDate(night, new Date(2026, 9, 20, 22, 0))).toBe(
+      nightDate(night, new Date(2026, 9, 21, 22, 0)),
+    );
+  });
+
+  it('adds the year only in another year, and reads a date-only value as written', () => {
+    expect(nightDate(new Date(2025, 11, 31, 20, 0), now)).toBe('Wed 31 Dec 2025');
+    expect(nightDateOnly('2026-10-20', now)).toBe('Tue 20 Oct');
+    expect(nightDateOnly('nope', now)).toBe('');
+    expect(nightDate(new Date('nope'), now)).toBe('');
   });
 });

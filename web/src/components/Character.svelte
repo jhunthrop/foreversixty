@@ -16,6 +16,7 @@
   import {
     encounterSlug,
     fetchCharacter,
+    fetchCharacterRating,
     RankingsError,
     type CharacterFight,
     type CharacterPage,
@@ -35,7 +36,7 @@
   import { componentGaps, foreverOf, hasScore, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
-  import { characterPrompt } from '../lib/character-prompt';
+  import { characterPrompt, showsNoDataPage } from '../lib/character-prompt';
   import { GEAR_ANCHOR, gearSpecLine } from '../lib/gear/panel';
   import { classSlugFromName } from '../lib/report/tree-sizes';
   import CharacterGearPanel from './character/CharacterGearPanel.svelte';
@@ -117,6 +118,8 @@
    *  same cached /v1/me every island on the page shares. */
   let own = $state<MeCharacter | null>(null);
   let owned = $state(false);
+  /** /v1/me has answered (or failed), so `owned` is the settled answer, not the first guess. */
+  let ownerKnown = $state(false);
   /** The latest rated fight and its rating, from the rating panel once it loads (L8.5 fix round
    *  2 item 3): "Every ranked fight" marks that row "rated 65". */
   let rated = $state<{ report_id: string; fight_index: number; overall: number } | null>(null);
@@ -125,6 +128,7 @@
     const requested = resolved;
     own = null;
     owned = false;
+    ownerKnown = false;
     if (requested === null) return;
     const current = readCurrent();
     const active =
@@ -136,9 +140,11 @@
         if (resolved !== requested) return;
         own = ownCharacter(me?.characters, requested);
         owned = active || own !== null;
+        ownerKnown = true;
       })
       .catch(() => {
         own = null;
+        ownerKnown = true;
       });
   });
 
@@ -176,6 +182,36 @@
           owned,
         }),
   );
+  /** Nothing on the page for a viewer who does not hold the character: the one-sentence page (P.1). */
+  const bareForVisitor = $derived(
+    data !== null &&
+      showsNoDataPage({
+        hasScore: hasScore(foreverOf(data)),
+        hasGear: data.gear !== undefined && data.gear.length > 0,
+        hasFights: data.best.length > 0 || data.history.length > 0,
+        owned: false,
+      }),
+  );
+  /** For a bare page a visitor would see, whether the character has a rating after all (the rating panel's own
+   *  endpoint, which the page's answer does not carry): the one-sentence page is only for nothing at all. */
+  let ratingProbe = $state<'idle' | 'pending' | 'none' | 'has'>('idle');
+  $effect(() => {
+    const requested = resolved;
+    if (requested === null || !bareForVisitor || !ownerKnown || owned) {
+      ratingProbe = 'idle';
+      return;
+    }
+    ratingProbe = 'pending';
+    void fetchCharacterRating(requested)
+      .then((rating) => {
+        if (resolved !== requested) return;
+        ratingProbe = rating.sample_size > 0 ? 'has' : 'none';
+      })
+      .catch(() => {
+        if (resolved !== requested) return;
+        ratingProbe = 'none';
+      });
+  });
   /** No score yet and gear to show: the gear card leads, above the empty score card (W.9). */
   const gearFirst = $derived(
     data !== null && !hasScore(foreverOf(data)) && data.gear !== undefined && data.gear.length > 0,
@@ -200,6 +236,11 @@
   {:else}
     <CharacterNotFound path={resolved} name={unloggedName} />
   {/if}
+{:else if data !== null && resolved !== null && bareForVisitor && (!ownerKnown || (!owned && ratingProbe !== 'none' && ratingProbe !== 'has'))}
+  <!-- Whether this is the viewer's own character decides which page they get: wait for /v1/me. -->
+  <Skeleton lines={6} rowHeight="h-4" minHeight={CHARACTER_LOADING_MIN_H} testid="character-skeleton" />
+{:else if data !== null && resolved !== null && bareForVisitor && !owned && ratingProbe === 'none'}
+  <CharacterNotFound path={resolved} name={data.character.name} known />
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): a signed-in chip first

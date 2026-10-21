@@ -14,6 +14,7 @@ import SkyBand from '../components/SkyBand.astro';
 import HomeTimeline from '../components/HomeTimeline.astro';
 import CharacterSearch from '../components/CharacterSearch.astro';
 import ToolCard from '../components/ToolCard.astro';
+import HomeOutcomeRows from '../components/HomeOutcomeRows.astro';
 import ClassCrest from '../components/ClassCrest.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
@@ -29,7 +30,6 @@ import {
   homeCompanionRow,
   homeHeroCopy,
   homeHeroStatePanelCopy,
-  homeProductPanels,
 } from '../lib/home-landing-copy';
 import { battlenetStartUrl } from '../lib/account/api';
 import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -131,7 +131,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                    hero's own flow (margin-box unchanged) -- the "Another class" row below
                    (§3.B.5) needed the identical fix. -->
               <div
-                class="-mx-1 -my-1.5 flex min-w-0 gap-3 overflow-x-auto px-1 py-1.5 md:max-w-[760px] md:gap-2"
+                class="-mx-1 -my-1.5 grid min-w-0 grid-cols-5 gap-x-3 gap-y-4 px-1 py-1.5 md:flex md:max-w-[760px] md:gap-2 md:overflow-x-auto"
                 data-testid="home-class-picker"
               >
                 {classes.map((c) => (
@@ -309,39 +309,11 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
              (`HomeUpgradesPanel.svelte`, mounted by `HomeAccountPanel.svelte` the same
              dynamic-import-once-signed-in way as the hero cards), not
              split between static Astro markup and a slot. `min-h` approximates the ready
-             panel's own height so the mount does not visibly shift "What the site does" beneath it. -->
+             panel's own height so the mount does not visibly shift the rows beneath it. -->
         <div class="min-h-[220px]" data-testid="home-upgrades-slot"></div>
       </section>
 
-      <section class="flex flex-col gap-[14px]" data-testid="home-five-doors">
-        <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">What the site does</h2>
-        <div class="grid grid-cols-1 gap-[14px] sm:grid-cols-2 lg:grid-cols-5">
-          {homeProductPanels.map((panel) => (
-            <ToolCard
-              title={panel.label}
-              description={panel.sentence}
-              href={panel.href}
-              linkLabel={panel.linkLabel}
-              testid={`home-five-doors-${panel.label.toLowerCase()}`}
-            >
-              <svg
-                slot="icon"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="9" />
-              </svg>
-            </ToolCard>
-          ))}
-        </div>
-      </section>
+      <HomeOutcomeRows />
 
       <!-- §3.B.5 "Another class" (signed in only): the signed-in equivalent of the
            signed-out "Best in slot by class" row above -- a smaller, 44px crest row, since

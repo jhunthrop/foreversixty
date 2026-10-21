@@ -127,3 +127,30 @@ export function utcDayMonthYear(value: string): string {
   }
   return formatDayMonthYear(new Date(value));
 }
+
+const SHORT_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+/** "Tue 20 Oct" ("Tue 20 Oct 2025" in another year) for a calendar day. */
+function nightLabelFor(target: { y: number; m: number; d: number }, now: Date): string {
+  const weekday = SHORT_WEEKDAYS[new Date(Date.UTC(target.y, target.m, target.d)).getUTCDay()];
+  const base = `${weekday} ${target.d} ${SHORT_MONTHS[target.m]}`;
+  return target.y === now.getFullYear() ? base : `${base} ${target.y}`;
+}
+
+/**
+ * A raid night's date for a moment, in the viewer's own zone: "Tue 20 Oct". It never says "today"
+ * or "yesterday", so the same night reads the same on the account's report row, the guild
+ * Overview and the Raids tab whenever each is opened (P.1, player review S2-4). An unreadable date
+ * renders as nothing.
+ */
+export function nightDate(d: Date, now: Date = new Date()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return nightLabelFor({ y: d.getFullYear(), m: d.getMonth(), d: d.getDate() }, now);
+}
+
+/** The same label for a date-only value ("2026-10-20"), read as written. */
+export function nightDateOnly(value: string, now: Date = new Date()): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (match === null) return '';
+  return nightLabelFor({ y: Number(match[1]), m: Number(match[2]) - 1, d: Number(match[3]) }, now);
+}

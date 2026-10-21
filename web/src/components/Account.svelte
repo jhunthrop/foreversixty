@@ -657,7 +657,7 @@
             </div>
 
             <StatePanel label="Your reports" testid="account-reports">
-              <MyReports heading={false} />
+              <MyReports heading={false} nightDates />
             </StatePanel>
           </div>
 
@@ -789,8 +789,11 @@
                 <StatePanel label={accountPageCopy.guildLabel} testid="account-guilds-panel">
                   <ul class="flex flex-col" data-testid="account-guilds">
                     {#each me!.guilds as guild (guild.id)}
+                      <!-- While Leave is asking, the confirm card is the row's last thing: no hairline and no
+                           empty line under it (P.1, player review S2-3). -->
                       <li
-                        class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
+                        class={`border-line-soft flex min-h-11 flex-wrap items-center gap-3 py-2 text-[14px] ${leaveAsking === guild.id ? 'pb-0' : 'border-b'}`}
+                        data-testid="account-guild-row"
                       >
                         <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
                         <label class="text-muted flex flex-wrap items-center gap-2 text-[13px]">
@@ -817,18 +820,18 @@
                             {guildConsentCopy.leave}
                           </button>
                         {/if}
-                        <p
-                          class={`text-muted basis-full text-[13px] ${leaveAsking === guild.id ? '' : 'min-h-[21px]'}`}
-                        >
-                          {#if consentSaved === guild.id}
-                            <span data-testid="account-guild-consent-saved">
-                              {guildConsentCopy.consentSaved(guildCharacterCount(guild.id))}
-                            </span>
-                          {/if}
-                        </p>
+                        {#if leaveAsking !== guild.id || consentSaved === guild.id}
+                          <p class="text-muted min-h-[21px] basis-full text-[13px]">
+                            {#if consentSaved === guild.id}
+                              <span data-testid="account-guild-consent-saved">
+                                {guildConsentCopy.consentSaved(guildCharacterCount(guild.id))}
+                              </span>
+                            {/if}
+                          </p>
+                        {/if}
                         {#if leaveAsking === guild.id}
                           <div
-                            class="border-line-soft mb-4 flex basis-full flex-col gap-3 border p-4"
+                            class="border-line-soft flex basis-full flex-col gap-3 border p-4"
                             data-testid="account-guild-leave-confirm"
                           >
                             <p class="text-[13px]">

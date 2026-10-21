@@ -58,7 +58,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await expect(page.getByTestId('roster-percentile')).toHaveCount(0);
   await expect(page.getByTestId('roster-spec')).toHaveCount(0);
   await expect(page.getByTestId('report-sample-note')).toContainText(
-    'A real beta night with the names changed',
+    'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',
   );
   await expect(page).not.toHaveURL(/fight=/);
   // Opens on the biggest pull (fight 6, 12:43), not the first.

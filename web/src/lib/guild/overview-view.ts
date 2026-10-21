@@ -2,7 +2,7 @@
 // The guild page's header band and Overview cards in a player's words (lifecycle review round 4,
 // N8/N9): plurals from the one helper, days as words, and the counts only where the viewer can
 // open what they count. Pure, so every rule is pinned without a page.
-import { dateOnlyWord, dayWord } from '../dates';
+import { dayWord, nightDate, nightDateOnly } from '../dates';
 import { counted } from '../plural';
 import type { GuildViewerRole } from './api';
 
@@ -27,14 +27,15 @@ export function updatedLine(updatedAt: string, now: Date = new Date()): string {
   return word === '' ? '' : `Updated ${word}`;
 }
 
-/** The day word of a report's `created_at` (an instant) for a raid-night row. */
+/** The date of a report's `created_at` (an instant) for a raid-night row: "Tue 20 Oct", the same words
+ *  the account's report row prints for the same night. */
 export function raidNightDay(createdAt: string, now: Date = new Date()): string {
-  return dayWord(new Date(createdAt), now);
+  return nightDate(new Date(createdAt), now);
 }
 
 /** A progression night's date, which the API sends as a calendar date. */
 export function progressionNightDay(date: string, now: Date = new Date()): string {
-  return date.length > 10 ? dayWord(new Date(date), now) : dateOnlyWord(date, now);
+  return date.length > 10 ? nightDate(new Date(date), now) : nightDateOnly(date, now);
 }
 
 /** "1 encounter down this tier: Onyxia." / "No encounter down this tier yet." */
@@ -42,8 +43,6 @@ export function encountersDownLine(names: readonly string[]): string {
   if (names.length === 0) return 'No encounter down this tier yet.';
   return `${counted(names.length, 'encounter')} down this tier: ${names.join(', ')}.`;
 }
-
-export const UNNAMED_ZONES_LINE = 'Barrow Deeps and Hyjal Summit have no encounter list yet.';
 
 /** "1 raider · 4 waiting for approval · 0 below the rating floor". */
 export function rosterCardParts(summary: {

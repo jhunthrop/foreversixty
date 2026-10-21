@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { characterPrompt } from './character-prompt';
+import { characterPrompt, showsNoDataPage } from './character-prompt';
 
 describe('characterPrompt (W.10: one prompt on an empty character page)', () => {
   it('asks for the companion when there are no logs, whatever else is missing', () => {
@@ -30,5 +30,23 @@ describe('characterPrompt (W.10: one prompt on an empty character page)', () => 
   it('drops the sign-in bar sentence while there is no score', () => {
     expect(characterPrompt({ hasScore: false, hasGear: true, owned: false }).quietBar).toBe(true);
     expect(characterPrompt({ hasScore: true, hasGear: false, owned: false }).quietBar).toBe(false);
+  });
+});
+
+describe('showsNoDataPage (P.1, the not-mine page with no data)', () => {
+  const EMPTY = { hasScore: false, hasGear: false, hasFights: false };
+
+  it('is the one-sentence page for a visitor and a character the account does not hold', () => {
+    expect(showsNoDataPage({ ...EMPTY, owned: false })).toBe(true);
+  });
+
+  it('keeps the full set for the signed-in holder', () => {
+    expect(showsNoDataPage({ ...EMPTY, owned: true })).toBe(false);
+  });
+
+  it('is not used once the character has a score, gear or a fight', () => {
+    expect(showsNoDataPage({ ...EMPTY, hasScore: true, owned: false })).toBe(false);
+    expect(showsNoDataPage({ ...EMPTY, hasGear: true, owned: false })).toBe(false);
+    expect(showsNoDataPage({ ...EMPTY, hasFights: true, owned: false })).toBe(false);
   });
 });

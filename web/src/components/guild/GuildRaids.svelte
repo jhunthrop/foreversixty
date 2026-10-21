@@ -9,8 +9,9 @@
   import { classColorVar } from '../../lib/report/format';
   import { fetchGuildProgression, type GuildRaidRow } from '../../lib/guild/api';
   import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
-  import { bossIdsOf, raidTallyLine } from '../../lib/guild/raid-view';
+  import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import EmptyState from '../ui/EmptyState.svelte';
+  import FactLine from './FactLine.svelte';
 
   let {
     rows,
@@ -78,11 +79,12 @@
             data-testid={`guild-raid-row-${row.id}`}
           >
             <span class="min-w-[140px] text-[14px] font-semibold">{row.zone}</span>
-            <span class="text-muted tabular font-mono text-[13px]">{raidNightDay(row.created_at)}</span>
+            <span class="text-muted tabular text-[13px]">{raidNightDay(row.created_at)}</span>
             <span class="text-muted tabular font-mono text-[13px]">{minutes(row.duration_ms)}</span>
-            <span class="text-muted tabular ml-auto font-mono text-[13px]">
-              {raidTallyLine(row, bossIds)}
-            </span>
+            <FactLine
+              facts={raidTallyParts(row, bossIds)}
+              class="text-muted tabular ml-auto text-right text-[13px]"
+            />
           </button>
           {#if isOpen}
             <div class="flex flex-col gap-3 pb-4" data-testid={`guild-raid-expanded-${row.id}`}>

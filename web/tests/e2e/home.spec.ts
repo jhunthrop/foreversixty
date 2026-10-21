@@ -46,12 +46,10 @@ test('homepage states the one fixed sentence (tenet 14) and stops, not a marketi
   await expect(
     page.getByTestId('home-class-picker-large').getByRole('heading', { name: 'Best in slot by class' }),
   ).toBeVisible();
-  // Five doors (§3.A.5): unchanged copy, now with a visible "Open the X" line per card.
-  await expect(page.getByTestId('home-five-doors-planner')).toContainText('Open the planner');
-  await expect(page.getByTestId('home-five-doors-simulator')).toContainText('Open the simulator');
-  await expect(page.getByTestId('home-five-doors-logs')).toContainText('Open the logs');
-  await expect(page.getByTestId('home-five-doors-rankings')).toContainText('Open the rankings');
-  await expect(page.getByTestId('home-five-doors-guides')).toContainText('Open guides');
+  // Three outcome rows (P.1) in place of the five feature cards.
+  await expect(page.getByTestId('home-outcome-planner')).toContainText('Plan your talents');
+  await expect(page.getByTestId('home-outcome-sim')).toContainText('Sim your gear');
+  await expect(page.getByTestId('home-outcome-logs')).toContainText('Upload tonight’s raid');
   // Spec §3.A.6 "Around the site": Recent reports and Top guilds, unchanged mechanism.
   await expect(page.getByTestId('recent-reports')).toBeVisible();
   await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();

@@ -186,11 +186,13 @@ export const addonCopy = {
     src: '/addon/companion-status.jpg',
     width: 1600,
     height: 436,
-    /** The phone source (W.10): the headline card alone, cropped from the 0.2.13 Status capture
-     *  and shown at 100% width under 640px, where the full page is too small to read. */
+    /** The phone source (W.10, P.1): the headline's title and sub line only, a 2x crop of the same
+     *  Status capture, shown at 100% width under 640px; the sub text is 11px at 314px wide. */
     phoneSrc: '/addon/companion-status-phone.jpg',
-    phoneWidth: 840,
-    phoneHeight: 294,
+    phoneWidth: 734,
+    phoneHeight: 172,
+    /** The label on the picture while the visitor is signed out: the name in it is not theirs. */
+    exampleLabel: 'Example',
     alt: 'The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow Jackzon” and the link “Open this report on the site”.',
   },
   /** The disclosure that holds the paste box. */

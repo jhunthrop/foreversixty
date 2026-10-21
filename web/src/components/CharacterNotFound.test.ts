@@ -49,3 +49,22 @@ describe('Character.svelte', () => {
     expect(source).toMatch(/\{#if owned\}\s*<CharacterUnlogged[\s\S]*\{:else\}\s*<CharacterNotFound/);
   });
 });
+
+describe('CharacterNotFound for a character the site holds with no data (P.1)', () => {
+  const { body } = render(CharacterNotFound, { props: { path: PATH, name: 'Nobody Here', known: true } });
+
+  it('reads "<Name> has no Forever Sixty data yet." under the name', () => {
+    expect(body).toContain('>Nobody Here</h1>');
+    expect(body).toContain('Nobody Here has no Forever Sixty data yet.');
+    expect(body).not.toContain('Character not found');
+    expect(body).not.toContain('No character called');
+  });
+
+  it('keeps the lookup box and carries one quiet "Get the addon" link, no upload link', () => {
+    expect(body).toContain('data-testid="character-not-found-form"');
+    const next = /data-testid="character-not-found-next">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
+    expect(next).toContain('>Get the addon</a>');
+    expect(next).not.toContain('Upload logs');
+    expect(next).not.toContain('Your character?');
+  });
+});

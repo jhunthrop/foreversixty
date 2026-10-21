@@ -10,7 +10,7 @@
   import { rowLink } from '../lib/report/format';
   import { fetchGuildRankings, type GuildRankingRow } from '../lib/rankings/api';
   import { homeTopGuildsCopy } from '../lib/rankings/copy';
-  import EmptyState from './ui/EmptyState.svelte';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
@@ -52,7 +52,12 @@
     testid="home-top-guilds-error"
   />
 {:else if rows.length === 0}
-  <EmptyState message={homeTopGuildsCopy.empty} testid="home-top-guilds-empty" />
+  <div class="flex flex-col items-start gap-3" data-testid="home-top-guilds-empty">
+    <p class="text-muted text-[14px]">{homeTopGuildsCopy.empty}</p>
+    <a class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4" href={homeTopGuildsCopy.emptyHref}>
+      {homeTopGuildsCopy.emptyAction}
+    </a>
+  </div>
 {:else}
   <ul class="reveal flex flex-col" data-testid="home-top-guilds">
     {#each rows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}

@@ -14,6 +14,7 @@
   import { logsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { myReportsCopy } from '../lib/reports/my-reports-copy';
+  import { nightDate } from '../lib/dates';
   import ReportRow from './ReportRow.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -23,10 +24,14 @@
     heading = true,
     guilds = [],
     uploadAction = true,
+    nightDates = false,
   }: {
     heading?: boolean;
     /** The empty state's "Upload a log" link; off on /logs, where the page's own header carries it. */
     uploadAction?: boolean;
+    /** The account page's rows print the night's date ("Tue 20 Oct"), the words the guild Overview uses for the
+     *  same night, instead of /logs' relative age (P.1). */
+    nightDates?: boolean;
     /** §4.C.1's own tab strip source: `Me.guilds`, every guild this account belongs to. */
     guilds?: readonly { id: number; name: string }[];
   } = $props();
@@ -144,6 +149,7 @@
           href={`/reports/${report.id}`}
           title={report.title === '' ? report.zone : report.title}
           createdAt={report.created_at}
+          dateLabel={nightDates ? nightDate(new Date(report.created_at)) : ''}
           summary={accountReportSummary({
             zone: report.zone,
             fightCount: report.fight_count,

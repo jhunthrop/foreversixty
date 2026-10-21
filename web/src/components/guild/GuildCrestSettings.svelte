@@ -166,17 +166,30 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <label class="label text-muted" for="guild-crest-file">{guildCrestCopy.pickerLabel}</label>
-    <input
-      id="guild-crest-file"
-      type="file"
-      accept={CREST_ACCEPT_ATTR}
-      bind:this={fileInputEl}
-      onchange={onFileChange}
-      disabled={busy !== null}
-      class="text-[13px]"
-      data-testid="guild-crest-file-input"
-    />
+    <!-- The browser's own file control is hidden (it stays in the page for the file dialog, a keyboard and
+         a screen reader); the ghost button is its label, and the focus ring shows on the label. -->
+    <div class="flex flex-wrap items-center gap-3">
+      <label
+        class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text has-[:focus-visible]:outline-gold cursor-pointer px-4 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ${busy !== null ? BUSY_CLASS : ''}`}
+        data-testid="guild-crest-choose"
+      >
+        {guildCrestCopy.chooseButton}
+        <input
+          id="guild-crest-file"
+          type="file"
+          accept={CREST_ACCEPT_ATTR}
+          bind:this={fileInputEl}
+          onchange={onFileChange}
+          disabled={busy !== null}
+          class="sr-only"
+          aria-label={guildCrestCopy.pickerLabel}
+          data-testid="guild-crest-file-input"
+        />
+      </label>
+      <span class="text-muted min-w-0 truncate text-[13px]" data-testid="guild-crest-file-name"
+        >{selectedFile === null ? guildCrestCopy.noneChosen : selectedFile.name}</span
+      >
+    </div>
     <p class="text-muted text-[12px]">{CREST_RULES_LINE}</p>
   </div>
 
@@ -191,7 +204,7 @@
   <div class="flex flex-wrap items-center gap-3">
     <button
       type="button"
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4 ${busy === 'saving' ? BUSY_CLASS : ''}`}
+      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4 disabled:cursor-not-allowed disabled:opacity-50 ${busy === 'saving' ? BUSY_CLASS : ''}`}
       onclick={() => void onSave()}
       disabled={selectedFile === null || busy !== null}
       aria-busy={busy === 'saving'}

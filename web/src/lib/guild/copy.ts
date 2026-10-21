@@ -162,6 +162,10 @@ export const guildCrestCopy = {
   heading: 'Guild crest',
   defaultCaption: "Default: your faction's logo",
   pickerLabel: 'Choose a crest image',
+  /** The styled picker button (P.1): a ghost button, never the browser's own file control. */
+  chooseButton: 'Choose an image',
+  /** Beside the button until a file is picked. */
+  noneChosen: 'No image chosen',
   save: 'Save',
   saving: 'Saving…',
   saved: 'Saved.',

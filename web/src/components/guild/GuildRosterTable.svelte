@@ -59,6 +59,7 @@
   } from '../../lib/guild/roster-sort';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import FactLine from './FactLine.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
   let {
@@ -272,7 +273,7 @@
   {#each facts as fact, i (fact.key)}
     <span class="whitespace-nowrap"
       ><span
-        class={`${fact.key === 'seen' ? 'text-muted' : ''} ${fact.key === 'gap' ? 'tabular font-mono' : ''}`}
+        class={`${fact.key === 'seen' ? 'text-muted' : ''} ${fact.key === 'gap' ? 'tabular' : ''}`}
         style={fact.hover === undefined ? '' : 'cursor:help'}
         title={fact.hover}
         data-testid={fact.key === 'gap' ? 'guild-roster-ingame-gap' : undefined}>{fact.text}</span
@@ -553,14 +554,18 @@
                   data-testid="guild-roster-rank">{rankWord(row.rank)}</span
                 >
               </span>
-              {#each chips as chip, i (chip)}
-                <span
-                  class={`tabular font-mono text-[12px] whitespace-nowrap ${i === 0 ? '' : 'text-muted'}`}
-                  style={chipTitle(chip, row) === undefined ? '' : 'cursor:help'}
-                  title={chipTitle(chip, row)}
-                  data-testid="guild-roster-chip">{chip}</span
-                >
-              {/each}
+              {#if chips.length > 0}
+                <!-- The stats as one sentence in the body face, " · " between them (P.1). -->
+                <FactLine
+                  class="tabular text-[12px]"
+                  facts={chips.map((chip, i) => ({
+                    text: chip,
+                    title: chipTitle(chip, row),
+                    class: i === 0 ? '' : 'text-muted',
+                    testid: 'guild-roster-chip',
+                  }))}
+                />
+              {/if}
               {#if row.logged_recently && !everyoneOnlineToday}
                 <span class="text-muted text-[12px]" data-testid="guild-roster-online">
                   {guildHomeCopy.loggedRecently}

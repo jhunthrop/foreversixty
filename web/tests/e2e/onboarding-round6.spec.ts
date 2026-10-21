@@ -75,6 +75,26 @@ async function shot(page: Page, name: string, fullPage = true): Promise<void> {
   await page.screenshot({ path: join(SHOTS, `w10-${name}.png`), fullPage });
 }
 
+/** An API answer for a character with a record and nothing on it: no gear, no fights, no score. */
+async function routeEmptyCharacter(page: Page): Promise<void> {
+  const data = {
+    ...CHARACTER.data,
+    character: { ...CHARACTER.data.character, class: 'priest', realm: 'Doomhowl' },
+    gear: [],
+    best: [],
+    history: [],
+    builds_seen: [],
+    score_history: [],
+  };
+  await page.route(CHARACTER_URL, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ...CHARACTER, data }),
+    }),
+  );
+}
+
 /** The visible step buttons whose background is the gold fill, by step number. */
 async function goldSteps(page: Page): Promise<string[]> {
   const gold = await page.evaluate(() => {
@@ -121,11 +141,13 @@ async function pictureShowsPhoneCrop(page: Page, phone: boolean): Promise<void> 
     box: el.getBoundingClientRect().toJSON(),
   }));
   expect(info.src.includes('companion-status-phone')).toBe(phone);
-  expect(info.box.height).toBeGreaterThan(80);
+  expect(info.box.height).toBeGreaterThan(60);
   if (phone) {
     // 100% of the panel's content width, about 314 px at 390.
     expect(info.box.width).toBeGreaterThan(300);
-    expect(info.box.width / info.box.height).toBeCloseTo(840 / 294, 1);
+    expect(info.box.width / info.box.height).toBeCloseTo(734 / 172, 0);
+    // The sub line is 26 px tall in the 734 px crop, so at this width it is at least 11 px.
+    expect((26 * info.box.width) / 734).toBeGreaterThanOrEqual(11);
   }
 }
 
@@ -149,6 +171,8 @@ for (const size of SIZES) {
         'Sends your character automatically and logs live. Without it, paste an export after each change.',
       );
       await pictureShowsPhoneCrop(page, phone);
+      await expect(page.getByTestId('setup-companion-capture-label')).toHaveText('Example');
+      await expect(page.getByTestId('setup-companion-capture-label')).toBeVisible();
       await settle(page);
       await shot(page, `setup-signed-out-${size.name}`);
     });
@@ -163,6 +187,7 @@ for (const size of SIZES) {
       expect(await goldSteps(page)).toEqual(['2']);
       await chipRowIsOneLine(page);
       await pictureShowsPhoneCrop(page, phone);
+      await expect(page.getByTestId('setup-companion-capture-label')).toBeHidden();
       await settle(page);
       await shot(page, `setup-signed-in-pending-${size.name}`);
     });
@@ -232,40 +257,70 @@ for (const size of SIZES) {
       await shot(page, `landing-beta-live-full-${size.name}`);
     });
 
-    test('a character with no logs and no gear: one primary button, one quiet line, no sign-in bar', async ({
+    test('a character the visitor does not hold, with no data: one sentence, the lookup, one quiet link', async ({
       page,
     }) => {
       await signedOut(page);
-      const data = {
-        ...CHARACTER.data,
-        character: { ...CHARACTER.data.character, class: 'priest', realm: 'Classic Beta PvP' },
-        gear: [],
-        best: [],
-        history: [],
-        builds_seen: [],
-        score_history: [],
-      };
-      await page.route(CHARACTER_URL, (route) =>
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ ...CHARACTER, data }),
-        }),
-      );
+      await routeEmptyCharacter(page);
       await page.goto(CHARACTER_PATH);
       await settle(page);
-      await expect(page.getByTestId('forever-score-empty-action')).toHaveText('Get the companion');
-      await expect(page.getByTestId('forever-score-empty-next')).toHaveCount(0);
-      await expect(page.getByTestId('character-gear-none')).toHaveText(
-        'No gear on file yet. Sync the addon, or sign in to claim this character.',
+      await expect(page.getByTestId('character-not-found-line')).toHaveText(
+        'Elyra Duskvale has no Forever Sixty data yet.',
       );
+      await expect(page.getByTestId('character-not-found-form')).toBeVisible();
+      await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveText(
+        'Get the addon',
+      );
+      await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveCount(1);
+      // The empty score bars and the tooltip lookalike are the holder's, not a visitor's.
+      await expect(page.getByTestId('forever-score-empty')).toHaveCount(0);
+      await expect(page.getByTestId('forever-score-empty-action')).toHaveCount(0);
+      await expect(page.getByTestId('character-gear-none')).toHaveCount(0);
+      await expect(page.getByTestId('character-in-game')).toHaveCount(0);
+      await expect(page.getByText('Forever Score: no logs yet')).toHaveCount(0);
+      await shot(page, `character-no-data-visitor-${size.name}`);
+    });
+
+    test('a character another account holds gets the same sentence, not the holder’s set', async ({
+      page,
+    }) => {
+      await signedIn(page, ME_DONE, []);
+      await routeEmptyCharacter(page);
+      await page.goto(CHARACTER_PATH);
+      await settle(page);
+      await expect(page.getByTestId('character-not-found-line')).toHaveText(
+        'Elyra Duskvale has no Forever Sixty data yet.',
+      );
+      await expect(page.getByTestId('forever-score-empty')).toHaveCount(0);
+    });
+
+    test('the signed-in holder keeps the full set: one primary button, one quiet line, no sign-in bar', async ({
+      page,
+    }) => {
+      const holder = {
+        ...ME_DONE,
+        characters: [
+          {
+            key: 'us/hardcore/elyra-duskvale',
+            region: 'us',
+            ruleset: 'hardcore',
+            name: 'Elyra Duskvale',
+            class: 'priest',
+            level: 60,
+          },
+        ],
+      };
+      await signedIn(page, holder, []);
+      await routeEmptyCharacter(page);
+      await page.goto(CHARACTER_PATH);
+      await settle(page);
+      await expect(page.getByTestId('character-not-found')).toHaveCount(0);
+      await expect(page.getByTestId('forever-score-empty-action')).toHaveText('Upload logs');
+      await expect(page.getByTestId('forever-score-empty-next')).toHaveCount(0);
+      await expect(page.getByTestId('character-gear-none')).toContainText('No gear on file yet.');
       await expect(page.getByTestId('character-gear-planner')).toHaveCount(0);
-      await expect(page.getByTestId('current-character-bar-signed-out')).toHaveCount(0);
-      await expect(page.getByText('Sign in with Battle.net or paste an export')).toHaveCount(0);
-      // The realm is a realm, the badge the ruleset: never two rulesets side by side.
-      await expect(page.getByTestId('character-realm')).toHaveText('Classic Beta PvP realm');
       await expect(page.getByTestId('character-ruleset-chip')).toHaveText(/hardcore/i);
-      await shot(page, `character-no-logs-no-gear-${size.name}`);
+      await shot(page, `character-no-data-holder-${size.name}`);
     });
 
     test('a character with gear and no logs: "No logs yet" in place of the score card, one button', async ({

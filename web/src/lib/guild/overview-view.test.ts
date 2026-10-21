@@ -39,10 +39,11 @@ describe('updatedLine and the raid-night days', () => {
     expect(updatedLine('not a date', NOW)).toBe('');
   });
 
-  it('words a report instant and a progression date alike', () => {
-    expect(raidNightDay(new Date(2026, 9, 20, 19, 0).toISOString(), NOW)).toBe('today');
-    expect(progressionNightDay('2026-10-20', NOW)).toBe('today');
-    expect(progressionNightDay('2026-10-19', NOW)).toBe('yesterday');
+  it('words a report instant and a progression date alike, as the night’s date and never today', () => {
+    expect(raidNightDay(new Date(2026, 9, 20, 19, 0).toISOString(), NOW)).toBe('Tue 20 Oct');
+    expect(raidNightDay(new Date(2026, 9, 19, 19, 0).toISOString(), NOW)).toBe('Mon 19 Oct');
+    expect(progressionNightDay('2026-10-20', NOW)).toBe('Tue 20 Oct');
+    expect(progressionNightDay('2026-10-19', NOW)).toBe('Mon 19 Oct');
   });
 });
 

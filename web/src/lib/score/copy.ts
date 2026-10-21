@@ -128,6 +128,9 @@ export const scoreCopy = {
   notFoundTitle: 'Character not found',
   notFoundLine: (name: string, where: string): string => `No character called ${name} on ${where} yet.`,
   notFoundLookupLabel: 'Look up another character',
+  /** A character the site holds with nothing on it, shown to a visitor who does not hold it (P.1). */
+  noDataLine: (name: string): string => `${name} has no Forever Sixty data yet.`,
+  noDataAddon: 'Get the addon',
 
   /** The no-logs card (fix round 2 item 4). */
   noLogsTitle: 'No logs yet',

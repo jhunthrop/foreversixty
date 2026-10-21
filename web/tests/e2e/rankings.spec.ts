@@ -679,7 +679,7 @@ test('a guild page leads with the pull count and kills, and its Progression tab 
 
   await expect(page.locator('h1')).toHaveText('The Last Watch');
   // The public read's progression rows (one boss with kills, 14 + 31 pulls) feed the header.
-  await expect(page.getByTestId('guild')).toContainText('1 bosses down · 45 pulls');
+  await expect(page.getByTestId('guild')).toContainText('1 boss down · 45 pulls');
   await expect(page.getByTestId('guild')).toContainText('Sanguine Depths, fixture night');
 
   // The per-boss lists moved to the Progression tab, which reads the guild's own progression
