@@ -106,7 +106,12 @@ type LootCandidate struct {
 	IlvlDelta         *int       `json:"ilvl_delta"`
 	Attendance        Attendance `json:"attendance"`
 	AlreadyEquivalent bool       `json:"already_equivalent"`
-	tier              int
+	// Replaces names the item this character wears now in the drop's slot (empty when the slot is
+	// empty or the item cannot be named); ItemsWon counts the awards this character has had in this
+	// guild this tier (Onyxia is the only encounter an award can name, so every award row is the tier).
+	Replaces string `json:"replaces"`
+	ItemsWon int    `json:"items_won"`
+	tier     int
 }
 
 // LootItemView is one of Onyxia's own 22 drops, as the Loot tab shows it.
@@ -199,6 +204,8 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		}
 	}
 
+	wonBy := awardCounts(awards)
+
 	for _, item := range onyxiaLoot {
 		// Two of the table's items can share a name (the Alliance and Horde "Head of Onyxia" quest
 		// items, both slotless); the council lists a name once and says how many it stands for.
@@ -212,6 +219,9 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		iv := LootItemView{ItemID: item.ItemID, Name: item.Name, Icon: item.Icon, Quality: item.Quality, Slot: item.Slot, Copies: 1}
 		iv.AwardedTo = awards[item.ItemID]
 		iv.Candidates = s.lootCandidates(roster, item, present, nights)
+		for i := range iv.Candidates {
+			iv.Candidates[i].ItemsWon = wonBy[iv.Candidates[i].CharacterKey]
+		}
 		view.Items = append(view.Items, iv)
 	}
 	return view, nil
@@ -254,6 +264,7 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[st
 			CharacterKey: key, Name: row.Name,
 			Attendance: Attendance{Present: present[row.CharacterKey], Nights: nights},
 		}
+		cand.Replaces = s.wornName(row, item.Slot)
 		if row.Class != nil {
 			cand.Class = *row.Class
 		}
@@ -279,6 +290,19 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[st
 	}
 	sortLootCandidates(out)
 	return out
+}
+
+// wornName is the name of the item row wears in slot, or "" when the slot is empty or the item is
+// not one this class's item table can name.
+func (s *Store) wornName(row RosterRow, slot string) string {
+	wornID, ok := row.gear[slot]
+	if !ok {
+		return ""
+	}
+	if it, found := s.buildItemFor(row.className, wornID); found {
+		return it.Name
+	}
+	return ""
 }
 
 // bisMatch is lootCandidates' own tier-0 test: row's spec band names item for its own slot
@@ -619,4 +643,15 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 		s.logger().Info("guilds", "op", "loot_award_delete", "guild_id", guildID, "award_id", awardID, "user_id", actor.UserID)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "removed"})
 	}
+}
+
+// awardCounts is how many of the tier's drops each character has been awarded in this guild. An
+// award row names one encounter (Onyxia, the only one an award can name), so every row is the
+// current tier and the count needs no table of its own.
+func awardCounts(awards map[int]*AwardedTo) map[string]int {
+	out := make(map[string]int, len(awards))
+	for _, a := range awards {
+		out[a.CharacterKey]++
+	}
+	return out
 }

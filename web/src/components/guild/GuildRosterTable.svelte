@@ -25,14 +25,14 @@
     GuildRosterRow,
   } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
+  import { addonSnapshotLine, addonSpecName } from '../../lib/guild/roster-addon';
   import {
-    addonGapLabel,
-    addonIdentity,
-    addonLevelSpec,
-    addonSeen,
-    addonSnapshotLine,
-    addonSpecName,
-  } from '../../lib/guild/roster-addon';
+    RANKS_PENDING_LINE,
+    entryFacts,
+    inGameFacts,
+    rosterStatChips,
+    type InGameFact,
+  } from '../../lib/guild/roster-facts';
   import {
     approveAllQuestion,
     can as hasCapability,
@@ -56,7 +56,7 @@
     type RosterRoleFilter,
     type RosterSortKey,
   } from '../../lib/guild/roster-sort';
-  import { specName } from '../../lib/guild/spec-name';
+  import { specClassName } from '../../lib/guild/spec-name';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -116,6 +116,8 @@
   let sortKey = $state<RosterSortKey>(DEFAULT_ROSTER_SORT);
   /** The waiting row whose Decline is asking first, and whether Approve all is. */
   let decliningKey = $state<string | null>(null);
+  /** The verified row whose Remove is asking first. */
+  let removingKey = $state<string | null>(null);
   let confirmingApproveAll = $state(false);
 
   const floor = $derived(ratingFloor(roster));
@@ -190,6 +192,10 @@
     confirmingApproveAll = false;
     onApproveAll();
   }
+  function doRemove(row: GuildRosterRow): void {
+    removingKey = null;
+    onRemove(row);
+  }
   function doDecline(row: GuildRosterRow): void {
     decliningKey = null;
     onDecline(row);
@@ -224,22 +230,41 @@
   // A name with no account row: the same shape, a different class so the account rows stay
   // the only `guild-roster-row`s.
   const ENTRY_ROW =
-    'guild-roster-entry flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 lg:flex-nowrap';
+    'guild-roster-entry flex flex-wrap items-center gap-x-3 gap-y-2 border-line-soft border-b py-2.5 lg:flex-nowrap';
   const MUTED_WORD = 'text-muted text-[12px]';
 </script>
 
+{#snippet factList(facts: InGameFact[])}
+  <!-- Each fact is one unbreakable piece (it wraps only as a whole) and carries its own trailing
+       dot, so a wrap never leaves a dot at the start of a line. The spaces are mustaches because
+       Svelte drops a bare space at the end of an {#each} body. -->
+  <!-- eslint-disable svelte/no-useless-mustaches -->
+  {#each facts as fact, i (fact.key)}
+    <span class="whitespace-nowrap"
+      ><span
+        class={`${fact.key === 'seen' ? 'text-muted' : ''} ${fact.key === 'gap' ? 'tabular font-mono' : ''}`}
+        style={fact.hover === undefined ? '' : 'cursor:help'}
+        title={fact.hover}
+        data-testid={fact.key === 'gap' ? 'guild-roster-ingame-gap' : undefined}>{fact.text}</span
+      >{#if i < facts.length - 1}{' '}<span class="text-muted" aria-hidden="true"
+          >{guildRosterAddonCopy.separator}</span
+        >{/if}</span
+    >{' '}
+  {/each}
+  <!-- eslint-enable svelte/no-useless-mustaches -->
+{/snippet}
+
 {#snippet inGame(row: GuildRosterRow)}
-  {@const identity = addonIdentity(row)}
-  {@const none = identity === null || row.addon === undefined || row.addon === null}
+  {@const facts = inGameFacts(row, now)}
   <!-- The slot is the same width on every row, so the row's height never depends on how much
        the addon knew: its text wraps inside it. Below lg it has a line of its own, and a row
        the snapshot did not carry has none there at all (no lone "—"). -->
   <div
-    class={`min-w-0 basis-full pl-12 text-[12px] break-words lg:shrink-0 lg:basis-[260px] lg:pl-0 ${none ? 'hidden lg:block' : ''}`}
+    class={`min-w-0 basis-full pl-12 text-[12px] break-words max-lg:order-2 lg:shrink-0 lg:basis-[260px] lg:pl-0 ${facts.length === 0 ? 'hidden lg:block' : ''}`}
     data-testid="guild-roster-ingame-slot"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
-    {#if identity === null || row.addon === undefined || row.addon === null}
+    {#if facts.length === 0}
       <span
         class="text-muted"
         style="cursor:help"
@@ -247,62 +272,22 @@
         data-testid="guild-roster-ingame-none">{guildRosterAddonCopy.notSeen}</span
       >
     {:else}
-      {@const withheld =
-        row.addon.level === null &&
-        row.addon.spec === null &&
-        row.addon.gear_gap === null &&
-        row.addon.build === null}
-      {@const seen = addonSeen(row.addon.seen_at, now, withheld)}
-      {@const gapLabel = addonGapLabel(row.addon.gear_gap)}
-      {@const build = row.addon.build !== null && row.addon.build !== '' ? row.addon.build : null}
-      <!-- The spaces are mustaches because Svelte drops a bare space at the start of an {#if}. -->
-      <!-- eslint-disable svelte/no-useless-mustaches -->
-      <span data-testid="guild-roster-ingame"
-        >{#if identity.level !== null}{addonLevelSpec(
-            identity.level,
-            identity.spec,
-          )}{#if identity.spec !== null}
-            {' '}<span class="text-muted">{guildRosterAddonCopy.addonTag}</span
-            >{/if}{/if}{#if gapLabel !== null}{#if identity.level !== null}
-            {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
-          {/if}
-          <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span
-          >{/if}{#if build !== null}{#if identity.level !== null || gapLabel !== null}
-            {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
-          {/if}
-          {guildRosterAddonCopy.build(
-            build,
-          )}{/if}{#if seen !== null}{#if identity.level !== null || gapLabel !== null || build !== null}
-            {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
-          {/if}
-          <span class="text-muted" style="cursor:help" title={seen.hover}>{seen.label}</span>{/if}</span
-      >
-      <!-- eslint-enable svelte/no-useless-mustaches -->
+      <span data-testid="guild-roster-ingame">{@render factList(facts)}</span>
     {/if}
   </div>
 {/snippet}
 
 {#snippet entryInGame(entry: GuildRosterEntry)}
-  {@const seen = entry.seen_at === undefined ? null : addonSeen(entry.seen_at, now)}
-  {@const level = entry.level === undefined ? null : guildRosterAddonCopy.level(entry.level)}
-  {@const none = level === null && seen === null}
+  {@const facts = entryFacts(entry, now)}
   <div
-    class={`min-w-0 basis-full pl-12 text-[12px] break-words lg:shrink-0 lg:basis-[260px] lg:pl-0 ${none ? 'hidden lg:block' : ''}`}
+    class={`text-nav min-w-0 basis-full pl-12 text-[12px] break-words max-lg:order-2 lg:shrink-0 lg:basis-[260px] lg:pl-0 ${facts.length === 0 ? 'hidden lg:block' : ''}`}
     data-testid="guild-roster-entry-ingame"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
-    {#if none}
-      <span class="text-muted" title={guildRosterModelCopy.states.not_seen}
-        >{guildRosterAddonCopy.notSeen}</span
-      >
+    {#if facts.length === 0}
+      <span title={guildRosterModelCopy.states.not_seen}>{guildRosterAddonCopy.notSeen}</span>
     {:else}
-      <span
-        >{level ?? ''}{#if level !== null && seen !== null}
-          &nbsp;<span class="text-muted">{guildRosterAddonCopy.separator}</span
-          >&nbsp;{/if}{#if seen !== null}<span class="text-muted" style="cursor:help" title={seen.hover}
-            >{seen.label}</span
-          >{/if}</span
-      >
+      <span>{@render factList(facts)}</span>
     {/if}
   </div>
 {/snippet}
@@ -399,7 +384,7 @@
             >
               {row.name}
             </span>
-            <span class="text-muted text-[12px]">{specName(row.spec ?? '')}</span>
+            <span class="text-muted text-[12px]">{specClassName(row.spec ?? '', row.class)}</span>
           </div>
           <span
             class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
@@ -459,6 +444,9 @@
   {/if}
 
   <p class="text-muted text-[13px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
+  {#if extras.some((entry) => entry.state === 'no_account')}
+    <p class="text-muted text-[12px]" data-testid="guild-roster-ranks-pending">{RANKS_PENDING_LINE}</p>
+  {/if}
 
   <div class="flex flex-wrap gap-6 pl-1 lg:gap-3 lg:pr-0" data-testid="guild-roster-sort-header">
     {#each SORT_COLUMNS as col (col.key)}
@@ -482,9 +470,10 @@
     <div class="flex flex-col" data-testid="guild-roster-rows">
       {#each ordered as row (row.character_key)}
         {@const pinned = row.character_key === myCharacterKey}
+        {@const chips = rosterStatChips(row)}
         <div class={`${ROW} ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
-          <div class="flex min-w-[150px] flex-col">
+          <div class="flex min-w-0 flex-1 flex-col lg:min-w-[150px] lg:flex-none">
             <span
               class="font-display text-[14px] font-bold"
               style={`color:${classColorVar(row.class ?? '')}`}
@@ -493,60 +482,61 @@
               {row.name}{pinned ? ' (you)' : ''}
             </span>
             <span class="text-muted text-[12px]" data-testid="guild-roster-spec"
-              >{specName(row.spec ?? '')}{#if altOf.has(row.character_key)}{row.spec ? ' · ' : ''}<span
-                  class="text-muted text-[11px]">alt of {altOf.get(row.character_key)}</span
+              ><span class="sr-only">On the site: </span>{specClassName(
+                row.spec ?? '',
+                row.class,
+              )}{#if altOf.has(row.character_key)}{row.spec ? ' · ' : ''}<span class="text-muted text-[11px]"
+                  >alt of {altOf.get(row.character_key)}</span
                 >{/if}</span
             >
           </div>
-          <!-- Below lg the facts, the In game line and the actions each take a line under the name
-               (indented past the crest); at lg they wrap inside their own group, so the In game slot
-               and the actions keep their place at the row's end. -->
+          <!-- Below lg the row is three blocks under the name (indented past the crest): the stat
+               chips, the professions on one line, and the in-game facts; Remove rides the name
+               row. At lg the chips and professions wrap inside their own group, so the In game
+               slot and the actions keep their place at the row's end. -->
           <div
-            class="flex basis-full flex-wrap items-center gap-x-3 gap-y-1 pl-12 lg:min-w-0 lg:flex-1 lg:basis-auto lg:pl-0"
+            class="flex min-w-0 basis-full flex-col gap-1 pl-12 max-lg:order-1 lg:flex-1 lg:basis-auto lg:pl-0"
+            data-testid="guild-roster-facts"
           >
-            <span
-              class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
-              data-testid="guild-roster-rank">{rankWord(row.rank)}</span
-            >
-            {#if row.logged_recently && !everyoneOnlineToday}
-              <span class="text-muted text-[12px]" data-testid="guild-roster-online">
-                {guildHomeCopy.loggedRecently}
-              </span>
-            {/if}
-            {#if row.item_level !== undefined}
-              <span class="tabular font-mono text-[13px]">ilvl {row.item_level}</span>
-            {/if}
-            {#if row.attendance !== undefined}
-              <span class="text-muted tabular font-mono text-[12px]"
-                >{row.attendance.present}/{row.attendance.nights} nights</span
+            <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+              <span
+                class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
+                data-testid="guild-roster-rank">{rankWord(row.rank)}</span
               >
-            {/if}
-            {#if row.best_parse !== undefined && row.best_parse !== null}
-              <span class="text-muted tabular font-mono text-[12px]">
-                {Math.round(row.best_parse.value)} best {row.best_parse.metric.toUpperCase()}
-              </span>
-            {/if}
+              {#if row.logged_recently && !everyoneOnlineToday}
+                <span class="text-muted text-[12px]" data-testid="guild-roster-online">
+                  {guildHomeCopy.loggedRecently}
+                </span>
+              {/if}
+              {#each chips as chip, i (chip)}
+                <span
+                  class={`tabular font-mono whitespace-nowrap ${i === 0 ? 'text-[13px]' : 'text-muted text-[12px]'}`}
+                  style={chip.startsWith('Rating') ? 'cursor:help' : ''}
+                  title={chip.startsWith('Rating') ? ratingTooltip(row) : undefined}
+                  data-testid="guild-roster-chip">{chip}</span
+                >
+              {/each}
+            </div>
             {#if row.professions !== undefined && row.professions.length > 0}
-              <span class="text-muted text-[11px]">{row.professions.join(' / ')}</span>
-            {/if}
-            {#if row.rating !== undefined && row.rating !== null}
-              <span class="tabular font-mono text-[13px]" style="cursor:help" title={ratingTooltip(row)}>
-                {row.rating.overall} <span class="text-muted text-[11px]">rating</span>
-              </span>
+              <span class="text-muted block truncate text-[11px]" data-testid="guild-roster-professions"
+                >{row.professions.join(' / ')}</span
+              >
             {/if}
           </div>
           {@render inGame(row)}
           <div
-            class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3 lg:w-[190px]"
+            class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
             data-testid="guild-roster-actions"
           >
             {#if row.consent !== 'roster'}
-              <GuildRosterHandoff path={rowPath(row)} stacked />
+              <div class="basis-full pl-12 max-lg:order-3 lg:basis-auto lg:pl-0">
+                <GuildRosterHandoff path={rowPath(row)} stacked />
+              </div>
             {/if}
             {#if canRemove && row.may_remove}
               <button
-                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
-                onclick={() => onRemove(row)}
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text max-lg:text-muted px-3 max-lg:border-0 max-lg:px-2 max-lg:text-[13px] max-lg:font-normal max-lg:tracking-normal max-lg:normal-case max-lg:underline ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+                onclick={() => (removingKey = row.character_key)}
                 disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
                 aria-label={`Remove ${row.name}`}
                 data-testid="guild-roster-remove"
@@ -556,6 +546,32 @@
             {/if}
           </div>
         </div>
+        {#if removingKey === row.character_key}
+          <div
+            class="border-line-soft flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2.5 pl-12 lg:pl-0"
+            role="group"
+            aria-label={guildRosterModelCopy.removeQuestion(row.name)}
+            data-testid="guild-roster-remove-confirm"
+          >
+            <span class="basis-full text-[13px] lg:basis-auto"
+              >{guildRosterModelCopy.removeQuestion(row.name)}</span
+            >
+            <button
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3`}
+              onclick={() => doRemove(row)}
+              data-testid="guild-roster-remove-yes"
+            >
+              {guildRosterModelCopy.removeButton}
+            </button>
+            <button
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
+              onclick={() => (removingKey = null)}
+              data-testid="guild-roster-remove-cancel"
+            >
+              {guildRosterModelCopy.cancel}
+            </button>
+          </div>
+        {/if}
       {/each}
     </div>
   {/if}
@@ -563,27 +579,40 @@
     <div class="flex flex-col" data-testid="guild-roster-entries">
       {#each extras as entry (`${entry.state}:${entry.name}`)}
         <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
-          <ClassCrestRing characterClass={entry.class ?? ''} size={36} />
-          <div class="flex min-w-[150px] flex-col">
+          {#if entry.class === undefined}
+            <!-- No class to ring: a plain circle on the border token, so the empty crest is seen. -->
             <span
-              class="font-display text-[14px] font-bold"
-              style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
+              class="border-line inline-block size-9 shrink-0 rounded-full border"
+              aria-hidden="true"
+              data-testid="guild-roster-entry-crest"
+            ></span>
+          {:else}
+            <ClassCrestRing characterClass={entry.class} size={36} />
+          {/if}
+          <div class="flex min-w-0 flex-1 flex-col lg:min-w-[150px] lg:flex-none">
+            <!-- Class-coloured at 70 percent, not grey: the row stays secondary by colour alone. -->
+            <span
+              class="font-display text-nav text-[14px] font-bold"
+              style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)};opacity:.7`}
               data-testid="guild-roster-entry-name">{entry.name}</span
             >
-            <span class="text-muted text-[12px]"
-              >{entry.spec === undefined ? '' : addonSpecName(entry.spec)}</span
-            >
+            {#if entry.spec !== undefined}
+              <span class="text-nav text-[12px]">{specClassName(addonSpecName(entry.spec), entry.class)}</span
+              >
+            {/if}
           </div>
           <div
-            class="flex basis-full flex-wrap items-center gap-x-3 gap-y-1 pl-12 lg:min-w-0 lg:flex-1 lg:basis-auto lg:pl-0"
+            class="flex min-w-0 basis-full flex-col gap-2 pl-12 max-lg:order-1 lg:flex-1 lg:basis-auto lg:flex-row lg:items-center lg:gap-3 lg:pl-0"
           >
             <!-- A name only the addon saw carries the state word alone: the snapshot has no rank for
                  it, and saying "Member" would be a rank nobody gave it. -->
             {#if entry.state !== 'no_account'}
-              <span class={MUTED_WORD} data-testid="guild-roster-entry-rank">{entryRankWord(entry)}</span>
+              <span class="text-nav text-[12px]" data-testid="guild-roster-entry-rank"
+                >{entryRankWord(entry)}</span
+              >
             {/if}
             <span
-              class="text-muted text-[12px]"
+              class="text-nav text-[12px]"
               data-testid="guild-roster-entry-state"
               title={entry.state === 'no_account'
                 ? `The addon saw this character in the guild; no account on the site has claimed it. ${entryRankWord(entry)} until the addon sends ranks.`
@@ -591,7 +620,7 @@
             >
           </div>
           {@render entryInGame(entry)}
-          <div class="ml-auto shrink-0 lg:w-[190px]" aria-hidden="true"></div>
+          <div class="ml-auto shrink-0 max-lg:hidden lg:w-[190px]" aria-hidden="true"></div>
         </div>
       {/each}
     </div>

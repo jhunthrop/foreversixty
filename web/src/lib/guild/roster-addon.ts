@@ -30,11 +30,6 @@ export function addonIdentity(row: GuildRosterRow): { level: number | null; spec
   return { level: addon.level, spec: same ? null : name };
 }
 
-/** "Level 60" or "Level 60 Survival": the level, then the spec where it differs from the site's. */
-export function addonLevelSpec(level: number, spec: string | null): string {
-  return spec === null ? guildRosterAddonCopy.level(level) : `${guildRosterAddonCopy.level(level)} ${spec}`;
-}
-
 /** "gap 12 DPS": the addon's integer gap (it may be negative), under the addon's own heading. */
 export function addonGapLabel(gap: number | null): string | null {
   return gap === null ? null : guildRosterAddonCopy.gap(gap);

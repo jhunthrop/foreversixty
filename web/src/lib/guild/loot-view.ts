@@ -3,7 +3,7 @@
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
 import { dayWord } from '../dates';
-import { SLOT_LABELS, type Slot } from '../planner/types';
+import { specName } from './spec-name';
 import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem } from './api';
 
 export const LOOT_FOOTNOTE =
@@ -23,13 +23,6 @@ export function awardQuestion(itemName: string, candidateName: string): string {
 export function bossPickerLabel(selected: GuildLootEncounter | undefined): string {
   if (selected === undefined) return 'No bosses killed yet this tier';
   return selected.killed ? `${selected.name} · on farm` : `${selected.name} · not killed yet`;
-}
-
-/** "Head", "Main hand", "Finger": the slot a drop goes in, as the planner names it. */
-function slotWord(slot: string): string {
-  if (Object.prototype.hasOwnProperty.call(SLOT_LABELS, slot)) return SLOT_LABELS[slot as Slot];
-  const plain = slot.replace(/_/g, ' ');
-  return plain === '' ? plain : plain[0].toUpperCase() + plain.slice(1);
 }
 
 /** Whether any candidate on the page was ranked by item level rather than by a simulation. */
@@ -72,13 +65,13 @@ export function nextUnkilledEncounter(
  * method on `gain_dps` directly, the bug that broke the whole tab on real data while the
  * fixture (predating the tier-1 fallback) never once exercised a null `gain_dps`.
  */
-export function candidateGainLabel(candidate: GuildLootCandidate, slot?: string): string {
+export function candidateGainLabel(candidate: GuildLootCandidate): string {
   if (candidate.gain_dps !== null) return `+${Math.round(candidate.gain_dps)} DPS`;
   if (candidate.ilvl_delta !== null) {
     const delta = candidate.ilvl_delta;
     const sign = delta >= 0 ? '+' : '';
     const figure = `${sign}${delta} item level${Math.abs(delta) === 1 ? '' : 's'}`;
-    return slot === undefined || slot === '' ? figure : `${figure} over their current ${slotWord(slot)}`;
+    return figure;
   }
   return '—';
 }
@@ -105,4 +98,34 @@ export function candidateAction(item: GuildLootItem, candidateKey: string): Loot
   const candidate = item.candidates.find((row) => row.character_key === candidateKey);
   if (candidate?.already_equivalent === true) return { kind: 'equivalent' };
   return { kind: 'award' };
+}
+
+/** "1 item won this tier", "3 items won this tier"; empty for none. */
+export function itemsWonLabel(won: number | undefined): string {
+  if (won === undefined || won <= 0) return '';
+  return `${won} item${won === 1 ? '' : 's'} won this tier`;
+}
+
+/**
+ * One candidate's line, what a loot council reads across: "Replaces Cap of Prophecy ·
+ * Restoration · 5 of 8 raid nights", then " · 1 item won this tier" when the guild's award rows
+ * give a count. An empty slot reads "Empty slot" in the place of the item. The gain figure is not
+ * here: it rides after the line as a small muted rider (`candidateGainLabel`).
+ */
+export function candidateLine(candidate: GuildLootCandidate): string {
+  // An API from before `replaces` sends none: say nothing rather than call every slot empty.
+  const replaces =
+    candidate.replaces === undefined
+      ? ''
+      : candidate.replaces === ''
+        ? 'Empty slot'
+        : `Replaces ${candidate.replaces}`;
+  return [
+    replaces,
+    specName(candidate.spec),
+    attendanceLabel(candidate.attendance.present, candidate.attendance.nights),
+    itemsWonLabel(candidate.items_won),
+  ]
+    .filter((part) => part !== '')
+    .join(' · ');
 }

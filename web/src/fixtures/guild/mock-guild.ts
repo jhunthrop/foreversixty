@@ -707,6 +707,22 @@ export function buildMockReadiness(): GuildReadinessPage {
 // the slot is empty) -- this fixture has no per-slot worn-gear model, so every candidate
 // reads as the "slot empty" branch: a positive, seeded 2-14 spread keeps the ranking
 // (ilvl_delta desc, defect 5's own contract) non-trivial without inventing a fake gear set.
+// wornNameFor is this fixture's stand-in for the item a candidate wears now in a slot (the real API
+// reads it from the gear it holds for the gap). Seeded per slot so a few rows read differently.
+const WORN_BY_SLOT: Record<string, string[]> = {
+  head: ['Cap of Prophecy', "Lieutenant Commander's Helm", 'Helm of Valor'],
+  back: ['Cloak of Concentrated Hate', 'Drape of Benediction'],
+  neck: ['Amulet of the Darkmoon', 'Onyxia Tooth Pendant'],
+  finger: ['Band of Forced Concentration', 'Seal of the Archmagus'],
+  trinket: ['Hand of Justice', 'Earthstrike'],
+  main_hand: ['Maul of the Redeemed Champion', 'Thunderfury Replica'],
+  off_hand: ["Orb of Dar'Orahil", 'Tome of Knowledge'],
+};
+function wornNameFor(name: string, slot: string): string {
+  const names = WORN_BY_SLOT[slot] ?? ['Worn ' + slot.replace(/_/g, ' ')];
+  return names[Math.floor(seed(name, `worn:${slot}`) * names.length)];
+}
+
 function ilvlDeltaFor(name: string, itemName: string): number {
   return 2 + Math.round(seed(name, `ilvl-delta:${itemName}`) * 12);
 }
@@ -743,6 +759,8 @@ export function buildMockLoot(): GuildLootPage {
         ilvl_delta: ilvlDeltaFor(r.name, name),
         attendance: attendanceFor(r.name),
         already_equivalent: false,
+        replaces: wornNameFor(r.name, slot),
+        items_won: 0,
       }));
     const isAwarded = itemId === 16963 && candidates.length > 0; // Helm of Wrath -- this fixture's own long-standing awarded item
     items.push({
@@ -764,6 +782,7 @@ export function buildMockLoot(): GuildLootPage {
       candidates,
     });
   }
+  // What each character has won this tier, counted from the awards on the page, as the API counts them.  const won = new Map<string, number>();  for (const item of items) {    if (item.awarded_to !== null) {      won.set(item.awarded_to.character_key, (won.get(item.awarded_to.character_key) ?? 0) + 1);    }  }  for (const item of items) {    for (const candidate of item.candidates) candidate.items_won = won.get(candidate.character_key) ?? 0;  }
   return {
     encounters: [{ encounter_id: ONYXIA_ENCOUNTER_ID, name: 'Onyxia', zone: "Onyxia's Lair", killed: true }],
     selected: ONYXIA_ENCOUNTER_ID,

@@ -100,6 +100,10 @@
   // Which guild's Leave is asking "are you sure", and the "Saved." line a consent change
   // prints (shown for three seconds, the same place the guild settings print theirs).
   let leaveAsking = $state<number | null>(null);
+  /** Focus lands on Cancel, so a stray Enter backs out of leaving rather than leaves. */
+  function focusOnMount(node: HTMLElement): void {
+    node.focus();
+  }
   let consentSaved = $state<number | null>(null);
   let consentTimer: ReturnType<typeof setTimeout> | undefined;
   /** How many of this account's characters sit in the guild: consent and Leave cover all of them. */
@@ -769,7 +773,7 @@
               <p class="text-muted text-[13px]">{accountPageCopy.pseudonymNote}</p>
             </StatePanel>
 
-            <div id="plan">
+            <div id="plan" class="flex flex-col gap-4">
               {#if me!.guilds.length > 0}
                 <StatePanel label={accountPageCopy.guildLabel} testid="account-guilds-panel">
                   <ul class="flex flex-col" data-testid="account-guilds">
@@ -778,17 +782,20 @@
                         class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
                       >
                         <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
-                        <select
-                          class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
-                          value={guild.consent ?? 'gear'}
-                          onchange={(event) => onConsentChange(guild.id, event)}
-                          disabled={busy || guildBusy === guild.id}
-                          data-testid="account-guild-consent"
-                        >
-                          <option value="roster">{guildConsentCopy.roster}</option>
-                          <option value="gear">{guildConsentCopy.gear}</option>
-                          <option value="gear_bags">{guildConsentCopy.gearBags}</option>
-                        </select>
+                        <label class="text-muted flex flex-wrap items-center gap-2 text-[13px]">
+                          {guildConsentCopy.shareLabel}
+                          <select
+                            class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
+                            value={guild.consent ?? 'gear'}
+                            onchange={(event) => onConsentChange(guild.id, event)}
+                            disabled={busy || guildBusy === guild.id}
+                            data-testid="account-guild-consent"
+                          >
+                            <option value="roster">{guildConsentCopy.roster}</option>
+                            <option value="gear">{guildConsentCopy.gear}</option>
+                            <option value="gear_bags">{guildConsentCopy.gearBags}</option>
+                          </select>
+                        </label>
                         {#if leaveAsking !== guild.id}
                           <button
                             class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
@@ -799,7 +806,9 @@
                             {guildConsentCopy.leave}
                           </button>
                         {/if}
-                        <p class="text-muted min-h-[21px] basis-full text-[13px]">
+                        <p
+                          class={`text-muted basis-full text-[13px] ${leaveAsking === guild.id ? '' : 'min-h-[21px]'}`}
+                        >
                           {#if consentSaved === guild.id}
                             <span data-testid="account-guild-consent-saved">
                               {guildConsentCopy.consentSaved(guildCharacterCount(guild.id))}
@@ -818,10 +827,17 @@
                               <p class="text-[13px]" data-testid="account-guild-leave-releases">
                                 {guildConsentCopy.leaveReleasesClaim(guild.name)}
                               </p>
+                              <p class="text-muted text-[13px]" data-testid="account-guild-leave-no-handover">
+                                {guildConsentCopy.leaveNoHandOver}
+                              </p>
+                            {:else if guild.can?.some( (word) => ['approve', 'award', 'settings'].includes(word) )}
+                              <p class="text-[13px]" data-testid="account-guild-leave-officer">
+                                {guildConsentCopy.leaveLosesOfficer(guild.name)}
+                              </p>
                             {/if}
                             <div class="flex gap-3">
                               <button
-                                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+                                class="rounded-control border-wipe bg-wipe text-bg inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
                                 onclick={() => onLeaveGuild(guild.id)}
                                 disabled={busy || guildBusy === guild.id}
                                 data-testid="account-guild-leave-confirm-button"
@@ -832,6 +848,8 @@
                                 class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
                                 onclick={() => (leaveAsking = null)}
                                 disabled={busy || guildBusy === guild.id}
+                                use:focusOnMount
+                                data-testid="account-guild-leave-cancel"
                               >
                                 {guildConsentCopy.leaveCancel}
                               </button>

@@ -7,7 +7,6 @@ import { guildRosterAddonCopy } from './copy';
 import {
   addonGapLabel,
   addonIdentity,
-  addonLevelSpec,
   addonSeen,
   addonSeenAt,
   addonSeenClock,
@@ -158,12 +157,5 @@ describe('addonSnapshotLine', () => {
       'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
     );
     expect(addonSnapshotLine(undefined, [row()], now)).toBe(guildRosterAddonCopy.noSnapshot);
-  });
-});
-
-describe('addonLevelSpec', () => {
-  it('joins the level and the spec with one space, or reads the level alone', () => {
-    expect(addonLevelSpec(60, 'Survival')).toBe('Level 60 Survival');
-    expect(addonLevelSpec(60, null)).toBe('Level 60');
   });
 });

@@ -75,6 +75,9 @@ test('not on the plan: shows the honest not-subscribed line and a real subscribe
   await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings-billing')).toContainText('not on the guild plan yet');
+  await expect(page.getByTestId('guild-billing-price')).toHaveText(
+    '$15 a month, cancel any time. Officers get the loot, readiness and progression tools.',
+  );
   await shot(page, 'g7-billing-not-on-plan');
   await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(
     'href',
@@ -160,5 +163,52 @@ test('on the plan via a CLI grant (no Stripe billing contact): shows renewal inf
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings-billing')).toContainText('until 1 Dec 2026');
   await expect(page.getByTestId('guild-settings-billing')).not.toContainText('Billed by');
+  await expect(page.getByTestId('guild-billing-contact')).toHaveText('Granted by Forever Sixty.');
   await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
+});
+
+test('Stripe unavailable: Manage billing says so and offers Try again, which asks again', async ({
+  page,
+}) => {
+  await routeCommon(page);
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      envelope(
+        meWithGuildPlan({
+          status: 'active',
+          current_period_end: '2026-12-01T00:00:00Z',
+          cancel_at_period_end: false,
+          billed_by: 'you',
+          you_are_billing_contact: true,
+        }).data,
+      ),
+    ),
+  );
+  let asked = 0;
+  await page.route('**/v1/billing/portal', (route) => {
+    asked += 1;
+    if (asked === 1) {
+      return route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ok: false,
+          data: null,
+          error: { code: 'billing_unavailable', message: 'billing is not available' },
+          request_id: 'r',
+        }),
+      });
+    }
+    return route.fulfill(envelope({ portal_url: 'https://billing.stripe.com/guild' }));
+  });
+  await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
+  await page.goto('/guild/us/hardcore/the-last-watch/settings');
+  await page.getByTestId('guild-manage-billing').click();
+  await expect(page.getByTestId('guild-billing-unavailable')).toHaveText(
+    'Billing is not available right now. Try again in a few minutes.',
+  );
+  await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
+  await page.getByTestId('guild-billing-retry').click();
+  await page.waitForURL('https://billing.stripe.com/**');
+  expect(asked).toBe(2);
 });

@@ -815,6 +815,10 @@ export interface GuildLootCandidate {
   ilvl_delta: number | null;
   attendance: GuildRosterAttendance;
   already_equivalent: boolean;
+  /** The item they wear now in the drop's slot; absent or empty when the slot is empty. */
+  replaces?: string;
+  /** Awards this character has had in this guild this tier; absent reads as none. */
+  items_won?: number;
 }
 
 export interface GuildLootAwardedTo {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidFight, GuildRaidRow } from './api';
+import { buildMockProgression, buildMockRaids } from '../../fixtures/guild/mock-guild';
 import { bossIdsOf, raidTally, raidTallyLine, reportTallyLine } from './raid-view';
 
 function fight(
@@ -71,5 +72,17 @@ describe('raidTallyLine', () => {
 describe('bossIdsOf', () => {
   it('is null until the progression page is known', () => {
     expect(bossIdsOf(null)).toBeNull();
+  });
+});
+
+describe('the fixture raid nights', () => {
+  // Each Onyxia night in the fixture kills her once, so a night never reads as a double count.
+  it('reads one kill for a night with one kill', () => {
+    const bossIds = bossIdsOf(buildMockProgression());
+    const onyxia = buildMockRaids().rows.filter((row) => row.zone === "Onyxia's Lair");
+    expect(onyxia.length).toBeGreaterThan(0);
+    for (const row of onyxia) {
+      expect(raidTallyLine(row, bossIds)).toMatch(/^1 boss \(Onyxia\) · 1 kill · \d+ wipes?$/);
+    }
   });
 });

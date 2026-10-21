@@ -8,7 +8,7 @@
   import { guildClaimHref, type CharacterPath } from '../lib/characters';
   import { fetchMeFresh, refetchMe, type GuildBillingView, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
-  import { openPortal } from '../lib/billing/api';
+  import { BillingApiError, openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
   import {
     GuildApiError,
@@ -25,6 +25,7 @@
     canManageBilling,
     claimedByLine,
     guildPlanLine,
+    notOnPlanLines,
     settingsWords,
   } from '../lib/guild/settings-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -62,6 +63,8 @@
    * already asked.
    */
   let guildBilling = $state<GuildBillingView | null>(null);
+  /** Stripe could not be reached for Manage billing (the API answered 503 billing_unavailable). */
+  let billingUnavailable = $state(false);
 
   /**
    * A 403 from GET .../settings is read directly off the thrown GuildApiError's status --
@@ -149,7 +152,17 @@
   const onManageBilling = (): void =>
     void run(async () => {
       if (guildId === null) return;
-      const result = await openPortal(guildId);
+      billingUnavailable = false;
+      let result;
+      try {
+        result = await openPortal(guildId);
+      } catch (thrown) {
+        if (thrown instanceof BillingApiError && thrown.status === 503) {
+          billingUnavailable = true;
+          return;
+        }
+        throw thrown;
+      }
       window.location.assign(result.portal_url);
     });
 
@@ -198,7 +211,8 @@
       <section class="flex flex-col gap-3" data-testid="guild-settings-billing">
         <h2 class="section-title text-[18px]">Billing</h2>
         {#if guildBilling === null}
-          <p class="text-[14px]">{billingBlockCopy.guildNotSubscribed}</p>
+          <p class="text-[14px]" data-testid="guild-billing-not-on-plan">{notOnPlanLines().headline}</p>
+          <p class="text-muted text-[13px]" data-testid="guild-billing-price">{notOnPlanLines().detail}</p>
           {#if guildId !== null}
             <a
               href={`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`}
@@ -214,7 +228,19 @@
           {#if guildBilling.status === 'past_due'}
             <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
           {/if}
-          {#if canManageBilling(guildBilling)}
+          {#if billingUnavailable}
+            <p class="text-[14px]" role="alert" data-testid="guild-billing-unavailable">
+              {settingsWords.billingUnavailable}
+            </p>
+            <button
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
+              onclick={onManageBilling}
+              disabled={busy}
+              data-testid="guild-billing-retry"
+            >
+              {settingsWords.tryAgain}
+            </button>
+          {:else if canManageBilling(guildBilling)}
             <button
               class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
               onclick={onManageBilling}

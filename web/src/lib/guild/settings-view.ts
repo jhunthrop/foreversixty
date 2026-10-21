@@ -3,6 +3,7 @@
 // holds the claim, what the plan is and when it renews, and who is billed. Pure, so the states
 // are pinned without a page.
 import type { GuildBillingView } from '../account/api';
+import { PLANS } from '../billing/plans';
 import { utcDayMonthYear } from '../dates';
 import type { ClaimStateView, MemberRef } from './api';
 
@@ -14,6 +15,9 @@ export const settingsWords = {
   visibilityHelp: 'Public, Unlisted (link only) or Guild only. Applies to new reports.',
   guildPlan: 'Guild plan',
   noBillingContact: 'No billing contact yet',
+  grantedByUs: 'Granted by Forever Sixty.',
+  billingUnavailable: 'Billing is not available right now. Try again in a few minutes.',
+  tryAgain: 'Try again',
 } as const;
 
 /** "Claimed by hunthrop#1894" for a claimed guild; null otherwise (a contested claim shows the
@@ -39,10 +43,38 @@ export function guildPlanLine(billing: GuildBillingView): string {
 /** Who pays: "Billed to you.", "Billed by hunthrop#1894", or "No billing contact yet". */
 export function billedLine(billing: GuildBillingView): string {
   if (billing.you_are_billing_contact) return 'Billed to you.';
-  return billing.billed_by === '' ? settingsWords.noBillingContact : `Billed by ${billing.billed_by}`;
+  return billing.billed_by === '' ? settingsWords.grantedByUs : `Billed by ${billing.billed_by}`;
 }
 
 /** Manage billing needs a Stripe customer: the billing contact, and only a plan with one. */
 export function canManageBilling(billing: GuildBillingView): boolean {
   return billing.you_are_billing_contact && billing.billed_by !== '';
+}
+
+/**
+ * The not-on-plan body, two lines: the fact, then what it costs and gets. The price is the guild
+ * plan's own (billing/plans.ts, the one place a price is written); with no price there, "Monthly,
+ * cancel any time." and no number.
+ */
+export function notOnPlanLines(monthlyUsd: number | undefined = PLANS.guild.monthly): {
+  headline: string;
+  detail: string;
+} {
+  const priced = typeof monthlyUsd === 'number' && Number.isFinite(monthlyUsd) && monthlyUsd > 0;
+  return {
+    headline: 'This guild is not on the guild plan yet.',
+    detail: priced
+      ? `$${monthlyUsd} a month, cancel any time. Officers get the loot, readiness and progression tools.`
+      : 'Monthly, cancel any time. Officers get the loot, readiness and progression tools.',
+  };
+}
+
+/** What the billing block shows: the plan, the plan granted by an operator, the plan the API could
+ *  not reach Stripe for, or no plan. */
+export type BillingState = 'not-on-plan' | 'on-plan' | 'granted' | 'unavailable';
+
+export function billingState(billing: GuildBillingView | null, unavailable: boolean): BillingState {
+  if (unavailable) return 'unavailable';
+  if (billing === null) return 'not-on-plan';
+  return billing.billed_by === '' ? 'granted' : 'on-plan';
 }
