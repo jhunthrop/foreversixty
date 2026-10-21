@@ -55,7 +55,8 @@
       "logging": false,
       "fights": 0,
       "offset": 0,
-      "queued": 0
+      "queued": 0,
+      "queued_fights": 0
     },
     "reports": [],
     "characters": [],

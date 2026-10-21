@@ -247,6 +247,7 @@ h3 {
   border-bottom: 1px solid var(--line);
   font-size: var(--fs-small);
   color: var(--strong);
+  text-wrap: pretty;
 }
 /* Every bar is centred as one group (mark, text, button) and its text reads left to right, so
    a mark that wraps sits beside the first line of the text, not at the window's edge. */
@@ -567,11 +568,14 @@ main:has(#settings:not([hidden])) .page { padding-top: var(--sp-4); }
 #settings .help { margin-top: var(--sp-1); }
 .group + .group { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
 @media (max-height: 520px) {
-  select, input { min-height: 36px; }
+  select, input { min-height: 32px; }
   :root { --save-h: 52px; }
   main:has(#settings:not([hidden])) .page { padding-top: var(--sp-3); }
   #settings .panel { padding-top: var(--sp-3); }
-  .group + .group { margin-top: var(--sp-3); padding-top: var(--sp-3); }
+  .group + .group { margin-top: 10px; padding-top: 10px; }
+  #settings .panel { padding-bottom: var(--sp-2); }
+  /* The two help sentences are one line each here (the whole sentence is the title), so the first folder row reads above the fade. */
+  #settings .help { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 /* Save is a strip at the foot of the page, after the last group. On a window
    too short for everything it stays in view, and the page scrolls clear of it
@@ -654,6 +658,8 @@ footer a:hover, footer a:focus-visible { color: var(--gold); text-decoration-col
   .h2line { flex-wrap: wrap; }
   .row { flex-direction: column; gap: 2px; }
   .row .v { text-align: left; }
+  /* Stacked, the button is no longer on the value column's right edge: pull its border back to the label's left edge instead. */
+  .row .v .check-builds { margin: 6px 0 0 -11px; }
   .headline .sub, .headline .actions { margin-left: 0; }
   .headline .actions { flex-direction: column; align-items: stretch; }
   .headline .actions button { width: 100%; }

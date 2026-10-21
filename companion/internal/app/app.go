@@ -807,8 +807,16 @@ func (a *App) Snapshot() Snapshot {
 	if err != nil {
 		a.log.Warn("could not list the reports", "component", "app", "err", err.Error())
 	}
+	// One report is one row: a state file read twice (a copy caught mid-save,
+	// or one report under two names) keeps the newest copy, the one that has
+	// the server's id.
+	seen := map[string]bool{}
 	for i := len(reports) - 1; i >= 0; i-- {
 		r := reports[i]
+		if seen[r.Key] {
+			continue
+		}
+		seen[r.Key] = true
 		row := ReportRow{Key: r.Key, ReportID: r.ReportID, Zone: r.Zone,
 			Fights: r.Fights, StartedAt: r.StartedAt, Done: r.Done, Credit: creditOf(r)}
 		if r.Key == s.Pipeline.ReportKey {

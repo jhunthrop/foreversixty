@@ -228,7 +228,27 @@ const FORMAT = (() => {
     return secondsLeft(expiresISO, now) <= LATE_SECONDS;
   }
 
-  return { pathTruncate, pathBudget, reportCredit, anyNotCredited, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
+  // fightRows says what the Fights uploaded and Queued rows hold, so the two
+  // never count the same fights: uploaded is the fights the site has (every fight
+  // the report closed, less those still waiting), queued is the fights waiting
+  // while some are already up. While none are up yet the one row says they are
+  // on their way. With no report open there are no rows, the Current report
+  // row has said "None yet".
+  function fightRows(p, w) {
+    if (!p.report_key && !p.report_id) return { show: false };
+    const total = p.fights || 0;
+    const waiting = Math.min(p.queued_fights || 0, total);
+    const up = total - waiting;
+    if (waiting > 0 && up === 0) return { show: true, text: w.uploadingFights(waiting), help: '', queued: 0 };
+    if (total === 0) {
+      return p.report_id && p.logging
+        ? { show: true, text: w.noFightsYet, help: w.noFightsHelp, queued: 0 }
+        : { show: true, text: w.noReport, help: '', queued: 0 };
+    }
+    return { show: true, text: String(up), help: '', queued: waiting };
+  }
+
+  return { fightRows, pathTruncate, pathBudget, reportCredit, anyNotCredited, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

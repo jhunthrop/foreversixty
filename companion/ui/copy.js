@@ -43,6 +43,8 @@ const COPY = {
     // The Fights uploaded row while the open report has none yet.
     noFightsYet: '0 so far',
     noFightsHelp: 'The first fight uploads when it ends.',
+    // The one row while every fight of the report is still waiting to go up.
+    uploadingFights: (n) => 'Uploading ' + n + (n === 1 ? ' fight' : ' fights') + '…',
     inProgress: 'In progress',
     rows: {
       report: 'Current report',

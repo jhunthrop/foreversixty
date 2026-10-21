@@ -178,6 +178,30 @@ func (q *Queue) Len() (int, error) {
 	return len(seqs), nil
 }
 
+// Waiting is how many items of one kind are waiting, read from the
+// metadata alone (a fight's bundle stays on disk). An item whose
+// metadata cannot be read is not counted.
+func (q *Queue) Waiting(kind Kind) (int, error) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	seqs, err := q.pending()
+	if err != nil {
+		return 0, err
+	}
+	n := 0
+	for _, seq := range seqs {
+		b, err := os.ReadFile(q.meta(seq))
+		if err != nil {
+			continue
+		}
+		var it Item
+		if json.Unmarshal(b, &it) == nil && it.Kind == kind {
+			n++
+		}
+	}
+	return n, nil
+}
+
 // ErrEmpty is returned by Head when nothing is queued.
 var ErrEmpty = errors.New("queue: empty")
 

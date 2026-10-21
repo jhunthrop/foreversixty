@@ -195,3 +195,23 @@ func TestTheLastSyncSurvivesARestartAndIsNotAReport(t *testing.T) {
 		t.Error("a corrupt file was read as empty without an error")
 	}
 }
+
+// Save writes through a dot-named temporary and renames it; a List that lands
+// between the two must not read that temporary as a second report.
+func TestListSkipsASaveInFlight(t *testing.T) {
+	dir := t.TempDir()
+	if err := Save(dir, Report{Key: "20261209-200000-aa"}); err != nil {
+		t.Fatal(err)
+	}
+	tmp := `{"key":"20261209-200000-aa","report_id":"rpt000000001"}`
+	if err := os.WriteFile(filepath.Join(dir, ".state-123456.json"), []byte(tmp), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got, err := List(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0].ReportID != "" {
+		t.Fatalf("List = %+v; the temporary of a save in flight is not a report", got)
+	}
+}
