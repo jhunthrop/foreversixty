@@ -20,6 +20,8 @@ export interface FixtureCharacter {
   syncError?: string | null;
   /** Worn items by slot, the addon export's `build.gear`. */
   gear?: Record<string, number>;
+  /** The character's guild line in `/v1/me`. */
+  guild?: { id: number; name: string; verified: boolean };
 }
 
 export const OBNOXIOUS: FixtureCharacter = {
@@ -47,6 +49,7 @@ function meCharacter(character: FixtureCharacter): Record<string, unknown> {
     class: character.class,
     spec: character.spec,
     ...(character.race === undefined ? {} : { race: character.race }),
+    ...(character.guild === undefined ? {} : { guild: character.guild }),
     level: character.level ?? 60,
     realm: character.realm ?? 'Living Flame',
     faction: character.faction ?? 'alliance',

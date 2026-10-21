@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import { ACTIVE_BUILD } from './support/active-build';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 
 const ok = (data: unknown, status = 200) => ({
@@ -9,6 +10,7 @@ const ok = (data: unknown, status = 200) => ({
 });
 
 const KEY = 'us/hardcore/obnoxious-yell';
+const WORN_RING = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,finger1=264908`;
 const SAVED = { id: 'k7x2qm4a', url: 'https://foreversixty.gg/b/k7x2qm4a' };
 
 function me() {
@@ -109,6 +111,58 @@ test.describe('Send this build to the addon', () => {
     await page.getByTestId('talent-1002').click();
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
     await expect(action).toBeEnabled();
+  });
+
+  test('a worn item outside the planner list never reaches the body, and the card says so', async ({
+    page,
+  }) => {
+    await signIn(page);
+    const saves: { gear?: Record<string, number> }[] = [];
+    await page.route('**/v1/builds', (route) => {
+      saves.push(route.request().postDataJSON());
+      return route.fulfill(ok(SAVED, 201));
+    });
+    await page.route('**/v1/addon/inbox', (route) => route.fulfill(ok({ build_id: SAVED.id }, 201)));
+    // An export wearing Ancient Heirloom (264908), a ring the planner has no item for.
+    await page.goto(`/planner?code=${encodeURIComponent(WORN_RING)}`);
+    await expect(page.getByTestId('planner-left-out')).toHaveText(
+      'Left out: the ring in your first ring slot (not a planner item).',
+    );
+    const action = page.getByTestId('character-header-action');
+    await expect(action).toBeEnabled();
+    await action.click();
+    // Another player's build asks once before it goes out.
+    await expect(action).toHaveText('Yes, send it');
+    await action.click();
+    await expect(action).toHaveText('Sent');
+    expect(saves).toHaveLength(1);
+    expect(saves[0].gear).toEqual({ head: 12640 });
+  });
+
+  test('a refused save says what the site refused', async ({ page }) => {
+    await signIn(page);
+    await page.route('**/v1/builds', (route) =>
+      route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ok: false,
+          data: null,
+          error: {
+            code: 'invalid',
+            message: 'this build breaks the talent rules',
+            fields: { 'gear.finger1': 'Item 264908 is not available to Hunter' },
+          },
+          request_id: 'r',
+        }),
+      }),
+    );
+    await page.goto('/planner');
+    await page.getByTestId('talent-1001').click();
+    await page.getByTestId('character-header-action').click();
+    await expect(page.getByTestId('character-header-note')).toHaveText(
+      'The site refused this build: Item 264908 is not available to Hunter.',
+    );
   });
 
   test('an account with no companion is pointed at the companion setup', async ({ page }) => {

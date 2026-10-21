@@ -15,7 +15,8 @@ export type SendState =
   | { kind: 'sent' }
   | { kind: 'sign-in' }
   | { kind: 'no-device' }
-  | { kind: 'failed' };
+  /** `reason`: what the API said when it refused the save (its first field's message). */
+  | { kind: 'failed'; reason?: string };
 
 /** What the planner knows about the build on screen, beyond its points. */
 export interface SendBuild {
@@ -114,7 +115,10 @@ export function sendActionFor(
       return {
         ...base,
         label: copy.sendBuildTo(character.name),
-        note: { tone: 'error' as const, text: copy.failed },
+        note: {
+          tone: 'error' as const,
+          text: state.reason === undefined ? copy.failed : copy.refused(state.reason),
+        },
       };
     case 'idle':
       return others

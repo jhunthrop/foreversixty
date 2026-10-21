@@ -7,7 +7,10 @@ import { saveBuild } from './share';
 import type { BuildDraft } from './types';
 
 export type SendOutcome =
-  { kind: 'sent'; buildId: string } | { kind: 'sign-in' } | { kind: 'no-device' } | { kind: 'failed' };
+  | { kind: 'sent'; buildId: string }
+  | { kind: 'sign-in' }
+  | { kind: 'no-device' }
+  | { kind: 'failed'; reason?: string };
 
 export interface SendDeps {
   save: typeof saveBuild;
@@ -34,7 +37,10 @@ export async function sendBuildToAddon(
     let buildId = known;
     if (buildId === null) {
       const saved = await deps.save(draft);
-      if (!saved.ok) return { kind: 'failed' };
+      if (!saved.ok) {
+        const reason = Object.values(saved.fields)[0];
+        return reason === undefined ? { kind: 'failed' } : { kind: 'failed', reason };
+      }
       buildId = saved.build.id;
     }
     await deps.queue(buildId, characterKey);

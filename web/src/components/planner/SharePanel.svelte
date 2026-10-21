@@ -12,6 +12,7 @@
   import CopyForGame from '../CopyForGame.svelte';
   import { addonCopy } from '../../lib/addon/copy';
   import { plannerCopy } from '../../lib/planner/copy';
+  import { ensureItems } from '../../lib/planner/items-ready';
   import { plannerAddonCode, unsavedPlannerHref } from '../../lib/planner/current-character-planner';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
@@ -297,6 +298,12 @@
     if (event.key !== 'Escape') return;
     cancelShare();
   }
+
+  // The shared gear is the part of the worn gear the class catalogue lists, so a build that wears
+  // anything asks for the catalogue up front, before the confirm names what it will publish.
+  $effect(() => {
+    if (Object.keys(store.gear).length > 0) void ensureItems(store);
+  });
 
   async function share(): Promise<void> {
     saving = true;

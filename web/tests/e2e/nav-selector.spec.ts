@@ -431,6 +431,52 @@ test.describe('choosing a character', () => {
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 
+  test('the Guild menu follows the chosen character’s guild, and Forget falls back to the first', async ({
+    page,
+  }) => {
+    const olympus = { id: 1, region: 'us', ruleset: 'normal', name: 'OLYMPUS XXVII', verified: true };
+    const millennials = {
+      id: 2,
+      region: 'us',
+      ruleset: 'normal',
+      name: 'Employed Millennials',
+      verified: false,
+    };
+    const inOlympus = { ...OBNOXIOUS, guild: { id: 1, name: 'OLYMPUS XXVII', verified: true } };
+    const bow: FixtureCharacter = {
+      name: 'Bow Jackzon',
+      class: 'Hunter',
+      spec: 'Beast Mastery',
+      level: 24,
+      buildDaysAgo: 1,
+      guild: { id: 2, name: 'Employed Millennials', verified: false },
+    };
+    await signInWith(page, [inOlympus, bow], [olympus, millennials]);
+    await storePointer(page, armoryPointer(inOlympus));
+    await page.goto('/rankings');
+    await ready(page);
+    const guildName = page.locator('[data-guild-name]').first();
+    const roster = page.getByTestId('site-panel-row-roster');
+    await expect(guildName).toHaveText('OLYMPUS XXVII');
+    await expect(roster).toHaveAttribute('href', '/guild/us/normal/olympus-xxvii#roster');
+
+    await choose(page, bow);
+    await expect(guildName).toHaveText('Employed Millennials');
+    await expect(roster).toHaveAttribute('href', '/guild/us/normal/employed-millennials#roster');
+    await expect(page.getByTestId('site-panel-foot-guild')).toHaveAttribute(
+      'href',
+      '/guild/us/normal/employed-millennials/settings',
+    );
+
+    // Forgetting the pointer settles back on the first guild.
+    await page.evaluate(() => {
+      window.localStorage.removeItem('fs.currentCharacter');
+      window.dispatchEvent(new Event('fs:current-character'));
+    });
+    await expect(guildName).toHaveText('OLYMPUS XXVII');
+    await expect(roster).toHaveAttribute('href', '/guild/us/normal/olympus-xxvii#roster');
+  });
+
   test('a faction shows as its real emblem with its name, never an abstract mark', async ({ page }) => {
     await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
