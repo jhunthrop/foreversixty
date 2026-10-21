@@ -152,9 +152,18 @@ func TestEmbeddedSpellRanksLoad(t *testing.T) {
 	if !ok || len(hunter) == 0 {
 		t.Fatal(`the embedded table carries no "hunter" entries`)
 	}
-	// Serpent Sting's max-rank id (25295), unchanged at level 60.
-	if id, ok := HighestLearnedSpellID("hunter", 25295, 60); !ok || id != 25295 {
-		t.Errorf(`HighestLearnedSpellID("hunter", 25295, 60) = (%d, %v), want (25295, true)`, id, ok)
+	// Serpent Sting's top trainer rank (13555) is unchanged at level 60; its
+	// rank 9 (25295) is an Ahn'Qiraj book rank, which resolves to the trainer
+	// rank while the engine leaves the book out.
+	if id, ok := HighestLearnedSpellID("hunter", 13555, 60); !ok || id != 13555 {
+		t.Errorf(`HighestLearnedSpellID("hunter", 13555, 60) = (%d, %v), want (13555, true)`, id, ok)
+	}
+	wantBook := int32(13555)
+	if core.IncludeAQ {
+		wantBook = 25295
+	}
+	if id, ok := HighestLearnedSpellID("hunter", 25295, 60); !ok || id != wantBook {
+		t.Errorf(`HighestLearnedSpellID("hunter", 25295, 60) = (%d, %v), want (%d, true)`, id, ok, wantBook)
 	}
 }
 
@@ -259,5 +268,70 @@ func TestInferiorIdInAMixedTierResolvesToItsSoundSibling(t *testing.T) {
 	}
 	if got, ok := highestLearnedIn(table["hunter"], 14325, 60); !ok || got != 1213268 {
 		t.Errorf("named 14325 at level 60 resolves to %d (ok=%v), want 1213268", got, ok)
+	}
+}
+
+// A book rank's id still belongs to its spell: a rotation authored at the
+// book rank must resolve to the highest trainer rank the character has
+// learned, not be left as written for an engine that has not registered it.
+func TestABookRankIDResolvesToTheHighestTrainerRankLearned(t *testing.T) {
+	if core.IncludeAQ {
+		t.Skip("the book rank is a real rank while IncludeAQ is on")
+	}
+	table, err := parseSpellRanks([]byte(bookRankExcerpt))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		level  int
+		want   int32
+		wantOK bool
+	}{
+		{60, 14322, true},
+		{58, 14322, true},
+		{50, 14321, true},
+		{40, 0, false}, // nothing of the spell learned yet: the line is dropped
+	} {
+		got, ok := highestLearnedIn(table["hunter"], 25296, tc.level)
+		if ok != tc.wantOK || (ok && got != tc.want) {
+			t.Errorf("book id 25296 at level %d: got (%d, %v), want (%d, %v)", tc.level, got, ok, tc.want, tc.wantOK)
+		}
+	}
+}
+
+// Shred rank 1 is learned at 22 by the pinned engine, 20 by the client row.
+func TestRankLevelOverrideGatesARankAtTheEnginesLevel(t *testing.T) {
+	const excerpt = `{"build":"x","classes":{"druid":{"Shred":[
+	  {"id":5221,"rank":1,"level":20},
+	  {"id":6800,"rank":2,"level":30}]}}}`
+	table, err := parseSpellRanks([]byte(excerpt))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := highestLearnedIn(table["druid"], 6800, 20); ok {
+		t.Error("Shred is learned at level 22 by the engine, not at 20")
+	}
+	if got, ok := highestLearnedIn(table["druid"], 6800, 22); !ok || got != 5221 {
+		t.Errorf("Shred at level 22: got (%d, %v), want (5221, true)", got, ok)
+	}
+}
+
+// The single-tier overrides name ids the engine gates behind a real level.
+func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
+	for _, tc := range []struct {
+		class string
+		id    int32
+		level int
+	}{
+		{"paladin", 407632, 40}, // Hammer of the Righteous
+		{"paladin", 25890, 60},  // Greater Blessing of Light
+		{"warlock", 603, 60},    // Bane of Doom
+	} {
+		if _, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level-1); ok {
+			t.Errorf("%s %d is learned at level %d, not %d", tc.class, tc.id, tc.level, tc.level-1)
+		}
+		if got, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level); !ok || got != tc.id {
+			t.Errorf("%s %d at level %d: got (%d, %v)", tc.class, tc.id, tc.level, got, ok)
+		}
 	}
 }

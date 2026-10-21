@@ -93,6 +93,13 @@ type rankTier struct {
 // rank number (and therefore, in practice, by level).
 type rankChain struct {
 	tiers []rankTier
+	// aliases is every id of a rank the character can never learn (an
+	// Ahn'Qiraj book rank while core.IncludeAQ is off) that still belongs
+	// to this spell. A rotation authored at the book rank names one of
+	// them; resolving it to the highest trainer rank learned is what lets
+	// the same rotation cast at every level, instead of leaving the id
+	// as written for the engine to fail to resolve below level 60.
+	aliases []int32
 }
 
 // parseSpellRanks decodes the embedded table into, per class, a lookup
@@ -125,6 +132,9 @@ func parseSpellRanks(b []byte) (map[string]map[int32]*rankChain, error) {
 					byID[id] = chain
 				}
 			}
+			for _, id := range chain.aliases {
+				byID[id] = chain
+			}
 		}
 		out[class] = byID
 	}
@@ -145,8 +155,13 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 	idsByRank := make(map[int][]int32)
 	castableByRank := make(map[int][]int32)
 	var ranks []int
+	var aliases []int32
 	for _, row := range rows {
-		if row.Rank <= 0 || !RankAvailable(row.Book) {
+		if row.Rank <= 0 {
+			continue
+		}
+		if !RankAvailable(row.Book) {
+			aliases = append(aliases, row.ID)
 			continue
 		}
 		if _, seen := levelByRank[row.Rank]; !seen {
@@ -164,9 +179,15 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 	sort.Ints(ranks)
 	tiers := make([]rankTier, len(ranks))
 	for i, r := range ranks {
-		tiers[i] = rankTier{level: levelByRank[r], ids: idsByRank[r], castable: castableByRank[r]}
+		level := levelByRank[r]
+		for _, id := range idsByRank[r] {
+			if override, ok := rankLevelOverrides[class][id]; ok {
+				level = override
+			}
+		}
+		tiers[i] = rankTier{level: level, ids: idsByRank[r], castable: castableByRank[r]}
 	}
-	return &rankChain{tiers: tiers}
+	return &rankChain{tiers: tiers, aliases: aliases}
 }
 
 // singleTierLevelOverrides names ids whose spellranks.json rows are ALL
@@ -195,6 +216,13 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 	"hunter": {
 		2643: 18, // Multi-Shot rank 1; sim/hunter/multi_shot.go's rank table, RequiredLevel 18 (this build's spellranks.json never lists Multi-Shot's higher client ranks 14288/14289/14290/25294 at all, so 2643 is the only id this override, or this table's own callers, ever resolve it to)
 		3045: 26, // Rapid Fire; sim/hunter/rapid_fire.go: registerRapidFire returns immediately if hunter.Level < 26
+	},
+	"paladin": {
+		407632: 40, // Hammer of the Righteous; sim/paladin/hammer_of_the_righteous.go: hammerOfTheRighteousLevel = 40, registration returns below it
+		25890:  60, // Greater Blessing of Light; sim/paladin/blessing_of_light.go: greaterBlessingOfLight.level = 60
+	},
+	"warlock": {
+		603: 60, // Bane of Doom; sim/warlock/curses.go registers it with RequiredLevel: 60
 	},
 }
 
@@ -299,4 +327,35 @@ func sameBandOrFirst(ids []int32, original int32) int32 {
 		}
 	}
 	return ids[0]
+}
+
+// rankLevelOverrides names ids whose spellranks.json row is a real rank of a
+// ranked spell, but whose level column disagrees with the level the pinned
+// engine registers that rank at, verified by reading the class package's own
+// registration (the engine is what the sim runs; a rank the table calls
+// learned before the engine registers it is an id the engine cannot resolve).
+// Found by the site's rotation ladder (sim/request/ladder_test.go) reporting
+// the id unresolved at the lowest rung that straddles the two levels.
+var rankLevelOverrides = map[string]map[int32]int{
+	"druid": {
+		// Shred rank 1: spellranks.json carries the client's level-20 row;
+		// sim/druid/shred.go's shredLearnLevels starts at 22 (its comment: "the
+		// level-20 rank-0 id is an internal copy, not a player rank").
+		5221: 22,
+	},
+}
+
+// SingleTierLevelOverride reports the engine learn level singleTierLevelOverrides
+// holds for id, for readers outside this package (the rotation ladder's
+// learned-but-unused list) that must agree with the rewrite about it.
+func SingleTierLevelOverride(class string, id int32) (int, bool) {
+	level, ok := singleTierLevelOverrides[class][id]
+	return level, ok
+}
+
+// RankLevelOverride is SingleTierLevelOverride's counterpart for
+// rankLevelOverrides.
+func RankLevelOverride(class string, id int32) (int, bool) {
+	level, ok := rankLevelOverrides[class][id]
+	return level, ok
 }

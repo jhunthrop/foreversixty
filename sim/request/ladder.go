@@ -906,7 +906,13 @@ func buildClassAbilities(all spellRanksFile, class string) classAbilities {
 		sort.Ints(ranks)
 		tiers := make([]rankTier, len(ranks))
 		for i, r := range ranks {
-			tiers[i] = rankTier{Level: levelByRank[r], Rank: r, IDs: idsByRank[r]}
+			level := levelByRank[r]
+			for _, id := range idsByRank[r] {
+				if override, ok := spellranks.RankLevelOverride(class, int32(id)); ok {
+					level = override
+				}
+			}
+			tiers[i] = rankTier{Level: level, Rank: r, IDs: idsByRank[r]}
 		}
 		out.Tiers[name] = tiers
 	}
@@ -1316,7 +1322,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -1328,7 +1337,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -1557,8 +1568,12 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 			if e.Rank <= 0 {
 				continue
 			}
-			if prev, ok := out[e.ID]; !ok || e.Level < prev {
-				out[e.ID] = e.Level
+			level := e.Level
+			if override, ok := spellranks.RankLevelOverride(class, int32(e.ID)); ok {
+				level = override
+			}
+			if prev, ok := out[e.ID]; !ok || level < prev {
+				out[e.ID] = level
 			}
 		}
 	}
@@ -1579,8 +1594,10 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 // a second copy of a grouping already computed elsewhere, not a live
 // dependency on it.
 var idLearnLevelOverrides = map[string]map[int]int{
-	"druid":  {5217: 24, 5229: 12, 22812: 44, 22842: 36},
-	"hunter": {2643: 18, 3045: 26},
+	"druid":   {5217: 24, 5229: 12, 22812: 44, 22842: 36},
+	"hunter":  {2643: 18, 3045: 26},
+	"paladin": {407632: 40, 25890: 60},
+	"warlock": {603: 60},
 }
 
 // warnedSpellID pulls the bare spell id out of an engine warning
@@ -1637,4 +1654,36 @@ func pickWandItem(items []buildItem, known map[int]bool, floors map[int]int, lev
 		}
 	}
 	return best, found
+}
+
+// talentOwnedAuraIDs maps an aura id a rotation condition names to the
+// talent spell id (the rank-1 id talents.json's ranks[].spell_id lists)
+// whose talent registers that aura in the pinned engine. The aura is not
+// a spell of its own - spellranks.json does not track it, and talents.json
+// lists the talent's cast or proc id, not the buff - so harness rule 1's
+// "zero points on this talent" exemption cannot find it through the two
+// tables, yet the engine registers the aura only when the character has
+// spent a point on the talent, and warns it cannot resolve the id until
+// then, exactly as it does for the talent's own spell id.
+var talentOwnedAuraIDs = map[string]map[int]int{
+	"mage": {
+		// sim/mage/arcane_blast.go: registerArcaneBlastSpell returns before
+		// RegisterAura(arcaneBlastBuffSpellId) unless Talents.ArcaneBlast.
+		400573: 400574,
+		// sim/mage/fingers_of_frost.go: applyFingersOfFrost returns before
+		// RegisterAura(fingersOfFrostBuffSpellId) when
+		// Talents.FingersOfFrost == 0.
+		400669: 400647,
+	},
+}
+
+// addTalentOwnedAuras gives each aura in talentOwnedAuraIDs[class] the node
+// of the talent that owns it, when talentSpellIDs knows that talent.
+func addTalentOwnedAuras(class string, talentSpellIDs map[int]int) map[int]int {
+	for aura, owner := range talentOwnedAuraIDs[class] {
+		if node, ok := talentSpellIDs[owner]; ok {
+			talentSpellIDs[aura] = node
+		}
+	}
+	return talentSpellIDs
 }

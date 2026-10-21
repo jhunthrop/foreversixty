@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -93,12 +98,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 0.0 | 1 | spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
-| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 14.7 | 3 | spell:8004=27.8, spell:20572=3.0, spell:5394=1.2 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
-| 30 | 0000000000000000-000000000000000000-5532003300000000 | main_hand:9604 | 23.3 | 3 | spell:8008=29.6, spell:20572=3.0, spell:6375=1.4 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
-| 38 | 0000000000000000-000000000000000000-5532003315200000 | main_hand:9604 | 30.0 | 4 | spell:8010=27.5, other:mana_gain=3.1, spell:20572=3.0, spell:6375=1.7, spell:408510=1.7 | {SpellID: 16188}, {SpellID: 17354}, {SpellID: 25357} |
-| 40 | 0000000000000000-000000000000000000-5532003315400000 | main_hand:7723 | 31.8 | 5 | spell:8010=28.6, other:mana_gain=3.2, spell:20572=3.0, spell:408510=1.8, spell:6377=1.6 | {SpellID: 16188}, {SpellID: 17354}, {SpellID: 25357}, {SpellID: 408521} |
-| 50 | 0000000000000000-000000000000000000-5532003315513131 | main_hand:812 | 56.4 | 8 | spell:10466=29.2, other:mana_gain=7.6, spell:20572=3.0, spell:10462=2.0, spell:16188=2.0 | {SpellID: 25357} |
+| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 8.9 | 2 | spell:332=34.1, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 15.4 | 4 | spell:8004=21.5, spell:913=4.5, spell:20572=3.0, spell:5394=1.3 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 30 | 0000000000000000-000000000000000000-5532003300000000 | main_hand:9604 | 24.3 | 4 | spell:8008=20.6, spell:939=6.5, spell:20572=3.0, spell:6375=1.9 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 38 | 0000000000000000-000000000000000000-5532003315200000 | main_hand:9604 | 31.4 | 5 | spell:8010=19.0, spell:959=6.1, spell:20572=3.0, other:mana_gain=2.9, spell:6375=1.8 | {SpellID: 16188}, {SpellID: 17354} |
+| 40 | 0000000000000000-000000000000000000-5532003315400000 | main_hand:7723 | 34.0 | 6 | spell:8010=19.9, spell:8005=4.9, spell:20572=3.0, other:mana_gain=2.9, spell:408510=1.6 | {SpellID: 16188}, {SpellID: 17354}, {SpellID: 408521} |
+| 50 | 0000000000000000-000000000000000000-5532003315513131 | main_hand:812 | 75.7 | 9 | spell:10466=17.4, other:mana_gain=7.1, spell:10395=5.7, spell:20572=3.0, spell:1239242=2.7 | - |
 | 60 | 5300000000000000-000000000000000000-5532003315513151 | main_hand:19355 | 99.6 | 9 | spell:10468=12.4, other:mana_gain=6.4, spell:25357=4.7, spell:1239243=3.2, spell:20572=3.0 | - |
 
 ## Learned but unused (informational)
@@ -190,10 +195,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- shaman-restoration level=10 kind=unresolved_id action={SpellID: 25357}
-- shaman-restoration level=20 kind=unresolved_id action={SpellID: 25357}
-- shaman-restoration level=30 kind=unresolved_id action={SpellID: 25357}
-- shaman-restoration level=38 kind=unresolved_id action={SpellID: 25357}
-- shaman-restoration level=40 kind=unresolved_id action={SpellID: 25357}
-- shaman-restoration level=50 kind=unresolved_id action={SpellID: 25357}
-- shaman-restoration level=60 kind=zero_casts spell="Mana Tide Totem" id=1325256 authored=17359
+None.

@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -97,7 +102,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 00000000000000000-0000000000000000-05024000000000000 | main_hand:6953 | 32.6 | 6 | other:attack/1=57.3, spell:25739=49.1, spell:1866=18.6, spell:20271=18.6, spell:20281=18.6 | - |
 | 30 | 00000000000000000-0000000000000000-05025331001100000 | main_hand:13045 | 49.6 | 6 | other:attack/1=63.1, spell:25738=54.1, other:mana_gain=18.5, spell:20271=18.5, spell:20282=18.5 | - |
 | 38 | 00000000000000000-0000000000000000-05025331001330300 | main_hand:10758 | 73.2 | 6 | other:attack/1=55.5, spell:25737=47.4, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
-| 40 | 00000000000000000-0000000000000000-05025331001330311 | main_hand:1982 | 83.8 | 6 | other:attack/1=65.3, spell:25737=56.0, other:mana_gain=18.5, spell:20271=18.5, spell:20283=18.5 | - |
+| 40 | 00000000000000000-0000000000000000-05025331001330311 | main_hand:1982 | 84.4 | 6 | other:attack/1=52.4, spell:25737=44.8, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
 | 50 | 52003000000000000-0000000000000000-05025331001330311 | main_hand:2915 | 116.3 | 7 | other:attack/1=79.3, spell:25735=66.7, spell:5569=18.4, other:mana_gain=17.8, spell:20271=17.8 | - |
 | 60 | 52003003000000000-0520000000000000-05025331001330311 | main_hand:22798 | 194.7 | 7 | other:attack/1=48.3, spell:25713=41.0, spell:10333=18.4, other:mana_gain=17.5, spell:20271=17.5 | - |
 

@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -98,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 025005031320000000-00000000000000000-00000000000000000 | main_hand:249392 | 40.5 | 7 | spell:9472=38.1, other:mana_gain=15.0, spell:6063=2.5, spell:14751=2.0, spell:6065=1.9 | {SpellID: 402174} |
 | 38 | 025005031330011410-00000000000000000-00000000000000000 | main_hand:873 | 69.5 | 8 | spell:9474=21.9, spell:402174=20.8, other:mana_gain=15.0, spell:6066=3.0, spell:6064=2.5 | - |
 | 40 | 025005031330011520-00000000000000000-00000000000000000 | main_hand:873 | 83.9 | 9 | spell:9474=22.9, spell:1240720=17.6, other:mana_gain=15.0, spell:6066=2.8, spell:14751=2.0 | - |
-| 50 | 025005031330011520-03502000000000000-00000000000000000 | main_hand:812 | 124.8 | 9 | spell:1240721=22.0, spell:10916=15.1, other:mana_gain=15.0, spell:6064=4.0, spell:14751=2.0 | - |
+| 50 | 025005031330011520-03502000000000000-00000000000000000 | main_hand:812 | 137.5 | 9 | spell:1240721=22.1, other:mana_gain=15.0, spell:10916=14.4, spell:6064=4.6, spell:14751=2.0 | - |
 | 60 | 025005031330011520-03505003030100000-00000000000000000 | main_hand:19355 | 179.2 | 10 | spell:1316995=19.1, other:mana_gain=15.0, spell:10917=13.0, spell:6064=12.2, spell:3747=2.9 | - |
 
 ## Learned but unused (informational)
@@ -188,5 +193,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - priest-discipline level=38 kind=zero_casts spell="Prayer of Healing" id=596 authored=596
 - priest-discipline level=40 kind=zero_casts spell="Prayer of Healing" id=996 authored=596
 - priest-discipline level=50 kind=zero_casts spell="Prayer of Healing" id=10960 authored=596
-- priest-discipline level=60 kind=zero_casts spell="Power Word: Shield" id=10901 authored=3747
-- priest-discipline level=60 kind=zero_casts spell="Prayer of Healing" id=10961 authored=596

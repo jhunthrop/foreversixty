@@ -13,7 +13,7 @@
   },
   "expected_idle": [
     {
-      "id": 25307,
+      "id": 11661,
       "reason": "Shadow Bolt is gated `not spellIsKnown(412758)`, the pre-Incinerate filler (see the priority list's own note on this line and on Incinerate above it). At every level this ladder's own zero_casts check flags it (40+), Incinerate is already known and correctly claims the filler slot instead -- the ladder's own cast sets confirm 412758/1293812/1293813 firing at those levels. The fallback yielding as designed, not a defect, the same shape as rogue-subtlety's Sinister Strike/Hemorrhage line."
     }
   ],

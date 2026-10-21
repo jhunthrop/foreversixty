@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -97,8 +102,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 03323000000000000-00000000000000000-000000000000000000 | main_hand:6631 | 19.3 | 4 | other:attack/1=63.1, spell:6547=14.2, other:rage_gain=12.0, spell:7384=4.7, spell:5242=1.5 | {SpellID: 10610} |
 | 30 | 03325213020000000-00000000000000000-000000000000000000 | main_hand:13045 | 42.9 | 5 | other:rage_gain=83.1, other:attack/1=63.1, spell:6548=11.8, spell:5308=10.9, spell:7887=5.4 | {SpellID: 10610} |
 | 38 | 03325213032500000-00000000000000000-000000000000000000 | main_hand:873 | 66.4 | 5 | other:rage_gain=83.0, other:attack/1=49.6, spell:7887=14.2, spell:6548=11.8, spell:20658=9.3 | {SpellID: 10610} |
-| 40 | 03325213032511000-00000000000000000-000000000000000000 | main_hand:1982 | 78.9 | 5 | other:rage_gain=83.0, other:attack/1=65.2, spell:7887=17.3, spell:11572=10.3, spell:20660=9.4 | {SpellID: 10610}, {SpellID: 12294} |
-| 50 | 03325213032515001-05000000000000000-000000000000000000 | main_hand:812 | 125.9 | 6 | other:rage_gain=99.0, other:attack/1=59.1, spell:21551=20.1, spell:11584=17.9, spell:11573=10.3 | {SpellID: 10610} |
+| 40 | 03325213032511000-00000000000000000-000000000000000000 | main_hand:1982 | 78.7 | 5 | other:rage_gain=83.0, other:attack/1=52.3, spell:7887=14.7, spell:11572=10.1, spell:20660=9.9 | {SpellID: 10610}, {SpellID: 12294} |
+| 50 | 03325213032515001-05000000000000000-000000000000000000 | main_hand:812 | 111.2 | 6 | other:rage_gain=99.0, other:attack/1=59.1, spell:21551=20.1, spell:11584=17.9, spell:11573=10.3 | {SpellID: 10610} |
 | 60 | 03325213032515001-05050000000000000-005000000000000000 | main_hand:22798 | 210.0 | 6 | other:rage_gain=123.9, other:attack/1=48.3, spell:21553=22.0, spell:11585=16.3, spell:11574=10.2 | {SpellID: 10610} |
 
 ## Learned but unused (informational)

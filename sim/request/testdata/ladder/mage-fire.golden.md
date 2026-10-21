@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -98,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 0000000000000000000-23552100120000000-0000000000000000000 | main_hand:273040 ranged:5213 | 29.8 | 3 | spell:5019=95.1, spell:8444=35.1, spell:8412=3.9, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 11129}, {SpellID: 400625} |
 | 38 | 0000000000000000000-23552100130105010-0000000000000000000 | main_hand:7714 ranged:13064 | 47.8 | 4 | spell:5019=76.5, spell:8445=33.6, spell:8413=5.1, other:mana_gain=2.0, spell:12523=1.9 | {SpellID: 11129} |
 | 40 | 0000000000000000000-23552100130105021-0000000000000000000 | main_hand:7714 ranged:5216 | 50.8 | 5 | spell:5019=86.6, spell:8446=28.9, spell:8413=4.2, other:mana_gain=2.0, spell:12523=2.0 | - |
-| 50 | 2050011000000000000-23552100130105031-0000000000000000000 | main_hand:9527 ranged:249232 | 87.4 | 5 | spell:5019=59.9, spell:10205=33.0, spell:10197=7.0, spell:12525=2.9, other:mana_gain=2.0 | - |
+| 50 | 2050011000000000000-23552100130105031-0000000000000000000 | main_hand:812 ranged:249232 | 94.0 | 5 | spell:5019=58.8, spell:10205=34.4, spell:10197=7.3, spell:12525=3.0, other:mana_gain=2.0 | - |
 | 60 | 2050015100000000000-23552100130105031-0050000000000000000 | main_hand:22589 ranged:22821 | 270.4 | 5 | spell:10207=52.0, spell:5019=47.9, spell:10199=17.0, spell:18809=8.8, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)
