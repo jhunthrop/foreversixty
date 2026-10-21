@@ -167,3 +167,48 @@ func TestForgettingADeviceIsNotBeingSignedOutBySomeoneElse(t *testing.T) {
 		t.Fatalf("a deliberate forget reads signed out: %+v %q", s.SignedOut, s.Headline.Key)
 	}
 }
+
+// A heartbeat the site refuses signs the device out through the same path
+// as an upload does, and stops; signing in again starts it once more.
+func TestARefusedHeartbeatSignsTheDeviceOutAndASignInResumesIt(t *testing.T) {
+	var logs lockedBuf
+	h := newHarnessWith(t, nil, func(o *app.Options) {
+		o.Log = slog.New(slog.NewTextHandler(&logs, &slog.HandlerOptions{Level: slog.LevelDebug}))
+		o.HeartbeatEvery = 20 * time.Millisecond
+	})
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+	h.app.Step(t.Context(), t0) // prime the tail over the empty folder
+	if err := os.WriteFile(h.log,
+		[]byte(fixture.Header+fixture.Zone+fixture.Encounter(0)+fixture.Heartbeat(0)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), t0.Add(time.Second)) // the report opens and is created
+	wait := func(what string, cond func() bool) {
+		t.Helper()
+		for deadline := time.Now().Add(2 * time.Second); !cond(); time.Sleep(5 * time.Millisecond) {
+			if time.Now().After(deadline) {
+				t.Fatalf("timed out waiting for %s", what)
+			}
+		}
+	}
+	wait("a heartbeat", func() bool { return h.srv.Heartbeats() > 0 })
+	h.srv.RevokeToken()
+	wait("the refusal", func() bool {
+		h.app.Step(t.Context(), t0.Add(2*time.Second))
+		return h.app.Snapshot().SignedOut != nil
+	})
+	n := h.srv.HeartbeatRequests()
+	time.Sleep(100 * time.Millisecond)
+	if got := h.srv.HeartbeatRequests(); got != n {
+		t.Fatalf("heartbeats went from %d to %d while signed out", n, got)
+	}
+	h.srv.RestoreToken()
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("signing in again failed")
+	}
+	wait("a heartbeat after the sign-in", func() bool { return h.srv.HeartbeatRequests() > n })
+}

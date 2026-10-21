@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.10
+
+- While a log is being followed, the companion tells the site it is alive once a minute, so a report page can say when it has gone quiet.
+
 ## 0.2.9
 
 - Status says plainly whether the current report is credited, and to whom; installs you are not logging no longer warn about advanced logging; the companion checks for builds right after you log out, and the Addon row has a Check-for-builds-now button.

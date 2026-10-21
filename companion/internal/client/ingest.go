@@ -243,6 +243,20 @@ func (c *Client) PutLive(ctx context.Context, reportID string, index int, in Liv
 	return err
 }
 
+// Heartbeat tells the site the report's companion is alive: a POST with
+// no body, answered 204, which the API accepts once a minute per
+// device. It makes a single attempt on purpose. The caller's next tick
+// is the retry, and the client's own backoff would answer a 429 by
+// asking again inside the minute it was told to wait; the error
+// carries RetryAfter for the caller to honour.
+func (c *Client) Heartbeat(ctx context.Context, reportID string) error {
+	_, err := c.attempt(ctx, request{
+		Method: http.MethodPost,
+		Path:   "/v1/reports/" + url.PathEscape(reportID) + "/heartbeat",
+	})
+	return err
+}
+
 // PutRaw uploads one compressed chunk of the original log, addressed
 // by the uncompressed byte offset of its first byte.
 //

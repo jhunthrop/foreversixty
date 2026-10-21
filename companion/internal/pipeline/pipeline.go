@@ -63,9 +63,12 @@ type Options struct {
 	// for. Nil means none are known.
 	Records func() []logger.Record
 
-	RawChunk   int
-	LiveEvery  time.Duration
-	StateEvery time.Duration
+	RawChunk  int
+	LiveEvery time.Duration
+	// HeartbeatEvery is how often an open report tells the site the
+	// companion is alive. Zero means HeartbeatEvery, the API's limit.
+	HeartbeatEvery time.Duration
+	StateEvery     time.Duration
 	// NewKey mints a local report key. Tests pin it.
 	NewKey func(time.Time) string
 }
@@ -92,6 +95,16 @@ type Pipeline struct {
 	// noted is the reports whose unresolved logger was already said
 	// so in the log, so the line is written once per report.
 	noted map[string]bool
+
+	// hb is the open report's heartbeat goroutine, hbCtx the pipeline-wide
+	// context it hangs from (ended by Close), and hbWG what Close waits
+	// on. hbRefused is a token refusal the heartbeat met, kept until
+	// HeartbeatRefused hands it to the signed-out path.
+	hb        *heartbeat
+	hbCtx     context.Context
+	hbStop    context.CancelFunc
+	hbWG      sync.WaitGroup
+	hbRefused error
 }
 
 // New builds a pipeline and resumes the report that was open when the
@@ -109,6 +122,9 @@ func New(o Options) (*Pipeline, error) {
 	if o.StateEvery == 0 {
 		o.StateEvery = StateEvery
 	}
+	if o.HeartbeatEvery == 0 {
+		o.HeartbeatEvery = HeartbeatEvery
+	}
 	if o.NewKey == nil {
 		o.NewKey = state.NewKey
 	}
@@ -120,11 +136,15 @@ func New(o Options) (*Pipeline, error) {
 		return nil, err
 	}
 	p := &Pipeline{o: o, enc: enc, noted: map[string]bool{}}
+	p.hbCtx, p.hbStop = context.WithCancel(context.Background())
 	p.migrateStoredNames()
 	if err := p.resume(); err != nil {
 		return nil, err
 	}
 	p.recallDetected()
+	if p.cur != nil {
+		p.startHeartbeat()
+	}
 	return p, nil
 }
 
@@ -233,8 +253,10 @@ func (p *Pipeline) detect() {
 	}
 }
 
-// Close releases the compressor.
+// Close ends the heartbeat, waits for it, and releases the compressor.
 func (p *Pipeline) Close() error {
+	p.hbStop()
+	p.hbWG.Wait()
 	p.enc.Close()
 	return nil
 }
@@ -398,6 +420,7 @@ func (p *Pipeline) start(e watch.Event, now time.Time) error {
 	p.raw, p.rawAt, p.lastLive, p.lastSave = nil, 0, time.Time{}, now
 	p.o.Log.Info("a report started", "component", "pipeline", "report", key,
 		"path", e.Path, "file_offset", e.Offset)
+	p.startHeartbeat()
 	return p.save()
 }
 
@@ -581,6 +604,7 @@ func (p *Pipeline) complete(now time.Time) error {
 	}
 	p.o.Log.Info("a report completed", "component", "pipeline", "report", p.cur.Key,
 		"fights", p.cur.Fights, "final_offset", p.cur.Offset)
+	p.stopHeartbeat()
 	p.sess, p.cur, p.raw = nil, nil, nil
 	return nil
 }
