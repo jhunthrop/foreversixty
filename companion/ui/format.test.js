@@ -274,7 +274,7 @@ test('Settings has a page heading, and Add a folder sits in the Game folders lab
   const row = html.slice(html.indexOf('class="label-row"'));
   assert.ok(row.indexOf('id="folders-label"') < row.indexOf('id="add-folder"'));
   assert.ok(row.indexOf('id="add-folder"') < row.indexOf('id="folder-list"'), 'the button is above the list, never under the fade');
-  assert.match(html, /<h2 class="sr" tabindex="-1">This device<\/h2>/, 'the Device page keeps one Cinzel heading');
+  assert.match(html, /<h2 tabindex="-1">This device<\/h2>/, 'the Device page shows its heading again');
 });
 
 test('the sign-in screen says the browser has opened, and the expiry once', () => {
@@ -383,4 +383,51 @@ test('every count is in the body face, the poll failure disables Check for build
 test('the Fights row never shows a bare 0 on an open report', () => {
   assert.strictEqual(COPY.status.noFightsYet, '0 so far');
   assert.strictEqual(COPY.status.noFightsHelp, 'The first fight uploads when it ends.');
+});
+
+test('the fight rows never count one fight as both uploaded and queued', () => {
+  const w = COPY.status;
+  const open = (o) => Object.assign({ report_key: 'k', report_id: 'r_1', logging: true, fights: 0, queued: 0, queued_fights: 0 }, o);
+  // No report open: no Fights row at all.
+  assert.deepStrictEqual(FORMAT.fightRows({ fights: 0, queued: 0 }, w), { show: false });
+  // Everything still waiting: the one row says so, with no Queued row beside it.
+  const first = FORMAT.fightRows(open({ fights: 3, queued: 5, queued_fights: 3 }), w);
+  assert.strictEqual(first.text, 'Uploading 3 fights…');
+  assert.strictEqual(first.queued, 0);
+  assert.strictEqual(FORMAT.fightRows(open({ fights: 1, queued: 2, queued_fights: 1 }), w).text, 'Uploading 1 fight…');
+  // Some up, some waiting: uploaded is the site's, queued is the rest.
+  const some = FORMAT.fightRows(open({ fights: 5, queued: 4, queued_fights: 2 }), w);
+  assert.strictEqual(some.text, '3');
+  assert.strictEqual(some.queued, 2);
+  // Nothing waiting: only the uploaded count, even with raw chunks queued.
+  const clear = FORMAT.fightRows(open({ fights: 4, queued: 2, queued_fights: 0 }), w);
+  assert.strictEqual(clear.text, '4');
+  assert.strictEqual(clear.queued, 0);
+  // An open report with no fight yet.
+  assert.strictEqual(FORMAT.fightRows(open(), w).text, w.noFightsYet);
+  assert.strictEqual(FORMAT.fightRows(open({ report_id: '' }), w).text, w.noReport);
+});
+
+test('the fixtures: a fresh report reads Uploading, Ready has no fights row', () => {
+  const first = fixture('status-uploading.json');
+  assert.strictEqual(FORMAT.fightRows(first.pipeline, COPY.status).text, 'Uploading 3 fights…');
+  const some = FORMAT.fightRows(fixture('status-uploading-some.json').pipeline, COPY.status);
+  assert.deepStrictEqual([some.text, some.queued], ['3', 2]);
+  assert.strictEqual(FORMAT.fightRows(fixture('status-ready.json').pipeline, COPY.status).show, false);
+});
+
+test('the Device page keeps its heading visible and only Status hides its heading', () => {
+  const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+  const heads = [...html.matchAll(/<section id="(\w+)"[^>]*>\s*(?:<div class="h2line">\s*)?<h2 ([^>]*)>/g)];
+  const hidden = heads.filter((m) => /class="sr"/.test(m[2])).map((m) => m[1]);
+  assert.deepStrictEqual(hidden, ['status']);
+  assert.strictEqual(heads.length, 4);
+});
+
+test('the Settings help sentences collapse to one line in a short window and the bar balances its text', () => {
+  const css = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf8');
+  const short = css.match(/@media \(max-height: 520px\) \{[\s\S]*?\n\}/)[0];
+  assert.match(short, /#settings \.help \{[^}]*white-space: nowrap[^}]*text-overflow: ellipsis/);
+  assert.match(css, /\.bar \{[^}]*text-wrap: pretty/);
+  assert.match(css, /@media \(max-width: 520px\)[\s\S]*\.row \.v \.check-builds \{ margin: 6px 0 0 -11px; \}/);
 });

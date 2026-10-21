@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.14
+
+- A log is one row in Reports; the counters never say uploaded and queued for the same fights; Settings stays legible in a small window.
+
 ## 0.2.13
 
 - The Status card says what to do when a log is not credited to you; Settings shows whole folder names and a Save strip that says No changes; the update bar says uploads pause during the restart.

@@ -218,3 +218,20 @@ func TestTheClockCanBeReplaced(t *testing.T) {
 		t.Fatalf("enqueued at %s", l.Item.EnqueuedAt)
 	}
 }
+
+func TestWaitingCountsOneKind(t *testing.T) {
+	q, err := Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	q.Enqueue(Item{Kind: Fight, ReportKey: "k", FightIndex: 0}, []byte("a"))
+	q.Enqueue(Item{Kind: Raw, ReportKey: "k"}, []byte("b"))
+	q.Enqueue(Item{Kind: Fight, ReportKey: "k", FightIndex: 1}, []byte("c"))
+	q.Enqueue(Item{Kind: Complete, ReportKey: "k"}, []byte("d"))
+	if n, _ := q.Waiting(Fight); n != 2 {
+		t.Fatalf("Waiting(Fight) = %d, want 2", n)
+	}
+	if n, _ := q.Len(); n != 4 {
+		t.Fatalf("Len = %d, want 4", n)
+	}
+}

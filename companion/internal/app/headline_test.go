@@ -193,6 +193,18 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			headline(&s)
 			return s
 		}},
+		// The first seconds of a report: three fights closed, none on the site yet.
+		{"status-uploading.json", func() Snapshot {
+			s := base(unmatched)
+			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 3, 5, 3
+			return s
+		}},
+		// Some fights up, two still waiting: the two rows count different fights.
+		{"status-uploading-some.json", func() Snapshot {
+			s := base(credited)
+			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 5, 4, 2
+			return s
+		}},
 		{"status-advanced-off.json", func() Snapshot {
 			s := base(none)
 			s.Installs[0].Advanced = false

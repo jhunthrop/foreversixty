@@ -286,7 +286,7 @@ function renderStatus(s) {
     // The words, not the time: the relative time moves on its own, and the
     // region only redraws when what it holds changes.
     lastSync: lastSyncRow(s.last_sync),
-    fights: p.fights, queued: p.queued, addon: s.addon_line, stale: s.addon_stale, never: s.addon_never, help: s.addon_help, title: s.addon_seen_title,
+    fights: p.fights, queued: p.queued, queuedFights: p.queued_fights || 0, open: !!(p.report_key || p.report_id), addon: s.addon_line, stale: s.addon_stale, never: s.addon_never, help: s.addon_help, title: s.addon_seen_title,
     // The Check for builds now button and the line it leaves. The words are
     // computed here, like the Last sync row's, so they move on their own.
     paired: s.paired,
@@ -314,14 +314,14 @@ function renderStatus(s) {
     // An open report with no fight yet says so, rather than a bare 0 that reads as lost;
     // with no report open the count is "None yet", like the Current report row above it.
     // Every count is in the body face with tabular digits.
-    const noFights = p.fights === 0 && p.report_id && p.logging;
-    el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
-      noFights
-        ? h('span', { class: 'v' }, COPY.status.noFightsYet, h('span', { class: 'sub', text: COPY.status.noFightsHelp }))
-        : h('span', { class: 'v', text: p.fights === 0 ? COPY.status.noReport : String(p.fights) })));
-    if (p.queued > 0) {
-      el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
-        h('span', { class: 'v', text: String(p.queued) })));
+    const fr = FORMAT.fightRows(p, COPY.status);
+    if (fr.show) {
+      el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
+        h('span', { class: 'v' }, fr.text, fr.help ? h('span', { class: 'sub', text: fr.help }) : null)));
+      if (fr.queued > 0) {
+        el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
+          h('span', { class: 'v', text: String(fr.queued) })));
+      }
     }
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     // A sync over a day old, and no sync at all, each say what to do.
@@ -730,6 +730,7 @@ function syncSave() {
   $('save').disabled = !strip.enabled;
   $('save-state').textContent = strip.text;
   $('visibility-help').textContent = COPY.settings.visibilityHelp[$('visibility').value] || '';
+  $('visibility-help').title = $('visibility-help').textContent;
 }
 
 // fillSettings puts the saved values into the form: on first load, and
@@ -872,6 +873,7 @@ for (const o of $('visibility').options) o.textContent = COPY.settings.visibilit
 $('folders-label').textContent = COPY.settings.folders;
 $('character-label').textContent = COPY.settings.character;
 $('character-help').textContent = COPY.settings.characterHelp;
+$('character-help').title = COPY.settings.characterHelp;
 $('save').textContent = COPY.settings.save;
 $('add-folder').textContent = COPY.settings.addFolder;
 $('first-check').textContent = COPY.checking;

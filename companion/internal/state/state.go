@@ -159,7 +159,9 @@ func List(dir string) ([]Report, error) {
 	}
 	var keys []string
 	for _, e := range entries {
-		if !e.IsDir() && strings.HasSuffix(e.Name(), ".json") {
+		// A dot-file is Save's temporary, mid-rename: listing it would show one
+		// report twice, once as it was and once as it is about to be.
+		if !e.IsDir() && !strings.HasPrefix(e.Name(), ".") && strings.HasSuffix(e.Name(), ".json") {
 			keys = append(keys, strings.TrimSuffix(e.Name(), ".json"))
 		}
 	}

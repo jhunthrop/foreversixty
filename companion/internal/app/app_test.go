@@ -824,3 +824,27 @@ func TestForgetCountsADeadTokenAsRevoked(t *testing.T) {
 		t.Fatalf("unpair = %d %v", code, body)
 	}
 }
+
+// A state file listed twice under two names (the copy of a save in flight) is
+// still one report, and so one row in Reports.
+func TestAReportListedTwiceIsOneRow(t *testing.T) {
+	h := newHarnessSeeded(t, func(dirs paths.Dirs) {
+		r := state.Report{Key: "20261201-200000-bbbbbbbb", StartedAt: t0.Add(-time.Hour), Fights: 3}
+		if err := state.Save(dirs.State, r); err != nil {
+			t.Fatal(err)
+		}
+		// The same report under a name that sorts after it, with the server's id.
+		b := []byte(`{"key":"20261201-200000-bbbbbbbb","report_id":"rpt000000001","started_at":"` +
+			r.StartedAt.Format(time.RFC3339) + `","fights":3}`)
+		if err := os.WriteFile(filepath.Join(dirs.State, "20261201-200000-bbbbbbbb-copy.json"), b, 0o600); err != nil {
+			t.Fatal(err)
+		}
+	})
+	rows := h.app.Snapshot().Reports
+	if len(rows) != 1 {
+		t.Fatalf("Reports has %d rows for one report: %+v", len(rows), rows)
+	}
+	if rows[0].ReportID != "rpt000000001" {
+		t.Errorf("the row kept the older copy: %+v", rows[0])
+	}
+}

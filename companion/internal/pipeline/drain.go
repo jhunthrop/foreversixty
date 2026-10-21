@@ -296,7 +296,12 @@ type Status struct {
 	Fights     int       `json:"fights"`
 	Offset     int64     `json:"offset"`
 	LastAppend time.Time `json:"last_append,omitzero"`
-	Queued     int       `json:"queued"`
+	// Queued is every item waiting (fights, raw chunks, the completion);
+	// QueuedFights is the fights among them, the ones the window counts.
+	// Fights is every fight the report has closed, so the fights the
+	// site holds are Fights minus QueuedFights.
+	Queued       int `json:"queued"`
+	QueuedFights int `json:"queued_fights"`
 	// Detected is who the combat log says is logging: the report's
 	// character once the addon has named it, else the name the log
 	// gave. It is the last one seen when no report is open.
@@ -308,6 +313,9 @@ func (p *Pipeline) Status() Status {
 	s := Status{}
 	if n, err := p.o.Queue.Len(); err == nil {
 		s.Queued = n
+	}
+	if n, err := p.o.Queue.Waiting(queue.Fight); err == nil {
+		s.QueuedFights = n
 	}
 	p.mu.Lock()
 	defer p.mu.Unlock()
