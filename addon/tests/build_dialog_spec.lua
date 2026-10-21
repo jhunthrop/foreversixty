@@ -422,44 +422,16 @@ describe("BuildDialog, paste mode's model", function()
 		assert.is_nil(BuildDialog.previewContext(nil, ordered("ID"), {}, DATA, 21).short)
 	end)
 
-	it("fits the Next line by shortening the tree, then the rank, never the talent (fix 5, 15)", function()
-		local measure = function(text)
-			return utf8.len(text) * 5
-		end
+	it("gives the Next line whole, tree and rank included, never an ellipsis (X.6)", function()
 		local order = {}
 		for _ = 1, 3 do
 			order[#order + 1] = { tab = 3, tier = 1, column = 1 }
 		end
 		local ret = build(Codec.encodeFSB1({ dataBuild = DATA.build, classSlug = "paladin", order = order, gear = {} }))
 		local ranks = { [3] = { ["1:1"] = 1 } }
-		local whole = BuildDialog.previewContext(nil, ret, ranks, DATA, 21)
-		assert.are.equal("Next talent would be: Take Two-Handed Weapon Specialization (Retribution, 2 of 3)",
-			whole.nextWould)
-		local fitted = BuildDialog.previewContext(nil, ret, ranks, DATA, 21, measure, 388)
-		assert.is_true(measure(fitted.nextWould) <= 388, fitted.nextWould)
-		assert.is_truthy(fitted.nextWould:find("Take Two-Handed Weapon Specialization", 1, true))
-		local narrow = BuildDialog.previewContext(nil, ret, ranks, DATA, 21, measure, 300)
-		assert.is_truthy(narrow.nextWould:find("Two-Handed Weapon Specialization", 1, true))
-		-- Fix 6, 9: down to 200 px the talent stays whole, and the tree is shortened before it is
-		-- dropped (whole tree, then a shortened one, then none: never back).
-		local function phase(text)
-			if text:find("(Retribution", 1, true) then
-				return 1
-			elseif text:find("(", 1, true) and text:find(L.ellipsis, 1, true) then
-				return 2
-			end
-			return 3
-		end
-		local last, sawShort = 1, false
-		for width = 420, 200, -2 do
-			local line = BuildDialog.previewContext(nil, ret, ranks, DATA, 21, measure, width).nextWould
-			assert.is_truthy(line:find("Take Two-Handed Weapon Specialization", 1, true), width .. ": " .. line)
-			local now = phase(line)
-			assert.is_true(now >= last, width .. ": " .. line)
-			sawShort = sawShort or now == 2
-			last = now
-		end
-		assert.is_true(sawShort)
+		local line = BuildDialog.previewContext(nil, ret, ranks, DATA, 21).nextWould
+		assert.are.equal("Next talent would be: Take Two-Handed Weapon Specialization (Retribution, 2 of 3)", line)
+		assert.is_nil(line:find(L.ellipsis, 1, true))
 	end)
 
 	it("words one point and no points without a bare number", function()
@@ -620,12 +592,11 @@ describe("BuildDialog, paste mode's model", function()
 		end
 		local width = 388
 		local long = ordered("DDI", "A very long build name the site sent for this character")
-		local context = BuildDialog.previewContext(long, ordered("IDD"), {}, DATA, 21, measure, width)
+		local context = BuildDialog.previewContext(long, ordered("IDD"), {}, DATA, 21)
 		assert.is_true(measure(context.replaces) > width, "the sentence is whole, wider than one line")
 		assert.is_truthy(context.replaces:find("A very long build name the site sent for this character", 1, true))
 		assert.is_truthy(context.replaces:find("Improved Heroic Strike (Arms)", 1, true))
-		assert.is_true(measure(context.nextWould) <= width)
-		local short = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21, measure, width)
+		local short = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21)
 		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
 			short.replaces)
 	end)

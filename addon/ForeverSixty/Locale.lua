@@ -950,6 +950,7 @@ L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
 -- why "Use this build" is held back then.
 L.dialogSameAsPlan = "Same as your plan for %s. Yours goes on with %s."
 L.dialogUseFurther = "Your plan is further along."
+L.dialogUseFurtherHint = "Your plan is further along"
 -- The incoming build stops short of the points spent and is not a prefix: "%s" its points, then the
 -- points spent and the point it keeps following from; above the "first differs at" sentence.
 L.dialogEndsShort = "This build ends at %s; you have spent %d. It keeps following from point %d."

@@ -570,6 +570,27 @@ describe("BuildDialog, round 5 frame checks", function()
 			assert.are.equal(BuildDialog.height - BuildDialog.chrome.top - BuildDialog.chrome.bottom,
 				BuildDialog.contentHeight)
 		end)
+
+	it("wraps the Next line whole too: no one-line cap, no tree cut short, the dialog grows (X.6)", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		local nextWould = BuildDialog.paste.nextWould
+		nextWould.GetStringHeight = function(region)
+			return math.ceil(utf8.len(region:GetText() or "") * 5 / 388) * 14
+		end
+		paste("FSB1:1.60.1.70291:warrior:112:")
+		local text = nextWould:GetText()
+		assert.is_truthy(text, "a next talent is said")
+		assert.is_nil(text:find(require("Locale").ellipsis, 1, true), text)
+		assert.is_nil(mock.lastCall(nextWould, "SetWordWrap"))
+		assert.is_nil(mock.lastCall(nextWould, "SetMaxLines"))
+		assert.are.equal(388, mock.lastCall(nextWould, "SetWidth")[1])
+		nextWould.GetStringHeight = function()
+			return 140
+		end
+		paste("FSB1:1.60.1.70291:warrior:113:")
+		assert.is_true(BuildDialog.height > Theme.SIZES.dialogHeight, BuildDialog.height)
+	end)
 end)
 
 describe("BuildDialog, round 6 frame checks", function()
@@ -1067,6 +1088,7 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_true(paste.use:IsEnabled())
 		assert.is_false(paste.useReason:IsShown())
 		assert.is_nil(BuildDialog.useBlocked)
+		assert.are.equal("Enter to use", BuildDialog.enterHint:GetText())
 	end)
 
 	it("disables Use for a build that is a prefix of the plan, with the reason beside the button (X.5)", function()
@@ -1078,6 +1100,9 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_false(paste.use:IsEnabled())
 		assert.is_true(paste.useReason:IsShown())
 		assert.are.equal("Your plan is further along.", paste.useReason:GetText())
+		-- The hint follows the button: no instruction that does nothing, the reason's short form instead (X.6).
+		assert.are.equal("Your plan is further along", BuildDialog.enterHint:GetText())
+		assert.is_true(BuildDialog.enterHint:IsShown())
 		assert.is_truthy(paste.replaces:GetText():find("Same as your plan for 2 points. Yours goes on with", 1, true))
 		-- Neither the button nor Enter loads it.
 		local before = Follow.build
