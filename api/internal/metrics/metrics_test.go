@@ -121,17 +121,32 @@ func TestCompareRejectsMissingAndExtraRows(t *testing.T) {
 
 func TestCompareIgnoresClassSpecAndIlvlTheRebuildCannotSee(t *testing.T) {
 	rows := fixtureRows(t)
+	// A rebuild that derived nothing: the fixture's rebuild reads classes off the spells
+	// cast (lane L.8), so blank them to stand for a log whose spells name no class.
+	blind := append([]Row{}, rows...)
+	for i := range blind {
+		blind[i].Class, blind[i].Spec, blind[i].Ilvl = "", "", 0
+	}
 	posted := append([]Row{}, rows...)
 	for i := range posted {
 		posted[i].Class, posted[i].Spec, posted[i].Ilvl = "Warrior", "Fury", 183
 	}
-	if err := Compare(posted, rows); err != nil {
+	if err := Compare(posted, blind); err != nil {
 		t.Fatalf("a rebuild that derived no class must not reject one: %v", err)
+	}
+	// The companion posts no class or spec for a log without COMBATANT_INFO; the
+	// rebuild's own reading is not a contradiction of nothing.
+	unclaimed := append([]Row{}, rows...)
+	for i := range unclaimed {
+		unclaimed[i].Class, unclaimed[i].Spec = "", ""
+	}
+	if err := Compare(unclaimed, rows); err != nil {
+		t.Fatalf("an empty posted class must not be rejected against a derived one: %v", err)
 	}
 	derived := append([]Row{}, rows...)
 	derived[0].Class = "Mage"
 	if err := Compare(posted, derived); err == nil {
-		t.Fatal("a class the rebuild did derive must be enforced")
+		t.Fatal("a class the rebuild did derive must be enforced against a claimed one")
 	}
 }
 

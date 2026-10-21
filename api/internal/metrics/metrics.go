@@ -157,8 +157,11 @@ func compareRow(guid string, got, want Row) *Mismatch {
 	// Class, spec, and item level come from COMBATANT_INFO, whose payload
 	// the Parquet schema does not carry (see engine.Header), and the
 	// companion's registry has seen the whole log where a rebuild sees
-	// one fight. So they are checked only when the rebuild derived one of
-	// its own; an empty or zero derivation is not evidence of a forgery.
+	// one fight. So they are checked only when both sides name one: an
+	// empty or zero derivation is not evidence of a forgery, and an empty
+	// posted value is no claim at all (the rebuild reads a class and a
+	// spec off the spells cast since lane L.8, which the companion's own
+	// registry does not, so a log without COMBATANT_INFO posts neither).
 	for _, f := range []struct {
 		name      string
 		got, want string
@@ -166,7 +169,7 @@ func compareRow(guid string, got, want Row) *Mismatch {
 		{"class", got.Class, want.Class},
 		{"spec", got.Spec, want.Spec},
 	} {
-		if f.want != "" && f.got != f.want {
+		if f.got != "" && f.want != "" && f.got != f.want {
 			return mismatchf(guid, f.name, "%s is %q, the events give %q", f.name, f.got, f.want)
 		}
 	}

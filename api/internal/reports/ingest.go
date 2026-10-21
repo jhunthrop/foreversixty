@@ -360,6 +360,25 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 	}
 	record.Verified = true
 
+	// The companion's registry reads no class or spec off the spells cast (the
+	// rebuild does, since lane L.8), so a log without COMBATANT_INFO posts neither.
+	// The fight it publishes carries the rebuild's reading where the post left a
+	// blank, and never overrides a value the companion did send.
+	derivedAt := make(map[string]int, len(rebuilt.Roster))
+	for j, row := range rebuilt.Roster {
+		derivedAt[row.GUID] = j
+	}
+	for j := range posted.Roster {
+		if k, ok := derivedAt[posted.Roster[j].GUID]; ok {
+			if posted.Roster[j].Class == "" {
+				posted.Roster[j].Class = rebuilt.Roster[k].Class
+			}
+			if posted.Roster[j].Spec == "" {
+				posted.Roster[j].Spec = rebuilt.Roster[k].Spec
+			}
+		}
+	}
+
 	pub := store.Publisher{Keys: Keys(rep.ID), Put: i.Put}
 	if err := pub.WriteFight(r.Context(), n, posted, events); err != nil {
 		i.fail(w, r, "fight", err, "could not store that fight just now")
