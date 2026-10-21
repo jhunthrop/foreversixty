@@ -1,6 +1,6 @@
 // web/src/lib/items/lookup.test.ts
 import { describe, expect, it } from 'vitest';
-import { readItemTooltipModel } from './lookup';
+import { readItemTooltipModel } from './lookup-node';
 
 const BUILD = '1.60.1.70374';
 
