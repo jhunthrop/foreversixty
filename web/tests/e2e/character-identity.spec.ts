@@ -889,6 +889,9 @@ test('the crest tops the name block, in the same place for a visitor and the own
   expect(Math.abs(visitor.crest - visitor.name)).toBeLessThan(0.5);
 
   await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
+  // An owner whose session already settled its pointer (the first answer of a session writes the
+  // main, which adds the spine bar above the header): this measures the header, not the bar.
+  await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
   await page.reload();
   await expect(page.getByTestId('character-sync')).toBeVisible();
   const owner = await measure();

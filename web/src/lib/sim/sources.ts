@@ -40,7 +40,7 @@ import {
 } from './character';
 import { fetchSimInput } from './api';
 import { simCopy } from './copy';
-import { recordCurrentCharacter } from './current-character-bridge';
+import { recordCurrentCharacter, recordLoadedExport } from './current-character-bridge';
 import type { CharacterSource } from './types';
 
 export interface LoadContext {
@@ -110,20 +110,25 @@ export function relativeTime(iso: string, now: Date = new Date()): string {
  * The strip's source pill. Armory and addon carry a time because freshness is the question
  * a player has about them; a build and a fight are fixed things, so naming them is enough.
  */
-export function sourcePill(source: CharacterSource, now: Date = new Date()): string {
+export function sourcePill(source: CharacterSource, now: Date = new Date(), name = ''): string {
   switch (source.kind) {
     case 'armory':
       return `Armory, ${relativeTime(source.captured_at, now)}`;
     case 'blizzard':
       return `Battle.net, ${relativeTime(source.captured_at, now)}`;
     case 'addon':
-      return `Addon export, ${relativeTime(source.captured_at, now)}`;
+      // A named export that arrived in a link carries no capture time; say what it is.
+      return source.captured_at === ''
+        ? 'Addon export'
+        : `Addon export, ${relativeTime(source.captured_at, now)}`;
     case 'build':
       return 'Build from planner';
     case 'fight':
       return 'From this fight';
     default:
-      return 'Entered by hand';
+      // A planner build that carries a character ("Sim this build" from an account
+      // character) says whose gear it is; any other code was typed or linked by hand.
+      return name === '' ? 'Entered by hand' : `Build from planner · ${name}’s gear`;
   }
 }
 
@@ -288,7 +293,8 @@ async function loadFs1Character(
   code: string,
   ctx: LoadContext,
   kind: 'addon' | 'manual',
-  pointerSource: 'addon' | 'code',
+  policy: 'paste' | 'link',
+  captured_at: string,
   storage?: Storage,
 ): Promise<SourceResult> {
   // The class is in the string, so the talent file is chosen from it rather than guessed.
@@ -307,9 +313,9 @@ async function loadFs1Character(
   const result = characterFromFs1(code, talents, classes, races, {
     kind,
     ref: '',
-    captured_at: new Date().toISOString(),
+    captured_at,
   });
-  if (result.ok) recordCurrentCharacter(result.character, pointerSource, code, storage);
+  if (result.ok) await recordLoadedExport(result.character, code, policy, storage);
   return result;
 }
 
@@ -319,7 +325,20 @@ export async function fromAddonExport(
   ctx: LoadContext,
   storage?: Storage,
 ): Promise<SourceResult> {
-  return loadFs1Character(code, ctx, 'addon', 'addon', storage);
+  return loadFs1Character(code, ctx, 'addon', 'paste', new Date().toISOString(), storage);
+}
+
+/**
+ * A named addon export that arrived in a link (the character page's and the paste box's
+ * "Open in simulator"): an addon export by kind, but with no capture time to claim, and it
+ * leaves the player's pointer alone unless it names a character the account holds.
+ */
+export async function fromLinkedExport(
+  code: string,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
+  return loadFs1Character(code, ctx, 'addon', 'link', '', storage);
 }
 
 /**
@@ -338,7 +357,7 @@ export async function fromManualCode(
   ctx: LoadContext,
   storage?: Storage,
 ): Promise<SourceResult> {
-  return loadFs1Character(code, ctx, 'manual', 'code', storage);
+  return loadFs1Character(code, ctx, 'manual', 'link', new Date().toISOString(), storage);
 }
 
 export async function fromPlannerBuild(
@@ -364,7 +383,7 @@ export async function fromPlannerBuild(
     if (classRow === undefined) return { ok: false, message: simCopy.buildNotFound };
     const talents = await loadTalents(record.tree_version, classRow.slug);
     const character = fromBuildDraft(record, talents, classes, races, {
-      name: record.title === undefined || record.title === '' ? classRow.name : record.title,
+      name: record.title === undefined ? '' : record.title,
       source: { kind: 'build', ref: record.id, captured_at: record.created_at },
     });
     if (character === null) return { ok: false, message: simCopy.buildNotFound };

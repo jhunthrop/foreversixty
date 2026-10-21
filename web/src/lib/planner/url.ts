@@ -8,6 +8,7 @@
 const CLASS = 'class';
 const RACE = 'race';
 const CODE = 'code';
+const CHARACTER = 'character';
 
 /**
  * The query string the planner should carry for `classSlug` and `raceSlug`, or `null` when
@@ -29,11 +30,16 @@ export function plannerSearchFor(
 ): string | null {
   const params = new URLSearchParams(search);
   if (code !== null && code.classSlug === classSlug && code.raceSlug === raceSlug) return null;
-  const bare = params.get(CODE) === null && params.get(CLASS) === null && params.get(RACE) === null;
+  const bare =
+    params.get(CODE) === null &&
+    params.get(CHARACTER) === null &&
+    params.get(CLASS) === null &&
+    params.get(RACE) === null;
   if (bare && opened.classSlug === classSlug && opened.raceSlug === raceSlug) return null;
 
   const next = new URLSearchParams(search);
   next.delete(CODE);
+  next.delete(CHARACTER);
   next.set(CLASS, classSlug);
   if (raceSlug === '') next.delete(RACE);
   else next.set(RACE, raceSlug);

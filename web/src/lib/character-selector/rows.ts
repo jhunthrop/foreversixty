@@ -4,6 +4,7 @@
 // Pure functions of their inputs, so the ordering, the stale rule and the pointer cases are
 // all tested without a browser.
 import type { Me, MeCharacter } from '../account/api';
+import { pointerNameOf, sameCharacter } from '../account/hero-character';
 import { mainCharacter } from '../account/main-character';
 import { rulesetLabel } from '../characters';
 import type { CurrentCharacter } from '../current-character';
@@ -11,7 +12,6 @@ import { relativeTime } from '../dates';
 import type { Faction } from '../faction-mark';
 import { specName } from '../guild/spec-name';
 import { orderCharacters } from './order';
-import { sameCharacter } from './paste';
 import { selectorCopy } from './copy';
 import { isFailed, isStale } from './stale';
 
@@ -144,8 +144,8 @@ function isPastedPointer(pointer: CurrentCharacter | null): pointer is PastedPoi
 /** A pasted pointer written before the account knew the character, or by an older build, is the
  *  account character with the same name and class: one row, never the same person twice. */
 function accountCharacterOfPointer(me: Me, pointer: PastedPointer): MeCharacter | null {
-  const { name } = splitPointerLabel(pointer);
-  if (name === '' || name === capitalise(pointer.classSlug)) return null;
+  const name = pointerNameOf(pointer);
+  if (name === '') return null;
   return me.characters.find((character) => sameCharacter(character, name, pointer.classSlug)) ?? null;
 }
 

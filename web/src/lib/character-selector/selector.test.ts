@@ -436,7 +436,7 @@ describe('choosing a character', () => {
   it('points the planner and simulator URLs at the choice, before the page is told, with no reload', () => {
     const planner = deps('/planner', memoryStorage());
     chooseCharacter(tester, planner);
-    expect(planner.urls).toEqual(['/planner?class=warrior']);
+    expect(planner.urls).toEqual([`/planner?character=${encodeURIComponent(tester.key)}`]);
     expect(planner.log).toEqual(['url', 'event']);
 
     const sim = deps('/sim/gear', memoryStorage());

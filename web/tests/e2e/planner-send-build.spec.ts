@@ -75,7 +75,7 @@ test.describe('Send this build to the addon', () => {
     );
     await page.goto('/planner');
     const action = page.getByTestId('character-header-action');
-    await expect(action).toHaveText('Send this build to the addon');
+    await expect(action).toHaveText('Send this build to Obnoxious Yell');
     await page.getByTestId('planner-header-band').screenshot({
       path: process.env.W2_CAPTURES ? `${process.env.W2_CAPTURES}/send-build-before.png` : undefined,
     });
@@ -107,7 +107,7 @@ test.describe('Send this build to the addon', () => {
 
     // Changing the build puts the button back; a second send reuses nothing stale.
     await page.getByTestId('talent-1002').click();
-    await expect(action).toHaveText('Send this build to the addon');
+    await expect(action).toHaveText('Send this build to Obnoxious Yell');
     await expect(action).toBeEnabled();
   });
 
@@ -157,7 +157,7 @@ test.describe('Send this build to the addon', () => {
     await page.goto('/planner');
     await expect(page.getByTestId('planner-header-band')).toBeVisible();
     await expect(page.getByRole('button', { name: /send this build/i })).toHaveCount(0);
-    await expect(page.getByText('Send this build to the addon')).toHaveCount(0);
+    await expect(page.getByText('Send this build to')).toHaveCount(0);
     await expect(page.getByTestId('character-header-action')).toHaveCount(0);
   });
 });

@@ -20,6 +20,8 @@ const activeBuild = JSON.parse(
 ) as { build: string };
 
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+// Only an export that names its character becomes the current one.
+const NAMED_FURY = `${FURY}|who=Simfury:Realm`;
 
 test('a cold paste decodes, runs with no further click, and writes the current-character pointer', async ({
   page,
@@ -32,7 +34,7 @@ test('a cold paste decodes, runs with no further click, and writes the current-c
   const run = page.getByTestId('sim-cold-paste-run');
   await expect(run).toBeDisabled();
 
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
   await expect(run).toBeEnabled();
   await expect(page.getByTestId('sim-cold-paste-error')).toHaveCount(0);
 
@@ -50,7 +52,7 @@ test('a cold paste decodes, runs with no further click, and writes the current-c
   expect(pointer).not.toBeNull();
   const parsed = JSON.parse(pointer ?? '{}') as { source: string; ref: string };
   expect(parsed.source).toBe('addon');
-  expect(parsed.ref).toBe(FURY);
+  expect(parsed.ref).toBe(NAMED_FURY);
 });
 
 test('a bad paste shows the validation message and Run stays disabled', async ({ page }) => {

@@ -40,13 +40,13 @@ export function mainCharacter(characters: readonly MeCharacter[], mainKey?: stri
 /** The current-character pointer for the hub's own arrival write (spec §3.1: "sets the
  *  current-character pointer to it"). Always an `'armory'`-kind pointer, the same kind
  *  every other stored-character load writes (`sources.ts`'s `fromStoredCharacter`) --
- *  `/sim` and the character page already know how to restore one; `/planner` does not
- *  (documented in `current-character-planner.ts`), which is an existing, intentional
- *  limit this pointer does not change. */
+ *  `/sim`, `/planner` and the character page all restore one by key. */
 export function pointerForCharacter(character: MeCharacter): CurrentCharacter {
   const classSlug = character.class?.toLowerCase() ?? '';
+  // The class as the game names it ("Survival Hunter"), whatever case the API sent.
+  const className = character.class === undefined ? undefined : specName(character.class);
   const spec = character.spec === undefined ? undefined : specName(character.spec);
-  const specClass = [spec, character.class].filter((part) => part !== undefined).join(' ');
+  const specClass = [spec, className].filter((part) => part !== undefined).join(' ');
   const label = specClass === '' ? character.name : `${character.name} · ${specClass}`;
   return {
     source: 'armory',

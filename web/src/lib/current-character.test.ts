@@ -121,9 +121,9 @@ describe('plannerHrefFor', () => {
     expect(plannerHrefFor({ ...sample, source: 'fight', ref: 'abc:1' })).toBe('/planner?class=warrior');
   });
 
-  it('is the honest class-only fallback for an armory-sourced pointer', () => {
+  it('opens an armory-sourced pointer by character key, so the planner loads its own build', () => {
     expect(plannerHrefFor({ ...sample, source: 'armory', ref: 'us/normal/simfury' })).toBe(
-      '/planner?class=warrior',
+      '/planner?character=us%2Fnormal%2Fsimfury',
     );
   });
 });

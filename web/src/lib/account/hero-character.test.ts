@@ -29,8 +29,17 @@ describe('heroCharacter', () => {
     expect(heroCharacter(null, [CHAR])).toBeNull();
   });
 
-  it('returns null when the pointer is not an armory source', () => {
-    expect(heroCharacter({ ...POINTER, source: 'addon' }, [CHAR])).toBeNull();
+  it('matches an addon or code pointer by the character name its label carries', () => {
+    const named = { ...POINTER, source: 'addon' as const, ref: 'FS1:x', label: 'Thoradin · Fury Warrior' };
+    expect(heroCharacter(named, [CHAR])).toBe(CHAR);
+    expect(heroCharacter({ ...named, source: 'code' }, [CHAR])).toBe(CHAR);
+  });
+
+  it('does not match a pasted pointer whose label is only the class, or a fight or build pointer', () => {
+    const nameless = { ...POINTER, source: 'code' as const, ref: 'FS1:x', label: 'Warrior' };
+    expect(heroCharacter(nameless, [CHAR])).toBeNull();
+    expect(heroCharacter({ ...POINTER, source: 'fight' }, [CHAR])).toBeNull();
+    expect(heroCharacter({ ...POINTER, source: 'build' }, [CHAR])).toBeNull();
   });
 
   it('returns the character even when it has no render_url (an addon-only import)', () => {
@@ -63,9 +72,16 @@ describe('selectedCharacter', () => {
     expect(selectedCharacter(null, me)).toBe(CHAR);
   });
 
-  it('falls back to the account main when the pointer names no listed character', () => {
+  it('is the pointer’s own identity, never silently the main, when it names no listed character', () => {
     const me = { characters: [SHAMAN, CHAR], main_character_key: CHAR.key };
-    expect(selectedCharacter({ ...POINTER, ref: 'us/pvp/somebody-else' }, me)).toBe(CHAR);
+    expect(selectedCharacter({ ...POINTER, ref: 'us/pvp/somebody-else' }, me)).toBeNull();
+    expect(selectedCharacter({ ...POINTER, source: 'fight', ref: 'abc:1' }, me)).toBeNull();
+  });
+
+  it('resolves a pasted export that names an account character to that character', () => {
+    const me = { characters: [SHAMAN, CHAR], main_character_key: SHAMAN.key };
+    const pasted = { ...POINTER, source: 'addon' as const, ref: 'FS1:x', label: 'Thoradin · Fury Warrior' };
+    expect(selectedCharacter(pasted, me)).toBe(CHAR);
   });
 
   it('is null with no characters at all', () => {

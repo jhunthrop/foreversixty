@@ -17,7 +17,7 @@ test('the /setup paste box offers the planner and the simulator once an export d
   );
   await expect(sim).toHaveAttribute(
     'href',
-    `/sim?code=${encodeURIComponent(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`)}`,
+    `/sim?source=addon&code=${encodeURIComponent(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`)}`,
   );
 });
 
@@ -105,18 +105,20 @@ test('an export pasted on /setup becomes the current character on the simulator 
 }) => {
   await page.goto('/setup');
   await page.getByTestId('setup-try-export').locator('summary').click();
-  await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
+  await page
+    .getByTestId('addon-paste-code')
+    .fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:|who=Simfury:Realm`);
   await page.getByTestId('addon-paste-submit').click();
 
   // The bar under the paste box shows it at once, without a reload.
   const chip = page.getByTestId('current-character-chip');
-  await expect(chip).toContainText('Warrior');
+  await expect(chip).toContainText('Simfury');
 
   // A bare simulator URL (no ?code=) restores it and says so; so does a tool tab.
   await page.goto('/sim');
   await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
   await page.goto('/sim/gear');
-  await expect(page.getByTestId('current-character-bar-identity')).toContainText('Warrior', {
+  await expect(page.getByTestId('current-character-bar-identity')).toContainText('Simfury', {
     timeout: 15_000,
   });
 
@@ -156,7 +158,9 @@ test('a pending session check reserves the signed-out branch height, so the sect
   });
   await page.goto('/setup');
   await page.getByTestId('setup-try-export').locator('summary').click();
-  await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
+  await page
+    .getByTestId('addon-paste-code')
+    .fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:|who=Simfury:Realm`);
   await page.getByTestId('addon-paste-submit').click();
 
   // The pasted export is already the current character (writeCurrent() runs synchronously

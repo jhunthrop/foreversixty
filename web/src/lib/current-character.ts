@@ -146,9 +146,12 @@ export function plannerHrefFor(current: CurrentCharacter): string {
     return `/planner?code=${encodeURIComponent(current.ref)}`;
   }
   if (current.source === 'build') return buildPermalink(current.ref);
-  // 'fight' | 'armory': the pointer alone carries no gear or talents for these kinds -- the
-  // same honest class-only fallback sim/character.ts's own plannerHrefFor uses when it has
-  // no talent index to encode a full FS1 code from.
+  // An account character opens the planner by key: the planner reads its talents, gear, race
+  // and level from the account (`?character=`), so the build is the character's own.
+  if (current.source === 'armory') return `/planner?character=${encodeURIComponent(current.ref)}`;
+  // 'fight': the pointer alone carries no gear or talents -- the same honest class-only
+  // fallback sim/character.ts's own plannerHrefFor uses when it has no talent index to
+  // encode a full FS1 code from.
   return `/planner?class=${encodeURIComponent(current.classSlug)}`;
 }
 

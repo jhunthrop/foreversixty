@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FIXTURE_BUILD_ID, createSimApi, envelope } from '../../test-support/sim-api';
-import { readCurrent } from '../current-character';
+import { readCurrent, writeCurrent } from '../current-character';
 import { simCopy } from './copy';
 import type { CharacterPath } from '../characters';
 import type { CombatantRow, RosterRow } from '../report/types';
 import {
   fromAddonExport,
+  fromLinkedExport,
   fromLoggedFight,
   fromManualCode,
   fromPlannerBuild,
@@ -469,6 +470,19 @@ describe('relativeTime', () => {
   });
 });
 
+describe('sourcePill for planner and linked builds', () => {
+  const at = new Date('2026-09-14T12:00:00Z');
+  it('names the character whose gear a planner build carries', () => {
+    const source = { kind: 'manual' as const, ref: '', captured_at: '2026-09-14T11:59:50Z' };
+    expect(sourcePill(source, at, 'Bow Jackzon')).toBe('Build from planner · Bow Jackzon’s gear');
+    expect(sourcePill(source, at)).toBe('Entered by hand');
+  });
+
+  it('says Addon export, without a time it cannot know, for a linked export', () => {
+    expect(sourcePill({ kind: 'addon', ref: '', captured_at: '' }, at, 'Bow Jackzon')).toBe('Addon export');
+  });
+});
+
 describe('sourcePill', () => {
   const now = new Date('2026-09-14T12:00:00Z');
 
@@ -529,19 +543,52 @@ describe('fromStoredCharacter, addon-sourced', () => {
 });
 
 describe('current-character pointer writes', () => {
-  it('fromAddonExport writes an addon-sourced pointer with the pasted code as ref', async () => {
+  const NAMED = `${FURY}|who=Simfury:Realm`;
+
+  it('fromAddonExport writes an addon-sourced pointer when the pasted export names a character', async () => {
     const storage = fakeStorage();
-    await fromAddonExport(FURY, ctx, storage);
+    await fromAddonExport(NAMED, ctx, storage);
     const pointer = readCurrent(storage);
     expect(pointer?.source).toBe('addon');
-    expect(pointer?.ref).toBe(FURY);
+    expect(pointer?.ref).toBe(NAMED);
     expect(pointer?.classSlug).toBe('warrior');
+    expect(pointer?.label).toBe('Simfury · Fury Warrior');
   });
 
-  it('fromManualCode writes a code-sourced pointer with the pasted code as ref', async () => {
+  it('a code that names nobody never becomes the pointer, pasted or linked', async () => {
     const storage = fakeStorage();
+    await fromAddonExport(FURY, ctx, storage);
     await fromManualCode(FURY, ctx, storage);
-    expect(readCurrent(storage)).toMatchObject({ source: 'code', ref: FURY });
+    expect(readCurrent(storage)).toBeNull();
+  });
+
+  it('a linked code leaves the stored pointer alone, named or not', async () => {
+    const storage = fakeStorage();
+    writeCurrent(
+      {
+        source: 'armory',
+        ref: 'us/pvp/bow-jackzon',
+        label: 'Bow Jackzon · Survival Hunter',
+        classSlug: 'hunter',
+        savedAt: '2026-10-21T00:00:00Z',
+      },
+      storage,
+    );
+    const before = readCurrent(storage);
+    await fromManualCode(FURY, ctx, storage);
+    await fromManualCode(NAMED, ctx, storage);
+    await fromLinkedExport(NAMED, ctx, storage);
+    expect(readCurrent(storage)).toEqual(before);
+  });
+
+  it('a nameless code has an empty name, never the class word', async () => {
+    const result = await fromManualCode(FURY, ctx, fakeStorage());
+    expect(result.ok && result.character.name).toBe('');
+  });
+
+  it('a linked named export is an addon export with no capture time to claim', async () => {
+    const result = await fromLinkedExport(NAMED, ctx, fakeStorage());
+    expect(result.ok && result.character.source).toMatchObject({ kind: 'addon', captured_at: '' });
   });
 
   it('fromPlannerBuild writes a build-sourced pointer with the build id as ref', async () => {

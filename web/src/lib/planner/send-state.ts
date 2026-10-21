@@ -29,7 +29,7 @@ export function sendActionFor(
   if (pointsSpent <= 0 && state.kind !== 'sending') {
     return {
       ...base,
-      label: copy.sendBuildToAddon,
+      label: copy.sendBuildTo(character.name),
       disabled: true,
       note: { tone: 'muted' as const, text: copy.spendFirst },
     };
@@ -47,7 +47,7 @@ export function sendActionFor(
     case 'sign-in':
       return {
         ...base,
-        label: copy.sendBuildToAddon,
+        label: copy.sendBuildTo(character.name),
         note: {
           tone: 'error' as const,
           text: copy.signIn,
@@ -57,7 +57,7 @@ export function sendActionFor(
     case 'no-device':
       return {
         ...base,
-        label: copy.sendBuildToAddon,
+        label: copy.sendBuildTo(character.name),
         note: {
           tone: 'error' as const,
           text: copy.noDevice,
@@ -65,11 +65,15 @@ export function sendActionFor(
         },
       };
     case 'failed':
-      return { ...base, label: copy.sendBuildToAddon, note: { tone: 'error' as const, text: copy.failed } };
+      return {
+        ...base,
+        label: copy.sendBuildTo(character.name),
+        note: { tone: 'error' as const, text: copy.failed },
+      };
     case 'idle':
       return {
         ...base,
-        label: copy.sendBuildToAddon,
+        label: copy.sendBuildTo(character.name),
         ...shorterNote(character, pointsSpent, characterSpent),
       };
   }

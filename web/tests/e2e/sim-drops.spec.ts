@@ -323,7 +323,8 @@ test('a real Droptimizer upgrade names the next action on a later plain sim', as
 
 test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page }) => {
   await stubPremiumRun(page);
-  await loadDrops(page);
+  // Named, so the paste is a choice and becomes the current character (a nameless code never does).
+  await loadDrops(page, `${FURY}|who=Simfury:Realm`);
   await page.getByTestId('sim-upcoming').check();
   await page.getByTestId('sim-source-raid:molten-core:11502').check();
   await expect(page.getByTestId('sim-server-run')).toBeVisible();

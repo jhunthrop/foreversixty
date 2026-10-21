@@ -164,9 +164,13 @@
 >
   <div class="flex flex-wrap items-center gap-3">
     <ClassCrestRing characterClass={character.class_slug} size={36} testid="sim-character-class-icon" />
-    <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="sim-character-name">
-      {character.name}
-    </span>
+    <!-- A build that names no character has no name to show: the descriptor beside this
+         already reads its race, spec and class, and a class word is never made a name. -->
+    {#if character.name !== ''}
+      <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="sim-character-name">
+        {character.name}
+      </span>
+    {/if}
     <span class="text-muted text-[13px] capitalize" data-testid="sim-character-descriptor">
       {descriptor}
     </span>
@@ -189,7 +193,9 @@
         </select>
       </label>
     {/if}
-    <span class="pill pill-site" data-testid="sim-source-pill">{sourcePill(character.source)}</span>
+    <span class="pill pill-site" data-testid="sim-source-pill"
+      >{sourcePill(character.source, new Date(), character.name)}</span
+    >
     {#if !readonly}
       <button
         type="button"

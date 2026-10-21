@@ -352,7 +352,7 @@ test.describe('choosing a character', () => {
       .getByRole('button')
       .first()
       .click();
-    await expect(page).toHaveURL(/\/planner\?class=mage/);
+    await expect(page).toHaveURL(/\/planner\?character=us%2Fnormal%2Ffrostbyte/);
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
   });
 
@@ -426,7 +426,7 @@ test.describe('choosing a character', () => {
     await expect(page.getByTestId('planner-header-h1')).toContainText('Warrior');
     await choose(page, FROSTBYTE);
     await expect(page.getByTestId('planner-header-h1')).toContainText('Mage');
-    await expect(page).toHaveURL(/\/planner\?class=mage/);
+    await expect(page).toHaveURL(/\/planner\?character=us%2Fnormal%2Ffrostbyte/);
     await expect(page.getByTestId('character-header')).toContainText('Frostbyte');
     expect(await pageWasNotReloaded(page)).toBe(true);
   });

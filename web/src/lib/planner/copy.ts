@@ -58,7 +58,8 @@ export const plannerHeaderCopy = {
 
 /** The planner's action on the shared character header (spec 2026-10-11 section 4). */
 export const plannerCharacterCardCopy = {
-  sendBuildToAddon: 'Send this build to the addon',
+  /** The one send button names who it sends to: the build goes to that character's addon. */
+  sendBuildTo: (name: string): string => `Send this build to ${name}`,
   sending: 'Sending',
   sent: 'Sent',
   /** A visitor with no current character cannot be sent anything: the button is the way in. */
