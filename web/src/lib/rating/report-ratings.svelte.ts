@@ -7,6 +7,7 @@
 // web/src/lib/report/lazy-component.svelte.ts's plain-state-container style, and on
 // Character.svelte's own `resolved !== requested` stale-response guard.
 import { RankingsError, fetchReportRatings } from '../rankings/api';
+import { isSampleReport } from '../report/sample';
 import type { ReportRatings } from './types';
 
 /** `none`: the API answered 404 "no ratings for that fight", which is by design for trash: ratings
@@ -46,6 +47,13 @@ export function createReportRatingsFetch(apiBase?: string): ReportRatingsFetch {
     },
     load(reportId: string, fightIndex: number): void {
       const key = `${reportId}:${fightIndex}`;
+      // The bundled sample has no database row, so there is nothing for the API to rate.
+      if (isSampleReport(reportId)) {
+        requestedKey = key;
+        data = null;
+        status = 'none';
+        return;
+      }
       if (key === loadedKey || (key === requestedKey && status === 'loading')) return;
       requestedKey = key;
       status = 'loading';

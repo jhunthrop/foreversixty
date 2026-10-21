@@ -19,6 +19,28 @@ function envWith(assetBody = 'asset') {
 
 afterEach(() => vi.unstubAllGlobals());
 
+describe('the sample report', () => {
+  it('sends the old database id to the bundled page', async () => {
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/5lop7n5kwysf'),
+      envWith(),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get('location')).toBe('https://foreversixty.gg/reports/sample');
+  });
+
+  it('leaves /reports/sample to the static page, with no API call', async () => {
+    const upstream = vi.fn();
+    vi.stubGlobal('fetch', upstream);
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/sample'),
+      envWith('page'),
+    );
+    expect(await response.text()).toBe('page');
+    expect(upstream).not.toHaveBeenCalled();
+  });
+});
+
 describe('worker fetch handler', () => {
   it('proxies /b/:id to the API, keeping the path, query and cache headers', async () => {
     const upstream = vi.fn<GlobalFetch>(

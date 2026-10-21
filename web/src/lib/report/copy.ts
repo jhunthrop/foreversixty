@@ -27,4 +27,6 @@ export const reportCopy = {
     `Not heard from the companion for ${minutes} minutes. Check that it is running.`,
   /** The badge that replaces "Live" while the companion is quiet. */
   quietBadge: 'Quiet',
+  /** The badge where "Live" goes on the bundled sample report. */
+  sampleBadge: 'Sample report',
 } as const;

@@ -1,0 +1,33 @@
+---
+// web/src/pages/reports/sample.astro
+// The site's bundled sample report (lib/report/sample.ts): always prerendered, in every
+// build, because it needs no Worker, no API and no database row. Its meta is inlined as
+// data-report, as the fixture page does, and its data files are static assets under
+// /sample-report/sample/. The island shows a quiet "Sample report" badge where "Live" goes.
+import Base from '../../layouts/Base.astro';
+import sampleMeta from '../../../public/sample-report/sample/meta.json';
+import IslandScript from '../../components/IslandScript.astro';
+import { reportSkeletonHtml } from '../../lib/report/skeleton';
+import { SAMPLE_REPORT_ID, SAMPLE_REPORT_PATH } from '../../lib/report/sample';
+---
+
+<Base
+  title={sampleMeta.title}
+  description="A sample World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
+  path={SAMPLE_REPORT_PATH}
+>
+  <link rel="stylesheet" href="/report-island.css" slot="head" />
+  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
+    <!-- The same reserves as reports/[id].astro, measured on the same four-fight report. -->
+    <div
+      id="report"
+      data-report-mount
+      data-report-id={SAMPLE_REPORT_ID}
+      data-report={JSON.stringify(sampleMeta)}
+      class="min-h-[2460px] md:min-h-[1556px] lg:min-h-[1325px]"
+    >
+      <Fragment set:html={reportSkeletonHtml(sampleMeta.title)} />
+    </div>
+    <IslandScript src="/report-island.js" />
+  </main>
+</Base>

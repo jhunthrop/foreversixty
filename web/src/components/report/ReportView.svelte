@@ -81,6 +81,7 @@
   import ResourceGraphs from './ResourceGraphs.svelte';
   import { reportHeading } from '../../lib/report/heading';
   import { quietMinutes } from '../../lib/report/quiet';
+  import { isSampleReport } from '../../lib/report/sample';
   import { pageTitle } from '../../lib/seo';
   import { reportCredit } from '../../lib/report/credit';
   import { homeRealmOf, setHomeRealm } from '../../lib/report/names.svelte';
@@ -1583,7 +1584,9 @@
            visitor is doing. role="status" plus aria-live="polite" is the same pairing
            SummaryBar.svelte uses for its own background result. -->
         <span role="status" aria-live="polite">
-          {#if fightIsLive}
+          {#if isSampleReport(reportId)}
+            <span class="pill pill-site" data-testid="report-sample-badge">{reportCopy.sampleBadge}</span>
+          {:else if fightIsLive}
             <span class="pill pill-site" data-testid="report-live"
               >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
             >
@@ -1614,12 +1617,16 @@
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
         {#if meta.zone !== ''}{meta.zone} ·{/if}
         {#if fights.length > 0}<span class="tabular font-mono">{formatDate(fights[0].start)}</span> ·{/if}
-        <span class="tabular font-mono">{fights.length} fights</span> · {meta.status} ·
-        <span data-testid="report-credit"
-          >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
-              >{credit.name}</a
-            >{:else}{credit.name}{/if}</span
-        >
+        <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
+        <!-- The bundled sample was logged by no one the site knows: no credit line. -->
+        {#if !isSampleReport(reportId)}
+          ·
+          <span data-testid="report-credit"
+            >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
+                >{credit.name}</a
+              >{:else}{credit.name}{/if}</span
+          >
+        {/if}
         {#if nightMode}· All boss pulls{/if}
         {#if fight}· {fight.name}
           {#if fight.kind === 'encounter' && !fight.in_progress}
