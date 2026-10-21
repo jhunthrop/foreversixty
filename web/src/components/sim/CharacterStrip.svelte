@@ -30,6 +30,15 @@
   import { sourcePill } from '../../lib/sim/sources';
   import { specLabel } from '../../lib/sim/spec-label';
 
+  /** "high-order-skyborne" -> "High Order Skyborne". */
+  function raceWords(slug: string): string {
+    return slug
+      .split('-')
+      .filter((word) => word !== '')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
   let {
     character,
     items,
@@ -142,16 +151,16 @@
   // planner build is the only source that still always simulates at MAX_LEVEL regardless
   // of points -- an addon export with no level section now sets `level` to this same
   // talent-implied number, so there is no discrepancy left to call out for it).
-  const levelSuffix = $derived(
+  // Said as its own sentence-case line under the descriptor, never folded into it.
+  const levelNote = $derived(
     character.talent_level < character.level
-      ? ` · ${character.point_order.length} talent points (${handoffCopy.simmedAtLevel(character.level)})`
+      ? `${character.point_order.length} talent points. ${handoffCopy.simmedAtLevel(character.level)}`
       : '',
   );
   const descriptor = $derived(
-    (pending
+    pending
       ? `${specLabel(character.spec)} · ${character.level}`
-      : `${character.race_slug.replace(/-/g, ' ')} ${specLabel(character.spec)} · ${character.level}`) +
-      levelSuffix,
+      : `${raceWords(character.race_slug)} ${specLabel(character.spec)} · ${character.level}`,
   );
   const split = $derived(
     character.point_order.length > 0 ? character.point_order.length : (talentPoints ?? 0),
@@ -171,7 +180,7 @@
         {character.name}
       </span>
     {/if}
-    <span class="text-muted text-[13px] capitalize" data-testid="sim-character-descriptor">
+    <span class="text-muted text-[13px]" data-testid="sim-character-descriptor">
       {descriptor}
     </span>
     {#if pending}
@@ -207,6 +216,10 @@
       </button>
     {/if}
   </div>
+
+  {#if levelNote !== ''}
+    <p class="text-muted -mt-2 text-[13px]" data-testid="sim-level-note">{levelNote}</p>
+  {/if}
 
   {#if unread}
     <ExportNotRead capturedAt={character.source.captured_at} testid="sim-export-not-read" />
@@ -249,7 +262,7 @@
 
   {#if !unread}
     <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
-      <span class="text-muted label">Talents</span>
+      {#if levelNote === ''}<span class="text-muted label">Talents</span>{/if}
       <!-- A saved sim's stored request carries the engine's talent *string*, not the
          planner's point order (Task 17), so its `point_order` is always empty --
          `talentPoints` (the caller's own digit-sum of that string, SavedSim.svelte) is what
@@ -259,7 +272,7 @@
          showing "0 points" would claim a build spent none, which this guard still avoids
          for the one remaining case (character/talentPoints both absent) where the count is
          simply unknown. -->
-      {#if split > 0}
+      {#if split > 0 && levelNote === ''}
         <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
       {/if}
       <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)

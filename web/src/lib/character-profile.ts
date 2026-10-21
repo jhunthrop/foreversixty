@@ -3,7 +3,10 @@
 // CharacterPage) that the profile header and the Forever Score card share.
 import { bandForLevel } from './bis/hover';
 import { specLinkHref } from './bis/landing-links';
+import type { MeCharacter } from './account/api';
+import { characterSpecName, specFromPoints } from './character-spec';
 import { guildHref, rulesetLabel } from './characters';
+import { specName } from './guild/spec-name';
 import { factionOfRace } from './race-faction';
 import type { BuildSeen, CharacterFight, CharacterPage } from './rankings/api';
 import { scoreCopy } from './score/copy';
@@ -280,6 +283,59 @@ export function profileSpec(
   return known(newestBuild(page.builds_seen)?.spec) ?? newestSpec(page);
 }
 
+/** The record the viewer owns, when it is theirs: the pieces the one spec rule reads. */
+type OwnRecord = Pick<MeCharacter, 'class' | 'spec' | 'build'> | null | undefined;
+
+/**
+ * The page's spec by the one rule (lib/character-spec.ts): the owner's synced talent ranks when
+ * the viewer owns the character, else the newest build seen at pull when it carries a split, else
+ * the spec the fights or the addon named -- always as a player says it ("Beast Mastery").
+ */
+export function resolvedProfileSpec(
+  page: Pick<CharacterPage, 'character' | 'history' | 'best'> & Partial<Pick<CharacterPage, 'builds_seen'>>,
+  own?: OwnRecord,
+): string | null {
+  if (own !== null && own !== undefined) {
+    const fromOwn = characterSpecName({ ...own, class: own.class ?? page.character.class, spec: undefined });
+    if (own.build?.talents !== undefined && fromOwn !== undefined) return fromOwn;
+  }
+  const split = newestSplit(page.builds_seen);
+  if (split !== null && page.character.class !== undefined) {
+    const derived = specFromPoints(
+      page.character.class,
+      split.split('/').map((count) => Number.parseInt(count, 10) || 0),
+    );
+    if (derived !== null) return derived;
+  }
+  const named = profileSpec(page);
+  return named === null ? null : specName(named);
+}
+
+/** A build seen at pull as a player says it: the spec its split leans to, else the spec it was filed under. */
+export function seenBuildSpec(
+  className: string | undefined,
+  build: Pick<BuildSeen, 'talent_split' | 'spec'>,
+): string {
+  const derived =
+    className === undefined || className === ''
+      ? null
+      : specFromPoints(
+          className,
+          build.talent_split.split('/').map((count) => Number.parseInt(count, 10) || 0),
+        );
+  return derived ?? specName(build.spec ?? '');
+}
+
+/** The talent split beside the spec: the owner's synced ranks, else the newest build seen. */
+export function resolvedProfileSplit(
+  page: Partial<Pick<CharacterPage, 'builds_seen'>>,
+  own?: OwnRecord,
+): string | null {
+  const points = own?.build?.talents?.points;
+  if (points !== undefined && points.some((count) => count > 0)) return points.join('/');
+  return newestSplit(page.builds_seen);
+}
+
 function known(text: string | null | undefined): string | null {
   return typeof text === 'string' && text.trim() !== '' ? text.trim() : null;
 }
@@ -294,11 +350,12 @@ function known(text: string | null | undefined): string | null {
 export function profileHeader(
   page: Pick<CharacterPage, 'character' | 'history' | 'best'> & Partial<Pick<CharacterPage, 'builds_seen'>>,
   path: { region: string; ruleset: string },
+  own?: OwnRecord,
 ): ProfileHeader {
   const { character } = page;
   const pieces: ProfileHeaderPiece[] = [];
-  const specClass = specClassLabel(character.class, profileSpec(page));
-  const split = newestSplit(page.builds_seen);
+  const specClass = specClassLabel(character.class, resolvedProfileSpec(page, own));
+  const split = resolvedProfileSplit(page, own);
   if (specClass !== '')
     pieces.push(split === null ? { key: 'spec', text: specClass } : { key: 'spec', text: specClass, split });
   const guild = known(character.guild?.name);

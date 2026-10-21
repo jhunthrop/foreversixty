@@ -61,11 +61,13 @@ export const gearCopy = {
    *  and the count of slots whose gap is above 0. The dot between them is drawn after "Gear"
    *  (fix round 2 ruling 4), so no line starts with it. */
   summary: (total: number, slots: number): string =>
-    `+${points(total)} pts across ${slots} ${slots === 1 ? 'slot' : 'slots'}`,
+    `+${points(total)} points across ${slots} ${slots === 1 ? 'slot' : 'slots'}`,
+  /** The best-in-slot count the BiS card shows too: "3 of 17 slots best in slot". */
+  bestCount: (worn: number, total: number): string => `${worn} of ${total} slots best in slot`,
   /** A total of 0 with no row showing an arrow: every pick is worn (fix round 2 ruling 5). */
   summaryAllWorn: 'every slot is the best you can wear',
   /** A total of 0 with an arrow left (an empty slot, a pick scoring no more than the worn item). */
-  summaryZero: '+0 pts from the picks you can wear',
+  summaryZero: '+0 points from the picks you can wear',
   /** After the summary when a slot with a pick has no gap: " · 1 not scored", its dot glued to
    *  the word before it. */
   notScored: (count: number): string => `\u00a0· ${count} not scored`,
@@ -80,7 +82,7 @@ export const gearCopy = {
   totalsZero: (cardGap: number): string =>
     `The card’s ${points(cardGap)} counts the level range’s best set. Nothing you can wear adds to it.`,
   /** A row's gap: "+18.4 pts", and read aloud "18.4 points to gain". */
-  gap: (gap: number): string => `+${points(gap)} pts`,
+  gap: (gap: number): string => `+${points(gap)} points`,
   gapLabel: (gap: number): string => `${points(gap)} points to gain`,
   /** A gap the API could not score (an item the data build does not have). */
   gapUnscored: 'Not scored',
@@ -100,7 +102,7 @@ export const gearCopy = {
    *  nice-to-have; fix round 6 item 2). */
   failed: 'Item details didn’t load.',
   /** The worn item is the pick (or as good as it): no arrow. */
-  best: 'Best for your level range',
+  best: 'Already your best at this level',
   /** The band has no pick for the slot (fix round 2 ruling 6: capitalised everywhere). */
   /** The muted words after the heading when the spec was not named by a fight. */
   specFromTalents: 'from your talents',
@@ -115,7 +117,7 @@ export const gearCopy = {
   /** The drawn arrow between the worn item and the pick, with its spaces; a screen reader hears
    *  the label instead ("Green Lens, best for your band: Halo of Transcendence"). */
   arrow: ' → ',
-  arrowLabel: ' best for your level range: ',
+  arrowLabel: ' best at this level: ',
   /** `gear: []`: under the heading, this one line; its two phrases link where each happens. */
   noGear: 'No gear on file yet. Sync the addon, or sign in to claim this character.',
   /** The one quiet line (W.10): the owner syncs; a visitor may also sign in to claim the character. */

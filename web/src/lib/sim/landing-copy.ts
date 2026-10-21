@@ -48,6 +48,8 @@ export const landingCopy = {
    *  character the bar itself calls current -- the same one the character list below
    *  offers Sim/Paste export for, so the two can never disagree. */
   runSim: 'Run sim',
+  /** A healing or tanking spec: no button, one quiet line where it would be. */
+  notSimulatedYet: 'Not simulated yet',
   runBlockNoBuild: (name: string): string => `${name} has no build yet.`,
 
   /** Finding 2: the intro line every signed-out visitor reads before either load method. */

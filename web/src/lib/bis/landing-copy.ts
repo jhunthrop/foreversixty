@@ -16,8 +16,8 @@ export const landingCopy = {
   tierHref: '/tiers',
 
   /** The answer slot of the shared character header (spec 2026-10-11 section 4). */
-  countLabel: 'Best-in-slot slots you wear',
-  countLabelStale: 'Slots you wore at the last sync',
+  countLabel: 'Best-in-slot pieces you wear',
+  countLabelStale: 'Pieces you wore at the last sync',
   countFailed: 'Your gear count did not load.',
   noSync: 'Add the addon to see how many of these slots you already wear.',
   noSyncLink: 'Get the addon',

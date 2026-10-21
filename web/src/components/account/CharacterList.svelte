@@ -21,12 +21,15 @@
     characters,
     bnetImportedAt,
     mainKey = undefined,
+    currentKey = undefined,
     onSetMain = undefined,
   }: {
     characters: MeCharacter[];
     bnetImportedAt?: string;
     /** The chosen main's key; the row carries a Main pill and every other row a Set as main control. */
     mainKey?: string;
+    /** The character the page speaks for (the header's current one): its row is marked. */
+    currentKey?: string;
     /** Called with the key when Set as main is pressed; the caller records it and updates `mainKey`. */
     onSetMain?: (key: string) => Promise<void>;
   } = $props();
@@ -82,12 +85,17 @@
           descriptorTestid="character-descriptor"
         >
           {#snippet action()}
+            {#if currentKey === character.key}
+              <span class="pill pill-site" data-testid="character-current-pill"
+                >{characterListCopy.current}</span
+              >
+            {/if}
             {#if mainKey === character.key}
               <span class="pill pill-site" data-testid="character-main-pill">{characterListCopy.main}</span>
             {:else if onSetMain !== undefined}
               <button
                 type="button"
-                class="text-nav inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+                class="text-nav border-line-warm rounded-control inline-flex min-h-11 items-center border px-3 text-[13px] font-semibold md:min-h-10"
                 onclick={() => void setMain(character.key)}
                 disabled={settingMain !== ''}
                 aria-busy={settingMain === character.key}

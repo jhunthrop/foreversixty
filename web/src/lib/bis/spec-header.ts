@@ -5,6 +5,7 @@
 // opens the band's build in the planner (the addon's inbox carries builds, not lists).
 import type { MeCharacter } from '../account/api';
 import type { AnswerSpec, HeaderAction } from '../character-header/types';
+import { characterSpecName } from '../character-spec';
 import { classSlugFromName } from '../report/tree-sizes';
 import { bisCopy } from './copy';
 import { bisAnswerSpec } from './landing-answer';
@@ -25,7 +26,7 @@ export function characterIsOfSpec(
   return (
     character.class !== undefined &&
     classSlugFromName(character.class) === page.classSlug &&
-    character.spec === page.specName
+    characterSpecName(character) === page.specName
   );
 }
 

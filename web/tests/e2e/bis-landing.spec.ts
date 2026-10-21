@@ -267,7 +267,9 @@ test.describe('signed in, desktop', () => {
   test('the label is always "Your character" and the answer has its own label', async ({ page }) => {
     await openSignedIn(page, [FURY, HUNTER]);
     await expect(header(page).locator('.label').first()).toHaveText('Your character');
-    await expect(page.getByTestId('character-header-answer-label')).toHaveText('Best-in-slot slots you wear');
+    await expect(page.getByTestId('character-header-answer-label')).toHaveText(
+      'Best-in-slot pieces you wear',
+    );
   });
 
   test('the descriptor is one line at 1440 and two fixed lines below 1280', async ({ page }) => {
@@ -356,7 +358,7 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('character-header-sync')).toContainText('Addon · 19 days ago');
     await expect(page.getByTestId('character-header-sync')).toContainText('Log out in the game to sync');
     await expect(page.getByTestId('character-header-stale')).toHaveText('Log out in the game to sync');
-    await expect(header(page)).toContainText('Slots you wore at the last sync');
+    await expect(header(page)).toContainText('Pieces you wore at the last sync');
   });
 
   test('with no addon sync the count is one sentence and a link, never a zero', async ({ page }) => {

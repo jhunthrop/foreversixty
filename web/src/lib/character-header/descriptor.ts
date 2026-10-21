@@ -6,6 +6,7 @@
 import type { MeCharacter } from '../account/api';
 import type { Faction } from '../faction-mark';
 import { classSlugFromName } from '../report/tree-sizes';
+import { characterSpecName } from '../character-spec';
 import { classDisplayName } from '../sim/spec-label';
 import { characterHeaderCopy } from './copy';
 
@@ -20,7 +21,7 @@ export interface DescriptorLines {
 export function descriptorLines(character: MeCharacter): DescriptorLines {
   const className =
     character.class === undefined ? undefined : classDisplayName(classSlugFromName(character.class));
-  const identity = [character.race, character.spec, className]
+  const identity = [character.race, characterSpecName(character), className]
     .filter((part): part is string => part !== undefined && part !== '')
     .join(' ');
   return {

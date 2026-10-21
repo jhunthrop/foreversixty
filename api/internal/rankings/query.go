@@ -127,7 +127,10 @@ func (q Query) where(now time.Time) (string, []any, error) {
 		add("m.difficulty = $%d", *q.Difficulty)
 	}
 	if q.Spec != "" {
-		add("lower(m.spec) = lower($%d)", q.Spec)
+		// A spec is one name however it was written: the addon and a log export write
+		// "BeastMastery", the talent trees and the site say "Beast Mastery". Compared with the
+		// spaces gone, a board filtered on either spelling holds the same fights.
+		add("replace(lower(m.spec), ' ', '') = replace(lower($%d), ' ', '')", q.Spec)
 	}
 	if q.Class != "" {
 		add("lower(m.class) = lower($%d)", q.Class)

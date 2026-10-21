@@ -247,6 +247,21 @@
     runBlockCharacter === null ? null : parseCharacterPath(`/character/${runBlockCharacter.key}`),
   );
 
+  /** The name the page's own card shows (the simulator card, or the landing's), so the strip above
+   *  it does not say the same character again. */
+  const stripCardName = $derived(
+    store.character !== null && !switcherOpen
+      ? store.character.name
+      : store.character === null &&
+          !switcherOpen &&
+          !sessionPending &&
+          me !== null &&
+          me.characters.length > 0 &&
+          runBlockCharacter !== null
+        ? runBlockCharacter.name
+        : '',
+  );
+
   let historyRows = $state<SimListRow[] | null>(null);
   let historyError = $state<string | null>(null);
   // The history filter (Task 18). "all" sends no `kind=` at all -- see api.ts's listMySims.
@@ -524,7 +539,7 @@
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
   <!-- The spine bar is the one current-character band on this page (the old chip said the
        same character a second time, 44px below it); it reserves CHIP_HEIGHT itself. -->
-  <CurrentCharacterBar spine currentDoor="sim" {restored} />
+  <CurrentCharacterBar spine currentDoor="sim" {restored} cardName={stripCardName} />
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->

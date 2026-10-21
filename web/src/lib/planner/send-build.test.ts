@@ -152,7 +152,7 @@ describe('sendActionFor when the build is shorter than the character’s spend',
     expect('disabled' in action && action.disabled).toBeFalsy();
     expect('note' in action && action.note).toEqual({
       tone: 'muted',
-      text: 'This build has 11 points; Bow Jackzon has spent 15. The addon will follow it from point 12.',
+      text: 'This build has 11 points; Bow Jackzon has 15.',
     });
   });
 

@@ -620,7 +620,7 @@
                   />
                   {#if heroPath !== null}
                     <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0">
-                      <CharacterHandoffLinks path={heroPath} />
+                      <CharacterHandoffLinks path={heroPath} buttons />
                       <a
                         class="inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
                         href="/logs"
@@ -652,6 +652,7 @@
                 characters={cardCharacters}
                 bnetImportedAt={me!.bnet_imported_at}
                 mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
+                currentKey={hero?.key}
                 onSetMain={setMain}
               />
             </div>

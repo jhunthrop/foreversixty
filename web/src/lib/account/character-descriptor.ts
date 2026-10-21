@@ -5,17 +5,18 @@
 // than two hand-rolled copies drifting apart. (The character's picture is always the ringed
 // class crest, CharacterPortrait.svelte; the letter square and class-icon URL that lived here
 // are gone, design/DESIGN-SYSTEM.md tenet 7.)
+import { characterSpecName } from '../character-spec';
 import { classDisplayName } from '../sim/spec-label';
 import { rulesetLabel } from '../characters';
 import type { MeCharacter } from './api';
 import { characterListCopy } from './character-list-copy';
 
-/** "Night Elf Hunter · Level 25 · Living Flame (PvP US)"; every part but the ruleset/
+/** "Night Elf Beast Mastery Hunter · Level 25 · Living Flame (PvP US)"; every part but the ruleset/
  *  region location is omitted when the character has never been through the Battle.net
  *  import. */
 export function characterDescriptor(character: MeCharacter): string {
   const className = character.class === undefined ? undefined : classDisplayName(character.class);
-  const raceClass = [character.race, className]
+  const raceClass = [character.race, characterSpecName(character), className]
     .filter((part): part is string => part !== undefined)
     .join(' ');
   const location =

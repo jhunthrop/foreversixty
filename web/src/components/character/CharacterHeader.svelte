@@ -90,6 +90,7 @@
     source,
     onCharacterChange,
     onPick,
+    onSecondary,
   }: {
     action: ActionProp;
     answer?: AnswerSpec;
@@ -101,6 +102,8 @@
     source?: CharacterCardState;
     onCharacterChange?: (character: MeCharacter | null) => void;
     onPick?: () => void;
+    /** The picker action's second button, when it is a press rather than a link. */
+    onSecondary?: () => void;
   } = $props();
 
   const session = untrack(() => source) ?? createCharacterCardState();
@@ -315,6 +318,22 @@
       onclick={() => onPick?.()}
       data-testid="character-header-action">{@render txt(act.label, ghost)}</button
     >
+    {#if act.secondary !== undefined}
+      {#if act.secondary.href !== undefined}
+        <a
+          class="ch-cta ch-cta-second"
+          href={act.secondary.href}
+          data-testid={act.secondary.testid ?? 'character-header-secondary'}>{act.secondary.label}</a
+        >
+      {:else}
+        <button
+          type="button"
+          class="ch-cta ch-cta-second"
+          onclick={() => onSecondary?.()}
+          data-testid={act.secondary.testid ?? 'character-header-secondary'}>{act.secondary.label}</button
+        >
+      {/if}
+    {/if}
     {#if act.note !== undefined}
       <p
         class="ch-note"
@@ -715,6 +734,24 @@
     border-color: var(--color-gold-hover);
     color: var(--color-gold-hover);
     background: color-mix(in srgb, var(--color-gold) 8%, transparent);
+  }
+  /* The second button sits 8px under the first (the grid gap is 16px), same width, same height,
+     quieter: the outline stays, the fill and glow go. */
+  .ch-cta-second {
+    margin-top: -8px;
+    text-decoration: none;
+  }
+  .ch-primary .ch-cta-second {
+    height: 44px;
+    border: 1px solid var(--color-gold-deep);
+    background: transparent;
+    box-shadow: none;
+    color: var(--color-gold);
+    font-size: 12px;
+  }
+  .ch-primary .ch-cta-second:hover {
+    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
+    color: var(--color-gold-hover);
   }
   .ch-cta:disabled {
     cursor: default;

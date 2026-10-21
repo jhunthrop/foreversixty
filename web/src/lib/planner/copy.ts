@@ -40,6 +40,11 @@ export const plannerCopy = {
    *  copy naming the band instead. */
   bandLoadedNote: (bandLabel: string): string =>
     `Loaded the ${bandLabel} build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.`,
+  /** A link that carries gear but no talent ranks (a build link from a log). */
+  noTalentRanksNote: 'This link carries no talent ranks.',
+  /** The record carries more points than any legal order reaches: name what the planner kept. */
+  keptNote: (kept: number, total: number, name: string): string =>
+    `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order. The order is a reconstruction: the game does not record the order points were spent in.`,
 } as const;
 
 /** Rebuild spec §4.A: the header's own copy -- crest, h1, suffix. */
@@ -79,10 +84,32 @@ export const plannerCharacterCardCopy = {
   failed: 'Could not send just now. Try again.',
   /** An empty draft is never sent; a muted hint, not an error (nothing went wrong). */
   spendFirst: "Spend some points first, or load the level range's build.",
-  /** A build with fewer points than the character has spent: the addon follows it from the next point. */
+  /** A build with fewer points than the character has spent: say both counts, nothing more. */
   shorterThanSpend: (built: number, characterName: string, spent: number): string =>
-    `This build has ${built} point${built === 1 ? '' : 's'}; ${characterName} has spent ${spent}. The addon will follow it from point ${built + 1}.`,
+    `This build has ${built} point${built === 1 ? '' : 's'}; ${characterName} has ${spent}.`,
+  /** The build on screen is another class's: the button says so and stays off. */
+  otherClass: (buildClass: string, characterName: string, characterClass: string): string =>
+    `This is ${article(buildClass)} ${buildClass} build; ${characterName} is ${article(characterClass)} ${characterClass}`,
+  /** Another player's build of the character's own class: it replaces what the character has. */
+  sendOthersBuildTo: (name: string, replaces: number | null): string =>
+    replaces === null || replaces <= 0
+      ? `Send this build to ${name}`
+      : `Send this build to ${name} (replaces their ${replaces} points)`,
+  /** The one question before another player's build goes out. */
+  confirmQuestion: (owner: string, name: string): string =>
+    owner === '' ? `Send this build to ${name}?` : `Send ${owner}'s build to ${name}?`,
+  confirmYes: 'Yes, send it',
+  confirmNo: 'Cancel',
+  /** The planner header's line for a build that is somebody else's: "Ashenveil's build · Holy Paladin". */
+  originLine: (owner: string, specClass: string): string =>
+    owner === '' ? `A linked build · ${specClass}` : `${owner}'s build · ${specClass}`,
+  /** The simulator link under the send button. */
+  simThisBuild: 'Sim this build',
 } as const;
+
+function article(word: string): string {
+  return /^[aeiou]/i.test(word) ? 'an' : 'a';
+}
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own
  *  level band's published build. */

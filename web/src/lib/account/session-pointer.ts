@@ -26,8 +26,13 @@ export function pointerToHeal(pointer: CurrentCharacter | null, me: Me): Current
   if ((pointer.source === 'code' || pointer.source === 'addon') && pointerNameOf(pointer) === '') {
     return pointerForCharacter(main);
   }
-  if (pointer.source === 'armory' && !me.characters.some((character) => character.key === pointer.ref)) {
-    return pointerForCharacter(main);
+  if (pointer.source === 'armory') {
+    const held = me.characters.find((character) => character.key === pointer.ref);
+    if (held === undefined) return pointerForCharacter(main);
+    // The label carries the spec the pointer was written with; the rule may read the record
+    // differently now (new talents, a better record), so the label follows it.
+    const label = pointerForCharacter(held).label;
+    return label === pointer.label ? null : { ...pointer, label };
   }
   return null;
 }

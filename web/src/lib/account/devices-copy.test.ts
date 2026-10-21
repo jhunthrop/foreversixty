@@ -5,7 +5,7 @@ import { devicesCopy, pairingEntryLabel } from './devices-copy';
 
 describe('pairingEntryLabel', () => {
   it('keeps the plain code fallback, "Use a code instead", when no device is paired', () => {
-    expect(pairingEntryLabel(0, accountPageCopy.pairADevice)).toBe('Use a code instead');
+    expect(pairingEntryLabel(0, accountPageCopy.pairADevice)).toBe('Use a pairing code instead');
   });
 
   it('becomes the quiet "Pair another computer" once a device is paired', () => {
