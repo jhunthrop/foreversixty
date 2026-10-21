@@ -155,7 +155,29 @@ const FORMAT = (() => {
     return { m: Math.floor(left / 60), s: left % 60 };
   }
 
-  return { midTruncate, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown };
+  // The sign-in link works ten minutes; the expiry bar is the share left.
+  const LINK_SECONDS = 600;
+  const LATE_SECONDS = 60;
+
+  // secondsLeft is the whole seconds until expiresISO, never negative.
+  function secondsLeft(expiresISO, now) {
+    const t = new Date(expiresISO).getTime();
+    if (Number.isNaN(t)) return 0;
+    return Math.max(0, Math.floor((t - now.getTime()) / 1000));
+  }
+
+  // expiryShare is how much of the link's life is left, from 1 to 0, for
+  // the bar under the countdown.
+  function expiryShare(expiresISO, now) {
+    return Math.min(1, secondsLeft(expiresISO, now) / LINK_SECONDS);
+  }
+
+  // lastMinute is true once the countdown should turn amber.
+  function lastMinute(expiresISO, now) {
+    return secondsLeft(expiresISO, now) <= LATE_SECONDS;
+  }
+
+  return { midTruncate, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

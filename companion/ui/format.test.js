@@ -204,3 +204,16 @@ test('the stopped-responding note says where the tray icon is', () => {
   assert.strictEqual(COPY.localDown,
     'The companion stopped responding. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.');
 });
+
+test('the expiry bar is the share of the ten minutes left, and the last minute is amber', () => {
+  const now = new Date('2026-10-15T20:00:00Z');
+  assert.strictEqual(FORMAT.expiryShare('2026-10-15T20:10:00Z', now), 1);
+  assert.strictEqual(FORMAT.expiryShare('2026-10-15T20:08:00Z', now), 0.8);
+  assert.strictEqual(FORMAT.expiryShare('2026-10-15T20:00:30Z', now), 0.05);
+  assert.strictEqual(FORMAT.expiryShare('2026-10-15T19:59:00Z', now), 0);
+  assert.strictEqual(FORMAT.expiryShare('2026-10-15T20:30:00Z', now), 1);
+  assert.strictEqual(FORMAT.expiryShare('', now), 0);
+  assert.strictEqual(FORMAT.lastMinute('2026-10-15T20:01:00Z', now), true);
+  assert.strictEqual(FORMAT.lastMinute('2026-10-15T20:01:01Z', now), false);
+  assert.strictEqual(FORMAT.lastMinute('2026-10-15T19:00:00Z', now), true);
+});

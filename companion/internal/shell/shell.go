@@ -29,6 +29,11 @@ type Options struct {
 	// word for word. It becomes the tooltip and the menu's first
 	// (disabled) item, and is asked for again every TrayEvery.
 	State func() string
+	// Tone is the headline's tone (on, warn, bad or off). The tray icon is
+	// the seal with a dot in that colour; off is the plain seal. It is
+	// asked for again every TrayEvery, and the icon is replaced only when
+	// the tone changes.
+	Tone func() string
 	// OpenReports opens the player's reports on the site; the tray's
 	// "Open my reports on the site".
 	OpenReports func()
@@ -48,19 +53,23 @@ const TrayEvery = 2 * time.Second
 // "still running in the tray" bar showing, before hiding it.
 const NoticeFor = 4 * time.Second
 
-// Defaults fills in the window size.
+// withDefaults fills in the window size: 800 by 620, which shows a
+// Status headline and its button without scrolling.
 func (o Options) withDefaults() Options {
 	if o.Title == "" {
 		o.Title = "Forever Sixty"
 	}
 	if o.Width == 0 {
-		o.Width = 960
+		o.Width = 800
 	}
 	if o.Height == 0 {
-		o.Height = 680
+		o.Height = 620
 	}
 	if o.State == nil {
 		o.State = func() string { return o.Title }
+	}
+	if o.Tone == nil {
+		o.Tone = func() string { return "off" }
 	}
 	return o
 }
@@ -72,10 +81,10 @@ func wait(ctx context.Context) error {
 	return ctx.Err()
 }
 
-// watchLine calls apply with the line now and again whenever it
-// changes, until the context ends. The tray uses it so a menu item and
-// a tooltip are rewritten only when the words change.
-func watchLine(ctx context.Context, every time.Duration, read func() string, apply func(string)) {
+// watchLine calls apply with the value now and again whenever it
+// changes, until the context ends. The tray uses it so a menu item, a
+// tooltip and an icon are rewritten only when what they show changes.
+func watchLine[T comparable](ctx context.Context, every time.Duration, read func() T, apply func(T)) {
 	last := read()
 	apply(last)
 	t := time.NewTicker(every)

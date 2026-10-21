@@ -753,6 +753,10 @@ func TestTheStatusPageShowsWhenTheSiteSawTheExport(t *testing.T) {
 	if s := h.app.Snapshot(); s.AddonLine != app.CopyNeverSynced || s.AddonSeenAt != nil {
 		t.Fatalf("a line before any ack: %+v", s)
 	}
+	// The state is short; what to do about it is the muted line under it.
+	if s := h.app.Snapshot(); !s.AddonNever || s.AddonHelp != app.CopyNeverSyncedHelp || s.AddonStale {
+		t.Fatalf("never-synced help: never=%v stale=%v help=%q", s.AddonNever, s.AddonStale, s.AddonHelp)
+	}
 	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
 		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
 		t.Fatal("pairing failed")

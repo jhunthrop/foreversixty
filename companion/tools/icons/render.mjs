@@ -70,3 +70,47 @@ const total = 8 + elems.reduce((n, e) => n + e.length, 0);
 const ih = Buffer.alloc(8); ih.write('icns', 0, 'ascii'); ih.writeUInt32BE(total, 4);
 writeFileSync(join(out, 'seal.icns'), Buffer.concat([ih, ...elems]));
 console.log(`wrote ${sizes.length} PNGs, seal.ico, seal.icns to ${out}`);
+
+// Tray icons that carry the headline's tone: the seal plus a status dot at
+// its lower right (docs: companion premium spec, section 10.3). The dot has
+// a ring in the page colour so it reads on a light taskbar and a dark one.
+// "off" is the plain seal above and has no file of its own. 48 px is not in
+// the spec's table; it scales the 32 px dot by 1.5.
+const tones = { on: '#7bff5c', warn: '#e8883a', bad: '#ff6b5c' };
+const dots = {
+  16: { c: 12.5, r: 3, ring: 1 },
+  24: { c: 18.5, r: 4.5, ring: 1.5 },
+  32: { c: 25, r: 6, ring: 2 },
+  48: { c: 37.5, r: 9, ring: 3 },
+};
+const withDot = (size, color) => {
+  const d = dots[size];
+  const base = get(size).toString('base64');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">` +
+    `<image x="0" y="0" width="${size}" height="${size}" xlink:href="data:image/png;base64,${base}"/>` +
+    `<circle cx="${d.c}" cy="${d.c}" r="${d.r + d.ring}" fill="#07090d"/>` +
+    `<circle cx="${d.c}" cy="${d.c}" r="${d.r}" fill="${color}"/></svg>`;
+  return new Resvg(svg, { fitTo: { mode: 'width', value: size } }).render().asPng();
+};
+const trayCache = new Map();
+const tray = (size, tone) => {
+  const k = `${tone}-${size}`;
+  if (!trayCache.has(k)) trayCache.set(k, withDot(size, tones[tone]));
+  return trayCache.get(k);
+};
+const traySizes = [16, 24, 32, 48];
+for (const tone of Object.keys(tones)) {
+  const th = Buffer.alloc(6 + 16 * traySizes.length);
+  th.writeUInt16LE(0, 0); th.writeUInt16LE(1, 2); th.writeUInt16LE(traySizes.length, 4);
+  let off = th.length;
+  traySizes.forEach((s, i) => {
+    const b = tray(s, tone), o = 6 + 16 * i;
+    th[o] = s; th[o + 1] = s; th[o + 2] = 0; th[o + 3] = 0;
+    th.writeUInt16LE(1, o + 4); th.writeUInt16LE(32, o + 6);
+    th.writeUInt32LE(b.length, o + 8); th.writeUInt32LE(off, o + 12);
+    off += b.length;
+  });
+  writeFileSync(join(out, `seal-tray-${tone}.ico`), Buffer.concat([th, ...traySizes.map((s) => tray(s, tone))]));
+  writeFileSync(join(out, `seal-tray-${tone}.png`), tray(32, tone));
+}
+console.log(`wrote seal-tray-{${Object.keys(tones).join(',')}}.ico and .png to ${out}`);

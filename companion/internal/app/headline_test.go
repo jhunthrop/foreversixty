@@ -89,40 +89,175 @@ func TestTheLoggingSubLineFollowsTheCreditState(t *testing.T) {
 }
 
 // The status fixtures the window's tests read (ui/testdata) are the snapshots the companion
-// sends in the three credit states, written from the real headline builder so a change to the
-// words fails here before the JavaScript tests read stale ones. UPDATE_FIXTURES=1 rewrites them.
+// sends, one per state the window draws, written from the real headline builder so a change to
+// the words fails here before the JavaScript tests read stale ones. UPDATE_FIXTURES=1 rewrites
+// them. The times are fixed around 17:41 on 20 Oct 2026; the capture rig shifts them to now.
 func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 	watched := time.Date(2026, 10, 20, 17, 40, 0, 0, time.UTC)
+	credited := Credit{Name: "Bow Jackzon", State: CreditCredited}
+	unmatched := Credit{Name: "Bow Jackzon", State: CreditUnmatched}
+	none := Credit{State: CreditNone}
+	at := func(h, m, s int) *time.Time {
+		v := time.Date(2026, 10, 20, h, m, s, 0, time.UTC)
+		return &v
+	}
+
+	// base is a paired companion that is logging a report credited to credit.
+	base := func(credit Credit) Snapshot {
+		installs := []InstallStatus{
+			{Path: `C:\Program Files (x86)\World of Warcraft\_classic_era_`, Flavor: "_classic_era_",
+				FlavorName: "Classic Era", Watching: true, Added: true, LastPlayed: &watched,
+				Advanced: true, AdvancedKnown: true},
+			{Path: `C:\Program Files (x86)\World of Warcraft\_anniversary_`, Flavor: "_anniversary_",
+				FlavorName: "Classic Anniversary", AdvancedKnown: true},
+		}
+		s := Snapshot{
+			AppVersion: "0.2.8", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
+			DeviceName: "JH-DESKTOP", TokenBackend: "file", TokenBackendName: "A private file in your user folder",
+			APIBaseURL: "https://api.foreversixty.gg", SiteBaseURL: "https://foreversixty.gg",
+			Visibility: "public", DetectedCharacter: credit.Name,
+			Installs: installs,
+			Pipeline: pipeline.Status{Logging: true, ReportKey: "20261020-174100", ReportID: "r_9f2c",
+				Detected: credit.Name},
+			Reports:    []ReportRow{{Key: "20261020-174100", ReportID: "r_9f2c", Fights: 0, StartedAt: watched, Credit: credit}},
+			Characters: []addon.Export{},
+			AddonLine:  "Last synced 1 minute ago", Credit: credit,
+			LastSync: LastSyncView{State: SyncSent, Count: 2, At: &watched, Title: "Tue 20 Oct 2026, 17:40"},
+		}
+		s.Headline = headlineFor(true, false, false, true, credit, installs)
+		return s
+	}
+	// headline recomputes the headline from what a case changed.
+	headline := func(s *Snapshot) {
+		connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
+		s.Headline = headlineFor(s.Paired, connecting, s.SignedOut != nil, s.Pipeline.Logging, s.Credit, s.Installs)
+	}
+	// unpaired is a companion that has never signed in.
+	unpaired := func() Snapshot {
+		s := base(none)
+		s.Paired, s.AccountLabel, s.Pipeline, s.Reports, s.Credit = false, "", pipeline.Status{}, []ReportRow{}, none
+		s.AddonLine, s.AddonNever, s.AddonHelp = CopyNeverSynced, true, CopyNeverSyncedHelp
+		s.LastSync = LastSyncView{State: SyncAbsent}
+		headline(&s)
+		return s
+	}
+	waiting := func(expires *time.Time) Snapshot {
+		s := unpaired()
+		s.Connect = ConnectView{State: ConnectWaiting, UserCode: "KQ4-7TM", URL: "https://foreversixty.gg/connect/KQ4-7TM", Expires: expires}
+		headline(&s)
+		return s
+	}
+	// rows is a mixed list: open, credited, not credited and never uploaded.
+	rows := func() []ReportRow {
+		zones := []string{"Molten Core", "Blackwing Lair", "Onyxia's Lair", "Zul'Gurub", "Ruins of Ahn'Qiraj", "Temple of Ahn'Qiraj", "Naxxramas", "Scholomance", "Stratholme", "Dire Maul"}
+		out := []ReportRow{}
+		for i, z := range zones {
+			r := ReportRow{Key: "k" + z, ReportID: "r_" + z, Zone: z, Fights: 3 + i, StartedAt: watched.Add(-time.Duration(i) * 26 * time.Hour),
+				Done: true, URL: "https://foreversixty.gg/reports/r_" + z, Credit: credited}
+			switch i {
+			case 0:
+				r.Done = false
+			case 1:
+				r.Credit = unmatched
+			case 3:
+				r.Credit, r.URL, r.ReportID = unmatched, "", ""
+			case 5:
+				r.Zone = ""
+			}
+			out = append(out, r)
+		}
+		return out
+	}
+
 	for _, c := range []struct {
-		file   string
-		credit Credit
+		file  string
+		build func() Snapshot
 	}{
-		{"status-credited.json", Credit{Name: "Bow Jackzon", State: CreditCredited}},
-		{"status-not-credited.json", Credit{Name: "Bow Jackzon", State: CreditUnmatched}},
-		{"status-no-name.json", Credit{State: CreditNone}},
+		{"status-credited.json", func() Snapshot { return base(credited) }},
+		{"status-not-credited.json", func() Snapshot { return base(unmatched) }},
+		{"status-no-name.json", func() Snapshot { return base(none) }},
+		{"status-ready.json", func() Snapshot {
+			s := base(none)
+			s.Pipeline = pipeline.Status{}
+			s.Credit = none
+			headline(&s)
+			return s
+		}},
+		{"status-advanced-off.json", func() Snapshot {
+			s := base(none)
+			s.Installs[0].Advanced = false
+			s.Installs[0].AdvancedLogHelp = CopyAdvancedRowHelp
+			s.Pipeline = pipeline.Status{}
+			headline(&s)
+			return s
+		}},
+		{"status-no-folder.json", func() Snapshot {
+			s := base(none)
+			s.Installs, s.Pipeline = []InstallStatus{}, pipeline.Status{}
+			headline(&s)
+			return s
+		}},
+		{"status-not-connected.json", unpaired},
+		{"status-signed-out.json", func() Snapshot {
+			s := unpaired()
+			s.SignedOut = &SignedOut{Reason: "device_revoked", AccountLabel: "Jhunt", At: watched}
+			headline(&s)
+			return s
+		}},
+		{"status-connecting.json", func() Snapshot { return waiting(at(17, 50, 57)) }},
+		{"status-addon-never.json", func() Snapshot {
+			s := base(credited)
+			s.AddonLine, s.AddonNever, s.AddonHelp = CopyNeverSynced, true, CopyNeverSyncedHelp
+			s.LastSync = LastSyncView{State: SyncNone, Line: CopyNoCharactersSent}
+			return s
+		}},
+		{"status-addon-stale.json", func() Snapshot {
+			s := base(credited)
+			s.AddonLine, s.AddonStale, s.AddonHelp = "Last synced 3 days ago", true, CopyStaleHelp
+			return s
+		}},
+		{"reports-rows.json", func() Snapshot {
+			s := base(credited)
+			s.Reports = rows()
+			return s
+		}},
+		{"reports-empty.json", func() Snapshot {
+			s := base(none)
+			s.Reports, s.Pipeline = []ReportRow{}, pipeline.Status{}
+			headline(&s)
+			return s
+		}},
+		{"device-waiting.json", func() Snapshot { return waiting(at(17, 49, 0)) }},
+		{"device-waiting-last-minute.json", func() Snapshot { return waiting(at(17, 41, 40)) }},
+		{"device-waiting-trouble.json", func() Snapshot {
+			s := waiting(at(17, 49, 0))
+			s.Connect.Trouble = true
+			return s
+		}},
+		{"device-blocked.json", func() Snapshot {
+			s := waiting(at(17, 49, 0))
+			s.Connect.State = ConnectBlocked
+			headline(&s)
+			return s
+		}},
+		{"device-failed.json", func() Snapshot {
+			s := unpaired()
+			s.Connect = ConnectView{State: ConnectFailed, Reason: "expired", Message: "The sign-in link expired before you finished. Try again."}
+			return s
+		}},
+		{"update-staged.json", func() Snapshot {
+			s := base(credited)
+			s.UpdateStaged = true
+			return s
+		}},
+		{"update-arrived.json", func() Snapshot {
+			s := base(credited)
+			s.UpdatedTo = "0.2.11"
+			return s
+		}},
 	} {
 		t.Run(c.file, func(t *testing.T) {
-			installs := []InstallStatus{
-				{Path: `C:\Program Files (x86)\World of Warcraft\_classic_era_`, Flavor: "_classic_era_",
-					FlavorName: "Classic Era", Watching: true, Added: true, LastPlayed: &watched,
-					Advanced: true, AdvancedKnown: true},
-				{Path: `C:\Program Files (x86)\World of Warcraft\_anniversary_`, Flavor: "_anniversary_",
-					FlavorName: "Classic Anniversary", AdvancedKnown: true},
-			}
-			s := Snapshot{
-				AppVersion: "0.2.8", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
-				DeviceName: "JH-DESKTOP", TokenBackend: "file", TokenBackendName: "A private file in your user folder",
-				APIBaseURL: "https://api.foreversixty.gg", SiteBaseURL: "https://foreversixty.gg",
-				Visibility: "public", DetectedCharacter: c.credit.Name,
-				Installs: installs,
-				Pipeline: pipeline.Status{Logging: true, ReportKey: "20261020-174100", ReportID: "r_9f2c",
-					Detected: c.credit.Name},
-				Reports:    []ReportRow{{Key: "20261020-174100", ReportID: "r_9f2c", Fights: 0, StartedAt: watched, Credit: c.credit}},
-				Characters: []addon.Export{},
-				Headline:   headlineFor(true, false, false, true, c.credit, installs),
-				AddonLine:  "Last synced 1 minute ago", Credit: c.credit,
-				LastSync: LastSyncView{State: SyncSent, Count: 2, At: &watched, Title: "Tue 20 Oct 2026, 17:40"},
-			}
+			s := c.build()
 			got, err := json.MarshalIndent(map[string]any{"ok": true, "data": s, "error": nil}, "", "  ")
 			if err != nil {
 				t.Fatal(err)

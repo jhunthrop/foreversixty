@@ -155,6 +155,7 @@ func run(args []string, out *os.File) error {
 		// The tray says what the Status headline says, and the window
 		// closing leaves the companion running (the shell hides it).
 		State:       func() string { return a.Headline().Title },
+		Tone:        func() string { return a.Headline().Tone },
 		OpenReports: func() { _ = browser.Open(a.ReportsURL()) },
 		FirstClose:  a.FirstClose,
 		Notice:      app.CopyTrayNotice,

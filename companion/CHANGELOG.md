@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.11
+
+- The companion looks like the site: its own typefaces, a dark title bar that never flashes white, a fixed frame with a scrolling page, a Status headline you can read from across the room, and a tray icon that shows green, amber or red.
+
 ## 0.2.10
 
 - While a log is being followed, the companion tells the site it is alive once a minute, so a report page can say when it has gone quiet.

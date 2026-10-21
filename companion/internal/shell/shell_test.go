@@ -10,7 +10,7 @@ import (
 
 func TestDefaultsFillInTheWindow(t *testing.T) {
 	got := Options{}.withDefaults()
-	if got.Title != "Forever Sixty" || got.Width != 960 || got.Height != 680 {
+	if got.Title != "Forever Sixty" || got.Width != 800 || got.Height != 620 {
 		t.Fatalf("defaults = %+v", got)
 	}
 	kept := Options{Title: "x", Width: 1, Height: 2}.withDefaults()
@@ -68,5 +68,58 @@ func TestTheTrayLineIsAppliedOnceAndThenOnlyWhenItChanges(t *testing.T) {
 func TestTheTrayStateDefaultsToTheTitle(t *testing.T) {
 	if got := (Options{}).withDefaults().State(); got != "Forever Sixty" {
 		t.Fatalf("state = %q", got)
+	}
+}
+
+func TestTheTooltipLeadsWithTheProductAndTheMenuLineDoesNot(t *testing.T) {
+	if got := tooltip("Logging"); got != "Forever Sixty · Logging" {
+		t.Fatalf("tooltip = %q", got)
+	}
+	long := tooltip(strings.Repeat("x", 400))
+	if n := len([]rune(long)); n != TooltipMax {
+		t.Fatalf("a long tooltip is %d characters, Windows shows %d", n, TooltipMax)
+	}
+}
+
+func TestTheTrayIsRewrittenOnlyForWhatChanged(t *testing.T) {
+	var calls []string
+	a := trayApply{
+		Tooltip: func(s string) { calls = append(calls, "tip:"+s) },
+		Title:   func(s string) { calls = append(calls, "title:"+s) },
+		Icon:    func(s string) { calls = append(calls, "icon:"+s) },
+	}
+	step := func(prev *trayView, now trayView) string {
+		calls = nil
+		applyTray(prev, now, a)
+		return strings.Join(calls, ",")
+	}
+	logging := trayView{Line: "Logging", Tone: "on"}
+	if got := step(nil, logging); got != "tip:Forever Sixty · Logging,title:Logging,icon:on" {
+		t.Errorf("first call = %s", got)
+	}
+	if got := step(&logging, logging); got != "" {
+		t.Errorf("nothing changed, but: %s", got)
+	}
+	if got := step(&logging, trayView{Line: "Logging", Tone: "warn"}); got != "icon:warn" {
+		t.Errorf("tone only = %s", got)
+	}
+	if got := step(&logging, trayView{Line: "Ready", Tone: "on"}); got != "tip:Forever Sixty · Ready,title:Ready" {
+		t.Errorf("words only = %s", got)
+	}
+}
+
+func TestTheTrayToneDefaultsToTheSealAlone(t *testing.T) {
+	if got := (Options{}).withDefaults().Tone(); got != "off" {
+		t.Fatalf("tone = %q", got)
+	}
+}
+
+func TestTheWindowOpensAtTheSpecSizeAndNeverShrinksBelowTheMinimum(t *testing.T) {
+	if MinWidth != 560 || MinHeight != 480 {
+		t.Fatalf("minimum = %dx%d", MinWidth, MinHeight)
+	}
+	got := Options{}.withDefaults()
+	if got.Width < MinWidth || got.Height < MinHeight {
+		t.Fatalf("default %dx%d is under the minimum", got.Width, got.Height)
 	}
 }

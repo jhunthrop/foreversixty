@@ -13,6 +13,12 @@
 const POLL_MS = 2000;
 const NOTE_MS = 4000;
 const FLASH_MS = 4000;
+// How long the page, headline and first-paint fades run (--dur-med in styles.css).
+const ENTER_MS = 160;
+// The first poll gets this long before the bar says the service is not answering.
+const SLOW_FIRST_POLL_MS = 1500;
+// "Updated to ..." stays in the footer for this long after a new version's first launch.
+const UPDATED_MS = 30000;
 // The Reports page lists the newest few; the rest are one link away on the site.
 const REPORT_ROWS = 10;
 
@@ -33,6 +39,31 @@ function h(tag, props, ...kids) {
     el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
   }
   return el;
+}
+
+// icon is an inline SVG on a 24 px grid, 2 px stroke, round caps, in the
+// colour of the text around it. Nothing on screen is a text glyph or an
+// emoji: the system font a glyph falls back to is not ours.
+const ICONS = {
+  check: ['M20 6 9 17l-5-5'],
+  triangle: ['M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z', 'M12 9v4M12 17h.01'],
+  file: ['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', 'M14 2v6h6M8 13h8M8 17h6'],
+  chevron: ['m9 18 6-6-6-6'],
+};
+function icon(name, size, cls) {
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', String(size));
+  svg.setAttribute('height', String(size));
+  svg.setAttribute('class', 'icon' + (cls ? ' ' + cls : ''));
+  svg.setAttribute('aria-hidden', 'true');
+  for (const d of ICONS[name]) {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', d);
+    svg.append(p);
+  }
+  return svg;
 }
 
 // ---- talking to the companion ----------------------------------------
@@ -65,8 +96,10 @@ function note(id, kind, text) {
   const el = $(id);
   clearTimeout(timers.get(id));
   el.className = 'note' + (kind === 'bad' ? ' bad' : kind === 'ok' ? ' ok' : '');
-  el.textContent = text || '';
-  if (text && kind !== 'bad') timers.set(id, setTimeout(() => { el.textContent = ''; }, NOTE_MS));
+  el.replaceChildren();
+  if (text && kind === 'ok') el.append(icon('check', 14));
+  if (text) el.append(document.createTextNode(text));
+  if (text && kind !== 'bad') timers.set(id, setTimeout(() => { el.replaceChildren(); }, NOTE_MS));
 }
 
 // busy disables a button and gives it a "doing it" label while fn runs.
@@ -105,10 +138,22 @@ let barTimer = null;
 function showBar(id, text, ms) {
   const bar = $(id);
   bar.hidden = false;
-  const t = bar.querySelector('span') || bar;
-  t.textContent = text;
+  if (id === 'poll-bar') {
+    // The poll bar is the one with a mark: the companion's service is not answering.
+    bar.replaceChildren(icon('triangle', 16), h('span', { text }));
+  } else {
+    const t = bar.querySelector('span') || bar;
+    t.textContent = text;
+  }
   clearTimeout(barTimer);
   if (ms) barTimer = setTimeout(() => { bar.hidden = true; }, ms);
+}
+
+// copiedLabel is the "Copied." a Copy link button says for two seconds,
+// with the check before it, then goes back to its own words.
+function copiedLabel(btn, was, copied) {
+  btn.replaceChildren(icon('check', 12, 'ok'), copied);
+  setTimeout(() => { btn.textContent = was; }, 2000);
 }
 
 async function copyText(text) {
@@ -158,12 +203,24 @@ function region(name, container, data, render) {
 
 let page = null;
 let snap = null;
-const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, copied: false, busyPair: false, starting: false, checkError: '' };
+const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, flashDrawn: false, copied: false, busyPair: false, starting: false, checkError: '', pollFailed: false };
+
+// replay adds a class for one animation's length, so a class that was
+// already there plays again.
+function replay(el, cls, ms) {
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), ms);
+}
 
 function show(name, focus) {
   const leaving = page;
   page = name;
   for (const s of document.querySelectorAll('main section')) s.hidden = s.id !== name;
+  // The incoming page eases in; the outgoing one is simply gone, and a
+  // poll that only changes data never gets here.
+  if (leaving !== null && leaving !== name) replay($(name), 'enter', ENTER_MS);
   for (const b of document.querySelectorAll('nav button')) {
     if (b.dataset.page === name) b.setAttribute('aria-current', 'page');
     else b.removeAttribute('aria-current');
@@ -181,24 +238,47 @@ for (const s of document.querySelectorAll('main section')) s.querySelector('h2')
 
 // ---- Status ----------------------------------------------------------
 
+// The key of the headline last drawn: a change of state fades the card in,
+// a poll that leaves the state alone never does.
+let lastHeadlineKey = null;
+
+// unavailableHeadline is what Status says while the companion's own
+// service does not answer: grey, no button, the last numbers dimmed below.
+function unavailableHeadline() {
+  return { key: 'unavailable', tone: 'off', title: COPY.status.unavailableTitle, sub: COPY.status.unavailableSub };
+}
+
 function renderStatus(s) {
   const p = s.pipeline;
-  const hd = s.headline;
+  const failed = local.pollFailed;
+  const hd = failed ? unavailableHeadline() : s.headline;
   const reportURL = p.report_id ? s.site_base_url + '/reports/' + p.report_id : '';
+  $('status-rows').classList.toggle('dim', failed);
+  $('installs').classList.toggle('dim', failed);
 
   region('headline', $('headline'), { hd, reportURL }, (el) => {
+    el.dataset.tone = hd.tone;
+    el.dataset.key = hd.key;
     el.replaceChildren();
+    // Connecting shows a spinner where every other state has its dot.
+    const mark = hd.key === 'connecting' ? h('span', { class: 'spinner', 'aria-hidden': 'true' }) : dot(hd.tone);
     el.append(
-      h('div', { class: 'head' }, dot(hd.tone), h('div', { class: 'title', text: hd.title })),
+      h('div', { class: 'head' }, mark, h('div', { class: 'title', text: hd.title })),
       h('p', { class: 'sub', text: hd.sub }),
     );
     const actions = [];
     if (hd.action) {
-      actions.push(h('button', { class: 'action primary', type: 'button', 'data-fid': 'headline-action',
+      // The account button is for signing in and nothing else.
+      const account = hd.key === 'not_connected' || hd.key === 'signed_out';
+      actions.push(h('button', { class: account ? 'account' : 'action primary big', type: 'button', 'data-fid': 'headline-action',
         onclick: () => show(hd.action.page, true) }, hd.action.label));
     }
     if (hd.key === 'logging' && reportURL) actions.push(ext(COPY.status.reportLogging, reportURL, { 'data-fid': 'headline-report' }));
     if (actions.length) el.append(h('div', { class: 'actions' }, ...actions));
+    if (hd.key !== lastHeadlineKey) {
+      lastHeadlineKey = hd.key;
+      replay(el, 'enter', ENTER_MS);
+    }
   });
 
   const rows = {
@@ -236,12 +316,14 @@ function renderStatus(s) {
         h('span', { class: 'v mono', text: String(p.queued) })));
     }
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
-    if (s.addon_stale && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
+    // A sync over a day old, and no sync at all, each say what to do.
+    if ((s.addon_stale || s.addon_never) && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
     if (rows.checked) v.append(h('span', { class: 'sub', text: rows.checked }));
     if (rows.checkError) v.append(h('span', { class: 'sub warn', text: rows.checkError }));
     if (rows.paired) {
       v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'check-builds',
         disabled: rows.checking || !rows.canCheck, onclick: onCheckBuilds },
+      rows.checking ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
       rows.checking ? COPY.status.checking : COPY.status.checkBuilds));
     }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.addon }), v));
@@ -252,13 +334,13 @@ function renderStatus(s) {
     }
   });
 
-  region('installs', $('installs'), { installs: s.installs, key: hd.key }, (el) => {
+  region('installs', $('installs'), { installs: s.installs, key: s.headline.key }, (el) => {
     el.replaceChildren();
     if (!s.installs.length) {
       el.append(h('p', { class: 'note', text: COPY.status.noFolders }));
       return;
     }
-    for (const i of s.installs) el.append(installRow(i, hd.key));
+    for (const i of s.installs) el.append(installRow(i, s.headline.key));
   });
 }
 
@@ -309,11 +391,9 @@ function installRow(i, headlineKey) {
 function advancedLabel(i, headlineKey) {
   const adv = FORMAT.advancedView(i, headlineKey, COPY.status);
   if (adv.kind === 'unknown') return h('span', { class: 'adv', text: adv.text });
-  if (adv.kind === 'on') {
-    return h('span', { class: 'adv' }, h('span', { class: 'glyph', 'aria-hidden': 'true', text: '✓' }), adv.text);
-  }
+  if (adv.kind === 'on') return h('span', { class: 'adv on' }, icon('check', 14), adv.text);
   if (adv.kind === 'muted') return h('span', { class: 'adv', text: adv.text });
-  return h('span', { class: 'adv off' }, h('span', { class: 'glyph', 'aria-hidden': 'true', text: '⚠' }), adv.text);
+  return h('span', { class: 'adv off' }, icon('triangle', 14), adv.text);
 }
 
 // ---- Reports ---------------------------------------------------------
@@ -321,6 +401,7 @@ function advancedLabel(i, headlineKey) {
 function renderReports(s) {
   const all = $('reports-all');
   if (all.getAttribute('href') !== s.site_base_url + '/logs') all.setAttribute('href', s.site_base_url + '/logs');
+  $('report-panel').classList.toggle('dim', local.pollFailed);
 
   region('reports', $('report-panel'), { reports: s.reports, paired: s.paired, site: s.site_base_url }, (el) => {
     el.replaceChildren();
@@ -328,9 +409,9 @@ function renderReports(s) {
       const box = h('div', { class: 'empty' });
       if (!s.paired) {
         box.append(h('p', { class: 'big-line', text: COPY.reports.unpairedTitle }),
-          h('button', { class: 'action primary', type: 'button', onclick: () => show('device', true) }, COPY.reports.unpairedButton));
+          h('button', { class: 'account', type: 'button', onclick: () => show('device', true) }, COPY.reports.unpairedButton));
       } else {
-        box.append(h('p', { class: 'big-line', text: COPY.reports.emptyTitle }),
+        box.append(icon('file', 32, 'big-icon'), h('p', { class: 'big-line', text: COPY.reports.emptyTitle }),
           h('p', { class: 'note', text: COPY.reports.emptyBody }));
       }
       el.append(box);
@@ -343,25 +424,35 @@ function renderReports(s) {
   });
 }
 
+// reportRow: a marker, the zone and one meta line, and Copy link. The whole
+// row is the link to the report; only the credit that is missing is loud.
 function reportRow(r, now) {
   const zone = r.zone || COPY.reports.unnamed;
   const title = r.url ? ext(zone, r.url, { 'data-fid': 'report-' + r.key }) : h('span', { text: zone });
-  const meta = h('div', { class: 'when' },
-    r.done ? null : dot('on'),
-    [FORMAT.when(r.started_at, now, COPY.reports), COPY.reports.fights(r.fights)]
-      .concat(r.done ? [] : [COPY.reports.inProgress])
-      .concat(r.url ? [] : [COPY.reports.notUploaded])
-      .concat([FORMAT.creditText(r.credit, COPY.status.credit)]).join(' · '));
-  const li = h('li', {}, h('div', { class: 'what' }, h('div', { class: 'zone' }, title), meta));
+  // The marker column is always there so the rows line up: a live dot while
+  // the report is open, a ring when it never reached the site, else empty.
+  const marker = h('span', { class: 'marker' + (!r.done ? ' live' : (!r.url ? ' pending' : '')), 'aria-hidden': 'true' });
+  const credit = COPY.status.credit;
+  const creditWords = FORMAT.creditText(r.credit, credit);
+  const lead = credit.credited('');
+  const creditNode = creditWords.startsWith(lead)
+    ? [lead, h('span', { class: 'who', text: creditWords.slice(lead.length) })]
+    : [h('span', { class: 'not-credited', text: creditWords })];
+  const parts = [FORMAT.when(r.started_at, now, COPY.reports), COPY.reports.fights(r.fights)];
+  if (!r.done) parts.push(h('span', { class: 'live', text: COPY.reports.inProgress }));
+  if (!r.url) parts.push(COPY.reports.notUploaded);
+  parts.push(h('span', {}, ...creditNode));
+  const meta = h('div', { class: 'when' });
+  parts.forEach((p, n) => { if (n) meta.append(credit.separator); meta.append(p); });
+  const li = h('li', {}, marker, h('div', { class: 'what' }, h('div', { class: 'zone' }, title), meta));
   if (r.url) {
     const btn = h('button', { class: 'ghost small', type: 'button', 'data-fid': 'copy-' + r.key }, COPY.reports.copyLink);
     btn.addEventListener('click', async () => {
-      if (await copyText(r.url)) {
-        btn.textContent = COPY.reports.copied;
-        setTimeout(() => { btn.textContent = COPY.reports.copyLink; }, 2000);
-      }
+      if (await copyText(r.url)) copiedLabel(btn, COPY.reports.copyLink, COPY.reports.copied);
     });
     li.append(btn);
+  } else {
+    li.append(h('span'));
   }
   return li;
 }
@@ -388,18 +479,16 @@ function renderDevice(s) {
 
 function notConnectedView(s, c) {
   const failed = c.state === 'failed';
-  const out = [
-    h('div', { class: 'state-line' }, dot('bad'), COPY.device.notConnected),
-  ];
-  if (failed && c.message) out.push(h('div', { class: 'reason', role: 'alert', text: c.message }));
-  if (s.signed_out) out.push(h('div', { class: 'reason', role: 'alert', text: COPY.device.signedOutBar(s.signed_out.account_label) }));
-  out.push(h('p', { class: 'lede', text: COPY.device.intro }));
-  const btn = h('button', { class: 'action primary big', type: 'button', id: 'connect', 'data-fid': 'connect',
+  const body = [];
+  if (failed && c.message) body.push(h('div', { class: 'reason', role: 'alert', text: c.message }));
+  if (s.signed_out) body.push(h('div', { class: 'reason', role: 'alert', text: COPY.device.signedOutBar(s.signed_out.account_label) }));
+  body.push(h('p', { class: 'lede', text: COPY.device.intro }));
+  const btn = h('button', { class: 'account', type: 'button', id: 'connect', 'data-fid': 'connect',
     onclick: startConnect });
   btn.append(local.starting ? COPY.device.starting : (failed ? COPY.device.tryAgain : COPY.device.signIn));
   if (local.starting) btn.disabled = true;
-  out.push(h('div', {}, btn));
-  out.push(h('p', { class: 'fine', text: COPY.device.signInNote }));
+  body.push(h('div', { class: 'cta' }, btn));
+  body.push(h('p', { class: 'fine', text: COPY.device.signInNote }));
 
   const open = local.pairOpen || failed;
   const fb = h('div', { class: 'fallback' });
@@ -410,9 +499,12 @@ function notConnectedView(s, c) {
   } else {
     fb.append(pairForm());
   }
-  out.push(fb);
-  out.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
-  return out;
+  body.push(fb);
+  body.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
+  return [
+    h('div', { class: 'state-line' }, dot('bad'), COPY.device.notConnected),
+    h('div', { class: 'device-body' }, ...body),
+  ];
 }
 
 function pairForm() {
@@ -429,60 +521,70 @@ function pairForm() {
 }
 
 function signingInView(c) {
-  const out = [
-    h('div', { class: 'state-line' }, h('span', { class: 'spinner', 'aria-hidden': 'true' }),
-      h('span', { role: 'status', text: COPY.device.waiting })),
-    h('p', { class: 'lede' }, COPY.device.checkCode, h('br'), h('span', { class: 'code', text: c.user_code })),
-    h('p', { class: 'fine' }, COPY.device.lasts + ' ', h('span', { id: 'countdown', 'data-expires': c.expires_at || '' })),
+  const body = [
+    h('p', { class: 'lede' }, COPY.device.checkCode),
+    h('div', { class: 'code-plate' }, h('span', { class: 'code', text: c.user_code })),
+    h('p', { class: 'fine' }, COPY.device.lasts + ' ', h('span', { class: 'mono', id: 'countdown', 'data-expires': c.expires_at || '' })),
+    h('div', { class: 'expiry', 'aria-hidden': 'true' }, h('i', { id: 'expiry-fill' })),
   ];
-  if (c.trouble) out.push(h('p', { class: 'note warn', role: 'status', text: COPY.device.trouble }));
+  if (c.trouble) body.push(h('p', { class: 'note warn', role: 'status', text: COPY.device.trouble }));
   if (c.state === 'blocked') {
-    out.push(h('p', { class: 'lede', text: COPY.device.blocked }));
-    out.push(h('div', { class: 'link-field' },
+    body.push(h('p', { class: 'lede', text: COPY.device.blocked }));
+    body.push(h('div', { class: 'link-field' },
       h('input', { class: 'mono', readonly: true, value: c.url, 'aria-label': COPY.device.linkLabel, onfocus: (e) => e.target.select() })));
   }
   const buttons = [];
   if (c.state === 'blocked') {
     buttons.push(h('button', { class: 'action primary', type: 'button', 'data-fid': 'copylink', onclick: async (e) => {
-      if (await copyText(c.url)) {
-        e.target.textContent = COPY.device.copied;
-        setTimeout(() => { e.target.textContent = COPY.device.copyLink; }, 2000);
-      }
+      const btn = e.currentTarget;
+      if (await copyText(c.url)) copiedLabel(btn, COPY.device.copyLink, COPY.device.copied);
     } }, COPY.device.copyLink));
   } else {
     buttons.push(h('button', { class: 'action', type: 'button', 'data-fid': 'reopen', onclick: onReopen }, COPY.device.reopen));
   }
   buttons.push(h('button', { class: 'ghost', type: 'button', 'data-fid': 'cancel', onclick: onCancel }, COPY.device.cancel));
-  out.push(h('div', { class: 'buttons' }, ...buttons));
-  out.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
-  return out;
+  body.push(h('div', { class: 'buttons' }, ...buttons));
+  body.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
+  return [
+    h('div', { class: 'state-line' }, h('span', { class: 'spinner', 'aria-hidden': 'true' }),
+      h('span', { role: 'status', text: COPY.device.waiting })),
+    h('div', { class: 'device-body' }, ...body),
+  ];
 }
 
 function pairedView(s) {
-  const out = [
-    h('div', { class: 'state-line' }, dot('on'), COPY.device.connectedAs(s.account_label)),
-  ];
-  if (local.flash) out.push(h('p', { class: 'note ok', role: 'status', text: COPY.device.flash }));
+  const body = [];
+  if (local.flash) {
+    // The check draws once, on the render that first has the flash; a redraw
+    // while the four seconds run shows it settled.
+    const first = !local.flashDrawn;
+    local.flashDrawn = true;
+    body.push(h('p', { class: 'connected-flash' + (first ? ' draw' : ''), role: 'status' }, icon('check', 14), COPY.device.flash));
+    if (first) replay($('device-panel'), 'flash', 1200);
+  }
   const file = s.token_backend === 'file';
-  out.push(h('div', { class: 'row', style: 'margin-top:12px' }, h('span', { class: 'k', text: COPY.device.savedIn }),
+  body.push(h('div', { class: 'row device-saved' }, h('span', { class: 'k', text: COPY.device.savedIn }),
     h('span', { class: 'v' + (file ? ' amber' : ''), text: s.token_backend_name },
       file && s.token_backend_note ? h('span', { class: 'sub', text: s.token_backend_note }) : null)));
-  out.push(h('details', {}, h('summary', { text: COPY.device.details }),
+  body.push(h('details', {}, h('summary', {}, icon('chevron', 14), COPY.device.details),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.deviceName }), h('span', { class: 'v mono', text: s.device_name })),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.api }), h('span', { class: 'v mono', text: s.api_base_url }))));
   if (local.confirmForget) {
-    out.push(h('div', { class: 'ask', role: 'alertdialog', 'aria-label': COPY.device.forgetAsk },
+    body.push(h('div', { class: 'ask', role: 'alertdialog', 'aria-label': COPY.device.forgetAsk },
       h('p', { text: COPY.device.forgetAsk }),
       h('div', { class: 'ask-buttons' },
         h('button', { class: 'action danger', type: 'button', id: 'forget-yes', 'data-fid': 'forget-yes', onclick: onForget }, COPY.device.forgetYes),
         h('button', { class: 'action', type: 'button', id: 'forget-no', 'data-fid': 'forget-no', onclick: () => cancelForget(true) }, COPY.device.forgetNo))));
   } else {
-    out.push(h('div', { class: 'buttons' },
+    body.push(h('div', { class: 'buttons' },
       h('button', { class: 'action', type: 'button', 'data-fid': 'my-reports', onclick: () => openLink(s.site_base_url + '/logs') }, COPY.device.openReports),
       h('button', { class: 'ghost', type: 'button', 'data-fid': 'forget', onclick: askForget }, COPY.device.forget)));
   }
-  out.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
-  return out;
+  body.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
+  return [
+    h('div', { class: 'state-line' }, dot('on'), COPY.device.connectedAs(s.account_label)),
+    h('div', { class: 'device-body' }, ...body),
+  ];
 }
 
 function renderForgotten(s, revoked) {
@@ -569,12 +671,18 @@ async function onPair(e) {
   applySnapshot(r.data);
 }
 
-// A countdown that ticks without re-rendering anything.
+// A countdown that ticks without re-rendering anything. The expiry bar
+// under it is the share of the ten minutes left; its width eases over the
+// second until the next tick, so it moves without a redraw.
 function tickCountdown() {
   const el = $('countdown');
   if (!el || !el.dataset.expires) return;
-  const t = FORMAT.countdown(el.dataset.expires, new Date());
+  const now = new Date();
+  const t = FORMAT.countdown(el.dataset.expires, now);
   el.textContent = COPY.device.countdown(t.m, t.s);
+  el.classList.toggle('late', FORMAT.lastMinute(el.dataset.expires, now));
+  const fill = $('expiry-fill');
+  if (fill) fill.style.width = (FORMAT.expiryShare(el.dataset.expires, now) * 100) + '%';
 }
 setInterval(tickCountdown, 1000);
 
@@ -637,9 +745,11 @@ function renderSettings(s) {
       return;
     }
     for (const i of s.installs) {
+      // The name and when it was last played share a line, so the three
+      // fields and Save stay together on a short window.
       const where = h('div', { class: 'where' },
-        h('div', { class: 'name', text: i.flavor_name || i.flavor }),
-        h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) }),
+        h('div', { class: 'head' }, h('span', { class: 'name', text: i.flavor_name || i.flavor }),
+          h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) })),
         h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 52) }));
       const side = i.added
         ? h('button', { class: 'ghost small', type: 'button', 'data-fid': 'remove-' + i.path, onclick: (e) => onRemove(e.target, i.path) }, COPY.settings.remove)
@@ -695,16 +805,27 @@ $('save').addEventListener('click', async () => {
 
 // ---- chrome: footer, bars, title -------------------------------------
 
+// updatedSince is when the window first showed "Updated to ..." while it
+// was on screen; the line stays for UPDATED_MS from then.
+let updatedSince = null;
+function updatedShowing(s) {
+  if (!s.updated_to) return false;
+  if (updatedSince === null && document.visibilityState === 'visible') updatedSince = Date.now();
+  return updatedSince !== null && Date.now() - updatedSince < UPDATED_MS;
+}
+
 function renderChrome(s) {
-  region('footer', $('footer'), { v: s.app_version, u: s.update_staged, site: s.site_base_url }, () => {
-    $('foot-version').textContent = COPY.footer.version(s.app_version);
+  const updated = updatedShowing(s);
+  region('footer', $('footer'), { v: s.app_version, u: s.update_staged, site: s.site_base_url, upd: updated ? s.updated_to : '' }, () => {
+    const left = $('foot-version');
+    left.textContent = updated ? COPY.footer.updatedTo(s.updated_to) : COPY.footer.version(s.app_version);
+    left.classList.toggle('updated', updated);
     $('foot-site').textContent = COPY.footer.site;
     $('foot-site').setAttribute('href', s.site_base_url);
     $('wordmark').setAttribute('href', s.site_base_url);
-    $('foot-update').hidden = !s.update_staged;
-    $('foot-update').textContent = s.update_staged ? COPY.footer.updateReady : '';
+    $('update-bar').hidden = !s.update_staged;
+    $('update-text').textContent = s.update_staged ? COPY.footer.updateReady : '';
   });
-  $('footer').hidden = false;
 }
 
 // The first close of the window: the shell calls this before it hides
@@ -740,6 +861,7 @@ function applySnapshot(s) {
   if (page === null) {
     // First paint: an unpaired companion opens on Device.
     $('main').hidden = false;
+    replay($('main'), 'enter', ENTER_MS);
     show(s.paired ? 'status' : 'device', false);
   }
   renderChrome(s);
@@ -756,6 +878,7 @@ function applySnapshot(s) {
 // result. Away from the Device page, nothing moves.
 function onConnected() {
   local.flash = true;
+  local.flashDrawn = false;
   local.pairOpen = false;
   local.forgot = false;
   if (page === 'device') {
@@ -774,11 +897,37 @@ async function refresh() {
   const r = await api('api/status');
   if (!r.ok) {
     showBar('poll-bar', COPY.localDown);
+    // The cards keep the last numbers the companion sent, dimmed, under a
+    // headline that says so.
+    if (!local.pollFailed) {
+      local.pollFailed = true;
+      if (snap) { renderStatus(snap); renderReports(snap); }
+    }
     return;
   }
   $('poll-bar').hidden = true;
+  local.pollFailed = false;
   applySnapshot(r.data);
 }
+
+// If the first answer is slow the bar says so; there is no spinner on the page.
+setTimeout(() => { if (!snap) showBar('poll-bar', COPY.localDown); }, SLOW_FIRST_POLL_MS);
+
+// ---- native feel: no browser menu, no page zoom, nothing to drag -----
+
+// The window is an app, not a web page: the browser's right-click menu,
+// Ctrl-wheel and Ctrl-plus zoom and dragging a link or the seal are off.
+// A text field or a selection keeps its menu so Copy and Paste still work.
+document.addEventListener('contextmenu', (e) => {
+  const t = e.target;
+  const editable = t && t.closest && t.closest('input, select, textarea');
+  if (!editable && !String(window.getSelection()).length) e.preventDefault();
+});
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('wheel', (e) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+document.addEventListener('dragstart', (e) => e.preventDefault());
 
 refresh();
 setInterval(refresh, POLL_MS);
