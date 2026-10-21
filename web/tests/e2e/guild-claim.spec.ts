@@ -98,6 +98,9 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
     const box = await page.getByTestId(id).boundingBox();
     expect(box?.height).toBe(44);
   }
+  // The pointer still rests where the claim button was, which is where the primary now sits;
+  // move it off so the resting colour is read, not the hover one.
+  await page.mouse.move(0, 0);
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveCSS(
     'background-color',
     'rgb(229, 185, 85)',
