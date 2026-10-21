@@ -19,6 +19,7 @@ export function sendActionFor(
   character: MeCharacter | null,
   state: SendState,
   pointsSpent = 1,
+  characterSpent: number | null = null,
 ): HeaderAction {
   if (character === null) {
     return { label: copy.getTheAddon, href: copy.getTheAddonHref };
@@ -66,6 +67,27 @@ export function sendActionFor(
     case 'failed':
       return { ...base, label: copy.sendBuildToAddon, note: { tone: 'error' as const, text: copy.failed } };
     case 'idle':
-      return { ...base, label: copy.sendBuildToAddon };
+      return {
+        ...base,
+        label: copy.sendBuildToAddon,
+        ...shorterNote(character, pointsSpent, characterSpent),
+      };
   }
+}
+
+/** Points a character has spent, from its synced talents; null when the site holds none. */
+export function characterPointsSpent(character: MeCharacter | null): number | null {
+  return character?.build?.talents?.points.reduce((sum, n) => sum + n, 0) ?? null;
+}
+
+/** The muted "this build is shorter than the character's spend" note, or nothing to add. */
+function shorterNote(
+  character: MeCharacter,
+  pointsSpent: number,
+  characterSpent: number | null,
+): { note?: { tone: 'muted'; text: string } } {
+  if (characterSpent === null || pointsSpent >= characterSpent) return {};
+  return {
+    note: { tone: 'muted', text: copy.shorterThanSpend(pointsSpent, character.name, characterSpent) },
+  };
 }

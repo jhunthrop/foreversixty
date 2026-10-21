@@ -8,7 +8,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { fetchMeOnce, type Me } from '../../lib/account/api';
+  import { fetchMeOnce, type Me, type MeCharacter } from '../../lib/account/api';
   import { selectedCharacter } from '../../lib/account/hero-character';
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
@@ -137,6 +137,9 @@
   /** Set when the build came in as an FS1 code: either why it could not be read, or that its
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
   let codeNote = $state<CodeNote | null>(null);
+
+  /** The header card's selected character, for the band panel's level cut (null: none). */
+  let bandCharacter = $state<MeCharacter | null>(null);
 
   // Matches the one message `decodeFS1` returns that carries two counts, so the digits can be
   // pulled out and wrapped here without `decodeFS1` itself having to return anything but a
@@ -641,7 +644,13 @@
          title, the old current-character spine band (which duplicated Copy for the game, now
          in the Share panel below), and the prior round's boxed header beside a separate
          character-card panel. -->
-    <PlannerHeaderBand {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />
+    <PlannerHeaderBand
+      {store}
+      {live}
+      {gate}
+      onshowdps={() => (dpsOptedIn = true)}
+      oncharacter={(next) => (bandCharacter = next)}
+    />
   {:else}
     <!-- The non-standalone inline embed (Top Gear's "add a build", TalentCandidates.svelte)
          keeps its own pre-fix-round layout: no header, no rail -- just the flat facts bar
@@ -948,6 +957,7 @@
                  ever needed for it specifically). -->
             <BandCompare
               {store}
+              characterLevel={bandCharacter?.level ?? bandCharacter?.build?.level ?? null}
               specOverride={specParam ?? undefined}
               onbanddiff={(diff) => (bandDiff = diff)}
               onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}

@@ -89,6 +89,29 @@ export function loadFromBand(index: TalentIndex, bandTalents: string): BandLoad 
   return { order, dropped };
 }
 
+export interface BandLoadAtLevel extends BandLoad {
+  /** The points the band's whole build holds (before any cut); fewer in `order` means it was cut. */
+  fullPoints: number;
+}
+
+/**
+ * The band's build for a character at `characterLevel` (null: none selected). The point order
+ * is cut at the character's level (points = level - 9) when that is fewer than the band's
+ * whole build; a character past the band, or none, gets the whole build. A character too low
+ * to have a point (below level 10) also gets the whole build rather than an empty one.
+ */
+export function loadFromBandAtLevel(
+  index: TalentIndex,
+  bandTalents: string,
+  characterLevel: number | null,
+): BandLoadAtLevel {
+  const full = loadFromBand(index, bandTalents);
+  const fullPoints = full.order.length;
+  const allowed = (characterLevel ?? 9) - 9;
+  const order = allowed > 0 ? full.order.slice(0, allowed) : full.order;
+  return { ...full, order, fullPoints };
+}
+
 /** The title for a band build just applied to a draft of `classSlug` with `split` points per tree. */
 export function bandTitleForDraft(bandLabel: string, classSlug: string, split: readonly number[]): string {
   const key = specKeyFor(classSlug, split);

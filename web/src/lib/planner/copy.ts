@@ -78,6 +78,9 @@ export const plannerCharacterCardCopy = {
   failed: 'Could not send just now. Try again.',
   /** An empty draft is never sent; a muted hint, not an error (nothing went wrong). */
   spendFirst: "Spend some points first, or load the band's build.",
+  /** A build with fewer points than the character has spent: the addon follows it from the next point. */
+  shorterThanSpend: (built: number, characterName: string, spent: number): string =>
+    `This build has ${built} point${built === 1 ? '' : 's'}; ${characterName} has spent ${spent}. The addon will follow it from point ${built + 1}.`,
 } as const;
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own
@@ -95,6 +98,11 @@ export const bandCompareCopy = {
   differsSuffix: 'of your points differ from this build',
   matches: 'Matches',
   loadButton: (bandLabel: string): string => `Load the ${bandLabel} build`,
+  /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
+  loadedLine: (level: number, points: number, of: number): string =>
+    points < of
+      ? `Loaded for level ${level} · ${points} of ${of} points`
+      : `Loaded at level ${level} · ${points} points`,
   seeWhatDiffers: 'See what differs',
   loadConfirmMessage: "Loading replaces every point you've spent with this band's own build. Load anyway?",
   loadConfirmProceed: 'Load it',
