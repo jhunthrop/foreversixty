@@ -1416,15 +1416,36 @@ end
 
 --- Escape, Enter and Tab in either box: Escape closes the dialog (the box gives up the
 --- keyboard as it hides, so the player can walk), Tab switches tabs, Enter does the tab's job.
+--- What Escape does wherever the keyboard is (X.7): a site row previewing goes back to the empty
+--- dialog, a second one (or anything else showing) closes it.
+function BuildDialog.escape()
+	local verdict = BuildDialog.verdict
+	if BuildDialog.mode == "paste" and verdict ~= nil and verdict.inboxId ~= nil then
+		BuildDialog.clearPaste()
+		return
+	end
+	BuildDialog.close()
+end
+
+--- The frame's own key handler (X.7): the dialog is keyboard-enabled so Escape closes it whether
+--- the focus was in a box, on a row or on a tab (UISpecialFrames alone only closes it while
+--- nothing else has taken the key). Escape is consumed; every other key is passed on, so Return
+--- still opens chat and movement keys still walk. SetPropagateKeyboardInput is the client's call
+--- for exactly this; it is a flag on our own frame, which is never protected, so it is allowed in
+--- combat, and nothing here touches a client frame.
+function BuildDialog.onKey(frame, key)
+	local keep = key ~= "ESCAPE"
+	if type(frame.SetPropagateKeyboardInput) == "function" then
+		frame:SetPropagateKeyboardInput(keep)
+	end
+	if not keep then
+		BuildDialog.escape()
+	end
+end
+
 local function bindKeys(box, onEnter)
 	box:SetScript("OnEscapePressed", function()
-		local verdict = BuildDialog.verdict
-		if BuildDialog.mode == "paste" and verdict ~= nil and verdict.inboxId ~= nil then
-			-- A site row previewing: Escape goes back to the empty dialog, a second one closes.
-			BuildDialog.clearPaste()
-			return
-		end
-		BuildDialog.close()
+		BuildDialog.escape()
 	end)
 	box:SetScript("OnTabPressed", function()
 		BuildDialog.setMode(BuildDialog.nextMode(BuildDialog.mode))
@@ -1934,6 +1955,11 @@ function BuildDialog.ensure()
 		BuildDialog.link = nil
 	end)
 	frame:SetScript("OnEvent", onEvent)
+	-- Escape from any focus state, every other key passed on (BuildDialog.onKey).
+	if type(frame.EnableKeyboard) == "function" then
+		frame:EnableKeyboard(true)
+	end
+	frame:SetScript("OnKeyDown", BuildDialog.onKey)
 	Theme.registerEvent(frame, "GET_ITEM_INFO_RECEIVED")
 	Theme.makeEscapable(BuildDialog.FRAME_NAME)
 	return frame

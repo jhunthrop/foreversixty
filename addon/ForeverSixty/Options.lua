@@ -187,6 +187,9 @@ function Options.handle(input)
 		return Options.buildCommand(rest)
 	elseif command == "record" then
 		return Recorder.command(rest)
+	elseif command == "welcome" then
+		-- The first-login welcome again (X.7); it does not touch the stamp.
+		return SiteStatus.welcomeLines()
 	elseif command == "help" then
 		-- The player's commands, then the testers' two lines, muted (fix round 1, item 16;
 		-- fix round 3, item 5).
