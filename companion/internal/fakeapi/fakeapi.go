@@ -74,6 +74,9 @@ type Report struct {
 	Created          *client.Character
 	// Patches are the bodies PATCH /v1/reports/{id} received, in order.
 	Patches []json.RawMessage
+	// Heartbeats are the times POST /v1/reports/{id}/heartbeat was
+	// accepted, by the fake's clock.
+	Heartbeats []time.Time
 }
 
 // Server is a fake ingest API.
@@ -109,6 +112,13 @@ type Server struct {
 	// token again.
 	revoked bool
 	revokes int
+
+	// limitBeats is how many heartbeats still answer 429, with
+	// limitAfter as the Retry-After header; beatAttempts counts every
+	// heartbeat request, accepted or not.
+	limitBeats   int
+	limitAfter   int
+	beatAttempts int
 }
 
 // InboxFetches is how many times GET /v1/addon/inbox has been answered.
@@ -146,6 +156,7 @@ func New() *Server {
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}", s.putFight)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}/live", s.putLive)
 	mux.HandleFunc("PUT /v1/reports/{id}/raw", s.putRaw)
+	mux.HandleFunc("POST /v1/reports/{id}/heartbeat", s.heartbeat)
 	mux.HandleFunc("POST /v1/reports/{id}/complete", s.complete)
 	mux.HandleFunc("POST /v1/addon/exports", s.addonExports)
 	mux.HandleFunc("GET /v1/addon/inbox", s.addonInbox)
@@ -533,6 +544,64 @@ func (s *Server) putLive(w http.ResponseWriter, r *http.Request) {
 	s.order = append(s.order, "live "+strconv.Itoa(n))
 	s.mu.Unlock()
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// heartbeat answers 204 and records the time, or 429 with a
+// Retry-After while LimitHeartbeats has some left, as the API does for
+// a device that beats more than once a minute.
+func (s *Server) heartbeat(w http.ResponseWriter, r *http.Request) {
+	s.mu.Lock()
+	s.beatAttempts++
+	s.mu.Unlock()
+	if s.shouldFail("POST /v1/reports/{id}/heartbeat") {
+		fail(w, http.StatusInternalServerError, "injected failure")
+		return
+	}
+	s.mu.Lock()
+	if s.limitBeats > 0 {
+		s.limitBeats--
+		after := s.limitAfter
+		s.mu.Unlock()
+		w.Header().Set("Retry-After", strconv.Itoa(after))
+		fail(w, http.StatusTooManyRequests, "one heartbeat a minute")
+		return
+	}
+	s.mu.Unlock()
+	rep, found := s.report(w, r)
+	if !found {
+		return
+	}
+	s.mu.Lock()
+	rep.Heartbeats = append(rep.Heartbeats, s.clock())
+	s.mu.Unlock()
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// LimitHeartbeats makes the next n heartbeats answer 429 with a
+// Retry-After of afterSeconds.
+func (s *Server) LimitHeartbeats(n, afterSeconds int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.limitBeats, s.limitAfter = n, afterSeconds
+}
+
+// Heartbeats is how many heartbeats the fake accepted for any report.
+func (s *Server) Heartbeats() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	n := 0
+	for _, r := range s.reports {
+		n += len(r.Heartbeats)
+	}
+	return n
+}
+
+// HeartbeatRequests is how many heartbeat requests have arrived,
+// accepted or refused.
+func (s *Server) HeartbeatRequests() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.beatAttempts
 }
 
 func (s *Server) putRaw(w http.ResponseWriter, r *http.Request) {

@@ -39,6 +39,8 @@ type rig struct {
 	q        *queue.Queue
 	clock    time.Time
 	rawChunk int
+	// beatEvery is the heartbeat interval; zero is the pipeline's own.
+	beatEvery time.Duration
 
 	// records are what the addon has exported, as the pipeline asks
 	// for them; chosen is the character picked in Settings, nil for
@@ -99,9 +101,10 @@ func (r *rig) open() {
 		Watch:    watch.New(watch.Options{Dir: r.dirs.logs}),
 		Config: config.Config{APIBaseURL: r.srv.URL, SiteBaseURL: r.srv.URL,
 			ReportVisibility: "public", LoggingCharacter: r.chosen},
-		Records:  func() []logger.Record { return r.records },
-		Log:      slog.New(slog.NewTextHandler(&r.logs, nil)),
-		RawChunk: r.rawChunk,
+		Records:        func() []logger.Record { return r.records },
+		Log:            slog.New(slog.NewTextHandler(&r.logs, nil)),
+		RawChunk:       r.rawChunk,
+		HeartbeatEvery: r.beatEvery,
 		// Save the session on every tick so a restart in a test
 		// resumes from the same place a long-running companion would.
 		StateEvery: -1,

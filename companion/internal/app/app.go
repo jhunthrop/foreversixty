@@ -69,6 +69,10 @@ type Options struct {
 	// ConnectInterval overrides how often a sign-in is polled. Zero
 	// means the server's own interval, two seconds.
 	ConnectInterval time.Duration
+	// HeartbeatEvery overrides how often an open report tells the site
+	// the companion is alive. Zero means once a minute, the API's limit;
+	// tests shrink it.
+	HeartbeatEvery time.Duration
 }
 
 // App is the whole companion.
@@ -181,6 +185,8 @@ func New(o Options) (*App, error) {
 		Config:   a.cfg,
 		Log:      a.log,
 		Records:  a.addonRecords,
+
+		HeartbeatEvery: o.HeartbeatEvery,
 	})
 	if err != nil {
 		return nil, err
@@ -434,6 +440,9 @@ func (a *App) saveDevice(token, label string) error {
 	}
 	a.forgetToken()
 	a.signedOut = nil
+	// A heartbeat that stopped on the old token starts again for the
+	// report still open.
+	a.pipe.ResumeHeartbeat()
 	if err := a.writeLabel(label); err != nil {
 		// The token is saved and the device works; only the "connected
 		// as" line is lost.
@@ -842,6 +851,11 @@ func (a *App) Step(ctx context.Context, now time.Time) {
 	a.retarget()
 	if err := a.pipe.Tick(now); err != nil {
 		a.log.Error("the tail failed", "component", "app", "err", err.Error())
+	}
+	// A heartbeat the site refused has stopped itself; the signed-out
+	// path decides what that means, exactly as for a refused snapshot.
+	if err := a.pipe.HeartbeatRefused(); err != nil && a.signOutIfRefused(err, tok) {
+		return
 	}
 	if err := a.pipe.Live(ctx, now); err != nil {
 		if a.signOutIfRefused(err, tok) {
