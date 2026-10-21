@@ -398,33 +398,10 @@ local function replacesLine(raw, at, parts, sameFormat)
 	return string.format(L.dialogReplacesDiffers, escaped(raw), at, talentText(parts, nil, false))
 end
 
---- The Next line: "Next talent would be: Take <talent (tree, rank)>", fitted to `width` by
---- shortening the tree, then dropping the rank, then the tree, never the talent's name.
-local function nextLine(parts, measure, width)
-	local function line(text)
-		return string.format(L.dialogNextWould, string.format(L.chipTake, text))
-	end
-	local full = line(talentText(parts))
-	if fitsWidth(full, measure, width) then
-		return full
-	end
-	if parts.tree then
-		local tree = parts.tree
-		local bytes = #tree
-		while bytes > 1 do
-			bytes = #cut(tree, bytes - 1)
-			local candidate = line(talentText(parts, (cut(tree, bytes):gsub("%s+$", "")) .. L.ellipsis))
-			if fitsWidth(candidate, measure, width) then
-				return candidate
-			end
-		end
-		local shortTree = cut(tree, 1) .. L.ellipsis
-		local noRank = line(talentText(parts, shortTree, false))
-		if fitsWidth(noRank, measure, width) then
-			return noRank
-		end
-	end
-	return line(talentText(parts, false, false))
+--- The Next line: "Next talent would be: Take <talent (tree, rank)>", whole. Like the Replaces
+--- sentence the frame wraps it onto a second line and the dialog grows (X.6: "(Beast M..." decided a click).
+local function nextLine(parts)
+	return string.format(L.dialogNextWould, string.format(L.chipTake, talentText(parts)))
 end
 
 --- Whether two builds plan the same gear: the same slots, items and stats, in order.
@@ -460,8 +437,8 @@ end
 --- back ("Your plan is further along."). `short`, for a candidate that ends before the points
 --- `ranks` have spent and is not a prefix: "This build ends at 11 points; you have spent 15. It
 --- keeps following from point 12.", above `replaces`. `nextWould`: the next talent the candidate
---- gives on this character now, fitted to `width` as `measure` measures it (no measure: whole).
-function BuildDialog.previewContext(followed, candidate, ranks, data, level, measure, width)
+--- gives on this character now, whole (the frame wraps it).
+function BuildDialog.previewContext(followed, candidate, ranks, data, level)
 	local context = {}
 	local prefix = false
 	if followed ~= nil and candidate ~= nil then
@@ -485,7 +462,7 @@ function BuildDialog.previewContext(followed, candidate, ranks, data, level, mea
 	end
 	local label, _, parts = BuildDialog.dialogTalent(candidate, ranks, data, level)
 	if label ~= nil then
-		context.nextWould = nextLine(parts, measure, width)
+		context.nextWould = nextLine(parts)
 	end
 	return context
 end
@@ -1776,15 +1753,12 @@ local function buildPaste(frame, top, bottom)
 	paste.preview.frame:SetFrameLevel((boxLevel or 0) + 4)
 	paste.use:SetFrameLevel((boxLevel or 0) + 5)
 	paste.use:Hide()
-	-- Above the button, laid out bottom-up by drawPreview: the next talent the candidate gives (one
-	-- line, fitted), what Use replaces and, above it, where the candidate stops short; the last two
+	-- Above the button, laid out bottom-up by drawPreview: the next talent the candidate gives (wrapped
+	-- whole), what Use replaces and, above it, where the candidate stops short; the last two
 	-- wrap whole (X.5). Beside the button, why it is held back.
 	paste.nextWould = text(content, "muted", width)
 	paste.replaces = text(content, "muted", width)
 	paste.short = text(content, "muted", width)
-	if type(paste.nextWould.SetWordWrap) == "function" then
-		paste.nextWould:SetWordWrap(false)
-	end
 	paste.useReason = text(content, "muted", width - Theme.SIZES.buttonWidth - S.gap * 2)
 	paste.useReason:SetPoint("LEFT", paste.use, "RIGHT", S.gap * 2, 0)
 	paste.useReason:Hide()
@@ -2095,8 +2069,7 @@ local function drawPreview(verdict, y)
 			followed = Follow.slotBuild(data, slot)
 		end
 	end
-	local ok, context = pcall(BuildDialog.previewContext, followed, verdict.build, ranks, data, liveLevel(),
-		widthOf(paste.nextWould), contentWidth())
+	local ok, context = pcall(BuildDialog.previewContext, followed, verdict.build, ranks, data, liveLevel())
 	if not ok then
 		context = {}
 	end
@@ -2286,7 +2259,8 @@ function BuildDialog.drawPaste()
 		used = drawPreview(verdict, y)
 		paste.use:Show()
 		if BuildDialog.mode == "paste" then
-			BuildDialog.enterHint:SetText(L.dialogEnterHint)
+			-- The hint follows the button: Enter uses only while Use is enabled; held back, it says why.
+			BuildDialog.enterHint:SetText(BuildDialog.useBlocked == nil and L.dialogEnterHint or L.dialogUseFurtherHint)
 			BuildDialog.enterHint:Show()
 		end
 	elseif waiting and BuildDialog.mode == "paste" then
