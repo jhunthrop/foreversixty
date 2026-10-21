@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -94,7 +99,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 8.6 | 4 | spell:5177=44.1, other:attack/1=31.3, spell:8924=5.5, spell:1259799=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.2 | 4 | other:attack/1=182.1, spell:1082=46.4, spell:1079=8.7, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 5221} |
+| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.2 | 4 | other:attack/1=182.1, spell:1082=46.4, spell:1079=8.7, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
 | 30 | 0000000000000000-55232031000000000000-0000000000000000 | bare | 73.6 | 5 | other:attack/1=182.1, spell:6800=44.4, spell:9492=8.2, spell:5217=6.6, spell:1259799=1.5 | {SpellID: 1322605} |
 | 38 | 0000000000000000-55232032121030000000-0000000000000000 | bare | 100.2 | 7 | other:attack/1=182.1, spell:8992=50.7, spell:9493=9.9, spell:1322605=8.3, spell:5217=6.6 | - |
 | 40 | 0000000000000000-55232032121032000000-0000000000000000 | bare | 102.4 | 7 | other:attack/1=182.1, spell:8992=50.1, spell:9493=10.6, spell:1322605=8.3, spell:5217=6.6 | - |
@@ -115,7 +120,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 5570)
 - Maul (spell 6808)
 - Moonfire (spell 8925)
-- Shred (spell 5221)
 - Starfire (spell 2912)
 - Swipe (spell 779)
 - Wrath (spell 5178)
@@ -197,8 +201,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- druid-feral level=20 kind=unresolved_id action={SpellID: 5221}
-- druid-feral level=38 kind=zero_casts spell="Ferocious Bite" id=22568 authored=22829
-- druid-feral level=40 kind=zero_casts spell="Ferocious Bite" id=22827 authored=22829
-- druid-feral level=50 kind=zero_casts spell="Ferocious Bite" id=22828 authored=22829
-- druid-feral level=60 kind=zero_casts spell="Ferocious Bite" id=22829 authored=22829
+None.

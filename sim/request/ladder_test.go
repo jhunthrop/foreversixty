@@ -189,6 +189,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		t.Fatal(err)
 	}
 	talentSpellIDs = expandTalentSpellIDs(talentSpellIDs, abilities)
+	talentSpellIDs = addTalentOwnedAuras(class, talentSpellIDs)
 	rankLevelByID := idLearnLevel(ranks, class)
 
 	var rows []ladderRow
@@ -351,6 +352,13 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		// approximate copy of its resolution - that never fired.
 		for authoredID := range authoredIDs {
 			learnedID32, learned := spellranks.HighestLearnedSpellID(class, int32(authoredID), level)
+			if level >= api.MaxLevel {
+				// rotation() skips the rank rewrite at MaxLevel: the
+				// engine runs the line exactly as authored, so the id it
+				// casts is the authored one, not the rank the rewrite
+				// would pick.
+				learnedID32, learned = int32(authoredID), true
+			}
 			if !learned {
 				continue // the engine's own rewrite already dropped this line; nothing to double-report.
 			}
@@ -449,4 +457,18 @@ func ladderOutput(player *proto.UnitMetrics, healer bool) float64 {
 		return player.EffectiveHps.GetAvg()
 	}
 	return player.Dps.GetAvg()
+}
+
+// idLearnLevelOverrides is a hand mirror of sim/internal/spellranks'
+// singleTierLevelOverrides; the two must name the same ids at the same
+// levels or the ladder and the rewrite disagree about a gated id.
+func TestLadderLearnLevelOverridesMirrorTheRewrites(t *testing.T) {
+	for class, ids := range idLearnLevelOverrides {
+		for id, level := range ids {
+			got, ok := spellranks.SingleTierLevelOverride(class, int32(id))
+			if !ok || got != level {
+				t.Errorf("%s %d: ladder mirror says %d, spellranks says (%d, %v)", class, id, level, got, ok)
+			}
+		}
+	}
 }

@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -99,7 +104,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 41.4 | 6 | other:attack/1=85.6, spell:6351=66.3, spell:10391=16.7, spell:408490=10.0, spell:6364=4.6 | - |
 | 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 45.7 | 6 | other:attack/1=83.8, spell:6352=64.4, spell:10391=22.3, spell:1238299=4.4, spell:6365=4.0 | - |
 | 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:9419 off_hand:10195 | 56.5 | 6 | spell:10435=68.4, other:attack/1=51.6, spell:15207=21.4, spell:1238300=4.8, spell:10437=3.9 | - |
-| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:19360 off_hand:22819 | 82.9 | 6 | spell:10436=69.5, other:attack/1=45.5, spell:15208=22.0, spell:1238300=10.2, spell:10438=3.6 | - |
+| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:2243 off_hand:22819 | 82.0 | 6 | spell:10436=69.6, other:attack/1=68.1, spell:15208=22.4, spell:1238300=9.6, spell:10438=3.7 | - |
 
 ## Learned but unused (informational)
 
@@ -173,4 +178,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- shaman-elemental level=60 kind=zero_casts spell="Lava Burst" id=1326047 authored=1238300
+None.

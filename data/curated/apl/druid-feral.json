@@ -11,7 +11,7 @@
   },
   "expected_idle": [
     {
-      "id": 31018,
+      "id": 22829,
       "reason": "Ferocious Bite only fires at 5 combo points while Rip still has more than 6s left (the branch above it refreshes Rip instead). Superseding this entry's earlier text (which believed the engine's Rip still carried a fixed 12s duration -- that was fixed upstream, sim/druid/rip.go's RipTicks(comboPoints) = 3+comboPoints, giving 8s-16s depending on combo points, and confirmed still current against this pinned engine, rotation-accuracy program, 2026-09-28): even with that real combo-point scaling, this bare, ungeared ladder build's only combo generators are Rake maintenance and Shred filler, at 40/60 energy with no haste, crit (Primal Fury) or talent discounts to speed the rebuild -- the ~10-11s it takes to bank 5 combo points again leaves Rip (reapplied at 16s when it last hit exactly 5 combo points) with only a few seconds of slack, and the run's own energy/RNG variance consistently lands it under the 6s refresh threshold before 5 combo points are next banked. The line is kept for a geared/talented character (Primal Fury, +hit/haste gear) where faster combo-point generation makes it reachable; a bare dummy simply cannot out-pace Rip's own upkeep, which is a real Classic feral mechanic, not a rotation or engine defect."
     },
     {

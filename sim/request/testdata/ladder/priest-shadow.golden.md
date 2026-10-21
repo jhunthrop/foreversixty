@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -98,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 000000000000000000-00000000000000000-54342001200000000 | main_hand:273040 ranged:5213 | 36.6 | 4 | spell:5019=82.4, spell:17311=28.3, spell:992=1.8, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
 | 38 | 000000000000000000-00000000000000000-54342001201300040 | main_hand:7714 ranged:13064 | 55.4 | 4 | spell:5019=70.8, spell:17312=25.6, spell:2767=2.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
 | 40 | 000000000000000000-00000000000000000-54342001201300051 | main_hand:7714 ranged:5216 | 74.1 | 5 | spell:5019=57.3, spell:17312=36.1, spell:2767=2.3, spell:19277=2.0, spell:15473=1.0 | {SpellID: 14751} |
-| 50 | 523000000000000000-00000000000000000-54342001201300051 | main_hand:9527 ranged:249232 | 107.5 | 5 | spell:5019=49.3, spell:17313=31.2, spell:10893=2.8, spell:19278=2.0, spell:15473=1.0 | {SpellID: 14751} |
+| 50 | 523000000000000000-00000000000000000-54342001201300051 | main_hand:812 ranged:249232 | 114.8 | 5 | spell:5019=48.3, spell:17313=31.8, spell:10893=3.0, spell:19278=2.0, spell:15473=1.0 | {SpellID: 14751} |
 | 60 | 524010031130000000-00000000000000000-54342001201300051 | main_hand:22799 ranged:22821 | 288.7 | 8 | spell:18807=50.5, spell:5019=31.5, spell:10894=6.0, spell:14751=1.5, spell:19280=1.5 | - |
 
 ## Learned but unused (informational)

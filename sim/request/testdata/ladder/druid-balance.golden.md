@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -98,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 5232221112000000-00000000000000000000-0000000000000000 | main_hand:273040 | 35.0 | 5 | spell:8949=24.5, other:attack/1=22.2, spell:24974=11.7, spell:1259799=1.5, spell:5180=1.4 | - |
 | 38 | 5232221115400010-00000000000000000000-0000000000000000 | main_hand:7713 | 45.5 | 5 | other:attack/1=25.8, spell:8950=24.5, spell:24974=11.8, spell:1259799=1.5, spell:6780=1.5 | - |
 | 40 | 5232221115400021-00000000000000000000-0000000000000000 | main_hand:7713 | 50.4 | 5 | other:attack/1=25.5, spell:8950=25.4, spell:24975=11.5, spell:1259799=1.5, spell:6780=1.4 | - |
-| 50 | 5232221115400051-05000000000000000000-2000000000000000 | main_hand:9527 | 70.4 | 5 | other:attack/1=39.9, spell:9875=20.6, spell:24976=11.8, spell:8905=1.6, spell:1259799=1.5 | - |
+| 50 | 5232221115400051-05000000000000000000-2000000000000000 | main_hand:812 | 80.6 | 5 | other:attack/1=32.2, spell:9875=21.9, spell:24976=12.2, spell:8905=1.6, spell:1259799=1.5 | - |
 | 60 | 5232221115400051-05000000000000000000-5033010000000000 | main_hand:22799 | 121.1 | 5 | other:attack/1=30.5, spell:9876=22.4, spell:24977=12.4, spell:9912=1.6, spell:1259799=1.5 | - |
 
 ## Learned but unused (informational)
@@ -116,7 +121,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 5570)
 - Maul (spell 6808)
 - Rip (spell 1079)
-- Shred (spell 5221)
 - Swipe (spell 779)
 
 ### Level 30

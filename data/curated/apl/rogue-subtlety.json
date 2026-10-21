@@ -8,8 +8,8 @@
       "reason": "Sinister Strike is gated `not spellIsKnown(Hemorrhage/16511)`, the fallback builder for a bare build below Hemorrhage's talent row (Subtlety tier 4). At every level this ladder's own zero_casts check flags it, the truncated talent build has already spent points on Hemorrhage, so the gate correctly keeps Sinister Strike idle and lets Hemorrhage claim the builder slot instead -- the fallback yielding as designed, not a defect."
     },
     {
-      "id": 31016,
-      "reason": "Eviscerate and Slice and Dice only spend combo points built while Rupture is running. At levels 20 and 30 energy is scarce enough that every set of four combo points goes straight into Rupture, which is cast again as soon as it ends, so no points are left for either; from level 38 they are cast."
+      "id": 11300,
+      "reason": "Eviscerate and Slice and Dice only spend combo points built while Rupture is running. On the ladder's bare rungs (levels 10 to 50) energy is scarce enough that every set of combo points goes straight into Rupture, which is cast again as soon as it ends, so no points are left for Eviscerate (Slice and Dice is cast from level 20); at level 60, with the full talent build, Eviscerate is cast."
     },
     {
       "id": 6774,

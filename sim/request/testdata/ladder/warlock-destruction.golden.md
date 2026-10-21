@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -93,12 +98,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 9.9 | 5 | other:mana_gain=34.0, spell:1454=34.0, spell:5019=33.6, spell:695=33.5, spell:172=13.8 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
-| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:890 ranged:5243 | 20.4 | 5 | spell:5019=38.8, other:mana_gain=35.4, spell:1455=35.4, spell:1088=28.9, spell:1094=13.2 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
-| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:273040 ranged:5213 | 46.3 | 6 | spell:5019=64.5, other:mana_gain=33.2, spell:1456=33.2, spell:1106=22.2, spell:2941=13.4 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:7714 ranged:13064 | 69.3 | 7 | spell:5019=55.5, other:mana_gain=32.5, spell:11687=32.5, spell:2941=19.8, spell:7641=15.9 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 603} |
-| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:7714 ranged:5216 | 97.9 | 7 | spell:5019=64.2, other:mana_gain=39.2, spell:11687=39.2, spell:11665=19.2, spell:412758=16.8 | {OtherID: 13}, {SpellID: 603} |
-| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:9527 ranged:249232 | 147.2 | 7 | spell:5019=51.0, other:mana_gain=29.0, spell:11688=29.0, spell:1293812=18.4, spell:18930=14.9 | {OtherID: 13}, {SpellID: 603} |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:263430 | 9.9 | 5 | other:mana_gain=34.0, spell:1454=34.0, spell:5019=33.6, spell:695=33.5, spell:172=13.8 | {OtherID: 13}, {SpellID: 412758} |
+| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:890 ranged:5243 | 20.4 | 5 | spell:5019=38.8, other:mana_gain=35.4, spell:1455=35.4, spell:1088=28.9, spell:1094=13.2 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758} |
+| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:273040 ranged:5213 | 46.3 | 6 | spell:5019=64.5, other:mana_gain=33.2, spell:1456=33.2, spell:1106=22.2, spell:2941=13.4 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 412758} |
+| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:7714 ranged:13064 | 69.3 | 7 | spell:5019=55.5, other:mana_gain=32.5, spell:11687=32.5, spell:2941=19.8, spell:7641=15.9 | {OtherID: 13}, {SpellID: 412758} |
+| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:7714 ranged:5216 | 97.9 | 7 | spell:5019=64.2, other:mana_gain=39.2, spell:11687=39.2, spell:11665=19.2, spell:412758=16.8 | {OtherID: 13} |
+| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:812 ranged:249232 | 156.1 | 7 | spell:5019=50.0, other:mana_gain=28.4, spell:11688=28.4, spell:1293812=19.2, spell:18930=14.6 | {OtherID: 13} |
 | 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 353.1 | 8 | spell:5019=67.4, other:mana_gain=33.1, spell:11689=33.1, spell:1293813=27.2, spell:18932=14.7 | {OtherID: 13} |
 
 ## Learned but unused (informational)
@@ -206,12 +211,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-destruction level=10 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=20 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=30 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=38 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=40 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=11661
-- warlock-destruction level=50 kind=unresolved_id action={SpellID: 603}
-- warlock-destruction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=11661
-- warlock-destruction level=60 kind=zero_casts spell="Shadow Bolt" id=11661 authored=11661
+None.

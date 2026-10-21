@@ -61,7 +61,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   walk) has spent zero points on that talent at this level - expected
   right up until the level this ladder's approximation of the guide's
   build actually reaches that talent's row, a violation only once the
-  build HAS spent points on it and the id still will not resolve.
+  build HAS spent points on it and the id still will not resolve. An
+  aura such a talent registers (talentOwnedAuraIDs: Arcane Blast's
+  stacking buff, Fingers of Frost's charge buff) is held to the same
+  rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
@@ -73,7 +76,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   expected_idle array names the LINE'S AUTHORED id with a reason.
   HighestLearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
-  is not a violation to report twice.
+  is not a violation to report twice. At level 60 the request skips the
+  rewrite (the rotation was authored for level 60), so the id a line
+  casts there is the authored one.
 - Learned but unused (informational, not a violation): every damage
   ability (spellconst effect 2, 6 with aura 3, or 121/31/58 - see
   ladder.go's isDamageEffect) the class has learned by this level that
@@ -98,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 1531005113100000000-00000000000000000-0000000000000000000 | main_hand:273040 ranged:5213 | 48.8 | 4 | spell:5019=49.1, spell:8406=21.8, spell:1239696=14.6, spell:5145=12.0, item:5514=1.0 | {SpellID: 12042}, {SpellID: 12043} |
 | 38 | 1531005113100001520-00000000000000000-0000000000000000000 | main_hand:7714 ranged:13064 | 71.5 | 5 | spell:5019=41.7, spell:8408=20.5, spell:1239696=15.2, spell:8416=12.0, other:mana_gain=2.0 | {SpellID: 12042} |
 | 40 | 1531005113100001531-00000000000000000-0000000000000000000 | main_hand:7714 ranged:5216 | 80.9 | 6 | spell:5019=46.4, spell:8408=19.9, spell:1239696=15.3, spell:8417=11.5, other:mana_gain=2.0 | - |
-| 50 | 1531005113100001531-03202300000000000-0000000000000000000 | main_hand:9527 ranged:249232 | 121.3 | 6 | spell:5019=35.8, spell:10180=19.2, spell:1239699=15.1, spell:10211=11.6, other:mana_gain=2.0 | - |
+| 50 | 1531005113100001531-03202300000000000-0000000000000000000 | main_hand:812 ranged:249232 | 129.0 | 6 | spell:5019=34.8, spell:10180=19.7, spell:1239699=15.4, spell:10211=11.6, other:mana_gain=2.0 | - |
 | 60 | 1531005113100001531-03202300000000000-0550000000000000000 | main_hand:22589 ranged:22821 | 242.7 | 6 | spell:5019=41.8, spell:10181=24.6, spell:1239700=16.1, spell:25345=13.1, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)
@@ -221,4 +226,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-arcane level=20 kind=unresolved_id action={SpellID: 400573}
+None.
