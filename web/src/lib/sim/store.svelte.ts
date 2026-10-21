@@ -34,6 +34,7 @@ import {
 } from './settings';
 import {
   fromAddonExport,
+  fromLinkedExport,
   fromLoggedFight,
   fromManualCode,
   fromPlannerBuild,
@@ -416,7 +417,7 @@ export function createSimStore(init: SimStoreInit) {
     init.request !== undefined
       ? applyRequestOnce(init.request)
       : init.code !== undefined && init.code !== ''
-        ? adopt(fromManualCode(init.code, ctx))
+        ? adopt(init.source === 'addon' ? fromLinkedExport(init.code, ctx) : fromManualCode(init.code, ctx))
         : (() => {
             const load =
               init.source !== undefined && init.ref !== undefined && init.ref !== ''

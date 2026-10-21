@@ -9,7 +9,10 @@
   import { untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { fetchMeOnce, type Me, type MeCharacter } from '../../lib/account/api';
+  import { adoptHeldCharacter } from '../../lib/account/adopt-held';
   import { selectedCharacter } from '../../lib/account/hero-character';
+  import { recordPastedExport } from '../../lib/character-selector/paste';
+  import { accountCharacterCode } from '../../lib/planner/account-character';
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { clearCurrent, onCurrentCharacterChange, readCurrent } from '../../lib/current-character';
@@ -26,7 +29,13 @@
   import { bandForLevel } from '../../lib/bis/hover';
   import { plannerCopy } from '../../lib/planner/copy';
   import { levelReached, ranksByTalent } from '../../lib/planner/derive';
-  import { encodeFS1, orderFromRanks, remapTreeRanksByTalentId } from '../../lib/planner/fs1';
+  import {
+    decodeFS1,
+    encodeFS1,
+    encodeFS1V2,
+    orderFromRanks,
+    remapTreeRanksByTalentId,
+  } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
   import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
@@ -104,9 +113,16 @@
   const plannerLoad = untrack(() => {
     const urlCode = record ? null : (fromQuery('code') ?? null);
     const search = typeof window === 'undefined' ? '' : window.location.search;
-    return decidePlannerLoad(urlCode, isBarePlannerUrl(search), record !== null, standalone, readCurrent());
+    return decidePlannerLoad(
+      urlCode,
+      isBarePlannerUrl(search),
+      record !== null,
+      standalone,
+      readCurrent(),
+      fromQuery('character') ?? null,
+    );
   });
-  const { codeParam, decoded } = plannerLoad;
+  const { decoded } = plannerLoad;
   // A dead restored pointer is forgotten, not shown as an error. Runs once, on mount.
   $effect(() => {
     if (plannerLoad.deadPointer) clearCurrent();
@@ -137,6 +153,9 @@
   /** Set when the build came in as an FS1 code: either why it could not be read, or that its
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
   let codeNote = $state<CodeNote | null>(null);
+
+  /** The account character whose build is on screen: the Sim link speaks for it. */
+  let loadedCharacter = $state<MeCharacter | null>(null);
 
   /** The header card's selected character, for the band panel's level cut (null: none). */
   let bandCharacter = $state<MeCharacter | null>(null);
@@ -239,7 +258,8 @@
   $effect(() => {
     void pointerVersion;
     if (session === null || linkNamesBuild) return;
-    const hero = session.data === null ? null : selectedCharacter(readCurrent(), session.data);
+    const hero =
+      loadedCharacter ?? (session.data === null ? null : selectedCharacter(readCurrent(), session.data));
     store.setCharacterLevel(hero?.level ?? null);
     // The race picker starts on the character's race, as the class already follows it.
     // A link or a saved build names its own race; a manual pick wins (store.followRace).
@@ -254,7 +274,7 @@
   // spec §3: replaced by the shared character header) -- the write itself still matters
   // (the site-wide current-character bridge every other tool page reads), so this keeps
   // calling it and simply has nothing of its own left to do with the fresh pointer back.
-  function writePointer(source: 'code' | 'addon' | 'build', ref: string, cls: string, title?: string): void {
+  function writePointer(source: 'addon' | 'build', ref: string, cls: string, title?: string): void {
     writePlannerPointer(store, standalone, source, ref, cls, title);
   }
 
@@ -262,10 +282,101 @@
   // class's talents have loaded, instead of telling the player to switch by hand. The
   // pending code is cleared before anything else so a failed deferred import cannot retry
   // on every later talent load.
-  let pendingImport = $state<{ classSlug: string; code: string } | null>(null);
-  function switchClassForImport(classSlug: string, code: string): void {
-    pendingImport = { classSlug, code };
+  // `origin` says who asked: a 'paste' is the player choosing an export (it earns the pointer), a
+  // 'follow' is the header selector moving the page (the pointer is already right), a 'character'
+  // is an account character opening with its own build.
+  let pendingImport = $state<{
+    classSlug: string;
+    code: string;
+    origin: 'paste' | 'follow' | 'character';
+    character?: MeCharacter;
+  } | null>(null);
+  function switchClassForImport(
+    classSlug: string,
+    code: string,
+    origin: 'paste' | 'follow' | 'character' = 'paste',
+    character?: MeCharacter,
+  ): void {
+    pendingImport = { classSlug, code, origin, character };
+    if (origin !== 'character') characterLoading = false;
     store.selectClass(classSlug);
+  }
+
+  /** Opens the account character `key` with its own talents, gear, race and level. */
+  // Each load (and each other move of the pointer) takes a number; a load that finds a newer one
+  // when its reads come back stops, so the character chosen last is the one that opens.
+  let characterRequest = 0;
+  /** True from the moment a character is asked for until its build is on screen. */
+  let characterLoading = $state(false);
+  async function loadAccountCharacter(key: string): Promise<void> {
+    const mine = ++characterRequest;
+    characterLoading = true;
+    const me = await fetchMeOnce().catch(() => null);
+    const character = me?.characters.find((row) => row.key === key);
+    if (character === undefined || mine !== characterRequest) {
+      if (mine === characterRequest) characterLoading = false;
+      return;
+    }
+    const classSlug = character.class?.toLowerCase() ?? '';
+    const code = await accountCharacterCode(character, activeBuild.build, API_BASE_URL);
+    if (mine !== characterRequest) return;
+    if (code !== null && decodeFS1(code).ok) {
+      switchClassForImport(classSlug, code, 'character', character);
+      return;
+    }
+    // The account holds no build for it: its class and race are still its own.
+    if (classSlug !== '') store.selectClass(classSlug);
+    loadedCharacter = character;
+    store.followRace(character.race ?? null);
+    characterLoading = false;
+  }
+  if (plannerLoad.characterKey !== null) {
+    const key = plannerLoad.characterKey;
+    $effect(() => {
+      untrack(() => void loadAccountCharacter(key));
+    });
+  }
+
+  async function applyCharacterImport(
+    pending: { classSlug: string; code: string; character?: MeCharacter },
+    index: TalentIndex,
+  ): Promise<void> {
+    const decoded = decodeFS1(pending.code);
+    if (!decoded.ok) return;
+    let treeRanks = decoded.build.treeRanks;
+    let remapDropped = 0;
+    // The export may be from another client build than the trees on screen; the same by-id remap
+    // a `?code=` gets keeps each point on its own talent.
+    if (decoded.build.dataBuild !== store.treeVersion) {
+      try {
+        const older = await loadTalents(decoded.build.dataBuild, pending.classSlug);
+        if (store.classSlug !== pending.classSlug) return;
+        const remap = remapTreeRanksByTalentId(indexTalents(older), index, treeRanks);
+        treeRanks = remap.treeRanks;
+        remapDropped = remap.dropped.length;
+      } catch {
+        // Positional, as before the remap existed.
+      }
+    }
+    if (store.classSlug !== pending.classSlug) {
+      characterLoading = false;
+      return;
+    }
+    const rebuilt = orderFromRanks(index, treeRanks);
+    store.loadImported({
+      classSlug: pending.classSlug,
+      raceSlug: decoded.build.raceSlug,
+      order: rebuilt.order,
+      gear: decoded.build.gear,
+    });
+    loadedCharacter = pending.character ?? null;
+    codeNote = {
+      kind: 'reconstructed',
+      dropped: rebuilt.dropped.length + remapDropped,
+      gearOnly: false,
+      olderBuild: false,
+    };
+    characterLoading = false;
   }
   // The header selector moves the open planner along, the way a fresh load of that character
   // would (followPointerInPlanner): a pasted export imports, any other character opens its
@@ -277,7 +388,12 @@
       pointerVersion += 1;
       if (fromPageLoad) return;
       const follow = followPointerInPlanner(readCurrent(), store.classSlug);
-      if (follow.kind === 'import') switchClassForImport(follow.classSlug, follow.code);
+      if (follow.kind !== 'none') {
+        loadedCharacter = null;
+        characterRequest += 1;
+      }
+      if (follow.kind === 'character') void loadAccountCharacter(follow.key);
+      else if (follow.kind === 'import') switchClassForImport(follow.classSlug, follow.code, 'follow');
       else if (follow.kind === 'class') store.selectClass(follow.classSlug);
     });
   });
@@ -286,6 +402,10 @@
     const index = store.talentIndex;
     if (pending === null || index === null || index.file.class_slug !== pending.classSlug) return;
     pendingImport = null;
+    if (pending.origin === 'character') {
+      void applyCharacterImport(pending, index);
+      return;
+    }
     const result = importFromAddon(pending.code, index, activeBuild.build);
     if (!result.ok) return;
     store.loadImported({
@@ -294,7 +414,7 @@
       order: result.order,
       gear: result.gear,
     });
-    writePointer('addon', pending.code, result.classSlug, result.characterName);
+    if (pending.origin === 'paste') void recordPastedExport(pending.code);
   });
 
   // The live DPS estimate (Task 20). Created once -- createLiveDps holds no pool until the
@@ -367,6 +487,32 @@
     if (liveCode !== '') oncode?.(liveCode);
   });
 
+  // The build of an account character, as the export the simulator reads: the planner's talents
+  // and gear under the character's own name, race and level, so the simulator opens on that
+  // character rather than on a nameless code.
+  const characterBuildCode = $derived.by(() => {
+    const character = loadedCharacter;
+    if (character === null || store.talentIndex === null) return '';
+    if (character.class?.toLowerCase() !== store.classSlug) return '';
+    return encodeFS1V2({
+      dataBuild: store.treeVersion,
+      classSlug: store.classSlug,
+      raceSlug: store.raceSlug,
+      treeRanks: treeRanksFor(store.talentIndex, store.order),
+      level: store.level,
+      gear: store.gear,
+      character: { name: character.name, realm: character.realm ?? '' },
+    });
+  });
+  // Moving off the character's class is leaving its build behind.
+  $effect(() => {
+    if (loadedCharacter !== null && loadedCharacter.class?.toLowerCase() !== store.classSlug) {
+      untrack(() => (loadedCharacter = null));
+    }
+  });
+  /** Nothing to sim: no points spent and no character behind the build. */
+  const simLinkShown = $derived(!standalone || store.spent > 0 || loadedCharacter !== null);
+
   // "Sim this build": a saved build's own link when it has one, otherwise `liveCode` above.
   // The link is always present so a player can reach the full results whether or not the
   // live estimate has run, or could run at all. Both branches go through
@@ -378,9 +524,11 @@
         defaultSimState(),
         store.sourceId !== null
           ? { source: 'build', ref: store.sourceId }
-          : liveCode !== ''
-            ? { code: liveCode }
-            : {},
+          : characterBuildCode !== ''
+            ? { code: characterBuildCode }
+            : liveCode !== ''
+              ? { code: liveCode }
+              : {},
       ),
     )}`,
   );
@@ -553,8 +701,18 @@
 
       // Task 10: a `?code=`/restored code just applied above, or this mount's `record`.
       if (record !== null) writePointer('build', record.id, slug, record.title);
-      else if (codeForThisClass !== null && codeParam !== null) {
-        writePointer('code', codeParam, codeForThisClass.build.classSlug);
+      else if (
+        codeForThisClass !== null &&
+        !plannerLoad.restored &&
+        codeForThisClass.build.character !== undefined
+      ) {
+        // A link is looked at, not chosen: it moves the pointer only to an account character it
+        // names, and never to a nameless code or somebody else's export.
+        void adoptHeldCharacter(codeForThisClass.build.character.name, codeForThisClass.build.classSlug).then(
+          (held) => {
+            if (held !== null && store.classSlug === codeForThisClass.build.classSlug) loadedCharacter = held;
+          },
+        );
       }
 
       // Planner rebuild §11 (owner ruling): the gear panel left the planner entirely --
@@ -604,10 +762,12 @@
   let opened: { classSlug: string; raceSlug: string } | null = null;
   $effect(() => {
     if (!standalone || record || store.races.length === 0) return;
+    // An account character owns the address: a refresh reopens it from the account.
     if (opened === null) {
       opened = { classSlug: store.classSlug, raceSlug: store.raceSlug };
       return;
     }
+    if (loadedCharacter !== null || characterLoading) return;
     const next = plannerSearchFor(
       window.location.search,
       store.classSlug,
@@ -982,13 +1142,15 @@
                  tablet rail's own second row, spanning both columns (fix round 6) --
                  harmless at xl, where this wrapper is `contents` again and `col-span` has
                  no grid to act inside. -->
-            <a
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2 lg:col-span-2"
-              href={simHref}
-              data-testid="planner-sim-link"
-            >
-              {simCopy.simThisBuild}
-            </a>
+            {#if simLinkShown}
+              <a
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2 lg:col-span-2"
+                href={simHref}
+                data-testid="planner-sim-link"
+              >
+                {simCopy.simThisBuild}
+              </a>
+            {/if}
 
             <div
               class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-3"
@@ -1007,7 +1169,8 @@
                 activeBuild={activeBuild.build}
                 onimport={(build, pastedCode) => {
                   store.loadImported(build);
-                  writePointer('addon', pastedCode, build.classSlug, build.characterName);
+                  loadedCharacter = null;
+                  void recordPastedExport(pastedCode);
                 }}
                 onwrongclass={standalone ? switchClassForImport : undefined}
                 phone={collapsesOnPhone}

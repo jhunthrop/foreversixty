@@ -63,7 +63,7 @@ describe('spineDoorsFor', () => {
     const doors = spineDoorsFor('warrior', ARMORY, 'us', 'normal');
     expect(doors.map((d) => d.id)).toEqual(['plan', 'sim', 'logs', 'rankings']);
     expect(doors[0]).toMatchObject({ label: 'Plan', testid: 'current-character-bar-plan' });
-    expect(doors[0].href).toBe('/planner?class=warrior');
+    expect(doors[0].href).toBe('/planner?character=us%2Fnormal%2Fsimfury');
     expect(doors[1].href).toContain('/sim?source=armory&ref=us%2Fnormal%2Fsimfury');
     expect(doors[2]).toMatchObject({ label: 'Logs', href: '/logs' });
     expect(doors[3].label).toBe('Rankings for Warrior');

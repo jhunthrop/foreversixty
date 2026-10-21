@@ -6,6 +6,7 @@
 import { ME_QUERY_VERSION, ME_TTL_MS, fetchMeOnce, meKey, type Me } from '../account/api';
 import { createQueryState } from '../data/query.svelte';
 import { sessionHinted } from '../data/query';
+import { settlePointerForSession } from '../account/session-pointer';
 import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../current-character';
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
@@ -74,6 +75,11 @@ export function createSelectorState(): SelectorState {
   });
 
   const loadStatus = $derived(loadStatusOf(session.status));
+
+  // The first signed-in answer of a browser session settles an absent, nameless or foreign pointer.
+  $effect(() => {
+    if (loadStatus === 'ready' && session.data) settlePointerForSession(session.data);
+  });
   // One rule on every page (P.1): the header shows the account's current character, a guild page
   // included. The guild page marks whichever of the account's characters is on its roster "(you)".
   const model = $derived(

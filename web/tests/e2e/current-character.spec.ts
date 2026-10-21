@@ -12,6 +12,9 @@ import { shareBuild } from './support/planner';
 // across tests/e2e for `FS1:`) -- a known-good FS1 v2 code for the fixture data build,
 // reused rather than inventing a new one that may not decode against it.
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+// The same build from an addon that wrote the character's name: the only kind of export that can
+// become the current character (a code that names nobody never does).
+const NAMED_FURY = `${FURY}|who=Simfury:Realm`;
 
 const envelope = (data: unknown) => ({
   status: 200,
@@ -20,8 +23,10 @@ const envelope = (data: unknown) => ({
 });
 
 test.describe('current character', () => {
-  test('loading a character on /sim via ?code= then opening /planner bare restores it', async ({ page }) => {
-    await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
+  test('a named export pasted on /sim, then opening /planner bare, restores it', async ({ page }) => {
+    await page.goto('/sim');
+    await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
+    await page.getByTestId('sim-cold-paste-run').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
     // Planner rebuild spec §3: the spine chip (and its Forget control) that used to prove
@@ -38,8 +43,19 @@ test.describe('current character', () => {
     await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   });
 
-  test('Forget on the restored chip clears the pointer for the next bare load', async ({ page }) => {
+  test('a code that names nobody is looked at and never becomes the current character', async ({ page }) => {
     await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(page.getByTestId('sim-character-name')).toHaveCount(0);
+    expect(await page.evaluate(() => window.localStorage.getItem('fs.currentCharacter'))).toBeNull();
+    await page.goto('/sim');
+    await expect(page.getByTestId('sim-character')).toHaveCount(0);
+  });
+
+  test('Forget on the restored chip clears the pointer for the next bare load', async ({ page }) => {
+    await page.goto('/sim');
+    await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
+    await page.getByTestId('sim-cold-paste-run').click();
     // The island boots after the shell's first paint (IslandScript.astro), so the pointer
     // is written a beat after `load`: wait for the character to show before leaving.
     await expect(page.getByTestId('sim-character')).toBeVisible();

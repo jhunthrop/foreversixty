@@ -88,6 +88,12 @@ export interface SimCharacter {
  */
 export const MAX_LEVEL = 60;
 
+/** The label a request carries for a build that names no character; a saved sim maps it back to no name. */
+export const NAMELESS_REQUEST_NAME = 'Build';
+
+/** `<region>/<ruleset>/<slug>`: the key a stored character's source carries. */
+const CHARACTER_KEY = /^[a-z0-9-]+\/[a-z0-9-]+\/[^/\s]+$/;
+
 /**
  * `race_slug` for a character whose source did not record a race. A combat log records
  * none at all, so `fromLoggedFight` sets this rather than substituting a race the player
@@ -178,7 +184,7 @@ export function fromBuildDraft(
   if (talents.class_slug !== classRow.slug) return null;
   const index = indexTalents(talents);
   return {
-    name: extras.name ?? classRow.name,
+    name: extras.name ?? '',
     spec: specOf(index, draft.point_order),
     class_slug: classRow.slug,
     race_slug: raceRow.slug,
@@ -218,7 +224,7 @@ export function characterFromPlanner(store: PlannerStore): SimCharacter | null {
   if (store.talents === null || store.classes.length === 0) return null;
   if (store.classRow === null || store.raceRow === null) return null;
   return fromBuildDraft(store.toDraft(), store.talents, store.classes, store.races, {
-    name: store.classRow.name,
+    name: '',
     source: { kind: 'manual', ref: '', captured_at: new Date().toISOString() },
   });
 }
@@ -375,7 +381,8 @@ export function toCharacterSpec(
   cooldowns: readonly CooldownSpec[] = [],
 ): CharacterSpec {
   const spec: CharacterSpec = {
-    name: character.name,
+    // The engine wants a label for the report; a build with no character says so.
+    name: character.name === '' ? NAMELESS_REQUEST_NAME : character.name,
     race: character.race_slug,
     class: character.class_slug,
     // Sent as the character's own level (design 6) -- not always MAX_LEVEL any more.
@@ -423,6 +430,12 @@ export function toCharacterSpec(
  * (character.ts:296-309 above), so neither ends up in the encoded code either way.
  */
 export function plannerHrefFor(character: SimCharacter, index: TalentIndex | null): string {
+  // A character the site holds opens in the planner by its key, so the planner loads the
+  // account's own build and the click leaves the pointer where it is.
+  const { kind, ref } = character.source;
+  if ((kind === 'armory' || kind === 'blizzard' || kind === 'addon') && CHARACTER_KEY.test(ref)) {
+    return `/planner?character=${encodeURIComponent(ref)}`;
+  }
   if (index === null) {
     const params = new URLSearchParams({ class: character.class_slug, race: character.race_slug });
     return `/planner?${params.toString()}`;
@@ -479,7 +492,8 @@ export function characterFromFs1(
   return {
     ok: true,
     character: {
-      name: name ?? decoded.build.character?.name ?? classRow.name,
+      // No name is no name: a code that names nobody never invents one from its class.
+      name: name ?? decoded.build.character?.name ?? '',
       spec: specOf(index, order),
       class_slug: classRow.slug,
       race_slug: raceRow === null ? PENDING_RACE : raceRow.slug,

@@ -57,3 +57,13 @@ describe('plannerSearchFor', () => {
     expect(at('?utm=x&class=warrior', 'mage', 'gnome')).toBe('?utm=x&class=mage&race=gnome');
   });
 });
+
+describe('plannerSearchFor with a character', () => {
+  it('drops ?character= once the visitor moves off the character’s build', () => {
+    expect(at('?character=us%2Fpvp%2Fbow-jackzon', 'mage', 'gnome')).toBe('?class=mage&race=gnome');
+  });
+
+  it('does not treat a character address as bare', () => {
+    expect(at('?character=us%2Fpvp%2Fbow-jackzon', 'warrior', 'human')).toBe('?class=warrior&race=human');
+  });
+});

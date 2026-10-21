@@ -60,8 +60,8 @@ test('signing in lands on the hub with the main character in the hero band', asy
   // scoped to the hero band -- the same disambiguation handoffs-account-character.spec.ts
   // uses for a row -- or it hits a strict-mode violation on the two same-testid matches.
   const heroSim = heroBand.getByTestId('character-open-sim');
-  await expect(heroSim).toHaveAttribute('href', /^\/sim\?code=/);
+  await expect(heroSim).toHaveAttribute('href', /^\/sim\?source=addon&code=/);
 
   await heroSim.click();
-  await expect(page).toHaveURL(/\/sim\?code=/);
+  await expect(page).toHaveURL(/\/sim\?source=addon&code=/);
 });

@@ -99,6 +99,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer,
       initialClassSlug: null,
+      characterKey: null,
     });
   });
 
@@ -112,6 +113,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer,
       initialClassSlug: 'warrior',
+      characterKey: null,
     });
   });
 
@@ -125,6 +127,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer,
       initialClassSlug: 'warrior',
+      characterKey: null,
     });
   });
 
@@ -138,10 +141,11 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer,
       initialClassSlug: 'warrior',
+      characterKey: null,
     });
   });
 
-  it('does not restore a fight- or armory-sourced pointer', () => {
+  it('does not restore a fight- or armory-sourced pointer as a code; an armory pointer names its character', () => {
     const fight = stored('fight', 'abc:1');
     expect(decidePlannerLoad(null, true, false, true, fight)).toEqual<PlannerLoadDecision>({
       codeParam: null,
@@ -150,6 +154,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer: fight,
       initialClassSlug: 'warrior',
+      characterKey: null,
     });
     const armory = stored('armory', 'us/normal/simfury');
     expect(decidePlannerLoad(null, true, false, true, armory)).toEqual<PlannerLoadDecision>({
@@ -159,6 +164,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer: armory,
       initialClassSlug: 'warrior',
+      characterKey: 'us/normal/simfury',
     });
   });
 
@@ -172,6 +178,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer,
       initialClassSlug: 'warrior',
+      characterKey: null,
     });
   });
 
@@ -185,6 +192,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer,
       initialClassSlug: 'warrior',
+      characterKey: null,
     });
   });
 
@@ -197,6 +205,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer: null,
       initialClassSlug: null,
+      characterKey: null,
     });
   });
 
@@ -209,6 +218,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: false,
       pointer: null,
       initialClassSlug: null,
+      characterKey: null,
     });
   });
 
@@ -221,6 +231,7 @@ describe('decidePlannerLoad', () => {
       deadPointer: true,
       pointer: null,
       initialClassSlug: null,
+      characterKey: null,
     });
   });
 
@@ -283,17 +294,6 @@ describe('labelForPlannerLoad', () => {
 });
 
 describe('recordPlannerCharacter', () => {
-  it('writes a code-sourced pointer with the given label and class slug', () => {
-    const storage = fakeStorage();
-    recordPlannerCharacter('code', GOOD_CODE, 'Warrior · Fury Warrior', 'warrior', storage);
-    expect(readCurrent(storage)).toMatchObject({
-      source: 'code',
-      ref: GOOD_CODE,
-      label: 'Warrior · Fury Warrior',
-      classSlug: 'warrior',
-    });
-  });
-
   it('writes a build-sourced pointer', () => {
     const storage = fakeStorage();
     recordPlannerCharacter('build', 'b1', 'My Build', 'mage', storage);
@@ -340,8 +340,8 @@ describe('writePlannerPointer', () => {
 
   it('writes and returns the fresh pointer once talent data has loaded, standalone', () => {
     const storage = fakeStorage();
-    const result = writePlannerPointer(loadedStore, true, 'code', GOOD_CODE, 'warrior', undefined, storage);
-    expect(result).toMatchObject({ source: 'code', ref: GOOD_CODE, label: 'Fury Warrior' });
+    const result = writePlannerPointer(loadedStore, true, 'addon', GOOD_CODE, 'warrior', undefined, storage);
+    expect(result).toMatchObject({ source: 'addon', ref: GOOD_CODE, label: 'Fury Warrior' });
     expect(readCurrent(storage)).toEqual(result);
   });
 
@@ -349,14 +349,14 @@ describe('writePlannerPointer', () => {
     const storage = fakeStorage();
     recordPlannerCharacter('build', 'b1', 'Old', 'mage', storage);
     const before = readCurrent(storage);
-    const result = writePlannerPointer(loadedStore, false, 'code', GOOD_CODE, 'warrior', undefined, storage);
+    const result = writePlannerPointer(loadedStore, false, 'addon', GOOD_CODE, 'warrior', undefined, storage);
     expect(result).toEqual(before);
     expect(readCurrent(storage)).toEqual(before);
   });
 
   it('is a no-op before talent data has loaded', () => {
     const storage = fakeStorage();
-    const result = writePlannerPointer(emptyStore, true, 'code', GOOD_CODE, 'warrior', undefined, storage);
+    const result = writePlannerPointer(emptyStore, true, 'addon', GOOD_CODE, 'warrior', undefined, storage);
     expect(result).toBeNull();
     expect(readCurrent(storage)).toBeNull();
   });
@@ -409,6 +409,30 @@ describe('unsavedPlannerHref', () => {
   });
 });
 
+describe('decidePlannerLoad with an account character', () => {
+  const armory = stored('armory', 'us/pvp/bow-jackzon');
+
+  it('opens a bare planner on the armory pointer’s character', () => {
+    expect(decidePlannerLoad(null, true, false, true, armory).characterKey).toBe('us/pvp/bow-jackzon');
+  });
+
+  it('opens ?character= on that character, over any pointer', () => {
+    expect(decidePlannerLoad(null, false, false, true, armory, 'us/pvp/pipsqueak').characterKey).toBe(
+      'us/pvp/pipsqueak',
+    );
+  });
+
+  it('never loads a character into a saved build, an inline planner or a ?class= tile', () => {
+    expect(decidePlannerLoad(null, true, true, true, armory).characterKey).toBeNull();
+    expect(decidePlannerLoad(null, true, false, false, armory).characterKey).toBeNull();
+    expect(decidePlannerLoad(null, false, false, true, armory).characterKey).toBeNull();
+  });
+
+  it('treats ?character= as a named address, not a bare one', () => {
+    expect(isBarePlannerUrl('?character=us%2Fpvp%2Fbow-jackzon')).toBe(false);
+  });
+});
+
 describe('followPointerInPlanner', () => {
   it('imports a pasted export, naming its class so the planner can switch first', () => {
     expect(followPointerInPlanner(stored('addon', GOOD_CODE), 'mage')).toEqual({
@@ -424,9 +448,15 @@ describe('followPointerInPlanner', () => {
     expect(followPointerInPlanner(null, 'mage')).toEqual({ kind: 'none' });
   });
 
-  it('moves to the class of an account character, and keeps the build when the class is the same', () => {
+  it('loads an account character with its own build, whatever class the planner is on', () => {
     const hunter = { ...stored('armory', 'us/normal/bow'), classSlug: 'hunter' };
-    expect(followPointerInPlanner(hunter, 'warrior')).toEqual({ kind: 'class', classSlug: 'hunter' });
-    expect(followPointerInPlanner(hunter, 'hunter')).toEqual({ kind: 'none' });
+    expect(followPointerInPlanner(hunter, 'warrior')).toEqual({ kind: 'character', key: 'us/normal/bow' });
+    expect(followPointerInPlanner(hunter, 'hunter')).toEqual({ kind: 'character', key: 'us/normal/bow' });
+  });
+
+  it('moves a fight pointer to its class and keeps the build when the class is the same', () => {
+    const fight = { ...stored('fight', 'abc:1'), classSlug: 'hunter' };
+    expect(followPointerInPlanner(fight, 'warrior')).toEqual({ kind: 'class', classSlug: 'hunter' });
+    expect(followPointerInPlanner(fight, 'hunter')).toEqual({ kind: 'none' });
   });
 });

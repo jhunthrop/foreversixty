@@ -15,6 +15,13 @@ export function simCodeHref(code: string): string {
   return `/sim?code=${encodeURIComponent(code)}`;
 }
 
+/** An addon export, opened in the simulator as what it is: an addon export (its badge says
+ *  so), not a code somebody typed. Carries the export in `code` because it is far longer than a
+ *  `ref` may be. */
+export function simExportHref(code: string): string {
+  return `/sim?source=addon&code=${encodeURIComponent(code)}`;
+}
+
 /**
  * `<report>:<fight>` when `guid` is omitted (the existing whole-fight "Sim this fight"
  * link's own ref shape), extended to `<report>:<fight>:<guid>` when it is given — the

@@ -36,12 +36,12 @@ test('pasting a valid addon export renders the strip, and Change source returns 
   await expect(page.getByTestId('sim-cold-paste')).toBeVisible();
   await expect(page.getByTestId('sim-sources')).toBeVisible();
 
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
+  await page.getByTestId('sim-cold-paste-input').fill(`${FURY}|who=Simfury:Realm`);
   await page.getByTestId('sim-cold-paste-run').click();
 
   const strip = page.getByTestId('sim-character');
   await expect(strip).toBeVisible();
-  await expect(page.getByTestId('sim-character-name')).toBeVisible();
+  await expect(page.getByTestId('sim-character-name')).toHaveText('Simfury');
   await expect(page.getByTestId('sim-source-pill')).toHaveText('Addon export, just now');
   await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
   await expect(page.getByTestId('sim-slot-head')).toContainText('Lionheart Helm');
@@ -85,7 +85,8 @@ test('opening /sim?code=<fs1> adopts the character on load, as a manual source',
 
   const strip = page.getByTestId('sim-character');
   await expect(strip).toBeVisible();
-  await expect(page.getByTestId('sim-character-name')).toBeVisible();
+  // A code names nobody, so the strip has no name to show and never makes the class one.
+  await expect(page.getByTestId('sim-character-name')).toHaveCount(0);
   // Not "Addon export, …": a code and an addon export share a decoder but not a source, and
   // the pill must not claim the addon read gear it never saw.
   await expect(page.getByTestId('sim-source-pill')).toHaveText('Entered by hand');

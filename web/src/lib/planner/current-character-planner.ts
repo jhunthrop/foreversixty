@@ -10,9 +10,12 @@
 // character... The planner restores only when its URL is bare and its own build is empty."
 // This lane's ruling (task-10-brief.md, superseded only on which sources are chip-visible,
 // not on which restore): a 'build' pointer already has its own permalink (`/b/<id>`, not
-// `/planner`'s own bare-load path), and 'fight'/'armory' carry no talents or gear the
-// planner could show at all, so only a 'code' or 'addon' pointer -- both an FS1 string --
-// can ever restore here, fed through the exact path `?code=` already takes.
+// `/planner`'s own bare-load path), and a 'fight' carries no talents or gear the planner
+// could show, so only a 'code' or 'addon' pointer -- both an FS1 string -- restores as a code,
+// fed through the exact path `?code=` already takes. An 'armory' pointer names an account
+// character: the planner opens it by key (`characterKey`) with the account's own talents, gear,
+// race and level (account-character.ts). Loading never writes the pointer: it changes only when
+// the player chooses (the selector, Set as main, a paste, Forget).
 import { buildCodeFor } from '../addon/build-code';
 import { decodeFS1, type FS1Result } from './fs1';
 import type { TalentIndex } from './rules';
@@ -46,6 +49,7 @@ export function isBarePlannerUrl(search: string): boolean {
   const params = new URLSearchParams(search);
   return (
     params.get('code') === null &&
+    params.get('character') === null &&
     params.get('class') === null &&
     params.get('race') === null &&
     params.get('talents') === null
@@ -83,6 +87,9 @@ export interface PlannerLoadDecision {
    *  class asynchronously (Planner.svelte's own effect) rather than blocking the first paint
    *  on a network read. */
   initialClassSlug: string | null;
+  /** The account character the planner should open with its own talents, gear, race and
+   *  level: `?character=<key>`, or a bare URL's `armory` pointer. Null otherwise. */
+  characterKey: string | null;
 }
 
 /**
@@ -105,6 +112,7 @@ export function decidePlannerLoad(
   hasRecord: boolean,
   standalone: boolean,
   stored: CurrentCharacter | null,
+  urlCharacter: string | null = null,
 ): PlannerLoadDecision {
   const initialPointer = standalone ? stored : null;
   const initialClassSlug = standalone && urlCode === null ? (stored?.classSlug ?? null) : null;
@@ -116,8 +124,13 @@ export function decidePlannerLoad(
       deadPointer: false,
       pointer: initialPointer,
       initialClassSlug: null,
+      characterKey: null,
     };
   }
+  const characterKey =
+    standalone && !hasRecord
+      ? (urlCharacter ?? (isBare && stored?.source === 'armory' ? stored.ref : null))
+      : null;
   const eligible = standalone && !hasRecord && isBare && stored !== null;
   const restorable = eligible && (stored.source === 'code' || stored.source === 'addon');
   const notRestoring = {
@@ -127,6 +140,7 @@ export function decidePlannerLoad(
     deadPointer: false,
     pointer: initialPointer,
     initialClassSlug,
+    characterKey,
   };
   if (!restorable || stored === null) return notRestoring;
   const decoded = decodeFS1(stored.ref);
@@ -138,6 +152,7 @@ export function decidePlannerLoad(
         deadPointer: false,
         pointer: initialPointer,
         initialClassSlug,
+        characterKey,
       }
     : {
         codeParam: null,
@@ -146,12 +161,14 @@ export function decidePlannerLoad(
         deadPointer: true,
         pointer: null,
         initialClassSlug: null,
+        characterKey: null,
       };
 }
 
 /** What the open planner does when the header selector names a different character. */
 export type PlannerFollow =
   | { kind: 'import'; classSlug: string; code: string }
+  | { kind: 'character'; key: string }
   | { kind: 'class'; classSlug: string }
   | { kind: 'none' };
 
@@ -174,6 +191,8 @@ export function followPointerInPlanner(
       ? { kind: 'import', classSlug: decoded.build.classSlug, code: pointer.ref }
       : { kind: 'none' };
   }
+  // An account character loads with its own talents, gear, race and level.
+  if (pointer.source === 'armory') return { kind: 'character', key: pointer.ref };
   const classSlug = pointer.classSlug;
   return classSlug === '' || classSlug === openClassSlug ? { kind: 'none' } : { kind: 'class', classSlug };
 }
@@ -211,7 +230,7 @@ export function labelForPlannerLoad(
  * three call sites.
  */
 export function recordPlannerCharacter(
-  source: 'code' | 'addon' | 'build',
+  source: 'addon' | 'build',
   ref: string,
   label: string,
   classSlug: string,
@@ -233,7 +252,7 @@ export function recordPlannerCharacter(
 export function writePlannerPointer(
   store: PlannerStore,
   standalone: boolean,
-  source: 'code' | 'addon' | 'build',
+  source: 'addon' | 'build',
   ref: string,
   classSlug: string,
   title?: string,

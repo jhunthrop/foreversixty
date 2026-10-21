@@ -7,7 +7,8 @@
 import { expect, test } from '@playwright/test';
 import { ACTIVE_BUILD } from './support/active-build';
 
-const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:`;
+// An export that names its character: the only kind that becomes the current one.
+const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:|who=Simfury:Realm`;
 
 async function pasteAndGoTo(page: import('@playwright/test').Page, path: string) {
   await page.goto('/setup');

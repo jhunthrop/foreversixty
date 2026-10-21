@@ -92,7 +92,7 @@ describe('sendActionFor', () => {
   it('is the send button when a character is current', () => {
     expect(sendActionFor(ME, { kind: 'idle' })).toMatchObject({
       kind: 'picker',
-      label: 'Send this build to the addon',
+      label: 'Send this build to Obnoxious Yell',
     });
   });
 
@@ -109,7 +109,11 @@ describe('sendActionFor', () => {
 
   it('is disabled with a muted hint at zero points, and never a promise of sending', () => {
     const action = sendActionFor(ME, { kind: 'idle' }, 0);
-    expect(action).toMatchObject({ kind: 'picker', label: 'Send this build to the addon', disabled: true });
+    expect(action).toMatchObject({
+      kind: 'picker',
+      label: 'Send this build to Obnoxious Yell',
+      disabled: true,
+    });
     expect('note' in action && action.note).toEqual({
       tone: 'muted',
       text: "Spend some points first, or load the level range's build.",
@@ -144,7 +148,7 @@ describe('sendActionFor when the build is shorter than the character’s spend',
 
   it('says so under the button and still sends', () => {
     const action = sendActionFor(JACKZON, { kind: 'idle' }, 11, 15);
-    expect(action).toMatchObject({ kind: 'picker', label: 'Send this build to the addon' });
+    expect(action).toMatchObject({ kind: 'picker', label: 'Send this build to Bow Jackzon' });
     expect('disabled' in action && action.disabled).toBeFalsy();
     expect('note' in action && action.note).toEqual({
       tone: 'muted',

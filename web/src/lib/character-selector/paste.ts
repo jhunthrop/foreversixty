@@ -3,25 +3,19 @@
 // paste box use, then the pointer it earns. An export that names a character already on the
 // account becomes that account character ('armory', by key); anything else stays a pasted
 // export ('code'). Loaded on demand: the decoder is not on the page-load path of every page.
-import type { MeCharacter } from '../account/api';
-import { characterSlug } from '../characters';
+import { fetchMeOnce, type MeCharacter } from '../account/api';
+import { sameCharacter } from '../account/hero-character';
 import { pointerForCharacter } from '../account/main-character';
-import type { CurrentCharacter } from '../current-character';
+import { announcePageLoadedCharacter, writeCurrent, type CurrentCharacter } from '../current-character';
 import { decodeFS1 } from '../planner/fs1';
+
+export { sameCharacter };
 
 export type PasteResult =
   { ok: true; pointer: CurrentCharacter; account: MeCharacter | null } | { ok: false };
 
 function capitalise(slug: string): string {
   return slug.charAt(0).toUpperCase() + slug.slice(1);
-}
-
-/** The account character an export or a pasted pointer names: same name (a key slug counts) and class, case-insensitive. */
-export function sameCharacter(character: MeCharacter, name: string, classSlug: string): boolean {
-  return (
-    characterSlug(character.name) === characterSlug(name) &&
-    (character.class ?? '').toLowerCase() === classSlug
-  );
 }
 
 /** Decodes `input`; a failure carries nothing, the selector shows its one fixed sentence. */
@@ -54,4 +48,26 @@ export function resolvePastedExport(
       savedAt: now.toISOString(),
     },
   };
+}
+
+/**
+ * A player pasting an export into a box on a page (the planner's Import, /addon, /setup) is
+ * choosing it: an export that names a character becomes the current one (the account's own
+ * when it holds one by that name, else a pasted export). One that names nobody is read and
+ * changes nothing -- a class word is never made the pointer. Never throws.
+ */
+export async function recordPastedExport(code: string, storage?: Storage): Promise<void> {
+  const decoded = decodeFS1(code.trim());
+  if (!decoded.ok || decoded.build.character === undefined) return;
+  // The export is the current character at once; the account, once it answers, may know it by key.
+  const first = resolvePastedExport(code, [], new Date());
+  if (first.ok) {
+    writeCurrent(first.pointer, storage);
+    announcePageLoadedCharacter();
+  }
+  const me = await fetchMeOnce().catch(() => null);
+  const held = resolvePastedExport(code, me?.characters ?? [], new Date());
+  if (!held.ok || held.account === null) return;
+  writeCurrent(held.pointer, storage);
+  announcePageLoadedCharacter();
 }

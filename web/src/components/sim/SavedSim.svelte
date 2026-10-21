@@ -19,6 +19,7 @@
   import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
   import {
     MAX_LEVEL,
+    NAMELESS_REQUEST_NAME,
     plannerHrefForSpec,
     talentPointsFromString,
     type SimCharacter,
@@ -89,7 +90,7 @@
 
   /** The stored request back into the strip's own shape. Every field is already there. */
   const character = $derived<SimCharacter>({
-    name: result.request.character.name,
+    name: result.request.character.name === NAMELESS_REQUEST_NAME ? '' : result.request.character.name,
     spec: result.request.spec,
     class_slug: result.request.character.class,
     race_slug: result.request.character.race,

@@ -11,8 +11,8 @@
   import { ADDON_PASTE_STATUS_MIN_H } from '../lib/addon/paste-layout';
   import { decodeFS1, type FS1Build } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { CURRENT_CHARACTER_CHANGED, writeCurrent } from '../lib/current-character';
-  import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
+  import { recordPastedExport } from '../lib/character-selector/paste';
+  import { plannerCodeHref, simExportHref } from '../lib/handoff-links';
   import AddonPasteSave from './AddonPasteSave.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
@@ -50,22 +50,10 @@
     error = null;
     loaded = trimmed;
     loadedCharacter = result.build.character;
-    // The export is now the site's current character, so the planner and every simulator
-    // tab open on it without a second paste. The label is the character's own name with
-    // the class when the export carries one (the addon's name section), else the class
-    // alone: the spec needs the talent file, which the tool that opens it loads and then
-    // writes a fuller label.
-    const classSlug = result.build.classSlug;
-    const className = classSlug.charAt(0).toUpperCase() + classSlug.slice(1);
-    const characterName = result.build.character?.name;
-    writeCurrent({
-      source: 'addon',
-      ref: trimmed,
-      label: characterName === undefined ? className : `${characterName} · ${className}`,
-      classSlug,
-      savedAt: new Date().toISOString(),
-    });
-    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    // An export that names a character is the player choosing it: it becomes the current
+    // character (the account's own, when it holds one by that name). One that names nobody
+    // is looked at and changes nothing -- a class word is never made the pointer.
+    void recordPastedExport(trimmed);
   }
 </script>
 
@@ -111,7 +99,7 @@
         </a>
         <a
           class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
-          href={simCodeHref(loaded)}
+          href={simExportHref(loaded)}
           data-testid="addon-paste-sim"
         >
           {addonCopy.pasteOpenSim}

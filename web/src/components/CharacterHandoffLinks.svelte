@@ -5,7 +5,7 @@
 <script lang="ts">
   import { lookupAddonExport } from '../lib/addon-export';
   import { handoffCopy } from '../lib/handoff-copy';
-  import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
+  import { plannerCodeHref, simExportHref } from '../lib/handoff-links';
   import type { CharacterPath } from '../lib/characters';
 
   let {
@@ -45,7 +45,8 @@
   {#if status === 'loading'}
     <span class="invisible text-[13px]" aria-hidden="true">{handoffCopy.openInSimulator}</span>
   {:else if code !== null}
-    <a class={LINK} href={simCodeHref(code)} data-testid="character-open-sim">{handoffCopy.openInSimulator}</a
+    <a class={LINK} href={simExportHref(code)} data-testid="character-open-sim"
+      >{handoffCopy.openInSimulator}</a
     >
     <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"
       >{handoffCopy.openInPlanner}</a
