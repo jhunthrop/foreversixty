@@ -68,10 +68,13 @@
           style={`width:${tier.named_encounters === 0 ? 0 : Math.min(100, (tier.down / tier.named_encounters) * 100)}%`}
         ></div>
       </div>
-      <p class="text-muted text-[12px]">
-        Barrow Deeps and Hyjal Summit have no encounter list yet. Their pulls count toward the tier total
-        above but cannot be named or ranked per boss.
-      </p>
+      {#if progression.unnamed.length > 0}
+        <!-- Our to-do, so only when this guild has pulls it applies to (P.1, player review S2-5). -->
+        <p class="text-muted text-[12px]" data-testid="guild-progression-unnamed-note">
+          Barrow Deeps and Hyjal Summit have no encounter list yet. Their pulls count toward the tier total
+          above but cannot be named or ranked per boss.
+        </p>
+      {/if}
     </div>
 
     {#each progression.encounters as encounter (encounter.encounter_id)}
@@ -90,7 +93,7 @@
         <div class="flex flex-col">
           {#each encounter.pulls_by_night as night (night.report_id)}
             <div class="border-line-soft flex items-center gap-4 border-b py-1.5">
-              <span class="text-muted tabular min-w-[90px] font-mono text-[13px]"
+              <span class="text-muted tabular min-w-[90px] text-[13px]"
                 >{progressionNightDay(night.date)}</span
               >
               <span class="text-[13px]">{counted(night.pulls, 'pull')}</span>

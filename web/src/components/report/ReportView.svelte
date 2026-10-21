@@ -1609,7 +1609,11 @@
     >
       <div class="contents md:flex md:flex-wrap md:items-center md:gap-2">
         <h1
-          class="section-title min-w-0 truncate text-[20px] md:overflow-visible md:text-[18px] md:whitespace-normal"
+          class="section-title min-w-0 text-[20px] md:overflow-visible md:text-[18px] md:whitespace-normal {isSampleReport(
+            reportId,
+          )
+            ? 'max-md:break-words'
+            : 'truncate'}"
           title={heading}
           data-testid="report-title"
         >
@@ -1691,8 +1695,8 @@
         data-testid="report-subtitle"
       >
         {#if facts.zone !== ''}{facts.zone} ·{/if}
-        {#if fights.length > 0}<span class="tabular font-mono">{facts.date}</span> ·{/if}
-        <span class="tabular font-mono">{facts.fights}</span>{#if !isSampleReport(reportId)}
+        {#if fights.length > 0}<span class="tabular font-mono whitespace-nowrap">{facts.date}</span> ·{/if}
+        <span class="tabular font-mono whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
           · {meta.status}{/if}
         <!-- The bundled sample was logged by no one the site knows: no credit line. -->
         {#if !isSampleReport(reportId)}
@@ -1807,6 +1811,7 @@
               {presets}
               onSelectPreset={(index) => setWindow(presets[index]?.window ?? null)}
               onWindow={setWindow}
+              compact={isSampleReport(reportId)}
             />
           {:else}
             <div

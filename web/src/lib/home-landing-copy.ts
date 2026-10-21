@@ -56,49 +56,6 @@ export const homeHeroStatePanelCopy = {
   bandsLine: 'Leveling best in slot, levels 20, 30, 40, 50, 60',
 } as const;
 
-export interface HomeProductPanelCopy {
-  label: string;
-  sentence: string;
-  linkLabel: string;
-  href: string;
-}
-
-/** Spec section 2 item 3, one entry per product panel, in display order. Review round 1 fix
- *  item 2 adds Guides last: the fifth door this site offers, previously reachable only from
- *  the header nav, now presented the same way as the other four. */
-export const homeProductPanels: readonly HomeProductPanelCopy[] = [
-  {
-    label: 'Planner',
-    sentence: 'Every talent tree for 1.60, every race and class, shared by link.',
-    linkLabel: 'Open the planner',
-    href: '/planner',
-  },
-  {
-    label: 'Simulator',
-    sentence: 'Your DPS, upgrades from any loot table, stat weights.',
-    linkLabel: 'Open the simulator',
-    href: '/sim',
-  },
-  {
-    label: 'Logs',
-    sentence: 'Upload a night or log live with the companion; every fight, every parse.',
-    linkLabel: 'Open the logs',
-    href: '/logs',
-  },
-  {
-    label: 'Rankings',
-    sentence: 'Guild progression and character parses, per boss.',
-    linkLabel: 'Open the rankings',
-    href: '/rankings',
-  },
-  {
-    label: 'Guides',
-    sentence: '28 spec guides, talent builds and rotations for every class.',
-    linkLabel: 'Open guides',
-    href: '/guides',
-  },
-] as const;
-
 /** Spec section 2.4, "Around the site": the two compact tables, each five rows "as today"
  *  (RecentReports compact and HomeTopGuilds), with a "See all" link apiece. */
 export const homeAroundTheSiteCopy = {

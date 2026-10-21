@@ -29,6 +29,7 @@
     presets,
     onSelectPreset,
     onWindow,
+    compact = false,
   }: {
     series: number[];
     /** More lines drawn behind the main one, each in its token's colour. */
@@ -54,6 +55,10 @@
     /** Fired with a chosen preset's index; undefined whenever `presets` is. */
     onSelectPreset?: (index: number) => void;
     onWindow: (window: TimeWindow | null) => void;
+    /** A 96px strip at md and up: the canvas alone, with no legend line and no slider row, so a table
+     *  below it shows more than one row in a short window (P.1, the sample report). Dragging the canvas
+     *  still brushes a window, and a small reset sits over it while one is set. */
+    compact?: boolean;
   } = $props();
 
   /** The select's value: the preset matching the current window, or none for a custom drag. */
@@ -313,10 +318,13 @@
 </script>
 
 <figure
-  class="border-line rounded-panel bg-raised m-0 flex flex-col gap-2 border p-3"
+  class="border-line rounded-panel bg-raised m-0 flex flex-col gap-2 border p-3 {compact
+    ? 'md:gap-0 md:p-0'
+    : ''}"
   data-testid="time-chart"
+  data-compact={compact ? 'true' : undefined}
 >
-  <figcaption class="flex flex-wrap items-baseline justify-between gap-2">
+  <figcaption class="flex flex-wrap items-baseline justify-between gap-2 {compact ? 'md:hidden' : ''}">
     <span class="label text-muted"
       >{#if series.length > 0}<span class="whitespace-nowrap"
           ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"
@@ -350,6 +358,16 @@
   <!-- The scale sits over the canvas's left edge: the peak, half of it and zero, so the
        line says how much and not only when. The canvas keeps its full width for the brush. -->
   <div class="relative pl-12">
+    {#if compact && !isFullWindow(current, durationMs)}
+      <button
+        type="button"
+        class="border-line-warm bg-raised text-text rounded-control absolute top-1 right-1 z-10 hidden h-7 items-center border px-2 text-[11px] font-bold tracking-[0.06em] uppercase md:inline-flex"
+        onclick={() => onWindow(null)}
+        data-testid="window-reset-compact"
+      >
+        Whole fight
+      </button>
+    {/if}
     <canvas
       bind:this={canvas}
       class="w-full touch-none"
@@ -407,7 +425,7 @@
        for that. Native is 16px tall. h-11 makes the whole strip the handle, which is why
        the thumb pseudo-element needs no sizing of its own -- and leaving the control's
        native appearance alone is what keeps accent-gold painting the filled track. -->
-  <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+  <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4 {compact ? 'md:hidden' : ''}">
     {#if presets !== undefined}
       <!-- Left of the sliders (design review 2026-09-26 finding 4): the six-button preset
            row folded into one select, full width on phone with the sliders under it, and

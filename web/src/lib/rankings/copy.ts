@@ -16,7 +16,10 @@ export const homeTopGuildsCopy = {
   /** The placeholder's screen-reader name, so the panel never says "Loading" in page text. */
   placeholderLabel: 'Top guilds',
   failed: 'Rankings did not load.',
-  empty: 'No kills ranked yet.',
+  empty: 'No guilds ranked yet. Claim yours from the Guild menu.',
+  /** The ghost button under the empty sentence (P.1). */
+  emptyAction: 'Open the guild page',
+  emptyHref: '/guild',
   /** "1 boss", "12 bosses": the count beside each guild. */
   bosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
 } as const;

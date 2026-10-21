@@ -11,13 +11,15 @@
   import { scoreCopy } from '../lib/score/copy';
   import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
 
-  let { path, name }: { path: CharacterPath; name: string } = $props();
+  /** `known`: the site holds this character but has nothing on it, and the viewer does not hold it
+   *  (P.1): its own sentence, and only a quiet "Get the addon" link under the lookup box. */
+  let { path, name, known = false }: { path: CharacterPath; name: string; known?: boolean } = $props();
 
   const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-full border px-3 text-[15px]';
   const LINK = 'text-nav underline';
 
   $effect(() => {
-    document.title = scoreCopy.notFoundTitle;
+    document.title = known ? `${name} · Forever Sixty` : scoreCopy.notFoundTitle;
   });
 
   /** Routes the form's submit to the profile it names, as the home page's lookup does. */
@@ -28,9 +30,13 @@
 
 <div class="reveal flex flex-col gap-5" data-testid="character-not-found" id="character">
   <header class="flex flex-col gap-2">
-    <h1 class="section-title text-[22px]" data-testid="character-name">{scoreCopy.notFoundTitle}</h1>
+    <h1 class="section-title text-[22px]" data-testid="character-name">
+      {known ? name : scoreCopy.notFoundTitle}
+    </h1>
     <p class="text-[15px]" data-testid="character-not-found-line">
-      {scoreCopy.notFoundLine(name, characterHeaderCopy.chip(path.ruleset, path.region))}
+      {known
+        ? scoreCopy.noDataLine(name)
+        : scoreCopy.notFoundLine(name, characterHeaderCopy.chip(path.ruleset, path.region))}
     </p>
   </header>
   <form
@@ -83,11 +89,17 @@
     </button>
   </form>
   <p id="character-not-found-error" class="text-strong min-h-[1lh] text-[13px]" role="status"></p>
-  <p class="text-muted text-[14px]" data-testid="character-not-found-next">
-    {scoreCopy.noLogsNext.lead}
-    <a class={LINK} href={scoreCopy.noLogsNext.addonHref}>{scoreCopy.noLogsNext.addon}</a
-    >{scoreCopy.separator}<a class={LINK} href={scoreCopy.noLogsNext.uploadHref}
-      >{scoreCopy.noLogsNext.upload}</a
-    >
-  </p>
+  {#if known}
+    <p class="text-muted text-[14px]" data-testid="character-not-found-next">
+      <a class={LINK} href={scoreCopy.noLogsNext.addonHref}>{scoreCopy.noDataAddon}</a>
+    </p>
+  {:else}
+    <p class="text-muted text-[14px]" data-testid="character-not-found-next">
+      {scoreCopy.noLogsNext.lead}
+      <a class={LINK} href={scoreCopy.noLogsNext.addonHref}>{scoreCopy.noLogsNext.addon}</a
+      >{scoreCopy.separator}<a class={LINK} href={scoreCopy.noLogsNext.uploadHref}
+        >{scoreCopy.noLogsNext.upload}</a
+      >
+    </p>
+  {/if}
 </div>

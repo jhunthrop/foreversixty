@@ -10,7 +10,7 @@
 // supersedes guild-home.spec.ts and guild-phone.spec.ts, both of which exercised exactly
 // the flat single-page body (the duplicated unverified note, the old flat roster list) this
 // rebuild replaces -- see the build report for the full reasoning.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -797,22 +797,24 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     expect(yes).not.toBe('rgba(0, 0, 0, 0)');
   });
 
-  test('below lg the claim and invite card folds to one 44px line with a Show toggle; Settings keeps it open', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 390, height: 900 });
-    await stubCore(page, VIEWER_OFFICER, 'leader');
-    await page.goto(`${GUILD_URL}#roster`);
-    const summary = page.getByTestId('guild-officer-strip-summary');
-    await expect(summary).toBeVisible();
-    expect((await summary.boundingBox())?.height).toBe(44);
-    await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
-    await page.getByTestId('guild-officer-strip-toggle').click();
-    await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
-    await page.getByTestId('guild-tab-settings').click();
-    await expect(page.getByTestId('guild-officer-strip-summary')).toBeHidden();
-    await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
-  });
+  for (const width of [390, 1280]) {
+    test(`at ${width} the claim and invite card folds to one 44px line with a Show toggle; Settings keeps it open`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await stubCore(page, VIEWER_OFFICER, 'leader');
+      await page.goto(`${GUILD_URL}#roster`);
+      const summary = page.getByTestId('guild-officer-strip-summary');
+      await expect(summary).toBeVisible();
+      expect((await summary.boundingBox())?.height).toBe(44);
+      await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
+      await page.getByTestId('guild-officer-strip-toggle').click();
+      await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
+      await page.getByTestId('guild-tab-settings').click();
+      await expect(page.getByTestId('guild-officer-strip-summary')).toBeHidden();
+      await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
+    });
+  }
 
   test('the ranks line sits above the roster while a row has no rank', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
@@ -1525,6 +1527,10 @@ test.describe('guild crest (Settings tab, officer only)', () => {
     await page.goto(`${GUILD_URL}#settings`);
     const saveButton = page.getByTestId('guild-crest-save');
     await expect(saveButton).toBeDisabled();
+    // P.1: a styled "Choose an image" button, not the browser's own file control.
+    await expect(page.getByTestId('guild-crest-choose')).toHaveText('Choose an image');
+    await expect(page.getByTestId('guild-crest-file-name')).toHaveText('No image chosen');
+    await expect(page.getByTestId('guild-crest-file-input')).toHaveCSS('position', 'absolute');
 
     await page.getByTestId('guild-crest-file-input').setInputFiles({
       name: 'crest.png',
@@ -1532,6 +1538,8 @@ test.describe('guild crest (Settings tab, officer only)', () => {
       buffer: Buffer.from(new Uint8Array(1024)),
     });
     await expect(page.getByTestId('guild-crest-preview')).toBeVisible();
+    await expect(page.getByTestId('guild-crest-file-name')).toHaveText('crest.png');
+    await p1Shot(page, 'guild-settings-crest-chosen-1280');
     await expect(saveButton).toBeEnabled();
 
     await saveButton.click();
@@ -1605,5 +1613,92 @@ test.describe('guild crest (Settings tab, officer only)', () => {
       buffer: Buffer.from('x'),
     });
     await expect(page.getByTestId('guild-crest-file-error')).toHaveAttribute('role', 'alert');
+  });
+});
+
+/** A capture for the review when P1_SHOTS names a folder. */
+async function p1Shot(page: Page, name: string): Promise<void> {
+  const dir = process.env.P1_SHOTS;
+  if (dir === undefined) return;
+  await page.screenshot({ path: `${dir}/p1-${name}.png`, fullPage: true });
+}
+
+/** The visible words of an element, no-break spaces read as spaces. */
+async function words(locator: Locator): Promise<string> {
+  return ((await locator.innerText()) ?? '')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+test.describe('guild facts read as sentences (P.1)', () => {
+  for (const width of [1280, 390]) {
+    test(`at ${width} the header, Overview and roster facts are body-face sentences with " · " spaced`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await stubCore(page, VIEWER_OFFICER, 'leader');
+      await stubDepthEndpoints(page);
+      await page.goto(GUILD_URL);
+      const header = page.getByTestId('guild-header-facts');
+      await expect(header).toBeVisible();
+      expect(await words(header)).toMatch(/^PvP US · \d+ bosse?s? down · \d+ pulls?( · Updated .+)?$/);
+      const rosterFacts = page.getByTestId('guild-overview-roster-facts');
+      expect(await words(rosterFacts)).toMatch(
+        /^\d+ raiders? with gear on the site · \d+ waiting for approval · \d+ below the rating floor$/,
+      );
+      const raidFacts = page.getByTestId('guild-overview-raid-facts').first();
+      expect(await words(raidFacts)).toMatch(/ · /);
+      for (const line of [header, rosterFacts, raidFacts]) {
+        expect(await line.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/mono/i);
+      }
+      // Each fact is one piece: no fact's box is split across two lines.
+      for (const line of [header, rosterFacts, raidFacts]) {
+        const split = await line.evaluate(
+          (el) =>
+            [...el.querySelectorAll('.whitespace-nowrap')].filter(
+              (piece) =>
+                piece.getBoundingClientRect().height > parseFloat(getComputedStyle(piece).fontSize) * 2.2,
+            ).length,
+        );
+        expect(split).toBe(0);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+      await p1Shot(page, `guild-overview-${width}`);
+    });
+
+    test(`at ${width} the roster stats are one sentence in the body face`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await stubCore(page, VIEWER_OFFICER, 'leader');
+      await page.goto(`${GUILD_URL}#roster`);
+      const chip = page.getByTestId('guild-roster-chip').first();
+      await expect(chip).toBeVisible();
+      const line = chip;
+      expect(await line.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/mono/i);
+      const stats = page.getByTestId('guild-roster-facts').first();
+      expect(await words(stats)).toMatch(/Item level \d+/);
+      await p1Shot(page, `guild-roster-${width}`);
+    });
+  }
+
+  test('at 1280 the claim card is one line and the first roster row is above the fold', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-officer-strip-summary')).toBeVisible();
+    await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
+    const row = page.locator('.guild-roster-row').first();
+    await expect(row).toBeVisible();
+    const box = await row.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.y + box!.height).toBeLessThanOrEqual(800);
+  });
+
+  test('the Overview prints no "no encounter list yet" line of ours', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(GUILD_URL);
+    await expect(page.getByTestId('guild-overview-card-progression')).toBeVisible();
+    await expect(page.getByTestId('guild-overview-card-progression')).not.toContainText('no encounter list');
   });
 });

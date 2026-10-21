@@ -3,9 +3,7 @@
 // the session's first verified guild, as its name and its page. Pure, so the selector island
 // can compute it from the cached `/v1/me` and the header script only applies the result.
 import type { Me } from '../account/api';
-import { pointerForCharacter } from '../account/main-character';
-import { characterSlug, guildHref, parseGuildPath } from '../characters';
-import type { CurrentCharacter } from '../current-character';
+import { guildHref } from '../characters';
 
 export interface SessionGuild {
   readonly name: string;
@@ -32,40 +30,4 @@ export function sessionGuildOf(me: Me | null | undefined): SessionGuild | null {
   const guild = me?.guilds.find((entry) => entry.verified);
   if (guild === undefined) return null;
   return { name: guild.name, href: guildHref(guild.region, guild.ruleset, guild.name) };
-}
-
-/**
- * The character the header shows on a guild page: the account's own character in that guild
- * when it has one (the guild band already names it), else whatever is current. A view only,
- * never written back, and only until the player picks a character on this page: a pointer
- * saved since the page loaded is the player's choice and stands.
- */
-export function guildPagePointer(
-  me: Me | null | undefined,
-  pathname: string,
-  pointer: CurrentCharacter | null,
-  pageLoadedAtMs: number,
-): CurrentCharacter | null {
-  if (me === null || me === undefined) return pointer;
-  const path = parseGuildPath(pathname);
-  if (path === null) return pointer;
-  const guild = me.guilds.find(
-    (entry) =>
-      entry.region === path.region &&
-      entry.ruleset === path.ruleset &&
-      characterSlug(entry.name) === path.slug,
-  );
-  if (guild === undefined) return pointer;
-  const inGuild = me.characters.filter((character) => character.guild?.id === guild.id);
-  if (inGuild.length === 0) return pointer;
-  if (pointer !== null) {
-    const chosenHere = Date.parse(pointer.savedAt) >= pageLoadedAtMs;
-    const pointedName = pointer.label.split(' · ')[0].toLowerCase();
-    const alreadyInGuild =
-      inGuild.some((character) => character.key === pointer.ref) ||
-      inGuild.some((character) => character.name.toLowerCase() === pointedName);
-    if (chosenHere || alreadyInGuild) return pointer;
-  }
-  const own = inGuild.find((character) => character.key === me.main_character_key) ?? inGuild[0];
-  return pointerForCharacter(own);
 }

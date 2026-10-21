@@ -1,19 +1,34 @@
 // web/tests/e2e/handoffs-home.spec.ts
 import { expect, test } from '@playwright/test';
 
-test('the five doors carry Planner, Simulator, Logs, Rankings and Guides, in spec order', async ({
-  page,
-}) => {
+test('the landing carries three outcome rows in the player’s words, no feature cards', async ({ page }) => {
   await page.goto('/');
-  const order = ['planner', 'simulator', 'logs', 'rankings', 'guides'];
-  const cardHandles = await page.getByTestId('home-five-doors').locator('a').all();
-  const testids = await Promise.all(cardHandles.map((card) => card.getAttribute('data-testid')));
-  expect(testids).toEqual(order.map((slug) => `home-five-doors-${slug}`));
-  await expect(page.getByTestId('home-five-doors-simulator')).toHaveAttribute('href', '/sim');
-  await expect(page.getByTestId('home-five-doors-simulator')).toContainText('Open the simulator');
-  // Review round 1 fix item 2: Guides is a fifth door here, not just a header nav link.
-  await expect(page.getByTestId('home-five-doors-guides')).toHaveAttribute('href', '/guides');
-  await expect(page.getByTestId('home-five-doors-guides')).toContainText('Open guides');
+  const rows = page.getByTestId('home-outcomes').locator('a');
+  await expect(rows).toHaveText([/Plan your talents/, /Sim your gear/, /Upload tonight’s raid/]);
+  await expect(page.getByTestId('home-outcome-planner')).toHaveAttribute('href', '/planner');
+  await expect(page.getByTestId('home-outcome-sim')).toHaveAttribute('href', '/sim');
+  await expect(page.getByTestId('home-outcome-logs')).toHaveAttribute('href', '/logs');
+  await expect(page.getByText('What the site does')).toHaveCount(0);
+  await expect(page.getByTestId('home-five-doors')).toHaveCount(0);
+});
+
+test('with a current character the planner and sim rows open that character', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'fs.currentCharacter',
+      JSON.stringify({
+        source: 'code',
+        ref: 'FS1CODE',
+        label: 'Bow Jackzon · Marksmanship Hunter',
+        classSlug: 'hunter',
+        savedAt: '2026-10-20T10:00:00Z',
+      }),
+    );
+  });
+  await page.goto('/');
+  await expect(page.getByTestId('home-outcome-planner')).toHaveAttribute('href', '/planner?code=FS1CODE');
+  await expect(page.getByTestId('home-outcome-sim')).toHaveAttribute('href', /^\/sim.*FS1CODE/);
+  await expect(page.getByTestId('home-outcome-logs')).toHaveAttribute('href', '/logs');
 });
 
 test('the "Get set up" card links to /setup', async ({ page }) => {

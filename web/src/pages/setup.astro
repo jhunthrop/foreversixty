@@ -73,7 +73,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
 
     <Panel title={addonCopy.setupStep1Title}>
       <div id="signin" class="flex scroll-mt-20 flex-col gap-3 p-[18px]">
-        <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
+        <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
         <a
           class={`setup-when-out ${STEP_BUTTON}`}
           data-step="1"
@@ -101,13 +101,13 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
             ))}
           </ul>
         </div>
-        <p class="text-muted text-[13px] leading-relaxed" data-testid="setup-data-addon">
+        <p class="text-pretty text-muted text-[13px] leading-relaxed" data-testid="setup-data-addon">
           {addonCopy.installDataHint}
         </p>
-        <p class="text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
+        <p class="text-pretty text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
           {addonCopy.setupHowItArrives}
         </p>
-        <p class="setup-when-out setup-when-pointer text-[14px]" data-testid="setup-addon-done">
+        <p class="text-pretty setup-when-out setup-when-pointer text-[14px]" data-testid="setup-addon-done">
           {addonCopy.setupAddonDoneLine}
         </p>
         <SetupStepLine step="addon" client:idle />
@@ -128,7 +128,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
             </span>
           </summary>
           <div class="flex flex-col gap-3 px-4 pb-4">
-            <p class="text-muted text-[14px] leading-relaxed" data-testid="setup-export-what">
+            <p class="text-pretty text-muted text-[14px] leading-relaxed" data-testid="setup-export-what">
               {addonCopy.setupTryExportBody}
             </p>
             <AddonPasteBox client:idle heading={false} />
@@ -146,7 +146,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
             </span>
           </summary>
           <div class="flex flex-col gap-3 px-4 pb-4">
-            <p class="text-muted text-[14px] leading-relaxed">{addonCopy.installDataLead}</p>
+            <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.installDataLead}</p>
             <ul class="flex flex-col gap-0 md:flex-row md:flex-wrap md:gap-x-6">
               {dataLinks.map((link) => (
                 <li>
@@ -156,7 +156,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
                 </li>
               ))}
             </ul>
-            <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
+            <p class="text-pretty text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
           </div>
         </details>
 
@@ -187,7 +187,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
                 {addonCopy.surfaces.map((surface) => (
                   <li class="flex flex-col gap-2" data-surface={surface.section}>
                     <h4 class="text-[15px] font-semibold">{surface.title}</h4>
-                    <p class="text-muted text-[14px] leading-relaxed">{surface.body}</p>
+                    <p class="text-pretty text-muted text-[14px] leading-relaxed">{surface.body}</p>
                     {surface.images.map((image) => (
                       <div
                         class={`border-line-soft rounded-control bg-raised w-full overflow-hidden border ${image.tall ? 'max-h-[900px]' : 'max-h-[420px]'}`}
@@ -222,8 +222,10 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
               </div>
               <div class="flex flex-col gap-2" data-testid="setup-handshake">
                 <h3 class="label text-muted">{addonCopy.handshakeTitle}</h3>
-                <p class="text-muted text-[14px] leading-relaxed">{addonCopy.handshake.join(' ')}</p>
-                <p class="text-muted text-[14px] leading-relaxed">{addonCopy.pageNoNetwork}</p>
+                <p class="text-pretty text-muted text-[14px] leading-relaxed">
+                  {addonCopy.handshake.join(' ')}
+                </p>
+                <p class="text-pretty text-muted text-[14px] leading-relaxed">{addonCopy.pageNoNetwork}</p>
               </div>
             </section>
             <div class="flex flex-col gap-3" data-testid="setup-flows">
@@ -232,7 +234,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
                 {flows.map((flow) => (
                   <div class="border-line-soft rounded-control border p-4">
                     <h3 class="label text-muted mb-2">{flow.title}</h3>
-                    <p class="text-muted text-[14px] leading-relaxed">{flow.body}</p>
+                    <p class="text-pretty text-muted text-[14px] leading-relaxed">{flow.body}</p>
                   </div>
                 ))}
               </div>
@@ -244,7 +246,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
 
     <Panel title={addonCopy.setupStep3Title}>
       <div id="companion" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
-        <p class="text-muted text-[13px]" data-testid="setup-companion-note">
+        <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-note">
           {addonCopy.setupCompanionNote}
         </p>
         <div class="flex flex-col gap-2" data-testid="setup-companion-downloads">
@@ -270,22 +272,29 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
           )}
         </div>
         {platformsLine !== null && (
-          <p class="text-muted text-[13px]" data-testid="setup-companion-platforms">
+          <p class="text-pretty text-muted text-[13px]" data-testid="setup-companion-platforms">
             {platformsLine}
           </p>
         )}
-        <p id="logging" class="text-muted text-[14px] leading-relaxed">
+        <p id="logging" class="text-pretty text-muted text-[14px] leading-relaxed">
           {addonCopy.setupCompanionBody}
         </p>
-        <p class="text-[14px]" data-testid="setup-companion-pair">
+        <p class="text-pretty text-[14px]" data-testid="setup-companion-pair">
           {addonCopy.setupCompanionPair}
         </p>
         <SetupStepLine step="companion" client:idle />
         <div
-          class="setup-capture border-line-soft rounded-control bg-raised w-full overflow-hidden border"
+          class="setup-capture border-line-soft rounded-control bg-raised relative w-full overflow-hidden border"
           style={`max-width: 800px; --capture-ratio: ${capture.width} / ${capture.height}; --capture-phone-ratio: ${capture.phoneWidth} / ${capture.phoneHeight}`}
           data-testid="setup-companion-capture"
         >
+          <span
+            class="pill pill-sample absolute top-2 right-2 z-10"
+            data-session-hide
+            data-testid="setup-companion-capture-label"
+          >
+            {capture.exampleLabel}
+          </span>
           <picture class="block h-full w-full">
             <source
               media="(max-width: 639px)"

@@ -67,7 +67,7 @@ for (const size of SIZES) {
       const statuses = await rows.evaluateAll((els) => els.map((el) => (el as HTMLElement).dataset.status));
       // Past dates come last: no past row is followed by a live, next or future one.
       expect(statuses.join(' ')).not.toMatch(/past (live|next|future)/);
-      await expect(page.getByRole('heading', { name: 'What the site does' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Get started' })).toBeVisible();
       await expect(page.getByText('Five doors')).toHaveCount(0);
       await expect(page.getByTestId('home-get-set-up-signed-out')).toContainText(
         'Sign in, install the addon, and run the companion — one page.',

@@ -26,7 +26,6 @@
   } from '../../lib/guild/api';
   import {
     NO_PUBLIC_REPORTS,
-    UNNAMED_ZONES_LINE,
     checksFailingLine,
     encountersDownLine,
     raidNightDay,
@@ -35,6 +34,7 @@
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
   import { counted } from '../../lib/plural';
+  import FactLine from './FactLine.svelte';
   import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
   import type { GuildTabId } from './GuildTabs.svelte';
 
@@ -172,13 +172,14 @@
           onclick={() => onSelectTab('roster')}>See all</button
         >
       </div>
-      <p class="text-[14px]">
-        <span class="tabular font-mono">{rosterParts.raiders}</span> ·
-        <span class="tabular font-mono {(summary?.waiting_for_approval ?? 0) > 0 ? 'text-gold' : ''}"
-          >{rosterParts.waiting}</span
-        >
-        ·
-        <span class="tabular font-mono">{rosterParts.belowFloor}</span>
+      <p class="text-[14px]" data-testid="guild-overview-roster-facts">
+        <FactLine
+          facts={[
+            rosterParts.raiders,
+            { text: rosterParts.waiting, class: (summary?.waiting_for_approval ?? 0) > 0 ? 'text-gold' : '' },
+            rosterParts.belowFloor,
+          ]}
+        />
       </p>
     </div>
   {/if}
@@ -210,19 +211,13 @@
           <span class="min-w-0 flex-1 text-[14px] font-semibold"
             >{report.title === '' ? report.zone : report.title}</span
           >
-          <span class="text-muted tabular font-mono text-[14px] lg:text-[13px]"
-            >{raidNightDay(report.created_at)}</span
-          >
+          <span class="text-muted tabular text-[14px] lg:text-[13px]">{raidNightDay(report.created_at)}</span>
           {#if facts.length > 0}
-            <!-- eslint-disable svelte/no-useless-mustaches -->
-            <span
-              class="text-muted tabular order-last flex basis-full flex-wrap gap-x-3 gap-y-1 font-mono text-[14px] lg:order-none lg:basis-auto lg:flex-nowrap lg:gap-x-0 lg:text-[13px]"
-              data-testid="guild-overview-raid-facts"
-              >{#each facts as fact, i (fact)}<span class="whitespace-nowrap"
-                  >{fact}{#if i < facts.length - 1}<span class="max-lg:hidden">{' · '}</span>{/if}</span
-                >{/each}</span
-            >
-            <!-- eslint-enable svelte/no-useless-mustaches -->
+            <FactLine
+              {facts}
+              class="text-muted tabular order-last basis-full text-[14px] lg:order-none lg:basis-auto lg:text-[13px]"
+              testid="guild-overview-raid-facts"
+            />
           {/if}
         </div>
       {/each}
@@ -242,7 +237,6 @@
     </div>
     {#if showCounts}
       <p class="text-[14px]">{encountersLine}</p>
-      <p class="text-muted text-[13px]">{UNNAMED_ZONES_LINE}</p>
     {:else}
       <p class="text-muted text-[14px]">{NO_PUBLIC_REPORTS}</p>
     {/if}

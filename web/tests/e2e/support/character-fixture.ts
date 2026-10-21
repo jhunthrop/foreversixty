@@ -66,7 +66,7 @@ export const CHARACTER = {
       guild: { name: 'Cx66 Olympus', rank: 'officer' },
       level: 60,
       race: 'Night Elf',
-      realm: 'Classic Beta PvP',
+      realm: 'Doomhowl',
     },
     best: [
       {

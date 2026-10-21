@@ -158,7 +158,7 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
   const FULL = {
     class: 'Priest',
     guild: { name: 'Cx66 Olympus', rank: 'officer' as const },
-    realm: 'Classic Beta PvP',
+    realm: 'Doomhowl',
     level: 60,
     race: 'Night Elf',
   };
@@ -167,9 +167,17 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
 
   it('reads "Holy Priest · <Guild> · Realm", then "Level 60 Night Elf", with "Hardcore US" as the chip', () => {
     const header = profileHeader(page(FULL, 'Holy'), PATH);
-    expect(text(header)).toBe('Holy Priest · <Cx66 Olympus> · Classic Beta PvP realm');
+    expect(text(header)).toBe('Holy Priest · <Cx66 Olympus> · Doomhowl');
     expect(header.levelRace).toBe('Level 60 Night Elf');
     expect(header.chip).toBe('Hardcore US');
+  });
+
+  it('prints the realm field and nothing else, beside a badge that prints the ruleset (P.1)', () => {
+    const header = profileHeader(page(FULL, 'Holy'), PATH);
+    const realm = header.pieces.find((piece) => piece.key === 'realm');
+    expect(realm?.text).toBe('Doomhowl');
+    expect(header.chip).toBe('Hardcore US');
+    expect(realm?.text).not.toMatch(/realm/i);
   });
 
   it('links the guild to its page on the character’s region and ruleset', () => {
@@ -182,7 +190,7 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
 
   it('drops the guild when it is null, never a placeholder', () => {
     const header = profileHeader(page({ ...FULL, guild: null }, 'Holy'), PATH);
-    expect(text(header)).toBe('Holy Priest · Classic Beta PvP realm');
+    expect(text(header)).toBe('Holy Priest · Doomhowl');
   });
 
   it('drops the realm when it is null or empty', () => {
@@ -195,9 +203,9 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
   });
 
   it('reads the class alone without a spec, and drops it with no class', () => {
-    expect(text(profileHeader(page(FULL), PATH))).toBe('Priest · <Cx66 Olympus> · Classic Beta PvP realm');
+    expect(text(profileHeader(page(FULL), PATH))).toBe('Priest · <Cx66 Olympus> · Doomhowl');
     expect(text(profileHeader(page({ ...FULL, class: undefined }, 'Holy'), PATH))).toBe(
-      '<Cx66 Olympus> · Classic Beta PvP realm',
+      '<Cx66 Olympus> · Doomhowl',
     );
   });
 

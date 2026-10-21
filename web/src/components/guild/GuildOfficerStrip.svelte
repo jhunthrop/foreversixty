@@ -4,7 +4,7 @@
      the Settings tab (the same strip, restyled unchanged, spec §4.G: "the strip here is
      the glance, Settings is the editing surface").
 
-     Below lg, on every tab but Settings (`collapsible`), the card folds to one 44 px line --
+     At every width (P.1, UX S2-1), on every tab but Settings (`collapsible`), the card folds to one 44 px line --
      "Claimed by hunthrop#1894 · Invite link" and a Show toggle -- so the tab's own answer is
      not pushed down by ~190 px of claim tools (round 8, F8-12). The full card stays mounted
      while folded, so a rotated link is not lost by folding it. -->
@@ -33,7 +33,7 @@
 <div class="border-line-soft bg-raised flex flex-col rounded-md border" data-testid="guild-officer-strip">
   {#if collapsible}
     <div
-      class="flex h-11 items-center justify-between gap-3 pr-1 pl-4 lg:hidden"
+      class="flex h-11 items-center justify-between gap-3 pr-1 pl-4"
       data-testid="guild-officer-strip-summary"
     >
       <span class="text-muted min-w-0 truncate text-[13px]"
@@ -50,7 +50,7 @@
     </div>
   {/if}
   <div
-    class={`flex flex-wrap items-center justify-between gap-4 p-4 ${folded ? 'max-lg:hidden' : ''} ${collapsible && open ? 'max-lg:border-line-soft max-lg:border-t' : ''}`}
+    class={`flex flex-wrap items-center justify-between gap-4 p-4 ${folded ? 'hidden' : ''} ${collapsible && open ? 'border-line-soft border-t' : ''}`}
     data-testid="guild-officer-strip-body"
   >
     <div class="flex items-center gap-3">

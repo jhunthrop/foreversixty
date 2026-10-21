@@ -1,6 +1,6 @@
 // web/src/components/character/ProfileDescriptor.test.ts
 // L8.4 fix round 2 items 3, 4 and 5: the profile's lines under the character's name.
-//   Line 1: "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP realm", "Holy Priest" in
+//   Line 1: "Holy Priest · 31/20/0 · <Olympus XXVII> · Doomhowl", "Holy Priest" in
 //           --text and the rest muted, the guild a link with a 44px tap target on a phone.
 //   Line 2: "Level 60 Night Elf".
 //   The "HARDCORE US" chip ends the last of those two lines, 8px after its text.
@@ -23,7 +23,7 @@ const FULL: CharacterPage = {
     guild: { name: 'Olympus XXVII', rank: 'member' },
     level: 60,
     race: 'Night Elf',
-    realm: 'Classic Beta PvP',
+    realm: 'Doomhowl',
   },
   best: [],
   history: [
@@ -68,11 +68,11 @@ const para = (html: string, testid: string): string =>
   new RegExp(`<p[^>]*data-testid="${testid}"[\\s\\S]*?</p>`).exec(html)?.[0] ?? '';
 
 describe('ProfileDescriptor', () => {
-  it('reads "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP realm", the spec in --text and the rest muted', () => {
+  it('reads "Holy Priest · 31/20/0 · <Olympus XXVII> · Doomhowl", the spec in --text and the rest muted', () => {
     const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
     const line = para(body, 'character-descriptor');
     expect(text(line).replace(/&lt;/g, '<').replace(/&gt;/g, '>')).toBe(
-      'Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP realm',
+      'Holy Priest · 31/20/0 · <Olympus XXVII> · Doomhowl',
     );
     expect(classes(tag(body, 'character-descriptor'))).toContain('text-muted');
     // The class is in its colour: Priest has a token, so the spec piece takes it.
@@ -140,12 +140,7 @@ describe('ProfileDescriptor', () => {
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>'),
     );
-    expect(segments).toEqual([
-      'Holy Priest\u00a0·',
-      '31/20/0\u00a0·',
-      '<Olympus XXVII>\u00a0·',
-      'Classic Beta PvP realm',
-    ]);
+    expect(segments).toEqual(['Holy Priest\u00a0·', '31/20/0\u00a0·', '<Olympus XXVII>\u00a0·', 'Doomhowl']);
     // Between the units only a plain, breakable space, and no dot outside them.
     expect(line.replace(unit, '|').replace(/<[^>]+>/g, '')).toBe('| | | |');
     // Only the guild's unit is an inline-block, so a guild longer than the line can still wrap.
@@ -154,7 +149,7 @@ describe('ProfileDescriptor', () => {
     ).toHaveLength(1);
     // The realm is one unit, holding no dot.
     expect(line).toMatch(
-      /<span class="whitespace-nowrap" data-testid="character-segment"><span data-testid="character-realm">Classic Beta PvP realm<\/span><\/span><\/p>/,
+      /<span class="whitespace-nowrap" data-testid="character-segment"><span data-testid="character-realm">Doomhowl<\/span><\/span><\/p>/,
     );
   });
 

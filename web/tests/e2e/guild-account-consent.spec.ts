@@ -127,6 +127,12 @@ test('the guild master is warned that leaving releases the claim and what the of
   expect(await leave.evaluate((node) => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
   await expect(page.getByTestId('account-guild-leave-cancel')).toBeFocused();
   await expect(page.getByLabel('Share with this guild')).toBeVisible();
+  // P.1: nothing under the open confirm -- no hairline on the row, no empty line after the card.
+  const row = page.getByTestId('account-guild-row');
+  await expect(row).toHaveCSS('border-bottom-width', '0px');
+  expect(await row.evaluate((node) => node.lastElementChild?.getAttribute('data-testid'))).toBe(
+    'account-guild-leave-confirm',
+  );
   const dir = process.env.G7_SHOTS;
   if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-1280.png`, fullPage: true });
   // The confirm clears the plan card below it by a gutter, at a phone's width too.

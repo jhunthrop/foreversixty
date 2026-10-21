@@ -31,5 +31,5 @@ export const reportCopy = {
   sampleBadge: 'Sample report',
   /** The one muted line under the sample's subtitle: what it is, and that yours look like it. */
   sampleNote:
-    'A real beta night with the names changed, so you can look around. Your own reports look like this.',
+    'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',
 } as const;
