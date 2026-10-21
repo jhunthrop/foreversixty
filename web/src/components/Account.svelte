@@ -97,6 +97,14 @@
   let pairing = $state<PairingCode | null>(null);
   let busy = $state(false);
   let guildBusy = $state<number | null>(null);
+  // Which guild's Leave is asking "are you sure", and the "Saved." line a consent change
+  // prints (shown for three seconds, the same place the guild settings print theirs).
+  let leaveAsking = $state<number | null>(null);
+  let consentSaved = $state<number | null>(null);
+  let consentTimer: ReturnType<typeof setTimeout> | undefined;
+  /** How many of this account's characters sit in the guild: consent and Leave cover all of them. */
+  const guildCharacterCount = (guildId: number): number =>
+    me?.characters.filter((c) => c.guild?.id === guildId).length ?? 0;
 
   // Logs landing spec (2026-10-04) §4.D.2: once a code is shown, poll for the companion
   // actually using it. `pairedDevice` is the poll's own success state, distinct from
@@ -362,6 +370,9 @@
             guilds: me.guilds.map((g) => (g.id === guildId ? { ...g, consent: value } : g)),
           };
         }
+        consentSaved = guildId;
+        clearTimeout(consentTimer);
+        consentTimer = setTimeout(() => (consentSaved = null), 3000);
       } finally {
         guildBusy = null;
       }
@@ -374,8 +385,20 @@
     void run(async () => {
       try {
         await leaveGuild(guildId);
+        // The character cards read the same source: the guild line goes with the guild.
+        if (me !== null) {
+          me = {
+            ...me,
+            guilds: me.guilds.filter((g) => g.id !== guildId),
+            characters: me.characters.map((c) => {
+              if (c.guild?.id !== guildId) return c;
+              const { guild: _gone, ...rest } = c;
+              return rest;
+            }),
+          };
+        }
         leftGuildIds = [...leftGuildIds, guildId];
-        if (me !== null) me = { ...me, guilds: me.guilds.filter((g) => g.id !== guildId) };
+        leaveAsking = null;
       } finally {
         guildBusy = null;
       }
@@ -766,14 +789,50 @@
                           <option value="gear">{guildConsentCopy.gear}</option>
                           <option value="gear_bags">{guildConsentCopy.gearBags}</option>
                         </select>
-                        <button
-                          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                          onclick={() => onLeaveGuild(guild.id)}
-                          disabled={busy || guildBusy === guild.id}
-                          data-testid="account-guild-leave"
-                        >
-                          {guildConsentCopy.leave}
-                        </button>
+                        {#if leaveAsking !== guild.id}
+                          <button
+                            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                            onclick={() => (leaveAsking = guild.id)}
+                            disabled={busy || guildBusy === guild.id}
+                            data-testid="account-guild-leave"
+                          >
+                            {guildConsentCopy.leave}
+                          </button>
+                        {/if}
+                        <p class="text-muted min-h-[21px] basis-full text-[13px]">
+                          {#if consentSaved === guild.id}
+                            <span data-testid="account-guild-consent-saved">
+                              {guildConsentCopy.consentSaved(guildCharacterCount(guild.id))}
+                            </span>
+                          {/if}
+                        </p>
+                        {#if leaveAsking === guild.id}
+                          <div
+                            class="border-line-soft flex basis-full flex-col gap-3 border p-4"
+                            data-testid="account-guild-leave-confirm"
+                          >
+                            <p class="text-[13px]">
+                              {guildConsentCopy.leaveConfirmLine(guild.name, guildCharacterCount(guild.id))}
+                            </p>
+                            <div class="flex gap-3">
+                              <button
+                                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+                                onclick={() => onLeaveGuild(guild.id)}
+                                disabled={busy || guildBusy === guild.id}
+                                data-testid="account-guild-leave-confirm-button"
+                              >
+                                {guildConsentCopy.leaveConfirmButton}
+                              </button>
+                              <button
+                                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                                onclick={() => (leaveAsking = null)}
+                                disabled={busy || guildBusy === guild.id}
+                              >
+                                {guildConsentCopy.leaveCancel}
+                              </button>
+                            </div>
+                          </div>
+                        {/if}
                       </li>
                     {/each}
                   </ul>

@@ -31,7 +31,7 @@ const ME_OFFICER = {
   ],
 };
 
-test('an unclaimed guild shows the claim button to a signed-in officer, and claiming shows "claimed by you"', async ({
+test('an unclaimed guild asks an officer first, then says "You hold" and where to go next', async ({
   page,
 }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
@@ -50,10 +50,25 @@ test('an unclaimed guild shows the claim button to a signed-in officer, and clai
   );
   await page.goto('/guild/us/hardcore/the-last-watch/claim');
   await expect(page.getByTestId('guild-claim')).toBeVisible();
-  await expect(page.getByTestId('guild-claim-state')).toHaveText('Nobody has claimed this guild yet.');
+  await expect(page.getByTestId('guild-claim-state')).toHaveText(
+    'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+  );
   await expect(page.getByTestId('guild-claim-button')).toBeVisible();
+  // Nothing to contest: the claim does not exist yet.
+  await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
 
-  await page.route('**/v1/guilds/501/claim', (route) => route.fulfill(envelope({ status: 'confirmed' })));
+  // Claiming asks first, with the rules in one line; Cancel backs out without a request.
+  let claimPosts = 0;
+  await page.route('**/v1/guilds/501/claim', (route) => {
+    claimPosts += 1;
+    return route.fulfill(envelope({ status: 'confirmed' }));
+  });
+  await page.getByTestId('guild-claim-button').click();
+  await expect(page.getByTestId('guild-claim-confirm-box')).toContainText('Claim The Last Watch?');
+  await expect(page.getByTestId('guild-claim-confirm-box')).toContainText('one claim every 30 days');
+  await page.getByTestId('guild-claim-confirm-box').getByRole('button', { name: 'Cancel' }).click();
+  await expect(page.getByTestId('guild-claim-confirm-box')).toHaveCount(0);
+  expect(claimPosts).toBe(0);
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(
       envelope({
@@ -67,8 +82,64 @@ test('an unclaimed guild shows the claim button to a signed-in officer, and clai
     ),
   );
   await page.getByTestId('guild-claim-button').click();
-  await expect(page.getByTestId('guild-claim-state')).toHaveText('You claimed this guild.');
-  await expect(page.getByTestId('guild-claim-release')).toBeVisible();
+  await page.getByTestId('guild-claim-confirm-claim').click();
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('You hold The Last Watch.');
+  expect(claimPosts).toBe(1);
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(
+    'Approve your officers and members on the roster',
+  );
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveAttribute(
+    'href',
+    '/guild/us/hardcore/the-last-watch#roster',
+  );
+  await expect(page.getByTestId('guild-claim-next-invite')).toHaveText('Make an invite link in settings');
+  await expect(page.getByTestId('guild-claim-next-invite')).toHaveAttribute(
+    'href',
+    '/guild/us/hardcore/the-last-watch/settings',
+  );
+  // Your own claim is not something to contest.
+  await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
+
+  // Release stays, behind a confirm.
+  let releasePosts = 0;
+  await page.route('**/v1/guilds/501/claim/release', (route) => {
+    releasePosts += 1;
+    return route.fulfill(envelope({ status: 'released' }));
+  });
+  await page.getByTestId('guild-claim-release').click();
+  await expect(page.getByTestId('guild-claim-release-confirm')).toContainText(
+    'Release your claim on The Last Watch? Officers will have to claim it again.',
+  );
+  await page.getByTestId('guild-claim-release-confirm').getByRole('button', { name: 'Cancel' }).click();
+  expect(releasePosts).toBe(0);
+  await page.getByTestId('guild-claim-release').click();
+  await page.getByTestId('guild-claim-release-confirm-button').click();
+  await expect.poll(() => releasePosts).toBe(1);
+});
+
+test("someone else's claim names the holder and offers Contest, with its confirm", async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: { battletag: 'OtherOfficer#5678' },
+        claim_pending: null,
+        claim: { state: 'claimed', since: '2026-09-20T00:00:00Z', frozen: false },
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-state')).toHaveText(
+    'Claimed by OtherOfficer#5678 since 20 Sep.',
+  );
+  await expect(page.getByTestId('guild-claim-release')).toHaveCount(0);
+  await expect(page.getByTestId('guild-claim-next')).toHaveCount(0);
+  await page.getByTestId('guild-claim-contest-button').click();
+  await expect(page.getByTestId('guild-claim-contest-confirm')).toBeVisible();
 });
 
 test('a signed-out visitor sees a sign-in prompt, not a claim button', async ({ page }) => {
@@ -199,7 +270,9 @@ test('a contested claim shows the dedicated contested notice alongside the claim
   await expect(page.getByTestId('guild-claim-contested-notice')).toHaveText(
     'This guild’s claim is contested and under review by a moderator.',
   );
-  await expect(page.getByTestId('guild-claim-state')).toHaveText('Claimed by OtherOfficer#5678.');
+  await expect(page.getByTestId('guild-claim-state')).toHaveText(
+    'Claimed by OtherOfficer#5678 since 19 Sep.',
+  );
   // Not the claimant, so no release control -- this is a different account's claim.
   await expect(page.getByTestId('guild-claim-release')).toHaveCount(0);
 });
@@ -226,9 +299,12 @@ test('release stays visible and enabled for the claim holder even while their cl
   );
   await page.goto('/guild/us/hardcore/the-last-watch/claim');
   await expect(page.getByTestId('guild-claim-contested-notice')).toBeVisible();
-  await expect(page.getByTestId('guild-claim-state')).toHaveText('You claimed this guild.');
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('You hold The Last Watch.');
   await expect(page.getByTestId('guild-claim-release')).toBeVisible();
   await expect(page.getByTestId('guild-claim-release')).toBeEnabled();
+  // While frozen the next steps are not offered, and a held claim is never contestable by its holder.
+  await expect(page.getByTestId('guild-claim-next')).toHaveCount(0);
+  await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
 });
 
 // Found live (2026-09-28, /guild/us/pvp/olympus-xxvii/claim): GET .../settings is
@@ -279,7 +355,8 @@ test('a plain member, refused settings, still sees the claim state and who can a
   await page.goto('/guild/us/hardcore/the-last-watch/claim');
   await expect(page.getByTestId('guild-claim-state')).toHaveText('Nobody has claimed this guild yet.');
   await expect(page.getByTestId('guild-claim-not-eligible')).toContainText('You are a member of this guild');
-  await expect(page.getByTestId('guild-claim-contest-button')).toBeVisible();
+  // Nothing is claimed, so there is nothing to contest.
+  await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-rules')).toBeVisible();
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
 });

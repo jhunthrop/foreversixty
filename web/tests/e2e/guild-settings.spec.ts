@@ -18,6 +18,7 @@ const GUILD_PAGE = {
 
 test('a verified officer sees settings and can rotate the invite link with the leak warning shown', async ({
   page,
+  context,
 }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.route('**/v1/guilds/501/settings', (route) =>
@@ -48,8 +49,23 @@ test('a verified officer sees settings and can rotate the invite link with the l
     page.getByText('Anyone with this link can join as a member. Rotate it if it leaks.'),
   ).toBeVisible();
 
+  // Rotating asks first: the old link stops working.
   await page.getByTestId('guild-invite-rotate').click();
-  await expect(page.getByTestId('guild-invite-token')).toContainText('newtoken1');
+  await expect(page.getByTestId('guild-invite-rotate-confirm')).toContainText(
+    'Rotate the invite link? The old link stops working.',
+  );
+  await page.getByTestId('guild-invite-rotate-confirm-button').click();
+  // The full URL on this site, in a field, with a Copy button that reads "Copied" after a click.
+  await expect(page.getByTestId('guild-invite-url')).toHaveValue(
+    new RegExp('^https?://[^/]+/guild/invite/newtoken1$'),
+  );
+  await expect(page.getByTestId('guild-invite-token')).toContainText('Shown once. Copy it now.');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.getByTestId('guild-invite-copy').click();
+  await expect(page.getByTestId('guild-invite-copy')).toHaveText('Copied');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('/guild/invite/newtoken1');
+  await expect(page.getByTestId('guild-invite-copy')).toHaveText('Copy link', { timeout: 4000 });
+  await expect(page.getByTestId('guild-invite-made')).toContainText('Current link made 21 Sep.');
 });
 
 test('a non-officer sees the honest forbidden line, never a bare 403', async ({ page }) => {

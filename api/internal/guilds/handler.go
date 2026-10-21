@@ -70,6 +70,10 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/guilds/{id}/invite/rotate", auth.RequireSession(s.rotateInvite))
 	accept := httpx.RateLimitPer(inviteAcceptPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/guilds/invite/{token}/accept", accept(auth.RequireSession(s.acceptInvite)))
+	// The invite page's lookup: public (a signed-out visitor sees the same card), under
+	// its own prefix because /v1/guilds/invite/{token}/... would collide with the
+	// rankings route GET /v1/guilds/{region}/{ruleset}/{name}.
+	mux.Handle("GET /v1/guild-invites/{token}", accept(http.HandlerFunc(s.peekInvite)))
 	mux.HandleFunc("POST /v1/guilds/{id}/characters/{region}/{ruleset}/{name}/approve", auth.RequireSession(s.approveCharacter))
 	mux.HandleFunc("POST /v1/guilds/{id}/roster/approve-all", auth.RequireSession(s.approveAll))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))

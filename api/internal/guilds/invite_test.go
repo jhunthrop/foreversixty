@@ -140,3 +140,45 @@ func TestRotateInviteIsFrozenDuringAContestedClaim(t *testing.T) {
 		t.Fatalf("invite rotate while contested = %d, want 409", res.StatusCode)
 	}
 }
+
+func TestPeekInviteNamesTheGuildWithoutJoiningAndRefusesBadTokens(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	token, _, err := h.store.RotateInvite(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Signed out: the zero actor still gets the card.
+	h.actor = auth.Actor{}
+	res := h.do(http.MethodGet, "/v1/guild-invites/"+token, "")
+	var got struct {
+		Guild struct {
+			ID      int64  `json:"id"`
+			Name    string `json:"name"`
+			Region  string `json:"region"`
+			Ruleset string `json:"ruleset"`
+		} `json:"guild"`
+	}
+	h.data(res, &got)
+	if got.Guild.ID != gid || got.Guild.Name != "Forever" || got.Guild.Region == "" || got.Guild.Ruleset == "" {
+		t.Fatalf("peek = %+v, want guild %d Forever with a realm", got.Guild, gid)
+	}
+	var rows int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters where guild_id = $1`, gid).Scan(&rows); err != nil || rows != 0 {
+		t.Fatalf("peek joined someone: rows = %d, err = %v", rows, err)
+	}
+
+	// Rotated-away and invented tokens answer the same 404.
+	if _, _, err := h.store.RotateInvite(ctx, gid); err != nil {
+		t.Fatal(err)
+	}
+	for _, bad := range []string{token, "fsg_totallymadeup"} {
+		res := h.do(http.MethodGet, "/v1/guild-invites/"+bad, "")
+		res.Body.Close()
+		if res.StatusCode != http.StatusNotFound {
+			t.Fatalf("peek %q = %d, want 404", bad, res.StatusCode)
+		}
+	}
+}

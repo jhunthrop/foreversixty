@@ -76,6 +76,10 @@ test('joining by invite lands on the member view, not the cached stranger view',
   await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
     joined ? route.fulfill(envelope(buildMockHome(VIEWER_MEMBER))) : route.fulfill(FORBIDDEN),
   );
+  // The invite card names the guild before the join (the public token lookup).
+  await page.route(`**/v1/guild-invites/${INVITE_TOKEN}`, (route) =>
+    route.fulfill(envelope({ guild: { id: GUILD_ID, region: 'us', ruleset: 'pvp', name: 'Olympus XXVII' } })),
+  );
   await page.route(`**/v1/guilds/invite/${INVITE_TOKEN}/accept`, (route) => {
     joined = true;
     return route.fulfill(
