@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.15
+
+- The first-login welcome says what you can see and how your character reaches the site; 'chip' is gone from the words you read.
+
 ## 2.0.14
 
 - A first login says what the addon does and where its commands are; Escape closes the build dialog whatever has focus, and typing to chat is never swallowed by it.
