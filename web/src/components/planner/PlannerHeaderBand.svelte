@@ -19,7 +19,7 @@
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { MeCharacter } from '../../lib/account/api';
-  import { sendActionFor, type SendState } from '../../lib/planner/send-state';
+  import { characterPointsSpent, sendActionFor, type SendState } from '../../lib/planner/send-state';
   import { buildHasGear } from '../../lib/addon-export';
   import CharacterHeader from '../character/CharacterHeader.svelte';
   import ExportNotRead from '../character/ExportNotRead.svelte';
@@ -30,11 +30,14 @@
     live,
     gate,
     onshowdps,
+    oncharacter,
   }: {
     store: PlannerStore;
     live: LiveDps;
     gate: LiveGate;
     onshowdps: () => void;
+    /** Fires with the card's current character (or null), for the band panel's level cut. */
+    oncharacter?: (character: MeCharacter | null) => void;
   } = $props();
 
   /** The card's current character: the send is aimed at it. Null signed out or with none synced. */
@@ -59,7 +62,7 @@
     if (sendState.kind === 'sent' && sent?.key !== currentKey) sendState = { kind: 'idle' };
   });
 
-  const action = $derived(sendActionFor(character, sendState, store.spent));
+  const action = $derived(sendActionFor(character, sendState, store.spent, characterPointsSpent(character)));
   /** The card's character has an addon export that carried no gear and no talents (W.3): the
    *  card says so instead of leaving the empty tree to read as the character's build. */
   const unread = $derived(
@@ -138,7 +141,10 @@
           layout="card"
           emphasis="secondary"
           {action}
-          onCharacterChange={(next) => (character = next)}
+          onCharacterChange={(next) => {
+            character = next;
+            oncharacter?.(next);
+          }}
           onPick={() => void send()}
         />
         {#if unread}

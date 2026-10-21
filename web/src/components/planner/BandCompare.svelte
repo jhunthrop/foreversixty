@@ -21,7 +21,7 @@
   import {
     bandTitleForDraft,
     diffAgainstBand,
-    loadFromBand,
+    loadFromBandAtLevel,
     type BandDiffView,
   } from '../../lib/planner/band-compare';
   import { bandCompareCopy } from '../../lib/planner/copy';
@@ -37,6 +37,7 @@
   let {
     store,
     specOverride,
+    characterLevel = null,
     onbanddiff,
     onloaded,
     class: className = '',
@@ -45,6 +46,8 @@
     /** `?spec=` (spec §4.I): names which spec's `bis/<spec>.json` this panel reads,
      *  overriding the points-based inference for the life of this mount. */
     specOverride?: string;
+    /** The selected character's level; the load cuts the band's point order at it. */
+    characterLevel?: number | null;
     /** Fires with the panel's own diff view (or `null` once there is none) so the tree row
      *  can draw the per-cell "differs from this band" marker (spec §4.E.4) from the same
      *  computation, rather than a second fetch/derivation of its own. */
@@ -116,6 +119,9 @@
   );
 
   let confirming = $state(false);
+  /** What the last load did, shown until the build changes from what it loaded. */
+  let loaded = $state({ key: '', line: '' });
+  const loadedLine = $derived(loaded.key === store.order.join(',') ? loaded.line : '');
 
   /** The band's talents, applied in tree/tier/column order -- the same order the
    *  reconstruction itself walks -- so "see what differs" always jumps to a real,
@@ -141,8 +147,13 @@
 
   function applyLoad(): void {
     if (store.talentIndex === null || bandEntry === undefined) return;
-    const result = loadFromBand(store.talentIndex, bandEntry.talents);
+    const result = loadFromBandAtLevel(store.talentIndex, bandEntry.talents, characterLevel);
     store.applyOrder(result.order, {});
+    const points = result.order.length;
+    loaded = {
+      key: store.order.join(','),
+      line: bandCompareCopy.loadedLine(points + 9, points, result.fullPoints),
+    };
     store.nameBandBuild(bandTitleForDraft(bandLabel, store.classSlug, store.split));
     onloaded?.(bandLabel);
   }
@@ -253,6 +264,10 @@
           </button>
         {/if}
       </div>
+    {/if}
+
+    {#if loadedLine !== ''}
+      <p class="text-muted tabular text-[12px]" data-testid="band-compare-loaded">{loadedLine}</p>
     {/if}
 
     <a

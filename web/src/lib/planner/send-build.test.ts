@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AccountError, type MeCharacter } from '../account/api';
 import { sendActionFor, sendBuildToAddon, type SendDeps } from './send-build';
+import { characterPointsSpent } from './send-state';
 import type { BuildDraft } from './types';
 
 const DRAFT = { class_id: 1, race_id: 1, tree_version: 'b', point_order: [1], gear: {} } as BuildDraft;
@@ -135,5 +136,45 @@ describe('sendActionFor', () => {
       link: { href: '/setup#companion' },
     });
     expect(note('failed')).toMatchObject({ text: 'Could not send just now. Try again.' });
+  });
+});
+
+describe('sendActionFor when the build is shorter than the character’s spend', () => {
+  const JACKZON = { ...ME, name: 'Bow Jackzon' } as MeCharacter;
+
+  it('says so under the button and still sends', () => {
+    const action = sendActionFor(JACKZON, { kind: 'idle' }, 11, 15);
+    expect(action).toMatchObject({ kind: 'picker', label: 'Send this build to the addon' });
+    expect('disabled' in action && action.disabled).toBeFalsy();
+    expect('note' in action && action.note).toEqual({
+      tone: 'muted',
+      text: 'This build has 11 points; Bow Jackzon has spent 15. The addon will follow it from point 12.',
+    });
+  });
+
+  it('is quiet when the build matches or passes the spend, or the spend is unknown', () => {
+    for (const [built, spent] of [
+      [15, 15],
+      [20, 15],
+      [11, null],
+    ] as const) {
+      const action = sendActionFor(JACKZON, { kind: 'idle' }, built, spent);
+      expect('note' in action && action.note).toBeFalsy();
+    }
+  });
+
+  it('says "1 point" for a one-point build', () => {
+    const action = sendActionFor(JACKZON, { kind: 'idle' }, 1, 15);
+    expect('note' in action && action.note?.text).toContain('This build has 1 point; ');
+  });
+
+  it('reads the spend from the synced talents', () => {
+    const synced = {
+      ...JACKZON,
+      build: { talents: { trees: [], points: [5, 10, 0] } },
+    } as unknown as MeCharacter;
+    expect(characterPointsSpent(synced)).toBe(15);
+    expect(characterPointsSpent(JACKZON)).toBeNull();
+    expect(characterPointsSpent(null)).toBeNull();
   });
 });

@@ -1,7 +1,7 @@
 // web/src/lib/planner/band-compare.test.ts
 import { describe, expect, it } from 'vitest';
 import talents from '../../fixtures/planner/talents/warrior.json';
-import { bandTreeRanksFrom, diffAgainstBand, loadFromBand } from './band-compare';
+import { bandTreeRanksFrom, diffAgainstBand, loadFromBand, loadFromBandAtLevel } from './band-compare';
 import { indexTalents } from './rules';
 import type { TalentFile } from './types';
 
@@ -66,5 +66,33 @@ describe('loadFromBand', () => {
     const { order, dropped } = loadFromBand(index, '0005000-0-0');
     expect(dropped).toEqual([1004]);
     expect(order.includes(1004)).toBe(false);
+  });
+});
+
+describe('loadFromBandAtLevel', () => {
+  // The band's whole build is three points (level 12), so each case sits at a known cut.
+  it('loads the band’s whole build with no character selected', () => {
+    const result = loadFromBandAtLevel(index, '3-0-0', null);
+    expect(result.order).toEqual([1001, 1001, 1001]);
+    expect(result.fullPoints).toBe(3);
+  });
+
+  it('cuts the point order at a character inside the band (points = level - 9)', () => {
+    const result = loadFromBandAtLevel(index, '3-0-0', 11);
+    expect(result.order).toEqual([1001, 1001]);
+    expect(result.fullPoints).toBe(3);
+  });
+
+  it('loads the whole build for a character past the band', () => {
+    const result = loadFromBandAtLevel(index, '3-0-0', 29);
+    expect(result.order).toHaveLength(3);
+  });
+
+  it('cuts to the character’s points when the character is below the band', () => {
+    expect(loadFromBandAtLevel(index, '3-0-0', 10).order).toEqual([1001]);
+  });
+
+  it('does not load an empty build for a character with no point yet', () => {
+    expect(loadFromBandAtLevel(index, '3-0-0', 8).order).toHaveLength(3);
   });
 });
