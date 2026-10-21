@@ -10,7 +10,7 @@
      -- and the page always says who can act and what to do next. It used to render only
      its heading to a plain member (found live, 2026-09-28). -->
 <script lang="ts">
-  import { fetchMeOnce, type Me } from '../lib/account/api';
+  import { fetchMeFresh, type Me } from '../lib/account/api';
   import { characterSlug, guildHref, type CharacterPath } from '../lib/characters';
   import { SETUP_NAV_ITEM } from '../lib/nav';
   import {
@@ -60,7 +60,10 @@
     status = 'loading';
     error = '';
     try {
-      const [session, guildPage] = await Promise.all([fetchMeOnce(), fetchGuild(path)]);
+      const [session, guildPage] = await Promise.all([
+        fetchMeFresh((fresh) => (me = fresh)),
+        fetchGuild(path),
+      ]);
       me = session;
       guildId = guildPage.guild.id;
       guildName = guildPage.guild.name;
@@ -69,8 +72,10 @@
       const id = guildPage.guild.id;
       const isMember = membershipIn(session) !== null;
       [settings, home] = await Promise.all([
-        fetchGuildSettings(id).catch(() => null),
-        isMember ? fetchGuildHome(id).catch(() => null) : Promise.resolve(null),
+        fetchGuildSettings(id, undefined, (fresh) => (settings = fresh)).catch(() => null),
+        isMember
+          ? fetchGuildHome(id, undefined, undefined, (fresh) => (home = fresh)).catch(() => null)
+          : Promise.resolve(null),
       ]);
       status = 'ready';
     } catch {

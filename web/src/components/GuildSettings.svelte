@@ -6,12 +6,14 @@
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
   import type { CharacterPath } from '../lib/characters';
-  import { fetchMeOnce, type GuildBillingView } from '../lib/account/api';
+  import { fetchMeFresh, refetchMe, type GuildBillingView, type Me } from '../lib/account/api';
+  import { onWindowFocus } from '../lib/data/query';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
   import {
     GuildApiError,
     fetchGuildSettings,
+    refetchGuildSettings,
     rotateInvite,
     updateGuildSettings,
     type GuildSettingsData,
@@ -58,7 +60,7 @@
       const page = await fetchGuild(path);
       guildId = page.guild.id;
       guildName = page.guild.name;
-      settings = await fetchGuildSettings(page.guild.id);
+      settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
     } catch (thrown) {
       status = thrown instanceof GuildApiError && thrown.status === 403 ? 'forbidden' : 'failed';
@@ -68,15 +70,29 @@
     // loaded successfully -- the billing section just falls back to "not subscribed" until
     // a retry (page reload) succeeds, same as any other read this page treats as secondary.
     try {
-      const me = await fetchMeOnce();
-      guildBilling = me?.guilds.find((g) => g.id === guildId)?.plan ?? null;
+      const me = await fetchMeFresh(applyBilling);
+      applyBilling(me);
     } catch {
       guildBilling = null;
     }
   }
 
+  function applyBilling(me: Me | null): void {
+    guildBilling = me?.guilds.find((g) => g.id === guildId)?.plan ?? null;
+  }
+
   $effect(() => {
     void load();
+  });
+
+  // A CLI grant or a Stripe webhook cannot notify the browser, so Settings (and the billing
+  // block on it) asks again when the player comes back to the window.
+  $effect(() => {
+    return onWindowFocus(() => {
+      if (guildId === null || status !== 'ready') return;
+      refetchGuildSettings(guildId, (fresh) => (settings = fresh));
+      refetchMe(applyBilling);
+    });
   });
 
   /**

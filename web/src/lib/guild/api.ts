@@ -4,8 +4,8 @@
 // reconciliation record). Follows rankings/api.ts's pattern: the shared transport
 // (account/api.ts's requestEnvelope), a module-local error class, and typed reads/writes
 // with no bespoke fetch() call anywhere else in this lane's own code.
-import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
-import { invalidate, query } from '../data/query';
+import { AccountError, invalidateMe, requestEnvelope, type EnvelopeResult } from '../account/api';
+import { invalidate, query, refetch } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 
 export const GUILD_API_FAILED = 'That did not work; try again';
@@ -340,11 +340,11 @@ async function call<T>(
   return result.data as T;
 }
 
-const GUILD_TTL_MS = 5 * 60 * 1000;
+/** A guild-scoped private answer older than this is never painted: role, plan and claim
+ *  are what a player acts on, and a join, a grant or an approval can land at any moment. */
+const GUILD_TTL_MS = 60 * 1000;
 
-/** Matches the path `fetchGuildHome` itself builds, so `invalidate(guildHomeKey(id,
- *  undefined, apiBase))` -- a prefix match -- catches every cursor page cached for this
- *  guild, not just the cursor-less first page. */
+/** The path `fetchGuildHome` itself builds; `invalidateGuild` below drops every cursor page. */
 function guildHomeKey(guildId: number, cursor: string | undefined, apiBase: string): string {
   return `${apiBase}/v1/guilds/${guildId}/home${cursor === undefined ? '' : `?cursor=${cursor}`}`;
 }
@@ -354,31 +354,69 @@ function guildSettingsKey(guildId: number, apiBase: string): string {
 }
 
 /**
+ * The one invalidation every guild mutation calls (claim, release, contest, confirm, approve,
+ * approve all, remove, join, leave, consent, settings, rotate, crest, award, un-award): drops
+ * every cached read under this guild (home and its cursor pages, settings, raids, progression,
+ * readiness, loot) and `/v1/me`, which carries the player's membership, rank, plan and the
+ * guild line on their character cards. The trailing slash keeps guild 1 from catching guild 12.
+ * Never called ad hoc from a component.
+ */
+export function invalidateGuild(guildId: number, apiBase: string = API_BASE_URL): void {
+  invalidate(`${apiBase}/v1/guilds/${guildId}/`);
+  invalidateMe(apiBase);
+}
+
+/**
  * "Guild home/settings for a member" (spec section 3.2): private, 5 minutes, through the
- * shared client cache (web/src/lib/data/query.ts). Every mutation below invalidates both
- * keys for the guild it acted on.
+ * shared client cache (web/src/lib/data/query.ts). Every mutation below calls
+ * `invalidateGuild`. Revalidated on every read: `onFresh` gets the newer answer when the
+ * background read differs from the cached one this call returned.
  */
 export function fetchGuildHome(
   guildId: number,
   cursor?: string,
   apiBase: string = API_BASE_URL,
+  onFresh?: (home: GuildHome) => void,
 ): Promise<GuildHome> {
   const path = cursor === undefined ? '' : `?cursor=${encodeURIComponent(cursor)}`;
   return query<GuildHome>(
     guildHomeKey(guildId, cursor, apiBase),
     () => call<GuildHome>(`/v1/guilds/${guildId}/home${path}`, apiBase),
-    { scope: 'private', ttlMs: GUILD_TTL_MS },
+    { scope: 'private', ttlMs: GUILD_TTL_MS, revalidateOnRead: true, onRevalidated: onFresh },
   );
 }
 
 export function fetchGuildSettings(
   guildId: number,
   apiBase: string = API_BASE_URL,
+  onFresh?: (settings: GuildSettingsData) => void,
 ): Promise<GuildSettingsData> {
   return query<GuildSettingsData>(
     guildSettingsKey(guildId, apiBase),
-    () => call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase),
+    () => loadGuildSettings(guildId, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS, revalidateOnRead: true, onRevalidated: onFresh },
+  );
+}
+
+function loadGuildSettings(guildId: number, apiBase: string): Promise<GuildSettingsData> {
+  return call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase);
+}
+
+/**
+ * The settings read asked again right now, whatever the cache holds: what the Settings page
+ * calls when the window regains focus, since a CLI grant or a Stripe webhook cannot notify
+ * the browser. The plan lives on `/v1/me`, so callers pair it with `refetchMe`.
+ */
+export function refetchGuildSettings(
+  guildId: number,
+  onData: (settings: GuildSettingsData) => void,
+  apiBase: string = API_BASE_URL,
+): void {
+  refetch(
+    guildSettingsKey(guildId, apiBase),
+    () => loadGuildSettings(guildId, apiBase),
     { scope: 'private', ttlMs: GUILD_TTL_MS },
+    onData,
   );
 }
 
@@ -391,15 +429,13 @@ export async function updateGuildSettings(
     method: 'PATCH',
     body: patch,
   });
-  invalidate(guildSettingsKey(guildId, apiBase));
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
 export async function claimGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<ClaimResult> {
   const data = await call<ClaimResult>(`/v1/guilds/${guildId}/claim`, apiBase, { method: 'POST' });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -410,8 +446,7 @@ export async function confirmClaim(
   const data = await call<ClaimConfirmResult>(`/v1/guilds/${guildId}/claim/confirm`, apiBase, {
     method: 'POST',
   });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -422,15 +457,13 @@ export async function releaseClaim(
   const data = await call<ClaimReleaseResult>(`/v1/guilds/${guildId}/claim/release`, apiBase, {
     method: 'POST',
   });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
 export async function contestClaim(guildId: number, apiBase: string = API_BASE_URL): Promise<ContestResult> {
   const data = await call<ContestResult>(`/v1/guilds/${guildId}/claim/contest`, apiBase, { method: 'POST' });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -441,19 +474,24 @@ export async function rotateInvite(
   const data = await call<InviteRotateResult>(`/v1/guilds/${guildId}/invite/rotate`, apiBase, {
     method: 'POST',
   });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
 /**
  * No `guildId` is known until the API answers (the token alone does not name a guild), so
- * this deliberately does not invalidate any guild's cached home/settings -- unlike every
- * other mutation in this file. The page that calls this navigates to the guild afterward,
- * which re-fetches regardless.
+ * the invalidation runs after it: the guild the invite named and `/v1/me` are dropped
+ * before the caller navigates, so the guild page it lands on renders the member view.
  */
-export function acceptInvite(token: string, apiBase: string = API_BASE_URL): Promise<InviteAcceptResult> {
-  return call<InviteAcceptResult>(`/v1/guilds/invite/${token}/accept`, apiBase, { method: 'POST' });
+export async function acceptInvite(
+  token: string,
+  apiBase: string = API_BASE_URL,
+): Promise<InviteAcceptResult> {
+  const data = await call<InviteAcceptResult>(`/v1/guilds/invite/${token}/accept`, apiBase, {
+    method: 'POST',
+  });
+  invalidateGuild(data.guild.id, apiBase);
+  return data;
 }
 
 /**
@@ -476,8 +514,7 @@ export async function approveCharacter(
     apiBase,
     { method: 'POST' },
   );
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -493,8 +530,7 @@ export async function removeCharacter(
     apiBase,
     { method: 'DELETE' },
   );
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -507,15 +543,13 @@ export async function updateConsent(
     method: 'PATCH',
     body: { consent },
   });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
 export async function leaveGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<LeftResult> {
   const data = await call<LeftResult>(`/v1/guilds/${guildId}/members/me`, apiBase, { method: 'DELETE' });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -782,13 +816,6 @@ export interface LootAwardResult {
   awarded_at: string;
 }
 
-/** Awards and un-awards invalidate every cached loot page for this guild, not just the
- *  currently-selected encounter -- a loot decision can be read back from any encounter
- *  query once the API supports filtering by item rather than encounter alone. */
-function invalidateGuildLoot(guildId: number, apiBase: string): void {
-  invalidate(`${apiBase}/v1/guilds/${guildId}/loot`);
-}
-
 export async function awardLoot(
   guildId: number,
   body: { encounter_id: number; item_id: number; character_key: string },
@@ -798,7 +825,7 @@ export async function awardLoot(
     method: 'POST',
     body,
   });
-  invalidateGuildLoot(guildId, apiBase);
+  invalidateGuild(guildId, apiBase); // every loot page, not just the selected encounter
   return data;
 }
 
@@ -810,7 +837,7 @@ export async function unawardLoot(
   const data = await call<{ status: 'removed' }>(`/v1/guilds/${guildId}/loot/awards/${awardId}`, apiBase, {
     method: 'DELETE',
   });
-  invalidateGuildLoot(guildId, apiBase);
+  invalidateGuild(guildId, apiBase); // every loot page, not just the selected encounter
   return data;
 }
 
@@ -825,8 +852,7 @@ export async function approveAllRoster(
   const data = await call<ApproveAllResult>(`/v1/guilds/${guildId}/roster/approve-all`, apiBase, {
     method: 'POST',
   });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -857,8 +883,7 @@ export async function putGuildCrest(
     method: 'PUT',
     body,
   });
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return data;
 }
 
@@ -870,7 +895,6 @@ export async function deleteGuildCrest(
   apiBase: string = API_BASE_URL,
 ): Promise<{ status: 'removed' }> {
   await call<null>(`/v1/guilds/${guildId}/crest`, apiBase, { method: 'DELETE' }, true);
-  invalidate(guildHomeKey(guildId, undefined, apiBase));
-  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidateGuild(guildId, apiBase);
   return { status: 'removed' };
 }

@@ -11,7 +11,7 @@
      line, above the tab strip itself (spec §4.0: "the tab strip sits directly under the
      role-based line") -- so they are visible on every tab, not just Overview. -->
 <script lang="ts">
-  import { fetchMeOnce } from '../lib/account/api';
+  import { fetchMeFresh, type Me } from '../lib/account/api';
   import { lookupAddonExport } from '../lib/addon-export';
   import { FACTION_BAR_COLOR, factionLogoSrc } from '../lib/faction-mark';
   import {
@@ -146,31 +146,37 @@
     const requested = resolved;
     if (requested === null) return;
     homeStatus = 'loading';
-    void fetchMeOnce()
-      .then((result) => {
+    // Painted from the cache at once, then asked again: a join, a grant or an approval since
+    // the last visit replaces the answer through `apply` (`onFresh`) without a reload.
+    const apply = (result: Me | null): Promise<void> | null => {
+      if (resolved !== requested) return null;
+      const membership = result?.guilds.find(
+        (g) =>
+          g.region === requested.region &&
+          g.ruleset === requested.ruleset &&
+          characterSlug(g.name) === requested.slug,
+      );
+      myCharacterKeys = new Set((result?.characters ?? []).map((c) => c.key));
+      isModerator = result?.user.role === 'moderator' || result?.user.role === 'admin';
+      myBattletag = result?.user.battletag ?? null;
+      meResolved = true;
+      signedIn = result !== null;
+      if (membership === undefined) {
+        myGuildMembership = null;
+        home = null;
+        homeStatus = 'idle';
+        return null;
+      }
+      myGuildMembership = { rank: membership.rank ?? 'member', verified: membership.verified };
+      const show = (page: GuildHome): void => {
         if (resolved !== requested) return;
-        const membership = result?.guilds.find(
-          (g) =>
-            g.region === requested.region &&
-            g.ruleset === requested.ruleset &&
-            characterSlug(g.name) === requested.slug,
-        );
-        myCharacterKeys = new Set((result?.characters ?? []).map((c) => c.key));
-        isModerator = result?.user.role === 'moderator' || result?.user.role === 'admin';
-        myBattletag = result?.user.battletag ?? null;
-        meResolved = true;
-        signedIn = result !== null;
-        if (membership === undefined) {
-          homeStatus = 'idle';
-          return null;
-        }
-        myGuildMembership = { rank: membership.rank ?? 'member', verified: membership.verified };
-        return fetchGuildHome(membership.id).then((page) => {
-          if (resolved !== requested) return;
-          home = page;
-          homeStatus = 'ready';
-        });
-      })
+        home = page;
+        homeStatus = 'ready';
+      };
+      return fetchGuildHome(membership.id, undefined, undefined, show).then(show);
+    };
+    void fetchMeFresh((fresh) => void apply(fresh)?.catch(() => {}))
+      .then(apply)
       .catch(() => {
         if (resolved !== requested) return;
         meResolved = true;
@@ -270,6 +276,18 @@
     });
   });
 
+  /** After a roster action: the mutation dropped the cached home, so this reads the guild's
+   *  own answer (roster, pending list, waiting count) rather than trusting the local edit.
+   *  Best-effort: the local edit already shows the change. */
+  async function refreshHome(): Promise<void> {
+    if (home === null) return;
+    try {
+      home = await fetchGuildHome(home.guild.id);
+    } catch {
+      // The local edit stays.
+    }
+  }
+
   async function onApprove(row: GuildRosterRow): Promise<void> {
     if (home === null) return;
     rosterBusy = row.character_key;
@@ -283,6 +301,7 @@
         ),
         pending: (home.pending ?? []).filter((r) => r.character_key !== row.character_key),
       };
+      await refreshHome();
     } catch (thrown) {
       rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
@@ -302,6 +321,7 @@
         roster: home.roster.map((r) => (approved.has(r.character_key) ? { ...r, verified: true } : r)),
         pending: (home.pending ?? []).filter((r) => !approved.has(r.character_key)),
       };
+      await refreshHome();
     } catch (thrown) {
       rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
@@ -316,6 +336,7 @@
     try {
       await removeCharacter(home.guild.id, row.region, row.ruleset, characterSlug(row.name));
       home = { ...home, roster: home.roster.filter((r) => r.character_key !== row.character_key) };
+      await refreshHome();
     } catch (thrown) {
       rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
