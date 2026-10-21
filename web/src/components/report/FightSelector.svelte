@@ -34,7 +34,7 @@
   const currentLabel = $derived(
     selected === ALL_FIGHTS || current === null
       ? 'All boss pulls'
-      : `${fightTitle(current)} · ${outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? ''))} · ${formatDuration(current.duration_ms)}`,
+      : `${fightTitle(current)} · ${outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? ''))}${current.kind === 'encounter' ? ` · ${formatDuration(current.duration_ms)}` : ''}`,
   );
 
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
@@ -102,7 +102,8 @@
       </span>
       <span class="text-muted tabular flex w-full items-baseline gap-2 font-mono text-[11px]">
         <span>{formatClock(fight.start)}</span>
-        <span>{formatDuration(fight.duration_ms)}</span>
+        <!-- A trash row's name already says its length ("Trash · 3:26"): once is enough. -->
+        {#if fight.kind === 'encounter'}<span>{formatDuration(fight.duration_ms)}</span>{/if}
         {#if fight.deaths > 0}
           <span
             class="text-death"

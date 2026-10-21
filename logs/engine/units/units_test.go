@@ -215,3 +215,24 @@ func TestAllIsSortedForDeterminism(t *testing.T) {
 		}
 	}
 }
+
+// A spec-defining spell votes; the most-cast spec wins, and COMBATANT_INFO silences the vote.
+func TestSpecFromSpecDefiningSpells(t *testing.T) {
+	r := NewRegistry(Options{SpecBySpell: map[int64]string{1: "Arms", 2: "Fury"}})
+	guid := "Player-4184-000000B1"
+	cast := func(id int64) {
+		r.Observe(event.Event{Time: at, Kind: event.CastSuccess,
+			Source: event.Unit{GUID: guid, Name: "Test-Realm", Flags: 0x511},
+			Spell:  event.Spell{ID: id}})
+	}
+	cast(1)
+	cast(2)
+	cast(2)
+	if u, _ := r.Get(guid); u.Spec != "Fury" {
+		t.Fatalf("spec = %q, want the most-cast, Fury", u.Spec)
+	}
+	cast(1)
+	if u, _ := r.Get(guid); u.Spec != "Fury" {
+		t.Fatalf("a tie flipped the spec to %q", u.Spec)
+	}
+}

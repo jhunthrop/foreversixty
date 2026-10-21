@@ -29,4 +29,7 @@ export const reportCopy = {
   quietBadge: 'Quiet',
   /** The badge where "Live" goes on the bundled sample report. */
   sampleBadge: 'Sample report',
+  /** The one muted line under the sample's subtitle: what it is, and that yours look like it. */
+  sampleNote:
+    'A real beta night with the names changed, so you can look around. Your own reports look like this.',
 } as const;

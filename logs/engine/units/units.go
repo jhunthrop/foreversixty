@@ -124,18 +124,21 @@ func Parse(s string) GUID {
 
 // Unit is everything the registry knows about one GUID.
 type Unit struct {
-	GUID        string    `json:"guid"`
-	Name        string    `json:"name"`
-	Kind        Kind      `json:"kind"`
-	NPCID       int64     `json:"npc_id,omitempty"`
-	Flags       uint32    `json:"flags"`
-	OwnerGUID   string    `json:"owner_guid,omitempty"`
-	Class       string    `json:"class,omitempty"`
-	ClassSource string    `json:"class_source,omitempty"` // "combatant_info" or "inferred"
-	SpecID      int64     `json:"spec_id,omitempty"`
-	ItemLevel   int64     `json:"item_level,omitempty"`
-	FirstSeen   time.Time `json:"first_seen"`
-	LastSeen    time.Time `json:"last_seen"`
+	GUID        string `json:"guid"`
+	Name        string `json:"name"`
+	Kind        Kind   `json:"kind"`
+	NPCID       int64  `json:"npc_id,omitempty"`
+	Flags       uint32 `json:"flags"`
+	OwnerGUID   string `json:"owner_guid,omitempty"`
+	Class       string `json:"class,omitempty"`
+	ClassSource string `json:"class_source,omitempty"` // "combatant_info" or "inferred"
+	SpecID      int64  `json:"spec_id,omitempty"`
+	// Spec is a spec read off the spells the player cast, for a log with no COMBATANT_INFO;
+	// empty when the spells are not spec-defining or the log named the spec itself.
+	Spec      string    `json:"spec,omitempty"`
+	ItemLevel int64     `json:"item_level,omitempty"`
+	FirstSeen time.Time `json:"first_seen"`
+	LastSeen  time.Time `json:"last_seen"`
 }
 
 // IsPlayer reports whether the unit is a player character.
@@ -150,12 +153,18 @@ type Options struct {
 	ClassBySpell map[int64]string
 	// ClassBySpec maps a COMBATANT_INFO spec id to a class name.
 	ClassBySpec map[int64]string
+	// SpecBySpell maps a spec-defining spell id (a talent's) to the spec's name. A player
+	// who cast one has that spec when the log gave none; several specs vote, most wins.
+	SpecBySpell map[int64]string
 }
 
 // Registry accumulates units as events arrive.
 type Registry struct {
 	opt   Options
 	units map[string]*Unit
+	// specVotes counts spec-defining casts per player. It is a working tally, not saved
+	// state: a restored registry keeps each unit's Spec and votes again from there.
+	specVotes map[string]map[string]int
 }
 
 // State is the registry in a form that survives a restart.
@@ -165,7 +174,7 @@ type State struct {
 
 // NewRegistry returns an empty registry.
 func NewRegistry(o Options) *Registry {
-	return &Registry{opt: o, units: map[string]*Unit{}}
+	return &Registry{opt: o, units: map[string]*Unit{}, specVotes: map[string]map[string]int{}}
 }
 
 // RestoreRegistry rebuilds a registry from saved state.
@@ -231,6 +240,25 @@ func (r *Registry) Observe(e event.Event) {
 				u.Class, u.ClassSource = class, "inferred"
 			}
 		}
+		if spec, ok := r.opt.SpecBySpell[e.Spell.ID]; ok {
+			if u := r.units[e.Source.GUID]; u != nil && u.IsPlayer() && u.SpecID == 0 {
+				r.voteSpec(u, spec)
+			}
+		}
+	}
+}
+
+// voteSpec counts one spec-defining cast and gives the unit the spec with the most casts;
+// on a tie the spec it already has stays.
+func (r *Registry) voteSpec(u *Unit, spec string) {
+	votes := r.specVotes[u.GUID]
+	if votes == nil {
+		votes = map[string]int{}
+		r.specVotes[u.GUID] = votes
+	}
+	votes[spec]++
+	if u.Spec == "" || votes[spec] > votes[u.Spec] {
+		u.Spec = spec
 	}
 }
 

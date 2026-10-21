@@ -60,6 +60,17 @@ export function defaultFightIndex(fights: readonly FightEntry[]): number {
   return encounter?.index ?? fights[0]?.index ?? 1;
 }
 
+/**
+ * The fight the bundled sample opens on: its longest pull, the one a visitor should see first.
+ * A real report keeps defaultFightIndex's rule; the sample is one night of trash with no boss,
+ * so "first boss pull" would land on a three-minute pull of a hundred players doing nothing.
+ */
+export function biggestFightIndex(fights: readonly FightEntry[]): number {
+  let best: FightEntry | undefined;
+  for (const fight of fights) if (best === undefined || fight.duration_ms > best.duration_ms) best = fight;
+  return best?.index ?? defaultFightIndex(fights);
+}
+
 /** What a fight's row is called: a boss keeps its name; trash is "Trash · 3:26", its length, since every trash pull is named "Trash". */
 export function fightTitle(fight: Pick<FightEntry, 'kind' | 'name' | 'duration_ms'>): string {
   return fight.kind === 'encounter' ? fight.name : `Trash · ${formatDuration(fight.duration_ms)}`;

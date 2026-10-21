@@ -51,6 +51,7 @@
     durationMs,
     percentile = null,
     parseFallback = '',
+    showParse = true,
     pairsLabel = 'Targets',
     share = 0,
     approximate = false,
@@ -72,6 +73,8 @@
     durationMs: number;
     percentile?: Placement | null;
     parseFallback?: string;
+    /** False on a report with no ranked boss kill: no Parse column at all. */
+    showParse?: boolean;
     /** The word over the per-unit split: Targets for damage done and healing, Sources for damage taken. */
     pairsLabel?: string;
     /** This row's share of its table's total, 0..100. */
@@ -338,7 +341,9 @@
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
   <button
     type="button"
-    class="grid min-h-11 w-full grid-cols-[28px_auto_minmax(96px,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px] md:py-2"
+    class="grid min-h-11 w-full items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:py-2 {showParse
+      ? 'grid-cols-[28px_auto_minmax(96px,1fr)_auto] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'
+      : 'grid-cols-[28px_minmax(96px,1fr)_auto] md:grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
@@ -348,30 +353,32 @@
       >{rank}</span
     >
 
-    <!-- A parse is for the whole fight: under a window or a table filter the figure beside
+    {#if showParse}
+      <!-- A parse is for the whole fight: under a window or a table filter the figure beside
          it is a subtotal, and the whole-fight percentile would be read as its rank. -->
-    <span
-      class="tabular font-mono text-[12px]"
-      class:text-muted={percentile === null || parseWithheld}
-      style={percentile === null || parseWithheld
-        ? undefined
-        : `color: ${percentileToken(percentile.percentile)}`}
-      title={percentile === null || parseWithheld
-        ? parseTitle(parseFallback)
-        : parseTitle(percentile.percentile, percentile.ranked)}
-      data-testid="row-percentile"
-    >
-      {#if percentile === null || parseWithheld}<span class:text-muted={true}
-          >{parseFallback === 'none' ||
-          parseFallback === 'night' ||
-          parseFallback === 'window' ||
-          parseFallback === 'filter'
-            ? ''
-            : parseFallback}</span
-        >{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
-          percentile.percentile,
-        )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
-    </span>
+      <span
+        class="tabular font-mono text-[12px]"
+        class:text-muted={percentile === null || parseWithheld}
+        style={percentile === null || parseWithheld
+          ? undefined
+          : `color: ${percentileToken(percentile.percentile)}`}
+        title={percentile === null || parseWithheld
+          ? parseTitle(parseFallback)
+          : parseTitle(percentile.percentile, percentile.ranked)}
+        data-testid="row-percentile"
+      >
+        {#if percentile === null || parseWithheld}<span class:text-muted={true}
+            >{parseFallback === 'none' ||
+            parseFallback === 'night' ||
+            parseFallback === 'window' ||
+            parseFallback === 'filter'
+              ? ''
+              : parseFallback}</span
+          >{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
+            percentile.percentile,
+          )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
+      </span>
+    {/if}
 
     <span
       class="flex min-w-0 flex-wrap items-center gap-x-2 overflow-hidden font-semibold [&>*]:truncate"
@@ -403,7 +410,7 @@
     <span class="text-muted tabular hidden text-right font-mono text-[12px] md:inline" data-testid="row-share"
       >{share.toFixed(1)}%</span
     >
-    <span class="col-span-4 row-start-2 md:col-span-1 md:row-auto">
+    <span class="row-start-2 md:col-span-1 md:row-auto {showParse ? 'col-span-4' : 'col-span-3'}">
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
 

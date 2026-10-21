@@ -1,8 +1,8 @@
 <!-- web/src/components/report/ModeBar.svelte -->
 <!-- Modes, then views, then source scope, then the twelve tabs -- the order spec section 4
-     sets, which is also Warcraft Logs' order, so nobody relearns it. Replay is rendered
-     disabled with "later" rather than hidden: the spec defers it, and a missing control
-     reads as a missing feature.
+     sets, which is also Warcraft Logs' order, so nobody relearns it. Replay is not rendered
+     until it exists (the mode stays in url.ts): a "later" chip on the tab row read as a
+     roadmap pill on the one page meant to impress.
 
      Over the whole night the mode row stays up rather than hiding: Analyze's tables and
      Mechanics both have a meaning across pulls, and hiding the row hid the way back out
@@ -68,6 +68,20 @@
   /** Closed once a tab is picked from it, the way a native select closes on its own. */
   let moreOpen = $state(false);
 
+  let tabRow = $state<HTMLElement | null>(null);
+  let fadeRight = $state(false);
+  function measureFade(): void {
+    if (tabRow === null) return;
+    fadeRight = tabRow.scrollLeft + tabRow.clientWidth < tabRow.scrollWidth - 1;
+  }
+  $effect(() => {
+    if (tabRow === null) return;
+    measureFade();
+    const watch = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measureFade);
+    watch?.observe(tabRow);
+    return () => watch?.disconnect();
+  });
+
   function selectTab(tab: Tab): void {
     onPatch({ tab });
     moreOpen = false;
@@ -75,46 +89,47 @@
 </script>
 
 <div class="flex flex-col gap-3" data-testid="mode-bar">
-  <div
-    role="tablist"
-    aria-label="Mode"
-    class="border-line-soft flex flex-nowrap items-center overflow-x-auto border-b"
-  >
-    {#each MODES as option (option.id)}
-      {#if option.id === 'replay'}
-        <!-- A trailing muted chip, not another tab: Replay is not built yet, and giving it
-             the same underline treatment as the four real modes made it read as a fifth
-             one that happened to be broken. shrink-0 keeps it from being the reason the
-             row wraps on a phone -- the row scrolls sideways instead (finding 4). -->
-        <button
-          type="button"
-          role="tab"
-          class="{pill} border-line-soft bg-card-top text-muted ml-2 shrink-0 gap-1 rounded-full border px-3 whitespace-nowrap normal-case"
-          aria-selected="false"
-          disabled
-          data-testid={`mode-${option.id}`}
-        >
-          {option.label}<span class="lowercase">{option.note}</span>
-        </button>
-      {:else}
-        <button
-          type="button"
-          role="tab"
-          class="{pill} {underline} shrink-0 whitespace-nowrap"
-          class:border-gold={reportState.mode === option.id}
-          class:border-transparent={reportState.mode !== option.id}
-          class:text-strong={available(option) && reportState.mode === option.id}
-          class:text-nav={available(option) && reportState.mode !== option.id}
-          class:text-muted={!available(option)}
-          aria-selected={reportState.mode === option.id}
-          disabled={!available(option)}
-          data-testid={`mode-${option.id}`}
-          onclick={() => available(option) && onPatch({ mode: option.id as Mode })}
-        >
-          {option.label}{#if !available(option)}<span class="text-muted ml-2 lowercase">one pull’s</span>{/if}
-        </button>
-      {/if}
-    {/each}
+  <!-- On a phone the row scrolls sideways; a 24px fade on the right edge says there is more
+       while it does, and goes once the last tab is in view. -->
+  <div class="relative">
+    <div
+      bind:this={tabRow}
+      onscroll={measureFade}
+      role="tablist"
+      aria-label="Mode"
+      class="border-line-soft flex flex-nowrap items-center overflow-x-auto border-b"
+    >
+      {#each MODES as option (option.id)}
+        {#if option.id === 'replay'}
+          <!-- Not drawn until Replay exists. -->
+        {:else}
+          <button
+            type="button"
+            role="tab"
+            class="{pill} {underline} shrink-0 whitespace-nowrap"
+            class:border-gold={reportState.mode === option.id}
+            class:border-transparent={reportState.mode !== option.id}
+            class:text-strong={available(option) && reportState.mode === option.id}
+            class:text-nav={available(option) && reportState.mode !== option.id}
+            class:text-muted={!available(option)}
+            aria-selected={reportState.mode === option.id}
+            disabled={!available(option)}
+            data-testid={`mode-${option.id}`}
+            onclick={() => available(option) && onPatch({ mode: option.id as Mode })}
+          >
+            {option.label}{#if !available(option)}<span class="text-muted ml-2 lowercase">one pull’s</span
+              >{/if}
+          </button>
+        {/if}
+      {/each}
+    </div>
+    {#if fadeRight}
+      <div
+        class="from-bg/0 to-bg pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-r md:hidden"
+        data-testid="mode-fade"
+        aria-hidden="true"
+      ></div>
+    {/if}
   </div>
 
   <!-- Row 2: the view segmented control, the source scope and the table tabs, one flex-wrap

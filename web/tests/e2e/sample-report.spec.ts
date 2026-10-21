@@ -36,7 +36,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await sample.getByRole('link').first().click();
 
   await expect(page).toHaveURL(/\/reports\/sample$/);
-  await expect(page.getByTestId('report-title')).toHaveText('Beta night, 17 Sept 2026 · sample log');
+  await expect(page.getByTestId('report-title')).toHaveText('Beta night, 17 Sept 2026');
   await expect(page.getByText('17 Sept 2026').first()).toBeVisible();
   await expect(page.getByTestId('report-sample-badge')).toHaveText('Sample report');
   await expect(page.getByTestId('report-live')).toHaveCount(0);
@@ -46,8 +46,36 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await expect(page.getByText(SAMPLE_REPORT_META.zone).first()).toBeVisible();
   expect(api).toEqual([]);
 
+  // L.8: a first look that convinces. Nothing the log cannot know is drawn; the class shows.
+  const roster = page.getByTestId('summary-tab');
+  await expect(roster).toBeVisible();
+  await expect(roster.getByTestId(/^roster-Player-/).first()).toBeVisible();
+  const body = (await page.locator('main').innerText()) ?? '';
+  expect(body).not.toContain('REPLAY');
+  expect(body).not.toContain('could not be reached');
+  await expect(page.getByTestId('mode-replay')).toHaveCount(0);
+  await expect(page.getByTestId('parse-unavailable')).toHaveCount(0);
+  await expect(page.getByTestId('roster-percentile')).toHaveCount(0);
+  await expect(page.getByTestId('roster-spec')).toHaveCount(0);
+  await expect(page.getByTestId('report-sample-note')).toContainText(
+    'A real beta night with the names changed',
+  );
+  await expect(page).not.toHaveURL(/fight=/);
+  // Opens on the biggest pull (fight 6, 12:43), not the first.
+  await expect(page.getByTestId('fight-6')).toHaveAttribute('aria-current', 'true');
+  // Class colours: no name keeps the plain text colour.
+  const colours = await roster
+    .getByTestId(/^roster-Player-/)
+    .evaluateAll((rows) =>
+      rows.slice(0, 40).map((row) => getComputedStyle(row.querySelector('span') as Element).color),
+    );
+  expect(new Set(colours).size).toBeGreaterThan(2);
+  // A trash row prints its length once.
+  const row1 = await page.getByTestId('fight-1').innerText();
+  expect((row1.match(/3:26/g) ?? []).length).toBe(1);
+
   if (SHOT_DIR !== undefined) {
     const width = info.project.name === 'mobile' ? 390 : 1280;
-    await page.screenshot({ path: `${SHOT_DIR}/l7-sample-${width}.png`, fullPage: false });
+    await page.screenshot({ path: `${SHOT_DIR}/l8-sample-${width}.png`, fullPage: false });
   }
 });
