@@ -7,7 +7,9 @@ describe('accountPageCopy first-run lines', () => {
     expect(accountPageCopy.noDevices).toBe(
       'No devices yet. The companion signs in with Battle.net from its Device page; a code is only for the fallback.',
     );
-    expect(accountPageCopy.pairADevice).toBe('Get a pairing code');
+    // With no companion the button is the download and the code is a text link under it (W.9).
+    expect(accountPageCopy.downloadCompanion).toBe('Download the companion');
+    expect(accountPageCopy.pairADevice).toBe('Use a code instead');
   });
 
   it('greets an account with no characters by name instead of naming a character', () => {

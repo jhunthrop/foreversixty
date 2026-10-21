@@ -363,6 +363,25 @@ html[data-pointer='1'] .setup-when-no-pointer {
   display: none;
 }
 
+/* The three progress chips on /setup (SetupProgress.svelte). Each shows its "to do" or its "done"
+   reading: from `data-done` once the session and device reads have answered, and until then from
+   the same pre-paint hints the steps use -- the session cookie for step 1, the stored character
+   for step 2 -- so a signed-in visitor never sees step 1 flip. */
+.setup-chip[data-done='true'] .chip-todo,
+.setup-chip[data-done='false'] .chip-done,
+html:not([data-session='1']) .setup-chip[data-hint='session']:not([data-done]) .chip-done,
+html[data-session='1'] .setup-chip[data-hint='session']:not([data-done]) .chip-todo,
+html:not([data-pointer='1']) .setup-chip[data-hint='pointer']:not([data-done]) .chip-done,
+html[data-pointer='1'] .setup-chip[data-hint='pointer']:not([data-done]) .chip-todo,
+.setup-chip[data-hint='none']:not([data-done]) .chip-done {
+  display: none;
+}
+.setup-chip[data-done='true'] .setup-chip-link,
+html[data-session='1'] .setup-chip[data-hint='session']:not([data-done]) .setup-chip-link,
+html[data-pointer='1'] .setup-chip[data-hint='pointer']:not([data-done]) .setup-chip-link {
+  border-color: var(--color-gold);
+}
+
 /* A disclosure's own affordance: a summary carries one .when-closed and one .when-open
    child ("Show" / "Hide" or a caret), and only the one that applies is drawn. */
 details[open] > summary .when-closed,

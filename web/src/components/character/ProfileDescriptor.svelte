@@ -20,6 +20,7 @@
 <script lang="ts">
   import { characterHeaderCopy, type ProfileHeader } from '../../lib/character-profile';
   import { STALE_SEPARATOR, syncText, type SyncView } from '../../lib/character-header/sync';
+  import { classColorVar } from '../../lib/report/format';
 
   let { header, sync = null }: { header: ProfileHeader; sync?: SyncView | null } = $props();
 
@@ -44,7 +45,11 @@
 
   /** Muted text and one border token, whichever line it ends (fix round 2 item 3); top-aligned,
    *  a 22px pill in a 22px line box, so its centre is the line's (fix round 3 item 14). */
-  const CHIP = 'pill text-muted border-line align-top ml-2';
+  const CHIP = 'pill text-muted border-line align-top';
+  /** The chip's own box: 12 px from the race on a line it shares, and on a phone it drops to a line of
+   *  its own so "Night Elf" never runs into the badge (W.9). */
+  const CHIP_BOX = 'ml-3';
+  const CHIP_OWN_LINE = 'ml-3 max-sm:mt-1 max-sm:ml-0 max-sm:block max-sm:w-fit';
   /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). Inline and
    *  wrapping inside its unit, so a guild longer than the line wraps (fix round 3 item 2); on a
    *  phone 14px of padding above and below the 16px content box make the 44px target (15px made
@@ -72,10 +77,12 @@
   }
 </script>
 
-{#snippet chip()}<span class={CHIP} data-testid="character-ruleset-chip">{header.chip}</span>{/snippet}
+{#snippet chip(ownLine: boolean = false)}<span class={ownLine ? CHIP_OWN_LINE : CHIP_BOX}
+    ><span class={CHIP} data-testid="character-ruleset-chip">{header.chip}</span></span
+  >{/snippet}
 
 {#snippet words(item: Segment, index: number)}{#if item.key === 'spec'}<span
-      class="text-text"
+      style={`color: ${classColorVar(header.className ?? undefined)}`}
       data-testid="character-spec">{item.text}</span
     >{:else if item.key === 'split'}<span class="tabular" data-testid="character-split">{item.text}</span
     >{:else if item.href !== undefined}<a
@@ -101,7 +108,7 @@
 {#if header.levelRace !== null}
   <p class={`${LINE} whitespace-nowrap`} data-testid="character-level-line">
     <span data-testid="character-level-race">{header.levelRace}</span
-    >{#if header.chipOn === 'levelRace'}{@render chip()}{/if}
+    >{#if header.chipOn === 'levelRace'}{@render chip(true)}{/if}
   </p>
 {/if}
 {#if sync !== null}

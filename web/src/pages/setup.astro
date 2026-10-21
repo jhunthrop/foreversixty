@@ -1,12 +1,14 @@
 ---
 // web/src/pages/setup.astro
 // Sign in, the addon, and the companion, in one page (spec 2026-09-25 §3.4), replacing
-// /addon. Reference voice: state the thing and stop.
+// /addon. Reference voice: state the thing and stop. Each step is one gold button and, signed
+// in, one line saying whether the account shows it done (W.9; UX review r5, finding 2).
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
 import AddonPasteBox from '../components/AddonPasteBox.svelte';
 import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
-import SetupCompanionDone from '../components/SetupCompanionDone.svelte';
+import SetupProgress from '../components/SetupProgress.svelte';
+import SetupStepLine from '../components/SetupStepLine.svelte';
 import { companionPlatformsLine } from '../lib/setup/progress';
 import { addonCopy } from '../lib/addon/copy';
 import { battlenetStartUrl } from '../lib/account/api';
@@ -26,8 +28,8 @@ export const DATA_CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706707'
 export const DATA_WAGO_URL = 'https://addons.wago.io/addons/foreversixtydata';
 export const DATA_GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=data-v`;
 
-const links = [
-  { label: addonCopy.installCurseForge, href: CURSEFORGE_URL },
+// The step's one gold button is CurseForge; Wago and the zip are quiet links beside it.
+const quietLinks = [
   { label: addonCopy.installWago, href: WAGO_URL },
   { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
 ];
@@ -38,6 +40,9 @@ const dataLinks = [
   { label: addonCopy.installDataGitHub, href: DATA_GITHUB_RELEASES_URL },
 ];
 
+const downloadUrl = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
+// The first download is the step's one gold button; any other platform is a quiet link.
+const [primaryDownload, ...otherDownloads] = companion.downloads;
 const platformsLine = companionPlatformsLine(companion.downloads.map((entry) => entry.platform));
 const capture = addonCopy.setupCompanionCapture;
 
@@ -46,114 +51,114 @@ const flows = [
   { title: addonCopy.flowInTitle, body: addonCopy.flowInBody },
   { title: addonCopy.inGameTitle, body: addonCopy.inGameBody },
 ];
+
+const DISCLOSURE = 'border-line rounded-control border';
+const SUMMARY =
+  'label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 select-none';
+const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2';
 ---
 
 <Base title={addonCopy.setupPageTitle} description={addonCopy.pageDescription} path="/setup">
   <main id="main" tabindex="-1" class="measure-wide flex flex-col gap-5 px-[18px] py-10 md:px-0">
     <header class="flex flex-col gap-3">
       <h1 class="text-[28px] font-bold tracking-[0.02em]">{addonCopy.setupPageTitle}</h1>
-      <p class="text-muted text-[15px]">{addonCopy.pageDescription}</p>
-      <!-- The checklist at a glance. Each item has a done and a not-done reading; global.css
-           shows one of them from the <html> hints, so a signed-in visitor with an export
-           loaded sees two ticks before any script runs. The companion has no hint of its own
-           (pairing lives on the account), so it never reads as done here. -->
-      <p id="setup-progress-label" class="label text-muted -mb-1">
-        {addonCopy.setupProgressLabel}
-      </p>
-      <ol
-        class="label text-muted flex flex-wrap gap-x-5 gap-y-1"
-        data-testid="setup-status"
-        aria-labelledby="setup-progress-label"
-      >
-        <li class="flex items-center gap-2">
-          <span
-            class="setup-when-out border-line-warm inline-block size-3 rounded-full border"
-            aria-hidden="true"
-          ></span>
-          <span class="setup-when-in bg-gold inline-block size-3 rounded-full" aria-hidden="true"></span>
-          <span class="setup-when-out">{addonCopy.setupStatusSignIn}</span>
-          <span class="setup-when-in">{addonCopy.setupStatusSignedIn}</span>
-        </li>
-        <li class="flex items-center gap-2">
-          <span
-            class="setup-when-no-pointer border-line-warm inline-block size-3 rounded-full border"
-            aria-hidden="true"
-          ></span>
-          <span class="setup-when-pointer bg-gold inline-block size-3 rounded-full" aria-hidden="true"></span>
-          <span class="setup-when-no-pointer">{addonCopy.setupStatusAddon}</span>
-          <span class="setup-when-pointer">{addonCopy.setupStatusAddonDone}</span>
-        </li>
-        <li class="flex items-center gap-2">
-          <span class="border-line-warm inline-block size-3 rounded-full border" aria-hidden="true"></span>
-          <span>{addonCopy.setupStatusCompanion}</span>
-        </li>
-      </ol>
+      <p class="text-muted text-[15px]">{addonCopy.setupSubline}</p>
+      <!-- The checklist at a glance: three numbered anchors, gold with a check once the account
+           shows the step done. They read the <html> hints before any script runs (global.css). -->
+      <SetupProgress client:idle />
     </header>
 
     <Panel title={addonCopy.setupStep1Title}>
-      <div class="flex flex-col gap-3 p-[18px]">
+      <div id="signin" class="flex scroll-mt-20 flex-col gap-3 p-[18px]">
         <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
-        <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInRealmNote}</p>
         <a
           class={`setup-when-out ${PRIMARY_BUTTON_FIXED} px-5 w-fit`}
           href={battlenetStartUrl('/account?signed_in=1')}
         >
           {addonCopy.setupSignInAction}
         </a>
-        <p class="setup-when-in text-[14px]" data-testid="setup-signed-in">
-          {addonCopy.setupSignedInLine}{' '}
-          <a class="text-nav underline" href="/account">
-            {addonCopy.setupSignedInLink}
-          </a>
-        </p>
+        <SetupStepLine step="signin" client:idle />
       </div>
     </Panel>
 
     <Panel title={addonCopy.setupStep2Title}>
       <div id="addon" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
-        <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
-        <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
-          {links.map((link) => (
-            <li>
-              <a
-                class="inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2"
-                href={link.href}
-                rel="noopener"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <p class="text-muted text-[14px] leading-relaxed" data-testid="setup-data-addon">
-          {addonCopy.installDataLead}
+        <div class="flex flex-col gap-3">
+          <a class={`${PRIMARY_BUTTON_FIXED} w-fit px-5`} href={CURSEFORGE_URL} rel="noopener">
+            {addonCopy.installCurseForge}
+          </a>
+          <ul class="flex flex-wrap gap-x-6 gap-y-0">
+            {quietLinks.map((link) => (
+              <li>
+                <a class={QUIET_LINK} href={link.href} rel="noopener">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p class="text-muted text-[13px] leading-relaxed" data-testid="setup-data-addon">
+          {addonCopy.installDataHint}
         </p>
-        <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
-          {dataLinks.map((link) => (
-            <li>
-              <a
-                class="inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2"
-                href={link.href}
-                rel="noopener"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <p class="setup-when-pointer text-[14px]" data-testid="setup-addon-done">
+        <p class="text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
+          {addonCopy.setupHowItArrives}
+        </p>
+        <p class="setup-when-out setup-when-pointer text-[14px]" data-testid="setup-addon-done">
           {addonCopy.setupAddonDoneLine}
         </p>
-        <AddonPasteBox client:idle />
+        <SetupStepLine step="addon" client:idle />
         <CurrentCharacterBar client:idle hasOwnPasteBox />
+
+        <!-- Behind disclosures, so the step reads as one button and a line: the export paste box,
+             the data addon's own links and the build number, and the manual (what the addon does
+             in the game, its commands, the handshake and the flows). A link to #paste, or to a
+             step's anchor, opens the disclosure that holds it (the script below). -->
+        <details class={DISCLOSURE} data-testid="setup-try-export">
+          <summary class={SUMMARY}>
+            {addonCopy.setupTryExport}
+            <span class="when-closed text-muted" aria-hidden="true">
+              {addonCopy.disclosureOpen}
+            </span>
+            <span class="when-open text-muted" aria-hidden="true">
+              {addonCopy.disclosureClose}
+            </span>
+          </summary>
+          <div class="px-4 pb-4">
+            <AddonPasteBox client:idle heading={false} />
+          </div>
+        </details>
+
+        <details class={DISCLOSURE} data-testid="setup-manual-install">
+          <summary class={SUMMARY}>
+            {addonCopy.setupManualInstall}
+            <span class="when-closed text-muted" aria-hidden="true">
+              {addonCopy.disclosureOpen}
+            </span>
+            <span class="when-open text-muted" aria-hidden="true">
+              {addonCopy.disclosureClose}
+            </span>
+          </summary>
+          <div class="flex flex-col gap-3 px-4 pb-4">
+            <p class="text-muted text-[14px] leading-relaxed">{addonCopy.installDataLead}</p>
+            <ul class="flex flex-col gap-0 md:flex-row md:flex-wrap md:gap-x-6">
+              {dataLinks.map((link) => (
+                <li>
+                  <a class={QUIET_LINK} href={link.href} rel="noopener">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
+          </div>
+        </details>
+
         <!-- Task L8.3: what the addon does in the game, one row per surface of the addon-v2
              spec's §4 in its order, with crops of real client captures (lazy, each in a box
              of its own aspect so nothing below moves as they load); then the /fs commands
              and the companion handshake. A surface with no capture shows no image. -->
-        <!-- The manual: one collapsed disclosure, so the three steps read in order and the
-             companion is not a scroll away. -->
-        <details class="border-line rounded-control border" data-testid="setup-everything">
-          <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 select-none">
+        <details class={DISCLOSURE} data-testid="setup-everything">
+          <summary class={SUMMARY}>
             {addonCopy.setupEverything}
             <span class="when-closed text-muted" aria-hidden="true">
               {addonCopy.disclosureOpen}
@@ -232,40 +237,45 @@ const flows = [
 
     <Panel title={addonCopy.setupStep3Title}>
       <div id="companion" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
-        <p id="logging" class="text-muted text-[14px] leading-relaxed">
-          {addonCopy.setupCompanionBody}
+        <p class="text-muted text-[13px]" data-testid="setup-companion-note">
+          {addonCopy.setupCompanionNote}
         </p>
-        <div class="flex flex-col gap-2">
-          <h3 class="label text-muted">{addonCopy.setupCompanionDownloadLead}</h3>
-          <ul
-            class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6"
-            data-testid="setup-companion-downloads"
+        <div class="flex flex-col gap-2" data-testid="setup-companion-downloads">
+          <a
+            class={`${PRIMARY_BUTTON_FIXED} w-fit px-5`}
+            href={downloadUrl(primaryDownload.asset)}
+            rel="noopener"
+            data-testid="setup-companion-download"
           >
-            {companion.downloads.map((entry) => (
-              <li>
-                <a
-                  class="inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2"
-                  href={`${companion.releasesUrl}/latest/download/${entry.asset}`}
-                  rel="noopener"
-                >
-                  {entry.platform}
-                </a>
-              </li>
-            ))}
-          </ul>
+            {addonCopy.setupCompanionDownload(primaryDownload.platform)}
+          </a>
+          {otherDownloads.length > 0 && (
+            <ul class="flex flex-wrap gap-x-6">
+              {otherDownloads.map((entry) => (
+                <li>
+                  <a class={QUIET_LINK} href={downloadUrl(entry.asset)} rel="noopener">
+                    {addonCopy.setupCompanionDownload(entry.platform)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         {platformsLine !== null && (
           <p class="text-muted text-[13px]" data-testid="setup-companion-platforms">
             {platformsLine}
           </p>
         )}
+        <p id="logging" class="text-muted text-[14px] leading-relaxed">
+          {addonCopy.setupCompanionBody}
+        </p>
         <p class="text-[14px]" data-testid="setup-companion-pair">
           {addonCopy.setupCompanionPair}
         </p>
-        <SetupCompanionDone client:idle />
+        <SetupStepLine step="companion" client:idle />
         <div
           class="border-line-soft rounded-control bg-raised w-full overflow-hidden border"
-          style={`max-width: ${capture.width}px; aspect-ratio: ${capture.width} / ${capture.height}`}
+          style={`max-width: 800px; aspect-ratio: ${capture.width} / ${capture.height}`}
           data-testid="setup-companion-capture"
         >
           <img
@@ -282,3 +292,24 @@ const flows = [
     </Panel>
   </main>
 </Base>
+
+<script>
+  // A link to #paste, or to anything else inside a closed disclosure, opens that disclosure and
+  // scrolls to the target: the export box and the manual are folded, and the hero's "paste an
+  // addon export" lands here.
+  function openForHash(): void {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (id === '') return;
+    const target = document.getElementById(id);
+    let opened = false;
+    for (let el = target?.parentElement ?? null; el !== null; el = el.parentElement) {
+      if (el instanceof HTMLDetailsElement && !el.open) {
+        el.open = true;
+        opened = true;
+      }
+    }
+    if (opened) target?.scrollIntoView();
+  }
+  openForHash();
+  window.addEventListener('hashchange', openForHash);
+</script>

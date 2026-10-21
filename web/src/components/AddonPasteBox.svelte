@@ -16,6 +16,9 @@
   import AddonPasteSave from './AddonPasteSave.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
+  /** False where the mounting page already titles the box (the /setup disclosure's own summary). */
+  let { heading = true }: { heading?: boolean } = $props();
+
   let code = $state('');
   let error = $state<string | null>(null);
   let loaded = $state<string | null>(null);
@@ -71,7 +74,7 @@
   class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4"
   data-testid="addon-paste-box"
 >
-  <h2 class="section-title text-[15px]">{addonCopy.pasteTitle}</h2>
+  {#if heading}<h2 class="section-title text-[15px]">{addonCopy.pasteTitle}</h2>{/if}
   <textarea
     class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"
     rows="2"

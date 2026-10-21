@@ -5,6 +5,7 @@
 export const myReportsCopy = {
   failed: 'Your reports did not load.',
   empty: 'No reports yet. Upload a log, or let the companion send your next raid.',
-  signedOut: 'Reports you own appear here once you are signed in.',
+  signedOut: 'Sign in to see your reports.',
+  signInAction: 'Sign in with Battle.net',
   uploadAction: 'Upload a log',
 } as const;

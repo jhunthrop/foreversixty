@@ -12,6 +12,7 @@
      line (fix round 2 item 5), not repeated here. Plain data in: Character.svelte works out
      ownership and the faction. -->
 <script lang="ts">
+  import { titleCase } from '../lib/character-profile';
   import { factionName } from '../lib/faction-mark';
   import { classColorVar } from '../lib/report/format';
   import { scoreCopy } from '../lib/score/copy';
@@ -46,7 +47,7 @@
 
   const descriptor = $derived(scoreCopy.tooltipLevelLine(level, race));
   const classLine = $derived(
-    descriptor !== null && className !== undefined && className !== '' ? className : null,
+    descriptor !== null && className !== undefined && className !== '' ? titleCase(className) : null,
   );
   const factionLine = $derived(descriptor !== null && faction !== null ? factionName(faction) : null);
   const guildLine = $derived(

@@ -71,7 +71,11 @@
     unread = false,
     capturedAt = null,
     owned = true,
+    first = false,
   }: {
+    /** The panel goes above the score card (a character with no score yet: the gear picks are the
+     *  best thing on the page, W.9). */
+    first?: boolean;
     /** `gear`: all 17 slots, or `[]` when the character has no export. */
     gear: readonly CharacterGearSlot[];
     /** `gear_gap_total`. */
@@ -100,6 +104,9 @@
   } = $props();
 
   const build = activeBuild.build;
+  /** The section's place in the profile's flex column: with the score card (-2), after it by DOM
+   *  order, or ahead of it (-3, after the header which is -3 and earlier in the DOM). */
+  const ORDER = $derived(first ? '-order-3' : '-order-2');
 
   /** The items file: undefined while it loads, null when it failed. */
   let facts = $state<GearItemTable | null | undefined>(undefined);
@@ -308,9 +315,9 @@
                 >{#if row.pick !== null}{@render item(row.pick, 'character-gear-pick')}{/if}</span
               >
               <span class={`${META} basis-full`} data-testid="character-gear-meta"
-                >{row.source}{#if row.chance !== null}<span
-                    class="gear-dot-before whitespace-nowrap"
-                    data-testid="character-gear-chance">{row.chance}</span
+                >{row.source}{#if row.chance !== null}<span aria-hidden="true"
+                    >{gearCopy.sourceSeparator}</span
+                  ><span class="whitespace-nowrap" data-testid="character-gear-chance">{row.chance}</span
                   >{/if}</span
               >
             </span>
@@ -347,7 +354,7 @@
     </p>
   </section>
 {:else}
-  <section class="-order-2 flex scroll-mt-24 flex-col" id={GEAR_ANCHOR} data-testid="character-gear">
+  <section class="{ORDER} flex scroll-mt-24 flex-col" id={GEAR_ANCHOR} data-testid="character-gear">
     {@render title()}
     {#if totalsLine !== null}
       <p class="text-muted mt-1 text-[13px] leading-5" data-testid="character-gear-totals">{totalsLine}</p>
@@ -373,9 +380,9 @@
               <span class={`${META} basis-full`} data-testid="character-gear-meta">{row.note}</span>
             {:else if row.source !== null}
               <span class={`${META} basis-full`} data-testid="character-gear-meta"
-                >{row.source}{#if row.chance !== null}<span
-                    class="gear-dot-before whitespace-nowrap"
-                    data-testid="character-gear-chance">{row.chance}</span
+                >{row.source}{#if row.chance !== null}<span aria-hidden="true"
+                    >{gearCopy.sourceSeparator}</span
+                  ><span class="whitespace-nowrap" data-testid="character-gear-chance">{row.chance}</span
                   >{/if}{#if row.note !== null && row.noteUnknown && loading}<span
                     class="rounded-[2px] bg-[#1a1d24]"
                     data-testid="character-gear-note-bar"

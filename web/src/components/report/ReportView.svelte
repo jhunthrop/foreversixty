@@ -1689,6 +1689,7 @@
         selected={state.fight}
         onSelect={(index) => patch({ fight: index })}
         {phaseOf}
+        foldOnPhone={isSampleReport(reportId)}
       />
 
       <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">

@@ -14,7 +14,11 @@
     selected,
     onSelect,
     phaseOf = new Map<number, string>(),
+    foldOnPhone = false,
   }: {
+    /** On a phone, fold the list to the one row that names the fight on show (the sample report,
+     *  whose table would otherwise start two screens down). */
+    foldOnPhone?: boolean;
     fights: FightEntry[];
     selected: number;
     onSelect: (index: number) => void;
@@ -23,6 +27,15 @@
   } = $props();
 
   let showTrash = $state(false);
+  /** On a phone the list is folded to the one row that names the fight on show, so the report's
+   *  table starts above the second screen (W.9); a pick closes it again. From md it is always open. */
+  let phoneOpen = $state(false);
+  const current = $derived(fights.find((fight) => fight.index === selected) ?? null);
+  const currentLabel = $derived(
+    selected === ALL_FIGHTS || current === null
+      ? 'All boss pulls'
+      : `${fightTitle(current)} · ${outcome(current, current.kill ? '' : (phaseOf.get(current.index) ?? ''))} · ${formatDuration(current.duration_ms)}`,
+  );
 
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
   const shown = $derived(showTrash ? fights : encounters.length > 0 ? encounters : fights);
@@ -36,6 +49,11 @@
   let openGroups = $state<number[]>([]);
 
   const outcome = outcomeLabel;
+
+  function pick(index: number): void {
+    phoneOpen = false;
+    onSelect(index);
+  }
 </script>
 
 {#snippet fightRow(fight: FightEntry, nested: boolean)}
@@ -53,7 +71,7 @@
         : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
       aria-current={isSelected ? 'true' : undefined}
       data-testid={`fight-${fight.index}`}
-      onclick={() => onSelect(fight.index)}
+      onclick={() => pick(fight.index)}
     >
       <span class="flex w-full items-baseline gap-2">
         <span
@@ -107,92 +125,109 @@
   class="border-line rounded-panel bg-raised flex flex-col border md:sticky md:top-4"
   data-testid="fight-selector"
 >
-  <ul
-    class="flex max-h-[320px] flex-col overflow-y-auto md:max-h-[calc(100vh-180px)]"
-    onscroll={(event) => {
-      const list = event.currentTarget;
-      listAtEnd = list.scrollTop + list.clientHeight >= list.scrollHeight - 4;
-    }}
+  {#if foldOnPhone}
+    <button
+      type="button"
+      class="flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-[14px] md:hidden"
+      aria-expanded={phoneOpen}
+      data-testid="fight-selector-toggle"
+      onclick={() => (phoneOpen = !phoneOpen)}
+    >
+      <span class="text-strong min-w-0 truncate" data-testid="fight-selector-current">{currentLabel}</span>
+      <span class="text-muted shrink-0 text-[12px]" aria-hidden="true">{phoneOpen ? 'Hide' : 'Change'}</span>
+    </button>
+  {/if}
+  <div
+    class="flex flex-col {phoneOpen || !foldOnPhone ? '' : 'max-md:hidden'}"
+    data-testid="fight-selector-body"
   >
-    {#if encounters.length > 0}
-      <li>
-        <button
-          type="button"
-          class="flex min-h-11 w-full items-center gap-3 border-b border-l-[3px] px-3 py-2 text-left text-[14px] {selected ===
-          ALL_FIGHTS
-            ? 'border-l-gold bg-card-top'
-            : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
-          aria-current={selected === ALL_FIGHTS ? 'true' : undefined}
-          data-testid="fight-all"
-          onclick={() => onSelect(ALL_FIGHTS)}
-        >
-          <span class="text-strong flex-1 font-semibold">All boss pulls</span>
-          <span class="text-muted tabular font-mono text-[12px]">{encounters.length} pulls</span>
-        </button>
-      </li>
-    {/if}
-    {#each rows as row (row.type === 'fight' ? row.fight.index : `group-${row.key}`)}
-      {#if row.type === 'fight'}
-        {@render fightRow(row.fight, false)}
-      {:else}
-        {@const holdsSelected = row.fights.some((entry) => entry.index === selected)}
-        {@const isOpen = holdsSelected || openGroups.includes(row.key)}
-        <!-- Consecutive trash in one zone: one row, opened to reach each pull. -->
+    <ul
+      class="flex max-h-[320px] flex-col overflow-y-auto md:max-h-[calc(100vh-180px)]"
+      onscroll={(event) => {
+        const list = event.currentTarget;
+        listAtEnd = list.scrollTop + list.clientHeight >= list.scrollHeight - 4;
+      }}
+    >
+      {#if encounters.length > 0}
         <li>
           <button
             type="button"
-            class="border-line-soft hover:bg-card-top/60 flex min-h-11 w-full flex-col gap-0.5 border-b border-l-[3px] border-l-transparent px-3 py-2 text-left text-[14px]"
-            aria-expanded={isOpen}
-            data-testid={`fight-group-${row.key}`}
-            onclick={() =>
-              (openGroups = openGroups.includes(row.key)
-                ? openGroups.filter((key) => key !== row.key)
-                : [...openGroups, row.key])}
+            class="flex min-h-11 w-full items-center gap-3 border-b border-l-[3px] px-3 py-2 text-left text-[14px] {selected ===
+            ALL_FIGHTS
+              ? 'border-l-gold bg-card-top'
+              : 'border-line-soft hover:bg-card-top/60 border-l-transparent'}"
+            aria-current={selected === ALL_FIGHTS ? 'true' : undefined}
+            data-testid="fight-all"
+            onclick={() => pick(ALL_FIGHTS)}
           >
-            <span class="flex w-full items-baseline gap-2">
-              <span class="text-muted min-w-0 flex-1 truncate leading-tight" title={`Trash · ${row.zone}`}
-                >Trash · {row.zone}</span
-              >
-              <span
-                class="text-muted tabular shrink-0 font-mono text-[12px]"
-                title="Trash: how many enemies died">{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
-              >
-            </span>
-            <span class="text-muted tabular flex w-full items-baseline gap-2 font-mono text-[11px]">
-              <span>{formatDuration(row.duration_ms)}</span>
-              {#if row.deaths > 0}
-                <span class="text-death" title={`${row.deaths} ${row.deaths === 1 ? 'death' : 'deaths'}`}
-                  >{row.deaths}<span aria-hidden="true">†</span></span
-                >
-              {/if}
-              <span class="ml-auto">{row.fights.length} pulls {isOpen ? '‹' : '›'}</span>
-            </span>
+            <span class="text-strong flex-1 font-semibold">All boss pulls</span>
+            <span class="text-muted tabular font-mono text-[12px]">{encounters.length} pulls</span>
           </button>
         </li>
-        {#if isOpen}
-          {#each row.fights as fight (fight.index)}
-            {@render fightRow(fight, true)}
-          {/each}
-        {/if}
       {/if}
-    {/each}
-  </ul>
-  {#if encounters.length > PHONE_ROWS_SHOWN && !listAtEnd}
-    <!-- The phone list is a scroll box that ends on a whole row, so it looks complete when it
+      {#each rows as row (row.type === 'fight' ? row.fight.index : `group-${row.key}`)}
+        {#if row.type === 'fight'}
+          {@render fightRow(row.fight, false)}
+        {:else}
+          {@const holdsSelected = row.fights.some((entry) => entry.index === selected)}
+          {@const isOpen = holdsSelected || openGroups.includes(row.key)}
+          <!-- Consecutive trash in one zone: one row, opened to reach each pull. -->
+          <li>
+            <button
+              type="button"
+              class="border-line-soft hover:bg-card-top/60 flex min-h-11 w-full flex-col gap-0.5 border-b border-l-[3px] border-l-transparent px-3 py-2 text-left text-[14px]"
+              aria-expanded={isOpen}
+              data-testid={`fight-group-${row.key}`}
+              onclick={() =>
+                (openGroups = openGroups.includes(row.key)
+                  ? openGroups.filter((key) => key !== row.key)
+                  : [...openGroups, row.key])}
+            >
+              <span class="flex w-full items-baseline gap-2">
+                <span class="text-muted min-w-0 flex-1 truncate leading-tight" title={`Trash · ${row.zone}`}
+                  >Trash · {row.zone}</span
+                >
+                <span
+                  class="text-muted tabular shrink-0 font-mono text-[12px]"
+                  title="Trash: how many enemies died">{row.kills} {row.kills === 1 ? 'kill' : 'kills'}</span
+                >
+              </span>
+              <span class="text-muted tabular flex w-full items-baseline gap-2 font-mono text-[11px]">
+                <span>{formatDuration(row.duration_ms)}</span>
+                {#if row.deaths > 0}
+                  <span class="text-death" title={`${row.deaths} ${row.deaths === 1 ? 'death' : 'deaths'}`}
+                    >{row.deaths}<span aria-hidden="true">†</span></span
+                  >
+                {/if}
+                <span class="ml-auto">{row.fights.length} pulls {isOpen ? '‹' : '›'}</span>
+              </span>
+            </button>
+          </li>
+          {#if isOpen}
+            {#each row.fights as fight (fight.index)}
+              {@render fightRow(fight, true)}
+            {/each}
+          {/if}
+        {/if}
+      {/each}
+    </ul>
+    {#if encounters.length > PHONE_ROWS_SHOWN && !listAtEnd}
+      <!-- The phone list is a scroll box that ends on a whole row, so it looks complete when it
          is not: this says how much is below the fold until the reader gets there. -->
-    <span
-      class="text-muted border-line-soft border-t px-3 py-1 text-[12px] md:hidden"
-      data-testid="fights-more">Scroll the list for all {encounters.length} pulls</span
-    >
-  {/if}
-  {#if trashCount > 0 && encounters.length > 0}
-    <button
-      type="button"
-      class="text-muted inline-flex min-h-11 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase"
-      onclick={() => (showTrash = !showTrash)}
-      data-testid="toggle-trash"
-    >
-      {showTrash ? 'Hide trash' : `Show ${trashCount} trash fights`}
-    </button>
-  {/if}
+      <span
+        class="text-muted border-line-soft border-t px-3 py-1 text-[12px] md:hidden"
+        data-testid="fights-more">Scroll the list for all {encounters.length} pulls</span
+      >
+    {/if}
+    {#if trashCount > 0 && encounters.length > 0}
+      <button
+        type="button"
+        class="text-muted inline-flex min-h-11 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase"
+        onclick={() => (showTrash = !showTrash)}
+        data-testid="toggle-trash"
+      >
+        {showTrash ? 'Hide trash' : `Show ${trashCount} trash fights`}
+      </button>
+    {/if}
+  </div>
 </nav>

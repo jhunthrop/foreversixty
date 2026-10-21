@@ -733,6 +733,16 @@
                     {pairingCopy.success(pairedDevice.name)}
                   </p>
                 {:else if pairing === null}
+                  <!-- No companion yet: the download is the button, the code a text link under it. -->
+                  {#if devices.length === 0}
+                    <a
+                      class="{PRIMARY_BUTTON_FIXED} w-fit px-5"
+                      href={accountPageCopy.downloadCompanionHref}
+                      data-testid="account-download-companion"
+                    >
+                      {accountPageCopy.downloadCompanion}
+                    </a>
+                  {/if}
                   <button
                     class="text-nav inline-flex min-h-11 w-fit items-center text-[13px] underline md:min-h-0"
                     onclick={onPair}

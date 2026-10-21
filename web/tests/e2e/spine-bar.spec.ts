@@ -11,6 +11,7 @@ const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:`;
 
 async function pasteAndGoTo(page: import('@playwright/test').Page, path: string) {
   await page.goto('/setup');
+  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill(FURY);
   await page.getByTestId('addon-paste-submit').click();
   await page.goto(path);

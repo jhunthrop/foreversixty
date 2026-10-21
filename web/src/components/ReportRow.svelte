@@ -1,7 +1,9 @@
 <!-- web/src/components/ReportRow.svelte -->
-<!-- One report's row (design/specs/2026-10-11-logs.md section 2.5): the title and its age on the
-     first line (relative inside two weeks, a date beyond, `relativeDay`), one summary line under
-     the title. The caller builds the summary (`lib/logs/report-summary.ts`): "Your reports" says
+<!-- One report's row (design/specs/2026-10-11-logs.md section 2.5): the title on the first line, one
+     muted line under it that ends in the age (relative inside two weeks, a date beyond,
+     `relativeDay`; a caller may pass its own `dateLabel`). Every list that shows a report uses this
+     one row: the public feed, the one sample under it and "Your reports" look the same, the title
+     always 16 px in the strong text colour (W.9). The caller builds the summary (`lib/logs/report-summary.ts`): "Your reports" says
      where and how many fights, the public feed says kills and guild. Shared by MyReports.svelte
      and RecentReports.svelte so the row exists in exactly one place.
 
@@ -25,6 +27,7 @@
     status = '',
     character = undefined,
     creditHint = '',
+    dateLabel = '',
   }: {
     href: string;
     title: string;
@@ -36,9 +39,12 @@
     character?: string | null;
     /** A line under the summary, for a row nobody is credited on yet. */
     creditHint?: string;
+    /** The date as the caller words it, in place of the relative age (the sample's, which reads
+     *  as the report page's own date). */
+    dateLabel?: string;
   } = $props();
 
-  const when = $derived(relativeDay(new Date(createdAt)));
+  const when = $derived(dateLabel !== '' ? dateLabel : relativeDay(new Date(createdAt)));
   const badge = $derived(reportStatusLabel(status));
 </script>
 
@@ -47,11 +53,8 @@
   class:report-row-owned={character !== undefined}
   data-testid="report-row"
 >
-  <a {href} class="report-title text-text font-semibold">{title}</a>
-  {#if character === undefined}
-    <span class="text-muted tabular font-mono text-[13px]" data-testid="report-row-when">{when}</span>
-  {/if}
-  <span class="text-muted flex flex-wrap items-center gap-x-2 text-[12px]">
+  <a {href} class="report-title text-strong text-[16px] font-semibold">{title}</a>
+  <span class="text-muted flex flex-wrap items-center gap-x-2 text-[13px]">
     {#if character !== undefined}
       <span class="tabular font-mono" data-testid="report-row-when">{when}</span>
       {#if character === null}
@@ -61,6 +64,10 @@
       {/if}
     {/if}
     {#if summary !== ''}<span data-testid="report-row-summary">{summary}</span>{/if}
+    {#if character === undefined}
+      {#if summary !== ''}<span aria-hidden="true">·</span>{/if}
+      <span class="tabular" data-testid="report-row-when">{when}</span>
+    {/if}
     {#if badge !== ''}
       <span class="pill pill-sample" data-testid="report-status">{badge}</span>
     {/if}
@@ -83,9 +90,6 @@
   }
   .report-row > :not(.report-title) {
     grid-column: 1 / -1;
-  }
-  .report-row:not(.report-row-owned) > :nth-child(2) {
-    grid-column: auto;
   }
   .report-title::after {
     content: '';

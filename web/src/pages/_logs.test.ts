@@ -11,6 +11,7 @@ import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import companion from '../data/companion.json';
 import { logsCompanionCopy } from '../lib/reports/copy';
+import { myReportsCopy } from '../lib/reports/my-reports-copy';
 import Logs from './logs.astro';
 
 let container: AstroContainer;
@@ -33,13 +34,31 @@ describe('/logs', () => {
   });
 
   // Spec 2026-09-25 section 3.4: the companion column no longer repeats the download panel
-  // or the /combatlog reminder -- both moved to /setup -- so it points there instead.
-  it('points the companion column at /setup instead of repeating the download steps', async () => {
+  // or the /combatlog reminder -- both moved to /setup -- so it points there instead. W.9: one
+  // sentence and one outlined button to the companion's own step.
+  it('points the companion column at /setup#companion instead of repeating the download steps', async () => {
     const html = await container.renderToString(Logs);
     expect(html).toContain(logsCompanionCopy.pointer);
-    expect(html).toContain('href="/setup"');
+    expect(logsCompanionCopy.pointer).toBe('Log live while you raid.');
+    expect(logsCompanionCopy.pointerLink).toBe('Get the companion');
+    expect(html).toContain('href="/setup#companion"');
     expect(html).not.toContain('Advanced Combat Logging');
     expect(html).not.toContain('latest/download/foreversixty-companion_windows_amd64.exe');
+  });
+
+  it('signed out, "Your reports" says to sign in and carries the gold Sign in button', async () => {
+    const html = await container.renderToString(Logs);
+    expect(myReportsCopy.signedOut).toBe('Sign in to see your reports.');
+    expect(html).toContain(myReportsCopy.signedOut);
+    const button = [...html.matchAll(/<a\s[^>]*data-testid="reports-sign-in"[^>]*>/g)][0]?.[0] ?? '';
+    expect(button).toContain('bg-gold');
+    expect(button).toContain('/v1/auth/battlenet');
+    expect(html).toContain('Sign in with Battle.net');
+  });
+
+  it('leaves the signed-out character strip out of the page', async () => {
+    const html = await container.renderToString(Logs);
+    expect(html).not.toContain('Sign in or paste an export to see your character here');
   });
 
   it('names the two ways in panels, each with the id the header links to', async () => {

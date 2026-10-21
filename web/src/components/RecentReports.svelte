@@ -8,7 +8,7 @@
   import { recentReportsCopy } from '../lib/reports/copy';
   import { RECENT_REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { fetchRecentReports, isPublicListable, type RecentReport } from '../lib/reports/recent';
-  import { creditedName, recentReportSummary } from '../lib/logs/report-summary';
+  import { publicReportRow } from '../lib/logs/report-summary';
   import { SAMPLE_FALLBACK_ROW, SAMPLE_LABEL, SAMPLE_REPORT_ID, loadSampleRow } from '../lib/logs/sample-row';
   import ReportRow from './ReportRow.svelte';
   import EmptyState from './ui/EmptyState.svelte';
@@ -80,19 +80,23 @@
   {:else if rows.length === 0}
     <EmptyState message={recentReportsCopy.empty} testid="recent-reports-empty" />
   {:else}
-    <ul class="reveal flex flex-col">
+    <!-- No `reveal` fade on the rows: the sample row under them is drawn at once, and a feed
+         row caught mid-fade read as a dimmed, disabled item beside it (W.9). -->
+    <ul class="flex flex-col" data-testid="recent-reports-list">
       {#each rows as report (report.id)}
+        {@const row = publicReportRow({
+          title: report.title,
+          zone: report.zone,
+          killCount: report.kill_count,
+          fightCount: report.fight_count,
+          guildName: report.guild_name,
+          loggingCharacter: report.logging_character,
+        })}
         <ReportRow
           href={`/reports/${report.id}`}
-          title={report.title === '' ? (report.zone ?? '') : report.title}
+          title={row.title}
           createdAt={report.created_at}
-          character={creditedName(report.logging_character) ?? undefined}
-          summary={recentReportSummary({
-            zone: report.zone,
-            killCount: report.kill_count,
-            fightCount: report.fight_count,
-            guildName: report.guild_name,
-          })}
+          summary={row.summary}
         />
       {/each}
     </ul>
@@ -113,6 +117,7 @@
         href={`/reports/${sample.id}`}
         title={sample.title}
         createdAt={sample.createdAt}
+        dateLabel={sample.dateLabel}
         summary={sample.summary}
       />
     </ul>

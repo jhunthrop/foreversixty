@@ -111,10 +111,10 @@ describe('CharacterInGame', () => {
   });
 
   // Fix round 2 item 6, from the real 1.60 client (ingame-reference-client-player-tooltip.jpg):
-  // name, <Guild>, "Level 60 Night Elf (Player)", the class on its own line, the faction on its
+  // name, <Guild>, "Level 60 Night Elf", the class on its own line, the faction on its
   // own line when known, all in the client's light grey-white; then the blank line and the
   // addon's score line.
-  it('keeps the client’s order: name, guild, "Level 60 Night Elf (Player)", class, faction, a blank line, the score', () => {
+  it('keeps the client’s order: name, guild, "Level 60 Night Elf", class, faction, a blank line, the score', () => {
     const { body } = render(CharacterInGame, {
       props: {
         ...BASE,
@@ -134,13 +134,22 @@ describe('CharacterInGame', () => {
     const order = [
       at('>Elyra Duskvale<'),
       at('data-testid="character-in-game-guild"'),
-      at('data-testid="character-in-game-descriptor">Level 60 Night Elf (Player)<'),
+      at('data-testid="character-in-game-descriptor">Level 60 Night Elf<'),
       at('data-testid="character-in-game-class">Priest<'),
       at('data-testid="character-in-game-faction">Alliance<'),
       at('<span class="h-[20px]" aria-hidden="true"></span>'),
       at('data-testid="character-in-game-score"'),
     ];
     expect([...order].sort((a, b) => a - b)).toEqual(order);
+  });
+
+  it('never says "(Player)", and title-cases a class the API sends lower-case (W.9)', () => {
+    const { body } = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, className: 'hunter', level: 24, race: 'Orc', faction: 'horde' },
+    });
+    expect(body).not.toContain('(Player)');
+    expect(body).toMatch(/data-testid="character-in-game-descriptor">Level 24 Orc</);
+    expect(body).toMatch(/data-testid="character-in-game-class">Hunter</);
   });
 
   it('draws the guild, level, class and faction lines in the client’s light grey-white', () => {
@@ -171,11 +180,11 @@ describe('CharacterInGame', () => {
     const levelOnly = render(CharacterInGame, {
       props: { ...BASE, forever: SCORED, level: 60, race: null },
     }).body;
-    expect(levelOnly).toMatch(/data-testid="character-in-game-descriptor">Level 60 \(Player\)</);
+    expect(levelOnly).toMatch(/data-testid="character-in-game-descriptor">Level 60</);
     const raceOnly = render(CharacterInGame, {
       props: { ...BASE, forever: SCORED, level: null, race: 'Night Elf' },
     }).body;
-    expect(raceOnly).toMatch(/data-testid="character-in-game-descriptor">Night Elf \(Player\)</);
+    expect(raceOnly).toMatch(/data-testid="character-in-game-descriptor">Night Elf</);
     const neither = render(CharacterInGame, {
       props: { ...BASE, forever: SCORED, level: null, race: null, faction: 'alliance' },
     }).body;

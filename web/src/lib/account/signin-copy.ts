@@ -4,8 +4,7 @@
 // 2026-09-22 §2.5: the account page reuses the login page's own reason rather than
 // inventing a second one.
 export const accountSignInCopy = {
-  reason:
-    'An account is needed to upload logs, pair the companion and claim characters. Reading reports and rankings never needs one.',
+  reason: 'Sign in to save your builds, sims and logs. Reading reports and rankings never needs an account.',
 } as const;
 
 /** "or use an email link": the alternative to the Battle.net button, worded once for every

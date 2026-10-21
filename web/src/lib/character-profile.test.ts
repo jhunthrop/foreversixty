@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   amountHeader,
+  titleCase,
   bestRepeatsHistory,
   bisHref,
   characterBuildsCopy,
@@ -401,5 +402,19 @@ describe('the weakest part’s fight (L8.5 ruling 1)', () => {
       rowId: null,
     });
     expect(latestRatedFight([], HISTORY)).toBeNull();
+  });
+});
+
+describe('titleCase and the class label (W.9)', () => {
+  it('capitalises a class the API sends lower-case', () => {
+    expect(titleCase('hunter')).toBe('Hunter');
+    expect(titleCase('death knight')).toBe('Death Knight');
+    expect(titleCase('Priest')).toBe('Priest');
+  });
+
+  it('puts the capitalised class in the descriptor label', () => {
+    expect(specClassLabel('hunter', 'Beast Mastery')).toBe('Beast Mastery Hunter');
+    expect(specClassLabel('hunter', null)).toBe('Hunter');
+    expect(specClassLabel(undefined, null)).toBe('');
   });
 });

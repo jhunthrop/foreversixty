@@ -176,10 +176,7 @@ test("the pairing code is on the page, and the companion's downloads point to /s
   );
 
   await openLogs(page);
-  await expect(page.getByTestId('logs-companion-pointer').getByRole('link')).toHaveAttribute(
-    'href',
-    '/setup',
-  );
+  await expect(page.getByTestId('logs-companion-link')).toHaveAttribute('href', '/setup#companion');
   await expect(page.getByTestId('companion-downloads')).toHaveCount(0);
   await page.getByRole('button', { name: 'Show pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
@@ -212,18 +209,17 @@ test('a signed-out visitor is told in plain words, with no sign-in control anywh
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await openLogs(page);
 
-  await expect(page.getByTestId('reports-signed-out')).toHaveText(
-    'Reports you own appear here once you are signed in.',
-  );
+  await expect(page.getByTestId('reports-signed-out')).toHaveText('Sign in to see your reports.');
   await expect(page.getByTestId('upload-signed-out')).toHaveText(
     'Uploading needs a signed-in account; the report is filed under it.',
   );
-  await expect(page.getByTestId('pairing-signed-out')).toHaveText('Live logging needs a signed-in account.');
+  // Signed out the companion card is a sentence and a button, and the pairing block is not drawn.
+  await expect(page.getByTestId('pairing')).toHaveCount(0);
   // Signed out, the form is not drawn at all.
   await expect(page.getByTestId('upload-file')).toHaveCount(0);
   await expect(page.getByTestId('upload-start')).toHaveCount(0);
-  // Nothing inside the page asks for a sign-in: the nav's selector is the one control.
+  // One sign-in button on the page, in Your reports (W.9); the other panels only say what they need.
   const main = page.locator('#main');
-  await expect(main.getByRole('link', { name: /sign in/i })).toHaveCount(0);
+  await expect(main.getByRole('link', { name: /sign in/i })).toHaveCount(1);
   await expect(main.getByRole('button', { name: /sign in/i })).toHaveCount(0);
 });

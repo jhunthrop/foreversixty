@@ -33,7 +33,8 @@ test('the sample report is one plain labelled row, with a date and its kills, an
     'href',
     `/reports/${SAMPLE_REPORT_ID}`,
   );
-  await expect(row.getByTestId('report-row-when')).toHaveText('Sep 15');
+  // The date the report page says (its first fight, "15 Sept 2026"), not a second format (W.9).
+  await expect(row.getByTestId('report-row-when')).toHaveText('15 Sept 2026');
   await expect(row.getByTestId('report-row-summary')).toHaveText('Sanguine Depths · 1 boss · 2 fights');
   await expect(page.locator('.pill-sample')).toHaveCount(0);
 });

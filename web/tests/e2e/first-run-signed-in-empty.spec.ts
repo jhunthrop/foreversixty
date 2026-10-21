@@ -55,7 +55,12 @@ test.describe('/account with no characters', () => {
     await page.goto('/account');
     const devices = page.getByTestId('account-devices');
     await expect(devices).toContainText('The companion signs in with Battle.net from its Device page');
-    await expect(devices.getByRole('button', { name: 'Get a pairing code' })).toBeVisible();
+    // The download is the button; the code is a text link under it (W.9).
+    await expect(devices.getByRole('link', { name: 'Download the companion' })).toHaveAttribute(
+      'href',
+      '/setup#companion',
+    );
+    await expect(devices.getByRole('button', { name: 'Use a code instead' })).toBeVisible();
   });
 
   test('greets the arrival by battletag instead of naming a character', async ({ page }) => {
@@ -70,9 +75,7 @@ test.describe('/setup and /logs first-run copy', () => {
   test('/setup says the companion connects itself', async ({ page }) => {
     await signInWith(page, []);
     await page.goto('/setup');
-    await expect(page.getByTestId('setup-signed-in')).toContainText(
-      'Done. You are signed in. Next: the addon, then the companion.',
-    );
+    await expect(page.getByTestId('setup-line-signin')).toContainText('Signed in as Fixture#1');
     await expect(page.getByTestId('setup-companion-pair')).toHaveText(
       'Sign in with Battle.net inside the companion; it connects itself.',
     );

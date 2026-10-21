@@ -32,7 +32,7 @@
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
-  import { componentGaps, foreverOf, ownCharacter } from '../lib/score/score';
+  import { componentGaps, foreverOf, hasScore, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
   import { GEAR_ANCHOR, gearSpecLine } from '../lib/gear/panel';
@@ -165,6 +165,10 @@
       !slotsHaveGear(data.gear) &&
       (own?.build?.talents === undefined || !own.build.talents.points.some((points) => points > 0)),
   );
+  /** No score yet and gear to show: the gear card leads, above the empty score card (W.9). */
+  const gearFirst = $derived(
+    data !== null && !hasScore(foreverOf(data)) && data.gear !== undefined && data.gear.length > 0,
+  );
 </script>
 
 {#if status === 'missing'}
@@ -258,6 +262,7 @@
         specLine={gearSpecLine(data.gear_spec, data.gear_spec_source)}
         band={typeof data.character.level === 'number' ? bandForLevel(data.character.level) : null}
         unread={gearUnread}
+        first={gearFirst}
         capturedAt={own?.build?.captured_at ?? null}
         {owned}
       />
