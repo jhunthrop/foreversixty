@@ -34,7 +34,7 @@ test('the sample report is one plain labelled row, with a date and its kills, an
     `/reports/${SAMPLE_REPORT_ID}`,
   );
   await expect(row.getByTestId('report-row-when')).toHaveText('Sep 15');
-  await expect(row.getByTestId('report-row-summary')).toHaveText('Sanguine Depths \u00b7 1 kill');
+  await expect(row.getByTestId('report-row-summary')).toHaveText('Sanguine Depths · 1 boss · 2 fights');
   await expect(page.locator('.pill-sample')).toHaveCount(0);
 });
 

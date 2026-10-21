@@ -1,14 +1,14 @@
 // web/src/lib/logs/sample-row.ts
 // The one sample report, as the plain row it is in "Recent public reports"
 // (design/specs/2026-10-11-logs.md sections 2.1 and 9): the site's canonical public report,
-// read through the public report endpoint like any other, shown once and labelled `A sample
+// bundled with the site and read from its static meta (lib/report/sample.ts), shown once and labelled `A sample
 // report` above its row. It never doubles as a feed entry (the feed filters it out by id).
-import sampleReport from '../../data/sample-report.json';
 import { fetchReportMeta } from '../report/load';
+import { SAMPLE_REPORT_ID } from '../report/sample';
 import type { ReportMeta } from '../report/types';
-import { publicReportSummary } from './report-summary';
+import { recentReportSummary } from './report-summary';
 
-export const SAMPLE_REPORT_ID: string = sampleReport.id;
+export { SAMPLE_REPORT_ID };
 export const SAMPLE_LABEL = 'A sample report';
 const FALLBACK_TITLE = 'Open the sample report';
 
@@ -26,7 +26,7 @@ export function sampleRowFromMeta(meta: ReportMeta): SampleRow {
     id: meta.id,
     title: meta.title === '' ? meta.zone : meta.title,
     createdAt: meta.created_at,
-    summary: publicReportSummary({ zone: meta.zone, killCount }),
+    summary: recentReportSummary({ zone: meta.zone, killCount, fightCount: meta.fights.length }),
   };
 }
 

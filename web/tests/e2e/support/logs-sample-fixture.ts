@@ -25,7 +25,7 @@ export const SAMPLE_REPORT_META: ReportMeta = {
   status: 'complete',
   engine_version: '0.1.0',
   created_at: '2026-09-15T12:55:13Z',
-  data_base_url: `/logs-data/reports/${SAMPLE_REPORT_ID}`,
+  data_base_url: `/sample-report/${SAMPLE_REPORT_ID}`,
   players: ['Player-1', 'Player-2'],
   fights: [
     {
@@ -60,17 +60,9 @@ export const SAMPLE_REPORT_META: ReportMeta = {
   ],
 };
 
-function envelope(data: unknown, status = 200): { status: number; contentType: string; body: string } {
-  return {
-    status,
-    contentType: 'application/json',
-    body: JSON.stringify({ ok: status < 400, data, error: null, request_id: 'e2e' }),
-  };
-}
-
-/** Routes the canonical sample's own `GET /v1/reports/{id}`. */
+/** Routes the bundled sample's meta, a plain JSON file beside its data (lib/report/sample.ts). */
 export async function routeSampleReportMeta(page: Page): Promise<void> {
-  await page.route(`**/v1/reports/${SAMPLE_REPORT_ID}`, (route) =>
-    route.fulfill(envelope(SAMPLE_REPORT_META)),
+  await page.route(`**/sample-report/${SAMPLE_REPORT_ID}/meta.json`, (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(SAMPLE_REPORT_META) }),
   );
 }

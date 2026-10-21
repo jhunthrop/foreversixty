@@ -10,6 +10,7 @@
 // events.parquet are immutable and take the default.
 import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
+import { SAMPLE_META_URL, isSampleReport } from './sample';
 import { asArray, type ReportFile, type ReportMeta, type ReportStatus, type Summary } from './types';
 
 export const REPORT_LOAD_FAILED = 'Report data did not load';
@@ -68,12 +69,36 @@ export function reportMetaCacheable(meta: ReportMeta): boolean {
 }
 
 export function fetchReportMeta(id: string, apiBase: string = API_BASE_URL): Promise<ReportMeta> {
+  if (isSampleReport(id)) return fetchSampleMeta();
   const path = `/v1/reports/${encodeURIComponent(id)}`;
   return query<ReportMeta>(`${apiBase}${path}`, () => apiGet<ReportMeta>(path, apiBase), {
     scope: 'public',
     ttlMs: REPORT_META_TTL_MS,
     // A processing or live snapshot is true for seconds: fetch-only, never persisted.
     cacheable: reportMetaCacheable,
+  });
+}
+
+/** The bundled sample's meta: plain JSON from the site itself, no envelope, no API, no credentials. */
+async function sampleMetaGet(): Promise<ReportMeta> {
+  let response: Response;
+  try {
+    response = await fetch(SAMPLE_META_URL);
+  } catch {
+    throw new ReportLoadError(REPORT_LOAD_FAILED, 0);
+  }
+  if (!response.ok) throw apiFailure(response.status);
+  try {
+    return (await response.json()) as ReportMeta;
+  } catch {
+    throw new ReportLoadError(REPORT_LOAD_FAILED, response.status);
+  }
+}
+
+function fetchSampleMeta(): Promise<ReportMeta> {
+  return query<ReportMeta>(SAMPLE_META_URL, sampleMetaGet, {
+    scope: 'public',
+    ttlMs: REPORT_META_TTL_MS,
   });
 }
 

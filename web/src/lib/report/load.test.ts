@@ -19,6 +19,8 @@ import {
   fetchSummary,
   withFreshBase,
 } from './load';
+import { SAMPLE_META_URL, SAMPLE_REPORT_ID } from './sample';
+import sampleMeta from '../../../public/sample-report/sample/meta.json';
 
 const API = 'https://api.foreversixty.test';
 // Absolute, per the Amendments: data_base_url is always
@@ -302,5 +304,44 @@ describe('createPoller', () => {
 
     expect(peak).toBe(1);
     expect(calls).toBeGreaterThan(1);
+  });
+});
+
+describe('fetchReportMeta for the bundled sample', () => {
+  it('reads the meta from the site itself, never the API, and takes plain JSON with no envelope', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () =>
+      json({ ...fixtureMeta, id: SAMPLE_REPORT_ID, owner: null }),
+    );
+    vi.stubGlobal('fetch', upstream);
+
+    const meta = await fetchReportMeta(SAMPLE_REPORT_ID, API);
+
+    expect(meta.id).toBe(SAMPLE_REPORT_ID);
+    expect(meta.owner).toBeNull();
+    expect(upstream).toHaveBeenCalledTimes(1);
+    expect(upstream.mock.calls[0][0]).toBe(SAMPLE_META_URL);
+    expect(SAMPLE_META_URL).toBe(`/sample-report/${SAMPLE_REPORT_ID}/meta.json`);
+  });
+
+  it('fails as a load error when the bundle cannot be read', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => json({}, 404)),
+    );
+
+    await expect(fetchReportMeta(SAMPLE_REPORT_ID, API)).rejects.toMatchObject({ status: 404 });
+  });
+
+  it('is described by the bundled files: the same id, public, no owner, data beside it', () => {
+    const bundled = sampleMeta as unknown as {
+      id: string;
+      owner: unknown;
+      visibility: string;
+      data_base_url: string;
+    };
+    expect(bundled.id).toBe(SAMPLE_REPORT_ID);
+    expect(bundled.owner).toBeNull();
+    expect(bundled.visibility).toBe('public');
+    expect(bundled.data_base_url).toBe(`/sample-report/${SAMPLE_REPORT_ID}`);
   });
 });

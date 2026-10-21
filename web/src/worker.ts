@@ -32,6 +32,7 @@ import {
   type RankingsHead,
   type ShellMeta,
 } from './lib/report/og-meta';
+import { SAMPLE_LEGACY_IDS, SAMPLE_REPORT_PATH } from './lib/report/sample';
 import type { ReportMeta } from './lib/report/types';
 import type { SimResult } from './lib/sim/types';
 
@@ -553,6 +554,9 @@ async function serveShell(env: Env, url: URL, asset: string): Promise<Response> 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    // The sample's old database id: the link lives in cached pages and old shares.
+    const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);
+    if (legacy !== undefined) return Response.redirect(new URL(SAMPLE_REPORT_PATH, url).toString(), 301);
     const logsData = LOGS_DATA_PATH.exec(url.pathname);
     if (logsData !== null) return serveReportFile(request, env, logsData[1], logsData[2]);
     if (url.pathname.startsWith(LOGS_DATA_PREFIX)) return refuse(404, 'Not a report file');
