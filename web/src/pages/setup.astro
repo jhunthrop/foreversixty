@@ -12,7 +12,7 @@ import SetupStepLine from '../components/SetupStepLine.svelte';
 import { companionPlatformsLine } from '../lib/setup/progress';
 import { addonCopy } from '../lib/addon/copy';
 import { battlenetStartUrl } from '../lib/account/api';
-import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 import companion from '../data/companion.json';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
@@ -52,6 +52,9 @@ const flows = [
   { title: addonCopy.inGameTitle, body: addonCopy.inGameBody },
 ];
 
+// One button per step; only the first undone step's is gold, the others stay outlined until their
+// turn (global.css, .setup-btn; SetupProgress.svelte says which step is first).
+const STEP_BUTTON = `${SECONDARY_BUTTON_FIXED} setup-btn border-line-warm-strong text-strong w-fit px-5`;
 const DISCLOSURE = 'border-line rounded-control border';
 const SUMMARY =
   'label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 select-none';
@@ -72,7 +75,8 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
       <div id="signin" class="flex scroll-mt-20 flex-col gap-3 p-[18px]">
         <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
         <a
-          class={`setup-when-out ${PRIMARY_BUTTON_FIXED} px-5 w-fit`}
+          class={`setup-when-out ${STEP_BUTTON}`}
+          data-step="1"
           href={battlenetStartUrl('/account?signed_in=1')}
         >
           {addonCopy.setupSignInAction}
@@ -84,7 +88,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
     <Panel title={addonCopy.setupStep2Title}>
       <div id="addon" class="flex scroll-mt-20 flex-col gap-4 p-[18px]">
         <div class="flex flex-col gap-3">
-          <a class={`${PRIMARY_BUTTON_FIXED} w-fit px-5`} href={CURSEFORGE_URL} rel="noopener">
+          <a class={STEP_BUTTON} data-step="2" href={CURSEFORGE_URL} rel="noopener">
             {addonCopy.installCurseForge}
           </a>
           <ul class="flex flex-wrap gap-x-6 gap-y-0">
@@ -123,7 +127,10 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
               {addonCopy.disclosureClose}
             </span>
           </summary>
-          <div class="px-4 pb-4">
+          <div class="flex flex-col gap-3 px-4 pb-4">
+            <p class="text-muted text-[14px] leading-relaxed" data-testid="setup-export-what">
+              {addonCopy.setupTryExportBody}
+            </p>
             <AddonPasteBox client:idle heading={false} />
           </div>
         </details>
@@ -242,7 +249,8 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
         </p>
         <div class="flex flex-col gap-2" data-testid="setup-companion-downloads">
           <a
-            class={`${PRIMARY_BUTTON_FIXED} w-fit px-5`}
+            class={STEP_BUTTON}
+            data-step="3"
             href={downloadUrl(primaryDownload.asset)}
             rel="noopener"
             data-testid="setup-companion-download"
@@ -274,19 +282,26 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
         </p>
         <SetupStepLine step="companion" client:idle />
         <div
-          class="border-line-soft rounded-control bg-raised w-full overflow-hidden border"
-          style={`max-width: 800px; aspect-ratio: ${capture.width} / ${capture.height}`}
+          class="setup-capture border-line-soft rounded-control bg-raised w-full overflow-hidden border"
+          style={`max-width: 800px; --capture-ratio: ${capture.width} / ${capture.height}; --capture-phone-ratio: ${capture.phoneWidth} / ${capture.phoneHeight}`}
           data-testid="setup-companion-capture"
         >
-          <img
-            class="block h-full w-full object-contain"
-            src={capture.src}
-            width={capture.width}
-            height={capture.height}
-            alt={capture.alt}
-            loading="lazy"
-            decoding="async"
-          />
+          <picture class="block h-full w-full">
+            <source
+              media="(max-width: 639px)"
+              srcset={capture.phoneSrc}
+              width={capture.phoneWidth}
+              height={capture.phoneHeight}
+            />
+            <img
+              class="block h-full w-full object-contain"
+              src={capture.src}
+              width={capture.width}
+              height={capture.height}
+              alt={capture.alt}
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
     </Panel>

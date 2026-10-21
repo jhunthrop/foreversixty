@@ -61,6 +61,17 @@ export function timelineDisplayRows(rows: readonly TimelineRow[]): TimelineRow[]
     .map(({ row }) => row);
 }
 
+/**
+ * Which of the shown rows carries the gold dot: the live one (the Beta tile while the hero card says
+ * "Beta is live"), and only when nothing is live, the next one to come. Null for no rows.
+ */
+export function dotIndex(shown: readonly TimelineRow[]): number | null {
+  const live = shown.findIndex((row) => row.status === 'live');
+  if (live !== -1) return live;
+  const next = shown.findIndex((row) => row.status === 'next');
+  return next === -1 ? null : next;
+}
+
 /** What a row reads: a finished span uses its past-tense wording. */
 export function timelineRowText(row: TimelineRow): { key: string; value: string; note?: string } {
   if (row.status === 'past' && row.pastKey !== undefined) {

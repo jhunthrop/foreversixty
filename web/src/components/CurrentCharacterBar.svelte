@@ -33,7 +33,11 @@
     currentDoor = null,
     restored = false,
     profile = false,
+    quietSignedOut = false,
   }: {
+    /** The signed-out sentence and its two links are left out: the page already asks one thing
+     *  (an empty character page, W.10). */
+    quietSignedOut?: boolean;
     hasOwnPasteBox?: boolean;
     compact?: boolean;
     spine?: boolean;
@@ -98,7 +102,9 @@
 </script>
 
 {#if spine}
-  {#if classSlug === null}
+  {#if classSlug === null && quietSignedOut}
+    <!-- Nothing: the page's one prompt stands alone. -->
+  {:else if classSlug === null}
     <!-- Not wrapped in `.chip-slot`: that class is hidden pre-paint (global.css) whenever
          neither `data-pointer` nor `data-session` is set on `<html>`, which is exactly the
          one signal-free case this branch is FOR -- a visitor with truly nothing to resolve.

@@ -6,7 +6,7 @@ import type { AnswerSpec, HeaderAnswer } from './types';
 
 const FIGURES: HeaderAnswer = {
   kind: 'figures',
-  label: 'Upgrades in your band',
+  label: 'Upgrades for your level range',
   staleLabel: 'Slots you wore at the last sync',
   figures: [
     { value: '9', unit: 'upgrades' },
@@ -44,7 +44,7 @@ function character(overrides: Partial<MeCharacter> = {}): MeCharacter {
 describe('answerViewFor', () => {
   it('carries both figures of a two-figure answer', () => {
     const view = answerViewFor(character(), SPEC, READY, false);
-    expect(view).toMatchObject({ kind: 'figures', label: 'Upgrades in your band' });
+    expect(view).toMatchObject({ kind: 'figures', label: 'Upgrades for your level range' });
     expect(view?.kind === 'figures' && view.answer.figures.map((figure) => figure.value)).toEqual([
       '9',
       '+11.2',
@@ -59,7 +59,9 @@ describe('answerViewFor', () => {
     expect(answerViewFor(character(), SPEC, READY, true)).toMatchObject({
       label: 'Slots you wore at the last sync',
     });
-    expect(answerViewFor(character(), SPEC, READY, false)).toMatchObject({ label: 'Upgrades in your band' });
+    expect(answerViewFor(character(), SPEC, READY, false)).toMatchObject({
+      label: 'Upgrades for your level range',
+    });
   });
 
   it('shows the level-floor sentence below the floor without waiting for the answer', () => {

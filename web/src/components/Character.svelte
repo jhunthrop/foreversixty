@@ -35,6 +35,7 @@
   import { componentGaps, foreverOf, hasScore, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
+  import { characterPrompt } from '../lib/character-prompt';
   import { GEAR_ANCHOR, gearSpecLine } from '../lib/gear/panel';
   import { classSlugFromName } from '../lib/report/tree-sizes';
   import CharacterGearPanel from './character/CharacterGearPanel.svelte';
@@ -165,6 +166,16 @@
       !slotsHaveGear(data.gear) &&
       (own?.build?.talents === undefined || !own.build.talents.points.some((points) => points > 0)),
   );
+  /** The one primary prompt and the one quiet line an under-filled page asks (lib/character-prompt.ts). */
+  const prompt = $derived(
+    data === null
+      ? null
+      : characterPrompt({
+          hasScore: hasScore(foreverOf(data)),
+          hasGear: data.gear !== undefined && data.gear.length > 0,
+          owned,
+        }),
+  );
   /** No score yet and gear to show: the gear card leads, above the empty score card (W.9). */
   const gearFirst = $derived(
     data !== null && !hasScore(foreverOf(data)) && data.gear !== undefined && data.gear.length > 0,
@@ -195,7 +206,7 @@
          (-4), then the header (-3) and the score card (-2, ForeverScoreCard) with the Gear
          section under it (-2, after it in the page: L8.6), then the visitor's sign-in band (-1):
          the character is the page's subject. Then the rest in page order. -->
-    <CurrentCharacterBar spine profile />
+    <CurrentCharacterBar spine profile quietSignedOut={prompt?.quietBar ?? false} />
     <header class="-order-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
         <CharacterIdentity
@@ -242,6 +253,7 @@
       bisHref={specBis}
       gearHref={data.gear === undefined ? null : `#${GEAR_ANCHOR}`}
       {owned}
+      compactEmpty={gearFirst}
       name={data.character.name}
       fights={data.history}
       onrated={(next) => (rated = next)}
@@ -263,6 +275,7 @@
         band={typeof data.character.level === 'number' ? bandForLevel(data.character.level) : null}
         unread={gearUnread}
         first={gearFirst}
+        planner={prompt?.primary === 'planner'}
         capturedAt={own?.build?.captured_at ?? null}
         {owned}
       />

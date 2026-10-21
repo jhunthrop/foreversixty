@@ -106,7 +106,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     const totals = /<p class="([^"]*)" data-testid="character-gear-totals">([\s\S]*?)<\/p>/.exec(body);
     expect(text(totals?.[2] ?? '')).toBe(
-      'The card’s 88 counts the band’s best set. These 70 count the picks you can wear.',
+      'The card’s 88 counts the level range’s best set. These 70 count the picks you can wear.',
     );
     expect(totals?.[1].split(' ')).toEqual(expect.arrayContaining(['text-muted', 'text-[13px]', 'mt-1']));
     expect(classesOf(body, 'character-gear-list')).toContain('mt-4');
@@ -157,7 +157,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(body).not.toContain('character-gear-pick');
     // "Empty" and "Worn item not in our list" are not names: they draw at once.
     expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
-    expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your band yet');
+    expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your level range yet');
     // The off hand's swap note's line is reserved as a bar of its width (fix 4 item 4).
     expect(bare(rowHtml(body, 'off_hand'))).toMatch(
       /<span class="[^"]*bg-\[#1a1d24\][^"]*" data-testid="character-gear-note-bar"><span class="[^"]*invisible[^"]*"[^>]*>comes with the <span class="whitespace-nowrap">main-hand swap<\/span><\/span><\/span>/,
@@ -261,7 +261,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(ranged).toMatch(
       /<span class="text-text"[^>]*data-testid="character-gear-worn">Skul's Ghastly Touch<\/span>/,
     );
-    expect(text(ranged)).toBe("Ranged Skul's Ghastly Touch No pick for your band yet");
+    expect(text(ranged)).toBe("Ranged Skul's Ghastly Touch No pick for your level range yet");
   });
 
   it('the failed line sits in the footer under the link, so nothing above it moves (fix 6 item 2)', () => {
@@ -296,13 +296,17 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(gearCopy.swap).toBe('comes with the main-hand swap');
   });
 
-  it('copy: "No pick for your band yet", "Best for your band", "17% drop" (fix 2 ruling 6)', () => {
+  it('copy: "No pick for your level range yet", "Best for your level range", "17% drop" (fix 2 ruling 6)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
-    expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your band yet');
-    expect(text(rowHtml(body, 'ranged'))).toBe("Ranged Skul's Ghastly Touch No pick for your band yet");
-    expect(text(rowHtml(body, 'shoulder'))).toBe('Shoulder Pauldrons of Transcendence Best for your band');
+    expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your level range yet');
+    expect(text(rowHtml(body, 'ranged'))).toBe(
+      "Ranged Skul's Ghastly Touch No pick for your level range yet",
+    );
+    expect(text(rowHtml(body, 'shoulder'))).toBe(
+      'Shoulder Pauldrons of Transcendence Best for your level range',
+    );
     expect(text(rowHtml(body, 'head'))).toBe(
-      "Head Green Lens → best for your band: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 pts",
+      "Head Green Lens → best for your level range: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 pts",
     );
     expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
   });
@@ -343,7 +347,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     }
     const long = render(CharacterGearPanel, { props: { ...PROPS, gear: GEAR_FIXTURE_LONG_NAME } }).body;
     expect(text(rowHtml(long, 'shoulder'))).toBe(
-      'Shoulder Mantle of the Unforgiving Majesty Best for your band',
+      'Shoulder Mantle of the Unforgiving Majesty Best for your level range',
     );
   });
 
@@ -434,7 +438,24 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(text(heading?.[1] ?? '')).toBe('Gear');
     expect(classesOf(body, 'character-gear-heading')).not.toContain(TRAILING_DOT);
     const line = /<p class="([^"]*)" id="gear" data-testid="character-gear-none">([\s\S]*?)<\/p>/.exec(body);
-    expect(text(line?.[2] ?? '')).toBe(gearCopy.noGear);
+    // The default viewer owns the character: sync, and nothing else (W.10).
+    expect(text(line?.[2] ?? '')).toBe('No gear on file yet. Sync the addon.');
+    expect(body).not.toContain('character-gear-planner');
+  });
+
+  it('`gear: []`, a visitor: the one quiet line says sync or sign in; with a score the planner is the one button (W.10)', () => {
+    const visitor = render(CharacterGearPanel, {
+      props: { ...PROPS, gear: [], total: null, owned: false },
+    }).body;
+    const line = /<p class="[^"]*" id="gear" data-testid="character-gear-none">([^]*?)[<][/]p>/.exec(visitor);
+    expect(text(line?.[1] ?? '')).toBe(gearCopy.noGear);
+    expect(line?.[1]).toContain('href="/setup"');
+    expect(line?.[1]).toContain('href="/login"');
+    expect(visitor).not.toContain('character-gear-planner');
+    const scored = render(CharacterGearPanel, {
+      props: { ...PROPS, gear: [], total: null, owned: false, planner: true },
+    }).body;
+    expect(scored).toMatch(/href="[/]planner"[^>]*data-testid="character-gear-planner">Open the planner</);
   });
 });
 

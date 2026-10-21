@@ -118,9 +118,9 @@ describe('bandForPanel (W.8)', () => {
 });
 
 describe('the band card’s aside (W.8)', () => {
-  it('says "your level’s band" only when there is a character, else the band by name', () => {
-    expect(bandCompareCopy.headingAside('60', true)).toBe("your level's band");
-    expect(bandCompareCopy.headingAside('60', false)).toBe('the 60 band');
+  it('says "your level’s range" only when there is a character, else the band by name', () => {
+    expect(bandCompareCopy.headingAside('60', true)).toBe("your level's range");
+    expect(bandCompareCopy.headingAside('60', false)).toBe('the 60 level range');
     expect(bandCompareCopy.headingAside('20 to 29', false)).not.toMatch(/your/);
   });
 });

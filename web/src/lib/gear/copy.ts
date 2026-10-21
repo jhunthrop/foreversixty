@@ -75,10 +75,10 @@ export const gearCopy = {
   titleSeparator: ' · ',
   /** Under the title (fix round 1 ruling 3): both numbers, what each counts. */
   totals: (cardGap: number, total: number): string =>
-    `The card’s ${points(cardGap)} counts the band’s best set. These ${points(total)} count the picks you can wear.`,
+    `The card’s ${points(cardGap)} counts the level range’s best set. These ${points(total)} count the picks you can wear.`,
   /** The same at a total of 0 (fix round 2 ruling 5). */
   totalsZero: (cardGap: number): string =>
-    `The card’s ${points(cardGap)} counts the band’s best set. Nothing you can wear adds to it.`,
+    `The card’s ${points(cardGap)} counts the level range’s best set. Nothing you can wear adds to it.`,
   /** A row's gap: "+18.4 pts", and read aloud "18.4 points to gain". */
   gap: (gap: number): string => `+${points(gap)} pts`,
   gapLabel: (gap: number): string => `${points(gap)} points to gain`,
@@ -100,12 +100,12 @@ export const gearCopy = {
    *  nice-to-have; fix round 6 item 2). */
   failed: 'Item details didn’t load.',
   /** The worn item is the pick (or as good as it): no arrow. */
-  best: 'Best for your band',
+  best: 'Best for your level range',
   /** The band has no pick for the slot (fix round 2 ruling 6: capitalised everywhere). */
   /** The muted words after the heading when the spec was not named by a fight. */
   specFromTalents: 'from your talents',
   specDefault: 'no points spent yet',
-  noPick: 'No pick for your band yet',
+  noPick: 'No pick for your level range yet',
   /** The off hand under a worn two-hander: its pick comes with the main hand's (ruling 9). It is
    *  drawn as `swapLead` then `swapKept` on one unbroken line, so "main-hand swap" never splits at
    *  its hyphen or leaves "swap" alone (fix round 6 item 3). */
@@ -115,18 +115,23 @@ export const gearCopy = {
   /** The drawn arrow between the worn item and the pick, with its spaces; a screen reader hears
    *  the label instead ("Green Lens, best for your band: Halo of Transcendence"). */
   arrow: ' → ',
-  arrowLabel: ' best for your band: ',
+  arrowLabel: ' best for your level range: ',
   /** `gear: []`: under the heading, this one line; its two phrases link where each happens. */
-  noGear: 'No gear on file. Upload a log or sync the addon.',
+  noGear: 'No gear on file yet. Sync the addon, or sign in to claim this character.',
+  /** The one quiet line (W.10): the owner syncs; a visitor may also sign in to claim the character. */
   noGearParts: {
-    lead: 'No gear on file. ',
-    upload: 'Upload a log',
-    uploadHref: '/logs#upload',
-    or: ' or ',
-    sync: 'sync the addon',
+    lead: 'No gear on file yet. ',
+    sync: 'Sync the addon',
     syncHref: '/setup',
+    or: ', or ',
+    signIn: 'sign in',
+    signInHref: '/login',
+    claimEnd: ' to claim this character.',
     end: '.',
   },
+  /** The primary when a character has a score but no gear: the planner builds a set to compare. */
+  noGearPlanner: 'Open the planner',
+  noGearPlannerHref: '/planner',
   /** The footer link to the spec's best-in-slot page (fix round 1 ruling 3): "Full Holy BiS list
    *  at 60", a band below 60 by its range as the /bis band tabs name it ("30 to 39"). */
   bisLink: (spec: string, band: number | null): string =>

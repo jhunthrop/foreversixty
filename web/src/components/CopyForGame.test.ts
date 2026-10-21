@@ -128,7 +128,7 @@ describe('CopyForGame (the click)', () => {
 describe('the addon hint', () => {
   it('names /fs, not the retired /fs follow', () => {
     expect(addonCopy.addonCodeHint).toBe(
-      'Paste this in game with /fs; the chip and the talent window follow it from then on.',
+      'Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on.',
     );
     expect(addonCopy.addonCodeHint).not.toContain('/fs follow');
   });

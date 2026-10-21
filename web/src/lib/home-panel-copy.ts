@@ -27,7 +27,7 @@ export const homePanelCopy = {
   noSimYet: 'No sim yet.',
   runAction: 'Run',
   /** The shared character header's words on the home page (spec 2026-10-11 section 4). */
-  headerAnswerLabel: 'Upgrades in your band',
+  headerAnswerLabel: 'Upgrades for your level range',
   headerNote: (bandLabel: string): string => `Best in slot for ${bandLabel}, together`,
   /** Said, not silently dropped: a slot with no sim-verified alternative is left out of the gain. */
   headerNotSimChecked: (count: number): string =>
@@ -66,11 +66,11 @@ export const homeHeroCardsCopy = {
   /** A spec and a gear export both exist, but this build has no published BiS list for the
    *  spec/band pair yet -- distinct from `bestInSlotNotAvailable` (that names a gap in THIS
    *  character's own data; this one names a gap in the site's own published data). */
-  bestInSlotNoListYet: 'No best in slot list published yet for this spec and band.',
+  bestInSlotNoListYet: 'No best in slot list published yet for this spec and level range.',
   talentsLabel: 'Talents',
   talentsNotAvailable:
     'Not available yet: no talent export for this character. Open the addon once to send it.',
-  talentsNoListYet: 'No talent build published yet for this spec and band.',
+  talentsNoListYet: 'No talent build published yet for this spec and level range.',
   talentsOptimizedFigure: 'Optimized',
   talentsUnoptimizedFigure: 'Unoptimized',
   /** Fix round 1 item A.3: names whose points the denominator counts (the band's own build),
@@ -83,10 +83,11 @@ export const homeHeroCardsCopy = {
   simulatorNowFigure: (dps: string): string => `${dps} DPS now`,
   /** The band's own `set_dps`. Read after the figure it is comparable with:
    *  "26 DPS now · 37.5 DPS at band best in slot". */
-  simulatorBandLine: (bandSetDps: number): string => `${bandSetDps.toFixed(1)} DPS at band best in slot`,
+  simulatorBandLine: (bandSetDps: number): string =>
+    `${bandSetDps.toFixed(1)} DPS at best in slot for your level range`,
   /** With no comparable saved sim the band figure stands alone, as the card's figure. */
   simulatorBandOnlyFigure: (bandSetDps: number): string => `${bandSetDps.toFixed(1)} DPS`,
-  simulatorBandOnlyLine: 'at band best in slot',
+  simulatorBandOnlyLine: 'at best in slot for your level range',
 } as const;
 
 /**

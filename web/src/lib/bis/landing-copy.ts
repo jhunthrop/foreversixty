@@ -7,7 +7,7 @@ import { bandLabel } from './landing-bands';
 export const landingCopy = {
   title: 'Best in slot',
   description:
-    'The best gear you can wear at every level band, from the simulator: one list per class and spec, built once and never per character.',
+    'The best gear you can wear at every level range, from the simulator: one list per class and spec, built once and never per character.',
   eyebrow: 'Levels 20 to 60',
   h1: 'Best in slot',
   jobLine: 'The best gear you can wear at your level, for every spec. Open yours.',
@@ -25,9 +25,9 @@ export const landingCopy = {
   under20: 'Best in slot starts at 20.',
   /** `of 17 slots`: the muted unit after the figure, so the figure can be set larger. */
   countUnit: (total: number): string => `of ${total} slots`,
-  /** `Trinkets have no pick at this band.` / `Neck has no pick at this band.` */
+  /** `Trinkets have no pick at this level range.` / `Neck has no pick at this level range.` */
   excludedNote: (slots: string, plural: boolean): string =>
-    `${slots} ${plural ? 'have' : 'has'} no pick at this band.`,
+    `${slots} ${plural ? 'have' : 'has'} no pick at this level range.`,
   /** `Fury gear for 40 to 49 →`, `Fury gear for 60 →`. */
   leadButton: (specName: string, band: number): string => `${specName} gear for ${bandLabel(band)} →`,
   /** A character whose class the site does not know: the action points at the grid below. */
@@ -37,12 +37,13 @@ export const landingCopy = {
   gridHeadingSignedOut: 'Pick a class and spec',
   gridHeadingSignedIn: 'Another class or spec',
 
-  stripHead: 'Spec links open at this band',
+  stripHead: 'Spec links open at this level range',
   stripNote: (raidLabel: string): string => {
-    const lead = 'Each list is the best you can wear inside one band; gear changes about every ten levels.';
+    const lead =
+      'Each list is the best you can wear inside one level range; gear changes about every ten levels.';
     return raidLabel === '' ? lead : `${lead} 60: full ${raidLabel} gear.`;
   },
-  bandGroupLabel: 'Spec links open at this band',
+  bandGroupLabel: 'Spec links open at this level range',
   you: 'you',
   yours: 'Yours',
   roleWords: { tank: 'Tank', healer: 'Healer' } as const,

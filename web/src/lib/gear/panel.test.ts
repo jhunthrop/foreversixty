@@ -85,7 +85,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     });
   });
 
-  it('the worn item that is the pick: "Best for your band" on its line, no pick, no gap', () => {
+  it('the worn item that is the pick: "Best for your level range" on its line, no pick, no gap', () => {
     expect(row('shoulder')).toEqual({
       slot: 'shoulder',
       label: 'Shoulder',
@@ -94,7 +94,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       pick: null,
       source: null,
       chance: null,
-      note: 'Best for your band',
+      note: 'Best for your level range',
       inline: true,
       gap: null,
       gapLabel: null,
@@ -117,12 +117,12 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     });
   });
 
-  it('no pick: "No pick for your band yet" beside the worn item, or beside "Empty" (fix 2 ruling 6)', () => {
+  it('no pick: "No pick for your level range yet" beside the worn item, or beside "Empty" (fix 2 ruling 6)', () => {
     expect(row('ranged')).toMatchObject({
       state: 'worn-only',
       worn: { id: 13396, name: "Skul's Ghastly Touch", known: true },
       pick: null,
-      note: 'No pick for your band yet',
+      note: 'No pick for your level range yet',
       inline: true,
       gap: null,
     });
@@ -130,7 +130,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       state: 'none',
       worn: null,
       pick: null,
-      note: 'No pick for your band yet',
+      note: 'No pick for your level range yet',
       inline: true,
       gap: null,
     });
@@ -247,11 +247,11 @@ describe('gearTitle (L8.6 fix round 1 ruling 3)', () => {
 describe('gearTotalsLine (L8.6 fix round 1 ruling 3)', () => {
   it('names both numbers: the card’s gear gap and gear_gap_total', () => {
     expect(gearTotalsLine(88, 70)).toBe(
-      'The card’s 88 counts the band’s best set. These 70 count the picks you can wear.',
+      'The card’s 88 counts the level range’s best set. These 70 count the picks you can wear.',
     );
     // A total of 0 has its own wording (fix 2 ruling 5).
     expect(gearTotalsLine(26, 0)).toBe(
-      'The card’s 26 counts the band’s best set. Nothing you can wear adds to it.',
+      'The card’s 26 counts the level range’s best set. Nothing you can wear adds to it.',
     );
     expect(gearTotalsLine(88, 18.4)).toContain('These 18.4 count');
   });
@@ -265,9 +265,11 @@ describe('gearTotalsLine (L8.6 fix round 1 ruling 3)', () => {
 
 describe('gearCopy (L8.6 fix round 1)', () => {
   it('the no-gear line', () => {
-    expect(gearCopy.noGear).toBe('No gear on file. Upload a log or sync the addon.');
-    const { lead, upload, or, sync, end } = gearCopy.noGearParts;
-    expect(`${lead}${upload}${or}${sync}${end}`).toBe(gearCopy.noGear);
+    expect(gearCopy.noGear).toBe('No gear on file yet. Sync the addon, or sign in to claim this character.');
+    const { lead, sync, or, signIn, claimEnd, end } = gearCopy.noGearParts;
+    expect(`${lead}${sync}${or}${signIn}${claimEnd}`).toBe(gearCopy.noGear);
+    // The owner has no account to sign in to: sync, and nothing else.
+    expect(`${lead}${sync}${end}`).toBe('No gear on file yet. Sync the addon.');
   });
 
   it('the footer link: "Full Holy BiS list at 60", a band below 60 by its range (fix 1 ruling 3)', () => {

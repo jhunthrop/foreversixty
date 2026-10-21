@@ -24,17 +24,17 @@ function outcomeNoun(unit: RateUnit): string {
 export const bisCopy = {
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
-    'The simulator has not ranked this spec’s gear across the leveling bands yet. Check back once the nightly ranking run covers it.',
+    'The simulator has not ranked this spec’s gear across the level ranges yet. Check back once the nightly ranking run covers it.',
   backToIndex: 'Back to BiS',
   classGuideLink: 'See leveling BiS gear for this class',
   factionAlliance: 'Alliance',
   factionHorde: 'Horde',
   levelLabel: (band: number): string => `Level ${band}`,
-  bandPillGroupLabel: 'Level band',
+  bandPillGroupLabel: 'Level range',
   bandHeading: (band: number): string => `Best gear at level ${band}`,
   newAtBand: (band: number): string => `New at ${band}`,
-  newAtBandEmpty: 'Nothing changed from the previous band.',
-  newAtBandFirst: 'The first band -- everything here is new.',
+  newAtBandEmpty: 'Nothing changed from the previous level range.',
+  newAtBandFirst: 'The first level range -- everything here is new.',
   noKnownSourceForSlot: 'No sourced item at this level yet',
   slotHeading: 'Slot',
   itemHeading: 'Item',
@@ -47,18 +47,18 @@ export const bisCopy = {
   talentPointsLabel: (points: number): string => `${points} point${points === 1 ? '' : 's'} spent`,
   verified: 'Verified',
   unverified: 'Unverified',
-  verifiedTitle: 'Confirmed by a Top Gear simulation pass at this band.',
+  verifiedTitle: 'Confirmed by a Top Gear simulation pass at this level range.',
   unverifiedTitle: 'Ranked by stat weights only; not yet settled by a Top Gear pass.',
   swapNoteSummary: 'Swap note',
   noSourceCount: (count: number): string =>
     count === 0
       ? ''
-      : `${count} item${count === 1 ? '' : 's'} at this band had no known source and ${count === 1 ? 'is' : 'are'} left out.`,
+      : `${count} item${count === 1 ? '' : 's'} at this level range had no known source and ${count === 1 ? 'is' : 'are'} left out.`,
   questFactionBadge: (faction: 'alliance' | 'horde'): string =>
     faction === 'alliance' ? 'Alliance quest' : 'Horde quest',
   generatedFrom: (engineVersion: string): string => `Simulated against engine ${engineVersion}`,
   metaDescription: (specName: string, className: string): string =>
-    `The best gear for a leveling ${className} ${specName} at every level band, ranked by the simulator and verified with Top Gear.`,
+    `The best gear for a leveling ${className} ${specName} at every level range, ranked by the simulator and verified with Top Gear.`,
 
   // --- source cell (step 1) ---------------------------------------------------------------
   questSourceLabel: (questName: string): string => `Quest: ${questName}`,
@@ -111,8 +111,8 @@ export const bisCopy = {
   bandStripGroupLabel: 'Jump to level',
   bandNewCount: (count: number): string => `${count} new`,
   changedSinceHeading: (previousBand: number): string => `What changed since level ${previousBand}`,
-  changedSinceEmpty: 'Nothing changed from the previous band.',
-  changedSinceFirst: 'The first band -- everything here is new.',
+  changedSinceEmpty: 'Nothing changed from the previous level range.',
+  changedSinceFirst: 'The first level range -- everything here is new.',
   wasLabel: 'Was',
   nowLabel: 'Now',
   newRowMarker: 'New',
@@ -124,8 +124,10 @@ export const bisCopy = {
   newAtBandCount: (count: number): string => `${count} new`,
   newPillLabel: 'New',
   newPillTitle: (replaced: string | undefined): string =>
-    replaced === undefined ? 'New this band -- nothing was equipped here before.' : `Replaces ${replaced}.`,
-  verifiedGlyphTitle: 'Confirmed by a Top Gear simulation pass at this band.',
+    replaced === undefined
+      ? 'New this level range -- nothing was equipped here before.'
+      : `Replaces ${replaced}.`,
+  verifiedGlyphTitle: 'Confirmed by a Top Gear simulation pass at this level range.',
   unverifiedGlyphTitle: 'Ranked by stat weights only; not yet settled by a Top Gear pass.',
   upgradesSinceHeading: (count: number, previousBand: number): string =>
     count === 0
@@ -133,7 +135,7 @@ export const bisCopy = {
       : `${count} upgrade${count === 1 ? '' : 's'} since level ${previousBand}`,
   newSlotLabel: 'New slot',
   setDpsDelta: (delta: number, unit: RateUnit = 'DPS'): string =>
-    `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} ${unit} since the last band`,
+    `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} ${unit} since the last level range`,
   /** Shown under `setDpsLabel`'s big number when `BisBand.set_dps_partial` is true (spec
    *  addendum 3, §E): `count` always equals the number of rows this same band actually
    *  renders with `notSimCheckedTag` (`panel-view.ts`'s `BandInfo.setDpsPartialCount`,
@@ -192,7 +194,7 @@ export const bisCopy = {
    *  suffix now only ever appears when no candidate item actually carries the stat. */
   weightsHasteCaption: (scaleFactor: number, noItemAtBand: boolean): string =>
     `Haste: ${scaleFactor.toFixed(2)} per 1%${
-      noItemAtBand ? ', not in the table because no item at this band has it' : ''
+      noItemAtBand ? ', not in the table because no item at this level range has it' : ''
     }`,
   /** A per-point row's own `scale_factor`/`dps_per_point`/`scale_error` the sweep's own 25%-
    *  of-value error bar could not clear (`weight.insignificant`) -- greyed on the page
@@ -351,7 +353,7 @@ export const bisCopy = {
   runnersUpHeaderLabel: (unit: RateUnit = 'DPS'): string => `Runners-up · ${unit} vs the pick`,
   youHeaderLabel: 'You',
   whereToGetItHeading: 'Where to get it',
-  newAtThisBandHeading: 'New at this band',
+  newAtThisBandHeading: 'New at this level range',
   /** `source_kind === 'world_drop'`'s own group label for "Where to get it" (spec §4.E) --
    *  never `worldDropSourceLabel`'s `"World drop (BoE)"` phrasing, which is pipeline jargon
    *  for the same row's own individual source line; this is the one place on the page
@@ -359,7 +361,7 @@ export const bisCopy = {
    *  items rather than one row. */
   worldDropGroupLabel: 'World drop (auction house)',
   groupCountSuffix: (count: number): string => `×${count}`,
-  firstBandEveryPickNew: 'This is the first band — every pick here is new.',
+  firstBandEveryPickNew: 'This is the first level range — every pick here is new.',
   /** Sentence 1 of "New at this band" (spec §4.E) for every band past the first -- `parts`
    *  is the already-built, ordered list of instance names and `"the <faction> rewards"`
    *  clauses (`joinWithAnd` below joins them into one clause). */
@@ -370,7 +372,7 @@ export const bisCopy = {
    *  world/crafted source), in which case the sentence starts straight from the slot clause
    *  (or is empty entirely when neither clause has anything to say). */
   nextBandLine: (bandLabel: string, joinedParts: string, helpfulSlotLabel: string | undefined): string => {
-    const head = `Next band (${bandLabel})`;
+    const head = `Next level range (${bandLabel})`;
     const slotClause = helpfulSlotLabel === undefined ? '' : `the first ${helpfulSlotLabel} that helps`;
     if (joinedParts === '' && slotClause === '') return `${head}.`;
     if (joinedParts === '') return `${head}: ${slotClause}.`;

@@ -55,7 +55,8 @@ export const addonCopy = {
   copyFailed: 'Could not copy; select the code below instead',
   /** The accessible name of that read-only field. */
   buildCodeLabel: 'Build code',
-  addonCodeHint: 'Paste this in game with /fs; the chip and the talent window follow it from then on.',
+  addonCodeHint:
+    'Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on.',
 
   // --- planner import box ---
   importTitle: 'Import from addon',
@@ -104,9 +105,10 @@ export const addonCopy = {
   /** The nightly ratings pack is its own addon (ForeverSixtyData): a manager that honours
    *  required dependencies installs it with the addon; a hand install needs both. */
   installDataLead:
-    'Forever Sixty Data carries the nightly Forever Scores and guild standings the addon shows. CurseForge and Wago add it for you; a hand install needs both.',
+    'Forever Sixty Data carries the Forever Scores and guild standings the addon shows, updated nightly. CurseForge and Wago add it for you; a hand install needs both.',
   /** The one quiet line under the install buttons (UX review r5, finding 2). */
-  installDataHint: 'Forever Sixty Data carries the nightly scores. CurseForge and Wago add it for you.',
+  installDataHint:
+    'Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.',
   /** The disclosure that holds the data addon's own links and the build number. */
   setupManualInstall: 'Manual install',
   installDataCurseForge: 'Forever Sixty Data on CurseForge',
@@ -137,9 +139,11 @@ export const addonCopy = {
   setupSignInAction: 'Sign in with Battle.net',
   /** The truth of how a character reaches the site, said once and the way the addon's welcome says
    *  it (addon/ForeverSixty/Locale.lua): the addon saves, the companion sends. */
-  setupHowItArrives: 'The addon saves your character when you log out; the companion sends it to the site.',
+  setupHowItArrives:
+    'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (Try an export, below).',
   /** Under the step 3 title: which of the three steps can be skipped. */
-  setupCompanionNote: 'Optional for gear. Needed for live logs.',
+  setupCompanionNote:
+    'Sends your character automatically and logs live. Without it, paste an export after each change.',
   setupSubline: 'Three steps. The first two take two minutes.',
   setupCompanionBody:
     'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
@@ -149,11 +153,12 @@ export const addonCopy = {
   setupPageTitle: 'Get set up',
   /** The label over the status chips: they report progress, they are not tabs. */
   setupProgressLabel: 'Your progress',
-  /** The three chips, each an anchor to its step: the label to do, the label once done. */
+  /** The three chips, each an anchor to its step: one label per chip whatever its state; the
+   *  tick, not the words, says it is done (W.10). */
   setupChips: [
-    { step: 1, href: '#signin', todo: 'Sign in', done: 'Signed in' },
-    { step: 2, href: '#addon', todo: 'Addon', done: 'Addon seen' },
-    { step: 3, href: '#companion', todo: 'Companion', done: 'Companion running' },
+    { step: 1, href: '#signin', label: 'Signed in' },
+    { step: 2, href: '#addon', label: 'Addon' },
+    { step: 3, href: '#companion', label: 'Companion' },
   ] as const,
   /** A signed-out visitor who pasted an export: the one done line a step can show without a session. */
   setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
@@ -161,7 +166,8 @@ export const addonCopy = {
   setupSignedInAs: (name: string): string => `Signed in as ${name}`,
   setupAddonArrived: (character: string, when: string): string =>
     `${character} arrived from the addon ${when}`,
-  setupAddonWaiting: 'No character yet — log out once with the addon on',
+  setupAddonWaiting:
+    'No character yet. Log out once with the addon on and the companion running, or paste an export.',
   setupCompanionLine: (device: string, seen: string): string =>
     `Companion signed in on ${device} · last seen ${seen}`,
   setupCompanionWaiting: 'No companion signed in yet',
@@ -180,10 +186,18 @@ export const addonCopy = {
     src: '/addon/companion-status.jpg',
     width: 1600,
     height: 436,
+    /** The phone source (W.10): the headline card alone, cropped from the 0.2.13 Status capture
+     *  and shown at 100% width under 640px, where the full page is too small to read. */
+    phoneSrc: '/addon/companion-status-phone.jpg',
+    phoneWidth: 840,
+    phoneHeight: 294,
     alt: 'The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow Jackzon” and the link “Open this report on the site”.',
   },
   /** The disclosure that holds the paste box. */
   setupTryExport: 'Try an export',
+  /** What an export is, first thing inside its disclosure. */
+  setupTryExportBody:
+    'Paste what the addon saved (type /fs copy in game) to see your character without the companion.',
   disclosureOpen: 'Show',
   disclosureClose: 'Hide',
 
@@ -197,14 +211,14 @@ export const addonCopy = {
   surfaces: [
     {
       section: '4.1',
-      title: 'The chip',
+      title: 'The Forever Sixty line',
       body: 'A small icon and line beside the minimap that names your next step: the talent to take, a bag item to equip, loot here for you, or what a raid check found missing.',
       images: [
         {
           src: '/addon/chip-tooltip-legend.jpg',
           width: 1019,
           height: 360,
-          alt: 'The chip beside the minimap with its hover open: “Forever Sixty · Beast Mastery / Marksmanship build”, “Next talent at 25: Lethal Attacks”, the legend lines “Green arrow: a bag item beats what you wear.” and “Gold corner: next upgrade to chase.”, then the click, right-click and shift-drag hints.',
+          alt: 'The Forever Sixty line beside the minimap with its hover open: “Forever Sixty · Beast Mastery / Marksmanship build”, “Next talent at 25: Lethal Attacks”, the legend lines “Green arrow: a bag item beats what you wear.” and “Gold corner: next upgrade to chase.”, then the click, right-click and shift-drag hints.',
         },
       ],
     },
@@ -344,7 +358,7 @@ export const addonCopy = {
           tall: true,
           width: 1166,
           height: 790,
-          alt: 'The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the chip, Hide the chip in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button.',
+          alt: 'The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the Forever Sixty line, Hide the Forever Sixty line in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button.',
         },
       ],
     },

@@ -1,6 +1,6 @@
 // web/tests/e2e/character-identity.spec.ts
 // Task L8.4 and its fix round 2: who the character is and its score over time, on the profile.
-// The header reads "Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP" with
+// The header reads "Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP realm" with
 // "Level 60 Night Elf" under it, the "Hardcore US" chip ending the last line, and for the owner
 // the Character header's sync line third; the tooltip mock reads as the 1.60 client prints it;
 // the Forever Score card draws score_history as a sparkline across its content column with a
@@ -51,7 +51,7 @@ test('the header says who the character is, the guild links to its page, and the
   await page.goto(CHARACTER_PATH);
 
   await expect(page.getByTestId('character-descriptor')).toHaveText(
-    'Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP',
+    'Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP realm',
   );
   // "Discipline Priest" in --text, the rest muted.
   await expect(page.getByTestId('character-spec')).toHaveCSS('color', 'rgb(255, 255, 255)');
@@ -59,7 +59,7 @@ test('the header says who the character is, the guild links to its page, and the
   const guild = page.getByTestId('character-guild-link');
   await expect(guild).toHaveText('<Cx66 Olympus>');
   await expect(guild).toHaveAttribute('href', '/guild/us/hardcore/cx66-olympus');
-  await expect(page.getByTestId('character-realm')).toHaveText('Classic Beta PvP');
+  await expect(page.getByTestId('character-realm')).toHaveText('Classic Beta PvP realm');
   await expect(page.getByTestId('character-level-race')).toHaveText('Level 60 Night Elf');
   const chip = page.getByTestId('character-ruleset-chip');
   await expect(chip).toHaveText('Hardcore US');
@@ -538,7 +538,7 @@ for (const width of [390, 360, 320]) {
       await stub(page, { ...CHARACTER.data, ...SCORE });
       await page.goto(CHARACTER_PATH);
       await expect(page.getByTestId('character-descriptor')).toHaveText(
-        'Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP',
+        'Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP realm',
       );
       const { dots, units } = await headerLines(page);
       expect(dots).toHaveLength(3);
@@ -571,7 +571,7 @@ test.describe('a long realm at 360px (item 10, fix round 5 item 6)', () => {
     await page.goto(CHARACTER_PATH);
 
     const realm = page.getByTestId('character-realm');
-    await expect(realm).toHaveText('Classic Beta PvE Two Extended');
+    await expect(realm).toHaveText('Classic Beta PvE Two Extended realm');
     expect(await realm.evaluate((element) => element.getClientRects().length)).toBe(1);
     // Every "·" shares its line with the character before it: a dot ends its segment's line.
     const { dots } = await headerLines(page);

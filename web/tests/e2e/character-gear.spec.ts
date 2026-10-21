@@ -172,7 +172,7 @@ for (const width of [1440, 390]) {
       );
       const totals = page.getByTestId('character-gear-totals');
       await expect(totals).toHaveText(
-        'The card’s 88 counts the band’s best set. These 70 count the picks you can wear.',
+        'The card’s 88 counts the level range’s best set. These 70 count the picks you can wear.',
       );
       await expect(totals).toHaveCSS('font-size', '13px');
       await expect(totals).toHaveCSS('color', RGB.muted);
@@ -228,16 +228,16 @@ for (const width of [1440, 390]) {
       await expect(row(page, 'back').getByTestId('character-gear-meta')).toContainText('<1% drop');
       await expect(row(page, 'chest').getByTestId('character-gear-meta')).toHaveText('Tailoring');
       await expect(row(page, 'shoulder').getByTestId('character-gear-meta')).toContainText(
-        'Best for your band',
+        'Best for your level range',
       );
       await expect(row(page, 'shoulder').getByTestId('character-gear-gap')).toHaveText('');
       await expect(row(page, 'finger1').getByTestId('character-gear-slot')).toHaveText('Ring 1');
       await expect(row(page, 'trinket2').getByTestId('character-gear-slot')).toHaveText('Trinket 2');
       await expect(row(page, 'trinket2').getByTestId('character-gear-meta')).toHaveText(
-        'No pick for your band yet',
+        'No pick for your level range yet',
       );
       await expect(row(page, 'ranged').getByTestId('character-gear-meta')).toHaveText(
-        'No pick for your band yet',
+        'No pick for your level range yet',
       );
       const legs = row(page, 'legs');
       await expect(legs.getByTestId('character-gear-worn')).toHaveText('Worn item not in our list');
@@ -281,7 +281,9 @@ for (const width of [1440, 390]) {
       const heading = page.getByTestId('character-gear-title');
       const line = page.getByTestId('character-gear-none');
       await expect(heading).toHaveText('Gear');
-      await expect(line).toHaveText('No gear on file. Upload a log or sync the addon.');
+      await expect(line).toHaveText(
+        'No gear on file yet. Sync the addon, or sign in to claim this character.',
+      );
       await page.getByTestId('forever-score-most-to-gain').getByRole('link', { name: 'Gear' }).click();
       await expect(page).toHaveURL(/#gear$/);
       await expect(heading).toBeFocused();
@@ -386,7 +388,7 @@ for (const width of [1440, 390]) {
           });
       }
       const ranged = seen.find((r) => r.slot === 'ranged')!.cells.map((cell) => cell.text);
-      expect(ranged).toEqual(["Skul's Ghastly Touch", 'No pick for your band yet']);
+      expect(ranged).toEqual(["Skul's Ghastly Touch", 'No pick for your level range yet']);
       await expect(row(page, 'ranged').getByTestId('character-gear-worn')).toHaveCSS('color', RGB.body);
       // Every icon box the muted line, no white border.
       const borders = await page
@@ -627,7 +629,11 @@ for (const width of [320, 360, 375, 390, 414]) {
             const meta = li.querySelector<HTMLElement>('[data-testid="character-gear-meta"]');
             const items = li.querySelector<HTMLElement>('[data-testid="character-gear-items"]');
             if (meta === null || items === null) return [];
-            if (!['Best for your band', 'No pick for your band yet'].includes(meta.textContent?.trim() ?? ''))
+            if (
+              !['Best for your level range', 'No pick for your level range yet'].includes(
+                meta.textContent?.trim() ?? '',
+              )
+            )
               return [];
             const name = [...items.getClientRects()].at(-1)!;
             const note = meta.getClientRects()[0];

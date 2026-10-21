@@ -77,16 +77,13 @@ describe('CharacterUnlogged (the 404 no-logs page)', () => {
     expect(visitor).toContain('data-testid="character-ruleset-chip"');
   });
 
-  // L8.4 fix round 4 item 5: the 404 page is not a dead end for a visitor.
-  it('gives a visitor a next step under the no-logs message, and leaves the owner its button alone', () => {
+  // W.10: one prompt for a visitor (the companion button); the owner keeps its own button.
+  it('gives a visitor the one companion button, and leaves the owner its button alone', () => {
     const visitor = render(CharacterUnlogged, {
       props: { path: PATH, name: 'Elyra Duskvale', owned: false },
     }).body;
-    const next = /data-testid="forever-score-empty-next">([\s\S]*?)<\/p>/.exec(visitor)?.[1] ?? '';
-    expect(next).toContain(`href="${scoreCopy.noLogsNext.addonHref}"`);
-    expect(next).toContain(`>${scoreCopy.noLogsNext.addon}</a>`);
-    expect(next).toContain(`href="${scoreCopy.noLogsNext.uploadHref}"`);
-    expect(next).toContain(`>${scoreCopy.noLogsNext.upload}</a>`);
+    expect(visitor).not.toContain('forever-score-empty-next');
+    expect(visitor).toContain(`>${scoreCopy.noLogsCompanion}</a>`);
     const owner = render(CharacterUnlogged, {
       props: { path: PATH, name: 'Elyra Duskvale', owned: true },
     }).body;

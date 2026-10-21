@@ -61,11 +61,11 @@ Berserk on its cooldown adds threat. Left out on purpose: Demoralizing Roar, bec
 
 ## Stat priority
 
-The table above is this band's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
+The table above is this level range's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
 Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and a bear's Stamina is multiplied in Bear Form. Armor is multiplied by the form and lowers every physical hit by a fraction that shrinks as you stack it. Dodge is the only avoidance a bear has, because it cannot Parry or Block, and Defense Skill both lowers the chance to be critically hit and feeds Thick Hide. Agility is Dodge, Armor and crit at once. Strength and Attack Power are threat. Expertise lowers the boss's chance to dodge you, which is threat, not survival, and no item carries it yet.
 
-A stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this band's sample size, to tell its value apart from zero.
+A stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this level range's sample size, to tell its value apart from zero.
 
 ## Gear
 

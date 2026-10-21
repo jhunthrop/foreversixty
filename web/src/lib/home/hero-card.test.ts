@@ -23,7 +23,7 @@ describe('heroCardFor (W.9: the beta card follows the clock)', () => {
     expect(card.mode).toBe('launch');
     expect(card.eyebrow).toBe('Launch Nov 4 · 15:00 PST');
     expect(card.tag).toBe('in 13 days');
-    expect(card.bandsLine).toBe('Leveling best in slot, bands 20 to 60');
+    expect(card.bandsLine).toBe('Leveling best in slot, levels 20, 30, 40, 50, 60');
     expect(card.eyebrow).not.toMatch(/beta is live/i);
     expect(card.tag).not.toContain('cap 30');
   });
