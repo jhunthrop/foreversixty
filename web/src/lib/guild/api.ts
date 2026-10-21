@@ -757,6 +757,9 @@ export interface GuildReadinessRow {
   enchants: GuildReadinessEnchants;
   consumables: GuildReadinessConsumables;
   talent_points_unspent: number;
+  /** True when the export carried talents, so `talent_points_unspent: 0` is a real zero; false
+   *  when it carried none (the 0 is then "not read yet"). Absent on a response from before it. */
+  talent_points_read?: boolean;
   item_level: number | null;
   item_level_delta: number | null;
   logged_at: string;

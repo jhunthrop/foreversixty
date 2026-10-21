@@ -164,3 +164,16 @@ func TestFailTextCleanRowIsEmpty(t *testing.T) {
 		t.Fatalf("failText = %v, want empty for a clean row", got)
 	}
 }
+
+// TestComputeReadinessTalentsRead: a zero unspent is only a real zero when the export carried
+// talents at all; the board says "not read yet" for the other zero.
+func TestComputeReadinessTalentsRead(t *testing.T) {
+	read := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 51, true, 60, true, nil, nil)
+	if !read.TalentsRead || read.TalentPointsUnspent != 0 {
+		t.Fatalf("read = %v unspent = %d, want a real zero", read.TalentsRead, read.TalentPointsUnspent)
+	}
+	unread := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 0, false, 60, true, nil, nil)
+	if unread.TalentsRead || unread.TalentPointsUnspent != 0 {
+		t.Fatalf("read = %v unspent = %d, want an unread zero", unread.TalentsRead, unread.TalentPointsUnspent)
+	}
+}

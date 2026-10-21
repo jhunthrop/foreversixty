@@ -17,9 +17,24 @@
      card for the same reason -- it is now part of Guild.svelte's own full-bleed band, so
      it, too, stays visible on every tab rather than Overview-only. -->
 <script lang="ts">
-  import type { GuildHomeSummary } from '../../lib/guild/api';
-  import { fetchGuildLoot, fetchGuildProgression, fetchGuildReadiness } from '../../lib/guild/api';
+  import type { GuildHomeSummary, GuildRaidsPage } from '../../lib/guild/api';
+  import {
+    fetchGuildLoot,
+    fetchGuildProgression,
+    fetchGuildRaids,
+    fetchGuildReadiness,
+  } from '../../lib/guild/api';
+  import {
+    NO_PUBLIC_REPORTS,
+    UNNAMED_ZONES_LINE,
+    checksFailingLine,
+    encountersDownLine,
+    raidNightDay,
+    rosterCardParts,
+  } from '../../lib/guild/overview-view';
+  import { bossIdsOf, raidTallyLine, reportTallyLine } from '../../lib/guild/raid-view';
   import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
+  import { counted } from '../../lib/plural';
   import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
   import type { GuildTabId } from './GuildTabs.svelte';
 
@@ -41,12 +56,16 @@
     role,
     reports,
     summary,
+    showCounts = true,
     onSelectTab,
   }: {
     guildId: number | null;
     role: 'public' | 'member' | 'officer' | 'moderator';
     reports: readonly OverviewReport[];
     summary: GuildHomeSummary | undefined;
+    /** False for a visitor when the only report is guild-only: the progression card then says
+     *  what the public tabs say instead of counting what the visitor cannot open. */
+    showCounts?: boolean;
     onSelectTab: (tab: GuildTabId) => void;
   } = $props();
 
@@ -56,21 +75,37 @@
    *  and this card read "0 named encounters down" under a band saying 1 boss down. The
    *  progression endpoint is public and already carries the tier figures, so the card reads
    *  it for every role and falls back to `summary` only while it loads. */
-  let progressionSummary = $state<{ down: number; unnamedPulls: number } | null>(null);
-  const namedDown = $derived(progressionSummary?.down ?? summary?.named_encounters_down ?? 0);
-  const unnamedPulls = $derived(progressionSummary?.unnamedPulls ?? summary?.pulls_this_tier ?? 0);
+  let progressionSummary = $state<{ down: number; names: string[] } | null>(null);
+  /** The progression read names the encounters; until it answers the home's own count stands in. */
+  const encountersLine = $derived(
+    progressionSummary !== null
+      ? encountersDownLine(progressionSummary.names)
+      : `${counted(summary?.named_encounters_down ?? 0, 'encounter')} down this tier.`,
+  );
+  /** The raid nights' fights, so a night reads as boss kills and trash packs. */
+  let raidsPage = $state<GuildRaidsPage | null>(null);
+  let bossIds = $state<ReadonlySet<number> | null>(null);
 
   $effect(() => {
     if (guildId === null) return;
     void fetchGuildProgression(guildId)
       .then((page) => {
-        progressionSummary = {
-          down: page.tier.down,
-          unnamedPulls: page.unnamed.reduce((sum, zone) => sum + zone.pulls, 0),
-        };
+        progressionSummary = { down: page.tier.down, names: page.encounters.map((e) => e.name) };
+        bossIds = bossIdsOf(page);
       })
       .catch(() => {
         progressionSummary = null;
+      });
+  });
+
+  $effect(() => {
+    if (guildId === null) return;
+    void fetchGuildRaids(guildId)
+      .then((page) => {
+        raidsPage = page;
+      })
+      .catch(() => {
+        raidsPage = null;
       });
   });
 
@@ -102,6 +137,25 @@
       ? undefined
       : Math.max(0, report.fight_count - report.kill_count);
   }
+
+  /** "1 boss kill (Onyxia) · 2 trash packs · 0 wipes" when the night's fights are known, else the
+   *  two counts the report row carries; nothing when it carries neither (the public list). */
+  function tallyOf(report: OverviewReport): string {
+    const night = raidsPage?.rows.find((row) => row.id === report.id);
+    if (night !== undefined) return raidTallyLine(night, bossIds);
+    const wipes = wipeCount(report);
+    return report.kill_count !== undefined && wipes !== undefined
+      ? reportTallyLine(report.kill_count, wipes)
+      : '';
+  }
+
+  const rosterParts = $derived(
+    rosterCardParts({
+      raiders: summary?.raiders ?? 0,
+      waiting_for_approval: summary?.waiting_for_approval ?? 0,
+      below_rating_floor: summary?.below_rating_floor ?? 0,
+    }),
+  );
 </script>
 
 <section class="flex flex-col gap-5" data-testid="guild-overview-tab">
@@ -118,10 +172,9 @@
         >
       </div>
       <p class="text-[14px]">
-        <span class="tabular font-mono">{summary?.raiders ?? 0}</span> raiders ·
-        <span class="tabular text-gold font-mono">{summary?.waiting_for_approval ?? 0}</span> waiting for
-        approval ·
-        <span class="tabular font-mono">{summary?.below_rating_floor ?? 0}</span> below the rating floor
+        <span class="tabular font-mono">{rosterParts.raiders}</span> ·
+        <span class="tabular text-gold font-mono">{rosterParts.waiting}</span> ·
+        <span class="tabular font-mono">{rosterParts.belowFloor}</span>
       </p>
     </div>
   {/if}
@@ -138,22 +191,18 @@
       >
     </div>
     {#if reports.length === 0}
-      <p class="text-muted text-[14px]">No reports this week yet.</p>
+      <p class="text-muted text-[14px]">
+        {role === 'public' ? NO_PUBLIC_REPORTS : 'No reports this week yet.'}
+      </p>
     {:else}
       {#each reports.slice(0, 3) as report (report.id)}
         <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
           <span class="flex-1 text-[14px] font-semibold"
             >{report.title === '' ? report.zone : report.title}</span
           >
-          <span class="text-muted tabular font-mono text-[13px]">{report.created_at.slice(0, 10)}</span>
-          {#if report.kill_count !== undefined && wipeCount(report) !== undefined}
-            <span class="text-muted tabular font-mono text-[13px]">
-              {report.kill_count} kill{report.kill_count === 1 ? '' : 's'} · {wipeCount(report)} wipe{wipeCount(
-                report,
-              ) === 1
-                ? ''
-                : 's'}
-            </span>
+          <span class="text-muted tabular font-mono text-[13px]">{raidNightDay(report.created_at)}</span>
+          {#if tallyOf(report) !== ''}
+            <span class="text-muted tabular font-mono text-[13px]">{tallyOf(report)}</span>
           {/if}
         </div>
       {/each}
@@ -171,11 +220,12 @@
         onclick={() => onSelectTab('progression')}>See all</button
       >
     </div>
-    <p class="text-[14px]">
-      <span class="tabular font-mono">{namedDown}</span> named encounter{namedDown === 1 ? '' : 's'} down this tier.
-      Barrow Deeps and Hyjal Summit have no published encounter list yet —
-      <span class="tabular font-mono">{unnamedPulls}</span> pulls logged there regardless.
-    </p>
+    {#if showCounts}
+      <p class="text-[14px]">{encountersLine}</p>
+      <p class="text-muted text-[13px]">{UNNAMED_ZONES_LINE}</p>
+    {:else}
+      <p class="text-muted text-[14px]">{NO_PUBLIC_REPORTS}</p>
+    {/if}
   </div>
 
   {#if role !== 'public'}
@@ -195,7 +245,7 @@
       {:else}
         {#each readinessSummary as row (row.name)}
           <p class="text-[13px]">
-            <span class="font-semibold">{row.name}</span> · {row.failing} checks failing
+            <span class="font-semibold">{row.name}</span> · {checksFailingLine(row.failing)}
           </p>
         {/each}
       {/if}

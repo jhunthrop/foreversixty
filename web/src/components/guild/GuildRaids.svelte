@@ -7,10 +7,30 @@
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
-  import type { GuildRaidRow } from '../../lib/guild/api';
+  import { fetchGuildProgression, type GuildRaidRow } from '../../lib/guild/api';
+  import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
+  import { bossIdsOf, raidTallyLine } from '../../lib/guild/raid-view';
   import EmptyState from '../ui/EmptyState.svelte';
 
-  let { rows, officer }: { rows: GuildRaidRow[]; officer: boolean } = $props();
+  let {
+    rows,
+    guildId = null,
+    publicView = false,
+  }: { rows: GuildRaidRow[]; guildId?: number | null; publicView?: boolean } = $props();
+
+  /** The tier's boss ids, so a night's kills split into bosses and trash packs; unknown (the
+   *  progression read has not answered, or failed) until then, when the API's own count shows. */
+  let bossIds = $state<ReadonlySet<number> | null>(null);
+  $effect(() => {
+    if (guildId === null) return;
+    void fetchGuildProgression(guildId)
+      .then((page) => {
+        bossIds = bossIdsOf(page);
+      })
+      .catch(() => {
+        bossIds = null;
+      });
+  });
 
   let expanded = $state<string | null>(null);
   let defaulted = $state(false);
@@ -41,7 +61,9 @@
   <h2 class="section-title text-[18px]">Raids</h2>
   {#if rows.length === 0}
     <EmptyState
-      message="No raid nights logged yet. Upload a raid log to get started."
+      message={publicView
+        ? NO_PUBLIC_RAID_NIGHTS
+        : 'No raid nights logged yet. Upload a raid log to get started.'}
       testid="guild-raids-empty"
     />
   {:else}
@@ -56,13 +78,10 @@
             data-testid={`guild-raid-row-${row.id}`}
           >
             <span class="min-w-[140px] text-[14px] font-semibold">{row.zone}</span>
-            <span class="text-muted tabular font-mono text-[13px]">{row.created_at.slice(0, 10)}</span>
+            <span class="text-muted tabular font-mono text-[13px]">{raidNightDay(row.created_at)}</span>
             <span class="text-muted tabular font-mono text-[13px]">{minutes(row.duration_ms)}</span>
             <span class="text-muted tabular ml-auto font-mono text-[13px]">
-              {row.kill_count} named kill{row.kill_count === 1 ? '' : 's'} · {row.wipe_count} wipe{row.wipe_count ===
-              1
-                ? ''
-                : 's'}
+              {raidTallyLine(row, bossIds)}
             </span>
           </button>
           {#if isOpen}
@@ -75,7 +94,7 @@
               </div>
               {#if row.top_parse !== null}
                 <p class="text-[13px]">
-                  Top parse: <span style={`color:${classColorVar(row.top_parse.class)};font-weight:600`}
+                  Top parse <span style={`color:${classColorVar(row.top_parse.class)};font-weight:600`}
                     >{row.top_parse.name}</span
                   >
                   {row.top_parse.value.toFixed(1)}
@@ -104,11 +123,6 @@
                   </div>
                 {/each}
               </div>
-              {#if officer}
-                <p class="text-muted text-[11px]">
-                  Attach to this guild / visibility controls are officer-only (unchanged from round 1).
-                </p>
-              {/if}
             </div>
           {/if}
         </div>

@@ -4,6 +4,7 @@
 // read straight off `GuildHomeStanding` (the contract's own `home.standing`) -- no second
 // fetch, matching spec §8's "no new round trip from Overview."
 import type { GuildHomeStanding } from './api';
+import { specName } from './spec-name';
 
 /** Exact copy, spec §6: the all-clear line is a stated fact, never a silent absence. */
 export const EVERY_CHECK_PASSES_LINE = 'Every readiness check passes. Nothing needed before Thursday.';
@@ -16,11 +17,12 @@ export const EVERY_CHECK_PASSES_LINE = 'Every readiness check passes. Nothing ne
  */
 export function standingSentence(standing: GuildHomeStanding): string {
   const className = capitalize(standing.class);
+  const spec = specName(standing.spec);
   if (standing.same_spec_count <= 1) {
-    return `the only ${standing.spec} ${className} in this guild this week`;
+    return `the only ${spec} ${className} in this guild this week`;
   }
   return (
-    `${standing.rank_by_item_level} of ${standing.same_spec_count} ${standing.spec} ${className}s ` +
+    `${standing.rank_by_item_level} of ${standing.same_spec_count} ${spec} ${className}s ` +
     `this week by item level (${standing.item_level} ilvl)`
   );
 }

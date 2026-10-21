@@ -29,3 +29,47 @@ export function rosterGateState({ signedIn, member }: RosterGateInput): RosterGa
 
 /** "Run this guild? Claim it.": the muted line for a signed-in viewer who is not a verified officer. */
 export const claimEntryCopy = { question: 'Run this guild?', action: 'Claim it.' } as const;
+
+/** What the band says about claiming, for this viewer (lifecycle review round 4, N10 / UX 10). */
+export type ClaimEntry =
+  | { kind: 'none' }
+  /** "Run this guild? Claim it." with the link to the claim page. */
+  | { kind: 'claim' }
+  /** A muted line and no link. */
+  | { kind: 'note'; text: string };
+
+export interface ClaimEntryInput {
+  signedIn: boolean;
+  /** A verified officer or leader: the Guild settings link in the band is theirs. */
+  canManage: boolean;
+  /** This account's entry in the guild, when it has one. */
+  membership: { rank: string } | null;
+  /** The guild's claim state; null while the viewer cannot read it (no member home). */
+  claimState: 'unclaimed' | 'pending' | 'claimed' | 'contested' | null;
+  claimedBy: string | null;
+}
+
+export const claimEntryNotes = {
+  claimedBy: (battletag: string): string => `Claimed by ${battletag}`,
+  unclaimedForMember: 'Nobody runs this guild on the site yet. An officer can claim it.',
+} as const;
+
+/**
+ * "Run this guild? Claim it." is for someone whose in-game rank is an officer rank, in a guild
+ * nobody has claimed. A verified member of a claimed guild reads who holds it, muted; of an
+ * unclaimed one, that an officer can claim it; a stranger reads nothing; a verified officer has
+ * the settings link instead.
+ */
+export function claimEntryFor(input: ClaimEntryInput): ClaimEntry {
+  const { signedIn, canManage, membership, claimState, claimedBy } = input;
+  if (!signedIn || canManage || membership === null) return { kind: 'none' };
+  const officerRank = membership.rank === 'officer' || membership.rank === 'leader';
+  if (claimState === null) return officerRank ? { kind: 'claim' } : { kind: 'none' };
+  if (claimState === 'unclaimed') {
+    return officerRank ? { kind: 'claim' } : { kind: 'note', text: claimEntryNotes.unclaimedForMember };
+  }
+  if ((claimState === 'claimed' || claimState === 'contested') && claimedBy !== null) {
+    return { kind: 'note', text: claimEntryNotes.claimedBy(claimedBy) };
+  }
+  return { kind: 'none' };
+}

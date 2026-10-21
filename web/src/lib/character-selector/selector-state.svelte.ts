@@ -10,7 +10,7 @@ import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '..
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
 import { accountNameOf, buildSelectorModel, closedKindOf, type ClosedKind, type SelectorModel } from './rows';
-import { memberGuildOf, type SessionGuild } from './session-guild';
+import { guildPagePointer, memberGuildOf, type SessionGuild } from './session-guild';
 
 export type LoadStatus = 'loading' | 'ready' | 'failed';
 
@@ -74,10 +74,16 @@ export function createSelectorState(): SelectorState {
   });
 
   const loadStatus = $derived(loadStatusOf(session.status));
+  // On a guild page the header shows the account's character in that guild (a view only).
+  const shownPointer = $derived(
+    mounted && loadStatus === 'ready'
+      ? guildPagePointer(session.data, window.location.pathname, pointer, performance.timeOrigin)
+      : pointer,
+  );
   const model = $derived(
     buildSelectorModel({
       me: loadStatus === 'ready' ? session.data : undefined,
-      pointer,
+      pointer: shownPointer,
       chosenKeys,
       nowMs,
     }),

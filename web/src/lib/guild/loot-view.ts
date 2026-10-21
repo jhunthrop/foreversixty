@@ -2,15 +2,49 @@
 // Guild control-centre spec §4.F: the loot council helper. The API (contract's
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
+import { dayWord } from '../dates';
+import { SLOT_LABELS, type Slot } from '../planner/types';
 import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem } from './api';
 
-/** Spec §6's boss-picker copy: a killed boss with nothing left unkilled reads "next
- *  unkilled: none, farm" (today's real case, Onyxia); an unkilled boss just names itself. */
+export const LOOT_FOOTNOTE =
+  'Candidates are ranked by gain over what they wear now. A drop stays unawarded until an officer awards it.';
+export const NOT_SIMMED_NOTE = 'Gain here is item level. The simulator has not checked these.';
+export const NO_CANDIDATE = 'No one on the roster can use this.';
+export const ALREADY_AWARDED = 'Already awarded';
+
+/** The boss picker's status word: a boss that is down reads "on farm", one that is not "not
+ *  killed yet". Never the filter's own jargon. */
 export function bossPickerLabel(selected: GuildLootEncounter | undefined): string {
   if (selected === undefined) return 'No bosses killed yet this tier';
-  return selected.killed
-    ? `${selected.name} · next unkilled: none, farm`
-    : `${selected.name} · not yet killed`;
+  return selected.killed ? `${selected.name} · on farm` : `${selected.name} · not killed yet`;
+}
+
+/** "Head", "Main hand", "Finger": the slot a drop goes in, as the planner names it. */
+function slotWord(slot: string): string {
+  if (Object.prototype.hasOwnProperty.call(SLOT_LABELS, slot)) return SLOT_LABELS[slot as Slot];
+  const plain = slot.replace(/_/g, ' ');
+  return plain === '' ? plain : plain[0].toUpperCase() + plain.slice(1);
+}
+
+/** Whether any candidate on the page was ranked by item level rather than by a simulation. */
+export function anyNotSimmed(items: readonly GuildLootItem[]): boolean {
+  return items.some((item) => item.candidates.some((candidate) => candidate.not_sim_checked));
+}
+
+/** "Rootbound · +76 item levels over their current Head · 1 of 1 raid nights", the tail of a row. */
+export function attendanceLabel(present: number, nights: number): string {
+  return `${present} of ${nights} raid night${nights === 1 ? '' : 's'}`;
+}
+
+/** "Awarded to Rootbound · today · by Bow Jackzon": said once, on the item. */
+export function awardedLine(
+  awarded: { name: string; at: string; by_name: string },
+  now: Date = new Date(),
+): string {
+  const day = dayWord(new Date(awarded.at), now);
+  return [`Awarded to ${awarded.name}`, day, awarded.by_name === '' ? '' : `by ${awarded.by_name}`]
+    .filter((part) => part !== '')
+    .join(' · ');
 }
 
 /** The first encounter in the list the API has not marked killed -- the boss picker's own
@@ -32,11 +66,13 @@ export function nextUnkilledEncounter(
  * method on `gain_dps` directly, the bug that broke the whole tab on real data while the
  * fixture (predating the tier-1 fallback) never once exercised a null `gain_dps`.
  */
-export function candidateGainLabel(candidate: GuildLootCandidate): string {
+export function candidateGainLabel(candidate: GuildLootCandidate, slot?: string): string {
   if (candidate.gain_dps !== null) return `+${Math.round(candidate.gain_dps)} DPS`;
   if (candidate.ilvl_delta !== null) {
-    const sign = candidate.ilvl_delta >= 0 ? '+' : '';
-    return `${sign}${candidate.ilvl_delta} ilvl`;
+    const delta = candidate.ilvl_delta;
+    const sign = delta >= 0 ? '+' : '';
+    const figure = `${sign}${delta} item level${Math.abs(delta) === 1 ? '' : 's'}`;
+    return slot === undefined || slot === '' ? figure : `${figure} over their current ${slotWord(slot)}`;
   }
   return '—';
 }
@@ -58,7 +94,7 @@ export function candidateAction(item: GuildLootItem, candidateKey: string): Loot
   if (item.awarded_to !== null) {
     return item.awarded_to.character_key === candidateKey
       ? { kind: 'awarded' }
-      : { kind: 'awarded-to-other', label: `Awarded to ${item.awarded_to.name}` };
+      : { kind: 'awarded-to-other', label: ALREADY_AWARDED };
   }
   const candidate = item.candidates.find((row) => row.character_key === candidateKey);
   if (candidate?.already_equivalent === true) return { kind: 'equivalent' };

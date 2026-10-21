@@ -5,7 +5,7 @@
      side (spec section 2.6) -- a 403 from that call IS the "you are not an officer" signal,
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
-  import type { CharacterPath } from '../lib/characters';
+  import { guildClaimHref, type CharacterPath } from '../lib/characters';
   import { fetchMeFresh, refetchMe, type GuildBillingView, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
   import { openPortal } from '../lib/billing/api';
@@ -20,6 +20,13 @@
   } from '../lib/guild/api';
   import { guildRosterModelCopy, guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
+  import {
+    billedLine,
+    canManageBilling,
+    claimedByLine,
+    guildPlanLine,
+    settingsWords,
+  } from '../lib/guild/settings-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -37,6 +44,8 @@
    * from the rank.
    */
   let mayBill = $state<boolean | null>(null);
+  /** Whether this account may release the claim (the `release` word on its /v1/me guild entry). */
+  let mayRelease = $state(false);
   let guildName = $state('');
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
@@ -89,6 +98,7 @@
     const entry = me?.guilds.find((g) => g.id === guildId);
     guildBilling = entry?.plan ?? null;
     mayBill = entry === undefined ? null : can(entry.can, 'billing');
+    mayRelease = entry === undefined ? false : can(entry.can, 'release');
   }
 
   $effect(() => {
@@ -171,9 +181,12 @@
   {:else if status === 'forbidden'}
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
   {:else if settings !== null}
-    {#if settings.claim.state !== 'unclaimed' && settings.claim.state !== 'contested'}
+    {#if claimedByLine(settings.claim, settings.claimed_by) !== null}
       <p class="text-[13px]" data-testid="guild-settings-claim-state">
-        Claim: {settings.claim.state}
+        {claimedByLine(settings.claim, settings.claimed_by)}{#if mayRelease}&#32; ·
+          <a href={guildClaimHref(path.region, path.ruleset, guildName)} data-testid="guild-settings-release"
+            >{settingsWords.releaseOnClaimPage}</a
+          >{/if}
       </p>
     {/if}
     {#if settings.claim.state === 'contested' && frozen}
@@ -196,19 +209,12 @@
             </a>
           {/if}
         {:else}
-          <p class="text-[14px]">
-            {guildBilling.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
-            {guildBilling.current_period_end
-              ? new Date(guildBilling.current_period_end).toLocaleDateString()
-              : ''}
-            {#if guildBilling.billed_by !== ''}
-              · {billingBlockCopy.guildBilledBy(guildBilling.billed_by)}
-            {/if}
-          </p>
+          <p class="text-[14px]" data-testid="guild-billing-plan">{guildPlanLine(guildBilling)}</p>
+          <p class="text-muted text-[13px]" data-testid="guild-billing-contact">{billedLine(guildBilling)}</p>
           {#if guildBilling.status === 'past_due'}
             <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
           {/if}
-          {#if guildBilling.you_are_billing_contact}
+          {#if canManageBilling(guildBilling)}
             <button
               class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
               onclick={onManageBilling}
@@ -228,6 +234,7 @@
     {/if}
     <section class="flex flex-col gap-3">
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
+      <p class="text-muted text-[13px]">{settingsWords.visibilityHelp}</p>
       <select
         id="guild-visibility"
         class={`border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
@@ -243,9 +250,8 @@
       </select>
     </section>
     <section class="flex flex-col gap-3">
-      <label class="label text-muted" for="guild-officer-threshold"
-        >{guildSettingsCopy.officerThreshold}</label
-      >
+      <label class="label text-muted" for="guild-officer-threshold">{settingsWords.officerRank}</label>
+      <p class="text-muted text-[13px]">{settingsWords.officerRankHelp}</p>
       <input
         id="guild-officer-threshold"
         type="number"

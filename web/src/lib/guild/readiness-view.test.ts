@@ -98,10 +98,30 @@ describe('cell labels', () => {
     expect(gearGapLabel(row())).toBe('3 upgrades · +24 DPS');
   });
 
-  it('gearGapLabel reads "no gear consent" when the API withholds gear_gap', () => {
-    expect(gearGapLabel(row({ gear_gap: null }))).toBe('no gear consent');
-    expect(gearGapLabel(row({ gear_gap: { upgrades: null, gain_dps: null, not_sim_checked: 0 } }))).toBe(
-      'no gear consent',
+  it('gearGapLabel names the real state when the API withholds gear_gap', () => {
+    // Roster-only consent: the member does not share gear.
+    expect(gearGapLabel(row({ consent: 'roster', gear_gap: null }))).toBe('Not shared');
+    // A member whose consent IS gear is never told "no gear consent": the site simply has not checked.
+    expect(gearGapLabel(row({ consent: 'gear', gear_gap: null }))).toBe('Not checked yet');
+    expect(
+      gearGapLabel(
+        row({ consent: 'gear', gear_gap: { upgrades: null, gain_dps: null, not_sim_checked: 0 } }),
+      ),
+    ).toBe('Not checked yet');
+  });
+
+  it('gearGapLabel never prints +0 DPS for upgrades no simulation produced', () => {
+    expect(gearGapLabel(row({ gear_gap: { upgrades: 15, gain_dps: 0, not_sim_checked: 15 } }))).toBe(
+      '15 upgrades · not simmed yet',
+    );
+    expect(gearGapLabel(row({ gear_gap: { upgrades: 1, gain_dps: 0, not_sim_checked: 1 } }))).toBe(
+      '1 upgrade · not simmed yet',
+    );
+    expect(gearGapLabel(row({ gear_gap: { upgrades: 5, gain_dps: 48, not_sim_checked: 1 } }))).toBe(
+      '5 upgrades · +48 DPS · 1 not simmed yet',
+    );
+    expect(gearGapLabel(row({ gear_gap: { upgrades: 0, gain_dps: 0, not_sim_checked: 0 } }))).toBe(
+      'No upgrades',
     );
   });
 
@@ -113,8 +133,10 @@ describe('cell labels', () => {
     expect(enchantLabel(row({ enchants: { missing_slots: [], checked: true } }))).toBe('All enchanted');
   });
 
-  it('enchantLabel reads "consent needed" when unchecked', () => {
-    expect(enchantLabel(row({ enchants: { missing_slots: [], checked: false } }))).toBe('consent needed');
+  it('enchantLabel reads "Not shared" for roster-only consent when unchecked', () => {
+    expect(enchantLabel(row({ consent: 'roster', enchants: { missing_slots: [], checked: false } }))).toBe(
+      'Not shared',
+    );
   });
 
   // Live-fix round, defect 4: the four real contract slot keys (readiness_core.go's
@@ -145,19 +167,34 @@ describe('cell labels', () => {
   });
 
   it('enchantPillText matches enchantLabel for the consent/all-enchanted cases', () => {
-    expect(enchantPillText(row({ enchants: { missing_slots: [], checked: false } }))).toBe('consent needed');
+    expect(enchantPillText(row({ consent: 'roster', enchants: { missing_slots: [], checked: false } }))).toBe(
+      'Not shared',
+    );
     expect(enchantPillText(row({ enchants: { missing_slots: [], checked: true } }))).toBe('All enchanted');
   });
 
-  it('consumablesLabel reads Stocked/Short/consent needed', () => {
+  it('consumablesLabel reads Stocked/Short, else why not', () => {
     expect(consumablesLabel(row({ consumables: { state: 'stocked' } }))).toBe('Stocked');
     expect(consumablesLabel(row({ consumables: { state: 'short' } }))).toBe('Short');
-    expect(consumablesLabel(row({ consumables: { state: 'unknown' } }))).toBe('consent needed');
+    expect(consumablesLabel(row({ consent: 'gear', consumables: { state: 'unknown' } }))).toBe('Not shared');
+    expect(consumablesLabel(row({ consent: 'roster', consumables: { state: 'unknown' } }))).toBe(
+      'Not shared',
+    );
+    expect(consumablesLabel(row({ consent: 'gear_bags', consumables: { state: 'unknown' } }))).toBe(
+      'Not checked yet',
+    );
   });
 
-  it('talentPointsLabel reads the unspent count or a bare 0', () => {
+  it('talentPointsLabel reads the unspent count, a real zero, or that the talents were not read', () => {
     expect(talentPointsLabel(row({ talent_points_unspent: 2 }))).toBe('2 unspent');
-    expect(talentPointsLabel(row({ talent_points_unspent: 0 }))).toBe('0');
+    expect(talentPointsLabel(row({ talent_points_unspent: 0, talent_points_read: true }))).toBe(
+      'None unspent',
+    );
+    expect(talentPointsLabel(row({ talent_points_unspent: 0, talent_points_read: false }))).toBe(
+      'Not read yet',
+    );
+    // A response from before the field claims nothing.
+    expect(talentPointsLabel(row({ talent_points_unspent: 0 }))).toBe('—');
   });
 
   it('itemLevelLabel signs the delta and dashes an unknown item level', () => {

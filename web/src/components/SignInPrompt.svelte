@@ -26,8 +26,6 @@
       <a class="text-nav underline" href={battlenetStartUrl(next)}>Sign in with Battle.net</a>
       or
       <a href="/login">use an email link.</a>
-    {:else}
-      <a href="/login">Use an email link instead.</a>
     {/if}
   </p>
   {#if !compact}
@@ -37,5 +35,8 @@
     >
       Sign in with Battle.net
     </a>
+    <p class="text-muted text-[13px]">
+      or <a class="text-nav underline" href="/login" data-testid="sign-in-email-link">use an email link</a>
+    </p>
   {/if}
 </div>

@@ -47,6 +47,7 @@ type ReadinessRow struct {
 	Enchants            EnchantsView    `json:"enchants"`
 	Consumables         ConsumablesView `json:"consumables"`
 	TalentPointsUnspent int             `json:"talent_points_unspent"`
+	TalentPointsRead    bool            `json:"talent_points_read"`
 	ItemLevel           *int            `json:"item_level"`
 	ItemLevelDelta      *int            `json:"item_level_delta"`
 	LoggedAt            time.Time       `json:"logged_at"`
@@ -114,6 +115,7 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool) 
 			Enchants:            EnchantsView{MissingSlots: cr.MissingEnchantSlots, Checked: cr.EnchantsChecked},
 			Consumables:         ConsumablesView{State: cr.ConsumablesState},
 			TalentPointsUnspent: cr.TalentPointsUnspent,
+			TalentPointsRead:    cr.TalentsRead,
 			ItemLevel:           cr.ItemLevel, ItemLevelDelta: cr.ItemLevelDelta,
 			LoggedAt: row.LoggedAt, Failing: cr.FailingCount(),
 		}

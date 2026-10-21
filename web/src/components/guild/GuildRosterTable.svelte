@@ -55,6 +55,7 @@
     type RosterRoleFilter,
     type RosterSortKey,
   } from '../../lib/guild/roster-sort';
+  import { specName } from '../../lib/guild/spec-name';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -117,6 +118,10 @@
   let confirmingApproveAll = $state(false);
 
   const floor = $derived(ratingFloor(roster));
+  /** "Online today" on every row says nothing, so it is shown only when it tells rows apart. */
+  const everyoneOnlineToday = $derived(
+    roster.filter((row) => row.verified).every((row) => row.logged_recently),
+  );
   // Verified rows only -- `pending`'s own explicit unverified block above already covers
   // every unverified row (spec §4.B), so this must never also lead with them (that doubled
   // every unverified raider in the roster-rows region and pushed the pinned viewer row
@@ -393,7 +398,7 @@
             >
               {row.name}
             </span>
-            <span class="text-muted text-[12px]">{row.spec ?? ''}</span>
+            <span class="text-muted text-[12px]">{specName(row.spec ?? '')}</span>
           </div>
           <span
             class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
@@ -487,7 +492,7 @@
               {row.name}{pinned ? ' (you)' : ''}
             </span>
             <span class="text-muted text-[12px]" data-testid="guild-roster-spec"
-              >{row.spec ?? ''}{#if altOf.has(row.character_key)}{row.spec ? ' · ' : ''}<span
+              >{specName(row.spec ?? '')}{#if altOf.has(row.character_key)}{row.spec ? ' · ' : ''}<span
                   class="text-muted text-[11px]">alt of {altOf.get(row.character_key)}</span
                 >{/if}</span
             >
@@ -501,12 +506,9 @@
               class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
               data-testid="guild-roster-rank">{rankWord(row.rank)}</span
             >
-            {#if row.logged_recently}
-              <span
-                class="pill"
-                style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
-              >
-                Logged in the last day
+            {#if row.logged_recently && !everyoneOnlineToday}
+              <span class="text-muted text-[12px]" data-testid="guild-roster-online">
+                {guildHomeCopy.loggedRecently}
               </span>
             {/if}
             {#if row.item_level !== undefined}

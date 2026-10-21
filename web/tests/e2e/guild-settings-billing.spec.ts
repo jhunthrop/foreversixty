@@ -96,8 +96,8 @@ test('on the plan, billing contact: shows renewal info and a working manage-bill
   });
   await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
-  await expect(page.getByTestId('guild-settings-billing')).toContainText('Renews');
-  await expect(page.getByTestId('guild-settings-billing')).toContainText('Billed by you');
+  await expect(page.getByTestId('guild-settings-billing')).toContainText('renews');
+  await expect(page.getByTestId('guild-settings-billing')).toContainText('Billed to you');
   await page.getByTestId('guild-manage-billing').click();
   await page.waitForURL('https://billing.stripe.com/**');
   expect(posted).toEqual({ guild_id: 501 });
@@ -147,7 +147,7 @@ test('on the plan via a CLI grant (no Stripe billing contact): shows renewal inf
     ),
   );
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
-  await expect(page.getByTestId('guild-settings-billing')).toContainText('Renews');
+  await expect(page.getByTestId('guild-settings-billing')).toContainText('until');
   await expect(page.getByTestId('guild-settings-billing')).not.toContainText('Billed by');
   await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
 });
