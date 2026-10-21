@@ -82,7 +82,7 @@ for (const size of SIZES) {
       mkdirSync(SHOTS, { recursive: true });
       await signedOutWithFeeds(page);
       await page.goto('/setup');
-      await expect(page.locator('#setup-progress-label')).toHaveText('Your progress');
+      await expect(page.getByTestId('setup-status')).toHaveAttribute('aria-label', 'Your progress');
       const manual = page.getByTestId('setup-everything');
       await expect(manual.locator('summary')).toContainText('Everything the addon does');
       await expect(manual).not.toHaveAttribute('open', '');
@@ -91,7 +91,9 @@ for (const size of SIZES) {
       await expect(page.getByTestId('setup-companion-pair')).toHaveText(
         'Sign in with Battle.net inside the companion; it connects itself.',
       );
-      await expect(page.getByTestId('setup-companion-platforms')).toHaveText('Windows now, macOS next.');
+      await expect(page.getByTestId('setup-companion-platforms')).toHaveText(
+        'Windows. Mac is not supported yet.',
+      );
       await page.getByTestId('setup-companion-capture').scrollIntoViewIfNeeded();
       await expect(page.getByTestId('setup-companion-capture').locator('img')).toBeVisible();
       await page.screenshot({ path: join(SHOTS, `w8-setup-${size.name}.png`), fullPage: true });
@@ -108,13 +110,12 @@ for (const size of SIZES) {
       await expect(feed.getByTestId('report-row')).toHaveCount(2);
       const named = feed.getByTestId('report-row').first();
       await expect(named).toContainText('Blackrock Depths');
-      await expect(named.getByTestId('report-row-character')).toHaveText('Bow Jackzon');
+      // The credited character is the title; the zone leads the muted line under it (W.9).
+      await expect(named.getByRole('link', { name: 'Bow Jackzon' })).toBeVisible();
       await expect(named.getByTestId('report-row-summary')).toHaveText(
         'Blackrock Depths · 3 bosses · 14 fights',
       );
-      await expect(page.getByTestId('pairing-signed-out')).toHaveText(
-        'Live logging needs a signed-in account.',
-      );
+      await expect(page.getByTestId('reports-sign-in')).toBeVisible();
       await feed.scrollIntoViewIfNeeded();
       await page.screenshot({ path: join(SHOTS, `w8-logs-${size.name}.png`), fullPage: true });
     });

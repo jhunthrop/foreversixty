@@ -271,7 +271,7 @@ describe('CharacterRatingPanel Forever Score card', () => {
     );
   });
 
-  it('no logs, visitor: the same shape, empty tracks with a dash, and "Look up another character"', () => {
+  it('no logs, visitor: the same shape, empty tracks with a dash, and the companion button, never the typo hint', () => {
     const { body } = render(CharacterRatingPanel, {
       props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale' },
     });
@@ -285,9 +285,11 @@ describe('CharacterRatingPanel Forever Score card', () => {
       expect(row, component.key).toContain(component.label);
       expect(row, component.key).toContain('>–<');
     }
-    expect(body).toContain('Check the name and ruleset, or look up another character.');
+    // A character the site holds is never told to check its name (W.9).
+    expect(body).not.toContain('Check the name');
+    expect(body).toContain('Log a raid with the companion and the score fills in.');
     expect(body).toMatch(
-      /href="\/\?character=Elyra%20Duskvale&amp;region=us&amp;ruleset=hardcore#lookup"[^>]*data-testid="forever-score-empty-action">Look up another character</,
+      /href="\/setup#companion"[^>]*data-testid="forever-score-empty-action">Get the companion</,
     );
     // The addon's no-logs sentence lives in the tooltip mock, not here.
     expect(body).not.toContain(labels.noLogs);

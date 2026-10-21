@@ -12,7 +12,8 @@
      panels never visibly swap places. -->
 
 <script lang="ts">
-  import { fetchMeOnce, listDevices, type Device, type Me } from '../../lib/account/api';
+  import { battlenetStartUrl, fetchMeOnce, listDevices, type Device, type Me } from '../../lib/account/api';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import type { HeaderAction } from '../../lib/character-header/types';
   import { logsAnswerSpec, newestOwnReport, type NewestReport } from '../../lib/logs/latest-kill';
   import { waysOrder } from '../../lib/logs/panel-order';
@@ -82,7 +83,9 @@
   );
 </script>
 
-<CharacterHeader action={headerAction} {answer} onPick={() => upload?.openPicker()} />
+<!-- Signed out the page has no character to show, and the sentence the shared band would say
+     repeats the nav's: the header is left out (whenSignedOut="none"). -->
+<CharacterHeader action={headerAction} {answer} whenSignedOut="none" onPick={() => upload?.openPicker()} />
 
 <div class="logs-grid" data-testid="logs-grid">
   <div class="logs-column" data-testid="logs-reading">
@@ -93,9 +96,20 @@
                hint is signed out, so the sentence is the page's largest first paint, and keeping the
                same element (only the hint class drops) keeps it the stable LCP candidate. A hinted
                visitor sees the reserved box until the session answers. -->
-          <p class="text-[14px]" class:ch-hint-out-only={me === undefined} data-testid="reports-signed-out">
-            {myReportsCopy.signedOut}
-          </p>
+          <div
+            class="flex flex-col items-start gap-3"
+            class:ch-hint-out-only={me === undefined}
+            data-testid="reports-signed-out-block"
+          >
+            <p class="text-[14px]" data-testid="reports-signed-out">{myReportsCopy.signedOut}</p>
+            <a
+              class="{PRIMARY_BUTTON_FIXED} px-5"
+              href={battlenetStartUrl('/logs')}
+              data-testid="reports-sign-in"
+            >
+              {myReportsCopy.signInAction}
+            </a>
+          </div>
         {:else}
           <MyReports heading={false} guilds={me.guilds ?? []} uploadAction={false} />
         {/if}
@@ -110,21 +124,28 @@
     {#each order as way (way)}
       {#if way === 'companion'}
         <LogsPanel title="The companion" aside="Live, while you raid" id="companion">
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-col items-start gap-3">
             {#if devices !== null}<CompanionStatus {devices} />{/if}
-            <p class="text-[14px]" data-testid="logs-companion-pointer">
-              {logsCompanionCopy.pointer}
-              <a class="text-nav underline" href="/setup">{logsCompanionCopy.pointerLink}</a>
-            </p>
+            <p class="text-[14px]" data-testid="logs-companion-pointer">{logsCompanionCopy.pointer}</p>
+            <a
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
+              href={logsCompanionCopy.pointerHref}
+              data-testid="logs-companion-link"
+            >
+              {logsCompanionCopy.pointerLink}
+            </a>
           </div>
-          <div class="border-line-soft flex flex-col gap-3 border-t pt-3">
-            {#if signedIn}
+          <!-- The pairing code is for an account that has one to pair: signed out, the card is
+               the sentence and the button, sized to its content, and the code block is not drawn. A signed-in visitor gets it once the session read answers, while
+               the column is still hidden (.logs-pending), so nothing visibly moves. -->
+          {#if signedIn}
+            <div class="border-line-soft flex flex-col gap-3 border-t pt-3">
               <h3 class="label text-muted">
                 {paired ? logsCompanionCopy.pairAnotherLabel : logsCompanionCopy.pairLabel}
               </h3>
-            {/if}
-            <Account mode="pairing" />
-          </div>
+              <Account mode="pairing" />
+            </div>
+          {/if}
         </LogsPanel>
       {:else}
         <LogsPanel title="Upload a log" aside="For a night already logged" id="upload">

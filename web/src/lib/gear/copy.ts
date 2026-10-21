@@ -90,6 +90,8 @@ export const gearCopy = {
     const percent = fraction * 100;
     return `${percent < 1 ? '<1' : Math.round(percent)}% drop`;
   },
+  /** Between a source and its drop chance, in the text: "Skum · 50% drop". */
+  sourceSeparator: '\u00a0·\u00a0',
   /** An empty slot, and a row with neither a worn item nor a pick. */
   empty: 'Empty',
   /** A worn item the export's data build does not have. */

@@ -257,14 +257,19 @@ test.describe('signed out, desktop', () => {
     await page.goto('/logs');
   });
 
-  test('the shared band stands in the header slot, and the page has no sign-in button', async ({ page }) => {
-    await expect(page.getByTestId('character-header-signed-out')).toBeVisible();
+  test('signed out the header slot is empty, and the one sign-in button is in Your reports', async ({
+    page,
+  }) => {
+    await expect(page.getByTestId('character-header-signed-out')).toHaveCount(0);
     await expect(header(page)).toHaveCount(0);
     const main = page.locator('#main');
-    await expect(main.getByRole('link', { name: /sign in/i })).toHaveCount(0);
+    await expect(main.getByRole('link', { name: /sign in/i })).toHaveCount(1);
+    await expect(page.getByTestId('reports-sign-in')).toBeVisible();
     await expect(main.getByRole('button', { name: /sign in/i })).toHaveCount(0);
     await expect(page.getByTestId('upload-signed-out')).toBeVisible();
-    await expect(page.getByTestId('pairing-signed-out')).toBeVisible();
+    // The companion card is a sentence and a button, with no pairing block (W.9).
+    await expect(page.getByTestId('pairing-signed-out')).toHaveCount(0);
+    await expect(page.getByTestId('logs-companion-link')).toBeVisible();
   });
 
   test('Upload comes first, then the companion, and the sample is one row', async ({ page }) => {

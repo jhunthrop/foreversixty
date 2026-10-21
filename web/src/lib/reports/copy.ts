@@ -20,8 +20,10 @@ export const logsBandCopy = {
 /** /logs' companion column: the pairing island, and a pointer to /setup for the download and
  *  /combatlog steps instead of repeating them. The pairing labels name what the code is for. */
 export const logsCompanionCopy = {
-  pointer: 'Log live while you raid. Downloads and the in-game /combatlog step are on the setup page.',
-  pointerLink: 'Get set up',
+  pointer: 'Log live while you raid.',
+  /** The signed-out card's one button, to the companion's own step on /setup. */
+  pointerLink: 'Get the companion',
+  pointerHref: '/setup#companion',
   pairLabel: 'Pair it with your account',
   pairAnotherLabel: 'Pair another device',
 } as const;

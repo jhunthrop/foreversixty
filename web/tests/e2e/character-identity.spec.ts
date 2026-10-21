@@ -54,7 +54,7 @@ test('the header says who the character is, the guild links to its page, and the
     'Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP',
   );
   // "Discipline Priest" in --text, the rest muted.
-  await expect(page.getByTestId('character-spec')).toHaveCSS('color', 'rgb(233, 228, 216)');
+  await expect(page.getByTestId('character-spec')).toHaveCSS('color', 'rgb(255, 255, 255)');
   await expect(page.getByTestId('character-descriptor')).toHaveCSS('color', 'rgb(154, 148, 132)');
   const guild = page.getByTestId('character-guild-link');
   await expect(guild).toHaveText('<Cx66 Olympus>');
@@ -65,15 +65,19 @@ test('the header says who the character is, the guild links to its page, and the
   await expect(chip).toHaveText('Hardcore US');
   await expect(chip).toHaveCSS('color', 'rgb(154, 148, 132)');
   await expect(chip).toHaveCSS('border-top-color', 'rgb(38, 46, 64)');
-  // The chip is the last item on the level line, 8px after its text, on that line.
+  // The chip ends the level line, 12px after its text, on that line; on a phone (under 640px) it
+  // drops to a line of its own under the race, so the two never run together (W.9).
   const level = await page.getByTestId('character-level-race').boundingBox();
   const chipBox = await chip.boundingBox();
   expect(level).not.toBeNull();
   expect(chipBox).not.toBeNull();
-  expect(Math.round((chipBox?.x ?? 0) - ((level?.x ?? 0) + (level?.width ?? 0)))).toBe(8);
-  expect(
-    Math.abs((chipBox?.y ?? 0) + (chipBox?.height ?? 0) / 2 - ((level?.y ?? 0) + (level?.height ?? 0) / 2)),
-  ).toBeLessThan(3);
+  if (test.info().project.name === 'mobile') {
+    expect(chipBox!.y).toBeGreaterThanOrEqual(level!.y + level!.height - 1);
+    expect(Math.abs(chipBox!.x - level!.x)).toBeLessThan(1);
+  } else {
+    expect(Math.round(chipBox!.x - (level!.x + level!.width))).toBe(12);
+    expect(Math.abs(chipBox!.y + chipBox!.height / 2 - (level!.y + level!.height / 2))).toBeLessThan(3);
+  }
   // A visitor gets no sync line.
   await expect(page.getByTestId('character-sync')).toHaveCount(0);
   // Fix round 1 item 3: the fixture's rows carry execution_score, so the column never reads NaN.
@@ -81,7 +85,7 @@ test('the header says who the character is, the guild links to its page, and the
   await expect(page.getByTestId('character-history')).not.toContainText('NaN');
 });
 
-test('the tooltip mock reads as the client prints it: name, <guild>, "Level 60 Night Elf (Player)", class, a blank line, the score', async ({
+test('the tooltip mock reads as the client prints it: name, <guild>, "Level 60 Night Elf", class, a blank line, the score', async ({
   page,
 }) => {
   await stub(page, { ...CHARACTER.data, ...SCORE });
@@ -91,7 +95,7 @@ test('the tooltip mock reads as the client prints it: name, <guild>, "Level 60 N
   await expect(lines).toHaveText([
     'Elyra Duskvale',
     '<Cx66 Olympus>',
-    'Level 60 Night Elf (Player)',
+    'Level 60 Night Elf',
     'Priest',
     'Alliance',
     '',
@@ -193,7 +197,7 @@ test('a character nobody knows the identity of: no guild, realm or level line, n
   await expect(page.getByTestId('character-descriptor')).toHaveText('Discipline Priest⁠Hardcore US');
   const spec = await page.getByTestId('character-spec').boundingBox();
   const chip = await page.getByTestId('character-ruleset-chip').boundingBox();
-  expect(Math.round((chip?.x ?? 0) - ((spec?.x ?? 0) + (spec?.width ?? 0)))).toBe(8);
+  expect(Math.round((chip?.x ?? 0) - ((spec?.x ?? 0) + (spec?.width ?? 0)))).toBe(12);
   await expect(page.getByTestId('character-split')).toHaveCount(0);
   await expect(page.getByTestId('character-guild-link')).toHaveCount(0);
   await expect(page.getByTestId('character-realm')).toHaveCount(0);
@@ -363,11 +367,11 @@ test.describe('a 40-character guild with no realm at 320px (item 2, D2)', () => 
       })),
     );
     expect(lines.length).toBeGreaterThan(1);
-    // The chip sits on the guild's last line, 8px after its last word.
+    // The chip sits on the guild last line, 12px after its last word.
     const lastLine = lines[lines.length - 1];
     const chip = await page.getByTestId('character-ruleset-chip').boundingBox();
     if (chip === null) throw new Error('no chip');
-    expect(Math.round(chip.x - lastLine.right)).toBe(8);
+    expect(Math.round(chip.x - lastLine.right)).toBe(12);
     expect(Math.abs(chip.y + chip.height / 2 - (lastLine.top + lastLine.bottom) / 2)).toBeLessThan(1);
   });
 });
@@ -629,6 +633,7 @@ test.describe('the score card at 1440 (item 13)', () => {
 });
 
 test('the chip is centred on its text line (item 14)', async ({ page }) => {
+  test.skip(test.info().project.name === 'mobile', 'on a phone the chip has a line of its own');
   await stub(page, { ...CHARACTER.data, ...SCORE });
   await page.goto(CHARACTER_PATH);
   const level = await centreOf(page, 'character-level-race');

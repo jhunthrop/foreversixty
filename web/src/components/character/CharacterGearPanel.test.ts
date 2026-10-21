@@ -302,7 +302,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(text(rowHtml(body, 'ranged'))).toBe("Ranged Skul's Ghastly Touch No pick for your band yet");
     expect(text(rowHtml(body, 'shoulder'))).toBe('Shoulder Pauldrons of Transcendence Best for your band');
     expect(text(rowHtml(body, 'head'))).toBe(
-      "Head Green Lens → best for your band: Halo of Transcendence Onyxia's Lair: Onyxia17% drop +18.4 pts",
+      "Head Green Lens → best for your band: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 pts",
     );
     expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
   });
@@ -311,16 +311,19 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     const texts = [...body.replace(/<!--[\s\S]*?-->/g, '').matchAll(/>([^<]+)</g)].map((m) => m[1].trim());
     for (const piece of texts) {
+      // The one separator between a source and its drop chance is a text node of its own, aria-hidden.
+      if (piece === '·') continue;
       expect(piece, JSON.stringify(piece)).not.toMatch(/^·/);
       expect(piece, JSON.stringify(piece)).not.toMatch(/·$/);
     }
     expect(classesOf(rowHtml(body, 'shoulder'), 'character-gear-items').join(' ')).not.toContain('after:');
-    // The chance and the swap note draw their dots before themselves.
+    // The swap note draws its dot before itself; the chance is separated from its source by a real
+    // " · " in the text (aria-hidden), so "Skum · 50% drop" reads that way wherever the text is read.
     const off = rowHtml(body, 'off_hand');
-    expect(classesOf(off, 'character-gear-chance')).toContain(DOT_BEFORE);
     expect(classesOf(off, 'character-gear-note')).toContain(DOT_BEFORE);
-    // No dot in the row's text: only in the drawn ::before.
-    expect(text(off)).not.toContain('·');
+    expect(classesOf(off, 'character-gear-chance')).not.toContain(DOT_BEFORE);
+    expect(off).toContain('<span aria-hidden="true"> · </span>');
+    expect(text(off).split('·').length - 1).toBe(1);
   });
 
   it('below 1024px a row’s note is a line of its own under the items, with no dot, at every width (fix 5 item 1)', () => {

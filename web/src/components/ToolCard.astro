@@ -1,5 +1,6 @@
 ---
 import type { ToolStatusKind } from '../lib/sources';
+import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
 interface Props {
   title: string;
   description: string;
@@ -14,8 +15,12 @@ interface Props {
   /** Optional `data-testid` on the card's own anchor -- Astro.props does not spread
    *  unknown attributes automatically, so a caller that wants one passes it explicitly. */
   testid?: string;
+  /** A gold button drawn inside the card's anchor (W.9: the landing's "Get set up" card had no
+   *  button): full width on a phone, at the right edge from md. Plain text in a span, never a
+   *  second <a>. */
+  buttonLabel?: string;
 }
-const { title, description, href, status, linkLabel, testid } = Astro.props;
+const { title, description, href, status, linkLabel, testid, buttonLabel } = Astro.props;
 ---
 
 <a
@@ -31,6 +36,14 @@ const { title, description, href, status, linkLabel, testid } = Astro.props;
   </div>
   <span class="font-display text-[15px] font-bold">{title}</span>
   <span class="text-[13px] leading-snug text-muted">{description}</span>
+  {buttonLabel && (
+    <span
+      class={`${PRIMARY_BUTTON_FIXED} mt-1 justify-center self-stretch px-5 md:self-end`}
+      data-testid="tool-card-button"
+    >
+      {buttonLabel}
+    </span>
+  )}
   {linkLabel && (
     <span class="text-gold mt-auto text-[12px] font-bold uppercase tracking-[0.06em]">{linkLabel}</span>
   )}

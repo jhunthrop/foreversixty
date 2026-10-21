@@ -33,7 +33,9 @@ test('the sample report is one plain labelled row, with a date and its kills, an
     'href',
     `/reports/${SAMPLE_REPORT_ID}`,
   );
-  await expect(row.getByTestId('report-row-when')).toHaveText('Sep 17');
+  // The date the report page says (its first fight), not a second format (W.9); the zone and
+  // count come from the sample's meta, the same source the page reads (L.7).
+  await expect(row.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
   await expect(row.getByTestId('report-row-summary')).toHaveText(
     `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.length} fights`,
   );

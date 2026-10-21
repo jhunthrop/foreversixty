@@ -72,7 +72,8 @@ describe('CharacterUnlogged (the 404 no-logs page)', () => {
     // A visitor's "Upload logs" is a link in the next-step line (fix round 4 item 5), never the
     // owner's button.
     expect(visitor).not.toContain(`data-testid="forever-score-empty-action">${scoreCopy.noLogsUpload}<`);
-    expect(visitor).toContain(scoreCopy.noLogsLookup);
+    expect(visitor).toContain(scoreCopy.noLogsCompanion);
+    expect(visitor).not.toContain('Check the name');
     expect(visitor).toContain('data-testid="character-ruleset-chip"');
   });
 

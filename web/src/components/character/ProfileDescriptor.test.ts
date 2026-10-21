@@ -75,7 +75,8 @@ describe('ProfileDescriptor', () => {
       'Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP',
     );
     expect(classes(tag(body, 'character-descriptor'))).toContain('text-muted');
-    expect(tag(body, 'character-spec')).toMatch(/class="text-text"/);
+    // The class is in its colour: Priest has a token, so the spec piece takes it.
+    expect(tag(body, 'character-spec')).toMatch(/style="color: var\(--color-class-priest\)"/);
     expect(classes(tag(body, 'character-split'))).not.toContain('text-text');
     // The brackets are escaped text, still inside the link.
     expect(body).toMatch(/data-testid="character-guild-link"[^>]*>&lt;Olympus XXVII(&gt;|>)<\/a>/);
@@ -184,7 +185,7 @@ describe('ProfileDescriptor', () => {
     };
     const line = para(view({ header: profileHeader(page, PATH), sync: null }).body, 'character-descriptor');
     expect(line).toMatch(
-      /<a [^>]*data-testid="character-guild-link">&lt;Olympus XXVII Veterans of the Long March(&gt;|>)<\/a><span class="whitespace-nowrap">\u2060<span [^>]*data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/span><\/p>/,
+      /<a [^>]*data-testid="character-guild-link">&lt;Olympus XXVII Veterans of the Long March(&gt;|>)<\/a><span class="whitespace-nowrap">\u2060<span [^>]*><span [^>]*data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/span><\/span><\/p>/,
     );
     // The guild’s segment moves whole when it fits a line and wraps inside itself when it
     // does not (an inline-block at most the line’s width), the link turning wrapping back on.
@@ -193,11 +194,11 @@ describe('ProfileDescriptor', () => {
     );
   });
 
-  it('ends the level line with the chip, 8px after "Level 60 Night Elf"', () => {
+  it('ends the level line with the chip, 12px after "Level 60 Night Elf"', () => {
     const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
     const levelLine = para(body, 'character-level-line');
     expect(levelLine).toMatch(
-      /data-testid="character-level-race">Level 60 Night Elf<\/span><span class="[^"]*\bml-2\b[^"]*" data-testid="character-ruleset-chip">Hardcore US<\/span><\/p>/,
+      /data-testid="character-level-race">Level 60 Night Elf<\/span><span class="[^"]*\bml-3\b[^"]*"><span class="[^"]*" data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/p>/,
     );
     expect(classes(tag(body, 'character-level-line'))).toContain('whitespace-nowrap');
     expect(para(body, 'character-descriptor')).not.toContain('character-ruleset-chip');
@@ -210,7 +211,7 @@ describe('ProfileDescriptor', () => {
     // The last word and the chip never part (fix round 3 item 2: a word joiner in a nowrap span
     // glues the chip to it), inside the spec’s own nowrap segment (fix round 5 item 6).
     expect(line).toMatch(
-      /<span class="text-text" data-testid="character-spec">Holy Priest<\/span><span class="whitespace-nowrap">\u2060<span class="[^"]*\bml-2\b[^"]*" data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/span><\/p>/,
+      /<span style="color: var\(--color-class-priest\)" data-testid="character-spec">Holy Priest<\/span><span class="whitespace-nowrap">\u2060<span class="[^"]*\bml-3\b[^"]*"><span class="[^"]*" data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/span><\/span><\/p>/,
     );
   });
 
@@ -218,7 +219,18 @@ describe('ProfileDescriptor', () => {
     for (const page of [FULL, BARE]) {
       const { body } = view({ header: profileHeader(page, PATH), sync: null });
       const chip = classes(tag(body, 'character-ruleset-chip'));
-      expect(chip).toEqual(expect.arrayContaining(['pill', 'text-muted', 'border-line', 'ml-2']));
+      expect(chip).toEqual(expect.arrayContaining(['pill', 'text-muted', 'border-line']));
+      // 12px from the text before it (W.9); after the race, on a phone, it drops to a line of its own.
+      const box =
+        /<span class="([^"]*)"><span class="[^"]*" data-testid="character-ruleset-chip"/.exec(body)?.[1] ??
+        '';
+      const tokens = box.split(' ');
+      expect(tokens).toContain('ml-3');
+      if (page === FULL) {
+        expect(tokens).toEqual(expect.arrayContaining(['max-sm:block', 'max-sm:ml-0', 'max-sm:w-fit']));
+      } else {
+        expect(tokens).not.toContain('max-sm:block');
+      }
       expect(chip.filter((token) => token.startsWith('border-'))).toEqual(['border-line']);
       expect(chip.filter((token) => token.startsWith('text-'))).toEqual(['text-muted']);
     }

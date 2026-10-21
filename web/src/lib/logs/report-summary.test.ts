@@ -4,6 +4,7 @@ import {
   creditedName,
   formatReportLength,
   ownReportSummary,
+  publicReportRow,
   publicReportSummary,
   recentReportSummary,
   reportStatusLabel,
@@ -116,5 +117,39 @@ describe('recentReportSummary (W.8)', () => {
       'Darnassus · 1 fight',
     );
     expect(recentReportSummary({ killCount: 1, fightCount: 4 })).toBe('1 boss · 4 fights');
+  });
+});
+
+describe('publicReportRow (W.9)', () => {
+  const FACTS = { title: 'Blackrock Depths', zone: 'Blackrock Depths', killCount: 3, fightCount: 14 };
+
+  it('titles a credited report with the character and leads the line under it with the zone', () => {
+    expect(
+      publicReportRow({ ...FACTS, loggingCharacter: { key: 'us/pvp/bow-jackzon', name: 'Bow Jackzon' } }),
+    ).toEqual({
+      title: 'Bow Jackzon',
+      summary: 'Blackrock Depths · 3 bosses · 14 fights',
+    });
+  });
+
+  it('with nobody credited, titles it with the zone and does not say the zone twice', () => {
+    expect(publicReportRow(FACTS)).toEqual({ title: 'Blackrock Depths', summary: '3 bosses · 14 fights' });
+    expect(publicReportRow({ ...FACTS, title: '' })).toEqual({
+      title: 'Blackrock Depths',
+      summary: '3 bosses · 14 fights',
+    });
+  });
+
+  it('keeps the zone on the line when the report has a title of its own', () => {
+    expect(publicReportRow({ ...FACTS, title: 'Tuesday night', guildName: 'Lifecycle Test' })).toEqual({
+      title: 'Tuesday night',
+      summary: 'Blackrock Depths · 3 bosses · 14 fights · Lifecycle Test',
+    });
+  });
+
+  it('never repeats the title anywhere on the line', () => {
+    const row = publicReportRow({ ...FACTS, loggingCharacter: 'Bow Jackzon' });
+    expect(row.summary).not.toContain(row.title);
+    expect(publicReportRow(FACTS).summary).not.toContain(FACTS.zone);
   });
 });

@@ -3,6 +3,7 @@
 // (design/specs/2026-10-11-logs.md sections 2.1 and 9): the site's canonical public report,
 // bundled with the site and read from its static meta (lib/report/sample.ts), shown once and labelled `A sample
 // report` above its row. It never doubles as a feed entry (the feed filters it out by id).
+import { formatDate } from '../report/format';
 import { fetchReportMeta } from '../report/load';
 import { SAMPLE_REPORT_ID } from '../report/sample';
 import type { ReportMeta } from '../report/types';
@@ -17,15 +18,24 @@ export interface SampleRow {
   title: string;
   /** Empty when the report could not be read: the row is then just the link. */
   createdAt: string;
+  /** The date as the report page says it ("26 Sep 2026"), so the row and the page agree. */
+  dateLabel: string;
   summary: string;
+}
+
+/** The report page dates a report by its first fight; the row reads the same field. */
+export function sampleDateIso(meta: Pick<ReportMeta, 'fights' | 'created_at'>): string {
+  return meta.fights[0]?.start ?? meta.created_at;
 }
 
 export function sampleRowFromMeta(meta: ReportMeta): SampleRow {
   const killCount = meta.fights.filter((fight) => fight.kind === 'encounter' && fight.kill).length;
+  const createdAt = sampleDateIso(meta);
   return {
     id: meta.id,
     title: meta.title === '' ? meta.zone : meta.title,
-    createdAt: meta.created_at,
+    createdAt,
+    dateLabel: formatDate(createdAt),
     summary: recentReportSummary({ zone: meta.zone, killCount, fightCount: meta.fights.length }),
   };
 }
@@ -35,6 +45,7 @@ export const SAMPLE_FALLBACK_ROW: SampleRow = {
   id: SAMPLE_REPORT_ID,
   title: FALLBACK_TITLE,
   createdAt: '',
+  dateLabel: '',
   summary: '',
 };
 

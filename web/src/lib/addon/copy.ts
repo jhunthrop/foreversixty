@@ -100,11 +100,15 @@ export const addonCopy = {
     'The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.',
   installCurseForge: 'Install from CurseForge',
   installWago: 'Install from Wago Addons',
-  installGitHub: 'Download the latest release',
+  installGitHub: 'Download the zip',
   /** The nightly ratings pack is its own addon (ForeverSixtyData): a manager that honours
    *  required dependencies installs it with the addon; a hand install needs both. */
   installDataLead:
-    'Install Forever Sixty Data too. It carries the nightly Forever Scores and guild standings the addon shows; CurseForge and Wago list it as a required dependency, so their apps add it for you.',
+    'Forever Sixty Data carries the nightly Forever Scores and guild standings the addon shows. CurseForge and Wago add it for you; a hand install needs both.',
+  /** The one quiet line under the install buttons (UX review r5, finding 2). */
+  installDataHint: 'Forever Sixty Data carries the nightly scores. CurseForge and Wago add it for you.',
+  /** The disclosure that holds the data addon's own links and the build number. */
+  setupManualInstall: 'Manual install',
   installDataCurseForge: 'Forever Sixty Data on CurseForge',
   installDataWago: 'Forever Sixty Data on Wago Addons',
   installDataGitHub: 'Latest data release',
@@ -126,16 +130,17 @@ export const addonCopy = {
   setupStep1Title: '1. Sign in with Battle.net',
   setupStep2Title: '2. The addon',
   setupStep3Title: '3. The companion',
-  setupSignInBody:
-    'Saves your builds, sims and logs to an account. Character import waits on Blizzard serving Forever data.',
-  /** Second line under step 1: same family of copy as `accountPageCopy.noBattlenetDataForRealm`
-   *  (spec 2026-09-25 §3.4) -- that key names the gap per character, on the account page,
-   *  after sign-in; this one names it up front, before signing in, as a standalone fact. */
-  setupSignInRealmNote: 'Until then, the addon below adds your characters.',
+  setupSignInBody: 'Saves your builds, sims and logs to your account.',
   /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
    *  every visible string on this page comes from `addonCopy`, matching this page's own
    *  copy-module convention rather than reaching into the home page's module. */
   setupSignInAction: 'Sign in with Battle.net',
+  /** The truth of how a character reaches the site, said once and the way the addon's welcome says
+   *  it (addon/ForeverSixty/Locale.lua): the addon saves, the companion sends. */
+  setupHowItArrives: 'The addon saves your character when you log out; the companion sends it to the site.',
+  /** Under the step 3 title: which of the three steps can be skipped. */
+  setupCompanionNote: 'Optional for gear. Needed for live logs.',
+  setupSubline: 'Three steps. The first two take two minutes.',
   setupCompanionBody:
     'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
   /** The page as a checklist (design loop, setup round): its own title, a status row
@@ -144,30 +149,41 @@ export const addonCopy = {
   setupPageTitle: 'Get set up',
   /** The label over the status chips: they report progress, they are not tabs. */
   setupProgressLabel: 'Your progress',
-  setupStatusSignIn: 'Not signed in',
-  setupStatusSignedIn: 'Signed in',
-  setupStatusAddon: 'Addon export',
-  setupStatusAddonDone: 'Addon export loaded',
-  setupStatusCompanion: 'Companion app',
-  setupSignedInLine: 'Done. You are signed in. Next: the addon, then the companion.',
-  setupSignedInLink: 'Your account',
-  setupAddonDoneLine: 'Done. An export is loaded; the site is pointed at that character.',
+  /** The three chips, each an anchor to its step: the label to do, the label once done. */
+  setupChips: [
+    { step: 1, href: '#signin', todo: 'Sign in', done: 'Signed in' },
+    { step: 2, href: '#addon', todo: 'Addon', done: 'Addon seen' },
+    { step: 3, href: '#companion', todo: 'Companion', done: 'Companion running' },
+  ] as const,
+  /** A signed-out visitor who pasted an export: the one done line a step can show without a session. */
+  setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
+  /** The done and not-done lines of each step for a signed-in account (W.9). */
+  setupSignedInAs: (name: string): string => `Signed in as ${name}`,
+  setupAddonArrived: (character: string, when: string): string =>
+    `${character} arrived from the addon ${when}`,
+  setupAddonWaiting: 'No character yet — log out once with the addon on',
+  setupCompanionLine: (device: string, seen: string): string =>
+    `Companion signed in on ${device} · last seen ${seen}`,
+  setupCompanionWaiting: 'No companion signed in yet',
   setupHowItWorks: 'How the addon works',
   /** The one disclosure that holds the manual: what the addon does, its commands, the handshake and the flows. */
   setupEverything: 'Everything the addon does',
-  setupCompanionDownloadLead: 'Download the companion',
   setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
-  /** Said under the downloads while the release carries only some platforms. */
-  setupCompanionPlatforms: (available: string): string => `${available} now, macOS next.`,
-  /** The companion step's done state, from the account's newest connected device. */
-  setupCompanionDoneLine: (device: string, seen: string): string =>
-    `Done. Connected as ${device}, last seen ${seen}.`,
+  /** Said under the download while the release carries no Mac bundle (companion.yml has the
+   *  darwin targets off): the repo declines a "macOS next". */
+  setupCompanionPlatforms: (available: string): string => `${available}. Mac is not supported yet.`,
+  /** The primary download button: "Download for Windows". */
+  setupCompanionDownload: (platform: string): string => `Download for ${platform}`,
+  /** A 2x crop of the 0.2.11 companion's Status page, the Logging state credited to a fictional
+   *  two-word name (docs/superpowers/reviews/companion-premium/). */
   setupCompanionCapture: {
     src: '/addon/companion-status.jpg',
-    width: 1010,
-    height: 280,
-    alt: 'The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow-Jackzon” and the link “Open this report on the site”.',
+    width: 1600,
+    height: 436,
+    alt: 'The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow Jackzon” and the link “Open this report on the site”.',
   },
+  /** The disclosure that holds the paste box. */
+  setupTryExport: 'Try an export',
   disclosureOpen: 'Show',
   disclosureClose: 'Hide',
 

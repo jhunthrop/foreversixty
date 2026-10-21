@@ -39,8 +39,18 @@ export const homeClassPickerCopy = {
  *  leveling BiS preview, captioned unambiguously as a stand-in class, never a claim about
  *  the visitor's own character. */
 export const homeHeroStatePanelCopy = {
+  /** While the beta runs (W.9: the card follows the clock, lib/home/hero-card.ts). */
   betaEyebrow: 'Beta is live',
   levelCapLabel: 'level cap 30',
+  betaBandsLine: 'Leveling best in slot, levels 10 to 30',
+  /** Between the beta and launch: "Launch Nov 4 · 15:00 PST", and the days left. */
+  launchEyebrow: (key: string, note: string | undefined): string =>
+    note === undefined || note === '' ? `Launch ${key}` : `Launch ${key} · ${note}`,
+  launchCountdown: (days: number): string =>
+    days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`,
+  /** Once launch day is over. */
+  launchedEyebrow: (key: string): string => `Launched ${key}`,
+  launchedTag: 'level cap 60',
   examplePill: 'Example',
   bandsLine: 'Leveling best in slot, bands 20 to 60',
 } as const;

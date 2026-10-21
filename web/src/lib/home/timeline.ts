@@ -16,6 +16,8 @@ export interface DateEntry {
   iso: string;
   /** The last day of a span ("through Oct 21"); the entry is live until that day is over. */
   endIso?: string;
+  /** Which entry the hero card follows: "beta" (the span the card says is live) or "launch". */
+  role?: string;
   /** How the row reads once the span is over: "Sept 17 to Oct 21", "Beta", its note. */
   pastKey?: string;
   pastValue?: string;

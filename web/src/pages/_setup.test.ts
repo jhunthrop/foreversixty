@@ -13,7 +13,15 @@ import { createPageContainer } from '../test-support/page-container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
 import { SETUP_NAV_ITEM } from '../lib/nav';
-import { companionDoneLine, companionPlatformsLine } from '../lib/setup/progress';
+import type { Device, Me, MeCharacter } from '../lib/account/api';
+import {
+  addonLine,
+  chipsDone,
+  companionLine,
+  companionPlatformsLine,
+  newestAddonCharacter,
+  signInLine,
+} from '../lib/setup/progress';
 import activeBuild from '../data/active-build.json';
 import SetupPage, {
   CURSEFORGE_URL,
@@ -44,22 +52,18 @@ const STRING_COPY_KEYS = [
   'setupStep2Title',
   'setupStep3Title',
   'setupSignInBody',
-  'setupSignInRealmNote',
   'setupSignInAction',
+  'setupSubline',
+  'setupHowItArrives',
+  'setupCompanionNote',
+  'installDataHint',
+  'setupManualInstall',
+  'setupTryExport',
   'setupCompanionBody',
   'setupPageTitle',
-  'setupProgressLabel',
   'setupEverything',
-  'setupStatusSignIn',
-  'setupStatusSignedIn',
-  'setupStatusAddon',
-  'setupStatusAddonDone',
-  'setupStatusCompanion',
-  'setupSignedInLine',
-  'setupSignedInLink',
   'setupAddonDoneLine',
   'setupHowItWorks',
-  'setupCompanionDownloadLead',
   'setupCompanionPair',
   'disclosureOpen',
   'disclosureClose',
@@ -102,25 +106,24 @@ describe('/setup', () => {
     expect(html).toContain(GITHUB_RELEASES_URL);
   });
 
-  it('tells the visitor to install the data addon too, with its three routes under the lead', () => {
-    expect(html).toContain('data-testid="setup-data-addon"');
+  it('keeps the data addon’s own links and the build number in the Manual install disclosure, not in the step', () => {
+    expect(html).toContain('data-testid="setup-manual-install"');
     expect(html).toContain(DATA_CURSEFORGE_URL);
     expect(html).toContain(DATA_WAGO_URL);
     expect(html).toContain(DATA_GITHUB_RELEASES_URL);
-    expect(html.indexOf(addonCopy.installDataLead)).toBeGreaterThan(html.indexOf(GITHUB_RELEASES_URL));
+    const open = html.indexOf('data-testid="setup-manual-install"');
+    const close = html.indexOf('</details>', open);
+    const inside = html.slice(open, close);
+    for (const url of [DATA_CURSEFORGE_URL, DATA_WAGO_URL, DATA_GITHUB_RELEASES_URL]) {
+      expect(inside).toContain(url);
+    }
+    expect(inside).toContain(addonCopy.currentDataBuild(activeBuild.build));
+    expect(html.indexOf(addonCopy.installDataHint)).toBeLessThan(open);
   });
 
   it('addresses CurseForge by the project ids the TOCs carry, never a guessed slug', () => {
     expect(CURSEFORGE_URL).toBe('https://www.curseforge.com/projects/1706689');
     expect(DATA_CURSEFORGE_URL).toBe('https://www.curseforge.com/projects/1706707');
-  });
-
-  it('shows the current data build from the data file in the rendered output', () => {
-    expect(html).toContain(addonCopy.currentDataBuild(activeBuild.build));
-  });
-
-  it('names which realm types Blizzard serves today under step 1', () => {
-    expect(html).toContain(addonCopy.setupSignInRealmNote);
   });
 
   it('every install link opts out of opener access', () => {
@@ -430,45 +433,83 @@ describe('/setup: what it does in the game (L8.3)', () => {
 });
 
 describe('/setup first-run copy', () => {
-  it('leads with the addon and the companion, and the companion connects itself', () => {
-    expect(addonCopy.setupSignedInLine).toBe('Done. You are signed in. Next: the addon, then the companion.');
+  it('says the companion connects itself, never that it pairs', () => {
     expect(addonCopy.setupCompanionPair).toBe(
       'Sign in with Battle.net inside the companion; it connects itself.',
     );
     expect(html).toContain(addonCopy.setupCompanionPair);
     expect(html).not.toMatch(/pairs itself|pair the companion/i);
   });
+
+  it('says once, the way the addon welcome does, how a character reaches the site', () => {
+    expect(addonCopy.setupHowItArrives).toBe(
+      'The addon saves your character when you log out; the companion sends it to the site.',
+    );
+    expect(html.split(addonCopy.setupHowItArrives).length - 1).toBe(1);
+  });
+
+  it('drops the Blizzard status sentence from step 1', () => {
+    expect(html).not.toMatch(/waits on Blizzard|Character import/i);
+    expect(addonCopy.setupSignInBody).toBe('Saves your builds, sims and logs to your account.');
+  });
 });
 
-// W.8: three steps a new player finishes in order, each with a one-line done state.
-describe('/setup as three steps (W.8)', () => {
-  it('labels the status chips “Your progress”, so they read as status and not as tabs', () => {
-    expect(addonCopy.setupProgressLabel).toBe('Your progress');
-    const label = html.indexOf('id="setup-progress-label"');
-    const chips = html.indexOf('data-testid="setup-status"');
-    expect(label).toBeGreaterThan(-1);
-    expect(chips).toBeGreaterThan(label);
-    expect(html.slice(chips - 120, chips + 120)).toContain('aria-labelledby="setup-progress-label"');
-    expect(html).toContain(addonCopy.setupProgressLabel);
+// W.9: one gold button per step, a done line per step, the manual behind disclosures.
+describe('/setup as three steps (W.9)', () => {
+  const GOLD = 'bg-gold';
+  const anchorWith = (needle: string): string =>
+    [...html.matchAll(/<a\s[^>]*>/g)].map((m) => m[0]).find((tag) => tag.includes(needle)) ?? '';
+
+  it('titles the page "Get set up" with the one-line subline, not the old lede', () => {
+    expect(addonCopy.setupPageTitle).toBe('Get set up');
+    expect(addonCopy.setupSubline).toBe('Three steps. The first two take two minutes.');
+    expect(html).toContain(addonCopy.setupSubline);
   });
 
-  it('gives each of the three steps a done line that only a signed-in or loaded state shows', () => {
-    expect(html).toContain('data-testid="setup-signed-in"');
-    expect(html).toContain('data-testid="setup-addon-done"');
-    expect(html).toContain('data-testid="setup-companion-done"');
-    for (const testid of ['setup-signed-in', 'setup-addon-done', 'setup-companion-done']) {
-      const tag = new RegExp(`<p class="([^"]*)"[^>]*data-testid="${testid}"`).exec(html);
-      expect(tag?.[1], testid).toMatch(/setup-when-(in|pointer)/);
+  it('draws three chips that are anchors to their steps, numbered', () => {
+    const start = html.indexOf('data-testid="setup-status"');
+    const chips = html.slice(start, start + 4000);
+    for (const [index, chip] of addonCopy.setupChips.entries()) {
+      expect(chip.step).toBe(index + 1);
+      expect(chips).toContain(`href="${chip.href}"`);
+      expect(chips).toContain(chip.todo);
+      expect(html).toContain(`id="${chip.href.slice(1)}"`);
     }
-    for (const line of [addonCopy.setupSignedInLine, addonCopy.setupAddonDoneLine]) {
-      expect(line.startsWith('Done.')).toBe(true);
+    expect(addonCopy.setupChips.map((chip) => chip.done)).toEqual([
+      'Signed in',
+      'Addon seen',
+      'Companion running',
+    ]);
+  });
+
+  it('gives each step one gold button: Sign in with Battle.net, Install from CurseForge, Download for Windows', () => {
+    expect(anchorWith('battlenet')).toContain(GOLD);
+    expect(anchorWith(CURSEFORGE_URL)).toContain(GOLD);
+    expect(anchorWith('data-testid="setup-companion-download"')).toContain(GOLD);
+    expect(html).toContain('Download for Windows');
+    // Wago and the zip are quiet links, not buttons.
+    expect(anchorWith(WAGO_URL)).not.toContain(GOLD);
+    expect(anchorWith(GITHUB_RELEASES_URL)).not.toContain(GOLD);
+    expect(addonCopy.installGitHub).toBe('Download the zip');
+  });
+
+  it('gives each step a line component, hidden until a session exists', () => {
+    for (const step of ['signin', 'addon', 'companion']) {
+      const tag = new RegExp(`<p class="([^"]*)"[^>]*data-testid="setup-line-${step}"`).exec(html);
+      expect(tag?.[1], step).toContain('setup-when-in');
     }
   });
 
-  it('puts the manual behind one collapsed “Everything the addon does” disclosure, the companion after it', () => {
-    const open = /<details[^>]*data-testid="setup-everything"[^>]*>/.exec(html)?.[0] ?? '';
-    expect(open).not.toBe('');
-    expect(open).not.toContain(' open');
+  it('puts the export box, the manual install and the manual behind three collapsed disclosures', () => {
+    expect(html.match(/<details/g)).toHaveLength(3);
+    for (const testid of ['setup-try-export', 'setup-manual-install', 'setup-everything']) {
+      const open = new RegExp(`<details[^>]*data-testid="${testid}"[^>]*>`).exec(html)?.[0] ?? '';
+      expect(open, testid).not.toBe('');
+      expect(open).not.toContain(' open');
+    }
+    const tryExport = html.indexOf('data-testid="setup-try-export"');
+    expect(html.indexOf('id="paste"')).toBeGreaterThan(tryExport);
+    expect(html.indexOf('id="paste"')).toBeLessThan(html.indexOf('</details>', tryExport));
     const disclosure = html.indexOf('data-testid="setup-everything"');
     const end = html.indexOf('</details>', disclosure);
     const inside = html.slice(disclosure, end);
@@ -477,72 +518,121 @@ describe('/setup as three steps (W.8)', () => {
       expect(inside, marker).toContain(`data-testid="${marker}"`);
     }
     expect(html.indexOf('id="companion"')).toBeGreaterThan(end);
-    expect(html.match(/<details/g)).toHaveLength(1);
   });
 
-  it('shows the companion’s Status page in the third step', () => {
+  it('shows the 0.2.11 companion Status page, two-word name, in the third step', () => {
     const capture = addonCopy.setupCompanionCapture;
     const step3 = html.slice(html.indexOf('id="companion"'));
     expect(step3).toContain(`src="${capture.src}"`);
     expect(capture.alt).toContain('Status');
-    expect(existsSync(new URL(`../../public${capture.src}`, import.meta.url))).toBe(true);
+    expect(capture.alt).toContain('Bow Jackzon');
+    expect(capture.alt).not.toContain('Bow-Jackzon');
+    const bytes = readFileSync(new URL(`../../public${capture.src}`, import.meta.url));
+    expect(jpegSize(bytes)).toEqual({ width: capture.width, height: capture.height });
+    // A 2x capture: at least 1600 px of source for the 800 px it is shown at.
+    expect(capture.width).toBeGreaterThanOrEqual(1600);
   });
 
-  it('offers Windows and says macOS is next while the release carries no Mac bundle', () => {
+  it('says Mac is not supported while the release carries no Mac bundle', () => {
     const step3 = html.slice(html.indexOf('id="companion"'));
-    expect(step3).toContain('>Windows<');
-    expect(step3).toContain('Windows now, macOS next.');
+    expect(step3).toContain('Windows. Mac is not supported yet.');
+    expect(step3).not.toMatch(/macOS next/i);
     expect(companionPlatformsLine(['Windows', 'macOS'])).toBeNull();
-    expect(companionPlatformsLine(['Windows'])).toBe('Windows now, macOS next.');
+    expect(companionPlatformsLine(['Windows'])).toBe('Windows. Mac is not supported yet.');
+  });
+
+  it('says which of the steps is optional', () => {
+    expect(addonCopy.setupCompanionNote).toBe('Optional for gear. Needed for live logs.');
   });
 });
 
 describe('the setup done lines (progress.ts)', () => {
   const NOW = new Date('2026-10-20T12:00:00Z');
-  it('has no companion line until the account holds a device', () => {
-    expect(companionDoneLine([], NOW)).toBeNull();
+  const user = { id: 1, battletag: 'hunthrop#1894', email: null, role: 'user', anonymize: false };
+  const character = (
+    name: string,
+    capturedAt: string | null,
+    source: 'addon' | 'blizzard' = 'addon',
+  ): MeCharacter => ({
+    key: `us/hardcore/${name.toLowerCase()}`,
+    region: 'us',
+    ruleset: 'hardcore',
+    name,
+    ...(capturedAt === null ? {} : { build: { source, captured_at: capturedAt } }),
+  });
+  const me = (characters: MeCharacter[], battletag: string | null = 'hunthrop#1894'): Me => ({
+    user: { ...user, battletag },
+    characters,
+    guilds: [],
+  });
+  const device = (name: string, lastSeen: string | null, created = '2026-10-01T00:00:00Z'): Device => ({
+    id: name,
+    name,
+    platform: 'windows',
+    created_at: created,
+    last_seen_at: lastSeen,
   });
 
-  it('names the most recently seen device and when', () => {
+  it('says nothing signed out', () => {
+    expect(signInLine(null)).toBeNull();
+    expect(addonLine(null, NOW)).toBeNull();
+    expect(companionLine(null, [], NOW)).toBeNull();
+    expect(chipsDone({ me: null, devices: [] })).toEqual([false, false, false]);
+  });
+
+  it('names the signed-in account: the battletag, else the email', () => {
+    expect(signInLine(me([]))).toEqual({ done: true, text: 'Signed in as hunthrop#1894' });
+    const emailOnly = { ...me([], null), user: { ...user, battletag: null, email: 'a@b.gg' } };
+    expect(signInLine(emailOnly)?.text).toBe('Signed in as a@b.gg');
+  });
+
+  it('names the newest character the addon synced and when, ignoring Battle.net-only builds', () => {
+    const account = me([
+      character('Old Hunter', '2026-10-10T00:00:00Z'),
+      character('Bow Jackzon', '2026-10-20T11:00:00Z'),
+      character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard'),
+      character('No Build', null),
+    ]);
+    expect(newestAddonCharacter(account.characters)?.character.name).toBe('Bow Jackzon');
+    expect(addonLine(account, NOW)).toEqual({
+      done: true,
+      text: 'Bow Jackzon arrived from the addon 1 hour ago',
+    });
+  });
+
+  it('says what to do when no addon character has arrived', () => {
+    expect(addonLine(me([character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard')]), NOW)).toEqual({
+      done: false,
+      text: 'No character yet — log out once with the addon on',
+    });
+  });
+
+  it('names the most recently seen companion device and when', () => {
     const devices = [
-      {
-        id: 'a',
-        name: 'Old laptop',
-        platform: 'windows',
-        created_at: '2026-10-01T00:00:00Z',
-        last_seen_at: '2026-10-02T00:00:00Z',
-      },
-      {
-        id: 'b',
-        name: 'Desktop',
-        platform: 'windows',
-        created_at: '2026-10-05T00:00:00Z',
-        last_seen_at: '2026-10-20T11:00:00Z',
-      },
-      {
-        id: 'c',
-        name: 'Never seen',
-        platform: 'windows',
-        created_at: '2026-10-03T00:00:00Z',
-        last_seen_at: null,
-      },
+      device('OLD-LAPTOP', '2026-10-02T00:00:00Z'),
+      device('JH-DESKTOP', '2026-10-20T11:57:00Z'),
+      device('NEVER-SEEN', null, '2026-10-03T00:00:00Z'),
     ];
-    expect(companionDoneLine(devices, NOW)).toBe('Done. Connected as Desktop, last seen 1 hour ago.');
+    expect(companionLine(me([]), devices, NOW)).toEqual({
+      done: true,
+      text: 'Companion signed in on JH-DESKTOP · last seen 3 minutes ago',
+    });
   });
 
   it('falls back to the creation time for a device never heard from', () => {
-    const line = companionDoneLine(
-      [
-        {
-          id: 'c',
-          name: 'Desktop',
-          platform: 'windows',
-          created_at: '2026-10-20T11:58:00Z',
-          last_seen_at: null,
-        },
-      ],
-      NOW,
-    );
-    expect(line).toBe('Done. Connected as Desktop, last seen 2 minutes ago.');
+    const line = companionLine(me([]), [device('JH-DESKTOP', null, '2026-10-20T11:58:00Z')], NOW);
+    expect(line?.text).toBe('Companion signed in on JH-DESKTOP · last seen 2 minutes ago');
+  });
+
+  it('says no companion has signed in, and claims nothing when the device list did not load', () => {
+    expect(companionLine(me([]), [], NOW)).toEqual({ done: false, text: 'No companion signed in yet' });
+    expect(companionLine(me([]), null, NOW)).toBeNull();
+  });
+
+  it('marks a chip done only when the account shows its step', () => {
+    const account = me([character('Bow Jackzon', '2026-10-20T11:00:00Z')]);
+    expect(chipsDone({ me: account, devices: [] })).toEqual([true, true, false]);
+    expect(chipsDone({ me: me([]), devices: [device('JH-DESKTOP', null)] })).toEqual([true, false, true]);
+    expect(chipsDone({ me: me([]), devices: null })).toEqual([true, false, false]);
   });
 });

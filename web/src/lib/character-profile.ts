@@ -16,10 +16,16 @@ export function newestSpec(page: Pick<CharacterPage, 'history' | 'best'>): strin
   return spec === undefined || spec.trim() === '' ? null : spec;
 }
 
+/** "hunter" -> "Hunter", "death knight" -> "Death Knight": the API sends the class as it keys it. */
+export function titleCase(text: string): string {
+  return text.replace(/\b\p{L}/gu, (letter) => letter.toUpperCase());
+}
+
 /** "Holy Priest" when the spec is known, else "Priest"; empty with no class. */
 export function specClassLabel(className: string | undefined, spec: string | null): string {
   if (className === undefined || className === '') return '';
-  return spec === null ? className : `${spec} ${className}`;
+  const label = titleCase(className);
+  return spec === null ? label : `${spec} ${label}`;
 }
 
 function slug(text: string): string {
@@ -237,6 +243,8 @@ export interface ProfileHeader {
   levelRace: string | null;
   /** The ruleset and region, "Hardcore US", always present (it is the page's address). */
   chip: string;
+  /** The class as the API keys it ("hunter"), for the descriptor's class colour; null when unknown. */
+  className: string | null;
   /** The line the chip ends (fix round 2 item 3): the last text line, so the level line when
    *  there is one, else the first. */
   chipOn: 'levelRace' | 'pieces';
@@ -306,6 +314,7 @@ export function profileHeader(
     pieces,
     levelRace,
     chip: characterHeaderCopy.chip(path.ruleset, path.region),
+    className: known(character.class),
     chipOn: levelRace === null ? 'pieces' : 'levelRace',
   };
 }

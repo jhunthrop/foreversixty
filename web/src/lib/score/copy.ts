@@ -131,7 +131,11 @@ export const scoreCopy = {
 
   /** The no-logs card (fix round 2 item 4). */
   noLogsTitle: 'No logs yet',
-  noLogsHint: 'Check the name and ruleset, or look up another character.',
+  /** A character the site holds with no logs yet: never a typo hint (the name is right, it is on the
+   *  page), one sentence on how the score fills in and a button to the companion (W.9). */
+  noLogsHint: 'Log a raid with the companion and the score fills in.',
+  noLogsCompanion: 'Get the companion',
+  noLogsCompanionHref: '/setup#companion',
   noLogsLookup: 'Look up another character',
   /** The home page's lookup with the name, region and ruleset filled in (CharacterSearch.astro
    *  reads all three; fix round 3 item 3). */
@@ -156,15 +160,13 @@ export const scoreCopy = {
    *  item 1). */
   tooltipGuild: (name: string): string => `<${name}>`,
   /** The tooltip mock's level line, the 1.60 client's own (fix round 2 item 6, from a real
-   *  client capture): "Level 60 Night Elf (Player)", the class and the faction each on a line of
-   *  their own below it. Written from whichever of level and race is known; null with neither,
+   *  client capture): "Level 60 Night Elf", the class and the faction each on a line of
+   *  their own below it (the "(Player)" the client adds is left out, W.9). Written from whichever of level and race is known; null with neither,
    *  when the level, class and faction lines are all left out (never "Priest" alone). */
   tooltipLevelLine: (level: number | null, race: string | null): string | null =>
     level === null && race === null
       ? null
-      : [level === null ? '' : `Level ${level}`, race ?? '', '(Player)']
-          .filter((part) => part !== '')
-          .join(' '),
+      : [level === null ? '' : `Level ${level}`, race ?? ''].filter((part) => part !== '').join(' '),
   inGameShownOn: 'Shown on this character’s tooltip when you have the Forever Sixty addon.',
   inGameSetupLink: 'Get set up',
   inGameSetupHref: '/setup',

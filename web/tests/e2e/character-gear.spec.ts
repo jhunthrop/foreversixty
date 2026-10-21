@@ -572,12 +572,18 @@ for (const width of [320, 360, 375, 390, 414]) {
         const found = await page.getByTestId('character-gear').evaluate((section) => {
           const texts: Text[] = [];
           const edged: string[] = [];
+          const separators: Text[] = [];
           const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
           for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
             const text = (node as Text).data.trim();
             if (text === '') continue;
             texts.push(node as Text);
-            if (text.startsWith('·') || text.endsWith('·')) edged.push(text);
+            // The one real separator between a source and its drop chance ("Skum · 50% drop", W.9)
+            // is a text node of its own, aria-hidden, glued to both words by no-break spaces.
+            const separator =
+              text === '·' && (node as Text).parentElement?.getAttribute('aria-hidden') === 'true';
+            if (separator) separators.push(node as Text);
+            else if (text.startsWith('·') || text.endsWith('·')) edged.push(text);
           }
           /** The box of a text's first or last glyph. */
           const glyph = (node: Text, last: boolean): DOMRect => {
@@ -635,9 +641,19 @@ for (const width of [320, 360, 375, 390, 414]) {
               },
             ];
           });
-          return { edged, drawn, notes };
+          // Each real separator: the glyphs either side of it share its line (it never starts or ends one).
+          const separated = separators.map((node) => {
+            const at = texts.indexOf(node);
+            return (
+              oneLine(glyph(texts[at - 1], true), glyph(node, false)) &&
+              oneLine(glyph(node, true), glyph(texts[at + 1], false))
+            );
+          });
+          return { edged, drawn, notes, separated };
         });
         expect(found.edged).toEqual([]);
+        expect(found.separated.length).toBeGreaterThan(0);
+        expect(found.separated.every(Boolean)).toBe(true);
         // The chances and the swap note: each dot glued to the texts either side, on their line.
         expect(found.drawn.length).toBeGreaterThan(0);
         for (const dot of found.drawn) {
@@ -683,8 +699,9 @@ test.describe('drawn dots at 1440 (fix 5 item 2)', () => {
         .getByTestId(testid)
         .evaluate((element, p) => getComputedStyle(element, p).content, which);
     expect(await pseudo(null, 'character-gear-heading', '::after')).toBe('"\u00a0·" / ""');
-    expect(await pseudo('head', 'character-gear-chance', '::before')).toBe(DRAWN_DOT);
-    expect(await pseudo('off_hand', 'character-gear-chance', '::before')).toBe(DRAWN_DOT);
+    // The chance is separated from its source by a real " · " in the text now (W.9), not a drawn dot.
+    expect(await pseudo('head', 'character-gear-chance', '::before')).toBe('none');
+    await expect(row(page, 'head').getByTestId('character-gear-meta')).toContainText('· 17% drop');
     expect(await pseudo('off_hand', 'character-gear-note', '::before')).toBe(DRAWN_DOT);
     await expect(page.getByTestId('character-gear-title')).toHaveAccessibleName(
       'Gear +70 pts across 7 slots · 1 not scored',

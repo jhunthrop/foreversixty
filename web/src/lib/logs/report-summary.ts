@@ -87,6 +87,35 @@ export function accountReportSummary({ zone, fightCount, killCount }: AccountRep
   ]);
 }
 
+export interface PublicRowFacts extends Omit<RecentReportFacts, 'zone'> {
+  /** The report's own title, or the zone the API resolved it to. */
+  title: string;
+  zone?: string;
+  /** The credited character as the API sends it; null or absent when none is credited. */
+  loggingCharacter?: string | { key?: string; name?: string } | null;
+}
+
+/**
+ * A row of the public list: the credited character is the title (a player looks for a name) and
+ * the zone leads the muted line under it; with nobody credited the title is the report's own, and
+ * the zone is not said a second time when it already is the title. The age is the row's to add.
+ */
+export function publicReportRow(facts: PublicRowFacts): { title: string; summary: string } {
+  const credited = creditedName(facts.loggingCharacter);
+  const zone = (facts.zone ?? '').trim();
+  const title = credited ?? (facts.title === '' ? zone : facts.title);
+  const zoneIsTitle = credited === null && title === zone;
+  return {
+    title,
+    summary: recentReportSummary({
+      zone: zoneIsTitle ? undefined : zone,
+      killCount: facts.killCount,
+      fightCount: facts.fightCount,
+      guildName: facts.guildName,
+    }),
+  };
+}
+
 /** The row's badge: "Live" while the log is still being written, "Processing" while it is read. Nothing once complete. */
 export function reportStatusLabel(status: string): string {
   if (status === '' || status === 'complete') return '';

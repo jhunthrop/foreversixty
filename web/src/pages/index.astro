@@ -8,6 +8,8 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { HOME_DESCRIPTION, SITE_NAME } from '../lib/seo';
+import { heroCardFor } from '../lib/home/hero-card';
+import { latestNews } from '../lib/home/news';
 import SkyBand from '../components/SkyBand.astro';
 import HomeTimeline from '../components/HomeTimeline.astro';
 import CharacterSearch from '../components/CharacterSearch.astro';
@@ -47,9 +49,13 @@ import activeBuild from '../data/active-build.json';
 // page's own head, not Base.astro, so no other page pays for it.
 import heroFontCss from '../styles/hero-font.css?raw';
 
-const changelog = (await getCollection('changelog'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 4);
+// A "This site" item older than a month is left out (lib/home/news.ts): the page is built once per
+// deploy, so the script at the foot of the page hides one that has gone stale since.
+const changelog = latestNews(await getCollection('changelog'));
+
+// The hero card follows the clock like the timeline (lib/home/hero-card.ts): built for the deploy's
+// date here, re-read against the visitor's clock by the script at the foot of the page.
+const heroCard = heroCardFor(dates);
 
 // The "Get set up" card's only icon (spec 2026-09-25 §3.5 collapses the addon/companion row
 // to one card, so this no longer needs to be a lookup map).
@@ -174,16 +180,23 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                 class="bg-raised/85 border-line flex flex-col gap-3 rounded-panel border px-5 py-[18px]"
                 data-testid="home-example-panel"
               >
-                <div class="flex items-center justify-between">
+                <div
+                  class="flex items-center justify-between"
+                  data-testid="home-hero-card"
+                  data-entries={JSON.stringify(dates)}
+                  data-mode={heroCard.mode}
+                >
                   <span class="label text-gold flex items-center gap-2">
                     <i
                       class="bg-gold h-2 w-2 shrink-0 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]"
                       aria-hidden="true"
                     ></i>
-                    {homeHeroStatePanelCopy.betaEyebrow}
+                    <span data-part="eyebrow">{heroCard.eyebrow}</span>
                   </span>
                   <span class="flex items-center gap-2">
-                    <span class="mono text-[12px] text-muted">{homeHeroStatePanelCopy.levelCapLabel}</span>
+                    <span class="mono text-[12px] text-muted" data-part="tag">
+                      {heroCard.tag}
+                    </span>
                     <span class="pill pill-sample">{homeHeroStatePanelCopy.examplePill}</span>
                   </span>
                 </div>
@@ -193,7 +206,9 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                     <span class="font-display text-[15px] font-bold" style="color: #aad372">
                       Marksmanship Hunter
                     </span>
-                    <span class="text-[13px] text-muted">{homeHeroStatePanelCopy.bandsLine}</span>
+                    <span class="text-[13px] text-muted" data-part="bands" data-testid="home-hero-bands">
+                      {heroCard.bandsLine}
+                    </span>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -233,7 +248,8 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
          The negative bottom margin keeps the strip-to-content gap at the 32px it always had
          while the section gap is 48px from md up. -->
     <div class="flex flex-col gap-8 md:gap-12 px-[18px] md:px-0 pb-8 -mt-2">
-      <div class="md:-mb-4" data-testid="home-timeline-wrap">
+      <div class="flex flex-col gap-[14px] md:-mb-4" data-testid="home-timeline-wrap">
+        <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">Dates</h2>
         <HomeTimeline dates={dates} />
       </div>
 
@@ -401,7 +417,12 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
           data-testid="home-get-set-up-signed-out"
         >
           {homeCompanionRow.map((card) => (
-            <ToolCard title={card.title} description={card.description} href={card.href}>
+            <ToolCard
+              title={card.title}
+              description={card.description}
+              href={card.href}
+              buttonLabel={card.title}
+            >
               <svg
                 slot="icon"
                 width="22"
@@ -427,14 +448,16 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             Everything we know
           </a>
           {changelog.map((e, i) => (
-            <FeedRow
-              date={e.data.date}
-              kind={e.data.kind}
-              title={e.data.title}
-              href={`/changelog#${e.id}`}
-              note={e.data.note}
-              last={i === changelog.length - 1}
-            />
+            <div data-testid="home-news-item" data-kind={e.data.kind} data-date={e.data.date.toISOString()}>
+              <FeedRow
+                date={e.data.date}
+                kind={e.data.kind}
+                title={e.data.title}
+                href={`/changelog#${e.id}`}
+                note={e.data.note}
+                last={i === changelog.length - 1}
+              />
+            </div>
           ))}
         </Panel>
         <div class="col-span-12 lg:col-span-4 flex flex-col gap-[22px] md:gap-8">
@@ -467,3 +490,29 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
   </main>
   <style slot="head" set:html={heroFontCss}></style>
 </Base>
+
+<script>
+  import { heroCardFor } from '../lib/home/hero-card';
+  import { isStaleSiteNews } from '../lib/home/news';
+  import type { DateEntry } from '../lib/home/timeline';
+
+  // The page is built once per deploy: re-read the hero card and the LATEST block against the
+  // visitor's clock, so the beta card stops saying live the night the beta ends and a This site
+  // item that has aged out of the month goes, with no edit and no redeploy.
+  const now = new Date();
+  const card = document.querySelector<HTMLElement>('[data-testid="home-hero-card"]');
+  if (card?.dataset.entries) {
+    const next = heroCardFor(JSON.parse(card.dataset.entries) as DateEntry[], now);
+    card.dataset.mode = next.mode;
+    const set = (selector: string, text: string): void => {
+      const el = document.querySelector(selector);
+      if (el !== null && el.textContent !== text) el.textContent = text;
+    };
+    set('[data-testid="home-hero-card"] [data-part="eyebrow"]', next.eyebrow);
+    set('[data-testid="home-hero-card"] [data-part="tag"]', next.tag);
+    set('[data-testid="home-hero-bands"]', next.bandsLine);
+  }
+  for (const item of document.querySelectorAll<HTMLElement>('[data-testid="home-news-item"]')) {
+    if (isStaleSiteNews(item.dataset.kind ?? '', new Date(item.dataset.date ?? ''), now)) item.hidden = true;
+  }
+</script>

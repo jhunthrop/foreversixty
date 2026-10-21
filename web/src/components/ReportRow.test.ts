@@ -73,4 +73,33 @@ describe('ReportRow', () => {
     const { body } = render(ReportRow, { props: BASE });
     expect(body).not.toContain('report-row-character');
   });
+
+  // W.9: one row style for every list, the age at the end of the muted line.
+  it('draws the title 16 px in the strong colour, never dimmed, the same for every row', () => {
+    const feed = render(ReportRow, { props: BASE }).body;
+    const sample = render(ReportRow, { props: { ...BASE, dateLabel: '26 Sept 2026' } }).body;
+    const owned = render(ReportRow, { props: { ...BASE, character: 'Bow Jackzon' } }).body;
+    for (const body of [feed, sample, owned]) {
+      const title = /<a [^>]*class="([^"]*report-title[^"]*)"/.exec(body)?.[1] ?? '';
+      expect(title).toContain('text-strong');
+      expect(title).toContain('text-[16px]');
+      expect(title).not.toMatch(/text-muted|opacity/);
+      expect(body).not.toContain('reveal');
+    }
+  });
+
+  it('ends the muted line of a public row with the age, after the summary', () => {
+    const { body } = render(ReportRow, { props: BASE });
+    const summary = body.indexOf("Onyxia's Lair");
+    const when = body.indexOf('data-testid="report-row-when"');
+    expect(summary).toBeGreaterThan(-1);
+    expect(when).toBeGreaterThan(summary);
+    expect(body).toContain('3 days ago');
+  });
+
+  it('says the date label a caller gives in place of the relative age', () => {
+    const { body } = render(ReportRow, { props: { ...BASE, dateLabel: '26 Sept 2026' } });
+    expect(body).toContain('26 Sept 2026');
+    expect(body).not.toContain('3 days ago');
+  });
 });

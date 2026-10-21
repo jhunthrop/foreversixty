@@ -4,6 +4,7 @@ import { ACTIVE_BUILD } from './support/active-build';
 
 test('the /setup paste box offers the planner and the simulator once an export decodes', async ({ page }) => {
   await page.goto('/setup');
+  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 
@@ -22,6 +23,7 @@ test('the /setup paste box offers the planner and the simulator once an export d
 
 test('a code from another format is refused by name, not silently dropped', async ({ page }) => {
   await page.goto('/setup');
+  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill('FS2:nope');
   await page.getByTestId('addon-paste-submit').click();
   await expect(page.getByTestId('addon-paste-error')).toHaveText('That code is FS2; this site reads FS1.');
@@ -102,6 +104,7 @@ test('an export pasted on /setup becomes the current character on the simulator 
   page,
 }) => {
   await page.goto('/setup');
+  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 
@@ -152,6 +155,7 @@ test('a pending session check reserves the signed-out branch height, so the sect
     );
   });
   await page.goto('/setup');
+  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 

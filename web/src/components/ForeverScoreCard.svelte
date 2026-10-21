@@ -23,7 +23,7 @@
      With no score (a 404, or a 200 whose score is null): the same shape -- "No logs yet" where
      the number would be, "of 2100" greyed, the five parts as empty tracks with a dash -- then
      one button: the owner's "Upload logs" (the companion uploads fights automatically), anyone
-     else's "Look up another character". The addon's no-logs sentence lives in the tooltip mock
+     else's "Get the companion" (the page only draws it for a character the site holds). The addon's no-logs sentence lives in the tooltip mock
      below, so the card does not repeat it. -->
 <script lang="ts">
   import { scoreCopy } from '../lib/score/copy';
@@ -53,9 +53,6 @@
     bisHref = null,
     gearHref = null,
     owned = false,
-    name = '',
-    region = '',
-    ruleset = '',
     heading = true,
     sample = false,
   }: {
@@ -313,8 +310,8 @@
           {:else}
             <a
               class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-              href={scoreCopy.lookupHref(name, region, ruleset)}
-              data-testid="forever-score-empty-action">{scoreCopy.noLogsLookup}</a
+              href={scoreCopy.noLogsCompanionHref}
+              data-testid="forever-score-empty-action">{scoreCopy.noLogsCompanion}</a
             >
           {/if}
         </div>
