@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.13
+
+- The build preview never cuts a talent or tree name short, and the dialog's hint only says Enter to use when that works.
+
 ## 2.0.12
 
 - Builds from the site are rows you can pick in /fs, with the character they are for and what they change; the preview never cuts a sentence; /fs diag says when the inbox was read and that builds arrive at login, not on /reload; the addon's times match the chat's clock.
