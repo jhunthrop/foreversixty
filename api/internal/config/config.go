@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 )
@@ -45,6 +46,15 @@ const defaultTrustedProxyHops = 1
 type Config struct {
 	Port     string
 	MailFrom string
+
+	// ListenHost is the address the HTTP listener binds to (LISTEN_HOST). Empty binds every
+	// interface, which is what a container wants; a local run sets 127.0.0.1.
+	ListenHost string
+	// DevLogin (FS_DEV_LOGIN=1) mounts POST /v1/dev/login, which signs anyone in as a
+	// seeded account without a password. It exists only for the local walkthrough stack
+	// (tools/dev-stack) and must never ship enabled: Load refuses it unless ListenHost is
+	// a loopback address and PublicBaseURL is not the production origin.
+	DevLogin bool
 
 	// DatabaseURL is used for normal runtime connections; it may point at a
 	// connection pooler (e.g. Neon's PgBouncer endpoint).
@@ -154,6 +164,16 @@ func Load(getenv func(string) string) (Config, error) {
 	if c.MailFrom == "" {
 		c.MailFrom = defaultMailFrom
 	}
+	c.ListenHost = getenv("LISTEN_HOST")
+	c.DevLogin = getenv("FS_DEV_LOGIN") == "1"
+	if c.DevLogin {
+		if !isLoopbackHost(c.ListenHost) {
+			return Config{}, fmt.Errorf("config: FS_DEV_LOGIN=1 needs LISTEN_HOST to be a loopback address (127.0.0.1 or ::1), got %q", c.ListenHost)
+		}
+		if c.PublicBaseURL == productionBaseURL {
+			return Config{}, fmt.Errorf("config: FS_DEV_LOGIN=1 is refused when PUBLIC_BASE_URL is %s", productionBaseURL)
+		}
+	}
 	c.TreeDataDir = getenv("TREE_DATA_DIR")
 	if c.TreeDataDir == "" {
 		c.TreeDataDir = defaultTreeDataDir
@@ -227,6 +247,14 @@ func Load(getenv func(string) string) (Config, error) {
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 
 	return c, nil
+}
+
+// isLoopbackHost reports whether host is a literal loopback IP. "localhost" and the empty
+// string are deliberately not accepted: the first depends on name resolution and the second
+// binds every interface, and the dev sign-in must not depend on either.
+func isLoopbackHost(host string) bool {
+	ip := net.ParseIP(strings.Trim(host, "[]"))
+	return ip != nil && ip.IsLoopback()
 }
 
 // splitCommaList splits a comma-separated env value into its trimmed,

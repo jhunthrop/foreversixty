@@ -56,6 +56,9 @@ type Service struct {
 	PublicBaseURL string
 	APIBaseURL    string
 	Log           *slog.Logger
+	// DevLogin mounts POST /v1/dev/login (devlogin.go). Only the local walkthrough stack
+	// sets it, and config.Load refuses FS_DEV_LOGIN off a loopback listener.
+	DevLogin bool
 }
 
 // Mount registers the sign-in, device, and account routes. The Battle.net
@@ -93,6 +96,9 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// The literal wins over {id}: a companion forgets itself with its own token.
 	mux.HandleFunc("DELETE /v1/devices/self", RequireDevice(s.revokeSelf))
 	mux.HandleFunc("DELETE /v1/devices/{id}", RequireSession(s.revokeDevice))
+	if s.DevLogin {
+		mux.HandleFunc("POST /v1/dev/login", s.devLogin)
+	}
 }
 
 func (s *Service) logger() *slog.Logger {

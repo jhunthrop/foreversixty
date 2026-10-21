@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -577,6 +578,11 @@ func serve(log *slog.Logger) error {
 		Store: authStore, Auth: authenticator, Mailer: mailer, Entitlements: entStore,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
+	if cfg.DevLogin {
+		accounts.DevLogin = true
+		log.Warn("auth", "state", "FS_DEV_LOGIN is on",
+			"effect", "POST /v1/dev/login signs anyone in as a seeded account; loopback only, never for a deployment")
+	}
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
 		bnetSvcClient := bnetClient(cfg, log)
@@ -701,7 +707,7 @@ func serve(log *slog.Logger) error {
 	}
 
 	srv := &http.Server{
-		Addr:              ":" + cfg.Port,
+		Addr:              net.JoinHostPort(cfg.ListenHost, cfg.Port),
 		Handler:           server.NewRouter(deps),
 		ReadHeaderTimeout: 5 * time.Second,
 	}

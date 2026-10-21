@@ -55,7 +55,16 @@ export function fixtureCharacterPaths(): { params: { path: string } }[] {
   return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_CHARACTER_PATH } }] : [];
 }
 
+// The one guild path the local walkthrough stack (tools/dev-stack, `npm run dev:local-api`)
+// prerenders. A real guild's page is the Worker serving dist/guild.html for any
+// /guild/<region>/<ruleset>/<slug>[/claim|/settings] and /guild/invite/<token>; `astro dev` has
+// no Worker, so under FS_LOCAL_GUILD_SHELL=1 astro.config.mjs rewrites every /guild/... request
+// to this one path and the shell reads the browser's own URL, exactly as it does in production.
+// Set only by scripts/dev-local-api.mjs; a real build never sets it.
+export const LOCAL_GUILD_SHELL_PATH = 'us/pvp/lifecycle-test';
+
 export function fixtureGuildPaths(): { params: { path: string } }[] {
+  if (process.env.FS_LOCAL_GUILD_SHELL === '1') return [{ params: { path: LOCAL_GUILD_SHELL_PATH } }];
   if (process.env.FOREVER_DATA !== 'fixture') return [];
   return [
     { params: { path: FIXTURE_GUILD_PATH } },

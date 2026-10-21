@@ -11,6 +11,10 @@
 //	go run ./cmd/seedguild --guild 2 --owner-battletag 'hunthrop#1894' --dry-run    # preview
 //	go run ./cmd/seedguild --guild 2 --owner-battletag 'hunthrop#1894' --remove     # undo
 //
+// --lifecycle seeds a small world from nothing instead (lifecycle.go): the unclaimed guild
+// "Lifecycle Test", a guild master, an officer and members, for walking the guild claim and
+// management workflows on a local stack (tools/dev-stack). It takes --remove too.
+//
 // DATABASE_URL is read from the environment and never printed or logged.
 package main
 
@@ -36,10 +40,14 @@ func run(args []string) error {
 	fs := flag.NewFlagSet("seedguild", flag.ContinueOnError)
 	guildID := fs.Int64("guild", 0, "the guild id to seed (required)")
 	ownerBattletag := fs.String("owner-battletag", "", "the owning account's battletag (required)")
+	lifecycle := fs.Bool("lifecycle", false, "seed the local walkthrough world (guild \"Lifecycle Test\") instead of dressing up --guild")
 	remove := fs.Bool("remove", false, "remove a previously applied seed instead of applying one")
 	dryRun := fs.Bool("dry-run", false, "print what would be written (or removed) without writing anything")
 	if err := fs.Parse(args); err != nil {
 		return err
+	}
+	if *lifecycle {
+		return runLifecycle(*remove, *dryRun)
 	}
 	if *guildID <= 0 {
 		return fmt.Errorf("--guild is required and must be positive")
@@ -100,4 +108,31 @@ func requireSeedRowsTable(ctx context.Context, pool *pgxpool.Pool) error {
 		return fmt.Errorf("seedguild: the seed_rows table is missing: deploy the API build that carries migration 0029 first, then run this tool")
 	}
 	return nil
+}
+
+// runLifecycle applies or removes the local walkthrough world. It has no dry run: the whole
+// cast is a fixed list in lifecycle.go.
+func runLifecycle(remove, dryRun bool) error {
+	if dryRun {
+		return fmt.Errorf("--lifecycle has no --dry-run; the cast is the fixed list in lifecycle.go")
+	}
+	url := os.Getenv("DATABASE_URL")
+	if url == "" {
+		return fmt.Errorf("DATABASE_URL is not set")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+	pool, err := db.Connect(ctx, url)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	// Same rule as above: the API's own startup applies migrations, never this tool.
+	if err := requireSeedRowsTable(ctx, pool); err != nil {
+		return err
+	}
+	if remove {
+		return RemoveLifecycle(ctx, pool)
+	}
+	return ApplyLifecycle(ctx, pool)
 }
