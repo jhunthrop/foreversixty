@@ -3,7 +3,9 @@
 -- export's us/pvp/bow-jackzon. This re-keys fight_metrics and rating_scores rows whose
 -- player_name has the three-segment First-Last-Realm form and whose key is still the first
 -- word alone. A row whose corrected key already exists for the same fight is left for the
--- report's next re-ingest to replace. Not run by the lane; take a dump first and run:
+-- report's next re-ingest to replace. Migration 0043_rekey_two_word_units applies this on
+-- deploy, so production needs no manual run; this file stays for another database. Take a
+-- dump first and run:
 --   psql "$DIRECT_URL" -v ON_ERROR_STOP=1 -f api/tools/rekey-two-word-units.sql
 begin;
 
