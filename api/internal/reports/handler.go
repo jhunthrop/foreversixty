@@ -190,6 +190,12 @@ type Summary struct {
 	// KillCount is how many of those fights were boss kills, which is
 	// what the list shows beside the count: "8 fights, 3 kills".
 	KillCount int `json:"kill_count"`
+	// LoggingCharacter, LastUploadAt and HeartbeatAt are what the single-report meta
+	// answers under the same names, with the same rules, so a row can credit its
+	// character and say Quiet or Live without opening each report.
+	LoggingCharacter *LoggingCharacter `json:"logging_character"`
+	LastUploadAt     *time.Time        `json:"last_upload_at"`
+	HeartbeatAt      *time.Time        `json:"heartbeat_at"`
 }
 
 // MinePage is the body of GET /v1/reports?mine=1.
@@ -359,7 +365,16 @@ func (s *Service) view(ctx context.Context, rep Report) (View, error) {
 // that cannot be read is never an error on the report page.
 func (s *Service) loggingCharacter(ctx context.Context, key string) *LoggingCharacter {
 	var name string
-	if err := s.Store.Pool.QueryRow(ctx, `select name from characters where key = $1`, key).Scan(&name); err == nil && name != "" {
+	if err := s.Store.Pool.QueryRow(ctx, `select name from characters where key = $1`, key).Scan(&name); err != nil {
+		name = ""
+	}
+	return characterRef(key, name)
+}
+
+// characterRef is the LoggingCharacter for key: name when the characters table has one, else
+// the key's last segment title-cased. The report meta and the report lists share it.
+func characterRef(key, name string) *LoggingCharacter {
+	if name != "" {
 		return &LoggingCharacter{Key: key, Name: name}
 	}
 	slug := key[strings.LastIndex(key, "/")+1:]

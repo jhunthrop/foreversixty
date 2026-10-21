@@ -1050,3 +1050,65 @@ func TestTheReportNamesItsLoggingCharacter(t *testing.T) {
 		t.Fatalf("logging_character = %s, want null", got)
 	}
 }
+
+// The mine list credits a row the way the single-report meta does: the characters table's name
+// when the key resolves, the title-cased slug when it does not, null for a report that names
+// none; and it carries last_upload_at and heartbeat_at.
+func TestTheOwnReportsListCarriesTheCreditedCharacterAndLiveness(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	h.asSession()
+	created := time.Now().Add(-2 * time.Hour).UTC().Truncate(time.Second)
+	h.seedReport("credited", "Tuesday", "Molten Core", Private, StatusLive, created)
+	h.seedReport("slugged", "Wednesday", "Molten Core", Private, StatusLive, created.Add(-time.Hour))
+	h.seedReport("uncredited", "Thursday", "Molten Core", Private, StatusComplete, created.Add(-2*time.Hour))
+	for _, q := range []string{
+		`insert into characters (key, region, ruleset, name) values ('eu/pvp/bow-jackzon', 'eu', 'pvp', 'Bow Jackzon')`,
+		`update reports set logging_character = 'eu/pvp/bow-jackzon' where id = 'credited'`,
+		`update reports set logging_character = 'us/hardcore/baelgrim' where id = 'slugged'`,
+		`update reports set heartbeat_at = now() where id = 'credited'`,
+	} {
+		if _, err := h.store.Pool.Exec(ctx, q); err != nil {
+			t.Fatal(err)
+		}
+	}
+	h.reportID = "credited"
+	h.seedFight(0, 0, 0, 10)
+
+	var page MinePage
+	h.data(h.do(http.MethodGet, "/v1/reports?mine=1", "", nil), &page)
+	rows := map[string]Summary{}
+	for _, r := range page.Rows {
+		rows[r.ID] = r
+	}
+	if c := rows["credited"].LoggingCharacter; c == nil || c.Key != "eu/pvp/bow-jackzon" || c.Name != "Bow Jackzon" {
+		t.Fatalf("credited logging_character = %+v, want eu/pvp/bow-jackzon, Bow Jackzon", c)
+	}
+	if c := rows["slugged"].LoggingCharacter; c == nil || c.Name != "Baelgrim" {
+		t.Fatalf("slugged logging_character = %+v, want the title-cased slug Baelgrim", c)
+	}
+	if c := rows["uncredited"].LoggingCharacter; c != nil {
+		t.Fatalf("uncredited logging_character = %+v, want null", c)
+	}
+	if r := rows["credited"]; r.LastUploadAt == nil || !r.LastUploadAt.After(created) || r.HeartbeatAt == nil {
+		t.Fatalf("credited liveness = %v / %v, want a fight upload after creation and a heartbeat", r.LastUploadAt, r.HeartbeatAt)
+	}
+	if r := rows["uncredited"]; r.LastUploadAt == nil || !r.LastUploadAt.Equal(created.Add(-2*time.Hour)) || r.HeartbeatAt != nil {
+		t.Fatalf("uncredited liveness = %v / %v, want its creation and null", r.LastUploadAt, r.HeartbeatAt)
+	}
+
+	res := h.do(http.MethodGet, "/v1/reports?mine=1", "", nil)
+	var raw struct {
+		Data struct {
+			Rows []map[string]json.RawMessage `json:"rows"`
+		} `json:"data"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&raw); err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range raw.Data.Rows {
+		if string(row["id"]) == `"uncredited"` && string(row["logging_character"]) != "null" {
+			t.Fatalf("uncredited logging_character on the wire = %s, want null", row["logging_character"])
+		}
+	}
+}

@@ -1559,7 +1559,7 @@ paths:
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
         '200':
-          description: "rows, total, page, per_page (100). Each row carries id, title, zone, status, visibility, created_at, fight_count and kill_count."
+          description: "rows, total, page, per_page (100). Each row carries id, title, zone, status, visibility, created_at, fight_count and kill_count, plus logging_character ({key, name} or null), last_upload_at and heartbeat_at, each as GET /v1/reports/{id} answers them (last_upload_at is never null here; heartbeat_at is null before the first beat)."
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
         '400': { description: "mine=1 is required", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     post:
@@ -2145,7 +2145,8 @@ paths:
       summary: A guild's own reports, newest first (session)
       description: >-
         Shaped exactly like GET /v1/reports?mine=1 (rows, total, page, per_page): each row
-        carries id, title, zone, status, visibility, created_at, fight_count and kill_count.
+        carries id, title, zone, status, visibility, created_at, fight_count and kill_count,
+        plus logging_character, last_upload_at and heartbeat_at as in GET /v1/reports?mine=1.
         The rows are the guild's own guild-visibility reports plus its public ones, the set a
         member already sees on any one of that guild's reports. Authorized the same way: a
         verified member of the guild (any rank) may list it; a signed-in caller with no
