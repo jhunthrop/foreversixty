@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import links from './src/data/links.json';
 import { assertLinksAreReal } from './src/lib/links';
+import { LOCAL_GUILD_SHELL_PATH } from './src/lib/report/shell-paths';
 import { DUCKDB_WASM_VERSION, RUNTIME_MODULES, stagingDir } from './scripts/duckdb-runtime.mjs';
 
 // The two DuckDB engine modules are over Cloudflare's static-asset limit, so they are not
@@ -32,6 +33,28 @@ const duckdbRuntime = {
         }
         response.setHeader('content-type', 'application/wasm');
         createReadStream(join(stagingDir, file)).pipe(response);
+      });
+    },
+  },
+};
+
+// The local walkthrough stack (tools/dev-stack) has no Worker to serve the guild shell for a
+// real guild's URL, so under FS_LOCAL_GUILD_SHELL=1 (set only by scripts/dev-local-api.mjs)
+// every /guild/<anything> request is rewritten, server side, to the one prerendered shell
+// path. The browser's address bar keeps the real URL, which is what the shell parses, as it
+// does behind the Worker in production. Off by default, so no build or other dev run changes.
+const localGuildShell = {
+  name: 'local-guild-shell',
+  hooks: {
+    'astro:server:setup': ({ server }) => {
+      if (process.env.FS_LOCAL_GUILD_SHELL !== '1') return;
+      server.middlewares.use((request, _response, next) => {
+        const url = request.url ?? '';
+        const [pathname, query] = url.split('?');
+        if (pathname.startsWith('/guild/') && pathname !== `/guild/${LOCAL_GUILD_SHELL_PATH}`) {
+          request.url = `/guild/${LOCAL_GUILD_SHELL_PATH}${query === undefined ? '' : `?${query}`}`;
+        }
+        next();
       });
     },
   },
@@ -133,6 +156,7 @@ export default defineConfig({
     idleAfterLoadDirective,
     placeholderGuard,
     duckdbRuntime,
+    localGuildShell,
   ],
   vite: {
     plugins: [tailwindcss()],
