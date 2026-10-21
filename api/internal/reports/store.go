@@ -69,7 +69,11 @@ func (s *Store) Get(ctx context.Context, id string) (Report, error) {
 const reportSummaryColumns = `r.id, r.title, r.zone, r.status, r.visibility, r.created_at,
 	        (select count(*) from fights f where f.report_id = r.id),
 	        (select count(*) from fights f where f.report_id = r.id and f.kill
-	           and f.encounter_id is not null)`
+	           and f.encounter_id is not null),
+	        r.logging_character,
+	        (select c.name from characters c where c.key = r.logging_character),
+	        greatest(r.created_at, coalesce((select max(f.uploaded_at) from fights f where f.report_id = r.id), r.created_at)),
+	        r.heartbeat_at`
 
 // scanSummaries reads every row of a query built on
 // reportSummaryColumns, in the column order it lists.
@@ -78,9 +82,19 @@ func scanSummaries(rows pgx.Rows) ([]Summary, error) {
 	out := []Summary{}
 	for rows.Next() {
 		var s Summary
+		var key, name *string
+		var last time.Time
 		if err := rows.Scan(&s.ID, &s.Title, &s.Zone, &s.Status, &s.Visibility,
-			&s.CreatedAt, &s.FightCount, &s.KillCount); err != nil {
+			&s.CreatedAt, &s.FightCount, &s.KillCount, &key, &name, &last, &s.HeartbeatAt); err != nil {
 			return nil, fmt.Errorf("reports: scan summary: %w", err)
+		}
+		s.LastUploadAt = &last
+		if key != nil {
+			n := ""
+			if name != nil {
+				n = *name
+			}
+			s.LoggingCharacter = characterRef(*key, n)
 		}
 		out = append(out, s)
 	}
