@@ -1,24 +1,33 @@
 <!-- web/src/components/GuildJoin.svelte -->
-<!-- /guild/invite/<token> (spec section 4.4): a minimal landing page. Signed out, it shows
-     the guild's name (not fetchable here per plan ruling 6 -- no unauthenticated
-     token-peek endpoint exists -- so the sign-in-first line names no guild) and the sign-in
-     prompt; signed in, a "Join as a member" button that calls POST
-     /v1/guilds/invite/{token}/accept and redirects to the guild's own page. -->
+<!-- /guild/invite/<token> (spec section 4.4): the invite card. The token is looked up
+     (GET /v1/guild-invites/{token}, public: it names the guild without joining) so the page
+     can say which guild invited the visitor and what joining does before the button. Signed
+     out, the same card carries "Sign in with Battle.net to join"; an unknown or rotated token
+     says so plainly with no button; a member of the guild already is told so. Joining calls
+     POST /v1/guilds/invite/{token}/accept and goes to the guild's own page. -->
 <script lang="ts">
-  import { fetchMeOnce, type Me } from '../lib/account/api';
-  import { guildHref } from '../lib/characters';
-  import { GuildApiError, acceptInvite, type InviteAcceptResult } from '../lib/guild/api';
+  import { battlenetStartUrl, fetchMeOnce, type Me } from '../lib/account/api';
+  import { guildHref, guildInviteHref, rulesetLabel } from '../lib/characters';
+  import {
+    GuildApiError,
+    acceptInvite,
+    peekInvite,
+    type GuildSummary,
+    type InviteAcceptResult,
+  } from '../lib/guild/api';
   import { guildJoinCopy } from '../lib/guild/copy';
   import { GUILD_LOADING } from '../lib/guild/layout';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { guildMarkSrc } from '../lib/guild/mark';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import FactionCrest from './character/FactionCrest.svelte';
   import GuildStatus from './GuildStatus.svelte';
-  import SignInPrompt from './SignInPrompt.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
   let { token }: { token: string } = $props();
 
   let me = $state<Me | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed'>('loading');
+  let guild = $state<GuildSummary | null>(null);
+  let status = $state<'loading' | 'ready' | 'invalid' | 'failed'>('loading');
   let joined = $state<InviteAcceptResult | null>(null);
   let error = $state('');
   let busy = $state(false);
@@ -26,8 +35,17 @@
   async function load(): Promise<void> {
     status = 'loading';
     try {
-      me = await fetchMeOnce();
-      status = 'ready';
+      // The lookup answers a 404 for a bad token: that is a state, not a failure.
+      const [session, peek] = await Promise.all([
+        fetchMeOnce(),
+        peekInvite(token).catch((thrown: unknown) => {
+          if (thrown instanceof GuildApiError && thrown.status === 404) return null;
+          throw thrown;
+        }),
+      ]);
+      me = session;
+      guild = peek === null ? null : peek.guild;
+      status = peek === null ? 'invalid' : 'ready';
     } catch {
       status = 'failed';
     }
@@ -38,6 +56,10 @@
   });
 
   const signedIn = $derived(me !== null);
+  const alreadyIn = $derived(guild !== null && (me?.guilds.some((g) => g.id === guild!.id) ?? false));
+  const realm = $derived(
+    guild === null ? '' : `${rulesetLabel(guild.ruleset)} ${guild.region.toUpperCase()}`,
+  );
 
   async function onJoin(): Promise<void> {
     busy = true;
@@ -62,22 +84,66 @@
       minHeight={GUILD_LOADING.join.minHeight}
       testid="guild-join"
     />
-  {:else if !signedIn}
-    <SignInPrompt line={guildJoinCopy.signInLine} testid="guild-join-signin" />
+  {:else if status === 'invalid' || guild === null}
+    <p class="max-w-[480px] text-[14px]" data-testid="guild-join-invalid">{guildJoinCopy.invalid}</p>
   {:else}
-    <button
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-      onclick={() => void onJoin()}
-      disabled={busy}
-      aria-busy={busy}
-      data-testid="guild-join-button"
+    <div
+      class="border-line-soft bg-raised flex w-full max-w-[480px] flex-col gap-4 rounded-md border p-5"
+      data-testid="guild-join-card"
     >
-      {guildJoinCopy.joinButton}
-    </button>
-    <div class="min-h-[21px]">
-      {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="guild-join-action-error">
-          {error}
-        </p>{/if}
+      <div class="flex items-center gap-3">
+        <FactionCrest faction={guild.faction} src={guildMarkSrc(guild)} testid="guild-join-crest" />
+        <h1 class="section-title text-[18px]" data-testid="guild-join-name">{guild.name}</h1>
+      </div>
+      <p class="text-[14px]" data-testid="guild-join-invited">
+        {guildJoinCopy.invitedYou(guild.name, realm)}
+      </p>
+      <p class="text-muted text-[13px]" data-testid="guild-join-consequence">{guildJoinCopy.consequence}</p>
+      {#if !signedIn}
+        <a
+          class="{PRIMARY_BUTTON_FIXED} w-fit px-4"
+          href={battlenetStartUrl(guildInviteHref(token))}
+          data-testid="guild-join-signin"
+        >
+          {guildJoinCopy.signInButton}
+        </a>
+        <a class="text-nav w-fit text-[13px]" href="/login" data-testid="guild-join-signin-email">
+          Use an email link instead.
+        </a>
+      {:else if alreadyIn}
+        <p class="text-[14px]" data-testid="guild-join-already">{guildJoinCopy.alreadyIn(guild.name)}</p>
+        <a
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+          href={guildHref(guild.region, guild.ruleset, guild.name)}
+          data-testid="guild-join-open"
+        >
+          {guildJoinCopy.openGuild}
+        </a>
+      {:else}
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            class={`${PRIMARY_BUTTON_FIXED} w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
+            onclick={() => void onJoin()}
+            disabled={busy}
+            aria-busy={busy}
+            data-testid="guild-join-button"
+          >
+            {guildJoinCopy.joinButton(guild.name)}
+          </button>
+          <a
+            class="text-nav text-[13px]"
+            href={guildHref(guild.region, guild.ruleset, guild.name)}
+            data-testid="guild-join-not-now"
+          >
+            {guildJoinCopy.notNow}
+          </a>
+        </div>
+        <div class="min-h-[21px]">
+          {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="guild-join-action-error">
+              {error}
+            </p>{/if}
+        </div>
+      {/if}
     </div>
   {/if}
 </div>

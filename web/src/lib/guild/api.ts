@@ -295,6 +295,11 @@ export interface InviteRotateResult {
   url: string;
   rotated_at: string;
 }
+/** GET /v1/guild-invites/{token}: which guild a valid token opens, answered without joining
+ *  and without a session, so the invite page can name the guild to a signed-out visitor too. */
+export interface InvitePeekResult {
+  guild: GuildSummary;
+}
 export interface InviteAcceptResult {
   guild: GuildSummary;
   rank: 'member';
@@ -444,6 +449,11 @@ export async function rotateInvite(
   invalidate(guildHomeKey(guildId, undefined, apiBase));
   invalidate(guildSettingsKey(guildId, apiBase));
   return data;
+}
+
+/** 404 (a `GuildApiError` with status 404) for an unknown or rotated-away token. */
+export function peekInvite(token: string, apiBase: string = API_BASE_URL): Promise<InvitePeekResult> {
+  return call<InvitePeekResult>(`/v1/guild-invites/${encodeURIComponent(token)}`, apiBase);
 }
 
 /**

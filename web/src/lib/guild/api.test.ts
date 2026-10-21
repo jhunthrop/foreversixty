@@ -14,6 +14,7 @@ import {
   fetchGuildHome,
   fetchGuildSettings,
   leaveGuild,
+  peekInvite,
   putGuildCrest,
   releaseClaim,
   removeCharacter,
@@ -256,6 +257,18 @@ describe('membership and invite', () => {
     vi.stubGlobal('fetch', upstream);
     const result = await acceptInvite('abc-123', API);
     expect(result.guild.name).toBe('The Last Watch');
+  });
+
+  it('looks an invite up without joining, by token, with no body', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () =>
+      envelope({ guild: { id: 501, region: 'us', ruleset: 'pvp', name: 'Lifecycle Test' } }),
+    );
+    vi.stubGlobal('fetch', upstream);
+    const peek = await peekInvite('fsg_abc', API);
+    expect(peek.guild.name).toBe('Lifecycle Test');
+    const sent = upstream.mock.calls[0]?.[0] as unknown as Request;
+    expect(sent.url).toBe(`${API}/v1/guild-invites/fsg_abc`);
+    expect(sent.method).toBe('GET');
   });
 
   it('rotates the invite', async () => {

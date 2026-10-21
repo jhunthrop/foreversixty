@@ -11,7 +11,7 @@
      its heading to a plain member (found live, 2026-09-28). -->
 <script lang="ts">
   import { fetchMeOnce, type Me } from '../lib/account/api';
-  import { characterSlug, guildHref, type CharacterPath } from '../lib/characters';
+  import { characterSlug, guildHref, guildSettingsHref, type CharacterPath } from '../lib/characters';
   import { SETUP_NAV_ITEM } from '../lib/nav';
   import {
     claimGuild,
@@ -25,8 +25,9 @@
   } from '../lib/guild/api';
   import { claimView } from '../lib/guild/claim-view';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
+  import { formatMadeOn } from '../lib/guild/invite-link';
   import { GUILD_LOADING } from '../lib/guild/layout';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { fetchGuild } from '../lib/rankings/api';
   import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -43,6 +44,8 @@
   let error = $state('');
   let busy = $state(false);
   let showContestConfirm = $state(false);
+  let showClaimConfirm = $state(false);
+  let showReleaseConfirm = $state(false);
 
   /**
    * `fetchMeOnce()` is awaited directly rather than `.catch()`-guarded to null:
@@ -123,6 +126,7 @@
     void run(async () => {
       if (guildId === null) return;
       await claimGuild(guildId);
+      showClaimConfirm = false;
       settings = await fetchGuildSettings(guildId);
     });
 
@@ -137,8 +141,13 @@
     void run(async () => {
       if (guildId === null) return;
       await releaseClaim(guildId);
+      showReleaseConfirm = false;
       settings = await fetchGuildSettings(guildId);
     });
+
+  // The guild's own page and settings, for the next-step links once the viewer holds it.
+  const guildBase = $derived(guildHref(path.region, path.ruleset, guildName || path.slug));
+  const settingsBase = $derived(guildSettingsHref(path.region, path.ruleset, guildName || path.slug));
 
   const onContest = (): void =>
     void run(async () => {
@@ -165,7 +174,7 @@
     />
   {:else}
     {#snippet contestOffer()}
-      {#if membership !== null && claimState !== null && claimState !== 'contested'}
+      {#if membership !== null && claimState === 'claimed'}
         {#if !showContestConfirm}
           <button
             class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
@@ -219,23 +228,70 @@
 
     {#if settings !== null && settings.claimed_by !== null}
       <!-- An officer's read: who holds the claim, and release for the holder. -->
-      <p class="text-[14px]" data-testid="guild-claim-state">
-        {settings.claimed_by.battletag === myBattletag
-          ? guildClaimCopy.claimedByYou
-          : guildClaimCopy.claimedBySomeoneElse(settings.claimed_by.battletag)}
-      </p>
       {#if settings.claimed_by.battletag === myBattletag}
-        <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-          onclick={onRelease}
-          disabled={busy}
-          aria-busy={busy}
-          data-testid="guild-claim-release"
-        >
-          {guildClaimCopy.releaseButton}
-        </button>
+        <p class="text-[16px]" data-testid="guild-claim-state">{guildClaimCopy.youHold(guildName)}</p>
+        {#if claimState !== 'contested'}
+          <section class="flex flex-col gap-2" data-testid="guild-claim-next">
+            <h2 class="section-title text-[16px]">{guildClaimCopy.nextHeading}</h2>
+            <ul class="flex flex-col gap-1 text-[14px]">
+              <li>
+                <a class="text-nav" href={`${guildBase}#roster`} data-testid="guild-claim-next-roster">
+                  {guildClaimCopy.nextRoster}
+                </a>
+              </li>
+              <li>
+                <a class="text-nav" href={settingsBase} data-testid="guild-claim-next-invite">
+                  {guildClaimCopy.nextInvite}
+                </a>
+              </li>
+            </ul>
+          </section>
+        {/if}
+        {#if !showReleaseConfirm}
+          <button
+            class={`text-muted w-fit text-[13px] underline ${busy ? BUSY_CLASS : ''}`}
+            onclick={() => (showReleaseConfirm = true)}
+            disabled={busy}
+            aria-busy={busy}
+            data-testid="guild-claim-release"
+          >
+            {guildClaimCopy.releaseButton}
+          </button>
+        {:else}
+          <div
+            class="border-line-soft flex flex-col gap-3 border p-4"
+            data-testid="guild-claim-release-confirm"
+          >
+            <p class="text-[13px]">{guildClaimCopy.releaseConfirmLine(guildName)}</p>
+            <div class="flex gap-3">
+              <button
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
+                onclick={onRelease}
+                disabled={busy}
+                aria-busy={busy}
+                data-testid="guild-claim-release-confirm-button"
+              >
+                {guildClaimCopy.releaseConfirmButton}
+              </button>
+              <button
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3`}
+                onclick={() => (showReleaseConfirm = false)}
+                disabled={busy}
+              >
+                {guildClaimCopy.cancel}
+              </button>
+            </div>
+          </div>
+        {/if}
+      {:else}
+        <p class="text-[14px]" data-testid="guild-claim-state">
+          {guildClaimCopy.claimedBySomeoneElse(
+            settings.claimed_by.battletag,
+            settings.claim.since === undefined ? undefined : formatMadeOn(settings.claim.since),
+          )}
+        </p>
+        {@render contestOffer()}
       {/if}
-      {@render contestOffer()}
     {:else if settings !== null && settings.claim_pending !== null}
       <p class="text-[14px]" data-testid="guild-claim-state">
         {guildClaimCopy.pending(settings.claim_pending.expires_at)}
@@ -253,7 +309,6 @@
       {:else}
         <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
       {/if}
-      {@render contestOffer()}
     {:else if view.viewer === 'signed-out'}
       <SignInPrompt line={guildClaimCopy.signInLine} testid="guild-claim-signin" />
     {:else if view.viewer === 'stranger'}
@@ -268,18 +323,44 @@
       {:else if claimState === 'pending'}
         <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.pending()}</p>
       {:else if claimState === 'unclaimed'}
-        <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.unclaimed}</p>
+        <p class="text-[14px]" data-testid="guild-claim-state">
+          {eligible ? guildClaimCopy.unclaimedForOfficer : guildClaimCopy.unclaimed}
+        </p>
       {/if}
       {#if eligible && (claimState === 'unclaimed' || claimState === null)}
-        <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-          onclick={onClaim}
-          disabled={busy}
-          aria-busy={busy}
-          data-testid="guild-claim-button"
-        >
-          {guildClaimCopy.claimButton}
-        </button>
+        {#if !showClaimConfirm}
+          <button
+            class={`${PRIMARY_BUTTON_FIXED} w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
+            onclick={() => (showClaimConfirm = true)}
+            disabled={busy}
+            aria-busy={busy}
+            data-testid="guild-claim-button"
+          >
+            {guildClaimCopy.claimButton}
+          </button>
+        {:else}
+          <div class="border-line-soft flex flex-col gap-3 border p-4" data-testid="guild-claim-confirm-box">
+            <p class="text-[13px]">{guildClaimCopy.claimConfirmLine(guildName)}</p>
+            <div class="flex gap-3">
+              <button
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
+                onclick={onClaim}
+                disabled={busy}
+                aria-busy={busy}
+                data-testid="guild-claim-confirm-claim"
+              >
+                {guildClaimCopy.claimConfirmButton}
+              </button>
+              <button
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3`}
+                onclick={() => (showClaimConfirm = false)}
+                disabled={busy}
+              >
+                {guildClaimCopy.cancel}
+              </button>
+            </div>
+          </div>
+        {/if}
       {:else if !eligible}
         <p class="text-[14px]" data-testid="guild-claim-not-eligible">
           {guildClaimCopy.memberCannotClaim}

@@ -12,7 +12,6 @@
   import {
     GuildApiError,
     fetchGuildSettings,
-    rotateInvite,
     updateGuildSettings,
     type GuildSettingsData,
     type GuildVisibility,
@@ -21,6 +20,7 @@
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import GuildInviteLink from './guild/GuildInviteLink.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
@@ -32,7 +32,6 @@
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
   let error = $state('');
-  let rotated = $state<{ token: string; url: string } | null>(null);
   let busy = $state(false);
   /**
    * A guild's billing view is not part of GET /v1/guilds/{id}/settings's own response (the
@@ -108,14 +107,6 @@
           : { officer_max_rank_index: Number(value) };
       settings = await updateGuildSettings(guildId, patch);
       notice = guildSettingsCopy.saved;
-    });
-
-  const onRotate = (): void =>
-    void run(async () => {
-      if (guildId === null) return;
-      const result = await rotateInvite(guildId);
-      rotated = { token: result.token, url: result.url };
-      if (settings !== null) settings = { ...settings, invite: { rotated_at: result.rotated_at } };
     });
 
   const onManageBilling = (): void =>
@@ -238,20 +229,15 @@
     <section class="flex flex-col gap-3">
       <h2 class="section-title text-[18px]">{guildSettingsCopy.inviteHeading}</h2>
       <p class="text-muted text-[13px]">{guildSettingsCopy.inviteWarning}</p>
-      <button
-        class={`border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase ${busy ? BUSY_CLASS : ''}`}
-        onclick={onRotate}
-        disabled={busy || frozen}
-        aria-busy={busy}
-        data-testid="guild-invite-rotate"
-      >
-        {guildSettingsCopy.rotateButton}
-      </button>
-      {#if rotated !== null}
-        <p class="text-[13px]" data-testid="guild-invite-token">
-          {guildSettingsCopy.tokenShownOnce}
-          <code class="font-mono">{rotated.url}</code>
-        </p>
+      {#if guildId !== null}
+        <GuildInviteLink
+          {guildId}
+          rotatedAt={settings.invite.rotated_at}
+          disabled={busy || frozen}
+          onRotated={(rotatedAt) => {
+            if (settings !== null) settings = { ...settings, invite: { rotated_at: rotatedAt } };
+          }}
+        />
       {/if}
     </section>
     <div class="min-h-[21px]">
