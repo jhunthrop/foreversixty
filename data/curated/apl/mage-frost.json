@@ -8,9 +8,13 @@
     {
       "id": 5019,
       "reason": "Arcane Blast costs no mana and sits ahead of the wand line, so once Frostbolt is unaffordable the character casts Arcane Blast and never reaches the wand; the rotation search measured this as the best use of those globals."
+    },
+    {
+      "id": 1240047,
+      "reason": "Ice Lance fires on a Fingers of Frost charge and only then (the line asks the engine whether the aura exists before it asks whether it is up, so a character with the Ice Lance talent and no Fingers of Frost point does not spam it). The ladder's level-30 character has spent the Ice Lance point but not yet a Fingers of Frost point, so the line is idle on that one rung; from 38 on it casts."
     }
   ],
-  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last). 2026-10-07: the Arcane Blast line is gone - it was adopted while the engine registered the spell free; the client charges 15% of base mana per cast, and on that engine the line measures no effect at all. 2026-10-07: Fingers of Frost is implemented (15 percent per Chill application, 1 or 2 charges for 15 sec, the next damaging cast counts as Frozen), so Ice Lance is cast on a charge; with the Fingers of Frost build the rotation search measured it as a missing line beyond the combined error, see design/reviews/2026-10-07-frost-fingers-of-frost.md.",
+  "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 77 percent of top casts) on this bare, no-consumes, no-buffs ladder character. Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last). 2026-10-07: the Arcane Blast line is gone - it was adopted while the engine registered the spell free; the client charges 15% of base mana per cast, and on that engine the line measures no effect at all. 2026-10-07: Fingers of Frost is implemented (15 percent per Chill application, 1 or 2 charges for 15 sec, the next damaging cast counts as Frozen), so Ice Lance is cast on a charge; with the Fingers of Frost build the rotation search measured it as a missing line beyond the combined error, see design/reviews/2026-10-07-frost-fingers-of-frost.md. 2026-10-21 (ladder rotations lane): the Ice Lance line asks whether the Fingers of Frost aura exists before it asks whether it is up. The engine only registers the aura once the talent has a point, and a condition on an aura that does not exist is dropped, which left the line unconditional: a level-30 mage with the Ice Lance point and no Fingers of Frost point cast Ice Lance every global and never Frostbolt.",
   "sources": [
     {
       "label": "wowsims/classic default Mage priority list",
@@ -37,7 +41,7 @@
         }
       },
       {
-        "notes": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies. Only fires with the Fingers of Frost talent; without it the buff never appears and the line stays idle.",
+        "notes": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies. Only fires with the Fingers of Frost talent; without it the buff never appears, the line asks whether the aura exists first, and the line stays idle.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -46,10 +50,23 @@
             }
           },
           "condition": {
-            "auraIsActive": {
-              "auraId": {
-                "spellId": 400669
-              }
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 400669
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 400669
+                    }
+                  }
+                }
+              ]
             }
           }
         }

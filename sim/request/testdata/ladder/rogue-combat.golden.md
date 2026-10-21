@@ -98,8 +98,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 12.2 | 3 | other:attack/2=149.8, other:attack/1=95.6, spell:1757=42.8, spell:5171/5=6.2, spell:5171/3=1.0 | {SpellID: 13750} |
-| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:1482 off_hand:2236 | 26.0 | 4 | other:attack/2=141.9, other:attack/1=79.1, spell:1758=47.4, spell:5171/5=7.1, spell:5171/3=1.0 | {SpellID: 13750} |
+| 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 12.7 | 3 | other:attack/2=132.1, other:attack/1=84.3, spell:1757=40.6, spell:6760/5=7.0, spell:5171/3=1.0 | {SpellID: 13750} |
+| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:1482 off_hand:2236 | 26.9 | 3 | other:attack/2=123.3, other:attack/1=68.8, spell:1758=44.9, spell:6761/5=7.8, spell:5171/3=1.0 | {SpellID: 13750} |
 | 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:9457 off_hand:7687 | 42.8 | 3 | other:attack/1=80.6, other:attack/2=77.3, spell:1760=45.6, spell:6762/5=8.1, spell:5171/3=1.0 | {SpellID: 13750} |
 | 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 68.8 | 4 | other:attack/1=89.8, other:attack/2=85.8, spell:8621=45.0, spell:8623/5=7.9, other:attack/3=3.0 | {SpellID: 13750} |
 | 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 80.4 | 6 | other:attack/2=104.8, other:attack/1=89.9, spell:8621=48.1, spell:8624/5=8.4, spell:18107=2.4 | - |
@@ -112,7 +112,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 10
 
 - Backstab (spell 53)
-- Eviscerate (spell 6760)
 - Gouge (spell 1776)
 - Serrated Blades (spell 461327)
 
@@ -183,4 +182,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- rogue-combat level=10 kind=zero_casts spell="Eviscerate" id=6760 authored=11300
+None.
