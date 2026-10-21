@@ -25,11 +25,12 @@
     GuildRosterRow,
   } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
-  import { addonSnapshotLine, addonSpecName } from '../../lib/guild/roster-addon';
+  import { addonSnapshotLine } from '../../lib/guild/roster-addon';
   import {
     RANKS_PENDING_LINE,
     entryFacts,
     inGameFacts,
+    rosterSpecLine,
     rosterStatChips,
     type InGameFact,
   } from '../../lib/guild/roster-facts';
@@ -56,7 +57,6 @@
     type RosterRoleFilter,
     type RosterSortKey,
   } from '../../lib/guild/roster-sort';
-  import { specClassName } from '../../lib/guild/spec-name';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -78,6 +78,7 @@
     onApproveAll,
     rowPath,
     addonSnapshot = null,
+    mySiteSpec = null,
     now = new Date(),
   }: {
     roster: GuildRosterRow[];
@@ -104,6 +105,9 @@
     rowPath: (row: GuildRosterRow) => CharacterPath;
     /** The home's `addon_snapshot` (Task L6.14); absent on a home from before it, read as null. */
     addonSnapshot?: GuildAddonSnapshot | null;
+    /** The spec the site's own record (the account's character, `/v1/me`) holds for the viewer's
+     *  character; the other rows carry only the roster's spec. Null when unknown. */
+    mySiteSpec?: string | null;
     /** The clock the snapshot's "received … ago" and each "seen … ago" read against; a test pins it. */
     now?: Date;
   } = $props();
@@ -201,14 +205,42 @@
     onDecline(row);
   }
 
-  const SORT_COLUMNS: { key: RosterSortKey; label: string; hover?: string }[] = [
+  /** The sort chips, in the order a guild master reads them. The addon's gear gap is a fact on the
+   *  row, not a sort the page offers. */
+  const SORT_CHIPS: { key: RosterSortKey; label: string }[] = [
     { key: 'rank', label: 'Rank' },
     { key: 'ilvl', label: 'Item level' },
     { key: 'rating', label: 'Rating' },
     { key: 'attendance', label: 'Attendance' },
     { key: 'seen', label: 'Last seen' },
-    { key: 'addon_gap', label: guildRosterAddonCopy.column, hover: guildRosterAddonCopy.columnHover },
   ];
+  /** Rating sorts nothing while no row has one. */
+  const sortChips = $derived(
+    SORT_CHIPS.filter(
+      (chip) =>
+        chip.key !== 'rating' || roster.some((row) => row.rating !== undefined && row.rating !== null),
+    ),
+  );
+
+  /** What a row's spec line reads: the addon's spec in game, the site's where it differs. The viewer's
+   *  own row compares against the site's character record, which is what their header chip shows. */
+  function specLineOf(row: GuildRosterRow): string {
+    const siteSpec = row.character_key === myCharacterKey && mySiteSpec !== null ? mySiteSpec : row.spec;
+    return rosterSpecLine({ siteSpec, addonSpec: row.addon?.spec ?? null, className: row.class });
+  }
+
+  /** Focus lands on Cancel when a confirm opens, so a stray Enter backs out rather than removes. */
+  function focusOnMount(node: HTMLElement): void {
+    node.focus();
+  }
+
+  /** The hover on a stat chip: the rating's six parts, or which boss kill the best figure is from. */
+  function chipTitle(chip: string, row: GuildRosterRow): string | undefined {
+    if (chip.startsWith('Rating')) return ratingTooltip(row);
+    if (chip.startsWith('Best') && row.best_parse !== undefined && row.best_parse !== null)
+      return `Best boss kill: ${row.best_parse.encounter}`;
+    return undefined;
+  }
 
   function ratingTooltip(row: GuildRosterRow): string {
     const r = row.rating;
@@ -220,11 +252,9 @@
   // -- this tab's rows only ever mount after the guild's async roster fetch resolves, so
   // a scoped <style> block's CSS is silently dropped from this build's SSR-critical-CSS
   // inlining pass.
-  const FILTER_BTN = 'border-line h-8 rounded-control border px-3 text-[12px] font-semibold text-text';
+  const FILTER_BTN =
+    'border-line h-11 rounded-control border px-3 text-[12px] font-semibold text-text lg:h-8';
   const FILTER_BTN_ON = 'border-gold text-gold bg-[rgba(229,185,85,.08)]';
-  const SORT_HEADER =
-    'h-9 bg-none border-none p-0 text-[11px] font-bold tracking-[0.1em] uppercase text-muted';
-  const SORT_HEADER_ACTIVE = 'text-gold';
   const ROW =
     'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 lg:flex-nowrap';
   // A name with no account row: the same shape, a different class so the account rows stay
@@ -331,6 +361,28 @@
     </button>
   </div>
 
+  <!-- The sort controls are chips under the filters, not a header row: the rows are blocks, not
+       columns, so there is nothing for a column heading to sit over. -->
+  <div
+    class="flex flex-wrap items-center gap-2"
+    role="group"
+    aria-label="Sort"
+    data-testid="guild-roster-sort"
+  >
+    <span class="label text-muted">Sort</span>
+    {#each sortChips as chip (chip.key)}
+      <button
+        class={`${FILTER_BTN} ${sortKey === chip.key ? FILTER_BTN_ON : ''}`}
+        onclick={() => (sortKey = chip.key)}
+        aria-pressed={sortKey === chip.key}
+        aria-sort={sortKey === chip.key ? 'descending' : undefined}
+        data-testid={`guild-roster-sort-${chip.key}`}
+      >
+        {chip.label}{sortKey === chip.key ? ' ▾' : ''}
+      </button>
+    {/each}
+  </div>
+
   {#if canApprove && shownPending.length > 0}
     <div class="flex flex-col gap-2" data-testid="guild-roster-waiting">
       <div class="flex items-center justify-between gap-3">
@@ -384,7 +436,7 @@
             >
               {row.name}
             </span>
-            <span class="text-muted text-[12px]">{specClassName(row.spec ?? '', row.class)}</span>
+            <span class="text-muted text-[12px]">{specLineOf(row)}</span>
           </div>
           <span
             class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
@@ -448,21 +500,6 @@
     <p class="text-muted text-[12px]" data-testid="guild-roster-ranks-pending">{RANKS_PENDING_LINE}</p>
   {/if}
 
-  <div class="flex flex-wrap gap-6 pl-1 lg:gap-3 lg:pr-0" data-testid="guild-roster-sort-header">
-    {#each SORT_COLUMNS as col (col.key)}
-      <button
-        class={`${SORT_HEADER} ${col.key === 'addon_gap' ? 'min-w-0 text-left lg:ml-auto lg:w-[260px] lg:shrink-0' : ''} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
-        title={col.hover}
-        onclick={() => (sortKey = col.key)}
-        data-testid={`guild-roster-sort-${col.key}`}
-      >
-        {col.label}{sortKey === col.key ? ' ▾' : ''}
-      </button>
-    {/each}
-    <!-- Where each row's actions group sits, so the In game heading stays over its slot. -->
-    <span class="hidden lg:block lg:w-[190px] lg:shrink-0" aria-hidden="true"></span>
-  </div>
-
   {#if ordered.length === 0 && extras.length === 0}
     <EmptyState message="No raiders match these filters." testid="guild-roster-empty" />
   {/if}
@@ -471,23 +508,33 @@
       {#each ordered as row (row.character_key)}
         {@const pinned = row.character_key === myCharacterKey}
         {@const chips = rosterStatChips(row)}
+        {@const specLine = specLineOf(row)}
+        {@const subtitle = altOf.has(row.character_key)
+          ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
+          : specLine}
         <div class={`${ROW} ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
-          <div class="flex min-w-0 flex-1 flex-col lg:min-w-[150px] lg:flex-none">
+          <!-- At lg the name block is a fixed 240 px and its subtitle one ellipsised line (the whole
+               text in the title), so every row's rank and stats start at the same left edge. -->
+          <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
             <span
-              class="font-display text-[14px] font-bold"
+              class="font-display text-[14px] font-bold lg:truncate"
               style={`color:${classColorVar(row.class ?? '')}`}
+              title={`${row.name}${pinned ? ' (you)' : ''}`}
               data-testid="guild-roster-name"
             >
               {row.name}{pinned ? ' (you)' : ''}
             </span>
-            <span class="text-muted text-[12px]" data-testid="guild-roster-spec"
-              ><span class="sr-only">On the site: </span>{specClassName(
-                row.spec ?? '',
-                row.class,
-              )}{#if altOf.has(row.character_key)}{row.spec ? ' · ' : ''}<span class="text-muted text-[11px]"
-                  >alt of {altOf.get(row.character_key)}</span
-                >{/if}</span
+            <!-- One line per part at lg ("Beast Mastery Hunter in game", then "Survival on the site"), each
+                 ellipsised to the 240 px block, so the disagreeing record is never the part cut off; one
+                 wrapping run, parts joined by a dot, below lg. -->
+            <span
+              class="text-muted text-[12px] max-lg:break-words"
+              title={subtitle}
+              data-testid="guild-roster-spec"
+              >{#each subtitle.split(' · ') as part, i (i)}<span class="lg:block lg:truncate"
+                  >{#if i > 0}<span class="lg:hidden" aria-hidden="true">&#32;·&#32;</span>{/if}{part}</span
+                >{/each}</span
             >
           </div>
           <!-- Below lg the row is three blocks under the name (indented past the crest): the stat
@@ -499,27 +546,31 @@
             data-testid="guild-roster-facts"
           >
             <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-              <span
-                class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
-                data-testid="guild-roster-rank">{rankWord(row.rank)}</span
-              >
+              <!-- A 72 px slot at lg, whatever the word, so the stats after it share one left edge. -->
+              <span class="lg:w-[72px] lg:shrink-0">
+                <span
+                  class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
+                  data-testid="guild-roster-rank">{rankWord(row.rank)}</span
+                >
+              </span>
+              {#each chips as chip, i (chip)}
+                <span
+                  class={`tabular font-mono text-[12px] whitespace-nowrap ${i === 0 ? '' : 'text-muted'}`}
+                  style={chipTitle(chip, row) === undefined ? '' : 'cursor:help'}
+                  title={chipTitle(chip, row)}
+                  data-testid="guild-roster-chip">{chip}</span
+                >
+              {/each}
               {#if row.logged_recently && !everyoneOnlineToday}
                 <span class="text-muted text-[12px]" data-testid="guild-roster-online">
                   {guildHomeCopy.loggedRecently}
                 </span>
               {/if}
-              {#each chips as chip, i (chip)}
-                <span
-                  class={`tabular font-mono whitespace-nowrap ${i === 0 ? 'text-[13px]' : 'text-muted text-[12px]'}`}
-                  style={chip.startsWith('Rating') ? 'cursor:help' : ''}
-                  title={chip.startsWith('Rating') ? ratingTooltip(row) : undefined}
-                  data-testid="guild-roster-chip">{chip}</span
-                >
-              {/each}
             </div>
             {#if row.professions !== undefined && row.professions.length > 0}
-              <span class="text-muted block truncate text-[11px]" data-testid="guild-roster-professions"
-                >{row.professions.join(' / ')}</span
+              <span
+                class="text-muted block truncate text-[12px] lg:pl-[84px]"
+                data-testid="guild-roster-professions">{row.professions.join(' / ')}</span
               >
             {/if}
           </div>
@@ -547,25 +598,31 @@
           </div>
         </div>
         {#if removingKey === row.character_key}
+          <!-- Indented to the name column at every width, as the award confirm is. Remove is the danger
+               token (as Leave guild is), Cancel a ghost with the focus ring on open. -->
           <div
-            class="border-line-soft flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2.5 pl-12 lg:pl-0"
+            class="border-line-soft flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2.5 pl-12"
             role="group"
             aria-label={guildRosterModelCopy.removeQuestion(row.name)}
             data-testid="guild-roster-remove-confirm"
           >
-            <span class="basis-full text-[13px] lg:basis-auto"
-              >{guildRosterModelCopy.removeQuestion(row.name)}</span
-            >
+            <div class="flex basis-full flex-col gap-0.5">
+              <span class="text-[13px]">{guildRosterModelCopy.removeQuestion(row.name)}</span>
+              <span class="text-muted text-[12px]" data-testid="guild-roster-remove-rejoin"
+                >{guildRosterModelCopy.removeRejoin}</span
+              >
+            </div>
             <button
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3`}
+              class="rounded-control border-wipe bg-wipe text-bg inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
               onclick={() => doRemove(row)}
               data-testid="guild-roster-remove-yes"
             >
               {guildRosterModelCopy.removeButton}
             </button>
             <button
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
+              class="rounded-control text-muted inline-flex h-11 items-center justify-center bg-none px-4 text-[12px] font-bold tracking-[0.06em] uppercase focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)]"
               onclick={() => (removingKey = null)}
+              use:focusOnMount
               data-testid="guild-roster-remove-cancel"
             >
               {guildRosterModelCopy.cancel}
@@ -589,7 +646,7 @@
           {:else}
             <ClassCrestRing characterClass={entry.class} size={36} />
           {/if}
-          <div class="flex min-w-0 flex-1 flex-col lg:min-w-[150px] lg:flex-none">
+          <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
             <!-- Class-coloured at 70 percent, not grey: the row stays secondary by colour alone. -->
             <span
               class="font-display text-nav text-[14px] font-bold"
@@ -597,7 +654,10 @@
               data-testid="guild-roster-entry-name">{entry.name}</span
             >
             {#if entry.spec !== undefined}
-              <span class="text-nav text-[12px]">{specClassName(addonSpecName(entry.spec), entry.class)}</span
+              <span
+                class="text-nav text-[12px] max-lg:break-words lg:truncate"
+                title={rosterSpecLine({ addonSpec: entry.spec, className: entry.class })}
+                >{rosterSpecLine({ addonSpec: entry.spec, className: entry.class })}</span
               >
             {/if}
           </div>

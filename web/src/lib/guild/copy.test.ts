@@ -22,8 +22,8 @@ describe('guildClaimCopy', () => {
 
   it('says what the claimant holds and where to go next', () => {
     expect(guildClaimCopy.youHold('Lifecycle Test')).toBe('You hold Lifecycle Test.');
-    expect(guildClaimCopy.nextRoster).toBe('Approve your officers and members on the roster');
-    expect(guildClaimCopy.nextInvite).toBe('Make an invite link in settings');
+    expect(guildClaimCopy.nextRoster).toBe('Approve your officers and members');
+    expect(guildClaimCopy.nextInvite).toBe('Make an invite link');
   });
 
   it('asks before releasing', () => {

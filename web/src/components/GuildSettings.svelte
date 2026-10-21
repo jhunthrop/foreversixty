@@ -30,7 +30,7 @@
   } from '../lib/guild/settings-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import GuildInviteLink from './guild/GuildInviteLink.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
@@ -138,6 +138,16 @@
     }
   }
 
+  /** The officer rank as typed: it saves when Save is pressed, and the line under it says it took. */
+  let rankDraft = $derived<number | null>(settings?.officer_max_rank_index ?? null);
+  let rankSaved = $state(false);
+  const rankChanged = $derived(
+    settings !== null &&
+      typeof rankDraft === 'number' &&
+      rankDraft >= 0 &&
+      rankDraft !== settings.officer_max_rank_index,
+  );
+
   const onSave = (field: 'default_visibility' | 'officer_max_rank_index', value: string): void =>
     void run(async () => {
       if (guildId === null) return;
@@ -146,7 +156,8 @@
           ? { default_visibility: value as GuildVisibility }
           : { officer_max_rank_index: Number(value) };
       settings = await updateGuildSettings(guildId, patch);
-      notice = guildSettingsCopy.saved;
+      if (field === 'officer_max_rank_index') rankSaved = true;
+      else notice = guildSettingsCopy.saved;
     });
 
   const onManageBilling = (): void =>
@@ -216,7 +227,7 @@
           {#if guildId !== null}
             <a
               href={`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`}
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+              class="{PRIMARY_BUTTON_FIXED} w-fit px-4"
               data-testid="guild-subscribe-link"
             >
               {billingBlockCopy.subscribeTheGuild}
@@ -278,18 +289,32 @@
     <section class="flex flex-col gap-3">
       <label class="label text-muted" for="guild-officer-threshold">{settingsWords.officerRank}</label>
       <p class="text-muted text-[13px]">{settingsWords.officerRankHelp}</p>
-      <input
-        id="guild-officer-threshold"
-        type="number"
-        min="0"
-        class={`border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
-        value={settings.officer_max_rank_index}
-        onchange={(event) =>
-          onSave('officer_max_rank_index', (event.currentTarget as HTMLInputElement).value)}
-        disabled={busy || frozen}
-        aria-busy={busy}
-        data-testid="guild-officer-threshold-input"
-      />
+      <div class="flex flex-wrap items-center gap-3">
+        <input
+          id="guild-officer-threshold"
+          type="number"
+          min="0"
+          class={`border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
+          bind:value={rankDraft}
+          oninput={() => (rankSaved = false)}
+          disabled={busy || frozen}
+          aria-busy={busy}
+          data-testid="guild-officer-threshold-input"
+        />
+        <button
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50 ${busy ? BUSY_CLASS : ''}`}
+          onclick={() => onSave('officer_max_rank_index', String(rankDraft))}
+          disabled={busy || frozen || !rankChanged}
+          data-testid="guild-officer-threshold-save"
+        >
+          Save
+        </button>
+        {#if rankSaved}
+          <span class="text-muted text-[13px]" role="status" data-testid="guild-officer-threshold-saved"
+            >{guildSettingsCopy.saved}</span
+          >
+        {/if}
+      </div>
     </section>
     <section class="flex flex-col gap-3">
       <h2 class="section-title text-[18px]">{guildSettingsCopy.inviteHeading}</h2>

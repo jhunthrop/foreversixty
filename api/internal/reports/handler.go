@@ -190,6 +190,9 @@ type Summary struct {
 	// KillCount is how many of those fights were boss kills, which is
 	// what the list shows beside the count: "8 fights, 3 kills".
 	KillCount int `json:"kill_count"`
+	// BossCount is how many DISTINCT bosses those kills were: two Onyxia kills in one night
+	// are one boss, which is what the guild pages count and what the row prints.
+	BossCount int `json:"boss_count"`
 	// LoggingCharacter, LastUploadAt and HeartbeatAt are what the single-report meta
 	// answers under the same names, with the same rules, so a row can credit its
 	// character and say Quiet or Live without opening each report.

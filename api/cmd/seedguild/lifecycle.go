@@ -49,6 +49,9 @@ type lifecycleCharacter struct {
 	Mock      mockCharacter
 	InGuild   bool
 	RankIndex int
+	// GearGap is the DPS the addon says this character's gear leaves on the table, as it sends it
+	// in the roster snapshot; zero for a character whose gear is as good as its spec can wear.
+	GearGap int
 }
 
 // lifecycleAccount is one seeded account: the sub stands in for a Battle.net subject.
@@ -78,7 +81,7 @@ func lifecycleAccounts() []lifecycleAccount {
 			Characters: []lifecycleCharacter{
 				{Mock: mockCharacter{Name: "Ashenveil", Class: "paladin", Spec: "Holy", Role: roleHealer,
 					RaceSlug: "human", Consent: "gear", ItemLevel: 63},
-					InGuild: true, RankIndex: 1},
+					InGuild: true, RankIndex: 1, GearGap: 14},
 			},
 		},
 		{
@@ -90,7 +93,7 @@ func lifecycleAccounts() []lifecycleAccount {
 					RaceSlug: "night-elf", Consent: "gear", ItemLevel: 58}, InGuild: true, RankIndex: 4},
 				{Mock: mockCharacter{Name: "Cindergale", Class: "mage", Spec: "Fire", Role: roleDPS,
 					RaceSlug: "gnome", BisFile: "mage-fire.json", Consent: "gear", ItemLevel: 61},
-					InGuild: true, RankIndex: 5},
+					InGuild: true, RankIndex: 5, GearGap: 38},
 			},
 		},
 		{
@@ -115,14 +118,16 @@ var lifecycleExtraRoster = []struct {
 	{"Oldmarrow", "Arms", 58},
 }
 
-// lifecycleReport is the one complete report: two Onyxia kills credited to the guild master
-// (Onyxia is the only boss the game data publishes, so both kills are hers; see raid.go).
+// lifecycleReport is the one complete report, credited to the guild master: two whelp packs, one
+// Onyxia wipe and one Onyxia kill (Onyxia is the only boss the game data publishes; see raid.go).
+// Every page that counts the night then agrees: "1 boss (Onyxia) · 1 kill · 2 trash packs · 1 wipe",
+// Progression's "2 pulls" with one KILL, and the header's two pulls.
 func lifecycleReport() reportPlan {
 	return reportPlan{
 		Tag: "ony", Label: "Onyxia", Zone: zoneOnyxia, DaysAgo: 1, StartHour: 19,
 		Fights: []fightPlan{
 			{Name: "Onyxian Whelp", DurationMS: 60_000, Kill: true, Trash: true},
-			{Name: "Onyxia", EncounterID: encOnyxia, Kill: true, DurationMS: 240_000},
+			{Name: "Onyxia", EncounterID: encOnyxia, Kill: false, DurationMS: 240_000},
 			{Name: "Onyxian Whelp", DurationMS: 55_000, Kill: true, Trash: true},
 			{Name: "Onyxia", EncounterID: encOnyxia, Kill: true, DurationMS: 225_000},
 		},
@@ -306,7 +311,7 @@ func putLifecycleSnapshot(ctx context.Context, addonStore *addon.Store, gmUserID
 		for _, c := range acct.Characters {
 			if c.InGuild {
 				lines = append(lines, addon.RosterMember{
-					Name: c.Mock.Name, Level: fs1Level, Spec: c.Mock.Spec, SeenAt: seen,
+					Name: c.Mock.Name, Level: fs1Level, Spec: c.Mock.Spec, GearGap: c.GearGap, SeenAt: seen,
 				})
 			}
 		}

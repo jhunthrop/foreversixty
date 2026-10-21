@@ -781,6 +781,7 @@ func TestTheOwnReportsListIsPagedAndCounted(t *testing.T) {
 	h.reportID = second
 	h.seedFight(1, 9001, 0, 100)
 	h.seedFight(2, 0, 100, 200)
+	h.seedFight(3, 9001, 200, 300) // the same boss killed again: a second kill, not a second boss
 
 	res := h.do(http.MethodGet, "/v1/reports?mine=1", "", nil)
 	var page MinePage
@@ -795,9 +796,12 @@ func TestTheOwnReportsListIsPagedAndCounted(t *testing.T) {
 	if newest.ID != second || newest.Status != StatusLive || newest.Visibility != Private {
 		t.Fatalf("newest = %+v", newest)
 	}
-	if newest.FightCount != 2 || newest.KillCount != 1 {
-		t.Fatalf("counts = %d fights and %d kills, want 2 and 1 (the trash fight is not a kill)",
+	if newest.FightCount != 3 || newest.KillCount != 2 {
+		t.Fatalf("counts = %d fights and %d kills, want 3 and 2 (the trash fight is not a kill)",
 			newest.FightCount, newest.KillCount)
+	}
+	if newest.BossCount != 1 {
+		t.Fatalf("boss_count = %d, want 1: two kills of one boss are one boss (round 8, P8-3)", newest.BossCount)
 	}
 	if page.Rows[1].ID != first || page.Rows[1].FightCount != 0 || page.Rows[1].KillCount != 0 {
 		t.Fatalf("oldest = %+v", page.Rows[1])

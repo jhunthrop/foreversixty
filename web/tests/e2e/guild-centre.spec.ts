@@ -389,7 +389,7 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
       'Roster from the addon · sent by Zulmara 3 minutes ago',
     );
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60\s+·\s+Gear gap 12 DPS\s+·\s+Survival in game\s+·\s+Gear set: Survival \(raid\)\s+·\s+seen 6 minutes ago\s*$/,
+      /^Level 60\s+·\s+Gear gap 12 DPS\s+·\s+Gear set: Survival \(raid\)\s+·\s+seen 6 minutes ago\s*$/,
     );
     await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
       /^Level 60\s+·\s+Gear gap 4 DPS\s+·\s+Gear set: Protection \(raid\)\s+·\s+seen 8 minutes ago\s*$/,
@@ -397,32 +397,56 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
     await expect(none).toHaveText('—');
     await expect(none).toHaveAttribute('title', 'Not seen by the addon in the last snapshot');
-    await expect(page.getByTestId('guild-roster-sort-addon_gap')).toHaveAttribute(
-      'title',
-      'Gear gap in DPS, as the addon reports it',
+    // The spec line says which record it reads: the addon's in game, the site's where it differs.
+    await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-spec')).toContainText(
+      'Survival Hunter in game · Marksmanship on the site',
+    );
+    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText(
+      'Protection Warrior in game',
     );
   });
 
-  test('sorting by In game orders the gaps numerically, largest first, with "—" last', async ({ page }) => {
+  test('the roster has a SORT row of chips and no header row at any width; the chips sort', async ({
+    page,
+  }) => {
     await openRoster(page, true);
-    // Default sort unchanged: item level, the viewer pinned first.
+    await expect(page.locator('[role="columnheader"]')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-sort-header')).toHaveCount(0);
+    const sort = page.getByTestId('guild-roster-sort');
+    await expect(sort).toContainText('Sort');
+    await expect(sort.getByRole('button')).toHaveText([
+      /Rank/,
+      /Item level/,
+      /Rating/,
+      /Attendance/,
+      /Last seen/,
+    ]);
     await expect(page.getByTestId('guild-roster-sort-ilvl')).toContainText('▾');
-    await page.getByTestId('guild-roster-sort-addon_gap').click();
-    await expect(page.getByTestId('guild-roster-sort-addon_gap')).toContainText('▾');
-    const names = await page
-      .getByTestId('guild-roster-rows')
-      .getByTestId('guild-roster-name')
-      .allTextContents();
-    const cleaned = names.map((n) => n.replace(' (you)', '').trim());
-    // Zulmara is the viewer, pinned first (unchanged rule); then Kraggor 4; Duskstrider's gap
-    // is null (no gear consent) and sorts after every row that has one.
-    expect(cleaned.slice(0, 2)).toEqual(['Zulmara', 'Kraggor']);
-    const gaps = await page.getByTestId('guild-roster-ingame-gap').allTextContents();
-    expect(gaps).toEqual(['Gear gap 12 DPS', 'Gear gap 4 DPS']);
-    const cells = page.getByTestId('guild-roster-rows').locator('.guild-roster-row');
-    const count = await cells.count();
-    for (let i = 2; i < count; i++) {
-      await expect(cells.nth(i).getByTestId('guild-roster-ingame-gap')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-sort-ilvl')).toHaveAttribute('aria-sort', 'descending');
+    // Rank puts the leader and officers first (the viewer stays pinned above them).
+    await page.getByTestId('guild-roster-sort-rank').click();
+    await expect(page.getByTestId('guild-roster-sort-rank')).toContainText('▾');
+    await expect(page.getByTestId('guild-roster-sort-rank')).toHaveAttribute('aria-sort', 'descending');
+    await expect(page.getByTestId('guild-roster-sort-ilvl')).not.toHaveAttribute('aria-sort', 'descending');
+    const names = (
+      await page.getByTestId('guild-roster-rows').getByTestId('guild-roster-name').allTextContents()
+    ).map((n) => n.replace(' (you)', '').trim());
+    expect(names[0]).toBe('Zulmara');
+    // The In game column's gap is a fact on the row, not a sort the page offers.
+    await expect(page.getByTestId('guild-roster-sort-addon_gap')).toHaveCount(0);
+    // Every row's stats start at one left edge at lg.
+    if ((page.viewportSize()?.width ?? 0) >= 1024) {
+      const lefts = await page
+        .getByTestId('guild-roster-rows')
+        .getByTestId('guild-roster-facts')
+        .evaluateAll((els) =>
+          els.map((e) =>
+            Math.round(
+              e.querySelector('[data-testid="guild-roster-chip"]')?.getBoundingClientRect().left ?? -1,
+            ),
+          ),
+        );
+      expect(new Set(lefts).size).toBe(1);
     }
   });
 
@@ -728,9 +752,9 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
       expect(prof.height).toBeLessThan(20);
     }
     // Spec words carry the class; units are named; "in game" and "Gear set:" replace the old words.
-    await expect(zulmara.getByTestId('guild-roster-spec')).toContainText('Marksmanship Hunter');
+    await expect(zulmara.getByTestId('guild-roster-spec')).toContainText('Marksmanship on the site');
     await expect(zulmara).toContainText('Rating');
-    await expect(zulmara).toContainText('Survival in game');
+    await expect(zulmara).toContainText('Survival Hunter in game');
     await expect(zulmara).toContainText('Gear set: Survival (raid)');
     await expect(zulmara).not.toContainText('per addon');
     await expect(zulmara).not.toContainText('build:');
@@ -758,6 +782,36 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     await expect(page.getByTestId('guild-roster-remove-confirm')).toContainText(
       'Remove Windtalon from the roster?',
     );
+    // One muted line, they never she/he; Remove in the danger token, Cancel focused with the ring.
+    await expect(page.getByTestId('guild-roster-remove-rejoin')).toHaveText(
+      'They can rejoin with the invite link.',
+    );
+    await expect(page.getByTestId('guild-roster-remove-cancel')).toBeFocused();
+    const yes = await page
+      .getByTestId('guild-roster-remove-yes')
+      .evaluate((n) => getComputedStyle(n).backgroundColor);
+    const cancel = await page
+      .getByTestId('guild-roster-remove-cancel')
+      .evaluate((n) => getComputedStyle(n).backgroundColor);
+    expect(yes).not.toBe(cancel);
+    expect(yes).not.toBe('rgba(0, 0, 0, 0)');
+  });
+
+  test('below lg the claim and invite card folds to one 44px line with a Show toggle; Settings keeps it open', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    const summary = page.getByTestId('guild-officer-strip-summary');
+    await expect(summary).toBeVisible();
+    expect((await summary.boundingBox())?.height).toBe(44);
+    await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
+    await page.getByTestId('guild-officer-strip-toggle').click();
+    await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
+    await page.getByTestId('guild-tab-settings').click();
+    await expect(page.getByTestId('guild-officer-strip-summary')).toBeHidden();
+    await expect(page.getByTestId('guild-officer-strip-body')).toBeVisible();
   });
 
   test('the ranks line sits above the roster while a row has no rank', async ({ page }) => {
@@ -979,9 +1033,11 @@ test.describe('loot: Award asks first and can be undone', () => {
 
     // After: who got it, when, from whom, Undo; everyone else reads "Already awarded", never a live button.
     await expect(page.getByTestId(`guild-loot-awarded-${item.item_id}`)).toHaveText(
-      `Awarded to ${first.name} · today · by ${VIEWER_OFFICER}`,
+      `Awarded to ${first.name} · today · by\u00a0${VIEWER_OFFICER}`,
     );
-    await expect(page.getByTestId(`guild-loot-undo-${item.item_id}`)).toBeVisible();
+    // One Undo only: the winner row's. The awarded chip carries none.
+    await expect(page.getByTestId(`guild-loot-undo-${item.item_id}`)).toHaveCount(0);
+    await expect(page.getByTestId(`guild-loot-row-undo-${item.item_id}`)).toBeVisible();
     // The winner's own row reads "Awarded · Undo"; the other candidates keep "Already awarded".
     await expect(panel.getByTestId('guild-loot-winner-slot')).toHaveText(/^Awarded\s+·\s+Undo$/);
     await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
@@ -989,7 +1045,7 @@ test.describe('loot: Award asks first and can be undone', () => {
     if (dir) await panel.screenshot({ path: `${dir}/g7-award-done-${page.viewportSize()?.width}.png` });
 
     // Undo removes it by the award's id: the Award buttons come back.
-    await page.getByTestId(`guild-loot-undo-${item.item_id}`).click();
+    await page.getByTestId(`guild-loot-row-undo-${item.item_id}`).click();
     await expect.poll(() => record.deletes).toEqual(['41']);
     await expect(page.getByTestId(`guild-loot-awarded-${item.item_id}`)).toHaveCount(0);
     await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(item.candidates.length);
@@ -1015,7 +1071,7 @@ test.describe('loot: Award asks first and can be undone', () => {
     const chip = page.getByTestId(`guild-loot-awarded-${item.item_id}`);
     await expect(chip).toBeVisible();
     // Sentence case, 14px, and the box grows with its text: nothing overflows it.
-    await expect(chip).toHaveText(`Awarded to ${first.name} · today · by ${VIEWER_OFFICER}`);
+    await expect(chip).toHaveText(`Awarded to ${first.name} · today · by\u00a0${VIEWER_OFFICER}`);
     const fit = await chip.evaluate((node) => ({
       overflowY: node.scrollHeight - node.clientHeight,
       overflowX: node.scrollWidth - node.clientWidth,
@@ -1029,14 +1085,14 @@ test.describe('loot: Award asks first and can be undone', () => {
     // The title's box and the chip's box do not intersect; the chip is under the title, full width.
     const title = await panel.locator('span.font-display').first().boundingBox();
     const box = await chip.boundingBox();
-    const undo = await page.getByTestId(`guild-loot-undo-${item.item_id}`).boundingBox();
+    const undo = await page.getByTestId(`guild-loot-row-undo-${item.item_id}`).boundingBox();
     expect(title && box && undo).toBeTruthy();
     if (title && box && undo) {
       expect(box.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
       expect(box.width).toBeGreaterThan(300);
       expect(undo.height).toBeGreaterThanOrEqual(44);
-      // Undo is a separate control below the chip, with the 12px gap, and no dot beside it.
-      expect(undo.y).toBeGreaterThanOrEqual(box.y + box.height + 11);
+      // The one Undo is the winner row's, below the chip.
+      expect(undo.y).toBeGreaterThanOrEqual(box.y + box.height);
     }
     expect(await panel.getByText('·', { exact: true }).count()).toBe(0);
     const scrolls = await page.evaluate(() => document.documentElement.scrollWidth);
@@ -1183,6 +1239,46 @@ test.describe('a 404 from an undeployed endpoint never crashes the page', () => 
     await page.goto(`${GUILD_URL}#raids`);
     await expect(page.getByTestId('guild-raids-missing')).toBeVisible();
     await expect(page.getByTestId('guild')).toBeVisible();
+  });
+});
+
+test.describe('the Overview raid-night row at 390 (round 8)', () => {
+  test('every fact is visible on its own line and the page does not scroll sideways', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(GUILD_URL);
+    const row = page.getByTestId('guild-overview-raid-row').first();
+    await expect(row).toBeVisible();
+    const facts = row.getByTestId('guild-overview-raid-facts');
+    await expect(facts).toContainText('boss');
+    const pieces = facts.locator(':scope > span');
+    const n = await pieces.count();
+    expect(n).toBeGreaterThanOrEqual(2);
+    for (let i = 0; i < n; i++) {
+      await expect(pieces.nth(i)).toBeVisible();
+      const box = await pieces.nth(i).boundingBox();
+      expect(box && box.x >= 0 && box.x + box.width <= 390).toBe(true);
+    }
+    // The facts sit on a line of their own under the title and the day.
+    const [title, factsBox] = await Promise.all([
+      row.locator('span').first().boundingBox(),
+      facts.boundingBox(),
+    ]);
+    expect(title && factsBox && factsBox.y >= title.y + title.height - 1).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  });
+
+  test('at 1280 the row stays one line', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(GUILD_URL);
+    const row = page.getByTestId('guild-overview-raid-row').first();
+    await expect(row).toBeVisible();
+    await expect(row.getByTestId('guild-overview-raid-facts')).toContainText(' · ');
+    const box = await row.boundingBox();
+    expect(box?.height ?? 99).toBeLessThan(40);
   });
 });
 

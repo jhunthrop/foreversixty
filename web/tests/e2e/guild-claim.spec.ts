@@ -85,18 +85,24 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   await page.getByTestId('guild-claim-confirm-claim').click();
   await expect(page.getByTestId('guild-claim-state')).toHaveText('You hold The Last Watch.');
   expect(claimPosts).toBe(1);
-  await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(
-    'Approve your officers and members on the roster',
-  );
+  // Once the claim is held the page is about the claim.
+  await expect(page.getByTestId('guild-claim-heading')).toHaveText('The Last Watch · your claim');
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveText('Approve your officers and members');
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch#roster',
   );
-  await expect(page.getByTestId('guild-claim-next-invite')).toHaveText('Make an invite link in settings');
-  // The next steps look like links: underlined, in the site's link colour.
+  await expect(page.getByTestId('guild-claim-next-invite')).toHaveText('Make an invite link');
+  // The next steps are two 44 px buttons: the roster is the gold primary, the invite link a ghost.
   for (const id of ['guild-claim-next-roster', 'guild-claim-next-invite']) {
-    await expect(page.getByTestId(id)).toHaveCSS('text-decoration-line', 'underline');
+    const box = await page.getByTestId(id).boundingBox();
+    expect(box?.height).toBe(44);
   }
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveCSS(
+    'background-color',
+    'rgb(229, 185, 85)',
+  );
+  await expect(page.getByTestId('guild-claim-next-invite')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(page.getByTestId('guild-claim-next-invite')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch/settings',

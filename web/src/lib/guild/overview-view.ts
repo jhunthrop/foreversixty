@@ -52,7 +52,7 @@ export function rosterCardParts(summary: {
   below_rating_floor: number;
 }): { raiders: string; waiting: string; belowFloor: string } {
   return {
-    raiders: counted(summary.raiders, 'raider'),
+    raiders: `${counted(summary.raiders, 'raider')} with gear on the site`,
     waiting: `${summary.waiting_for_approval} waiting for approval`,
     belowFloor: `${summary.below_rating_floor} below the rating floor`,
   };

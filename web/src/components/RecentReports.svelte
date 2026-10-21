@@ -88,6 +88,7 @@
           title: report.title,
           zone: report.zone,
           killCount: report.kill_count,
+          bossCount: report.boss_count,
           fightCount: report.fight_count,
           guildName: report.guild_name,
           loggingCharacter: report.logging_character,

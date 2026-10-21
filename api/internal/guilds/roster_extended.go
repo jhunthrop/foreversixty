@@ -127,10 +127,16 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (i
 	return len(ids), present, nil
 }
 
-// bestParses is character_key -> that character's single best kill-fight parse across the
+// bestParses is character_key -> that character's single best BOSS kill parse across the
 // guild's own reports that are evidence (presence.EvidenceReport: not private, not flagged) -
 // dps for every role but healer, hps for healer, matching
 // rankings.Store's own metricOf convention without importing that package.
+//
+// Only encounters count (a named boss, encounter_id > 0): a whelp pack that dies in a minute
+// posts a higher DPS than any boss kill and is no one's best. This is the same set the guild
+// page's Progression "Roster bests" reads (rankings.Store.Guild: one best per raider per
+// encounter, ordered by the role's own metric), so a raider's roster figure is the largest of
+// the Progression rows against their name - one number, not two (round 8, P8-7).
 func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestParse, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select distinct on (m.player_key) m.player_key, coalesce(m.role, ''),
@@ -138,7 +144,8 @@ func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestP
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
-		where r.guild_id = $1 and m.kill and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
+		where r.guild_id = $1 and m.kill and coalesce(m.encounter_id, 0) > 0 and m.state <> 'removed'
+		  and `+presence.EvidenceReport("r")+`
 		order by m.player_key,
 		  (case when m.role = 'healer' then coalesce(m.metric_hps, 0) else coalesce(m.metric_dps, 0) end) desc`,
 		guildID)
@@ -307,12 +314,16 @@ func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterR
 		Scan(&sv.NamedEncountersDown); err != nil {
 		return SummaryView{}, fmt.Errorf("guilds: named encounters down: %w", err)
 	}
-	// pulls_this_tier: every fight ever logged for the guild. No raid-tier-start
-	// timestamp exists anywhere queryable (the design doc's own 9 December 2026 tier
-	// open is a future calendar date, not a stored marker) - see CONTROL_CENTRE.md.
+	// pulls_this_tier: every pull this tier counts - the named encounter's pulls and the unnamed
+	// zones' - the same pulls the Progression tab adds up, so the header and that tab agree
+	// (round 8). A trash pack is no pull at all. No raid-tier-start timestamp exists anywhere
+	// queryable (the design doc's own 9 December 2026 tier open is a future calendar date, not
+	// a stored marker) - see CONTROL_CENTRE.md.
 	if err := s.Pool.QueryRow(ctx, `
 		select count(*) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and `+presence.NotFlagged("r"), guildID).
+		where r.guild_id = $1 and (f.encounter_id = $2
+		      or (r.zone = any($3) and (f.encounter_id is null or f.encounter_id = 0)))
+		  and `+presence.NotFlagged("r"), guildID, encounterOnyxia, unnamedZones).
 		Scan(&sv.PullsThisTier); err != nil {
 		return SummaryView{}, fmt.Errorf("guilds: pulls this tier: %w", err)
 	}

@@ -57,7 +57,7 @@ describe('the cards', () => {
 
   it('counts raiders and checks with the plural helper', () => {
     expect(rosterCardParts({ raiders: 1, waiting_for_approval: 4, below_rating_floor: 0 })).toEqual({
-      raiders: '1 raider',
+      raiders: '1 raider with gear on the site',
       waiting: '4 waiting for approval',
       belowFloor: '0 below the rating floor',
     });

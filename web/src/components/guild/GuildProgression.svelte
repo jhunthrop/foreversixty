@@ -4,11 +4,11 @@
      every role. -->
 <script lang="ts">
   import { characterHref, splitUnitName, type Region, type Ruleset } from '../../lib/characters';
-  import { classColorVar, formatAmount, rowLink } from '../../lib/report/format';
+  import { classColorVar, rowLink } from '../../lib/report/format';
   import { dayWord } from '../../lib/dates';
   import type { GuildParseRef, GuildProgressionPage } from '../../lib/guild/api';
   import { progressionNightDay } from '../../lib/guild/overview-view';
-  import { specName } from '../../lib/guild/spec-name';
+  import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
   import { executionLabel, executionTitle } from '../../lib/sim/execution';
@@ -145,6 +145,7 @@
     <div class="flex flex-col gap-2" data-testid="guild-roster-best">
       <h3 class="section-title text-[16px]">Roster bests</h3>
       {#each encounterBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
+        {@const labels = rosterBestLabels(row)}
         <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
           <a
             class="{rowLink} truncate font-semibold"
@@ -153,10 +154,8 @@
           >
             {splitUnitName(row.player.name).name}
           </a>
-          <span class="text-muted hidden truncate text-[13px] md:inline"
-            >{row.encounter} · {specName(row.player.spec)}</span
-          >
-          <span class="tabular ml-auto font-mono text-[14px]">{formatAmount(Math.round(row.value))}</span>
+          <span class="text-muted min-w-0 truncate text-[13px]">{labels.what}</span>
+          <span class="tabular ml-auto font-mono text-[14px]" title={labels.hover}>{labels.value}</span>
           <span
             class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
             title={executionTitle(row.execution_score)}

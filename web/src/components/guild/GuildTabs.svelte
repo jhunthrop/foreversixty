@@ -58,6 +58,13 @@
 
   const allowed = $derived(tabsForRole(role));
   let stripEl = $state<HTMLDivElement | undefined>(undefined);
+  /** True while tabs lie past the strip's right edge: a fade says so (a phone shows three of seven). */
+  let moreToTheRight = $state(false);
+
+  function measure(): void {
+    if (stripEl === undefined) return;
+    moreToTheRight = stripEl.scrollLeft + stripEl.clientWidth < stripEl.scrollWidth - 2;
+  }
 
   function select(tab: GuildTabId, event: MouseEvent): void {
     event.preventDefault();
@@ -70,7 +77,23 @@
     const currentActive = active;
     if (stripEl === undefined) return;
     const pill = stripEl.querySelector<HTMLElement>(`[data-guild-tab="${currentActive}"]`);
-    pill?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    // The strip scrolls by hand rather than through scrollIntoView, which would also move the page.
+    if (pill !== null) {
+      const left = pill.offsetLeft;
+      const right = left + pill.offsetWidth;
+      if (left < stripEl.scrollLeft) stripEl.scrollLeft = left;
+      else if (right > stripEl.scrollLeft + stripEl.clientWidth) {
+        stripEl.scrollLeft = right - stripEl.clientWidth;
+      }
+    }
+    measure();
+  });
+
+  $effect(() => {
+    if (stripEl === undefined || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(stripEl);
+    return () => observer.disconnect();
   });
 </script>
 
@@ -84,30 +107,42 @@
      class literal anywhere in the source tree, independent of what actually renders for a
      given request, so it is the only reliable way to style a lazily-mounted region on this
      page. Every guild/* component in this round follows the same rule. -->
-<div
-  bind:this={stripEl}
-  class="flex [scrollbar-width:none] gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden"
-  role="tablist"
-  aria-label="Guild sections"
-  data-testid="guild-tabs"
->
-  {#each GUILD_TABS.filter((tab) => allowed.includes(tab.id)) as tab (tab.id)}
-    {@const isActive = tab.id === active}
-    {@const readOnlySuffix = tab.id === 'loot' && role === 'member'}
-    <a
-      href={`#${tab.id}`}
-      role="tab"
-      aria-selected={isActive}
-      data-guild-tab={tab.id}
-      data-testid={`guild-tab-${tab.id}`}
-      class={`rounded-control box-border inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] whitespace-nowrap uppercase ${isActive ? 'border-gold text-gold' : 'border-line text-text'}`}
-      style={isActive ? 'background: rgba(229,185,85,.08)' : ''}
-      onclick={(event) => select(tab.id, event)}
-    >
-      {tab.label}
-      {#if readOnlySuffix}<span class="text-muted ml-1 text-[10px] tracking-normal normal-case">
-          · read-only</span
-        >{/if}
-    </a>
-  {/each}
+<div class="relative">
+  <div
+    bind:this={stripEl}
+    class="flex [scrollbar-width:none] gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+    role="tablist"
+    aria-label="Guild sections"
+    data-testid="guild-tabs"
+    onscroll={measure}
+  >
+    {#each GUILD_TABS.filter((tab) => allowed.includes(tab.id)) as tab (tab.id)}
+      {@const isActive = tab.id === active}
+      {@const readOnlySuffix = tab.id === 'loot' && role === 'member'}
+      <a
+        href={`#${tab.id}`}
+        role="tab"
+        aria-selected={isActive}
+        data-guild-tab={tab.id}
+        data-testid={`guild-tab-${tab.id}`}
+        class={`rounded-control box-border inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] whitespace-nowrap uppercase ${isActive ? 'border-gold text-gold' : 'border-line text-text'}`}
+        style={isActive ? 'background: rgba(229,185,85,.08)' : ''}
+        onclick={(event) => select(tab.id, event)}
+      >
+        {tab.label}
+        {#if readOnlySuffix}<span class="text-muted ml-1 text-[10px] tracking-normal normal-case">
+            · read-only</span
+          >{/if}
+      </a>
+    {/each}
+  </div>
+  <!-- A 24 px fade on the right edge while the strip can still scroll. The band behind it is
+       the raised surface, so the fade runs to that colour. -->
+  {#if moreToTheRight}
+    <div
+      class="from-raised pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l to-transparent"
+      aria-hidden="true"
+      data-testid="guild-tabs-fade"
+    ></div>
+  {/if}
 </div>

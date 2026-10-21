@@ -109,3 +109,34 @@ test('a contested claim disables officer controls and shows the frozen notice', 
   // never both at once.
   await expect(page.getByTestId('guild-settings-claim-state')).toHaveCount(0);
 });
+
+test('the officer rank has a Save control and says "Saved." once it took', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  const settings = {
+    default_visibility: 'guild',
+    officer_max_rank_index: 1,
+    claimed_by: { battletag: 'Fixture#1234' },
+    claim_pending: null,
+    claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
+    invite: { rotated_at: null },
+  };
+  const patches: unknown[] = [];
+  await page.route('**/v1/guilds/501/settings', async (route) => {
+    if (route.request().method() === 'PATCH') {
+      const body = route.request().postDataJSON() as { officer_max_rank_index: number };
+      patches.push(body);
+      settings.officer_max_rank_index = body.officer_max_rank_index;
+    }
+    await route.fulfill(envelope(settings));
+  });
+  await page.goto('/guild/us/hardcore/the-last-watch/settings');
+  // The label has no trailing colon, and Save stays off until the number changes.
+  await expect(page.getByText('Officers are guild ranks at or above', { exact: true })).toBeVisible();
+  const save = page.getByTestId('guild-officer-threshold-save');
+  await expect(save).toBeDisabled();
+  await page.getByTestId('guild-officer-threshold-input').fill('2');
+  await expect(save).toBeEnabled();
+  await save.click();
+  await expect(page.getByTestId('guild-officer-threshold-saved')).toHaveText('Saved.');
+  expect(patches).toEqual([{ officer_max_rank_index: 2 }]);
+});

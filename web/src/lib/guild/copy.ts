@@ -73,6 +73,8 @@ export const guildClaimCopy = {
   // Guild name isn't known until the public guild page resolves, so the heading falls
   // back to a nameless form rather than the page ever hardcoding either half itself.
   heading: (guildName: string): string => (guildName === '' ? 'Claim this guild' : `Claim ${guildName}`),
+  // Once the viewer holds the claim the page is about the claim, not about making one.
+  headingHeld: (guildName: string): string => (guildName === '' ? 'Your claim' : `${guildName} · your claim`),
   unclaimed: 'Nobody has claimed this guild yet.',
   // What an officer who may claim reads: what claiming gets them.
   unclaimedForOfficer:
@@ -84,8 +86,8 @@ export const guildClaimCopy = {
   // After the claim: the page says what the viewer holds and where to go next.
   youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
   nextHeading: 'Next',
-  nextRoster: 'Approve your officers and members on the roster',
-  nextInvite: 'Make an invite link in settings',
+  nextRoster: 'Approve your officers and members',
+  nextInvite: 'Make an invite link',
   releaseConfirmLine: (guildName: string): string =>
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',
@@ -211,6 +213,12 @@ export const guildConsentCopy = {
   /** The muted line under it: no self-serve hand-over exists, so the way out is to ask first. */
   leaveNoHandOver:
     'There is no hand-over yet; if you want an officer to run the guild after you, ask us on Discord before you leave.',
+  /** The same line cut around its one link, so the page can make "Discord" the site's invite. */
+  leaveNoHandOverParts: [
+    'There is no hand-over yet; if you want an officer to run the guild after you, ask us on ',
+    'Discord',
+    ' before you leave.',
+  ] as const,
   /** The line a plain officer (tools, but no claim) reads in the confirm. */
   leaveLosesOfficer: (guildName: string): string => `You lose your officer tools in ${guildName}.`,
   /** The label on the consent select, which sets what the guild sees of this account. */
@@ -295,6 +303,8 @@ export const guildRosterModelCopy = {
   /** Asked before a verified character is taken off the roster. */
   removeQuestion: (name: string): string => `Remove ${name} from the roster?`,
   removeButton: 'Remove',
+  /** The one muted line under the Remove question: nobody is locked out by it. */
+  removeRejoin: 'They can rejoin with the invite link.',
   declineQuestion: (name: string): string => `Remove ${name} from the waiting list? They can ask again.`,
   /** "Approve 4, including 1 officer?" */
   approveAllQuestion: (total: number, officers: number): string =>

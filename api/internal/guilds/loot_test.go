@@ -485,3 +485,75 @@ func TestAwardCountsAndTheCandidateLine(t *testing.T) {
 		t.Fatalf("candidates = %+v, want one replacing Red Winter Hat", cands)
 	}
 }
+
+// TestAwardLineNamesTheOfficersCharacter checks the officer on an award line is the account's
+// main character in this guild (the highest item level of its characters here), "an officer" when
+// the account has none, and "an officer" - never a pseudonym - once the account asks to be
+// anonymous. A BattleTag never reaches the line.
+func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	ctx := context.Background()
+	store := &Store{Pool: h.pool, Accounts: &auth.Store{Pool: h.pool}}
+
+	addChar := func(uid int64, key, name string, ilvl int) {
+		t.Helper()
+		seedCharacter(t, h.pool, gid, uid, key, "officer", true)
+		if _, err := h.pool.Exec(ctx, `
+			insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at, updated_at)
+			values ($1, $2, 'us', 'hardcore', $3, 'FS1:x', now(), now())`, key, uid, name); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := h.pool.Exec(ctx, `
+			insert into fight_metrics (report_id, fight_index, player_key, class, spec, role, ilvl, faction, fought_at)
+			values ($1, 0, $2, 'hunter', 'Marksmanship', 'dps', $3, 'alliance', now())`,
+			"award-line-"+key, key, ilvl); err != nil {
+			t.Fatal(err)
+		}
+	}
+	award := func(uid int64, itemID int, to string) {
+		t.Helper()
+		if _, err := h.pool.Exec(ctx, `
+			insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by)
+			values ($1, 1084, $2, $3, $4)`, gid, itemID, to, uid); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// An officer with two characters here: the higher item level is the main.
+	main := seedUser(t, h.pool, "award-line-main@example.com")
+	addChar(main, "us/hardcore/awardalt", "Altwing", 52)
+	addChar(main, "us/hardcore/awardmain", "Bowmain", 66)
+	if _, err := h.pool.Exec(ctx, `update users set battletag = 'Officer#1234' where id = $1`, main); err != nil {
+		t.Fatal(err)
+	}
+	// An officer whose account has no character in this guild at all.
+	stranger := seedUser(t, h.pool, "award-line-none@example.com")
+	// An officer who asked to be shown by pseudonym.
+	hidden := seedUser(t, h.pool, "award-line-anon@example.com")
+	addChar(hidden, "us/hardcore/awardhidden", "Shadowed", 60)
+	if _, err := h.pool.Exec(ctx, `update users set anonymize = true, battletag = 'Hidden#9999' where id = $1`, hidden); err != nil {
+		t.Fatal(err)
+	}
+	winner := seedUser(t, h.pool, "award-line-winner@example.com")
+	addChar(winner, "us/hardcore/awardwinner", "Rootbound", 58)
+
+	award(main, 16963, "us/hardcore/awardwinner")
+	award(stranger, 16939, "us/hardcore/awardwinner")
+	award(hidden, 16947, "us/hardcore/awardwinner")
+
+	got, err := store.lootAwards(ctx, gid, 1084)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for item, want := range map[int]string{16963: "Bowmain", 16939: "an officer", 16947: "an officer"} {
+		if got[item] == nil || got[item].ByName != want {
+			t.Fatalf("award of %d: by_name = %+v, want %q", item, got[item], want)
+		}
+	}
+	for item, a := range got {
+		if strings.Contains(a.ByName, "#") || strings.HasPrefix(a.ByName, "user-") {
+			t.Fatalf("award of %d names an account (%q), want a character or \"an officer\"", item, a.ByName)
+		}
+	}
+}

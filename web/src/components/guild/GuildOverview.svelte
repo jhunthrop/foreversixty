@@ -32,7 +32,7 @@
     raidNightDay,
     rosterCardParts,
   } from '../../lib/guild/overview-view';
-  import { bossIdsOf, raidTallyLine, reportTallyLine } from '../../lib/guild/raid-view';
+  import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
   import { counted } from '../../lib/plural';
   import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
@@ -138,15 +138,16 @@
       : Math.max(0, report.fight_count - report.kill_count);
   }
 
-  /** "1 boss (Onyxia) · 2 kills · 2 trash packs · 0 wipes" when the night's fights are known, else the
-   *  two counts the report row carries; nothing when it carries neither (the public list). */
-  function tallyOf(report: OverviewReport): string {
+  /** The night's facts, one piece each ("1 boss (Onyxia)", "1 kill", "2 trash packs", "1 wipe") when its
+   *  fights are known, else the two counts the report row carries; none when it carries neither (the
+   *  public list). */
+  function tallyOf(report: OverviewReport): string[] {
     const night = raidsPage?.rows.find((row) => row.id === report.id);
-    if (night !== undefined) return raidTallyLine(night, bossIds);
+    if (night !== undefined) return raidTallyParts(night, bossIds);
     const wipes = wipeCount(report);
     return report.kill_count !== undefined && wipes !== undefined
-      ? reportTallyLine(report.kill_count, wipes)
-      : '';
+      ? [counted(report.kill_count, 'kill'), counted(wipes, 'wipe')]
+      : [];
   }
 
   const rosterParts = $derived(
@@ -173,7 +174,10 @@
       </div>
       <p class="text-[14px]">
         <span class="tabular font-mono">{rosterParts.raiders}</span> ·
-        <span class="tabular text-gold font-mono">{rosterParts.waiting}</span> ·
+        <span class="tabular font-mono {(summary?.waiting_for_approval ?? 0) > 0 ? 'text-gold' : ''}"
+          >{rosterParts.waiting}</span
+        >
+        ·
         <span class="tabular font-mono">{rosterParts.belowFloor}</span>
       </p>
     </div>
@@ -196,13 +200,29 @@
       </p>
     {:else}
       {#each reports.slice(0, 3) as report (report.id)}
-        <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
-          <span class="flex-1 text-[14px] font-semibold"
+        {@const facts = tallyOf(report)}
+        <!-- Below lg two lines: the title left and the day right, then the facts in a wrapping row
+             (each fact whole). At lg one row, the facts as the single " · " line they always were. -->
+        <div
+          class="border-line-soft flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b py-1.5 lg:flex-nowrap lg:items-center"
+          data-testid="guild-overview-raid-row"
+        >
+          <span class="min-w-0 flex-1 text-[14px] font-semibold"
             >{report.title === '' ? report.zone : report.title}</span
           >
-          <span class="text-muted tabular font-mono text-[13px]">{raidNightDay(report.created_at)}</span>
-          {#if tallyOf(report) !== ''}
-            <span class="text-muted tabular font-mono text-[13px]">{tallyOf(report)}</span>
+          <span class="text-muted tabular font-mono text-[14px] lg:text-[13px]"
+            >{raidNightDay(report.created_at)}</span
+          >
+          {#if facts.length > 0}
+            <!-- eslint-disable svelte/no-useless-mustaches -->
+            <span
+              class="text-muted tabular order-last flex basis-full flex-wrap gap-x-3 gap-y-1 font-mono text-[14px] lg:order-none lg:basis-auto lg:flex-nowrap lg:gap-x-0 lg:text-[13px]"
+              data-testid="guild-overview-raid-facts"
+              >{#each facts as fact, i (fact)}<span class="whitespace-nowrap"
+                  >{fact}{#if i < facts.length - 1}<span class="max-lg:hidden">{' · '}</span>{/if}</span
+                >{/each}</span
+            >
+            <!-- eslint-enable svelte/no-useless-mustaches -->
           {/if}
         </div>
       {/each}

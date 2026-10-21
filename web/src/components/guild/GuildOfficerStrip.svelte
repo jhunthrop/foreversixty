@@ -2,7 +2,12 @@
 <!-- Guild control-centre spec §4.B/§4.A: the officer tools glance -- claim state, who is
      waiting for approval, invite link rotate. Shared by the Overview tab (the glance) and
      the Settings tab (the same strip, restyled unchanged, spec §4.G: "the strip here is
-     the glance, Settings is the editing surface"). -->
+     the glance, Settings is the editing surface").
+
+     Below lg, on every tab but Settings (`collapsible`), the card folds to one 44 px line --
+     "Claimed by hunthrop#1894 · Invite link" and a Show toggle -- so the tab's own answer is
+     not pushed down by ~190 px of claim tools (round 8, F8-12). The full card stays mounted
+     while folded, so a rotated link is not lost by folding it. -->
 <script lang="ts">
   import GuildInviteLink from './GuildInviteLink.svelte';
 
@@ -11,30 +16,60 @@
     claimedByName,
     waitingCount,
     onSelectRoster,
-  }: { guildId: number; claimedByName: string | null; waitingCount: number; onSelectRoster: () => void } =
-    $props();
+    collapsible = false,
+  }: {
+    guildId: number;
+    claimedByName: string | null;
+    waitingCount: number;
+    onSelectRoster: () => void;
+    /** Fold to the one-line summary below lg (every tab but Settings). */
+    collapsible?: boolean;
+  } = $props();
+
+  let open = $state(false);
+  const folded = $derived(collapsible && !open);
 </script>
 
-<div
-  class="border-line-soft bg-raised flex flex-wrap items-center justify-between gap-4 rounded-md border p-4"
-  data-testid="guild-officer-strip"
->
-  <div class="flex items-center gap-3">
-    <span class="pill pill-site">Claimed</span>
-    {#if claimedByName !== null}<span class="text-muted text-[13px]">by {claimedByName}</span>{/if}
-  </div>
-  {#if waitingCount > 0}
-    <button
-      class="text-gold text-[13px] font-bold"
-      onclick={onSelectRoster}
-      data-testid="guild-officer-waiting"
+<div class="border-line-soft bg-raised flex flex-col rounded-md border" data-testid="guild-officer-strip">
+  {#if collapsible}
+    <div
+      class="flex h-11 items-center justify-between gap-3 pr-1 pl-4 lg:hidden"
+      data-testid="guild-officer-strip-summary"
     >
-      {waitingCount} waiting for approval
-    </button>
+      <span class="text-muted min-w-0 truncate text-[13px]"
+        >{claimedByName !== null ? `Claimed by ${claimedByName}` : 'Claimed'} · Invite link</span
+      >
+      <button
+        class="text-gold inline-flex h-11 shrink-0 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase"
+        onclick={() => (open = !open)}
+        aria-expanded={open}
+        data-testid="guild-officer-strip-toggle"
+      >
+        {open ? 'Hide' : 'Show'}
+      </button>
+    </div>
   {/if}
-  <div class="flex flex-wrap items-center gap-3">
-    <span class="label text-muted">Invite link</span>
-    <span class="text-muted text-[12px]">Anyone with this link can join as a member.</span>
+  <div
+    class={`flex flex-wrap items-center justify-between gap-4 p-4 ${folded ? 'max-lg:hidden' : ''} ${collapsible && open ? 'max-lg:border-line-soft max-lg:border-t' : ''}`}
+    data-testid="guild-officer-strip-body"
+  >
+    <div class="flex items-center gap-3">
+      <span class="pill pill-site">Claimed</span>
+      {#if claimedByName !== null}<span class="text-muted text-[13px]">by {claimedByName}</span>{/if}
+    </div>
+    {#if waitingCount > 0}
+      <button
+        class="text-gold text-[13px] font-bold"
+        onclick={onSelectRoster}
+        data-testid="guild-officer-waiting"
+      >
+        {waitingCount} waiting for approval
+      </button>
+    {/if}
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="label text-muted">Invite link</span>
+      <span class="text-muted text-[12px]">Anyone with this link can join as a member.</span>
+    </div>
+    <GuildInviteLink {guildId} testidPrefix="guild-officer-invite" />
   </div>
-  <GuildInviteLink {guildId} testidPrefix="guild-officer-invite" />
 </div>

@@ -101,20 +101,28 @@ describe('candidateGainLabel', () => {
   }
 
   it('reads a DPS figure for a tier-0 (BiS-matched) candidate', () => {
-    expect(candidateGainLabel(candidate({ gain_dps: 40.4 }))).toBe('+40 DPS');
+    expect(candidateGainLabel(candidate({ gain_dps: 40.4 }))).toBe('+40\u00a0DPS');
   });
 
   // Live-fix round, defect 5: every real candidate on a live roster is tier-1 today
   // (gain_dps null, ilvl_delta set) -- this must read the item level figure, never throw
   // calling a number method on the null gain_dps the way GuildLoot.svelte once did.
   it('reads a signed item-level figure for a tier-1 (fallback) candidate', () => {
-    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 6 }))).toBe('+6 item levels');
-    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: -3 }))).toBe('-3 item levels');
-    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 1 }))).toBe('+1 item level');
+    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 6 }))).toBe('+6\u00a0item\u00a0levels');
+    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: -3 }))).toBe(
+      '-3\u00a0item\u00a0levels',
+    );
+    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 1 }))).toBe('+1\u00a0item\u00a0level');
   });
 
   it('keeps the gain figure to itself: the slot is the candidate line, not this label', () => {
-    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 76 }))).toBe('+76 item levels');
+    expect(candidateGainLabel(candidate({ gain_dps: null, ilvl_delta: 76 }))).toBe(
+      '+76\u00a0item\u00a0levels',
+    );
+  });
+
+  it('reads nothing for an empty slot: the rider would only print the items own level', () => {
+    expect(candidateGainLabel(candidate({ replaces: '', gain_dps: null, ilvl_delta: 76 }))).toBe('');
   });
 
   it('reads an em dash when neither figure is present', () => {
@@ -178,10 +186,22 @@ describe('the words around a candidate', () => {
         { name: 'Rootbound', at: new Date(2026, 9, 20, 20, 30).toISOString(), by_name: 'Bow Jackzon' },
         now,
       ),
-    ).toBe('Awarded to Rootbound · today · by Bow Jackzon');
+    ).toBe('Awarded to Rootbound · today · by\u00a0Bow Jackzon');
     expect(
       awardedLine({ name: 'Rootbound', at: new Date(2026, 9, 19, 20, 30).toISOString(), by_name: '' }, now),
     ).toBe('Awarded to Rootbound · yesterday');
+  });
+
+  it('names an officer when the account has no character in the guild', () => {
+    const at = new Date(2026, 9, 20, 20, 30).toISOString();
+    const now = new Date(2026, 9, 20, 21, 0);
+    expect(awardedLine({ name: 'Rootbound', at, by_name: 'an officer' }, now)).toBe(
+      'Awarded to Rootbound · today · by\u00a0an officer',
+    );
+    // A no-break space after "by", so the name never orphans from it.
+    expect(awardedLine({ name: 'Rootbound', at, by_name: 'Bow Jackzon' }, now)).toContain(
+      'by\u00a0Bow Jackzon',
+    );
   });
 
   it('knows when any candidate was ranked without a simulation', () => {

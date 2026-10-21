@@ -24,6 +24,7 @@
     type Me,
     type PairingCode,
   } from '../lib/account/api';
+  import communityLinks from '../data/links.json';
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
@@ -838,7 +839,12 @@
                                 {guildConsentCopy.leaveReleasesClaim(guild.name)}
                               </p>
                               <p class="text-muted text-[13px]" data-testid="account-guild-leave-no-handover">
-                                {guildConsentCopy.leaveNoHandOver}
+                                {guildConsentCopy.leaveNoHandOverParts[0]}<a
+                                  href={communityLinks.discordInvite}
+                                  rel="noopener"
+                                  data-testid="account-guild-leave-discord"
+                                  >{guildConsentCopy.leaveNoHandOverParts[1]}</a
+                                >{guildConsentCopy.leaveNoHandOverParts[2]}
                               </p>
                             {:else if guild.can?.some( (word) => ['approve', 'award', 'settings'].includes(word) )}
                               <p class="text-[13px]" data-testid="account-guild-leave-officer">
