@@ -54,14 +54,15 @@ func headlineFor(paired, connecting, signedOut, logging bool, credit Credit, ins
 		}
 	}
 	if logging {
-		sub := CopyLoggingSub
+		sub, title := CopyLoggingSub, CopyLoggingTitle
 		switch credit.State {
 		case CreditCredited:
 			sub = CopyLoggingSubAs(credit.Name)
 		case CreditUnmatched:
 			sub = CopyLoggingSubNotMatched
+			title = CopyLoggingTitleNotCredited
 		}
-		return Headline{Key: "logging", Tone: "on", Title: CopyLoggingTitle, Sub: sub}
+		return Headline{Key: "logging", Tone: "on", Title: title, Sub: sub}
 	}
 	return Headline{Key: "ready", Tone: "off", Title: CopyReadyTitle, Sub: CopyReadySub}
 }

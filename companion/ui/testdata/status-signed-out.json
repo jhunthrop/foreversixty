@@ -24,8 +24,9 @@
       "state": "",
       "trouble": false
     },
-    "token_backend": "file",
-    "token_backend_name": "A private file in your user folder",
+    "token_backend": "keychain",
+    "token_backend_name": "Windows Credential Manager",
+    "token_backend_note": "A private store in your user profile.",
     "api_base_url": "https://api.foreversixty.gg",
     "site_base_url": "https://foreversixty.gg",
     "visibility": "public",

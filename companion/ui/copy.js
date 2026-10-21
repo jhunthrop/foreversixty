@@ -21,7 +21,7 @@ const COPY = {
   footer: {
     version: (v) => 'Companion ' + v,
     site: 'foreversixty.gg',
-    updateReady: 'Update ready. It installs the next time you open the companion.',
+    updateReady: 'Update ready. Quit the companion from the tray icon and start it again to install it.',
     // The first half minute after the first launch of a new version.
     updatedTo: (v) => 'Updated to ' + v,
   },
@@ -32,6 +32,11 @@ const COPY = {
     // cards under it keep the last numbers it sent, dimmed.
     unavailableTitle: 'Status unavailable',
     unavailableSub: 'The numbers below are the last ones the companion sent.',
+    // The caption over the greyed numbers while Status is unavailable.
+    lastKnown: 'Last known',
+    // The Fights uploaded row while the open report has none yet.
+    noFightsYet: '0 so far',
+    noFightsHelp: 'The first fight uploads when it ends.',
     inProgress: 'In progress',
     rows: {
       report: 'Current report',
@@ -117,7 +122,8 @@ const COPY = {
     // Signing in
     waiting: 'Waiting for you to sign in...',
     checkCode: 'Check that your browser shows this code:',
-    lasts: 'This link works for 10 minutes.',
+    // Under the heading while the sign-in page is open in the player's browser.
+    opened: 'Your browser has opened. Sign in with Battle.net there, then come back.',
     countdown: (m, s) => 'Expires in ' + m + ':' + String(s).padStart(2, '0'),
     reopen: 'Open the browser again',
     cancel: 'Cancel',

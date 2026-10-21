@@ -627,7 +627,8 @@ type Snapshot struct {
 	Connect          ConnectView `json:"connect"`
 	TokenBackend     string      `json:"token_backend"`
 	TokenBackendName string      `json:"token_backend_name"`
-	// TokenBackendNote is the sub line under the file fallback.
+	// TokenBackendNote is the muted line under the store: what Credential Manager is,
+	// or, on the file fallback, which store was not available.
 	TokenBackendNote string `json:"token_backend_note,omitempty"`
 	APIBaseURL       string `json:"api_base_url"`
 	SiteBaseURL      string `json:"site_base_url"`
@@ -786,7 +787,7 @@ func (a *App) Snapshot() Snapshot {
 		Connect:          a.connectView(),
 		TokenBackend:     string(a.o.Secret.Backend()),
 		TokenBackendName: secret.Name(a.o.Secret.Backend(), runtime.GOOS),
-		TokenBackendNote: secret.FallbackNote(a.o.Secret.Backend(), runtime.GOOS),
+		TokenBackendNote: tokenNote(a.o.Secret.Backend()),
 		APIBaseURL:       cfg.APIBaseURL,
 		SiteBaseURL:      cfg.SiteBaseURL,
 		Visibility:       cfg.ReportVisibility,
@@ -1007,4 +1008,12 @@ func (a *App) signOutIfRefused(err error, tok string) bool {
 	a.log.Warn("the site no longer accepts this device's sign-in; sign in again",
 		"component", "app", "err", err.Error())
 	return true
+}
+
+// tokenNote is the muted line under "Saved in" on the Device page.
+func tokenNote(b secret.Backend) string {
+	if n := secret.FallbackNote(b, runtime.GOOS); n != "" {
+		return n
+	}
+	return secret.StoreNote(b, runtime.GOOS)
 }

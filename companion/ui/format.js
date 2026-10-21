@@ -18,6 +18,13 @@ const FORMAT = (() => {
     return path.slice(0, head) + '…' + path.slice(path.length - tail);
   }
 
+  // pathBudget is how many characters of a folder path the Settings row has
+  // room for: 44 in the 800 px window, 34 at the 560 px minimum. Past the
+  // budget midTruncate keeps the drive and the flavour folder.
+  function pathBudget(width) {
+    return width >= 700 ? 44 : 34;
+  }
+
   const pad = (n) => String(n).padStart(2, '0');
   const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
@@ -177,7 +184,7 @@ const FORMAT = (() => {
     return secondsLeft(expiresISO, now) <= LATE_SECONDS;
   }
 
-  return { midTruncate, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
+  return { midTruncate, pathBudget, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

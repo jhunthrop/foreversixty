@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.12
+
+- Settings never hides a field under the Save bar; the sign-in screen says the browser has opened; the Status title says when a log is not credited to you yet.
+
 ## 0.2.11
 
 - The companion looks like the site: its own typefaces, a dark title bar that never flashes white, a fixed frame with a scrolling page, a Status headline you can read from across the room, and a tray icon that shows green, amber or red.

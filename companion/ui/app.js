@@ -294,9 +294,11 @@ function renderStatus(s) {
     checking: checkBuilds.running,
     canCheck: checkBuilds.canPress(),
     checkError: local.checkError,
+    failed,
   };
   region('status-rows', $('status-rows'), rows, (el) => {
     el.replaceChildren();
+    if (rows.failed) el.append(h('div', { class: 'stale-cap', text: COPY.status.lastKnown }));
     let report;
     if (rows.report === 'none') report = h('span', { class: 'v', text: COPY.status.noReport });
     else if (rows.report === 'starting') report = h('span', { class: 'v', text: COPY.status.starting });
@@ -309,8 +311,12 @@ function renderStatus(s) {
         cr.help ? h('span', { class: 'help13', text: cr.help }) : null);
     }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.report }), report));
+    // An open report with no fight yet says so, rather than a bare 0 that reads as lost.
+    const noFights = p.fights === 0 && p.report_id && p.logging;
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
-      h('span', { class: 'v mono', text: String(p.fights) })));
+      noFights
+        ? h('span', { class: 'v' }, COPY.status.noFightsYet, h('span', { class: 'sub', text: COPY.status.noFightsHelp }))
+        : h('span', { class: 'v mono', text: String(p.fights) })));
     if (p.queued > 0) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
         h('span', { class: 'v mono', text: String(p.queued) })));
@@ -402,6 +408,8 @@ function renderReports(s) {
   const all = $('reports-all');
   if (all.getAttribute('href') !== s.site_base_url + '/logs') all.setAttribute('href', s.site_base_url + '/logs');
   $('report-panel').classList.toggle('dim', local.pollFailed);
+  // Signed out, the one next step is signing in; the link would compete with it.
+  all.hidden = !s.paired;
 
   region('reports', $('report-panel'), { reports: s.reports, paired: s.paired, site: s.site_base_url }, (el) => {
     el.replaceChildren();
@@ -437,7 +445,7 @@ function reportRow(r, now) {
   const lead = credit.credited('');
   const creditNode = creditWords.startsWith(lead)
     ? [lead, h('span', { class: 'who', text: creditWords.slice(lead.length) })]
-    : [h('span', { class: 'not-credited', text: creditWords })];
+    : [h('span', { class: 'not-credited', title: credit.notYetHelp, text: creditWords })];
   const parts = [FORMAT.when(r.started_at, now, COPY.reports), COPY.reports.fights(r.fights)];
   if (!r.done) parts.push(h('span', { class: 'live', text: COPY.reports.inProgress }));
   if (!r.url) parts.push(COPY.reports.notUploaded);
@@ -522,9 +530,11 @@ function pairForm() {
 
 function signingInView(c) {
   const body = [
-    h('p', { class: 'lede' }, COPY.device.checkCode),
+    // The browser-blocked state has its own sentence below, in place of this one.
+    c.state === 'blocked' ? null : h('p', { class: 'lede', text: COPY.device.opened }),
+    h('p', { class: 'lede', text: COPY.device.checkCode }),
     h('div', { class: 'code-plate' }, h('span', { class: 'code', text: c.user_code })),
-    h('p', { class: 'fine' }, COPY.device.lasts + ' ', h('span', { class: 'mono', id: 'countdown', 'data-expires': c.expires_at || '' })),
+    h('p', { class: 'fine expires', id: 'countdown', 'data-expires': c.expires_at || '' }),
     h('div', { class: 'expiry', 'aria-hidden': 'true' }, h('i', { id: 'expiry-fill' })),
   ];
   if (c.trouble) body.push(h('p', { class: 'note warn', role: 'status', text: COPY.device.trouble }));
@@ -562,10 +572,11 @@ function pairedView(s) {
     body.push(h('p', { class: 'connected-flash' + (first ? ' draw' : ''), role: 'status' }, icon('check', 14), COPY.device.flash));
     if (first) replay($('device-panel'), 'flash', 1200);
   }
-  const file = s.token_backend === 'file';
+  // Where the key lives, in the player's words, with one muted line that says what
+  // the store is. Never a warning colour: the file fallback still uploads.
   body.push(h('div', { class: 'row device-saved' }, h('span', { class: 'k', text: COPY.device.savedIn }),
-    h('span', { class: 'v' + (file ? ' amber' : ''), text: s.token_backend_name },
-      file && s.token_backend_note ? h('span', { class: 'sub', text: s.token_backend_note }) : null)));
+    h('span', { class: 'v', text: s.token_backend_name },
+      s.token_backend_note ? h('span', { class: 'sub', text: s.token_backend_note }) : null)));
   body.push(h('details', {}, h('summary', {}, icon('chevron', 14), COPY.device.details),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.deviceName }), h('span', { class: 'v mono', text: s.device_name })),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.api }), h('span', { class: 'v mono', text: s.api_base_url }))));
@@ -738,7 +749,7 @@ function renderSettings(s) {
     fillSettings(s);
   }
 
-  region('folders', $('folder-list'), { installs: s.installs, pending: s.watch_pending }, (el) => {
+  region('folders', $('folder-list'), { installs: s.installs, pending: s.watch_pending, budget: FORMAT.pathBudget(window.innerWidth) }, (el) => {
     el.replaceChildren();
     if (!s.installs.length) {
       el.append(h('li', {}, h('span', { class: 'note', text: COPY.settings.noFolders })));
@@ -750,7 +761,7 @@ function renderSettings(s) {
       const where = h('div', { class: 'where' },
         h('div', { class: 'head' }, h('span', { class: 'name', text: i.flavor_name || i.flavor }),
           h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) })),
-        h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 52) }));
+        h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, FORMAT.pathBudget(window.innerWidth)) }));
       const side = i.added
         ? h('button', { class: 'ghost small', type: 'button', 'data-fid': 'remove-' + i.path, onclick: (e) => onRemove(e.target, i.path) }, COPY.settings.remove)
         : h('span', { class: 'auto', text: COPY.settings.foundAutomatically });
@@ -759,6 +770,8 @@ function renderSettings(s) {
   });
 }
 
+// A narrower window shortens the Settings paths; the poll would not notice a resize.
+window.addEventListener('resize', () => { if (snap) renderSettings(snap); });
 $('visibility').addEventListener('change', syncSave);
 $('logging-character').addEventListener('change', syncSave);
 

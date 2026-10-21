@@ -217,3 +217,79 @@ test('the expiry bar is the share of the ten minutes left, and the last minute i
   assert.strictEqual(FORMAT.lastMinute('2026-10-15T20:01:01Z', now), false);
   assert.strictEqual(FORMAT.lastMinute('2026-10-15T19:00:00Z', now), true);
 });
+
+test('a Settings path is middle-truncated to its budget, never clipped', () => {
+  const p = 'C:\Program Files (x86)\World of Warcraft\_classic_era_';
+  assert.strictEqual(FORMAT.pathBudget(800), 44);
+  assert.strictEqual(FORMAT.pathBudget(560), 34);
+  for (const w of [800, 560]) {
+    const out = FORMAT.midTruncate(p, FORMAT.pathBudget(w));
+    assert.ok(out.length <= FORMAT.pathBudget(w));
+    assert.ok(out.endsWith('_classic_era_'), 'the tail names the flavour: ' + out);
+    assert.ok(out.includes('\u2026'));
+  }
+  const anniv = 'C:\Program Files (x86)\World of Warcraft\_anniversary_';
+  assert.ok(FORMAT.midTruncate(anniv, 34).endsWith('_anniversary_'));
+});
+
+test('the sign-in screen says the browser has opened, and the expiry once', () => {
+  assert.strictEqual(COPY.device.opened, 'Your browser has opened. Sign in with Battle.net there, then come back.');
+  assert.strictEqual(COPY.device.countdown(7, 31), 'Expires in 7:31');
+  assert.strictEqual(COPY.device.lasts, undefined);
+  assert.ok(COPY.device.blocked.startsWith('Could not open your browser'));
+});
+
+test('the update bar says how to install in the player\u2019s terms', () => {
+  assert.strictEqual(COPY.footer.updateReady,
+    'Update ready. Quit the companion from the tray icon and start it again to install it.');
+});
+
+test('Status unavailable greys the last numbers and says they are last known', () => {
+  assert.strictEqual(COPY.status.lastKnown, 'Last known');
+  assert.strictEqual(COPY.status.unavailableTitle, 'Status unavailable');
+});
+
+const read = (f) => fs.readFileSync(path.join(__dirname, f), 'utf8');
+
+test('a log that is not credited yet says so in the Status title, the dot stays green', () => {
+  const h = fixture('status-not-credited.json').headline;
+  assert.strictEqual(h.title, 'Logging \u00b7 not credited to you yet');
+  assert.strictEqual(h.tone, 'on');
+  assert.ok(h.sub.endsWith('character not matched yet'));
+  assert.strictEqual(fixture('status-credited.json').headline.title, 'Logging');
+  assert.strictEqual(fixture('status-no-name.json').headline.title, 'Logging');
+});
+
+test('Settings lists visibility, then the credited character, then the game folders, then Save', () => {
+  const html = read('index.html');
+  const at = (id) => html.indexOf('id="' + id + '"');
+  assert.ok(at('visibility') > 0);
+  assert.ok(at('visibility') < at('logging-character'));
+  assert.ok(at('logging-character') < at('folder-list'));
+  assert.ok(at('folder-list') < at('save'));
+});
+
+test('the Save strip is the last thing in Settings, with a fade above it', () => {
+  const html = read('index.html');
+  const settings = html.slice(html.indexOf('<section id="settings"'), html.indexOf('</section>', html.indexOf('<section id="settings"')));
+  assert.ok(settings.trimEnd().endsWith('</div>'));
+  assert.ok(settings.lastIndexOf('class="save-row"') > settings.lastIndexOf('class="panel"'), 'the strip sits after the panel, not inside it');
+  const css = read('styles.css');
+  assert.match(css, /\.save-row::before\s*\{[^}]*height: 24px/);
+  assert.match(css, /--save-h: 64px/);
+});
+
+test('the nav opens with Status current, so no tab changes at first paint', () => {
+  assert.match(read('index.html'), /<button data-page="status" aria-current="page">/);
+});
+
+test('the connected token line is muted, never a warning', () => {
+  const js = read('app.js');
+  const row = js.slice(js.indexOf("class: 'row device-saved'"), js.indexOf("class: 'row device-saved'") + 400);
+  assert.ok(!row.includes('amber'));
+});
+
+test('the Fights row never shows a bare 0 on an open report', () => {
+  assert.strictEqual(COPY.status.noFightsYet, '0 so far');
+  assert.strictEqual(COPY.status.noFightsHelp, 'The first fight uploads when it ends.');
+});
