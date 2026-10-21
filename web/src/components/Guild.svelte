@@ -47,7 +47,8 @@
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
   import { guildMarkSrc } from '../lib/guild/mark';
-  import { claimEntryCopy, rosterGateState } from '../lib/guild/roster-gate';
+  import { bandCountsLine, showBandCounts, updatedLine } from '../lib/guild/overview-view';
+  import { claimEntryCopy, claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
@@ -217,6 +218,17 @@
       (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
   );
 
+  /** What the band says about claiming: the "Run this guild? Claim it." prompt only for an officer
+   *  rank in an unclaimed guild, who holds a claimed guild for its members, nothing for a stranger. */
+  const claimEntry = $derived(
+    claimEntryFor({
+      signedIn,
+      canManage,
+      membership: myGuildMembership,
+      claimState: home?.claim.state ?? null,
+      claimedBy: home?.claim.claimed_by_name ?? null,
+    }),
+  );
   /** Control-centre contract addition: `home.viewer.role` is the server's own answer,
    *  preferred outright when present; a home response from before this contract landed
    *  (or a fixture using the old shape) falls back to the pre-existing `/v1/me`-membership
@@ -411,6 +423,9 @@
   // preferred whenever it has loaded; the public `data.progression` fallback (today's own
   // public roster_best/progression read, unaffected by this round) covers a visitor who
   // never reaches a membership match, or a pre-contract home response.
+  /** The band counts what the viewer can open: a visitor whose only report is guild-only is told
+   *  nothing about bosses and pulls beside a tab reading "No public reports this week yet". */
+  const showCounts = $derived(showBandCounts(role, data?.reports.length ?? 0));
   const killed = $derived(
     home?.summary?.named_encounters_down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
   );
@@ -656,14 +671,14 @@
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
             <h1 class="font-display text-strong text-[22px] font-bold">{data.guild.name}</h1>
           </div>
-          {#if home?.summary?.updated_at !== undefined}
-            <span class="text-muted text-[12px]">Updated {home.summary.updated_at.slice(0, 10)}</span>
+          {#if home?.summary?.updated_at !== undefined && updatedLine(home.summary.updated_at) !== ''}
+            <span class="text-muted text-[12px]">{updatedLine(home.summary.updated_at)}</span>
           {/if}
           <p class="text-muted text-[13px]">
             {rulesetLabel(resolved.ruleset)}
-            {resolved.region.toUpperCase()} ·
-            <span class="tabular font-mono">{killed}</span> bosses down ·
-            <span class="tabular font-mono">{pulls}</span> pulls
+            {resolved.region.toUpperCase()}{#if showCounts}&#32; · <span class="tabular font-mono"
+                >{bandCountsLine(killed, pulls)}</span
+              >{/if}
           </p>
 
           <!-- Spec §4.A.1 fourth branch (public visitor): one sign-in prompt in the hero,
@@ -680,7 +695,7 @@
           <!-- Any signed-in viewer who is not a verified officer can start a claim from here;
                the claim page states the rules and who may claim. A verified officer gets
                their Guild settings link in the role line below instead. -->
-          {#if meResolved && signedIn && !canManage}
+          {#if meResolved && claimEntry.kind === 'claim'}
             <p class="text-muted text-[13px]" data-testid="guild-claim-entry">
               {claimEntryCopy.question}
               <a
@@ -688,6 +703,8 @@
                 data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
               >
             </p>
+          {:else if meResolved && claimEntry.kind === 'note'}
+            <p class="text-muted text-[13px]" data-testid="guild-claim-note">{claimEntry.text}</p>
           {/if}
 
           <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
@@ -796,8 +813,7 @@
         {role}
         reports={home?.reports ?? data.reports}
         summary={home?.summary}
-        claimed={home?.claim.state === 'claimed'}
-        claimedByName={home?.claim.claimed_by_name ?? null}
+        {showCounts}
         onSelectTab={selectTab}
       />
     {:else if activeTab === 'roster' && home !== null}
@@ -830,11 +846,11 @@
         {@render lazyFallback(raidsLazy)}
       {:else if raidsStatus === 'missing'}
         <EmptyState
-          message="Raid night detail isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
+          message="Raid night detail is not available yet. Check back after the next sync."
           testid="guild-raids-missing"
         />
       {:else if raidsLazy.current}
-        <raidsLazy.current rows={raids?.rows ?? []} officer={role === 'officer' || role === 'moderator'} />
+        <raidsLazy.current rows={raids?.rows ?? []} {guildId} publicView={role === 'public'} />
       {/if}
     {:else if activeTab === 'progression'}
       {#if progressionStatus === 'loading' || (progressionStatus === 'ready' && !progressionLazy.current)}
@@ -842,7 +858,7 @@
         {@render lazyFallback(progressionLazy)}
       {:else if progressionStatus === 'missing' && (data?.roster_best ?? []).length === 0}
         <EmptyState
-          message="Progression detail isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
+          message="Progression detail is not available yet. Check back after the next sync."
           testid="guild-progression-missing"
         />
       {:else if progressionLazy.current}
@@ -859,7 +875,7 @@
         {@render lazyFallback(readinessLazy)}
       {:else if readinessStatus === 'missing'}
         <EmptyState
-          message="Readiness checks aren't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
+          message="Readiness checks are not available yet. Check back after the next sync."
           testid="guild-readiness-missing"
         />
       {:else if readinessLazy.current}
@@ -875,7 +891,7 @@
         {@render lazyFallback(lootLazy)}
       {:else if lootStatus === 'missing'}
         <EmptyState
-          message="Loot ranking isn't live yet -- the api lane is still deploying this endpoint. Check back after the next sync."
+          message="Loot ranking is not available yet. Check back after the next sync."
           testid="guild-loot-missing"
         />
       {:else if lootStatus === 'failed'}

@@ -24,7 +24,7 @@ export const guildHomeCopy = {
   emptyRosterMember: "You're the only member the site knows about.",
   /** The officer-only action on the empty-roster state: where the invite link lives. */
   manageInvite: 'Guild settings',
-  loggedRecently: 'Logged in the last day',
+  loggedRecently: 'Online today',
   unverified: 'Unverified',
   // UX review defect 3 (2026-09-28): the roster summary an officer sees above the (now
   // unverified-first) roster list, so waiting rows are announced, not just sorted forward.

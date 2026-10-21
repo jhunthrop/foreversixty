@@ -158,6 +158,7 @@ reads `presence.EvidenceReport` for every viewer.
     "enchants": { "missing_slots": ["chest"], "checked": true },             // checked=false without gear consent
     "consumables": { "state": "stocked" | "short" | "unknown" },             // unknown without gear_bags consent
     "talent_points_unspent": 1,
+    "talent_points_read": true,
     "item_level": 58, "item_level_delta": -5,
     "logged_at": "...",
     "failing": 4,                                                            // count of failing checks

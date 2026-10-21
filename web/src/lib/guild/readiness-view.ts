@@ -4,6 +4,7 @@
 // own shape) so GuildReadiness.svelte never re-derives a number the API already sent.
 import type { GuildReadinessRow } from './api';
 import { SLOT_LABELS, type Slot } from '../planner/types';
+import { counted } from '../plural';
 
 /** Spec §4.E: `readinessScore = failCount * 100 + gearGainDps`, so a raider failing more
  *  checks always sorts above one failing fewer, ties broken by the bigger gear gain. The
@@ -29,18 +30,35 @@ export function pinReadinessOwnRow(
   );
 }
 
-export const NO_GEAR_CONSENT = 'no gear consent';
-export const CONSENT_NEEDED = 'consent needed';
+export const NOT_SHARED = 'Not shared';
+export const NOT_CHECKED_YET = 'Not checked yet';
+export const NOT_READ_YET = 'Not read yet';
+export const NO_UPGRADES = 'No upgrades';
+export const NOT_SIMMED_YET = 'not simmed yet';
 export const ALL_ENCHANTED = 'All enchanted';
 
+/** A cell the character's consent keeps from the site reads "Not shared" (consent is roster
+ *  only), and one the site could have read but has not yet reads "Not checked yet". The words
+ *  name the real state per cell; "consent needed" told a player nothing about which. */
+function withheldWord(row: GuildReadinessRow, sharedAt: 'gear' | 'gear_bags'): string {
+  const shares = sharedAt === 'gear' ? row.consent !== 'roster' : row.consent === 'gear_bags';
+  return shares ? NOT_CHECKED_YET : NOT_SHARED;
+}
+
 /** Spec §4.E's Gear gap cell. `gear`/`gear_bags` consent only -- `gear_gap === null` (the
- *  API's fail-closed shape for `roster` consent) always reads the honest "no gear consent"
- *  line, never a leaked figure. */
+ *  API's fail-closed shape for `roster` consent) reads "Not shared", never a leaked figure; a
+ *  member who shares gear whose band has no entry yet reads "Not checked yet". The gain is
+ *  printed only when a simulation produced it: upgrades with no simulated gain read
+ *  "15 upgrades · not simmed yet", never "+0 DPS". */
 export function gearGapLabel(row: GuildReadinessRow): string {
   const gap = row.gear_gap;
-  if (gap === null || gap.upgrades === null) return NO_GEAR_CONSENT;
+  if (gap === null || gap.upgrades === null) return withheldWord(row, 'gear');
+  if (gap.upgrades === 0) return NO_UPGRADES;
+  const upgrades = counted(gap.upgrades, 'upgrade');
   const gain = Math.round(gap.gain_dps ?? 0);
-  return `${gap.upgrades} upgrade${gap.upgrades === 1 ? '' : 's'} · +${gain} DPS`;
+  if (gain <= 0 && gap.not_sim_checked > 0) return `${upgrades} · ${NOT_SIMMED_YET}`;
+  if (gap.not_sim_checked > 0) return `${upgrades} · +${gain} DPS · ${gap.not_sim_checked} ${NOT_SIMMED_YET}`;
+  return `${upgrades} · +${gain} DPS`;
 }
 
 /** Humanises an enchant slot key ("main_hand" -> "Main hand") via the shared slot-label
@@ -61,7 +79,7 @@ function enchantSlotLabel(slot: string): string {
  *  reads `enchantPillText` below, which truncates a long list the pill cannot hold.
  */
 export function enchantLabel(row: GuildReadinessRow): string {
-  if (!row.enchants.checked) return CONSENT_NEEDED;
+  if (!row.enchants.checked) return withheldWord(row, 'gear');
   if (row.enchants.missing_slots.length === 0) return ALL_ENCHANTED;
   return row.enchants.missing_slots.map(enchantSlotLabel).join(', ');
 }
@@ -76,7 +94,7 @@ const ENCHANT_PILL_MAX_SLOTS = 2;
  *  `ENCHANT_PILL_MAX_SLOTS` slots with a "+N more" suffix once a row fails that many
  *  enchant checks at once. */
 export function enchantPillText(row: GuildReadinessRow): string {
-  if (!row.enchants.checked) return CONSENT_NEEDED;
+  if (!row.enchants.checked) return withheldWord(row, 'gear');
   if (row.enchants.missing_slots.length === 0) return ALL_ENCHANTED;
   const labels = row.enchants.missing_slots.map(enchantSlotLabel);
   if (labels.length <= ENCHANT_PILL_MAX_SLOTS) return labels.join(', ');
@@ -85,22 +103,28 @@ export function enchantPillText(row: GuildReadinessRow): string {
 }
 
 /** Spec §4.E's Consumables cell -- `gear_bags` consent only, stricter than Gear gap/
- *  Enchants' `gear` floor (a `gear`-only consent reads "consent needed" here even though
- *  it already unlocks the other two cells). */
+ *  Enchants' `gear` floor: a member who shares gear but not bags reads "Not shared" here even
+ *  though the other two cells are read; one who shares bags the export did not carry reads
+ *  "Not checked yet". */
 export function consumablesLabel(row: GuildReadinessRow): string {
-  if (row.consumables.state === 'unknown') return CONSENT_NEEDED;
+  if (row.consumables.state === 'unknown') return withheldWord(row, 'gear_bags');
   return row.consumables.state === 'stocked' ? 'Stocked' : 'Short';
 }
 
-/** Spec §4.E's Talent points cell. */
+/** Spec §4.E's Talent points cell. The API sends 0 both for "nothing unspent" and for "the
+ *  export carried no talents", so it also says which (`talent_points_read`): a 0 it did not
+ *  read is "Not read yet", never a 0 a level 60 would be ashamed of. A response from before
+ *  that field reads "—" for 0, claiming nothing. */
 export function talentPointsLabel(row: GuildReadinessRow): string {
-  return row.talent_points_unspent > 0 ? `${row.talent_points_unspent} unspent` : '0';
+  if (row.talent_points_unspent > 0) return `${row.talent_points_unspent} unspent`;
+  if (row.talent_points_read === false) return NOT_READ_YET;
+  return row.talent_points_read === true ? 'None unspent' : '—';
 }
 
 /** Spec §4.E's Item level cell: signed delta against the roster's own median, `—` when the
- *  character carries no item level at all (no gear consent). */
+ *  character carries no item level at all and the roster-only consent explains why. */
 export function itemLevelLabel(row: GuildReadinessRow): string {
-  if (row.item_level === null) return '—';
+  if (row.item_level === null) return row.consent === 'roster' ? NOT_SHARED : '—';
   const delta = row.item_level_delta ?? 0;
   const sign = delta >= 0 ? '+' : '';
   return `${row.item_level} (${sign}${delta})`;
@@ -128,6 +152,11 @@ export function consumablesKind(row: GuildReadinessRow): ReadinessCellKind {
 
 export function talentPointsKind(row: GuildReadinessRow): ReadinessCellKind {
   return row.talent_points_unspent > 0 ? 'warn' : 'neutral';
+}
+
+/** The muted treatment (no pill, nothing to flag) for a cell that says why it has no figure. */
+export function isWithheldWord(label: string): boolean {
+  return label === NOT_SHARED || label === NOT_CHECKED_YET || label === NOT_READ_YET;
 }
 
 /** `'ok'` at or above the roster median (spec: "green at or above"), `'warn'` below,

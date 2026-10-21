@@ -1,16 +1,26 @@
 <!-- web/src/components/guild/GuildLoot.svelte -->
 <!-- Guild control-centre spec §4.F/§12.1: the loot council helper. Boss picker defaults to
-     the next unkilled named boss; Onyxia today reads "next unkilled: none, farm." Each
-     drop shows up to four ranked candidates; the awarded item's own top candidate carries
-     the "Awarded" tag, every other candidate shows a muted "Awarded to {name}" note, and an
-     unawarded item keeps the Award button on every row (§12.1's round-2 fix: one awardee
-     per item, not one per candidate row). Member sees every drop and ranking read-only
-     (§10.1, proposed); only officer sees the Award control. -->
+     the next unkilled named boss; a boss that is down reads "on farm." Each drop shows up to
+     four ranked candidates. An awarded item says who got it, when and from whom once, on the
+     item itself; every other candidate row reads "Already awarded" and has no button, and an
+     unawarded item keeps the Award button on every row (§12.1's round-2 fix: one awardee per
+     item, not one per candidate row). Member sees every drop and ranking read-only (§10.1,
+     proposed); only officer sees the Award control. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
-  import { bossPickerLabel, candidateAction, candidateGainLabel } from '../../lib/guild/loot-view';
+  import {
+    LOOT_FOOTNOTE,
+    NOT_SIMMED_NOTE,
+    NO_CANDIDATE,
+    anyNotSimmed,
+    attendanceLabel,
+    awardedLine,
+    bossPickerLabel,
+    candidateAction,
+    candidateGainLabel,
+  } from '../../lib/guild/loot-view';
   import EmptyState from '../ui/EmptyState.svelte';
 
   let {
@@ -28,6 +38,7 @@
   } = $props();
 
   const selectedEncounter = $derived(loot?.encounters.find((e) => e.encounter_id === loot.selected));
+  const notSimmed = $derived(loot !== null && anyNotSimmed(loot.items));
 </script>
 
 <section class="flex flex-col gap-4" data-testid="guild-loot-tab">
@@ -51,6 +62,10 @@
       </span>
     </div>
 
+    {#if notSimmed}
+      <p class="text-muted text-[12px]" data-testid="guild-loot-not-simmed">{NOT_SIMMED_NOTE}</p>
+    {/if}
+
     <div class="flex flex-col gap-4" data-testid="guild-loot-items">
       {#each loot.items as item (item.item_id)}
         <div
@@ -68,10 +83,15 @@
               <span
                 class="pill"
                 style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
-                >Awarded</span
+                data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
               >
             {/if}
           </div>
+          {#if item.candidates.length === 0}
+            <p class="text-muted text-[13px]" data-testid={`guild-loot-no-candidate-${item.item_id}`}>
+              {NO_CANDIDATE}
+            </p>
+          {/if}
           <div class="flex flex-col">
             {#each item.candidates as candidate (candidate.character_key)}
               {@const action = candidateAction(item, candidate.character_key)}
@@ -88,12 +108,9 @@
                 >
                   {candidate.name}
                 </span>
-                <span class="tabular font-mono text-[12px]">{candidateGainLabel(candidate)}</span>
-                {#if candidate.not_sim_checked}
-                  <span class="text-muted text-[11px]">not sim-checked</span>
-                {/if}
+                <span class="tabular font-mono text-[12px]">{candidateGainLabel(candidate, item.slot)}</span>
                 <span class="text-muted tabular font-mono text-[12px]">
-                  {candidate.attendance.present}/{candidate.attendance.nights} nights
+                  {attendanceLabel(candidate.attendance.present, candidate.attendance.nights)}
                 </span>
                 {#if candidate.already_equivalent}
                   <span
@@ -105,11 +122,7 @@
                 {/if}
                 <span class="ml-auto">
                   {#if action.kind === 'awarded'}
-                    <span
-                      class="pill"
-                      style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
-                      >Awarded</span
-                    >
+                    <!-- The item header already says who got it, when and from whom. -->
                   {:else if action.kind === 'awarded-to-other'}
                     <span class="text-muted text-[12px]">{action.label}</span>
                   {:else if officer}
@@ -130,9 +143,6 @@
         </div>
       {/each}
     </div>
-    <p class="text-muted text-[12px]">
-      Drops are the raid's own real loot table; ranked gain reuses the planner's own gain rule. "Awarded"
-      needs a new table this round proposes — a drop stays unawarded until an officer acts.
-    </p>
+    <p class="text-muted text-[12px]">{LOOT_FOOTNOTE}</p>
   {/if}
 </section>

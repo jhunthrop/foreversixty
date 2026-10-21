@@ -76,3 +76,54 @@ export function formatSyncStamp(d: Date): string {
   const pad = (value: number): string => String(value).padStart(2, '0');
   return `${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}, ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const WEEKDAY_WINDOW_DAYS = 6;
+
+/** The calendar day as a day number, so two days subtract to whole days with no clock or DST in it. */
+function dayNumber(year: number, month: number, day: number): number {
+  return Math.floor(Date.UTC(year, month, day) / DAY_MS);
+}
+
+/** "today", "yesterday", a weekday inside 6 days, else "20 Oct" ("20 Oct 2025" in another year). */
+function dayWordFor(target: { y: number; m: number; d: number }, now: Date): string {
+  const age =
+    dayNumber(now.getFullYear(), now.getMonth(), now.getDate()) - dayNumber(target.y, target.m, target.d);
+  if (age <= 0) return 'today';
+  if (age === 1) return 'yesterday';
+  if (age <= WEEKDAY_WINDOW_DAYS)
+    return WEEKDAYS[new Date(Date.UTC(target.y, target.m, target.d)).getUTCDay()];
+  const base = `${target.d} ${SHORT_MONTHS[target.m]}`;
+  return target.y === now.getFullYear() ? base : `${base} ${target.y}`;
+}
+
+/**
+ * The guild pages' day word for a moment ("Updated today", a raid night): the day is resolved in
+ * the viewer's own zone, so 20:00 in Chicago on the 20th is "today" even where UTC has already
+ * reached the 21st. An unreadable date renders as nothing.
+ */
+export function dayWord(d: Date, now: Date = new Date()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return dayWordFor({ y: d.getFullYear(), m: d.getMonth(), d: d.getDate() }, now);
+}
+
+/**
+ * The same word for a date-only value ("2026-10-20"): a calendar date has no zone, so it is read
+ * as written (never through `new Date`, which would move it by the viewer's offset) and only then
+ * set against the viewer's today. Anything else renders as nothing.
+ */
+export function dateOnlyWord(value: string, now: Date = new Date()): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (match === null) return '';
+  return dayWordFor({ y: Number(match[1]), m: Number(match[2]) - 1, d: Number(match[3]) }, now);
+}
+
+/** "31 Dec 2026" for a stored date-only value or an RFC 3339 instant, always read in UTC: a
+ *  grant "until 2026-12-31" is the 31st for everyone, not the 30th west of Greenwich. */
+export function utcDayMonthYear(value: string): string {
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (dateOnly !== null) {
+    return `${Number(dateOnly[3])} ${SHORT_MONTHS[Number(dateOnly[2]) - 1]} ${dateOnly[1]}`;
+  }
+  return formatDayMonthYear(new Date(value));
+}

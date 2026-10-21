@@ -5,7 +5,11 @@
 <script lang="ts">
   import { characterHref, splitUnitName, type Region, type Ruleset } from '../../lib/characters';
   import { classColorVar, formatAmount, rowLink } from '../../lib/report/format';
-  import type { GuildProgressionPage } from '../../lib/guild/api';
+  import { dayWord } from '../../lib/dates';
+  import type { GuildParseRef, GuildProgressionPage } from '../../lib/guild/api';
+  import { progressionNightDay } from '../../lib/guild/overview-view';
+  import { specName } from '../../lib/guild/spec-name';
+  import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
   import { executionLabel, executionTitle } from '../../lib/sim/execution';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -24,6 +28,19 @@
     region: Region;
     ruleset: Ruleset;
   } = $props();
+
+  /** One row per raider per encounter: the API also sends each raider's best with no encounter
+   *  behind it (id 0, no name), which reads as a second row of dashes and is not a boss. */
+  const encounterBests = $derived(rosterBest.filter((row) => row.encounter_id > 0 && row.encounter !== ''));
+
+  /** The tank, healer and damage bests that exist, in that order. */
+  function bestParses(best: {
+    tank?: GuildParseRef;
+    healer?: GuildParseRef;
+    dps?: GuildParseRef;
+  }): GuildParseRef[] {
+    return [best.tank, best.healer, best.dps].filter((parse): parse is GuildParseRef => parse !== undefined);
+  }
 
   function clock(ms: number | null): string {
     if (ms === null) return '—';
@@ -52,9 +69,8 @@
         ></div>
       </div>
       <p class="text-muted text-[12px]">
-        Barrow Deeps and Hyjal Summit have no published encounter list yet
-        (data/curated/loot/forever-raid-phases.json) — their pulls count toward the tier total above but
-        cannot be named or ranked per boss until Forever publishes them.
+        Barrow Deeps and Hyjal Summit have no encounter list yet. Their pulls count toward the tier total
+        above but cannot be named or ranked per boss.
       </p>
     </div>
 
@@ -66,14 +82,18 @@
         <h3 class="section-title text-[16px]">{encounter.name} · pulls to kill</h3>
         {#if encounter.first_kill_at !== null}
           <p class="text-[13px]">
-            First kill {encounter.first_kill_at.slice(0, 10)} · best kill time {clock(encounter.best_kill_ms)}
+            First kill {dayWord(new Date(encounter.first_kill_at))} · best kill time {clock(
+              encounter.best_kill_ms,
+            )}
           </p>
         {/if}
         <div class="flex flex-col">
           {#each encounter.pulls_by_night as night (night.report_id)}
             <div class="border-line-soft flex items-center gap-4 border-b py-1.5">
-              <span class="text-muted tabular min-w-[90px] font-mono text-[13px]">{night.date}</span>
-              <span class="text-[13px]">{night.pulls} pull{night.pulls === 1 ? '' : 's'}</span>
+              <span class="text-muted tabular min-w-[90px] font-mono text-[13px]"
+                >{progressionNightDay(night.date)}</span
+              >
+              <span class="text-[13px]">{counted(night.pulls, 'pull')}</span>
               {#if night.killed}
                 <span
                   class="pill"
@@ -85,19 +105,19 @@
           {/each}
         </div>
         <p class="text-[13px]">
-          Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} average. Top death causes need the report's own
-          event data (which spell killed whom) — death <em>count</em> is stored today, the <em>cause</em> is
-          not (<em>NEEDS NEW DATA</em>).
+          Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} on average. We do not track what killed people
+          yet.
         </p>
-        {#if encounter.best_by_role.dps !== undefined || encounter.best_by_role.healer !== undefined || encounter.best_by_role.tank !== undefined}
-          <p class="text-[13px]">
+        {#if bestParses(encounter.best_by_role).length > 0}
+          <p class="text-[13px]" data-testid="guild-progression-best-parse">
             Guild best parse:
-            {#each Object.entries(encounter.best_by_role) as [role, parse] (role)}
-              {#if parse !== undefined}
+            {#each bestParses(encounter.best_by_role) as parse, index (index)}
+              {#if index > 0}<span class="hidden md:inline" aria-hidden="true"> · </span>{/if}
+              <span class="block md:inline">
                 <span style={`color:${classColorVar(parse.class)};font-weight:600`}>{parse.name}</span>
                 {parse.value.toFixed(1)}
                 {parse.metric.toUpperCase()}
-              {/if}
+              </span>
             {/each}
           </p>
         {/if}
@@ -113,7 +133,7 @@
         {#each progression.unnamed as zone (zone.zone)}
           <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
             <span class="flex-1 text-[14px] font-semibold">{zone.zone}</span>
-            <span class="text-muted tabular font-mono text-[13px]">{zone.pulls} pulls logged</span>
+            <span class="text-muted tabular font-mono text-[13px]">{counted(zone.pulls, 'pull')} logged</span>
             <span class="text-muted text-[12px]">no named encounters yet</span>
           </div>
         {/each}
@@ -121,10 +141,10 @@
     {/if}
   {/if}
 
-  {#if rosterBest.length > 0}
+  {#if encounterBests.length > 0}
     <div class="flex flex-col gap-2" data-testid="guild-roster-best">
       <h3 class="section-title text-[16px]">Roster bests</h3>
-      {#each rosterBest as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
+      {#each encounterBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
         <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
           <a
             class="{rowLink} truncate font-semibold"
@@ -134,7 +154,7 @@
             {splitUnitName(row.player.name).name}
           </a>
           <span class="text-muted hidden truncate text-[13px] md:inline"
-            >{row.encounter} · {row.player.spec}</span
+            >{row.encounter} · {specName(row.player.spec)}</span
           >
           <span class="tabular ml-auto font-mono text-[14px]">{formatAmount(Math.round(row.value))}</span>
           <span

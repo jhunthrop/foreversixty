@@ -2,7 +2,7 @@
 // A guild member's way into their guild: the header's Roster and Guild settings doors lead
 // to it (and to Find a guild / Claim your guild when the session has none), the guild page
 // shows the roster to a verified member and one honest sentence to everyone else, and the
-// claim entry sits under the header for any signed-in viewer who is not a verified officer.
+// band names who holds the claim to a member, and offers the claim only to an officer rank.
 import { expect, test, type Page } from '@playwright/test';
 import {
   GUILD_ID,
@@ -118,8 +118,8 @@ test.describe('the guild page', () => {
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-rows').locator('.guild-roster-row').first()).toBeVisible();
     await expect(page.getByTestId('guild-roster-gate')).toHaveCount(0);
-    await expect(page.getByTestId('guild-claim-entry')).toHaveText('Run this guild? Claim it.');
-    await expect(page.getByTestId('guild-claim-entry-link')).toHaveAttribute('href', `${GUILD_PATH}/claim`);
+    await expect(page.getByTestId('guild-claim-note')).toHaveText('Claimed by Kraggor');
+    await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
   });
 
   test('tells a member still waiting on an officer what opens the roster, with no rows', async ({ page }) => {
@@ -129,7 +129,7 @@ test.describe('the guild page', () => {
     await expect(gate).toContainText('waiting for an officer to verify');
     await expect(gate).toBeInViewport();
     await expect(page.getByTestId('guild-roster-rows')).toHaveCount(0);
-    await expect(page.getByTestId('guild-claim-entry-link')).toBeVisible();
+    await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
   });
 
   test('tells a visitor the roster is for members, with no rows and no claim entry', async ({ page }) => {
@@ -146,7 +146,7 @@ test.describe('the guild page', () => {
     await stub(page, 'stranger');
     await page.goto(GUILD_PATH);
     await expect(page.getByTestId('guild-roster-gate')).toContainText('Roster is for members of this guild');
-    await expect(page.getByTestId('guild-claim-entry-link')).toBeVisible();
+    await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
   });
 
   test('lists everyone the addon saw to a member, with a word beside each and no controls', async ({

@@ -1,5 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import { formatDate, formatDayMonthYear, isPast, latest, relativeDay, relativeTime } from './dates';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  dateOnlyWord,
+  dayWord,
+  formatDate,
+  formatDayMonthYear,
+  isPast,
+  latest,
+  relativeDay,
+  relativeTime,
+  utcDayMonthYear,
+} from './dates';
 
 describe('formatDate', () => {
   it('uses the site month style', () => {
@@ -84,5 +94,54 @@ describe('formatDayMonthYear', () => {
     expect(formatDayMonthYear(new Date('2026-12-09T22:10:00Z'))).toBe('9 Dec 2026');
     expect(formatDayMonthYear(new Date('2026-09-30T23:59:00Z'))).toBe('30 Sep 2026');
     expect(formatDayMonthYear(new Date('not a date'))).toBe('');
+  });
+});
+
+describe("the guild pages' day words, in a zone west of Greenwich", () => {
+  const zone = process.env.TZ;
+  beforeAll(() => {
+    process.env.TZ = 'America/Chicago';
+  });
+  afterAll(() => {
+    if (zone === undefined) delete process.env.TZ;
+    else process.env.TZ = zone;
+  });
+
+  // Tuesday 20 Oct 2026, 20:00 CDT, is already Wednesday 21 Oct in UTC.
+  const eveningTuesday = new Date('2026-10-21T01:00:00Z');
+
+  it('reads a moment in the viewer zone, so a Tuesday evening is today and not tomorrow', () => {
+    expect(dayWord(eveningTuesday, eveningTuesday)).toBe('today');
+    expect(dayWord(new Date('2026-10-20T15:00:00Z'), eveningTuesday)).toBe('today');
+    expect(dayWord(new Date('2026-10-19T15:00:00Z'), eveningTuesday)).toBe('yesterday');
+  });
+
+  it('names a weekday inside six days and the date beyond', () => {
+    expect(dayWord(new Date('2026-10-16T18:00:00Z'), eveningTuesday)).toBe('Friday');
+    expect(dayWord(new Date('2026-10-04T18:00:00Z'), eveningTuesday)).toBe('4 Oct');
+    expect(dayWord(new Date('2025-12-31T18:00:00Z'), eveningTuesday)).toBe('31 Dec 2025');
+  });
+
+  it('never reads a future moment as a negative age', () => {
+    expect(dayWord(new Date('2026-10-22T18:00:00Z'), eveningTuesday)).toBe('today');
+  });
+
+  it('reads a date-only value as written, not through the local zone', () => {
+    expect(dateOnlyWord('2026-10-20', eveningTuesday)).toBe('today');
+    expect(dateOnlyWord('2026-10-19', eveningTuesday)).toBe('yesterday');
+    expect(dateOnlyWord('2026-10-21', eveningTuesday)).toBe('today');
+  });
+
+  it('prints the renewal date of a grant until 2026-12-31 as the 31st, not the 30th', () => {
+    // The trap this guards: midnight UTC on the 31st is the evening of the 30th here.
+    expect(new Date('2026-12-31T00:00:00Z').getDate()).toBe(30);
+    expect(utcDayMonthYear('2026-12-31')).toBe('31 Dec 2026');
+    expect(utcDayMonthYear('2026-12-31T00:00:00Z')).toBe('31 Dec 2026');
+    expect(utcDayMonthYear('2026-12-31T00:00:00.000Z')).toBe('31 Dec 2026');
+  });
+
+  it('renders nothing for a value it cannot read', () => {
+    expect(dayWord(new Date('nope'))).toBe('');
+    expect(dateOnlyWord('soon')).toBe('');
   });
 });

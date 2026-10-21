@@ -60,8 +60,11 @@ type CharacterReadiness struct {
 	// talentPointsAtLevel60 because the export carried no level section at all - the
 	// officer-only nudge_text's own cue to say so rather than present a guess as fact.
 	TalentLevelAssumed bool
-	ItemLevel          *int
-	ItemLevelDelta     *int
+	// TalentsRead is true when the export carried a talents section at all, so a zero
+	// TalentPointsUnspent is a real zero and not the absence of a reading.
+	TalentsRead    bool
+	ItemLevel      *int
+	ItemLevelDelta *int
 }
 
 // hasGearConsent reports whether consent unlocks the gear/gear_bags-gated checks
@@ -123,6 +126,7 @@ func computeReadiness(
 	}
 
 	if hasTalents {
+		cr.TalentsRead = true
 		maxPoints, assumedLevel60 := maxTalentPoints(level, hasLevel)
 		if unspent := maxPoints - talentPointsSpent; unspent > 0 {
 			cr.TalentPointsUnspent = unspent

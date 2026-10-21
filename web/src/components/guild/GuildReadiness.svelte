@@ -6,6 +6,7 @@
      390px viewport in the round-2 mock review, fixed before these boards shipped). -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import { dayWord } from '../../lib/dates';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildReadinessRow } from '../../lib/guild/api';
   import {
@@ -15,6 +16,7 @@
     enchantLabel,
     enchantPillText,
     gearGapLabel,
+    isWithheldWord,
     itemLevelKind,
     itemLevelLabel,
     nudgeText,
@@ -87,6 +89,16 @@
     return `${PILL_BASE} ${warnIsGold ? PILL_GOLD : PILL_WARN}`;
   }
 
+  /** A gear gap that says why it has no figure reads muted; a real one reads as plain text. */
+  function gearGapTextClass(row: GuildReadinessRow): string {
+    return isWithheldWord(gearGapLabel(row)) ? 'text-muted' : 'text-text';
+  }
+
+  /** The day the row's export last synced, as a word in the viewer's zone. */
+  function syncedDay(row: GuildReadinessRow): string {
+    return dayWord(new Date(row.logged_at));
+  }
+
   /** Item level reads as plain coloured text, never a pill (spec: "signed and coloured
    *  -- green at or above, red below"). */
   function itemLevelTextClass(kind: ReadinessCellKind): string {
@@ -105,18 +117,22 @@
     data-testid="guild-readiness-header"
   >
     <span class="label text-muted">Raider</span>
-    <span class="label text-muted" style="cursor:help" title="Upgrades and DPS gain vs this band's BiS"
+    <span
+      class="label text-muted"
+      style="cursor:help"
+      title="Slots with a better item in the best-in-slot list, and the DPS a simulation says they are worth"
       >Gear gap</span
     >
     <span
       class="label text-muted"
       style="cursor:help"
-      title="Weapon, chest, cloak, boots checked for a non-zero enchant id">Enchants</span
+      title="Weapon, chest, cloak and boots checked for an enchant">Enchants</span
     >
     <span
       class="label text-muted"
       style="cursor:help"
-      title="Flask/food/potion presence in bags -- gear_bags consent only">Consumables</span
+      title="Flasks, food and potions in bags. Only members who share their bags are checked."
+      >Consumables</span
     >
     <span class="label text-muted" style="cursor:help" title="Spent points vs 51 at level 60"
       >Talent points</span
@@ -143,7 +159,7 @@
             {row.name}{pinned ? ' (you)' : ''}
           </span>
         </span>
-        <span class="tabular text-text font-mono text-[12px]">{gearGapLabel(row)}</span>
+        <span class={`tabular font-mono text-[12px] ${gearGapTextClass(row)}`}>{gearGapLabel(row)}</span>
         {#if enchantKind(row) === 'consent'}
           <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
         {:else}
@@ -164,7 +180,7 @@
         <span class={`tabular font-mono text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
           >{itemLevelLabel(row)}</span
         >
-        <span class="text-muted text-[11px]">{row.logged_at.slice(0, 10)}</span>
+        <span class="text-muted text-[11px]">{syncedDay(row)}</span>
         {#if officer}
           <button
             class={NUDGE_BTN}
@@ -192,10 +208,14 @@
               {row.name}{pinned ? ' (you)' : ''}
             </span>
           </span>
-          <span class="text-muted text-[11px]">Synced {row.logged_at.slice(0, 10)}</span>
+          <span class="text-muted text-[11px]">Synced {syncedDay(row)}</span>
         </div>
         <div class="flex flex-wrap gap-4">
-          <span class={CHIP}><span class="label text-muted">Gear gap</span>{gearGapLabel(row)}</span>
+          <span class={CHIP}
+            ><span class="label text-muted">Gear gap</span><span class={gearGapTextClass(row)}
+              >{gearGapLabel(row)}</span
+            ></span
+          >
           <span class={CHIP}>
             <span class="label text-muted">Enchants</span>
             {#if enchantKind(row) === 'consent'}
@@ -242,7 +262,6 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    Sorted worst-first. "Nudge" copies a message to the clipboard — there is no network path to the addon, so
-    this is copy only, never a push.
+    Sorted worst first.{#if officer}&#32; Nudge copies a message you can paste to them.{/if}
   </p>
 </section>

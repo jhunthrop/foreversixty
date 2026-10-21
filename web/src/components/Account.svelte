@@ -48,7 +48,7 @@
   import { createPairingPoll, type PairingPoll } from '../lib/reports/pairing-poll';
   import { API_BASE_URL } from '../lib/planner/config';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { relativeTime } from '../lib/dates';
+  import { relativeTime, utcDayMonthYear } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterList from './account/CharacterList.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
@@ -849,9 +849,7 @@
                     <p class="text-[14px]">
                       {billing.plan} —
                       {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
-                      {billing.current_period_end
-                        ? new Date(billing.current_period_end).toLocaleDateString()
-                        : ''}
+                      {billing.current_period_end ? utcDayMonthYear(billing.current_period_end) : ''}
                     </p>
                     {#if billing.status === 'past_due'}
                       <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
