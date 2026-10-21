@@ -37,6 +37,7 @@ func (a *App) Handler() http.Handler {
 	inner.HandleFunc("POST /api/builds/check", a.handleBuildsCheck)
 	inner.HandleFunc("POST /api/folders/pick", a.handleFolderPick)
 	inner.HandleFunc("POST /api/folders/remove", a.handleFolderRemove)
+	inner.HandleFunc("POST /api/addon/install", a.handleAddonInstall)
 
 	outer := http.NewServeMux()
 	outer.Handle("/"+a.token+"/", http.StripPrefix("/"+a.token, inner))
@@ -101,6 +102,10 @@ func statusOf(err error) int {
 	case CodeConnected, CodeNoConnect, CodeKnownFolder, CodeNotAdded:
 		return http.StatusConflict
 	case CodeOffline, CodeServer:
+		return http.StatusBadGateway
+	case CodeGameRunning:
+		return http.StatusConflict
+	case CodeAddonDownload:
 		return http.StatusBadGateway
 	case CodeNoPicker, CodeNoBrowser:
 		return http.StatusServiceUnavailable
@@ -208,4 +213,16 @@ func (a *App) handleFolderRemove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.answer(w, a.RemoveFolder(in.Path))
+}
+
+// handleAddonInstall is the Install the addon button: one install, answered
+// with the snapshot that shows it.
+func (a *App) handleAddonInstall(w http.ResponseWriter, r *http.Request) {
+	var in struct {
+		Path string `json:"path"`
+	}
+	if !a.decode(w, r, &in) {
+		return
+	}
+	a.answer(w, a.InstallAddon(r.Context(), in.Path))
 }

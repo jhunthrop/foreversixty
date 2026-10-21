@@ -17,13 +17,16 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
+	"github.com/jhunthrop/foreversixty/companion/internal/addonupdater"
 	"github.com/jhunthrop/foreversixty/companion/internal/browser"
 	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
@@ -57,6 +60,10 @@ type Options struct {
 	// Updater options are passed through; a zero value means the
 	// defaults, which is no updates when the build has no key.
 	Updater updater.Options
+	// Addons are the addon updater's options (internal/addonupdater). The
+	// key, the API base and the HTTP client default to the Updater's, and a
+	// test may set Processes to say which games are running.
+	Addons addonupdater.Options
 	// Retry is the upload retry policy. Zero means the client's
 	// default; tests shrink it so an outage costs milliseconds.
 	Retry client.Retry
@@ -105,6 +112,10 @@ type App struct {
 	sync    *addon.Sync
 	exports *addon.Cache
 	updater *updater.Updater
+	// addons keeps the addon and the data addon current in every install;
+	// addonsBusy is set while its goroutine is running.
+	addons     *addonupdater.Updater
+	addonsBusy atomic.Bool
 
 	// bg is the context the sign-in poll runs under; Close ends it and
 	// waits for the poll, which must not outlive the app.
@@ -201,6 +212,25 @@ func New(o Options) (*App, error) {
 	uo := o.Updater
 	uo.Dir, uo.Log = o.Dirs.Update, a.log
 	a.updater = updater.New(uo)
+	ao := o.Addons
+	ao.Dir, ao.Log = filepath.Join(o.Dirs.Update, "addons"), a.log
+	if ao.PublicKey == "" {
+		ao.PublicKey = uo.PublicKey
+		if ao.PublicKey == "" {
+			ao.PublicKey = updater.PublicKey
+		}
+	}
+	if ao.APIBase == "" {
+		ao.APIBase = uo.APIBase
+	}
+	if ao.HTTP == nil {
+		ao.HTTP = uo.HTTP
+	}
+	if ao.Now == nil {
+		ao.Now = a.now
+	}
+	ao.Installs, ao.Enabled = a.installPaths, a.addonUpdatesOn
+	a.addons = addonupdater.New(ao)
 	a.noteVersion()
 	return a, nil
 }
@@ -512,6 +542,9 @@ type Settings struct {
 	Visibility       string               `json:"visibility"`
 	WoWPaths         []string             `json:"wow_paths,omitempty"`
 	LoggingCharacter *character.Character `json:"logging_character"`
+	// KeepAddonUpdated is the Keep the addon up to date switch; absent
+	// leaves it as it is.
+	KeepAddonUpdated *bool `json:"keep_addon_updated,omitempty"`
 }
 
 // SaveSettings validates and stores the settings, then puts them to
@@ -545,6 +578,10 @@ func (a *App) store(in Settings) error {
 		cfg.WoWPaths = in.WoWPaths
 	}
 	cfg.LoggingCharacter = in.LoggingCharacter
+	if in.KeepAddonUpdated != nil {
+		keep := *in.KeepAddonUpdated
+		cfg.KeepAddonUpdated = &keep
+	}
 	if cfg.LoggingCharacter != nil && !cfg.LoggingCharacter.Valid() {
 		return fault(CodeNoCharacter, errors.New("the logging character needs a region, a ruleset and a name"))
 	}
@@ -679,6 +716,10 @@ type Snapshot struct {
 	// BuildsChecked is what the last Check for builds now found; absent
 	// until the player has pressed it.
 	BuildsChecked *BuildsChecked `json:"builds_checked,omitempty"`
+	// KeepAddonUpdated is the Keep the addon up to date switch, and
+	// AddonUpdate the Addon row's version lines and install buttons.
+	KeepAddonUpdated bool            `json:"keep_addon_updated"`
+	AddonUpdate      AddonUpdateView `json:"addon_update"`
 }
 
 // InstallStatus is one game folder as the status page shows it.
@@ -792,6 +833,7 @@ func (a *App) Snapshot() Snapshot {
 		SiteBaseURL:      cfg.SiteBaseURL,
 		Visibility:       cfg.ReportVisibility,
 		LoggingCharacter: cfg.LoggingCharacter,
+		KeepAddonUpdated: cfg.AddonUpdates(),
 		Pipeline:         a.pipe.Status(),
 		Reports:          []ReportRow{},
 		Characters:       []addon.Export{},
@@ -853,6 +895,7 @@ func (a *App) Snapshot() Snapshot {
 		s.AddonHelp = CopyNeverSyncedHelp
 	}
 	s.LastSync = a.lastSyncView(st, now)
+	s.AddonUpdate = a.addonUpdateView()
 	if !st.SeenAt.IsZero() {
 		local := st.SeenAt.In(now.Location())
 		s.AddonSeenAt, s.SimRequestState = &local, st.SimRequestState
@@ -870,6 +913,8 @@ func (a *App) Snapshot() Snapshot {
 func (a *App) Step(ctx context.Context, now time.Time) {
 	tok := a.deviceToken()
 	a.retarget()
+	// The addon updater needs no sign-in, so it ticks before anything that does.
+	a.tickAddons(now)
 	if err := a.pipe.Tick(now); err != nil {
 		a.log.Error("the tail failed", "component", "app", "err", err.Error())
 	}

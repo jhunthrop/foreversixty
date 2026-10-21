@@ -248,7 +248,16 @@ const FORMAT = (() => {
     return { show: true, text: String(up), help: '', queued: waiting };
   }
 
-  return { fightRows, pathTruncate, pathBudget, reportCredit, anyNotCredited, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
+  // addonRows reads the snapshot's addon_update: the Addon row's version lines (each worded by
+  // the Go side) and the Install the addon into <folder> buttons. A snapshot from before it
+  // existed has neither. A line with no text is dropped; it is never rebuilt from a number.
+  function addonRows(au) {
+    const lines = ((au && au.lines) || []).filter((l) => l && l.text).map((l) => ({ text: l.text, muted: l.tone === 'muted' }));
+    const offers = ((au && au.offers) || []).filter((o) => o && o.path && o.label).map((o) => ({ path: o.path, label: o.label }));
+    return { lines, offers };
+  }
+
+  return { addonRows, fightRows, pathTruncate, pathBudget, reportCredit, anyNotCredited, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

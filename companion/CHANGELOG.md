@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.16
+
+- The companion keeps the Forever Sixty addon and its data up to date in every game folder, when the game is closed, and can install the addon where it is missing.
+
 ## 0.2.14
 
 - A log is one row in Reports; the counters never say uploaded and queued for the same fights; Settings stays legible in a small window.

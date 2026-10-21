@@ -82,6 +82,9 @@ const COPY = {
     checkedJustNow: 'just now',
     checkedBuilds: (n, who) => n + (n === 1 ? ' build' : ' builds') + (who.length ? ' for ' + who.join(', ') : ''),
     checkedNothing: 'nothing new',
+    // The Install the addon into <folder> button while it works. The button's label and the
+    // version lines come from the snapshot (copy.go).
+    installingAddon: 'Installing…',
     noReport: 'None yet',
     starting: 'Starting...',
     folders: 'Game folders',
@@ -198,6 +201,9 @@ const COPY = {
     characterAuto: 'Automatic (read from the log)',
     characterAutoNow: (name) => 'Automatic (currently ' + name + ')',
     characterHelp: 'Automatic reads who is logging from the combat log itself. Pick a character only if that is wrong.',
+    keepAddon: 'Keep the addon up to date',
+    keepAddonHelp: 'Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed. CurseForge and Wago users can leave this on; they get the same files.',
+    savedKeep: { on: 'Saved. The addon will be kept up to date.', off: 'Saved. The companion will not update the addon.' },
     save: 'Save changes',
     noChanges: 'No changes',
     unsaved: 'Unsaved changes',

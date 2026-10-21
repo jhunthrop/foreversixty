@@ -77,6 +77,12 @@
     },
     "credit": {
       "state": "none"
+    },
+    "keep_addon_updated": true,
+    "addon_update": {
+      "enabled": true,
+      "lines": [],
+      "offers": []
     }
   },
   "error": null,

@@ -203,7 +203,7 @@ function region(name, container, data, render) {
 
 let page = null;
 let snap = null;
-const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, flashDrawn: false, copied: false, busyPair: false, starting: false, checkError: '', pollFailed: false };
+const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, flashDrawn: false, copied: false, busyPair: false, starting: false, checkError: '', pollFailed: false, installingAddon: '', addonError: '' };
 
 // replay adds a class for one animation's length, so a class that was
 // already there plays again.
@@ -290,6 +290,9 @@ function renderStatus(s) {
     // The Check for builds now button and the line it leaves. The words are
     // computed here, like the Last sync row's, so they move on their own.
     paired: s.paired,
+    addon: FORMAT.addonRows(s.addon_update),
+    installing: local.installingAddon,
+    installError: local.addonError,
     checked: s.builds_checked ? FORMAT.checkedLine(s.builds_checked, new Date(), COPY.status, COPY.status.ago) : '',
     checking: checkBuilds.running,
     canCheck: checkBuilds.canPress(),
@@ -326,7 +329,17 @@ function renderStatus(s) {
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     // A sync over a day old, and no sync at all, each say what to do.
     if ((s.addon_stale || s.addon_never) && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
+    // What is installed, line by line, and where it is missing the button that puts it there.
+    for (const l of rows.addon.lines) v.append(h('span', { class: 'sub', text: l.text }));
     if (rows.checked) v.append(h('span', { class: 'sub', text: rows.checked }));
+    if (rows.installError) v.append(h('span', { class: 'sub warn', text: rows.installError }));
+    for (const o of rows.addon.offers) {
+      const working = rows.installing === o.path;
+      v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'install-addon-' + o.path,
+        disabled: !!rows.installing || rows.failed, onclick: () => onInstallAddon(o.path) },
+      working ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
+      working ? COPY.status.installingAddon : o.label));
+    }
     if (rows.checkError) v.append(h('span', { class: 'sub warn', text: rows.checkError }));
     if (rows.paired) {
       v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'check-builds',
@@ -372,6 +385,19 @@ const checkBuilds = FORMAT.checker(async () => {
   if (r.ok) applySnapshot(r.data);
   else local.checkError = r.error.message;
 }, Date.now);
+
+// onInstallAddon is the Install the addon into <folder> button: one at a time, and the
+// answer is the snapshot that shows the new version lines, or a sentence under the row.
+async function onInstallAddon(path) {
+  local.installingAddon = path;
+  local.addonError = '';
+  if (snap) renderStatus(snap);
+  const r = await api('api/addon/install', { path });
+  local.installingAddon = '';
+  if (r.ok) applySnapshot(r.data);
+  else local.addonError = r.error.message;
+  if (snap) renderStatus(snap);
+}
 
 async function onCheckBuilds() {
   const pressed = checkBuilds.press();
@@ -716,13 +742,13 @@ function charValue(s) {
 }
 
 function formValues() {
-  return { visibility: $('visibility').value, character: $('logging-character').value };
+  return { visibility: $('visibility').value, character: $('logging-character').value, keep: $('keep-addon').checked };
 }
 
 function dirty() {
   if (baseline === null) return false;
   const v = formValues();
-  return v.visibility !== baseline.visibility || v.character !== baseline.character;
+  return v.visibility !== baseline.visibility || v.character !== baseline.character || v.keep !== baseline.keep;
 }
 
 function syncSave() {
@@ -733,11 +759,14 @@ function syncSave() {
   $('visibility-help').title = $('visibility-help').textContent;
 }
 
+function keepOf(s) { return s.keep_addon_updated !== false; }
+
 // fillSettings puts the saved values into the form: on first load, and
 // again when the player leaves the page with changes unsaved.
 function fillSettings(s) {
-  baseline = { visibility: s.visibility, character: charValue(s) };
+  baseline = { visibility: s.visibility, character: charValue(s), keep: keepOf(s) };
   $('visibility').value = s.visibility;
+  $('keep-addon').checked = baseline.keep;
   const select = $('logging-character');
   select.replaceChildren(h('option', { value: '', text: FORMAT.automaticLabel(s.detected_character, COPY.settings) }));
   for (const c of s.characters) {
@@ -755,7 +784,7 @@ function resetSettings() {
 function renderSettings(s) {
   // The form is rewritten from the snapshot only when nothing has been
   // changed: unsaved edits are never overwritten by the poll.
-  const formKey = { v: s.visibility, c: s.characters, l: charValue(s), d: s.detected_character };
+  const formKey = { v: s.visibility, c: s.characters, l: charValue(s), d: s.detected_character, k: keepOf(s) };
   if (!dirty() && JSON.stringify(formKey) !== cache['settings-form']) {
     cache['settings-form'] = JSON.stringify(formKey);
     fillSettings(s);
@@ -786,6 +815,7 @@ function renderSettings(s) {
 window.addEventListener('resize', () => { if (snap) { renderSettings(snap); renderStatus(snap); } });
 $('visibility').addEventListener('change', syncSave);
 $('logging-character').addEventListener('change', syncSave);
+$('keep-addon').addEventListener('change', syncSave);
 
 $('add-folder').addEventListener('click', async (e) => {
   note('folder-note', 'ok', '');
@@ -808,6 +838,7 @@ $('save').addEventListener('click', async () => {
   note('folder-note', 'ok', '');
   const v = formValues();
   const visibilityChanged = v.visibility !== baseline.visibility;
+  const keepChanged = v.keep !== baseline.keep;
   const picked = v.character;
   const [region, ruleset, name] = picked ? picked.split('|') : [];
   saving = true;
@@ -816,14 +847,15 @@ $('save').addEventListener('click', async () => {
   const r = await api('api/settings', {
     visibility: v.visibility,
     logging_character: picked ? { region, ruleset, name } : null,
+    keep_addon_updated: v.keep,
   });
   saving = false;
   $('save').textContent = COPY.settings.save;
   if (!r.ok) { syncSave(); note('settings-note', 'bad', r.error.message); return; }
   note('settings-note', 'ok', visibilityChanged
     ? COPY.settings.savedVisibility(COPY.settings.visibilitySaved[v.visibility])
-    : COPY.settings.saved);
-  baseline = { visibility: v.visibility, character: picked };
+    : (keepChanged ? COPY.settings.savedKeep[v.keep ? 'on' : 'off'] : COPY.settings.saved));
+  baseline = { visibility: v.visibility, character: picked, keep: v.keep };
   applySnapshot(r.data);
   syncSave();
 });
@@ -872,6 +904,9 @@ $('visibility-label').textContent = COPY.settings.visibility;
 for (const o of $('visibility').options) o.textContent = COPY.settings.visibilityOptions[o.value];
 $('folders-label').textContent = COPY.settings.folders;
 $('character-label').textContent = COPY.settings.character;
+$('keep-addon-label').textContent = COPY.settings.keepAddon;
+$('keep-addon-help').textContent = COPY.settings.keepAddonHelp;
+$('keep-addon-help').title = COPY.settings.keepAddonHelp;
 $('character-help').textContent = COPY.settings.characterHelp;
 $('character-help').title = COPY.settings.characterHelp;
 $('save').textContent = COPY.settings.save;

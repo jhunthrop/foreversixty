@@ -92,6 +92,7 @@ The **Reports** page lists the newest reports the moment they have an id, live o
 | Setting | What it does |
 |---|---|
 | New reports are | public, unlisted, private or guild — the visibility a report starts with |
+| Keep the addon up to date | on by default. Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed (see below). CurseForge and Wago users can leave it on; they get the same files |
 | Game folders | the folders it found on its own, and any you add with **Add a folder...** (the system folder dialog); only the ones you add are saved, and **Remove** takes one back out. Pick a flavour folder such as `_classic_era_` or the folder above it |
 | Reports are credited to | Automatic by default: the companion reads who is logging from the combat log itself (the game marks the logging player's own units in every line), then finds that character among the ones the addon has exported, so a report is credited to the right region and ruleset with nothing to pick. If the addon has not exported the character yet, the report is credited the moment it has (log out once with the addon loaded). Pick a character from the list only if Automatic is wrong; the Status page and this setting both show who it currently reads |
 
@@ -123,6 +124,33 @@ loads the next time the game starts or you `/reload`. The game reads that file o
 14:03" once the site has your export. The companion only ever writes `ForeverSixtyInbox.lua`;
 `ForeverSixty.lua` is the game's. The game rewrites its own saved variables at logout, so an inbox written mid-session
 may be replaced; the next pass puts it back.
+
+### Keeping the addon up to date
+
+At launch and then every six hours the companion reads the repository's
+releases for a newer `addon-v*` release (the `ForeverSixty` and `ForeverSixtyInbox` folders) and
+the newest `data-v*` release (the nightly `ForeverSixtyData` folder), and installs them into every
+game folder that already has the addon. Both zips are signed with the same minisign key as the
+companion's own releases, and the companion installs nothing it cannot verify against the public
+key built into it: a release without a `.minisig` beside its zip is not a candidate, and a bad
+signature is logged and skipped. The installed version is the `## Version` line of
+`Interface/AddOns/<folder>/<folder>.toc`.
+
+The companion never writes into `Interface/AddOns` while that install's game is running. It asks
+the system for the running programs (on Windows the process list is the truth) and treats a
+`Wow*.exe` whose path is under the install, or whose path it cannot read, as the game. A release
+that arrives while the game is up waits in `update/addons/` and goes in a minute after the game
+closes. Each folder is swapped by rename: the new one is copied beside the old as
+`<folder>.fs-new`, the old becomes `<folder>.fs-previous`, the new takes its place, the new TOC
+must read back with the version just installed, and only then is the previous folder deleted; on
+any failure the previous folder is put back and `companion.log` says so. Only `ForeverSixty`,
+`ForeverSixtyInbox` and `ForeverSixtyData` (and those two suffixes) are ever written or removed; a
+folder that is a link or holds a `.git` is a developer's and is left alone, and saved variables
+are never touched.
+
+An install with no `ForeverSixty` folder gets nothing automatically. The Addon row on Status says
+"Addon not found in Classic Era" and offers **Install the addon into Classic Era**, which installs
+the addon and the data addon from the signed releases (it refuses while that game is running).
 
 ## Troubleshooting
 

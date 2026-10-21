@@ -86,6 +86,7 @@ func TestEveryFailureCodeHasASentenceThatCarriesNoCause(t *testing.T) {
 		app.CodeNotWoW, app.CodeKnownFolder, app.CodeNoPicker, app.CodeNoCharacter,
 		app.CodeSettings, app.CodeConnected, app.CodeNoConnect, app.CodeBadURL,
 		app.CodeNoBrowser, app.CodeBadRequest, app.CodeInternal, app.CodeNotAdded,
+		app.CodeGameRunning, app.CodeAddonDownload, app.CodeAddonInstall,
 	} {
 		msg := app.Message(code)
 		if msg == "" || !strings.HasSuffix(msg, ".") {
@@ -113,5 +114,35 @@ func TestTheSignedOutCopyIsTheDesignersWords(t *testing.T) {
 		app.CopySignedOutSub != "This computer was removed from your account, or the account was reset. "+
 			"Nothing uploads until you sign in again." {
 		t.Errorf("copy = %q / %q", app.CopySignedOutTitle, app.CopySignedOutSub)
+	}
+}
+
+// The Addon row's version lines are the owner's words, one line per state, and
+// never a bare number or an internal term.
+func TestTheAddonVersionLinesAreTheRulingsWords(t *testing.T) {
+	for got, want := range map[string]string{
+		app.CopyVersionLine(app.CopyAddonName, "2.0.15", app.AddonCurrent):    "Addon 2.0.15 · up to date",
+		app.CopyVersionLine(app.CopyAddonName, "2.0.16", app.AddonInstalled):  "Addon 2.0.16 installed · takes effect at your next login",
+		app.CopyVersionLine(app.CopyAddonName, "2.0.16", app.AddonReady):      "Addon 2.0.16 ready · installs when the game closes",
+		app.CopyVersionLine(app.CopyDataName, "2026.10.21", app.AddonCurrent): "Data 2026.10.21 · up to date",
+		app.CopyAddonNotFound("Classic Era"):                                  "Addon not found in Classic Era",
+		app.CopyInstallAddon("Classic Era"):                                   "Install the addon into Classic Era",
+		app.CopyForInstall("Classic Era", "Addon 2.0.15 · up to date"):        "Classic Era: Addon 2.0.15 · up to date",
+	} {
+		if got != want {
+			t.Errorf("copy = %q, want %q", got, want)
+		}
+		for _, banned := range []string{"manifest", "asset", "stage", "Stage"} {
+			if strings.Contains(got, banned) {
+				t.Errorf("%q says %q, which is not a player's word", got, banned)
+			}
+		}
+	}
+	for _, code := range []string{app.CodeGameRunning, app.CodeAddonDownload, app.CodeAddonInstall} {
+		for _, banned := range []string{"manifest", "asset", "stage", "signature", "minisign"} {
+			if strings.Contains(strings.ToLower(app.Message(code)), banned) {
+				t.Errorf("%s: %q says %q", code, app.Message(code), banned)
+			}
+		}
 	}
 }
