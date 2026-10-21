@@ -17,6 +17,7 @@ export const characterListCopy = {
   verified: 'Verified',
   /** The main character's pill, and the control on every alt. */
   main: 'Main',
+  current: 'Current',
   setAsMain: 'Set as main',
   setAsMainFailed: 'Could not set your main just now.',
   levelPrefix: (level: number): string => `Level ${level}`,

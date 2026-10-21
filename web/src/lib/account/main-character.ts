@@ -5,6 +5,7 @@
 // null. A pure function of the list `/v1/me` already returned, so the hub's own effect
 // just calls it and writes the result -- no fetch of its own.
 import type { CurrentCharacter } from '../current-character';
+import { characterSpecName } from '../character-spec';
 import { specName } from '../guild/spec-name';
 import type { MeCharacter } from './api';
 
@@ -45,7 +46,7 @@ export function pointerForCharacter(character: MeCharacter): CurrentCharacter {
   const classSlug = character.class?.toLowerCase() ?? '';
   // The class as the game names it ("Survival Hunter"), whatever case the API sent.
   const className = character.class === undefined ? undefined : specName(character.class);
-  const spec = character.spec === undefined ? undefined : specName(character.spec);
+  const spec = characterSpecName(character);
   const specClass = [spec, className].filter((part) => part !== undefined).join(' ');
   const label = specClass === '' ? character.name : `${character.name} · ${specClass}`;
   return {

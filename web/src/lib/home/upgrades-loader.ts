@@ -10,6 +10,7 @@
 import activeBuild from '../../data/active-build.json';
 import type { MeCharacter } from '../account/api';
 import { bandEntryFor, bandForLevel, fetchBisFile } from '../bis/hover';
+import { withRuleSpec } from '../character-spec';
 import type { BisBand, BisFile } from '../bis/types';
 import { query } from '../data/query';
 import { loadItems } from '../planner/load';
@@ -22,7 +23,8 @@ import { SPECS } from '../sim/specs';
  *  key (`"hunter-marksmanship"`) `SPECS`/BiS files key by. `undefined` when either half is
  *  missing (an addon export with no learned spec yet) or names a class/spec pair `SPECS`
  *  does not recognise -- never guessed at. */
-export function specKeyForCharacter(character: Pick<MeCharacter, 'class' | 'spec'>): string | undefined {
+export function specKeyForCharacter(raw: Pick<MeCharacter, 'class' | 'spec' | 'build'>): string | undefined {
+  const character = withRuleSpec(raw);
   if (character.class === undefined || character.spec === undefined) return undefined;
   const classSlug = classSlugFromName(character.class);
   return SPECS.find((row) => row.class_slug === classSlug && row.name === character.spec)?.spec;

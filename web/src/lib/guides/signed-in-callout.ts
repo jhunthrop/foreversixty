@@ -6,6 +6,7 @@
 // Pure view-model only: the page's own inline bootstrap script (no Svelte island -- the
 // guide rebuild's own budget keeps every page static beyond the one existing
 // `GuideBuildTree` island) calls `fetchMeOnce()` itself and passes the result here.
+import { withRuleSpec } from '../character-spec';
 import { classSlugFromName } from '../report/tree-sizes';
 import { classCrestSrc } from '../class-crest';
 import { classColorVar } from '../report/format';
@@ -25,7 +26,8 @@ export interface SignedInCalloutView {
  * character, or its class/spec have not been learned yet (never a guess at either, spec
  * §4.A/§5's own "omitted on failure or signed-out" rule, extended to "not yet known").
  */
-export function signedInCalloutView(character: MeCharacter | undefined): SignedInCalloutView | undefined {
+export function signedInCalloutView(raw: MeCharacter | undefined): SignedInCalloutView | undefined {
+  const character = raw === undefined ? undefined : withRuleSpec(raw);
   if (character?.class === undefined || character.spec === undefined) return undefined;
   const classSlug = classSlugFromName(character.class);
   const specSlug = classSlugFromName(character.spec);

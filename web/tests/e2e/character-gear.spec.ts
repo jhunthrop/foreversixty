@@ -168,7 +168,7 @@ for (const width of [1440, 390]) {
       await open(page);
       await rowsDrawn(page);
       await expect(page.getByTestId('character-gear-title')).toHaveText(
-        'Gear +70 pts across 7 slots · 1 not scored',
+        'Gear 6 of 15 slots best in slot · +70 points across 7 slots · 1 not scored',
       );
       const totals = page.getByTestId('character-gear-totals');
       await expect(totals).toHaveText(
@@ -213,7 +213,7 @@ for (const width of [1440, 390]) {
       // The dot between the source and the chance is drawn (::before), not text.
       await expect(head.getByTestId('character-gear-meta')).toContainText("Onyxia's Lair: Onyxia");
       await expect(head.getByTestId('character-gear-chance')).toHaveText('17% drop');
-      await expect(head.getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
+      await expect(head.getByTestId('character-gear-gap')).toHaveText('+18.4 points');
       await expect(head.getByTestId('character-gear-gap')).toHaveCSS('font-weight', '700');
       await expect(row(page, 'wrist').getByTestId('character-gear-gap')).toHaveCSS('font-weight', '400');
       // Icons: a 20px box, the pick's border its quality, the image loaded in it.
@@ -228,7 +228,7 @@ for (const width of [1440, 390]) {
       await expect(row(page, 'back').getByTestId('character-gear-meta')).toContainText('<1% drop');
       await expect(row(page, 'chest').getByTestId('character-gear-meta')).toHaveText('Tailoring');
       await expect(row(page, 'shoulder').getByTestId('character-gear-meta')).toContainText(
-        'Best for your level range',
+        'Already your best at this level',
       );
       await expect(row(page, 'shoulder').getByTestId('character-gear-gap')).toHaveText('');
       await expect(row(page, 'finger1').getByTestId('character-gear-slot')).toHaveText('Ring 1');
@@ -630,7 +630,7 @@ for (const width of [320, 360, 375, 390, 414]) {
             const items = li.querySelector<HTMLElement>('[data-testid="character-gear-items"]');
             if (meta === null || items === null) return [];
             if (
-              !['Best for your level range', 'No pick for your level range yet'].includes(
+              !['Already your best at this level', 'No pick for your level range yet'].includes(
                 meta.textContent?.trim() ?? '',
               )
             )
@@ -710,7 +710,7 @@ test.describe('drawn dots at 1440 (fix 5 item 2)', () => {
     await expect(row(page, 'head').getByTestId('character-gear-meta')).toContainText('· 17% drop');
     expect(await pseudo('off_hand', 'character-gear-note', '::before')).toBe(DRAWN_DOT);
     await expect(page.getByTestId('character-gear-title')).toHaveAccessibleName(
-      'Gear +70 pts across 7 slots · 1 not scored',
+      'Gear 6 of 15 slots best in slot · +70 points across 7 slots · 1 not scored',
     );
   });
 });
@@ -735,7 +735,7 @@ for (const [width, height] of [
       await expect(list).toHaveAttribute('aria-busy', 'true');
       await expect(list.locator('[data-testid^="character-gear-row-"]')).toHaveCount(17);
       await expect(row(page, 'head').getByTestId('character-gear-slot')).toBeVisible();
-      await expect(row(page, 'head').getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
+      await expect(row(page, 'head').getByTestId('character-gear-gap')).toHaveText('+18.4 points');
       await expect(row(page, 'head').getByTestId('character-gear-chance')).toHaveText('17% drop');
       await expect(page.getByTestId('character-gear-pick')).toHaveCount(0);
       await expect(list.locator('[data-bis-item]')).toHaveCount(0);

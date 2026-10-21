@@ -60,7 +60,7 @@ test.describe('/account with no characters', () => {
       'href',
       '/setup#companion',
     );
-    await expect(devices.getByRole('button', { name: 'Use a code instead' })).toBeVisible();
+    await expect(devices.getByRole('button', { name: 'Use a pairing code instead' })).toBeVisible();
   });
 
   test('greets the arrival by battletag instead of naming a character', async ({ page }) => {

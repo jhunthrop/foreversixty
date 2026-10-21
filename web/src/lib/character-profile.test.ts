@@ -246,11 +246,11 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
   it('carries the newest build’s talent split on the spec piece, and none without a build', () => {
     const builds = [
       { talent_split: '21/30/0', spec: 'Holy', first_seen: '2026-11-01T20:00:00Z' },
-      { talent_split: '31/20/0', spec: 'Holy', first_seen: '2026-12-09T22:10:00Z' },
+      { talent_split: '0/31/20', spec: 'Holy', first_seen: '2026-12-09T22:10:00Z' },
       { talent_split: '0/21/30', spec: 'Shadow', first_seen: '2026-11-20T20:00:00Z' },
     ];
     const header = profileHeader({ ...page(FULL, 'Holy'), builds_seen: builds }, PATH);
-    expect(header.pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest', split: '31/20/0' });
+    expect(header.pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest', split: '0/31/20' });
     expect(profileHeader(page(FULL, 'Holy'), PATH).pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest' });
     // A page from an API that predates builds_seen reads as no build.
     const { builds_seen: _omitted, ...older } = page(FULL, 'Holy');

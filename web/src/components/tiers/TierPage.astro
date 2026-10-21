@@ -248,7 +248,15 @@ const stampTitle =
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 28px var(--page-inset) 24px;
+    /* The header is the site column's own `.page-column`: from 768px its gutter is the body's
+       left edge. A `padding` shorthand with the phone inset alone zeroed that gutter. */
+    --tier-header-inline: var(--page-inset);
+    padding: 28px var(--tier-header-inline) 24px;
+  }
+  @media (min-width: 768px) {
+    .tier-header {
+      --tier-header-inline: var(--page-gutter);
+    }
   }
   .tier-eyebrow {
     display: flex;
@@ -662,7 +670,7 @@ const stampTitle =
       font-size: 22px;
     }
     .tier-header {
-      padding: 22px var(--page-inset) 20px;
+      padding: 22px var(--tier-header-inline) 20px;
       gap: 14px;
     }
     .tier-h1 {

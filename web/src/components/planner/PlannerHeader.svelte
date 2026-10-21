@@ -19,7 +19,7 @@
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';
-  import { plannerHeaderCopy } from '../../lib/planner/copy';
+  import { plannerCharacterCardCopy, plannerHeaderCopy } from '../../lib/planner/copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
@@ -35,11 +35,14 @@
     live,
     gate,
     onshowdps,
+    origin = null,
   }: {
     store: PlannerStore;
     live: LiveDps;
     gate: LiveGate;
     onshowdps: () => void;
+    /** Set when the build on screen is another player's: whose it is ('' for a link that names nobody). */
+    origin?: { owner: string } | null;
   } = $props();
 
   const color = $derived(classColorVar(store.classRow?.name));
@@ -53,6 +56,18 @@
     const max = Math.max(...split);
     return max > 0 && split.filter((points) => points === max).length === 1;
   });
+
+  /** "Ashenveil's build · Holy Paladin": whose build this is, when it is not the player's own. */
+  const originLine = $derived(
+    origin === null
+      ? ''
+      : plannerCharacterCardCopy.originLine(
+          origin.owner,
+          hasLeadingTree && store.talentIndex !== null
+            ? specLabel(specOf(store.talentIndex, [...store.order]))
+            : (store.classRow?.name ?? store.classSlug),
+        ),
+  );
 
   const specSuffix = $derived(
     hasLeadingTree && store.talentIndex !== null
@@ -93,6 +108,9 @@
             · {store.raceRow?.name ?? ''} · Level {store.level}{specSuffix}
           </span>
         </h1>
+        {#if originLine !== ''}
+          <p class="planner-header-origin" data-testid="planner-build-origin">{originLine}</p>
+        {/if}
         <p class="planner-header-description">{plannerHeaderCopy.description}</p>
       </div>
     </div>
@@ -259,6 +277,12 @@
     font-size: 14px;
     letter-spacing: 0.1em;
     text-transform: none;
+  }
+  .planner-header-origin {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-gold);
   }
   .planner-header-description {
     margin: 0;

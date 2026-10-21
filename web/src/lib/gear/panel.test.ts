@@ -68,7 +68,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       chance: '17% drop',
       note: null,
       inline: false,
-      gap: '+18.4 pts',
+      gap: '+18.4 points',
       gapLabel: '18.4 points to gain',
       strong: true,
       noteUnknown: false,
@@ -81,11 +81,11 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       state: 'upgrade',
       source: 'Tailoring',
       chance: null,
-      gap: '+11.3 pts',
+      gap: '+11.3 points',
     });
   });
 
-  it('the worn item that is the pick: "Best for your level range" on its line, no pick, no gap', () => {
+  it('the worn item that is the pick: "Already your best at this level" on its line, no pick, no gap', () => {
     expect(row('shoulder')).toEqual({
       slot: 'shoulder',
       label: 'Shoulder',
@@ -94,7 +94,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       pick: null,
       source: null,
       chance: null,
-      note: 'Best for your level range',
+      note: 'Already your best at this level',
       inline: true,
       gap: null,
       gapLabel: null,
@@ -113,7 +113,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       source: 'Molten Core: Ragnaros',
       chance: '12% drop',
       inline: false,
-      gap: '+12.6 pts',
+      gap: '+12.6 points',
     });
   });
 
@@ -156,7 +156,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       gap: null,
     });
     // The items file says the main hand is one-handed: the API's 0 stands.
-    expect(row('off_hand', () => false)).toMatchObject({ note: null, gap: '+0 pts' });
+    expect(row('off_hand', () => false)).toMatchObject({ note: null, gap: '+0 points' });
   });
 
   it('an unknown main hand (the file loading or failed): the swap note is held, unknown, and no figure (fix 4 item 4)', () => {
@@ -172,12 +172,12 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     expect(gearRows(noMain, null).find((r) => r.slot === 'off_hand')).toMatchObject({
       note: null,
       noteUnknown: false,
-      gap: '+0 pts',
+      gap: '+0 points',
     });
     // Known, the note is plain.
     expect(row('off_hand')).toMatchObject({ noteUnknown: false });
     // Everything else as built.
-    expect(failed.find((r) => r.slot === 'head')?.gap).toBe('+18.4 pts');
+    expect(failed.find((r) => r.slot === 'head')?.gap).toBe('+18.4 points');
     expect(failed.find((r) => r.slot === 'legs')?.gap).toBe('Not scored');
   });
 
@@ -196,34 +196,38 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
   });
 
   it('a whole-number gap drops its ".0"', () => {
-    expect(gearRows([{ ...GEAR_FIXTURE[0], gap: 30 }])[0].gap).toBe('+30 pts');
+    expect(gearRows([{ ...GEAR_FIXTURE[0], gap: 30 }])[0].gap).toBe('+30 points');
   });
 });
 
 describe('gearTitle (L8.6 fix round 1 ruling 3)', () => {
-  it('"Gear · +70 pts across 7 slots · 1 not scored" from gear_gap_total, the gaps and the nulls', () => {
+  it('"Gear · +70 points across 7 slots · 1 not scored" from gear_gap_total, the gaps and the nulls', () => {
     expect(gearGapCount(GEAR_FIXTURE)).toBe(7);
     expect(title(GEAR_PANEL_FIXTURE.gear, GEAR_PANEL_FIXTURE.gear_gap_total)).toBe(
-      'Gear · +70 pts across 7 slots · 1 not scored',
+      'Gear · 6 of 15 slots best in slot · +70 points across 7 slots · 1 not scored',
     );
   });
 
   it('with every gap scored there is no "not scored"; one slot is "slot"', () => {
     const scored = GEAR_FIXTURE.filter((slot) => slot.slot !== 'legs');
-    expect(title(scored, 70)).toBe('Gear · +70 pts across 7 slots');
-    expect(title([GEAR_FIXTURE[0], GEAR_FIXTURE[2]], 18.4)).toBe('Gear · +18.4 pts across 1 slot');
+    expect(title(scored, 70)).toBe('Gear · 6 of 14 slots best in slot · +70 points across 7 slots');
+    expect(title([GEAR_FIXTURE[0], GEAR_FIXTURE[2]], 18.4)).toBe(
+      'Gear · 1 of 2 slots best in slot · +18.4 points across 1 slot',
+    );
   });
 
-  it('a total of 0 with an arrow left: "+0 pts from the picks you can wear" (fix 2 ruling 5)', () => {
+  it('a total of 0 with an arrow left: "+0 points from the picks you can wear" (fix 2 ruling 5)', () => {
     // The fixture with every scored gap 0: Neck and Off hand are still empty, their picks shown.
     const zero = GEAR_FIXTURE.map((slot) => ({ ...slot, gap: slot.gap === null ? null : 0 }));
-    expect(title(zero, 0)).toBe('Gear · +0 pts from the picks you can wear · 1 not scored');
+    expect(title(zero, 0)).toBe(
+      'Gear · 6 of 15 slots best in slot · +0 points from the picks you can wear · 1 not scored',
+    );
     expect(
       title(
         zero.filter((slot) => slot.slot !== 'legs'),
         0,
       ),
-    ).toBe('Gear · +0 pts from the picks you can wear');
+    ).toBe('Gear · 6 of 14 slots best in slot · +0 points from the picks you can wear');
   });
 
   it('a total of 0 with no arrow anywhere: "every slot is the best you can wear" (fix 2 ruling 5)', () => {
@@ -234,7 +238,9 @@ describe('gearTitle (L8.6 fix round 1 ruling 3)', () => {
   });
 
   it('the summary after "Gear" alone, its own dots glued to the word before them (fix 2 ruling 4)', () => {
-    expect(gearTitleSummary(GEAR_PANEL_FIXTURE.gear, 70)).toBe('+70 pts across 7 slots · 1 not scored');
+    expect(gearTitleSummary(GEAR_PANEL_FIXTURE.gear, 70)).toBe(
+      '6 of 15 slots best in slot · +70 points across 7 slots · 1 not scored',
+    );
     expect(gearTitleSummary([GEAR_FIXTURE[13]], null)).toBeNull();
   });
 

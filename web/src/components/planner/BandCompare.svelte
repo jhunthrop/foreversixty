@@ -63,8 +63,13 @@
   } = $props();
 
   const faction = $derived<Faction>(store.raceRow?.faction === 'horde' ? 'horde' : 'alliance');
+  /** The band of the points spent (what a bare build is compared with). */
   const reachedBand = $derived(bandForLevel(levelReached(store.order)));
-  const wantedBand = $derived(bandForPanel(store.order.length, characterLevel, reachedBand));
+  /** The band of the build's level: a level-60 character with a build short of 51 points is still
+   *  a level 60, compared with the level-60 build rather than the band its points happen to reach.
+   *  `store.level` is the points' level for a bare build, so nothing else moves. */
+  const levelBand = $derived(bandForLevel(store.level));
+  const wantedBand = $derived(bandForPanel(store.order.length, characterLevel, levelBand));
   /** The visitor's level-60 default only while the spec's file has that band: a spec whose list
    *  stops short of 60 compares at the band the build has reached, as before. */
   const band = $derived(

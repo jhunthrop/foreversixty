@@ -7,17 +7,22 @@
   import { handoffCopy } from '../lib/handoff-copy';
   import { plannerCodeHref, simExportHref } from '../lib/handoff-links';
   import type { CharacterPath } from '../lib/characters';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
   let {
     path,
     apiBase = undefined,
     showNeedsExport = true,
+    buttons = false,
   }: {
     path: CharacterPath;
     apiBase?: string;
     /** False on a profile the viewer does not own (fix round 2 item 1): "No export yet · paste
      *  it here" is an instruction to the character's owner, not to a visitor. */
     showNeedsExport?: boolean;
+    /** The two next steps as outlined buttons (the character page and the account's current
+     *  block, where they are the page's only next steps) rather than small text links. */
+    buttons?: boolean;
   } = $props();
 
   let code = $state<string | null>(null);
@@ -38,7 +43,11 @@
   });
 
   /** A text link that still clears the 44px hit target on a phone. */
-  const LINK = 'inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0';
+  const LINK = $derived(
+    buttons
+      ? `${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold px-4`
+      : 'inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0',
+  );
 </script>
 
 <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0" data-testid="character-handoff">

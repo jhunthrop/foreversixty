@@ -20,6 +20,7 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { characterPointsSpent, sendActionFor, type SendState } from '../../lib/planner/send-state';
+  import { classDisplayName } from '../../lib/sim/spec-label';
   import { buildHasGear } from '../../lib/addon-export';
   import CharacterHeader from '../character/CharacterHeader.svelte';
   import ExportNotRead from '../character/ExportNotRead.svelte';
@@ -31,6 +32,8 @@
     gate,
     onshowdps,
     oncharacter,
+    origin = null,
+    simHref,
   }: {
     store: PlannerStore;
     live: LiveDps;
@@ -38,6 +41,11 @@
     onshowdps: () => void;
     /** Fires with the card's current character (or null), for the band panel's level cut. */
     oncharacter?: (character: MeCharacter | null) => void;
+    /** Set when the build on screen is another player's: whose it is ('' for a link that names
+     *  nobody). The send asks before it replaces anything, and the header says whose it is. */
+    origin?: { owner: string } | null;
+    /** The planner's "Sim this build" link, drawn in the card under the send button. */
+    simHref?: string;
   } = $props();
 
   /** The card's current character: the send is aimed at it. Null signed out or with none synced. */
@@ -62,7 +70,22 @@
     if (sendState.kind === 'sent' && sent?.key !== currentKey) sendState = { kind: 'idle' };
   });
 
-  const action = $derived(sendActionFor(character, sendState, store.spent, characterPointsSpent(character)));
+  // Asking "Send X's build to Y?" holds only while the build and the character stay as they were.
+  let confirmKey: string | null = null;
+  $effect(() => {
+    if (sendState.kind === 'confirming' && (origin === null || confirmKey !== currentKey)) {
+      sendState = { kind: 'idle' };
+    }
+  });
+
+  const action = $derived(
+    sendActionFor(character, sendState, store.spent, characterPointsSpent(character), {
+      classSlug: store.classSlug,
+      className: classDisplayName(store.classSlug),
+      owner: origin === null ? undefined : origin.owner,
+      simHref,
+    }),
+  );
   /** The card's character has an addon export that carried no gear and no talents (W.3): the
    *  card says so instead of leaving the empty tree to read as the character's build. */
   const unread = $derived(
@@ -72,6 +95,14 @@
   async function send(): Promise<void> {
     const key = currentKey;
     if (character === null || key === null || sendState.kind === 'sending' || store.spent === 0) return;
+    // Another class's build is never sent to a character (the button is off, this is the guard).
+    if (character.class !== undefined && character.class.toLowerCase() !== store.classSlug) return;
+    // Another player's build asks once; the yes comes back through here.
+    if (origin !== null && sendState.kind !== 'confirming') {
+      confirmKey = key;
+      sendState = { kind: 'confirming' };
+      return;
+    }
     const target = character.key;
     sendState = { kind: 'sending' };
     const known = sent?.key === key ? sent.buildId : null;
@@ -135,7 +166,7 @@
   <div class="planner-header-band-gradient" aria-hidden="true"></div>
   <div class="planner-header-band-inner page-column">
     <div class="planner-header-band-grid">
-      <PlannerHeader {store} {live} {gate} {onshowdps} />
+      <PlannerHeader {store} {live} {gate} {onshowdps} {origin} />
       <div class="flex flex-col gap-3">
         <CharacterHeader
           layout="card"
@@ -146,6 +177,7 @@
             oncharacter?.(next);
           }}
           onPick={() => void send()}
+          onSecondary={() => (sendState = { kind: 'idle' })}
         />
         {#if unread}
           <ExportNotRead
@@ -192,7 +224,15 @@
   }
   .planner-header-band-inner {
     position: relative;
+    /* The phone inset below 768px; from there the site column's own gutter, so the header's
+       left edge is the body's. A scoped `padding-inline` outranks `.page-column`'s gutter, so
+       it has to name the gutter itself. */
     padding-inline: var(--page-inset);
+  }
+  @media (min-width: 768px) {
+    .planner-header-band-inner {
+      padding-inline: var(--page-gutter);
+    }
   }
   .planner-header-band-grid {
     display: grid;

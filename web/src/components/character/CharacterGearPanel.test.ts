@@ -84,10 +84,10 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(section?.[1].split(' ')).toEqual(expect.arrayContaining(['scroll-mt-24', '-order-2']));
   });
 
-  it('titles it "Gear" then "+70 pts across 7 slots · 1 not scored", a heading focus can land on', () => {
+  it('titles it "Gear" then the best-in-slot count and "+70 points across 7 slots · 1 not scored", a heading focus can land on', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     const title = /<h2[^>]*data-testid="character-gear-title"[\s\S]*?<\/h2>/.exec(body)?.[0] ?? '';
-    expect(text(title)).toBe('Gear +70 pts across 7 slots · 1 not scored');
+    expect(text(title)).toBe('Gear 6 of 15 slots best in slot · +70 points across 7 slots · 1 not scored');
     expect(title).toMatch(/^<h2[^>]*tabindex="-1"/);
   });
 
@@ -99,7 +99,9 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     );
     expect(classesOf(body, 'character-gear-summary')).toContain('max-[480px]:block');
     // The summary's own dot is glued to the word before it.
-    expect(body).toMatch(/data-testid="character-gear-summary">\+70 pts across 7 slots\u00a0· 1 not scored</);
+    expect(body).toMatch(
+      /data-testid="character-gear-summary">6 of 15 slots best in slot · \+70 points across 7 slots\u00a0· 1 not scored</,
+    );
   });
 
   it('explains the two totals directly under the title: 13px, 4px under it, 16px above row 1', () => {
@@ -296,17 +298,17 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(gearCopy.swap).toBe('comes with the main-hand swap');
   });
 
-  it('copy: "No pick for your level range yet", "Best for your level range", "17% drop" (fix 2 ruling 6)', () => {
+  it('copy: "No pick for your level range yet", "Already your best at this level", "17% drop" (fix 2 ruling 6)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your level range yet');
     expect(text(rowHtml(body, 'ranged'))).toBe(
       "Ranged Skul's Ghastly Touch No pick for your level range yet",
     );
     expect(text(rowHtml(body, 'shoulder'))).toBe(
-      'Shoulder Pauldrons of Transcendence Best for your level range',
+      'Shoulder Pauldrons of Transcendence Already your best at this level',
     );
     expect(text(rowHtml(body, 'head'))).toBe(
-      "Head Green Lens → best for your level range: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 pts",
+      "Head Green Lens → best at this level: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 points",
     );
     expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
   });
@@ -347,7 +349,7 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     }
     const long = render(CharacterGearPanel, { props: { ...PROPS, gear: GEAR_FIXTURE_LONG_NAME } }).body;
     expect(text(rowHtml(long, 'shoulder'))).toBe(
-      'Shoulder Mantle of the Unforgiving Majesty Best for your level range',
+      'Shoulder Mantle of the Unforgiving Majesty Already your best at this level',
     );
   });
 

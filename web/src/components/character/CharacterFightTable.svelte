@@ -13,6 +13,7 @@
 <script lang="ts">
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
   import { formatDayMonthYear } from '../../lib/dates';
+  import { specName } from '../../lib/guild/spec-name';
   import type { CharacterFight } from '../../lib/rankings/api';
   import { RANKING_METRICS } from '../../lib/rankings/url';
   import { formatAmount, percentileToken, rowLink } from '../../lib/report/format';
@@ -96,7 +97,7 @@
         id={rowId === null ? undefined : rowId(row)}
       >
         <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
-        <span class="text-muted hidden truncate text-[13px] md:inline">{row.spec ?? ''}</span>
+        <span class="text-muted hidden truncate text-[13px] md:inline">{specName(row.spec ?? '')}</span>
         <span
           class="tabular text-right font-mono text-[13px]"
           style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}

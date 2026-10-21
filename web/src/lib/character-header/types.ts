@@ -21,7 +21,17 @@ export type HeaderAction =
       disabled?: boolean;
       /** A line under the button: what the press did, or why it could not. */
       note?: HeaderNote;
+      /** A second, quieter button under the first: a link out ("Sim this build") or a press
+       *  (`onSecondary`, the "Cancel" of a confirm). */
+      secondary?: HeaderSecondary;
     };
+
+/** The picker action's second button. A link carries `href`; without one it calls `onSecondary`. */
+export interface HeaderSecondary {
+  label: string;
+  href?: string;
+  testid?: string;
+}
 
 /** The one status line a picker action can carry under its button. */
 export interface HeaderNote {

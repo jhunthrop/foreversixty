@@ -5,6 +5,7 @@
 // default for that filter. Replaces the old pointer prefill, which knew only class and ruleset.
 import type { MeCharacter } from '../account/api';
 import { parseCharacterKey, type CharacterPath } from '../characters';
+import { withRuleSpec } from '../character-spec';
 import { classSlugFromName } from '../report/tree-sizes';
 import type { SpecRole } from '../sim/specs';
 import type { CharacterFight, CharacterPage, EncounterOption } from './api';
@@ -20,7 +21,8 @@ const ROLE_METRIC: Readonly<Record<SpecRole, string>> = {
 };
 
 /** Every default, for a signed-out visitor (`character` null: nothing aimed, damage) or a character. */
-export function rankingsDefaults(character: MeCharacter | null, now: Date): RankingsDefaults {
+export function rankingsDefaults(raw: MeCharacter | null, now: Date): RankingsDefaults {
+  const character = raw === null ? null : withRuleSpec(raw);
   const phase = phaseAt(now.toISOString());
   if (character === null) return { class: '', spec: '', ruleset: '', phase, metric: 'dps' };
   const classSlug = character.class === undefined ? '' : classSlugFromName(character.class);

@@ -235,7 +235,7 @@
             {/if}
           </span>
           <span class={CHIP}>
-            <span class="label text-muted">Talent pts</span>
+            <span class="label text-muted">Talent points</span>
             {#if talentPointsKind(row) === 'warn'}
               <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
             {:else}

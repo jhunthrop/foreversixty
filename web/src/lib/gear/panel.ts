@@ -3,15 +3,17 @@
 // /v1/characters/...'s `gear`, in the export's order, the title line from `gear_gap_total`, and
 // the line under it that sets that total beside the score card's. Pure:
 // CharacterGearPanel.svelte draws what this returns.
+import { wearsListedBest } from '../bis/best-in-slot';
 import { gearCopy } from './copy';
 import type { CharacterGearSlot, GearSlotName } from './types';
 
 /**
  * What a row shows:
  *   upgrade    worn -> pick, the source and chance, the gap
- *   best       the worn item, "Best for your band" (no arrow, no gap): the worn item is the pick,
- *              or the API gave it a gap of 0 (it scores at least as much, or it is the pick of
- *              the other slot of its pair, the rings and trinkets being matched either way round)
+ *   best       the worn item, "Already your best at this level" (no arrow, no gap): the worn
+ *              item is the listed pick, or the pick of the other slot of its pair (the rings and
+ *              trinkets matched either way round). The one definition the best-in-slot card counts
+ *              with (lib/bis/best-in-slot.ts)
  *   empty      "Empty" -> pick, the source and chance, the gap
  *   worn-only  the worn item, "no pick for your band yet"
  *   none       "Empty", "no pick for your band yet"
@@ -88,6 +90,8 @@ export function gearRows(
   twoHand: ((id: number) => boolean) | null = () => false,
 ): GearRow[] {
   const strong = strongSlots(gear);
+  const wornBySlot: Record<string, number | undefined> = {};
+  for (const slot of gear) wornBySlot[slot.slot] = slot.worn?.id;
   const mainHand = gear.find((slot) => slot.slot === 'main_hand')?.worn ?? null;
   return gear.map((slot): GearRow => {
     const label = gearCopy.slotLabels[slot.slot] ?? slot.slot;
@@ -112,7 +116,7 @@ export function gearRows(
         note: gearCopy.noPick,
         inline: true,
       };
-    if (slot.worn !== null && (slot.worn.id === pick.id || slot.gap === 0))
+    if (slot.worn !== null && wearsListedBest(slot.slot, pick.id, wornBySlot))
       return { ...bare, state: 'best', pick: null, note: gearCopy.best, inline: true };
     const emptyOffHandAtZero = slot.slot === 'off_hand' && slot.worn === null && slot.gap === 0;
     const swap = emptyOffHandAtZero && twoHand !== null && mainHand !== null && twoHand(mainHand.id);
@@ -154,6 +158,15 @@ export function gearSpecLine(
   return `${name} · ${source === 'talents' ? gearCopy.specFromTalents : gearCopy.specDefault}`;
 }
 
+/** The slots wearing their listed best, of the slots that have a pick: the card's "3 of 17 slots". */
+export function gearBestCount(gear: readonly CharacterGearSlot[]): { worn: number; total: number } {
+  const rows = gearRows(gear);
+  return {
+    worn: rows.filter((row) => row.state === 'best').length,
+    total: gear.filter((slot) => slot.pick !== null).length,
+  };
+}
+
 /** How many slots have something to gain: a gap above 0. */
 export function gearGapCount(gear: readonly CharacterGearSlot[]): number {
   return gear.filter((slot) => slot.gap !== null && slot.gap > 0).length;
@@ -176,12 +189,17 @@ export function gearTitleSummary(gear: readonly CharacterGearSlot[], total: numb
   if (total === null) return unscored > 0 ? gearCopy.unscored(unscored) : null;
   const slots = gearGapCount(gear);
   const arrow = gearRows(gear).some((row) => row.pick !== null);
-  const lead =
+  const gain =
     total > 0 && slots > 0
       ? gearCopy.summary(total, slots)
       : arrow
         ? gearCopy.summaryZero
         : gearCopy.summaryAllWorn;
+  const best = gearBestCount(gear);
+  const lead =
+    gain === gearCopy.summaryAllWorn || best.total === 0
+      ? gain
+      : `${gearCopy.bestCount(best.worn, best.total)}${gearCopy.titleSeparator}${gain}`;
   return unscored > 0 ? `${lead}${gearCopy.notScored(unscored)}` : lead;
 }
 

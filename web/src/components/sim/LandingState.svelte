@@ -24,6 +24,8 @@
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { armorySimHref } from '../../lib/sim/url';
+  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { characterIsSimulated } from '../../lib/character-spec';
   import CharacterRow from '../character/CharacterRow.svelte';
   import { currentCharacterCopy } from '../../lib/current-character-copy';
 
@@ -47,6 +49,16 @@
     onpick: (path: CharacterPath) => void;
     onother: () => void;
   } = $props();
+
+  /** The current character first, then the rest by level (highest first), then name. */
+  const ordered = $derived(
+    [...characters].sort(
+      (a, b) =>
+        Number(b.key === currentKey) - Number(a.key === currentKey) ||
+        (b.level ?? 0) - (a.level ?? 0) ||
+        a.name.localeCompare(b.name),
+    ),
+  );
 
   const failedCharacter = $derived(
     failedKey === null ? null : (characters.find((character) => character.key === failedKey) ?? null),
@@ -100,7 +112,7 @@
   <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
 
   <ul class="border-line bg-raised rounded-panel flex flex-col border px-3">
-    {#each characters as character (character.key)}
+    {#each ordered as character (character.key)}
       {@const path = pathOf(character)}
       <CharacterRow
         {character}
@@ -118,7 +130,12 @@
               >{currentCharacterCopy.switchCurrentMarker}</span
             >
           {/if}
-          {#if hasBuild(character)}
+          {#if hasBuild(character) && !characterIsSimulated(character)}
+            <span
+              class="text-muted ml-auto shrink-0 text-[13px]"
+              data-testid={`sim-not-simulated-${character.key}`}>{landingCopy.notSimulatedYet}</span
+            >
+          {:else if hasBuild(character)}
             <button
               type="button"
               class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
@@ -172,7 +189,7 @@
 
   <button
     type="button"
-    class="text-nav label min-h-11 self-start underline md:min-h-9"
+    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong self-start px-4"
     onclick={onother}
     data-testid="sim-other-character"
   >

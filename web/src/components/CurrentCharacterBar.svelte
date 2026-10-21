@@ -34,7 +34,11 @@
     restored = false,
     profile = false,
     quietSignedOut = false,
+    cardName = '',
   }: {
+    /** The name of the character the page's own card shows. When it is the one this strip speaks
+     *  for, the strip shows only its doors: the card carries the identity, said once. */
+    cardName?: string;
     /** The signed-out sentence and its two links are left out: the page already asks one thing
      *  (an empty character page, W.10). */
     quietSignedOut?: boolean;
@@ -96,6 +100,10 @@
   // Pointer wins; the main is the fallback only once there is no pointer at all (spec 4.1).
   const displayCharacter = $derived<MeCharacter | null>(pointerCharacter ?? (current === null ? main : null));
   const classSlug = $derived(resolveSpineClassSlug(pointerCharacter, current, main));
+  /** The page's card already names the character this strip speaks for. */
+  const identityOnCard = $derived(
+    cardName !== '' && displayCharacter !== null && displayCharacter.name === cardName,
+  );
   const doors = $derived(
     spineDoorsFor(classSlug, current, displayCharacter?.region ?? null, displayCharacter?.ruleset ?? null),
   );
@@ -140,15 +148,17 @@
          resolves is what stops it from ever painting a wrong guess. -->
     <div class={`chip-slot ${CHIP_HEIGHT} ${profile ? '-order-4' : ''}`} data-testid="current-character-bar">
       <div class="flex h-full flex-col md:flex-row md:items-center md:gap-4">
-        <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
-          {#if displayCharacter !== null}
-            <CharacterIdentity character={displayCharacter} size="md" descriptor="realm" />
-          {:else if current !== null}
-            <span class="truncate font-semibold" style:color={classColorVar(current.classSlug)}>
-              {current.label}
-            </span>
-          {/if}
-        </div>
+        {#if !identityOnCard}
+          <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
+            {#if displayCharacter !== null}
+              <CharacterIdentity character={displayCharacter} size="md" descriptor="realm" />
+            {:else if current !== null}
+              <span class="truncate font-semibold" style:color={classColorVar(current.classSlug)}>
+                {current.label}
+              </span>
+            {/if}
+          </div>
+        {/if}
         <!-- Every child is shrink-0: a flex item with an explicit min-width (min-w-11) no longer
              keeps its min-content width, so without it the phone row shrank the links onto
              one another. The row wraps rather than scrolls: a scrolled row hid Forget past
@@ -181,6 +191,9 @@
               type="button"
               class="{rowLink} text-muted label min-w-11 shrink-0 justify-center"
               onclick={forget}
+              title={displayCharacter === null
+                ? undefined
+                : `Forget ${displayCharacter.name} and use your main`}
               data-testid="current-character-forget"
             >
               {currentCharacterCopy.forget}

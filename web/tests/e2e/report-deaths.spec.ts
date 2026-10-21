@@ -38,7 +38,7 @@ test('the combatants list links a build into the planner and the planner opens i
   // The fixture's tank carries retail spell ids, not per-talent ranks, so the code this
   // link built is gear-only: Planner.svelte says so rather than claiming talents loaded
   // (see the gearOnly branch of its planner-code-note, added for this link).
-  await expect(page.getByTestId('planner-code-note')).toContainText('Gear loaded');
+  await expect(page.getByTestId('planner-code-note')).toContainText('This link carries no talent ranks.');
 });
 
 test('deaths read top to bottom as cards at 360px with 44px controls', async ({ page }, testInfo) => {

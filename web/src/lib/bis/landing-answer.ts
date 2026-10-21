@@ -7,8 +7,10 @@
 // `bisAnswerSpec` with its own spec lookup.
 import type { MeCharacter } from '../account/api';
 import type { AnswerSpec, HeaderAction, HeaderAnswer } from '../character-header/types';
+import { characterSpecName } from '../character-spec';
 import { homeHeroCardsCopy } from '../home-panel-copy';
 import { SLOTS, type Slot } from '../planner/types';
+import { wearsListedBest } from './best-in-slot';
 import { bandEntryFor, fetchBisFile } from './hover';
 import { DEFAULT_LANDING_BAND, FIRST_BAND_LEVEL, characterBand } from './landing-bands';
 import { classFor, specKeyFor, type LandingConfig } from './landing-config';
@@ -51,7 +53,7 @@ export function excludedSlotNames(slots: readonly Slot[]): string[] {
  */
 export function slotCount(band: Pick<BisBand, 'slots'>, gear: Readonly<Record<string, number>>): SlotCount {
   const sourced = band.slots.filter(hasKnownSource);
-  const worn = sourced.filter((pick) => gear[pick.slot] === pick.item_id).length;
+  const worn = sourced.filter((pick) => wearsListedBest(pick.slot, pick.item_id, gear)).length;
   const unsourced = SLOTS.filter((slot) => !sourced.some((pick) => pick.slot === slot));
   return { worn, total: sourced.length, excluded: excludedSlotNames(unsourced) };
 }
@@ -139,14 +141,14 @@ export function bisAnswerSpec(options: BisAnswerOptions): AnswerSpec {
 export function landingAnswerSpec(config: LandingConfig): AnswerSpec {
   return bisAnswerSpec({
     build: config.build,
-    specKeyOf: (character) => specKeyFor(config, character.class, character.spec),
+    specKeyOf: (character) => specKeyFor(config, character.class, characterSpecName(character)),
   });
 }
 
 /** The character's own spec page at its own band and faction; the pointer to the grid for an unknown class. */
 export function landingAction(character: MeCharacter, config: LandingConfig): HeaderAction {
   const cls = classFor(config, character.class);
-  const specKey = specKeyFor(config, character.class, character.spec);
+  const specKey = specKeyFor(config, character.class, characterSpecName(character));
   const spec = cls === undefined ? undefined : config.specs[specKey ?? cls.defaultSpecKey];
   if (cls === undefined || spec === undefined) {
     return { label: landingCopy.fallbackAction, href: landingCopy.fallbackHref };

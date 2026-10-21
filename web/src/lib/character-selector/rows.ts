@@ -10,6 +10,7 @@ import { rulesetLabel } from '../characters';
 import type { CurrentCharacter } from '../current-character';
 import { relativeTime } from '../dates';
 import type { Faction } from '../faction-mark';
+import { characterSpecName } from '../character-spec';
 import { specName } from '../guild/spec-name';
 import { orderCharacters } from './order';
 import { selectorCopy } from './copy';
@@ -92,7 +93,7 @@ function rowFromCharacter(character: MeCharacter, current: boolean, now: Date): 
     name: character.name,
     classSlug,
     className: capitalise(classSlug),
-    spec: character.spec === undefined ? undefined : specName(character.spec),
+    spec: characterSpecName(character),
     level: character.level,
     realm: character.realm,
     ruleset: character.ruleset === 'normal' ? undefined : rulesetLabel(character.ruleset),

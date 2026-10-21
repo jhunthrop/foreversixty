@@ -13,11 +13,11 @@ export const accountPageCopy = {
   planLabel: 'Plan',
   currentCharacterLabel: 'Current character',
   noDevices:
-    'No devices yet. The companion signs in with Battle.net from its Device page; a code is only for the fallback.',
+    'No devices yet. The companion signs in with Battle.net from its Device page; a pairing code is only for the fallback.',
   /** A player with no companion yet: the next step is the download, and the code is the fallback (W.9). */
   downloadCompanion: 'Download the companion',
   downloadCompanionHref: '/setup#companion',
-  pairADevice: 'Use a code instead',
+  pairADevice: 'Use a pairing code instead',
   pseudonymLabel: 'Show a pseudonym instead of my character names',
   pseudonymNote:
     'Applies everywhere your characters appear, on reports and rankings alike. Reports themselves are never deleted or rewritten.',

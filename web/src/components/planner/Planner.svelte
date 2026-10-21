@@ -6,14 +6,16 @@
      behind a tab switcher (Tasks 9 and 17). Rebuild spec §11 (owner ruling): the gear panel
      left this page entirely -- the simulator keeps its own gear step. -->
 <script lang="ts">
-  import { untrack } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { fetchMeOnce, type Me, type MeCharacter } from '../../lib/account/api';
   import { adoptHeldCharacter } from '../../lib/account/adopt-held';
   import { selectedCharacter } from '../../lib/account/hero-character';
   import { recordPastedExport } from '../../lib/character-selector/paste';
   import { accountCharacterCode } from '../../lib/planner/account-character';
+  import { characterPointsSpent } from '../../lib/planner/send-state';
   import { mainCharacter } from '../../lib/account/main-character';
+  import { hasSessionHint } from '../../lib/page-load';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { clearCurrent, onCurrentCharacterChange, readCurrent } from '../../lib/current-character';
   import { API_BASE_URL, DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
@@ -148,7 +150,10 @@
     // own Load button) is never a character or an addon import -- the 'reconstructed' note's
     // own "Talents loaded from a character" wording is false for it, so it gets its own kind
     // and its own copy rather than a borrowed branch of that one.
-    | { kind: 'band'; bandLabel: string };
+    | { kind: 'band'; bandLabel: string }
+    // A character whose recorded ranks reach further than any legal order can: the note names
+    // the count the planner kept against the count the record carries.
+    | { kind: 'kept'; kept: number; total: number; name: string };
 
   /** Set when the build came in as an FS1 code: either why it could not be read, or that its
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
@@ -159,6 +164,32 @@
 
   /** The header card's selected character, for the band panel's level cut (null: none). */
   let bandCharacter = $state<MeCharacter | null>(null);
+  /** True once the header card has heard from the session (a character, or signed out). */
+  let bandSettled = $state(false);
+  /** Base.astro's pre-paint hint that a session cookie exists: a visitor who may have a card
+   *  does not get the rail's "Sim this build" first and lose it a moment later. */
+  let sessionHinted = $state(false);
+  onMount(() => {
+    sessionHinted = hasSessionHint();
+  });
+  /** The rail carries "Sim this build" only when the card cannot: signed out, or no character. */
+  const railSimLink = $derived(bandSettled ? bandCharacter === null : !sessionHinted);
+  /** Set when the build on screen is somebody else's (a linked or guild build, never the
+   *  account character's own): `owner` is their name, '' for a link that names nobody. The
+   *  send button reads it: another player's build asks before it replaces anything. */
+  let buildOrigin = $state<{ owner: string } | null>(null);
+  /** The same fact with the account's other characters counted: a build loaded from one of the
+   *  player's own characters is another character's build beside a different current one. */
+  const effectiveOrigin = $derived(
+    buildOrigin ??
+      (loadedCharacter !== null && bandCharacter !== null && loadedCharacter.key !== bandCharacter.key
+        ? { owner: loadedCharacter.name }
+        : null),
+  );
+  // A build with nothing spent is nobody's.
+  $effect(() => {
+    if (store.spent === 0 && buildOrigin !== null) untrack(() => (buildOrigin = null));
+  });
 
   // Matches the one message `decodeFS1` returns that carries two counts, so the digits can be
   // pulled out and wrapped here without `decodeFS1` itself having to return anything but a
@@ -298,6 +329,7 @@
     character?: MeCharacter,
   ): void {
     pendingImport = { classSlug, code, origin, character };
+    buildOrigin = null;
     if (origin !== 'character') characterLoading = false;
     store.selectClass(classSlug);
   }
@@ -370,12 +402,16 @@
       gear: decoded.build.gear,
     });
     loadedCharacter = pending.character ?? null;
-    codeNote = {
-      kind: 'reconstructed',
-      dropped: rebuilt.dropped.length + remapDropped,
-      gearOnly: false,
-      olderBuild: false,
-    };
+    const total = pending.character === undefined ? null : characterPointsSpent(pending.character);
+    codeNote =
+      pending.character !== undefined && total !== null && store.spent < total
+        ? { kind: 'kept', kept: store.spent, total, name: pending.character.name }
+        : {
+            kind: 'reconstructed',
+            dropped: rebuilt.dropped.length + remapDropped,
+            gearOnly: false,
+            olderBuild: false,
+          };
     characterLoading = false;
   }
   // The header selector moves the open planner along, the way a fresh load of that character
@@ -390,6 +426,7 @@
       const follow = followPointerInPlanner(readCurrent(), store.classSlug);
       if (follow.kind !== 'none') {
         loadedCharacter = null;
+        buildOrigin = null;
         characterRequest += 1;
       }
       if (follow.kind === 'character') void loadAccountCharacter(follow.key);
@@ -701,18 +738,20 @@
 
       // Task 10: a `?code=`/restored code just applied above, or this mount's `record`.
       if (record !== null) writePointer('build', record.id, slug, record.title);
-      else if (
-        codeForThisClass !== null &&
-        !plannerLoad.restored &&
-        codeForThisClass.build.character !== undefined
-      ) {
-        // A link is looked at, not chosen: it moves the pointer only to an account character it
-        // names, and never to a nameless code or somebody else's export.
-        void adoptHeldCharacter(codeForThisClass.build.character.name, codeForThisClass.build.classSlug).then(
-          (held) => {
-            if (held !== null && store.classSlug === codeForThisClass.build.classSlug) loadedCharacter = held;
-          },
-        );
+      else if (codeForThisClass !== null && !plannerLoad.restored) {
+        const named = codeForThisClass.build.character;
+        if (named === undefined) {
+          // A link that names nobody is somebody's build, not the current character's.
+          buildOrigin = { owner: '' };
+        } else {
+          // A link is looked at, not chosen: it moves the pointer only to an account character it
+          // names, and never to a nameless code or somebody else's export.
+          void adoptHeldCharacter(named.name, codeForThisClass.build.classSlug).then((held) => {
+            if (store.classSlug !== codeForThisClass.build.classSlug) return;
+            if (held !== null) loadedCharacter = held;
+            else buildOrigin = { owner: named.name };
+          });
+        }
       }
 
       // Planner rebuild §11 (owner ruling): the gear panel left the planner entirely --
@@ -791,6 +830,7 @@
       // Every kind of note is cleared the same way; none of them describes anything about a
       // class the planner has since moved on from.
       codeNote = null;
+      buildOrigin = null;
       classSlugForNoteReset = store.classSlug;
     }
   });
@@ -809,7 +849,12 @@
       {live}
       {gate}
       onshowdps={() => (dpsOptedIn = true)}
-      oncharacter={(next) => (bandCharacter = next)}
+      oncharacter={(next) => {
+        bandCharacter = next;
+        bandSettled = true;
+      }}
+      origin={effectiveOrigin}
+      simHref={simLinkShown ? simHref : undefined}
     />
   {:else}
     <!-- The non-standalone inline embed (Top Gear's "add a build", TalentCandidates.svelte)
@@ -825,7 +870,7 @@
         <span class="tabular font-mono">{codeNote.want}</span>.
       {:else if codeNote.kind === 'reconstructed'}
         {#if codeNote.gearOnly}
-          Gear loaded from a character. The log did not record talent ranks for this build.
+          {plannerCopy.noTalentRanksNote}
         {:else if codeNote.dropped === 0}
           Talents loaded from a character. The order points were spent in is not recorded in game, so this is
           the lowest-tier-first order that reaches the same tree.
@@ -838,6 +883,8 @@
         {#if codeNote.olderBuild}
           This code is from an older client build; check the talents.
         {/if}
+      {:else if codeNote.kind === 'kept'}
+        {plannerCopy.keptNote(codeNote.kept, codeNote.total, codeNote.name)}
       {:else if codeNote.kind === 'band'}
         {plannerCopy.bandLoadedNote(codeNote.bandLabel)}
       {:else}
@@ -1142,7 +1189,7 @@
                  tablet rail's own second row, spanning both columns (fix round 6) --
                  harmless at xl, where this wrapper is `contents` again and `col-span` has
                  no grid to act inside. -->
-            {#if simLinkShown}
+            {#if simLinkShown && railSimLink}
               <a
                 class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2 lg:col-span-2"
                 href={simHref}
@@ -1170,6 +1217,7 @@
                 onimport={(build, pastedCode) => {
                   store.loadImported(build);
                   loadedCharacter = null;
+                  buildOrigin = null;
                   void recordPastedExport(pastedCode);
                 }}
                 onwrongclass={standalone ? switchClassForImport : undefined}

@@ -145,8 +145,8 @@ describe('countAnswer', () => {
     const answer = countAnswer(bandWithout('trinket1', 'trinket2'), wearing('head', 'neck'));
     expect(answer).toEqual({
       kind: 'figures',
-      label: 'Best-in-slot slots you wear',
-      staleLabel: 'Slots you wore at the last sync',
+      label: 'Best-in-slot pieces you wear',
+      staleLabel: 'Pieces you wore at the last sync',
       figures: [{ value: '2', unit: 'of 15 slots' }],
       bar: 2 / 15,
       note: { text: 'Trinkets have no pick at this level range.' },

@@ -28,7 +28,8 @@
     characterBuildsCopy,
     fightRowId,
     profileHeader,
-    profileSpec,
+    resolvedProfileSpec,
+    seenBuildSpec,
     seenSplits,
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
@@ -97,13 +98,18 @@
 
   /** "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP", "Level 60 Night Elf" and the
    *  chip, from the answer. */
-  const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved));
+  const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved, own));
   /** The spec's best-in-slot page at this band: the Gear section's footer link (L8.6 ruling 2),
    *  and where the score card's "Most to gain: Gear" goes for an API that sends no `gear`. */
   const specBis = $derived(
     data === null
       ? null
-      : bisHref(data.character.class, profileSpec(data), data.character.level, data.character.race),
+      : bisHref(
+          data.character.class,
+          resolvedProfileSpec(data, own),
+          data.character.level,
+          data.character.race,
+        ),
   );
   /** Under "Builds seen at pull": every distinct split, newest first (fix round 5 item 4). */
   const buildsFootnote = $derived(
@@ -247,7 +253,12 @@
          (-4), then the header (-3) and the score card (-2, ForeverScoreCard) with the Gear
          section under it (-2, after it in the page: L8.6), then the visitor's sign-in band (-1):
          the character is the page's subject. Then the rest in page order. -->
-    <CurrentCharacterBar spine profile quietSignedOut={prompt?.quietBar ?? false} />
+    <CurrentCharacterBar
+      spine
+      profile
+      quietSignedOut={prompt?.quietBar ?? false}
+      cardName={data.character.name}
+    />
     <header class="-order-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
         <CharacterIdentity
@@ -274,7 +285,7 @@
         </CharacterIdentity>
         <!-- "No export yet · paste it here" only for an owner the site holds no build for:
              with one, the sync line above already says when it came. -->
-        <CharacterHandoffLinks path={resolved} showNeedsExport={owned && own?.build === undefined} />
+        <CharacterHandoffLinks path={resolved} showNeedsExport={owned && own?.build === undefined} buttons />
       </div>
       {#if data.character.render_url !== undefined}
         <img
@@ -311,7 +322,7 @@
           ? null
           : classSlugFromName(data.character.class)}
         bisHref={specBis}
-        spec={profileSpec(data)}
+        spec={resolvedProfileSpec(data, own)}
         specLine={gearSpecLine(data.gear_spec, data.gear_spec_source)}
         band={typeof data.character.level === 'number' ? bandForLevel(data.character.level) : null}
         unread={gearUnread}
@@ -369,7 +380,9 @@
               class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
             >
               <span class="tabular font-mono font-semibold">{build.talent_split}</span>
-              {#if build.spec}<span class="text-muted text-[13px]">{build.spec}</span>{/if}
+              {#if seenBuildSpec(data.character.class, build) !== ''}<span class="text-muted text-[13px]"
+                  >{seenBuildSpec(data.character.class, build)}</span
+                >{/if}
               <span class="text-muted tabular font-mono text-[13px]"
                 >first seen {formatDayMonthYear(new Date(build.first_seen))}</span
               >

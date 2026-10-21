@@ -12,7 +12,11 @@
   import type { CharacterPath } from '../../lib/characters';
   import { landingCopy } from '../../lib/sim/landing-copy';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import CharacterIdentity from '../character/CharacterIdentity.svelte';
+  import { buildSourcePill } from '../../lib/account/build-pill';
+  import { characterIsSimulated, characterSpecName } from '../../lib/character-spec';
+  import { classDisplayName } from '../../lib/sim/spec-label';
+  import { classColorVar } from '../../lib/report/format';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
 
   let {
     character,
@@ -30,14 +34,47 @@
   } = $props();
 
   const canRun = $derived(hasBuild(character));
+  const simulated = $derived(characterIsSimulated(character));
+  const classSlug = $derived(character.class?.toLowerCase() ?? '');
+  /** "Gnome Holy Priest · 60": the same words and order the simulator's own card uses. */
+  const descriptor = $derived(
+    [
+      [
+        character.race,
+        characterSpecName(character),
+        classSlug === '' ? undefined : classDisplayName(classSlug),
+      ]
+        .filter((part): part is string => part !== undefined && part !== '')
+        .join(' '),
+      character.level === undefined ? '' : String(character.level),
+    ]
+      .filter((part) => part !== '')
+      .join(' · '),
+  );
+  const pill = $derived(buildSourcePill(character.build));
 </script>
 
 <section
   class="border-line bg-raised rounded-panel mx-[18px] flex flex-wrap items-center justify-between gap-3 border p-4 md:mx-0"
   data-testid="sim-run-block"
 >
-  <CharacterIdentity {character} size="md" descriptor="realm" testid="sim-run-block-identity" />
-  {#if canRun}
+  <div class="flex min-w-0 flex-wrap items-center gap-3" data-testid="sim-run-block-identity">
+    <ClassCrestRing characterClass={classSlug} size={36} testid="sim-run-block-class-icon" />
+    <span
+      class="text-[17px] font-semibold"
+      style={`color: ${classColorVar(character.class)}`}
+      data-testid="sim-run-block-name">{character.name}</span
+    >
+    <span class="text-muted text-[13px]" data-testid="sim-run-block-descriptor">{descriptor}</span>
+    {#if canRun && pill.pillClass !== null}
+      <span class="pill {pill.pillClass}" data-testid="sim-run-block-pill">{pill.label}</span>
+    {/if}
+  </div>
+  {#if canRun && !simulated}
+    <span class="text-muted text-[13px]" data-testid="sim-run-block-not-simulated"
+      >{landingCopy.notSimulatedYet}</span
+    >
+  {:else if canRun}
     <button
       type="button"
       class="{PRIMARY_BUTTON_FIXED} shrink-0 px-5 disabled:opacity-50"

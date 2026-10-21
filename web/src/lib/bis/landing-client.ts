@@ -8,6 +8,7 @@
 import { mount } from 'svelte';
 import type { MeCharacter } from '../account/api';
 import { nextTabIndex } from '../tiers/tier-controls';
+import { characterSpecName } from '../character-spec';
 import { afterLoad, hasSessionHint } from '../page-load';
 import { bandLabel, parseBandParam } from './landing-bands';
 import { landingCopy } from './landing-copy';
@@ -125,7 +126,7 @@ function mountHeader(config: LandingConfig, controller: LandingController): void
               : {
                   level: character.level,
                   faction: character.faction,
-                  specKey: specKeyFor(config, character.class, character.spec),
+                  specKey: specKeyFor(config, character.class, characterSpecName(character)),
                 },
           ),
       },

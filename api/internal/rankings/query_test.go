@@ -187,6 +187,29 @@ func TestRankingsFilterOnEveryAxis(t *testing.T) {
 	}
 }
 
+// A spec is one name however it was written: a board filtered on "Beast Mastery" holds the fights
+// whose export wrote "BeastMastery", and the reverse. A different spec still matches nothing.
+func TestRankingsSpecFilterIgnoresSpacesAndCase(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	if _, err := h.pool.Exec(context.Background(),
+		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, spec, role,
+		   metric_dps, encounter_id, difficulty, kill, phase, fought_at, state)
+		 values ('spec-report', 1, 'us/pvp/spec-hunter', 'Spec Hunter', 'hunter', 'BeastMastery', 'dps',
+		   300, 9001, 8, true, 'raids-1', $1, 'ok')`, engine.FixtureBase); err != nil {
+		t.Fatal(err)
+	}
+	for spec, want := range map[string]int{
+		"Beast%20Mastery": 1, "BeastMastery": 1, "beast%20mastery": 1, "Survival": 0, "Fury": 0,
+	} {
+		var page Page
+		h.data(h.get("/v1/rankings?encounter=9001&spec="+spec), &page)
+		if page.Total != want {
+			t.Errorf("spec=%s matched %d rows, want %d", spec, page.Total, want)
+		}
+	}
+}
+
 func TestRankingsRejectBadParameters(t *testing.T) {
 	h := newHarness(t)
 	serve(t, h)
