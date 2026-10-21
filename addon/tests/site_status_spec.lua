@@ -50,7 +50,15 @@ describe("what the site has and what the inbox holds", function()
 		} } }
 	end
 
+	--- The account was welcomed at an earlier login unless a spec says otherwise (X.7: the welcome
+	--- is its own describe block below).
+	local welcomed = true
+
 	local function fire(event, ...)
+		if event == "PLAYER_ENTERING_WORLD" and welcomed then
+			_G.ForeverSixtyDB = _G.ForeverSixtyDB or {}
+			_G.ForeverSixtyDB.welcomedAt = _G.ForeverSixtyDB.welcomedAt or 1
+		end
 		Options.onEvent(Options.frame, event, ...)
 	end
 
@@ -605,6 +613,107 @@ describe("what the site has and what the inbox holds", function()
 			assert.is_function(handler)
 			handler()
 			assert.is_true(BuildDialog.frame:IsShown())
+		end)
+	end)
+
+	-- X.7: a first login says what the addon does, once per account.
+	describe("the first-login welcome", function()
+		local function login()
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			mock.runTimers(state)
+		end
+
+		local function welcome()
+			local out = {}
+			for index, text in ipairs({ L.welcomeOn, L.welcomeNext, L.welcomeSite }) do
+				out[index] = Theme.chatLine(text)
+			end
+			return out
+		end
+
+		before_each(function()
+			welcomed = false
+			state.printed = {}
+		end)
+
+		after_each(function()
+			welcomed = true
+		end)
+
+		it("names the chip, /fs, /fs help and the logout, in three sentences", function()
+			assert.are.equal("ForeverSixty is on.", L.welcomeOn)
+			assert.are.equal("The chip by your minimap names your next step; /fs opens builds from foreversixty.gg; "
+				.. "/fs help lists the commands.", L.welcomeNext)
+			assert.are.equal("Your character reaches the site after a logout with the companion running.", L.welcomeSite)
+		end)
+
+		it("is said five seconds in, once, and stamps the account", function()
+			record(GEAR)
+			inbox(ack(3600))
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			assert.is_true(timersAt(5) >= 1)
+			assert.are.same({}, state.printed)
+			mock.runTimers(state)
+			assert.are.same(welcome(), state.printed)
+			assert.is_number(_G.ForeverSixtyDB.welcomedAt)
+		end)
+
+		it("comes before the inbox's own line that session", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
+			login()
+			local expected = welcome()
+			expected[4] = Theme.chatLine(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
+			assert.are.same(expected, state.printed)
+		end)
+
+		it("is not said at a second login, a reload or a loading screen, but the inbox still is", function()
+			record(GEAR)
+			inbox(ack(3600), build("Arms raid", ARMS))
+			login()
+			state.printed = {}
+			login()
+			assert.are.same({ Theme.chatLine(string.format(L.siteLoginBuild, "Bob", "Arms raid")) }, state.printed)
+			state.printed = {}
+			fire("PLAYER_ENTERING_WORLD", false, true)
+			fire("PLAYER_ENTERING_WORLD", false, false)
+			mock.runTimers(state)
+			for _, line in ipairs(state.printed) do
+				assert.is_nil(line:find(L.welcomeOn, 1, true))
+			end
+		end)
+
+		it("is said once when the world is entered twice before the five seconds are up", function()
+			record(GEAR)
+			inbox(ack(3600))
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			mock.runTimers(state)
+			assert.are.same(welcome(), state.printed)
+		end)
+
+		it("is one stamp for the account: another character that finds it set hears nothing", function()
+			record(GEAR)
+			inbox(ack(3600))
+			_G.ForeverSixtyDB.welcomedAt = 1793000000
+			login()
+			assert.are.same({}, state.printed)
+		end)
+
+		it("is said again by /fs welcome, without changing the stamp", function()
+			record(GEAR)
+			_G.ForeverSixtyDB.welcomedAt = 1793000000
+			local lines = Options.handle("welcome")
+			assert.are.same({ L.welcomeOn, L.welcomeNext, L.welcomeSite }, lines)
+			assert.are.equal(1793000000, _G.ForeverSixtyDB.welcomedAt)
+		end)
+
+		it("runs no OnUpdate", function()
+			record(GEAR)
+			login()
+			for _, frame in ipairs(state.frames) do
+				assert.is_nil(frame:GetScript("OnUpdate"))
+			end
 		end)
 	end)
 

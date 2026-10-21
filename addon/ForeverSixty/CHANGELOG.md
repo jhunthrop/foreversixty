@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.14
+
+- A first login says what the addon does and where its commands are; Escape closes the build dialog whatever has focus, and typing to chat is never swallowed by it.
+
 ## 2.0.13
 
 - The build preview never cuts a talent or tree name short, and the dialog's hint only says Enter to use when that works.

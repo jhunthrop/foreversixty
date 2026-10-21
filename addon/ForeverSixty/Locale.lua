@@ -33,7 +33,7 @@ local L = {
 	},
 	helpTesters = {
 		"For testers: /fs diag verbose",
-		"For testers: /fs inbox, /fs hello, /fs seen, /fs record",
+		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome",
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
@@ -1480,6 +1480,11 @@ L.siteLoginGear = "your gear is on its way to the site; check it after your next
 -- X.5: the ack is newer than the export's build time, so the earlier "on its way" is settled (once).
 L.siteLoginGearSeen = "the site has your gear (seen %s)."
 L.siteLoginSelf = "this character"
+-- X.7: the first login's welcome, once per account, one chat line per sentence (/fs welcome says it again).
+L.welcomeOn = "ForeverSixty is on."
+L.welcomeNext = "The chip by your minimap names your next step; /fs opens builds from " .. SITE
+	.. "; /fs help lists the commands."
+L.welcomeSite = "Your character reaches the site after a logout with the companion running."
 L.siteLoginBuild = "a build for %s is waiting: %s. /fs opens it."
 L.siteLoginBuilds = "%d builds for %s are waiting: %s. /fs opens them."
 L.siteLoginSilent = "the companion has not picked up your data since %s. "

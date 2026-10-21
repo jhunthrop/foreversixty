@@ -270,7 +270,8 @@ describe("SettingsPage, the command list", function()
 	-- Fix round 3, item 5: two chat lines, so /fs diag verbose never reads as having the
 	-- others for options; /fs record's arguments live in its own usage.
 	it("names every tester command in two short chat lines, no pipes", function()
-		assert.are.same({ "For testers: /fs diag verbose", "For testers: /fs inbox, /fs hello, /fs seen, /fs record" },
+		assert.are.same({ "For testers: /fs diag verbose",
+			"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome" },
 			L.helpTesters)
 		for _, line in ipairs(L.helpTesters) do
 			assert.is_nil(line:find("|", 1, true))

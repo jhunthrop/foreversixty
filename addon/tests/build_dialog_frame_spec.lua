@@ -1179,3 +1179,97 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.are.equal("Mine", BuildDialog.rows[1].name)
 	end)
 end)
+
+describe("BuildDialog, X.7 Escape from any focus and the keys it leaves alone", function()
+	local state, BuildDialog
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		require("Theme").reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+	end)
+
+	after_each(function()
+		_G.InCombatLockdown = nil
+		mock.uninstall()
+	end)
+
+	local function key(name)
+		local frame = BuildDialog.frame
+		frame:GetScript("OnKeyDown")(frame, name)
+	end
+
+	it("is keyboard-enabled, in UISpecialFrames and keyed on the frame itself", function()
+		assert.is_true(mock.lastCall(BuildDialog.frame, "EnableKeyboard")[1])
+		local listed = false
+		for _, name in ipairs(UISpecialFrames) do
+			listed = listed or name == BuildDialog.FRAME_NAME
+		end
+		assert.is_true(listed)
+		assert.is_function(BuildDialog.frame:GetScript("OnKeyDown"))
+	end)
+
+	it("closes on Escape with the focus in the paste box, and gives the keyboard back", function()
+		assert.is_true(BuildDialog.paste.box:HasFocus())
+		key("ESCAPE")
+		assert.is_false(BuildDialog.frame:IsShown())
+		assert.is_false(BuildDialog.paste.box:HasFocus())
+		assert.is_false(mock.lastCall(BuildDialog.frame, "SetPropagateKeyboardInput")[1])
+	end)
+
+	it("closes on Escape with the focus on a row (the box has let go)", function()
+		BuildDialog.paste.box:ClearFocus()
+		BuildDialog.paste.rows[1].frame:Show()
+		key("ESCAPE")
+		assert.is_false(BuildDialog.frame:IsShown())
+	end)
+
+	it("closes on Escape from either tab", function()
+		BuildDialog.setMode("copy")
+		BuildDialog.copyTab.box:ClearFocus()
+		key("ESCAPE")
+		assert.is_false(BuildDialog.frame:IsShown())
+		BuildDialog.open("paste")
+		BuildDialog.paste.box:ClearFocus()
+		key("ESCAPE")
+		assert.is_false(BuildDialog.frame:IsShown())
+	end)
+
+	it("lets the box's own Escape close it too", function()
+		local box = BuildDialog.paste.box
+		box:GetScript("OnEscapePressed")(box)
+		assert.is_false(BuildDialog.frame:IsShown())
+	end)
+
+	it("passes every other key on, so Return still opens chat, and keeps the dialog open", function()
+		for _, name in ipairs({ "ENTER", "W", "SPACE", "TAB", "1" }) do
+			key(name)
+			assert.is_true(mock.lastCall(BuildDialog.frame, "SetPropagateKeyboardInput")[1], name)
+			assert.is_true(BuildDialog.frame:IsShown(), name)
+		end
+	end)
+
+	it("makes the propagation call, and closes, in combat too (the frame is not protected)", function()
+		_G.InCombatLockdown = function()
+			return true
+		end
+		key("ESCAPE")
+		assert.is_false(BuildDialog.frame:IsShown())
+		assert.is_false(mock.lastCall(BuildDialog.frame, "SetPropagateKeyboardInput")[1])
+	end)
+end)
