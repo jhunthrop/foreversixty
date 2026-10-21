@@ -11,7 +11,7 @@ import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '..
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
 import { accountNameOf, buildSelectorModel, closedKindOf, type ClosedKind, type SelectorModel } from './rows';
-import { memberGuildOf, type SessionGuild } from './session-guild';
+import { currentGuildOf, type SessionGuild } from './session-guild';
 
 export type LoadStatus = 'loading' | 'ready' | 'failed';
 
@@ -93,7 +93,7 @@ export function createSelectorState(): SelectorState {
 
   const accountName = $derived(loadStatus === 'ready' && session.data ? accountNameOf(session.data) : '');
 
-  const sessionGuild = $derived(loadStatus === 'ready' ? memberGuildOf(session.data) : null);
+  const sessionGuild = $derived(loadStatus === 'ready' ? currentGuildOf(session.data, pointer) : null);
 
   // Until the browser has been read, and while a signed-in visitor's character is still
   // unknown, the closed control stays the pre-paint link (its skeleton variant); a visitor

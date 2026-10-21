@@ -388,6 +388,35 @@ describe('toDraft', () => {
     });
   });
 
+  it('never carries a worn item the planner does not list', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      gear: { head: 12640, finger1: 264908, trinket2: 1 },
+    });
+    expect(store.toDraft().gear).toEqual({ head: 12640 });
+    expect(store.leftOutSlots).toEqual(['finger1', 'trinket2']);
+    // The character's own map is untouched: only the draft is filtered.
+    expect(store.gear.finger1).toBe(264908);
+  });
+
+  it('drops nothing before the item catalogue has loaded', () => {
+    const store = createPlannerStore({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      gear: { finger1: 264908 },
+    });
+    store.setReference({
+      classes: fixtureClasses as ClassRow[],
+      races: fixtureRaces as RaceRow[],
+      combos: fixtureCombos as Combo[],
+    });
+    expect(store.toDraft().gear).toEqual({ finger1: 264908 });
+    expect(store.leftOutSlots).toEqual([]);
+  });
+
   it('omits an empty title and caps a long one at 60 characters', () => {
     const store = loaded();
     expect(store.toDraft().title).toBeUndefined();

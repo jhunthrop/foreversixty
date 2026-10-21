@@ -20,6 +20,8 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { characterPointsSpent, sendActionFor, type SendState } from '../../lib/planner/send-state';
+  import { ensureItems } from '../../lib/planner/items-ready';
+  import { plannerCharacterCardCopy } from '../../lib/planner/copy';
   import { classDisplayName } from '../../lib/sim/spec-label';
   import { buildHasGear } from '../../lib/addon-export';
   import CharacterHeader from '../character/CharacterHeader.svelte';
@@ -92,7 +94,16 @@
     character?.build !== undefined && character.build.source === 'addon' && !buildHasGear(character.build),
   );
 
+  // The card names the worn pieces the planner has no item for, so a character wearing anything
+  // asks for the class's catalogue; a visitor with an empty gear map never fetches it.
+  $effect(() => {
+    if (character !== null && Object.keys(store.gear).length > 0) void ensureItems(store);
+  });
+
   async function send(): Promise<void> {
+    // The draft is filtered by the catalogue: have it before the build is read, so the key the
+    // result is checked against is the one that was sent.
+    await ensureItems(store);
     const key = currentKey;
     if (character === null || key === null || sendState.kind === 'sending' || store.spent === 0) return;
     // Another class's build is never sent to a character (the button is off, this is the guard).
@@ -120,7 +131,7 @@
       sent = { key, buildId: outcome.buildId };
       sendState = { kind: 'sent' };
     } else {
-      sendState = { kind: outcome.kind };
+      sendState = outcome;
     }
   }
 
@@ -179,6 +190,11 @@
           onPick={() => void send()}
           onSecondary={() => (sendState = { kind: 'idle' })}
         />
+        {#if character !== null && store.leftOutSlots.length > 0}
+          <p class="text-muted text-[13px]" data-testid="planner-left-out">
+            {plannerCharacterCardCopy.leftOut(store.leftOutSlots)}
+          </p>
+        {/if}
         {#if unread}
           <ExportNotRead
             capturedAt={character?.build?.captured_at ?? null}

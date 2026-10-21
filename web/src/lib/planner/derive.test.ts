@@ -11,6 +11,7 @@ import {
   pointsPerTree,
   ranksByTalent,
   splitLabel,
+  splitListedGear,
   statTotals,
 } from './derive';
 import { indexItems, indexTalents } from './rules';
@@ -54,6 +55,22 @@ describe('the split', () => {
   it('is all zeroes for an empty build', () => {
     expect(pointsPerTree(index, [])).toEqual([0, 0]);
     expect(splitLabel(index, [])).toBe('0/0');
+  });
+});
+
+describe('splitListedGear', () => {
+  it('keeps listed items and names the slots of the rest, in slot order', () => {
+    expect(splitListedGear(items, { finger2: 5, head: 12640, finger1: 264908 })).toEqual({
+      listed: { head: 12640 },
+      leftOut: ['finger1', 'finger2'],
+    });
+  });
+
+  it('judges nothing without a catalogue', () => {
+    expect(splitListedGear(new Map(), { finger1: 264908 })).toEqual({
+      listed: { finger1: 264908 },
+      leftOut: [],
+    });
   });
 });
 

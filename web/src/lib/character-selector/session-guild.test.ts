@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { Me, MeGuild } from '../account/api';
 import { readFileSync } from 'node:fs';
 import * as sessionGuild from './session-guild';
-import { memberGuildOf, sessionGuildOf } from './session-guild';
+import { currentGuildOf, memberGuildOf, sessionGuildOf } from './session-guild';
+import type { CurrentCharacter } from '../current-character';
 
 const guild = (overrides: Partial<MeGuild>): MeGuild => ({
   id: 1,
@@ -65,6 +66,69 @@ describe('memberGuildOf', () => {
       { key: 'us/pvp/loner' },
     ]);
     expect(memberGuildOf(me)).toEqual(olympus);
+  });
+});
+
+describe('currentGuildOf', () => {
+  const olympus = { name: 'OLYMPUS XXVII', href: '/guild/us/pvp/olympus-xxvii' };
+  const millennials = { name: 'Employed Millennials', href: '/guild/us/pvp/employed-millennials' };
+  const guilds = [guild({}), guild({ id: 2, name: 'Employed Millennials' })];
+  const chars = [
+    {
+      key: 'us/pvp/main',
+      name: 'Main',
+      class: 'warrior',
+      guild: { id: 1, name: 'OLYMPUS XXVII', verified: true },
+    },
+    {
+      key: 'us/pvp/bow',
+      name: 'Bow',
+      class: 'hunter',
+      guild: { id: 2, name: 'Employed Millennials', verified: false },
+    },
+    { key: 'us/pvp/loner', name: 'Loner', class: 'mage' },
+    {
+      key: 'us/pvp/stray',
+      name: 'Stray',
+      class: 'mage',
+      guild: { id: 9, name: 'Elsewhere', verified: true },
+    },
+  ];
+  const me = { guilds, characters: chars, main_character_key: 'us/pvp/main' } as unknown as Me;
+  const at = (ref: string, classSlug = 'hunter'): CurrentCharacter => ({
+    source: 'armory',
+    ref,
+    label: ref,
+    classSlug,
+    savedAt: '2026-10-21T00:00:00Z',
+  });
+
+  it('is null signed out', () => {
+    expect(currentGuildOf(null, at('us/pvp/bow'))).toBeNull();
+    expect(currentGuildOf(undefined, null)).toBeNull();
+  });
+
+  it("is the current character's guild, an unverified one included", () => {
+    expect(currentGuildOf(me, at('us/pvp/bow'))).toEqual(millennials);
+    expect(currentGuildOf(me, at('us/pvp/main'))).toEqual(olympus);
+  });
+
+  it('resolves an addon pointer by the name its label carries', () => {
+    const addon: CurrentCharacter = { ...at('FS1:x'), source: 'addon', label: 'Bow · Beast Mastery Hunter' };
+    expect(currentGuildOf(me, addon)).toEqual(millennials);
+  });
+
+  it('is the main character’s guild with no pointer', () => {
+    expect(currentGuildOf(me, null)).toEqual(olympus);
+  });
+
+  it('falls back to the main’s guild when the current character has none or a guild me.guilds lacks', () => {
+    expect(currentGuildOf(me, at('us/pvp/loner', 'mage'))).toEqual(olympus);
+    expect(currentGuildOf(me, at('us/pvp/stray', 'mage'))).toEqual(olympus);
+  });
+
+  it('falls back when the pointer names no account character', () => {
+    expect(currentGuildOf(me, at('FS1:y'))).toEqual(olympus);
   });
 });
 

@@ -12,6 +12,7 @@ import {
   pointsPerTree,
   ranksByTalent,
   splitLabel as deriveSplitLabel,
+  splitListedGear,
   statTotals as deriveStatTotals,
   type ActiveSet,
 } from './derive';
@@ -113,6 +114,7 @@ export function createPlannerStore(init: PlannerInit) {
   const split = $derived<number[]>(talentIndex ? pointsPerTree(talentIndex, order) : []);
   const splitLabel = $derived<string>(talentIndex ? deriveSplitLabel(talentIndex, order) : '');
   const equipped = $derived<Item[]>(equippedItems(itemIndex, gear));
+  const leftOutSlots = $derived<Slot[]>(splitListedGear(itemIndex, gear).leftOut);
   const statTotals = $derived<Partial<Record<StatKey, number>>>(deriveStatTotals(equipped));
   const activeSets = $derived<ActiveSet[]>(activeSetBonuses(equipped, sets));
 
@@ -180,6 +182,10 @@ export function createPlannerStore(init: PlannerInit) {
     },
     get talentIndex() {
       return talentIndex;
+    },
+    /** Worn slots whose item the planner does not list; a draft never carries them. */
+    get leftOutSlots() {
+      return leftOutSlots;
     },
     get itemIndex() {
       return itemIndex;
@@ -422,7 +428,7 @@ export function createPlannerStore(init: PlannerInit) {
         race_id: raceRow.id,
         tree_version: init.treeVersion,
         point_order: [...order],
-        gear: { ...gear },
+        gear: splitListedGear(itemIndex, gear).listed,
       };
       if (title.length > 0) draft.title = title;
       return draft;

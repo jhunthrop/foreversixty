@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AccountError, type MeCharacter } from '../account/api';
 import { sendActionFor, sendBuildToAddon, type SendDeps } from './send-build';
+import { plannerCharacterCardCopy } from './copy';
 import { characterPointsSpent } from './send-state';
 import type { BuildDraft } from './types';
 
@@ -51,6 +52,18 @@ describe('sendBuildToAddon', () => {
     await expect(
       sendBuildToAddon(DRAFT, KEY, null, deps({ devices: vi.fn().mockRejectedValue(unauth) })),
     ).resolves.toEqual({ kind: 'sign-in' });
+  });
+
+  it('carries the first field message the API gave when it refuses the save', async () => {
+    const save = vi.fn().mockResolvedValue({
+      ok: false,
+      message: 'this build breaks the talent rules',
+      fields: { 'gear.finger1': 'Item 264908 is not available to Hunter' },
+    });
+    await expect(sendBuildToAddon(DRAFT, KEY, null, deps({ save }))).resolves.toEqual({
+      kind: 'failed',
+      reason: 'Item 264908 is not available to Hunter',
+    });
   });
 
   it('maps a refused save, a 400, or a network failure to failed', async () => {
@@ -140,6 +153,26 @@ describe('sendActionFor', () => {
       link: { href: '/setup#companion' },
     });
     expect(note('failed')).toMatchObject({ text: 'Could not send just now. Try again.' });
+  });
+
+  it('says why the site refused a build when the API gave a reason', () => {
+    const a = sendActionFor(ME, { kind: 'failed', reason: 'Item 264908 is not available to Hunter' });
+    expect('note' in a && a.note).toMatchObject({
+      tone: 'error',
+      text: 'The site refused this build: Item 264908 is not available to Hunter.',
+    });
+  });
+
+  it('words what the planner left out by slot, never a bare id', () => {
+    expect(plannerCharacterCardCopy.leftOut(['finger1'])).toBe(
+      'Left out: the ring in your first ring slot (not a planner item).',
+    );
+    expect(plannerCharacterCardCopy.leftOut(['finger1'], { finger1: 'Ancient Heirloom' })).toBe(
+      'Left out: Ancient Heirloom (not a planner item).',
+    );
+    expect(plannerCharacterCardCopy.leftOut(['finger1', 'trinket2'])).toBe(
+      'Left out: the ring in your first ring slot and the trinket in your second trinket slot (not planner items).',
+    );
   });
 });
 

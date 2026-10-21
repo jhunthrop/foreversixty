@@ -82,6 +82,17 @@ export const plannerCharacterCardCopy = {
   noDeviceLink: 'Set up the companion',
   noDeviceHref: '/setup#companion',
   failed: 'Could not send just now. Try again.',
+  /** The API refused the save and said why: the first field's message, never a generic retry. */
+  refused: (reason: string): string => `The site refused this build: ${reason.replace(/[.s]+$/, '')}.`,
+  /** Worn pieces the planner has no item for: named by slot (the character's export carries only ids). */
+  leftOut: (slots: readonly string[], names: Readonly<Record<string, string>> = {}): string => {
+    const parts = slots.map((slot) => names[slot] ?? leftOutSlotPhrase[slot] ?? 'a worn piece');
+    const list =
+      parts.length < 3
+        ? parts.join(' and ')
+        : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+    return `Left out: ${list} (not ${parts.length === 1 ? 'a planner item' : 'planner items'}).`;
+  },
   /** An empty draft is never sent; a muted hint, not an error (nothing went wrong). */
   spendFirst: "Spend some points first, or load the level range's build.",
   /** A build with fewer points than the character has spent: say both counts, nothing more. */
@@ -106,6 +117,26 @@ export const plannerCharacterCardCopy = {
   /** The simulator link under the send button. */
   simThisBuild: 'Sim this build',
 } as const;
+
+const leftOutSlotPhrase: Record<string, string> = {
+  head: 'the helm in your head slot',
+  neck: 'the necklace in your neck slot',
+  shoulder: 'the piece in your shoulder slot',
+  back: 'the cloak in your back slot',
+  chest: 'the piece in your chest slot',
+  wrist: 'the piece in your wrist slot',
+  hands: 'the piece in your hands slot',
+  waist: 'the belt in your waist slot',
+  legs: 'the piece in your legs slot',
+  feet: 'the piece in your feet slot',
+  finger1: 'the ring in your first ring slot',
+  finger2: 'the ring in your second ring slot',
+  trinket1: 'the trinket in your first trinket slot',
+  trinket2: 'the trinket in your second trinket slot',
+  main_hand: 'the weapon in your main hand',
+  off_hand: 'the item in your off hand',
+  ranged: 'the piece in your ranged slot',
+};
 
 function article(word: string): string {
   return /^[aeiou]/i.test(word) ? 'an' : 'a';

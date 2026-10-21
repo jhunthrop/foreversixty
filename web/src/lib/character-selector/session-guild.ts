@@ -3,6 +3,8 @@
 // the session's first verified guild, as its name and its page. Pure, so the selector island
 // can compute it from the cached `/v1/me` and the header script only applies the result.
 import type { Me } from '../account/api';
+import { selectedCharacter } from '../account/hero-character';
+import type { CurrentCharacter } from '../current-character';
 import { guildHref } from '../characters';
 
 export interface SessionGuild {
@@ -22,6 +24,26 @@ export function memberGuildOf(me: Me | null | undefined): SessionGuild | null {
     mainKey === undefined ? undefined : me.characters?.find((c) => c.key === mainKey)?.guild?.id;
   const guild = me.guilds.find((entry) => entry.id === mainGuildId) ?? me.guilds[0];
   if (guild === undefined) return null;
+  return { name: guild.name, href: guildHref(guild.region, guild.ruleset, guild.name) };
+}
+
+/**
+ * The guild the header's Guild menu follows: the current character's own (the pointer's
+ * resolution, `selectedCharacter`), verified or not, found among `me.guilds` for its region
+ * and ruleset. A current character with no guild, or one `me.guilds` does not list, falls back
+ * to `memberGuildOf` (the main's guild, else the first). `null` signed out.
+ */
+export function currentGuildOf(
+  me: Me | null | undefined,
+  pointer: CurrentCharacter | null,
+): SessionGuild | null {
+  if (me === null || me === undefined) return null;
+  const guildId = selectedCharacter(pointer, {
+    characters: me.characters ?? [],
+    main_character_key: me.main_character_key,
+  })?.guild?.id;
+  const guild = guildId === undefined ? undefined : me.guilds.find((entry) => entry.id === guildId);
+  if (guild === undefined) return memberGuildOf(me);
   return { name: guild.name, href: guildHref(guild.region, guild.ruleset, guild.name) };
 }
 

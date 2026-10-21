@@ -58,6 +58,24 @@ export function equippedItems(items: Map<number, Item>, gear: Gear): Item[] {
   return equipped;
 }
 
+/**
+ * Splits worn gear into what the planner lists and what it does not. The API refuses an item
+ * outside the class catalogue, so a draft carries only `listed`; `leftOut` names the slots the
+ * planner dropped. With no catalogue loaded yet nothing can be judged, so nothing is dropped.
+ */
+export function splitListedGear(items: Map<number, Item>, gear: Gear): { listed: Gear; leftOut: Slot[] } {
+  if (items.size === 0) return { listed: { ...gear }, leftOut: [] };
+  const listed: Gear = {};
+  const leftOut: Slot[] = [];
+  for (const slot of SLOTS as readonly Slot[]) {
+    const id = gear[slot];
+    if (id === undefined) continue;
+    if (items.has(id)) listed[slot] = id;
+    else leftOut.push(slot);
+  }
+  return { listed, leftOut };
+}
+
 /** Summed stats; `armor` from the item's own armor field lands under the `armor` stat key. */
 export function statTotals(equipped: Item[]): Partial<Record<StatKey, number>> {
   const totals: Partial<Record<StatKey, number>> = {};
