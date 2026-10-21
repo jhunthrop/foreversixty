@@ -9,6 +9,7 @@ import { rulesetLabel } from '../characters';
 import type { CurrentCharacter } from '../current-character';
 import { relativeTime } from '../dates';
 import type { Faction } from '../faction-mark';
+import { specName } from '../guild/spec-name';
 import { orderCharacters } from './order';
 import { sameCharacter } from './paste';
 import { selectorCopy } from './copy';
@@ -91,7 +92,7 @@ function rowFromCharacter(character: MeCharacter, current: boolean, now: Date): 
     name: character.name,
     classSlug,
     className: capitalise(classSlug),
-    spec: character.spec,
+    spec: character.spec === undefined ? undefined : specName(character.spec),
     level: character.level,
     realm: character.realm,
     ruleset: character.ruleset === 'normal' ? undefined : rulesetLabel(character.ruleset),
@@ -112,7 +113,7 @@ function splitPointerLabel(pointer: CurrentCharacter): { name: string; specClass
 
 function specOfLabel(specClass: string, className: string): string | undefined {
   const suffix = ` ${className}`;
-  if (specClass.endsWith(suffix)) return specClass.slice(0, -suffix.length);
+  if (specClass.endsWith(suffix)) return specName(specClass.slice(0, -suffix.length));
   return undefined;
 }
 

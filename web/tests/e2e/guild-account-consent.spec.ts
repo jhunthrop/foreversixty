@@ -74,6 +74,8 @@ test('changing consent calls the API and leaving removes the row and the cards g
   await expect(page.getByTestId('account-guild-leave-confirm')).toContainText(
     'Leave The Last Watch? This removes all 3 of your characters from its roster.',
   );
+  // A member holds no claim, so the confirm says nothing about releasing one.
+  await expect(page.getByTestId('account-guild-leave-releases')).toHaveCount(0);
   await page.getByTestId('account-guild-leave-confirm').getByRole('button', { name: 'Cancel' }).click();
   await expect(page.getByTestId('account-guild-leave-confirm')).toHaveCount(0);
   expect(leaves).toBe(0);
@@ -86,4 +88,45 @@ test('changing consent calls the API and leaving removes the row and the cards g
   // The character cards drop its guild line in the same view, no reload.
   await expect(page.getByTestId('character-guild-line')).toHaveCount(0);
   await expect(page.getByTestId('account-characters')).toContainText('Quillfeather');
+});
+
+test('the guild master is warned that leaving releases the claim and what the officers lose', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      envelope({
+        ...meFor('gear', true),
+        guilds: [
+          {
+            ...GUILD,
+            name: 'Lifecycle Test',
+            rank: 'leader',
+            can: ['approve', 'remove', 'settings', 'award', 'billing', 'release'],
+          },
+        ],
+      }),
+    ),
+  );
+  await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
+  await page.goto('/account');
+  await page.getByTestId('account-guild-leave').click();
+  const confirm = page.getByTestId('account-guild-leave-confirm');
+  await expect(confirm).toContainText(
+    'Leave Lifecycle Test? This removes all 3 of your characters from its roster.',
+  );
+  await expect(page.getByTestId('account-guild-leave-releases')).toHaveText(
+    'Leaving Lifecycle Test releases your claim; your officers lose their roster and loot tools and access to your gear.',
+  );
+  const dir = process.env.G7_SHOTS;
+  if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-1280.png`, fullPage: true });
+  // The confirm clears the plan card below it by a gutter, at a phone's width too.
+  await page.setViewportSize({ width: 390, height: 900 });
+  const [box, plan] = await Promise.all([
+    confirm.boundingBox(),
+    page.getByTestId('account-guilds-plan').boundingBox(),
+  ]);
+  expect(box && plan).toBeTruthy();
+  if (box && plan) expect(plan.y - (box.y + box.height)).toBeGreaterThanOrEqual(12);
+  if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-390.png`, fullPage: true });
 });

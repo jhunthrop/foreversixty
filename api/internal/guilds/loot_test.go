@@ -241,6 +241,11 @@ func TestLootAwardCreateAndDeleteIsOfficerOnly(t *testing.T) {
 	if helm == nil || helm.AwardedTo == nil || helm.AwardedTo.CharacterKey != "us/hardcore/lootawardmember" {
 		t.Fatalf("awarded_to = %+v, want the awarded character", helm)
 	}
+	// The page undoes an award by the id it reads on the item, so the view carries the id the
+	// create call returned.
+	if helm.AwardedTo.AwardID != int64(awardID) {
+		t.Fatalf("awarded_to.award_id = %d, want %d (the id the award was created with)", helm.AwardedTo.AwardID, int64(awardID))
+	}
 
 	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
 	res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/loot/awards/%d", gid, int64(awardID)), "")
@@ -262,6 +267,45 @@ func TestLootAwardCreateAndDeleteIsOfficerOnly(t *testing.T) {
 		if item.ItemID == 16963 && item.AwardedTo != nil {
 			t.Fatalf("awarded_to after delete = %+v, want nil", item.AwardedTo)
 		}
+	}
+
+	// Undoing it twice finds nothing the second time.
+	res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/loot/awards/%d", gid, int64(awardID)), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("undoing an award that is already gone = %d, want 404", res.StatusCode)
+	}
+}
+
+// TestLootAwardUndoIsScopedToItsGuild checks an officer of another guild cannot undo this
+// guild's award by guessing its id.
+func TestLootAwardUndoIsScopedToItsGuild(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	seedHunterCharacter(t, h, gid, "undo-scope-member@example.com", "us/hardcore/undoscopemember", 21524)
+	officerUID := seedUser(t, h.pool, "undo-scope-officer@example.com")
+	seedCharacter(t, h.pool, gid, officerUID, "us/hardcore/undoscopeofficer", "officer", true)
+	recomputeMembership(t, h.pool, gid, officerUID)
+	h.actor = auth.Actor{UserID: officerUID, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/loot/awards", gid),
+		`{"encounter_id":1084,"item_id":16963,"character_key":"us/hardcore/undoscopemember"}`)
+	var created map[string]any
+	h.data(res, &created)
+	awardID := int64(created["award_id"].(float64))
+
+	otherGuild := seedGuild(t, h.pool, "Other Forever")
+	otherOfficer := seedUser(t, h.pool, "undo-scope-other@example.com")
+	seedCharacter(t, h.pool, otherGuild, otherOfficer, "us/hardcore/undoscopeother", "officer", true)
+	recomputeMembership(t, h.pool, otherGuild, otherOfficer)
+	h.actor = auth.Actor{UserID: otherOfficer, Role: "user", Method: "session"}
+	res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/loot/awards/%d", otherGuild, awardID), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("another guild's officer undoing this award = %d, want 404", res.StatusCode)
+	}
+	var n int
+	if err := h.pool.QueryRow(context.Background(), `select count(*) from loot_awards where id = $1`, awardID).Scan(&n); err != nil || n != 1 {
+		t.Fatalf("the award should still exist, count = %d err = %v", n, err)
 	}
 }
 

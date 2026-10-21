@@ -196,8 +196,10 @@ func TestMayRemoveRowTable(t *testing.T) {
 		{"a moderator removes a leader", Guild{}, owner, "leader", true, false, true},
 		{"a member removes their own row", Guild{}, me, "member", false, false, true},
 		{"an officer has no Remove on her own row", claimedBy(owner), me, "officer", false, true, false},
-		{"the claimant keeps Remove on their own officer row", claimedBy(me), me, "officer", false, true, true},
-		{"a leader keeps Remove on their own row", Guild{}, me, "leader", false, true, true},
+		{"the claimant has no Remove on their own officer row", claimedBy(me), me, "officer", false, true, false},
+		{"the claimant has no Remove on their own row, whatever its rank", claimedBy(me), me, "member", false, true, false},
+		{"a leader has no Remove on their own row", Guild{}, me, "leader", false, true, false},
+		{"a leader who holds the claim has none either", claimedBy(me), me, "leader", false, true, false},
 		{"a moderator removes their own officer row", claimedBy(owner), me, "officer", true, false, true},
 	}
 	for _, tc := range cases {

@@ -11,6 +11,12 @@ export const LOOT_FOOTNOTE =
 export const NOT_SIMMED_NOTE = 'Gain here is item level. The simulator has not checked these.';
 export const NO_CANDIDATE = 'No one on the roster can use this.';
 export const ALREADY_AWARDED = 'Already awarded';
+export const UNDO_AWARD = 'Undo';
+
+/** "Award Stormrage Cover to Rootbound?", what the inline confirm asks before an award is recorded. */
+export function awardQuestion(itemName: string, candidateName: string): string {
+  return `Award ${itemName} to ${candidateName}?`;
+}
 
 /** The boss picker's status word: a boss that is down reads "on farm", one that is not "not
  *  killed yet". Never the filter's own jargon. */

@@ -28,6 +28,7 @@
     approveAllRoster,
     approveCharacter,
     awardLoot,
+    unawardLoot,
     contestClaim,
     fetchGuildHome,
     fetchGuildLoot,
@@ -576,6 +577,22 @@
       lootBusyItemId = null;
     }
   }
+
+  /** Undo: removes the award the item shows, then reads the page again (the invalidation in
+   *  `unawardLoot` clears the cached loot, so the read is fresh). */
+  async function onUndo(item: GuildLootItem): Promise<void> {
+    if (guildId === null || loot === null || loot.selected === null || item.awarded_to === null) return;
+    lootBusyItemId = item.item_id;
+    lootError = '';
+    try {
+      await unawardLoot(guildId, item.awarded_to.award_id);
+      loot = await fetchGuildLoot(guildId, loot.selected);
+    } catch (thrown) {
+      lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
+    } finally {
+      lootBusyItemId = null;
+    }
+  }
 </script>
 
 {#if status === 'missing'}
@@ -907,6 +924,7 @@
           memberReadOnly={role === 'member'}
           busyItemId={lootBusyItemId}
           onAward={(item, charKey) => void onAward(item, charKey)}
+          onUndo={(item) => void onUndo(item)}
         />
         {#if lootError !== ''}<p class="text-[13px]" role="alert" data-testid="guild-loot-error">
             {lootError}

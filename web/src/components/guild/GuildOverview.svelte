@@ -82,7 +82,7 @@
       ? encountersDownLine(progressionSummary.names)
       : `${counted(summary?.named_encounters_down ?? 0, 'encounter')} down this tier.`,
   );
-  /** The raid nights' fights, so a night reads as boss kills and trash packs. */
+  /** The raid nights' fights, so a night reads as bosses, kills and trash packs. */
   let raidsPage = $state<GuildRaidsPage | null>(null);
   let bossIds = $state<ReadonlySet<number> | null>(null);
 
@@ -138,7 +138,7 @@
       : Math.max(0, report.fight_count - report.kill_count);
   }
 
-  /** "1 boss kill (Onyxia) · 2 trash packs · 0 wipes" when the night's fights are known, else the
+  /** "1 boss (Onyxia) · 2 kills · 2 trash packs · 0 wipes" when the night's fights are known, else the
    *  two counts the report row carries; nothing when it carries neither (the public list). */
   function tallyOf(report: OverviewReport): string {
     const night = raidsPage?.rows.find((row) => row.id === report.id);

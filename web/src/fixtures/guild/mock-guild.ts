@@ -150,9 +150,10 @@ const ALL_CLASSES = ['warrior', 'hunter', 'rogue', 'warlock', 'mage', 'priest', 
 // fixture, and matching it to the live API is this live-fix round's own defect 5).
 // `classes` is this fixture's own eligibility list (the real API reads a per-class item
 // table this fixture has no equivalent of) -- each slotted item's lore class, broadened to
-// ALL_CLASSES for a slot no class is restricted from, and Judgement Crown's own paladin
-// pick is unreachable by this 8-class roster, so it also takes warrior (both are plate)
-// so every slotted item still has at least one candidate.
+// ALL_CLASSES for a slot no class is restricted from. The list is honest: a class-locked
+// token goes to that class only, so Judgement Crown (paladin) and Helmet of Ten Storms
+// (shaman) have no candidate on a roster with no verified paladin or shaman, which is what
+// the real API answers ("No one on the roster can use this."), never a warrior or a hunter.
 const ONYXIA_DROPS: [
   itemId: number,
   name: string,
@@ -169,14 +170,11 @@ const ONYXIA_DROPS: [
   [16929, 'Nemesis Skullcap', 'inv_helmet_08', 4, 'head', ['warlock']],
   [16939, "Dragonstalker's Helm", 'inv_helmet_05', 4, 'head', ['hunter']],
   // This roster's only three shaman (Rootgall/Stormtusk/Fulmintide) are all unverified
-  // (ROSTER_SEED above), so a shaman-only eligibility list would leave this item with no
-  // candidate at all, the same "every slotted item needs at least one" rule
-  // api/cmd/seedguild's own integration test enforces against the real 24-raider roster --
-  // hunter (the other mail-wearing class) backstops it here.
-  [16947, 'Helmet of Ten Storms', 'inv_helmet_69', 4, 'head', ['shaman', 'hunter']],
-  [16955, 'Judgement Crown', 'inv_helmet_74', 4, 'head', ['warrior']],
+  // (ROSTER_SEED above), so the shaman helm lists no one, as the API would.
+  [16947, 'Helmet of Ten Storms', 'inv_helmet_69', 4, 'head', ['shaman']],
+  [16955, 'Judgement Crown', 'inv_helmet_74', 4, 'head', ['paladin']],
   [16963, 'Helm of Wrath', 'inv_helmet_71', 4, 'head', ['warrior']],
-  [17064, 'Shard of the Scale', 'inv_misc_monsterscales_15', 4, 'trinket', ALL_CLASSES],
+  [17064, 'Shard of the Scale', 'inv_misc_monsterscales_15', 4, 'trinket', ['priest', 'druid', 'shaman']],
   [
     17067,
     'Ancient Cornerstone Grimoire',
@@ -420,7 +418,11 @@ export function buildMockHome(
   // `addon` null, `addon_snapshot` null) for the Roster tab's null state.
   withAddonSnapshot = true,
 ): GuildHome {
-  const roster = buildMockRoster(withAddonSnapshot);
+  // The API sends no Remove on the viewer's own row when it is an officer's or the leader's (the
+  // guild master leaves through Leave on the account page); the fixture sends what it would.
+  const roster = buildMockRoster(withAddonSnapshot).map((r) =>
+    r.name === viewerName && (r.rank === 'officer' || r.rank === 'leader') ? { ...r, may_remove: false } : r,
+  );
   const model = buildMockMembers(roster, withAddonSnapshot);
   const pending = roster.filter((r) => !r.verified);
   const belowFloor = roster.filter((r) => (r.rating?.overall ?? 100) < 55).length;
@@ -718,7 +720,15 @@ function ilvlDeltaFor(name: string, itemName: string): number {
 // shape the real API stopped sending.
 export function buildMockLoot(): GuildLootPage {
   const roster = buildMockRoster();
-  const items = ONYXIA_DROPS.map(([itemId, name, icon, quality, slot, classes]) => {
+  const items: GuildLootPage['items'] = [];
+  for (const [itemId, name, icon, quality, slot, classes] of ONYXIA_DROPS) {
+    // Two drops can share a name (the Alliance and Horde "Head of Onyxia"); the API lists the name
+    // once and says how many it stands for, so this does too.
+    const listed = items.find((item) => item.name === name);
+    if (listed !== undefined) {
+      listed.copies = (listed.copies ?? 1) + 1;
+      continue;
+    }
     const eligible = slot === '' ? [] : roster.filter((r) => r.verified && classes.includes(r.class ?? ''));
     const candidates = [...eligible]
       .sort((a, b) => ilvlDeltaFor(b.name, name) - ilvlDeltaFor(a.name, name))
@@ -735,14 +745,16 @@ export function buildMockLoot(): GuildLootPage {
         already_equivalent: false,
       }));
     const isAwarded = itemId === 16963 && candidates.length > 0; // Helm of Wrath -- this fixture's own long-standing awarded item
-    return {
+    items.push({
       item_id: itemId,
       name,
       icon,
       quality,
       slot,
+      copies: 1,
       awarded_to: isAwarded
         ? {
+            award_id: 1,
             character_key: candidates[0].character_key,
             name: candidates[0].name,
             at: '2026-12-15T20:10:00Z',
@@ -750,8 +762,8 @@ export function buildMockLoot(): GuildLootPage {
           }
         : null,
       candidates,
-    };
-  });
+    });
+  }
   return {
     encounters: [{ encounter_id: ONYXIA_ENCOUNTER_ID, name: 'Onyxia', zone: "Onyxia's Lair", killed: true }],
     selected: ONYXIA_ENCOUNTER_ID,

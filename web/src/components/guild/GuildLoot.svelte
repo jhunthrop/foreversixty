@@ -5,7 +5,9 @@
      item itself; every other candidate row reads "Already awarded" and has no button, and an
      unawarded item keeps the Award button on every row (§12.1's round-2 fix: one awardee per
      item, not one per candidate row). Member sees every drop and ranking read-only (§10.1,
-     proposed); only officer sees the Award control. -->
+     proposed); only officer sees the Award control. Award asks first ("Award Stormrage Cover to
+     Rootbound?" with Award and Cancel, focus on Cancel) and an awarded item offers the officer
+     Undo, which removes the award (lifecycle round 6, R2). -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
@@ -14,8 +16,10 @@
     LOOT_FOOTNOTE,
     NOT_SIMMED_NOTE,
     NO_CANDIDATE,
+    UNDO_AWARD,
     anyNotSimmed,
     attendanceLabel,
+    awardQuestion,
     awardedLine,
     bossPickerLabel,
     candidateAction,
@@ -29,13 +33,28 @@
     memberReadOnly,
     busyItemId,
     onAward,
+    onUndo,
   }: {
     loot: GuildLootPage | null;
     officer: boolean;
     memberReadOnly: boolean;
     busyItemId: number | null;
     onAward: (item: GuildLootItem, characterKey: string) => void;
+    /** Remove the item's award (the award's id is on `item.awarded_to`). */
+    onUndo: (item: GuildLootItem) => void;
   } = $props();
+
+  /** The candidate whose Award is asking first; one at a time. */
+  let confirming = $state<{ itemId: number; key: string } | null>(null);
+
+  function confirmAward(item: GuildLootItem, key: string): void {
+    confirming = null;
+    onAward(item, key);
+  }
+  /** Focus lands on Cancel, so a stray Enter backs out rather than awards. */
+  function focusOnMount(node: HTMLElement): void {
+    node.focus();
+  }
 
   const selectedEncounter = $derived(loot?.encounters.find((e) => e.encounter_id === loot.selected));
   const notSimmed = $derived(loot !== null && anyNotSimmed(loot.items));
@@ -80,11 +99,25 @@
                 >{/if}</span
             >
             {#if item.awarded_to !== null}
-              <span
-                class="pill"
-                style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
-                data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
-              >
+              <span class="flex flex-wrap items-center justify-end gap-x-1">
+                <span
+                  class="pill"
+                  style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
+                  data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
+                >
+                {#if officer}
+                  <span class="text-muted" aria-hidden="true">·</span>
+                  <button
+                    class="text-muted inline-flex h-11 items-center px-2 text-[12px] underline md:h-7"
+                    onclick={() => onUndo(item)}
+                    disabled={busyItemId === item.item_id}
+                    aria-label={`Undo the award of ${item.name} to ${item.awarded_to.name}`}
+                    data-testid={`guild-loot-undo-${item.item_id}`}
+                  >
+                    {UNDO_AWARD}
+                  </button>
+                {/if}
+              </span>
             {/if}
           </div>
           {#if item.candidates.length === 0}
@@ -127,8 +160,8 @@
                     <span class="text-muted text-[12px]">{action.label}</span>
                   {:else if officer}
                     <button
-                      class="rounded-control text-strong inline-flex h-7 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase"
-                      onclick={() => onAward(item, candidate.character_key)}
+                      class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase md:h-7"
+                      onclick={() => (confirming = { itemId: item.item_id, key: candidate.character_key })}
                       disabled={busyItemId === item.item_id}
                       aria-label={`Award ${item.name} to ${candidate.name}`}
                       data-testid={`guild-loot-award-${item.item_id}-${candidate.character_key}`}
@@ -138,6 +171,38 @@
                   {/if}
                 </span>
               </div>
+              <!-- Escape backs out of the confirm from either button; the group itself takes no action. -->
+              <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+              {#if officer && confirming !== null && confirming.itemId === item.item_id && confirming.key === candidate.character_key}
+                <div
+                  class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2"
+                  role="group"
+                  aria-label={awardQuestion(item.name, candidate.name)}
+                  onkeydown={(event) => {
+                    if (event.key === 'Escape') confirming = null;
+                  }}
+                  data-testid={`guild-loot-award-confirm-${item.item_id}`}
+                >
+                  <span class="basis-full text-[13px] md:basis-auto"
+                    >{awardQuestion(item.name, candidate.name)}</span
+                  >
+                  <button
+                    class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-4 text-[11px] font-bold tracking-[0.06em] uppercase md:h-7"
+                    onclick={() => confirmAward(item, candidate.character_key)}
+                    data-testid={`guild-loot-award-yes-${item.item_id}`}
+                  >
+                    Award
+                  </button>
+                  <button
+                    class="rounded-control text-muted inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-4 text-[11px] font-bold tracking-[0.06em] uppercase md:h-7"
+                    onclick={() => (confirming = null)}
+                    use:focusOnMount
+                    data-testid={`guild-loot-award-cancel-${item.item_id}`}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              {/if}
             {/each}
           </div>
         </div>

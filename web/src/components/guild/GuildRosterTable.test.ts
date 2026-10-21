@@ -287,6 +287,32 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(rank('Zulmara')).toBe('Member');
   });
 
+  it('prints no rank for a name only the addon saw: the state word alone, "Rank not known" on hover', () => {
+    const section = asOfficer.slice(asOfficer.indexOf('data-testid="guild-roster-entries"'));
+    const noAccount = section.split('data-testid="guild-roster-entry" ')[1];
+    expect(noAccount).toContain('data-state="no_account"');
+    expect(noAccount).not.toContain('data-testid="guild-roster-entry-rank"');
+    expect(text(noAccount)).not.toContain('Member');
+    expect(text(noAccount)).toContain('No account yet');
+    expect(noAccount).toMatch(/title="[^"]*Rank not known until the addon sends ranks/);
+    // The invited member who is not yet seen did join as a member, and says so.
+    const invited = section.split('data-testid="guild-roster-entry" ')[2];
+    expect(text(invited)).toContain('Member');
+  });
+
+  it('gives the viewer no Remove on their own row, guild master or officer, and keeps it on everyone else', () => {
+    for (const viewer of [VIEWER_OFFICER, 'Sunderfel']) {
+      const own = buildMockHome(viewer);
+      const html = render(GuildRosterTable, {
+        props: { ...props(own), can: ['approve', 'remove', 'settings', 'award'] },
+      }).body;
+      const byName = rows(html);
+      expect(byName.get(viewer), viewer).toBeDefined();
+      expect(byName.get(viewer), viewer).not.toContain('data-testid="guild-roster-remove"');
+      expect(byName.get('Zulmara'), viewer).toContain('data-testid="guild-roster-remove"');
+    }
+  });
+
   it('the waiting list names what Approve does, shows the rank the addon sent and the state word, and offers Decline', () => {
     const list = asOfficer.slice(asOfficer.indexOf('data-testid="guild-roster-waiting"'));
     expect(text(list)).toContain(

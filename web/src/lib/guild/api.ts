@@ -818,6 +818,8 @@ export interface GuildLootCandidate {
 }
 
 export interface GuildLootAwardedTo {
+  /** The row `DELETE .../loot/awards/{award_id}` takes: what Undo sends. */
+  award_id: number;
   character_key: string;
   name: string;
   at: string;
@@ -861,11 +863,8 @@ export function fetchGuildLoot(
 }
 
 export interface LootAwardResult {
-  id: string;
-  encounter_id: number;
-  item_id: number;
-  character_key: string;
-  awarded_at: string;
+  award_id: number;
+  status: 'awarded';
 }
 
 export async function awardLoot(
@@ -883,7 +882,7 @@ export async function awardLoot(
 
 export async function unawardLoot(
   guildId: number,
-  awardId: string,
+  awardId: number | string,
   apiBase: string = API_BASE_URL,
 ): Promise<{ status: 'removed' }> {
   const data = await call<{ status: 'removed' }>(`/v1/guilds/${guildId}/loot/awards/${awardId}`, apiBase, {

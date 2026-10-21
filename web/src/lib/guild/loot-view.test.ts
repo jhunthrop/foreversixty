@@ -6,6 +6,7 @@ import {
   LOOT_FOOTNOTE,
   anyNotSimmed,
   attendanceLabel,
+  awardQuestion,
   awardedLine,
   bossPickerLabel,
   candidateAction,
@@ -150,7 +151,13 @@ describe('candidateAction', () => {
 
   it('marks exactly the awardee "awarded" and every other candidate "Already awarded"', () => {
     const awarded = item({
-      awarded_to: { character_key: 'a', name: 'Kraggor', at: '2026-12-15T00:00:00Z', by_name: 'Kraggor' },
+      awarded_to: {
+        award_id: 7,
+        character_key: 'a',
+        name: 'Kraggor',
+        at: '2026-12-15T00:00:00Z',
+        by_name: 'Kraggor',
+      },
     });
     expect(candidateAction(awarded, 'a')).toEqual({ kind: 'awarded' });
     expect(candidateAction(awarded, 'b')).toEqual({ kind: 'awarded-to-other', label: ALREADY_AWARDED });
@@ -158,6 +165,10 @@ describe('candidateAction', () => {
 });
 
 describe('the words around a candidate', () => {
+  it('asks the award as a question naming the item and the candidate', () => {
+    expect(awardQuestion('Stormrage Cover', 'Rootbound')).toBe('Award Stormrage Cover to Rootbound?');
+  });
+
   it('counts raid nights as a player says it', () => {
     expect(attendanceLabel(1, 1)).toBe('1 of 1 raid night');
     expect(attendanceLabel(6, 8)).toBe('6 of 8 raid nights');

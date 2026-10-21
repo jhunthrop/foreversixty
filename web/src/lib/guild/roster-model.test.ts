@@ -11,6 +11,7 @@ import {
   countLine,
   derivedCounts,
   entriesWithoutRow,
+  entryRankWord,
   filterEntries,
   officersAmong,
   rankWord,
@@ -94,6 +95,12 @@ describe('words', () => {
     expect(rankWord('officer')).toBe('Officer');
     expect(rankWord('member')).toBe('Member');
     expect(rankWord(undefined)).toBe('Member');
+  });
+
+  it('says "Rank not known" for a name only the addon saw, and the real rank for everyone else', () => {
+    expect(entryRankWord({ state: 'no_account', rank: 'member' })).toBe('Rank not known');
+    expect(entryRankWord({ state: 'not_seen', rank: 'member' })).toBe('Member');
+    expect(entryRankWord({ state: 'approved', rank: 'officer' })).toBe('Officer');
   });
 });
 

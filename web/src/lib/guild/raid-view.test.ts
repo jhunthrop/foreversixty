@@ -39,17 +39,26 @@ describe('raidTallyLine', () => {
       fight(2, 'Onyxia', 1084, true),
     ]);
     expect(raidTally(row, BOSSES)).toEqual({ bosses: ['Onyxia'], bossKills: 1, trashPacks: 2, wipes: 0 });
-    expect(raidTallyLine(row, BOSSES)).toBe('1 boss kill (Onyxia) · 2 trash packs · 0 wipes');
+    expect(raidTallyLine(row, BOSSES)).toBe('1 boss (Onyxia) · 1 kill · 2 trash packs · 0 wipes');
   });
 
   it('leaves the trash out when there was none and pluralises the bosses', () => {
     const row = night([fight(0, 'Onyxia', 1084, true), fight(1, 'Onyxia', 1084, true)], 1);
-    expect(raidTallyLine(row, BOSSES)).toBe('2 boss kills (Onyxia) · 1 wipe');
+    expect(raidTallyLine(row, BOSSES)).toBe('1 boss (Onyxia) · 2 kills · 1 wipe');
   });
 
-  it('reads 0 boss kills on a night with no boss down', () => {
+  it('reads 0 bosses on a night with no boss down', () => {
     const row = night([fight(0, 'Onyxian Whelp', 2001, true)]);
-    expect(raidTallyLine(row, BOSSES)).toBe('0 boss kills · 1 trash pack · 0 wipes');
+    expect(raidTallyLine(row, BOSSES)).toBe('0 bosses · 1 trash pack · 0 wipes');
+  });
+
+  it('counts distinct bosses, not pulls', () => {
+    const row = night([
+      fight(0, 'Onyxia', 1084, true),
+      fight(1, 'Onyxia', 1084, true),
+      fight(2, 'Hakkar', 1085, true),
+    ]);
+    expect(raidTallyLine(row, new Set([1084, 1085]))).toBe('2 bosses (Onyxia, Hakkar) · 3 kills · 0 wipes');
   });
 
   it('falls back to the API figure under its own name while the tier list is unknown', () => {

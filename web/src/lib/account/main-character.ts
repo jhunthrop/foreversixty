@@ -5,6 +5,7 @@
 // null. A pure function of the list `/v1/me` already returned, so the hub's own effect
 // just calls it and writes the result -- no fetch of its own.
 import type { CurrentCharacter } from '../current-character';
+import { specName } from '../guild/spec-name';
 import type { MeCharacter } from './api';
 
 function levelOf(character: MeCharacter): number {
@@ -44,7 +45,8 @@ export function mainCharacter(characters: readonly MeCharacter[], mainKey?: stri
  *  limit this pointer does not change. */
 export function pointerForCharacter(character: MeCharacter): CurrentCharacter {
   const classSlug = character.class?.toLowerCase() ?? '';
-  const specClass = [character.spec, character.class].filter((part) => part !== undefined).join(' ');
+  const spec = character.spec === undefined ? undefined : specName(character.spec);
+  const specClass = [spec, character.class].filter((part) => part !== undefined).join(' ');
   const label = specClass === '' ? character.name : `${character.name} · ${specClass}`;
   return {
     source: 'armory',

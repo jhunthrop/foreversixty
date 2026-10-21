@@ -39,6 +39,7 @@
     countLine,
     derivedCounts,
     entriesWithoutRow,
+    entryRankWord,
     filterEntries,
     rankWord,
     stateWord,
@@ -234,7 +235,7 @@
        the addon knew: its text wraps inside it. Below lg it has a line of its own, and a row
        the snapshot did not carry has none there at all (no lone "—"). -->
   <div
-    class={`min-w-0 basis-full text-[12px] break-words lg:shrink-0 lg:basis-[260px] ${none ? 'hidden lg:block' : ''}`}
+    class={`min-w-0 basis-full pl-12 text-[12px] break-words lg:shrink-0 lg:basis-[260px] lg:pl-0 ${none ? 'hidden lg:block' : ''}`}
     data-testid="guild-roster-ingame-slot"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
@@ -286,7 +287,7 @@
   {@const level = entry.level === undefined ? null : guildRosterAddonCopy.level(entry.level)}
   {@const none = level === null && seen === null}
   <div
-    class={`min-w-0 basis-full text-[12px] break-words lg:shrink-0 lg:basis-[260px] ${none ? 'hidden lg:block' : ''}`}
+    class={`min-w-0 basis-full pl-12 text-[12px] break-words lg:shrink-0 lg:basis-[260px] lg:pl-0 ${none ? 'hidden lg:block' : ''}`}
     data-testid="guild-roster-entry-ingame"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
@@ -497,10 +498,11 @@
                 >{/if}</span
             >
           </div>
-          <!-- Below lg the facts flow with the rest of the row; at lg they wrap inside their own
-               group, so the In game slot and the actions keep their place at the row's end. -->
+          <!-- Below lg the facts, the In game line and the actions each take a line under the name
+               (indented past the crest); at lg they wrap inside their own group, so the In game slot
+               and the actions keep their place at the row's end. -->
           <div
-            class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
+            class="flex basis-full flex-wrap items-center gap-x-3 gap-y-1 pl-12 lg:min-w-0 lg:flex-1 lg:basis-auto lg:pl-0"
           >
             <span
               class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
@@ -573,14 +575,18 @@
             >
           </div>
           <div
-            class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
+            class="flex basis-full flex-wrap items-center gap-x-3 gap-y-1 pl-12 lg:min-w-0 lg:flex-1 lg:basis-auto lg:pl-0"
           >
-            <span class={MUTED_WORD} data-testid="guild-roster-entry-rank">{rankWord(entry.rank)}</span>
+            <!-- A name only the addon saw carries the state word alone: the snapshot has no rank for
+                 it, and saying "Member" would be a rank nobody gave it. -->
+            {#if entry.state !== 'no_account'}
+              <span class={MUTED_WORD} data-testid="guild-roster-entry-rank">{entryRankWord(entry)}</span>
+            {/if}
             <span
               class="text-muted text-[12px]"
               data-testid="guild-roster-entry-state"
               title={entry.state === 'no_account'
-                ? 'The addon saw this character in the guild; no account on the site has claimed it.'
+                ? `The addon saw this character in the guild; no account on the site has claimed it. ${entryRankWord(entry)} until the addon sends ranks.`
                 : undefined}>{stateWord(entry.state)}</span
             >
           </div>

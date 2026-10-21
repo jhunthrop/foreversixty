@@ -91,3 +91,11 @@ describe('guildSettingsCopy invite block', () => {
     expect(guildSettingsCopy.copyFailed).toBe('Could not copy. Select the link and copy it.');
   });
 });
+
+describe('the Leave confirm for the guild master', () => {
+  it('warns that leaving releases the claim and what the officers lose', () => {
+    expect(guildConsentCopy.leaveReleasesClaim('Lifecycle Test')).toBe(
+      'Leaving Lifecycle Test releases your claim; your officers lose their roster and loot tools and access to your gear.',
+    );
+  });
+});

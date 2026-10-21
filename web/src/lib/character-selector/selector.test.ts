@@ -219,6 +219,26 @@ describe('the model', () => {
     expect(model.rows[1]).toMatchObject({ name: 'Tester', current: false });
   });
 
+  it('says a spec as a player does, "Beast Mastery", whatever way the export wrote it', () => {
+    const bow = character('Bow Jackzon', { class: 'Hunter', spec: 'BeastMastery' });
+    const model = buildSelectorModel({ me: me([bow]), pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
+    expect(model.rows[0].spec).toBe('Beast Mastery');
+    expect(rowLineTwo(model.rows[0])).toContain('Beast Mastery Hunter');
+    expect(rowLineTwo(model.rows[0])).not.toContain('BeastMastery');
+    const pasted = buildSelectorModel({
+      me: me([tester]),
+      pointer: pointerFor({
+        source: 'code',
+        ref: 'FS1.abc',
+        label: 'Pasty · BeastMastery Hunter',
+        classSlug: 'hunter',
+      }),
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
+    expect(pasted.rows[0].spec).toBe('Beast Mastery');
+  });
+
   it('matches a pointer whose label carries the key slug to the account row and shows its display name', () => {
     const bow = character('Bow Jackzon', {
       key: 'us/normal/bow-jackzon',

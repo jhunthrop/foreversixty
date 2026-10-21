@@ -23,6 +23,15 @@ export function rankWord(rank: GuildRank | string | undefined): string {
   return guildRosterModelCopy.ranks.member;
 }
 
+/**
+ * The rank word for a roster entry. A name only the addon saw has no rank on the site and the
+ * addon's snapshot carries none, so it reads "Rank not known" rather than a plain "Member"; an
+ * invited member joined as one, and an account's character carries the addon's rank.
+ */
+export function entryRankWord(entry: Pick<GuildRosterEntry, 'state' | 'rank'>): string {
+  return entry.state === 'no_account' ? guildRosterModelCopy.rankNotKnown : rankWord(entry.rank);
+}
+
 /** True for a rank the site makes an officer of the guild (Officer or Leader). */
 export function isOfficerRank(rank: GuildRank | string): boolean {
   return rank === 'officer' || rank === 'leader';
