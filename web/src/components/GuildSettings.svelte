@@ -18,7 +18,8 @@
     type GuildSettingsData,
     type GuildVisibility,
   } from '../lib/guild/api';
-  import { guildSettingsCopy } from '../lib/guild/copy';
+  import { guildRosterModelCopy, guildSettingsCopy } from '../lib/guild/copy';
+  import { can } from '../lib/guild/roster-model';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -29,6 +30,13 @@
   let { path }: { path: CharacterPath } = $props();
 
   let guildId = $state<number | null>(null);
+  /**
+   * Whether this account may see and change the guild's billing, from the `can` list on its
+   * /v1/me guild entry (the API's one rule: the account holding the claim, not an officer). `null`
+   * until /v1/me has answered, and when it fails: the section then stays out rather than guessing
+   * from the rank.
+   */
+  let mayBill = $state<boolean | null>(null);
   let guildName = $state('');
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
@@ -73,11 +81,14 @@
       applyBilling(me);
     } catch {
       guildBilling = null;
+      mayBill = null;
     }
   }
 
   function applyBilling(me: Me | null): void {
-    guildBilling = me?.guilds.find((g) => g.id === guildId)?.plan ?? null;
+    const entry = me?.guilds.find((g) => g.id === guildId);
+    guildBilling = entry?.plan ?? null;
+    mayBill = entry === undefined ? null : can(entry.can, 'billing');
   }
 
   $effect(() => {
@@ -170,45 +181,51 @@
         {guildSettingsCopy.frozenNotice}
       </p>
     {/if}
-    <section class="flex flex-col gap-3" data-testid="guild-settings-billing">
-      <h2 class="section-title text-[18px]">Billing</h2>
-      {#if guildBilling === null}
-        <p class="text-[14px]">{billingBlockCopy.guildNotSubscribed}</p>
-        {#if guildId !== null}
-          <a
-            href={`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`}
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
-            data-testid="guild-subscribe-link"
-          >
-            {billingBlockCopy.subscribeTheGuild}
-          </a>
-        {/if}
-      {:else}
-        <p class="text-[14px]">
-          {guildBilling.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
-          {guildBilling.current_period_end
-            ? new Date(guildBilling.current_period_end).toLocaleDateString()
-            : ''}
-          {#if guildBilling.billed_by !== ''}
-            · {billingBlockCopy.guildBilledBy(guildBilling.billed_by)}
+    {#if mayBill === true}
+      <section class="flex flex-col gap-3" data-testid="guild-settings-billing">
+        <h2 class="section-title text-[18px]">Billing</h2>
+        {#if guildBilling === null}
+          <p class="text-[14px]">{billingBlockCopy.guildNotSubscribed}</p>
+          {#if guildId !== null}
+            <a
+              href={`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`}
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+              data-testid="guild-subscribe-link"
+            >
+              {billingBlockCopy.subscribeTheGuild}
+            </a>
           {/if}
-        </p>
-        {#if guildBilling.status === 'past_due'}
-          <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+        {:else}
+          <p class="text-[14px]">
+            {guildBilling.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
+            {guildBilling.current_period_end
+              ? new Date(guildBilling.current_period_end).toLocaleDateString()
+              : ''}
+            {#if guildBilling.billed_by !== ''}
+              · {billingBlockCopy.guildBilledBy(guildBilling.billed_by)}
+            {/if}
+          </p>
+          {#if guildBilling.status === 'past_due'}
+            <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+          {/if}
+          {#if guildBilling.you_are_billing_contact}
+            <button
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
+              onclick={onManageBilling}
+              disabled={busy}
+              aria-busy={busy}
+              data-testid="guild-manage-billing"
+            >
+              {billingBlockCopy.manageBilling}
+            </button>
+          {/if}
         {/if}
-        {#if guildBilling.you_are_billing_contact}
-          <button
-            class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-            onclick={onManageBilling}
-            disabled={busy}
-            aria-busy={busy}
-            data-testid="guild-manage-billing"
-          >
-            {billingBlockCopy.manageBilling}
-          </button>
-        {/if}
-      {/if}
-    </section>
+      </section>
+    {:else if mayBill === false}
+      <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
+        {guildRosterModelCopy.guildMasterOnly}
+      </p>
+    {/if}
     <section class="flex flex-col gap-3">
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
       <select

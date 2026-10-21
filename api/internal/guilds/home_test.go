@@ -361,8 +361,9 @@ func TestHomeReportsExposeZone(t *testing.T) {
 // from the exact rank-protects-rank rule the DELETE route enforces, from
 // the viewpoint of whoever is asking - a verified officer viewer may
 // remove a plain member's row (verifiedOfficer), never the guild
-// master's leader-rank row (rank protects rank), and always their own
-// row regardless of rank (self).
+// master's leader-rank row (rank protects rank), and their own row unless it is an
+// officer-rank row and they do not hold the claim (an officer is not a second guild master;
+// TestMayRemoveRowTable pins every combination).
 func TestHomeRosterMayRemoveMatchesTheRemoveRule(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()
@@ -394,8 +395,8 @@ func TestHomeRosterMayRemoveMatchesTheRemoveRule(t *testing.T) {
 	for _, row := range view.Roster {
 		byKey[row.CharacterKey] = row
 	}
-	if row := byKey["us/hardcore/mayremoveviewer"]; !row.MayRemove {
-		t.Fatalf("the viewer's own row: may_remove = %v, want true (self)", row.MayRemove)
+	if row := byKey["us/hardcore/mayremoveviewer"]; row.MayRemove {
+		t.Fatalf("an officer's own row: may_remove = %v, want false (not the claimant)", row.MayRemove)
 	}
 	if row := byKey["us/hardcore/mayremovemember"]; !row.MayRemove {
 		t.Fatalf("a plain member row seen by a verified officer: may_remove = %v, want true", row.MayRemove)

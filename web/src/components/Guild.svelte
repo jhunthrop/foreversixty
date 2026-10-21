@@ -49,6 +49,7 @@
   import { guildMarkSrc } from '../lib/guild/mark';
   import { claimEntryCopy, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
+  import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
@@ -130,7 +131,7 @@
   let contestError = $state('');
   let showContestConfirm = $state(false);
 
-  let myGuildMembership = $state<{ rank: string; verified: boolean } | null>(null);
+  let myGuildMembership = $state<{ rank: string; verified: boolean; can: string[] } | null>(null);
   let myCharacterKeys = $state<Set<string>>(new Set());
   let isModerator = $state(false);
   /** The signed-in account's own battletag (fix round 1): the only signal available to
@@ -167,7 +168,11 @@
         homeStatus = 'idle';
         return null;
       }
-      myGuildMembership = { rank: membership.rank ?? 'member', verified: membership.verified };
+      myGuildMembership = {
+        rank: membership.rank ?? 'member',
+        verified: membership.verified,
+        can: membership.can ?? [],
+      };
       const show = (page: GuildHome): void => {
         if (resolved !== requested) return;
         home = page;
@@ -219,6 +224,11 @@
   const role = $derived<GuildViewerRole>(
     home?.viewer?.role ?? (home === null ? 'public' : canManage ? 'officer' : 'member'),
   );
+  /** What this account may do here, the API's capability list from `/v1/me` (api
+   *  `guilds.Capabilities`): the Roster tab draws Approve, Remove and Decline from it and from
+   *  nothing else, so an officer who is not the guild master is never offered a guild master's
+   *  controls by inference from her rank. */
+  const can = $derived(myGuildMembership?.can ?? []);
   const guildId = $derived(home?.guild.id ?? data?.guild.id ?? null);
   /** Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): `home.guild` (the
    *  member-gated fetch) wins once it resolves -- it is the one place a just-saved/removed
@@ -300,6 +310,7 @@
           r.character_key === row.character_key ? { ...r, verified: true } : r,
         ),
         pending: (home.pending ?? []).filter((r) => r.character_key !== row.character_key),
+        ...afterApprove(home, new Set([row.character_key])),
       };
       await refreshHome();
     } catch (thrown) {
@@ -320,6 +331,7 @@
         ...home,
         roster: home.roster.map((r) => (approved.has(r.character_key) ? { ...r, verified: true } : r)),
         pending: (home.pending ?? []).filter((r) => !approved.has(r.character_key)),
+        ...afterApprove(home, approved),
       };
       await refreshHome();
     } catch (thrown) {
@@ -335,7 +347,12 @@
     rosterActionError = '';
     try {
       await removeCharacter(home.guild.id, row.region, row.ruleset, characterSlug(row.name));
-      home = { ...home, roster: home.roster.filter((r) => r.character_key !== row.character_key) };
+      home = {
+        ...home,
+        roster: home.roster.filter((r) => r.character_key !== row.character_key),
+        pending: (home.pending ?? []).filter((r) => r.character_key !== row.character_key),
+        ...afterRemove(home, row.character_key),
+      };
       await refreshHome();
     } catch (thrown) {
       rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
@@ -788,7 +805,9 @@
         <rosterLazy.current
           roster={home.roster}
           pending={home.pending ?? []}
-          officer={role === 'officer' || role === 'moderator'}
+          members={home.members}
+          counts={home.counts}
+          {can}
           {myCharacterKey}
           {rosterBusy}
           {rosterActionError}
@@ -796,6 +815,7 @@
           {removeOverridesFrozen}
           onApprove={(row) => void onApprove(row)}
           onRemove={(row) => void onRemove(row)}
+          onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
           {rowPath}
           addonSnapshot={home.addon_snapshot ?? null}

@@ -21,6 +21,8 @@ import type {
   GuildProgressionPage,
   GuildReadinessPage,
   GuildRaidsPage,
+  GuildRosterCounts,
+  GuildRosterEntry,
   GuildRosterRow,
 } from '../../lib/guild/api';
 import type { GuildPage } from '../../lib/rankings/api';
@@ -282,7 +284,6 @@ function accountKeyFor(name: string): string {
 function toRosterRow(name: string): GuildRosterRow {
   const [raiderName, cls, spec, rank, verified, logged, consent, ilvl] = rowByName(name);
   const parses = parsesFor(name);
-  const hasGear = consent === 'gear' || consent === 'gear_bags';
   return {
     character_key: `us/pvp/${raiderName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
     region: 'us',
@@ -311,7 +312,7 @@ function toRosterRow(name: string): GuildRosterRow {
     account_key: accountKeyFor(name),
     last_report_at: logged ? '2026-12-22T21:40:00Z' : '2026-12-15T19:00:00Z',
     may_approve: !verified,
-    may_remove: hasGear && rank !== 'leader',
+    may_remove: rank !== 'leader',
   };
 }
 
@@ -361,6 +362,53 @@ export function buildMockRoster(withAddonSnapshot = true): GuildRosterRow[] {
   return ROSTER_SEED.map((r) => ({ ...toRosterRow(r[0]), addon: addonFor(r[0], withAddonSnapshot) }));
 }
 
+/** The member a guild joined by invite link and the addon has not seen in game yet. */
+export const INVITED_MEMBER = 'Driftwood';
+
+/**
+ * The roster as the home's `members` and `counts` give it: an entry per roster row (approved
+ * or waiting, with the snapshot's line where it carries one), the snapshot's one unmatched
+ * name as "no account yet", and the invited member as "not seen in game yet". Without a
+ * snapshot nobody is in game without an account, but the invited member is still listed.
+ */
+export function buildMockMembers(
+  roster: GuildRosterRow[],
+  withAddonSnapshot = true,
+): { members: GuildRosterEntry[]; counts: GuildRosterCounts } {
+  const members: GuildRosterEntry[] = roster.map((r) => ({
+    name: r.name,
+    character_key: r.character_key,
+    state: r.verified ? ('approved' as const) : ('waiting' as const),
+    rank: r.rank,
+    ...(r.class === undefined ? {} : { class: r.class }),
+    ...(r.addon?.level == null ? {} : { level: r.addon.level }),
+    ...(r.addon?.spec == null ? {} : { spec: r.addon.spec }),
+    ...(r.addon == null ? {} : { seen_at: r.addon.seen_at }),
+  }));
+  let noAccount = 0;
+  if (withAddonSnapshot) {
+    members.push({
+      name: ADDON_UNMATCHED_MEMBER,
+      state: 'no_account',
+      rank: 'member',
+      level: 58,
+      spec: 'rogue-combat',
+      seen_at: '2026-12-22 19:46',
+    });
+    noAccount = 1;
+  }
+  members.push({ name: INVITED_MEMBER, state: 'not_seen', rank: 'member', class: 'rogue' });
+  return {
+    members,
+    counts: {
+      on_roster: members.length,
+      in_game_no_account: noAccount,
+      waiting: roster.filter((r) => !r.verified).length,
+      not_seen: 1,
+    },
+  };
+}
+
 export function buildMockHome(
   viewerName: string | null,
   faction: 'alliance' | 'horde' | null = GUILD.faction,
@@ -373,6 +421,7 @@ export function buildMockHome(
   withAddonSnapshot = true,
 ): GuildHome {
   const roster = buildMockRoster(withAddonSnapshot);
+  const model = buildMockMembers(roster, withAddonSnapshot);
   const pending = roster.filter((r) => !r.verified);
   const belowFloor = roster.filter((r) => (r.rating?.overall ?? 100) < 55).length;
   const viewerRow = viewerName === null ? null : (roster.find((r) => r.name === viewerName) ?? null);
@@ -433,6 +482,8 @@ export function buildMockHome(
     roster,
     pending,
     addon_snapshot: withAddonSnapshot ? ADDON_SNAPSHOT : null,
+    members: model.members,
+    counts: model.counts,
   };
 }
 

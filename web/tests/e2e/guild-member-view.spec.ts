@@ -38,6 +38,7 @@ function meFor(viewer: Exclude<Viewer, 'visitor'>) {
             rank: viewer === 'officer' ? 'leader' : 'member',
             consent: 'gear',
             verified: viewer !== 'unverified',
+            can: viewer === 'officer' ? ['approve', 'remove', 'settings', 'award', 'billing', 'release'] : [],
           },
         ];
   return {
@@ -146,6 +147,20 @@ test.describe('the guild page', () => {
     await page.goto(GUILD_PATH);
     await expect(page.getByTestId('guild-roster-gate')).toContainText('Roster is for members of this guild');
     await expect(page.getByTestId('guild-claim-entry-link')).toBeVisible();
+  });
+
+  test('lists everyone the addon saw to a member, with a word beside each and no controls', async ({
+    page,
+  }) => {
+    await stub(page, 'member');
+    await page.goto(`${GUILD_PATH}#roster`);
+    await expect(page.getByTestId('guild-roster-counts')).toContainText('on the roster');
+    await expect(page.getByTestId('guild-roster-counts')).toContainText('in game without an account');
+    await expect(page.getByTestId('guild-roster-entries')).toContainText('No account yet');
+    await expect(page.getByTestId('guild-roster-entries')).toContainText('Not seen in game yet');
+    await expect(page.getByTestId('guild-roster-approve')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-decline')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-remove')).toHaveCount(0);
   });
 
   test('gives a verified officer Guild settings in place of the claim entry', async ({ page }) => {

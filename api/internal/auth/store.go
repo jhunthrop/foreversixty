@@ -197,6 +197,10 @@ type Guild struct {
 	// Ruling C — a non-officer member sees the features it unlocks, not
 	// the billing detail).
 	Plan *GuildBillingView `json:"plan,omitempty"`
+	// Can lists what this account may do in the guild, the words guilds.Capabilities defines
+	// ("approve", "remove", "settings", "award", "billing", "release"); empty for a plain member.
+	// The page draws a control exactly when its word is here, never from the rank.
+	Can []string `json:"can"`
 }
 
 // Store is every account read and write. One type rather than one per

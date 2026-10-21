@@ -1414,6 +1414,14 @@ paths:
         fails this route; it simply leaves every one of these fields absent.
 
 
+        Each guilds[] entry carries can: the list of words (approve, remove, settings, award,
+        billing, release) naming what the account may do in that guild, from the one rule in
+        api/internal/guilds/capabilities.go. approve, remove, settings and award belong to a
+        verified officer or leader; billing and release belong to the account holding the
+        guild's claim (an officer is not a second guild master), and a moderator gets remove,
+        settings and release. It is [] for a plain member.
+
+
         A build also always carries two nullable sync-history fields, read from the
         character_syncs history (one row per addon export, Battle.net import or refresh;
         never a stored value). median_sync_gap_sec is the median gap in whole seconds
@@ -2172,6 +2180,13 @@ paths:
         GuildRosterAddon): its line in the guild's newest addon roster snapshot, or null; the
         top-level addon_snapshot (schema GuildAddonSnapshot) says when that snapshot was
         received, by which character, and how many members it listed, or is null when the
+        members[] and counts are the roster as a person counts it: one entry per character the
+        newest addon snapshot names and per verified character, merged by name, each with a
+        state (approved, waiting, no_account, not_seen), the rank word (the addon's for an
+        account's character; "member" for a snapshot name that carries none) and the snapshot's
+        level, spec and seen_at; counts is { on_roster, in_game_no_account, waiting,
+        not_seen }. An account that joined by invite has an entry the moment it joins
+        (not_seen until the snapshot names it). roster[] and pending[] stay the account rows.
         guild has none. reports[] is paged by cursor (next_cursor). A verified member of the
         guild (an account with a verified character on its roster) may read it; anyone else,
         an account whose rows are all unverified included, gets 403.

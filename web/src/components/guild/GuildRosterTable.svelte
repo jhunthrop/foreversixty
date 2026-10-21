@@ -3,22 +3,46 @@
      rating/attendance/parses/professions/main-alt columns, the viewer's own row pinned
      first. Member/officer only (unchanged visibility from v1). Task L8.3 adds the "In game"
      column (the addon's level/spec where they differ, gear gap in DPS, build, seen time) from
-     the guild's newest addon roster snapshot, and the line above the table naming it. -->
+     the guild's newest addon roster snapshot, and the line above the table naming it.
+
+     Lifecycle round 4 (the roster model): the roster is everyone the addon saw, not only the
+     verified accounts. The count line names how many are on it, in game without an account,
+     waiting and not seen yet; the account rows keep their table, and the names with no
+     account row (and an invited member the addon has not seen) list after them with a word
+     beside each. Every row carries its rank word, Member included. The waiting list says what
+     Approve does, shows the rank the addon sent and offers Decline; Approve all asks first when
+     an officer is among them. Controls draw from `can` (the account's capability list from
+     /v1/me), never from the rank. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
-  import type { GuildAddonSnapshot, GuildRosterRow } from '../../lib/guild/api';
-  import { guildRosterAddonCopy } from '../../lib/guild/copy';
+  import type {
+    GuildAddonSnapshot,
+    GuildRosterCounts,
+    GuildRosterEntry,
+    GuildRosterRow,
+  } from '../../lib/guild/api';
+  import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
   import {
     addonGapLabel,
     addonIdentity,
     addonLevelSpec,
     addonSeen,
     addonSnapshotLine,
-    localDateKey,
+    addonSpecName,
   } from '../../lib/guild/roster-addon';
+  import {
+    approveAllQuestion,
+    can as hasCapability,
+    countLine,
+    derivedCounts,
+    entriesWithoutRow,
+    filterEntries,
+    rankWord,
+    stateWord,
+  } from '../../lib/guild/roster-model';
   import {
     DEFAULT_ROSTER_FILTERS,
     DEFAULT_ROSTER_SORT,
@@ -38,7 +62,9 @@
   let {
     roster,
     pending,
-    officer,
+    members,
+    counts,
+    can,
     myCharacterKey,
     rosterBusy,
     rosterActionError,
@@ -46,6 +72,7 @@
     removeOverridesFrozen = () => false,
     onApprove,
     onRemove,
+    onDecline,
     onApproveAll,
     rowPath,
     addonSnapshot = null,
@@ -53,7 +80,13 @@
   }: {
     roster: GuildRosterRow[];
     pending: GuildRosterRow[];
-    officer: boolean;
+    /** The home's `members`: everyone the addon saw plus every verified character. Absent on a
+     *  home from before the roster model, read as the account rows alone. */
+    members?: GuildRosterEntry[];
+    /** The home's `counts`; absent, they are derived from the account rows. */
+    counts?: GuildRosterCounts;
+    /** The account's capability words for this guild (`/v1/me`'s `can`). */
+    can: readonly string[];
     myCharacterKey: string | null;
     rosterBusy: string | null;
     rosterActionError: string;
@@ -63,16 +96,25 @@
     removeOverridesFrozen?: (row: GuildRosterRow) => boolean;
     onApprove: (row: GuildRosterRow) => void;
     onRemove: (row: GuildRosterRow) => void;
+    /** Turn a waiting character away: the API's remove, so the row leaves the list. */
+    onDecline: (row: GuildRosterRow) => void;
     onApproveAll: () => void;
     rowPath: (row: GuildRosterRow) => CharacterPath;
     /** The home's `addon_snapshot` (Task L6.14); absent on a home from before it, read as null. */
     addonSnapshot?: GuildAddonSnapshot | null;
-    /** The clock the snapshot's "received … ago" reads against; a test pins it. */
+    /** The clock the snapshot's "received … ago" and each "seen … ago" read against; a test pins it. */
     now?: Date;
   } = $props();
 
+  const canApprove = $derived(hasCapability(can, 'approve'));
+  const canRemove = $derived(hasCapability(can, 'remove'));
+
   let filters = $state<RosterFilters>({ ...DEFAULT_ROSTER_FILTERS });
+  let noAccountOnly = $state(false);
   let sortKey = $state<RosterSortKey>(DEFAULT_ROSTER_SORT);
+  /** The waiting row whose Decline is asking first, and whether Approve all is. */
+  let decliningKey = $state<string | null>(null);
+  let confirmingApproveAll = $state(false);
 
   const floor = $derived(ratingFloor(roster));
   // Verified rows only -- `pending`'s own explicit unverified block above already covers
@@ -80,27 +122,44 @@
   // every unverified raider in the roster-rows region and pushed the pinned viewer row
   // down, found on this round's own e2e run).
   const ordered = $derived(
-    pinOwnRowFirst(
-      sortRoster(
-        applyRosterFilters(
-          roster.filter((row) => row.verified),
-          filters,
-          floor,
+    noAccountOnly
+      ? []
+      : pinOwnRowFirst(
+          sortRoster(
+            applyRosterFilters(
+              roster.filter((row) => row.verified),
+              filters,
+              floor,
+            ),
+            sortKey,
+          ),
+          myCharacterKey,
         ),
-        sortKey,
-      ),
-      myCharacterKey,
-    ),
   );
   const classOptions = $derived(
-    [...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort(),
+    [
+      ...new Set(
+        [...roster.map((r) => r.class), ...(members ?? []).map((m) => m.class)].filter(
+          (c): c is string => c !== undefined,
+        ),
+      ),
+    ].sort(),
   );
   const altOf = $derived(altOfMainName(roster));
-  // Every roster row once (a pending row may also be in `roster`): the sender's name lookup,
-  // the "members seen" count and its total all read this.
+  // Every roster row once (a pending row may also be in `roster`): the sender's name lookup
+  // and the derived counts both read this.
   const allRows = $derived([...new Map([...roster, ...pending].map((r) => [r.character_key, r])).values()]);
   const snapshotLine = $derived(addonSnapshotLine(addonSnapshot, allRows, now));
-  const today = $derived(localDateKey(now));
+  const countsView = $derived(counts ?? derivedCounts(allRows));
+  const extras = $derived(
+    filterEntries(entriesWithoutRow(members), {
+      role: filters.role,
+      classFilter: filters.classFilter,
+      verifiedOnly: filters.verifiedOnly,
+      noAccountOnly,
+    }),
+  );
+  const shownPending = $derived(noAccountOnly ? [] : pending);
 
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
@@ -114,6 +173,20 @@
     const order = ['all', ...classOptions];
     const next = order[(order.indexOf(filters.classFilter) + 1) % order.length];
     filters = { ...filters, classFilter: next };
+  }
+
+  /** Approve all goes straight through unless an officer is waiting, then it asks first. */
+  function askApproveAll(): void {
+    if (approveAllQuestion(pending) === null) onApproveAll();
+    else confirmingApproveAll = true;
+  }
+  function doApproveAll(): void {
+    confirmingApproveAll = false;
+    onApproveAll();
+  }
+  function doDecline(row: GuildRosterRow): void {
+    decliningKey = null;
+    onDecline(row);
   }
 
   const SORT_COLUMNS: { key: RosterSortKey; label: string; hover?: string }[] = [
@@ -142,6 +215,11 @@
   const SORT_HEADER_ACTIVE = 'text-gold';
   const ROW =
     'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 lg:flex-nowrap';
+  // A name with no account row: the same shape, a different class so the account rows stay
+  // the only `guild-roster-row`s.
+  const ENTRY_ROW =
+    'guild-roster-entry flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 lg:flex-nowrap';
+  const MUTED_WORD = 'text-muted text-[12px]';
 </script>
 
 {#snippet inGame(row: GuildRosterRow)}
@@ -168,7 +246,7 @@
         row.addon.spec === null &&
         row.addon.gear_gap === null &&
         row.addon.build === null}
-      {@const seen = addonSeen(row.addon.seen_at, today, withheld)}
+      {@const seen = addonSeen(row.addon.seen_at, now, withheld)}
       {@const gapLabel = addonGapLabel(row.addon.gear_gap)}
       {@const build = row.addon.build !== null && row.addon.build !== '' ? row.addon.build : null}
       <!-- The spaces are mustaches because Svelte drops a bare space at the start of an {#if}. -->
@@ -198,7 +276,39 @@
   </div>
 {/snippet}
 
+{#snippet entryInGame(entry: GuildRosterEntry)}
+  {@const seen = entry.seen_at === undefined ? null : addonSeen(entry.seen_at, now)}
+  {@const level = entry.level === undefined ? null : guildRosterAddonCopy.level(entry.level)}
+  {@const none = level === null && seen === null}
+  <div
+    class={`min-w-0 basis-full text-[12px] break-words lg:shrink-0 lg:basis-[260px] ${none ? 'hidden lg:block' : ''}`}
+    data-testid="guild-roster-entry-ingame"
+  >
+    <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
+    {#if none}
+      <span class="text-muted" title={guildRosterModelCopy.states.not_seen}
+        >{guildRosterAddonCopy.notSeen}</span
+      >
+    {:else}
+      <span
+        >{level ?? ''}{#if level !== null && seen !== null}
+          &nbsp;<span class="text-muted">{guildRosterAddonCopy.separator}</span
+          >&nbsp;{/if}{#if seen !== null}<span class="text-muted" style="cursor:help" title={seen.hover}
+            >{seen.label}</span
+          >{/if}</span
+      >
+    {/if}
+  </div>
+{/snippet}
+
 <section class="flex flex-col gap-4" data-testid="guild-roster-tab">
+  <div class="flex flex-col gap-1">
+    <p class="text-[14px] font-semibold" data-testid="guild-roster-counts">{countLine(countsView)}</p>
+    <p class="text-muted text-[12px]" data-testid="guild-roster-gear-note">
+      {guildRosterModelCopy.gearNote}
+    </p>
+  </div>
+
   <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
     <span class="label text-muted">Filter</span>
     <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
@@ -215,6 +325,13 @@
       Verified only
     </button>
     <button
+      class={`${FILTER_BTN} ${noAccountOnly ? FILTER_BTN_ON : ''}`}
+      onclick={() => (noAccountOnly = !noAccountOnly)}
+      data-testid="guild-roster-filter-noaccount"
+    >
+      {guildRosterModelCopy.noAccountFilter}
+    </button>
+    <button
       class={`${FILTER_BTN} ${filters.belowFloorOnly ? FILTER_BTN_ON : ''}`}
       onclick={() => toggle('belowFloorOnly')}
       data-testid="guild-roster-filter-floor"
@@ -223,23 +340,50 @@
     </button>
   </div>
 
-  {#if officer && pending.length > 0}
-    <div class="flex items-center justify-between gap-3" data-testid="guild-roster-waiting">
-      <span class="text-muted text-[13px]">{pending.length} waiting for approval</span>
-      <button
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
-        onclick={onApproveAll}
-        disabled={frozen}
-        data-testid="guild-roster-approve-all"
-      >
-        Approve all
-      </button>
+  {#if canApprove && shownPending.length > 0}
+    <div class="flex flex-col gap-2" data-testid="guild-roster-waiting">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-muted text-[13px]">{guildHomeCopy.waitingForApproval(shownPending.length)}</span>
+        <button
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
+          onclick={askApproveAll}
+          disabled={frozen}
+          data-testid="guild-roster-approve-all"
+        >
+          Approve all
+        </button>
+      </div>
+      {#if confirmingApproveAll}
+        <div
+          class="border-line-soft flex flex-wrap items-center gap-3 border p-3"
+          data-testid="guild-roster-approve-all-confirm"
+        >
+          <span class="text-[13px]">{approveAllQuestion(pending)}</span>
+          <button
+            class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3`}
+            onclick={doApproveAll}
+            disabled={frozen}
+            data-testid="guild-roster-approve-all-yes"
+          >
+            {guildRosterModelCopy.confirm}
+          </button>
+          <button
+            class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
+            onclick={() => (confirmingApproveAll = false)}
+          >
+            {guildRosterModelCopy.cancel}
+          </button>
+        </div>
+      {/if}
+      <p class="text-muted text-[12px]" data-testid="guild-roster-approve-explains">
+        {guildRosterModelCopy.approveExplains}
+      </p>
     </div>
   {/if}
 
-  {#if pending.length > 0}
+  {#if shownPending.length > 0}
     <div class="flex flex-col" id="guild-roster-unverified" data-testid="guild-roster-unverified-list">
-      {#each pending as row (row.character_key)}
+      {#each shownPending as row (row.character_key)}
         <div class={ROW}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
@@ -251,19 +395,59 @@
             </span>
             <span class="text-muted text-[12px]">{row.spec ?? ''}</span>
           </div>
-          <span class="pill pill-site">Unverified</span>
-          {#if officer}
-            <button
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text ml-auto px-3 ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
-              onclick={() => onApprove(row)}
-              disabled={rosterBusy === row.character_key || frozen}
-              aria-label={`Approve ${row.name}`}
-              data-testid="guild-roster-approve"
-            >
-              Approve
-            </button>
-          {/if}
+          <span
+            class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
+            data-testid="guild-roster-pending-rank">{rankWord(row.rank)}</span
+          >
+          <span class="pill pill-site" data-testid="guild-roster-state"
+            >{guildRosterModelCopy.states.waiting}</span
+          >
+          <div class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3">
+            {#if canApprove}
+              <button
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+                onclick={() => onApprove(row)}
+                disabled={rosterBusy === row.character_key || frozen}
+                aria-label={`Approve ${row.name}`}
+                data-testid="guild-roster-approve"
+              >
+                Approve
+              </button>
+            {/if}
+            {#if canRemove && row.may_remove}
+              <button
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
+                onclick={() => (decliningKey = row.character_key)}
+                disabled={rosterBusy === row.character_key || (frozen && !removeOverridesFrozen(row))}
+                aria-label={`Decline ${row.name}`}
+                data-testid="guild-roster-decline"
+              >
+                {guildRosterModelCopy.decline}
+              </button>
+            {/if}
+          </div>
         </div>
+        {#if decliningKey === row.character_key}
+          <div
+            class="border-line-soft flex flex-wrap items-center gap-3 border-b py-2.5"
+            data-testid="guild-roster-decline-confirm"
+          >
+            <span class="text-[13px]">{guildRosterModelCopy.declineQuestion(row.name)}</span>
+            <button
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3`}
+              onclick={() => doDecline(row)}
+              data-testid="guild-roster-decline-yes"
+            >
+              {guildRosterModelCopy.decline}
+            </button>
+            <button
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3`}
+              onclick={() => (decliningKey = null)}
+            >
+              {guildRosterModelCopy.cancel}
+            </button>
+          </div>
+        {/if}
       {/each}
     </div>
   {/if}
@@ -285,9 +469,10 @@
     <span class="hidden lg:block lg:w-[190px] lg:shrink-0" aria-hidden="true"></span>
   </div>
 
-  {#if ordered.length === 0}
+  {#if ordered.length === 0 && extras.length === 0}
     <EmptyState message="No raiders match these filters." testid="guild-roster-empty" />
-  {:else}
+  {/if}
+  {#if ordered.length > 0}
     <div class="flex flex-col" data-testid="guild-roster-rows">
       {#each ordered as row (row.character_key)}
         {@const pinned = row.character_key === myCharacterKey}
@@ -312,9 +497,10 @@
           <div
             class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
           >
-            {#if row.rank === 'officer' || row.rank === 'leader'}
-              <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>
-            {/if}
+            <span
+              class={row.rank === 'member' ? MUTED_WORD : 'pill pill-site'}
+              data-testid="guild-roster-rank">{rankWord(row.rank)}</span
+            >
             {#if row.logged_recently}
               <span
                 class="pill"
@@ -353,7 +539,7 @@
             {#if row.consent !== 'roster'}
               <GuildRosterHandoff path={rowPath(row)} stacked />
             {/if}
-            {#if officer && row.rank !== 'leader'}
+            {#if canRemove && row.may_remove}
               <button
                 class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 ${rosterBusy === row.character_key ? BUSY_CLASS : ''}`}
                 onclick={() => onRemove(row)}
@@ -365,6 +551,39 @@
               </button>
             {/if}
           </div>
+        </div>
+      {/each}
+    </div>
+  {/if}
+  {#if extras.length > 0}
+    <div class="flex flex-col" data-testid="guild-roster-entries">
+      {#each extras as entry (`${entry.state}:${entry.name}`)}
+        <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
+          <ClassCrestRing characterClass={entry.class ?? ''} size={36} />
+          <div class="flex min-w-[150px] flex-col">
+            <span
+              class="font-display text-[14px] font-bold"
+              style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
+              data-testid="guild-roster-entry-name">{entry.name}</span
+            >
+            <span class="text-muted text-[12px]"
+              >{entry.spec === undefined ? '' : addonSpecName(entry.spec)}</span
+            >
+          </div>
+          <div
+            class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
+          >
+            <span class={MUTED_WORD} data-testid="guild-roster-entry-rank">{rankWord(entry.rank)}</span>
+            <span
+              class="text-muted text-[12px]"
+              data-testid="guild-roster-entry-state"
+              title={entry.state === 'no_account'
+                ? 'The addon saw this character in the guild; no account on the site has claimed it.'
+                : undefined}>{stateWord(entry.state)}</span
+            >
+          </div>
+          {@render entryInGame(entry)}
+          <div class="ml-auto shrink-0 lg:w-[190px]" aria-hidden="true"></div>
         </div>
       {/each}
     </div>

@@ -255,8 +255,9 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 	res = h.get(fmt.Sprintf("/v1/guilds/%d/loot", guildID))
 	var loot guilds.LootView
 	h.data(res, &loot)
-	if len(loot.Items) != 22 {
-		t.Errorf("loot.items = %d, want 22", len(loot.Items))
+	// 22 drops, the two "Head of Onyxia" listed as one row.
+	if len(loot.Items) != 21 {
+		t.Errorf("loot.items = %d, want 21", len(loot.Items))
 	}
 	// Follow-up fix: loot candidates must not read empty on real data. Every real
 	// armor/weapon drop (a non-empty slot) must carry at least one candidate from this

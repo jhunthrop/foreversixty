@@ -134,6 +134,13 @@ export interface MeGuild {
    * treats a missing key the same as null.
    */
   plan?: GuildBillingView | null;
+  /**
+   * What the account may do in this guild (`approve`, `remove`, `settings`, `award`,
+   * `billing`, `release`), from the API's one rule (api `guilds.Capabilities`). The page draws
+   * a control exactly when its word is here, never from the rank. Optional so a response from
+   * before it reads as an empty list.
+   */
+  can?: string[];
 }
 
 /** Spec 1.4: every Can() feature pre-resolved for the caller, plus their own billing state. */

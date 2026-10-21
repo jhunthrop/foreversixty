@@ -109,12 +109,16 @@ type LootCandidate struct {
 
 // LootItemView is one of Onyxia's own 22 drops, as the Loot tab shows it.
 type LootItemView struct {
-	ItemID     int             `json:"item_id"`
-	Name       string          `json:"name"`
-	Icon       string          `json:"icon"`
-	Quality    int             `json:"quality"`
-	Slot       string          `json:"slot"`
-	AwardedTo  *AwardedTo      `json:"awarded_to"`
+	ItemID    int        `json:"item_id"`
+	Name      string     `json:"name"`
+	Icon      string     `json:"icon"`
+	Quality   int        `json:"quality"`
+	Slot      string     `json:"slot"`
+	AwardedTo *AwardedTo `json:"awarded_to"`
+	// Copies is how many of the table's drops this one row stands for: two items can share a
+	// name (Onyxia's two "Head of Onyxia", the Alliance and Horde quest items), and the council
+	// lists a name once.
+	Copies     int             `json:"copies"`
 	Candidates []LootCandidate `json:"candidates"`
 }
 
@@ -160,6 +164,13 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	if err != nil {
 		return LootView{}, err
 	}
+	// An account that joined by invite has no character row of the guild's, but its gear is on the
+	// site and it takes part in the raid, so it is a candidate like any member.
+	invited, err := s.invitedRosterRows(ctx, guildID, g)
+	if err != nil {
+		return LootView{}, err
+	}
+	roster = append(roster, invited...)
 	// The roster already carries each row's attendance (enrichRoster), the same reading the
 	// home shows. Every roster row carries the same nights (the window's size), so the last
 	// row's is the guild's.
@@ -174,13 +185,44 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		return LootView{}, err
 	}
 
+	// An award to an invited member names the account's synthetic row, which no export carries a
+	// name for; the picked character's name stands in for it.
+	invitedName := make(map[string]string, len(invited))
+	for _, row := range invited {
+		invitedName[row.awardKey] = row.Name
+	}
+	for _, a := range awards {
+		if name, ok := invitedName[a.CharacterKey]; ok && a.Name == "" {
+			a.Name = name
+		}
+	}
+
 	for _, item := range onyxiaLoot {
-		iv := LootItemView{ItemID: item.ItemID, Name: item.Name, Icon: item.Icon, Quality: item.Quality, Slot: item.Slot}
+		// Two of the table's items can share a name (the Alliance and Horde "Head of Onyxia" quest
+		// items, both slotless); the council lists a name once and says how many it stands for.
+		if i := indexOfLootName(view.Items, item.Name); i >= 0 {
+			view.Items[i].Copies++
+			if view.Items[i].AwardedTo == nil {
+				view.Items[i].AwardedTo = awards[item.ItemID]
+			}
+			continue
+		}
+		iv := LootItemView{ItemID: item.ItemID, Name: item.Name, Icon: item.Icon, Quality: item.Quality, Slot: item.Slot, Copies: 1}
 		iv.AwardedTo = awards[item.ItemID]
 		iv.Candidates = s.lootCandidates(roster, item, present, nights)
 		view.Items = append(view.Items, iv)
 	}
 	return view, nil
+}
+
+// indexOfLootName is the position of the item already listed under name, or -1.
+func indexOfLootName(items []LootItemView, name string) int {
+	for i := range items {
+		if items[i].Name == name {
+			return i
+		}
+	}
+	return -1
 }
 
 // lootCandidates ranks every verified roster character this item names a candidate for,
@@ -202,8 +244,12 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[st
 		if !row.Verified || row.className == "" {
 			continue
 		}
+		key := row.CharacterKey
+		if row.awardKey != "" {
+			key = row.awardKey
+		}
 		cand := LootCandidate{
-			CharacterKey: row.CharacterKey, Name: row.Name,
+			CharacterKey: key, Name: row.Name,
 			Attendance: Attendance{Present: present[row.CharacterKey], Nights: nights},
 		}
 		if row.Class != nil {

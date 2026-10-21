@@ -11,6 +11,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -1236,4 +1237,60 @@ func asDevice(h http.HandlerFunc, method, target string) *httptest.ResponseRecor
 	w := httptest.NewRecorder()
 	h(w, r)
 	return w
+}
+
+// fakeGuildCapabilities answers GuildCapabilities from a table keyed by the guild and the
+// moderator flag, and records the user it was asked about.
+type fakeGuildCapabilities struct {
+	lists map[int64][]string
+	asked []int64
+	mods  []bool
+}
+
+func (f *fakeGuildCapabilities) Capabilities(_ context.Context, guildID, userID int64, moderator bool) ([]string, error) {
+	f.asked = append(f.asked, userID)
+	f.mods = append(f.mods, moderator)
+	return f.lists[guildID], nil
+}
+
+// TestMeListsWhatTheAccountMayDoInEachGuild: every guild entry on /v1/me carries "can", the
+// words the guilds package's one rule gives the account, and an empty list (never null) when
+// the rule gives nothing or no rule is wired.
+func TestMeListsWhatTheAccountMayDoInEachGuild(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "me-guild-can")
+	officer := h.seedUser(t, "me-can-officer@example.com")
+	h.seedGuildMember(t, gid, officer, "officer", true)
+
+	type meBody struct {
+		Guilds []struct {
+			ID  int64     `json:"id"`
+			Can *[]string `json:"can"`
+		} `json:"guilds"`
+	}
+	read := func() meBody {
+		res := h.sessionRequest(t, http.MethodGet, "/v1/me", officer)
+		var b meBody
+		h.decode(t, res, &b)
+		return b
+	}
+
+	if b := read(); len(b.Guilds) != 1 || b.Guilds[0].Can == nil || len(*b.Guilds[0].Can) != 0 {
+		t.Fatalf("with no rule wired, can = %+v, want []", b.Guilds)
+	}
+
+	fake := &fakeGuildCapabilities{lists: map[int64][]string{gid: {"approve", "remove", "settings", "award"}}}
+	h.svc.GuildCapabilities = fake
+	b := read()
+	if len(b.Guilds) != 1 || b.Guilds[0].Can == nil || !reflect.DeepEqual(*b.Guilds[0].Can, []string{"approve", "remove", "settings", "award"}) {
+		t.Fatalf("can = %+v, want the rule's list", b.Guilds)
+	}
+	if len(fake.asked) != 1 || fake.asked[0] != officer || fake.mods[0] {
+		t.Errorf("asked = %v moderator = %v, want the signed-in user, not a moderator", fake.asked, fake.mods)
+	}
+
+	fake.lists = map[int64][]string{}
+	if b := read(); b.Guilds[0].Can == nil || len(*b.Guilds[0].Can) != 0 {
+		t.Fatalf("a rule answering nothing must still read [], got %+v", b.Guilds[0].Can)
+	}
 }

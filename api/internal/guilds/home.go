@@ -167,6 +167,10 @@ type RosterRow struct {
 	// ownerUserID is gc.user_id: read to compute MayRemove/MayApprove/AccountKey against
 	// the viewing actor, never marshaled into the response itself.
 	ownerUserID int64
+	// awardKey is the guild_characters key a loot award has to name when it differs from
+	// CharacterKey: an invited member's picked character is ranked under its own key but awarded
+	// under the account's synthetic row (invitedRosterRows). Empty everywhere else.
+	awardKey string
 	// faction/className/specName/export/gear/enchants/bags/talentPointsSpent/hasTalents
 	// back this row's own standing/readiness computation (standing.go) without a second
 	// query - never marshaled.
@@ -203,7 +207,7 @@ type AddonMemberView struct {
 
 // AddonSnapshotView is the home's top-level account of the guild's newest roster snapshot:
 // when it was received (RFC 3339 UTC), the character key whose export carried it, and how
-// many members it listed (unmatched ones included; they never become roster rows).
+// many members it listed (unmatched ones included; they become the roster's no-account entries, HomeView.Members).
 type AddonSnapshotView struct {
 	ReceivedAt  time.Time `json:"received_at"`
 	ByCharacter string    `json:"by_character"`
@@ -253,6 +257,12 @@ type HomeView struct {
 	Pending []RosterRow `json:"pending"`
 	// AddonSnapshot is the guild's newest addon roster snapshot, null when it has none.
 	AddonSnapshot *AddonSnapshotView `json:"addon_snapshot"`
+	// Members is the roster as a person counts it: everyone the newest addon snapshot names plus
+	// every verified character, merged by name, each with a state (RosterEntry), and Counts the
+	// numbers above it. Roster and Pending above stay the account rows the readiness and loot
+	// views are built from.
+	Members []RosterEntry `json:"members"`
+	Counts  RosterCounts  `json:"counts"`
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
@@ -344,54 +354,9 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 	defer rows.Close()
 	out := []RosterRow{}
 	for rows.Next() {
-		var row RosterRow
-		var export, faction *string
-		if err := rows.Scan(&row.CharacterKey, &row.ownerUserID, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
-			&row.Verified, &row.LoggedRecently, &row.LoggedAt, &row.Consent, &row.Class, &row.Spec, &row.Role,
-			&row.ItemLevel, &faction, &export); err != nil {
-			return nil, fmt.Errorf("guilds: home roster: %w", err)
-		}
-		if faction != nil {
-			row.faction = *faction
-		}
-		row.MayRemove = mayRemoveRow(g, actorID, row.ownerUserID, row.Rank, moderator, verifiedOfficer)
-		row.MayApprove = verifiedOfficer && !row.Verified
-		row.AccountKey = accountKeyFor(row.ownerUserID)
-		if row.Class != nil {
-			row.className = *row.Class
-		}
-		if row.Spec != nil {
-			row.specStr = *row.Spec
-		}
-		if export != nil {
-			decoded, ok := fs1.Decode(*export)
-			if ok {
-				row.gear, row.enchants = decoded.Gear, decoded.Enchants
-				row.bags, row.hasBagsSection = decoded.Bags, hasBagsSection(*export)
-				row.Professions = decoded.Professions
-				row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
-				row.level, row.hasLevel = decoded.Level, decoded.HasLevel
-				// Class comes from fight_metrics first (a logged fight is live evidence of
-				// what was actually played), the FS1 export second - the export always
-				// carries a class (fs1.Decoded.ClassSlug), so a character with gear consent
-				// but no fight_metrics row yet (readiness/standing's own "no fight data"
-				// case) still gets a class instead of reading empty and drawing a broken
-				// crest web-side. The export carries no spec field at all, so specStr has
-				// no equivalent second source.
-				if row.className == "" && decoded.ClassSlug != "" {
-					row.className = decoded.ClassSlug
-					class := decoded.ClassSlug
-					row.Class = &class
-				}
-				// faction has no fight_metrics source at all (that table carries no
-				// faction column - see factionForRace's own doc comment), so the export's
-				// race is the only place this ever comes from.
-				if row.faction == "" {
-					if f, ok := s.factionForRace(decoded.RaceSlug); ok {
-						row.faction = f
-					}
-				}
-			}
+		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer)
+		if err != nil {
+			return nil, err
 		}
 		out = append(out, row)
 	}
@@ -402,6 +367,64 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 		return nil, err
 	}
 	return out, nil
+}
+
+// scanRosterRow reads one row of a roster query (the columns HomeRoster and
+// invitedRosterRows both select, in this order) and finishes it: the remove and approve flags
+// against the viewing actor, and the class, spec and gear the export decodes to. extra are a
+// query's own trailing columns, scanned after the standard ones.
+func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, verifiedOfficer bool, extra ...any) (RosterRow, error) {
+	var row RosterRow
+	var export, faction *string
+	dest := append([]any{&row.CharacterKey, &row.ownerUserID, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
+		&row.Verified, &row.LoggedRecently, &row.LoggedAt, &row.Consent, &row.Class, &row.Spec, &row.Role,
+		&row.ItemLevel, &faction, &export}, extra...)
+	if err := rows.Scan(dest...); err != nil {
+		return RosterRow{}, fmt.Errorf("guilds: home roster: %w", err)
+	}
+	if faction != nil {
+		row.faction = *faction
+	}
+	row.MayRemove = mayRemoveRow(g, actorID, row.ownerUserID, row.Rank, moderator, verifiedOfficer)
+	row.MayApprove = verifiedOfficer && !row.Verified
+	row.AccountKey = accountKeyFor(row.ownerUserID)
+	if row.Class != nil {
+		row.className = *row.Class
+	}
+	if row.Spec != nil {
+		row.specStr = *row.Spec
+	}
+	if export != nil {
+		decoded, ok := fs1.Decode(*export)
+		if ok {
+			row.gear, row.enchants = decoded.Gear, decoded.Enchants
+			row.bags, row.hasBagsSection = decoded.Bags, hasBagsSection(*export)
+			row.Professions = decoded.Professions
+			row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
+			row.level, row.hasLevel = decoded.Level, decoded.HasLevel
+			// Class comes from fight_metrics first (a logged fight is live evidence of
+			// what was actually played), the FS1 export second - the export always
+			// carries a class (fs1.Decoded.ClassSlug), so a character with gear consent
+			// but no fight_metrics row yet (readiness/standing's own "no fight data"
+			// case) still gets a class instead of reading empty and drawing a broken
+			// crest web-side. The export carries no spec field at all, so specStr has
+			// no equivalent second source.
+			if row.className == "" && decoded.ClassSlug != "" {
+				row.className = decoded.ClassSlug
+				class := decoded.ClassSlug
+				row.Class = &class
+			}
+			// faction has no fight_metrics source at all (that table carries no
+			// faction column - see factionForRace's own doc comment), so the export's
+			// race is the only place this ever comes from.
+			if row.faction == "" {
+				if f, ok := s.factionForRace(decoded.RaceSlug); ok {
+					row.faction = f
+				}
+			}
+		}
+	}
+	return row, nil
 }
 
 // snapshotMember is one stored member line of guild_roster_snapshots.members, as
@@ -418,11 +441,12 @@ type snapshotMember struct {
 // homeAddonSnapshot reads the guild's newest roster snapshot in one query and sets each
 // roster row's Addon from it. The snapshot's names carry no realm, or the sender's
 // Name-Realm form: the realm half is dropped and the name matched to a row's name, any
-// case, the guild's realm being the row's. The first line of a name wins; a line that
+// case, the guild's realm being the row's. The snapshot's member lines come back too, for the
+// merged roster. The first line of a name wins; a line that
 // matches no row is counted in Members and nothing else. The newest snapshot wins even when
 // it lists nobody (an empty roster is a fact), so every row then reads null. Nil, with every
 // row's Addon nil, when the guild has no snapshot.
-func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []RosterRow) (*AddonSnapshotView, error) {
+func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []RosterRow) (*AddonSnapshotView, []snapshotMember, error) {
 	var snap AddonSnapshotView
 	var members []snapshotMember
 	err := s.Pool.QueryRow(ctx, `
@@ -430,10 +454,10 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		where guild_id = $1 order by received_at desc limit 1`, guildID).
 		Scan(&snap.ByCharacter, &members, &snap.ReceivedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
+		return nil, nil, nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("guilds: home addon snapshot: %w", err)
+		return nil, nil, fmt.Errorf("guilds: home addon snapshot: %w", err)
 	}
 	snap.ReceivedAt = snap.ReceivedAt.UTC()
 	snap.Members = len(members)
@@ -461,7 +485,7 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		}
 		roster[i].Addon = line
 	}
-	return &snap, nil
+	return &snap, members, nil
 }
 
 // accountKeyFor is the contract's own "same value for a main and its alts" grouping key.
@@ -502,10 +526,15 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		return HomeView{}, err
 	}
 	// Before pending is copied out of roster, so a pending row carries its line too.
-	addonSnapshot, err := s.homeAddonSnapshot(ctx, guildID, roster)
+	addonSnapshot, snapshotLines, err := s.homeAddonSnapshot(ctx, guildID, roster)
 	if err != nil {
 		return HomeView{}, err
 	}
+	invited, err := s.invitedMembers(ctx, guildID)
+	if err != nil {
+		return HomeView{}, err
+	}
+	members, counts := mergeRoster(roster, invited, snapshotLines)
 	claim := claimState(g, time.Now())
 	if claim.State == "claimed" && g.ClaimedBy != nil && s.Accounts != nil {
 		if u, uerr := s.Accounts.User(ctx, *g.ClaimedBy); uerr == nil {
@@ -556,7 +585,7 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		Summary:  summary,
 		Standing: standingFor(s, roster, userID),
 		Reports:  reports, Roster: roster, Pending: pending,
-		AddonSnapshot: addonSnapshot,
+		AddonSnapshot: addonSnapshot, Members: members, Counts: counts,
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]

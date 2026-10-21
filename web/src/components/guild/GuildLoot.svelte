@@ -58,7 +58,12 @@
           data-testid={`guild-loot-item-${item.item_id}`}
         >
           <div class="flex items-center justify-between gap-2">
-            <span class="font-display text-[15px] font-bold">{item.name}</span>
+            <span class="font-display text-[15px] font-bold"
+              >{item.name}{#if (item.copies ?? 1) > 1}
+                <span class="text-muted text-[12px]" data-testid={`guild-loot-copies-${item.item_id}`}
+                  >x{item.copies}</span
+                >{/if}</span
+            >
             {#if item.awarded_to !== null}
               <span
                 class="pill"

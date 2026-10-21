@@ -4,7 +4,12 @@
 // e2e spec guild-centre.spec.ts clicks the sort and reads the hovers in a browser.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { ADDON_SNAPSHOT, VIEWER_MEMBER, buildMockHome } from '../../fixtures/guild/mock-guild';
+import {
+  ADDON_SNAPSHOT,
+  VIEWER_MEMBER,
+  VIEWER_OFFICER,
+  buildMockHome,
+} from '../../fixtures/guild/mock-guild';
 import type { GuildHome } from '../../lib/guild/api';
 import { guildRosterAddonCopy } from '../../lib/guild/copy';
 import GuildRosterTable from './GuildRosterTable.svelte';
@@ -18,13 +23,16 @@ function props(home: GuildHome) {
   return {
     roster: home.roster,
     pending: home.pending ?? [],
-    officer: false,
+    members: home.members,
+    counts: home.counts,
+    can: [] as string[],
     myCharacterKey: home.viewer?.character_key ?? null,
     rosterBusy: null,
     rosterActionError: '',
     frozen: false,
     onApprove: () => {},
     onRemove: () => {},
+    onDecline: () => {},
     onApproveAll: () => {},
     rowPath: () => ({ region: 'us' as const, ruleset: 'pvp' as const, slug: 'x' }),
     addonSnapshot: home.addon_snapshot ? { ...home.addon_snapshot, received_at: RECEIVED } : null,
@@ -87,12 +95,12 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     const zulmara = byName.get('Zulmara') ?? '';
     expect(zulmara).toContain('data-testid="guild-roster-ingame"');
     expect(text(zulmara)).toContain(
-      'Level 60 Survival per addon · gap 12 DPS · build: Survival raid · seen 21:40',
+      'Level 60 Survival per addon · Gear gap 12 DPS · build: Survival raid · seen 6 minutes ago',
     );
     expect(zulmara).toMatch(/class="[^"]*text-muted[^"]*"[^>]*>per addon</);
     // Kraggor: the addon agrees with the site's Protection, so the level shows with no tag.
     const kraggor = text(byName.get('Kraggor') ?? '');
-    expect(kraggor).toContain('Level 60 · gap 4 DPS · build: Protection raid · seen 21:38');
+    expect(kraggor).toContain('Level 60 · Gear gap 4 DPS · build: Protection raid · seen 8 minutes ago');
     expect(kraggor).not.toContain('per addon');
     expect(kraggor).not.toContain('(addon)');
     expect(withSnapshot).not.toContain('(addon)');
@@ -104,8 +112,8 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(guildRosterAddonCopy.seenHover('21:40')).toBe("Seen at 21:40 on the member's clock");
   });
 
-  it('a seen time that is not today names its day', () => {
-    expect(text(rows(withSnapshot).get('Duskstrider') ?? '')).toContain('seen Mon 23:12');
+  it('an older seen time reads as how long ago it was', () => {
+    expect(text(rows(withSnapshot).get('Duskstrider') ?? '')).toContain('seen 22 hours ago');
   });
 
   it('a consent-withheld row (level, spec, gap, build all null) shows only the seen time, hovering "Details withheld by the member"', () => {
@@ -165,7 +173,7 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(guildRosterAddonCopy.build('Survival raid')).toBe('build: Survival raid');
     const zulmara = rows(withSnapshot).get('Zulmara') ?? '';
     expect(text(zulmara)).toContain('build: Survival raid');
-    expect(text(zulmara)).not.toMatch(/gap 12 DPS · Survival raid/);
+    expect(text(zulmara)).not.toMatch(/Gear gap 12 DPS · Survival raid/);
   });
 
   it('the In game header sits over the same slot', () => {
@@ -189,13 +197,9 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     }
   });
 
-  it('puts the snapshot line above the table: who sent it, when, and how many members were seen', () => {
-    const home = buildMockHome(VIEWER_MEMBER);
-    const seen = home.roster.filter((r) => r.addon !== null).length;
+  it('puts the snapshot line above the table: who sent it and when (the counts have their own line)', () => {
     const line = /data-testid="guild-roster-addon-snapshot"[^>]*>([^<]*)</.exec(withSnapshot)?.[1].trim();
-    expect(line).toBe(
-      `Roster from the addon · sent by Zulmara 3 minutes ago · ${seen} of ${home.roster.length} members seen`,
-    );
+    expect(line).toBe('Roster from the addon · sent by Zulmara 3 minutes ago');
     expect(withSnapshot.indexOf('guild-roster-addon-snapshot')).toBeLessThan(
       withSnapshot.indexOf('data-testid="guild-roster-rows"'),
     );
@@ -220,5 +224,132 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     const html = render(GuildRosterTable, { props: { ...props(bare), addonSnapshot: undefined } }).body;
     expect(text(html)).toContain(guildRosterAddonCopy.noSnapshot);
     expect(html).toContain('data-testid="guild-roster-ingame-none"');
+  });
+});
+
+describe('GuildRosterTable: everyone the addon saw, with a word beside each', () => {
+  const home = buildMockHome(VIEWER_OFFICER);
+  const officerAsk = (extra: Record<string, unknown> = {}) =>
+    render(GuildRosterTable, {
+      props: {
+        ...props(home),
+        can: ['approve', 'remove', 'settings', 'award'],
+        ...extra,
+      },
+    }).body;
+  const asOfficer = officerAsk();
+
+  it('puts the count line above the filters: on the roster, in game without an account, waiting, not seen', () => {
+    const line = /data-testid="guild-roster-counts"[^>]*>([^<]*)</.exec(asOfficer)?.[1].trim();
+    expect(line).toBe(
+      `${home.roster.length + 2} on the roster · 1 in game without an account · ${home.pending?.length} waiting for approval · 1 not seen in game yet`,
+    );
+    expect(asOfficer.indexOf('guild-roster-counts')).toBeLessThan(
+      asOfficer.indexOf('data-testid="guild-roster-filters"'),
+    );
+    expect(text(asOfficer)).toContain('Loot and readiness list members with gear on the site.');
+  });
+
+  it('leaves a zero part out of the count line, and derives the counts from the account rows when the home sends none', () => {
+    const bare = render(GuildRosterTable, {
+      props: { ...props(home), members: undefined, counts: undefined, can: [] },
+    }).body;
+    const line = /data-testid="guild-roster-counts"[^>]*>([^<]*)</.exec(bare)?.[1].trim();
+    expect(line).toBe(`${home.roster.length} on the roster · ${home.pending?.length} waiting for approval`);
+  });
+
+  it('lists the names with no account row after the account rows, each with a rank word and a state word', () => {
+    const entries = [...asOfficer.matchAll(/data-testid="guild-roster-entry" data-state="([a-z_]+)"/g)].map(
+      (m) => m[1],
+    );
+    expect(entries).toEqual(['no_account', 'not_seen']);
+    const section = asOfficer.slice(asOfficer.indexOf('data-testid="guild-roster-entries"'));
+    expect(text(section)).toContain('Brightwick');
+    expect(text(section)).toContain('No account yet');
+    expect(text(section)).toContain('Driftwood');
+    expect(text(section)).toContain('Not seen in game yet');
+    // The snapshot's level and a relative seen time, never a clock.
+    expect(text(section)).toMatch(/Level 58 · seen 2 hours ago/);
+    expect(asOfficer.indexOf('data-testid="guild-roster-rows"')).toBeLessThan(
+      asOfficer.indexOf('data-testid="guild-roster-entries"'),
+    );
+    // A name with no account has neither Approve nor Remove.
+    expect(section).not.toContain('guild-roster-approve');
+    expect(section).not.toContain('guild-roster-remove');
+  });
+
+  it('gives every account row a rank word, Member included', () => {
+    const byName = rows(asOfficer);
+    const rank = (name: string) =>
+      text(/data-testid="guild-roster-rank"[^>]*>([^<]*)</.exec(byName.get(name) ?? '')?.[1] ?? '');
+    expect(rank('Kraggor')).toBe('Leader');
+    expect(rank('Sunderfel')).toBe('Officer');
+    expect(rank('Zulmara')).toBe('Member');
+  });
+
+  it('the waiting list names what Approve does, shows the rank the addon sent and the state word, and offers Decline', () => {
+    const list = asOfficer.slice(asOfficer.indexOf('data-testid="guild-roster-waiting"'));
+    expect(text(list)).toContain(
+      'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
+    );
+    const waitingRows = asOfficer
+      .slice(
+        asOfficer.indexOf('data-testid="guild-roster-unverified-list"'),
+        asOfficer.indexOf('data-testid="guild-roster-addon-snapshot"'),
+      )
+      .split('guild-roster-row ')
+      .slice(1);
+    expect(waitingRows.length).toBe(home.pending?.length);
+    for (const part of waitingRows) {
+      expect(text(part)).toContain('Waiting for approval');
+      expect(part).toMatch(/data-testid="guild-roster-pending-rank"[^>]*>(Member|Officer|Leader)</);
+      expect(part).toContain('data-testid="guild-roster-decline"');
+      expect(part).toContain('data-testid="guild-roster-approve"');
+    }
+  });
+
+  it('draws Approve, Decline and Remove from the capability list, never from the rank', () => {
+    // The viewer is the fixture's leader, but the account's list is empty: no controls at all.
+    const none = officerAsk({ can: [] });
+    for (const id of ['approve', 'approve-all', 'decline', 'remove']) {
+      expect(none, id).not.toContain(`data-testid="guild-roster-${id}"`);
+    }
+    // approve alone: Approve and Approve all, no Remove or Decline.
+    const approveOnly = officerAsk({ can: ['approve'] });
+    expect(approveOnly).toContain('data-testid="guild-roster-approve-all"');
+    expect(approveOnly).toContain('data-testid="guild-roster-approve"');
+    expect(approveOnly).not.toContain('data-testid="guild-roster-remove"');
+    expect(approveOnly).not.toContain('data-testid="guild-roster-decline"');
+    // remove alone: Remove (only where the API says may_remove) and Decline, no Approve.
+    const removeOnly = officerAsk({ can: ['remove'] });
+    expect(removeOnly).not.toContain('data-testid="guild-roster-approve"');
+    expect(removeOnly).toContain('data-testid="guild-roster-remove"');
+    expect(removeOnly).toContain('data-testid="guild-roster-decline"');
+    // A row the API marks may_remove: false never gets Remove, whatever the list says.
+    const noRemoves = officerAsk({
+      roster: home.roster.map((r) => ({ ...r, may_remove: false })),
+      pending: (home.pending ?? []).map((r) => ({ ...r, may_remove: false })),
+      can: ['approve', 'remove'],
+    });
+    expect(noRemoves).not.toContain('data-testid="guild-roster-remove"');
+    expect(noRemoves).not.toContain('data-testid="guild-roster-decline"');
+  });
+
+  it('a member (no capabilities) sees the table without any control, and still the count line', () => {
+    const member = render(GuildRosterTable, { props: props(buildMockHome(VIEWER_MEMBER)) }).body;
+    expect(member).toContain('data-testid="guild-roster-counts"');
+    expect(member).not.toContain('guild-roster-waiting');
+    expect(member).not.toContain('guild-roster-remove');
+  });
+
+  it('adds a "No account" filter chip beside "Verified only"', () => {
+    const filters = asOfficer.slice(
+      asOfficer.indexOf('data-testid="guild-roster-filters"'),
+      asOfficer.indexOf('data-testid="guild-roster-waiting"'),
+    );
+    expect(filters.indexOf('guild-roster-filter-verified')).toBeLessThan(
+      filters.indexOf('guild-roster-filter-noaccount'),
+    );
+    expect(text(filters)).toContain('No account');
   });
 });
