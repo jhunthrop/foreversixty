@@ -5058,7 +5058,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -5087,7 +5087,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -5122,7 +5122,7 @@
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -5157,7 +5157,7 @@
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -5198,7 +5198,7 @@
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -5239,7 +5239,7 @@
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -5280,7 +5280,7 @@
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global (or cannot start because the next auto shot is under a second away) and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the shots worth saving for): it is instant, so it never clips an auto shot and can hold Multi-Shot back by at most one global, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
             "icon": "ability_impalingbolt"
           }
         ]
@@ -7431,7 +7431,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -7448,7 +7448,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -7561,7 +7561,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -7710,7 +7710,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -7859,7 +7859,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8008,7 +8008,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8157,7 +8157,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8308,7 +8308,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8325,7 +8325,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8438,7 +8438,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8486,7 +8486,7 @@
           {
             "spell_id": 596,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
@@ -8557,7 +8557,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8605,7 +8605,7 @@
           {
             "spell_id": 596,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
@@ -8676,7 +8676,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8688,7 +8688,7 @@
           {
             "spell_id": 401859,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
+            "condition": "Prayer of Mending goes on the tank every time it is ready and the mana pace allows it: a 10 second cooldown, five charges, and at the top rank it is the cheapest healing per mana the Holy kit has.",
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
@@ -8730,7 +8730,7 @@
           {
             "spell_id": 996,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
@@ -8801,7 +8801,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8813,7 +8813,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
+            "condition": "Prayer of Mending goes on the tank every time it is ready and the mana pace allows it: a 10 second cooldown, five charges, and at the top rank it is the cheapest healing per mana the Holy kit has.",
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
@@ -8855,7 +8855,7 @@
           {
             "spell_id": 10960,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
@@ -8926,7 +8926,7 @@
           {
             "spell_id": 440054,
             "name": "Shadowfiend",
-            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.",
+            "condition": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast.",
             "icon": "spell_shadow_shadowfiend"
           },
           {
@@ -8938,7 +8938,7 @@
           {
             "spell_id": 1240827,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
+            "condition": "Prayer of Mending goes on the tank every time it is ready and the mana pace allows it: a 10 second cooldown, five charges, and at the top rank it is the cheapest healing per mana the Holy kit has.",
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
@@ -8980,7 +8980,7 @@
           {
             "spell_id": 25316,
             "name": "Prayer of Healing",
-            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.",
+            "condition": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are under 85% of their health.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
@@ -9511,7 +9511,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
@@ -9540,7 +9540,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
@@ -9569,7 +9569,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
@@ -9598,7 +9598,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
@@ -9627,7 +9627,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
@@ -9656,7 +9656,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
@@ -9685,7 +9685,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice kept up: opened in the first 15 seconds as soon as three combo points are banked, then refreshed at five combo points once under 3 seconds remain.",
+            "condition": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked.",
             "icon": "ability_rogue_slicedice"
           },
           {
