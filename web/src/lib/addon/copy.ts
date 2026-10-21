@@ -142,17 +142,32 @@ export const addonCopy = {
    *  under it, a done line for each step a visitor has already finished, the addon's
    *  how-it-works cards behind one disclosure, and the companion's downloads. */
   setupPageTitle: 'Get set up',
+  /** The label over the status chips: they report progress, they are not tabs. */
+  setupProgressLabel: 'Your progress',
   setupStatusSignIn: 'Not signed in',
   setupStatusSignedIn: 'Signed in',
   setupStatusAddon: 'Addon export',
   setupStatusAddonDone: 'Addon export loaded',
   setupStatusCompanion: 'Companion app',
-  setupSignedInLine: 'Signed in. Next: the addon, then the companion.',
+  setupSignedInLine: 'Done. You are signed in. Next: the addon, then the companion.',
   setupSignedInLink: 'Your account',
-  setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
+  setupAddonDoneLine: 'Done. An export is loaded; the site is pointed at that character.',
   setupHowItWorks: 'How the addon works',
+  /** The one disclosure that holds the manual: what the addon does, its commands, the handshake and the flows. */
+  setupEverything: 'Everything the addon does',
   setupCompanionDownloadLead: 'Download the companion',
-  setupCompanionPair: 'Sign in with Battle.net inside the companion; it pairs itself.',
+  setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
+  /** Said under the downloads while the release carries only some platforms. */
+  setupCompanionPlatforms: (available: string): string => `${available} now, macOS next.`,
+  /** The companion step's done state, from the account's newest connected device. */
+  setupCompanionDoneLine: (device: string, seen: string): string =>
+    `Done. Connected as ${device}, last seen ${seen}.`,
+  setupCompanionCapture: {
+    src: '/addon/companion-status.jpg',
+    width: 1010,
+    height: 280,
+    alt: 'The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow-Jackzon” and the link “Open this report on the site”.',
+  },
   disclosureOpen: 'Show',
   disclosureClose: 'Hide',
 
@@ -336,10 +351,6 @@ export const addonCopy = {
     { command: '/fs diag', description: 'what is not working' },
     { command: '/fs help', description: 'every command' },
   ],
-  /** The testers' commands, kept on the page because /fs help lists them: a small label, then
-   *  one muted line. */
-  commandsTestersLabel: 'For testers',
-  commandsTestersLine: '/fs diag verbose, /fs inbox, /fs hello, /fs seen, /fs record',
   /** The companion handshake (addon-v2 spec §4.10 and §6.3–6.4), three sentences. */
   handshakeTitle: 'The companion handshake',
   handshake: [

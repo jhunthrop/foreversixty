@@ -22,7 +22,7 @@ export const premiumCopy = {
   ],
   guildFeatures: [
     'Everything in Premium, for everyone in the guild.',
-    "Officer tools once they ship: the loot council helper, the raid readiness board, and the rest — a claimed guild's officers see what's live today on the guild's settings page.",
+    'Officer tools: the loot council helper, the raid readiness board, roster approvals and invite links.',
   ],
   noAds:
     'No ads. Not for anyone, paying or not. The site is paid for by Premium and the guild plan, not by ads, and that is true for everyone.',

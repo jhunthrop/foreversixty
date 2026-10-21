@@ -34,6 +34,19 @@ export interface RecentReport {
   kill_count: number;
   /** Absent when the report has no guild. */
   guild_name?: string;
+  /** The zone the report was logged in; the API sends it once the list carries it (A.6). */
+  zone?: string;
+  /** The credited character, as the single-report meta has it; null or absent when none. */
+  logging_character?: string | { key?: string; name?: string } | null;
+}
+
+/**
+ * Whether a report belongs on the public list: it names a zone or has a boss kill. A log with
+ * neither (a test upload, a walk through a city) says nothing a visitor can read, and was the
+ * first thing /logs showed under "Recent public reports": rows of "today · 0 kills".
+ */
+export function isPublicListable(report: Pick<RecentReport, 'zone' | 'kill_count'>): boolean {
+  return report.kill_count > 0 || (report.zone ?? '').trim() !== '';
 }
 
 export interface RecentReportsPage {

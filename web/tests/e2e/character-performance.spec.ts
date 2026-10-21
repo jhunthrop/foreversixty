@@ -11,7 +11,7 @@
 //   Ruling 4. Below 400px a part's row reads "412/500" with an 80px label column.
 //   Ruling 5. /setup says "type /fs copy, press Ctrl+C".
 import { expect, test, type Page } from '@playwright/test';
-import { CHARACTER, CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
+import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeOwner } from './support/character-fixture';
 
 const NOT_FOUND = {
   status: 404,
@@ -241,6 +241,7 @@ test.describe('the 404 page at 1440 (L8.5 ruling 3)', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'a desktop width');
 
   test('caps the no-logs card at 720px', async ({ page }) => {
+    await routeOwner(page);
     await page.route(CHARACTER_URL, (route) => route.fulfill(NOT_FOUND));
     await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
     await page.goto(CHARACTER_PATH);

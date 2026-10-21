@@ -34,8 +34,8 @@ test('the page says the in-game UI is in beta testing and points at the surfaces
   page,
 }) => {
   await page.goto('/setup');
-  // The three how-it-works cards sit behind one closed disclosure (design loop, setup round).
-  await page.getByText('How the addon works').click();
+  // The how-it-works cards sit inside the one closed "Everything the addon does" disclosure.
+  await page.getByText('Everything the addon does').click();
   await expect(page.getByText('in beta testing in game')).toBeVisible();
   await expect(page.getByText('no screenshot', { exact: false })).toHaveCount(0);
 });
@@ -47,6 +47,7 @@ test.describe('What it does in the game (L8.3)', () => {
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/setup');
+      await page.getByText('Everything the addon does').click();
       const surfaces = page.getByTestId('setup-surfaces').locator('[data-surface]');
       await expect(surfaces).toHaveCount(11);
       expect(await surfaces.evaluateAll((els) => els.map((el) => el.getAttribute('data-surface')))).toEqual([
@@ -86,6 +87,7 @@ test.describe('What it does in the game (L8.3)', () => {
 
   test('the commands and the companion handshake follow the surfaces', async ({ page }) => {
     await page.goto('/setup');
+    await page.getByText('Everything the addon does').click();
     const commands = page.getByTestId('setup-commands').locator('li');
     await expect(commands).toHaveCount(13);
     await expect(commands.first()).toHaveText('/fs: paste or copy a build');

@@ -179,7 +179,7 @@ test.describe('signed in, desktop', () => {
     page,
   }) => {
     await openSignedIn(page);
-    await expect(page.getByTestId('report-row-summary').first()).toHaveText("Onyxia's Lair · 0 bosses");
+    await expect(page.getByTestId('report-row-summary').first()).toHaveText("Onyxia's Lair · 6 fights");
     await expect(page.getByTestId('report-row-when').first()).toHaveText('1 day ago');
     await expect(page.locator('.pill-sample')).toHaveCount(0);
     await expect(page.getByTestId('upload-start')).toHaveCount(0);

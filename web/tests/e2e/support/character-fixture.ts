@@ -4,6 +4,7 @@
 // character-retry.spec.ts drives its failed state, and a fixture that drifted between the
 // two would let one of them pass against a shape the other no longer sees.
 import type { Page } from '@playwright/test';
+import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import { readFileSync, existsSync } from 'node:fs';
 import {
   GEAR_FIXTURE_ITEMS,
@@ -137,5 +138,37 @@ export const CHARACTER = {
 export async function stubCharacter(page: Page): Promise<void> {
   await page.route(CHARACTER_URL, (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(CHARACTER) }),
+  );
+}
+
+/** A `/v1/me` answer whose one character is the fixture's own (Elyra Duskvale, hardcore US), so
+ *  the page reads as the owner's: the 404 no-logs card with its upload action, not the visitor's
+ *  "No character called ... yet" page. */
+export function ownerMeAnswer(): { ok: true; data: unknown; error: null; request_id: string } {
+  const own = meAddonFixture.characters[0];
+  return {
+    ok: true,
+    error: null,
+    request_id: 'r',
+    data: {
+      ...meAddonFixture,
+      characters: [
+        {
+          ...own,
+          key: 'us/hardcore/elyra-duskvale',
+          region: 'us',
+          ruleset: 'hardcore',
+          name: 'Elyra Duskvale',
+          class: 'Priest',
+        },
+      ],
+    },
+  };
+}
+
+/** Routes `/v1/me` to `ownerMeAnswer()`. */
+export async function routeOwner(page: Page): Promise<void> {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ownerMeAnswer()) }),
   );
 }

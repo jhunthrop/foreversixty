@@ -32,6 +32,9 @@ describe('home-landing-copy', () => {
     expect(homeCompanionRow).toHaveLength(1);
     expect(homeCompanionRow[0].title).toBe('Get set up');
     expect(homeCompanionRow[0].href).toBe('/setup');
+    expect(homeCompanionRow[0].description).toBe(
+      'Sign in, install the addon, and run the companion — one page.',
+    );
   });
 
   it('carries the exact collapsed "Get set up" sentence, interpolating the real sync time', () => {

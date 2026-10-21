@@ -3,6 +3,8 @@
 // honest-copy voice: never promises what is not built, no exclamation marks.
 export const recentReportsCopy = {
   heading: 'Recent public reports',
+  /** The placeholder's screen-reader name while the feed loads: never the word "Loading" in page text. */
+  placeholderLabel: 'Recent reports',
   failed: 'Recent reports did not load.',
   empty: 'No public reports yet. The first raid logs land in December; dungeon logs are welcome now.',
   older: 'Older reports',
@@ -32,7 +34,7 @@ export const logsCopy = {
 /** The companion panel's pairing lines (§4.D.2): the success line replaces the code block in
  *  place once a new device appears; signed out, one plain sentence and no control. */
 export const pairingCopy = {
-  signedOut: 'Pairing needs a signed-in account.',
+  signedOut: 'Live logging needs a signed-in account.',
   /** One line above the code button: the companion's own Battle.net sign-in is the way in. */
   companionFirst:
     'Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.',

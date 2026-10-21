@@ -66,11 +66,10 @@ export const landingCopy = {
    *  sim history, shown once they have sims in two or more specs. */
   bestPerSpecTitle: 'Best per spec',
 
-  /** Finding 2: the hero sign-in card's own button and its text alternative -- the same
+  /** Finding 2: the hero sign-in card's own button; its email-link alternative is EmailLinkAlternative.svelte's -- the same
    *  wording SignInPrompt.svelte and Account.svelte already use elsewhere on the site,
    *  repeated here since this card is its own copy, not a render of that component. */
   signInWithBattlenet: 'Sign in with Battle.net',
-  emailLinkInstead: 'Use an email link instead.',
 
   /** Persona review 2026-10-06 (retail-raider), §5/§8 item 1: the cold-paste box ahead of
    *  everything else on a signed-out (or signed-in, no tracked character) /sim -- the

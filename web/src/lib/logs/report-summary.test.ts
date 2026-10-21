@@ -5,6 +5,7 @@ import {
   formatReportLength,
   ownReportSummary,
   publicReportSummary,
+  recentReportSummary,
   reportStatusLabel,
 } from './report-summary';
 
@@ -95,5 +96,25 @@ describe('creditedName', () => {
 
   it('is null when the report has no logging character', () => {
     for (const value of [undefined, null, '', { key: '', name: '' }]) expect(creditedName(value)).toBeNull();
+  });
+});
+
+describe('recentReportSummary (W.8)', () => {
+  it('reads zone, bosses, fights and guild in the "Your reports" shape', () => {
+    expect(
+      recentReportSummary({
+        zone: 'Blackrock Depths',
+        killCount: 3,
+        fightCount: 14,
+        guildName: 'Lifecycle Test',
+      }),
+    ).toBe('Blackrock Depths · 3 bosses · 14 fights · Lifecycle Test');
+  });
+
+  it('leaves out the bosses when there are none and the zone when unknown', () => {
+    expect(recentReportSummary({ zone: 'Darnassus', killCount: 0, fightCount: 1 })).toBe(
+      'Darnassus · 1 fight',
+    );
+    expect(recentReportSummary({ killCount: 1, fightCount: 4 })).toBe('1 boss · 4 fights');
   });
 });

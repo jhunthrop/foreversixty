@@ -7,8 +7,8 @@
 <script lang="ts">
   import { recentReportsCopy } from '../lib/reports/copy';
   import { RECENT_REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
-  import { fetchRecentReports, type RecentReport } from '../lib/reports/recent';
-  import { publicReportSummary } from '../lib/logs/report-summary';
+  import { fetchRecentReports, isPublicListable, type RecentReport } from '../lib/reports/recent';
+  import { creditedName, recentReportSummary } from '../lib/logs/report-summary';
   import { SAMPLE_FALLBACK_ROW, SAMPLE_LABEL, SAMPLE_REPORT_ID, loadSampleRow } from '../lib/logs/sample-row';
   import ReportRow from './ReportRow.svelte';
   import EmptyState from './ui/EmptyState.svelte';
@@ -38,7 +38,7 @@
       // Logs spec (2026-10-11) section 9: the canonical sample report is shown once, as its own
       // labelled row under the feed -- it must never double as a feed entry, or this feed's
       // genuinely-empty state (and its already-correct empty copy) is never reachable.
-      const filtered = result.rows.filter((row) => row.id !== SAMPLE_REPORT_ID);
+      const filtered = result.rows.filter((row) => row.id !== SAMPLE_REPORT_ID && isPublicListable(row));
       rows = compact ? filtered.slice(0, COMPACT_ROWS) : filtered;
       nextCursor = result.next_cursor;
       status = 'ready';
@@ -65,7 +65,12 @@
     <!-- One line over a reserved sentence's height, not a screenful of rows: the feed's ready
          state is its empty sentence (RECENT_REPORTS_LOADING_MIN_H), and the sample row under it
          must not move when the feed answers. -->
-    <Skeleton lines={1} minHeight={RECENT_REPORTS_LOADING_MIN_H} testid="recent-reports-skeleton" />
+    <Skeleton
+      lines={1}
+      minHeight={RECENT_REPORTS_LOADING_MIN_H}
+      label={recentReportsCopy.placeholderLabel}
+      testid="recent-reports-skeleton"
+    />
   {:else if status === 'failed'}
     <LoadError
       message={recentReportsCopy.failed}
@@ -79,9 +84,15 @@
       {#each rows as report (report.id)}
         <ReportRow
           href={`/reports/${report.id}`}
-          title={report.title}
+          title={report.title === '' ? (report.zone ?? '') : report.title}
           createdAt={report.created_at}
-          summary={publicReportSummary({ killCount: report.kill_count, guildName: report.guild_name })}
+          character={creditedName(report.logging_character) ?? undefined}
+          summary={recentReportSummary({
+            zone: report.zone,
+            killCount: report.kill_count,
+            fightCount: report.fight_count,
+            guildName: report.guild_name,
+          })}
         />
       {/each}
     </ul>

@@ -11,7 +11,13 @@
 import { expect, test, type Page } from '@playwright/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, SCORE_HISTORY } from './support/character-fixture';
+import {
+  CHARACTER,
+  CHARACTER_PATH,
+  CHARACTER_URL,
+  SCORE_HISTORY,
+  routeOwner,
+} from './support/character-fixture';
 
 const NOT_FOUND = {
   status: 404,
@@ -308,6 +314,7 @@ test('a 404 is still the no-logs page, and its owner still gets "Upload logs" (r
 test('the 404 no-logs page draws the character header above the Forever Score card (item 1, D1)', async ({
   page,
 }) => {
+  await routeOwner(page);
   await stub(page, 'missing');
   await page.goto(CHARACTER_PATH);
 
@@ -827,18 +834,10 @@ test('a visitor on the 404 page gets "Get the addon" and "Upload logs"; the owne
 }) => {
   await stub(page, 'missing');
   await page.goto(CHARACTER_PATH);
-  const next = page.getByTestId('forever-score-empty-next');
+  const next = page.getByTestId('character-not-found-next');
   await expect(next).toBeVisible();
   await expect(next.getByRole('link', { name: 'Get the addon' })).toHaveAttribute('href', '/setup');
   await expect(next.getByRole('link', { name: 'Upload logs' })).toHaveAttribute('href', '/logs#upload');
-  // Under the message: both read in one pass.
-  const under = await page.getByTestId('forever-score-card').evaluate((card) => {
-    const hint = card.querySelector('[data-testid="forever-score-empty-hint"]')?.getBoundingClientRect();
-    const line = card.querySelector('[data-testid="forever-score-empty-next"]')?.getBoundingClientRect();
-    return hint === undefined || line === undefined ? null : line.top - hint.bottom;
-  });
-  expect(under).not.toBeNull();
-  expect(under ?? -1).toBeGreaterThanOrEqual(-0.5);
 
   await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
   await page.reload();

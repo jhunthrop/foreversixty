@@ -3,7 +3,9 @@
      reserve the ready content's height, so the reveal changes nothing but opacity. `lines`
      draws that many placeholder rows at the given `rowHeight`; `minHeight` (a Tailwind
      min-h class, e.g. "min-h-[320px]") reserves more than the rows when the ready view is
-     taller. Screen readers hear one "Loading" and the region is aria-busy. -->
+     taller. Screen readers hear one "Loading" (or the `label` a caller gives, when the word
+     would show up in page text where a quiet placeholder is wanted) and the region is
+     aria-busy. -->
 <script lang="ts">
   import { uiCopy } from '../../lib/ui/copy';
 

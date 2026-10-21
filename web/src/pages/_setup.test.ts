@@ -13,6 +13,7 @@ import { createPageContainer } from '../test-support/page-container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
 import { SETUP_NAV_ITEM } from '../lib/nav';
+import { companionDoneLine, companionPlatformsLine } from '../lib/setup/progress';
 import activeBuild from '../data/active-build.json';
 import SetupPage, {
   CURSEFORGE_URL,
@@ -47,6 +48,8 @@ const STRING_COPY_KEYS = [
   'setupSignInAction',
   'setupCompanionBody',
   'setupPageTitle',
+  'setupProgressLabel',
+  'setupEverything',
   'setupStatusSignIn',
   'setupStatusSignedIn',
   'setupStatusAddon',
@@ -314,20 +317,11 @@ describe('/setup: what it does in the game (L8.3)', () => {
     }
   });
 
-  it('puts the testers’ commands on one muted line under a small “For testers” label', () => {
-    const block = html.slice(
-      html.indexOf('data-testid="setup-commands"'),
-      html.indexOf('data-testid="setup-handshake"'),
-    );
-    expect(addonCopy.commandsTestersLabel).toBe('For testers');
-    expect(addonCopy.commandsTestersLine).toBe(
-      '/fs diag verbose, /fs inbox, /fs hello, /fs seen, /fs record',
-    );
-    expect(source).toContain('addonCopy.commandsTestersLine');
-    expect(block.match(/For testers/g)).toHaveLength(1);
-    expect(block).toMatch(
-      /<p class="[^"]*text-muted[^"]*">\/fs diag verbose, \/fs inbox, \/fs hello, \/fs seen, \/fs record<\/p>/,
-    );
+  it('keeps the testers’ commands off the public page', () => {
+    expect(html).not.toMatch(/For testers/i);
+    expect(html).not.toContain('/fs diag verbose');
+    expect(html).not.toContain('/fs inbox');
+    expect(Object.keys(addonCopy)).not.toContain('commandsTestersLine');
   });
 
   it('says what leaves the machine and sits the no-network sentence next to the handshake', () => {
@@ -436,11 +430,119 @@ describe('/setup: what it does in the game (L8.3)', () => {
 });
 
 describe('/setup first-run copy', () => {
-  it('leads with the addon and the companion, and the companion pairs itself', () => {
-    expect(addonCopy.setupSignedInLine).toBe('Signed in. Next: the addon, then the companion.');
+  it('leads with the addon and the companion, and the companion connects itself', () => {
+    expect(addonCopy.setupSignedInLine).toBe('Done. You are signed in. Next: the addon, then the companion.');
     expect(addonCopy.setupCompanionPair).toBe(
-      'Sign in with Battle.net inside the companion; it pairs itself.',
+      'Sign in with Battle.net inside the companion; it connects itself.',
     );
     expect(html).toContain(addonCopy.setupCompanionPair);
+    expect(html).not.toMatch(/pairs itself|pair the companion/i);
+  });
+});
+
+// W.8: three steps a new player finishes in order, each with a one-line done state.
+describe('/setup as three steps (W.8)', () => {
+  it('labels the status chips “Your progress”, so they read as status and not as tabs', () => {
+    expect(addonCopy.setupProgressLabel).toBe('Your progress');
+    const label = html.indexOf('id="setup-progress-label"');
+    const chips = html.indexOf('data-testid="setup-status"');
+    expect(label).toBeGreaterThan(-1);
+    expect(chips).toBeGreaterThan(label);
+    expect(html.slice(chips - 120, chips + 120)).toContain('aria-labelledby="setup-progress-label"');
+    expect(html).toContain(addonCopy.setupProgressLabel);
+  });
+
+  it('gives each of the three steps a done line that only a signed-in or loaded state shows', () => {
+    expect(html).toContain('data-testid="setup-signed-in"');
+    expect(html).toContain('data-testid="setup-addon-done"');
+    expect(html).toContain('data-testid="setup-companion-done"');
+    for (const testid of ['setup-signed-in', 'setup-addon-done', 'setup-companion-done']) {
+      const tag = new RegExp(`<p class="([^"]*)"[^>]*data-testid="${testid}"`).exec(html);
+      expect(tag?.[1], testid).toMatch(/setup-when-(in|pointer)/);
+    }
+    for (const line of [addonCopy.setupSignedInLine, addonCopy.setupAddonDoneLine]) {
+      expect(line.startsWith('Done.')).toBe(true);
+    }
+  });
+
+  it('puts the manual behind one collapsed “Everything the addon does” disclosure, the companion after it', () => {
+    const open = /<details[^>]*data-testid="setup-everything"[^>]*>/.exec(html)?.[0] ?? '';
+    expect(open).not.toBe('');
+    expect(open).not.toContain(' open');
+    const disclosure = html.indexOf('data-testid="setup-everything"');
+    const end = html.indexOf('</details>', disclosure);
+    const inside = html.slice(disclosure, end);
+    expect(addonCopy.setupEverything).toBe('Everything the addon does');
+    for (const marker of ['setup-surfaces', 'setup-commands', 'setup-handshake', 'setup-flows']) {
+      expect(inside, marker).toContain(`data-testid="${marker}"`);
+    }
+    expect(html.indexOf('id="companion"')).toBeGreaterThan(end);
+    expect(html.match(/<details/g)).toHaveLength(1);
+  });
+
+  it('shows the companion’s Status page in the third step', () => {
+    const capture = addonCopy.setupCompanionCapture;
+    const step3 = html.slice(html.indexOf('id="companion"'));
+    expect(step3).toContain(`src="${capture.src}"`);
+    expect(capture.alt).toContain('Status');
+    expect(existsSync(new URL(`../../public${capture.src}`, import.meta.url))).toBe(true);
+  });
+
+  it('offers Windows and says macOS is next while the release carries no Mac bundle', () => {
+    const step3 = html.slice(html.indexOf('id="companion"'));
+    expect(step3).toContain('>Windows<');
+    expect(step3).toContain('Windows now, macOS next.');
+    expect(companionPlatformsLine(['Windows', 'macOS'])).toBeNull();
+    expect(companionPlatformsLine(['Windows'])).toBe('Windows now, macOS next.');
+  });
+});
+
+describe('the setup done lines (progress.ts)', () => {
+  const NOW = new Date('2026-10-20T12:00:00Z');
+  it('has no companion line until the account holds a device', () => {
+    expect(companionDoneLine([], NOW)).toBeNull();
+  });
+
+  it('names the most recently seen device and when', () => {
+    const devices = [
+      {
+        id: 'a',
+        name: 'Old laptop',
+        platform: 'windows',
+        created_at: '2026-10-01T00:00:00Z',
+        last_seen_at: '2026-10-02T00:00:00Z',
+      },
+      {
+        id: 'b',
+        name: 'Desktop',
+        platform: 'windows',
+        created_at: '2026-10-05T00:00:00Z',
+        last_seen_at: '2026-10-20T11:00:00Z',
+      },
+      {
+        id: 'c',
+        name: 'Never seen',
+        platform: 'windows',
+        created_at: '2026-10-03T00:00:00Z',
+        last_seen_at: null,
+      },
+    ];
+    expect(companionDoneLine(devices, NOW)).toBe('Done. Connected as Desktop, last seen 1 hour ago.');
+  });
+
+  it('falls back to the creation time for a device never heard from', () => {
+    const line = companionDoneLine(
+      [
+        {
+          id: 'c',
+          name: 'Desktop',
+          platform: 'windows',
+          created_at: '2026-10-20T11:58:00Z',
+          last_seen_at: null,
+        },
+      ],
+      NOW,
+    );
+    expect(line).toBe('Done. Connected as Desktop, last seen 2 minutes ago.');
   });
 });

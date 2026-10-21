@@ -38,7 +38,13 @@
 </script>
 
 {#if status === 'loading'}
-  <Skeleton lines={ROWS} rowHeight="h-9" minHeight="min-h-[220px]" testid="home-top-guilds-skeleton" />
+  <Skeleton
+    lines={ROWS}
+    rowHeight="h-9"
+    minHeight="min-h-[220px]"
+    label={homeTopGuildsCopy.placeholderLabel}
+    testid="home-top-guilds-skeleton"
+  />
 {:else if status === 'failed'}
   <LoadError
     message={homeTopGuildsCopy.failed}

@@ -2,6 +2,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { currentCharacterCopy } from '../../lib/current-character-copy';
+import { emailLinkCopy } from '../../lib/account/signin-copy';
 import { landingCopy } from '../../lib/sim/landing-copy';
 import { simCopy } from '../../lib/sim/copy';
 import SourceSwitcher from './SourceSwitcher.svelte';
@@ -67,7 +68,7 @@ describe('SourceSwitcher', () => {
       const match = /<button[^>]*data-testid="sim-signin"[^>]*>/.exec(body);
       if (match === null) throw new Error('no sim-signin button rendered');
       expect(match[0]).not.toContain('bg-gold');
-      expect(body).toContain(landingCopy.emailLinkInstead);
+      expect(body).toContain(emailLinkCopy.link);
       expect(body).toContain('href="/login"');
     });
 

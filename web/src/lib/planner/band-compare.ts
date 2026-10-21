@@ -117,3 +117,20 @@ export function bandTitleForDraft(bandLabel: string, classSlug: string, split: r
   const key = specKeyFor(classSlug, split);
   return bandBuildTitle(bandLabel, specRow(key) === null ? null : specDisplayName(key));
 }
+
+/** The band a visitor with no character and no points spent is shown: the level-60 build,
+ *  the end state every other band leads to, so a first look at the planner answers "what does
+ *  a finished build look like" instead of "level 9, nothing to compare". The first band with
+ *  talents (10 to 19) is the other reading; it is not used because that band's build is a few
+ *  points of a tree the visitor has not chosen, and its DPS says nothing about the class. */
+export const VISITOR_DEFAULT_BAND = 60;
+
+/** The band the panel compares against: the visitor default while nothing is spent and no
+ *  character is selected, else the band of the level the build reaches. */
+export function bandForPanel(
+  pointsSpent: number,
+  characterLevel: number | null,
+  reachedBand: number,
+): number {
+  return pointsSpent === 0 && characterLevel === null ? VISITOR_DEFAULT_BAND : reachedBand;
+}

@@ -1,7 +1,7 @@
 // web/src/lib/reports/recent.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { invalidate } from '../data/query';
-import { RECENT_REPORTS_FAILED, RecentReportsError, fetchRecentReports } from './recent';
+import { RECENT_REPORTS_FAILED, RecentReportsError, fetchRecentReports, isPublicListable } from './recent';
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
@@ -96,5 +96,18 @@ describe('caching through query.ts', () => {
     await fetchRecentReports(undefined, API);
     await fetchRecentReports(undefined, API);
     expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('isPublicListable (W.8)', () => {
+  it('lists a report with a boss kill, or with a zone', () => {
+    expect(isPublicListable({ kill_count: 2 })).toBe(true);
+    expect(isPublicListable({ kill_count: 0, zone: 'Blackrock Depths' })).toBe(true);
+  });
+
+  it('leaves out a report with neither a zone nor a kill', () => {
+    expect(isPublicListable({ kill_count: 0 })).toBe(false);
+    expect(isPublicListable({ kill_count: 0, zone: '' })).toBe(false);
+    expect(isPublicListable({ kill_count: 0, zone: '  ' })).toBe(false);
   });
 });

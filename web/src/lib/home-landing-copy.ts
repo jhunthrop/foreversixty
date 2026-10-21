@@ -107,7 +107,7 @@ export interface HomeCompanionRowCard {
 export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
   {
     title: 'Get set up',
-    description: 'Sign in, install the addon, and pair the companion -- one page.',
+    description: 'Sign in, install the addon, and run the companion — one page.',
     href: '/setup',
   },
 ] as const;

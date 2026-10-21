@@ -9,6 +9,10 @@
     "key": "Sept 17",
     "value": "Beta opens",
     "note": "level cap 30 · through Oct 21",
+    "endIso": "2026-10-21",
+    "pastKey": "Sept 17 to Oct 21",
+    "pastValue": "Beta",
+    "pastNote": "level cap 30",
     "iso": "2026-09-17",
     "highlight": true
   },

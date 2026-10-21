@@ -45,9 +45,25 @@ describe('HomeTimeline', () => {
       props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z') },
     });
     expect(html.match(/data-status="past"/g)).toHaveLength(2);
-    expect(html.match(/font-semibold text-muted/g)).toHaveLength(2);
-    expect(html.match(/font-semibold text-strong/g)).toHaveLength(2);
-    expect(html).toContain('opacity-60');
+    expect(html.match(/class="timeline-value /g)).toHaveLength(4);
+    expect(html).toContain('data-[status=past]:opacity-60');
     expect(html).not.toMatch(/md:opacity|max-md:opacity/);
+  });
+
+  it('shows the next date first and the past ones last, and carries the entries for the clock script', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(HomeTimeline, {
+      props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z') },
+    });
+    const statuses = [...html.matchAll(/data-status="([a-z]+)"/g)].map((m) => m[1]);
+    expect(statuses).toEqual(['next', 'future', 'past', 'past']);
+    expect(html.indexOf('>Name reservation<')).toBeLessThan(html.indexOf('>Deep Dive panel<'));
+    expect(html).toContain('data-entries=');
+  });
+
+  it('shows no stamp unless one is passed', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(HomeTimeline, { props: { dates: DATES } });
+    expect(html).not.toContain('Updated');
   });
 });
