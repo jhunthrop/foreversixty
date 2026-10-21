@@ -307,19 +307,21 @@ function renderStatus(s) {
       // the warning token with the one muted line that says what to do.
       const cr = FORMAT.currentReport(rows.report, COPY.status);
       report = h('span', { class: 'v' }, cr.lead + cr.separator,
-        cr.credited ? cr.credit : h('span', { class: 'warn', text: cr.credit }),
+        cr.credited ? cr.credit : h('span', { class: cr.noName ? 'muted-word' : 'warn', text: cr.credit }),
         cr.help ? h('span', { class: 'help13', text: cr.help }) : null);
     }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.report }), report));
-    // An open report with no fight yet says so, rather than a bare 0 that reads as lost.
+    // An open report with no fight yet says so, rather than a bare 0 that reads as lost;
+    // with no report open the count is "None yet", like the Current report row above it.
+    // Every count is in the body face with tabular digits.
     const noFights = p.fights === 0 && p.report_id && p.logging;
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
       noFights
         ? h('span', { class: 'v' }, COPY.status.noFightsYet, h('span', { class: 'sub', text: COPY.status.noFightsHelp }))
-        : h('span', { class: 'v mono', text: String(p.fights) })));
+        : h('span', { class: 'v', text: p.fights === 0 ? COPY.status.noReport : String(p.fights) })));
     if (p.queued > 0) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
-        h('span', { class: 'v mono', text: String(p.queued) })));
+        h('span', { class: 'v', text: String(p.queued) })));
     }
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     // A sync over a day old, and no sync at all, each say what to do.
@@ -328,7 +330,7 @@ function renderStatus(s) {
     if (rows.checkError) v.append(h('span', { class: 'sub warn', text: rows.checkError }));
     if (rows.paired) {
       v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'check-builds',
-        disabled: rows.checking || !rows.canCheck, onclick: onCheckBuilds },
+        disabled: rows.checking || !rows.canCheck || rows.failed, onclick: onCheckBuilds },
       rows.checking ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
       rows.checking ? COPY.status.checking : COPY.status.checkBuilds));
     }
@@ -340,7 +342,7 @@ function renderStatus(s) {
     }
   });
 
-  region('installs', $('installs'), { installs: s.installs, key: s.headline.key }, (el) => {
+  region('installs', $('installs'), { installs: s.installs, key: s.headline.key, budget: FORMAT.pathBudget(window.innerWidth, true) }, (el) => {
     el.replaceChildren();
     if (!s.installs.length) {
       el.append(h('p', { class: 'note', text: COPY.status.noFolders }));
@@ -385,7 +387,7 @@ function installRow(i, headlineKey) {
     advancedLabel(i, headlineKey));
   const row = h('div', { class: 'install' }, top,
     h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) }),
-    h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 62) }));
+    h('span', { class: 'path', title: i.path, text: FORMAT.pathTruncate(i.path, FORMAT.pathBudget(window.innerWidth, true)) }));
   // The instruction lives in the headline when the headline is about
   // advanced logging; a row keeps its short line only for the watched
   // install, and an install the player is not logging has none.
@@ -411,6 +413,8 @@ function renderReports(s) {
   // Signed out, the one next step is signing in; the link would compete with it.
   all.hidden = !s.paired;
 
+  const shown = s.reports.slice(0, REPORT_ROWS);
+  $('reports-hint').hidden = !FORMAT.anyNotCredited(shown, COPY.status.credit);
   region('reports', $('report-panel'), { reports: s.reports, paired: s.paired, site: s.site_base_url }, (el) => {
     el.replaceChildren();
     if (!s.reports.length) {
@@ -427,7 +431,7 @@ function renderReports(s) {
     }
     const list = h('ul', { class: 'reports' });
     const now = new Date();
-    for (const r of s.reports.slice(0, REPORT_ROWS)) list.append(reportRow(r, now));
+    for (const r of shown) list.append(reportRow(r, now));
     el.append(list);
   });
 }
@@ -441,15 +445,20 @@ function reportRow(r, now) {
   // the report is open, a ring when it never reached the site, else empty.
   const marker = h('span', { class: 'marker' + (!r.done ? ' live' : (!r.url ? ' pending' : '')), 'aria-hidden': 'true' });
   const credit = COPY.status.credit;
-  const creditWords = FORMAT.creditText(r.credit, credit);
+  const cr = FORMAT.reportCredit(r, credit);
   const lead = credit.credited('');
-  const creditNode = creditWords.startsWith(lead)
-    ? [lead, h('span', { class: 'who', text: creditWords.slice(lead.length) })]
-    : [h('span', { class: 'not-credited', title: credit.notYetHelp, text: creditWords })];
   const parts = [FORMAT.when(r.started_at, now, COPY.reports), COPY.reports.fights(r.fights)];
   if (!r.done) parts.push(h('span', { class: 'live', text: COPY.reports.inProgress }));
-  if (!r.url) parts.push(COPY.reports.notUploaded);
-  parts.push(h('span', {}, ...creditNode));
+  if (cr.kind === 'absent') {
+    // The site has no such report yet, so there is nothing to credit: one muted phrase, no orange.
+    parts.push(h('span', {}, COPY.reports.notOnSite + credit.separator + COPY.reports.notOnSiteWhen));
+  } else if (cr.kind === 'credited') {
+    parts.push(h('span', {}, lead, h('span', { class: 'who', text: cr.text.slice(lead.length) })));
+  } else if (cr.kind === 'noname') {
+    parts.push(h('span', {}, cr.text));
+  } else {
+    parts.push(h('span', { class: 'not-credited', title: credit.notYetHelp, text: cr.text }));
+  }
   const meta = h('div', { class: 'when' });
   parts.forEach((p, n) => { if (n) meta.append(credit.separator); meta.append(p); });
   const li = h('li', {}, marker, h('div', { class: 'what' }, h('div', { class: 'zone' }, title), meta));
@@ -717,7 +726,9 @@ function dirty() {
 }
 
 function syncSave() {
-  $('save').disabled = saving || !dirty();
+  const strip = FORMAT.saveStrip(dirty(), saving, COPY.settings);
+  $('save').disabled = !strip.enabled;
+  $('save-state').textContent = strip.text;
   $('visibility-help').textContent = COPY.settings.visibilityHelp[$('visibility').value] || '';
 }
 
@@ -761,7 +772,7 @@ function renderSettings(s) {
       const where = h('div', { class: 'where' },
         h('div', { class: 'head' }, h('span', { class: 'name', text: i.flavor_name || i.flavor }),
           h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) })),
-        h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, FORMAT.pathBudget(window.innerWidth)) }));
+        h('span', { class: 'path', title: i.path, text: FORMAT.pathTruncate(i.path, FORMAT.pathBudget(window.innerWidth)) }));
       const side = i.added
         ? h('button', { class: 'ghost small', type: 'button', 'data-fid': 'remove-' + i.path, onclick: (e) => onRemove(e.target, i.path) }, COPY.settings.remove)
         : h('span', { class: 'auto', text: COPY.settings.foundAutomatically });
@@ -771,7 +782,7 @@ function renderSettings(s) {
 }
 
 // A narrower window shortens the Settings paths; the poll would not notice a resize.
-window.addEventListener('resize', () => { if (snap) renderSettings(snap); });
+window.addEventListener('resize', () => { if (snap) { renderSettings(snap); renderStatus(snap); } });
 $('visibility').addEventListener('change', syncSave);
 $('logging-character').addEventListener('change', syncSave);
 
@@ -830,9 +841,10 @@ function updatedShowing(s) {
 function renderChrome(s) {
   const updated = updatedShowing(s);
   region('footer', $('footer'), { v: s.app_version, u: s.update_staged, site: s.site_base_url, upd: updated ? s.updated_to : '' }, () => {
+    // The version stays on screen after an update; only "just updated" is green.
     const left = $('foot-version');
-    left.textContent = updated ? COPY.footer.updatedTo(s.updated_to) : COPY.footer.version(s.app_version);
-    left.classList.toggle('updated', updated);
+    left.replaceChildren(COPY.footer.version(s.app_version));
+    if (updated) left.append(COPY.footer.joint, h('span', { class: 'updated', text: COPY.footer.justUpdated }));
     $('foot-site').textContent = COPY.footer.site;
     $('foot-site').setAttribute('href', s.site_base_url);
     $('wordmark').setAttribute('href', s.site_base_url);
@@ -862,6 +874,8 @@ $('character-label').textContent = COPY.settings.character;
 $('character-help').textContent = COPY.settings.characterHelp;
 $('save').textContent = COPY.settings.save;
 $('add-folder').textContent = COPY.settings.addFolder;
+$('first-check').textContent = COPY.checking;
+$('reports-hint').textContent = COPY.reports.notCreditedHint;
 
 // ---- the poll --------------------------------------------------------
 
@@ -873,6 +887,7 @@ function applySnapshot(s) {
   wasPaired = s.paired;
   if (page === null) {
     // First paint: an unpaired companion opens on Device.
+    $('first-check').hidden = true;
     $('main').hidden = false;
     replay($('main'), 'enter', ENTER_MS);
     show(s.paired ? 'status' : 'device', false);
@@ -910,6 +925,7 @@ async function refresh() {
   const r = await api('api/status');
   if (!r.ok) {
     showBar('poll-bar', COPY.localDown);
+    $('first-check').hidden = true;
     // The cards keep the last numbers the companion sent, dimmed, under a
     // headline that says so.
     if (!local.pollFailed) {
@@ -924,7 +940,7 @@ async function refresh() {
 }
 
 // If the first answer is slow the bar says so; there is no spinner on the page.
-setTimeout(() => { if (!snap) showBar('poll-bar', COPY.localDown); }, SLOW_FIRST_POLL_MS);
+setTimeout(() => { if (!snap) { showBar('poll-bar', COPY.localDown); $('first-check').hidden = true; } }, SLOW_FIRST_POLL_MS);
 
 // ---- native feel: no browser menu, no page zoom, nothing to drag -----
 

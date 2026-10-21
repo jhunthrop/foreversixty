@@ -1,6 +1,6 @@
 {
   "data": {
-    "app_version": "0.2.8",
+    "app_version": "0.2.13",
     "engine_version": "1.0.0",
     "paired": true,
     "account_label": "Jhunt",
@@ -68,7 +68,7 @@
     ],
     "characters": [],
     "update_staged": false,
-    "updated_to": "0.2.11",
+    "updated_to": "0.2.13",
     "addon_line": "Last synced 1 minute ago",
     "addon_never": false,
     "addon_stale": false,

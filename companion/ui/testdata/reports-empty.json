@@ -1,6 +1,6 @@
 {
   "data": {
-    "app_version": "0.2.8",
+    "app_version": "0.2.13",
     "engine_version": "1.0.0",
     "paired": true,
     "account_label": "Jhunt",
@@ -9,7 +9,7 @@
       "key": "ready",
       "tone": "off",
       "title": "Ready",
-      "sub": "Waiting for a combat log. Type /combatlog in game, or leave combat logging on."
+      "sub": "Waiting for a combat log. In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on."
     },
     "connect": {
       "state": "",

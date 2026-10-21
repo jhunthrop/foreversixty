@@ -1,15 +1,15 @@
 {
   "data": {
-    "app_version": "0.2.8",
+    "app_version": "0.2.13",
     "engine_version": "1.0.0",
     "paired": true,
     "account_label": "Jhunt",
     "device_name": "JH-DESKTOP",
     "headline": {
       "key": "logging",
-      "tone": "on",
+      "tone": "warn",
       "title": "Logging · not credited to you yet",
-      "sub": "Uploading your fights as they end · character not matched yet"
+      "sub": "Uploading your fights as they end. Log out once in game with the addon loaded and it is credited to you."
     },
     "connect": {
       "state": "",

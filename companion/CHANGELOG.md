@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.13
+
+- The Status card says what to do when a log is not credited to you; Settings shows whole folder names and a Save strip that says No changes; the update bar says uploads pause during the restart.
+
 ## 0.2.12
 
 - Settings never hides a field under the Save bar; the sign-in screen says the browser has opened; the Status title says when a log is not credited to you yet.

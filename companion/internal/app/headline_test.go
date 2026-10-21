@@ -56,7 +56,8 @@ func TestHeadlineJudgesTheWatchedInstall(t *testing.T) {
 }
 
 // The Logging headline's sub line says who the report is credited to, that the
-// character is not matched yet, or nothing, and the dot is green in all three.
+// character is not matched yet, or that the name comes with the first fight; the dot is
+// green, except amber when the log is not credited to anyone yet.
 // A name stored in its log form prints with a space, never a hyphen.
 func TestTheLoggingSubLineFollowsTheCreditState(t *testing.T) {
 	watched := []InstallStatus{{Watching: true, Advanced: true, AdvancedKnown: true}}
@@ -70,8 +71,8 @@ func TestTheLoggingSubLineFollowsTheCreditState(t *testing.T) {
 		{"credited, stored with the log's hyphen", Credit{Name: "Bow-Jackzon", State: CreditCredited},
 			"Uploading your fights as they end · logging as Bow Jackzon"},
 		{"a name read, not matched", Credit{Name: "Bow Jackzon", State: CreditUnmatched},
-			"Uploading your fights as they end · character not matched yet"},
-		{"no name read yet", Credit{State: CreditNone}, "Uploading your fights as they end"},
+			"Uploading your fights as they end. Log out once in game with the addon loaded and it is credited to you."},
+		{"no name read yet", Credit{State: CreditNone}, "Uploading your fights as they end. Your name is read from the first fight."},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			got := headlineFor(true, false, false, true, c.credit, watched)
@@ -79,8 +80,12 @@ func TestTheLoggingSubLineFollowsTheCreditState(t *testing.T) {
 			if c.credit.State == CreditUnmatched {
 				wantTitle = "Logging · not credited to you yet"
 			}
-			if got.Key != "logging" || got.Tone != "on" || got.Title != wantTitle {
-				t.Errorf("headline = %+v, want the green Logging state", got)
+			wantTone := "on"
+			if c.credit.State == CreditUnmatched {
+				wantTone = "warn"
+			}
+			if got.Key != "logging" || got.Tone != wantTone || got.Title != wantTitle {
+				t.Errorf("headline = %+v, want the %s Logging state", got, wantTone)
 			}
 			if got.Sub != c.want {
 				t.Errorf("sub = %q, want %q", got.Sub, c.want)
@@ -116,7 +121,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 				FlavorName: "Classic Anniversary", AdvancedKnown: true},
 		}
 		s := Snapshot{
-			AppVersion: "0.2.8", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
+			AppVersion: "0.2.13", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
 			DeviceName: "JH-DESKTOP", TokenBackend: "keychain", TokenBackendName: "Windows Credential Manager",
 			TokenBackendNote: "A private store in your user profile.",
 			APIBaseURL:       "https://api.foreversixty.gg", SiteBaseURL: "https://foreversixty.gg",
@@ -257,7 +262,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 		}},
 		{"update-arrived.json", func() Snapshot {
 			s := base(credited)
-			s.UpdatedTo = "0.2.11"
+			s.UpdatedTo = "0.2.13"
 			return s
 		}},
 	} {

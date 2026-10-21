@@ -126,7 +126,8 @@ func TestAReportSaysWhoItIsCreditedTo(t *testing.T) {
 	}
 	// The window reads the two-state copy; the name-versus-realm split is the log's
 	// (pipeline's logger_test checks that line).
-	if s.Headline.Tone != "on" || s.Headline.Sub != "Uploading your fights as they end · character not matched yet" {
+	if s.Headline.Tone != "warn" || s.Headline.Sub != app.CopyLoggingSubNotMatched ||
+		s.Headline.Title != app.CopyLoggingTitleNotCredited {
 		t.Errorf("headline = %+v", s.Headline)
 	}
 	if len(s.Reports) != 1 || s.Reports[0].Credit != s.Credit {
