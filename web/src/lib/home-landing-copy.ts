@@ -51,8 +51,9 @@ export const homeHeroStatePanelCopy = {
   /** Once launch day is over. */
   launchedEyebrow: (key: string): string => `Launched ${key}`,
   launchedTag: 'level cap 60',
-  examplePill: 'Example',
-  bandsLine: 'Leveling best in slot, bands 20 to 60',
+  /** The card's label (P6-10): it says whose list this is, so it is never read as the visitor's own. */
+  exampleLabel: 'Example: Marksmanship Hunter best in slot',
+  bandsLine: 'Leveling best in slot, levels 20, 30, 40, 50, 60',
 } as const;
 
 export interface HomeProductPanelCopy {

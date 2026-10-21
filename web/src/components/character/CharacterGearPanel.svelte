@@ -56,6 +56,7 @@
   import { rarityBorderColorFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
   import BisTooltipHost from '../BisTooltipHost.svelte';
+  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import ExportNotRead from './ExportNotRead.svelte';
 
   let {
@@ -72,7 +73,10 @@
     capturedAt = null,
     owned = true,
     first = false,
+    planner = false,
   }: {
+    /** No gear and a score: the one primary prompt is the planner (lib/character-prompt.ts). */
+    planner?: boolean;
     /** The panel goes above the score card (a character with no score yet: the gear picks are the
      *  best thing on the page, W.9). */
     first?: boolean;
@@ -346,12 +350,20 @@
   <section class="-order-2 flex flex-col gap-2" data-testid="character-gear-empty-section">
     {@render title()}
     <p class="text-muted scroll-mt-[132px] text-[14px]" id={GEAR_ANCHOR} data-testid="character-gear-none">
-      {gearCopy.noGearParts.lead}<a class={SENTENCE_LINK} href={gearCopy.noGearParts.uploadHref}
-        >{gearCopy.noGearParts.upload}</a
-      >{gearCopy.noGearParts.or}<a class={SENTENCE_LINK} href={gearCopy.noGearParts.syncHref}
+      {gearCopy.noGearParts.lead}<a class={SENTENCE_LINK} href={gearCopy.noGearParts.syncHref}
         >{gearCopy.noGearParts.sync}</a
-      >{gearCopy.noGearParts.end}
+      >{#if owned}{gearCopy.noGearParts.end}{:else}{gearCopy.noGearParts.or}<a
+          class={SENTENCE_LINK}
+          href={gearCopy.noGearParts.signInHref}>{gearCopy.noGearParts.signIn}</a
+        >{gearCopy.noGearParts.claimEnd}{/if}
     </p>
+    {#if planner}
+      <a
+        class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`}
+        href={gearCopy.noGearPlannerHref}
+        data-testid="character-gear-planner">{gearCopy.noGearPlanner}</a
+      >
+    {/if}
   </section>
 {:else}
   <section class="{ORDER} flex scroll-mt-24 flex-col" id={GEAR_ANCHOR} data-testid="character-gear">

@@ -329,7 +329,7 @@ describe('bandInfosFor: scale rail', () => {
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, true));
     expect(infos[0].hasteCaptionLine).toBe(
-      'Haste: 5.00 per 1%, not in the table because no item at this band has it',
+      'Haste: 5.00 per 1%, not in the table because no item at this level range has it',
     );
   });
 

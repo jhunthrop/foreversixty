@@ -112,7 +112,7 @@ describe('sendActionFor', () => {
     expect(action).toMatchObject({ kind: 'picker', label: 'Send this build to the addon', disabled: true });
     expect('note' in action && action.note).toEqual({
       tone: 'muted',
-      text: "Spend some points first, or load the band's build.",
+      text: "Spend some points first, or load the level range's build.",
     });
   });
 

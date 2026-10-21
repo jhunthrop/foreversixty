@@ -335,7 +335,7 @@ test('the Simulator card pairs a saved sim of the band own setup with the band b
     preset: 'bare',
   });
   await expect(card.getByTestId('home-hero-card-sim-value')).toHaveText('26 DPS now');
-  await expect(card).toContainText(/\d+\.\d DPS at band best in slot/, { timeout: 10_000 });
+  await expect(card).toContainText(/\d+\.\d DPS at best in slot for your level range/, { timeout: 10_000 });
 });
 
 test('the Simulator card shows the band best in slot alone when the saved sim is not comparable', async ({
@@ -346,7 +346,7 @@ test('the Simulator card shows the band best in slot alone when the saved sim is
   await expect(card.getByTestId('home-hero-card-sim-value')).toHaveText(/^\d+\.\d DPS$/, {
     timeout: 10_000,
   });
-  await expect(card).toContainText('at band best in slot');
+  await expect(card).toContainText('at best in slot for your level range');
   await expect(card).toContainText('Run');
   await expect(card).not.toContainText('DPS now');
 });
@@ -426,7 +426,9 @@ test("a signed-in panel with a real gear/talent export sees the two upgrade figu
   // numbers: the first figure is the number of rows "Your upgrades" lists, the second is the
   // gain as a DPS figure at the same size, and the total never mixes the full-sim `score` with
   // a `scoreItem`-only estimate (fix round 1 item A.1).
-  await expect(panel.getByTestId('character-header-answer-label')).toHaveText('Upgrades in your band');
+  await expect(panel.getByTestId('character-header-answer-label')).toHaveText(
+    'Upgrades for your level range',
+  );
   const countFigure = panel.getByTestId('character-header-figure-1');
   await expect(countFigure).toHaveText(/^\d+ upgrades?$/, { timeout: 10_000 });
   const upgradeCount = Number.parseInt((await countFigure.textContent()) ?? '', 10);

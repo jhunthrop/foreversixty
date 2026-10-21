@@ -219,6 +219,9 @@ export const characterHeaderCopy = {
     const parts = [level === null ? '' : `Level ${level}`, race ?? ''].filter((part) => part !== '');
     return parts.length === 0 ? null : parts.join(' ');
   },
+  /** The realm named as a realm, so "Classic Beta PvP" beside a "Hardcore US" badge is never read as a
+   *  second ruleset (W.10): "Classic Beta PvP realm". */
+  realm: (realm: string): string => `${realm} realm`,
   /** The trailing chip: "Hardcore US". */
   chip: (ruleset: string, region: string): string => `${rulesetLabel(ruleset)} ${region.toUpperCase()}`,
   /** The guild the way the client prints it, "<Olympus XXVII>" (fix round 2 item 4): the same
@@ -306,7 +309,7 @@ export function profileHeader(
       href: guildHref(path.region, path.ruleset, guild),
     });
   const realm = known(character.realm);
-  if (realm !== null) pieces.push({ key: 'realm', text: realm });
+  if (realm !== null) pieces.push({ key: 'realm', text: characterHeaderCopy.realm(realm) });
   const level =
     typeof character.level === 'number' && Number.isFinite(character.level) ? character.level : null;
   const levelRace = characterHeaderCopy.levelRace(level, known(character.race));

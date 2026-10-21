@@ -382,6 +382,38 @@ html[data-pointer='1'] .setup-chip[data-hint='pointer']:not([data-done]) .setup-
   border-color: var(--color-gold);
 }
 
+/* /setup's step buttons: outlined until their turn, gold on the first undone step only (W.10).
+   <SetupProgress> sets data-setup-first on <html> once the session and device reads answer; until
+   then the session hint decides between step 1 (signed out) and step 2. */
+html:not([data-setup-first]):not([data-session='1']) .setup-btn[data-step='1'],
+html:not([data-setup-first])[data-session='1'] .setup-btn[data-step='2'],
+html[data-setup-first='1'] .setup-btn[data-step='1'],
+html[data-setup-first='2'] .setup-btn[data-step='2'],
+html[data-setup-first='3'] .setup-btn[data-step='3'] {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+  color: var(--color-bg);
+}
+html:not([data-setup-first]):not([data-session='1']) .setup-btn[data-step='1']:hover,
+html:not([data-setup-first])[data-session='1'] .setup-btn[data-step='2']:hover,
+html[data-setup-first='1'] .setup-btn[data-step='1']:hover,
+html[data-setup-first='2'] .setup-btn[data-step='2']:hover,
+html[data-setup-first='3'] .setup-btn[data-step='3']:hover {
+  background: var(--color-gold-hover);
+  border-color: var(--color-gold-hover);
+  color: var(--color-bg);
+}
+
+/* The companion capture reserves the shown source's own ratio, so nothing moves as it loads. */
+.setup-capture {
+  aspect-ratio: var(--capture-phone-ratio);
+}
+@media (min-width: 640px) {
+  .setup-capture {
+    aspect-ratio: var(--capture-ratio);
+  }
+}
+
 /* A disclosure's own affordance: a summary carries one .when-closed and one .when-open
    child ("Show" / "Hide" or a caret), and only the one that applies is drawn. */
 details[open] > summary .when-closed,

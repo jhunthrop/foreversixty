@@ -52,7 +52,7 @@ test.describe('character page with a gearless export', () => {
     await expect(page.getByTestId('character-gear-row-head')).toContainText('Halo of Transcendence');
     // Nothing reads as a verdict on the character.
     await expect(page.getByText('Empty', { exact: true })).toHaveCount(0);
-    await expect(page.getByText('No pick for your band yet')).toHaveCount(0);
+    await expect(page.getByText('No pick for your level range yet')).toHaveCount(0);
     await expect(page.getByTestId('character-gear-totals')).toHaveCount(0);
   });
 

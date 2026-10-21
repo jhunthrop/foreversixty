@@ -131,6 +131,8 @@ export const scoreCopy = {
 
   /** The no-logs card (fix round 2 item 4). */
   noLogsTitle: 'No logs yet',
+  /** Under "No logs yet", in place of a greyed "of 2100" (W.10). */
+  noLogsRange: (max: number): string => `Score runs to ${max}.`,
   /** A character the site holds with no logs yet: never a typo hint (the name is right, it is on the
    *  page), one sentence on how the score fills in and a button to the companion (W.9). */
   noLogsHint: 'Log a raid with the companion and the score fills in.',

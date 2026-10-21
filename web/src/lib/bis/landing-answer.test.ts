@@ -125,15 +125,17 @@ describe('excluded slot names and the note', () => {
   });
 
   it('reads the spec’s sentence, plural for a pair or several slots', () => {
-    expect(excludedNote(['Trinkets'])).toBe('Trinkets have no pick at this band.');
-    expect(excludedNote(['Off hand', 'Ranged'])).toBe('Off hand and Ranged have no pick at this band.');
+    expect(excludedNote(['Trinkets'])).toBe('Trinkets have no pick at this level range.');
+    expect(excludedNote(['Off hand', 'Ranged'])).toBe(
+      'Off hand and Ranged have no pick at this level range.',
+    );
     expect(excludedNote(['Trinkets', 'Off hand', 'Ranged'])).toBe(
-      'Trinkets, Off hand and Ranged have no pick at this band.',
+      'Trinkets, Off hand and Ranged have no pick at this level range.',
     );
   });
 
   it('agrees with a single named slot and says nothing when none is excluded', () => {
-    expect(excludedNote(['Neck'])).toBe('Neck has no pick at this band.');
+    expect(excludedNote(['Neck'])).toBe('Neck has no pick at this level range.');
     expect(excludedNote([])).toBeNull();
   });
 });
@@ -147,7 +149,7 @@ describe('countAnswer', () => {
       staleLabel: 'Slots you wore at the last sync',
       figures: [{ value: '2', unit: 'of 15 slots' }],
       bar: 2 / 15,
-      note: { text: 'Trinkets have no pick at this band.' },
+      note: { text: 'Trinkets have no pick at this level range.' },
     });
   });
 
@@ -208,7 +210,7 @@ describe('loadBisAnswer', () => {
     vi.spyOn(hover, 'fetchBisFile').mockResolvedValue(null);
     expect(await loadBisAnswer(character(), options)).toEqual({
       kind: 'sentence',
-      text: 'No best in slot list published yet for this spec and band.',
+      text: 'No best in slot list published yet for this spec and level range.',
     });
   });
 

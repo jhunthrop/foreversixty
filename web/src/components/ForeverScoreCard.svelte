@@ -55,6 +55,7 @@
     owned = false,
     heading = true,
     sample = false,
+    compact = false,
   }: {
     forever: ForeverScore | null;
     /** The character's score_history, oldest first; the sparkline needs two points or more. */
@@ -76,6 +77,9 @@
     heading?: boolean;
     /** Marks the card as an example, with the design system's Sample pill. */
     sample?: boolean;
+    /** With no score: leave the five empty bars out, so the page that leads with its gear shows
+     *  one "No logs yet" line and the one button instead of a card of dashes (W.10). */
+    compact?: boolean;
   } = $props();
 
   /** A bar's fill, to one decimal place: 412 of 500 is 82.4%. */
@@ -271,36 +275,27 @@
         <span class="text-strong text-[24px] leading-none font-semibold md:text-[28px]"
           >{scoreCopy.noLogsTitle}</span
         >
-        <span class="text-muted tabular font-mono text-[14px]" data-testid="forever-score-empty-max"
-          >{scoreCopy.outOf(SCORE_MAX)}</span
+        <span class="text-muted text-[14px]" data-testid="forever-score-empty-max"
+          >{scoreCopy.noLogsRange(SCORE_MAX)}</span
         >
       </div>
-      <ul class="flex max-w-[600px] flex-col gap-2">
-        {#each scoreCopy.components as component (component.key)}
-          <li class={ROW} data-testid={`forever-score-empty-${component.key}`}>
-            <span class="text-muted">{component.label}</span>
-            <span class="bg-line-soft h-2" aria-hidden="true"></span>
-            <span class="text-muted tabular text-right font-mono">{scoreCopy.emptyPart}</span>
-            <span class="max-[340px]:hidden"></span>
-          </li>
-        {/each}
-      </ul>
+      {#if !compact}
+        <ul class="flex max-w-[600px] flex-col gap-2">
+          {#each scoreCopy.components as component (component.key)}
+            <li class={ROW} data-testid={`forever-score-empty-${component.key}`}>
+              <span class="text-muted">{component.label}</span>
+              <span class="bg-line-soft h-2" aria-hidden="true"></span>
+              <span class="text-muted tabular text-right font-mono">{scoreCopy.emptyPart}</span>
+              <span class="max-[340px]:hidden"></span>
+            </li>
+          {/each}
+        </ul>
+      {/if}
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div class="flex flex-col items-start gap-3">
           <p class="text-[14px] leading-[22px]" data-testid="forever-score-empty-hint">
             {owned ? scoreCopy.noLogsOwner : scoreCopy.noLogsHint}
           </p>
-          {#if !owned}
-            <!-- Fix round 4 item 5: a visitor's next step, one line under the message: the addon
-                 and the logs upload. The owner's "Upload logs" button below stands alone. -->
-            <p class="text-muted text-[14px] leading-[22px]" data-testid="forever-score-empty-next">
-              {scoreCopy.noLogsNext.lead}
-              <a class={LINK} href={scoreCopy.noLogsNext.addonHref}>{scoreCopy.noLogsNext.addon}</a
-              >{scoreCopy.separator}<a class={LINK} href={scoreCopy.noLogsNext.uploadHref}
-                >{scoreCopy.noLogsNext.upload}</a
-              >
-            </p>
-          {/if}
           {#if owned}
             <a
               class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}

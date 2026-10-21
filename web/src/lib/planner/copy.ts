@@ -49,7 +49,7 @@ export const plannerHeaderCopy = {
   /** Fix round 1, item 2.a (the approved mock, `day3/shots/boards/Planner.png`): one line
    *  under the h1, always the same sentence -- never computed, this page has one job. */
   description:
-    "Spend your points, compare them with the band's build, and send the result to the addon or the simulator.",
+    "Spend your points, compare them with the level range's build, and send the result to the addon or the simulator.",
   /** Sits beside the race select: the planner has no separate FactionToggle (§4.A's own
    *  reasoning -- a second faction control would ask the visitor to agree with their race
    *  twice), and the mock names that choice explicitly rather than leaving it unsaid. */
@@ -77,7 +77,7 @@ export const plannerCharacterCardCopy = {
   noDeviceHref: '/setup#companion',
   failed: 'Could not send just now. Try again.',
   /** An empty draft is never sent; a muted hint, not an error (nothing went wrong). */
-  spendFirst: "Spend some points first, or load the band's build.",
+  spendFirst: "Spend some points first, or load the level range's build.",
   /** A build with fewer points than the character has spent: the addon follows it from the next point. */
   shorterThanSpend: (built: number, characterName: string, spent: number): string =>
     `This build has ${built} point${built === 1 ? '' : 's'}; ${characterName} has spent ${spent}. The addon will follow it from point ${built + 1}.`,
@@ -87,12 +87,12 @@ export const plannerCharacterCardCopy = {
  *  level band's published build. */
 export const bandCompareCopy = {
   heading: (bandLabel: string): string => `${bandLabel} build`,
-  /** "your level's band" only to a visitor who has a character; anyone else gets the band's own name. */
+  /** "your level's range" only to a visitor who has a character; anyone else gets the band's own name. */
   headingAside: (bandLabel: string, hasCharacter: boolean): string =>
-    hasCharacter ? "your level's band" : `the ${bandLabel} band`,
+    hasCharacter ? "your level's range" : `the ${bandLabel} level range`,
   noLevelingList: (specName: string): string => `No leveling list for ${specName} yet.`,
   setDpsCaption: (bandLabel: string): string =>
-    `the ${bandLabel} band's own gear set, fully equipped — not your build`,
+    `the ${bandLabel} level range's own gear set, fully equipped — not your build`,
   differs: (n: number): string => `${n} of your points differ from this build`,
   /** The same sentence as `differs`, minus its own leading number -- `BandCompare.svelte`
    *  renders the count in its own mono/gold span and this text beside it, rather than
@@ -106,7 +106,8 @@ export const bandCompareCopy = {
       ? `Loaded for level ${level} · ${points} of ${of} points`
       : `Loaded at level ${level} · ${points} points`,
   seeWhatDiffers: 'See what differs',
-  loadConfirmMessage: "Loading replaces every point you've spent with this band's own build. Load anyway?",
+  loadConfirmMessage:
+    "Loading replaces every point you've spent with this level range's own build. Load anyway?",
   loadConfirmProceed: 'Load it',
   loadConfirmCancel: 'Keep my build',
   gearRowLabel: (bandLabel: string): string => `Gear for ${bandLabel}`,

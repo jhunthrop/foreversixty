@@ -83,7 +83,7 @@ test.describe('Send this build to the addon', () => {
     // An empty build is never sent: the button is disabled until points are spent.
     await expect(action).toBeDisabled();
     await expect(page.getByTestId('character-header-note')).toHaveText(
-      "Spend some points first, or load the band's build.",
+      "Spend some points first, or load the level range's build.",
     );
     await page.getByTestId('band-compare-load').click();
     await expect(action).toBeEnabled();

@@ -277,7 +277,7 @@ describe('CharacterRatingPanel Forever Score card', () => {
     });
     expect(body).toContain('data-testid="forever-score-card"');
     expect(body).toMatch(/data-testid="forever-score-empty"[\s\S]*?No logs yet/);
-    expect(body).toMatch(/data-testid="forever-score-empty-max"[^>]*>of 2100</);
+    expect(body).toMatch(/data-testid="forever-score-empty-max"[^>]*>Score runs to 2100[.]</);
     for (const component of labels.components) {
       const row = new RegExp(
         `<li[^>]*data-testid="forever-score-empty-${component.key}"[\\s\\S]*?</li>`,
@@ -306,32 +306,27 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(body).not.toContain('forever-score-empty-next');
   });
 
-  // L8.4 fix round 4 item 5: a visitor on a no-logs page gets a next step under the message,
-  // one line with two links: the addon's page and the logs upload.
-  it('no logs, visitor: one line under the message with "Get the addon" and "Upload logs" (fix round 4 item 5)', () => {
+  // W.10 (UX r6 F6-5): a no-logs visitor page asks one thing, the companion button; the old
+  // "Your character? Get the addon · Upload logs" line is gone.
+  it('no logs, visitor: one prompt, the companion button, and no second line of calls to action (W.10)', () => {
     const { body } = render(CharacterRatingPanel, {
       props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale' },
     });
-    const line =
-      /<p class="[^"]*" data-testid="forever-score-empty-next">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
-    expect(line).not.toBe('');
-    const links = [...line.matchAll(/<a class="([^"]*)" href="([^"]*)"[^>]*>([^<]*)<\/a>/g)].map((m) => ({
-      classes: m[1].split(' '),
-      href: m[2],
-      text: m[3],
-    }));
-    expect(links.map(({ text: words, href }) => [words, href])).toEqual([
-      [scoreCopy.noLogsNext.addon, scoreCopy.noLogsNext.addonHref],
-      [scoreCopy.noLogsNext.upload, scoreCopy.noLogsNext.uploadHref],
-    ]);
-    expect(links.map((link) => link.text)).toEqual(['Get the addon', 'Upload logs']);
-    expect(scoreCopy.noLogsNext.addonHref).toBe('/setup');
-    expect(scoreCopy.noLogsNext.uploadHref).toBe('/logs#upload');
-    // 44px tap targets on a phone, underlined in text.
-    for (const link of links) expect(link.classes).toEqual(expect.arrayContaining(['underline', 'min-h-11']));
-    // Under the no-logs message, before the lookup button.
-    expect(body.indexOf('forever-score-empty-hint')).toBeLessThan(body.indexOf('forever-score-empty-next'));
-    expect(body.indexOf('forever-score-empty-next')).toBeLessThan(body.indexOf('forever-score-empty-action'));
+    expect(body).not.toContain('forever-score-empty-next');
+    expect(body).not.toContain('Get the addon');
+    expect(body).not.toContain('Upload logs');
+    expect(body.match(/data-testid="forever-score-empty-action"/g)).toHaveLength(1);
+  });
+
+  it('no logs, compact (the page leads with its gear): "No logs yet", the range and the button, no empty bars (W.10)', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale', compactEmpty: true },
+    });
+    expect(body).toMatch(/data-testid="forever-score-empty"[^]*?No logs yet/);
+    expect(body).toMatch(/data-testid="forever-score-empty-max"[^>]*>Score runs to 2100[.]</);
+    expect(body).not.toContain('forever-score-empty-experience');
+    expect(body).not.toContain('>–<');
+    expect(body).toContain('data-testid="forever-score-empty-action"');
   });
 
   it('draws the score history as a gold sparkline with its newest point in the tier colour (Task L8.4 ruling 3)', () => {
@@ -437,7 +432,7 @@ describe('CharacterRatingPanel Forever Score card', () => {
     }).body;
     for (const [name, body, count] of [
       ['scored', scored, 2],
-      ['no logs', visitor, 3],
+      ['no logs', visitor, 1],
     ] as const) {
       const card = /data-testid="forever-score-card"[\s\S]*$/.exec(body)?.[0] ?? '';
       const links = [...card.matchAll(/<a class="([^"]*)"/g)]

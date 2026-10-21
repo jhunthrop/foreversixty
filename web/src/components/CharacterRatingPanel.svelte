@@ -28,6 +28,7 @@
     bisHref = null,
     gearHref = null,
     owned = false,
+    compactEmpty = false,
     name = '',
     fights = [],
     onrated = undefined,
@@ -49,6 +50,9 @@
     gearHref?: string | null;
     /** The viewer's own character: the captions say "Your" only then (fix round 2 item 1). */
     owned?: boolean;
+    /** The page leads with its gear: a character with no score shows one "No logs yet" line, not the
+     *  card of empty bars (W.10). */
+    compactEmpty?: boolean;
     /** The character's name, for the no-logs card's "Look up another character". */
     name?: string;
     /** "Every ranked fight"'s rows, which the rating card's weakest part links into (L8.5
@@ -112,6 +116,7 @@
     {bisHref}
     {gearHref}
     {owned}
+    compact={compactEmpty}
     {name}
     region={path.region}
     ruleset={path.ruleset}

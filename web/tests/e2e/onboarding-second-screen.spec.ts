@@ -122,7 +122,7 @@ for (const size of SIZES) {
       await settle(page);
       await expect(page.getByTestId('setup-line-signin')).toHaveText('Signed in as hunthrop#1894');
       await expect(page.getByTestId('setup-line-addon')).toHaveText(
-        'No character yet — log out once with the addon on',
+        'No character yet. Log out once with the addon on and the companion running, or paste an export.',
       );
       await expect(page.getByTestId('setup-line-companion')).toHaveText('No companion signed in yet');
       await expect(page.locator('.setup-chip[data-done="true"]')).toHaveCount(1);

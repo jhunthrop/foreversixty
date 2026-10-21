@@ -23,15 +23,15 @@ describe('homeHeroCardsCopy', () => {
 });
 
 describe('the Simulator card copy', () => {
-  it('puts the unit on both figures: "26 DPS now · 37.5 DPS at band best in slot"', () => {
+  it('puts the unit on both figures: "26 DPS now · 37.5 DPS at best in slot for your level range"', () => {
     const together = `${homeHeroCardsCopy.simulatorNowFigure('26')} · ${homeHeroCardsCopy.simulatorBandLine(37.46)}`;
-    expect(together).toBe('26 DPS now · 37.5 DPS at band best in slot');
+    expect(together).toBe('26 DPS now · 37.5 DPS at best in slot for your level range');
   });
 });
 
 describe('homePanelCopy', () => {
   it('carries the header answer words from the character header spec', () => {
-    expect(homePanelCopy.headerAnswerLabel).toBe('Upgrades in your band');
+    expect(homePanelCopy.headerAnswerLabel).toBe('Upgrades for your level range');
     expect(homePanelCopy.headerNote('60')).toBe('Best in slot for 60, together');
     expect(homePanelCopy.headerAllMatch('60')).toBe('Every slot matches the 60 list.');
     expect(homePanelCopy.headerAction).toBe('See your upgrades →');

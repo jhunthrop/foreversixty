@@ -35,7 +35,7 @@ describe('upgradesAnswer', () => {
   it('is the count and the gain as two figures at the same size', () => {
     expect(upgradesAnswer(cached())).toEqual({
       kind: 'figures',
-      label: 'Upgrades in your band',
+      label: 'Upgrades for your level range',
       figures: [
         { value: '9', unit: 'upgrades' },
         { value: '+11.2', unit: 'DPS' },

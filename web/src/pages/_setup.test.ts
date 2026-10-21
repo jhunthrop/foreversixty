@@ -221,7 +221,11 @@ describe('/setup: what it does in the game (L8.3)', () => {
     const headings = specSurfaceHeadings();
     expect(headings).toHaveLength(11);
     expect(addonCopy.surfaces.map((s) => s.section)).toEqual(headings.map((h) => h.section));
-    expect(addonCopy.surfaces.map((s) => s.title)).toEqual(headings.map((h) => h.title));
+    // The spec's own word for 4.1 is "The chip"; a player is never taught it (W.10): the page says
+    // "The Forever Sixty line", the name the addon's own settings use.
+    expect(addonCopy.surfaces.map((s) => s.title)).toEqual(
+      headings.map((h) => (h.title === 'The chip' ? 'The Forever Sixty line' : h.title)),
+    );
   });
 
   it('renders each surface’s title and one-sentence description, in order, from the copy file', () => {
@@ -443,7 +447,7 @@ describe('/setup first-run copy', () => {
 
   it('says once, the way the addon welcome does, how a character reaches the site', () => {
     expect(addonCopy.setupHowItArrives).toBe(
-      'The addon saves your character when you log out; the companion sends it to the site.',
+      'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (Try an export, below).',
     );
     expect(html.split(addonCopy.setupHowItArrives).length - 1).toBe(1);
   });
@@ -472,20 +476,29 @@ describe('/setup as three steps (W.9)', () => {
     for (const [index, chip] of addonCopy.setupChips.entries()) {
       expect(chip.step).toBe(index + 1);
       expect(chips).toContain(`href="${chip.href}"`);
-      expect(chips).toContain(chip.todo);
+      expect(chips).toContain(chip.label);
       expect(html).toContain(`id="${chip.href.slice(1)}"`);
     }
-    expect(addonCopy.setupChips.map((chip) => chip.done)).toEqual([
-      'Signed in',
-      'Addon seen',
-      'Companion running',
-    ]);
+    // One label per chip whatever its state, so a done row never reflows (W.10): the tick says done.
+    expect(addonCopy.setupChips.map((chip) => chip.label)).toEqual(['Signed in', 'Addon', 'Companion']);
+    expect(chips).not.toMatch(/Addon seen|Companion running/);
   });
 
-  it('gives each step one gold button: Sign in with Battle.net, Install from CurseForge, Download for Windows', () => {
-    expect(anchorWith('battlenet')).toContain(GOLD);
-    expect(anchorWith(CURSEFORGE_URL)).toContain(GOLD);
-    expect(anchorWith('data-testid="setup-companion-download"')).toContain(GOLD);
+  it('gives each step one button, gold only on the first undone step (global.css .setup-btn): Sign in with Battle.net, Install from CurseForge, Download for Windows', () => {
+    for (const [needle, step] of [
+      ['battlenet', '1'],
+      [CURSEFORGE_URL, '2'],
+      ['data-testid="setup-companion-download"', '3'],
+    ] as const) {
+      const tag = anchorWith(needle);
+      expect(tag, needle).toContain('setup-btn');
+      expect(tag, needle).toContain(`data-step="${step}"`);
+      // Gold is the page's rule for the first undone step, never a fixed class on the button.
+      expect(tag, needle).not.toContain(GOLD);
+    }
+    const css = readFileSync(new URL('../styles/global.css', import.meta.url), 'utf8');
+    expect(css).toContain("html[data-setup-first='2'] .setup-btn[data-step='2']");
+    expect(css).toContain("html:not([data-setup-first]):not([data-session='1']) .setup-btn[data-step='1']");
     expect(html).toContain('Download for Windows');
     // Wago and the zip are quiet links, not buttons.
     expect(anchorWith(WAGO_URL)).not.toContain(GOLD);
@@ -533,6 +546,32 @@ describe('/setup as three steps (W.9)', () => {
     expect(capture.width).toBeGreaterThanOrEqual(1600);
   });
 
+  it('draws the capture as a picture with a phone source: the headline card alone, sized by attributes (W.10)', () => {
+    const capture = addonCopy.setupCompanionCapture;
+    const step3 = html.slice(html.indexOf('id="companion"'));
+    expect(step3).toMatch(/<picture[^>]*>/);
+    const source = /<source[^>]*>/.exec(step3)?.[0] ?? '';
+    expect(source).toContain('media="(max-width: 639px)"');
+    expect(source).toContain(`srcset="${capture.phoneSrc}"`);
+    expect(source).toContain(`width="${capture.phoneWidth}"`);
+    expect(source).toContain(`height="${capture.phoneHeight}"`);
+    // Not lazy: a lazy image caught early was the blank box at 390.
+    const img =
+      [...step3.matchAll(/<img[^>]*>/g)].map((m) => m[0]).find((tag) => tag.includes(capture.src)) ?? '';
+    expect(img).not.toBe('');
+    expect(img).not.toContain('loading="lazy"');
+    const bytes = readFileSync(new URL(`../../public${capture.phoneSrc}`, import.meta.url));
+    expect(jpegSize(bytes)).toEqual({ width: capture.phoneWidth, height: capture.phoneHeight });
+    // A crop of the headline card at 2x: about 700 x 300 or more of source for the 350 px it is shown at.
+    expect(capture.phoneWidth).toBeGreaterThanOrEqual(700);
+    expect(capture.phoneHeight).toBeLessThanOrEqual(320);
+  });
+
+  it('says what an export is inside its disclosure', () => {
+    const tryExport = html.slice(html.indexOf('data-testid="setup-try-export"'));
+    expect(tryExport.slice(0, tryExport.indexOf('</details>'))).toContain(addonCopy.setupTryExportBody);
+  });
+
   it('says Mac is not supported while the release carries no Mac bundle', () => {
     const step3 = html.slice(html.indexOf('id="companion"'));
     expect(step3).toContain('Windows. Mac is not supported yet.');
@@ -542,7 +581,9 @@ describe('/setup as three steps (W.9)', () => {
   });
 
   it('says which of the steps is optional', () => {
-    expect(addonCopy.setupCompanionNote).toBe('Optional for gear. Needed for live logs.');
+    expect(addonCopy.setupCompanionNote).toBe(
+      'Sends your character automatically and logs live. Without it, paste an export after each change.',
+    );
   });
 });
 
@@ -603,7 +644,7 @@ describe('the setup done lines (progress.ts)', () => {
   it('says what to do when no addon character has arrived', () => {
     expect(addonLine(me([character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard')]), NOW)).toEqual({
       done: false,
-      text: 'No character yet — log out once with the addon on',
+      text: 'No character yet. Log out once with the addon on and the companion running, or paste an export.',
     });
   });
 

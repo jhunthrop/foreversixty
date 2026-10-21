@@ -6,7 +6,13 @@
 // the visitor's clock on load: a date that has passed since the deploy reads as past, in the
 // past tense, with no edit. Each row carries its whole entry as JSON for that script.
 import UpdatedStamp from './UpdatedStamp.astro';
-import { timelineDisplayRows, timelineRowText, timelineRows, type DateEntry } from '../lib/home/timeline';
+import {
+  dotIndex,
+  timelineDisplayRows,
+  timelineRowText,
+  timelineRows,
+  type DateEntry,
+} from '../lib/home/timeline';
 
 interface Props {
   dates: DateEntry[];
@@ -14,9 +20,12 @@ interface Props {
   now?: Date;
 }
 const { dates, updated, now } = Astro.props;
-const rows = timelineDisplayRows(timelineRows(dates, now)).map((row) => ({
+const shownRows = timelineDisplayRows(timelineRows(dates, now));
+const dotAt = dotIndex(shownRows);
+const rows = shownRows.map((row, index) => ({
   row,
   text: timelineRowText(row),
+  dot: index === dotAt,
 }));
 ---
 
@@ -28,14 +37,14 @@ const rows = timelineDisplayRows(timelineRows(dates, now)).map((row) => ({
   role="group"
   aria-label="Key dates timeline"
 >
-  {rows.map(({ row, text }) => (
+  {rows.map(({ row, text, dot }) => (
     <div
       class="timeline-row flex min-w-0 flex-col gap-1 px-3 py-1 md:min-w-[150px] md:flex-1 md:border-line-soft md:border-r data-[status=past]:opacity-60"
       data-testid="home-timeline-row"
       data-status={row.status}
     >
       <div class="flex items-center gap-2">
-        {row.status === 'next' && (
+        {dot && (
           <span
             class="bg-gold h-2 w-2 shrink-0 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]"
             data-testid="home-timeline-dot"
@@ -76,7 +85,13 @@ const rows = timelineDisplayRows(timelineRows(dates, now)).map((row) => ({
 </style>
 
 <script>
-  import { timelineDisplayRows, timelineRowText, timelineRows, type DateEntry } from '../lib/home/timeline';
+  import {
+    dotIndex,
+    timelineDisplayRows,
+    timelineRowText,
+    timelineRows,
+    type DateEntry,
+  } from '../lib/home/timeline';
 
   // Re-classify against the visitor's clock. The server markup is already right at deploy
   // time; this only changes anything on a page that has outlived the date that moves a row.
@@ -85,6 +100,7 @@ const rows = timelineDisplayRows(timelineRows(dates, now)).map((row) => ({
     const dates = JSON.parse(root.dataset.entries) as DateEntry[];
     const shown = timelineDisplayRows(timelineRows(dates, new Date()));
     const rowEls = Array.from(root.querySelectorAll<HTMLElement>('[data-testid="home-timeline-row"]'));
+    const dotAt = dotIndex(shown);
     const same = shown.every((row, index) => rowEls[index]?.dataset.status === row.status);
     if (rowEls.length === shown.length && !same) {
       const make = (tag: string, className: string, text: string, part: string): HTMLElement => {
@@ -100,7 +116,7 @@ const rows = timelineDisplayRows(timelineRows(dates, now)).map((row) => ({
         el.dataset.status = row.status;
         const head = document.createElement('div');
         head.className = 'flex items-center gap-2';
-        if (row.status === 'next') {
+        if (index === dotAt) {
           const dot = document.createElement('span');
           dot.className = 'bg-gold h-2 w-2 shrink-0 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]';
           dot.dataset.testid = 'home-timeline-dot';

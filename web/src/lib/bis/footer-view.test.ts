@@ -103,7 +103,7 @@ describe('newAtBandLinesFor (spec §4.E "New at this band")', () => {
       undefined,
       undefined,
     );
-    expect(sentence1).toBe('This is the first band — every pick here is new.');
+    expect(sentence1).toBe('This is the first level range — every pick here is new.');
     expect(sentence2).toBeUndefined();
   });
 
@@ -139,7 +139,7 @@ describe('newAtBandLinesFor (spec §4.E "New at this band")', () => {
       rows: [row({ slot: 'off_hand', empty: false }), row({ slot: 'trinket1', empty: true, emptyCopy: 'y' })],
     });
     const { sentence2 } = newAtBandLinesFor(current, 30, [], next, '40 to 49', []);
-    expect(sentence2).toBe('Next band (40 to 49): the first off hand that helps.');
+    expect(sentence2).toBe('Next level range (40 to 49): the first off hand that helps.');
   });
 
   it('drops the whole next-band sentence at the top band', () => {

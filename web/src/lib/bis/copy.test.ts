@@ -36,7 +36,7 @@ describe('unit-aware wording', () => {
     expect(bisCopy.runnersUpHeaderLabel()).toBe('Runners-up · DPS vs the pick');
     expect(bisCopy.runnersUpHeaderLabel('HPS')).toBe('Runners-up · HPS vs the pick');
     expect(bisCopy.youGainOverWorn(2.5, 'Old Ring', 'HPS')).toBe('+2.5 HPS over your Old Ring');
-    expect(bisCopy.setDpsDelta(3, 'HPS')).toBe('+3.0 HPS since the last band');
+    expect(bisCopy.setDpsDelta(3, 'HPS')).toBe('+3.0 HPS since the last level range');
     expect(bisCopy.lowValueTitle('HPS')).toContain('adds HPS');
     expect(bisCopy.headerSummary(60, undefined)).toContain('raises your damage most at 60');
     expect(bisCopy.headerSummary(50, 59, 'HPS')).toContain('raises your healing most from 50 to 59');

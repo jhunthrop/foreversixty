@@ -33,7 +33,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         href: '/planner',
         description: 'Talents, the build you follow, and what to train next',
       },
-      { label: 'BiS', href: '/bis', description: 'The gear to chase in your band, slot by slot' },
+      { label: 'BiS', href: '/bis', description: 'The gear to chase at your level, slot by slot' },
       {
         label: 'Simulator',
         href: '/sim',
@@ -58,7 +58,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       {
         label: 'Rankings',
         href: '/rankings',
-        description: 'Parses by boss, spec and band, from every log',
+        description: 'Parses by boss, spec and level range, from every log',
       },
       {
         label: 'Tier list',

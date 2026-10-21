@@ -1,5 +1,5 @@
 <!-- web/src/components/SetupProgress.svelte -->
-<!-- The three progress chips at the top of /setup: "1 Sign in", "2 Addon", "3 Companion", each an
+<!-- The three progress chips at the top of /setup: "Signed in", "Addon", "Companion" (one label each whatever the state, W.10), each an
      anchor to its step, gold with a check once the account shows the step done and a ring with its
      number until then (UX review r5, finding 2; the done wording is the player review's N11).
      Server-rendered, it reads the same <html> hints the steps use (global.css), so a signed-in
@@ -23,12 +23,23 @@
   });
 
   const done = $derived(state === null ? null : chipsDone(state));
+
+  // The step whose button is gold is the first one not done (global.css, .setup-btn); with all three
+  // done none is. Until the reads answer the page's own hints decide.
+  $effect(() => {
+    if (done === null) return;
+    const first = done.indexOf(false);
+    document.documentElement.dataset.setupFirst = first === -1 ? 'none' : String(first + 1);
+    return () => {
+      delete document.documentElement.dataset.setupFirst;
+    };
+  });
   /** Which <html> hint a chip follows until the reads answer: the session cookie, the stored character, or none. */
   const HINTS = ['session', 'pointer', 'none'] as const;
 </script>
 
 <ol
-  class="setup-chips flex flex-wrap gap-2"
+  class="setup-chips flex gap-2 max-[400px]:gap-1.5"
   data-testid="setup-status"
   aria-label={addonCopy.setupProgressLabel}
 >
@@ -40,7 +51,7 @@
       data-done={done === null ? undefined : String(done[index])}
     >
       <a
-        class="setup-chip-link border-line-warm text-muted inline-flex min-h-11 items-center gap-2 rounded-full border px-3 text-[13px] font-semibold"
+        class="setup-chip-link border-line-warm text-strong inline-flex min-h-11 items-center gap-2 rounded-full border px-3 text-[13px] font-semibold whitespace-nowrap max-[400px]:gap-1.5 max-[400px]:px-2.5"
         href={chip.href}
       >
         <span class="setup-chip-mark" aria-hidden="true">
@@ -61,8 +72,7 @@
             >
           </span>
         </span>
-        <span class="chip-todo">{chip.todo}</span>
-        <span class="chip-done text-strong">{chip.done}</span>
+        <span data-testid="setup-chip-label">{chip.label}</span>
       </a>
     </li>
   {/each}
