@@ -119,13 +119,14 @@ const (
 		CopyAdvancedHow
 
 	CopyReadyTitle = "Ready"
-	CopyReadySub   = "Waiting for a combat log. Type /combatlog in game, or leave combat logging on."
+	CopyReadySub   = "Waiting for a combat log. In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on."
 
 	CopyLoggingTitle = "Logging"
 	CopyLoggingSub   = "Uploading your fights as they end"
 	// CopyLoggingTitleNotCredited is the Logging title while the open report is
-	// not credited to the player yet. The dot stays green: the headline's colour
-	// follows whether fights are uploading, not whom they are credited to.
+	// not credited to the player yet. This is the one Logging state that is
+	// amber: the headline carries the one thing the player must do (log out
+	// once with the addon loaded), which overrides R-C7 for this case only.
 	CopyLoggingTitleNotCredited = CopyLoggingTitle + CopySeparator + "not credited to you yet"
 
 	// CopyAdvancedHow is the menu path, and what to do after.
@@ -203,10 +204,15 @@ func Message(code string) string {
 }
 
 // CopyLoggingSubNotMatched is the Logging headline's sub line once the
-// combat log has named its logger and no addon record fits yet. The dot
-// stays green: the fights are uploading either way, only the credit
-// waits for a logout with the addon loaded.
-const CopyLoggingSubNotMatched = CopyLoggingSub + CopySeparator + "character not matched yet"
+// combat log has named its logger and no addon record fits yet: the fights
+// are uploading, and the one step that credits them is on the card. The tray
+// carries the title only.
+const CopyLoggingSubNotMatched = CopyLoggingSub + ". Log out once in game with the addon loaded and it is credited to you."
+
+// CopyLoggingSubNoName is the sub line while the combat log has named nobody
+// yet (credit none on an open report): nothing is wrong, the name arrives
+// with the first fight.
+const CopyLoggingSubNoName = CopyLoggingSub + ". Your name is read from the first fight."
 
 // CopyLoggingSubAs is the Logging headline's sub line for a report
 // credited to a character: the same words, then who it is. The name is
@@ -223,7 +229,7 @@ func SpacedName(name string) string {
 	return strings.Join(strings.FieldsFunc(name, func(r rune) bool { return r == '-' || r == ' ' }), " ")
 }
 
-// The Last sync row's lines.
+// The Characters sent row's lines.
 const (
 	// CopyNoCharactersSent is the row when the addon is installed and
 	// no character list has reached the site.

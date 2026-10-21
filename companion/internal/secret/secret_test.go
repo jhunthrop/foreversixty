@@ -2,6 +2,7 @@ package secret
 
 import (
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
@@ -164,6 +165,18 @@ func TestTheFileFallbackNamesWhatWasNotAvailable(t *testing.T) {
 		}
 		if got := FallbackNote(Keychain, goos); got != "" {
 			t.Errorf("FallbackNote(Keychain, %s) = %q, want none", goos, got)
+		}
+	}
+}
+
+// The Linux word never reaches a Windows player: every line the Device page can
+// carry for the token store, on every backend, is free of "Secret Service" on windows.
+func TestTheWindowsBuildNeverSaysSecretService(t *testing.T) {
+	for _, b := range []Backend{Keychain, File} {
+		for _, line := range []string{Name(b, "windows"), FallbackNote(b, "windows"), StoreNote(b, "windows")} {
+			if strings.Contains(line, "Secret Service") {
+				t.Errorf("backend %v on windows says %q", b, line)
+			}
 		}
 	}
 }

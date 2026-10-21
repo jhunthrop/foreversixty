@@ -1,6 +1,6 @@
 {
   "data": {
-    "app_version": "0.2.8",
+    "app_version": "0.2.13",
     "engine_version": "1.0.0",
     "paired": true,
     "account_label": "Jhunt",
@@ -9,7 +9,7 @@
       "key": "logging",
       "tone": "on",
       "title": "Logging",
-      "sub": "Uploading your fights as they end"
+      "sub": "Uploading your fights as they end. Your name is read from the first fight."
     },
     "connect": {
       "state": "",

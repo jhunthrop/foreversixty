@@ -5,14 +5,29 @@ const assert = require('node:assert');
 const FORMAT = require('./format.js');
 const COPY = require('./copy.js');
 
-test('a long path keeps its drive and its flavour folder', () => {
+test('a long path is cut at separators only, keeping the drive and the last two folders', () => {
   const p = 'C:\\Program Files (x86)\\World of Warcraft\\_classic_era_';
-  const out = FORMAT.midTruncate(p, 32);
-  assert.strictEqual(out.length, 32);
-  assert.ok(out.startsWith('C:\\Program'));
-  assert.ok(out.endsWith('_classic_era_'));
-  assert.ok(out.includes('\u2026'));
-  assert.strictEqual(FORMAT.midTruncate('short', 32), 'short');
+  assert.strictEqual(p.length, 54);
+  // The UX review's case: budget 38 at the 560 px window.
+  assert.strictEqual(FORMAT.pathTruncate(p, 38), 'C:\\\u2026\\World of Warcraft\\_classic_era_');
+  // 56 at the 800 px window holds the whole path.
+  assert.strictEqual(FORMAT.pathTruncate(p, 56), p);
+  assert.strictEqual(FORMAT.pathTruncate('short', 38), 'short');
+  // Too small for two folders: the drive and the last one.
+  assert.strictEqual(FORMAT.pathTruncate(p, 30), 'C:\\\u2026\\_classic_era_');
+  // One name alone too long: the ellipsis ends that name, never a stray bracket or half a word in the middle.
+  assert.strictEqual(FORMAT.pathTruncate(p, 12), 'C:\\\u2026\\_class\u2026');
+  // Never a cut inside a name while a separator cut fits.
+  for (let max = 20; max < 54; max++) {
+    const out = FORMAT.pathTruncate(p, max);
+    assert.ok(out.length <= max, out);
+    assert.ok(out.endsWith('_classic_era_'), out);
+    assert.ok(!out.includes('Files'), out);
+    assert.ok(!out.includes('('), out);
+  }
+  // Another flavour folder and a POSIX path.
+  assert.strictEqual(FORMAT.pathTruncate('D:\\Games\\Blizzard\\World of Warcraft\\_anniversary_', 38), 'D:\\\u2026\\World of Warcraft\\_anniversary_');
+  assert.strictEqual(FORMAT.pathTruncate('/home/jhunt/Games/World of Warcraft/_classic_era_', 38), '/\u2026/World of Warcraft/_classic_era_');
 });
 
 test('a time is today, yesterday or a short date', () => {
@@ -94,8 +109,10 @@ test('a report says who it is credited to, or that it is not yet', () => {
   assert.strictEqual(FORMAT.creditText({ state: 'credited', name: 'Bow Jackzon' }, w), 'credited to Bow Jackzon');
   assert.strictEqual(FORMAT.creditText({ state: 'credited', name: 'Bow-Jackzon' }, w), 'credited to Bow Jackzon');
   assert.strictEqual(FORMAT.creditText({ state: 'unmatched', name: 'Bow Jackzon' }, w), 'not credited yet');
-  assert.strictEqual(FORMAT.creditText({ state: 'none' }, w), 'not credited yet');
-  assert.strictEqual(FORMAT.creditText(undefined, w), 'not credited yet');
+  // A log that has named nobody yet is not a fault; once the report is done it is not credited.
+  assert.strictEqual(FORMAT.creditText({ state: 'none' }, w), 'name not read yet');
+  assert.strictEqual(FORMAT.creditText({ state: 'none' }, w, true), 'not credited yet');
+  assert.strictEqual(FORMAT.creditText(undefined, w, true), 'not credited yet');
 });
 
 // The three /api/status bodies the companion sends (written by a Go test from the real headline
@@ -113,18 +130,26 @@ test('the Current report row and the headline agree in each of the three credit 
 
   assert.strictEqual(credited.headline.sub, 'Uploading your fights as they end · logging as Bow Jackzon');
   assert.deepStrictEqual(row(credited), { lead: 'In progress', separator: ' · ', credit: 'credited to Bow Jackzon',
-    credited: true, help: '' });
+    credited: true, noName: false, help: '' });
 
-  assert.strictEqual(notCredited.headline.sub, 'Uploading your fights as they end · character not matched yet');
+  // Not credited: the card says what to do once, the row keeps its amber phrase and its help line.
+  assert.strictEqual(notCredited.headline.sub,
+    'Uploading your fights as they end. Log out once in game with the addon loaded and it is credited to you.');
   assert.deepStrictEqual(row(notCredited), { lead: 'In progress', separator: ' · ', credit: 'not credited yet',
-    credited: false, help: 'Log out once in game with the addon loaded. The companion credits this report then.' });
+    credited: false, noName: false, help: 'Log out once in game with the addon loaded. The companion credits this report then.' });
+  assert.ok(!notCredited.headline.sub.includes(COPY.status.credit.notYetHelp), 'the help sentence is never on screen three times');
+  assert.ok(!/matched/.test(notCredited.headline.sub), 'matched is the project\u2019s word');
 
-  assert.strictEqual(noName.headline.sub, 'Uploading your fights as they end');
-  assert.strictEqual(row(noName).credit, 'not credited yet');
-  assert.strictEqual(row(noName).credited, false);
+  // No name read yet is not the unmatched state: no not-credited title, no amber, and the row agrees.
+  assert.strictEqual(noName.headline.title, 'Logging');
+  assert.strictEqual(noName.headline.sub, 'Uploading your fights as they end. Your name is read from the first fight.');
+  assert.deepStrictEqual(row(noName), { lead: 'In progress', separator: ' · ', credit: 'name not read yet',
+    credited: false, noName: true, help: '' });
 
+  assert.strictEqual(credited.headline.tone, 'on');
+  assert.strictEqual(noName.headline.tone, 'on');
+  assert.strictEqual(notCredited.headline.tone, 'warn', 'the one Logging state that is amber');
   for (const s of [credited, notCredited, noName]) {
-    assert.strictEqual(s.headline.tone, 'on', 'the dot stays green');
     assert.ok(!/-/.test(s.headline.sub.replace(/ · /g, '')), 'no hyphenated name');
     assert.ok(!('reason' in s.credit), 'the window reads two states and no reason');
   }
@@ -200,9 +225,9 @@ test('the Addon row says when it checked and what it found', () => {
   assert.strictEqual(COPY.status.checking, 'Checking…');
 });
 
-test('the stopped-responding note says where the tray icon is', () => {
+test('the stopped-responding note says where the tray icon is, and that uploads may have stopped', () => {
   assert.strictEqual(COPY.localDown,
-    'The companion stopped responding. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.');
+    'The companion stopped responding, so your fights may not be uploading. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.');
 });
 
 test('the expiry bar is the share of the ten minutes left, and the last minute is amber', () => {
@@ -218,18 +243,38 @@ test('the expiry bar is the share of the ten minutes left, and the last minute i
   assert.strictEqual(FORMAT.lastMinute('2026-10-15T19:00:00Z', now), true);
 });
 
-test('a Settings path is middle-truncated to its budget, never clipped', () => {
-  const p = 'C:\Program Files (x86)\World of Warcraft\_classic_era_';
-  assert.strictEqual(FORMAT.pathBudget(800), 44);
-  assert.strictEqual(FORMAT.pathBudget(560), 34);
+test('the Settings path budget is 56 characters at the 800 px window and 38 at 560', () => {
+  const p = 'C:\\Program Files (x86)\\World of Warcraft\\_classic_era_';
+  assert.strictEqual(FORMAT.pathBudget(800), 56);
+  assert.strictEqual(FORMAT.pathBudget(560), 38);
   for (const w of [800, 560]) {
-    const out = FORMAT.midTruncate(p, FORMAT.pathBudget(w));
+    const out = FORMAT.pathTruncate(p, FORMAT.pathBudget(w));
     assert.ok(out.length <= FORMAT.pathBudget(w));
     assert.ok(out.endsWith('_classic_era_'), 'the tail names the flavour: ' + out);
-    assert.ok(out.includes('\u2026'));
   }
-  const anniv = 'C:\Program Files (x86)\World of Warcraft\_anniversary_';
-  assert.ok(FORMAT.midTruncate(anniv, 34).endsWith('_anniversary_'));
+  assert.strictEqual(FORMAT.pathTruncate(p, FORMAT.pathBudget(800)), p);
+  const anniv = 'C:\\Program Files (x86)\\World of Warcraft\\_anniversary_';
+  assert.strictEqual(FORMAT.pathTruncate(anniv, FORMAT.pathBudget(560)), 'C:\\\u2026\\World of Warcraft\\_anniversary_');
+});
+
+test('the Save strip says No changes (Save disabled) or Unsaved changes (Save enabled)', () => {
+  assert.strictEqual(COPY.settings.noChanges, 'No changes');
+  assert.strictEqual(COPY.settings.unsaved, 'Unsaved changes');
+  assert.deepStrictEqual(FORMAT.saveStrip(false, false, COPY.settings), { text: 'No changes', enabled: false });
+  assert.deepStrictEqual(FORMAT.saveStrip(true, false, COPY.settings), { text: 'Unsaved changes', enabled: true });
+  assert.deepStrictEqual(FORMAT.saveStrip(true, true, COPY.settings), { text: 'Unsaved changes', enabled: false }, 'not pressable mid-save');
+  const html = read('index.html');
+  assert.match(html, /id="save-state"[^>]*>No changes</);
+  assert.ok(read('app.js').includes('FORMAT.saveStrip('));
+});
+
+test('Settings has a page heading, and Add a folder sits in the Game folders label row', () => {
+  const html = read('index.html');
+  assert.match(html, /<section id="settings"[^>]*>\s*<h2 tabindex="-1">Settings<\/h2>/);
+  const row = html.slice(html.indexOf('class="label-row"'));
+  assert.ok(row.indexOf('id="folders-label"') < row.indexOf('id="add-folder"'));
+  assert.ok(row.indexOf('id="add-folder"') < row.indexOf('id="folder-list"'), 'the button is above the list, never under the fade');
+  assert.match(html, /<h2 class="sr" tabindex="-1">This device<\/h2>/, 'the Device page keeps one Cinzel heading');
 });
 
 test('the sign-in screen says the browser has opened, and the expiry once', () => {
@@ -239,9 +284,15 @@ test('the sign-in screen says the browser has opened, and the expiry once', () =
   assert.ok(COPY.device.blocked.startsWith('Could not open your browser'));
 });
 
-test('the update bar says how to install in the player\u2019s terms', () => {
+test('the update bar says how to install and what it costs, and the footer keeps the version', () => {
   assert.strictEqual(COPY.footer.updateReady,
-    'Update ready. Quit the companion from the tray icon and start it again to install it.');
+    'Update ready. Quit the companion from the tray icon and start it again to install it. Uploads pause while it restarts, so pick a quiet moment.');
+  assert.strictEqual(COPY.footer.version('0.2.13') + COPY.footer.joint + COPY.footer.justUpdated, 'Companion 0.2.13 \u00b7 just updated');
+  assert.strictEqual(COPY.footer.updatedTo, undefined);
+  const js = read('app.js');
+  assert.ok(js.includes("class: 'updated', text: COPY.footer.justUpdated"), 'green on just updated only');
+  // The footer says Companion at first paint, before the first snapshot.
+  assert.match(read('index.html'), /id="foot-version">Companion</);
 });
 
 test('Status unavailable greys the last numbers and says they are last known', () => {
@@ -251,11 +302,10 @@ test('Status unavailable greys the last numbers and says they are last known', (
 
 const read = (f) => fs.readFileSync(path.join(__dirname, f), 'utf8');
 
-test('a log that is not credited yet says so in the Status title, the dot stays green', () => {
+test('a log that is not credited yet says so in the Status title, and the dot is amber', () => {
   const h = fixture('status-not-credited.json').headline;
   assert.strictEqual(h.title, 'Logging \u00b7 not credited to you yet');
-  assert.strictEqual(h.tone, 'on');
-  assert.ok(h.sub.endsWith('character not matched yet'));
+  assert.strictEqual(h.tone, 'warn');
   assert.strictEqual(fixture('status-credited.json').headline.title, 'Logging');
   assert.strictEqual(fixture('status-no-name.json').headline.title, 'Logging');
 });
@@ -287,6 +337,47 @@ test('the connected token line is muted, never a warning', () => {
   const js = read('app.js');
   const row = js.slice(js.indexOf("class: 'row device-saved'"), js.indexOf("class: 'row device-saved'") + 400);
   assert.ok(!row.includes('amber'));
+});
+
+test('Reports: the hint over the list, and a row the site has not got says so in muted words', () => {
+  const w = COPY.status.credit;
+  assert.strictEqual(COPY.reports.notCreditedHint, 'Not credited yet? Log out once in game with the addon loaded.');
+  const row = (extra) => Object.assign({ key: 'k', url: 'https://x/r/1', done: true, credit: { state: 'unmatched', name: 'A' } }, extra);
+  assert.deepStrictEqual(FORMAT.reportCredit(row(), w), { kind: 'notyet', text: 'not credited yet' });
+  assert.strictEqual(FORMAT.reportCredit(row({ credit: { state: 'credited', name: 'Bow-Jackzon' } }), w).text, 'credited to Bow Jackzon');
+  assert.strictEqual(FORMAT.reportCredit(row({ done: false, credit: { state: 'none' } }), w).kind, 'noname');
+  assert.strictEqual(FORMAT.reportCredit(row({ done: true, credit: { state: 'none' } }), w).kind, 'notyet');
+  // No URL: the site has no such report, so there is nothing to credit and no orange word.
+  assert.deepStrictEqual(FORMAT.reportCredit(row({ url: '' }), w), { kind: 'absent', text: '' });
+  assert.strictEqual(COPY.reports.notOnSite + w.separator + COPY.reports.notOnSiteWhen, 'not on the site yet \u00b7 uploads when the site is reachable');
+  assert.strictEqual(FORMAT.anyNotCredited([row({ url: '' }), row({ credit: { state: 'credited', name: 'A' } })], w), false);
+  assert.strictEqual(FORMAT.anyNotCredited([row({ url: '' }), row()], w), true);
+  // The fixture list: a not-credited row on the site, one never created.
+  const rows = fixture('reports-rows.json').reports;
+  assert.strictEqual(FORMAT.anyNotCredited(rows, w), true);
+  assert.deepStrictEqual(rows.filter((r) => !r.url).map((r) => FORMAT.reportCredit(r, w).kind), ['absent']);
+});
+
+test('/combatlog is a toggle: the words never tell the player to type it blind', () => {
+  assert.strictEqual(COPY.reports.emptyBody,
+    'In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on.');
+  const ready = fixture('status-ready.json').headline;
+  assert.strictEqual(ready.sub, 'Waiting for a combat log. In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on.');
+  assert.strictEqual(COPY.status.noReport, 'None yet');
+  assert.strictEqual(COPY.status.rows.lastSync, 'Characters sent');
+});
+
+test('every count is in the body face, the poll failure disables Check for builds, bars start with the text', () => {
+  const js = read('app.js');
+  assert.ok(!/class: 'v mono', text: String\(p\./.test(js), 'no mono count');
+  assert.ok(js.includes('rows.checking || !rows.canCheck || rows.failed'));
+  const css = read('styles.css');
+  assert.match(css, /\.headline \.sub[^}]*text-wrap: pretty/);
+  assert.match(css, /\.expiry \{ width: 190px/);
+  assert.match(css, /\.bar\.update \{\s*align-items: flex-start/);
+  assert.ok(!/\.bar\.update \{\s*justify-content: flex-start/.test(css));
+  assert.match(css, /\.tag \{[^}]*var\(--line-strong\)/);
+  assert.match(css, /footer a \{ color: var\(--muted\)/);
 });
 
 test('the Fights row never shows a bare 0 on an open report', () => {

@@ -40,6 +40,7 @@
   --field: #0a0e15;
   --line: #262e40;
   --line-soft: #1c2230;
+  --line-strong: #3a4256;       /* a neutral outline for a status that is not an action */
   --line-warm: #3a3326;
   --line-warm-strong: #4a4030;
   --wash: rgba(255, 255, 255, 0.03);
@@ -239,7 +240,7 @@ h3 {
    the page; the update notice sits between the page and the footer.
    None of them animates, and each pushes the page, never the frame. */
 .bar {
-  display: flex; align-items: center; gap: var(--sp-3); justify-content: center;
+  display: flex; align-items: center; gap: var(--sp-3); justify-content: center; text-align: left;
   min-height: 36px;
   padding: 6px var(--gutter);
   background: var(--header);
@@ -247,16 +248,19 @@ h3 {
   font-size: var(--fs-small);
   color: var(--strong);
 }
-.bar.bad { background: var(--bad-bg); border-bottom-color: var(--bad-line); color: var(--bad-text); text-align: center; }
-.bar.bad svg { color: var(--bad); flex: none; }
+/* Every bar is centred as one group (mark, text, button) and its text reads left to right, so
+   a mark that wraps sits beside the first line of the text, not at the window's edge. */
+.bar.bad { background: var(--bad-bg); border-bottom-color: var(--bad-line); color: var(--bad-text); align-items: flex-start; }
+.bar.bad svg { color: var(--bad); flex: none; margin-top: 2px; }
 .bar button.ghost { margin-top: 0; min-height: 24px; padding: 0 10px; }
 .bar.update {
-  justify-content: flex-start;
+  align-items: flex-start;
   border-bottom: 0; border-top: 1px solid var(--line);
   color: var(--gold);
   animation: fade-in var(--dur-med) var(--ease);
 }
-.bar.update .pip { width: 6px; height: 6px; border-radius: 999px; background: var(--gold); flex: none; }
+.bar.update .pip { width: 6px; height: 6px; border-radius: 999px; background: var(--gold); flex: none; margin-top: 7px; }
+.first-check { margin-top: var(--sp-5); margin-bottom: 0; color: var(--muted); font-size: var(--fs-small); }
 
 /* ---- icons ----------------------------------------------------------- */
 
@@ -275,7 +279,7 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; fill: none; 
 .headline .title { font: 700 var(--fs-title)/1.2 var(--font-display); letter-spacing: 0.02em; color: var(--strong); }
 .headline .dot { width: 14px; height: 14px; margin: 0; }
 .headline .spinner { width: 18px; height: 18px; }
-.headline .sub { margin: 6px 0 0 28px; max-width: 60ch; font-size: var(--fs-body); color: var(--muted); }
+.headline .sub { margin: 6px 0 0 28px; max-width: 64ch; font-size: var(--fs-body); color: var(--muted); text-wrap: pretty; }
 .headline .actions { margin: var(--sp-4) 0 0 28px; display: flex; gap: var(--sp-4); align-items: center; flex-wrap: wrap; }
 .headline .actions button { margin-top: 0; }
 .headline .actions a { font-size: var(--fs-small); }
@@ -287,6 +291,7 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; fill: none; 
 .dot.warn { background: var(--warn); }
 /* The one live dot: the headline while logging. Nothing else breathes. */
 #headline[data-key='logging'] .dot.on { animation: breathe 2000ms ease-out infinite; }
+#headline[data-key='logging'] .dot.warn { box-shadow: 0 0 8px var(--warn); animation: breathe-warn 2000ms ease-out infinite; }
 
 /* ---- rows ------------------------------------------------------------ */
 
@@ -302,18 +307,19 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; fill: none; 
 .row:last-child { border-bottom: 0; }
 .row .k { color: var(--muted); font-size: var(--fs-small); }
 /* Prose is the body face; mono is for paths, ids, URLs and numbers. */
-.row .v { color: var(--strong); text-align: right; min-width: 0; font-size: var(--fs-body); }
+.row .v { color: var(--strong); text-align: right; min-width: 0; font-size: var(--fs-body); font-variant-numeric: tabular-nums; }
 .mono, .row .v.mono, .v .mono { font-family: var(--font-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
 .row .v.amber { color: var(--warn); font-weight: 600; }
 .row .v.muted { color: var(--muted); }
 .row .v .sub { display: block; font-size: var(--fs-caption); font-weight: 400; line-height: 1.5; color: var(--muted); }
 .row .v .sub.warn { color: var(--warn); }
 .row .v .warn { color: var(--warn); font-weight: 600; }
+.row .v .muted-word { color: var(--muted); }
 .row .v .help13 { display: block; font-size: var(--fs-small); font-weight: 400; line-height: 1.5; color: var(--muted); }
 /* The ghost button's side padding and border (11 px) are pulled back so its label ends on the value column's edge. */
 .row .v .check-builds { display: block; margin: 6px -11px 0 auto; }
 
-.note { color: var(--muted); font-size: var(--fs-small); margin: var(--sp-2) 0 0; min-height: 0; }
+.note { color: var(--muted); font-size: var(--fs-small); margin: var(--sp-2) 0 0; min-height: 0; text-wrap: pretty; }
 .note:empty { display: none; }
 .note.warn { color: var(--warn); }
 .note.bad { color: var(--bad); }
@@ -448,8 +454,8 @@ button.link:hover { color: var(--gold-hover); border: 0; }
 .install .help-line { margin: 4px 0 0 0; font-size: var(--fs-small); color: var(--warn); }
 .tag {
   display: inline-block; padding: 1px 6px;
-  border: 1px solid var(--gold-deep); border-radius: var(--radius-pill);
-  color: var(--gold);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
+  color: var(--strong);
   font: 700 var(--fs-label)/1.5 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase;
 }
 #installs .note { margin: var(--sp-3) 0; }
@@ -461,7 +467,9 @@ ul.folders .head { display: flex; align-items: baseline; gap: 10px; }
 ul.folders .played { margin-top: 0; }
 ul.folders .auto { font-size: var(--fs-caption); color: var(--muted); white-space: nowrap; }
 ul.folders .note { margin: 0; }
-#add-folder { margin-top: var(--sp-3); }
+.label-row { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-bottom: 6px; }
+.label-row .label { margin: 0; }
+#add-folder { margin: -4px -11px -4px 0; }
 
 /* ---- Reports --------------------------------------------------------- */
 
@@ -504,7 +512,7 @@ ul.reports button { position: relative; z-index: 1; }
 .state-line .spinner { width: 18px; height: 18px; }
 .device-body { margin-left: 32px; }
 .cta { margin-top: var(--sp-5); }
-.lede { color: var(--text); margin: var(--sp-3) 0 0; max-width: 56ch; }
+.lede { color: var(--text); margin: var(--sp-3) 0 0; max-width: 56ch; text-wrap: pretty; }
 .fine { color: var(--muted); font-size: var(--fs-caption); margin: var(--sp-3) 0 0; }
 /* The countdown is one sentence in one face; the last minute turns all of it amber. */
 .fine.expires { font-variant-numeric: tabular-nums; }
@@ -520,7 +528,7 @@ ul.reports button { position: relative; z-index: 1; }
   background: var(--field); border: 1px solid var(--line-warm); border-radius: var(--radius-control);
 }
 .code { display: block; font: 500 28px/1.2 var(--font-mono); letter-spacing: 0.16em; color: var(--strong); }
-.expiry { width: 240px; height: 4px; margin-top: 10px; border-radius: 2px; background: var(--line-soft); overflow: hidden; }
+.expiry { width: 190px; height: 4px; margin-top: 10px; border-radius: 2px; background: var(--line-soft); overflow: hidden; }
 .expiry > i { display: block; height: 100%; width: 100%; background: var(--gold); transition: width 1000ms linear; }
 .link-field { display: flex; gap: var(--sp-2); align-items: center; margin-top: 10px; }
 .link-field input { flex: 1; }
@@ -551,7 +559,20 @@ details .row { font-size: var(--fs-small); }
 
 /* ---- Settings -------------------------------------------------------- */
 
-.group + .group { margin-top: var(--sp-5); padding-top: var(--sp-5); border-top: 1px solid var(--line-soft); }
+/* The Settings page is dense: the page heading, three groups and the Save strip have to share a 620 px
+   window (two folders fully above the strip) and show the folders' label at 480. */
+main:has(#settings:not([hidden])) .page { padding-top: var(--sp-4); }
+#settings h2 { margin-bottom: var(--sp-2); }
+#settings .panel { padding-top: var(--sp-4); padding-bottom: var(--sp-4); margin-bottom: 0; }
+#settings .help { margin-top: var(--sp-1); }
+.group + .group { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+@media (max-height: 520px) {
+  select, input { min-height: 36px; }
+  :root { --save-h: 52px; }
+  main:has(#settings:not([hidden])) .page { padding-top: var(--sp-3); }
+  #settings .panel { padding-top: var(--sp-3); }
+  .group + .group { margin-top: var(--sp-3); padding-top: var(--sp-3); }
+}
 /* Save is a strip at the foot of the page, after the last group. On a window
    too short for everything it stays in view, and the page scrolls clear of it
    at the end: it is the section's last child, so it can never sit under a
@@ -573,6 +594,13 @@ details .row { font-size: var(--fs-small); }
   pointer-events: none;
 }
 .save-row button, .save-row .note { margin: 0; }
+.save-row button { margin-left: auto; }
+.save-msg { min-width: 0; flex: 1 1 auto; }
+.save-msg p { margin: 0; }
+.save-msg .state { color: var(--muted); font-size: var(--fs-small); }
+/* A message from Save ("Saved.") takes the state line's place until it clears. */
+.save-msg:has(.note:not(:empty)) .state { display: none; }
+.hint { margin: 0 0 var(--sp-3); color: var(--muted); font-size: var(--fs-small); }
 
 /* ---- footer ---------------------------------------------------------- */
 
@@ -582,8 +610,10 @@ footer .inner {
   display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
   height: 100%; max-width: var(--col); margin: 0 auto; padding: 0 var(--gutter);
 }
-footer .foot-left.updated { color: var(--ok); }
-footer a { transition: color var(--dur-fast) var(--ease); }
+footer .foot-left .updated { color: var(--ok); }
+/* The footer link is a place to go, not the page's action: muted, gold only when pointed at or focused. */
+footer a { color: var(--muted); text-decoration-color: var(--line-strong); transition: color var(--dur-fast) var(--ease); }
+footer a:hover, footer a:focus-visible { color: var(--gold); text-decoration-color: var(--gold); }
 
 /* ---- motion ---------------------------------------------------------- */
 
@@ -593,6 +623,10 @@ footer a { transition: color var(--dur-fast) var(--ease); }
 @keyframes breathe {
   from { box-shadow: 0 0 8px var(--ok), 0 0 0 0 rgba(123, 255, 92, 0.45); }
   to { box-shadow: 0 0 8px var(--ok), 0 0 0 6px rgba(123, 255, 92, 0); }
+}
+@keyframes breathe-warn {
+  from { box-shadow: 0 0 8px var(--warn), 0 0 0 0 rgba(232, 136, 58, 0.45); }
+  to { box-shadow: 0 0 8px var(--warn), 0 0 0 6px rgba(232, 136, 58, 0); }
 }
 @keyframes draw { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
 @keyframes border-settle { from { border-color: var(--ok-line); } to { border-color: var(--line); } }
@@ -625,7 +659,8 @@ footer a { transition: color var(--dur-fast) var(--ease); }
   .headline .actions button { width: 100%; }
   .device-body { margin-left: 0; }
   .expiry { width: 100%; }
-  .save-row { align-items: flex-start; flex-direction: column; gap: var(--sp-3); }
+  .save-row { align-items: stretch; flex-direction: column; gap: var(--sp-3); }
+  .save-row button { margin-left: 0; }
   .install { display: flex; flex-direction: column; }
   .install .top-line { display: contents; }
   .install .name { order: 1; }

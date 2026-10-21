@@ -14,16 +14,22 @@ const COPY = {
 
   // Shown when the companion's own service does not answer. The cause
   // is never printed.
-  localDown: 'The companion stopped responding. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.',
+  localDown: 'The companion stopped responding, so your fights may not be uploading. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.',
   trayNotice: 'Still running in the tray. Use Quit from the tray icon to stop logging.',
   dismiss: 'Dismiss',
 
+  // Shown in the body until the companion has answered once.
+  checking: 'Checking…',
+
   footer: {
+    // The footer is "Companion" at first paint and "Companion 0.2.13" from the first answer.
+    product: 'Companion',
     version: (v) => 'Companion ' + v,
     site: 'foreversixty.gg',
-    updateReady: 'Update ready. Quit the companion from the tray icon and start it again to install it.',
-    // The first half minute after the first launch of a new version.
-    updatedTo: (v) => 'Updated to ' + v,
+    updateReady: 'Update ready. Quit the companion from the tray icon and start it again to install it. Uploads pause while it restarts, so pick a quiet moment.',
+    // After "Companion 0.2.13", for the first half minute after a new version's first launch.
+    justUpdated: 'just updated',
+    joint: ' · ',
   },
 
   status: {
@@ -43,7 +49,7 @@ const COPY = {
       fights: 'Fights uploaded',
       queued: 'Queued',
       addon: 'Addon',
-      lastSync: 'Last sync',
+      lastSync: 'Characters sent',
     },
     // The Last sync row's sent line; the other lines come from the snapshot.
     lastSyncSent: (n, ago) => n + (n === 1 ? ' character, ' : ' characters, ') + ago,
@@ -61,6 +67,8 @@ const COPY = {
     credit: {
       credited: (name) => 'credited to ' + name,
       notYet: 'not credited yet',
+      // The log has named nobody yet on a report still open: not a fault, so muted.
+      noName: 'name not read yet',
       // The second line of the Current report row while it is not credited.
       notYetHelp: 'Log out once in game with the addon loaded. The companion credits this report then.',
       separator: ' · ',
@@ -91,12 +99,16 @@ const COPY = {
   reports: {
     all: 'Open all my reports on the site',
     emptyTitle: 'No reports yet.',
-    emptyBody: 'Type /combatlog in game, fight something, and the report shows up here within seconds.',
+    emptyBody: 'In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on.',
+    // One muted line over the list while any row reads "not credited yet".
+    notCreditedHint: 'Not credited yet? Log out once in game with the addon loaded.',
     unpairedTitle: 'Sign in first.',
     unpairedButton: 'Sign in with Battle.net',
     unnamed: 'Unnamed report',
     inProgress: 'in progress',
-    notUploaded: 'not uploaded yet',
+    // A report the site has not created yet. The companion creates it on its next upload try.
+    notOnSite: 'not on the site yet',
+    notOnSiteWhen: 'uploads when the site is reachable',
     fights: (n) => n + (n === 1 ? ' fight' : ' fights'),
     copyLink: 'Copy link',
     copied: 'Copied.',
@@ -185,6 +197,8 @@ const COPY = {
     characterAutoNow: (name) => 'Automatic (currently ' + name + ')',
     characterHelp: 'Automatic reads who is logging from the combat log itself. Pick a character only if that is wrong.',
     save: 'Save changes',
+    noChanges: 'No changes',
+    unsaved: 'Unsaved changes',
     saving: 'Saving...',
     saved: 'Saved.',
     savedVisibility: (words) => 'Saved. New reports will be ' + words + '. The report in progress keeps its setting.',

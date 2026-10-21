@@ -6,23 +6,38 @@
 
 const FORMAT = (() => {
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const BS = String.fromCharCode(92); // the Windows path separator
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  // midTruncate keeps the start and the end of a path, which are the
-  // drive and the flavour folder, and drops the middle.
-  function midTruncate(path, max) {
+  // pathTruncate shortens a folder path at its separators only, never
+  // inside a name. Past the budget it keeps the first segment (the drive)
+  // and the last two: C:\…\World of Warcraft\_classic_era_; then the drive
+  // and the last one: C:\…\_classic_era_. Only when that one name alone is
+  // still too long is it cut, with the ellipsis at the end of the name.
+  function pathTruncate(path, max) {
     if (path.length <= max) return path;
-    const keep = max - 1;
-    const head = Math.ceil(keep * 0.4);
-    const tail = keep - head;
-    return path.slice(0, head) + '…' + path.slice(path.length - tail);
+    const sep = path.includes(BS) ? BS : '/';
+    const segs = path.split(sep);
+    if (segs.length < 3) return cutName(path, max);
+    const head = segs[0] + sep + '…' + sep;
+    const two = head + segs.slice(-2).join(sep);
+    if (segs.length > 3 && two.length <= max) return two;
+    const one = head + segs[segs.length - 1];
+    if (one.length <= max) return one;
+    const room = max - head.length;
+    return head + cutName(segs[segs.length - 1], Math.max(room, 2));
   }
 
-  // pathBudget is how many characters of a folder path the Settings row has
-  // room for: 44 in the 800 px window, 34 at the 560 px minimum. Past the
-  // budget midTruncate keeps the drive and the flavour folder.
-  function pathBudget(width) {
-    return width >= 700 ? 44 : 34;
+  // cutName is a single name cut to max characters, ellipsis last.
+  function cutName(name, max) {
+    return name.length <= max ? name : name.slice(0, max - 1) + '…';
+  }
+
+  // pathBudget is how many characters of a folder path a row has room for:
+  // 56 in the 800 px window, 38 at the 560 px minimum. The Status page's
+  // rows have no control beside the path and take 6 more.
+  function pathBudget(width, wide) {
+    return (width >= 700 ? 56 : 38) + (wide ? 6 : 0);
   }
 
   const pad = (n) => String(n).padStart(2, '0');
@@ -66,12 +81,38 @@ const FORMAT = (() => {
   }
 
   // creditText is the suffix after a report's zone: who it is credited to,
-  // or that it is not yet. Never a hyphenated name: the log's form is the
-  // companion's to log, the player reads "Bow Jackzon".
-  function creditText(credit, words) {
+  // that the log has named nobody yet (state none, a report still open: not
+  // a fault), or that it is not credited yet. Never a hyphenated name: the
+  // log's form is the companion's to log, the player reads "Bow Jackzon".
+  // A report that is done and still named nobody is not credited, whatever
+  // its state says: pass done=true for it.
+  function creditText(credit, words, done) {
     const c = credit || {};
     if (c.state === 'credited') return words.credited(spaced(c.name));
+    if (c.state === 'none' && !done) return words.noName;
     return words.notYet;
+  }
+
+  // reportCredit is how a Reports row ends: kind credited, notyet (the one
+  // orange phrase, and only when the report is on the site: it is credited
+  // by creating it with a character or by a patch), noname (muted), or
+  // absent (the site has no such report yet, so there is nothing to
+  // credit and no URL).
+  function reportCredit(r, words) {
+    if (!r.url) return { kind: 'absent', text: '' };
+    const c = r.credit || {};
+    const text = creditText(c, words, r.done);
+    return { kind: c.state === 'credited' ? 'credited' : (text === words.noName ? 'noname' : 'notyet'), text };
+  }
+
+  // anyNotCredited is true when a row in the list reads "not credited yet".
+  function anyNotCredited(reports, words) {
+    return reports.some((r) => reportCredit(r, words).kind === 'notyet');
+  }
+
+  // saveStrip is the Settings strip's words and whether Save can be pressed.
+  function saveStrip(dirty, saving, words) {
+    return { text: dirty ? words.unsaved : words.noChanges, enabled: dirty && !saving };
   }
 
   const spaced = (name) => String(name || '').replace(/-/g, ' ');
@@ -80,13 +121,16 @@ const FORMAT = (() => {
   // or the zone once known), the credit words, and the muted help line that
   // only a report not credited yet carries.
   function currentReport(report, status) {
-    const credited = !!report.credit && report.credit.state === 'credited';
+    const state = (report.credit || {}).state;
+    const credited = state === 'credited';
+    const noName = state === 'none';
     return {
       lead: report.zone || status.inProgress,
       separator: status.credit.separator,
       credit: creditText(report.credit, status.credit),
       credited,
-      help: credited ? '' : status.credit.notYetHelp,
+      noName,
+      help: credited || noName ? '' : status.credit.notYetHelp,
     };
   }
 
@@ -184,7 +228,7 @@ const FORMAT = (() => {
     return secondsLeft(expiresISO, now) <= LATE_SECONDS;
   }
 
-  return { midTruncate, pathBudget, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
+  return { pathTruncate, pathBudget, reportCredit, anyNotCredited, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

@@ -28,6 +28,7 @@
   <span id="tray-bar-text"></span>
   <button class="ghost" id="tray-bar-dismiss" type="button">Dismiss</button>
 </div>
+<p class="col first-check" id="first-check" role="status">Checking…</p>
 <main id="main" hidden>
   <div class="col page">
     <section id="status">
@@ -43,16 +44,17 @@
         <h2 tabindex="-1">Your reports</h2>
         <a id="reports-all" href="#" data-open></a>
       </div>
+      <p class="hint" id="reports-hint" hidden></p>
       <div class="panel flush" id="report-panel"></div>
     </section>
 
     <section id="device" hidden>
-      <h2 tabindex="-1">This device</h2>
+      <h2 class="sr" tabindex="-1">This device</h2>
       <div class="panel" id="device-panel"></div>
     </section>
 
     <section id="settings" hidden>
-      <h2 class="sr" tabindex="-1">Settings</h2>
+      <h2 tabindex="-1">Settings</h2>
       <div class="panel">
         <div class="group">
           <label for="visibility" id="visibility-label">New reports are</label>
@@ -72,16 +74,21 @@
         </div>
 
         <div class="group">
-          <div class="label" id="folders-label">Game folders</div>
+          <div class="label-row">
+            <div class="label" id="folders-label">Game folders</div>
+            <button class="ghost small" id="add-folder" type="button">Add a folder...</button>
+          </div>
           <ul class="folders" id="folder-list" aria-labelledby="folders-label"></ul>
-          <button class="action" id="add-folder" type="button">Add a folder...</button>
           <p class="note" id="folder-note" role="status"></p>
         </div>
 
       </div>
       <div class="save-row">
+        <div class="save-msg">
+          <p class="state" id="save-state">No changes</p>
+          <p class="note" id="settings-note" role="status"></p>
+        </div>
         <button class="action primary big" id="save" type="button" disabled>Save changes</button>
-        <p class="note" id="settings-note" role="status"></p>
       </div>
     </section>
   </div>
@@ -89,7 +96,7 @@
 <div class="bar update" id="update-bar" role="status" hidden><span class="pip" aria-hidden="true"></span><span id="update-text"></span></div>
 <footer id="footer">
   <div class="inner">
-    <span class="foot-left" id="foot-version"></span>
+    <span class="foot-left" id="foot-version">Companion</span>
     <a class="foot-right" id="foot-site" href="https://foreversixty.gg" data-open>foreversixty.gg</a>
   </div>
 </footer>
