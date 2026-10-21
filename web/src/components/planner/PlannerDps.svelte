@@ -6,7 +6,7 @@
      click is worse than one that is briefly a click behind. -->
 <script lang="ts">
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
-  import { simCopy } from '../../lib/sim/copy';
+  import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';

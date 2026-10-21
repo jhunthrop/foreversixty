@@ -27,7 +27,7 @@
   import type { BuildDraft } from '../../lib/planner/types';
   import { saveSim } from '../../lib/sim/api';
   import { characterFromPlanner, toCharacterSpec } from '../../lib/sim/character';
-  import { simCopy } from '../../lib/sim/copy';
+  import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { runSim } from '../../lib/sim/run';
   import { defaultSettings } from '../../lib/sim/settings';
   import { referenceStatOf } from '../../lib/sim/spec-label';

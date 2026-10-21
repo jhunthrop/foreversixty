@@ -22,7 +22,7 @@
     isBarePlannerUrl,
     writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
-  import { bisCopy } from '../../lib/bis/copy';
+  import { bandRangeLabel } from '../../lib/planner/band-title';
   import { bandForLevel } from '../../lib/bis/hover';
   import { plannerCopy } from '../../lib/planner/copy';
   import { levelReached, ranksByTalent } from '../../lib/planner/derive';
@@ -37,7 +37,7 @@
   import { plannerSearchFor } from '../../lib/planner/url';
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
-  import { simCopy } from '../../lib/sim/copy';
+  import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { specRow } from '../../lib/sim/spec-label';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import LoadError from '../ui/LoadError.svelte';
@@ -546,7 +546,7 @@
         talentsApplied = true;
         const rebuilt = loadFromBand(store.talentIndex, talentsParam);
         store.applyOrder(rebuilt.order, {});
-        const bandLabel = bisCopy.bandRangeLabel(bandForLevel(levelReached(rebuilt.order)));
+        const bandLabel = bandRangeLabel(bandForLevel(levelReached(rebuilt.order)));
         store.nameBandBuild(bandTitleForDraft(bandLabel, store.classSlug, store.split));
         codeNote = { kind: 'band', bandLabel };
       }
