@@ -114,8 +114,9 @@ func TestRecentHandlerFiltersLinksAndCounts(t *testing.T) {
 		t.Fatal(err)
 	}
 	h.reportID = "public00zone"
-	h.seedFight(1, 9001, 0, 500) // an encounter kill
-	h.seedFight(2, 0, 500, 900)  // trash, not counted as a kill
+	h.seedFight(1, 9001, 0, 500)    // an encounter kill
+	h.seedFight(2, 0, 500, 900)     // trash, not counted as a kill
+	h.seedFight(3, 9001, 900, 1300) // the same boss again: a second kill, still one boss
 
 	res := h.do(http.MethodGet, "/v1/reports/recent", "", nil)
 	var page RecentPage
@@ -130,8 +131,9 @@ func TestRecentHandlerFiltersLinksAndCounts(t *testing.T) {
 	if newest.GuildName != "Forever" {
 		t.Fatalf("guild_name = %q, want Forever", newest.GuildName)
 	}
-	if newest.FightCount != 2 || newest.KillCount != 1 {
-		t.Fatalf("counts = %d fights, %d kills; want 2, 1", newest.FightCount, newest.KillCount)
+	if newest.FightCount != 3 || newest.KillCount != 2 || newest.BossCount != 1 {
+		t.Fatalf("counts = %d fights, %d kills, %d bosses; want 3, 2, 1",
+			newest.FightCount, newest.KillCount, newest.BossCount)
 	}
 	if page.Rows[1].GuildName != "" {
 		t.Fatalf("a report with no guild should carry no guild_name: %q", page.Rows[1].GuildName)

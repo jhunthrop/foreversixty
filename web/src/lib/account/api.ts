@@ -645,6 +645,8 @@ export interface MyReport {
   created_at: string;
   fight_count: number;
   kill_count: number;
+  /** Distinct bosses killed (the API's own count; absent from an API before it). */
+  boss_count?: number;
   /** The character the log is credited to (`{ key, name }`); null when none is. */
   logging_character?: string | { key?: string; name?: string } | null;
   /** The newest fight upload, else creation; with `heartbeat_at` it says Quiet or Live as the report meta does. */

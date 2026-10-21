@@ -462,13 +462,41 @@ func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) (map
 		}
 		a.At = awardedAt.UTC().Format(time.RFC3339)
 		if awardedBy != nil && s.Accounts != nil {
-			if u, uerr := s.Accounts.User(ctx, *awardedBy); uerr == nil {
-				a.ByName = u.PublicName()
-			}
+			a.ByName = s.awarderName(ctx, guildID, *awardedBy)
 		}
 		out[itemID] = &a
 	}
 	return out, rows.Err()
+}
+
+// anOfficer is what an award line says when it cannot name the officer's character.
+const anOfficer = "an officer"
+
+// awarderName is how an award line names the officer who made it: the account's main
+// character in THIS guild (its highest item level, ties by name, the same pick the roster
+// makes for "alt of"), never a BattleTag. An account with no character in the guild, or one
+// that has asked to be shown by pseudonym (users.anonymize, which the guild pages honour by
+// never printing the account behind a character), reads "an officer" - the line names no
+// one the guild cannot already see, and never the "user-12" pseudonym a stranger would be told.
+func (s *Store) awarderName(ctx context.Context, guildID, userID int64) string {
+	u, err := s.Accounts.User(ctx, userID)
+	if err != nil || u.Anonymize {
+		return anOfficer
+	}
+	var name string
+	err = s.Pool.QueryRow(ctx, `
+		select ae.name
+		from guild_characters gc
+		join addon_exports ae on ae.character_key = gc.character_key
+		where gc.guild_id = $1 and gc.user_id = $2 and gc.character_key not like 'account:%'
+		order by coalesce((
+		  select m.ilvl from fight_metrics m
+		  where m.player_key = gc.character_key order by m.fought_at desc limit 1), -1) desc, ae.name
+		limit 1`, guildID, userID).Scan(&name)
+	if err != nil || name == "" {
+		return anOfficer
+	}
+	return name
 }
 
 // ErrInvalidAward is returned for an award whose encounter/item is not one of Onyxia's

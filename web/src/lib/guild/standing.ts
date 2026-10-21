@@ -12,15 +12,14 @@ export const EVERY_CHECK_PASSES_LINE = 'Every readiness check passes. Nothing ne
 /**
  * The header's own "where do I stand" clause (spec §4.A.1), unchanged mechanism from v1:
  * ranked by item level among same-spec, same-class peers this week. A spec with no other
- * ranked peer reads "the only {spec} {class} in this guild this week" rather than a
- * meaningless "1 of 1".
+ * ranked peer says nothing at all (empty): "the only Beast Mastery Hunter in this guild" was
+ * a gloss nobody asked for, and its spec came from a different place than the header chip's, so
+ * the two read as a contradiction (round 8, P8-1).
  */
 export function standingSentence(standing: GuildHomeStanding): string {
   const className = capitalize(standing.class);
   const spec = specName(standing.spec);
-  if (standing.same_spec_count <= 1) {
-    return `the only ${spec} ${className} in this guild this week`;
-  }
+  if (standing.same_spec_count <= 1) return '';
   return (
     `${standing.rank_by_item_level} of ${standing.same_spec_count} ${spec} ${className}s ` +
     `this week by item level (${standing.item_level} ilvl)`

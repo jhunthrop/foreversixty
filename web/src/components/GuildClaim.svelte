@@ -114,6 +114,10 @@
   const view = $derived(claimView({ me, membership, settings, home }));
   const eligible = $derived(view.viewer === 'eligible');
   const claimState = $derived(view.claim?.state ?? null);
+  /** The signed-in account is the one holding the claim: the page is then about the claim it holds. */
+  const holdsClaim = $derived(
+    settings !== null && settings.claimed_by !== null && settings.claimed_by.battletag === myBattletag,
+  );
 
   async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
@@ -167,7 +171,9 @@
   <a class="text-nav w-fit text-[13px]" href={guildHref(path.region, path.ruleset, guildName || path.slug)}>
     ← {guildClaimCopy.backToGuild(guildName)}
   </a>
-  <h1 class="section-title text-[18px]">{guildClaimCopy.heading(guildName)}</h1>
+  <h1 class="section-title text-[18px]" data-testid="guild-claim-heading">
+    {holdsClaim ? guildClaimCopy.headingHeld(guildName) : guildClaimCopy.heading(guildName)}
+  </h1>
   {#if status === 'loading' || status === 'failed'}
     <GuildStatus
       status={status === 'loading' ? 'loading' : 'failed'}
@@ -238,31 +244,28 @@
         {#if claimState !== 'contested'}
           <section class="flex flex-col gap-2" data-testid="guild-claim-next">
             <h2 class="section-title text-[16px]">{guildClaimCopy.nextHeading}</h2>
-            <ul class="flex flex-col gap-1 text-[14px]">
-              <li>
-                <a
-                  class="text-nav inline-flex min-h-11 items-center underline md:min-h-0"
-                  href={`${guildBase}#roster`}
-                  data-testid="guild-claim-next-roster"
-                >
-                  {guildClaimCopy.nextRoster}
-                </a>
-              </li>
-              <li>
-                <a
-                  class="text-nav inline-flex min-h-11 items-center underline md:min-h-0"
-                  href={settingsBase}
-                  data-testid="guild-claim-next-invite"
-                >
-                  {guildClaimCopy.nextInvite}
-                </a>
-              </li>
-            </ul>
+            <!-- Two button rows: the first step is the primary, the second a ghost; full width on a phone. -->
+            <div class="flex flex-col gap-3 md:flex-row">
+              <a
+                class={`${PRIMARY_BUTTON_FIXED} w-full justify-center px-4 md:w-auto`}
+                href={`${guildBase}#roster`}
+                data-testid="guild-claim-next-roster"
+              >
+                {guildClaimCopy.nextRoster}
+              </a>
+              <a
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-full justify-center px-4 md:w-auto`}
+                href={settingsBase}
+                data-testid="guild-claim-next-invite"
+              >
+                {guildClaimCopy.nextInvite}
+              </a>
+            </div>
           </section>
         {/if}
         {#if !showReleaseConfirm}
           <button
-            class={`text-muted w-fit text-[13px] underline ${busy ? BUSY_CLASS : ''}`}
+            class={`text-muted mt-2 w-fit text-[13px] underline ${busy ? BUSY_CLASS : ''}`}
             onclick={() => (showReleaseConfirm = true)}
             disabled={busy}
             aria-busy={busy}

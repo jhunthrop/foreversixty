@@ -68,41 +68,68 @@ const withoutSnapshot = render(GuildRosterTable, {
 }).body;
 
 describe('GuildRosterTable: the In game column (L8.3)', () => {
-  it('adds an "In game" sort header after the existing columns, hovering "as the addon reports it"', () => {
-    const header = withSnapshot.slice(withSnapshot.indexOf('data-testid="guild-roster-sort-header"'));
-    const labels = [...header.matchAll(/data-testid="guild-roster-sort-(?!header")([a-z_]+)"/g)].map(
-      (m) => m[1],
-    );
-    expect(labels).toEqual(['rank', 'ilvl', 'rating', 'attendance', 'seen', 'addon_gap']);
-    const tag = /<button[^>]*data-testid="guild-roster-sort-addon_gap"[^>]*>/.exec(header)?.[0] ?? '';
-    expect(tag).toContain(`title="${guildRosterAddonCopy.columnHover}"`);
-    expect(guildRosterAddonCopy.columnHover).toContain('as the addon reports it');
-    expect(text(header)).toContain(guildRosterAddonCopy.column);
+  it('sorts by chips under a SORT label: no header row, no "In game" heading', () => {
+    expect(withSnapshot).not.toContain('guild-roster-sort-header');
+    expect(withSnapshot).not.toContain('columnheader');
+    const sort = withSnapshot.slice(withSnapshot.indexOf('data-testid="guild-roster-sort"'));
+    const row = sort.slice(0, sort.indexOf('data-testid="guild-roster-addon-snapshot"'));
+    expect(text(row)).toContain('Sort Rank Item level');
+    const labels = [...row.matchAll(/data-testid="guild-roster-sort-([a-z_]+)"/g)].map((m) => m[1]);
+    expect(labels).toEqual(['rank', 'ilvl', 'rating', 'attendance', 'seen']);
+    expect(labels).not.toContain('addon_gap');
+    expect(text(row)).not.toContain(guildRosterAddonCopy.column);
   });
 
-  it('keeps the default sort on item level', () => {
-    const header = withSnapshot.slice(withSnapshot.indexOf('data-testid="guild-roster-sort-header"'));
-    const active = /data-testid="guild-roster-sort-ilvl"[^>]*>([^<]*)</.exec(header)?.[1] ?? '';
-    expect(active).toContain('▾');
+  it('hides the Rating chip when no row has a rating', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    const unrated = {
+      ...props(home),
+      roster: home.roster.map(({ rating: _rating, ...rest }) => rest),
+    };
+    const html = render(GuildRosterTable, { props: unrated }).body;
+    expect(html).not.toContain('guild-roster-sort-rating');
+    expect(html).toContain('guild-roster-sort-attendance');
+  });
+
+  it('keeps the default sort on item level, the active chip showing its arrow and aria-sort', () => {
+    const tag = /<button[^>]*data-testid="guild-roster-sort-ilvl"[^>]*>[^<]*</.exec(withSnapshot)?.[0] ?? '';
+    expect(tag).toContain('▾');
+    expect(tag).toContain('aria-sort="descending"');
+    expect(/<button[^>]*data-testid="guild-roster-sort-rank"[^>]*>/.exec(withSnapshot)?.[0]).not.toContain(
+      'aria-sort',
+    );
     const names = [...rows(withSnapshot).keys()];
     // Zulmara (the viewer) pinned first, then item level descending: Windtalon 70 leads.
     expect(names.slice(0, 3)).toEqual(['Zulmara', 'Windtalon', 'Pyrewisp']);
   });
 
-  it('a matched row reads Level, Gear gap, the in-game spec only where it differs, the gear set and seen, in that order', () => {
+  it('a matched row reads Level, Gear gap, the gear set and seen in that order; the spec has its own line', () => {
     const byName = rows(withSnapshot);
     // Zulmara: the site says Marksmanship, the addon says Survival.
     const zulmara = byName.get('Zulmara') ?? '';
     expect(zulmara).toContain('data-testid="guild-roster-ingame"');
     expect(text(zulmara)).toContain(
-      'Level 60 · Gear gap 12 DPS · Survival in game · Gear set: Survival (raid) · seen 6 minutes ago',
+      'Level 60 · Gear gap 12 DPS · Gear set: Survival (raid) · seen 6 minutes ago',
     );
-    // Kraggor: the addon agrees with the site's Protection, so the level shows with no tag.
+    expect(text(zulmara)).toContain('Survival Hunter in game · Marksmanship on the site');
+    // Kraggor: the addon agrees with the site's Protection, so the line says only "in game".
     const kraggor = text(byName.get('Kraggor') ?? '');
     expect(kraggor).toContain('Level 60 · Gear gap 4 DPS · Gear set: Protection (raid) · seen 8 minutes ago');
-    expect(kraggor).not.toContain('in game ·');
+    expect(kraggor).toContain('Protection Warrior in game');
+    expect(kraggor).not.toContain('on the site');
     expect(kraggor).not.toContain('(addon)');
     expect(withSnapshot).not.toContain('(addon)');
+  });
+
+  it("the viewer's own row compares the snapshot with the site's character record", () => {
+    const html = render(GuildRosterTable, {
+      props: { ...props(buildMockHome(VIEWER_MEMBER)), mySiteSpec: 'Beast Mastery' },
+    }).body;
+    expect(text(rows(html).get('Zulmara') ?? '')).toContain(
+      'Survival Hunter in game · Beast Mastery on the site',
+    );
+    // Other rows still read the roster's own spec.
+    expect(text(rows(html).get('Kraggor') ?? '')).toContain('Protection Warrior in game');
   });
 
   it('the seen time hovers "Seen at HH:MM on the member\'s clock"', () => {
@@ -193,10 +220,30 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(kraggor).toContain('Protection Warrior');
   });
 
-  it('the In game header sits over the same slot', () => {
-    const header =
-      /<button[^>]*data-testid="guild-roster-sort-addon_gap"[^>]*>/.exec(withSnapshot)?.[0] ?? '';
-    expect(header).toContain('lg:w-[260px]');
+  it('gives every row the same fixed name block and rank slot at lg, so the stats line up', () => {
+    for (const [name, part] of rows(withSnapshot)) {
+      expect(part, name).toContain('lg:w-[240px]');
+      expect(part, name).toContain('lg:w-[72px]');
+      const at = part.indexOf('data-testid="guild-roster-spec"');
+      const subtitle = part.slice(part.lastIndexOf('<span', at), at + 400);
+      expect(subtitle, name).toContain('lg:truncate');
+      expect(subtitle, name).toContain('title="');
+    }
+  });
+
+  it('drops the Gear gap fact when it is 0', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    const zeroed = {
+      ...props(home),
+      roster: home.roster.map((row) =>
+        row.addon === undefined || row.addon === null
+          ? row
+          : { ...row, addon: { ...row.addon, gear_gap: 0 } },
+      ),
+    };
+    const html = render(GuildRosterTable, { props: zeroed }).body;
+    expect(text(html)).not.toContain('Gear gap 0');
+    expect(html).not.toContain('guild-roster-ingame-gap');
   });
 
   it('puts a dot between the spec and "alt of {main}" rather than running them together', () => {

@@ -32,6 +32,8 @@ export interface RecentReport {
   created_at: string;
   fight_count: number;
   kill_count: number;
+  /** Distinct bosses killed; absent from an API before it. */
+  boss_count?: number;
   /** Absent when the report has no guild. */
   guild_name?: string;
   /** The zone the report was logged in; the API sends it once the list carries it (A.6). */

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidFight, GuildRaidRow } from './api';
 import { buildMockProgression, buildMockRaids } from '../../fixtures/guild/mock-guild';
-import { bossIdsOf, raidTally, raidTallyLine, reportTallyLine } from './raid-view';
+import { bossIdsOf, raidTally, raidTallyLine, raidTallyParts, reportTallyLine } from './raid-view';
 
 function fight(
   index: number,
@@ -66,6 +66,26 @@ describe('raidTallyLine', () => {
     const row = night([fight(0, 'Onyxia', 1084, true)]);
     expect(raidTallyLine(row, null)).toBe('1 kill · 0 wipes');
     expect(reportTallyLine(4, 1)).toBe('4 kills · 1 wipe');
+  });
+});
+
+describe('raidTallyParts', () => {
+  it('hands the facts over one piece each, so a phone wraps them whole', () => {
+    const row = night(
+      [
+        fight(0, 'Onyxian Whelp', null, true),
+        fight(1, 'Onyxia', 1084, false),
+        fight(2, 'Onyxian Whelp', null, true),
+        fight(3, 'Onyxia', 1084, true),
+      ],
+      1,
+    );
+    expect(raidTallyParts(row, BOSSES)).toEqual(['1 boss (Onyxia)', '1 kill', '2 trash packs', '1 wipe']);
+    expect(raidTallyParts(row, BOSSES).join(' · ')).toBe(raidTallyLine(row, BOSSES));
+  });
+
+  it('is the two API counts while the tier list is unknown', () => {
+    expect(raidTallyParts(night([fight(0, 'Onyxia', 1084, true)]), null)).toEqual(['1 kill', '0 wipes']);
   });
 });
 

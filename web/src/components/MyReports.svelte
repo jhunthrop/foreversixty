@@ -148,6 +148,7 @@
             zone: report.zone,
             fightCount: report.fight_count,
             killCount: report.kill_count,
+            bossCount: report.boss_count,
           })}
           status={report.status}
           character={creditedName(report.logging_character)}

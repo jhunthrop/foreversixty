@@ -3,6 +3,7 @@
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
 import { dayWord } from '../dates';
+import { nightsLabel } from './nights';
 import { specName } from './spec-name';
 import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem } from './api';
 
@@ -12,6 +13,9 @@ export const NOT_SIMMED_NOTE = 'Gain here is item level. The simulator has not c
 export const NO_CANDIDATE = 'No one on the roster can use this.';
 export const ALREADY_AWARDED = 'Already awarded';
 export const UNDO_AWARD = 'Undo';
+
+/** A no-break space: "by Bow Jackzon" and "+16 item levels" never break inside. */
+const NBSP = '\u00a0';
 
 /** "Award Stormrage Cover to Rootbound?", what the inline confirm asks before an award is recorded. */
 export function awardQuestion(itemName: string, candidateName: string): string {
@@ -32,7 +36,7 @@ export function anyNotSimmed(items: readonly GuildLootItem[]): boolean {
 
 /** "Rootbound · +76 item levels over their current Head · 1 of 1 raid nights", the tail of a row. */
 export function attendanceLabel(present: number, nights: number): string {
-  return `${present} of ${nights} raid night${nights === 1 ? '' : 's'}`;
+  return nightsLabel(present, nights, 'raid night');
 }
 
 /** "Awarded to Rootbound · today · by Bow Jackzon": said once, on the item. */
@@ -41,7 +45,7 @@ export function awardedLine(
   now: Date = new Date(),
 ): string {
   const day = dayWord(new Date(awarded.at), now);
-  return [`Awarded to ${awarded.name}`, day, awarded.by_name === '' ? '' : `by ${awarded.by_name}`]
+  return [`Awarded to ${awarded.name}`, day, awarded.by_name === '' ? '' : `by${NBSP}${awarded.by_name}`]
     .filter((part) => part !== '')
     .join(' · ');
 }
@@ -66,11 +70,13 @@ export function nextUnkilledEncounter(
  * fixture (predating the tier-1 fallback) never once exercised a null `gain_dps`.
  */
 export function candidateGainLabel(candidate: GuildLootCandidate): string {
-  if (candidate.gain_dps !== null) return `+${Math.round(candidate.gain_dps)} DPS`;
+  // An empty slot gains nothing to compare: the rider would only print the item's own level.
+  if (candidate.replaces === '') return '';
+  if (candidate.gain_dps !== null) return `+${Math.round(candidate.gain_dps)}${NBSP}DPS`;
   if (candidate.ilvl_delta !== null) {
     const delta = candidate.ilvl_delta;
     const sign = delta >= 0 ? '+' : '';
-    const figure = `${sign}${delta} item level${Math.abs(delta) === 1 ? '' : 's'}`;
+    const figure = `${sign}${delta}${NBSP}item${NBSP}level${Math.abs(delta) === 1 ? '' : 's'}`;
     return figure;
   }
   return '—';

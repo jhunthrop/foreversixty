@@ -27,6 +27,7 @@ type RecentSummary struct {
 	CreatedAt  time.Time `json:"created_at"`
 	FightCount int       `json:"fight_count"`
 	KillCount  int       `json:"kill_count"`
+	BossCount  int       `json:"boss_count"`
 	// GuildName is empty when the report has no guild.
 	GuildName string `json:"guild_name,omitempty"`
 }

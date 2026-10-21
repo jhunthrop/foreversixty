@@ -3,6 +3,7 @@
 // many bosses died and how long the night ran, "Blackrock Depths · 4 bosses · 2 h 10 m". A part
 // the API did not send is left out rather than guessed; the list endpoint does not carry the
 // length yet, so it prints when it does.
+import { bossCountLabel } from '../boss-count';
 import { reportCredit } from '../report/credit';
 
 const MS_PER_MINUTE = 60_000;
@@ -34,7 +35,7 @@ export interface OwnReportFacts {
 export function ownReportSummary({ zone, killCount, durationMs }: OwnReportFacts): string {
   return join([
     zone,
-    plural(killCount, 'boss', 'bosses'),
+    bossCountLabel(killCount),
     durationMs === undefined ? undefined : formatReportLength(durationMs),
   ]);
 }
@@ -53,16 +54,25 @@ export function publicReportSummary({ zone, killCount, guildName }: PublicReport
 export interface RecentReportFacts {
   zone?: string;
   killCount: number;
+  /** Distinct bosses killed, when the API sends it; absent, the kill count stands in. */
+  bossCount?: number;
   fightCount: number;
   guildName?: string;
 }
 
 /** A row of the public list, in the shape "Your reports" uses (the character and the badge are
  *  ReportRow's own): zone, bosses when there are any, fights, then the guild when it has one. */
-export function recentReportSummary({ zone, killCount, fightCount, guildName }: RecentReportFacts): string {
+export function recentReportSummary({
+  zone,
+  killCount,
+  bossCount,
+  fightCount,
+  guildName,
+}: RecentReportFacts): string {
+  const bosses = bossCount ?? killCount;
   return join([
     zone === undefined || zone === '' ? undefined : zone,
-    killCount > 0 ? plural(killCount, 'boss', 'bosses') : undefined,
+    bosses > 0 ? bossCountLabel(bosses) : undefined,
     plural(fightCount, 'fight', 'fights'),
     guildName,
   ]);
@@ -72,6 +82,8 @@ export interface AccountReportFacts {
   zone: string;
   fightCount: number;
   killCount: number;
+  /** Distinct bosses killed, when the API sends it; absent, the kill count stands in. */
+  bossCount?: number;
 }
 
 /**
@@ -79,10 +91,11 @@ export interface AccountReportFacts {
  * something to the player. "Darnassus · 0 fights", "Blackrock Depths · 3 bosses · 14 fights";
  * bosses print only when there are any, and a report with no zone says so.
  */
-export function accountReportSummary({ zone, fightCount, killCount }: AccountReportFacts): string {
+export function accountReportSummary({ zone, fightCount, killCount, bossCount }: AccountReportFacts): string {
+  const bosses = bossCount ?? killCount;
   return join([
     zone === '' ? 'No zone yet' : zone,
-    killCount > 0 ? plural(killCount, 'boss', 'bosses') : undefined,
+    bosses > 0 ? bossCountLabel(bosses) : undefined,
     plural(fightCount, 'fight', 'fights'),
   ]);
 }

@@ -1567,7 +1567,7 @@ paths:
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
         '200':
-          description: "rows, total, page, per_page (100). Each row carries id, title, zone, status, visibility, created_at, fight_count and kill_count, plus logging_character ({key, name} or null), last_upload_at and heartbeat_at, each as GET /v1/reports/{id} answers them (last_upload_at is never null here; heartbeat_at is null before the first beat)."
+          description: "rows, total, page, per_page (100). Each row carries id, title, zone, status, visibility, created_at, fight_count, kill_count and boss_count (distinct bosses killed), plus logging_character ({key, name} or null), last_upload_at and heartbeat_at, each as GET /v1/reports/{id} answers them (last_upload_at is never null here; heartbeat_at is null before the first beat)."
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
         '400': { description: "mine=1 is required", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     post:

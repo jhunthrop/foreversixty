@@ -22,22 +22,18 @@ describe('standingSentence', () => {
     );
   });
 
-  it('reads "the only" when there is exactly one ranked peer', () => {
-    expect(standingSentence(standing({ same_spec_count: 1, rank_by_item_level: 1 }))).toBe(
-      'the only Marksmanship Hunter in this guild this week',
-    );
+  it('says nothing when there is exactly one ranked peer: no "the only" gloss', () => {
+    expect(standingSentence(standing({ same_spec_count: 1, rank_by_item_level: 1 }))).toBe('');
   });
 
   it('prints the spec as a player says it, never the camel-cased export name', () => {
-    expect(
-      standingSentence(standing({ spec: 'BeastMastery', same_spec_count: 1, rank_by_item_level: 1 })),
-    ).toBe('the only Beast Mastery Hunter in this guild this week');
+    expect(standingSentence(standing({ spec: 'BeastMastery', same_spec_count: 2 }))).toBe(
+      '2 of 2 Beast Mastery Hunters this week by item level (66 ilvl)',
+    );
   });
 
-  it('reads "the only" when there are no ranked peers at all', () => {
-    expect(standingSentence(standing({ same_spec_count: 0, rank_by_item_level: 0 }))).toBe(
-      'the only Marksmanship Hunter in this guild this week',
-    );
+  it('says nothing when there are no ranked peers at all', () => {
+    expect(standingSentence(standing({ same_spec_count: 0, rank_by_item_level: 0 }))).toBe('');
   });
 });
 

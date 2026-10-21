@@ -235,8 +235,8 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 		        m.execution_score
 		 from fight_metrics m join reports r on r.id = m.report_id
 		 where r.guild_id = $1 and m.kill and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
-		 order by m.player_key, m.encounter_id, greatest(coalesce(m.metric_dps, 0),
-		          coalesce(m.metric_hps, 0), coalesce(m.damage_taken, 0)) desc`, out.Guild.ID)
+		 order by m.player_key, m.encounter_id,
+		          (case when m.role = 'healer' then coalesce(m.metric_hps, 0) else coalesce(m.metric_dps, 0) end) desc`, out.Guild.ID)
 	if err != nil {
 		return Guild{}, false, fmt.Errorf("rankings: read roster bests: %w", err)
 	}

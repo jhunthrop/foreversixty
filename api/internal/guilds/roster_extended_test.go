@@ -126,7 +126,9 @@ func TestHomeAttendanceCountsPresenceOverLast8Reports(t *testing.T) {
 }
 
 // TestHomeBestParseAndRatingReadTheNewestKillFight checks best_parse and rating are
-// populated from fight_metrics/rating_scores for a character with a logged kill.
+// populated from fight_metrics/rating_scores for a character with a logged kill. The best
+// parse is the best BOSS kill: a whelp pack that died faster and posted a higher DPS is no
+// one's best, which is what keeps the roster's figure the same as Progression's (round 8).
 func TestHomeBestParseAndRatingReadTheNewestKillFight(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()
@@ -149,13 +151,23 @@ func TestHomeBestParseAndRatingReadTheNewestKillFight(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(ctx,
-		`insert into fights (report_id, fight_index, name, kill, players) values ('parse-report', 0, 'Onyxia', true, $1)`,
+		`insert into fights (report_id, fight_index, name, encounter_id, kill, players) values ('parse-report', 0, 'Onyxia', 1084, true, $1)`,
+		[]string{key}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into fights (report_id, fight_index, name, kill, players) values ('parse-report', 1, 'Onyxian Whelp', true, $1)`,
 		[]string{key}); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(ctx,
 		`insert into fight_metrics (report_id, fight_index, player_key, role, metric_dps, kill, fought_at)
-		 values ('parse-report', 0, $1, 'dps', 123.4, true, now())`, key); err != nil {
+		 values ('parse-report', 1, $1, 'dps', 999.9, true, now())`, key); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into fight_metrics (report_id, fight_index, player_key, role, metric_dps, encounter_id, kill, fought_at)
+		 values ('parse-report', 0, $1, 'dps', 123.4, 1084, true, now())`, key); err != nil {
 		t.Fatal(err)
 	}
 	components := `[{"name":"output","score":70},{"name":"survival","score":60}]`
@@ -238,5 +250,50 @@ func TestHomeStandingRanksAmongVerifiedSameSpecGearConsentPeers(t *testing.T) {
 	}
 	if view.Standing.ItemLevel != 60 {
 		t.Errorf("item_level = %d, want 60", view.Standing.ItemLevel)
+	}
+}
+
+// TestPullsThisTierCountsPullsAndNeverATrashPack checks the header's pull count is the pulls the
+// Progression tab adds up: a night of two whelp packs, an Onyxia wipe and an Onyxia kill is two
+// pulls, not four fights (round 8, F8-8).
+func TestPullsThisTierCountsPullsAndNeverATrashPack(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, guild_id, visibility, status, zone, created_at)
+		 values ('pulls-night', $1, 'guild', 'complete', 'Onyxia''s Lair', now())`, gid); err != nil {
+		t.Fatal(err)
+	}
+	type fight struct {
+		name string
+		enc  any
+		kill bool
+	}
+	for i, f := range []fight{
+		{"Onyxian Whelp", nil, true},
+		{"Onyxia", 1084, false},
+		{"Onyxian Whelp", nil, true},
+		{"Onyxia", 1084, true},
+	} {
+		if _, err := h.pool.Exec(ctx,
+			`insert into fights (report_id, fight_index, name, encounter_id, kill) values ('pulls-night', $1, $2, $3, $4)`,
+			i, f.name, f.enc, f.kill); err != nil {
+			t.Fatal(err)
+		}
+	}
+	sv, err := h.store.homeSummary(ctx, gid, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if sv.PullsThisTier != 2 || sv.NamedEncountersDown != 1 {
+		t.Fatalf("pulls this tier %d, bosses down %d; want 2 and 1", sv.PullsThisTier, sv.NamedEncountersDown)
+	}
+	prog, err := h.store.Progression(ctx, gid, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if prog.Encounters[0].Pulls != sv.PullsThisTier {
+		t.Fatalf("Progression counts %d Onyxia pulls, the header %d; they must agree", prog.Encounters[0].Pulls, sv.PullsThisTier)
 	}
 }

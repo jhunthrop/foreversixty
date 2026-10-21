@@ -93,7 +93,7 @@
           data-testid={`guild-loot-item-${item.item_id}`}
         >
           <!-- Below lg the awarded line is its own full-width row under the title (a chip that
-               grows with its text, then Undo as a separate control); at lg it sits right of it. -->
+               grows with its text); at lg it sits right of it. Undo is the winner row's alone. -->
           <div class="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
             <span class="font-display min-w-0 text-[15px] font-bold"
               >{item.name}{#if (item.copies ?? 1) > 1}
@@ -107,17 +107,6 @@
                   class="min-w-0 basis-full rounded-md border border-[rgba(30,255,0,.25)] bg-[rgba(30,255,0,.10)] px-3 py-2 text-[14px] leading-snug text-[#7bff5c] lg:basis-auto"
                   data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
                 >
-                {#if officer}
-                  <button
-                    class="text-muted inline-flex h-11 items-center text-[12px] underline lg:h-7"
-                    onclick={() => onUndo(item)}
-                    disabled={busyItemId === item.item_id}
-                    aria-label={`Undo the award of ${item.name} to ${item.awarded_to.name}`}
-                    data-testid={`guild-loot-undo-${item.item_id}`}
-                  >
-                    {UNDO_AWARD}
-                  </button>
-                {/if}
               </div>
             {/if}
           </div>
@@ -142,10 +131,11 @@
                   data-testid="guild-loot-candidate-line"
                 >
                   {candidateLine(candidate)}
-                  <span
-                    class="text-muted tabular font-mono text-[11px]"
-                    data-testid="guild-loot-candidate-gain">{candidateGainLabel(candidate)}</span
-                  >
+                  <!-- One unbreakable chunk, and nothing at all for an empty slot. -->
+                  {#if candidateGainLabel(candidate) !== ''}<span
+                      class="text-muted tabular font-mono text-[11px] whitespace-nowrap"
+                      data-testid="guild-loot-candidate-gain">{candidateGainLabel(candidate)}</span
+                    >{/if}
                 </span>
                 {#if candidate.already_equivalent}
                   <span

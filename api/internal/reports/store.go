@@ -70,6 +70,8 @@ const reportSummaryColumns = `r.id, r.title, r.zone, r.status, r.visibility, r.c
 	        (select count(*) from fights f where f.report_id = r.id),
 	        (select count(*) from fights f where f.report_id = r.id and f.kill
 	           and f.encounter_id is not null),
+	        (select count(distinct f.encounter_id) from fights f where f.report_id = r.id and f.kill
+	           and f.encounter_id is not null),
 	        r.logging_character,
 	        (select c.name from characters c where c.key = r.logging_character),
 	        greatest(r.created_at, coalesce((select max(f.uploaded_at) from fights f where f.report_id = r.id), r.created_at)),
@@ -85,7 +87,7 @@ func scanSummaries(rows pgx.Rows) ([]Summary, error) {
 		var key, name *string
 		var last time.Time
 		if err := rows.Scan(&s.ID, &s.Title, &s.Zone, &s.Status, &s.Visibility,
-			&s.CreatedAt, &s.FightCount, &s.KillCount, &key, &name, &last, &s.HeartbeatAt); err != nil {
+			&s.CreatedAt, &s.FightCount, &s.KillCount, &s.BossCount, &key, &name, &last, &s.HeartbeatAt); err != nil {
 			return nil, fmt.Errorf("reports: scan summary: %w", err)
 		}
 		s.LastUploadAt = &last
@@ -167,6 +169,8 @@ func (s *Store) Recent(ctx context.Context, before *recentCursor, limit int) ([]
 		        (select count(*) from fights f where f.report_id = r.id),
 		        (select count(*) from fights f where f.report_id = r.id and f.kill
 		           and f.encounter_id is not null),
+		        (select count(distinct f.encounter_id) from fights f where f.report_id = r.id and f.kill
+		           and f.encounter_id is not null),
 		        coalesce(g.name, '')
 		 from reports r
 		 left join guilds g on g.id = r.guild_id
@@ -183,7 +187,7 @@ func (s *Store) Recent(ctx context.Context, before *recentCursor, limit int) ([]
 	for rows.Next() {
 		var row RecentSummary
 		if err := rows.Scan(&row.ID, &row.Title, &row.CreatedAt, &row.FightCount,
-			&row.KillCount, &row.GuildName); err != nil {
+			&row.KillCount, &row.BossCount, &row.GuildName); err != nil {
 			return nil, fmt.Errorf("reports: recent: %w", err)
 		}
 		out = append(out, row)

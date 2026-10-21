@@ -5,15 +5,16 @@
 // words are pinned without a page.
 import { guildRosterAddonCopy } from './copy';
 import type { GuildRosterEntry, GuildRosterRow } from './api';
-import { addonGapLabel, addonIdentity, addonSeen } from './roster-addon';
+import { nightsLabel } from './nights';
+import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
+import { specClassName, specName } from './spec-name';
 
 /** "Item level 68", "5 of 8 nights", "Best DPS 238", "Rating 65": every figure with its unit
  *  named first, never a bare "65 rating". */
 export function rosterStatChips(row: GuildRosterRow): string[] {
   const chips: string[] = [];
   if (row.item_level !== undefined) chips.push(`Item level ${row.item_level}`);
-  if (row.attendance !== undefined)
-    chips.push(`${row.attendance.present} of ${row.attendance.nights} nights`);
+  if (row.attendance !== undefined) chips.push(nightsLabel(row.attendance.present, row.attendance.nights));
   if (row.best_parse !== undefined && row.best_parse !== null) {
     chips.push(`Best ${row.best_parse.metric.toUpperCase()} ${Math.round(row.best_parse.value)}`);
   }
@@ -31,12 +32,43 @@ export function gearSetLabel(build: string): string {
   return `Gear set: ${named}`;
 }
 
-/** "Survival in game": the addon's spec, where it differs from the site's row. */
+/** "Survival in game": the spec the addon's snapshot carries. */
 export function inGameSpecLabel(spec: string): string {
   return `${spec} in game`;
 }
 
-export type InGameFactKey = 'level' | 'gap' | 'spec' | 'build' | 'seen';
+/** "Survival on the site": the spec the site's own record carries. */
+export function siteSpecLabel(spec: string): string {
+  return `${spec} on the site`;
+}
+
+/**
+ * The spec line under a raider's name, saying WHICH record it reads (round 8, P8-1). The addon's
+ * snapshot and the site's record can name two specs for one character (a respec the site has not
+ * seen, or an export the addon has not re-sent), and a line that names one without saying whose
+ * reads as a bug:
+ *  - the snapshot carries a spec and the site agrees (or has none): "Beast Mastery Hunter in game";
+ *  - they disagree: "Beast Mastery Hunter in game · Survival on the site";
+ *  - the snapshot carries none: the site's, "Survival Hunter on the site".
+ * `addonSpec` is the snapshot's slug; `siteSpec` the site's spec as it writes it. Empty when neither.
+ */
+export function rosterSpecLine(input: {
+  siteSpec?: string | null;
+  addonSpec?: string | null;
+  className?: string;
+}): string {
+  const site = input.siteSpec === undefined || input.siteSpec === null ? '' : specName(input.siteSpec);
+  const game =
+    input.addonSpec === undefined || input.addonSpec === null || input.addonSpec === ''
+      ? ''
+      : specName(addonSpecName(input.addonSpec));
+  if (game === '') return site === '' ? '' : siteSpecLabel(specClassName(site, input.className));
+  const inGame = inGameSpecLabel(specClassName(game, input.className));
+  if (site === '' || site.toLowerCase() === game.toLowerCase()) return inGame;
+  return `${inGame} · ${siteSpecLabel(site)}`;
+}
+
+export type InGameFactKey = 'level' | 'gap' | 'build' | 'seen';
 export interface InGameFact {
   key: InGameFactKey;
   text: string;
@@ -45,9 +77,10 @@ export interface InGameFact {
 }
 
 /**
- * The in-game facts of a row the addon saw, always in this order: Level, Gear gap, spec (only
- * where it differs from the site's), gear set, seen. A fact the member withholds is absent;
- * the order of the rest never changes. Empty for a row the snapshot did not carry.
+ * The in-game facts of a row the addon saw, always in this order: Level, Gear gap (not when it is
+ * 0: a fact that says nothing), gear set, seen. The spec has its own line under the name
+ * (`rosterSpecLine`). A fact the member withholds is absent; the order of the rest never
+ * changes. Empty for a row the snapshot did not carry.
  */
 export function inGameFacts(row: GuildRosterRow, now: Date): InGameFact[] {
   const identity = addonIdentity(row);
@@ -57,9 +90,8 @@ export function inGameFacts(row: GuildRosterRow, now: Date): InGameFact[] {
     addon.level === null && addon.spec === null && addon.gear_gap === null && addon.build === null;
   const facts: InGameFact[] = [];
   if (identity.level !== null) facts.push({ key: 'level', text: guildRosterAddonCopy.level(identity.level) });
-  const gap = addonGapLabel(addon.gear_gap);
+  const gap = addon.gear_gap === 0 ? null : addonGapLabel(addon.gear_gap);
   if (gap !== null) facts.push({ key: 'gap', text: gap });
-  if (identity.spec !== null) facts.push({ key: 'spec', text: inGameSpecLabel(identity.spec) });
   if (addon.build !== null && addon.build !== '')
     facts.push({ key: 'build', text: gearSetLabel(addon.build) });
   const seen = addonSeen(addon.seen_at, now, withheld);

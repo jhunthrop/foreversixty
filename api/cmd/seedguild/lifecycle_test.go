@@ -58,10 +58,39 @@ func TestLifecycleExportCarriesTheGuildSectionOnlyForMembers(t *testing.T) {
 	}
 }
 
-func TestLifecycleReportHasTwoBossKills(t *testing.T) {
-	kills := lifecycleReport().kills()
-	if kills != 2 {
-		t.Fatalf("report has %d boss kills, want 2", kills)
+// The night every page counts must agree with itself: one boss killed once after one wipe, with
+// two trash packs - "1 boss (Onyxia) · 1 kill · 2 trash packs · 1 wipe", two Onyxia pulls with one
+// KILL on Progression, and two pulls in the header (round 8, F8-8).
+func TestLifecycleReportIsOneKillAfterOneWipe(t *testing.T) {
+	plan := lifecycleReport()
+	if plan.kills() != 1 || plan.wipes() != 1 {
+		t.Fatalf("report has %d boss kills and %d wipes, want 1 and 1", plan.kills(), plan.wipes())
+	}
+	var trash, bossPulls int
+	for _, f := range plan.Fights {
+		if f.Trash {
+			trash++
+		} else if f.EncounterID == encOnyxia {
+			bossPulls++
+		}
+	}
+	if trash != 2 || bossPulls != 2 || len(plan.Fights) != 4 {
+		t.Fatalf("%d trash packs, %d Onyxia pulls, %d fights; want 2, 2, 4", trash, bossPulls, len(plan.Fights))
+	}
+}
+
+// Two raiders carry a real gear gap, so the roster shows what the fact is for (round 8, P8-6).
+func TestLifecycleSeedsTwoRealGearGaps(t *testing.T) {
+	var gaps int
+	for _, acct := range lifecycleAccounts() {
+		for _, c := range acct.Characters {
+			if c.GearGap > 0 {
+				gaps++
+			}
+		}
+	}
+	if gaps != 2 {
+		t.Fatalf("%d characters with a gear gap, want 2", gaps)
 	}
 }
 
@@ -118,11 +147,11 @@ func TestApplyLifecycleThenRemoveRoundTrips(t *testing.T) {
 	if n := count(`select count(*) from reports where status = 'complete' and owner_id = (select id from users where battletag = 'hunthrop#1894')`); n != 1 {
 		t.Errorf("%d complete reports owned by the guild master, want 1", n)
 	}
-	if n := count(`select count(*) from fights where kill and encounter_id is not null`); n != 2 {
-		t.Errorf("%d boss kills, want 2", n)
+	if n := count(`select count(*) from fights where kill and encounter_id is not null`); n != 1 {
+		t.Errorf("%d boss kills, want 1", n)
 	}
-	if n := count(`select count(*) from fight_metrics where player_key = 'us/pvp/bow-jackzon' and kill and encounter_id is not null`); n != 2 {
-		t.Errorf("%d boss kills credited to the guild master, want 2", n)
+	if n := count(`select count(*) from fight_metrics where player_key = 'us/pvp/bow-jackzon' and kill and encounter_id is not null`); n != 1 {
+		t.Errorf("%d boss kills credited to the guild master, want 1", n)
 	}
 
 	if err := RemoveLifecycle(ctx, pool); err != nil {

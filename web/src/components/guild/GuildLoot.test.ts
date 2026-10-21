@@ -32,12 +32,46 @@ function text(markup: string): string {
 describe('GuildLoot', () => {
   const awarded = buildMockLoot().items.find((item) => item.awarded_to !== null);
 
-  it('offers the officer Undo beside the awarded line, and a member nothing', () => {
+  it('offers the officer one Undo, on the winner row, and a member nothing', () => {
     expect(awarded).toBeDefined();
     const id = awarded?.item_id;
-    expect(html(true)).toContain(`data-testid="guild-loot-undo-${id}"`);
-    expect(html(false)).not.toContain('guild-loot-undo-');
+    // The awarded chip carries no Undo of its own: two links for one action read as two actions.
+    expect(html(true)).not.toContain('guild-loot-undo-');
+    expect(html(true).split(`data-testid="guild-loot-row-undo-${id}"`).length - 1).toBe(1);
+    expect(html(false)).not.toContain('guild-loot-row-undo-');
     expect(html(false)).not.toContain('guild-loot-award-');
+  });
+
+  it('prints no gain rider for an empty slot, and keeps the rider as one non-breaking chunk otherwise', () => {
+    const loot = buildMockLoot();
+    const item = loot.items.find((i) => i.candidates.length > 0 && i.awarded_to === null);
+    expect(item).toBeDefined();
+    if (item === undefined) return;
+    item.candidates[0] = { ...item.candidates[0], replaces: '', ilvl_delta: 76, gain_dps: null };
+    item.candidates[1] = {
+      ...item.candidates[1],
+      replaces: 'Beastmaster Cap',
+      ilvl_delta: 16,
+      gain_dps: null,
+    };
+    const markup = render(GuildLoot, {
+      props: {
+        loot,
+        officer: true,
+        memberReadOnly: false,
+        busyItemId: null,
+        onAward: () => {},
+        onUndo: () => {},
+      },
+    }).body;
+    const panel = markup.slice(markup.indexOf(`data-testid="guild-loot-item-${item.item_id}"`));
+    const firstLine = panel.slice(panel.indexOf('guild-loot-candidate-line'));
+    const firstRow = firstLine.slice(0, firstLine.indexOf('Replaces'));
+    expect(text(firstRow)).toContain('Empty slot');
+    expect(text(firstRow)).not.toContain('item levels');
+    // Exactly one rider on the item: the second candidate's, whole.
+    const riders = [...panel.matchAll(/guild-loot-candidate-gain[^>]*>([^<]*)</g)].map((m) => m[1]);
+    expect(riders[0]).toBe('+16 item levels');
   });
 
   it('says "Already awarded" on the other candidates, without a live Award button', () => {
@@ -46,7 +80,7 @@ describe('GuildLoot', () => {
     const panel = markup.slice(start, markup.indexOf('data-testid="guild-loot-item-', start + 10));
     expect(panel).not.toContain('data-testid="guild-loot-award-');
     expect(text(panel)).toContain('Awarded to');
-    expect(text(panel)).toContain('Undo');
+    expect(text(panel)).toContain('Awarded · Undo');
     const others = (awarded?.candidates.length ?? 0) - 1;
     expect(text(panel).split('Already awarded').length - 1).toBe(others);
   });

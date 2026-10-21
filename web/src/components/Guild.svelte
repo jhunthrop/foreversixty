@@ -135,6 +135,9 @@
 
   let myGuildMembership = $state<{ rank: string; verified: boolean; can: string[] } | null>(null);
   let myCharacterKeys = $state<Set<string>>(new Set());
+  /** The site's own record of each of the account's characters' spec (`/v1/me`), by character key: the
+   *  header chip reads it, and the roster's spec line says where the addon's snapshot disagrees. */
+  let mySiteSpecs = $state<Map<string, string>>(new Map());
   let isModerator = $state(false);
   /** The signed-in account's own battletag (fix round 1): the only signal available to
    *  tell "this viewer's own account is the one holding the claim" from "a verified
@@ -160,6 +163,9 @@
           characterSlug(g.name) === requested.slug,
       );
       myCharacterKeys = new Set((result?.characters ?? []).map((c) => c.key));
+      mySiteSpecs = new Map(
+        (result?.characters ?? []).flatMap((c) => (c.spec === undefined ? [] : [[c.key, c.spec] as const])),
+      );
       isModerator = result?.user.role === 'moderator' || result?.user.role === 'admin';
       myBattletag = result?.user.battletag ?? null;
       meResolved = true;
@@ -737,11 +743,16 @@
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
               {#if home.standing !== null && home.standing !== undefined}
+                {@const sentence = standingSentence(home.standing)}
                 <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
                   <p class="flex flex-wrap items-center gap-3 text-[14px] font-semibold">
-                    <span style={`color:${classColorVar(home.standing.class)}`}>
-                      {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{standingSentence(home.standing)}
-                    </span>
+                    <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
+                         gloss read as a second spec beside the header chip's. -->
+                    {#if sentence !== ''}
+                      <span style={`color:${classColorVar(home.standing.class)}`}>
+                        {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
+                      </span>
+                    {/if}
                     {#if viewerPlannerHref !== null}
                       <a
                         href={viewerPlannerHref}
@@ -806,6 +817,7 @@
                   claimedByName={home.claim.claimed_by_name ?? null}
                   waitingCount={home.summary?.waiting_for_approval ?? 0}
                   onSelectRoster={() => selectTab('roster')}
+                  collapsible={activeTab !== 'settings'}
                 />
               {/if}
 
@@ -852,6 +864,7 @@
           onApproveAll={() => void onApproveAll()}
           {rowPath}
           addonSnapshot={home.addon_snapshot ?? null}
+          mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />

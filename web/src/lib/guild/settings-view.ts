@@ -8,7 +8,7 @@ import { utcDayMonthYear } from '../dates';
 import type { ClaimStateView, MemberRef } from './api';
 
 export const settingsWords = {
-  officerRank: 'Officers are guild ranks at or above:',
+  officerRank: 'Officers are guild ranks at or above',
   officerRankHelp:
     'Rank number, 0 is the guild master. This rank and every rank above it can approve members and award loot.',
   releaseOnClaimPage: 'Release on the claim page',
