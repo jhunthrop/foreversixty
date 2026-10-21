@@ -7,7 +7,7 @@
 // DELETE /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments
 // section; the first draft required both behaviours on /account without naming a route.
 import { API_BASE_URL } from '../planner/config';
-import { forgetPrivate, invalidate, query, setQueryData } from '../data/query';
+import { forgetPrivate, invalidate, query, refetch, setQueryData } from '../data/query';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -427,6 +427,38 @@ export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> 
     ttlMs: ME_TTL_MS,
     version: ME_QUERY_VERSION,
   });
+}
+
+/** Drops the cached `/v1/me`: membership, rank, plan and every character card's guild line
+ *  come from it, so each guild mutation (lib/guild/api.ts's `invalidateGuild`) calls this. */
+export function invalidateMe(apiBase: string = API_BASE_URL): void {
+  invalidate(meKey(apiBase));
+}
+
+/** `fetchMeOnce` for a guild page: an answer older than a minute is never painted, the
+ *  cached one is revalidated on every read, and `onFresh` gets the newer answer when it
+ *  differs. */
+export function fetchMeFresh(
+  onFresh?: (me: Me | null) => void,
+  apiBase: string = API_BASE_URL,
+): Promise<Me | null> {
+  return query<Me | null>(meKey(apiBase), () => fetchMe(apiBase), {
+    scope: 'private',
+    ttlMs: 60 * 1000,
+    version: ME_QUERY_VERSION,
+    revalidateOnRead: true,
+    onRevalidated: onFresh,
+  });
+}
+
+/** `/v1/me` asked again right now (window focus on the Settings page). */
+export function refetchMe(onData: (me: Me | null) => void, apiBase: string = API_BASE_URL): void {
+  refetch(
+    meKey(apiBase),
+    () => fetchMe(apiBase),
+    { scope: 'private', ttlMs: 60 * 1000, version: ME_QUERY_VERSION },
+    onData,
+  );
 }
 
 /** Tests only: a fresh page has no remembered session. */

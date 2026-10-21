@@ -77,11 +77,11 @@
   });
 
   // A writable $derived (Svelte 5): tracks `session.data`, but the guild consent/leave
-  // handlers below (onConsentChange, onLeaveGuild) also reassign it directly, since
-  // lib/guild/api.ts's updateConsent/leaveGuild invalidate only their own guild-scoped
-  // cache keys, never this one, so those optimistic edits have nowhere else to live. Any
-  // such local override lasts only until `session.data` next changes, at which point this
-  // reverts to tracking it again -- setMain/onAnonymize's own edits are harmless duplicates
+  // handlers below (onConsentChange, onLeaveGuild) also reassign it directly so the page
+  // changes in the same frame; lib/guild/api.ts's updateConsent/leaveGuild drop the cached
+  // `/v1/me` (invalidateGuild) and the handlers then re-read it with `session.refresh()`.
+  // Any such local override lasts only until `session.data` next changes, at which point
+  // this reverts to tracking it again -- setMain/onAnonymize's own edits are harmless duplicates
   // of that: setMainCharacter/setAnonymize (lib/account/api.ts) already push the server's
   // fresh `me` into this same cache key via setQueryData.
   let me = $derived(session.data);
@@ -111,6 +111,17 @@
   $effect(() => {
     return () => activePoll?.stop();
   });
+
+  /** Guilds left on this page. The character cards' guild line goes with the GUILD section
+   *  in the same frame; the refetched `/v1/me` then confirms it. */
+  let leftGuildIds = $state<number[]>([]);
+  const cardCharacters = $derived(
+    me === null
+      ? []
+      : me.characters.map((c) =>
+          c.guild !== undefined && leftGuildIds.includes(c.guild.id) ? { ...c, guild: undefined } : c,
+        ),
+  );
 
   const signedIn = $derived(me !== null);
   const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
@@ -354,6 +365,7 @@
       } finally {
         guildBusy = null;
       }
+      session.refresh();
     });
   };
 
@@ -362,10 +374,12 @@
     void run(async () => {
       try {
         await leaveGuild(guildId);
+        leftGuildIds = [...leftGuildIds, guildId];
         if (me !== null) me = { ...me, guilds: me.guilds.filter((g) => g.id !== guildId) };
       } finally {
         guildBusy = null;
       }
+      session.refresh();
     });
   };
 </script>
@@ -607,7 +621,7 @@
 
             <div id="characters">
               <CharacterList
-                characters={me!.characters}
+                characters={cardCharacters}
                 bnetImportedAt={me!.bnet_imported_at}
                 mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
                 onSetMain={setMain}
