@@ -32,7 +32,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await expect(sample.getByTestId('report-row-summary')).toHaveText(
     `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.length} fights`,
   );
-  await expect(sample.getByTestId('report-row-when')).toHaveText('Sep 17');
+  await expect(sample.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
   await sample.getByRole('link').first().click();
 
   await expect(page).toHaveURL(/\/reports\/sample$/);
