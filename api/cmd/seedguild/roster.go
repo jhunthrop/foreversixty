@@ -34,6 +34,11 @@ type mockCharacter struct {
 	Unverifed bool // true for the 3 characters an officer still needs to approve
 	Consent   string
 	ItemLevel int
+	// Talents is an explicit FS1 talent field ("<t1>/<t2>/<t3>", built with talentDigits so
+	// it decodes to the right point total) for a character whose tree is known; empty means
+	// talentString's role-shaped flavour. The owner's own main puts its 51 points in the
+	// Beast Mastery tree, as the production export does.
+	Talents string
 
 	// Account groups two characters under one account (a main and an alt) when set to
 	// the same non-empty value; empty means "this character's own account". Two

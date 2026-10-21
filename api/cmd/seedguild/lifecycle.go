@@ -68,8 +68,12 @@ func lifecycleAccounts() []lifecycleAccount {
 		{
 			Battletag: "hunthrop#1894", Sub: "dev-lifecycle-gm",
 			Characters: []lifecycleCharacter{
+				// The owner's real main as production holds it (21 Oct 2026): a High Order
+				// Skyborne Beast Mastery hunter with a full 51-point build, so the local stack
+				// shows what the owner sees on the site rather than a Dwarf with a Survival build.
 				{Mock: mockCharacter{Name: "Bow Jackzon", Class: "hunter", Spec: "BeastMastery", Role: roleDPS,
-					RaceSlug: "dwarf", BisFile: "hunter-beast-mastery.json", Consent: "gear", ItemLevel: 66},
+					RaceSlug: "high-order-skyborne", Talents: talentDigits(51) + "/0/0",
+					BisFile: "hunter-beast-mastery.json", Consent: "gear", ItemLevel: 66},
 					InGuild: true, RankIndex: 0},
 				// An alt in no guild: a character page that is not a member's.
 				{Mock: mockCharacter{Name: "Pipsqueak", Class: "priest", Spec: "Holy", Role: roleHealer,

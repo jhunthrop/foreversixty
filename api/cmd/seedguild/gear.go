@@ -181,6 +181,9 @@ func talentStringUnspent(role string) string {
 
 // talentStringFor picks the full or the unspent variant for c.
 func talentStringFor(c mockCharacter) string {
+	if c.Talents != "" {
+		return c.Talents
+	}
 	if c.UnspentTalents {
 		return talentStringUnspent(c.Role)
 	}
