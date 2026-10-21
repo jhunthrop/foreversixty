@@ -808,12 +808,17 @@
                         </p>
                         {#if leaveAsking === guild.id}
                           <div
-                            class="border-line-soft flex basis-full flex-col gap-3 border p-4"
+                            class="border-line-soft mb-4 flex basis-full flex-col gap-3 border p-4"
                             data-testid="account-guild-leave-confirm"
                           >
                             <p class="text-[13px]">
                               {guildConsentCopy.leaveConfirmLine(guild.name, guildCharacterCount(guild.id))}
                             </p>
+                            {#if guild.can?.includes('release')}
+                              <p class="text-[13px]" data-testid="account-guild-leave-releases">
+                                {guildConsentCopy.leaveReleasesClaim(guild.name)}
+                              </p>
+                            {/if}
                             <div class="flex gap-3">
                               <button
                                 class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"

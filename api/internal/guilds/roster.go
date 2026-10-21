@@ -73,12 +73,11 @@ func (s *Store) CharacterOwner(ctx context.Context, guildID int64, characterKey 
 // removed by its own account, a verified officer/leader, or a
 // moderator; an officer-rank row adds only the account currently
 // holding the guild's claim to that list (not any officer); a
-// leader-rank row is removable only by its own account or a moderator -
-// never by the account holding the claim either, since a second
-// leader-rank row belongs to a different real character than the
-// claimant's own. An officer-rank row's own account may remove it only
-// when that account holds the claim (mayRemoveOwnRow): an officer is not a
-// second guild master. This is what stops an officer from stripping the real
+// leader-rank row is removable only by a moderator - never by the account
+// holding the claim either, since a second leader-rank row belongs to a
+// different real character than the claimant's own. A viewer's own row never
+// offers Remove to the claim holder or to an officer- or leader-rank row
+// (mayRemoveOwnRow): they leave through Leave on the account page. This is what stops an officer from stripping the real
 // guild master's membership and then claiming the now-unclaimed guild.
 // Pure (g is already in hand) so both the actual remove route
 // (mayRemoveCharacter) and the guild home's per-row may_remove field

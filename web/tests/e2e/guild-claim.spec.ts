@@ -93,6 +93,10 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
     '/guild/us/hardcore/the-last-watch#roster',
   );
   await expect(page.getByTestId('guild-claim-next-invite')).toHaveText('Make an invite link in settings');
+  // The next steps look like links: underlined, in the site's link colour.
+  for (const id of ['guild-claim-next-roster', 'guild-claim-next-invite']) {
+    await expect(page.getByTestId(id)).toHaveCSS('text-decoration-line', 'underline');
+  }
   await expect(page.getByTestId('guild-claim-next-invite')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch/settings',

@@ -609,7 +609,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await expect(page.getByTestId('guild-roster-decline')).toHaveCount(0);
   });
 
-  test('an officer who is not the guild master has no Remove on her own row; the guild master keeps hers', async ({
+  test('nobody has Remove on their own row: an officer, and the guild master, keep it on everyone else', async ({
     page,
   }) => {
     // The API marks the viewer\'s own officer row may_remove: false (guilds.mayRemoveRow).
@@ -634,6 +634,58 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await expect(
       page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Zulmara"]'),
     ).toBeVisible();
+  });
+
+  test('the guild master has no Remove on their own row, and a name only the addon saw has no rank word', async ({
+    page,
+  }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    const own = page
+      .getByTestId('guild-roster-rows')
+      .locator('.guild-roster-row')
+      .filter({ has: page.getByTestId('guild-roster-name').getByText(VIEWER_OFFICER) });
+    await expect(own).toBeVisible();
+    await expect(own.getByTestId('guild-roster-rank')).toHaveText('Leader');
+    await expect(own.getByTestId('guild-roster-remove')).toHaveCount(0);
+    await expect(
+      page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Zulmara"]'),
+    ).toBeVisible();
+    // Brightwick is in game with no account: the state word alone, no "Member" invented for it.
+    const noAccount = page.locator('[data-testid="guild-roster-entry"][data-state="no_account"]');
+    await expect(noAccount).toContainText('No account yet');
+    await expect(noAccount).not.toContainText('Member');
+    await expect(noAccount.getByTestId('guild-roster-entry-rank')).toHaveCount(0);
+  });
+
+  test('at 390px a no-account row stacks its state and in-game cells under the name', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-entries')).toBeVisible();
+    const entry = page.locator('[data-testid="guild-roster-entry"][data-state="no_account"]');
+    const [n, s, g] = await Promise.all([
+      entry.getByTestId('guild-roster-entry-name').boundingBox(),
+      entry.getByTestId('guild-roster-entry-state').boundingBox(),
+      entry.getByTestId('guild-roster-entry-ingame').boundingBox(),
+    ]);
+    expect(n && s && g).toBeTruthy();
+    if (n && s && g) {
+      // The state word sits below the name, under it, and the in-game line below the state:
+      // stacked, none beside another.
+      expect(s.y).toBeGreaterThanOrEqual(n.y + n.height - 1);
+      expect(g.y).toBeGreaterThanOrEqual(s.y + s.height - 1);
+      expect(Math.abs(s.x - n.x)).toBeLessThan(4);
+    }
+    const scrolls = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
+    expect(scrolls).toBe(false);
+    const dir = process.env.G7_SHOTS;
+    if (dir)
+      await page
+        .getByTestId('guild-roster-entries')
+        .screenshot({ path: `${dir}/g7-roster-entries-${page.viewportSize()?.width}.png` });
   });
 });
 
@@ -754,6 +806,123 @@ test.describe('readiness: worst-first sort and officer Nudge', () => {
   });
 });
 
+test.describe('loot: Award asks first and can be undone', () => {
+  /** A loot endpoint that keeps the awards the page records, the way the API does. */
+  async function stubAwards(page: Page): Promise<{ posts: unknown[]; deletes: string[] }> {
+    const record: { posts: unknown[]; deletes: string[] } = { posts: [], deletes: [] };
+    const awards = new Map<number, { award_id: number; character_key: string; name: string; at: string }>();
+    await page.route(`**/v1/guilds/${GUILD_ID}/loot*`, (route) => {
+      const loot = buildMockLoot();
+      return route.fulfill(
+        envelope({
+          ...loot,
+          items: loot.items.map((item) => {
+            const award = awards.get(item.item_id);
+            return {
+              ...item,
+              awarded_to: award === undefined ? null : { ...award, by_name: VIEWER_OFFICER },
+            };
+          }),
+        }),
+      );
+    });
+    await page.route(`**/v1/guilds/${GUILD_ID}/loot/awards**`, (route) => {
+      const request = route.request();
+      if (request.method() === 'POST') {
+        const body = request.postDataJSON() as { item_id: number; character_key: string };
+        record.posts.push(body);
+        const candidate = buildMockLoot()
+          .items.find((item) => item.item_id === body.item_id)
+          ?.candidates.find((c) => c.character_key === body.character_key);
+        awards.set(body.item_id, {
+          award_id: 41,
+          character_key: body.character_key,
+          name: candidate?.name ?? '',
+          at: new Date().toISOString(),
+        });
+        return route.fulfill(envelope({ award_id: 41, status: 'awarded' }));
+      }
+      record.deletes.push(request.url().split('/').pop() ?? '');
+      awards.clear();
+      return route.fulfill(envelope({ status: 'removed' }));
+    });
+    return record;
+  }
+
+  test('the officer is asked, can Cancel, awards, sees who got it, and can Undo', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
+    await page.route(`**/v1/guilds/${GUILD_ID}/progression`, (route) =>
+      route.fulfill(envelope(buildMockProgression())),
+    );
+    const record = await stubAwards(page);
+    const item = buildMockLoot().items.find((i) => i.name === 'Stormrage Cover');
+    const first = item?.candidates[0];
+    expect(first).toBeDefined();
+    if (item === undefined || first === undefined) return;
+    await page.goto(`${GUILD_URL}#loot`);
+    const panel = page.getByTestId(`guild-loot-item-${item.item_id}`);
+    await expect(panel).toBeVisible();
+    const awardButton = panel.getByTestId(`guild-loot-award-${item.item_id}-${first.character_key}`);
+    const confirm = page.getByTestId(`guild-loot-award-confirm-${item.item_id}`);
+    const cancel = page.getByTestId(`guild-loot-award-cancel-${item.item_id}`);
+    const dir = process.env.G7_SHOTS;
+
+    // Award asks first, naming the item and the candidate, with focus on Cancel; Cancel records nothing.
+    await awardButton.click();
+    await expect(confirm).toContainText(`Award Stormrage Cover to ${first.name}?`);
+    await expect(cancel).toBeFocused();
+    await cancel.click();
+    await expect(confirm).toHaveCount(0);
+    expect(record.posts).toHaveLength(0);
+
+    // Escape backs out too.
+    await awardButton.click();
+    await page.keyboard.press('Escape');
+    await expect(confirm).toHaveCount(0);
+
+    await awardButton.click();
+    if (dir) await panel.screenshot({ path: `${dir}/g7-award-confirm-${page.viewportSize()?.width}.png` });
+    await page.getByTestId(`guild-loot-award-yes-${item.item_id}`).click();
+    await expect.poll(() => record.posts.length).toBe(1);
+    expect(record.posts[0]).toMatchObject({ item_id: item.item_id, character_key: first.character_key });
+
+    // After: who got it, when, from whom, Undo; everyone else reads "Already awarded", never a live button.
+    await expect(page.getByTestId(`guild-loot-awarded-${item.item_id}`)).toHaveText(
+      `Awarded to ${first.name} · today · by ${VIEWER_OFFICER}`,
+    );
+    await expect(page.getByTestId(`guild-loot-undo-${item.item_id}`)).toBeVisible();
+    await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
+    await expect(panel.getByText('Already awarded')).toHaveCount(item.candidates.length - 1);
+    if (dir) await panel.screenshot({ path: `${dir}/g7-award-done-${page.viewportSize()?.width}.png` });
+
+    // Undo removes it by the award's id: the Award buttons come back.
+    await page.getByTestId(`guild-loot-undo-${item.item_id}`).click();
+    await expect.poll(() => record.deletes).toEqual(['41']);
+    await expect(page.getByTestId(`guild-loot-awarded-${item.item_id}`)).toHaveCount(0);
+    await expect(panel.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(item.candidates.length);
+  });
+
+  test('a member sees an awarded item but no Undo and no Award', async ({ page }) => {
+    await stubCore(page, VIEWER_MEMBER, 'member');
+    await stubDepthEndpoints(page);
+    await page.goto(`${GUILD_URL}#loot`);
+    await expect(page.locator('[data-testid^="guild-loot-awarded-"]').first()).toBeVisible();
+    await expect(page.locator('[data-testid^="guild-loot-undo-"]')).toHaveCount(0);
+    await expect(page.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
+  });
+
+  test('"Head of Onyxia" is listed once and a paladin helm is offered to no warrior', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(`${GUILD_URL}#loot`);
+    await expect(page.getByTestId('guild-loot-items').getByText('Head of Onyxia')).toHaveCount(1);
+    const crown = buildMockLoot().items.find((i) => i.name === 'Judgement Crown');
+    expect(crown?.candidates).toEqual([]);
+    await expect(page.getByTestId(`guild-loot-no-candidate-${crown?.item_id}`)).toBeVisible();
+  });
+});
+
 test.describe('loot: read-only for a member, awarded state for everyone', () => {
   test('officer sees the Award control and the already-awarded item’s state', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
@@ -797,7 +966,9 @@ test.describe('loot: read-only for a member, awarded state for everyone', () => 
 // (mock-guild.ts), and these two tests reproduce the officer's own repro steps: mount
 // Overview (which prefetches .../loot for its own summary card) then switch to Loot.
 test.describe('loot tab renders real data after Overview’s own prefetch', () => {
-  test('officer: Overview mounts first, then Loot renders all 22 items with candidates', async ({ page }) => {
+  test('officer: Overview mounts first, then Loot renders every item with its candidates', async ({
+    page,
+  }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
@@ -809,7 +980,8 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     await expect(page.getByTestId('guild-loot-tab')).toBeVisible();
 
     const loot = buildMockLoot();
-    expect(loot.items).toHaveLength(22);
+    // The API lists a shared name once: 22 drops, 21 rows.
+    expect(loot.items).toHaveLength(21);
     for (const item of loot.items) {
       await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
       if (item.slot === '') continue; // a quest/reputation/crafting drop, no candidates

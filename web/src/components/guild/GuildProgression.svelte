@@ -112,7 +112,7 @@
           <p class="text-[13px]" data-testid="guild-progression-best-parse">
             Guild best parse:
             {#each bestParses(encounter.best_by_role) as parse, index (index)}
-              {#if index > 0}<span class="hidden md:inline" aria-hidden="true"> · </span>{/if}
+              {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span>{/if}
               <span class="block md:inline">
                 <span style={`color:${classColorVar(parse.class)};font-weight:600`}>{parse.name}</span>
                 {parse.value.toFixed(1)}

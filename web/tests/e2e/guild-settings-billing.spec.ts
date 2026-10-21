@@ -15,6 +15,15 @@ function envelope(data: unknown, status = 200) {
   };
 }
 
+/** With G7_SHOTS set, saves the billing section's capture there; a plain run writes nothing. */
+async function shot(page: import('@playwright/test').Page, name: string): Promise<void> {
+  const dir = process.env.G7_SHOTS;
+  if (dir)
+    await page
+      .getByTestId('guild-settings-billing')
+      .screenshot({ path: `${dir}/${name}-${page.viewportSize()?.width}.png` });
+}
+
 const GUILD_PAGE = {
   guild: { id: 501, name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
   progression: [],
@@ -66,6 +75,7 @@ test('not on the plan: shows the honest not-subscribed line and a real subscribe
   await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings-billing')).toContainText('not on the guild plan yet');
+  await shot(page, 'g7-billing-not-on-plan');
   await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(
     'href',
     '/premium/checkout?plan=guild&interval=monthly&guild_id=501',
@@ -96,7 +106,8 @@ test('on the plan, billing contact: shows renewal info and a working manage-bill
   });
   await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
-  await expect(page.getByTestId('guild-settings-billing')).toContainText('renews');
+  await expect(page.getByTestId('guild-settings-billing')).toContainText('renews 1 Dec 2026');
+  await shot(page, 'g7-billing-on-plan');
   await expect(page.getByTestId('guild-settings-billing')).toContainText('Billed to you');
   await page.getByTestId('guild-manage-billing').click();
   await page.waitForURL('https://billing.stripe.com/**');
@@ -147,7 +158,7 @@ test('on the plan via a CLI grant (no Stripe billing contact): shows renewal inf
     ),
   );
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
-  await expect(page.getByTestId('guild-settings-billing')).toContainText('until');
+  await expect(page.getByTestId('guild-settings-billing')).toContainText('until 1 Dec 2026');
   await expect(page.getByTestId('guild-settings-billing')).not.toContainText('Billed by');
   await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
 });

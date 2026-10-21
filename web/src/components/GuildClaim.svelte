@@ -240,12 +240,20 @@
             <h2 class="section-title text-[16px]">{guildClaimCopy.nextHeading}</h2>
             <ul class="flex flex-col gap-1 text-[14px]">
               <li>
-                <a class="text-nav" href={`${guildBase}#roster`} data-testid="guild-claim-next-roster">
+                <a
+                  class="text-nav inline-flex min-h-11 items-center underline md:min-h-0"
+                  href={`${guildBase}#roster`}
+                  data-testid="guild-claim-next-roster"
+                >
                   {guildClaimCopy.nextRoster}
                 </a>
               </li>
               <li>
-                <a class="text-nav" href={settingsBase} data-testid="guild-claim-next-invite">
+                <a
+                  class="text-nav inline-flex min-h-11 items-center underline md:min-h-0"
+                  href={settingsBase}
+                  data-testid="guild-claim-next-invite"
+                >
                   {guildClaimCopy.nextInvite}
                 </a>
               </li>

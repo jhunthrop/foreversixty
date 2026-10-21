@@ -76,8 +76,10 @@ var onyxiaLoot = []lootItem{
 	{21108, "Draconic for Dummies", "", 4, ""},
 }
 
-// AwardedTo is a loot item's own award, when one exists.
+// AwardedTo is a loot item's own award, when one exists. AwardID is the row
+// DELETE .../loot/awards/{award_id} takes, so the page can undo an award it has just read.
 type AwardedTo struct {
+	AwardID      int64  `json:"award_id"`
 	CharacterKey string `json:"character_key"`
 	Name         string `json:"name"`
 	At           string `json:"at"`
@@ -418,7 +420,7 @@ func deltaOrZero(d *int) int {
 // the claimant's and the awarding officer's own names resolved.
 func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) (map[int]*AwardedTo, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select la.item_id, la.character_key, coalesce(ae.name, ''), la.awarded_at, la.awarded_by
+		select la.item_id, la.id, la.character_key, coalesce(ae.name, ''), la.awarded_at, la.awarded_by
 		from loot_awards la left join addon_exports ae on ae.character_key = la.character_key
 		where la.guild_id = $1 and la.encounter_id = $2`, guildID, encounterID)
 	if err != nil {
@@ -431,7 +433,7 @@ func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) (map
 		var awardedBy *int64
 		var a AwardedTo
 		var awardedAt time.Time
-		if err := rows.Scan(&itemID, &a.CharacterKey, &a.Name, &awardedAt, &awardedBy); err != nil {
+		if err := rows.Scan(&itemID, &a.AwardID, &a.CharacterKey, &a.Name, &awardedAt, &awardedBy); err != nil {
 			return nil, fmt.Errorf("guilds: loot awards: %w", err)
 		}
 		a.At = awardedAt.UTC().Format(time.RFC3339)

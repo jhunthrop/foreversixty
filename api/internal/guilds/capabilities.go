@@ -69,13 +69,18 @@ func (s *Store) Capabilities(ctx context.Context, guildID, userID int64, moderat
 	return Capabilities(g, userID, moderator, verifiedOfficer), nil
 }
 
-// mayRemoveOwnRow is the one extra rule an officer's own roster row carries: an officer who
-// does not hold the claim has no Remove on herself (she leaves through Leave, which says what
-// it removes), so the guild's roster never offers a second guild master a way to strip
-// her own standing by accident. Members, the claimant and moderators keep removing their own.
+// mayRemoveOwnRow is the one extra rule a viewer's own roster row carries: the account that
+// holds the claim, and anyone whose own row is an officer or the leader, has no Remove on
+// themselves. They leave through Leave on the account page, which says what it releases and
+// who loses access, so the roster never offers the guild master (or an officer) a way to strip
+// their own standing, and with it the guild's officers, by one stray click. Members keep
+// removing their own row, and so do moderators.
 func mayRemoveOwnRow(g Guild, actorID int64, rank string, moderator bool) bool {
-	if moderator || rank != "officer" {
+	if moderator {
 		return true
 	}
-	return g.ClaimedBy != nil && *g.ClaimedBy == actorID
+	if g.ClaimedBy != nil && *g.ClaimedBy == actorID {
+		return false
+	}
+	return rank != "officer" && rank != "leader"
 }

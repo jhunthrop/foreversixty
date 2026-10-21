@@ -86,6 +86,11 @@ describe('pointerForCharacter', () => {
     expect(pointerForCharacter(c).label).toBe('Aria · Frost Mage');
   });
 
+  it('writes the spec as a player says it, never the run-together export word', () => {
+    const c = character({ key: 'us/normal/a', name: 'Aria', class: 'Hunter', spec: 'BeastMastery' });
+    expect(pointerForCharacter(c).label).toBe('Aria · Beast Mastery Hunter');
+  });
+
   it('falls back to the character name alone with no class on file', () => {
     const c = character({ key: 'us/normal/a', name: 'Aria' });
     const pointer = pointerForCharacter(c);

@@ -195,6 +195,57 @@ func TestTheAccountHoldingTheClaimCanRemoveAnOfficerButNotAnotherLeaderRow(t *te
 	}
 }
 
+// TestNobodyRemovesTheirOwnOfficerOrLeaderRow pins the self-removal rule on the route itself: the
+// claim holder (the guild master) and an officer get a 403 on their own row, and the home
+// reads may_remove false there.
+func TestNobodyRemovesTheirOwnOfficerOrLeaderRow(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	gm := seedUser(t, h.pool, "self-gm@example.com")
+	seedCharacter(t, h.pool, gid, gm, "us/hardcore/selfgm", "leader", true)
+	seedExport(t, h.pool, gm, "us/hardcore/selfgm", "us", "hardcore", "selfgm")
+	syncMembership(t, h.pool, gid, gm)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1 where id = $2`, gm, gid); err != nil {
+		t.Fatal(err)
+	}
+	officer := seedUser(t, h.pool, "self-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/selfofficer", "officer", true)
+	seedExport(t, h.pool, officer, "us/hardcore/selfofficer", "us", "hardcore", "selfofficer")
+	syncMembership(t, h.pool, gid, officer)
+
+	for _, tc := range []struct {
+		who int64
+		key string
+	}{{gm, "us/hardcore/selfgm"}, {officer, "us/hardcore/selfofficer"}} {
+		h.actor = auth.Actor{UserID: tc.who, Role: "user", Method: "session"}
+		res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+		var view HomeView
+		h.data(res, &view)
+		found := false
+		for _, row := range view.Roster {
+			if row.CharacterKey == tc.key {
+				found = true
+				if row.MayRemove {
+					t.Errorf("%s: may_remove on their own row = true, want false", tc.key)
+				}
+			}
+		}
+		if !found {
+			t.Errorf("%s: own row missing from the roster", tc.key)
+		}
+		res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/characters/%s", gid, tc.key), "")
+		res.Body.Close()
+		if res.StatusCode != http.StatusForbidden {
+			t.Errorf("%s removing their own row = %d, want 403", tc.key, res.StatusCode)
+		}
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters where guild_id = $1`, gid).Scan(&n); err != nil || n != 2 {
+		t.Fatalf("both rows should remain, count = %d err = %v", n, err)
+	}
+}
+
 func TestAContestedClaimFreezesApproveAndRemove(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()

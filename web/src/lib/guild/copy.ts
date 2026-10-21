@@ -203,6 +203,11 @@ export const guildConsentCopy = {
   left: 'Left.',
   leaveConfirmLine: (guildName: string, characters: number): string =>
     `Leave ${guildName}? This removes ${characterCount(characters)} from its roster.`,
+  /** The second sentence of the confirm for the account that holds the guild's claim: leaving
+   *  releases it, and the officers who work from it lose their tools. Shown when `/v1/me`'s
+   *  entry for the guild carries the release capability. */
+  leaveReleasesClaim: (guildName: string): string =>
+    `Leaving ${guildName} releases your claim; your officers lose their roster and loot tools and access to your gear.`,
   leaveConfirmButton: 'Leave',
   leaveCancel: 'Cancel',
   consentSaved: (characters: number): string => `Saved. Applies to ${characterCount(characters)}.`,
@@ -260,6 +265,8 @@ export const guildRosterModelCopy = {
     not_seen: 'Not seen in game yet',
   },
   ranks: { leader: 'Leader', officer: 'Officer', member: 'Member' },
+  /** A name only the addon saw: its snapshot carries no guild rank, so none is said. */
+  rankNotKnown: 'Rank not known',
   /** "7 on the roster · 2 in game without an account · 1 waiting for approval · 1 not seen in
    *  game yet": the parts that are zero are left out. */
   countLine: (c: {

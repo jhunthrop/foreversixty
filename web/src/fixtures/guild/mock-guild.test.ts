@@ -145,18 +145,41 @@ describe('buildMockLoot', () => {
   // Live-fix round, defect 5: this fixture now matches the live contract's own 22-item
   // table exactly (api/internal/guilds/loot.go's onyxiaLoot), with candidates read
   // through the tier-1 (fallback) shape every real candidate on a live roster uses today.
-  it("names all 22 of the contract's own Onyxia drops", () => {
-    expect(buildMockLoot().items).toHaveLength(22);
+  it("lists the contract's 22 Onyxia drops as the API does: a shared name once, with its copies", () => {
+    const items = buildMockLoot().items;
+    expect(items).toHaveLength(21);
+    expect(items.filter((item) => item.name === 'Head of Onyxia')).toHaveLength(1);
+    expect(items.find((item) => item.name === 'Head of Onyxia')?.copies).toBe(2);
+    expect(items.reduce((sum, item) => sum + (item.copies ?? 1), 0)).toBe(22);
   });
 
-  it('gives every slotted item at least one candidate, tier-1 throughout', () => {
+  it('offers a class-locked token only to its class, so a roster without one lists no one', () => {
+    const items = buildMockLoot().items;
+    const roster = new Map(buildMockRoster().map((r) => [r.character_key, r.class]));
+    const classesOf = (name: string) =>
+      new Set(items.find((item) => item.name === name)?.candidates.map((c) => roster.get(c.character_key)));
+    expect(classesOf("Dragonstalker's Helm")).toEqual(new Set(['hunter']));
+    expect(classesOf('Stormrage Cover')).toEqual(new Set(['druid']));
+    expect(classesOf('Helm of Wrath')).toEqual(new Set(['warrior']));
+    // No verified paladin or shaman in the fixture roster: the real API answers an empty list.
+    expect(items.find((item) => item.name === 'Judgement Crown')?.candidates).toEqual([]);
+    expect(items.find((item) => item.name === 'Helmet of Ten Storms')?.candidates).toEqual([]);
+    // A healer trinket is not offered to a warrior.
+    expect(classesOf('Shard of the Scale').has('warrior')).toBe(false);
+  });
+
+  it('the awarded item carries the award id the Undo sends', () => {
+    const awarded = buildMockLoot().items.find((item) => item.awarded_to !== null);
+    expect(awarded?.awarded_to?.award_id).toBeGreaterThan(0);
+  });
+
+  it('gives every slotted item with candidates the tier-1 shape', () => {
     const loot = buildMockLoot();
     for (const item of loot.items) {
       if (item.slot === '') {
         expect(item.candidates).toHaveLength(0);
         continue;
       }
-      expect(item.candidates.length).toBeGreaterThan(0);
       for (const candidate of item.candidates) {
         expect(candidate.gain_dps).toBeNull();
         expect(candidate.not_sim_checked).toBe(true);
