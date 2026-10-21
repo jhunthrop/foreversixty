@@ -50,6 +50,24 @@ export function publicReportSummary({ zone, killCount, guildName }: PublicReport
   return join([zone, plural(killCount, 'kill', 'kills'), guildName]);
 }
 
+export interface RecentReportFacts {
+  zone?: string;
+  killCount: number;
+  fightCount: number;
+  guildName?: string;
+}
+
+/** A row of the public list, in the shape "Your reports" uses (the character and the badge are
+ *  ReportRow's own): zone, bosses when there are any, fights, then the guild when it has one. */
+export function recentReportSummary({ zone, killCount, fightCount, guildName }: RecentReportFacts): string {
+  return join([
+    zone === undefined || zone === '' ? undefined : zone,
+    killCount > 0 ? plural(killCount, 'boss', 'bosses') : undefined,
+    plural(fightCount, 'fight', 'fights'),
+    guildName,
+  ]);
+}
+
 export interface AccountReportFacts {
   zone: string;
   fightCount: number;

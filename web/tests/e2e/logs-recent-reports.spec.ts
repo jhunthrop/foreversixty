@@ -89,7 +89,9 @@ test('lists a public report by title, relative date, kills and guild', async ({ 
   const link = panel.getByRole('link', { name: 'Progress night' });
   await expect(link).toHaveAttribute('href', '/reports/abc123def456');
   await expect(panel.getByTestId('report-row-when').first()).toHaveText('3 days ago');
-  await expect(panel.getByTestId('report-row-summary').first()).toHaveText('3 kills \u00b7 The Last Watch');
+  await expect(panel.getByTestId('report-row-summary').first()).toHaveText(
+    '3 bosses · 8 fights · The Last Watch',
+  );
 });
 
 test('an honest empty state before the first public report lands', async ({ page }) => {

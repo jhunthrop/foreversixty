@@ -218,7 +218,7 @@ test('a signed-out visitor is told in plain words, with no sign-in control anywh
   await expect(page.getByTestId('upload-signed-out')).toHaveText(
     'Uploading needs a signed-in account; the report is filed under it.',
   );
-  await expect(page.getByTestId('pairing-signed-out')).toHaveText('Pairing needs a signed-in account.');
+  await expect(page.getByTestId('pairing-signed-out')).toHaveText('Live logging needs a signed-in account.');
   // Signed out, the form is not drawn at all.
   await expect(page.getByTestId('upload-file')).toHaveCount(0);
   await expect(page.getByTestId('upload-start')).toHaveCount(0);

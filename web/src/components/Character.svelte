@@ -7,6 +7,7 @@
   import CharacterFightTable from './character/CharacterFightTable.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import ProfileDescriptor from './character/ProfileDescriptor.svelte';
+  import CharacterNotFound from './CharacterNotFound.svelte';
   import CharacterUnlogged from './CharacterUnlogged.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { fetchMeOnce, type MeCharacter } from '../lib/account/api';
@@ -177,7 +178,13 @@
 {:else if status === 'failed'}
   <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
 {:else if status === 'unlogged' && resolved !== null}
-  <CharacterUnlogged path={resolved} name={unloggedName} {owned} />
+  <!-- A character the viewer owns is known to them (their own export, no fights yet), so it keeps
+       the empty card with its upload action; any other name is simply not on the site. -->
+  {#if owned}
+    <CharacterUnlogged path={resolved} name={unloggedName} {owned} />
+  {:else}
+    <CharacterNotFound path={resolved} name={unloggedName} />
+  {/if}
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): a signed-in chip first

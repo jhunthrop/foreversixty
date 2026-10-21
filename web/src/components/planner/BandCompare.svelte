@@ -19,6 +19,7 @@
   import { bandForLevel, bandEntryFor, bisPageHref, fetchBisFile } from '../../lib/bis/hover';
   import type { BisFile, Faction } from '../../lib/bis/types';
   import {
+    bandForPanel,
     bandTitleForDraft,
     diffAgainstBand,
     loadFromBandAtLevel,
@@ -62,7 +63,18 @@
   } = $props();
 
   const faction = $derived<Faction>(store.raceRow?.faction === 'horde' ? 'horde' : 'alliance');
-  const band = $derived(bandForLevel(levelReached(store.order)));
+  const reachedBand = $derived(bandForLevel(levelReached(store.order)));
+  const wantedBand = $derived(bandForPanel(store.order.length, characterLevel, reachedBand));
+  /** The visitor's level-60 default only while the spec's file has that band: a spec whose list
+   *  stops short of 60 compares at the band the build has reached, as before. */
+  const band = $derived(
+    wantedBand !== reachedBand &&
+      file !== undefined &&
+      file !== null &&
+      bandEntryFor(file, wantedBand, faction) === undefined
+      ? reachedBand
+      : wantedBand,
+  );
   const specKey = $derived(
     specOverride ?? (store.talentIndex ? specKeyFor(store.classSlug, store.split) : null),
   );
@@ -183,7 +195,9 @@
        the trees" case) -- a real, if small, CLS regression this panel must not introduce. -->
   <header class="flex items-baseline justify-between gap-3">
     <h2 class="section-title text-[15px] whitespace-nowrap">{bandCompareCopy.heading(bandLabel)}</h2>
-    <span class="text-muted text-[12px] whitespace-nowrap">{bandCompareCopy.headingAside}</span>
+    <span class="text-muted text-[12px] whitespace-nowrap"
+      >{bandCompareCopy.headingAside(bandLabel, characterLevel !== null)}</span
+    >
   </header>
 
   {#if file === undefined}

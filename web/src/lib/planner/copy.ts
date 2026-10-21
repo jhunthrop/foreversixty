@@ -87,7 +87,9 @@ export const plannerCharacterCardCopy = {
  *  level band's published build. */
 export const bandCompareCopy = {
   heading: (bandLabel: string): string => `${bandLabel} build`,
-  headingAside: "your level's band",
+  /** "your level's band" only to a visitor who has a character; anyone else gets the band's own name. */
+  headingAside: (bandLabel: string, hasCharacter: boolean): string =>
+    hasCharacter ? "your level's band" : `the ${bandLabel} band`,
   noLevelingList: (specName: string): string => `No leveling list for ${specName} yet.`,
   setDpsCaption: (bandLabel: string): string =>
     `the ${bandLabel} band's own gear set, fully equipped — not your build`,

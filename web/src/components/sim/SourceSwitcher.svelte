@@ -28,6 +28,7 @@
 <script lang="ts">
   import { currentCharacterCopy } from '../../lib/current-character-copy';
   import { landingCopy } from '../../lib/sim/landing-copy';
+  import EmailLinkAlternative from '../EmailLinkAlternative.svelte';
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
@@ -208,7 +209,7 @@
       <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
         {landingCopy.signInWithBattlenet}
       </button>
-      <a class="text-nav text-[13px] underline" href="/login">{landingCopy.emailLinkInstead}</a>
+      <EmailLinkAlternative testid="sim-email-link" />
     </div>
 
     <div class={`grid grid-cols-1 gap-3 ${showAddonCard ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>

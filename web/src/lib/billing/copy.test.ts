@@ -39,3 +39,13 @@ describe('billingBlockCopy', () => {
     expect(billingBlockCopy.guildBilledBy('Fixture#1234')).toContain('Fixture#1234');
   });
 });
+
+describe('the guild plan’s officer tools (W.8)', () => {
+  it('says the tools are live and lists them, with no "once they ship"', () => {
+    const officer = premiumCopy.guildFeatures.find((line) => line.startsWith('Officer tools'));
+    expect(officer).toBe(
+      'Officer tools: the loot council helper, the raid readiness board, roster approvals and invite links.',
+    );
+    expect(premiumCopy.guildFeatures.join(' ')).not.toMatch(/ship/i);
+  });
+});

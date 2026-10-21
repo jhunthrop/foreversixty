@@ -1,7 +1,15 @@
 // web/src/lib/planner/band-compare.test.ts
 import { describe, expect, it } from 'vitest';
 import talents from '../../fixtures/planner/talents/warrior.json';
-import { bandTreeRanksFrom, diffAgainstBand, loadFromBand, loadFromBandAtLevel } from './band-compare';
+import {
+  VISITOR_DEFAULT_BAND,
+  bandForPanel,
+  bandTreeRanksFrom,
+  diffAgainstBand,
+  loadFromBand,
+  loadFromBandAtLevel,
+} from './band-compare';
+import { bandCompareCopy } from './copy';
 import { indexTalents } from './rules';
 import type { TalentFile } from './types';
 
@@ -94,5 +102,25 @@ describe('loadFromBandAtLevel', () => {
 
   it('does not load an empty build for a character with no point yet', () => {
     expect(loadFromBandAtLevel(index, '3-0-0', 8).order).toHaveLength(3);
+  });
+});
+
+describe('bandForPanel (W.8)', () => {
+  it('opens a visitor with no character and nothing spent on the level-60 build', () => {
+    expect(VISITOR_DEFAULT_BAND).toBe(60);
+    expect(bandForPanel(0, null, 20)).toBe(60);
+  });
+
+  it('follows the build once a point is spent, or a character is selected', () => {
+    expect(bandForPanel(1, null, 20)).toBe(20);
+    expect(bandForPanel(0, 34, 30)).toBe(30);
+  });
+});
+
+describe('the band card’s aside (W.8)', () => {
+  it('says "your level’s band" only when there is a character, else the band by name', () => {
+    expect(bandCompareCopy.headingAside('60', true)).toBe("your level's band");
+    expect(bandCompareCopy.headingAside('60', false)).toBe('the 60 band');
+    expect(bandCompareCopy.headingAside('20 to 29', false)).not.toMatch(/your/);
   });
 });

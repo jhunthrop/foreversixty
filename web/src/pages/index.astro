@@ -50,7 +50,6 @@ import heroFontCss from '../styles/hero-font.css?raw';
 const changelog = (await getCollection('changelog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 4);
-const updated = changelog[0]?.data.updated;
 
 // The "Get set up" card's only icon (spec 2026-09-25 §3.5 collapses the addon/companion row
 // to one card, so this no longer needs to be a lookup map).
@@ -235,7 +234,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
          while the section gap is 48px from md up. -->
     <div class="flex flex-col gap-8 md:gap-12 px-[18px] md:px-0 pb-8 -mt-2">
       <div class="md:-mb-4" data-testid="home-timeline-wrap">
-        <HomeTimeline dates={dates} updated={updated} />
+        <HomeTimeline dates={dates} />
       </div>
 
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
@@ -294,12 +293,12 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
              (`HomeUpgradesPanel.svelte`, mounted by `HomeAccountPanel.svelte` the same
              dynamic-import-once-signed-in way as the hero cards), not
              split between static Astro markup and a slot. `min-h` approximates the ready
-             panel's own height so the mount does not visibly shift "Five doors" beneath it. -->
+             panel's own height so the mount does not visibly shift "What the site does" beneath it. -->
         <div class="min-h-[220px]" data-testid="home-upgrades-slot"></div>
       </section>
 
       <section class="flex flex-col gap-[14px]" data-testid="home-five-doors">
-        <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">Five doors</h2>
+        <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">What the site does</h2>
         <div class="grid grid-cols-1 gap-[14px] sm:grid-cols-2 lg:grid-cols-5">
           {homeProductPanels.map((panel) => (
             <ToolCard

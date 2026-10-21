@@ -7,7 +7,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { CHARACTER, CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
+import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeOwner } from './support/character-fixture';
 
 const NOT_FOUND = {
   status: 404,
@@ -33,9 +33,21 @@ const withScore = (fields: Record<string, unknown>) => ({
   data: { ...CHARACTER.data, ...fields },
 });
 
-test('a character the API has never heard of shows "no logs yet", not an error and not a zero', async ({
+test('a character the API has never heard of is not drawn as a character: not found, not an error and not a zero', async ({
   page,
 }) => {
+  await stub(page, 'missing');
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character-not-found-line')).toHaveText(
+    'No character called Elyra Duskvale on Hardcore US yet.',
+  );
+  await expect(page.getByTestId('forever-score')).toHaveCount(0);
+  await expect(page.getByTestId('character-error')).toHaveCount(0);
+});
+
+test('the owner of a character with no logs yet sees "no logs yet", not "not found"', async ({ page }) => {
+  await routeOwner(page);
   await stub(page, 'missing');
   await page.goto(CHARACTER_PATH);
 
@@ -225,7 +237,10 @@ test('In game: the tooltip mock for any visitor, the planner line only for the o
   await expect(page.getByTestId('character-in-game-planner')).toHaveCount(0);
 });
 
-test('the no-logs page keeps the neutral crest and the same card, with what to do next', async ({ page }) => {
+test('the owner’s no-logs page keeps the neutral crest and the same card, with what to do next', async ({
+  page,
+}) => {
+  await routeOwner(page);
   await stub(page, 'missing');
   await page.goto(CHARACTER_PATH);
 
@@ -233,13 +248,7 @@ test('the no-logs page keeps the neutral crest and the same card, with what to d
   await expect(page.getByTestId('character-avatar-silhouette')).toBeVisible();
   const card = page.getByTestId('forever-score-card');
   await expect(card).toContainText('No logs yet');
-  await expect(card).toContainText('Check the name and ruleset, or look up another character.');
   await expect(card).not.toContainText(labels.noLogs);
-  const lookup = card.getByRole('link', { name: 'Look up another character' });
-  await expect(lookup).toHaveAttribute(
-    'href',
-    '/?character=Elyra%20Duskvale&region=us&ruleset=hardcore#lookup',
-  );
   await expect(page.getByTestId('character-in-game-tooltip')).toContainText(labels.noLogs);
 });
 

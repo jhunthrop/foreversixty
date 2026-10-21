@@ -7,3 +7,11 @@ export const accountSignInCopy = {
   reason:
     'An account is needed to upload logs, pair the companion and claim characters. Reading reports and rankings never needs one.',
 } as const;
+
+/** "or use an email link": the alternative to the Battle.net button, worded once for every
+ *  sign-in surface (EmailLinkAlternative.svelte). */
+export const emailLinkCopy = {
+  lead: 'or',
+  link: 'use an email link',
+  href: '/login',
+} as const;

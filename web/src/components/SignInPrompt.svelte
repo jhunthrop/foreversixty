@@ -10,6 +10,7 @@
 <script lang="ts">
   import { battlenetStartUrl } from '../lib/account/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import EmailLinkAlternative from './EmailLinkAlternative.svelte';
 
   let {
     line,
@@ -26,8 +27,6 @@
       <a class="text-nav underline" href={battlenetStartUrl(next)}>Sign in with Battle.net</a>
       or
       <a href="/login">use an email link.</a>
-    {:else}
-      <a href="/login">Use an email link instead.</a>
     {/if}
   </p>
   {#if !compact}
@@ -37,5 +36,6 @@
     >
       Sign in with Battle.net
     </a>
+    <EmailLinkAlternative testid={`${testid}-email-link`} />
   {/if}
 </div>

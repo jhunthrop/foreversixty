@@ -123,6 +123,12 @@ export const scoreCopy = {
   /** Read aloud beside the current tier in the strip. */
   currentTier: 'this character’s tier',
 
+  /** The page for a name the site has never heard of (W.8): said plainly, not drawn as an empty
+   *  character. `where` is the ruleset-and-region chip, "PvP US". */
+  notFoundTitle: 'Character not found',
+  notFoundLine: (name: string, where: string): string => `No character called ${name} on ${where} yet.`,
+  notFoundLookupLabel: 'Look up another character',
+
   /** The no-logs card (fix round 2 item 4). */
   noLogsTitle: 'No logs yet',
   noLogsHint: 'Check the name and ruleset, or look up another character.',
