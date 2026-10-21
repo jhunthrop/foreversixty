@@ -76,15 +76,20 @@ func (s *Store) CharacterOwner(ctx context.Context, guildID int64, characterKey 
 // leader-rank row is removable only by its own account or a moderator -
 // never by the account holding the claim either, since a second
 // leader-rank row belongs to a different real character than the
-// claimant's own. This is what stops an officer from stripping the real
+// claimant's own. An officer-rank row's own account may remove it only
+// when that account holds the claim (mayRemoveOwnRow): an officer is not a
+// second guild master. This is what stops an officer from stripping the real
 // guild master's membership and then claiming the now-unclaimed guild.
 // Pure (g is already in hand) so both the actual remove route
 // (mayRemoveCharacter) and the guild home's per-row may_remove field
 // (item 7, fourth security review response) read the exact same rule
 // from one place.
 func mayRemoveRow(g Guild, actorID, ownerID int64, targetRank string, moderator, verifiedOfficer bool) bool {
-	if moderator || actorID == ownerID {
+	if moderator {
 		return true
+	}
+	if actorID == ownerID {
+		return mayRemoveOwnRow(g, actorID, targetRank, moderator)
 	}
 	switch targetRank {
 	case "leader":

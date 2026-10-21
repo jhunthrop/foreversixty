@@ -259,7 +259,43 @@ export interface GuildHome {
   /** Task L6.14: the guild's newest addon roster snapshot, `null` when it has none. Optional
    *  so a home from before the addendum still reads (the Roster tab treats absent as null). */
   addon_snapshot?: GuildAddonSnapshot | null;
+  /** The roster as a person counts it (api `HomeView.members`): everyone the newest addon
+   *  snapshot names plus every verified character, merged by name, each with a state. Optional
+   *  so a home from before it still reads (the Roster tab then lists the account rows alone). */
+  members?: GuildRosterEntry[];
+  /** The numbers the count line above the roster reads (api `HomeView.counts`). */
+  counts?: GuildRosterCounts;
 }
+
+/** One person on the roster (api `RosterEntry`). `approved` is a verified character,
+ *  `waiting` an account's character no officer has approved, `no_account` a name the addon saw
+ *  that no account has claimed, `not_seen` a member who joined by invite and is not in the
+ *  snapshot. `character_key` is set when the entry has a `roster[]` or `pending[]` row. */
+export type GuildEntryState = 'approved' | 'waiting' | 'no_account' | 'not_seen';
+
+export interface GuildRosterEntry {
+  name: string;
+  character_key?: string;
+  state: GuildEntryState;
+  rank: GuildRank;
+  class?: string;
+  /** The snapshot's level; absent when the member withholds it. */
+  level?: number;
+  /** The snapshot's spec slug (`warrior-arms`); absent when withheld. */
+  spec?: string;
+  /** The sender's local `YYYY-MM-DD HH:MM`. */
+  seen_at?: string;
+}
+
+export interface GuildRosterCounts {
+  on_roster: number;
+  in_game_no_account: number;
+  waiting: number;
+  not_seen: number;
+}
+
+/** The words `GET /v1/me` lists on a guild entry's `can` (api `guilds.Capabilities`). */
+export type GuildCapability = 'approve' | 'remove' | 'settings' | 'award' | 'billing' | 'release';
 
 export interface GuildSettingsData {
   default_visibility: GuildVisibility;
@@ -749,6 +785,9 @@ export interface GuildLootItem {
   slot: string;
   awarded_to: GuildLootAwardedTo | null;
   candidates: GuildLootCandidate[];
+  /** How many of the table's drops this row stands for (two items can share a name); absent
+   *  on a response from before it, read as 1. */
+  copies?: number;
 }
 
 export interface GuildLootPage {

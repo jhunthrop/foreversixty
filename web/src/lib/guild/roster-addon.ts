@@ -45,32 +45,32 @@ export function addonSeenClock(seenAt: string): string | null {
   return /^\d{4}-\d{2}-\d{2} (\d{2}:\d{2})$/.exec(seenAt)?.[1] ?? null;
 }
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
-
-/** The viewer's local calendar date, "YYYY-MM-DD", for the "is it today" test. */
-export function localDateKey(now: Date): string {
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+/** The member's `seen_at` (their own local "YYYY-MM-DD HH:MM") as an instant, read in the
+ *  viewer's zone: the addon announces no zone, so the clock is taken as the viewer's own, the
+ *  same reading the rest of the page makes of a local stamp. Null for anything else. */
+export function addonSeenAt(seenAt: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/.exec(seenAt);
+  if (m === null) return null;
+  const [, y, mo, d, h, mi] = m.map(Number);
+  const at = new Date(y, mo - 1, d, h, mi);
+  return Number.isNaN(at.getTime()) ? null : at;
 }
 
 /**
- * "seen 21:40", or "seen Mon 21:40" when `seen_at` is not on the viewer's current local date
- * (`seen_at` is the member's own clock, so the day is named rather than guessed as "yesterday").
- * `withheld` is a member who shares nothing else: the hover then says so instead of naming the
- * clock. Null for a `seen_at` that is not "YYYY-MM-DD HH:MM".
+ * "seen 2 hours ago", relative to `now` (a stamp ahead of the viewer's clock reads "just now",
+ * never a negative age). `withheld` is a member who shares nothing else: the hover then says so
+ * instead of naming the clock. Null for a `seen_at` that is not "YYYY-MM-DD HH:MM".
  */
 export function addonSeen(
   seenAt: string,
-  today: string,
+  now: Date,
   withheld = false,
 ): { label: string; hover: string } | null {
   const clock = addonSeenClock(seenAt);
-  if (clock === null) return null;
-  const date = seenAt.slice(0, 10);
-  const [y, m, d] = date.split('-').map(Number);
-  const day = WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  const at = addonSeenAt(seenAt);
+  if (clock === null || at === null) return null;
   return {
-    label: date === today ? guildRosterAddonCopy.seen(clock) : guildRosterAddonCopy.seenOnDay(day, clock),
+    label: guildRosterAddonCopy.seen(relativeTime(at, now)),
     hover: withheld ? guildRosterAddonCopy.withheldHover : guildRosterAddonCopy.seenHover(clock),
   };
 }
@@ -84,19 +84,17 @@ export function snapshotSenderName(byCharacter: string, rows: readonly GuildRost
   return last.charAt(0).toUpperCase() + last.slice(1);
 }
 
-/** The line above the table. A home without the field (before the addendum) reads as none.
- *  "Members seen" counts the roster rows the snapshot matched; the total is every roster row. */
+/** The line above the table: who sent the newest snapshot and when. A home without the field
+ *  (before the addendum) reads as none. How many people are on the roster, and in what state,
+ *  is the count line (roster-model.ts). */
 export function addonSnapshotLine(
   snapshot: GuildAddonSnapshot | null | undefined,
   rows: readonly GuildRosterRow[],
   now: Date = new Date(),
 ): string {
   if (snapshot === undefined || snapshot === null) return guildRosterAddonCopy.noSnapshot;
-  const seen = rows.filter((r) => r.addon !== undefined && r.addon !== null).length;
   return guildRosterAddonCopy.snapshotLine(
     snapshotSenderName(snapshot.by_character, rows),
     relativeTime(new Date(snapshot.received_at), now),
-    seen,
-    rows.length,
   );
 }

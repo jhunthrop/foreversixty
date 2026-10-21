@@ -75,8 +75,23 @@ func TestLootListsOnyxiasRealTwentyTwoItems(t *testing.T) {
 	var view LootView
 	h.data(res, &view)
 
-	if len(view.Items) != 22 {
-		t.Fatalf("items = %d, want 22", len(view.Items))
+	// Twenty-two drops, listed as 21 rows: the two "Head of Onyxia" items are one row of two.
+	if len(view.Items) != 21 {
+		t.Fatalf("items = %d, want 21", len(view.Items))
+	}
+	heads := 0
+	for _, it := range view.Items {
+		if it.Name == "Head of Onyxia" {
+			heads++
+			if it.Copies != 2 {
+				t.Errorf("Head of Onyxia copies = %d, want 2", it.Copies)
+			}
+		} else if it.Copies != 1 {
+			t.Errorf("%s copies = %d, want 1", it.Name, it.Copies)
+		}
+	}
+	if heads != 1 {
+		t.Fatalf("Head of Onyxia rows = %d, want 1", heads)
 	}
 	if view.Selected != 1084 || len(view.Encounters) != 1 || view.Encounters[0].Name != "Onyxia" {
 		t.Fatalf("encounters/selected = %+v/%d, want Onyxia/1084", view.Encounters, view.Selected)

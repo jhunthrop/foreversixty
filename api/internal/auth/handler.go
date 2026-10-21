@@ -37,6 +37,12 @@ const (
 	maxDevicePlatform = 40
 )
 
+// GuildCapabilities is the part of guilds.Store the account read needs. It is an interface
+// because guilds imports this package.
+type GuildCapabilities interface {
+	Capabilities(ctx context.Context, guildID, userID int64, moderator bool) ([]string, error)
+}
+
 // Service serves every sign-in route.
 type Service struct {
 	Store  *Store
@@ -48,6 +54,9 @@ type Service struct {
 	// value, every Guild.Plan stays nil) for a test harness that does
 	// not exercise billing.
 	Entitlements *entitlements.Store
+	// GuildCapabilities answers each guild entry's Can list on GET /v1/me. Nil is safe (every
+	// list reads empty) for a harness that does not mount guilds; guilds.Store satisfies it.
+	GuildCapabilities GuildCapabilities
 	// Importer runs the Battle.net character/guild import right after a
 	// successful Battle.net sign-in. Nil means the feature is off (no
 	// Battle.net credentials configured, or a test harness that does
@@ -395,6 +404,11 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
+	guilds, err = s.attachGuildCapabilities(r.Context(), guilds, u)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
 	ev, err := s.buildEntitlementsView(r.Context(), u.ID)
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")
@@ -458,6 +472,28 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 // guild's plan visible/active on this response (spec §1.3 rule 4).
 func isActiveEntitlementStatus(status string) bool {
 	return status == "active" || status == "trialing" || status == "past_due"
+}
+
+// attachGuildCapabilities fills Guild.Can for every guild the account belongs to, from the
+// one rule guilds.Capabilities holds. Every list is non-nil, so the JSON is [] and not null.
+func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u User) ([]Guild, error) {
+	out := make([]Guild, len(guilds))
+	copy(out, guilds)
+	moderator := u.Role == "moderator" || u.Role == "admin"
+	for i, g := range out {
+		out[i].Can = []string{}
+		if s.GuildCapabilities == nil {
+			continue
+		}
+		can, err := s.GuildCapabilities.Capabilities(ctx, g.ID, u.ID, moderator)
+		if err != nil {
+			return nil, fmt.Errorf("auth: me: guild capabilities %d: %w", g.ID, err)
+		}
+		if can != nil {
+			out[i].Can = can
+		}
+	}
+	return out, nil
 }
 
 // attachGuildPlans fills Guild.Plan for every guild in guilds where

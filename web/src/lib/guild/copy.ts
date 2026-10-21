@@ -170,20 +170,19 @@ export const guildRosterAddonCopy = {
   level: (level: number): string => `Level ${level}`,
   /** Shown after the addon's spec, only when it differs from the site's or the site has none. */
   addonTag: 'per addon',
-  gap: (gap: number): string => `gap ${gap} DPS`,
-  seen: (clock: string): string => `seen ${clock}`,
-  /** "seen Mon 21:40": the day is named when `seen_at` is not today in the viewer's date. */
-  seenOnDay: (day: string, clock: string): string => `seen ${day} ${clock}`,
+  /** "Gear gap 12 DPS": the figure with the word, so it does not read as a bare number. */
+  gap: (gap: number): string => `Gear gap ${gap} DPS`,
+  /** "seen 2 hours ago": `when` is the relative phrase for the member's `seen_at`. */
+  seen: (when: string): string => `seen ${when}`,
   seenHover: (clock: string): string => `Seen at ${clock} on the member's clock`,
   /** The hover on a row whose member shares nothing but the time the addon saw them. */
   withheldHover: 'Details withheld by the member',
   separator: '·',
   /** The build name in the In game slot, so it does not read as a stray word. */
   build: (name: string): string => `build: ${name}`,
-  /** `seen` counts the roster rows the snapshot matched; `total` is every roster row. */
-  snapshotLine: (by: string, when: string, seen: number, total: number): string =>
-    `Roster from the addon · sent by ${by} ${when} · ${seen} of ${total} members seen`,
-  noSnapshot: 'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
+  /** Who sent the newest snapshot and when; the counts live on their own line. */
+  snapshotLine: (by: string, when: string): string => `Roster from the addon · sent by ${by} ${when}`,
+  noSnapshot: 'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
 } as const;
 
 /** The bare `/guild` landing: the lookup, the top guilds and the officer line. */
@@ -197,4 +196,47 @@ export const guildLandingCopy = {
   emptyName: "Type the guild's name as the game writes it.",
   topHeading: 'Top guilds',
   officerLine: 'Run a guild? Open its page and choose Claim this guild.',
+} as const;
+
+/** The roster as everyone the addon saw, with a word beside each (lifecycle review round 4,
+ *  N4/N5/N6/N13): the state words, the rank words, the count line, what approving does and
+ *  what only the guild master can do. */
+export const guildRosterModelCopy = {
+  states: {
+    approved: 'Approved',
+    waiting: 'Waiting for approval',
+    no_account: 'No account yet',
+    not_seen: 'Not seen in game yet',
+  },
+  ranks: { leader: 'Leader', officer: 'Officer', member: 'Member' },
+  /** "7 on the roster · 2 in game without an account · 1 waiting for approval · 1 not seen in
+   *  game yet": the parts that are zero are left out. */
+  countLine: (c: {
+    on_roster: number;
+    in_game_no_account: number;
+    waiting: number;
+    not_seen: number;
+  }): string =>
+    [
+      `${c.on_roster} on the roster`,
+      c.in_game_no_account > 0 ? `${c.in_game_no_account} in game without an account` : '',
+      c.waiting > 0 ? `${c.waiting} waiting for approval` : '',
+      c.not_seen > 0 ? `${c.not_seen} not seen in game yet` : '',
+    ]
+      .filter((part) => part !== '')
+      .join(' · '),
+  gearNote: 'Loot and readiness list members with gear on the site.',
+  noAccountFilter: 'No account',
+  /** Above the waiting list: what Approve gives the character. */
+  approveExplains:
+    'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
+  decline: 'Decline',
+  declineQuestion: (name: string): string => `Remove ${name} from the waiting list? They can ask again.`,
+  /** "Approve 4, including 1 officer?" */
+  approveAllQuestion: (total: number, officers: number): string =>
+    `Approve ${total}, including ${officers} officer${officers === 1 ? '' : 's'}?`,
+  confirm: 'Yes',
+  cancel: 'Cancel',
+  /** Settings, for an officer who does not hold the claim. */
+  guildMasterOnly: 'Only the guild master can release the claim or change billing.',
 } as const;

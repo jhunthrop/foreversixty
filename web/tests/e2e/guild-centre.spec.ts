@@ -42,6 +42,14 @@ function envelope(data: unknown, status = 200) {
 const [REGION, RULESET, SLUG] = FIXTURE_GUILD_CENTRE_PATH.split('/');
 const GUILD_URL = `/guild/${FIXTURE_GUILD_CENTRE_PATH}`;
 
+/** The capability words the API lists on a /v1/me guild entry (api guilds.Capabilities): the
+ *  guild master holding the claim has all six, an officer four, a member none. */
+function canFor(rank: 'leader' | 'officer' | 'member'): string[] {
+  if (rank === 'leader') return ['approve', 'remove', 'settings', 'award', 'billing', 'release'];
+  if (rank === 'officer') return ['approve', 'remove', 'settings', 'award'];
+  return [];
+}
+
 function meFixture(
   viewerName: string | null,
   rank: 'leader' | 'officer' | 'member' = 'member',
@@ -64,7 +72,17 @@ function meFixture(
     guilds:
       viewerName === null
         ? []
-        : [{ id: GUILD_ID, region: REGION, ruleset: RULESET, name: 'Olympus XXVII', rank, verified: true }],
+        : [
+            {
+              id: GUILD_ID,
+              region: REGION,
+              ruleset: RULESET,
+              name: 'Olympus XXVII',
+              rank,
+              verified: true,
+              can: canFor(rank),
+            },
+          ],
   };
 }
 
@@ -289,7 +307,7 @@ test.describe('roster: pin, sort, officer controls', () => {
     await expect(rows.first()).toContainText('(you)');
 
     const unverifiedList = page.getByTestId('guild-roster-unverified-list');
-    await expect(unverifiedList).toContainText('Unverified');
+    await expect(unverifiedList).toContainText('Waiting for approval');
   });
 
   test('officer sees Approve all, with a distinct accessible name per raider for Approve/Remove', async ({
@@ -345,17 +363,14 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     page,
   }) => {
     await openRoster(page, true);
-    const fixtureRows = buildMockHome(VIEWER_MEMBER).roster.length;
     await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
-      new RegExp(
-        `^Roster from the addon · sent by Zulmara 3 minutes ago · 3 of ${fixtureRows} members seen$`,
-      ),
+      'Roster from the addon · sent by Zulmara 3 minutes ago',
     );
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60 Survival\s+per addon\s+·\s+gap 12 DPS\s+·\s+build: Survival raid\s+·\s+seen 21:40$/,
+      /^Level 60 Survival\s+per addon\s+·\s+Gear gap 12 DPS\s+·\s+build: Survival raid\s+·\s+seen 6 minutes ago$/,
     );
     await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60\s+·\s+gap 4 DPS\s+·\s+build: Protection raid\s+·\s+seen 21:38$/,
+      /^Level 60\s+·\s+Gear gap 4 DPS\s+·\s+build: Protection raid\s+·\s+seen 8 minutes ago$/,
     );
     const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
     await expect(none).toHaveText('—');
@@ -381,7 +396,7 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     // is null (no gear consent) and sorts after every row that has one.
     expect(cleaned.slice(0, 2)).toEqual(['Zulmara', 'Kraggor']);
     const gaps = await page.getByTestId('guild-roster-ingame-gap').allTextContents();
-    expect(gaps).toEqual(['gap 12 DPS', 'gap 4 DPS']);
+    expect(gaps).toEqual(['Gear gap 12 DPS', 'Gear gap 4 DPS']);
     const cells = page.getByTestId('guild-roster-rows').locator('.guild-roster-row');
     const count = await cells.count();
     for (let i = 2; i < count; i++) {
@@ -392,11 +407,239 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
   test('with no snapshot: the null line, and every row "—"', async ({ page }) => {
     await openRoster(page, false);
     await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
-      'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
+      'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
     );
     await expect(page.getByTestId('guild-roster-ingame')).toHaveCount(0);
     const rows = await page.getByTestId('guild-roster-rows').locator('.guild-roster-row').count();
     await expect(page.getByTestId('guild-roster-ingame-none')).toHaveCount(rows);
+  });
+});
+
+// Lifecycle round 4, the roster model: everyone the addon saw with a word beside each, what
+// approving does, and controls that come from the account's capability list.
+test.describe('roster: everyone the addon saw, with a word beside each', () => {
+  test.use({ timezoneId: 'UTC' });
+
+  test('the count line, the rank word on every row and the names with no account', async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
+    await stubCore(page, VIEWER_MEMBER, 'member');
+    await page.goto(`${GUILD_URL}#roster`);
+    const home = buildMockHome(VIEWER_MEMBER);
+    const waiting = home.roster.filter((r) => !r.verified).length;
+    await expect(page.getByTestId('guild-roster-counts')).toHaveText(
+      `${home.roster.length + 2} on the roster · 1 in game without an account · ${waiting} waiting for approval · 1 not seen in game yet`,
+    );
+    await expect(page.getByTestId('guild-roster-gear-note')).toHaveText(
+      'Loot and readiness list members with gear on the site.',
+    );
+    // Member is a word, not a blank: a plain member's row says so.
+    const zulmara = page
+      .getByTestId('guild-roster-rows')
+      .locator('.guild-roster-row')
+      .filter({ has: page.getByTestId('guild-roster-name').getByText('Zulmara') });
+    await expect(zulmara.getByTestId('guild-roster-rank')).toHaveText('Member');
+    // The names with no account row: a state word each, no controls.
+    const entries = page.getByTestId('guild-roster-entries').getByTestId('guild-roster-entry');
+    await expect(entries).toHaveCount(2);
+    await expect(entries.nth(0)).toContainText('Brightwick');
+    await expect(entries.nth(0).getByTestId('guild-roster-entry-state')).toHaveText('No account yet');
+    await expect(entries.nth(0).getByTestId('guild-roster-entry-ingame')).toContainText('Level 58');
+    await expect(entries.nth(0).getByTestId('guild-roster-entry-ingame')).toContainText('seen 2 hours ago');
+    await expect(entries.nth(1)).toContainText('Driftwood');
+    await expect(entries.nth(1).getByTestId('guild-roster-entry-state')).toHaveText('Not seen in game yet');
+    await expect(entries.locator('button')).toHaveCount(0);
+  });
+
+  test('the "No account" chip narrows the roster to the names with no account', async ({ page }) => {
+    await stubCore(page, VIEWER_MEMBER, 'member');
+    await page.goto(`${GUILD_URL}#roster`);
+    await page.getByTestId('guild-roster-filter-noaccount').click();
+    await expect(page.getByTestId('guild-roster-entries').getByTestId('guild-roster-entry')).toHaveCount(1);
+    await expect(page.getByTestId('guild-roster-rows')).toHaveCount(0);
+    await page.getByTestId('guild-roster-filter-noaccount').click();
+    await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
+    // "Verified only" drops the name with no account and keeps the invited member.
+    await page.getByTestId('guild-roster-filter-verified').click();
+    await expect(page.getByTestId('guild-roster-entries').getByTestId('guild-roster-entry')).toHaveCount(1);
+    await expect(page.getByTestId('guild-roster-entries')).toContainText('Driftwood');
+  });
+
+  test('the waiting list says what Approve does and shows the rank each character arrived with', async ({
+    page,
+  }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-approve-explains')).toHaveText(
+      'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
+    );
+    const list = page.getByTestId('guild-roster-unverified-list');
+    await expect(list.getByTestId('guild-roster-pending-rank').first()).toHaveText('Member');
+    await expect(list.getByTestId('guild-roster-state').first()).toHaveText('Waiting for approval');
+  });
+
+  test('Approve all goes straight through when no officer is waiting', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    let called = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/roster/approve-all`, (route) => {
+      called = true;
+      return route.fulfill(
+        envelope({ approved: ['us/pvp/rootgall', 'us/pvp/stormtusk', 'us/pvp/fulmintide'] }),
+      );
+    });
+    await page.goto(`${GUILD_URL}#roster`);
+    await page.getByTestId('guild-roster-approve-all').click();
+    await expect(page.getByTestId('guild-roster-approve-all-confirm')).toHaveCount(0);
+    await expect.poll(() => called).toBe(true);
+    await expect(page.getByTestId('guild-roster-unverified-list')).toHaveCount(0);
+    // The count line and the list agree in the same frame.
+    await expect(page.getByTestId('guild-roster-counts')).not.toContainText('waiting for approval');
+  });
+
+  test('Approve all asks first when an officer is among the waiting', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    const home = buildMockHome(VIEWER_OFFICER);
+    const waiting = home.roster.filter((r) => !r.verified);
+    const withOfficer = {
+      ...home,
+      roster: home.roster.map((r) => (r.name === 'Rootgall' ? { ...r, rank: 'officer' as const } : r)),
+      pending: waiting.map((r) => (r.name === 'Rootgall' ? { ...r, rank: 'officer' as const } : r)),
+    };
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => route.fulfill(envelope(withOfficer)));
+    let called = false;
+    await page.route(`**/v1/guilds/${GUILD_ID}/roster/approve-all`, (route) => {
+      called = true;
+      return route.fulfill(envelope({ approved: waiting.map((r) => r.character_key) }));
+    });
+    await page.goto(`${GUILD_URL}#roster`);
+    await page.getByTestId('guild-roster-approve-all').click();
+    await expect(page.getByTestId('guild-roster-approve-all-confirm')).toContainText(
+      `Approve ${waiting.length}, including 1 officer?`,
+    );
+    expect(called).toBe(false);
+    await page
+      .getByTestId('guild-roster-approve-all-confirm')
+      .getByRole('button', { name: 'Cancel' })
+      .click();
+    expect(called).toBe(false);
+    await page.getByTestId('guild-roster-approve-all').click();
+    await page.getByTestId('guild-roster-approve-all-yes').click();
+    await expect.poll(() => called).toBe(true);
+  });
+
+  test('Decline asks first, then removes the character from the waiting list', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    let removed = false;
+    await page.route('**/v1/guilds/*/characters/us/pvp/rootgall', (route) => {
+      if (route.request().method() === 'DELETE') {
+        removed = true;
+        return route.fulfill(envelope({ status: 'removed' }));
+      }
+      return route.continue();
+    });
+    await page.goto(`${GUILD_URL}#roster`);
+    await page.locator('[data-testid="guild-roster-decline"][aria-label="Decline Rootgall"]').click();
+    await expect(page.getByTestId('guild-roster-decline-confirm')).toContainText(
+      'Remove Rootgall from the waiting list? They can ask again.',
+    );
+    expect(removed).toBe(false);
+    await page.getByTestId('guild-roster-decline-yes').click();
+    await expect.poll(() => removed).toBe(true);
+    await expect(page.getByTestId('guild-roster-unverified-list')).not.toContainText('Rootgall');
+  });
+
+  test('controls come from the capability list: an officer whose list lacks remove and approve sees neither', async ({
+    page,
+  }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route('**/v1/me', (route) =>
+      route.fulfill(
+        envelope({
+          ...meFixture(VIEWER_OFFICER, 'leader'),
+          guilds: [
+            {
+              id: GUILD_ID,
+              region: REGION,
+              ruleset: RULESET,
+              name: 'Olympus XXVII',
+              rank: 'leader',
+              verified: true,
+              can: [],
+            },
+          ],
+        }),
+      ),
+    );
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
+    await expect(page.getByTestId('guild-roster-approve')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-approve-all')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-remove')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-decline')).toHaveCount(0);
+  });
+
+  test('an officer who is not the guild master has no Remove on her own row; the guild master keeps hers', async ({
+    page,
+  }) => {
+    // The API marks the viewer\'s own officer row may_remove: false (guilds.mayRemoveRow).
+    await stubCore(page, 'Sunderfel', 'officer');
+    const home = buildMockHome('Sunderfel');
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(
+        envelope({
+          ...home,
+          roster: home.roster.map((r) => (r.name === 'Sunderfel' ? { ...r, may_remove: false } : r)),
+        }),
+      ),
+    );
+    await page.goto(`${GUILD_URL}#roster`);
+    const own = page
+      .getByTestId('guild-roster-rows')
+      .locator('.guild-roster-row')
+      .filter({ has: page.getByTestId('guild-roster-name').getByText('Sunderfel') });
+    await expect(own).toBeVisible();
+    await expect(own.getByTestId('guild-roster-remove')).toHaveCount(0);
+    // Others' rows still carry Remove for an officer.
+    await expect(
+      page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Zulmara"]'),
+    ).toBeVisible();
+  });
+});
+
+test.describe('settings: billing and release belong to the guild master', () => {
+  async function openSettings(page: Page, rank: 'leader' | 'officer'): Promise<void> {
+    await stubCore(page, VIEWER_OFFICER, rank);
+    await page.route(`**/v1/guilds/${GUILD_ID}/settings`, (route) =>
+      route.fulfill(
+        envelope({
+          default_visibility: 'guild',
+          officer_max_rank_index: 2,
+          claimed_by: { battletag: 'Kraggor' },
+          claim_pending: null,
+          claim: { state: 'claimed', frozen: false },
+          invite: { rotated_at: null },
+        }),
+      ),
+    );
+    await page.goto(`${GUILD_URL}/settings`);
+    await expect(page.getByTestId('guild-visibility-select')).toBeVisible();
+  }
+
+  test('the guild master sees the billing section', async ({ page }) => {
+    await openSettings(page, 'leader');
+    await expect(page.getByTestId('guild-settings-billing')).toBeVisible();
+    await expect(page.getByTestId('guild-settings-master-only')).toHaveCount(0);
+  });
+
+  test('an officer sees no billing section and is told what only the guild master can do', async ({
+    page,
+  }) => {
+    await openSettings(page, 'officer');
+    await expect(page.getByTestId('guild-settings-billing')).toHaveCount(0);
+    await expect(page.getByTestId('guild-settings-master-only')).toHaveText(
+      'Only the guild master can release the claim or change billing.',
+    );
+    // Everything else on the page is still hers.
+    await expect(page.getByTestId('guild-invite-rotate')).toBeVisible();
   });
 });
 
@@ -609,6 +852,7 @@ test('visiting a different guild sharing region/ruleset shows no role-line from 
             name: 'Olympus XXVII',
             rank: 'leader',
             verified: true,
+            can: canFor('leader'),
           },
         ],
       }),

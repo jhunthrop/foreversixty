@@ -9,8 +9,8 @@ import {
   addonIdentity,
   addonLevelSpec,
   addonSeen,
+  addonSeenAt,
   addonSeenClock,
-  localDateKey,
   addonSnapshotLine,
   addonSpecName,
   snapshotSenderName,
@@ -88,10 +88,10 @@ describe('addonIdentity: the level and spec from the snapshot, where they differ
 
 describe('addonGapLabel', () => {
   it('reads the addon’s integer gap under its own heading, as DPS', () => {
-    expect(addonGapLabel(12)).toBe('gap 12 DPS');
-    expect(addonGapLabel(0)).toBe('gap 0 DPS');
+    expect(addonGapLabel(12)).toBe('Gear gap 12 DPS');
+    expect(addonGapLabel(0)).toBe('Gear gap 0 DPS');
     // The contract allows a negative gap (a member already past the plan).
-    expect(addonGapLabel(-3)).toBe('gap -3 DPS');
+    expect(addonGapLabel(-3)).toBe('Gear gap -3 DPS');
     expect(addonGapLabel(12)).toBe(guildRosterAddonCopy.gap(12));
     expect(addonGapLabel(null)).toBeNull();
   });
@@ -109,30 +109,31 @@ describe('addonSeenClock', () => {
   });
 });
 
-describe('addonSeen: the day is named when seen_at is not today in the viewer’s date', () => {
-  it('reads "seen HH:MM" for today, hovering the member’s clock', () => {
-    expect(addonSeen('2026-12-22 21:40', '2026-12-22')).toEqual({
-      label: 'seen 21:40',
-      hover: "Seen at 21:40 on the member's clock",
+describe('addonSeen: how long ago, relative to now, in the viewer\u2019s own clock', () => {
+  const now = new Date(2026, 11, 22, 21, 46);
+  it('reads "seen N hours ago", hovering the member\u2019s clock', () => {
+    expect(addonSeen('2026-12-22 19:46', now)).toEqual({
+      label: 'seen 2 hours ago',
+      hover: "Seen at 19:46 on the member's clock",
     });
   });
-  it('adds the weekday when it is not today', () => {
-    // 21 Dec 2026 is a Monday, 20 Dec a Sunday.
-    expect(addonSeen('2026-12-21 23:12', '2026-12-22')?.label).toBe('seen Mon 23:12');
-    expect(addonSeen('2026-12-20 08:05', '2026-12-22')?.label).toBe('seen Sun 08:05');
+  it('reads minutes under an hour and days beyond a day', () => {
+    expect(addonSeen('2026-12-22 21:40', now)?.label).toBe('seen 6 minutes ago');
+    expect(addonSeen('2026-12-22 21:46', now)?.label).toBe('seen just now');
+    expect(addonSeen('2026-12-20 08:05', now)?.label).toBe('seen 2 days ago');
   });
-  it('a later date than today (the member’s clock ahead of ours) also names its day', () => {
-    expect(addonSeen('2026-12-23 00:10', '2026-12-22')?.label).toBe('seen Wed 00:10');
+  it('a stamp ahead of the viewer\u2019s clock reads "just now", never a negative age', () => {
+    expect(addonSeen('2026-12-23 00:10', now)?.label).toBe('seen just now');
   });
-  it('a withholding member’s hover says so', () => {
-    expect(addonSeen('2026-12-22 21:40', '2026-12-22', true)?.hover).toBe('Details withheld by the member');
+  it('a withholding member\u2019s hover says so', () => {
+    expect(addonSeen('2026-12-22 21:40', now, true)?.hover).toBe('Details withheld by the member');
   });
   it('is null for a seen_at it cannot read', () => {
-    expect(addonSeen('yesterday', '2026-12-22')).toBeNull();
+    expect(addonSeen('yesterday', now)).toBeNull();
+    expect(addonSeenAt('yesterday')).toBeNull();
   });
-  it('takes "today" from the viewer’s local calendar', () => {
-    expect(localDateKey(new Date(2026, 11, 22, 23, 59))).toBe('2026-12-22');
-    expect(localDateKey(new Date(2026, 0, 5, 0, 1))).toBe('2026-01-05');
+  it('takes the stamp as the viewer\u2019s local time', () => {
+    expect(addonSeenAt('2026-12-22 21:40')?.getTime()).toBe(new Date(2026, 11, 22, 21, 40).getTime());
   });
 });
 
@@ -147,28 +148,14 @@ describe('snapshotSenderName', () => {
 
 describe('addonSnapshotLine', () => {
   const now = new Date('2026-12-22T21:46:00Z');
-  const other = (key: string, addon: GuildRosterAddon | null) =>
-    row({ character_key: key, name: key.split('/').pop() ?? key, addon });
-  it('says who sent it, when, and how many of the roster rows the snapshot matched', () => {
-    const rows = [
-      row(),
-      other('us/pvp/kraggor', ADDON),
-      other('us/pvp/windtalon', null),
-      other('us/pvp/a', null),
-    ];
-    expect(addonSnapshotLine(SNAPSHOT, rows, now)).toBe(
-      'Roster from the addon · sent by Zulmara 3 minutes ago · 2 of 4 members seen',
+  it('says who sent it and when; the counts have their own line', () => {
+    expect(addonSnapshotLine(SNAPSHOT, [row()], now)).toBe(
+      'Roster from the addon \u00b7 sent by Zulmara 3 minutes ago',
     );
   });
-  it('counts the matched rows, not the snapshot’s own member total (which includes unmatched lines)', () => {
-    expect(addonSnapshotLine({ ...SNAPSHOT, members: 9 }, [row()], now)).toMatch(/· 1 of 1 members seen$/);
-  });
-  it('counts none seen as zero: an empty match is a fact', () => {
-    expect(addonSnapshotLine(SNAPSHOT, [row({ addon: null })], now)).toMatch(/· 0 of 1 members seen$/);
-  });
-  it('says no snapshot has arrived yet when there is none', () => {
+  it('says no roster has arrived yet when there is none', () => {
     expect(addonSnapshotLine(null, [row()], now)).toBe(
-      'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
+      'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
     );
     expect(addonSnapshotLine(undefined, [row()], now)).toBe(guildRosterAddonCopy.noSnapshot);
   });
