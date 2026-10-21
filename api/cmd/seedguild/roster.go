@@ -34,11 +34,16 @@ type mockCharacter struct {
 	Unverifed bool // true for the 3 characters an officer still needs to approve
 	Consent   string
 	ItemLevel int
-	// Talents is an explicit FS1 talent field ("<t1>/<t2>/<t3>", built with talentDigits so
-	// it decodes to the right point total) for a character whose tree is known; empty means
-	// talentString's role-shaped flavour. The owner's own main puts its 51 points in the
-	// Beast Mastery tree, as the production export does.
+	// Talents is an explicit FS1 talent field ("<t1>/<t2>/<t3>", one base-36 rank digit per
+	// talent cell in tab order, the planner's own encoding) for a character whose build is
+	// known; empty means talentString's role-shaped flavour. The owner's main carries the
+	// level-60 Beast Mastery build from data/builds/<build>/bis/hunter-beast-mastery.json.
 	Talents string
+	// Export is a verbatim FS1 head (data build, class, race, talents and gear, as the addon
+	// wrote it) used in place of the BiS-built one, for a character whose real export is
+	// known. The guild section is still appended. The owner's main uses its production
+	// export so the local stack shows exactly what the site shows them.
+	Export string
 
 	// Account groups two characters under one account (a main and an alt) when set to
 	// the same non-empty value; empty means "this character's own account". Two

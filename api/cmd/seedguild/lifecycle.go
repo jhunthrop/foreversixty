@@ -20,6 +20,7 @@
 package main
 
 import (
+	"strings"
 	"context"
 	"fmt"
 	"net/url"
@@ -72,8 +73,9 @@ func lifecycleAccounts() []lifecycleAccount {
 				// Skyborne Beast Mastery hunter with a full 51-point build, so the local stack
 				// shows what the owner sees on the site rather than a Dwarf with a Survival build.
 				{Mock: mockCharacter{Name: "Bow Jackzon", Class: "hunter", Spec: "BeastMastery", Role: roleDPS,
-					RaceSlug: "high-order-skyborne", Talents: talentDigits(51) + "/0/0",
-					BisFile: "hunter-beast-mastery.json", Consent: "gear", ItemLevel: 66},
+					RaceSlug: "high-order-skyborne", Talents: "5420001505001251/0053502001000000/400000000000000000",
+					BisFile: "hunter-beast-mastery.json", Consent: "gear", ItemLevel: 66,
+					Export: bowJackzonExport},
 					InGuild: true, RankIndex: 0},
 				// An alt in no guild: a character page that is not a member's.
 				{Mock: mockCharacter{Name: "Pipsqueak", Class: "priest", Spec: "Holy", Role: roleHealer,
@@ -152,6 +154,26 @@ func lifecycleExport(c lifecycleCharacter) (string, error) {
 	}
 	export := buildFS1(classSlugFor(c.Mock.Class), c.Mock.RaceSlug, talentStringFor(c.Mock),
 		gearWithReadiness(c.Mock, slots), professionsFor(c.Mock.Class), bagsFor(c.Mock))
+	if c.Mock.Export != "" {
+		// The verbatim export's head (data build, class, race, gear) replaces the BiS-built
+		// one; its own sections are dropped (a real export names the player's real guild
+		// and level) and the level, bags and professions sections built above stay, so the
+		// roster snapshot and the lifecycle guild read as the walkthrough expects. An
+		// explicit Talents field wins over the head's own, so the build fits the world's
+		// level.
+		head, _, _ := strings.Cut(c.Mock.Export, "|")
+		if c.Mock.Talents != "" {
+			if fields := strings.SplitN(head, ":", 6); len(fields) == 6 {
+				fields[4] = c.Mock.Talents
+				head = strings.Join(fields, ":")
+			}
+		}
+		if i := strings.Index(export, "|"); i >= 0 {
+			export = head + export[i:]
+		} else {
+			export = head
+		}
+	}
 	if c.InGuild {
 		export += fmt.Sprintf("|guild=%s:%d", url.PathEscape(lifecycleGuildName), c.RankIndex)
 	}
@@ -424,3 +446,8 @@ func removeLifecycleGuild(ctx context.Context, tx pgx.Tx, guildID string) error 
 	}
 	return nil
 }
+
+// bowJackzonExport is the owner's main as production's sim-input served it on 21 Oct 2026
+// (data build 1.60.1.70450, High Order Skyborne, 51 points in Beast Mastery, the gear worn
+// that day) - public data, so the local stack can show the owner their own character.
+const bowJackzonExport = "FS1:1.60.1.70450:hunter:high-order-skyborne:50202105/0/0:head=252504,neck=279870,shoulder=5404,back=279865,chest=2041,wrist=271202,hands=10413,waist=279897,legs=279868,feet=252425,finger1=264908,finger2=5622,main_hand=5192,off_hand=1951,ranged=3039|level=24|bags=6948,4538,1205,1205,3012,858,2455,6339,6218,281243,6443,2515,2515,2515,2515,2515,2515,2515,2515,2515,2515,2515,2515,2940,3167,5601,5602,878|bank=10940,6308,1081,5503,3174|professions=leatherworking,enchanting,cooking|guild=Employed%20Millennials:4|who=Bow%20Jackzon:Classic%20Beta%20PvP"
