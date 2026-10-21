@@ -47,20 +47,39 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentManaPercent": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.5"
+            "or": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "remainingTimePercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.3"
+                      }
+                    }
+                  }
                 }
-              }
+              ]
             }
           }
         },
-        "notes": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast."
+        "notes": "Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it (below half, or in the last 30% of the fight if the bar never got there), and its long cooldown makes it a once-a-fight cast."
       },
       {
         "action": {
@@ -507,8 +526,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 596,
-              "rank": 1
+              "spellId": 10961,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -532,7 +551,7 @@
                         },
                         "rhs": {
                           "const": {
-                            "val": "0.9"
+                            "val": "0.6"
                           }
                         }
                       }
@@ -558,7 +577,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -576,7 +595,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -594,7 +613,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -618,7 +637,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -636,7 +655,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -654,7 +673,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -678,7 +697,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -696,7 +715,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -714,7 +733,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -738,7 +757,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -756,7 +775,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }
@@ -774,7 +793,7 @@
                                 },
                                 "rhs": {
                                   "const": {
-                                    "val": "0.7"
+                                    "val": "0.85"
                                   }
                                 }
                               }

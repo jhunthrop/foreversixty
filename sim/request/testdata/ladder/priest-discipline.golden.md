@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 010000000000000000-00000000000000000-00000000000000000 | main_hand:263937 | 3.1 | 1 | spell:17=20.0 | - |
+| 10 | 010000000000000000-00000000000000000-00000000000000000 | main_hand:263937 | 3.1 | 2 | spell:17=20.0, other:mana_gain=10.0, spell:401977=1.0 | - |
 | 20 | 025004000000000000-00000000000000000-00000000000000000 | main_hand:890 | 23.4 | 6 | spell:2061=30.2, other:mana_gain=15.0, spell:600=3.1, spell:2054=1.8, spell:1277324=1.0 | - |
-| 30 | 025005031320000000-00000000000000000-00000000000000000 | main_hand:249392 | 40.5 | 7 | spell:9472=38.1, other:mana_gain=15.0, spell:6063=2.5, spell:14751=2.0, spell:6065=1.9 | {SpellID: 402174} |
-| 38 | 025005031330011410-00000000000000000-00000000000000000 | main_hand:873 | 69.5 | 8 | spell:9474=21.9, spell:402174=20.8, other:mana_gain=15.0, spell:6066=3.0, spell:6064=2.5 | - |
-| 40 | 025005031330011520-00000000000000000-00000000000000000 | main_hand:873 | 83.9 | 9 | spell:9474=22.9, spell:1240720=17.6, other:mana_gain=15.0, spell:6066=2.8, spell:14751=2.0 | - |
-| 50 | 025005031330011520-03502000000000000-00000000000000000 | main_hand:812 | 137.5 | 9 | spell:1240721=22.1, other:mana_gain=15.0, spell:10916=14.4, spell:6064=4.6, spell:14751=2.0 | - |
-| 60 | 025005031330011520-03505003030100000-00000000000000000 | main_hand:19355 | 179.2 | 10 | spell:1316995=19.1, other:mana_gain=15.0, spell:10917=13.0, spell:6064=12.2, spell:3747=2.9 | - |
+| 30 | 025005031320000000-00000000000000000-00000000000000000 | main_hand:249392 | 40.3 | 8 | spell:9472=37.4, other:mana_gain=15.0, spell:14751=2.0, spell:6065=2.0, spell:6063=1.7 | {SpellID: 402174} |
+| 38 | 025005031330011410-00000000000000000-00000000000000000 | main_hand:873 | 69.1 | 9 | spell:9474=21.4, spell:402174=20.9, other:mana_gain=15.0, spell:6066=3.1, spell:14751=2.0 | - |
+| 40 | 025005031330011520-00000000000000000-00000000000000000 | main_hand:873 | 83.5 | 10 | spell:9474=22.5, spell:1240720=17.4, other:mana_gain=15.0, spell:6066=2.7, spell:14751=2.0 | - |
+| 50 | 025005031330011520-03502000000000000-00000000000000000 | main_hand:812 | 136.5 | 10 | spell:1240721=22.1, other:mana_gain=15.0, spell:10916=13.9, spell:6064=3.8, spell:14751=2.0 | - |
+| 60 | 025005031330011520-03505003030100000-00000000000000000 | main_hand:19355 | 178.5 | 10 | spell:1316995=19.0, other:mana_gain=15.0, spell:10917=11.9, spell:6064=10.4, spell:3747=2.8 | - |
 
 ## Learned but unused (informational)
 
@@ -188,8 +188,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- priest-discipline level=10 kind=zero_casts id=401977 authored=401977 (untracked ability; not in spellranks.json's rank chains)
-- priest-discipline level=30 kind=zero_casts spell="Prayer of Healing" id=596 authored=596
-- priest-discipline level=38 kind=zero_casts spell="Prayer of Healing" id=596 authored=596
-- priest-discipline level=40 kind=zero_casts spell="Prayer of Healing" id=996 authored=596
-- priest-discipline level=50 kind=zero_casts spell="Prayer of Healing" id=10960 authored=596
+None.

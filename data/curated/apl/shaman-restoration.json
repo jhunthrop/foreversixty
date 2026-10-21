@@ -161,8 +161,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 25357,
-              "rank": 10
+              "spellId": 10396,
+              "rank": 9
             },
             "target": {
               "type": "Player",
@@ -879,8 +879,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 25357,
-              "rank": 10
+              "spellId": 10396,
+              "rank": 9
             },
             "target": {
               "type": "Player",

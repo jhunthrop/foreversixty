@@ -79,8 +79,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 25292,
-              "rank": 9
+              "spellId": 10329,
+              "rank": 8
             },
             "target": {
               "type": "Player",
@@ -139,8 +139,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 25292,
-              "rank": 9
+              "spellId": 10329,
+              "rank": 8
             },
             "target": {
               "type": "Player",

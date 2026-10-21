@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 7.7 | 2 | spell:5019=71.6, spell:205=36.8 | - |
 | 20 | 0000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 18.4 | 2 | spell:5019=68.6, spell:7322=30.5 | {SpellID: 1312002}, {SpellID: 400669} |
-| 30 | 0000000000000000000-00000000000000000-2535101301000000000 | main_hand:273040 ranged:5213 | 25.7 | 2 | spell:5019=105.9, spell:400640=49.8, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 400669} |
+| 30 | 0000000000000000000-00000000000000000-2535101301000000000 | main_hand:273040 ranged:5213 | 32.1 | 2 | spell:5019=82.7, spell:8406=29.3, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 400669} |
 | 38 | 0000000000000000000-00000000000000000-2535101301000300230 | main_hand:7714 ranged:13064 | 50.8 | 3 | spell:5019=71.1, spell:8408=25.8, spell:1240044=4.2, other:mana_gain=2.0, item:5513=1.0 | - |
 | 40 | 0000000000000000000-00000000000000000-2535101301000300250 | main_hand:7714 ranged:5216 | 50.4 | 3 | spell:5019=75.5, spell:8408=25.9, spell:1240044=4.3, other:mana_gain=2.0, item:5513=1.0 | - |
 | 50 | 2030005000000000000-00000000000000000-2535101301000300250 | main_hand:812 ranged:249232 | 114.9 | 3 | spell:10180=39.8, spell:5019=38.0, spell:1240046=5.8, other:mana_gain=2.0, item:5514=1.0 | - |
@@ -145,7 +145,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flamestrike (spell 2121)
 - Frost Blast (spell 1326053)
 - Frost Nova (spell 865)
-- Frostbolt (spell 8406)
+- Ice Lance (spell 400640)
 - Pyroblast (spell 12522)
 - Scorch (spell 8444)
 
@@ -227,4 +227,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-frost level=30 kind=zero_casts spell="Frostbolt" id=8406 authored=10181
+None.
