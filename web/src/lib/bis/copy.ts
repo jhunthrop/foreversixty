@@ -6,6 +6,7 @@
 // that file's own header for why (the item tooltip needs those two functions but must
 // never pay for the rest of this much larger, /bis-page-only object).
 import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/source-labels';
+import { bandRangeLabel } from '../planner/band-title';
 import type { RateUnit } from './types';
 
 export { pvpRankTitle };
@@ -304,7 +305,7 @@ export const bisCopy = {
    *  design system's own explicit rule, never `"60 to 60"` (spec §4.A). Every band in this
    *  contract is a ten-level bracket (`bands` are `[20, 30, 40, 50, 60]`, one entry per
    *  lower bound) except the last, which has no bracket to show. */
-  bandRangeLabel: (band: number): string => (band === 60 ? '60' : `${band} to ${band + 9}`),
+  bandRangeLabel,
   /** The header's one summary sentence (spec §4.A) -- `bandHigh` is `undefined` only for
    *  the plain-60 band, which drops the whole "from X to Y" clause rather than say "at 60
    *  to 60" or invent a range the contract does not have. */

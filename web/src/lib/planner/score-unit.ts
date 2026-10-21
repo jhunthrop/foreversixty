@@ -5,7 +5,7 @@
 // two cannot drift into calling a healer's number DPS.
 import { specKeyFor } from '../addon/score';
 import { scoreUnitWord, type SlotScoreUnit } from '../bis/tank-view';
-import { simCopy } from '../sim/copy';
+import { plannerSimCopy as simCopy } from '../sim/planner-copy';
 import { specRow } from '../sim/spec-label';
 import type { Estimate, SimResult } from '../sim/types';
 

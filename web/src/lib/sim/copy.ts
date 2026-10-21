@@ -6,6 +6,8 @@
 //
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the number and stop.
 
+import { plannerSimCopy } from './planner-copy';
+
 /**
  * One name per sim kind, for every site that names one: each tool page's `<title>`, `<h1>`
  * and `<noscript>`, the history filter and its rows, the saved page and the unfurl. A
@@ -136,6 +138,7 @@ export const weightsUnsupportedSpec = (specName: string): string =>
 const seePlansLabel = 'See plans';
 
 export const simCopy = {
+  ...plannerSimCopy,
   /** Network and API failures. */
   saveFailed: 'The sim could not be saved; try again.',
   loadFailed: 'That sim did not load.',
@@ -207,21 +210,6 @@ export const simCopy = {
   engineCrashed:
     'The engine hit a bug running this character. Try the Solo preset or a different setting, and tell us on Discord what you loaded so we can fix it.',
 
-  // --- Task 20: live DPS in the planner. ---
-  /** The summary bar's fourth figure, beside Level, Split and Points. */
-  plannerDpsLabel: 'DPS',
-  /** Under the figure while points are unspent: the live estimate waits for a whole build. */
-  plannerDpsPointsToGo: (left: number): string => (left === 1 ? '1 point to go' : `${left} points to go`),
-  /** The header facts rail's own static DPS caption (fix round 1, item 2.a) -- the dynamic
-   *  "{n} points to go" count moved under "Points left" instead, so this slot reads a plain
-   *  explainer rather than repeating the same number twice. */
-  plannerDpsLiveCaption: 'live when the build reaches 51 points',
-  /** On a phone or a data-saver connection the estimate is asked for, never assumed. */
-  plannerDpsShow: 'Show DPS',
-  plannerDpsShowNote: 'Runs on this device',
-  /** The link that opens the full results for the build on the page. */
-  simThisBuild: 'Sim this build',
-
   // 2026-09-21 result-page review round 2, Defect 2 continued: resolveActionName's own
   // fallback for a spell or item id the shared table has no row for at all -- real prose,
   // never the raw number (action-names.ts's own unresolvedActionName).
@@ -279,14 +267,6 @@ export const simCopy = {
   // trailing "." in SimView.svelte's template, outside this file's "every user-visible
   // string" rule.
   noCharactersYetLink: 'Logs.',
-
-  // --- Task 21: build unfurls carrying simmed DPS. ---
-  includeSimOnCard: 'Include a simmed DPS on the card',
-  buildSimUnavailable: 'Needs a DPS estimate first; change a talent or a slot to get one.',
-  buildSimRunning: 'Simming this build for the card, a few seconds…',
-  buildSimDone: (dps: string, version: string): string =>
-    `The card will show ${dps} DPS on engine ${version}.`,
-  buildSimSkipped: 'The card will not show a DPS figure; the sim did not finish.',
 
   // --- Task 12: the settings bar. Fight length, targets, execute phase and a named buff
   // preset; the rotation is stated by name rather than offered as a control, since the APL

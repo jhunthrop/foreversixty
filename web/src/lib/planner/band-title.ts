@@ -4,6 +4,9 @@
 // the band's own label, with the spec when the loaded build has one: "20 to 29 · Beast Mastery".
 const SEPARATOR = ' · ';
 
+/** A band's range as the site writes it: "20 to 29", or "60" for the last band, which has no bracket. */
+export const bandRangeLabel = (band: number): string => (band === 60 ? '60' : `${band} to ${band + 9}`);
+
 /** "20 to 29", or "20 to 29 · Beast Mastery" once the loaded build names a spec. */
 export function bandBuildTitle(bandLabel: string, specName: string | null): string {
   return specName === null || specName === '' ? bandLabel : `${bandLabel}${SEPARATOR}${specName}`;

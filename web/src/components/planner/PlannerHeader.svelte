@@ -25,7 +25,7 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { MAX_POINTS } from '../../lib/planner/types';
   import { specOf } from '../../lib/sim/character';
-  import { simCopy } from '../../lib/sim/copy';
+  import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { specLabel } from '../../lib/sim/spec-label';
   import PlannerDps from './PlannerDps.svelte';
   import { scoreUnitForBuild } from '../../lib/planner/score-unit';
