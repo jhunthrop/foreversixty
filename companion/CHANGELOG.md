@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.19
+
+- The Addon row no longer tells you to install an addon it shows as installed: with the addon in place and no export yet it says "No character yet" and to log out once in game. A first run on a machine that still holds an old sign-in reads as a first run, not as a sign-in that lapsed. The log says each thing once: an addon update waiting for the game to close, and a step that keeps failing, are written when they start and not every minute or second.
+
 ## 0.2.18
 
 - A build sent from the site while you are in game is in the addon's inbox seconds after you log out, not a minute: the companion writes it as soon as the game has finished saving, so logging straight back in shows it. The Status card says a build is waiting, and for whom, until a logout shows the addon held it.

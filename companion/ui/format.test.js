@@ -494,3 +494,14 @@ test('a build waiting for the game is one line on the Addon row, and it never of
   assert.doesNotMatch(line, /reload/i);
   assert.strictEqual(fixture('status-addon-current.json').builds_waiting, undefined);
 });
+
+// "Install ForeverSixty" is for a machine with no addon. With the addon installed and no export yet,
+// the Addon row says the only thing left is the first logout, and the version line sits under it.
+test('the Addon row says no character yet when the addon is installed and nothing has synced', () => {
+  const s = fixture('status-addon-installed-no-character.json');
+  assert.strictEqual(s.addon_never, true);
+  assert.strictEqual(s.addon_help, "No character yet · log out once in game and the addon's save arrives here.");
+  assert.deepStrictEqual(FORMAT.addonRows(s.addon_update).lines.map((l) => l.text),
+    ['Addon 2.0.15 · up to date', 'Data 2026.10.21 · up to date']);
+  assert.strictEqual(fixture('status-addon-never.json').addon_help, 'Install ForeverSixty, then log out once.');
+});

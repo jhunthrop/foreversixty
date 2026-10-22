@@ -1,0 +1,92 @@
+{
+  "data": {
+    "app_version": "0.2.13",
+    "engine_version": "1.0.0",
+    "paired": true,
+    "account_label": "Jhunt",
+    "device_name": "JH-DESKTOP",
+    "headline": {
+      "key": "logging",
+      "tone": "on",
+      "title": "Logging",
+      "sub": "Uploading your fights as they end · logging as Bow Jackzon"
+    },
+    "connect": {
+      "state": "",
+      "trouble": false
+    },
+    "token_backend": "keychain",
+    "token_backend_name": "Windows Credential Manager",
+    "token_backend_note": "A private store in your user profile.",
+    "api_base_url": "https://api.foreversixty.gg",
+    "site_base_url": "https://foreversixty.gg",
+    "visibility": "public",
+    "detected_character": "Bow Jackzon",
+    "installs": [
+      {
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_",
+        "flavor": "_classic_beta_",
+        "flavor_name": "Classic beta",
+        "watching": true,
+        "added": true,
+        "last_played": "2026-10-20T17:40:00Z",
+        "advanced_logging": true,
+        "advanced_logging_known": true
+      }
+    ],
+    "watch_pending": false,
+    "pipeline": {
+      "logging": true,
+      "report_key": "20261020-174100",
+      "report_id": "r_9f2c",
+      "fights": 0,
+      "offset": 0,
+      "queued": 0,
+      "queued_fights": 0,
+      "detected": "Bow Jackzon"
+    },
+    "reports": [
+      {
+        "key": "20261020-174100",
+        "report_id": "r_9f2c",
+        "fights": 0,
+        "started_at": "2026-10-20T17:40:00Z",
+        "done": false,
+        "credit": {
+          "name": "Bow Jackzon",
+          "state": "credited"
+        }
+      }
+    ],
+    "characters": [],
+    "update_staged": false,
+    "updated_to": "",
+    "addon_line": "Not synced yet",
+    "addon_never": true,
+    "addon_stale": false,
+    "addon_help": "No character yet · log out once in game and the addon's save arrives here.",
+    "last_sync": {
+      "state": "none",
+      "line": "No characters sent yet. In game, log out once."
+    },
+    "credit": {
+      "name": "Bow Jackzon",
+      "state": "credited"
+    },
+    "keep_addon_updated": true,
+    "addon_update": {
+      "enabled": true,
+      "lines": [
+        {
+          "text": "Addon 2.0.15 · up to date"
+        },
+        {
+          "text": "Data 2026.10.21 · up to date"
+        }
+      ],
+      "offers": []
+    }
+  },
+  "error": null,
+  "ok": true
+}

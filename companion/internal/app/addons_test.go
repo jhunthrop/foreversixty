@@ -7,6 +7,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/base64"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -90,12 +91,14 @@ type addonWorld struct {
 	mu      sync.Mutex
 	running bool
 	tick    int
+	logs    lockedBuf
 }
 
 func newAddonWorld(t *testing.T) *addonWorld {
 	t.Helper()
 	w := &addonWorld{signer: newSigner(t)}
 	w.harness = newHarnessWith(t, nil, func(o *app.Options) {
+		o.Log = slog.New(slog.NewTextHandler(&w.logs, &slog.HandlerOptions{Level: slog.LevelDebug}))
 		o.Updater = updater.Options{PublicKey: w.signer.pub, APIBase: o.Config.APIBaseURL}
 		o.Addons = addonupdater.Options{
 			Now: time.Now,
@@ -339,5 +342,53 @@ func TestNoOfferIsMadeForAnotherGamesInstall(t *testing.T) {
 	}
 	if len(v.Lines) != 2 {
 		t.Errorf("lines = %+v, want the Classic beta's two", v.Lines)
+	}
+}
+
+func TestTheAddonRowHelpSaysNoCharacterYetWhenTheAddonIsInstalled(t *testing.T) {
+	w := newAddonWorld(t)
+	w.srv.SetReleases()
+
+	// No install has the addon: the step is to install it.
+	s := w.app.Snapshot()
+	if !s.AddonNever || s.AddonHelp != app.CopyNeverSyncedHelp {
+		t.Errorf("addon not installed: never %v, help %q", s.AddonNever, s.AddonHelp)
+	}
+
+	// The addon is installed and no export has arrived: nothing is missing but the first logout.
+	w.put("ForeverSixty", "## Version: 2.0.15\n")
+	s = w.app.Snapshot()
+	want := "No character yet · log out once in game and the addon's save arrives here."
+	if !s.AddonNever || s.AddonHelp != want {
+		t.Errorf("addon installed, no export: never %v, help %q", s.AddonNever, s.AddonHelp)
+	}
+	if got := w.lines(); len(got) != 1 || got[0] != "Addon 2.0.15 · up to date" {
+		t.Errorf("lines = %q", got)
+	}
+}
+
+func TestAWaitingUpdateIsLoggedOnceNotEveryMinute(t *testing.T) {
+	w := newAddonWorld(t)
+	w.put("ForeverSixty", "## Version: 2.0.15\n")
+	w.put("ForeverSixtyData", "## Version: data-v2026.10.20\n")
+	w.srv.SetReleases(w.signer.data(t, "2026.10.21"), w.signer.addon(t, "2.0.16"))
+
+	w.setRunning(true)
+	w.stepUntil("Addon 2.0.16 ready · installs when the game closes", "Data 2026.10.21 ready · installs when the game closes")
+	// Many more minutes with the game still up.
+	for i := 0; i < 20; i++ {
+		w.tick++
+		w.app.Step(context.Background(), t0.Add(time.Duration(w.tick)*2*time.Minute))
+		time.Sleep(10 * time.Millisecond)
+	}
+	// One line per family (the addon and the data are staged apart), not one a minute.
+	if n := w.logs.count("an addon update is waiting for the game to close"); n != 2 {
+		t.Fatalf("the wait was logged %d times over 20 more minutes; want once per family (2)", n)
+	}
+
+	w.setRunning(false)
+	w.stepUntil("Addon 2.0.16 installed · takes effect at your next login", "Data 2026.10.21 installed · takes effect at your next login")
+	if n := w.logs.count("installed the addon 2.0.16"); n != 1 {
+		t.Errorf("the install was logged %d times", n)
 	}
 }

@@ -13,14 +13,15 @@ import (
 // change to the copy, made here.
 func TestTheAddonCopyIsTheDesignersWords(t *testing.T) {
 	for got, want := range map[string]string{
-		app.CopyLastSynced:      "Last synced",
-		app.CopyNeverSynced:     "Not synced yet",
-		app.CopyNeverSyncedHelp: "Install ForeverSixty, then log out once.",
-		app.CopyStaleHelp:       "Log out of the game with the addon installed to sync.",
-		app.CopySimQueued:       "Sim queued",
-		app.CopySimNeedsPremium: "Sim needs premium",
-		app.CopySimDuplicate:    "Sim already running",
-		app.CopySimInvalid:      "Sim request invalid",
+		app.CopyLastSynced:         "Last synced",
+		app.CopyNeverSynced:        "Not synced yet",
+		app.CopyNeverSyncedHelp:    "Install ForeverSixty, then log out once.",
+		app.CopyNoCharacterYetHelp: "No character yet · log out once in game and the addon's save arrives here.",
+		app.CopyStaleHelp:          "Log out of the game with the addon installed to sync.",
+		app.CopySimQueued:          "Sim queued",
+		app.CopySimNeedsPremium:    "Sim needs premium",
+		app.CopySimDuplicate:       "Sim already running",
+		app.CopySimInvalid:         "Sim request invalid",
 	} {
 		if got != want {
 			t.Errorf("copy = %q, want %q", got, want)

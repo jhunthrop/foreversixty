@@ -87,7 +87,13 @@ type Updater struct {
 	lastLook time.Time
 	backoff  map[string]time.Time
 	rejected map[string]bool
-	recs     records
+	// waitSaid holds the installs whose "waiting for the game to close" line
+	// is already in the log, so the once-a-minute look says it once.
+	waitSaid map[string]bool
+	// listFailed is true while the process list cannot be read and the log
+	// has said so.
+	listFailed bool
+	recs       records
 }
 
 // New builds an updater.
@@ -122,7 +128,7 @@ func New(o Options) *Updater {
 	if o.ApplyEvery <= 0 {
 		o.ApplyEvery = ApplyEvery
 	}
-	u := &Updater{o: o, backoff: map[string]time.Time{}, rejected: map[string]bool{}}
+	u := &Updater{o: o, backoff: map[string]time.Time{}, rejected: map[string]bool{}, waitSaid: map[string]bool{}}
 	u.recs = loadRecords(o.Dir)
 	return u
 }
@@ -508,10 +514,19 @@ func (u *Updater) unpack(body []byte, f Family) (root string, done func(), err e
 func (u *Updater) running(install string) bool {
 	procs, err := u.o.Processes()
 	if err != nil {
-		u.o.Log.Warn("could not list the running programs, so the game is assumed to be running",
-			"component", "addonupdater", "err", err.Error())
+		u.mu.Lock()
+		said := u.listFailed
+		u.listFailed = true
+		u.mu.Unlock()
+		if !said {
+			u.o.Log.Warn("could not list the running programs, so the game is assumed to be running",
+				"component", "addonupdater", "err", err.Error())
+		}
 		return true
 	}
+	u.mu.Lock()
+	u.listFailed = false
+	u.mu.Unlock()
 	return GameRunning(install, procs)
 }
 
@@ -533,9 +548,9 @@ func (u *Updater) apply(ctx context.Context) {
 			switch {
 			case u.backedOff(in, meta.Tag):
 			case u.running(in):
-				u.o.Log.Info("an addon update is waiting for the game to close",
-					"component", "addonupdater", "install", in, "version", meta.Version)
+				u.sayWaiting(in, meta.Version)
 			default:
+				u.clearWaiting(in, meta.Version)
 				ready = append(ready, in)
 			}
 		}
@@ -790,4 +805,27 @@ func (u *Updater) recordInstalled(install string, f Family, version string) {
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		u.o.Log.Warn("could not remember the install", "component", "addonupdater", "err", err.Error())
 	}
+}
+
+// sayWaiting logs that a staged update is waiting for an install's game to
+// close, the first time it is seen so: the look repeats every minute and the
+// line must not.
+func (u *Updater) sayWaiting(install, version string) {
+	key := install + "|" + version
+	u.mu.Lock()
+	said := u.waitSaid[key]
+	u.waitSaid[key] = true
+	u.mu.Unlock()
+	if !said {
+		u.o.Log.Info("an addon update is waiting for the game to close",
+			"component", "addonupdater", "install", install, "version", version)
+	}
+}
+
+// clearWaiting forgets that the wait was logged once the game is closed, so
+// a later wait for the same update is said again.
+func (u *Updater) clearWaiting(install, version string) {
+	u.mu.Lock()
+	delete(u.waitSaid, install+"|"+version)
+	u.mu.Unlock()
 }

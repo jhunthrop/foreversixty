@@ -26,6 +26,9 @@ const (
 	// short state and not a sentence.
 	CopyNeverSynced     = "Not synced yet"
 	CopyNeverSyncedHelp = "Install ForeverSixty, then log out once."
+	// CopyNoCharacterYetHelp is the same line when an install already has the
+	// addon: nothing is missing but the first logout.
+	CopyNoCharacterYetHelp = "No character yet · log out once in game and the addon's save arrives here."
 	// CopyStaleHelp sits under a sync older than a day.
 	CopyStaleHelp       = "Log out of the game with the addon installed to sync."
 	CopySimQueued       = "Sim queued"
