@@ -1548,7 +1548,16 @@ local function draw(model)
 		if type(Chip.text.SetWordWrap) == "function" then
 			Chip.text:SetWordWrap(wrapped)
 		end
-		Chip.text:SetWidth(wrapped and room or 0)
+		-- A width only where the words wrap (the room they wrap in). Never 0: a font string with
+		-- no width draws nothing here. One line sets no width at all, as before; a line that was
+		-- wrapped and is not any more gets the widest room, so it cannot stay narrow.
+		if wrapped then
+			Chip.text:SetWidth(room)
+			Chip.textSized = true
+		elseif Chip.textSized then
+			Chip.text:SetWidth(S.chipWide)
+			Chip.textSized = nil
+		end
 		Chip.text:SetText(fitted)
 		Chip.text:SetTextColor(Theme.rgb(Theme.HEX[chosen.muted and "muted" or "body"]))
 		Chip.text:Show()
