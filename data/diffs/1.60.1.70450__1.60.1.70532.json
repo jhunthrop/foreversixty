@@ -1,0 +1,446 @@
+{
+  "from": "1.60.1.70450",
+  "to": "1.60.1.70532",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [
+        {
+          "id": 274484,
+          "name": "Axe of Inevitable Ruin",
+          "quality": 3,
+          "item_level": 42,
+          "required_level": 37,
+          "class_id": 2,
+          "subclass_id": 1,
+          "inventory_type": 17,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 281676,
+          "name": "Rog'mar Trainee Shoulderpads",
+          "quality": 2,
+          "item_level": 41,
+          "required_level": 36,
+          "class_id": 4,
+          "subclass_id": 2,
+          "inventory_type": 3,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 282550,
+          "name": "Combat Tuning Wrench",
+          "quality": 2,
+          "item_level": 43,
+          "required_level": 38,
+          "class_id": 2,
+          "subclass_id": 4,
+          "inventory_type": 13,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 9392,
+          "before": {
+            "id": 9392,
+            "name": "Annealed Blade",
+            "quality": 3,
+            "item_level": 40,
+            "required_level": 35,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9392,
+            "name": "Annealed Blade",
+            "quality": 3,
+            "item_level": 40,
+            "required_level": 35,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 9425,
+          "before": {
+            "id": 9425,
+            "name": "Pendulum of Doom",
+            "quality": 3,
+            "item_level": 44,
+            "required_level": 39,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9425,
+            "name": "Pendulum of Doom",
+            "quality": 3,
+            "item_level": 44,
+            "required_level": 39,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 14554,
+          "before": {
+            "id": 14554,
+            "name": "Cloudkeeper Legplates",
+            "quality": 4,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 14554,
+            "name": "Cloudkeeper Legplates",
+            "quality": 4,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 17055,
+          "before": {
+            "id": 17055,
+            "name": "Changuk Smasher",
+            "quality": 3,
+            "item_level": 50,
+            "required_level": 45,
+            "class_id": 2,
+            "subclass_id": 4,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 17055,
+            "name": "Changuk Smasher",
+            "quality": 3,
+            "item_level": 52,
+            "required_level": 47,
+            "class_id": 2,
+            "subclass_id": 4,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [
+        {
+          "id": 105773,
+          "tab_id": 61,
+          "tab_name": "Frost",
+          "class_id": 8,
+          "tier": 2,
+          "column": 0,
+          "spell_ids": [
+            11151,
+            11151,
+            11151
+          ],
+          "prereq_talent_id": null
+        }
+      ],
+      "changed": [
+        {
+          "id": 105771,
+          "before": {
+            "id": 105771,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 2,
+            "column": 3,
+            "spell_ids": [
+              11185,
+              11185,
+              11185
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105771,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 2,
+            "column": 1,
+            "spell_ids": [
+              11185,
+              11185,
+              11185
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 105772,
+          "before": {
+            "id": 105772,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 2,
+            "column": 1,
+            "spell_ids": [
+              11160,
+              11160,
+              11160
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105772,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 2,
+            "column": 0,
+            "spell_ids": [
+              11160,
+              11160,
+              11160
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 105774,
+          "before": {
+            "id": 105774,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 1,
+            "column": 3,
+            "spell_ids": [
+              11071,
+              11071,
+              11071
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105774,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              11071,
+              11071,
+              11071
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 105776,
+          "before": {
+            "id": 105776,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              11175,
+              11175,
+              11175
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105776,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 1,
+            "column": 3,
+            "spell_ids": [
+              11175,
+              11175,
+              11175
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 105778,
+          "before": {
+            "id": 105778,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 0,
+            "column": 2,
+            "spell_ids": [
+              29438,
+              29438,
+              29438,
+              29438,
+              29438
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105778,
+            "tab_id": 61,
+            "tab_name": "Frost",
+            "class_id": 8,
+            "tier": 0,
+            "column": 2,
+            "spell_ids": [
+              29438,
+              29438,
+              29438
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        }
+      ]
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}
