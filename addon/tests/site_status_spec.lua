@@ -709,7 +709,8 @@ describe("what the site has and what the inbox holds", function()
 			record(GEAR)
 			_G.ForeverSixtyDB.welcomedAt = 1793000000
 			local lines = Options.handle("welcome")
-			assert.are.same({ L.welcomeOn, L.welcomeNext, L.welcomeSite }, lines)
+			-- No chip is drawn in this spec, so the first sentence names what is there.
+			assert.are.same({ L.welcomeOnNoLine, L.welcomeNext, L.welcomeSite }, lines)
 			assert.are.equal(1793000000, _G.ForeverSixtyDB.welcomedAt)
 		end)
 

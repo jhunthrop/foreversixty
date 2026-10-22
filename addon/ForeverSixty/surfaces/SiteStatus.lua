@@ -256,7 +256,14 @@ end
 
 --- The first-login welcome's lines (X.7), the text after the addon's prefix.
 function SiteStatus.welcomeLines()
-	return { L.welcomeOn, L.welcomeNext, L.welcomeSite }
+	-- A.1: the first sentence names the line beside the minimap only when it is drawn.
+	local chip = ns.Chip
+	if chip == nil and type(require) == "function" then
+		local loaded, module = pcall(require, "Chip")
+		chip = loaded and module or nil
+	end
+	local drawn = chip ~= nil and type(chip.isDrawn) == "function" and chip.isDrawn()
+	return { drawn and L.welcomeOn or L.welcomeOnNoLine, L.welcomeNext, L.welcomeSite }
 end
 
 --- Whether this client has not been welcomed yet: ForeverSixtyDB.welcomedAt, one stamp for the

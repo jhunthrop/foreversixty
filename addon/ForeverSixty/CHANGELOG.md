@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.16
+
+- The Forever Sixty line beside the minimap is on screen at a first login and says your next step ("Next: Endurance Training (1 of 5)", or "Pick a build: /fs"); a saved spot that is off screen puts it back beside the minimap, it sits above the buff icons, and the welcome names the line only when it is drawn.
+
 ## 2.0.15
 
 - The first-login welcome says what you can see and how your character reaches the site; 'chip' is gone from the words you read.
