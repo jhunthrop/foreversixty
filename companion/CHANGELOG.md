@@ -1,6 +1,6 @@
 # Companion changelog
 
-## 0.2.20
+## 0.2.21
 
 - When the game closes the companion reads the releases again and installs the newest signed addon, not the one it staged hours earlier; it reads the installed version from the addon folder first and never installs an older or equal one, saying so once in the log. The Status line names the version that will go in and follows a newer release.
 
