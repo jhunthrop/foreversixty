@@ -94,7 +94,7 @@ test.describe('What it does in the game (L8.3)', () => {
     await expect(commands).toHaveCount(13);
     await expect(commands.first()).toHaveText('/fs: paste or copy a build');
     await expect(commands.last()).toHaveText('/fs help: every command');
-    await expect(page.getByTestId('setup-handshake')).toContainText('Seen by the site');
+    await expect(page.getByTestId('setup-handshake')).toContainText('Site has your save from');
   });
 });
 
