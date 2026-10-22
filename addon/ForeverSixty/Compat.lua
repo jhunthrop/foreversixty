@@ -310,6 +310,77 @@ function Compat.inventoryTooltipRows(slotId)
 	return scanRows(slotId)
 end
 
+--- Whether the client calls `item` equippable (IsEquippableItem): true or false, nil where the
+--- client has no such function. A bag, a reagent and a quest item are false.
+function Compat.isEquippableItem(item)
+	local answer = call("IsEquippableItem", item)
+	if answer == nil then
+		return nil
+	end
+	return answer and true or false
+end
+
+--- The level an item asks of its wearer (GetItemInfo's fifth value), or nil until the client has
+--- the item cached.
+function Compat.itemMinLevel(item)
+	local level = select(5, Compat.itemInfo(item))
+	return type(level) == "number" and level or nil
+end
+
+local function scanHyperlinkRows(link)
+	if type(CreateFrame) ~= "function" then
+		return nil
+	end
+	if Compat.scanFrame == nil then
+		local ok, frame = pcall(CreateFrame, "GameTooltip", SCAN_NAME, nil, "GameTooltipTemplate")
+		if not ok or frame == nil then
+			return nil
+		end
+		Compat.scanFrame = frame
+	end
+	local tip = Compat.scanFrame
+	local ok = pcall(function()
+		tip:SetOwner(UIParent, "ANCHOR_NONE")
+		tip:ClearLines()
+		tip:SetHyperlink(link)
+	end)
+	if not ok or type(tip.NumLines) ~= "function" then
+		return nil
+	end
+	local rows = {}
+	for index = 1, tip:NumLines() do
+		local left = _G[SCAN_NAME .. "TextLeft" .. index]
+		rows[index] = { left = left ~= nil and left:GetText() or nil }
+	end
+	tip:Hide()
+	return rows
+end
+
+--- The lines of an item's own tooltip, { left, right } per line, read from its `link`:
+--- C_TooltipInfo.GetHyperlink where the client has it, else the hidden scanning tooltip.
+--- nil when the client can give neither (an item it does not hold yet reads as no lines).
+function Compat.hyperlinkRows(link)
+	if type(link) ~= "string" then
+		return nil
+	end
+	local info = _G.C_TooltipInfo
+	if type(info) == "table" and type(info.GetHyperlink) == "function" then
+		local ok, data = pcall(info.GetHyperlink, link)
+		if ok and type(data) == "table" and type(data.lines) == "table" then
+			local surface = type(_G.TooltipUtil) == "table" and _G.TooltipUtil.SurfaceArgs or nil
+			local rows = {}
+			for index, line in ipairs(data.lines) do
+				if line.leftText == nil and type(surface) == "function" then
+					pcall(surface, line)
+				end
+				rows[index] = { left = line.leftText, right = line.rightText }
+			end
+			return rows
+		end
+	end
+	return scanHyperlinkRows(link)
+end
+
 --- The item's level (GetItemInfo's fourth value), or nil until the client
 --- has it cached.
 function Compat.itemLevel(itemId)

@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.18
+
+- The line, the Gear page's bag rows and the minimap count never offer a piece you cannot wear: its level, its class line and your armor and weapon training are checked first (a level-21 warrior was offered the Shaman tier-1 gauntlets). /fs loot says why when you ask: "Not for you: requires level 60", "Not for you: Shaman only".
+- The line's hover names the slot and what the piece replaces ("Hands: Earthfury Gauntlets replaces Gloves of the Fang, +3.5 DPS"), and the guild window's gap and that number come from one baseline: the hover reads "Gap to your planned gear: 0.7 DPS".
+- The guild window with nobody scored says so once ("Nobody here has logs on the site yet. Scores appear after a member's logs are uploaded."), draws one dash in every cell it has nothing for (the under-level-10 rows too), sorts by Level until a score exists, and counts "14 online of 773 · 1 running Forever Sixty" with no date. Its title is the guild's name ("OLYMPUS XXVII · Forever Sixty") and its button sits inside the guild window beside Invite Member.
+- The Raid tab's button reads "Forever Sixty · solo" alone and opens the panel with your own row ("Invite someone and their row appears here."); /fs group and /fs panel print where the panel is and when it fills when you are solo.
+
 ## 2.0.17
 
 - The build preview lists every gear slot it counts, at the build's own level ("Gear in this build · level 24 · 14 of 17 slots"), each with where it comes from in full; the build window and the line say which build is which ("Beast Mastery build · from the site, 22 Oct · 15 points", "Replaces Beast Mastery build (51 points)").

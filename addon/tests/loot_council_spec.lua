@@ -818,6 +818,29 @@ describe("LootCouncil", function()
 			assert.are.equal(3, #state.printed)
 		end)
 
+		-- A.3 ruling 1: the same guard as the chip's line, said in words because the player asked.
+		it("says 'Not for you: requires level 60' and 'Not for you: Shaman only' for a piece the player cannot wear",
+			function()
+				start({ solo = true, level = 30 })
+				state.itemStats[108] = { __itemId = 108, __slot = "INVTYPE_CHEST", __name = "Earthfury Chestguard",
+					__class = 4, __subclass = 3, __quality = 4, __minLevel = 60, ITEM_MOD_AGILITY_SHORT = 40 }
+				local lines = LootCouncil.command("108")
+				assert.is_truthy(lines[1]:find("Earthfury Chestguard", 1, true))
+				assert.is_truthy(lines[1]:find(": Not for you: requires level 60", 1, true), lines[1])
+				-- Level met, the tooltip's class line refuses.
+				start({ solo = true, level = 60 })
+				state.itemStats[108] = { __itemId = 108, __slot = "INVTYPE_CHEST", __name = "Earthfury Chestguard",
+					__class = 4, __subclass = 3, __quality = 4, __minLevel = 60, ITEM_MOD_AGILITY_SHORT = 40 }
+				_G.C_TooltipInfo = { GetHyperlink = function()
+					return { lines = { { leftText = "Earthfury Chestguard" }, { leftText = "Classes: Shaman" } } }
+				end }
+				lines = LootCouncil.command("108")
+				_G.C_TooltipInfo = nil
+				assert.is_truthy(lines[1]:find(": Not for you: Shaman only", 1, true), lines[1])
+				-- A piece the hunter can wear still prints its value.
+				assert.is_truthy(LootCouncil.command("100")[1]:find("+12.0 DPS", 1, true))
+			end)
+
 		-- Fix round 2 (6): the slot, and the level gate as a prefix with the value still computed.
 		it("names the slot, and says what level an item needs when the character cannot use it yet", function()
 			start({ solo = true, level = 30 })

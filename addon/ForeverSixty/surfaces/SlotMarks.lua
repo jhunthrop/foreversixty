@@ -194,6 +194,9 @@ end
 --- rule the chip's list and the tooltip's refusal already read.
 local function wearableBy(base)
 	return function(link, slot)
+		if Gear.restriction(link, base.classToken, base.level) ~= nil then
+			return false
+		end
 		local _, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(link)
 		return Rules.canEquip(base.classToken, base.level, classId or itemType, subClassId or itemSubType,
 			equipLocation, slot) == "ok"

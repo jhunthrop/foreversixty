@@ -7,7 +7,8 @@
 -- it taints a frame of its own on any HookScript, CreateTexture, tab-template call or field
 -- write (L4.1, L4.3). So, as the character panel tab (L4.3), the "tab" is an addon-owned
 -- button and an addon-owned flyout, both parented to CommunitiesFrame (looked up each time;
--- the client loads it on demand) and anchored to it: the button under its bottom right, the
+-- the client loads it on demand) and anchored to it: the button inside its bottom edge beside
+-- "Invite Member" (A.3 ruling 4; it hung under the corner before), the
 -- flyout TOPLEFT at its TOPRIGHT, right of any of its side tabs that shows with a rect. The
 -- client frame is only ever read (Widgets' shared reads). Scripts sit only on the addon's own
 -- frames; the flyout hides with the guild frame because it is its child. Nothing polls.
@@ -87,6 +88,8 @@ GuildTab.headers = {}
 --- The sort a header click chose (nil: online first, then Score high to low), the switch
 --- (nil: GuildTab.defaultOnlineOnly), and the first row shown.
 GuildTab.sort = nil
+--- The column the default order is on at the last draw: "score" once a row has one, else "level".
+GuildTab.defaultKey = nil
 GuildTab.onlineOnly = nil
 GuildTab.offset = 0
 --- How many times the flyout was drawn (a spec reads it), and the model last drawn.
@@ -245,18 +248,24 @@ local function perSecond(unit)
 	return unit == "dps" or unit == "hps"
 end
 
---- The order for `sort` ({ key, descending }; nil: Score high to low): online rows above
+--- The order for `sort` ({ key, descending }; nil: Score high to low, or Level high to low while
+--- no row shown has a score, `defaultKey`): online rows above
 --- offline ones in every sort, as the client's roster keeps them (fix round 2, persona item 4),
 --- then the column's values, a blank last both ways. Gap puts the gaps in DPS before those in
 --- points, each by number (fix round 2, item 3). Equal values go by name, A to Z.
-local function comparator(sort)
-	local key = sort ~= nil and sort.key or "score"
+local function comparator(sort, defaultKey)
+	local key = sort ~= nil and sort.key or defaultKey or "score"
 	local descending = sort == nil or sort.descending == true
+	-- The default order with nobody scored: ties go to rows with live data, then by level.
+	local byLevel = sort == nil and key == "level"
 	return function(left, right)
 		if left.online ~= right.online then
 			return left.online
 		end
 		local a, b = valueOf(left, key), valueOf(right, key)
+		if byLevel and a == b and left.live ~= right.live then
+			return left.live
+		end
 		if key == "gap" and a ~= nil and b ~= nil and perSecond(left.unit) ~= perSecond(right.unit) then
 			return perSecond(left.unit)
 		end
@@ -306,14 +315,24 @@ function GuildTab.rows(roster, record, seen, sort, filter, context)
 			end
 		end
 	end
-	table.sort(shown, comparator(sort))
-	return shown, { total = total, shown = #shown, live = live, online = online }
+	local scored = 0
+	for _, row in ipairs(shown) do
+		if type(row.score) == "number" then
+			scored = scored + 1
+		end
+	end
+	-- The default sort is Score once a row has one, Level until then (a sort of equal blanks reads as
+	-- broken): the column the header's arrow sits on.
+	local defaultKey = scored > 0 and "score" or "level"
+	table.sort(shown, comparator(sort, defaultKey))
+	return shown, { total = total, shown = #shown, live = live, online = online, scored = scored,
+		defaultKey = defaultKey, onlineOnly = onlineOnly }
 end
 
 --- The sort after a click on `key`'s header: the same column turns round; another starts high
 --- to low for a number, A to Z for a name. The default is Score high to low.
-function GuildTab.nextSort(sort, key)
-	local current = sort or { key = "score", descending = true }
+function GuildTab.nextSort(sort, key, defaultKey)
+	local current = sort or { key = defaultKey or "score", descending = true }
 	if current.key == key then
 		return { key = key, descending = not current.descending }
 	end
@@ -348,18 +367,10 @@ local function muted(text, online)
 	return { text = text, hex = online == false and Theme.HEX.mutedDimmed or Theme.HEX.muted }
 end
 
---- A cell nobody has a value for (fix round 1, item 3): blank, never a dash.
-local function blank()
-	return plain("")
-end
-
---- A record cell for a member the readable record has nothing for (L3.7 item 40): a dim dash,
---- not a bare blank; blank where the record cannot be read at all.
-local function noRecord(row)
-	if row.noLogs then
-		return muted(L.guildTabDash, row.online)
-	end
-	return blank()
+--- A cell nobody has a value for (A.3 ruling 3): one muted dash, never a blank beside a filled
+--- cell and never the words "no logs" (those stay in the row's hover).
+local function unknown(row)
+	return muted(L.guildTabDash, row.online)
 end
 
 --- A row's cells, each { text, hex }: the name in its class colour lifted for the panel
@@ -389,24 +400,23 @@ function GuildTab.cells(row)
 			text = string.format(L.gapAtLeast, text)
 		end
 		gap = rounded == 0 and muted(text, row.online) or plain(text)
+		row.gapText = text
 	end
 	local cells = {
 		name = { text = row.short, hex = row.classToken ~= nil and Theme.panelClassHex(row.classToken) or Theme.HEX.body },
-		level = type(row.level) == "number" and plain(whole(row.level)) or blank(),
-		spec = row.spec ~= nil and plain(Follow.specName(row.spec)) or blank(),
-		gear = type(row.gearScore) == "number" and plain(whole(row.gearScore)) or noRecord(row),
+		level = type(row.level) == "number" and plain(whole(row.level)) or unknown(row),
+		spec = row.spec ~= nil and plain(Follow.specName(row.spec)) or unknown(row),
+		gear = type(row.gearScore) == "number" and plain(whole(row.gearScore)) or unknown(row),
 		attendance = type(row.attendance) == "number" and plain(string.format(L.guildTabPercent, row.attendance))
-			or noRecord(row),
-		gap = gap or blank(),
+			or unknown(row),
+		gap = gap or unknown(row),
 	}
 	if type(row.score) == "number" then
 		local r, g, b = Score.tierColor(row.tier)
 		local hex = Theme.panelTierHex(row.tier, r ~= nil and Theme.hexOf(r, g, b) or nil)
 		cells.score = { text = whole(row.score), hex = hex or Theme.HEX.body }
-	elseif row.noLogs then
-		cells.score = muted(L.guildTabNoLogs, row.online)
 	else
-		cells.score = blank()
+		cells.score = unknown(row)
 	end
 	return cells
 end
@@ -422,13 +432,23 @@ function GuildTab.rowHint(row)
 	elseif row.noLogs then
 		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", L.scoreNoLogs)
 	end
+	-- Why a row has no figures to show, in the hover (the cells are one dash each).
+	if type(row.level) == "number" and row.level < Score.LEVEL_FLOOR then
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", string.format(L.guildTabUnderFloor, Score.LEVEL_FLOOR))
+	end
+	if row.online and not row.live then
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", L.guildTabNotRunning)
+	end
 	if row.live then
 		local spec = row.spec ~= nil and Follow.specName(row.spec) or ""
-		-- With no gap to say (nothing scored, fix round 2), the line leaves it out rather than say 0.
-		local live = type(row.gap) == "number"
-			and string.format(L.scoreLive, row.level or 0, spec, math.floor(row.gap + 0.5))
-			or string.format(L.guildTabLiveNoGap, row.level or 0, spec)
+		local live = string.format(L.guildTabLiveNoGap, row.level or 0, spec)
 		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", (live:gsub("  +", " ")))
+		-- The gap says what it is measured against: the planned gear, the one baseline the line's
+		-- "+N DPS" is measured on too.
+		if row.gapText ~= nil then
+			lines[#lines + 1] = Theme.inlineColor("tooltipText",
+				string.format(row.own and L.guildTabGapOwn or L.guildTabGapTheirs, row.gapText))
+		end
 		if row.buildName ~= nil then
 			lines[#lines + 1] = Theme.inlineColor("tooltipText", string.format(L.guildTabBuild, row.buildName))
 		end
@@ -439,28 +459,24 @@ function GuildTab.rowHint(row)
 	return lines
 end
 
---- The count line (fix round 2, item 2), two parts: "3 of 97 shown", or once scrolled past
---- the top (`first` above 1) the rows in view, "4–23 of 97" (`first` to `last` of `total`);
---- then "2 live of 4 online", or "sharing off" while the share switch is off (`sharing`
---- false). 62 characters at most, the room right of the switch. Pure.
-function GuildTab.countsText(counts, sharing, first, last, total, asOf)
+--- The count line, two parts: "14 online of 773" (Online only on), "773 members · 14 online" (off),
+--- or once scrolled past the top (`first` above 1) the rows in view, "4–23 of 97" (`first` to
+--- `last` of `total`); then "1 running Forever Sixty", or "sharing off" while the share switch is
+--- off (`sharing` false). It carries no date: the roster is live. 62 characters at most, the room
+--- right of the switch. Pure.
+function GuildTab.countsText(counts, sharing, first, last, total)
 	local head
 	if type(first) == "number" and first > 1 and type(last) == "number" and type(total) == "number" then
 		head = string.format(L.guildTabRange, first, last, total)
+	elseif counts.onlineOnly then
+		head = string.format(L.guildTabOnlineOf, counts.online or 0, counts.total or 0)
 	else
-		head = string.format(L.guildTabShown, counts.shown or 0, counts.total or 0)
+		head = string.format(L.guildTabMembers, counts.total or 0) .. L.guildTabCountsJoin
+			.. string.format(L.guildTabOnline, counts.online or 0)
 	end
 	local tail = sharing == false and L.guildTabSharingOff
-		or string.format(L.guildTabLiveOf, counts.live or 0, counts.online or 0)
-	local line = head .. L.guildTabCountsJoin .. tail
-	-- The record's age (L3.7 item 42), "as of 12 Oct", when the line still fits its room.
-	if type(asOf) == "string" and asOf ~= "" then
-		local dated = line .. L.guildTabCountsJoin .. string.format(L.scoreAsOf, asOf)
-		if #(dated:gsub("[\128-\191]", "")) <= GuildTab.COUNTS_CHARS then
-			return dated
-		end
-	end
-	return line
+		or string.format(L.guildTabRunning, counts.live or 0)
+	return head .. L.guildTabCountsJoin .. tail
 end
 
 --- The one line said for the whole list while the ratings cannot be read or are old (fix
@@ -768,6 +784,48 @@ end
 
 -- The frames --------------------------------------------------------------------------------
 
+--- The window's title: the guild's name first, "OLYMPUS XXVII · Forever Sixty"; the addon's name
+--- with " · Guild" where the client gives none.
+function GuildTab.titleText()
+	local name = Theme.playerGuild()
+	if type(name) == "string" and name ~= "" then
+		return string.format(L.guildTabTitle, name)
+	end
+	return L.guildTabHeader
+end
+
+--- The client's "Invite Member" button sits on the guild window's bottom edge, at the right; the
+--- addon's button goes inside the frame on that same edge, beside it (to its left), never
+--- hanging under the corner. How far left of the frame's right edge the invite button's left edge
+--- is, read where the client says (a field of the frame, only read), else this many units.
+GuildTab.INVITE_CLEAR = 140
+GuildTab.INVITE_FIELDS = { "InviteButton", "Invite" }
+--- The gap between the two buttons and the lift from the frame's bottom edge.
+GuildTab.BUTTON_GAP = 8
+GuildTab.BUTTON_LIFT = 3
+
+--- Where the button's right edge sits, in units left of the frame's right edge.
+function GuildTab.buttonOffset(frame)
+	for _, key in ipairs(GuildTab.INVITE_FIELDS) do
+		local ok, invite = pcall(function()
+			return frame[key]
+		end)
+		if ok and type(invite) == "table" then
+			local left, right = Widgets.frameEdge(invite, "GetLeft"), Widgets.frameEdge(frame, "GetRight")
+			if left ~= nil and right ~= nil and right > left then
+				return right - left + GuildTab.BUTTON_GAP
+			end
+		end
+	end
+	return GuildTab.INVITE_CLEAR
+end
+
+--- Puts the button inside `frame`, on its bottom edge, left of "Invite Member".
+function GuildTab.placeButton(button, frame)
+	button:ClearAllPoints()
+	button:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -GuildTab.buttonOffset(frame), GuildTab.BUTTON_LIFT)
+end
+
 --- The "Forever Sixty" button under the guild frame's bottom right, the panel tab's look
 --- (Widgets.edgedButton, 112 x 24) and hover hint. Made the first time a refresh finds the
 --- guild frame (never in combat: it waits for its end). nil without one. It carries the
@@ -799,8 +857,7 @@ function GuildTab.ensureButton()
 			GuildTab.onButtonShow(self)
 		end)
 		Widgets.withHint(button, GuildTab.buttonHint)
-		button:ClearAllPoints()
-		button:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 0)
+		GuildTab.placeButton(button, frame)
 		button.seedLive = GuildTab.seedLive
 		-- Capture helpers for a /run (L5.1 fix round 3): the player's own live fields as the row
 		-- shows them, and the hello's (its third field is the gear gap on the wire).
@@ -891,7 +948,7 @@ end
 local function paintHeader(key)
 	local header = GuildTab.headers[key]
 	local states = Theme.CONTROL_STATES.header
-	local sorted = GuildTab.sort ~= nil and GuildTab.sort.key or "score"
+	local sorted = GuildTab.sort ~= nil and GuildTab.sort.key or GuildTab.defaultKey or "score"
 	local look = key == sorted and states.active or header.over and states.hoverLabel or states.label
 	header.label:SetTextColor(Theme.rgb(Theme.HEX[look]))
 	header.look = look
@@ -1016,6 +1073,7 @@ function GuildTab.ensureFlyout()
 	GuildTab.flyout = flyout
 	local header = Widgets.label(flyout, L.guildTabHeader, "gold", "normal")
 	header:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -S.panelPadding)
+	GuildTab.title = header
 	local close = Widgets.closeButton(flyout, function()
 		closeFlyout()
 	end)
@@ -1099,7 +1157,7 @@ end
 --- The headers' look: the sorted column's label gold with its arrow (down high to low, the
 --- art flipped for low to high), the others muted (body under the cursor).
 local function drawHeaders()
-	local key = GuildTab.sort ~= nil and GuildTab.sort.key or "score"
+	local key = GuildTab.sort ~= nil and GuildTab.sort.key or GuildTab.defaultKey or "score"
 	local descending = GuildTab.sort == nil or GuildTab.sort.descending == true
 	for columnKey, header in pairs(GuildTab.headers) do
 		paintHeader(columnKey)
@@ -1170,7 +1228,7 @@ function GuildTab.renderRows()
 	local range = math.max(0, #rows - visible)
 	GuildTab.bar:Update(#rows > 0 and math.min(1, visible / #rows) or 1, range > 0 and offset / range or 0)
 	GuildTab.countsLine:SetText(fitted(GuildTab.countsText(model.counts, model.sharing, #rows > 0 and first or nil,
-		#rows > 0 and last or nil, #rows, model.asOf), GuildTab.innerWidth() - S.guildToggleRoom))
+		#rows > 0 and last or nil, #rows), GuildTab.innerWidth() - S.guildToggleRoom))
 	local empty = GuildTab.emptyLine
 	if #rows == 0 then
 		empty:SetText(fitted(model.counts.total == 0 and L.guildTabNoRoster or L.guildTabNobodyOnline,
@@ -1271,6 +1329,7 @@ function GuildTab.draw()
 		return GuildTab.drawSolo(flyout)
 	end
 	GuildTab.soloLine:Hide()
+	GuildTab.title:SetText(GuildTab.titleText())
 	GuildTab.onlineToggle.frame:Show()
 	GuildTab.countsLine:Show()
 	GuildTab.countsHover:Show()
@@ -1279,7 +1338,15 @@ function GuildTab.draw()
 	end
 	GuildTab.holder:Show()
 	local rows, counts, onlineOnly, status = GuildTab.model()
-	local notice = GuildTab.ratingsNotice(status)
+	-- With the record readable and no shown row scored, the one line that says so; else the ratings
+	-- notice while they cannot be read or are old.
+	local notice
+	if #rows > 0 and counts.scored == 0 and status.available == true then
+		notice = L.guildTabNobodyLogs
+	else
+		notice = GuildTab.ratingsNotice(status)
+	end
+	GuildTab.defaultKey = counts.defaultKey
 	local _, rank = Theme.playerGuild()
 	local officer = GuildTab.officerRegion(guildMessage(), rank, Follow.build, GuildTab.data or ns.Data)
 	if officer ~= nil then
@@ -1288,8 +1355,7 @@ function GuildTab.draw()
 	local hasNotice = notice ~= nil
 	local visible = GuildTab.fitRows(Widgets.frameHeight(pane()), officer, hasNotice)
 	GuildTab.last = { rows = rows, counts = counts, officer = officer, visible = visible, notice = notice,
-		sharing = Comms.sharing(),
-		asOf = type(status) == "table" and status.available and Compat.shortDate(status.generated) or nil }
+		sharing = Comms.sharing() }
 	GuildTab.onlineToggle:SetChecked(onlineOnly)
 	if hasNotice then
 		GuildTab.noticeLine:SetText(fitted(notice, GuildTab.innerWidth()))
@@ -1381,7 +1447,7 @@ end
 --- A header's click: sorts by that column, or turns it round; back to the first row.
 function GuildTab.setSort(key)
 	guarded(function()
-		GuildTab.sort = GuildTab.nextSort(GuildTab.sort, key)
+		GuildTab.sort = GuildTab.nextSort(GuildTab.sort, key, GuildTab.defaultKey)
 		GuildTab.offset = 0
 		redraw()
 	end)

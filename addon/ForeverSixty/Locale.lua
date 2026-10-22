@@ -239,6 +239,11 @@ local L = {
 	gearNoBuild = "No build loaded, so there is nothing to compare against.",
 	gearUpgrade = "%s: %+.1f over %s",
 	gearNone = "Nothing in your bags beats what you are wearing.",
+	-- What finishes "Not for you: ..." when a carried piece asks for more than the character has
+	-- (Gear.restriction): the line, the Gear page and /fs loot all read these.
+	gearRequiresLevel = "requires level %d",
+	gearClassOnly = "%s only",
+	gearClassOr = " or ",
 	gearPlanned = "PLANNED",
 	gearEquipped = "EQUIPPED",
 	gearMatches = "As planned",
@@ -851,6 +856,9 @@ local L = {
 	chipNextTalent = "the next talent",
 	-- The upgrade line with the verb dropped, when the whole line will not fit.
 	chipEquipShort = "%s, %s",
+	-- The hover: the slot, the piece and what it replaces (or the empty slot it fills).
+	chipEquipTip = "%s: %s replaces %s, %s",
+	chipEquipTipEmpty = "%s: %s fills an empty slot, %s",
 	-- The hover's click hint for the state shown.
 	chipHintTalents = "Click: Open talents",
 	chipHintEquip = "Click: Equip",
@@ -1182,16 +1190,28 @@ L.guildTabHint = {
 	"Click to open or close.",
 }
 L.guildTabOnlineOnly = "Online only"
--- Right of the switch, muted, in two parts (fix round 2, item 2; 62 characters at most): "3 of
--- 97 shown", or once scrolled past the top the rows in view "4–23 of 97"; then "2 live of 4
--- online" (live: online guildmates whose addon answered, and the player), or "sharing off"
--- while "Share my build with my guild" is off. Its hover says what live means.
-L.guildTabShown = "%d of %d shown"
+-- The window's title: the guild's name first.
+L.guildTabTitle = "%s \194\183 " .. L.addonName
+-- Right of the switch, muted, in two parts (62 characters at most): "14 online of 773" (Online
+-- only on) or "773 members · 14 online" (off), or once scrolled past the top the rows in view
+-- "4–23 of 97"; then "1 running Forever Sixty" (online guildmates whose addon answered, and the
+-- player), or "sharing off" while "Share my build with my guild" is off. No date: the roster is
+-- live. Its hover says what running means.
+L.guildTabOnlineOf = "%d online of %d"
+L.guildTabMembers = "%d members"
+L.guildTabOnline = "%d online"
+L.guildTabRunning = "%d running Forever Sixty"
 L.guildTabRange = "%d–%d of %d"
-L.guildTabLiveOf = "%d live of %d online"
 L.guildTabSharingOff = "sharing off"
 L.guildTabCountsJoin = " · "
-L.guildTabCountsHint = "Live: guildmates running Forever Sixty share their spec and gear gap."
+L.guildTabCountsHint = "Running Forever Sixty: guildmates whose addon answered share their spec and gear gap."
+-- Under the header, once, while the record is readable and no row shown has a score.
+L.guildTabNobodyLogs = "Nobody here has logs on the site yet. Scores appear after a member's logs are uploaded."
+-- A row's hover: why its cells are dashes, and what the gap is measured against.
+L.guildTabUnderFloor = "Under level %d: not scored yet."
+L.guildTabNotRunning = "Not running Forever Sixty."
+L.guildTabGapOwn = "Gap to your planned gear: %s"
+L.guildTabGapTheirs = "Gap to their planned gear: %s"
 -- Under the count line, muted, while the ratings cannot be read or are old (fix round 1,
 -- item 1): the Settings foot's state for them, said once for the whole list ("Player
 -- ratings: too old. Get the new Forever Sixty Data at foreversixty.gg.").
@@ -1222,8 +1242,8 @@ L.gapAtLeast = "\226\137\165 %s"
 L.guildTabHeaderHints = {
 	gear = { "Gear score from the nightly record, in points" },
 	score = { "Forever Score from the nightly record, in points" },
-	gap = { "Gear gap reported live by the member's addon.",
-		"Biggest slot behind their build, in DPS or points; 0 means on plan.",
+	gap = { "Gap to their planned gear, reported live by the member's addon.",
+		"Biggest slot behind the plan, in DPS or points; 0 means on plan.",
 		"A leading \226\137\165 means at least: a weapon's stats are still on their way." },
 }
 -- A row's hover: the member's build as their addon announced it, and offline.
@@ -1277,9 +1297,12 @@ L.groupPanelHint = {
 -- where it fits the flyout, else a sentence a line (GroupPanel.soloHint).
 L.groupNotInGroup = "Not in a group."
 L.groupSoloHint = {
-	"A party or raid shows each member's spec, gear gap, score and buffs.",
-	"/fs ready tries the check on you.",
+	"Invite someone and their row appears here.",
 }
+-- The Raid tab's button while the player is alone: it opens the panel with the player's own row.
+L.groupPanelSoloLabel = L.addonName .. " \194\183 solo"
+-- /fs group and /fs panel while alone: where the panel is and when it fills.
+L.groupSoloCommand = "The group panel is on the Raid tab of the Social window (O). It fills when you join a group."
 -- Under the header, muted: "5 members · 3 inspected · 2 live".
 L.groupCounts = "%d members · %d inspected · %d live"
 -- /fs group with the Raid tab not open (the Social window closed, or another tab): the panel
@@ -1471,6 +1494,7 @@ L.lootCmdSlot = "%s (%s)"
 L.lootOnYourList = "on your list"
 L.lootNotOnYourList = "not on your list"
 L.lootCmdCant = "%s: can't score: %s"
+L.lootCmdNotForYou = "%s: %s"
 L.lootCmdAsked = "Asked the group about %s."
 L.lootCmdNotAsked = "Did not ask the group: %s"
 L.lootCmdLoading = "Item %d: loading…"

@@ -682,6 +682,111 @@ function Gear.referenceStat(weights)
 	return nil
 end
 
+--- The class names an item's own tooltip restricts it to ("Classes: Shaman" -> { "Shaman" }), or
+--- nil when it names none. The client's own format string (ITEM_CLASSES_ALLOWED) is matched, else
+--- the English form. Pure over the rows.
+function Gear.classLine(rows)
+	local format = Compat.globalString("ITEM_CLASSES_ALLOWED") or "Classes: %s"
+	local pattern = patternOf(format)
+	for _, row in ipairs(rows or {}) do
+		local text = type(row.left) == "string" and row.left:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "") or nil
+		local list = text ~= nil and text:match(pattern) or nil
+		if list ~= nil then
+			local names = {}
+			for name in list:gmatch("[^,]+") do
+				names[#names + 1] = trim(name)
+			end
+			return names
+		end
+	end
+	return nil
+end
+
+--- Class restrictions read so far, by item id (false: the tooltip was read and names none), so the
+--- client's tooltip is read once per item; cleared when it grows past a few bags' worth.
+Gear.classCache = {}
+local CLASS_CACHE_LIMIT = 200
+local classCacheSize = 0
+
+--- The classes an item is restricted to, read from its tooltip once the client has it: a list of
+--- names, false for none, nil while the tooltip cannot be read (asked again next time).
+local function classesOf(link)
+	local itemId = tonumber(type(link) == "string" and link:match("item:(%d+)") or nil)
+	if itemId ~= nil and Gear.classCache[itemId] ~= nil then
+		return Gear.classCache[itemId]
+	end
+	local rows = Compat.hyperlinkRows(link)
+	if rows == nil or #rows == 0 then
+		return nil
+	end
+	local names = Gear.classLine(rows) or false
+	if itemId ~= nil then
+		if classCacheSize >= CLASS_CACHE_LIMIT then
+			Gear.classCache, classCacheSize = {}, 0
+		end
+		Gear.classCache[itemId] = names
+		classCacheSize = classCacheSize + 1
+	end
+	return names
+end
+
+--- Whether a restriction list names the player's class: by the player's own class name, the
+--- client's male and female names for the token, or the token itself, in any case.
+local function namesClass(names, classToken)
+	local wanted = {}
+	local function add(name)
+		if type(name) == "string" and name ~= "" then
+			wanted[name:lower()] = true
+		end
+	end
+	add(classToken)
+	if type(UnitClass) == "function" then
+		add((UnitClass("player")))
+	end
+	for _, table_ in ipairs({ Compat.classNames() or {}, _G.LOCALIZED_CLASS_NAMES_FEMALE or {} }) do
+		add(table_[classToken])
+	end
+	for _, name in ipairs(names) do
+		if wanted[name:lower()] then
+			return true
+		end
+	end
+	return false
+end
+
+--- Why the character cannot put the carried item `link` on at all, or nil when it can (the
+--- chip's line, the Gear page's rows and /fs loot all ask this one function): its kind and the
+--- words that finish "Not for you: ...".
+---   "equip"  the client says it is not equippable (no words: it is no gear);
+---   "level"  "requires level 60", the item asks more than `level`;
+---   "class"  "Shaman only", the item's tooltip names classes and the character's is not one.
+--- The armor and weapon proficiency by level is Rules.canEquip, per slot. Anything the client has
+--- not loaded yet (no level, no tooltip) is never a refusal: a wrong "not for you" is worse than
+--- saying nothing. `classToken` and `level` are the player's when nil.
+function Gear.restriction(link, classToken, level)
+	if link == nil then
+		return nil
+	end
+	-- An item id reads through the hyperlink the client's tooltip takes for it.
+	local hyperlink = type(link) == "number" and "item:" .. link or link
+	if Compat.isEquippableItem(link) == false then
+		return "equip", nil
+	end
+	level = level or Compat.playerLevel()
+	local needs = Compat.itemMinLevel(link)
+	if type(level) == "number" and needs ~= nil and needs > level then
+		return "level", string.format(L.gearRequiresLevel, needs)
+	end
+	if classToken == nil and type(UnitClass) == "function" then
+		classToken = select(2, UnitClass("player"))
+	end
+	local names = classToken ~= nil and classesOf(hyperlink) or nil
+	if names and not namesClass(names, classToken:upper()) then
+		return "class", string.format(L.gearClassOnly, table.concat(names, L.gearClassOr))
+	end
+	return nil
+end
+
 --- Everything the player is carrying that beats the planned item in a
 --- slot it fits.
 function Gear.upgrades(data, build)
@@ -693,13 +798,22 @@ function Gear.upgrades(data, build)
 	end
 	local planned = plannedBySlot(build)
 	local found = {}
+	local classToken = build.classSlug ~= nil and build.classSlug:upper() or nil
+	local level = Compat.playerLevel()
 	for _, link in ipairs(Gear.bagLinks()) do
 		-- Through Compat, like Export.lua's itemIdOf and isEquippable, so
 		-- every call site finds the function in the same place on a client
 		-- that moved it to C_Item.
-		local id, _, _, equipLocation = Compat.itemInfoInstant(link)
-		for _, target in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation] or {}) do
+		local id, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(link)
+		-- A piece the character cannot wear (not equippable, a level or a class it is not) is
+		-- skipped silently; the armor and weapon proficiency is judged per slot below.
+		local unfit = Gear.restriction(link, classToken, level) ~= nil
+		for _, target in ipairs(not unfit and Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation] or {}) do
 			local against = planned[target]
+			if against ~= nil and Rules.canEquip(classToken, level, classId or itemType, subClassId or itemSubType,
+				equipLocation, target) ~= "ok" then
+				against = nil
+			end
 			-- A planned item with no stats is an FS1 code, which carries none.
 			-- Scoring it at zero would call every item an upgrade; saying
 			-- nothing about that slot is honest. An item that IS the planned

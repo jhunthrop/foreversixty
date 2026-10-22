@@ -244,19 +244,20 @@ describe("GuildTab", function()
 			assert.is_false(smoke.live)
 		end)
 
-		-- L3.7 item 40: a member the readable record has nothing for shows a dim dash in the record's
-		-- cells, not a bare blank; a member with no live addon still has a blank Gap.
-		it("draws a dim dash in the Gear and Attendance cells of a member with no logs", function()
+		-- A.3 ruling 3: every cell nobody has a value for is one muted dash, whether the record has
+		-- nothing for the member or cannot be read, and never the words "no logs".
+		it("draws one muted dash in every unknown cell, never a blank", function()
 			local cells = GuildTab.cells({ short = "A", name = "A", online = true, noLogs = true })
-			assert.are.equal("\226\128\148", cells.gear.text)
-			assert.are.equal("\226\128\148", cells.attendance.text)
-			assert.are.equal(Theme.HEX.muted, cells.gear.hex)
-			assert.are.equal("", cells.gap.text)
+			for _, key in ipairs({ "level", "spec", "gear", "score", "attendance", "gap" }) do
+				assert.are.equal("\226\128\148", cells[key].text, key)
+				assert.are.equal(Theme.HEX.muted, cells[key].hex, key)
+			end
 			cells = GuildTab.cells({ short = "A", name = "A", online = false, noLogs = true })
 			assert.are.equal(Theme.HEX.mutedDimmed, cells.gear.hex)
-			-- A row with no readable record (the data addon missing) stays blank.
+			-- A row with no readable record (the data addon missing) reads the same.
 			cells = GuildTab.cells({ short = "A", name = "A", online = true })
-			assert.are.equal("", cells.gear.text)
+			assert.are.equal("\226\128\148", cells.gear.text)
+			assert.are.equal("\226\128\148", cells.score.text)
 		end)
 
 		-- L3.7 item 40: every text colour an offline row draws reads at least 3:1 at the row's alpha.
@@ -336,7 +337,8 @@ describe("GuildTab", function()
 				time = 990 }, ["Smoke Gouda-ClassicBetaPvP"] = { level = 41, gearGap = 3, time = 990 } }
 			local rows, counts = GuildTab.rows(ROSTER, _G.ForeverSixtyData.characters, seen, nil, { onlineOnly = true })
 			assert.are.same({ "Bow Jackzon", "Facep Alm" }, names(rows))
-			assert.are.same({ total = 4, shown = 2, live = 1, online = 2 }, counts)
+			assert.are.same({ total = 4, shown = 2, live = 1, online = 2, scored = 1, defaultKey = "score",
+				onlineOnly = true }, counts)
 			-- A "-" spec from a snapshot is no spec: the record's is kept.
 			assert.are.equal("hunter-beast-mastery", rows[1].spec)
 		end)
@@ -378,20 +380,15 @@ describe("GuildTab", function()
 			assert.are.equal(string.format(L.guildTabGapPts, 14), cells.gap.text)
 		end)
 
-		it("reads no logs muted in Score, a dim dash in Gear and Attendance, and leaves every other missing value blank",
-			function()
+		it("reads one muted dash for every cell the record and the addon have nothing for", function()
 			local rows = GuildTab.rows({ member("Facep Alm-ClassicBetaPvP", 12, "MAGE", true) },
 				require("Score").forCharacter, {})
 			local cells = GuildTab.cells(rows[1])
-			assert.are.equal(L.guildTabNoLogs, cells.score.text)
-			assert.are.equal(Theme.HEX.muted, cells.score.hex)
-			for _, key in ipairs({ "spec", "gap" }) do
-				assert.are.equal("", cells[key].text, key)
-			end
-			-- L3.7 item 40 (it was a bare blank before): the record has nothing for this member.
-			for _, key in ipairs({ "gear", "attendance" }) do
+			for _, key in ipairs({ "score", "spec", "gap", "gear", "attendance" }) do
 				assert.are.equal(L.guildTabDash, cells[key].text, key)
+				assert.are.equal(Theme.HEX.muted, cells[key].hex, key)
 			end
+			assert.are.equal("12", cells.level.text)
 		end)
 
 		it("writes the live gap in the sender's unit: DPS where the data has a DPS per point for the spec", function()
@@ -405,7 +402,7 @@ describe("GuildTab", function()
 			end
 			assert.are.equal("14 DPS", byName["Facep Alm"].gap.text)
 			assert.are.equal("9 pts", byName["Bow Jackzon"].gap.text)
-			assert.are.equal("", byName["Smoke Gouda"].gap.text)
+			assert.are.equal(L.guildTabDash, byName["Smoke Gouda"].gap.text)
 		end)
 	end)
 
@@ -461,12 +458,15 @@ describe("GuildTab", function()
 	end)
 
 	describe("the frames", function()
-		it("puts the button under the guild frame's bottom right, the panel button's look", function()
+		it("puts the button inside the guild frame, on its bottom edge beside Invite Member, the panel button's look",
+			function()
 			local frame = start()
 			GuildTab.refresh()
 			local button = _G[GuildTab.BUTTON_NAME]
 			assert.are.equal(frame, button.parent)
-			assertPoint({ "TOPRIGHT", frame, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+			-- Inside the frame (its own bottom right, lifted off the edge), left of the invite button.
+			assertPoint({ "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -GuildTab.INVITE_CLEAR, GuildTab.BUTTON_LIFT },
+				button.points[#button.points])
 			assert.are.equal(L.guildTabLabel, button:GetText())
 			assert.are.same({ Theme.SIZES.panelTabWidth, Theme.SIZES.panelTabHeight },
 				{ button:GetWidth(), button:GetHeight() })
@@ -647,12 +647,12 @@ describe("GuildTab", function()
 			Export.characterKey = real
 		end)
 
-		it("draws the record's date at the end of the count line", function()
+		it("draws no date on the count line: the roster is live", function()
 			start()
 			open()
-			local today = require("Compat").shortDate(os.date("!%Y-%m-%d"))
 			local text = GuildTab.countsLine:GetText()
-			assert.are.equal(string.format(L.scoreAsOf, today), text:sub(-#string.format(L.scoreAsOf, today)), text)
+			assert.is_nil(text:find("as of", 1, true), text)
+			assert.are.equal("4 members \194\183 2 online \194\183 1 running Forever Sixty", text)
 		end)
 
 		it("leaves Online only off at 40 or fewer", function()
@@ -669,7 +669,7 @@ describe("GuildTab", function()
 			end
 			start({ roster = many, data = false })
 			open()
-			click(GuildTab.headers.level.button)
+			-- Nobody is scored, so the default order is Level high to low.
 			local list = drawnNames()
 			assert.are.equal(20, #list)
 			assert.are.equal("M01", list[1])
@@ -699,7 +699,8 @@ describe("GuildTab", function()
 			assert.is_true(flyout:GetHeight() <= 300)
 			local shown = #drawnNames()
 			assert.is_true(shown < 20 and shown > 0)
-			assert.are.equal(GuildTab.fitRows(300, nil), shown)
+			-- Nobody here has logs: the one line under the header takes a row's room.
+			assert.are.equal(GuildTab.fitRows(300, nil, true), shown)
 			assert.are.equal(GuildTab.VISIBLE_ROWS, GuildTab.fitRows(nil, nil))
 			assert.are.equal(1, GuildTab.fitRows(10, nil))
 		end)
@@ -945,11 +946,11 @@ describe("GuildTab", function()
 						assert.is_true(line:IsShown())
 						assert.are.equal("Player ratings: " .. value, line:GetText())
 						assert.are.equal(Theme.HEX.muted, colorOf(line))
-						-- No "no logs" in any row: the Score, Gear and Attendance cells are blank.
+						-- No "no logs" in any row: the Score, Gear and Attendance cells are one dash each.
 						for _, row in ipairs(GuildTab.rowFrames) do
 							if row.frame:IsShown() then
 								for _, key in ipairs({ "score", "gear", "attendance" }) do
-									assert.are.equal("", row.cells[key]:GetText(), key)
+									assert.are.equal(L.guildTabDash, row.cells[key]:GetText(), key)
 								end
 							end
 						end
@@ -969,15 +970,15 @@ describe("GuildTab", function()
 				assert.are.equal("Player ratings: " .. L.settingsRatingsOld:match("^.-:%s(.*)$"),
 					GuildTab.noticeLine:GetText())
 				assert.are.equal("1240", drawnRow("Bow Jackzon").cells.score:GetText())
-				assert.are.equal(L.guildTabNoLogs, drawnRow("Facep Alm").cells.score:GetText())
+				assert.are.equal(L.guildTabDash, drawnRow("Facep Alm").cells.score:GetText())
 			end)
 
-			it("says nothing while the ratings are current, and no logs only for a member the record lacks", function()
+			it("says nothing while the ratings are current, and a dash only for a member the record lacks", function()
 				start()
 				open()
 				assert.is_false(GuildTab.noticeLine:IsShown())
 				assert.is_nil(GuildTab.ratingsNotice(require("Score").status()))
-				assert.are.equal(L.guildTabNoLogs, drawnRow("Facep Alm").cells.score:GetText())
+				assert.are.equal(L.guildTabDash, drawnRow("Facep Alm").cells.score:GetText())
 				assert.are.equal("1240", drawnRow("Bow Jackzon").cells.score:GetText())
 				local header = GuildTab.headers.name.button
 				assert.are.equal(-GuildTab.headerTop(false), header.points[#header.points][5])
@@ -1024,7 +1025,7 @@ describe("GuildTab", function()
 				assert.are.equal("90%", drawn.cells.attendance:GetText())
 				-- It counts in the live tally.
 				assert.are.equal(1, GuildTab.last.counts.live)
-				assert.is_truthy(GuildTab.countsLine:GetText():find("1 live of 2 online", 1, true))
+				assert.is_truthy(GuildTab.countsLine:GetText():find("1 running Forever Sixty", 1, true))
 			end)
 
 			it("reads its spec from the build's own spec, the plan's tree, else the talents", function()
@@ -1124,15 +1125,11 @@ describe("GuildTab", function()
 				end
 			end)
 
-			it("shows no logs once in Score and blanks elsewhere for a member with no record", function()
+			it("shows one dash in each cell a member with no record has no value for", function()
 				start()
 				open()
 				local facep = drawnRow("Facep Alm")
-				assert.are.equal(L.guildTabNoLogs, facep.cells.score:GetText())
-				for _, key in ipairs({ "spec", "gap" }) do
-					assert.are.equal("", facep.cells[key]:GetText(), key)
-				end
-				for _, key in ipairs({ "gear", "attendance" }) do
+				for _, key in ipairs({ "score", "spec", "gap", "gear", "attendance" }) do
 					assert.are.equal(L.guildTabDash, facep.cells[key]:GetText(), key)
 				end
 			end)
@@ -1484,7 +1481,7 @@ describe("GuildTab", function()
 					local data = hunter(nil)
 					assert.is_nil(Comms.gearGap(data, "hunter-marksmanship"))
 					open()
-					assert.are.equal("", drawnRow("Bow Jackzon").cells.gap:GetText())
+					assert.are.equal(L.guildTabDash, drawnRow("Bow Jackzon").cells.gap:GetText())
 					assert.is_true(drawnRow("Bow Jackzon").entry.live)
 					-- Its hover says no gap either, rather than "gear gap 0".
 					local hint = table.concat(GuildTab.rowHint(drawnRow("Bow Jackzon").entry), " ")
@@ -1559,37 +1556,33 @@ describe("GuildTab", function()
 				return #(text:gsub("[\128-\191]", ""))
 			end
 
-			it("reads shown of total and live of online at the top; the range once scrolled; sharing off", function()
+			it("reads online of total with Online only on, members and online with it off; the range once scrolled; sharing off",
+				function()
 				start()
-				assert.are.equal("97 of 97 shown · 2 live of 4 online", GuildTab.countsText(COUNTS, true, 1, 20, 97))
-				assert.are.equal("4–23 of 97 · 2 live of 4 online", GuildTab.countsText(COUNTS, true, 4, 23, 97))
-				assert.are.equal("97 of 97 shown · sharing off", GuildTab.countsText(COUNTS, false, 1, 20, 97))
-				assert.are.equal("4–23 of 97 · sharing off", GuildTab.countsText(COUNTS, false, 4, 23, 97))
-				-- No range at the top, nor with no rows.
-				assert.are.equal("0 of 97 shown · 0 live of 0 online",
-					GuildTab.countsText({ shown = 0, total = 97, live = 0, online = 0 }, true, nil, nil, 0))
+				local ON = { shown = 14, total = 773, live = 1, online = 14, onlineOnly = true }
+				assert.are.equal("14 online of 773 \194\183 1 running Forever Sixty", GuildTab.countsText(ON, true, 1, 14, 14))
+				assert.are.equal("773 members \194\183 14 online \194\183 1 running Forever Sixty",
+					GuildTab.countsText({ shown = 773, total = 773, live = 1, online = 14 }, true, 1, 20, 773))
+				assert.are.equal("4–23 of 97 \194\183 2 running Forever Sixty",
+					GuildTab.countsText(COUNTS, true, 4, 23, 97))
+				assert.are.equal("14 online of 773 \194\183 sharing off", GuildTab.countsText(ON, false, 1, 14, 14))
+				assert.are.equal("4–23 of 97 \194\183 sharing off", GuildTab.countsText(COUNTS, false, 4, 23, 97))
 			end)
 
-			-- L3.7 item 42: the record's age, "as of 12 Oct", ends the line when it fits in the 62.
-			it("ends with the record's date when it fits, and leaves it out when it does not", function()
+			-- A.3 ruling 3: "as of 22 Oct" goes, the roster is live; the line takes no date.
+			it("carries no date at all", function()
 				start()
-				assert.are.equal("97 of 97 shown · 2 live of 4 online · as of 12 Oct",
-					GuildTab.countsText(COUNTS, true, 1, 20, 97, "12 Oct"))
-				assert.are.equal("97 of 97 shown · sharing off · as of 12 Oct",
-					GuildTab.countsText(COUNTS, false, 1, 20, 97, "12 Oct"))
-				local big = { shown = 1000, total = 1000, live = 1000, online = 1000 }
-				local long = string.rep("x", 20)
-				assert.are.equal(GuildTab.countsText(big, true, 981, 1000, 1000),
-					GuildTab.countsText(big, true, 981, 1000, 1000, long))
-				assert.is_true(width(GuildTab.countsText(big, true, 1, 20, 1000, "12 Oct")) <= 62)
-				assert.are.equal(string.format(L.scoreAsOf, "12 Oct"), "as of 12 Oct")
+				local text = GuildTab.countsText(COUNTS, true, 1, 20, 97, "12 Oct")
+				assert.is_nil(text:find("as of", 1, true), text)
+				assert.is_nil(text:find("12 Oct", 1, true), text)
 			end)
 
 			it("fits its longest form in 62 characters, the room at 6 units a character", function()
 				start()
 				assert.are.equal(62, math.floor((GuildTab.innerWidth() - Theme.SIZES.guildToggleRoom) / 6))
 				local big = { shown = 1000, total = 1000, live = 1000, online = 1000 }
-				for _, text in ipairs({ GuildTab.countsText(big, true, 1, 20, 1000),
+				for _, text in ipairs({ GuildTab.countsText({ shown = 1000, total = 1000, live = 1000, online = 1000,
+					onlineOnly = true }, true, 1, 20, 1000), GuildTab.countsText(big, true, 1, 20, 1000),
 					GuildTab.countsText(big, true, 981, 1000, 1000), GuildTab.countsText(big, false, 1, 20, 1000),
 					GuildTab.countsText(big, false, 981, 1000, 1000) }) do
 					assert.is_true(width(text) <= 62, width(text) .. ": " .. text)
@@ -1603,7 +1596,7 @@ describe("GuildTab", function()
 				end
 				start({ roster = many, sharingOff = true, data = false })
 				open()
-				assert.are.equal("30 of 30 shown · sharing off", GuildTab.countsLine:GetText())
+				assert.are.equal("30 members \194\183 30 online \194\183 sharing off", GuildTab.countsLine:GetText())
 				local wheel = GuildTab.holder:GetScript("OnMouseWheel")
 				wheel(GuildTab.holder, -1)
 				assert.are.equal("4–23 of 30 · sharing off", GuildTab.countsLine:GetText())
@@ -1612,7 +1605,7 @@ describe("GuildTab", function()
 				local before = mock.countCalls(_G.GameTooltip, "AddLine")
 				hover:GetScript("OnEnter")(hover)
 				assert.are.same({ Theme.inlineColor("tooltipText",
-					"Live: guildmates running Forever Sixty share their spec and gear gap.") }, addedLines(before))
+					L.guildTabCountsHint) }, addedLines(before))
 				hover:GetScript("OnLeave")(hover)
 			end)
 		end)
@@ -1699,12 +1692,12 @@ describe("GuildTab", function()
 
 		-- Item 3 and persona item 3: muted text on an offline row still reads.
 		describe("muted text on an offline row", function()
-			it("draws no logs offline in the brighter muted token, 3:1 at the row alpha", function()
+			it("draws the dash offline in the brighter muted token, 3:1 at the row alpha", function()
 				start()
 				open()
 				local ground = Theme.HEX.background
 				-- Quiet (offline) and Facep (online) both have no logs.
-				assert.are.equal(L.guildTabNoLogs, drawnRow("Quiet Person").cells.score:GetText())
+				assert.are.equal(L.guildTabDash, drawnRow("Quiet Person").cells.score:GetText())
 				assert.are.equal(Theme.HEX.mutedDimmed, colorOf(drawnRow("Quiet Person").cells.score))
 				assert.are.equal(Theme.HEX.muted, colorOf(drawnRow("Facep Alm").cells.score))
 				local dimmed = Theme.overGround(Theme.HEX.mutedDimmed, Theme.ALPHA.dim)
@@ -1881,7 +1874,7 @@ describe("GuildTab", function()
 				assert.is_nil(rangedTarget(data).gain)
 				assert.is_nil(Comms.gearGap(data, "hunter-marksmanship"))
 				open()
-				assert.are.equal("", ownRow().cells.gap:GetText())
+				assert.are.equal(L.guildTabDash, ownRow().cells.gap:GetText())
 				assert.are.equal(0, Comms.helloFields()[3])
 			end)
 
@@ -2069,6 +2062,164 @@ describe("GuildTab", function()
 			inGuild = true
 			GuildTab.refresh()
 			assert.is_true(button:IsShown())
+		end)
+	end)
+	-- A.3 ruling 3: the window says what it knows when nobody has logs, ruling 2: the gap's hover says
+	-- what it is measured against, ruling 4: the button sits inside the guild window, ruling 6: the
+	-- window is titled with the guild's name.
+	describe("when nobody has logs (A.3)", function()
+		--- The record with nobody scored: readable and current, no character in it.
+		local function emptyRecord()
+			local record = nightly()
+			record.characters = {}
+			return record
+		end
+
+		local DASH = "\226\128\148"
+		local YOUNG = {
+			member("Bow Jackzon-ClassicBetaPvP", 26, "HUNTER", true, 0),
+			member("Carla Delianco-ClassicBetaPvP", 7, "PRIEST", true),
+			member("Fear Dapriestt-ClassicBetaPvP", 7, "PRIEST", true),
+			member("Glax Gladius-ClassicBetaPvP", 41, "WARRIOR", true),
+			member("Old Timer-ClassicBetaPvP", 55, "MAGE", false),
+		}
+
+		local function drawnRow(short)
+			for _, row in ipairs(GuildTab.rowFrames) do
+				if row.frame:IsShown() and row.cells.name:GetText() == short then
+					return row
+				end
+			end
+			return nil
+		end
+
+		it("says so once under the header, in those words", function()
+			start({ data = emptyRecord(), roster = YOUNG })
+			open()
+			assert.are.equal("Nobody here has logs on the site yet. Scores appear after a member's logs are uploaded.",
+				L.guildTabNobodyLogs)
+			assert.is_true(GuildTab.noticeLine:IsShown())
+			assert.are.equal(L.guildTabNobodyLogs, GuildTab.noticeLine:GetText())
+			assert.are.equal(0, GuildTab.last.counts.scored)
+		end)
+
+		it("leaves the line out once a row has a score", function()
+			start({ roster = YOUNG })
+			open()
+			assert.is_true(GuildTab.last.counts.scored >= 1)
+			assert.is_false(GuildTab.noticeLine:IsShown())
+		end)
+
+		it("leaves the line out while the record cannot be read (the ratings notice speaks then)", function()
+			start({ data = false, roster = YOUNG })
+			open()
+			assert.are_not.equal(L.guildTabNobodyLogs, GuildTab.noticeLine:GetText())
+		end)
+
+		it("draws one muted dash in each unknown cell, the two young rows read like the others", function()
+			start({ data = emptyRecord(), roster = YOUNG })
+			open()
+			for _, name in ipairs({ "Carla Delianco", "Fear Dapriestt", "Glax Gladius" }) do
+				local row = drawnRow(name)
+				assert.is_not_nil(row, name)
+				for _, key in ipairs({ "spec", "gear", "score", "attendance", "gap" }) do
+					assert.are.equal(DASH, row.cells[key]:GetText(), name .. " " .. key)
+				end
+				assert.are.equal(Theme.HEX.muted, (function()
+					local call = mock.lastCall(row.cells.score, "SetTextColor")
+					return Theme.hexOf(call[1], call[2], call[3])
+				end)())
+			end
+			assert.are.equal("7", drawnRow("Carla Delianco").cells.level:GetText())
+		end)
+
+		it("sorts by Level high to low with the arrow on Level while nobody has a score", function()
+			start({ data = emptyRecord(), roster = YOUNG })
+			open()
+			assert.are.equal("level", GuildTab.defaultKey)
+			-- Online rows first, then by level: the player's own row (26) before the 41 only on a tie.
+			assert.are.same({ "Glax Gladius", "Bow Jackzon", "Carla Delianco", "Fear Dapriestt", "Old Timer" },
+				drawnNames())
+			assert.is_true(GuildTab.headers.level.arrow:IsShown())
+			assert.is_false(GuildTab.headers.score.arrow:IsShown())
+			-- A click on Level turns it round: the default is already high to low.
+			click(GuildTab.headers.level.button)
+			assert.are.same({ key = "level", descending = false }, GuildTab.sort)
+		end)
+
+		it("sorts by Score, the arrow on Score, once a row has one", function()
+			start({ roster = YOUNG })
+			open()
+			assert.are.equal("score", GuildTab.defaultKey)
+			assert.is_true(GuildTab.headers.score.arrow:IsShown())
+			assert.is_false(GuildTab.headers.level.arrow:IsShown())
+			assert.are.equal("Bow Jackzon", drawnNames()[1])
+		end)
+
+		it("breaks a level tie for the rows with live data", function()
+			local seen = { ["Fear Dapriestt-ClassicBetaPvP"] = { level = 7, spec = "priest-holy", gearGap = 3, time = 990 } }
+			local rows = GuildTab.rows({
+				member("Carla Delianco-ClassicBetaPvP", 7, "PRIEST", true),
+				member("Fear Dapriestt-ClassicBetaPvP", 7, "PRIEST", true),
+			}, {}, seen, nil, nil, { now = 1000 })
+			assert.are.same({ "Fear Dapriestt", "Carla Delianco" }, names(rows))
+		end)
+
+		it("keeps the date off the count line and reads 'N online of M · K running Forever Sixty'", function()
+			start({ data = emptyRecord(), roster = YOUNG })
+			open()
+			GuildTab.setOnlineOnly(true)
+			assert.are.equal("4 online of 5 \194\183 1 running Forever Sixty", GuildTab.countsLine:GetText())
+			GuildTab.setOnlineOnly(false)
+			assert.are.equal("5 members \194\183 4 online \194\183 1 running Forever Sixty", GuildTab.countsLine:GetText())
+		end)
+
+		it("titles the window with the guild's name", function()
+			start({ roster = YOUNG })
+			open()
+			assert.are.equal("Employed Millennials \194\183 Forever Sixty", GuildTab.title:GetText())
+			assert.are.equal("Employed Millennials \194\183 Forever Sixty", GuildTab.titleText())
+		end)
+
+		it("falls back to the addon's own title with no guild name", function()
+			start({ roster = YOUNG })
+			state.guild = nil
+			assert.are.equal(L.guildTabHeader, GuildTab.titleText())
+		end)
+
+		it("explains a row's dashes in its hover", function()
+			local function lines(row)
+				return table.concat(GuildTab.rowHint(row), "\n")
+			end
+			local young = lines({ short = "Carla", name = "Carla", online = true, level = 7, noLogs = false })
+			assert.is_truthy(young:find("Under level 10: not scored yet.", 1, true))
+			assert.is_truthy(young:find("Not running Forever Sixty.", 1, true))
+			local offline = lines({ short = "Quiet", name = "Quiet", online = false, level = 30, noLogs = true })
+			assert.is_nil(offline:find("Not running Forever Sixty.", 1, true))
+			assert.is_truthy(offline:find("No logs yet", 1, true) or offline:find("no logs yet", 1, true))
+		end)
+
+		it("labels the gap in its hover with what it is measured against", function()
+			local own = table.concat(GuildTab.rowHint({ short = "Bow", name = "Bow", online = true, level = 26, live = true,
+				own = true, gap = 1, gapExact = 0.7, unit = "dps", spec = "hunter-marksmanship" }), "\n")
+			assert.is_truthy(own:find("Gap to your planned gear: 0.7 DPS", 1, true))
+			local theirs = table.concat(GuildTab.rowHint({ short = "Glax", name = "Glax", online = true, level = 41,
+				live = true, gap = 14, gapExact = 14, unit = "dps", spec = "warrior-arms" }), "\n")
+			assert.is_truthy(theirs:find("Gap to their planned gear: 14 DPS", 1, true))
+			assert.are.equal("Gap to your planned gear: %s", L.guildTabGapOwn)
+		end)
+
+		it("puts the button inside the guild window on its bottom edge, left of Invite Member", function()
+			local frame = start({ roster = YOUNG })
+			frame.GetRight = function()
+				return 800
+			end
+			frame.InviteButton = withRect(_G.CreateFrame("Button", nil, _G.UIParent), 690, 790)
+			GuildTab.refresh()
+			local button = _G[GuildTab.BUTTON_NAME]
+			assertPoint({ "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -(800 - 690 + GuildTab.BUTTON_GAP), GuildTab.BUTTON_LIFT },
+				button.points[#button.points])
+			assert.are.equal(frame, button.parent)
 		end)
 	end)
 end)

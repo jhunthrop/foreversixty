@@ -551,7 +551,9 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 	local found = {}
 	for _, raw in ipairs(bagLinks or {}) do
 		local item = describe(raw)
-		if item.link == nil or not wornLinks[item.link] then
+		-- Not equippable, or a level or a class the character is not: skipped silently.
+		local fits = item.link == nil or Gear.restriction(item.link, classToken, level) == nil
+		if fits and (item.link == nil or not wornLinks[item.link]) then
 			local candidate = { itemId = item.itemId, equipLocation = item.equipLocation, stats = item.stats }
 			local bestSlot, bestDelta, bestState
 			for _, slot in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[item.equipLocation] or {}) do
@@ -559,17 +561,19 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 					item.equipLocation, slot) == "ok"
 				-- Progress.itemVerdict: the two hands as one pair (nothing in the
 				-- off hand under a two-hander; a two-hander net of both).
-				local verdict = wearable and Progress.itemVerdict(slot, candidate, equipped, weights, nil, weapon) or nil
+				local delta, verdict
+				if wearable then
+					delta, verdict = Progress.slotGain(slot, candidate, equipped, weights, dpsPerPoint, weapon)
+				end
 				-- A "match" is the item scored against its own copy; "blocked" a
-				-- hand the worn two-hander holds. The delta is worn minus candidate.
-				if verdict ~= nil and verdict.delta ~= nil and verdict.state ~= "match" and verdict.state ~= "blocked" then
-					local delta = -verdict.delta
+				-- hand the worn two-hander holds.
+				if delta ~= nil and verdict.state ~= "match" and verdict.state ~= "blocked" then
 					if bestDelta == nil or delta > bestDelta then
 						bestSlot, bestDelta, bestState = slot, delta, verdict.state
 					end
 				end
 			end
-			local gain = bestDelta ~= nil and inUnit(bestDelta, dpsPerPoint) or nil
+			local gain = bestDelta
 			-- The floor reads the gain as shown (Progress.roundedGain), as the tooltip does.
 			-- An item that fills an EMPTY slot is an upgrade at any gain that shows (L4.1
 			-- fix round 3: "Fills an empty slot, +0.8 DPS" with no chip line and no arrow).
@@ -802,7 +806,20 @@ function Progress.pickStats(data, statsOf, itemId, standIn)
 	return stats
 end
 
---- `itemId`'s gain (with `stats`) over what is worn in `slot`: Progress.itemVerdict (the two
+--- The one baseline the guild window's gap, the line's "+N DPS", the Gear page's bag rows and the
+--- tooltips share: what is worn in `slot` (net of its enchant, the two hands as a pair), scored
+--- with the spec's weights (and weapon term). `hovered` is { itemId, equipLocation, stats }.
+--- Answers the gain (candidate minus worn) in `dpsPerPoint`'s unit (score when nil), unrounded,
+--- and the verdict; nil with no figure (a hand the worn two-hander holds, no stats).
+function Progress.slotGain(slot, hovered, equipped, weights, dpsPerPoint, weapon)
+	local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, dpsPerPoint, weapon)
+	if verdict == nil or verdict.delta == nil then
+		return nil, verdict
+	end
+	return -verdict.delta, verdict
+end
+
+--- `itemId`'s gain (with `stats`) over what is worn in `slot`: Progress.slotGain (the two
 --- hands as one pair, net of the worn enchant, a weapon's own DPS at `current`'s weapon term),
 --- rounded as the item tooltip shows it (Progress.roundedGain: one decimal in DPS, whole
 --- points), and the verdict. `current` is Gear.currentWeights' answer. nil with no weights, no
@@ -813,11 +830,11 @@ function Progress.pickGain(slot, itemId, stats, equipped, current)
 		return nil
 	end
 	local wanted = { itemId = itemId, stats = stats, equipLocation = select(4, Compat.itemInfoInstant(itemId)) }
-	local verdict = Progress.itemVerdict(slot, wanted, equipped, weights, current.dpsPerPoint, current.weapon)
-	if verdict == nil or verdict.delta == nil then
+	local gain, verdict = Progress.slotGain(slot, wanted, equipped, weights, current.dpsPerPoint, current.weapon)
+	if gain == nil then
 		return nil
 	end
-	return Progress.roundedGain(-verdict.delta, current.dpsPerPoint ~= nil and "dps" or "score"), verdict
+	return Progress.roundedGain(gain, current.dpsPerPoint ~= nil and "dps" or "score"), verdict
 end
 
 --- Every slot's one target and its gain over what is worn there, as the item tooltip's Next
