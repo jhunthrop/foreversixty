@@ -3,8 +3,8 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
-build: 'FS1:1.60.1.70450:mage:gnome:2030005/113023/253510130100030025:'
-raidBuild: 'FS1:1.60.1.70450:mage:gnome:2030005/13102/255510032100030025:'
+build: 'FS1:1.60.1.70532:mage:gnome:2030005/113023/25351013010030025:'
+raidBuild: 'FS1:1.60.1.70532:mage:gnome:2030005/13102/253510130101301251:'
 recommendedRaces: [gnome, troll]
 statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -38,16 +38,16 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 
 - **Improved Frostbolt** — up to 0.5 seconds off Frostbolt's cast time at rank 5, the tree's most direct throughput gain.
 - **Ice Shards** — up to 100% more Frost critical strike damage at rank 5, the biggest single damage multiplier in the tree.
-- **Piercing Ice** — a flat 6% more Frost damage at rank 3.
+- **Frost Channeling** — up to 15% off the mana cost of your Frost spells at rank 3, and 30% less threat from them. With Piercing Ice gone from the tree, it is where those three points went.
 - **Shatter** — up to 50% more critical strike chance against a frozen target at rank 3. A raid boss cannot be frozen by Frost Nova, so against a boss this talent only works through Fingers of Frost, below.
 - **Fingers of Frost** — each Chill effect (Frostbolt, Frostfire Bolt, Cone of Cold, Improved Blizzard) has a 15% chance to grant a 15 second effect that treats your next 1 spell (2 at rank 2) as if the target were Frozen. That switches on Shatter's crit bonus and Ice Lance's frozen damage bonus against a target that Frost Nova cannot freeze. It needs Ice Lance, so that is a one-point cost.
 - **Winter's Chill** — a chance for Frost hits to stack a debuff that raises Ice Lance's and Frostbolt's crit chance against that target, up to 5 stacks at rank 5.
 
-The build above comes from this site's talent search, held to the rule that a replacement must keep every talent the simulator cannot yet credit, stay in the Frost tree, and gain at least 1% beyond the run's measured error. It takes **Wand Specialization** at 2/2 (25% more wand damage), **Improved Channeling** at 3/5 (a 42–60% chance to keep channeling Arcane Missiles through incoming damage — the engine has no code path yet to credit that resistance, so it's an honest unknown rather than a confirmed zero) and **Arcane Concentration** at 5/5 (a 10% chance per damage spell cast to enter Clearcasting, making your very next cast free — by far the largest single swing measured in this build). Fire keeps only the points that unlock Impact and Flame Throwing, which the simulator cannot credit but a Frost mage may still want for their control effects.
+The build above comes from this site's talent search, held to the rule that a replacement must keep every talent the simulator cannot yet credit, stay in the Frost tree, and gain at least 1% beyond the run's measured error. It takes **Frost Channeling** at 3/3 (taking the place of Piercing Ice, which the client removed), **Wand Specialization** at 2/2 (25% more wand damage), **Improved Channeling** at 3/5 (a 42–60% chance to keep channeling Arcane Missiles through incoming damage — the engine has no code path yet to credit that resistance, so it's an honest unknown rather than a confirmed zero) and **Arcane Concentration** at 5/5 (a 10% chance per damage spell cast to enter Clearcasting, making your very next cast free — by far the largest single swing measured in this build). Fire keeps only the points that unlock Impact and Flame Throwing, which the simulator cannot credit but a Frost mage may still want for their control effects.
 
 The latest change is Fingers of Frost, now modeled: the search's previous build had Shatter at 3/3 but nothing to make a boss count as frozen, so Shatter did nothing. Spending the Arcane Blast, Cold Snap, and Improved Frost Nova points on Ice Lance and Fingers of Frost 2/2 lifts the build by about 10% over the previous spend on the Frostbolt-only rotation, and the Ice Lance line below adds roughly 3% on top. Those three dropped talents are utility the simulator measures as no damage, not damage you lose; Cold Snap and Improved Frost Nova are real control tools, and a player who values them more than that gain can take them back. Ice Barrier stays out for the same reason as before: a pure-damage search does not weigh survivability. This spend is still a projection — the beta cap of 30 has not let anyone test it live, only this site's own simulator. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
-**Raid build.** For a raid the search found about +3% over the leveling build above in the raid-ready run: it moves two ranks of Improved Fireball, the three Impact points (a stun) and one Frostbite (a freeze chance) into Incineration, Elemental Precision and two more ranks of Frost Channeling, which also takes 30% of the threat off Frost spells. Winter's Chill, Ice Lance, Fingers of Frost, Frost Warding, Flame Throwing and Improved Channeling stay.
+**Raid build.** For a raid the search found about +3% over the leveling build above in the raid-ready run: it moves two ranks of Improved Fireball and the three Impact points (a stun) into Incineration and a third rank of Frost Channeling, which also takes 30% of the threat off Frost spells. The client removed Piercing Ice and trimmed Elemental Precision to 3 ranks, and the five points they held went to Frostbite (1/3), Ice Block, Cold Snap and Ice Barrier plus that third Frost Channeling rank: every Frost talent the simulator credits as damage was already maxed, so the spare points buy survivability and the cooldown reset. Ice Barrier needs 30 points below it, which the 34 Frost points meet. Winter's Chill, Ice Lance, Fingers of Frost, Frost Warding, Flame Throwing and Improved Channeling stay.
 
 ## Rotation and priority
 

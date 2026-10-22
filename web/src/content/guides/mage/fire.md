@@ -3,8 +3,8 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70450:mage:gnome:20500151/23552100130105031/005:'
-raidBuild: 'FS1:1.60.1.70450:mage:gnome:20500151/23252100130135031/005:'
+build: 'FS1:1.60.1.70532:mage:gnome:20500151/23552100130125031/003:'
+raidBuild: 'FS1:1.60.1.70532:mage:gnome:20500151/23452100130135031/003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
@@ -44,11 +44,11 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Pyroblast** and **Heating Up** — a pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack.
 - **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land three non-periodic Fire crits.
 
-This build spends 32 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They come out of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measures the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. Taking those two points from Wake of Fire or Incineration instead measures the same within the sim's error, so that is a matter of taste if you would rather keep the mana refund.
+This build spends 34 points in Fire to reach Combustion at the bottom, and two of them are Pyroblast and Heating Up. They were bought with the points of **Master of Elements** (2/3 → 0/3), which refunded 20% of the base mana cost on your Fire and Frost critical strikes: the sim measured the swap, with the Pyroblast line added to the rotation, as about 3.5% more damage than the previous spend and rotation. The client has since trimmed Elemental Precision to 3 ranks, and the two points that freed went back into Master of Elements (2/3), so the mana refund is back and Pyroblast and Heating Up stay. Taking Pyroblast and Heating Up's points from Wake of Fire or Incineration instead measured the same within the sim's error, so that is a matter of taste.
 
-Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 5 points in Frost instead, all into **Elemental Precision** (5/5, 5% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 3 points in Frost instead, all into **Elemental Precision** (3/3, 6% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
-**Raid build.** For a raid the search found a small gain, about +1% over the leveling build above in the raid-ready run, from moving the three Improved Fireball points into Master of Elements. Improved Scorch, Combustion, Flame Throwing and Impact all stay.
+**Raid build.** For a raid the search found a small gain, about +1% over the leveling build above in the raid-ready run, from moving one Improved Fireball point (the build keeps 4 of 5) into a full three ranks of Master of Elements. Improved Scorch, Combustion, Flame Throwing and Impact all stay.
 
 ## Rotation and priority
 

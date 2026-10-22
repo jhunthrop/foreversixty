@@ -6,6 +6,7 @@
 - The line, the chat line after Use and the talent strip name the next point ("Build complete · next point at level 25", "next at level 25: Focused Fire"); the line keeps one class icon and sits under the buff row when the buffs are in its way.
 - "Seen by the site 02:21 pm" is "Site has your save from 1 h 35 min ago" (and "Not sent to the site yet · log out to send"), the same age in /fs diag and the login line.
 - The ready check says the same words on the line and in chat, with no "(test)" and what it checked; /fs help lists the player's commands and /fs help all adds the testers'; the welcome names the addon once and says what the companion does; the Options page lists four commands and /fs help for the rest, its explanations at full contrast; the player tooltip's /fs link hint shows three times, then goes; Copy my character says what the export holds.
+- Data for client build 1.60.1.70532: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher.
 
 ## 2.0.16
 
