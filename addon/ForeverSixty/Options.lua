@@ -218,8 +218,9 @@ function Options.handle(input)
 		return Options.inspectLines()
 	elseif command == "link" then
 		return Options.link(rest)
-	elseif command == "group" then
-		-- The group panel (L5.2 ruling 1): toggled from anywhere.
+	elseif command == "group" or command == "panel" then
+		-- The group panel (L5.2 ruling 1): toggled from anywhere; alone, a line says where it is
+		-- (/fs panel is the same command, A.3 ruling 5).
 		GroupPanel.data = Options.data
 		return GroupPanel.command()
 	elseif command == "ready" then

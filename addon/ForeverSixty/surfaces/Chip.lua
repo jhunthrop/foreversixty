@@ -318,6 +318,11 @@ local function upgradeState(input)
 		link = upgrade.link,
 		text = string.format(L.chipEquip, upgrade.name, gain),
 		short = string.format(L.chipEquipShort, upgrade.name, gain),
+		-- The hover names the slot and what the piece replaces: "Hands: Earthfury Gauntlets
+		-- replaces Gloves of the Fang, +3.5 DPS" (the same gain the guild window's gap is measured in).
+		tip = upgrade.slotLabel ~= nil and string.format(
+			upgrade.replaces ~= nil and L.chipEquipTip or L.chipEquipTipEmpty,
+			upgrade.slotLabel, upgrade.name, upgrade.replaces or gain, upgrade.replaces ~= nil and gain or nil) or nil,
 		-- The gain, kept whole when the short form must be cut: ", +4.2 DPS".
 		keep = string.format(L.chipEquipShort, "", gain),
 		action = not input.inCombat and "equip" or nil,
@@ -850,13 +855,24 @@ function Chip.scoredUpgrades(data, spec, perPoint, inbox, key, build, ranks, bag
 	return Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dps, level, current)
 end
 
-local function bestUpgrade(found)
+local function bestUpgrade(found, equipped)
 	local best = found[1]
 	if best == nil then
 		return nil
 	end
 	local _, _, quality = Compat.itemInfo(best.link)
+	-- The slot it goes in and the piece it replaces, for the hover ("Hands: ... replaces ...").
+	local worn = equipped ~= nil and equipped[best.slot] or nil
+	if best.slot == "main_hand" and worn == nil and equipped ~= nil then
+		worn = equipped.off_hand
+	end
+	local replaces = worn ~= nil and (worn.link ~= nil and itemName(worn.link) or Compat.itemName(worn.itemId))
+		or nil
 	return {
+		slot = best.slot,
+		slotLabel = L.gearSlotLabels[best.slot],
+		replaces = replaces,
+		empty = worn == nil,
 		name = itemName(best.link),
 		link = best.link,
 		icon = Compat.itemIcon(best.itemId or best.link),
@@ -992,7 +1008,7 @@ function Chip.inputs(data)
 	local equipped = Gear.readEquipped()
 	if build ~= nil then
 		input.upgrades = { bestUpgrade(Chip.scoredUpgrades(data, spec, Gear.dpsFigure(data, spec, level),
-			ForeverSixtyInbox, Export.characterKey(), build, ranks, Gear.bagLinks(), equipped, level)) }
+			ForeverSixtyInbox, Export.characterKey(), build, ranks, Gear.bagLinks(), equipped, level), equipped) }
 	end
 	Chip.pending = {}
 	input.here, input.hereIn = picksHere(data, spec, level, equipped)

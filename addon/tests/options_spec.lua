@@ -71,6 +71,43 @@ describe("Options", function()
 		assert.are.same({ "paste", "copy" }, opened)
 	end)
 
+	-- A.3 ruling 5: every command answers. Alone, /fs group and /fs panel say where the group panel
+	-- is and when it fills; in a group /fs panel toggles it as /fs group does.
+	describe("/fs group and /fs panel", function()
+		local SOLO = "The group panel is on the Raid tab of the Social window (O). It fills when you join a group."
+
+		it("both print where the panel is and when it fills while solo", function()
+			assert.are.equal(SOLO, require("Locale").groupSoloCommand)
+			assert.are.same({ SOLO }, Options.handle("group"))
+			assert.are.same({ SOLO }, Options.handle("panel"))
+			assert.are.same({ SOLO }, Options.handle("panel "))
+		end)
+
+		it("toggles the panel with /fs panel in a group, as /fs group does", function()
+			_G.IsInGroup = function()
+				return true
+			end
+			_G.IsInRaid = function()
+				return false
+			end
+			_G.GetNumGroupMembers = function()
+				return 2
+			end
+			local GroupPanel = require("GroupPanel")
+			local toggled = 0
+			local real = GroupPanel.command
+			GroupPanel.command = function()
+				toggled = toggled + 1
+				return {}
+			end
+			assert.are.same({}, Options.handle("panel"))
+			assert.are.same({}, Options.handle("group"))
+			GroupPanel.command = real
+			_G.IsInGroup, _G.IsInRaid, _G.GetNumGroupMembers = nil, nil, nil
+			assert.are.equal(2, toggled)
+		end)
+	end)
+
 	-- L4.4 ruling 2: the player tooltip cannot be clicked, so /fs link copies the site page.
 	describe("/fs link", function()
 		local opened

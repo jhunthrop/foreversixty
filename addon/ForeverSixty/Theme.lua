@@ -289,6 +289,8 @@ Theme.SIZES = {
 	--- live client drew the icons ~40 px over 14 px rows): `rowIcon` square at the row's top
 	--- left, the text `gap` right of it; a text line is `panelLine` high.
 	panelTabWidth = 112,
+	-- The Raid tab button reads "Forever Sixty · solo" alone, so it is this much wider then.
+	groupSoloTabExtra = 48,
 	panelTabHeight = 24,
 	panelTabGap = 0,
 	flyoutWidth = 320,

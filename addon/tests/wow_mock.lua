@@ -607,7 +607,8 @@ function mock.install(state)
 	end
 	_G.GetItemInfo = function(link)
 		local info = state.itemStats[link] or {}
-		return info.__name, link, info.__quality, nil, nil, nil, nil, nil, nil, info.__icon
+		-- The fifth value is the level the item asks of its wearer (a spec sets __minLevel).
+		return info.__name, link, info.__quality, nil, info.__minLevel, nil, nil, nil, nil, info.__icon
 	end
 	_G.GetItemIcon = function(itemId)
 		return state.itemIcons[itemId]

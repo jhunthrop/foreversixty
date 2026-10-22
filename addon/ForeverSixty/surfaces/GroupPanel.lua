@@ -1120,13 +1120,18 @@ end
 --- connected, own, inspect (Inspect.get's fresh record; the player's own read now), live
 --- (Comms.seen's fresh entry; the player's own fields), record (Score.forCharacter), gear (the
 --- plan measured on the inspected gear) }. Empty out of a group.
-function GroupPanel.members(data)
+function GroupPanel.members(data, soloOwn)
 	data = data or GroupPanel.data or ns.Data
 	local members = {}
 	local now = Theme.now()
 	local _, ownRealm = Theme.playerNameRealm()
 	local faction = Compat.playerFaction()
-	for _, unit in ipairs(GroupPanel.groupUnits()) do
+	local units = GroupPanel.groupUnits()
+	-- Solo, the panel shows the player's own row (`soloOwn`): the group of one it will become.
+	if #units == 0 and soloOwn then
+		units = { "player" }
+	end
+	for _, unit in ipairs(units) do
 		local name, realm = PlayerTooltip.nameOf(unit)
 		if type(name) == "string" and name ~= "" then
 			local _, classToken = try(client("UnitClass"), unit)
@@ -1158,9 +1163,9 @@ end
 
 --- The rows as drawn now: the group's members joined and sorted, with the floor, the inspect
 --- pause and whether the record is readable. Answers the rows and the counts.
-function GroupPanel.model()
+function GroupPanel.model(soloOwn)
 	local data = GroupPanel.data or ns.Data
-	return GroupPanel.rows(GroupPanel.members(data), GroupPanel.sort, {
+	return GroupPanel.rows(GroupPanel.members(data, soloOwn), GroupPanel.sort, {
 		floor = Prefs.get("groupFloor"), paused = Inspect.isPaused(), ratings = Score.status().available == true,
 		data = data,
 	})
@@ -1704,12 +1709,24 @@ end
 --- window next opens); with the window closed it is left as it is (it hides with the window). The
 --- sentinel and the button made first where they can be. What it read is kept
 --- (GroupPanel.tabWasOpen) so UNIT_AURA reads again only on a change (N2).
+--- The Raid tab button's label: "Forever Sixty" in a group, "Forever Sixty · solo" alone (the
+--- button is wider for it), set whenever the tab is read.
+function GroupPanel.labelButton(button)
+	local solo = not GroupPanel.inGroup()
+	local label = solo and L.groupPanelSoloLabel or L.groupPanelLabel
+	if button:GetText() ~= label then
+		button:SetText(label)
+	end
+	button:SetWidth(solo and S.panelTabWidth + S.groupSoloTabExtra or S.panelTabWidth)
+end
+
 local function syncTab()
 	GroupPanel.ensureSentinel()
 	local button = GroupPanel.ensureButton()
 	if button == nil then
 		return
 	end
+	GroupPanel.labelButton(button)
 	local open = GroupPanel.tabOpen()
 	GroupPanel.tabWasOpen = open
 	if GroupPanel.anchor() == nil then
@@ -2156,10 +2173,15 @@ end
 
 --- The solo line (fix round 4, E): `lines` (GroupPanel.soloHint's) drawn muted, the rest hidden;
 --- none in a group.
-local function drawSolo(lines)
+local function drawSolo(lines, top)
 	for index, label in ipairs(GroupPanel.soloLines) do
 		local text = lines[index]
 		if text ~= nil then
+			-- Under the player's own row (`top`), else under the count line.
+			label:ClearAllPoints()
+			local y = top ~= nil and top + (index - 1) * GroupPanel.lineHeight()
+				or GroupPanel.countsTop() + index * GroupPanel.lineHeight()
+			label:SetPoint("TOPLEFT", GroupPanel.flyout, "TOPLEFT", S.panelPadding, -y)
 			label:SetText(fitted(text, GroupPanel.innerWidth()))
 			label:SetTextColor(Theme.rgb(Theme.HEX.muted))
 			label:Show()
@@ -2251,11 +2273,29 @@ function GroupPanel.draw()
 	GroupPanel.stale = nil
 	GroupPanel.draws = GroupPanel.draws + 1
 	if not GroupPanel.inGroup() then
-		GroupPanel.last = { rows = {}, counts = { members = 0, inspected = 0, live = 0 }, visible = 0, solo = true }
+		local ownRows = GroupPanel.model(true)
+		local hint = GroupPanel.soloHint(GroupPanel.measure, GroupPanel.innerWidth())
 		GroupPanel.countsLine:SetText(fitted(L.groupNotInGroup, GroupPanel.innerWidth()))
 		-- L5.3 pre-item: the line itself in the body colour; the hint lines stay muted.
 		GroupPanel.countsLine:SetTextColor(Theme.rgb(Theme.HEX.body))
-		local hint = GroupPanel.soloHint(GroupPanel.measure, GroupPanel.innerWidth())
+		drawCheck(flyout, {}, 0)
+		drawLoot(flyout, {}, 0)
+		if #ownRows > 0 then
+			-- The player's own row, with "Invite someone and their row appears here." under it.
+			GroupPanel.last = { rows = ownRows, counts = { members = 1, inspected = 0, live = 0 }, visible = 1,
+				solo = true }
+			drawHeaders(true)
+			local holder = GroupPanel.holder
+			holder:SetHeight(GroupPanel.rowsHeight(1))
+			GroupPanel.content:SetHeight(GroupPanel.rowsHeight(1))
+			holder:Show()
+			GroupPanel.renderRows()
+			local below = GroupPanel.rowsTop() + GroupPanel.rowsHeight(1) + S.panelRowGap
+			drawSolo(hint, below)
+			flyout:SetHeight(below + GroupPanel.lineHeight() * #hint + S.panelPadding)
+			return GroupPanel.last
+		end
+		GroupPanel.last = { rows = {}, counts = { members = 0, inspected = 0, live = 0 }, visible = 0, solo = true }
 		drawSolo(hint)
 		drawHeaders(false)
 		GroupPanel.holder:Hide()
@@ -2263,8 +2303,6 @@ function GroupPanel.draw()
 			row.entry = nil
 			row.frame:Hide()
 		end
-		drawCheck(flyout, {}, 0)
-		drawLoot(flyout, {}, 0)
 		flyout:SetHeight(GroupPanel.soloHeight(#hint))
 		return GroupPanel.last
 	end
@@ -2378,6 +2416,10 @@ end
 --- another tab the flyout it opened is closed again (the line says where the panel shows); with
 --- the window closed it stays open to show when the window does. The lines to print.
 function GroupPanel.command()
+	-- Solo there is nothing to toggle: the line says where the panel is and when it fills.
+	if not GroupPanel.inGroup() then
+		return { L.groupSoloCommand }
+	end
 	local lines = guarded(function()
 		local flyout = GroupPanel.ensureFlyout()
 		if flyout:IsShown() then

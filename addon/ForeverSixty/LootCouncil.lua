@@ -804,6 +804,12 @@ end
 
 --- The player's own line for an item: the line, and why when the item could not be scored.
 local function ownLine(data, itemId, shown)
+	-- A piece asking for a level or a class the player is not is answered as such, since the
+	-- player asked: "Not for you: requires level 60", "Not for you: Shaman only".
+	local kind, why = Gear.restriction(itemId)
+	if why ~= nil and (kind == "level" or kind == "class") then
+		return string.format(L.lootCmdNotForYou, shown, string.format(L.rulesNever, why)), "restricted"
+	end
 	local ok, result, reason = pcall(LootCouncil.ownValue, data, itemId, true, true)
 	if not ok then
 		result, reason = nil, "nodata"
