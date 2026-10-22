@@ -796,6 +796,11 @@ local L = {
 	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
 	-- this line; a click opens a card with one button per spec.
 	chipPath = "Pick a path",
+	-- A.1: the idle chip says something at a first login. "Next: <talent>" reuses talentStripNextTalent.
+	chipIdlePick = "Pick a build: /fs",
+	chipIdleInbox = "Build waiting: /fs",
+	chipHintBuildWindow = "Click: Open the build window",
+	diagChipMoved = "The Forever Sixty line was off screen, so it went back beside the minimap",
 	-- What the chip cut a too-long line with.
 	ellipsis = "…",
 	diagChipOff = "The Forever Sixty line is off: its text did not fit or it was off screen",
@@ -1483,6 +1488,8 @@ L.siteLoginGearSeen = "the site has your gear (seen %s)."
 L.siteLoginSelf = "this character"
 -- X.7: the first login's welcome, once per account, one chat line per sentence (/fs welcome says it again).
 L.welcomeOn = "Forever Sixty is on. The small Forever Sixty line beside your minimap shows your next step."
+-- A.1: said instead of welcomeOn when the line is not drawn (hidden, turned itself off, or not built yet).
+L.welcomeOnNoLine = "Forever Sixty is on. Your next step is waiting in the build window."
 L.welcomeNext = "/fs opens the build window; builds you send from the site wait there. /fs help lists the commands."
 L.welcomeSite = "The addon saves your character when you log out; the Forever Sixty companion on your PC sends it to "
 	.. SITE .. "."

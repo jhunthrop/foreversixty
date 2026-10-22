@@ -53,6 +53,8 @@ Chip.MAX_LEVEL = 60
 --- Where the chip goes on a client with no minimap frame to sit beside.
 Chip.FALLBACK_X = -200
 Chip.FALLBACK_Y = -16
+--- The chip's frame level inside its strata: over the buff icons and the minimap's own furniture.
+Chip.FRAME_LEVEL = 100
 
 --- Injection point: what to redraw after a path is chosen. Options sets it
 --- to its own refreshSurfaces, so the talent marks follow the new build too.
@@ -430,6 +432,25 @@ Chip.STATES = {
 	completeState,
 }
 
+--- The idle chip (A.1): what is true when nothing else is. With a build followed and its next talent
+--- known, the line is the chip's own label, "Next: Endurance Training (1 of 5)"; with no build, the
+--- short "Pick a build: /fs" (a click opens the build window); a finished build has nothing to say
+--- and stays the class icon alone. Words, so a first look at the minimap reads a next step and not a
+--- dimmed icon that is easy to miss.
+local function idleState(input)
+	local idle = { kind = "idle", icon = input.classIcon, text = "", action = "talents", hint = L.chipHintTalents }
+	if input.build == nil then
+		idle.text, idle.action, idle.hint = L.chipIdlePick, "inbox", L.chipHintBuildWindow
+		return idle
+	end
+	local point = input.progress ~= nil and input.progress.point or nil
+	if point ~= nil and input.pointName ~= nil then
+		idle.text = string.format(L.talentStripNextTalent, Chip.pointLabel(input.pointName, input.pointRank))
+		idle.muted = true
+	end
+	return idle
+end
+
 --- The hover's muted "Next talent at 22: Improved Tactical Mastery": a
 --- build's next point that cannot be spent yet, from the first talent level
 --- on; none at the level cap.
@@ -466,10 +487,9 @@ function Chip.model(input)
 	-- X.3: a build waits in the inbox, none is followed and the chip has nothing else to say: the
 	-- idle chip opens the dialog, and its hover says so.
 	local inboxWaiting = input.build == nil and (input.inboxWaiting or 0) > 0 and states[1] == nil
-	local chosen = states[1]
-		or { kind = "idle", icon = input.classIcon, text = "", action = "talents", hint = L.chipHintTalents }
+	local chosen = states[1] or idleState(input)
 	if inboxWaiting then
-		chosen = { kind = "idle", icon = input.classIcon, text = "", action = "inbox" }
+		chosen = { kind = "idle", icon = input.classIcon, text = L.chipIdleInbox, action = "inbox" }
 	end
 	local hiddenByLevel = input.hiddenUntilLevel ~= nil and (input.level or 0) < input.hiddenUntilLevel
 	local hiddenBy
@@ -501,7 +521,7 @@ function Chip.model(input)
 		hiddenBy = hiddenBy,
 		alpha = input.inCombat and Chip.COMBAT_ALPHA or 1,
 		-- Dimmed only on a chip at full alpha: never 40 % inside the 25 % combat fade.
-		iconAlpha = (chosen.kind == "idle" and not input.inCombat) and Chip.IDLE_ALPHA or 1,
+		iconAlpha = (chosen.kind == "idle" and chosen.text == "" and not input.inCombat) and Chip.IDLE_ALPHA or 1,
 		mouse = not input.inCombat,
 		ring = chosen.ring == true,
 	}
@@ -1197,6 +1217,32 @@ end
 
 -- The frame -------------------------------------------------------------------
 
+--- Whether a shift-dragged spot can be trusted (A.1): a named anchor point and two numbers that are
+--- inside the screen (UIParent's size, when the client has told it). `point` "" is no saved spot,
+--- and a saved `y` or `x` without a point is never used. A spot that fails this is not drawn at:
+--- the chip sits beside the minimap instead, so a bad number can never put it off screen.
+function Chip.savedSpotUsable(point, x, y)
+	if type(point) ~= "string" or point == "" or type(x) ~= "number" or type(y) ~= "number" then
+		return false
+	end
+	local parent = _G.UIParent
+	local width = type(parent) == "table" and type(parent.GetWidth) == "function" and parent:GetWidth() or nil
+	local height = type(parent) == "table" and type(parent.GetHeight) == "function" and parent:GetHeight() or nil
+	if type(width) == "number" and width > 0 and math.abs(x) >= width then
+		return false
+	end
+	if type(height) == "number" and height > 0 and math.abs(y) >= height then
+		return false
+	end
+	return true
+end
+
+--- Whether the chip is drawn now: built, shown, and not turned off for the session. The welcome
+--- reads it, so it names the line only when the line is there.
+function Chip.isDrawn()
+	return not Chip.disabled and Chip.frame ~= nil and Chip.frame:IsShown() == true
+end
+
 --- Where the chip sits: the saved spot after a shift-drag, else just left of
 --- the minimap, its top edge level with the minimap's.
 function Chip.place()
@@ -1206,7 +1252,7 @@ function Chip.place()
 	end
 	frame:ClearAllPoints()
 	local point = Prefs.get("chip", "point")
-	if type(point) == "string" and point ~= "" then
+	if Chip.savedSpotUsable(point, Prefs.get("chip", "x"), Prefs.get("chip", "y")) then
 		frame:SetPoint(point, UIParent, point, Prefs.get("chip", "x"), Prefs.get("chip", "y"))
 		return point
 	end
@@ -1299,6 +1345,10 @@ function Chip.ensure()
 	Theme.noteFrame("Chip", "login")
 	frame:SetSize(S.chip, S.chip)
 	frame:SetFrameStrata("MEDIUM")
+	-- Above the client's own buff icons, which sit in the same strata beside the minimap (A.1).
+	if type(frame.SetFrameLevel) == "function" then
+		frame:SetFrameLevel(Chip.FRAME_LEVEL)
+	end
 	frame:SetMovable(true)
 	frame:SetClampedToScreen(true)
 	frame:EnableMouse(true)
@@ -1493,6 +1543,26 @@ function Chip.refresh(data)
 	return state
 end
 
+--- Whether the frame's edges the client has resolved lie inside the screen. An edge it has not
+--- resolved yet (nil, before the first layout) counts as inside.
+function Chip.onScreen(frame)
+	local left, right = frame:GetLeft(), frame:GetRight()
+	local top = frame:GetTop()
+	local parent = _G.UIParent
+	local parentRight = type(parent) == "table" and type(parent.GetRight) == "function" and parent:GetRight() or nil
+	local parentTop = type(parent) == "table" and type(parent.GetTop) == "function" and parent:GetTop() or nil
+	if type(left) == "number" and left < 0 then
+		return false
+	end
+	if type(right) == "number" and type(parentRight) == "number" and right > parentRight + 1 then
+		return false
+	end
+	if type(top) == "number" and type(parentTop) == "number" and top > parentTop + 1 then
+		return false
+	end
+	return true
+end
+
 --- The render check (spec section 2.4): the line fits the widest chip and
 --- the chip is on screen. Otherwise the chip turns itself off for the session
 --- and says why in /fs diag. True when it passes or there is nothing shown.
@@ -1503,9 +1573,17 @@ function Chip.selfCheck()
 	end
 	local S = Theme.SIZES
 	local width = Chip.text:GetStringWidth()
-	local left = frame:GetLeft()
 	local fitsWidth = type(width) ~= "number" or width <= S.chipWide - S.chipTextInset
-	local onScreen = type(left) ~= "number" or left >= 0
+	local onScreen = Chip.onScreen(frame)
+	if fitsWidth and not onScreen and Chip.savedSpotUsable(Prefs.get("chip", "point"), Prefs.get("chip", "x"),
+		Prefs.get("chip", "y")) then
+		-- A.1: the dragged spot is off screen (another resolution, a moved UI): back to the default
+		-- spot beside the minimap, once, rather than losing the line for the session.
+		Prefs.set("chip", "point", "")
+		Chip.place()
+		Theme.noteInfo(L.diagChipMoved)
+		onScreen = Chip.onScreen(frame)
+	end
 	if fitsWidth and onScreen then
 		return true
 	end
