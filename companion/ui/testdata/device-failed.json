@@ -30,22 +30,13 @@
     "detected_character": "",
     "installs": [
       {
-        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_",
-        "flavor": "_classic_era_",
-        "flavor_name": "Classic Era",
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_",
+        "flavor": "_classic_beta_",
+        "flavor_name": "Classic beta",
         "watching": true,
         "added": true,
         "last_played": "2026-10-20T17:40:00Z",
         "advanced_logging": true,
-        "advanced_logging_known": true
-      },
-      {
-        "path": "C:\\Program Files (x86)\\World of Warcraft\\_anniversary_",
-        "flavor": "_anniversary_",
-        "flavor_name": "Classic Anniversary",
-        "watching": false,
-        "added": false,
-        "advanced_logging": false,
         "advanced_logging_known": true
       }
     ],

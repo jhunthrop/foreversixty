@@ -173,6 +173,7 @@ func New(o Options) (*App, error) {
 	// stale token back over the one on disk; SaveSettings reads the
 	// live value out of config.json when it saves.
 	a.cfg.DeviceToken = ""
+	a.dropOtherGames()
 	a.installs = a.detect()
 	a.watching = a.logsDir()
 	a.exports = &addon.Cache{}
@@ -309,6 +310,23 @@ func (a *App) prune(now time.Time) {
 		a.log.Info("forgot reports older than the retention", "component", "app",
 			"reports", removed, "retention", ReportRetention.String())
 	}
+}
+
+// dropOtherGames takes out of the stored folders any that is not a Forever
+// variant (an old config that remembered _retail_), with one log line each.
+// It runs at start, before the installs are found. Callers hold a.mu or are New.
+func (a *App) dropOtherGames() {
+	keep := make([]string, 0, len(a.cfg.WoWPaths))
+	for _, p := range a.cfg.WoWPaths {
+		var r *wow.Refusal
+		if _, err := wow.Pick(p); errors.As(err, &r) {
+			a.log.Info("dropped a stored game folder that is not a Forever variant",
+				"component", "app", "path", p, "folder", r.Folder)
+			continue
+		}
+		keep = append(keep, p)
+	}
+	a.cfg.WoWPaths = keep
 }
 
 // detect lists the installs: the configured paths first, then

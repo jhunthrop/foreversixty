@@ -358,7 +358,12 @@ function renderStatus(s) {
   region('installs', $('installs'), { installs: s.installs, key: s.headline.key, budget: FORMAT.pathBudget(window.innerWidth, true) }, (el) => {
     el.replaceChildren();
     if (!s.installs.length) {
-      el.append(h('p', { class: 'note', text: COPY.status.noFolders }));
+      // The headline above already says it once when it is the no-folder state.
+      if (s.headline.key === 'no_folder') {
+        el.append(h('p', { class: 'note', text: COPY.status.noFolders }));
+      } else {
+        el.append(h('p', { class: 'note' }, COPY.status.noInstall + ' ', h('button', { class: 'link', type: 'button', 'data-fid': 'no-install-settings', onclick: () => show('settings', true) }, COPY.status.noInstallLink), '.'));
+      }
       return;
     }
     for (const i of s.installs) el.append(installRow(i, s.headline.key));

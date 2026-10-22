@@ -696,7 +696,7 @@ func TestUnsignedReleasesAreNotCandidates(t *testing.T) {
 	if v := g2.version(in2, "ForeverSixty"); v != "2.0.15" {
 		t.Errorf("installed an unsigned release: %s", v)
 	}
-	if !strings.Contains(g2.log.String(), "no signed zip") {
+	if !strings.Contains(g2.log.String(), "the update check skipped 1 unsigned release; newest signed: none") {
 		t.Errorf("the skip was not logged:\n%s", g2.log)
 	}
 	// Prereleases are skipped too.
@@ -980,4 +980,28 @@ func TestDefaultsAreSane(t *testing.T) {
 		t.Errorf("defaults = %+v", u.o)
 	}
 	u.Tick(context.Background(), t0) // no key: nothing, no panic
+}
+
+func TestManyUnsignedReleasesAreOneLogLine(t *testing.T) {
+	sk, key := keypair(t)
+	gh := newGithub(t)
+	for i := 1; i <= 24; i++ {
+		d := signedData(t, sk, fmt.Sprintf("2026.09.%02d", i))
+		d.sig = nil
+		gh.publish(d)
+	}
+	g := newGame(t)
+	in := g.install("_classic_beta_", "2.0.15", "")
+	u := g.updater(gh, key, in)
+	u.Tick(context.Background(), t0)
+	out := g.log.String()
+	if n := strings.Count(out, "unsigned"); n != 1 {
+		t.Errorf("%d lines mention unsigned releases, want 1:\n%s", n, out)
+	}
+	if !strings.Contains(out, "the update check skipped 24 unsigned releases; newest signed: none") {
+		t.Errorf("the summary line is missing:\n%s", out)
+	}
+	if strings.Contains(out, "no signed zip") {
+		t.Errorf("a per-tag line is still logged:\n%s", out)
+	}
 }

@@ -83,7 +83,7 @@ func (c *countingSecret) count() int {
 // folder to tail and one account's SavedVariables.
 func newGame(t *testing.T) string {
 	t.Helper()
-	game := filepath.Join(t.TempDir(), "_classic_era_")
+	game := filepath.Join(t.TempDir(), "_classic_beta_")
 	for _, p := range []string{
 		filepath.Join(game, "Logs"),
 		filepath.Join(game, "WTF", "Account", "ACCOUNT#1", "SavedVariables"),
@@ -846,5 +846,33 @@ func TestAReportListedTwiceIsOneRow(t *testing.T) {
 	}
 	if rows[0].ReportID != "rpt000000001" {
 		t.Errorf("the row kept the older copy: %+v", rows[0])
+	}
+}
+
+func TestTheInboxGoesToTheForeverInstallAndNeverToAnotherGame(t *testing.T) {
+	retail := newInstall(t, "_retail_")
+	anni := newInstall(t, "_anniversary_")
+	h := newHarnessWith(t, nil, func(o *app.Options) {
+		o.Config.WoWPaths = append(append([]string{}, o.Config.WoWPaths...), retail, anni)
+	})
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+	h.app.Step(t.Context(), t0)
+	h.app.Step(t.Context(), t0.Add(5*time.Minute))
+	sv := func(game string) string {
+		return filepath.Join(game, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
+	}
+	if _, err := os.Stat(addon.InboxPath(sv(h.game))); err != nil {
+		t.Errorf("the Classic beta got no inbox: %v", err)
+	}
+	for _, other := range []string{retail, anni} {
+		if _, err := os.Stat(addon.InboxPath(sv(other))); err == nil {
+			t.Errorf("an inbox was written under %s", other)
+		}
+	}
+	if n := len(h.app.Snapshot().Installs); n != 1 {
+		t.Errorf("%d installs listed, want the Classic beta alone", n)
 	}
 }

@@ -110,9 +110,9 @@ const (
 	CopySignedOutSub   = "This computer was removed from your account, or the account was reset. " +
 		"Nothing uploads until you sign in again."
 
-	CopyNoFolderTitle = "No game folder found"
-	CopyNoFolderSub   = "Add your World of Warcraft folder."
-	CopyNoFolderBtn   = "Add a folder"
+	CopyNoFolderTitle = "No Classic beta install found"
+	CopyNoFolderSub   = "Pick its folder in Settings."
+	CopyNoFolderBtn   = "Open Settings"
 
 	CopyAdvancedOffTitle = "Advanced logging is off"
 	CopyAdvancedOffSub   = "Reports will miss deaths with health, item level, resources and positions. " +
@@ -184,7 +184,7 @@ var messages = map[string]string{
 	CodeSave: "Connected, but this PC would not let the companion save the sign-in. " +
 		"Nothing will upload. Details are in logs/companion.log.",
 	CodeNotWoW: "That folder is not a World of Warcraft folder. " +
-		"Choose the one that contains WTF and Logs, such as _classic_era_.",
+		"Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder.",
 	CodeKnownFolder:   "That folder is already in the list.",
 	CodeNoPicker:      "The companion could not open a folder dialog on this computer.",
 	CodeNoCharacter:   "Choose a character from the list.",

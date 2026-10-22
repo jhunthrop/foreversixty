@@ -115,11 +115,9 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 	// base is a paired companion that is logging a report credited to credit.
 	base := func(credit Credit) Snapshot {
 		installs := []InstallStatus{
-			{Path: `C:\Program Files (x86)\World of Warcraft\_classic_era_`, Flavor: "_classic_era_",
-				FlavorName: "Classic Era", Watching: true, Added: true, LastPlayed: &watched,
+			{Path: `C:\Program Files (x86)\World of Warcraft\_classic_beta_`, Flavor: "_classic_beta_",
+				FlavorName: "Classic beta", Watching: true, Added: true, LastPlayed: &watched,
 				Advanced: true, AdvancedKnown: true},
-			{Path: `C:\Program Files (x86)\World of Warcraft\_anniversary_`, Flavor: "_anniversary_",
-				FlavorName: "Classic Anniversary", AdvancedKnown: true},
 		}
 		s := Snapshot{
 			AppVersion: "0.2.13", EngineVersion: "1.0.0", Paired: true, AccountLabel: "Jhunt",
@@ -271,13 +269,6 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			return addonRow(base(none), 1, addonView(true, "2.0.15", "2026.10.20", "2.0.16", "2026.10.21", false))
 		}},
 		{"status-addon-missing.json", func() Snapshot { return addonRow(base(none), 1, addonView(false, "", "", "", "", false)) }},
-		// Two installs with the addon: each line names its install. One without it: its own line and button.
-		{"status-addon-two-installs.json", func() Snapshot {
-			return addonRow(base(none), 2, addonView(true, "2.0.15", "2026.10.21", "", "", false), addonView(true, "2.0.15", "2026.10.20", "2.0.16", "2026.10.21", false))
-		}},
-		{"status-addon-one-missing.json", func() Snapshot {
-			return addonRow(base(none), 2, addonView(true, "2.0.15", "2026.10.21", "", "", false), addonView(false, "", "", "", "", false))
-		}},
 		{"reports-rows.json", func() Snapshot {
 			s := base(credited)
 			s.Reports = rows()

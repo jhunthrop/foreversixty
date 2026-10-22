@@ -24,9 +24,9 @@
     "detected_character": "",
     "installs": [
       {
-        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_",
-        "flavor": "_classic_era_",
-        "flavor_name": "Classic Era",
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_",
+        "flavor": "_classic_beta_",
+        "flavor_name": "Classic beta",
         "watching": true,
         "added": true,
         "last_played": "2026-10-20T17:40:00Z",
@@ -76,14 +76,14 @@
       "enabled": true,
       "lines": [
         {
-          "text": "Addon not found in Classic Era",
+          "text": "Addon not found in Classic beta",
           "tone": "muted"
         }
       ],
       "offers": [
         {
-          "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_era_",
-          "label": "Install the addon into Classic Era"
+          "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_",
+          "label": "Install the addon into Classic beta"
         }
       ]
     }
