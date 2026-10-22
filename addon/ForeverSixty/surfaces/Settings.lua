@@ -237,7 +237,7 @@ SettingsPage.rowHeight = Widgets.toggleRowHeight
 --- height, never less than one line; L3.7 item 39): the left edge, the hint's indent and width
 --- (the width minus the 40 px indent and the right padding), the width of Reset's sentence
 --- and of the divider, and the y of the title, the warning line (nil without one), each
---- switch row, Reset, the commands heading, its divider and lines, and the two foot lines,
+--- command heading, its divider and lines (first, under the title), each switch row, Reset, and the two foot lines,
 --- and the height it all needs with the foot's pad (the page scrolls when the canvas is
 --- shorter). A backdrop the client has not sized yet is laid out at
 --- Theme.SIZES.settingsWidth. Pure.
@@ -265,14 +265,8 @@ function SettingsPage.layout(width, rowHeights, warned)
 		y = y + (type(warned) == "number" and math.max(warned, S.settingsLine) or S.settingsLine)
 	end
 	y = y + S.gap * 2
-	for index = 1, #SettingsPage.SWITCHES do
-		layout.rows[index] = -y
-		local height = type(rowHeights) == "table" and rowHeights[index] or nil
-		y = y + ((type(height) == "number" and height > 0) and height or S.settingsRow)
-	end
-	y = y + S.padding
-	layout.reset = -y
-	y = y + S.buttonHeight + S.padding
+	-- A.2: the commands lead, right under the title, where the list is short and always on the first
+	-- screen; the switches (the long part) follow and the page scrolls through them.
 	layout.commandsHeading = -y
 	y = y + S.settingsLine
 	layout.divider = -y
@@ -282,6 +276,14 @@ function SettingsPage.layout(width, rowHeights, warned)
 		y = y + S.settingsLine
 	end
 	y = y + S.padding
+	for index = 1, #SettingsPage.SWITCHES do
+		layout.rows[index] = -y
+		local height = type(rowHeights) == "table" and rowHeights[index] or nil
+		y = y + ((type(height) == "number" and height > 0) and height or S.settingsRow)
+	end
+	y = y + S.padding
+	layout.reset = -y
+	y = y + S.buttonHeight + S.padding
 	for index = 1, 2 do
 		layout.data[index] = -y
 		y = y + S.settingsLine

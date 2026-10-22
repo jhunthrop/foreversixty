@@ -546,19 +546,20 @@ describe("SettingsPage, the layout", function()
 		assert.is_true(layout.rows[1] < layout.title)
 	end)
 
-	it("puts Reset under the switches, the commands under Reset and the two data lines at the foot", function()
+	it("puts the commands first under the title, then the switches, Reset and the two data lines at the foot", function()
 		local S = Theme.SIZES
 		local layout = SettingsPage.layout(600)
-		local lastRow = layout.rows[#layout.rows] - S.settingsRow
-		assert.is_true(layout.reset <= lastRow)
-		assert.is_true(layout.commandsHeading <= layout.reset - S.buttonHeight)
+		assert.is_true(layout.title > layout.commandsHeading)
 		assert.is_true(layout.divider < layout.commandsHeading)
 		assert.is_true(layout.commands[1] < layout.divider)
+		assert.is_true(layout.rows[1] <= layout.commands[#layout.commands] - S.settingsLine)
+		local lastRow = layout.rows[#layout.rows] - S.settingsRow
+		assert.is_true(layout.reset <= lastRow)
 		-- A.2: the first four commands and the line sending the rest to /fs help, never a cut row.
 		assert.are.equal(5, #layout.commands)
 		assert.are.equal(#SettingsPage.commandLines(), #layout.commands)
 		assert.are.equal(2, #layout.data)
-		assert.is_true(layout.data[1] <= layout.commands[#layout.commands] - S.settingsLine)
+		assert.is_true(layout.data[1] <= layout.reset - S.buttonHeight)
 		assert.are.equal(-S.settingsLine, layout.data[2] - layout.data[1])
 		assert.is_true(layout.height >= -layout.data[2] + S.settingsLine)
 	end)

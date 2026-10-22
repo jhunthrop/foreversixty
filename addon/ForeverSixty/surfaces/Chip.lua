@@ -451,6 +451,20 @@ local function idleState(input)
 		return idle
 	end
 	local point = input.progress ~= nil and input.progress.point or nil
+	if point == nil and (input.unspent or 0) == 0 and type(input.nextLevel) == "number" and input.progress ~= nil
+		and input.progress.total ~= nil and input.progress.total > 0 then
+		-- The plan has no point left but the level will bring one (a 15-point build at level 24): the
+		-- line says so and stays, "Build complete · next point at level 25" (A.2). At the cap, the icon alone.
+		idle.text = string.format(L.chipCompleteNext, input.nextLevel)
+		idle.muted = true
+		return idle
+	end
+	if point ~= nil and input.pointName == nil and (input.unspent or 0) == 0 and type(input.nextLevel) == "number" then
+		-- A next talent the data cannot name: the level alone.
+		idle.text = string.format(L.chipNextTalentAtUnnamed, input.nextLevel)
+		idle.muted = true
+		return idle
+	end
 	if point ~= nil and input.pointName ~= nil then
 		local label = Chip.pointLabel(input.pointName, input.pointRank)
 		if (input.unspent or 0) == 0 and type(input.nextLevel) == "number" then

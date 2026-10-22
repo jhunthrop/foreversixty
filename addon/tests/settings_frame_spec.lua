@@ -247,7 +247,8 @@ describe("SettingsPage, the canvas", function()
 
 	-- Fix round 2, item 10: at the default canvas height, with the title's warning line and a
 	-- two-line hint, Reset is in view without the wheel.
-	it("keeps Reset's bottom edge inside the viewport at the default canvas height", function()
+	it("keeps the whole Commands block inside the viewport at the default canvas height, the page scrolling on (A.2)",
+		function()
 		measure = function(region)
 			if region:GetText() == L.settingsBroadcastHint then
 				return 20
@@ -262,9 +263,15 @@ describe("SettingsPage, the canvas", function()
 		panel:Show()
 		panel:GetScript("OnShow")(panel)
 		assert.is_true(SettingsPage.warningLabel:IsShown())
-		local top = mock.lastCall(SettingsPage.resetButton, "SetPoint")[5]
-		assert.is_true(-top + Theme.SIZES.buttonHeight <= SettingsPage.backdrop:GetHeight())
+		local last = SettingsPage.commandLabels[#SettingsPage.commandLabels]
+		local top = mock.lastCall(last, "SetPoint")[5]
+		assert.is_true(-top + Theme.SIZES.settingsLine <= SettingsPage.backdrop:GetHeight())
 		assert.are.equal(0, SettingsPage.scroll.offset)
+		-- The switches and Reset are further down: the page scrolls (the wheel) to reach them.
+		assert.is_true(SettingsPage.scroll.contentHeight > SettingsPage.backdrop:GetHeight())
+		assert.is_true(SettingsPage.scroll:Range() > 0)
+		local reset = mock.lastCall(SettingsPage.resetButton, "SetPoint")[5]
+		assert.is_true(reset < top)
 	end)
 
 	-- Fix round 2, item 3: a wrapped hint pushes the next row down by its extra line.
