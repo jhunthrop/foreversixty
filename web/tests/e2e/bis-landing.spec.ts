@@ -138,7 +138,7 @@ test.describe('signed out, desktop', () => {
 
   test('the strip defaults to 20 to 29', async ({ page }) => {
     await expect(pill(page, 20)).toHaveAttribute('aria-current', 'true');
-    await expect(page.getByTestId('bis-strip-head')).toHaveText('Spec links open at this band');
+    await expect(page.getByTestId('bis-strip-head')).toHaveText('Spec links open at this level range');
     await expect(pill(page, 20).locator('.pb-you')).toBeHidden();
     for (const band of BANDS.slice(1))
       await expect(pill(page, band)).not.toHaveAttribute('aria-current', 'true');
@@ -257,8 +257,8 @@ test.describe('signed in, desktop', () => {
       'href',
       '/bis/warrior/fury?faction=alliance#band-alliance-40',
     );
-    if (unsourcedSlots.length > 0) await expect(header(page)).toContainText('no pick at this band');
-    else await expect(header(page)).not.toContainText('no pick at this band');
+    if (unsourcedSlots.length > 0) await expect(header(page)).toContainText('no pick at this level range');
+    else await expect(header(page)).not.toContainText('no pick at this level range');
     await expect(page.getByTestId('bis-grid-heading')).toHaveText(/^another class or spec$/i, {
       useInnerText: true,
     });

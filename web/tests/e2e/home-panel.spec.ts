@@ -244,7 +244,7 @@ test('the header says "Your character" with one or several characters and has no
   await expect(page.getByTestId('home-example-block')).toBeHidden();
   // The flat faction logo, 16 px, beside the faction word.
   const emblem = header.locator('.ch-faction img');
-  await expect(emblem).toHaveAttribute('src', '/icons/hd/faction/alliance-logo-512.webp');
+  await expect(emblem).toHaveAttribute('src', '/icons/hd/faction/alliance-logo-64.webp');
   await expect(emblem).toHaveAttribute('width', '16');
 
   // The header selector is the one way to change character; the header follows it in place.
