@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.20
+
+- When the game closes the companion reads the releases again and installs the newest signed addon, not the one it staged hours earlier; it reads the installed version from the addon folder first and never installs an older or equal one, saying so once in the log. The Status line names the version that will go in and follows a newer release.
+
 ## 0.2.19
 
 - The Addon row no longer tells you to install an addon it shows as installed: with the addon in place and no export yet it says "No character yet" and to log out once in game. A first run on a machine that still holds an old sign-in reads as a first run, not as a sign-in that lapsed. The log says each thing once: an addon update waiting for the game to close, and a step that keeps failing, are written when they start and not every minute or second.

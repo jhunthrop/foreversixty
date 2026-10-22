@@ -1005,3 +1005,133 @@ func TestManyUnsignedReleasesAreOneLogLine(t *testing.T) {
 		t.Errorf("a per-tag line is still logged:\n%s", out)
 	}
 }
+
+// ---- the newest signed release goes in, never an older one --------------
+
+// stageWhileRunning stages 2.0.16 over a 2.0.15 folder while the game runs.
+func stageWhileRunning(t *testing.T, sk minisign.PrivateKey, gh *github, g *game) string {
+	t.Helper()
+	gh.publish(signedAddon(t, sk, "2.0.16"))
+	in := g.install("_classic_beta_", "2.0.15", "")
+	g.running[in] = true
+	return in
+}
+
+func TestTheCloseReReadsTheReleasesAndInstallsTheNewest(t *testing.T) {
+	sk, key := keypair(t)
+	gh := newGithub(t)
+	g := newGame(t)
+	in := stageWhileRunning(t, sk, gh, g)
+	u := g.updater(gh, key, in)
+	u.Tick(context.Background(), t0)
+	if s, ok := u.readStaged(Addon); !ok || s.Version != "2.0.16" {
+		t.Fatalf("staged = %+v, %v", s, ok)
+	}
+
+	gh.publish(signedAddon(t, sk, "2.0.17"))
+	g.running[in] = false
+	u.Tick(context.Background(), t0.Add(2*time.Minute))
+	if v := g.version(in, "ForeverSixty"); v != "2.0.17" {
+		t.Fatalf("installed %s, want the newer 2.0.17", v)
+	}
+	if _, ok := u.readStaged(Addon); ok {
+		t.Error("the staged release was not cleared")
+	}
+	if _, err := os.Stat(u.zipPath(Addon)); err == nil {
+		t.Error("the older staged zip was kept")
+	}
+	if !strings.Contains(g.log.String(), "replaces the staged 2.0.16") {
+		t.Errorf("the log does not say the newer release took over:\n%s", g.log)
+	}
+	g.untouched(in)
+}
+
+func TestAStagedReleaseOlderThanTheFolderIsDiscarded(t *testing.T) {
+	sk, key := keypair(t)
+	gh := newGithub(t)
+	g := newGame(t)
+	in := stageWhileRunning(t, sk, gh, g)
+	u := g.updater(gh, key, in)
+	u.Tick(context.Background(), t0)
+
+	// The folder moves on to 2.0.17 by another road while the game runs.
+	g.write(filepath.Join(AddonsDir(in), "ForeverSixty", "ForeverSixty.toc"), "## Version: 2.0.17\nCore.lua\n")
+	g.write(filepath.Join(AddonsDir(in), "ForeverSixty", "Core.lua"), "-- core 2.0.17\n")
+	if view := u.View(in, time.Time{}); view.Addon.Ready != "" {
+		t.Errorf("the card still says %q is waiting", view.Addon.Ready)
+	}
+	g.running[in] = false
+	u.Tick(context.Background(), t0.Add(2*time.Minute))
+	if v := g.version(in, "ForeverSixty"); v != "2.0.17" {
+		t.Fatalf("the folder is %s, a downgrade happened", v)
+	}
+	if got := g.read(filepath.Join(AddonsDir(in), "ForeverSixty", "Core.lua")); got != "-- core 2.0.17\n" {
+		t.Errorf("a file was overwritten: %q", got)
+	}
+	if _, ok := u.readStaged(Addon); ok {
+		t.Error("the staged release was kept")
+	}
+	if want := "addon 2.0.16 is not newer than the installed 2.0.17; nothing to install"; strings.Count(g.log.String(), want) != 1 {
+		t.Errorf("want exactly one line %q in:\n%s", want, g.log)
+	}
+}
+
+func TestAListingFailureFallsBackToTheStagedReleaseOnlyIfNewer(t *testing.T) {
+	for _, tc := range []struct {
+		folder, want string
+	}{{"2.0.15", "2.0.16"}, {"2.0.17", "2.0.17"}} {
+		t.Run(tc.folder, func(t *testing.T) {
+			sk, key := keypair(t)
+			gh := newGithub(t)
+			g := newGame(t)
+			in := stageWhileRunning(t, sk, gh, g)
+			u := g.updater(gh, key, in)
+			u.Tick(context.Background(), t0)
+			g.write(filepath.Join(AddonsDir(in), "ForeverSixty", "ForeverSixty.toc"), "## Version: "+tc.folder+"\nCore.lua\n")
+
+			gh.Close() // the listing cannot be read at the moment of the close
+			g.running[in] = false
+			u.Tick(context.Background(), t0.Add(2*time.Minute))
+			if v := g.version(in, "ForeverSixty"); v != tc.want {
+				t.Errorf("folder %s ended at %s, want %s", tc.folder, v, tc.want)
+			}
+			if _, ok := u.readStaged(Addon); ok {
+				t.Error("the staged release is still waiting")
+			}
+		})
+	}
+}
+
+func TestTheStagedLineNamesTheVersionAndFollowsANewerRelease(t *testing.T) {
+	sk, key := keypair(t)
+	gh := newGithub(t)
+	g := newGame(t)
+	in := stageWhileRunning(t, sk, gh, g)
+	u := g.updater(gh, key, in)
+	u.Tick(context.Background(), t0)
+	if r := u.View(in, time.Time{}).Addon.Ready; r != "2.0.16" {
+		t.Fatalf("ready = %q", r)
+	}
+	gh.publish(signedAddon(t, sk, "2.0.18"))
+	u.Tick(context.Background(), t0.Add(7*time.Hour)) // the six-hour check, game still up
+	if r := u.View(in, time.Time{}).Addon.Ready; r != "2.0.18" {
+		t.Errorf("ready after the next check = %q, want 2.0.18", r)
+	}
+}
+
+func TestVersionComparisonIsNumericPerComponent(t *testing.T) {
+	for _, tc := range []struct {
+		cand, in string
+		want     bool
+	}{
+		{"2.0.18", "2.0.9", true},
+		{"2.0.9", "2.0.18", false},
+		{"2.0.16", "2.0.17", false},
+		{"2.0.17", "2.0.17", false},
+		{"2.10.0", "2.9.9", true},
+	} {
+		if got := Addon.Newer(tc.cand, tc.in); got != tc.want {
+			t.Errorf("Newer(%q, %q) = %v, want %v", tc.cand, tc.in, got, tc.want)
+		}
+	}
+}
