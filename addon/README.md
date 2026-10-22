@@ -236,7 +236,7 @@ Run on one character per role and tick here:
 - [ ] `/fs options` opens the Settings page; "Marks on the talent window" off leaves the talent
       window bare, and the chip stays beside the minimap while the window is open.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
-- [ ] `/fs help` prints the command list, then the two muted testers' lines.
+- [ ] `/fs help` prints the command list, and `/fs help all` adds the two muted testers' lines.
 - [ ] With the data addon installed, a logged player's tooltip ends with the Forever Score in its
       tier colour and the muted Shift hint; Shift shows the components; a player with no logs reads
       "Forever Score: no logs yet"; a guildmate heard on GUILD adds the live line (rows 51-54).

@@ -1,6 +1,12 @@
 <h2>Play your class better, in game</h2>
 <p>Forever Sixty puts the next thing that makes your character better where you would act on it: on the talent window, the item tooltip, the character panel, the raid frame. There is no window to open and nothing to configure. A new character follows the default build for its spec from the first level; every surface with nothing to say stays out of the way.</p>
 <p>It is the in-game half of <strong><a href="https://foreversixty.gg">foreversixty.gg</a></strong>, the planner, simulator and log site for World of Warcraft: Forever. The numbers in the game are the site's numbers: the same simulator, the same stat weights, the same Forever Score.</p>
+<h3>What's new in 2.0.17</h3>
+<ul>
+<li><strong>The build preview shows the whole build.</strong> Every gear slot the code plans is listed, at the build's own level, each with where it comes from in full (boss, place, drop chance, or the profession that crafts it). The list scrolls when it is long.</li>
+<li><strong>The line beside the minimap says the next point.</strong> When your plan is finished for now it reads "Build complete · next point at level 25", and the talent strip and the chat line after you paste a build say the same, so a finished plan no longer looks like a dead end.</li>
+<li><strong>The stray words are gone.</strong> "0 off plan" reads "none off plan", the Options page lists four commands and "/fs help" for the rest, the testers' commands moved under "/fs help all", and the copy tab says how long ago the site saved your character instead of a clock time.</li>
+</ul>
 <h3>Install in two minutes</h3>
 <ol>
 <li>Install <strong>Forever Sixty</strong> and <strong>Forever Sixty Data</strong> (the nightly ratings pack; a required dependency, so the CurseForge and Wago apps install it with the addon). Installing by hand, put both folders in <code>Interface\AddOns</code>; the <code>ForeverSixtyInbox</code> folder in the same download is for the desktop companion and does nothing on its own.</li>
@@ -95,7 +101,7 @@
 <p>The dialog previews what a paste would replace and never overwrites a raid build with a leveling one. <code>/fs build raid</code>, <code>leveling</code> or <code>pvp</code> switches between the builds you have saved. Builds you save on the site, and builds an officer pushes, arrive here too.</p>
 <h3>Copy your character to the site</h3>
 <p><img src="https://foreversixty.gg/addon/build-dialog-copy.jpg" alt="The build dialog's copy tab"></p>
-<p><code>/fs copy</code>, or Ctrl+C in the dialog, copies your character: level, spec, talents, equipped gear, and your bags when that switch is on. Paste it on the site's planner or simulator under "Import from addon" and they start from exactly what you have. With the desktop companion the copy travels by itself at logout, and the tab reads "Seen by the site" with the time.</p>
+<p><code>/fs copy</code>, or Ctrl+C in the dialog, copies your character: level, spec, talents, equipped gear, and your bags when that switch is on. Paste it on the site's planner or simulator under "Import from addon" and they start from exactly what you have. With the desktop companion the copy travels by itself at logout, and the tab reads "Site has your save from" and how long ago.</p>
 <h3>Settings</h3>
 <p><img src="https://foreversixty.gg/addon/settings-switches.jpg" alt="The addon's page on the game's Settings window"></p>
 <p>Everything lives on the game's own Settings page: Escape, Options, AddOns, Forever Sixty; or <code>/fs options</code>; or right-click the minimap button. Nine switches, each with one line saying what it does:</p>
@@ -113,7 +119,7 @@
 <tr><td>Save my character for the companion app</td><td>Written at logout for the companion app on your PC, so the site can read your gear.</td></tr>
 </tbody>
 </table>
-<p>Under them: Reset positions, which puts the chip, the minimap button and the build dialog back, the command list, and a plain line for the data pack ("Player ratings: as of 14 Oct", "too old", "not installed").</p>
+<p>Under them: Reset positions, which puts the chip, the minimap button and the build dialog back, the first four commands and "/fs help: all the commands", and a plain line for the data pack ("Player ratings: as of 14 Oct", "too old", "not installed").</p>
 <h3>The desktop companion, optional</h3>
 <p>The companion app on <strong><a href="https://foreversixty.gg/setup">foreversixty.gg/setup</a></strong> (Windows) carries what the addon leaves at logout to the site, your character, a "Sim me" request and your guild roster, and brings back what the site has for you: the builds you chose there, your newest sim with its upgrades, and your last raid. Without it everything above still works; the character panel's sim and last-raid drawers are what it adds.</p>
 <h3>Commands</h3>
@@ -131,13 +137,13 @@
 <tr><td><code>/fs loot</code></td><td>what an item is worth to you</td></tr>
 <tr><td><code>/fs floor N</code></td><td>tag members scored under N</td></tr>
 <tr><td><code>/fs options</code></td><td>open the settings page</td></tr>
-<tr><td><code>/fs diag</code></td><td>what is not working</td></tr>
+<tr><td><code>/fs diag</code></td><td>check what is wrong</td></tr>
 <tr><td><code>/fs help</code></td><td>every command</td></tr>
 </tbody>
 </table>
 <h3>If something looks wrong</h3>
 <ul>
-<li><strong><code>/fs diag</code></strong> says what is not working and why, one line per surface.</li>
+<li><strong><code>/fs diag</code></strong> says what is wrong and why, one line per surface.</li>
 <li><strong>"Player ratings: not installed"</strong> means Forever Sixty Data is missing; install it beside the addon. <strong>"too old"</strong> means your addon manager has not updated it for a while.</li>
 <li><strong>No chip</strong>: right-click hid it until your next level; <code>/fs chip</code> brings it back.</li>
 <li><strong>No marks in your bags</strong>: another bag addon owns them, and the chip's hover legend still names the upgrade.</li>

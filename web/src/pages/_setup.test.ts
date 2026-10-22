@@ -340,7 +340,7 @@ describe('/setup: what it does in the game (L8.3)', () => {
       'live roster',
       'Share my build with my guild',
       'seen HH:MM',
-      'Seen by the site',
+      'Site has your save from',
     ]) {
       expect(text).toContain(part);
     }
@@ -412,9 +412,9 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(alt('/addon/settings-switches.jpg')).toMatch(/hunter|eight switches/i);
   });
 
-  it('states the companion handshake in three sentences, naming the “Seen by the site” line', () => {
+  it('states the companion handshake in three sentences, naming the “Site has your save from” line', () => {
     expect(addonCopy.handshake).toHaveLength(3);
-    expect(addonCopy.handshake.join(' ')).toContain('Seen by the site');
+    expect(addonCopy.handshake.join(' ')).toContain('Site has your save from');
     const block = textOf(html.slice(html.indexOf('data-testid="setup-handshake"')));
     for (const sentence of addonCopy.handshake) {
       expect(sentence.trim().endsWith('.')).toBe(true);
