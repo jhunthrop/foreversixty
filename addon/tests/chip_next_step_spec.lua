@@ -25,14 +25,14 @@ end
 
 --- Boot the addon as a level 24 hunter with fifteen points spent, the minimap 140 wide, then
 --- PLAYER_LOGIN and the first PLAYER_ENTERING_WORLD.
-local function boot(chipPrefs)
+local function boot(chipPrefs, level)
 	mock.install({
 		class = { name = "Hunter", token = "HUNTER" },
 		race = { name = "High Order Skyborne", token = "HighOrderSkyborne" },
 		realm = "Classic Beta PvP",
 		region = 1,
 		playerName = "Bow Jackzon",
-		level = 24,
+		level = level or 24,
 		traits = { configID = 7, ranks = traitRanks(2, 15) },
 	})
 	_G.UIParent.width, _G.UIParent.height = 1920, 1080
@@ -167,6 +167,76 @@ describe("the chip's words once every point is spent (A.2)", function()
 	end)
 end)
 
+describe("the line's words at a login, for the states that had none (A.2)", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	--- A 15-point plan down the hunter's tab 2 in the data's own order: exactly the points traitRanks spends.
+	local function fifteenPointBuild()
+		local order, left = {}, 15
+		for _, talent in ipairs(Data.classes.hunter.tabs[2].talents) do
+			for _ = 1, math.min(left, talent.maxRank) do
+				order[#order + 1] = { tab = 2, tier = talent.tier, column = talent.column }
+			end
+			left = left - math.min(left, talent.maxRank)
+			if left <= 0 then
+				break
+			end
+		end
+		local Codec = require("Codec")
+		return Codec.loadBuild(Codec.encodeFSB1({ dataBuild = Data.build, classSlug = "hunter", order = order,
+			gear = {} }), Data)
+	end
+
+	local function words()
+		local Chip = require("Chip")
+		assert.is_true(Chip.text:IsShown())
+		local text = Chip.text:GetText()
+		assert.is_truthy(text)
+		assert.is_true(#text > 0)
+		return text
+	end
+
+	it("says Build complete with the next point's level for a 15-point plan with 15 points spent at level 24",
+		function()
+			boot()
+			local Chip, Follow = require("Chip"), require("Follow")
+			-- The follow state arrives after the first draw, as at a login; the line is redrawn with it.
+			Follow.build = fifteenPointBuild()
+			Chip.refresh()
+			-- Completing it flashes the line first...
+			assert.are.equal("complete", Chip.current.chosen.kind)
+			assert.are.equal("Build complete \194\183 next point at level 25", words())
+			-- ...and once the flash is over the idle line says the same, never an empty font string.
+			Chip.completedAt = -1000
+			Chip.refresh()
+			assert.are.equal("idle", Chip.current.chosen.kind)
+			assert.are.equal("Build complete \194\183 next point at level 25", words())
+			assert.is_true(Chip.frame:GetWidth() >= require("Theme").SIZES.chip)
+			assert.is_true(Chip.frame:IsShown())
+			-- And the same through the model as the client feeds it.
+			assert.are.equal(25, Chip.inputs(Data).nextLevel)
+		end)
+
+	it("keeps words for the first-login state of A.1: a point to spend with the default build, and Next at 25", function()
+		boot(nil, 25)
+		local Chip = require("Chip")
+		-- Level 25 with 15 spent: one point to spend, the chip says which talent to take.
+		assert.are.equal("point", Chip.current.chosen.kind)
+		assert.is_truthy(words():find("^Take "))
+		mock.uninstall()
+		boot(nil, 24)
+		assert.is_truthy(words():find("^Next at 25: ."))
+	end)
+
+	it("is empty only for a plan finished at the level cap", function()
+		boot(nil, 60)
+		local Chip = require("Chip")
+		assert.is_nil(Chip.current.chosen.text:find("next point", 1, true))
+	end)
+end)
+
 describe("the line's text always has a width, so the frame is wider than its icon", function()
 	after_each(function()
 		mock.uninstall()
@@ -208,7 +278,7 @@ describe("the line's text always has a width, so the frame is wider than its ico
 		boot()
 		local Chip, Theme = require("Chip"), require("Theme")
 		measured(Chip)
-		Chip.setRaidCheck({}, "Ready check (only you see this): nothing missing at your level 9483 "
+		Chip.setRaidCheck({}, "Ready check (only you see this): nothing missing at your level \194\183 "
 			.. "no flask, food or buff is expected below 35", false, true)
 		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
 		assert.is_true(Chip.text:GetStringWidth() > 0)
