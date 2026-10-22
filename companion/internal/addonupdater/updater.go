@@ -540,6 +540,7 @@ func (u *Updater) apply(ctx context.Context) {
 		}
 		need := u.needs(f, meta.Version)
 		if len(need) == 0 {
+			u.sayNotNewer(f, meta.Version)
 			u.clearStaged(f)
 			continue
 		}
@@ -554,6 +555,20 @@ func (u *Updater) apply(ctx context.Context) {
 				ready = append(ready, in)
 			}
 		}
+		if len(ready) == 0 {
+			continue
+		}
+		// A game is closed and about to get this release. The release that
+		// was staged hours ago may have been followed by newer ones, so the
+		// list is read again and the newest signed one goes in.
+		meta = u.newest(ctx, f, meta)
+		need = u.needs(f, meta.Version)
+		if len(need) == 0 {
+			u.sayNotNewer(f, meta.Version)
+			u.clearStaged(f)
+			continue
+		}
+		ready = intersect(ready, need)
 		if len(ready) == 0 {
 			continue
 		}
@@ -584,6 +599,66 @@ func (u *Updater) apply(ctx context.Context) {
 			u.clearStaged(f)
 		}
 	}
+}
+
+// newest re-reads the releases and, when a signed release of family f is
+// newer than the staged one, stages it in the staged one's place and returns
+// it. A listing that cannot be read, a newest release that is not newer, or
+// one that cannot be taken leaves the staged release as it was.
+func (u *Updater) newest(ctx context.Context, f Family, meta staged) staged {
+	cands, err := u.candidates(ctx, f)
+	if err != nil {
+		u.o.Log.Warn("could not re-read the releases before installing; using the one that was staged",
+			"component", "addonupdater", "staged", meta.Version, "err", err.Error())
+		return meta
+	}
+	c, ok := cands[f.Key]
+	if !ok || !f.Newer(c.version, meta.Version) || u.isRejected(c.tag) {
+		return meta
+	}
+	if err := u.stage(ctx, c); err != nil {
+		u.o.Log.Warn("the "+f.Key+" release "+c.tag+" was not taken; using the one that was staged",
+			"component", "addonupdater", "err", err.Error())
+		return meta
+	}
+	if now, ok := u.readStaged(f); ok {
+		u.o.Log.Info(fmt.Sprintf("a newer %s release, %s, replaces the staged %s", f.Key, c.version, meta.Version),
+			"component", "addonupdater")
+		return now
+	}
+	return meta
+}
+
+func intersect(a, b []string) []string {
+	var out []string
+	for _, x := range a {
+		for _, y := range b {
+			if x == y {
+				out = append(out, x)
+				break
+			}
+		}
+	}
+	return out
+}
+
+// sayNotNewer logs that a staged release is not newer than what the folders
+// hold, naming the newest of them.
+func (u *Updater) sayNotNewer(f Family, version string) {
+	have := ""
+	for _, in := range u.o.Installs() {
+		if !eligible(f, in) {
+			continue
+		}
+		if v, found := ReadVersion(AddonsDir(in), f.Main()); found && (have == "" || f.Newer(v, have)) {
+			have = v
+		}
+	}
+	if have == "" {
+		return
+	}
+	u.o.Log.Info(fmt.Sprintf("%s %s is not newer than the installed %s; nothing to install", f.Key, version, have),
+		"component", "addonupdater")
 }
 
 func (u *Updater) backedOff(install, tag string) bool {
@@ -617,6 +692,12 @@ func (u *Updater) verifiedZip(f Family) ([]byte, error) {
 // the previous folders back, is logged, and leaves the install alone for an
 // hour.
 func (u *Updater) install(f Family, install, root string, meta staged) {
+	// Never a downgrade: the folder's TOC is read again at the moment of the swap.
+	if have, found := ReadVersion(AddonsDir(install), f.Main()); found && !f.Newer(meta.Version, have) {
+		u.o.Log.Info(fmt.Sprintf("%s %s is not newer than the installed %s; nothing to install", f.Key, meta.Version, have),
+			"component", "addonupdater", "install", install)
+		return
+	}
 	err := replace(AddonsDir(install), root, f.Folders, meta.Version, u.o.Log)
 	if err != nil {
 		u.mu.Lock()
