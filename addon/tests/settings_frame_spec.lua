@@ -273,6 +273,12 @@ describe("SettingsPage, the canvas", function()
 			if region:GetText() == L.settingsBroadcastHint then
 				return 20
 			end
+			-- A.2: a hint is the body size now, so a hint is told by its words, not its font.
+			for _, switch in ipairs(SettingsPage.SWITCHES) do
+				if region:GetText() == switch.hint then
+					return 10
+				end
+			end
 			return region.inherits == "GameFontNormalSmall" and 10 or 12
 		end
 		start()
@@ -382,7 +388,7 @@ describe("SettingsPage, the canvas", function()
 		assert.are.equal(0, scroll.offset)
 	end)
 
-	it("wraps each hint to the layout's width, in the muted token at full alpha", function()
+	it("wraps each hint to the layout's width, in the body token at full alpha and the body size (A.2)", function()
 		start()
 		SettingsPage.register()
 		show()
@@ -390,7 +396,9 @@ describe("SettingsPage, the canvas", function()
 		for _, toggle in ipairs(SettingsPage.toggles) do
 			assert.are.equal(width, mock.lastCall(toggle.hint, "SetWidth")[1])
 			assert.are.equal(Theme.SIZES.settingsRow, toggle.frame:GetHeight())
-			assert.are.same(color("muted"), { table.unpack(mock.lastCall(toggle.hint, "SetTextColor")) })
+			assert.are.same(color("body"), { table.unpack(mock.lastCall(toggle.hint, "SetTextColor")) })
+			assert.are.equal("GameFontNormal", toggle.hint.inherits)
+			assert.are.equal(toggle.label.inherits, toggle.hint.inherits)
 			assert.is_nil(mock.lastCall(toggle.hint, "SetAlpha"))
 		end
 	end)
@@ -401,9 +409,13 @@ describe("SettingsPage, the canvas", function()
 		show()
 		assert.are.same(color("gold"), { table.unpack(mock.lastCall(SettingsPage.commandsHeading, "SetTextColor")) })
 		assert.are.equal(Theme.SIZES.border, mock.lastCall(SettingsPage.divider, "SetHeight")[1])
-		assert.are.equal(#L.settingsCommands, #SettingsPage.commandLabels)
+		-- A.2: four commands and the line for the rest, so the list ends on a whole row.
+		assert.are.equal(5, #SettingsPage.commandLabels)
+		assert.are.equal(#SettingsPage.commandLines(), #SettingsPage.commandLabels)
+		assert.are.equal(SettingsPage.commandText(L.settingsCommandsMore),
+			SettingsPage.commandLabels[#SettingsPage.commandLabels]:GetText())
 		for index, label in ipairs(SettingsPage.commandLabels) do
-			assert.are.equal(SettingsPage.commandText(L.settingsCommands[index]), label:GetText())
+			assert.are.equal(SettingsPage.commandText(SettingsPage.commandLines()[index]), label:GetText())
 			assert.are.same(color("muted"), { table.unpack(mock.lastCall(label, "SetTextColor")) })
 		end
 	end)

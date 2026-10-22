@@ -28,7 +28,7 @@ local L = {
 		"/fs loot: what an item is worth to you",
 		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
-		"/fs diag: what is not working",
+		"/fs diag: check what is wrong",
 		"/fs help: every command",
 	},
 	helpTesters = {
@@ -85,8 +85,14 @@ local L = {
 	talentStripCount = "%d of %d points",
 	talentStripSpend = "spend %d now",
 	talentStripNext = "next point at level %d",
+	-- A.2: with the plan's next talent named ("next at level 25: Focused Fire"), and a finished
+	-- plan below the cap, which still gets a point at the next level.
+	talentStripNextAt = "next at level %d: %s",
+	talentStripDoneNext = "complete · next point at level %d",
 	talentStripDone = "complete",
 	talentStripOffPlan = "%d off plan",
+	-- Shown only while the plan has more to take, so something could still go off it.
+	talentStripNoneOffPlan = "none off plan",
 	-- L3.2 fix round 4: the strip's leading segment while the open window
 	-- hides the chip, the chip's own label: "Next: Improved Heroic Strike (1 of 3)".
 	talentStripNextTalent = "Next: %s",
@@ -318,7 +324,7 @@ local L = {
 	-- L3.7 item 49: the ninth switch, the loot council's quality rule: epics only unless this is on.
 	settingsLootRares = "Ask the group about rare drops too",
 	settingsLootRaresHint = "As the master looter you ask the group about epics. On: rares too, "
-		.. "whatever the loot threshold.",
+		.. "whatever the loot threshold. Off by default.",
 	settingsBroadcast = "Share my build with my guild",
 	-- One line in player words; the ticked box shows the default (fix round 2, item 2).
 	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and gear gap. "
@@ -329,6 +335,8 @@ local L = {
 	settingsAutoSaveHint = "Written at logout for the companion app on your PC, so the site can read your gear "
 		.. "and talents.",
 	settingsCommandsHeading = "Commands",
+	-- A.2: the page shows the first four commands and this line, so the list never ends in a cut row.
+	settingsCommandsMore = "/fs help: all the commands",
 	settingsReset = "Reset positions",
 	settingsResetDone = "Positions reset",
 	settingsResetHint = "Puts the Forever Sixty line, the minimap button and the build dialog back "
@@ -432,7 +440,7 @@ local L = {
 	scoreShiftHint = "Shift: score details",
 	scoreLinkHint = "target them, then /fs link",
 	-- The hint alone, where there is no Shift: a no-logs player, a record without components.
-	scoreLinkAlone = "Target them, then /fs link: site page",
+	scoreLinkAlone = "Target them, then /fs link opens their site page",
 	-- After the components while Shift is held, right-aligned and muted: the record's score.
 	scoreTotal = "= %d",
 	-- The score before a message in chat, in the tier colour, then a muted badgeMark
@@ -780,6 +788,8 @@ local L = {
 	-- The badge when more states wait behind the one shown: "+2".
 	chipWaiting = "+%d",
 	chipComplete = "Build complete",
+	-- A.2: a finished plan below the cap names the next point (the level it arrives at).
+	chipCompleteNext = "Build complete · next point at level %d",
 	chipInCombat = "In combat",
 	chipHideUntilLevel = "Hide until next level",
 	-- The hover tooltip's last line, muted: how to put the chip away.
@@ -940,18 +950,24 @@ L.dialogPlaceNow = "You can place %d now."
 -- One tree in the split: "Arms 31".
 L.dialogSplitPart = "%s %d"
 L.dialogSplitSeparator = " / "
--- The preview's gear rows: a muted heading ("Gear in this build · at 60" below 60), its hover.
+-- The preview's gear rows: a muted heading at the build's own level ("Gear in this build · level 24 ·
+-- 14 of 17 slots"; a build of 60 on a lower character says "at 60"), its hover.
 L.dialogGearHeading = "Gear in this build"
 L.dialogGearAt = "%s · at %d"
--- "Gear in this build · at 60 · 3 of 17 slots": the fields the code carries over the export's slots.
+L.dialogGearLevel = "%s · level %d"
+-- "Gear in this build · level 24 · 14 of 17 slots": the slots the code carries, every one a row.
 L.dialogGearSlots = "%s · %d of %d slots"
-L.dialogGearHeadingTip = "The first three items the code plans."
+L.dialogGearHeadingTip = "Every item the code plans. Scroll the list for the rest."
+-- A gear row's second line: where the item comes from, in full.
+L.dialogSourceUnknown = "Source unknown"
+L.dialogSourceCraftable = "%s · you can craft this"
 -- Above "Use this build", muted: what it replaces and where the two orders first differ (or
 -- "same point order"), and the next talent the candidate gives, alone.
-L.dialogReplaces = "Replaces %s"
-L.dialogReplacesSameAll = "Replaces %s · same points and gear · nothing changes"
-L.dialogReplacesSameOrder = "Replaces %s · same points, different gear list"
-L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
+-- "%s" the followed build's name, then its size ("51 points"): two builds can share a name.
+L.dialogReplaces = "Replaces %s (%s)"
+L.dialogReplacesSameAll = "Replaces %s (%s) · same points and gear · nothing changes"
+L.dialogReplacesSameOrder = "Replaces %s (%s) · same points, different gear list"
+L.dialogReplacesDiffers = "Replaces %s (%s) · first differs at point %d: %s"
 -- X.5: the incoming build is a prefix of the plan ("%s" its points, then the plan's next talent), and
 -- why "Use this build" is held back then.
 L.dialogSameAsPlan = "Same as your plan for %s. Yours goes on with %s."
@@ -973,21 +989,48 @@ L.buildUsage = "/fs build raid, leveling or pvp switches between your saved buil
 -- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
 L.dialogNowFollowing = "Now following %s."
 L.dialogNowFollowingNext = "Now following %s. Next: %s."
+-- A.2: with no point to spend now, the level the next one arrives at, and the plan's talent for it.
+L.dialogNowFollowingLater = "Now following %s. Next point at level %d."
+L.dialogNowFollowingLaterTalent = "Now following %s. Next point at level %d: %s."
 -- A build the site sent is a row of three lines (X.5): its name, "Hunter · Beast Mastery 11 · 11 points",
 -- and a muted "For Bow Jackzon · Classic Beta PvP · from the site" (the name shortens to fit).
 L.dialogForCharacter = "For %s"
 L.dialogFromSite = "from the site"
+-- The day a build arrived: "from the site, 22 Oct" (the whole line reads "Beast Mastery build ·
+-- from the site, 22 Oct · 15 points", so two builds of one name tell apart).
+L.dialogFromSiteOn = "from the site, %s"
+L.dialogFromPushOn = "pushed by %s, %s"
 -- A build an officer pushed to the guild or group (L3.7 item 44; "%s" the officer), and the
 -- one chat line when it arrives.
 L.dialogFromPush = "pushed by %s"
 L.pushArrived = "%s pushed the build %s. Open /fs to look at it."
 L.dialogInboxMore = "and %d more"
 -- Copy mode. The lead line under the tabs until a real Ctrl+C, then the copy claim.
+-- A.2: one line above the export box saying what it holds ("Level 24 Hunter · 14 items · 3 professions ·
+-- your guild and realm are included"; no guild: "your realm is included").
+L.dialogSummaryWho = "Level %d %s"
+L.dialogSummaryWhoNoLevel = "%s"
+L.dialogSummaryItems = "%d items"
+L.dialogSummaryItemOne = "1 item"
+L.dialogSummaryProfessions = "%d professions"
+L.dialogSummaryProfessionOne = "1 profession"
+L.dialogSummaryShared = "your guild and realm are included"
+L.dialogSummarySharedRealm = "your realm is included"
 L.dialogSelectedLead = "Selected. Press Ctrl+C, then paste it on " .. SITE .. "."
 L.dialogYouCopied = "You copied %s. Now paste it on " .. SITE .. "."
 -- The ack: the site has this export, or an older one.
-L.dialogSeen = "Seen by the site %s"
-L.dialogSiteOlder = "The site has your character from %s. Yours is newer."
+-- A.2: an age on the chat's clock, never a time of day the player has to compare with the game's.
+L.dialogSeen = "Site has your save from %s"
+L.dialogSiteOlder = "Site has your save from %s. Yours is newer: log out to send it."
+-- No ack ever came back: nothing has reached the site (the companion's own lines follow).
+L.dialogNotSent = "Not sent to the site yet \194\183 log out to send"
+-- How long ago, for every line that tells when the site last saw this character.
+L.agoJustNow = "just now"
+L.agoMinutes = "%d min ago"
+L.agoHours = "%d h ago"
+L.agoHoursMinutes = "%d h %d min ago"
+L.agoDay = "1 day ago"
+L.agoDays = "%d days ago"
 -- After a real copy, until an ack at or after it arrives.
 L.dialogWaitingSite = "Waiting for the site to see this copy. It answers at your next login."
 -- When, for anything before today: "yesterday 22:30", "2 Nov 22:30".
@@ -1344,10 +1387,13 @@ L.groupChipSummaryYou = "Ready check: missing %s"
 L.groupChipSummaryYouNone = "Ready check: nothing missing"
 -- L3.7 item 46: a dry run (/fs ready) is a test; the chip says so. Item 48: "at your level" when
 -- every need was gated by it.
-L.groupChipSummaryTest = "Ready check (test): %d missing (%s)"
-L.groupChipSummaryYouTest = "Ready check (test): missing %s"
-L.groupChipSummaryYouNoneTest = "Ready check (test): nothing missing"
-L.groupChipSummaryYouNoneLevelTest = "Ready check (test): nothing missing at your level"
+-- A.2: no "(test)" in a shipped build: the dry run's toast and its chat line read the same words, and the
+-- clean one says what was checked ("%d" the level the first consumable is expected from).
+L.groupChipSummaryTest = "Ready check (only you see this): %d missing (%s)"
+L.groupChipSummaryYouTest = "Ready check (only you see this): missing %s"
+L.groupChipSummaryYouNoneTest = "Ready check (only you see this): nothing missing"
+L.groupChipSummaryYouNoneLevelTest = "Ready check (only you see this): nothing missing at your level "
+	.. "\194\183 no flask, food or buff is expected below %d"
 -- /fs ready: a dry run, in chat. Fix round 4 (E, B): alone, one line ("... you are missing flask,
 -- food." or "... nothing missing."); in a group a header naming the list it read, then a line a
 -- member or "Nobody is missing anything.".
@@ -1355,7 +1401,8 @@ L.groupReadyDry = "Ready check (only you see this), %s:"
 L.groupReadyNone = "Nobody is missing anything."
 L.groupReadyYou = "Ready check (only you see this): you are missing %s."
 L.groupReadyYouNone = "Ready check (only you see this): nothing missing."
-L.groupReadyYouNoneLevel = "Ready check (only you see this): nothing missing at your level."
+L.groupReadyYouNoneLevel = "Ready check (only you see this): nothing missing at your level "
+	.. "\194\183 no flask, food or buff is expected below %d"
 -- /fs ready when the panel has turned itself off: no check ran, so none is claimed clean.
 L.groupPanelOff = "Group panel is off."
 -- /fs floor (ruling 4): the panel flags, it never declines or whispers.
@@ -1414,8 +1461,8 @@ L.lootAnswered = "%d of %d answered"
 L.chipHintLoot = "Click: Show the list"
 -- The group button's hover names the drop.
 L.lootButtonHint = "Drop: %s"
--- /fs loot <item link or id>.
-L.lootUsage = "Type /fs loot and an item link or id to see what it is worth to you."
+-- /fs loot <item link>.
+L.lootUsage = "Type /fs loot, then shift-click an item, to see what it is worth to you."
 L.lootNotInGroup = "You are not in a group."
 -- "Ranger Bow (Ranged): +3.5 DPS over Short Ash Bow, on your list"; the level gate is a prefix.
 L.lootCmdLine = "%s: %s over %s, %s"
@@ -1454,8 +1501,8 @@ L.diagExport = "Export: built %s, %d slots, talents %s"
 L.diagExportNone = "Export: not built yet"
 -- /fs diag (X.3): what the site has of this character and what the inbox holds.
 L.diagNotSeenHeadline = "Addon running; the site has not seen this character yet."
-L.diagSiteSeen = "Site: seen %s (%d characters)"
-L.diagSiteSeenOne = "Site: seen %s (1 character)"
+L.diagSiteSeen = "Site: has your save from %s (%d characters)"
+L.diagSiteSeenOne = "Site: has your save from %s (1 character)"
 L.diagSiteNever = "Site: not seen yet \226\128\148 is the companion running and signed in?"
 L.diagSiteOld = "Site: last seen %s, %d days ago"
 L.diagSiteOldOne = "Site: last seen %s, 1 day ago"
@@ -1484,15 +1531,15 @@ L.siteLoginNever = "the site has not seen this character yet. Keep the companion
 	.. "log out once from the world."
 L.siteLoginGear = "your gear is on its way to the site; check it after your next logout."
 -- X.5: the ack is newer than the export's build time, so the earlier "on its way" is settled (once).
-L.siteLoginGearSeen = "the site has your gear (seen %s)."
+L.siteLoginGearSeen = "the site has your gear (saved %s)."
 L.siteLoginSelf = "this character"
 -- X.7: the first login's welcome, once per account, one chat line per sentence (/fs welcome says it again).
-L.welcomeOn = "Forever Sixty is on. The small Forever Sixty line beside your minimap shows your next step."
+L.welcomeOn = "Forever Sixty is on. The line beside your minimap shows your next step."
 -- A.1: said instead of welcomeOn when the line is not drawn (hidden, turned itself off, or not built yet).
 L.welcomeOnNoLine = "Forever Sixty is on. Your next step is waiting in the build window."
 L.welcomeNext = "/fs opens the build window; builds you send from the site wait there. /fs help lists the commands."
-L.welcomeSite = "The addon saves your character when you log out; the Forever Sixty companion on your PC sends it to "
-	.. SITE .. "."
+L.welcomeSite = "Install the companion on your PC and it sends your character to " .. SITE
+	.. " when you log out."
 L.siteLoginBuild = "a build for %s is waiting: %s. /fs opens it."
 L.siteLoginBuilds = "%d builds for %s are waiting: %s. /fs opens them."
 L.siteLoginSilent = "the companion has not picked up your data since %s. "

@@ -28,6 +28,11 @@ local Talents = ns.Talents or require("Talents")
 
 local PlayerTooltip = {}
 
+--- The "target them, then /fs link" hint shows this many times a session, then goes (A.2: a command
+--- hint on every hover forever is noise).
+PlayerTooltip.HINT_TIMES = 3
+PlayerTooltip.hintsShown = 0
+
 -- The section, pure ---------------------------------------------------------------------
 
 local function line(text, hexKey)
@@ -60,8 +65,11 @@ end
 --- in the text colour, then a muted right-aligned total ("= 1240", the record's score).
 --- Otherwise one muted hint naming the step to the site page. `level` (optional) is the player's:
 --- under Score.LEVEL_FLOOR a character the record does not have gets no "no logs" or link line. Pure.
-function PlayerTooltip.section(record, available, live, shift, level)
+function PlayerTooltip.section(record, available, live, shift, level, showHint)
 	local out = {}
+	-- `showHint` (default true) is whether the link hint is still said this session; `hinted` tells
+	-- the caller one was in the lines.
+	showHint = showHint ~= false
 	-- Under level 10 nothing is said about logs (L3.7 item 34).
 	if type(level) == "number" and level < Score.LEVEL_FLOOR then
 		available = false
@@ -75,14 +83,15 @@ function PlayerTooltip.section(record, available, live, shift, level)
 			out[1] = line(lines[1], "tooltipText")
 		end
 	elseif available then
-		out[1] = line(L.scoreNoLogs, "tooltipMuted")
+		out[1] = line(L.scoreNoLogs, "tooltipBody")
 	end
 	if live ~= nil then
 		out[#out + 1] = line(PlayerTooltip.liveLine(live), "tooltipMuted")
 	end
 	if #lines == 0 then
-		if available then
-			out[#out + 1] = line(L.scoreLinkAlone, "tooltipMuted")
+		if available and showHint then
+			out[#out + 1] = line(L.scoreLinkAlone, "tooltipBody")
+			out.hinted = true
 		end
 		return out
 	end
@@ -93,9 +102,15 @@ function PlayerTooltip.section(record, available, live, shift, level)
 		end
 		out[#out + 1] = double(" ", string.format(L.scoreTotal, record.score), "tooltipMuted", "tooltipMuted")
 	elseif #parts > 0 then
-		out[#out + 1] = line(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, "tooltipMuted")
-	else
-		out[#out + 1] = line(L.scoreLinkAlone, "tooltipMuted")
+		if showHint then
+			out[#out + 1] = line(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, "tooltipBody")
+			out.hinted = true
+		else
+			out[#out + 1] = line(L.scoreShiftHint, "tooltipBody")
+		end
+	elseif showHint then
+		out[#out + 1] = line(L.scoreLinkAlone, "tooltipBody")
+		out.hinted = true
 	end
 	return out
 end
@@ -179,9 +194,13 @@ local function addLines(tooltip, unit)
 	local available = record ~= nil or Score.status().available
 	local live = PlayerTooltip.liveEntry(Comms.seen, name, firstName, realm, ownRealm(), Theme.now())
 	local level = type(UnitLevel) == "function" and tonumber(UnitLevel(unit)) or nil
-	local lines = PlayerTooltip.section(record, available, live, Theme.shiftDown(), level)
+	local lines = PlayerTooltip.section(record, available, live, Theme.shiftDown(), level,
+		PlayerTooltip.hintsShown < PlayerTooltip.HINT_TIMES)
 	if #lines == 0 then
 		return
+	end
+	if lines.hinted then
+		PlayerTooltip.hintsShown = PlayerTooltip.hintsShown + 1
 	end
 	for _, entry in ipairs(lines) do
 		if entry.right ~= nil then

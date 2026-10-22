@@ -176,7 +176,7 @@ describe("Options", function()
 			local rows = BuildDialog.rows
 			assert.are.equal(1, #rows)
 			assert.are.equal("BM raid", rows[1].name)
-			assert.is_truthy(rows[1].target:find("pushed by Boss", 1, true))
+			assert.is_truthy(rows[1].stamp:find("pushed by Boss", 1, true))
 			assert.is_truthy(state.printed[#state.printed]:find("Boss", 1, true))
 		end)
 
@@ -270,9 +270,12 @@ describe("Options", function()
 	it("lists the player's commands, a few words each, on /fs help: the Settings page's list", function()
 		local lines = Options.handle("help")
 		local Locale, Theme = require("Locale"), require("Theme")
-		assert.are.same(Locale.settingsCommands, { table.unpack(lines, 1, #lines - 2) })
+		-- A.2: the player's list alone; the testers' two lines wait behind "/fs help all".
+		assert.are.same(Locale.settingsCommands, lines)
+		local all = Options.handle("help all")
+		assert.are.same(Locale.settingsCommands, { table.unpack(all, 1, #all - 2) })
 		assert.are.same({ Theme.inlineColor("muted", Locale.helpTesters[1]), Theme.inlineColor("muted",
-			Locale.helpTesters[2]) }, { table.unpack(lines, #lines - 1) })
+			Locale.helpTesters[2]) }, { table.unpack(all, #all - 1) })
 	end)
 
 	it("lists /fs and /fs copy first on /fs help (L3.4 fix 6)", function()
@@ -393,7 +396,10 @@ describe("Options", function()
 	it("prints /fs help in chat", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("help")
-		-- The player lines, then the testers' two (fix round 3, item 5).
+		-- The player lines only (A.2); "/fs help all" adds the testers' two.
+		assert.are.equal(#require("Locale").settingsCommands, #state.printed)
+		state.printed = {}
+		SlashCmdList["FOREVERSIXTY"]("help all")
 		assert.are.equal(#require("Locale").settingsCommands + 2, #state.printed)
 	end)
 

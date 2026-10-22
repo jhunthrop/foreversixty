@@ -94,7 +94,7 @@ describe("the line at a first login (the fresh-account walk)", function()
 		assert.is_true(Chip.frame:IsShown())
 		assert.is_true(Chip.isDrawn())
 		assert.are.equal("idle", Chip.current.chosen.kind)
-		assert.is_truthy(Chip.current.chosen.text:find("^Next: ."))
+		assert.is_truthy(Chip.current.chosen.text:find("^Next at %d+: ."))
 		assert.are.equal(Chip.current.chosen.text, Chip.text:GetText())
 		assert.is_true(Chip.text:IsShown())
 		-- The words are not dimmed away with the icon.

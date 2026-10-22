@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.17
+
+- The build preview lists every gear slot it counts, at the build's own level ("Gear in this build · level 24 · 14 of 17 slots"), each with where it comes from in full; the build window and the line say which build is which ("Beast Mastery build · from the site, 22 Oct · 15 points", "Replaces Beast Mastery build (51 points)").
+- The line, the chat line after Use and the talent strip name the next point ("Build complete · next point at level 25", "next at level 25: Focused Fire"); the line keeps one class icon and sits under the buff row when the buffs are in its way.
+- "Seen by the site 02:21 pm" is "Site has your save from 1 h 35 min ago" (and "Not sent to the site yet · log out to send"), the same age in /fs diag and the login line.
+- The ready check says the same words on the line and in chat, with no "(test)" and what it checked; /fs help lists the player's commands and /fs help all adds the testers'; the welcome names the addon once and says what the companion does; the Options page lists four commands and /fs help for the rest, its explanations at full contrast; the player tooltip's /fs link hint shows three times, then goes; Copy my character says what the export holds.
+
 ## 2.0.16
 
 - The Forever Sixty line beside the minimap is on screen at a first login and says your next step ("Next: Endurance Training (1 of 5)", or "Pick a build: /fs"); a saved spot that is off screen puts it back beside the minimap, it sits above the buff icons, and the welcome names the line only when it is drawn.

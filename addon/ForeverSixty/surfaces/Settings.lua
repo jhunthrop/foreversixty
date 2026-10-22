@@ -202,6 +202,20 @@ function SettingsPage.lineText(entry)
 	return entry.label .. " " .. Theme.inlineColor(entry.tone, entry.value)
 end
 
+--- How many commands the page lists before "/fs help: all the commands".
+SettingsPage.COMMANDS_SHOWN = 4
+
+--- The commands the page lists: the first four and the line that sends the rest to /fs help (the
+--- whole list is /fs help's, L.settingsCommands), so the page never ends in a half-cut row.
+function SettingsPage.commandLines()
+	local lines = {}
+	for index = 1, SettingsPage.COMMANDS_SHOWN do
+		lines[index] = L.settingsCommands[index]
+	end
+	lines[#lines + 1] = L.settingsCommandsMore
+	return lines
+end
+
 --- A command line as drawn on a muted font string: its "/fs ...:" token in body, the words
 --- after it muted (fix round 1, item 14). Pure.
 function SettingsPage.commandText(line)
@@ -263,7 +277,7 @@ function SettingsPage.layout(width, rowHeights, warned)
 	y = y + S.settingsLine
 	layout.divider = -y
 	y = y + S.border + S.gap * 2
-	for index = 1, #L.settingsCommands do
+	for index = 1, #SettingsPage.commandLines() do
 		layout.commands[index] = -y
 		y = y + S.settingsLine
 	end
@@ -414,7 +428,7 @@ function SettingsPage.build(panel)
 	divider:SetHeight(S.border)
 	SettingsPage.divider = divider
 	SettingsPage.commandLabels = {}
-	for index, line in ipairs(L.settingsCommands) do
+	for index, line in ipairs(SettingsPage.commandLines()) do
 		SettingsPage.commandLabels[index] = Widgets.label(content, SettingsPage.commandText(line), "muted", "small")
 	end
 	SettingsPage.dataLabels = {}

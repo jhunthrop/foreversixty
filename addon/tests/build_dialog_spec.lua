@@ -135,6 +135,41 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 		BuildDialog.say = nil
 	end)
 
+	-- A.2: with every point of the level spent, the chat line after Use names the next point's level.
+	it("says the next point's level in the chat line after Use when no point waits, and the talent to take when one does",
+		function()
+			local Talents, Compat = require("Talents"), require("Compat")
+			local realRanks, realLevel = Talents.readStagedRanks, Compat.playerLevel
+			local said = {}
+			BuildDialog.say = function(line)
+				said[#said + 1] = line
+			end
+			local order = {}
+			for index = 1, 15 do
+				order[index] = { tab = 1, tier = 1, column = 1 }
+			end
+			local fifteen = Codec.encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = order, gear = {} })
+			Compat.playerLevel = function()
+				return 24
+			end
+			-- Fifteen points spent at level 24: nothing to spend until 25.
+			Talents.readStagedRanks = function()
+				return { [1] = { ["1:1"] = 15 } }
+			end
+			BuildDialog.onPaste(fifteen)
+			BuildDialog.useCurrent()
+			assert.are.equal("Now following Arms build. Next point at level 25.", said[1])
+			-- Fourteen spent: a point waits, so the talent to take.
+			Talents.readStagedRanks = function()
+				return { [1] = { ["1:1"] = 14 } }
+			end
+			said = {}
+			BuildDialog.onPaste(fifteen)
+			BuildDialog.useCurrent()
+			assert.is_truthy(said[1]:find("^Now following Arms build%. Next: "), said[1])
+			Talents.readStagedRanks, Compat.playerLevel = realRanks, realLevel
+		end)
+
 	it("loads nothing on paste, and the trimmed code on Use", function()
 		BuildDialog.onPaste("\n  " .. ARMS .. "  \n")
 		assert.are.equal(0, #calls)
@@ -179,10 +214,16 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 	it("says who pushed a pushed build, in place of 'from the site'", function()
 		local rows = BuildDialog.inboxRows({ { id = "x", name = "BM raid", code = ARMS, from = "Boss" },
 			{ id = "y", name = "Site build", code = ARMS .. "" } }, {}, DATA)
-		assert.is_truthy(rows[1].target:find(string.format(L.dialogFromPush, "Boss"), 1, true))
-		assert.is_nil(rows[1].target:find(L.dialogFromSite, 1, true))
-		assert.is_truthy(rows[2].target:find(L.dialogFromSite, 1, true))
+		-- A.2: the sender is the title line's stamp now, the day beside it for a build from the site.
+		assert.are.equal("pushed by Boss", rows[1].stamp)
+		assert.are.equal("from the site", rows[2].stamp)
 		assert.are.equal("pushed by Boss", string.format(L.dialogFromPush, "Boss"))
+		local dated = BuildDialog.inboxRows({ { id = "y", name = "Site build", code = ARMS } }, {}, DATA, nil, "22 Oct")
+		assert.are.equal("from the site, 22 Oct", dated[1].stamp)
+		-- A push carries no day of its own.
+		local pushed = BuildDialog.inboxRows({ { id = "x", name = "BM", code = ARMS, from = "Boss" } }, {}, DATA, nil,
+			"22 Oct")
+		assert.are.equal("pushed by Boss", pushed[1].stamp)
 	end)
 
 	it("marks a build from the site used by its id and its code", function()
@@ -322,8 +363,8 @@ describe("BuildDialog, paste mode's model", function()
 
 	it("says the two orders match on the Replaces line, and the Next line is the talent alone (fix 4, 3)", function()
 		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DDI"), {}, DATA, 21)
-		assert.are.equal(string.format(L.dialogReplacesSameAll, "Arms raid"), context.replaces)
-		assert.are.equal("Replaces Arms raid · same points and gear · nothing changes", context.replaces)
+		assert.are.equal(string.format(L.dialogReplacesSameAll, "Arms raid", "3 points"), context.replaces)
+		assert.are.equal("Replaces Arms raid (3 points) · same points and gear · nothing changes", context.replaces)
 		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2)", context.nextWould)
 	end)
 
@@ -332,21 +373,21 @@ describe("BuildDialog, paste mode's model", function()
 		local candidate = ordered("DDI")
 		candidate.gear = { { slot = "head", itemId = 12640, stats = {} } }
 		local context = BuildDialog.previewContext(followed, candidate, {}, DATA, 21)
-		assert.are.equal("Replaces Arms raid · same points, different gear list", context.replaces)
+		assert.are.equal("Replaces Arms raid (3 points) · same points, different gear list", context.replaces)
 		followed.gear = { { slot = "head", itemId = 12640, stats = {} } }
-		assert.are.equal("Replaces Arms raid · same points and gear · nothing changes",
+		assert.are.equal("Replaces Arms raid (3 points) · same points and gear · nothing changes",
 			BuildDialog.previewContext(followed, candidate, {}, DATA, 21).replaces)
 	end)
 
 	it("says where the two orders first differ, by point and talent", function()
 		local same = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DID"), {}, DATA, 21)
-		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 2, "Improved Heroic Strike (Arms)"),
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", "3 points", 2, "Improved Heroic Strike (Arms)"),
 			same.replaces)
 		assert.are.equal(string.format(L.dialogNextWould, string.format(L.chipTake, "Deflection (Arms, 1 of 2)")),
 			same.nextWould)
 		assert.is_nil(L.dialogNextWouldSame)
 		local other = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21)
-		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", "3 points", 1, "Improved Heroic Strike (Arms)"),
 			other.replaces)
 		assert.are.equal("Next talent would be: Take Improved Heroic Strike (Arms)", other.nextWould)
 		assert.are.equal(1, BuildDialog.firstDifference(ordered("DDI").order, ordered("IDD").order))
@@ -360,7 +401,7 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2)", fresh.nextWould)
 		assert.is_nil(BuildDialog.previewContext(nil, nil, {}, DATA, 21).nextWould)
 		local piped = BuildDialog.previewContext(ordered("DDI", "A|B"), ordered("DDI"), {}, DATA, 21)
-		assert.are.equal(string.format(L.dialogReplacesSameAll, "A||B"), piped.replaces)
+		assert.are.equal(string.format(L.dialogReplacesSameAll, "A||B", "3 points"), piped.replaces)
 	end)
 
 	it("cuts a row's name before it escapes it, so a cut never leaves a lone pipe (fix 5, 14)", function()
@@ -380,7 +421,7 @@ describe("BuildDialog, paste mode's model", function()
 	it("never cuts the Replaces sentence: the name and the talent with its tree stay whole (X.5)", function()
 		local name = "A very long build name the site sent for this character, an old patch one"
 		local context = BuildDialog.previewContext(ordered("DDI", name), ordered("IDD"), {}, DATA, 21)
-		assert.are.equal(string.format(L.dialogReplacesDiffers, name, 1, "Improved Heroic Strike (Arms)"),
+		assert.are.equal(string.format(L.dialogReplacesDiffers, name, "3 points", 1, "Improved Heroic Strike (Arms)"),
 			context.replaces)
 		assert.is_nil(context.replaces:find(L.ellipsis, 1, true))
 		-- The pipes of a site-sent name are doubled, whole.
@@ -399,7 +440,7 @@ describe("BuildDialog, paste mode's model", function()
 			BuildDialog.previewContext(ordered("DDI"), ordered("D"), {}, DATA, 21).replaces)
 		local same = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DDI"), {}, DATA, 21)
 		assert.is_nil(same.blocked)
-		assert.are.equal("Replaces Arms raid · same points and gear · nothing changes", same.replaces)
+		assert.are.equal("Replaces Arms raid (3 points) · same points and gear · nothing changes", same.replaces)
 		-- A longer build, or one that parts earlier, is never blocked.
 		assert.is_nil(BuildDialog.previewContext(ordered("DD"), ordered("DDI"), {}, DATA, 21).blocked)
 		assert.is_nil(BuildDialog.previewContext(ordered("DDI"), ordered("IDD"), {}, DATA, 21).blocked)
@@ -411,7 +452,7 @@ describe("BuildDialog, paste mode's model", function()
 		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("ID"), ranks, DATA, 21)
 		assert.are.equal("This build ends at 2 points; you have spent 3. It keeps following from point 3.",
 			context.short)
-		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", "3 points", 1, "Improved Heroic Strike (Arms)"),
 			context.replaces)
 		assert.is_nil(context.blocked)
 		-- Not said for a build as long as the spend, or for a prefix (its own sentence says it).
@@ -439,24 +480,65 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal("Warrior · " .. L.dialogNoPoints, BuildDialog.preview(build(code(0, 0)), DATA).detail)
 	end)
 
-	it("lists the code's first three gear fields, each with its slot word, under a heading", function()
+	it("lists every gear field the code carries, each with its slot word, under a heading", function()
 		local words = { HEADSLOT = "Head", NECKSLOT = "Neck" }
 		local preview = BuildDialog.preview(build(ARMS), DATA, {
 			level = 21, slotWord = function(slot) return BuildDialog.slotWord(slot, words) end,
 		})
+		local unknown = L.dialogSourceUnknown
+		-- All four, not the first three (A.2): the heading's count is the rows there are.
 		assert.are.same({
-			{ itemId = 12640, slot = "head", slotWord = "Head" },
-			{ itemId = 15411, slot = "neck", slotWord = "Neck" },
+			{ itemId = 12640, slot = "head", slotWord = "Head", source = unknown },
+			{ itemId = 15411, slot = "neck", slotWord = "Neck", source = unknown },
 			-- No client word for the shoulder here: the addon's own.
-			{ itemId = 12927, slot = "shoulder", slotWord = L.gearSlotLabels.shoulder },
+			{ itemId = 12927, slot = "shoulder", slotWord = L.gearSlotLabels.shoulder, source = unknown },
+			{ itemId = 11726, slot = "chest", slotWord = L.gearSlotLabels.chest, source = unknown },
 		}, preview.picks)
-		-- Fix 5, 4: the fields the code carries over the 17 export slots.
+		-- Fix 5, 4: the fields the code carries over the 17 export slots. A build with no points names
+		-- no level of its own, so a character below 60 reads the old "at 60".
 		assert.are.equal(string.format(L.dialogGearSlots, string.format(L.dialogGearAt, L.dialogGearHeading, 60), 4, 17),
 			preview.heading)
-		assert.are.equal("Gear in this build · at 60 · 4 of 17 slots", preview.heading)
+		assert.are.equal("Gear in this build \194\183 at 60 \194\183 4 of 17 slots", preview.heading)
 		local at60 = BuildDialog.preview(build(ARMS), DATA, { level = 60 })
-		assert.are.equal("Gear in this build · 4 of 17 slots", at60.heading)
+		assert.are.equal("Gear in this build \194\183 4 of 17 slots", at60.heading)
 		assert.is_nil(BuildDialog.preview(build(code(3, 0)), DATA, { level = 21 }).heading)
+	end)
+
+	it("names the gear at the build's own level: 15 points are level 24, 51 are 60 (A.2)", function()
+		local function gearOf(points, extra)
+			local order = {}
+			for index = 1, points do
+				order[index] = { tab = 1, tier = 1, column = 1 }
+			end
+			return build(Codec.encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = order,
+				gear = extra or { { slot = "head", itemId = 12640, stats = {} } } }))
+		end
+		assert.are.equal(24, BuildDialog.buildLevel(gearOf(15)))
+		assert.are.equal(60, BuildDialog.buildLevel(gearOf(51)))
+		assert.is_nil(BuildDialog.buildLevel(gearOf(0)))
+		assert.are.equal("Gear in this build \194\183 level 24 \194\183 1 of 17 slots",
+			BuildDialog.preview(gearOf(15), DATA, { level = 24 }).heading)
+		-- Whatever level the character is: the build's own, never "at 60" for a level-24 build.
+		assert.are.equal("Gear in this build \194\183 level 24 \194\183 1 of 17 slots",
+			BuildDialog.preview(gearOf(15), DATA, { level = 60 }).heading)
+		-- The "at 60" form only for a 60 build on a lower character.
+		assert.are.equal("Gear in this build \194\183 at 60 \194\183 1 of 17 slots",
+			BuildDialog.preview(gearOf(51), DATA, { level = 24 }).heading)
+		assert.are.equal("Gear in this build \194\183 1 of 17 slots",
+			BuildDialog.preview(gearOf(51), DATA, { level = 60 }).heading)
+	end)
+
+	it("lists every slot of a full code, the ranged slot as a row like the rest (A.2)", function()
+		local gear = {}
+		for index, slot in ipairs({ "head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs",
+			"feet", "finger1", "finger2", "trinket1", "main_hand", "ranged" }) do
+			gear[index] = { slot = slot, itemId = 20000 + index, stats = {} }
+		end
+		local preview = BuildDialog.preview(build(Codec.encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior",
+			order = {}, gear = gear })), DATA, { level = 60 })
+		assert.are.equal(15, #preview.picks)
+		assert.are.equal("ranged", preview.picks[15].slot)
+		assert.are.equal("Gear in this build \194\183 15 of 17 slots", preview.heading)
 	end)
 
 	-- L3.7 item 31: each gear row carries its source, the item tooltip's own source text, found in
@@ -476,10 +558,11 @@ describe("BuildDialog, paste mode's model", function()
 		local preview = BuildDialog.preview(build(ARMS), withBis, { level = 21 })
 		assert.are.equal("Blackrock Depths \194\183 Lord Roccor \194\183 12% drop", preview.picks[1].source)
 		assert.are.equal(require("ItemTooltip").sourceLine(preview.picks[1].pick), preview.picks[1].source)
-		assert.are.equal("A neck quest \194\183 Quest", preview.picks[2].source)
-		-- Another class's pick never names a warrior's item; and no BiS data, no source.
-		assert.is_nil(preview.picks[3].source)
-		assert.is_nil(BuildDialog.preview(build(ARMS), DATA, { level = 21 }).picks[1].source)
+		-- A.2: a quest or a vendor leads with its kind ("Vendor \194\183 Darnassus").
+		assert.are.equal("Quest \194\183 A neck quest", preview.picks[2].source)
+		-- Another class's pick never names a warrior's item; and no BiS data, no source: said so.
+		assert.are.equal("Source unknown", preview.picks[3].source)
+		assert.are.equal("Source unknown", BuildDialog.preview(build(ARMS), DATA, { level = 21 }).picks[1].source)
 	end)
 
 	it("keeps a build's own name", function()
@@ -550,21 +633,23 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal(string.format(L.dialogNowFollowing, "A||B"), BuildDialog.chatLine("A|B", nil))
 	end)
 
-	it("fits the worst preview in the 300 px panel at the Theme's line heights (fix 3, 9 and 14)", function()
+	it("fits the worst preview in its tallest window at the Theme's line heights (fix 3, 9 and 14)", function()
 		local S = require("Theme").SIZES
 		-- A chosen inbox row (or the collapsed code, never both), "You can place N now.",
-		-- "Replaces", "Next talent would be", three gear rows at pitch 20, the button and the hint.
+		-- "Replaces", "Next talent would be", GEAR_VISIBLE two-line gear rows (the rest of the list
+		-- scrolls, A.2), the button and the hint.
 		for _, line in ipairs({ 12, 13, 14 }) do
 			local height, parts = BuildDialog.previewLayout(line)
-			assert.is_true(height <= S.dialogHeight, line .. " px lines: " .. height)
-			assert.are.equal(3 * S.rowHeight, parts.gearRows)
+			assert.is_true(height <= BuildDialog.PREVIEW_MAX_HEIGHT, line .. " px lines: " .. height)
+			assert.are.equal(BuildDialog.GEAR_VISIBLE * BuildDialog.GEAR_PITCH, parts.gearRows)
 			assert.is_true(parts.hintClearance >= 10)
 			assert.are.equal(8, parts.aboveReplaces)
 			-- Fix 4, 9: the gaps the frame draws (S.gap / 2 between the header's lines).
 			assert.are.equal(math.max(S.dialogClassIcon, line * 3 + S.gap) + BuildDialog.LAYOUT.previewGap, parts.header)
 			assert.are.equal(line * 2 + S.gap / 2, parts.context)
 		end
-		assert.are.equal(20, BuildDialog.GEAR_PITCH)
+		assert.are.equal(32, BuildDialog.GEAR_PITCH)
+		assert.are.equal(4, BuildDialog.GEAR_VISIBLE)
 	end)
 
 	it("lays a build from the site out with a fourth header line and no code, and grows by each wrapped line (X.5)",
@@ -572,7 +657,7 @@ describe("BuildDialog, paste mode's model", function()
 			local S = require("Theme").SIZES
 			for _, line in ipairs({ 12, 13, 14 }) do
 				local site, parts = BuildDialog.previewLayout(line, 2, true)
-				assert.is_true(site <= S.dialogHeight, line .. " px lines: " .. site)
+				assert.is_true(site <= BuildDialog.PREVIEW_MAX_HEIGHT, line .. " px lines: " .. site)
 				assert.are.equal(0, parts.code)
 				assert.are.equal(math.max(S.dialogClassIcon, line * 4 + S.gap / 2 * 3) + BuildDialog.LAYOUT.previewGap,
 					parts.header)
@@ -597,7 +682,7 @@ describe("BuildDialog, paste mode's model", function()
 		assert.is_truthy(context.replaces:find("A very long build name the site sent for this character", 1, true))
 		assert.is_truthy(context.replaces:find("Improved Heroic Strike (Arms)", 1, true))
 		local short = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21)
-		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", "3 points", 1, "Improved Heroic Strike (Arms)"),
 			short.replaces)
 	end)
 
@@ -605,8 +690,9 @@ describe("BuildDialog, paste mode's model", function()
 		local S = require("Theme").SIZES
 		assert.are.equal(72, S.dialogSlotColumn)
 		local row = BuildDialog.pickRowLayout(352)
+		-- The source is the row's second line, from the icon's left, the whole room under the item.
 		assert.are.same({ slot = 0, icon = 72, name = 72 + S.iconSize + S.gap * 2,
-			nameWidth = 352 - 72 - S.iconSize - S.gap * 2 }, row)
+			nameWidth = 352 - 72 - S.iconSize - S.gap * 2, source = 72, sourceWidth = 352 - 72 }, row)
 	end)
 
 	it("reads the client's slot words, else the addon's own", function()
@@ -740,11 +826,39 @@ describe("BuildDialog, copy mode's model", function()
 	end)
 
 	it("says the site saw this export when the ack is at or after the save", function()
-		assert.are.equal(string.format(L.dialogSeen, "14:03"),
-			model({ ack = ACK, savedAt = "2026-11-04 14:02" }).seen)
-		assert.are.equal(string.format(L.dialogSeen, "15:03"),
-			model({ ack = ACK, savedAt = "2026-11-04 15:02", clock = BuildDialog.utcClock(3600, NOV4_1402) }).seen)
-		assert.are.equal(string.format(L.dialogSeen, "14:03"), model({ ack = ACK }).seen)
+		-- A.2: an age on the chat's clock, never a time of day (the ack is 14:03; now is 15:02).
+		assert.are.equal("Site has your save from 59 min ago", model({ ack = ACK, savedAt = "2026-11-04 14:02" }).seen)
+		assert.are.equal(string.format(L.dialogSeen, "59 min ago"), model({ ack = ACK }).seen)
+		-- The same age whatever the player's offset from UTC: it is a difference of two instants.
+		assert.are.equal("Site has your save from 59 min ago",
+			model({ ack = ACK, savedAt = "2026-11-04 15:02", clock = BuildDialog.utcClock(3600, NOV4_1402 + 3600) }).seen)
+	end)
+
+	it("words an age: just now, minutes, hours and minutes, days (A.2)", function()
+		local seen = BuildDialog.parseUtc(ACK.export_seen_at)
+		local function ago(seconds)
+			return BuildDialog.ago(seen, BuildDialog.utcClock(0, seen + seconds))
+		end
+		assert.are.equal("just now", ago(0))
+		assert.are.equal("just now", ago(59))
+		assert.are.equal("just now", ago(-30))
+		assert.are.equal("1 min ago", ago(60))
+		assert.are.equal("35 min ago", ago(35 * 60))
+		assert.are.equal("1 h ago", ago(3600))
+		assert.are.equal("1 h 35 min ago", ago(3600 + 35 * 60 + 20))
+		assert.are.equal("23 h 59 min ago", ago(86399))
+		assert.are.equal("1 day ago", ago(86400))
+		assert.are.equal("3 days ago", ago(3 * 86400 + 5000))
+		assert.are.equal("Site has your save from 1 h 35 min ago",
+			model({ ack = ACK, clock = BuildDialog.utcClock(0, seen + 3600 + 35 * 60) }).seen)
+		assert.are.equal("Site has your save from just now",
+			model({ ack = ACK, clock = BuildDialog.utcClock(0, seen + 10) }).seen)
+	end)
+
+	it("says nothing has been sent when no ack ever came, and nothing about a /fs link page (A.2)", function()
+		assert.are.equal("Not sent to the site yet \194\183 log out to send", model().seen)
+		assert.are.equal(L.dialogNotSent, model().seen)
+		assert.is_nil(model({ link = { url = "foreversixty.gg/x", name = "Bob" } }).seen)
 	end)
 
 	it("waits for the site after a real copy until an ack at or after it arrives (fix 3, 5)", function()
@@ -752,9 +866,9 @@ describe("BuildDialog, copy mode's model", function()
 		assert.are.equal(L.dialogWaitingSite, copied.seen)
 		assert.are.equal("Waiting for the site to see this copy. It answers at your next login.", copied.seen)
 		local seenAfter = model({ ack = ACK, savedAt = "2026-11-04 14:02", copiedAt = NOV4_1402 + 30 })
-		assert.are.equal(string.format(L.dialogSeen, "14:03"), seenAfter.seen)
-		-- No ack, no companion: nothing to wait for, the companion lines say so.
-		assert.is_nil(model({ copiedAt = NOV4_1402 }).seen)
+		assert.are.equal(string.format(L.dialogSeen, "59 min ago"), seenAfter.seen)
+		-- No ack, no companion: nothing to wait for; it was not sent, the companion lines say why.
+		assert.are.equal(L.dialogNotSent, model({ copiedAt = NOV4_1402 }).seen)
 	end)
 
 	it("keeps the copy tab's lead to the same number of lines in both states (fix 3, 7)", function()
@@ -767,7 +881,7 @@ describe("BuildDialog, copy mode's model", function()
 	end)
 
 	it("says the site's copy is older in one line (fix 5, 11)", function()
-		assert.are.equal("The site has your character from 14:03. Yours is newer.",
+		assert.are.equal("Site has your save from 59 min ago. Yours is newer: log out to send it.",
 			model({ ack = ACK, savedAt = "2026-11-04 14:05" }).seen)
 	end)
 
@@ -805,15 +919,15 @@ describe("BuildDialog, copy mode's model", function()
 		end)
 
 	it("says the site has an older character when the save is newer than the ack", function()
-		assert.are.equal(string.format(L.dialogSiteOlder, "14:03"),
+		assert.are.equal(string.format(L.dialogSiteOlder, "59 min ago"),
 			model({ ack = ACK, savedAt = "2026-11-04 14:05" }).seen)
 		local older = { export_seen_at = "2026-11-03T20:00:00Z" }
-		assert.are.equal(string.format(L.dialogSiteOlder, string.format(L.dialogYesterday, "20:00")),
+		assert.are.equal(string.format(L.dialogSiteOlder, "19 h 2 min ago"),
 			model({ ack = older, savedAt = "2026-11-04 14:00" }).seen)
 	end)
 
 	it("says nothing about the site with no ack or an unreadable one", function()
-		assert.is_nil(model().seen)
+		assert.are.equal(L.dialogNotSent, model().seen)
 		assert.is_nil(model({ ack = { export_seen_at = "yesterday" } }).seen)
 	end)
 
@@ -929,7 +1043,8 @@ describe("BuildDialog, builds from the site", function()
 		local rows = BuildDialog.inboxRows(builds, { c = true, [code(5, 0)] = true }, DATA)
 		assert.are.equal(2, #rows)
 		assert.are.same({ id = "a", name = "Arms raid", code = MINE, classToken = "WARRIOR",
-			detail = "Warrior · Arms 31 / Fury 20 · 51 points", target = "from the site" }, rows[1])
+			detail = "Warrior · Arms 31 / Fury 20", target = "", stamp = "from the site", points = "51 points" },
+			rows[1])
 		local fury = Follow.buildName(DATA, build(OTHER))
 		assert.are.equal(fury, rows[2].name)
 	end)
@@ -942,13 +1057,15 @@ describe("BuildDialog, builds from the site", function()
 			{ id = "b", name = "For anyone", code = code(5, 0) },
 			{ id = "c", name = "Pushed", code = code(6, 0), from = "Boss", character = "us/Classic Beta PvP/Bow Jackzon" },
 		}, {}, DATA, player)
-		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP \194\183 from the site", rows[1].target)
+		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP", rows[1].target)
+		assert.are.equal("from the site", rows[1].stamp)
 		-- The title the site sent is the name, verbatim.
 		assert.are.equal("20 to 29 \226\128\148 Beast Mastery", rows[1].name)
 		-- A build addressed to no one is not "for" anyone in particular.
-		assert.are.equal("from the site", rows[2].target)
-		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP \194\183 pushed by Boss", rows[3].target)
-		assert.are.equal("Warrior \194\183 Arms 31 / Fury 20 \194\183 51 points", rows[1].detail)
+		assert.are.equal("", rows[2].target)
+		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP", rows[3].target)
+		assert.are.equal("pushed by Boss", rows[3].stamp)
+		assert.are.equal("Warrior \194\183 Arms 31 / Fury 20", rows[1].detail)
 	end)
 
 	it("lays a row out three lines tall, never under the class icon's height (X.5)", function()
@@ -1133,5 +1250,104 @@ describe("BuildDialog, the frame's pure rules", function()
 		_G.ForeverSixtyDB = savedDB
 		BuildDialog.place = realPlace
 		assert.are.equal(1, placed)
+	end)
+end)
+
+describe("BuildDialog, the gear row's source and the build's title (A.2)", function()
+	it("says where an item comes from, in full, in the words the ruling gives", function()
+		local drop = { kind = "D", source = "Wailing Caverns: Lady Anacondra", chance = 0.2 }
+		assert.are.equal("Wailing Caverns \194\183 Lady Anacondra \194\183 20% drop", BuildDialog.sourceText(drop, {}))
+		local vendor = { kind = "V", source = "Darnassus" }
+		assert.are.equal("Vendor \194\183 Darnassus", BuildDialog.sourceText(vendor, {}))
+		assert.are.equal("Quest \194\183 A neck quest", BuildDialog.sourceText({ kind = "Q", source = "A neck quest" }, {}))
+		-- Nothing known: said so, never a bare gap.
+		assert.are.equal("Source unknown", BuildDialog.sourceText(nil, {}))
+		assert.are.equal("Source unknown", BuildDialog.sourceText({ kind = "D" }, {}))
+		assert.are.equal("Source unknown", L.dialogSourceUnknown)
+	end)
+
+	it("says the character can craft an item only when it has the profession", function()
+		local crafted = { kind = "C", source = "Leatherworking" }
+		assert.are.equal("Leatherworking \194\183 you can craft this",
+			BuildDialog.sourceText(crafted, { leatherworking = true }))
+		assert.are.equal("Crafted \194\183 Leatherworking", BuildDialog.sourceText(crafted, { tailoring = true }))
+		assert.are.equal("Crafted \194\183 Leatherworking", BuildDialog.sourceText(crafted, nil))
+		assert.are.equal("Crafted", BuildDialog.sourceText({ kind = "C" }, { leatherworking = true }))
+	end)
+
+	it("cuts a source only between words, the boss and the drop chance last to go", function()
+		local measure = function(text)
+			return utf8.len(text) * 5
+		end
+		local whole = "Wailing Caverns \194\183 Lady Anacondra \194\183 20% drop"
+		assert.are.equal(whole, BuildDialog.fitSourceText(whole, measure, 400))
+		assert.are.equal(whole, BuildDialog.fitSourceText(whole, nil, 10))
+		-- Too wide: the chance goes first, then the place shortens by whole words, never mid-word.
+		assert.are.equal("Wailing Caverns \194\183 Lady Anacondra",
+			BuildDialog.fitSourceText(whole, measure, 38 * 5))
+		assert.are.equal("Wailing\226\128\166 \194\183 Lady Anacondra",
+			BuildDialog.fitSourceText(whole, measure, 26 * 5))
+		for width = 60, 280, 5 do
+			local line = BuildDialog.fitSourceText(whole, measure, width)
+			local place = line:match("^(.-) \194\183") or line
+			assert.is_truthy(("Wailing Caverns"):find(place:gsub("\226\128\166$", ""), 1, true), line)
+		end
+	end)
+
+	it("puts the sender and the day beside the size on a site build's title, cutting only the name", function()
+		local measure = function(text)
+			return utf8.len(text) * 5
+		end
+		assert.are.equal("Beast Mastery build \194\183 from the site, 22 Oct \194\183 15 points",
+			BuildDialog.siteTitle("Beast Mastery build", "from the site, 22 Oct", "15 points"))
+		local cutTitle = BuildDialog.siteTitle("A very long build name the site sent for this character",
+			"from the site, 22 Oct", "15 points", measure, 300)
+		assert.is_true(measure(cutTitle) <= 300, cutTitle)
+		assert.is_truthy(cutTitle:find("from the site, 22 Oct \194\183 15 points$"), cutTitle)
+		-- A pipe in a site-sent name is doubled, whole.
+		assert.is_truthy(BuildDialog.siteTitle("A|B", "from the site", "3 points"):find("A||B", 1, true))
+	end)
+
+	it("reads the day the inbox was written on the player's own calendar", function()
+		local clock = BuildDialog.utcClock(0, NOV4_1402)
+		assert.are.equal("22 Oct", BuildDialog.inboxDay({ generated_at = "2026-10-22T12:00:00Z" }, clock))
+		-- Late in the evening UTC is already the next day an ocean east.
+		assert.are.equal("23 Oct",
+			BuildDialog.inboxDay({ generated_at = "2026-10-22T23:00:00Z" }, BuildDialog.utcClock(3 * 3600, NOV4_1402)))
+		assert.is_nil(BuildDialog.inboxDay({}, clock))
+		assert.is_nil(BuildDialog.inboxDay({ generated_at = "soon" }, clock))
+		assert.is_nil(BuildDialog.inboxDay(nil, clock))
+	end)
+
+	it("says what the export holds in one line above its box", function()
+		local function export(level, professions, guild)
+			return Codec.encodeFS1({ dataBuild = DATA.build, classSlug = "hunter", raceSlug = "night-elf",
+				treeRanks = { {}, {}, {} }, level = level, professions = professions, guild = guild,
+				gearSlots = { { slot = "head", itemId = 12640, stats = {} }, { slot = "neck", itemId = 15411, stats = {} } } })
+		end
+		assert.are.equal("Level 24 Hunter \194\183 2 items \194\183 3 professions \194\183 your guild and realm are included",
+			BuildDialog.exportSummary(export(24, { "leatherworking", "skinning", "first-aid" },
+				{ name = "Guild", rankIndex = 1 })))
+		assert.are.equal("Level 24 Hunter \194\183 2 items \194\183 1 profession \194\183 your realm is included",
+			BuildDialog.exportSummary(export(24, { "skinning" })))
+		assert.are.equal("Hunter \194\183 2 items \194\183 your realm is included", BuildDialog.exportSummary(export(nil)))
+		assert.is_nil(BuildDialog.exportSummary("not an export"))
+		assert.is_nil(BuildDialog.exportSummary(nil))
+		-- Copy mode carries it; a /fs link page holds none.
+		local model = BuildDialog.copyModel({ code = export(24), clock = BuildDialog.utcClock(0, NOV4_1402) })
+		assert.are.equal("Level 24 Hunter \194\183 2 items \194\183 your realm is included", model.summary)
+		assert.is_nil(BuildDialog.copyModel({ link = { url = "foreversixty.gg/x", name = "Bob" },
+			clock = BuildDialog.utcClock(0, NOV4_1402) }).summary)
+	end)
+
+	it("says the next point's level in the chat line after Use, and the plan's talent when it has one", function()
+		assert.are.equal("Now following Beast Mastery build. Next point at level 25.",
+			BuildDialog.chatLine("Beast Mastery build", nil, 25))
+		assert.are.equal("Now following Beast Mastery build. Next point at level 25: Focused Fire (1 of 3).",
+			BuildDialog.chatLine("Beast Mastery build", "Focused Fire (1 of 3)", 25))
+		-- With a point to spend now (no level given) the old line: the talent to take.
+		assert.are.equal("Now following Arms raid. Next: Deflection (1 of 2).",
+			BuildDialog.chatLine("Arms raid", "Deflection (1 of 2)"))
+		assert.are.equal("Now following Arms raid.", BuildDialog.chatLine("Arms raid", nil))
 	end)
 end)

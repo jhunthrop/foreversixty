@@ -101,19 +101,33 @@ function TalentMarks.stripSegments(name, progress, state)
 	segments[#segments + 1] = { kind = "count", text = string.format(L.talentStripCount, matched, total) }
 	local action
 	if progress.point == nil then
-		action = L.talentStripDone
+		if (state.unspent or 0) == 0 and type(state.nextLevel) == "number" then
+			action = string.format(L.talentStripDoneNext, state.nextLevel)
+		else
+			action = L.talentStripDone
+		end
 	elseif (state.unspent or 0) > 0 then
 		action = string.format(L.talentStripSpend, state.unspent)
 	elseif progress.nextLevel ~= nil then
-		action = string.format(L.talentStripNext, progress.nextLevel)
+		if state.pointName ~= nil then
+			action = string.format(L.talentStripNextAt, progress.nextLevel, state.pointName)
+		else
+			action = string.format(L.talentStripNext, progress.nextLevel)
+		end
 	end
 	if action ~= nil then
 		segments[#segments + 1] = { kind = "action", text = action }
 	end
+	-- Off plan shows only where something could be: a point is off plan (a warning), or the plan
+	-- has more to take ("none off plan", muted); a finished plan with nothing off it says nothing.
 	local offPlan = progress.offPlan or 0
 	local warned = offPlan > 0
-	segments[#segments + 1] = { kind = "offPlan",
-		text = Theme.inlineColor(warned and "warning" or "muted", string.format(L.talentStripOffPlan, offPlan)) }
+	if warned then
+		segments[#segments + 1] = { kind = "offPlan",
+			text = Theme.inlineColor("warning", string.format(L.talentStripOffPlan, offPlan)) }
+	elseif progress.point ~= nil then
+		segments[#segments + 1] = { kind = "noneOffPlan", text = Theme.inlineColor("muted", L.talentStripNoneOffPlan) }
+	end
 	return segments, warned
 end
 
@@ -128,9 +142,10 @@ local function joinSegments(segments, dropped)
 end
 
 --- The order segments give way in when the line is wider than the pill
---- may grow: the action ("spend N now"), then the build name, then the
---- leading "Next: …". The count and the off-plan count always stay.
-TalentMarks.STRIP_SACRIFICE = { "action", "name", "next" }
+--- may grow: the muted "none off plan", then the leading "Next: …", then
+--- the build name, then the action ("next at level 25: …"). The count and
+--- a warning off-plan count always stay.
+TalentMarks.STRIP_SACRIFICE = { "noneOffPlan", "next", "name", "action" }
 
 --- The strip's line: the widest line of whole segments that fits
 --- `maxWidth` as `measure` (text -> width) reads it, never a segment cut
@@ -735,6 +750,17 @@ local function nextLabel(data, build, cells)
 	return nil
 end
 
+--- The plan's next talent's name alone ("Focused Fire"), for the strip's "next at level 25: ..."; nil
+--- once the plan is done or the data cannot name it.
+local function nextName(data, build, cells)
+	for _, cell in ipairs(cells) do
+		if cell.next then
+			return Chip.talentName(Talents.cellOf(data, build.classSlug, cell.tab, cell.tier, cell.column))
+		end
+	end
+	return nil
+end
+
 --- Whether "Marks on the talent window" is on: the one reader of the pref (L3.5 fix
 --- round 1, item 4). Off, the window carries no ring, no badges and no strip.
 function TalentMarks.enabled()
@@ -790,7 +816,8 @@ function TalentMarks.refresh(data, pass)
 	local _, decision = TalentMarks.selfCheck()
 	local segments = TalentMarks.stripSegments(Follow.buildName(data, build), Progress.build(build, ranks, level),
 		{ unspent = Progress.unspentPoints(level, ranks), next = nextLabel(data, build, cells),
-			allowed = Progress.pointsAllowed(build, level) })
+			allowed = Progress.pointsAllowed(build, level), pointName = nextName(data, build, cells),
+			nextLevel = type(level) == "number" and Progress.nextPointLevel(level, ranks) or nil })
 	local strip, host, text = drawStrip(frame, segments)
 	if pass ~= 0 then
 		-- After the show's own pass, when the client has laid the strip out.

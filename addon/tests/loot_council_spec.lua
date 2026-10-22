@@ -836,7 +836,8 @@ describe("LootCouncil", function()
 		it("says can't score and why, and the usage with no item", function()
 			start({ solo = true })
 			assert.is_truthy(LootCouncil.command("105")[1]:find("can't score: " .. L.lootWhy.notgear, 1, true))
-			assert.are.equal("Type /fs loot and an item link or id to see what it is worth to you.", LootCouncil.command("")[1])
+			assert.are.equal("Type /fs loot, then shift-click an item, to see what it is worth to you.",
+				LootCouncil.command("")[1])
 			assert.is_truthy(LootCouncil.command("102")[1]:find(L.lootWhy.cantuse, 1, true))
 		end)
 
