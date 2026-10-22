@@ -255,6 +255,12 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			s.LastSync = LastSyncView{State: SyncNone, Line: CopyNoCharactersSent}
 			return s
 		}},
+		{"status-addon-installed-no-character.json", func() Snapshot {
+			s := addonRow(base(credited), 1, addonView(true, "2.0.15", "2026.10.21", "", "", false))
+			s.AddonLine, s.AddonNever, s.AddonHelp = CopyNeverSynced, true, CopyNoCharacterYetHelp
+			s.LastSync = LastSyncView{State: SyncNone, Line: CopyNoCharactersSent}
+			return s
+		}},
 		{"status-addon-stale.json", func() Snapshot {
 			s := base(credited)
 			s.AddonLine, s.AddonStale, s.AddonHelp = "Last synced 3 days ago", true, CopyStaleHelp

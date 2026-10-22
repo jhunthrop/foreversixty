@@ -101,7 +101,11 @@ type App struct {
 	// signedOut is set when the site refused the device token, until the
 	// next sign-in succeeds; guarded by mu.
 	signedOut *SignedOut
-	installs  []wow.Install
+	// failSaid is the last failure each per-tick step logged, so a step that fails
+	// every second says so once and not every second (see saidFailure).
+	failMu   sync.Mutex
+	failSaid map[string]string
+	installs []wow.Install
 	// watching is the Logs directory the tail is pointed at. The
 	// settings page can move it; retarget does the move.
 	watching string
@@ -915,11 +919,11 @@ func (a *App) Snapshot() Snapshot {
 	}
 	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
 	s.AddonNever = st.SeenAt.IsZero()
+	s.AddonUpdate = a.addonUpdateView()
 	if s.AddonNever {
-		s.AddonHelp = CopyNeverSyncedHelp
+		s.AddonHelp = neverSyncedHelp(s.AddonUpdate)
 	}
 	s.LastSync = a.lastSyncView(st, now)
-	s.AddonUpdate = a.addonUpdateView()
 	if !st.SeenAt.IsZero() {
 		local := st.SeenAt.In(now.Location())
 		s.AddonSeenAt, s.SimRequestState = &local, st.SimRequestState
@@ -939,7 +943,7 @@ func (a *App) Step(ctx context.Context, now time.Time) {
 	a.retarget()
 	// The addon updater needs no sign-in, so it ticks before anything that does.
 	a.tickAddons(now)
-	if err := a.pipe.Tick(now); err != nil {
+	if err := a.pipe.Tick(now); a.saidFailure("tail", err) {
 		a.log.Error("the tail failed", "component", "app", "err", err.Error())
 	}
 	// A heartbeat the site refused has stopped itself; the signed-out
@@ -954,7 +958,11 @@ func (a *App) Step(ctx context.Context, now time.Time) {
 		if client.Unauthorized(err) {
 			return // already signed out; the pipeline logged the attempt
 		}
-		a.log.Error("a live snapshot failed", "component", "app", "err", err.Error())
+		if a.saidFailure("live", err) {
+			a.log.Error("a live snapshot failed", "component", "app", "err", err.Error())
+		}
+	} else {
+		a.saidFailure("live", nil)
 	}
 	a.mu.Lock()
 	signedOut := a.signedOut != nil
@@ -966,17 +974,27 @@ func (a *App) Step(ctx context.Context, now time.Time) {
 		if a.signOutIfRefused(err, tok) {
 			return
 		}
-		a.log.Warn("uploads are behind", "component", "app", "err", err.Error())
+		if a.saidFailure("drain", err) {
+			a.log.Warn("uploads are behind", "component", "app", "err", err.Error())
+		}
+	} else {
+		a.saidFailure("drain", nil)
 	}
 	if err := a.sync.Poll(ctx, now); err != nil {
 		if a.signOutIfRefused(err, tok) {
 			return
 		}
-		a.log.Warn("the addon sync did not complete", "component", "app", "err", err.Error())
+		if a.saidFailure("addonsync", err) {
+			a.log.Warn("the addon sync did not complete", "component", "app", "err", err.Error())
+		}
+	} else {
+		a.saidFailure("addonsync", nil)
 	}
 	if staged, err := a.updater.Poll(ctx, now); err != nil {
-		a.log.Warn("the update check failed", "component", "app", "err", err.Error())
-	} else if staged {
+		if a.saidFailure("updatecheck", err) {
+			a.log.Warn("the update check failed", "component", "app", "err", err.Error())
+		}
+	} else if a.saidFailure("updatecheck", nil); staged {
 		a.log.Info("an update is ready and will be applied on the next launch",
 			"component", "app")
 	}
@@ -1077,6 +1095,18 @@ func (a *App) signOutIfRefused(err error, tok string) bool {
 		// used; the refusal belongs to the old one.
 		return true
 	}
+	if !a.connectedBefore() {
+		// A token left in the system store by an earlier install, refused on
+		// the first call this home ever makes: nothing was lost here, so the
+		// card reads as a first run and not as a sign-in that lapsed.
+		if cerr := a.o.Secret.Clear(); cerr != nil {
+			a.log.Error("could not forget the refused device token", "component", "app", "err", cerr.Error())
+		}
+		a.forgetToken()
+		a.log.Info("a device token left by an earlier install was refused; starting as a first run",
+			"component", "app", "err", err.Error())
+		return true
+	}
 	a.signedOut = &SignedOut{Reason: SignedOutRevoked, AccountLabel: a.cfg.AccountLabel, At: a.now()}
 	if cerr := a.o.Secret.Clear(); cerr != nil {
 		a.log.Error("could not forget the refused device token", "component", "app", "err", cerr.Error())
@@ -1093,4 +1123,38 @@ func tokenNote(b secret.Backend) string {
 		return n
 	}
 	return secret.StoreNote(b, runtime.GOOS)
+}
+
+// connectedBefore is true when this home has been signed in: it holds who
+// the device was connected as, or the state of a report it uploaded. A home
+// with neither is a first run, whatever the system store still holds.
+// Callers hold a.mu.
+func (a *App) connectedBefore() bool {
+	if a.cfg.AccountLabel != "" {
+		return true
+	}
+	reports, err := state.List(a.o.Dirs.State)
+	return err == nil && len(reports) > 0
+}
+
+// saidFailure reports whether a step's failure is news: true the first time
+// err is seen for key and whenever its text changes, false while the same
+// failure repeats. A nil err (the step worked) forgets the failure, so the
+// next one is said again. Step runs every second, and a step that fails
+// every second must reach the log once, not once a second.
+func (a *App) saidFailure(key string, err error) bool {
+	a.failMu.Lock()
+	defer a.failMu.Unlock()
+	if err == nil {
+		delete(a.failSaid, key)
+		return false
+	}
+	if a.failSaid == nil {
+		a.failSaid = map[string]string{}
+	}
+	if a.failSaid[key] == err.Error() {
+		return false
+	}
+	a.failSaid[key] = err.Error()
+	return true
 }

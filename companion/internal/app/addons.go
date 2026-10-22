@@ -46,6 +46,8 @@ type AddonUpdateView struct {
 	Enabled bool               `json:"enabled"`
 	Lines   []AddonVersionLine `json:"lines"`
 	Offers  []AddonOffer       `json:"offers"`
+	// hasAddon is true when any install has the addon folder.
+	hasAddon bool
 }
 
 // addonUpdatesOn is the switch, read for the updater on its own goroutine.
@@ -127,6 +129,7 @@ func buildAddonView(on, keyed bool, installs []addonInstall) AddonUpdateView {
 			with++
 		}
 	}
+	view.hasAddon = with > 0
 	for _, in := range installs {
 		if !in.View.Addon.Present {
 			view.Lines = append(view.Lines, AddonVersionLine{Text: CopyAddonNotFound(in.Folder), Tone: "muted"})
@@ -176,4 +179,14 @@ func (a *App) InstallAddon(ctx context.Context, path string) error {
 	}
 	a.log.Warn("the addon could not be installed", "component", "app", "install", path, "err", err.Error())
 	return fault(CodeAddonInstall, err)
+}
+
+// neverSyncedHelp is the muted line under "Not synced yet". It means that no
+// export has arrived: when an install already has the addon the player needs
+// only the first logout, and only when none has it is the install the step.
+func neverSyncedHelp(v AddonUpdateView) string {
+	if v.hasAddon {
+		return CopyNoCharacterYetHelp
+	}
+	return CopyNeverSyncedHelp
 }
