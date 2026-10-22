@@ -18,3 +18,13 @@
 | game-08-options.jpg | Options → AddOns → Forever Sixty: nine switches with one-line explanations, "Reset positions", and a Commands list cut off by the panel's bottom edge |
 
 Observed, for the reviews: the preview says "at 60" for a level-24 build; the preview's gear list stops after three rows with the rest of the panel empty; the Options page's Commands list is clipped; the "Build complete" line names no next step (the next point comes at level 25); "Seen by the site 02:21 pm" is the local clock while the game shows 03:56.
+
+## After A.2 (four commits, merged `44fc76a5`), verified at a normal login
+
+| File | What it shows |
+|---|---|
+| game-09-chip-build-complete-next-level.jpg | The line beside the minimap: "Build complete · next point at level 25" with the class icon, placed under the buff row |
+| game-10-options-commands-first.jpg | Options: Commands first (/fs, /fs copy, /fs build, /fs chip, "/fs help: all the commands"), then the switches at body size, the page scrolling |
+| game-11-help-no-tester-lines.jpg | `/fs help` without the tester lines; "/fs diag: check what is wrong" |
+
+Also seen: `/fs diag` "Site: has your save from 1 h 20 min ago (6 characters)"; the talent strip "Beast Mastery build · 15 of 15 points · complete · next point at level 25". Three A.2 rounds were needed for the line: the buff-frame anchor, then `SetWidth(0)` on the font string, then the finished-plan idle state that A.1 had left as the icon alone.
