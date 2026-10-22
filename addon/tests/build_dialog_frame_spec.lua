@@ -294,8 +294,75 @@ describe("BuildDialog, the preview's gear rows carry a source", function()
 		local rows = BuildDialog.paste.preview.picks
 		assert.are.equal("Blackrock Depths \194\183 Lord Roccor \194\183 12% drop", rows[1].source:GetText())
 		assert.is_true(rows[1].source:IsShown())
-		assert.are.equal("", rows[2].source:GetText())
-		assert.is_false(rows[2].source:IsShown())
+		-- A.2: a row no pick names says so, whole, on its second line.
+		assert.are.equal(require("Locale").dialogSourceUnknown, rows[2].source:GetText())
+		assert.are.equal("Source unknown", rows[2].source:GetText())
+		assert.is_true(rows[2].source:IsShown())
+	end)
+
+	it("lists every slot the heading counts, scrolling the rows inside the window (A.2)", function()
+		local slots = { "head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs", "feet",
+			"finger1", "finger2", "trinket1", "ranged" }
+		local gear = {}
+		for index, slot in ipairs(slots) do
+			gear[index] = { slot = slot, itemId = 12640 + index, stats = {} }
+		end
+		-- Fifteen points: a level 24 build, whatever level the character is.
+		local order = {}
+		for index = 1, 15 do
+			order[index] = { tab = 1, tier = 1, column = 1 }
+		end
+		local code = require("Codec").encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = order,
+			gear = gear })
+		BuildDialog.paste.box:SetText(code)
+		BuildDialog.paste.box:GetScript("OnTextChanged")(BuildDialog.paste.box, true)
+		local preview = BuildDialog.paste.preview
+		assert.are.equal("Gear in this build \194\183 level 24 \194\183 14 of 17 slots", preview.heading:GetText())
+		-- Four rows show at once, the other ten are the list behind them.
+		assert.are.equal(BuildDialog.GEAR_VISIBLE, #preview.picks)
+		assert.are.equal(14, #preview.entries)
+		for index = 1, BuildDialog.GEAR_VISIBLE do
+			assert.is_true(preview.picks[index].frame:IsShown())
+		end
+		assert.are.equal(12641, preview.picks[1].itemId)
+		-- The wheel over a row moves the list a row at a time, down and back up, within it.
+		local wheel = preview.picks[1].frame:GetScript("OnMouseWheel")
+		wheel(preview.picks[1].frame, -1)
+		assert.are.equal(1, preview.offset)
+		assert.are.equal(12642, preview.picks[1].itemId)
+		for _ = 1, 30 do
+			wheel(preview.picks[1].frame, -1)
+		end
+		assert.are.equal(14 - BuildDialog.GEAR_VISIBLE, preview.offset)
+		-- The ranged slot is a row like any other: the last of them.
+		assert.are.equal(12654, preview.picks[BuildDialog.GEAR_VISIBLE].itemId)
+		assert.are.equal(require("Locale").gearSlotLabels.ranged, preview.picks[BuildDialog.GEAR_VISIBLE].slot:GetText())
+		for _ = 1, 30 do
+			wheel(preview.picks[1].frame, 1)
+		end
+		assert.are.equal(0, preview.offset)
+		-- The scrollbar thumb shows while there is more than the rows shown.
+		assert.is_true(preview.bar.thumb:IsShown())
+		-- A redraw of the same build (an item's name arriving) keeps where the wheel left it; another
+		-- build starts at the top.
+		wheel(preview.picks[1].frame, -1)
+		wheel(preview.picks[1].frame, -1)
+		BuildDialog.drawPaste()
+		assert.are.equal(2, preview.offset)
+		BuildDialog.paste.box:SetText(code .. " ")
+		BuildDialog.paste.box:GetScript("OnTextChanged")(BuildDialog.paste.box, true)
+		assert.are.equal(0, preview.offset)
+	end)
+
+	it("shows a short list whole, with no scrollbar (A.2)", function()
+		local code = require("Codec").encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = {},
+			gear = { { slot = "head", itemId = 12640, stats = {} } } })
+		BuildDialog.paste.box:SetText(code)
+		BuildDialog.paste.box:GetScript("OnTextChanged")(BuildDialog.paste.box, true)
+		local preview = BuildDialog.paste.preview
+		assert.is_true(preview.picks[1].frame:IsShown())
+		assert.is_false(preview.picks[2].frame:IsShown())
+		assert.is_false(preview.bar.thumb:IsShown())
 	end)
 end)
 
@@ -443,6 +510,53 @@ describe("BuildDialog, round 4 frame checks", function()
 	end)
 end)
 
+describe("BuildDialog, copy mode says what it holds and whether the site has it (A.2)", function()
+	local state, BuildDialog
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		require("Theme").reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("puts a one-line summary of the export above its box, and says nothing has been sent without an ack", function()
+		BuildDialog.open("copy")
+		mock.runTimers(state)
+		local copy = BuildDialog.copyTab
+		assert.is_true(copy.summary:IsShown())
+		assert.are.equal(BuildDialog.exportSummary(BuildDialog.exportCode), copy.summary:GetText())
+		assert.is_truthy(copy.summary:GetText():find("your realm is included", 1, true))
+		-- The box starts under the summary, which sits under the lead.
+		assert.is_true(mock.lastCall(copy.summary, "SetPoint")[5] < 0)
+		assert.is_true(mock.lastCall(copy.field, "SetPoint")[5] < mock.lastCall(copy.summary, "SetPoint")[5])
+		assert.are.equal("Not sent to the site yet \194\183 log out to send", copy.seen:GetText())
+		assert.is_true(copy.seen:IsShown())
+	end)
+
+	it("has no summary on a /fs link page", function()
+		BuildDialog.openLink("foreversixty.gg/character/us/pvp/bob", "Bob")
+		mock.runTimers(state)
+		assert.is_false(BuildDialog.copyTab.summary:IsShown())
+	end)
+end)
+
 describe("BuildDialog, round 5 frame checks", function()
 	local state, BuildDialog, Theme
 
@@ -555,7 +669,7 @@ describe("BuildDialog, round 5 frame checks", function()
 			local text = replaces:GetText()
 			assert.is_truthy(text:find(name, 1, true), text)
 			assert.is_nil(text:find(require("Locale").ellipsis, 1, true), text)
-			assert.are.equal(2, replaces:GetStringHeight() / 14)
+			assert.are.equal(math.ceil(utf8.len(text) * 5 / 388), replaces:GetStringHeight() / 14)
 			-- It is a wrapping region: no one-line cap, and the content width.
 			assert.is_nil(mock.lastCall(replaces, "SetWordWrap"))
 			assert.is_nil(mock.lastCall(replaces, "SetMaxLines"))
@@ -570,6 +684,19 @@ describe("BuildDialog, round 5 frame checks", function()
 			assert.are.equal(BuildDialog.height - BuildDialog.chrome.top - BuildDialog.chrome.bottom,
 				BuildDialog.contentHeight)
 		end)
+
+	it("draws the Replaces line in the warning colour, the one warning before a plan changes (A.2)", function()
+		local Follow = require("Follow")
+		Follow.build = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		paste("FSB1:1.60.1.70291:warrior:112:")
+		local replaces = BuildDialog.paste.replaces
+		assert.is_truthy(replaces:GetText():find("^Replaces .- %(1 point%) \194\183 first differs at point 1"),
+			replaces:GetText())
+		local r, g, b = require("Theme").rgb(require("Theme").HEX.warning)
+		assert.are.same({ r, g, b }, { table.unpack(mock.lastCall(replaces, "SetTextColor"), 1, 3) })
+	end)
 
 	it("wraps the Next line whole too: no one-line cap, no tree cut short, the dialog grows (X.6)", function()
 		BuildDialog.open("paste")
@@ -963,10 +1090,11 @@ describe("BuildDialog, X.5 builds from the site", function()
 		local paste = open()
 		local row = paste.rows[1]
 		assert.is_true(row.frame:IsShown())
-		assert.are.equal("20 to 29 \226\128\148 Arms", row.name:GetText())
-		assert.are.equal("Warrior \194\183 Arms 3 \194\183 3 points", row.detail:GetText())
+		-- A.2: the title line carries the sender and the size; the muted lines the spec and the character.
+		assert.are.equal("20 to 29 \226\128\148 Arms \194\183 from the site \194\183 3 points", row.name:GetText())
+		assert.are.equal("Warrior \194\183 Arms 3", row.detail:GetText())
 		assert.is_nil(row.detail:GetText():find("|", 1, true))
-		assert.are.equal("For Bob \194\183 Ashbringer \194\183 from the site", row.target:GetText())
+		assert.are.equal("For Bob \194\183 Ashbringer", row.target:GetText())
 		assert.is_not_nil(mock.lastCall(row.icon, "SetTexture"))
 		-- Above the box, which sits below it.
 		assert.is_true(yOf(row.frame) < yOf(paste.field))
@@ -1043,8 +1171,8 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.are.equal(BuildDialog.rows[1].id, BuildDialog.verdict.inboxId)
 		assert.is_true(paste.preview.frame:IsShown())
 		assert.is_false(paste.rows[1].frame:IsShown())
-		assert.are.equal("20 to 29 \226\128\148 Arms", paste.preview.name:GetText())
-		assert.are.equal("For Bob \194\183 Ashbringer \194\183 from the site", paste.preview.target:GetText())
+		assert.are.equal("20 to 29 \226\128\148 Arms \194\183 from the site \194\183 3 points", paste.preview.name:GetText())
+		assert.are.equal("For Bob \194\183 Ashbringer", paste.preview.target:GetText())
 		assert.is_true(paste.preview.target:IsShown())
 		assert.is_true(paste.use:IsShown())
 		assert.are.equal("Enter to use", BuildDialog.enterHint:GetText())
@@ -1057,8 +1185,8 @@ describe("BuildDialog, X.5 builds from the site", function()
 	it("moves the highlight with the arrow keys and on hover, and previews the one it is on (X.5)", function()
 		inbox(sent("First", THREE), sent("Second", OTHER))
 		local paste = open()
-		assert.are.equal("Second", paste.rows[1].name:GetText())
-		assert.are.equal("First", paste.rows[2].name:GetText())
+		assert.are.equal("Second \194\183 from the site \194\183 3 points", paste.rows[1].name:GetText())
+		assert.are.equal("First \194\183 from the site \194\183 3 points", paste.rows[2].name:GetText())
 		paste.box:GetScript("OnArrowPressed")(paste.box, "DOWN")
 		assert.is_false(paste.rows[1].edge:IsShown())
 		assert.is_true(paste.rows[2].edge:IsShown())
@@ -1070,14 +1198,25 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_true(paste.rows[2].edge:IsShown())
 		assert.is_false(paste.rows[1].edge:IsShown())
 		paste.box:GetScript("OnEnterPressed")(paste.box)
-		assert.are.equal("First", paste.preview.name:GetText())
+		assert.are.equal("First \194\183 from the site \194\183 3 points", paste.preview.name:GetText())
 	end)
 
 	it("previews a clicked row", function()
 		inbox(sent("First", THREE), sent("Second", OTHER))
 		local paste = open()
 		paste.rows[2].frame:GetScript("OnClick")(paste.rows[2].frame)
-		assert.are.equal("First", paste.preview.name:GetText())
+		assert.are.equal("First \194\183 from the site \194\183 3 points", paste.preview.name:GetText())
+	end)
+
+	it("names the day the site's build arrived, on its row and in its preview (A.2)", function()
+		-- 22 Oct 2026, 03:50 UTC: the companion wrote the inbox then.
+		_G.ForeverSixtyInbox = { format = 2, generated_at = "2026-10-22T12:00:00Z",
+			messages = { sent("Beast Mastery build", THREE) } }
+		local paste = open()
+		assert.are.equal("Beast Mastery build \194\183 from the site, 22 Oct \194\183 3 points", paste.rows[1].name:GetText())
+		paste.rows[1].frame:GetScript("OnClick")(paste.rows[1].frame)
+		assert.are.equal("Beast Mastery build \194\183 from the site, 22 Oct \194\183 3 points",
+			paste.preview.name:GetText())
 	end)
 
 	it("says it holds nothing back for a build that differs from the plan, and Use works (X.5)", function()

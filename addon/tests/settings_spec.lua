@@ -71,7 +71,7 @@ describe("SettingsPage, the switches", function()
 			{ "Save my character for the companion app",
 				"Written at logout for the companion app on your PC, so the site can read your gear and talents." },
 			{ "Ask the group about rare drops too",
-				"As the master looter you ask the group about epics. On: rares too, whatever the loot threshold." },
+				"As the master looter you ask the group about epics. On: rares too, whatever the loot threshold. Off by default." },
 		}, words)
 	end)
 
@@ -262,7 +262,7 @@ describe("SettingsPage, the command list", function()
 			"/fs loot: what an item is worth to you",
 			"/fs floor N: tag members scored under N",
 			"/fs options: open the settings page",
-			"/fs diag: what is not working",
+			"/fs diag: check what is wrong",
 			"/fs help: every command",
 		}, L.settingsCommands)
 	end)
@@ -554,7 +554,9 @@ describe("SettingsPage, the layout", function()
 		assert.is_true(layout.commandsHeading <= layout.reset - S.buttonHeight)
 		assert.is_true(layout.divider < layout.commandsHeading)
 		assert.is_true(layout.commands[1] < layout.divider)
-		assert.are.equal(#require("Locale").settingsCommands, #layout.commands)
+		-- A.2: the first four commands and the line sending the rest to /fs help, never a cut row.
+		assert.are.equal(5, #layout.commands)
+		assert.are.equal(#SettingsPage.commandLines(), #layout.commands)
 		assert.are.equal(2, #layout.data)
 		assert.is_true(layout.data[1] <= layout.commands[#layout.commands] - S.settingsLine)
 		assert.are.equal(-S.settingsLine, layout.data[2] - layout.data[1])
@@ -566,10 +568,26 @@ describe("SettingsPage, the layout", function()
 		assert.are.same(SettingsPage.layout(Theme.SIZES.settingsWidth), SettingsPage.layout(nil))
 	end)
 
-	it("sits the page on an opaque backdrop 8 px inside the canvas, hints in the muted token", function()
+	it("lists the first four commands and a line for the rest, so the list never ends in a cut row (A.2)", function()
+		local L = require("Locale")
+		assert.are.same({
+			"/fs: paste or copy a build",
+			"/fs copy: copy my character for the site",
+			"/fs build: switch between saved builds",
+			"/fs chip: show or hide the Forever Sixty line",
+			"/fs help: all the commands",
+		}, SettingsPage.commandLines())
+		assert.are.equal(4, SettingsPage.COMMANDS_SHOWN)
+		assert.are.equal("/fs help: all the commands", L.settingsCommandsMore)
+		-- /fs help still lists every one of them.
+		assert.are.equal(13, #L.settingsCommands)
+	end)
+
+	it("sits the page on an opaque backdrop 8 px inside the canvas, hints in the body token", function()
 		assert.are.equal(8, Theme.SIZES.settingsInset)
 		assert.is_true(Theme.ALPHA.window >= 0.9)
-		assert.are.equal("muted", Theme.CONTROL_STATES.toggle.hint)
+		-- A.2: the explanation lines are the body size at full contrast, not the weakest text on the page.
+		assert.are.equal("body", Theme.CONTROL_STATES.toggle.hint)
 		assert.are.equal("muted", Theme.CONTROL_STATES.toggle.edge)
 	end)
 
@@ -661,11 +679,16 @@ describe("Options, /fs help and /fs options", function()
 		assert.are_not.equal("changed", L.settingsCommands[1])
 	end)
 
-	it("adds the two muted testers lines on /fs help only", function()
+	it("keeps the testers' two lines out of /fs help and shows them on /fs help all (A.2)", function()
+		assert.are.same(Options.helpLines(), Options.handle("help"))
+		for _, line in ipairs(Options.handle("help")) do
+			assert.is_nil(line:find("For testers", 1, true))
+		end
 		local expected = Options.helpLines()
 		expected[#expected + 1] = Theme.inlineColor("muted", L.helpTesters[1])
 		expected[#expected + 1] = Theme.inlineColor("muted", L.helpTesters[2])
-		assert.are.same(expected, Options.handle("help"))
+		assert.are.same(expected, Options.handle("help all"))
+		assert.are.same(expected, Options.handle("help ALL"))
 		assert.are.same(Options.helpLines(), Options.handle("nonsense"))
 	end)
 

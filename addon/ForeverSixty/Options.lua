@@ -191,11 +191,13 @@ function Options.handle(input)
 		-- The first-login welcome again (X.7); it does not touch the stamp.
 		return SiteStatus.welcomeLines()
 	elseif command == "help" then
-		-- The player's commands, then the testers' two lines, muted (fix round 1, item 16;
-		-- fix round 3, item 5).
+		-- The player's commands; "/fs help all" adds the testers' two lines, muted (A.2: the
+		-- player's help carries nothing a tester reads).
 		local lines = Options.helpLines()
-		for _, line in ipairs(L.helpTesters) do
-			lines[#lines + 1] = Theme.inlineColor("muted", line)
+		if rest:lower() == "all" then
+			for _, line in ipairs(L.helpTesters) do
+				lines[#lines + 1] = Theme.inlineColor("muted", line)
+			end
 		end
 		return lines
 	elseif command == "options" then

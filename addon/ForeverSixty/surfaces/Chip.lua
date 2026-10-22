@@ -364,6 +364,8 @@ local function raidCheckState(input)
 		kind = "raidcheck",
 		icon = (#input.raidCheck.missing == 0) and Theme.MEDIA.gearTick or Theme.MEDIA.gearCross,
 		text = text,
+		-- A ready check's words are whole: past one line they wrap inside the chip, never cut (A.2).
+		wrap = true,
 		action = "raidlist",
 		hint = L.chipHintList,
 	}
@@ -419,8 +421,13 @@ local function completeState(input)
 		or (input.now or 0) - input.completedAt >= Theme.SIZES.completeSeconds then
 		return nil
 	end
+	-- Below the cap with no point waiting, the next point's level is the next step.
+	local text, short = L.chipComplete, nil
+	if (input.unspent or 0) == 0 and type(input.nextLevel) == "number" then
+		text, short = string.format(L.chipCompleteNext, input.nextLevel), L.chipComplete
+	end
 	return {
-		kind = "complete", icon = Theme.MEDIA.gearTick, text = L.chipComplete,
+		kind = "complete", icon = Theme.MEDIA.gearTick, text = text, short = short,
 		action = "talents", hint = L.chipHintTalents,
 	}
 end
@@ -445,7 +452,13 @@ local function idleState(input)
 	end
 	local point = input.progress ~= nil and input.progress.point or nil
 	if point ~= nil and input.pointName ~= nil then
-		idle.text = string.format(L.talentStripNextTalent, Chip.pointLabel(input.pointName, input.pointRank))
+		local label = Chip.pointLabel(input.pointName, input.pointRank)
+		if (input.unspent or 0) == 0 and type(input.nextLevel) == "number" then
+			-- Nothing to spend yet: the level the point arrives at leads, "Next at 25: Focused Fire (1 of 3)".
+			idle.text = string.format(L.chipNextAt, input.nextLevel, label)
+		else
+			idle.text = string.format(L.talentStripNextTalent, label)
+		end
 		idle.muted = true
 	end
 	return idle
@@ -931,6 +944,8 @@ function Chip.inputs(data)
 		progress = progress,
 		classIcon = Theme.classIcon(classSlug ~= nil and classSlug:upper() or nil),
 		unspent = Progress.unspentPoints(level, ranks),
+		-- The level the character's next point arrives at (nil at the cap), whatever the plan says.
+		nextLevel = type(level) == "number" and Progress.nextPointLevel(level, ranks) or nil,
 		now = Theme.now(),
 		clock = Score.clock(),
 		inCombat = Chip.combat == true or Theme.inCombat(),
@@ -1243,8 +1258,41 @@ function Chip.isDrawn()
 	return not Chip.disabled and Chip.frame ~= nil and Chip.frame:IsShown() == true
 end
 
+--- The client's buff frame when it sits where the line's default spot would be (the line's
+--- rectangle, just left of the minimap, meets it), else nil. Only asked, never written.
+function Chip.buffsInTheWay(minimap, frame)
+	local buffs = _G.BuffFrame
+	if type(buffs) ~= "table" or type(buffs.GetLeft) ~= "function" or type(minimap.GetLeft) ~= "function" then
+		return nil
+	end
+	local ok, shown = pcall(function()
+		return type(buffs.IsShown) ~= "function" or buffs:IsShown()
+	end)
+	if not ok or not shown then
+		return nil
+	end
+	local read, left, right, top, bottom = pcall(function()
+		return buffs:GetLeft(), buffs:GetRight(), buffs:GetTop(), buffs:GetBottom()
+	end)
+	local minimapLeft, minimapTop = minimap:GetLeft(), minimap:GetTop()
+	if not read or type(left) ~= "number" or type(right) ~= "number" or type(top) ~= "number"
+		or type(bottom) ~= "number" or type(minimapLeft) ~= "number" or type(minimapTop) ~= "number" then
+		return nil
+	end
+	local S = Theme.SIZES
+	local width, height = frame:GetWidth(), frame:GetHeight()
+	local chipRight = minimapLeft - S.chipMinimapGap
+	local chipLeft = chipRight - (type(width) == "number" and width or S.chip)
+	local chipBottom = minimapTop - (type(height) == "number" and height or S.chip)
+	if right > chipLeft and left < chipRight and top > chipBottom and bottom < minimapTop then
+		return buffs
+	end
+	return nil
+end
+
 --- Where the chip sits: the saved spot after a shift-drag, else just left of
---- the minimap, its top edge level with the minimap's.
+--- the minimap, its top edge level with the minimap's; where the client's buff icons
+--- are in that spot, just under them instead (A.2: clear of the buff row).
 function Chip.place()
 	local frame = Chip.frame
 	if frame == nil then
@@ -1259,6 +1307,11 @@ function Chip.place()
 	local minimap = _G.Minimap
 	local width = type(minimap) == "table" and type(minimap.GetWidth) == "function" and minimap:GetWidth() or nil
 	if type(width) == "number" and width > 0 then
+		local buffs = Chip.buffsInTheWay(minimap, frame)
+		if buffs ~= nil then
+			frame:SetPoint("TOPRIGHT", buffs, "BOTTOMRIGHT", 0, -Theme.SIZES.chipMinimapGap / 2)
+			return "buffs"
+		end
 		frame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", -(width + Theme.SIZES.chipMinimapGap), 0)
 		return "minimap"
 	end
@@ -1450,29 +1503,42 @@ local function draw(model)
 	local S = Theme.SIZES
 	local frame = Chip.ensure()
 	local chosen = model.chosen
-	Chip.icon:SetTexture(chosen.icon or Theme.UNKNOWN_ICON)
+	-- One steady icon in every state (A.2): the class icon, never the talent's, the item's or a tick
+	-- that changes under the player's eye; the words say what the state is.
 	local classIcon, classCoords = Theme.classIcon(Chip.classToken())
+	Chip.icon:SetTexture(classIcon or Theme.UNKNOWN_ICON)
 	if type(Chip.icon.SetTexCoord) == "function" then
-		if chosen.icon == classIcon then
-			-- The client's class icons share one texture, cut by coords.
-			Chip.icon:SetTexCoord(classCoords[1], classCoords[2], classCoords[3], classCoords[4])
-		elseif chosen.crop then
-			Chip.icon:SetTexCoord(Theme.ICON_CROP[1], Theme.ICON_CROP[2], Theme.ICON_CROP[3], Theme.ICON_CROP[4])
-		else
-			Chip.icon:SetTexCoord(0, 1, 0, 1)
-		end
+		Chip.icon:SetTexCoord(classCoords[1], classCoords[2], classCoords[3], classCoords[4])
 	end
-	paintIconBorder(chosen)
-	local width, shortened, usedShort = S.chip, false, false
+	paintIconBorder({})
+	local width, shortened, usedShort, height = S.chip, false, false, S.chip
+	local room = S.chipWide - S.chipTextInset
+	local wrapped = false
 	if chosen.text ~= nil and chosen.text ~= "" then
-		local fitted = Chip.fit(chosen.text, measure, S.chipWide - S.chipTextInset, chosen.short, chosen.keep)
+		local fitted = chosen.text
+		if chosen.wrap and not fits(chosen.text, measure, room) then
+			-- Whole words on as many lines as they take, inside the widest chip.
+			wrapped = true
+		else
+			fitted = Chip.fit(chosen.text, measure, room, chosen.short, chosen.keep)
+		end
+		if type(Chip.text.SetWordWrap) == "function" then
+			Chip.text:SetWordWrap(wrapped)
+		end
+		Chip.text:SetWidth(wrapped and room or 0)
 		Chip.text:SetText(fitted)
 		Chip.text:SetTextColor(Theme.rgb(Theme.HEX[chosen.muted and "muted" or "body"]))
 		Chip.text:Show()
 		shortened = fitted ~= chosen.text
 		usedShort = shortened and fitted == chosen.short
 		local textWidth = Chip.text:GetStringWidth()
-		if type(textWidth) == "number" then
+		if wrapped then
+			width = S.chipWide
+			local textHeight = type(Chip.text.GetStringHeight) == "function" and Chip.text:GetStringHeight() or nil
+			if type(textHeight) == "number" and textHeight > 0 then
+				height = math.max(S.chip, math.ceil(textHeight) + S.chipIconInset * 2)
+			end
+		elseif type(textWidth) == "number" then
 			width = math.min(S.chipWide, math.max(S.chip, math.ceil(textWidth) + S.chipTextInset))
 		else
 			width = S.chipWide
@@ -1483,6 +1549,12 @@ local function draw(model)
 	end
 	-- The chip grows leftwards from its top-right anchor.
 	frame:SetWidth(width)
+	frame:SetHeight(height)
+	-- The default spot is read again now the chip has its size and the client its layout: it
+	-- moves under the buff row where the buffs are in the way (Chip.place).
+	if not Chip.savedSpotUsable(Prefs.get("chip", "point"), Prefs.get("chip", "x"), Prefs.get("chip", "y")) then
+		Chip.place()
+	end
 	Chip.lastDraw = { width = width, shortened = shortened, usedShort = usedShort }
 	local badge = Chip.badgeText(model.waiting)
 	if badge ~= "" then

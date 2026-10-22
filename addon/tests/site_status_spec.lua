@@ -139,7 +139,7 @@ describe("what the site has and what the inbox holds", function()
 
 		it("says when the newest ack was and how many characters the site has", function()
 			inbox(ack(2 * 3600), ack(3600, "US/Ashbringer/Alice"), ack(5 * 3600, "US/Ashbringer/Cleo"))
-			assert.are.equal("Site: seen 10:00 (3 characters)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 2 h ago (3 characters)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
 		it("reads the site's ruleset key as this beta character", function()
@@ -147,12 +147,12 @@ describe("what the site has and what the inbox holds", function()
 				name = "Bow Jackzon", class = "Warrior", realm = "Classic Beta PvP", region = "us" } } }
 			state.realm, state.playerName = "Classic Beta PvP", "Bow Jackzon"
 			inbox(ack(2 * 3600, "us/pvp/bow-jackzon"))
-			assert.are.equal("Site: seen 10:00 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 2 h ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
 		it("says one character in the singular", function()
 			inbox(ack(2 * 3600))
-			assert.are.equal("Site: seen 10:00 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 2 h ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
 		it("says the day and the days gone once the newest ack is older than 24 hours", function()
@@ -164,23 +164,25 @@ describe("what the site has and what the inbox holds", function()
 
 		it("reads the newest ack for this character, not another's", function()
 			inbox(ack(10 * 3600), ack(3600, "US/Ashbringer/Alice"))
-			assert.are.equal("Site: seen 02:00 (2 characters)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 10 h ago (2 characters)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
-		-- X.5: the addon's times are the chat's clock, so "06:21" in chat and "18:20" here never sit side by side.
-		it("prints the time in the chat's 24-hour clock, and 12-hour with am and pm where the chat is (X.5)", function()
+		-- A.2: an age, never a time of day, so the chat's own clock (12 or 24 hour) cannot disagree with it.
+		it("says the age of the newest ack, the same whichever clock the chat shows (A.2)", function()
 			inbox(ack(2 * 3600), ack(30 * 60))
 			_G.CHAT_TIMESTAMP_FORMAT = nil
-			assert.are.equal("Site: seen 11:30 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 30 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 			_G.CHAT_TIMESTAMP_FORMAT = "%I:%M %p "
-			assert.are.equal("Site: seen 11:30 am (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 30 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 			inbox(ack(0))
-			assert.are.equal("Site: seen 12:00 pm (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from just now (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			inbox(ack(95 * 60))
+			assert.are.equal("Site: has your save from 1 h 35 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 			NOW = Civil.civilSeconds(2026, 10, 19, 18, 25, 0)
 			inbox(ack(5 * 60))
-			assert.are.equal("Site: seen 06:20 pm (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 5 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 			_G.CHAT_TIMESTAMP_FORMAT = nil
-			assert.are.equal("Site: seen 18:20 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 5 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
 		it("prints the Export line's build time and the login time in the same clock (X.5)", function()
@@ -279,7 +281,7 @@ describe("what the site has and what the inbox holds", function()
 			local list = lines()
 			local export = at(list, require("Export").diagLine())
 			assert.is_truthy(export)
-			assert.are.equal("Site: seen 11:00 (1 character)", list[export + 1])
+			assert.are.equal("Site: has your save from 1 h ago (1 character)", list[export + 1])
 			assert.are.equal("Inbox: 1 build waiting (Arms raid)", list[export + 2])
 		end)
 
@@ -499,7 +501,7 @@ describe("what the site has and what the inbox holds", function()
 			state.printed = {}
 			inbox(ack(10 * 60))
 			login()
-			only("the site has your gear (seen 11:50).")
+			only("the site has your gear (saved 10 min ago).")
 			assert.is_nil(_G.ForeverSixtyDB.site[KEY].gearPending)
 			state.printed = {}
 			login()
@@ -536,7 +538,7 @@ describe("what the site has and what the inbox holds", function()
 			state.printed = {}
 			inbox(ack(10 * 60))
 			login()
-			only("the site has your gear (seen 11:50).")
+			only("the site has your gear (saved 10 min ago).")
 		end)
 
 		it("reads the ack's receive time and ignores the export's own change time", function()
@@ -545,7 +547,7 @@ describe("what the site has and what the inbox holds", function()
 			acked.export_changed_at = ago(5 * 3600)
 			inbox(acked)
 			assert.are.equal(NOW - 600, SiteStatus.facts().seen)
-			assert.are.equal("Site: seen 11:50 (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
+			assert.are.equal("Site: has your save from 10 min ago (1 character)", SiteStatus.siteLine(SiteStatus.facts()))
 		end)
 
 		it("reads the record after the refresh has run", function()
@@ -641,12 +643,12 @@ describe("what the site has and what the inbox holds", function()
 		end)
 
 		it("names the line you can see, /fs, /fs help and the logout, in three sentences", function()
-			assert.are.equal("Forever Sixty is on. The small Forever Sixty line beside your minimap shows your next step.",
-				L.welcomeOn)
+			-- A.2: the name once.
+			assert.are.equal("Forever Sixty is on. The line beside your minimap shows your next step.", L.welcomeOn)
 			assert.are.equal("/fs opens the build window; builds you send from the site wait there. "
 				.. "/fs help lists the commands.", L.welcomeNext)
-			assert.are.equal("The addon saves your character when you log out; the Forever Sixty companion on your PC "
-				.. "sends it to foreversixty.gg.", L.welcomeSite)
+			assert.are.equal("Install the companion on your PC and it sends your character to foreversixty.gg "
+				.. "when you log out.", L.welcomeSite)
 			for _, text in ipairs({ L.welcomeOn, L.welcomeNext, L.welcomeSite }) do
 				assert.is_nil(text:lower():find("chip", 1, true))
 			end

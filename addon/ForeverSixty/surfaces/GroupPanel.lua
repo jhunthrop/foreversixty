@@ -655,7 +655,10 @@ function GroupPanel.summary(result)
 		if not (result.alone and dry) then
 			return nil
 		end
-		return result.levelGated and L.groupChipSummaryYouNoneLevelTest or L.groupChipSummaryYouNoneTest
+		if result.levelGated then
+			return string.format(L.groupChipSummaryYouNoneLevelTest, GroupPanel.CONSUMABLE_LEVELS.food)
+		end
+		return L.groupChipSummaryYouNoneTest
 	end
 	local lack = GroupPanel.ownLack(result)
 	if lack ~= nil then
@@ -2530,7 +2533,8 @@ function GroupPanel.handleReady()
 	if result.alone then
 		local lack = GroupPanel.ownLack(result)
 		return { lack ~= nil and string.format(L.groupReadyYou, lack)
-			or (result.levelGated and L.groupReadyYouNoneLevel or L.groupReadyYouNone) }
+			or (result.levelGated and string.format(L.groupReadyYouNoneLevel, GroupPanel.CONSUMABLE_LEVELS.food)
+				or L.groupReadyYouNone) }
 	end
 	local lines = { string.format(L.groupReadyDry, result.where or L.groupCheckStandard) }
 	local missing = GroupPanel.missingLines(result)

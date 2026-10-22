@@ -46,6 +46,8 @@ Theme.HEX = {
 	tooltipMuted = "b8b8b8",
 	--- Text on the client's tooltip that must read clearly ("Your sim").
 	tooltipText = "d0d0d0",
+	--- The client's own tooltip body white: the addon's plain lines on a player's tooltip (A.2).
+	tooltipBody = "ffffff",
 	--- The client's own tooltip gold (its item-set and "Requires" lines).
 	clientGold = "ffd100",
 	body = "e9e4d8",
@@ -193,8 +195,9 @@ Theme.SIZES = {
 	orderBadgeText = 12,
 	orderBadgeOffset = 4,
 	orderBadgePad = 6,
-	talentStrip = 24,
-	talentStripText = 12,
+	talentStrip = 26,
+	-- A.2: one size up from 12, so the strip reads at the window's distance.
+	talentStripText = 13,
 	talentWindowBorder = 8,
 	talentStripInset = 8,
 	talentStripPadding = 12,
@@ -690,10 +693,10 @@ Theme.CONTROL_STATES = {
 	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
 	--- A Settings switch (L3.5, fix round 1): on, a gold square (goldHover under the cursor,
 	--- goldPressed held) with the check in onGold; off, a 1 px outline in the muted-text grey,
-	--- body under the cursor, an inset ground while held. The hint is muted text at full alpha.
+	--- body under the cursor, an inset ground while held. The hint is body text at full alpha (A.2).
 	toggle = {
 		on = "gold", onHover = "goldHover", onPressed = "goldPressed", check = "onGold",
-		edge = "muted", edgeHover = "body", offPressed = "inset", hint = "muted",
+		edge = "muted", edgeHover = "body", offPressed = "inset", hint = "body",
 	},
 }
 Theme.PRESSED_LABEL_DROP = 1

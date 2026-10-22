@@ -114,13 +114,14 @@ describe("PlayerTooltip", function()
 		end)
 
 		-- Fix round 2, item 4: the hint names the step (/fs link reads the target).
-		it("hides the components behind Shift, with a muted hint that names the /fs link step", function()
+		it("hides the components behind Shift, with a hint that names the /fs link step, at the body white", function()
 			start(record())
 			local lines = hover()
 			assert.are.equal(2, #lines)
 			assert.are.equal(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, lines[2].text)
 			assert.are.equal("Shift: score details " .. DOT .. " target them, then /fs link", lines[2].text)
-			assert.are.same(rgbOf("tooltipMuted"), { lines[2].r, lines[2].g, lines[2].b })
+			-- A.2: the tooltip's own body contrast, not grey on grey.
+			assert.are.same(rgbOf("tooltipBody"), { lines[2].r, lines[2].g, lines[2].b })
 			assert.is_nil(lines[2].right)
 		end)
 
@@ -171,7 +172,7 @@ describe("PlayerTooltip", function()
 			local lines = hover()
 			assert.are.equal("Forever Score 700 " .. DOT .. " Uncommon " .. DOT .. " as of 3 Nov", lines[1].text)
 			assert.are.equal(L.scoreLinkAlone, lines[2].text)
-			assert.are.equal("Target them, then /fs link: site page", lines[2].text)
+			assert.are.equal("Target them, then /fs link opens their site page", lines[2].text)
 			shift = true
 			assert.are.equal(2, #hover())
 		end)
@@ -187,15 +188,17 @@ describe("PlayerTooltip", function()
 
 	describe("no logs", function()
 		-- Fix round 2, item 4: the link step shows on a no-logs player too.
-		it("reads no logs yet, muted, for a character the record does not have, then the link step", function()
+		it("reads no logs yet for a character the record does not have, then the link step, both at body white",
+			function()
 			start(record())
 			names.mouseover = { "Smoke Gouda", "" }
 			local lines = hover()
 			assert.are.equal(2, #lines)
 			assert.are.equal("Forever Score: no logs yet", lines[1].text)
-			assert.are.same(rgbOf("tooltipMuted"), { lines[1].r, lines[1].g, lines[1].b })
-			assert.are.equal("Target them, then /fs link: site page", lines[2].text)
-			assert.are.same(rgbOf("tooltipMuted"), { lines[2].r, lines[2].g, lines[2].b })
+			assert.are.same(rgbOf("tooltipBody"), { lines[1].r, lines[1].g, lines[1].b })
+			assert.are.equal("Target them, then /fs link opens their site page", lines[2].text)
+			assert.are.same(rgbOf("tooltipBody"), { lines[2].r, lines[2].g, lines[2].b })
+			assert.are.equal("ffffff", Theme.HEX.tooltipBody)
 			shift = true
 			assert.are.equal(2, #hover())
 		end)
@@ -224,6 +227,58 @@ describe("PlayerTooltip", function()
 			assert.are.same({}, hover())
 			start({ format = 3, generated = "2026-11-04", characters = {}, guilds = {} })
 			assert.are.same({}, hover())
+		end)
+	end)
+
+	-- A.2: a command hint on every hover forever is noise: it shows the first three times in a session.
+	describe("the link hint", function()
+		it("shows three times in a session on a player with no logs, then goes, the score line staying", function()
+			start(record())
+			names.mouseover = { "Smoke Gouda", "" }
+			assert.are.equal(3, PlayerTooltip.HINT_TIMES)
+			for _ = 1, 3 do
+				local lines = hover()
+				assert.are.equal(2, #lines)
+				assert.are.equal(L.scoreLinkAlone, lines[2].text)
+			end
+			for _ = 1, 3 do
+				local lines = hover()
+				assert.are.equal(1, #lines)
+				assert.are.equal(L.scoreNoLogs, lines[1].text)
+			end
+		end)
+
+		it("goes from a scored player's line too, leaving Shift: score details", function()
+			start(record())
+			for _ = 1, 3 do
+				assert.are.equal(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, hover()[2].text)
+			end
+			local after = hover()
+			assert.are.equal(2, #after)
+			assert.are.equal("Shift: score details", after[2].text)
+			assert.is_nil(after[2].text:find("/fs link", 1, true))
+			-- A record without components has only the link step: nothing after the third time.
+			names.mouseover = { "Bob", "Whitemane" }
+			assert.are.equal(1, #hover())
+		end)
+
+		it("counts only the hovers that carried it", function()
+			start(record())
+			names.mouseover = { "Smoke Gouda", "" }
+			hover()
+			players.mouseover = false
+			hover()
+			hover()
+			players.mouseover = true
+			hover()
+			assert.are.equal(2, #hover(), "the third hover that carried one")
+			assert.are.equal(1, #hover())
+		end)
+
+		it("is part of the pure section, shown unless told otherwise", function()
+			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, 20))
+			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, 20, true))
+			assert.are.equal(1, #PlayerTooltip.section(nil, true, nil, false, 20, false))
 		end)
 	end)
 

@@ -324,7 +324,8 @@ describe("the chip's hover with a build in force", function()
 		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [2] = 15 }) })
 		local Chip, Theme, L = require("Chip"), require("Theme"), require("Locale")
 		assert.are.equal("idle", Chip.current.chosen.kind)
-		assert.is_truthy(Chip.current.chosen.text:find("^Next: "))
+		-- A.2: nothing to spend yet, so the level the point arrives at leads: "Next at 25: ...".
+		assert.is_truthy(Chip.current.chosen.text:find("^Next at %d+: "))
 		assert.are.equal("|cff" .. Theme.HEX.gold .. L.addonName .. "|r|cff" .. Theme.HEX.muted
 			.. " · Marksmanship build|r", Chip.tooltipLines(Chip.current)[1])
 	end)

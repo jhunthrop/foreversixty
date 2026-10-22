@@ -1622,8 +1622,11 @@ describe("GroupPanel", function()
 			-- The player alone at 24 with nothing on: nothing missing, in chat and on the chip.
 			start({ solo = true, members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter",
 				level = 24 } }, auras = { Tester = {} } })
-			assert.are.same({ "Ready check (only you see this): nothing missing at your level." }, GroupPanel.handleReady())
-			assert.are.equal("Ready check (test): nothing missing at your level", Chip.raidCheck.text)
+			-- A.2: the chat line and the chip's toast read the same words, and say what was checked.
+			local said = "Ready check (only you see this): nothing missing at your level \194\183 "
+				.. "no flask, food or buff is expected below 35"
+			assert.are.same({ said }, GroupPanel.handleReady())
+			assert.are.equal(said, Chip.raidCheck.text)
 		end)
 
 		-- L3.7 item 46: the columns lead as the guild tab's do (Name, Level, Spec).
@@ -1670,18 +1673,27 @@ describe("GroupPanel", function()
 			assert.is_nil(GroupPanel.headerHint("name", { { level = 25 } }))
 		end)
 
-		-- L3.7 item 46: a dry run is a test, and the chip says so.
-		it("words a dry run's chip line as a test and a real check's as it was", function()
+		-- L3.7 item 46: a dry run is the player's own look; the chip says only they see it. A.2: never
+		-- "(test)" in a shipped build, and the chip and the chat line read alike.
+		it("words a dry run's chip line as the chat line says it, never as a test, and a real check's as it was",
+			function()
 			local missing = { { name = "Thorgrim", what = { "flask" } } }
-			assert.are.equal("Ready check (test): 1 missing (Thorgrim)", GroupPanel.summary({ missing = missing, dry = true }))
+			assert.are.equal("Ready check (only you see this): 1 missing (Thorgrim)",
+				GroupPanel.summary({ missing = missing, dry = true }))
 			assert.are.equal("Ready check: 1 missing (Thorgrim)", GroupPanel.summary({ missing = missing }))
-			assert.are.equal("Ready check (test): missing flask", GroupPanel.summary({ missing = missing, alone = true,
-				dry = true }))
+			assert.are.equal("Ready check (only you see this): missing flask", GroupPanel.summary({ missing = missing,
+				alone = true, dry = true }))
 			assert.are.equal("Ready check: missing flask", GroupPanel.summary({ missing = missing, alone = true }))
-			assert.are.equal("Ready check (test): nothing missing", GroupPanel.summary({ missing = {}, alone = true,
-				dry = true }))
-			assert.are.equal("Ready check (test): nothing missing at your level", GroupPanel.summary({ missing = {},
+			assert.are.equal("Ready check (only you see this): nothing missing", GroupPanel.summary({ missing = {},
+				alone = true, dry = true }))
+			assert.are.equal("Ready check (only you see this): nothing missing at your level \194\183 "
+				.. "no flask, food or buff is expected below 35", GroupPanel.summary({ missing = {},
 				alone = true, dry = true, levelGated = true }))
+			for _, key in ipairs({ "groupChipSummaryTest", "groupChipSummaryYouTest", "groupChipSummaryYouNoneTest",
+				"groupChipSummaryYouNoneLevelTest", "groupReadyDry", "groupReadyYou", "groupReadyYouNone",
+				"groupReadyYouNoneLevel" }) do
+				assert.is_nil(L[key]:find("(test)", 1, true), key)
+			end
 		end)
 
 		-- L3.7 item 48: nothing was asked of the player (every need gated by level): said so.
@@ -1695,7 +1707,8 @@ describe("GroupPanel", function()
 				spec = "hunter-marksmanship", auras = { ids = { [19705] = true }, names = {} } } }, needs, GroupPanel.spellName)
 			assert.is_falsy(at35.levelGated)
 			assert.are.same({}, at35.missing)
-			assert.are.equal("Ready check (only you see this): nothing missing at your level.", L.groupReadyYouNoneLevel)
+			assert.are.equal("Ready check (only you see this): nothing missing at your level \194\183 "
+				.. "no flask, food or buff is expected below %d", L.groupReadyYouNoneLevel)
 		end)
 
 		-- L3.7 item 48: a rogue with one poisoned hand is missing the other's.
@@ -2109,13 +2122,13 @@ describe("GroupPanel", function()
 			-- Fix round 2: the player alone, the chip names what they lack, not "1 missing (Tester)".
 			-- Fix round 3, C3: the chip's own short form, "missing ..." (no "you are").
 			assert.are.equal(string.format(L.groupChipSummaryYouTest, "flask"), Chip.raidCheck.text)
-			assert.are.equal("Ready check (test): missing flask", Chip.raidCheck.text)
+			assert.are.equal("Ready check (only you see this): missing flask", Chip.raidCheck.text)
 			assert.is_nil(Chip.raidCheck.open)
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			assert.are.same({ "Ready check (only you see this): nothing missing." }, GroupPanel.handleReady())
 			-- Fix round 4 (E): the chip says so for the dry run's 60 s, then goes.
 			assert.are.same({}, Chip.raidCheck.missing)
-			assert.are.equal("Ready check (test): nothing missing", Chip.raidCheck.text)
+			assert.are.equal("Ready check (only you see this): nothing missing", Chip.raidCheck.text)
 			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock))
 			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS))
 			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS + 1))
@@ -2123,7 +2136,7 @@ describe("GroupPanel", function()
 				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
 				raidCheck = Chip.raidCheck })
 			assert.are.equal("raidcheck", model.chosen.kind)
-			assert.are.equal("Ready check (test): nothing missing", model.chosen.text)
+			assert.are.equal("Ready check (only you see this): nothing missing", model.chosen.text)
 			-- A click on the chip prints that line.
 			local said, say = {}, Theme.say
 			Theme.say = function(text)
@@ -2131,7 +2144,7 @@ describe("GroupPanel", function()
 			end
 			pcall(Chip.printRaidCheck)
 			Theme.say = say
-			assert.are.same({ "Ready check (test): nothing missing" }, said)
+			assert.are.same({ "Ready check (only you see this): nothing missing" }, said)
 		end)
 
 		-- Fix round 5, D2: the chip's glyph says what the check found: the green tick on a clean dry
@@ -2149,7 +2162,7 @@ describe("GroupPanel", function()
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			GroupPanel.handleReady()
 			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal("Ready check (test): nothing missing", chosen().text)
+			assert.are.equal("Ready check (only you see this): nothing missing", chosen().text)
 			assert.are.equal(Theme.MEDIA.gearTick, chosen().icon)
 			-- The flask runs out while the dry run stands: the list refills and the cross returns.
 			table.remove(auras.Tester, 2)
@@ -2157,7 +2170,7 @@ describe("GroupPanel", function()
 			GroupPanel.onAura("player")
 			mock.runTimers(state)
 			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal("Ready check (test): missing flask", chosen().text)
+			assert.are.equal("Ready check (only you see this): missing flask", chosen().text)
 			assert.are.equal(Theme.MEDIA.gearCross, chosen().icon)
 		end)
 
@@ -2343,7 +2356,7 @@ describe("GroupPanel", function()
 			assert.are.equal("Group panel: open, not in a group, ready check 12:00: you are missing flask, food",
 				GroupPanel.diagLine())
 			-- Fix round 3, C3: the chip says "missing flask, food"; the diag keeps "you are missing".
-			assert.are.equal("Ready check (test): missing flask, food", Chip.raidCheck.text)
+			assert.are.equal("Ready check (only you see this): missing flask, food", Chip.raidCheck.text)
 			start({ solo = true, auras = { Tester = { aura(10938), aura(19705), aura(17627) } } })
 			GroupPanel.handleReady()
 			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelClosed,

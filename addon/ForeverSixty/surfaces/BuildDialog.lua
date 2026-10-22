@@ -30,8 +30,9 @@ local Chip = ns.Chip or require("Chip")
 local BuildDialog = {}
 
 BuildDialog.FRAME_NAME = "ForeverSixtyBuildDialog"
---- How many of the build's planned items the preview shows: the code's first three.
-BuildDialog.GEAR_PICKS = 3
+--- How many gear rows the preview shows at once: every item the code plans is a row, and the
+--- list scrolls inside the window past this many (the wheel over it).
+BuildDialog.GEAR_VISIBLE = 4
 --- The most characters a refusal's lead keeps (two lines of the dialog's text).
 BuildDialog.REASON_CHARS = 120
 --- How far an edge may sit past the screen's and still count as on it (UI px).
@@ -43,8 +44,11 @@ BuildDialog.EMPTY_LINES = 2
 BuildDialog.HINT_POINT = "BOTTOMLEFT"
 --- The collapsed code's colour: muted text on the box's inset ground.
 BuildDialog.COLLAPSED_TEXT = "muted"
---- The gear rows' pitch (Theme.SIZES.rowHeight), so their icons never touch.
-BuildDialog.GEAR_PITCH = 20
+--- The gear rows' pitch: two lines, the item on its quality colour and under it where it comes from
+--- in full (never cut beside the name, which is what the first line gives way to).
+BuildDialog.GEAR_PITCH = 32
+--- The tallest the preview may stand at its worst (px): the window grows to it, never past.
+BuildDialog.PREVIEW_MAX_HEIGHT = 380
 --- A zero-width space: a break point the export's display may wrap at where the client cannot
 --- break a run of characters itself. Never in the box's text, which Ctrl+C copies.
 BuildDialog.BREAK = "\226\128\139"
@@ -260,13 +264,103 @@ end
 
 --- "Warrior · Arms 33 / Fury 16 · 51 points", the line under a build's name in the preview and in a
 --- row from the site.
-function BuildDialog.detailLine(build, data)
+function BuildDialog.detailLine(build, data, withoutPoints)
 	local points = #build.order
 	return joined(
 		Talents.titleCase(build.classSlug),
 		points > 0 and BuildDialog.split(build, data) or nil,
-		pointsWord(points)
+		not withoutPoints and pointsWord(points) or nil
 	)
+end
+
+--- A build from the site's title line: "Beast Mastery build · from the site, 22 Oct · 15 points" --
+--- the sender and the day beside the size, so two builds of one name tell apart. The name is cut
+--- (never the rest) to what `width` leaves as `measure` measures it; whole with no measure.
+function BuildDialog.siteTitle(raw, stamp, points, measure, width)
+	local tail = joined(nil, stamp, points)
+	local room = width
+	if measure ~= nil and width ~= nil then
+		local used = measure(L.dialogSeparator .. tail)
+		room = type(used) == "number" and width - used or width
+	end
+	return joined(BuildDialog.rowText(raw, measure, room), stamp, points)
+end
+
+--- The level a build is for: a point a level from 10, so its points name it (15 points are a level
+--- 24 build, 51 a level 60 one); nil for a build with no points, which names no level.
+function BuildDialog.buildLevel(build)
+	local points = build ~= nil and build.order ~= nil and #build.order or 0
+	if points <= 0 then
+		return nil
+	end
+	return math.min(Progress.MAX_LEVEL, 9 + points)
+end
+
+--- The kinds of source whose place is worth leading with the kind: "Vendor · Darnassus".
+local KIND_FIRST = { V = true, Q = true, R = true, P = true }
+
+--- Where an item comes from, in full, as the gear row says it: "Wailing Caverns · Lady Anacondra ·
+--- 20% drop", "Vendor · Darnassus", "Leatherworking · you can craft this" when the character has the
+--- profession (`professions`, a set of profession slugs), "Crafted · Leatherworking" when not, and
+--- "Source unknown" for an item no pick names or a pick with no source.
+function BuildDialog.sourceText(pick, professions)
+	local tooltip = ns.ItemTooltip or require("ItemTooltip")
+	local first, second, percent = tooltip.sourceParts(pick)
+	if first == nil then
+		return L.dialogSourceUnknown
+	end
+	if pick.kind == "C" and type(pick.source) == "string" and pick.source ~= "" then
+		local slug = Export.slugify(pick.source)
+		if slug ~= nil and type(professions) == "table" and professions[slug] then
+			return string.format(L.dialogSourceCraftable, pick.source)
+		end
+	elseif KIND_FIRST[pick.kind] and second ~= nil then
+		first, second = second, first
+	end
+	return tooltip.sourceText(first, second, percent)
+end
+
+--- `text` (a source line, its parts joined by " · ") within `room` as `measure` measures it, cut
+--- only between words: whole; else without the drop chance; else the leading place shortened by
+--- whole words with an ellipsis, the rest kept. No measure: whole.
+function BuildDialog.fitSourceText(text, measure, room)
+	local function fits(value)
+		local measured = measure ~= nil and room ~= nil and measure(value) or nil
+		return measured == nil or measured <= room
+	end
+	if fits(text) then
+		return text
+	end
+	local sep = L.dialogSeparator
+	local parts, from = {}, 1
+	while true do
+		local at = text:find(sep, from, true)
+		if at == nil then
+			parts[#parts + 1] = text:sub(from)
+			break
+		end
+		parts[#parts + 1] = text:sub(from, at - 1)
+		from = at + #sep
+	end
+	if #parts > 1 and parts[#parts]:find("%d+%% drop$") then
+		table.remove(parts)
+		local line = table.concat(parts, sep)
+		if fits(line) then
+			return line
+		end
+	end
+	local rest = #parts > 1 and sep .. table.concat(parts, sep, 2) or ""
+	local words = {}
+	for word in parts[1]:gmatch("%S+") do
+		words[#words + 1] = word
+	end
+	for count = #words - 1, 1, -1 do
+		local line = table.concat(words, " ", 1, count) .. L.ellipsis .. rest
+		if fits(line) then
+			return line
+		end
+	end
+	return table.concat(parts, sep)
 end
 
 --- What the preview shows for a build the codec loaded: the class token (for
@@ -283,29 +377,30 @@ function BuildDialog.preview(build, data, context)
 	local wordOf = context.slotWord or function(slot)
 		return BuildDialog.slotWord(slot, {})
 	end
+	-- Every slot the code carries is a row (the list scrolls), the ranged slot like any other.
 	local picks = {}
 	for _, entry in ipairs(build.gear or {}) do
-		if #picks >= BuildDialog.GEAR_PICKS then
-			break
-		end
 		if type(entry.itemId) == "number" then
 			local pick = BuildDialog.pickFor(data, build.classSlug, entry.itemId)
-			local tooltip = pick ~= nil and (ns.ItemTooltip or require("ItemTooltip")) or nil
 			picks[#picks + 1] = { itemId = entry.itemId, slot = entry.slot, slotWord = wordOf(entry.slot),
-				pick = pick, source = tooltip ~= nil and tooltip.sourceLine(pick) or nil }
+				pick = pick, source = BuildDialog.sourceText(pick, context.professions) }
 		end
 	end
 	local heading
 	if #picks > 0 then
 		heading = L.dialogGearHeading
-		if type(context.level) == "number" and context.level < Progress.MAX_LEVEL then
+		local own = BuildDialog.buildLevel(build)
+		if own ~= nil and own < Progress.MAX_LEVEL then
+			heading = string.format(L.dialogGearLevel, heading, own)
+		elseif type(context.level) == "number" and context.level < Progress.MAX_LEVEL then
 			heading = string.format(L.dialogGearAt, heading, Progress.MAX_LEVEL)
 		end
-		heading = string.format(L.dialogGearSlots, heading, #(build.gear or {}), #Codec.SLOTS)
+		heading = string.format(L.dialogGearSlots, heading, #picks, #Codec.SLOTS)
 	end
 	return {
 		classToken = build.classSlug:upper(),
 		name = escaped(Follow.buildName(data, build)),
+		rawName = Follow.buildName(data, build),
 		detail = detail,
 		placeNow = unspent > 0 and string.format(L.dialogPlaceNow, unspent) or nil,
 		picks = picks,
@@ -391,11 +486,11 @@ end
 --- The Replaces sentence: "Replaces Arms raid · same points and gear · nothing changes" / "· same
 --- points, different gear list" / "· first differs at point N: <talent (tree)>". Whole, never cut: the
 --- frame wraps it onto a second line and the dialog grows (X.5: "Replaces Beast Ma…" decided a click).
-local function replacesLine(raw, at, parts, sameFormat)
+local function replacesLine(raw, size, at, parts, sameFormat)
 	if at == nil then
-		return string.format(sameFormat, escaped(raw))
+		return string.format(sameFormat, escaped(raw), size)
 	end
-	return string.format(L.dialogReplacesDiffers, escaped(raw), at, talentText(parts, nil, false))
+	return string.format(L.dialogReplacesDiffers, escaped(raw), size, at, talentText(parts, nil, false))
 end
 
 --- The Next line: "Next talent would be: Take <talent (tree, rank)>", whole. Like the Replaces
@@ -443,17 +538,18 @@ function BuildDialog.previewContext(followed, candidate, ranks, data, level)
 	local prefix = false
 	if followed ~= nil and candidate ~= nil then
 		local raw = Follow.buildName(data, followed)
+		local size = pointsWord(#followed.order)
 		local at = BuildDialog.firstDifference(followed.order, candidate.order)
 		if at == nil then
 			local same = sameGear(followed, candidate) and L.dialogReplacesSameAll or L.dialogReplacesSameOrder
-			context.replaces = replacesLine(raw, nil, nil, same)
+			context.replaces = replacesLine(raw, size, nil, nil, same)
 		elseif candidate.order[at] == nil then
 			prefix = true
 			context.replaces = string.format(L.dialogSameAsPlan, pointsWord(#candidate.order),
 				talentText(talentParts(followed, data, followed.order[at]), false, false))
 			context.blocked = L.dialogUseFurther
 		else
-			context.replaces = replacesLine(raw, at, talentParts(candidate, data, candidate.order[at]), nil)
+			context.replaces = replacesLine(raw, size, at, talentParts(candidate, data, candidate.order[at]), nil)
 		end
 	end
 	local spent = Progress.pointsSpent(ranks)
@@ -470,7 +566,7 @@ end
 --- The preview's worst case laid out at `line` px a text line (Theme.SIZES and LAYOUT): the
 --- title and tabs, the collapsed code (a pasted build) or none (a build from the site, whose
 --- header takes a fourth line for the character it is for), the name, spec and "You can place N
---- now." beside the class icon, the gear heading and three rows at GEAR_PITCH, 8 px, `contextLines`
+--- now." beside the class icon, the gear heading and GEAR_VISIBLE rows at GEAR_PITCH, 8 px, `contextLines`
 --- of "Replaces" and "Next talent would be" (two; each wrapped line of the replace sentence and the
 --- "ends at" sentence adds one, and the dialog grows by it, BuildDialog.fitHeight), the button,
 --- and the hint under it with its clearance. The total, and the parts by name.
@@ -483,7 +579,7 @@ function BuildDialog.previewLayout(line, contextLines, fromSite)
 		code = fromSite and 0 or math.max(S.rowHeight, line + S.gap * 2) + G.codeGap,
 		header = math.max(S.dialogClassIcon, line * headerLines + S.gap / 2 * (headerLines - 1)) + G.previewGap,
 		gearHeading = S.dialogGearRow,
-		gearRows = BuildDialog.GEAR_PICKS * BuildDialog.GEAR_PITCH,
+		gearRows = BuildDialog.GEAR_VISIBLE * BuildDialog.GEAR_PITCH,
 		aboveReplaces = G.aboveReplaces,
 		context = line * contextLines + S.gap / 2 * (contextLines - 1),
 		buttonGap = G.buttonGap,
@@ -521,7 +617,9 @@ end
 function BuildDialog.pickRowLayout(width)
 	local S = Theme.SIZES
 	local name = S.dialogSlotColumn + S.iconSize + S.gap * 2
-	return { slot = 0, icon = S.dialogSlotColumn, name = name, nameWidth = width - name }
+	-- The source runs on the second line from the icon's left, the whole room under the item.
+	return { slot = 0, icon = S.dialogSlotColumn, name = name, nameWidth = width - name,
+		source = S.dialogSlotColumn, sourceWidth = width - S.dialogSlotColumn }
 end
 
 --- The next talent the build wants, as the chip says it ("Deflection (1 of 2)",
@@ -600,8 +698,15 @@ end
 
 --- The chat line after Use: "Now following Arms raid. Next: Deflection (1 of 2).", the
 --- name's pipes doubled so a site-sent name cannot render as markup.
-function BuildDialog.chatLine(name, nextLabel)
+function BuildDialog.chatLine(name, nextLabel, atLevel)
 	local safe = escaped(name)
+	if atLevel ~= nil then
+		-- No point to spend now: the level the next arrives at, and the plan's talent for it.
+		if nextLabel ~= nil then
+			return string.format(L.dialogNowFollowingLaterTalent, safe, atLevel, nextLabel)
+		end
+		return string.format(L.dialogNowFollowingLater, safe, atLevel)
+	end
 	if nextLabel ~= nil then
 		return string.format(L.dialogNowFollowingNext, safe, nextLabel)
 	end
@@ -716,6 +821,25 @@ local function hhmm(fields)
 	return Compat.clockText(fields.hour, fields.min)
 end
 
+--- How long ago `seconds` was, on the clock's own now: "just now" under a minute, "35 min ago",
+--- "1 h 35 min ago", "3 h ago", "2 days ago". Never a time of day.
+function BuildDialog.ago(seconds, clock)
+	local diff = math.max(0, (clock.now or 0) - seconds)
+	if diff < 60 then
+		return L.agoJustNow
+	elseif diff < 3600 then
+		return string.format(L.agoMinutes, math.floor(diff / 60))
+	elseif diff < 86400 then
+		local hours, minutes = math.floor(diff / 3600), math.floor(diff % 3600 / 60)
+		if minutes == 0 then
+			return string.format(L.agoHours, hours)
+		end
+		return string.format(L.agoHoursMinutes, hours, minutes)
+	end
+	local days = math.floor(diff / 86400)
+	return days == 1 and L.agoDay or string.format(L.agoDays, days)
+end
+
 --- Which day `seconds` was, in local time ("today", "yesterday" or "date"), its "14:02", and
 --- "2 Nov 14:02" for a date.
 local function whenParts(seconds, clock)
@@ -750,13 +874,39 @@ function BuildDialog.copyKey(key, control, focused, selected)
 	return key == "C" and control == true and focused == true and selected == true
 end
 
---- The ack's line about the export: "Seen by the site 14:03" when the site's copy is at or
+--- What the export holds in one line: "Level 24 Hunter · 14 items · 3 professions · your guild and
+--- realm are included" (a count of none is left out; "your realm is included" with no guild); nil for
+--- a code that is not an export.
+function BuildDialog.exportSummary(code)
+	if type(code) ~= "string" then
+		return nil
+	end
+	local ok, build = pcall(Codec.decodeFS1, code)
+	if not ok or type(build) ~= "table" then
+		return nil
+	end
+	local class = Talents.titleCase(build.classSlug)
+	local who = build.level ~= nil and string.format(L.dialogSummaryWho, build.level, class)
+		or string.format(L.dialogSummaryWhoNoLevel, class)
+	local items = #(build.gearSlots or {})
+	local professions = #(build.professions or {})
+	return joined(
+		who,
+		items > 0 and (items == 1 and L.dialogSummaryItemOne or string.format(L.dialogSummaryItems, items)) or nil,
+		professions > 0 and (professions == 1 and L.dialogSummaryProfessionOne
+			or string.format(L.dialogSummaryProfessions, professions)) or nil,
+		build.guild ~= nil and L.dialogSummaryShared or L.dialogSummarySharedRealm
+	)
+end
+
+--- The ack's line about the export: "Site has your save from 1 h 35 min ago" when the site's copy is at or
 --- after this computer's last save (the upload follows the save, so "the same export"
---- reads as not older), "The site has your character from yesterday 22:30. Yours has
---- changed since." when it is older; nil without a readable ack.
+--- reads as not older), "Site has your save from 2 days ago. Yours is newer: log out to send it."
+--- when it is older; "Not sent to the site yet · log out to send" with no ack at all (nothing has
+--- reached the site); nil for an ack with no readable time.
 local function seenLine(ack, savedAt, clock, copiedAt)
 	if type(ack) ~= "table" then
-		return nil
+		return L.dialogNotSent
 	end
 	local seen = BuildDialog.parseUtc(ack.export_seen_at)
 	if copiedAt ~= nil and (seen == nil or seen < copiedAt) then
@@ -768,9 +918,9 @@ local function seenLine(ack, savedAt, clock, copiedAt)
 	end
 	local saved = BuildDialog.parseLocal(savedAt, clock)
 	if saved ~= nil and seen < saved then
-		return string.format(L.dialogSiteOlder, BuildDialog.when(seen, clock))
+		return string.format(L.dialogSiteOlder, BuildDialog.ago(seen, clock))
 	end
-	return string.format(L.dialogSeen, BuildDialog.when(seen, clock))
+	return string.format(L.dialogSeen, BuildDialog.ago(seen, clock))
 end
 
 --- The ack's sim request state in words: "Sim queued for the 22:30 copy. The result arrives
@@ -862,7 +1012,8 @@ function BuildDialog.copyModel(input)
 		textHex = link ~= nil and "tooltipText" or BuildDialog.COLLAPSED_TEXT,
 		selected = code ~= nil and code ~= false,
 		lead = lead,
-		seen = seenLine(ack, input.savedAt, clock, input.copiedAt),
+		summary = link == nil and BuildDialog.exportSummary(code) or nil,
+		seen = link == nil and seenLine(ack, input.savedAt, clock, input.copiedAt) or nil,
 		sim = sim,
 		simNext = simNext,
 		companion = companion,
@@ -908,7 +1059,7 @@ end
 --- from the site" (`player` carries the character's `name` and `realm`; a site-wide build says only
 --- where it is from). Another class's build is left out without a word (it was sent for another
 --- character of the account). The second value is the first other refusal met, for /fs inbox.
-function BuildDialog.inboxRows(builds, dismissed, data, player)
+function BuildDialog.inboxRows(builds, dismissed, data, player, stamp)
 	local rows, refusal = {}, nil
 	dismissed = dismissed or {}
 	for _, entry in ipairs(builds or {}) do
@@ -924,8 +1075,11 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 					code = entry.code,
 					from = entry.from,
 					classToken = verdict.build.classSlug:upper(),
-					detail = BuildDialog.detailLine(verdict.build, data),
+					detail = BuildDialog.detailLine(verdict.build, data, true),
 					target = BuildDialog.rowTarget(entry, player),
+					-- "from the site, 22 Oct" and "15 points": the title line's tail.
+					stamp = BuildDialog.rowStamp(entry, stamp),
+					points = pointsWord(#verdict.build.order),
 				}
 			elseif refusal == nil and not otherClass then
 				refusal = verdict.reason
@@ -940,16 +1094,35 @@ end
 --- only for a build addressed to a character (`entry.character`) while the player's name is known;
 --- the realm is the one the player is on, which the build was matched to (Follow.offeredTo).
 function BuildDialog.rowTarget(entry, player)
-	local source = L.dialogFromSite
-	if type(entry.from) == "string" and entry.from ~= "" then
-		source = string.format(L.dialogFromPush, entry.from)
-	end
 	local who, realm
 	if entry.character ~= nil and type(player) == "table" and type(player.name) == "string" and player.name ~= "" then
 		who = string.format(L.dialogForCharacter, player.name)
 		realm = player.realm
 	end
-	return joined(who, realm, source)
+	return joined(who, realm)
+end
+
+--- Where a waiting build came from and when: "from the site, 22 Oct" (the day the companion wrote
+--- the inbox, `day`, "22 Oct"), "pushed by <officer>" for an officer's push (it carries no day).
+function BuildDialog.rowStamp(entry, day)
+	if type(entry.from) == "string" and entry.from ~= "" then
+		return string.format(L.dialogFromPush, entry.from)
+	end
+	if type(day) == "string" and day ~= "" then
+		return string.format(L.dialogFromSiteOn, day)
+	end
+	return L.dialogFromSite
+end
+
+--- The day the inbox was written ("22 Oct", the player's own calendar), from its `generated_at`
+--- stamp; nil when there is none or it is unreadable.
+function BuildDialog.inboxDay(inbox, clock)
+	local at = type(inbox) == "table" and BuildDialog.parseUtc(inbox.generated_at) or nil
+	if at == nil or clock == nil then
+		return nil
+	end
+	local fields = clock.fields(at)
+	return Compat.shortDate(string.format("%04d-%02d-%02d", fields.year, fields.month, fields.day))
 end
 
 --- `raw` as a row shows it, escaped and cut with an ellipsis to `width` as `measure` measures it
@@ -1174,7 +1347,8 @@ end
 
 local function currentRows()
 	return BuildDialog.inboxRows(Follow.inboxBuilds(ForeverSixtyInbox, Export.characterKey()),
-		Follow.dismissedSet(), dataOf(), BuildDialog.player())
+		Follow.dismissedSet(), dataOf(), BuildDialog.player(),
+		BuildDialog.inboxDay(ForeverSixtyInbox, BuildDialog.liveClock()))
 end
 
 local SLOT_WORDS = setmetatable({}, {
@@ -1208,7 +1382,12 @@ function BuildDialog.use(code, name, inboxId)
 		BuildDialog.afterUse()
 	end
 	BuildDialog.close()
-	local line = BuildDialog.chatLine(Follow.buildName(data, build), liveNext(build))
+	local level, ranks = liveLevel(), liveRanks(data)
+	local atLevel
+	if type(level) == "number" and Progress.unspentPoints(level, ranks) == 0 then
+		atLevel = Progress.nextPointLevel(level, ranks)
+	end
+	local line = BuildDialog.chatLine(Follow.buildName(data, build), liveNext(build), atLevel)
 	local say = BuildDialog.say or Theme.say
 	say(line)
 	if from ~= nil then
@@ -1236,7 +1415,7 @@ end
 --- A "from the site" row was clicked: preview it in the same place a paste previews.
 function BuildDialog.choose(row)
 	local verdict = BuildDialog.evaluate(row.code, dataOf(), BuildDialog.player())
-	verdict.name, verdict.inboxId, verdict.target = row.name, row.id, row.target
+	verdict.name, verdict.inboxId, verdict.target, verdict.stamp = row.name, row.id, row.target, row.stamp
 	if verdict.build ~= nil then
 		-- The preview names it as the site does (Follow.buildName reads the build's own name).
 		verdict.build.name = row.name
@@ -1551,27 +1730,27 @@ local function buildPickRow(parent, width)
 	local row = Theme.createFrame("Frame", nil, parent)
 	row:SetSize(width, BuildDialog.GEAR_PITCH)
 	row:EnableMouse(true)
+	-- First line: the slot word muted in its column, the icon, the item on its quality colour.
 	local slot = text(row, "muted", S.dialogSlotColumn - S.gap)
-	slot:SetPoint("LEFT", row, "LEFT", layout.slot, 0)
+	slot:SetPoint("TOPLEFT", row, "TOPLEFT", layout.slot, -S.gap / 2)
 	if type(slot.SetWordWrap) == "function" then
 		slot:SetWordWrap(false)
 	end
 	local icon = Theme.icon(row, "ARTWORK", nil, S.iconSize)
-	icon:SetPoint("LEFT", row, "LEFT", layout.icon, 0)
+	icon:SetPoint("TOPLEFT", row, "TOPLEFT", layout.icon, -S.gap / 2)
 	local name = text(row, "body", layout.nameWidth)
-	name:SetPoint("LEFT", row, "LEFT", layout.name, 0)
+	name:SetPoint("TOPLEFT", row, "TOPLEFT", layout.name, -S.gap / 2)
 	if type(name.SetWordWrap) == "function" then
 		name:SetWordWrap(false)
 	end
-	-- The pick's source (L3.7 item 31), muted, right-aligned in what the name leaves.
-	local source = text(row, "muted", 0)
-	source:SetJustifyH("RIGHT")
-	source:SetPoint("RIGHT", row, "RIGHT", 0, 0)
+	-- Second line: where the item comes from, muted and whole (BuildDialog.sourceText).
+	local source = text(row, "muted", layout.sourceWidth)
+	source:SetPoint("TOPLEFT", row, "TOPLEFT", layout.source, -(S.gap / 2 + S.iconSize + 1))
 	if type(source.SetWordWrap) == "function" then
 		source:SetWordWrap(false)
 	end
-	source:Hide()
-	local pick = { frame = row, icon = icon, name = name, slot = slot, source = source, nameRoom = layout.nameWidth }
+	local pick = { frame = row, icon = icon, name = name, slot = slot, source = source, nameRoom = layout.nameWidth,
+		sourceRoom = layout.sourceWidth }
 	Widgets.attachTooltip(row, function()
 		return pick.itemId, nil
 	end)
@@ -1616,15 +1795,30 @@ local function buildPreview(content)
 	headingFrame:SetScript("OnLeave", function()
 		Theme.hideTooltip()
 	end)
+	-- The gear rows: GEAR_VISIBLE of them, over the list the wheel scrolls (every item is a row).
 	local picks = {}
-	for index = 1, BuildDialog.GEAR_PICKS do
+	for index = 1, BuildDialog.GEAR_VISIBLE do
 		picks[index] = buildPickRow(preview, width)
 	end
-	preview:Hide()
-	return {
+	local area = Theme.createFrame("Frame", nil, preview)
+	area:SetSize(width, BuildDialog.GEAR_VISIBLE * BuildDialog.GEAR_PITCH)
+	local bar = Widgets.scrollbar(area, area, Theme.SIZES.gap)
+	local result = {
 		frame = preview, icon = icon, name = name, detail = detail, target = target, placeNow = placeNow,
-		headingFrame = headingFrame, heading = heading, picks = picks,
+		headingFrame = headingFrame, heading = heading, picks = picks, area = area, bar = bar,
+		offset = 0, entries = {},
 	}
+	local function wheel(_, delta)
+		BuildDialog.scrollGear(-delta)
+	end
+	headingFrame:EnableMouseWheel(true)
+	headingFrame:SetScript("OnMouseWheel", wheel)
+	for _, pick in ipairs(picks) do
+		pick.frame:EnableMouseWheel(true)
+		pick.frame:SetScript("OnMouseWheel", wheel)
+	end
+	preview:Hide()
+	return result
 end
 
 --- One build from the site as a row (X.5): the class icon, the name, the detail ("Hunter · Beast
@@ -1778,7 +1972,8 @@ local function buildPaste(frame, top, bottom)
 	-- whole), what Use replaces and, above it, where the candidate stops short; the last two
 	-- wrap whole (X.5). Beside the button, why it is held back.
 	paste.nextWould = text(content, "muted", width)
-	paste.replaces = text(content, "muted", width)
+	-- The only warning before a plan changes: the warning colour, not the muted body.
+	paste.replaces = text(content, "warning", width)
 	paste.short = text(content, "muted", width)
 	paste.useReason = text(content, "muted", width - Theme.SIZES.buttonWidth - S.gap * 2)
 	paste.useReason:SetPoint("LEFT", paste.use, "RIGHT", S.gap * 2, 0)
@@ -1881,6 +2076,9 @@ local function buildCopy(frame, top, bottom)
 	-- Measures the lead's two states unwrapped, so the box under it never moves.
 	copy.probe = text(content, "body")
 	copy.probe:Hide()
+	copy.summary = text(content, "muted", width)
+	setMaxLines(copy.summary, 2)
+	copy.summary:Hide()
 	copy.seen = text(content, "muted", width)
 	setMaxLines(copy.seen, 2)
 	copy.sim = text(content, "muted", width)
@@ -1989,26 +2187,76 @@ end
 --- The row's source beside its name (L3.7 item 31): the item tooltip's own text fitted to what the
 --- name leaves (at most 60% of the row is the name's), the boss never cut (ItemTooltip.fitSource);
 --- hidden where no pick names the item or nothing fits.
-function BuildDialog.fitSource(pick, entry)
-	local S = Theme.SIZES
-	local room = pick.nameRoom
-	pick.name:SetWidth(room)
-	pick.source:SetText("")
-	pick.source:Hide()
-	if entry.pick == nil then
-		return
-	end
-	local tooltip = ns.ItemTooltip or require("ItemTooltip")
-	local nameWidth = type(pick.name.GetStringWidth) == "function" and pick.name:GetStringWidth() or 0
-	local sourceRoom = room - math.min(nameWidth, math.floor(room * 0.6)) - S.gap * 2
-	local lines = tooltip.fitSource(entry.pick, widthOf(pick.source), sourceRoom)
-	if #lines ~= 1 then
-		return
-	end
-	pick.source:SetText(lines[1])
-	pick.source:SetWidth(sourceRoom)
-	pick.name:SetWidth(room - sourceRoom - S.gap * 2)
+function BuildDialog.fitSource(pick, entry, room)
+	room = room or pick.sourceRoom
+	pick.source:SetWidth(room)
+	pick.source:SetText(BuildDialog.fitSourceText(entry.source or L.dialogSourceUnknown, widthOf(pick.source), room))
 	pick.source:Show()
+end
+
+--- Draw the gear rows from `preview.entries` at `preview.offset` (the wheel's): each row its slot,
+--- icon, item on its quality colour and, under it, the whole source; the scrollbar beside them when
+--- the list is longer than the rows shown. The height the rows take (the window's, whole rows).
+function BuildDialog.paintGear()
+	local paste = BuildDialog.paste
+	local preview = paste ~= nil and paste.preview or nil
+	if preview == nil then
+		return 0
+	end
+	local S = Theme.SIZES
+	local total, visible = #preview.entries, BuildDialog.GEAR_VISIBLE
+	local scrolls = total > visible
+	local shown = math.min(total, visible)
+	local width = contentWidth() - (scrolls and S.scrollbar + S.gap * 2 or 0)
+	local layout = BuildDialog.pickRowLayout(width)
+	preview.area:ClearAllPoints()
+	preview.area:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", 0, -(preview.top or 0))
+	preview.area:SetSize(width, math.max(1, shown * BuildDialog.GEAR_PITCH))
+	if total > 0 then
+		preview.area:Show()
+	else
+		preview.area:Hide()
+	end
+	for index, pick in ipairs(preview.picks) do
+		local entry = preview.entries[(preview.offset or 0) + index]
+		pick.itemId = entry ~= nil and entry.itemId or nil
+		if entry == nil or index > shown then
+			pick.frame:Hide()
+		else
+			pick.frame:SetWidth(width)
+			pick.nameRoom, pick.sourceRoom = layout.nameWidth, layout.sourceWidth
+			pick.name:SetWidth(layout.nameWidth)
+			pick.slot:SetText(entry.slotWord)
+			pick.icon:SetTexture(Compat.itemIcon(entry.itemId) or Theme.UNKNOWN_ICON)
+			local name = Compat.itemName(entry.itemId)
+			if name == nil then
+				BuildDialog.pending[entry.itemId] = true
+			end
+			pick.name:SetText(name or "")
+			pick.name:SetTextColor(Theme.qualityColor(Compat.itemQuality(entry.itemId)))
+			BuildDialog.fitSource(pick, entry)
+			pick.frame:ClearAllPoints()
+			pick.frame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", 0,
+				-((preview.top or 0) + (index - 1) * BuildDialog.GEAR_PITCH))
+			pick.frame:Show()
+		end
+	end
+	local range = math.max(0, total - visible)
+	preview.bar:Update(total > 0 and math.min(1, visible / total) or 1, range > 0 and (preview.offset or 0) / range or 0)
+	return shown * BuildDialog.GEAR_PITCH
+end
+
+--- The wheel over the gear list: `rows` rows down (negative: up), within the list. The new offset.
+function BuildDialog.scrollGear(rows)
+	local paste = BuildDialog.paste
+	local preview = paste ~= nil and paste.preview or nil
+	if preview == nil then
+		return 0
+	end
+	local range = math.max(0, #preview.entries - BuildDialog.GEAR_VISIBLE)
+	preview.offset = math.max(0, math.min(range, (preview.offset or 0) + rows))
+	BuildDialog.paintGear()
+	return preview.offset
 end
 
 local function drawPreview(verdict, y)
@@ -2017,9 +2265,15 @@ local function drawPreview(verdict, y)
 	local preview = paste.preview
 	local data = dataOf()
 	local ranks = liveRanks(data)
+	local professions = {}
+	local known, slugs = pcall(Export.professionSlugs)
+	for _, slug in ipairs(known and slugs or {}) do
+		professions[slug] = true
+	end
 	local model = BuildDialog.preview(verdict.build, data, {
 		level = liveLevel(),
 		unspent = Progress.unspentPoints(liveLevel(), ranks),
+		professions = professions,
 		slotWord = function(slot)
 			return BuildDialog.slotWord(slot, SLOT_WORDS)
 		end,
@@ -2029,7 +2283,13 @@ local function drawPreview(verdict, y)
 	if type(preview.icon.SetTexCoord) == "function" then
 		preview.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4])
 	end
-	preview.name:SetText(model.name)
+	if verdict.stamp ~= nil then
+		preview.name:SetText(BuildDialog.siteTitle(model.rawName, verdict.stamp, pointsWord(#verdict.build.order),
+			widthOf(preview.name), contentWidth() - S.dialogClassIcon - S.gap * 2))
+		model.detail = BuildDialog.detailLine(verdict.build, data, true)
+	else
+		preview.name:SetText(model.name)
+	end
 	preview.detail:SetText(model.detail)
 	local textY = textHeight(preview.name) + S.gap / 2 + textHeight(preview.detail)
 	-- A build from the site names the character it is for, as its row did.
@@ -2062,27 +2322,14 @@ local function drawPreview(verdict, y)
 	else
 		preview.headingFrame:Hide()
 	end
-	for index, pick in ipairs(preview.picks) do
-		local entry = model.picks[index]
-		pick.itemId = entry ~= nil and entry.itemId or nil
-		if entry == nil then
-			pick.frame:Hide()
-		else
-			pick.slot:SetText(entry.slotWord)
-			pick.icon:SetTexture(Compat.itemIcon(entry.itemId) or Theme.UNKNOWN_ICON)
-			local name = Compat.itemName(entry.itemId)
-			if name == nil then
-				BuildDialog.pending[entry.itemId] = true
-			end
-			pick.name:SetText(name or "")
-			pick.name:SetTextColor(Theme.qualityColor(Compat.itemQuality(entry.itemId)))
-			BuildDialog.fitSource(pick, entry)
-			pick.frame:ClearAllPoints()
-			pick.frame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", 0, -headY)
-			pick.frame:Show()
-			headY = headY + BuildDialog.GEAR_PITCH
-		end
+	preview.entries, preview.top = model.picks, headY
+	-- A different build starts at the top of its list; a redraw of the same one (an item's name arriving) keeps
+	-- where the wheel left it.
+	if preview.scrolledFor ~= verdict then
+		preview.offset, preview.scrolledFor = 0, verdict
 	end
+	preview.offset = math.min(preview.offset or 0, math.max(0, #model.picks - BuildDialog.GEAR_VISIBLE))
+	headY = headY + BuildDialog.paintGear()
 	preview.frame:SetHeight(headY)
 	stack(preview.frame, paste.content, y, headY)
 	-- What Use replaces and how the orders compare, and the next talent the candidate gives.
@@ -2204,7 +2451,11 @@ function BuildDialog.drawPaste()
 			end
 			row.selected = rows.active == entry.id
 			row.name:SetTextColor(Theme.rgb(Theme.HEX[row.selected and "gold" or "body"]))
-			row.name:SetText(BuildDialog.rowText(entry.name, widthOf(row.name), inner))
+			if entry.stamp ~= nil then
+				row.name:SetText(BuildDialog.siteTitle(entry.name, entry.stamp, entry.points, widthOf(row.name), inner))
+			else
+				row.name:SetText(BuildDialog.rowText(entry.name, widthOf(row.name), inner))
+			end
 			row.detail:SetText(BuildDialog.rowText(entry.detail, widthOf(row.detail), inner))
 			row.target:SetText(BuildDialog.rowText(entry.target, widthOf(row.target), inner))
 			if row.selected then
@@ -2427,6 +2678,16 @@ function BuildDialog.drawCopy(select)
 	local leadLines = BuildDialog.leadLines({ leadWidth(before), leadWidth(after), leadWidth(model.lead.text) },
 		contentWidth())
 	local top = first + (leadLines - 1) * advance + S.gap * 2
+	-- What the export holds, in one line under the lead (A.2), above the box.
+	if model.summary ~= nil then
+		copy.summary:SetText(model.summary)
+		copy.summary:ClearAllPoints()
+		copy.summary:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -(top - S.gap))
+		copy.summary:Show()
+		top = top + textHeight(copy.summary) + S.gap
+	else
+		copy.summary:Hide()
+	end
 	-- The lines under the box first, so the box takes only the room left. The seen line is
 	-- reserved at the taller of its two states (before and after a copy), so a Ctrl+C never
 	-- changes the box's height.

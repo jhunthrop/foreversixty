@@ -166,7 +166,7 @@ function SiteStatus.siteLine(facts)
 		local days = math.floor(facts.age / 86400)
 		return string.format(days == 1 and L.diagSiteOldOne or L.diagSiteOld, dayOf(facts.seen, facts.clock), days)
 	end
-	local stamp = BuildDialog.when(facts.seen, facts.clock)
+	local stamp = BuildDialog.ago(facts.seen, facts.clock)
 	if facts.characters == 1 then
 		return string.format(L.diagSiteSeenOne, stamp)
 	end
@@ -246,7 +246,7 @@ function SiteStatus.loginLine(data, facts)
 		return string.format(L.siteLoginBuilds, #rows, who, nameList(rows)), "build"
 	end
 	if facts.gear and facts.gearPending and (facts.builtAt == nil or facts.seen >= facts.builtAt) then
-		return string.format(L.siteLoginGearSeen, BuildDialog.when(facts.seen, facts.clock)), "gearSeen"
+		return string.format(L.siteLoginGearSeen, BuildDialog.ago(facts.seen, facts.clock)), "gearSeen"
 	end
 	if facts.hasRecord and facts.age > SiteStatus.SILENT_SECONDS then
 		return string.format(L.siteLoginSilent, dayOf(facts.seen, facts.clock)), "silent"

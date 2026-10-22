@@ -47,20 +47,21 @@ end
 
 -- Fix round 2 (personas on marks2-*): "next at level 21" at level 21 with
 -- twelve points to spend read as "later"; the strip says "spend 12 now"
--- while points wait. Fix round 3: "off plan" (spec section 4.2), muted at 0
--- and a warning from 1; no "click Apply Changes" (the client's lit button says it).
+-- while points wait. Fix round 3: "off plan" (spec section 4.2), a warning from 1; no "click Apply
+-- Changes" (the client's lit button says it). A.2: "0 off plan" is "none off plan", muted, and only
+-- while the plan has more to take (so something could go off it).
 local MUTED, WARN, GOLD, BODY = "|cff9a9484", "|cffff6b5c", "|cffe5b955", "|cffe9e4d8"
 
 describe("the strip's line (TalentMarks.stripSegments)", function()
 	it("says spend N now while points wait, with no level", function()
 		local text, warned = stripLine("Arms / Fury build", progress(0, 51, 21, 0), { unspent = 12 })
-		assert.are.equal("Arms / Fury build · 0 of 51 points · spend 12 now · " .. MUTED .. "0 off plan|r", text)
+		assert.are.equal("Arms / Fury build · 0 of 51 points · spend 12 now · " .. MUTED .. "none off plan|r", text)
 		assert.is_false(warned)
 	end)
 
 	it("names the level the next point arrives at when none waits", function()
 		local text = stripLine("Arms leveling", progress(11, 51, 22, 0), { unspent = 0 })
-		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. MUTED .. "0 off plan|r",
+		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. MUTED .. "none off plan|r",
 			text)
 	end)
 
@@ -78,12 +79,51 @@ describe("the strip's line (TalentMarks.stripSegments)", function()
 
 	it("says complete once the build has no point left, spendable points or not", function()
 		local text = stripLine("Arms leveling", progress(51, 51, nil, 0, true), { unspent = 3 })
-		assert.are.equal("Arms leveling · 51 of 51 points · complete · " .. MUTED .. "0 off plan|r", text)
+		-- A finished plan with nothing off it says nothing about off plan (A.2).
+		assert.are.equal("Arms leveling · 51 of 51 points · complete", text)
+		-- A point off the plan still warns on a finished one.
+		local off = stripLine("Arms leveling", progress(50, 51, nil, 1, true), { unspent = 0 })
+		assert.are.equal("Arms leveling · 50 of 51 points · complete · " .. WARN .. "1 off plan|r", off)
+	end)
+
+	-- A.2: the strip names the next step instead of ending at "complete".
+	it("names the next point's level and talent when none waits: next at level 25: Focused Fire", function()
+		local text = stripLine("Beast Mastery build", progress(15, 51, 25, 0),
+			{ unspent = 0, allowed = 15, pointName = "Focused Fire", nextLevel = 25 })
+		assert.are.equal("Beast Mastery build · 15 of 15 points · next at level 25: Focused Fire · "
+			.. MUTED .. "none off plan|r", text)
+		-- No name for the talent: the level alone.
+		assert.are.equal("Beast Mastery build · 15 of 15 points · next point at level 25 · " .. MUTED .. "none off plan|r",
+			stripLine("Beast Mastery build", progress(15, 51, 25, 0), { unspent = 0, allowed = 15, nextLevel = 25 }))
+		-- Points to spend now: "spend N now", never the level.
+		assert.are.equal("Beast Mastery build · 14 of 51 points · spend 1 now · " .. MUTED .. "none off plan|r",
+			stripLine("Beast Mastery build", progress(14, 51, 25, 0),
+				{ unspent = 1, pointName = "Focused Fire", nextLevel = 25 }))
+	end)
+
+	it("says the finished plan's next point below the cap, and complete alone at 60 (A.2)", function()
+		-- A 15-point build at level 24: the plan is done, a point still comes at 25.
+		assert.are.equal("Beast Mastery build · 15 of 15 points · complete · next point at level 25",
+			stripLine("Beast Mastery build", progress(15, 15, nil, 0, true), { unspent = 0, nextLevel = 25 }))
+		assert.are.equal("complete · next point at level 25", string.format(L.talentStripDoneNext, 25))
+		-- At 60 with every point spent there is no next level: "complete" alone.
+		assert.are.equal("Arms leveling · 51 of 51 points · complete",
+			stripLine("Arms leveling", progress(51, 51, nil, 0, true), { unspent = 0, nextLevel = nil }))
+	end)
+
+	it("says none off plan only while the plan has more to take (A.2)", function()
+		local more = stripLine("Arms leveling", progress(11, 51, 22, 0), { unspent = 0 })
+		assert.is_truthy(more:find("none off plan", 1, true))
+		assert.is_nil(more:find("0 off plan", 1, true))
+		local done = stripLine("Arms leveling", progress(51, 51, nil, 0, true), { unspent = 0 })
+		assert.is_nil(done:find("off plan", 1, true))
+		assert.are.equal("none off plan", L.talentStripNoneOffPlan)
+		assert.are.equal("next at level %d: %s", L.talentStripNextAt)
 	end)
 
 	it("says nothing about Apply Changes while a click is staged", function()
 		local text = stripLine("Arms leveling", progress(12, 51, 21, 0), { unspent = 0, staged = true })
-		assert.are.equal("Arms leveling · 12 of 51 points · next point at level 21 · " .. MUTED .. "0 off plan|r", text)
+		assert.are.equal("Arms leveling · 12 of 51 points · next point at level 21 · " .. MUTED .. "none off plan|r", text)
 	end)
 
 	-- Polish round B fix 1, item 10: the count reads the level's points like the flyout ("12 of 15
@@ -92,10 +132,10 @@ describe("the strip's line (TalentMarks.stripSegments)", function()
 		local text = stripLine("Arms leveling", progress(12, 51, 25, 3), { unspent = 0, allowed = 15 })
 		assert.are.equal("Arms leveling · 12 of 15 points · next point at level 25 · " .. WARN .. "3 off plan|r", text)
 		text = stripLine("Arms leveling", progress(20, 51, 25, 0), { unspent = 0, allowed = 15 })
-		assert.are.equal("Arms leveling · 15 of 15 points · next point at level 25 · " .. MUTED .. "0 off plan|r", text)
+		assert.are.equal("Arms leveling · 15 of 15 points · next point at level 25 · " .. MUTED .. "none off plan|r", text)
 		-- Below level 10 nothing is allowed yet: the build's own length, never "0 of 0".
 		text = stripLine("Arms leveling", progress(0, 51, 10, 0), { unspent = 0, allowed = 0 })
-		assert.are.equal("Arms leveling · 0 of 51 points · next point at level 10 · " .. MUTED .. "0 off plan|r", text)
+		assert.are.equal("Arms leveling · 0 of 51 points · next point at level 10 · " .. MUTED .. "none off plan|r", text)
 		local led = stripLine("Arms leveling", progress(12, 51, 25, 3),
 			{ unspent = 0, allowed = 15, next = "Lethal Attacks (1 of 5)" })
 		assert.is_truthy(led:find("Next: Lethal Attacks (1 of 5) · Arms leveling · 12 of 15 points", 1, true))
@@ -110,7 +150,7 @@ describe("the strip's line (TalentMarks.stripSegments)", function()
 		local text = stripLine("Arms / Fury build", progress(0, 51, 21, 0),
 			{ unspent = 12, next = "Improved Heroic Strike (1 of 3)" })
 		assert.are.equal("Next: Improved Heroic Strike (1 of 3) · Arms / Fury build · 0 of 51 points · spend 12 now · "
-			.. MUTED .. "0 off plan|r", text)
+			.. MUTED .. "none off plan|r", text)
 		assert.are.equal("Next: %s", L.talentStripNextTalent)
 	end)
 
@@ -131,23 +171,28 @@ describe("TalentMarks.fitStrip", function()
 		return #text
 	end
 	local segments = TalentMarks.stripSegments("Arms / Fury build", progress(1, 51, 21, 0), { unspent = 11 })
-	local full = "Arms / Fury build · 1 of 51 points · spend 11 now · " .. MUTED .. "0 off plan|r"
+	local full = "Arms / Fury build · 1 of 51 points · spend 11 now · " .. MUTED .. "none off plan|r"
+	local noNone = "Arms / Fury build · 1 of 51 points · spend 11 now"
 
 	it("keeps every segment when the line fits", function()
 		assert.are.equal(full, TalentMarks.fitStrip(segments, measure, #full))
 		assert.are.equal(full, TalentMarks.fitStrip(segments, measure, nil))
 	end)
 
-	it("drops spend N now first, whole", function()
-		local short = "Arms / Fury build · 1 of 51 points · " .. MUTED .. "0 off plan|r"
-		assert.are.equal(short, TalentMarks.fitStrip(segments, measure, #full - 1))
-		assert.are.equal(short, TalentMarks.fitStrip(segments, measure, #short))
+	it("drops the muted none off plan first, whole, then the build name, then the action", function()
+		assert.are.equal(noNone, TalentMarks.fitStrip(segments, measure, #full - 1))
+		assert.are.equal(noNone, TalentMarks.fitStrip(segments, measure, #noNone))
+		local noName = "1 of 51 points · spend 11 now"
+		assert.are.equal(noName, TalentMarks.fitStrip(segments, measure, #noNone - 1))
+		assert.are.equal(noName, TalentMarks.fitStrip(segments, measure, #noName))
 	end)
 
-	it("then the build name, never the count or the off-plan count", function()
-		local shortest = "1 of 51 points · " .. MUTED .. "0 off plan|r"
+	it("never gives up the count, nor a warning off-plan count", function()
+		local shortest = "1 of 51 points"
 		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, #shortest))
 		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, 3))
+		local warned = TalentMarks.stripSegments("Arms / Fury build", progress(1, 51, 21, 2), { unspent = 11 })
+		assert.are.equal("1 of 51 points · " .. WARN .. "2 off plan|r", TalentMarks.fitStrip(warned, measure, 3))
 	end)
 
 	-- Fix round 5: a nil measure is the whole line, whatever the room.
@@ -157,19 +202,21 @@ describe("TalentMarks.fitStrip", function()
 
 	-- Fix round 5: the count and off-plan count never give way; when even they
 	-- overflow the room, the fitter says so and the pill grows to fit them.
-	it("says when even the count and off-plan count do not fit", function()
-		local shortest = "1 of 51 points · " .. MUTED .. "0 off plan|r"
+	it("says when even the count does not fit", function()
+		local shortest = "1 of 51 points"
 		assert.are.same({ shortest, true }, { TalentMarks.fitStrip(segments, measure, #shortest) })
 		assert.are.same({ shortest, false }, { TalentMarks.fitStrip(segments, measure, 3) })
 	end)
 
-	it("gives up the leading Next segment last", function()
+	it("gives up the leading Next segment after the none off plan, before the name", function()
 		local led = TalentMarks.stripSegments("Arms / Fury build", progress(1, 51, 21, 0),
 			{ unspent = 11, next = "Improved Heroic Strike (2 of 3)" })
-		local noName = "Next: Improved Heroic Strike (2 of 3) · 1 of 51 points · " .. MUTED .. "0 off plan|r"
-		assert.are.equal(noName, TalentMarks.fitStrip(led, measure, #noName))
-		local bare = "1 of 51 points · " .. MUTED .. "0 off plan|r"
-		assert.are.equal(bare, TalentMarks.fitStrip(led, measure, #noName - 1))
+		local ledNoNone = "Next: Improved Heroic Strike (2 of 3) \194\183 Arms / Fury build \194\183 1 of 51 points "
+			.. "\194\183 spend 11 now"
+		assert.are.equal(ledNoNone, TalentMarks.fitStrip(led, measure, #ledNoNone))
+		local noNext = "Arms / Fury build \194\183 1 of 51 points \194\183 spend 11 now"
+		assert.are.equal(noNext, TalentMarks.fitStrip(led, measure, #ledNoNone - 1))
+		assert.are.equal(noNext, TalentMarks.fitStrip(led, measure, #noNext))
 	end)
 end)
 
@@ -227,10 +274,11 @@ describe("Theme.inlineColor", function()
 end)
 
 describe("Theme.SIZES for the marks", function()
-	it("has the 16 px plate with 12 px digits and the 24 px strip", function()
+	it("has the 16 px plate with 12 px digits and the 26 px strip of 13 px text (A.2: one size up)", function()
 		assert.are.equal(16, Theme.SIZES.orderBadge)
 		assert.are.equal(12, Theme.SIZES.orderBadgeText)
-		assert.are.equal(24, Theme.SIZES.talentStrip)
+		assert.are.equal(26, Theme.SIZES.talentStrip)
+		assert.are.equal(13, Theme.SIZES.talentStripText)
 	end)
 end)
 
@@ -466,8 +514,8 @@ end)
 -- Fix round 2: the pill sits 8 px inside the window's border, centred on Apply Changes.
 describe("TalentMarks.stripOffsetY", function()
 	it("centres the pill on the Apply Changes button", function()
-		-- Button 22 high from 108 over a window bottom at 100: 8 + (22 - 24) / 2 = 7.
-		assert.are.equal(7, TalentMarks.stripOffsetY(100, 108, 22))
+		-- Button 22 high from 108 over a window bottom at 100: 8 + (22 - 26) / 2 = 6.
+		assert.are.equal(6, TalentMarks.stripOffsetY(100, 108, 22))
 	end)
 
 	it("sits 8 px inside the window's border without the button", function()
