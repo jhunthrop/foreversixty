@@ -186,20 +186,95 @@ describe("the line's default spot and the client's buff row (A.2)", function()
 	local function geometry()
 		_G.Minimap.GetLeft = function() return 1700 end
 		_G.Minimap.GetTop = function() return 1060 end
+		_G.UIParent.GetRight = function() return 1920 end
+		_G.UIParent.GetTop = function() return 1080 end
 	end
 
-	it("sits just under the buff frame where the buffs are in the way, and beside the minimap otherwise", function()
+	local function offsets()
+		local point = lastPoint(require("Chip").frame)
+		return { point[1], point[2], point[3], point[4], point[5] }
+	end
+
+	it("sits just under the buffs, as plain offsets from the screen, where they are in the way", function()
 		boot()
 		geometry()
 		local Chip, Theme = require("Chip"), require("Theme")
 		assert.are.equal("minimap", Chip.place())
 		-- The buffs end 10 px left of the minimap, rows from the top down: the line's rectangle meets them.
-		local frame = buffs(1300, 1690, 1060, 1000)
-		assert.are.equal(frame, Chip.buffsInTheWay(_G.Minimap, Chip.frame))
+		buffs(1300, 1690, 1060, 1000)
 		assert.are.equal("buffs", Chip.place())
-		local point = lastPoint(Chip.frame)
-		assert.are.same({ "TOPRIGHT", frame, "BOTTOMRIGHT" }, { point[1], point[2], point[3] })
-		assert.are.equal(-Theme.SIZES.chipMinimapGap / 2, point[5])
+		-- Right edge at the minimap's left less the gap, top a half gap under the buffs' bottom.
+		local gap = Theme.SIZES.chipMinimapGap
+		assert.are.same({ "TOPRIGHT", _G.UIParent, "TOPRIGHT", 1700 - gap - 1920, 1000 - 1080 - gap / 2 }, offsets())
+		assert.is_true(Chip.onScreen(Chip.frame) ~= false)
+	end)
+
+	it("never anchors to the buff frame, so it cannot follow it off screen", function()
+		boot()
+		geometry()
+		local frame = buffs(1300, 1690, 1060, 1000)
+		local Chip = require("Chip")
+		Chip.place()
+		for _, point in ipairs(Chip.frame.points) do
+			assert.are_not.equal(frame, point[2])
+		end
+	end)
+
+	it("draws the line beside the minimap whatever the buff frame answers (nil, zero, off screen)", function()
+		boot()
+		geometry()
+		local Chip = require("Chip")
+		local function placedAt()
+			assert.are.equal("minimap", Chip.place())
+			assert.are.equal(_G.Minimap, lastPoint(Chip.frame)[2])
+		end
+		buffs(nil, nil, nil, nil)
+		placedAt()
+		buffs(0, 0, 0, 0)
+		placedAt()
+		-- Buffs hanging off the bottom of the screen: the spot under them is off screen.
+		buffs(1300, 1690, 1060, -5)
+		placedAt()
+		buffs(1300, 1690, 1060, 5)
+		placedAt()
+		-- The screen's own size unknown: the plain default.
+		_G.UIParent.GetRight = function() return nil end
+		buffs(1300, 1690, 1060, 1000)
+		placedAt()
+	end)
+
+	it("puts the line back beside the minimap, not off for the session, when the buff move lands it off screen",
+		function()
+			boot()
+			geometry()
+			local Chip = require("Chip")
+			buffs(1300, 1690, 1060, 1000)
+			assert.are.equal("buffs", Chip.place())
+			-- The client lays that spot out left of the screen's edge.
+			Chip.frame.GetLeft = function(own)
+				return lastPoint(own)[2] == _G.Minimap and 1500 or -30
+			end
+			assert.is_true(Chip.selfCheck())
+			assert.is_nil(Chip.disabled)
+			assert.is_true(Chip.noBuffMove)
+			assert.are.equal(_G.Minimap, lastPoint(Chip.frame)[2])
+			assert.is_true(Chip.frame:IsShown())
+		end)
+
+	it("places the line again on /fs chip show, even one the render check switched off", function()
+		local Options = boot()
+		geometry()
+		local Chip = require("Chip")
+		buffs(1300, 1690, 1060, 1000)
+		Chip.disabled = true
+		Chip.frame:Hide()
+		Options.handle("chip")
+		Options.handle("chip")
+		Chip = require("Chip")
+		assert.is_nil(Chip.disabled)
+		assert.are.equal(_G.Minimap, lastPoint(Chip.frame)[2])
+		assert.is_true(Chip.frame:IsShown())
+		assert.is_true(Chip.isDrawn())
 	end)
 
 	it("stays beside the minimap when the buffs are elsewhere, hidden or cannot be read", function()
