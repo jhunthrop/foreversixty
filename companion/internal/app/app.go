@@ -734,6 +734,9 @@ type Snapshot struct {
 	// BuildsChecked is what the last Check for builds now found; absent
 	// until the player has pressed it.
 	BuildsChecked *BuildsChecked `json:"builds_checked,omitempty"`
+	// BuildsWaiting is the Addon row's line while a sent build has not
+	// yet shown in the game; absent otherwise.
+	BuildsWaiting string `json:"builds_waiting,omitempty"`
 	// KeepAddonUpdated is the Keep the addon up to date switch, and
 	// AddonUpdate the Addon row's version lines and install buttons.
 	KeepAddonUpdated bool            `json:"keep_addon_updated"`
@@ -906,6 +909,9 @@ func (a *App) Snapshot() Snapshot {
 	st := a.sync.Status()
 	if c := st.Checked; !c.At.IsZero() {
 		s.BuildsChecked = &BuildsChecked{At: c.At.In(now.Location()), New: c.New, For: c.For}
+	}
+	if st.Waiting > 0 {
+		s.BuildsWaiting = CopyBuildsWaiting(st.Waiting, st.WaitingFor)
 	}
 	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
 	s.AddonNever = st.SeenAt.IsZero()

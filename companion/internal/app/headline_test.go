@@ -264,6 +264,11 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 		{"status-addon-current.json", func() Snapshot {
 			return addonRow(base(none), 1, addonView(true, "2.0.15", "2026.10.21", "", "", false))
 		}},
+		{"status-addon-build-waiting.json", func() Snapshot {
+			s := addonRow(base(none), 1, addonView(true, "2.0.15", "2026.10.21", "", "", false))
+			s.BuildsWaiting = CopyBuildsWaiting(1, []string{"Bow Jackzon"})
+			return s
+		}},
 		{"status-addon-installed.json", func() Snapshot { return addonRow(base(none), 1, addonView(true, "2.0.16", "2026.10.21", "", "", true)) }},
 		{"status-addon-ready.json", func() Snapshot {
 			return addonRow(base(none), 1, addonView(true, "2.0.15", "2026.10.20", "2.0.16", "2026.10.21", false))

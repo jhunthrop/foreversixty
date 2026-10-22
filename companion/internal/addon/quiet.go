@@ -9,12 +9,16 @@ import (
 
 const (
 	// QuietFolder is how long nothing under an account's SavedVariables
-	// folder may have changed before the companion writes into it.
-	QuietFolder = 20 * time.Second
-	// QuietSaved is how long ForeverSixty.lua, the file the game writes
-	// at a reload or logout, must have been still. The client is busy
-	// around that moment, so the inbox waits well past it.
-	QuietSaved = 60 * time.Second
+	// folder may have changed before the companion writes into it. The
+	// client writes every SavedVariables file in one burst at a logout or
+	// reload and reads nothing again until Enter World, so a few seconds
+	// of stillness mean the burst is over. The window is the logout, not
+	// a minute: the walk of 22 Oct pressed Enter World 25 s after /logout
+	// and must find the build.
+	QuietFolder = 3 * time.Second
+	// QuietSaved is the same stillness asked of ForeverSixty.lua, the
+	// file the game writes at a reload or logout.
+	QuietSaved = 3 * time.Second
 	// BusyRetry is how long a write waits after the game held the inbox
 	// open when the rename was tried.
 	BusyRetry = 30 * time.Second
@@ -91,6 +95,7 @@ func (s *Sync) flush(now time.Time, paths []string) error {
 		}
 		deferred := now.Sub(w.since)
 		delete(s.pending, p)
+		s.lastBody[p] = s.body
 		if wrote {
 			args := []any{"component", "addon", "path", ip,
 				"builds", s.counts[0], "messages", s.counts[1]}

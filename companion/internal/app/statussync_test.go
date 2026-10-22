@@ -242,3 +242,26 @@ func TestCheckForBuildsNowFetchesOnceAndSaysWhatItFound(t *testing.T) {
 		t.Errorf("an unchanged inbox reported %v new", got["new_builds"])
 	}
 }
+
+// A build sent while the player is in game is named on the Addon row from the fetch that finds
+// it, in words that say to log out to the character screen and back in (a reload shows nothing).
+func TestTheAddonRowSaysABuildIsWaiting(t *testing.T) {
+	h := newHarness(t)
+	h.pairAndPrime()
+	if s := h.app.Snapshot(); s.BuildsWaiting != "" {
+		t.Fatalf("a build is waiting before one was sent: %q", s.BuildsWaiting)
+	}
+	h.srv.SetInbox(`{"format":2,"generated_at":"2026-12-09T20:00:00Z","builds":[` +
+		`{"id":"b1","name":"Beast Mastery build","character":"us/pvp/bow-jackzon","code":"FSB1:x"}],"messages":[]}`)
+	if code, body := h.call(http.MethodPost, h.url("/api/builds/check"), nil); code != http.StatusOK {
+		t.Fatalf("check = %d %v", code, body)
+	}
+	want := "A build is waiting for Bow Jackzon. Log out to the character screen and back in."
+	if got := h.app.Snapshot().BuildsWaiting; got != want {
+		t.Errorf("BuildsWaiting = %q, want %q", got, want)
+	}
+	if got := app.CopyBuildsWaiting(2, []string{"Bow Jackzon", "Booty"}); got !=
+		"2 builds are waiting for Bow Jackzon, Booty. Log out to the character screen and back in." {
+		t.Errorf("plural = %q", got)
+	}
+}
