@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70450",
-  "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-21T13:12:47Z",
+  "engine_version": "e03762f45",
+  "generated_at": "2026-10-22T13:16:18Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -673,8 +673,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.9568002660000001,
-      "verify_run_seconds": 3.072470787,
+      "weights_run_seconds": 1.859829231,
+      "verify_run_seconds": 3.138611361,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1444,8 +1444,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.9568002660000001,
-      "verify_run_seconds": 2.856602745,
+      "weights_run_seconds": 1.859829231,
+      "verify_run_seconds": 2.886628929,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2256,8 +2256,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.9620768709999998,
-      "verify_run_seconds": 1.883408985,
+      "weights_run_seconds": 1.930286342,
+      "verify_run_seconds": 1.88508613,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3069,8 +3069,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.9620768709999998,
-      "verify_run_seconds": 1.828390218,
+      "weights_run_seconds": 1.930286342,
+      "verify_run_seconds": 1.818720435,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3888,8 +3888,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 2.319052584,
-      "verify_run_seconds": 2.420222261,
+      "weights_run_seconds": 2.253088403,
+      "verify_run_seconds": 2.399019089,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4702,8 +4702,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 2.319052584,
-      "verify_run_seconds": 2.36721885,
+      "weights_run_seconds": 2.253088403,
+      "verify_run_seconds": 2.342100168,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5565,8 +5565,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.371940044,
-      "verify_run_seconds": 4.201035681,
+      "weights_run_seconds": 2.2911099090000002,
+      "verify_run_seconds": 4.044106072,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6420,8 +6420,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.371940044,
-      "verify_run_seconds": 2.404901746,
+      "weights_run_seconds": 2.2911099090000002,
+      "verify_run_seconds": 2.366236295,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7306,8 +7306,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.367882854,
-      "verify_run_seconds": 8.312940159,
+      "weights_run_seconds": 2.311845337,
+      "verify_run_seconds": 7.915465281,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8168,8 +8168,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.367882854,
-      "verify_run_seconds": 8.394018975,
+      "weights_run_seconds": 2.311845337,
+      "verify_run_seconds": 8.220265134,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9047,8 +9047,8 @@
         "trinket2: Darkmoon Card: Heroism",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.551753291,
-      "verify_run_seconds": 7.063012546,
+      "weights_run_seconds": 2.464524842,
+      "verify_run_seconds": 6.84510473,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9942,8 +9942,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.551753291,
-      "verify_run_seconds": 8.582258383,
+      "weights_run_seconds": 2.464524842,
+      "verify_run_seconds": 8.321721226,
       "coverage": {
         "back": {
           "eligible": 391,

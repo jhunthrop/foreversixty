@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 0000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 31.7. Weights run: 1.0s. Verify run: 0.7s. 145 eligible items had no known source.
+Set DPS (verified): 31.7. Weights run: 0.9s. Verify run: 0.7s. 145 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.365 ± 0.007, crit=0.072 ± 0.002 per rating point (14 rating = 1%, 1.008 per %), hit=0.238 ± 0.007 per rating point (10 rating = 1%, 2.381 per %), spell_haste=not significant (0.287 ± 0.111), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.002
 
@@ -38,37 +38,37 @@ No-known-source sample (15 of 145, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 0000000000000000000-00000000000000000-2535101301000000000)
 
-Set DPS (verified): 48.1. Weights run: 1.2s. Verify run: 0.8s. 264 eligible items had no known source.
+Set DPS (verified): 59.8. Weights run: 1.0s. Verify run: 0.7s. 264 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.154 ± 0.004, crit=0.099 ± 0.003 per rating point (14 rating = 1%, 1.390 per %), hit=0.248 ± 0.006 per rating point (10 rating = 1%, 2.483 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.002
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.378 ± 0.011, crit=0.119 ± 0.005 per rating point (14 rating = 1%, 1.659 per %), hit=0.261 ± 0.011 per rating point (10 rating = 1%, 2.608 per %), spell_haste=not significant (0.455 ± 0.188), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 11.0 spell_power points (1.27 DPS) | yes | Filigreed Pristine Circlet (253975, -0.35 DPS) [crafted]; Enchanter's Cowl (4322, -0.40 DPS) [crafted]; Silk Headband (7050, -1.93 DPS, sim-verified) [crafted] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.9 spell_power points (0.91 DPS) | yes | Darkspear Warding Pendant (272075, -0.82 DPS) [vendor]; Crystal Starfire Medallion (5003, -0.84 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -0.97 DPS, sim-verified) [world] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 10.4 spell_power points (1.19 DPS) | yes | Death Speaker Mantle (6685, -0.31 DPS) [dungeon]; Fairywing Mantle (9536, -0.35 DPS) [quest]; Invoker's Mantle (215365, -0.83 DPS, sim-verified) [crafted] |
-| back | Vine Pruner's Cloak (279835) (or Hillman's Cloak (3719)) | A Green Sample [quest] | 5.0 spell_power points (0.58 DPS) | yes | Hillman's Cloak (3719, +0.00 DPS) [crafted]; Heavy Woolen Cloak (4311, -0.12 DPS) [crafted]; Prelacy Cape (7004, -0.12 DPS) [quest] |
-| chest | Green Silk Armor (7065) | Tailoring [crafted] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Beguiler Robes (7728, -0.02 DPS) [dungeon]; Mechbuilder's Overalls (9508, -0.13 DPS) [dungeon]; Tree Bark Jacket (1486, -0.89 DPS, sim-verified) [dungeon] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (1.04 DPS) | yes | Windsong Bangles (263336, -0.92 DPS) [quest]; Nightsky Wristbands (6407, -0.93 DPS) [world_drop]; Glowing Magical Bracelets (13106, -0.95 DPS, sim-verified) [world_drop] |
-| hands | Shilly Mitts (9609) (or Serpent Gloves (5970)) | Gyrodrillmatic Excavationators [quest] | 7.0 spell_power points (0.81 DPS) | yes | Serpent Gloves (5970, +0.00 DPS) [dungeon]; Gnoll Casting Gloves (892, -0.12 DPS) [world]; Truefaith Gloves (7049, -0.18 DPS) [crafted] |
-| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 11.5 spell_power points (1.32 DPS) | yes | Belt of Arugal (6392, -0.23 DPS) [dungeon]; Ghamoo-ra's Bind (6908, -0.40 DPS) [dungeon]; Invoker's Cord (215366, -0.42 DPS) [crafted] |
-| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Pristine Leggings (253987, -0.25 DPS) [crafted]; Silk-threaded Trousers (1929, -0.37 DPS) [dungeon]; Gaze Dreamer Pants (6903, -0.51 DPS, sim-verified) [dungeon] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 8.1 spell_power points (0.93 DPS) | yes | Glinteye Slippers (273024, -0.12 DPS) [dungeon]; Acidic Walkers (9454, -0.21 DPS) [dungeon]; Spidersilk Boots (4320, -1.36 DPS, sim-verified) [crafted] |
-| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 spell_power points (0.81 DPS) | yes | Ring of Power Regulation (273030, -0.12 DPS) [dungeon]; Sea Giant's Toe Ring (274746, -0.12 DPS) [vendor]; Minor Channeling Ring (1449, -0.19 DPS) [quest] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 6.8 spell_power points (0.78 DPS) | yes | Sea Giant's Toe Ring (274746, +0.00 DPS, sim-verified) [vendor]; Ring of Power Regulation (273030, -0.09 DPS) [dungeon]; Minor Channeling Ring (1449, -0.17 DPS) [quest] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 11.0 spell_power points (1.50 DPS) | yes | Silk Headband (7050, -0.27 DPS) [crafted]; Filigreed Pristine Circlet (253975, -0.41 DPS) [crafted]; Enchanter's Cowl (4322, -1.85 DPS, sim-verified) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 9.3 spell_power points (1.26 DPS) | yes | Darkspear Warding Pendant (272075, -1.01 DPS) [vendor]; Crystal Starfire Medallion (5003, -1.06 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -1.23 DPS, sim-verified) [world] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 12.4 spell_power points (1.69 DPS) | yes | Death Speaker Mantle (6685, -0.31 DPS) [dungeon]; Fairywing Mantle (9536, -0.41 DPS) [quest]; Invoker's Mantle (215365, -0.48 DPS) [crafted] |
+| back | Vine Pruner's Cloak (279835) (or Hillman's Cloak (3719)) | A Green Sample [quest] | 5.0 spell_power points (0.68 DPS) | yes | Hillman's Cloak (3719, +0.00 DPS) [crafted]; Heavy Woolen Cloak (4311, -0.14 DPS) [crafted]; Prelacy Cape (7004, -0.14 DPS) [quest] |
+| chest | Green Silk Armor (7065) | Tailoring [crafted] | 13.9 spell_power points (1.90 DPS) | yes | Beguiler Robes (7728, -0.05 DPS) [dungeon]; Tree Bark Jacket (1486, -0.12 DPS) [dungeon]; Mechbuilder's Overalls (9508, -0.19 DPS) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (1.23 DPS) | yes | Nightsky Wristbands (6407, -0.92 DPS) [world_drop]; Stonecloth Bindings (14416, -0.97 DPS) [world_drop]; Glowing Magical Bracelets (13106, -1.27 DPS, sim-verified) [world_drop] |
+| hands | Shilly Mitts (9609) (or Serpent Gloves (5970)) | Gyrodrillmatic Excavationators [quest] | 7.0 spell_power points (0.95 DPS) | yes | Serpent Gloves (5970, +0.00 DPS) [dungeon]; Truefaith Gloves (7049, -0.12 DPS) [crafted]; Gnoll Casting Gloves (892, -0.14 DPS) [world] |
+| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 12.1 spell_power points (1.65 DPS) | yes | Belt of Arugal (6392, -0.27 DPS) [dungeon]; Invoker's Cord (215366, -0.44 DPS) [crafted]; Crimson Silk Belt (7055, -0.48 DPS) [crafted] |
+| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 12.0 spell_power points (1.64 DPS) | yes | Pristine Leggings (253987, -0.32 DPS) [crafted]; Gaze Dreamer Pants (6903, -0.50 DPS, sim-verified) [dungeon]; Filigreed Pristine Leggings (253937, -0.51 DPS) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 9.6 spell_power points (1.31 DPS) | yes | Acidic Walkers (9454, -0.22 DPS) [dungeon]; Glinteye Slippers (273024, -0.36 DPS) [dungeon]; Spidersilk Boots (4320, -1.97 DPS, sim-verified) [crafted] |
+| finger1 | Snake Hoop (6750) | Willix the Importer [quest] | 7.9 spell_power points (1.08 DPS) | yes | Ring of Power Regulation (273030, -0.26 DPS) [dungeon]; Sea Giant's Toe Ring (274746, -0.26 DPS) [vendor]; Minor Channeling Ring (1449, -0.29 DPS) [quest] |
+| finger2 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 spell_power points (0.95 DPS) | yes | Ring of Power Regulation (273030, -0.14 DPS) [dungeon]; Sea Giant's Toe Ring (274746, -0.14 DPS) [vendor]; Minor Channeling Ring (1449, -0.17 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Spine of the Devourer (273040) (or Tendonscraper Dagger (273053)) | Mana Devourer [world] | 36.0 spell_power points (4.14 DPS) | yes | Tendonscraper Dagger (273053, +0.00 DPS) [world]; Hardened Root Staff (1317, -1.84 DPS) [quest]; Glimmering Staff (249392, -3.95 DPS) [crafted] |
+| main_hand | Spine of the Devourer (273040) (or Tendonscraper Dagger (273053)) | Mana Devourer [world] | 36.0 spell_power points (4.91 DPS) | yes | Tendonscraper Dagger (273053, +0.00 DPS) [world]; Hardened Root Staff (1317, -2.18 DPS) [quest]; Glimmering Staff (249392, -4.34 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Starfaller (13063) | World drop [world_drop] | 286.3 spell_power points (32.93 DPS) | yes | Wand of Mana Concentration (273043, -0.86 DPS, sim-verified) [world]; Greater Mystic Wand (217287, -3.36 DPS) [crafted]; Gravestone Scepter (7001, -3.93 DPS) [quest] |
+| ranged | Starfaller (13063) | World drop [world_drop] | 242.6 spell_power points (33.07 DPS) | yes | Wand of Mana Concentration (273043, +0.00 DPS, sim-verified) [world]; Greater Mystic Wand (217287, -3.38 DPS) [crafted]; Gravestone Scepter (7001, -4.07 DPS) [quest] |
 
-**New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Vine Pruner's Cloak; chest: Green Silk Armor; wrist: Spidertank Oilrag; hands: Shilly Mitts; waist: Highlander's Cloth Girdle; feet: Gilded Slippers; finger1: Lorekeeper's Ring; finger2: Snake Hoop; main_hand: Spine of the Devourer; ranged: Starfaller
+**New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Vine Pruner's Cloak; chest: Green Silk Armor; wrist: Spidertank Oilrag; hands: Shilly Mitts; waist: Highlander's Cloth Girdle; feet: Gilded Slippers; finger1: Snake Hoop; finger2: Lorekeeper's Ring; main_hand: Spine of the Devourer; ranged: Starfaller
 
 No-known-source sample (15 of 264, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14145 Cursed Felblade; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation
 
 ### Band 40 (gnome, 0000000000000000000-00000000000000000-2535101301000300250)
 
-Set DPS (verified): 84.8. Weights run: 1.1s. Verify run: 0.9s. 343 eligible items had no known source.
+Set DPS (verified): 84.8. Weights run: 1.1s. Verify run: 0.8s. 343 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.600 ± 0.023, crit=0.174 ± 0.007 per rating point (14 rating = 1%, 2.437 per %), hit=0.399 ± 0.024 per rating point (10 rating = 1%, 3.987 per %), spell_haste=1.674 ± 0.374, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
@@ -92,13 +92,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | Celestial Orb (7515) | Celestial Power [quest] | 14.8 spell_power points (2.01 DPS) | yes | Orb of the Forgotten Seer (7685, -0.11 DPS) [dungeon]; Orb of Lorica (11262, -0.38 DPS) [quest]; Orb of Mystic Insight (249394, -0.57 DPS) [crafted] |
 | ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 292.9 spell_power points (39.87 DPS) | yes | Nether Force Wand (11263, -2.30 DPS) [quest]; Icefury Wand (7514, -2.44 DPS) [quest]; Ragefire Wand (7513, -2.49 DPS) [quest] |
 
-**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Dreamweave Vest; hands: Dreamweave Gloves; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; main_hand: Hypnotic Blade; off_hand: Celestial Orb; ranged: Jaina's Firestarter
+**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Dreamweave Vest; hands: Dreamweave Gloves; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Snake Hoop; main_hand: Hypnotic Blade; off_hand: Celestial Orb; ranged: Jaina's Firestarter
 
 No-known-source sample (15 of 343, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 9362 Brilliant Gold Ring
 
 ### Band 50 (gnome, 2030005000000000000-00000000000000000-2535101301000300250)
 
-Set DPS (verified): 211.5. Weights run: 1.0s. Verify run: 1.1s. 436 eligible items had no known source.
+Set DPS (verified): 211.5. Weights run: 1.0s. Verify run: 1.0s. 436 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.007, intellect=0.888 ± 0.038, crit=0.273 ± 0.011 per rating point (14 rating = 1%, 3.822 per %), hit=0.842 ± 0.050 per rating point (10 rating = 1%, 8.423 per %), spell_haste=7.404 ± 0.691, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.007
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 436, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 2030005000000000000-11302300000000000-2535101301000300250)
 
-Set DPS (verified): 320.8. Weights run: 1.1s. Verify run: 3.2s. 891 eligible items had no known source.
+Set DPS (verified): 320.8. Weights run: 1.1s. Verify run: 3.1s. 891 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.007, intellect=0.653 ± 0.045, crit=0.382 ± 0.013 per rating point (14 rating = 1%, 5.344 per %), hit=1.191 ± 0.066 per rating point (10 rating = 1%, 11.905 per %), spell_haste=7.468 ± 0.785, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.007
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 891, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60, raid preset (gnome, 2030005000000000000-13102000000000000-2555100321000300250)
 
-Set DPS (verified): 547.0. Weights run: 1.2s. Verify run: 2.3s. 891 eligible items had no known source.
+Set DPS (verified): 547.0. Weights run: 1.1s. Verify run: 2.2s. 891 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.191 ± 0.016, crit=0.420 ± 0.013 per rating point (14 rating = 1%, 5.884 per %), hit=0.966 ± 0.041 per rating point (10 rating = 1%, 9.661 per %), spell_haste=7.070 ± 0.277, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.002
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 891, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 20 (troll, 0000000000000000000-00000000000000000-2531000000000000000)
 
-Set DPS (verified): 29.4. Weights run: 1.0s. Verify run: 0.7s. 134 eligible items had no known source.
+Set DPS (verified): 29.4. Weights run: 0.9s. Verify run: 0.7s. 134 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.365 ± 0.007, crit=0.072 ± 0.002 per rating point (14 rating = 1%, 1.008 per %), hit=0.238 ± 0.007 per rating point (10 rating = 1%, 2.381 per %), spell_haste=not significant (0.287 ± 0.111), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.002
 
@@ -220,31 +220,31 @@ No-known-source sample (15 of 134, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 0000000000000000000-00000000000000000-2535101301000000000)
 
-Set DPS (verified): 46.0. Weights run: 1.2s. Verify run: 0.8s. 245 eligible items had no known source.
+Set DPS (verified): 57.1. Weights run: 1.0s. Verify run: 0.7s. 245 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.154 ± 0.004, crit=0.099 ± 0.003 per rating point (14 rating = 1%, 1.390 per %), hit=0.248 ± 0.006 per rating point (10 rating = 1%, 2.483 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.002
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.378 ± 0.011, crit=0.119 ± 0.005 per rating point (14 rating = 1%, 1.659 per %), hit=0.261 ± 0.011 per rating point (10 rating = 1%, 2.608 per %), spell_haste=not significant (0.455 ± 0.188), spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 11.0 spell_power points (1.27 DPS) | yes | Filigreed Pristine Circlet (253975, -0.35 DPS) [crafted]; Enchanter's Cowl (4322, -0.40 DPS) [crafted]; Silk Headband (7050, -1.76 DPS, sim-verified) [crafted] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.9 spell_power points (0.91 DPS) | yes | Darkspear Warding Pendant (272075, -0.82 DPS) [vendor]; Crystal Starfire Medallion (5003, -0.84 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -0.91 DPS, sim-verified) [world] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 10.4 spell_power points (1.19 DPS) | yes | Invoker's Mantle (215365, -0.30 DPS) [crafted]; Death Speaker Mantle (6685, -0.31 DPS) [dungeon]; Chestnut Mantle (17695, -1.11 DPS, sim-verified) [quest] |
-| back | Hillman's Cloak (3719) (or Windsong Drape (15468)) | Leatherworking [crafted] | 5.0 spell_power points (0.58 DPS) | yes | Windsong Drape (15468, +0.00 DPS) [quest]; Heavy Woolen Cloak (4311, -0.12 DPS) [crafted]; Battle Healer's Cloak (19529, -0.12 DPS) [rep] |
-| chest | Green Silk Armor (7065) | Tailoring [crafted] | sim-verified (46.0 DPS) | yes | Beguiler Robes (7728, -0.02 DPS) [dungeon]; Mechbuilder's Overalls (9508, -0.13 DPS) [dungeon]; Tree Bark Jacket (1486, -0.92 DPS, sim-verified) [dungeon] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (1.04 DPS) | yes | Owlbeard Bracers (16981, -0.88 DPS) [quest]; Glowing Magical Bracelets (13106, -0.89 DPS) [world_drop]; Tabitha's Cuffs (251486, -1.17 DPS, sim-verified) [quest] |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 spell_power points (0.81 DPS) | yes | Jutebraid Gloves (10654, -0.03 DPS) [quest]; Gnoll Casting Gloves (892, -0.12 DPS) [world]; Truefaith Gloves (7049, -0.18 DPS) [crafted] |
-| waist | Defiler's Cloth Girdle (20164) | The Defilers [rep] | 11.5 spell_power points (1.32 DPS) | yes | Warsong Sash (16975, -0.05 DPS) [quest]; Belt of Arugal (6392, -0.23 DPS) [dungeon]; Ghamoo-ra's Bind (6908, -0.40 DPS) [dungeon] |
-| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 spell_power points (1.38 DPS) | yes | Abomination Skin Leggings (23173, +0.00 DPS, sim-verified) [dungeon]; Pristine Leggings (253987, -0.45 DPS) [crafted]; Silk-threaded Trousers (1929, -0.58 DPS) [dungeon] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 8.1 spell_power points (0.93 DPS) | yes | Glinteye Slippers (273024, -0.12 DPS) [dungeon]; Acidic Walkers (9454, -0.21 DPS) [dungeon]; Spidersilk Boots (4320, -1.14 DPS, sim-verified) [crafted] |
-| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 spell_power points (0.81 DPS) | yes | Ring of Power Regulation (273030, -0.12 DPS) [dungeon]; Sea Giant's Toe Ring (274746, -0.12 DPS) [vendor]; Solid Gold Band (279845, -0.35 DPS) [quest] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 6.8 spell_power points (0.78 DPS) | yes | Sea Giant's Toe Ring (274746, +0.00 DPS, sim-verified) [vendor]; Ring of Power Regulation (273030, -0.09 DPS) [dungeon]; Solid Gold Band (279845, -0.32 DPS) [quest] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 11.0 spell_power points (1.50 DPS) | yes | Silk Headband (7050, -0.27 DPS) [crafted]; Filigreed Pristine Circlet (253975, -0.41 DPS) [crafted]; Enchanter's Cowl (4322, -1.50 DPS, sim-verified) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 9.3 spell_power points (1.26 DPS) | yes | Darkspear Warding Pendant (272075, -1.01 DPS) [vendor]; Crystal Starfire Medallion (5003, -1.06 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -1.16 DPS, sim-verified) [world] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 12.4 spell_power points (1.69 DPS) | yes | Death Speaker Mantle (6685, -0.31 DPS) [dungeon]; Fairywing Mantle (9536, -0.41 DPS) [quest]; Invoker's Mantle (215365, -0.48 DPS) [crafted] |
+| back | Hillman's Cloak (3719) (or Windsong Drape (15468)) | Leatherworking [crafted] | 5.0 spell_power points (0.68 DPS) | yes | Windsong Drape (15468, +0.00 DPS) [quest]; Heavy Woolen Cloak (4311, -0.14 DPS) [crafted]; Battle Healer's Cloak (19529, -0.14 DPS) [rep] |
+| chest | Green Silk Armor (7065) | Tailoring [crafted] | 13.9 spell_power points (1.90 DPS) | yes | Beguiler Robes (7728, -0.05 DPS) [dungeon]; Tree Bark Jacket (1486, -0.12 DPS) [dungeon]; Mechbuilder's Overalls (9508, -0.19 DPS) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 9.0 spell_power points (1.23 DPS) | yes | Glowing Magical Bracelets (13106, -0.80 DPS, sim-verified) [world_drop]; Tabitha's Cuffs (251486, -0.82 DPS) [quest]; Nightsky Wristbands (6407, -0.92 DPS) [world_drop] |
+| hands | Jutebraid Gloves (10654) | Horde Presence [quest] | 7.9 spell_power points (1.08 DPS) | yes | Serpent Gloves (5970, -0.12 DPS) [dungeon]; Truefaith Gloves (7049, -0.24 DPS) [crafted]; Gnoll Casting Gloves (892, -0.26 DPS) [world] |
+| waist | Defiler's Cloth Girdle (20164) | The Defilers [rep] | 12.1 spell_power points (1.65 DPS) | yes | Belt of Arugal (6392, -0.27 DPS) [dungeon]; Invoker's Cord (215366, -0.44 DPS) [crafted]; Warsong Sash (16975, -0.51 DPS, sim-verified) [quest] |
+| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 12.0 spell_power points (1.64 DPS) | yes | Gaze Dreamer Pants (6903, -0.00 DPS) [dungeon]; Pristine Leggings (253987, -0.32 DPS) [crafted]; Filigreed Pristine Leggings (253937, -0.51 DPS) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 9.6 spell_power points (1.31 DPS) | yes | Acidic Walkers (9454, -0.22 DPS) [dungeon]; Glinteye Slippers (273024, -0.36 DPS) [dungeon]; Spidersilk Boots (4320, -1.65 DPS, sim-verified) [crafted] |
+| finger1 | Snake Hoop (6750) | Willix the Importer [quest] | 7.9 spell_power points (1.08 DPS) | yes | Ring of Power Regulation (273030, -0.26 DPS) [dungeon]; Sea Giant's Toe Ring (274746, -0.26 DPS) [vendor]; Solid Gold Band (279845, -0.53 DPS) [quest] |
+| finger2 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 spell_power points (0.95 DPS) | yes | Sea Giant's Toe Ring (274746, +0.00 DPS, sim-verified) [vendor]; Ring of Power Regulation (273030, -0.14 DPS) [dungeon]; Solid Gold Band (279845, -0.41 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Spine of the Devourer (273040) (or Tendonscraper Dagger (273053)) | Mana Devourer [world] | 36.0 spell_power points (4.14 DPS) | yes | Tendonscraper Dagger (273053, +0.00 DPS) [world]; Glimmering Staff (249392, -3.95 DPS) [crafted]; Gnarled Necromancer's Staff (251534, -3.96 DPS) [quest] |
+| main_hand | Spine of the Devourer (273040) (or Tendonscraper Dagger (273053)) | Mana Devourer [world] | 36.0 spell_power points (4.91 DPS) | yes | Tendonscraper Dagger (273053, +0.00 DPS) [world]; Glimmering Staff (249392, -4.34 DPS) [crafted]; Gnarled Necromancer's Staff (251534, -4.39 DPS) [quest] |
 | off_hand | - | - |  |  |  |
-| ranged | Starfaller (13063) | World drop [world_drop] | 286.3 spell_power points (32.93 DPS) | yes | Wand of Mana Concentration (273043, -1.06 DPS, sim-verified) [world]; Unstable Power Core (279847, -3.22 DPS) [quest]; Greater Mystic Wand (217287, -3.36 DPS) [crafted] |
+| ranged | Starfaller (13063) | World drop [world_drop] | 242.6 spell_power points (33.07 DPS) | yes | Wand of Mana Concentration (273043, -1.68 DPS) [world]; Unstable Power Core (279847, -3.36 DPS) [quest]; Greater Mystic Wand (217287, -3.38 DPS) [crafted] |
 
-**New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Hillman's Cloak; chest: Green Silk Armor; wrist: Spidertank Oilrag; waist: Defiler's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Gilded Slippers; finger1: Advisor's Ring; finger2: Snake Hoop; main_hand: Spine of the Devourer; ranged: Starfaller
+**New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Hillman's Cloak; chest: Green Silk Armor; wrist: Spidertank Oilrag; hands: Jutebraid Gloves; waist: Defiler's Cloth Girdle; feet: Gilded Slippers; finger1: Snake Hoop; finger2: Advisor's Ring; main_hand: Spine of the Devourer; ranged: Starfaller
 
 No-known-source sample (15 of 245, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia; 18859 Insignia of the Alliance; 20162 Defiler's Cloth Boots
 
@@ -274,7 +274,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | Celestial Orb (7515) | Celestial Power [quest] | 14.8 spell_power points (2.01 DPS) | yes | Orb of the Forgotten Seer (7685, -0.11 DPS) [dungeon]; Orb of Mystic Insight (249394, -0.57 DPS) [crafted]; Omega Orb (7749, -0.79 DPS) [quest] |
 | ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 292.9 spell_power points (39.87 DPS) | yes | Nether Force Wand (11263, -1.81 DPS, sim-verified) [quest]; Icefury Wand (7514, -2.44 DPS) [quest]; Ragefire Wand (7513, -2.49 DPS) [quest] |
 
-**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; main_hand: Hypnotic Blade; off_hand: Celestial Orb; ranged: Jaina's Firestarter
+**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Snake Hoop; main_hand: Hypnotic Blade; off_hand: Celestial Orb; ranged: Jaina's Firestarter
 
 No-known-source sample (15 of 320, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9718 Reforged Blade of Heroes; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 880, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60, raid preset (troll, 2030005000000000000-13102000000000000-2555100321000300250)
 
-Set DPS (verified): 547.6. Weights run: 1.2s. Verify run: 2.2s. 880 eligible items had no known source.
+Set DPS (verified): 547.6. Weights run: 1.1s. Verify run: 2.1s. 880 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.191 ± 0.016, crit=0.420 ± 0.013 per rating point (14 rating = 1%, 5.884 per %), hit=0.966 ± 0.041 per rating point (10 rating = 1%, 9.661 per %), spell_haste=7.070 ± 0.277, spell_penetration=not significant (0.000 ± 0.000), frost_power=1.000 ± 0.002
 

@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70450",
-  "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-21T13:08:12Z",
+  "engine_version": "e03762f45",
+  "generated_at": "2026-10-22T13:11:51Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -16,66 +16,66 @@
         {
           "stat": "attack_power",
           "weight": 1,
-          "error": 0.0009222506677620203,
+          "error": 0.0008987892775011765,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.5184443204592718,
-          "dps_per_point": 0.06380654235777307,
-          "scale_error": 0.00047813562074099027
+          "scale_factor": 0.515925765385686,
+          "dps_per_point": 0.06167035068720967,
+          "scale_error": 0.0004637085459152422
         },
         {
           "stat": "strength",
           "weight": 1,
-          "error": 0.0009222506677620203,
+          "error": 0.0008987892775011765,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.5184443204592718,
-          "dps_per_point": 0.06380654235777307,
-          "scale_error": 0.00047813562074099027
+          "scale_factor": 0.515925765385686,
+          "dps_per_point": 0.06167035068720967,
+          "scale_error": 0.0004637085459152422
         },
         {
           "stat": "agility",
-          "weight": 1.9288474394205626,
-          "error": 0.013990430373125206,
+          "weight": 1.9382633454106308,
+          "error": 0.014854523400934095,
           "insignificant": false,
-          "weight_per_percent": 1.9288474394205626,
+          "weight_per_percent": 1.9382633454106308,
           "scale_factor": 1,
-          "dps_per_point": 0.12307308584507025,
-          "scale_error": 0.0072532591677276536
+          "dps_per_point": 0.11953338023563781,
+          "scale_error": 0.007663831355066506
         },
         {
           "stat": "crit",
-          "weight": 0.5961542735255934,
-          "error": 0.013066053534495557,
+          "weight": 0.5940886849765626,
+          "error": 0.013580606399031211,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 8.346159829358307,
-          "scale_factor": 0.3090727972268671,
-          "dps_per_point": 0.03803854290547821,
-          "scale_error": 0.006774021245776016
+          "weight_per_percent": 8.317241589671877,
+          "scale_factor": 0.3065056595035088,
+          "dps_per_point": 0.036637657541807846,
+          "scale_error": 0.007006584750821923
         },
         {
           "stat": "hit",
-          "weight": 0.7130541659303236,
-          "error": 0.031546483784672896,
+          "weight": 0.6193559544733215,
+          "error": 0.030425182796735277,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 7.130541659303235,
-          "scale_factor": 0.3696788825063994,
-          "dps_per_point": 0.04549752084181974,
-          "scale_error": 0.016355095348624178
+          "weight_per_percent": 6.193559544733215,
+          "scale_factor": 0.31954169485783046,
+          "dps_per_point": 0.038195898912581204,
+          "scale_error": 0.015697135721405055
         },
         {
           "stat": "melee_haste",
-          "weight": 3.7141462061866193,
-          "error": 0.34840673246156956,
+          "weight": 4.053574672809867,
+          "error": 0.37565502787069993,
           "insignificant": false,
-          "weight_per_percent": 3.7141462061866193,
-          "scale_factor": 1.9255780059528043,
-          "dps_per_point": 0.23698682722800868,
-          "scale_error": 0.18062949165447376
+          "weight_per_percent": 4.053574672809867,
+          "scale_factor": 2.091343615617462,
+          "dps_per_point": 0.2499853716089757,
+          "scale_error": 0.19381010777517207
         }
       ],
       "slots": [
@@ -85,7 +85,7 @@
           "item_name": "Brawler's Leather Hood",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 15.430779515,
+          "score": 15.506106763,
           "verified": true,
           "alternatives": [
             {
@@ -93,7 +93,7 @@
               "item_name": "Defender's Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.482944268,
+              "dps_delta": -0.441757023,
               "verified": true
             }
           ],
@@ -111,7 +111,7 @@
           "item_name": "Sentinel's Medallion",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "score": 11.573084637,
+          "score": 11.629580072,
           "verified": true,
           "alternatives": [
             {
@@ -119,7 +119,7 @@
               "item_name": "Erudite's Amulet",
               "source_kind": "quest",
               "source": "Friend of the Library",
-              "dps_delta": -0.518717204,
+              "dps_delta": -0.493563964,
               "verified": true
             }
           ],
@@ -138,7 +138,7 @@
           "source": "Wailing Caverns: Lady Anacondra",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "score": 9.644237197,
+          "score": 9.691316727,
           "verified": true,
           "alternatives": [
             {
@@ -146,7 +146,7 @@
               "item_name": "Slime-encrusted Pads",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Mutanus the Devourer",
-              "dps_delta": -0.653947784,
+              "dps_delta": -0.616867343,
               "verified": true
             }
           ],
@@ -165,7 +165,7 @@
           "source": "Wailing Caverns: Skum",
           "source_kind": "dungeon",
           "chance": 0.5,
-          "score": 11.573084637,
+          "score": 11.629580072,
           "verified": true,
           "alternatives": [
             {
@@ -173,21 +173,21 @@
               "item_name": "Cape of the Brotherhood",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.123073086
+              "dps_delta": -0.11953338
             },
             {
               "item_id": 2316,
               "item_name": "Dark Leather Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.241606173
+              "dps_delta": -0.235259439
             },
             {
               "item_id": 14571,
               "item_name": "Bristlebark Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             }
           ],
           "runners_up": [
@@ -209,7 +209,7 @@
           "item_name": "Tunic of Westfall",
           "source": "The Defias Brotherhood",
           "source_kind": "quest",
-          "score": 21.217321834,
+          "score": 21.3208968,
           "verified": true,
           "alternatives": [
             {
@@ -217,21 +217,21 @@
               "item_name": "Brawler's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.173259632
+              "dps_delta": -0.169781768
             },
             {
               "item_id": 14562,
               "item_name": "Prospector's Chestpiece",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.487752345
+              "dps_delta": -0.4743262
             },
             {
               "item_id": 252491,
               "item_name": "Trapper's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.492292343
+              "dps_delta": -0.478133521
             }
           ],
           "runners_up": [
@@ -253,7 +253,7 @@
           "item_name": "Bravo's Armbands",
           "source": "Underground Assault",
           "source_kind": "quest",
-          "score": 9.715389758,
+          "score": 9.753053382,
           "verified": true,
           "alternatives": [
             {
@@ -261,21 +261,21 @@
               "item_name": "Forest Leather Bracers",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.004539999
+              "dps_delta": -0.003807321
             },
             {
               "item_id": 14569,
               "item_name": "Bristlebark Bindings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.123073086
+              "dps_delta": -0.11953338
             },
             {
               "item_id": 4794,
               "item_name": "Wolf Bracers",
               "source_kind": "vendor",
               "source": "Bernard Brubaker",
-              "dps_delta": -0.127613085
+              "dps_delta": -0.123340701
             }
           ],
           "runners_up": [
@@ -298,7 +298,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 41.67469417834143,
+          "sim_dps": 41.776516271286496,
           "verified": true,
           "alternatives": [
             {
@@ -320,7 +320,7 @@
               "item_name": "Gloves of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": -2.890784176,
+              "dps_delta": -2.648279524,
               "verified": true
             }
           ],
@@ -357,21 +357,21 @@
               "item_name": "Brawler's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.40099925
+              "dps_delta": -0.385251389
             },
             {
               "item_id": 279897,
               "item_name": "Dusty Belt",
               "source_kind": "quest",
               "source": "The Restless Dead",
-              "dps_delta": -0.533152333
+              "dps_delta": -0.512399411
             },
             {
               "item_id": 6468,
               "item_name": "Deviate Scale Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.936576672,
+              "dps_delta": -3.662428099,
               "verified": true
             }
           ],
@@ -395,7 +395,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 41.67469417834143,
+          "sim_dps": 41.776516271286496,
           "verified": true,
           "alternatives": [
             {
@@ -417,7 +417,7 @@
               "item_name": "Brawler's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.158954538,
+              "dps_delta": -2.905672154,
               "verified": true
             }
           ],
@@ -446,7 +446,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 41.67469417834143,
+          "sim_dps": 41.776516271286496,
           "verified": true,
           "alternatives": [
             {
@@ -468,7 +468,7 @@
               "item_name": "Feet of the Lynx",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.075042787,
+              "dps_delta": -2.826399429,
               "verified": true
             }
           ],
@@ -496,31 +496,31 @@
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "score": 11.715389758,
+          "score": 11.753053382,
           "verified": true,
-          "swap_note": "confirmed by the sim against Pyrewood Signet Ring (id 277210): kept the pick, +0.8 DPS (41.7 vs 40.9 set DPS)",
-          "dps_delta": 0.7951916627347657,
+          "swap_note": "confirmed by the sim against Pyrewood Signet Ring (id 277210): kept the pick, +0.8 DPS (41.8 vs 41.0 set DPS)",
+          "dps_delta": 0.7606605627452652,
           "alternatives": [
             {
               "item_id": 12054,
               "item_name": "Demon Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.492292343
+              "dps_delta": -0.478133521
             },
             {
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid",
-              "dps_delta": -0.501372341
+              "dps_delta": -0.485748163
             },
             {
               "item_id": 8350,
               "item_name": "The 1 Ring",
               "source_kind": "world",
               "source": "Fishing",
-              "dps_delta": -0.560638885
+              "dps_delta": -0.543611193
             }
           ],
           "runners_up": [
@@ -542,7 +542,7 @@
           "item_name": "Pyrewood Signet Ring",
           "source": "The Horn of Xelthos",
           "source_kind": "quest",
-          "score": 10.567606421,
+          "score": 10.2304772,
           "verified": true,
           "alternatives": [
             {
@@ -550,7 +550,7 @@
               "item_name": "Demon Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.226590057,
+              "dps_delta": -0.229020496,
               "verified": true
             },
             {
@@ -558,14 +558,14 @@
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid",
-              "dps_delta": -0.428136255
+              "dps_delta": -0.391850356
             },
             {
               "item_id": 8350,
               "item_name": "The 1 Ring",
               "source_kind": "world",
               "source": "Fishing",
-              "dps_delta": -0.487402799
+              "dps_delta": -0.449713386
             }
           ],
           "runners_up": [
@@ -599,29 +599,29 @@
           "source_kind": "world_drop",
           "score": 228.62,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +4.3 DPS (41.7 vs 37.4 set DPS)",
-          "dps_delta": 4.285615647128203,
+          "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +3.9 DPS (41.8 vs 37.9 set DPS)",
+          "dps_delta": 3.8861575893908906,
           "alternatives": [
             {
               "item_id": 2567,
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
-              "dps_delta": -0.911157425
+              "dps_delta": -0.880652608
             },
             {
               "item_id": 2169,
               "item_name": "Buzzer Blade",
               "source_kind": "dungeon",
               "source": "The Deadmines: Sneed's Shredder",
-              "dps_delta": -2.081369412
+              "dps_delta": -2.011686839
             },
             {
               "item_id": 3490,
               "item_name": "Deadly Bronze Poniard",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.678892812
+              "dps_delta": -2.586882908
             }
           ],
           "runners_up": [
@@ -643,7 +643,7 @@
           "item_name": "Assassin's Blade",
           "source": "Shadowfang Keep",
           "source_kind": "dungeon",
-          "score": 228.135389758,
+          "score": 228.173053382,
           "verified": true,
           "alternatives": [
             {
@@ -651,7 +651,7 @@
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
-              "dps_delta": -4.768179667,
+              "dps_delta": -4.309870423,
               "verified": true
             }
           ],
@@ -669,7 +669,7 @@
           "item_name": "Lil Timmy's Peashooter",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 7.715389758,
+          "score": 7.753053382,
           "verified": true,
           "alternatives": [
             {
@@ -677,7 +677,7 @@
               "item_name": "Fine Longbow",
               "source_kind": "vendor",
               "source": "Naela Trance",
-              "dps_delta": -0.242242746,
+              "dps_delta": -0.226467366,
               "verified": true
             },
             {
@@ -685,14 +685,14 @@
               "item_name": "Deadly Blunderbuss",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             },
             {
               "item_id": 4576,
               "item_name": "Light Bow",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             }
           ],
           "runners_up": [
@@ -709,7 +709,7 @@
           ]
         }
       ],
-      "set_dps": 41.67469417834143,
+      "set_dps": 41.776516271286496,
       "no_source_count": 198,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -745,8 +745,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.295942471,
-      "verify_run_seconds": 4.626191277,
+      "weights_run_seconds": 2.092793983,
+      "verify_run_seconds": 4.338371927,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -828,10 +828,10 @@
           "rare_spawn_skipped": 5
         }
       },
-      "reference_dps_per_point": 0.06380654235777307,
+      "reference_dps_per_point": 0.06167035068720967,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility",
-      "haste_scale_factor": 1.9255780059528043,
+      "haste_scale_factor": 2.091343615617462,
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
@@ -854,66 +854,66 @@
         {
           "stat": "attack_power",
           "weight": 1,
-          "error": 0.0009222506677620203,
+          "error": 0.0008987892775011765,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.5184443204592718,
-          "dps_per_point": 0.06380654235777307,
-          "scale_error": 0.00047813562074099027
+          "scale_factor": 0.515925765385686,
+          "dps_per_point": 0.06167035068720967,
+          "scale_error": 0.0004637085459152422
         },
         {
           "stat": "strength",
           "weight": 1,
-          "error": 0.0009222506677620203,
+          "error": 0.0008987892775011765,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.5184443204592718,
-          "dps_per_point": 0.06380654235777307,
-          "scale_error": 0.00047813562074099027
+          "scale_factor": 0.515925765385686,
+          "dps_per_point": 0.06167035068720967,
+          "scale_error": 0.0004637085459152422
         },
         {
           "stat": "agility",
-          "weight": 1.9288474394205626,
-          "error": 0.013990430373125206,
+          "weight": 1.9382633454106308,
+          "error": 0.014854523400934095,
           "insignificant": false,
-          "weight_per_percent": 1.9288474394205626,
+          "weight_per_percent": 1.9382633454106308,
           "scale_factor": 1,
-          "dps_per_point": 0.12307308584507025,
-          "scale_error": 0.0072532591677276536
+          "dps_per_point": 0.11953338023563781,
+          "scale_error": 0.007663831355066506
         },
         {
           "stat": "crit",
-          "weight": 0.5961542735255934,
-          "error": 0.013066053534495557,
+          "weight": 0.5940886849765626,
+          "error": 0.013580606399031211,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 8.346159829358307,
-          "scale_factor": 0.3090727972268671,
-          "dps_per_point": 0.03803854290547821,
-          "scale_error": 0.006774021245776016
+          "weight_per_percent": 8.317241589671877,
+          "scale_factor": 0.3065056595035088,
+          "dps_per_point": 0.036637657541807846,
+          "scale_error": 0.007006584750821923
         },
         {
           "stat": "hit",
-          "weight": 0.7130541659303236,
-          "error": 0.031546483784672896,
+          "weight": 0.6193559544733215,
+          "error": 0.030425182796735277,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 7.130541659303235,
-          "scale_factor": 0.3696788825063994,
-          "dps_per_point": 0.04549752084181974,
-          "scale_error": 0.016355095348624178
+          "weight_per_percent": 6.193559544733215,
+          "scale_factor": 0.31954169485783046,
+          "dps_per_point": 0.038195898912581204,
+          "scale_error": 0.015697135721405055
         },
         {
           "stat": "melee_haste",
-          "weight": 3.7141462061866193,
-          "error": 0.34840673246156956,
+          "weight": 4.053574672809867,
+          "error": 0.37565502787069993,
           "insignificant": false,
-          "weight_per_percent": 3.7141462061866193,
-          "scale_factor": 1.9255780059528043,
-          "dps_per_point": 0.23698682722800868,
-          "scale_error": 0.18062949165447376
+          "weight_per_percent": 4.053574672809867,
+          "scale_factor": 2.091343615617462,
+          "dps_per_point": 0.2499853716089757,
+          "scale_error": 0.19381010777517207
         }
       ],
       "slots": [
@@ -923,7 +923,7 @@
           "item_name": "Brawler's Leather Hood",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 15.430779515,
+          "score": 15.506106763,
           "verified": true,
           "alternatives": [
             {
@@ -931,7 +931,7 @@
               "item_name": "Defender's Leather Hood",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.432088215,
+              "dps_delta": -0.448039354,
               "verified": true
             }
           ],
@@ -949,7 +949,7 @@
           "item_name": "Scout's Medallion",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "score": 11.573084637,
+          "score": 11.629580072,
           "verified": true,
           "alternatives": [
             {
@@ -957,7 +957,7 @@
               "item_name": "Erudite's Amulet",
               "source_kind": "quest",
               "source": "Friend of the Library",
-              "dps_delta": -0.475255125,
+              "dps_delta": -0.475008934,
               "verified": true
             }
           ],
@@ -976,7 +976,7 @@
           "source": "Wailing Caverns: Lady Anacondra",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "score": 9.644237197,
+          "score": 9.691316727,
           "verified": true,
           "alternatives": [
             {
@@ -984,7 +984,7 @@
               "item_name": "Slime-encrusted Pads",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Mutanus the Devourer",
-              "dps_delta": -0.600891132,
+              "dps_delta": -0.614580656,
               "verified": true
             }
           ],
@@ -1003,7 +1003,7 @@
           "source": "Wailing Caverns: Skum",
           "source_kind": "dungeon",
           "chance": 0.5,
-          "score": 11.573084637,
+          "score": 11.629580072,
           "verified": true,
           "alternatives": [
             {
@@ -1011,21 +1011,21 @@
               "item_name": "Cape of the Brotherhood",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.123073086
+              "dps_delta": -0.11953338
             },
             {
               "item_id": 2316,
               "item_name": "Dark Leather Cloak",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.241606173
+              "dps_delta": -0.235259439
             },
             {
               "item_id": 14571,
               "item_name": "Bristlebark Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             }
           ],
           "runners_up": [
@@ -1048,7 +1048,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 40.971768118844345,
+          "sim_dps": 41.00960127900602,
           "verified": true,
           "alternatives": [
             {
@@ -1070,7 +1070,7 @@
               "item_name": "Brawler's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.806955503,
+              "dps_delta": -2.626072175,
               "verified": true
             }
           ],
@@ -1098,7 +1098,7 @@
           "item_name": "Forest Leather Bracers",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 9.644237197,
+          "score": 9.691316727,
           "verified": true,
           "alternatives": [
             {
@@ -1106,21 +1106,21 @@
               "item_name": "Bristlebark Bindings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.118533087
+              "dps_delta": -0.115726059
             },
             {
               "item_id": 4794,
               "item_name": "Wolf Bracers",
               "source_kind": "vendor",
               "source": "Bernard Brubaker",
-              "dps_delta": -0.123073086
+              "dps_delta": -0.11953338
             },
             {
               "item_id": 274742,
               "item_name": "Ratchet Wristwraps",
               "source_kind": "vendor",
               "source": "Winklespark",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             }
           ],
           "runners_up": [
@@ -1143,7 +1143,7 @@
           "source": "Wailing Caverns: Druid of the Fang",
           "source_kind": "dungeon",
           "chance": 0.0234,
-          "score": 15.573084637,
+          "score": 15.629580072,
           "verified": true,
           "alternatives": [
             {
@@ -1151,7 +1151,7 @@
               "item_name": "Bristlebark Gloves",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.226960233,
+              "dps_delta": -0.238916076,
               "verified": true
             },
             {
@@ -1159,14 +1159,14 @@
               "item_name": "Brawler's Leather Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             },
             {
               "item_id": 5970,
               "item_name": "Serpent Gloves",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.255226169
+              "dps_delta": -0.246681403
             }
           ],
           "runners_up": [
@@ -1197,21 +1197,21 @@
               "item_name": "Brawler's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.40099925
+              "dps_delta": -0.385251389
             },
             {
               "item_id": 5780,
               "item_name": "Murloc Scale Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.65168542
+              "dps_delta": -0.62812547
             },
             {
               "item_id": 6468,
               "item_name": "Deviate Scale Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.791164146,
+              "dps_delta": -3.574560716,
               "verified": true
             }
           ],
@@ -1235,7 +1235,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 40.971768118844345,
+          "sim_dps": 41.00960127900602,
           "verified": true,
           "alternatives": [
             {
@@ -1257,7 +1257,7 @@
               "item_name": "Brawler's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.007019582,
+              "dps_delta": -2.824591126,
               "verified": true
             }
           ],
@@ -1286,7 +1286,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 40.971768118844345,
+          "sim_dps": 41.00960127900602,
           "verified": true,
           "alternatives": [
             {
@@ -1308,7 +1308,7 @@
               "item_name": "Feet of the Lynx",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.935316965,
+              "dps_delta": -2.736975202,
               "verified": true
             }
           ],
@@ -1336,31 +1336,31 @@
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "score": 11.715389758,
+          "score": 11.753053382,
           "verified": true,
-          "swap_note": "confirmed by the sim against Pyrewood Signet Ring (id 277210): kept the pick, +0.7 DPS (41.0 vs 40.2 set DPS)",
-          "dps_delta": 0.746090395736843,
+          "swap_note": "confirmed by the sim against Pyrewood Signet Ring (id 277210): kept the pick, +0.7 DPS (41.0 vs 40.3 set DPS)",
+          "dps_delta": 0.737415645837217,
           "alternatives": [
             {
               "item_id": 5351,
               "item_name": "Bounty Hunter's Ring",
               "source_kind": "quest",
               "source": "Hezrul Bloodmark",
-              "dps_delta": -0.378299255
+              "dps_delta": -0.366214783
             },
             {
               "item_id": 12054,
               "item_name": "Demon Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.492292343
+              "dps_delta": -0.478133521
             },
             {
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid",
-              "dps_delta": -0.501372341
+              "dps_delta": -0.485748163
             }
           ],
           "runners_up": [
@@ -1382,7 +1382,7 @@
           "item_name": "Pyrewood Signet Ring",
           "source": "The Horn of Xelthos",
           "source_kind": "quest",
-          "score": 10.567606421,
+          "score": 10.2304772,
           "verified": true,
           "alternatives": [
             {
@@ -1390,21 +1390,21 @@
               "item_name": "Bounty Hunter's Ring",
               "source_kind": "quest",
               "source": "Hezrul Bloodmark",
-              "dps_delta": -0.305063169
+              "dps_delta": -0.272316976
             },
             {
               "item_id": 12054,
               "item_name": "Demon Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.419056257
+              "dps_delta": -0.384235714
             },
             {
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid",
-              "dps_delta": -0.428136255
+              "dps_delta": -0.391850356
             }
           ],
           "runners_up": [
@@ -1438,29 +1438,29 @@
           "source_kind": "world_drop",
           "score": 228.62,
           "verified": true,
-          "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +4.2 DPS (41.0 vs 36.8 set DPS)",
-          "dps_delta": 4.172370649837717,
+          "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +3.7 DPS (41.0 vs 37.3 set DPS)",
+          "dps_delta": 3.7027492543317564,
           "alternatives": [
             {
               "item_id": 20441,
               "item_name": "Scout's Blade",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -0.436730913
+              "dps_delta": -0.419786785
             },
             {
               "item_id": 2567,
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
-              "dps_delta": -0.911157425
+              "dps_delta": -0.880652608
             },
             {
               "item_id": 2169,
               "item_name": "Buzzer Blade",
               "source_kind": "dungeon",
               "source": "The Deadmines: Sneed's Shredder",
-              "dps_delta": -2.081369412
+              "dps_delta": -2.011686839
             }
           ],
           "runners_up": [
@@ -1482,7 +1482,7 @@
           "item_name": "Assassin's Blade",
           "source": "Shadowfang Keep",
           "source_kind": "dungeon",
-          "score": 228.135389758,
+          "score": 228.173053382,
           "verified": true,
           "alternatives": [
             {
@@ -1490,7 +1490,7 @@
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
-              "dps_delta": -4.523353895,
+              "dps_delta": -3.879926888,
               "verified": true
             }
           ],
@@ -1508,7 +1508,7 @@
           "item_name": "Lil Timmy's Peashooter",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 7.715389758,
+          "score": 7.753053382,
           "verified": true,
           "alternatives": [
             {
@@ -1516,7 +1516,7 @@
               "item_name": "Fine Longbow",
               "source_kind": "vendor",
               "source": "Naela Trance",
-              "dps_delta": -0.204419855,
+              "dps_delta": -0.212602222,
               "verified": true
             },
             {
@@ -1524,14 +1524,14 @@
               "item_name": "Deadly Blunderbuss",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             },
             {
               "item_id": 4576,
               "item_name": "Light Bow",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.246146172
+              "dps_delta": -0.23906676
             }
           ],
           "runners_up": [
@@ -1548,7 +1548,7 @@
           ]
         }
       ],
-      "set_dps": 40.971768118844345,
+      "set_dps": 41.00960127900602,
       "no_source_count": 191,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1584,8 +1584,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.295942471,
-      "verify_run_seconds": 4.690548355,
+      "weights_run_seconds": 2.092793983,
+      "verify_run_seconds": 4.392555834,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1667,10 +1667,10 @@
           "rare_spawn_skipped": 5
         }
       },
-      "reference_dps_per_point": 0.06380654235777307,
+      "reference_dps_per_point": 0.06167035068720967,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility",
-      "haste_scale_factor": 1.9255780059528043,
+      "haste_scale_factor": 2.091343615617462,
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
@@ -2477,8 +2477,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.297811178,
-      "verify_run_seconds": 4.801204169,
+      "weights_run_seconds": 2.136000415,
+      "verify_run_seconds": 4.450870828,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3375,8 +3375,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.297811178,
-      "verify_run_seconds": 4.755197524,
+      "weights_run_seconds": 2.136000415,
+      "verify_run_seconds": 4.473437788,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4257,8 +4257,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.571311829,
-      "verify_run_seconds": 2.706895134,
+      "weights_run_seconds": 2.316184491,
+      "verify_run_seconds": 2.519980147,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5137,8 +5137,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.571311829,
-      "verify_run_seconds": 2.735681091,
+      "weights_run_seconds": 2.316184491,
+      "verify_run_seconds": 2.563711787,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6014,8 +6014,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.15889833,
-      "verify_run_seconds": 3.256304932,
+      "weights_run_seconds": 2.947890477,
+      "verify_run_seconds": 3.011597555,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6894,8 +6894,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.15889833,
-      "verify_run_seconds": 3.2239363819999998,
+      "weights_run_seconds": 2.947890477,
+      "verify_run_seconds": 3.042299436,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7816,8 +7816,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.416806668,
-      "verify_run_seconds": 8.720755129,
+      "weights_run_seconds": 3.166657084,
+      "verify_run_seconds": 8.116750453,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8733,8 +8733,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Glacial Blade"
       ],
-      "weights_run_seconds": 3.416806668,
-      "verify_run_seconds": 8.820023308,
+      "weights_run_seconds": 3.166657084,
+      "verify_run_seconds": 8.175874837,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9650,8 +9650,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.576633442,
-      "verify_run_seconds": 9.050640737,
+      "weights_run_seconds": 3.332138054,
+      "verify_run_seconds": 8.590799533,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10583,8 +10583,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.576633442,
-      "verify_run_seconds": 9.072007341,
+      "weights_run_seconds": 3.332138054,
+      "verify_run_seconds": 8.444526372,
       "coverage": {
         "back": {
           "eligible": 390,

@@ -1,8 +1,8 @@
 {
   "spec": "warrior-protection",
   "build": "1.60.1.70450",
-  "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-21T13:34:16Z",
+  "engine_version": "e03762f45",
+  "generated_at": "2026-10-22T13:36:57Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -888,8 +888,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 5.206234355,
-      "verify_run_seconds": 2.197163632,
+      "weights_run_seconds": 5.084156023,
+      "verify_run_seconds": 2.1248291,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1877,8 +1877,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 5.206234355,
-      "verify_run_seconds": 2.075769976,
+      "weights_run_seconds": 5.084156023,
+      "verify_run_seconds": 2.074232347,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2908,8 +2908,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.0674525,
-      "verify_run_seconds": 2.051860998,
+      "weights_run_seconds": 5.014953066,
+      "verify_run_seconds": 2.042834936,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3933,8 +3933,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.0674525,
-      "verify_run_seconds": 2.052550738,
+      "weights_run_seconds": 5.014953066,
+      "verify_run_seconds": 2.036060318,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4990,8 +4990,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.769626223,
-      "verify_run_seconds": 2.362670192,
+      "weights_run_seconds": 4.661614742,
+      "verify_run_seconds": 2.3355209869999998,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -6048,8 +6048,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.769626223,
-      "verify_run_seconds": 2.432269229,
+      "weights_run_seconds": 4.661614742,
+      "verify_run_seconds": 2.434918181,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -7130,8 +7130,8 @@
         "off_hand: Aegis of Stormwind",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.106961679,
-      "verify_run_seconds": 4.689528636,
+      "weights_run_seconds": 5.065126329,
+      "verify_run_seconds": 4.607869562,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -8210,8 +8210,8 @@
         "off_hand: Aegis of Stormwind",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.106961679,
-      "verify_run_seconds": 4.558134479,
+      "weights_run_seconds": 5.065126329,
+      "verify_run_seconds": 4.532547565,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -9266,8 +9266,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 5.321111583,
-      "verify_run_seconds": 8.694995943,
+      "weights_run_seconds": 5.245116127,
+      "verify_run_seconds": 8.409722214,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10321,8 +10321,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 5.321111583,
-      "verify_run_seconds": 8.506543575,
+      "weights_run_seconds": 5.245116127,
+      "verify_run_seconds": 8.191846926,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -11378,8 +11378,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.101495169,
-      "verify_run_seconds": 9.466705192,
+      "weights_run_seconds": 6.050864658,
+      "verify_run_seconds": 9.336466968,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -12434,8 +12434,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.101495169,
-      "verify_run_seconds": 9.37312298,
+      "weights_run_seconds": 6.050864658,
+      "verify_run_seconds": 9.043834779,
       "coverage": {
         "back": {
           "eligible": 390,
