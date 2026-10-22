@@ -5,11 +5,13 @@
 package addon
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"os"
 	"reflect"
 	"slices"
 	"strings"
@@ -106,6 +108,12 @@ type Status struct {
 	// Checked is the newest inbox fetch the player asked for with the
 	// Check for builds now button; zero until one has run.
 	Checked Checked
+	// Waiting is how many builds the site holds for the player that the
+	// addon has not yet shown to be loaded, and WaitingFor the characters
+	// they are for (display names). A build is waiting from the fetch that
+	// found it until a logout rewrites the inbox file with it still in it.
+	Waiting    int
+	WaitingFor []string
 }
 
 // Checked is what one asked-for inbox fetch found: when it ran, how many
@@ -165,6 +173,16 @@ type Sync struct {
 	// first time a write was due.
 	pending map[string]*pendingWrite
 	counts  [2]int // builds, messages of the body pending
+	// lastBody is, per SavedVariables file, the inbox body the companion
+	// last left in the folder; a different file there is the client's
+	// own rewrite at a logout or reload, which holds what the addon had in
+	// memory.
+	lastBody map[string][]byte
+	// seen are the build ids that are not waiting: the ones in the first
+	// inbox this process fetched, and the ones a logout showed the addon
+	// held.
+	seen      map[string]bool
+	baselined bool
 
 	// mu guards status, which the status page reads from the loopback
 	// server's goroutine while Poll runs on the ticker's.
@@ -188,7 +206,7 @@ func New(o Options) *Sync {
 	}
 	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{}, fresh: map[string]bool{},
 		skipLogged: map[string]bool{}, formatLogged: map[int]bool{},
-		pending: map[string]*pendingWrite{}}
+		pending: map[string]*pendingWrite{}, lastBody: map[string][]byte{}, seen: map[string]bool{}}
 	if o.StateDir != "" {
 		sent, err := state.LoadOutboxSent(o.StateDir)
 		if err != nil {
@@ -267,6 +285,9 @@ func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
 		if s.fresh[p] && quiet(p, now) {
 			settled = append(settled, p)
 		}
+	}
+	for _, p := range settled {
+		s.arrivals(p)
 	}
 	if !outboxUp && len(settled) == 0 && !s.lastInbox.IsZero() && now.Sub(s.lastInbox) < s.o.Every {
 		return errors.Join(errs...)
@@ -359,6 +380,15 @@ func (s *Sync) fetchInbox(ctx context.Context, now time.Time, paths []string) (C
 		}
 	}
 	s.counts = [2]int{len(inbox.Builds), len(inbox.Messages)}
+	if !s.baselined {
+		// What the inbox held when this process first looked was there
+		// before the companion could have sent anything.
+		s.baselined = true
+		for _, b := range inbox.Builds {
+			s.seen[b.ID] = true
+		}
+	}
+	s.setWaiting(inbox.Builds)
 	return found, nil
 }
 
@@ -582,4 +612,44 @@ func (s *Sync) postBatches(ctx context.Context, batches [][]Export) error {
 		}
 	}
 	return nil
+}
+
+// setWaiting records which of the builds in the inbox the addon has not
+// yet shown to be loaded, for the Status card.
+func (s *Sync) setWaiting(builds []Build) {
+	var n int
+	var who []string
+	for _, b := range builds {
+		if s.seen[b.ID] {
+			continue
+		}
+		n++
+		if name := characterName(b.Character); name != "" && !slices.Contains(who, name) {
+			who = append(who, name)
+		}
+	}
+	s.mu.Lock()
+	s.status.Waiting, s.status.WaitingFor = n, who
+	s.mu.Unlock()
+}
+
+// arrivals runs when the folder has gone quiet after an export. The
+// client has just written the inbox file from memory, so a waiting
+// build whose id is in a file the companion did not write is a build
+// the addon loaded at its login: it has arrived. A file that is still
+// the companion's own says nothing.
+func (s *Sync) arrivals(p string) {
+	if len(s.builds) == 0 {
+		return
+	}
+	old, err := os.ReadFile(InboxPath(p))
+	if err != nil || bytes.Equal(old, s.lastBody[p]) {
+		return
+	}
+	for _, b := range s.builds {
+		if !s.seen[b.ID] && bytes.Contains(old, []byte(quote(b.ID))) {
+			s.seen[b.ID] = true
+		}
+	}
+	s.setWaiting(s.builds)
 }

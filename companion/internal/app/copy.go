@@ -290,3 +290,18 @@ func CopyInstallAddon(folder string) string { return "Install the addon into " +
 // CopyForInstall puts an install's name before its lines when the Addon row
 // speaks for more than one.
 func CopyForInstall(folder, line string) string { return folder + ": " + line }
+
+// CopyBuildsWaiting is the Addon row's line while a sent build is in (or
+// on its way to) the addon's inbox and the addon has not shown it yet:
+// "A build is waiting for Bow Jackzon. Log out to the character screen
+// and back in." A /reload does not show it, so the line does not offer one.
+func CopyBuildsWaiting(n int, who []string) string {
+	forWho := ""
+	if len(who) > 0 {
+		forWho = " for " + strings.Join(who, ", ")
+	}
+	if n == 1 {
+		return "A build is waiting" + forWho + ". Log out to the character screen and back in."
+	}
+	return fmt.Sprintf("%d builds are waiting%s. Log out to the character screen and back in.", n, forWho)
+}

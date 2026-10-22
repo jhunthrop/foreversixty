@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.18
+
+- A build sent from the site while you are in game is in the addon's inbox seconds after you log out, not a minute: the companion writes it as soon as the game has finished saving, so logging straight back in shows it. The Status card says a build is waiting, and for whom, until a logout shows the addon held it.
+
 ## 0.2.17
 
 - The companion knows only Forever variants: the Classic beta is listed, watched and written to, and Retail, Anniversary and other folders are not; a picked folder of another game is refused with a sentence that says why; the addon updater logs one line for unsigned releases.

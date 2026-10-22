@@ -332,6 +332,7 @@ function renderStatus(s) {
     // What is installed, line by line, and where it is missing the button that puts it there.
     for (const l of rows.addon.lines) v.append(h('span', { class: 'sub', text: l.text }));
     if (rows.checked) v.append(h('span', { class: 'sub', text: rows.checked }));
+    if (s.builds_waiting) v.append(h('span', { class: 'sub', text: s.builds_waiting }));
     if (rows.installError) v.append(h('span', { class: 'sub warn', text: rows.installError }));
     for (const o of rows.addon.offers) {
       const working = rows.installing === o.path;

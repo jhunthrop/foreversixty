@@ -487,3 +487,10 @@ test('the Settings switch says what the ruling says, and the page carries it und
   assert.ok(at('visibility') > 0 && at('visibility') < at('keep-addon') && at('keep-addon') < at('logging-character'));
   assert.match(html, /<input type="checkbox" role="switch" id="keep-addon" checked>/);
 });
+
+test('a build waiting for the game is one line on the Addon row, and it never offers a reload', () => {
+  const line = fixture('status-addon-build-waiting.json').builds_waiting;
+  assert.strictEqual(line, 'A build is waiting for Bow Jackzon. Log out to the character screen and back in.');
+  assert.doesNotMatch(line, /reload/i);
+  assert.strictEqual(fixture('status-addon-current.json').builds_waiting, undefined);
+});
