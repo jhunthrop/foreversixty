@@ -28,3 +28,15 @@ Observed, for the reviews: the preview says "at 60" for a level-24 build; the pr
 | game-11-help-no-tester-lines.jpg | `/fs help` without the tester lines; "/fs diag: check what is wrong" |
 
 Also seen: `/fs diag` "Site: has your save from 1 h 20 min ago (6 characters)"; the talent strip "Beast Mastery build · 15 of 15 points · complete · next point at level 25". Three A.2 rounds were needed for the line: the buff-frame anchor, then `SetWidth(0)` on the font string, then the finished-plan idle state that A.1 had left as the icon alone.
+
+## Solo-viewable surfaces on the owner's alt (Obnoxious Yell, level 21 Arms warrior, OLYMPUS XXVII), addon 2.0.17 files
+
+| File | What it shows |
+|---|---|
+| game-15-chip-warrior-equip.jpg | The line for the warrior: "Equip Earthfury Gauntlets, +3.5 DPS" with the item icon |
+| game-13-guild-window-tab-button.jpg | The client's Guild & Communities window with the addon's "Forever Sixty" tab button under its bottom-right corner (hover: "Your guild's Forever Scores, gear and live builds. Click to open or close.") |
+| game-12-guild-tab.jpg, game-12-guild-tab-full.jpg | The addon's guild window: "Forever Sixty · Guild", "Online only" ticked, "14 of 773 shown · 1 live of 14 online · as of 22 Oct", columns Name · Level · Spec · Gear · Score↓ · Attendance · Gap; every row "— · no logs · —" except the player's own ("Arms", gap "0.7 DPS"); two level-7 rows (Carla Delianco, Fear Dapriestt) with no cells at all |
+| game-14-social-raid-tab.jpg | The Social window's Raid tab solo: the client's raid text and the addon's "Forever Sixty" button under the bottom-right corner |
+| game-16-chat-group-hint.jpg | `/fs group` solo: "The group panel shows on the Raid tab of the Social window (O)." |
+
+Also: `/fs panel` printed nothing and opened nothing visible while solo (`/fs diag` says "Panel: closed, 2 targets, rotation 5 rows").
