@@ -167,6 +167,60 @@ describe("the chip's words once every point is spent (A.2)", function()
 	end)
 end)
 
+describe("the line's text always has a width, so the frame is wider than its icon", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	-- Six px a letter, a font string with no width (or a width of 0) drawing nothing: its string width is 0.
+	local function measured(Chip)
+		local room = require("Theme").SIZES.chipWide - require("Theme").SIZES.chipTextInset
+		Chip.text.GetStringWidth = function(region)
+			local width = utf8.len(region:GetText() or "") * 6
+			local set = mock.lastCall(region, "SetWidth")
+			if set ~= nil and set[1] == 0 then
+				return 0
+			end
+			return region.wrapped and math.min(width, room) or width
+		end
+		Chip.text.GetStringHeight = function(region)
+			return math.ceil(utf8.len(region:GetText() or "") * 6 / room) * 14
+		end
+		Chip.text.SetWordWrap = function(region, on)
+			region.wrapped = on
+		end
+	end
+
+	it("is wider than the 28 px icon for a short Next line", function()
+		boot()
+		local Chip, Theme = require("Chip"), require("Theme")
+		measured(Chip)
+		Chip.refresh()
+		assert.is_truthy(Chip.text:GetText():find("^Next"))
+		assert.is_true(Chip.text:IsShown())
+		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
+		for _, call in ipairs(Chip.text.calls) do
+			assert.is_false(call.method == "SetWidth" and call[1] == 0)
+		end
+	end)
+
+	it("is wider than the icon for the ready-check sentence, wrapped, and again for a short line after it", function()
+		boot()
+		local Chip, Theme = require("Chip"), require("Theme")
+		measured(Chip)
+		Chip.setRaidCheck({}, "Ready check (only you see this): nothing missing at your level 9483 "
+			.. "no flask, food or buff is expected below 35", false, true)
+		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
+		assert.is_true(Chip.text:GetStringWidth() > 0)
+		Chip.setRaidCheck({}, "Ready check: nothing missing", false, true)
+		assert.is_true(Chip.frame:GetWidth() > Theme.SIZES.chip)
+		assert.is_true(Chip.text:GetStringWidth() > 0)
+		for _, call in ipairs(Chip.text.calls) do
+			assert.is_false(call.method == "SetWidth" and call[1] == 0)
+		end
+	end)
+end)
+
 describe("the line's default spot and the client's buff row (A.2)", function()
 	after_each(function()
 		mock.uninstall()
