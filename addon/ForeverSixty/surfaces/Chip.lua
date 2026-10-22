@@ -1133,6 +1133,11 @@ function Chip.toggle()
 	end
 	Prefs.set("chip", "shown", true)
 	Chip.clearHidden()
+	-- Showing it again always places it: a line the render check switched off gets its spot back
+	-- beside the minimap, clear of any buff-row move.
+	Chip.disabled = nil
+	Chip.noBuffMove = true
+	Chip.place()
 	Chip.refresh()
 	return L.chipShownLine
 end
@@ -1258,9 +1263,15 @@ function Chip.isDrawn()
 	return not Chip.disabled and Chip.frame ~= nil and Chip.frame:IsShown() == true
 end
 
---- The client's buff frame when it sits where the line's default spot would be (the line's
---- rectangle, just left of the minimap, meets it), else nil. Only asked, never written.
+--- Where to put the line under the client's buff frame when that frame sits where the line's default
+--- spot would be (the line's rectangle, just left of the minimap, meets it): { x, y } offsets of the
+--- line's top-right corner from UIParent's, plain numbers, never an anchor to the buff frame (which
+--- the client may move or leave unsized). nil when the buffs are elsewhere, not drawn, unreadable, or the
+--- spot under them would not be on screen. Only asked, never written.
 function Chip.buffsInTheWay(minimap, frame)
+	if Chip.noBuffMove then
+		return nil
+	end
 	local buffs = _G.BuffFrame
 	if type(buffs) ~= "table" or type(buffs.GetLeft) ~= "function" or type(minimap.GetLeft) ~= "function" then
 		return nil
@@ -1284,10 +1295,22 @@ function Chip.buffsInTheWay(minimap, frame)
 	local chipRight = minimapLeft - S.chipMinimapGap
 	local chipLeft = chipRight - (type(width) == "number" and width or S.chip)
 	local chipBottom = minimapTop - (type(height) == "number" and height or S.chip)
-	if right > chipLeft and left < chipRight and top > chipBottom and bottom < minimapTop then
-		return buffs
+	if not (right > chipLeft and left < chipRight and top > chipBottom and bottom < minimapTop) then
+		return nil
 	end
-	return nil
+	local parent = _G.UIParent
+	local parentRight = type(parent) == "table" and type(parent.GetRight) == "function" and parent:GetRight() or nil
+	local parentTop = type(parent) == "table" and type(parent.GetTop) == "function" and parent:GetTop() or nil
+	if type(parentRight) ~= "number" or type(parentTop) ~= "number" or bottom <= 0 or bottom >= top then
+		return nil
+	end
+	local x = chipRight - parentRight
+	local y = bottom - parentTop - S.chipMinimapGap / 2
+	-- The spot must leave the whole line on screen (its height below the top edge, its right edge in).
+	if x > 0 or chipLeft < 0 or bottom - S.chipMinimapGap / 2 - (type(height) == "number" and height or S.chip) < 0 then
+		return nil
+	end
+	return { x = x, y = y }
 end
 
 --- Where the chip sits: the saved spot after a shift-drag, else just left of
@@ -1307,9 +1330,9 @@ function Chip.place()
 	local minimap = _G.Minimap
 	local width = type(minimap) == "table" and type(minimap.GetWidth) == "function" and minimap:GetWidth() or nil
 	if type(width) == "number" and width > 0 then
-		local buffs = Chip.buffsInTheWay(minimap, frame)
-		if buffs ~= nil then
-			frame:SetPoint("TOPRIGHT", buffs, "BOTTOMRIGHT", 0, -Theme.SIZES.chipMinimapGap / 2)
+		local under = Chip.buffsInTheWay(minimap, frame)
+		if under ~= nil then
+			frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", under.x, under.y)
 			return "buffs"
 		end
 		frame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", -(width + Theme.SIZES.chipMinimapGap), 0)
@@ -1654,6 +1677,13 @@ function Chip.selfCheck()
 		Prefs.set("chip", "point", "")
 		Chip.place()
 		Theme.noteInfo(L.diagChipMoved)
+		onScreen = Chip.onScreen(frame)
+	end
+	if fitsWidth and not onScreen and not Chip.noBuffMove then
+		-- The spot under the buff row left the line off screen: beside the minimap as before, for
+		-- the session, rather than losing the line.
+		Chip.noBuffMove = true
+		Chip.place()
 		onScreen = Chip.onScreen(frame)
 	end
 	if fitsWidth and onScreen then
