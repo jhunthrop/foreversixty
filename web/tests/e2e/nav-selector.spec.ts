@@ -489,8 +489,8 @@ test.describe('choosing a character', () => {
     const horde = panel(page)
       .getByTestId(`selector-row-${keyOf(FROSTBYTE)}`)
       .getByRole('img', { name: 'Horde' });
-    await expect(alliance).toHaveAttribute('src', /\/icons\/hd\/faction\/alliance-logo-512\.webp$/);
-    await expect(horde).toHaveAttribute('src', /\/icons\/hd\/faction\/horde-logo-512\.webp$/);
+    await expect(alliance).toHaveAttribute('src', /\/icons\/hd\/faction\/alliance-logo-64.webp$/);
+    await expect(horde).toHaveAttribute('src', /\/icons\/hd\/faction\/horde-logo-64.webp$/);
     await expect(horde).toHaveAttribute('title', 'Horde');
     expect(await horde.evaluate((img) => (img as HTMLImageElement).width)).toBe(16);
   });

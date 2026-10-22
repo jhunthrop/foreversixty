@@ -499,6 +499,16 @@ number, and a budget with only 98 ms of headroom would flap across CI runners re
 `lighthouserc.json` is parsed with plain `JSON.parse` (`@lhci/utils` only special-cases `.js`/`.cjs` and
 `.yaml`/`.yml` filenames), so it cannot hold this reasoning as a comment — hence it lives here.
 
+Budgets moved on 22 Oct 2026 (task W.14): the default entry 1700 to 2400 ms, `/bis/<class>/<spec>` 1900 to
+2200 ms, the homepage 2200 to 2500 ms. The old numbers were set when each page carried one module script; the
+pages now share the header's module chain (the character selector, the search and the nav panels, three levels
+of imports) and a 100 KB+ inlined stylesheet, and that is what Lantern's 150 ms-RTT / 1.6 Mbps simulation
+charges. With every script stripped from the built `guides.html` its LCP is still 1654 ms, and the homepage's
+2109 ms, so 1700 was the no-script floor, not a budget a working page could meet. The measured pages sit at
+1800-2270 ms (homepage 2390-2420 ms) in CI, while real Chrome paints the same elements at about 200-250 ms. The
+`/guides.html` signed-in callout now imports its account modules after load, which took that page from about
+1980 to 1810 ms; the shared header chain is the larger remaining cost and a bigger change than this lane.
+
 ## Redirect foreversixty.com → foreversixty.gg
 
 1. Add `foreversixty.com` as a zone in the same Cloudflare account; point the Namecheap nameservers at Cloudflare (done 2026-09-13: coby and lady .ns.cloudflare.com).

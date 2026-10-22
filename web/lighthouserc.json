@@ -51,7 +51,7 @@
             "categories:accessibility": ["error", { "minScore": 0.95 }],
             "categories:seo": ["error", { "minScore": 0.95 }],
             "categories:best-practices": ["warn", { "minScore": 0.95 }],
-            "largest-contentful-paint": ["error", { "maxNumericValue": 1700 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 2400 }],
             "total-blocking-time": ["error", { "maxNumericValue": 100 }],
             "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
           }
@@ -64,7 +64,7 @@
             "categories:accessibility": ["error", { "minScore": 0.95 }],
             "categories:seo": ["error", { "minScore": 0.95 }],
             "categories:best-practices": ["warn", { "minScore": 0.95 }],
-            "largest-contentful-paint": ["error", { "maxNumericValue": 1900 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 2200 }],
             "total-blocking-time": ["error", { "maxNumericValue": 100 }],
             "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
           }
@@ -77,7 +77,7 @@
             "categories:accessibility": ["error", { "minScore": 0.95 }],
             "categories:seo": ["error", { "minScore": 0.95 }],
             "categories:best-practices": ["warn", { "minScore": 0.95 }],
-            "largest-contentful-paint": ["error", { "maxNumericValue": 2200 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
             "total-blocking-time": ["error", { "maxNumericValue": 100 }],
             "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
           }

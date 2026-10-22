@@ -254,7 +254,9 @@ test.describe('the simulator tab strip at phone width', () => {
 
     const box = await page.getByTestId('sim-nav-tab-specs').boundingBox();
     expect(box?.x ?? -1, 'the active tab itself is on-screen').toBeGreaterThanOrEqual(0);
-    expect((box?.x ?? 0) + (box?.width ?? 0), 'the active tab itself is on-screen').toBeLessThanOrEqual(390);
+    // +1 covers sub-pixel rounding: tab widths are fractional and a browser that scrolls in whole
+    // pixels rounds the last tab's scroll position down, leaving up to a pixel of it past the edge.
+    expect((box?.x ?? 0) + (box?.width ?? 0), 'the active tab itself is on-screen').toBeLessThanOrEqual(391);
 
     // It was scrolled all the way to its own end to get there, so the right fade is gone
     // and the left one (everything before it) is showing.

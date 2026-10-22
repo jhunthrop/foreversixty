@@ -30,6 +30,9 @@ function firstVisibleBand(page: Page) {
 test.describe('the BiS page shares one tooltip host across every row', () => {
   test('hovering a slot’s icon shows the item tooltip with icon, stats and level', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
+    // The shared host is a client:idle island: hover is only delegated once it has mounted, so
+    // wait for its ready marker rather than racing hydration.
+    await page.locator('html[data-tooltip-host="ready"]').waitFor({ state: 'attached' });
     const band = firstVisibleBand(page);
     await expect(band).toBeVisible();
 
@@ -74,6 +77,9 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
 
   test('only one tooltip is open at a time across the page’s delegated host', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
+    // The shared host is a client:idle island: hover is only delegated once it has mounted, so
+    // wait for its ready marker rather than racing hydration.
+    await page.locator('html[data-tooltip-host="ready"]').waitFor({ state: 'attached' });
     const pills = firstVisibleBand(page).locator('[data-testid^="item-hover-"]');
     const firstIcon = pills.nth(0);
     const secondIcon = pills.nth(1);
@@ -99,6 +105,9 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     page,
   }) => {
     await page.goto('/bis/hunter/marksmanship');
+    // The shared host is a client:idle island: hover is only delegated once it has mounted, so
+    // wait for its ready marker rather than racing hydration.
+    await page.locator('html[data-tooltip-host="ready"]').waitFor({ state: 'attached' });
     const band = firstVisibleBand(page);
     await expect(band).toBeVisible();
     const icon = band.locator('[data-testid^="item-hover-"]').last();

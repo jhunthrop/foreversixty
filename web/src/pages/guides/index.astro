@@ -74,10 +74,28 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
   // a plain module script swaps this skeleton for the real callout, or hides the slot
   // signed-out / on a session with no usable character (never blocks the grid beside it,
   // which needs nothing from this fetch). It follows the header character selector.
-  import { mountSignedInCallout } from '../../lib/guides/signed-in-callout-mount';
-
+  //
+  // The mount (and the account read and current-character modules behind it) is imported after
+  // the page has loaded and gone idle, not statically: the callout is the one thing here that
+  // needs the account, and a static import put that whole module chain, one round trip per
+  // level, ahead of first paint on a slow connection (main's Lighthouse run, 22 Oct: LCP
+  // 2065 ms against a 1700 ms budget, with the skeleton above already the reserved box).
   const root = document.getElementById('guides-signed-in-callout');
-  if (root !== null) mountSignedInCallout(root);
+  if (root !== null) {
+    const mount = (): void => {
+      void import('../../lib/guides/signed-in-callout-mount').then((m) => m.mountSignedInCallout(root));
+    };
+    // A short beat after load, then idle: the skeleton holds the callout's box meanwhile, and
+    // the request for the account waits until the heading and its note have long been painted.
+    const afterLoad = (): void => {
+      window.setTimeout(() => {
+        if ('requestIdleCallback' in window) window.requestIdleCallback(mount, { timeout: 1500 });
+        else mount();
+      }, 400);
+    };
+    if (document.readyState === 'complete') afterLoad();
+    else window.addEventListener('load', afterLoad, { once: true });
+  }
 </script>
 
 <style>
