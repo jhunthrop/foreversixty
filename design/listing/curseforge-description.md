@@ -44,6 +44,12 @@ Forever Sixty puts the next thing that makes your character better where you wou
 
 It is the in-game half of **[foreversixty.gg](https://foreversixty.gg)**, the planner, simulator and log site for World of Warcraft: Forever. The numbers in the game are the site's numbers: the same simulator, the same stat weights, the same Forever Score.
 
+### What's new in 2.0.17
+
+- **The build preview shows the whole build.** Every gear slot the code plans is listed, at the build's own level, each with where it comes from in full (boss, place, drop chance, or the profession that crafts it). The list scrolls when it is long.
+- **The line beside the minimap says the next point.** When your plan is finished for now it reads "Build complete · next point at level 25", and the talent strip and the chat line after you paste a build say the same, so a finished plan no longer looks like a dead end.
+- **The stray words are gone.** "0 off plan" reads "none off plan", the Options page lists four commands and "/fs help" for the rest, the testers' commands moved under "/fs help all", and the copy tab says how long ago the site saved your character instead of a clock time.
+
 ### Install in two minutes
 
 1. Install **Forever Sixty** and **Forever Sixty Data** (the nightly ratings pack; a required dependency, so the CurseForge and Wago apps install it with the addon). Installing by hand, put both folders in `Interface\AddOns`; the `ForeverSixtyInbox` folder in the same download is for the desktop companion and does nothing on its own.
@@ -168,7 +174,7 @@ The dialog previews what a paste would replace and never overwrites a raid build
 
 ![The build dialog's copy tab](https://foreversixty.gg/addon/build-dialog-copy.jpg)
 
-`/fs copy`, or Ctrl+C in the dialog, copies your character: level, spec, talents, equipped gear, and your bags when that switch is on. Paste it on the site's planner or simulator under "Import from addon" and they start from exactly what you have. With the desktop companion the copy travels by itself at logout, and the tab reads "Seen by the site" with the time.
+`/fs copy`, or Ctrl+C in the dialog, copies your character: level, spec, talents, equipped gear, and your bags when that switch is on. Paste it on the site's planner or simulator under "Import from addon" and they start from exactly what you have. With the desktop companion the copy travels by itself at logout, and the tab reads "Site has your save from" and how long ago.
 
 ### Settings
 
@@ -188,7 +194,7 @@ Everything lives on the game's own Settings page: Escape, Options, AddOns, Forev
 | Share my build with my guild | Guildmates with Forever Sixty see your level, spec, build and gear gap. |
 | Save my character for the companion app | Written at logout for the companion app on your PC, so the site can read your gear. |
 
-Under them: Reset positions, which puts the chip, the minimap button and the build dialog back, the command list, and a plain line for the data pack ("Player ratings: as of 14 Oct", "too old", "not installed").
+Under them: Reset positions, which puts the chip, the minimap button and the build dialog back, the first four commands and "/fs help: all the commands", and a plain line for the data pack ("Player ratings: as of 14 Oct", "too old", "not installed").
 
 ### The desktop companion, optional
 
@@ -209,12 +215,12 @@ The companion app on **[foreversixty.gg/setup](https://foreversixty.gg/setup)** 
 | `/fs loot` | what an item is worth to you |
 | `/fs floor N` | tag members scored under N |
 | `/fs options` | open the settings page |
-| `/fs diag` | what is not working |
+| `/fs diag` | check what is wrong |
 | `/fs help` | every command |
 
 ### If something looks wrong
 
-- **`/fs diag`** says what is not working and why, one line per surface.
+- **`/fs diag`** says what is wrong and why, one line per surface.
 - **"Player ratings: not installed"** means Forever Sixty Data is missing; install it beside the addon. **"too old"** means your addon manager has not updated it for a while.
 - **No chip**: right-click hid it until your next level; `/fs chip` brings it back.
 - **No marks in your bags**: another bag addon owns them, and the chip's hover legend still names the upgrade.

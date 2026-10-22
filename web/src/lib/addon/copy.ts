@@ -380,7 +380,7 @@ export const addonCopy = {
     { command: '/fs loot', description: 'what an item is worth to you' },
     { command: '/fs floor N', description: 'tag members scored under N' },
     { command: '/fs options', description: 'open the settings page' },
-    { command: '/fs diag', description: 'what is not working' },
+    { command: '/fs diag', description: 'check what is wrong' },
     { command: '/fs help', description: 'every command' },
   ],
   /** The companion handshake (addon-v2 spec §4.10 and §6.3–6.4), three sentences. */
@@ -388,7 +388,7 @@ export const addonCopy = {
   handshake: [
     'When you log out, the addon saves your character export (level, spec, talents, equipped gear, and bags when the bag switch is on), any sim request and the guild tab’s live roster.',
     'The roster is saved only while “Share my build with my guild” is on, and members who opted out appear as “seen HH:MM” only; the companion uploads all of it and brings back what the site has for you, builds and sim results included.',
-    'The build dialog’s Copy my character tab then says “Seen by the site” with the time, once the site has your latest copy.',
+    'The build dialog’s Copy my character tab then says “Site has your save from” and how long ago once the site has your latest copy, and “Not sent to the site yet · log out to send” until then.',
   ],
 
   // --- gear panel weights ---

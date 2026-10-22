@@ -120,8 +120,8 @@ did with it ("Sim request queued"). It writes `ForeverSixtyInbox.lua` beside the
 you chose on the site, your newest sim, your last raid and what the site last saw, which the addon
 loads the next time the game starts or you `/reload`. The game reads that file only for the small
 `ForeverSixtyInbox` addon that ships in the same download as ForeverSixty (both folders go into
-`Interface/AddOns`); without it the inbox is never seen. The status page shows "Seen by the site
-14:03" once the site has your export. The companion only ever writes `ForeverSixtyInbox.lua`;
+`Interface/AddOns`); without it the inbox is never seen. The status page's Addon row shows "Last synced 4 minutes ago"
+(the time of day later on, then "yesterday") once the site has your export. The companion only ever writes `ForeverSixtyInbox.lua`;
 `ForeverSixty.lua` is the game's. The game rewrites its own saved variables at logout, so an inbox written mid-session
 may be replaced; the next pass puts it back.
 

@@ -318,7 +318,7 @@ Notes for the reader:
   time in UTC, whether or not the export had changed since the one before (a re-upload of the
   same export moves it); `ack.export_changed_at` is when the export text last changed, so the
   addon can tell "the site saw it again" from "the site has something new" (optional; the
-  addon ignores it when absent); the build dialog shows it as "Seen by the site 14:03" in local time. `ack` is sent only
+  addon ignores it when absent); the build dialog shows it as an age, "Site has your save from 1 h 35 min ago" (older than the addon's own save it adds "Yours is newer: log out to send it."; with no ack at all it reads "Not sent to the site yet · log out to send"). `ack` is sent only
   to an account with a companion paired. Its optional `sim_request_state` is what became of
   the character's newest in-game sim request: `"queued"` (a run started), `"needs_premium"`
   (server sims are a premium feature), `"duplicate"` (another request started a run within
