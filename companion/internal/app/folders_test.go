@@ -60,10 +60,10 @@ func TestAPickedFolderIsValidatedAddedAndStoredByItsOwnPath(t *testing.T) {
 	}
 }
 
-func TestAFolderAboveTheInstallsAddsEachOfThem(t *testing.T) {
+func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 	h := newHarness(t)
 	root := t.TempDir()
-	for _, f := range []string{"_classic_era_", "_anniversary_"} {
+	for _, f := range []string{"_classic_beta_", "_retail_", "_anniversary_"} {
 		for _, p := range []string{filepath.Join(root, f, "WTF"), filepath.Join(root, f, "Logs")} {
 			if err := os.MkdirAll(p, 0o755); err != nil {
 				t.Fatal(err)
@@ -74,8 +74,46 @@ func TestAFolderAboveTheInstallsAddsEachOfThem(t *testing.T) {
 	if code, _ := h.call(http.MethodPost, h.url("/api/folders/pick"), nil); code != http.StatusOK {
 		t.Fatal("pick failed")
 	}
-	if got := h.storedPaths(); len(got) != 3 {
-		t.Fatalf("wow_paths = %v, want the game folder and both installs by their own paths", got)
+	got := h.storedPaths()
+	if len(got) != 2 || got[1] != filepath.Join(root, "_classic_beta_") {
+		t.Fatalf("wow_paths = %v, want the game folder and the Classic beta by its own path", got)
+	}
+	for _, in := range h.app.Snapshot().Installs {
+		if in.Flavor != "_classic_beta_" {
+			t.Errorf("an install of %s is listed", in.Flavor)
+		}
+	}
+}
+
+func TestARetailFolderIsRefusedInWordsThatSayWhy(t *testing.T) {
+	h := newHarness(t)
+	for pick, want := range map[string]string{
+		newInstall(t, "_retail_"):      "That is Retail. Forever Sixty runs on the Classic beta; pick its folder, _classic_beta_.",
+		newInstall(t, "_private_srv_"): "Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder.",
+	} {
+		h.pick = pick
+		code, body := h.call(http.MethodPost, h.url("/api/folders/pick"), nil)
+		if code != http.StatusBadRequest || errorCode(body) != "not_wow_folder" {
+			t.Fatalf("pick = %d %v", code, body)
+		}
+		if msg := body["error"].(map[string]any)["message"]; msg != want {
+			t.Errorf("message = %q, want %q", msg, want)
+		}
+	}
+	if got := h.storedPaths(); len(got) != 1 {
+		t.Fatalf("wow_paths = %v, a refused folder was stored", got)
+	}
+}
+
+func TestAStoredFolderOfAnotherGameIsDroppedAtLoad(t *testing.T) {
+	retail := newInstall(t, "_retail_")
+	h := newHarnessWith(t, nil, func(o *app.Options) {
+		o.Config.WoWPaths = append(append([]string{}, o.Config.WoWPaths...), retail)
+	})
+	for _, in := range h.app.Snapshot().Installs {
+		if in.Path == retail {
+			t.Fatalf("the remembered Retail folder is still listed: %+v", in)
+		}
 	}
 }
 
@@ -87,7 +125,7 @@ func TestAFolderThatIsNotTheGameIsRefusedWithTheDesignersSentence(t *testing.T) 
 		t.Fatalf("pick = %d %v", code, body)
 	}
 	if msg := body["error"].(map[string]any)["message"]; msg !=
-		"That folder is not a World of Warcraft folder. Choose the one that contains WTF and Logs, such as _classic_era_." {
+		"That folder is not a World of Warcraft folder. Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder." {
 		t.Errorf("message = %q", msg)
 	}
 	if got := h.storedPaths(); len(got) != 1 {
@@ -171,7 +209,7 @@ func TestTheSnapshotCarriesTheNewFieldsAndNeverAnErrorsText(t *testing.T) {
 		t.Fatalf("installs = %+v", s.Installs)
 	}
 	in := s.Installs[0]
-	if in.FlavorName != "Classic Era" || !in.Watching || !in.Added || in.Path != h.game {
+	if in.FlavorName != "Classic beta" || !in.Watching || !in.Added || in.Path != h.game {
 		t.Errorf("install = %+v", in)
 	}
 	if in.AdvancedLogHelp != app.CopyAdvancedRowHelp {

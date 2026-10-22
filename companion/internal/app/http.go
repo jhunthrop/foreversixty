@@ -6,11 +6,13 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"io/fs"
 	"net/http"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/browser"
+	"github.com/jhunthrop/foreversixty/companion/internal/wow"
 	"github.com/jhunthrop/foreversixty/companion/ui"
 )
 
@@ -76,6 +78,13 @@ func writeBody(w http.ResponseWriter, status int, data any, message, code string
 // this to the player as it is.
 func (a *App) writeFault(w http.ResponseWriter, status int, err error, fallback string) {
 	code := codeOf(err, fallback)
+	// A folder that is another game is refused in words that name it; they
+	// are written in the wow package for the player, not an error's text.
+	var refusal *wow.Refusal
+	if code == CodeNotWoW && errors.As(err, &refusal) {
+		writeBody(w, status, nil, refusal.Words(), code)
+		return
+	}
 	if code == CodeInternal {
 		a.log.Error("a request failed", "component", "ui", "err", err.Error())
 	}

@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -306,6 +307,29 @@ func (u *Updater) reject(tag string) {
 // older signed one is taken instead.
 func (u *Updater) candidates(ctx context.Context, fams ...Family) (map[string]candidate, error) {
 	out := map[string]candidate{}
+	skipped := 0
+	// One line per check, not one per tag: a repository with two dozen
+	// releases from before signing would otherwise fill the log every time.
+	defer func() {
+		if skipped == 0 {
+			return
+		}
+		newest := "none"
+		if len(out) > 0 {
+			tags := make([]string, 0, len(out))
+			for _, c := range out {
+				tags = append(tags, c.tag)
+			}
+			sort.Strings(tags)
+			newest = strings.Join(tags, ", ")
+		}
+		noun := "releases"
+		if skipped == 1 {
+			noun = "release"
+		}
+		u.o.Log.Info(fmt.Sprintf("the update check skipped %d unsigned %s; newest signed: %s", skipped, noun, newest),
+			"component", "addonupdater")
+	}()
 	for page := 1; page <= maxPages; page++ {
 		rels, err := u.list(ctx, page)
 		if err != nil {
@@ -322,8 +346,7 @@ func (u *Updater) candidates(ctx context.Context, fams ...Family) (map[string]ca
 				if c, ok := pick(f, rel); ok {
 					out[f.Key] = c
 				} else {
-					u.o.Log.Info("a release has no signed zip, so it is not installed",
-						"component", "addonupdater", "tag", rel.TagName)
+					skipped++
 				}
 			}
 		}

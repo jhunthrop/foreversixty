@@ -92,7 +92,7 @@ func TestARaidNightSurvivesADropAndARestart(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	install := filepath.Join(t.TempDir(), "_classic_era_")
+	install := filepath.Join(t.TempDir(), "_classic_beta_")
 	logs := filepath.Join(install, "Logs")
 	for _, p := range []string{logs, filepath.Join(install, "WTF", "Account", "ACCOUNT#1", "SavedVariables")} {
 		if err := os.MkdirAll(p, 0o755); err != nil {

@@ -159,7 +159,12 @@ test('the Current report row and the headline agree in each of the three credit 
 
 test('only the watched install shouts that advanced logging is off', () => {
   const s = fixture('status-credited.json');
-  const [watched, other] = s.installs;
+  // One install today; a second Forever variant is the same row, unwatched.
+  const [watched] = s.installs;
+  const other = Object.assign({}, watched, { watching: false });
+  delete other.advanced_logging_help;
+  other.advanced_logging = false;
+  other.advanced_logging_known = true;
   assert.strictEqual(watched.watching, true);
   assert.strictEqual(other.watching, false);
 
@@ -443,18 +448,9 @@ test('the Addon row shows the version line for each state and the install button
   assert.deepStrictEqual(rows('status-addon-ready.json').lines.map((l) => l.text),
     ['Addon 2.0.16 ready · installs when the game closes', 'Data 2026.10.21 ready · installs when the game closes']);
   const missing = rows('status-addon-missing.json');
-  assert.deepStrictEqual(missing.lines, [{ text: 'Addon not found in Classic Era', muted: true }]);
-  assert.deepStrictEqual(missing.offers.map((o) => o.label), ['Install the addon into Classic Era']);
+  assert.deepStrictEqual(missing.lines, [{ text: 'Addon not found in Classic beta', muted: true }]);
+  assert.deepStrictEqual(missing.offers.map((o) => o.label), ['Install the addon into Classic beta']);
   assert.strictEqual(rows('status-addon-current.json').offers.length, 0);
-  // One button per install without the addon, and the install named on the lines when there are two.
-  const two = rows('status-addon-two-installs.json');
-  assert.deepStrictEqual(two.lines.map((l) => l.text), [
-    'Classic Era: Addon 2.0.15 · up to date', 'Classic Era: Data 2026.10.21 · up to date',
-    'Classic Anniversary: Addon 2.0.16 ready · installs when the game closes', 'Classic Anniversary: Data 2026.10.21 ready · installs when the game closes']);
-  assert.strictEqual(two.offers.length, 0);
-  const one = rows('status-addon-one-missing.json');
-  assert.deepStrictEqual(one.lines.map((l) => l.text), ['Addon 2.0.15 · up to date', 'Data 2026.10.21 · up to date', 'Addon not found in Classic Anniversary']);
-  assert.deepStrictEqual(one.offers.map((o) => o.label), ['Install the addon into Classic Anniversary']);
 });
 
 test('a snapshot with no addon_update, or with a line that has no words, shows nothing for it', () => {

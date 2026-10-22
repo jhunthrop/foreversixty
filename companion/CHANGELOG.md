@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.17
+
+- The companion knows only Forever variants: the Classic beta is listed, watched and written to, and Retail, Anniversary and other folders are not; a picked folder of another game is refused with a sentence that says why; the addon updater logs one line for unsigned releases.
+
 ## 0.2.16
 
 - The companion keeps the Forever Sixty addon and its data up to date in every game folder, when the game is closed, and can install the addon where it is missing.

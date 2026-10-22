@@ -21,6 +21,23 @@ import (
 // timestamped siblings behind.
 const LogGlob = "WoWCombatLog*.txt"
 
+// ForeverFlavors are the flavour folders Forever Sixty runs on, and the
+// only ones the companion lists, watches or writes to. Today that is the
+// Classic beta; the Forever realms' folder is added here when they open.
+// Retail, Anniversary and Era are other games, and a private server's
+// folder is not ours to touch.
+var ForeverFlavors = []string{"_classic_beta_"}
+
+// IsForever reports whether a flavour folder name is a Forever variant.
+func IsForever(folder string) bool {
+	for _, f := range ForeverFlavors {
+		if strings.EqualFold(f, folder) {
+			return true
+		}
+	}
+	return false
+}
+
 // Install is one flavour directory of the game.
 type Install struct {
 	// Path is the flavour directory itself.
@@ -77,9 +94,21 @@ func installAt(dir string) Install {
 	}
 }
 
-// Scan returns every install at or one level below root, sorted by
-// path so two runs agree.
+// Scan returns the Forever installs at or one level below root, sorted
+// by path so two runs agree. Other games' folders are not returned.
 func Scan(root string) []Install {
+	var out []Install
+	for _, in := range scanAll(root) {
+		if IsForever(in.Flavor) {
+			out = append(out, in)
+		}
+	}
+	return out
+}
+
+// scanAll returns every install at or one level below root, Forever
+// variant or not.
+func scanAll(root string) []Install {
 	var out []Install
 	if isInstall(root) {
 		out = append(out, installAt(root))
@@ -118,7 +147,28 @@ func Detect() []Install {
 
 // ErrNotAnInstall says a picked folder is not the game.
 var ErrNotAnInstall = errors.New("that folder is not a World of Warcraft install: " +
-	"pick the folder that contains WTF and Logs, such as _classic_era_")
+	"pick the folder that contains WTF and Logs, such as _classic_beta_")
+
+// Refusal says a folder is a World of Warcraft install that is not a
+// Forever variant.
+type Refusal struct {
+	// Folder is the refused flavour folder's name and Path where it is.
+	Folder string
+	Path   string
+	// Known is true when Folder is a game the player may well have
+	// (Retail, Classic Anniversary), so the words can name it.
+	Known bool
+}
+
+func (r *Refusal) Error() string { return "not a Forever variant: " + r.Path }
+
+// Words is the refusal in the player's words.
+func (r *Refusal) Words() string {
+	if r.Known {
+		return "That is " + FlavorName(r.Folder) + ". Forever Sixty runs on the Classic beta; pick its folder, _classic_beta_."
+	}
+	return "Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder."
+}
 
 // Pick validates a folder the player chose. It accepts either a
 // flavour directory or the folder above one, which is what a file
@@ -133,6 +183,11 @@ func Pick(path string) ([]Install, error) {
 	}
 	found := Scan(path)
 	if len(found) == 0 {
+		if other := scanAll(path); len(other) > 0 {
+			r := &Refusal{Folder: other[0].Flavor, Path: other[0].Path}
+			r.Known = len(other) == 1 && FlavorName(r.Folder) != r.Folder
+			return nil, r
+		}
 		return nil, ErrNotAnInstall
 	}
 	return found, nil

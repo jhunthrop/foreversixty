@@ -176,10 +176,10 @@ func TestTheAddonRowOffersTheInstallWhereItIsMissing(t *testing.T) {
 	w := newAddonWorld(t)
 	w.srv.SetReleases(w.signer.data(t, "2026.10.21"), w.signer.addon(t, "2.0.16"))
 	v := w.app.Snapshot().AddonUpdate
-	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in Classic Era" {
+	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in Classic beta" {
 		t.Fatalf("lines = %+v", v.Lines)
 	}
-	if len(v.Offers) != 1 || v.Offers[0].Label != "Install the addon into Classic Era" || v.Offers[0].Path != w.game {
+	if len(v.Offers) != 1 || v.Offers[0].Label != "Install the addon into Classic beta" || v.Offers[0].Path != w.game {
 		t.Fatalf("offers = %+v", v.Offers)
 	}
 
@@ -300,7 +300,7 @@ func TestABuildWithoutAKeyOffersNoInstall(t *testing.T) {
 	if len(v.Offers) != 0 {
 		t.Errorf("offers = %+v; a build that cannot verify a zip must not offer to install one", v.Offers)
 	}
-	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in Classic Era" {
+	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in Classic beta" {
 		t.Errorf("lines = %+v", v.Lines)
 	}
 }
@@ -315,4 +315,29 @@ func errMessage(body map[string]any) string {
 	e, _ := body["error"].(map[string]any)
 	s, _ := e["message"].(string)
 	return s
+}
+
+func TestNoOfferIsMadeForAnotherGamesInstall(t *testing.T) {
+	retail := newInstall(t, "_retail_")
+	anni := newInstall(t, "_anniversary_")
+	w := &addonWorld{signer: newSigner(t)}
+	w.harness = newHarnessWith(t, nil, func(o *app.Options) {
+		o.Updater = updater.Options{PublicKey: w.signer.pub, APIBase: o.Config.APIBaseURL}
+		o.Config.WoWPaths = append(append([]string{}, o.Config.WoWPaths...), retail, anni)
+	})
+	w.srv.SetReleases()
+	w.put("ForeverSixty", "## Version: 2.0.15\n")
+	w.put("ForeverSixtyData", "## Version: data-v2026.10.21\n")
+	v := w.app.Snapshot().AddonUpdate
+	for _, l := range v.Lines {
+		if strings.Contains(l.Text, "Retail") || strings.Contains(l.Text, "Anniversary") || strings.Contains(l.Text, "not found") {
+			t.Errorf("a line about another game: %q", l.Text)
+		}
+	}
+	if len(v.Offers) != 0 {
+		t.Errorf("offers = %+v", v.Offers)
+	}
+	if len(v.Lines) != 2 {
+		t.Errorf("lines = %+v, want the Classic beta's two", v.Lines)
+	}
 }

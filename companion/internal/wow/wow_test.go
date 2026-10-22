@@ -23,28 +23,77 @@ func fakeInstall(t *testing.T, root, flavor, account string) Install {
 	return installAt(dir)
 }
 
-func TestScanFindsFlavourDirectoriesUnderARoot(t *testing.T) {
+func TestScanKeepsOnlyForeverFlavours(t *testing.T) {
 	root := t.TempDir()
-	fakeInstall(t, root, "_classic_era_", "ACCOUNT#1")
-	fakeInstall(t, root, "_forever_", "ACCOUNT#1")
+	beta := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	fakeInstall(t, root, "_retail_", "ACCOUNT#1")
+	fakeInstall(t, root, "_anniversary_", "ACCOUNT#1")
+	fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	fakeInstall(t, root, "_forever_", "ACCOUNT#1") // a private server's folder
 	if err := os.MkdirAll(filepath.Join(root, "Utils"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 	got := Scan(root)
-	if len(got) != 2 {
-		t.Fatalf("Scan found %d installs: %+v", len(got), got)
+	if len(got) != 1 || got[0].Path != beta.Path {
+		t.Fatalf("Scan found %+v, want only the Classic beta", got)
 	}
-	if got[0].Flavor != "_classic_era_" || got[1].Flavor != "_forever_" {
-		t.Fatalf("flavours = %q, %q", got[0].Flavor, got[1].Flavor)
+	if got[0].Flavor != "_classic_beta_" {
+		t.Errorf("flavour = %q", got[0].Flavor)
 	}
-	if got[0].Logs != filepath.Join(root, "_classic_era_", "Logs") {
+	if got[0].Logs != filepath.Join(root, "_classic_beta_", "Logs") {
 		t.Errorf("logs = %q", got[0].Logs)
+	}
+	// Pointing straight at a flavour folder is filtered the same way.
+	if got := Scan(filepath.Join(root, "_retail_")); len(got) != 0 {
+		t.Errorf("Scan(_retail_) = %+v", got)
+	}
+}
+
+func TestIsForeverIsTheListBesideFlavorName(t *testing.T) {
+	for folder, want := range map[string]bool{"_classic_beta_": true, "_retail_": false, "_anniversary_": false, "_classic_era_": false, "_forever_": false, "": false} {
+		if got := IsForever(folder); got != want {
+			t.Errorf("IsForever(%q) = %v", folder, got)
+		}
+	}
+	for _, f := range ForeverFlavors {
+		if FlavorName(f) == f {
+			t.Errorf("%s has no player-facing name", f)
+		}
+	}
+}
+
+func TestPickRefusesAnotherGameInWords(t *testing.T) {
+	for _, c := range []struct{ folder, words string }{
+		{"_retail_", "That is Retail. Forever Sixty runs on the Classic beta; pick its folder, _classic_beta_."},
+		{"_anniversary_", "That is Classic Anniversary. Forever Sixty runs on the Classic beta; pick its folder, _classic_beta_."},
+		{"_forever_", "Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder."},
+	} {
+		root := t.TempDir()
+		in := fakeInstall(t, root, c.folder, "ACCOUNT#1")
+		for _, path := range []string{in.Path, root} {
+			_, err := Pick(path)
+			var r *Refusal
+			if !errors.As(err, &r) {
+				t.Fatalf("Pick(%s) = %v, want a Refusal", path, err)
+			}
+			if r.Words() != c.words {
+				t.Errorf("%s: words = %q", c.folder, r.Words())
+			}
+		}
+	}
+	// A folder with the beta and Retail is accepted, and gives the beta alone.
+	root := t.TempDir()
+	beta := fakeInstall(t, root, "_classic_beta_", "A")
+	fakeInstall(t, root, "_retail_", "A")
+	got, err := Pick(root)
+	if err != nil || len(got) != 1 || got[0].Path != beta.Path {
+		t.Fatalf("Pick(both) = %+v, %v", got, err)
 	}
 }
 
 func TestPickAcceptsAFlavourDirectoryOrItsParent(t *testing.T) {
 	root := t.TempDir()
-	in := fakeInstall(t, root, "_classic_era_", "ACCOUNT#1")
+	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
 
 	fromParent, err := Pick(root)
 	if err != nil {
@@ -80,7 +129,7 @@ func TestPickRefusesAFolderThatIsNotTheGame(t *testing.T) {
 
 func TestAdvancedLoggingIsReadFromConfigWTF(t *testing.T) {
 	root := t.TempDir()
-	in := fakeInstall(t, root, "_classic_era_", "ACCOUNT#1")
+	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
 	write := func(body string) {
 		t.Helper()
 		if err := os.WriteFile(in.AdvancedLoggingPath(), []byte(body), 0o600); err != nil {
@@ -106,8 +155,8 @@ func TestAdvancedLoggingIsReadFromConfigWTF(t *testing.T) {
 
 func TestSavedVariablesAreOnePerAccount(t *testing.T) {
 	root := t.TempDir()
-	in := fakeInstall(t, root, "_classic_era_", "ACCOUNT#1")
-	fakeInstall(t, root, "_classic_era_", "ACCOUNT#2") // second account, same install
+	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	fakeInstall(t, root, "_classic_beta_", "ACCOUNT#2") // second account, same install
 	sv, err := in.SavedVariables("ForeverSixty")
 	if err != nil {
 		t.Fatal(err)

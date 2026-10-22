@@ -8,10 +8,10 @@
     "headline": {
       "key": "no_folder",
       "tone": "bad",
-      "title": "No game folder found",
-      "sub": "Add your World of Warcraft folder.",
+      "title": "No Classic beta install found",
+      "sub": "Pick its folder in Settings.",
       "action": {
-        "label": "Add a folder",
+        "label": "Open Settings",
         "page": "settings"
       }
     },
