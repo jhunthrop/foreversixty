@@ -3,6 +3,11 @@
 // use, in the site's own honest-copy voice: no exclamation marks, never a nag inside a
 // tool. Wording quoted directly from the spec is marked as such below.
 export const guildHomeCopy = {
+  // The line every not-yet-ready state paints (loading, failed, a bad address), so the first
+  // thing on screen is server-rendered text that hydration does not change: the page's
+  // largest-contentful-paint candidate lands with the HTML instead of waiting for, or
+  // being replaced by, the island's scripts (W.16).
+  lede: "A guild's progression per boss, pull counts, kill dates and roster bests. Its roster, raid nights and loot sit in the tabs once it has loaded.",
   reportsHeading: "This week's reports",
   // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
   // it from the member section's "This week's reports" above -- both can render on the same

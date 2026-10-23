@@ -464,27 +464,35 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
 </Base>
 
 <script>
-  import { heroCardFor } from '../lib/home/hero-card';
-  import { isStaleSiteNews } from '../lib/home/news';
+  import { afterPaint } from '../lib/after-paint';
   import type { DateEntry } from '../lib/home/timeline';
 
-  // The page is built once per deploy: re-read the hero card and the LATEST block against the
-  // visitor's clock, so the beta card stops saying live the night the beta ends and a This site
-  // item that has aged out of the month goes, with no edit and no redeploy.
-  const now = new Date();
-  const card = document.querySelector<HTMLElement>('[data-testid="home-hero-card"]');
-  if (card?.dataset.entries) {
-    const next = heroCardFor(JSON.parse(card.dataset.entries) as DateEntry[], now);
-    card.dataset.mode = next.mode;
-    const set = (selector: string, text: string): void => {
-      const el = document.querySelector(selector);
-      if (el !== null && el.textContent !== text) el.textContent = text;
-    };
-    set('[data-testid="home-hero-card"] [data-part="eyebrow"]', next.eyebrow);
-    set('[data-testid="home-hero-card"] [data-part="tag"]', next.tag);
-    set('[data-testid="home-hero-bands"]', next.bandsLine);
-  }
-  for (const item of document.querySelectorAll<HTMLElement>('[data-testid="home-news-item"]')) {
-    if (isStaleSiteNews(item.dataset.kind ?? '', new Date(item.dataset.date ?? ''), now)) item.hidden = true;
-  }
+  // Re-read after first paint (src/lib/after-paint.ts): the markup is right for the deploy's
+  // date, and the two modules this needs were ahead of the hero's paint (W.16).
+  afterPaint(() => {
+    void Promise.all([import('../lib/home/hero-card'), import('../lib/home/news')]).then(
+      ([{ heroCardFor }, { isStaleSiteNews }]) => {
+        // The page is built once per deploy: re-read the hero card and the LATEST block against the
+        // visitor's clock, so the beta card stops saying live the night the beta ends and a This site
+        // item that has aged out of the month goes, with no edit and no redeploy.
+        const now = new Date();
+        const card = document.querySelector<HTMLElement>('[data-testid="home-hero-card"]');
+        if (card?.dataset.entries) {
+          const next = heroCardFor(JSON.parse(card.dataset.entries) as DateEntry[], now);
+          card.dataset.mode = next.mode;
+          const set = (selector: string, text: string): void => {
+            const el = document.querySelector(selector);
+            if (el !== null && el.textContent !== text) el.textContent = text;
+          };
+          set('[data-testid="home-hero-card"] [data-part="eyebrow"]', next.eyebrow);
+          set('[data-testid="home-hero-card"] [data-part="tag"]', next.tag);
+          set('[data-testid="home-hero-bands"]', next.bandsLine);
+        }
+        for (const item of document.querySelectorAll<HTMLElement>('[data-testid="home-news-item"]')) {
+          if (isStaleSiteNews(item.dataset.kind ?? '', new Date(item.dataset.date ?? ''), now))
+            item.hidden = true;
+        }
+      },
+    );
+  });
 </script>

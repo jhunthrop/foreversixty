@@ -22,6 +22,12 @@ describe('Guild', () => {
     expect(body).toContain('data-testid="guild-skeleton"');
   });
 
+  it('server-renders the lede, so the first paint is text the island does not change (W.16)', () => {
+    const { body } = render(Guild, { props: { path: PATH } });
+    expect(body).toContain('data-testid="guild-lede"');
+    expect(body).toContain('raid nights and loot sit in the tabs');
+  });
+
   it('gives the loading state an h1, so the page still has one before the guild name loads (axe page-has-heading-one)', () => {
     // svelte/server's render only ever sees the pre-$effect state (see the file header
     // comment), which is 'loading' whether or not `path` resolves -- the 'missing' branch's

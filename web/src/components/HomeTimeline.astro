@@ -85,52 +85,54 @@ const rows = shownRows.map((row, index) => ({
 </style>
 
 <script>
-  import {
-    dotIndex,
-    timelineDisplayRows,
-    timelineRowText,
-    timelineRows,
-    type DateEntry,
-  } from '../lib/home/timeline';
+  import { afterPaint } from '../lib/after-paint';
+  import type { DateEntry } from '../lib/home/timeline';
 
-  // Re-classify against the visitor's clock. The server markup is already right at deploy
-  // time; this only changes anything on a page that has outlived the date that moves a row.
-  const root = document.querySelector<HTMLElement>('[data-testid="home-timeline"]');
-  if (root?.dataset.entries) {
-    const dates = JSON.parse(root.dataset.entries) as DateEntry[];
-    const shown = timelineDisplayRows(timelineRows(dates, new Date()));
-    const rowEls = Array.from(root.querySelectorAll<HTMLElement>('[data-testid="home-timeline-row"]'));
-    const dotAt = dotIndex(shown);
-    const same = shown.every((row, index) => rowEls[index]?.dataset.status === row.status);
-    if (rowEls.length === shown.length && !same) {
-      const make = (tag: string, className: string, text: string, part: string): HTMLElement => {
-        const el = document.createElement(tag);
-        el.className = className;
-        el.textContent = text;
-        el.dataset.part = part;
-        return el;
-      };
-      shown.forEach((row, index) => {
-        const el = rowEls[index];
-        const text = timelineRowText(row);
-        el.dataset.status = row.status;
-        const head = document.createElement('div');
-        head.className = 'flex items-center gap-2';
-        if (index === dotAt) {
-          const dot = document.createElement('span');
-          dot.className = 'bg-gold h-2 w-2 shrink-0 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]';
-          dot.dataset.testid = 'home-timeline-dot';
-          dot.setAttribute('aria-hidden', 'true');
-          head.append(dot);
+  // Wired after first paint (src/lib/after-paint.ts); the server markup is already right.
+  afterPaint(() => {
+    void import('../lib/home/timeline').then(
+      ({ dotIndex, timelineDisplayRows, timelineRowText, timelineRows }) => {
+        // Re-classify against the visitor's clock. The server markup is already right at deploy
+        // time; this only changes anything on a page that has outlived the date that moves a row.
+        const root = document.querySelector<HTMLElement>('[data-testid="home-timeline"]');
+        if (root?.dataset.entries) {
+          const dates = JSON.parse(root.dataset.entries) as DateEntry[];
+          const shown = timelineDisplayRows(timelineRows(dates, new Date()));
+          const rowEls = Array.from(root.querySelectorAll<HTMLElement>('[data-testid="home-timeline-row"]'));
+          const dotAt = dotIndex(shown);
+          const same = shown.every((row, index) => rowEls[index]?.dataset.status === row.status);
+          if (rowEls.length === shown.length && !same) {
+            const make = (tag: string, className: string, text: string, part: string): HTMLElement => {
+              const el = document.createElement(tag);
+              el.className = className;
+              el.textContent = text;
+              el.dataset.part = part;
+              return el;
+            };
+            shown.forEach((row, index) => {
+              const el = rowEls[index];
+              const text = timelineRowText(row);
+              el.dataset.status = row.status;
+              const head = document.createElement('div');
+              head.className = 'flex items-center gap-2';
+              if (index === dotAt) {
+                const dot = document.createElement('span');
+                dot.className = 'bg-gold h-2 w-2 shrink-0 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]';
+                dot.dataset.testid = 'home-timeline-dot';
+                dot.setAttribute('aria-hidden', 'true');
+                head.append(dot);
+              }
+              head.append(make('span', 'font-mono tabular text-[12px] text-muted', text.key, 'key'));
+              const children: HTMLElement[] = [
+                head,
+                make('span', 'timeline-value text-[13px] font-semibold text-strong', text.value, 'value'),
+              ];
+              if (text.note) children.push(make('span', 'text-muted text-[12px]', text.note, 'note'));
+              el.replaceChildren(...children);
+            });
+          }
         }
-        head.append(make('span', 'font-mono tabular text-[12px] text-muted', text.key, 'key'));
-        const children: HTMLElement[] = [
-          head,
-          make('span', 'timeline-value text-[13px] font-semibold text-strong', text.value, 'value'),
-        ];
-        if (text.note) children.push(make('span', 'text-muted text-[12px]', text.note, 'note'));
-        el.replaceChildren(...children);
-      });
-    }
-  }
+      },
+    );
+  });
 </script>

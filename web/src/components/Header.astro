@@ -175,67 +175,12 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     })();
   </script>
   <script>
-    import { isTypingTarget, wireLookupForm } from '../lib/character-search-dom';
-    import { SESSION_GUILD_EVENT } from '../lib/character-selector/config';
-    import type { SessionGuild } from '../lib/character-selector/session-guild';
-    import { readPublishedSessionGuild } from '../lib/character-selector/session-guild-dom';
-    import { applySessionGuild, wireNavPanels } from '../lib/nav-panels-dom';
+    import { afterPaint } from '../lib/after-paint';
 
-    // The compact lookup and the "/" key (HeaderSearch.astro). "/" outside a text field
-    // focuses the home page's own box where there is one; otherwise it opens the bar's panel
-    // (from 1024px) or the Menu (below), cursor in the box.
-    const header = document.querySelector<HTMLElement>('[data-site-header]');
-    // The four doors' hover panels, and the Guild panel following the session's guild: the
-    // stamp covers a selector that settled before this ran, the event covers the rest.
-    if (header !== null) {
-      wireNavPanels(header);
-      applySessionGuild(header, readPublishedSessionGuild(header));
-      window.addEventListener(SESSION_GUILD_EVENT, (event) =>
-        applySessionGuild(header, (event as CustomEvent<SessionGuild | null>).detail),
-      );
-    }
-    for (const form of header?.querySelectorAll<HTMLFormElement>('form[data-character-search]') ?? []) {
-      wireLookupForm(form);
-    }
-    const toggle = header?.querySelector<HTMLButtonElement>('[data-header-search-toggle]') ?? null;
-    const panel = header?.querySelector<HTMLElement>('[data-header-search-panel]') ?? null;
-    const setPanel = (open: boolean): void => {
-      if (toggle === null || panel === null) return;
-      panel.hidden = !open;
-      toggle.setAttribute('aria-expanded', String(open));
-      if (open) panel.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
-    };
-    toggle?.addEventListener('click', () => setPanel(panel !== null && panel.hidden === true));
-    document.addEventListener('click', (event) => {
-      if (panel === null || panel.hidden) return;
-      const target = event.target;
-      if (target instanceof Node && (panel.contains(target) || toggle?.contains(target))) return;
-      setPanel(false);
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && panel !== null && !panel.hidden) {
-        setPanel(false);
-        toggle?.focus();
-        return;
-      }
-      if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
-      if (isTypingTarget(event.target)) return;
-      const primary = document.querySelector<HTMLInputElement>(
-        'form[data-character-search-primary] input[name="name"]',
-      );
-      event.preventDefault();
-      if (primary !== null && primary.offsetParent !== null) {
-        primary.focus();
-        return;
-      }
-      if (window.matchMedia('(min-width: 1024px)').matches) {
-        setPanel(true);
-        return;
-      }
-      const menuButton = header?.querySelector<HTMLButtonElement>('[data-menu-button]');
-      if (menuButton !== null && menuButton !== undefined && !header?.hasAttribute('data-menu-open'))
-        menuButton.click();
-      header?.querySelector<HTMLInputElement>('[data-header-search-menu] input[name="name"]')?.focus();
-    });
+    // The wiring (src/lib/header-wiring.ts) runs after first paint (src/lib/after-paint.ts):
+    // the header is complete markup without it, and its module chain was about 150 ms of
+    // simulated LCP on every page (W.16). The header gets `data-header-wired` when it is
+    // done; specs that drive the panels or the "/" key wait for it.
+    afterPaint(() => void import('../lib/header-wiring').then((m) => m.wireHeader()));
   </script>
 </header>

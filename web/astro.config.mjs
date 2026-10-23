@@ -77,6 +77,18 @@ const idleAfterLoadDirective = {
   },
 };
 
+// A `client:after-paint` directive (src/directives/after-paint.ts): hydrates once the first
+// contentful paint has happened. The guild page opts in so its server-rendered lede is the
+// largest contentful paint on every run.
+const afterPaintDirective = {
+  name: 'after-paint-directive',
+  hooks: {
+    'astro:config:setup': ({ addClientDirective }) => {
+      addClientDirective({ name: 'after-paint', entrypoint: './src/directives/after-paint.ts' });
+    },
+  },
+};
+
 const webRoot = fileURLToPath(new URL('.', import.meta.url));
 const contractFixtures = fileURLToPath(new URL('../docs/contracts/fixtures', import.meta.url));
 
@@ -154,6 +166,7 @@ export default defineConfig({
       },
     }),
     idleAfterLoadDirective,
+    afterPaintDirective,
     placeholderGuard,
     duckdbRuntime,
     localGuildShell,

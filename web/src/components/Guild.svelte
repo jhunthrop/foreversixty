@@ -605,23 +605,35 @@
 
 {#if status === 'missing'}
   <h1 class="sr-only">Guild</h1>
-  <!-- Keeps the loading skeleton's height: this branch replaces it on the client (an address
-       that does not parse never fetches), and a footer that jumps up the page by the
-       skeleton's height is the layout shift the guild Lighthouse row measured. -->
-  <p class="text-[14px] {GUILD_LOADING.home.minHeight}" data-testid="guild-missing">
-    That is not a guild address. They look like <code class="font-mono">/guild/eu/normal/the-last-watch</code
-    >.
-  </p>
+  <!-- Keeps the loading state's box and its lede: this branch replaces the loading state on
+       the client (an address that does not parse never fetches), so the server-rendered
+       lede stays the first paint and a footer that jumps up the page by the skeleton's
+       height (the layout shift the guild Lighthouse row measured) stays put. -->
+  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight}">
+    <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
+    <p class="text-[14px]" data-testid="guild-missing">
+      That is not a guild address. They look like <code class="font-mono"
+        >/guild/eu/normal/the-last-watch</code
+      >.
+    </p>
+  </div>
 {:else if status === 'loading' || status === 'failed'}
   <h1 class="sr-only">Guild</h1>
-  <GuildStatus
-    status={status === 'loading' ? 'loading' : 'failed'}
-    error={status === 'failed' ? error : ''}
-    onRetry={() => (attempt += 1)}
-    lines={GUILD_LOADING.home.lines}
-    minHeight={GUILD_LOADING.home.minHeight}
-    testid="guild"
-  />
+  <!-- The lede is server-rendered text: it is the page's first paint, so the largest
+       contentful paint does not wait for the island's scripts (W.16). The box keeps the
+       loading skeleton's height, so the lede and the skeleton rows share it and nothing
+       moves when the guild arrives or the address turns out wrong. -->
+  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight}">
+    <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
+    <GuildStatus
+      status={status === 'loading' ? 'loading' : 'failed'}
+      error={status === 'failed' ? error : ''}
+      onRetry={() => (attempt += 1)}
+      lines={GUILD_LOADING.home.lines}
+      minHeight=""
+      testid="guild"
+    />
+  </div>
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="guild" id="guild">
     <!-- Fix round 1 (owner rule): a full-bleed band, inner content in the site column,

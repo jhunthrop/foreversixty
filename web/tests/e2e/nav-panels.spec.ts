@@ -5,6 +5,7 @@
 // same four groups in the phone Menu. Every width keeps the no-sideways-scroll rule.
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { guildHref } from '../../src/lib/characters';
+import { headerWired } from './support/header';
 import { OBNOXIOUS, armoryPointer, signInWith, storePointer } from './support/selector';
 
 const DOOR_KEYS = ['tools', 'logs', 'guild', 'guides'] as const;
@@ -175,6 +176,7 @@ test.describe('touch', () => {
 
   test('the first tap on Guild opens the panel and the second navigates', async ({ page }) => {
     await page.goto('/');
+    await headerWired(page);
     expect(await page.evaluate(() => matchMedia('(hover: none)').matches)).toBe(true);
     await door(page, 'guild').tap();
     await expect(panel(page, 'guild')).toBeVisible();
