@@ -1,0 +1,4 @@
+{
+  "notes": "Spell ids the guide pages name (their Cooldowns lists) that no curated APL line resolves to, so spellicons.json would otherwise carry no icon for them. 12051 is Evocation.",
+  "spell_ids": [12051]
+}

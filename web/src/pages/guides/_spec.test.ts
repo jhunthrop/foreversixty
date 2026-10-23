@@ -51,7 +51,8 @@ describe('/guides/warrior/fury', () => {
     expect(html).toContain('data-testid="guide-sim-build"');
     expect(html).toContain('data-testid="stat-priority-pills"');
     expect(html).toContain('data-testid="guide-race-pills"');
-    expect(html).toContain('data-testid="confidence-footer-note"');
+    expect(html).not.toContain('confidence-footer-note');
+    expect(html).not.toContain('Our inference');
     // The nine headings still appear, in order, exactly as SpecTableOfContents promises.
     const talentsIndex = html.indexOf('id="talents-and-builds"');
     const rotationIndex = html.indexOf('id="rotation-and-priority"');
@@ -68,7 +69,7 @@ describe('/guides/rogue/assassination (a spec with a raid build)', () => {
     const html = await container.renderToString(SpecPage, { props: { entry } });
     expect(html).toContain('data-testid="guide-build-leveling"');
     expect(html).toContain('data-testid="guide-build-raid"');
-    expect(html).toContain('>Leveling build</h3>');
+    expect(html).toContain('>Level 60 build</h3>');
     expect(html).toContain('>Raid build</h3>');
     expect(html).toContain(raidBuild);
     expect(html).toContain('data-testid="guide-load-raid-build"');
@@ -78,12 +79,131 @@ describe('/guides/rogue/assassination (a spec with a raid build)', () => {
 });
 
 describe('/guides/warrior/fury (a spec whose raid build is its leveling build)', () => {
-  it('shows one tree under a single "Leveling and raid build" heading', async () => {
+  it('shows one tree under a single "Level 60 and raid build" heading', async () => {
     const entry = loadGuideEntry('warrior/fury');
     expect(entry.data.raidBuild).toBeUndefined();
     const html = await container.renderToString(SpecPage, { props: { entry } });
     expect(html).toContain('data-testid="guide-build-both"');
-    expect(html).toContain('>Leveling and raid build</h3>');
+    expect(html).toContain('>Level 60 and raid build</h3>');
     expect(html).not.toContain('data-testid="guide-build-raid"');
+  });
+});
+
+describe('/guides/mage/frost (the class-guide blocks)', () => {
+  async function frostHtml(): Promise<string> {
+    return container.renderToString(SpecPage, { props: { entry: loadGuideEntry('mage/frost') } });
+  }
+
+  it('says the status once, at the top, and carries the header facts', async () => {
+    const html = await frostHtml();
+    expect(html.match(/data-testid="guide-status-note"/g)).toHaveLength(1);
+    expect(html).toContain('The beta stops at level 30.');
+    expect(html).toMatch(
+      /DPS · Updated \d{1,2} [A-Z][a-z]{2} · built on client 1\.60\.1\.\d+ · beta-tested to level 30, level 60 simulated/,
+    );
+    // The header summary is the Overview's own sentence, not the frontmatter description.
+    expect(html).toContain('Frost is the Mage control and survivability spec');
+  });
+
+  it('lays the Overview out as strengths, weaknesses and the raid role', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="guide-overview-strengths"');
+    expect(html).toContain('data-testid="guide-overview-weaknesses"');
+    expect(html).toContain('data-testid="guide-overview-raid"');
+  });
+
+  it('names the raid build’s difference in one line and lists the key talents with icons', async () => {
+    const html = await frostHtml();
+    expect(html).toMatch(/data-testid="guide-build-diff"[^>]*>The raid build moves \d+ points? from /);
+    expect(html).toContain('data-testid="guide-key-talents"');
+    expect(html).toContain('Improved Frostbolt');
+    expect(html).toMatch(/guide-key-talent-0[\s\S]*?<img src="\/data\/[^"]+\/icons\/[^"]+\.webp"/);
+  });
+
+  it('numbers a priority with spell icons, names the real cooldowns, and prints no opener when the APL has no pre-pull', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="guide-rotation-priority"');
+    expect(html).toMatch(/guide-rotation-priority-0[\s\S]*?<img[^>]+icons\/spell_frost_frostblast\.webp/);
+    expect(html).toContain('Ice Lance');
+    expect(html).not.toContain('data-testid="guide-rotation-opener"');
+    expect(html).not.toContain('Then work down it from the top');
+    for (const name of ['Evocation', 'Cold Snap', 'Ice Block']) {
+      expect(html, name).toMatch(new RegExp(`data-testid="guide-rotation-cooldowns-\\d+"[\\s\\S]*?${name}`));
+    }
+    expect(html).toContain('8 min cooldown');
+    // Evocation has its icon from the spell icon data, so every spell row shares the left edge.
+    expect(html).toMatch(/guide-rotation-cooldowns-\d+"[^>]*>(?:(?!<\/li>)[\s\S])*?spell_nature_purge/);
+  });
+
+  it('gives the stat block pills, a weights table and the hit line as its headline, in one order', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="stat-priority-pills"');
+    expect(html).toContain('data-testid="guide-stat-table"');
+    expect(html).toMatch(
+      /data-testid="guide-stat-table-hit-cap"[^>]*>Hit to cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear</,
+    );
+    expect(html).toContain('DPS per point');
+    expect(html).toMatch(/1 point of hit = \d\.\d\d DPS at level 60/);
+    expect(html).toMatch(/\d+\.\d per 1% haste/);
+    expect(html).not.toMatch(/\d per 1%</);
+    expect(html).toContain('Spell penetration shows as &quot;Not significant&quot;');
+    expect(html).not.toContain('from school');
+    const pills = [...html.matchAll(/data-testid="stat-pill-(\d+)"[\s\S]*?<span>([^<]+)<\/span>/g)].map(
+      (m) => m[2],
+    );
+    const rows = [
+      ...html.matchAll(/data-testid="guide-stat-table-row-\d+"[^>]*><td class="stat-name">([^<]+)</g),
+    ].map((m) => m[1]);
+    expect(pills.length).toBeGreaterThan(3);
+    expect(pills).toEqual(rows);
+  });
+
+  it('puts the best-in-slot table in the page, one panel per faction and level range, with the BiS link', async () => {
+    const html = await frostHtml();
+    for (const faction of ['alliance', 'horde']) {
+      for (const band of [20, 30, 40, 50, 60]) {
+        expect(html).toContain(`data-testid="guide-bis-panel-${faction}-${band}"`);
+      }
+      expect(html).toContain(`data-testid="guide-bis-faction-${faction}"`);
+    }
+    for (const band of [20, 30, 40, 50, 60]) {
+      expect(html).toContain(`data-testid="guide-bis-pill-${band}"`);
+    }
+    expect(html).toMatch(/id="gbis-band-60"[^>]*checked/);
+    expect(html).toMatch(/id="gbis-f-alliance"[^>]*checked/);
+    expect(html).toContain('href="/bis/mage/frost?faction=alliance#band-alliance-60"');
+    expect(html).toContain('href="/bis/mage/frost?faction=horde#band-horde-60"');
+    expect(html).toContain('Full list and alternatives');
+    expect(html).toContain('data-testid="guide-bis-row-alliance-60-head"');
+    expect(html).not.toContain('named honestly');
+    expect(html).not.toMatch(/<astro-island[^>]*GuideBisTable/);
+  });
+
+  it('adds the enchant and consumable tables, the race table and the leveling talents', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="guide-enchants"');
+    expect(html).toContain('data-testid="guide-consumables"');
+    expect(html).toContain('Elixir of Frost Power');
+    expect(html).toContain('replaces both elixirs');
+    expect(html).toContain('Without a flask');
+    expect(html).not.toContain('The caster meal');
+    expect(html).toContain('data-testid="guide-race-table"');
+    expect(html).toContain('data-testid="guide-race-row-gnome"');
+    expect(html).toMatch(/data-testid="guide-race-row-gnome" data-recommended="true"/);
+    expect(html).toContain('Gnome is the Alliance pick: Escape Artist and Expansive Mind.');
+    expect(html).toContain('Troll is the Horde pick: Berserking.');
+    expect(html).not.toContain('Eureka!');
+    expect(html).toContain('data-testid="guide-leveling-row-talents"');
+    expect(html).toMatch(/leveling-chip-rank[^>]*>\d\/\d</);
+    expect(html).toContain('Level 20 to 29');
+    expect(html).toContain('11 to 20 points');
+    expect(html).toContain('Outlined: points added in this level range.');
+  });
+
+  it('renders no per-section hedge', async () => {
+    const html = await frostHtml();
+    for (const hedge of ['is a projection', 'not tested', 'cannot be named', 'inferred from 1.12']) {
+      expect(html, hedge).not.toContain(hedge);
+    }
   });
 });

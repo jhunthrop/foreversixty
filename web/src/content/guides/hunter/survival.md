@@ -56,13 +56,29 @@ sources:
 
 ## Overview
 
-Survival is a melee spec in Forever (owner direction, 2026-09-28): it commits fully to standing in weapon range instead of splitting time between shots and Raptor Strike the way earlier builds of this guide described. The old "ranged base with a melee weave" reading came from the shared Hunter spell package every spec starts from; Survival's own tree — Counterattack, Strider Kick, Predator's Edge, Lacerating Strikes — only pays off in melee, and this site's simulator now plays it that way: in melee range for the whole fight, no shots. The beta caps at level 30, so anything here about level 60 play, raid tuning, or how Survival compares to the other two specs at endgame is a projection from the demo trees and 1.12 knowledge, not confirmed play.
+Survival is a melee spec in Forever: the Hunter stands in weapon range for the whole fight and uses Raptor Strike, Mongoose Bite and bleeds instead of shots.
+
+### Strengths
+
+- Counterattack is a free strike that cannot be blocked, dodged or parried
+- Lacerating Strikes adds a bleed to Mongoose Bite
+- Raptor Strike replaces the next auto-attack without costing a swing
+- Strider Kick adds a third melee special on a short cooldown
+
+### Weaknesses
+
+- Stays in melee range and fires no ranged shots
+- Counterattack and Mongoose Bite fire only when their windows open
+- Wing Clip filler pays off only with a Windfury Totem in the group
+
+### In a raid
+
+- **Role:** Melee DPS
+- **Brings:** Hunter's Mark on the target; no raid-wide buff
 
 ## Talents and builds
 
 Reading the Survival tree in priority order for a melee build: **Savage Strikes** and **Predator's Edge** are direct melee damage — crit chance and crit damage on every melee special, plus a bonus to off-hand damage if this spec carries a second weapon. **Deterrence** unlocks **Counterattack**, a free, unavoidable strike after a parry (cannot be blocked, dodged, or parried) — a genuine "free damage" proc this build takes specifically to use. **Expose Prey** is a damage talent in its own right: each melee or ranged attack against a target carrying your Hunter's Mark has a 5% (10% at 2/2) chance to activate Mongoose Bite for 5 seconds, and that window is the only way a boss that never attacks you lets you cast it at all — the two points measure about +7% in our level-60 search run, so keep Hunter's Mark up. It also unlocks the capstone, **Lacerating Strikes**, which adds a bleed to Mongoose Bite worth 40% of that hit's damage over 21 seconds. **Strider Kick** is a third melee special on its own short cooldown. **Improved Wing Clip** and **Entrapment** are left at 0 here: they raise the reliability of control tools this rotation doesn't use against a stationary target, and the points are worth more spent reaching Counterattack and Lacerating Strikes sooner. The remaining points go into Marksmanship, spent reaching **Mortal Shots** (its own prerequisite, **Careful Aim**, needs all 5 points) — in this engine, Mortal Shots adds its crit-damage bonus to every Hunter special, melee included, rather than into Beast Mastery or further Survival utility. The five points once held in **Efficiency** (shot mana cost, which a melee rotation that never fires a shot does not use) now sit in **Lethal Attacks** (5/5), a flat 5% critical strike chance on all attacks, and that swap measures about +5% in our level-60 search run. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
-
-**Raid build.** The raid-ready search found no build that beats this one beyond error while keeping what the rotation casts, the group buffs the raid already counts on and the threat and survival talents, so the raid build is the leveling build and one tree serves both.
 
 ## Rotation and priority
 
@@ -70,24 +86,18 @@ This site's simulator starts Survival in melee range and keeps it there for the 
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+## Best in slot
 
-## Gear
-
-Look for attack power first, then agility and strength, then crit and hit, in the order above. Prioritize weapon slots: a main-hand (and off-hand, if this build carries one — Predator's Edge's off-hand damage bonus only matters with one equipped) over a ranged weapon, which this rotation no longer uses for anything but a stat stick. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30, and this build's raid loot tables are themselves incomplete — most items the community's own sourcing expects are missing from the current client, and nothing raids in-game until the first tier opens on 9 December 2026. This section fills in once raid loot is itemized and the spec is played past 30.
+Prioritize weapon slots: a main-hand (and off-hand, if this build carries one — Predator's Edge's off-hand damage bonus only matters with one equipped) over a ranged weapon, which this rotation no longer uses for anything but a stat stick.
 
 ## Enchants and consumables
 
-Target agility and attack power on weapon and glove enchants — the weapon enchant matters most here, since this spec's melee weapon (or weapons, if dual-wielding) carries the whole rotation now, not a ranged one. **Enchant Gloves - Agility** and **Enchant Weapon - Agility** both exist in this build's enchant data. For consumables, **Elixir of Greater Agility** and **Elixir of the Mongoose** are both verified options in this build's consumable list. Beyond naming those, specific best-in-slot consumable stacking isn't something this site can confirm yet at level 30.
-
 ## Races
-
-Survival can be played by every race Hunter allows: Human (new in Forever), Orc, Dwarf, Night Elf, Tauren, and Troll, plus the Skyborne on either faction. For Alliance, **Dwarf** is the strongest pairing: the reworked Dwarf racial, Big Game Hunter, adds bonus damage against Beasts specifically, which applies to every melee special here against a beast target exactly as it would to a shot. For Horde, **Troll** pairs well: Berserking's 10% attack speed shortens the melee swing timer that now drives this entire rotation, not just the Raptor Strike weave, and Beast Slaying's 5% damage against Beasts stacks on top of it. Hunter is open to the Skyborne on either faction with no class restriction; their racials read as utility (a downward glide, a short full-resource restore, haste, bonus Elemental damage) rather than damage-focused, so Skyborne is a valid pick but not a clear upgrade over Dwarf or Troll for this spec.
 
 ## Professions
 
-Community convention for Hunter favors **Skinning** for the cheap, plentiful leather this class already collects while killing beasts to level, often paired with **Leatherworking** for self-crafted agility gear, or **Blacksmithing** for a melee-focused Hunter's own weapon and armor work. This is general Classic-era community practice, not something confirmed for Forever specifically.
+Community convention for Hunter favors **Skinning** for the cheap, plentiful leather this class already collects while killing beasts to level, often paired with **Leatherworking** for self-crafted agility gear, or **Blacksmithing** for a melee-focused Hunter's own weapon and armor work.
 
 ## Leveling
 
-Beast Mastery is generally regarded as the strongest leveling spec for Hunter; a melee-committed Survival needs deeper Survival investment (Deterrence for Counterattack, Expose Prey for Lacerating Strikes) than a leveling character can usually afford early, so it comes online later than Beast Mastery does, and later than it did as a part-ranged spec. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Beast Mastery is generally regarded as the strongest leveling spec for Hunter; a melee-committed Survival needs deeper Survival investment (Deterrence for Counterattack, Expose Prey for Lacerating Strikes) than a leveling character can usually afford early, so it comes online later than Beast Mastery does, and later than it did as a part-ranged spec.

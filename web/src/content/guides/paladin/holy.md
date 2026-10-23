@@ -29,7 +29,25 @@ sources:
 
 ## Overview
 
-Holy is Forever's Paladin healing tree: single-target direct healing backed by Holy Shock and Light's Vigil for burst, with mana sustained through Reverence and Illumination rather than heavy regeneration gear alone. In a group it fills the same seat Holy fills in 1.12 — reactive raid and tank healing rather than the periodic-heal style Priest or Druid lean on. The beta caps at level 30, so nothing here about level 60 raid healing, mana curves over a full encounter, or best-in-slot gear has actually been played; it is a projection built from the demo talent trees and 1.12 Holy Paladin knowledge, confirmed only where Blizzard's own recap says so directly.
+Holy is the Paladin healing tree: reactive single-target healing built on Flash of Light, Holy Shock and Divine Favor, with mana sustained by Reverence and Illumination.
+
+### Strengths
+
+- Holy Shock and Divine Favor give instant and guaranteed-critical burst heals
+- Flash of Light is the most efficient heal per mana for tank and party
+- Illumination and Reverence sustain mana while casting
+- Spiritual Focus protects heals from damage pushback
+
+### Weaknesses
+
+- Mana runs short in a long fight, so Flash of Light carries most of the healing
+- Healing is single-target, with no group heal to match Prayer of Healing
+- Heals are reactive, without the periodic healing Priest and Druid lean on
+
+### In a raid
+
+- **Role:** Tank and raid healer, reactive single-target healing
+- **Brings:** Greater Blessings and an aura for the group
 
 ## Talents and builds
 
@@ -54,22 +72,16 @@ In simulator-derived order, per point of stat: **MP5** first, then **Intellect**
 
 Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-## Gear
-
-Look for pieces that lead with the stats at the top of the stat priority above; spell power on a healing item adds nothing to a heal. Beyond that principle, this section cannot get specific yet: the beta caps at level 30, nothing raids until the first tier opens on 9 December, and this build's own item data has most raid loot tables only partially re-itemized or not itemized at all for Forever, so a real Holy pre-raid or first-raid gear list would be guessing. This section fills in once raid loot data lands.
+## Best in slot
 
 ## Enchants and consumables
 
-Target healing power and spirit on weapon and bracer enchants, matching the stat priority above. This build's enchant data confirms an Enchant Weapon - Healing Power option and healing-power enchants for bracers and gloves specifically, so a Holy Paladin has verified enchant slots to chase for its top stat. For consumables, look for elixirs or flasks that boost spirit or intellect over general-purpose ones; this build's consumable data lists spirit- and intellect-specific elixirs, though which one is strongest for Forever's mana curve isn't something this site can state with confidence yet.
-
 ## Races
-
-Holy Paladin can only be Human or Dwarf on Alliance, or Undead on Horde — this build's race and class combination table confirms no other race can train Paladin at all. Between the two Alliance options, Human is the better healing pick: its reworked The Human Spirit racial grants a flat 5% Spirit, which feeds mana regeneration directly and compounds with Reverence's in-combat regen, while Dwarf's reworked Stoneform is a physical damage-reduction cooldown that a backline healer rarely gets to use. On Horde, Undead is currently the only playable Paladin race; its reworked Cannibalize now restores mana as well as health, giving a Holy Undead a way to top off mana between pulls that neither Alliance race has, and Will of the Forsaken's fear, charm, and sleep cleanse is useful raid utility even though it no longer grants brief immunity the way it did in 1.12.
 
 ## Professions
 
-Alchemy pairs naturally with Holy's reliance on mana consumables, since it lets a healer supply their own mana potions and elixirs rather than buying them out. Enchanting or Tailoring both give access to caster-stat enchants and crafted cloth or leather pieces that carry healing power directly. This is general Classic-era community convention rather than anything Forever-specific, since profession bonuses have not been shown to change for Forever.
+Alchemy pairs naturally with Holy's reliance on mana consumables, since it lets a healer supply their own mana potions and elixirs rather than buying them out. Enchanting or Tailoring both give access to caster-stat enchants and crafted cloth or leather pieces that carry healing power directly.
 
 ## Leveling
 
-Retribution is the stronger leveling spec for Paladin — it kills things faster solo, where Holy's strengths barely apply outside a group. If leveling Holy anyway, expect a slower solo pace than Retribution offers. All of this is restated 1.12 knowledge rather than tested Forever guidance: the beta caps at level 30, well short of where a full leveling route would matter.
+Retribution is the stronger leveling spec for Paladin — it kills things faster solo, where Holy's strengths barely apply outside a group. If leveling Holy anyway, expect a slower solo pace than Retribution offers.

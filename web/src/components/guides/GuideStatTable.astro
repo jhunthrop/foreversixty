@@ -1,25 +1,21 @@
 ---
 // web/src/components/guides/GuideStatTable.astro
-// Live-numbers lane (2026-10-06): the "## Stat priority" prose used to quote this band's
-// scale factors by hand ("Strength 1.00, Attack power 0.50, Crit 0.26 ..."), which the
-// nightly BiS republish then moved -- the written numbers went stale the next morning.
-// This table renders the same per-point scale factors straight from this band's own sim
-// weights, through the identical load path (`band60Weights`, class-dps.ts) and the
-// identical ordering/significance rules (`railStatRows`, rail-stats.ts) the rail's own Stat
-// priority card already uses, so the two surfaces can never disagree. The guide's own
-// prose, planted below this table by [spec].astro, never quotes a number again.
+// The Stat priority block: the hit line as the headline, then the weights table, in the order
+// the sim ranks them (the pills above it and the prose read the same order). Every number
+// comes from this band's own sim weights, through the identical load path (`band60Weights`,
+// class-dps.ts) and the identical ordering rules (`railStatRows`, rail-stats.ts) the hero's
+// Stat priority card uses, so the two can never disagree.
 //
-// A real `<table>` rather than a styled div grid: `[spec].astro` renders this inside
-// Content.astro's `.prose-forever` wrapper, which already carries table/th/td rules
-// (global.css) for exactly this shape -- reusing that means this component needs no
-// `<style>` block of its own. Cell text reuses the rail card's own value styling
-// (`font-mono`/`tabular` for a number, `text-muted` for "not separable from zero") rather
-// than inventing a second convention for the same fact.
+// Two columns of numbers: the weight, normalised so the strongest per-point stat reads 1.00
+// (with a bar, so the order can be read at a glance), and the DPS one point of the stat adds
+// (per 1% for haste, which has no rating in this client). A stat the sweep cannot tell from zero
+// reads "Not significant" here and in the hero.
 import { band60Weights } from '../../lib/guides/class-dps';
-import { formatDate } from '../../lib/dates';
 import { expertiseCapLine } from '../../lib/bis/expertise-cap';
-import { hitCapLine } from '../../lib/bis/hit-cap';
+import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
+import { guidesCopy } from '../../lib/guides/copy';
 import { railStatRows } from '../../lib/guides/rail-stats';
+import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
   build: string;
@@ -28,60 +24,148 @@ interface Props {
   classSlug: string;
   recommendedRaces: string[];
   /** The guide's own frontmatter `statPriority` -- the SET of stats to show; this
-   *  component, not that array's own order, decides the order they render in
-   *  (content.config.ts's own note on why the array's order no longer matters). */
+   *  component, not that array's own order, decides the order they render in. */
   statPriority: string[];
+  /** The school-hit talent the build takes ("Elemental Precision"), for the hit line. */
+  hitTalent?: string;
 }
 
-const { build, spec, classSlug, recommendedRaces, statPriority } = Astro.props;
+const { build, spec, classSlug, recommendedRaces, statPriority, hitTalent } = Astro.props;
 
 const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
 const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
-const hitCap = hitCapLine(band60?.hitToCap);
+const anchor = rows.find((row) => row.value !== undefined && !row.perPercent)?.label;
+const hitCap = guideHitCapLine(band60?.hitToCap, hitTalent);
 const expertiseCap = expertiseCapLine(band60?.expertiseToCap);
-const updated = band60 === undefined ? undefined : formatDate(new Date(band60.generatedAt));
+const unitRow = rows.find(
+  (row) => row.value !== undefined && !row.perPercent && row.dpsPerPoint !== undefined,
+);
+const insignificant = rows.filter((row) => row.value === undefined).map((row) => row.label);
+
+function barWidth(value: number | undefined, perPercent: boolean | undefined): number {
+  if (value === undefined || perPercent) return 0;
+  return Math.max(2, Math.min(100, Math.round(value * 100)));
+}
+function dpsText(value: number | undefined): string {
+  if (value === undefined) return '';
+  return value >= 10 ? value.toFixed(1) : value.toFixed(2);
+}
 ---
 
 {rows.length > 0 && (
   <div data-testid="guide-stat-table">
-    <table>
-      <tbody>
-        {rows.map((row, index) => (
-          <tr data-testid={`guide-stat-table-row-${index}`}>
-            <td class="text-strong">{row.label}</td>
-            <td data-testid={`guide-stat-table-value-${index}`}>
-              {row.value === undefined ? (
-                <span class="text-muted">not separable from zero</span>
-              ) : (
-                <span class="tabular text-strong font-mono">
-                  {row.value.toFixed(2)}
-                  {row.perPercent ? ' per 1%' : ''}
-                </span>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
     {hitCap !== undefined && (
-      <p class="text-muted text-[12px]" title={hitCap.title} data-testid="guide-stat-table-hit-cap">
+      <p class="stat-headline" title={hitCap.title} data-testid="guide-stat-table-hit-cap">
         {hitCap.text}
       </p>
     )}
-    {expertiseCap !== undefined && (
-      <p
-        class="text-muted text-[12px]"
-        title={expertiseCap.title}
-        data-testid="guide-stat-table-expertise-cap"
-      >
-        {expertiseCap.text}
+    <GuideTableBox label="Stat weights" fitPhone>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Stat</th>
+            <th scope="col" class="stat-num-head">
+              {guidesCopy.weightColumn(anchor ?? rows[0]!.label)}
+            </th>
+            <th scope="col" class="stat-num-head">
+              {guidesCopy.dpsPerPointColumn}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr data-testid={`guide-stat-table-row-${index}`}>
+              <td class="stat-name">{row.label}</td>
+              <td data-testid={`guide-stat-table-value-${index}`} class="stat-num-cell">
+                {row.value === undefined ? (
+                  <span class="stat-muted">{guidesCopy.notSignificant}</span>
+                ) : (
+                  <span class="stat-weight">
+                    {!row.perPercent && (
+                      <span class="stat-bar" aria-hidden="true">
+                        <span class="stat-bar-fill" style={`width:${barWidth(row.value, row.perPercent)}%`} />
+                      </span>
+                    )}
+                    <span class="tabular font-mono stat-num">
+                      {row.perPercent ? `${row.value.toFixed(1)} per 1% haste` : row.value.toFixed(2)}
+                    </span>
+                  </span>
+                )}
+              </td>
+              <td class="stat-num-cell">
+                <span class="tabular font-mono stat-num">{dpsText(row.dpsPerPoint)}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </GuideTableBox>
+    {unitRow !== undefined && (
+      <p class="stat-note" data-testid="guide-stat-table-unit">
+        {guidesCopy.unitLine(unitRow.label.toLowerCase(), dpsText(unitRow.dpsPerPoint))}
       </p>
     )}
-    {updated !== undefined && (
-      <p class="text-muted text-[12px]" data-testid="guide-stat-table-updated">
-        Updated {updated} · {band60?.presetLabel}
+    {insignificant.length > 0 && (
+      <p class="stat-note" data-testid="guide-stat-table-not-significant">
+        {guidesCopy.notSignificantNote(insignificant.join(' and '), insignificant.length > 1)}
+      </p>
+    )}
+    {expertiseCap !== undefined && (
+      <p class="stat-note" title={expertiseCap.title} data-testid="guide-stat-table-expertise-cap">
+        {expertiseCap.text}
       </p>
     )}
   </div>
 )}
+
+<style is:global>
+  .stat-headline {
+    margin: 14px 0 4px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-strong);
+  }
+  .stat-name {
+    color: var(--color-strong);
+  }
+  .stat-num-head {
+    text-align: right;
+  }
+  .stat-num-cell {
+    text-align: right;
+  }
+  .stat-weight {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+  }
+  .stat-bar {
+    flex: 1 1 auto;
+    height: 4px;
+    min-width: 40px;
+    max-width: 220px;
+    background: var(--color-line-soft);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .stat-bar-fill {
+    display: block;
+    height: 100%;
+    background: var(--color-gold);
+  }
+  .stat-num {
+    color: var(--color-strong);
+    white-space: nowrap;
+  }
+  .stat-muted {
+    color: var(--color-nav);
+  }
+  .stat-note {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: var(--color-nav);
+  }
+</style>

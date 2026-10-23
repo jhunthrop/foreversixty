@@ -7,10 +7,14 @@
 // where a panel was expected" defect).
 import ClassCrest from '../ClassCrest.astro';
 import classes from '../../data/classes.json';
+import { guidesCopy } from '../../lib/guides/copy';
 
 export interface ClassCardSpec {
   name: string;
   href: string;
+  /** The spec's tree icon stem, absent when the build has none. */
+  icon?: string;
+  role: 'dps' | 'healer' | 'tank';
 }
 
 export interface ClassCardEntry {
@@ -20,9 +24,10 @@ export interface ClassCardEntry {
 
 interface Props {
   entries: ClassCardEntry[];
+  build: string;
 }
 
-const { entries } = Astro.props;
+const { entries, build } = Astro.props;
 
 function nameFor(slug: string): string {
   return classes.find((c) => c.slug === slug)?.name ?? slug;
@@ -43,7 +48,21 @@ function colorFor(slug: string): string {
         <ul class="class-card-specs">
           {entry.specs.map((spec) => (
             <li>
-              <a href={spec.href}>{spec.name}</a>
+              <a href={spec.href} class="class-card-spec">
+                {spec.icon !== undefined && (
+                  <img
+                    src={`/data/${build}/icons/${spec.icon}.webp`}
+                    alt=""
+                    width="24"
+                    height="24"
+                    loading="lazy"
+                    decoding="async"
+                    class="class-card-spec-icon"
+                  />
+                )}
+                <span>{spec.name}</span>
+                <span class="class-card-role">{guidesCopy.roleLabel(spec.role)}</span>
+              </a>
             </li>
           ))}
         </ul>
@@ -88,9 +107,28 @@ function colorFor(slug: string): string {
     flex-direction: column;
     gap: 3px;
   }
-  .class-card-specs a {
-    font-size: 13px;
+  .class-card-spec {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    font-size: 14px;
+    color: var(--color-text);
+  }
+  .class-card-spec-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+  }
+  .class-card-role {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--color-nav);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    padding: 0 6px;
   }
 
   @media (max-width: 1023px) {

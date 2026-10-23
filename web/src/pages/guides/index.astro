@@ -11,33 +11,46 @@ import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import classes from '../../data/classes.json';
 import { guidesCopy } from '../../lib/guides/copy';
 import { readSpecCatalog } from '../../lib/bis/load';
+import { specTabIcon } from '../../lib/bis/spec-icon';
 import { latest } from '../../lib/dates';
+import activeBuild from '../../data/active-build.json';
+import { rankedBisFile } from '../../lib/guides/class-dps';
+import { pageUpdatedAt } from '../../lib/guides/guide-header';
 
 const guides = await getCollection('guides');
-const updated = latest(guides.map((g) => g.data.updated));
-const specGuideTitle = new Map(
-  guides.filter((g) => g.data.spec !== undefined).map((g) => [g.id, g.data.title]),
+const catalog = readSpecCatalog();
+// The newest date any guide page shows: its own `updated`, or the day its ranked BiS file was
+// published (the nightly republishes the numbers the guide pages carry).
+const updated = latest(
+  guides.map((g) => {
+    const spec = g.data.spec === undefined ? undefined : `${g.data.classSlug}-${g.data.spec}`;
+    return pageUpdatedAt(
+      g.data.updated,
+      spec === undefined ? undefined : rankedBisFile(activeBuild.build, spec)?.generated_at,
+    );
+  }),
 );
 
 // Tree order (`tree_index` ascending), the same order `SpecTabs` already uses elsewhere on
 // the site (spec §4.A/§4.B's shared "reuse the token" rule) -- not the old page's own
 // alphabetical-by-title sort.
-const catalog = readSpecCatalog();
 const entries: ClassCardEntry[] = classes.map((c) => ({
   slug: c.slug,
   specs: catalog
     .filter((s) => s.class_slug === c.slug)
     .sort((a, b) => a.tree_index - b.tree_index)
     .map((s) => ({
-      name: specGuideTitle.get(`${c.slug}/${s.spec_slug}`) ?? `${s.name} ${c.name}`,
+      name: s.name,
       href: `/guides/${c.slug}/${s.spec_slug}`,
+      icon: specTabIcon(activeBuild.build, c.slug, s.tree_index),
+      role: (['dps', 'healer', 'tank'].includes(s.role) ? s.role : 'dps') as 'dps' | 'healer' | 'tank',
     })),
 }));
 ---
 
 <Base
   title="Guides"
-  description="Class and spec guides for World of Warcraft: Forever, with a beta-honesty note on every projection."
+  description="Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec."
   path="/guides"
 >
   <main id="main" tabindex="-1" class="guides-index">
@@ -63,7 +76,7 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
       </div>
     </header>
     <div class="guides-index-body">
-      <GuidesClassPicker entries={entries} />
+      <GuidesClassPicker entries={entries} build={activeBuild.build} />
     </div>
   </main>
 </Base>

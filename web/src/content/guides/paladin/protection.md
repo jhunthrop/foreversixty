@@ -43,13 +43,29 @@ sources:
 
 ## Overview
 
-Protection is Forever's Paladin tanking tree, built around Seal of Fury for threat and mana return, Judgement as a ranged taunt, and Holy Shield for block uptime once a target is engaged. Blizzard confirmed Seal of Fury as a new addition specifically to give Protection a proper tanking Seal, with its Judgement taunting from farther away than other tanks get. In a group it holds the same job Protection has always held — pull threat, absorb damage, and keep a boss facing away from the raid — but the tools for doing it have changed since 1.12. The beta caps at level 30, so nothing here about level 60 raid tanking, threat ceilings against real boss damage, or best-in-slot gear has actually been played; it is a projection from the demo talent trees and 1.12 Protection Paladin knowledge, confirmed only where Blizzard's own recap says so directly.
+Protection is the Paladin tanking tree: Seal of Fury and Judgement hold threat from range, while Holy Shield, block and avoidance absorb damage.
+
+### Strengths
+
+- Judgement taunts from farther away than other tanks can
+- Seal of Fury returns mana and gives a tanking Seal
+- Holy Shield raises block and adds threat on every block
+- Righteous Fury lowers damage taken, and Templar's Bulwark gives an emergency absorb
+
+### Weaknesses
+
+- Mana, not cooldowns, limits the rotation
+- The emergency defensives share one Forbearance timer
+- Hit is needed for Judgement and Holy Strike to land and hold threat
+
+### In a raid
+
+- **Role:** Main tank; pulls threat and holds a boss facing away from the raid
+- **Brings:** Devotion Aura for the group's armor; no blessing of its own from the Protection tree
 
 ## Talents and builds
 
 This build spends 38 points in Protection, 5 in Retribution and 8 in Holy, and it is the build this site's tank simulator runs, taken from the client's own talent text. An earlier draft of it put the points past Holy Shield into the Holy tree's healing talents; pricing each choice in the simulator showed that Deflection, Sacred Duty and Iron Creed together cut the chance of death in the tank fight many times over, which is why the list below spends them where it does.
-
-**Protection**, in roughly the order you would take them:
 
 - **Toughness** — more armor from your items.
 - **Redoubt** — a chance, whenever a melee attack damages you, to gain extra Block chance for a short window or until it has absorbed a few blocks.
@@ -88,28 +104,22 @@ Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are l
 
 ## Stat priority
 
-The table above is this level range's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
+A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
 Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches and powers Holy Shield's damage and Redoubt. Strength adds threat and Block Value; Hit keeps Judgement and Holy Strike landing; Expertise lowers the boss's chance to dodge or parry you, which is threat, not survival, and no item carries it yet.
 
-Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so Block Value is not weighed apart from Block chance. And a stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this level range's sample size, to tell its value apart from zero.
+Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so Block Value is not weighed apart from Block chance.
 
-## Gear
-
-Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them. This site's ranker builds the level 60 set for you in the BiS tab, scored on the same tank fight, in a shield and a one-handed weapon. Specific raid picks cannot be named honestly yet: nothing raids until 9 December, and this build's raid loot tables are only partly itemized for Forever, so the set is built from what the item tables do carry.
+## Best in slot
 
 ## Enchants and consumables
 
-Target stamina and the defensive stats on enchants where they are available. This build's enchant data confirms a dedicated Enchant Shield line for stamina. For consumables the BiS tab's Raid-ready set shows the tank's: armor and health elixirs, stamina food and drink, and strength and attack power for threat.
-
 ## Races
-
-Protection Paladin can only be Human or Dwarf on Alliance, or Undead on Horde — this build's race and class combination table confirms no other race can train Paladin at all. Between the two Alliance options, Dwarf is the better tanking pick: its reworked Stoneform now reduces physical damage taken for its duration instead of only raising armor, which is a direct mitigation cooldown a tank can time to a dangerous swing, and Mace Specialization adds crit chance that feeds Reckoning's extra-attack proc if paired with a one-handed mace and shield. Human's Sword Specialization only helps if wielding a sword, and its Spirit bonus does little for a tank build. On Horde, Undead is currently the only playable Paladin race; Will of the Forsaken's fear, charm, and sleep cleanse is useful raid utility for a tank that needs to stay locked onto a boss, even though it no longer grants brief immunity the way it did in 1.12.
 
 ## Professions
 
-Blacksmithing suits Protection well since it can add sockets to armor pieces, letting a tank fill in stamina or defense the itemization doesn't provide on its own. Engineering offers utility trinkets and gadgets a tank can use situationally. This is general Classic-era community convention rather than anything Forever-specific, since profession bonuses have not been shown to change for Forever.
+Blacksmithing suits Protection well since it can add sockets to armor pieces, letting a tank fill in stamina or defense the itemization doesn't provide on its own. Engineering offers utility trinkets and gadgets a tank can use situationally.
 
 ## Leveling
 
-Retribution is the stronger leveling spec for Paladin — a shield and a threat rotation built for holding aggro on one enemy is a poor fit for the pace of solo questing. If leveling Protection anyway, expect it to feel closer to a Warrior's tank stance than a fast solo spec. All of this is restated 1.12 knowledge rather than tested Forever guidance: the beta caps at level 30, well short of where a full leveling route would matter.
+Retribution is the stronger leveling spec for Paladin — a shield and a threat rotation built for holding aggro on one enemy is a poor fit for the pace of solo questing. If leveling Protection anyway, expect it to feel closer to a Warrior's tank stance than a fast solo spec.

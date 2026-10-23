@@ -1,0 +1,110 @@
+---
+// web/src/components/guides/GuideOverview.astro
+// The Overview as three scannable blocks, the way a class guide opens: strengths and
+// weaknesses side by side, then the spec's place in a raid. The bullets are the guide's own
+// Markdown (rendered by the page); this only lays them out.
+import { guidesCopy } from '../../lib/guides/copy';
+
+interface Props {
+  strengthsHtml: string;
+  weaknessesHtml: string;
+  raidHtml: string;
+}
+const { strengthsHtml, weaknessesHtml, raidHtml } = Astro.props;
+---
+
+<div class="overview" data-testid="guide-overview">
+  <div class="overview-pair">
+    {strengthsHtml !== '' && (
+      <section class="overview-card overview-strengths" data-testid="guide-overview-strengths">
+        <h3>{guidesCopy.strengths}</h3>
+        <div class="overview-list" set:html={strengthsHtml} />
+      </section>
+    )}
+    {weaknessesHtml !== '' && (
+      <section class="overview-card overview-weaknesses" data-testid="guide-overview-weaknesses">
+        <h3>{guidesCopy.weaknesses}</h3>
+        <div class="overview-list" set:html={weaknessesHtml} />
+      </section>
+    )}
+  </div>
+  {raidHtml !== '' && (
+    <section class="overview-card overview-raid" data-testid="guide-overview-raid">
+      <h3>{guidesCopy.inARaid}</h3>
+      <div class="overview-list" set:html={raidHtml} />
+    </section>
+  )}
+</div>
+
+<style>
+  .overview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0 0 14px;
+  }
+  .overview-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .overview-card {
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    padding: 12px 16px 6px;
+  }
+  .overview-card :global(h3) {
+    margin: 0 0 8px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .overview-strengths {
+    border-top: 2px solid var(--color-kill);
+  }
+  .overview-weaknesses {
+    border-top: 2px solid var(--color-wipe);
+  }
+  .overview-raid {
+    border-top: 2px solid var(--color-gold-deep);
+  }
+  .overview-list :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+    max-width: none;
+  }
+  .overview-list :global(li) {
+    position: relative;
+    padding-left: 18px;
+    margin: 0 0 6px;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .overview-list :global(li)::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+  .overview-strengths .overview-list :global(li)::before {
+    content: '+';
+    color: var(--color-kill);
+  }
+  .overview-weaknesses .overview-list :global(li)::before {
+    content: '\2212';
+    color: var(--color-wipe);
+  }
+  .overview-raid .overview-list :global(li)::before {
+    content: '\203A';
+    color: var(--color-gold);
+  }
+  @media (max-width: 639px) {
+    .overview-pair {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

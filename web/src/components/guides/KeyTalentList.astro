@@ -1,0 +1,114 @@
+---
+// web/src/components/guides/KeyTalentList.astro
+// "Key talents": the talents a guide calls out, each as its icon and name (with the build's
+// rank) and the one line on why it matters. Icons and ranks come from the build's talent data
+// (lib/guides/key-talents.ts), the lines from the guide's own bullets.
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { KeyTalentEntry } from '../../lib/guides/key-talents';
+
+interface Props {
+  build: string;
+  entries: KeyTalentEntry[];
+}
+const { build, entries } = Astro.props;
+---
+
+{entries.length > 0 && (
+  <section data-testid="guide-key-talents">
+    <h3 id="key-talents">{guidesCopy.keyTalents}</h3>
+    <ul class="key-talents">
+      {entries.map((entry, index) => (
+        <li class="key-talent" data-testid={`guide-key-talent-${index}`}>
+          <span class="key-talent-names">
+            {entry.talents.map((talent) => (
+              <span class="key-talent-ref">
+                {talent.icon !== undefined ? (
+                  <img
+                    src={dataUrl(build, `icons/${talent.icon}.webp`)}
+                    alt=""
+                    width="28"
+                    height="28"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <span class="key-talent-icon-empty" aria-hidden="true" />
+                )}
+                <span class="key-talent-name">{talent.name}</span>
+                {talent.rank !== undefined && talent.maxRank !== undefined && (
+                  <span class="key-talent-rank font-mono tabular">{`${talent.rank}/${talent.maxRank}`}</span>
+                )}
+              </span>
+            ))}
+          </span>
+          <span class="key-talent-why">{entry.why}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .key-talents {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .key-talent {
+    display: grid;
+    grid-template-columns: minmax(150px, 200px) minmax(0, 1fr);
+    gap: 4px 16px;
+    align-items: center;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .key-talent:last-child {
+    border-bottom: none;
+  }
+  .key-talent-names {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .key-talent-ref {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .key-talent-ref img,
+  .key-talent-icon-empty {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+  }
+  .key-talent-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--color-strong);
+  }
+  .key-talent-rank {
+    font-size: 12px;
+    color: var(--color-gold);
+  }
+  .key-talent-why {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--color-text);
+  }
+  @media (max-width: 639px) {
+    .key-talent {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,22 +1,24 @@
 ---
 // web/src/components/guides/LevelingBandStrip.astro
-// The Leveling section's planted band strip (rebuild spec §4.D, proposed ruling §10.1):
-// one row per this spec's own BiS band (one faction, the guide's own first
-// `recommendedRaces` entry decides which -- `classLandingSetDps`'s own sibling rule),
-// each showing the real talent-point total and a direct "Load in planner" link built from
-// that band's own verified talent string -- the identical href shape `bis/[class]/
-// [spec].astro` already builds for its own band panels. Desktop also gets a per-row
-// thumbnail of that band's own LIT talents (round-1 mock review finding 5), decoded with
-// the same `decodeBandTalents` the rail's Build card and the full tree already share;
-// phone drops the thumbnail so nineteen icons never crowd the row's own 44px
-// "Load in planner" tap target (spec §4.D's own explicit instruction).
-import { decodeBandTalents, litTalents } from '../../lib/guides/build-tree';
+// The Leveling section's band strip: one row per this spec's BiS band (one faction -- the
+// guide's own first `recommendedRaces` entry decides which, `classLandingSetDps`'s sibling
+// rule), each with the talent-point total, a direct "Load in planner" link built from that
+// band's own verified talent string, and the band's talents as a list to work through: icon,
+// name and rank, the build's main tree first, each tree from its first row down. A talent that
+// takes more points than in the band before is marked, so the strip also reads as what each
+// range adds. Every row is wrapped in the same `decodeBandTalents` the rail and the full tree
+// share.
+import { decodeBandTalents } from '../../lib/guides/build-tree';
 import { guidesCopy } from '../../lib/guides/copy';
+import { levelingChipRows } from '../../lib/guides/leveling-talents';
 import { dataUrl } from '../../lib/planner/load';
 
 export interface LevelingBandRow {
+  band: number;
+  /** "Level 20 to 29". */
   bandLabel: string;
-  points: number;
+  /** "11 to 20 points". */
+  pointsLabel: string;
   plannerHref: string;
   talents: string;
 }
@@ -28,53 +30,65 @@ interface Props {
 }
 
 const { build, classSlug, rows } = Astro.props;
+
+const decoded = rows.map((row) => decodeBandTalents(build, classSlug, row.talents));
+const chipRows = levelingChipRows(decoded);
 ---
 
-<div class="panel-box leveling-strip" data-testid="guide-leveling-strip">
-  {rows.map((row) => {
-    const trees = decodeBandTalents(build, classSlug, row.talents);
-    const lit = trees === undefined ? [] : litTalents(trees);
+<p class="leveling-legend" data-testid="guide-leveling-legend">
+  {guidesCopy.levelingLegend}
+</p>
+<div class="leveling-panel-box leveling-strip" data-testid="guide-leveling-strip">
+  {rows.map((row, index) => {
+    const chips = chipRows[index] ?? [];
     return (
-      <div class="leveling-row" data-testid={`guide-leveling-row-${row.bandLabel.replace(/\s+/g, '-')}`}>
+      <div class="leveling-row" data-testid={`guide-leveling-row-${row.band}`}>
         <div class="leveling-row-top">
           <span class="font-mono tabular leveling-row-band">{row.bandLabel}</span>
-          <span class="text-muted leveling-row-points">{guidesCopy.levelingPointsLabel(row.points)}</span>
+          <span class="leveling-row-points">{row.pointsLabel}</span>
           <a class="leveling-row-link" href={row.plannerHref}>
             {guidesCopy.loadInPlanner}
           </a>
         </div>
-        {lit.length > 0 && (
-          <div class="leveling-row-thumb" aria-hidden="true" data-testid="guide-leveling-row-thumbnail">
-            {lit.map((talent) => (
-              <span class="leveling-row-thumb-cell">
+        {chips.length > 0 && (
+          <ul class="leveling-chips" data-testid="guide-leveling-row-talents">
+            {chips.map((chip) => (
+              <li
+                class:list={['leveling-chip', chip.isNew && 'leveling-chip-new']}
+                title={chip.isNew ? guidesCopy.levelingNewTitle : undefined}
+                data-new={chip.isNew}
+              >
                 <img
-                  src={dataUrl(build, `icons/${talent.icon}.webp`)}
+                  src={dataUrl(build, `icons/${chip.icon}.webp`)}
                   alt=""
-                  width="16"
-                  height="16"
+                  width="24"
+                  height="24"
                   loading="lazy"
                   decoding="async"
                 />
-                {talent.rank > 1 && (
-                  <span class="font-mono tabular leveling-row-thumb-rank">{talent.rank}</span>
-                )}
-              </span>
+                <span class="leveling-chip-name">{chip.name}</span>
+                <span class="font-mono tabular leveling-chip-rank">{`${chip.rank}/${chip.maxRank}`}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
     );
   })}
 </div>
 
-<style>
-  .panel-box {
+<style is:global>
+  /* Global on purpose: a scoped style stamps a data-astro-cid attribute on every element it
+       styles, and this block is ~100 rows of markup. Every selector carries this component's own
+       prefix, so going global widens nothing. */
+  .leveling-panel-box {
     background: var(--color-raised);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-panel);
   }
   .leveling-strip {
     padding: 4px 20px 6px 20px;
+    margin: 0 0 14px;
   }
   .leveling-row {
     display: flex;
@@ -88,7 +102,7 @@ const { build, classSlug, rows } = Astro.props;
   }
   .leveling-row-top {
     display: grid;
-    grid-template-columns: 90px 1fr auto;
+    grid-template-columns: 150px 1fr auto;
     gap: 16px;
     align-items: center;
     min-height: 44px;
@@ -99,6 +113,12 @@ const { build, classSlug, rows } = Astro.props;
   }
   .leveling-row-points {
     font-size: 13px;
+    color: var(--color-nav);
+  }
+  .leveling-legend {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--color-nav);
   }
   .leveling-row-link {
     font-size: 12px;
@@ -109,40 +129,49 @@ const { build, classSlug, rows } = Astro.props;
     align-items: center;
     min-height: 44px;
   }
-  .leveling-row-thumb {
+  .leveling-chips {
+    list-style: none;
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+    max-width: none;
   }
-  .leveling-row-thumb-cell {
-    position: relative;
+  .leveling-chip {
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px 2px 2px;
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-control);
+    background: var(--color-bg);
+    font-size: 13px;
   }
-  .leveling-row-thumb-cell img {
-    width: 16px;
-    height: 16px;
+  .leveling-chip img {
+    width: 24px;
+    height: 24px;
     border-radius: 3px;
     border: 1px solid var(--color-line);
   }
-  .leveling-row-thumb-rank {
-    position: absolute;
-    bottom: -2px;
-    right: -2px;
-    font-size: 7px;
-    background: var(--color-line-soft);
+  .leveling-chip-new {
+    border-color: var(--color-gold);
+  }
+  .leveling-chip-name {
+    color: var(--color-text);
+  }
+  .leveling-chip-rank {
+    font-size: 12px;
     color: var(--color-gold);
-    border-radius: 2px;
-    padding: 0 1px;
-    line-height: 1.2;
   }
 
   @media (max-width: 1023px) {
-    .leveling-row-thumb {
-      display: none;
-    }
     .leveling-row-top {
-      grid-template-columns: 70px 1fr auto;
+      grid-template-columns: auto 1fr auto;
       gap: 10px;
+    }
+    .leveling-strip {
+      padding: 4px 12px 6px 12px;
     }
   }
 </style>

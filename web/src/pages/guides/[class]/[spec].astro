@@ -12,20 +12,35 @@
 // a component directly -- splitSpecSections/renderGuideMarkdown (lib/guides/) render each
 // of the nine sections independently instead of the whole body as one `<Body />`, which is
 // what makes planting possible while every heading keeps its exact id.
+//
+// W.18 (22 Oct 2026): the page reads like a class guide. Every block that has icons, tables or
+// ranks is built from the build data and the BiS ranker (lib/guides/*), never typed per guide;
+// the Markdown keeps the prose. The sections, in order: Overview (strengths, weaknesses, in a
+// raid), Talents and builds (trees, the raid-build diff, key talents), Rotation and priority
+// (opener, priority, cooldowns), Stat priority, Best in slot (the /bis picks per level range),
+// Enchants and consumables, Races (pills and a table), Professions, Leveling. One status note
+// at the top says once what is simulated, so the sections do not hedge.
 import { getCollection } from 'astro:content';
 import ArtPanel from '../../../components/ArtPanel.astro';
 import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
 import GuideActionRail from '../../../components/guides/GuideActionRail.astro';
+import GuideBisTable from '../../../components/guides/GuideBisTable.astro';
 import GuideBuilds from '../../../components/guides/GuideBuilds.astro';
+import GuideGearExtras from '../../../components/guides/GuideGearExtras.astro';
+import GuideOverview from '../../../components/guides/GuideOverview.astro';
 import GuideStatTable from '../../../components/guides/GuideStatTable.astro';
+import GuideStatusNote from '../../../components/guides/GuideStatusNote.astro';
+import KeyTalentList from '../../../components/guides/KeyTalentList.astro';
 import LevelingBandStrip, { type LevelingBandRow } from '../../../components/guides/LevelingBandStrip.astro';
 import RacePillRow from '../../../components/guides/RacePillRow.astro';
+import RaceTable from '../../../components/guides/RaceTable.astro';
+import RotationLists from '../../../components/guides/RotationLists.astro';
+import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
 import StatPriorityPills from '../../../components/guides/StatPriorityPills.astro';
 import SpecTableOfContents from '../../../components/SpecTableOfContents.astro';
 import Content from '../../../layouts/Content.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
-import { bisCopy } from '../../../lib/bis/copy';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import {
   bandTopLevel,
@@ -40,6 +55,21 @@ import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { railStatRows } from '../../../lib/guides/rail-stats';
 import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
+import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
+import { loadGuideBis } from '../../../lib/guides/guide-bis';
+import { schoolHitTalent } from '../../../lib/guides/hit-cap-line';
+import { pageScript } from '../../../lib/guides/page-script';
+import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
+import { loadGearExtras } from '../../../lib/guides/gear-extras';
+import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
+import { splitOverview } from '../../../lib/guides/overview';
+import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
+import {
+  loadApl,
+  rotationListsFrom,
+  specCooldowns,
+  spellLookupFor,
+} from '../../../lib/guides/rotation-lists';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -59,26 +89,13 @@ const { entry } = Astro.props;
 // is built to consume, and it must be byte-identical to what _sections.test.ts validates.
 const sections = splitSpecSections(entry.body ?? '');
 
-/** A section's raw markdown, minus its own `## Heading` line -- for the three sections that
- *  plant a component between the heading and the guide's own prose. */
+/** A section's raw markdown, minus its own `## Heading` line -- for the sections that plant
+ *  a component between the heading and the guide's own prose. */
 function proseOnly(section: SpecSection): string {
   const raw = sections.get(section) ?? '';
   const [, ...rest] = raw.split('\n');
   return rest.join('\n').replace(/^\n+/, '');
 }
-
-const overviewHtml = await renderGuideMarkdown(sections.get('Overview') ?? '');
-const talentsHtml = await renderGuideMarkdown(sections.get('Talents and builds') ?? '');
-const rotationHtml = await renderGuideMarkdown(sections.get('Rotation and priority') ?? '');
-const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
-const statPriorityProseHtml = await renderGuideMarkdown(proseOnly('Stat priority'));
-const gearHtml = await renderGuideMarkdown(sections.get('Gear') ?? '');
-const enchantsHtml = await renderGuideMarkdown(sections.get('Enchants and consumables') ?? '');
-const racesHeadingHtml = await renderGuideMarkdown('## Races');
-const racesProseHtml = await renderGuideMarkdown(proseOnly('Races'));
-const professionsHtml = await renderGuideMarkdown(sections.get('Professions') ?? '');
-const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
-const levelingProseHtml = await renderGuideMarkdown(proseOnly('Leveling'));
 
 const buildCode = entry.data.build;
 const build = activeBuild.build;
@@ -86,6 +103,16 @@ const classSlug = entry.data.classSlug;
 const specSlug = entry.id.split('/')[1]!;
 const fullSpecId = `${classSlug}-${specSlug}`;
 const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
+const role = entry.data.role ?? 'dps';
+
+// Overview: a summary sentence (the header's) and three bullet blocks.
+const overview = splitOverview(sections.get('Overview') ?? '');
+const hasOverviewBlocks = overview.strengths !== '' || overview.weaknesses !== '' || overview.raid !== '';
+const overviewHeadingHtml = await renderGuideMarkdown('## Overview');
+const overviewFallbackHtml = hasOverviewBlocks ? '' : await renderGuideMarkdown(proseOnly('Overview'));
+const strengthsHtml = await renderGuideMarkdown(overview.strengths);
+const weaknessesHtml = await renderGuideMarkdown(overview.weaknesses);
+const raidHtml = await renderGuideMarkdown(overview.raid);
 
 // SpecTabs: every spec of this class, in the talent tree's own left-to-right order --
 // identical convention `/bis`'s own header already uses.
@@ -100,18 +127,50 @@ const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
   active: s.spec_slug === specSlug,
 }));
 const specName = catalogEntries.find((s) => s.spec_slug === specSlug)?.name ?? specSlug;
+const specIcon = specTabs.find((tab) => tab.active)?.icon;
 
-// Rail: Build card's primary-tree thumbnail (the tree the build spends the most points in).
+// Talents: both builds decoded for the key-talent icons and the raid-build diff.
 const buildTrees = buildCode === undefined ? [] : (decodeBuildTrees(build, buildCode) ?? []);
+const raidCode = entry.data.raidBuild;
+const raidTrees =
+  raidCode === undefined || raidCode === buildCode ? undefined : decodeBuildTrees(build, raidCode);
+const raidDiffLine =
+  raidTrees === undefined || buildTrees.length === 0
+    ? undefined
+    : buildDiffLine(diffBuilds(buildTrees, raidTrees));
+const talentsHeadingHtml = await renderGuideMarkdown('## Talents and builds');
+const keyTalents = keyTalentsFor(
+  proseOnly('Talents and builds'),
+  buildTrees.length > 0 ? buildTrees : undefined,
+);
+const talentsProseHtml = await renderGuideMarkdown(withoutTalentBullets(proseOnly('Talents and builds')));
 
 // Rail: Rotation card's first four level-60 lines (spec §4.C.2) -- the card is omitted
 // entirely when no rotation entry applies yet (spec §5's own state table), never a card
-// with zero lines standing in for "no data".
+// with zero lines standing in for "no data". The Rotation section's lists read the same lines.
 const rotationEntries = loadRotations(build, fullSpecId) ?? [];
 const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
 const rotationLines =
   rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId);
 const rotationBandLabel = String(bandTopLevel(60));
+const litTalentNames = new Set(
+  [...buildTrees, ...(raidTrees ?? [])].flatMap((tree) =>
+    tree.talents.filter((talent) => talent.rank > 0).map((talent) => talent.name),
+  ),
+);
+const spellFacts = spellLookupFor(build, classSlug);
+const rotationListsData =
+  rotationEntry === undefined
+    ? undefined
+    : rotationListsFrom(
+        rotationLines,
+        loadApl(fullSpecId),
+        spellFacts,
+        specCooldowns(build, classSlug, litTalentNames, spellFacts),
+      );
+const hitTalent = schoolHitTalent(raidTrees ?? buildTrees);
+const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
+const rotationProseHtml = await renderGuideMarkdown(proseOnly('Rotation and priority'));
 
 // Rail: Stat priority card's real per-point numbers, and the Leveling band strip -- both
 // read the spec's own band-60/per-band BiS data, at the faction the guide's first
@@ -128,6 +187,40 @@ const statRows =
   band60 === undefined
     ? []
     : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.hasteScaleFactor);
+// The pills, the table and the hero card follow the weights, in the table's order; the
+// frontmatter list is only the fallback for a spec with no weights yet.
+const statPills = statRows.length > 0 ? statRows.map((row) => row.label) : entry.data.statPriority;
+const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
+const statPriorityProseHtml = await renderGuideMarkdown(proseOnly('Stat priority'));
+
+// Best in slot: the /bis picks per level range, plus the enchant and consumable tables that
+// follow the level 60 band's weights.
+const guideBis = loadGuideBis(build, classSlug, fullSpecId, entry.data.recommendedRaces);
+const bisHref = `/bis/${classSlug}/${specSlug}`;
+const topBand = guideBis?.panels.find(
+  (p) => p.faction === guideBis.defaultFaction && p.band === guideBis.defaultBand,
+);
+const mainHand = topBand?.rows.find((row) => row.slot === 'main_hand');
+const offHand = topBand?.rows.find((row) => row.slot === 'off_hand');
+const gearExtras = loadGearExtras(build, classSlug, fullSpecId, entry.data.recommendedRaces, {
+  twoHanded: mainHand?.typeLabel === 'Two-Handed Weapon',
+  shield: offHand?.typeLabel === 'Shield',
+  hasOffHand: offHand !== undefined && !offHand.empty,
+});
+const gearHeadingHtml = await renderGuideMarkdown('## Best in slot');
+const gearProseHtml = await renderGuideMarkdown(proseOnly('Best in slot'));
+const enchantsHeadingHtml = await renderGuideMarkdown('## Enchants and consumables');
+const enchantsProseHtml = await renderGuideMarkdown(proseOnly('Enchants and consumables'));
+
+// Races: the pills as the summary, the table under them.
+const raceRows = raceTableFor(
+  classSlug,
+  entry.data.recommendedRaces,
+  specKindOf(classSlug, fullSpecId, role),
+);
+const racesHeadingHtml = await renderGuideMarkdown('## Races');
+const racesProseHtml = await renderGuideMarkdown(proseOnly('Races'));
+const professionsHtml = await renderGuideMarkdown(sections.get('Professions') ?? '');
 
 const levelingRows: LevelingBandRow[] =
   ranked === undefined || faction === undefined
@@ -139,11 +232,17 @@ const levelingRows: LevelingBandRow[] =
         .filter((b) => b.faction === faction && (b.preset === undefined || b.preset === 'bare'))
         .sort((a, b) => a.band - b.band)
         .map((b) => ({
-          bandLabel: bisCopy.bandRangeLabel(b.band),
-          points: b.talent_points,
+          band: b.band,
+          bandLabel: guidesCopy.levelRangeLabel(b.band),
+          pointsLabel: guidesCopy.levelRangePoints(b.talent_points, b.band),
           plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
           talents: b.talents,
         }));
+const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
+const levelingProseHtml = await renderGuideMarkdown(proseOnly('Leveling'));
+
+const updatedStamp = dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at));
+const metaLine = guidesCopy.headerMeta(role, updatedStamp, build);
 ---
 
 <Content
@@ -155,6 +254,8 @@ const levelingRows: LevelingBandRow[] =
   sources={entry.data.sources}
   confidencePlacement="footer"
   hideHeader
+  wideProse
+  hideConfidenceNote
 >
   <Fragment slot="beforeMain">
     <ArtPanel classSlug={classSlug}>
@@ -167,7 +268,9 @@ const levelingRows: LevelingBandRow[] =
         build={build}
         minimal
         eyebrow={guidesCopy.eyebrow}
-        summaryOverride={entry.data.description}
+        summaryOverride={overview.summary !== '' ? overview.summary : entry.data.description}
+        metaLine={metaLine}
+        metaIcon={specIcon}
       />
       {buildCode !== undefined && (
         <div class="guide-rail-wrap">
@@ -185,29 +288,53 @@ const levelingRows: LevelingBandRow[] =
   </Fragment>
   <SpecTableOfContents />
   <SpecTableOfContents slot="aside" placement="rail" />
-  <Fragment set:html={overviewHtml} />
-  <Fragment set:html={talentsHtml} />
-  {buildCode !== undefined && <GuideBuilds levelingCode={buildCode} raidCode={entry.data.raidBuild} />}
-  <Fragment set:html={rotationHtml} />
+  <GuideStatusNote />
+  <Fragment set:html={overviewHeadingHtml} />
+  {hasOverviewBlocks ? (
+    <GuideOverview strengthsHtml={strengthsHtml} weaknessesHtml={weaknessesHtml} raidHtml={raidHtml} />
+  ) : (
+    <Fragment set:html={overviewFallbackHtml} />
+  )}
+  <Fragment set:html={talentsHeadingHtml} />
+  {buildCode !== undefined && (
+    <GuideBuilds levelingCode={buildCode} raidCode={entry.data.raidBuild} raidDiffLine={raidDiffLine} />
+  )}
+  <KeyTalentList build={build} entries={keyTalents} />
+  <Fragment set:html={talentsProseHtml} />
+  <Fragment set:html={rotationHeadingHtml} />
+  {rotationListsData !== undefined && <RotationLists build={build} lists={rotationListsData} />}
+  <Fragment set:html={rotationProseHtml} />
   <Fragment set:html={statPriorityHeadingHtml} />
+  <StatPriorityPills stats={statPills} />
   <GuideStatTable
     build={build}
     spec={fullSpecId}
     classSlug={classSlug}
     recommendedRaces={entry.data.recommendedRaces}
     statPriority={entry.data.statPriority}
+    hitTalent={hitTalent}
   />
-  <StatPriorityPills stats={entry.data.statPriority} />
   <Fragment set:html={statPriorityProseHtml} />
-  <Fragment set:html={gearHtml} />
-  <Fragment set:html={enchantsHtml} />
+  <Fragment set:html={gearHeadingHtml} />
+  {guideBis !== undefined && (
+    <Fragment>
+      <GlyphSheet />
+      <GuideBisTable build={build} bis={guideBis} bisHref={bisHref} classSlug={classSlug} />
+    </Fragment>
+  )}
+  <Fragment set:html={gearProseHtml} />
+  <Fragment set:html={enchantsHeadingHtml} />
+  {gearExtras !== undefined && <GuideGearExtras build={build} extras={gearExtras} />}
+  <Fragment set:html={enchantsProseHtml} />
   <Fragment set:html={racesHeadingHtml} />
   <RacePillRow classSlug={entry.data.classSlug} recommendedRaces={entry.data.recommendedRaces} />
+  <RaceTable rows={raceRows} />
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
   <Fragment set:html={levelingHeadingHtml} />
   {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
   <Fragment set:html={levelingProseHtml} />
+  <script is:inline set:html={pageScript}></script>
 </Content>
 
 <style>

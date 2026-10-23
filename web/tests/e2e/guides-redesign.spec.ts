@@ -101,7 +101,7 @@ test.describe('desktop', () => {
     await page.goto('/guides/warrior/fury');
     const strip = page.getByTestId('guide-leveling-strip');
     await expect(strip).toBeVisible();
-    const rows = strip.locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-thumbnail"])');
+    const rows = strip.locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
     await expect(rows).toHaveCount(5);
     for (const row of await rows.all()) {
       const link = row.getByText('Load in planner');
@@ -123,13 +123,14 @@ test.describe('phone', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 
-  test('the Leveling band strip keeps all five rows on phone (thumbnails dropped)', async ({ page }) => {
+  test('the Leveling band strip keeps all five rows on phone, each listing its talents', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
     const rows = page
       .getByTestId('guide-leveling-strip')
-      .locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-thumbnail"])');
+      .locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
     await expect(rows).toHaveCount(5);
-    await expect(page.getByTestId('guide-leveling-row-thumbnail').first()).toBeHidden();
+    await expect(page.getByTestId('guide-leveling-row-talents').first()).toBeVisible();
+    await expect(page.getByTestId('guide-leveling-row-talents').first().locator('li').first()).toBeVisible();
   });
 });
 

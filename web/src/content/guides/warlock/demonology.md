@@ -31,11 +31,27 @@ sources:
 
 ## Overview
 
-Demonology is Warlock's pet-focused spec: its talents strengthen and empower a summoned demon, and its signature choice — Demonic Sacrifice, giving up the pet for a standing buff instead — decides whether you play with a demon out or without one. Casting-wise it's closer to Affliction than a pet-and-forget spec: Corruption and Shadow Bolt still carry most of the direct damage, with Soul Fire as an occasional cooldown. Demonology also picked up Incubus, a new demon summon alongside the Succubus with several talents referencing it, in the BlizzCon demo. The beta only reaches level 30, so nothing here about level 60 talents, raiding, or best-in-slot gear has actually been played — it is a projection from the demo trees and 1.12 knowledge, not tested content.
+Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demonic Sacrifice trades the pet for a standing buff.
+
+### Strengths
+
+- Talents strengthen and empower the summoned demon
+- Demonic Sacrifice offers a play style without a pet
+- Incubus joins Succubus as a new summon with several talents behind it
+- Soul Fire adds an occasional large hit
+
+### Weaknesses
+
+- Corruption and Shadow Bolt still carry most of the direct damage
+- The mana pool also sustains the pet through Fel Vitality
+- A dead pet must be re-summoned, costing mana and time
+
+### In a raid
+
+- **Role:** Ranged shadow damage with a demon
+- **Brings:** A curse on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
-
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. Verified against this build's talent data, Demonology's key picks in roughly the order you'd take them are:
 
 - **Fel Vitality** — up to 15% more maximum health, mana, and pet stats at rank 3, an early quality-of-life pick.
 - **Demonic Sacrifice** — sacrifices your active demon for a long-lasting buff instead, the talent that defines whether you're playing pet-out or pet-sacrificed Demonology.
@@ -44,36 +60,22 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Master Demonologist** — a scaling buff to both Warlock and demon that differs by pet, up to 10% at rank 5 for whichever pet is out.
 - **Decimation** — the search run's best use of the points freed from Demonic Embrace; the simulator credits it with a measurable damage gain.
 
-This build spends 30 points in Demonology, with 16 in Affliction (Improved Corruption and Suppression maxed, then Improved Life Tap, Soul Harvest and Grim Reach, the two-rank range talent the current client put in Malediction's slot) and 5 in Destruction on Bane. Against the first draft it drops three Improved Drains points, two Demonic Embrace points and the Demonic Pact capstone, all of which the simulator measures at zero for a solo caster, and spends them on two Decimation points and four Bane points, which shorten the Shadow Bolt cast. That was worth about +10% in the search run, and about +8% on the level-60 row of the rotation ladder. Demonic Sacrifice and Soul Link stay, and so do the talents the simulator cannot yet see (Soul Harvest, Improved Health Funnel, Demonic Aegis, Improved Voidwalker). A deep Affliction build scored higher still, but it abandons the Demonology tree and those talents, so it is not the recommendation for this spec. This is a projection from the simulator, not beta play. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
-
-**Raid build.** For a raid the search found about +6% over the previous raid build in the raid-ready run, now that Searing Pain is the filler and Soul Fire is in the loop. It drops the three Malediction points and a Master Summoner point and spends them on two more Aftermath points, a Ruin point and an Improved Sayaad point. With Searing Pain as the filler Improved Shadow Bolt no longer earns a point, which is why the raid build carries none of it. Suppression (less threat), Soul Link, Demonic Aegis and Decimation stay.
-
 ## Rotation and priority
 
 Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires (it edged out Bane of Agony in our simulator; on a fight shorter than a minute use Agony instead), and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Immolate is the addition that matters: recast it when under 3 seconds remain, since a running Immolate out-damages the globals it displaces. Soul Fire is back in the rotation now that the build takes both Decimation points: Decimation drops its cooldown by 90% and shortens its cast time and cost for 10 seconds after a Shadow Bolt or Searing Pain crit, and a Soul Fire cast whenever it is ready beat the Shadow Bolts it displaces by about 7% on the bare character and about 10% in the raid-ready run. Searing Pain fills every other global: in the raid-ready run the search put it ahead of Shadow Bolt as the filler, a further gain of about 2.5%. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs tick, and Life Tap is only the backstop below about 10%. Together these changes were worth about +13% in our level-60 search run.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
-
-## Gear
-
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above; stamina from Demonic Embrace-adjacent gear is a secondary consideration if you're sacrificing your pet and losing its damage-soak utility. Specific slot-by-slot picks can't be named honestly yet: the beta caps at level 30, so no one has gear-checked Demonology past the early game, and raid loot doesn't exist yet either — nothing raids until 9 December, and even then this client's item table is missing most of the classic raid loot tables it's meant to carry (Onyxia's Lair's own list is currently empty, and Barrow Deeps and Hyjal Summit aren't mapped to items at all). This section will fill in with real picks once raid loot is itemized.
+## Best in slot
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above. **Enchant Weapon - Spell Power** (verified in this build's enchant data, +30 spell damage) is the standard weapon enchant for a caster. Demonology splits its school damage between Shadow and Fire depending on pet talents taken, so a generic spell-power consumable such as **Flask of Supreme Power** is the safer pick over a single school-specific elixir like **Elixir of Shadow Power** or **Elixir of Fire Power**, both verified in this build's data. Beyond naming those, keep it principle-level until raid-tier consumables are confirmed for Forever specifically.
-
 ## Races
-
-Warlock's playable races are Human, Orc, Undead, Gnome, and Troll on their respective factions; the class is not open to Skyborne at all. Troll is one of Blizzard's six confirmed new race and class pairs, giving the Horde a Warlock option it didn't have in 1.12.
-
-For Alliance, **Gnome** is the strongest pick: Expansive Mind's mana bonus stretches a pool that also has to sustain your pet's mana through Fel Vitality, and Eureka!'s mana-cost reduction is a direct complement to re-summoning demons or firing off Soul Fire. For Horde, **Troll** is the pick as the new pairing Blizzard specifically added for this class: Berserking's 10% casting and attack speed on a 3-minute cooldown shortens Shadow Bolt casts, and Regeneration keeps some health regeneration running in combat, useful for a spec that spends health through Life Tap and, if pet-sacrificed, loses the Voidwalker's mana-return option.
 
 ## Professions
 
-Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them. This is general Classic-community convention rather than anything Forever-specific, so treat it as inferred until this site has profession data from the beta.
+Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them.
 
 ## Leveling
 
-Affliction is generally the stronger leveling choice for Warlock; Demonology can level well too, particularly with a Voidwalker tanking damage while you cast, but it's usually considered slower solo than Affliction's DoT-and-move playstyle. That assessment is inferred from 1.12 knowledge, not tested — the beta only runs to level 30, so nothing about the leveling experience above that has been played in Forever's actual client.
+Affliction is generally the stronger leveling choice for Warlock; Demonology can level well too, particularly with a Voidwalker tanking damage while you cast, but it's usually considered slower solo than Affliction's DoT-and-move playstyle.

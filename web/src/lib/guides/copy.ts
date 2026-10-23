@@ -12,8 +12,7 @@ export const guidesCopy = {
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
    *  come from the visitor's own character, e.g. "Your guide: Fury Warrior →". */
   signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} →`,
-  indexHonestyLine:
-    'The beta caps at level 30. Level 60 play is a projection until we can confirm it against a live raid.',
+  indexHonestyLine: "The beta stops at level 30. Level 60 picks come from this site's simulator.",
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   readTheGuide: 'Read the guide',
@@ -31,12 +30,82 @@ export const guidesCopy = {
   loadBuildRailAriaLabel: 'Load this build in the planner (summary)',
   simBuildRailAriaLabel: 'Sim this build (summary)',
   // --- raid build (2026-10-07) -------------------------------------------------------------
-  levelingBuild: 'Leveling build',
+  levelingBuild: 'Level 60 build',
   raidBuild: 'Raid build',
   /** The one heading a spec shows when its raid build is its leveling build. */
-  levelingAndRaidBuild: 'Leveling and raid build',
-  loadLevelingBuildAriaLabel: 'Load the leveling build in the planner',
-  simLevelingBuildAriaLabel: 'Sim the leveling build',
+  levelingAndRaidBuild: 'Level 60 and raid build',
+  loadLevelingBuildAriaLabel: 'Load the level 60 build in the planner',
+  simLevelingBuildAriaLabel: 'Sim the level 60 build',
   loadRaidBuildAriaLabel: 'Load the raid build in the planner',
   simRaidBuildAriaLabel: 'Sim the raid build',
+  // --- guides like Wowhead's (W.18, 2026-10-22) ---------------------------------------------
+  /** The one status note for the whole page; the sections are then written as a guide. */
+  statusNote:
+    "The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.",
+  statusNoteLabel: 'About this guide',
+  headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string, build: string): string =>
+    `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated} · built on client ${build} · beta-tested to level 30, level 60 simulated`,
+  strengths: 'Strengths',
+  weaknesses: 'Weaknesses',
+  inARaid: 'In a raid',
+  keyTalents: 'Key talents',
+  opener: 'Opener',
+  priority: 'Priority',
+  cooldowns: 'Cooldowns',
+  bestInSlot: 'Best in slot',
+  levelRange: 'Level range',
+  bisCaption: (race: string, faction: string): string =>
+    `Picks for a ${race} (${faction}), ranked by this site's simulator with every item equipped.`,
+  fullListLink: 'Full list and alternatives',
+  preRaidNote:
+    'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
+  notSimChecked: 'Not sim-checked',
+  slotColumn: 'Slot',
+  itemColumn: 'Item',
+  sourceColumn: 'Source',
+  enchants: 'Enchants',
+  consumables: 'Consumables',
+  enchantsNote:
+    'Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.',
+  consumablesNote: 'What the simulator gives this spec in its raid-ready run.',
+  enchantColumn: 'Enchant',
+  givesColumn: 'Gives',
+  consumableColumn: 'Consumable',
+  raceColumn: 'Race',
+  factionColumn: 'Faction',
+  racialsColumn: 'Racials',
+
+  recommendedTag: 'Recommended',
+  /** The Stat priority headline: "Hit to cap: 16% · 3% from Elemental Precision, 13% from gear". */
+  hitToCap: (
+    percent: string,
+    split?: { talentPercent: string; talent: string; gearPercent: string },
+  ): string =>
+    split === undefined
+      ? `Hit to cap: ${percent}%`
+      : `Hit to cap: ${percent}% · ${split.talentPercent}% from ${split.talent}, ${split.gearPercent}% from gear`,
+  hitToCapWhite: (percent: string, white: string): string =>
+    `Hit to cap: ${percent}% · ${white}% for white swings`,
+  notSignificantNote: (labels: string, plural: boolean): string =>
+    `${labels} shows as "Not significant": the simulator cannot tell ${plural ? 'them' : 'it'} from zero.`,
+  weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
+  dpsPerPointColumn: 'DPS per point',
+  unitLine: (stat: string, dps: string): string => `1 point of ${stat} = ${dps} DPS at level 60`,
+  notSignificant: 'Not significant',
+  levelingNewTitle: 'More points here than the range before',
+  levelingLegend: 'Outlined: points added in this level range.',
+  levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),
+  levelRangePoints: (points: number, band: number): string =>
+    band === 60 ? `${points} points` : `${points} to ${points + 9} points`,
+  railFoldLabel: 'Rotation and stats',
+  tocBarLabel: 'On this page',
+  tocBarHint: 'Jump to a section',
+  alliancePicksHeading: 'Alliance',
+  hordePicksHeading: 'Horde',
+  factionGroup: 'Faction',
+  withoutFlask: 'Without a flask',
+  replacesBothElixirs: 'replaces both elixirs',
+  alsoUsed: 'Food, oil and potions',
+  recommendedRacesLine: (name: string, faction: string, article: string, racials: string): string =>
+    `${name} is ${article} ${faction} pick: ${racials}.`,
 } as const;

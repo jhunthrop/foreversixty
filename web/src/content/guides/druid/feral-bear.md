@@ -27,7 +27,25 @@ sources:
 
 ## Overview
 
-The Feral Combat tree serves two jobs, and this is the second: Bear Form tanking. The cat's DPS guide is [Feral Druid](/guides/druid/feral); the two share a talent tree and a trainer and little else. A bear has no shield, no Parry and no Block. It stays alive on a large health pool, Armor multiplied by its form and by Thick Hide, and Dodge, and it holds a boss with Maul, Swipe, Lacerate and Primal Bite. The beta only reaches level 30, so everything here about level 60 is this site's own simulation of the client's tables, not play.
+Feral Bear is the Bear Form tank: a large health pool, form-multiplied Armor and Dodge, and Maul, Swipe, Lacerate and Primal Bite to hold a boss.
+
+### Strengths
+
+- Bear Form multiplies Stamina and Armor, and Thick Hide adds more Armor
+- Primal Bite is a high-threat attack on its own cooldown
+- Lacerate stacks a bleed that Rend and Tear reads
+- Berserk lets Primal Bite strike three targets on no cooldown
+
+### Weaknesses
+
+- No shield, Parry or Block: Dodge is its only avoidance
+- Armor lowers physical hits by a share that shrinks as you stack it
+- Maul and Swipe spend Rage, so threat follows Rage income
+
+### In a raid
+
+- **Role:** Main tank in Bear Form; for cat DPS see [Feral Druid](/guides/druid/feral)
+- **Brings:** Leader of the Pack, a critical strike aura for the group
 
 ## Talents and builds
 
@@ -61,27 +79,19 @@ Berserk on its cooldown adds threat. Left out on purpose: Demoralizing Roar, bec
 
 ## Stat priority
 
-The table above is this level range's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
+A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
 Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and a bear's Stamina is multiplied in Bear Form. Armor is multiplied by the form and lowers every physical hit by a fraction that shrinks as you stack it. Dodge is the only avoidance a bear has, because it cannot Parry or Block, and Defense Skill both lowers the chance to be critically hit and feeds Thick Hide. Agility is Dodge, Armor and crit at once. Strength and Attack Power are threat. Expertise lowers the boss's chance to dodge you, which is threat, not survival, and no item carries it yet.
 
-A stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this level range's sample size, to tell its value apart from zero.
-
-## Gear
-
-Follow the table above: health, then Armor and Dodge, with the threat stats behind them. This site's ranker builds the level 60 set for you in the BiS tab, scored on the same tank fight. Specific raid picks cannot be named honestly yet: nothing raids until 9 December, and this build's raid loot tables are only partly itemized for Forever.
+## Best in slot
 
 ## Enchants and consumables
 
-Target stamina and the defensive stats on enchants where they are available. For consumables the BiS tab's Raid-ready set shows the bear's: armor and health elixirs, stamina food and drink, strength and attack power for threat, and a Stoneshield potion.
-
 ## Races
-
-Night Elf and Tauren, as for the cat. **Night Elf** has Quickness, a passive Dodge bonus that a bear, with Dodge as its only avoidance, values more than the cat does. **Tauren** has Endurance, more health, which is a straight gain in effective health for a tank, and War Stomp for a pack of adds.
 
 ## Professions
 
-Skinning and Leatherworking, as for the cat: leather is the armor a druid wears, and Leatherworking turns Skinning's leather into it. This is general Classic convention rather than something confirmed for Forever.
+Skinning and Leatherworking, as for the cat: leather is the armor a druid wears, and Leatherworking turns Skinning's leather into it.
 
 ## Leveling
 
