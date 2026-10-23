@@ -13,11 +13,11 @@ export const TANK_ROLE: BisRole = 'tank';
 export type SlotScoreUnit = 'dps' | 'hps' | 'tank_score';
 
 const NUMBER_LOCALE = 'en-US';
-const WHOLE_NUMBER = new Intl.NumberFormat(NUMBER_LOCALE, { maximumFractionDigits: 0 });
-const ONE_DECIMAL = new Intl.NumberFormat(NUMBER_LOCALE, {
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
+// Built on first use, not when the module loads: a NumberFormat loads locale data, tens of
+// milliseconds under a throttled CPU, and the planner's island imports this file without ever
+// formatting a tank figure.
+let wholeNumber: Intl.NumberFormat | undefined;
+let oneDecimal: Intl.NumberFormat | undefined;
 const PERCENT_DECIMALS = 1;
 const PERCENT_FACTOR = 100;
 /** Under this share a non-zero chance of death is written "<0.1%" rather than "0.0%". */
@@ -73,11 +73,16 @@ export function scoreUnitWord(unit: SlotScoreUnit): string {
 }
 
 export function formatWholeNumber(value: number): string {
-  return WHOLE_NUMBER.format(value);
+  wholeNumber ??= new Intl.NumberFormat(NUMBER_LOCALE, { maximumFractionDigits: 0 });
+  return wholeNumber.format(value);
 }
 
 export function formatOneDecimal(value: number): string {
-  return ONE_DECIMAL.format(value);
+  oneDecimal ??= new Intl.NumberFormat(NUMBER_LOCALE, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  return oneDecimal.format(value);
 }
 
 /** 0..1 as "12.3%"; a non-zero chance under the resolution reads "<0.1%". */

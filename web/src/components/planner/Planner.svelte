@@ -43,6 +43,7 @@
   import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
+  import { yieldToMain } from '../../lib/planner/yield';
   import { SECONDARY_BUTTON_FIXED, treeRowColumnsClass } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import { plannerSearchFor } from '../../lib/planner/url';
@@ -571,6 +572,11 @@
   );
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
+  /** The rail beside the trees (compare, point order, toolbar, import) mounts a task after the
+   *  trees, not with them: together they are one task longer than the page's blocking-time budget
+   *  under 4x CPU throttling. The rail sits below the trees on a phone and beside them from xl,
+   *  inside the reserve box, so nothing moves when it arrives. */
+  let railReady = $state(false);
   let attempt = $state(0);
   // Reset asks in the toolbar rather than through window.confirm: a browser dialog cannot be
   // styled, cannot say what it is about to clear, and reads badly on phone.
@@ -631,6 +637,7 @@
       decoded !== null && decoded.ok && !codeApplied && decoded.build.classSlug === slug ? decoded : null;
 
     status = 'loading';
+    railReady = false;
     try {
       // Fired together, not one after the other: `loadTalents` depends on nothing
       // `loadReference` produces (both only need `store.treeVersion`/`slug`, already known),
@@ -648,6 +655,11 @@
       const reference = await loadReference(store.treeVersion);
       if (stale()) return;
       store.setReference(reference);
+      // Each step of the boot below ends the task it ran in (lib/planner/yield.ts): the reference
+      // landing, the trees landing and the page rendering them are each their own task, so none
+      // of them blocks the main thread past the page's blocking-time budget under throttling.
+      await yieldToMain();
+      if (stale()) return;
 
       let talents: TalentFile;
       try {
@@ -673,6 +685,8 @@
       }
       if (stale()) return;
       store.setTalents(talents);
+      await yieldToMain();
+      if (stale()) return;
 
       if (codeForThisClass !== null && store.talentIndex !== null) {
         codeApplied = true;
@@ -759,6 +773,9 @@
       // with it (the simulator keeps its own gear step). `status` flips the moment the
       // trees have something to show; nothing else is fetched after it.
       status = 'ready';
+      await yieldToMain();
+      if (stale()) return;
+      railReady = true;
     } catch {
       // A stale run's failure is not this class's failure: the run that replaced it owns the
       // status, and reporting this one would put a working planner behind a Retry button.
@@ -1157,21 +1174,22 @@
           <div
             class="contents lg:grid lg:grid-cols-2 lg:gap-8 xl:col-span-4 xl:contents xl:flex xl:flex-col xl:gap-8"
           >
-            <!-- Rebuild spec §4.D/§6: the new rail panel, answering review findings 1 and
+            {#if railReady}
+              <!-- Rebuild spec §4.D/§6: the new rail panel, answering review findings 1 and
                  3. `order-first` is the phone placement fix (§6: full width, above the tree
                  row, never collapsed); it stays first at every wider width too (its own DOM
                  position in this rail already puts it there, so no `order-*` override is
                  ever needed for it specifically). -->
-            <BandCompare
-              {store}
-              characterLevel={bandCharacter?.level ?? bandCharacter?.build?.level ?? null}
-              specOverride={specParam ?? undefined}
-              onbanddiff={(diff) => (bandDiff = diff)}
-              onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}
-              class="order-first"
-            />
+              <BandCompare
+                {store}
+                characterLevel={bandCharacter?.level ?? bandCharacter?.build?.level ?? null}
+                specOverride={specParam ?? undefined}
+                onbanddiff={(diff) => (bandDiff = diff)}
+                onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}
+                class="order-first"
+              />
 
-            <!-- Fix round 2 (ux-designer review finding 1): the desktop rail reads
+              <!-- Fix round 2 (ux-designer review finding 1): the desktop rail reads
                  BandCompare -> Point order -> Sim this build -> Share -> Import, per the
                  mock and §4.F -- a different order than phone's own (BandCompare -> Point
                  order -> Import -> Sim -> Share), so desktop needs its own explicit
@@ -1181,49 +1199,50 @@
                  ~215px gap the review measured). Point order moves first in markup order
                  too (nearest its own `order-1`), right after BandCompare, so the two visual
                  orders agree as closely as the mobile/desktop split allows. -->
-            <OrderStrip {store} class="order-1 lg:order-1" />
+              <OrderStrip {store} class="order-1 lg:order-1" />
 
-            <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeader`) and
+              <!-- "Sim this build" leaves the facts rail (now inside `PlannerHeader`) and
                  lives here instead -- its own outlined gold secondary button, directly
                  under Point order on desktop, above the Share panel. `lg:col-span-2`: the
                  tablet rail's own second row, spanning both columns (fix round 6) --
                  harmless at xl, where this wrapper is `contents` again and `col-span` has
                  no grid to act inside. -->
-            {#if simLinkShown && railSimLink}
-              <a
-                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2 lg:col-span-2"
-                href={simHref}
-                data-testid="planner-sim-link"
+              {#if simLinkShown && railSimLink}
+                <a
+                  class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-gold order-3 w-full justify-center px-4 lg:order-2 lg:col-span-2"
+                  href={simHref}
+                  data-testid="planner-sim-link"
+                >
+                  {simCopy.simThisBuild}
+                </a>
+              {/if}
+
+              <div
+                class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-3"
+                data-testid="planner-toolbar"
               >
-                {simCopy.simThisBuild}
-              </a>
-            {/if}
+                <PlannerToolbar {store} {live} bind:confirmingReset />
+              </div>
 
-            <div
-              class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:px-0 lg:order-3"
-              data-testid="planner-toolbar"
-            >
-              <PlannerToolbar {store} {live} bind:confirmingReset />
-            </div>
-
-            {#if !store.readOnly}
-              <!-- A read-only build (opened from a share link) has nowhere for an imported
+              {#if !store.readOnly}
+                <!-- A read-only build (opened from a share link) has nowhere for an imported
                  build to go until it is forked, so the box only mounts once the toolbar
                  above already shows Reset and Share rather than "Fork it to spend points
                  of your own." -->
-              <ImportBox
-                talents={store.talentIndex}
-                activeBuild={activeBuild.build}
-                onimport={(build, pastedCode) => {
-                  store.loadImported(build);
-                  loadedCharacter = null;
-                  buildOrigin = null;
-                  void recordPastedExport(pastedCode);
-                }}
-                onwrongclass={standalone ? switchClassForImport : undefined}
-                phone={collapsesOnPhone}
-                class="order-2 mx-[18px] md:mx-0 lg:order-4"
-              />
+                <ImportBox
+                  talents={store.talentIndex}
+                  activeBuild={activeBuild.build}
+                  onimport={(build, pastedCode) => {
+                    store.loadImported(build);
+                    loadedCharacter = null;
+                    buildOrigin = null;
+                    void recordPastedExport(pastedCode);
+                  }}
+                  onwrongclass={standalone ? switchClassForImport : undefined}
+                  phone={collapsesOnPhone}
+                  class="order-2 mx-[18px] md:mx-0 lg:order-4"
+                />
+              {/if}
             {/if}
           </div>
         </div>
