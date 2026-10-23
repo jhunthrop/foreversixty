@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-23T00:06:54Z",
+  "generated_at": "2026-10-23T13:17:25Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -773,8 +773,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.352258536,
-      "verify_run_seconds": 2.306608169,
+      "weights_run_seconds": 1.816811735,
+      "verify_run_seconds": 2.968975808,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1632,8 +1632,8 @@
         "main_hand: Hammerbone",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.352258536,
-      "verify_run_seconds": 2.277986328,
+      "weights_run_seconds": 1.816811735,
+      "verify_run_seconds": 2.917193909,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2487,8 +2487,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 1.557144198,
-      "verify_run_seconds": 1.521045262,
+      "weights_run_seconds": 2.147006992,
+      "verify_run_seconds": 1.972107598,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3340,8 +3340,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 1.557144198,
-      "verify_run_seconds": 1.550761269,
+      "weights_run_seconds": 2.147006992,
+      "verify_run_seconds": 1.992544036,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4202,8 +4202,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.774977735,
-      "verify_run_seconds": 1.674997742,
+      "weights_run_seconds": 2.4698837080000002,
+      "verify_run_seconds": 2.249060043,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5063,8 +5063,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.774977735,
-      "verify_run_seconds": 1.683310565,
+      "weights_run_seconds": 2.4698837080000002,
+      "verify_run_seconds": 2.266094959,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5943,8 +5943,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.888467365,
-      "verify_run_seconds": 2.141466011,
+      "weights_run_seconds": 2.6165035469999998,
+      "verify_run_seconds": 2.837389736,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6844,8 +6844,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.888467365,
-      "verify_run_seconds": 2.155134998,
+      "weights_run_seconds": 2.6165035469999998,
+      "verify_run_seconds": 2.850337627,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7748,8 +7748,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.915183125,
-      "verify_run_seconds": 6.341889642,
+      "weights_run_seconds": 2.598074255,
+      "verify_run_seconds": 8.328776163,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8660,8 +8660,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.915183125,
-      "verify_run_seconds": 6.213252222,
+      "weights_run_seconds": 2.598074255,
+      "verify_run_seconds": 8.144029516,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9565,8 +9565,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.70717836,
-      "verify_run_seconds": 6.035824681,
+      "weights_run_seconds": 2.251746443,
+      "verify_run_seconds": 7.820949759,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10489,8 +10489,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.70717836,
-      "verify_run_seconds": 7.28101251,
+      "weights_run_seconds": 2.251746443,
+      "verify_run_seconds": 9.516078797,
       "coverage": {
         "back": {
           "eligible": 390,

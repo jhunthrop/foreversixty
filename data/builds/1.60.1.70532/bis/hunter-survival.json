@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T23:17:40Z",
+  "generated_at": "2026-10-23T12:11:38Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -745,8 +745,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.658936187,
-      "verify_run_seconds": 3.714865369,
+      "weights_run_seconds": 3.549072572,
+      "verify_run_seconds": 4.929534177,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1584,8 +1584,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.658936187,
-      "verify_run_seconds": 3.511011528,
+      "weights_run_seconds": 3.549072572,
+      "verify_run_seconds": 4.735653668,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2474,8 +2474,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.891599718,
-      "verify_run_seconds": 2.128859064,
+      "weights_run_seconds": 3.863818761,
+      "verify_run_seconds": 2.8596795569999998,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3356,8 +3356,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.891599718,
-      "verify_run_seconds": 2.050658034,
+      "weights_run_seconds": 3.863818761,
+      "verify_run_seconds": 2.737216645,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4246,8 +4246,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.951462962,
-      "verify_run_seconds": 2.497771986,
+      "weights_run_seconds": 4.03623016,
+      "verify_run_seconds": 3.374944143,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5119,8 +5119,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.951462962,
-      "verify_run_seconds": 2.462203241,
+      "weights_run_seconds": 4.03623016,
+      "verify_run_seconds": 3.284088787,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6048,8 +6048,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.979402726,
-      "verify_run_seconds": 5.095727557,
+      "weights_run_seconds": 3.994196114,
+      "verify_run_seconds": 6.845587413,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6968,8 +6968,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.979402726,
-      "verify_run_seconds": 2.729751041,
+      "weights_run_seconds": 3.994196114,
+      "verify_run_seconds": 3.683469445,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7931,8 +7931,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.904574941,
-      "verify_run_seconds": 9.156301828,
+      "weights_run_seconds": 3.93609175,
+      "verify_run_seconds": 12.073301747,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8895,8 +8895,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.904574941,
-      "verify_run_seconds": 9.29229493,
+      "weights_run_seconds": 3.93609175,
+      "verify_run_seconds": 12.166189077,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9853,8 +9853,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.529402509,
-      "verify_run_seconds": 6.523657688,
+      "weights_run_seconds": 3.378028958,
+      "verify_run_seconds": 8.326646191,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10810,8 +10810,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.529402509,
-      "verify_run_seconds": 6.537228054,
+      "weights_run_seconds": 3.378028958,
+      "verify_run_seconds": 8.491141489,
       "coverage": {
         "back": {
           "eligible": 390,

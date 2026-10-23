@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T23:53:36Z",
+  "generated_at": "2026-10-23T12:59:47Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -686,8 +686,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.8155502019999998,
-      "verify_run_seconds": 1.102578566,
+      "weights_run_seconds": 2.3997712780000002,
+      "verify_run_seconds": 1.473816229,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1471,8 +1471,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.8155502019999998,
-      "verify_run_seconds": 1.072222651,
+      "weights_run_seconds": 2.3997712780000002,
+      "verify_run_seconds": 1.3938857470000001,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2288,8 +2288,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.058440883,
-      "verify_run_seconds": 1.148629339,
+      "weights_run_seconds": 2.804645435,
+      "verify_run_seconds": 1.451089911,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3109,8 +3109,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.058440883,
-      "verify_run_seconds": 1.077926222,
+      "weights_run_seconds": 2.804645435,
+      "verify_run_seconds": 1.442636492,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3977,8 +3977,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 2.47549696,
-      "verify_run_seconds": 1.587225493,
+      "weights_run_seconds": 3.374628839,
+      "verify_run_seconds": 2.027473332,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4829,8 +4829,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Thrash's Trash"
       ],
-      "weights_run_seconds": 2.47549696,
-      "verify_run_seconds": 1.585173906,
+      "weights_run_seconds": 3.374628839,
+      "verify_run_seconds": 2.090519193,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5680,8 +5680,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.4321923549999998,
-      "verify_run_seconds": 1.772646688,
+      "weights_run_seconds": 3.305987753,
+      "verify_run_seconds": 2.358826957,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6527,8 +6527,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.4321923549999998,
-      "verify_run_seconds": 1.7405491560000002,
+      "weights_run_seconds": 3.305987753,
+      "verify_run_seconds": 2.259445695,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7481,8 +7481,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 2.387002603,
-      "verify_run_seconds": 5.5587758350000005,
+      "weights_run_seconds": 3.191051639,
+      "verify_run_seconds": 7.345818372,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8443,8 +8443,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 2.387002603,
-      "verify_run_seconds": 5.626547336,
+      "weights_run_seconds": 3.191051639,
+      "verify_run_seconds": 7.320139188,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9410,8 +9410,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.32331068,
-      "verify_run_seconds": 3.70043125,
+      "weights_run_seconds": 1.753547358,
+      "verify_run_seconds": 4.718819214,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10380,8 +10380,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.32331068,
-      "verify_run_seconds": 3.708726286,
+      "weights_run_seconds": 1.753547358,
+      "verify_run_seconds": 4.815779726,
       "coverage": {
         "back": {
           "eligible": 391,
