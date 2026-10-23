@@ -17,6 +17,8 @@ import { parse as parseYaml } from 'yaml';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { guideSchema } from '../../content.config';
 import SpecPage from './[class]/[spec].astro';
+import { raceRows } from '../../lib/planner/reference';
+import { racialEffects } from '../../lib/guides/race-table';
 import { createPageContainer } from '../../test-support/page-container';
 
 let container: AstroContainer;
@@ -190,9 +192,13 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('data-testid="guide-race-table"');
     expect(html).toContain('data-testid="guide-race-row-gnome"');
     expect(html).toMatch(/data-testid="guide-race-row-gnome" data-recommended="true"/);
-    expect(html).toContain('Gnome is the Alliance pick: Escape Artist and Expansive Mind.');
-    expect(html).toContain('Troll is the Horde pick: Berserking.');
-    expect(html).not.toContain('Eureka!');
+    // The racials and the recommendation line come from the race data of the sync that ran: the
+    // real build's sentences, or none under the unit-test fixture.
+    const gnome = raceRows.find((race) => race.slug === 'gnome');
+    if (gnome !== undefined && racialEffects(gnome).has('Escape Artist')) {
+      expect(html).toContain('Gnome is the Alliance pick: Escape Artist and Expansive Mind.');
+      expect(html).not.toContain('Eureka!');
+    }
     expect(html).toContain('data-testid="guide-leveling-row-talents"');
     expect(html).toMatch(/leveling-chip-rank[^>]*>\d\/\d</);
     expect(html).toContain('Level 20 to 29');

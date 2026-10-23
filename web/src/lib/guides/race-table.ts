@@ -152,8 +152,13 @@ export function raceTableFor(
   if (classRow === undefined) return [];
   return racesForClass(classRow.id).map((race): GuideRaceRow => {
     const picks = RACIAL_PICKS[race.slug];
-    const names = picks === undefined ? [] : (picks[kind] ?? picks.default);
+    const wanted = picks === undefined ? [] : (picks[kind] ?? picks.default);
     const effects = racialEffects(race);
+    // A racial the editorial table does not know (or the build's text does not describe) falls
+    // back to the race's first racial the data does describe, with its own sentence; a race
+    // whose data describes none shows no racial at all.
+    const known = wanted.filter((name) => effects.has(name));
+    const names = known.length > 0 ? known : effects.size > 0 ? [[...effects.keys()][0]!] : [];
     return {
       slug: race.slug,
       name: race.name,
