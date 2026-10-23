@@ -19,6 +19,8 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { SPECS } from '../../lib/sim/specs';
+  import { gridSize } from '../../lib/planner/grid';
+  import { yieldToMain } from '../../lib/planner/yield';
   import TreeGrid from './TreeGrid.svelte';
 
   let {
@@ -41,6 +43,26 @@
      *  tree's talents carry. */
     bandDiff?: BandDiffView | null;
   } = $props();
+
+  // Which trees have drawn their grids after the panel. The open tab's grid draws with the panel;
+  // each other tree waits for its own task, because the three grids together are one task longer
+  // than the page's blocking-time budget under 4x CPU throttling. A tab opened before its turn draws
+  // at once (the `activeTree === i` half of the condition below), so a switch never waits.
+  let drawn = $state<number[]>([]);
+  $effect(() => {
+    const count = talentIndex.trees.length;
+    let cancelled = false;
+    void (async () => {
+      for (let i = 0; i < count; i += 1) {
+        await yieldToMain();
+        if (cancelled) return;
+        drawn = [...drawn, i];
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  });
 
   /** The spec's own talent-tab icon for one tree, by its position in `talentIndex.trees`
    *  (that position IS `data/curated/specs.json`'s own `tree_index`, the same inference
@@ -174,7 +196,35 @@
           {store.split[i] ?? 0}
         </span>
       </header>
-      <TreeGrid {store} {tree} {bandDiff} />
+      {#if drawn.includes(i) || activeTree === i}
+        <TreeGrid {store} {tree} {bandDiff} />
+      {:else}
+        <!-- The grid's own box, empty: the trees draw one task at a time after the first (see
+             `drawn`), and nothing below this panel moves when its cells arrive. -->
+        {@const size = gridSize(tree)}
+        <div class="flex justify-center" aria-hidden="true">
+          <div class="tree-reserve" style="--tree-columns: {size.columns}; --tree-tiers: {size.tiers};"></div>
+        </div>
+      {/if}
     </div>
   {/each}
 </div>
+
+<style>
+  /* TreeGrid's box: a cell is h-11/w-11, 48px from md and 56px from lg, with an 8px gap. */
+  .tree-reserve {
+    --cell: 44px;
+    width: calc(var(--tree-columns) * var(--cell) + (var(--tree-columns) - 1) * 8px);
+    height: calc(var(--tree-tiers) * var(--cell) + (var(--tree-tiers) - 1) * 8px);
+  }
+  @media (min-width: 768px) {
+    .tree-reserve {
+      --cell: 48px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .tree-reserve {
+      --cell: 56px;
+    }
+  }
+</style>

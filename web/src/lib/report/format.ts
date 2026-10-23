@@ -81,20 +81,26 @@ export function formatDuration(ms: number): string {
  * viewer's zone: a raid leader comparing a log against a teammate's screenshot needs the
  * same clock on both, and the log file itself is the shared reference.
  */
-// Built once: constructing a DateTimeFormat loads locale data, several milliseconds on a
-// throttled phone, and the report header formats a date inside the island's mount task.
-const DAY_UTC = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
+// Built once, on first use: constructing a DateTimeFormat loads locale data, tens of
+// milliseconds on a throttled phone. At module level it ran in the evaluation of every island
+// that imports this file for `classColorVar` alone (the planner's header card), inside the
+// mount task; here only a page that formats a date pays for it.
+let dayUtc: Intl.DateTimeFormat | undefined;
+function dayFormat(): Intl.DateTimeFormat {
+  dayUtc ??= new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  return dayUtc;
+}
 
 /** The calendar day of an instant, in UTC like formatClock: "26 Sep 2026". */
 export function formatDate(iso: string): string {
   const at = new Date(iso);
   if (Number.isNaN(at.getTime())) return '';
-  return DAY_UTC.format(at);
+  return dayFormat().format(at);
 }
 
 export function formatClock(iso: string): string {
@@ -104,7 +110,11 @@ export function formatClock(iso: string): string {
   return `${pad(at.getUTCHours())}:${pad(at.getUTCMinutes())}:${pad(at.getUTCSeconds())}`;
 }
 
-const GROUPED = new Intl.NumberFormat('en-US');
+let grouped: Intl.NumberFormat | undefined;
+function groupedFormat(): Intl.NumberFormat {
+  grouped ??= new Intl.NumberFormat('en-US');
+  return grouped;
+}
 
 export function formatAmount(n: number): string {
   const safe = Number.isFinite(n) ? n : 0;
@@ -114,7 +124,7 @@ export function formatAmount(n: number): string {
   // From 100k the grouped form is seven characters against a neighbour's "1.09M", and a
   // column mixing the two reads the longer string as the bigger number.
   if (abs >= 100_000) return `${(safe / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-  return GROUPED.format(Math.round(safe));
+  return groupedFormat().format(Math.round(safe));
 }
 
 /**
