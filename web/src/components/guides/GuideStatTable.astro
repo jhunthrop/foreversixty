@@ -38,6 +38,9 @@ const rows =
 const anchor = rows.find((row) => row.value !== undefined && !row.perPercent)?.label;
 const hitCap = guideHitCapLine(band60?.hitToCap, hitTalent);
 const expertiseCap = expertiseCapLine(band60?.expertiseToCap);
+const unitRow = rows.find(
+  (row) => row.value !== undefined && !row.perPercent && row.dpsPerPoint !== undefined,
+);
 const insignificant = rows.filter((row) => row.value === undefined).map((row) => row.label);
 
 function barWidth(value: number | undefined, perPercent: boolean | undefined): number {
@@ -98,6 +101,11 @@ function dpsText(value: number | undefined): string {
         </tbody>
       </table>
     </GuideTableBox>
+    {unitRow !== undefined && (
+      <p class="stat-note" data-testid="guide-stat-table-unit">
+        {guidesCopy.unitLine(unitRow.label.toLowerCase(), dpsText(unitRow.dpsPerPoint))}
+      </p>
+    )}
     {insignificant.length > 0 && (
       <p class="stat-note" data-testid="guide-stat-table-not-significant">
         {guidesCopy.notSignificantNote(insignificant.join(' and '), insignificant.length > 1)}

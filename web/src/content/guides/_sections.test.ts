@@ -112,6 +112,8 @@ describe('guide content structure', () => {
       /beta (?:only )?(?:caps|reaches|runs)/i,
       /the beta caps/i,
       /nightly pipeline/i,
+      /an engine that/i,
+      /gone from the tree/i,
       /never hand-entered/i,
       /talent search/i,
       /honest unknown/i,

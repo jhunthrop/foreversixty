@@ -29,12 +29,14 @@ const sentences = picks.map((pick) => {
 
 {rows.length > 0 && (
   <>
-    <GuideTableBox label="Races" testid="guide-race-table">
+    <GuideTableBox label="Races" testid="guide-race-table" fitPhone>
       <table>
         <thead>
           <tr>
             <th scope="col">{guidesCopy.raceColumn}</th>
-            <th scope="col">{guidesCopy.factionColumn}</th>
+            <th scope="col" class="race-faction-col">
+              {guidesCopy.factionColumn}
+            </th>
             <th scope="col">{guidesCopy.racialsColumn}</th>
           </tr>
         </thead>
@@ -46,8 +48,9 @@ const sentences = picks.map((pick) => {
                   <span style={`color:${factionColorVar(row.faction)}`}>{row.name}</span>
                   {row.recommended && <span class="race-tag">{guidesCopy.recommendedTag}</span>}
                 </span>
+                <span class="race-faction-inline">{factionName(row.faction)}</span>
               </th>
-              <td class="race-faction">{factionName(row.faction)}</td>
+              <td class="race-faction race-faction-col">{factionName(row.faction)}</td>
               <td class="race-effect">
                 {row.racials.length === 0
                   ? '—'
@@ -110,6 +113,31 @@ const sentences = picks.map((pick) => {
   }
   .race-effect {
     min-width: 240px;
+  }
+  .race-faction-inline {
+    display: none;
+  }
+  @media (max-width: 639px) {
+    .race-faction-col {
+      display: none;
+    }
+    .race-name {
+      white-space: normal;
+      vertical-align: top;
+    }
+    .race-name-line {
+      flex-wrap: wrap;
+    }
+    .race-faction-inline {
+      display: block;
+      margin-top: 2px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--color-nav);
+    }
+    .race-effect {
+      min-width: 0;
+    }
   }
   .race-picks {
     margin: 0 0 14px;

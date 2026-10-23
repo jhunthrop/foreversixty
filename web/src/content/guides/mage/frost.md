@@ -30,7 +30,7 @@ sources:
 
 ## Overview
 
-Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed, with Frost Nova and Ice Block for emergencies and Ice Lance for burst.
+Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed, with Frost Nova and Ice Block for emergencies and Ice Lance on a Fingers of Frost charge.
 
 ### Strengths
 
@@ -42,7 +42,7 @@ Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed
 ### Weaknesses
 
 - Less sustained output than Fire
-- No burst cooldown
+- No burst cooldown: Icy Veins is not in this client's trees
 - Shatter works on a boss only through Fingers of Frost
 
 ### In a raid
@@ -54,14 +54,13 @@ Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed
 
 - **Improved Frostbolt** — up to 0.5 seconds off Frostbolt's cast time at rank 5, the tree's most direct throughput gain.
 - **Ice Shards** — up to 100% more Frost critical strike damage at rank 5, the biggest single damage multiplier in the tree.
-- **Frost Channeling** — up to 15% off the mana cost of your Frost spells at rank 3, and 30% less threat from them. With Piercing Ice gone from the tree, it is where those three points went.
-- **Shatter** — up to 50% more critical strike chance against a frozen target at rank 3. A raid boss cannot be frozen by Frost Nova, so against a boss this talent only works through Fingers of Frost, below.
+- **Frost Channeling** — up to 15% off the mana cost of your Frost spells at rank 3, and 30% less threat from them.- **Shatter** — up to 50% more critical strike chance against a frozen target at rank 3. A raid boss cannot be frozen by Frost Nova, so against a boss this talent only works through Fingers of Frost, below.
 - **Fingers of Frost** — each Chill effect (Frostbolt, Frostfire Bolt, Cone of Cold, Improved Blizzard) has a 15% chance to grant a 15 second effect that treats your next 1 spell (2 at rank 2) as if the target were Frozen. That switches on Shatter's crit bonus and Ice Lance's frozen damage bonus against a target that Frost Nova cannot freeze. It needs Ice Lance, so that is a one-point cost.
 - **Winter's Chill** — a chance for Frost hits to stack a debuff that raises Ice Lance's and Frostbolt's crit chance against that target, up to 5 stacks at rank 5.
 
 ## Rotation and priority
 
-Frostbolt is the filler, with the wand coming out once mana runs low. When Fingers of Frost procs, cast **Ice Lance** while the effect is up: the held charge makes the target count as frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies, and each cast spends one charge. In the simulator the Ice Lance line gains roughly 3% over Frostbolt alone, beyond the run's error. Frostbolt's own Chill can roll the next charge, so keep casting while charges are held rather than waiting. Frostfire Bolt, which you can train from level 40, is not a Frost filler: swapping it in for Frostbolt measured roughly a third lower damage, because its direct hit is smaller and the Frost talents above scale Frostbolt, not it. Arcane Blast is no longer part of this rotation or this build: the client prices every cast at 15% of your base mana, and the earlier free-cast line rested on an engine that charged nothing for it. Frost Nova and the other freezes are not part of the boss rotation, since a boss cannot be frozen.
+Frostbolt is the filler, with the wand coming out once mana runs low. When Fingers of Frost procs, cast **Ice Lance** while the effect is up: the held charge makes the target count as frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies, and each cast spends one charge. In the simulator the Ice Lance line gains roughly 3% over Frostbolt alone, beyond the run's error. Frostbolt's own Chill can roll the next charge, so keep casting while charges are held rather than waiting. Frostfire Bolt, which you can train from level 40, is not a Frost filler: swapping it in for Frostbolt measured roughly a third lower damage, because its direct hit is smaller and the Frost talents above scale Frostbolt, not it. Frost Nova and the other freezes are not part of the boss rotation, since a boss cannot be frozen.
 
 ## Stat priority
 

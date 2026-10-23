@@ -235,6 +235,10 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
     expect(names).not.toContain('Blink');
   });
 
+  it('gives Evocation its icon from the spell icon data', () => {
+    expect(items.find((item) => item.name === 'Evocation')?.icon).toBe('spell_nature_purge');
+  });
+
   it('takes a lit talent’s icon from the talent file', () => {
     expect(items.find((item) => item.name === 'Cold Snap')?.icon).toBe('spell_frost_wizardmark');
   });

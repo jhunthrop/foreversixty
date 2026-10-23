@@ -35,6 +35,9 @@ interface Props {
   /** The spec guide: running text runs the full column width, the same as its tables and
    *  callouts, instead of the 68ch reading measure. */
   wideProse?: boolean;
+  /** The spec guides say what is simulated once, in the status note at the top, so the footer
+   *  confidence line ("Our inference from what has been said") is left off. */
+  hideConfidenceNote?: boolean;
 }
 const {
   title,
@@ -47,6 +50,7 @@ const {
   hideHeader = false,
   wide = false,
   wideProse = false,
+  hideConfidenceNote = false,
 } = Astro.props;
 // A page that fills the `aside` slot (the spec guides' table of contents) gets a wider main
 // with the article column and a sticky rail beside it at lg; below lg the rail is simply
@@ -93,7 +97,7 @@ const confidenceCopy: Record<Confidence, string> = {
       <div class:list={['prose-forever text-[16px] leading-[1.6]', wideProse && 'prose-wide']}>
         <slot />
       </div>
-      {confidencePlacement === 'footer' && (
+      {confidencePlacement === 'footer' && !hideConfidenceNote && (
         <p class="text-muted text-[13px]" data-testid="confidence-footer-note">
           {confidenceCopy[confidence]}
         </p>

@@ -328,6 +328,12 @@ def compute_spell_icons(
         for band in build_rotation(spec, curated_dir, spellranks, icon_of):
             for line in band.lines:
                 icons.setdefault(line.spell_id, line.icon)
+    # Spells a guide names that no rotation line does (the cooldown list: a trainer spell such as
+    # Evocation): `curated/extra-spell-icons.json` lists their ids so they get an icon too.
+    extra_path = curated_dir / "extra-spell-icons.json"
+    if extra_path.exists():
+        for spell_id in json.loads(extra_path.read_text(encoding="utf-8"))["spell_ids"]:
+            icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
     return dict(sorted(icons.items()))
 
 

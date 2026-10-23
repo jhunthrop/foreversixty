@@ -157,8 +157,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
                 <span class="text-muted guide-rail-stat-value">Not significant</span>
               ) : (
                 <span class="font-mono tabular guide-rail-stat-value">
-                  {row.value.toFixed(2)}
-                  {row.perPercent ? ' per 1%' : ''}
+                  {row.perPercent ? `${row.value.toFixed(1)} per 1% haste` : row.value.toFixed(2)}
                 </span>
               )}
             </div>

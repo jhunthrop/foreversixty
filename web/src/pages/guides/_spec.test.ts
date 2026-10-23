@@ -51,7 +51,8 @@ describe('/guides/warrior/fury', () => {
     expect(html).toContain('data-testid="guide-sim-build"');
     expect(html).toContain('data-testid="stat-priority-pills"');
     expect(html).toContain('data-testid="guide-race-pills"');
-    expect(html).toContain('data-testid="confidence-footer-note"');
+    expect(html).not.toContain('confidence-footer-note');
+    expect(html).not.toContain('Our inference');
     // The nine headings still appear, in order, exactly as SpecTableOfContents promises.
     const talentsIndex = html.indexOf('id="talents-and-builds"');
     const rotationIndex = html.indexOf('id="rotation-and-priority"');
@@ -130,8 +131,8 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       expect(html, name).toMatch(new RegExp(`data-testid="guide-rotation-cooldowns-\\d+"[\\s\\S]*?${name}`));
     }
     expect(html).toContain('8 min cooldown');
-    // No empty icon indent on a row that has no icon.
-    expect(html).not.toContain('rotation-icon-spacer');
+    // Evocation has its icon from the spell icon data, so every spell row shares the left edge.
+    expect(html).toMatch(/guide-rotation-cooldowns-\d+"[^>]*>(?:(?!<\/li>)[\s\S])*?spell_nature_purge/);
   });
 
   it('gives the stat block pills, a weights table and the hit line as its headline, in one order', async () => {
@@ -142,7 +143,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       /data-testid="guide-stat-table-hit-cap"[^>]*>Hit to cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear</,
     );
     expect(html).toContain('DPS per point');
+    expect(html).toMatch(/1 point of hit = \d\.\d\d DPS at level 60/);
     expect(html).toMatch(/\d+\.\d per 1% haste/);
+    expect(html).not.toMatch(/\d per 1%</);
     expect(html).toContain('Spell penetration shows as &quot;Not significant&quot;');
     expect(html).not.toContain('from school');
     const pills = [...html.matchAll(/data-testid="stat-pill-(\d+)"[\s\S]*?<span>([^<]+)<\/span>/g)].map(

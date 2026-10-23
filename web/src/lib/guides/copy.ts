@@ -90,6 +90,7 @@ export const guidesCopy = {
     `${labels} shows as "Not significant": the simulator cannot tell ${plural ? 'them' : 'it'} from zero.`,
   weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
   dpsPerPointColumn: 'DPS per point',
+  unitLine: (stat: string, dps: string): string => `1 point of ${stat} = ${dps} DPS at level 60`,
   notSignificant: 'Not significant',
   levelingNewTitle: 'More points here than the range before',
   levelingLegend: 'Outlined: points added in this level range.',
