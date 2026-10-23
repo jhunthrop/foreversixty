@@ -27,7 +27,25 @@ sources:
 
 ## Overview
 
-Elemental is Shaman's ranged spellcasting DPS spec, built on Lightning Bolt and Chain Lightning backed by Flame Shock and totem support, with Lava Burst adding a new high-damage nuke that hits harder when Flame Shock is already on the target. Forever's baseline cast-time cut to Lightning Bolt and Chain Lightning, before any talent points are spent, is a meaningful floor-raise for the spec's damage even before talents are considered. The beta caps at level 30, so how Elemental's damage compares to other casters at level 60, or performs in a raid, is a projection from the demo talent trees and 1.12 knowledge, not confirmed play.
+Elemental is Shaman's ranged spellcasting spec, dealing damage with Lightning Bolt, Chain Lightning, Flame Shock and Lava Burst, backed by fire totems.
+
+### Strengths
+
+- Forever's baseline cast-time cut to Lightning Bolt and Chain Lightning
+- Lava Burst hits harder when Flame Shock is already on the target
+- Chain Lightning hits every target for close to single-target Lightning Bolt damage
+- Searing Totem for one target and Magma Totem for several add steady damage
+
+### Weaknesses
+
+- Slower leveling than Enhancement, because its damage depends on cast times
+- Hard casts leave it idle while moving
+- Raid build spends points in Restoration to reach spell hit
+
+### In a raid
+
+- **Role:** Ranged spell damage
+- **Brings:** Party totems alongside its own damage; no raid-wide buff or debuff
 
 ## Talents and builds
 
@@ -39,19 +57,17 @@ Point allocation runs deep into Elemental (30 points: Convection, Concussion, El
 
 ## Rotation and priority
 
-The loop this site's simulator plays: against a single target, drop Searing Totem for the higher fire damage; against two or more targets, drop Magma Totem instead so everyone standing in it takes damage. Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage. Lightning Bolt fills the rest of the single-target rotation, on every free global. Lava Burst is the first line when you have the talent: it is cast on every cooldown, ahead of the totems and the cooldowns, with no Flame Shock condition. Flame Shock and Earth Shock are not part of the loop. Flame Shock costs more mana than the damage it adds: it did worse than leaving it out whether it was kept up all fight or only above 50, 70 or 90 percent mana, and it did not earn its keep even counting the 20 percent Lava Burst gains against a Flame-Shocked target, so Lava Burst is cast without the bonus. Chain Lightning on cooldown against a single target is also worse than plain Lightning Bolt casts, because it costs more than twice the mana for less damage per cast. With the talent, Lava Burst trades a Lightning Bolt for slightly more damage per second of casting at about the same damage per mana, which is the whole of its gain; against one target that is a fraction of a percent. Earth Shock as a mana dump sits behind Lightning Bolt and rarely gets a global. Mana Spring Totem goes down first: it lasts five minutes, returns 10 mana every 2 seconds at its top rank, and the rest of the loop is limited by mana long before a three-minute fight ends, so the 100 mana it costs comes back many times over; adding it was worth roughly 4% in our level-60 run, and starting it one global before the cooldowns was worth about 1.5% more. Fire Nova is a real spell in Forever (learned from level 12, instant, on a 10-second cooldown, and it needs a Fire totem standing), but it is not in the loop: it deals about a third of Lightning Bolt's damage per point of mana, and at no mana threshold we tried did adding it beat plain Lightning Bolt casts. We re-checked these numbers against the client's own spell data, and every one of them got smaller; the order of the loop did not change.
+The loop this site's simulator plays: against a single target, drop Searing Totem for the higher fire damage; against two or more targets, drop Magma Totem instead so everyone standing in it takes damage. Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage. Lightning Bolt fills the rest of the single-target rotation, on every free global. Lava Burst is the first line when you have the talent: it is cast on every cooldown, ahead of the totems and the cooldowns, with no Flame Shock condition.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Prioritize spell power and intellect first, then crit and hit, then spell haste, spell penetration, and Nature-specific power. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026. This section fills in once raid loot is itemized and the class is played past 30.
+Prioritize spell power and intellect first, then crit and hit, then spell haste, spell penetration, and Nature-specific power.
 
 ## Enchants and consumables
-
-Weapon enchants should target spell power; **Enchant Weapon - Spell Power** is a verified entry in this build's enchant data. For consumables, **Greater Arcane Elixir** (spell power and crit) is a verified option. A fuller consumable stack isn't something this site is naming until the class is played past level 30.
 
 ## Races
 
@@ -59,8 +75,8 @@ Elemental can be played by Orc and Troll on the Horde, Tauren on the Horde, Dwar
 
 ## Professions
 
-Community convention for caster Shaman favors **Enchanting** alongside **Tailoring** or a gathering profession for spell-power gear and enchant materials, though Shaman's totem and weapon-imbue kit doesn't lean as hard on any one profession as a pure caster class does. This is general Classic-era community practice, not confirmed for Forever.
+Community convention for caster Shaman favors **Enchanting** alongside **Tailoring** or a gathering profession for spell-power gear and enchant materials, though Shaman's totem and weapon-imbue kit doesn't lean as hard on any one profession as a pure caster class does.
 
 ## Leveling
 
-Enhancement is generally the stronger leveling spec for Shaman, since its melee durability and weapon-imbue burst clear trash faster than Elemental's cast-time-dependent damage. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Enhancement is generally the stronger leveling spec for Shaman, since its melee durability and weapon-imbue burst clear trash faster than Elemental's cast-time-dependent damage.

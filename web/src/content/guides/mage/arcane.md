@@ -30,11 +30,29 @@ sources:
 
 ## Overview
 
-Arcane is Mage's burst-window spec: it trades a flatter damage curve for cooldowns that spike hard, built around Arcane Power and instant-cast tools that let you dump damage in a short window rather than sustain it evenly. In a raid it's a single-target caster with strong burst on cooldown and less baseline sustained output than Fire once a target's debuffs are stacked. The beta only reaches level 30, so nothing here about level 60 talents, raiding, or best-in-slot gear has actually been played — it is a projection from the demo trees and 1.12 knowledge, not tested content.
+Arcane is the Mage burst spec: Arcane Power and Presence of Mind concentrate damage into short windows on the Arcane Blast loop.
+
+### Strengths
+
+- Arcane Power adds 30% spell damage for 15 seconds
+- Presence of Mind makes the next cast instant
+- Arcane Concentration gives free Clearcasting casts
+- Missile Barrage halves Arcane Missiles' channel and makes it free
+
+### Weaknesses
+
+- Less sustained damage than Fire once the target's debuffs are stacked
+- Arcane Power costs 30% more mana per cast
+- Each Arcane Blast stack raises the next Blast's mana cost by 175%
+
+### In a raid
+
+- **Role:** Single-target caster DPS with burst on cooldown
+- **Brings:** Arcane Intellect for the group; no raid-wide debuff
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. Verified against this build's talent data, the Arcane tree's key picks in roughly the order you'd take them are:
+Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31.
 
 - **Arcane Focus** — up to 5% additional hit chance with Arcane spells, worth taking early since hit is scarce while leveling.
 - **Arcane Concentration** — up to a 10% chance for a damage spell to grant Clearcasting, making your next cast free; a large mana saver over a long fight.
@@ -52,19 +70,19 @@ The other 20 points split 10 and 10. Fire keeps **Incineration** (3/3), **Improv
 
 ## Rotation and priority
 
-Use Arcane Power the instant it's off cooldown — it has no cast time, so there's never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it's up and spend the instant cast on whichever spell benefits most in the moment. This site's simulator has Arcane Blast, its stacking buff and Missile Barrage wired up, including the part of Arcane Blast's tooltip that matters most: it costs 15% of your base mana, and every stack of its buff raises the next Blast's cost by 175%. Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank (half the channel time, no mana cost) to cash in the proc. Otherwise the loop is two Arcane Blasts, then Frostbolt. Frostfire Bolt can fill the Frostbolt slot (it also rolls Missile Barrage's 20% chance) but measured about 1% lower, within a couple of percent of break-even, so Frostbolt stays. The second Blast is still affordable and brings the buff to two stacks; a third would cost several times a Frostbolt for the same damage, so Frostbolt takes the next global instead. It hits harder under the two-stack buff, it can proc Missile Barrage itself, and casting it ends the buff, which is exactly what you want: the next Blast starts a fresh, cheap pair. The search that settled this measured the two-Blast loop about 10% ahead of blasting without a stack limit, and well ahead of Arcane Missiles as the filler, which costs more mana per second of damage. If the build hasn't taken Arcane Blast yet, plain Arcane Missiles fills instead, the same way pre-Arcane-Blast Era Arcane played.
+Use Arcane Power the instant it's off cooldown — it has no cast time, so there's never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it's up and spend the instant cast on whichever spell benefits most in the moment. This site's simulator has Arcane Blast, its stacking buff and Missile Barrage wired up, including the part of Arcane Blast's tooltip that matters most: it costs 15% of your base mana, and every stack of its buff raises the next Blast's cost by 175%.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above. Specific slot-by-slot picks can't be named honestly yet: the beta caps at level 30, so no one has gear-checked Arcane past the early game, and raid loot doesn't exist yet either — nothing raids until 9 December, and even then this client's item table is missing most of the classic raid loot tables it's meant to carry (Onyxia's Lair's own list is currently empty, and Barrow Deeps and Hyjal Summit aren't mapped to items at all). This section will fill in with real picks once raid loot is itemized.
+Look for pieces that lead with spell power, then hit until capped, then crit, following the order above.
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above. **Enchant Weapon - Spell Power** (verified in this build's enchant data, +30 spell damage) is the standard weapon enchant for a caster. For flasks and elixirs, **Greater Arcane Elixir** and **Flask of Supreme Power** are both verified spell-damage consumables in this build's data; a weapon oil such as **Brilliant Wizard Oil** adds more of the same. Beyond naming those, keep it principle-level until raid-tier consumables are confirmed for Forever specifically.
+Target spell power and hit on enchants and consumables, matching the stat priority above.
 
 ## Races
 
@@ -74,8 +92,8 @@ For Alliance, **Gnome** is the strongest pick: Eureka! cuts the mana cost of you
 
 ## Professions
 
-Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them. This is general Classic-community convention rather than anything Forever-specific, so treat it as inferred until this site has profession data from the beta.
+Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them.
 
 ## Leveling
 
-Frost is the spec most players lean on for leveling, since Frostbolt's slow and Frost Nova's root make it safer to solo than Arcane's burst-focused kit. Arcane can still level fine, especially once Arcane Blast and Missile Barrage are actually castable, but that's inferred from 1.12 knowledge, not tested — the beta only runs to level 30, so nothing about the leveling experience above that has been played in Forever's actual client.
+Frost is the spec most players lean on for leveling, since Frostbolt's slow and Frost Nova's root make it safer to solo than Arcane's burst-focused kit. Arcane can still level fine, especially once Arcane Blast and Missile Barrage are actually castable.

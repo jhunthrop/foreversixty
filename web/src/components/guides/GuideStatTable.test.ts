@@ -8,7 +8,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
 import { bandEntry, loadBisFile } from '../../lib/bis/load';
 import { expertiseCapLine } from '../../lib/bis/expertise-cap';
-import { hitCapLine } from '../../lib/bis/hit-cap';
+import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { railStatRows } from '../../lib/guides/rail-stats';
 import GuideStatTable from './GuideStatTable.astro';
 
@@ -78,7 +78,7 @@ describe('GuideStatTable', () => {
     const file = loadBisFile('warrior-fury', BUILD);
     if (file === null) throw new Error('warrior-fury BiS file missing');
     const band = bandEntry(file, 60, 'alliance');
-    const expected = hitCapLine(band?.hit_to_cap);
+    const expected = guideHitCapLine(band?.hit_to_cap);
 
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {

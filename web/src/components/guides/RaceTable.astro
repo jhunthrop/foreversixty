@@ -1,0 +1,77 @@
+---
+// web/src/components/guides/RaceTable.astro
+// The Races table under the pills: one row per race the class can be, with its faction, the
+// racial that matters for this spec and what that racial does; the guide's recommended races
+// carry a tag. Rows come from lib/guides/race-table.ts.
+import { guidesCopy } from '../../lib/guides/copy';
+import { factionColorVar } from '../../lib/guides/race-pills';
+import type { GuideRaceRow } from '../../lib/guides/race-table';
+import GuideTableBox from './GuideTableBox.astro';
+
+interface Props {
+  rows: GuideRaceRow[];
+}
+const { rows } = Astro.props;
+---
+
+{rows.length > 0 && (
+  <GuideTableBox label="Races" testid="guide-race-table">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{guidesCopy.raceColumn}</th>
+          <th scope="col">{guidesCopy.factionColumn}</th>
+          <th scope="col">{guidesCopy.racialColumn}</th>
+          <th scope="col">{guidesCopy.racialDoesColumn}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr data-testid={`guide-race-row-${row.slug}`} data-recommended={row.recommended}>
+            <th scope="row" class="race-name">
+              <span class="race-name-line">
+                <span style={`color:${factionColorVar(row.faction)}`}>{row.name}</span>
+                {row.recommended && <span class="race-tag">{guidesCopy.recommendedTag}</span>}
+              </span>
+            </th>
+            <td class="text-muted race-faction">{row.faction === 'alliance' ? 'Alliance' : 'Horde'}</td>
+            <td class="text-strong race-racial">{row.racial ?? '—'}</td>
+            <td class="race-effect">{row.effect ?? ''}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </GuideTableBox>
+)}
+
+<style>
+  .race-name {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .race-name-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .race-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-deep);
+    border-radius: var(--radius-pill);
+    padding: 0 6px;
+  }
+  .race-effect {
+    min-width: 220px;
+  }
+  .race-faction,
+  .race-racial {
+    white-space: nowrap;
+  }
+</style>

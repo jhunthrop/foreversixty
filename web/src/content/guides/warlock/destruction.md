@@ -31,11 +31,29 @@ sources:
 
 ## Overview
 
-Destruction is Warlock's direct-damage spec: it keeps Immolate ticking on the target so Conflagrate has something to consume and Incinerate has something to boost, and it closes out low-health targets with Shadowburn. Compared to Affliction's set-and-forget DoTs, Destruction spends more globals on hard-hitting single casts and instants, trading some sustain for burst. The beta only reaches level 30, so nothing here about level 60 talents, raiding, or best-in-slot gear has actually been played — it is a projection from the demo trees and 1.12 knowledge, not tested content.
+Destruction is Warlock's direct-damage spec: it keeps Immolate on the target to fuel Conflagrate and Incinerate, and finishes with Shadowburn.
+
+### Strengths
+
+- Conflagrate and Incinerate both build on Immolate
+- Shadowburn closes out low-health targets
+- Hard-hitting casts and instants give high burst
+- Corruption adds cheap sustained damage under the direct casts
+
+### Weaknesses
+
+- Gives up sustain compared with Affliction
+- Expensive casts such as Incinerate and Soul Fire press its mana
+- Loses value on every cast if Immolate lapses
+
+### In a raid
+
+- **Role:** Ranged fire and shadow burst damage
+- **Brings:** A curse on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. Verified against this build's talent data, Destruction's key picks in roughly the order you'd take them are:
+Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31.
 
 - **Bane** — up to 0.5 seconds off Shadow Bolt, Immolate, and Incinerate cast time, and up to 2 seconds off Soul Fire, at rank 5.
 - **Ruin** — up to a 100% critical-strike-damage bonus at rank 5 on all Destruction spells, the tree's biggest single multiplier.
@@ -50,19 +68,19 @@ This build spends 34 points in Destruction to reach Incinerate at the bottom, wi
 
 ## Rotation and priority
 
-Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Open with Corruption and keep it up throughout: it's cheap sustained damage, and adding it was the single biggest gain the search found. Keep Bane of Doom running behind it, recast the moment it fires; it edged out Bane of Agony in our simulator, and on a fight shorter than a minute Agony is the curse to use. Immolate is the DoT this whole rotation is built around, since both Conflagrate and Incinerate depend on it being active; recast it when under 3 seconds remain so it never falls off. Conflagrate is only worth casting while Immolate is up, since it consumes the DoT for an instant burst of damage — cast it as soon as it's off cooldown with Immolate running. Shadowburn is no longer saved for targets below 20% health: cast it on cooldown whenever its reagent cost is acceptable, because the burst is worth more than waiting for the execute window. Incinerate is now live in this site's simulator and is the default filler for every other global once talented, dealing bonus damage while Immolate is active; for a build that hasn't taken the Incinerate talent, Shadow Bolt fills that role instead. Once mana falls under 40%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs tick, and Life Tap is only the backstop below about 10%. Together these changes were worth about +21% in our level-60 search run.
+Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Open with Corruption and keep it up throughout: it's cheap sustained damage, and adding it was the single biggest gain the search found. Keep Bane of Doom running behind it, recast the moment it fires; it edged out Bane of Agony in our simulator, and on a fight shorter than a minute Agony is the curse to use. Together these changes were worth about +21% in our level-60 search run.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. This comes from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above. Specific slot-by-slot picks can't be named honestly yet: the beta caps at level 30, so no one has gear-checked Destruction past the early game, and raid loot doesn't exist yet either — nothing raids until 9 December, and even then this client's item table is missing most of the classic raid loot tables it's meant to carry (Onyxia's Lair's own list is currently empty, and Barrow Deeps and Hyjal Summit aren't mapped to items at all). This section will fill in with real picks once raid loot is itemized.
+Look for pieces that lead with spell power, then hit until capped, then crit, following the order above.
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above. **Enchant Weapon - Spell Power** (verified in this build's enchant data, +30 spell damage) is the standard weapon enchant for a caster. Destruction splits its damage between Shadow (Shadow Bolt, Shadowburn) and Fire (Immolate, Conflagrate, Incinerate), so **Elixir of Fire Power**, verified in this build's data, is a reasonable school-specific pick given Immolate's constant uptime, while **Flask of Supreme Power** covers the general spell-damage slot on a raid night. Beyond naming those, keep it principle-level until raid-tier consumables are confirmed for Forever specifically.
+Target spell power and hit on enchants and consumables, matching the stat priority above.
 
 ## Races
 
@@ -72,8 +90,8 @@ For Alliance, **Gnome** is the strongest pick: Eureka!'s 50% mana-cost reduction
 
 ## Professions
 
-Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them. This is general Classic-community convention rather than anything Forever-specific, so treat it as inferred until this site has profession data from the beta.
+Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them.
 
 ## Leveling
 
-Affliction is generally the stronger leveling choice for Warlock; Destruction can level well too, since Shadowburn and Conflagrate give it solid burst against single targets, but it lacks Affliction's DoT-and-move safety against multiple enemies. That assessment is inferred from 1.12 knowledge, not tested — the beta only runs to level 30, so nothing about the leveling experience above that has been played in Forever's actual client.
+Affliction is generally the stronger leveling choice for Warlock; Destruction can level well too, since Shadowburn and Conflagrate give it solid burst against single targets, but it lacks Affliction's DoT-and-move safety against multiple enemies.

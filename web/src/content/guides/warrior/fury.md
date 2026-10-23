@@ -38,11 +38,27 @@ sources:
 
 ## Overview
 
-Fury is Forever's dual-wield DPS spec, built around Bloodthirst's frequent big hit and Whirlwind's multi-target filler rather than Arms's single hard-hitting finisher. In a raid or group it plays a similar single-target damage role to Arms but leans on faster, more consistent swings from two weapons instead of one heavy two-handed weapon, and it picks up more incidental area damage from Whirlwind hitting everything nearby. The beta only reaches level 30, so nothing below about level 60 play, raiding, or best-in-slot gear has actually been tested — it's a projection from the demo trees and 1.12 knowledge, not confirmed play.
+Fury is Forever's dual-wield warrior spec, built around Bloodthirst's frequent big hit and Whirlwind's multi-target hit.
+
+### Strengths
+
+- Bloodthirst lands a big hit every six seconds
+- Whirlwind hits everything nearby
+- Death Wish gives a burst window
+- Execute leads the rotation below 20% target health
+
+### Weaknesses
+
+- Rage limits every ability and needs Bloodrage to top up
+- Needs two good weapons, which doubles weapon gear needs
+- Puts no healing reduction on the target
+
+### In a raid
+
+- **Role:** Dual-wield melee damage
+- **Brings:** Battle Shout for the group; no debuff on the target
 
 ## Talents and builds
-
-Verified against this build's talent data, in roughly the order you'd take them:
 
 - **Cruelty** — up to 5% flat critical strike chance with melee attacks at max rank, a simple multiplier taken early.
 - **Unbridled Wrath**, taken to 5/5 — a 60% chance per melee hit to generate 1 extra Rage, the same with any weapon since the 1 October 2026 patch notes removed the two-handed bonus. It feeds the same Rage pool Bloodthirst and Whirlwind both draw from, and the level-60 search found it worth more than the defensive point it replaced.
@@ -60,19 +76,19 @@ This build reaching Bloodthirst spends 32 points in Fury, with 17 in Arms and 2 
 
 ## Rotation and priority
 
-This site's own Fury priority list opens the same way Arms does: top up Rage with Bloodrage below 80, since Rage limits the rest of the rotation. Death Wish is used on cooldown as the spec's burst window, and Battle Shout is kept active for the group buff. Below 20% target health, Execute comes first, ahead of Bloodthirst and Whirlwind (moving it up was worth about +1% in the raid-ready run and helps the bare character too). Otherwise Bloodthirst is the priority hit whenever its six-second cooldown is up, since it's the highest damage-per-Rage button in the kit; Whirlwind fills the gap whenever Bloodthirst isn't ready, hitting everything nearby rather than sitting idle. Leftover Rage goes into Heroic Strike, but only above 40 Rage, so it never starves Bloodthirst or Execute of what they need.
+This site's own Fury priority list opens the same way Arms does: top up Rage with Bloodrage below 80, since Rage limits the rest of the rotation. Death Wish is used on cooldown as the spec's burst window, and Battle Shout is kept active for the group buff. Below 20% target health, Execute comes first, ahead of Bloodthirst and Whirlwind (moving it up was worth about +1% in the raid-ready run and helps the bare character too). Leftover Rage goes into Heroic Strike, but only above 40 Rage, so it never starves Bloodthirst or Execute of what they need.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for attack power and strength first, then crit, then hit, following the order above. Because Fury dual-wields, both main-hand and off-hand weapon damage matter, unlike Arms's single two-handed weapon. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30, and this build's raid loot tables are incomplete until the first raid tier opens on 9 December 2026 and gets curated. This section fills in once raid loot is itemized.
+Look for attack power and strength first, then crit, then hit, following the order above. Because Fury dual-wields, both main-hand and off-hand weapon damage matter, unlike Arms's single two-handed weapon.
 
 ## Enchants and consumables
 
-Target strength and attack power on weapon and gear enchants, matching the stat priority above; because Fury carries two weapons, both need an enchant to get full value. **Enchant Weapon - Strength** and **Enchant Weapon - Crusader** (a proc-based strength and self-healing enchant) are both verified in this build's enchant data. For consumables, **Mighty Rage Potion** and **Elixir of Ogre Strength** are verified options in this build's consumable list. Beyond naming those, specific best-in-slot consumable stacking isn't something this site can confirm yet at level 30.
+Target strength and attack power on weapon and gear enchants, matching the stat priority above; because Fury carries two weapons, both need an enchant to get full value.
 
 ## Races
 
@@ -80,8 +96,8 @@ Fury can be played by every race the Warrior class allows: Human, Dwarf, Night E
 
 ## Professions
 
-Blacksmithing and Mining remain the standard Classic-era combination for a melee DPS Warrior: Blacksmithing's crafted weapons, armor, and socket additions have direct combat value, and Mining removes the need to buy ore. This is general Classic-community convention, not confirmed for Forever specifically.
+Blacksmithing and Mining remain the standard Classic-era combination for a melee DPS Warrior: Blacksmithing's crafted weapons, armor, and socket additions have direct combat value, and Mining removes the need to buy ore.
 
 ## Leveling
 
-Fury is generally considered the strongest leveling spec for Warrior of the three, since dual-wielding two fast weapons together with Bloodthirst clears trash quickly. That comparison is carried over from 1.12 knowledge rather than tested — the beta only reaches level 30, so nothing about leveling above that has actually been played in Forever's client.
+Fury is generally considered the strongest leveling spec for Warrior of the three, since dual-wielding two fast weapons together with Bloodthirst clears trash quickly.

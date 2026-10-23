@@ -30,11 +30,29 @@ sources:
 
 ## Overview
 
-Affliction is Warlock's damage-over-time spec: it layers multiple DoTs onto a target and lets them run, spending Life Tap to keep casting once mana runs low rather than worrying about health, since the drain spells and DoTs keep the Warlock topped up. In a raid it's a low-maintenance, high-uptime caster that keeps producing damage even during movement, once its DoTs are applied. The beta only reaches level 30, so nothing here about level 60 talents, raiding, or best-in-slot gear has actually been played — it is a projection from the demo trees and 1.12 knowledge, not tested content.
+Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a target and keeps casting with Life Tap and drain spells.
+
+### Strengths
+
+- High DoT uptime with little upkeep once the DoTs are applied
+- Keeps dealing damage while moving
+- Life Tap and drain spells keep mana and health topped up
+- Corruption is the cheapest DoT per point of damage
+
+### Weaknesses
+
+- Life Tap spends health to fund mana
+- Damage ramps up slowly, since DoTs must be applied first
+- Less burst than Destruction
+
+### In a raid
+
+- **Role:** Ranged shadow damage over time
+- **Brings:** A curse on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31; separately, Curses and Banes now run as independent categories so a Bane and a Curse can be active on the same target together. Verified against this build's talent data, Affliction's key picks in roughly the order you'd take them are:
+Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31; separately, Curses and Banes now run as independent categories so a Bane and a Curse can be active on the same target together.
 
 - **Suppression** — up to 5% more hit chance and 20% less threat at rank 5, both scarce and valuable for a spec that casts constantly.
 - **Improved Corruption** — cuts Corruption's cast time by up to 2 seconds and adds up to 10% more damage at rank 5.
@@ -52,19 +70,19 @@ What the build deliberately keeps is everything the simulator cannot see: Soul H
 
 ## Rotation and priority
 
-Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Doom goes up right behind it as your one curse: it does all of its damage in a single hit when its minute is up, so recast it the moment it fires. In our simulator it beat Bane of Agony by a small margin and Curse of the Elements by a wide one, since a lone caster's own damage gains less from Elements than Doom or Agony deal themselves; on a fight shorter than a minute Doom never lands, so use Agony there. Wrack is live in this site's simulator: an instant, no-cooldown DoT that also stacks a 10% Shadow-damage-taken vulnerability on the target, so recast it in its last second to keep the vulnerability from ever dropping. Immolate is the fourth DoT: the search found that a running Immolate out-damages the Shadow Bolt global it costs, so it joins the upkeep order ahead of the filler, and that recasting it when under 3 seconds remain, rather than after it lapses, measured a little better. Once all four DoTs are running, spend every remaining global on Shadow Bolt. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs keep ticking, and Life Tap is only the backstop below about 10%. Together these changes were worth about +6% in our level-60 search run.
+Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Doom goes up right behind it as your one curse: it does all of its damage in a single hit when its minute is up, so recast it the moment it fires.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above. Specific slot-by-slot picks can't be named honestly yet: the beta caps at level 30, so no one has gear-checked Affliction past the early game, and raid loot doesn't exist yet either — nothing raids until 9 December, and even then this client's item table is missing most of the classic raid loot tables it's meant to carry (Onyxia's Lair's own list is currently empty, and Barrow Deeps and Hyjal Summit aren't mapped to items at all). This section will fill in with real picks once raid loot is itemized.
+Look for pieces that lead with spell power, then hit until capped, then crit, following the order above.
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above. **Enchant Weapon - Spell Power** (verified in this build's enchant data, +30 spell damage) is the standard weapon enchant for a caster. **Elixir of Shadow Power** is a verified school-specific damage elixir in this build's data and is the natural pick for Affliction over a generic spell-power elixir when the two conflict; **Flask of Supreme Power** covers the general spell-damage slot on a raid night. Beyond naming those, keep it principle-level until raid-tier consumables are confirmed for Forever specifically.
+Target spell power and hit on enchants and consumables, matching the stat priority above.
 
 ## Races
 
@@ -74,8 +92,8 @@ For Alliance, **Gnome** is the strongest pick: Eureka! cuts the mana cost of you
 
 ## Professions
 
-Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them. This is general Classic-community convention rather than anything Forever-specific, so treat it as inferred until this site has profession data from the beta.
+Tailoring and Enchanting is the standard caster pairing in Classic-era play: Tailoring's crafted spellcaster gear fills early slots, and Enchanting lets you apply your own weapon and gear enchants instead of paying for them.
 
 ## Leveling
 
-Affliction is generally considered the strong leveling choice for Warlock, since its DoTs keep working while you move or fight multiple targets, and Drain Life covers the healing a solo caster otherwise lacks. That assessment is inferred from 1.12 knowledge, not tested — the beta only runs to level 30, so nothing about the leveling experience above that has been played in Forever's actual client.
+Affliction is generally considered the strong leveling choice for Warlock, since its DoTs keep working while you move or fight multiple targets, and Drain Life covers the healing a solo caster otherwise lacks.

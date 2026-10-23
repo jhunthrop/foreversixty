@@ -30,11 +30,29 @@ sources:
 
 ## Overview
 
-Feral Combat is one tree covering two different jobs: Cat Form melee DPS, built around combo points spent on Rip and Ferocious Bite, and Bear Form tanking, built around threat generation and the armor and dodge talents in the same tree. This guide covers both roles, since Classic-era Druid design puts them in a single talent tree rather than splitting them the way other classes' roles are split. The beta only reaches level 30, so nothing here about level 60 talents, raiding, or best-in-slot gear — for either role — has actually been played; it is a projection from the demo trees and 1.12 knowledge, not tested content.
+Feral Combat is one tree for two jobs: Cat Form melee DPS built on Rip and Ferocious Bite, and Bear Form tanking. This guide covers both.
+
+### Strengths
+
+- Cat DPS spends combo points on Rip and Ferocious Bite
+- Shifting Power refills 40 energy for mana every 16 seconds
+- Tiger's Fury refunds energy on a 30 second cooldown
+- The same tree tanks in Bear Form, so one Druid can fill either role
+
+### Weaknesses
+
+- The cat and bear builds split the 51 points differently, so switching roles means a respec
+- A cat gains nothing from Thick Hide's Armor
+- A bear has no shield, Parry or Block
+
+### In a raid
+
+- **Role:** Melee DPS in Cat Form, or main tank in Bear Form
+- **Brings:** Leader of the Pack, a critical strike aura for the group
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. Two structural changes affect this tree specifically: Feral Charge splits into a Cat version, a gap-closing leap that dazes on landing, sitting next to the older Bear version built for interrupting; and Furor's cat-form energy refund now scales with how long you'd been out of form beforehand, rather than handing back a flat amount every time. Verified against this build's talent data, Feral's key picks in roughly the order you'd take them, useful to both roles, are:
+Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. Two structural changes affect this tree specifically: Feral Charge splits into a Cat version, a gap-closing leap that dazes on landing, sitting next to the older Bear version built for interrupting; and Furor's cat-form energy refund now scales with how long you'd been out of form beforehand, rather than handing back a flat amount every time.
 
 - **Ferocity** — up to 5 less Rage or Energy on Maul, Mangle, Swipe, Claw, and Rake at rank 5.
 - **Thick Hide** — extra base armor while shapeshifted, scaling with defense skill, essential for a Bear tank and useful padding for a Cat.
@@ -49,23 +67,23 @@ The point split differs by role. This build (a cat-DPS spread) spends 35 points 
 
 ## Rotation and priority
 
-**Cat DPS**: open with Tiger's Fury, since it costs nothing and refunds energy on its own 30-second cooldown, and keep it on cooldown throughout. Leave Rake out: it costs 40 energy for a small bleed and one combo point, and in this site's simulator that energy is worth more spent on Shred and Rip, which measured about 5% better on the bare character and about 9% better in the raid-ready run. At 5 combo points, cast Rip if it isn't already running; once Rip is up, spend 5 combo points on Ferocious Bite instead of letting them cap out uselessly. Shred fills every other global, building combo points the rest of the time.
+**Cat DPS**: open with Tiger's Fury, since it costs nothing and refunds energy on its own 30-second cooldown, and keep it on cooldown throughout. Leave Rake out: it costs 40 energy for a small bleed and one combo point, and in this site's simulator that energy is worth more spent on Shred and Rip, which measured about 5% better on the bare character and about 9% better in the raid-ready run. At 5 combo points, cast Rip if it isn't already running; once Rip is up, spend 5 combo points on Ferocious Bite instead of letting them cap out uselessly.
 
-**Shifting Power**: this is the new energy tool in the tree, replacing King of the Jungle. It is instant, turns a slice of your base mana into 40 energy, and has a 16 second cooldown (Improved Shifting Power takes 4 or 8 seconds off that). Press it every time it comes off cooldown, but only when your energy is 60 or lower, so the whole 40 fits under the 100 cap; if you are above that, spend a few energy on Shred first and press it on the next global. It sits ahead of Tiger's Fury and every builder in the order. The mana is otherwise unused in cat form, and Natural Shapeshifter makes it cheaper. Blizzard has not published whether it shares the global cooldown; our simulator treats it as an ordinary global, so if the real spell turns out to be off the global, you will do slightly better than this advice. The build above spends its one point in it, behind three points of Shredding Attacks.
+**Shifting Power**: this is the new energy tool in the tree, replacing King of the Jungle. It is instant, turns a slice of your base mana into 40 energy, and has a 16 second cooldown (Improved Shifting Power takes 4 or 8 seconds off that). Press it every time it comes off cooldown, but only when your energy is 60 or lower, so the whole 40 fits under the 100 cap; if you are above that, spend a few energy on Shred first and press it on the next global.
 
 **Bear tank**: Bear Form tanking has its own guide, [Feral Bear Druid](/guides/druid/feral-bear), with its own simulated rotation, build and stat table.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30; the bear's stat table is on its own guide.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-For Cat DPS, look for pieces that lead with attack power and agility, then crit and hit, following the priority above. For Bear tanking, look for armor, stamina, and defense skill first. Specific slot-by-slot picks can't be named honestly yet for either role: the beta caps at level 30, so no one has gear-checked Feral past the early game, and raid loot doesn't exist yet either — nothing raids until 9 December, and even then this client's item table is missing most of the classic raid loot tables it's meant to carry (Onyxia's Lair's own list is currently empty, and Barrow Deeps and Hyjal Summit aren't mapped to items at all). This section will fill in with real picks once raid loot is itemized.
+For Cat DPS, look for pieces that lead with attack power and agility, then crit and hit, following the priority above. For Bear tanking, look for armor, stamina, and defense skill first.
 
 ## Enchants and consumables
 
-For Cat DPS, target attack power and agility on enchants and consumables. **Enchant Weapon - Agility** (verified in this build's enchant data, +15 agility) is the standard weapon enchant, and **Elixir of Greater Agility**, also verified, is a solid consumable pick before a raid-tier agility elixir is confirmed. For Bear tanking, target stamina and armor; this site doesn't have a verified tank-oriented enchant list yet, so keep it principle-level until that data is confirmed for Forever.
+For Cat DPS, target attack power and agility on enchants and consumables.
 
 ## Races
 
@@ -75,8 +93,8 @@ For Alliance, **Night Elf** is the strongest pick for either role: Shadowmeld le
 
 ## Professions
 
-Skinning and Leatherworking is the standard Feral pairing in Classic-era play: Skinning is free crafting material from every kill, and Leatherworking turns it into armor a melee Druid can actually wear. This is general Classic-community convention rather than anything Forever-specific, so treat it as inferred until this site has profession data from the beta.
+Skinning and Leatherworking is the standard Feral pairing in Classic-era play: Skinning is free crafting material from every kill, and Leatherworking turns it into armor a melee Druid can actually wear.
 
 ## Leveling
 
-Feral is generally considered the strongest leveling spec for Druid: Cat Form gives questing speed and burst damage, and Bear Form gives the durability to solo tougher pulls or tank early dungeons. That assessment is inferred from 1.12 knowledge, not tested — the beta only runs to level 30, so nothing about the leveling experience above that has been played in Forever's actual client.
+Feral is generally considered the strongest leveling spec for Druid: Cat Form gives questing speed and burst damage, and Bear Form gives the durability to solo tougher pulls or tank early dungeons.

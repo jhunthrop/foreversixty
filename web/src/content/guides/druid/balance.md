@@ -31,11 +31,29 @@ sources:
 
 ## Overview
 
-Balance is Druid's ranged caster tree, keeping a Moonfire DoT on the target while filling every other global with Starfire, and offering the option to shapeshift into Moonkin Form for a party-wide critical strike buff. In a raid it's the class's only pure-damage caster role, and Moonkin Form gives it a support angle Balance-only builds elsewhere don't get. The beta only reaches level 30, so nothing here about level 60 talents, raiding, or best-in-slot gear has actually been played — it is a projection from the demo trees and 1.12 knowledge, not tested content.
+Balance is the Druid ranged caster tree: Starfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura.
+
+### Strengths
+
+- Moonkin Form raises party critical strike chance by 3% within 45 yards
+- Vengeance doubles critical damage on Arcane and Nature spells
+- Starfire and Wrath cover both long and short windows
+- Instant Moonfire finishes fights when no other cast will land
+
+### Weaknesses
+
+- Starfire's 3.5 second cast leaves little room to move
+- Mana limits it: keeping Moonfire up costs more than it returns
+- Damage is confined to the Nature and Arcane schools
+
+### In a raid
+
+- **Role:** Ranged caster damage
+- **Brings:** Moonkin Form, a 3% critical strike chance aura for party members within 45 yards
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31; separately, both Omen of Clarity and Nature's Grasp moved to the trainer instead of the tree, and Improved Mark of the Wild became a baseline passive, together freeing points every Druid used to spend elsewhere. Verified against this build's talent data, Balance's key picks in roughly the order you'd take them are:
+Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31; separately, both Omen of Clarity and Nature's Grasp moved to the trainer instead of the tree, and Improved Mark of the Wild became a baseline passive, together freeing points every Druid used to spend elsewhere.
 
 - **Improved Wrath** — up to 0.5 seconds off Wrath's cast time and 50% off its mana cost at rank 5, a heavy early investment in the tree's other nuke.
 - **Vengeance** — up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier.
@@ -45,25 +63,25 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
 - **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
 
-This build spends 34 points in Balance and reaches Moonkin Form at the bottom, keeping Improved Wrath, Vengeance, Improved Starfire, Insect Swarm and Moonfury, and now also takes Moonglow, Nature's Reach and Nature's Splendor, with 5 points in Feral's Heart of the Wild and 12 in Restoration: Nature's Focus at rank 5, 3 points of Naturalist, 3 of Subtlety and one of Reflection. In the search run this beats the old build by about 21%. It drops Furor (5 points), Natural Shapeshifter (3) and Nature's Grace (1), which the simulator measures at no damage, and spends them on Moonglow, Nature's Reach, Nature's Splendor, Heart of the Wild and Reflection, all of which it credits with damage. Nature's Focus and Subtlety stay because the engine does not model them yet. Nature's Grace is no longer in the build: the simulator finds no gain from it. A deeper variant that also drops Subtlety, Nature's Focus and Improved Entangling Roots scored higher still, but it gives up talents the engine cannot yet measure, so this guide holds it back. (This split is a common 1.12 hybrid pattern, but it is not confirmed for Forever specifically.) Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+This build spends 34 points in Balance and reaches Moonkin Form at the bottom, keeping Improved Wrath, Vengeance, Improved Starfire, Insect Swarm and Moonfury, and now also takes Moonglow, Nature's Reach and Nature's Splendor, with 5 points in Feral's Heart of the Wild and 12 in Restoration: Nature's Focus at rank 5, 3 points of Naturalist, 3 of Subtlety and one of Reflection. In the search run this beats the old build by about 21%. It drops Furor (5 points), Natural Shapeshifter (3) and Nature's Grace (1), which the simulator measures at no damage, and spends them on Moonglow, Nature's Reach, Nature's Splendor, Heart of the Wild and Reflection, all of which it credits with damage. Nature's Focus and Subtlety stay because the engine does not model them yet. Nature's Grace is no longer in the build: the simulator finds no gain from it. A deeper variant that also drops Subtlety, Nature's Focus and Improved Entangling Roots scored higher still, but it gives up talents the engine cannot yet measure, so this guide holds it back.
 
 **Raid build.** For a raid the search found a better spend of the same 51 points, about +8% over the leveling build above in the raid-ready run (the group's buffs and debuffs on a long single target). It takes a rank of Improved Starfire, Nature's Grace and two more ranks of Naturalist, and pays with one point each from Improved Wrath, Genesis and Reflection, which the simulator measures at little or no damage once the rest of the build is in, and from Improved Entangling Roots, a root, which a raid Balance druid does not use. Moonkin Form (the raid's crit aura), Insect Swarm, Nature's Focus and Subtlety (30% less threat on Nature and Arcane spells) all stay. Level with the build above and respec for the raid.
 
 ## Rotation and priority
 
-Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Insect Swarm ticking on the target: it is a cheap DoT with no real GCD contention beyond applying and refreshing it. Starfire is everything else: cast it on repeat for the rest of the fight. Moonfire is no longer a maintained DoT: keeping it up all fight costs more mana than it returns, and dropping that upkeep was worth about +7% in our level-60 search run. It is kept only to clip the last seconds. Near the end of a fight, adjust for what will actually land: with less than 3.5 seconds remaining, switch to Wrath, since its 2-second cast still finishes where Starfire's 3.5-second cast would not; with less than 1.5 seconds left, only the instant Moonfire will land in time. Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
+Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Insect Swarm ticking on the target: it is a cheap DoT with no real GCD contention beyond applying and refreshing it. Starfire is everything else: cast it on repeat for the rest of the fight. Moonfire is no longer a maintained DoT: keeping it up all fight costs more mana than it returns, and dropping that upkeep was worth about +7% in our level-60 search run.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above. Specific slot-by-slot picks can't be named honestly yet: the beta caps at level 30, so no one has gear-checked Balance past the early game, and raid loot doesn't exist yet either — nothing raids until 9 December, and even then this client's item table is missing most of the classic raid loot tables it's meant to carry (Onyxia's Lair's own list is currently empty, and Barrow Deeps and Hyjal Summit aren't mapped to items at all). This section will fill in with real picks once raid loot is itemized.
+Look for pieces that lead with spell power, then hit until capped, then crit, following the order above.
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above. **Enchant Weapon - Spell Power** (verified in this build's enchant data, +30 spell damage) is the standard weapon enchant for a caster. **Greater Arcane Elixir** is a verified spell-damage consumable in this build's data that covers both of Balance's damage schools better than a single-school elixir would; **Flask of Supreme Power** is the raid-night alternative. Beyond naming those, keep it principle-level until raid-tier consumables are confirmed for Forever specifically.
+Target spell power and hit on enchants and consumables, matching the stat priority above.
 
 ## Races
 
@@ -73,8 +91,8 @@ For Alliance, **Night Elf** is the strongest pick: Elune's Light grants 10% crit
 
 ## Professions
 
-Balance benefits from the same caster-support professions as any spellcaster: Tailoring for crafted spellcaster gear and Enchanting to self-apply spell power enchants are the general Classic-era convention. This is community convention rather than anything Forever-specific, so treat it as inferred until this site has profession data from the beta.
+Balance benefits from the same caster-support professions as any spellcaster: Tailoring for crafted spellcaster gear and Enchanting to self-apply spell power enchants are the general Classic-era convention.
 
 ## Leveling
 
-Balance is a reasonable leveling spec on its own, with Moonfire and Starfire providing ranged damage, but Feral is generally considered the stronger overall leveling choice for Druid thanks to Cat Form's mobility and Bear Form's durability. That assessment is inferred from 1.12 knowledge, not tested — the beta only runs to level 30, so nothing about the leveling experience above that has been played in Forever's actual client.
+Balance is a reasonable leveling spec on its own, with Moonfire and Starfire providing ranged damage, but Feral is generally considered the stronger overall leveling choice for Druid thanks to Cat Form's mobility and Bear Form's durability.

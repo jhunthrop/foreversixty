@@ -1,0 +1,131 @@
+---
+// web/src/components/guides/RotationLists.astro
+// The Rotation block: an Opener list, a Priority list and a Cooldowns list, each line a spell
+// icon, its name and one clause (lib/guides/rotation-lists.ts builds them from the sim's APL).
+// Opener and Priority are numbered; Cooldowns is a plain list.
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { RotationItem, RotationLists } from '../../lib/guides/rotation-lists';
+
+interface Props {
+  build: string;
+  lists: RotationLists;
+}
+const { build, lists } = Astro.props;
+const groups: { id: string; title: string; items: RotationItem[]; numbered: boolean }[] = [
+  { id: 'opener', title: guidesCopy.opener, items: lists.opener, numbered: true },
+  { id: 'priority', title: guidesCopy.priority, items: lists.priority, numbered: true },
+  { id: 'cooldowns', title: guidesCopy.cooldowns, items: lists.cooldowns, numbered: false },
+].filter((group) => group.items.length > 0);
+---
+
+<div class="rotation-lists" data-testid="guide-rotation-lists">
+  {groups.map((group) => {
+    const ListTag = group.numbered ? 'ol' : 'ul';
+    return (
+      <section data-testid={`guide-rotation-${group.id}`}>
+        <h3 id={group.id}>{group.title}</h3>
+        <ListTag class="rotation-list">
+          {group.items.map((item, index) => (
+            <li class="rotation-item" data-testid={`guide-rotation-${group.id}-${index}`}>
+              {group.numbered && <span class="rotation-num font-mono tabular">{index + 1}</span>}
+              {item.icon === undefined ? (
+                <span class="rotation-icon-spacer" aria-hidden="true" />
+              ) : (
+                <img
+                  src={dataUrl(build, `icons/${item.icon}.webp`)}
+                  alt=""
+                  width="28"
+                  height="28"
+                  loading="lazy"
+                  decoding="async"
+                  class="rotation-icon"
+                />
+              )}
+              <span class="rotation-text">
+                <span class="rotation-name">
+                  {item.name}
+                  {item.rank !== undefined && (
+                    <span class="rotation-rank font-mono tabular">{`Rank ${item.rank}`}</span>
+                  )}
+                </span>
+                {item.clause !== '' && <span class="rotation-clause">{item.clause}</span>}
+              </span>
+            </li>
+          ))}
+        </ListTag>
+      </section>
+    );
+  })}
+</div>
+
+<style>
+  .rotation-lists {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rotation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+    max-width: none;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .rotation-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--color-line-soft);
+    min-width: 0;
+  }
+  .rotation-item:last-child {
+    border-bottom: none;
+  }
+  .rotation-num {
+    width: 18px;
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--color-gold);
+    text-align: right;
+  }
+  .rotation-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+  }
+  .rotation-icon-spacer {
+    width: 28px;
+    flex-shrink: 0;
+  }
+  .rotation-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+    min-width: 0;
+  }
+  .rotation-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--color-strong);
+  }
+  .rotation-rank {
+    margin-left: 6px;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .rotation-clause {
+    font-size: 14px;
+    color: var(--color-text);
+  }
+</style>

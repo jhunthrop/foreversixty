@@ -50,7 +50,25 @@ sources:
 
 ## Overview
 
-Beast Mastery is a pet-focused ranged DPS spec: a large share of total damage in Forever comes from a strengthened pet rather than the Hunter's own shots, with Bestial Wrath as the spec's signature burst cooldown. In a raid or group it plays consistent single-target damage with a pet that can absorb hits and threat the Hunter would otherwise take directly. The beta caps at level 30, so anything here about level 60 play, raid tuning, or how Beast Mastery compares to the other two specs at endgame is a projection from the demo trees and 1.12 knowledge, not confirmed play.
+Beast Mastery is the pet-focused ranged Hunter spec: a strengthened pet deals a large share of the damage, and Bestial Wrath is its burst cooldown.
+
+### Strengths
+
+- A large share of damage comes from the pet
+- Bestial Wrath gives the pet 50% more damage for 18 seconds
+- The pet absorbs hits and threat the Hunter would otherwise take
+- Efficiency cuts shot and sting mana cost by 15%
+
+### Weaknesses
+
+- Damage depends on the pet staying alive and attacking
+- A fight of Classic length allows only one real burst window
+- Arcane Shot is its least mana-efficient filler
+
+### In a raid
+
+- **Role:** Ranged single-target DPS with a pet
+- **Brings:** Trueshot Aura, ranged attack power for the party
 
 ## Talents and builds
 
@@ -64,19 +82,19 @@ To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improv
 
 ## Rotation and priority
 
-This site's own simulator plays Beast Mastery on the same Aimed Shot and Multi-Shot shell the other two specs share, with Bestial Wrath layered in as this spec's own cooldown. Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens. Once engaged, Bestial Wrath is used on cooldown first and timed to land together with Rapid Fire, since a fight of Classic length only gives room for one real burst window — stacking both cooldowns into it beats spreading them apart. Aimed Shot is then recast every time it comes off cooldown, as long as the cast won't clip the next auto shot. Multi-Shot comes next on every free global between Aimed Shot casts, then Serpent Sting is refreshed whenever it's close to falling off and neither Rapid Fire nor Aimed Shot is close to ready (putting Multi-Shot ahead of the sting was a small gain, about +0.4% in the raid-ready run, and level for the bare character), and Arcane Shot is the last filler whenever Aimed Shot itself is more than 1.5 seconds from ready and mana is above a 25% reserve — Multi-Shot's own cooldown comes up often enough that gating Arcane Shot on it too would zero out Arcane Shot's casts entirely, so the priority no longer waits on it. Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor. The priority list doesn't call for active pet repositioning beyond keeping the pet alive and attacking through the Bestial Wrath window.
+This site's own simulator plays Beast Mastery on the same Aimed Shot and Multi-Shot shell the other two specs share, with Bestial Wrath layered in as this spec's own cooldown. Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens. Once engaged, Bestial Wrath is used on cooldown first and timed to land together with Rapid Fire, since a fight of Classic length only gives room for one real burst window — stacking both cooldowns into it beats spreading them apart.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for attack power and ranged attack power first, then agility, then crit and hit, in the order above. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30, and this build's raid loot tables are themselves incomplete — most items the community's own sourcing expects are missing from the current client, and nothing raids in-game until the first tier opens on 9 December 2026. This section fills in once raid loot is itemized and the spec is played past 30.
+Look for attack power and ranged attack power first, then agility, then crit and hit, in the order above.
 
 ## Enchants and consumables
 
-Target agility and attack power on weapon and glove enchants. **Enchant Gloves - Agility** and **Enchant Weapon - Agility** both exist in this build's enchant data, and a ranged weapon scope such as **Deadly Scope** or **Sniper Scope** is a verified item in this build. For consumables, **Elixir of Greater Agility** and **Elixir of the Mongoose** are both verified options in this build's consumable list. Beyond naming those, specific best-in-slot consumable stacking isn't something this site can confirm yet at level 30.
+Target agility and attack power on weapon and glove enchants.
 
 ## Races
 
@@ -84,8 +102,8 @@ Beast Mastery can be played by every race Hunter allows: Human (new in Forever),
 
 ## Professions
 
-Community convention for Hunter favors **Skinning** for the cheap, plentiful leather this class already collects while killing beasts to level, often paired with **Leatherworking** for self-crafted agility gear, or **Engineering** for ranged-weapon scopes and trap-adjacent gadgets. This is general Classic-era community practice, not something confirmed for Forever specifically.
+Community convention for Hunter favors **Skinning** for the cheap, plentiful leather this class already collects while killing beasts to level, often paired with **Leatherworking** for self-crafted agility gear, or **Engineering** for ranged-weapon scopes and trap-adjacent gadgets.
 
 ## Leveling
 
-Beast Mastery is generally regarded as the strongest leveling spec for Hunter: a durable, hard-hitting pet absorbs damage that would otherwise land on the Hunter and clears trash faster than Marksmanship's single-target focus or Survival's melee weaving. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Beast Mastery is generally regarded as the strongest leveling spec for Hunter: a durable, hard-hitting pet absorbs damage that would otherwise land on the Hunter and clears trash faster than Marksmanship's single-target focus or Survival's melee weaving.

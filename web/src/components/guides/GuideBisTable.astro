@@ -1,0 +1,258 @@
+---
+// web/src/components/guides/GuideBisTable.astro
+// "Best in slot": the per-slot picks the /bis page lists, one table per level range with a
+// switcher, the level 60 table open first. Server-rendered from the ranked BiS file
+// (lib/guides/guide-bis.ts) with no island: the switcher is a set of radios and the CSS that
+// shows the checked range's panel, the same no-script mechanism the /bis faction toggle uses.
+import { dataUrl } from '../../lib/planner/load';
+import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { GuideBis } from '../../lib/guides/guide-bis';
+import type { SourceCell } from '../../lib/bis/source-cell';
+import SourceKindIcon from '../bis/SourceKindIcon.astro';
+import GuideTableBox from './GuideTableBox.astro';
+
+interface Props {
+  build: string;
+  bis: GuideBis;
+  /** `/bis/<class>/<spec>`, for the "Full list and alternatives" link. */
+  bisHref: string;
+}
+const { build, bis, bisHref } = Astro.props;
+
+// One rule pair per range: the checked radio shows its panel and lights its pill. Built here
+// and emitted unscoped (like the /bis page's own toggle CSS) because the selectors reach from
+// the radio to elements further along the same parent.
+const switchCss = bis.bands
+  .map(
+    (b) =>
+      `#gbis-band-${b.band}:checked~#gbis-panel-${b.band}{display:block}` +
+      `#gbis-band-${b.band}:checked~.gbis-pills label[for="gbis-band-${b.band}"]{background:color-mix(in srgb,var(--color-gold) 16%,transparent);border-color:var(--color-gold);color:var(--color-gold-light)}` +
+      `#gbis-band-${b.band}:focus-visible~.gbis-pills label[for="gbis-band-${b.band}"]{outline:2px solid var(--color-gold);outline-offset:2px}`,
+  )
+  .join('');
+---
+
+<div class="gbis" data-testid="guide-bis">
+  <style set:html={switchCss}></style>
+  <p class="text-muted gbis-caption" data-testid="guide-bis-caption">
+    {guidesCopy.bisCaption(bis.raceName, bis.faction === 'alliance' ? 'Alliance' : 'Horde')}
+  </p>
+  {bis.bands.map((b) => (
+    <input
+      type="radio"
+      name="gbis-band"
+      id={`gbis-band-${b.band}`}
+      class="sr-only"
+      checked={b.band === bis.defaultBand}
+      data-testid={`guide-bis-radio-${b.band}`}
+    />
+  ))}
+  <div class="gbis-pills" role="group" aria-label={guidesCopy.levelRange}>
+    {bis.bands.map((b) => (
+      <label
+        for={`gbis-band-${b.band}`}
+        class="gbis-pill font-mono tabular"
+        data-testid={`guide-bis-pill-${b.band}`}
+      >
+        {b.label}
+      </label>
+    ))}
+  </div>
+  {bis.bands.map((b) => (
+    <div class="gbis-panel" id={`gbis-panel-${b.band}`} data-testid={`guide-bis-panel-${b.band}`}>
+      <GuideTableBox label={`${guidesCopy.bestInSlot}, level ${b.label}`} fitPhone>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{guidesCopy.slotColumn}</th>
+              <th scope="col">{guidesCopy.itemColumn}</th>
+              <th scope="col" class="gbis-source-col">
+                {guidesCopy.sourceColumn}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {b.rows.map((row) => (
+              <tr data-testid={`guide-bis-row-${b.band}-${row.slot}`}>
+                <th scope="row" class="gbis-slot">
+                  {row.slotLabel}
+                </th>
+                {row.empty ? (
+                  <td colspan="2" class="text-muted gbis-empty">
+                    {row.emptyCopy}
+                  </td>
+                ) : (
+                  <>
+                    <td>
+                      <span class="gbis-item">
+                        {row.icon !== undefined ? (
+                          <img
+                            src={dataUrl(build, `icons/${row.icon}.webp`)}
+                            alt=""
+                            width="28"
+                            height="28"
+                            loading="lazy"
+                            decoding="async"
+                            class="gbis-icon"
+                            style={`border-color:${rarityBorderColorFor(row.quality ?? 1)}`}
+                          />
+                        ) : (
+                          <span
+                            class="gbis-icon gbis-icon-empty"
+                            style={`border-color:${rarityBorderColorFor(row.quality ?? 1)}`}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span class="gbis-name-wrap">
+                          <span class:list={['gbis-name', rarityClassFor(row.quality ?? 1)]}>
+                            {row.itemName}
+                          </span>
+                          {row.notSimChecked && (
+                            <span class="gbis-flag" data-testid="guide-bis-not-sim-checked">
+                              {guidesCopy.notSimChecked}
+                            </span>
+                          )}
+                          <span class="gbis-source-inline text-muted">{row.sourceDetail}</span>
+                        </span>
+                      </span>
+                    </td>
+                    <td class="gbis-source gbis-source-col text-muted">
+                      <span class="gbis-source-line">
+                        <SourceKindIcon kind={(row.sourceKind ?? 'unknown') as SourceCell['kind']} />
+                        {row.sourceDetail}
+                      </span>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </GuideTableBox>
+      <p class="gbis-foot">
+        <a href={`${bisHref}#${b.bisAnchor}`} data-testid={`guide-bis-full-link-${b.band}`}>
+          {guidesCopy.fullListLink}
+        </a>
+      </p>
+      {b.preRaid && (
+        <p class="text-muted gbis-note" data-testid="guide-bis-pre-raid-note">
+          {guidesCopy.preRaidNote}
+        </p>
+      )}
+    </div>
+  ))}
+</div>
+
+<style is:global>
+  /* Global on purpose: a scoped style stamps a data-astro-cid attribute on every element it
+       styles, and this block is ~100 rows of markup. Every selector carries this component's own
+       prefix, so going global widens nothing. */
+  .gbis-caption {
+    margin: 0 0 10px;
+    font-size: 13px;
+  }
+  .gbis-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 12px;
+  }
+  .gbis-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    background: var(--color-raised);
+    color: var(--color-nav);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .gbis-panel {
+    display: none;
+  }
+  .gbis-slot {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .gbis td {
+    vertical-align: middle;
+  }
+  .gbis-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .gbis-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: var(--color-bg);
+    object-fit: cover;
+  }
+  .gbis-name-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
+  }
+  .gbis-name {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  /* At phone width the source folds under the item name, so the table fits without scrolling. */
+  .gbis-source-inline {
+    display: none;
+    flex-basis: 100%;
+    font-size: 12px;
+  }
+  @media (max-width: 639px) {
+    .gbis-source-col {
+      display: none;
+    }
+    .gbis-source-inline {
+      display: block;
+    }
+    .gbis-slot {
+      font-size: 11px;
+    }
+  }
+  .gbis-flag {
+    font-size: 11px;
+    color: var(--color-muted);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    padding: 0 6px;
+    white-space: nowrap;
+  }
+  .gbis-source {
+    font-size: 13px;
+  }
+  .gbis-source-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gbis-empty {
+    font-size: 13px;
+  }
+  .gbis-foot {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .gbis-note {
+    margin: 0 0 14px;
+    font-size: 13px;
+  }
+</style>

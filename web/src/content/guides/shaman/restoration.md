@@ -26,7 +26,25 @@ sources:
 
 ## Overview
 
-Restoration is Shaman's dedicated healing tree, centered on Healing Wave and totem-based group sustain like Mana Spring Totem and Mana Tide Totem, with Water Shield and Riptide adding two new tools to the kit. Its group-wide mana support through totems is historically its distinguishing feature next to Priest and Druid healing. The beta caps at level 30, so how Restoration performs healing a level-60 raid, or how it stacks up against other healing classes at that scale, is a projection from the demo talent trees and 1.12 healing knowledge, not confirmed play.
+Restoration is Shaman's healing spec, built on Healing Wave, Chain Heal and Riptide, with totems that sustain the group's mana and health.
+
+### Strengths
+
+- Chain Heal jumps to the most injured party members
+- Riptide and Nature's Swiftness give fast healing on the tank
+- Mana Spring Totem and Mana Tide Totem support the group's mana
+- Water Shield returns mana as it procs
+
+### Weaknesses
+
+- Needs raid-ready gear before its mana lasts a whole fight
+- Slow solo leveling, since its group kit does not translate
+- Totems sit in one place and must be dropped again as the group moves
+
+### In a raid
+
+- **Role:** Healer, centered on the tank with Chain Heal for the group
+- **Brings:** Healing Stream Totem, Mana Spring Totem and Mana Tide Totem for the group
 
 ## Talents and builds
 
@@ -41,7 +59,7 @@ The sim found any build that keeps that core scores the same, because the points
 
 ## Rotation and priority
 
-Water Shield and a Healing Stream Totem go up before the pull. In the fight the tank comes first: **Riptide** whenever it is ready and the tank is hurt, **Healing Wave** for a deeper hole, **Lesser Healing Wave** when it is serious, and **Nature's Swiftness** into an instant Healing Wave when the tank is nearly dead. **Chain Heal** is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members. Members are healed directly only while your mana is healthy, so the tank keeps the mana. **Mana Tide Totem** goes down when you are low.
+Water Shield and a Healing Stream Totem go up before the pull. In the fight the tank comes first: **Riptide** whenever it is ready and the tank is hurt, **Healing Wave** for a deeper hole, **Lesser Healing Wave** when it is serious, and **Nature's Swiftness** into an instant Healing Wave when the tank is nearly dead. **Chain Heal** is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members. Members are healed directly only while your mana is healthy, so the tank keeps the mana.
 
 Under the profile the shaman's mana lasts the whole fight at raid-ready gear, so the rotation spends the spare on members. It does not downrank.
 
@@ -51,13 +69,11 @@ In simulator-derived order, per point of stat: **MP5** first, then **Intellect**
 
 Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-## Gear
+## Best in slot
 
-Follow the stat priority above; spell power on a healing item adds nothing to a heal. Water Shield's proc-based mana return makes a slightly lower spirit floor more survivable than in 1.12, but spirit remains the tree's primary sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Follow the stat priority above; spell power on a healing item adds nothing to a heal. Water Shield's proc-based mana return makes a slightly lower spirit floor more survivable than in 1.12, but spirit remains the tree's primary sustain stat.
 
 ## Enchants and consumables
-
-Weapon enchants should target healing power; **Enchant Weapon - Healing Power** is a verified entry in this build's enchant data. For consumables, **Flask of Distilled Wisdom** is a verified option historically tied to mana regeneration for healers. A fuller consumable stack isn't something this site is naming until the class is played past level 30.
 
 ## Races
 
@@ -65,8 +81,8 @@ Restoration can be played by Orc and Troll on the Horde, Tauren on the Horde, Dw
 
 ## Professions
 
-Community convention for healing Shaman favors **Herbalism** alongside **Alchemy** for self-sourced healing and mana potions, or **Tailoring** for caster cloth-adjacent leather stats, matching general Classic-era healer practice. This is community convention, not confirmed for Forever.
+Community convention for healing Shaman favors **Herbalism** alongside **Alchemy** for self-sourced healing and mana potions, or **Tailoring** for caster cloth-adjacent leather stats, matching general Classic-era healer practice.
 
 ## Leveling
 
-Enhancement is the generally recommended leveling spec for Shaman, not Restoration — Restoration's group-support kit doesn't translate to fast solo leveling the way Enhancement's melee durability and burst does. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Enhancement is the generally recommended leveling spec for Shaman, not Restoration — Restoration's group-support kit doesn't translate to fast solo leveling the way Enhancement's melee durability and burst does.

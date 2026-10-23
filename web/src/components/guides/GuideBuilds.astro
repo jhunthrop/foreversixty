@@ -11,14 +11,21 @@ import GuideBuildTree from './GuideBuildTree.svelte';
 interface Props {
   levelingCode: string;
   raidCode?: string;
+  /** "The raid build moves 5 points from ... to ...", under the raid build's heading. */
+  raidDiffLine?: string;
 }
-const { levelingCode, raidCode } = Astro.props;
+const { levelingCode, raidCode, raidDiffLine } = Astro.props;
 const blocks = guideBuildBlocks(levelingCode, raidCode);
 ---
 
 {blocks.map((block) => (
   <section class="mt-6" data-testid={`guide-build-${block.kind}`}>
     <h3 id={block.id}>{block.label}</h3>
+    {block.kind === 'raid' && raidDiffLine !== undefined && (
+      <p class="text-muted" data-testid="guide-build-diff">
+        {raidDiffLine}
+      </p>
+    )}
     <GuideBuildTree client:visible code={block.code} />
     <BuildActionButtons
       code={block.code}

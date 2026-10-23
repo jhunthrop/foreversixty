@@ -87,3 +87,86 @@ describe('/guides/warrior/fury (a spec whose raid build is its leveling build)',
     expect(html).not.toContain('data-testid="guide-build-raid"');
   });
 });
+
+describe('/guides/mage/frost (the class-guide blocks)', () => {
+  async function frostHtml(): Promise<string> {
+    return container.renderToString(SpecPage, { props: { entry: loadGuideEntry('mage/frost') } });
+  }
+
+  it('says the status once, at the top, and carries the header facts', async () => {
+    const html = await frostHtml();
+    expect(html.match(/data-testid="guide-status-note"/g)).toHaveLength(1);
+    expect(html).toContain('The beta stops at level 30.');
+    expect(html).toMatch(
+      /DPS · Updated \d{1,2} [A-Z][a-z]{2} · built on client 1\.60\.1\.\d+ · beta-tested to level 30, level 60 simulated/,
+    );
+    // The header summary is the Overview's own sentence, not the frontmatter description.
+    expect(html).toContain('Frost is the Mage control and survivability spec');
+  });
+
+  it('lays the Overview out as strengths, weaknesses and the raid role', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="guide-overview-strengths"');
+    expect(html).toContain('data-testid="guide-overview-weaknesses"');
+    expect(html).toContain('data-testid="guide-overview-raid"');
+  });
+
+  it('names the raid build’s difference in one line and lists the key talents with icons', async () => {
+    const html = await frostHtml();
+    expect(html).toMatch(/data-testid="guide-build-diff"[^>]*>The raid build moves \d+ points? from /);
+    expect(html).toContain('data-testid="guide-key-talents"');
+    expect(html).toContain('Improved Frostbolt');
+    expect(html).toMatch(/guide-key-talent-0[\s\S]*?<img src="\/data\/[^"]+\/icons\/[^"]+\.webp"/);
+  });
+
+  it('numbers an opener and a priority list with spell icons', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="guide-rotation-opener"');
+    expect(html).toContain('data-testid="guide-rotation-priority"');
+    expect(html).toMatch(/guide-rotation-priority-0[\s\S]*?<img[^>]+icons\/spell_frost_frostblast\.webp/);
+    expect(html).toContain('Ice Lance');
+    expect(html).toContain('Frostbolt');
+  });
+
+  it('gives the stat block its pills, its weights table and the hit cap line', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="stat-priority-pills"');
+    expect(html).toContain('data-testid="guide-stat-table"');
+    expect(html).toMatch(/data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \d+(\.\d)?%/);
+  });
+
+  it('puts the best-in-slot table in the page, one panel per level range, with the BiS link', async () => {
+    const html = await frostHtml();
+    for (const band of [20, 30, 40, 50, 60]) {
+      expect(html).toContain(`data-testid="guide-bis-panel-${band}"`);
+      expect(html).toContain(`data-testid="guide-bis-pill-${band}"`);
+    }
+    expect(html).toMatch(/id="gbis-band-60"[^>]*checked/);
+    expect(html).toContain('href="/bis/mage/frost#band-alliance-60"');
+    expect(html).toContain('Full list and alternatives');
+    expect(html).toContain('data-testid="guide-bis-row-60-head"');
+    // The honest-gap paragraph is gone.
+    expect(html).not.toContain('named honestly');
+    // A server-rendered table: no island carries it.
+    expect(html).not.toMatch(/<astro-island[^>]*GuideBisTable/);
+  });
+
+  it('adds the enchant and consumable tables, the race table and the leveling talents', async () => {
+    const html = await frostHtml();
+    expect(html).toContain('data-testid="guide-enchants"');
+    expect(html).toContain('data-testid="guide-consumables"');
+    expect(html).toContain('Elixir of Frost Power');
+    expect(html).toContain('data-testid="guide-race-table"');
+    expect(html).toContain('data-testid="guide-race-row-gnome"');
+    expect(html).toMatch(/data-testid="guide-race-row-gnome" data-recommended="true"/);
+    expect(html).toContain('data-testid="guide-leveling-row-talents"');
+    expect(html).toMatch(/leveling-chip-rank[^>]*>\d\/\d</);
+  });
+
+  it('renders no per-section hedge', async () => {
+    const html = await frostHtml();
+    for (const hedge of ['is a projection', 'not tested', 'cannot be named', 'inferred from 1.12']) {
+      expect(html, hedge).not.toContain(hedge);
+    }
+  });
+});

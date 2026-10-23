@@ -26,7 +26,25 @@ sources:
 
 ## Overview
 
-Holy is the throughput healing tree for Priest, leaning on efficient direct and periodic heals rather than Discipline's shield-and-mitigation approach, with Prayer of Mending adding a new jumping heal to the kit that rewards keeping it moving through a group. It's the tree most Classic-era raids expect to carry the bulk of group-wide healing. The beta caps at level 30, so anything about how Holy performs healing a level-60 raid, or how it compares to Discipline at that scale, is a projection from the demo talent trees and 1.12 healing knowledge, not confirmed play.
+Holy is the Priest throughput healing tree: efficient direct and periodic heals, with Prayer of Mending and Prayer of Healing carrying the group-wide healing.
+
+### Strengths
+
+- Prayer of Mending jumps through the group once placed on the tank
+- Prayer of Healing answers several members being hurt together
+- Spiritual Healing multiplies every heal
+- Spiritual Guidance turns Spirit into bonus healing
+
+### Weaknesses
+
+- Mana is the limit, and it runs dry sooner than Discipline
+- No shield or other damage prevention
+- Spell damage on healing items is wasted, since it adds nothing to a heal
+
+### In a raid
+
+- **Role:** Raid and group healer; carries the bulk of group-wide healing
+- **Brings:** Power Word: Fortitude for the group, with Prayer of Mending and Renew on the tank
 
 ## Talents and builds
 
@@ -52,13 +70,11 @@ In simulator-derived order, per point of stat, the mana stats outrank raw healin
 
 Spell power, the damage side of a healing item, adds nothing to a heal. Forever puts a third of every healing bonus on an item as spell damage; it is the healing number that heals. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-## Gear
+## Best in slot
 
-Follow the stat priority above: the mana stats first, then healing power, with critical strike behind; spell power on a healing item adds nothing to a heal. Spirit stays the tree's core sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Follow the stat priority above: the mana stats first, then healing power, with critical strike behind; spell power on a healing item adds nothing to a heal. Spirit stays the tree's core sustain stat.
 
 ## Enchants and consumables
-
-Weapon and glove enchants should target healing power; **Enchant Weapon - Healing Power** and **Enchant Bracer - Healing Power** are both verified entries in this build's enchant data. For consumables, **Flask of Distilled Wisdom** is a verified option historically tied to mana regeneration for healers. A fuller consumable stack isn't something this site is naming until the class is played past level 30.
 
 ## Races
 
@@ -66,8 +82,8 @@ Holy can be played by Human, Dwarf, Night Elf, and Gnome on the Alliance, and Un
 
 ## Professions
 
-Community convention for healing Priests favors **Tailoring** for caster cloth stats alongside **Enchanting** for weapon and gear enchants, since neither profession competes with anything Holy-specific. This is general Classic-era community practice, not confirmed for Forever.
+Community convention for healing Priests favors **Tailoring** for caster cloth stats alongside **Enchanting** for weapon and gear enchants, since neither profession competes with anything Holy-specific.
 
 ## Leveling
 
-Shadow is the generally recommended leveling spec for Priest, not Holy — Holy's group-throughput kit doesn't translate to fast solo leveling the way Shadow's self-sufficient damage and healing does. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Shadow is the generally recommended leveling spec for Priest, not Holy — Holy's group-throughput kit doesn't translate to fast solo leveling the way Shadow's self-sufficient damage and healing does.

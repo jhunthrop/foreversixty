@@ -1,0 +1,139 @@
+---
+// web/src/components/guides/GuideGearExtras.astro
+// The two small tables under "Enchants and consumables": slot -> enchant, and consumable ->
+// what it gives. Both come from the build's data (lib/guides/gear-extras.ts); a table with no
+// rows is left out rather than shown empty.
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { GearExtras } from '../../lib/guides/gear-extras';
+import GuideTableBox from './GuideTableBox.astro';
+
+interface Props {
+  build: string;
+  extras: GearExtras;
+}
+const { build, extras } = Astro.props;
+// The build's icon tree does not ship every consumable's icon; when none of the rows has one,
+// the column of empty frames is left out rather than drawn.
+const consumableIcons = extras.consumables.some((row) => row.icon !== undefined);
+---
+
+<div data-testid="guide-gear-extras">
+  {extras.enchants.length > 0 && (
+    <section data-testid="guide-enchants">
+      <h3 id="enchants">{guidesCopy.enchants}</h3>
+      <p class="text-muted extras-note">{guidesCopy.enchantsNote}</p>
+      <GuideTableBox label={guidesCopy.enchants}>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{guidesCopy.slotColumn}</th>
+              <th scope="col">{guidesCopy.enchantColumn}</th>
+              <th scope="col">{guidesCopy.givesColumn}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {extras.enchants.map((row) => (
+              <tr data-testid={`guide-enchant-${row.slot}`}>
+                <th scope="row" class="extras-label">
+                  {row.slotLabel}
+                </th>
+                <td>
+                  <span class="extras-item">
+                    {row.icon !== undefined ? (
+                      <img
+                        src={dataUrl(build, `icons/${row.icon}.webp`)}
+                        alt=""
+                        width="24"
+                        height="24"
+                        loading="lazy"
+                        decoding="async"
+                        class="extras-icon"
+                      />
+                    ) : (
+                      <span class="extras-icon" aria-hidden="true" />
+                    )}
+                    <span class="text-strong">{row.name}</span>
+                  </span>
+                </td>
+                <td>{row.gives}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </GuideTableBox>
+    </section>
+  )}
+  {extras.consumables.length > 0 && (
+    <section data-testid="guide-consumables">
+      <h3 id="consumables">{guidesCopy.consumables}</h3>
+      <p class="text-muted extras-note">{guidesCopy.consumablesNote}</p>
+      <GuideTableBox label={guidesCopy.consumables}>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{guidesCopy.consumableColumn}</th>
+              <th scope="col">{guidesCopy.givesColumn}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {extras.consumables.map((row) => (
+              <tr data-testid={`guide-consumable-${row.id.replace(/[^a-z0-9]+/gi, '-')}`}>
+                <td>
+                  <span class="extras-item">
+                    {row.icon !== undefined ? (
+                      <img
+                        src={dataUrl(build, `icons/${row.icon}.webp`)}
+                        alt=""
+                        width="24"
+                        height="24"
+                        loading="lazy"
+                        decoding="async"
+                        class="extras-icon"
+                      />
+                    ) : (
+                      consumableIcons && <span class="extras-icon" aria-hidden="true" />
+                    )}
+                    <span class="text-strong">{row.name}</span>
+                  </span>
+                </td>
+                <td>{row.gives}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </GuideTableBox>
+    </section>
+  )}
+</div>
+
+<style>
+  .extras-note {
+    margin: 0 0 8px;
+    font-size: 13px;
+  }
+  .extras-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+  .extras-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .extras-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: var(--color-bg);
+  }
+  .extras-item :global(span.text-strong) {
+    font-weight: 700;
+  }
+</style>

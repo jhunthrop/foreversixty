@@ -39,4 +39,45 @@ export const guidesCopy = {
   simLevelingBuildAriaLabel: 'Sim the leveling build',
   loadRaidBuildAriaLabel: 'Load the raid build in the planner',
   simRaidBuildAriaLabel: 'Sim the raid build',
+  // --- guides like Wowhead's (W.18, 2026-10-22) ---------------------------------------------
+  /** The one status note for the whole page; the sections are then written as a guide. */
+  statusNote:
+    "The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.",
+  statusNoteLabel: 'About this guide',
+  headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string, build: string): string =>
+    `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated} · built on client ${build} · beta-tested to level 30, level 60 simulated`,
+  strengths: 'Strengths',
+  weaknesses: 'Weaknesses',
+  inARaid: 'In a raid',
+  keyTalents: 'Key talents',
+  opener: 'Opener',
+  priority: 'Priority',
+  cooldowns: 'Cooldowns',
+  bestInSlot: 'Best in slot',
+  levelRange: 'Level range',
+  bisCaption: (race: string, faction: string): string =>
+    `Picks for a ${race} (${faction}), ranked by this site's simulator with every item equipped.`,
+  fullListLink: 'Full list and alternatives',
+  preRaidNote:
+    'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
+  notSimChecked: 'Not sim-checked',
+  slotColumn: 'Slot',
+  itemColumn: 'Item',
+  sourceColumn: 'Source',
+  enchants: 'Enchants',
+  consumables: 'Consumables',
+  enchantsNote:
+    "The enchant that adds the most of the stats this spec's weights value, for each slot. Enchants that grant crit, hit or haste are not scored here.",
+  consumablesNote: 'What the simulator gives this spec in its raid-ready run.',
+  enchantColumn: 'Enchant',
+  givesColumn: 'Gives',
+  consumableColumn: 'Consumable',
+  raceColumn: 'Race',
+  factionColumn: 'Faction',
+  racialColumn: 'Racial',
+  racialDoesColumn: 'What it does',
+  recommendedTag: 'Recommended',
+  hitCapLine: (percent: string, school: string | undefined, white: string | undefined): string =>
+    `Hit cap: ${percent}%${school === undefined ? '' : ` (${school}% from school)`}${white === undefined ? '' : ` (${white}% for white swings)`}`,
+  levelingNewTitle: 'More points here than the range before',
 } as const;

@@ -27,7 +27,25 @@ sources:
 
 ## Overview
 
-Assassination is a poison-focused melee DPS spec that trades Combat's flat weapon damage for consistent poison uptime and a guaranteed-critical finisher window through Cold Blood. In a group it plays a single-target damage role rather than the cleave utility Combat or Subtlety can offer. The beta caps out at level 30, so nothing below about how this spec performs at level 60, in a full poison-uptime rotation, or against raid-tuned targets is confirmed play — it's read off the demo trees and 1.12 knowledge, not tested.
+Assassination is the Rogue poison-based melee damage tree: constant poison uptime, Mutilate as the builder, and Cold Blood for a guaranteed-critical finisher.
+
+### Strengths
+
+- Mutilate strikes with both weapons for 2 combo points a cast
+- Cold Blood guarantees a critical strike on the next attack
+- Vile Poisons and Improved Poisons raise poison damage and application chance
+- Relentless Strikes is the largest single damage gain in the build
+
+### Weaknesses
+
+- Single-target damage role, with less cleave than Combat or Subtlety
+- Gives up Combat's flat weapon damage
+- Mutilate's bonus needs a lingering poison, so poison upkeep is required
+
+### In a raid
+
+- **Role:** Single-target melee damage dealer
+- **Brings:** Its own damage; no raid-wide buff or debuff
 
 ## Talents and builds
 
@@ -41,19 +59,19 @@ Point allocation is still heavily weighted into Assassination: 32 points reach V
 
 ## Rotation and priority
 
-Poisons come first: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at 30. Mutilate's bonus against poisoned targets counts only a poison that lingers, so two Instants leave it on the table; this site's simulator carries that kit for Assassination, and it measured well ahead of two Instants. Mutilate is your builder, striking with both weapons for 2 combo points a cast, and you spend combo points from four rather than waiting for five: Mutilate gives points in twos, so a fifth point wastes one of them and a whole Mutilate on top. Slice and Dice goes first at four or more combo points whenever it has lapsed (opened when it is down, refreshed under 3 seconds remaining), for the attack-speed bonus; otherwise Eviscerate is the finisher whenever its 35 energy is there, and Cold Blood goes off right ahead of it for a guaranteed crit. Cold Blood costs no combo points and no global cooldown, so it simply waits for the Eviscerate. Venom, this tree's poison finisher, is not cast. The simulator models it to the client's numbers (30% more poison damage, 10 points more poison proc chance, 6 seconds plus 3 per combo point), but it multiplies Venom's bonus with Vile Poisons where the client adds the two, which flatters Venom, and even so the rotation measured about 1 to 2% better on the bare character without it and no different in the raid-ready run, where the Eviscerate and Slice and Dice lines take every set of combo points first. Without the Mutilate talent, Sinister Strike builds instead. Poisons do much of this spec's work, so keep them applied; Mutilate hits harder against a poisoned target.
+Poisons come first: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at 30. Mutilate's bonus against poisoned targets counts only a poison that lingers, so two Instants leave it on the table; this site's simulator carries that kit for Assassination, and it measured well ahead of two Instants. Cold Blood costs no combo points and no global cooldown, so it simply waits for the Eviscerate. Venom, this tree's poison finisher, is not cast. Without the Mutilate talent, Sinister Strike builds instead.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero. These numbers come from this site's own level-60 simulator, not from beta play, which only reaches level 30.
+The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
 
-## Gear
+## Best in slot
 
-Look for agility and attack power first, then the merged hit and crit ratings the itemization change consolidated from their old melee/spell splits, then melee haste. A new stat that reduces the target's dodge and parry chance may show up on gear as itemization fills in, which would sit alongside hit rating in value for a dagger-and-poison spec that wants attacks to land. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30, and this build's raid loot tables are themselves incomplete — most raid items the community's own sourcing expects are absent from the current client, and nothing raids in-game until the first tier opens on 9 December 2026. This section fills in once raid loot is itemized and the class is played past 30.
+Look for agility and attack power first, then the merged hit and crit ratings the itemization change consolidated from their old melee/spell splits, then melee haste. A new stat that reduces the target's dodge and parry chance may show up on gear as itemization fills in, which would sit alongside hit rating in value for a dagger-and-poison spec that wants attacks to land.
 
 ## Enchants and consumables
 
-Target agility and attack power on weapon and glove enchants; **Enchant Gloves - Superior Agility** and **Enchant Weapon - Agility** both exist in this build's enchant data. For consumables, **Elixir of the Mongoose** (agility) is a verified option in this build's consumable list. Beyond naming those two, specific best-in-slot consumable stacking is not something this site can confirm yet at level 30. A raid shaman's **Windfury Totem** is an aura on you, not a weapon enchant, so it stacks with your poisons; this site's raid-preset numbers include it.
+A raid shaman's **Windfury Totem** is an aura on you, not a weapon enchant, so it stacks with your poisons; this site's raid-preset numbers include it.
 
 ## Races
 
@@ -61,8 +79,8 @@ Assassination can be played by every race the Rogue class allows: Human, Dwarf, 
 
 ## Professions
 
-Community convention for Rogue favors **Engineering** for its combat utility items (bombs, gadgets) alongside a gathering profession like Herbalism or Mining for self-funded leveling, since Rogue has no crafting profession that directly boosts poison or weapon damage the way casters benefit from tailored gear. This is general Classic-era community practice, not something confirmed for Forever specifically.
+Community convention for Rogue favors **Engineering** for its combat utility items (bombs, gadgets) alongside a gathering profession like Herbalism or Mining for self-funded leveling, since Rogue has no crafting profession that directly boosts poison or weapon damage the way casters benefit from tailored gear.
 
 ## Leveling
 
-Combat is generally regarded as the stronger leveling spec for Rogue, since Adrenaline Rush and heavier weapon damage clear trash faster than Assassination's poison-uptime playstyle, which pays off more in sustained single-target fights. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Combat is generally regarded as the stronger leveling spec for Rogue, since Adrenaline Rush and heavier weapon damage clear trash faster than Assassination's poison-uptime playstyle, which pays off more in sustained single-target fights.

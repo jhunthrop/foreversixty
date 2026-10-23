@@ -26,7 +26,25 @@ sources:
 
 ## Overview
 
-Discipline is the shield-and-mitigation healing tree, leaning on Power Word: Shield uptime and cost-reduction talents rather than Holy's raw throughput, with Penance adding a new channeled heal-or-damage option to the kit. It tends to shine on tank healing and damage prevention rather than raw group-wide output. The beta caps at level 30, so anything about how Discipline performs healing a level-60 raid boss, or how it stacks up against Holy in that context, is a projection from the demo talent trees and 1.12 healing knowledge, not confirmed play.
+Discipline is the Priest shield-and-mitigation healing tree: Power Word: Shield uptime, Penance and Divine Aegis prevent damage, and cost-reduction talents stretch its mana.
+
+### Strengths
+
+- Power Word: Shield keeps a tank alive by preventing damage
+- Penance adds a channelled heal that can also deal damage
+- Divine Aegis turns critical heals into shields
+- Lasts longer on its mana than Holy under the same fight
+
+### Weaknesses
+
+- Group-wide healing is lower than Holy's
+- A target under Weakened Soul cannot take another shield
+- The fight is mana-bound, so the shield and filler need pacing
+
+### In a raid
+
+- **Role:** Tank healer; damage prevention more than raw throughput
+- **Brings:** Power Word: Fortitude for the group, with shields and Prayer of Mending on the tank
 
 ## Talents and builds
 
@@ -51,13 +69,11 @@ In simulator-derived order, per point of stat: **MP5** first, then **Spirit**, *
 
 Spell power adds nothing to a heal; it is the damage side of a healing item. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-## Gear
+## Best in slot
 
-Follow the stat priority above: regeneration first, then healing power, Spirit and Intellect close together; spell power on a healing item adds nothing to a heal. Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it's still the tree's main sustain stat. Specific pre-raid or raid-tier item picks can't be named with confidence yet: the beta caps at level 30 and this build's raid loot tables are still missing most items the community's sourcing expects, with nothing raiding in-game until the first tier opens on 9 December 2026.
+Follow the stat priority above: regeneration first, then healing power, Spirit and Intellect close together; spell power on a healing item adds nothing to a heal. Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it's still the tree's main sustain stat.
 
 ## Enchants and consumables
-
-Weapon and glove enchants should target healing power; **Enchant Weapon - Healing Power** and **Enchant Bracer - Healing Power** are both verified entries in this build's enchant data. For consumables, **Flask of Distilled Wisdom** is a verified option historically tied to mana regeneration for healers. A fuller consumable stack isn't something this site is naming until the class is played past level 30.
 
 ## Races
 
@@ -65,8 +81,8 @@ Discipline can be played by Human, Dwarf, Night Elf, and Gnome on the Alliance, 
 
 ## Professions
 
-Community convention for healing Priests favors **Tailoring** for caster cloth stats alongside **Enchanting** for weapon and gear enchants, since neither profession competes with anything Discipline-specific. This is general Classic-era community practice, not confirmed for Forever.
+Community convention for healing Priests favors **Tailoring** for caster cloth stats alongside **Enchanting** for weapon and gear enchants, since neither profession competes with anything Discipline-specific.
 
 ## Leveling
 
-Shadow is the generally recommended leveling spec for Priest, not Discipline — Discipline's shield-and-mitigation kit is built around keeping other people alive, which doesn't translate to fast solo leveling the way Shadow's self-sufficient damage and healing does. The beta caps at level 30, so this is carried over from 1.12 leveling knowledge rather than tested in Forever.
+Shadow is the generally recommended leveling spec for Priest, not Discipline — Discipline's shield-and-mitigation kit is built around keeping other people alive, which doesn't translate to fast solo leveling the way Shadow's self-sufficient damage and healing does.

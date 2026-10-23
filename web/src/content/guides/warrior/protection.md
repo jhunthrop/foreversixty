@@ -49,13 +49,29 @@ sources:
 
 ## Overview
 
-Protection is Forever's tanking spec, built around a one-handed weapon and shield rather than the two-handed or dual-wield choices Arms and Fury make. In a raid or group it holds enemy attention through Sunder Armor stacks and its own capstone finisher, Shield Slam, while a shield and a tree full of defensive talents keep its mitigation and Rage generation high enough to survive hits the other two specs wouldn't need to plan around. The beta only reaches level 30, so nothing below about level 60 play, raid tanking, or best-in-slot gear has actually been tested — it's a projection from the demo trees and 1.12 knowledge, not confirmed play.
+Protection is Forever's tanking spec, using a one-handed weapon and shield to hold enemy attention and survive heavy hits.
+
+### Strengths
+
+- Shield Slam is its highest-threat button and grows with Block Value
+- Sunder Armor stacks add threat on every spare global
+- Defensive talents keep mitigation and Rage generation high
+- Revenge comes up more often the better its avoidance
+
+### Weaknesses
+
+- Gives up the damage of the two-handed and dual-wield specs
+- Needs healers to outlast sustained damage
+- Threat leans on Sunder Armor filling every other global
+
+### In a raid
+
+- **Role:** Main tank
+- **Brings:** Sunder Armor on the target, Thunder Clap's attack-speed slow and Demoralizing Shout
 
 ## Talents and builds
 
 This build spends 20 points in Arms and 31 in Protection, the shortest road to Shield Slam. It is the build this site's tank simulator is run on, so everything below is what the simulator models, taken from the client's own talent text.
-
-**Protection**, in roughly the order you would take them:
 
 - **Shield Specialization** — more Block chance, and every Block pays Rage. A block is no longer only mitigation: it feeds the Rage that Shield Slam, Revenge and Heroic Strike spend.
 - **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
@@ -97,13 +113,13 @@ Why the stats land where they do is mechanical, and stays true when the numbers 
 
 Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so a shield's Block Value is not weighed apart from its Block chance. And a stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this level range's sample size, to tell its value apart from zero.
 
-## Gear
+## Best in slot
 
-Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them. This site's ranker builds the level 60 set for you in the BiS tab, scored on the same tank fight, in a shield and one-handed weapon. Specific raid picks cannot be named honestly yet: nothing raids until 9 December, and this build's raid loot tables are only partly itemized for Forever, so the set is built from what the item tables do carry.
+Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them.
 
 ## Enchants and consumables
 
-Target Stamina and Defense Skill on enchants where they're available, rather than the Strength and Attack Power enchants the two DPS specs want. **Enchant Cloak - Superior Defense** and **Enchant Bracer - Superior Stamina** are both verified in this build's enchant data, and **Enchant Shield - Greater Stamina** is a shield-specific option also verified there. Specific consumable stacking for a level-60 tank isn't something this site can confirm yet at level 30.
+Target Stamina and Defense Skill on enchants where they're available, rather than the Strength and Attack Power enchants the two DPS specs want.
 
 ## Races
 
@@ -111,8 +127,8 @@ Protection can be played by every race the Warrior class allows: Human, Dwarf, N
 
 ## Professions
 
-Blacksmithing and Mining is also the standard convention for a tanking Warrior, with an extra reason beyond the DPS specs: Blacksmithing's socket-adding recipes let a tank add Stamina or Defense gems to gear that doesn't already have a socket. This is general Classic-community practice rather than anything confirmed for Forever specifically.
+Blacksmithing and Mining is also the standard convention for a tanking Warrior, with an extra reason beyond the DPS specs: Blacksmithing's socket-adding recipes let a tank add Stamina or Defense gems to gear that doesn't already have a socket.
 
 ## Leveling
 
-Protection is not generally the leveling spec of choice for Warrior — Fury, or Arms to a lesser extent, clears trash faster while leveling solo, and Protection's strengths show up in a group or raid tanking role instead. That comparison is carried over from 1.12 knowledge rather than tested — the beta only reaches level 30, so nothing about leveling or tanking above that has actually been played in Forever's client.
+Protection is not generally the leveling spec of choice for Warrior — Fury, or Arms to a lesser extent, clears trash faster while leveling solo, and Protection's strengths show up in a group or raid tanking role instead.

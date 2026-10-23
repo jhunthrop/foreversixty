@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { guideSchema } from '../../content.config';
+import { splitOverview } from '../../lib/guides/overview';
 import { SPEC_SECTIONS, splitSpecSections } from '../../lib/guides/sections';
 
 const guidesRoot = join(dirname(fileURLToPath(import.meta.url)));
@@ -79,6 +80,54 @@ describe('guide content structure', () => {
     expect([...sections.keys()], `sections out of order in ${id}`).toEqual(
       SPEC_SECTIONS.filter((section) => sections.has(section)),
     );
+  });
+
+  it.each(specGuides.map((g) => [g.id, g] as const))(
+    '%s opens with a summary sentence and Strengths, Weaknesses and In a raid blocks',
+    (id, guide) => {
+      const overview = splitOverview(splitSpecSections(guide.body).get('Overview') ?? '');
+      expect(overview.summary, `${id}: no summary sentence`).not.toBe('');
+      expect(overview.summary.split(/\s+/).length, `${id}: summary too long`).toBeLessThanOrEqual(30);
+      const bullets = (markdown: string) => markdown.split('\n').filter((line) => line.startsWith('- '));
+      expect(bullets(overview.strengths).length, `${id}: strengths`).toBeGreaterThanOrEqual(3);
+      expect(bullets(overview.strengths).length, `${id}: strengths`).toBeLessThanOrEqual(4);
+      expect(bullets(overview.weaknesses).length, `${id}: weaknesses`).toBeGreaterThanOrEqual(2);
+      expect(bullets(overview.weaknesses).length, `${id}: weaknesses`).toBeLessThanOrEqual(3);
+      expect(overview.raid, `${id}: raid role`).toContain('**Role:**');
+      expect(overview.raid, `${id}: raid brings`).toContain('**Brings:**');
+    },
+  );
+
+  // The page says once, at the top, that the beta stops at level 30 and the rest is simulated
+  // (GuideStatusNote); the sections are written as a guide and do not hedge in every section.
+  it.each(specGuides.map((g) => [g.id, g] as const))('%s carries no per-section hedge', (id, guide) => {
+    const hedges = [
+      /\bprojection\b/i,
+      /not tested/i,
+      /inferred from 1\.12/i,
+      /restated 1\.12/i,
+      /carried over from 1\.12/i,
+      /can(?:'|’)t be named/i,
+      /cannot be named/i,
+      /beta (?:only )?(?:caps|reaches|runs)/i,
+      /the beta caps/i,
+    ];
+    for (const hedge of hedges) {
+      expect(guide.body, `${id} still matches ${hedge}`).not.toMatch(hedge);
+    }
+  });
+
+  it('gives every spec guide a Best in slot section in place of Gear', () => {
+    for (const guide of specGuides) {
+      expect(guide.body, guide.id).toContain('## Best in slot');
+      expect(guide.body, guide.id).not.toContain('## Gear');
+    }
+  });
+
+  it('gives every spec guide a role the Races table can sort', () => {
+    for (const guide of specGuides) {
+      expect(['dps', 'healer', 'tank']).toContain(guide.frontmatter.role);
+    }
   });
 
   it('gives every spec guide a spec, a role and a classSlug matching its directory', () => {

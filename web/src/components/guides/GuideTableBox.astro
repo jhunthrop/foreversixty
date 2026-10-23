@@ -1,0 +1,47 @@
+---
+// web/src/components/guides/GuideTableBox.astro
+// A guide table's frame: the site's raised panel with the table inside it, scrolling sideways
+// inside the box at phone width instead of widening the page. The table's own look comes from
+// the `.prose-forever` table rules the guide already sits in.
+interface Props {
+  /** The region's accessible name, so a keyboard user knows what they are scrolling. */
+  label: string;
+  testid?: string;
+  /** A table written to fit a phone (it folds its own columns): no minimum width there. */
+  fitPhone?: boolean;
+}
+const { label, testid, fitPhone = false } = Astro.props;
+---
+
+<div
+  class:list={['guide-table-box', fitPhone && 'guide-table-box-fit']}
+  role="region"
+  aria-label={label}
+  tabindex="0"
+  data-testid={testid}
+>
+  <slot />
+</div>
+
+<style>
+  .guide-table-box {
+    overflow-x: auto;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    margin: 12px 0 14px;
+  }
+  .guide-table-box :global(table) {
+    margin: 0;
+    min-width: 480px;
+  }
+  @media (max-width: 639px) {
+    .guide-table-box-fit :global(table) {
+      min-width: 0;
+    }
+  }
+  .guide-table-box :global(tr:last-child > td),
+  .guide-table-box :global(tr:last-child > th) {
+    border-bottom: none;
+  }
+</style>

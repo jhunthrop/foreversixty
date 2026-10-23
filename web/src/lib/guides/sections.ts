@@ -8,7 +8,7 @@ export const SPEC_SECTIONS = [
   'Talents and builds',
   'Rotation and priority',
   'Stat priority',
-  'Gear',
+  'Best in slot',
   'Enchants and consumables',
   'Races',
   'Professions',

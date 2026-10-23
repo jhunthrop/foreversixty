@@ -16,9 +16,10 @@
 // (`font-mono`/`tabular` for a number, `text-muted` for "not separable from zero") rather
 // than inventing a second convention for the same fact.
 import { band60Weights } from '../../lib/guides/class-dps';
-import { formatDate } from '../../lib/dates';
+import { dayMonth } from '../../lib/guides/guide-header';
+import GuideTableBox from './GuideTableBox.astro';
 import { expertiseCapLine } from '../../lib/bis/expertise-cap';
-import { hitCapLine } from '../../lib/bis/hit-cap';
+import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { railStatRows } from '../../lib/guides/rail-stats';
 
 interface Props {
@@ -38,34 +39,36 @@ const { build, spec, classSlug, recommendedRaces, statPriority } = Astro.props;
 const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
 const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
-const hitCap = hitCapLine(band60?.hitToCap);
+const hitCap = guideHitCapLine(band60?.hitToCap);
 const expertiseCap = expertiseCapLine(band60?.expertiseToCap);
-const updated = band60 === undefined ? undefined : formatDate(new Date(band60.generatedAt));
+const updated = band60 === undefined ? undefined : dayMonth(new Date(band60.generatedAt));
 ---
 
 {rows.length > 0 && (
   <div data-testid="guide-stat-table">
-    <table>
-      <tbody>
-        {rows.map((row, index) => (
-          <tr data-testid={`guide-stat-table-row-${index}`}>
-            <td class="text-strong">{row.label}</td>
-            <td data-testid={`guide-stat-table-value-${index}`}>
-              {row.value === undefined ? (
-                <span class="text-muted">not separable from zero</span>
-              ) : (
-                <span class="tabular text-strong font-mono">
-                  {row.value.toFixed(2)}
-                  {row.perPercent ? ' per 1%' : ''}
-                </span>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <GuideTableBox label="Stat weights">
+      <table>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr data-testid={`guide-stat-table-row-${index}`}>
+              <td class="text-strong">{row.label}</td>
+              <td data-testid={`guide-stat-table-value-${index}`}>
+                {row.value === undefined ? (
+                  <span class="text-muted">not separable from zero</span>
+                ) : (
+                  <span class="tabular text-strong font-mono">
+                    {row.value.toFixed(2)}
+                    {row.perPercent ? ' per 1%' : ''}
+                  </span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </GuideTableBox>
     {hitCap !== undefined && (
-      <p class="text-muted text-[12px]" title={hitCap.title} data-testid="guide-stat-table-hit-cap">
+      <p class="text-strong text-[14px]" title={hitCap.title} data-testid="guide-stat-table-hit-cap">
         {hitCap.text}
       </p>
     )}
