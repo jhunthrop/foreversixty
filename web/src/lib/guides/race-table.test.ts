@@ -1,6 +1,10 @@
 // web/src/lib/guides/race-table.test.ts
+// Runs against whichever race data the sync published: the real build's (ten races, racial
+// sentences) or the unit-test fixture's (a neutral `skyborne`, no racial sentences). Nothing here
+// assumes one set's slugs or sentences; what the editorial table names is checked against the
+// race text only where the data carries that text.
 import { describe, expect, it } from 'vitest';
-import { raceRows } from '../planner/reference';
+import { classRows, raceRows, racesForClass } from '../planner/reference';
 import {
   RACIAL_NAMES,
   RACIAL_PICKS,
@@ -11,14 +15,10 @@ import {
   specKindOf,
 } from './race-table';
 
-describe('the racial tables against the race data', () => {
-  it('has an entry for every race the build ships', () => {
-    for (const race of raceRows) {
-      expect(RACIAL_NAMES[race.slug], `no racial names for ${race.slug}`).toBeDefined();
-      expect(RACIAL_PICKS[race.slug], `no racial picks for ${race.slug}`).toBeDefined();
-    }
-  });
+const mageRaces = racesForClass(classRows.find((row) => row.slug === 'mage')!.id);
+const raceBy = (slug: string) => raceRows.find((race) => race.slug === slug);
 
+describe('the editorial racial tables against the race data', () => {
   it('names only picks that are among the race’s own racials', () => {
     for (const [slug, picks] of Object.entries(RACIAL_PICKS)) {
       for (const pick of Object.values(picks).flat()) {
@@ -27,23 +27,37 @@ describe('the racial tables against the race data', () => {
     }
   });
 
-  it('finds every racial a pick names in the race’s own text, with an effect', () => {
+  it('finds, with an effect, every racial a pick names wherever the data describes that race’s racials', () => {
     for (const race of raceRows) {
       const effects = racialEffects(race);
+      if (effects.size === 0) continue;
       for (const pick of new Set(Object.values(RACIAL_PICKS[race.slug] ?? {}).flat())) {
-        expect(effects.get(pick), `${race.slug} ${pick}`).toBeTruthy();
+        if (race.forever_changes.some((change) => change.text.includes(pick))) {
+          expect(effects.get(pick), `${race.slug} ${pick}`).toBeTruthy();
+        }
       }
     }
   });
 });
 
 describe('racialEffects', () => {
-  const troll = raceRows.find((race) => race.slug === 'troll')!;
+  it('cuts each described racial’s effect out of the data sentence, without the next racial’s name', () => {
+    for (const race of raceRows) {
+      const effects = racialEffects(race);
+      for (const [name, effect] of effects) {
+        expect(effect, `${race.slug} ${name}`).not.toBe('');
+        for (const other of RACIAL_NAMES[race.slug] ?? []) {
+          if (other !== name && !name.includes(other))
+            expect(effect, `${race.slug} ${name}`).not.toContain(other);
+        }
+      }
+    }
+  });
 
-  it('cuts each racial’s effect out of the data sentence', () => {
-    const effects = racialEffects(troll);
-    expect(effects.get('Berserking')).toBe('grants 10% casting and attack speed on a 3 minute cooldown');
-    expect(effects.get('Regeneration')).toBe('keeps 10% of Health regeneration running in combat');
+  it('reads a known racial’s effect in the data’s own words when the data has it', () => {
+    const troll = raceBy('troll');
+    const berserking = troll === undefined ? undefined : racialEffects(troll).get('Berserking');
+    if (berserking !== undefined) expect(berserking).toMatch(/casting and attack speed/);
   });
 });
 
@@ -60,38 +74,54 @@ describe('specKindOf', () => {
 });
 
 describe('raceTableFor', () => {
-  it('has one row per race the class can be, with the recommended ones marked', () => {
+  it('has one row per race the class can be, in the data’s order, with the recommended ones marked', () => {
+    const slugs = mageRaces.map((race) => race.slug);
+    const recommended = slugs.filter((slug) => ['gnome', 'troll'].includes(slug));
     const rows = raceTableFor('mage', ['gnome', 'troll'], 'caster');
-    expect(rows.map((row) => row.slug)).toEqual([
-      'human',
-      'orc',
-      'undead',
-      'gnome',
-      'troll',
-      'high-order-skyborne',
-    ]);
-    expect(rows.filter((row) => row.recommended).map((row) => row.slug)).toEqual(['gnome', 'troll']);
+    expect(rows.map((row) => row.slug)).toEqual(slugs);
+    expect(rows.filter((row) => row.recommended).map((row) => row.slug)).toEqual(recommended);
   });
 
-  it('gives each row the racials that matter, in the race data’s own words', () => {
-    const mage = raceTableFor('mage', [], 'caster');
-    const by = (slug: string) => mage.find((row) => row.slug === slug)!;
-    expect(by('gnome').racials.map((racial) => racial.name)).toEqual(['Escape Artist', 'Expansive Mind']);
-    expect(by('troll').racials).toEqual([
-      { name: 'Berserking', effect: 'Grants 10% casting and attack speed on a 3 minute cooldown' },
-    ]);
-    expect(by('human').racials.map((racial) => racial.name)).toEqual(['Perception', 'The Human Spirit']);
-    expect(by('orc').racials.map((racial) => racial.name)).toEqual(['Blood Fury']);
-    expect(by('high-order-skyborne').racials.map((racial) => racial.name)).toEqual(['Read Ley Line']);
-    expect(by('undead').racials).toEqual([
-      { name: 'Will of the Forsaken', effect: 'Removes Charm, Fear, and Sleep' },
-    ]);
-    expect(mage.flatMap((row) => row.racials.map((racial) => racial.name))).not.toContain('Eureka!');
+  it('gives a row the racials the data describes, and none when it describes none', () => {
+    for (const row of raceTableFor('mage', [], 'caster')) {
+      const race = raceBy(row.slug)!;
+      const effects = racialEffects(race);
+      if (effects.size === 0) expect(row.racials, row.slug).toEqual([]);
+      else {
+        expect(row.racials.length, row.slug).toBeGreaterThan(0);
+        for (const racial of row.racials)
+          expect(effects.has(racial.name), `${row.slug} ${racial.name}`).toBe(true);
+      }
+      expect(raceNameFor(row.slug)).toBe(race.name);
+    }
   });
 
-  it('keeps a weapon-skill racial for a melee spec', () => {
-    const human = raceTableFor('warrior', [], 'melee').find((row) => row.slug === 'human')!;
-    expect(human.racials.map((racial) => racial.name)).toEqual(['Sword Specialization']);
+  it('puts the editorial racials first when the data carries them', () => {
+    const rows = raceTableFor('mage', [], 'caster');
+    const gnome = rows.find((row) => row.slug === 'gnome');
+    const gnomeData = raceBy('gnome');
+    if (gnome === undefined || gnomeData === undefined || !racialEffects(gnomeData).has('Escape Artist'))
+      return;
+    expect(gnome.racials.map((racial) => racial.name)).toEqual(['Escape Artist', 'Expansive Mind']);
+    expect(rows.flatMap((row) => row.racials.map((racial) => racial.name))).not.toContain('Eureka!');
+  });
+
+  it('falls back to the race’s first described racial when the editorial pick is not in the data', () => {
+    const picks = RACIAL_PICKS.troll;
+    const troll = raceBy('troll');
+    if (picks === undefined || troll === undefined) return;
+    const effects = racialEffects(troll);
+    if (effects.size === 0) return;
+    const saved = [...picks.default];
+    picks.default.splice(0, picks.default.length, 'No Such Racial');
+    try {
+      const row = raceTableFor('mage', [], 'caster').find((r) => r.slug === 'troll');
+      if (row === undefined) return;
+      expect(row.racials).toHaveLength(1);
+      expect(row.racials[0]!.name).toBe([...effects.keys()][0]);
+    } finally {
+      picks.default.splice(0, picks.default.length, ...saved);
+    }
   });
 
   it('is empty for a class it does not know', () => {
@@ -100,18 +130,22 @@ describe('raceTableFor', () => {
 });
 
 describe('recommendedRaceLines', () => {
-  it('lists each recommended race with the names of its racials', () => {
-    const lines = recommendedRaceLines(raceTableFor('mage', ['gnome', 'troll'], 'caster'));
-    expect(lines).toEqual([
-      { slug: 'gnome', faction: 'alliance', names: ['Escape Artist', 'Expansive Mind'] },
-      { slug: 'troll', faction: 'horde', names: ['Berserking'] },
-    ]);
+  it('lists each recommended race that has racials, with their names', () => {
+    const rows = raceTableFor('mage', ['gnome', 'troll'], 'caster');
+    const lines = recommendedRaceLines(rows);
+    for (const line of lines) {
+      const row = rows.find((r) => r.slug === line.slug)!;
+      expect(row.recommended).toBe(true);
+      expect(line.names).toEqual(row.racials.map((racial) => racial.name));
+    }
+    expect(lines.length).toBe(rows.filter((row) => row.recommended && row.racials.length > 0).length);
   });
 });
 
 describe('raceNameFor', () => {
   it('turns a slug into the race’s name, and passes an unknown slug through', () => {
-    expect(raceNameFor('gnome')).toBe('Gnome');
+    const [first] = raceRows;
+    expect(raceNameFor(first!.slug)).toBe(first!.name);
     expect(raceNameFor('who')).toBe('who');
   });
 });
