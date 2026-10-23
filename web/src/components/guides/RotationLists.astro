@@ -29,9 +29,7 @@ const groups: { id: string; title: string; items: RotationItem[]; numbered: bool
           {group.items.map((item, index) => (
             <li class="rotation-item" data-testid={`guide-rotation-${group.id}-${index}`}>
               {group.numbered && <span class="rotation-num font-mono tabular">{index + 1}</span>}
-              {item.icon === undefined ? (
-                <span class="rotation-icon-spacer" aria-hidden="true" />
-              ) : (
+              {item.icon !== undefined && (
                 <img
                   src={dataUrl(build, `icons/${item.icon}.webp`)}
                   alt=""
@@ -118,7 +116,7 @@ const groups: { id: string; title: string; items: RotationItem[]; numbered: bool
   }
   .rotation-rank {
     margin-left: 6px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 400;
     color: var(--color-muted);
     letter-spacing: 0.04em;

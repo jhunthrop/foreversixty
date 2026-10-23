@@ -139,9 +139,13 @@ export function rotationListsFrom(
   lines: readonly CollapsedLine[],
   apl: unknown,
   spellFacts: SpellLookup,
+  /** Further cooldown spells of the spec (`specCooldowns`), after the ones its priority names. */
+  extraCooldowns: readonly RotationItem[] = [],
 ): RotationLists {
   const priority = lines.map(lineItem);
 
+  // The opener is the APL's pre-pull casts and nothing else: with none, there is no opener to
+  // print (a row that is not a spell is not an opener step).
   // A pre-pull rank often has no icon of its own; the priority line for the same spell does.
   const lineIcons = new Map(
     priority.filter((item) => item.icon !== undefined).map((item) => [item.name, item.icon]),
@@ -158,17 +162,10 @@ export function rotationListsFrom(
       clause: `${secondsText(cast.secondsBefore)} before the pull`,
     });
   }
-  if (usesCooldownPass(apl)) {
-    opener.push({ name: 'On-use cooldowns', clause: 'Trinkets, racials and potions, as the pull starts' });
-  }
-  opener.push({ name: 'Priority list', clause: 'Then work down it from the top' });
 
   const cooldowns: RotationItem[] = [];
   const seen = new Set<string>();
-  const candidates = [
-    ...opener.filter((item) => item.spellId !== undefined),
-    ...priority.filter((item) => item.spellId !== undefined),
-  ];
+  const candidates = [...opener, ...priority.filter((item) => item.spellId !== undefined)];
   for (const item of candidates) {
     const facts = spellFacts(item.spellId!);
     if (facts === undefined || facts.cooldownMs < COOLDOWN_FLOOR_MS || seen.has(item.name)) continue;
@@ -177,6 +174,11 @@ export function rotationListsFrom(
     const when = `${formatCooldown(facts.cooldownMs)} cooldown`;
     const plain = fromLine === undefined || fromLine === '' || /^on cooldown$/i.test(fromLine);
     cooldowns.push({ ...item, clause: plain ? when : `${when}. ${fromLine}` });
+  }
+  for (const item of extraCooldowns) {
+    if (seen.has(item.name)) continue;
+    seen.add(item.name);
+    cooldowns.push(item);
   }
   if (usesCooldownPass(apl)) {
     cooldowns.push({
@@ -249,4 +251,88 @@ export function spellLookupFor(build: string, classSlug: string): SpellLookup {
 export function loadApl(spec: string): unknown {
   const file = path.join(repoRoot(), 'data/curated/apl', `${spec}.json`);
   return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as unknown) : undefined;
+}
+
+// --- the spec's own cooldown spells ---------------------------------------------------------
+
+const BASELINE_COOLDOWN_FLOOR_MS = 180_000;
+const TALENT_COOLDOWN_FLOOR_MS = 60_000;
+const COOLDOWN_CEILING_MS = 1_800_000;
+const MAX_LEVEL = 60;
+
+interface TrainableFile {
+  trainables: {
+    name: string;
+    active: boolean;
+    cooldown_ms: number;
+    ranks: { id: number; rank: number; level: number }[];
+  }[];
+}
+
+interface TalentNameFile {
+  trees: { talents: { name: string; icon: string; spell_id: number }[] }[];
+}
+
+/**
+ * The cooldown spells a spec can use, from the client's own data: the class trainer's active
+ * spells with a long cooldown (a baseline spell from three minutes up), and the talent spells
+ * the spec's builds actually spend points in. A spell the APL already names is left to
+ * `rotationListsFrom`. Rank is the highest learned by level 60.
+ */
+export function specCooldowns(
+  build: string,
+  classSlug: string,
+  litTalents: ReadonlySet<string>,
+  spellFacts: SpellLookup,
+): RotationItem[] {
+  const root = repoRoot();
+  const trainFile = path.join(root, 'data/builds', build, 'trainables', `${classSlug}.json`);
+  const talentFile = path.join(root, 'data/builds', build, 'talents', `${classSlug}.json`);
+  if (!existsSync(trainFile)) return [];
+  const trainables = (JSON.parse(readFileSync(trainFile, 'utf8')) as TrainableFile).trainables;
+  const talentIcons = new Map<string, string>();
+  const talentNames = new Set<string>();
+  if (existsSync(talentFile)) {
+    for (const tree of (JSON.parse(readFileSync(talentFile, 'utf8')) as TalentNameFile).trees) {
+      for (const talent of tree.talents) {
+        talentNames.add(talent.name);
+        talentIcons.set(talent.name, talent.icon);
+      }
+    }
+  }
+  const items: (RotationItem & { cooldownMs: number; lit: boolean })[] = [];
+  const seen = new Set<string>();
+  for (const spell of trainables) {
+    if (!spell.active || seen.has(spell.name)) continue;
+    const isTalent = talentNames.has(spell.name);
+    if (isTalent && !litTalents.has(spell.name)) continue;
+    const learned = spell.ranks.filter((rank) => rank.level <= MAX_LEVEL);
+    const top = learned.reduce<(typeof learned)[number] | undefined>(
+      (best, rank) => (best === undefined || rank.rank >= best.rank ? rank : best),
+      undefined,
+    );
+    if (top === undefined) continue;
+    const facts = spellFacts(top.id);
+    const cooldownMs = Math.max(spell.cooldown_ms, facts?.cooldownMs ?? 0);
+    const floor = isTalent ? TALENT_COOLDOWN_FLOOR_MS : BASELINE_COOLDOWN_FLOOR_MS;
+    if (cooldownMs < floor || cooldownMs > COOLDOWN_CEILING_MS) continue;
+    seen.add(spell.name);
+    items.push({
+      spellId: top.id,
+      name: spell.name,
+      rank: facts?.rank,
+      icon: facts?.icon ?? iconFor(build, talentIcons.get(spell.name)),
+      clause: `${formatCooldown(cooldownMs)} cooldown`,
+      cooldownMs,
+      lit: isTalent,
+    });
+  }
+  return items
+    .sort((a, b) => Number(b.lit) - Number(a.lit) || a.cooldownMs - b.cooldownMs)
+    .map(({ cooldownMs: _cooldownMs, lit: _lit, ...item }) => item);
+}
+
+function iconFor(build: string, icon: string | undefined): string | undefined {
+  if (icon === undefined) return undefined;
+  return existsSync(path.join(repoRoot(), 'data/builds', build, 'icons', `${icon}.webp`)) ? icon : undefined;
 }

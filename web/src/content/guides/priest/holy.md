@@ -72,13 +72,11 @@ Spell power, the damage side of a healing item, adds nothing to a heal. Forever 
 
 ## Best in slot
 
-Follow the stat priority above: the mana stats first, then healing power, with critical strike behind; spell power on a healing item adds nothing to a heal. Spirit stays the tree's core sustain stat.
+Spirit stays the tree's core sustain stat.
 
 ## Enchants and consumables
 
 ## Races
-
-Holy can be played by Human, Dwarf, Night Elf, and Gnome on the Alliance, and Undead and Troll on the Horde. Priest is not available to the Skyborne on either faction. For Alliance, **Gnome** is the strongest pick for a throughput-focused Holy build: Contingency Plan is a proactive Holy ward that absorbs and heals an ally automatically when they drop below 35% health, functioning as a passive extra heal that costs no cast time — a direct fit for a tree built around efficient, repeated healing. Human's Divine Grace is a close second through its instant heal on demand. For Horde, **Troll** is the stronger pick over Undead for Holy specifically: Regeneration keeps 10% of health regeneration running in combat, a passive survivability boost that complements a spec focused on keeping others alive rather than sustaining its own mana pool the way Undead's Dark Sacrifice does.
 
 ## Professions
 

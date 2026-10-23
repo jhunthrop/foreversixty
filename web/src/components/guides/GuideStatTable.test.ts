@@ -44,7 +44,9 @@ describe('GuideStatTable', () => {
       expect(html).toContain(`data-testid="guide-stat-table-row-${index}"`);
       expect(html).toContain(row.label);
       if (row.value === undefined) {
-        expect(html).toContain('not separable from zero');
+        expect(html).toContain('Not significant');
+      } else if (row.perPercent) {
+        expect(html).toContain(`${row.value.toFixed(1)} per 1% haste`);
       } else {
         expect(html).toContain(row.value.toFixed(2));
       }
@@ -55,10 +57,7 @@ describe('GuideStatTable', () => {
     expect(expectedRows).toHaveLength(STAT_PRIORITY.length);
   });
 
-  it('prints an "Updated" line from the file’s own generated_at', async () => {
-    const file = loadBisFile('warrior-fury', BUILD);
-    if (file === null) throw new Error('warrior-fury BiS file missing');
-
+  it('has the weight and DPS-per-point columns, and no "Updated" line (the fact line carries the date)', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {
       props: {
@@ -70,8 +69,9 @@ describe('GuideStatTable', () => {
       },
     });
 
-    expect(html).toContain('data-testid="guide-stat-table-updated"');
-    expect(html).toContain('Updated');
+    expect(html).toContain('DPS per point');
+    expect(html).toMatch(/Weight \([A-Za-z ]+ = 1\.00\)/);
+    expect(html).not.toContain('guide-stat-table-updated');
   });
 
   it('prints the hit-to-cap line exactly when the band publishes the key', async () => {

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   CONSUMABLE_GIVES,
+  consumableKind,
   consumableRows,
   enchantGives,
   enchantScore,
@@ -158,12 +159,34 @@ describe('consumableRows', () => {
     expect(rows).toEqual([
       {
         id: 'flask_of_supreme_power',
+        kind: 'flask',
         name: 'Flask of Supreme Power',
         icon: 'inv_potion_41',
         gives: 'Spell power',
       },
-      { id: 'juju_power', name: 'Juju Power', icon: undefined, gives: 'Strength' },
+      { id: 'juju_power', kind: 'other', name: 'Juju Power', icon: undefined, gives: 'Strength' },
     ]);
+  });
+});
+
+describe('consumableKind', () => {
+  it('tells a flask from an elixir from everything else', () => {
+    expect(consumableKind('flask_of_supreme_power')).toBe('flask');
+    expect(consumableKind('greater_arcane_elixir')).toBe('elixir');
+    expect(consumableKind('elixir_of_frost_power')).toBe('elixir');
+    expect(consumableKind('major_mana_potion')).toBe('other');
+  });
+});
+
+describe('enchant icons', () => {
+  it('drops an icon the data shares among many enchants, keeps one an enchant owns', () => {
+    const shared = Array.from({ length: 4 }, (_, i) =>
+      enchant({ id: i + 10, name: `Stand-in ${i}`, icon: 'generic', stats: { intellect: 1 } }),
+    );
+    const own = enchant({ id: 1, name: 'Own', icon: 'own_icon', slots: ['feet'], stats: { intellect: 5 } });
+    const rows = pickEnchants([...shared, own], WEIGHTS, CONTEXT);
+    expect(rows.find((row) => row.name === 'Own')?.icon).toBe('own_icon');
+    expect(rows.find((row) => row.slot === 'wrist')?.icon).toBeUndefined();
   });
 });
 

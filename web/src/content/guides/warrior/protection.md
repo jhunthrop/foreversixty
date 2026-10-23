@@ -107,23 +107,17 @@ Rage comes from your swings (a fixed amount per landed swing from the weapon's s
 
 ## Stat priority
 
-The table above is this level range's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
+A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
 Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches, so it depends on your Block Value. Expertise lowers the boss's chance to dodge or parry you, which is threat and Rage, not survival; no item carries it yet, so it is a stat for the day one does. Strength and Attack Power add threat and, for Strength, Block Value.
 
-Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so a shield's Block Value is not weighed apart from its Block chance. And a stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this level range's sample size, to tell its value apart from zero.
+Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so a shield's Block Value is not weighed apart from its Block chance.
 
 ## Best in slot
 
-Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them.
-
 ## Enchants and consumables
 
-Target Stamina and Defense Skill on enchants where they're available, rather than the Strength and Attack Power enchants the two DPS specs want.
-
 ## Races
-
-Protection can be played by every race the Warrior class allows: Human, Dwarf, Night Elf, and Gnome on the Alliance; Orc, Undead, Tauren, and Troll on the Horde; and, new in Forever, the Skyborne on either faction, since Skyborne is a new race rather than one of Blizzard's six new class pairings. For Alliance, **Dwarf** is the strongest pick for a tank: the reworked Stoneform now reduces Physical damage taken instead of only raising Armor, a direct, on-demand mitigation cooldown that fits a spec absorbing sustained physical hits. For Horde, **Tauren** pairs well: War Stomp stuns up to 5 nearby enemies within 8 yards for 2 seconds on a 2-minute cooldown, useful for peeling adds off healers, and Endurance grants 5% more Health and 1% Hit chance, directly growing the health pool and threat reliability a tank leans on. Skyborne is open to Warrior on both factions with no restriction; its racials (a downward glide, a short full health-and-mana restore, 1% haste) read as utility rather than survivability, so it's a valid but not obviously stronger pick than Dwarf or Tauren for Protection specifically.
 
 ## Professions
 

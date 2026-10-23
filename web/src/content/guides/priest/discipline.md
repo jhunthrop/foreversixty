@@ -71,13 +71,11 @@ Spell power adds nothing to a heal; it is the damage side of a healing item. Eve
 
 ## Best in slot
 
-Follow the stat priority above: regeneration first, then healing power, Spirit and Intellect close together; spell power on a healing item adds nothing to a heal. Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it's still the tree's main sustain stat.
+Because Meditation now lets a much larger share of mana regeneration continue while casting, spirit is somewhat less punishing to undervalue than in 1.12, but it's still the tree's main sustain stat.
 
 ## Enchants and consumables
 
 ## Races
-
-Discipline can be played by Human, Dwarf, Night Elf, and Gnome on the Alliance, and Undead and Troll on the Horde. Priest is not available to the Skyborne on either faction. For Alliance, **Human** is the strongest pick: the reworked Divine Grace snaps out an instant heal on any party member whose health has fallen under half, self-targeting excluded, giving Discipline a free emergency cooldown that stacks with Power Word: Shield rather than competing with it. Gnome, the new Alliance pairing, is also a reasonable pick through Contingency Plan, a defensive ward that triggers its own absorb and heal once a party member's health falls under roughly a third — a similar proactive-mitigation idea to Divine Grace, just automatic rather than cast. For Horde, **Undead** is the strongest pick: Dark Sacrifice converts health to mana, giving a Discipline healer a way to keep casting through a fight that's run the mana pool dry, which matters more for Discipline than for a burst-heavy Holy build.
 
 ## Professions
 

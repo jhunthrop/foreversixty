@@ -39,8 +39,12 @@ export interface EnchantRow {
   gives: string;
 }
 
+export type ConsumableKind = 'flask' | 'elixir' | 'other';
+
 export interface ConsumableRow {
   id: string;
+  /** A flask takes both elixir slots; an elixir is what a player without a flask uses. */
+  kind: ConsumableKind;
   name: string;
   icon: string | undefined;
   gives: string;
@@ -57,6 +61,15 @@ const STAT_ALIASES: Readonly<Record<string, string>> = {
 
 /** Rating-family and haste stats: not scored (see the header). */
 const UNSCORED = new Set(['crit', 'hit', 'dodge', 'parry', 'block', 'defense', 'melee_haste', 'spell_haste']);
+
+/** An icon shared by this many enchants is the data's stand-in, not the enchant's own. */
+const STAND_IN_ICON_USES = 4;
+
+export function consumableKind(id: string): ConsumableKind {
+  if (id.startsWith('flask_')) return 'flask';
+  if (id.includes('elixir')) return 'elixir';
+  return 'other';
+}
 
 const STAT_WORDS: Readonly<Record<string, string>> = {
   spell_damage: 'spell power',
@@ -128,6 +141,8 @@ export function pickEnchants(
   context: EnchantContext,
 ): EnchantRow[] {
   const byStat = new Map(weights.filter((w) => !(w.insignificant ?? false)).map((w) => [w.stat, w.weight]));
+  const iconUses = new Map<string, number>();
+  for (const record of records) iconUses.set(record.icon, (iconUses.get(record.icon) ?? 0) + 1);
   const best = new Map<string, { score: number; record: EnchantRecord }>();
   for (const record of records) {
     if (record.phase > LATEST_PHASE || record.item_types.includes('kit')) continue;
@@ -153,7 +168,7 @@ export function pickEnchants(
       slot,
       slotLabel: slot === 'main_hand' ? 'Weapon' : (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot),
       name: record.name,
-      icon: record.icon,
+      icon: (iconUses.get(record.icon) ?? 0) >= STAND_IN_ICON_USES ? undefined : record.icon,
       gives: enchantGives(record.stats),
     };
   });
@@ -174,7 +189,7 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   flask_of_supreme_power: 'Spell power',
   flask_of_the_titans: '1200 health for two hours',
   food_grilled_squid: 'Agility',
-  food_runn_tum_tuber_surprise: 'The caster meal',
+  food_runn_tum_tuber_surprise: 'Intellect (well fed)',
   food_sages_tea: 'Healing power',
   food_tender_wolf_steak: 'Stamina',
   greater_arcane_elixir: 'Spell power',
@@ -212,6 +227,7 @@ export function consumableRows(
     return [
       {
         id: consume.id,
+        kind: consumableKind(consume.id),
         name: consume.label,
         icon: icon !== undefined && iconExists(icon) ? icon : undefined,
         gives,

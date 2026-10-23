@@ -23,29 +23,36 @@ export const RACIAL_NAMES: Readonly<Record<string, readonly string[]>> = {
   'windshaper-skyborne': ['Walk on Air', 'Read Ley Line', 'Wind Blessed', 'Elemental Insight'],
 };
 
-type Picks = { default: string } & Partial<Record<SpecKind, string>>;
+type Picks = { default: string[] } & Partial<Record<SpecKind, string[]>>;
 
-/** The racial that matters, by kind of spec. */
+/** The racials that matter, by kind of spec: Gnome Escape Artist and Expansive Mind, Troll
+ *  Berserking, Undead Will of the Forsaken, Human Perception and The Human Spirit, Orc Blood
+ *  Fury, Skyborne Read Ley Line; the rest follow the same rule. Names are the race data's own. */
 export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   human: {
-    default: 'Sword Specialization',
-    caster: 'The Human Spirit',
-    healer: 'The Human Spirit',
-    ranged: 'Will to Survive',
+    default: ['Perception', 'The Human Spirit'],
+    melee: ['Sword Specialization'],
+    tank: ['Sword Specialization'],
+    ranged: ['Will to Survive'],
   },
-  orc: { default: 'Blood Fury', tank: 'Shatter Curse' },
-  dwarf: { default: 'Mace Specialization', healer: 'Stoneform', caster: 'Stoneform', tank: 'Stoneform' },
-  'night-elf': { default: "Elune's Light", tank: 'Quickness' },
+  orc: { default: ['Blood Fury'], tank: ['Shatter Curse'] },
+  dwarf: {
+    default: ['Mace Specialization'],
+    healer: ['Stoneform'],
+    caster: ['Stoneform'],
+    tank: ['Stoneform'],
+  },
+  'night-elf': { default: ["Elune's Light"], tank: ['Quickness'] },
   undead: {
-    default: 'Will of the Forsaken',
-    melee: 'Touch of the Grave',
-    ranged: 'Touch of the Grave',
+    default: ['Will of the Forsaken'],
+    melee: ['Touch of the Grave'],
+    ranged: ['Touch of the Grave'],
   },
-  tauren: { default: 'Endurance' },
-  gnome: { default: 'Eureka!', healer: 'Expansive Mind', tank: 'Escape Artist' },
-  troll: { default: 'Berserking', tank: 'Rapid Regeneration' },
-  'high-order-skyborne': { default: 'Wind Blessed', healer: 'Read Ley Line' },
-  'windshaper-skyborne': { default: 'Wind Blessed', healer: 'Read Ley Line' },
+  tauren: { default: ['Endurance'] },
+  gnome: { default: ['Escape Artist', 'Expansive Mind'] },
+  troll: { default: ['Berserking'], tank: ['Rapid Regeneration'] },
+  'high-order-skyborne': { default: ['Read Ley Line'] },
+  'windshaper-skyborne': { default: ['Read Ley Line'] },
 };
 
 const CASTER_CLASSES = new Set(['mage', 'warlock']);
@@ -73,6 +80,7 @@ function trimEffect(raw: string): string {
   }
   const stops = [text.indexOf('. '), text.indexOf(';')].filter((i) => i !== -1);
   if (stops.length > 0) text = text.slice(0, Math.min(...stops));
+  text = text.replace(/\s+but no longer.*$/i, '');
   text = text.replace(/[,\s]+(and\s*)?$/i, '').replace(/[.\s]+$/, '');
   text = text
     .replace(/^,\s*/, '')
@@ -116,15 +124,19 @@ export function racialEffects(race: RaceRow): Map<string, string> {
   return effects;
 }
 
+export interface GuideRacial {
+  name: string;
+  /** What it does, sentence case, no final stop. */
+  effect: string;
+}
+
 export interface GuideRaceRow {
   slug: string;
   name: string;
   faction: string;
   recommended: boolean;
-  /** The racial that matters for this spec, absent when the data does not describe it. */
-  racial: string | undefined;
-  /** What it does, sentence case, no final stop. */
-  effect: string | undefined;
+  /** The racials that matter for this spec; the ones the data does not describe are left out. */
+  racials: GuideRacial[];
 }
 
 function upperFirst(text: string): string {
@@ -140,17 +152,33 @@ export function raceTableFor(
   if (classRow === undefined) return [];
   return racesForClass(classRow.id).map((race): GuideRaceRow => {
     const picks = RACIAL_PICKS[race.slug];
-    const racial = picks === undefined ? undefined : (picks[kind] ?? picks.default);
-    const effect = racial === undefined ? undefined : racialEffects(race).get(racial);
+    const names = picks === undefined ? [] : (picks[kind] ?? picks.default);
+    const effects = racialEffects(race);
     return {
       slug: race.slug,
       name: race.name,
       faction: race.faction,
       recommended: recommendedRaces.includes(race.slug),
-      racial: effect === undefined ? undefined : racial,
-      effect: effect === undefined ? undefined : upperFirst(effect),
+      racials: names.flatMap((name) => {
+        const effect = effects.get(name);
+        return effect === undefined ? [] : [{ name, effect: upperFirst(effect) }];
+      }),
     };
   });
+}
+
+/** The recommended races as the one line under the table: "Gnome is the Alliance pick: Escape
+ *  Artist and Expansive Mind." ("a" when a faction has more than one). */
+export function recommendedRaceLines(
+  rows: readonly GuideRaceRow[],
+): { slug: string; faction: string; names: string[] }[] {
+  return rows
+    .filter((row) => row.recommended && row.racials.length > 0)
+    .map((row) => ({
+      slug: row.slug,
+      faction: row.faction,
+      names: row.racials.map((racial) => racial.name),
+    }));
 }
 
 /** A race's display name from its slug (a BiS band names its race by slug); the slug itself

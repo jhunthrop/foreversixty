@@ -1,9 +1,11 @@
 ---
 // web/src/components/guides/GuideBisTable.astro
-// "Best in slot": the per-slot picks the /bis page lists, one table per level range with a
-// switcher, the level 60 table open first. Server-rendered from the ranked BiS file
-// (lib/guides/guide-bis.ts) with no island: the switcher is a set of radios and the CSS that
-// shows the checked range's panel, the same no-script mechanism the /bis faction toggle uses.
+// "Best in slot": the per-slot picks the /bis page lists, one table per faction and level range
+// with two switches, the level 60 table of the guide's own faction open first. Server-rendered
+// from the ranked BiS file (lib/guides/guide-bis.ts) with no island: the switches are radios and
+// the CSS that shows the checked pair's panel, the same no-script mechanism the /bis faction
+// toggle uses. A small inline script on the page may check a different level range radio (the
+// visitor's own band) after paint.
 import { dataUrl } from '../../lib/planner/load';
 import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
 import { guidesCopy } from '../../lib/guides/copy';
@@ -17,27 +19,53 @@ interface Props {
   bis: GuideBis;
   /** `/bis/<class>/<spec>`, for the "Full list and alternatives" link. */
   bisHref: string;
+  /** The guide's class, so the page script can tell whether the stored character fits it. */
+  classSlug: string;
 }
-const { build, bis, bisHref } = Astro.props;
+const { build, bis, bisHref, classSlug } = Astro.props;
 
-// One rule pair per range: the checked radio shows its panel and lights its pill. Built here
-// and emitted unscoped (like the /bis page's own toggle CSS) because the selectors reach from
-// the radio to elements further along the same parent.
-const switchCss = bis.bands
-  .map(
-    (b) =>
-      `#gbis-band-${b.band}:checked~#gbis-panel-${b.band}{display:block}` +
-      `#gbis-band-${b.band}:checked~.gbis-pills label[for="gbis-band-${b.band}"]{background:color-mix(in srgb,var(--color-gold) 16%,transparent);border-color:var(--color-gold);color:var(--color-gold-light)}` +
-      `#gbis-band-${b.band}:focus-visible~.gbis-pills label[for="gbis-band-${b.band}"]{outline:2px solid var(--color-gold);outline-offset:2px}`,
-  )
-  .join('');
+const factionLabel = (faction: string): string => (faction === 'alliance' ? 'Alliance' : 'Horde');
+
+// One rule group per faction and range: the checked pair shows its panel, and each checked radio
+// lights its pill. Built here and emitted unscoped (like the /bis page's own toggle CSS) because
+// the selectors reach from the radios to elements further along the same parent.
+const lit =
+  'background:color-mix(in srgb,var(--color-gold) 16%,transparent);border-color:var(--color-gold);color:var(--color-gold-light)';
+const switchCss =
+  bis.factions
+    .map(
+      (f) =>
+        `#gbis-f-${f}:checked~.gbis-controls label[for="gbis-f-${f}"]{${lit}}` +
+        `#gbis-f-${f}:focus-visible~.gbis-controls label[for="gbis-f-${f}"]{outline:2px solid var(--color-gold);outline-offset:2px}`,
+    )
+    .join('') +
+  bis.bands
+    .map(
+      (b) =>
+        `#gbis-band-${b.band}:checked~.gbis-controls label[for="gbis-band-${b.band}"]{${lit}}` +
+        `#gbis-band-${b.band}:focus-visible~.gbis-controls label[for="gbis-band-${b.band}"]{outline:2px solid var(--color-gold);outline-offset:2px}`,
+    )
+    .join('') +
+  bis.panels
+    .map(
+      (p) =>
+        `#gbis-f-${p.faction}:checked~#gbis-band-${p.band}:checked~#gbis-panel-${p.faction}-${p.band}{display:block}`,
+    )
+    .join('');
 ---
 
-<div class="gbis" data-testid="guide-bis">
+<div class="gbis" data-testid="guide-bis" data-default-band={bis.defaultBand} data-guide-class={classSlug}>
   <style set:html={switchCss}></style>
-  <p class="text-muted gbis-caption" data-testid="guide-bis-caption">
-    {guidesCopy.bisCaption(bis.raceName, bis.faction === 'alliance' ? 'Alliance' : 'Horde')}
-  </p>
+  {bis.factions.map((f) => (
+    <input
+      type="radio"
+      name="gbis-faction"
+      id={`gbis-f-${f}`}
+      class="sr-only"
+      checked={f === bis.defaultFaction}
+      data-testid={`guide-bis-faction-radio-${f}`}
+    />
+  ))}
   {bis.bands.map((b) => (
     <input
       type="radio"
@@ -48,20 +76,41 @@ const switchCss = bis.bands
       data-testid={`guide-bis-radio-${b.band}`}
     />
   ))}
-  <div class="gbis-pills" role="group" aria-label={guidesCopy.levelRange}>
-    {bis.bands.map((b) => (
-      <label
-        for={`gbis-band-${b.band}`}
-        class="gbis-pill font-mono tabular"
-        data-testid={`guide-bis-pill-${b.band}`}
-      >
-        {b.label}
-      </label>
-    ))}
+  <div class="gbis-controls">
+    {bis.factions.length > 1 && (
+      <div class="gbis-factions" role="group" aria-label={guidesCopy.factionGroup}>
+        {bis.factions.map((f) => (
+          <label for={`gbis-f-${f}`} class="gbis-pill" data-testid={`guide-bis-faction-${f}`}>
+            {factionLabel(f)}
+          </label>
+        ))}
+      </div>
+    )}
+    <div class="gbis-pills" role="group" aria-label={guidesCopy.levelRange}>
+      {bis.bands.map((b) => (
+        <label
+          for={`gbis-band-${b.band}`}
+          class="gbis-pill font-mono tabular"
+          data-testid={`guide-bis-pill-${b.band}`}
+        >
+          {guidesCopy.levelRangeLabel(b.band)}
+        </label>
+      ))}
+    </div>
   </div>
-  {bis.bands.map((b) => (
-    <div class="gbis-panel" id={`gbis-panel-${b.band}`} data-testid={`guide-bis-panel-${b.band}`}>
-      <GuideTableBox label={`${guidesCopy.bestInSlot}, level ${b.label}`} fitPhone>
+  {bis.panels.map((p) => (
+    <div
+      class="gbis-panel"
+      id={`gbis-panel-${p.faction}-${p.band}`}
+      data-testid={`guide-bis-panel-${p.faction}-${p.band}`}
+    >
+      <p class="gbis-caption" data-testid={`guide-bis-caption-${p.faction}-${p.band}`}>
+        {guidesCopy.bisCaption(p.raceName, factionLabel(p.faction))}
+      </p>
+      <GuideTableBox
+        label={`${guidesCopy.bestInSlot}, ${factionLabel(p.faction)}, ${guidesCopy.levelRangeLabel(p.band)}`}
+        fitPhone
+      >
         <table>
           <thead>
             <tr>
@@ -73,13 +122,13 @@ const switchCss = bis.bands
             </tr>
           </thead>
           <tbody>
-            {b.rows.map((row) => (
-              <tr data-testid={`guide-bis-row-${b.band}-${row.slot}`}>
+            {p.rows.map((row) => (
+              <tr data-testid={`guide-bis-row-${p.faction}-${p.band}-${row.slot}`}>
                 <th scope="row" class="gbis-slot">
                   {row.slotLabel}
                 </th>
                 {row.empty ? (
-                  <td colspan="2" class="text-muted gbis-empty">
+                  <td colspan="2" class="gbis-empty">
                     {row.emptyCopy}
                   </td>
                 ) : (
@@ -113,11 +162,11 @@ const switchCss = bis.bands
                               {guidesCopy.notSimChecked}
                             </span>
                           )}
-                          <span class="gbis-source-inline text-muted">{row.sourceDetail}</span>
+                          <span class="gbis-source-inline">{row.sourceDetail}</span>
                         </span>
                       </span>
                     </td>
-                    <td class="gbis-source gbis-source-col text-muted">
+                    <td class="gbis-source gbis-source-col">
                       <span class="gbis-source-line">
                         <SourceKindIcon kind={(row.sourceKind ?? 'unknown') as SourceCell['kind']} />
                         {row.sourceDetail}
@@ -131,12 +180,15 @@ const switchCss = bis.bands
         </table>
       </GuideTableBox>
       <p class="gbis-foot">
-        <a href={`${bisHref}#${b.bisAnchor}`} data-testid={`guide-bis-full-link-${b.band}`}>
+        <a
+          href={`${bisHref}?faction=${p.faction}#${p.bisAnchor}`}
+          data-testid={`guide-bis-full-link-${p.faction}-${p.band}`}
+        >
           {guidesCopy.fullListLink}
         </a>
       </p>
-      {b.preRaid && (
-        <p class="text-muted gbis-note" data-testid="guide-bis-pre-raid-note">
+      {p.preRaid && (
+        <p class="gbis-note" data-testid="guide-bis-pre-raid-note">
           {guidesCopy.preRaidNote}
         </p>
       )}
@@ -146,17 +198,24 @@ const switchCss = bis.bands
 
 <style is:global>
   /* Global on purpose: a scoped style stamps a data-astro-cid attribute on every element it
-       styles, and this block is ~100 rows of markup. Every selector carries this component's own
-       prefix, so going global widens nothing. */
-  .gbis-caption {
-    margin: 0 0 10px;
-    font-size: 13px;
+     styles, and this block is ~170 rows of markup. Every selector carries this component's own
+     prefix, so going global widens nothing. */
+  .gbis-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin: 0 0 12px;
   }
-  .gbis-pills {
+  .gbis-pills,
+  .gbis-factions {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin: 0 0 12px;
+  }
+  .gbis-caption {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: var(--color-nav);
   }
   .gbis-pill {
     display: inline-flex;
@@ -169,6 +228,7 @@ const switchCss = bis.bands
     color: var(--color-nav);
     font-size: 13px;
     cursor: pointer;
+    white-space: nowrap;
   }
   .gbis-panel {
     display: none;
@@ -178,7 +238,7 @@ const switchCss = bis.bands
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-nav);
     white-space: nowrap;
     vertical-align: middle;
   }
@@ -214,7 +274,8 @@ const switchCss = bis.bands
   .gbis-source-inline {
     display: none;
     flex-basis: 100%;
-    font-size: 12px;
+    font-size: 13px;
+    color: var(--color-nav);
   }
   @media (max-width: 639px) {
     .gbis-source-col {
@@ -223,13 +284,21 @@ const switchCss = bis.bands
     .gbis-source-inline {
       display: block;
     }
-    .gbis-slot {
-      font-size: 11px;
+    .gbis-pills,
+    .gbis-factions {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      max-width: 100%;
+      scrollbar-width: none;
+    }
+    .gbis-controls {
+      flex-direction: column;
+      flex-wrap: nowrap;
     }
   }
   .gbis-flag {
-    font-size: 11px;
-    color: var(--color-muted);
+    font-size: 12px;
+    color: var(--color-nav);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-pill);
     padding: 0 6px;
@@ -237,6 +306,7 @@ const switchCss = bis.bands
   }
   .gbis-source {
     font-size: 13px;
+    color: var(--color-nav);
   }
   .gbis-source-line {
     display: inline-flex;
@@ -245,6 +315,7 @@ const switchCss = bis.bands
   }
   .gbis-empty {
     font-size: 13px;
+    color: var(--color-nav);
   }
   .gbis-foot {
     margin: 0 0 8px;
@@ -254,5 +325,6 @@ const switchCss = bis.bands
   .gbis-note {
     margin: 0 0 14px;
     font-size: 13px;
+    color: var(--color-nav);
   }
 </style>

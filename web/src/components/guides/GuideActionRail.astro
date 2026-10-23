@@ -83,69 +83,90 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
     />
   </div>
 
-  {hasRotation && (
-    <div class="panel-box guide-rail-card" data-testid="guide-rail-rotation">
-      <span class="label">{guidesCopy.rotationRailLabel(rotationBandLabel)}</span>
-      <ul class="guide-rail-rotation-lines">
-        {rotationLines.map((line) => (
-          <li class="guide-rail-rotation-line" data-testid={`guide-rail-rotation-line-${line.spellId}`}>
-            {line.icon !== undefined ? (
-              <img
-                src={dataUrl(build, `icons/${line.icon}.webp`)}
-                alt=""
-                width="28"
-                height="28"
-                loading="eager"
-                decoding="async"
-                class="guide-rail-rotation-icon"
-              />
-            ) : (
-              <span
-                class="guide-rail-rotation-icon guide-rail-rotation-icon-placeholder"
-                aria-hidden="true"
-              />
-            )}
-            <span class="guide-rail-rotation-body">
-              <span class="guide-rail-rotation-name-line">
-                <span class="guide-rail-rotation-name">{line.name}</span>
-                {line.rank !== undefined && (
-                  <span class="text-muted guide-rail-rotation-rank">Rank {line.rank}</span>
-                )}
+  <input
+    type="checkbox"
+    id="guide-rail-fold"
+    class="guide-rail-fold-input sr-only"
+    aria-controls="guide-rail-fold-body"
+  />
+  <label for="guide-rail-fold" class="guide-rail-fold-toggle" data-testid="guide-rail-fold-toggle">
+    {guidesCopy.railFoldLabel}
+    <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" class="guide-rail-fold-chevron">
+      <path
+        d="M2 4l4 4 4-4"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </label>
+  <div class="guide-rail-fold-body" id="guide-rail-fold-body">
+    {hasRotation && (
+      <div class="panel-box guide-rail-card" data-testid="guide-rail-rotation">
+        <span class="label">{guidesCopy.rotationRailLabel(rotationBandLabel)}</span>
+        <ul class="guide-rail-rotation-lines">
+          {rotationLines.map((line) => (
+            <li class="guide-rail-rotation-line" data-testid={`guide-rail-rotation-line-${line.spellId}`}>
+              {line.icon !== undefined ? (
+                <img
+                  src={dataUrl(build, `icons/${line.icon}.webp`)}
+                  alt=""
+                  width="28"
+                  height="28"
+                  loading="eager"
+                  decoding="async"
+                  class="guide-rail-rotation-icon"
+                />
+              ) : (
+                <span
+                  class="guide-rail-rotation-icon guide-rail-rotation-icon-placeholder"
+                  aria-hidden="true"
+                />
+              )}
+              <span class="guide-rail-rotation-body">
+                <span class="guide-rail-rotation-name-line">
+                  <span class="guide-rail-rotation-name">{line.name}</span>
+                  {line.rank !== undefined && (
+                    <span class="text-muted guide-rail-rotation-rank">Rank {line.rank}</span>
+                  )}
+                </span>
+                <span class="guide-rail-rotation-condition">{line.condition}</span>
               </span>
-              <span class="guide-rail-rotation-condition">{line.condition}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <a class="guide-rail-full-priority" href="#rotation-and-priority">
-        {guidesCopy.fullPriorityLink}
-      </a>
-    </div>
-  )}
-
-  {hasStatPriority && (
-    <div class="panel-box guide-rail-card" data-testid="guide-rail-stat-priority">
-      <span class="label">{guidesCopy.statPriorityRailLabel}</span>
-      <div class="guide-rail-stat-rows">
-        {statRows.map((row, index) => (
-          <div class="guide-rail-stat-row">
-            <span class="guide-rail-stat-label">
-              <span class="font-mono tabular guide-rail-stat-index">{index + 1}</span>
-              {row.label}
-            </span>
-            {row.value === undefined ? (
-              <span class="text-muted guide-rail-stat-value">Not significant</span>
-            ) : (
-              <span class="font-mono tabular guide-rail-stat-value">
-                {row.value.toFixed(2)}
-                {row.perPercent ? ' per 1%' : ''}
-              </span>
-            )}
-          </div>
-        ))}
+            </li>
+          ))}
+        </ul>
+        <a class="guide-rail-full-priority" href="#rotation-and-priority">
+          {guidesCopy.fullPriorityLink}
+        </a>
       </div>
-    </div>
-  )}
+    )}
+
+    {hasStatPriority && (
+      <div class="panel-box guide-rail-card" data-testid="guide-rail-stat-priority">
+        <span class="label">{guidesCopy.statPriorityRailLabel}</span>
+        <div class="guide-rail-stat-rows">
+          {statRows.map((row, index) => (
+            <div class="guide-rail-stat-row">
+              <span class="guide-rail-stat-label">
+                <span class="font-mono tabular guide-rail-stat-index">{index + 1}</span>
+                {row.label}
+              </span>
+              {row.value === undefined ? (
+                <span class="text-muted guide-rail-stat-value">Not significant</span>
+              ) : (
+                <span class="font-mono tabular guide-rail-stat-value">
+                  {row.value.toFixed(2)}
+                  {row.perPercent ? ' per 1%' : ''}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
 </div>
 
 <style>
@@ -324,6 +345,58 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
   .guide-rail-stat-value {
     font-size: 12px;
     color: var(--color-strong);
+  }
+
+  /* Phone: the Rotation and Stat cards (both repeated in full below) fold into one disclosure so
+     the Overview starts within the first screen. From 640px up the wrapper is invisible and the
+     cards are grid items as before. */
+  .guide-rail-fold-input,
+  .guide-rail-fold-toggle {
+    display: none;
+  }
+  .guide-rail-fold-body {
+    display: contents;
+  }
+  .guide-rail {
+    align-items: start;
+  }
+  @media (max-width: 639px) {
+    /* The Build card keeps its Load and Sim buttons; the tree thumbnail (the full tree is the
+       first thing under Talents) goes so the Overview starts on the first screen. */
+    .guide-rail-trees {
+      display: none;
+    }
+    .guide-rail-fold-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      padding: 0 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-strong);
+      background: var(--color-raised);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-panel);
+      cursor: pointer;
+    }
+    .guide-rail-fold-input:focus-visible + .guide-rail-fold-toggle {
+      outline: 2px solid var(--color-gold);
+      outline-offset: 2px;
+    }
+    .guide-rail-fold-input:checked + .guide-rail-fold-toggle .guide-rail-fold-chevron {
+      transform: rotate(180deg);
+    }
+    .guide-rail-fold-body {
+      display: none;
+    }
+    .guide-rail-fold-input:checked ~ .guide-rail-fold-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
   }
 
   @media (max-width: 1023px) {

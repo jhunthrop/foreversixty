@@ -52,8 +52,6 @@ Fire is the Mage sustained single-target spec: Scorch stacks a Fire vulnerabilit
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31.
-
 - **Improved Fireball** — up to 0.5 seconds off Fireball's and Frostfire Bolt's cast time at rank 5, a direct throughput gain taken early.
 - **Ignite** — Fire critical strikes burn the target for a further 40% of the spell's damage over 4 seconds at rank 5, turning every crit into extra sustained damage.
 - **Improved Scorch** — up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target.
@@ -66,29 +64,17 @@ This build spends 34 points in Fire to reach Combustion at the bottom, and two o
 
 Outside Fire, the spend drops from 20 points in Arcane to 14 — losing **Arcane Focus** entirely (5/5 → 0/5) and **Arcane Subtlety** entirely (1/2 → 0/2), neither of which registered any damage in the sim's model for this rotation — and picks up 3 points in Frost instead, all into **Elemental Precision** (3/3, 6% more hit chance with Frost and Fire spells), which this build's Fire-heavy rotation measures as a real damage gain since Scorch and Fire Blast both benefit directly. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
-**Raid build.** For a raid the search found a small gain, about +1% over the leveling build above in the raid-ready run, from moving one Improved Fireball point (the build keeps 4 of 5) into a full three ranks of Master of Elements. Improved Scorch, Combustion, Flame Throwing and Impact all stay.
-
 ## Rotation and priority
 
-Open by stacking Improved Scorch's vulnerability debuff with a few Scorch casts before your main damage window, then hold Combustion until the debuff is fully stacked so every Fire spell hit during Combustion lands as a guaranteed crit. Heating Up decides when Pyroblast is worth a global: cast it only once Heating Up has reached three stacks, which cuts it to a 1.5 second cast, and never at the full 6 seconds. Fireball is only the filler before you train Scorch at level 22.
+Open by stacking Improved Scorch's vulnerability debuff with a few Scorch casts before your main damage window, then hold Combustion until the debuff is fully stacked so every Fire spell hit during Combustion lands as a guaranteed crit. Heating Up decides when Pyroblast is worth a global: cast it only once Heating Up has reached three stacks, which cuts it to a 1.5 second cast, and never at the full 6 seconds. In the sim a three-stack Pyroblast is worth roughly 3.5% more damage over the whole fight than leaving it out, while casting it on two stacks measured no better than not casting it and casting it on one stack lost damage. Fire Blast slots in on cooldown as a free extra hit that doesn't compete with your Scorch casts for a global cooldown, and its crits feed Heating Up like the rest. Scorch is the filler for every global that isn't spent on a three-stack Pyroblast, Fire Blast, or Combustion: it costs 150 mana for a 1.5 second cast against Fireball's 395 for 3 seconds, a Fire mage runs short of mana long before a fight ends, and every Scorch also renews the debuff, so it never falls off. In the sim, Scorch as the filler beat Fireball by about 10 percent on a level 60 character over a three to five minute fight, and by 5 to 8 percent over one minute, at levels 40, 50 and 60 alike; a mix that casts Fireball while mana is high and Scorch when it is low measured below Scorch alone. Fireball is only the filler before you train Scorch at level 22. Frostfire Bolt (trained at levels 40, 50 and 60) feeds Heating Up and Ignite like Fireball and measured within error of it, so it is no upgrade on Scorch either. Pyroblast's own damage-over-time is minor next to the hit; the point of the buff is the fast cast. This site's simulator only models the Combustion-stacking loop when Improved Scorch is actually talented, and without Heating Up it skips the Pyroblast line, so take Improved Scorch if you want the Combustion-stacking loop above to matter.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
-
 ## Best in slot
-
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above.
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above.
-
 ## Races
-
-Mage's playable races are Human, Orc, Undead, Gnome, and Troll on their respective factions, plus Skyborne — but only the Alliance-side Skyborne, since Mage is Alliance-only for that race. Orc is one of Blizzard's six confirmed new race and class pairs, giving Horde a Mage option it didn't have in 1.12.
-
-For Alliance, **Gnome** is the strongest pick: Eureka! cuts the mana cost of your next three abilities by 50% and adds 10% more damage on a 2-minute cooldown, which lines up well with a burst of Scorch casts around a Combustion window, and Expansive Mind's mana bonus helps sustain a spec that rarely stops casting. For Horde, **Orc** is the pick: Blood Fury grants 10% spell power for 15 seconds on a 2-minute cooldown, a straightforward damage cooldown to pair with Combustion, and it's the new pairing Blizzard specifically added for this class. Skyborne is available to Alliance Mages as a third option; its Read Ley Line racial restores all health and mana over 15 seconds, useful out of combat, but it doesn't add spell damage the way Gnome's Eureka! does, so it's a pick for the race and story rather than raw throughput.
 
 ## Professions
 

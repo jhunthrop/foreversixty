@@ -10,10 +10,10 @@ describe('guideBuildBlocks', () => {
       {
         kind: 'leveling',
         id: 'leveling-build',
-        label: 'Leveling build',
+        label: 'Level 60 build',
         code: LEVELING,
-        loadAriaLabel: 'Load the leveling build in the planner',
-        simAriaLabel: 'Sim the leveling build',
+        loadAriaLabel: 'Load the level 60 build in the planner',
+        simAriaLabel: 'Sim the level 60 build',
       },
       {
         kind: 'raid',
@@ -28,7 +28,7 @@ describe('guideBuildBlocks', () => {
 
   it('shows one block for both when the guide has no raid build', () => {
     expect(guideBuildBlocks(LEVELING)).toEqual([
-      { kind: 'both', id: 'leveling-and-raid-build', label: 'Leveling and raid build', code: LEVELING },
+      { kind: 'both', id: 'leveling-and-raid-build', label: 'Level 60 and raid build', code: LEVELING },
     ]);
   });
 

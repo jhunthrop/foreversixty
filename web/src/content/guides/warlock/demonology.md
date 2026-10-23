@@ -53,8 +53,6 @@ Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demo
 
 ## Talents and builds
 
-Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth one-point talent added at the 16-point mark alongside the existing ones at 11, 21, and 31.
-
 - **Fel Vitality** — up to 15% more maximum health, mana, and pet stats at rank 3, an early quality-of-life pick.
 - **Demonic Sacrifice** — sacrifices your active demon for a long-lasting buff instead, the talent that defines whether you're playing pet-out or pet-sacrificed Demonology.
 - **Master Summoner** — up to 4 seconds off summon cast time and 40% off its mana cost at rank 2, useful whenever you need to re-summon mid-fight.
@@ -62,31 +60,17 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Master Demonologist** — a scaling buff to both Warlock and demon that differs by pet, up to 10% at rank 5 for whichever pet is out.
 - **Decimation** — the search run's best use of the points freed from Demonic Embrace; the simulator credits it with a measurable damage gain.
 
-This build spends 30 points in Demonology, with 16 in Affliction (Improved Corruption and Suppression maxed, then Improved Life Tap, Soul Harvest and Grim Reach, the two-rank range talent the current client put in Malediction's slot) and 5 in Destruction on Bane. Against the first draft it drops three Improved Drains points, two Demonic Embrace points and the Demonic Pact capstone, all of which the simulator measures at zero for a solo caster, and spends them on two Decimation points and four Bane points, which shorten the Shadow Bolt cast. That was worth about +10% in the search run, and about +8% on the level-60 row of the rotation ladder. Demonic Sacrifice and Soul Link stay, and so do the talents the simulator cannot yet see (Soul Harvest, Improved Health Funnel, Demonic Aegis, Improved Voidwalker). A deep Affliction build scored higher still, but it abandons the Demonology tree and those talents, so it is not the recommendation for this spec. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
-
-**Raid build.** For a raid the search found about +6% over the previous raid build in the raid-ready run, now that Searing Pain is the filler and Soul Fire is in the loop. It drops the three Malediction points and a Master Summoner point and spends them on two more Aftermath points, a Ruin point and an Improved Sayaad point. With Searing Pain as the filler Improved Shadow Bolt no longer earns a point, which is why the raid build carries none of it. Suppression (less threat), Soul Link, Demonic Aegis and Decimation stay.
-
 ## Rotation and priority
 
-Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires (it edged out Bane of Agony in our simulator; on a fight shorter than a minute use Agony instead), and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Together these changes were worth about +13% in our level-60 search run.
+Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires (it edged out Bane of Agony in our simulator; on a fight shorter than a minute use Agony instead), and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Immolate is the addition that matters: recast it when under 3 seconds remain, since a running Immolate out-damages the globals it displaces. Soul Fire is back in the rotation now that the build takes both Decimation points: Decimation drops its cooldown by 90% and shortens its cast time and cost for 10 seconds after a Shadow Bolt or Searing Pain crit, and a Soul Fire cast whenever it is ready beat the Shadow Bolts it displaces by about 7% on the bare character and about 10% in the raid-ready run. Searing Pain fills every other global: in the raid-ready run the search put it ahead of Shadow Bolt as the filler, a further gain of about 2.5%. Once mana falls under 50%, wand with Shoot instead: it costs nothing, so mana regenerates while the DoTs tick, and Life Tap is only the backstop below about 10%. Together these changes were worth about +13% in our level-60 search run.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
-
 ## Best in slot
-
-Look for pieces that lead with spell power, then hit until capped, then crit, following the order above; stamina from Demonic Embrace-adjacent gear is a secondary consideration if you're sacrificing your pet and losing its damage-soak utility.
 
 ## Enchants and consumables
 
-Target spell power and hit on enchants and consumables, matching the stat priority above.
-
 ## Races
-
-Warlock's playable races are Human, Orc, Undead, Gnome, and Troll on their respective factions; the class is not open to Skyborne at all. Troll is one of Blizzard's six confirmed new race and class pairs, giving the Horde a Warlock option it didn't have in 1.12.
-
-For Alliance, **Gnome** is the strongest pick: Expansive Mind's mana bonus stretches a pool that also has to sustain your pet's mana through Fel Vitality, and Eureka!'s mana-cost reduction is a direct complement to re-summoning demons or firing off Soul Fire. For Horde, **Troll** is the pick as the new pairing Blizzard specifically added for this class: Berserking's 10% casting and attack speed on a 3-minute cooldown shortens Shadow Bolt casts, and Regeneration keeps some health regeneration running in combat, useful for a spec that spends health through Life Tap and, if pet-sacrificed, loses the Voidwalker's mana-return option.
 
 ## Professions
 

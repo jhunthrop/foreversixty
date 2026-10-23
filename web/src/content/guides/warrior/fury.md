@@ -72,27 +72,19 @@ Also worth a point if you lean into Whirlwind or Cleave uptime: **Raging Blows**
 
 This build reaching Bloodthirst spends 32 points in Fury, with 17 in Arms and 2 in Protection. The Arms points are Improved Heroic Strike, Deflection (4 of 5), Improved Rend, Improved Charge, Deep Wounds and Impale — Fury's high crit rate keeps both the bleed and the crit-damage talent relevant — and the Protection points are Improved Bloodrage, which raises the Rage a Bloodrage cast gives by 50% (Protection otherwise has little to offer a dual-wielding damage build). Within Fury the build now takes **Improved Execute** at 2/2 (Execute costs 5 Rage less), **Furious Precision** at 3/3 so the off-hand reaches the hit cap, one point each of **Lingering Rage** and **Improved Intercept**, and keeps Death Wish, Flurry and Bloodthirst. The points came from the previous build's three Booming Voice, three of its five Enrage, and one each of Deflection, Improved Tactical Mastery and Improved Overpower; the sim measures no damage from Booming Voice and Deflection, and the others were worth less than Execute's cheaper cost and the off-hand hit chance. Bloodthirst, Whirlwind, Heroic Strike and Execute all still fire at level 60, and the build drops no talent the engine fails to model. This build measures about +8.6% over the previous spend in our level-60 search run. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
-**Raid build.** The raid-ready search found no build that beats this one beyond error while keeping what the rotation casts, the group buffs the raid already counts on and the threat and survival talents, so the raid build is the leveling build and one tree serves both.
-
 ## Rotation and priority
 
-This site's own Fury priority list opens the same way Arms does: top up Rage with Bloodrage below 80, since Rage limits the rest of the rotation. Death Wish is used on cooldown as the spec's burst window, and Battle Shout is kept active for the group buff. Below 20% target health, Execute comes first, ahead of Bloodthirst and Whirlwind (moving it up was worth about +1% in the raid-ready run and helps the bare character too). Leftover Rage goes into Heroic Strike, but only above 40 Rage, so it never starves Bloodthirst or Execute of what they need.
+This site's own Fury priority list opens the same way Arms does: top up Rage with Bloodrage below 80, since Rage limits the rest of the rotation. Death Wish is used on cooldown as the spec's burst window, and Battle Shout is kept active for the group buff. Below 20% target health, Execute comes first, ahead of Bloodthirst and Whirlwind (moving it up was worth about +1% in the raid-ready run and helps the bare character too). Otherwise Bloodthirst is the priority hit whenever its six-second cooldown is up, since it's the highest damage-per-Rage button in the kit; Whirlwind fills the gap whenever Bloodthirst isn't ready, hitting everything nearby rather than sitting idle. Leftover Rage goes into Heroic Strike, but only above 40 Rage, so it never starves Bloodthirst or Execute of what they need.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
-
 ## Best in slot
 
-Look for attack power and strength first, then crit, then hit, following the order above. Because Fury dual-wields, both main-hand and off-hand weapon damage matter, unlike Arms's single two-handed weapon.
+Because Fury dual-wields, both main-hand and off-hand weapon damage matter, unlike Arms's single two-handed weapon.
 
 ## Enchants and consumables
 
-Target strength and attack power on weapon and gear enchants, matching the stat priority above; because Fury carries two weapons, both need an enchant to get full value.
-
 ## Races
-
-Fury can be played by every race the Warrior class allows: Human, Dwarf, Night Elf, and Gnome on the Alliance; Orc, Undead, Tauren, and Troll on the Horde; and, new in Forever, the Skyborne on either faction, since Skyborne is a new race rather than one of Blizzard's six new class pairings. For Alliance, **Human** is a strong pick if you're dual-wielding swords: Sword Specialization adds 2% ability critical strike chance while wielding a sword, stacking with Cruelty and giving Flurry more chances to trigger. For Horde, **Troll** pairs well through Berserking, a 10% attack speed cooldown on a 3-minute timer — a direct swing-speed boost for a dual-wield spec that already leans on attack speed for Flurry uptime. Skyborne is open to Warrior on both factions with no restriction; its racials (a downward glide, a short full health-and-mana restore, 1% haste) read as utility rather than damage, so it's a valid but not obviously stronger pick than Human or Troll for Fury specifically.
 
 ## Professions
 

@@ -111,6 +111,12 @@ describe('guide content structure', () => {
       /cannot be named/i,
       /beta (?:only )?(?:caps|reaches|runs)/i,
       /the beta caps/i,
+      /nightly pipeline/i,
+      /never hand-entered/i,
+      /talent search/i,
+      /honest unknown/i,
+      /cannot yet credit/i,
+      /not separable from zero/i,
     ];
     for (const hedge of hedges) {
       expect(guide.body, `${id} still matches ${hedge}`).not.toMatch(hedge);

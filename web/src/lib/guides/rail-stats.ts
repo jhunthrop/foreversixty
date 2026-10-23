@@ -25,6 +25,8 @@ export interface RailStatRow {
    *  primary stat (owner correction 2026-09-30, `panel-view.ts` `isHasteStat`): it sits
    *  outside the normalization and the rail prints it "per 1%". */
   perPercent?: boolean;
+  /** Absolute DPS per point of the stat (per 1% for haste), when the file publishes it. */
+  dpsPerPoint?: number;
 }
 
 function isHasteStat(stat: string): boolean {
@@ -95,12 +97,17 @@ export function railStatRows(
       // number the BiS page's caption prints (`band.haste_scale_factor`, else its own scale).
       const raw = weight.scale_factor ?? weight.weight;
       const perPercent = hasteScaleFactor ?? (top === undefined ? undefined : raw / top);
-      return { label, value: (weight.insignificant ?? false) ? undefined : perPercent, perPercent: true };
+      return {
+        label,
+        value: (weight.insignificant ?? false) ? undefined : perPercent,
+        perPercent: true,
+        dpsPerPoint: (weight.insignificant ?? false) ? undefined : weight.dps_per_point,
+      };
     }
     if (weight === undefined || (weight.insignificant ?? false) || top === undefined) {
       return { label, value: undefined };
     }
     const raw = weight.scale_factor ?? weight.weight;
-    return { label, value: raw / top };
+    return { label, value: raw / top, dpsPerPoint: weight.dps_per_point };
   });
 }

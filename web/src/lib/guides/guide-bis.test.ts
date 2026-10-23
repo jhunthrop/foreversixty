@@ -88,6 +88,11 @@ const DEPS = {
 };
 
 describe('guideBisFrom', () => {
+  const hordeBand = {
+    ...band(60, [pick({ slot: 'head', item_id: 1, item_name: 'Horde Crown' })]),
+    faction: 'horde' as const,
+    race: 'troll',
+  };
   const guide = guideBisFrom(
     file(
       band(20, [pick({ slot: 'head', item_id: 1 })]),
@@ -101,20 +106,28 @@ describe('guideBisFrom', () => {
           sim_status: 'not_in_sim',
         }),
       ]),
+      hordeBand,
     ),
     'alliance',
     DEPS,
   )!;
+  const panel = (faction: string, level: number) =>
+    guide.panels.find((p) => p.faction === faction && p.band === level)!;
 
-  it('opens on the top band and names the race the band was ranked for', () => {
+  it('opens on the faction and the top band, and lists both factions', () => {
+    expect(guide.defaultFaction).toBe('alliance');
+    expect(guide.factions).toEqual(['alliance', 'horde']);
     expect(guide.defaultBand).toBe(60);
-    expect(guide.faction).toBe('alliance');
-    expect(guide.raceName).toBe('Gnome');
     expect(guide.bands.map((b) => b.label)).toEqual(['20 to 29', '60']);
   });
 
+  it('names the race each faction band was ranked for', () => {
+    expect(panel('alliance', 60).raceName).toBe('Gnome');
+    expect(panel('horde', 60).raceName).toBe('Troll');
+  });
+
   it('gives every wearable slot a row: the item, its quality, its icon and its source', () => {
-    const top = guide.bands.find((b) => b.band === 60)!;
+    const top = panel('alliance', 60);
     expect(top.rows).toHaveLength(17);
     const head = top.rows.find((row) => row.slot === 'head')!;
     expect(head).toMatchObject({
@@ -126,55 +139,64 @@ describe('guideBisFrom', () => {
       notSimChecked: false,
     });
     expect(head.sourceDetail).toContain('Mokvar');
+    expect(panel('horde', 60).rows.find((row) => row.slot === 'head')?.itemName).toBe('Horde Crown');
   });
 
   it('flags a pick the ranker did not sim-check, and drops the red question-mark icon', () => {
-    const neck = guide.bands.find((b) => b.band === 60)!.rows.find((row) => row.slot === 'neck')!;
+    const neck = panel('alliance', 60).rows.find((row) => row.slot === 'neck')!;
     expect(neck.notSimChecked).toBe(true);
     expect(neck.icon).toBeUndefined();
     expect(neck.quality).toBe(3);
   });
 
-  it('says why a slot is empty, in the BiS page’s words', () => {
-    const empty = guide.bands.find((b) => b.band === 60)!.rows.find((row) => row.slot === 'finger1')!;
+  it('says why a slot is empty, in the BiS page words', () => {
+    const empty = panel('alliance', 60).rows.find((row) => row.slot === 'finger1')!;
     expect(empty.empty).toBe(true);
     expect(empty.emptyCopy).toBeTruthy();
   });
 
-  it('anchors each band on the BiS page', () => {
-    expect(guide.bands.map((b) => b.bisAnchor)).toEqual(['band-alliance-20', 'band-alliance-60']);
+  it('anchors each panel on its faction band on the BiS page', () => {
+    expect(panel('alliance', 20).bisAnchor).toBe('band-alliance-20');
+    expect(panel('horde', 60).bisAnchor).toBe('band-horde-60');
   });
 
   it('is the pre-raid list only while no level 60 pick comes from a raid', () => {
     const noRaid = guideBisFrom(file(band(60, [pick({ slot: 'head', item_id: 1 })])), 'alliance', DEPS)!;
-    expect(noRaid.bands[0]!.preRaid).toBe(true);
-    expect(guide.bands.find((b) => b.band === 60)!.preRaid).toBe(false);
-    expect(guide.bands.find((b) => b.band === 20)!.preRaid).toBe(false);
+    expect(noRaid.panels[0]!.preRaid).toBe(true);
+    expect(panel('alliance', 60).preRaid).toBe(false);
+    expect(panel('alliance', 20).preRaid).toBe(false);
   });
 
-  it('has nothing for a faction the file has no band for', () => {
-    expect(guideBisFrom(file(band(60, [])), 'horde', DEPS)).toBeUndefined();
+  it('opens on the other faction when the file has no picks for the wanted one', () => {
+    expect(guideBisFrom(file(hordeBand), 'alliance', DEPS)?.defaultFaction).toBe('horde');
+    expect(guideBisFrom(file(band(60, [])), 'alliance', DEPS)?.factions).toEqual(['alliance']);
   });
 });
 
 describe('loadGuideBis for Frost Mage, from the real file', () => {
   const guide = loadGuideBis(BUILD, 'mage', 'mage-frost', ['gnome', 'troll']);
 
-  it('has the five level ranges, opening on 60, for the faction of the first recommended race', () => {
+  it('has the five level ranges for both factions, opening on 60 for the first recommended race faction', () => {
     if (guide === undefined) throw new Error('mage-frost has no ranked file');
-    expect(guide.faction).toBe('alliance');
+    expect(guide.defaultFaction).toBe('alliance');
+    expect(guide.factions).toEqual(['alliance', 'horde']);
     expect(guide.defaultBand).toBe(60);
     expect(guide.bands.map((b) => b.label)).toEqual(['20 to 29', '30 to 39', '40 to 49', '50 to 59', '60']);
-    expect(guide.bands.every((b) => b.rows.length === 17)).toBe(true);
+    expect(guide.panels).toHaveLength(10);
+    expect(guide.panels.every((p) => p.rows.length === 17)).toBe(true);
   });
 
-  it('names the same item in each slot as the BiS page does', () => {
+  it('names the same item in each slot as the BiS page does, for each faction', () => {
     if (guide === undefined) throw new Error('mage-frost has no ranked file');
     const bis = loadBisFile('mage-frost', BUILD)!;
-    const raid = bis.bands.find((b) => b.band === 60 && b.faction === 'alliance' && b.preset === 'raid')!;
-    const top = guide.bands.find((b) => b.band === 60)!;
-    for (const slot of raid.slots.filter((s) => s.item_name !== undefined)) {
-      expect(top.rows.find((row) => row.slot === slot.slot)?.itemName, slot.slot).toBe(slot.item_name);
+    for (const faction of ['alliance', 'horde'] as const) {
+      const raid = bis.bands.find((b) => b.band === 60 && b.faction === faction && b.preset === 'raid')!;
+      const top = guide.panels.find((p) => p.faction === faction && p.band === 60)!;
+      for (const slot of raid.slots.filter((s) => s.item_name !== undefined)) {
+        expect(top.rows.find((row) => row.slot === slot.slot)?.itemName, `${faction} ${slot.slot}`).toBe(
+          slot.item_name,
+        );
+      }
     }
   });
 

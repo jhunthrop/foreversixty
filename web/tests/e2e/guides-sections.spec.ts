@@ -91,57 +91,90 @@ for (const [label, viewport] of [
       await imagesLoaded(page, '[data-testid="guide-key-talents"] img');
     });
 
-    test('numbers an opener and a priority with spell icons', async ({ page }) => {
+    test('numbers a priority with spell icons and lists real cooldowns, with no opener', async ({ page }) => {
       await page.goto(PAGE);
       const priority = page.getByTestId('guide-rotation-priority');
       await expect(priority.locator('h3')).toHaveText('Priority');
       await expect(priority.locator('li').first()).toContainText('Ice Lance');
       await expect(priority.locator('li').first().locator('img')).toHaveCount(1);
-      await expect(page.getByTestId('guide-rotation-opener').locator('h3')).toHaveText('Opener');
-      await expect(page.getByTestId('guide-rotation-cooldowns').locator('h3')).toHaveText('Cooldowns');
+      await expect(page.getByTestId('guide-rotation-opener')).toHaveCount(0);
+      const cooldowns = page.getByTestId('guide-rotation-cooldowns');
+      await expect(cooldowns.locator('h3')).toHaveText('Cooldowns');
+      for (const name of ['Evocation', 'Cold Snap', 'Ice Block']) await expect(cooldowns).toContainText(name);
       await imagesLoaded(page, '[data-testid="guide-rotation-lists"] img');
     });
 
-    test('gives the stat block its pills, its table and the hit cap line', async ({ page }) => {
+    test('gives the stat block its pills, the hit headline and the weights table', async ({ page }) => {
       await page.goto(PAGE);
       await expect(page.getByTestId('stat-priority-pills')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
-      await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(/^Hit cap: \d+(\.\d)?%/);
+      await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
+        /^Hit to cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear$/,
+      );
+      await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
+      const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();
+      const rows = await page.locator('[data-testid^="guide-stat-table-row-"] .stat-name').allTextContents();
+      expect(pills).toEqual(rows);
     });
 
-    test('opens best in slot on 60 and switches level range without a script', async ({ page }) => {
+    test('opens best in slot on 60 and switches faction and level range without a script', async ({
+      page,
+    }) => {
       await page.goto(PAGE);
-      const panel60 = page.getByTestId('guide-bis-panel-60');
-      const panel30 = page.getByTestId('guide-bis-panel-30');
-      await expect(panel60).toBeVisible();
-      await expect(panel30).toBeHidden();
+      const alliance60 = page.getByTestId('guide-bis-panel-alliance-60');
+      await expect(alliance60).toBeVisible();
+      await expect(page.getByTestId('guide-bis-panel-alliance-30')).toBeHidden();
       await expect(page.getByTestId('guide-bis-radio-60')).toBeChecked();
-      await expect(panel60.locator('tbody tr')).toHaveCount(17);
-      await expect(panel60.getByTestId('guide-bis-row-60-head')).toContainText('Head');
-      await expect(panel60.getByTestId('guide-bis-row-60-head').locator('img')).toHaveCount(1);
-      await expect(panel60.getByRole('link', { name: 'Full list and alternatives' })).toHaveAttribute(
+      await expect(alliance60.locator('tbody tr')).toHaveCount(17);
+      await expect(alliance60.getByTestId('guide-bis-row-alliance-60-head')).toContainText('Head');
+      await expect(alliance60.getByTestId('guide-bis-row-alliance-60-head').locator('img')).toHaveCount(1);
+      await expect(alliance60.getByRole('link', { name: 'Full list and alternatives' })).toHaveAttribute(
         'href',
-        '/bis/mage/frost#band-alliance-60',
+        '/bis/mage/frost?faction=alliance#band-alliance-60',
       );
+      await expect(page.getByTestId('guide-bis-pill-60')).toHaveText('Level 60');
 
       await page.getByTestId('guide-bis-pill-30').click();
-      await expect(panel30).toBeVisible();
-      await expect(panel60).toBeHidden();
-      await expect(panel30.getByRole('link', { name: 'Full list and alternatives' })).toHaveAttribute(
+      await expect(page.getByTestId('guide-bis-panel-alliance-30')).toBeVisible();
+      await expect(alliance60).toBeHidden();
+
+      await page.getByTestId('guide-bis-faction-horde').click();
+      const horde30 = page.getByTestId('guide-bis-panel-horde-30');
+      await expect(horde30).toBeVisible();
+      await expect(page.getByTestId('guide-bis-caption-horde-30')).toContainText('Troll (Horde)');
+      await expect(horde30.getByRole('link', { name: 'Full list and alternatives' })).toHaveAttribute(
         'href',
-        '/bis/mage/frost#band-alliance-30',
+        '/bis/mage/frost?faction=horde#band-horde-30',
       );
-      await expect(panel30.locator('tbody tr')).toHaveCount(17);
 
       await page.getByTestId('guide-bis-pill-60').click();
-      await expect(panel60).toBeVisible();
+      await expect(page.getByTestId('guide-bis-panel-horde-60')).toBeVisible();
       await imagesLoaded(page, '[data-testid="guide-bis"] img');
       await noSidewaysScroll(page);
     });
 
+    test('opens best in slot on the stored character own level range', async ({ page }) => {
+      await page.addInitScript(() => {
+        // 24 talent points spent: level 33, the 30 to 39 range.
+        localStorage.setItem(
+          'fs.currentCharacter',
+          JSON.stringify({
+            source: 'code',
+            ref: 'FS1:1.60.1.70532:mage:gnome:55/55/4:',
+            label: 'Test',
+            classSlug: 'mage',
+            savedAt: new Date().toISOString(),
+          }),
+        );
+      });
+      await page.goto(PAGE);
+      await expect(page.getByTestId('guide-bis-radio-30')).toBeChecked({ timeout: 5000 });
+      await expect(page.getByTestId('guide-bis-panel-alliance-30')).toBeVisible();
+    });
+
     test('keeps the best-in-slot table inside its own scrolling box', async ({ page }) => {
       await page.goto(PAGE);
-      const box = page.getByTestId('guide-bis-panel-60').getByRole('region');
+      const box = page.getByTestId('guide-bis-panel-alliance-60').getByRole('region');
       await expect(box).toHaveAttribute('tabindex', '0');
       const { scrollWidth, clientWidth } = await box.evaluate((el) => ({
         scrollWidth: el.scrollWidth,
@@ -169,7 +202,11 @@ for (const [label, viewport] of [
       const table = page.getByTestId('guide-race-table');
       await expect(table.locator('tbody tr')).toHaveCount(6);
       await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Recommended');
-      await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Eureka!');
+      await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Escape Artist');
+      await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Expansive Mind');
+      await expect(page.getByTestId('guide-race-picks')).toContainText(
+        'Gnome is the Alliance pick: Escape Artist and Expansive Mind.',
+      );
       await expect(page.getByTestId('guide-race-row-troll')).toContainText('Berserking');
       await expect(page.getByTestId('guide-race-row-human')).not.toContainText('Recommended');
     });
@@ -182,6 +219,7 @@ for (const [label, viewport] of [
       const rows = strip.locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
       await expect(rows).toHaveCount(5);
       for (const row of await rows.all()) {
+        await expect(row.getByTestId('guide-leveling-row-talents')).toBeVisible();
         await expect(row.getByText('Load in planner')).toHaveAttribute(
           'href',
           /^\/planner\?spec=mage-frost&talents=/,
@@ -191,6 +229,11 @@ for (const [label, viewport] of [
         await expect(chips.first().locator('img')).toHaveCount(1);
         await expect(chips.first()).toContainText(/\d\/\d/);
       }
+      await expect(page.getByTestId('guide-leveling-legend')).toHaveText(
+        'Outlined: points added in this level range.',
+      );
+      await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('Level 20 to 29');
+      await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('11 to 20 points');
       await imagesLoaded(page, '[data-testid="guide-leveling-strip"] img');
       await noSidewaysScroll(page);
     });
@@ -206,6 +249,46 @@ test.describe('table of contents', () => {
     await rail.getByRole('link', { name: 'Best in slot' }).click();
     await expect(page).toHaveURL(/#best-in-slot$/);
     await expect(page.locator('#best-in-slot')).toBeInViewport();
+  });
+
+  test('desktop: the rail marks the section you are in', async ({ page }) => {
+    await page.setViewportSize(DESKTOP);
+    await page.goto(PAGE);
+    const rail = page.getByTestId('guide-toc-rail');
+    const scrollTo = (id: string) =>
+      page.evaluate(
+        (target) =>
+          window.scrollTo(
+            0,
+            (document.getElementById(target)?.getBoundingClientRect().top ?? 0) + window.scrollY - 80,
+          ),
+        id,
+      );
+    await scrollTo('stat-priority');
+    await expect(rail.locator('[aria-current="location"]')).toHaveText('Stat priority');
+    await scrollTo('races');
+    await expect(rail.locator('[aria-current="location"]')).toHaveText('Races');
+    await expect(rail.locator('[aria-current="location"]')).toHaveCount(1);
+  });
+
+  test('phone: the hero folds Rotation and stats into a disclosure', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(PAGE);
+    const toggle = page.getByTestId('guide-rail-fold-toggle');
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveText('Rotation and stats');
+    await expect(page.getByTestId('guide-rail-rotation')).toBeHidden();
+    await toggle.click();
+    await expect(page.getByTestId('guide-rail-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-rail-stat-priority')).toBeVisible();
+  });
+
+  test('desktop: the hero shows all three cards and no fold toggle', async ({ page }) => {
+    await page.setViewportSize(DESKTOP);
+    await page.goto(PAGE);
+    await expect(page.getByTestId('guide-rail-fold-toggle')).toBeHidden();
+    await expect(page.getByTestId('guide-rail-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-rail-stat-priority')).toBeVisible();
   });
 
   test('phone: the contents drop down from the top and jump to a section', async ({ page }) => {

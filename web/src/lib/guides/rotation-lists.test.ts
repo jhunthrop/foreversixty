@@ -7,6 +7,7 @@ import {
   clauseOf,
   formatCooldown,
   loadApl,
+  specCooldowns,
   prepullCasts,
   rotationListsFrom,
   spellLookupFor,
@@ -154,13 +155,9 @@ describe('rotationListsFrom', () => {
     ]);
   });
 
-  it('builds the opener from the pre-pull casts, the cooldown pass and the priority list', () => {
+  it('builds the opener from the pre-pull casts alone', () => {
     const { opener } = rotationListsFrom(lines, apl, (id) => facts[id]);
-    expect(opener.map((item) => item.name)).toEqual([
-      'Aspect of the Hawk',
-      'On-use cooldowns',
-      'Priority list',
-    ]);
+    expect(opener.map((item) => item.name)).toEqual(['Aspect of the Hawk']);
     expect(opener[0]).toMatchObject({ rank: 5, icon: 'icon_hawk', clause: '10 s before the pull' });
   });
 
@@ -170,10 +167,22 @@ describe('rotationListsFrom', () => {
     expect(cooldowns[0]!.clause).toBe('2 min cooldown');
   });
 
-  it('with no APL still ends the opener on the priority list and has no cooldowns', () => {
+  it('has no opener, and no cooldowns, with no APL and nothing else to go on', () => {
     const lists = rotationListsFrom([], undefined, () => undefined);
-    expect(lists.opener.map((item) => item.name)).toEqual(['Priority list']);
+    expect(lists.opener).toEqual([]);
     expect(lists.cooldowns).toEqual([]);
+  });
+
+  it('adds the spec’s own cooldown spells after the priority’s, before the trinket line', () => {
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [
+      { name: 'Evocation', clause: '8 min cooldown' },
+      { name: 'Bestial Wrath', clause: 'ignored: already named by the priority' },
+    ]);
+    expect(cooldowns.map((item) => item.name)).toEqual([
+      'Bestial Wrath',
+      'Evocation',
+      'Trinkets, racials and potions',
+    ]);
   });
 });
 
@@ -186,7 +195,7 @@ describe('the Frost Mage lists, from the real data', () => {
     const lists = rotationListsFrom(lines, loadApl('mage-frost'), spellLookupFor(BUILD, 'mage'));
     expect(lists.priority.map((item) => item.name)).toEqual(['Ice Lance', 'Frostbolt']);
     expect(lists.priority.every((item) => item.icon !== undefined && item.clause !== '')).toBe(true);
-    expect(lists.opener.at(-1)?.name).toBe('Priority list');
+    expect(lists.opener).toEqual([]);
   });
 
   it('names the pre-pull casts of a spec that has them, with their icons', () => {
@@ -199,5 +208,34 @@ describe('the Frost Mage lists, from the real data', () => {
     expect(names).toContain('Aimed Shot');
     expect(lists.opener.find((item) => item.name === 'Aimed Shot')?.icon).toBeDefined();
     expect(lists.cooldowns.map((item) => item.name)).toContain('Bestial Wrath');
+  });
+});
+
+describe('specCooldowns for Frost Mage, from the client data', () => {
+  const items = specCooldowns(
+    BUILD,
+    'mage',
+    new Set(['Cold Snap', 'Ice Block']),
+    spellLookupFor(BUILD, 'mage'),
+  );
+
+  it('names the baseline and the lit talent cooldowns, each with its length', () => {
+    const names = items.map((item) => item.name);
+    expect(names).toContain('Evocation');
+    expect(names).toContain('Cold Snap');
+    expect(names).toContain('Ice Block');
+    expect(items.find((item) => item.name === 'Cold Snap')?.clause).toBe('10 min cooldown');
+    expect(items.find((item) => item.name === 'Evocation')?.clause).toBe('8 min cooldown');
+  });
+
+  it('leaves out a talent the build does not take and a short baseline cooldown', () => {
+    const names = items.map((item) => item.name);
+    expect(names).not.toContain('Presence of Mind');
+    expect(names).not.toContain('Arcane Power');
+    expect(names).not.toContain('Blink');
+  });
+
+  it('takes a lit talent’s icon from the talent file', () => {
+    expect(items.find((item) => item.name === 'Cold Snap')?.icon).toBe('spell_frost_wizardmark');
   });
 });

@@ -41,7 +41,6 @@ import SpecTableOfContents from '../../../components/SpecTableOfContents.astro';
 import Content from '../../../layouts/Content.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
-import { bisCopy } from '../../../lib/bis/copy';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import {
   bandTopLevel,
@@ -58,12 +57,19 @@ import { railStatRows } from '../../../lib/guides/rail-stats';
 import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
 import { loadGuideBis } from '../../../lib/guides/guide-bis';
+import { schoolHitTalent } from '../../../lib/guides/hit-cap-line';
+import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { loadGearExtras } from '../../../lib/guides/gear-extras';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
-import { loadApl, rotationListsFrom, spellLookupFor } from '../../../lib/guides/rotation-lists';
+import {
+  loadApl,
+  rotationListsFrom,
+  specCooldowns,
+  spellLookupFor,
+} from '../../../lib/guides/rotation-lists';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -147,10 +153,22 @@ const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
 const rotationLines =
   rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId);
 const rotationBandLabel = String(bandTopLevel(60));
+const litTalentNames = new Set(
+  [...buildTrees, ...(raidTrees ?? [])].flatMap((tree) =>
+    tree.talents.filter((talent) => talent.rank > 0).map((talent) => talent.name),
+  ),
+);
+const spellFacts = spellLookupFor(build, classSlug);
 const rotationListsData =
   rotationEntry === undefined
     ? undefined
-    : rotationListsFrom(rotationLines, loadApl(fullSpecId), spellLookupFor(build, classSlug));
+    : rotationListsFrom(
+        rotationLines,
+        loadApl(fullSpecId),
+        spellFacts,
+        specCooldowns(build, classSlug, litTalentNames, spellFacts),
+      );
+const hitTalent = schoolHitTalent(raidTrees ?? buildTrees);
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
 const rotationProseHtml = await renderGuideMarkdown(proseOnly('Rotation and priority'));
 
@@ -169,6 +187,9 @@ const statRows =
   band60 === undefined
     ? []
     : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.hasteScaleFactor);
+// The pills, the table and the hero card follow the weights, in the table's order; the
+// frontmatter list is only the fallback for a spec with no weights yet.
+const statPills = statRows.length > 0 ? statRows.map((row) => row.label) : entry.data.statPriority;
 const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
 const statPriorityProseHtml = await renderGuideMarkdown(proseOnly('Stat priority'));
 
@@ -176,7 +197,9 @@ const statPriorityProseHtml = await renderGuideMarkdown(proseOnly('Stat priority
 // follow the level 60 band's weights.
 const guideBis = loadGuideBis(build, classSlug, fullSpecId, entry.data.recommendedRaces);
 const bisHref = `/bis/${classSlug}/${specSlug}`;
-const topBand = guideBis?.bands.find((b) => b.band === guideBis.defaultBand);
+const topBand = guideBis?.panels.find(
+  (p) => p.faction === guideBis.defaultFaction && p.band === guideBis.defaultBand,
+);
 const mainHand = topBand?.rows.find((row) => row.slot === 'main_hand');
 const offHand = topBand?.rows.find((row) => row.slot === 'off_hand');
 const gearExtras = loadGearExtras(build, classSlug, fullSpecId, entry.data.recommendedRaces, {
@@ -209,8 +232,9 @@ const levelingRows: LevelingBandRow[] =
         .filter((b) => b.faction === faction && (b.preset === undefined || b.preset === 'bare'))
         .sort((a, b) => a.band - b.band)
         .map((b) => ({
-          bandLabel: bisCopy.bandRangeLabel(b.band),
-          points: b.talent_points,
+          band: b.band,
+          bandLabel: guidesCopy.levelRangeLabel(b.band),
+          pointsLabel: guidesCopy.levelRangePoints(b.talent_points, b.band),
           plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
           talents: b.talents,
         }));
@@ -230,6 +254,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp, build);
   sources={entry.data.sources}
   confidencePlacement="footer"
   hideHeader
+  wideProse
 >
   <Fragment slot="beforeMain">
     <ArtPanel classSlug={classSlug}>
@@ -279,20 +304,21 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp, build);
   {rotationListsData !== undefined && <RotationLists build={build} lists={rotationListsData} />}
   <Fragment set:html={rotationProseHtml} />
   <Fragment set:html={statPriorityHeadingHtml} />
-  <StatPriorityPills stats={entry.data.statPriority} />
+  <StatPriorityPills stats={statPills} />
   <GuideStatTable
     build={build}
     spec={fullSpecId}
     classSlug={classSlug}
     recommendedRaces={entry.data.recommendedRaces}
     statPriority={entry.data.statPriority}
+    hitTalent={hitTalent}
   />
   <Fragment set:html={statPriorityProseHtml} />
   <Fragment set:html={gearHeadingHtml} />
   {guideBis !== undefined && (
     <Fragment>
       <GlyphSheet />
-      <GuideBisTable build={build} bis={guideBis} bisHref={bisHref} />
+      <GuideBisTable build={build} bis={guideBis} bisHref={bisHref} classSlug={classSlug} />
     </Fragment>
   )}
   <Fragment set:html={gearProseHtml} />
@@ -307,6 +333,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp, build);
   <Fragment set:html={levelingHeadingHtml} />
   {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
   <Fragment set:html={levelingProseHtml} />
+  <script is:inline set:html={pageScript}></script>
 </Content>
 
 <style>

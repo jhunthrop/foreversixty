@@ -10,12 +10,15 @@
 // share.
 import { decodeBandTalents } from '../../lib/guides/build-tree';
 import { guidesCopy } from '../../lib/guides/copy';
-import { levelingTalentChips } from '../../lib/guides/leveling-talents';
+import { levelingChipRows } from '../../lib/guides/leveling-talents';
 import { dataUrl } from '../../lib/planner/load';
 
 export interface LevelingBandRow {
+  band: number;
+  /** "Level 20 to 29". */
   bandLabel: string;
-  points: number;
+  /** "11 to 20 points". */
+  pointsLabel: string;
   plannerHref: string;
   talents: string;
 }
@@ -29,18 +32,20 @@ interface Props {
 const { build, classSlug, rows } = Astro.props;
 
 const decoded = rows.map((row) => decodeBandTalents(build, classSlug, row.talents));
+const chipRows = levelingChipRows(decoded);
 ---
 
+<p class="leveling-legend" data-testid="guide-leveling-legend">
+  {guidesCopy.levelingLegend}
+</p>
 <div class="leveling-panel-box leveling-strip" data-testid="guide-leveling-strip">
   {rows.map((row, index) => {
-    const trees = decoded[index];
-    const chips =
-      trees === undefined ? [] : levelingTalentChips(trees, index > 0 ? decoded[index - 1] : undefined);
+    const chips = chipRows[index] ?? [];
     return (
-      <div class="leveling-row" data-testid={`guide-leveling-row-${row.bandLabel.replace(/\s+/g, '-')}`}>
+      <div class="leveling-row" data-testid={`guide-leveling-row-${row.band}`}>
         <div class="leveling-row-top">
           <span class="font-mono tabular leveling-row-band">{row.bandLabel}</span>
-          <span class="text-muted leveling-row-points">{guidesCopy.levelingPointsLabel(row.points)}</span>
+          <span class="leveling-row-points">{row.pointsLabel}</span>
           <a class="leveling-row-link" href={row.plannerHref}>
             {guidesCopy.loadInPlanner}
           </a>
@@ -97,7 +102,7 @@ const decoded = rows.map((row) => decodeBandTalents(build, classSlug, row.talent
   }
   .leveling-row-top {
     display: grid;
-    grid-template-columns: 90px 1fr auto;
+    grid-template-columns: 150px 1fr auto;
     gap: 16px;
     align-items: center;
     min-height: 44px;
@@ -108,6 +113,12 @@ const decoded = rows.map((row) => decodeBandTalents(build, classSlug, row.talent
   }
   .leveling-row-points {
     font-size: 13px;
+    color: var(--color-nav);
+  }
+  .leveling-legend {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--color-nav);
   }
   .leveling-row-link {
     font-size: 12px;
@@ -144,19 +155,19 @@ const decoded = rows.map((row) => decodeBandTalents(build, classSlug, row.talent
     border: 1px solid var(--color-line);
   }
   .leveling-chip-new {
-    border-color: var(--color-gold-deep);
+    border-color: var(--color-gold);
   }
   .leveling-chip-name {
     color: var(--color-text);
   }
   .leveling-chip-rank {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--color-gold);
   }
 
   @media (max-width: 1023px) {
     .leveling-row-top {
-      grid-template-columns: 70px 1fr auto;
+      grid-template-columns: auto 1fr auto;
       gap: 10px;
     }
     .leveling-strip {

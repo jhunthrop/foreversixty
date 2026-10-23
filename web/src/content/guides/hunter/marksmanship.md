@@ -76,29 +76,17 @@ Reading the Marksmanship tree in priority order for a single-target Aimed Shot b
 
 On top of that spread, this build reaches further into Beast Mastery and down to the bottom of its own tree for three more measured damage gains. **Unleashed Fury** (5/5) adds 15% more pet and hawk damage and **Ferocity** (1/5) adds 2% pet and hawk critical strike chance. **Lethal Attacks** (5/5) adds a flat 5% critical strike chance with all attacks, and **Ranged Weapon Specialization** (5/5) adds a flat 5% more damage with ranged weapons — both are the kind of unconditional multiplier that's hard to pass up once the points are available.
 
-The last round of the talent search moved three points: two from **Endurance Training** (pet health and armor, now 3/5) and the one in **Lone Wolf** (20% more damage with no active pet) went to the fifth point of Unleashed Fury, the first of Ferocity and the first of Improved Stings. Endurance Training and Lone Wolf both measured no damage in the sim, because a stationary single-target parse shows neither pet durability nor a pet-less bonus this build uses; they are real effects, just not ones the parse can show value from. The build keeps Improved Aspect of the Monkey, Hawk Eye, Improved Concussive Shot and Deflection at zero, as before. This build measures about +1.5% over the previous spend in our level-60 search run. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
-
-**Raid build.** The raid-ready search found no build that beats this one beyond error while keeping what the rotation casts, the group buffs the raid already counts on and the threat and survival talents, so the raid build is the leveling build and one tree serves both.
-
 ## Rotation and priority
 
-This site's own simulator plays Marksmanship as the most direct read of the shared Hunter shot rotation: heavy Aimed Shot weaving, with no Serpent Sting: the rotation search measured the sting as a loss in the raid-ready run, about +1.2% for dropping it, because the global and the mana are worth more to Aimed Shot and Multi-Shot (the engine's Serpent Sting damage is held to the client's numbers, so this is the sim's honest verdict, and the bare character comes out about level).
+This site's own simulator plays Marksmanship as the most direct read of the shared Hunter shot rotation: heavy Aimed Shot weaving, with no Serpent Sting: the rotation search measured the sting as a loss in the raid-ready run, about +1.2% for dropping it, because the global and the mana are worth more to Aimed Shot and Multi-Shot (the engine's Serpent Sting damage is held to the client's numbers, so this is the sim's honest verdict, and the bare character comes out about level). Before the pull, Aspect of the Hawk goes up and the opening Aimed Shot begins casting so it lands close to the start of the fight. In combat, Rapid Fire is timed to land together with an incoming auto shot right as Aimed Shot is about to come off cooldown, so both benefit from the same window. Aimed Shot is then recast on cooldown whenever the cast won't clip the next auto shot, Multi-Shot fills the remaining gaps between Aimed Shot casts, and Arcane Shot is the last filler whenever Aimed Shot itself is more than 1.5 seconds from ready and mana is above a 25% reserve — Multi-Shot's own cooldown comes up often enough that gating Arcane Shot on it too would zero out Arcane Shot's casts entirely, so the priority no longer waits on it. Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor. There's no melee or pet-management component to this priority list — the spec stays at range for the whole fight.
 
 ## Stat priority
 
-The table above is this level range's own simulation at level 60, re-run by the nightly pipeline every time the build or its gear data changes — these numbers are never hand-entered. A stat shown as "not separable from zero" is not a verdict that it is worthless; the sim's measured error on it is too wide, at this level range's sample size, to tell its true value apart from zero.
-
 ## Best in slot
-
-Look for attack power and ranged attack power first, then agility, then crit and hit, in the order above.
 
 ## Enchants and consumables
 
-Target agility and attack power on weapon and glove enchants.
-
 ## Races
-
-Marksmanship can be played by every race Hunter allows: Human (new in Forever), Orc, Dwarf, Night Elf, Tauren, and Troll, plus the Skyborne on either faction. For Alliance, **Dwarf** is the strongest pairing: the reworked Dwarf racial, Big Game Hunter, adds bonus damage against Beasts specifically, which applies to Aimed Shot the same as any other physical attack. For Horde, **Troll** pairs well and pays off a little differently for this spec than for the other two: Berserking's 10% casting speed applies directly to Aimed Shot's own cast time, shortening the one ability Marksmanship revolves around, on top of the 10% attack speed and Beast Slaying's 5% damage against Beasts. Hunter is open to the Skyborne on either faction with no class restriction; their racials read as utility (a downward glide, a short full-resource restore, haste, bonus Elemental damage) rather than damage-focused, so Skyborne is a valid pick but not a clear upgrade over Dwarf or Troll for this spec.
 
 ## Professions
 

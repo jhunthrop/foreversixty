@@ -74,15 +74,9 @@ Spell power adds nothing to a heal. Every figure behind this ranking comes from 
 
 ## Best in slot
 
-Look for pieces that lead with the stats at the top of the stat priority above; spell power on a healing item adds nothing to a heal.
-
 ## Enchants and consumables
 
-Target healing power and spirit on weapon and bracer enchants, matching the stat priority above.
-
 ## Races
-
-Holy Paladin can only be Human or Dwarf on Alliance, or Undead on Horde — this build's race and class combination table confirms no other race can train Paladin at all. Between the two Alliance options, Human is the better healing pick: its reworked The Human Spirit racial grants a flat 5% Spirit, which feeds mana regeneration directly and compounds with Reverence's in-combat regen, while Dwarf's reworked Stoneform is a physical damage-reduction cooldown that a backline healer rarely gets to use. On Horde, Undead is currently the only playable Paladin race; its reworked Cannibalize now restores mana as well as health, giving a Holy Undead a way to top off mana between pulls that neither Alliance race has, and Will of the Forsaken's fear, charm, and sleep cleanse is useful raid utility even though it no longer grants brief immunity the way it did in 1.12.
 
 ## Professions
 

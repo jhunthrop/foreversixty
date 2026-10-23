@@ -104,23 +104,17 @@ Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are l
 
 ## Stat priority
 
-The table above is this level range's own tank simulation at level 60, re-run by the nightly pipeline whenever the build or its gear data changes; these numbers are never hand-entered. A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
+A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
 
 Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches and powers Holy Shield's damage and Redoubt. Strength adds threat and Block Value; Hit keeps Judgement and Holy Strike landing; Expertise lowers the boss's chance to dodge or parry you, which is threat, not survival, and no item carries it yet.
 
-Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so Block Value is not weighed apart from Block chance. And a stat shown as "not separable from zero" is not a verdict that it is worthless; the simulation's own error on it is too wide, at this level range's sample size, to tell its value apart from zero.
+Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so Block Value is not weighed apart from Block chance.
 
 ## Best in slot
 
-Follow the table above: health, then the avoidance stats and armor, with the threat stats behind them.
-
 ## Enchants and consumables
 
-Target stamina and the defensive stats on enchants where they are available.
-
 ## Races
-
-Protection Paladin can only be Human or Dwarf on Alliance, or Undead on Horde — this build's race and class combination table confirms no other race can train Paladin at all. Between the two Alliance options, Dwarf is the better tanking pick: its reworked Stoneform now reduces physical damage taken for its duration instead of only raising armor, which is a direct mitigation cooldown a tank can time to a dangerous swing, and Mace Specialization adds crit chance that feeds Reckoning's extra-attack proc if paired with a one-handed mace and shield. Human's Sword Specialization only helps if wielding a sword, and its Spirit bonus does little for a tank build. On Horde, Undead is currently the only playable Paladin race; Will of the Forsaken's fear, charm, and sleep cleanse is useful raid utility for a tank that needs to stay locked onto a boss, even though it no longer grants brief immunity the way it did in 1.12.
 
 ## Professions
 

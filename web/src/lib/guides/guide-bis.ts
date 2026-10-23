@@ -1,8 +1,8 @@
 // web/src/lib/guides/guide-bis.ts
 // The guide's "Best in slot" table: the same per-slot picks the /bis page lists, one block
-// per level range, read from the spec's ranked BiS file through the same view builder /bis
-// uses (`bandInfosFor`) so a guide and its BiS page can never name different items. The
-// table is server-rendered from this; nothing here is typed per guide.
+// per level range and faction, read from the spec's ranked BiS file through the same view
+// builder /bis uses (`bandInfosFor`) so a guide and its BiS page can never name different
+// items. The table is server-rendered from this; nothing here is typed per guide.
 import { bisCopy } from '../bis/copy';
 import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
 import { bandInfosFor, type BandInfo, type RowView } from '../bis/panel-view';
@@ -36,24 +36,31 @@ export interface GuideBisRow {
   typeLabel?: string;
 }
 
-export interface GuideBisBand {
+/** One faction's table for one level range. */
+export interface GuideBisPanel {
+  faction: Faction;
   band: number;
   /** "20 to 29", "60". */
   label: string;
   /** Anchor on the /bis page for this band, e.g. `band-alliance-60`. */
   bisAnchor: string;
+  /** The race the band was ranked for, as a display name. */
+  raceName: string;
   rows: GuideBisRow[];
   /** True when the level 60 picks carry no raid-tier item, so the table is the pre-raid list. */
   preRaid: boolean;
 }
 
 export interface GuideBis {
-  faction: Faction;
-  /** The race the band was ranked for, as a display name. */
-  raceName: string;
-  /** The band the table opens on. */
+  /** The faction the table opens on: the one the guide's first recommended race plays. */
+  defaultFaction: Faction;
+  /** The factions the file has picks for, in the order the switch lists them. */
+  factions: Faction[];
+  /** The band the table opens on, before any visitor-specific choice. */
   defaultBand: number;
-  bands: GuideBisBand[];
+  /** The level ranges, ascending. */
+  bands: { band: number; label: string }[];
+  panels: GuideBisPanel[];
 }
 
 const PLACEHOLDER_ICON = 'inv_misc_questionmark';
@@ -84,35 +91,44 @@ function isPreRaid(band: number, rows: readonly RowView[]): boolean {
   return band === 60 && !rows.some((row) => row.sourceKind === 'raid');
 }
 
-export function guideBisBandsFrom(infos: readonly BandInfo[], faction: Faction): GuideBisBand[] {
+export function guideBisPanelsFrom(infos: readonly BandInfo[], faction: Faction): GuideBisPanel[] {
   return infos.map((info) => ({
+    faction,
     band: info.band,
     label: bisCopy.bandRangeLabel(info.band),
     bisAnchor: `band-${faction}-${info.band}`,
+    raceName: raceNameFor(info.race),
     rows: info.rows.map(rowFor),
     preRaid: isPreRaid(info.band, info.rows),
   }));
 }
 
+const FACTIONS: readonly Faction[] = ['alliance', 'horde'];
+
 export function guideBisFrom(
   file: BisFile,
-  faction: Faction,
+  defaultFaction: Faction,
   deps: Parameters<typeof bandInfosFor>[3],
 ): GuideBis | undefined {
-  const infos = bandInfosFor(file, bandLevels(file), faction, deps);
-  if (infos.length === 0) return undefined;
-  const top = infos[infos.length - 1]!;
-  return {
+  const levels = bandLevels(file);
+  const perFaction = FACTIONS.map((faction) => ({
     faction,
-    raceName: raceNameFor(top.race),
-    defaultBand: top.band,
-    bands: guideBisBandsFrom(infos, faction),
+    infos: bandInfosFor(file, levels, faction, deps),
+  })).filter((entry) => entry.infos.length > 0);
+  const chosen = perFaction.find((entry) => entry.faction === defaultFaction) ?? perFaction[0];
+  if (chosen === undefined) return undefined;
+  return {
+    defaultFaction: chosen.faction,
+    factions: perFaction.map((entry) => entry.faction),
+    defaultBand: chosen.infos[chosen.infos.length - 1]!.band,
+    bands: chosen.infos.map((info) => ({ band: info.band, label: bisCopy.bandRangeLabel(info.band) })),
+    panels: perFaction.flatMap((entry) => guideBisPanelsFrom(entry.infos, entry.faction)),
   };
 }
 
-/** The spec's picks for the faction its first recommended race plays, from the real
- *  published file only (never the /bis dev fixture); `undefined` when the spec has no ranked
- *  list yet, and the guide then shows no table at all rather than an empty one. */
+/** The spec's picks for both factions, opening on the one its first recommended race plays,
+ *  from the real published file only (never the /bis dev fixture); `undefined` when the spec
+ *  has no ranked list yet, and the guide then shows no table at all rather than an empty one. */
 export function loadGuideBis(
   build: string,
   classSlug: string,

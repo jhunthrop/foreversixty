@@ -59,7 +59,7 @@ The sim measured the capstone Wild Growth and Improved Regrowth against spending
 
 ## Rotation and priority
 
-The tank keeps **Regrowth** and **Rejuvenation** up for the whole fight, and the heals over time carry most of the work. **Healing Touch** fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. Party members get **Wild Growth** when two are hurt, **Rejuvenation** when one is, and **Tranquility** when two are well down.
+The tank keeps **Regrowth** and **Rejuvenation** up for the whole fight, and the heals over time carry most of the work. **Healing Touch** fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. Party members get **Wild Growth** when two are hurt, **Rejuvenation** when one is, and **Tranquility** when two are well down. **Nature's Swiftness** into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and **Innervate** goes on you when you are low.
 
 The rotation does not downrank.
 
@@ -71,17 +71,9 @@ Spell power adds nothing to a heal. Every figure behind this ranking comes from 
 
 ## Best in slot
 
-Look for pieces that follow the stat priority above; spell power on a healing item adds nothing to a heal.
-
 ## Enchants and consumables
 
-Target healing power and spirit on enchants and consumables, matching the stat priority above.
-
 ## Races
-
-Druid's playable races are Night Elf and Tauren on their respective factions, plus Skyborne on both sides — Druid is one of the few classes open to both the Alliance's High Order Skyborne and the Horde's Windshaper Skyborne. None of Blizzard's six confirmed new race and class pairs touches Druid, so this list is unchanged from 1.12.
-
-For Alliance, **Night Elf** is the strongest pick: Quickness's passive dodge and speed help a healer stay alive while kiting or repositioning, and Shadowmeld's in-combat stealth is a real emergency tool when a healer draws unwanted attention. For Horde, **Tauren** is the pick: Endurance's 5% health gives a healer more of a buffer, and War Stomp's group stun is a useful panic button if adds close in on a healer standing at range. Skyborne is available to Druid on both factions; Read Ley Line's 100% health and mana regeneration over 15 seconds is a genuinely strong out-of-combat sustain tool for a mana-focused healer, making it a reasonable third option rather than purely a flavor pick.
 
 ## Professions
 

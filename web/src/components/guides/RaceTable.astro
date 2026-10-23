@@ -1,47 +1,74 @@
 ---
 // web/src/components/guides/RaceTable.astro
-// The Races table under the pills: one row per race the class can be, with its faction, the
-// racial that matters for this spec and what that racial does; the guide's recommended races
-// carry a tag. Rows come from lib/guides/race-table.ts.
+// The Races table under the pills: one row per race the class can be, with its faction and the
+// racials that matter for this spec, each with what it does; the guide's recommended races
+// carry a tag, and a line under the table says which racials make them the pick. Rows and the
+// line come from lib/guides/race-table.ts, so the line can never contradict the table.
 import { guidesCopy } from '../../lib/guides/copy';
 import { factionColorVar } from '../../lib/guides/race-pills';
-import type { GuideRaceRow } from '../../lib/guides/race-table';
+import { recommendedRaceLines, type GuideRaceRow } from '../../lib/guides/race-table';
 import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
   rows: GuideRaceRow[];
 }
 const { rows } = Astro.props;
+const factionName = (faction: string): string => (faction === 'alliance' ? 'Alliance' : 'Horde');
+const picks = recommendedRaceLines(rows);
+const nameOf = (slug: string): string => rows.find((row) => row.slug === slug)?.name ?? slug;
+const sentences = picks.map((pick) => {
+  const sameFaction = picks.filter((other) => other.faction === pick.faction).length;
+  return guidesCopy.recommendedRacesLine(
+    nameOf(pick.slug),
+    factionName(pick.faction),
+    sameFaction === 1 ? 'the' : 'a',
+    pick.names.join(' and '),
+  );
+});
 ---
 
 {rows.length > 0 && (
-  <GuideTableBox label="Races" testid="guide-race-table">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">{guidesCopy.raceColumn}</th>
-          <th scope="col">{guidesCopy.factionColumn}</th>
-          <th scope="col">{guidesCopy.racialColumn}</th>
-          <th scope="col">{guidesCopy.racialDoesColumn}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr data-testid={`guide-race-row-${row.slug}`} data-recommended={row.recommended}>
-            <th scope="row" class="race-name">
-              <span class="race-name-line">
-                <span style={`color:${factionColorVar(row.faction)}`}>{row.name}</span>
-                {row.recommended && <span class="race-tag">{guidesCopy.recommendedTag}</span>}
-              </span>
-            </th>
-            <td class="text-muted race-faction">{row.faction === 'alliance' ? 'Alliance' : 'Horde'}</td>
-            <td class="text-strong race-racial">{row.racial ?? '—'}</td>
-            <td class="race-effect">{row.effect ?? ''}</td>
+  <>
+    <GuideTableBox label="Races" testid="guide-race-table">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{guidesCopy.raceColumn}</th>
+            <th scope="col">{guidesCopy.factionColumn}</th>
+            <th scope="col">{guidesCopy.racialsColumn}</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </GuideTableBox>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr data-testid={`guide-race-row-${row.slug}`} data-recommended={row.recommended}>
+              <th scope="row" class="race-name">
+                <span class="race-name-line">
+                  <span style={`color:${factionColorVar(row.faction)}`}>{row.name}</span>
+                  {row.recommended && <span class="race-tag">{guidesCopy.recommendedTag}</span>}
+                </span>
+              </th>
+              <td class="race-faction">{factionName(row.faction)}</td>
+              <td class="race-effect">
+                {row.racials.length === 0
+                  ? '—'
+                  : row.racials.map((racial) => (
+                      <span class="race-line">
+                        <span class="race-racial">{racial.name}</span>
+                        {`: ${racial.effect}`}
+                      </span>
+                    ))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </GuideTableBox>
+    {sentences.length > 0 && (
+      <p class="race-picks" data-testid="guide-race-picks">
+        {sentences.join(' ')}
+      </p>
+    )}
+  </>
 )}
 
 <style>
@@ -58,7 +85,7 @@ const { rows } = Astro.props;
     gap: 8px;
   }
   .race-tag {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -67,11 +94,24 @@ const { rows } = Astro.props;
     border-radius: var(--radius-pill);
     padding: 0 6px;
   }
-  .race-effect {
-    min-width: 220px;
+  .race-line {
+    display: block;
   }
-  .race-faction,
-  .race-racial {
+  .race-line + .race-line {
+    margin-top: 4px;
+  }
+  .race-faction {
+    color: var(--color-nav);
     white-space: nowrap;
+  }
+  .race-racial {
+    color: var(--color-strong);
+    white-space: nowrap;
+  }
+  .race-effect {
+    min-width: 240px;
+  }
+  .race-picks {
+    margin: 0 0 14px;
   }
 </style>
