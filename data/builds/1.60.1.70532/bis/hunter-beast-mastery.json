@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T12:21:57Z",
+  "generated_at": "2026-10-22T23:14:45Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -671,8 +671,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.729274694,
-      "verify_run_seconds": 2.313883826,
+      "weights_run_seconds": 2.021060622,
+      "verify_run_seconds": 1.743371022,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1466,8 +1466,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.729274694,
-      "verify_run_seconds": 2.243730444,
+      "weights_run_seconds": 2.021060622,
+      "verify_run_seconds": 1.713834604,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2371,8 +2371,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.959858562,
-      "verify_run_seconds": 2.758034347,
+      "weights_run_seconds": 2.193319018,
+      "verify_run_seconds": 2.085024683,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3279,8 +3279,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.959858562,
-      "verify_run_seconds": 2.552968383,
+      "weights_run_seconds": 2.193319018,
+      "verify_run_seconds": 1.960173489,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4153,7 +4153,7 @@
         }
       ],
       "set_dps": 183.48416828884865,
-      "no_source_count": 624,
+      "no_source_count": 626,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4188,8 +4188,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.240689351,
-      "verify_run_seconds": 3.107521631,
+      "weights_run_seconds": 2.389643054,
+      "verify_run_seconds": 2.365323883,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4232,8 +4232,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 528,
-          "sourced": 381,
+          "eligible": 531,
+          "sourced": 383,
           "rare_spawn_skipped": 41
         },
         "neck": {
@@ -4252,7 +4252,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 155,
           "rare_spawn_skipped": 3
         },
@@ -5063,7 +5063,7 @@
         }
       ],
       "set_dps": 185.7232501408982,
-      "no_source_count": 588,
+      "no_source_count": 590,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5098,8 +5098,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.240689351,
-      "verify_run_seconds": 3.04137454,
+      "weights_run_seconds": 2.389643054,
+      "verify_run_seconds": 2.31926255,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5142,8 +5142,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 520,
-          "sourced": 396,
+          "eligible": 523,
+          "sourced": 398,
           "rare_spawn_skipped": 41
         },
         "neck": {
@@ -5162,7 +5162,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 180,
+          "eligible": 181,
           "sourced": 158,
           "rare_spawn_skipped": 3
         },
@@ -5936,7 +5936,7 @@
         }
       ],
       "set_dps": 223.762803321076,
-      "no_source_count": 780,
+      "no_source_count": 782,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5971,8 +5971,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.264085315,
-      "verify_run_seconds": 3.767422949,
+      "weights_run_seconds": 2.405283225,
+      "verify_run_seconds": 2.82624765,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6015,8 +6015,8 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 622,
-          "sourced": 453,
+          "eligible": 625,
+          "sourced": 455,
           "rare_spawn_skipped": 42
         },
         "neck": {
@@ -6035,7 +6035,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 262,
+          "eligible": 263,
           "sourced": 226,
           "rare_spawn_skipped": 3
         },
@@ -6844,7 +6844,7 @@
         }
       ],
       "set_dps": 227.06330368935446,
-      "no_source_count": 737,
+      "no_source_count": 739,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6878,8 +6878,8 @@
         "off_hand: Force of the Hippogryph",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.264085315,
-      "verify_run_seconds": 3.5199442789999997,
+      "weights_run_seconds": 2.405283225,
+      "verify_run_seconds": 2.722554156,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6922,8 +6922,8 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 617,
-          "sourced": 474,
+          "eligible": 620,
+          "sourced": 476,
           "rare_spawn_skipped": 42
         },
         "neck": {
@@ -6942,7 +6942,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 261,
+          "eligible": 262,
           "sourced": 229,
           "rare_spawn_skipped": 3
         },
@@ -7742,7 +7742,7 @@
         }
       ],
       "set_dps": 296.73909174394294,
-      "no_source_count": 1413,
+      "no_source_count": 1415,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7778,8 +7778,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.174482635,
-      "verify_run_seconds": 11.321044591,
+      "weights_run_seconds": 2.34993489,
+      "verify_run_seconds": 8.535225717,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7822,8 +7822,8 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 815,
-          "sourced": 565,
+          "eligible": 818,
+          "sourced": 567,
           "rare_spawn_skipped": 42
         },
         "neck": {
@@ -7842,7 +7842,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 393,
+          "eligible": 394,
           "sourced": 317,
           "rare_spawn_skipped": 3
         },
@@ -8638,7 +8638,7 @@
         }
       ],
       "set_dps": 307.0430164187725,
-      "no_source_count": 1393,
+      "no_source_count": 1395,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8672,8 +8672,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.174482635,
-      "verify_run_seconds": 10.84437909,
+      "weights_run_seconds": 2.34993489,
+      "verify_run_seconds": 8.220458202,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -8716,8 +8716,8 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 813,
-          "sourced": 577,
+          "eligible": 816,
+          "sourced": 579,
           "rare_spawn_skipped": 42
         },
         "neck": {
@@ -8736,7 +8736,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 392,
+          "eligible": 393,
           "sourced": 319,
           "rare_spawn_skipped": 3
         },
@@ -9528,7 +9528,7 @@
         }
       ],
       "set_dps": 751.3482813226776,
-      "no_source_count": 1413,
+      "no_source_count": 1415,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9564,8 +9564,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.209373033,
-      "verify_run_seconds": 11.333664366,
+      "weights_run_seconds": 2.414902806,
+      "verify_run_seconds": 8.6763583,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9608,8 +9608,8 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 815,
-          "sourced": 565,
+          "eligible": 818,
+          "sourced": 567,
           "rare_spawn_skipped": 42
         },
         "neck": {
@@ -9628,7 +9628,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 393,
+          "eligible": 394,
           "sourced": 317,
           "rare_spawn_skipped": 3
         },
@@ -10425,7 +10425,7 @@
         }
       ],
       "set_dps": 781.9034785569881,
-      "no_source_count": 1393,
+      "no_source_count": 1395,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10459,8 +10459,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.209373033,
-      "verify_run_seconds": 10.953030144,
+      "weights_run_seconds": 2.414902806,
+      "verify_run_seconds": 8.42059613,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10503,8 +10503,8 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 813,
-          "sourced": 577,
+          "eligible": 816,
+          "sourced": 579,
           "rare_spawn_skipped": 42
         },
         "neck": {
@@ -10523,7 +10523,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 392,
+          "eligible": 393,
           "sourced": 319,
           "rare_spawn_skipped": 3
         },

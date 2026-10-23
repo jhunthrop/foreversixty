@@ -2,7 +2,7 @@
   "spec": "priest-holy",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T13:08:02Z",
+  "generated_at": "2026-10-22T23:48:24Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -732,8 +732,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.253868087,
-      "verify_run_seconds": 28.535213475,
+      "weights_run_seconds": 7.54544353,
+      "verify_run_seconds": 20.945324543,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1558,8 +1558,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.253868087,
-      "verify_run_seconds": 28.558848965,
+      "weights_run_seconds": 7.54544353,
+      "verify_run_seconds": 20.940508926,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2418,8 +2418,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.827542617,
-      "verify_run_seconds": 33.402635585,
+      "weights_run_seconds": 7.924668225,
+      "verify_run_seconds": 24.323494609,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3281,8 +3281,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.827542617,
-      "verify_run_seconds": 33.964693975,
+      "weights_run_seconds": 7.924668225,
+      "verify_run_seconds": 24.758484973,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4153,7 +4153,7 @@
         }
       ],
       "set_dps": 113.82650074374345,
-      "no_source_count": 339,
+      "no_source_count": 340,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4188,8 +4188,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 11.19419552,
-      "verify_run_seconds": 39.19750456,
+      "weights_run_seconds": 8.349374127,
+      "verify_run_seconds": 26.052530433,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4232,7 +4232,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 303,
+          "eligible": 304,
           "sourced": 215,
           "rare_spawn_skipped": 28
         },
@@ -5053,7 +5053,7 @@
         }
       ],
       "set_dps": 108.02303454230335,
-      "no_source_count": 322,
+      "no_source_count": 323,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5088,8 +5088,8 @@
         "off_hand: Orb of Souls",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 11.19419552,
-      "verify_run_seconds": 40.00922744,
+      "weights_run_seconds": 8.349374127,
+      "verify_run_seconds": 26.140699108,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5132,7 +5132,7 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 305,
+          "eligible": 306,
           "sourced": 231,
           "rare_spawn_skipped": 28
         },
@@ -5987,7 +5987,7 @@
         }
       ],
       "set_dps": 221.71446112502784,
-      "no_source_count": 433,
+      "no_source_count": 434,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6020,8 +6020,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 10.908214077,
-      "verify_run_seconds": 41.315141968,
+      "weights_run_seconds": 8.05130493,
+      "verify_run_seconds": 28.336300831,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6064,9 +6064,9 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 365,
-          "sourced": 261,
-          "rare_spawn_skipped": 29
+          "eligible": 367,
+          "sourced": 262,
+          "rare_spawn_skipped": 30
         },
         "neck": {
           "eligible": 71,
@@ -6915,7 +6915,7 @@
         }
       ],
       "set_dps": 211.55345429967005,
-      "no_source_count": 413,
+      "no_source_count": 414,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6947,8 +6947,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.908214077,
-      "verify_run_seconds": 40.610059431,
+      "weights_run_seconds": 8.05130493,
+      "verify_run_seconds": 26.978191557,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6991,9 +6991,9 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 368,
-          "sourced": 280,
-          "rare_spawn_skipped": 29
+          "eligible": 370,
+          "sourced": 281,
+          "rare_spawn_skipped": 30
         },
         "neck": {
           "eligible": 73,
@@ -7858,7 +7858,7 @@
         }
       ],
       "set_dps": 430.9305106100756,
-      "no_source_count": 947,
+      "no_source_count": 948,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7892,8 +7892,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.410800183,
-      "verify_run_seconds": 64.632557403,
+      "weights_run_seconds": 6.968871653,
+      "verify_run_seconds": 45.811946544,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7936,9 +7936,9 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 472,
-          "sourced": 319,
-          "rare_spawn_skipped": 29
+          "eligible": 474,
+          "sourced": 320,
+          "rare_spawn_skipped": 30
         },
         "neck": {
           "eligible": 155,
@@ -8798,7 +8798,7 @@
         }
       ],
       "set_dps": 419.6421419030338,
-      "no_source_count": 939,
+      "no_source_count": 940,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8831,8 +8831,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.410800183,
-      "verify_run_seconds": 65.720656641,
+      "weights_run_seconds": 6.968871653,
+      "verify_run_seconds": 46.410538978,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -8875,9 +8875,9 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 477,
-          "sourced": 332,
-          "rare_spawn_skipped": 29
+          "eligible": 479,
+          "sourced": 333,
+          "rare_spawn_skipped": 30
         },
         "neck": {
           "eligible": 157,
@@ -9750,7 +9750,7 @@
         }
       ],
       "set_dps": 753.5249830079259,
-      "no_source_count": 947,
+      "no_source_count": 948,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9784,8 +9784,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.225678707,
-      "verify_run_seconds": 30.294651546,
+      "weights_run_seconds": 4.638091459,
+      "verify_run_seconds": 22.122723391,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9828,9 +9828,9 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 472,
-          "sourced": 319,
-          "rare_spawn_skipped": 29
+          "eligible": 474,
+          "sourced": 320,
+          "rare_spawn_skipped": 30
         },
         "neck": {
           "eligible": 155,
@@ -10704,7 +10704,7 @@
         }
       ],
       "set_dps": 737.3991523353841,
-      "no_source_count": 939,
+      "no_source_count": 940,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10737,8 +10737,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.225678707,
-      "verify_run_seconds": 32.093370277,
+      "weights_run_seconds": 4.638091459,
+      "verify_run_seconds": 23.336646107,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10781,9 +10781,9 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 477,
-          "sourced": 332,
-          "rare_spawn_skipped": 29
+          "eligible": 479,
+          "sourced": 333,
+          "rare_spawn_skipped": 30
         },
         "neck": {
           "eligible": 157,

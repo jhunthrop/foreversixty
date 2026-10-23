@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T13:30:12Z",
+  "generated_at": "2026-10-23T00:05:03Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -728,8 +728,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.346225765,
-      "verify_run_seconds": 1.214697203,
+      "weights_run_seconds": 1.765831365,
+      "verify_run_seconds": 0.922573345,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1554,8 +1554,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.346225765,
-      "verify_run_seconds": 1.228212252,
+      "weights_run_seconds": 1.765831365,
+      "verify_run_seconds": 0.914728592,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2438,8 +2438,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.416354325,
-      "verify_run_seconds": 1.210623193,
+      "weights_run_seconds": 1.809819047,
+      "verify_run_seconds": 0.933466666,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3323,8 +3323,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.416354325,
-      "verify_run_seconds": 1.213631408,
+      "weights_run_seconds": 1.809819047,
+      "verify_run_seconds": 0.945710171,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4229,8 +4229,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.968876342,
-      "verify_run_seconds": 1.271321282,
+      "weights_run_seconds": 1.483736039,
+      "verify_run_seconds": 0.970159563,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4273,8 +4273,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 302,
-          "sourced": 208,
+          "eligible": 303,
+          "sourced": 209,
           "rare_spawn_skipped": 25
         },
         "neck": {
@@ -5136,8 +5136,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.968876342,
-      "verify_run_seconds": 1.211916178,
+      "weights_run_seconds": 1.483736039,
+      "verify_run_seconds": 0.927458234,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5180,8 +5180,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 303,
-          "sourced": 229,
+          "eligible": 304,
+          "sourced": 230,
           "rare_spawn_skipped": 25
         },
         "neck": {
@@ -6055,8 +6055,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.165052243,
-      "verify_run_seconds": 1.463511904,
+      "weights_run_seconds": 3.858135044,
+      "verify_run_seconds": 1.124654188,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6099,8 +6099,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 357,
-          "sourced": 249,
+          "eligible": 358,
+          "sourced": 250,
           "rare_spawn_skipped": 26
         },
         "neck": {
@@ -6990,8 +6990,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.165052243,
-      "verify_run_seconds": 1.4384202209999999,
+      "weights_run_seconds": 3.858135044,
+      "verify_run_seconds": 1.112738188,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7034,8 +7034,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 358,
-          "sourced": 273,
+          "eligible": 359,
+          "sourced": 274,
           "rare_spawn_skipped": 26
         },
         "neck": {
@@ -7953,8 +7953,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.897257487,
-      "verify_run_seconds": 2.787104665,
+      "weights_run_seconds": 4.39572866,
+      "verify_run_seconds": 2.114912239,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7997,8 +7997,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 466,
-          "sourced": 317,
+          "eligible": 467,
+          "sourced": 318,
           "rare_spawn_skipped": 26
         },
         "neck": {
@@ -8914,8 +8914,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.897257487,
-      "verify_run_seconds": 2.776694095,
+      "weights_run_seconds": 4.39572866,
+      "verify_run_seconds": 2.106368223,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -8958,8 +8958,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 468,
-          "sourced": 330,
+          "eligible": 469,
+          "sourced": 331,
           "rare_spawn_skipped": 26
         },
         "neck": {
@@ -9880,8 +9880,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.163907972,
-      "verify_run_seconds": 3.06299523,
+      "weights_run_seconds": 5.22173847,
+      "verify_run_seconds": 2.326514794,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9924,8 +9924,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 466,
-          "sourced": 317,
+          "eligible": 467,
+          "sourced": 318,
           "rare_spawn_skipped": 26
         },
         "neck": {
@@ -10839,8 +10839,8 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 7.163907972,
-      "verify_run_seconds": 3.102535952,
+      "weights_run_seconds": 5.22173847,
+      "verify_run_seconds": 2.366598813,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10883,8 +10883,8 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 468,
-          "sourced": 330,
+          "eligible": 469,
+          "sourced": 331,
           "rare_spawn_skipped": 26
         },
         "neck": {

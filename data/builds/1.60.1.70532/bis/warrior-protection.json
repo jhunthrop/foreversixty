@@ -2,7 +2,7 @@
   "spec": "warrior-protection",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T13:36:57Z",
+  "generated_at": "2026-10-23T00:10:08Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -888,8 +888,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 5.084156023,
-      "verify_run_seconds": 2.1248291,
+      "weights_run_seconds": 3.7668458449999997,
+      "verify_run_seconds": 1.647888545,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1877,8 +1877,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 5.084156023,
-      "verify_run_seconds": 2.074232347,
+      "weights_run_seconds": 3.7668458449999997,
+      "verify_run_seconds": 1.599321869,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2908,8 +2908,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.014953066,
-      "verify_run_seconds": 2.042834936,
+      "weights_run_seconds": 3.776455191,
+      "verify_run_seconds": 1.5531879389999999,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3933,8 +3933,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.014953066,
-      "verify_run_seconds": 2.036060318,
+      "weights_run_seconds": 3.776455191,
+      "verify_run_seconds": 1.553415352,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4956,7 +4956,7 @@
         }
       ],
       "set_dps": 99.20212615001131,
-      "no_source_count": 713,
+      "no_source_count": 716,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4990,8 +4990,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.661614742,
-      "verify_run_seconds": 2.3355209869999998,
+      "weights_run_seconds": 3.463481852,
+      "verify_run_seconds": 1.7638701110000001,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5034,8 +5034,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 709,
-          "sourced": 521,
+          "eligible": 713,
+          "sourced": 523,
           "rare_spawn_skipped": 31
         },
         "neck": {
@@ -5054,7 +5054,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 195,
+          "eligible": 196,
           "sourced": 167,
           "rare_spawn_skipped": 3
         },
@@ -6014,7 +6014,7 @@
         }
       ],
       "set_dps": 98.18927732940391,
-      "no_source_count": 664,
+      "no_source_count": 667,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6048,8 +6048,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.661614742,
-      "verify_run_seconds": 2.434918181,
+      "weights_run_seconds": 3.463481852,
+      "verify_run_seconds": 1.830193124,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6092,8 +6092,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 697,
-          "sourced": 536,
+          "eligible": 701,
+          "sourced": 538,
           "rare_spawn_skipped": 31
         },
         "neck": {
@@ -6112,7 +6112,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 194,
+          "eligible": 195,
           "sourced": 170,
           "rare_spawn_skipped": 3
         },
@@ -7093,7 +7093,7 @@
         }
       ],
       "set_dps": 122.21495063335888,
-      "no_source_count": 898,
+      "no_source_count": 901,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7130,8 +7130,8 @@
         "off_hand: Aegis of Stormwind",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.065126329,
-      "verify_run_seconds": 4.607869562,
+      "weights_run_seconds": 3.756894006,
+      "verify_run_seconds": 3.614926637,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7174,9 +7174,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 839,
-          "sourced": 620,
-          "rare_spawn_skipped": 32
+          "eligible": 844,
+          "sourced": 623,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 71,
@@ -7194,7 +7194,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 300,
+          "eligible": 301,
           "sourced": 261,
           "rare_spawn_skipped": 3
         },
@@ -8173,7 +8173,7 @@
         }
       ],
       "set_dps": 121.89120689959651,
-      "no_source_count": 840,
+      "no_source_count": 843,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8210,8 +8210,8 @@
         "off_hand: Aegis of Stormwind",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.065126329,
-      "verify_run_seconds": 4.532547565,
+      "weights_run_seconds": 3.756894006,
+      "verify_run_seconds": 3.48340124,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8254,9 +8254,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 830,
-          "sourced": 641,
-          "rare_spawn_skipped": 32
+          "eligible": 835,
+          "sourced": 644,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 73,
@@ -8274,7 +8274,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 299,
+          "eligible": 300,
           "sourced": 264,
           "rare_spawn_skipped": 3
         },
@@ -9230,7 +9230,7 @@
         }
       ],
       "set_dps": 169.50128159816717,
-      "no_source_count": 1627,
+      "no_source_count": 1630,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9266,8 +9266,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 5.245116127,
-      "verify_run_seconds": 8.409722214,
+      "weights_run_seconds": 3.965617718,
+      "verify_run_seconds": 6.437646606,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9305,14 +9305,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 497,
+          "eligible": 600,
+          "sourced": 498,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1090,
-          "sourced": 761,
-          "rare_spawn_skipped": 32
+          "eligible": 1095,
+          "sourced": 764,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 158,
@@ -9330,7 +9330,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 461,
+          "eligible": 462,
           "sourced": 374,
           "rare_spawn_skipped": 3
         },
@@ -10285,7 +10285,7 @@
         }
       ],
       "set_dps": 171.54066501252686,
-      "no_source_count": 1596,
+      "no_source_count": 1599,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10321,8 +10321,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 5.245116127,
-      "verify_run_seconds": 8.191846926,
+      "weights_run_seconds": 3.965617718,
+      "verify_run_seconds": 6.274218026,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10360,14 +10360,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 593,
-          "sourced": 493,
+          "eligible": 594,
+          "sourced": 494,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1085,
-          "sourced": 774,
-          "rare_spawn_skipped": 32
+          "eligible": 1090,
+          "sourced": 777,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 160,
@@ -10385,7 +10385,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 459,
+          "eligible": 460,
           "sourced": 376,
           "rare_spawn_skipped": 3
         },
@@ -11342,7 +11342,7 @@
         }
       ],
       "set_dps": 318.2303636822412,
-      "no_source_count": 1627,
+      "no_source_count": 1630,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -11378,8 +11378,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.050864658,
-      "verify_run_seconds": 9.336466968,
+      "weights_run_seconds": 4.464597743,
+      "verify_run_seconds": 7.012820709,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11417,14 +11417,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 497,
+          "eligible": 600,
+          "sourced": 498,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1090,
-          "sourced": 761,
-          "rare_spawn_skipped": 32
+          "eligible": 1095,
+          "sourced": 764,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 158,
@@ -11442,7 +11442,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 461,
+          "eligible": 462,
           "sourced": 374,
           "rare_spawn_skipped": 3
         },
@@ -12398,7 +12398,7 @@
         }
       ],
       "set_dps": 316.34312240424623,
-      "no_source_count": 1596,
+      "no_source_count": 1599,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -12434,8 +12434,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.050864658,
-      "verify_run_seconds": 9.043834779,
+      "weights_run_seconds": 4.464597743,
+      "verify_run_seconds": 6.996422846,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -12473,14 +12473,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 593,
-          "sourced": 493,
+          "eligible": 594,
+          "sourced": 494,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1085,
-          "sourced": 774,
-          "rare_spawn_skipped": 32
+          "eligible": 1090,
+          "sourced": 777,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 160,
@@ -12498,7 +12498,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 459,
+          "eligible": 460,
           "sourced": 376,
           "rare_spawn_skipped": 3
         },

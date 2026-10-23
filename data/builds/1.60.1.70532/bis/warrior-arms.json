@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T13:32:39Z",
+  "generated_at": "2026-10-23T00:06:54Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -773,8 +773,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.838616879,
-      "verify_run_seconds": 2.979025825,
+      "weights_run_seconds": 1.352258536,
+      "verify_run_seconds": 2.306608169,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1632,8 +1632,8 @@
         "main_hand: Hammerbone",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.838616879,
-      "verify_run_seconds": 2.916408261,
+      "weights_run_seconds": 1.352258536,
+      "verify_run_seconds": 2.277986328,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2487,8 +2487,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 2.121432331,
-      "verify_run_seconds": 1.9986491690000001,
+      "weights_run_seconds": 1.557144198,
+      "verify_run_seconds": 1.521045262,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3340,8 +3340,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 2.121432331,
-      "verify_run_seconds": 2.020800907,
+      "weights_run_seconds": 1.557144198,
+      "verify_run_seconds": 1.550761269,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3973,8 +3973,8 @@
           "source_kind": "rep",
           "score": 25.614296073,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +2.3 DPS (120.1 vs 117.8 set DPS)",
-          "dps_delta": 2.274211463748699,
+          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +1.8 DPS (101.0 vs 99.2 set DPS)",
+          "dps_delta": 1.7723769118193218,
           "alternatives": [
             {
               "item_id": 13095,
@@ -4073,12 +4073,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9449,
-          "item_name": "Manual Crowd Pummeler",
-          "source": "Gnomeregan: Crowd Pummeler 9-60",
-          "source_kind": "dungeon",
-          "chance": 0.4,
-          "sim_dps": 120.07845361645722,
+          "item_id": 1982,
+          "item_name": "Nightblade",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 100.98446897911319,
           "verified": true,
           "alternatives": [
             {
@@ -4086,21 +4085,21 @@
               "item_name": "Bonebiter",
               "source_kind": "quest",
               "source": "In the Name of the Light",
-              "dps_delta": 0
+              "dps_delta": -1.345122373
             },
             {
               "item_id": 276203,
               "item_name": "Primitive Fishing Pole",
               "source_kind": "vendor",
               "source": "Friz Frazzlespark",
-              "dps_delta": 0
+              "dps_delta": -1.556153445
             },
             {
-              "item_id": 1982,
-              "item_name": "Nightblade",
+              "item_id": 870,
+              "item_name": "Fiery War Axe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -19.093984637,
+              "dps_delta": -2.768924938,
               "verified": true
             }
           ],
@@ -4128,7 +4127,7 @@
           "item_name": "Monolithic Bow",
           "source": "Uldaman",
           "source_kind": "dungeon",
-          "sim_dps": 120.07845361645722,
+          "sim_dps": 100.98446897911319,
           "verified": true,
           "alternatives": [
             {
@@ -4150,7 +4149,7 @@
               "item_name": "Bow of Searing Arrows",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.389708681,
+              "dps_delta": -1.013718377,
               "verified": true
             }
           ],
@@ -4168,8 +4167,8 @@
           ]
         }
       ],
-      "set_dps": 120.07845361645722,
-      "no_source_count": 713,
+      "set_dps": 100.98446897911319,
+      "no_source_count": 716,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4200,10 +4199,11 @@
         "feet: Officer's Boots",
         "finger1: Protector's Band",
         "finger2: Mark of Kern",
+        "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.443890995,
-      "verify_run_seconds": 2.426225115,
+      "weights_run_seconds": 1.774977735,
+      "verify_run_seconds": 1.674997742,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4246,8 +4246,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 709,
-          "sourced": 521,
+          "eligible": 713,
+          "sourced": 523,
           "rare_spawn_skipped": 54
         },
         "neck": {
@@ -4266,7 +4266,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 195,
+          "eligible": 196,
           "sourced": 167,
           "rare_spawn_skipped": 3
         },
@@ -4572,19 +4572,18 @@
               "dps_delta": -0.359700142
             },
             {
+              "item_id": 8157,
+              "item_name": "Jouster's Chestplate",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.359700142
+            },
+            {
               "item_id": 10775,
               "item_name": "Carapace of Tuten'kash",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Tuten'kash",
               "dps_delta": -0.381335629
-            },
-            {
-              "item_id": 8157,
-              "item_name": "Jouster's Chestplate",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.715299919,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -4594,9 +4593,9 @@
               "source": "Razorfen Kraul"
             },
             {
-              "item_id": 10775,
+              "item_id": 8157,
               "source_kind": "dungeon",
-              "source": "Razorfen Downs: Tuten'kash"
+              "source": "Uldaman: Ancient Treasure"
             }
           ]
         },
@@ -4836,8 +4835,8 @@
           "source_kind": "rep",
           "score": 25.614296073,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +2.5 DPS (120.1 vs 117.7 set DPS)",
-          "dps_delta": 2.4874490571362173,
+          "swap_note": "confirmed by the sim against Mark of Kern (id 2262): kept the pick, +1.8 DPS (101.2 vs 99.4 set DPS)",
+          "dps_delta": 1.838857613768667,
           "alternatives": [
             {
               "item_id": 13095,
@@ -4936,47 +4935,46 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9449,
-          "item_name": "Manual Crowd Pummeler",
-          "source": "Gnomeregan: Crowd Pummeler 9-60",
-          "source_kind": "dungeon",
-          "chance": 0.4,
-          "sim_dps": 120.14620678164525,
+          "item_id": 1982,
+          "item_name": "Nightblade",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 101.20577868215132,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 272081,
-              "item_name": "Darkspear Raider's Reaper",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": 0
-            },
             {
               "item_id": 276203,
               "item_name": "Primitive Fishing Pole",
               "source_kind": "vendor",
               "source": "Friz Frazzlespark",
-              "dps_delta": 0
+              "dps_delta": -1.556153445
             },
             {
-              "item_id": 1982,
-              "item_name": "Nightblade",
+              "item_id": 272081,
+              "item_name": "Darkspear Raider's Reaper",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -1.71758328
+            },
+            {
+              "item_id": 870,
+              "item_name": "Fiery War Axe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -18.940428099,
+              "dps_delta": -2.593708748,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 272081,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            {
               "item_id": 276203,
               "source_kind": "vendor",
               "source": "Friz Frazzlespark"
+            },
+            {
+              "item_id": 272081,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             }
           ]
         },
@@ -4991,7 +4989,7 @@
           "item_name": "Monolithic Bow",
           "source": "Uldaman",
           "source_kind": "dungeon",
-          "sim_dps": 120.14620678164525,
+          "sim_dps": 101.20577868215132,
           "verified": true,
           "alternatives": [
             {
@@ -5013,7 +5011,7 @@
               "item_name": "Bow of Searing Arrows",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.44275226,
+              "dps_delta": -1.007920389,
               "verified": true
             }
           ],
@@ -5031,8 +5029,8 @@
           ]
         }
       ],
-      "set_dps": 120.14620678164525,
-      "no_source_count": 664,
+      "set_dps": 101.20577868215132,
+      "no_source_count": 667,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5062,10 +5060,11 @@
         "feet: Officer's Boots",
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern",
+        "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.443890995,
-      "verify_run_seconds": 2.482238392,
+      "weights_run_seconds": 1.774977735,
+      "verify_run_seconds": 1.683310565,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5108,8 +5107,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 697,
-          "sourced": 536,
+          "eligible": 701,
+          "sourced": 538,
           "rare_spawn_skipped": 54
         },
         "neck": {
@@ -5128,7 +5127,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 194,
+          "eligible": 195,
           "sourced": 170,
           "rare_spawn_skipped": 3
         },
@@ -5909,7 +5908,7 @@
         }
       ],
       "set_dps": 174.9846837364046,
-      "no_source_count": 898,
+      "no_source_count": 901,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5944,8 +5943,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.629199366,
-      "verify_run_seconds": 2.926199592,
+      "weights_run_seconds": 1.888467365,
+      "verify_run_seconds": 2.141466011,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5988,9 +5987,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 839,
-          "sourced": 620,
-          "rare_spawn_skipped": 55
+          "eligible": 844,
+          "sourced": 623,
+          "rare_spawn_skipped": 56
         },
         "neck": {
           "eligible": 71,
@@ -6008,7 +6007,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 300,
+          "eligible": 301,
           "sourced": 261,
           "rare_spawn_skipped": 3
         },
@@ -6809,7 +6808,7 @@
         }
       ],
       "set_dps": 174.7967800855966,
-      "no_source_count": 840,
+      "no_source_count": 843,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6845,8 +6844,8 @@
         "main_hand: Blight",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.629199366,
-      "verify_run_seconds": 2.903102844,
+      "weights_run_seconds": 1.888467365,
+      "verify_run_seconds": 2.155134998,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6889,9 +6888,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 830,
-          "sourced": 641,
-          "rare_spawn_skipped": 55
+          "eligible": 835,
+          "sourced": 644,
+          "rare_spawn_skipped": 56
         },
         "neck": {
           "eligible": 73,
@@ -6909,7 +6908,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 299,
+          "eligible": 300,
           "sourced": 264,
           "rare_spawn_skipped": 3
         },
@@ -7713,7 +7712,7 @@
         }
       ],
       "set_dps": 260.3822441147653,
-      "no_source_count": 1627,
+      "no_source_count": 1630,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7749,8 +7748,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.648294341,
-      "verify_run_seconds": 8.441270958,
+      "weights_run_seconds": 1.915183125,
+      "verify_run_seconds": 6.341889642,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7788,14 +7787,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 497,
+          "eligible": 600,
+          "sourced": 498,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1090,
-          "sourced": 761,
-          "rare_spawn_skipped": 55
+          "eligible": 1095,
+          "sourced": 764,
+          "rare_spawn_skipped": 56
         },
         "neck": {
           "eligible": 158,
@@ -7813,7 +7812,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 461,
+          "eligible": 462,
           "sourced": 374,
           "rare_spawn_skipped": 3
         },
@@ -8625,7 +8624,7 @@
         }
       ],
       "set_dps": 265.6996160173676,
-      "no_source_count": 1596,
+      "no_source_count": 1599,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8661,8 +8660,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.648294341,
-      "verify_run_seconds": 8.352040724,
+      "weights_run_seconds": 1.915183125,
+      "verify_run_seconds": 6.213252222,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -8700,14 +8699,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 593,
-          "sourced": 493,
+          "eligible": 594,
+          "sourced": 494,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1085,
-          "sourced": 774,
-          "rare_spawn_skipped": 55
+          "eligible": 1090,
+          "sourced": 777,
+          "rare_spawn_skipped": 56
         },
         "neck": {
           "eligible": 160,
@@ -8725,7 +8724,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 459,
+          "eligible": 460,
           "sourced": 376,
           "rare_spawn_skipped": 3
         },
@@ -9531,7 +9530,7 @@
         }
       ],
       "set_dps": 788.3733957573185,
-      "no_source_count": 1627,
+      "no_source_count": 1630,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9566,8 +9565,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.302780029,
-      "verify_run_seconds": 7.87880813,
+      "weights_run_seconds": 1.70717836,
+      "verify_run_seconds": 6.035824681,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9605,14 +9604,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 497,
+          "eligible": 600,
+          "sourced": 498,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1090,
-          "sourced": 761,
-          "rare_spawn_skipped": 55
+          "eligible": 1095,
+          "sourced": 764,
+          "rare_spawn_skipped": 56
         },
         "neck": {
           "eligible": 158,
@@ -9630,7 +9629,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 461,
+          "eligible": 462,
           "sourced": 374,
           "rare_spawn_skipped": 3
         },
@@ -10454,7 +10453,7 @@
         }
       ],
       "set_dps": 794.6301993589138,
-      "no_source_count": 1596,
+      "no_source_count": 1599,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10490,8 +10489,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.302780029,
-      "verify_run_seconds": 9.503991695,
+      "weights_run_seconds": 1.70717836,
+      "verify_run_seconds": 7.28101251,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10529,14 +10528,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 593,
-          "sourced": 493,
+          "eligible": 594,
+          "sourced": 494,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 1085,
-          "sourced": 774,
-          "rare_spawn_skipped": 55
+          "eligible": 1090,
+          "sourced": 777,
+          "rare_spawn_skipped": 56
         },
         "neck": {
           "eligible": 160,
@@ -10554,7 +10553,7 @@
           "rare_spawn_skipped": 5
         },
         "shoulder": {
-          "eligible": 459,
+          "eligible": 460,
           "sourced": 376,
           "rare_spawn_skipped": 3
         },

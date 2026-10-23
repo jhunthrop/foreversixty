@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70532",
   "engine_version": "e03762f45",
-  "generated_at": "2026-10-22T12:44:12Z",
+  "generated_at": "2026-10-22T23:31:23Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -717,8 +717,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.980132945,
-      "verify_run_seconds": 3.147426133,
+      "weights_run_seconds": 1.470845676,
+      "verify_run_seconds": 2.420808256,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1530,8 +1530,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.980132945,
-      "verify_run_seconds": 3.190832571,
+      "weights_run_seconds": 1.470845676,
+      "verify_run_seconds": 2.4538650300000002,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2361,8 +2361,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.019726275,
-      "verify_run_seconds": 3.612543187,
+      "weights_run_seconds": 1.521894982,
+      "verify_run_seconds": 2.7765748,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3171,8 +3171,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.019726275,
-      "verify_run_seconds": 1.937261743,
+      "weights_run_seconds": 1.521894982,
+      "verify_run_seconds": 1.491100261,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3965,7 +3965,7 @@
         }
       ],
       "set_dps": 125.54975736001064,
-      "no_source_count": 578,
+      "no_source_count": 580,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -3997,8 +3997,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.060958046,
-      "verify_run_seconds": 3.692776333,
+      "weights_run_seconds": 1.5432434430000002,
+      "verify_run_seconds": 2.832384528,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4041,8 +4041,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 352,
-          "sourced": 258,
+          "eligible": 354,
+          "sourced": 259,
           "rare_spawn_skipped": 24
         },
         "neck": {
@@ -4060,7 +4060,7 @@
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 195,
+          "eligible": 196,
           "sourced": 167,
           "rare_spawn_skipped": 3
         },
@@ -4791,7 +4791,7 @@
         }
       ],
       "set_dps": 133.836682124043,
-      "no_source_count": 546,
+      "no_source_count": 548,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4822,8 +4822,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.060958046,
-      "verify_run_seconds": 3.696401889,
+      "weights_run_seconds": 1.5432434430000002,
+      "verify_run_seconds": 2.858325296,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -4866,8 +4866,8 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 346,
-          "sourced": 266,
+          "eligible": 348,
+          "sourced": 267,
           "rare_spawn_skipped": 24
         },
         "neck": {
@@ -4885,7 +4885,7 @@
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 194,
+          "eligible": 195,
           "sourced": 170,
           "rare_spawn_skipped": 3
         },
@@ -5651,7 +5651,7 @@
         }
       ],
       "set_dps": 178.97278740065275,
-      "no_source_count": 738,
+      "no_source_count": 740,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5685,8 +5685,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.21002211,
-      "verify_run_seconds": 4.760690896,
+      "weights_run_seconds": 1.653202861,
+      "verify_run_seconds": 3.581590689,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5729,9 +5729,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 421,
-          "sourced": 313,
-          "rare_spawn_skipped": 24
+          "eligible": 424,
+          "sourced": 315,
+          "rare_spawn_skipped": 25
         },
         "neck": {
           "eligible": 71,
@@ -5748,7 +5748,7 @@
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 302,
+          "eligible": 303,
           "sourced": 263,
           "rare_spawn_skipped": 3
         },
@@ -6528,7 +6528,7 @@
         }
       ],
       "set_dps": 173.8073852866113,
-      "no_source_count": 714,
+      "no_source_count": 716,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6560,8 +6560,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.21002211,
-      "verify_run_seconds": 4.39093438,
+      "weights_run_seconds": 1.653202861,
+      "verify_run_seconds": 3.290653598,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6604,9 +6604,9 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 415,
-          "sourced": 322,
-          "rare_spawn_skipped": 24
+          "eligible": 418,
+          "sourced": 324,
+          "rare_spawn_skipped": 25
         },
         "neck": {
           "eligible": 73,
@@ -6623,7 +6623,7 @@
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 301,
+          "eligible": 302,
           "sourced": 264,
           "rare_spawn_skipped": 3
         },
@@ -7430,7 +7430,7 @@
         }
       ],
       "set_dps": 262.52484688390484,
-      "no_source_count": 1394,
+      "no_source_count": 1396,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7465,8 +7465,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.22183764,
-      "verify_run_seconds": 10.475673898,
+      "weights_run_seconds": 1.6205501820000001,
+      "verify_run_seconds": 8.083142162,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7504,14 +7504,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 608,
-          "sourced": 505,
+          "eligible": 609,
+          "sourced": 506,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 557,
-          "sourced": 389,
-          "rare_spawn_skipped": 24
+          "eligible": 560,
+          "sourced": 391,
+          "rare_spawn_skipped": 25
         },
         "neck": {
           "eligible": 155,
@@ -7528,7 +7528,7 @@
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 470,
+          "eligible": 471,
           "sourced": 383,
           "rare_spawn_skipped": 3
         },
@@ -8361,7 +8361,7 @@
         }
       ],
       "set_dps": 269.7761958072271,
-      "no_source_count": 1416,
+      "no_source_count": 1418,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8397,8 +8397,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.22183764,
-      "verify_run_seconds": 10.185074187,
+      "weights_run_seconds": 1.6205501820000001,
+      "verify_run_seconds": 7.729872782,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -8436,14 +8436,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 491,
+          "eligible": 600,
+          "sourced": 492,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 551,
-          "sourced": 395,
-          "rare_spawn_skipped": 24
+          "eligible": 554,
+          "sourced": 397,
+          "rare_spawn_skipped": 25
         },
         "neck": {
           "eligible": 153,
@@ -8460,7 +8460,7 @@
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 466,
+          "eligible": 467,
           "sourced": 376,
           "rare_spawn_skipped": 3
         },
@@ -9241,7 +9241,7 @@
         }
       ],
       "set_dps": 602.3597184074422,
-      "no_source_count": 1394,
+      "no_source_count": 1396,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9276,8 +9276,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Arcanite Champion"
       ],
-      "weights_run_seconds": 2.611379915,
-      "verify_run_seconds": 11.891491271,
+      "weights_run_seconds": 1.866003451,
+      "verify_run_seconds": 9.093111311,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9315,14 +9315,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 608,
-          "sourced": 505,
+          "eligible": 609,
+          "sourced": 506,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 557,
-          "sourced": 389,
-          "rare_spawn_skipped": 24
+          "eligible": 560,
+          "sourced": 391,
+          "rare_spawn_skipped": 25
         },
         "neck": {
           "eligible": 155,
@@ -9339,7 +9339,7 @@
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 470,
+          "eligible": 471,
           "sourced": 383,
           "rare_spawn_skipped": 3
         },
@@ -10129,7 +10129,7 @@
         }
       ],
       "set_dps": 605.6267668688818,
-      "no_source_count": 1416,
+      "no_source_count": 1418,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10164,8 +10164,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Arcanite Champion"
       ],
-      "weights_run_seconds": 2.611379915,
-      "verify_run_seconds": 9.146368264,
+      "weights_run_seconds": 1.866003451,
+      "verify_run_seconds": 6.83572908,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -10203,14 +10203,14 @@
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 491,
+          "eligible": 600,
+          "sourced": 492,
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 551,
-          "sourced": 395,
-          "rare_spawn_skipped": 24
+          "eligible": 554,
+          "sourced": 397,
+          "rare_spawn_skipped": 25
         },
         "neck": {
           "eligible": 153,
@@ -10227,7 +10227,7 @@
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 466,
+          "eligible": 467,
           "sourced": 376,
           "rare_spawn_skipped": 3
         },
