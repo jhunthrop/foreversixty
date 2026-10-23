@@ -5,6 +5,7 @@
 // expired states, the keyboard path, and the phone Menu and sheet.
 import { expect, test, type Page } from '@playwright/test';
 import { ACTIVE_BUILD } from './support/active-build';
+import { headerWired } from './support/header';
 import {
   OBNOXIOUS,
   armoryPointer,
@@ -88,6 +89,7 @@ test.describe('the doors', () => {
   test('are the four groups in order, and BiS is a row of the Tools panel', async ({ page }) => {
     await signedOut(page);
     await page.goto('/');
+    await headerWired(page);
     await expect(page.getByTestId('primary-nav').locator('a.site-door')).toHaveText(DOORS);
     await expect(page.getByRole('banner')).not.toContainText('Leveling BiS');
     await page.getByTestId('primary-nav').getByRole('link', { name: 'Tools', exact: true }).hover();

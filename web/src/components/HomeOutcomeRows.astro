@@ -31,17 +31,23 @@ import { outcomeRows, outcomeRowsHeading } from '../lib/home/outcome-rows';
 </section>
 
 <script>
-  import { readCurrent } from '../lib/current-character';
-  import { outcomeHrefs, type OutcomeRowKey } from '../lib/home/outcome-rows';
+  import { afterPaint } from '../lib/after-paint';
 
-  const current = readCurrent();
-  if (current !== null) {
-    const hrefs = outcomeHrefs(current);
-    for (const link of document.querySelectorAll<HTMLAnchorElement>(
-      '[data-testid="home-outcomes"] a[data-outcome]',
-    )) {
-      const href = hrefs[link.dataset.outcome as OutcomeRowKey];
-      if (href !== undefined) link.setAttribute('href', href);
-    }
-  }
+  // The rows' links follow the stored character; they already work as rendered, so the
+  // retarget runs after first paint (src/lib/after-paint.ts), at `load` for a visitor who has one.
+  afterPaint(() => {
+    void Promise.all([import('../lib/current-character'), import('../lib/home/outcome-rows')]).then(
+      ([{ readCurrent }, { outcomeHrefs }]) => {
+        const current = readCurrent();
+        if (current === null) return;
+        const hrefs = outcomeHrefs(current);
+        for (const link of document.querySelectorAll<HTMLAnchorElement>(
+          '[data-testid="home-outcomes"] a[data-outcome]',
+        )) {
+          const href = (hrefs as Record<string, string | undefined>)[link.dataset.outcome ?? ''];
+          if (href !== undefined) link.setAttribute('href', href);
+        }
+      },
+    );
+  });
 </script>

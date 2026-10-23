@@ -1,7 +1,7 @@
 // web/src/test-support/page-container.ts
 // One container for every page test that renders through Base.astro. The Astro test container
 // ships only the five built-in client directives; the site also registers
-// `client:idle-after-load` (astro.config.mjs -> src/directives/idle-after-load.ts) and
+// `client:idle-after-load` and `client:after-paint` (astro.config.mjs -> src/directives/idle-after-load.ts) and
 // Base.astro mounts the header's character selector with it, so a container without it throws
 // "invalid hydration directive" on every page. Container tests assert server HTML and never
 // run directive code: the built-ins come from astro's own prebuilt sources (so the inline
@@ -17,6 +17,7 @@ import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
 import { loadRenderers } from 'astro:container';
 
 export const IDLE_AFTER_LOAD_DIRECTIVE = 'idle-after-load';
+export const AFTER_PAINT_DIRECTIVE = 'after-paint';
 
 const IDLE_AFTER_LOAD_STAND_IN =
   '/* client:idle-after-load stand-in for container tests; the real directive is src/directives/idle-after-load.ts */';
@@ -29,6 +30,10 @@ export function siteClientDirectives(): Map<string, string> {
     ['only', only],
     ['visible', visible],
     [IDLE_AFTER_LOAD_DIRECTIVE, IDLE_AFTER_LOAD_STAND_IN],
+    [
+      AFTER_PAINT_DIRECTIVE,
+      '/* client:after-paint stand-in for container tests; the real directive is src/directives/after-paint.ts */',
+    ],
   ]);
 }
 

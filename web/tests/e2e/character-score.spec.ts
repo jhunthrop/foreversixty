@@ -8,6 +8,7 @@ import { expect, test, type Page } from '@playwright/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeOwner } from './support/character-fixture';
+import { headerWired } from './support/header';
 
 const NOT_FOUND = {
   status: 404,
@@ -202,6 +203,7 @@ test('"/" opens the header lookup on a page without its own box, and it routes t
   await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CHARACTER.data)));
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
   await page.goto('/ratings');
+  await headerWired(page);
   await page.locator('body').click({ position: { x: 5, y: 300 } });
   await page.keyboard.press('/');
   const viewport = page.viewportSize();
