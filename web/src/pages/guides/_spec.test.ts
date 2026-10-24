@@ -145,7 +145,13 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       /data-testid="guide-stat-table-hit-cap"[^>]*>Hit to cap: \d+(\.\d)?% · \d+(\.\d)?% from Elemental Precision, \d+(\.\d)?% from gear</,
     );
     expect(html).toContain('DPS per point');
-    expect(html).toMatch(/1 point of hit = \d\.\d\d DPS at level 60/);
+    // The unit line names the top per-point stat at 60, and the nightly sim decides which one
+    // that is: for Frost, hit and spell power sit within error of each other and swap places
+    // between nightlies. Pin the shape, a lowercase stat label and then dpsText's figure (two
+    // decimals under 10, one at 10 or more), never which stat wins.
+    expect(html).toMatch(
+      /data-testid="guide-stat-table-unit"[^>]*>1 point of [a-z][a-z ]* = (?:\d\.\d\d|\d{2,}\.\d) DPS at level 60</,
+    );
     expect(html).toMatch(/\d+\.\d per 1% haste/);
     expect(html).not.toMatch(/\d per 1%</);
     expect(html).toContain('Spell penetration shows as &quot;Not significant&quot;');
