@@ -13,15 +13,16 @@ anywhere you like.
 
 | Platform | Asset |
 |---|---|
-| macOS, Apple silicon | `foreversixty-companion_darwin_arm64` |
-| macOS, Intel | `foreversixty-companion_darwin_amd64` |
 | Windows | `foreversixty-companion_windows_amd64.exe` |
 | Linux | `foreversixty-companion_linux_amd64` |
+
+There is no macOS build: Forever runs on Windows and under Wine or Proton on Linux, and the two
+macOS targets are out of the release matrix until there is a reason to pay for the runners.
 
 Every asset is published beside a `.minisig` signature. To check one:
 
 ```sh
-minisign -Vm foreversixty-companion_darwin_arm64 -P "$(cat MINISIGN_PUBLIC_KEY.txt)"
+minisign -Vm foreversixty-companion_windows_amd64.exe -P "$(cat MINISIGN_PUBLIC_KEY.txt)"
 ```
 
 The public key is in `MINISIGN_PUBLIC_KEY.txt` beside the assets on every release the project has
@@ -32,8 +33,7 @@ The Windows build is signed through Azure Artifact Signing in the name of Commis
 company behind Forever Sixty, so that is the publisher Windows names in its prompts. A brand-new
 signing identity has no SmartScreen reputation yet, so the first installs may still see "Windows
 protected your PC": choose **More info**, then **Run anyway**. That warning retires on its own as
-installs accumulate. The macOS build is not signed yet: right-click the binary, choose Open, and
-confirm once.
+installs accumulate.
 
 Linux needs WebKitGTK for the window: `sudo apt install libgtk-3-0 libwebkit2gtk-4.1-0`. Without
 it, run with `-headless` and open the printed URL in a browser.
@@ -70,7 +70,7 @@ Closing the window does not stop the companion: it stays in the tray (Windows) a
 The first time you close the window it says so, then hides. The tray icon's menu shows what the
 companion is doing in a line at the top (the same words as the Status headline, which is also the
 tooltip), **Open Forever Sixty**, **Open my reports on the site** and **Quit**. Quit is the only way
-to stop it. On macOS and Linux, closing the window quits the companion; keep it open while logging. The
+to stop it. On Linux, closing the window quits the companion; keep it open while logging. The
 close-to-tray behaviour is Windows-only in the first release.
 Launching the companion again just opens the running one.
 
@@ -102,7 +102,6 @@ Where the companion keeps its files:
 
 | Platform | Directory |
 |---|---|
-| macOS | `~/Library/Application Support/ForeverSixty` |
 | Windows | `%APPDATA%\ForeverSixty` |
 | Linux | `~/.config/foreversixty` |
 
@@ -194,7 +193,7 @@ on the site.
 
 The Forever Sixty seal (`web/public/favicon.svg`) is the app's icon everywhere the OS shows one:
 the window and taskbar, the tray, Explorer (the Windows exe carries it as a resource, with the
-product and company fields), and the dock on macOS. The rendered files live in
+product and company fields). The rendered files live in
 `internal/icon/assets/` and are committed; to regenerate them after the seal changes:
 
 ```sh
@@ -202,10 +201,7 @@ node tools/icons/render.mjs   # needs `pnpm install` in web/ for resvg; WEB_NODE
 ```
 
 The Windows resource is built from `cmd/foreversixty-companion/winres/winres.json` by the release
-workflow (go-winres), not committed. The macOS release also publishes
-`foreversixty-companion_darwin_<arch>.app.zip`: unzip it and put **Forever Sixty.app** in
-Applications. The updater replaces the binary inside the bundle, so the app keeps its icon across
-updates; the bare binary stays published beside it because that is what the updater downloads.
+workflow (go-winres), not committed.
 
 ## Build it yourself
 

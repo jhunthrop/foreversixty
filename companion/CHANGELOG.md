@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.22
+
+- The Windows build is signed by Commish LLC, the company behind Forever Sixty, through Azure Artifact Signing: Windows names that publisher in its prompts, and SmartScreen's "unknown publisher" warning goes with it. The README lists the two platforms that ship, Windows and Linux.
+
 ## 0.2.21
 
 - When the game closes the companion reads the releases again and installs the newest signed addon, not the one it staged hours earlier; it reads the installed version from the addon folder first and never installs an older or equal one, saying so once in the log. The Status line names the version that will go in and follows a newer release.

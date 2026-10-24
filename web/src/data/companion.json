@@ -4,7 +4,7 @@
     {
       "platform": "Windows",
       "asset": "foreversixty-companion_windows_amd64.exe",
-      "firstRun": "Not signed yet. SmartScreen will ask: choose More info, then Run anyway."
+      "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
     }
   ]
 }
