@@ -147,11 +147,8 @@ describe('CharacterList', () => {
     expect(without.body).not.toContain('data-testid="bnet-imported"');
   });
 
-  it('puts the Supporter chip on every row only when the account shows the mark', () => {
-    const rows = [GUILDED, UNGUILDED];
-    const on = render(CharacterList, { props: { characters: rows, supporter: true } }).body;
-    const off = render(CharacterList, { props: { characters: rows } }).body;
-    expect(on.split('data-testid="supporter-chip"')).toHaveLength(rows.length + 1);
-    expect(off).not.toContain('supporter-chip');
+  it('never draws the Supporter chip on a row: the mark belongs to the person, not the character', () => {
+    const body = render(CharacterList, { props: { characters: [GUILDED, UNGUILDED] } }).body;
+    expect(body).not.toContain('supporter-chip');
   });
 });

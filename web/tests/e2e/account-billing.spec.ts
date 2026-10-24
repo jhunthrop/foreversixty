@@ -117,10 +117,17 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
   );
   await page.goto('/account');
   const block = page.getByTestId('account-premium-block');
-  await expect(block).toContainText('Server sims · On');
-  await expect(block).toContainText('Supporter mark · Shown on your characters');
-  await expect(block).toContainText('History charts · Ships November');
+  await expect(page.getByTestId('account-premium-serverSims')).toHaveText(/Server sims\s*On/);
+  await expect(page.getByTestId('account-premium-serverSims-link')).toHaveAttribute('href', '/sim');
+  await expect(page.getByTestId('account-premium-supporter-link')).toHaveAttribute(
+    'href',
+    '/character/us/hardcore/elyra-duskvale',
+  );
+  await expect(block).toContainText('Ships November');
+  await expect(block).toContainText('Ships December');
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
+  // The mark belongs to the person: the character rows never carry it.
+  await expect(page.getByTestId('supporter-chip')).toHaveCount(1);
 });
 
 test('without the Supporter mark the hero carries no chip', async ({ page }) => {

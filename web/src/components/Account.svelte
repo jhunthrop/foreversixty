@@ -656,7 +656,6 @@
                 bnetImportedAt={me!.bnet_imported_at}
                 mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
                 currentKey={hero?.key}
-                supporter={isSupporter}
                 onSetMain={setMain}
               />
             </div>
@@ -887,7 +886,6 @@
               {/if}
               <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
                 <div class="flex flex-col gap-3">
-                  <AccountPremiumBlock entitlements={me?.entitlements} />
                   {#if billing === null}
                     <p class="text-[14px]" data-testid="account-billing-row">
                       <span class="text-muted">{accountPageCopy.planKey}</span> · {billingBlockCopy.notSubscribed}
@@ -902,6 +900,13 @@
                     {#if billing.status === 'past_due'}
                       <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
                     {/if}
+                  {/if}
+                  <AccountPremiumBlock
+                    entitlements={me?.entitlements}
+                    characters={me?.characters ?? []}
+                    mainKey={me?.main_character_key}
+                  />
+                  {#if billing !== null}
                     <button
                       class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
                       onclick={onManageBilling}

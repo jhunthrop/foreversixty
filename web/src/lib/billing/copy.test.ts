@@ -46,7 +46,7 @@ describe('what the page promises', () => {
       'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
       'Character history charts over time (ships November).',
       'Discord notifications (ships December).',
-      'A supporter mark on your profile.',
+      'A supporter mark on your characters.',
     ]);
     expect(premiumCopy.guildFeatures).toEqual([
       'Everything in Premium, for everyone in the guild.',

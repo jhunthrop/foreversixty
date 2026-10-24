@@ -45,7 +45,7 @@ test('lists only what is live, dates what is coming, and promises no retention t
     'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
     'Character history charts over time (ships November).',
     'Discord notifications (ships December).',
-    'A supporter mark on your profile.',
+    'A supporter mark on your characters.',
   ]) {
     await expect(page.getByText(line, { exact: true }).first()).toBeVisible();
   }
