@@ -29,9 +29,11 @@ The body is the follow report: what changed per class, the talents to check, the
 
 Do the hand work on that branch: fix what no longer compiles, correct the talent rates the report lists, add dispositions, fix the racials. Run the fork's suite. Merge to `master`. The pin lands the next night, or at once if you dispatch `engine.yml`.
 
+A merged `follow/<build>` left on the fork is stale and the next follow overwrites it, but enabling "Automatically delete head branches" on the fork (Settings, General, Pull Requests) avoids the stale-branch case entirely.
+
 ## The site pull request: `engine: pin <sha>`
 
-The fork passed its own CI and follows the active build, but the site's sim suite or `tests/test_genproto.py` is red against it. `main` keeps the old pin. The pull request comes from `engine-pin/<sha>`, which already carries the pin commit, and its body is the failing output.
+The fork passed its own CI and follows the active build, but the site is red against it: `go vet` or the sim suite in `sim/`, `make apl-check`, `make styles-check`, or `data/tests/test_genproto.py`. `main` keeps the old pin. The pull request comes from `engine-pin/<sha>`, which already carries the pin commit, and its body is the failing output. It is opened with the job token, so no workflow runs on it; the person merging runs the checks by pushing to the branch or dispatching `sim.yml` on it.
 
 Almost always a correct engine change moved a number a site golden pins. Check out the branch, regenerate what the failing test names, read the diff to confirm the new answer is right, and merge.
 
@@ -73,11 +75,11 @@ The report, the follow paths, the suite log and the generated diff are uploaded 
 
 ## By hand
 
-The workflow is a schedule around the same commands. In the fork, with the site's raw tables for the build fetched first:
+The workflow is a schedule around the same commands. In the fork, with the site's raw tables for the build fetched first. The product is the `"product"` in `data/builds/<build>/manifest.json` (`wowf` for Forever):
 
 ```bash
 cd /path/to/forever/data
-uv run python -m pipeline fetch --product wowf --build <build>
+uv run python -m pipeline fetch --product <the "product" in data/builds/<build>/manifest.json> --build <build>
 
 cd /path/to/wowsims-forever
 make follow SITE_DIR=/path/to/forever BUILD=<build>

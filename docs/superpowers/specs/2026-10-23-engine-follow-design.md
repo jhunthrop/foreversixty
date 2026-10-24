@@ -320,7 +320,7 @@ at most); the runbook records the expiry month beside the name. The fork's
 `master` is unprotected, so the direct push in the clean path needs nothing
 more. Until the token exists the workflow runs only with `dry_run`. Everything
 on the site side uses the job's own `GITHUB_TOKEN`, as the ranking and the
-client watcher do today, plus the existing `WAGO_API_TOKEN` for the raw fetch.
+client watcher do today.
 
 ### Runbook
 
