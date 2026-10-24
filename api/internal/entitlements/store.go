@@ -295,9 +295,10 @@ func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan stri
 }
 
 // isActiveStatus mirrors activeStatusClause's SQL as Go, for a status
-// value already read into memory (UpsertStripe's duplicate check).
+// value already read into memory (UpsertStripe's duplicate check); the
+// list itself lives in StatusGrantsAccess, which billing reads too.
 func isActiveStatus(status string) bool {
-	return status == "active" || status == "trialing" || status == "past_due"
+	return StatusGrantsAccess(status)
 }
 
 // execer is the common surface of *pgxpool.Pool and pgx.Tx that

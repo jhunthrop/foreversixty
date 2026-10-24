@@ -3,6 +3,7 @@ package billing
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -35,6 +36,11 @@ func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 	// tolerance is used unmodified.
 	event, err := webhook.ConstructEvent(payload, r.Header.Get("Stripe-Signature"), s.WebhookSecret)
 	if err != nil {
+		// The library also refuses an event whose API version is not the
+		// one it was built for (stripe.APIVersion), so the endpoint is
+		// created pinned to it (api/README.md, "Stripe: going live"); the
+		// reason is logged because the client sees only a 400.
+		s.Log.Warn("billing: webhook rejected", "err", err)
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "the webhook signature could not be verified", nil)
 		return
 	}
@@ -155,7 +161,7 @@ func (s *Service) onSubscriptionDeleted(ctx context.Context, event stripe.Event,
 }
 
 func (s *Service) onInvoiceEvent(ctx context.Context, event stripe.Event, actor string) error {
-	subID := stripeRefID(event.Data.Object["subscription"])
+	subID := invoiceSubscriptionID(event.Data.Object)
 	if subID == "" {
 		return nil
 	}
@@ -168,6 +174,29 @@ func (s *Service) onInvoiceEvent(ctx context.Context, event stripe.Event, actor 
 
 // metadataUserID reads sub.Metadata["user_id"] — always the buying
 // account, premium or guild plan alike (spec §2.2).
+// invoiceSubscriptionID is the subscription an invoice bills. Since API
+// version 2025-03-31.basil an invoice carries it at
+// parent.subscription_details.subscription; older shapes carried a
+// top-level subscription, which is still read so a replayed older event
+// resolves the same way.
+func invoiceSubscriptionID(invoice map[string]any) string {
+	if parent, ok := invoice["parent"].(map[string]any); ok {
+		if details, ok := parent["subscription_details"].(map[string]any); ok {
+			if id := stripeRefID(details["subscription"]); id != "" {
+				return id
+			}
+		}
+	}
+	return stripeRefID(invoice["subscription"])
+}
+
+// errNotOurSubscription marks a subscription this service did not sell:
+// one with no plan or subject in its metadata (made in the Dashboard, or
+// edited by support). Its events are acknowledged and logged rather than
+// failed, because a 500 makes Stripe retry for three days and can disable
+// the endpoint, and no retry would ever make the metadata appear.
+var errNotOurSubscription = errors.New("billing: subscription carries no plan metadata")
+
 func metadataUserID(sub *stripe.Subscription) (int64, bool) {
 	uid, err := strconv.ParseInt(sub.Metadata["user_id"], 10, 64)
 	if err != nil {
@@ -197,11 +226,13 @@ func subscriptionPeriodEnd(sub *stripe.Subscription) (time.Time, bool) {
 func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscription, actor string) error {
 	plan := sub.Metadata["plan"]
 	if plan != entitlements.PlanPremium && plan != entitlements.PlanGuild {
-		return fmt.Errorf("billing: subscription %s carries no valid plan metadata", sub.ID)
+		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", errNotOurSubscription)
+		return nil
 	}
 	billingUserID, ok := metadataUserID(sub)
 	if !ok {
-		return fmt.Errorf("billing: subscription %s carries no valid user_id metadata", sub.ID)
+		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid user_id metadata")
+		return nil
 	}
 	p := entitlements.StripeUpsert{
 		Plan: plan, Status: string(sub.Status), CancelAtPeriodEnd: sub.CancelAtPeriodEnd,
@@ -227,7 +258,8 @@ func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscr
 	if plan == entitlements.PlanGuild {
 		guildID, err := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
 		if err != nil {
-			return fmt.Errorf("billing: guild subscription %s carries no valid guild_id metadata: %w", sub.ID, err)
+			s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid guild_id metadata")
+			return nil
 		}
 		p.GuildID = &guildID
 		return s.Store.WithGuildLock(ctx, guildID, func(ctx context.Context) error {

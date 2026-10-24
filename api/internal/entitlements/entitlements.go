@@ -59,3 +59,16 @@ const (
 	// entitlements row at all (spec §2.8's two-directional check).
 	AnomalyOrphanSubscription AnomalyKind = "orphan_subscription"
 )
+
+// StatusGrantsAccess reports whether a Stripe subscription status counts
+// as having the plan: active, trialing, and past_due (dunning keeps access
+// while Stripe retries the card). Store's entitlement SQL grants on the
+// same three, and billing's checkout refuses a second subscription while
+// one of them stands.
+func StatusGrantsAccess(status string) bool {
+	switch status {
+	case "active", "trialing", "past_due":
+		return true
+	}
+	return false
+}

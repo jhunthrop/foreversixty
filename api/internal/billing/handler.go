@@ -55,6 +55,9 @@ type FrozenClaimant interface {
 // *entitlements.Store satisfies it.
 type Entitlements interface {
 	GuildBilling(ctx context.Context, guildID int64) (*entitlements.GuildBilling, error)
+	// PersonalBilling is the premium checkout's own "already subscribed"
+	// read, nil when the account has no premium row.
+	PersonalBilling(ctx context.Context, userID int64) (*entitlements.Billing, error)
 	UpsertStripe(ctx context.Context, p entitlements.StripeUpsert) (entitlements.UpsertResult, error)
 	SetCanceled(ctx context.Context, stripeSubscriptionID string, graceUntil *time.Time, actor string) error
 	// StripeSubscriptionIDs is stripe-reconcile's database→Stripe read:
@@ -181,26 +184,65 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customerID, err := s.customerFor(r.Context(), actor.UserID)
-	if err != nil {
-		s.fail(w, r, "checkout", err, "could not start checkout just now")
-		return
-	}
-	priceID, err := s.Gateway.PriceIDForLookupKey(r.Context(), lookupKey)
-	if err != nil {
-		s.fail(w, r, "checkout", err, "could not start checkout just now")
-		return
-	}
-	session, err := s.Gateway.CreateCheckoutSession(r.Context(), CheckoutParams{
-		CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
-		SuccessURL: s.PublicBaseURL + "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}",
-		CancelURL:  s.PublicBaseURL + "/premium?canceled=1",
+	s.premiumCheckout(w, r, actor.UserID, lookupKey, clientRef, metadata)
+}
+
+// premiumCheckout is the personal path, serialized per user by the same
+// lock the webhook's upsert takes, so the "already subscribed" read below
+// and the Customer creation cannot race a double click or an in-flight
+// webhook. A live premium row (active, trialing or past_due, including
+// one set to cancel at the period's end) answers 409 with the portal
+// hint: a second subscription would be flagged as a duplicate by
+// entitlements.UpsertStripe and set to cancel, and the member would lose
+// access when the first one ended despite having paid for the second.
+// The portal is where a cancelled-at-period-end subscription is resumed.
+func (s *Service) premiumCheckout(w http.ResponseWriter, r *http.Request, userID int64, lookupKey, clientRef string, metadata map[string]string) {
+	var result CheckoutSession
+	err := s.Store.WithUserLock(r.Context(), userID, func(ctx context.Context) error {
+		current, err := s.Entitlements.PersonalBilling(ctx, userID)
+		if err != nil {
+			return err
+		}
+		if current != nil && entitlements.StatusGrantsAccess(current.Status) {
+			return alreadyOnPremiumRefusal()
+		}
+		customerID, err := s.customerFor(ctx, userID)
+		if err != nil {
+			return err
+		}
+		priceID, err := s.Gateway.PriceIDForLookupKey(ctx, lookupKey)
+		if err != nil {
+			return err
+		}
+		session, err := s.Gateway.CreateCheckoutSession(ctx, CheckoutParams{
+			CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
+			SuccessURL: s.PublicBaseURL + "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}",
+			CancelURL:  s.PublicBaseURL + "/premium?canceled=1",
+		})
+		if err != nil {
+			return err
+		}
+		result = session
+		return nil
 	})
 	if err != nil {
+		var refusal *checkoutRefusal
+		if errors.As(err, &refusal) {
+			httpx.WriteError(w, r, refusal.status, refusal.code, refusal.message, refusal.fields)
+			return
+		}
 		s.fail(w, r, "checkout", err, "could not start checkout just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": session.URL})
+	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": result.URL})
+}
+
+// alreadyOnPremiumRefusal is the personal counterpart of
+// alreadyOnThePlanRefusal: the account already has Premium, and the
+// portal is where it is changed or resumed.
+func alreadyOnPremiumRefusal() *checkoutRefusal {
+	return &checkoutRefusal{status: http.StatusConflict, code: "conflict",
+		message: "this account already has Premium", fields: map[string]string{"portal_hint": "1"}}
 }
 
 // checkoutRefusal carries a refusal's HTTP shape out of guildCheckout's

@@ -286,3 +286,40 @@ func TestBillingRoutesAnswer503WhenStripeIsNotConfigured(t *testing.T) {
 		}
 	}
 }
+
+// A member whose premium subscription still stands (active, in dunning, or
+// set to cancel at the period's end) is refused a second checkout with the
+// portal hint: a second subscription would be flagged a duplicate and
+// cancelled, and the member would lose access when the first one ended
+// despite having paid for the second. A canceled row no longer blocks.
+func TestCheckoutPremiumConflictsWhileASubscriptionStands(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "premium-again@example.com")
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into entitlements (user_id, plan, source, status, cancel_at_period_end, stripe_subscription_id)
+		 values ($1, 'premium', 'stripe', 'active', true, 'sub_premium_again')`, uid); err != nil {
+		t.Fatal(err)
+	}
+	r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", uid,
+		map[string]string{"plan": "premium", "interval": "monthly"})
+	w := h.do(t, r)
+	if w.Code != http.StatusConflict {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+	if env := decodeEnvelope(t, w); env.Error.Fields["portal_hint"] != "1" {
+		t.Fatalf("fields = %+v", env.Error.Fields)
+	}
+	if len(h.gateway.Checkouts) != 0 {
+		t.Fatalf("no Checkout Session may be created for a standing subscription, got %d", len(h.gateway.Checkouts))
+	}
+
+	if _, err := h.pool.Exec(t.Context(),
+		`update entitlements set status = 'canceled' where user_id = $1`, uid); err != nil {
+		t.Fatal(err)
+	}
+	r = h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", uid,
+		map[string]string{"plan": "premium", "interval": "monthly"})
+	if w := h.do(t, r); w.Code != http.StatusOK {
+		t.Fatalf("after cancellation: status = %d, body = %s", w.Code, w.Body.String())
+	}
+}

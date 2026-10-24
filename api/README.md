@@ -264,11 +264,14 @@ sales tax), which is why `stripe-setup` gives every product a tax code. In order
    same command the sandbox got, from a shell whose `STRIPE_SECRET_KEY` is read from Secret
    Manager and `STRIPE_ENVIRONMENT=live`; `PUBLIC_BASE_URL=https://foreversixty.gg` so the
    portal links the real legal pages: `go run ./cmd/api stripe-setup`. It is idempotent.
-4. Create the webhook endpoint for `https://api.foreversixty.gg/v1/billing/webhook` with the
-   events `checkout.session.completed`, `customer.subscription.created`,
+4. Create the webhook endpoint for `https://api.foreversixty.gg/v1/billing/webhook` through the
+   API, not the Dashboard, with `api_version` set to the version stripe-go was built for
+   (`stripe.APIVersion`, `2025-08-27.basil` for v82): the library rejects an event of any other
+   version as unverifiable, and a Dashboard-made endpoint gets the account's newer default.
+   Events: `checkout.session.completed`, `customer.subscription.created`,
    `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid` and
-   `invoice.payment_failed`, and put its signing secret in Secret Manager as
-   `STRIPE_WEBHOOK_SECRET`.
+   `invoice.payment_failed`. Put its signing secret in Secret Manager as
+   `STRIPE_WEBHOOK_SECRET` without it ever touching a terminal.
 5. Wire the service, which restarts it with billing on:
    `gcloud run services update api --region us-east1 --update-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest --update-env-vars STRIPE_ENVIRONMENT=live`
 6. Create the `stripe-reconcile` job and its nightly schedule (below), then buy and cancel one

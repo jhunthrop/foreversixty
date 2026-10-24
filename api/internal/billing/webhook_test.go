@@ -440,3 +440,86 @@ func TestWebhookRetriesProcessingWhenAPriorAttemptFailedBeforeCompleting(t *test
 		t.Fatalf("status = %q, want active — the retry must have actually processed the event", status)
 	}
 }
+
+// Since API version 2025-03-31.basil an invoice names its subscription at
+// parent.subscription_details.subscription; the older top-level field is
+// still read so a replayed older event resolves the same way.
+func TestInvoiceSubscriptionIDReadsTheBasilShapeAndTheOldOne(t *testing.T) {
+	basil := map[string]any{"id": "in_1", "parent": map[string]any{
+		"subscription_details": map[string]any{"subscription": "sub_basil"},
+	}}
+	if got := invoiceSubscriptionID(basil); got != "sub_basil" {
+		t.Errorf("basil shape: %q, want sub_basil", got)
+	}
+	expanded := map[string]any{"id": "in_2", "parent": map[string]any{
+		"subscription_details": map[string]any{"subscription": map[string]any{"id": "sub_expanded"}},
+	}}
+	if got := invoiceSubscriptionID(expanded); got != "sub_expanded" {
+		t.Errorf("expanded basil shape: %q, want sub_expanded", got)
+	}
+	if got := invoiceSubscriptionID(map[string]any{"id": "in_3", "subscription": "sub_old"}); got != "sub_old" {
+		t.Errorf("old shape: %q, want sub_old", got)
+	}
+	if got := invoiceSubscriptionID(map[string]any{"id": "in_4"}); got != "" {
+		t.Errorf("one-off invoice: %q, want empty", got)
+	}
+}
+
+// invoice.paid is the renewal signal (spec §2.6): a basil-shaped invoice
+// for a known subscription re-fetches it and writes the entitlement.
+func TestWebhookInvoicePaidUpsertsFromTheBasilInvoiceShape(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "webhook-invoice@example.com")
+	end := time.Now().Add(30 * 24 * time.Hour).UTC().Truncate(time.Second)
+	sub := fixtureSubscription("sub_webhook_invoice", "premium", uid, 0, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+
+	r := signedWebhookRequest(t, "invoice.paid", map[string]any{
+		"id": "in_webhook_1", "parent": map[string]any{
+			"subscription_details": map[string]any{"subscription": sub.ID},
+		},
+	})
+	if w := h.do(t, r); w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+	var status string
+	if err := h.pool.QueryRow(t.Context(),
+		`select status from entitlements where user_id = $1 and stripe_subscription_id = $2`, uid, sub.ID).Scan(&status); err != nil {
+		t.Fatalf("no entitlement row written from invoice.paid: %v", err)
+	}
+	if status != "active" {
+		t.Fatalf("status = %q, want active", status)
+	}
+}
+
+// A subscription this service did not sell (no plan metadata: one made in
+// the Dashboard, or edited by support) is acknowledged and marked
+// processed, never failed: a 500 would make Stripe retry for three days
+// and no retry could make the metadata appear.
+func TestWebhookSubscriptionWithoutOurMetadataIsAcknowledged(t *testing.T) {
+	h := newHarness(t)
+	sub := &stripe.Subscription{ID: "sub_not_ours", Status: stripe.SubscriptionStatusActive, Metadata: map[string]string{}}
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+
+	r := signedWebhookRequest(t, "customer.subscription.updated", map[string]any{"id": sub.ID})
+	w := h.do(t, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+	var processed bool
+	if err := h.pool.QueryRow(t.Context(),
+		`select processed_at is not null from stripe_events order by received_at desc limit 1`).Scan(&processed); err != nil {
+		t.Fatal(err)
+	}
+	if !processed {
+		t.Fatal("the event was answered 200 but not marked processed")
+	}
+	var rows int
+	if err := h.pool.QueryRow(t.Context(),
+		`select count(*) from entitlements where stripe_subscription_id = $1`, sub.ID).Scan(&rows); err != nil {
+		t.Fatal(err)
+	}
+	if rows != 0 {
+		t.Fatalf("an entitlement row was written for a subscription that is not ours")
+	}
+}

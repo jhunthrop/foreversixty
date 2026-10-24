@@ -50,6 +50,10 @@ func (g *StripeGateway) CreateCustomer(ctx context.Context, email string) (strin
 	return c.ID, nil
 }
 
+// checkoutSessionLifetime is how long a Checkout page stays valid: the
+// minimum Stripe allows, so an abandoned one stops blocking a guild soon.
+const checkoutSessionLifetime = 30 * time.Minute
+
 func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutParams) (CheckoutSession, error) {
 	sess, err := g.client.V1CheckoutSessions.Create(ctx, &stripe.CheckoutSessionCreateParams{
 		Mode:              stripe.String(string(stripe.CheckoutSessionModeSubscription)),
@@ -62,8 +66,13 @@ func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutPar
 		SubscriptionData:    &stripe.CheckoutSessionCreateSubscriptionDataParams{Metadata: p.Metadata},
 		AutomaticTax:        &stripe.CheckoutSessionCreateAutomaticTaxParams{Enabled: stripe.Bool(true)},
 		AllowPromotionCodes: stripe.Bool(true),
-		SuccessURL:          stripe.String(p.SuccessURL),
-		CancelURL:           stripe.String(p.CancelURL),
+		// Stripe's shortest expiry. A guild checkout that is abandoned on
+		// the Checkout page holds a pending_checkouts row until the session
+		// expires, and every other officer sees "already has the plan"
+		// until then; thirty minutes instead of Stripe's default day.
+		ExpiresAt:  stripe.Int64(time.Now().Add(checkoutSessionLifetime).Unix()),
+		SuccessURL: stripe.String(p.SuccessURL),
+		CancelURL:  stripe.String(p.CancelURL),
 	})
 	if err != nil {
 		return CheckoutSession{}, fmt.Errorf("billing: create checkout session: %w", err)
