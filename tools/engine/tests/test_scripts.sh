@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Tests for tools/engine/follow-inputs-hash.sh and tools/engine/pin-conditions.sh,
-# the two scripts .github/workflows/engine.yml calls. Plain bash, no bats: each
+# Tests for tools/engine/follow-inputs-hash.sh, tools/engine/pin-conditions.sh
+# and tools/engine/push-review-branch.sh, the scripts .github/workflows/engine.yml calls. Plain bash, no bats: each
 # case builds scratch git repositories under mktemp -d and stubs `gh`.
 #
 #   bash tools/engine/tests/test_scripts.sh
@@ -13,6 +13,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 readonly HERE
 readonly HASH=$HERE/../follow-inputs-hash.sh
 readonly PIN=$HERE/../pin-conditions.sh
+readonly PUSH=$HERE/../push-review-branch.sh
 readonly BUILD=1.60.1.70532
 readonly OTHER_BUILD=1.60.1.70425
 
@@ -64,9 +65,11 @@ make_site() {
 # make_fork <dir> <followed build>: a fork checkout with generator sources.
 make_fork() {
 	local dir=$1 build=$2
-	mkdir -p "$dir/tools" "$dir/sim/core/spellconst/gen" "$dir/assets/db_inputs"
+	mkdir -p "$dir/tools/talentgen/testdata" "$dir/sim/core/spellconst/gen" "$dir/assets/db_inputs"
 	git init --quiet "$dir"
 	echo 'package main' >"$dir/tools/main.go"
+	echo 'package main' >"$dir/tools/talentgen/main.go"
+	echo '{"build": "old"}' >"$dir/tools/talentgen/testdata/mage.json"
 	echo 'package gen' >"$dir/sim/core/spellconst/gen/gen.go"
 	echo "$build" >"$dir/assets/db_inputs/FOREVER_BUILD"
 	commit_all "$dir" "fork"
@@ -114,7 +117,12 @@ test_hash_is_stable_and_follows_the_inputs() {
 	assert "a file outside the hashed inputs leaves the hash alone" \
 		equal "$edited" "$(bash "$HASH" "$clone" "$fork" "$BUILD")"
 
-	echo 'package main // moved' >"$fork/tools/main.go"
+	echo '{"build": "new"}' >"$fork/tools/talentgen/testdata/mage.json"
+	commit_all "$fork" "a follow rewrote a talent fixture"
+	assert "a talent fixture the follow writes leaves the hash alone" \
+		equal "$first" "$(bash "$HASH" "$site" "$fork" "$BUILD")"
+
+	echo 'package main // moved' >"$fork/tools/talentgen/main.go"
 	commit_all "$fork" "a generator moved"
 	assert "a changed fork generator changes the hash" \
 		differ "$first" "$(bash "$HASH" "$site" "$fork" "$BUILD")"
@@ -188,6 +196,15 @@ test_pin_refuses_a_fork_ci_that_never_ran() {
 	run_pin "$SITE" "$FORK" "$BUILD"
 	assert "absent CI: exits 1" equal "$PIN_STATUS" 1
 	assert "absent CI: names the CI condition" contains "$PIN_OUT" "test workflow"
+	assert "absent CI: waits out the grace checks, then gives up" equal "$(cat "$SCRATCH/gh-$CASE/count")" 3
+}
+
+test_pin_waits_for_a_fork_ci_not_registered_yet() {
+	pin_case late "$BUILD" 000000000
+	stub_gh "$SCRATCH/gh-$CASE" '[]' '[{"status":"completed","conclusion":"success"}]'
+	run_pin "$SITE" "$FORK" "$BUILD"
+	assert "late CI: exits 0 once the run appears and passes (got $PIN_STATUS: $PIN_OUT)" equal "$PIN_STATUS" 0
+	assert "late CI: polled twice" equal "$(cat "$SCRATCH/gh-$CASE/count")" 2
 }
 
 test_pin_waits_for_a_running_fork_ci() {
@@ -234,17 +251,87 @@ test_pin_usage() {
 	assert "no arguments: prints usage" contains "$out" usage
 }
 
+# make_review_repos <name>: a bare remote and a clone of it with one commit,
+# setting REMOTE and WORK.
+make_review_repos() {
+	REMOTE=$SCRATCH/$1-remote.git
+	WORK=$SCRATCH/$1-work
+	git init --quiet --bare "$REMOTE"
+	git init --quiet "$WORK"
+	echo base >"$WORK/f"
+	commit_all "$WORK" "base"
+}
+
+# commit_as <dir> <author> <message>: one commit by that author.
+commit_as() {
+	echo "$3" >>"$1/f"
+	git -C "$1" add -A
+	git -C "$1" -c user.name="$2" -c user.email=x@example.com commit --quiet -m "$3"
+}
+
+remote_head() { git --git-dir="$REMOTE" rev-parse --verify --quiet "refs/heads/$1"; }
+
+run_push() {
+	PUSH_OUT=$(cd "$WORK" && bash "$PUSH" "$REMOTE" "$1" 2>&1)
+	PUSH_STATUS=$?
+}
+
+test_push_review_branch_creates_a_missing_branch() {
+	make_review_repos new
+	run_push follow/b
+	assert "no branch: exits 0 (got $PUSH_STATUS: $PUSH_OUT)" equal "$PUSH_STATUS" 0
+	assert "no branch: the remote has HEAD" equal "$(remote_head follow/b)" "$(git -C "$WORK" rev-parse HEAD)"
+}
+
+test_push_review_branch_replaces_the_bots_own_head() {
+	make_review_repos bot
+	commit_as "$WORK" forever-bis-bot "last night"
+	git -C "$WORK" push --quiet "$REMOTE" HEAD:refs/heads/follow/b
+	git -C "$WORK" reset --quiet --hard HEAD~1
+	commit_as "$WORK" forever-bis-bot "tonight"
+	run_push follow/b
+	assert "bot head: exits 0 (got $PUSH_STATUS: $PUSH_OUT)" equal "$PUSH_STATUS" 0
+	assert "bot head: the remote has tonight's HEAD" equal "$(remote_head follow/b)" "$(git -C "$WORK" rev-parse HEAD)"
+}
+
+test_push_review_branch_keeps_hand_work() {
+	local before
+	make_review_repos hand
+	commit_as "$WORK" forever-bis-bot "last night"
+	commit_as "$WORK" "A Person" "hand work"
+	git -C "$WORK" push --quiet "$REMOTE" HEAD:refs/heads/follow/b
+	before=$(remote_head follow/b)
+	git -C "$WORK" reset --quiet --hard HEAD~2
+	commit_as "$WORK" forever-bis-bot "tonight"
+	run_push follow/b
+	assert "hand work: exits 10 (got $PUSH_STATUS: $PUSH_OUT)" equal "$PUSH_STATUS" 10
+	assert "hand work: names it" contains "$PUSH_OUT" "hand work"
+	assert "hand work: the remote is unchanged" equal "$(remote_head follow/b)" "$before"
+}
+
+test_push_review_branch_fails_on_a_bad_remote() {
+	make_review_repos bad
+	PUSH_OUT=$(cd "$WORK" && bash "$PUSH" "$SCRATCH/no-such-remote.git" follow/b 2>&1)
+	PUSH_STATUS=$?
+	assert "bad remote: exits 1 (got $PUSH_STATUS)" equal "$PUSH_STATUS" 1
+}
+
 test_hash_is_stable_and_follows_the_inputs
 test_hash_refuses_a_build_the_site_does_not_have
 test_last_reads_the_newest_follow_inputs_trailer
 test_pin_holds_when_all_three_conditions_do
 test_pin_refuses_a_failed_fork_ci
 test_pin_refuses_a_fork_ci_that_never_ran
+test_pin_waits_for_a_fork_ci_not_registered_yet
 test_pin_waits_for_a_running_fork_ci
 test_pin_gives_up_on_a_fork_ci_that_never_finishes
 test_pin_refuses_a_fork_on_another_build
 test_pin_refuses_the_sha_already_pinned
 test_pin_usage
+test_push_review_branch_creates_a_missing_branch
+test_push_review_branch_replaces_the_bots_own_head
+test_push_review_branch_keeps_hand_work
+test_push_review_branch_fails_on_a_bad_remote
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "FAILED $FAILED of $((PASSED + FAILED)) assertions" >&2

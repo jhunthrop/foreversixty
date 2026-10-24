@@ -10,7 +10,8 @@
 #      (a half-followed fork is never pinned);
 #   3. the fork's `test` workflow concluded success for that sha, waiting
 #      for a queued or running one (every PIN_POLL_SECONDS, default 60, up to
-#      PIN_POLL_ATTEMPTS, default 30: half an hour).
+#      PIN_POLL_ATTEMPTS, default 30: half an hour; a run not registered yet
+#      counts as pending for the first two checks).
 # Exit 0 when all hold; exit 1 with one line per failed condition; exit 2 on
 # bad arguments. GH_BIN overrides the gh command (the tests stub it).
 set -euo pipefail
@@ -22,6 +23,9 @@ readonly VERSION_FILE=sim/enginever/version.go
 readonly GH=${GH_BIN:-gh}
 readonly POLL_SECONDS=${PIN_POLL_SECONDS:-60}
 readonly POLL_ATTEMPTS=${PIN_POLL_ATTEMPTS:-30}
+# A run is registered a few seconds after the push that starts it, so while
+# waiting, the first checks treat "no run yet" as one about to start.
+readonly ABSENT_GRACE_ATTEMPTS=2
 
 FAILURES=()
 
@@ -46,6 +50,9 @@ ci_conclusion() {
 	local sha=$1 attempts=$2 state attempt
 	for ((attempt = 1; attempt <= attempts; attempt++)); do
 		state=$(ci_state "$sha")
+		if [[ $state == absent && $attempts -gt 1 && $attempt -le $ABSENT_GRACE_ATTEMPTS ]]; then
+			state=pending
+		fi
 		[[ $state == pending ]] || { echo "$state"; return; }
 		[[ $attempt -eq $attempts ]] || sleep "$POLL_SECONDS"
 	done

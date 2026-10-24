@@ -17,7 +17,10 @@ set -euo pipefail
 # The build's inputs a follow copies or generates from, relative to data/builds/<build>/.
 readonly SITE_INPUTS=(spellconst talents trainables gametables levels.json sets.json races.json)
 # The fork's generator sources: a change to them can change every generated file.
-readonly FORK_GENERATORS=(HEAD:tools HEAD:sim/core/spellconst/gen)
+readonly FORK_GENERATORS=(tools sim/core/spellconst/gen)
+# Under tools/ but written by the follow itself (follow.sh copies the build's
+# talent trees there), so hashing it would make every follow look unfollowed.
+readonly FORK_FOLLOW_OUTPUTS=tools/talentgen/testdata/
 readonly TRAILER=Follow-Inputs
 readonly TRAILER_SEARCH_DEPTH=50
 readonly HASH_LENGTH=16
@@ -42,8 +45,9 @@ inputs_hash() {
 	for input in "${SITE_INPUTS[@]}"; do paths+=("data/builds/$build/$input"); done
 	tree=$(git -C "$site" ls-tree -r HEAD -- "${paths[@]}")
 	[[ -n $tree ]] || { echo "the site has no committed data/builds/$build inputs at $site" >&2; exit 1; }
-	generators=$(git -C "$fork" rev-parse "${FORK_GENERATORS[@]}") ||
-		{ echo "the fork at $fork has no generator sources (${FORK_GENERATORS[*]})" >&2; exit 1; }
+	generators=$(git -C "$fork" ls-tree -r HEAD -- "${FORK_GENERATORS[@]}" |
+		awk -F '\t' -v skip="$FORK_FOLLOW_OUTPUTS" 'index($2, skip) != 1')
+	[[ -n $generators ]] || { echo "the fork at $fork has no generator sources (${FORK_GENERATORS[*]})" >&2; exit 1; }
 	printf '%s\n%s\n%s\n' "$build" "$tree" "$generators" | sha256 | cut -c1-"$HASH_LENGTH"
 }
 
