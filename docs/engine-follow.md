@@ -45,9 +45,7 @@ The site repository currently has "Allow GitHub Actions to create and approve pu
 
 The site repository secret `ENGINE_REPO_TOKEN` is a fine-grained personal access token on `jhunthrop/wowsims-forever` with Contents and Pull requests read/write. It pushes to the fork's `master`, pushes `follow/<build>` and opens its pull request. Everything on the site side uses the job's own `GITHUB_TOKEN`; the raw fetch needs no token.
 
-Expires: <month year, filled in when created>
-
-Fine-grained tokens expire after one year at most. Renew it before the month above, or live runs stop.
+Expires: no expiration (created 2026-10-24). If it is ever recreated with an expiry, write the month here and renew before it, or live runs stop.
 
 Until the secret exists, every run that is not already a dry run turns into one and warns. Nothing is pushed or opened.
 
