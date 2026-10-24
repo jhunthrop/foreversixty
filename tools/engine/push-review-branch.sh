@@ -4,7 +4,7 @@
 # site's engine-pin/<sha>, which are regenerated every night a follow or a pin
 # goes to review.
 #
-#   tools/engine/push-review-branch.sh <remote-url> <branch> [bot name]
+#   tools/engine/push-review-branch.sh <remote-url or remote name> <branch> [bot name]
 #
 # Run inside the repository whose HEAD is pushed. No remote branch, or one whose
 # head commit the bot (default forever-bis-bot) authored: push with

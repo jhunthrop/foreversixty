@@ -122,7 +122,7 @@ jobs:
         env: { BUILD_IN: '${{ inputs.build }}' }
         run: |
           build=${BUILD_IN:-$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)}
-          test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          [[ $build =~ ^[0-9]+(\.[0-9]+){3}$ ]] || { echo "'$build' is not a client build number"; exit 1; }
           manifest="data/builds/$build/manifest.json"
           test -f "$manifest" || { echo "no $manifest; data.yml has not fetched build $build"; exit 1; }
           product=$(sed -n 's/.*"product"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$manifest")
@@ -131,9 +131,11 @@ jobs:
           echo "product=$product" >> "$GITHUB_OUTPUT"
       # Skip-when-unchanged, the ranking's shape: the build id, the site's
       # committed inputs for it and the fork's generator sources, against the
-      # Follow-Inputs trailer on the fork's last follow commit. A second run
-      # queued behind this one (schedule plus the watcher's dispatch) sees
-      # the trailer this one pushed and skips.
+      # Follow-Inputs trailer on the fork master's last follow commit. A
+      # second run queued behind a clean follow (schedule plus the watcher's
+      # dispatch) sees the trailer that follow pushed to master and skips;
+      # behind a review follow master has no new trailer, so it follows again
+      # and updates the same review branch and pull request.
       - name: tonight's follow inputs, against the last follow
         id: inputs
         env:
@@ -155,7 +157,10 @@ jobs:
       - name: fetch the build's raw tables
         if: steps.inputs.outputs.skip != 'true'
         working-directory: data
-        run: uv run python -m pipeline fetch --product "${{ steps.identity.outputs.product }}" --build "${{ steps.identity.outputs.build }}"
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          PRODUCT: ${{ steps.identity.outputs.product }}
+        run: uv run python -m pipeline fetch --product "$PRODUCT" --build "$BUILD"
       # The script, not `make follow`: make turns every failure into 2 and
       # the verdict lives in the exit code (0 clean, 3 review, 1 failure).
       - name: follow the build
@@ -226,7 +231,10 @@ jobs:
           if-no-files-found: warn
       - name: dry run
         if: steps.mode.outputs.dry == 'true' && steps.follow.outcome == 'success'
-        run: echo "::notice::dry run; nothing pushed (verdict ${{ steps.follow.outputs.verdict }}, suite ${{ steps.suite.outputs.suite }})"
+        env:
+          VERDICT: ${{ steps.follow.outputs.verdict }}
+          SUITE: ${{ steps.suite.outputs.suite }}
+        run: echo "::notice::dry run; nothing pushed (verdict $VERDICT, suite $SUITE)"
       # Exactly the paths follow.sh lists, never -A (it writes only its
       # allowlist, and checks that it did).
       - name: commit the follow
@@ -255,7 +263,10 @@ jobs:
         env: { ENGINE_REPO_TOKEN: '${{ secrets.ENGINE_REPO_TOKEN }}' }
         run: git push "https://x-access-token:${ENGINE_REPO_TOKEN}@github.com/$FORK_REPO" HEAD:master
       # Review or red: one branch per build and one pull request on it,
-      # updated (never duplicated) by a later run. The pin does not move.
+      # updated (never duplicated) by a later run. A branch whose head someone
+      # else committed carries hand work and is never overwritten
+      # (tools/engine/push-review-branch.sh); the pull request then only says
+      # so. The pin does not move.
       - name: open the follow for review
         if: steps.commit.outputs.committed == 'true' && (steps.follow.outputs.verdict != 'clean' || steps.suite.outputs.suite != 'green')
         working-directory: engine
@@ -266,9 +277,12 @@ jobs:
           GH_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN }}
         run: |
           branch="follow/$BUILD"
-          git push --force "https://x-access-token:${ENGINE_REPO_TOKEN}@github.com/$FORK_REPO" "HEAD:refs/heads/$branch"
+          pushed=0
+          "$GITHUB_WORKSPACE/tools/engine/push-review-branch.sh" "https://x-access-token:${ENGINE_REPO_TOKEN}@github.com/$FORK_REPO" "$branch" || pushed=$?
+          case $pushed in 0 | 10) ;; *) exit 1 ;; esac
           body=$(mktemp)
           {
+            if [ "$pushed" = 10 ]; then printf "The branch has hand work; tonight's regeneration was not pushed.\n\n"; fi
             # A pull request body holds 65,536 characters; the full report is
             # the run's artifact.
             head -c 50000 dist/FOLLOW-REPORT.md
@@ -328,7 +342,7 @@ jobs:
         if: steps.mode.outputs.dry != 'true'
         run: |
           build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
-          test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          [[ $build =~ ^[0-9]+(\.[0-9]+){3}$ ]] || { echo "web/src/data/active-build.json names no client build ('$build')"; exit 1; }
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "sha=$(git -C engine rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       # The three conditions (tools/engine/pin-conditions.sh): the fork is not
@@ -338,13 +352,17 @@ jobs:
       - name: may the fork be pinned
         id: conditions
         if: steps.mode.outputs.dry != 'true'
-        env: { GH_TOKEN: '${{ github.token }}' }
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if out=$(tools/engine/pin-conditions.sh . engine "${{ steps.identity.outputs.build }}"); then
-            echo "pin=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "pin=false" >> "$GITHUB_OUTPUT"
-          fi
+          status=0
+          out=$(tools/engine/pin-conditions.sh . engine "$BUILD") || status=$?
+          case $status in
+            0) echo "pin=true" >> "$GITHUB_OUTPUT" ;;
+            1) echo "pin=false" >> "$GITHUB_OUTPUT" ;;
+            *) echo "$out"; echo "::error::tools/engine/pin-conditions.sh failed (exit $status)"; exit 1 ;;
+          esac
           echo "$out"
           { echo "## Pin"; echo; while IFS= read -r line; do echo "- $line"; done <<< "$out"; } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/setup-go@v5
@@ -416,12 +434,13 @@ jobs:
         if: success() && steps.tests.outputs.green == 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          gh workflow run web.yml --ref main && echo "dispatched the site deploy"
-          gh workflow run api.yml --ref main && echo "dispatched the API build and deploy"
-          gh workflow run sim.yml --ref main && echo "dispatched the sim artifacts"
-          gh workflow run bis.yml --ref main -f force=true && echo "dispatched the ranking"
+          gh workflow run web.yml --ref main
+          gh workflow run api.yml --ref main
+          gh workflow run sim.yml --ref main
+          gh workflow run bis.yml --ref main -f force=true
       # Red: main keeps the old pin; one pull request from a branch that
       # already carries the pin, for whatever moved to be regenerated by hand.
+      # Hand work on that branch is never overwritten (push-review-branch.sh).
       - name: open the pin for review
         if: steps.tests.outputs.green == 'false'
         env:
@@ -429,9 +448,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           branch="engine-pin/$SHA"
-          git push --force origin "HEAD:refs/heads/$branch"
+          pushed=0
+          tools/engine/push-review-branch.sh origin "$branch" || pushed=$?
+          case $pushed in 0 | 10) ;; *) exit 1 ;; esac
           body=$(mktemp)
           {
+            if [ "$pushed" = 10 ]; then printf "The branch has hand work; tonight's regeneration was not pushed.\n\n"; fi
             printf 'The fork at %s passed its own CI and follows the active build, but the site is red against it.\n\n```\n' "$SHA"
             tail -n 80 "$RUNNER_TEMP/pin-tests.log" | tail -c 50000
             printf '```\n\nNext step: regenerate what moved on this branch and merge it.\n'
