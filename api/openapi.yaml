@@ -2138,7 +2138,9 @@ paths:
         addon export, in the export's order, each with what it wears, the band's pick and the
         gap; [] when the character has no export. gear_gap_total beside it is the sum of the
         gaps (schema CharacterGear gives both and every null rule). A history row's
-        execution_score is defined in schema ExecutionScore.
+        execution_score is defined in schema ExecutionScore. supporter is true when the
+        owning account shows the supporter mark, and false for a character with no linked
+        account.
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
@@ -2187,6 +2189,8 @@ paths:
         level, spec and seen_at; counts is { on_roster, in_game_no_account, waiting,
         not_seen }. An account that joined by invite has an entry the moment it joins
         (not_seen until the snapshot names it). roster[] and pending[] stay the account rows.
+        Each of their rows carries supporter, true when its owning account shows the supporter
+        mark; the members[] entries, which have no account of their own, never carry it.
         guild has none. reports[] is paged by cursor (next_cursor). A verified member of the
         guild (an account with a verified character on its roster) may read it; anyone else,
         an account whose rows are all unverified included, gets 403.

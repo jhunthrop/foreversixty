@@ -85,6 +85,10 @@ data for, so a member that addon had no data for reads `null`. Those four fields
 when the row's member did not give `gear` (or `gear_bags`) consent, the same rule that withholds
 the row's class, spec and item level; `seen_at` and `snapshot_at` stay and `addon` stays non-null.
 
+`supporter` is present on every `roster` and `pending` row: true when the row's owning account
+shows the supporter mark, false otherwise. `members` entries, which are names without an
+account, never carry it.
+
 A character is present in a report when it has a ranked or rated row there (`fight_metrics`
 not removed, or `rating_scores`), read by character key, never the log's GUIDs in
 `fights.players`. `attendance` counts the guild's last 8 reports that are non-private,

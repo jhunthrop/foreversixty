@@ -76,6 +76,7 @@
   import { factionLogoSmallSrc, factionName } from '../../lib/faction-mark';
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
+  import SupporterChip from '../SupporterChip.svelte';
   import CharacterHeaderSignedOut from './CharacterHeaderSignedOut.svelte';
 
   type ActionProp = HeaderAction | ((context: ActionContext) => HeaderAction);
@@ -108,6 +109,7 @@
 
   const session = untrack(() => source) ?? createCharacterCardState();
   const character = $derived(session.character);
+  const isSupporter = $derived(session.me?.entitlements?.supporter_mark === true);
   const view = $derived<'loading' | 'signed-out' | 'no-characters' | 'ready'>(
     character !== null
       ? 'ready'
@@ -207,6 +209,7 @@
             style:color
             data-testid="character-header-name">{@render txt(c.name, ghost)}</svelte:element
           >
+          {#if isSupporter && !ghost}<SupporterChip />{/if}
         </span>
       </span>
     </a>
@@ -516,6 +519,7 @@
   .ch-name-box {
     display: flex;
     align-items: flex-end;
+    gap: 12px;
     min-height: calc(var(--ch-name-size) * 1.2 * 2);
   }
   @media (min-width: 1024px) {

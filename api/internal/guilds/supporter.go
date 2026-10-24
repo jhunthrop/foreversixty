@@ -1,6 +1,10 @@
 package guilds
 
-import "context"
+import (
+	"context"
+
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+)
 
 // Supporters answers whether an account shows the supporter mark; nil means
 // nobody does (the fixture build, and tests that do not care).
@@ -27,7 +31,7 @@ func (s *Service) markSupporters(ctx context.Context, lists ...[]RosterRow) {
 			if !asked {
 				ok, err := s.Supporters.IsSupporter(ctx, owner)
 				if err != nil {
-					s.logger().Warn("guilds", "op", "supporter", "user_id", owner, "err", err)
+					s.logger().Warn("guilds", "id", httpx.RequestIDFrom(ctx), "op", "supporter", "user_id", owner, "err", err)
 				}
 				supporter = ok && err == nil
 				answers[owner] = supporter
