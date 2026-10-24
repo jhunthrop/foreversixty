@@ -87,8 +87,9 @@ it. Everything below reads and writes `master`.
 
 The raw client tables (`data/builds/<build>/raw/*.csv`) are gitignored on the
 site; `python -m pipeline fetch --product <key> --build <build>` downloads them
-from wago.tools with the `WAGO_API_TOKEN` secret, and the build's
-`manifest.json` records the product key it was fetched with. Relic mods and set
+from wago.tools (no token; the `WAGO_API_TOKEN` secret is for publishing the
+addon), and the build's `manifest.json` records the product key it was fetched
+with. Relic mods and set
 rows read those tables, so the job fetches before it follows.
 
 Defects the design corrects on the way:
@@ -123,6 +124,14 @@ asserts after each generator that the header's build is the one requested.
 
 The script is the only definition of the sequence. The workflow calls it; a
 person calls it; the plan's local verification calls it.
+
+A regenerated talent tree can remove or rename a proto field that hand-written
+Go still names, so the engine may not compile after the generators run. The
+script does not stop there: it records the build errors, leaves the goldens as
+they were (they cannot be regenerated without a compiling engine), and still
+writes the report, whose verdict is then `review` with a leading "Build"
+section carrying the compiler output. The hand work that fixes the build is
+exactly what the review pull request is for.
 
 The script owns an explicit list of the paths it may write (the generated
 artifacts in the table above, `FOREVER_BUILD`, the goldens and the summary's
@@ -233,7 +242,7 @@ Otherwise the job:
    `engine/`; installs Go, the protoc release the committed headers name,
    protoc-gen-go v1.36.6, Python and uv.
 2. Fetches the build's raw tables: `uv run python -m pipeline fetch --product
-   <manifest product> --build $BUILD` in `data/`, with `WAGO_API_TOKEN`.
+   <manifest product> --build $BUILD` in `data/`.
 3. Runs `make follow SITE_DIR=$GITHUB_WORKSPACE BUILD=$BUILD` in `engine/`.
 4. Runs the fork's suite exactly as the fork's CI runs it (the proto-match test,
    `make binary_dist/dist.go`, `go test --tags=with_db ./sim/...` and
