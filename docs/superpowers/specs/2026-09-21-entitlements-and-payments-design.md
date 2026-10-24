@@ -615,30 +615,30 @@ changes" — cited at the end of this document):
 
 | Event | What it does to entitlements |
 |---|---|
-| `checkout.session.completed` | First sight of a new subscription. Reads `session.Metadata` (falling back to `client_reference_id` if metadata is ever empty — defensive only, since both are always set by §2.2); if `session.Customer` is new, writes `stripe_customers`; re-fetches the Subscription fresh by `session.Subscription.ID` (never trusts the session payload's own embedded subscription summary) and calls the shared `upsertFromSubscription` below. |
-| `customer.subscription.created` / `.updated` | Re-fetches the Subscription by `event.Data.Object.ID` (the same "always re-fetch, never trust the payload" rule — see below) and calls `upsertFromSubscription`. Covers plan changes made through the portal, renewals, and the trailing state settle after `checkout.session.completed`. |
+| `checkout.session.completed` | First sight of a new subscription. Reads `session.Metadata` (falling back to `client_reference_id` if metadata is ever empty — defensive only, since both are always set by §2.2); if `session.Customer` is new, writes `stripe_customers`; re-fetches the Subscription fresh by `session.Subscription.ID` (never trusts the session payload's own embedded subscription summary) and hands that id to the shared `upsertSubscription` below. |
+| `customer.subscription.created` / `.updated` | Re-fetches the Subscription by `event.Data.Object.ID` (the same "always re-fetch, never trust the payload" rule — see below) and hands it to `upsertSubscription`. Covers plan changes made through the portal, renewals, and the trailing state settle after `checkout.session.completed`. |
 | `customer.subscription.deleted` | Sets `status = 'canceled'`; sets `grace_until = current_period_end + 30 days` (the retention grace, §2.7) using the *last known* `current_period_end` rather than re-deriving one from a now-deleted subscription. |
-| `invoice.paid` | The authoritative "renewed successfully" signal (Stripe's own guide: "you can provision access to your product when you receive this event and the subscription status is active"). Re-fetches the Subscription named by `invoice.Subscription.ID` and calls `upsertFromSubscription` — this is what clears a `past_due` status back to `active` after a retried card succeeds. |
-| `invoice.payment_failed` | Re-fetches the Subscription and calls `upsertFromSubscription` — Stripe's own status transition (to `past_due` or `incomplete`) is trusted once re-fetched, not inferred from the invoice event alone. No immediate revocation (§1.3 rule 4); the account page shows a "payment failed, update your card" banner once `status` reads `past_due`. |
+| `invoice.paid` | The authoritative "renewed successfully" signal (Stripe's own guide: "you can provision access to your product when you receive this event and the subscription status is active"). Re-fetches the Subscription named by `invoice.Subscription.ID` through `upsertSubscription` — this is what clears a `past_due` status back to `active` after a retried card succeeds. |
+| `invoice.payment_failed` | Re-fetches the Subscription through `upsertSubscription` — Stripe's own status transition (to `past_due` or `incomplete`) is trusted once re-fetched, not inferred from the invoice event alone. No immediate revocation (§1.3 rule 4); the account page shows a "payment failed, update your card" banner once `status` reads `past_due`. |
 
 **RULING 8 — out-of-order delivery is handled by never trusting an event's own embedded
 object state, only by re-fetching the named object fresh from the Stripe API inside the
 handler.** Stripe's own docs are explicit that event delivery order is not guaranteed and
 recommend exactly this ("you can also use the API to retrieve any missing objects... don't
-use `created` to determine event order"). `upsertFromSubscription(sub *stripe.Subscription)`
+use `created` to determine event order"). `upsertSubscription(ctx, subscriptionID, actor)`
 is the **one** function that writes `entitlements` from Stripe state, called by every event
-type above with a freshly `Get`-ed Subscription, never with the fields Stripe happened to
+type above with the id of a freshly `Get`-ed Subscription (fetched again inside the lock), never with the fields Stripe happened to
 embed in that particular event's JSON. *Cost if wrong (trusting the payload instead):* a
 `customer.subscription.updated` delivered before an earlier `.created` (Stripe's own example
 ordering shows this can happen) could otherwise downgrade a status the account already
 progressed past — a live, exploitable-by-accident correctness bug, not a hypothetical.
 
 ```go
-// upsertFromSubscription is the only writer of entitlements from Stripe state. plan and
-// subject (user_id xor guild_id) come from sub.Metadata — set at Checkout via
+// upsertSubscription is the only writer of entitlements from Stripe state. plan and
+// subject (user_id xor guild_id) come from the fetched subscription's Metadata — set at Checkout via
 // subscription_data.metadata (§2.2) and therefore present on the Subscription object
 // itself for the whole of its lifetime, independent of which event triggered the call.
-func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscription) error
+func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor string) error
 ```
 
 ### 2.7 Dunning, grace, and refunds
@@ -737,9 +737,9 @@ the same way `sim-validate` already is (`api/README.md`'s job-creation pattern),
 passes:
 
 1. **Database → Stripe** (the original design): every `entitlements` row with
-   `source = 'stripe'` and `status` not `canceled` is re-fetched fresh by
-   `stripe_subscription_id` and upserted through `upsertFromSubscription` exactly as a
-   webhook event would — healing anything Stripe's own three-day retry window never
+   `source = 'stripe'` and `status` not `canceled` has its
+   `stripe_subscription_id` handed to `upsertSubscription`, which fetches it fresh inside the
+   subject lock, exactly as a webhook event would — healing anything Stripe's own three-day retry window never
    successfully delivered (rare, but the backstop this spec's brief asks for explicitly).
 2. **The `pending_checkouts` sweep** (added by the amendment below): any row whose Checkout
    Session has expired with no webhook ever landing for it — an abandoned checkout — is

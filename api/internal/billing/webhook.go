@@ -232,7 +232,7 @@ func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor 
 		if err != nil {
 			return fmt.Errorf("billing: get subscription %s inside lock: %w", subscriptionID, err)
 		}
-		if again, ok := s.subjectOf(sub); !ok || again != subject {
+		if again, err := parseSubject(sub); err != nil || again != subject {
 			s.Log.Warn("billing: subscription metadata changed between fetches", "subscription", sub.ID)
 			return nil
 		}
@@ -255,41 +255,50 @@ func (sj subscriptionSubject) withLock(ctx context.Context, store *Store, fn fun
 	return store.WithUserLock(ctx, sj.billingUserID, fn)
 }
 
-// subjectOf reads plan, buyer and guild from sub.Metadata. A subscription
-// without them is not ours: it is acknowledged and logged rather than
-// failed, because no retry would ever make the metadata appear.
+// subjectOf is parseSubject for the first fetch: a subscription without
+// our metadata is acknowledged and logged rather than failed, because no
+// retry would ever make the metadata appear.
 func (s *Service) subjectOf(sub *stripe.Subscription) (subscriptionSubject, bool) {
+	subject, err := parseSubject(sub)
+	if err != nil {
+		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", err)
+		return subscriptionSubject{}, false
+	}
+	return subject, true
+}
+
+// parseSubject reads plan, buyer and guild from sub.Metadata.
+func parseSubject(sub *stripe.Subscription) (subscriptionSubject, error) {
 	plan := sub.Metadata["plan"]
 	if plan != entitlements.PlanPremium && plan != entitlements.PlanGuild {
-		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", errNotOurSubscription)
-		return subscriptionSubject{}, false
+		return subscriptionSubject{}, errNotOurSubscription
 	}
 	billingUserID, ok := metadataUserID(sub)
 	if !ok {
-		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid user_id metadata")
-		return subscriptionSubject{}, false
+		return subscriptionSubject{}, errors.New("no valid user_id metadata")
 	}
 	subject := subscriptionSubject{plan: plan, billingUserID: billingUserID}
 	if plan == entitlements.PlanGuild {
 		guildID, err := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
 		if err != nil {
-			s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid guild_id metadata")
-			return subscriptionSubject{}, false
+			return subscriptionSubject{}, errors.New("no valid guild_id metadata")
 		}
 		subject.guildID = guildID
 	}
-	return subject, true
+	return subject, nil
 }
 
 func stripeUpsertFor(sub *stripe.Subscription, subject subscriptionSubject, actor string) entitlements.StripeUpsert {
 	p := entitlements.StripeUpsert{
 		Plan: subject.plan, Status: string(sub.Status), CancelAtPeriodEnd: sub.CancelAtPeriodEnd,
 		StripeSubscriptionID: sub.ID, BillingUserID: subject.billingUserID, Actor: actor,
-		SubscriptionCreated: time.Unix(sub.Created, 0).UTC(),
 		// spec §2.9 RULING 10's "Take over billing" handoff: the new
 		// subscription is meant to overwrite the guild's row, not be
 		// flagged as a duplicate (StripeUpsert.Transfer's own doc).
 		Transfer: sub.Metadata["intent"] == "transfer",
+	}
+	if sub.Created != 0 { // time.Unix(0, 0) is 1970, not the zero time "unknown" needs
+		p.SubscriptionCreated = time.Unix(sub.Created, 0).UTC()
 	}
 	if end, ok := subscriptionPeriodEnd(sub); ok {
 		p.CurrentPeriodEnd = &end

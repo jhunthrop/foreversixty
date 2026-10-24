@@ -663,6 +663,24 @@ func TestUpsertStripeStoresTheSubscriptionCreated(t *testing.T) {
 	}
 }
 
+func TestUpsertStripeNewSubscriptionWithUnknownCreatedClearsAStoredCreated(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	officer := seedUser(t, pool)
+	upsertGuildSub(t, s, gid, officer, "sub_a", "canceled", time.Now().Add(-time.Hour), false)
+
+	upsertGuildSub(t, s, gid, officer, "sub_b", "active", time.Time{}, false)
+	var notNull bool
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_created is not null from entitlements where guild_id = $1`, gid).Scan(&notNull); err != nil {
+		t.Fatal(err)
+	}
+	if notNull {
+		t.Fatal("stripe_subscription_created kept sub_a's value for sub_b, want NULL")
+	}
+}
+
 func TestRecordAnomalyIsIdempotentPerKindAndSubscription(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}

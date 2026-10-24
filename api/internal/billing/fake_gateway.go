@@ -55,7 +55,8 @@ type FakeGateway struct {
 	GetSubscriptionCalls []string
 	// OnGetSubscription, when set, runs after each GetSubscription call is
 	// recorded and before the registered object is returned, so it may
-	// mutate that object. call counts from 1.
+	// mutate that object. call counts from 1. It runs under the gateway
+	// mutex and must not call back into the gateway.
 	OnGetSubscription func(id string, call int)
 
 	NextCheckoutURL       string

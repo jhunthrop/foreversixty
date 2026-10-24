@@ -69,8 +69,10 @@ func entitlementsStripeUpsertFor(sub *stripe.Subscription) entitlements.StripeUp
 	up := entitlements.StripeUpsert{
 		Plan: sub.Metadata["plan"], Status: string(sub.Status),
 		CurrentPeriodEnd: &end, StripeSubscriptionID: sub.ID, BillingUserID: uid,
-		Actor: "test_fixture", SubscriptionCreated: time.Unix(sub.Created, 0).UTC(),
-		Transfer: sub.Metadata["intent"] == "transfer",
+		Actor: "test_fixture", Transfer: sub.Metadata["intent"] == "transfer",
+	}
+	if sub.Created != 0 {
+		up.SubscriptionCreated = time.Unix(sub.Created, 0).UTC()
 	}
 	if up.Plan == entitlements.PlanGuild {
 		gid, _ := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
@@ -715,5 +717,37 @@ func TestWebhookUpdatedAfterDeletedStaysCanceled(t *testing.T) {
 	status2, grace2 := read()
 	if status2 != "canceled" || grace2 == nil || !grace2.Equal(*grace) {
 		t.Fatalf("after updated: status = %q grace = %v, want canceled with grace %v unchanged", status2, grace2, grace)
+	}
+}
+
+func TestWebhookMetadataChangedBetweenFetchesWritesNothing(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "webhook-meta-changed-guild", true)
+	officer := h.seedUser(t, "webhook-meta-changed@example.com")
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	sub := fixtureSubscription("sub_meta", "guild", officer, gid, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+	h.gateway.OnGetSubscription = func(_ string, call int) {
+		if call == 2 {
+			sub.Metadata["guild_id"] = strconv.FormatInt(gid+1, 10)
+		}
+	}
+
+	r := signedWebhookRequest(t, "customer.subscription.updated", map[string]any{"id": sub.ID})
+	if w := h.do(t, r); w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+	var rows int
+	if err := h.pool.QueryRow(t.Context(), `select count(*) from entitlements where plan = 'guild' and stripe_subscription_id = $1`, sub.ID).Scan(&rows); err != nil {
+		t.Fatal(err)
+	}
+	if rows != 0 {
+		t.Fatalf("entitlements rows = %d, want 0", rows)
+	}
+	if len(h.gateway.CanceledAtPeriodEnd) != 0 {
+		t.Fatalf("CanceledAtPeriodEnd = %v, want none", h.gateway.CanceledAtPeriodEnd)
+	}
+	if n := h.countAnomalies(t, gid) + h.countAnomalies(t, gid+1); n != 0 {
+		t.Fatalf("anomaly rows = %d, want 0", n)
 	}
 }

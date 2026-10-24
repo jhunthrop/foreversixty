@@ -336,7 +336,7 @@ func (s *Store) RecordAnomaly(ctx context.Context, userID, guildID *int64, plan 
 	return recordAnomaly(ctx, s.Pool, nil, userID, guildID, plan, kind, stripeSubscriptionID, actor)
 }
 
-// StripeUpsert is upsertFromSubscription's (billing package) sole way to
+// StripeUpsert is upsertSubscription's (billing package) sole way to
 // write entitlements from Stripe state (spec §2.6 RULING 8): one row per
 // (subject, plan), written by every subscription/invoice event with a
 // freshly re-fetched Subscription.
@@ -458,7 +458,10 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 				cancel_at_period_end = excluded.cancel_at_period_end,
 				stripe_subscription_id = excluded.stripe_subscription_id,
 				billing_user_id = excluded.billing_user_id,
-				stripe_subscription_created = coalesce(excluded.stripe_subscription_created, entitlements.stripe_subscription_created),
+				stripe_subscription_created = case
+					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
+					then coalesce(excluded.stripe_subscription_created, entitlements.stripe_subscription_created)
+					else excluded.stripe_subscription_created end,
 				updated_at = now()
 			returning id`,
 			p.UserID, p.GuildID, p.Plan, p.Status, p.CurrentPeriodEnd, p.CancelAtPeriodEnd,
