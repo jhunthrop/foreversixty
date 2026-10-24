@@ -1,6 +1,6 @@
 # Premium experience design
 
-Date: 2026-10-24. Status: draft for the owner, after a builder check.
+Date: 2026-10-24. Status: approved by the owner on 2026-10-24 (answers in §8); the plan follows.
 
 Argues from `2026-09-21-entitlements-and-payments-design.md` (the entitlement model, the
 billing flow, the `/premium` page and its copy), which this document never restates. Where
@@ -101,56 +101,27 @@ and sees the chip; the same page with the entitlement canceled shows no chip and
 Promise: "Two years of log retention instead of ninety days." FAQ: thirty days of grace
 after a subscription ends, then ninety days like every free account.
 
-Exists: the flag, and `grace_until` written on cancellation. No job prunes anything, so free
-and paid retention are both unlimited today.
+Exists: the flag, and `grace_until` written on cancellation. No job prunes anything, so
+every log and saved sim is kept today.
 
-Experience, in two steps that ship a week apart so nobody loses data unannounced:
+Owner's decision (2026-10-24): **keep everything, for everyone.** Parsed reports are the
+rankings' and the Forever Score's memory and must never be pruned; raw logs are cheap to
+hold and Warcraft Logs holds its logs forever, so a ninety-day limit would make the free
+site worse than the incumbent for no revenue that matters. There is no retention tier.
 
-1. **Tell.** The account page shows, under Logs and under Saved sims: `Kept for 90 days
-   (2 years on Premium). Oldest kept today: <date>.` For a payer: `Kept for 2 years.` For a
-   member in grace: `Kept for 2 years until <grace date>, then 90 days.` Every report row in
-   the member's reports list and every saved sim shows `Kept until <date>`. The date is
-   computed by the API from the same function the job will use, so the page and the job
-   can never disagree.
-2. **Prune.** A nightly job `retention-prune` (an `api` subcommand, a Cloud Run job and a
-   scheduler entry like `stripe-reconcile`) deletes, per owner, the **raw logs** and the
-   **saved sims** older than that owner's window: two years when `Can(owner,
-   FeatureRetention)` or `grace_until` is in the future, ninety days otherwise. A raw log is
-   the upload's R2 object (`uploads/<id>/raw.txt.zst`) and its `raw_chunks` rows, the
-   replayable detail. The parsed report itself (its fights, fight metrics and ratings rows)
-   is never pruned: it carries every other player in the raid, it feeds rankings and the
-   Forever Score, and the September spec §2.7 prunes "raw log / saved-sim rows", not reports.
-   A report whose raw log is gone shows `Raw log no longer kept` where the download was. The
-   job runs in bounded batches, logs counts per owner, supports `--dry-run`, and is safe to
-   rerun.
+Experience: none to build. The lane that makes the page true (6.1) removes the retention
+line from `/premium`, the FAQ's "long-retention logs" answer, and the ninety-day and
+two-year sentences from the Terms and the Privacy page's "Data retention" section, which
+then says that uploaded logs, saved sims and the ratings derived from them are kept until
+the member deletes them or their account. The `retention` flag and `grace_until` stay in
+the model unused, the way `multi_compare` does; nothing reads them.
 
-Rulings
+Ruling: if storage cost ever makes a limit necessary, it is a new decision with its own
+spec, announced on the changelog with dates before anything is removed, and it would apply
+to raw logs only (the September spec §2.7's reading), never to parsed reports.
 
-- A raw log's window is the longer of the uploader's own window and, when the report is
-  tagged to a guild, that guild's. A Premium member's upload is never shortened by a free
-  guild tag, and a free member's upload to a paying guild gets the guild's two years.
-- Ownerless rows (`owner_id` or `user_id` null after an account deletion) take the free
-  window. Account deletion's own cascade is unchanged by this document.
-- Visibility does not extend retention. The `Kept until` date is on the report page for
-  everyone to see.
-- Deletion of the raw log is hard. There is no archive tier; the FAQ already says "anything
-  older than that is not kept". What stays is the parsed report, which is most of what a
-  member comes back for.
-- Grace: a personal or guild subscription that ends gets the thirty days the webhook
-  already writes. A `grant` that expires gets no grace; its expiry date is on the account
-  page from the day it is granted.
-- Step 1's interim copy on `/premium` and the account page tells the truth of the day:
-  "Every log is kept today. From <date> free accounts keep raw logs for ninety days and
-  Premium for two years; parsed reports are kept either way." The date is the first prune's
-  date, at least seven days out, and the first run is a dry run whose counts the owner
-  reads.
-- A raw log under thirty days old is never deleted whatever the window, so a clock or
-  entitlement bug cannot eat fresh data.
-
-Acceptance: a unit suite for the window function covering free, premium, grace, guild
-tag, ownerless and the thirty-day floor; a job test against the test database that seeds
-uploads on both sides of each window and asserts exactly the right raw chunks and R2 keys
-go while every report row stays; an e2e that the account page's dates match the API.
+Acceptance: the legal-pages test asserts the ninety-day and two-year sentences are gone
+from all three legal pages and from `billing/copy.ts`.
 
 ### 4.3 Server sims
 
@@ -200,13 +171,11 @@ parses over time. See plans.` A visitor sees the sparkline only.
 
 Rulings
 
-- Data: the `rating_scores` rows already stored, which retention never prunes (4.2); no
-  new table. Where history has gaps the chart shows the gap, with the rating module's own
+- Data: the `rating_scores` rows already stored, which nothing prunes (4.2); no new table. Where history has gaps the chart shows the gap, with the rating module's own
   reason beside it.
 - The owner's own chart includes their private and guild-visible reports, through an
   owner-only query that the public character payload never calls; the sparkline a visitor
-  sees stays on public, unflagged reports as today. A fight whose raw log is gone keeps its
-  point and its link to the parsed report.
+  sees stays on public, unflagged reports as today.
 - Charts follow the dataviz rules the site already uses for the sparkline: gold line on the
   raised ground, tabular numerals, no legend where one series is drawn.
 
@@ -221,9 +190,9 @@ Promise: "Compare more than two builds at once."
 Exists: nothing to gate. The compare view compares a sim to a fight; the bulk lane already
 ranks thousands of candidates in one run. No surface has a two-build limit.
 
-Ruling: the line comes off `/premium` and the FAQ in the first lane to ship, and the
-`multi_compare` flag stays in the model unused. This document does not invent a feature to
-fit the line. (Open question 1 asks the owner to confirm.)
+Owner's decision (2026-10-24): retire. The line comes off `/premium` in the first lane to
+ship, and the `multi_compare` flag stays in the model unused. This document does not
+invent a feature to fit the line.
 
 ### 4.6 Discord notifications
 
@@ -268,12 +237,17 @@ guild.` linking to the guild settings page. Members who are not officers see not
 
 Rulings
 
-- Grandfathering is open question 2. A guild-plan `grant` is not a narrow tool: it gives
-  every verified member server sims, retention, history, notifications and the supporter
-  chip until it expires, so "free officer tools until launch" through a grant means "free
-  Premium for every member of every claimed guild until launch". The alternatives are to
-  gate at once, or to build an officer-tools-only grant kind, which is model work this
-  document would rather not add.
+- Owner's decision (2026-10-24): take the time to build the mechanism properly. A guild
+  gets an **officer-tools grant**: a new grant kind on the guild's entitlement row
+  (`source = 'grant'`, a `features` scope naming `officer_views` only, an expiry) that
+  `Can` honours for `FeatureOfficerViews` and for nothing else, so a granted guild's
+  members get no Premium and no Supporter chip. The `grant` command gains `--guild <id>
+  --features officer_views --until <date>`; the account page and guild settings show the
+  grant and its expiry as plainly as a paid plan. Every guild claimed before the gate ships
+  receives one running to 2026-12-09, the first raid night, by a one-off script the owner
+  runs; a guild claimed after the gate ships buys the plan or sees the read-only tools.
+- The gate ships only after the grant mechanism and the grandfather run exist, in that
+  order within the lane, never the gate first.
 - Roster approvals and invite links are not built here; the page's line names only what
   ships: "the loot council helper and the raid readiness board, with more as they ship".
 
@@ -284,16 +258,14 @@ controls' enabled and read-only states and the one sentence.
 
 - **The account page is the Premium console.** Its Premium block lists each benefit with
   its live state and a link to where it lives: Server sims with the count of runs this
-  month; Retention with the window and oldest-kept date; History with a link to the
-  member's main character; Discord with its on/off state; Supporter mark; and for guild
-  members, the guild line. The copy comes from `billing/copy.ts`.
+  month; History with a link to the member's main character; Discord with its on/off
+  state; Supporter mark; and for guild members, the guild line. The copy comes from `billing/copy.ts`.
 - **The upsell sentence** is one component, used everywhere a free owner meets a benefit:
   one line of plain copy and `See plans`, secondary link style, no icon.
-- **`/premium` is edited as each lane ships**, never ahead: when 4.2 step 2 is live the
-  retention line stands; until then the line reads what is true today ("Logs are kept for
-  ninety days on every account today; two-year retention for Premium is being switched on
-  and will be announced on the changelog"). The first lane makes this edit and removes the
-  compare line.
+- **`/premium` is edited as each lane ships**, never ahead. After lane 1 the Premium list
+  reads: server sims; character history charts and Discord notifications, each marked
+  "ships <month>" until it does; the supporter mark. A benefit that is not live carries its
+  month, never "soon".
 - **Every lane ships with its e2e and a changelog entry** in the site's changelog
   collection, in the past tense, with the date.
 
@@ -301,16 +273,17 @@ controls' enabled and read-only states and the one sentence.
 
 In this order, each a lane with its own review, the earlier ones smallest:
 
-1. Page truth: `/premium` and FAQ copy made true for today; compare line removed; account
-   page Premium block skeleton with Supporter mark (4.1).
-2. Retention step 1, tell (4.2). Then, no sooner than seven days later, step 2, prune.
-3. Server sims: my runs, cancel, done-while-away (4.3).
+1. Page truth: `/premium`, the FAQ and the three legal pages lose the retention and compare
+   lines (4.2, 4.5); the account page's Premium block skeleton; the Supporter mark (4.1).
+2. The guild billing takeover fix from issue #3, so the guild plan can be sold before
+   launch.
+3. Server sims: my runs and done-while-away (4.3).
 4. History charts (4.4).
 5. Discord (4.6).
-6. Guild plan gating with the grandfather grant (4.7).
+6. Guild plan: the officer-tools grant kind, the grandfather run, then the gate (4.7).
 
-The guild billing takeover fix from issue #3 is ours and ships before lane 6; with launch
-on 4 Nov it is scheduled right after lane 1, not left to the end.
+Launch is 4 Nov and the first raid night 9 Dec; lanes 1 and 2 land before launch, the
+rest in the weeks after, each announced on the changelog the day it ships.
 
 ## 7. Left to the builder
 
@@ -318,19 +291,16 @@ File layout within the existing packages (`api/internal/retention` is new; the r
 `sims`, `rating`, `guilds`, `account`); chart library choice within the site's existing
 one; estimate smoothing; the embed layout; batch sizes; test fixtures.
 
-## 8. Open questions for the owner
+## 8. Owner's answers (2026-10-24)
 
-1. Compare: retire the line (this document's ruling) or name a real feature to build in
-   its place?
-2. Guild officer tools before launch: gate at once, give every claimed guild full Premium
-   for its members until 4 Nov through a guild-plan grant, or build an officer-tools-only
-   grant kind?
-3. Retention's meaning: this document reads "two years of log retention" as the raw log
-   and saved sims, with parsed reports kept for everyone. If the owner meant whole reports,
-   rankings and every other raider's parses are affected and the design changes.
+1. Compare: retired.
+2. Guild officer tools: build the officer-tools-only grant kind rather than gate at once or
+   hand out full Premium; take the time to make it what it should be.
+3. Retention: keep everything for everyone. Rankings need the history, and Warcraft Logs
+   keeps its logs forever. The retention tier is gone from the page and the legal pages.
 
-Calls made without asking, for the owner to check while reading: raw-log pruning rather
-than whole reports (4.2); the longer of uploader's and guild's window; no queue, no cancel
-and no position on server runs (4.3); the owner's history includes private reports, a
+Calls made without asking, for the owner to check while reading: the server-run list shows
+running, done and failed with no queue position and no cancel, because runs start
+immediately and there is no queue (4.3); the owner's history includes private reports, a
 visitor's sparkline does not (4.4); grants expire without grace; visitors never see a full
-history chart.
+history chart; the grandfather grants run to the first raid night, 9 Dec.
