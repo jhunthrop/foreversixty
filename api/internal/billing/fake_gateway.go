@@ -34,6 +34,8 @@ type FakeGateway struct {
 	// Prices maps a lookup key to a price id — pre-populate to simulate
 	// stripe-setup having already run; EnsurePrice adds to it.
 	Prices map[string]string
+	// EnsuredPortals records every EnsurePortalConfiguration call.
+	EnsuredPortals []PortalSpec
 	// ListSubscriptionsResult is ListSubscriptions' answer, keyed by
 	// product id — a test populates this directly (independent of
 	// Subscriptions, which GetSubscription reads) since the whole point
@@ -142,6 +144,17 @@ func (f *FakeGateway) ListSubscriptions(_ context.Context, productID string) ([]
 		return nil, f.Err
 	}
 	return f.ListSubscriptionsResult[productID], nil
+}
+
+// EnsurePortalConfiguration records the spec; the fake has no portal.
+func (f *FakeGateway) EnsurePortalConfiguration(_ context.Context, spec PortalSpec) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	f.EnsuredPortals = append(f.EnsuredPortals, spec)
+	return nil
 }
 
 func (f *FakeGateway) EnsurePrice(_ context.Context, spec PriceSpec) error {

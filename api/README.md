@@ -50,6 +50,9 @@ make run
 | `SIM_JOB_NAME` | no | `sim-run` | The Cloud Run job that runs one premium sim. |
 | `SIM_JOB_REGION` | no | `us-east1` | |
 | `SIM_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the sim jobs live in. |
+| `STRIPE_SECRET_KEY` | no | — | Stripe secret or restricted key. Absent, every `/v1/billing/*` route answers 503 and the Premium page's buttons fail honestly; present, billing is on. Lives in Secret Manager (`STRIPE_SECRET_KEY`, live; `STRIPE_SECRET_KEY_TEST`, the sandbox). |
+| `STRIPE_WEBHOOK_SECRET` | no | — | The signing secret of the `POST /v1/billing/webhook` endpoint in the same mode as the key. |
+| `STRIPE_ENVIRONMENT` | no | — | `test` or `live`. Must be `live` exactly when `PUBLIC_BASE_URL` is the production origin, and the key's own prefix must agree; `config.ValidateStripeKeyEnvironment` refuses to start otherwise. |
 | `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
 
 Every Phase 3 variable is optional and degrades honestly: with no R2 credentials the service
@@ -245,6 +248,32 @@ Both run the same image as the API, dispatched on their first argument.
     gcloud run jobs create sim-validate \
       --image <the API image> --region us-east1 --args sim-validate \
       --cpu 4 --memory 4Gi --task-timeout 30m
+
+## Stripe: going live
+
+Billing is off until the three `STRIPE_*` variables exist on the Cloud Run service; the
+deploy workflow never touches env or secrets, so they are set once and survive every deploy.
+The account runs Stripe's Managed Payments (Stripe is the merchant of record and handles
+sales tax), which is why `stripe-setup` gives every product a tax code. In order:
+
+1. Activate the Stripe account (identity, bank account, statement descriptor `FOREVERSIXTY`).
+2. Put the live secret key in Secret Manager, never in a shell history or a chat:
+   `gcloud secrets create STRIPE_SECRET_KEY --project foreversixty --data-file=<file>` (then
+   delete the file). The sandbox key is `STRIPE_SECRET_KEY_TEST`.
+3. Create the products, prices and the Customer Portal configuration in live mode with the
+   same command the sandbox got, from a shell whose `STRIPE_SECRET_KEY` is read from Secret
+   Manager and `STRIPE_ENVIRONMENT=live`; `PUBLIC_BASE_URL=https://foreversixty.gg` so the
+   portal links the real legal pages: `go run ./cmd/api stripe-setup`. It is idempotent.
+4. Create the webhook endpoint for `https://api.foreversixty.gg/v1/billing/webhook` with the
+   events `checkout.session.completed`, `customer.subscription.created`,
+   `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid` and
+   `invoice.payment_failed`, and put its signing secret in Secret Manager as
+   `STRIPE_WEBHOOK_SECRET`.
+5. Wire the service, which restarts it with billing on:
+   `gcloud run services update api --region us-east1 --update-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest --update-env-vars STRIPE_ENVIRONMENT=live`
+6. Create the `stripe-reconcile` job and its nightly schedule (below), then buy and cancel one
+   real Premium month yourself and refund it in the Dashboard: the webhook lands, the account
+   page shows Premium, the portal cancels it at period end.
 
 The entitlements/billing lane adds two more, both cheap and short-lived — `stripe-setup` is
 run by hand once per mode (see "First-time setup" above); `stripe-reconcile` is scheduled

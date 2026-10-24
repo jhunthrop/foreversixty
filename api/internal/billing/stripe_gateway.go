@@ -111,6 +111,125 @@ func (g *StripeGateway) PriceIDForLookupKey(ctx context.Context, lookupKey strin
 	return "", ErrPriceNotFound
 }
 
+// ensureProduct is EnsurePrice's product half: create the product by
+// its fixed id when it is missing, and set its tax code when it carries
+// none or a different one, so a product made before tax codes were
+// required still sells (Managed Payments refuses a Checkout otherwise).
+func (g *StripeGateway) ensureProduct(ctx context.Context, spec PriceSpec) error {
+	product, err := g.client.V1Products.Retrieve(ctx, spec.ProductID, nil)
+	if err != nil {
+		params := &stripe.ProductCreateParams{ID: stripe.String(spec.ProductID), Name: stripe.String(spec.ProductName)}
+		if spec.TaxCode != "" {
+			params.TaxCode = stripe.String(spec.TaxCode)
+		}
+		if _, cerr := g.client.V1Products.Create(ctx, params); cerr != nil {
+			return fmt.Errorf("billing: create product %s: %w", spec.ProductID, cerr)
+		}
+		return nil
+	}
+	if spec.TaxCode == "" || (product.TaxCode != nil && product.TaxCode.ID == spec.TaxCode) {
+		return nil
+	}
+	if _, err := g.client.V1Products.Update(ctx, spec.ProductID, &stripe.ProductUpdateParams{
+		TaxCode: stripe.String(spec.TaxCode),
+	}); err != nil {
+		return fmt.Errorf("billing: set tax code on product %s: %w", spec.ProductID, err)
+	}
+	return nil
+}
+
+// EnsurePortalConfiguration makes the account's default Customer Portal
+// configuration match spec: created when there is none, otherwise its
+// legal links, return page and the prices a subscriber may switch
+// between are set again (the Dashboard is not the source of truth, spec
+// RULING 5). A subscriber can read invoices, change the card, cancel at
+// the period's end, and move between a product's own prices.
+func (g *StripeGateway) EnsurePortalConfiguration(ctx context.Context, spec PortalSpec) error {
+	products, err := g.portalProducts(ctx, spec)
+	if err != nil {
+		return err
+	}
+	for existing, err := range g.client.V1BillingPortalConfigurations.List(ctx, &stripe.BillingPortalConfigurationListParams{
+		IsDefault: stripe.Bool(true), Active: stripe.Bool(true),
+	}) {
+		if err != nil {
+			return fmt.Errorf("billing: list portal configurations: %w", err)
+		}
+		if _, err := g.client.V1BillingPortalConfigurations.Update(ctx, existing.ID, &stripe.BillingPortalConfigurationUpdateParams{
+			BusinessProfile: &stripe.BillingPortalConfigurationUpdateBusinessProfileParams{
+				Headline:          stripe.String(spec.Headline),
+				PrivacyPolicyURL:  stripe.String(spec.PrivacyPolicyURL),
+				TermsOfServiceURL: stripe.String(spec.TermsOfServiceURL),
+			},
+			DefaultReturnURL: stripe.String(spec.DefaultReturnURL),
+			Features: &stripe.BillingPortalConfigurationUpdateFeaturesParams{
+				SubscriptionUpdate: &stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateParams{
+					Enabled: stripe.Bool(true), DefaultAllowedUpdates: []*string{stripe.String("price")},
+					Products: products, ProrationBehavior: stripe.String("create_prorations"),
+				},
+			},
+		}); err != nil {
+			return fmt.Errorf("billing: update portal configuration %s: %w", existing.ID, err)
+		}
+		return nil
+	}
+	createProducts := make([]*stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams, 0, len(products))
+	for _, p := range products {
+		createProducts = append(createProducts, &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams{
+			Product: p.Product, Prices: p.Prices,
+		})
+	}
+	if _, err := g.client.V1BillingPortalConfigurations.Create(ctx, &stripe.BillingPortalConfigurationCreateParams{
+		BusinessProfile: &stripe.BillingPortalConfigurationCreateBusinessProfileParams{
+			Headline:          stripe.String(spec.Headline),
+			PrivacyPolicyURL:  stripe.String(spec.PrivacyPolicyURL),
+			TermsOfServiceURL: stripe.String(spec.TermsOfServiceURL),
+		},
+		DefaultReturnURL: stripe.String(spec.DefaultReturnURL),
+		Features: &stripe.BillingPortalConfigurationCreateFeaturesParams{
+			CustomerUpdate: &stripe.BillingPortalConfigurationCreateFeaturesCustomerUpdateParams{
+				Enabled: stripe.Bool(true), AllowedUpdates: []*string{stripe.String("email"), stripe.String("address")},
+			},
+			InvoiceHistory:      &stripe.BillingPortalConfigurationCreateFeaturesInvoiceHistoryParams{Enabled: stripe.Bool(true)},
+			PaymentMethodUpdate: &stripe.BillingPortalConfigurationCreateFeaturesPaymentMethodUpdateParams{Enabled: stripe.Bool(true)},
+			SubscriptionCancel: &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionCancelParams{
+				Enabled: stripe.Bool(true), Mode: stripe.String("at_period_end"),
+				CancellationReason: &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionCancelCancellationReasonParams{
+					Enabled: stripe.Bool(true),
+					Options: []*string{stripe.String("too_expensive"), stripe.String("missing_features"), stripe.String("unused"), stripe.String("other")},
+				},
+			},
+			SubscriptionUpdate: &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateParams{
+				Enabled: stripe.Bool(true), DefaultAllowedUpdates: []*string{stripe.String("price")},
+				Products: createProducts, ProrationBehavior: stripe.String("create_prorations"),
+			},
+		},
+	}); err != nil {
+		return fmt.Errorf("billing: create portal configuration: %w", err)
+	}
+	return nil
+}
+
+// portalProducts resolves spec's lookup keys to the price ids the portal
+// lets a subscriber switch between, product by product.
+func (g *StripeGateway) portalProducts(ctx context.Context, spec PortalSpec) ([]*stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateProductParams, error) {
+	products := make([]*stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateProductParams, 0, len(spec.Products))
+	for _, p := range spec.Products {
+		prices := make([]*string, 0, len(p.LookupKeys))
+		for _, key := range p.LookupKeys {
+			id, err := g.PriceIDForLookupKey(ctx, key)
+			if err != nil {
+				return nil, fmt.Errorf("billing: portal price %s: %w", key, err)
+			}
+			prices = append(prices, stripe.String(id))
+		}
+		products = append(products, &stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateProductParams{
+			Product: stripe.String(p.ProductID), Prices: prices,
+		})
+	}
+	return products, nil
+}
+
 // CancelSubscriptionAtPeriodEnd implements Gateway.CancelSubscriptionAtPeriodEnd.
 func (g *StripeGateway) CancelSubscriptionAtPeriodEnd(ctx context.Context, subscriptionID string) error {
 	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, &stripe.SubscriptionUpdateParams{
@@ -158,21 +277,17 @@ func subscriptionHasProduct(sub *stripe.Subscription, productID string) bool {
 	return false
 }
 
-// EnsurePrice is stripe-setup's only call (Ruling D): retrieve-or-create
-// the product by its fixed id, then list-or-create the price by its
-// lookup key. Never mutates an existing price's amount.
+// EnsurePrice is stripe-setup's price call (Ruling D): retrieve-or-create
+// the product by its fixed id, give it its tax code, then list-or-create
+// the price by its lookup key. Never mutates an existing price's amount.
 func (g *StripeGateway) EnsurePrice(ctx context.Context, spec PriceSpec) error {
+	if err := g.ensureProduct(ctx, spec); err != nil {
+		return err
+	}
 	if _, err := g.PriceIDForLookupKey(ctx, spec.LookupKey); err == nil {
 		return nil
 	} else if err != ErrPriceNotFound {
 		return err
-	}
-	if _, err := g.client.V1Products.Retrieve(ctx, spec.ProductID, nil); err != nil {
-		if _, cerr := g.client.V1Products.Create(ctx, &stripe.ProductCreateParams{
-			ID: stripe.String(spec.ProductID), Name: stripe.String(spec.ProductName),
-		}); cerr != nil {
-			return fmt.Errorf("billing: create product %s: %w", spec.ProductID, cerr)
-		}
 	}
 	if _, err := g.client.V1Prices.Create(ctx, &stripe.PriceCreateParams{
 		Product: stripe.String(spec.ProductID), Currency: stripe.String("usd"),

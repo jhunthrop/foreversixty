@@ -53,14 +53,41 @@ const (
 	ProductIDGuild   = "prod_fs_guild"
 )
 
+// ProductTaxCodeSaaSPersonal is Stripe's tax code for software as a
+// service sold for personal use, which is what a Premium or guild plan
+// is. Managed Payments (on by default for the account, Stripe as
+// merchant of record) refuses a Checkout whose product carries no tax
+// code, and Stripe Tax needs one to classify the sale.
+const ProductTaxCodeSaaSPersonal = "txcd_10103001"
+
 // PriceSpec is one (product, price) pair stripe-setup ensures exists
 // (spec §2.1's table).
 type PriceSpec struct {
 	ProductID       string
 	ProductName     string
+	TaxCode         string // ProductTaxCodeSaaSPersonal for every product we sell
 	LookupKey       string
 	Interval        string // "month" | "year"
 	UnitAmountCents int64
+}
+
+// PortalSpec is the Customer Portal configuration stripe-setup ensures
+// exists (spec §2.5 left it to a Dashboard click-through; code keeps
+// test and live mode identical). Products lists what a subscriber may
+// switch between, by lookup key.
+type PortalSpec struct {
+	Headline          string
+	PrivacyPolicyURL  string
+	TermsOfServiceURL string
+	DefaultReturnURL  string
+	Products          []PortalProduct
+}
+
+// PortalProduct is one product the portal lets a subscriber move within:
+// monthly to yearly and back.
+type PortalProduct struct {
+	ProductID  string
+	LookupKeys []string
 }
 
 // PortalCall is one CreatePortalSession invocation, recorded by
@@ -112,6 +139,11 @@ type Gateway interface {
 	// when spec.LookupKey resolves to none, a no-op otherwise (spec
 	// §2.1 — never mutates an existing price's amount).
 	EnsurePrice(ctx context.Context, spec PriceSpec) error
+	// EnsurePortalConfiguration is stripe-setup's other call: create the
+	// account's default Customer Portal configuration from spec when
+	// none exists, a no-op otherwise, so a Dashboard edit made later is
+	// never overwritten.
+	EnsurePortalConfiguration(ctx context.Context, spec PortalSpec) error
 	// CancelSubscriptionAtPeriodEnd sets cancel_at_period_end on a live
 	// Stripe subscription — the newcomer side of the duplicate-
 	// subscription guard (entitlements.UpsertResult.Duplicate,
