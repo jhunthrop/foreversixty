@@ -728,6 +728,8 @@ period end, so "cancel" here means canceling it immediately rather than waiting 
 period, if the refund is issued before then). The kept row (`ExistingSubscriptionID` in the
 anomaly's sibling `entitlements` row) needs no action — it was never touched.
 
+**Amendment, 2026-10-24 (issue #3 H2/M3/M4/L1).** The duplicate guard in `UpsertStripe` now decides a conflicting newcomer in a fixed order: a newcomer whose status grants no access is a *dead newcomer* and is ignored (no anomaly, no Stripe cancel, M4); a `transfer` newcomer replaces the row only when its Stripe `created` is strictly newer than the stored subscription's, compared at whole seconds, otherwise it is a *stale transfer* and nothing is written (H2); any other live newcomer is a duplicate, recorded and canceled at period end as above. A stale transfer is silent by design: RULING 10 leaves the old subscription for the guild to cancel, and a stale event is exactly that cancellation arriving, so it is acknowledged with an info log line, not an anomaly. The webhook fetches the subscription twice: once outside the lock to learn the plan and subject that pick the lock key, and again inside the lock, so the write never uses a status read before a faster delivery committed (M3); if the plan or subject metadata differ between the two fetches the event is acknowledged and ignored. `entitlement_anomalies` is unique on (`kind`, `stripe_subscription_id`), so a failed cancel that Stripe retries re-records nothing (L1).
+
 ### 2.8 Reconciliation
 
 A seventh `os.Args[1]` subcommand, `stripe-reconcile`, run nightly on a Cloud Scheduler job

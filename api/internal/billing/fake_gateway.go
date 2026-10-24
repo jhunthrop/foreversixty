@@ -24,6 +24,9 @@ type FakeGateway struct {
 	// Err, when non-nil, is returned by every method instead of doing
 	// anything, for testing an upstream-failure path.
 	Err error
+	// CancelErr, when non-nil, is returned by CancelSubscriptionAtPeriodEnd
+	// alone, for testing a failed duplicate cancel.
+	CancelErr error
 
 	nextCustomerID int
 	nextSessionID  int
@@ -48,6 +51,12 @@ type FakeGateway struct {
 	Portals             []PortalCall
 	EnsuredSpecs        []PriceSpec
 	CanceledAtPeriodEnd []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
+	// GetSubscriptionCalls records the ids passed to GetSubscription, in order.
+	GetSubscriptionCalls []string
+	// OnGetSubscription, when set, runs after each GetSubscription call is
+	// recorded and before the registered object is returned, so it may
+	// mutate that object. call counts from 1.
+	OnGetSubscription func(id string, call int)
 
 	NextCheckoutURL       string
 	NextCheckoutExpiresAt time.Time
@@ -107,6 +116,10 @@ func (f *FakeGateway) GetSubscription(_ context.Context, id string) (*stripe.Sub
 	if f.Err != nil {
 		return nil, f.Err
 	}
+	f.GetSubscriptionCalls = append(f.GetSubscriptionCalls, id)
+	if f.OnGetSubscription != nil {
+		f.OnGetSubscription(id, len(f.GetSubscriptionCalls))
+	}
 	sub, ok := f.Subscriptions[id]
 	if !ok {
 		return nil, fmt.Errorf("billing: fake gateway: no such subscription %s", id)
@@ -132,6 +145,9 @@ func (f *FakeGateway) CancelSubscriptionAtPeriodEnd(_ context.Context, subscript
 	defer f.mu.Unlock()
 	if f.Err != nil {
 		return f.Err
+	}
+	if f.CancelErr != nil {
+		return f.CancelErr
 	}
 	f.CanceledAtPeriodEnd = append(f.CanceledAtPeriodEnd, subscriptionID)
 	return nil

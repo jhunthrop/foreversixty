@@ -140,7 +140,7 @@ func (s *Store) WithEventLock(ctx context.Context, id string, fn func(context.Co
 // through Checkout Session creation and the pending_checkouts write, so
 // two officers checking out for the same guild concurrently can never
 // both read "no active plan" and both pay; webhook.go's
-// upsertFromSubscription holds it around every entitlements write for a
+// upsertSubscription holds it around every entitlements write for a
 // guild subject, so two webhook deliveries for two *different*
 // subscriptions on the same guild (the checkout-serialization window
 // cannot cover a delivery race, only a checkout race) can never both
@@ -153,7 +153,7 @@ func (s *Store) WithGuildLock(ctx context.Context, guildID int64, fn func(contex
 }
 
 // WithUserLock is WithGuildLock's symmetric counterpart for a personal
-// premium subject — webhook.go's upsertFromSubscription holds it around
+// premium subject — webhook.go's upsertSubscription holds it around
 // every entitlements write for a user subject, for the same reason
 // WithGuildLock now does for a guild one.
 func (s *Store) WithUserLock(ctx context.Context, userID int64, fn func(context.Context) error) error {

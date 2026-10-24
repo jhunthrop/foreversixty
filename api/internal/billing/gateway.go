@@ -4,7 +4,7 @@
 // portal, the webhook, and the CLI jobs (stripe-setup, stripe-reconcile).
 // It never writes the entitlements table directly — every write goes
 // through entitlements.Store, so that package stays the single writer
-// (see webhook.go's upsertFromSubscription). See
+// (see webhook.go's upsertSubscription). See
 // docs/superpowers/specs/2026-09-21-entitlements-and-payments-design.md §2.
 package billing
 
@@ -147,7 +147,7 @@ type Gateway interface {
 	// CancelSubscriptionAtPeriodEnd sets cancel_at_period_end on a live
 	// Stripe subscription — the newcomer side of the duplicate-
 	// subscription guard (entitlements.UpsertResult.Duplicate,
-	// webhook.go's upsertFromSubscription): the officer who
+	// webhook.go's upsertSubscription): the officer who
 	// accidentally paid twice keeps what they already paid for through
 	// the current period; the operator's runbook (spec §2.7) covers
 	// refunding that charge by hand.

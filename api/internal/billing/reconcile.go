@@ -45,11 +45,7 @@ func (s *Service) Reconcile(ctx context.Context) (int, error) {
 	known := make(map[string]bool, len(ids))
 	for _, id := range ids {
 		known[id] = true
-		sub, err := s.Gateway.GetSubscription(ctx, id)
-		if err != nil {
-			return 0, fmt.Errorf("billing: reconcile: get %s: %w", id, err)
-		}
-		if err := s.upsertFromSubscription(ctx, sub, reconcileActor); err != nil {
+		if err := s.upsertSubscription(ctx, id, reconcileActor); err != nil {
 			return 0, fmt.Errorf("billing: reconcile: upsert %s: %w", id, err)
 		}
 	}

@@ -171,7 +171,7 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		transfer := in.Intent == "transfer"
 		if transfer {
 			// Carried onto the Subscription itself (subscription_data.metadata,
-			// same as every other field here) so upsertFromSubscription can
+			// same as every other field here) so upsertSubscription can
 			// tell a deliberate "Take over billing" handoff (spec §2.9
 			// RULING 10) apart from the double-billing security finding's
 			// race: RULING 10 intends the new subscription to become the

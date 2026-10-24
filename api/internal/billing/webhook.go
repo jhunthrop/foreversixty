@@ -121,7 +121,7 @@ func (s *Service) onCheckoutCompleted(ctx context.Context, event stripe.Event, a
 			}
 		}
 	}
-	if err := s.upsertFromSubscription(ctx, sub, actor); err != nil {
+	if err := s.upsertSubscription(ctx, subID, actor); err != nil {
 		return err
 	}
 	// A completed Checkout Session no longer needs to block a later,
@@ -138,12 +138,7 @@ func (s *Service) onCheckoutCompleted(ctx context.Context, event stripe.Event, a
 }
 
 func (s *Service) onSubscriptionEvent(ctx context.Context, event stripe.Event, actor string) error {
-	id := stripeRefID(event.Data.Object["id"])
-	sub, err := s.Gateway.GetSubscription(ctx, id)
-	if err != nil {
-		return fmt.Errorf("billing: subscription event: get %s: %w", id, err)
-	}
-	return s.upsertFromSubscription(ctx, sub, actor)
+	return s.upsertSubscription(ctx, stripeRefID(event.Data.Object["id"]), actor)
 }
 
 func (s *Service) onSubscriptionDeleted(ctx context.Context, event stripe.Event, actor string) error {
@@ -165,11 +160,7 @@ func (s *Service) onInvoiceEvent(ctx context.Context, event stripe.Event, actor 
 	if subID == "" {
 		return nil
 	}
-	sub, err := s.Gateway.GetSubscription(ctx, subID)
-	if err != nil {
-		return fmt.Errorf("billing: invoice event: get subscription %s: %w", subID, err)
-	}
-	return s.upsertFromSubscription(ctx, sub, actor)
+	return s.upsertSubscription(ctx, subID, actor)
 }
 
 // metadataUserID reads sub.Metadata["user_id"] — always the buying
@@ -217,26 +208,84 @@ func subscriptionPeriodEnd(sub *stripe.Subscription) (time.Time, bool) {
 	return time.Unix(sub.Items.Data[0].CurrentPeriodEnd, 0).UTC(), true
 }
 
-// upsertFromSubscription is the only writer of entitlements from Stripe
-// state (spec RULING 8): plan and subject come from sub.Metadata, set at
-// Checkout via subscription_data.metadata (spec §2.2) and therefore
-// present on the Subscription object for its whole lifetime, independent
-// of which event triggered this call — never from the event's own
-// embedded snapshot.
-func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscription, actor string) error {
+// upsertSubscription is the only writer of entitlements from Stripe
+// state (spec RULING 8): plan and subject come from the subscription's
+// metadata, set at Checkout via subscription_data.metadata (spec §2.2)
+// and therefore present for its whole lifetime, independent of which
+// event triggered this call — never from the event's own snapshot.
+//
+// The subscription is fetched twice (issue #3 M3). The first fetch only
+// learns the plan and subject, which pick the lock; the write uses the
+// second fetch, taken inside the lock, so a slower delivery cannot write
+// a status it read before a faster one committed.
+func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor string) error {
+	first, err := s.Gateway.GetSubscription(ctx, subscriptionID)
+	if err != nil {
+		return fmt.Errorf("billing: get subscription %s: %w", subscriptionID, err)
+	}
+	subject, ok := s.subjectOf(first)
+	if !ok {
+		return nil
+	}
+	return subject.withLock(ctx, s.Store, func(ctx context.Context) error {
+		sub, err := s.Gateway.GetSubscription(ctx, subscriptionID)
+		if err != nil {
+			return fmt.Errorf("billing: get subscription %s inside lock: %w", subscriptionID, err)
+		}
+		if again, ok := s.subjectOf(sub); !ok || again != subject {
+			s.Log.Warn("billing: subscription metadata changed between fetches", "subscription", sub.ID)
+			return nil
+		}
+		return s.applyUpsert(ctx, stripeUpsertFor(sub, subject, actor), sub)
+	})
+}
+
+// subscriptionSubject is the row owner a subscription bills: a guild for
+// the guild plan, the buying user for premium.
+type subscriptionSubject struct {
+	plan          string
+	billingUserID int64
+	guildID       int64 // set only for the guild plan
+}
+
+func (sj subscriptionSubject) withLock(ctx context.Context, store *Store, fn func(context.Context) error) error {
+	if sj.plan == entitlements.PlanGuild {
+		return store.WithGuildLock(ctx, sj.guildID, fn)
+	}
+	return store.WithUserLock(ctx, sj.billingUserID, fn)
+}
+
+// subjectOf reads plan, buyer and guild from sub.Metadata. A subscription
+// without them is not ours: it is acknowledged and logged rather than
+// failed, because no retry would ever make the metadata appear.
+func (s *Service) subjectOf(sub *stripe.Subscription) (subscriptionSubject, bool) {
 	plan := sub.Metadata["plan"]
 	if plan != entitlements.PlanPremium && plan != entitlements.PlanGuild {
 		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", errNotOurSubscription)
-		return nil
+		return subscriptionSubject{}, false
 	}
 	billingUserID, ok := metadataUserID(sub)
 	if !ok {
 		s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid user_id metadata")
-		return nil
+		return subscriptionSubject{}, false
 	}
+	subject := subscriptionSubject{plan: plan, billingUserID: billingUserID}
+	if plan == entitlements.PlanGuild {
+		guildID, err := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
+		if err != nil {
+			s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid guild_id metadata")
+			return subscriptionSubject{}, false
+		}
+		subject.guildID = guildID
+	}
+	return subject, true
+}
+
+func stripeUpsertFor(sub *stripe.Subscription, subject subscriptionSubject, actor string) entitlements.StripeUpsert {
 	p := entitlements.StripeUpsert{
-		Plan: plan, Status: string(sub.Status), CancelAtPeriodEnd: sub.CancelAtPeriodEnd,
-		StripeSubscriptionID: sub.ID, BillingUserID: billingUserID, Actor: actor,
+		Plan: subject.plan, Status: string(sub.Status), CancelAtPeriodEnd: sub.CancelAtPeriodEnd,
+		StripeSubscriptionID: sub.ID, BillingUserID: subject.billingUserID, Actor: actor,
+		SubscriptionCreated: time.Unix(sub.Created, 0).UTC(),
 		// spec §2.9 RULING 10's "Take over billing" handoff: the new
 		// subscription is meant to overwrite the guild's row, not be
 		// flagged as a duplicate (StripeUpsert.Transfer's own doc).
@@ -245,55 +294,47 @@ func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscr
 	if end, ok := subscriptionPeriodEnd(sub); ok {
 		p.CurrentPeriodEnd = &end
 	}
-	// The write itself is serialized per subject (security review fix,
-	// 2026-09-21): checkGuildCheckout's advisory lock only ever
-	// serializes *creating* a Checkout Session, not the webhook deliveries
-	// that later land for whatever subscriptions got created — two
-	// deliveries for two different subscriptions on the same subject can
-	// still reach here concurrently (an independent review's finding
-	// against an earlier version of this fix, where UpsertStripe's
-	// duplicate guard was an unserialized check-then-act). Holding the
-	// same guild/user lock here closes that: the second delivery's
-	// UpsertStripe call only runs after the first's has fully committed.
-	if plan == entitlements.PlanGuild {
-		guildID, err := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
-		if err != nil {
-			s.Log.Warn("billing: subscription is not ours; event acknowledged", "subscription", sub.ID, "reason", "no valid guild_id metadata")
-			return nil
-		}
-		p.GuildID = &guildID
-		return s.Store.WithGuildLock(ctx, guildID, func(ctx context.Context) error {
-			return s.applyUpsert(ctx, p, sub, plan)
-		})
+	if subject.plan == entitlements.PlanGuild {
+		p.GuildID = &subject.guildID
+	} else {
+		p.UserID = &subject.billingUserID
 	}
-	p.UserID = &billingUserID
-	return s.Store.WithUserLock(ctx, billingUserID, func(ctx context.Context) error {
-		return s.applyUpsert(ctx, p, sub, plan)
-	})
+	return p
 }
 
-// applyUpsert is upsertFromSubscription's locked half: the actual
-// entitlements write, and — on a caught duplicate — canceling the
-// newcomer at Stripe. Always called from inside WithGuildLock/WithUserLock.
-func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription, plan string) error {
+// applyUpsert is upsertSubscription's locked half: the entitlements
+// write, then the action its outcome calls for. Always called from
+// inside WithGuildLock/WithUserLock.
+func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription) error {
 	result, err := s.Entitlements.UpsertStripe(ctx, p)
 	if err != nil {
 		return err
 	}
-	if !result.Duplicate {
-		return nil
+	switch result.Outcome {
+	case entitlements.OutcomeDuplicate:
+		return s.cancelDuplicate(ctx, sub, result.ExistingSubscriptionID)
+	case entitlements.OutcomeStaleTransfer:
+		s.logger().Info("billing", "op", "stale_transfer_ignored",
+			"subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID)
+	case entitlements.OutcomeDeadNewcomer:
+		s.logger().Info("billing", "op", "dead_newcomer_ignored",
+			"subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID)
 	}
-	// A second, live subscription for a (subject, plan) that already had
-	// one, pointing at a different id (security review fix, 2026-09-21):
-	// UpsertStripe already kept the existing row and recorded the
-	// anomaly; this is the other half — the newcomer must not keep
-	// billing with nothing in our database honoring it, so it is
-	// canceled at Stripe (at period end: whoever paid for it keeps what
-	// they already paid for). No secret or metadata dump in the log line
-	// — subscription ids and the kept id only.
+	return nil
+}
+
+// cancelDuplicate is the other half of a caught duplicate (security
+// review fix, 2026-09-21): UpsertStripe kept the existing row and
+// recorded the anomaly; the newcomer must not keep billing with nothing
+// in our database honoring it, so it is canceled at Stripe (at period
+// end: whoever paid keeps what they paid for). A failed cancel is
+// returned so Stripe retries; the anomaly is recorded once per
+// subscription, so the retry adds no second row. No secret or metadata
+// dump in the log line — subscription ids only.
+func (s *Service) cancelDuplicate(ctx context.Context, sub *stripe.Subscription, keptID string) error {
 	s.logger().Error("billing", "op", "duplicate_subscription",
-		"newcomer_subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID,
-		"plan", plan)
+		"newcomer_subscription_id", sub.ID, "kept_subscription_id", keptID,
+		"plan", sub.Metadata["plan"])
 	if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, sub.ID); err != nil {
 		return fmt.Errorf("billing: cancel duplicate subscription %s: %w", sub.ID, err)
 	}
