@@ -220,10 +220,22 @@ test('notes under Experience what counts, muted at 12px (L8.5 ruling 2)', async 
   await expect(note).toBeVisible();
   await expect(note).toHaveCSS('font-size', '12px');
   await expect(note).toHaveCSS('color', 'rgb(154, 148, 132)');
-  const detail = await page.getByTestId('forever-score-experience-detail').boundingBox();
-  const box = await note.boundingBox();
-  expect(box?.y ?? 0).toBeGreaterThanOrEqual((detail?.y ?? 0) + (detail?.height ?? 0) - 0.5);
-  expect(box?.height ?? 99).toBeLessThan(20);
+  // Both boxes in one pass, once the web fonts have settled: two separate reads let a font
+  // swap reflow the card between them and put the note "above" a detail line that had just
+  // shrunk (one run in four on CI).
+  const boxes = await page.evaluate(async () => {
+    await document.fonts.ready;
+    const rect = (testid: string) =>
+      document.querySelector(`[data-testid="${testid}"]`)?.getBoundingClientRect() ?? null;
+    const detail = rect('forever-score-experience-detail');
+    const note = rect('forever-score-experience-note');
+    return detail === null || note === null
+      ? null
+      : { detailBottom: detail.bottom, noteTop: note.top, noteHeight: note.height };
+  });
+  expect(boxes).not.toBeNull();
+  expect(boxes!.noteTop).toBeGreaterThanOrEqual(boxes!.detailBottom - 0.5);
+  expect(boxes!.noteHeight).toBeLessThan(20);
 });
 
 test.describe('the Experience note on a 390px phone (fix round 2 item 6)', () => {

@@ -10,12 +10,11 @@
 // Consumables: the ones the BiS ranker's raid-ready preset gives this spec, with the icon from
 // the build's `simbuffs.json` and a short "what it gives" line from CONSUMABLE_GIVES, which a
 // test holds to the preset: a consumable the preset adds without a line here fails the test.
-import { existsSync, readFileSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import { bandEntry } from '../bis/load';
 import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
 import type { Slot } from '../planner/types';
+import { buildFile, readBuildJson } from './build-files';
 import { factionForFirstRace, rankedBisFile } from './class-dps';
 import type { BisBand, BisStatWeight } from '../bis/types';
 
@@ -236,17 +235,6 @@ export function consumableRows(
   });
 }
 
-// --- disk -----------------------------------------------------------------------------------
-
-function repoRoot(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-}
-
-function readBuildJson<T>(build: string, file: string): T | undefined {
-  const full = path.join(repoRoot(), 'data/builds', build, file);
-  return existsSync(full) ? (JSON.parse(readFileSync(full, 'utf8')) as T) : undefined;
-}
-
 export interface GearExtras {
   enchants: EnchantRow[];
   consumables: ConsumableRow[];
@@ -280,7 +268,7 @@ export function loadGearExtras(
     consumables: consumableRows(
       consumes.map((consume) => ({ id: String(consume.id), label: consume.label })),
       simBuffs,
-      (icon) => existsSync(path.join(repoRoot(), 'data/builds', build, 'icons', `${icon}.webp`)),
+      (icon) => existsSync(buildFile(build, 'icons', `${icon}.webp`)),
     ),
   };
 }
