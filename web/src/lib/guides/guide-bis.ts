@@ -91,13 +91,18 @@ function isPreRaid(band: number, rows: readonly RowView[]): boolean {
   return band === 60 && !rows.some((row) => row.sourceKind === 'raid');
 }
 
-export function guideBisPanelsFrom(infos: readonly BandInfo[], faction: Faction): GuideBisPanel[] {
+/** `raceName` turns a band's race slug into its display name (raceNameFor on the build). */
+export function guideBisPanelsFrom(
+  infos: readonly BandInfo[],
+  faction: Faction,
+  raceName: (slug: string) => string,
+): GuideBisPanel[] {
   return infos.map((info) => ({
     faction,
     band: info.band,
     label: bisCopy.bandRangeLabel(info.band),
     bisAnchor: `band-${faction}-${info.band}`,
-    raceName: raceNameFor(info.race),
+    raceName: raceName(info.race),
     rows: info.rows.map(rowFor),
     preRaid: isPreRaid(info.band, info.rows),
   }));
@@ -109,6 +114,7 @@ export function guideBisFrom(
   file: BisFile,
   defaultFaction: Faction,
   deps: Parameters<typeof bandInfosFor>[3],
+  raceName: (slug: string) => string,
 ): GuideBis | undefined {
   const levels = bandLevels(file);
   const perFaction = FACTIONS.map((faction) => ({
@@ -122,7 +128,7 @@ export function guideBisFrom(
     factions: perFaction.map((entry) => entry.faction),
     defaultBand: chosen.infos[chosen.infos.length - 1]!.band,
     bands: chosen.infos.map((info) => ({ band: info.band, label: bisCopy.bandRangeLabel(info.band) })),
-    panels: perFaction.flatMap((entry) => guideBisPanelsFrom(entry.infos, entry.faction)),
+    panels: perFaction.flatMap((entry) => guideBisPanelsFrom(entry.infos, entry.faction, raceName)),
   };
 }
 
@@ -140,10 +146,15 @@ export function loadGuideBis(
   if (file === undefined || faction === undefined) return undefined;
   const tooltipFor = (itemId: number): ItemTooltipModel | undefined =>
     readItemTooltipModel(build, classSlug, itemId) ?? undefined;
-  return guideBisFrom(file, faction, {
-    itemDetails: itemDetails(build, classSlug),
-    loot: loadLootFile(build),
-    tooltipFor,
-    spec,
-  });
+  return guideBisFrom(
+    file,
+    faction,
+    {
+      itemDetails: itemDetails(build, classSlug),
+      loot: loadLootFile(build),
+      tooltipFor,
+      spec,
+    },
+    (slug) => raceNameFor(build, slug),
+  );
 }

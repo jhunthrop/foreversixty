@@ -1,11 +1,13 @@
 // web/src/lib/guides/race-table.ts
 // The guide's Races table: one row per race the class can be, with the racial that matters
-// for this kind of spec and what that racial does. The race list comes from the combos, the
-// racial effects from the build's own race data (`races.json` `forever_changes`); the one
-// editorial input is which racial matters to which kind of spec, kept here as a small table
-// that a test holds to the race data, so a renamed racial fails a test instead of the page.
-import { classRows, raceRows, racesForClass } from '../planner/reference';
+// for this kind of spec and what that racial does. The race list comes from the build's own
+// combos, the racial effects from its race data (`races.json` `forever_changes`), both read
+// off data/builds/<build>/ (build-races.ts) so the table is the same under either
+// FOREVER_DATA; the one editorial input is which racial matters to which kind of spec, kept
+// here as a small table that a test holds to the race data, so a renamed racial fails a test
+// instead of the page.
 import type { RaceRow } from '../planner/types';
+import { buildRace, buildRacesForClass } from './build-races';
 
 export type SpecKind = 'caster' | 'melee' | 'ranged' | 'healer' | 'tank';
 
@@ -144,13 +146,12 @@ function upperFirst(text: string): string {
 }
 
 export function raceTableFor(
+  build: string,
   classSlug: string,
   recommendedRaces: readonly string[],
   kind: SpecKind,
 ): GuideRaceRow[] {
-  const classRow = classRows.find((row) => row.slug === classSlug);
-  if (classRow === undefined) return [];
-  return racesForClass(classRow.id).map((race): GuideRaceRow => {
+  return buildRacesForClass(build, classSlug).map((race): GuideRaceRow => {
     const picks = RACIAL_PICKS[race.slug];
     const wanted = picks === undefined ? [] : (picks[kind] ?? picks.default);
     const effects = racialEffects(race);
@@ -187,7 +188,7 @@ export function recommendedRaceLines(
 }
 
 /** A race's display name from its slug (a BiS band names its race by slug); the slug itself
- *  when the race is unknown. */
-export function raceNameFor(slug: string): string {
-  return raceRows.find((race) => race.slug === slug)?.name ?? slug;
+ *  when the build has no such race. */
+export function raceNameFor(build: string, slug: string): string {
+  return buildRace(build, slug)?.name ?? slug;
 }

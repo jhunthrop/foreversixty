@@ -7,6 +7,7 @@ import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
 import type { BisBand, BisFile, BisSlot, LootQuestsFile } from '../bis/types';
 import { guideBisFrom, loadGuideBis } from './guide-bis';
+import { raceNameFor } from './race-table';
 
 const BUILD = activeBuild.build;
 
@@ -75,6 +76,9 @@ function model(id: number, quality: number, icon: string, typeLabel?: string): I
   } as unknown as ItemTooltipModel;
 }
 
+/** The page's own name function, on the active build: a band's race slug to its display name. */
+const raceName = (slug: string): string => raceNameFor(activeBuild.build, slug);
+
 const DEPS = {
   itemDetails: new Map(),
   loot: LOOT,
@@ -110,6 +114,7 @@ describe('guideBisFrom', () => {
     ),
     'alliance',
     DEPS,
+    raceName,
   )!;
   const panel = (faction: string, level: number) =>
     guide.panels.find((p) => p.faction === faction && p.band === level)!;
@@ -161,15 +166,20 @@ describe('guideBisFrom', () => {
   });
 
   it('is the pre-raid list only while no level 60 pick comes from a raid', () => {
-    const noRaid = guideBisFrom(file(band(60, [pick({ slot: 'head', item_id: 1 })])), 'alliance', DEPS)!;
+    const noRaid = guideBisFrom(
+      file(band(60, [pick({ slot: 'head', item_id: 1 })])),
+      'alliance',
+      DEPS,
+      raceName,
+    )!;
     expect(noRaid.panels[0]!.preRaid).toBe(true);
     expect(panel('alliance', 60).preRaid).toBe(false);
     expect(panel('alliance', 20).preRaid).toBe(false);
   });
 
   it('opens on the other faction when the file has no picks for the wanted one', () => {
-    expect(guideBisFrom(file(hordeBand), 'alliance', DEPS)?.defaultFaction).toBe('horde');
-    expect(guideBisFrom(file(band(60, [])), 'alliance', DEPS)?.factions).toEqual(['alliance']);
+    expect(guideBisFrom(file(hordeBand), 'alliance', DEPS, raceName)?.defaultFaction).toBe('horde');
+    expect(guideBisFrom(file(band(60, [])), 'alliance', DEPS, raceName)?.factions).toEqual(['alliance']);
   });
 });
 

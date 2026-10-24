@@ -8,11 +8,12 @@ import { guidesCopy } from '../../lib/guides/copy';
 import { factionColorVar, racePillsFor } from '../../lib/guides/race-pills';
 
 interface Props {
+  build: string;
   classSlug: string;
   recommendedRaces: string[];
 }
-const { classSlug, recommendedRaces } = Astro.props;
-const pills = racePillsFor(classSlug, recommendedRaces);
+const { build, classSlug, recommendedRaces } = Astro.props;
+const pills = racePillsFor(build, classSlug, recommendedRaces);
 ---
 
 <ul class="m-0 flex list-none flex-wrap gap-2 p-0" data-testid="guide-race-pills">

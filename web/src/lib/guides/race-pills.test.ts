@@ -1,9 +1,12 @@
+import activeBuild from '../../data/active-build.json';
 import { describe, expect, it } from 'vitest';
 import { factionColorVar, racePillsFor } from './race-pills';
 
+const BUILD = activeBuild.build;
+
 describe('racePillsFor', () => {
   it('lists every race legal for the class, marking the recommended ones', () => {
-    const pills = racePillsFor('warrior', ['human', 'troll']);
+    const pills = racePillsFor(BUILD, 'warrior', ['human', 'troll']);
     const slugs = pills.map((p) => p.slug);
     expect(slugs).toContain('human');
     expect(slugs).toContain('orc');
@@ -12,7 +15,7 @@ describe('racePillsFor', () => {
   });
 
   it('returns an empty list for an unknown class slug rather than throwing', () => {
-    expect(racePillsFor('not-a-class', [])).toEqual([]);
+    expect(racePillsFor(BUILD, 'not-a-class', [])).toEqual([]);
   });
 });
 

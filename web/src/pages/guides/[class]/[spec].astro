@@ -214,6 +214,7 @@ const enchantsProseHtml = await renderGuideMarkdown(proseOnly('Enchants and cons
 
 // Races: the pills as the summary, the table under them.
 const raceRows = raceTableFor(
+  build,
   classSlug,
   entry.data.recommendedRaces,
   specKindOf(classSlug, fullSpecId, role),
@@ -327,7 +328,11 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp, build);
   {gearExtras !== undefined && <GuideGearExtras build={build} extras={gearExtras} />}
   <Fragment set:html={enchantsProseHtml} />
   <Fragment set:html={racesHeadingHtml} />
-  <RacePillRow classSlug={entry.data.classSlug} recommendedRaces={entry.data.recommendedRaces} />
+  <RacePillRow
+    build={build}
+    classSlug={entry.data.classSlug}
+    recommendedRaces={entry.data.recommendedRaces}
+  />
   <RaceTable rows={raceRows} />
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
