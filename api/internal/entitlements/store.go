@@ -269,6 +269,8 @@ type existingRow struct {
 	id                   int64
 	status               string
 	stripeSubscriptionID *string
+	// stripeSubscriptionCreated is nil for rows written before it was stored.
+	stripeSubscriptionCreated *time.Time
 }
 
 // existingEntitlement reads subj's row for plan, inside tx — isNew=true
@@ -277,14 +279,14 @@ func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan stri
 	var q pgx.Row
 	if subj.UserID != nil {
 		q = tx.QueryRow(ctx,
-			`select id, status, stripe_subscription_id from entitlements where user_id = $1 and plan = $2`,
+			`select id, status, stripe_subscription_id, stripe_subscription_created from entitlements where user_id = $1 and plan = $2`,
 			*subj.UserID, plan)
 	} else {
 		q = tx.QueryRow(ctx,
-			`select id, status, stripe_subscription_id from entitlements where guild_id = $1 and plan = $2`,
+			`select id, status, stripe_subscription_id, stripe_subscription_created from entitlements where guild_id = $1 and plan = $2`,
 			*subj.GuildID, plan)
 	}
-	err = q.Scan(&row.id, &row.status, &row.stripeSubscriptionID)
+	err = q.Scan(&row.id, &row.status, &row.stripeSubscriptionID, &row.stripeSubscriptionCreated)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return existingRow{}, true, nil
 	}
@@ -311,12 +313,14 @@ type execer interface {
 
 // recordAnomaly writes one entitlement_anomalies row (spec fix, security
 // review 2026-09-21): see AnomalyKind's docs for what each kind means.
+// Idempotent per (kind, subscription): a repeat is a no-op.
 // entitlementID is nil for an orphan (there is no local row to point at).
 func recordAnomaly(ctx context.Context, db execer, entitlementID, userID, guildID *int64,
 	plan string, kind AnomalyKind, stripeSubscriptionID, actor string) error {
 	if _, err := db.Exec(ctx, `
 		insert into entitlement_anomalies (entitlement_id, user_id, guild_id, plan, kind, stripe_subscription_id, actor)
-		values ($1, $2, $3, $4, $5, $6, $7)`,
+		values ($1, $2, $3, $4, $5, $6, $7)
+		on conflict (kind, stripe_subscription_id) do nothing`,
 		entitlementID, userID, guildID, plan, string(kind), stripeSubscriptionID, actor); err != nil {
 		return fmt.Errorf("entitlements: record anomaly: %w", err)
 	}
@@ -347,30 +351,73 @@ type StripeUpsert struct {
 	BillingUserID        int64
 	Actor                string
 	// Transfer is true when sub.Metadata["intent"] == "transfer" — a
-	// deliberate "Take over billing" handoff (spec §2.9 RULING 10), the
-	// one flow that *intends* a second, different subscription for a
-	// guild that already had an active one: RULING 10 has the new
-	// subscription become the one entitlements points at, with the old
-	// one left for the guild to cancel by hand. A Transfer upsert skips
-	// the duplicate-subscription guard below entirely — the opposite of
-	// every other caller, for which a second active subscription is
-	// exactly the security finding this guard exists to catch.
+	// deliberate "Take over billing" handoff (spec §2.9 RULING 10): the
+	// new subscription becomes the one entitlements points at, but only
+	// when it is strictly newer (SubscriptionCreated) than the one the
+	// row has; otherwise the upsert is a stale transfer and writes nothing.
+	// Every other caller gets the duplicate-subscription guard instead.
 	Transfer bool
+	// SubscriptionCreated is sub.Created; zero when unknown.
+	SubscriptionCreated time.Time
 }
 
-// UpsertResult is UpsertStripe's outcome. Duplicate is true when an
-// existing ACTIVE row for the same subject+plan already pointed at a
-// different Stripe subscription — the row was left untouched and
-// ExistingSubscriptionID names the one that was kept. The caller
-// (billing.Service.upsertFromSubscription) must cancel the newcomer
-// subscription at Stripe: this is the entitlements-layer half of the
-// double-billing fix (security review, 2026-09-21) — the second layer
-// against checkGuildCheckout's advisory lock, for the race the lock
-// cannot cover on its own (two Checkout Sessions started far enough
-// apart, or outside this process, that the lock window never overlapped).
+// UpsertOutcome says what UpsertStripe did with a subscription.
+type UpsertOutcome string
+
+const (
+	// OutcomeWritten: the entitlements row was written.
+	OutcomeWritten UpsertOutcome = "written"
+	// OutcomeDuplicate: an active row points at a different subscription
+	// and the newcomer is live and not a transfer. An anomaly was
+	// recorded; the caller must cancel the newcomer at Stripe.
+	OutcomeDuplicate UpsertOutcome = "duplicate"
+	// OutcomeStaleTransfer: a transfer newcomer that is not strictly newer
+	// than the existing row's subscription. Nothing written or recorded.
+	OutcomeStaleTransfer UpsertOutcome = "stale_transfer"
+	// OutcomeDeadNewcomer: the newcomer's status grants no access and an
+	// active row points elsewhere. Nothing written or recorded.
+	OutcomeDeadNewcomer UpsertOutcome = "dead_newcomer"
+)
+
+// UpsertResult is UpsertStripe's outcome. ExistingSubscriptionID names
+// the subscription the row kept, for every outcome but OutcomeWritten
+// (the double-billing fix's second layer, security review 2026-09-21).
 type UpsertResult struct {
-	Duplicate              bool
+	Outcome                UpsertOutcome
 	ExistingSubscriptionID string
+}
+
+// conflictsWithActiveRow is true when an active row already points at a
+// subscription other than p's.
+func conflictsWithActiveRow(existing existingRow, isNew bool, p StripeUpsert) bool {
+	return !isNew && isActiveStatus(existing.status) &&
+		existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID != p.StripeSubscriptionID
+}
+
+// skippedOutcome decides a conflicting upsert, in order: a dead newcomer
+// is ignored, a transfer wins only when strictly newer (a row with no
+// stored created loses to any transfer), anything else is a duplicate.
+// skipped=false means the write goes ahead.
+func skippedOutcome(existing existingRow, p StripeUpsert) (skipped bool, outcome UpsertOutcome) {
+	switch {
+	case !isActiveStatus(p.Status):
+		return true, OutcomeDeadNewcomer
+	case p.Transfer:
+		newer := existing.stripeSubscriptionCreated == nil || p.SubscriptionCreated.After(*existing.stripeSubscriptionCreated)
+		return !newer, OutcomeStaleTransfer
+	default:
+		return true, OutcomeDuplicate
+	}
+}
+
+// subscriptionCreatedOrNil is the column value for a possibly unknown
+// (zero) created time.
+func subscriptionCreatedOrNil(created time.Time) *time.Time {
+	if created.IsZero() {
+		return nil
+	}
+	utc := created.UTC()
+	return &utc
 }
 
 // UpsertStripe is the only writer of entitlements from Stripe state.
@@ -386,25 +433,31 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 		if err != nil {
 			return err
 		}
-		if !isNew && !p.Transfer && isActiveStatus(existing.status) &&
-			existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID != p.StripeSubscriptionID {
-			result = UpsertResult{Duplicate: true, ExistingSubscriptionID: *existing.stripeSubscriptionID}
-			return recordAnomaly(ctx, tx, &existing.id, p.UserID, p.GuildID, p.Plan,
-				AnomalyDuplicateSubscription, p.StripeSubscriptionID, p.Actor)
+		if conflictsWithActiveRow(existing, isNew, p) {
+			if skipped, outcome := skippedOutcome(existing, p); skipped {
+				result = UpsertResult{Outcome: outcome, ExistingSubscriptionID: *existing.stripeSubscriptionID}
+				if outcome != OutcomeDuplicate {
+					return nil
+				}
+				return recordAnomaly(ctx, tx, &existing.id, p.UserID, p.GuildID, p.Plan,
+					AnomalyDuplicateSubscription, p.StripeSubscriptionID, p.Actor)
+			}
 		}
+		result = UpsertResult{Outcome: OutcomeWritten}
 		var id int64
 		if err := tx.QueryRow(ctx, `
 			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end,
-				cancel_at_period_end, stripe_subscription_id, billing_user_id)
-			values ($1, $2, $3, 'stripe', $4, $5, $6, $7, $8)
+				cancel_at_period_end, stripe_subscription_id, billing_user_id, stripe_subscription_created)
+			values ($1, $2, $3, 'stripe', $4, $5, $6, $7, $8, $9)
 			on conflict (`+target+`) do update set
 				source = 'stripe', status = excluded.status, current_period_end = excluded.current_period_end,
 				cancel_at_period_end = excluded.cancel_at_period_end,
 				stripe_subscription_id = excluded.stripe_subscription_id,
-				billing_user_id = excluded.billing_user_id, updated_at = now()
+				billing_user_id = excluded.billing_user_id,
+				stripe_subscription_created = excluded.stripe_subscription_created, updated_at = now()
 			returning id`,
 			p.UserID, p.GuildID, p.Plan, p.Status, p.CurrentPeriodEnd, p.CancelAtPeriodEnd,
-			p.StripeSubscriptionID, p.BillingUserID).Scan(&id); err != nil {
+			p.StripeSubscriptionID, p.BillingUserID, subscriptionCreatedOrNil(p.SubscriptionCreated)).Scan(&id); err != nil {
 			return fmt.Errorf("entitlements: upsert stripe: write: %w", err)
 		}
 		var oldPtr *string

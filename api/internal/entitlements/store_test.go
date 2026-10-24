@@ -278,7 +278,7 @@ func TestUpsertStripeKeepsAnExistingActiveRowOnADifferentSubscriptionID(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	if res.Duplicate {
+	if res.Outcome != OutcomeWritten {
 		t.Fatalf("first write must not be flagged a duplicate: %+v", res)
 	}
 
@@ -289,8 +289,8 @@ func TestUpsertStripeKeepsAnExistingActiveRowOnADifferentSubscriptionID(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !res.Duplicate || res.ExistingSubscriptionID != "sub_a" {
-		t.Fatalf("second write = %+v, want Duplicate=true ExistingSubscriptionID=sub_a", res)
+	if res.Outcome != OutcomeDuplicate || res.ExistingSubscriptionID != "sub_a" {
+		t.Fatalf("second write = %+v, want OutcomeDuplicate ExistingSubscriptionID=sub_a", res)
 	}
 
 	gb, err := s.GuildBilling(context.Background(), gid)
@@ -358,7 +358,7 @@ func TestUpsertStripeAllowsARenewalOnTheSameSubscriptionID(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if res.Duplicate {
+	if res.Outcome != OutcomeWritten {
 		t.Fatalf("a renewal on the same subscription id must not be flagged a duplicate: %+v", res)
 	}
 	b, err := s.PersonalBilling(context.Background(), uid)
@@ -386,6 +386,7 @@ func TestUpsertStripeTransferOverwritesInsteadOfFlaggingADuplicate(t *testing.T)
 	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_old_officer", BillingUserID: oldOfficer, Actor: "stripe_webhook:evt_old",
+		SubscriptionCreated: time.Now().Add(-2 * time.Hour),
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -393,12 +394,12 @@ func TestUpsertStripeTransferOverwritesInsteadOfFlaggingADuplicate(t *testing.T)
 	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_new_officer", BillingUserID: newOfficer, Actor: "stripe_webhook:evt_transfer",
-		Transfer: true,
+		Transfer: true, SubscriptionCreated: time.Now().Add(-time.Hour),
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if res.Duplicate {
+	if res.Outcome != OutcomeWritten {
 		t.Fatalf("a transfer upsert must not be flagged a duplicate: %+v", res)
 	}
 
@@ -510,5 +511,166 @@ func TestStripeSubscriptionIDsListsOnlyNonCanceledStripeSourcedRows(t *testing.T
 	}
 	if len(ids) != 1 || ids[0] != "sub_reconcile_active" {
 		t.Fatalf("ids = %v, want [sub_reconcile_active]", ids)
+	}
+}
+
+func guildRowSubscription(t *testing.T, pool *pgxpool.Pool, gid int64) (subID string, cancelAtEnd bool) {
+	t.Helper()
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_id, cancel_at_period_end from entitlements where guild_id = $1 and plan = 'guild'`,
+		gid).Scan(&subID, &cancelAtEnd); err != nil {
+		t.Fatal(err)
+	}
+	return subID, cancelAtEnd
+}
+
+func countRows(t *testing.T, pool *pgxpool.Pool, table string, gid int64) int {
+	t.Helper()
+	var n int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from `+table+` where guild_id = $1`, gid).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	return n
+}
+
+func upsertGuildSub(t *testing.T, s *Store, gid, billing int64, subID, status string, created time.Time, transfer bool) UpsertResult {
+	t.Helper()
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: status, CurrentPeriodEnd: &end,
+		StripeSubscriptionID: subID, BillingUserID: billing, Actor: "stripe_webhook:evt_" + subID,
+		Transfer: transfer, SubscriptionCreated: created,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return res
+}
+
+func TestUpsertStripeStaleTransferLeavesTheNewerRowUntouched(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	officer := seedUser(t, pool)
+	upsertGuildSub(t, s, gid, officer, "sub_c", "active", time.Now().Add(-time.Hour), true)
+
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end, CancelAtPeriodEnd: true,
+		StripeSubscriptionID: "sub_b", BillingUserID: officer, Actor: "stripe_webhook:evt_b",
+		Transfer: true, SubscriptionCreated: time.Now().Add(-2 * time.Hour),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Outcome != OutcomeStaleTransfer || res.ExistingSubscriptionID != "sub_c" {
+		t.Fatalf("result = %+v, want OutcomeStaleTransfer / sub_c", res)
+	}
+	if subID, cancel := guildRowSubscription(t, pool, gid); subID != "sub_c" || cancel {
+		t.Fatalf("row = %q cancel=%v, want sub_c untouched", subID, cancel)
+	}
+	if n := countRows(t, pool, "entitlement_anomalies", gid); n != 0 {
+		t.Fatalf("anomaly rows = %d, want 0", n)
+	}
+	if n := countRows(t, pool, "entitlement_audit", gid); n != 1 {
+		t.Fatalf("audit rows = %d, want 1", n)
+	}
+}
+
+func TestUpsertStripeTransferWinsOverARowWithUnknownCreated(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	officer := seedUser(t, pool)
+	upsertGuildSub(t, s, gid, officer, "sub_old", "active", time.Time{}, false)
+
+	res := upsertGuildSub(t, s, gid, officer, "sub_new", "active", time.Now(), true)
+	if res.Outcome != OutcomeWritten {
+		t.Fatalf("result = %+v, want OutcomeWritten", res)
+	}
+	if subID, _ := guildRowSubscription(t, pool, gid); subID != "sub_new" {
+		t.Fatalf("row points at %q, want sub_new", subID)
+	}
+	var notNull bool
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_created is not null from entitlements where guild_id = $1`, gid).Scan(&notNull); err != nil || !notNull {
+		t.Fatalf("stripe_subscription_created not null = %v, %v", notNull, err)
+	}
+}
+
+func TestUpsertStripeEqualCreatedIsNotNewer(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	officer := seedUser(t, pool)
+	created := time.Now().Add(-time.Hour)
+	upsertGuildSub(t, s, gid, officer, "sub_a", "active", created, true)
+
+	res := upsertGuildSub(t, s, gid, officer, "sub_b", "active", created, true)
+	if res.Outcome != OutcomeStaleTransfer {
+		t.Fatalf("result = %+v, want OutcomeStaleTransfer", res)
+	}
+}
+
+func TestUpsertStripeDeadNewcomerIsIgnoredWithoutAnAnomaly(t *testing.T) {
+	for _, status := range []string{"canceled", "incomplete", "incomplete_expired", "unpaid"} {
+		t.Run(status, func(t *testing.T) {
+			pool := testPool(t)
+			s := &Store{Pool: pool}
+			gid := seedGuild(t, pool)
+			officer := seedUser(t, pool)
+			upsertGuildSub(t, s, gid, officer, "sub_a", "active", time.Now().Add(-time.Hour), false)
+
+			res := upsertGuildSub(t, s, gid, officer, "sub_x", status, time.Now(), false)
+			if res.Outcome != OutcomeDeadNewcomer || res.ExistingSubscriptionID != "sub_a" {
+				t.Fatalf("result = %+v, want OutcomeDeadNewcomer / sub_a", res)
+			}
+			if subID, _ := guildRowSubscription(t, pool, gid); subID != "sub_a" {
+				t.Fatalf("row points at %q, want sub_a unchanged", subID)
+			}
+			if n := countRows(t, pool, "entitlement_anomalies", gid); n != 0 {
+				t.Fatalf("anomaly rows = %d, want 0", n)
+			}
+		})
+	}
+}
+
+func TestUpsertStripeStoresTheSubscriptionCreated(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	officer := seedUser(t, pool)
+	created := time.Now().Add(-time.Hour).UTC().Truncate(time.Second)
+	upsertGuildSub(t, s, gid, officer, "sub_a", "active", created, false)
+
+	var got time.Time
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_created from entitlements where guild_id = $1`, gid).Scan(&got); err != nil {
+		t.Fatal(err)
+	}
+	if !got.Equal(created) {
+		t.Fatalf("stripe_subscription_created = %v, want %v", got, created)
+	}
+}
+
+func TestRecordAnomalyIsIdempotentPerKindAndSubscription(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	record := func(kind AnomalyKind) {
+		t.Helper()
+		if err := s.RecordAnomaly(context.Background(), nil, i64(gid), PlanGuild, kind, "sub_z", "test"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	record(AnomalyDuplicateSubscription)
+	record(AnomalyDuplicateSubscription)
+	if n := countRows(t, pool, "entitlement_anomalies", gid); n != 1 {
+		t.Fatalf("anomaly rows after repeat = %d, want 1", n)
+	}
+	record(AnomalyOrphanSubscription)
+	if n := countRows(t, pool, "entitlement_anomalies", gid); n != 2 {
+		t.Fatalf("anomaly rows after a different kind = %d, want 2", n)
 	}
 }
