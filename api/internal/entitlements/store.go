@@ -394,6 +394,10 @@ func conflictsWithActiveRow(existing existingRow, isNew bool, p StripeUpsert) bo
 		existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID != p.StripeSubscriptionID
 }
 
+// createdPrecision is Stripe's created resolution (whole seconds); the
+// stored value and the newer-than comparison both use it.
+const createdPrecision = time.Second
+
 // skippedOutcome decides a conflicting upsert, in order: a dead newcomer
 // is ignored, a transfer wins only when strictly newer (a row with no
 // stored created loses to any transfer), anything else is a duplicate.
@@ -403,7 +407,7 @@ func skippedOutcome(existing existingRow, p StripeUpsert) (skipped bool, outcome
 	case !isActiveStatus(p.Status):
 		return true, OutcomeDeadNewcomer
 	case p.Transfer:
-		newer := existing.stripeSubscriptionCreated == nil || p.SubscriptionCreated.After(*existing.stripeSubscriptionCreated)
+		newer := existing.stripeSubscriptionCreated == nil || p.SubscriptionCreated.Truncate(createdPrecision).After(existing.stripeSubscriptionCreated.Truncate(createdPrecision))
 		return !newer, OutcomeStaleTransfer
 	default:
 		return true, OutcomeDuplicate
@@ -416,7 +420,7 @@ func subscriptionCreatedOrNil(created time.Time) *time.Time {
 	if created.IsZero() {
 		return nil
 	}
-	utc := created.UTC()
+	utc := created.UTC().Truncate(createdPrecision)
 	return &utc
 }
 
@@ -454,7 +458,8 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 				cancel_at_period_end = excluded.cancel_at_period_end,
 				stripe_subscription_id = excluded.stripe_subscription_id,
 				billing_user_id = excluded.billing_user_id,
-				stripe_subscription_created = excluded.stripe_subscription_created, updated_at = now()
+				stripe_subscription_created = coalesce(excluded.stripe_subscription_created, entitlements.stripe_subscription_created),
+				updated_at = now()
 			returning id`,
 			p.UserID, p.GuildID, p.Plan, p.Status, p.CurrentPeriodEnd, p.CancelAtPeriodEnd,
 			p.StripeSubscriptionID, p.BillingUserID, subscriptionCreatedOrNil(p.SubscriptionCreated)).Scan(&id); err != nil {

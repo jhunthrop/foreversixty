@@ -604,7 +604,7 @@ func TestUpsertStripeEqualCreatedIsNotNewer(t *testing.T) {
 	s := &Store{Pool: pool}
 	gid := seedGuild(t, pool)
 	officer := seedUser(t, pool)
-	created := time.Now().Add(-time.Hour)
+	created := time.Now().Add(-time.Hour).UTC().Truncate(time.Second)
 	upsertGuildSub(t, s, gid, officer, "sub_a", "active", created, true)
 
 	res := upsertGuildSub(t, s, gid, officer, "sub_b", "active", created, true)
@@ -651,6 +651,15 @@ func TestUpsertStripeStoresTheSubscriptionCreated(t *testing.T) {
 	}
 	if !got.Equal(created) {
 		t.Fatalf("stripe_subscription_created = %v, want %v", got, created)
+	}
+
+	upsertGuildSub(t, s, gid, officer, "sub_a", "active", time.Time{}, false)
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_created from entitlements where guild_id = $1`, gid).Scan(&got); err != nil {
+		t.Fatal(err)
+	}
+	if !got.Equal(created) {
+		t.Fatalf("after a zero-created renewal stripe_subscription_created = %v, want %v kept", got, created)
 	}
 }
 
