@@ -29,6 +29,9 @@
 # and pull requests read/write) every run is a dry run.
 name: engine
 on:
+  # TEMPORARY (lane verification): workflow_dispatch needs the file on main.
+  push:
+    branches: [lane/engine-follow]
   schedule:
     - cron: '7 5 * * *'
   workflow_dispatch:
