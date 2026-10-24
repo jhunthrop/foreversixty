@@ -258,7 +258,10 @@ func (g *StripeGateway) CancelSubscriptionAtPeriodEnd(ctx context.Context, subsc
 // excludes canceled subscriptions, which is exactly "currently live."
 func (g *StripeGateway) ListSubscriptions(ctx context.Context, productID string) ([]StripeSubscriptionSummary, error) {
 	params := &stripe.SubscriptionListParams{}
-	params.AddExpand("data.items.data.price.product")
+	// No expansion: an unexpanded price.product still decodes to a
+	// Product carrying its id, which is all subscriptionHasProduct reads,
+	// and data.items.data.price.product is five levels, one more than
+	// Stripe expands (the first live reconcile failed on exactly that).
 	var out []StripeSubscriptionSummary
 	for sub, err := range g.client.V1Subscriptions.List(ctx, params) {
 		if err != nil {
