@@ -333,6 +333,11 @@ type Character struct {
 	// GearGapTotal of its rows: null when no row has a gap.
 	Gear         []GearSlot `json:"gear"`
 	GearGapTotal *float64   `json:"gear_gap_total"`
+	// Supporter is true when the character's owning account shows the supporter mark
+	// (Service.supporterOf); false for an unowned character.
+	Supporter bool `json:"supporter"`
+	// ownerID is characters.user_id, read to resolve Supporter and never marshaled.
+	ownerID *int64
 	// GearSpec is the spec the gear picks are for and GearSpecSource where it came from
 	// ("fight", "talents" or "default"); null when the panel has no spec.
 	GearSpec       *string `json:"gear_spec"`
@@ -433,8 +438,8 @@ func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name strin
 	}
 	var class *string
 	err := s.Pool.QueryRow(ctx,
-		`select name, class, coalesce(avatar_url, ''), coalesce(render_url, '') from characters where key = $1`, key).
-		Scan(&out.Character.Name, &class, &out.Character.AvatarURL, &out.Character.RenderURL)
+		`select name, class, coalesce(avatar_url, ''), coalesce(render_url, ''), user_id from characters where key = $1`, key).
+		Scan(&out.Character.Name, &class, &out.Character.AvatarURL, &out.Character.RenderURL, &out.ownerID)
 	if err == nil && class != nil {
 		out.Character.Class = *class
 	} else if err != nil && err != pgx.ErrNoRows {

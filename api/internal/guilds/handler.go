@@ -46,8 +46,10 @@ type Service struct {
 	// (crest.go). nil in a deployment or test harness with no object storage
 	// configured - every crest route then answers 503 rather than panicking on a nil
 	// client, the same shape reports.Service.Signer being nil already takes.
-	R2  Objects
-	Log *slog.Logger
+	R2 Objects
+	// Supporters adds the supporter mark to the home roster; nil means nobody shows it.
+	Supporters Supporters
+	Log        *slog.Logger
 }
 
 // Mount registers every /v1/guilds/{id}/... mutation route and the

@@ -78,6 +78,7 @@ type httpHarness struct {
 	t      *testing.T
 	pool   *pgxpool.Pool
 	store  *Store
+	svc    *Service
 	actor  auth.Actor
 	server *httptest.Server
 }
@@ -91,7 +92,7 @@ func newHTTPHarness(t *testing.T) *httpHarness {
 	svc := &Service{Store: store, Accounts: accounts, Log: quiet}
 	mux := http.NewServeMux()
 	Mount(mux, svc, 0)
-	h := &httpHarness{t: t, pool: pool, store: store}
+	h := &httpHarness{t: t, pool: pool, store: store, svc: svc}
 	h.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mux.ServeHTTP(w, r.WithContext(auth.WithActor(r.Context(), h.actor)))
 	}))

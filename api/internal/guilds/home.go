@@ -142,13 +142,15 @@ type RosterRow struct {
 	ItemLevel      *int    `json:"item_level,omitempty"`
 	// LoggedAt is addon_exports.updated_at - the contract's own replacement for
 	// logged_recently (kept below too, unchanged, per the contract's own instruction).
-	LoggedAt     time.Time   `json:"logged_at"`
-	Attendance   Attendance  `json:"attendance"`
-	BestParse    *BestParse  `json:"best_parse,omitempty"`
-	Rating       *RatingView `json:"rating,omitempty"`
-	Professions  []string    `json:"professions,omitempty"`
-	AccountKey   string      `json:"account_key"`
-	LastReportAt *time.Time  `json:"last_report_at"`
+	LoggedAt    time.Time   `json:"logged_at"`
+	Attendance  Attendance  `json:"attendance"`
+	BestParse   *BestParse  `json:"best_parse,omitempty"`
+	Rating      *RatingView `json:"rating,omitempty"`
+	Professions []string    `json:"professions,omitempty"`
+	AccountKey  string      `json:"account_key"`
+	// Supporter is true when the row's account shows the supporter mark (Service.markSupporters).
+	Supporter    bool       `json:"supporter"`
+	LastReportAt *time.Time `json:"last_report_at"`
 	// MayRemove is computed server-side from the exact same
 	// mayRemoveRow rule the DELETE .../characters/{key} route enforces
 	// (item 7, fourth security review response), from the viewpoint of
@@ -641,6 +643,7 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "home", err, "could not load that guild's home just now")
 		return
 	}
+	s.markSupporters(r.Context(), view.Roster, view.Pending)
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }

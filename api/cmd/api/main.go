@@ -623,12 +623,12 @@ func serve(log *slog.Logger) error {
 		Subscribe: subscribeSvc, Builds: buildsSvc, Site: siteDeps,
 		Auth: authenticator, Accounts: accounts,
 		Reports:  newReportsService(reportStore, authStore, guildStore, rankStore, cfg, log),
-		Rankings: &rankings.Service{Store: rankStore, Log: log},
+		Rankings: &rankings.Service{Store: rankStore, Log: log, Supporters: entStore},
 		Addon: &addon.Service{
 			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData,
 			Accounts: authStore, Guilds: guildStore, Sims: simStore, Log: log,
 		},
-		Guilds:           &guilds.Service{Store: guildStore, Accounts: authStore, Log: log},
+		Guilds:           &guilds.Service{Store: guildStore, Accounts: authStore, Supporters: entStore, Log: log},
 		Rating:           &rating.Service{Store: ratingStore, Reports: reportStore, Accounts: authStore, Log: log},
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}

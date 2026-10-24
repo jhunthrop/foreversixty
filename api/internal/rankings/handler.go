@@ -35,6 +35,28 @@ type Service struct {
 	// in place of Scores when it is set; nil leaves the panel [] and its total null, and a
 	// failed read leaves the score null.
 	ScoreGear ScoreGearReader
+	// Supporters adds the supporter mark to the character page; nil means nobody shows it.
+	Supporters Supporters
+}
+
+// Supporters answers whether an account shows the supporter mark; nil means
+// nobody does (the fixture build, and tests that do not care).
+type Supporters interface {
+	IsSupporter(ctx context.Context, userID int64) (bool, error)
+}
+
+// supporterOf reads the mark for a character's owning account. A cosmetic flag never takes
+// a page down: no service, no owner or a failed read is false (the failure logged at warn).
+func (s *Service) supporterOf(ctx context.Context, ownerID *int64) bool {
+	if s.Supporters == nil || ownerID == nil {
+		return false
+	}
+	ok, err := s.Supporters.IsSupporter(ctx, *ownerID)
+	if err != nil {
+		s.logger().Warn("rankings", "id", httpx.RequestIDFrom(ctx), "op", "supporter", "err", err)
+		return false
+	}
+	return ok
 }
 
 // Scorer reads a character's Forever Score by character key. rating.Service is the one
@@ -339,6 +361,7 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 			c.ForeverScore = score
 		}
 	}
+	c.Supporter = s.supporterOf(r.Context(), c.ownerID)
 	cache(w)
 	httpx.WriteOK(w, r, http.StatusOK, c)
 }
