@@ -12,7 +12,9 @@
 #   activate -- runs tools/activate-build.sh, which moves the site, the addon and the
 #               guides to the build, commits and pushes, tags the addon patch release
 #               (addon-release.yml publishes it) and dispatches the ranking (bis.yml,
-#               force) so the carried-forward picks are replaced the same day.
+#               force) so the carried-forward picks are replaced the same day, and the
+#               engine follow (engine.yml, force) so the wowsims fork regenerates from
+#               the build and the site pins it (docs/engine-follow.md).
 #
 # Scheduled before the other nightlies (addon-data-release 05:00, bis 06:23,
 # web's lhci 07:15 UTC) so they run against the new build. Dispatch with `build`
