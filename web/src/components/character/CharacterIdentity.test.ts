@@ -165,4 +165,15 @@ describe('CharacterIdentity', () => {
     expect(body).not.toContain('line-clamp-2');
     expect(body).not.toContain('min-h-');
   });
+
+  it('draws the Supporter chip after the name only when the character is one', () => {
+    const base = { character: CHAR, size: 'lg', descriptor: 'none' } as const;
+    const on = render(CharacterIdentity, { props: { ...base, supporter: true } }).body;
+    const off = render(CharacterIdentity, { props: { ...base, supporter: false } }).body;
+    const absent = render(CharacterIdentity, { props: base }).body;
+    expect(on.split('data-testid="supporter-chip"')).toHaveLength(2);
+    expect(on.indexOf('Elyra Duskvale')).toBeLessThan(on.indexOf('supporter-chip'));
+    expect(off).not.toContain('supporter-chip');
+    expect(absent).not.toContain('supporter-chip');
+  });
 });

@@ -95,3 +95,17 @@ test('past due: shows the payment-failed banner without losing access', async ({
   await page.goto('/account');
   await expect(page.getByTestId('account')).toContainText('payment failed');
 });
+
+test('the Premium block names each benefit and shows the Supporter mark when it is on', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil(meWith(mockEntitlements({ server_sims: true, supporter_mark: true })))),
+  );
+  await page.route('**/v1/devices', (route) =>
+    route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
+  );
+  await page.goto('/account');
+  const block = page.getByTestId('account-premium-block');
+  await expect(block).toContainText('Server sims · On');
+  await expect(block).toContainText('Supporter mark · Shown on your characters');
+  await expect(block).toContainText('History charts · Ships November');
+});

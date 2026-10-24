@@ -275,6 +275,7 @@
           descriptor="none"
           heading
           align="start"
+          supporter={data.supporter === true}
           nameTestid="character-name"
         >
           {#snippet below()}

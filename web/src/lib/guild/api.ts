@@ -177,6 +177,8 @@ export interface GuildRosterRow {
   role?: 'tank' | 'healer' | 'dps';
   rank: GuildRank;
   verified: boolean;
+  /** The account shows the Supporter mark; absent from an API that predates it. */
+  supporter?: boolean;
   /** addon_exports.updated_at within the last 24h (spec section 4.1, RULING 9). */
   logged_recently: boolean;
   /** `addon_exports.updated_at` itself (control-centre contract: "replaces logged_recently;

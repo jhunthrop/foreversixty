@@ -15,6 +15,7 @@
      /v1/me), never from the rank. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
@@ -431,11 +432,14 @@
         <div class={ROW}>
           <ClassCrestRing characterClass={row.class ?? ''} size={36} />
           <div class="flex min-w-[150px] flex-col">
-            <span
-              class="font-display text-[14px] font-bold"
-              style={`color:${classColorVar(row.class ?? '')}`}
-            >
-              {row.name}
+            <span class="flex min-w-0 items-center gap-2">
+              <span
+                class="font-display text-[14px] font-bold"
+                style={`color:${classColorVar(row.class ?? '')}`}
+              >
+                {row.name}
+              </span>
+              {#if row.supporter === true}<SupporterChip />{/if}
             </span>
             <span class="text-muted text-[12px]">{specLineOf(row)}</span>
           </div>
@@ -518,13 +522,16 @@
           <!-- At lg the name block is a fixed 240 px and its subtitle one ellipsised line (the whole
                text in the title), so every row's rank and stats start at the same left edge. -->
           <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
-            <span
-              class="font-display text-[14px] font-bold lg:truncate"
-              style={`color:${classColorVar(row.class ?? '')}`}
-              title={`${row.name}${pinned ? ' (you)' : ''}`}
-              data-testid="guild-roster-name"
-            >
-              {row.name}{pinned ? ' (you)' : ''}
+            <span class="flex min-w-0 items-center gap-2">
+              <span
+                class="font-display min-w-0 text-[14px] font-bold lg:truncate"
+                style={`color:${classColorVar(row.class ?? '')}`}
+                title={`${row.name}${pinned ? ' (you)' : ''}`}
+                data-testid="guild-roster-name"
+              >
+                {row.name}{pinned ? ' (you)' : ''}
+              </span>
+              {#if row.supporter === true}<SupporterChip />{/if}
             </span>
             <!-- One line per part at lg ("Beast Mastery Hunter in game", then "Survival on the site"), each
                  ellipsised to the 240 px block, so the disagreeing record is never the part cut off; one

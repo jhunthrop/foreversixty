@@ -461,3 +461,14 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(text(filters)).toContain('No account');
   });
 });
+
+describe('GuildRosterTable: the Supporter chip', () => {
+  it('draws the chip once, on the account row whose payload says supporter', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    const roster = home.roster.map((row, index) => ({ ...row, supporter: index === 0 }));
+    const html = render(GuildRosterTable, { props: { ...props(home), roster } }).body;
+    expect(html.split('data-testid="supporter-chip"')).toHaveLength(2);
+    const plain = render(GuildRosterTable, { props: props(home) }).body;
+    expect(plain).not.toContain('supporter-chip');
+  });
+});

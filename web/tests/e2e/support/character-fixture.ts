@@ -56,6 +56,8 @@ export const SCORE_HISTORY = [
 export const CHARACTER = {
   ok: true,
   data: {
+    // The owning account shows the Supporter mark (api `Character.supporter`); a spec sets it.
+    supporter: false,
     // Who the character is (api/openapi.yaml `CharacterIdentity`, Task L8.4): each field is
     // always sent, null when unknown -- a spec that needs a null overrides it.
     character: {

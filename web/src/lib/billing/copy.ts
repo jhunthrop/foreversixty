@@ -81,3 +81,14 @@ export const billingBlockCopy = {
   guildNotSubscribed: 'This guild is not on the guild plan yet.',
   subscribeTheGuild: 'Subscribe the guild',
 };
+
+export const premiumBlockCopy = {
+  heading: 'Premium',
+  rows: {
+    serverSims: { label: 'Server sims', on: 'On', off: 'Browser lane only' },
+    history: { label: 'History charts', on: 'Ships November', off: 'Ships November' },
+    notifications: { label: 'Discord notifications', on: 'Ships December', off: 'Ships December' },
+    supporter: { label: 'Supporter mark', on: 'Shown on your characters', off: 'Not shown' },
+  },
+  supporterChip: 'Supporter',
+} as const;

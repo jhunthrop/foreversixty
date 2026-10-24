@@ -12,6 +12,7 @@
   import { characterDescriptor } from '../../lib/account/character-descriptor';
   import { rulesetLabel } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
+  import SupporterChip from '../SupporterChip.svelte';
   import CharacterPortrait from './CharacterPortrait.svelte';
 
   /** 14 / 15 / 18px, spec 2026-09-23 §2.2; xl is the home hero's 34px display name (design
@@ -34,6 +35,7 @@
     testid = 'character',
     below,
     align = 'center',
+    supporter = false,
   }: {
     character: MeCharacter;
     size: 'sm' | 'md' | 'lg' | 'xl';
@@ -56,6 +58,8 @@
      *  the name ('start', the character profile: L8.4 fix round 4 item 8), so a taller text
      *  column -- the owner's sync line -- does not move it. */
     align?: 'center' | 'start';
+    /** The Supporter chip, inline after the name with the descriptor's gap. Never on the crest. */
+    supporter?: boolean;
   } = $props();
 
   const line = $derived(
@@ -73,41 +77,52 @@
   const headingClass = $derived(`m-0 p-0 font-normal${size === 'xl' ? ` ${XL_NAME_BOX}` : ''}`);
 </script>
 
+{#snippet nameElement()}
+  {#if heading}
+    <h1 class={headingClass}>
+      {#if href !== undefined}
+        <a
+          class={nameClass}
+          style:color={classColorVar(character.class)}
+          {href}
+          onclick={onNameClick}
+          data-testid={nameTestid}
+        >
+          {character.name}
+        </a>
+      {:else}
+        <span class={nameClass} style:color={classColorVar(character.class)} data-testid={nameTestid}>
+          {character.name}
+        </span>
+      {/if}
+    </h1>
+  {:else if href !== undefined}
+    <a
+      class={nameClass}
+      style:color={classColorVar(character.class)}
+      {href}
+      onclick={onNameClick}
+      data-testid={nameTestid}
+    >
+      {character.name}
+    </a>
+  {:else}
+    <span class={nameClass} style:color={classColorVar(character.class)} data-testid={nameTestid}>
+      {character.name}
+    </span>
+  {/if}
+{/snippet}
+
 <div class={`flex min-w-0 gap-3 ${align === 'start' ? 'items-start' : 'items-center'}`}>
   <CharacterPortrait {character} {size} {testid} />
   <div class="flex min-w-0 flex-col gap-0.5">
-    {#if heading}
-      <h1 class={headingClass}>
-        {#if href !== undefined}
-          <a
-            class={nameClass}
-            style:color={classColorVar(character.class)}
-            {href}
-            onclick={onNameClick}
-            data-testid={nameTestid}
-          >
-            {character.name}
-          </a>
-        {:else}
-          <span class={nameClass} style:color={classColorVar(character.class)} data-testid={nameTestid}>
-            {character.name}
-          </span>
-        {/if}
-      </h1>
-    {:else if href !== undefined}
-      <a
-        class={nameClass}
-        style:color={classColorVar(character.class)}
-        {href}
-        onclick={onNameClick}
-        data-testid={nameTestid}
-      >
-        {character.name}
-      </a>
+    {#if supporter}
+      <div class="flex min-w-0 items-center gap-3">
+        {@render nameElement()}
+        <SupporterChip />
+      </div>
     {:else}
-      <span class={nameClass} style:color={classColorVar(character.class)} data-testid={nameTestid}>
-        {character.name}
-      </span>
+      {@render nameElement()}
     {/if}
     {#if line !== ''}
       <span class="text-muted text-[13px]" data-testid={descriptorTestid}>{line}</span>

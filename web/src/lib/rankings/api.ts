@@ -148,6 +148,8 @@ export interface CharacterPage extends Partial<ForeverScore> {
      *  ("ClassicBetaPvP") when that is the only source. */
     realm?: string | null;
   };
+  /** The owning account shows the Supporter mark; absent from an API that predates it. */
+  supporter?: boolean;
   best: CharacterFight[];
   history: CharacterFight[];
   builds_seen: BuildSeen[];

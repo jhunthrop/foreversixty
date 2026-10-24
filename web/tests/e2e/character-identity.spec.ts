@@ -85,6 +85,28 @@ test('the header says who the character is, the guild links to its page, and the
   await expect(page.getByTestId('character-history')).not.toContainText('NaN');
 });
 
+test('a supporter character carries the chip right after the name; any other carries none', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE, supporter: true });
+  await page.goto(CHARACTER_PATH);
+  const chip = page.getByTestId('supporter-chip');
+  await expect(chip).toHaveText('Supporter');
+  const name = await page.getByTestId('character-name').boundingBox();
+  const chipBox = await chip.boundingBox();
+  expect(name).not.toBeNull();
+  expect(chipBox).not.toBeNull();
+  expect(chipBox!.x).toBeGreaterThanOrEqual(name!.x + name!.width);
+  expect(Math.abs(chipBox!.y + chipBox!.height / 2 - (name!.y + name!.height / 2))).toBeLessThan(8);
+});
+
+test('a character that is not a supporter has no chip', async ({ page }) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE, supporter: false });
+  await page.goto(CHARACTER_PATH);
+  await expect(page.getByTestId('character-name')).toBeVisible();
+  await expect(page.getByTestId('supporter-chip')).toHaveCount(0);
+});
+
 test('the tooltip mock reads as the client prints it: name, <guild>, "Level 60 Night Elf", class, a blank line, the score', async ({
   page,
 }) => {

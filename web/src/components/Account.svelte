@@ -28,6 +28,7 @@
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
+  import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
   import { accountPageCopy } from '../lib/account/account-page-copy';
@@ -883,6 +884,7 @@
               {/if}
               <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
                 <div class="flex flex-col gap-3">
+                  <AccountPremiumBlock entitlements={me?.entitlements} />
                   {#if billing === null}
                     <p class="text-[14px]" data-testid="account-billing-row">
                       <span class="text-muted">{accountPageCopy.planKey}</span> · {billingBlockCopy.notSubscribed}
