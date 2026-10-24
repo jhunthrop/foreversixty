@@ -519,7 +519,9 @@
   .ch-name-box {
     display: flex;
     align-items: flex-end;
-    gap: 12px;
+    /* The chip wraps under the name rather than squeezing it: the name keeps its full width. */
+    flex-wrap: wrap;
+    gap: 4px 12px;
     min-height: calc(var(--ch-name-size) * 1.2 * 2);
   }
   @media (min-width: 1024px) {
@@ -528,6 +530,7 @@
     }
   }
   .ch-name {
+    max-width: 100%;
     margin: 0;
     font-family: var(--font-display);
     font-size: var(--ch-name-size);
