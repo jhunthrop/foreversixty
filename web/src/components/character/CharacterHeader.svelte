@@ -522,6 +522,7 @@
     /* The chip wraps under the name rather than squeezing it: the name keeps its full width. */
     flex-wrap: wrap;
     gap: 4px 12px;
+    align-content: flex-end;
     min-height: calc(var(--ch-name-size) * 1.2 * 2);
   }
   @media (min-width: 1024px) {
