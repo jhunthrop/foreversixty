@@ -23,6 +23,15 @@ const publisher = {
 };
 
 /** The site node, carried on the homepage. */
+/** The company behind the site: the brand stays Forever Sixty, the legal owner is Commish LLC. */
+export const PUBLISHER = {
+  '@type': 'Organization',
+  name: SITE_NAME,
+  legalName: 'Commish LLC',
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.svg`,
+} as const;
+
 export function websiteLd() {
   return {
     '@context': 'https://schema.org',
@@ -30,6 +39,7 @@ export function websiteLd() {
     name: SITE_NAME,
     alternateName: SITE_ALTERNATE_NAME,
     url: SITE_URL,
+    publisher: PUBLISHER,
   };
 }
 

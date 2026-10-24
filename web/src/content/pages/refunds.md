@@ -1,7 +1,7 @@
 ---
 title: Refund policy
 description: How refunds work and what happens to your subscription when one is issued.
-updated: 2026-09-21
+updated: 2026-10-24
 confidence: confirmed
 sources:
   - label: This site
@@ -9,17 +9,10 @@ sources:
     kind: site
 ---
 
-<div data-testid="legal-draft-banner">
-
-**This page is a draft.** It is not final and must not be relied on. It is not legal advice.
-Every line starting with `OWNER:` below is a fact only the site's owner can supply; the page
-will stop showing this banner once every one of them is filled in.
-
-</div>
-
 ## Asking for a refund
 
-Email OWNER: support email and we will sort it out.
+Email [help@foreversixty.gg](mailto:help@foreversixty.gg) from the account the subscription is
+on and we will sort it out.
 
 ## What happens to your subscription
 
@@ -30,8 +23,13 @@ step the owner takes personally.
 
 ## Partial-period refunds
 
-OWNER: confirm whether a partial-period refund is ever offered, or state the actual policy.
+A subscription is paid up front for its period. Cancelling stops the renewal and your access
+runs to the end of the period you paid for; we do not refund part of a period. If something
+went wrong on our side — you were charged twice, or paid for something that did not work —
+email us and we will put it right.
 
 ## Who processes the refund
 
-OWNER: COMMISH LLC processes the refund through Stripe.
+Commish LLC, the Arkansas company that operates Forever Sixty, issues the refund through
+Stripe to the card you paid with. Stripe's own timing applies from there, usually five to ten
+business days.

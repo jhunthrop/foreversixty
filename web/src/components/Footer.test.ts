@@ -11,6 +11,14 @@ describe('Footer', () => {
     );
   });
 
+  it('names Commish LLC as the operator, with the copyright year', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(Footer);
+    expect(html).toContain(
+      `Forever Sixty is operated by Commish LLC. © ${new Date().getFullYear()} Commish LLC.`,
+    );
+  });
+
   it('links to About, Sources, Changelog, Contribute, Premium, Get set up', async () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(Footer);

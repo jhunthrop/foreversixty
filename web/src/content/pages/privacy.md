@@ -1,21 +1,13 @@
 ---
 title: Privacy policy
 description: What Forever Sixty collects, how it is used, and how long it is kept.
-updated: 2026-09-21
+updated: 2026-10-24
 confidence: confirmed
 sources:
   - label: This site
     url: https://foreversixty.gg/privacy
     kind: site
 ---
-
-<div data-testid="legal-draft-banner">
-
-**This page is a draft.** It is not final and must not be relied on. It is not legal advice.
-Every line starting with `OWNER:` below is a fact only the site's owner can supply; the page
-will stop showing this banner once every one of them is filled in.
-
-</div>
 
 ## What is collected
 
@@ -46,9 +38,17 @@ site never running ads, for anyone, ever.
 Raw logs and saved sims are kept ninety days on a free account, two years on Premium or a
 guild plan, and for thirty days after a subscription ends before falling back to ninety days.
 
+## Who is responsible
+
+Forever Sixty is operated by Commish LLC, an Arkansas limited liability company, which is the
+party responsible for the data described on this page. Mail reaches it at Commish LLC, c/o
+Northwest Registered Agent, LLC, 701 South St., STE 100, Mountain Home, AR 72653, United
+States.
+
 ## Requests and contact
 
-OWNER: support/contact email for a data request.
-
-OWNER: whether a formal DPA or a GDPR/CCPA-specific section is needed for this site's actual
-audience.
+To see, export, correct or delete what the site holds about you, email
+[help@foreversixty.gg](mailto:help@foreversixty.gg) from the address or Battle.net account the
+request is about. You get an answer within thirty days, and usually much sooner. Those rights
+are yours wherever you live; the site runs no advertising, sells no data and builds no
+profiles, so there is nothing to opt out of beyond deleting your account.

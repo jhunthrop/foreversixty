@@ -11,6 +11,13 @@ describe('structured data', () => {
     expect(ld).not.toHaveProperty('potentialAction');
   });
 
+  it('names Commish LLC as the publisher behind the Forever Sixty brand', () => {
+    const ld = websiteLd();
+    expect(ld.publisher['@type']).toBe('Organization');
+    expect(ld.publisher.name).toBe('Forever Sixty');
+    expect(ld.publisher.legalName).toBe('Commish LLC');
+  });
+
   it('describes a reference page with its modified date and og image', () => {
     const ld = articleLd({
       title: 'Paladin in Forever',

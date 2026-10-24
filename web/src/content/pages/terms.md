@@ -1,21 +1,13 @@
 ---
 title: Subscription terms
 description: What Premium and the guild plan are, how billing works, and how to cancel.
-updated: 2026-09-21
+updated: 2026-10-24
 confidence: confirmed
 sources:
   - label: This site
     url: https://foreversixty.gg/terms
     kind: site
 ---
-
-<div data-testid="legal-draft-banner">
-
-**This page is a draft.** It is not final and must not be relied on. It is not legal advice.
-Every line starting with `OWNER:` below is a fact only the site's owner can supply; the page
-will stop showing this banner once every one of them is filled in.
-
-</div>
 
 ## What Premium and the guild plan are
 
@@ -32,15 +24,17 @@ cancel. Stripe processes every payment; we never see or store your card.
 
 ## Cancelling
 
-Cancelling keeps your access through the end of the period you already paid for. After that,
-the account works exactly like a free one — nothing is deleted. Long-retention logs stay at
+Cancelling stops the renewal and keeps your access through the end of the period you already
+paid for; a period is paid up front and is not refunded in part (see the
+[refund policy](/refunds)). After that, the account works exactly like a free one — nothing is
+deleted. Long-retention logs stay at
 the two-year retention for thirty days after your subscription ends, then fall back to the
 free ninety-day retention.
 
 ## Price changes
 
-OWNER: confirm that an existing subscriber keeps their price until they voluntarily change
-plans, or state the actual policy if it differs.
+If a price changes, you are told before it affects you, and the new price applies only from
+your next renewal after that notice. Nothing you have already paid for is repriced.
 
 ## Account termination for abuse
 
@@ -50,12 +44,16 @@ entitlement revoked.
 
 ## The company
 
-This service is provided by OWNER: COMMISH LLC's exact registered name and state of
-formation.
+This service is provided by Commish LLC, an Arkansas limited liability company, trading as
+Forever Sixty.
 
-OWNER: governing law and venue.
+- Email: [help@foreversixty.gg](mailto:help@foreversixty.gg)
+- Phone: (479) 227-2208
+- Mail: Commish LLC, c/o Northwest Registered Agent, LLC, 701 South St., STE 100, Mountain
+  Home, AR 72653, United States
 
-OWNER: support email.
+These terms are governed by the laws of the State of Arkansas. Any dispute that cannot be
+settled by email is heard in the state or federal courts located in Arkansas.
 
 ## Battlenet-sourced data
 
