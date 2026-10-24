@@ -39,7 +39,7 @@ Almost always a correct engine change moved a number a site golden pins. Check o
 
 ## Pull requests need a repository setting
 
-The site repository currently has "Allow GitHub Actions to create and approve pull requests" off. Until you turn it on (Settings, Actions, General, Workflow permissions), a red pin only pushes `engine-pin/<sha>` and warns that it could not open the pull request. Open it by hand from the branch. The fork's pull requests use `ENGINE_REPO_TOKEN` and are not affected.
+The site repository has "Allow GitHub Actions to create and approve pull requests" on (Settings, Actions, General, Workflow permissions; turned on 2026-10-24). If it is ever turned off again, a red pin only pushes `engine-pin/<sha>` and warns that it could not open the pull request; open it by hand from the branch. The fork's pull requests use `ENGINE_REPO_TOKEN` and are not affected.
 
 ## `ENGINE_REPO_TOKEN`
 
