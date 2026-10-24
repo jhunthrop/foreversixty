@@ -63,6 +63,9 @@ jobs:
       actions: write
     outputs:
       dry: ${{ steps.mode.outputs.dry }}
+    # The fork is checked out inside the site, whose go.work would otherwise
+    # claim it ("not one of the workspace modules listed in go.work").
+    env: { GOWORK: 'off' }
     steps:
       - uses: actions/checkout@v4
       # The run is live only when asked to be and when it can push to the
