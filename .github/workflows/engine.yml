@@ -1,0 +1,488 @@
+# .github/workflows/engine.yml
+#
+# The engine follows the client. Every morning it regenerates the wowsims
+# fork (jhunthrop/wowsims-forever) from the active build's committed tables
+# and pins the site to the fork once the fork is proven
+# (docs/superpowers/specs/2026-10-23-engine-follow-design.md):
+#
+#   follow -- runs the fork's tools/follow.sh against this checkout's
+#             data/builds/<build>/, then the fork's own suite. Verdict clean and
+#             the suite green: the bot commits to the fork's master. Otherwise
+#             the same commit goes to the fork branch follow/<build> with one
+#             pull request carrying the follow report. Skipped when the
+#             Follow-Inputs hash matches the fork's last follow (dispatch with
+#             `force` to follow anyway);
+#   pin    -- runs whenever the fork's master is not the site's pin, follows the
+#             active build and passed the fork's own test workflow: pins it,
+#             runs the site's sim suite and the data lane's pin test, then
+#             pushes to main and dispatches every consumer (green) or opens
+#             one site pull request from engine-pin/<sha> (red).
+#
+# Scheduled at 05:07 UTC: after the client watcher (03:41) and the data
+# lane's nightly commits, and before the ranking (06:23), so a follow that
+# lands is ranked the same night. The client watcher also dispatches it with
+# `force` the morning a new build activates.
+#
+# `dry_run` runs everything, pushes nothing and opens nothing; the report and
+# the generated diff are the run's artifact. Until the fork token exists
+# (secrets.ENGINE_REPO_TOKEN, a fine-grained token on the fork with contents
+# and pull requests read/write) every run is a dry run.
+name: engine
+on:
+  schedule:
+    - cron: '7 5 * * *'
+  workflow_dispatch:
+    inputs:
+      build:
+        description: 'follow this build (blank = the active build)'
+        required: false
+        default: ''
+      force:
+        description: Follow even if nothing the follow reads has changed since the last follow
+        type: boolean
+        default: false
+      dry_run:
+        description: Run everything, push nothing, open nothing; upload the report and the diff
+        type: boolean
+        default: false
+permissions: { contents: read }
+concurrency:
+  group: engine
+  cancel-in-progress: false
+env:
+  FORK_REPO: jhunthrop/wowsims-forever
+jobs:
+  follow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    # Read only: the follow pushes to the fork with ENGINE_REPO_TOKEN and
+    # dispatches nothing, so the job token never writes.
+    permissions: { contents: read }
+    outputs:
+      dry: ${{ steps.mode.outputs.dry }}
+    # The fork is checked out inside the site, whose go.work would otherwise
+    # claim it ("not one of the workspace modules listed in go.work").
+    env: { GOWORK: 'off' }
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      # The run is live only when asked to be and when it can push to the
+      # fork. A missing token turns it into a dry run rather than a run that
+      # follows, then fails at the push.
+      - name: dry run or live
+        id: mode
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          HAS_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN != '' }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "dry=true" >> "$GITHUB_OUTPUT"
+          elif [ "$HAS_TOKEN" != "true" ]; then
+            echo "::warning::secrets.ENGINE_REPO_TOKEN is not set; this run is a dry run and pushes nothing (see docs/engine-follow.md)"
+            echo "dry=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dry=false" >> "$GITHUB_OUTPUT"
+          fi
+      # The fork is public, so the checkout needs no token; the push below
+      # names its own URL, so no credential is left in engine/.git.
+      # fetch-depth 0: --last searches the fork's history for the trailer.
+      - name: the engine fork's master
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.FORK_REPO }}
+          ref: master
+          path: engine
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with: { go-version-file: engine/go.mod, cache-dependency-path: engine/go.sum }
+      # follow.sh's talents step runs the fork's `make proto`, which also
+      # writes the UI's TypeScript protos through npx (node_modules: npm ci).
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: engine/.nvmrc
+          cache: npm
+          cache-dependency-path: engine/package-lock.json
+      # The same protoc install as the fork's test.yml: the release the
+      # committed .pb.go headers name, not the runner's apt package.
+      - name: protoc
+        run: |
+          VER=$(cat engine/.protoc-version)
+          curl -sSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v$VER/protoc-$VER-linux-x86_64.zip"
+          unzip -q -o /tmp/protoc.zip -d "$HOME/.local"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+        working-directory: data
+      # The build to follow and the wago.tools product its raw tables come
+      # from, read the way bis.yml's identity step and data.yml's fetch do.
+      - name: build identity
+        id: identity
+        env: { BUILD_IN: '${{ inputs.build }}' }
+        run: |
+          build=${BUILD_IN:-$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)}
+          [[ $build =~ ^[0-9]+(\.[0-9]+){3}$ ]] || { echo "'$build' is not a client build number"; exit 1; }
+          manifest="data/builds/$build/manifest.json"
+          test -f "$manifest" || { echo "no $manifest; data.yml has not fetched build $build"; exit 1; }
+          product=$(sed -n 's/.*"product"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$manifest")
+          test -n "$product" || { echo "$manifest names no product"; exit 1; }
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "product=$product" >> "$GITHUB_OUTPUT"
+      # Skip-when-unchanged, the ranking's shape: the build id, the site's
+      # committed inputs for it and the fork's generator sources, against the
+      # Follow-Inputs trailer on the fork master's last follow commit. A
+      # second run queued behind a clean follow (schedule plus the watcher's
+      # dispatch) sees the trailer that follow pushed to master and skips;
+      # behind a review follow master has no new trailer, so it follows again
+      # and updates the same review branch and pull request.
+      - name: tonight's follow inputs, against the last follow
+        id: inputs
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          hash=$(tools/engine/follow-inputs-hash.sh . engine "$BUILD")
+          last=$(tools/engine/follow-inputs-hash.sh --last engine)
+          echo "hash=$hash" >> "$GITHUB_OUTPUT"
+          echo "tonight: $hash  last follow: $last"
+          if [ "$FORCE" != "true" ] && [ "$hash" = "$last" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::nothing the follow reads has changed since the last follow; skipping it"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      # The raw tables are not committed; the relic mods and the set rows
+      # are generated from them, so every follow refetches them.
+      - name: fetch the build's raw tables
+        if: steps.inputs.outputs.skip != 'true'
+        working-directory: data
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          PRODUCT: ${{ steps.identity.outputs.product }}
+        run: uv run python -m pipeline fetch --product "$PRODUCT" --build "$BUILD"
+      # The script, not `make follow`: make turns every failure into 2 and
+      # the verdict lives in the exit code (0 clean, 3 review, 1 failure).
+      - name: follow the build
+        id: follow
+        if: steps.inputs.outputs.skip != 'true'
+        working-directory: engine
+        env: { BUILD: '${{ steps.identity.outputs.build }}' }
+        run: |
+          status=0
+          tools/follow.sh "$GITHUB_WORKSPACE" "$BUILD" || status=$?
+          case $status in
+            0) verdict=clean ;;
+            3) verdict=review ;;
+            *) echo "::error::tools/follow.sh failed (exit $status); see the log above"; exit 1 ;;
+          esac
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          cat dist/FOLLOW-REPORT.md >> "$GITHUB_STEP_SUMMARY"
+      # The fork's suite exactly as its test.yml runs it, with the site's
+      # build directory in reach so the fixture comparison runs, not skips.
+      # A red suite is recorded, not fatal: it sends the follow to a pull
+      # request instead of master.
+      - name: the fork's suite
+        id: suite
+        if: steps.follow.outcome == 'success'
+        working-directory: engine
+        env: { FOREVER_SITE_DIR: '${{ github.workspace }}' }
+        run: |
+          set -o pipefail
+          failed=""
+          check() {
+            echo "::group::$*"
+            if ! "$@" 2>&1 | tee -a dist/SUITE.log; then failed+="$* ;"; fi
+            echo "::endgroup::"
+          }
+          check go test --tags=with_db ./sim/core/proto/ -run TestGeneratedProtosMatchSources -v
+          check make binary_dist/dist.go
+          check go test --tags=with_db -count=1 ./sim/...
+          check go test --tags=with_db -count=1 ./tools/...
+          check env GOOS=js GOARCH=wasm go build ./sim/...
+          if [ -z "$failed" ]; then
+            echo "suite=green" >> "$GITHUB_OUTPUT"
+            printf '\n## Fork suite\n\ngreen\n' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "suite=red" >> "$GITHUB_OUTPUT"
+            echo "::warning::the fork's suite is red after the follow: $failed"
+            { printf '\n## Fork suite\n\nred: %s\n\n```\n' "$failed"; tail -n 60 dist/SUITE.log; printf '```\n'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+        shell: bash {0}
+      # The generated diff, new files included, for the artifact and for a
+      # person previewing a follow.
+      - name: the generated diff
+        if: always() && steps.follow.outcome == 'success'
+        working-directory: engine
+        run: |
+          git ls-files --others --exclude-standard -z | xargs -0 -r git add --intent-to-add
+          git diff > dist/FOLLOW.diff
+          git diff --stat | tail -1
+      - name: upload the follow report
+        if: always() && steps.follow.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: follow-${{ steps.identity.outputs.build }}
+          path: |
+            engine/dist/FOLLOW-REPORT.md
+            engine/dist/FOLLOW-PATHS
+            engine/dist/FOLLOW.diff
+            engine/dist/SUITE.log
+          if-no-files-found: warn
+      - name: dry run
+        if: steps.mode.outputs.dry == 'true' && steps.follow.outcome == 'success'
+        env:
+          VERDICT: ${{ steps.follow.outputs.verdict }}
+          SUITE: ${{ steps.suite.outputs.suite }}
+        run: echo "::notice::dry run; nothing pushed (verdict $VERDICT, suite $SUITE)"
+      # Exactly the paths follow.sh lists, never -A (it writes only its
+      # allowlist, and checks that it did).
+      - name: commit the follow
+        id: commit
+        if: steps.mode.outputs.dry != 'true' && steps.follow.outcome == 'success'
+        working-directory: engine
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          HASH: ${{ steps.inputs.outputs.hash }}
+          VERDICT: ${{ steps.follow.outputs.verdict }}
+          SUITE: ${{ steps.suite.outputs.suite }}
+        run: |
+          git config user.name "forever-bis-bot"
+          git config user.email "bot@foreversixty.gg"
+          [ ! -s dist/FOLLOW-PATHS ] || xargs git add < dist/FOLLOW-PATHS
+          allow_empty=()
+          if git diff --cached --quiet; then
+            if [ "$VERDICT" != "clean" ] || [ "$SUITE" != "green" ]; then
+              echo "::notice::the follow changed nothing and is not clean (verdict $VERDICT, suite $SUITE); no pull request to open"
+              echo "committed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            # A clean follow that changed nothing still commits, empty: the
+            # Follow-Inputs trailer on master is what lets the next night
+            # skip, so without it every later night reruns the full follow.
+            echo "::notice::the follow changed nothing; committing it empty to record its Follow-Inputs on master"
+            allow_empty=(--allow-empty)
+          fi
+          git commit "${allow_empty[@]}" -m "chore(client): the engine follows client $BUILD" -m "Follow-Inputs: $HASH"
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+      # A push made with a personal token triggers the fork's own test.yml on
+      # master, the second gate the pin job waits for.
+      - name: push the follow to the fork's master
+        if: steps.commit.outputs.committed == 'true' && steps.follow.outputs.verdict == 'clean' && steps.suite.outputs.suite == 'green'
+        working-directory: engine
+        env: { ENGINE_REPO_TOKEN: '${{ secrets.ENGINE_REPO_TOKEN }}' }
+        run: git push "https://x-access-token:${ENGINE_REPO_TOKEN}@github.com/$FORK_REPO" HEAD:master
+      # Review or red: one branch per build and one pull request on it,
+      # updated (never duplicated) by a later run. A branch whose head someone
+      # else committed carries hand work and is never overwritten
+      # (tools/engine/push-review-branch.sh); the pull request then only says
+      # so. The pin does not move.
+      - name: open the follow for review
+        if: steps.commit.outputs.committed == 'true' && (steps.follow.outputs.verdict != 'clean' || steps.suite.outputs.suite != 'green')
+        working-directory: engine
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          SUITE: ${{ steps.suite.outputs.suite }}
+          ENGINE_REPO_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.ENGINE_REPO_TOKEN }}
+        run: |
+          branch="follow/$BUILD"
+          pushed=0
+          "$GITHUB_WORKSPACE/tools/engine/push-review-branch.sh" "https://x-access-token:${ENGINE_REPO_TOKEN}@github.com/$FORK_REPO" "$branch" || pushed=$?
+          case $pushed in 0 | 10) ;; *) exit 1 ;; esac
+          body=$(mktemp)
+          {
+            if [ "$pushed" = 10 ]; then printf "The branch has hand work; tonight's regeneration was not pushed.\n\n"; fi
+            # A pull request body holds 65,536 characters; the full report is
+            # the run's artifact.
+            head -c 50000 dist/FOLLOW-REPORT.md
+            printf '\n\n## Fork suite\n\n%s\n' "${SUITE:-not run}"
+            if [ "$SUITE" = "red" ]; then printf '\n```\n'; tail -n 60 dist/SUITE.log | tail -c 10000; printf '```\n'; fi
+            printf '\nNext step: finish the hand work on this branch and merge it; the pin lands the next night, or on a dispatch of engine.yml.\n'
+            printf '\nFull report and diff: %s/%s/actions/runs/%s\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+          } > "$body"
+          number=$(gh pr list -R "$FORK_REPO" --head "$branch" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh pr edit "$number" -R "$FORK_REPO" --title "engine: follow client $BUILD" --body-file "$body"
+            echo "::notice::updated $FORK_REPO#$number"
+          else
+            gh pr create -R "$FORK_REPO" --base master --head "$branch" --title "engine: follow client $BUILD" --body-file "$body"
+          fi
+
+  pin:
+    needs: follow
+    # always(): the pin also carries a fork that advanced by hand (a review
+    # pull request merged) on a night the follow skipped or went to review.
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
+    steps:
+      # The follow job's mode; anything but an explicit live run (the follow
+      # job died before deciding, say) is a dry run.
+      - name: dry run or live
+        id: mode
+        env: { DRY: '${{ needs.follow.outputs.dry }}' }
+        run: |
+          if [ "$DRY" = "false" ]; then
+            echo "dry=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "dry=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::dry run; nothing pinned"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.mode.outputs.dry != 'true'
+      # Fresh, after the follow job's push. Full history: make engine-pin
+      # names the sha by `rev-parse --short`, whose length grows with the
+      # object count, so a shallow clone would write a shorter pin.
+      - name: the engine fork's master
+        if: steps.mode.outputs.dry != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.FORK_REPO }}
+          ref: master
+          path: engine
+          fetch-depth: 0
+          persist-credentials: false
+      - name: build and engine identity
+        id: identity
+        if: steps.mode.outputs.dry != 'true'
+        run: |
+          build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
+          [[ $build =~ ^[0-9]+(\.[0-9]+){3}$ ]] || { echo "web/src/data/active-build.json names no client build ('$build')"; exit 1; }
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git -C engine rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      # The three conditions (tools/engine/pin-conditions.sh): the fork is not
+      # the pin, follows the active build, and passed its own CI (waiting up
+      # to 30 minutes for a run in progress). Any one failing ends the job
+      # green, with the reasons in the summary.
+      - name: may the fork be pinned
+        id: conditions
+        if: steps.mode.outputs.dry != 'true'
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          status=0
+          out=$(tools/engine/pin-conditions.sh . engine "$BUILD") || status=$?
+          case $status in
+            0) echo "pin=true" >> "$GITHUB_OUTPUT" ;;
+            1) echo "pin=false" >> "$GITHUB_OUTPUT" ;;
+            *) echo "$out"; echo "::error::tools/engine/pin-conditions.sh failed (exit $status)"; exit 1 ;;
+          esac
+          echo "$out"
+          { echo "## Pin"; echo; while IFS= read -r line; do echo "- $line"; done <<< "$out"; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/setup-go@v5
+        if: steps.conditions.outputs.pin == 'true'
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: astral-sh/setup-uv@v3
+        if: steps.conditions.outputs.pin == 'true'
+      # Both pins move together, sim first (contract 10.3), and are committed
+      # before the tests: the data lane's pin test compares the vendored
+      # protos with the fork's, so it can only pass after simproto, and a red
+      # pull request has to carry the pin for the hand regeneration.
+      - name: pin the fork
+        if: steps.conditions.outputs.pin == 'true'
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          SHA: ${{ steps.identity.outputs.sha }}
+        run: |
+          make engine-pin ENGINE_DIR=engine
+          (cd data && uv sync && uv run python -m pipeline simproto --engine ../engine)
+          git config user.name "forever-bis-bot"
+          git config user.email "bot@foreversixty.gg"
+          git add sim/enginever/version.go web/src/lib/sim/version.ts web/src/fixtures/sim data/proto data/pipeline/simproto
+          git commit -m "chore(engine): pin $SHA (the engine follows client $BUILD)"
+      # The same go mod edit -replace the sim workflow makes, at the sha
+      # engine-pin just wrote. sim/go.mod stays out of the commit.
+      - uses: ./.github/actions/pin-engine
+        if: steps.conditions.outputs.pin == 'true'
+      - name: the active build's item database
+        if: steps.conditions.outputs.pin == 'true'
+        run: make simdb
+      # Everything sim.yml runs after a pin lands on main, so a pin that
+      # passes here cannot turn main red: go vet and the suite in sim/
+      # (its test job), and the rotation and fight-style checks against the
+      # fork at the pinned sha (its rotations job, which clones the fork to
+      # .engine; this job's engine checkout is that same sha).
+      - name: the site's sim suite and the data lane's pin test
+        id: tests
+        if: steps.conditions.outputs.pin == 'true'
+        env: { FOREVER_ENGINE_PATH: '${{ github.workspace }}/engine' }
+        shell: bash {0}
+        run: |
+          failed=""
+          (cd sim && go vet ./...) 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="sim go vet ;"
+          (cd sim && go test ./... -timeout 40m) 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="sim go test ;"
+          make apl-check ENGINE_DIR=engine 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="apl-check ;"
+          make styles-check 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="styles-check ;"
+          (cd data && uv run pytest -q --no-cov tests/test_genproto.py) 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="data test_genproto ;"
+          if [ -z "$failed" ]; then
+            echo "green=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "green=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::the pin is red: $failed"
+            { printf '\nred: %s\n\n```\n' "$failed"; tail -n 80 "$RUNNER_TEMP/pin-tests.log"; printf '```\n'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: push the pin to main
+        if: steps.tests.outputs.green == 'true'
+        run: |
+          # main moves while the suite runs; rebase the one pin commit onto
+          # whatever main is now and retry, as bis.yml and activate-build.sh do.
+          for attempt in 1 2 3 4 5; do
+            # --autostash: the pin-engine replace leaves sim/go.mod dirty.
+            if git pull --rebase --autostash origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            [ ! -d .git/rebase-merge ] && [ ! -d .git/rebase-apply ] || git rebase --abort
+            echo "push attempt $attempt failed; retrying"
+            sleep 20
+          done
+          exit 1
+      # A push made with GITHUB_TOKEN triggers no workflow, so every consumer
+      # of the new engine is dispatched here, as activate-build.sh does: the
+      # site, the API image, the sim artifacts, and the ranking against the
+      # new engine.
+      - name: deploy the new engine
+        if: success() && steps.tests.outputs.green == 'true'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          gh workflow run web.yml --ref main
+          gh workflow run api.yml --ref main
+          gh workflow run sim.yml --ref main
+          gh workflow run bis.yml --ref main -f force=true
+      # Red: main keeps the old pin; one pull request from a branch that
+      # already carries the pin, for whatever moved to be regenerated by hand.
+      # Hand work on that branch is never overwritten (push-review-branch.sh).
+      - name: open the pin for review
+        if: steps.tests.outputs.green == 'false'
+        env:
+          SHA: ${{ steps.identity.outputs.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="engine-pin/$SHA"
+          pushed=0
+          tools/engine/push-review-branch.sh origin "$branch" || pushed=$?
+          case $pushed in 0 | 10) ;; *) exit 1 ;; esac
+          body=$(mktemp)
+          {
+            if [ "$pushed" = 10 ]; then printf "The branch has hand work; tonight's regeneration was not pushed.\n\n"; fi
+            printf 'The fork at %s passed its own CI and follows the active build, but the site is red against it.\n\n```\n' "$SHA"
+            tail -n 80 "$RUNNER_TEMP/pin-tests.log" | tail -c 50000
+            printf '```\n\nNext step: regenerate what moved on this branch and merge it.\n'
+          } > "$body"
+          number=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --title "engine: pin $SHA" --body-file "$body"
+          elif ! gh pr create --base main --head "$branch" --title "engine: pin $SHA" --body-file "$body"; then
+            echo "::warning::could not open the pull request (the repository may not allow GitHub Actions to create pull requests); the pin is on $branch"
+          fi

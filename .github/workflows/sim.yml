@@ -24,6 +24,17 @@ jobs:
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: ./.github/actions/pin-engine
+      # Warn, never fail: the hours between activation and the engine pin are a normal state.
+      - name: the engine follows the active build
+        run: |
+          dir=$(go list -m -f '{{.Dir}}' github.com/wowsims/classic 2>/dev/null) || dir=""
+          engine=unknown
+          [ -z "$dir" ] || engine=$(cat "$dir/assets/db_inputs/FOREVER_BUILD" 2>/dev/null || echo unknown)
+          active=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ../web/src/data/active-build.json)
+          if [ "$engine" != "$active" ]; then
+            echo "::warning title=engine behind the client::the pinned engine is stamped for $engine; the site serves $active. engine.yml follows it nightly or on dispatch."
+            echo "engine $engine, active $active: the engine is behind the client" >> "$GITHUB_STEP_SUMMARY"
+          fi
       # //go:embed resolves at compile time, so the active build's item
       # database has to be in place before gofmt's siblings run, let
       # alone the build.
