@@ -309,6 +309,17 @@ test_push_review_branch_keeps_hand_work() {
 	assert "hand work: the remote is unchanged" equal "$(remote_head follow/b)" "$before"
 }
 
+test_push_review_branch_replaces_merged_hand_work() {
+	make_review_repos merged
+	commit_as "$WORK" "A Person" "hand work, merged"
+	git -C "$WORK" push --quiet "$REMOTE" HEAD:refs/heads/follow/b HEAD:refs/heads/master
+	git --git-dir="$REMOTE" symbolic-ref HEAD refs/heads/master
+	commit_as "$WORK" forever-bis-bot "tonight"
+	run_push follow/b
+	assert "merged hand work: exits 0 (got $PUSH_STATUS: $PUSH_OUT)" equal "$PUSH_STATUS" 0
+	assert "merged hand work: the remote has tonight's HEAD" equal "$(remote_head follow/b)" "$(git -C "$WORK" rev-parse HEAD)"
+}
+
 test_push_review_branch_fails_on_a_bad_remote() {
 	make_review_repos bad
 	PUSH_OUT=$(cd "$WORK" && bash "$PUSH" "$SCRATCH/no-such-remote.git" follow/b 2>&1)
@@ -331,6 +342,7 @@ test_pin_usage
 test_push_review_branch_creates_a_missing_branch
 test_push_review_branch_replaces_the_bots_own_head
 test_push_review_branch_keeps_hand_work
+test_push_review_branch_replaces_merged_hand_work
 test_push_review_branch_fails_on_a_bad_remote
 
 if [[ $FAILED -gt 0 ]]; then

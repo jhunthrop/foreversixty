@@ -55,9 +55,9 @@ jobs:
   follow:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    permissions:
-      contents: write
-      actions: write
+    # Read only: the follow pushes to the fork with ENGINE_REPO_TOKEN and
+    # dispatches nothing, so the job token never writes.
+    permissions: { contents: read }
     outputs:
       dry: ${{ steps.mode.outputs.dry }}
     # The fork is checked out inside the site, whose go.work would otherwise
@@ -65,6 +65,7 @@ jobs:
     env: { GOWORK: 'off' }
     steps:
       - uses: actions/checkout@v4
+        with: { persist-credentials: false }
       # The run is live only when asked to be and when it can push to the
       # fork. A missing token turns it into a dry run rather than a run that
       # follows, then fails at the push.
@@ -244,16 +245,26 @@ jobs:
         env:
           BUILD: ${{ steps.identity.outputs.build }}
           HASH: ${{ steps.inputs.outputs.hash }}
+          VERDICT: ${{ steps.follow.outputs.verdict }}
+          SUITE: ${{ steps.suite.outputs.suite }}
         run: |
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
           [ ! -s dist/FOLLOW-PATHS ] || xargs git add < dist/FOLLOW-PATHS
+          allow_empty=()
           if git diff --cached --quiet; then
-            echo "::notice::the follow changed nothing; nothing to commit"
-            echo "committed=false" >> "$GITHUB_OUTPUT"
-            exit 0
+            if [ "$VERDICT" != "clean" ] || [ "$SUITE" != "green" ]; then
+              echo "::notice::the follow changed nothing and is not clean (verdict $VERDICT, suite $SUITE); no pull request to open"
+              echo "committed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            # A clean follow that changed nothing still commits, empty: the
+            # Follow-Inputs trailer on master is what lets the next night
+            # skip, so without it every later night reruns the full follow.
+            echo "::notice::the follow changed nothing; committing it empty to record its Follow-Inputs on master"
+            allow_empty=(--allow-empty)
           fi
-          git commit -m "chore(client): the engine follows client $BUILD" -m "Follow-Inputs: $HASH"
+          git commit "${allow_empty[@]}" -m "chore(client): the engine follows client $BUILD" -m "Follow-Inputs: $HASH"
           echo "committed=true" >> "$GITHUB_OUTPUT"
       # A push made with a personal token triggers the fork's own test.yml on
       # master, the second gate the pin job waits for.
@@ -393,6 +404,11 @@ jobs:
       - name: the active build's item database
         if: steps.conditions.outputs.pin == 'true'
         run: make simdb
+      # Everything sim.yml runs after a pin lands on main, so a pin that
+      # passes here cannot turn main red: go vet and the suite in sim/
+      # (its test job), and the rotation and fight-style checks against the
+      # fork at the pinned sha (its rotations job, which clones the fork to
+      # .engine; this job's engine checkout is that same sha).
       - name: the site's sim suite and the data lane's pin test
         id: tests
         if: steps.conditions.outputs.pin == 'true'
@@ -400,8 +416,14 @@ jobs:
         shell: bash {0}
         run: |
           failed=""
+          (cd sim && go vet ./...) 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="sim go vet ;"
           (cd sim && go test ./... -timeout 40m) 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
           [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="sim go test ;"
+          make apl-check ENGINE_DIR=engine 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="apl-check ;"
+          make styles-check 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
+          [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="styles-check ;"
           (cd data && uv run pytest -q --no-cov tests/test_genproto.py) 2>&1 | tee -a "$RUNNER_TEMP/pin-tests.log"
           [ "${PIPESTATUS[0]}" -eq 0 ] || failed+="data test_genproto ;"
           if [ -z "$failed" ]; then
