@@ -14,15 +14,13 @@ export const premiumCopy = {
   plansHeading: 'The two plans',
   premiumFeatures: [
     'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
-    'Two years of log retention instead of ninety days.',
-    'Compare more than two builds at once.',
-    'Character history charts over time.',
-    'Discord notifications.',
+    'Character history charts over time (ships November).',
+    'Discord notifications (ships December).',
     'A supporter mark on your profile.',
   ],
   guildFeatures: [
     'Everything in Premium, for everyone in the guild.',
-    'Officer tools: the loot council helper, the raid readiness board, roster approvals and invite links.',
+    'Officer tools: the loot council helper and the raid readiness board, with more as they ship.',
   ],
   noAds:
     'No ads. Not for anyone, paying or not. The site is paid for by Premium and the guild plan, not by ads, and that is true for everyone.',
@@ -36,11 +34,6 @@ export const premiumCopy = {
       question: 'What happens if I cancel?',
       answer:
         'You keep everything through the end of the period you already paid for. After that, the account works exactly like a free one — nothing is deleted.',
-    },
-    {
-      question: 'What happens to my long-retention logs if I stop?',
-      answer:
-        'They stay at the two-year retention for thirty days after your subscription ends, in case you resubscribe. After that, retention falls back to ninety days like every free account, and anything older than that is not kept.',
     },
     {
       question: 'Can I get a refund?',

@@ -40,12 +40,27 @@ describe('billingBlockCopy', () => {
   });
 });
 
-describe('the guild plan’s officer tools (W.8)', () => {
-  it('says the tools are live and lists them, with no "once they ship"', () => {
-    const officer = premiumCopy.guildFeatures.find((line) => line.startsWith('Officer tools'));
-    expect(officer).toBe(
-      'Officer tools: the loot council helper, the raid readiness board, roster approvals and invite links.',
+describe('what the page promises', () => {
+  it('promises only what exists, and dates what is coming', () => {
+    expect(premiumCopy.premiumFeatures).toEqual([
+      'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
+      'Character history charts over time (ships November).',
+      'Discord notifications (ships December).',
+      'A supporter mark on your profile.',
+    ]);
+    expect(premiumCopy.guildFeatures).toEqual([
+      'Everything in Premium, for everyone in the guild.',
+      'Officer tools: the loot council helper and the raid readiness board, with more as they ship.',
+    ]);
+    expect(premiumCopy.faq.map((f) => f.question)).not.toContain(
+      'What happens to my long-retention logs if I stop?',
     );
-    expect(premiumCopy.guildFeatures.join(' ')).not.toMatch(/ship/i);
+    for (const text of [
+      ...premiumCopy.premiumFeatures,
+      ...premiumCopy.guildFeatures,
+      ...premiumCopy.faq.map((f) => f.answer),
+    ]) {
+      expect(text).not.toMatch(/retention|ninety|two-year|two years|Compare more than two/);
+    }
   });
 });

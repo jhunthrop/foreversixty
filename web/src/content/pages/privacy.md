@@ -35,8 +35,11 @@ site never running ads, for anyone, ever.
 
 ## Data retention
 
-Raw logs and saved sims are kept ninety days on a free account, two years on Premium or a
-guild plan, and for thirty days after a subscription ends before falling back to ninety days.
+Uploaded combat logs, the reports parsed from them, saved sims and the ratings derived from
+them are kept until you delete them or your account; the rankings and a character's history
+are built from that record and would be wrong without it. Session rows expire with the
+session. If a storage limit ever becomes necessary it will be announced on the changelog
+with dates before anything is removed.
 
 ## Who is responsible
 

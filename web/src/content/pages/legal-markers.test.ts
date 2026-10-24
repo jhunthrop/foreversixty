@@ -22,5 +22,8 @@ describe('legal pages', () => {
       expect(text).toContain('Commish LLC');
       expect(text).toContain('help@foreversixty.gg');
     });
+    it(`${file} promises no retention window`, () => {
+      expect(text).not.toMatch(/ninety|two-year|two years|retention falls back|long-retention/i);
+    });
   }
 });

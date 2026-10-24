@@ -39,6 +39,21 @@ test('every buy control is a plain link to /premium/checkout, never a marketing 
   await expect(premiumBuy).toHaveAttribute('href', '/premium/checkout?plan=premium&interval=monthly');
 });
 
+test('lists only what is live, dates what is coming, and promises no retention tier', async ({ page }) => {
+  await page.goto('/premium');
+  for (const line of [
+    'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
+    'Character history charts over time (ships November).',
+    'Discord notifications (ships December).',
+    'A supporter mark on your profile.',
+  ]) {
+    await expect(page.getByText(line, { exact: true }).first()).toBeVisible();
+  }
+  await expect(page.getByText('Two years of log retention', { exact: false })).toHaveCount(0);
+  await expect(page.getByText('Compare more than two builds', { exact: false })).toHaveCount(0);
+  await expect(page.getByText('long-retention logs', { exact: false })).toHaveCount(0);
+});
+
 test('/pricing resolves to /premium', async ({ page }) => {
   await page.goto('/pricing');
   await expect(page).toHaveURL(/\/premium$/);

@@ -27,9 +27,7 @@ cancel. Stripe processes every payment; we never see or store your card.
 Cancelling stops the renewal and keeps your access through the end of the period you already
 paid for; a period is paid up front and is not refunded in part (see the
 [refund policy](/refunds)). After that, the account works exactly like a free one — nothing is
-deleted. Long-retention logs stay at
-the two-year retention for thirty days after your subscription ends, then fall back to the
-free ninety-day retention.
+deleted.
 
 ## Price changes
 
