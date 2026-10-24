@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70532",
-  "engine_version": "e03762f45",
-  "generated_at": "2026-10-24T12:18:59Z",
+  "engine_version": "ee68ce3ea",
+  "generated_at": "2026-10-24T20:37:58Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -728,8 +728,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.720700302,
-      "verify_run_seconds": 0.895384661,
+      "weights_run_seconds": 2.367449663,
+      "verify_run_seconds": 1.106825421,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1553,8 +1553,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.720700302,
-      "verify_run_seconds": 0.895204692,
+      "weights_run_seconds": 2.367449663,
+      "verify_run_seconds": 1.133724366,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2443,8 +2443,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.812649769,
-      "verify_run_seconds": 0.934968272,
+      "weights_run_seconds": 2.447401676,
+      "verify_run_seconds": 1.2009172,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3315,8 +3315,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.812649769,
-      "verify_run_seconds": 0.936798764,
+      "weights_run_seconds": 2.447401676,
+      "verify_run_seconds": 1.250140403,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4231,8 +4231,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.608619429,
-      "verify_run_seconds": 0.9885315,
+      "weights_run_seconds": 2.053582849,
+      "verify_run_seconds": 1.247293854,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5136,8 +5136,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.608619429,
-      "verify_run_seconds": 0.977264666,
+      "weights_run_seconds": 2.053582849,
+      "verify_run_seconds": 1.234014154,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6050,8 +6050,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.492044972,
-      "verify_run_seconds": 1.291078295,
+      "weights_run_seconds": 1.979213461,
+      "verify_run_seconds": 1.678694903,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6981,8 +6981,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.492044972,
-      "verify_run_seconds": 1.131466016,
+      "weights_run_seconds": 1.979213461,
+      "verify_run_seconds": 1.48859454,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7940,8 +7940,8 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.692921514,
-      "verify_run_seconds": 2.278860783,
+      "weights_run_seconds": 2.224983914,
+      "verify_run_seconds": 2.85960782,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8899,8 +8899,8 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 1.692921514,
-      "verify_run_seconds": 2.215583149,
+      "weights_run_seconds": 2.224983914,
+      "verify_run_seconds": 2.819525711,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9860,8 +9860,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 5.539276832,
-      "verify_run_seconds": 2.438163845,
+      "weights_run_seconds": 7.337879055,
+      "verify_run_seconds": 3.138089633,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10827,8 +10827,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 5.539276832,
-      "verify_run_seconds": 2.555256307,
+      "weights_run_seconds": 7.337879055,
+      "verify_run_seconds": 3.302521547,
       "coverage": {
         "back": {
           "eligible": 390,
