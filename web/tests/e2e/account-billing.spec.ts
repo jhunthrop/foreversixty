@@ -6,12 +6,21 @@ function fulfil(body: unknown, status = 200) {
   return { status, contentType: 'application/json', body: JSON.stringify(body) };
 }
 
-function meWith(entitlements: ReturnType<typeof mockEntitlements>) {
+const HERO_CHARACTER = {
+  key: 'us/hardcore/elyra-duskvale',
+  region: 'us',
+  ruleset: 'hardcore',
+  name: 'Elyra Duskvale',
+  class: 'Priest',
+  level: 60,
+};
+
+function meWith(entitlements: ReturnType<typeof mockEntitlements>, characters: unknown[] = []) {
   return {
     ok: true,
     data: {
       user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
-      characters: [],
+      characters,
       guilds: [],
       entitlements,
     },
@@ -98,7 +107,9 @@ test('past due: shows the payment-failed banner without losing access', async ({
 
 test('the Premium block names each benefit and shows the Supporter mark when it is on', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
-    route.fulfill(fulfil(meWith(mockEntitlements({ server_sims: true, supporter_mark: true })))),
+    route.fulfill(
+      fulfil(meWith(mockEntitlements({ server_sims: true, supporter_mark: true }), [HERO_CHARACTER])),
+    ),
   );
   await page.route('**/v1/devices', (route) =>
     route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
@@ -108,4 +119,17 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
   await expect(block).toContainText('Server sims · On');
   await expect(block).toContainText('Supporter mark · Shown on your characters');
   await expect(block).toContainText('History charts · Ships November');
+  await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
+});
+
+test('without the Supporter mark the hero carries no chip', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil(meWith(mockEntitlements({ supporter_mark: false }), [HERO_CHARACTER]))),
+  );
+  await page.route('**/v1/devices', (route) =>
+    route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
+  );
+  await page.goto('/account');
+  await expect(page.getByTestId('account-hero')).toContainText('Elyra Duskvale');
+  await expect(page.getByTestId('supporter-chip')).toHaveCount(0);
 });

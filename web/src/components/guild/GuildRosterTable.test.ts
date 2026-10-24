@@ -471,4 +471,20 @@ describe('GuildRosterTable: the Supporter chip', () => {
     const plain = render(GuildRosterTable, { props: props(home) }).body;
     expect(plain).not.toContain('supporter-chip');
   });
+
+  it('draws the chip on a pending account row, and never on a name-only row', () => {
+    const home = buildMockHome(VIEWER_OFFICER);
+    const pending = (home.pending ?? []).map((row) => ({ ...row, supporter: true }));
+    const roster = home.roster.map((row) => ({ ...row, supporter: true }));
+    const html = render(GuildRosterTable, { props: { ...props(home), pending, roster } }).body;
+    const waiting = html.slice(
+      html.indexOf('id="guild-roster-unverified"'),
+      html.indexOf('data-testid="guild-roster-rows"'),
+    );
+    expect(pending.length).toBeGreaterThan(0);
+    expect(waiting.split('data-testid="supporter-chip"')).toHaveLength(pending.length + 1);
+    const entries = html.slice(html.indexOf('data-testid="guild-roster-entries"'));
+    expect(entries).toContain('guild-roster-entries');
+    expect(entries).not.toContain('supporter-chip');
+  });
 });

@@ -142,6 +142,7 @@
   // Optional chaining all the way through: `entitlements` itself may be absent on an
   // older/stubbed /v1/me response (see the `Me.entitlements` doc comment in account/api.ts).
   const billing = $derived(me?.entitlements?.billing ?? null);
+  const isSupporter = $derived(me?.entitlements?.supporter_mark === true);
   const signedInMethod = $derived(
     me?.user.battletag !== undefined && me?.user.battletag !== null
       ? accountPageCopy.signedInWithBattlenet
@@ -616,6 +617,7 @@
                     character={hero}
                     size="lg"
                     descriptor="full"
+                    supporter={isSupporter}
                     href={characterHref(hero.region, hero.ruleset, hero.name)}
                     testid="account-hero"
                   />
@@ -654,6 +656,7 @@
                 bnetImportedAt={me!.bnet_imported_at}
                 mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
                 currentKey={hero?.key}
+                supporter={isSupporter}
                 onSetMain={setMain}
               />
             </div>

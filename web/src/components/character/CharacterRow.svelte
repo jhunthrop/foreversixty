@@ -26,6 +26,7 @@
     descriptorTestid,
     testid,
     action,
+    supporter = false,
   }: {
     character: MeCharacter;
     descriptor?: 'full' | 'realm' | 'none';
@@ -42,6 +43,8 @@
     descriptorTestid?: string;
     testid?: string;
     action?: Snippet;
+    /** The Supporter chip beside the name (the account's own rows). */
+    supporter?: boolean;
   } = $props();
 
   const pill = $derived(buildSourcePill(character.build));
@@ -62,6 +65,7 @@
       size="md"
       {descriptor}
       {href}
+      {supporter}
       {onNameClick}
       {nameTestid}
       {descriptorTestid}

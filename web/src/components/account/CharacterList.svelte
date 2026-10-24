@@ -23,6 +23,7 @@
     mainKey = undefined,
     currentKey = undefined,
     onSetMain = undefined,
+    supporter = false,
   }: {
     characters: MeCharacter[];
     bnetImportedAt?: string;
@@ -30,6 +31,8 @@
     mainKey?: string;
     /** The character the page speaks for (the header's current one): its row is marked. */
     currentKey?: string;
+    /** The account shows the Supporter mark: every row carries the chip. */
+    supporter?: boolean;
     /** Called with the key when Set as main is pressed; the caller records it and updates `mainKey`. */
     onSetMain?: (key: string) => Promise<void>;
   } = $props();
@@ -81,6 +84,7 @@
           {character}
           descriptor="full"
           guildLine
+          {supporter}
           href={characterHref(character.region, character.ruleset, character.name)}
           descriptorTestid="character-descriptor"
         >
