@@ -524,6 +524,7 @@ test.describe('a connected channel (connect lane)', () => {
     await expect(page.getByTestId('discord-replace-note')).toHaveText(copy.reconnectNote);
     const html = await page.content();
     expect(html).not.toContain(WEBHOOK_TOKEN);
+    expect(html).not.toContain(WEBHOOK_ID);
     expect(html).not.toContain('discord.com/api/webhooks');
   });
 
@@ -545,6 +546,13 @@ test.describe('a connected channel (connect lane)', () => {
     await page.getByTestId('discord-remove-confirm').click();
     await expect(page.getByTestId('discord-connect')).toBeVisible();
     expect(seen.deletes).toBe(1);
+  });
+
+  test('Remove asks the pasted question with connect on', async ({ page }) => {
+    await openAccount(page, { initial: SAVED, connect: true });
+    await page.getByTestId('discord-remove').click();
+    await expect(panel(page)).toContainText(copy.removeQuestionPasted);
+    await expect(panel(page)).not.toContainText(copy.removeQuestionConnected);
   });
 
   test('replacing a pasted webhook with connect on opens the connect view with Cancel', async ({ page }) => {

@@ -4,9 +4,10 @@
 // the account page, with /v1/me and the notification routes stubbed, into every state and writes
 // PNGs to design/reviews/2026-10-25-discord-notifications/. Item 9 (real Discord messages) is made
 // by hand; item 13 (side-by-side with the mock) by compose_side_by_side.py in the same folder.
+import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type APIRequestContext, type Locator, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import type { DiscordNotifications } from '../../../src/lib/account/api';
 import type { HintState } from '../../../src/lib/account/layout';
 import {
@@ -630,6 +631,7 @@ for (const { flag, stages } of RETURNS) {
   atWidths(`return ${flag}`, BASE_WIDTHS, async (page, width) => {
     await openAccount(page, width, stages, {}, `/account?discord=${flag}#discord`);
     await expect(page).toHaveURL(/\/account#discord$/);
+    if (flag === 'connected') await expect(page.getByTestId('discord-test')).toBeFocused();
     await shoot(page, `return-${flag}`, width);
     await page.reload();
     await settle(page);
@@ -678,32 +680,25 @@ atWidths('reconnect view', BASE_WIDTHS, async (page, width) => {
   await shoot(page, 'connect-reconnect', width);
 });
 
-// 31. The built site carries neither Discord's logo nor its blurple. Not a PNG: the account page,
-// every script, stylesheet and module it reaches are fetched and searched.
-const FORBIDDEN_ASSET = /5865f2|discord[-_ ]?(logo|mark)|clyde/i;
-const ASSET_REFERENCE =
-  /(?:src|href|from|import\()\s*=?\s*["'`]?(\/[^"'`\s)>]+\.(?:js|css|mjs|svg|png|webp))/g;
-const MAX_ASSETS = 400;
-
-async function reachableSources(request: APIRequestContext, entry: string): Promise<Map<string, string>> {
-  const sources = new Map<string, string>();
-  const queue = [entry];
-  while (queue.length > 0 && sources.size < MAX_ASSETS) {
-    const url = queue.shift() as string;
-    if (sources.has(url)) continue;
-    const response = await request.get(url);
-    const body = response.ok() ? await response.text() : '';
-    sources.set(url, body);
-    for (const match of body.matchAll(ASSET_REFERENCE)) queue.push(match[1] as string);
-  }
-  return sources;
-}
+// 31. The built site carries neither Discord's logo nor its blurple. Not a PNG: the account page and
+// every script and stylesheet in the build's `_astro` folder (the hydrated Account island among them)
+// are read from disk and searched; a build without an Account chunk fails the test.
+const ASTRO_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../dist/_astro');
+const LOGO_NAME = /discord[-_ ]?(logo|mark)|clyde/i;
+const BLURPLE = /(?:#|0x)5865f2\b/i;
+const BUNDLE_FILE = /\.(?:js|css)$/;
+const ACCOUNT_CHUNK = /^Account\./;
 
 test('the built account page and its bundle carry no Discord logo and no blurple', async ({ request }) => {
-  const sources = await reachableSources(request, '/account');
-  expect(sources.size).toBeGreaterThan(1);
-  const offenders = [...sources].filter(
-    ([url, body]) => FORBIDDEN_ASSET.test(url) || FORBIDDEN_ASSET.test(body),
+  const files = readdirSync(ASTRO_DIR).filter((file) => BUNDLE_FILE.test(file));
+  expect(files.some((file) => ACCOUNT_CHUNK.test(file))).toBe(true);
+  const page = await (await request.get('/account')).text();
+  const sources = [
+    ['/account', page],
+    ...files.map((file): [string, string] => [file, readFileSync(path.join(ASTRO_DIR, file), 'utf8')]),
+  ] as [string, string][];
+  const offenders = sources.filter(
+    ([name, body]) => LOGO_NAME.test(name) || LOGO_NAME.test(body) || BLURPLE.test(body),
   );
-  expect(offenders.map(([url]) => url)).toEqual([]);
+  expect(offenders.map(([name]) => name)).toEqual([]);
 });
