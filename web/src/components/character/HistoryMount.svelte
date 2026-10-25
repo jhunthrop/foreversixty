@@ -8,6 +8,7 @@
   import { historyCopy } from '../../lib/character/history-copy';
   import { historyMount, type HistoryMountFacts } from '../../lib/character/history-mount';
   import type { CharacterPath } from '../../lib/characters';
+  import HistoryReserve from './HistoryReserve.svelte';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
   import type { Component } from 'svelte';
 
@@ -28,10 +29,10 @@
     <section.current {path} />
   {:else}
     <!-- The chunk is on its way: the reserved box, drawn only under the hint. -->
-    <div class="history-shell-reserve history-reserve -order-2" aria-hidden="true"></div>
+    <HistoryReserve />
   {/if}
 {:else if mount === 'pending'}
-  <div class="history-shell-reserve history-reserve -order-2" aria-hidden="true"></div>
+  <HistoryReserve />
 {:else if mount === 'sentence'}
   <p class="text-muted -order-2 flex min-h-11 items-center text-[13px]" data-testid="history-free-sentence">
     <span

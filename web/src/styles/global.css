@@ -333,6 +333,14 @@ html[data-session='1'][data-server-sims='1'] .server-runs-shell-reserve {
 html[data-session='1'][data-history='1'] .history-shell-reserve {
   display: block;
 }
+html[data-session='1'][data-history='1'] .history-after-skeleton {
+  margin-top: 22px;
+}
+@media (min-width: 768px) {
+  html[data-session='1'][data-history='1'] .history-after-skeleton {
+    margin-top: 32px;
+  }
+}
 html[data-session='1'][data-history='1'] .history-reserve {
   min-height: var(--history-reserve, 2120px);
 }

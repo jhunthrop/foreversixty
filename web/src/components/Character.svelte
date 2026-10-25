@@ -7,6 +7,7 @@
   import CharacterFightTable from './character/CharacterFightTable.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import HistoryMount from './character/HistoryMount.svelte';
+  import HistoryReserve from './character/HistoryReserve.svelte';
   import ProfileDescriptor from './character/ProfileDescriptor.svelte';
   import CharacterNotFound from './CharacterNotFound.svelte';
   import CharacterUnlogged from './CharacterUnlogged.svelte';
@@ -237,6 +238,7 @@
   </p>
 {:else if status === 'loading'}
   <Skeleton lines={6} rowHeight="h-4" minHeight={CHARACTER_LOADING_MIN_H} testid="character-skeleton" />
+  <HistoryReserve afterSkeleton />
 {:else if status === 'failed'}
   <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
 {:else if status === 'unlogged' && resolved !== null}
@@ -250,6 +252,7 @@
 {:else if data !== null && resolved !== null && bareForVisitor && (!ownerKnown || (!owned && ratingProbe !== 'none' && ratingProbe !== 'has'))}
   <!-- Whether this is the viewer's own character decides which page they get: wait for /v1/me. -->
   <Skeleton lines={6} rowHeight="h-4" minHeight={CHARACTER_LOADING_MIN_H} testid="character-skeleton" />
+  <HistoryReserve afterSkeleton />
 {:else if data !== null && resolved !== null && bareForVisitor && !owned && ratingProbe === 'none'}
   <CharacterNotFound path={resolved} name={data.character.name} known />
 {:else if data !== null && resolved !== null}
