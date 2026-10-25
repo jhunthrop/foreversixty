@@ -25,8 +25,9 @@
     mainKey?: string;
     serverRunsThisMonth?: number;
     /**
-     * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` leaves the
-     * row out (`premiumRowVisible(me)` is false: the deployment has notifications off).
+     * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` hides the
+     * row (`premiumRowVisible(me)` is false: the deployment has notifications off); `undefined`
+     * keeps the muted `Off · Premium` row. `Account.svelte` is the only caller.
      */
     notifications?: { value: string; linked: boolean } | null;
   } = $props();

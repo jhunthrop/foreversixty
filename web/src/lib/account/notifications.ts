@@ -90,11 +90,6 @@ export function failureWarning(discord: DiscordNotifications): WarningLines | nu
   return notificationsCopy.warningLines(discord.failures, discord.last_error);
 }
 
-/** "channel 1098765432101234567" is drawn from the id; null while the API has none. */
-export function channelLabel(channelId: string | null): string | null {
-  return channelId === null || channelId === '' ? null : `${notificationsCopy.destinationNoun} ${channelId}`;
-}
-
 function parseUrl(input: string): URL | null {
   try {
     return new URL(input);

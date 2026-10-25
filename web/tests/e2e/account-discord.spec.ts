@@ -1,23 +1,29 @@
 // web/tests/e2e/account-discord.spec.ts
 // The Discord block on the account page (experience spec 2026-10-25-discord-notifications, section
-// 9): paste and save, test, event change, the five-failure and lapsed states, remove, the free
-// sentence, the Premium row, layout shift through save and remove, and an axe pass per state.
+// 9, amended 2026-10-25): paste and save, the webhook name and channel lines, the three event rows
+// (the private row's disabled state and three-key save), the steps, test, the five-failure and
+// lapsed states, remove, the free sentence, the Premium row, layout shift through save and remove,
+// and an axe pass per state.
 // /v1/me and the three notification routes are stubbed; the fixture webhook URL and token appear
 // only in the typed input and the PUT body the stub records.
 import { createRequire } from 'node:module';
 import { expect, test, type Page } from '@playwright/test';
-import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
-import type { DiscordNotifications } from '../../src/lib/account/api';
-import { mockEntitlements } from '../../src/test-support/billing-fixtures';
+import {
+  DISCORD_NAME_LIMIT,
+  notificationsCopy as copy,
+  premiumRowCopy,
+} from '../../src/lib/account/notifications-copy';
 import { gotoHydrated } from './support/hydrated';
 import {
   CHANNEL_ID,
   discordBlock,
-  notificationsKey,
   routeDiscordNotifications,
+  signInMember,
+  type DiscordMeStages,
   type DiscordRouteOptions,
   type DiscordRoutes,
 } from './support/discord-notifications';
+import { drainShifts, recordShifts, sumShifts } from './support/layout-shift';
 
 const WEBHOOK_ID = '1087654321012345678';
 const WEBHOOK_TOKEN = 'xT9fixtureTokenNotARealOne_abcdEFGH';
@@ -29,57 +35,13 @@ const MAX_SHIFT = 0.02;
 const PHONE = { width: 390, height: 844 };
 const DESKTOP = { width: 1440, height: 1000 };
 
-type Discord = DiscordNotifications | null;
-
-interface MeStages {
-  entitled?: boolean;
-  /** The deployment has notifications off: /v1/me carries no `notifications` key. */
-  featureOff?: boolean;
-  initial: Discord;
-  /** What /v1/me answers once the PUT has been seen. */
-  afterPut?: Discord;
-  /** What /v1/me answers once a test has been sent. */
-  afterTest?: Discord;
-}
-
-function envelope(data: unknown) {
-  return {
-    status: 200,
-    contentType: 'application/json',
-    body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
-  };
-}
-
-function currentBlock(stages: MeStages, seen: DiscordRoutes): Discord {
-  if (seen.deletes > 0) return null;
-  if (seen.tests > 0 && stages.afterTest !== undefined) return stages.afterTest;
-  if (seen.puts.length > 0 && stages.afterPut !== undefined) return stages.afterPut;
-  return stages.initial;
-}
-
-/** Signs a member in; /v1/me follows what the stubbed notification routes have been sent. */
-async function signIn(page: Page, stages: MeStages, seen: DiscordRoutes): Promise<void> {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      envelope({
-        user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
-        characters: [],
-        guilds: [],
-        entitlements: mockEntitlements({ notifications: stages.entitled ?? true }),
-        ...(stages.featureOff === true ? {} : notificationsKey(currentBlock(stages, seen))),
-      }),
-    ),
-  );
-  await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
-}
-
 async function openAccount(
   page: Page,
-  stages: MeStages,
+  stages: DiscordMeStages,
   routeOptions: DiscordRouteOptions = {},
 ): Promise<DiscordRoutes> {
   const seen = await routeDiscordNotifications(page, routeOptions);
-  await signIn(page, stages, seen);
+  await signInMember(page, stages, seen);
   await gotoHydrated(page, '/account', 'account');
   return seen;
 }
@@ -101,6 +63,12 @@ async function browserStorage(page: Page): Promise<string> {
 async function pasteAndSave(page: Page, url: string): Promise<void> {
   await input(page).fill(url);
   await page.getByTestId('discord-save').click();
+}
+
+/** Line one of the destination for a webhook name, assembled from the copy module's two parts. */
+function namedLine(name: string): string {
+  const named = copy.destinationNamed(name);
+  return `${named.lead} ${named.name}`;
 }
 
 const SAVED = discordBlock();
@@ -132,9 +100,8 @@ test.describe('paste form', () => {
   }) => {
     const seen = await openAccount(page, { initial: null, afterPut: SAVED });
     await pasteAndSave(page, VALID_URL);
-    await expect(page.getByTestId('discord-destination')).toContainText(
-      `${copy.destinationNoun} ${CHANNEL_ID}`,
-    );
+    await expect(page.getByTestId('discord-destination')).toContainText(namedLine('Raid pings'));
+    await expect(page.getByTestId('discord-destination')).toContainText(copy.channelLine(CHANNEL_ID));
     expect(seen.puts).toEqual([{ webhook_url: VALID_URL, events: BOTH_EVENTS }]);
     await expect(status(page)).toContainText(copy.savedFirst);
     await expect(page.getByTestId('discord-test')).toBeFocused();
@@ -144,6 +111,16 @@ test.describe('paste form', () => {
     expect(html).not.toContain('discord.com/api/webhooks');
     expect(await browserStorage(page)).not.toMatch(new RegExp(`${WEBHOOK_TOKEN}|${WEBHOOK_ID}`));
     await expect(premiumRow(page)).toContainText('On · 2 events');
+  });
+
+  test('the form shows the three numbered steps above the field', async ({ page }) => {
+    await openAccount(page, { initial: null });
+    for (const [index, step] of copy.howSteps.entries()) {
+      await expect(page.getByTestId(`discord-step-${index + 1}`)).toHaveText(step);
+    }
+    const lastStepTop = (await page.getByTestId('discord-step-3').boundingBox())?.y ?? Infinity;
+    const fieldTop = (await input(page).boundingBox())?.y ?? 0;
+    expect(lastStepTop).toBeLessThan(fieldTop);
   });
 
   test('a refusal for want of Premium shows the sentence and a plans link', async ({ page }) => {
@@ -199,7 +176,75 @@ test.describe('saved webhook', () => {
 
   test('one to four failures show the warning with Discord’s last error', async ({ page }) => {
     await openAccount(page, { initial: discordBlock({ failures: 2, last_error: 'Unknown Webhook' }) });
-    await expect(panel(page)).toContainText(copy.warning(2, 'Unknown Webhook'));
+    const { failures, lastError } = copy.warningLines(2, 'Unknown Webhook');
+    await expect(panel(page)).toContainText(failures);
+    await expect(panel(page)).toContainText(lastError ?? '');
+  });
+
+  test('the destination reads the webhook name over the shortened channel id', async ({ page }) => {
+    await openAccount(page, { initial: SAVED });
+    const destination = page.getByTestId('discord-destination');
+    await expect(destination).toContainText(namedLine('Raid pings'));
+    await expect(destination).toContainText(copy.channelLine(CHANNEL_ID));
+    await expect(destination).not.toContainText(CHANNEL_ID);
+  });
+
+  test('a webhook without a name reads the unnamed line', async ({ page }) => {
+    await openAccount(page, { initial: discordBlock({ name: null }) });
+    const destination = page.getByTestId('discord-destination');
+    await expect(destination).toContainText(copy.destinationUnnamed);
+    await expect(destination).not.toContainText('Posts through');
+    await expect(destination).toContainText(copy.channelLine(CHANNEL_ID));
+  });
+
+  test('a name with markup and markdown is plain text, cut at 40 characters', async ({ page }) => {
+    const name = `<b>bold</b> [x](https://evil.example) **${'n'.repeat(60)}`;
+    await openAccount(page, { initial: discordBlock({ name }) });
+    const destination = page.getByTestId('discord-destination');
+    await expect(destination).toContainText(namedLine(name));
+    await expect(destination).toContainText('<b>bold</b> [x](https://evil.example)');
+    await expect(destination).not.toContainText('n'.repeat(60));
+    expect(await destination.locator('b, a, img').count()).toBe(0);
+    const shown = copy.destinationNamed(name).name;
+    expect([...shown.slice(1, -1)]).toHaveLength(DISCORD_NAME_LIMIT);
+    expect(shown.endsWith('…”')).toBe(true);
+  });
+
+  test('the private row is disabled, value kept, while the log box is off', async ({ page }) => {
+    const events = { sim_finished: true, upload_parsed: false, upload_private: true };
+    const seen = await openAccount(page, { initial: discordBlock({ events }) });
+    const privateBox = page.getByTestId('discord-event-private');
+    await expect(privateBox).toBeDisabled();
+    await expect(privateBox).toBeChecked();
+    await expect(page.getByTestId('discord-event-upload')).toBeEnabled();
+    await expect(panel(page)).toContainText(copy.eventUploadPrivate);
+    await expect(panel(page)).toContainText(copy.eventsNote);
+    expect(seen.puts).toHaveLength(0);
+  });
+
+  test('switching the log box on enables the private row with its value kept', async ({ page }) => {
+    const events = { sim_finished: true, upload_parsed: false, upload_private: true };
+    const seen = await openAccount(page, {
+      initial: discordBlock({ events }),
+      afterPut: discordBlock({ events: { ...events, upload_parsed: true } }),
+    });
+    await page.getByTestId('discord-event-upload').check();
+    await expect(page.getByTestId('discord-event-private')).toBeEnabled();
+    await expect(page.getByTestId('discord-event-private')).toBeChecked();
+    expect(seen.puts).toEqual([{ events: { ...events, upload_parsed: true } }]);
+  });
+
+  test('turning private logs on sends all three event keys and nothing else', async ({ page }) => {
+    const privateOn = { sim_finished: true, upload_parsed: true, upload_private: true };
+    const seen = await openAccount(page, {
+      initial: SAVED,
+      afterPut: discordBlock({ events: privateOn }),
+    });
+    await expect(page.getByTestId('discord-event-private')).not.toBeChecked();
+    await page.getByTestId('discord-event-private').check();
+    await expect(status(page)).toHaveText(copy.savedEvents);
+    expect(seen.puts).toEqual([{ events: privateOn }]);
+    await expect(page.getByTestId('discord-event-private')).toBeChecked();
   });
 
   test('replacing opens the paste form on the input and Escape closes it', async ({ page }) => {
@@ -216,7 +261,9 @@ test.describe('saved webhook', () => {
     await page.getByTestId('discord-remove').click();
     await expect(panel(page)).toContainText(copy.removeQuestion);
     await expect(page.getByTestId('discord-remove-cancel')).toBeFocused();
+    await expect(page.getByTestId('discord-replace')).toHaveCount(0);
     await page.getByTestId('discord-remove-cancel').click();
+    await expect(page.getByTestId('discord-replace')).toBeVisible();
     expect(seen.deletes).toBe(0);
     await page.getByTestId('discord-remove').click();
     await page.getByTestId('discord-remove-confirm').click();
@@ -224,7 +271,7 @@ test.describe('saved webhook', () => {
     expect(seen.deletes).toBe(1);
     await expect(input(page)).toBeFocused();
     await expect(panel(page)).toContainText(copy.removed);
-    await expect(premiumRow(page).getByText('Off · set up', { exact: true })).toBeVisible();
+    await expect(premiumRow(page).getByText(premiumRowCopy.offSetUp, { exact: true })).toBeVisible();
   });
 });
 
@@ -236,13 +283,28 @@ test.describe('switched off, lapsed, free', () => {
     const notice = page.getByTestId('discord-notice');
     await expect(notice).toContainText(copy.switchedOff);
     await expect(notice).toContainText(copy.lastError('Unknown Webhook'));
-    await expect(panel(page)).toContainText(copy.switchedOffHelper);
-    await expect(premiumRow(page)).toContainText('Off · failed five times');
+    await expect(notice).toContainText(copy.switchedOffFix);
+    await expect(notice.getByTestId('discord-replace')).toHaveText(copy.replace);
+    await expect(page.getByRole('button', { name: copy.testAndSwitchOn })).toBeVisible();
+    await expect(premiumRow(page)).toContainText(premiumRowCopy.offNeedsAttention);
+    await expect(premiumRow(page)).not.toContainText('failed five times');
     await page.getByRole('button', { name: copy.testAndSwitchOn }).click();
     await expect(status(page)).toContainText(copy.testSentSwitchedOn);
     await expect(page.getByTestId('discord-notice')).toHaveCount(0);
     expect(seen.tests).toBe(1);
     await expect(premiumRow(page)).toContainText('On · 2 events');
+  });
+
+  test('five failures: Use a different webhook leaves while the remove question is open', async ({
+    page,
+  }) => {
+    await openAccount(page, { initial: FIVE_FAILURES });
+    await expect(page.getByTestId('discord-replace')).toBeVisible();
+    await page.getByTestId('discord-remove').click();
+    await expect(panel(page)).toContainText(copy.removeQuestion);
+    await expect(page.getByTestId('discord-replace')).toHaveCount(0);
+    await page.getByTestId('discord-remove-cancel').click();
+    await expect(page.getByTestId('discord-replace')).toBeVisible();
   });
 
   test('lapsed: the why, read-only boxes, Remove and nothing that posts', async ({ page }) => {
@@ -252,6 +314,7 @@ test.describe('switched off, lapsed, free', () => {
     await expect(notice).toContainText(copy.lapsedBody);
     await expect(page.getByTestId('discord-event-sim')).toBeDisabled();
     await expect(page.getByTestId('discord-event-upload')).toBeDisabled();
+    await expect(page.getByTestId('discord-event-private')).toBeDisabled();
     await expect(page.getByTestId('discord-remove')).toBeVisible();
     await expect(page.getByTestId('discord-test')).toHaveCount(0);
     await expect(page.getByTestId('discord-replace')).toHaveCount(0);
@@ -271,20 +334,20 @@ test.describe('switched off, lapsed, free', () => {
     await expect(free).toContainText(copy.freeSentence);
     await expect(free.getByRole('link', { name: copy.seePlans })).toHaveAttribute('href', '/premium');
     await expect(panel(page)).toHaveCount(0);
-    await expect(premiumRow(page).getByText('Off', { exact: true })).toBeVisible();
+    await expect(premiumRow(page).getByText(premiumRowCopy.off, { exact: true })).toBeVisible();
     await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   });
 });
 
 test.describe('deployment with notifications off', () => {
-  test('a payer sees no block and an unlinked Off row', async ({ page }) => {
+  test('a payer sees no block and no Discord row', async ({ page }) => {
     await openAccount(page, { initial: null, featureOff: true });
-    await expect(page.getByTestId('account-premium-notifications')).toBeVisible();
+    await expect(page.getByTestId('account')).toBeVisible();
+    await expect(premiumRow(page)).toHaveCount(0);
+    await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
     await expect(page.locator('#discord')).toHaveCount(0);
     await expect(panel(page)).toHaveCount(0);
     await expect(page.getByTestId('discord-free')).toHaveCount(0);
-    await expect(premiumRow(page).getByText('Off', { exact: true })).toBeVisible();
-    await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   });
 });
 
@@ -298,41 +361,10 @@ test.describe('Premium row', () => {
   });
 });
 
-interface LayoutShiftEntry extends PerformanceEntry {
-  value: number;
-  hadRecentInput: boolean;
-}
-
 declare global {
   interface Window {
-    __shifts: number[];
     __skeletonSeen: boolean;
   }
-}
-
-async function recordShifts(page: Page): Promise<void> {
-  await page.addInitScript(() => {
-    window.__shifts = [];
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries() as LayoutShiftEntry[]) {
-        if (!entry.hadRecentInput) window.__shifts.push(entry.value);
-      }
-    }).observe({ type: 'layout-shift', buffered: true });
-  });
-}
-
-/** The shifts reported since the last call, once the page has had two frames and a beat to settle. */
-async function drainShifts(page: Page): Promise<number[]> {
-  return page.evaluate(
-    () =>
-      new Promise<number[]>((resolve) => {
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            setTimeout(() => resolve(window.__shifts.splice(0)), 300);
-          }),
-        );
-      }),
-  );
 }
 
 /** From now on, notes whether the account page ever draws a loading skeleton again. */
@@ -344,8 +376,6 @@ async function watchForSkeleton(page: Page): Promise<void> {
     }).observe(document.body, { childList: true, subtree: true });
   });
 }
-
-const sum = (values: number[]): number => values.reduce((total, value) => total + value, 0);
 
 test.describe('layout shift through save and remove', () => {
   for (const viewport of [PHONE, DESKTOP]) {
@@ -367,12 +397,12 @@ test.describe('layout shift through save and remove', () => {
       const remove = await drainShifts(page);
       test.info().annotations.push({
         type: 'cls',
-        description: `${viewport.width}px load ${sum(load)} save ${sum(save)} test ${sum(testing)} remove ${sum(remove)}`,
+        description: `${viewport.width}px load ${sumShifts(load)} save ${sumShifts(save)} test ${sumShifts(testing)} remove ${sumShifts(remove)}`,
       });
       // The load shift is the page's own skeleton giving way to the account panels (the same
       // 0.45 at 390 for a free member); it is printed above, the member-caused ones are asserted.
       expect(await page.evaluate(() => window.__skeletonSeen)).toBe(false);
-      expect(sum(testing)).toBeLessThanOrEqual(MAX_SHIFT);
+      expect(sumShifts(testing)).toBeLessThanOrEqual(MAX_SHIFT);
       for (const value of [...save, ...remove]) expect(value).toBeLessThanOrEqual(MAX_SHIFT);
     });
   }
@@ -402,7 +432,7 @@ async function expectNoAxeViolations(page: Page): Promise<void> {
 test.describe('axe', () => {
   // Axe samples colours mid-transition otherwise; reduced motion makes the panels settle at once.
   test.use({ reducedMotion: 'reduce' });
-  const states: { name: string; stages: MeStages }[] = [
+  const states: { name: string; stages: DiscordMeStages }[] = [
     { name: 'free', stages: { initial: null, entitled: false } },
     { name: 'paste form', stages: { initial: null } },
     { name: 'saved', stages: { initial: SAVED } },

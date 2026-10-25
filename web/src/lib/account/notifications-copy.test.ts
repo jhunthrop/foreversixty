@@ -37,6 +37,8 @@ function spec(label: string, index = 0, fill: Record<string, string> = {}): stri
 
 const ERROR_TEXT = 'Unknown Webhook';
 
+const isString = (value: string | null): value is string => value !== null;
+
 const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['label', notificationsCopy.label, spec('Panel label')],
   ['intro', notificationsCopy.intro, spec('Intro (form)')],
@@ -69,16 +71,6 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['invalidUrl', notificationsCopy.invalidUrl, spec('Invalid URL')],
   ['notEntitled', notificationsCopy.notEntitled, spec('Not entitled on save')],
   ['seePlans', notificationsCopy.seePlans, spec('Not entitled on save', 1)],
-  [
-    'warning, one',
-    notificationsCopy.warning(1, 'Missing Permissions'),
-    `${spec('Warning, one')} ${spec('Warning, one', 1, { last_error: 'Missing Permissions' })}`,
-  ],
-  [
-    'warning, several',
-    notificationsCopy.warning(3, 'Missing Permissions'),
-    `${spec('Warning, several', 0, { n: '3' })} ${spec('Warning, several', 1, { last_error: 'Missing Permissions' })}`,
-  ],
   ['switchedOff', notificationsCopy.switchedOff, spec('Switched off')],
   ['lastError', notificationsCopy.lastError(ERROR_TEXT), spec('Switched off', 1, { last_error: ERROR_TEXT })],
   ['testAndSwitchOn', notificationsCopy.testAndSwitchOn, spec('Switched off', 4)],
@@ -98,9 +90,10 @@ describe('notificationsCopy', () => {
   });
 
   it('omits the error clause from a warning that has no error', () => {
-    expect(notificationsCopy.warning(2, null)).toBe(
-      'The last 2 posts failed. At 5 in a row it switches off. Send a test message to check.',
-    );
+    expect(notificationsCopy.warningLines(2, null)).toEqual({
+      failures: 'The last 2 posts failed. At 5 in a row it switches off. Send a test message to check.',
+      lastError: null,
+    });
   });
 
   it('truncates Discord text at the limit', () => {
@@ -130,8 +123,8 @@ describe('notificationsCopy', () => {
     const rendered: string[] = [
       ...strings,
       notificationsCopy.testFailed('Unknown Webhook'),
-      notificationsCopy.warning(1, 'Missing Permissions'),
-      notificationsCopy.warning(3, null),
+      ...Object.values(notificationsCopy.warningLines(1, 'Missing Permissions')).filter(isString),
+      ...Object.values(notificationsCopy.warningLines(3, null)).filter(isString),
       notificationsCopy.lastError('Unknown Webhook'),
     ];
     expect(rendered.length).toBeGreaterThan(40);
@@ -162,9 +155,8 @@ describe('notificationsCopy against the spec text, read from the spec', () => {
 
   it('has the destination lines', () => {
     const [lead, quoted] = specCell('Destination, with a name');
-    expect(notificationsCopy.destinationNamed('Raid pings')).toBe(
-      `${lead} ${quoted?.replace('{name}', 'Raid pings')}`,
-    );
+    const named = notificationsCopy.destinationNamed('Raid pings');
+    expect(`${named.lead} ${named.name}`).toBe(`${lead} ${quoted?.replace('{name}', 'Raid pings')}`);
     expect(notificationsCopy.destinationUnnamed).toBe(specCell('Destination, no name')[0]);
     expect(notificationsCopy.channelLine('1198765432101234568')).toBe('Channel 1198…4568');
   });
@@ -202,8 +194,7 @@ describe('notificationsCopy against the spec text, read from the spec', () => {
   });
 
   it('shows at most 40 characters of the webhook name', () => {
-    const shown = notificationsCopy.destinationNamed('x'.repeat(60));
-    expect(shown).toBe(`Posts through “${'x'.repeat(39)}…”`);
-    expect(notificationsCopy.destinationNamed('  Raid pings  ')).toBe('Posts through “Raid pings”');
+    expect(notificationsCopy.destinationNamed('x'.repeat(60)).name).toBe(`“${'x'.repeat(39)}…”`);
+    expect(notificationsCopy.destinationNamed('  Raid pings  ').name).toBe('“Raid pings”');
   });
 });

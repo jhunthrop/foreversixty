@@ -8,12 +8,20 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, type Locator, type Page } from '@playwright/test';
 import type { DiscordNotifications } from '../../../src/lib/account/api';
-import { mockEntitlements } from '../../../src/test-support/billing-fixtures';
+import type { HintState } from '../../../src/lib/account/layout';
+import {
+  addSessionHint,
+  createHold,
+  measureHeldLoad,
+  seedWarm,
+  stubMember,
+} from '../../e2e/support/account-reserve';
 import { gotoHydrated } from '../../e2e/support/hydrated';
 import {
   discordBlock,
-  notificationsKey,
   routeDiscordNotifications,
+  signInMember,
+  type DiscordMeStages,
   type DiscordRouteOptions,
   type DiscordRoutes,
 } from '../../e2e/support/discord-notifications';
@@ -55,47 +63,6 @@ const NO_EVENTS = discordBlock({
   events: { sim_finished: false, upload_parsed: false, upload_private: false },
 });
 
-interface Stages {
-  entitled?: boolean;
-  featureOff?: boolean;
-  initial: DiscordNotifications | null;
-  afterPut?: DiscordNotifications | null;
-  afterTest?: DiscordNotifications | null;
-  /** Holds /v1/me until this resolves (the pre-paint skeleton). */
-  holdMe?: Promise<void>;
-}
-
-function envelope(data: unknown) {
-  return {
-    status: 200,
-    contentType: 'application/json',
-    body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
-  };
-}
-
-function currentBlock(stages: Stages, seen: DiscordRoutes): DiscordNotifications | null {
-  if (seen.deletes > 0) return null;
-  if (seen.tests > 0 && stages.afterTest !== undefined) return stages.afterTest;
-  if (seen.puts.length > 0 && stages.afterPut !== undefined) return stages.afterPut;
-  return stages.initial;
-}
-
-async function signIn(page: Page, stages: Stages, seen: DiscordRoutes): Promise<void> {
-  await page.route('**/v1/me', async (route) => {
-    if (stages.holdMe !== undefined) await stages.holdMe;
-    await route.fulfill(
-      envelope({
-        user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
-        characters: [],
-        guilds: [],
-        entitlements: mockEntitlements({ notifications: stages.entitled ?? true }),
-        ...(stages.featureOff === true ? {} : notificationsKey(currentBlock(stages, seen))),
-      }),
-    );
-  });
-  await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
-}
-
 /** A promise a spec resolves by hand, to hold a stubbed route until the frame is captured. */
 function gate(): { wait: Promise<void>; release: () => void } {
   let release = (): void => undefined;
@@ -122,12 +89,12 @@ const target = (name: string): string => path.join(OUT_DIR, name);
 async function openAccount(
   page: Page,
   width: number,
-  stages: Stages,
+  stages: DiscordMeStages,
   routeOptions: DiscordRouteOptions = {},
 ): Promise<DiscordRoutes> {
   await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
   const seen = await routeDiscordNotifications(page, routeOptions);
-  await signIn(page, stages, seen);
+  await signInMember(page, stages, seen);
   await gotoHydrated(page, '/account', 'account');
   await settle(page);
   return seen;
@@ -170,9 +137,13 @@ async function shoot(page: Page, name: string, width: number, subject: Locator =
 }
 
 /** One test per width, each on a fresh page. */
-function atWidths(title: string, widths: number[], body: (page: Page, width: number) => Promise<void>): void {
+function atWidths(
+  title: string,
+  widths: number[],
+  body: (page: Page, width: number, baseURL: string | undefined) => Promise<void>,
+): void {
   for (const width of widths) {
-    test(`${title} @${width}`, ({ page }) => body(page, width));
+    test(`${title} @${width}`, ({ page, baseURL }) => body(page, width, baseURL));
   }
 }
 
@@ -364,7 +335,7 @@ atWidths('deployment with notifications off', BASE_WIDTHS, async (page, width) =
 test.describe('focus and hover at 1440', () => {
   const focusOn = async (
     page: Page,
-    stages: Stages,
+    stages: DiscordMeStages,
     control: (page: Page) => Locator,
     name: string,
     subject: (page: Page) => Locator = panel,
@@ -395,7 +366,7 @@ test.describe('focus and hover at 1440', () => {
       byId('discord-free'),
     ));
 
-  const hoverOn = async (page: Page, stages: Stages, id: string, name: string): Promise<void> => {
+  const hoverOn = async (page: Page, stages: DiscordMeStages, id: string, name: string): Promise<void> => {
     await openAccount(page, WIDTH_DESKTOP, stages);
     await page.getByTestId(id).hover();
     await settle(page);
@@ -407,34 +378,182 @@ test.describe('focus and hover at 1440', () => {
   test('hover remove', ({ page }) => hoverOn(page, { initial: SAVED }, 'discord-remove', 'remove'));
 });
 
-// 10. The Premium row's seven values.
-const ROW_VALUES: { value: string; stages: Stages }[] = [
+// 10 and 20. The Premium row's seven values; 1024 proves `2 events` never splits.
+const ROW_WIDTHS = [390, 1024, WIDTH_DESKTOP];
+const ROW_VALUES: { value: string; stages: DiscordMeStages }[] = [
   { value: 'off', stages: { initial: null, entitled: false } },
   { value: 'off-set-up', stages: { initial: null } },
   { value: 'off-no-events', stages: { initial: NO_EVENTS } },
-  { value: 'off-failed-five-times', stages: { initial: FIVE_FAILURES } },
+  { value: 'off-needs-attention', stages: { initial: FIVE_FAILURES } },
   { value: 'paused-plan-lapsed', stages: { initial: SAVED, entitled: false } },
   { value: 'on-1-event', stages: { initial: ONE_EVENT } },
   { value: 'on-2-events', stages: { initial: SAVED } },
 ];
 
 for (const { value, stages } of ROW_VALUES) {
-  atWidths(`premium row ${value}`, BASE_WIDTHS, async (page, width) => {
+  atWidths(`premium row ${value}`, ROW_WIDTHS, async (page, width) => {
     await openAccount(page, width, stages);
     await cropOf(page, premiumRow(page), `discord-row-${value}-${width}.png`);
   });
 }
 
-// The account page's loading skeleton before /v1/me answers: the reserve gap the lane deferred.
-atWidths('account loading skeleton', BASE_WIDTHS, async (page, width) => {
-  const held = gate();
-  await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
-  // The readable half of the session cookie is the hint that makes the page draw its skeletons.
-  await page.context().addCookies([{ name: 'fs_csrf', value: 'capture', url: 'http://localhost:4411' }]);
-  await signIn(page, { initial: SAVED, holdMe: held.wait }, { puts: [], tests: 0, deletes: 0 });
-  await page.goto('/account');
-  await page.getByTestId('account-left-skeleton').waitFor();
+// 15. The destination: named, unnamed, a name cut at 40 characters, and a name that is only text.
+const LONG_NAME = 'Raid pings for the Thursday progression night with the whole guild';
+const MARKUP_NAME = '@everyone <b>x</b>';
+const DESTINATIONS: { value: string; block: DiscordNotifications }[] = [
+  { value: 'named', block: SAVED },
+  { value: 'unnamed', block: discordBlock({ name: null }) },
+  { value: 'name-long', block: discordBlock({ name: LONG_NAME }) },
+  { value: 'name-markup', block: discordBlock({ name: MARKUP_NAME }) },
+];
+
+for (const { value, block } of DESTINATIONS) {
+  atWidths(`destination ${value}`, BASE_WIDTHS, async (page, width) => {
+    await openAccount(page, width, { initial: block });
+    await cropOf(page, page.getByTestId('discord-destination'), `discord-destination-${value}-${width}.png`);
+    await shoot(page, `saved-${value}`, width);
+  });
+}
+
+// 14. The paste form's steps and the distance from the input's bottom to the trust line.
+atWidths('paste form steps and the dead band', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: null });
+  await page.getByTestId('discord-step-3').waitFor();
+  await shoot(page, 'paste-steps', width);
+});
+
+// 16. The three event rows: third on, third off, second off (third disabled), lapsed (all disabled).
+const EVENT_ROWS: { value: string; stages: DiscordMeStages }[] = [
+  {
+    value: 'private-on',
+    stages: {
+      initial: discordBlock({ events: { sim_finished: true, upload_parsed: true, upload_private: true } }),
+    },
+  },
+  { value: 'private-off', stages: { initial: SAVED } },
+  {
+    value: 'logs-off-private-disabled',
+    stages: {
+      initial: discordBlock({ events: { sim_finished: true, upload_parsed: false, upload_private: true } }),
+    },
+  },
+  { value: 'lapsed-all-disabled', stages: { initial: SAVED, entitled: false } },
+];
+
+for (const { value, stages } of EVENT_ROWS) {
+  atWidths(`event rows ${value}`, BASE_WIDTHS, async (page, width) => {
+    await openAccount(page, width, stages);
+    await shoot(page, `events-${value}`, width);
+  });
+}
+
+// 17. The warning: one failure, two failures, four failures with a 140-character error.
+const WARNINGS: { value: string; block: DiscordNotifications }[] = [
+  { value: 'one', block: discordBlock({ failures: 1, last_error: 'Unknown Webhook' }) },
+  { value: 'two', block: WARNING },
+  { value: 'four-long', block: WARNING_LONG },
+];
+
+for (const { value, block } of WARNINGS) {
+  atWidths(`warning ${value}`, BASE_WIDTHS, async (page, width) => {
+    await openAccount(page, width, { initial: block });
+    await shoot(page, `warning-${value}`, width);
+  });
+}
+
+// 18 and 19. The four-line switched-off notice with its heights, and the remove question with no replace link.
+atWidths('switched off notice, remove question open', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: FIVE_FAILURES });
+  await page.getByTestId('discord-remove').click();
+  await page.getByTestId('discord-remove-cancel').waitFor();
   await settle(page);
-  await full(page, 'skeleton', width);
-  held.release();
+  await shoot(page, 'switched-off-remove-confirm', width);
+});
+
+for (const [name, block] of [
+  ['switched-off', FIVE_FAILURES],
+  ['switched-off-long', FIVE_FAILURES_LONG],
+] as const) {
+  atWidths(`panel height ${name}`, NARROW_WIDTHS, async (page, width) => {
+    await openAccount(page, width, { initial: block });
+    const height = (await panel(page).boundingBox())?.height ?? 0;
+    test.info().annotations.push({ type: 'height', description: `${name} @${width}: ${height} px` });
+  });
+}
+
+// 21. The loading reserve: the loading frame beside the ready page for each `data-discord` state, warm
+// (the cached /v1/me and the stored heights) at both widths, and cold (nothing stored) once per width.
+const RESERVE_STATES: { state: HintState; stages: Omit<DiscordMeStages, 'hold'> }[] = [
+  { state: 'none', stages: { initial: null, featureOff: true } },
+  { state: 'free', stages: { initial: null, entitled: false } },
+  { state: 'form', stages: { initial: null } },
+  { state: 'saved', stages: { initial: SAVED } },
+  { state: 'off', stages: { initial: FIVE_FAILURES } },
+  { state: 'lapsed', stages: { initial: SAVED, entitled: false } },
+];
+
+async function captureLoadingReserve(
+  page: Page,
+  baseURL: string | undefined,
+  label: string,
+  width: number,
+  stages: Omit<DiscordMeStages, 'hold'>,
+  warm: boolean,
+): Promise<void> {
+  const hold = createHold();
+  await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
+  await addSessionHint(page, baseURL);
+  await stubMember(page, stages, hold);
+  if (warm) await seedWarm(page);
+  const measure = await measureHeldLoad(page, hold, async () => {
+    await full(page, `loading-${label}`, width);
+  });
+  await settle(page);
+  await full(page, `loading-${label}-ready`, width);
+  test.info().annotations.push({
+    type: warm ? 'warm' : 'cold',
+    description: `${label} @${width}: cls ${measure.cls.toFixed(4)}, footer ${measure.footerLoading} -> ${measure.footerReady}`,
+  });
+}
+
+for (const { state, stages } of RESERVE_STATES) {
+  atWidths(`loading reserve warm ${state}`, BASE_WIDTHS, (page, width, baseURL) =>
+    captureLoadingReserve(page, baseURL, `warm-${state}`, width, stages, true),
+  );
+}
+
+atWidths('loading reserve cold', BASE_WIDTHS, (page, width, baseURL) =>
+  captureLoadingReserve(page, baseURL, 'cold', width, { initial: null }, false),
+);
+
+// 22. Gold checkboxes: the Discord row checked, disabled and focus-visible, and the rankings filter.
+atWidths('gold checkbox, Discord row', [WIDTH_DESKTOP], async (page, width) => {
+  await openAccount(page, width, {
+    initial: discordBlock({ events: { sim_finished: true, upload_parsed: false, upload_private: true } }),
+  });
+  await cropOf(page, panel(page), `discord-checkbox-checked-disabled-${width}.png`);
+  await focusWithKeyboard(page, page.getByTestId('discord-event-sim'));
+  await cropOf(page, panel(page), `discord-checkbox-focus-${width}.png`);
+});
+
+atWidths('gold checkbox, rankings filter', [WIDTH_DESKTOP], async (page, width) => {
+  await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
+  await page.route('**/v1/rankings?**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: { rows: [], total: 0, page: 1, per_page: 100, updated_at: '2026-09-14T00:00:00Z' },
+        error: null,
+        request_id: 'r',
+      }),
+    }),
+  );
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
+  const today = page.getByTestId('filter-today');
+  await today.check();
+  await cropOf(page, today.locator('xpath=..'), `rankings-checkbox-checked-${width}.png`);
+  await focusWithKeyboard(page, today);
+  await cropOf(page, today.locator('xpath=..'), `rankings-checkbox-focus-${width}.png`);
 });

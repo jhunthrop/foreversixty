@@ -107,6 +107,12 @@ describe('AccountDiscordBlock', () => {
     expect(body).not.toContain('discord-notice');
   });
 
+  it('saved: the lead and the quoted name are one sentence once the tags are gone', () => {
+    const body = html(meWith(true, { discord: discordBlock({ name: 'Raid pings' }) }));
+    const named = notificationsCopy.destinationNamed('Raid pings');
+    expect(body.replace(/<!--.*?-->/g, '').replace(/<[^>]+>/g, '')).toContain(`${named.lead} ${named.name}`);
+  });
+
   it('saved without a name: the unnamed line', () => {
     const body = html(meWith(true, { discord: discordBlock({ name: null }) }));
     expect(text(body)).toContain(notificationsCopy.destinationUnnamed);
@@ -119,7 +125,8 @@ describe('AccountDiscordBlock', () => {
     expect(body).not.toContain('<b>');
     expect(body).not.toContain('href="https://evil.example');
     expect(body).toContain('&lt;b>bold&lt;/b>');
-    expect(text(body)).toContain(notificationsCopy.destinationNamed(name).replaceAll('<', '&lt;'));
+    const named = notificationsCopy.destinationNamed(name);
+    expect(text(body)).toContain(`${named.lead} ${named.name}`.replaceAll('<', '&lt;'));
     expect(text(body)).not.toContain('n'.repeat(60));
     expect(text(body)).toContain('…”');
   });
@@ -141,7 +148,9 @@ describe('AccountDiscordBlock', () => {
     const body = html(
       meWith(true, { discord: discordBlock({ failures: 3, last_error: 'Missing Permissions' }) }),
     );
-    expect(text(body)).toContain(notificationsCopy.warning(3, 'Missing Permissions'));
+    const { failures, lastError } = notificationsCopy.warningLines(3, 'Missing Permissions');
+    expect(text(body)).toContain(failures);
+    expect(text(body)).toContain(lastError);
   });
 
   it('saved with failures: the count line in text-text, the Discord error line in text-muted', () => {

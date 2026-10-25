@@ -4,7 +4,6 @@ import { discordBlock } from '../../test-support/notifications-api';
 import type { DiscordNotifications, Me } from './api';
 import {
   blockState,
-  channelLabel,
   failureWarning,
   looksLikeWebhookURL,
   premiumRowLinked,
@@ -138,13 +137,6 @@ describe('failureWarning', () => {
       failures: 'The last 2 posts failed. At 5 in a row it switches off. Send a test message to check.',
       lastError: null,
     });
-  });
-});
-
-describe('channelLabel', () => {
-  it('names the channel by id and is null without one', () => {
-    expect(channelLabel('1098765432101234567')).toBe('channel 1098765432101234567');
-    expect(channelLabel(null)).toBeNull();
   });
 });
 

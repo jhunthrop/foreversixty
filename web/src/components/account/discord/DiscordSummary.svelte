@@ -10,8 +10,6 @@
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import DiscordNotice from './DiscordNotice.svelte';
 
-  const NAME_QUOTE = '“';
-
   let {
     state,
     discord,
@@ -28,11 +26,8 @@
   } = $props();
 
   const name = $derived(discord.name?.trim() ?? '');
-  const lineOne = $derived(
-    name === '' ? notificationsCopy.destinationUnnamed : notificationsCopy.destinationNamed(name),
-  );
-  // The copy function owns the sentence; it is only split here so the quoted name can be emphasised.
-  const nameAt = $derived(name === '' ? -1 : lineOne.indexOf(NAME_QUOTE));
+  // The copy module owns the sentence and its quotes; the name part is emphasised on its own.
+  const named = $derived(name === '' ? null : notificationsCopy.destinationNamed(name));
   const lineTwo = $derived(notificationsCopy.channelLine(discord.channel_id));
   const idAt = $derived(lineTwo.lastIndexOf(' ') + 1);
   const warning = $derived(state === 'saved' ? failureWarning(discord) : null);
@@ -40,12 +35,11 @@
 
 <div class="flex flex-col gap-0.5" data-testid="discord-destination">
   <p class="text-[14px] [overflow-wrap:anywhere]">
-    {#if nameAt >= 0}
-      <span class="text-muted">{lineOne.slice(0, nameAt)}</span><span class="text-strong font-semibold"
-        >{lineOne.slice(nameAt)}</span
-      >
+    {#if named !== null}
+      <span class="text-muted">{named.lead}</span>
+      <span class="text-strong font-semibold">{named.name}</span>
     {:else}
-      <span class="text-muted">{lineOne}</span>
+      <span class="text-muted">{notificationsCopy.destinationUnnamed}</span>
     {/if}
   </p>
   <p class="text-muted text-[13px]">

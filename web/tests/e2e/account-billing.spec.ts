@@ -29,6 +29,8 @@ function meWith(
       guilds: [],
       entitlements,
       server_sims: serverSims,
+      // The deployment has notifications on, so the Premium block carries its Discord row.
+      notifications: { discord: null },
     },
     error: null,
     request_id: 'r',
@@ -144,7 +146,9 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     'href',
     '/character/us/hardcore/elyra-duskvale#history',
   );
-  await expect(page.getByTestId('account-premium-notifications')).toHaveText(/Discord notifications\s*Off$/);
+  await expect(page.getByTestId('account-premium-notifications')).toHaveText(
+    /Discord notifications\s*Off\s*· Premium$/,
+  );
   await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
   // The mark belongs to the person: the character rows never carry it.

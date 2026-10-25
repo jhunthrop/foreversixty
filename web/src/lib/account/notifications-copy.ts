@@ -66,7 +66,6 @@ export const notificationsCopy = {
     'Choose New Webhook, name it something you will recognize, then Copy Webhook URL.',
     'Paste it below.',
   ],
-  howHelper: 'In Discord: Channel settings, Integrations, Webhooks, New Webhook, Copy Webhook URL.',
   trustHelper: 'We store the URL encrypted, never show it again, and delete it with your account.',
   eventsLabel: 'Post when',
   eventSimFinished: 'A server sim finishes',
@@ -99,9 +98,11 @@ export const notificationsCopy = {
   invalidUrl: 'That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/.',
   notEntitled: 'Discord messages are part of Premium.',
 
-  destinationLead: 'Posts to',
-  destinationNoun: 'channel',
-  destinationNamed: (name: string): string => `Posts through “${shortenName(name)}”`,
+  /** Line one with a name: the lead, then the name in the typographic quotes the spec sets around it. */
+  destinationNamed: (name: string): { lead: string; name: string } => ({
+    lead: 'Posts through',
+    name: `“${shortenName(name)}”`,
+  }),
   destinationUnnamed: 'Posts to a Discord channel',
   /** Line two of the destination: the first and last four digits of the channel id. */
   channelLine: (channelId: string): string => {
@@ -124,16 +125,10 @@ export const notificationsCopy = {
         lastError === null ? null : `Last error from Discord: ${withFullStop(shortenDiscordText(lastError))}`,
     };
   },
-  warning: (failures: number, lastError: string | null): string => {
-    const lines = notificationsCopy.warningLines(failures, lastError);
-    return lines.lastError === null ? lines.failures : `${lines.failures} ${lines.lastError}`;
-  },
 
   switchedOff: 'Switched off after 5 failed posts in a row.',
-  switchedOffGeneric: 'Switched off.',
   lastError: (error: string): string => `Last error from Discord: ${withFullStop(shortenDiscordText(error))}`,
   switchedOffFix: 'Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.',
-  switchedOffHelper: 'Sends a test message. If Discord accepts it, posts resume.',
 
   lapsedTitle: 'Posts are paused because your plan ended.',
   lapsedBody: 'We kept your webhook. Posts start again when you are back on Premium.',

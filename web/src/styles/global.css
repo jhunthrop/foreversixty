@@ -416,6 +416,10 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
 /* account loading reserve:begin (mirrors lib/account/layout.ts's tables; layout-reserve.test.ts keeps them equal) */
 .account-rail-skeleton {
   min-height: var(--account-rail-reserve, var(--account-rail-floor));
+  /* With a stored height the rail is exactly that tall: a floor sum above it (a Plan panel with
+     no Premium row is shorter than its floor) is clipped, not pushed into the footer. */
+  max-height: var(--account-rail-reserve, none);
+  overflow: clip;
 }
 .account-discord-skeleton {
   display: none;

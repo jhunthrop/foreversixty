@@ -3,6 +3,7 @@
 // page sent, so a spec can assert that the typed URL travelled once and never came back.
 import type { Page, Route } from '@playwright/test';
 import type { DiscordNotifications } from '../../../src/lib/account/api';
+import { mockEntitlements } from '../../../src/test-support/billing-fixtures';
 
 /** The channel the saved webhook posts to; deliberately not the webhook id a pasted URL carries. */
 export const CHANNEL_ID = '1198765432101234568';
@@ -86,4 +87,52 @@ export async function routeDiscordNotifications(
     return route.fulfill({ status: 204 });
   });
   return seen;
+}
+
+/** What the stubbed `/v1/me` answers, as the notification routes are exercised. */
+export interface DiscordMeStages {
+  entitled?: boolean;
+  /** The deployment has notifications off: /v1/me carries no `notifications` key. */
+  featureOff?: boolean;
+  initial: DiscordNotifications | null;
+  /** What /v1/me answers once the PUT has been seen. */
+  afterPut?: DiscordNotifications | null;
+  /** What /v1/me answers once a test has been sent. */
+  afterTest?: DiscordNotifications | null;
+  /** Awaited before every `/v1/me` and `/v1/devices` answer: holds the page in its loading state. */
+  hold?: () => Promise<void>;
+}
+
+export function envelope(data: unknown): { status: number; contentType: string; body: string } {
+  return { status: 200, contentType: 'application/json', body: envelopeBody(data) };
+}
+
+function currentBlock(stages: DiscordMeStages, seen: DiscordRoutes): DiscordNotifications | null {
+  if (seen.deletes > 0) return null;
+  if (seen.tests > 0 && stages.afterTest !== undefined) return stages.afterTest;
+  if (seen.puts.length > 0 && stages.afterPut !== undefined) return stages.afterPut;
+  return stages.initial;
+}
+
+/** Signs a member in; /v1/me follows what the stubbed notification routes have been sent. */
+export async function signInMember(page: Page, stages: DiscordMeStages, seen: DiscordRoutes): Promise<void> {
+  await page.route('**/v1/me', async (route) => {
+    await stages.hold?.();
+    await route.fulfill(
+      envelope({
+        user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
+        characters: [],
+        guilds: [],
+        entitlements: mockEntitlements({ notifications: stages.entitled ?? true }),
+        ...(stages.featureOff === true ? {} : notificationsKey(currentBlock(stages, seen))),
+      }),
+    );
+  });
+  await page.route('**/v1/reports**', (route) =>
+    route.fulfill(envelope({ rows: [], total: 0, page: 1, per_page: 20 })),
+  );
+  await page.route('**/v1/devices', async (route) => {
+    await stages.hold?.();
+    await route.fulfill(envelope([]));
+  });
 }
