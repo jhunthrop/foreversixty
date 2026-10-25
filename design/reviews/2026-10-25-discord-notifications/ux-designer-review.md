@@ -155,3 +155,16 @@ None.
 5. Remove questions: the question sits 8 px under the note and 4 px above `Remove`/`Cancel`; same as the earlier lane and acceptable, but the question wraps to two lines at 390 with no extra space above the buttons.
 6. `Cancel` in the replace view is a 44 px link row 8 px under `Paste a webhook URL instead`; two stacked links of equal weight (spec-allowed). If the replace view is ever redone, make `Cancel` the first of the two.
 7. The `4568·` separator and the `Opening Discord…` captures are known and being fixed; re-capture `discord-connected-*` after the markup commit.
+
+## Connect lane final look (e5ed06f2)
+
+**Verdict: SHIP.** Reviewed on the PNGs: connect panel at 360 and 1440, `failed` return at 390 and 1440, paste view at 360, saved connected destination crop at 360, switched-off connected panel at 360 and 1440, reconnect at 390, replace view at 1440, and the README heights line. No must-fix remains.
+
+1. Explanation `Discord asks which server and channel, then lets Forever Sixty post there. You need to be able to manage webhooks in that channel. We keep only that webhook, encrypted.`: approved. It wraps to four lines at 360 and three at 390 and 1440, inside the 340/340/320 caps (324.5/324.5/313).
+2. `failed` line `Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.`: approved. Polish for a later pass: its middle sentence repeats the explanation directly above it; if the copy is touched again, use `Could not connect. Ask a server admin to let you manage webhooks in that channel, or paste a webhook URL instead.` Three lines at 390, 362 and 350 against the caps; the paste link moves down and the button does not.
+3. `Discord did not open. Try again, or paste a webhook URL instead.` after 10 s: approved; unit-tested only, acceptable for a transient restore.
+4. Switched-off connected panel: 592/592/600 against my provisional 620/620/605. Confirmed; 1440 has 5 px headroom. The link and its two-line note sit inside the red-ruled notice under `Fixed it in Discord?...`, above `Test and switch on`; order is correct and the note reads at 13 px muted.
+5. Channel line: `Channel 1198...4568 · Open in Discord` now has a space either side of the dot at 360, 390 and 1440; the crop fits on one line at 338 px. Fixed.
+6. Paste view with the back link at 360: 683 against 700. Confirmed.
+7. Saved connected 488.5/488.5/496.5 against 520/520/500: confirmed. Reconnect and replace panels unchanged and correct.
+8. Carried polish, not blocking: the 40 px reserved hole above `Paste a webhook URL instead`, and the `connect` reserve floor still above the measured height.

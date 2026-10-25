@@ -162,3 +162,18 @@ Pixel diff, `connect: false` paste state against the previous lane: `discord-con
 - The committed `connect opening Discord` test fails against a held navigation (the label is never seen), see the top of this section; the PNGs exist from the throwaway spec.
 - Capture 29 and the in-staging parts of 26 (real redirect, URL bar) are not captured here: the URL is asserted by the test, not shown.
 - The worktree moved while this ran (commits c5fc10f8 connect link to the API origin, f46eb52c, 9b51612f, later 381e6d7f, and uncommitted edits to the spec and the capture spec by someone else). The first run, at a build made before those landed, linked a relative `/v1/notifications/discord/connect`; the final full run and every PNG here come from a fresh fixture build at 9b51612f, and its output is identical in the panel sizes quoted above.
+
+## Connect lane verdicts (2026-10-25)
+
+- ux-designer: SHIP WITH FIXES on the first pass (the opening-Discord capture case; the switched-off connected state uncaptured; §7 caps for the paste view with the back link and the two-line `failed`), fixed in 384622fb/e5ed06f2 and recaptured; final look at e5ed06f2: **SHIP** — the Manage Webhooks sentence and the new `failed` line approved, switched-off connected 592/592/600 against 620/620/605, the channel line reads `Channel 1198…4568 · Open in Discord`. Report: `ux-designer-review.md` (`## Connect lane re-check`, `## Connect lane final look`).
+- wow-player: SHIP WITH FIXES (6). Shipped: the destination line recaptured after the separator fix; Manage Webhooks named before the click and a way out in the failure line; a 10 s stuck-`Opening Discord…` fallback. Ruled: a channel NAME is not available without a bot (`Open in Discord` is the answer); Discord's dialog enforces the permission before authorising, so `denied` is a cancel. Deferred: the band above `Paste a webhook URL instead`. Report: `wow-player-review.md` (`## Connect lane re-check`).
+
+## Deferred after the connect lane
+
+- The 40 px reserved band above `Paste a webhook URL instead` (designer: passes; polish).
+- The `connect` loading floor (320/340) sits above the measured connect panel and below a `failed` outcome (transient).
+- The `failed` line's middle sentence repeats the explanation above it; a later pass may shorten it (designer's wording in the final-look section).
+- A channel name on the destination line needs a bot (`bot` scope + a channel read); the guild lane may add it.
+- No shared server-side single-use marker for the OAuth state (cookie-cleared; Discord's code is single use).
+- A webhook created by Discord at authorisation for a member whose plan lapsed mid-flow is not exchanged and so cannot be deleted by us (research UNCONFIRMED on when Discord creates it).
+- Capture 29 (Discord's own authorisation dialog) and a real end-to-end connect against the production application are verified after deploy, by hand.
