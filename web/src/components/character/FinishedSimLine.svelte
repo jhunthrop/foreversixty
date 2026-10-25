@@ -81,7 +81,18 @@
     aria-label={serverRunsCopy.dismissLabel(label)}
     aria-busy={phase === 'busy'}
     onclick={dismiss}
-    data-testid="finished-sim-dismiss"><span aria-hidden="true">×</span></button
+    data-testid="finished-sim-dismiss"
+    ><span aria-hidden="true"
+      ><svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" /></svg
+      ></span
+    ></button
   >
 </div>
 

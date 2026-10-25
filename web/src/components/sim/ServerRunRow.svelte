@@ -130,10 +130,20 @@
       {rerunLabel}
     </button>
   {:else if isDone}
-    <span
-      class="server-run-arrow text-muted absolute top-3 right-3.5 text-[16px] md:static"
-      aria-hidden="true">›</span
+    <svg
+      class="server-run-arrow text-muted absolute top-1/2 right-3.5 -translate-y-1/2 md:static md:translate-y-0"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
     >
+      <path d="M6 3l5 5-5 5" />
+    </svg>
   {/if}
 </svelte:element>
 
@@ -148,7 +158,8 @@
     text-decoration: underline;
     text-underline-offset: 4px;
   }
-  .server-run-link:hover .server-run-arrow {
+  .server-run-link:hover .server-run-arrow,
+  .server-run-link:focus-visible .server-run-arrow {
     color: var(--color-gold);
   }
   .server-run-link:active {

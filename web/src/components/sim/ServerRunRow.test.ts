@@ -75,7 +75,7 @@ describe('ServerRunRow states', () => {
     expect(body).toContain('href="/sim/sim-1"');
     expect(text(body)).toContain('1,204 DPS');
     expect(text(body)).toContain('Finished 14 minutes ago');
-    expect(text(body)).toContain('›');
+    expect(body).toContain('server-run-arrow');
     expect(body).not.toContain(serverRunsCopy.unreadSr);
     expect(body).not.toContain('<button');
   });

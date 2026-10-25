@@ -73,19 +73,27 @@
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" id="server-runs" data-testid="server-runs">
   <h2 class="section-title flex h-6 items-center text-[15px]">{serverRunsCopy.heading}</h2>
   {#if failed}
-    <LoadError message={serverRunsCopy.loadFailed} onRetry={onretry} testid="server-runs-error" />
+    <div class="border-line bg-raised rounded-panel server-runs-rows-reserve flex items-center border px-3.5">
+      <LoadError message={serverRunsCopy.loadFailed} onRetry={onretry} testid="server-runs-error" />
+    </div>
   {:else if shown === null}
     <div
-      class="border-line bg-raised rounded-panel server-runs-rows-reserve flex flex-col gap-3 border px-3.5 py-3"
+      class="border-line bg-raised rounded-panel server-runs-rows-reserve overflow-hidden border"
       aria-busy="true"
       data-testid="server-runs-loading"
     >
       <span class="sr-only">{serverRunsCopy.loadingSr}</span>
       {#each Array.from({ length: SKELETON_ROWS }, (_, index) => index) as index (index)}
-        <div class="flex flex-col gap-1.5" aria-hidden="true">
-          <span class="skeleton-block h-[15px] w-[180px] max-w-full"></span>
-          <span class="skeleton-block h-3 w-[120px] max-w-full"></span>
-          <span class="skeleton-block h-3.5 w-[140px] max-w-full"></span>
+        <div
+          class="border-line-soft flex items-center gap-3.5 border-b px-3.5 py-3 last:border-b-0"
+          aria-hidden="true"
+        >
+          <span class="skeleton-block h-8 w-8 shrink-0 rounded-full"></span>
+          <span class="flex min-w-0 flex-1 flex-col gap-1.5">
+            <span class="skeleton-block h-[15px] w-[180px] max-w-full"></span>
+            <span class="skeleton-block h-3 w-[120px] max-w-full"></span>
+          </span>
+          <span class="skeleton-block h-3.5 w-[140px] max-w-[30%] shrink-0"></span>
         </div>
       {/each}
     </div>
