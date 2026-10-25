@@ -19,9 +19,22 @@ Ten items the first lane deferred are ruled here. Each changed passage below car
 9. The account page's loading state draws the real two-column grid and reserves heights from the cached `/v1/me` before first paint (9.1).
 10. Checkboxes are gold site-wide, one rule in `global.css` (9.2).
 
+## Amendment log (amended 2026-10-25, connect lane)
+
+The owner asked for one click instead of copying a webhook URL. Discord's OAuth2 `webhook.incoming` flow gives exactly that: Discord shows its own server-and-channel picker and asks the member to allow `Forever Sixty`; our API receives a new incoming webhook and stores it as it stores a pasted one. Every changed passage below carries the marker `(amended 2026-10-25, connect lane)`. The rulings, in one line each:
+
+1. When the API says `connect: true`, the first state is the Connect state: one gold `Connect a Discord channel` and a one-sentence explanation; the paste form is a swap view behind `Paste a webhook URL instead` (3.2, 6.1). When `connect` is false the paste-first state is unchanged.
+2. The round trip is a full redirect (nothing is drawn while away). The return lands on `/account?discord=connected|denied|failed#discord`; the page turns the flag into one status line, moves focus, and removes the flag from the URL (4.3).
+3. A connected webhook's destination is `Connected to a Discord channel` over `Channel 1198…4568`. Discord's own webhook name (`Forever Sixty`) is never shown (3.2).
+4. A connected webhook's replace link is `Connect a different channel`, one click to Discord; the API deletes the old webhook from Discord, best effort, and the link's note says so (3.2, 4.3).
+5. Remove asks a different question by source: connected, `we delete its webhook from Discord`; pasted, `It stays in Discord until you delete it there` (4.3, 6.1).
+6. The Premium row's seven values are unchanged (3.7).
+7. No Discord logo, wordmark glyph or blurple: a plain text button in our own gold (3.2, 8).
+8. Contract: `connect` and `source`, two routes, the delete rule (10).
+
 ## 0. The experience in one paragraph
 
-A payer opens `/account` and, directly under the Plan panel, finds a `Discord` panel. With nothing saved it is a paste form: three numbered steps, one field for a webhook URL, three checkboxes for what to post, one gold `Save webhook` (amended 2026-10-25, follow-up lane). Once saved the panel says `Posts through “Raid pings”` with the shortened channel id under it, shows the three checkboxes, and offers `Send test message` and `Remove` (amended 2026-10-25, follow-up lane). When Discord rejects five posts in a row the panel says so in one sentence, names Discord's last error, says how to fix it, and offers `Test and switch on` (amended 2026-10-25, follow-up lane). When the plan ends the panel says posts are paused, keeps the webhook, and says why. A free member sees one sentence and `See plans` in the panel's place. The webhook token never appears on the page, not even masked.
+A payer opens `/account` and, directly under the Plan panel, finds a `Discord` panel. With nothing saved it is a paste form: three numbered steps, one field for a webhook URL, three checkboxes for what to post, one gold `Save webhook` (amended 2026-10-25, follow-up lane). Once saved the panel says `Posts through “Raid pings”` with the shortened channel id under it, shows the three checkboxes, and offers `Send test message` and `Remove` (amended 2026-10-25, follow-up lane). When Discord rejects five posts in a row the panel says so in one sentence, names Discord's last error, says how to fix it, and offers `Test and switch on` (amended 2026-10-25, follow-up lane). When the plan ends the panel says posts are paused, keeps the webhook, and says why. A free member sees one sentence and `See plans` in the panel's place. (amended 2026-10-25, connect lane) Where the deployment has Discord connect on, the nothing-saved panel is not the paste form but one gold button, `Connect a Discord channel`: one click sends the member to Discord to pick a channel, and they come back to `Connected. Send a test message to see it in your channel.` The paste form stays one link away. The webhook token never appears on the page, not even masked.
 
 ## 1. The one question and the answer that must be visible
 
@@ -33,6 +46,7 @@ The answer is a state word and a destination: `Posts through “Raid pings”`, 
 |---|---|---|
 | Payer, saved | The `Posts through ...` line is the first line under the panel label. The whole panel (label, destination, three checkboxes, note, buttons, status line, `Use a different webhook`) is at most 480 px tall at 360 and 390, so it fits one 640 px screen once scrolled to (amended 2026-10-25, follow-up lane) (the Premium row's `On · 2 events` link lands on it, `#discord`). | The panel sits directly under Plan in the right rail (395 px wide at 1440). On a payer's account page Plan ends near y 895 at 1440, so the block begins at or below the fold; the Premium row above it answers the question in one line (`On · 2 events`), and the block is one tap or one scroll away. |
 | Payer, nothing saved | The intro (two lines) and the three numbered steps fill the panel's first 220 px; the URL field starts by 260 px, inside one 640 px screen (amended 2026-10-25, follow-up lane). | Same. |
+| Payer, nothing saved, connect on (amended 2026-10-25, connect lane) | The label, the intro and the gold `Connect a Discord channel` button end by 190 px, the explanation by 250 px; the whole panel is at most 340 px tall at 360 and 390. | The button's top is at 120 px inside the panel; the panel is at most 320 px tall at 1440. |
 | Payer, switched off or paused | The notice sentence is the first thing under the destination line, with a 2 px bar (`--wipe` switched off, `--gold` paused). | Same. |
 | Free | One sentence, 44 px high, under Plan. | Same. |
 
@@ -73,21 +87,42 @@ In `Account.svelte`, the right rail (`lg:col-span-4`), as the **last child of th
 | 5 | Events | `Post when` label, then the three checkbox rows and the note (3.4) | |
 | 6 | Actions | `Save webhook` (`PRIMARY_BUTTON_FIXED`, `px-5`) and, in the replace form only, `Cancel` (text link, 44 px) | The only filled gold element in the panel. |
 
+**Connect state** (payer, nothing saved, `me.notifications.connect` is true) (amended 2026-10-25, connect lane). This replaces the paste form as the first view. The paste form is the other view of the same panel (below).
+
+| Order | Region | Content | Style |
+|---|---|---|---|
+| 1 | Panel label row | gold dot, `Discord` | `StatePanel` |
+| 2 | Intro | `Get a message in a Discord channel when a server sim finishes or a log finishes parsing.` | 13 px `--muted`. Omitted in the replace view. |
+| 3 | Connect button (primary) | `Connect a Discord channel` | An `<a href="/v1/notifications/discord/connect">` styled as `PRIMARY_BUTTON_FIXED` (`h-11`, 44 px, `px-5`, gold fill, `--bg` text). A link, not a `<button>`: it is a navigation, middle-click and long-press work. Same tab. Not full width: it hugs its label (about 232 px). The only filled gold element. |
+| 4 | Explanation | `Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.` | 13 px `--muted`, 8 px under the button, up to three lines. It says what Discord will show and what we keep, and nothing else. |
+| 5 | Status line | reserved 21 px, empty until a return outcome (4.3) | 13 px, `--text` for `denied`, `--wipe` for `failed`; `role="status"` for denied, `role="alert"` for failed. |
+| 6 | Paste disclosure | `Paste a webhook URL instead` | Link-button, 13 px `--text`, underline, `min-h-11`, `aria-controls` the paste view. Activating it swaps the panel's body for the paste view with focus on the URL input. |
+
+No steps, no field and no checkboxes here: a connected webhook starts with the defaults (sim on, log on, private off) and the member edits them in the saved state, where changes save at once. Region gaps are the panel's 16 px; the button, explanation, status line and link sit in one group with 8 px between them.
+
+**Paste view when connect is on** (amended 2026-10-25, connect lane): the paste form above, unchanged in every row, plus one link-button under `Save webhook`, `Connect a Discord channel instead` (13 px `--text`, underline, 44 px), which swaps back with focus on the connect button. The view swap is not an accordion: the other view is removed, so the panel never holds both. The `Webhook URL` field keeps what was typed while the member stays on the paste view; switching away clears it.
+
+**Replace view when connect is on** (a pasted webhook, `Use a different webhook`): the connect view without the intro and with `Cancel` (text link, 44 px) as its last row; the saved webhook keeps posting until a new one is saved. A connected webhook has no replace view: its link goes straight to Discord (Saved, below).
+
+**Connect off** (`connect` is false or absent): the paste-first form above, exactly as shipped. The connect button, the disclosure and the back link do not exist.
+
 **Saved** (payer, working):
 
 | Order | Region | Content | Style |
 |---|---|---|---|
 | 1 | Label row | `Discord` | |
-| 2 | Destination (primary) (amended 2026-10-25, follow-up lane) | Line one: `Posts through “Raid pings”` (the name is Discord's own name for the webhook, 6.1). Line two: `Channel 1198…4568` (the first four and last four digits of the channel id, joined by an ellipsis). Without a stored name, line one reads `Posts to a Discord channel`. | Line one 14 px: `Posts through` `--muted`, the quoted name `--strong` 600; the name is escaped text, at most 40 characters shown then `…`, wraps at word boundaries, `overflow-wrap: anywhere`. Line two 13 px `--muted`: `Channel` in Barlow, the shortened id JetBrains Mono 13 px tabular `--text`; the id never breaks. 2 px between the lines. |
+| 2 | Destination (primary) (amended 2026-10-25, follow-up lane) (amended 2026-10-25, connect lane) | For a pasted webhook: line one `Posts through “Raid pings”` (the name is Discord's own name for the webhook, 6.1). Line two: `Channel 1198…4568` (the first four and last four digits of the channel id, joined by an ellipsis). Without a stored name, line one reads `Posts to a Discord channel`. For a connected webhook (`source` is `connected`): line one `Connected to a Discord channel`, line two the same shortened channel id, and a third line, the link `Open in Discord` (decision 22, amended: in this lane; shown for any webhook whose `guild_id` is known). Ruling: a connected webhook's Discord-side name is the application's name (`Forever Sixty`), so it says nothing and is never shown (the API returns `name: null` for a connected webhook; the web would ignore it regardless). The API cannot return a channel or server name (that needs a bot), so the member recognises the channel by the one they chose in Discord's dialog and by the test message. `Connected to` is `--muted`, `a Discord channel` is `--strong` 600; line two as for pasted. | Line one 14 px: `Posts through` `--muted`, the quoted name `--strong` 600; the name is escaped text, at most 40 characters shown then `…`, wraps at word boundaries, `overflow-wrap: anywhere`. Line two 13 px `--muted`: `Channel` in Barlow, the shortened id JetBrains Mono 13 px tabular `--text`; the id never breaks. 2 px between the lines. |
 | 3 | Failure warning (only with 1 to 4 failures) (amended 2026-10-25, follow-up lane) | Paragraph one: `The last 3 posts failed. At 5 in a row it switches off. Send a test message to check.` Paragraph two: `Last error from Discord: Missing Permissions.` | Paragraph one 13 px `--text`; paragraph two 13 px `--muted`; 2 px apart; no bar, no new colour. |
 | 4 | Events | `Post when`, the three checkbox rows (3.4), the note (amended 2026-10-25, follow-up lane) | |
 | 5 | Actions | `Send test message` and `Remove`, both `SECONDARY_BUTTON_FIXED`, `px-4`, 12 px gap, wrapping | No filled button: the panel is quiet when it works. |
 | 6 | Status line | reserved 21 px, 13 px | `--text` for success, `--wipe` for failure; `role="status"`, `role="alert"` on failure |
-| 7 | Replace link | `Use a different webhook` | 13 px `--text`, underline, 44 px tall, directly under the status line. Not rendered while the remove question is open (amended 2026-10-25, follow-up lane). |
+| 7 | Replace link | Pasted: `Use a different webhook`. Connected: `Connect a different channel` with the note `Connecting again replaces this channel and removes its webhook from Discord.` under it (amended 2026-10-25, connect lane) | 13 px `--text`, underline, 44 px tall, directly under the status line. Not rendered while the remove question is open (amended 2026-10-25, follow-up lane). The connected link is an `<a href="/v1/notifications/discord/connect">` (one click to Discord, no intermediate view); its note is 13 px `--muted`, no gap above, up to two lines, always shown. |
 
 **Switched off** (`disabled_reason` is `failed five times`, plan active) (amended 2026-10-25, follow-up lane): label row; destination; a notice; actions `Test and switch on` (`PRIMARY_BUTTON_FIXED`, the panel's only filled gold element) and `Remove`; status line; then the events (still editable). The notice is one block with a 2 px `--wipe` left bar and four lines, top to bottom: (1) 14 px `--strong` `Switched off after 5 failed posts in a row.`; (2) 13 px `--muted` `Last error from Discord: Unknown Webhook.`, omitted when `last_error` is null, cut at a word at 140 characters and ending in one `…` with no full stop after it; (3) 13 px `--muted` `Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.`; (4) the link-button `Use a different webhook` (13 px `--text`, underline, 44 px tall, 0 gap above it). The link moved out of its place under the status line: the cure for a deleted webhook is now read in the same block as the cause, and `Test and switch on` sits directly below the notice. The old helper `Sends a test message. If Discord accepts it, posts resume.` is deleted.
 
 **Plan lapsed** (`entitlements.notifications` is not true and a webhook is saved): label row; destination; a notice (2 px `--gold` left bar, `Posts are paused because your plan ended.`, under it `We kept your webhook. Posts start again when you are back on Premium.`); the `See plans` link; the three checkboxes disabled (read-only, showing what was chosen, no note) (amended 2026-10-25, follow-up lane); `Remove`. No `Send test message`, no `Use a different webhook`: the API refuses both.
+
+A lapsed connected webhook shows `Connected to a Discord channel` as its destination line (amended 2026-10-25, connect lane).
 
 **Free** (`entitlements.notifications` is not true and nothing is saved): the sentence `Discord messages tell you when a server sim or a log you uploaded is done. See plans` (13 px `--muted`, min height 44 px on the paragraph — `min-h-11 flex items-center`; the sentence wraps to two lines where the rail is narrower than the sentence, which includes 1440 at a 395 px rail, with `See plans` ending the second line, never alone on it; `See plans` underlined, `href="/premium"`, an inline link whose focus ring hugs the text). No panel, no heading, no form, no lock icon. This is the same decision as the character page's sentence (history spec 3.9).
 
@@ -137,6 +172,8 @@ The value column is about 190 px at 390: `Off · needs attention` (21 characters
 | `form` | entitled and nothing saved (`notifications` or `notifications.discord` is null or missing) | Paste form |
 | `free` | not entitled and nothing saved | The sentence |
 
+Which body the `form` state draws (amended 2026-10-25, connect lane): the Connect state when `me.notifications.connect` is true, else the paste form; a per-panel flag (`pasteView`) holds the member's swap to the paste view. `discordBlockState` still returns `form`; the view is a second pure function of `me` and the flag.
+
 A `/v1/me` with no `notifications` key means the deployment has notifications off (§10: the key is omitted when the API has no encryption key): the block renders nothing and the Premium row is not rendered, whatever the entitlement (amended 2026-10-25, follow-up lane). A saved webhook with both events off is `saved`; the Premium row says `Off · no events chosen` and the block shows the unchecked boxes.
 
 ### 4.2 Interactive elements
@@ -153,6 +190,15 @@ A `/v1/me` with no `notifications` key means the deployment has notifications of
 | `Use a different webhook` (in the saved panel, and inside the switched-off notice (amended 2026-10-25, follow-up lane)) | underlined `--text` link-button, 44 px; not rendered while the remove question is open | `--gold-hover` | gold outline, 2 px offset, radius 2 | `--gold-hover` | in flight | n/a | n/a | n/a |
 | `Cancel` (replace form) | as the link | as above | as above | as above | while saving | n/a | n/a | n/a |
 | `See plans` | `--text` underlined | `--gold-hover` | gold outline, 2 px offset | `--gold-hover` | n/a | n/a | n/a | n/a |
+
+**Connect elements** (amended 2026-10-25, connect lane):
+
+| Element | Default | Hover | Focus-visible | Active | Disabled | Loading | Empty | Error |
+|---|---|---|---|---|---|---|---|---|
+| `Connect a Discord channel` (link styled as primary) | gold fill, `--bg` text | fill `--gold-hover` | 2 px gold outline, 2 px offset | fill `#cfa64a` | n/a (an anchor); `aria-disabled` after the first click | label `Opening Discord…`, `aria-busy`, pointer events off, from the click until the page unloads; restored on `pageshow` with `persisted` (the back button) | n/a | none here: failure arrives as `?discord=failed` (4.3) |
+| `Paste a webhook URL instead`, `Connect a Discord channel instead`, `Connect a different channel` | underlined `--text` link-button, 44 px | `--gold-hover` | gold outline, 2 px offset, radius 2 | `--gold-hover` | in flight | the connected link shows `Opening Discord…` as the button does | n/a | n/a |
+
+Tab order (amended 2026-10-25, connect lane): connect state, `Connect a Discord channel`, `Paste a webhook URL instead`, then (replace view) `Cancel`; paste view, as before and then `Connect a Discord channel instead`; saved connected, the checkboxes, `Send test message`, `Remove`, `Connect a different channel`. Enter activates the anchor and Space the link-buttons as the platform does; Escape in the replace view acts as `Cancel`.
 
 Touch and keyboard parity: every control is 44 px high on phone (buttons `h-11`, link-buttons `min-h-11`, checkbox rows `min-h-11`, input `h-11`). Tab order in the form: input, `Save webhook`, `Cancel` (replace form only); checkboxes come before the actions in DOM order, so the order is input, the three checkboxes, `Save webhook` (amended 2026-10-25, follow-up lane). Saved: the three checkboxes (the third skipped while the second is off, since a disabled box takes no focus), `Send test message`, `Remove`, `Use a different webhook`. Switched off: `Use a different webhook` (in the notice), `Test and switch on`, `Remove`, then the checkboxes (amended 2026-10-25, follow-up lane). Enter in the input submits; Space toggles a focused checkbox; Escape in the replace form acts as `Cancel`; Escape in the remove question acts as `Cancel`. No hover-only behaviour exists, so touch needs nothing extra.
 
@@ -175,7 +221,24 @@ None of these messages repeats, quotes or hints at what was typed.
 
 **Failure warning.** With 1 to 4 failures in a row, the saved panel adds two paragraphs (amended 2026-10-25, follow-up lane): `The last N posts failed. At 5 in a row it switches off. Send a test message to check.` (`The last post failed.` for one), then `Last error from Discord: …`. They disappear when a post succeeds.
 
-**Remove.** `Remove` replaces the actions row with the question, and `Use a different webhook` is removed from the panel until the question is answered (amended 2026-10-25, follow-up lane). Confirm calls `DELETE /v1/notifications/discord`; success returns to the paste form with focus on the input and the status `Removed.` shown once under the panel's label row for 4 s (`role="status"`); in `lapsed`, success returns to `free`, which is the sentence, and the focus lands on the Plan panel's Discord row link.
+**Connect, the round trip** (amended 2026-10-25, connect lane).
+
+1. The click is a full-page navigation to `GET /v1/notifications/discord/connect`, which answers 302 to `https://discord.com/oauth2/authorize` (10). The page draws nothing while the member is away: no overlay, no spinner, no polling. Discord's own dialog asks which server and channel and asks them to authorise `Forever Sixty`; the member needs permission to manage webhooks in the channel and Discord's dialog says so. The only thing we draw before leaving is the button's `Opening Discord…`.
+2. Discord sends the member to `GET /v1/notifications/discord/callback`, which answers 302 to `/account?discord=<outcome>#discord`. The outcomes:
+
+| Outcome | Meaning | Panel after return | Status line (verbatim) | Focus |
+|---|---|---|---|---|
+| `connected` | the webhook was created and stored | `saved`, connected; the page treats its cached `/v1/me` as stale and renders the block only from the fresh read | `Connected. Send a test message to see it in your channel.` (`--text`, `role="status"`, stays until the next action) | `Send test message` |
+| `denied` | the member cancelled in Discord (no code) | unchanged: Connect state, or the saved panel when reconnecting; nothing is stored | `Cancelled in Discord. Nothing was connected.` (`--text`, `role="status"`) | the connect control that was used (`Connect a Discord channel` or `Connect a different channel`) |
+| `failed` | anything else (bad state, exchange failed, no webhook in the answer, not entitled, a store error) | unchanged | `Could not connect. Check that you can manage webhooks in that channel, then try again.` (`--wipe`, `role="alert"`) | the same control |
+
+3. The status line of a connect outcome is the panel's own (the reserved 21 px line of the connect state, or the saved panel's status line), so it never moves a button. A `denied` or `failed` line stays until the member acts or leaves.
+4. URL clean-up: on mount the page reads `discord`, keeps the value in component state, and calls `history.replaceState` to the same path and query without `discord`, keeping the hash (`/account#discord`), the pattern of the existing `?refreshed=1` toast. Any value other than the three is ignored and removed. Reloading the page therefore shows no status line. The hash scrolls the panel to the top (`scroll-margin-top: 80px`).
+5. Back button: from Discord the member may press back; the page restores from the bfcache or reloads; the button's `Opening Discord…` is reset on `pageshow` with `persisted`.
+6. Reconnect on a saved webhook: `denied` and `failed` leave the old webhook untouched and posting. `connected` replaces it: events, `failures`, `disabled_reason` and `last_error` follow 10; the old webhook is deleted from Discord when it was a connected one.
+7. A connect while switched off returns `connected` as a fresh saved webhook (failures 0, switched on); the status line is the connected line, not `Sent. Posts are on again.`
+
+**Remove.** `Remove` replaces the actions row with the question, and `Use a different webhook` is removed from the panel until the question is answered (amended 2026-10-25, follow-up lane). The question depends on `source` (amended 2026-10-25, connect lane): connected, `Remove this connection? Posts stop and we delete its webhook from Discord.`; pasted, `Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.` The delete from Discord is best effort and silent: if Discord refuses it the member still sees `Removed.`, because the webhook is already unusable by us. Confirm calls `DELETE /v1/notifications/discord`; success returns to the nothing-saved state (the Connect state when connect is on, else the paste form) with focus on the connect button or the input and the status `Removed.` shown once under the panel's label row for 4 s (`role="status"`); in `lapsed`, success returns to `free`, which is the sentence, and the focus lands on the Plan panel's Discord row link.
 
 **Replace.** `Use a different webhook` swaps the saved view for the paste form without the intro, with `Cancel`. The saved webhook keeps posting until a new one is saved. `Save webhook` here sends the new URL and the current events; success returns to `saved` with the new channel id.
 
@@ -183,7 +246,7 @@ None of these messages repeats, quotes or hints at what was typed.
 
 ## 5. Hierarchy
 
-- **One primary element per state.** Paste form: `Save webhook`, the only filled gold element. Saved: the destination line (`Posts through ...`) (amended 2026-10-25, follow-up lane); no filled button, because nothing is wrong. Switched off: the notice, and `Test and switch on` as the only filled gold element. Plan lapsed: the notice; `See plans` is a text link, not a button (the upsell grammar). Free: the sentence.
+- **One primary element per state.** Connect state (amended 2026-10-25, connect lane): `Connect a Discord channel`, the only filled gold element; `Paste a webhook URL instead` is a text link. Paste form: `Save webhook`, the only filled gold element. Saved: the destination line (`Posts through ...`) (amended 2026-10-25, follow-up lane); no filled button, because nothing is wrong. Switched off: the notice, and `Test and switch on` as the only filled gold element. Plan lapsed: the notice; `See plans` is a text link, not a button (the upsell grammar). Free: the sentence.
 - **One level of emphasis.** The destination (14 px, the id in mono `--strong`) is the answer; everything else is 13 px `--muted` or a control. `--wipe` appears only on the switched-off bar, failed status text and the invalid-field border. `--gold` appears on the panel dot and label (as every `StatePanel`), the primary button, the lapsed bar and focus outlines.
 - **Secondary is visibly secondary.** `Use a different webhook` and `Cancel` are text links under the actions; `Remove` is an outline button, never red, never first (the account page already keeps its one red for the guild-leave confirm).
 - **Whitespace.** 16 px between regions, 8 px label to field, 44 px rows; the 21 px status line is reserved, so a result never moves the buttons. No dividers inside the panel.
@@ -197,6 +260,17 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 
 | Where | String |
 |---|---|
+| Connect button (amended 2026-10-25, connect lane) | `Connect a Discord channel`; pending `Opening Discord…` |
+| Connect explanation (amended 2026-10-25, connect lane) | `Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.` |
+| Paste disclosure (amended 2026-10-25, connect lane) | `Paste a webhook URL instead` |
+| Back to connect (amended 2026-10-25, connect lane) | `Connect a Discord channel instead` |
+| Destination, connected (amended 2026-10-25, connect lane) | line one `Connected to` `a Discord channel`; line two `Channel` `{first 4 digits}…{last 4 digits}`. Never the Discord-side webhook name |
+| Reconnect link and note (amended 2026-10-25, connect lane) | `Connect a different channel` / `Connecting again replaces this channel and removes its webhook from Discord.` |
+| Return, connected (amended 2026-10-25, connect lane) | `Connected. Send a test message to see it in your channel.` |
+| Return, denied (amended 2026-10-25, connect lane) | `Cancelled in Discord. Nothing was connected.` |
+| Return, failed (amended 2026-10-25, connect lane) | `Could not connect. Check that you can manage webhooks in that channel, then try again.` |
+| Remove question, connected (amended 2026-10-25, connect lane) | `Remove this connection? Posts stop and we delete its webhook from Discord.` (buttons `Remove`, `Cancel`) |
+| Remove question, pasted (amended 2026-10-25, connect lane) | `Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.` (buttons `Remove`, `Cancel`) |
 | Panel label | `Discord` |
 | Intro (form) | `Get a message in a Discord channel when a server sim finishes or a log finishes parsing.` |
 | Field label | `Webhook URL` |
@@ -216,8 +290,7 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 | Destination, no name (amended 2026-10-25, follow-up lane) | line one `Posts to a Discord channel`; line two as above |
 | Test | `Send test message`; pending `Sending…` |
 | Remove | `Remove`; pending `Removing…` |
-| Remove question | `Remove this webhook? Posts stop and we forget the URL.` (buttons `Remove`, `Cancel`) |
-| Replace | `Use a different webhook` |
+| Replace (pasted) (amended 2026-10-25, connect lane) | `Use a different webhook` |
 | Saved status | `Saved. Send a test message to see it in your channel.` after a first save; `Saved.` after an event change |
 | Test sent | `Sent. Check the channel.`; after switching on `Sent. Posts are on again.` |
 | Test failed | `Discord said: {error}.` (the error text, one trailing full stop) |
@@ -280,9 +353,12 @@ Limits respected: titles at most 256 characters (ours are at most 200), field va
 
 **Never collapses, at any width:** the destination line and the channel id; the notice sentence in switched-off and lapsed; the three checkbox labels (they wrap, never truncate) (amended 2026-10-25, follow-up lane); the destination's two lines; the status line; `Remove`; the input at full width; the free sentence and `See plans`.
 
+Also never, (amended 2026-10-25, connect lane): `Connect a Discord channel` and its explanation, and the connect status line.
+
 **Collapses or wraps:** buttons wrap onto a second row when the panel is narrower than their sum (at 360 the panel's inner width is 292 px: `Send test message` plus `Remove` fit on one row at 280 px; `Test and switch on` plus `Remove` wrap, `Remove` on its own 44 px row). Helpers wrap. The channel id sits on its own line when the line is full. The panel padding is 16 px below 768.
 
 - **360 and 390:** the panel is the rail's width (the page's 18 px gutters, 324 or 354 px). Panel heights (amended 2026-10-25, follow-up lane): saved at most 480 px (540 with the 1-to-4-failures warning), paste form at most 640 px, switched off at most 580 px with a one-line Discord error, plan lapsed at most 480 px; with the longest error the API keeps (140 characters, three lines) the switched-off panel may reach 620 px at 390 and 650 px at 360 — the error is never cut shorter, because it is the one thing the member can act on. At 1440 the same states are at most 470, 650, 565 and 490 px (amended after the follow-up captures: the form measured 647 and the one-line switched-off 561, the 8 px being `StatePanel`'s `md:py-5` over `py-4`); saved with the 1-to-4-failures warning and a 140-character error may reach 590 px at 360 and 390 (measured 584 at 390). The heights grew from the first lane's caps (420, 560, 520) by the third checkbox row (44 px), the destination's second line (20 px) and the steps (about 70 px, form only). The Premium row's value wraps to two lines at 360 for the longest values.
+- Connect heights (amended 2026-10-25, connect lane): the connect state is at most 340 px at 360 and 390 and 320 px at 1440; saved and connected is at most 520 px at 360 and 390 and 500 px at 1440 (the pasted caps plus the reconnect note, 40 px). The button hugs its label and never wraps its text; at 360 it is 232 px of the 292 px inner width.
 - **768 to 1023:** the right rail drops under the left column (single column below `lg`), the panel is the full content width with 24 x 20 px padding, and nothing stretches the input beyond the panel.
 - **1024 to 1279:** the rail is 288 px wide; see 3.1.
 - **1440:** 395 px wide, as the mock.
@@ -303,6 +379,10 @@ Limits respected: titles at most 256 characters (ours are at most 200), field va
 10. **No history, counters or delivery log** in the block (3.5).
 11. **The destination is Discord's own webhook name, not a member label** (amended 2026-10-25, follow-up lane). A webhook's name is set by the member in the same Discord dialog that makes the URL; step 2 asks them to name it something they will recognize. A second field in our form would be a second thing to type for the same word. The shortened channel id stays beneath it to tell two webhooks of the same name apart.
 12. **The account page's loading state is the real grid** (amended 2026-10-25, follow-up lane). A Discord-only reserve inside an absent rail cannot hold; the reserve is the page's (9.1).
+13. **Connect is the first path, paste stays one link away** (amended 2026-10-25, connect lane). The member should not have to copy a URL; the product spec's non-goal (no bot, no guild linking) holds, because the OAuth scope `webhook.incoming` gives only a webhook. The paste path stays for members who do not want to authorise an app and for deployments without the Discord application.
+14. **A connected webhook says `Connected to a Discord channel`, never the Discord-side name** (amended 2026-10-25, connect lane). The name defaults to `Forever Sixty`, which tells the member nothing; a pasted name was typed by the member and does.
+15. **We delete what we made, never what the member made** (amended 2026-10-25, connect lane). A connected webhook is created by our authorisation, so replacing or removing it deletes it from Discord (best effort); a pasted webhook is the member's and stays.
+16. **No Discord branding** (amended 2026-10-25, connect lane). No logo, wordmark glyph or blurple; the button is our own gold text button, and the word `Discord` appears as text only. The Developer Portal application is named exactly `Forever Sixty` with our seal as its icon, because Discord's dialog shows both.
 
 ## 9. Performance, polish, and acceptance
 
@@ -332,7 +412,7 @@ A guild panel above Plan, extra devices, or any panel taller than its floor is a
 
 **What the page knows before first paint.** A third block in `Base.astro`'s inline script, written like the server-runs and history blocks (lines 131 to 185), runs only when `location.pathname` is `/account` or `/account/` and `<html data-session="1">`. It reads two localStorage values:
 
-1. The cached `/v1/me` (`data-me-storage-key`, as the other blocks). From it, one attribute on `<html>`: `data-discord` with exactly one of `none`, `free`, `form`, `saved`, `off`, `lapsed`, by the same precedence as `discordBlockState` (4.1): no cache, or no `notifications` key: `none`; otherwise `lapsed`, `off`, `saved`, `form`, `free` by 4.1's rows. A unit test runs the script's expression against every fixture `discordBlockState` is tested with and asserts equal keys.
+1. The cached `/v1/me` (`data-me-storage-key`, as the other blocks). From it, one attribute on `<html>`: `data-discord` with exactly one of `none`, `free`, `connect`, `form`, `saved`, `off`, `lapsed` ((amended 2026-10-25, connect lane): `connect` is `form` with `notifications.connect` true), by the same precedence as `discordBlockState` (4.1): no cache, or no `notifications` key: `none`; otherwise `lapsed`, `off`, `saved`, `form`, `free` by 4.1's rows. A unit test runs the script's expression against every fixture `discordBlockState` is tested with and asserts equal keys.
 2. The last rendered heights (`fs.accountReserve`, named in a `data-account-reserve-key` attribute): `{"v":1,"lg":{"left":N,"rail":N},"stack":{"left":N,"rail":N}}`. The bucket is `lg` when `matchMedia('(min-width: 1024px)').matches`, else `stack`. It sets `--account-left-reserve` and `--account-rail-reserve` in px on `<html>` when each value is above 0 and at most 4000. A malformed value, a wrong `v` or unavailable storage sets nothing and the floors apply (the other blocks' pattern: `try`/`catch`, silent).
 
 **What writes the heights.** `Account.svelte`, once two animation frames after the ready view mounts, and again on `pagehide` (so the Your reports list that arrives later is counted), writes the rounded `getBoundingClientRect().height` of `account-left-col` and `account-rail-col` (two new test ids on the existing column wrappers) into the current bucket, keeping the other bucket. It skips a write when either height is 0 or above 4000. Sign-out removes the key.
@@ -343,6 +423,7 @@ A guild panel above Plan, extra devices, or any panel taller than its floor is a
 |---|---|---|---|
 | `none` | nothing (no block; no row) | 0 | 0 |
 | `free` | one 44 px line, no panel chrome | 44 | 44 |
+| `connect` (amended 2026-10-25, connect lane) | one block | 320 | 340 |
 | `form` | one block | 610 | 630 |
 | `saved` | one block | 460 | 475 |
 | `off` | one block | 540 | 565 |
@@ -354,7 +435,7 @@ The `none` and `free` states draw no panel, because the ready page draws none.
 
 | Case | 390 | 1440 |
 |---|---|---|
-| Warm (localStorage holds a cached `/v1/me` and `fs.accountReserve` from a previous ready page), each of the six `data-discord` states | CLS at most 0.05; footer top moves at most 8 px | CLS at most 0.03; footer top moves at most 8 px |
+| Warm (localStorage holds a cached `/v1/me` and `fs.accountReserve` from a previous ready page), each of the seven `data-discord` states (amended 2026-10-25, connect lane) | CLS at most 0.05; footer top moves at most 8 px | CLS at most 0.03; footer top moves at most 8 px |
 | Cold (session hint set, nothing stored) | recorded, not gated; at most 0.15 | recorded, not gated; at most 0.08 |
 
 Cold is a new device; its numbers go in the PR so a regression is visible. The hint-less signed-out visitor is untouched and keeps its existing CLS 0.
@@ -405,15 +486,34 @@ New or changed in the follow-up lane (amended 2026-10-25, follow-up lane) (390 a
 18. Switched off with the four-line notice (one-line error, and the 140-character error at 390 and 360), with `Use a different webhook` inside the notice and the panel height printed against the caps in 7.
 19. Remove confirm: `Use a different webhook` absent.
 20. The Premium row's seven values at 390, 1024 and 1440, with the 1024 capture proving `2 events` never splits; and the feature-off page with no Discord row.
-21. The loading state at 390 and 1440 with the cached `/v1/me` for each of the six `data-discord` states, then the ready page beside it (same scale), the printed warm and cold CLS numbers, and the footer's top before and after.
+21. The loading state at 390 and 1440 with the cached `/v1/me` for each of the seven `data-discord` states (amended 2026-10-25, connect lane), then the ready page beside it (same scale), the printed warm and cold CLS numbers, and the footer's top before and after.
 22. A capture of each of the ten checkbox surfaces at 1440 showing a gold checked box; one disabled and one focus-visible capture of the Discord row and of one non-Discord surface (the rankings filters).
 23. The sim embed with and without the character name, the log embed with `Boss fights`, the test embed with private logs on, all three in the mock's boards and in a real channel when the owner supplies a webhook.
+
+New or changed in the connect lane (amended 2026-10-25, connect lane) (390 and 1440 unless stated; the mock's `CONNECT ON` boards are the reference):
+
+24. The Connect state with `connect: true`, nothing saved: default, button hover, button focus-visible, `Opening Discord…`, and the 360 capture; the panel height printed against 340 and 320.
+25. The paste view with connect on (with the back link), and the paste-first state with `connect: false` (the connect button, disclosure and back link absent).
+26. The three return outcomes from a real redirect in staging: `connected` (saved connected, focus on `Send test message`), `denied`, `failed`; each with the URL bar capture showing `/account#discord` with no `discord=`; a reload showing no status line.
+27. Saved connected: the destination `Connected to a Discord channel` over `Channel 1198…4568` with no Discord-side name anywhere in the DOM text; the reconnect link and its note at 360 and 390; a saved pasted webhook beside it.
+28. Remove confirm for a connected and for a pasted webhook (the two questions), and replace view for a pasted webhook with connect on.
+29. Discord's own dialog (staging) showing the application named `Forever Sixty` with the seal icon, and the new webhook listed under the channel's Integrations; after a reconnect and after a remove, the old webhook gone from Discord.
+30. The loading state for the seventh `data-discord` value (`connect`), warm CLS numbers as in 9.1.
+31. A grep of the built page and the bundle for the Discord logo asset and for `5865F2` finds nothing.
 
 ## 10. API contract this spec assumes
 
 The API lane builds exactly this; if it differs, change the contract here first.
 
 - **`GET /v1/me`** carries `notifications: {discord: {channel_id, name, events: {sim_finished, upload_parsed, upload_private}, disabled_reason, last_error, failures} | null}` (amended 2026-10-25, follow-up lane). `channel_id` is a string (Discord's channel snowflake). `name` is `null` or a string (see the next item). `events` has exactly those three keys. `disabled_reason` is `null`, `"failed five times"` or `"plan lapsed"`. `last_error` is `null` or Discord's error text with any URL or token removed. `failures` is the consecutive failure count, 0 to 5. The block is returned for a lapsed member (it is how the page knows the webhook was kept). `entitlements.notifications` is the gate; the web never decides it. Channels are keyed (`discord` now), so a later channel adds a key and changes no field.
+- **Connect additions** (amended 2026-10-25, connect lane).
+  - `GET /v1/me` carries `notifications.connect: boolean`: true only when the Discord application is configured (client id, client secret, registered redirect) and the deployment's encryption key is present. It is absent whenever `notifications` is.
+  - A saved `discord` block carries `source: "connected" | "pasted"`; rows saved before this change are `pasted`. For a connected webhook `name` is `null`.
+  - `GET /v1/notifications/discord/connect` needs the session cookie and `Can(FeatureNotifications)`. It answers 302 to `https://discord.com/oauth2/authorize?response_type=code&client_id=…&scope=webhook.incoming&redirect_uri=<callback>&state=<value>`. `state` is signed, bound to the session, single use, and expires in 10 minutes. Without a session or entitlement it answers 302 to `/account?discord=failed#discord`. When `connect` is false it answers 404.
+  - `GET /v1/notifications/discord/callback`: with no `code`, or with `error=access_denied`, 302 to `/account?discord=denied#discord`. With a bad or expired `state`, a failed exchange, an answer with no `webhook`, or a store error, 302 to `/account?discord=failed#discord`. Otherwise it exchanges the code (`POST https://discord.com/api/oauth2/token`, form-encoded, the same `redirect_uri`), takes `webhook.{id, token, url, channel_id, guild_id, name}`, stores the sealed URL, the channel id and `source = "connected"`, and answers 302 to `/account?discord=connected#discord`. The access and refresh tokens are discarded unread, never stored, never logged. No response, redirect or log line contains the code, the token or the URL.
+  - A connect over an existing webhook keeps its events; with nothing saved the events are the defaults (sim on, log on, private off). `failures`, `disabled_reason` and `last_error` are reset.
+  - **The delete-from-Discord rule.** When a connected webhook is replaced (by a new connect, or by a `PUT` with a URL), removed (`DELETE`), or its account is deleted, the API calls Discord's webhook delete (`DELETE /webhooks/{id}/{token}`) with the webhook's own token: 5 s timeout, no retry, after the database change has landed. A failure is logged without the URL or token and never shown. A pasted webhook is never deleted from Discord. A lapsed plan deletes nothing.
+  - A `PUT` with a `webhook_url` stores `source = "pasted"`.
 - **`PUT /v1/notifications/discord`** with `{webhook_url?, events}`, `events` carrying all three keys (amended 2026-10-25, follow-up lane). `webhook_url` is **required when nothing is saved or when replacing** and **omitted** for an events-only change (the page never has the URL, so it cannot resend it). 200 answers the same block as `/v1/me`'s, never the URL. The API validates the host (exactly `discord.com` or `discordapp.com`, https only) and the path (`/api/webhooks/<number>/<token>`, with an optional `v6` to `v10` segment), refuses a query or fragment (a pasted webhook URL has neither; the web pre-check mirrors this), and rejects userinfo and ports. A new URL resets `failures` to 0 and clears `disabled_reason` and `last_error`. 400 or 422 for a bad URL (the body names no part of the URL); 402 when `Can(FeatureNotifications)` is false. The web shows its own words and never the response body.
 - **The webhook `name` and the third event flag** (amended 2026-10-25, follow-up lane). This is an API change from the first lane. (a) One new nullable text column on the stored webhook, `webhook_name`: the `name` field of the same `GET /webhooks/{id}/{token}` response that supplies `channel_id`, trimmed, control characters removed, cut at 80 characters, stored on every save that sends a `webhook_url` (a replace refreshes it; an events-only `PUT` leaves it). `null` when Discord returns none. The web escapes it and shows at most 40 characters. Discord does not return the channel's name (that needs a bot), so the page cannot say `#raid-pings` and does not try. (b) One new boolean event flag, `upload_private`, beside the other two: default `false` on a new webhook; webhooks saved before this change keep posting private logs (their flag is set `true` once, so no member's behaviour changes silently). The report ingest posts when `upload_parsed` is on and either the report is not private or `upload_private` is on. The test message reads the flag (6.2). An events-only `PUT` validates all three keys. The Premium row's count is `sim_finished` plus `upload_parsed` only.
 - **`channel_id` provenance (decision 1).** A Discord webhook URL contains the **webhook id** and the token, not the channel id. The channel id comes from Discord's `GET /webhooks/{id}/{token}` response (`channel_id`). The API calls it once on save, with a 5 s timeout. If Discord does not answer or the webhook does not exist, the save fails with 422 and the invalid-URL message, which also proves the webhook exists before it is stored. The webhook id itself is never returned.
@@ -445,3 +545,8 @@ The API lane builds exactly this; if it differs, change the contract here first.
 18. **The Premium row's values** (3.7) are new wording for the state; `On · n events` follows the server-sims row's `On · n runs this month`; `Off · needs attention` and `Off · Premium` (amended 2026-10-25, follow-up lane) replace `Off · failed five times` and `Off`.
 19. **No live update.** A switch-off that happens while the account page is open shows on the next load. Alternative: re-read `/v1/me` on tab focus, which the page does not do for anything else.
 20. **Removing `shipsMonth.notifications`** from `billing/copy.ts` and the tests that reference `Ships December`; the /premium line and the changelog entry change on the day the lane ships, not before.
+21. **Connect is first when configured** (amended 2026-10-25, connect lane). Alternative: keep paste first with a secondary connect button. Recommended: connect first, per the owner's direction.
+22. **A connected webhook shows no name** (amended 2026-10-25, connect lane). Alternative: a link `Open in Discord` built from `guild_id` and `channel_id` (`https://discord.com/channels/<guild>/<channel>`), which would let the member see the channel's name in Discord. Controller ruling 2026-10-25: IN this lane — the API stores and returns `guild_id` for a connected webhook, and the saved view shows a third line under the channel id: the text link `Open in Discord` (13 px, underlined, `--text`, 44 px tall, `href="https://discord.com/channels/<guild_id>/<channel_id>"`, `target="_blank" rel="noopener"`), so the member can see the channel's name in Discord itself. A pasted webhook has no guild id (Discord's lookup gives `guild_id` too — store it for pasted webhooks as well, so both sources get the link when it is known).
+23. **A connected webhook offers no paste replace** (amended 2026-10-25, connect lane). A member who wants a pasted URL removes the connection first. Alternative: a second link under the reconnect link; rejected as two secondary links stacked for a rare path.
+24. **`denied` and `failed` are the only error words** (amended 2026-10-25, connect lane): the API knows no more. Alternative: a reason code (`?discord=failed&why=scope`); Discord's answers do not give one.
+25. **Events are not chosen before connecting** (amended 2026-10-25, connect lane). The redirect would have to carry them; the defaults suit most members and the saved state edits them in one click.
