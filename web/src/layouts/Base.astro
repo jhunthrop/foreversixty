@@ -41,6 +41,7 @@ import { API_BASE_URL } from '../lib/planner/config';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
   LIVE_TTL_MS as SERVER_RUNS_LIVE_TTL_MS,
+  MAX_RESERVE_PX as SERVER_RUNS_MAX_RESERVE_PX,
   RESERVE_STORAGE_KEY as SERVER_RUNS_RESERVE_KEY,
 } from '../lib/sim/server-runs-poll';
 
@@ -91,6 +92,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-server-runs-reserve-key={SERVER_RUNS_RESERVE_KEY}
       data-server-runs-live-key={SERVER_RUNS_LIVE_KEY}
       data-server-runs-live-ttl={SERVER_RUNS_LIVE_TTL_MS}
+      data-server-runs-max-reserve={SERVER_RUNS_MAX_RESERVE_PX}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -140,10 +142,12 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         // holds an unseen finished run, or a run was started or seen in flight in the last 2 h.
         const finished = me && me.finished_sims && me.finished_sims.length > 0;
         const liveSince = Number(localStorage.getItem(el.dataset.serverRunsLiveKey));
-        const live = liveSince > 0 && Date.now() - liveSince < Number(el.dataset.serverRunsLiveTtl);
+        const sinceLive = Date.now() - liveSince;
+        const live = liveSince > 0 && sinceLive >= 0 && sinceLive < Number(el.dataset.serverRunsLiveTtl);
         if (root.dataset.session === '1' && payer && (finished || live)) root.dataset.finished = '1';
         const reserve = Math.round(Number(localStorage.getItem(el.dataset.serverRunsReserveKey)));
-        if (reserve > 0) root.style.setProperty('--server-runs-reserve', reserve + 'px');
+        if (reserve > 0 && reserve <= Number(el.dataset.serverRunsMaxReserve))
+          root.style.setProperty('--server-runs-reserve', reserve + 'px');
       } catch {
         /* storage unavailable or malformed: the list reserves one row */
       }

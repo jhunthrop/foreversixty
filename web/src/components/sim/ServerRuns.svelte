@@ -4,9 +4,10 @@
      server sims. The parent reads and polls the list; this draws it, and owns the Run again
      calls because each row's button state belongs to the list, not to the page. -->
 <script lang="ts">
-  import { PREMIUM_REQUIRED_STATUS, SimApiError, rerunSim } from '../../lib/sim/api';
+  import { rerunSim } from '../../lib/sim/api';
   import { visibleRows } from '../../lib/sim/server-runs';
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
+  import { rerunOutcome } from '../../lib/sim/server-runs-rerun';
   import { writeReserveHeight, type RerunStatus } from '../../lib/sim/server-runs-poll';
   import type { SimListRow } from '../../lib/sim/types';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -37,9 +38,14 @@
   let panel = $state<HTMLElement | undefined>();
 
   // The panel's rendered height is next visit's reserve (spec 3.7): measured once rows or the
-  // empty state are painted, never while loading or failed.
+  // empty state are painted, never while loading or failed, and again whenever a row's state
+  // or a Run again status changes (a poll flipping running to done, a failure line appearing).
   $effect(() => {
-    if (panel !== undefined && shown !== null) writeReserveHeight(panel.offsetHeight);
+    void rerunStatus;
+    if (panel !== undefined && shown !== null) {
+      void shown.rows.map((row) => row.state);
+      writeReserveHeight(panel.offsetHeight);
+    }
   });
 
   function setStatus(simId: string, status: RerunStatus): void {
@@ -48,15 +54,9 @@
 
   async function rerun(simId: string): Promise<void> {
     setStatus(simId, 'pending');
-    try {
-      await rerunSim(simId);
-    } catch (thrown) {
-      const lapsed = thrown instanceof SimApiError && thrown.status === PREMIUM_REQUIRED_STATUS;
-      setStatus(simId, lapsed ? 'lapsed' : 'failed');
-      return;
-    }
-    setStatus(simId, 'started');
-    onstarted();
+    const outcome = await rerunOutcome(() => rerunSim(simId));
+    setStatus(simId, outcome);
+    if (outcome === 'started') onstarted();
   }
 </script>
 

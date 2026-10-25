@@ -2,6 +2,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   LIVE_TTL_MS,
+  MAX_RESERVE_PX,
   hasInFlight,
   isLive,
   markLive,
@@ -56,6 +57,19 @@ describe('the reserve hints', () => {
     writeReserveHeight(0);
     writeReserveHeight(Number.NaN);
     expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe('318');
+  });
+
+  it('refuses an absurd reserve', () => {
+    writeReserveHeight(MAX_RESERVE_PX + 1);
+    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBeNull();
+    writeReserveHeight(MAX_RESERVE_PX);
+    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe(String(MAX_RESERVE_PX));
+  });
+
+  it('does not count a future-dated live flag as live', () => {
+    markLive(2_000_000);
+    expect(isLive(1_999_999)).toBe(false);
+    expect(isLive(2_000_000)).toBe(true);
   });
 
   it('expires the live flag two hours after it was set', () => {

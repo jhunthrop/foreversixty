@@ -180,6 +180,23 @@ test('a lapsed plan answers Run again with the Premium line and See plans', asyn
   await expect(page.getByTestId('server-run-again-failed-run')).toBeEnabled();
 });
 
+test('another Run again failure shows the failure line, and the stored reserve grows with it', async ({
+  page,
+}) => {
+  await stubSignedIn(page, true);
+  await stubServerRuns(page, [FAILED], 500);
+  await page.goto('/sim');
+  const reserve = (): Promise<number> =>
+    page.evaluate(() => Number(localStorage.getItem('fs.serverRuns.reserve')));
+  await expect(page.getByTestId('server-run-failed-run')).toBeVisible();
+  await expect.poll(reserve).toBeGreaterThan(0);
+  const before = await reserve();
+
+  await page.getByTestId('server-run-again-failed-run').click();
+  await expect(page.getByTestId('server-run-failed-run')).toContainText(serverRunsCopy.runAgainFailed);
+  await expect.poll(reserve).toBeGreaterThan(before);
+});
+
 test('a free member sees no list, no heading and no empty state', async ({ page }) => {
   await stubSignedIn(page, false);
   await stubServerRuns(page, [DONE_UNSEEN]);

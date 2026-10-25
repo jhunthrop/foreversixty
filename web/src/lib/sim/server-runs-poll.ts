@@ -15,6 +15,8 @@ export const RESERVE_STORAGE_KEY = 'fs.serverRuns.reserve';
 /** When a run was last started or seen in flight (epoch ms); the band's reserve hint. */
 export const LIVE_STORAGE_KEY = 'fs.serverRuns.live';
 export const LIVE_TTL_MS = 2 * 60 * 60 * 1000;
+/** A stored reserve above this is nonsense (tampered or from another layout) and is ignored. */
+export const MAX_RESERVE_PX = 2000;
 
 /** What the `Run again` button on a failed row is showing. */
 export type RerunStatus = 'idle' | 'pending' | 'started' | 'failed' | 'lapsed';
@@ -51,7 +53,7 @@ function storage(): Storage | null {
 }
 
 export function writeReserveHeight(pixels: number): void {
-  if (!Number.isFinite(pixels) || pixels <= 0) return;
+  if (!Number.isFinite(pixels) || pixels <= 0 || pixels > MAX_RESERVE_PX) return;
   try {
     storage()?.setItem(RESERVE_STORAGE_KEY, String(Math.round(pixels)));
   } catch {
@@ -63,14 +65,15 @@ export function markLive(now: number = Date.now()): void {
   try {
     storage()?.setItem(LIVE_STORAGE_KEY, String(now));
   } catch {
-    // Same as writeRowCount.
+    // Private mode or quota: the hint is a convenience.
   }
 }
 
 export function isLive(now: number = Date.now()): boolean {
   try {
     const stamp = Number(storage()?.getItem(LIVE_STORAGE_KEY));
-    return Number.isFinite(stamp) && stamp > 0 && now - stamp < LIVE_TTL_MS;
+    // A stamp from the future (clock change, tampering) is expired, not live.
+    return Number.isFinite(stamp) && stamp > 0 && stamp <= now && now - stamp < LIVE_TTL_MS;
   } catch {
     return false;
   }

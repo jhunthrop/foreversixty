@@ -450,7 +450,6 @@
   .ch {
     --ch-cols: minmax(0, 1fr);
     --ch-gap: 16px;
-    --ch-pad: 16px;
     --ch-pad-x: 16px;
     --ch-pad-y: 16px;
     --ch-foot-h: 44px;
@@ -464,7 +463,7 @@
     gap: var(--ch-gap);
     align-items: center;
     box-sizing: border-box;
-    padding: var(--ch-pad);
+    padding: var(--ch-pad-y) var(--ch-pad-x);
     background: var(--color-raised);
     border: 1px solid var(--color-gold);
     border-radius: var(--radius-panel);
@@ -473,7 +472,6 @@
     .ch-band {
       --ch-cols: minmax(0, 1.3fr) minmax(0, 1fr) auto;
       --ch-gap: 28px;
-      --ch-pad: 18px 22px;
       --ch-pad-x: 22px;
       --ch-pad-y: 18px;
       --ch-crest: 64px;
@@ -516,7 +514,8 @@
     }
   }
   @media (min-width: 1024px) {
-    .ch-band.ch-has-foot {
+    .ch-band.ch-has-foot,
+    :global(html[data-finished='1']) .ch-band.ch-loading {
       min-height: calc(var(--ch-band-min) + var(--ch-foot-h));
       grid-template-rows: 1fr auto;
     }
@@ -870,7 +869,7 @@
     gap: var(--ch-gap);
     align-items: center;
     box-sizing: border-box;
-    padding: var(--ch-pad);
+    padding: var(--ch-pad-y) var(--ch-pad-x);
   }
   .ch-sk-identity {
     display: flex;

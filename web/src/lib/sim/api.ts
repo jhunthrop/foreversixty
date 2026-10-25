@@ -78,7 +78,7 @@ function myBuildsKey(apiBase: string, page: number): string {
   return `${apiBase}/v1/builds?mine=1&page=${page}`;
 }
 
-function mySimsKey(apiBase: string, page: number, kind: KindFilter, lane?: string): string {
+function mySimsKey(apiBase: string, page: number, kind: KindFilter, lane?: SimLane): string {
   return `${apiBase}/v1/sims?mine=1&page=${page}&kind=${kind}${laneParam(lane)}`;
 }
 
@@ -148,15 +148,17 @@ export function fetchMyBuilds(
   );
 }
 
-function laneParam(lane?: string): string {
-  return lane === undefined ? '' : `&lane=${lane}`;
+export type SimLane = 'server' | 'browser';
+
+function laneParam(lane?: SimLane): string {
+  return lane === undefined ? '' : `&lane=${encodeURIComponent(lane)}`;
 }
 
 export function listMySims(
   page: number = 1,
   apiBase: string = API_BASE_URL,
   kind: KindFilter = 'all',
-  lane?: string,
+  lane?: SimLane,
 ): Promise<SimListPage> {
   // "all" is the absence of the parameter, not a value: contract 8 gives `kind=` a closed
   // vocabulary of five and adding a sixth for "no filter" would be a word the API has to

@@ -6,6 +6,7 @@ import { readLayoutShift, trackLayoutShift } from './support/cls';
 import { ownerMeAnswer } from './support/character-fixture';
 
 const MAX_CLS = 0.02;
+const GATE_TIMEOUT_MS = 10_000;
 
 function run(id: string, dps: number): Record<string, unknown> {
   return { sim_id: id, spec: 'mage-frost', title: 'Frost night', dps, finished_at: '2026-10-24T11:00:00Z' };
@@ -106,8 +107,12 @@ test('a failed dismiss swaps the text for four seconds, then the sentence return
   );
   await page.goto('/');
   await page.getByTestId('finished-sim-dismiss').click();
-  await expect(page.getByTestId('finished-sim-failed')).toHaveText('Could not dismiss that. Try again.');
-  await expect(page.getByTestId('finished-sim-link')).toBeVisible({ timeout: 6000 });
+  const failure = page.getByTestId('finished-sim-failed');
+  await expect(failure).toHaveText('Could not dismiss that. Try again.');
+  await page.waitForTimeout(2000);
+  await expect(failure).toBeVisible();
+  await expect(page.getByTestId('finished-sim-link')).toBeVisible({ timeout: 4000 });
+  await expect(failure).toHaveCount(0);
 });
 
 test('while the seen call is in flight the dismiss is busy and the line stays, then it goes', async ({
@@ -119,18 +124,24 @@ test('while the seen call is in flight the dismiss is busy and the line stays, t
   let release: () => void = () => {};
   const gate = new Promise<void>((resolve) => {
     release = resolve;
+    // Fallback so a failing assertion never leaves the handler pending until teardown.
+    setTimeout(resolve, GATE_TIMEOUT_MS);
   });
   await page.route('**/v1/sims/*/seen', async (route) => {
     await gate;
     await route.fulfill({ status: 204, body: '' });
   });
-  await page.goto('/');
-  const dismiss = page.getByTestId('finished-sim-dismiss');
-  await dismiss.click();
-  await expect(dismiss).toHaveAttribute('aria-busy', 'true');
-  await expect(page.getByTestId('finished-sim-line')).toBeVisible();
-  release();
-  await expect(page.getByTestId('finished-sim-line')).toHaveCount(0);
+  try {
+    await page.goto('/');
+    const dismiss = page.getByTestId('finished-sim-dismiss');
+    await dismiss.click();
+    await expect(dismiss).toHaveAttribute('aria-busy', 'true');
+    await expect(page.getByTestId('finished-sim-line')).toBeVisible();
+    release();
+    await expect(page.getByTestId('finished-sim-line')).toHaveCount(0);
+  } finally {
+    release();
+  }
 });
 
 test('phone: the arrow replaces Open result, the line is at least 56 px, the dismiss is 44 px', async ({

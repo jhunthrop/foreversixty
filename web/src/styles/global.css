@@ -378,12 +378,8 @@ html[data-finished='1'] .ch-band.ch-loading {
     --ch-foot-reserve: var(--ch-foot-h);
   }
 }
-@media (min-width: 1024px) {
-  html[data-finished='1'] .ch-band.ch-loading {
-    min-height: calc(var(--ch-band-min) + var(--ch-foot-h));
-    grid-template-rows: 1fr auto;
-  }
-}
+/* From 1024px the skeleton's min-height and rows come from CharacterHeader.svelte's single
+   footer-reserve rule (shared with the ready state's .ch-has-foot). */
 
 /* The homepage hero with a session hinted (home signed-in panel spec 2026-10-10): the
    signed-out hero's text block and its example-panel cell collapse from first paint and the
