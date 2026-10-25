@@ -1,6 +1,7 @@
 package sims
 
 import (
+	"encoding/json"
 	"net/http"
 	"reflect"
 	"testing"
@@ -129,9 +130,22 @@ func TestRerunStartsTheFailedRunsStoredRequest(t *testing.T) {
 		t.Fatalf("stored request %+v, want %+v", got.Request, old)
 	}
 	var state string
+	var reason *string
+	var body []byte
 	if err := h.store.Pool.QueryRow(t.Context(),
-		`select state from sims where id = $1`, "ccccccccccc1").Scan(&state); err != nil || state != StateError {
+		`select state, failure_reason, result from sims where id = $1`, "ccccccccccc1").
+		Scan(&state, &reason, &body); err != nil || state != StateError {
 		t.Fatalf("old row state %q, err %v", state, err)
+	}
+	if reason == nil || *reason != "the engine stopped" {
+		t.Fatalf("old row failure_reason %v, want the original", reason)
+	}
+	var stored simapi.SimResult
+	if err := json.Unmarshal(body, &stored); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(stored.Request, old) {
+		t.Fatalf("old row request %+v, want %+v", stored.Request, old)
 	}
 }
 

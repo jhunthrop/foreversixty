@@ -761,10 +761,23 @@ func TestEstimateSecondsIsTheMedianOfTheLastTenDoneRuns(t *testing.T) {
 	if got, err = h.store.EstimateSeconds(t.Context(), "mage-fire"); err != nil || got != nil {
 		t.Fatalf("another spec: %v, %v, want nil", got, err)
 	}
-	// A done row whose result lacks the duration must not fail the estimate.
+	// A done row whose result lacks the duration is not a sample: the
+	// median is unchanged.
 	h.setColumn("est000000100", "result", []byte(`{}`))
-	if _, err = h.store.EstimateSeconds(t.Context(), "warrior-fury"); err != nil {
-		t.Fatalf("a result without duration_ms: %v", err)
+	if got, err = h.store.EstimateSeconds(t.Context(), "warrior-fury"); err != nil ||
+		got == nil || *got != 10 {
+		t.Fatalf("a result without duration_ms: %v, %v, want 10", got, err)
+	}
+}
+
+func TestEstimateSecondsDoesNotCountARunWithoutADuration(t *testing.T) {
+	h := newHarness(t)
+	h.finishedRun("estblank0001", "warrior-fury", 60000)
+	h.finishedRun("estblank0002", "warrior-fury", 120000)
+	h.finishedRun("estblank0003", "warrior-fury", 0)
+	h.setColumn("estblank0003", "result", []byte(`{}`))
+	if got, err := h.store.EstimateSeconds(t.Context(), "warrior-fury"); err != nil || got != nil {
+		t.Fatalf("two real runs and a blank one: %v, %v, want nil", got, err)
 	}
 }
 

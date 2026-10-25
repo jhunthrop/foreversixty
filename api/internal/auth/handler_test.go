@@ -913,12 +913,29 @@ func TestMeListsUnseenFinishedServerRunsForAPayer(t *testing.T) {
 	h.svc.Sims = oneUnseenRunOfTwoThisMonth()
 	body, _ := h.meSims(t, uid)
 	if len(body.FinishedSims) != 1 || body.FinishedSims[0].SimID != "sim-1" ||
-		body.FinishedSims[0].Spec != "hunter-marksmanship" || body.FinishedSims[0].DPS != 1234.5 ||
+		body.FinishedSims[0].Spec != "hunter-marksmanship" || body.FinishedSims[0].Title != "Marksmanship vs Patchwerk" || body.FinishedSims[0].DPS != 1234.5 ||
 		body.FinishedSims[0].FinishedAt != "2026-10-20T10:00:00Z" {
 		t.Fatalf("finished_sims = %+v", body.FinishedSims)
 	}
 	if body.ServerSims == nil || body.ServerSims.RunsThisMonth != 2 {
 		t.Fatalf("server_sims = %+v", body.ServerSims)
+	}
+}
+
+func TestMeCapsFinishedSimsAtThree(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-sims-cap@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (user_id, plan, source, status) values ($1, 'premium', 'grant', 'active')`,
+		uid); err != nil {
+		t.Fatal(err)
+	}
+	h.svc.Sims = fakeSims{unseen: []FinishedSim{
+		{SimID: "sim-1"}, {SimID: "sim-2"}, {SimID: "sim-3"}, {SimID: "sim-4"},
+	}}
+	body, _ := h.meSims(t, uid)
+	if len(body.FinishedSims) != 3 {
+		t.Fatalf("finished_sims = %+v, want 3", body.FinishedSims)
 	}
 }
 

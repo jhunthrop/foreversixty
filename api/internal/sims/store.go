@@ -407,7 +407,8 @@ func (s *Store) Fail(ctx context.Context, id, why string) error {
 
 // MarkSeen records that the owner has looked at a finished run. It is
 // false, and writes nothing, when the row is not the caller's or is not
-// done yet.
+// done yet. A repeat call on an already-seen row is true and keeps the
+// first seen_at.
 func (s *Store) MarkSeen(ctx context.Context, id string, userID int64) (bool, error) {
 	tag, err := s.Pool.Exec(ctx,
 		`update sims set seen_at = coalesce(seen_at, now())
@@ -492,12 +493,14 @@ const (
 )
 
 // EstimateSeconds answers how long a server run of spec usually takes: the
-// median of the last ten done runs. It is nil under three, when a median
-// would be a guess.
+// median of the last ten done runs that recorded a duration. A done row
+// without one is not a sample. It is nil under three, when a median would
+// be a guess.
 func (s *Store) EstimateSeconds(ctx context.Context, spec string) (*int, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select coalesce((result->>'duration_ms')::bigint, 0) from sims
+		`select (result->>'duration_ms')::bigint from sims
 		 where state = $1 and lane = $2 and spec = $3
+		   and (result->>'duration_ms') is not null
 		 order by finished_at desc nulls last, created_at desc limit $4`,
 		StateDone, simapi.LaneServer, spec, estimateWindow)
 	if err != nil {

@@ -476,3 +476,28 @@ func TestARunRouteBudgetIsPerAccountNotPerRequest(t *testing.T) {
 		t.Fatalf("other account: status %d, want 202", res.StatusCode)
 	}
 }
+
+// TestARerunSpendsTheSameAccountBudgetAsARun pins that rerun dispatches a
+// real job too, so it shares the per-account cap with run: a spent budget
+// answers 429 and dispatches nothing.
+func TestARerunSpendsTheSameAccountBudgetAsARun(t *testing.T) {
+	h := newHarness(t)
+	h.entitlements.allowed = true
+	failedServerRun(h, "rerunbudget1")
+	for i := 0; i < simsRunPerMinute; i++ {
+		res := h.do(http.MethodPost, "/v1/sims/rerunbudget1/rerun", "", nil)
+		if res.StatusCode != http.StatusAccepted {
+			t.Fatalf("rerun %d: status %d, want 202", i+1, res.StatusCode)
+		}
+	}
+	res := h.do(http.MethodPost, "/v1/sims/rerunbudget1/rerun", "", nil)
+	if res.StatusCode != http.StatusTooManyRequests {
+		t.Fatalf("rerun %d: status %d, want 429", simsRunPerMinute+1, res.StatusCode)
+	}
+	if code := h.errorCode(res); code != "rate_limited" {
+		t.Fatalf("code %q, want rate_limited", code)
+	}
+	if ran := len(h.jobs.Ran()); ran != simsRunPerMinute {
+		t.Fatalf("%d jobs dispatched, want %d", ran, simsRunPerMinute)
+	}
+}

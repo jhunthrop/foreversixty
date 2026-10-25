@@ -84,6 +84,12 @@ func TestTheSaveMineAndRunRoutesAreMounted(t *testing.T) {
 		t.Errorf("POST /v1/sims/run status %d, want 404 without Jobs and Accounts", w.Code)
 	}
 
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/abcdefghijkl/rerun", strings.NewReader("{}")))
+	if w.Code != http.StatusNotFound {
+		t.Errorf("POST /v1/sims/{id}/rerun status %d, want 404 without Jobs and Accounts", w.Code)
+	}
+
 	withRun := NewRouter(Deps{Version: "test", Sims: &sims.Service{
 		Jobs: fakeJobRunner{}, Accounts: fakeEntitlementer{}, Planner: planNothing{},
 	}})

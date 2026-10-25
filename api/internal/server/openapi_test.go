@@ -42,6 +42,7 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		"/v1/characters/search", "/v1/characters/{region}/{ruleset}/{name}", "/v1/guilds/{region}/{ruleset}/{name}",
 		"/v1/addon/exports", "/v1/addon/inbox", "/reports/{id}/card.png",
 		"/v1/sims", "/v1/sims/{id}", "/v1/sims/{id}/progress", "/v1/sims/run",
+		"/v1/sims/{id}/seen", "/v1/sims/{id}/rerun",
 		"/v1/specs", "/v1/characters/{region}/{ruleset}/{name}/sim-input",
 		"/v1/phases",
 	}
