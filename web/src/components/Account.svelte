@@ -29,6 +29,7 @@
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
   import { premiumRowLinked, premiumRowValue } from '../lib/account/notifications';
+  import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
@@ -922,6 +923,9 @@
                   {/if}
                 </div>
               </StatePanel>
+              {#if me !== null}
+                <AccountDiscordBlock {me} onChanged={() => session.refresh()} />
+              {/if}
             </div>
           </div>
         </div>
