@@ -42,7 +42,9 @@ test('not subscribed: plain text with a link to the plans, no upsell tone', asyn
   );
   await page.goto('/account');
   await expect(page.getByTestId('account')).toContainText('Not on Premium');
-  await expect(page.getByRole('link', { name: 'See plans' })).toHaveAttribute('href', '/premium');
+  await expect(
+    page.getByTestId('account-billing-row').getByRole('link', { name: 'See plans' }),
+  ).toHaveAttribute('href', '/premium');
 });
 
 test('active subscription: shows the renewal date and a working manage-billing button', async ({ page }) => {

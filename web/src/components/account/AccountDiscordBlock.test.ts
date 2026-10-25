@@ -102,6 +102,14 @@ describe('AccountDiscordBlock', () => {
     expect(body).toContain('discord-replace');
   });
 
+  it('switched off: the events come after the replace link', () => {
+    const body = html(
+      meWith(true, { discord: discordBlock({ disabled_reason: 'failed five times', failures: 5 }) }),
+    );
+    expect(body.indexOf('discord-replace')).toBeGreaterThan(body.indexOf('discord-test'));
+    expect(body.indexOf('discord-event-sim')).toBeGreaterThan(body.indexOf('discord-replace'));
+  });
+
   it('lapsed: gold notice, disabled boxes, Remove only', () => {
     const body = html(meWith(false, { discord: discordBlock() }));
     expect(body).toContain('border-gold');

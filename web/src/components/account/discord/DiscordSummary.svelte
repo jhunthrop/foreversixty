@@ -3,7 +3,12 @@
      switched-off or lapsed notice. The channel id is not a credential and is shown whole. -->
 <script lang="ts">
   import type { DiscordNotifications } from '../../../lib/account/api';
-  import { channelLabel, failureWarning, type DiscordBlockKey } from '../../../lib/account/notifications';
+  import {
+    channelLabel,
+    FAILED_FIVE_TIMES,
+    failureWarning,
+    type DiscordBlockKey,
+  } from '../../../lib/account/notifications';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import DiscordNotice from './DiscordNotice.svelte';
 
@@ -26,7 +31,7 @@
 {#if state === 'disabled'}
   <DiscordNotice
     tone="wipe"
-    title={discord.disabled_reason === 'failed five times'
+    title={discord.disabled_reason === FAILED_FIVE_TIMES
       ? notificationsCopy.switchedOff
       : notificationsCopy.switchedOffGeneric}
     detail={discord.last_error === null ? null : notificationsCopy.lastError(discord.last_error)}

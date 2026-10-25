@@ -6,7 +6,7 @@
      kept after a failed one, never written anywhere else. -->
 <script lang="ts">
   import { tick } from 'svelte';
-  import type { DiscordEvents, Me } from '../../lib/account/api';
+  import type { DiscordEvents, DiscordNotifications, Me } from '../../lib/account/api';
   import {
     removeWebhook,
     saveEvents,
@@ -14,18 +14,25 @@
     sendTest,
     type ActionResult,
   } from '../../lib/account/discord-actions';
+  import { discordFocus } from '../../lib/account/discord-focus';
   import { LINK_BUTTON } from '../../lib/account/discord-styles';
   import { blockState } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
   import StatePanel from '../ui/StatePanel.svelte';
   import DiscordEventRows from './discord/DiscordEventRows.svelte';
   import DiscordActions from './discord/DiscordActions.svelte';
+  import DiscordFree from './discord/DiscordFree.svelte';
   import DiscordPasteForm from './discord/DiscordPasteForm.svelte';
   import DiscordSummary from './discord/DiscordSummary.svelte';
   import DiscordStatusLine from './discord/DiscordStatusLine.svelte';
 
   const STATUS_MS = 4000;
   const BOTH_ON: DiscordEvents = { sim_finished: true, upload_parsed: true };
+
+  const INPUT = '#discord-webhook';
+  const TEST_BUTTON = '[data-testid="discord-test"]';
+  const REMOVE_CANCEL = '[data-testid="discord-remove-cancel"]';
+  const FREE_LINK = '[data-testid="discord-free-link"]';
 
   type Busy = 'save' | 'events' | 'test' | 'remove' | null;
 
@@ -38,20 +45,29 @@
   let replacing = $state(false);
   let confirming = $state(false);
   let busy = $state<Busy>(null);
-  let status = $state<{ ok: boolean; message: string } | null>(null);
+  let status = $state<ActionResult | null>(null);
   let fieldFailure = $state<Extract<ActionResult, { ok: false }> | null>(null);
-  let focusSelector = $state<string | null>(null);
+  // Applied by the effect below on the first render where it resolves: a save or remove changes
+  // the state only after the page re-reads /v1/me, so the target does not exist yet.
+  let pendingFocus = $state<string | null>(discordFocus.get());
+  function wantFocus(selector: string | null): void {
+    pendingFocus = selector;
+    discordFocus.set(selector);
+  }
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
   const showForm = $derived(block.state === 'empty' || (replacing && block.state !== 'lapsed'));
 
   $effect(() => () => clearTimeout(statusTimer));
   $effect(() => {
-    if (focusSelector === null) return;
-    void showForm;
+    const selector = pendingFocus;
+    if (selector === null) return;
+    void [block.state, showForm, confirming, busy];
     void tick().then(() => {
-      document.querySelector<HTMLElement>(focusSelector!)?.focus();
-      focusSelector = null;
+      const target = document.querySelector<HTMLElement>(selector);
+      if (target === null) return;
+      target.focus();
+      if (pendingFocus === selector) wantFocus(null);
     });
   });
 
@@ -64,6 +80,7 @@
   async function run(kind: Exclude<Busy, null>, action: () => Promise<ActionResult>): Promise<ActionResult> {
     busy = kind;
     status = null;
+    wantFocus(null);
     const result = await action();
     busy = null;
     if (result.ok) onChanged();
@@ -76,11 +93,12 @@
     if (!result.ok) {
       if (result.target === 'status') show(result);
       else fieldFailure = result;
+      wantFocus(INPUT);
       return;
     }
     webhook = '';
     replacing = false;
-    focusSelector = '[data-testid="discord-test"]';
+    wantFocus(TEST_BUTTON);
     show(result);
   }
 
@@ -99,7 +117,7 @@
     show(result);
     if (!result.ok) return;
     confirming = false;
-    focusSelector = '#discord-webhook';
+    wantFocus(block.state === 'lapsed' ? FREE_LINK : INPUT);
   }
 
   function startReplace(): void {
@@ -107,12 +125,12 @@
     fieldFailure = null;
     status = null;
     replacing = true;
-    focusSelector = '#discord-webhook';
+    wantFocus(INPUT);
   }
 
   function askRemove(): void {
     confirming = true;
-    focusSelector = '[data-testid="discord-remove-cancel"]';
+    wantFocus(REMOVE_CANCEL);
   }
 
   function cancel(): void {
@@ -129,17 +147,23 @@
 
 <svelte:window onkeydown={onKeydown} />
 
+{#snippet eventRows(discord: DiscordNotifications)}
+  <DiscordEventRows
+    events={discord.events}
+    disabled={busy !== null || block.state === 'lapsed'}
+    busy={busy === 'events'}
+    showNote={block.state !== 'lapsed'}
+    onToggle={changeEvents}
+  />
+{/snippet}
+
 <div id="discord" class="scroll-mt-20">
   {#if block.state === 'free'}
-    <p class="text-muted min-h-11 text-[13px]" data-testid="discord-free">
-      {notificationsCopy.freeSentence}
-      <a class="text-text hover:text-gold-hover inline-flex min-h-11 items-center underline" href="/premium"
-        >{notificationsCopy.seePlans}</a
-      >
-    </p>
+    <DiscordFree />
   {:else}
     <StatePanel label={notificationsCopy.label} testid="account-discord">
       {#if showForm}
+        {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
         <DiscordPasteForm
           bind:webhook
           bind:events={formEvents}
@@ -150,17 +174,10 @@
           onSubmit={submit}
           onCancel={cancel}
         />
-        {#if block.state === 'empty'}<DiscordStatusLine {status} />{/if}
       {:else if 'discord' in block}
         {@const discord = block.discord}
         <DiscordSummary state={block.state} {discord} />
-        <DiscordEventRows
-          events={discord.events}
-          disabled={busy !== null || block.state === 'lapsed'}
-          busy={busy === 'events'}
-          showNote={block.state !== 'lapsed'}
-          onToggle={changeEvents}
-        />
+        {#if block.state !== 'disabled'}{@render eventRows(discord)}{/if}
         <DiscordActions
           state={block.state}
           {confirming}
@@ -181,6 +198,7 @@
             {notificationsCopy.replace}
           </button>
         {/if}
+        {#if block.state === 'disabled'}{@render eventRows(discord)}{/if}
       {/if}
     </StatePanel>
   {/if}
