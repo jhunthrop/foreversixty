@@ -47,6 +47,7 @@
     type GuildViewerRole,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
+  import { officerToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
   import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
@@ -254,9 +255,8 @@
    *  refuses an Award/Undo with `guild_plan_required` (the grant ended after the page loaded).
    *  `?? true` is deliberate: the server's 403 is the real gate. */
   let officerToolsEnded = $state(false);
-  let refusedItemId = $state<number | null>(null);
-  let refusedKind = $state<'award' | 'undo' | null>(null);
-  const officerTools = $derived((home?.viewer?.officer_tools ?? true) && !officerToolsEnded);
+  let planRefusal = $state<GuildPlanRefusal | null>(null);
+  const officerTools = $derived(officerToolsOn(role, home?.viewer?.officer_tools, officerToolsEnded));
   const officerView = $derived(role === 'officer' || role === 'moderator');
   /** The plan sentence's link (gate spec §3.2): the guild's settings tab. */
   const settingsHref = $derived(
@@ -587,8 +587,9 @@
   function planRefused(thrown: unknown, item: GuildLootItem, kind: 'award' | 'undo'): boolean {
     if (!(thrown instanceof GuildApiError) || thrown.code !== 'guild_plan_required') return false;
     officerToolsEnded = true;
-    refusedItemId = item.item_id;
-    refusedKind = kind;
+    if (loot !== null && loot.selected !== null) {
+      planRefusal = { encounterId: loot.selected, itemId: item.item_id, kind };
+    }
     return true;
   }
 
@@ -980,8 +981,7 @@
           {officerTools}
           memberReadOnly={role === 'member'}
           busyItemId={lootBusyItemId}
-          {refusedItemId}
-          {refusedKind}
+          refusal={planRefusal}
           {settingsHref}
           onAward={(item, charKey) => void onAward(item, charKey)}
           onUndo={(item) => void onUndo(item)}

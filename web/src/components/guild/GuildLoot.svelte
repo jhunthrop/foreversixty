@@ -30,6 +30,7 @@
   } from '../../lib/guild/loot-view';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import EmptyState from '../ui/EmptyState.svelte';
+  import type { GuildPlanRefusal } from '../../lib/guild/officer-tools';
   import GuildPlanGate from './GuildPlanGate.svelte';
 
   let {
@@ -38,8 +39,7 @@
     officerTools,
     memberReadOnly,
     busyItemId,
-    refusedItemId,
-    refusedKind,
+    refusal,
     settingsHref,
     onAward,
     onUndo,
@@ -50,9 +50,8 @@
     officerTools: boolean;
     memberReadOnly: boolean;
     busyItemId: number | null;
-    /** The item whose Award or Undo the server refused with `guild_plan_required` (§4). */
-    refusedItemId: number | null;
-    refusedKind: 'award' | 'undo' | null;
+    /** The Award or Undo the server refused with `guild_plan_required` (§4), per boss and item. */
+    refusal: GuildPlanRefusal | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */
     settingsHref: string;
     onAward: (item: GuildLootItem, characterKey: string) => void;
@@ -73,13 +72,24 @@
     node.focus();
   }
 
+  /** The refusal that already took focus: switching boss and back remounts the line, not the focus. */
+  let focusedRefusal: GuildPlanRefusal | null = null;
+  function focusRefusalOnce(node: HTMLElement): void {
+    if (focusedRefusal === refusal) return;
+    focusedRefusal = refusal;
+    node.focus();
+  }
+  const refusedHere = $derived(
+    refusal !== null && loot !== null && loot.selected === refusal.encounterId ? refusal : null,
+  );
+
   const selectedEncounter = $derived(loot?.encounters.find((e) => e.encounter_id === loot.selected));
   const notSimmed = $derived(loot !== null && anyNotSimmed(loot.items));
   const officerReadOnly = $derived(officer && !officerTools);
   /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
   const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-loot' : undefined);
   const refusedLine = $derived(
-    refusedKind === 'undo' ? guildGateCopy.undoRefused : guildGateCopy.awardRefused,
+    refusedHere?.kind === 'undo' ? guildGateCopy.undoRefused : guildGateCopy.awardRefused,
   );
 </script>
 
@@ -233,12 +243,12 @@
               {/if}
             {/each}
           </div>
-          {#if refusedItemId === item.item_id}
+          {#if refusedHere !== null && refusedHere.itemId === item.item_id}
             <p
               class="text-wipe text-[13px] leading-5"
               role="alert"
               tabindex="-1"
-              use:focusOnMount
+              use:focusRefusalOnce
               data-testid={`guild-loot-plan-refused-${item.item_id}`}
             >
               {refusedLine}

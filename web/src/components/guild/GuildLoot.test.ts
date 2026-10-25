@@ -6,6 +6,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { buildMockLoot } from '../../fixtures/guild/mock-guild';
 import type { GuildLootPage } from '../../lib/guild/api';
+import type { GuildPlanRefusal } from '../../lib/guild/officer-tools';
 import { guildGateCopy } from '../../lib/guild/copy';
 import GuildLoot from './GuildLoot.svelte';
 
@@ -14,8 +15,7 @@ const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/#settings';
 type LootProps = {
   loot?: GuildLootPage | null;
   officerTools?: boolean;
-  refusedItemId?: number | null;
-  refusedKind?: 'award' | 'undo' | null;
+  refusal?: GuildPlanRefusal | null;
 };
 
 function html(officer: boolean, extra: LootProps = {}): string {
@@ -26,8 +26,7 @@ function html(officer: boolean, extra: LootProps = {}): string {
       officerTools: true,
       memberReadOnly: !officer,
       busyItemId: null,
-      refusedItemId: null,
-      refusedKind: null,
+      refusal: null,
       settingsHref: SETTINGS_HREF,
       onAward: () => {},
       onUndo: () => {},
@@ -137,6 +136,7 @@ describe('GuildLoot', () => {
 
   describe('officer-read-only (officer tools off)', () => {
     const readOnly = (extra: LootProps = {}): string => html(true, { officerTools: false, ...extra });
+    const selected = buildMockLoot().selected ?? 0;
 
     it('says the sentence once, with the settings link, above the boss picker', () => {
       const markup = readOnly();
@@ -206,6 +206,13 @@ describe('GuildLoot', () => {
       expect(text(markup)).not.toContain(guildGateCopy.readOnly);
     });
 
+    it('leaves a moderator as before: the page passes officerTools true, so no sentence and live Award', () => {
+      const markup = html(true, { officerTools: true });
+      expect(markup).not.toContain('guild-loot-plan-gate');
+      expect(text(markup)).not.toContain(guildGateCopy.readOnly);
+      for (const tag of buttons(markup, 'guild-loot-award-')) expect(tag).not.toMatch(/ disabled(=| |>)/);
+    });
+
     it('leaves a member exactly as before: no sentence, no controls', () => {
       const markup = html(false, { officerTools: false });
       expect(markup).not.toContain('guild-loot-plan-gate');
@@ -217,7 +224,7 @@ describe('GuildLoot', () => {
       const item = buildMockLoot().items.find((i) => i.awarded_to === null && i.candidates.length > 0);
       expect(item).toBeDefined();
       const id = item?.item_id ?? 0;
-      const markup = readOnly({ refusedItemId: id, refusedKind: 'award' });
+      const markup = readOnly({ refusal: { encounterId: selected, itemId: id, kind: 'award' } });
       const testid = `data-testid="guild-loot-plan-refused-${id}"`;
       expect(markup.split(testid).length - 1).toBe(1);
       expect(markup.split('guild-loot-plan-refused-').length - 1).toBe(1);
@@ -237,9 +244,18 @@ describe('GuildLoot', () => {
       );
     });
 
+    it('renders no refused line when another boss is selected', () => {
+      const item = buildMockLoot().items.find((i) => i.awarded_to === null && i.candidates.length > 0);
+      const markup = readOnly({
+        refusal: { encounterId: selected + 1000, itemId: item?.item_id ?? 0, kind: 'award' },
+      });
+      expect(markup).not.toContain('guild-loot-plan-refused-');
+      expect(text(markup)).not.toContain(guildGateCopy.awardRefused);
+    });
+
     it('says the undo refusal for an undo', () => {
       const id = awarded?.item_id ?? 0;
-      const markup = readOnly({ refusedItemId: id, refusedKind: 'undo' });
+      const markup = readOnly({ refusal: { encounterId: selected, itemId: id, kind: 'undo' } });
       expect(text(markup)).toContain(guildGateCopy.undoRefused);
       expect(text(markup)).not.toContain(guildGateCopy.awardRefused);
     });

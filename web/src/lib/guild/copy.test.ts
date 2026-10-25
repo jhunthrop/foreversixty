@@ -3,6 +3,7 @@
 // here because the spec files only see it through a built page.
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
+import { settingsWords } from './settings-view';
 import { guildClaimCopy, guildConsentCopy, guildGateCopy, guildJoinCopy, guildSettingsCopy } from './copy';
 
 describe('guildClaimCopy', () => {
@@ -116,7 +117,8 @@ describe('the Leave confirm for an officer and the hand-over line', () => {
 
 describe('guildGateCopy', () => {
   const GATE_SPEC = new URL('../../../../design/specs/2026-10-25-officer-tools-gate.md', import.meta.url);
-  const spec = (label: string): string => specString(GATE_SPEC, '## 7. Copy, verbatim', label);
+  const spec = (label: string, index = 0): string =>
+    specString(GATE_SPEC, '## 7. Copy, verbatim', label, index);
 
   it('reads the gate sentence from the spec: the sentence, then the link, then a full stop', () => {
     expect(`${guildGateCopy.sentence}${guildGateCopy.link}.`).toBe(spec('Gate sentence, Loot and Readiness'));
@@ -127,5 +129,9 @@ describe('guildGateCopy', () => {
     expect(guildGateCopy.awardRefused).toBe(spec('403 on Award'));
     expect(guildGateCopy.undoRefused).toBe(spec('403 on Undo'));
     expect(guildGateCopy.readOnly).toBe(spec('Header label (reused)'));
+  });
+
+  it('reads the account guild row link text from the spec', () => {
+    expect(settingsWords.guildSettingsLink).toBe(spec('Account guild row', 1));
   });
 });

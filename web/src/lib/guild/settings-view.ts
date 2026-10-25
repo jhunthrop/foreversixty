@@ -19,6 +19,7 @@ export const settingsWords = {
   grantedByUs: 'Granted by Forever Sixty.',
   billingUnavailable: 'Billing is not available right now. Try again in a few minutes.',
   tryAgain: 'Try again',
+  guildSettingsLink: 'Guild settings',
 } as const;
 
 /** "Claimed by hunthrop#1894" for a claimed guild; null otherwise (a contested claim shows the
@@ -53,11 +54,6 @@ export function officerToolsExplanation(billing: GuildBillingView): string {
   const date = planEndDate(billing);
   const until = date === '' ? '' : `, until ${date}`;
   return `Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only${until}. After that they need the guild plan.`;
-}
-
-/** The account page's guild row text; the row appends ` · ` and the settings link itself. */
-export function accountGuildPlanLine(billing: GuildBillingView): string {
-  return guildPlanLine(billing);
 }
 
 /** Who pays: "Billed to you.", "Billed by hunthrop#1894", or "No billing contact yet". */
