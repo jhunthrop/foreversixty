@@ -21,7 +21,8 @@ const (
 	FeatureNotifications Feature = "notifications"
 	// FeatureOfficerViews is guild-plan-and-verified-officer/leader only,
 	// never unlockable by an individual's own premium subscription
-	// (spec RULING 3).
+	// (spec RULING 3). A guild grant may cover this feature alone
+	// (FeatureScopeOfficerViews); Store.CanForGuild answers it per guild.
 	FeatureOfficerViews Feature = "officer_views"
 	FeatureRosterCheck  Feature = "roster_check"
 )

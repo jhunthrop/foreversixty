@@ -19,11 +19,21 @@ var ErrNotFound = errors.New("entitlements: not found")
 // Store is every entitlements table read and write.
 type Store struct{ Pool *pgxpool.Pool }
 
-// activeStatusClause lists the entitlements.status values that keep every
-// feature on (spec §1.3 rule 4): a status still inside Stripe's own
-// trial/retry window counts; canceled, unpaid, incomplete, and
-// incomplete_expired do not.
-const activeStatusClause = "status in ('active', 'trialing', 'past_due')"
+// FeatureScopeOfficerViews is the only value entitlements.features may hold:
+// a guild grant covering officer tools alone (design 2026-10-25 §4.1).
+const FeatureScopeOfficerViews = "officer_views"
+
+// activeClause is the predicate for a live entitlements row, aliased e
+// (spec §1.3 rule 4; design 2026-10-25 §4.2): a status still inside Stripe's
+// own trial/retry window counts; canceled, unpaid, incomplete, and
+// incomplete_expired do not. A grant has no Stripe behind it, so its own
+// current_period_end ends it; a Stripe row's life is Stripe's.
+const activeClause = `e.status in ('active', 'trialing', 'past_due')
+	and (e.source <> 'grant' or e.current_period_end is null or e.current_period_end > now())`
+
+// coversOfficerViewsClause matches rows that include officer tools: a
+// whole-plan row (features null) or one scoped to officer_views.
+const coversOfficerViewsClause = `(e.features is null or '` + FeatureScopeOfficerViews + `' = any(e.features))`
 
 // Can answers whether userID may use feature right now, and why. See
 // entitlements.go's Feature/Reason docs and spec §1.3 for the full rule.
@@ -53,8 +63,8 @@ func (s *Store) hasStandardEntitlement(ctx context.Context, userID int64) (bool,
 	var personal bool
 	if err := s.Pool.QueryRow(ctx, `
 		select exists (
-		  select 1 from entitlements
-		  where user_id = $1 and plan = 'premium' and `+activeStatusClause+`
+		  select 1 from entitlements e
+		  where e.user_id = $1 and e.plan = 'premium' and `+activeClause+`
 		)`, userID).Scan(&personal); err != nil {
 		return false, fmt.Errorf("entitlements: standard check %d: %w", userID, err)
 	}
@@ -72,7 +82,7 @@ func (s *Store) hasVerifiedGuildPlan(ctx context.Context, userID int64) (bool, e
 	err := s.Pool.QueryRow(ctx, `
 		select exists (
 		  select 1 from guild_members m
-		  join entitlements e on e.guild_id = m.guild_id and e.plan = 'guild' and e.`+activeStatusClause+`
+		  join entitlements e on e.guild_id = m.guild_id and e.plan = 'guild' and e.features is null and `+activeClause+`
 		  where m.user_id = $1 and m.verified_at is not null
 		)`, userID).Scan(&ok)
 	if err != nil {
@@ -90,7 +100,7 @@ func (s *Store) canOfficerViews(ctx context.Context, userID int64) (bool, Reason
 	if err := s.Pool.QueryRow(ctx, `
 		select exists (
 		  select 1 from guild_members m
-		  join entitlements e on e.guild_id = m.guild_id and e.plan = 'guild' and e.`+activeStatusClause+`
+		  join entitlements e on e.guild_id = m.guild_id and e.plan = 'guild' and `+coversOfficerViewsClause+` and `+activeClause+`
 		  where m.user_id = $1 and m.verified_at is not null and m.rank in ('officer', 'leader')
 		)`, userID).Scan(&officer); err != nil {
 		return false, "", fmt.Errorf("entitlements: officer check %d: %w", userID, err)
@@ -116,6 +126,37 @@ func (s *Store) canOfficerViews(ctx context.Context, userID int64) (bool, Reason
 		}
 	}
 	return false, ReasonNoPlan, nil
+}
+
+// CanForGuild answers a per-guild feature question for userID: true for a
+// verified officer/leader of guildID whose active row covers the feature,
+// ReasonNotOfficer for a verified member below officer rank of a covered
+// guild, ReasonNoPlan otherwise. Only FeatureOfficerViews is per-guild.
+func (s *Store) CanForGuild(ctx context.Context, guildID, userID int64, feature Feature) (bool, Reason, error) {
+	if feature != FeatureOfficerViews {
+		return false, "", fmt.Errorf("entitlements: %s is not a per-guild feature", feature)
+	}
+	var member, officer, covered bool
+	err := s.Pool.QueryRow(ctx, `
+		select
+		  exists (select 1 from guild_members m
+		    where m.guild_id = $1 and m.user_id = $2 and m.verified_at is not null),
+		  exists (select 1 from guild_members m
+		    where m.guild_id = $1 and m.user_id = $2 and m.verified_at is not null
+		      and m.rank in ('officer', 'leader')),
+		  exists (select 1 from entitlements e
+		    where e.guild_id = $1 and e.plan = 'guild' and `+coversOfficerViewsClause+` and `+activeClause+`)`,
+		guildID, userID).Scan(&member, &officer, &covered)
+	if err != nil {
+		return false, "", fmt.Errorf("entitlements: guild check %d/%d: %w", guildID, userID, err)
+	}
+	switch {
+	case !member || !covered:
+		return false, ReasonNoPlan, nil
+	case !officer:
+		return false, ReasonNotOfficer, nil
+	}
+	return true, ReasonEntitled, nil
 }
 
 // IsSupporter is a lighter question than Can (spec §1.3): does this
@@ -162,7 +203,15 @@ type GuildBilling struct {
 	CurrentPeriodEnd  *time.Time
 	CancelAtPeriodEnd bool
 	BillingUserID     *int64
+	// Features is nil for a whole-plan row, or the scoped feature list.
+	Features []string
+	// Active is the live-row predicate (activeClause) evaluated now; the row
+	// is returned either way so a settings page can say "ended".
+	Active bool
 }
+
+// Scoped reports whether the grant covers only some features.
+func (g GuildBilling) Scoped() bool { return len(g.Features) > 0 }
 
 // GuildBilling reads guildID's guild-plan row, nil when it has none, with
 // no status filter: a canceled guild plan still needs to be visible (for
@@ -170,9 +219,10 @@ type GuildBilling struct {
 func (s *Store) GuildBilling(ctx context.Context, guildID int64) (*GuildBilling, error) {
 	var g GuildBilling
 	err := s.Pool.QueryRow(ctx, `
-		select status, current_period_end, cancel_at_period_end, billing_user_id
-		from entitlements where guild_id = $1 and plan = 'guild'`, guildID).
-		Scan(&g.Status, &g.CurrentPeriodEnd, &g.CancelAtPeriodEnd, &g.BillingUserID)
+		select e.status, e.current_period_end, e.cancel_at_period_end, e.billing_user_id,
+		       e.features, (`+activeClause+`) as active
+		from entitlements e where e.guild_id = $1 and e.plan = 'guild'`, guildID).
+		Scan(&g.Status, &g.CurrentPeriodEnd, &g.CancelAtPeriodEnd, &g.BillingUserID, &g.Features, &g.Active)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
@@ -296,7 +346,7 @@ func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan stri
 	return row, false, nil
 }
 
-// isActiveStatus mirrors activeStatusClause's SQL as Go, for a status
+// isActiveStatus mirrors activeClause's SQL as Go, for a status
 // value already read into memory (UpsertStripe's duplicate check); the
 // list itself lives in StatusGrantsAccess, which billing reads too.
 func isActiveStatus(status string) bool {

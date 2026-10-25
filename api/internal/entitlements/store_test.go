@@ -701,3 +701,145 @@ func TestRecordAnomalyIsIdempotentPerKindAndSubscription(t *testing.T) {
 		t.Fatalf("anomaly rows after a different kind = %d, want 2", n)
 	}
 }
+
+func seedEntitlementUntil(t *testing.T, pool *pgxpool.Pool, subj Subject, plan, status string, features []string, until *time.Time) {
+	t.Helper()
+	if _, err := pool.Exec(context.Background(),
+		`insert into entitlements (user_id, guild_id, plan, source, status, features, current_period_end)
+		 values ($1, $2, $3, 'grant', $4, $5, $6)`,
+		subj.UserID, subj.GuildID, plan, status, features, until); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func seedStripeEntitlement(t *testing.T, pool *pgxpool.Pool, subj Subject, plan, status string, periodEnd time.Time) {
+	t.Helper()
+	if _, err := pool.Exec(context.Background(),
+		`insert into entitlements (user_id, guild_id, plan, source, status, stripe_subscription_id, current_period_end)
+		 values ($1, $2, $3, 'stripe', $4, $5, $6)`,
+		subj.UserID, subj.GuildID, plan, status, "sub_"+time.Now().Format("150405.000000000"), periodEnd); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func timePtr(v time.Time) *time.Time { return &v }
+
+func yesterday() time.Time { return time.Now().Add(-24 * time.Hour) }
+func tomorrow() time.Time  { return time.Now().Add(24 * time.Hour) }
+
+func TestExpiredGrantIsOff(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	uid := seedUser(t, pool)
+	seedEntitlementUntil(t, pool, Subject{UserID: i64(uid)}, PlanPremium, "active", nil, timePtr(yesterday()))
+	ok, reason, err := s.Can(context.Background(), uid, FeatureServerSims)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok || reason != ReasonNoPlan {
+		t.Fatalf("Can = %v, %v, want false, %v", ok, reason, ReasonNoPlan)
+	}
+	if sup, err := s.IsSupporter(context.Background(), uid); err != nil || sup {
+		t.Fatalf("IsSupporter = %v, %v, want false", sup, err)
+	}
+}
+
+func TestPastDueStripeRowStaysOn(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	seedStripeEntitlement(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "past_due", yesterday())
+	officer := seedUser(t, pool)
+	seedGuildMember(t, pool, gid, officer, "officer", true)
+	ok, reason, err := s.Can(context.Background(), officer, FeatureOfficerViews)
+	if err != nil || !ok {
+		t.Fatalf("Can = %v, %v, %v, want true", ok, reason, err)
+	}
+}
+
+func TestScopedGrantGivesMembersNothing(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active", []string{FeatureScopeOfficerViews}, timePtr(tomorrow()))
+	member := seedUser(t, pool)
+	seedGuildMember(t, pool, gid, member, "member", true)
+	officer := seedUser(t, pool)
+	seedGuildMember(t, pool, gid, officer, "officer", true)
+
+	if ok, _, err := s.Can(context.Background(), member, FeatureServerSims); err != nil || ok {
+		t.Fatalf("member Can(server_sims) = %v, %v, want false", ok, err)
+	}
+	if sup, err := s.IsSupporter(context.Background(), member); err != nil || sup {
+		t.Fatalf("member IsSupporter = %v, %v, want false", sup, err)
+	}
+	if ok, _, err := s.Can(context.Background(), officer, FeatureOfficerViews); err != nil || !ok {
+		t.Fatalf("officer Can(officer_views) = %v, %v, want true", ok, err)
+	}
+}
+
+func TestCanForGuild(t *testing.T) {
+	scoped := []string{FeatureScopeOfficerViews}
+	for _, tc := range []struct {
+		name       string
+		until      time.Time
+		rank       string
+		verified   bool
+		otherGuild bool
+		feature    Feature
+		wantOK     bool
+		wantReason Reason
+		wantErr    bool
+	}{
+		{name: "officer scoped grant", until: tomorrow(), rank: "officer", verified: true, feature: FeatureOfficerViews, wantOK: true, wantReason: ReasonEntitled},
+		{name: "officer expired grant", until: yesterday(), rank: "officer", verified: true, feature: FeatureOfficerViews, wantReason: ReasonNoPlan},
+		{name: "member with grant", until: tomorrow(), rank: "member", verified: true, feature: FeatureOfficerViews, wantReason: ReasonNotOfficer},
+		{name: "officer of another guild", until: tomorrow(), rank: "officer", verified: true, otherGuild: true, feature: FeatureOfficerViews, wantReason: ReasonNoPlan},
+		{name: "unverified officer", until: tomorrow(), rank: "officer", verified: false, feature: FeatureOfficerViews, wantReason: ReasonNoPlan},
+		{name: "other feature", until: tomorrow(), rank: "officer", verified: true, feature: FeatureHistory, wantErr: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			pool := testPool(t)
+			s := &Store{Pool: pool}
+			gid := seedGuild(t, pool)
+			seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active", scoped, timePtr(tc.until))
+			uid := seedUser(t, pool)
+			memberOf := gid
+			if tc.otherGuild {
+				memberOf = seedGuild(t, pool)
+			}
+			seedGuildMember(t, pool, memberOf, uid, tc.rank, tc.verified)
+			ok, reason, err := s.CanForGuild(context.Background(), gid, uid, tc.feature)
+			if (err != nil) != tc.wantErr {
+				t.Fatalf("err = %v, wantErr %v", err, tc.wantErr)
+			}
+			if ok != tc.wantOK || reason != tc.wantReason {
+				t.Fatalf("CanForGuild = %v, %q, want %v, %q", ok, reason, tc.wantOK, tc.wantReason)
+			}
+		})
+	}
+}
+
+func TestGuildBillingCarriesFeaturesAndActive(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	live, ended := seedGuild(t, pool), seedGuild(t, pool)
+	scoped := []string{FeatureScopeOfficerViews}
+	seedEntitlementUntil(t, pool, Subject{GuildID: i64(live)}, PlanGuild, "active", scoped, timePtr(tomorrow()))
+	seedEntitlementUntil(t, pool, Subject{GuildID: i64(ended)}, PlanGuild, "active", scoped, timePtr(yesterday()))
+
+	g, err := s.GuildBilling(context.Background(), live)
+	if err != nil || g == nil {
+		t.Fatalf("GuildBilling live = %v, %v", g, err)
+	}
+	if len(g.Features) != 1 || g.Features[0] != FeatureScopeOfficerViews || !g.Scoped() || !g.Active {
+		t.Fatalf("live = %+v, want scoped and active", g)
+	}
+	g, err = s.GuildBilling(context.Background(), ended)
+	if err != nil || g == nil {
+		t.Fatalf("GuildBilling ended = %v, %v", g, err)
+	}
+	if g.Active {
+		t.Fatalf("ended = %+v, want inactive", g)
+	}
+}
