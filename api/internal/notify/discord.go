@@ -51,6 +51,13 @@ type Poster interface {
 	Lookup(ctx context.Context, webhookURL string) (channelID string, err error)
 }
 
+// Transport failures, reported without the URL. The deliverer turns them
+// into the plain sentences a member reads.
+var (
+	ErrTimeout     = errors.New("notify: discord did not answer in time")
+	ErrUnreachable = errors.New("notify: discord unreachable")
+)
+
 // DiscordError is a non-2xx answer from Discord. Body is already sanitised.
 type DiscordError struct {
 	Status int
@@ -207,9 +214,9 @@ func (p *HTTPPoster) do(ctx context.Context, method, webhookURL string, body io.
 	res, err := p.client.Do(req)
 	if err != nil {
 		if ctx.Err() != nil || isTimeout(err) {
-			return nil, errors.New("notify: discord did not answer in time")
+			return nil, fmt.Errorf("%w: %w", ErrTimeout, context.DeadlineExceeded)
 		}
-		return nil, errors.New("notify: discord unreachable")
+		return nil, ErrUnreachable
 	}
 	return res, nil
 }
@@ -224,7 +231,19 @@ func statusError(res *http.Response) error {
 		return nil
 	}
 	raw, _ := io.ReadAll(io.LimitReader(res.Body, maxResponseLen))
-	return &DiscordError{Status: res.StatusCode, Body: sanitize(string(raw))}
+	return &DiscordError{Status: res.StatusCode, Body: sanitize(discordMessage(raw, res.StatusCode))}
+}
+
+// discordMessage is the "message" of Discord's JSON error body, or the
+// standard status text when the body is not that (an HTML proxy page).
+func discordMessage(raw []byte, status int) string {
+	var body struct {
+		Message string `json:"message"`
+	}
+	if json.Unmarshal(raw, &body) == nil && strings.TrimSpace(body.Message) != "" {
+		return body.Message
+	}
+	return http.StatusText(status)
 }
 
 // PostCall is one recorded FakePoster.Post.

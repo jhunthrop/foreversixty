@@ -106,3 +106,50 @@ func TestFakePosterRecordsAndScripts(t *testing.T) {
 		t.Fatalf("posts = %+v", got)
 	}
 }
+
+func postErrorFor(t *testing.T, status int, body string) *DiscordError {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(status)
+		_, _ = w.Write([]byte(body))
+	}))
+	defer srv.Close()
+	var de *DiscordError
+	if err := NewHTTPPoster("").Post(context.Background(), srv.URL, Embed{}); !errors.As(err, &de) {
+		t.Fatalf("err = %v; want *DiscordError", err)
+	}
+	return de
+}
+
+func TestDiscordErrorBodyIsItsMessage(t *testing.T) {
+	cases := []struct {
+		name   string
+		status int
+		body   string
+		want   string
+	}{
+		{"json message", 404, `{"message": "Unknown Webhook", "code": 10015}`, "Unknown Webhook"},
+		{"html from a proxy", 502, "<html><body>bad gateway page</body></html>", "Bad Gateway"},
+		{"empty message", 500, `{"message": "", "code": 1}`, "Internal Server Error"},
+		{"url in message", 400, `{"message": "bad https://discord.com/api/webhooks/1/SECRET here"}`, "bad here"},
+	}
+	for _, c := range cases {
+		if got := postErrorFor(t, c.status, c.body).Body; got != c.want {
+			t.Errorf("%s: Body = %q, want %q", c.name, got, c.want)
+		}
+	}
+}
+
+func TestTransportErrorsAreTheSentinels(t *testing.T) {
+	srv := httptest.NewServer(http.NotFoundHandler())
+	url := srv.URL
+	srv.Close()
+	if err := NewHTTPPoster("").Post(context.Background(), url, Embed{}); !errors.Is(err, ErrUnreachable) {
+		t.Fatalf("refused connection = %v; want ErrUnreachable", err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	if err := NewHTTPPoster("").Post(ctx, url, Embed{}); !errors.Is(err, ErrTimeout) {
+		t.Fatalf("cancelled = %v; want ErrTimeout", err)
+	}
+}

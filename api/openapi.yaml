@@ -2033,7 +2033,7 @@ paths:
       description: >-
         webhook_url is required when nothing is saved or when replacing, and omitted for an
         events-only change. A new URL is checked against Discord once (5 s) and its channel id
-        stored; the URL is sealed and never returned.
+        stored; the URL is sealed and never returned. Limited to 10 per minute per member.
       requestBody:
         required: true
         content:
@@ -2065,6 +2065,7 @@ paths:
         '402': { description: 'premium_required: Discord messages are part of Premium' }
         '404': { description: 'not_found: an events-only change with no webhook saved' }
         '422': { description: 'invalid: the URL parsed but Discord did not accept it; nothing is stored' }
+        '429': { description: 'rate_limited: more than 10 saves in a minute' }
     delete:
       summary: Remove the Discord webhook
       operationId: deleteDiscordWebhook
@@ -2085,7 +2086,8 @@ paths:
         '402': { description: 'premium_required' }
         '404': { description: 'not_found: no webhook saved' }
         '429': { description: 'rate_limited: more than 5 tests in a minute' }
-        '502': { description: "upstream: error.message is Discord's own text, URL and token removed, at most 140 characters" }
+        '502': { description: "upstream: Discord answered with an error; error.message is its own message (or the status text), URL and token removed, at most 140 characters" }
+        '504': { description: 'upstream: Discord did not answer (timeout or unreachable); error.message is a fixed sentence' }
   /v1/sims/{id}:
     get:
       summary: One saved sim

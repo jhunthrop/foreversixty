@@ -31,8 +31,11 @@ type Deliverer struct {
 	postTimeout time.Duration
 }
 
-// timeoutText is what a post that ran out of time leaves in last_error.
-const timeoutText = "discord did not answer in time"
+// What a member reads in last_error when the post never got an answer.
+const (
+	timeoutText     = "Discord did not answer in time."
+	unreachableText = "Discord could not be reached."
+)
 
 // Deliverer returns a Deliverer sharing the service's wiring.
 func (s *Service) Deliverer() *Deliverer {
@@ -40,6 +43,14 @@ func (s *Service) Deliverer() *Deliverer {
 		Store: s.Store, Sealer: s.Sealer, Entitlements: s.Entitlements,
 		Poster: s.Poster, PublicBaseURL: s.PublicBaseURL, Log: s.Log,
 	}
+}
+
+// effectiveTimeout is the injected post timeout, or the default.
+func (d *Deliverer) effectiveTimeout() time.Duration {
+	if d.postTimeout == 0 {
+		return posterTimeout
+	}
+	return d.postTimeout
 }
 
 func (d *Deliverer) logger() *slog.Logger {
@@ -62,7 +73,7 @@ func (d *Deliverer) UploadParsed(ctx context.Context, e UploadParsed) {
 
 func (d *Deliverer) deliverQuietly(ctx context.Context, userID int64, event EventName, embed Embed) {
 	if err := d.Deliver(ctx, userID, event, embed); err != nil {
-		d.logger().Error("notify", "user", userID, "event", string(event), "outcome", "error")
+		d.logger().Error("notify", "user", userID, "event", string(event), "outcome", "error", "err", err)
 	}
 }
 
@@ -92,11 +103,7 @@ func (d *Deliverer) Deliver(ctx context.Context, userID int64, event EventName, 
 	if err != nil {
 		return errors.New("notify: the saved webhook could not be opened")
 	}
-	limit := d.postTimeout
-	if limit == 0 {
-		limit = posterTimeout
-	}
-	postCtx, cancel := context.WithTimeout(ctx, limit)
+	postCtx, cancel := context.WithTimeout(ctx, d.effectiveTimeout())
 	defer cancel()
 	return d.record(ctx, userID, event, d.Poster.Post(postCtx, url, embed))
 }
@@ -115,8 +122,10 @@ func (d *Deliverer) record(ctx context.Context, userID int64, event EventName, p
 	switch {
 	case errors.As(postErr, &discordErr):
 		counts, status, text = !discordErr.RateLimited(), discordErr.Status, discordErr.Body
-	case errors.Is(postErr, context.DeadlineExceeded):
+	case errors.Is(postErr, ErrTimeout), errors.Is(postErr, context.DeadlineExceeded):
 		text = timeoutText
+	case errors.Is(postErr, ErrUnreachable):
+		text = unreachableText
 	}
 	disabled, err := d.Store.RecordFailure(ctx, userID, KindDiscord, text, counts)
 	d.logger().Warn("notify", "user", userID, "event", string(event), "outcome", "failed",

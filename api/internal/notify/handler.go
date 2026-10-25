@@ -17,6 +17,7 @@ import (
 
 const (
 	testsPerMinute  = 5
+	putsPerMinute   = 10
 	maxPutBodyBytes = 4 << 10
 	// maxTestErrorRunes is the spec's cap on the Discord text a failed test shows.
 	maxTestErrorRunes = 140
@@ -53,7 +54,8 @@ type Service struct {
 // deployment holds an encryption key (a Sealer exists).
 func Mount(mux *http.ServeMux, s *Service) {
 	limit := httpx.RateLimitByKey(testsPerMinute, time.Minute, auth.AccountRateLimitKey)
-	mux.HandleFunc("PUT /v1/notifications/discord", auth.RequireSession(s.put))
+	putLimit := httpx.RateLimitByKey(putsPerMinute, time.Minute, auth.AccountRateLimitKey)
+	mux.Handle("PUT /v1/notifications/discord", putLimit(auth.RequireSession(s.put)))
 	mux.HandleFunc("DELETE /v1/notifications/discord", auth.RequireSession(s.remove))
 	mux.Handle("POST /v1/notifications/discord/test", limit(auth.RequireSession(s.test)))
 }
@@ -206,17 +208,18 @@ func (s *Service) openSaved(ctx context.Context, userID int64) (Webhook, string,
 // testFailed answers a failed test post. It changes no counter: only the
 // jobs' own posts count toward switching a webhook off.
 func (s *Service) testFailed(w http.ResponseWriter, r *http.Request, err error) {
-	message := noAnswerMessage
+	message, status := noAnswerMessage, http.StatusGatewayTimeout
 	var discord *DiscordError
 	if errors.As(err, &discord) {
 		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "test", "status", discord.Status)
+		status = http.StatusBadGateway
 		if body := truncateRunes(discord.Body, maxTestErrorRunes); body != "" {
 			message = body
 		}
 	} else {
 		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "test", "err", "no answer")
 	}
-	httpx.WriteError(w, r, http.StatusBadGateway, "upstream", message, nil)
+	httpx.WriteError(w, r, status, "upstream", message, nil)
 }
 
 func truncateRunes(text string, limit int) string {

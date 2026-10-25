@@ -370,10 +370,10 @@ func TestFailedTestIs502LeavesCountersAndTruncates(t *testing.T) {
 		t.Fatalf("discord 429 -> %d, want 502", status)
 	}
 	h.poster.PostErr = io.ErrUnexpectedEOF
-	_, raw, _ = h.call("POST", "/v1/notifications/discord/test", "")
+	status, raw, _ = h.call("POST", "/v1/notifications/discord/test", "")
 	_ = json.Unmarshal([]byte(raw), &e)
-	if e.Error.Message != "Discord did not answer" {
-		t.Fatalf("message = %q", e.Error.Message)
+	if status != 504 || e.Error.Code != "upstream" || e.Error.Message != "Discord did not answer" {
+		t.Fatalf("%d message = %q", status, e.Error.Message)
 	}
 }
 
@@ -466,12 +466,21 @@ func TestMalformedPutBodiesAre400(t *testing.T) {
 		status, raw, _ := h.call("PUT", "/v1/notifications/discord", body)
 		var e errEnv
 		_ = json.Unmarshal([]byte(raw), &e)
-		if status != 400 || e.Error.Code != "invalid" {
+		if status != 400 || e.Error.Code != "invalid" || (name == "blank url") != strings.Contains(raw, invalidMS) {
 			t.Fatalf("%s: %d %s", name, status, raw)
 		}
 	}
-	_, raw, _ := h.call("PUT", "/v1/notifications/discord", `{"webhook_url":"   ","events":{"sim_finished":true,"upload_parsed":true}}`)
-	if !strings.Contains(raw, invalidMS) {
-		t.Fatalf("blank url message: %s", raw)
+}
+
+func TestPutIsLimitedToTenPerMinute(t *testing.T) {
+	h := newAPI(t)
+	h.premium()
+	for i := 1; i <= 10; i++ {
+		if status, _, _ := h.call("PUT", "/v1/notifications/discord", putBody(testHook, true, true)); status != 200 {
+			t.Fatalf("call %d status %d", i, status)
+		}
+	}
+	if status, _, _ := h.call("PUT", "/v1/notifications/discord", putBody(testHook, true, true)); status != 429 {
+		t.Fatalf("eleventh call status %d, want 429", status)
 	}
 }

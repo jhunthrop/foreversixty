@@ -188,7 +188,7 @@ func TestAHungPostTimesOutAndCountsAsAFailure(t *testing.T) {
 	if time.Since(start) > 2*time.Second {
 		t.Fatal("Deliver outlived its timeout")
 	}
-	if w := r.webhook(t); w.Failures != 1 || w.LastError != timeoutText {
+	if w := r.webhook(t); w.Failures != 1 || w.LastError != "Discord did not answer in time." {
 		t.Fatalf("webhook = %+v", w)
 	}
 }
@@ -221,5 +221,35 @@ func TestAPlainErrorCountsWithASanitisedText(t *testing.T) {
 	w := r.webhook(t)
 	if w.Failures != 1 || strings.Contains(w.LastError, "SECRET-TOKEN") || strings.Contains(w.LastError, "webhooks") {
 		t.Fatalf("webhook = %+v", w)
+	}
+}
+
+func TestAnUnreachableDiscordStoresAPlainSentence(t *testing.T) {
+	r := newDeliverRig(t, bothEvents)
+	r.poster.PostErr = ErrUnreachable
+	_ = r.deliver(t, EventSimFinished)
+	if w := r.webhook(t); w.Failures != 1 || w.LastError != "Discord could not be reached." {
+		t.Fatalf("webhook = %+v", w)
+	}
+}
+
+func TestAnErroredDeliveryLogsItsCause(t *testing.T) {
+	r := newDeliverRig(t, bothEvents)
+	r.d.Entitlements = errEnts{}
+	r.d.deliverQuietly(context.Background(), r.uid, EventSimFinished, Embed{})
+	if out := r.logs.String(); !strings.Contains(out, "outcome=error") || !strings.Contains(out, "entitlement store down") {
+		t.Fatalf("log = %q", out)
+	}
+}
+
+type errEnts struct{}
+
+func (errEnts) Can(context.Context, int64, entitlements.Feature) (bool, entitlements.Reason, error) {
+	return false, "", errors.New("entitlement store down")
+}
+
+func TestTheDefaultPostTimeoutIsFiveSeconds(t *testing.T) {
+	if got := (&Service{}).Deliverer().effectiveTimeout(); got != 5*time.Second {
+		t.Fatalf("effectiveTimeout = %v", got)
 	}
 }
