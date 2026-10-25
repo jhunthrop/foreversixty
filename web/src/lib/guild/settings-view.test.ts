@@ -153,3 +153,11 @@ describe('the officer tools scoped grant', () => {
     expect(accountGuildPlanLine(billing())).toBe(guildPlanLine(billing()));
   });
 });
+
+describe('the scoped explanation without an end date', () => {
+  it('drops the date clause instead of rendering It ends on ;', () => {
+    expect(officerToolsExplanation(scoped({ current_period_end: null }))).toBe(
+      'Granted by Forever Sixty for Award, Undo and Nudge only. The guild plan keeps them after that.',
+    );
+  });
+});

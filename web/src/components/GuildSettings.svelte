@@ -9,7 +9,6 @@
   import { fetchMeFresh, refetchMe, type GuildBillingView, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
   import { BillingApiError, openPortal } from '../lib/billing/api';
-  import { billingBlockCopy } from '../lib/billing/copy';
   import {
     GuildApiError,
     fetchGuildSettings,
@@ -20,17 +19,11 @@
   } from '../lib/guild/api';
   import { guildRosterModelCopy, guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
-  import {
-    billedLine,
-    canManageBilling,
-    claimedByLine,
-    guildPlanLine,
-    notOnPlanLines,
-    settingsWords,
-  } from '../lib/guild/settings-view';
+  import { claimedByLine, settingsWords } from '../lib/guild/settings-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import GuildBillingSection from './guild/GuildBillingSection.svelte';
   import GuildInviteLink from './guild/GuildInviteLink.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
@@ -218,52 +211,15 @@
         {guildSettingsCopy.frozenNotice}
       </p>
     {/if}
-    {#if mayBill === true}
-      <section class="flex flex-col gap-3" data-testid="guild-settings-billing">
-        <h2 class="section-title text-[18px]">Billing</h2>
-        {#if guildBilling === null}
-          <p class="text-[14px]" data-testid="guild-billing-not-on-plan">{notOnPlanLines().headline}</p>
-          <p class="text-muted text-[13px]" data-testid="guild-billing-price">{notOnPlanLines().detail}</p>
-          {#if guildId !== null}
-            <a
-              href={`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`}
-              class="{PRIMARY_BUTTON_FIXED} w-fit px-4"
-              data-testid="guild-subscribe-link"
-            >
-              {billingBlockCopy.subscribeTheGuild}
-            </a>
-          {/if}
-        {:else}
-          <p class="text-[14px]" data-testid="guild-billing-plan">{guildPlanLine(guildBilling)}</p>
-          <p class="text-muted text-[13px]" data-testid="guild-billing-contact">{billedLine(guildBilling)}</p>
-          {#if guildBilling.status === 'past_due'}
-            <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-          {/if}
-          {#if billingUnavailable}
-            <p class="text-[14px]" role="alert" data-testid="guild-billing-unavailable">
-              {settingsWords.billingUnavailable}
-            </p>
-            <button
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-              onclick={onManageBilling}
-              disabled={busy}
-              data-testid="guild-billing-retry"
-            >
-              {settingsWords.tryAgain}
-            </button>
-          {:else if canManageBilling(guildBilling)}
-            <button
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-              onclick={onManageBilling}
-              disabled={busy}
-              aria-busy={busy}
-              data-testid="guild-manage-billing"
-            >
-              {billingBlockCopy.manageBilling}
-            </button>
-          {/if}
-        {/if}
-      </section>
+    {#if mayBill === true || (mayBill === false && guildBilling !== null)}
+      <GuildBillingSection
+        billing={guildBilling}
+        {mayBill}
+        {guildId}
+        {busy}
+        unavailable={billingUnavailable}
+        {onManageBilling}
+      />
     {:else if mayBill === false}
       <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
         {guildRosterModelCopy.guildMasterOnly}
