@@ -346,8 +346,9 @@ func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan stri
 	return row, false, nil
 }
 
-// isActiveStatus mirrors activeClause's SQL as Go, for a status
-// value already read into memory (UpsertStripe's duplicate check); the
+// isActiveStatus mirrors only the status list of activeClause (not its
+// grant-expiry half) as Go, for a status value already read into memory
+// (UpsertStripe's duplicate check); the
 // list itself lives in StatusGrantsAccess, which billing reads too.
 func isActiveStatus(status string) bool {
 	return StatusGrantsAccess(status)
@@ -507,7 +508,7 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 				cancel_at_period_end, stripe_subscription_id, billing_user_id, stripe_subscription_created)
 			values ($1, $2, $3, 'stripe', $4, $5, $6, $7, $8, $9)
 			on conflict (`+target+`) do update set
-				source = 'stripe', status = excluded.status, current_period_end = excluded.current_period_end,
+				source = 'stripe', features = null, status = excluded.status, current_period_end = excluded.current_period_end,
 				cancel_at_period_end = excluded.cancel_at_period_end,
 				stripe_subscription_id = excluded.stripe_subscription_id,
 				billing_user_id = excluded.billing_user_id,

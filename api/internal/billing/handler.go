@@ -360,7 +360,7 @@ func (s *Service) checkGuildCheckout(ctx context.Context, guildID, userID int64,
 	if err != nil {
 		return nil, err
 	}
-	active := existing != nil && (existing.Status == "active" || existing.Status == "trialing" || existing.Status == "past_due")
+	active := existing != nil && existing.Active && !existing.Scoped()
 	if active && !transfer {
 		return alreadyOnThePlanRefusal(), nil
 	}

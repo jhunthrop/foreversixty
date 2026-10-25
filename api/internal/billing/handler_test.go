@@ -4,6 +4,7 @@ package billing
 import (
 	"context"
 	"net/http"
+	"strings"
 	"sync"
 	"testing"
 )
@@ -140,6 +141,36 @@ func TestCheckoutGuildConflictsWhenAlreadyOnThePlanUnlessTransfer(t *testing.T) 
 		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid, "intent": "transfer"})
 	if w := h.do(t, r); w.Code != http.StatusOK {
 		t.Fatalf("transfer: status = %d, body = %s", w.Code, w.Body.String())
+	}
+}
+
+func TestGuildCheckoutAllowedOnScopedGrant(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		features string
+		until    string
+		want     int
+	}{
+		{name: "scoped grant", features: "'{officer_views}'", until: "now() + interval '30 days'", want: http.StatusOK},
+		{name: "full grant", features: "null", until: "now() + interval '30 days'", want: http.StatusConflict},
+		{name: "expired full grant", features: "null", until: "now() - interval '1 day'", want: http.StatusOK},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			h := newHarness(t)
+			gid := h.seedGuild(t, strings.ReplaceAll(tc.name, " ", "-"), true)
+			officer := h.seedUser(t, "scoped-officer-"+strings.ReplaceAll(tc.name, " ", "-")+"@example.com")
+			h.seedGuildMember(t, gid, officer, "leader")
+			if _, err := h.pool.Exec(t.Context(),
+				`insert into entitlements (guild_id, plan, source, status, current_period_end, features)
+				 values ($1, 'guild', 'grant', 'active', `+tc.until+`, `+tc.features+`)`, gid); err != nil {
+				t.Fatal(err)
+			}
+			r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", officer,
+				map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid})
+			if w := h.do(t, r); w.Code != tc.want {
+				t.Fatalf("status = %d, want %d, body = %s", w.Code, tc.want, w.Body.String())
+			}
+		})
 	}
 }
 

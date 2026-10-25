@@ -786,12 +786,14 @@ func TestCanForGuild(t *testing.T) {
 		rank       string
 		verified   bool
 		otherGuild bool
+		wholePlan  bool
 		feature    Feature
 		wantOK     bool
 		wantReason Reason
 		wantErr    bool
 	}{
 		{name: "officer scoped grant", until: tomorrow(), rank: "officer", verified: true, feature: FeatureOfficerViews, wantOK: true, wantReason: ReasonEntitled},
+		{name: "whole plan active row", until: tomorrow(), rank: "officer", verified: true, feature: FeatureOfficerViews, wantOK: true, wantReason: ReasonEntitled, wholePlan: true},
 		{name: "officer expired grant", until: yesterday(), rank: "officer", verified: true, feature: FeatureOfficerViews, wantReason: ReasonNoPlan},
 		{name: "member with grant", until: tomorrow(), rank: "member", verified: true, feature: FeatureOfficerViews, wantReason: ReasonNotOfficer},
 		{name: "officer of another guild", until: tomorrow(), rank: "officer", verified: true, otherGuild: true, feature: FeatureOfficerViews, wantReason: ReasonNoPlan},
@@ -802,7 +804,11 @@ func TestCanForGuild(t *testing.T) {
 			pool := testPool(t)
 			s := &Store{Pool: pool}
 			gid := seedGuild(t, pool)
-			seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active", scoped, timePtr(tc.until))
+			features := scoped
+			if tc.wholePlan {
+				features = nil
+			}
+			seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active", features, timePtr(tc.until))
 			uid := seedUser(t, pool)
 			memberOf := gid
 			if tc.otherGuild {
@@ -841,5 +847,38 @@ func TestGuildBillingCarriesFeaturesAndActive(t *testing.T) {
 	}
 	if g.Active {
 		t.Fatalf("ended = %+v, want inactive", g)
+	}
+}
+
+func TestUpsertStripeReplacesScopedGrant(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	uid := seedUser(t, pool)
+	seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active",
+		[]string{FeatureScopeOfficerViews}, timePtr(tomorrow()))
+	end := tomorrow().UTC().Truncate(time.Second)
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		StripeSubscriptionID: "sub_scoped", BillingUserID: uid, Actor: "stripe_webhook:evt_s",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var source string
+	var features []string
+	if err := pool.QueryRow(context.Background(),
+		`select source, features from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&source, &features); err != nil {
+		t.Fatal(err)
+	}
+	if source != "stripe" || features != nil {
+		t.Fatalf("source = %q, features = %v, want stripe and null", source, features)
+	}
+	var oldStatus, newStatus string
+	if err := pool.QueryRow(context.Background(),
+		`select old_status, new_status from entitlement_audit where guild_id = $1`, gid).Scan(&oldStatus, &newStatus); err != nil {
+		t.Fatal(err)
+	}
+	if oldStatus != "active" || newStatus != "active" {
+		t.Fatalf("audit = %q -> %q, want active -> active", oldStatus, newStatus)
 	}
 }
