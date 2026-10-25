@@ -23,6 +23,23 @@ export interface FollowOptions {
 
 const NO_URL = { code: '', source: '', ref: '' } as const;
 
+/** Phases (the simulator's and the bulk tools') in which a run, or the engine for one, is under way. */
+const BUSY_PHASES: ReadonlySet<string> = new Set(['loading-engine', 'counting', 'running']);
+
+/** What a store reports for `simHoldsWork`; both the simulator's and the bulk tools' stores fit. */
+export interface SimWorkState {
+  phase: string;
+  serverRunning: boolean;
+}
+
+/**
+ * Whether the page holds work a session-default heal must not replace: a run (or its engine
+ * load) in progress, a server run, or a `?code=` build on screen.
+ */
+export function simHoldsWork(state: SimWorkState, bootstrapCode: string): boolean {
+  return BUSY_PHASES.has(state.phase) || state.serverRunning || bootstrapCode !== '';
+}
+
 /**
  * Subscribes; returns the unsubscribe. Loads run one after another in the order the choices
  * were made, so the last choice is always the one left on screen.

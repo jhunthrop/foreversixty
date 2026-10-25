@@ -342,7 +342,7 @@
   let characterRequest = 0;
   /** True from the moment a character is asked for until its build is on screen. */
   let characterLoading = $state(false);
-  async function loadAccountCharacter(key: string): Promise<void> {
+  async function loadAccountCharacter(key: string, abandon?: () => boolean): Promise<void> {
     const mine = ++characterRequest;
     characterLoading = true;
     const me = await fetchMeOnce().catch(() => null);
@@ -353,7 +353,11 @@
     }
     const classSlug = character.class?.toLowerCase() ?? '';
     const code = await accountCharacterCode(character, activeBuild.build, API_BASE_URL);
-    if (mine !== characterRequest) return;
+    // A heal's load stops when the visitor edited while the code was coming: their build stays.
+    if (mine !== characterRequest || abandon?.() === true) {
+      if (mine === characterRequest) characterLoading = false;
+      return;
+    }
     if (code !== null && decodeFS1(code).ok) {
       switchClassForImport(classSlug, code, 'character', character);
       return;
@@ -420,28 +424,27 @@
   // would (followPointerInPlanner): a pasted export imports, any other character opens its
   // class. The address follows through the class/race effect below; the selector already
   // replaced it for a character chosen there.
+  // The session's default must not replace a link's build or the visitor's own edits.
+  const healDiscardsWork = (): boolean =>
+    healWouldDiscardPlannerWork({
+      linkNamesBuild,
+      pointsSpent: store.order.length,
+      gearCount: Object.keys(store.gear).length,
+    });
   $effect(() => {
     if (!standalone || record !== null) return;
     return onCurrentCharacterChange(({ fromPageLoad, fromSessionHeal }) => {
       pointerVersion += 1;
       if (fromPageLoad) return;
-      // The session's default must not replace a link's build or the visitor's own edits.
-      if (
-        fromSessionHeal &&
-        healWouldDiscardPlannerWork({
-          linkNamesBuild,
-          pointsSpent: store.order.length,
-          gearCount: Object.keys(store.gear).length,
-        })
-      )
-        return;
+      if (fromSessionHeal && healDiscardsWork()) return;
       const follow = followPointerInPlanner(readCurrent(), store.classSlug);
       if (follow.kind !== 'none') {
         loadedCharacter = null;
         buildOrigin = null;
         characterRequest += 1;
       }
-      if (follow.kind === 'character') void loadAccountCharacter(follow.key);
+      if (follow.kind === 'character')
+        void loadAccountCharacter(follow.key, fromSessionHeal ? healDiscardsWork : undefined);
       else if (follow.kind === 'import') switchClassForImport(follow.classSlug, follow.code, 'follow');
       else if (follow.kind === 'class') store.selectClass(follow.classSlug);
     });

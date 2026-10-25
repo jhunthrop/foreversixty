@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
+import { plannerCharacterCardCopy } from '../../src/lib/planner/copy';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 
 const ok = (data: unknown, status = 200) => ({
@@ -94,6 +95,9 @@ test.describe('Send this build to the addon', () => {
     );
     await page.getByTestId('band-compare-load').click();
     await expect(action).toBeEnabled();
+    await expect(page.getByTestId('character-header-note')).toHaveText(
+      plannerCharacterCardCopy.shorterThanSpend(3, 'Obnoxious Yell', 9),
+    );
 
     await action.click();
 
@@ -154,8 +158,28 @@ test.describe('Send this build to the addon', () => {
     await page.evaluate(() => window.localStorage.clear());
     await page.goto('/planner?class=warrior');
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
-    await page.waitForTimeout(SELECTOR_MOUNT_MARGIN_MS);
+    await page.waitForFunction(() => window.sessionStorage.getItem('fs.pointerHealed') === '1');
     await expect(action).toBeDisabled();
+  });
+
+  test('a heal whose character code is still coming never replaces what the player edited', async ({
+    page,
+  }) => {
+    const buildless = { ...me(), characters: [{ ...me().characters[0], build: undefined }] };
+    await page.route('**/v1/me', (route) => route.fulfill(ok(buildless)));
+    await page.route('**/v1/devices', (route) => route.fulfill(ok([])));
+    await page.route('**/v1/characters/**/sim-input', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, SELECTOR_MOUNT_MARGIN_MS));
+      await route.fulfill(ok({ gear: WORN_RING }));
+    });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/planner');
+    // The heal has fired and the main's code is on its way: edit now, while it is in flight.
+    await page.waitForFunction(() => window.sessionStorage.getItem('fs.pointerHealed') === '1');
+    await page.getByTestId('talent-1001').click();
+    await expect(page.getByTestId('character-header-action')).toBeEnabled();
+    await page.waitForTimeout(SELECTOR_MOUNT_MARGIN_MS + 500);
+    await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '1');
   });
 
   test('a worn item outside the planner list never reaches the body, and the card says so', async ({

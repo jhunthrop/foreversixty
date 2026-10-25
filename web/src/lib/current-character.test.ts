@@ -190,6 +190,7 @@ describe('onCurrentCharacterChange', () => {
     window.dispatchEvent(new StorageEvent('storage', { key: 'fs.currentCharacter' }));
     window.dispatchEvent(new StorageEvent('storage', { key: 'something-else' }));
     expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith({ fromPageLoad: false, fromSessionHeal: false });
     stop();
   });
 
