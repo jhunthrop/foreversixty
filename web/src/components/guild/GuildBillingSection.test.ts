@@ -8,7 +8,7 @@ import GuildBillingSection from './GuildBillingSection.svelte';
 const SCOPED: GuildBillingView = {
   scope: 'officer_tools',
   status: 'active',
-  current_period_end: '2026-12-11T00:00:00Z',
+  current_period_end: '2026-12-12T00:00:00Z',
   cancel_at_period_end: false,
   billed_by: '',
   you_are_billing_contact: false,
@@ -21,8 +21,8 @@ const PLAN: GuildBillingView = {
   you_are_billing_contact: true,
 };
 const EXPLANATION =
-  'Granted by Forever Sixty for Award, Undo and Nudge only. It ends on 11 Dec 2026; the guild plan keeps them after that.';
-const MASTER_ONLY = 'Only the guild master can release the claim or change billing.';
+  'Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until 12 Dec 2026. After that they need the guild plan.';
+const MASTER_ONLY = 'Only the guild master can subscribe the guild, release the claim or change billing.';
 
 function html(billing: GuildBillingView | null, mayBill: boolean): string {
   return render(GuildBillingSection, { props: { billing, mayBill, guildId: 7 } }).body.replace(
@@ -46,7 +46,7 @@ describe('GuildBillingSection, scoped grant for the claim holder', () => {
   const body = html(SCOPED, true);
 
   it('draws the plan line, the explanation and the price line', () => {
-    expect(slot(body, 'guild-billing-plan')).toBe('Officer tools · until 11 Dec 2026');
+    expect(slot(body, 'guild-billing-plan')).toBe('Officer tools · until 12 Dec 2026');
     expect(slot(body, 'guild-billing-contact')).toBe(EXPLANATION);
     expect(slot(body, 'guild-billing-price')).toBe(notOnPlanLines().detail);
   });
@@ -62,7 +62,7 @@ describe('GuildBillingSection, scoped grant for the claim holder', () => {
 describe('GuildBillingSection, an officer without the claim', () => {
   it('shows the plan line and explanation, then the master-only sentence, no button', () => {
     const body = html(SCOPED, false);
-    expect(slot(body, 'guild-billing-plan')).toBe('Officer tools · until 11 Dec 2026');
+    expect(slot(body, 'guild-billing-plan')).toBe('Officer tools · until 12 Dec 2026');
     expect(slot(body, 'guild-billing-contact')).toBe(EXPLANATION);
     expect(slot(body, 'guild-settings-master-only')).toBe(MASTER_ONLY);
     expect(body).not.toContain('guild-subscribe-link');

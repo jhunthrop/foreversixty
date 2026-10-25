@@ -24,7 +24,7 @@ import {
   expectNoAxeViolations,
   nudgeButtons,
   refuseAwards,
-  stubAccountWithTwoGuilds,
+  stubAccountGuildRows,
   stubGuildCentre,
   undoButtons,
   unawardedItem,
@@ -32,6 +32,8 @@ import {
 } from './support/officer-tools';
 
 const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe the guild.';
+const MASTER_ONLY = 'Only the guild master can subscribe the guild, release the claim or change billing.';
+const SCOPED_PLAN_LINE = 'Officer tools · until 12 Dec 2026';
 const CLIPBOARD_SENTINEL = 'clipboard untouched';
 
 type Tab = 'loot' | 'readiness';
@@ -75,9 +77,14 @@ async function enabledCounts(page: Page): Promise<{ award: number; undo: number;
 }
 
 test.describe('officer-read-only: every control in place and disabled (§3.4)', () => {
-  test('state 1: tools on shows no sentence and every control live', async ({ page }) => {
+  test('state 1: tools on shows no sentence and every control live', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await enabledCounts(page);
     await expect(gate(page, 'readiness')).toHaveCount(0);
+    // The positive control for the disabled-Nudge test below: a live Nudge does write.
+    await page.evaluate((text) => navigator.clipboard.writeText(text), CLIPBOARD_SENTINEL);
+    await page.locator('button[data-testid^="guild-readiness-nudge-"]:visible').first().click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).not.toBe(CLIPBOARD_SENTINEL);
     await page.getByTestId('guild-tab-loot').click();
     await expect(gate(page, 'loot')).toHaveCount(0);
   });
@@ -174,6 +181,23 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
     }
   }
 
+  for (const [width, hitArea] of [
+    [360, 44],
+    [1440, null],
+  ] as const) {
+    test(`the link's phone hit area at ${width}: ${hitArea ?? 'none'}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await openTab(page, 'loot', { viewer: 'officer', officerTools: false });
+      const link = gate(page, 'loot').getByRole('link');
+      const after = await link.evaluate((node) => {
+        const style = getComputedStyle(node, '::after');
+        return { display: style.display, height: parseFloat(style.height) };
+      });
+      if (hitArea === null) expect(after.display).toBe('none');
+      else expect(after.height).toBeGreaterThanOrEqual(hitArea);
+    });
+  }
+
   test('keyboard: the link follows the tab strip and every disabled control is out of the order', async ({
     page,
   }) => {
@@ -207,7 +231,7 @@ test.describe('axe on the gate states (§8: 2, 7, 10, 13)', () => {
   });
 
   test('state 13: account, one scoped row and one paid row', async ({ page }) => {
-    await stubAccountWithTwoGuilds(page);
+    await stubAccountGuildRows(page);
     await gotoHydrated(page, '/account', 'account-guilds');
     await expectNoAxeViolations(page, '[data-testid="account-guilds-panel"]');
   });
@@ -270,9 +294,9 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
 
   test('state 10: the claim holder reads the grant and can subscribe the guild', async ({ page }) => {
     await openSettings(page, meWithGuildPlan(scopedGrant()));
-    await expect(page.getByTestId('guild-billing-plan')).toHaveText('Officer tools · until 11 Dec 2026');
+    await expect(page.getByTestId('guild-billing-plan')).toHaveText(SCOPED_PLAN_LINE);
     await expect(page.getByTestId('guild-billing-contact')).toHaveText(
-      'Granted by Forever Sixty for Award, Undo and Nudge only. It ends on 11 Dec 2026; the guild plan keeps them after that.',
+      'Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until 12 Dec 2026. After that they need the guild plan.',
     );
     await expect(page.getByTestId('guild-billing-price')).toBeVisible();
     await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(
@@ -286,13 +310,33 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
     page,
   }) => {
     await openSettings(page, meWithGuildPlan(scopedGrant(), OFFICER_CAN));
-    await expect(page.getByTestId('guild-billing-plan')).toHaveText('Officer tools · until 11 Dec 2026');
+    await expect(page.getByTestId('guild-billing-plan')).toHaveText(SCOPED_PLAN_LINE);
     await expect(page.getByTestId('guild-billing-contact')).toContainText('Award, Undo and Nudge only');
-    await expect(page.getByTestId('guild-settings-master-only')).toHaveText(
-      'Only the guild master can release the claim or change billing.',
-    );
+    await expect(page.getByTestId('guild-settings-master-only')).toHaveText(MASTER_ONLY);
     await expect(page.getByTestId('guild-subscribe-link')).toHaveCount(0);
     await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
+  });
+
+  test('an officer without the claim and no plan reads only the master-only line', async ({ page }) => {
+    await routeGuildSettingsPage(page);
+    await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null, OFFICER_CAN).data)));
+    await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-master-only');
+    await expect(page.getByTestId('guild-settings-master-only')).toHaveText(MASTER_ONLY);
+    await expect(page.getByTestId('guild-billing-plan')).toHaveCount(0);
+    await expect(page.getByTestId('guild-subscribe-link')).toHaveCount(0);
+    await expect(page.getByRole('link', { name: guildGateCopy.link })).toHaveCount(0);
+  });
+
+  test('the claim holder with no plan keeps the not-on-plan block', async ({ page }) => {
+    const billing = await openSettings(page, meWithGuildPlan(null));
+    await expect(page.getByTestId('guild-billing-not-on-plan')).toBeVisible();
+    await expect(page.getByTestId('guild-billing-price')).toBeVisible();
+    await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(
+      'href',
+      '/premium/checkout?plan=guild&interval=monthly&guild_id=501',
+    );
+    await expect(page.getByTestId('guild-billing-plan')).toHaveCount(0);
+    await expect(billing.getByTestId('guild-settings-master-only')).toHaveCount(0);
   });
 
   test('state 12: a granted full plan is unchanged', async ({ page }) => {
@@ -315,11 +359,18 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
 test('state 13: the account page shows each guild plan on its own row, never in Premium', async ({
   page,
 }) => {
-  await stubAccountWithTwoGuilds(page);
+  await stubAccountGuildRows(page);
   await gotoHydrated(page, '/account', 'account-guilds');
   const lines = page.getByTestId('account-guild-plan');
+  await expect(page.getByTestId('account-guild-row')).toHaveCount(3);
   await expect(lines).toHaveCount(2);
-  await expect(lines.nth(0)).toHaveText(/^Officer tools · until 11 Dec 2026 ·\s*Guild settings$/);
+  await expect(
+    page
+      .getByTestId('account-guild-row')
+      .filter({ hasText: 'Ashen Vigil' })
+      .getByTestId('account-guild-plan'),
+  ).toHaveCount(0);
+  await expect(lines.nth(0)).toHaveText(/^Officer tools · until 12 Dec 2026 ·\s*Guild settings$/);
   await expect(lines.nth(1)).toHaveText(/^Guild plan · renews 31 Dec 2026 ·\s*Guild settings$/);
   await expect(lines.nth(0).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
     'href',

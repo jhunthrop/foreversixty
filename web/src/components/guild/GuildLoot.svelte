@@ -235,7 +235,7 @@
           </div>
           {#if refusedItemId === item.item_id}
             <p
-              class="text-[13px] leading-5"
+              class="text-wipe text-[13px] leading-5"
               role="alert"
               tabindex="-1"
               use:focusOnMount

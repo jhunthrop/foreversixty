@@ -137,13 +137,17 @@ export const nudgeButtons = (page: Page): Locator =>
   page.locator('button[data-testid^="guild-readiness-nudge-"]');
 
 /** Two guilds on the account page: Olympus XXVII on the scoped grant, The Last Watch on the paid plan. */
-export function accountMeWithTwoGuilds() {
+/** The account page's third guild: no plan, so its row carries no plan line. */
+const NO_PLAN_GUILD_ID = 502;
+
+/** `/v1/me` with three guild rows: a scoped grant, a paid plan, and a guild with no plan. */
+export function accountMeWithGuildRows() {
   const row = (
     id: number,
     region: string,
     ruleset: string,
     name: string,
-    plan: GuildBillingView,
+    plan: GuildBillingView | null,
   ): Record<string, unknown> => ({
     id,
     region,
@@ -169,6 +173,7 @@ export function accountMeWithTwoGuilds() {
           'The Last Watch',
           guildBilling({ current_period_end: '2026-12-31T00:00:00Z' }),
         ),
+        row(NO_PLAN_GUILD_ID, 'us', 'hardcore', 'Ashen Vigil', null),
       ],
       entitlements: mockEntitlements(),
       notifications: { discord: null },
@@ -178,9 +183,9 @@ export function accountMeWithTwoGuilds() {
   };
 }
 
-/** Routes /v1/me with the two guilds and the device list the account page reads. */
-export async function stubAccountWithTwoGuilds(page: Page): Promise<void> {
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(accountMeWithTwoGuilds().data)));
+/** Routes /v1/me with the three guild rows and the device list the account page reads. */
+export async function stubAccountGuildRows(page: Page): Promise<void> {
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(accountMeWithGuildRows().data)));
   await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
 }
 

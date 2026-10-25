@@ -33,7 +33,7 @@ test('not on the plan: shows the honest not-subscribed line and a real subscribe
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings-billing')).toContainText('not on the guild plan yet');
   await expect(page.getByTestId('guild-billing-price')).toHaveText(
-    '$15 a month, cancel any time. Officers get the loot, readiness and progression tools.',
+    '$15 a month, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.',
   );
   await shot(page, 'g7-billing-not-on-plan');
   await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(

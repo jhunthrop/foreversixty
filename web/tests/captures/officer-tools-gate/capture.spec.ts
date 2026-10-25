@@ -22,7 +22,7 @@ import {
   awardedItemId,
   envelope,
   refuseAwards,
-  stubAccountWithTwoGuilds,
+  stubAccountGuildRows,
   stubGuildCentre,
   unawardedItem,
   type GuildCentreStub,
@@ -202,13 +202,24 @@ atWidths('12 settings granted plan', PAIR, async (page, width) => {
   await shoot(page, '12-settings-granted', width, billing(page));
 });
 
-// 13. Account, Guild panel: one scoped row and one paid row.
+// 13. Account, Guild panel: one scoped row, one paid row and one guild with no plan.
 atWidths('13 account guild rows', WITH_360, async (page, width) => {
   await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
-  await stubAccountWithTwoGuilds(page);
+  await stubAccountGuildRows(page);
   await gotoHydrated(page, '/account', 'account-guilds');
   await settle(page);
   await shoot(page, '13-account-guild-rows', width, page.getByTestId('account-guilds-panel'));
+});
+
+// 13, focused: the scoped row's muted Guild settings link reached with the keyboard.
+atWidths('13 account guild link focus', [1440], async (page, width) => {
+  await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
+  await stubAccountGuildRows(page);
+  await gotoHydrated(page, '/account', 'account-guilds');
+  await page.keyboard.press('Shift');
+  await page.getByTestId('account-guild-plan').first().getByRole('link').focus();
+  await settle(page);
+  await shoot(page, '13-account-guild-link-focus', width, page.getByTestId('account-guilds-panel'));
 });
 
 // §3.5: the panel with the sentence minus the same panel without it, at the same width.
