@@ -45,12 +45,12 @@ function shortenName(name: string): string {
 
 export const premiumRowCopy = {
   /** Not entitled: the row is muted text, not a link. */
-  off: `Off${NBSP}· Premium`,
-  offSetUp: `Off${NBSP}· set up`,
+  off: `Off${NBSP}·${NBSP}Premium`,
+  offSetUp: `Off${NBSP}·${NBSP}set${NBSP}up`,
   offNoEvents: `Off${NBSP}· no events chosen`,
   offNeedsAttention: `Off${NBSP}· needs attention`,
   paused: `Paused${NBSP}· plan lapsed`,
-  on: (events: number): string => `On${NBSP}· ${events}${NBSP}${events === 1 ? 'event' : 'events'}`,
+  on: (events: number): string => `On${NBSP}·${NBSP}${events}${NBSP}${events === 1 ? 'event' : 'events'}`,
 } as const;
 
 const WARNING_CHECK = 'Send a test message to check.';

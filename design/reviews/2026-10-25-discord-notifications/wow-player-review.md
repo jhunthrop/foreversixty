@@ -58,3 +58,54 @@ Reviewed: README, spec 6.1 and 6.2, and the 1440 and 390 captures of paste-empty
 3. After 5 failed posts, do we also tell the member by email or on the site's next visit? The switch-off is silent otherwise.
 4. Do live-logging uploads never post, and does the Premium row say so? Players who live-log will wait for a ping that does not come.
 5. Does the sim message include a link to the character's BiS gap, so the ping leads to a better character and not just a number?
+
+## Follow-up lane re-check (a71bbb90)
+
+**Verdict: SHIP WITH FIXES.** Nothing here would be mocked in guild chat; the two things I would fix before launch are copy, not layout.
+
+1. Changelog: `The account page now shows the name of the webhook, so you can tell which channel it is.` overpromises. The page shows the name the member gave the webhook (`Posts through “Raid pings”`), not the channel, and the same changelog's first paragraph still says `the page only shows which channel it posts to`. Say `shows the webhook's name and a short channel ID`.
+2. Changelog: the private-logs sentence is buried at the end of a long paragraph. A player who set up a webhook yesterday and skims will miss that their private logs are still posting. Move it to its own paragraph and say what it means (see Copy).
+3. `discord-events-logs-off-private-disabled-panel-1440.png`: `Include private logs` is greyed but ticked, directly under `A combat log you upload finishes parsing` (unticked), and the note under it says `Off, private logs never post.` The box says on, the note says off. Either leave a disabled box unticked, or when disabled make the note read `Kept on, but nothing posts while logs are off.`
+4. `discord-row-on-2-events-1024.png`: the Premium row value breaks as `On ·` then `2 events` on the next line, and the line above wraps to `only`. The non-breaking space the lane listed as polish is needed; the row looks broken at 1024.
+5. `discord-warning-four-long-panel-1440.png`, `discord-switched-off-long-panel-390.png`: the Discord error is cut at `someone with…`, which is exactly where the useful part would be. Cut at the last comma, or show `Invalid Webhook Token: the token in this webhook URL was changed, or the webhook was deleted.`
+
+## What landed well
+
+- Numbered steps (`discord-paste-steps-1440.png`) are right: `Integrations, then Webhooks`, `Choose New Webhook, name it something you will recognize, then Copy Webhook URL`, `Paste it below.` Step 2 asking for a name is what makes the saved line meaningful. The trust line sits 21 px under the input and reads fine.
+- `Posts through “Raid pings”` is better than the snowflake ever was. Even the unnamed variant (`Posts to a Discord channel` / `Channel 1198…4568`) is honest about what it is. Not getting the channel name is Discord's limit, and I accept it.
+- The three event rows read as one decision with a child: `Include private logs` indented under the log row, with a note that says who sees what (`everyone in the channel sees the log's name and “Only you”`). Off by default for new webhooks is the right call.
+- Switched-off notice (`discord-switched-off-long-panel-390.png`): red bar, cause, `Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.`, and `Use a different webhook` inside the notice, above `TEST AND SWITCH ON`. That is the cure I wanted, in the order a player does it.
+- The 1-to-4 warning now ends with `Send a test message to check.` and the first line is brighter than the error under it.
+- Premium row: `Off · needs attention` is linked and clear. `Off · Premium` on the free plan (`discord-free-1440.png`) is quiet, with no pitch, only the one sentence under the Plan panel. `On · 2 events` is correct.
+- Gold checkboxes are gold on the Discord rows and on the account `You` row, and look like the rest of the site.
+- Loading, warm: the skeleton bars sit where the panels land (footer within 0.5 px in all six states). That fixes the jump.
+- Messages as written in 6.2: `Run time`, `Boss fights` `9 · 7 kills`, `Frostbolt's Frost Mage sim finished`, `Visible to` `Only you`, `Test message from Forever Sixty`, and `finishes parsing, private logs included.`. All read like something a raid lead would be glad to see. `Result` `1,204 DPS` without `(sim)` is fine now that the title says it is a sim; I withdraw that item.
+
+## Still trips a player
+
+- Cold load (`discord-loading-cold-1440.png`): the skeleton shows three bars per right-hand panel and no Discord frame, and the footer sits at about y 990. When the data arrives the page grows by about 660 px and the footer drops. Warm is solved; cold (first visit, new tab) is not. Not a blocker; a player will see the footer fall once.
+- A webhook that still carries Discord's default name will show that default in `Posts through “…”`. The step asks for a name, but a pasted old webhook will read oddly. Acceptable, but know it.
+- `Channel 1198…4568` is in the body font, bold. A monospace face would say "this is an ID" at a glance.
+- Panel heights: the paste form is 647 px against its 640 cap and the one-line switched-off panel 561 against 560. Nobody will notice; update the cap.
+- The saved panel still leaves about 50 px between the buttons and `Use a different webhook`, which looks like a missing row (`discord-saved-unnamed-panel-1440.png`). Better than 70; not fixed.
+- Live logging never posts (6.2 says so). The event label says "upload", but a player who live-logs and sees nothing will blame the site. A one-line note under the log row would head that off.
+
+## Copy I would change
+
+| Current | Proposed |
+|---|---|
+| `The account page now shows the name of the webhook, so you can tell which channel it is.` | `The account page now shows the webhook's name (the one you gave it in Discord) and a short channel ID.` |
+| `...the page only shows which channel it posts to.` | `...the page only shows the webhook's name and a short channel ID.` |
+| `New webhooks leave private logs off; a webhook saved before today keeps posting them until you untick Include private logs.` | Own paragraph: `Private logs. New webhooks do not post private logs. If you saved a webhook before today, it still posts them to your channel until you untick Include private logs on your account page.` |
+| `Off, private logs never post.` (under a disabled, ticked box) | `Kept on, but nothing posts while logs are off.` |
+| `...deleted from the channel settings by someone with…` | `...the webhook was deleted.` (cut at the last comma, not mid-clause) |
+| `On · 2 events` wrapping at 1024 | non-breaking spaces so it stays on one line |
+| `Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.` | Fine as is. |
+| (none) | Under the log row: `Live logging does not post.` |
+
+## Questions for the owner
+
+1. The changelog tells people to untick a box. Do you also want to tell the people it affects? Anyone who saved a webhook yesterday is still posting private-log names into their channel today. A one-time line on the account page (`This webhook was saved before private logs became optional; it still posts them`) would reach them, and a changelog entry will not.
+2. Will the messages ever link to the character's BiS gap (my question 5 from yesterday)? It is the one part of the ping that moves a player toward a better character, and it is not in 6.2.
+3. After five failures the member is told only if they open the account page. Do we want an email or a notice on the next visit? (Question 3 from yesterday, still open.)
+4. Real channel: no capture shows the three embeds, so `Frostbolt's Frost Mage sim finished` with `Run`, `Run time` and `Result` has not been seen in Discord. Do not call spec item 9 done until it is.

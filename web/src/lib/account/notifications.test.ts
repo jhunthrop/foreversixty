@@ -65,13 +65,13 @@ describe('premiumRowValue', () => {
   const both = { sim_finished: true, upload_parsed: true, upload_private: false };
   const none = { sim_finished: false, upload_parsed: false, upload_private: false };
   it.each([
-    ['free', me(false, null), 'Off\u00A0· Premium'],
-    ['payer, nothing saved', me(true, null), 'Off\u00A0· set up'],
-    ['two events', me(true, discordBlock({ events: both })), 'On\u00A0· 2\u00A0events'],
+    ['free', me(false, null), 'Off\u00A0·\u00A0Premium'],
+    ['payer, nothing saved', me(true, null), 'Off\u00A0·\u00A0set\u00A0up'],
+    ['two events', me(true, discordBlock({ events: both })), 'On\u00A0·\u00A02\u00A0events'],
     [
       'one event',
       me(true, discordBlock({ events: { ...none, upload_parsed: true } })),
-      'On\u00A0· 1\u00A0event',
+      'On\u00A0·\u00A01\u00A0event',
     ],
     ['no event', me(true, discordBlock({ events: none })), 'Off\u00A0· no events chosen'],
     [
@@ -80,15 +80,17 @@ describe('premiumRowValue', () => {
       'Off\u00A0· needs attention',
     ],
     ['lapsed', me(false, discordBlock()), 'Paused\u00A0· plan lapsed'],
-    ['feature off, entitled', me(true), 'Off\u00A0· Premium'],
-    ['feature off, lapsed', me(false), 'Off\u00A0· Premium'],
+    ['feature off, entitled', me(true), 'Off\u00A0·\u00A0Premium'],
+    ['feature off, lapsed', me(false), 'Off\u00A0·\u00A0Premium'],
   ])('reads %s', (_name, account, expected) => {
     expect(premiumRowValue(account)).toBe(expected);
   });
 
   it('counts sim_finished plus upload_parsed only: upload_private is not an event', () => {
     const allThree = { ...both, upload_private: true };
-    expect(premiumRowValue(me(true, discordBlock({ events: allThree })))).toBe('On\u00A0· 2\u00A0events');
+    expect(premiumRowValue(me(true, discordBlock({ events: allThree })))).toBe(
+      'On\u00A0·\u00A02\u00A0events',
+    );
     expect(premiumRowValue(me(true, discordBlock({ events: { ...none, upload_private: true } })))).toBe(
       'Off\u00A0· no events chosen',
     );

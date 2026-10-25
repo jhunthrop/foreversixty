@@ -25,6 +25,9 @@ function specCell(labelStart: string): string[] {
 
 /** The spec's U+00A0 rule for the Premium row (3.7): after the state word, and between a count and its noun. */
 function withNonBreakingSpaces(value: string): string {
+  // Spec 3.7 (amended after the follow-up captures): the short values never wrap, so every
+  // space in them is U+00A0; the longer values keep only the state-dot and count-noun joins.
+  if (/^(On · \d+ events?|Off · Premium|Off · set up)$/.test(value)) return value.replace(/ /g, NBSP);
   return value.replace(' ·', `${NBSP}·`).replace(/(\d) (events?)$/, `$1${NBSP}$2`);
 }
 
@@ -134,8 +137,8 @@ describe('notificationsCopy', () => {
 
 describe('premiumRowCopy', () => {
   it('counts events', () => {
-    expect(premiumRowCopy.on(2)).toBe('On\u00A0· 2\u00A0events');
-    expect(premiumRowCopy.on(1)).toBe('On\u00A0· 1\u00A0event');
+    expect(premiumRowCopy.on(2)).toBe('On\u00A0·\u00A02\u00A0events');
+    expect(premiumRowCopy.on(1)).toBe('On\u00A0·\u00A01\u00A0event');
   });
 });
 

@@ -77,3 +77,52 @@ None.
 3. Native blue checkboxes: set `accent-color` to `--gold` on this row and the anonymize row together.
 4. At 360 and 390 the form's gap between the input and the `In Discord:` helper (see ruling 3) could drop 8 px.
 5. Record rulings 1 and 2 in the spec's §3.2 and §7 as written above, and fill the README's empty `Verdicts` and `Deferred, not this lane` sections.
+
+## Follow-up lane re-check (a71bbb90)
+
+VERDICT: SHIP. No must-fix items. Two cap amendments and one capture request below; none blocks the merge.
+
+Viewed: paste-steps, paste-invalid, replace, destination (named, unnamed, long, markup), events (private on, logs-off/private-disabled, lapsed-all-disabled), warning one and four-long, switched-off (1440, 360 long), remove-confirm (saved and switched-off), lapsed, the Premium row crops at 390, 1024 and 1440 (all seven values), feature-off, the warm loading captures beside their `-ready` twins (all six states at 390 and 1440), cold at 1440, the checkbox captures (Discord focus and disabled, rankings checked and focus, sim) and the side-by-side. Only what is on disk was judged; the fixture artefacts the README lists are not re-raised.
+
+### Ruling 1: the 1440 caps (amend, no cut)
+
+The extra 8 px is `StatePanel`'s own `md:py-5` against `py-4` (spec 3 tokens), so the 7 px and 1 px overshoots are the padding, not the content. A cut would mean changing every panel on the page. Amend section 7, 1440 column, to: paste form 650 px (measured 647), switched off with a one-line error 565 px (561), saved 470 (measured 457, unchanged), plan lapsed 490 (478, unchanged), switched off with the 140-character error 620 (600, unchanged). Rule for the future: a cap at 768 and up is the phone cap plus 8 px unless the wider line length removes a wrapped line. The phone caps stand: form 639 of 640 at 390, switched off 553 of 580. One addition the spec lacked: the 1-to-4 warning with a 140-character error (`discord-warning-four-long-panel-390.png`, 584 px; 1440 573 px). Amend the saved-with-warning cap to 540 px with a one-line error and 590 px at 390 and 360 with the longest error, for the reason already ruled for switched off (the error is the one thing the member can act on).
+
+### Ruling 2: the loading reserve (accepted)
+
+Warm skeletons sit where the ready panels sit. At 1440 the rail blocks start at y 185 (Devices), 450 (You), 675 (Plan) and 910 (Discord, saved); the ready panels start at 185, 450, 675 and 911. The same holds in the form, off, lapsed, free and none montages. At 390 the Devices, You, Plan and Discord skeletons start at the ready panels' y within a pixel in all six states, and the left skeleton ends where the Characters and Your reports pair begins to be absorbed by the stored height. Page heights (full-page PNGs) are equal within 1 px for all twelve pairs (for example saved 2188 against 2187 at 390, form 1809 against 1809 at 1440). The footer top matches. Visible differences, all accepted by 9.1: the ready header's identity line and `Sign out` are absent from the skeleton (a blank band of the same height, so nothing moves), and the skeletons draw bars without panel chrome, as 9.1 specifies. Cold is acceptable: it is the recorded, ungated case (CLS 0 at 390, at most 0.006 at 1440, inside the 0.15 and 0.08 allowances), and the 656 and 663 px footer growth sits below the first screen, which is why CLS stays near zero. `discord-loading-cold-1440.png` shows the three-block rail and footer at y 987 as 9.1 describes.
+
+### Ruling 3: the checkboxes (accepted; one capture requested, not blocking)
+
+Checked: gold fill, dark tick (`discord-events-private-on-panel-390.png`, `rankings-checkbox-checked-1440.png`, `checkbox-sim-1440.png`). Disabled: muted grey box with a grey tick when checked, label `--muted` (`discord-events-logs-off-private-disabled-panel-1440.png`, `discord-events-lapsed-all-disabled-panel-1440.png`). Focus-visible: 2 px gold ring at 2 px offset on the box, not clipped (`discord-checkbox-focus-1440.png`, `rankings-checkbox-focus-1440.png`). Unchecked: the dark-scheme outline. The source rule in `global.css` is the one 9.2 asks for, with the disabled label colour set outside the layers, and no local `accent-*` remains on any checkbox (the two `accent-gold` hits are range sliders in `TimeChart`, not checkboxes). The account `anonymize` box is judged from that generality: the unchecked state is visible and correct in `discord-feature-off-1440.png`. Polish, not a gate: attach one checked `anonymize` capture and one disabled sim box the next time the capture spec runs, since the sim capture was force-enabled by a throwaway spec.
+
+### Ruling 4: the changelog sentence (approved verbatim)
+
+`New webhooks leave private logs off; a webhook saved before today keeps posting them until you untick Include private logs.` It is true to spec section 10 (the one-time `upload_private = true` for old webhooks), names the control exactly as the label reads, uses the date-relative `today` correctly for a same-day entry, and has one idea on each side of the semicolon. Keep it.
+
+### Ruling 5: the amendments, item by item (all pass)
+
+- Numbered steps: three `list-decimal` items, 13 px muted, markers muted, 4 px between items, in the paste form and the replace form; the intro is absent in the replace form (`discord-replace-panel-390.png`). Pass.
+- Error line: input bottom to the `We store the URL` line is 21 px (README measurement; the crops agree). With the message present the error starts directly under the border in `--wipe` and the focused input shows the gold focus ring, not the `--wipe` border (the field keeps focus after a failed save), which is acceptable. The invalid-URL message wraps to two lines at 390 and 1440 (395 px rail), so it pushes the trust line down 21 px and touches it with no gap, which reads as one paragraph in two colours. Member-caused shift, allowed; polish: 4 px above the trust line when an error shows. Pass.
+- Destination two lines: `Posts through “Raid pings”` over `Channel 1198…4568`, name `--strong` 600, id mono tabular; unnamed reads `Posts to a Discord channel`; the 40-character name wraps and ends in an ellipsis inside the quotes; `@everyone <b>x</b>` renders as text. Pass. The cut glyph looks like three dots in the crop and the README writes `...`; confirm it is U+2026 as spec 3.2 says (not verifiable from pixels).
+- Private row: indented by the box plus gap (about 28 px), disabled and muted while the combat-log row is off with its value kept, the note shown in every state except lapsed (spec: lapsed has no note). Pass.
+- Four-line notice: 2 px `--wipe` bar, 14 px `--strong` line, muted error, muted cure line, `Use a different webhook` inside, `Test and switch on` the only gold fill directly below. Pass. With the remove question open the link is absent (`discord-switched-off-remove-confirm-panel-390.png`) and also absent in the saved remove question (`discord-remove-confirm-panel-390.png`). Pass.
+- Two-paragraph warning: `--text` first paragraph with `Send a test message to check.`, muted second paragraph, 2 px apart, no bar. Pass for one, two and four failures.
+- Premium row: `Off · needs attention` fits one line at 390 and wraps at 1024; `Off · Premium` is muted and unlinked; `2 events` and `1 event` never split at 1024 (the wrap falls after the dot: `On ·` / `2 events`). Pass. Cosmetic: at 1024 `Off · no events chosen` and `Paused · plan lapsed` take three lines in the 90 px value column; accepted by 3.7, but a later pass could widen the value column at `lg` to 2fr. The 1024 crops start mid-row (the previous row's `only` shows); crop 4 px lower next time.
+- Feature-off: no Discord block and no Discord row in Plan (`discord-feature-off-1440.png`). Pass.
+- Side-by-side: destination, post-when rows, indent, note, buttons and link align with the mock within 2 px; the mock's gap above `Use a different webhook` is 53 px, shipped about 52 px.
+
+### Must fix
+
+None.
+
+### Spec edits for the controller (I did not touch the spec file)
+
+1. Section 7 caps as in ruling 1.
+2. Section 3.2 and 7: saved with the warning, 590 px at 360 and 390 with the longest error.
+
+### Polish
+
+1. Capture a checked `anonymize` box and a real disabled sim box (ruling 3).
+2. 4 px above the trust line when the invalid-URL message shows.
+3. Confirm the truncation ellipsis is U+2026.
