@@ -18,6 +18,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
@@ -590,6 +591,28 @@ type lootAwardInput struct {
 	CharacterKey string `json:"character_key"`
 }
 
+// planRequiredMessage is the refusal body the web reads for guild_plan_required.
+const planRequiredMessage = "Award and Undo are part of the guild plan."
+
+// requireGuildPlan writes the refusal and returns false unless the officer's guild holds the
+// officer-tools feature. It runs after the officer check, so a member never learns the plan
+// state. A nil Entitlements refuses, matching officerTools (nil means no tools); a failed
+// lookup is a server error, not a refusal.
+func (s *Service) requireGuildPlan(w http.ResponseWriter, r *http.Request, guildID, userID int64, op, failMessage string) bool {
+	if s.Entitlements != nil {
+		ok, _, err := s.Entitlements.CanForGuild(r.Context(), guildID, userID, entitlements.FeatureOfficerViews)
+		if err != nil {
+			s.fail(w, r, op, err, failMessage)
+			return false
+		}
+		if ok {
+			return true
+		}
+	}
+	httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", planRequiredMessage, nil)
+	return false
+}
+
 func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 	guildID, ok := guildIDFrom(r)
 	if !ok {
@@ -605,6 +628,9 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 	if !allowed {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
 			"you must be a verified officer of this guild to award loot", nil)
+		return
+	}
+	if !s.requireGuildPlan(w, r, guildID, actor.UserID, "loot_award", "could not record that award just now") {
 		return
 	}
 	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
@@ -652,6 +678,9 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 	if !allowed {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
 			"you must be a verified officer of this guild to remove a loot award", nil)
+		return
+	}
+	if !s.requireGuildPlan(w, r, guildID, actor.UserID, "loot_award_delete", "could not remove that award just now") {
 		return
 	}
 	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {

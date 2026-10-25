@@ -3,6 +3,7 @@ package guilds
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -11,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -206,6 +208,7 @@ func candidateKeys(cands []LootCandidate) []string {
 func TestLootAwardCreateAndDeleteIsOfficerOnly(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid := seedGuild(t, h.pool, "Forever")
+	grantOfficerTools(t, h, gid)
 	member := seedHunterCharacter(t, h, gid, "loot-award-member@example.com", "us/hardcore/lootawardmember", 21524)
 	officerUID := seedUser(t, h.pool, "loot-award-officer@example.com")
 	seedCharacter(t, h.pool, gid, officerUID, "us/hardcore/lootawardofficer", "officer", true)
@@ -282,6 +285,7 @@ func TestLootAwardCreateAndDeleteIsOfficerOnly(t *testing.T) {
 func TestLootAwardUndoIsScopedToItsGuild(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid := seedGuild(t, h.pool, "Forever")
+	grantOfficerTools(t, h, gid)
 	seedHunterCharacter(t, h, gid, "undo-scope-member@example.com", "us/hardcore/undoscopemember", 21524)
 	officerUID := seedUser(t, h.pool, "undo-scope-officer@example.com")
 	seedCharacter(t, h.pool, gid, officerUID, "us/hardcore/undoscopeofficer", "officer", true)
@@ -294,6 +298,7 @@ func TestLootAwardUndoIsScopedToItsGuild(t *testing.T) {
 	awardID := int64(created["award_id"].(float64))
 
 	otherGuild := seedGuild(t, h.pool, "Other Forever")
+	grantOfficerTools(t, h, otherGuild)
 	otherOfficer := seedUser(t, h.pool, "undo-scope-other@example.com")
 	seedCharacter(t, h.pool, otherGuild, otherOfficer, "us/hardcore/undoscopeother", "officer", true)
 	recomputeMembership(t, h.pool, otherGuild, otherOfficer)
@@ -313,6 +318,7 @@ func TestLootAwardUndoIsScopedToItsGuild(t *testing.T) {
 func TestLootAwardRejectsAnUnknownItem(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid := seedGuild(t, h.pool, "Forever")
+	grantOfficerTools(t, h, gid)
 	officerUID := seedUser(t, h.pool, "loot-invalid-officer@example.com")
 	seedCharacter(t, h.pool, gid, officerUID, "us/hardcore/lootinvalidofficer", "officer", true)
 	recomputeMembership(t, h.pool, gid, officerUID)
@@ -555,5 +561,118 @@ func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
 		if strings.Contains(a.ByName, "#") || strings.HasPrefix(a.ByName, "user-") {
 			t.Fatalf("award of %d names an account (%q), want a character or \"an officer\"", item, a.ByName)
 		}
+	}
+}
+
+// Plan rows the gate tests seed: a scoped grant, and a whole Stripe guild plan.
+const (
+	scopedGrantSQL = `insert into entitlements (guild_id, plan, source, status, current_period_end, features)
+		values ($1,'guild','grant','active', now()+interval '30 days','{officer_views}')`
+	stripePlanSQL = `insert into entitlements (guild_id, plan, source, status, current_period_end, stripe_subscription_id)
+		values ($1,'guild','stripe','active', now()+interval '30 days', $2)`
+)
+
+// grantOfficerTools wires the real entitlements store and gives gid a scoped grant.
+func grantOfficerTools(t *testing.T, h *httpHarness, gid int64) {
+	t.Helper()
+	h.svc.Entitlements = &entitlements.Store{Pool: h.pool}
+	if _, err := h.pool.Exec(t.Context(), scopedGrantSQL, gid); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// TestLootAwardAndUndoNeedTheGuildPlan checks the plan gate: members learn nothing about the
+// plan (forbidden first), an officer without it gets guild_plan_required, and either a scoped
+// grant or a whole Stripe plan lets Award and Undo through.
+func TestLootAwardAndUndoNeedTheGuildPlan(t *testing.T) {
+	const planMessage = "Award and Undo are part of the guild plan."
+	tests := []struct {
+		name     string
+		planSQL  string
+		nilStore bool
+		rank     string
+		wantCode string // "" means allowed
+	}{
+		{"officer with a scoped grant", scopedGrantSQL, false, "officer", ""},
+		{"officer with a Stripe plan", stripePlanSQL, false, "officer", ""},
+		{"officer with no plan", "", false, "officer", "guild_plan_required"},
+		{"officer with no entitlements wired", "", true, "officer", "guild_plan_required"},
+		{"member with a scoped grant", scopedGrantSQL, false, "member", "forbidden"},
+		{"member with no plan", "", false, "member", "forbidden"},
+	}
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			h := newHTTPHarness(t)
+			if !tc.nilStore {
+				h.svc.Entitlements = &entitlements.Store{Pool: h.pool}
+			}
+			gid := seedGuild(t, h.pool, fmt.Sprintf("PlanGate%d", i))
+			target := fmt.Sprintf("us/hardcore/plangatetarget%d", i)
+			seedHunterCharacter(t, h, gid, fmt.Sprintf("plan-gate-target-%d@example.com", i), target, 21524)
+			actorUID := seedUser(t, h.pool, fmt.Sprintf("plan-gate-actor-%d@example.com", i))
+			seedCharacter(t, h.pool, gid, actorUID, fmt.Sprintf("us/hardcore/plangateactor%d", i), tc.rank, true)
+			recomputeMembership(t, h.pool, gid, actorUID)
+			if tc.planSQL != "" {
+				args := []any{gid}
+				if tc.planSQL == stripePlanSQL {
+					args = append(args, fmt.Sprintf("sub_plan_gate_%d", gid))
+				}
+				if _, err := h.pool.Exec(t.Context(), tc.planSQL, args...); err != nil {
+					t.Fatal(err)
+				}
+			}
+			h.actor = auth.Actor{UserID: actorUID, Role: "user", Method: "session"}
+
+			awardPath := fmt.Sprintf("/v1/guilds/%d/loot/awards", gid)
+			body := fmt.Sprintf(`{"encounter_id":1084,"item_id":16963,"character_key":%q}`, target)
+			res := h.do(http.MethodPost, awardPath, body)
+			if tc.wantCode == "" {
+				var created map[string]any
+				h.data(res, &created)
+				awardID := int64(created["award_id"].(float64))
+				res = h.do(http.MethodDelete, fmt.Sprintf("%s/%d", awardPath, awardID), "")
+				res.Body.Close()
+				if res.StatusCode != http.StatusOK {
+					t.Fatalf("undo = %d, want 200", res.StatusCode)
+				}
+				return
+			}
+			assertRefusal(t, res, tc.wantCode, planMessage)
+
+			// Undo is gated the same way; the award row only has to exist for the path to resolve.
+			var awardID int64
+			if err := h.pool.QueryRow(t.Context(),
+				`insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by)
+				 values ($1,1084,16963,$2,$3) returning id`, gid, target, actorUID).Scan(&awardID); err != nil {
+				t.Fatal(err)
+			}
+			res = h.do(http.MethodDelete, fmt.Sprintf("%s/%d", awardPath, awardID), "")
+			assertRefusal(t, res, tc.wantCode, planMessage)
+		})
+	}
+}
+
+// assertRefusal checks a 403 with the given error code, and the plan message when it is the
+// plan refusal.
+func assertRefusal(t *testing.T, res *http.Response, wantCode, planMessage string) {
+	t.Helper()
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("status = %d, want 403", res.StatusCode)
+	}
+	var env struct {
+		Error struct {
+			Code    string `json:"code"`
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&env); err != nil {
+		t.Fatal(err)
+	}
+	if env.Error.Code != wantCode {
+		t.Fatalf("code = %q, want %q", env.Error.Code, wantCode)
+	}
+	if wantCode == "guild_plan_required" && env.Error.Message != planMessage {
+		t.Fatalf("message = %q, want %q", env.Error.Message, planMessage)
 	}
 }
