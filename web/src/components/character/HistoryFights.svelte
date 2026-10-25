@@ -48,10 +48,13 @@
     const opens = untrack(() => listWindow(fights, false, marked).needsExpand);
     if (!opens) return;
     expanded = true;
+    // After the opened rows are in the DOM and painted, so the scroll measures the final list.
     void tick().then(() =>
-      host
-        ?.querySelector('[data-marked="true"]')
-        ?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() }),
+      requestAnimationFrame(() =>
+        host
+          ?.querySelector('[data-marked="true"]')
+          ?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() }),
+      ),
     );
   });
 </script>

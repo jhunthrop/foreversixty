@@ -57,7 +57,9 @@ test('selecting a hidden row opens the list once and a later hover never moves i
   await expect(score.getByTestId('history-readout-value')).toHaveText('740');
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(toggle).toHaveText('Show fewer');
-  await expect(score.locator('[data-marked="true"]')).toBeInViewport();
+  const marked = score.locator('[data-marked="true"]');
+  await expect(marked).toBeAttached();
+  await expect(marked).toBeInViewport({ timeout: 10_000 });
 
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');

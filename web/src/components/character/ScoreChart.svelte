@@ -68,7 +68,7 @@
   class="flex flex-col gap-3 xl:row-span-5 xl:grid xl:grid-rows-subgrid xl:gap-y-3"
   data-testid="history-score"
 >
-  <h3 class="text-[15px] font-semibold">{historyCopy.scoreHeading}</h3>
+  <h3 class="text-strong font-body text-[15px] font-semibold">{historyCopy.scoreHeading}</h3>
 
   <p class="text-muted flex min-h-11 items-center text-[12px]" data-testid="history-score-note">
     {chart.mode === 'line' ? historyCopy.scoreNote(chart.hasRings) : ''}

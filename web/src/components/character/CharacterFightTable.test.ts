@@ -259,4 +259,11 @@ describe('CharacterFightTable, the History list props', () => {
     const out = html({ note: (fight: CharacterFight) => (fight.fight_index === 2 ? 'Private' : null) });
     expect(out.match(/data-testid="character-fight-note">Private</g)).toHaveLength(1);
   });
+
+  it('ends a name beside a note in an ellipsis span, keeps the note whole and stacks it on a phone', () => {
+    const out = html({ note: () => 'Private' });
+    expect(out).toContain('<span class="truncate">Warden Kelthas</span>');
+    expect(out).toMatch(/class="[^"]*flex-none[^"]*" data-testid="character-fight-note">Private</);
+    expect(out).toContain('max-md:flex-col');
+  });
 });

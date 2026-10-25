@@ -12,6 +12,7 @@
     createHistoryController,
     type HistoryController,
   } from '../../lib/character/history-controller.svelte';
+  import { COLLAPSED_ROWS } from '../../lib/character/history-select';
   import { reserveToStore, scrollBehavior, writeHistoryReserve } from '../../lib/character/history-layout';
   import type { ChartSize } from '../../lib/character/history-scales';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -21,6 +22,8 @@
 
   /** The anchor the account page's History row links to. */
   const SECTION_ID = 'history';
+  /** The skeleton list draws as many rows as a list shows collapsed. */
+  const LIST_ROWS = Array.from({ length: COLLAPSED_ROWS }, (_, row) => row);
 
   let {
     path,
@@ -82,9 +85,19 @@
         <span class="sr-only" role="status">{historyCopy.loadingSr}</span>
         {#each [0, 1] as column (column)}
           <div class="flex flex-col gap-3" aria-hidden="true">
+            <!-- The ready column's own rows at its own heights: sub-heading, control row,
+                 readout, chart box, the list label and eight list rows. -->
             <span class="skeleton-block h-[15px] w-[140px]"></span>
+            <span class="skeleton-block h-11 w-3/4"></span>
             <span class="skeleton-block h-[28px] w-[120px]"></span>
             <span class="skeleton-block aspect-[3/2] w-full sm:aspect-[16/5] xl:aspect-[2/1]"></span>
+            <span class="skeleton-block h-4 w-24"></span>
+            <span class="skeleton-block h-4 w-1/3"></span>
+            <span class="skeleton-block h-9 w-full"></span>
+            {#each LIST_ROWS as row (row)}
+              <span class="skeleton-block h-[49px] w-full"></span>
+            {/each}
+            <span class="skeleton-block h-11 w-32"></span>
           </div>
         {/each}
       </div>

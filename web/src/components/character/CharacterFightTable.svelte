@@ -99,11 +99,15 @@
     selected !== null && selected.has(fightKey(row.report_id, row.fight_index));
 </script>
 
-{#snippet firstLink(row: Row)}
+{#snippet firstLink(row: Row, noted: boolean)}
   {#if lead === 'date'}
     <a class="{rowLink} text-muted tabular truncate font-mono text-[13px]" href={bossHref(row)}
       >{formatDayMonthYear(new Date(row.fought_at))}</a
     >
+  {:else if noted}
+    <!-- Beside a note the name takes the width left and ends in an ellipsis (text-overflow does
+         not apply to the link's own flex box, so the text sits in a span). -->
+    <a class="{rowLink} min-w-0" href={bossHref(row)}><span class="truncate">{row.encounter}</span></a>
   {:else}
     <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
   {/if}
@@ -141,11 +145,16 @@
         data-marked={isMarked(row) ? 'true' : undefined}
       >
         {#if word === null}
-          {@render firstLink(row)}
+          {@render firstLink(row, false)}
         {:else}
-          <span class="flex min-w-0 items-center gap-2">
-            {@render firstLink(row)}
-            <span class="text-muted shrink-0 text-[12px]" data-testid="character-fight-note">{word}</span>
+          <!-- On a phone the note takes the line under the name; from md it sits beside it. -->
+          <span
+            class="flex min-w-0 md:items-center md:gap-2 {lead === 'boss'
+              ? 'max-md:flex-col'
+              : 'items-center gap-2'}"
+          >
+            {@render firstLink(row, true)}
+            <span class="text-muted flex-none text-[12px]" data-testid="character-fight-note">{word}</span>
           </span>
         {/if}
         {#if columns === 'full'}<span class="text-muted hidden truncate text-[13px] md:inline"

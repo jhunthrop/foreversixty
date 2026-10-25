@@ -35,13 +35,16 @@
   <HistoryReserve />
 {:else if mount === 'sentence'}
   <p class="text-muted -order-2 flex min-h-11 items-center text-[13px]" data-testid="history-free-sentence">
+    <!-- One line of flow: the link stays inline with its space and stop; padding gives it the
+         44px target without making it a block. -->
     <span
-      >{historyCopy.freeOwnerSentence}
-      <a
-        class="text-text hover:text-gold-hover inline-flex min-h-11 items-center underline underline-offset-2"
-        href="/premium"
-        data-testid="history-see-plans">{historyCopy.freeOwnerLink}</a
-      >.</span
+      >{historyCopy.freeOwnerSentence}&#32;<span class="whitespace-nowrap"
+        ><a
+          class="text-text hover:text-gold-hover py-3.5 underline underline-offset-2"
+          href="/premium"
+          data-testid="history-see-plans">{historyCopy.freeOwnerLink}</a
+        >.</span
+      ></span
     >
   </p>
 {/if}

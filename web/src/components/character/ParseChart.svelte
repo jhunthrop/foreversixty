@@ -81,7 +81,7 @@
   class="flex flex-col gap-3 xl:row-span-5 xl:grid xl:grid-rows-subgrid xl:gap-y-3"
   data-testid="history-parse"
 >
-  <h3 class="text-[15px] font-semibold">{historyCopy.parseHeading}</h3>
+  <h3 class="text-strong font-body text-[15px] font-semibold">{historyCopy.parseHeading}</h3>
 
   {#if pill === undefined}
     <p class="text-muted min-h-11 text-[14px] xl:row-span-4" data-testid="history-parse-empty">
@@ -122,6 +122,9 @@
     <div class="flex flex-col gap-3">
       {#if chart.change !== null}
         <p class="text-text text-[12px]" data-testid="history-parse-change">{chart.change}</p>
+      {:else}
+        <!-- The line a chart would carry, held so this list's label stays level with the score list's. -->
+        <p class="text-[12px]" aria-hidden="true">&nbsp;</p>
       {/if}
       {#key pill.id}
         <HistoryFights
