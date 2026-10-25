@@ -116,11 +116,11 @@
   // and not once dismissed on this page.
   let finishedDismissed = $state(false);
   const finishedRuns = $derived(layout === 'band' && !finishedDismissed ? finishedRunsFor(session.me) : null);
-  let panelEl = $state<HTMLElement | null>(null);
+  let actionEl = $state<HTMLElement | null>(null);
 
   function onFinishedDismissed(): void {
     finishedDismissed = true;
-    panelEl?.querySelector<HTMLElement>('[data-testid="character-header-action"]')?.focus();
+    actionEl?.focus();
   }
 
   const view = $derived<'loading' | 'signed-out' | 'no-characters' | 'ready'>(
@@ -328,6 +328,7 @@
 {#snippet button(act: HeaderAction, ghost: boolean)}
   {#if act.kind === 'picker'}
     <button
+      bind:this={actionEl}
       type="button"
       class="ch-cta"
       disabled={act.disabled === true}
@@ -369,7 +370,8 @@
       </p>
     {/if}
   {:else}
-    <a class="ch-cta" href={act.href} data-testid="character-header-action">{@render txt(act.label, ghost)}</a
+    <a bind:this={actionEl} class="ch-cta" href={act.href} data-testid="character-header-action"
+      >{@render txt(act.label, ghost)}</a
     >
   {/if}
 {/snippet}
@@ -388,7 +390,6 @@
 
 {#if view === 'ready' && character !== null && resolvedAction !== null}
   <section
-    bind:this={panelEl}
     class="ch ch-{layout} ch-{emphasis}"
     class:ch-no-answer={!hasAnswerColumn}
     class:ch-has-foot={finishedRuns !== null}
@@ -438,7 +439,7 @@
       {/if}
       <span class="skeleton-block ch-sk-cta"></span>
     </div>
-    <div class="ch-foot ch-foot-reserve" aria-hidden="true"></div>
+    {#if layout === 'band'}<div class="ch-foot ch-foot-reserve" aria-hidden="true"></div>{/if}
   </section>
   {#if whenSignedOut === 'band'}
     <div class="ch-hint-out-only"><CharacterHeaderSignedOut /></div>

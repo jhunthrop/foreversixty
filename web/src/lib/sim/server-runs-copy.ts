@@ -39,8 +39,11 @@ export const serverRunsCopy = {
   planLapsed: 'Server sims are part of Premium.',
   seePlans: 'See plans',
 
-  bandLine: (specLabel: string, dps: number): string =>
-    `Your ${specLabel} sim finished: ${formatCount(Math.round(dps))} DPS`,
+  /** The sentence in two parts, so the band can set the DPS figure apart in mono. */
+  bandLineParts: (specLabel: string, dps: number): { prefix: string; figure: string } => ({
+    prefix: `Your ${specLabel} sim finished: `,
+    figure: `${formatCount(Math.round(dps))} DPS`,
+  }),
   bandOpen: 'Open result →',
   bandOpenPhone: '→',
   moreLabel: (count: number): string => `and ${formatCount(count)} more`,

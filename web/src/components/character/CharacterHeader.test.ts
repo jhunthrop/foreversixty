@@ -147,6 +147,14 @@ describe('CharacterHeader done line', () => {
     expect(headerWith(true, [RUN], 'card')).not.toContain('finished-sim-line');
   });
 
+  it('the card layout skeleton carries no reserve row', () => {
+    const { body } = render(CharacterHeader, {
+      props: { action: { label: 'Open', href: '/bis' }, whenSignedOut: 'none' as const, layout: 'card' },
+    });
+    expect(body).toContain('ch-loading');
+    expect(body).not.toContain('ch-foot-reserve');
+  });
+
   it('the loading skeleton carries the reserve row, shown only under data-finished', () => {
     const { body } = render(CharacterHeader, {
       props: { action: { label: 'Open', href: '/bis' }, whenSignedOut: 'none' as const },

@@ -31,18 +31,18 @@
   const newest = $derived(runs[0]);
   const label = $derived(specLabel(newest.spec));
   const olderCount = $derived(runs.length - 1);
-  // The DPS figure is set apart in mono; the sentence itself stays one string from the copy file.
-  const sentence = $derived(serverRunsCopy.bandLine(label, newest.dps));
-  const figureStart = $derived(sentence.lastIndexOf(': ') + 2);
+  const sentence = $derived(serverRunsCopy.bandLineParts(label, newest.dps));
 
   async function dismiss(): Promise<void> {
     if (phase === 'busy') return;
+    clearTimeout(restoreTimer);
     phase = 'busy';
     if (await markAllSeen(runs, markSeen)) {
       onDismissed();
       return;
     }
     phase = 'failed';
+    clearTimeout(restoreTimer);
     restoreTimer = setTimeout(() => {
       phase = 'idle';
     }, DISMISS_FAILURE_MS);
@@ -62,9 +62,7 @@
         title={newest.title === '' ? undefined : newest.title}
         data-testid="finished-sim-link"
       >
-        <span class="fsl-sentence"
-          >{sentence.slice(0, figureStart)}<span class="fsl-figure">{sentence.slice(figureStart)}</span></span
-        >
+        <span class="fsl-sentence">{sentence.prefix}<span class="fsl-figure">{sentence.figure}</span></span>
         <span class="fsl-open fsl-open-wide" data-testid="finished-sim-open">{serverRunsCopy.bandOpen}</span>
         <span class="fsl-open fsl-open-phone" data-testid="finished-sim-open-phone"
           >{serverRunsCopy.bandOpenPhone}</span

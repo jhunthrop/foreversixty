@@ -367,14 +367,14 @@ html[data-session='1'] .ch-hint-out-only {
 /* The band's "server sim finished" line (CharacterHeader.svelte, spec 2026-10-24 3.7):
    with data-finished hinted the skeleton holds the footer row (56px phone, 44px from 600px;
    at 1024px the band's 136px grid plus that row). The island collapses it if no line comes. */
-html[data-finished='1'] .ch-foot-reserve {
+html[data-finished='1'] .ch-band .ch-foot-reserve {
   display: block;
 }
-html[data-finished='1'] .ch-loading {
+html[data-finished='1'] .ch-band.ch-loading {
   --ch-foot-reserve: var(--ch-foot-phone-h);
 }
 @media (min-width: 600px) {
-  html[data-finished='1'] .ch-loading {
+  html[data-finished='1'] .ch-band.ch-loading {
     --ch-foot-reserve: var(--ch-foot-h);
   }
 }

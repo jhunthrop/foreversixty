@@ -46,8 +46,11 @@ describe('serverRunsCopy', () => {
     expect(serverRunsCopy.failedLine('')).toBe('Failed');
   });
 
-  it('bandLine and dismissLabel', () => {
-    expect(serverRunsCopy.bandLine('Frost Mage', 1204)).toBe('Your Frost Mage sim finished: 1,204 DPS');
+  it('bandLineParts and dismissLabel', () => {
+    expect(serverRunsCopy.bandLineParts('Frost Mage', 1204)).toEqual({
+      prefix: 'Your Frost Mage sim finished: ',
+      figure: '1,204 DPS',
+    });
     expect(serverRunsCopy.dismissLabel('Frost Mage')).toBe('Dismiss: your Frost Mage sim finished');
   });
 

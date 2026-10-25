@@ -110,6 +110,29 @@ test('a failed dismiss swaps the text for four seconds, then the sentence return
   await expect(page.getByTestId('finished-sim-link')).toBeVisible({ timeout: 6000 });
 });
 
+test('while the seen call is in flight the dismiss is busy and the line stays, then it goes', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await stubMe(page, [run('sim-1', 1204)]);
+  await page.unroute('**/v1/sims/*/seen');
+  let release: () => void = () => {};
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route('**/v1/sims/*/seen', async (route) => {
+    await gate;
+    await route.fulfill({ status: 204, body: '' });
+  });
+  await page.goto('/');
+  const dismiss = page.getByTestId('finished-sim-dismiss');
+  await dismiss.click();
+  await expect(dismiss).toHaveAttribute('aria-busy', 'true');
+  await expect(page.getByTestId('finished-sim-line')).toBeVisible();
+  release();
+  await expect(page.getByTestId('finished-sim-line')).toHaveCount(0);
+});
+
 test('phone: the arrow replaces Open result, the line is at least 56 px, the dismiss is 44 px', async ({
   page,
 }) => {
