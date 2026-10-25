@@ -52,6 +52,7 @@ make run
 | `SIM_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the sim jobs live in. |
 | `STRIPE_SECRET_KEY` | no | — | Stripe secret or restricted key. Absent, every `/v1/billing/*` route answers 503 and the Premium page's buttons fail honestly; present, billing is on. Lives in Secret Manager (`STRIPE_SECRET_KEY`, live; `STRIPE_SECRET_KEY_TEST`, the sandbox). |
 | `STRIPE_WEBHOOK_SECRET` | no | — | The signing secret of the `POST /v1/billing/webhook` endpoint in the same mode as the key. |
+| `NOTIFY_ENCRYPTION_KEY` | no | — | Base64 of 32 random bytes (`openssl rand -base64 32`); seals Discord webhook tokens at rest (AES-256-GCM). Absent, the Discord notifications feature is off; present but malformed, the service refuses to start. Lives in Secret Manager; never logged or printed. |
 | `STRIPE_ENVIRONMENT` | no | — | `test` or `live`. Must be `live` exactly when `PUBLIC_BASE_URL` is the production origin, and the key's own prefix must agree; `config.ValidateStripeKeyEnvironment` refuses to start otherwise. |
 | `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
 

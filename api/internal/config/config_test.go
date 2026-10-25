@@ -1,6 +1,39 @@
 package config
 
-import "testing"
+import (
+	"encoding/base64"
+	"strings"
+	"testing"
+)
+
+func TestLoadNotifyEncryptionKey(t *testing.T) {
+	base := map[string]string{
+		"DATABASE_URL": "postgres://x", "RESEND_API_KEY": "k",
+		"PUBLIC_BASE_URL": "https://foreversixty.gg", "API_BASE_URL": "https://api.foreversixty.gg",
+	}
+	with := func(v string) map[string]string {
+		m := map[string]string{"NOTIFY_ENCRYPTION_KEY": v}
+		for k, val := range base {
+			m[k] = val
+		}
+		return m
+	}
+	c, err := Load(env(base))
+	if err != nil || c.NotifyEncryptionKey != nil {
+		t.Fatalf("absent: key = %v, err = %v", c.NotifyEncryptionKey, err)
+	}
+	good := base64.StdEncoding.EncodeToString(make([]byte, 32))
+	c, err = Load(env(with(good)))
+	if err != nil || len(c.NotifyEncryptionKey) != 32 {
+		t.Fatalf("good: len = %d, err = %v", len(c.NotifyEncryptionKey), err)
+	}
+	for _, bad := range []string{"not base64!!", base64.StdEncoding.EncodeToString(make([]byte, 16))} {
+		_, err := Load(env(with(bad)))
+		if err == nil || strings.Contains(err.Error(), bad) {
+			t.Fatalf("malformed %q: err = %v", bad, err)
+		}
+	}
+}
 
 func env(m map[string]string) func(string) string {
 	return func(k string) string { return m[k] }

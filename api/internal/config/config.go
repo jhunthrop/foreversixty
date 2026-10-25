@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net"
 	"strconv"
@@ -146,7 +147,17 @@ type Config struct {
 	// the key's own prefix so the check has two independent signals to
 	// compare, not one value checked against itself.
 	StripeEnvironment string
+
+	// NotifyEncryptionKey seals the Discord webhook tokens at rest
+	// (AES-256-GCM). It is the base64 of NotifyKeyLen bytes in
+	// NOTIFY_ENCRYPTION_KEY. Absent, it is nil and the notifications
+	// feature is off; present but malformed, Load refuses to start. The
+	// value is never put in an error or a log.
+	NotifyEncryptionKey []byte
 }
+
+// NotifyKeyLen is the byte length of NotifyEncryptionKey.
+const NotifyKeyLen = 32
 
 func Load(getenv func(string) string) (Config, error) {
 	c := Config{
@@ -246,7 +257,27 @@ func Load(getenv func(string) string) (Config, error) {
 	c.StripeWebhookSecret = getenv("STRIPE_WEBHOOK_SECRET")
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 
+	key, err := decodeNotifyKey(getenv("NOTIFY_ENCRYPTION_KEY"))
+	if err != nil {
+		return c, err
+	}
+	c.NotifyEncryptionKey = key
+
 	return c, nil
+}
+
+// decodeNotifyKey turns NOTIFY_ENCRYPTION_KEY into key bytes: empty means
+// the feature is off (nil); anything else must be base64 of NotifyKeyLen
+// bytes. The error names the variable, never its value.
+func decodeNotifyKey(raw string) ([]byte, error) {
+	if raw == "" {
+		return nil, nil
+	}
+	key, err := base64.StdEncoding.DecodeString(raw)
+	if err != nil || len(key) != NotifyKeyLen {
+		return nil, fmt.Errorf("config: NOTIFY_ENCRYPTION_KEY must be base64 of %d bytes", NotifyKeyLen)
+	}
+	return key, nil
 }
 
 // isLoopbackHost reports whether host is a literal loopback IP. "localhost" and the empty
