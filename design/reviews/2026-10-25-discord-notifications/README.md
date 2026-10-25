@@ -1,6 +1,6 @@
 # Discord notifications: acceptance captures
 
-Head sha captured: c0e41c7d (design fixes) plus 1660ae0a, branch worktree-lane-discord-1; re-taken after the design fix round (first take was 8822bf07). Fixture build (`FOREVER_DATA=fixture`), `/v1/me` and the three notification routes stubbed, Chromium at device scale 1, reduced motion on (so fades and hovers show their end state).
+Head sha captured: a71bbb90 (branch worktree-lane-discord-2), re-taken for the follow-up lane; every PNG below is refreshed (the copy changed everywhere). The first-lane sha was c0e41c7d plus 1660ae0a. Fixture build (`FOREVER_DATA=fixture`), `/v1/me` and the three notification routes stubbed, Chromium at device scale 1, reduced motion on (so fades and hovers show their end state).
 Spec: `design/specs/2026-10-25-discord-notifications.md` section 9. Item 9 (real Discord messages) is the controller's.
 
 Regenerate: build and `astro preview --port 4411`, then from `web/`
@@ -28,6 +28,53 @@ Regenerate: build and `astro preview --port 4411`, then from `web/`
 | skeleton | `discord-skeleton-390.png`, `discord-skeleton-1440.png`: `/v1/me` held, session cookie hint set, so the page draws its loading skeletons |
 
 139 PNGs. 360, 390, 768 and 1024 widths other than the ones in the table were not asked for.
+
+## Follow-up lane (2026-10-25)
+
+Spec section 9 captures 14 to 23. File names are `discord-<name>-<width>.png` (full page) with `-panel-` crops where the spec asks for the panel. Run: `CAPTURE_PORT=4451 npx playwright test -c tests/captures/discord-notifications/playwright.capture.config.ts` (137 passed).
+
+| Capture | Files |
+|---|---|
+| 14 paste form with the three steps | `discord-paste-steps-<390|1440>` (full and panel); `paste-empty`, `paste-invalid`, `replace` refreshed |
+| 15 destination | `discord-destination-named`, `-unnamed`, `-name-long` (cut at 40 with `...`), `-name-markup` (`@everyone <b>x</b>` as text) at 390 and 1440, plus `discord-saved-<value>` full page and panel |
+| 16 event rows | `discord-events-private-on`, `-private-off`, `-logs-off-private-disabled`, `-lapsed-all-disabled` at 390 and 1440 |
+| 17 warning | `discord-warning-one`, `-two`, `-four-long` at 390 and 1440 |
+| 18, 19 switched off | `discord-switched-off`, `discord-switched-off-long` (360, 390, 1440), `discord-switched-off-remove-confirm` (no `Use a different webhook`) |
+| 20 Premium row | `discord-row-<value>-<390|1024|1440>` for off, off-set-up, off-no-events, off-needs-attention, paused-plan-lapsed, on-1-event, on-2-events; `discord-feature-off` |
+| 21 loading reserve | `discord-loading-warm-<none|free|form|saved|off|lapsed>-<390|1440>` with `-ready` beside each; `discord-loading-cold-<390|1440>` with `-ready` |
+| 22 gold checkboxes | `discord-checkbox-checked-disabled-1440`, `discord-checkbox-focus-1440`, `rankings-checkbox-checked-1440`, `rankings-checkbox-focus-1440`, `checkbox-sim-1440` and `checkbox-sim-page-1440` (the sim ones were taken by a throwaway spec, not the committed one) |
+| 13 | `discord-side-by-side-1440.png` regenerated after `design/mocks/gen_discord_notifications.py` |
+
+Not captured: the other seven of the ten checkbox surfaces (22), and item 23 (needs a real channel).
+
+Panel heights printed by the spec: switched off 553 px at 360 and 390, 561 px at 1440; switched off with the 140-character error 611.5 px at 360 and 390, 600 px at 1440. Crop heights at 1440 (panel height plus 48 px padding, so panel = crop minus 48): `discord-paste-steps-panel-1440` 695 (panel 647), `discord-switched-off-panel-1440` 609 (561), `discord-switched-off-long-panel-1440` 648 (600), `discord-warning-long-panel-1440` 621 (573), `discord-saved-panel-1440` 505 (457), `discord-lapsed-panel-1440` 526 (478). Against the section 7 caps at 1440 (form 640, switched off 560): the form is 7 px over and the one-line switched off 1 px over.
+
+### CLS and footer travel (Task 4 report, desktop project; Pixel 7 gives the same pass)
+
+Warm, CLS / footer travel in px:
+
+| state | 390 | 1440 |
+|---|---|---|
+| none | 0.0000 / 0 | 0.0001 / 0.5 |
+| free | 0.0000 / 0 | 0.0001 / 0.5 |
+| form | 0.0000 / 0 | 0.0000 / 0.5 |
+| saved | 0.0000 / 0.5 | 0.0000 / 0 |
+| off | 0.0000 / 0 | 0.0001 / 0.5 |
+| lapsed | 0.0000 / 0 | 0.0001 / 0.5 |
+
+Cold (nothing stored, hint `none`): CLS 0 for all six at 390; at 1440 0.0009 none, 0.0005 free, 0.0060 form, 0.0043 saved, 0.0052 off, 0.0045 lapsed. Cold footer travel is 27 to 656 px at 390 and 27.5 to 663.5 px at 1440. This capture run printed warm CLS 0.0000 at both widths for all six states (footer within 0.5 px) and cold CLS 0.0000 with the footer 1424 to 2080 at 390 and 987 to 1650.5 at 1440 (form state held).
+
+### Noticed while capturing
+
+- Paste form: three numbered steps sit above the field; the input bottom to the `We store the URL encrypted` trust line is 21 px at both 390 and 1440 (measured).
+- Panel heights at 1440: paste form 647 px (cap 640, 7 over), one-line switched off 561 px (cap 560, 1 over); the 140-character error reaches 600 px at 1440 and 611.5 px at 360 and 390 (spec allows 620 and 650 there).
+- Switched off carries the four-line notice with `Use a different webhook` inside it; with the remove question open that link is absent.
+- Premium row values (`Off · needs attention`, `Off · Premium`, `On · 2 events`) are captured at 390, 1024 and 1440; the 1024 captures are the evidence on whether `2 events` splits.
+- Loading skeleton, warm, 390 and 1440: the footer's top is the same (within 0.5 px) before and after the data arrives for all six `data-discord` states; cold, the page grows by 656 px (390) and 663 px (1440) when the Discord block lands.
+- Gold checkboxes show on the Discord row and the rankings filter. On `/sim` both settings boxes (`Execute phase`, `Target dummy`) are disabled in the fixture build because the sim worker chunk 404s under `astro preview` and the run never finishes; `checkbox-sim-1440.png` was taken with the box force-enabled and checked (computed accent `rgb(229, 185, 85)`).
+- The account `anonymize` box has no capture case and is not in this set.
+- Fixture artifacts as before: Your reports reads `did not load` where unstubbed, and the Plan panel reads `Not on Premium` beside a live Discord panel.
+- While this ran, `git status` showed uncommitted edits by someone else to `api/internal/notify/store_test.go` and seven files under `web/src` (Connect, AccountDiscordBlock, account api, layout, layout test and notifications, the changelog); the fixture build was made during that period, so the captures may or may not include them.
 
 ## CLS (item 12, Task 6 report, desktop project)
 
