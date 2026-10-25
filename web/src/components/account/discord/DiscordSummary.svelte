@@ -26,7 +26,10 @@
   {/if}
 </p>
 {#if warning !== null}
-  <p class="text-muted text-[13px]">{warning}</p>
+  <p class="text-[13px]">
+    <span class="text-text block">{warning.failures}</span>
+    {#if warning.lastError !== null}<span class="text-muted block">{warning.lastError}</span>{/if}
+  </p>
 {/if}
 {#if state === 'disabled'}
   <DiscordNotice

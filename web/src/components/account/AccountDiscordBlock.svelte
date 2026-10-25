@@ -172,26 +172,29 @@
           {@const discord = block.discord}
           <DiscordSummary state={block.state} {discord} />
           {#if block.state !== 'disabled'}{@render eventRows(discord)}{/if}
-          <DiscordActions
-            state={block.state}
-            {confirming}
-            {busy}
-            onTest={test}
-            onAskRemove={askRemove}
-            onRemove={remove}
-            onCancel={cancel}
-          />
-          <DiscordStatusLine {status} />
-          {#if block.state !== 'lapsed'}
-            <button
-              class="{LINK_BUTTON} w-fit"
-              disabled={busy !== null}
-              onclick={startReplace}
-              data-testid="discord-replace"
-            >
-              {notificationsCopy.replace}
-            </button>
-          {/if}
+          <!-- 8 px under the actions row; the replace link's own 44 px hit area is the rest -->
+          <div class="flex flex-col">
+            <DiscordActions
+              state={block.state}
+              {confirming}
+              {busy}
+              onTest={test}
+              onAskRemove={askRemove}
+              onRemove={remove}
+              onCancel={cancel}
+            />
+            <DiscordStatusLine {status} />
+            {#if block.state !== 'lapsed'}
+              <button
+                class="{LINK_BUTTON} w-fit"
+                disabled={busy !== null}
+                onclick={startReplace}
+                data-testid="discord-replace"
+              >
+                {notificationsCopy.replace}
+              </button>
+            {/if}
+          </div>
           {#if block.state === 'disabled'}{@render eventRows(discord)}{/if}
         {/if}
       </StatePanel>

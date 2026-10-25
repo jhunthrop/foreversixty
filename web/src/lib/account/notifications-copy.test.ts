@@ -28,7 +28,7 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ],
   ['eventsLabel', notificationsCopy.eventsLabel, 'Post when'],
   ['eventSimFinished', notificationsCopy.eventSimFinished, 'A server sim finishes'],
-  ['eventUploadParsed', notificationsCopy.eventUploadParsed, 'A log file you upload finishes parsing'],
+  ['eventUploadParsed', notificationsCopy.eventUploadParsed, 'A combat log you upload finishes parsing'],
   [
     'eventsNote',
     notificationsCopy.eventsNote,
@@ -125,6 +125,22 @@ describe('notificationsCopy', () => {
     const long = 'x'.repeat(300);
     expect(shortenDiscordText(long)).toHaveLength(DISCORD_TEXT_LIMIT);
     expect(shortenDiscordText('short')).toBe('short');
+  });
+
+  it('cuts at the last word boundary before the limit and never mid-word', () => {
+    const long = `${'word '.repeat(40)}tail`;
+    const cut = shortenDiscordText(long);
+    expect(cut.length).toBeLessThanOrEqual(DISCORD_TEXT_LIMIT);
+    expect(cut.endsWith('word…')).toBe(true);
+    expect(cut).not.toMatch(/\s…$/);
+  });
+
+  it('adds no full stop after an ellipsis, a full stop, ! or ?', () => {
+    const long = `${'word '.repeat(40)}tail`;
+    expect(notificationsCopy.testFailed(long).endsWith('…')).toBe(true);
+    expect(notificationsCopy.testFailed(long)).not.toContain('….');
+    expect(notificationsCopy.testFailed('Nope!')).toBe('Discord said: Nope!');
+    expect(notificationsCopy.testFailed('Why?')).toBe('Discord said: Why?');
   });
 
   it('uses no exclamation marks, soon or unlock, in values or function results', () => {

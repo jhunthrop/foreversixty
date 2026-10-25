@@ -81,7 +81,7 @@ In `Account.svelte`, the right rail (`lg:col-span-4`), as the **last child of th
 
 ### 3.4 The checkbox rows
 
-The native checkbox in a `label.flex.min-h-11.items-center.gap-3.text-[14px]`, exactly the `anonymize` row. Order is fixed: `A server sim finishes`, then `A log file you upload finishes parsing`. Defaults on a new webhook: both on. Under the second row, the note `Posts every log you upload, including private ones; each message says who can open it.` (13 px `--muted`), so a member who uploads a private report knows it will name that report in the channel. In the saved state a change **saves at once** (`PUT` with `events` only): both boxes are disabled with `aria-busy` while the call is in flight, the status line says `Saved.` for 4 s and then clears. A failed call puts the box back and the status line says `Could not save that. Try again.`
+The native checkbox in a `label.flex.min-h-11.items-center.gap-3.text-[14px]`, exactly the `anonymize` row. Order is fixed: `A server sim finishes`, then `A combat log you upload finishes parsing`. Defaults on a new webhook: both on. Under the second row, the note `Posts every log you upload, including private ones; each message says who can open it.` (13 px `--muted`), so a member who uploads a private report knows it will name that report in the channel. In the saved state a change **saves at once** (`PUT` with `events` only): both boxes are disabled with `aria-busy` while the call is in flight, the status line says `Saved.` for 4 s and then clears. A failed call puts the box back and the status line says `Could not save that. Try again.`
 
 ### 3.5 What the panel never shows
 
@@ -189,7 +189,7 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 | Helper (trust) | `We store the URL encrypted, never show it again, and delete it with your account.` |
 | Events label | `Post when` |
 | Event 1 | `A server sim finishes` |
-| Event 2 | `A log file you upload finishes parsing` |
+| Event 2 | `A combat log you upload finishes parsing` |
 | Events note | `Posts every log you upload, including private ones; each message says who can open it.` |
 | Save | `Save webhook`; pending `Saving…` |
 | Cancel | `Cancel` |
@@ -251,7 +251,7 @@ Every message is one POST with one embed, no `content`, `username` `Forever Sixt
 | Part | Text |
 |---|---|
 | Title (link to `/account#discord`) | `Test message from Forever Sixty` |
-| Description | `Your webhook works. You will get a message here when a server sim finishes or a log file you upload finishes parsing.` Built from the events currently on; with one on, only that clause; with none, `Your webhook works. No events are on yet.` |
+| Description | `Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing.` Built from the events currently on; with one on, only that clause; with none, `Your webhook works. No events are on yet.` |
 | Fields | none |
 
 Limits respected: titles at most 256 characters (ours are at most 200), field values at most 1024 (ours at most 100), three fields at most (Discord allows 25), one embed. One event is one message; the site never batches, repeats or follows up. A member who uploads ten files in a row gets ten messages; that is the member's own action and is stated in decision 16.

@@ -62,7 +62,7 @@ var embedCopy = struct {
 	TestLead:  "You will get a message here when",
 	TestClauses: map[EventName]string{
 		EventSimFinished:  "a server sim finishes",
-		EventUploadParsed: "a log file you upload finishes parsing",
+		EventUploadParsed: "a combat log you upload finishes parsing",
 	},
 	TestNone: "No events are on yet.",
 

@@ -435,9 +435,9 @@ func TestTestEmbedNamesOnlyTheEventsThatAreOn(t *testing.T) {
 		events map[EventName]bool
 		want   string
 	}{
-		"both": {bothEvents, "Your webhook works. You will get a message here when a server sim finishes or a log file you upload finishes parsing."},
+		"both": {bothEvents, "Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing."},
 		"sim":  {map[EventName]bool{EventSimFinished: true}, "Your webhook works. You will get a message here when a server sim finishes."},
-		"log":  {map[EventName]bool{EventUploadParsed: true}, "Your webhook works. You will get a message here when a log file you upload finishes parsing."},
+		"log":  {map[EventName]bool{EventUploadParsed: true}, "Your webhook works. You will get a message here when a combat log you upload finishes parsing."},
 		"none": {map[EventName]bool{}, "Your webhook works. No events are on yet."},
 	}
 	for name, c := range cases {

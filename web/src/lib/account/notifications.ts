@@ -16,6 +16,8 @@ export type DiscordBlockState =
 
 export type DiscordBlockKey = DiscordBlockState['state'];
 
+export type WarningLines = ReturnType<typeof notificationsCopy.warningLines>;
+
 const ACCEPTED_HOSTS: ReadonlySet<string> = new Set(['discord.com', 'discordapp.com']);
 // /api/webhooks/<number>/<token>, with an optional v6 to v10 segment after /api.
 const WEBHOOK_PATH = /^\/api(?:\/v(?:[6-9]|10))?\/webhooks\/\d+\/[\w-]+$/;
@@ -73,9 +75,9 @@ export function premiumRowLinked(me: Me): boolean {
  * The saved panel's warning for 1 to 4 failures in a row; null otherwise (none yet, or already
  * switched off, where the notice replaces it).
  */
-export function failureWarning(discord: DiscordNotifications): string | null {
+export function failureWarning(discord: DiscordNotifications): WarningLines | null {
   if (discord.failures < 1 || discord.failures >= FAILURES_BEFORE_SWITCH_OFF) return null;
-  return notificationsCopy.warning(discord.failures, discord.last_error);
+  return notificationsCopy.warningLines(discord.failures, discord.last_error);
 }
 
 /** "channel 1098765432101234567" is drawn from the id; null while the API has none. */

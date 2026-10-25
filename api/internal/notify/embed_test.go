@@ -36,7 +36,7 @@ func TestEmbedsMatchTheCopyTable(t *testing.T) {
 	}{
 		"test": {
 			TestEmbed(testBase, bothEvents, fixedFinish),
-			`{"title":"Test message from Forever Sixty","description":"Your webhook works. You will get a message here when a server sim finishes or a log file you upload finishes parsing.","url":"https://foreversixty.gg/account#discord",` + common + `}`,
+			`{"title":"Test message from Forever Sixty","description":"Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing.","url":"https://foreversixty.gg/account#discord",` + common + `}`,
 		},
 		"sim": {
 			SimFinishedEmbed(testBase, SimFinished{

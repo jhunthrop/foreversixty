@@ -108,18 +108,21 @@ describe('failureWarning', () => {
   });
 
   it('uses the spec sentences', () => {
-    expect(failureWarning(discordBlock({ failures: 3, last_error: 'Missing Permissions' }))).toBe(
-      'The last 3 posts failed. At 5 in a row it switches off. Last error from Discord: Missing Permissions.',
-    );
-    expect(failureWarning(discordBlock({ failures: 1, last_error: 'Unknown Webhook' }))).toBe(
-      'The last post failed. At 5 in a row it switches off. Last error from Discord: Unknown Webhook.',
-    );
+    expect(failureWarning(discordBlock({ failures: 3, last_error: 'Missing Permissions' }))).toEqual({
+      failures: 'The last 3 posts failed. At 5 in a row it switches off.',
+      lastError: 'Last error from Discord: Missing Permissions.',
+    });
+    expect(failureWarning(discordBlock({ failures: 1, last_error: 'Unknown Webhook' }))).toEqual({
+      failures: 'The last post failed. At 5 in a row it switches off.',
+      lastError: 'Last error from Discord: Unknown Webhook.',
+    });
   });
 
   it('omits the error clause when there is none', () => {
-    expect(failureWarning(discordBlock({ failures: 2, last_error: null }))).toBe(
-      'The last 2 posts failed. At 5 in a row it switches off.',
-    );
+    expect(failureWarning(discordBlock({ failures: 2, last_error: null }))).toEqual({
+      failures: 'The last 2 posts failed. At 5 in a row it switches off.',
+      lastError: null,
+    });
   });
 });
 

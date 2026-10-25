@@ -89,6 +89,15 @@ describe('AccountDiscordBlock', () => {
     expect(text(body)).toContain(notificationsCopy.warning(3, 'Missing Permissions'));
   });
 
+  it('saved with failures: the count line in text-text, the Discord error line in text-muted', () => {
+    const body = html(
+      meWith(true, { discord: discordBlock({ failures: 3, last_error: 'Missing Permissions' }) }),
+    );
+    const { failures, lastError } = notificationsCopy.warningLines(3, 'Missing Permissions');
+    expect(body).toMatch(new RegExp(`<span class="text-text[^"]*"[^>]*>\\s*${failures}\\s*</span>`));
+    expect(body).toMatch(new RegExp(`<span class="text-muted[^"]*"[^>]*>\\s*${lastError}\\s*</span>`));
+  });
+
   it('switched off: the notice and Test and switch on as the only filled button', () => {
     const body = html(
       meWith(true, {

@@ -8,17 +8,21 @@ export const DISCORD_TEXT_LIMIT = 140;
 
 const ELLIPSIS = '…';
 
-/** Plain text, at most `DISCORD_TEXT_LIMIT` characters; the API has already stripped URLs and tokens. */
+/** Plain text, at most `DISCORD_TEXT_LIMIT` characters, cut at a word boundary; the API has already stripped URLs and tokens. */
 export function shortenDiscordText(text: string): string {
   const trimmed = text.trim();
-  return trimmed.length <= DISCORD_TEXT_LIMIT
-    ? trimmed
-    : `${trimmed.slice(0, DISCORD_TEXT_LIMIT - ELLIPSIS.length)}${ELLIPSIS}`;
+  if (trimmed.length <= DISCORD_TEXT_LIMIT) return trimmed;
+  const room = trimmed.slice(0, DISCORD_TEXT_LIMIT - ELLIPSIS.length + 1);
+  const boundary = room.lastIndexOf(' ');
+  const kept = boundary > 0 ? room.slice(0, boundary) : room.slice(0, -1);
+  return `${kept.trimEnd()}${ELLIPSIS}`;
 }
 
-/** One trailing full stop, whether or not Discord's text carried its own. */
+const TERMINAL_MARKS = ['.', '!', '?', ELLIPSIS];
+
+/** One trailing full stop, unless Discord's text already ends in a full stop, !, ? or an ellipsis. */
 function withFullStop(text: string): string {
-  return text.endsWith('.') ? text : `${text}.`;
+  return TERMINAL_MARKS.some((mark) => text.endsWith(mark)) ? text : `${text}.`;
 }
 
 export const premiumRowCopy = {
@@ -39,7 +43,7 @@ export const notificationsCopy = {
   trustHelper: 'We store the URL encrypted, never show it again, and delete it with your account.',
   eventsLabel: 'Post when',
   eventSimFinished: 'A server sim finishes',
-  eventUploadParsed: 'A log file you upload finishes parsing',
+  eventUploadParsed: 'A combat log you upload finishes parsing',
   eventsNote: 'Posts every log you upload, including private ones; each message says who can open it.',
   save: 'Save webhook',
   saving: 'Saving…',
@@ -69,12 +73,21 @@ export const notificationsCopy = {
 
   destinationLead: 'Posts to',
   destinationNoun: 'channel',
-  warning: (failures: number, lastError: string | null): string => {
+  /** The warning as two lines: how many posts failed, then Discord's own words (null when none). */
+  warningLines: (
+    failures: number,
+    lastError: string | null,
+  ): { failures: string; lastError: string | null } => {
     const subject = failures === 1 ? 'The last post failed' : `The last ${failures} posts failed`;
-    const head = `${subject}. At 5 in a row it switches off.`;
-    return lastError === null
-      ? head
-      : `${head} Last error from Discord: ${withFullStop(shortenDiscordText(lastError))}`;
+    return {
+      failures: `${subject}. At 5 in a row it switches off.`,
+      lastError:
+        lastError === null ? null : `Last error from Discord: ${withFullStop(shortenDiscordText(lastError))}`,
+    };
+  },
+  warning: (failures: number, lastError: string | null): string => {
+    const lines = notificationsCopy.warningLines(failures, lastError);
+    return lines.lastError === null ? lines.failures : `${lines.failures} ${lines.lastError}`;
   },
 
   switchedOff: 'Switched off after 5 failed posts in a row.',

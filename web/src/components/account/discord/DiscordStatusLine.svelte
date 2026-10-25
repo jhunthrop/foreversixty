@@ -8,7 +8,7 @@
   let { status }: { status: { ok: boolean; message: string; target?: string } | null } = $props();
 </script>
 
-<div class="min-h-[21px] text-[13px]" data-testid="discord-status">
+<div class="mt-2 min-h-[21px] text-[13px]" data-testid="discord-status">
   {#if status !== null}
     <p class={status.ok ? 'text-text' : 'text-wipe'} role={status.ok ? 'status' : 'alert'}>
       {status.message}
