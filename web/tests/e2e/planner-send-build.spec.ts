@@ -9,6 +9,9 @@ const ok = (data: unknown, status = 200) => ({
   body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
 });
 
+/** A reply this late arrives after the header selector has mounted (`client:idle`, ~800 ms). */
+const SELECTOR_MOUNT_MARGIN_MS = 1500;
+
 const KEY = 'us/hardcore/obnoxious-yell';
 const WORN_RING = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,finger1=264908`;
 const SAVED = { id: 'k7x2qm4a', url: 'https://foreversixty.gg/b/k7x2qm4a' };
@@ -89,7 +92,11 @@ test.describe('Send this build to the addon', () => {
     );
     await page.getByTestId('band-compare-load').click();
     await expect(action).toBeEnabled();
-    await expect(page.getByTestId('character-header-note')).toHaveCount(0);
+    // The planner keeps the build the visitor loaded (the session's pointer heal no longer swaps in
+    // the character's own), so the card says how it compares with the character's spend.
+    await expect(page.getByTestId('character-header-note')).toHaveText(
+      'This build has 3 points; Obnoxious Yell has 9.',
+    );
 
     await action.click();
 
@@ -111,6 +118,29 @@ test.describe('Send this build to the addon', () => {
     await page.getByTestId('talent-1002').click();
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
     await expect(action).toBeEnabled();
+  });
+
+  test('a slow inbox reply still reads Sent: the header selector mounting mid-send does not reset it', async ({
+    page,
+  }) => {
+    await signIn(page);
+    await page.route('**/v1/builds', (route) => route.fulfill(ok(SAVED, 201)));
+    await page.route('**/v1/addon/inbox', async (route) => {
+      // Past the header selector's idle mount, where the fresh session's pointer heal lands.
+      await new Promise((resolve) => setTimeout(resolve, SELECTOR_MOUNT_MARGIN_MS));
+      await route.fulfill(ok({ build_id: SAVED.id }, 201));
+    });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.route('**/data/*/bis/warrior-arms.json', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ARMS_LIST) }),
+    );
+    await page.goto('/planner');
+    const action = page.getByTestId('character-header-action');
+    await expect(action).toHaveText('Send this build to Obnoxious Yell');
+    await page.getByTestId('band-compare-load').click();
+    await expect(action).toBeEnabled();
+    await action.click();
+    await expect(action).toHaveText('Sent');
   });
 
   test('a worn item outside the planner list never reaches the body, and the card says so', async ({
