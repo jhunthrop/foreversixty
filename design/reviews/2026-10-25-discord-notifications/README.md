@@ -53,4 +53,13 @@ Mobile project: all 0. Load-time footer shift is not zero: at 390 it is 0.4476 f
 
 ## Verdicts
 
+- ux-designer: SHIP WITH FIXES on the first pass (the free sentence broke into two lines with a 44 px link box; the `Saving…`/`Sending…` captures were stale; a 74 px gap above `Use a different webhook`; `Mana….`; the 1-to-4 warning read as small print). Fixed in c0e41c7d and re-captured; re-check at 6f493595: **SHIP**, no must-fix items. Rulings recorded in the spec: the free sentence may wrap to two lines where the rail is narrower than the sentence (§3.2); the 520 px switched-off cap holds for a one-line error, up to 560/590 px with the longest error (§7). Report: `ux-designer-review.md`.
+- wow-player: SHIP WITH FIXES (11 items). Shipped this lane: the cut error now ends at a word with no stray full stop; "log file" became "combat log" (the site's own term) in the checkbox row, the test message, the Go copy table and the spec. The rest are below. Report: `wow-player-review.md`.
+
 ## Deferred, not this lane
+
+- The loading skeleton reserves no height for the Discord panel (load-time CLS 0.04–0.06 higher at 1440; the page already shifts 0.35–0.45 at 390 with or without the block): a page-wide account-skeleton task with a Base.astro pre-paint hint.
+- An inflight pre-save `/v1/me` request can overwrite the in-place patch for a few hundred ms (shared `query.ts`).
+- wow-player: the switched-off helper wording and moving `Use a different webhook` into the notice; the channel NAME instead of the id (Discord's webhook GET carries no channel name — needs a bot or a member-typed label); numbered webhook how-to steps; the private-logs note wording or a separate private-logs checkbox; gold `accent-color` on checkboxes site-wide (ux polish too); Premium row wording (`Off · needs attention`); `Took` → `Run time`, the character name in the sim title, `Boss fights`.
+- ux polish: non-breaking spaces in the Premium row value at 1024; hide `Use a different webhook` while the remove question is open; 8 px less between the input and the `In Discord:` helper.
+- Spec §9 item 9 (the three messages in a real channel) needs a Discord webhook from the owner; the embeds are pinned by golden JSON tests meanwhile.

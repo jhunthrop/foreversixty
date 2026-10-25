@@ -73,7 +73,7 @@ In `Account.svelte`, the right rail (`lg:col-span-4`), as the **last child of th
 
 **Plan lapsed** (`entitlements.notifications` is not true and a webhook is saved): label row; destination; a notice (2 px `--gold` left bar, `Posts are paused because your plan ended.`, under it `We kept your webhook. Posts start again when you are back on Premium.`); the `See plans` link; the two checkboxes disabled (read-only, showing what was chosen, no note); `Remove`. No `Send test message`, no `Use a different webhook`: the API refuses both.
 
-**Free** (`entitlements.notifications` is not true and nothing is saved): the sentence `Discord messages tell you when a server sim or a log you uploaded is done. See plans` (13 px `--muted`, min height 44 px, `See plans` underlined, `href="/premium"`, `inline-flex min-h-11 items-center` on phone). No panel, no heading, no form, no lock icon. This is the same decision as the character page's sentence (history spec 3.9).
+**Free** (`entitlements.notifications` is not true and nothing is saved): the sentence `Discord messages tell you when a server sim or a log you uploaded is done. See plans` (13 px `--muted`, min height 44 px on the paragraph — `min-h-11 flex items-center`; the sentence wraps to two lines where the rail is narrower than the sentence, which includes 1440 at a 395 px rail, with `See plans` ending the second line, never alone on it; `See plans` underlined, `href="/premium"`, an inline link whose focus ring hugs the text). No panel, no heading, no form, no lock icon. This is the same decision as the character page's sentence (history spec 3.9).
 
 ### 3.3 The input
 
@@ -262,7 +262,7 @@ Limits respected: titles at most 256 characters (ours are at most 200), field va
 
 **Collapses or wraps:** buttons wrap onto a second row when the panel is narrower than their sum (at 360 the panel's inner width is 292 px: `Send test message` plus `Remove` fit on one row at 280 px; `Test and switch on` plus `Remove` wrap, `Remove` on its own 44 px row). Helpers wrap. The channel id sits on its own line when the line is full. The panel padding is 16 px below 768.
 
-- **360 and 390:** the panel is the rail's width (the page's 18 px gutters, 324 or 354 px). Panel heights: saved at most 420 px, paste form at most 560 px, switched off at most 520 px. The Premium row's value wraps to two lines at 360 for the longest values.
+- **360 and 390:** the panel is the rail's width (the page's 18 px gutters, 324 or 354 px). Panel heights: saved at most 420 px, paste form at most 560 px, switched off at most 520 px with a one-line Discord error; with the longest error the API keeps (140 characters, three lines) the panel may reach 560 px at 390 and 590 px at 360 — the error is never cut shorter, because it is the one thing the member can act on. The Premium row's value wraps to two lines at 360 for the longest values.
 - **768 to 1023:** the right rail drops under the left column (single column below `lg`), the panel is the full content width with 24 x 20 px padding, and nothing stretches the input beyond the panel.
 - **1024 to 1279:** the rail is 288 px wide; see 3.1.
 - **1440:** 395 px wide, as the mock.

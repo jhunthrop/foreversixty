@@ -43,3 +43,37 @@ Fixes (both small; no design change):
 - Premium row: all seven values render and link correctly; `Off` is muted and unlinked; `feature-off` renders no block and an `Off` row.
 - Heights: saved 408 px at 360 and 390 (limit 420); paste form 532 px at 390 (limit 560). CLS after member action is 0 at 390 and 1440.
 - 768 and 1024 stack and wrap as 3.1 and 7 describe; no horizontal overflow.
+
+## Re-check (6f493595)
+
+VERDICT: SHIP
+
+Viewed again at the re-taken captures: the recomposed `discord-side-by-side-1440.png`, `discord-free-1440.png`, `discord-free-panel-390.png`, `discord-focus-see-plans-1440.png`, the saved, saving, sending, warning, warning-long, switched-off, switched-off-long, lapsed, remove-confirm and test-failed panel crops at 1440 and 390, and `discord-saved-1024.png`.
+
+### Earlier findings, closed
+
+- Must 1, free sentence: now two lines 20 px apart at 1440 (y 923 and 943), `See plans` ends line two, the focus ring hugs the link (about 60 x 20 px, no overprint). Closed.
+- Must 2, pending states: `discord-saving-panel-1440.png` shows `SAVING…` on a disabled button with the field filled, the boxes greyed and the typed value kept. `discord-sending-panel-390.png` shows `SENDING…` with gold border and the boxes disabled. Real holds. Closed.
+- Should 1, gap: buttons to `Use a different webhook` text is 52 px at 1440 (`discord-saved-panel-1440.png`: 321 to 373), the mock's 53 px. In `discord-test-failed-panel-390.png` the red status sits 8 px under the buttons with the link right below. Closed.
+- Should 2, `Mana….`: gone; the long error ends `someone with…` at a word boundary, one ellipsis, no full stop. Closed.
+- Should 3, warning weight: the first sentence is visibly brighter than the last-error line (`discord-warning-panel-1440.png`: `The last 2 posts failed. At 5 in a row it switches off.` in `--text`, `Last error from Discord: Unknown Webhook.` in `--muted`, 2 px apart). The capture agent's "both muted" is wrong; the two greys differ. Closed.
+- Should 5, channel id: settled. The `1` in the id has a foot serif and a flag, and every digit is the same 7.7 px advance; the Barlow `1` in `Fixture#1234` (header) has neither. It is the monospace face, matches the mock's glyph shapes. Weight reads heavier than the surrounding 14 px Barlow only because mono at 13 px `--strong` is denser. Closed; no change.
+- Copy: `A combat log you upload finishes parsing` is verbatim from the amended spec in the form, saved, remove-confirm, lapsed and replace crops.
+
+### Rulings
+
+1. Free sentence at two lines at 1440: accepted. The rail is 395 px (inner width 395, no panel padding) and the 82-character sentence at 13 px cannot fit one line; two lines of 20 px with the link ending line two is the right outcome. The spec's "44 px" is a minimum tap height, met by `min-h-11`. Amend §3.2 Free: "min height 44 px; two lines where the rail is narrower than the sentence".
+2. `switched-off-long` at 390 (606 px crop, so about 558 px panel; 140-character three-line error): accepted as the worst case, no shorter cap. The typical switched-off panel at 390 is now about 500 px (`discord-switched-off-panel-390.png`, 548 px crop), inside the 520 px limit. Real Discord errors are one line (`Unknown Webhook`, `Missing Permissions`); capping the shown text below 140 characters would hide the one thing the member can act on. Amend §7: the 520 px limit holds for a one-line error; with a 140-character error the panel may reach 560 px at 390 and 590 px at 360.
+3. `Saving…` and `Sending…` captures: confirmed real holds (see above). The blank band between the input and `In Discord:` while saving is the reserved 21 px error line plus its gaps, by spec §3.2 row 3 and §9 ("a result never moves the buttons"); it is about 40 px at 1440 and 390. Keep it. If it is trimmed later, remove only the gap above the reserved line, never the line.
+
+### Remaining Must fix
+
+None.
+
+### Polish for a later pass
+
+1. `discord-saved-1024.png`: the Premium row value still breaks as `On · 2` / `events` with the underline split. Join the value with non-breaking spaces.
+2. `discord-remove-confirm-panel-1440.png`: `Use a different webhook` stays under an open remove question. Hide it while the question shows.
+3. Native blue checkboxes: set `accent-color` to `--gold` on this row and the anonymize row together.
+4. At 360 and 390 the form's gap between the input and the `In Discord:` helper (see ruling 3) could drop 8 px.
+5. Record rulings 1 and 2 in the spec's §3.2 and §7 as written above, and fill the README's empty `Verdicts` and `Deferred, not this lane` sections.
