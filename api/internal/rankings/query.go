@@ -446,57 +446,24 @@ func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name strin
 		return Character{}, false, fmt.Errorf("rankings: read character: %w", err)
 	}
 
-	rows, err := s.Pool.Query(ctx,
-		`select m.encounter_id, m.difficulty, m.kill, m.role, m.metric_dps, m.metric_hps,
-		        m.damage_taken, coalesce(m.spec, ''), coalesce(m.talent_split, ''),
-		        coalesce(m.duration_ms, 0), m.fought_at, m.report_id, m.fight_index,
-		        coalesce(m.class, ''), coalesce(m.phase, ''), m.execution_score
-		 from fight_metrics m join reports r on r.id = m.report_id
-		 where m.player_key = $1 and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
-		 order by m.fought_at desc limit $2`, key, HistoryLimit)
+	read, err := s.readHistory(ctx, key, presence.EvidenceReport("r"), HistoryLimit)
 	if err != nil {
-		return Character{}, false, fmt.Errorf("rankings: read character history: %w", err)
+		return Character{}, false, err
 	}
-	defer rows.Close()
 	best := map[[2]int64]CharacterBest{}
 	seen := map[string]BuildSeen{}
 	found := out.Character.Class != ""
-	// phases are remembered per history row so the percentiles can be
-	// read in one go once every row is in.
-	phases := []bracketKey{}
-	for rows.Next() {
-		var (
-			f                       CharacterFight
-			role, class, at         string
-			dps, hps                *float64
-			taken                   *int64
-			encounterID, difficulty *int64
-		)
-		if err := rows.Scan(&encounterID, &difficulty, &f.Kill, &role, &dps, &hps, &taken,
-			&f.Spec, &f.TalentSplit, &f.DurationMS, &f.FoughtAt, &f.ReportID, &f.FightIndex,
-			&class, &at, &f.ExecutionScore); err != nil {
-			return Character{}, false, fmt.Errorf("rankings: scan character history: %w", err)
-		}
+	byBracket := map[[2]int64]bracketKey{}
+	for _, h := range read.rows {
+		f := h.fight
 		found = true
 		if out.Character.Class == "" {
-			out.Character.Class = class
+			out.Character.Class = h.class
 		}
-		if encounterID != nil {
-			f.EncounterID = *encounterID
-		}
-		if difficulty != nil {
-			f.Difficulty = *difficulty
-		}
-		f.Metric = metricOf(role)
-		f.Value = pickValue(f.Metric, dps, hps, taken)
 		out.History = append(out.History, f)
-		phases = append(phases, bracketKey{
-			EncounterID: f.EncounterID, Difficulty: f.Difficulty,
-			Spec: f.Spec, Phase: at, Metric: f.Metric,
-		})
-
 		if f.Kill {
 			k := [2]int64{f.EncounterID, f.Difficulty}
+			byBracket[k] = h.bracket
 			if b, ok := best[k]; !ok || f.Value > b.Value {
 				best[k] = CharacterBest{
 					EncounterID: f.EncounterID, Difficulty: f.Difficulty, Metric: f.Metric,
@@ -512,38 +479,11 @@ func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name strin
 			}
 		}
 	}
-	if err := rows.Err(); err != nil {
-		return Character{}, false, err
-	}
-
-	// One query for the encounter names and one for the digests, then
-	// every row is named and placed in memory.
-	ids := make([]int64, 0, len(out.History))
-	for _, k := range phases {
-		ids = append(ids, k.EncounterID)
-	}
-	names, err := s.EncounterNames(ctx, ids)
-	if err != nil {
-		return Character{}, false, err
-	}
-	digests, err := s.digestsFor(ctx, ids)
-	if err != nil {
-		return Character{}, false, err
-	}
-	byBracket := map[[2]int64]bracketKey{}
-	for i := range out.History {
-		f := &out.History[i]
-		f.Encounter = names[f.EncounterID]
-		f.Percentile = percentileOf(digests, phases[i], f.Value)
-		if f.Kill {
-			byBracket[[2]int64{f.EncounterID, f.Difficulty}] = phases[i]
-		}
-	}
 	for k, b := range best {
-		b.Encounter = names[b.EncounterID]
+		b.Encounter = read.names[b.EncounterID]
 		if key, ok := byBracket[k]; ok {
 			key.Spec, key.Metric = b.Spec, b.Metric
-			b.Percentile = percentileOf(digests, key, b.Value)
+			b.Percentile = percentileOf(read.digests, key, b.Value)
 		}
 		out.Best = append(out.Best, b)
 	}
