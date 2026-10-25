@@ -52,7 +52,7 @@ func saved(t *testing.T) (*Store, int64) {
 	pool := testPool(t)
 	st := &Store{Pool: pool}
 	uid := seedUser(t, pool)
-	if err := st.Save(context.Background(), uid, KindDiscord, "555", []byte("box-1"), bothEvents); err != nil {
+	if err := st.Save(context.Background(), uid, KindDiscord, "555", nil, []byte("box-1"), bothEvents); err != nil {
 		t.Fatal(err)
 	}
 	return st, uid
@@ -67,7 +67,7 @@ func TestSaveUpsertsAndResetsFailures(t *testing.T) {
 		}
 	}
 	events := map[EventName]bool{EventSimFinished: true}
-	if err := st.Save(ctx, uid, KindDiscord, "777", []byte("box-2"), events); err != nil {
+	if err := st.Save(ctx, uid, KindDiscord, "777", nil, []byte("box-2"), events); err != nil {
 		t.Fatal(err)
 	}
 	w, ok, err := st.Get(ctx, uid, KindDiscord)
@@ -166,7 +166,7 @@ func TestDeleteCascadesWithTheUser(t *testing.T) {
 	if _, ok, _ := st.Get(ctx, uid, KindDiscord); ok {
 		t.Fatal("row survived Delete")
 	}
-	if err := st.Save(ctx, uid, KindDiscord, "1", []byte("b"), bothEvents); err != nil {
+	if err := st.Save(ctx, uid, KindDiscord, "1", nil, []byte("b"), bothEvents); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := st.Pool.Exec(ctx, `delete from users where id = $1`, uid); err != nil {
@@ -194,3 +194,69 @@ func TestGetNeverReturnsTheToken(t *testing.T) {
 		}
 	}
 }
+
+func TestExistingWebhooksKeepPostingPrivateLogs(t *testing.T) {
+	ctx := context.Background()
+	pool := testPool(t)
+	st := &Store{Pool: pool}
+	old, fresh := seedUser(t, pool), seedUser(t, pool)
+	if _, err := pool.Exec(ctx, `insert into notification_webhooks (user_id, kind, channel_id, token_box, events)
+		values ($1, $2, '9', 'b', '{"sim_finished": true, "upload_parsed": true}')`, old, KindDiscord); err != nil {
+		t.Fatal(err)
+	}
+	migration, err := os.ReadFile("../db/migrations/0047_notification_webhook_name_private.up.sql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, stmt := range strings.Split(string(migration), ";") {
+		if idx := strings.Index(stmt, "update notification_webhooks"); idx >= 0 {
+			if _, err := pool.Exec(ctx, stmt[idx:]); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	events := map[EventName]bool{EventSimFinished: true, EventUploadParsed: true}
+	if err := st.Save(ctx, fresh, KindDiscord, "8", nil, []byte("b"), events); err != nil {
+		t.Fatal(err)
+	}
+	for uid, want := range map[int64]bool{old: true, fresh: false} {
+		w, _, err := st.Get(ctx, uid, KindDiscord)
+		if err != nil || w.Events[EventUploadPrivate] != want {
+			t.Fatalf("user %d: UploadPrivate = %v (%v), want %v", uid, w.Events[EventUploadPrivate], err, want)
+		}
+	}
+}
+
+func TestSaveStoresACleanName(t *testing.T) {
+	for name, c := range map[string]struct {
+		raw  string
+		want *string
+	}{
+		"trimmed":        {"  Raid pings  ", ptr("Raid pings")},
+		"controls gone":  {"Ra\x00id\x1f \x7fpings\n", ptr("Raid pings")},
+		"81 runes to 80": {strings.Repeat("é", 81), ptr(strings.Repeat("é", 80))},
+		"empty is nil":   {"   ", nil},
+		"only controls":  {"\x00\x01", nil},
+		"unicode kept":   {"Gilde ⚔ Nacht", ptr("Gilde ⚔ Nacht")},
+	} {
+		if got := cleanWebhookName(c.raw); !reflect.DeepEqual(got, c.want) {
+			t.Errorf("%s: %v, want %v", name, got, c.want)
+		}
+	}
+	st, uid := saved(t)
+	ctx := context.Background()
+	if err := st.Save(ctx, uid, KindDiscord, "555", ptr("Raid pings"), []byte("box"), bothEvents); err != nil {
+		t.Fatal(err)
+	}
+	if w, _, err := st.Get(ctx, uid, KindDiscord); err != nil || w.Name == nil || *w.Name != "Raid pings" {
+		t.Fatalf("stored name = %v (%v)", w.Name, err)
+	}
+	if err := st.Save(ctx, uid, KindDiscord, "555", nil, []byte("box"), bothEvents); err != nil {
+		t.Fatal(err)
+	}
+	if w, _, _ := st.Get(ctx, uid, KindDiscord); w.Name != nil {
+		t.Fatalf("a nil name was kept: %v", *w.Name)
+	}
+}
+
+func ptr(s string) *string { return &s }

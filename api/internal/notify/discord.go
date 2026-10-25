@@ -47,8 +47,8 @@ type EmbedField struct {
 // Discord; the HTTP poster follows no redirects.
 type Poster interface {
 	Post(ctx context.Context, webhookURL string, embed Embed) error
-	// Lookup reads the webhook's channel id (GET on the webhook URL).
-	Lookup(ctx context.Context, webhookURL string) (channelID string, err error)
+	// Lookup reads the webhook's channel id and name (GET on the webhook URL).
+	Lookup(ctx context.Context, webhookURL string) (LookupResult, error)
 }
 
 // Transport failures, reported without the URL. The deliverer turns them
@@ -182,23 +182,27 @@ func (p *HTTPPoster) Post(ctx context.Context, webhookURL string, embed Embed) e
 	return statusError(res)
 }
 
-// Lookup returns the webhook's channel_id.
-func (p *HTTPPoster) Lookup(ctx context.Context, webhookURL string) (string, error) {
+// LookupResult is what Discord says about a webhook. Name may be empty.
+type LookupResult struct{ ChannelID, Name string }
+
+// Lookup returns the webhook's channel_id and name.
+func (p *HTTPPoster) Lookup(ctx context.Context, webhookURL string) (LookupResult, error) {
 	res, err := p.do(ctx, http.MethodGet, webhookURL, nil)
 	if err != nil {
-		return "", err
+		return LookupResult{}, err
 	}
 	defer res.Body.Close()
 	if err := statusError(res); err != nil {
-		return "", err
+		return LookupResult{}, err
 	}
 	var out struct {
 		ChannelID string `json:"channel_id"`
+		Name      string `json:"name"`
 	}
 	if err := json.NewDecoder(io.LimitReader(res.Body, maxResponseLen)).Decode(&out); err != nil || out.ChannelID == "" {
-		return "", errors.New("notify: webhook answered without a channel id")
+		return LookupResult{}, errors.New("notify: webhook answered without a channel id")
 	}
-	return out.ChannelID, nil
+	return LookupResult{ChannelID: out.ChannelID, Name: out.Name}, nil
 }
 
 // do sends the request; a transport failure is reported without the URL
@@ -261,6 +265,7 @@ type FakePoster struct {
 	// LookupErr, when set, is returned by Lookup; otherwise LookupChannelID.
 	LookupErr       error
 	LookupChannelID string
+	LookupName      string
 	posts           []PostCall
 }
 
@@ -271,10 +276,10 @@ func (f *FakePoster) Post(_ context.Context, webhookURL string, embed Embed) err
 	return f.PostErr
 }
 
-func (f *FakePoster) Lookup(context.Context, string) (string, error) {
+func (f *FakePoster) Lookup(context.Context, string) (LookupResult, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	return f.LookupChannelID, f.LookupErr
+	return LookupResult{ChannelID: f.LookupChannelID, Name: f.LookupName}, f.LookupErr
 }
 
 // Posts returns a copy of the recorded Post calls.

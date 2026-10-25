@@ -27,8 +27,9 @@ const (
 	maxTitleRunes = 256
 	maxValueRunes = 1024
 
-	maxRunRunes    = 100
-	maxReportTitle = 200
+	maxRunRunes       = 100
+	maxCharacterRunes = 40
+	maxReportTitle    = 200
 )
 
 // embedCopy is the words of every message the channel receives (spec 6.2).
@@ -38,8 +39,11 @@ var embedCopy = struct {
 	TestLead    string
 	TestClauses map[EventName]string
 	TestNone    string
+	// TestPrivateClause ends the upload clause when private logs may post.
+	TestPrivateClause string
 
 	SimTitle         string // %s: the spec label
+	SimTitleNamed    string // %s: the escaped character name, then the spec label
 	SimTitleNoSpec   string
 	SimResultName    string
 	SimResultDPS     string // %s: the formatted DPS
@@ -49,8 +53,7 @@ var embedCopy = struct {
 	LogTitleNoTitle  string
 	LogZoneName      string
 	LogFightsName    string
-	LogFightsFormat  string // %d fights/fight, %s kills phrase
-	LogOneFight      string
+	LogFightsFormat  string // %d fights, %s kills phrase
 	LogKillsNone     string
 	LogOneKill       string
 	LogManyKills     string // %d
@@ -64,20 +67,21 @@ var embedCopy = struct {
 		EventSimFinished:  "a server sim finishes",
 		EventUploadParsed: "a combat log you upload finishes parsing",
 	},
-	TestNone: "No events are on yet.",
+	TestNone:          "No events are on yet.",
+	TestPrivateClause: ", private logs included",
 
 	SimTitle:        "Your %s sim finished",
+	SimTitleNamed:   "%s's %s sim finished",
 	SimTitleNoSpec:  "Your sim finished",
 	SimResultName:   "Result",
 	SimResultDPS:    "%s DPS",
 	SimRunName:      "Run",
-	SimTookName:     "Took",
+	SimTookName:     "Run time",
 	LogTitleSuffix:  " finished parsing",
 	LogTitleNoTitle: "Your log finished parsing",
 	LogZoneName:     "Zone",
-	LogFightsName:   "Fights",
+	LogFightsName:   "Boss fights",
 	LogFightsFormat: "%s · %s",
-	LogOneFight:     "1 fight",
 	LogKillsNone:    "no kills",
 	LogOneKill:      "1 kill",
 	LogManyKills:    "%d kills",
@@ -123,18 +127,28 @@ func TestEmbed(publicBaseURL string, events map[EventName]bool, now time.Time) E
 	description := embedCopy.TestIntro + " " + embedCopy.TestNone
 	if len(clauses) > 0 {
 		description = embedCopy.TestIntro + " " + embedCopy.TestLead + " " +
-			strings.Join(clauses, " or ") + "."
+			strings.Join(clauses, " or ") + privateClause(events) + "."
 	}
 	e := baseEmbed(embedCopy.TestTitle, absoluteURL(publicBaseURL, accountDiscordPath), now)
 	e.Description = description
 	return e
 }
 
+// privateClause is appended when a private log may post (and logs post at all).
+func privateClause(events map[EventName]bool) string {
+	if events[EventUploadParsed] && events[EventUploadPrivate] {
+		return embedCopy.TestPrivateClause
+	}
+	return ""
+}
+
 // SimFinished is what the sim job holds when a server run reaches done.
 type SimFinished struct {
-	UserID     int64
-	SimID      string
-	Spec       string
+	UserID int64
+	SimID  string
+	Spec   string
+	// Character is the run's character name; empty when unknown.
+	Character  string
 	DPS        float64
 	Headline   string
 	Title      string
@@ -145,10 +159,7 @@ type SimFinished struct {
 // SimFinishedEmbed is the "Server sim finished" message.
 func SimFinishedEmbed(publicBaseURL string, in SimFinished) Embed {
 	spec, known := specs.ByKey[in.Spec]
-	title := embedCopy.SimTitleNoSpec
-	if known {
-		title = fmt.Sprintf(embedCopy.SimTitle, spec.Name+" "+classLabel(spec.ClassSlug))
-	}
+	title := simTitle(in.Character, spec, known)
 	e := baseEmbed(title, absoluteURL(publicBaseURL, simPathPrefix+in.SimID), in.FinishedAt)
 	result := fmt.Sprintf(embedCopy.SimResultDPS, thousands(in.DPS))
 	if headline := collapse(in.Headline); headline != "" {
@@ -176,6 +187,8 @@ type UploadParsed struct {
 	Title      string
 	Zone       string
 	Visibility string
+	// Private is true when the report is visible to its owner only.
+	Private    bool
 	Fights     int
 	Kills      int
 	FinishedAt time.Time
@@ -194,19 +207,30 @@ func UploadParsedEmbed(publicBaseURL string, in UploadParsed) Embed {
 			Name: embedCopy.LogZoneName, Value: escapedWithin(zone, maxValueRunes, maxValueRunes), Inline: true,
 		})
 	}
-	e.Fields = append(e.Fields,
-		EmbedField{Name: embedCopy.LogFightsName, Value: fightsLine(in.Fights, in.Kills), Inline: true},
-		EmbedField{
-			Name: embedCopy.LogVisibleName, Value: embedCopy.LogVisibleLabels[in.Visibility], Inline: true,
-		})
+	if in.Fights > 0 {
+		e.Fields = append(e.Fields,
+			EmbedField{Name: embedCopy.LogFightsName, Value: fightsLine(in.Fights, in.Kills), Inline: true})
+	}
+	e.Fields = append(e.Fields, EmbedField{
+		Name: embedCopy.LogVisibleName, Value: embedCopy.LogVisibleLabels[in.Visibility], Inline: true,
+	})
 	return e
 }
 
-func fightsLine(fights, kills int) string {
-	fightsText := fmt.Sprintf("%d fights", fights)
-	if fights == 1 {
-		fightsText = embedCopy.LogOneFight
+// simTitle names the character when the run has one, else addresses the member.
+func simTitle(character string, spec specs.Spec, known bool) string {
+	if !known {
+		return embedCopy.SimTitleNoSpec
 	}
+	label := spec.Name + " " + classLabel(spec.ClassSlug)
+	if name := collapse(character); name != "" {
+		return fmt.Sprintf(embedCopy.SimTitleNamed, escapedWithin(name, maxCharacterRunes, maxCharacterRunes), label)
+	}
+	return fmt.Sprintf(embedCopy.SimTitle, label)
+}
+
+func fightsLine(fights, kills int) string {
+	fightsText := fmt.Sprintf("%d", fights)
 	killsText := fmt.Sprintf(embedCopy.LogManyKills, kills)
 	switch kills {
 	case 0:

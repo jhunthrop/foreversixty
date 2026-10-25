@@ -513,11 +513,18 @@ components:
       description: The saved Discord channel. Never carries the URL, token or webhook id.
       properties:
         channel_id: { type: string }
+        name:
+          type: string
+          nullable: true
+          description: The webhook's own name at Discord, trimmed and at most 80 characters; null when Discord gave none.
         events:
           type: object
           properties:
             sim_finished: { type: boolean }
             upload_parsed: { type: boolean }
+            upload_private:
+              type: boolean
+              description: A private report posts only when this and upload_parsed are both on.
         disabled_reason:
           type: string
           nullable: true
@@ -2045,10 +2052,11 @@ paths:
                 webhook_url: { type: string }
                 events:
                   type: object
-                  required: [sim_finished, upload_parsed]
+                  required: [sim_finished, upload_parsed, upload_private]
                   properties:
                     sim_finished: { type: boolean }
                     upload_parsed: { type: boolean }
+                    upload_private: { type: boolean }
       responses:
         '200':
           description: The saved block

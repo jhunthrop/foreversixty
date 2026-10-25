@@ -13,9 +13,11 @@ const (
 func blockOf(w Webhook, entitled bool) *auth.DiscordBlock {
 	block := &auth.DiscordBlock{
 		ChannelID: w.ChannelID,
+		Name:      w.Name,
 		Events: auth.DiscordEvents{
-			SimFinished:  w.Events[EventSimFinished],
-			UploadParsed: w.Events[EventUploadParsed],
+			SimFinished:   w.Events[EventSimFinished],
+			UploadParsed:  w.Events[EventUploadParsed],
+			UploadPrivate: w.Events[EventUploadPrivate],
 		},
 		Failures: w.Failures,
 	}

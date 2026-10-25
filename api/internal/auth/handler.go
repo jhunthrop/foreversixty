@@ -64,16 +64,19 @@ type SimsView interface {
 // routes answer it. It never carries the webhook URL, its token or its id.
 type DiscordBlock struct {
 	ChannelID      string        `json:"channel_id"`
+	Name           *string       `json:"name"`
 	Events         DiscordEvents `json:"events"`
 	DisabledReason *string       `json:"disabled_reason"`
 	LastError      *string       `json:"last_error"`
 	Failures       int           `json:"failures"`
 }
 
-// DiscordEvents are the two things a Discord channel can be told about.
+// DiscordEvents are the two things a Discord channel can be told about, and
+// the modifier that lets private logs post.
 type DiscordEvents struct {
-	SimFinished  bool `json:"sim_finished"`
-	UploadParsed bool `json:"upload_parsed"`
+	SimFinished   bool `json:"sim_finished"`
+	UploadParsed  bool `json:"upload_parsed"`
+	UploadPrivate bool `json:"upload_private"`
 }
 
 // NotificationsBlock is /v1/me's notifications object, keyed by channel so a later channel

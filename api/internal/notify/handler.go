@@ -21,15 +21,17 @@ const (
 	maxPutBodyBytes = 4 << 10
 	// maxTestErrorRunes is the spec's cap on the Discord text a failed test shows.
 	maxTestErrorRunes = 140
+	// maxWebhookNameRunes is the spec's cap on the stored webhook name.
+	maxWebhookNameRunes = 80
 
 	invalidURLMessage  = "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/."
 	noAnswerMessage    = "Discord did not answer"
-	invalidBodyMessage = "the body must be {webhook_url?, events: {sim_finished, upload_parsed}}"
+	invalidBodyMessage = "the body must be {webhook_url?, events: {sim_finished, upload_parsed, upload_private}}"
 )
 
 var (
 	errTrailingData  = errors.New("notify: data after the request object")
-	errMissingEvents = errors.New("notify: both event keys are required")
+	errMissingEvents = errors.New("notify: all three event keys are required")
 )
 
 // Entitlementer answers whether an account may use a feature. It has the
@@ -72,8 +74,9 @@ func (s *Service) DiscordBlock(ctx context.Context, userID int64, entitled bool)
 type putRequest struct {
 	WebhookURL *string `json:"webhook_url"`
 	Events     *struct {
-		SimFinished  *bool `json:"sim_finished"`
-		UploadParsed *bool `json:"upload_parsed"`
+		SimFinished   *bool `json:"sim_finished"`
+		UploadParsed  *bool `json:"upload_parsed"`
+		UploadPrivate *bool `json:"upload_private"`
 	} `json:"events"`
 }
 
@@ -89,12 +92,13 @@ func decodePut(w http.ResponseWriter, r *http.Request) (putRequest, map[EventNam
 	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
 		return req, nil, errTrailingData
 	}
-	if req.Events == nil || req.Events.SimFinished == nil || req.Events.UploadParsed == nil {
+	if req.Events == nil || req.Events.SimFinished == nil || req.Events.UploadParsed == nil || req.Events.UploadPrivate == nil {
 		return req, nil, errMissingEvents
 	}
 	return req, map[EventName]bool{
-		EventSimFinished:  *req.Events.SimFinished,
-		EventUploadParsed: *req.Events.UploadParsed,
+		EventSimFinished:   *req.Events.SimFinished,
+		EventUploadParsed:  *req.Events.UploadParsed,
+		EventUploadPrivate: *req.Events.UploadPrivate,
 	}, nil
 }
 
@@ -135,7 +139,7 @@ func (s *Service) putWebhook(w http.ResponseWriter, r *http.Request, actor auth.
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", invalidURLMessage, nil)
 		return
 	}
-	channelID, err := s.Poster.Lookup(r.Context(), parsed.URL())
+	found, err := s.Poster.Lookup(r.Context(), parsed.URL())
 	if err != nil {
 		// Any failure to reach the webhook reads the same to the member: it does not work.
 		httpx.WriteError(w, r, http.StatusUnprocessableEntity, "invalid", invalidURLMessage, nil)
@@ -146,11 +150,27 @@ func (s *Service) putWebhook(w http.ResponseWriter, r *http.Request, actor auth.
 		s.fail(w, r, "seal", err)
 		return
 	}
-	if err := s.Store.Save(r.Context(), actor.UserID, KindDiscord, channelID, box, events); err != nil {
+	if err := s.Store.Save(r.Context(), actor.UserID, KindDiscord, found.ChannelID, cleanWebhookName(found.Name), box, events); err != nil {
 		s.fail(w, r, "save", err)
 		return
 	}
 	s.answerBlock(w, r, actor.UserID)
+}
+
+// cleanWebhookName is the member-controlled name as stored: trimmed, control
+// characters removed, at most maxWebhookNameRunes runes; nil when nothing is left.
+func cleanWebhookName(raw string) *string {
+	kept := strings.Map(func(r rune) rune {
+		if r < 0x20 || r == 0x7f {
+			return -1
+		}
+		return r
+	}, strings.TrimSpace(raw))
+	cleaned := strings.TrimSpace(truncateRunes(kept, maxWebhookNameRunes))
+	if cleaned == "" {
+		return nil
+	}
+	return &cleaned
 }
 
 func (s *Service) remove(w http.ResponseWriter, r *http.Request) {

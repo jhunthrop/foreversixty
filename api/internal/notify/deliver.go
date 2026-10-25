@@ -63,29 +63,34 @@ func (d *Deliverer) logger() *slog.Logger {
 // SimFinished posts the sim message; a failure is logged, never returned,
 // because the sim itself succeeded.
 func (d *Deliverer) SimFinished(ctx context.Context, e SimFinished) {
-	d.deliverQuietly(ctx, e.UserID, EventSimFinished, SimFinishedEmbed(d.PublicBaseURL, e))
+	d.deliverQuietly(ctx, e.UserID, SimFinishedEmbed(d.PublicBaseURL, e), EventSimFinished)
 }
 
-// UploadParsed posts the log message; see SimFinished.
+// UploadParsed posts the log message; see SimFinished. A private report
+// also needs the upload_private opt-in.
 func (d *Deliverer) UploadParsed(ctx context.Context, e UploadParsed) {
-	d.deliverQuietly(ctx, e.UserID, EventUploadParsed, UploadParsedEmbed(d.PublicBaseURL, e))
+	needs := []EventName{EventUploadParsed}
+	if e.Private {
+		needs = append(needs, EventUploadPrivate)
+	}
+	d.deliverQuietly(ctx, e.UserID, UploadParsedEmbed(d.PublicBaseURL, e), needs...)
 }
 
-func (d *Deliverer) deliverQuietly(ctx context.Context, userID int64, event EventName, embed Embed) {
-	if err := d.Deliver(ctx, userID, event, embed); err != nil {
-		d.logger().Error("notify", "user", userID, "event", string(event), "outcome", "error", "err", err)
+func (d *Deliverer) deliverQuietly(ctx context.Context, userID int64, embed Embed, needs ...EventName) {
+	if err := d.Deliver(ctx, userID, embed, needs...); err != nil {
+		d.logger().Error("notify", "user", userID, "event", string(needs[0]), "outcome", "error", "err", err)
 	}
 }
 
-// Deliver posts embed when the member has a live webhook with the event on
-// and still holds the entitlement. Skips are silent successes. The error it
+// Deliver posts embed when the member has a live webhook with every needed
+// event on (the first names the event in the log) and still holds the entitlement. Skips are silent successes. The error it
 // returns never holds the URL, token or message text.
-func (d *Deliverer) Deliver(ctx context.Context, userID int64, event EventName, embed Embed) error {
+func (d *Deliverer) Deliver(ctx context.Context, userID int64, embed Embed, needs ...EventName) error {
 	hook, found, err := d.Store.Get(ctx, userID, KindDiscord)
 	if err != nil {
 		return err
 	}
-	if !found || hook.DisabledAt != nil || !hook.Events[event] {
+	if !found || hook.DisabledAt != nil || !allOn(hook.Events, needs) {
 		return nil
 	}
 	allowed, _, err := d.Entitlements.Can(ctx, userID, entitlements.FeatureNotifications)
@@ -105,7 +110,16 @@ func (d *Deliverer) Deliver(ctx context.Context, userID int64, event EventName, 
 	}
 	postCtx, cancel := context.WithTimeout(ctx, d.effectiveTimeout())
 	defer cancel()
-	return d.record(ctx, userID, event, d.Poster.Post(postCtx, url, embed))
+	return d.record(ctx, userID, needs[0], d.Poster.Post(postCtx, url, embed))
+}
+
+func allOn(events map[EventName]bool, needs []EventName) bool {
+	for _, need := range needs {
+		if !events[need] {
+			return false
+		}
+	}
+	return true
 }
 
 // record writes the outcome on a context that outlives a cancelled job, so

@@ -42,7 +42,7 @@ func newDeliverRig(t *testing.T, events map[EventName]bool) *deliverRig {
 	}
 	st := &Store{Pool: pool}
 	uid := seedUser(t, pool)
-	if err := st.Save(context.Background(), uid, KindDiscord, "555", box, events); err != nil {
+	if err := st.Save(context.Background(), uid, KindDiscord, "555", nil, box, events); err != nil {
 		t.Fatal(err)
 	}
 	rig := &deliverRig{poster: &FakePoster{}, ents: &fakeEnts{allowed: true}, store: st, uid: uid, logs: &bytes.Buffer{}}
@@ -55,7 +55,7 @@ func newDeliverRig(t *testing.T, events map[EventName]bool) *deliverRig {
 
 func (r *deliverRig) deliver(t *testing.T, event EventName) error {
 	t.Helper()
-	return r.d.Deliver(context.Background(), r.uid, event, Embed{Title: "Secret member title"})
+	return r.d.Deliver(context.Background(), r.uid, Embed{Title: "Secret member title"}, event)
 }
 
 func (r *deliverRig) webhook(t *testing.T) Webhook {
@@ -111,7 +111,7 @@ func TestDeliverSkipsWhenOffLapsedOrDisabled(t *testing.T) {
 	})
 	t.Run("absent", func(t *testing.T) {
 		r := newDeliverRig(t, bothEvents)
-		if err := r.d.Deliver(context.Background(), r.uid+999, EventSimFinished, Embed{}); err != nil {
+		if err := r.d.Deliver(context.Background(), r.uid+999, Embed{}, EventSimFinished); err != nil {
 			t.Fatal(err)
 		}
 		assertNoPost(t, r)
@@ -196,8 +196,10 @@ func TestAHungPostTimesOutAndCountsAsAFailure(t *testing.T) {
 // cancelAfterPost cancels the job's context the moment the post resolves.
 type cancelAfterPost struct{ cancel context.CancelFunc }
 
-func (c cancelAfterPost) Post(context.Context, string, Embed) error    { c.cancel(); return nil }
-func (cancelAfterPost) Lookup(context.Context, string) (string, error) { return "", nil }
+func (c cancelAfterPost) Post(context.Context, string, Embed) error { c.cancel(); return nil }
+func (cancelAfterPost) Lookup(context.Context, string) (LookupResult, error) {
+	return LookupResult{}, nil
+}
 
 func TestRecordingSurvivesACancelledJobContext(t *testing.T) {
 	r := newDeliverRig(t, bothEvents)
@@ -206,7 +208,7 @@ func TestRecordingSurvivesACancelledJobContext(t *testing.T) {
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	r.d.Poster = cancelAfterPost{cancel: cancel}
-	if err := r.d.Deliver(ctx, r.uid, EventSimFinished, Embed{}); err != nil {
+	if err := r.d.Deliver(ctx, r.uid, Embed{}, EventSimFinished); err != nil {
 		t.Fatal(err)
 	}
 	if w := r.webhook(t); w.Failures != 0 || w.LastError != "" {
@@ -236,7 +238,7 @@ func TestAnUnreachableDiscordStoresAPlainSentence(t *testing.T) {
 func TestAnErroredDeliveryLogsItsCause(t *testing.T) {
 	r := newDeliverRig(t, bothEvents)
 	r.d.Entitlements = errEnts{}
-	r.d.deliverQuietly(context.Background(), r.uid, EventSimFinished, Embed{})
+	r.d.deliverQuietly(context.Background(), r.uid, Embed{}, EventSimFinished)
 	if out := r.logs.String(); !strings.Contains(out, "outcome=error") || !strings.Contains(out, "entitlement store down") {
 		t.Fatalf("log = %q", out)
 	}
@@ -252,4 +254,31 @@ func TestTheDefaultPostTimeoutIsFiveSeconds(t *testing.T) {
 	if got := (&Service{}).Deliverer().effectiveTimeout(); got != 5*time.Second {
 		t.Fatalf("effectiveTimeout = %v", got)
 	}
+}
+
+func TestPrivateUploadPostsOnlyWhenOptedIn(t *testing.T) {
+	upload := func(r *deliverRig, private bool) {
+		r.d.UploadParsed(context.Background(), UploadParsed{
+			UserID: r.uid, ReportID: "r1", Visibility: "private", Private: private, Fights: 1,
+		})
+	}
+	off := newDeliverRig(t, map[EventName]bool{EventUploadParsed: true})
+	upload(off, true)
+	assertNoPost(t, off)
+
+	on := newDeliverRig(t, map[EventName]bool{EventUploadParsed: true, EventUploadPrivate: true})
+	upload(on, true)
+	if n := len(on.poster.Posts()); n != 1 {
+		t.Fatalf("%d posts with private logs on, want 1", n)
+	}
+
+	public := newDeliverRig(t, map[EventName]bool{EventUploadParsed: true})
+	upload(public, false)
+	if n := len(public.poster.Posts()); n != 1 {
+		t.Fatalf("%d posts for a public report, want 1", n)
+	}
+
+	parsedOff := newDeliverRig(t, map[EventName]bool{EventUploadPrivate: true})
+	upload(parsedOff, true)
+	assertNoPost(t, parsedOff)
 }

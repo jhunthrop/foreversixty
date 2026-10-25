@@ -40,30 +40,50 @@ func TestEmbedsMatchTheCopyTable(t *testing.T) {
 		},
 		"sim": {
 			SimFinishedEmbed(testBase, SimFinished{
-				SimID: "abc123", Spec: "mage-frost", DPS: 1204.4, Title: "Phase 1 BiS check",
+				SimID: "abc123", Spec: "mage-frost", Character: "Frostbolt", DPS: 1204.4, Title: "Phase 1 BiS check",
 				CreatedAt: fixedFinish.Add(-192 * time.Second), FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"1,204 DPS","inline":true},{"name":"Run","value":"Phase 1 BiS check","inline":true},{"name":"Took","value":"3 min 12 s","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/mage.webp"},` + stamp + `}`,
+			`{"title":"Frostbolt's Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"1,204 DPS","inline":true},{"name":"Run","value":"Phase 1 BiS check","inline":true},{"name":"Run time","value":"3 min 12 s","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/mage.webp"},` + stamp + `}`,
 		},
 		"sim headline, no run": {
 			SimFinishedEmbed(testBase, SimFinished{
 				SimID: "abc123", Spec: "warrior-fury", DPS: 900, Headline: "+41 DPS from Vis'kag",
 				CreatedAt: fixedFinish.Add(-48 * time.Second), FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your Fury Warrior sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"+41 DPS from Vis'kag","inline":true},{"name":"Took","value":"48 s","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/warrior.webp"},` + stamp + `}`,
+			`{"title":"Your Fury Warrior sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"+41 DPS from Vis'kag","inline":true},{"name":"Run time","value":"48 s","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/warrior.webp"},` + stamp + `}`,
 		},
 		"log": {
 			UploadParsedEmbed(testBase, UploadParsed{
 				ReportID: "rep1", Title: "Tuesday Molten Core", Zone: "Molten Core",
 				Visibility: "unlisted", Fights: 9, Kills: 7, FinishedAt: fixedFinish,
 			}),
-			`{"title":"Tuesday Molten Core finished parsing","url":"https://foreversixty.gg/reports/rep1","fields":[{"name":"Zone","value":"Molten Core","inline":true},{"name":"Fights","value":"9 fights · 7 kills","inline":true},{"name":"Visible to","value":"Anyone with the link","inline":true}],` + common + `}`,
+			`{"title":"Tuesday Molten Core finished parsing","url":"https://foreversixty.gg/reports/rep1","fields":[{"name":"Zone","value":"Molten Core","inline":true},{"name":"Boss fights","value":"9 · 7 kills","inline":true},{"name":"Visible to","value":"Anyone with the link","inline":true}],` + common + `}`,
+		},
+		"log, no boss fights": {
+			UploadParsedEmbed(testBase, UploadParsed{
+				ReportID: "rep3", Visibility: "public", FinishedAt: fixedFinish,
+			}),
+			`{"title":"Your log finished parsing","url":"https://foreversixty.gg/reports/rep3","fields":[{"name":"Visible to","value":"Everyone","inline":true}],` + common + `}`,
+		},
+		"test, private logs included": {
+			TestEmbed(testBase, map[EventName]bool{EventSimFinished: true, EventUploadParsed: true, EventUploadPrivate: true}, fixedFinish),
+			`{"title":"Test message from Forever Sixty","description":"Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing, private logs included.","url":"https://foreversixty.gg/account#discord",` + common + `}`,
+		},
+		"test, private flag without logs": {
+			TestEmbed(testBase, map[EventName]bool{EventSimFinished: true, EventUploadPrivate: true}, fixedFinish),
+			`{"title":"Test message from Forever Sixty","description":"Your webhook works. You will get a message here when a server sim finishes.","url":"https://foreversixty.gg/account#discord",` + common + `}`,
+		},
+		"sim, unnamed": {
+			SimFinishedEmbed(testBase, SimFinished{
+				SimID: "abc123", Spec: "mage-frost", DPS: 10, CreatedAt: fixedFinish.Add(-time.Hour - 5*time.Minute), FinishedAt: fixedFinish,
+			}),
+			`{"title":"Your Frost Mage sim finished","url":"https://foreversixty.gg/sim/abc123","fields":[{"name":"Result","value":"10 DPS","inline":true},{"name":"Run time","value":"1 h 5 min","inline":true}],` + footer + `"thumbnail":{"url":"https://foreversixty.gg/icons/hd/crests/mage.webp"},` + stamp + `}`,
 		},
 		"log, bare": {
 			UploadParsedEmbed(testBase, UploadParsed{
 				ReportID: "rep2", Visibility: "private", Fights: 1, Kills: 1, FinishedAt: fixedFinish,
 			}),
-			`{"title":"Your log finished parsing","url":"https://foreversixty.gg/reports/rep2","fields":[{"name":"Fights","value":"1 fight · 1 kill","inline":true},{"name":"Visible to","value":"Only you","inline":true}],` + common + `}`,
+			`{"title":"Your log finished parsing","url":"https://foreversixty.gg/reports/rep2","fields":[{"name":"Boss fights","value":"1 · 1 kill","inline":true},{"name":"Visible to","value":"Only you","inline":true}],` + common + `}`,
 		},
 	}
 	for name, c := range cases {
@@ -77,7 +97,7 @@ func TestFightsAndVisibilityWording(t *testing.T) {
 	for _, c := range []struct {
 		fights, kills int
 		want          string
-	}{{9, 7, "9 fights · 7 kills"}, {1, 1, "1 fight · 1 kill"}, {3, 0, "3 fights · no kills"}} {
+	}{{9, 7, "9 · 7 kills"}, {1, 1, "1 · 1 kill"}, {3, 0, "3 · no kills"}} {
 		if got := fightsLine(c.fights, c.kills); got != c.want {
 			t.Errorf("%d/%d = %q, want %q", c.fights, c.kills, got, c.want)
 		}
@@ -148,5 +168,12 @@ func TestDurationAndThousands(t *testing.T) {
 		if got := thousands(v); got != want {
 			t.Errorf("%v = %q, want %q", v, got, want)
 		}
+	}
+}
+
+func TestTheCharacterNameIsEscapedInTheSimTitle(t *testing.T) {
+	e := SimFinishedEmbed(testBase, SimFinished{Spec: "mage-frost", Character: "A*b_c"})
+	if want := `A\*b\_c's Frost Mage sim finished`; e.Title != want {
+		t.Fatalf("title = %q, want %q", e.Title, want)
 	}
 }

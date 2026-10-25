@@ -143,7 +143,7 @@ func (d Deps) announce(ctx context.Context, rep reports.Report, fights []reports
 	}
 	d.Notify.UploadParsed(ctx, notify.UploadParsed{
 		UserID: *rep.OwnerID, ReportID: rep.ID, Title: rep.Title, Zone: rep.Zone,
-		Visibility: rep.Visibility, Fights: counted, Kills: kills, FinishedAt: time.Now().UTC(),
+		Visibility: rep.Visibility, Private: rep.Visibility == reports.Private, Fights: counted, Kills: kills, FinishedAt: time.Now().UTC(),
 	})
 }
 

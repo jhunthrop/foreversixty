@@ -32,7 +32,7 @@ func (h *harness) withWebhook(t *testing.T) (*notify.Deliverer, *notify.FakePost
 	}
 	st := &notify.Store{Pool: h.store.Pool}
 	events := map[notify.EventName]bool{notify.EventSimFinished: true, notify.EventUploadParsed: true}
-	if err := st.Save(t.Context(), h.owner, notify.KindDiscord, "1", box, events); err != nil {
+	if err := st.Save(t.Context(), h.owner, notify.KindDiscord, "1", nil, box, events); err != nil {
 		t.Fatal(err)
 	}
 	poster := &notify.FakePoster{}
@@ -57,7 +57,7 @@ func TestAFinishedRunPostsOneEmbed(t *testing.T) {
 		t.Fatalf("posts = %+v", posts)
 	}
 	e := posts[0].Embed
-	if e.Title != "Your Frost Mage sim finished" || e.URL != "https://foreversixty.gg/sim/nnnnnnnnnnn1" ||
+	if e.Title != "Baelgrim's Frost Mage sim finished" || e.URL != "https://foreversixty.gg/sim/nnnnnnnnnnn1" ||
 		e.Timestamp.IsZero() || len(e.Fields) < 2 || e.Fields[0].Name != "Result" {
 		t.Fatalf("embed = %+v", e)
 	}
@@ -77,5 +77,25 @@ func TestAFailedRunPostsNothing(t *testing.T) {
 	_ = Run(t.Context(), deps, "nnnnnnnnnnn3")
 	if n := len(poster.Posts()); n != 0 {
 		t.Fatalf("%d posts for failed runs", n)
+	}
+}
+
+func TestAFinishedRunNamesItsCharacterInTheTitle(t *testing.T) {
+	h := newHarness(t)
+	deliverer, poster := h.withWebhook(t)
+	req := browserResult("mage-frost", 0).Request
+	req.Iterations = preciseIterations
+	req.Character.Name = "Frostbolt"
+	if err := h.store.Queue(t.Context(), "nnnnnnnnnnn4", h.owner, req); err != nil {
+		t.Fatal(err)
+	}
+	deps := h.jobDeps(&runner.Fixture{})
+	deps.Notify = deliverer
+	if err := Run(t.Context(), deps, "nnnnnnnnnnn4"); err != nil {
+		t.Fatal(err)
+	}
+	posts := poster.Posts()
+	if len(posts) != 1 || posts[0].Embed.Title != "Frostbolt's Frost Mage sim finished" {
+		t.Fatalf("posts = %+v", posts)
 	}
 }

@@ -17,6 +17,9 @@ type EventName string
 const (
 	EventSimFinished  EventName = "sim_finished"
 	EventUploadParsed EventName = "upload_parsed"
+	// EventUploadPrivate is a modifier of EventUploadParsed, not an event: a
+	// private report posts only when it is on.
+	EventUploadPrivate EventName = "upload_private"
 )
 
 // MaxFailures is how many counted failures in a row switch a webhook off.
@@ -28,9 +31,11 @@ var ErrNotFound = errors.New("notify: no webhook saved")
 // Webhook is a saved channel as the page and the jobs see it. The token is
 // deliberately absent; Store.TokenBox is the one read that returns it.
 type Webhook struct {
-	UserID     int64
-	Kind       string
-	ChannelID  string
+	UserID    int64
+	Kind      string
+	ChannelID string
+	// Name is the webhook's own name at Discord; nil when Discord gave none.
+	Name       *string
 	Events     map[EventName]bool
 	Failures   int
 	LastError  string

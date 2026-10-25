@@ -21,6 +21,12 @@ func (allowAll) Can(context.Context, int64, entitlements.Feature) (bool, entitle
 // notifying wires a saved webhook for the report's owner into d.
 func notifying(t *testing.T, d *Deps, reportID string) *notify.FakePoster {
 	t.Helper()
+	return notifyingWith(t, d, reportID, map[notify.EventName]bool{notify.EventSimFinished: true, notify.EventUploadParsed: true})
+}
+
+// notifyingWith is notifying with the webhook's events chosen.
+func notifyingWith(t *testing.T, d *Deps, reportID string, events map[notify.EventName]bool) *notify.FakePoster {
+	t.Helper()
 	rep, err := d.Reports.Get(context.Background(), reportID)
 	if err != nil {
 		t.Fatal(err)
@@ -34,8 +40,7 @@ func notifying(t *testing.T, d *Deps, reportID string) *notify.FakePoster {
 		t.Fatal(err)
 	}
 	st := &notify.Store{Pool: d.Reports.Pool}
-	events := map[notify.EventName]bool{notify.EventSimFinished: true, notify.EventUploadParsed: true}
-	if err := st.Save(context.Background(), *rep.OwnerID, notify.KindDiscord, "1", box, events); err != nil {
+	if err := st.Save(context.Background(), *rep.OwnerID, notify.KindDiscord, "1", nil, box, events); err != nil {
 		t.Fatal(err)
 	}
 	poster := &notify.FakePoster{}
@@ -97,5 +102,37 @@ func TestALiveReportPostsNothing(t *testing.T) {
 	}
 	if n := len(poster.Posts()); n != 0 {
 		t.Fatalf("%d posts for a live report", n)
+	}
+}
+
+func TestAPrivateReportPostsOnlyWhenPrivateLogsAreOn(t *testing.T) {
+	for _, c := range []struct {
+		name    string
+		private bool
+		posts   int
+	}{{"flag off", false, 0}, {"flag on", true, 1}} {
+		t.Run(c.name, func(t *testing.T) {
+			d, reportID, _, _ := fixtureUpload(t, false)
+			if _, err := d.Reports.Pool.Exec(context.Background(),
+				`update reports set visibility = 'private' where id = $1`, reportID); err != nil {
+				t.Fatal(err)
+			}
+			poster := notifyingWith(t, &d, reportID, map[notify.EventName]bool{
+				notify.EventUploadParsed: true, notify.EventUploadPrivate: c.private,
+			})
+			if err := Report(context.Background(), d, reportID); err != nil {
+				t.Fatal(err)
+			}
+			posts := poster.Posts()
+			if len(posts) != c.posts {
+				t.Fatalf("%d posts, want %d", len(posts), c.posts)
+			}
+			if c.posts == 1 {
+				last := posts[0].Embed.Fields[len(posts[0].Embed.Fields)-1]
+				if last.Name != "Visible to" || last.Value != "Only you" {
+					t.Fatalf("fields = %+v", posts[0].Embed.Fields)
+				}
+			}
+		})
 	}
 }

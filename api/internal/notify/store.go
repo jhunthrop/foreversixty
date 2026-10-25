@@ -13,20 +13,21 @@ import (
 // Store is every notification_webhooks read and write.
 type Store struct{ Pool *pgxpool.Pool }
 
-// Save upserts the member's channel with a new token and events, and resets
+// Save upserts the member's channel with its name (nil when Discord gave
+// none), a new token and events, and resets
 // the failure counter, last error and disabled flag (a re-save is a re-enable).
-func (s *Store) Save(ctx context.Context, userID int64, kind, channelID string, tokenBox []byte, events map[EventName]bool) error {
+func (s *Store) Save(ctx context.Context, userID int64, kind, channelID string, name *string, tokenBox []byte, events map[EventName]bool) error {
 	raw, err := json.Marshal(events)
 	if err != nil {
 		return fmt.Errorf("notify: encode events: %w", err)
 	}
 	_, err = s.Pool.Exec(ctx, `
-		insert into notification_webhooks (user_id, kind, channel_id, token_box, events)
-		values ($1, $2, $3, $4, $5)
+		insert into notification_webhooks (user_id, kind, channel_id, webhook_name, token_box, events)
+		values ($1, $2, $3, $4, $5, $6)
 		on conflict (user_id, kind) do update set
-		  channel_id = excluded.channel_id, token_box = excluded.token_box, events = excluded.events,
+		  channel_id = excluded.channel_id, webhook_name = excluded.webhook_name, token_box = excluded.token_box, events = excluded.events,
 		  failures = 0, last_error = '', disabled_at = null, updated_at = now()`,
-		userID, kind, channelID, tokenBox, raw)
+		userID, kind, channelID, name, tokenBox, raw)
 	if err != nil {
 		return fmt.Errorf("notify: save %d/%s: %w", userID, kind, err)
 	}
@@ -49,9 +50,9 @@ func (s *Store) Get(ctx context.Context, userID int64, kind string) (Webhook, bo
 	w := Webhook{UserID: userID, Kind: kind}
 	var raw []byte
 	err := s.Pool.QueryRow(ctx, `
-		select channel_id, events, failures, last_error, disabled_at, updated_at
+		select channel_id, webhook_name, events, failures, last_error, disabled_at, updated_at
 		from notification_webhooks where user_id = $1 and kind = $2`, userID, kind).
-		Scan(&w.ChannelID, &raw, &w.Failures, &w.LastError, &w.DisabledAt, &w.UpdatedAt)
+		Scan(&w.ChannelID, &w.Name, &raw, &w.Failures, &w.LastError, &w.DisabledAt, &w.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Webhook{}, false, nil
 	}

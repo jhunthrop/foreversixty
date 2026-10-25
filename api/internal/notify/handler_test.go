@@ -104,7 +104,7 @@ func (h *apiHarness) call(method, path, body string) (int, string, http.Header) 
 }
 
 func putBody(url string, sim, upload bool) string {
-	b := map[string]any{"events": map[string]bool{"sim_finished": sim, "upload_parsed": upload}}
+	b := map[string]any{"events": map[string]bool{"sim_finished": sim, "upload_parsed": upload, "upload_private": true}}
 	if url != "" {
 		b["webhook_url"] = url
 	}
@@ -451,16 +451,16 @@ func TestTestEmbedNamesOnlyTheEventsThatAreOn(t *testing.T) {
 func TestMalformedPutBodiesAre400(t *testing.T) {
 	h := newAPI(t)
 	h.saveHook()
-	good := `{"events":{"sim_finished":true,"upload_parsed":true}}`
+	good := `{"events":{"sim_finished":true,"upload_parsed":true,"upload_private":true}}`
 	for name, body := range map[string]string{
 		"empty events":  `{"events":{}}`,
 		"one key":       `{"events":{"sim_finished":true}}`,
 		"no events":     `{}`,
-		"unknown field": `{"events":{"sim_finished":true,"upload_parsed":true},"extra":1}`,
+		"unknown field": `{"events":{"sim_finished":true,"upload_parsed":true,"upload_private":true},"extra":1}`,
 		"unknown event": `{"events":{"sim_finished":true,"upload_parsed":true,"x":true}}`,
 		"trailing data": good + `{}`,
-		"oversize":      `{"webhook_url":"` + strings.Repeat("a", 5000) + `","events":{"sim_finished":true,"upload_parsed":true}}`,
-		"blank url":     `{"webhook_url":"   ","events":{"sim_finished":true,"upload_parsed":true}}`,
+		"oversize":      `{"webhook_url":"` + strings.Repeat("a", 5000) + `","events":{"sim_finished":true,"upload_parsed":true,"upload_private":true}}`,
+		"blank url":     `{"webhook_url":"   ","events":{"sim_finished":true,"upload_parsed":true,"upload_private":true}}`,
 		"not json":      `nope`,
 	} {
 		status, raw, _ := h.call("PUT", "/v1/notifications/discord", body)
@@ -482,5 +482,53 @@ func TestPutIsLimitedToTenPerMinute(t *testing.T) {
 	}
 	if status, _, _ := h.call("PUT", "/v1/notifications/discord", putBody(testHook, true, true)); status != 429 {
 		t.Fatalf("eleventh call status %d, want 429", status)
+	}
+}
+
+func TestPutWithoutUploadPrivateIs400(t *testing.T) {
+	h := newAPI(t)
+	h.saveHook()
+	body := `{"events":{"sim_finished":true,"upload_parsed":true}}`
+	status, raw, _ := h.call("PUT", "/v1/notifications/discord", body)
+	if status != 400 || !strings.Contains(raw, "upload_private") {
+		t.Fatalf("%d %s", status, raw)
+	}
+}
+
+func TestMeCarriesNameAndThreeEvents(t *testing.T) {
+	h := newAPI(t)
+	h.poster.LookupName = "Raid pings"
+	h.saveHook()
+	data, raw := h.me()
+	var notes struct {
+		Discord struct {
+			Name   *string         `json:"name"`
+			Events map[string]bool `json:"events"`
+		} `json:"discord"`
+	}
+	if err := json.Unmarshal(data["notifications"], &notes); err != nil {
+		t.Fatal(err)
+	}
+	d := notes.Discord
+	if d.Name == nil || *d.Name != "Raid pings" || len(d.Events) != 3 || !d.Events["upload_private"] {
+		t.Fatalf("discord = %+v (%s)", d, raw)
+	}
+	h.poster.LookupName = ""
+	h.saveHook()
+	data, _ = h.me()
+	if !strings.Contains(string(data["notifications"]), `"name":null`) {
+		t.Fatalf("notifications = %s", data["notifications"])
+	}
+}
+
+func TestEventsOnlyPutKeepsTheName(t *testing.T) {
+	h := newAPI(t)
+	h.poster.LookupName = "Raid pings"
+	h.saveHook()
+	status, raw, _ := h.call("PUT", "/v1/notifications/discord", putBody("", false, false))
+	var env blockEnv
+	_ = json.Unmarshal([]byte(raw), &env)
+	if status != 200 || env.Data.Name == nil || *env.Data.Name != "Raid pings" {
+		t.Fatalf("%d %s", status, raw)
 	}
 }

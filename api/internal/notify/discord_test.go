@@ -79,14 +79,14 @@ func TestHTTPPosterTransportErrorHoldsNoURL(t *testing.T) {
 	}
 }
 
-func TestHTTPPosterLookupReadsTheChannelID(t *testing.T) {
+func TestLookupReturnsTheWebhookName(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte(`{"id":"1","channel_id":"999"}`))
+		_, _ = w.Write([]byte(`{"id":"1","channel_id":"999","name":"Raid pings"}`))
 	}))
 	defer srv.Close()
-	id, err := NewHTTPPoster("").Lookup(context.Background(), srv.URL)
-	if err != nil || id != "999" {
-		t.Fatalf("Lookup = %q, %v", id, err)
+	got, err := NewHTTPPoster("").Lookup(context.Background(), srv.URL)
+	if err != nil || got != (LookupResult{ChannelID: "999", Name: "Raid pings"}) {
+		t.Fatalf("Lookup = %+v, %v", got, err)
 	}
 	bad := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(404) }))
 	defer bad.Close()

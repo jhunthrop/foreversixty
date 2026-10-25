@@ -139,7 +139,7 @@ func (d JobDeps) announce(ctx context.Context, simID string, res simapi.SimResul
 		return
 	}
 	d.Notify.SimFinished(ctx, notify.SimFinished{
-		UserID: *row.UserID, SimID: simID, Spec: res.Request.Spec, DPS: res.DPS.Mean,
+		UserID: *row.UserID, SimID: simID, Spec: res.Request.Spec, Character: res.Request.Character.Name, DPS: res.DPS.Mean,
 		Headline: row.Headline, Title: row.Title, CreatedAt: row.CreatedAt, FinishedAt: row.FinishedAt,
 	})
 }
