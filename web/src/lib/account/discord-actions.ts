@@ -173,7 +173,21 @@ export function takeReturnFlag(location: Location, history: History): DiscordRet
   return flag;
 }
 
-/** The connected outcome means the callback stored a webhook: re-read `/v1/me` silently, once. */
-export function refreshAfterConnect(): void {
-  void fetchMeFresh().catch(() => {});
+/** Whether the address-bar flag is the connected outcome, whose `/v1/me` read the block waits for. */
+export function awaitsConnectRefresh(search: string): boolean {
+  const flag = discordReturnFlag(search);
+  return flag !== null && returnOutcome(flag).refresh;
+}
+
+/**
+ * The connected outcome means the callback stored a webhook: re-read `/v1/me` silently, once.
+ * The new `me` arrives through the cache; `onFailure` fires when no fresh `me` will (the read
+ * failed or the member is signed out), so the block need not wait for it.
+ */
+export function refreshAfterConnect(onFailure: () => void): void {
+  fetchMeFresh()
+    .then((me) => {
+      if (me === null) onFailure();
+    })
+    .catch(onFailure);
 }

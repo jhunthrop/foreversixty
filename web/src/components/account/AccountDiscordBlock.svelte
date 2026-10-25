@@ -8,12 +8,14 @@
   import { onMount } from 'svelte';
   import type { DiscordEvents, Me } from '../../lib/account/api';
   import {
+    awaitsConnectRefresh,
     NEW_WEBHOOK_EVENTS,
     removeWebhook,
     saveEvents,
     saveWebhook,
     sendTest,
     type ActionResult,
+    type ReturnOutcome,
   } from '../../lib/account/discord-actions';
   import { createFocusQueue, consumeReturn } from '../../lib/account/discord-return.svelte';
   import { blockState, connectAvailable } from '../../lib/account/notifications';
@@ -26,6 +28,8 @@
   import DiscordStatusLine from './discord/DiscordStatusLine.svelte';
 
   const STATUS_MS = 4000;
+  // The longest the block waits for the `connected` refresh before drawing from the `me` it has.
+  const CONNECT_SETTLE_MS = 4000;
 
   const INPUT = '#discord-webhook';
   const CONNECT = '[data-testid="discord-connect"]';
@@ -58,12 +62,37 @@
 
   const focus = createFocusQueue(() => [block.state, showForm, confirming, busy]);
 
-  // The callback redirects here with ?discord=<outcome>: show it once, move focus, drop the flag.
-  onMount(() => {
-    const outcome = consumeReturn();
-    if (outcome === null) return;
+  // After a `connected` return the held `me` predates the webhook: draw nothing (the reserve holds
+  // the space) until the fresh `me` carries it, so the empty state never flashes (spec 4.3).
+  let settling = $state(typeof window !== 'undefined' && awaitsConnectRefresh(window.location.search));
+  let waitingFor = $state<ReturnOutcome | null>(null);
+  let settleTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function reveal(outcome: ReturnOutcome): void {
+    clearTimeout(settleTimer);
+    waitingFor = null;
+    settling = false;
     status = outcome.status;
     focus.request(outcome.focus);
+  }
+
+  // The callback redirects here with ?discord=<outcome>: show it once, move focus, drop the flag.
+  onMount(() => {
+    let outcome: ReturnOutcome | null = null;
+    outcome = consumeReturn(() => outcome !== null && reveal(outcome));
+    if (outcome === null) {
+      settling = false;
+      return;
+    }
+    if (!outcome.refresh) return reveal(outcome);
+    const waiting = outcome;
+    waitingFor = waiting;
+    settleTimer = setTimeout(() => reveal(waiting), CONNECT_SETTLE_MS);
+    return () => clearTimeout(settleTimer);
+  });
+
+  $effect(() => {
+    if (waitingFor !== null && 'discord' in block) reveal(waitingFor);
   });
 
   function show(result: ActionResult): void {
@@ -156,7 +185,7 @@
   }
 </script>
 
-{#if block.state !== 'off'}
+{#if block.state !== 'off' && !settling}
   <div id="discord" class="scroll-mt-20" onkeydown={onKeydown} role="presentation">
     {#if block.state === 'free'}
       <DiscordFree />
