@@ -3,6 +3,7 @@ package notify
 import (
 	"bytes"
 	"context"
+	"errors"
 	"log/slog"
 	"strings"
 	"testing"
@@ -170,8 +171,55 @@ func TestAFailedDeliveryLogsNoURLTokenOrTitle(t *testing.T) {
 	}
 }
 
-func TestDeliverersTimeoutIsTheFiveSecondRule(t *testing.T) {
-	if posterTimeout != 5*time.Second {
-		t.Fatalf("posterTimeout = %v", posterTimeout)
+// blockingPoster waits for its context, the way a hung Discord would.
+type blockingPoster struct{ FakePoster }
+
+func (b *blockingPoster) Post(ctx context.Context, _ string, _ Embed) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+
+func TestAHungPostTimesOutAndCountsAsAFailure(t *testing.T) {
+	r := newDeliverRig(t, bothEvents)
+	r.d.Poster = &blockingPoster{}
+	r.d.postTimeout = 50 * time.Millisecond
+	start := time.Now()
+	_ = r.deliver(t, EventSimFinished)
+	if time.Since(start) > 2*time.Second {
+		t.Fatal("Deliver outlived its timeout")
+	}
+	if w := r.webhook(t); w.Failures != 1 || w.LastError != timeoutText {
+		t.Fatalf("webhook = %+v", w)
+	}
+}
+
+// cancelAfterPost cancels the job's context the moment the post resolves.
+type cancelAfterPost struct{ cancel context.CancelFunc }
+
+func (c cancelAfterPost) Post(context.Context, string, Embed) error    { c.cancel(); return nil }
+func (cancelAfterPost) Lookup(context.Context, string) (string, error) { return "", nil }
+
+func TestRecordingSurvivesACancelledJobContext(t *testing.T) {
+	r := newDeliverRig(t, bothEvents)
+	if _, err := r.store.RecordFailure(context.Background(), r.uid, KindDiscord, "old", true); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	r.d.Poster = cancelAfterPost{cancel: cancel}
+	if err := r.d.Deliver(ctx, r.uid, EventSimFinished, Embed{}); err != nil {
+		t.Fatal(err)
+	}
+	if w := r.webhook(t); w.Failures != 0 || w.LastError != "" {
+		t.Fatalf("success was not recorded: %+v", w)
+	}
+}
+
+func TestAPlainErrorCountsWithASanitisedText(t *testing.T) {
+	r := newDeliverRig(t, bothEvents)
+	r.poster.PostErr = errors.New("dial https://discord.com/api/webhooks/1/SECRET-TOKEN refused")
+	_ = r.deliver(t, EventSimFinished)
+	w := r.webhook(t)
+	if w.Failures != 1 || strings.Contains(w.LastError, "SECRET-TOKEN") || strings.Contains(w.LastError, "webhooks") {
+		t.Fatalf("webhook = %+v", w)
 	}
 }

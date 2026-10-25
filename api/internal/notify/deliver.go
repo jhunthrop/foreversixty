@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
@@ -26,7 +27,12 @@ type Deliverer struct {
 	Poster        Poster
 	PublicBaseURL string
 	Log           *slog.Logger
+	// postTimeout bounds one post; zero means posterTimeout.
+	postTimeout time.Duration
 }
+
+// timeoutText is what a post that ran out of time leaves in last_error.
+const timeoutText = "discord did not answer in time"
 
 // Deliverer returns a Deliverer sharing the service's wiring.
 func (s *Service) Deliverer() *Deliverer {
@@ -86,20 +92,31 @@ func (d *Deliverer) Deliver(ctx context.Context, userID int64, event EventName, 
 	if err != nil {
 		return errors.New("notify: the saved webhook could not be opened")
 	}
-	postCtx, cancel := context.WithTimeout(ctx, posterTimeout)
+	limit := d.postTimeout
+	if limit == 0 {
+		limit = posterTimeout
+	}
+	postCtx, cancel := context.WithTimeout(ctx, limit)
 	defer cancel()
 	return d.record(ctx, userID, event, d.Poster.Post(postCtx, url, embed))
 }
 
+// record writes the outcome on a context that outlives a cancelled job, so
+// a post that happened is never left unrecorded.
 func (d *Deliverer) record(ctx context.Context, userID int64, event EventName, postErr error) error {
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), posterTimeout)
+	defer cancel()
 	if postErr == nil {
 		d.logger().Info("notify", "user", userID, "event", string(event), "outcome", "posted")
 		return d.Store.RecordSuccess(ctx, userID, KindDiscord)
 	}
 	var discordErr *DiscordError
 	counts, status, text := true, 0, sanitize(postErr.Error())
-	if errors.As(postErr, &discordErr) {
+	switch {
+	case errors.As(postErr, &discordErr):
 		counts, status, text = !discordErr.RateLimited(), discordErr.Status, discordErr.Body
+	case errors.Is(postErr, context.DeadlineExceeded):
+		text = timeoutText
 	}
 	disabled, err := d.Store.RecordFailure(ctx, userID, KindDiscord, text, counts)
 	d.logger().Warn("notify", "user", userID, "event", string(event), "outcome", "failed",
