@@ -295,12 +295,15 @@
 
   // Spec 2026-10-24 §3: "Your server runs", for payers only. The list, its ten-second poll
   // and the localStorage hints live in the controller; the component loads lazily like
-  // SimHistory so a free member and /sim/<id> never download it.
+  // SimHistory. The list renders only on the /sim landing, so a free member, /sim/<id> and
+  // /sim/specs neither download it nor start the controller (which would poll and mark runs
+  // seen for a list nobody is looking at).
   const serverRuns = createServerRunsController();
   const hasServerSims = $derived(effectiveServerSims(me));
+  const showsServerRuns = $derived(hasServerSims && !hasSavedSimId && bootstrap.view !== 'specs');
   const serverRunsLazy = createLazyComponent(() => import('./ServerRuns.svelte'));
   $effect(() => {
-    if (!hasServerSims) return;
+    if (!showsServerRuns) return;
     serverRunsLazy.load();
     return serverRuns.start();
   });

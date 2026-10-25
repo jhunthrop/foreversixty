@@ -197,6 +197,21 @@ test('another Run again failure shows the failure line, and the stored reserve g
   await expect.poll(reserve).toBeGreaterThan(before);
 });
 
+for (const route of ['/sim/simfixtureab', '/sim/specs']) {
+  test(`a payer on ${route} never reads the server list`, async ({ page }) => {
+    await stubSignedIn(page, true);
+    const laneRequests: string[] = [];
+    await stubServerRuns(page, [DONE_UNSEEN]);
+    page.on('request', (request) => {
+      if (new URL(request.url()).searchParams.get('lane') === 'server') laneRequests.push(request.url());
+    });
+    await page.goto(route);
+    await expect(page.getByTestId('server-runs')).toHaveCount(0);
+    await page.waitForTimeout(1000);
+    expect(laneRequests).toEqual([]);
+  });
+}
+
 test('a free member sees no list, no heading and no empty state', async ({ page }) => {
   await stubSignedIn(page, false);
   await stubServerRuns(page, [DONE_UNSEEN]);

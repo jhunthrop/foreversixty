@@ -91,7 +91,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     box-sizing: border-box;
-    min-height: 56px;
+    min-height: var(--ch-foot-phone-h);
     padding: 6px 14px;
     border-top: 1px solid var(--color-line-soft);
     background: color-mix(in srgb, var(--color-gold) 8%, var(--color-raised));
@@ -100,7 +100,7 @@
   }
   @media (min-width: 600px) {
     .fsl {
-      min-height: 44px;
+      min-height: var(--ch-foot-h);
       padding: 0 22px;
     }
   }

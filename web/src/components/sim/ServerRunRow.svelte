@@ -82,8 +82,8 @@
     <span class="text-muted truncate text-[13px]">{meta}</span>
   </div>
 
-  <!-- Phone: the state and its age share one line, so the row holds the 92px the list
-       reserves (spec 3.7); desktop stacks them, right-aligned. -->
+  <!-- Phone: the state and its age share one line, so the row stays within the stored
+       px reserve (spec 3.7); desktop stacks them, right-aligned. -->
   <div
     class="col-start-2 flex min-w-0 flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 md:col-start-auto md:flex-col md:items-end md:justify-start md:text-right"
   >

@@ -37,6 +37,16 @@
 
   let panel = $state<HTMLElement | undefined>();
 
+  // The panel's height without the stored reserve holding it open, so the empty state (which
+  // carries the reserve class) can shrink the reserve instead of writing it back unchanged.
+  function naturalHeight(element: HTMLElement): number {
+    const held = element.style.minHeight;
+    element.style.minHeight = '0';
+    const height = element.offsetHeight;
+    element.style.minHeight = held;
+    return height;
+  }
+
   // The panel's rendered height is next visit's reserve (spec 3.7): measured once rows or the
   // empty state are painted, never while loading or failed, and again whenever a row's state
   // or a Run again status changes (a poll flipping running to done, a failure line appearing).
@@ -44,7 +54,7 @@
     void rerunStatus;
     if (panel !== undefined && shown !== null) {
       void shown.rows.map((row) => row.state);
-      writeReserveHeight(panel.offsetHeight);
+      writeReserveHeight(naturalHeight(panel));
     }
   });
 
