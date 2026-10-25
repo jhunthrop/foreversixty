@@ -282,3 +282,11 @@ func TestPrivateUploadPostsOnlyWhenOptedIn(t *testing.T) {
 	upload(parsedOff, true)
 	assertNoPost(t, parsedOff)
 }
+
+func TestDeliverWithoutEventsIsAnErrorNotAPanic(t *testing.T) {
+	r := newDeliverRig(t, bothEvents)
+	if err := r.d.Deliver(context.Background(), r.uid, Embed{}); err == nil {
+		t.Fatal("want an error")
+	}
+	assertNoPost(t, r)
+}

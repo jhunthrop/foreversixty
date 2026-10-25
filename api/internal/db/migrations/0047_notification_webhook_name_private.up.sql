@@ -3,4 +3,6 @@
 -- keep posting private logs, so their flag is set true once; new saves
 -- default it to false.
 alter table notification_webhooks add column webhook_name text;
-update notification_webhooks set events = events || '{"upload_private": true}'::jsonb;
+-- Idempotent and opt-out-safe: a row that already has the key is left alone.
+update notification_webhooks set events = '{"upload_private": true}'::jsonb || events
+  where not (events ? 'upload_private');

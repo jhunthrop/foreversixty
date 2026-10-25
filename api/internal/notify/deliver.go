@@ -31,6 +31,8 @@ type Deliverer struct {
 	postTimeout time.Duration
 }
 
+var errNoEvents = errors.New("notify: Deliver needs at least one event")
+
 // What a member reads in last_error when the post never got an answer.
 const (
 	timeoutText     = "Discord did not answer in time."
@@ -78,14 +80,18 @@ func (d *Deliverer) UploadParsed(ctx context.Context, e UploadParsed) {
 
 func (d *Deliverer) deliverQuietly(ctx context.Context, userID int64, embed Embed, needs ...EventName) {
 	if err := d.Deliver(ctx, userID, embed, needs...); err != nil {
-		d.logger().Error("notify", "user", userID, "event", string(needs[0]), "outcome", "error", "err", err)
+		d.logger().Error("notify", "user", userID, "events", needs, "outcome", "error", "err", err)
 	}
 }
 
 // Deliver posts embed when the member has a live webhook with every needed
-// event on (the first names the event in the log) and still holds the entitlement. Skips are silent successes. The error it
-// returns never holds the URL, token or message text.
+// event on (the first names the event in the log) and still holds the
+// entitlement. Skips are silent successes. needs must name at least one
+// event. The error it returns never holds the URL, token or message text.
 func (d *Deliverer) Deliver(ctx context.Context, userID int64, embed Embed, needs ...EventName) error {
+	if len(needs) == 0 {
+		return errNoEvents
+	}
 	hook, found, err := d.Store.Get(ctx, userID, KindDiscord)
 	if err != nil {
 		return err

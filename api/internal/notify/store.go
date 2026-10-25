@@ -14,10 +14,11 @@ import (
 type Store struct{ Pool *pgxpool.Pool }
 
 // Save upserts the member's channel with its name (nil when Discord gave
-// none), a new token and events, and resets
-// the failure counter, last error and disabled flag (a re-save is a re-enable).
+// none), a new token and events, and resets the failure counter, last
+// error and disabled flag (a re-save is a re-enable). All three event
+// keys are written explicitly.
 func (s *Store) Save(ctx context.Context, userID int64, kind, channelID string, name *string, tokenBox []byte, events map[EventName]bool) error {
-	raw, err := json.Marshal(events)
+	raw, err := json.Marshal(explicitEvents(events))
 	if err != nil {
 		return fmt.Errorf("notify: encode events: %w", err)
 	}
@@ -37,12 +38,24 @@ func (s *Store) Save(ctx context.Context, userID int64, kind, channelID string, 
 // SaveEvents changes only the events of a saved channel, leaving the token
 // and the counters alone. ErrNotFound when nothing is saved.
 func (s *Store) SaveEvents(ctx context.Context, userID int64, kind string, events map[EventName]bool) error {
-	raw, err := json.Marshal(events)
+	raw, err := json.Marshal(explicitEvents(events))
 	if err != nil {
 		return fmt.Errorf("notify: encode events: %w", err)
 	}
 	return s.mustAffect(ctx, `update notification_webhooks set events = $3, updated_at = now()
 		where user_id = $1 and kind = $2`, userID, kind, raw)
+}
+
+// storedEvents are the keys every stored events object carries.
+var storedEvents = []EventName{EventSimFinished, EventUploadParsed, EventUploadPrivate}
+
+// explicitEvents returns events with every stored key present (false when absent).
+func explicitEvents(events map[EventName]bool) map[EventName]bool {
+	out := make(map[EventName]bool, len(storedEvents))
+	for _, name := range storedEvents {
+		out[name] = events[name]
+	}
+	return out
 }
 
 // Get returns the saved channel without its token; ok is false when none is saved.
@@ -61,6 +74,10 @@ func (s *Store) Get(ctx context.Context, userID int64, kind string) (Webhook, bo
 	}
 	if err := json.Unmarshal(raw, &w.Events); err != nil {
 		return Webhook{}, false, fmt.Errorf("notify: decode events %d/%s: %w", userID, kind, err)
+	}
+	if _, present := w.Events[EventUploadPrivate]; !present {
+		// A row written by an older API instance: the legacy behaviour posted private logs.
+		w.Events[EventUploadPrivate] = true
 	}
 	return w, true, nil
 }

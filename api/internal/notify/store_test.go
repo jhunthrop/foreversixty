@@ -208,18 +208,25 @@ func TestExistingWebhooksKeepPostingPrivateLogs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, stmt := range strings.Split(string(migration), ";") {
-		if idx := strings.Index(stmt, "update notification_webhooks"); idx >= 0 {
-			if _, err := pool.Exec(ctx, stmt[idx:]); err != nil {
-				t.Fatal(err)
+	backfill := func() {
+		for _, stmt := range strings.Split(string(migration), ";") {
+			if idx := strings.Index(stmt, "update notification_webhooks"); idx >= 0 {
+				if _, err := pool.Exec(ctx, stmt[idx:]); err != nil {
+					t.Fatal(err)
+				}
 			}
 		}
 	}
+	backfill()
 	events := map[EventName]bool{EventSimFinished: true, EventUploadParsed: true}
 	if err := st.Save(ctx, fresh, KindDiscord, "8", nil, []byte("b"), events); err != nil {
 		t.Fatal(err)
 	}
-	for uid, want := range map[int64]bool{old: true, fresh: false} {
+	if _, err := pool.Exec(ctx, `update notification_webhooks set events = events || '{"upload_private": false}' where user_id = $1`, old); err != nil {
+		t.Fatal(err)
+	}
+	backfill() // a second run never flips an opt-out back
+	for uid, want := range map[int64]bool{old: false, fresh: false} {
 		w, _, err := st.Get(ctx, uid, KindDiscord)
 		if err != nil || w.Events[EventUploadPrivate] != want {
 			t.Fatalf("user %d: UploadPrivate = %v (%v), want %v", uid, w.Events[EventUploadPrivate], err, want)
@@ -237,6 +244,9 @@ func TestSaveStoresACleanName(t *testing.T) {
 		"81 runes to 80": {strings.Repeat("é", 81), ptr(strings.Repeat("é", 80))},
 		"empty is nil":   {"   ", nil},
 		"only controls":  {"\x00\x01", nil},
+		"c1 controls":    {"a\u0085b\u009fc", ptr("abc")},
+		"separators":     {"a\u2028b\u2029c", ptr("abc")},
+		"bidi":           {"a\u202ab\u202ec\u2066d\u2069e", ptr("abcde")},
 		"unicode kept":   {"Gilde ⚔ Nacht", ptr("Gilde ⚔ Nacht")},
 	} {
 		if got := cleanWebhookName(c.raw); !reflect.DeepEqual(got, c.want) {
@@ -260,3 +270,33 @@ func TestSaveStoresACleanName(t *testing.T) {
 }
 
 func ptr(s string) *string { return &s }
+
+func TestAMissingUploadPrivateKeyReadsTrueAndSaveWritesAllThree(t *testing.T) {
+	ctx := context.Background()
+	pool := testPool(t)
+	st := &Store{Pool: pool}
+	legacy, optedOut, fresh := seedUser(t, pool), seedUser(t, pool), seedUser(t, pool)
+	for uid, events := range map[int64]string{
+		legacy: `{"sim_finished": true, "upload_parsed": true}`, optedOut: `{"upload_private": false}`,
+	} {
+		if _, err := pool.Exec(ctx, `insert into notification_webhooks (user_id, kind, channel_id, token_box, events)
+			values ($1, $2, '9', 'b', $3)`, uid, KindDiscord, events); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for uid, want := range map[int64]bool{legacy: true, optedOut: false} {
+		if w, _, err := st.Get(ctx, uid, KindDiscord); err != nil || w.Events[EventUploadPrivate] != want {
+			t.Fatalf("user %d: %v (%v), want %v", uid, w.Events[EventUploadPrivate], err, want)
+		}
+	}
+	if err := st.Save(ctx, fresh, KindDiscord, "8", nil, []byte("b"), map[EventName]bool{EventSimFinished: true}); err != nil {
+		t.Fatal(err)
+	}
+	var keys int
+	if err := pool.QueryRow(ctx, `select count(*) from jsonb_object_keys((select events from notification_webhooks where user_id = $1))`, fresh).Scan(&keys); err != nil || keys != 3 {
+		t.Fatalf("stored keys = %d (%v), want 3", keys, err)
+	}
+	if w, _, _ := st.Get(ctx, fresh, KindDiscord); w.Events[EventUploadPrivate] {
+		t.Fatal("a fresh save read back private logs on")
+	}
+}

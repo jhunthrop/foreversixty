@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -157,11 +158,17 @@ func (s *Service) putWebhook(w http.ResponseWriter, r *http.Request, actor auth.
 	s.answerBlock(w, r, actor.UserID)
 }
 
+// isInvisibleFormatting is the line/paragraph separators and the bidi
+// controls: they are not unicode.IsControl but can disguise member text.
+func isInvisibleFormatting(r rune) bool {
+	return r == 0x2028 || r == 0x2029 || (r >= 0x202A && r <= 0x202E) || (r >= 0x2066 && r <= 0x2069)
+}
+
 // cleanWebhookName is the member-controlled name as stored: trimmed, control
 // characters removed, at most maxWebhookNameRunes runes; nil when nothing is left.
 func cleanWebhookName(raw string) *string {
 	kept := strings.Map(func(r rune) rune {
-		if r < 0x20 || r == 0x7f {
+		if unicode.IsControl(r) || isInvisibleFormatting(r) {
 			return -1
 		}
 		return r
