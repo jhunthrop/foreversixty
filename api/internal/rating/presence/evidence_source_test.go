@@ -110,6 +110,8 @@ var notEvidence = []struct{ file, expr, why string }{
 		"visible(): who may open a report, mirroring reports.mayView (access)"},
 	{"internal/guilds/home.go", "r.owner_id = $3 or r.visibility = 'public'",
 		"HomeReports: which reports the viewer may open, its own included (access)"},
+	{"internal/parse/parse.go", "rep.Visibility == reports.Private",
+		"the Discord notice's private-logs opt-in: whether the owner asked to be told about their own private log, not a reader"},
 }
 
 // unit is one expression the check reads: its source text and where it starts.
