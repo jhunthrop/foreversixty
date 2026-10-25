@@ -5,8 +5,10 @@
 One sheet at 1440 wide holding 1440 boards and 390 frames: the right rail of /account (the Plan panel with its
 Premium rows, then the Discord block under it), every state of the block, the button states, the Premium row's values,
 and the embeds drawn the way Discord renders them (a dark message card; Discord's own look is approximated, it is not
-our UI). The MEMBER, the channel id, the report, the sim, every number and date are EXAMPLES. The webhook token is never
-drawn: the block shows the channel id segment only, and the invalid-URL message never echoes what was typed.
+our UI). The MEMBER, the webhook name, the channel id, the report, the sim, every number and date are EXAMPLES. The webhook token
+is never drawn: the block shows Discord's webhook name and a shortened channel id only, and the invalid-URL message never echoes
+what was typed. Amended 2026-10-25 (follow-up lane): steps, destination name, third checkbox, switched-off notice, warning,
+Premium row values, embeds, the loading reserve and gold checkboxes.
 Helpers (cell, h2, CSS, fonts) come from gen_character_history.py.
 """
 import gen_character_header as CH
@@ -16,16 +18,22 @@ from mocklib import RAISED, GOLD, MUTED, TEXT, BORDER, SOFT, SEAL, crest, nav_ph
 
 WARM = '#3a3326'
 WIPE = '#f0736b'
-CHANNEL = '1098765432101234567'
+CHANNEL = '1198…4568'          # first four and last four digits of the channel id (spec 3.2)
+NAME = 'Raid pings'            # Discord's own name for the webhook
+NB = '\u00a0'                  # non-breaking space (spec 3.7)
 MONO, BODYF = H.MONO, H.BODYF
 
 W_DESK, W_PH = 395, 354          # the rail's panel width at 1440 (col-span-4) and at 390 (gutters 18)
 EVENT_SIM = 'A server sim finishes'
 EVENT_UPLOAD = 'A combat log you upload finishes parsing'
-EVENTS_NOTE = 'Posts every log you upload, including private ones; each message says who can open it.'
+EVENT_PRIVATE = 'Include private logs'
+EVENTS_NOTE = 'Off, private logs never post. On, everyone in the channel sees the log\'s name and \u201cOnly you\u201d.'
 UPSELL = 'Discord messages tell you when a server sim or a log you uploaded is done.'
 INTRO = 'Get a message in a Discord channel when a server sim finishes or a log finishes parsing.'
-HOWTO = 'In Discord: Channel settings, Integrations, Webhooks, New Webhook, Copy Webhook URL.'
+STEPS = ["In Discord, open the channel's settings, then Integrations, then Webhooks.",
+         'Choose New Webhook, name it something you will recognize, then Copy Webhook URL.',
+         'Paste it below.']
+CURE = 'Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.'
 TRUST = 'We store the URL encrypted, never show it again, and delete it with your account.'
 
 CSS_RAW = '''<style>
@@ -45,7 +53,13 @@ CSS_RAW = '''<style>
 .dn-input.is-focus{outline:2px solid GOLD_;outline-offset:2px}
 .dn-input.is-bad{border-color:WIPE_}
 .dn-check{display:flex;align-items:center;gap:12px;min-height:44px;font-size:14px;color:#e9e4d8}
-.dn-check input{width:16px;height:16px;margin:0;color-scheme:dark}
+.dn-check input{width:16px;height:16px;margin:0;color-scheme:dark;accent-color:GOLD_}
+.dn-check input:disabled{accent-color:MUTED_}
+.dn-steps{margin:0;padding-left:20px;font-size:13px;line-height:1.45;color:MUTED_}
+.dn-steps li{margin:0 0 4px}
+.dn-steps li:last-child{margin-bottom:0}
+.dn-ln.under{padding-top:4px;box-sizing:border-box}
+.sk{border-radius:6px;background:#121826;border:1px dashed #262e40;display:grid;place-items:center;color:#9a9484;font-size:12px;box-sizing:border-box}
 .dn-check.is-off{color:MUTED_}
 .dn-check.is-focus input{outline:2px solid GOLD_;outline-offset:2px}
 .dn-ln{margin:0;min-height:21px;font-size:13px;line-height:1.45;color:MUTED_}
@@ -69,6 +83,11 @@ def line(text, kind=''):
     return f'<p class="dn-ln {kind}">{text}</p>'
 
 
+def nb(value):
+    # Spec 3.7: U+00A0 after the state word and between a count and its noun.
+    return value.replace(' \u00b7 ', NB + '\u00b7 ').replace('2 events', f'2{NB}events').replace('1 event', f'1{NB}event')
+
+
 def check(text, on=True, off=False, state=''):
     box = f'<input type="checkbox" {"checked" if on else ""} {"disabled" if off else ""}>'
     return f'<label class="dn-check {"is-off" if off else ""} {state}">{box}<span>{text}</span></label>'
@@ -90,15 +109,21 @@ def panel(inner, width, phone=False, title='Discord'):
             f'display:flex;flex-direction:column;gap:16px;font-size:14px;color:{TEXT}">{head}{inner}</div>')
 
 
-def posts_to():
-    return (f'<p style="margin:0;font-size:14px;color:{TEXT};display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline">'
-            f'<span style="color:{MUTED}">Posts to</span><span>channel</span><span style="font-family:{MONO};font-size:13px;color:#f2eee4">{CHANNEL}</span></p>')
+def posts_to(name=NAME):
+    if name:
+        one = f'<span style="color:{MUTED}">Posts through</span> <span style="color:#f2eee4;font-weight:600">\u201c{name}\u201d</span>'
+    else:
+        one = f'<span style="color:{MUTED}">Posts to a Discord channel</span>'
+    return (f'<div style="display:flex;flex-direction:column;gap:2px"><p style="margin:0;font-size:14px;color:{TEXT};overflow-wrap:anywhere">{one}</p>'
+            f'<p style="margin:0;font-size:13px;color:{MUTED}">Channel <span style="font-family:{MONO};font-size:13px;color:{TEXT}">{CHANNEL}</span></p></div>')
 
 
-def events(sim=True, upload=True, off=False, note=True):
+def events(sim=True, upload=True, off=False, note=True, private=False):
     n = small(EVENTS_NOTE) if note else ''
+    third_off = off or not upload
     return (f'<div style="display:flex;flex-direction:column;gap:0"><div style="min-height:24px;display:flex;align-items:center">{label("Post when")}</div>'
-            f'{check(EVENT_SIM, sim, off)}{check(EVENT_UPLOAD, upload, off)}{n}</div>')
+            f'{check(EVENT_SIM, sim, off)}{check(EVENT_UPLOAD, upload, off)}'
+            f'<div style="padding-left:28px">{check(EVENT_PRIVATE, private, third_off)}</div>{n}</div>')
 
 
 def row(*items):
@@ -112,36 +137,49 @@ def notice(first, second='', accent=WIPE):
 
 
 # ------------------------------------------------------------------ the block's states
+def steps():
+    return '<ol class="dn-steps">' + ''.join(f'<li>{t}</li>' for t in STEPS) + '</ol>'
+
+
 def paste_form(error='', cancel=False, focus=False, filled=''):
     ph = 'https://discord.com/api/webhooks/…'
     val = f' value="{filled}"' if filled else ''
     bad = 'is-bad' if error else ''
     foc = 'is-focus' if focus else ''
-    err = line(error, 'bad') if error else line('')
+    err = line(error, 'bad under') if error else line('', 'under')
     cancel_html = link('Cancel') if cancel else ''
     intro = '' if cancel else small(INTRO)
-    return (f'{intro}<div style="display:flex;flex-direction:column;gap:8px"><label class="label" style="color:{MUTED}" for="u">Webhook URL</label>'
+    return (f'{intro}{steps()}<div style="display:flex;flex-direction:column;gap:0"><label class="label" style="color:{MUTED};margin-bottom:8px" for="u">Webhook URL</label>'
             f'<input id="u" class="dn-input {bad} {foc}" placeholder="{ph}"{val} autocomplete="off" spellcheck="false">{err}'
-            f'{small(HOWTO)}{small(TRUST)}</div>{events()}{row(btn("Save webhook", "primary"), cancel_html)}')
+            f'{small(TRUST)}</div>{events()}{row(btn("Save webhook", "primary"), cancel_html)}')
 
 
-def saved(status='', status_kind='', test_state='', test_label='Send test message', sim=True, upload=True, warn='', confirm=False):
+def warning(lead, detail):
+    return (f'<div style="display:flex;flex-direction:column;gap:2px"><p style="margin:0;font-size:13px;color:{TEXT};line-height:1.45">{lead}</p>'
+            f'{small(detail)}</div>')
+
+
+def saved(status='', status_kind='', test_state='', test_label='Send test message', sim=True, upload=True, warn=None, confirm=False,
+          private=False, name=NAME):
     if confirm:
         act = (f'<div style="display:flex;flex-direction:column;gap:12px"><p style="margin:0;font-size:14px;line-height:1.4">Remove this webhook? Posts stop and we forget the URL.</p>'
                f'{row(btn("Remove"), btn("Cancel"))}</div>')
     else:
         act = row(btn(test_label, '', test_state), btn('Remove'))
-    w = small(warn) if warn else ''
-    return (f'{posts_to()}{w}{events(sim, upload)}<div style="display:flex;flex-direction:column;gap:6px">{act}{line(status, status_kind)}</div>'
-            f'<div style="margin-top:-12px">{link("Use a different webhook")}</div>')
+    w = warning(*warn) if warn else ''
+    swap = '' if confirm else f'<div style="margin-top:-12px">{link("Use a different webhook")}</div>'
+    return (f'{posts_to(name)}{w}{events(sim, upload, private=private)}<div style="display:flex;flex-direction:column;gap:6px">{act}{line(status, status_kind)}</div>'
+            f'{swap}')
 
 
-def disabled_off():
-    return (f'{posts_to()}'
-            f'{notice("Switched off after 5 failed posts in a row.", "Last error from Discord: Unknown Webhook")}'
-            f'{small("Sends a test message. If Discord accepts it, posts resume.")}'
-            f'{row(btn("Test and switch on", "primary"), btn("Remove"))}'
-            f'<div style="margin-top:-8px">{link("Use a different webhook")}</div>{events()}')
+def disabled_off(error='Last error from Discord: Unknown Webhook.'):
+    err = small(error) if error else ''
+    box = (f'<div style="border-left:2px solid {WIPE};padding:8px 0 0 14px;display:flex;flex-direction:column;gap:4px">'
+           f'<p style="margin:0;font-size:14px;color:#f2eee4;line-height:1.4">Switched off after 5 failed posts in a row.</p>{err}{small(CURE)}'
+           f'{link("Use a different webhook")}</div>')
+    return (f'{posts_to()}{box}'
+            f'<div style="display:flex;flex-direction:column;gap:6px">{row(btn("Test and switch on", "primary"), btn("Remove"))}{line("")}</div>'
+            f'{events()}')
 
 
 def lapsed():
@@ -161,7 +199,7 @@ def prem_row(label_, value, link_=False, muted=False):
     color = MUTED if muted else '#e9e4d8'
     deco = 'text-decoration:underline;' if link_ else ''
     return (f'<div style="display:grid;grid-template-columns:10rem minmax(0,1fr);column-gap:12px;align-items:baseline;min-height:28px;font-size:14px">'
-            f'<span style="color:{MUTED}">{label_}</span><span style="color:{color};{deco}">{value}</span></div>')
+            f'<span style="color:{MUTED}">{label_}</span><span style="color:{color};{deco}">{nb(value) if label_.startswith("Discord") else value}</span></div>')
 
 
 def plan_panel(width, phone, discord_value, link_=True, muted=False):
@@ -209,18 +247,20 @@ def message(emb, width, time='Today at 9:41 PM'):
 FOOT = 'Forever Sixty · Today at 9:41 PM'
 
 
-def sim_embed(width, phone=False):
-    e = embed('Your Frost Mage sim finished', [('Result', '1,204 DPS'), ('Run', 'Phase 1 BiS check'), ('Took', '3 min 12 s')], FOOT, crest('mage'), width=width - 76, phone=phone)
+def sim_embed(width, phone=False, named=True):
+    title = "Frostbolt's Frost Mage sim finished" if named else 'Your Frost Mage sim finished'
+    e = embed(title, [('Result', '1,204 DPS'), ('Run', 'Phase 1 BiS check'), ('Run time', '3 min 12 s')], FOOT, crest('mage'), width=width - 76, phone=phone)
     return message(e, width)
 
 
 def upload_embed(width, phone=False):
-    e = embed('Tuesday Molten Core finished parsing', [('Zone', 'Molten Core'), ('Fights', '9 fights · 7 kills'), ('Visible to', 'Your guild')], FOOT, width=width - 76, phone=phone)
+    e = embed('Tuesday Molten Core finished parsing', [('Zone', 'Molten Core'), ('Boss fights', '9 · 7 kills'), ('Visible to', 'Your guild')], FOOT, width=width - 76, phone=phone)
     return message(e, width)
 
 
-def test_embed(width, phone=False):
-    e = embed('Test message from Forever Sixty', [], FOOT, desc='Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing.',
+def test_embed(width, phone=False, private=False):
+    tail = 'finishes parsing, private logs included.' if private else 'finishes parsing.'
+    e = embed('Test message from Forever Sixty', [], FOOT, desc=f'Your webhook works. You will get a message here when a server sim finishes or a combat log you upload {tail}',
               width=width - 76, phone=phone)
     return message(e, width)
 
@@ -233,18 +273,24 @@ def d_(title, inner, note='', w=W_DESK):
 def states_desktop():
     bad_url = 'That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/.'
     cells = [
-        d_('No webhook yet (the paste form)', paste_form(), 'Save is the one filled gold button. Both events start on.'),
+        d_('No webhook yet (the paste form)', paste_form(), 'Save is the one filled gold button. Sim and log start on; private logs start off.'),
         d_('Invalid URL', paste_form(bad_url, focus=True, filled='https://discord.com/channels/…'), 'Message is fixed copy; it never repeats what was typed.'),
-        d_('Saved', saved('Saved. Send a test message to see it in your channel.', 'ok'), 'Channel id only; the token is never shown.'),
+        d_('Saved', saved('Saved. Send a test message to see it in your channel.', 'ok'), "Discord's webhook name and a shortened channel id; the token is never shown."),
         d_('Test sending', saved('', '', 'is-off', 'Sending…'), 'Button disabled, aria-busy, label Sending…'),
         d_('Test sent', saved('Sent. Check the channel.', 'ok')),
         d_('Test failed', saved('Discord said: Unknown Webhook.', 'bad'),
            "Discord's own words, shortened to 140 characters, never the URL."),
-        d_('Some posts failed, not yet off', saved(warn='The last 3 posts failed. At 5 in a row it switches off. Last error from Discord: Missing Permissions.'),
-           'Quiet 13 px line, shown from the first failure.'),
-        d_('Switched off after five failures', disabled_off(), 'The reason and the last error come from the API. Primary is the way back.'),
+        d_('Some posts failed, not yet off', saved(warn=('The last 3 posts failed. At 5 in a row it switches off. Send a test message to check.',
+                                                          'Last error from Discord: Missing Permissions.')),
+           'Two paragraphs: the facts and the next step in --text, the error in --muted; no bar.'),
+        d_('Switched off after five failures', disabled_off(), 'Cause, cure and the way to a new webhook sit in one notice; Test and switch on is the one gold fill.'),
+        d_('Switched off, 140-character error', disabled_off('Last error from Discord: Invalid Webhook Token: the token in this webhook URL was changed, or the webhook was deleted from the channel settings by someone with\u2026'),
+           'Cut at a word, one ellipsis, no full stop after it.'),
+        d_('Saved, no webhook name (rows saved before the name column)', saved(name=None), 'Line one falls back to Posts to a Discord channel.'),
+        d_('Saved, private logs on', saved(private=True), 'The third box is a modifier of the second: indented 28 px, off by default.'),
+        d_('Log off: private row disabled, value kept', saved(upload=False, private=True), 'A disabled box takes no focus; its value is kept.'),
         d_('Plan lapsed (URL kept)', lapsed(), 'Toggles read-only, test hidden, Remove stays.'),
-        d_('Remove, asked in place', saved(confirm=True), "The devices list's own confirm grammar."),
+        d_('Remove, asked in place', saved(confirm=True), "The devices list's own confirm grammar. Use a different webhook is not drawn while the question is open."),
         d_('Use a different webhook', paste_form(cancel=True), 'Same form; the saved webhook keeps working until Save succeeds.'),
         d_('Event turned off, saved', saved('Saved.', 'ok', upload=False)),
     ]
@@ -259,23 +305,27 @@ def states_buttons():
     pri = ''.join(H.cell(n, btn('Save webhook', 'primary', s), '', 170) for n, s in zip(names, states))
     lk = ''.join(H.cell(n, link('Use a different webhook', s), '', 190) for n, s in zip(names[:3], states[:3]))
     ph = 'https://discord.com/api/webhooks/…'
+    chk = ''.join(H.cell(nm, f'<div style="display:flex;align-items:center;gap:12px;min-height:44px;color:{TEXT};font-size:14px">'
+                              f'<input type="checkbox" {a} style="width:16px;height:16px;margin:0;color-scheme:dark;accent-color:{GOLD}">{t}</div>', '', 190)
+                  for nm, a, t in (('unchecked', '', 'Show a pseudonym'), ('checked (gold)', 'checked', 'Show a pseudonym'),
+                                   ('disabled, checked', 'checked disabled', 'Read-only'), ('disabled, unchecked', 'disabled', 'Read-only')))
     inp = (H.cell('input default', f'<input class="dn-input" placeholder="{ph}">', '', 300)
            + H.cell('input focus-visible', f'<input class="dn-input is-focus" placeholder="{ph}">', '', 300)
            + H.cell('input error', '<input class="dn-input is-bad" value="https://discord.com/channels/…">', '', 300)
            + H.cell('checkbox row, focus', check(EVENT_SIM, True, False, 'is-focus'), '', 300)
            + H.cell('checkbox row, read-only (lapsed)', check(EVENT_SIM, True, True), '', 300))
     wrap = lambda x: f'<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">{x}</div>'
-    return wrap(sec) + wrap(pri) + wrap(lk) + wrap(inp)
+    return wrap(sec) + wrap(pri) + wrap(lk) + wrap(inp) + wrap(chk)
 
 
 def premium_rows():
     items = [
-        ('Free', 'Off', False, True),
+        ('Free', 'Off · Premium', False, True),
         ('Payer, nothing saved', 'Off · set up', True, False),
         ('Saved, two events on', 'On · 2 events', True, False),
         ('Saved, one event on', 'On · 1 event', True, False),
         ('Saved, no event chosen', 'Off · no events chosen', True, False),
-        ('Switched off', 'Off · failed five times', True, False),
+        ('Switched off', 'Off · needs attention', True, False),
         ('Plan lapsed', 'Paused · plan lapsed', True, False),
     ]
     out = ''
@@ -283,19 +333,54 @@ def premium_rows():
         box = (f'<div style="width:{W_DESK}px;box-sizing:border-box;border:1px solid {BORDER};border-radius:6px;background:{RAISED};padding:10px 24px">'
                f'{prem_row("Discord notifications", val, lk, mt)}</div>')
         out += H.cell(name, box, '', W_DESK)
-    return f'<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">{out}</div>'
+    narrow = ''
+    for name, val in (('1024 rail (288 px): the count never splits from its noun', 'On · 2 events'),
+                      ('1024 rail (288 px): a wrap falls between ordinary words', 'Off · needs attention')):
+        box = (f'<div style="width:288px;box-sizing:border-box;border:1px solid {BORDER};border-radius:6px;background:{RAISED};padding:10px 24px">'
+               f'<div style="display:grid;grid-template-columns:7.5rem minmax(0,1fr);column-gap:12px;align-items:baseline;min-height:28px;font-size:14px">'
+               f'<span style="color:{MUTED}">Discord notifications</span><span style="color:#e9e4d8;text-decoration:underline">{nb(val)}</span></div></div>')
+        narrow += H.cell(name, box, '', 288)
+    return (f'<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">{out}</div>'
+            f'<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:16px">{narrow}</div>')
 
 
 def embeds():
     d = ('<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">'
          + H.cell('Server sim finished (desktop, 600 px message)', sim_embed(600), 'Title is the link to /sim/ID. The crest is the 80 px thumbnail.', 600)
-         + H.cell('Log parsed (desktop)', upload_embed(600), 'Title is the link to /reports/ID. Fields: zone, fights, who can open it.', 600)
-         + H.cell('Test message (desktop)', test_embed(600), 'Title links to the account page.', 600) + '</div>')
+         + H.cell('Server sim finished, no character name on the run', sim_embed(600, named=False), 'Falls back to Your Frost Mage sim finished.', 600)
+         + H.cell('Log parsed (desktop)', upload_embed(600), 'Title is the link to /reports/ID. Fields: zone, boss fights (boss pulls only), who can open it.', 600)
+         + H.cell('Test message (desktop)', test_embed(600), 'Title links to the account page.', 600)
+         + H.cell('Test message, private logs on', test_embed(600, private=True), 'The clause is added only when Include private logs is on.', 600) + '</div>')
     p = ('<div style="display:flex;gap:24px;align-items:flex-start">'
          + H.cell('Server sim finished (phone, 354 px)', sim_embed(354, True), 'Fields stack in one column on a phone.', 354)
          + H.cell('Log parsed (phone)', upload_embed(354, True), '', 354)
          + H.cell('Test message (phone)', test_embed(354, True), '', 354) + '</div>')
     return d, p
+
+
+def sk(height, width, text=''):
+    return f'<div class="sk" style="height:{height}px;width:{width}px">{text}</div>'
+
+
+DISCORD_FLOORS = (('none', 0, 0), ('free', 44, 44), ('form', 610, 630), ('saved', 460, 475), ('off', 540, 565), ('lapsed', 475, 475))
+
+
+def loading_rail(width, discord_h, phone=False):
+    # Spec 9.1: the rail's loading skeleton. Heights are the 1440 floors; the phone floors are measured at build time.
+    gap = 'display:flex;flex-direction:column'
+    plan_wrap = (f'<div style="{gap};gap:16px">{sk(219, width, "Plan  219")}'
+                 + (sk(discord_h, width, f"Discord  {discord_h}") if discord_h else '') + '</div>')
+    return (f'<div style="{gap};gap:32px;width:{width}px">{sk(232, width, "Devices  232")}{sk(192, width, "You  192")}{plan_wrap}</div>')
+
+
+def skeleton_boards():
+    ready = rail(W_DESK, False, 'On · 2 events', panel(saved('', ''), W_DESK))
+    pair = ('<div style="display:flex;gap:24px;align-items:flex-start">'
+            + H.cell('1440: loading (saved state, cached /v1/me): the rail at its real positions', loading_rail(W_DESK, 460), 'Same width, same gaps (32, 32, 16). Devices, You and Plan sit under the ready panels; the footer does not move.', W_DESK)
+            + H.cell('1440: ready (Plan and Discord shown; Devices and You omitted here)', ready, '', W_DESK) + '</div>')
+    states = ''.join(H.cell(f'data-discord="{k}"  {a} / {b} px', sk(a, 200, f'{a} px') if a else '<div style="height:20px;color:#9a9484;font-size:12px">draws nothing</div>', '', 200)
+                     for k, a, b in DISCORD_FLOORS)
+    return pair + f'<div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:16px">{states}</div>'
 
 
 def phone_frame(inner):
@@ -308,17 +393,17 @@ def sheet():
     gut = CH.gutter(1440)
     wrap = lambda b: f'<div style="max-width:{CH.PAGE_MAX}px;margin:0 auto;padding:36px {gut}px;display:flex;flex-direction:column;gap:24px">{b}</div>'
     saved_rail = rail(W_DESK, False, 'On · 2 events', panel(saved('', ''), W_DESK))
-    free_rail = rail(W_DESK, False, 'Off', upsell_line(), False, True)
-    off_rail = rail(W_DESK, False, 'Off · failed five times', panel(disabled_off(), W_DESK))
+    free_rail = rail(W_DESK, False, 'Off · Premium', upsell_line(), False, True)
+    off_rail = rail(W_DESK, False, 'Off · needs attention', panel(disabled_off(), W_DESK))
     rails = ('<div style="display:flex;gap:24px;align-items:flex-start">'
              + H.cell('1440: right rail of /account, payer with a saved webhook (Discord directly under Plan)', saved_rail, '', W_DESK)
-             + H.cell('1440: free member (the row says Off; one sentence under it)', free_rail, '', W_DESK)
+             + H.cell('1440: free member (the row says Off · Premium; one sentence under it)', free_rail, '', W_DESK)
              + H.cell('1440: switched off (row and block agree)', off_rail, '', W_DESK) + '</div>')
     ph_saved = phone_frame(rail(W_PH, True, 'On · 2 events', panel(saved('', ''), W_PH, True)))
     ph_form = phone_frame(rail(W_PH, True, 'Off · set up', panel(paste_form(), W_PH, True)))
-    ph_off = phone_frame(rail(W_PH, True, 'Off · failed five times', panel(disabled_off(), W_PH, True)))
+    ph_off = phone_frame(rail(W_PH, True, 'Off · needs attention', panel(disabled_off(), W_PH, True)))
     ph_lapsed = phone_frame(rail(W_PH, True, 'Paused · plan lapsed', panel(lapsed(), W_PH, True)))
-    ph_free = phone_frame(rail(W_PH, True, 'Off', upsell_line(), False, True))
+    ph_free = phone_frame(rail(W_PH, True, 'Off · Premium', upsell_line(), False, True))
     phones = ('<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">'
               + H.cell('390: saved', ph_saved, '', 392) + H.cell('390: paste form', ph_form, '', 392)
               + H.cell('390: switched off', ph_off, '', 392) + H.cell('390: plan lapsed', ph_lapsed, '', 392)
@@ -328,7 +413,8 @@ def sheet():
                  + H.h2("Placement: the account page's right rail, under the Plan panel") + rails)
             + wrap(H.h2('Block states (395 px, the rail at 1440)') + states_desktop()
                    + H.h2('Controls') + states_buttons()
-                   + H.h2("The Premium row's values (Plan panel)") + premium_rows())
+                   + H.h2("The Premium row's values (Plan panel)") + premium_rows()
+                   + H.h2('The account page loading reserve (spec 9.1): the rail skeleton, and the Discord floor by state (1440 / 390)') + skeleton_boards())
             + wrap(H.h2('What Discord shows: the two embeds and the test message') + e_d + H.h2('The same on a phone (354 px message)') + e_p)
             + wrap(H.h2('Phone (390)') + phones))
     return N.doc(CH.CSS + H.CSS + CSS + body, 1440)
