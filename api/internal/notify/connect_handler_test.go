@@ -3,6 +3,7 @@ package notify
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -309,17 +310,29 @@ func TestCallbackOrphanWithAnUnparseableURLIsDeletedFromItsIDAndToken(t *testing
 	hook := OAuthWebhook{ID: "111222333444555666", Token: connectedToken, URL: "https://evil.example/x", ChannelID: testChan}
 	h := newAPIWithOAuth(t, &FakeOAuthClient{Webhook: hook})
 	h.premium()
+	var logs bytes.Buffer
+	h.svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
 	cookie, state := h.startConnect()
 	_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), cookie)
 	h.assertOutcome(loc, "failed")
 	if got := h.poster.Deletes(); len(got) != 1 || got[0] != connectedHook {
 		t.Fatalf("deletes = %v", got)
 	}
+	assertNoSecrets(t, logs.String())
 }
 
-func assertNoSecrets(t *testing.T, logs string) {
+// assertNoSecrets fails when the logs carry the code, the token, the URL, or any
+// given sealed box (raw or base64, standard or URL-safe).
+func assertNoSecrets(t *testing.T, logs string, boxes ...[]byte) {
 	t.Helper()
-	for _, secret := range []string{authCode, connectedToken, connectedHook, "webhooks/"} {
+	secrets := []string{authCode, connectedToken, connectedHook, "webhooks/"}
+	for _, box := range boxes {
+		if len(box) == 0 {
+			continue
+		}
+		secrets = append(secrets, string(box), base64.StdEncoding.EncodeToString(box), base64.URLEncoding.EncodeToString(box), base64.RawURLEncoding.EncodeToString(box))
+	}
+	for _, secret := range secrets {
 		if strings.Contains(logs, secret) {
 			t.Fatalf("%q leaked into the logs: %s", secret, logs)
 		}
@@ -357,6 +370,20 @@ func (h *apiHarness) connectWith(fake *FakeOAuthClient) {
 	cookie, state := h.startConnect()
 	_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), cookie)
 	h.assertOutcome(loc, "connected")
+}
+
+func TestSuccessfulConnectLogsNeitherSecretsNorTheSealedBox(t *testing.T) {
+	fake := connectFake()
+	h := newAPIWithOAuth(t, fake)
+	h.premium()
+	var logs bytes.Buffer
+	h.svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
+	h.connectWith(fake)
+	box, err := h.svc.Store.TokenBox(context.Background(), h.uid, KindDiscord)
+	if err != nil || len(box) == 0 {
+		t.Fatalf("sealed box = %d bytes, err %v", len(box), err)
+	}
+	assertNoSecrets(t, logs.String(), box)
 }
 
 func TestReconnectDeletesTheOldWebhookFromDiscordAfterSaving(t *testing.T) {
@@ -433,6 +460,26 @@ func TestRemoveDeletesAConnectedWebhookFromDiscordButNotAPastedOne(t *testing.T)
 	}
 	if got := h.poster.Deletes(); len(got) != 1 {
 		t.Fatalf("a pasted webhook was deleted from Discord: %v", got)
+	}
+}
+
+func TestRemoveDeletesTheRowBeforeCallingDiscord(t *testing.T) {
+	fake := connectFake()
+	h := newAPIWithOAuth(t, fake)
+	h.premium()
+	h.connectWith(fake)
+	rowStoredAtDelete := true
+	h.poster.OnDelete = func(string) {
+		_, rowStoredAtDelete, _ = h.svc.Store.Get(context.Background(), h.uid, KindDiscord)
+	}
+	if status, _, _ := h.call("DELETE", "/v1/notifications/discord", ""); status != 204 {
+		t.Fatalf("status %d", status)
+	}
+	if len(h.poster.Deletes()) != 1 {
+		t.Fatalf("deletes = %v", h.poster.Deletes())
+	}
+	if rowStoredAtDelete {
+		t.Fatal("Discord was called while the row was still stored")
 	}
 }
 

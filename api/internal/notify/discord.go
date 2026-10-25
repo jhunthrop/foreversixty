@@ -290,8 +290,10 @@ type FakePoster struct {
 	LookupGuildID   string
 	// DeleteErr, when set, is returned by every Delete.
 	DeleteErr error
-	posts     []PostCall
-	deletes   []string
+	// OnDelete, when set, runs inside every Delete (a test reads the world as Discord is called).
+	OnDelete func(webhookURL string)
+	posts    []PostCall
+	deletes  []string
 }
 
 func (f *FakePoster) Post(_ context.Context, webhookURL string, embed Embed) error {
@@ -317,8 +319,12 @@ func (f *FakePoster) Posts() []PostCall {
 // Delete records the URL and returns DeleteErr.
 func (f *FakePoster) Delete(_ context.Context, webhookURL string) error {
 	f.mu.Lock()
-	defer f.mu.Unlock()
 	f.deletes = append(f.deletes, webhookURL)
+	onDelete := f.OnDelete
+	f.mu.Unlock()
+	if onDelete != nil {
+		onDelete(webhookURL)
+	}
 	return f.DeleteErr
 }
 

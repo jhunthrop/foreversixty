@@ -94,7 +94,7 @@ go test -race -cover -p 1 ./...
 The one-click connect needs a Discord application (https://discord.com/developers/applications). One application serves every environment.
 
 - Name it `Forever Sixty` and use our seal as the icon (the same image the posts carry as their avatar).
-- OAuth2 > Redirects: add both `https://api.foreversixty.gg/v1/notifications/discord/callback` and, for staging or local runs, the matching `API_BASE_URL` + `/v1/notifications/discord/callback`.
+- OAuth2 > Redirects: add both URIs, exactly: `https://api.foreversixty.gg/v1/notifications/discord/callback` (production) and `http://127.0.0.1:8080/v1/notifications/discord/callback` (local runs). A staging deployment adds its own `API_BASE_URL` + `/v1/notifications/discord/callback`.
 - Client ID is public: set `DISCORD_CLIENT_ID`. The Client Secret goes in Secret Manager as `DISCORD_CLIENT_SECRET`.
 - No bot, no interactions endpoint, no privileged intents: the only scope is `webhook.incoming`.
 

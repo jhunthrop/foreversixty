@@ -197,10 +197,13 @@ func cleanWebhookName(raw string) *string {
 func (s *Service) remove(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
 	userID := auth.ActorFrom(r.Context()).UserID
-	s.deleteConnectedAtDiscord(r.Context(), userID)
+	connected := s.connectedURLToRemove(r.Context(), userID)
 	if err := s.Store.Delete(r.Context(), userID, KindDiscord); err != nil {
 		s.fail(w, r, "delete", err)
 		return
+	}
+	if connected != "" {
+		s.deleteAtDiscord(r.Context(), connected, "remove")
 	}
 	w.WriteHeader(http.StatusNoContent)
 }
@@ -343,17 +346,16 @@ func (s *Service) logOpenFailure(err error) {
 	}
 }
 
-// deleteConnectedAtDiscord removes a connected webhook from Discord before its
-// row goes, but only for a member who is still entitled: a lapsed plan deletes
-// nothing in Discord, and a pasted webhook is never touched.
-func (s *Service) deleteConnectedAtDiscord(ctx context.Context, userID int64) {
+// connectedURLToRemove is the URL of the connected webhook to delete from
+// Discord once its row is gone (read first, as the row holds the token). It is
+// empty for a member whose plan has lapsed, who deletes nothing in Discord, and
+// for a pasted webhook, which is never touched.
+func (s *Service) connectedURLToRemove(ctx context.Context, userID int64) string {
 	allowed, _, err := s.Entitlements.Can(ctx, userID, entitlements.FeatureNotifications)
 	if err != nil || !allowed {
-		return
+		return ""
 	}
-	if url := s.connectedURL(ctx, userID); url != "" {
-		s.deleteAtDiscord(ctx, url, "remove")
-	}
+	return s.connectedURL(ctx, userID)
 }
 
 // deleteAtDiscord is the best-effort Discord-side delete; it logs the outcome
