@@ -25,11 +25,17 @@ export const NEW_WEBHOOK_EVENTS: DiscordEvents = {
 /** `field` is the reserved line under the input, `plans` adds the See plans link, `status` the status line. */
 export type FailureTarget = 'field' | 'plans' | 'status';
 
+/**
+ * A success with `stays` is a prompt to act somewhere else (check the channel): the status line
+ * holds it until the next press in the panel. Without it the line clears after a few seconds,
+ * because the member can see the change on the page (spec 4.3, first-use fixes).
+ */
 export type ActionResult =
-  { ok: true; message: string } | { ok: false; target: FailureTarget; message: string };
+  { ok: true; message: string; stays?: true } | { ok: false; target: FailureTarget; message: string };
 
 const failed = (target: FailureTarget, message: string): ActionResult => ({ ok: false, target, message });
 const succeeded = (message: string): ActionResult => ({ ok: true, message });
+const stays = (message: string): ActionResult => ({ ok: true, message, stays: true });
 
 /**
  * Puts the server's answer into the cached `/v1/me` now, then re-reads it in the background.
@@ -84,7 +90,7 @@ export async function saveWebhook(me: Me, webhookUrl: string, events: DiscordEve
   if (invalid !== null) return failed('field', invalid);
   try {
     applyToMe(me, await saveDiscordWebhook({ webhook_url: webhookUrl.trim(), events }));
-    return succeeded(notificationsCopy.savedFirst);
+    return stays(notificationsCopy.savedFirst);
   } catch (error) {
     return saveFailure(error);
   }
@@ -107,7 +113,7 @@ export async function sendTest(me: Me, wasSwitchedOff: boolean): Promise<ActionR
     const saved = me.notifications?.discord ?? null;
     if (saved !== null && (saved.failures > 0 || saved.disabled_reason !== null))
       applyToMe(me, clearedFailures(saved));
-    return succeeded(wasSwitchedOff ? notificationsCopy.testSentSwitchedOn : notificationsCopy.testSent);
+    return stays(wasSwitchedOff ? notificationsCopy.testSentSwitchedOn : notificationsCopy.testSent);
   } catch (error) {
     return testFailure(error);
   }

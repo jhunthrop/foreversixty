@@ -88,7 +88,7 @@ export const notificationsCopy = {
   connect: 'Connect a Discord channel',
   connecting: 'Opening Discord…',
   connectExplanation:
-    'Discord asks which server and channel, then lets Forever Sixty post there. You need to be able to manage webhooks in that channel. We keep only that webhook, encrypted.',
+    'Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You must manage webhooks in it. We keep only that webhook, encrypted.',
   pasteInstead: 'Paste a webhook URL instead',
   connectInstead: 'Connect a Discord channel instead',
   reconnect: 'Connect a different channel',

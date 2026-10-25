@@ -94,7 +94,7 @@ go test -race -cover -p 1 ./...
 The one-click connect needs a Discord application (https://discord.com/developers/applications). One application serves every environment.
 
 - Name it `Forever Sixty` and use our seal as the icon (the same image the posts carry as their avatar).
-- OAuth2 > Redirects: add both URIs, exactly: `https://api.foreversixty.gg/v1/notifications/discord/callback` (production) and `http://127.0.0.1:8080/v1/notifications/discord/callback` (local runs). A staging deployment adds its own `API_BASE_URL` + `/v1/notifications/discord/callback`.
+- OAuth2 > Redirects: add both URIs, exactly: `https://api.foreversixty.gg/v1/notifications/discord/callback` (production) and `http://localhost:8080/v1/notifications/discord/callback` (local runs — Discord accepts plain `http` only for `localhost`, not `127.0.0.1`; set `API_BASE_URL=http://localhost:8080` for a local connect). A staging deployment adds its own `API_BASE_URL` + `/v1/notifications/discord/callback`. Paste each URI without a trailing space: the portal rejects the whole save with "You provided an invalid redirect URI" when any entry has one. The Cloud Logging `_Default` sink carries an exclusion for the callback request line, because Cloud Run's request log would otherwise store Discord's one-time `code`; the app logs the callback outcome itself.
 - Client ID is public: set `DISCORD_CLIENT_ID`. The Client Secret goes in Secret Manager as `DISCORD_CLIENT_SECRET`.
 - No bot, no interactions endpoint, no privileged intents: the only scope is `webhook.incoming`.
 

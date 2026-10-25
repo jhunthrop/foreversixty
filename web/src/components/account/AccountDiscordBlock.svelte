@@ -27,6 +27,7 @@
   import DiscordSaved from './discord/DiscordSaved.svelte';
   import DiscordStatusLine from './discord/DiscordStatusLine.svelte';
 
+  // How long `Saved.` and `Removed.` stay; a result with `stays` holds until the next press (spec 4.3).
   const STATUS_MS = 4000;
   // The longest the block waits for the `connected` refresh before drawing from the `me` it has.
   const CONNECT_SETTLE_MS = 4000;
@@ -98,7 +99,7 @@
   function show(result: ActionResult): void {
     clearTimeout(statusTimer);
     status = result;
-    if (result.ok) statusTimer = setTimeout(() => (status = null), STATUS_MS);
+    if (result.ok && result.stays !== true) statusTimer = setTimeout(() => (status = null), STATUS_MS);
   }
 
   /** The connect click never navigated: say so in the panel's status line (spec 4.3 item 5). */
@@ -161,11 +162,13 @@
   }
 
   function showPaste(): void {
+    status = null;
     pasteView = true;
     focus.request(INPUT);
   }
 
   function showConnectView(): void {
+    status = null;
     pasteView = false;
     webhook = '';
     fieldFailure = null;
@@ -173,6 +176,7 @@
   }
 
   function askRemove(): void {
+    status = null;
     confirming = true;
     focus.request(REMOVE_CANCEL);
   }
