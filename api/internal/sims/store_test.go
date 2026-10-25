@@ -762,3 +762,21 @@ func TestEstimateSecondsIsTheMedianOfTheLastTenDoneRuns(t *testing.T) {
 		t.Fatalf("another spec: %v, %v, want nil", got, err)
 	}
 }
+
+func TestFinishWithAnEngineErrorStoresItAsTheReason(t *testing.T) {
+	h := newHarness(t)
+	h.serverRun("refuse000001", "warrior-fury")
+	res := browserResult("warrior-fury", 0)
+	res.Lane, res.Error = simapi.LaneServer, "no such talent"
+	if err := h.store.Finish(t.Context(), "refuse000001", res); err != nil {
+		t.Fatal(err)
+	}
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "", simapi.LaneServer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Rows) != 1 || page.Rows[0].State != StateError ||
+		page.Rows[0].FailureReason != "no such talent" || page.Rows[0].FinishedAt == nil {
+		t.Fatalf("refused row: %+v", page.Rows)
+	}
+}

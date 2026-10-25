@@ -381,10 +381,11 @@ func (s *Store) Finish(ctx context.Context, id string, res simapi.SimResult) err
 	}
 	_, err = s.Pool.Exec(ctx,
 		`update sims set engine_version = $2, dps_mean = $3, dps_error = $4,
-		   iterations = $5, result = $6, state = $7, headline = $8, finished_at = now()
+		   iterations = $5, result = $6, state = $7, headline = $8, finished_at = now(),
+		   failure_reason = $9
 		 where id = $1`,
 		id, res.EngineVersion, res.DPS.Mean, res.DPS.Error, res.IterationsRun, body, state,
-		headline)
+		headline, res.Error)
 	if err != nil {
 		return fmt.Errorf("sims: finish %s: %w", id, err)
 	}
