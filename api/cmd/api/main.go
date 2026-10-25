@@ -650,6 +650,10 @@ func serve(log *slog.Logger) error {
 	deps.Addon.SimRequests = deps.Sims
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
+	deps.Notify = newNotifyService(cfg, pool, entStore, log)
+	if deps.Notify != nil {
+		accounts.Notifications = deps.Notify
+	}
 
 	var gateway billing.Gateway
 	if cfg.StripeConfigured() {

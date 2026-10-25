@@ -60,6 +60,36 @@ type SimsView interface {
 	RunsThisMonth(ctx context.Context, userID int64) (int, error)
 }
 
+// DiscordBlock is the caller's saved Discord channel as GET /v1/me and the notifications
+// routes answer it. It never carries the webhook URL, its token or its id.
+type DiscordBlock struct {
+	ChannelID      string        `json:"channel_id"`
+	Events         DiscordEvents `json:"events"`
+	DisabledReason *string       `json:"disabled_reason"`
+	LastError      *string       `json:"last_error"`
+	Failures       int           `json:"failures"`
+}
+
+// DiscordEvents are the two things a Discord channel can be told about.
+type DiscordEvents struct {
+	SimFinished  bool `json:"sim_finished"`
+	UploadParsed bool `json:"upload_parsed"`
+}
+
+// NotificationsBlock is /v1/me's notifications object, keyed by channel so a later channel
+// adds a key and changes no field. Discord is nil when nothing is saved.
+type NotificationsBlock struct {
+	Discord *DiscordBlock `json:"discord"`
+}
+
+// NotificationsView is the part of the notify service the account read needs. It is an
+// interface because notify imports this package.
+type NotificationsView interface {
+	// DiscordBlock answers the member's saved channel, or nil when none is saved. entitled
+	// is their notifications entitlement, which decides whether a kept webhook reads as lapsed.
+	DiscordBlock(ctx context.Context, userID int64, entitled bool) (*DiscordBlock, error)
+}
+
 // finishedSimsLimit caps the "done while away" list on GET /v1/me.
 const finishedSimsLimit = 3
 
@@ -80,6 +110,9 @@ type Service struct {
 	// Sims answers GET /v1/me's finished_sims and server_sims. Nil is safe (the list reads
 	// empty and server_sims is omitted) for a harness that does not mount sims.
 	Sims SimsView
+	// Notifications answers GET /v1/me's notifications block. Nil means the feature is off
+	// (no encryption key) and the block is omitted.
+	Notifications NotificationsView
 	// Importer runs the Battle.net character/guild import right after a
 	// successful Battle.net sign-in. Nil means the feature is off (no
 	// Battle.net credentials configured, or a test harness that does
@@ -375,6 +408,8 @@ type Me struct {
 	FinishedSims []FinishedSim `json:"finished_sims"`
 	// ServerSims is omitted when no sims store is configured.
 	ServerSims *ServerSimsView `json:"server_sims,omitempty"`
+	// Notifications is omitted when the deployment has notifications off.
+	Notifications *NotificationsBlock `json:"notifications,omitempty"`
 }
 
 // ServerSimsView is the caller's server-run account row.
@@ -452,12 +487,29 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
+	notifications, err := s.buildNotifications(r.Context(), u.ID, ev.Notifications)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
-		FinishedSims: finished, ServerSims: serverSims,
+		FinishedSims: finished, ServerSims: serverSims, Notifications: notifications,
 	})
+}
+
+// buildNotifications resolves the notifications half of /v1/me; nil when the feature is off.
+func (s *Service) buildNotifications(ctx context.Context, userID int64, entitled bool) (*NotificationsBlock, error) {
+	if s.Notifications == nil {
+		return nil, nil
+	}
+	discord, err := s.Notifications.DiscordBlock(ctx, userID, entitled)
+	if err != nil {
+		return nil, fmt.Errorf("auth: me: notifications: %w", err)
+	}
+	return &NotificationsBlock{Discord: discord}, nil
 }
 
 // buildSimsView resolves the sims half of /v1/me. The finished list is only read for a

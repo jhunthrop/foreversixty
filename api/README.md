@@ -155,6 +155,9 @@ The simulator's full surface (`POST /v1/sims`, `POST /v1/sims/run`, `GET /v1/sim
 | `GET /v1/sims?mine=1&kind=&lane=` | The caller's own sims, newest first, optionally narrowed to one tool (`run`, `gear`, `talents`, `drops`, `weights`) and to one lane (`server`, `browser`). Each row carries its kind, a composed one-line headline, its lane, `finished_at`, `failure_reason` and `seen`; queued and running rows carry `estimate_seconds`. An unknown kind or lane is 400. |
 | `POST /v1/sims/{id}/seen` | Marks the caller's finished server run as looked at (204); 404 when it is not theirs or not done. |
 | `POST /v1/sims/{id}/rerun` | Premium. Starts a failed run's stored request again as a new run (202 `{sim_id}`) under the checks `POST /v1/sims/run` applies; 404 when it is not the caller's failed run. |
+| `PUT /v1/notifications/discord` | Premium. Saves the Discord webhook (`webhook_url?`, `events`) and answers the block `/v1/me` carries under `notifications.discord`; an events-only change omits the URL (404 when none saved). A bad URL is 400, a URL Discord does not accept 422, both `invalid`. Mounted only when `NOTIFY_ENCRYPTION_KEY` is set; otherwise `/v1/me` omits `notifications`. |
+| `DELETE /v1/notifications/discord` | Removes the webhook (204, idempotent, allowed after a lapse). |
+| `POST /v1/notifications/discord/test` | Premium. Posts the test message (204); 502 `upstream` with Discord's text when it fails; 5 per minute per member. |
 | `GET /v1/phases` | The content phase boundaries, cached an hour. The table is compiled in; `api/internal/phase/boundaries_test.go` holds it to `data/curated/phases.json`. |
 
 ## Keeping the page chrome in step with the site

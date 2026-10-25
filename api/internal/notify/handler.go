@@ -1,0 +1,235 @@
+package notify
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"log/slog"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+)
+
+const (
+	testsPerMinute  = 5
+	maxPutBodyBytes = 4 << 10
+	// maxTestErrorRunes is the spec's cap on the Discord text a failed test shows.
+	maxTestErrorRunes = 140
+
+	invalidURLMessage = "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/."
+	noAnswerMessage   = "Discord did not answer"
+)
+
+// Entitlementer answers whether an account may use a feature. It has the
+// shape sims.Entitlementer has (entitlements.Store satisfies both); it is
+// declared here because sims will import this package for its own posts.
+type Entitlementer interface {
+	Can(ctx context.Context, userID int64, feature entitlements.Feature) (bool, entitlements.Reason, error)
+}
+
+// Service serves the notification routes and answers /v1/me's block.
+type Service struct {
+	Store        *Store
+	Sealer       *Sealer
+	Entitlements Entitlementer
+	Poster       Poster
+	// PublicBaseURL is the site origin the test message links to.
+	PublicBaseURL string
+	Log           *slog.Logger
+}
+
+// Mount registers the Discord routes. The caller mounts only when the
+// deployment holds an encryption key (a Sealer exists).
+func Mount(mux *http.ServeMux, s *Service) {
+	limit := httpx.RateLimitByKey(testsPerMinute, time.Minute, auth.AccountRateLimitKey)
+	mux.HandleFunc("PUT /v1/notifications/discord", auth.RequireSession(s.put))
+	mux.HandleFunc("DELETE /v1/notifications/discord", auth.RequireSession(s.remove))
+	mux.Handle("POST /v1/notifications/discord/test", limit(auth.RequireSession(s.test)))
+}
+
+// DiscordBlock implements auth.NotificationsView.
+func (s *Service) DiscordBlock(ctx context.Context, userID int64, entitled bool) (*auth.DiscordBlock, error) {
+	w, ok, err := s.Store.Get(ctx, userID, KindDiscord)
+	if err != nil || !ok {
+		return nil, err
+	}
+	return blockOf(w, entitled), nil
+}
+
+type putRequest struct {
+	WebhookURL string `json:"webhook_url"`
+	Events     *struct {
+		SimFinished  bool `json:"sim_finished"`
+		UploadParsed bool `json:"upload_parsed"`
+	} `json:"events"`
+}
+
+func (s *Service) put(w http.ResponseWriter, r *http.Request) {
+	actor := auth.ActorFrom(r.Context())
+	httpx.CachePrivateNoStore(w)
+	if !s.entitled(w, r, actor) {
+		return
+	}
+	var req putRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxPutBodyBytes)).Decode(&req); err != nil || req.Events == nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+			"the body must be {webhook_url?, events: {sim_finished, upload_parsed}}", nil)
+		return
+	}
+	events := map[EventName]bool{
+		EventSimFinished:  req.Events.SimFinished,
+		EventUploadParsed: req.Events.UploadParsed,
+	}
+	if strings.TrimSpace(req.WebhookURL) == "" {
+		s.putEvents(w, r, actor, events)
+		return
+	}
+	s.putWebhook(w, r, actor, req.WebhookURL, events)
+}
+
+func (s *Service) putEvents(w http.ResponseWriter, r *http.Request, actor auth.Actor, events map[EventName]bool) {
+	err := s.Store.SaveEvents(r.Context(), actor.UserID, KindDiscord, events)
+	if errors.Is(err, ErrNotFound) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no webhook is saved", nil)
+		return
+	}
+	if err != nil {
+		s.fail(w, r, "save events", err)
+		return
+	}
+	s.answerBlock(w, r, actor.UserID)
+}
+
+func (s *Service) putWebhook(w http.ResponseWriter, r *http.Request, actor auth.Actor, raw string, events map[EventName]bool) {
+	parsed, err := ParseWebhookURL(strings.TrimSpace(raw))
+	if err != nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", invalidURLMessage, nil)
+		return
+	}
+	channelID, err := s.Poster.Lookup(r.Context(), parsed.URL())
+	if err != nil {
+		// Any failure to reach the webhook reads the same to the member: it does not work.
+		httpx.WriteError(w, r, http.StatusUnprocessableEntity, "invalid", invalidURLMessage, nil)
+		return
+	}
+	box, err := s.Sealer.Seal(parsed.URL())
+	if err != nil {
+		s.fail(w, r, "seal", err)
+		return
+	}
+	if err := s.Store.Save(r.Context(), actor.UserID, KindDiscord, channelID, box, events); err != nil {
+		s.fail(w, r, "save", err)
+		return
+	}
+	s.answerBlock(w, r, actor.UserID)
+}
+
+func (s *Service) remove(w http.ResponseWriter, r *http.Request) {
+	httpx.CachePrivateNoStore(w)
+	if err := s.Store.Delete(r.Context(), auth.ActorFrom(r.Context()).UserID, KindDiscord); err != nil {
+		s.fail(w, r, "delete", err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *Service) test(w http.ResponseWriter, r *http.Request) {
+	actor := auth.ActorFrom(r.Context())
+	httpx.CachePrivateNoStore(w)
+	if !s.entitled(w, r, actor) {
+		return
+	}
+	hook, ok, err := s.Store.Get(r.Context(), actor.UserID, KindDiscord)
+	if err == nil && !ok {
+		err = ErrNotFound
+	}
+	var box []byte
+	if err == nil {
+		box, err = s.Store.TokenBox(r.Context(), actor.UserID, KindDiscord)
+	}
+	if errors.Is(err, ErrNotFound) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no webhook is saved", nil)
+		return
+	}
+	var url string
+	if err == nil {
+		url, err = s.Sealer.Open(box)
+	}
+	if err != nil {
+		s.fail(w, r, "open", err)
+		return
+	}
+	if err := s.Poster.Post(r.Context(), url, TestEmbed(s.PublicBaseURL, hook.Events)); err != nil {
+		s.testFailed(w, r, err)
+		return
+	}
+	if err := s.Store.RecordSuccess(r.Context(), actor.UserID, KindDiscord); err != nil {
+		s.fail(w, r, "record success", err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// testFailed answers a failed test post. It changes no counter: only the
+// jobs' own posts count toward switching a webhook off.
+func (s *Service) testFailed(w http.ResponseWriter, r *http.Request, err error) {
+	message := noAnswerMessage
+	var discord *DiscordError
+	if errors.As(err, &discord) {
+		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "test", "status", discord.Status)
+		if body := truncateRunes(discord.Body, maxTestErrorRunes); body != "" {
+			message = body
+		}
+	} else {
+		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "test", "err", "no answer")
+	}
+	httpx.WriteError(w, r, http.StatusBadGateway, "upstream", message, nil)
+}
+
+func truncateRunes(text string, limit int) string {
+	if runes := []rune(text); len(runes) > limit {
+		return string(runes[:limit])
+	}
+	return text
+}
+
+// entitled reports whether the actor holds the notifications feature, and
+// has already written the refusal when not.
+func (s *Service) entitled(w http.ResponseWriter, r *http.Request, actor auth.Actor) bool {
+	allowed, _, err := s.Entitlements.Can(r.Context(), actor.UserID, entitlements.FeatureNotifications)
+	if err != nil {
+		s.fail(w, r, "premium", err)
+		return false
+	}
+	if !allowed {
+		httpx.WriteError(w, r, http.StatusPaymentRequired, "premium_required",
+			"Discord messages are part of Premium", nil)
+	}
+	return allowed
+}
+
+// answerBlock writes the member's current block as the PUT answer.
+func (s *Service) answerBlock(w http.ResponseWriter, r *http.Request, userID int64) {
+	block, err := s.DiscordBlock(r.Context(), userID, true)
+	if err != nil || block == nil {
+		s.fail(w, r, "read block", err)
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, block)
+}
+
+func (s *Service) logger() *slog.Logger {
+	if s.Log != nil {
+		return s.Log
+	}
+	return slog.Default()
+}
+
+func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err error) {
+	s.logger().Error("notify", "id", httpx.RequestIDFrom(r.Context()), "op", op, "err", err)
+	httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not save that just now", nil)
+}

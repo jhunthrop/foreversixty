@@ -12,6 +12,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
@@ -51,6 +52,7 @@ type Deps struct {
 	Addon    *addon.Service
 	Guilds   *guilds.Service
 	Sims     *sims.Service
+	Notify   *notify.Service
 	Rating   *rating.Service
 	Billing  *billing.Service
 
@@ -107,6 +109,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Sims != nil {
 		sims.Mount(mux, d.Sims)
+	}
+	if d.Notify != nil {
+		notify.Mount(mux, d.Notify)
 	}
 	if d.Rating != nil {
 		rating.Mount(mux, d.Rating)

@@ -508,6 +508,22 @@ components:
             expansion above it with cap_exceeded rather than silently trimming.
             A result saved through POST /v1/sims must carry the cap its own
             lane ran under.
+    DiscordBlock:
+      type: object
+      description: The saved Discord channel. Never carries the URL, token or webhook id.
+      properties:
+        channel_id: { type: string }
+        events:
+          type: object
+          properties:
+            sim_finished: { type: boolean }
+            upload_parsed: { type: boolean }
+        disabled_reason:
+          type: string
+          nullable: true
+          enum: [failed five times, plan lapsed]
+        last_error: { type: string, nullable: true }
+        failures: { type: integer }
     WeightsSpec:
       type: object
       description: Asks for stat weights instead of a DPS number.
@@ -1474,6 +1490,13 @@ paths:
                             description: Omitted when the server has no sims store configured.
                             properties:
                               runs_this_month: { type: integer }
+                          notifications:
+                            type: object
+                            description: Omitted when the deployment has notifications off.
+                            properties:
+                              discord:
+                                nullable: true
+                                allOf: [{ $ref: '#/components/schemas/DiscordBlock' }]
         '401': { description: "Not signed in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     patch:
       summary: Set the read-time pseudonym flag
@@ -2003,6 +2026,65 @@ paths:
         '401': { description: Sign in first }
         '402': { description: 'premium_required: running on our servers is a premium feature' }
         '502': { description: The run was recorded but could not be started }
+  /v1/notifications/discord:
+    put:
+      summary: Save the Discord webhook or its events (premium)
+      operationId: putDiscordWebhook
+      description: >-
+        webhook_url is required when nothing is saved or when replacing, and omitted for an
+        events-only change. A new URL is checked against Discord once (5 s) and its channel id
+        stored; the URL is sealed and never returned.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              properties:
+                webhook_url: { type: string }
+                events:
+                  type: object
+                  properties:
+                    sim_finished: { type: boolean }
+                    upload_parsed: { type: boolean }
+      responses:
+        '200':
+          description: The saved block
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/DiscordBlock' }
+        '400': { description: 'invalid: the body is malformed or the URL is not a Discord webhook URL (the message never echoes it)' }
+        '401': { description: Sign in first }
+        '402': { description: 'premium_required: Discord messages are part of Premium' }
+        '404': { description: 'not_found: an events-only change with no webhook saved' }
+        '422': { description: 'invalid: the URL parsed but Discord did not accept it; nothing is stored' }
+    delete:
+      summary: Remove the Discord webhook
+      operationId: deleteDiscordWebhook
+      description: Allowed for a lapsed member; deleting an absent webhook is not an error.
+      responses:
+        '204': { description: Removed }
+        '401': { description: Sign in first }
+  /v1/notifications/discord/test:
+    post:
+      summary: Post the test message (premium)
+      operationId: testDiscordWebhook
+      description: >-
+        Limited to 5 per minute per member. Success resets the failure counter and clears a
+        failed-five-times switch-off; a failed test changes no counter.
+      responses:
+        '204': { description: Posted }
+        '401': { description: Sign in first }
+        '402': { description: 'premium_required' }
+        '404': { description: 'not_found: no webhook saved' }
+        '429': { description: 'rate_limited: more than 5 tests in a minute' }
+        '502': { description: "upstream: error.message is Discord's own text, URL and token removed, at most 140 characters" }
   /v1/sims/{id}:
     get:
       summary: One saved sim
