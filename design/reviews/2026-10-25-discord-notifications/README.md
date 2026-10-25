@@ -177,3 +177,11 @@ Pixel diff, `connect: false` paste state against the previous lane: `discord-con
 - No shared server-side single-use marker for the OAuth state (cookie-cleared; Discord's code is single use).
 - A webhook created by Discord at authorisation for a member whose plan lapsed mid-flow is not exchanged and so cannot be deleted by us (research UNCONFIRMED on when Discord creates it).
 - Capture 29 (Discord's own authorisation dialog) and a real end-to-end connect against the production application are verified after deploy, by hand.
+
+## First-use fixes (2026-10-25, lane discord-4)
+
+The owner's first real connect in production (the lane 5c deploy) surfaced four things; the lane fixes them without a new mock.
+
+- The explanation now says `a text channel, not a voice channel`: the owner picked a voice channel because Discord's picker lists them (its chat still received the posts). ux-designer ruling in the spec (§3.2 row 4, §6.1). Recaptured `discord-connect-{360,390,1440}.png` and the panel crops: four lines at 360 and 390, three at 1440; panel 324.5 / 324.5 / 313 px against the caps 340 / 340 / 320, so no row of the layout moved.
+- `Sent. Check the channel.`, `Sent. Posts are on again.` and `Saved. Send a test message to see it in your channel.` have no timer: the owner pressed Send test message, switched to Discord, came back after 4 s and saw nothing. They stay until the next press in the panel (a button, a link, a checkbox). `Saved.` and `Removed.` keep their 4 s. The connect return lines never had a timer. Asserted by `account-discord.spec.ts` (`Sent stays until the next action`).
+- Operations: the Cloud Logging `_Default` sink excludes the callback request line (Cloud Run's request log would otherwise keep Discord's one-time `code`); `api/README.md` carries the localhost redirect (Discord accepts plain `http` only for `localhost`) and the trailing-space gotcha that rejected the owner's first portal save.

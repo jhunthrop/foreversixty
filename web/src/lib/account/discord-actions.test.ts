@@ -65,7 +65,7 @@ describe('saveWebhook', () => {
 
   it('sends the trimmed URL and the events in one PUT', async () => {
     const result = await saveWebhook(meWith(), `  ${URL_OK} `, BOTH);
-    expect(result).toEqual({ ok: true, message: notificationsCopy.savedFirst });
+    expect(result).toEqual({ ok: true, message: notificationsCopy.savedFirst, stays: true });
     expect(api.requests().map((r) => [r.method, r.body])).toEqual([
       ['PUT', { webhook_url: URL_OK, events: BOTH }],
     ]);
@@ -93,6 +93,7 @@ describe('saveEvents', () => {
       upload_parsed: true,
       upload_private: false,
     });
+    // `Saved.` after an event change keeps its 4 s (spec 4.3): no `stays` flag.
     expect(result).toEqual({ ok: true, message: notificationsCopy.savedEvents });
     expect(api.requests()[0]?.body).toEqual({
       events: { sim_finished: false, upload_parsed: true, upload_private: false },
@@ -117,13 +118,18 @@ describe('saveEvents', () => {
 
 describe('sendTest', () => {
   it('reads Sent on a 204', async () => {
-    expect(await sendTest(meWith(), false)).toEqual({ ok: true, message: notificationsCopy.testSent });
+    expect(await sendTest(meWith(), false)).toEqual({
+      ok: true,
+      message: notificationsCopy.testSent,
+      stays: true,
+    });
   });
 
   it('reads Posts are on again when the webhook was switched off', async () => {
     expect(await sendTest(meWith(), true)).toEqual({
       ok: true,
       message: notificationsCopy.testSentSwitchedOn,
+      stays: true,
     });
   });
 

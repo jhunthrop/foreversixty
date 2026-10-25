@@ -34,6 +34,8 @@ const VALID_URL = `https://discord.com/api/webhooks/${WEBHOOK_ID}/${WEBHOOK_TOKE
 const INVALID_URL = 'https://example.com/api/webhooks/1/tok';
 const BOTH_EVENTS = { sim_finished: true, upload_parsed: true, upload_private: false };
 const SAVED_CLEAR_TIMEOUT_MS = 6000;
+// Past the 4 s that `Saved.` keeps: a line that is still there has no timer (spec 4.3, first-use fixes).
+const PAST_SAVED_CLEAR_MS = 4500;
 const MAX_SHIFT = 0.02;
 const PHONE = { width: 390, height: 844 };
 const DESKTOP = { width: 1440, height: 1000 };
@@ -143,6 +145,16 @@ test.describe('saved webhook', () => {
     await page.getByTestId('discord-test').click();
     await expect(status(page)).toContainText(copy.testSent);
     expect(seen.tests).toBe(1);
+  });
+
+  test('Sent stays until the next action, and a press in the panel clears it', async ({ page }) => {
+    await openAccount(page, { initial: SAVED });
+    await page.getByTestId('discord-test').click();
+    await expect(status(page)).toContainText(copy.testSent);
+    await page.waitForTimeout(PAST_SAVED_CLEAR_MS);
+    await expect(status(page)).toContainText(copy.testSent);
+    await page.getByTestId('discord-remove').click();
+    await expect(status(page)).toHaveText('');
   });
 
   test('a test Discord refuses shows its words as an alert', async ({ page }) => {
