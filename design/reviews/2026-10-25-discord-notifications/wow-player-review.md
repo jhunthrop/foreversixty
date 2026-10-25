@@ -109,3 +109,55 @@ Reviewed: README, spec 6.1 and 6.2, and the 1440 and 390 captures of paste-empty
 2. Will the messages ever link to the character's BiS gap (my question 5 from yesterday)? It is the one part of the ping that moves a player toward a better character, and it is not in 6.2.
 3. After five failures the member is told only if they open the account page. Do we want an email or a notice on the next visit? (Question 3 from yesterday, still open.)
 4. Real channel: no capture shows the three embeds, so `Frostbolt's Frost Mage sim finished` with `Run`, `Run time` and `Result` has not been seen in Discord. Do not call spec item 9 done until it is.
+
+## Connect lane re-check (3b6cec94)
+
+**Verdict: SHIP WITH FIXES.** The flow is clear and honest, and the remove questions are the best copy in the block. Three small fixes before I would send it to a guild.
+
+1. `discord-connected-destination-390.png`, `-360`, `-1440` and `discord-connected-saved-panel-390.png` still show `Channel 1198…4568· Open in Discord` with no space before the dot. You said it is fixed in source; the committed PNGs are stale, so recapture them. I will not call it fixed until I see a capture without the glitch.
+2. The explanation says nothing about permissions. `Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.` Add that you need Manage Webhooks on that channel. Today a raid leader learns it only from the red failure line in `discord-return-failed-panel-390.png`, after a trip to Discord and back. Proposed text is below.
+3. `Connected to a Discord channel` over `Channel 1198…4568` does not tell the player which channel. `Open in Discord` helps only if the player is in that server and can see the channel. Use the channel name or the webhook name Discord returns at connect time, if the API gives one, and keep the id as the small second line. If it cannot be done, fix the first line so it does not read like a name: `Connected to a Discord channel` looks like a placeholder someone forgot to fill in.
+
+### What landed well
+
+- `discord-connect-1440.png` and `discord-connect-panel-390.png`: connect is the one gold button, paste is a quiet underlined link. It is obvious which to do. The gold button is the only call to action, and the account page is easy to read around it.
+- `discord-connect-opening-panel-390.png`: `Opening Discord…` replaces the label and nothing jumps. That is the right amount of feedback for a full-page redirect.
+- Return outcomes: `Cancelled in Discord. Nothing was connected.` is plain and calm. `Could not connect. Check that you can manage webhooks in that channel, then try again.` is red, tells me the likely cause and what to do. The gold button stays focused so I can retry at once. Good.
+- `discord-return-connected-panel-390.png`: `Connected. Send a test message to see it in your channel.` with focus on `Send test message` is the right next step. It also answers "did it work?" without a guess.
+- `discord-connect-reconnect-panel-390.png`: `Connect a different channel` is a link, not a button, so nobody clicks it by habit. The note `Connecting again replaces this channel and removes its webhook from Discord.` reads as information, not alarm. It tells me the old channel will go quiet, which is what I need to know.
+- Remove questions are honest and different on purpose. Connected: `Remove this connection? Posts stop and we delete its webhook from Discord.` Pasted: `Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.` A player who pasted their own webhook is told it is still theirs to clean up. That is correct and rare.
+- `discord-connect-paste-view-panel-390.png`: the way back, `Connect a Discord channel instead`, is there. Nobody is stuck in the paste form.
+- `discord-connect-replace-view-panel-390.png`: replacing a pasted webhook offers connect first, paste second, `Cancel` last. Same order as a fresh setup, so there is one thing to learn.
+
+### Still trips a player
+
+- **Guild channels and permissions.** The raid leader who sets up the guild's channel needs Manage Webhooks on it, and an officer who does not have it gets Discord's own error page or a bare cancel. The lane's only hint is the failure line after the fact. If Discord returns the user to us with the same flag for "no permission" as for "cancelled", the player sees `Cancelled in Discord. Nothing was connected.` when they did not cancel anything. Please check what Discord sends back in that case.
+- **Which server.** A player in six servers, two of them with a `#raids` channel, cannot tell from `Channel 1198…4568` which one they picked. See fix 3.
+- **Authorise step.** Discord shows its own `Forever Sixty wants to access your Discord account` style screen and asks the player to pick a channel in a drop-down. We do not warn them. A short `You will see a Discord screen asking you to authorise Forever Sixty` takes the surprise out of it. I could not check the real screen (capture 29 is manual), so this is from how Discord's webhook OAuth works.
+- **Nothing happens.** There is no popup blocker, but a slow or blocked Discord (work network, adblock list) leaves `Opening Discord…` on screen with a shrunken button and no way out except reloading. After about ten seconds I would expect the label to go back and say `Discord did not open. Try again, or paste a webhook URL instead.` I did not see such a state in the captures.
+- **The 40 px gap.** In `discord-connect-panel-390.png` there is a large empty band between the explanation and `Paste a webhook URL instead`. It is the reserved status line, and it looks like a missing paragraph. The captures README says the reserve is deliberate for layout shift; fine, but at 40 px it reads as a hole. Tighten if the shift gate still passes.
+- **The destination dot spacing**, see fix 1.
+- **Reconnect note stays on screen.** `Connecting again replaces this channel and removes its webhook from Discord.` is shown all the time under the link. It is accurate, but a quiet note under a link that most players will never click is clutter beside the private-logs line. Acceptable; I would not hold the ship for it.
+
+### Copy I would change
+
+| Current | Proposed |
+|---|---|
+| `Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.` | `Discord asks you to pick a server and channel, and to authorise Forever Sixty. You need Manage Webhooks on that channel. We keep only the webhook, encrypted.` |
+| `Connected to a Discord channel` | The channel or webhook name when we have one (`Connected to #raid-pings`); otherwise `Connected to a Discord channel (name not provided)` is worse, so keep the current line and lean on `Open in Discord`. |
+| `Channel 1198…4568· Open in Discord` | `Channel 1198…4568 · Open in Discord` (space before the dot) |
+| `Cancelled in Discord. Nothing was connected.` | Fine as is. |
+| `Could not connect. Check that you can manage webhooks in that channel, then try again.` | `Could not connect. You need Manage Webhooks on that channel. Ask a server admin, or paste a webhook URL they give you.` (the second half is the raid leader's real way out) |
+| `Connect a different channel` | Fine as is. |
+| `Connecting again replaces this channel and removes its webhook from Discord.` | Fine as is. Keep the word `replaces`. |
+| `Remove this connection? Posts stop and we delete its webhook from Discord.` | Fine as is. |
+| `Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.` | Fine as is. |
+| `Opening Discord…` | Fine as is, with a timeout fallback (see above). |
+
+### Questions for the owner
+
+1. What does Discord's webhook response give us at connect time? It normally includes the webhook name, channel id and guild id. Can we show the channel name or the server name, or at least keep the webhook name and show that? Fix 3 depends on it.
+2. When Discord returns without a webhook because the member lacks Manage Webhooks, do we get a different error from a cancel? If not, the `Cancelled in Discord` line will be wrong for exactly the raid-leader case, and I would merge the two messages: `Nothing was connected. If you did not cancel, check that you can manage webhooks in that channel.`
+3. Is a channel id plus `Open in Discord` link a link to the channel (discord.com/channels/guild/channel)? If the guild id is not stored the link cannot work. I could not verify it from captures.
+4. What happens to the old webhook in Discord if the delete call fails during `Connect a different channel`? The note promises it is removed. The row is deleted first (commit 9b51612f), so the player never sees a failure. Do we want a line that says `Could not remove the old webhook from Discord; delete it there`?
+5. Is the 40 px reserve gap staying, or can it come down?
