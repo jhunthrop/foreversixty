@@ -42,8 +42,8 @@ type HistoryPoint struct {
 	FightIndex  int
 	Encounter   string
 	EncounterID int64
-	// Difficulty is DifficultyName of the fight's difficulty id.
-	Difficulty string
+	// Difficulty is the fight's difficulty id, as the public history rows send it.
+	Difficulty int64
 	// ParsePercentile is the fight's output component percentile, nil when it has none.
 	ParsePercentile *float64
 	Kill            bool
@@ -63,7 +63,7 @@ type HistoryParsePoint struct {
 type HistoryEncounter struct {
 	Encounter   string
 	EncounterID int64
-	Difficulty  string
+	Difficulty  int64
 	Points      []HistoryParsePoint
 }
 
@@ -88,11 +88,12 @@ type History struct {
 // ReadOwnerHistory reads the history of the character playerKey. Authorising the caller is the
 // handler's job; this reads whatever it is asked for.
 func (s *Store) ReadOwnerHistory(ctx context.Context, playerKey string) (History, error) {
+	rs := &rankings.Store{Pool: s.Pool}
 	rated, err := s.ratedPoints(ctx, playerKey)
 	if err != nil {
 		return History{}, err
 	}
-	names, err := (&rankings.Store{Pool: s.Pool}).EncounterNames(ctx, encounterIDs(rated))
+	names, err := rs.EncounterNames(ctx, encounterIDs(rated))
 	if err != nil {
 		return History{}, err
 	}
@@ -104,7 +105,7 @@ func (s *Store) ReadOwnerHistory(ctx context.Context, playerKey string) (History
 	if err != nil {
 		return History{}, err
 	}
-	fights, err := (&rankings.Store{Pool: s.Pool}).OwnerFights(ctx, playerKey, fightRefs(score))
+	fights, err := rs.OwnerFights(ctx, playerKey, fightRefs(score))
 	if err != nil {
 		return History{}, err
 	}
@@ -135,7 +136,7 @@ func (r ratedPoint) point(names map[int64]string) HistoryPoint {
 	return HistoryPoint{
 		At: r.at, Score: r.score, Tier: r.tier, ReportID: r.reportID, FightIndex: r.fightIndex,
 		Encounter: names[r.encounterID], EncounterID: r.encounterID,
-		Difficulty: DifficultyName(r.difficulty), ParsePercentile: outputPercentile(r.components),
+		Difficulty: r.difficulty, ParsePercentile: outputPercentile(r.components),
 		Kill: r.kill, Visibility: r.visibility,
 	}
 }
@@ -178,7 +179,7 @@ func reversed[T any](xs []T) []T {
 	return out
 }
 
-// outputComponent's percentile out of a stored components array: nil when the component is
+// outputPercentile is the output component's percentile out of a stored components array: nil when the component is
 // absent, excluded or has none.
 func outputPercentile(components json.RawMessage) *float64 {
 	var cs []struct {
@@ -225,7 +226,7 @@ func asOf(score []HistoryPoint, now time.Time) string {
 func encountersOf(score []HistoryPoint, names map[int64]string) []HistoryEncounter {
 	type groupKey struct {
 		id         int64
-		difficulty string
+		difficulty int64
 	}
 	groups := map[groupKey]*HistoryEncounter{}
 	order := []groupKey{}
@@ -279,8 +280,8 @@ func utcDate(t time.Time) time.Time {
 	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 }
 
-// stretchMark is a fight that explains an empty stretch: one in a flagged report, or (not
-// Flagged) one whose rating row kept no score snapshot.
+// stretchMark is a fight that explains an empty stretch: one in a flagged report, or (Flagged
+// false) one whose rating row kept no score snapshot.
 type stretchMark struct {
 	Date    time.Time
 	Flagged bool
@@ -342,19 +343,4 @@ func gapReason(from, to time.Time, marks []stretchMark) string {
 		reason = GapScoreNotKept
 	}
 	return reason
-}
-
-// DifficultyName is the word the API gives a difficulty id: the one-word names of the
-// ids a Forever raid is fought on, and "difficulty N" for an id nobody has named yet.
-func DifficultyName(id int64) string {
-	if name, ok := difficultyNames[id]; ok {
-		return name
-	}
-	return fmt.Sprintf("difficulty %d", id)
-}
-
-// difficultyNames is the single source of the difficulty words (the engine's difficultyID).
-var difficultyNames = map[int64]string{
-	1: "normal", 3: "normal", 4: "normal",
-	2: "hard", 5: "hard", 6: "hard",
 }

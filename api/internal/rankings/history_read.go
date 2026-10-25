@@ -6,9 +6,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
-
 	"github.com/jhunthrop/foreversixty/api/internal/digest"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // historyRow is one ranked fight as the history reads it: the page's row, the class it was

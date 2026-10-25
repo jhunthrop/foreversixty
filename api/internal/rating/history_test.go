@@ -53,6 +53,12 @@ func histReport(t *testing.T, pool *pgxpool.Pool, id, visibility string, flagged
 // histRate stores one rated fight of histKey; a nil score is a row that kept no snapshot.
 func histRate(t *testing.T, pool *pgxpool.Pool, report string, index int, at time.Time, kill bool, score *int, outputPct string) {
 	t.Helper()
+	histRateOn(t, pool, report, index, at, histEncounter, 3, kill, score, outputPct)
+}
+
+// histRateOn is histRate on a chosen boss and difficulty id.
+func histRateOn(t *testing.T, pool *pgxpool.Pool, report string, index int, at time.Time, encounter, difficulty int64, kill bool, score *int, outputPct string) {
+	t.Helper()
 	tier := (*string)(nil)
 	if score != nil {
 		tier = new(string)
@@ -60,8 +66,8 @@ func histRate(t *testing.T, pool *pgxpool.Pool, report string, index int, at tim
 	}
 	components := fmt.Sprintf(`[{"name":"output","percentile":%s,"excluded":false},{"name":"survival","percentile":12,"excluded":false}]`, outputPct)
 	mustExec(t, pool, `insert into rating_scores (report_id, fight_index, player_key, kill, components, model_version,
-		fought_at, encounter_id, difficulty, score, tier) values ($1, $2, $3, $4, $5::jsonb, 'test', $6, $7, 3, $8, $9)`,
-		report, index, histKey, kill, components, at, histEncounter, score, tier)
+		fought_at, encounter_id, difficulty, score, tier) values ($1, $2, $3, $4, $5::jsonb, 'test', $6, $7, $8, $9, $10)`,
+		report, index, histKey, kill, components, at, encounter, difficulty, score, tier)
 }
 
 func histMetric(t *testing.T, pool *pgxpool.Pool, report string, index int, at time.Time) {
@@ -98,7 +104,7 @@ func TestReadOwnerHistoryIncludesGuildAndPrivateButNeverFlagged(t *testing.T) {
 	if fmt.Sprint(got) != fmt.Sprint(want) {
 		t.Fatalf("visibilities = %v, want %v (oldest first, unlisted as public, flagged never)", got, want)
 	}
-	if h.Score[0].Score != 1500 || h.Score[0].Tier != "epic" || h.Score[0].Difficulty != "normal" {
+	if h.Score[0].Score != 1500 || h.Score[0].Tier != "epic" || h.Score[0].Difficulty != 3 {
 		t.Errorf("first point = %+v", h.Score[0])
 	}
 }
@@ -202,5 +208,51 @@ func TestReadOwnerHistoryCapsAtTheNewestThousandAndReturnsNonNilSlices(t *testin
 	}
 	if empty.Score == nil || empty.Encounters == nil || empty.Gaps == nil || empty.Fights == nil {
 		t.Errorf("an empty history must carry empty, not nil, slices: %+v", empty)
+	}
+}
+
+func TestReadOwnerHistoryEncounterGroupsSplitByDifficultyIdAndOrderByNewestKill(t *testing.T) {
+	pool := histPool(t)
+	id := histReport(t, pool, "groups", "public", nil)
+	other := int64(histEncounter + 1)
+	at := func(h int) time.Time { return histBase.Add(time.Duration(h) * time.Hour) }
+	histRateOn(t, pool, id, 1, at(0), histEncounter, 3, true, intp(1000), "10")
+	histRateOn(t, pool, id, 2, at(1), histEncounter, 4, true, intp(1000), "20")
+	histRateOn(t, pool, id, 3, at(2), other, 3, true, intp(1000), "30")
+	histRateOn(t, pool, id, 4, at(3), histEncounter, 3, true, intp(1000), "40")
+	histRateOn(t, pool, id, 5, at(4), other, 3, true, intp(1000), "50")
+	histRateOn(t, pool, id, 6, at(5), histEncounter, 4, true, intp(1000), "60")
+	h, err := (&Store{Pool: pool}).ReadOwnerHistory(context.Background(), histKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	type group struct {
+		enc, diff int64
+		pcts      string
+	}
+	var got []group
+	for _, g := range h.Encounters {
+		var pcts []float64
+		for _, p := range g.Points {
+			pcts = append(pcts, p.ParsePercentile)
+		}
+		got = append(got, group{g.EncounterID, g.Difficulty, fmt.Sprint(pcts)})
+	}
+	want := []group{
+		{histEncounter, 4, "[20 60]"}, {other, 3, "[30 50]"}, {histEncounter, 3, "[10 40]"},
+	}
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Fatalf("groups = %v, want %v (newest kill first; points oldest first; ids 3 and 4 apart)", got, want)
+	}
+}
+
+func TestGapsForThresholdIsMoreThanFourteenDays(t *testing.T) {
+	d := func(day int) time.Time { return time.Date(2026, 3, day, 0, 0, 0, 0, time.UTC) }
+	if gaps := gapsFor([]time.Time{d(1), d(15)}, nil); len(gaps) != 0 {
+		t.Errorf("exactly 14 days apart is no gap, got %v", gaps)
+	}
+	gaps := gapsFor([]time.Time{d(1), d(16)}, nil)
+	if len(gaps) != 1 || gaps[0].From != "2026-03-01" || gaps[0].To != "2026-03-16" {
+		t.Errorf("15 days apart is a gap, got %v", gaps)
 	}
 }
