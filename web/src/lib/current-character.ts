@@ -46,6 +46,7 @@ function storageOf(storage: Storage | undefined): Storage | null {
 export {
   CURRENT_CHARACTER_CHANGED,
   announcePageLoadedCharacter,
+  announceSessionHeal,
   onCurrentCharacterChange,
   type CurrentCharacterChange,
 } from './current-character-events';

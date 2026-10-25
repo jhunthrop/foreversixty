@@ -63,6 +63,8 @@ test.describe('Send this build to the addon', () => {
 
   test('saves the build, queues it for the character, and reads Sent', async ({ page }) => {
     await signIn(page);
+    // This test starts from an empty build: the session's pointer heal would load the main's own.
+    await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
     const saves: unknown[] = [];
     const queued: unknown[] = [];
     await page.route('**/v1/builds', (route) => {
@@ -92,11 +94,6 @@ test.describe('Send this build to the addon', () => {
     );
     await page.getByTestId('band-compare-load').click();
     await expect(action).toBeEnabled();
-    // The planner keeps the build the visitor loaded (the session's pointer heal no longer swaps in
-    // the character's own), so the card says how it compares with the character's spend.
-    await expect(page.getByTestId('character-header-note')).toHaveText(
-      'This build has 3 points; Obnoxious Yell has 9.',
-    );
 
     await action.click();
 
@@ -137,10 +134,28 @@ test.describe('Send this build to the addon', () => {
     await page.goto('/planner');
     const action = page.getByTestId('character-header-action');
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
-    await page.getByTestId('band-compare-load').click();
+    await page.getByTestId('talent-1001').click();
     await expect(action).toBeEnabled();
     await action.click();
     await expect(action).toHaveText('Sent');
+  });
+
+  test('a fresh pristine planner follows the session heal to the main; a link-named build does not', async ({
+    page,
+  }) => {
+    await signIn(page);
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/planner');
+    const action = page.getByTestId('character-header-action');
+    // The main's own build arrives with the heal: points are spent, so the send is on.
+    await expect(action).toBeEnabled();
+
+    await page.evaluate(() => window.sessionStorage.clear());
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto('/planner?class=warrior');
+    await expect(action).toHaveText('Send this build to Obnoxious Yell');
+    await page.waitForTimeout(SELECTOR_MOUNT_MARGIN_MS);
+    await expect(action).toBeDisabled();
   });
 
   test('a worn item outside the planner list never reaches the body, and the card says so', async ({

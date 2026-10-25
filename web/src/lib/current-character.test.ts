@@ -177,7 +177,10 @@ describe('onCurrentCharacterChange', () => {
     const stop = onCurrentCharacterChange(listener);
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     announcePageLoadedCharacter();
-    expect(listener.mock.calls).toEqual([[{ fromPageLoad: false }], [{ fromPageLoad: true }]]);
+    expect(listener.mock.calls).toEqual([
+      [{ fromPageLoad: false, fromSessionHeal: false }],
+      [{ fromPageLoad: true, fromSessionHeal: false }],
+    ]);
     stop();
   });
 

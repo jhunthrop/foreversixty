@@ -23,21 +23,33 @@ export const CURRENT_CHARACTER_CHANGED = 'fs:current-character';
  *  again. */
 export interface CurrentCharacterChange {
   fromPageLoad: boolean;
+  /** True when the session settled its default (the first signed-in answer wrote the account's
+   *  main). It moves a page like a choice does, except where that would discard the visitor's
+   *  own work (an edited planner, a link's build, a running sim). */
+  fromSessionHeal: boolean;
 }
 
 /** The `CustomEvent` detail a page-load write carries. */
 const PAGE_LOAD_ORIGIN = 'page-load';
+const SESSION_HEAL_ORIGIN = 'session-heal';
 
-function isPageLoadEvent(event: Event): boolean {
-  return (
-    event instanceof CustomEvent && (event.detail as { origin?: unknown } | null)?.origin === PAGE_LOAD_ORIGIN
-  );
+function hasOrigin(event: Event, origin: string): boolean {
+  return event instanceof CustomEvent && (event.detail as { origin?: unknown } | null)?.origin === origin;
+}
+
+function dispatchWithOrigin(origin: string): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(CURRENT_CHARACTER_CHANGED, { detail: { origin } }));
 }
 
 /** Tells every listener the pointer changed because this page loaded that character. */
 export function announcePageLoadedCharacter(): void {
-  if (typeof window === 'undefined') return;
-  window.dispatchEvent(new CustomEvent(CURRENT_CHARACTER_CHANGED, { detail: { origin: PAGE_LOAD_ORIGIN } }));
+  dispatchWithOrigin(PAGE_LOAD_ORIGIN);
+}
+
+/** Tells every listener the pointer changed because the session settled its default. */
+export function announceSessionHeal(): void {
+  dispatchWithOrigin(SESSION_HEAL_ORIGIN);
 }
 
 /**
@@ -48,9 +60,14 @@ export function announcePageLoadedCharacter(): void {
  */
 export function onCurrentCharacterChange(listener: (change: CurrentCharacterChange) => void): () => void {
   if (typeof window === 'undefined') return () => undefined;
-  const onChanged = (event: Event): void => listener({ fromPageLoad: isPageLoadEvent(event) });
+  const onChanged = (event: Event): void =>
+    listener({
+      fromPageLoad: hasOrigin(event, PAGE_LOAD_ORIGIN),
+      fromSessionHeal: hasOrigin(event, SESSION_HEAL_ORIGIN),
+    });
   const onStorage = (event: StorageEvent): void => {
-    if (event.key === null || event.key === CURRENT_CHARACTER_STORAGE_KEY) listener({ fromPageLoad: false });
+    if (event.key === null || event.key === CURRENT_CHARACTER_STORAGE_KEY)
+      listener({ fromPageLoad: false, fromSessionHeal: false });
   };
   window.addEventListener(CURRENT_CHARACTER_CHANGED, onChanged);
   window.addEventListener('storage', onStorage);

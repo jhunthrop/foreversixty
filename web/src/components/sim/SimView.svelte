@@ -380,6 +380,7 @@
       loaders: store,
       characterLoaded: () => store.character !== null,
       pinned: () => hasSavedSimId || bootstrap.request !== null,
+      holdsWork: () => store.phase === 'running' || store.serverRunning || bootstrap.code !== '',
       onSettled: (loaded) => (restored = loaded),
       onBusy: (busy) => (landingBusyKey = busy ? RESTORE_BUSY_KEY : null),
     });

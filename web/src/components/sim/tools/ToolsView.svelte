@@ -176,6 +176,7 @@
     const stopFollowing = followCurrentCharacter({
       loaders: store,
       characterLoaded: () => store.character !== null,
+      holdsWork: () => store.phase === 'running' || bootstrap.code !== '',
       onSettled: (loaded) => (restored = loaded),
     });
     return () => {

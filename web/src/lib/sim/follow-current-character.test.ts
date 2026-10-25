@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi, type Mock } from 'vitest';
 import {
   CURRENT_CHARACTER_CHANGED,
   announcePageLoadedCharacter,
+  announceSessionHeal,
   clearCurrent,
   writeCurrent,
   type CurrentCharacter,
@@ -76,6 +77,23 @@ describe('followCurrentCharacter', () => {
     announcePageLoadedCharacter();
     await flush();
     expect(loaders.loadStored).not.toHaveBeenCalled();
+  });
+
+  it('follows the session heal, except while the page holds work', async () => {
+    const loaders = fakeLoaders();
+    let holding = false;
+    stop = followCurrentCharacter({ loaders, characterLoaded: () => true, holdsWork: () => holding });
+    writeCurrent(pointer({}));
+    announceSessionHeal();
+    await flush();
+    expect(loaders.loadStored).toHaveBeenCalledTimes(1);
+    holding = true;
+    announceSessionHeal();
+    await flush();
+    expect(loaders.loadStored).toHaveBeenCalledTimes(1);
+    choose(pointer({}));
+    await flush();
+    expect(loaders.loadStored).toHaveBeenCalledTimes(2);
   });
 
   it('never follows on a pinned page', async () => {
