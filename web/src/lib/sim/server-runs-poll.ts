@@ -4,15 +4,14 @@
 // (experience spec 2026-10-24 sections 3.5 and 3.7) the pre-paint script in Base.astro reads
 // back. Pure functions plus guarded storage access; the reactive wrapper is
 // server-runs-controller.svelte.ts.
-import { MAX_VISIBLE_RUNS } from './server-runs';
 import type { SimListRow } from './types';
 
 /** How often the list re-reads while a run is queued or running and the tab is visible. */
 export const POLL_INTERVAL_MS = 10_000;
 /** After this page starts a server run, how long before the list first looks for the new row. */
 export const RUN_START_REFRESH_MS = 2_000;
-/** Last list read's row count (an integer string); sizes the reserved box on the next visit. */
-export const COUNT_STORAGE_KEY = 'fs.serverRuns.count';
+/** The list panel's last rendered height in px (heading excluded); sizes the reserved box on the next visit. */
+export const RESERVE_STORAGE_KEY = 'fs.serverRuns.reserve';
 /** When a run was last started or seen in flight (epoch ms); the band's reserve hint. */
 export const LIVE_STORAGE_KEY = 'fs.serverRuns.live';
 export const LIVE_TTL_MS = 2 * 60 * 60 * 1000;
@@ -43,11 +42,6 @@ export function withSeen(rows: readonly SimListRow[], ids: readonly string[]): S
   return rows.map((row) => (ids.includes(row.sim_id) ? { ...row, seen: true } : row));
 }
 
-/** Rows the reserved box holds: the last count, at least one, at most the visible five. */
-export function reservedRowCount(stored: number): number {
-  return Math.max(1, Math.min(Number.isFinite(stored) ? Math.floor(stored) : 1, MAX_VISIBLE_RUNS));
-}
-
 function storage(): Storage | null {
   try {
     return globalThis.localStorage ?? null;
@@ -56,19 +50,12 @@ function storage(): Storage | null {
   }
 }
 
-export function writeRowCount(count: number): void {
+export function writeReserveHeight(pixels: number): void {
+  if (!Number.isFinite(pixels) || pixels <= 0) return;
   try {
-    storage()?.setItem(COUNT_STORAGE_KEY, String(count));
+    storage()?.setItem(RESERVE_STORAGE_KEY, String(Math.round(pixels)));
   } catch {
     // Private mode or quota: the hint is a convenience.
-  }
-}
-
-export function readRowCount(): number {
-  try {
-    return reservedRowCount(Number(storage()?.getItem(COUNT_STORAGE_KEY) ?? 1));
-  } catch {
-    return 1;
   }
 }
 

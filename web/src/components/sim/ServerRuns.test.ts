@@ -19,8 +19,8 @@ function row(index: number): SimListRow {
   };
 }
 
-function renderList(rows: SimListRow[] | null, error: string | null = null): string {
-  return render(ServerRuns, { props: { rows, error, now: NOW, onretry: () => {}, onstarted: () => {} } })
+function renderList(rows: SimListRow[] | null, failed = false): string {
+  return render(ServerRuns, { props: { rows, failed, now: NOW, onretry: () => {}, onstarted: () => {} } })
     .body;
 }
 
@@ -44,13 +44,13 @@ describe('ServerRuns', () => {
     expect(body).toContain('data-testid="server-runs-empty"');
     expect(body).toContain('Run on our servers');
     expect(body).not.toContain('<a');
+    expect(body).toContain('server-runs-rows-reserve');
   });
 
   it('error: the failure line and Try again', () => {
-    const body = renderList(null, 'boom');
+    const body = renderList(null, true);
     expect(body).toContain(serverRunsCopy.loadFailed);
     expect(body).toContain('Try again');
-    expect(body).not.toContain('boom');
   });
 
   it('shows the newest five and the overflow footer when there are more', () => {

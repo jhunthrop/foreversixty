@@ -61,7 +61,7 @@
 <svelte:element
   this={isDone ? 'a' : 'div'}
   href={isDone ? `/sim/${row.sim_id}` : undefined}
-  class="server-run-row border-line-soft relative grid min-h-[92px] grid-cols-[32px_minmax(0,1fr)] items-center gap-x-3.5 gap-y-1 border-b px-3.5 py-3 last:border-b-0 md:min-h-16 md:grid-cols-[32px_minmax(0,1.4fr)_minmax(0,1.2fr)_auto] md:py-2.5"
+  class="server-run-row border-line-soft relative grid grid-cols-[32px_minmax(0,1fr)] items-center gap-x-3.5 gap-y-1 border-b px-3.5 py-3 last:border-b-0 md:min-h-16 md:grid-cols-[32px_minmax(0,1.4fr)_minmax(0,1.2fr)_auto] md:py-2.5"
   class:server-run-link={isDone}
   class:server-run-unseen={unseen}
   data-testid={`server-run-${row.sim_id}`}

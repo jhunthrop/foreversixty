@@ -11,7 +11,7 @@ import { createPageContainer } from '../test-support/page-container';
 import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { VIEW_GAP } from '../lib/current-character-layout';
-import { COUNT_STORAGE_KEY } from '../lib/sim/server-runs-poll';
+import { RESERVE_STORAGE_KEY } from '../lib/sim/server-runs-poll';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import Sim from './sim.astro';
 import SimById from './sim/[id].astro';
@@ -133,10 +133,10 @@ describe('the server runs reserve', () => {
     );
   });
 
-  it('the pre-paint script stamps data-server-sims from the cached /v1/me and the stored count', async () => {
+  it('the pre-paint script stamps data-server-sims from the cached /v1/me and the stored list height', async () => {
     const html = await container.renderToString(Sim);
     expect(html).toContain("root.dataset.serverSims = '1'");
     expect(html).toContain('entitlements.server_sims === true');
-    expect(html).toContain(`data-server-runs-count-key="${COUNT_STORAGE_KEY}"`);
+    expect(html).toContain(`data-server-runs-reserve-key="${RESERVE_STORAGE_KEY}"`);
   });
 });

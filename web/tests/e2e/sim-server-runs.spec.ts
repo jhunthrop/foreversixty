@@ -227,14 +227,14 @@ for (const viewport of [
   test(`the hinted payer's list loads without layout shift at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await stubSignedIn(page, true);
-    await stubServerRuns(page, [RUNNING_WITH_ESTIMATE, DONE_UNSEEN, DONE_SEEN]);
-    // The first visit stores the /v1/me snapshot and the row count; the second is the hinted one.
+    await stubServerRuns(page, [RUNNING_WITH_ESTIMATE, DONE_UNSEEN, FAILED]);
+    // The first visit stores the /v1/me snapshot and the list's height; the second is the hinted one.
     await page.goto('/sim');
-    await expect(page.getByTestId('server-run-done-seen')).toBeVisible();
+    await expect(page.getByTestId('server-run-failed-run')).toBeVisible();
 
     await trackLayoutShift(page);
     await page.reload();
-    await expect(page.getByTestId('server-run-done-seen')).toBeVisible();
+    await expect(page.getByTestId('server-run-failed-run')).toBeVisible();
     expect(await readLayoutShift(page)).toBeLessThanOrEqual(MAX_CLS);
   });
 }

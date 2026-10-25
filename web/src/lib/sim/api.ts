@@ -164,7 +164,12 @@ export function listMySims(
   const filter = kind === 'all' ? '' : `&kind=${kind}`;
   return query<SimListPage>(
     mySimsKey(apiBase, page, kind, lane),
-    () => call<SimListPage>(`/v1/sims?mine=1&page=${page}${filter}${laneParam(lane)}`, apiBase, simCopy.loadFailed),
+    () =>
+      call<SimListPage>(
+        `/v1/sims?mine=1&page=${page}${filter}${laneParam(lane)}`,
+        apiBase,
+        simCopy.loadFailed,
+      ),
     { scope: 'private', ttlMs: MY_SIMS_TTL_MS },
   );
 }

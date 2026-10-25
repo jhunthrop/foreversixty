@@ -6,7 +6,6 @@
 import { invalidate } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import { listMySims, markSimSeen } from './api';
-import { simCopy } from './copy';
 import {
   POLL_INTERVAL_MS,
   RUN_START_REFRESH_MS,
@@ -14,7 +13,6 @@ import {
   markLive,
   newlyFinished,
   withSeen,
-  writeRowCount,
 } from './server-runs-poll';
 import type { SimListRow } from './types';
 
@@ -28,7 +26,7 @@ function isVisible(): boolean {
 
 export function createServerRunsController() {
   let rows = $state<SimListRow[] | null>(null);
-  let error = $state<string | null>(null);
+  let failed = $state(false);
   let nowMs = $state(Date.now());
   let timer: ReturnType<typeof setTimeout> | undefined;
   let started = false;
@@ -62,13 +60,12 @@ export function createServerRunsController() {
       const page = await listMySims(1, undefined, 'all', SERVER_LANE);
       const before = rows;
       rows = page.rows;
-      error = null;
+      failed = false;
       nowMs = Date.now();
-      writeRowCount(page.rows.length);
       if (hasInFlight(page.rows)) markLive();
       await markWatched(newlyFinished(before, page.rows));
-    } catch (thrown) {
-      if (rows === null) error = thrown instanceof Error ? thrown.message : simCopy.loadFailed;
+    } catch {
+      if (rows === null) failed = true;
     }
     if (started && hasInFlight(rows) && isVisible()) schedule(POLL_INTERVAL_MS);
   }
@@ -82,8 +79,9 @@ export function createServerRunsController() {
     get rows() {
       return rows;
     },
-    get error() {
-      return error;
+    /** The first read failed and there is nothing to show; a later failed poll keeps the rows. */
+    get failed() {
+      return failed;
     },
     /** Epoch ms of the last read: the clock the rows' ages and overdue test are measured on. */
     get nowMs() {

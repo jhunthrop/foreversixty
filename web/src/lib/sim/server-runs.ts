@@ -6,13 +6,7 @@ import { relativeDay, relativeTime } from '../dates';
 import type { SimListRow } from './types';
 
 export type ServerRunState =
-  | 'queued'
-  | 'running'
-  | 'running-overdue'
-  | 'running-no-estimate'
-  | 'done'
-  | 'done-unseen'
-  | 'error';
+  'queued' | 'running' | 'running-overdue' | 'running-no-estimate' | 'done' | 'done-unseen' | 'error';
 
 export const MAX_VISIBLE_RUNS = 5;
 

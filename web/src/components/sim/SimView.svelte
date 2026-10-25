@@ -610,7 +610,7 @@
         {#if serverRunsLazy.current}
           <serverRunsLazy.current
             rows={serverRuns.rows}
-            error={serverRuns.error}
+            failed={serverRuns.failed}
             now={new Date(serverRuns.nowMs)}
             onretry={() => void serverRuns.reload()}
             onstarted={() => serverRuns.runStarted()}

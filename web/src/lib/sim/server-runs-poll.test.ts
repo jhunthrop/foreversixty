@@ -6,10 +6,9 @@ import {
   isLive,
   markLive,
   newlyFinished,
-  readRowCount,
-  reservedRowCount,
+  RESERVE_STORAGE_KEY,
   withSeen,
-  writeRowCount,
+  writeReserveHeight,
 } from './server-runs-poll';
 import type { SimListRow } from './types';
 
@@ -51,17 +50,12 @@ describe('in flight and newly finished', () => {
 });
 
 describe('the reserve hints', () => {
-  it('clamps the reserved rows to one through five', () => {
-    expect(reservedRowCount(0)).toBe(1);
-    expect(reservedRowCount(3)).toBe(3);
-    expect(reservedRowCount(9)).toBe(5);
-    expect(reservedRowCount(Number.NaN)).toBe(1);
-  });
-
-  it('round-trips the row count and defaults to one', () => {
-    expect(readRowCount()).toBe(1);
-    writeRowCount(3);
-    expect(readRowCount()).toBe(3);
+  it('stores the rendered height rounded, and ignores nonsense', () => {
+    writeReserveHeight(318.4);
+    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe('318');
+    writeReserveHeight(0);
+    writeReserveHeight(Number.NaN);
+    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe('318');
   });
 
   it('expires the live flag two hours after it was set', () => {

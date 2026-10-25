@@ -7,7 +7,7 @@
   import { PREMIUM_REQUIRED_STATUS, SimApiError, rerunSim } from '../../lib/sim/api';
   import { visibleRows } from '../../lib/sim/server-runs';
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
-  import type { RerunStatus } from '../../lib/sim/server-runs-poll';
+  import { writeReserveHeight, type RerunStatus } from '../../lib/sim/server-runs-poll';
   import type { SimListRow } from '../../lib/sim/types';
   import EmptyState from '../ui/EmptyState.svelte';
   import LoadError from '../ui/LoadError.svelte';
@@ -15,13 +15,14 @@
 
   let {
     rows,
-    error,
+    failed,
     now,
     onretry,
     onstarted,
   }: {
     rows: SimListRow[] | null;
-    error: string | null;
+    /** The first read failed and nothing is held to show. */
+    failed: boolean;
     now: Date;
     onretry: () => void;
     /** A failed run was started again: the parent re-reads the list for the new row. */
@@ -32,6 +33,14 @@
   let rerunStatus = $state<Record<string, RerunStatus>>({});
 
   const shown = $derived(rows === null ? null : visibleRows(rows));
+
+  let panel = $state<HTMLElement | undefined>();
+
+  // The panel's rendered height is next visit's reserve (spec 3.7): measured once rows or the
+  // empty state are painted, never while loading or failed.
+  $effect(() => {
+    if (panel !== undefined && shown !== null) writeReserveHeight(panel.offsetHeight);
+  });
 
   function setStatus(simId: string, status: RerunStatus): void {
     rerunStatus = { ...rerunStatus, [simId]: status };
@@ -53,7 +62,7 @@
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" id="server-runs" data-testid="server-runs">
   <h2 class="section-title flex h-6 items-center text-[15px]">{serverRunsCopy.heading}</h2>
-  {#if error !== null}
+  {#if failed}
     <LoadError message={serverRunsCopy.loadFailed} onRetry={onretry} testid="server-runs-error" />
   {:else if shown === null}
     <div
@@ -71,11 +80,18 @@
       {/each}
     </div>
   {:else if shown.rows.length === 0}
-    <div class="border-line bg-raised rounded-panel flex min-h-16 items-center border px-3.5">
+    <div
+      bind:this={panel}
+      class="border-line bg-raised rounded-panel server-runs-rows-reserve flex items-center border px-3.5"
+    >
       <EmptyState message={serverRunsCopy.empty} testid="server-runs-empty" />
     </div>
   {:else}
-    <div class="border-line bg-raised rounded-panel overflow-hidden border" data-testid="server-runs-list">
+    <div
+      bind:this={panel}
+      class="border-line bg-raised rounded-panel overflow-hidden border"
+      data-testid="server-runs-list"
+    >
       {#each shown.rows as row (row.sim_id)}
         <ServerRunRow
           {row}
