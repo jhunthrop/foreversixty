@@ -11,6 +11,7 @@
   let {
     state,
     confirming,
+    removeQuestion,
     busy,
     onTest,
     onAskRemove,
@@ -19,6 +20,8 @@
   }: {
     state: DiscordBlockKey;
     confirming: boolean;
+    /** The question for the webhook's source (connected or pasted). */
+    removeQuestion: string;
     busy: 'save' | 'events' | 'test' | 'remove' | null;
     onTest: () => void;
     onAskRemove: () => void;
@@ -30,7 +33,7 @@
 </script>
 
 {#if confirming}
-  <p class="text-[14px]">{notificationsCopy.removeQuestion}</p>
+  <p class="text-[14px]">{removeQuestion}</p>
   <div class="flex flex-wrap gap-3">
     <button class={OUTLINE} disabled={busy !== null} onclick={onRemove} data-testid="discord-remove-confirm">
       {label(notificationsCopy.remove, busy === 'remove', notificationsCopy.removing)}

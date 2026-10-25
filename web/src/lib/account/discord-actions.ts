@@ -12,7 +12,7 @@ import {
   saveDiscordWebhook,
   testDiscordWebhook,
 } from './notifications-api';
-import { webhookInputError } from './notifications';
+import { discordReturnFlag, webhookInputError, type DiscordReturnFlag } from './notifications';
 import { notificationsCopy } from './notifications-copy';
 
 /** `field` is the reserved line under the input, `plans` adds the See plans link, `status` the status line. */
@@ -114,4 +114,59 @@ export async function removeWebhook(me: Me): Promise<ActionResult> {
   } catch {
     return failed('status', notificationsCopy.removeFailed);
   }
+}
+
+/** What a return from Discord says, which control takes focus, and whether `/v1/me` is now stale. */
+export interface ReturnOutcome {
+  status: { ok: boolean; message: string };
+  focus: string;
+  refresh: boolean;
+}
+
+const CONNECT_CONTROLS = '[data-testid="discord-connect"], [data-testid="discord-replace"]';
+
+const RETURN_OUTCOMES: Readonly<Record<DiscordReturnFlag, ReturnOutcome>> = {
+  connected: {
+    status: { ok: true, message: notificationsCopy.returnConnected },
+    focus: '[data-testid="discord-test"]',
+    refresh: true,
+  },
+  denied: {
+    status: { ok: true, message: notificationsCopy.returnDenied },
+    focus: CONNECT_CONTROLS,
+    refresh: false,
+  },
+  failed: {
+    status: { ok: false, message: notificationsCopy.returnFailed },
+    focus: CONNECT_CONTROLS,
+    refresh: false,
+  },
+};
+
+export const returnOutcome = (flag: DiscordReturnFlag): ReturnOutcome => RETURN_OUTCOMES[flag];
+
+const FLAG_PARAM = 'discord';
+
+/**
+ * Reads the `?discord=` outcome once and drops it from the address bar, keeping the path, any
+ * other query and the hash, so a reload shows no second status line (spec 4.3). A value that is
+ * not one of the three is removed too and reads as no outcome.
+ */
+export function takeReturnFlag(location: Location, history: History): DiscordReturnFlag | null {
+  const params = new URLSearchParams(location.search);
+  if (!params.has(FLAG_PARAM)) return null;
+  const flag = discordReturnFlag(location.search);
+  params.delete(FLAG_PARAM);
+  const query = params.toString();
+  history.replaceState(
+    history.state,
+    '',
+    `${location.pathname}${query === '' ? '' : `?${query}`}${location.hash}`,
+  );
+  return flag;
+}
+
+/** The connected outcome means the callback stored a webhook: re-read `/v1/me` silently, once. */
+export function refreshAfterConnect(): void {
+  void fetchMeFresh().catch(() => {});
 }

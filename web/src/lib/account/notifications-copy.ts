@@ -80,8 +80,24 @@ export const notificationsCopy = {
   testAndSwitchOn: 'Test and switch on',
   remove: 'Remove',
   removing: 'Removing…',
-  removeQuestion: 'Remove this webhook? Posts stop and we forget the URL.',
+  removeQuestionPasted:
+    'Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.',
+  removeQuestionConnected: 'Remove this connection? Posts stop and we delete its webhook from Discord.',
   replace: 'Use a different webhook',
+
+  connect: 'Connect a Discord channel',
+  connecting: 'Opening Discord…',
+  connectExplanation:
+    'Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.',
+  pasteInstead: 'Paste a webhook URL instead',
+  connectInstead: 'Connect a Discord channel instead',
+  reconnect: 'Connect a different channel',
+  reconnectNote: 'Connecting again replaces this channel and removes its webhook from Discord.',
+  returnConnected: 'Connected. Send a test message to see it in your channel.',
+  returnDenied: 'Cancelled in Discord. Nothing was connected.',
+  returnFailed: 'Could not connect. Check that you can manage webhooks in that channel, then try again.',
+  openInDiscord: 'Open in Discord',
+  destinationConnected: { lead: 'Connected to', name: 'a Discord channel' },
   seePlans: 'See plans',
 
   savedFirst: 'Saved. Send a test message to see it in your channel.',

@@ -214,7 +214,7 @@ export interface Me {
   /** Absent on an older API. */
   server_sims?: { runs_this_month: number };
   /** Keyed by channel; `discord` is null when nothing is saved. Absent on an older API. */
-  notifications?: { discord: DiscordNotifications | null };
+  notifications?: { connect?: boolean; discord: DiscordNotifications | null };
 }
 
 /** Why posts stopped while a webhook is kept (spec 2026-10-25-discord-notifications §10). */
@@ -228,9 +228,16 @@ export interface DiscordEvents {
   upload_private: boolean;
 }
 
+/** How the webhook was saved: pasted by the member, or created by the Discord connect flow. */
+export type DiscordSource = 'pasted' | 'connected';
+
 /** The saved webhook as `/v1/me` and `PUT /v1/notifications/discord` answer it: never the URL. */
 export interface DiscordNotifications {
   channel_id: string;
+  /** Missing on an older API, which reads as `pasted`. */
+  source?: DiscordSource;
+  /** The Discord server's id when known (the `Open in Discord` link); null otherwise. */
+  guild_id?: string | null;
   /** Discord's own name for the webhook; null when Discord returned none. Member-controlled text. */
   name: string | null;
   events: DiscordEvents;

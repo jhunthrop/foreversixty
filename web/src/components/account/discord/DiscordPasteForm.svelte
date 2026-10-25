@@ -18,6 +18,7 @@
     replacing = false,
     onSubmit,
     onCancel,
+    onConnect,
   }: {
     webhook: string;
     events: DiscordEvents;
@@ -27,6 +28,8 @@
     replacing?: boolean;
     onSubmit: () => void;
     onCancel: () => void;
+    /** Present only where connect is on: swaps back to the Connect view. */
+    onConnect?: () => void;
   } = $props();
 
   function submit(event: SubmitEvent): void {
@@ -103,6 +106,15 @@
         data-testid="discord-cancel"
       >
         {notificationsCopy.cancel}
+      </button>
+    {/if}{#if onConnect !== undefined}
+      <button
+        type="button"
+        class="{LINK_BUTTON} basis-full"
+        onclick={onConnect}
+        data-testid="discord-connect-instead"
+      >
+        {notificationsCopy.connectInstead}
       </button>
     {/if}
   </div>

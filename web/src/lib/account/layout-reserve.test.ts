@@ -31,7 +31,7 @@ const css = read('../../styles/global.css');
 const base = read('../../layouts/Base.astro');
 
 const BUCKETS: readonly ReserveBucket[] = ['lg', 'stack'];
-const DISCORD_STATES: readonly HintState[] = ['free', 'form', 'saved', 'off', 'lapsed'];
+const DISCORD_STATES: readonly HintState[] = ['free', 'connect', 'form', 'saved', 'off', 'lapsed'];
 
 /** The CSS block's source split into its stack rules and its `@media (min-width: 1024px)` rules. */
 function cssByBucket(): Record<ReserveBucket, string> {
@@ -99,6 +99,7 @@ describe('the floors', () => {
   it('sum the rail as three panels, two gaps and the Discord block under Plan', () => {
     expect(railFloor('none', 'lg')).toBe(233 + 193 + 219 + 64);
     expect(railFloor('form', 'lg')).toBe(233 + 193 + 219 + 64 + 16 + DISCORD_FLOORS.form.lg);
+    expect(railFloor('connect', 'stack')).toBe(249 + 185 + 211 + 64 + 16 + 340);
   });
 
   it('take the taller column at lg and stack the two below it', () => {
@@ -128,6 +129,10 @@ describe('Base.astro hint script', () => {
     entitlements: mockEntitlements({ notifications: entitled }),
     ...(discord === undefined ? {} : { notifications: { discord } }),
   });
+  const connectAccount = (connect: boolean): Me => ({
+    ...account(true, null),
+    notifications: { connect, discord: null },
+  });
   const failed = discordBlock({ disabled_reason: 'failed five times', failures: 5 });
 
   it.each<[string, Me | null]>([
@@ -139,6 +144,12 @@ describe('Base.astro hint script', () => {
     ['off', account(true, failed)],
     ['saved', account(true, discordBlock())],
     ['form', account(true, null)],
+    ['connect', connectAccount(true)],
+    ['connect false', connectAccount(false)],
+    [
+      'connect on, saved',
+      { ...account(true, discordBlock()), notifications: { connect: true, discord: discordBlock() } },
+    ],
     ['free', account(false, null)],
     ['no entitlements', { ...account(true, null), entitlements: undefined }],
   ])('returns discordHintState for %s', (_name, fixture) => {
