@@ -5,7 +5,10 @@
 // from tests/e2e/guild-settings.spec.ts (owned by the guild-web lane) so this lane's new
 // coverage never edits a file it does not own.
 import { expect, test } from '@playwright/test';
-import { mockEntitlements } from '../../src/test-support/billing-fixtures';
+import {
+  meWithGuildPlan,
+  routeGuildSettingsPage as routeCommon,
+} from '../../src/test-support/billing-fixtures';
 
 function envelope(data: unknown, status = 200) {
   return {
@@ -22,52 +25,6 @@ async function shot(page: import('@playwright/test').Page, name: string): Promis
     await page
       .getByTestId('guild-settings-billing')
       .screenshot({ path: `${dir}/${name}-${page.viewportSize()?.width}.png` });
-}
-
-const GUILD_PAGE = {
-  guild: { id: 501, name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
-  progression: [],
-  roster_best: [],
-  reports: [],
-};
-
-const SETTINGS = {
-  default_visibility: 'guild',
-  officer_max_rank_index: 1,
-  claimed_by: { battletag: 'Fixture#1234' },
-  claim_pending: null,
-  claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
-  invite: { rotated_at: null },
-};
-
-function meWithGuildPlan(plan: unknown) {
-  return {
-    ok: true,
-    data: {
-      user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
-      characters: [],
-      guilds: [
-        {
-          id: 501,
-          region: 'us',
-          ruleset: 'hardcore',
-          name: 'The Last Watch',
-          rank: 'officer',
-          verified: true,
-          can: ['approve', 'remove', 'settings', 'award', 'billing', 'release'],
-          plan,
-        },
-      ],
-      entitlements: mockEntitlements(),
-    },
-    error: null,
-    request_id: 'r',
-  };
-}
-
-async function routeCommon(page: import('@playwright/test').Page): Promise<void> {
-  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
-  await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(envelope(SETTINGS)));
 }
 
 test('not on the plan: shows the honest not-subscribed line and a real subscribe link', async ({ page }) => {
