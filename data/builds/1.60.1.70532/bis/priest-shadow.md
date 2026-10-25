@@ -38,7 +38,7 @@ No-known-source sample (15 of 146, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-54342001200000000)
 
-Set DPS (verified): 58.7. Weights run: 1.0s. Verify run: 0.8s. 258 eligible items had no known source.
+Set DPS (verified): 58.7. Weights run: 1.0s. Verify run: 0.7s. 258 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.565 ± 0.007, crit=0.028 ± 0.001 per rating point (14 rating = 1%, 0.399 per %), hit=0.223 ± 0.008 per rating point (10 rating = 1%, 2.232 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 

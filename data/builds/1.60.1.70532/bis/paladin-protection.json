@@ -2,7 +2,7 @@
   "spec": "paladin-protection",
   "build": "1.60.1.70532",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-24T19:51:00Z",
+  "generated_at": "2026-10-25T12:22:07Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -848,8 +848,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 6.032204161,
-      "verify_run_seconds": 2.375606853,
+      "weights_run_seconds": 6.012745206,
+      "verify_run_seconds": 2.3728726509999998,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1789,8 +1789,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 6.032204161,
-      "verify_run_seconds": 2.466594574,
+      "weights_run_seconds": 6.012745206,
+      "verify_run_seconds": 2.372838135,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2773,8 +2773,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.146866625,
-      "verify_run_seconds": 2.390351402,
+      "weights_run_seconds": 6.066054281,
+      "verify_run_seconds": 2.351577909,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3754,8 +3754,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.146866625,
-      "verify_run_seconds": 2.276928784,
+      "weights_run_seconds": 6.066054281,
+      "verify_run_seconds": 2.247733534,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4770,8 +4770,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 8.67811452,
-      "verify_run_seconds": 3.526806836,
+      "weights_run_seconds": 8.586919669,
+      "verify_run_seconds": 3.527261968,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5784,8 +5784,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 8.67811452,
-      "verify_run_seconds": 3.356998336,
+      "weights_run_seconds": 8.586919669,
+      "verify_run_seconds": 3.260599251,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6814,8 +6814,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Aegis of Stormwind"
       ],
-      "weights_run_seconds": 8.83993733,
-      "verify_run_seconds": 6.995979925,
+      "weights_run_seconds": 8.723856965,
+      "verify_run_seconds": 6.90000058,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7840,8 +7840,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Aegis of Stormwind"
       ],
-      "weights_run_seconds": 8.83993733,
-      "verify_run_seconds": 6.480937454,
+      "weights_run_seconds": 8.723856965,
+      "verify_run_seconds": 6.393728769,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8874,8 +8874,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 9.190641902,
-      "verify_run_seconds": 16.150374803,
+      "weights_run_seconds": 9.069667437,
+      "verify_run_seconds": 15.686398064,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9906,8 +9906,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 9.190641902,
-      "verify_run_seconds": 14.987030802,
+      "weights_run_seconds": 9.069667437,
+      "verify_run_seconds": 14.733680752,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -10923,8 +10923,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 8.743898238,
-      "verify_run_seconds": 12.351308966,
+      "weights_run_seconds": 8.731816736,
+      "verify_run_seconds": 12.11685369,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11941,8 +11941,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 8.743898238,
-      "verify_run_seconds": 11.539025354,
+      "weights_run_seconds": 8.731816736,
+      "verify_run_seconds": 11.285756316,
       "coverage": {
         "back": {
           "eligible": 389,
