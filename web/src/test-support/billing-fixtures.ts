@@ -69,11 +69,11 @@ export function guildBilling(overrides: Partial<GuildBillingView> = {}): GuildBi
 }
 
 /** The scoped CLI grant (officer tools gate spec §5.1) the spec's copy is written against:
- *  Award, Undo and Nudge until 11 Dec 2026, with no billing contact. */
+ *  Award, Undo and Nudge until 12 Dec 2026, with no billing contact. */
 export function scopedGrant(): GuildBillingView {
   return guildBilling({
     scope: 'officer_tools',
-    current_period_end: '2026-12-11T00:00:00Z',
+    current_period_end: '2026-12-12T00:00:00Z',
     billed_by: '',
     you_are_billing_contact: false,
   });

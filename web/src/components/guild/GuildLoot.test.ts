@@ -149,6 +149,30 @@ describe('GuildLoot', () => {
       expect(gate).toContain(`href="${SETTINGS_HREF}"`);
     });
 
+    it('keeps the link whole and gives it a phone-only 44px hit area outside its focus ring', () => {
+      const markup = readOnly();
+      const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
+      const linkAt = markup.indexOf('<a', gateAt);
+      const classes =
+        (/class="([^"]*)"/.exec(markup.slice(linkAt, markup.indexOf('>', linkAt))) ?? [])[1] ?? '';
+      const list = classes.split(/\s+/);
+      expect(list).toEqual(
+        expect.arrayContaining([
+          'whitespace-nowrap',
+          'relative',
+          'after:absolute',
+          'after:inset-x-0',
+          'after:top-1/2',
+          'after:h-11',
+          'after:-translate-y-1/2',
+          "after:content-['']",
+          'md:after:hidden',
+          'focus-visible:outline-2',
+        ]),
+      );
+      expect(list).not.toContain('py-3');
+    });
+
     it('says the sentence above the empty state too', () => {
       const markup = readOnly({ loot: null });
       const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
@@ -207,6 +231,7 @@ describe('GuildLoot', () => {
       expect(tag).toContain('tabindex="-1"');
       expect(tag).toContain('text-[13px]');
       expect(tag).toContain('leading-5');
+      expect(tag).toContain('text-wipe');
       expect(text(markup.slice(lineAt, markup.indexOf('</p>', lineAt)))).toContain(
         guildGateCopy.awardRefused,
       );

@@ -41,7 +41,11 @@ line, the first line under the `Billing` heading.
 - `Subscribe the guild` is an inline link to `guildSettingsHref(region, ruleset, name)`.
   It uses the inline-link recipe (DESIGN-SYSTEM.md, Accent): underlined, `--gold` `#e5b955` at rest,
   `--gold-hover` `#f5d27a` on hover and `:active`, 2 px gold focus ring at 2 px offset.
-  On phone the link gets `py-3` so its hit area reaches 44 px. The line box stays 20 px.
+  The link is `whitespace-nowrap`, so it never splits across lines; at 360 the break falls after `plan.`.
+  On phone a `::after` pseudo-element (`relative` on the link; `after:absolute after:inset-x-0 after:top-1/2
+  after:h-11 after:-translate-y-1/2`, hidden from `md`) takes its hit area to 44 px: a fixed 44 px box centred
+  on the link, because an inline link's box is its font's ~16 px content area, not the 20 px line. The line box stays 20 px and the focus
+  ring stays on the link, hugging the text. (amended 2026-10-26, review round)
 - **Loot tab:** directly under the header row (`Loot` h2 and `Read-only`), above the boss picker.
   It also renders above the empty state (`No bosses killed yet this tier…`). The tab's `gap-4` (16 px) spaces it.
 - **Readiness tab:** directly under the `Readiness` h2, above the column header row (desktop) or the
@@ -107,10 +111,10 @@ Needs: `GuildApiError` gains `readonly code: string` from the envelope. Branch o
 
 ### 5.1 A scoped grant (`plan.scope === "officer_tools"`)
 `billingState` gains `'officer-tools'`. Inside the existing `Billing` section, top to bottom:
-1. Plan line, 14 px `--text`, slot `guild-billing-plan`: `Officer tools · until 11 Dec 2026`.
+1. Plan line, 14 px `--text`, slot `guild-billing-plan`: `Officer tools · until 12 Dec 2026`.
    The date comes from `utcDayMonthYear(current_period_end)`.
 2. Explanation, 13 px muted, in the `billedLine` slot (`guild-billing-contact`):
-   `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on 11 Dec 2026; the guild plan keeps them after that.`
+   `Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until 12 Dec 2026. After that they need the guild plan.` (amended 2026-10-26, review round)
 3. Price line, 13 px muted: today's `notOnPlanLines().detail`, unchanged.
 4. `Subscribe the guild`, `PRIMARY_BUTTON_FIXED w-fit px-4`, today's checkout href
    (`plan=guild&interval=monthly&guild_id=`). It is the same link as the not-on-plan state.
@@ -119,11 +123,11 @@ Needs: `GuildApiError` gains `readonly code: string` from the envelope. Branch o
 The full-plan states `on-plan`, `granted` (`Guild plan · until 31 Dec 2026`) and `not-on-plan` are unchanged in words and layout.
 
 ### 5.2 Officers who do not hold the claim (`mayBill === false`)
-- Today they see only `Only the guild master can release the claim or change billing.`
+- Today they see only `Only the guild master can subscribe the guild, release the claim or change billing.` (amended 2026-10-26, review round)
 - New: when `guildBilling !== null`, the `Billing` section renders for them too. It holds the plan line
   and its explanation (5.1 rows 1 and 2, or the `on-plan` or `granted` rows 1 and 2), then the
   existing `guildMasterOnly` line in place of any button.
-- Reason: the read-only sentence sends every officer here. They must find "until 11 Dec 2026", not a dead end.
+- Reason: the read-only sentence sends every officer here. They must find "until 12 Dec 2026", not a dead end.
 
 ### 5.3 An expired grant
 `/v1/me` attaches only an active plan (`attachGuildPlans`), so an expired grant arrives as `plan: null`.
@@ -143,7 +147,7 @@ The row:
 - Element: a `p` with `text-muted text-[13px] leading-5 basis-full`, `data-testid="account-guild-plan"`.
 - Text: the line guild settings shows, then `·`, then the muted inline link `Guild settings` to
   `guildSettingsHref`. The link is underlined, `--text-strong` on hover and `:active`, with the 2 px gold focus ring.
-  - `Officer tools · until 11 Dec 2026 · Guild settings`
+  - `Officer tools · until 12 Dec 2026 · Guild settings`
   - `Guild plan · renews 31 Dec 2026 · Guild settings`
 - `guildPlanLine` is extended to return the scoped line, so both pages call one function.
 - Height: the row grows by 32 px (a 20 px line and a 12 px gap) at every width. It does not wrap at 360.
@@ -160,10 +164,10 @@ New strings go in `web/src/lib/guild/copy.ts` (tabs) and `settings-view.ts` (`se
 | 403 on Award | `Not awarded. This guild's officer tools have ended.` |
 | 403 on Undo | `Not undone. This guild's officer tools have ended.` |
 | Settings plan line, scoped | `Officer tools · until {d Mon yyyy}` |
-| Settings explanation, scoped | `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on {d Mon yyyy}; the guild plan keeps them after that.` |
+| Settings explanation, scoped | `Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until {d Mon yyyy}. After that they need the guild plan.` (amended 2026-10-26, review round) |
 | Settings price line (reused) | `notOnPlanLines().detail` |
 | Settings button (reused) | `Subscribe the guild` |
-| Settings, not the claim holder (reused) | `Only the guild master can release the claim or change billing.` |
+| Settings, not the claim holder (reused) | `Only the guild master can subscribe the guild, release the claim or change billing.` (amended 2026-10-26, review round) |
 | Account guild row | `{plan line} · Guild settings` (link text `Guild settings`) |
 
 Out of lane (flag only): `notOnPlanLines().detail` still says "progression tools". §4.7 rules that the

@@ -7,7 +7,7 @@ import AccountGuildPlanLine from './AccountGuildPlanLine.svelte';
 const BASE: GuildBillingView = {
   scope: 'officer_tools',
   status: 'active',
-  current_period_end: '2026-12-11T00:00:00Z',
+  current_period_end: '2026-12-12T00:00:00Z',
   cancel_at_period_end: false,
   billed_by: '',
   you_are_billing_contact: false,
@@ -29,7 +29,7 @@ describe('AccountGuildPlanLine', () => {
   it('reads the scoped line then the Guild settings link', () => {
     const out = renderLine(BASE);
     expect(out.body).toContain('data-testid="account-guild-plan"');
-    expect(out.text).toBe('Officer tools · until 11 Dec 2026 · Guild settings');
+    expect(out.text).toBe('Officer tools · until 12 Dec 2026 · Guild settings');
     expect(out.body).toContain('href="/guild/us/hardcore/the-last-watch/settings"');
     expect(out.body).toContain('underline');
   });

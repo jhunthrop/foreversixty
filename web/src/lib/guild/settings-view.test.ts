@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
+import { guildRosterModelCopy } from './copy';
 import {
   billedLine,
   billingState,
@@ -116,12 +117,12 @@ describe('billing copy per state', () => {
 // Every officer-tools gate string below is read out of the spec's section 7 table.
 const GATE_SPEC = new URL('../../../../design/specs/2026-10-25-officer-tools-gate.md', import.meta.url);
 const COPY_HEADING = '## 7. Copy, verbatim';
-const DATE_PLACEHOLDER = { 'd Mon yyyy': '11 Dec 2026' };
+const DATE_PLACEHOLDER = { 'd Mon yyyy': '12 Dec 2026' };
 const scoped = (overrides: Partial<GuildBillingView> = {}): GuildBillingView =>
   billing({
     scope: 'officer_tools',
     billed_by: '',
-    current_period_end: '2026-12-11T00:00:00Z',
+    current_period_end: '2026-12-12T00:00:00Z',
     ...overrides,
   });
 
@@ -140,12 +141,18 @@ describe('the officer tools scoped grant', () => {
   it('reads the plan line from the spec', () => {
     const expected = specString(GATE_SPEC, COPY_HEADING, 'Settings plan line, scoped', 0, DATE_PLACEHOLDER);
     expect(guildPlanLine(scoped())).toBe(expected);
-    expect(guildPlanLine(scoped())).toBe('Officer tools · until 11 Dec 2026');
+    expect(guildPlanLine(scoped())).toBe('Officer tools · until 12 Dec 2026');
   });
 
   it('reads the explanation from the spec', () => {
     const expected = specString(GATE_SPEC, COPY_HEADING, 'Settings explanation, scoped', 0, DATE_PLACEHOLDER);
     expect(officerToolsExplanation(scoped())).toBe(expected);
+  });
+
+  it('reads the guild-master line from the spec', () => {
+    expect(guildRosterModelCopy.guildMasterOnly).toBe(
+      specString(GATE_SPEC, COPY_HEADING, 'Settings, not the claim holder (reused)'),
+    );
   });
 
   it('hands the account row the same plan line', () => {
@@ -155,9 +162,9 @@ describe('the officer tools scoped grant', () => {
 });
 
 describe('the scoped explanation without an end date', () => {
-  it('drops the date clause instead of rendering It ends on ;', () => {
+  it('drops the until clause instead of rendering until .', () => {
     expect(officerToolsExplanation(scoped({ current_period_end: null }))).toBe(
-      'Granted by Forever Sixty for Award, Undo and Nudge only. The guild plan keeps them after that.',
+      'Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only. After that they need the guild plan.',
     );
   });
 });
