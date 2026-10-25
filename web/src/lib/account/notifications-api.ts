@@ -1,11 +1,12 @@
 // web/src/lib/account/notifications-api.ts
 // The three calls the account page's Discord block makes (experience spec
 // 2026-10-25-discord-notifications section 10). None of them ever carries the webhook URL back:
-// the API answers the block that `/v1/me` carries. Each success drops the cached `/v1/me`, so
-// the Premium row and the block re-read the state the server now holds.
+// the API answers the block that `/v1/me` carries. A success writes nothing itself: the caller
+// patches the cached `/v1/me` with `patchMeDiscord`, so the page updates in place.
 import { API_BASE_URL } from '../planner/config';
-import { AccountError, invalidateMe, requestEnvelope } from './api';
-import type { DiscordEvents, DiscordNotifications } from './api';
+import { AccountError, meKey, requestEnvelope } from './api';
+import type { DiscordEvents, DiscordNotifications, Me } from './api';
+import { setQueryData } from '../data/query';
 import { notificationsCopy, shortenDiscordText } from './notifications-copy';
 
 export type { DiscordEvents, DiscordNotifications } from './api';
@@ -59,7 +60,6 @@ function toNotificationsError(error: unknown): NotificationsApiError {
 async function send<T>(path: string, method: string, apiBase: string, body?: unknown): Promise<T | null> {
   try {
     const { data } = await requestEnvelope<T>(path, apiBase, { method, body });
-    invalidateMe(apiBase);
     return data;
   } catch (error) {
     throw toNotificationsError(error);
@@ -83,4 +83,18 @@ export async function testDiscordWebhook(apiBase: string = API_BASE_URL): Promis
 
 export async function deleteDiscordWebhook(apiBase: string = API_BASE_URL): Promise<void> {
   await send<null>(DISCORD_PATH, 'DELETE', apiBase);
+}
+
+/**
+ * Writes `discord` into the cached `/v1/me` as a new object (the given `me` is untouched), so
+ * the account page, the Premium row and the block re-render in place with no loading state.
+ */
+export function patchMeDiscord(
+  me: Me,
+  discord: DiscordNotifications | null,
+  apiBase: string = API_BASE_URL,
+): Me {
+  const patched: Me = { ...me, notifications: { ...(me.notifications ?? {}), discord } };
+  setQueryData(meKey(apiBase), patched);
+  return patched;
 }

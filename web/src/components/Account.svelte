@@ -210,8 +210,11 @@
 
   // Devices, for 'account'/'pairing' only, once `me` is known -- the second half of the old
   // `load()`'s sequential await chain, now driven by `me` changing instead.
+  // Keyed on whether `me` exists, not on the object: an in-place patch of it (the Discord block
+  // writes its saved state into the cache) must not drop the page back to its loading state.
+  const hasMe = $derived(me !== null);
   $effect(() => {
-    if (me === null || (mode !== 'account' && mode !== 'pairing')) {
+    if (!hasMe || (mode !== 'account' && mode !== 'pairing')) {
       devicesStatus = 'idle';
       return;
     }
@@ -924,7 +927,7 @@
                 </div>
               </StatePanel>
               {#if me !== null}
-                <AccountDiscordBlock {me} onChanged={() => session.refresh()} />
+                <AccountDiscordBlock {me} />
               {/if}
             </div>
           </div>

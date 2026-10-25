@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createNotificationsApi, discordBlock } from '../../test-support/notifications-api';
-import * as accountApi from './api';
+import * as query from '../data/query';
+import type { Me } from './api';
 import {
   NotificationsApiError,
   deleteDiscordWebhook,
+  patchMeDiscord,
   saveDiscordWebhook,
   testDiscordWebhook,
 } from './notifications-api';
@@ -20,8 +22,7 @@ afterEach(() => {
 });
 
 describe('saveDiscordWebhook', () => {
-  it('PUTs the URL and events and returns the block, then drops the cached /v1/me', async () => {
-    const invalidate = vi.spyOn(accountApi, 'invalidateMe');
+  it('PUTs the URL and events and returns the block, and leaves the cached /v1/me alone', async () => {
     stub.setBlock(discordBlock({ events: EVENTS }));
     const block = await saveDiscordWebhook(
       { webhook_url: 'https://discord.com/api/webhooks/1/tok', events: EVENTS },
@@ -35,7 +36,6 @@ describe('saveDiscordWebhook', () => {
         body: { webhook_url: 'https://discord.com/api/webhooks/1/tok', events: EVENTS },
       },
     ]);
-    expect(invalidate).toHaveBeenCalledWith(BASE);
   });
 
   it('omits webhook_url for an events-only change', async () => {
@@ -53,24 +53,20 @@ describe('saveDiscordWebhook', () => {
     });
   });
 
-  it('types 402 as not-entitled and 500 as failed, and does not invalidate', async () => {
-    const invalidate = vi.spyOn(accountApi, 'invalidateMe');
+  it('types 402 as not-entitled and 500 as failed', async () => {
     stub.failWith('put', 402, 'premium');
     await expect(saveDiscordWebhook({ events: EVENTS }, BASE)).rejects.toMatchObject({
       kind: 'not-entitled',
     });
     stub.failWith('put', 500, 'boom');
     await expect(saveDiscordWebhook({ events: EVENTS }, BASE)).rejects.toMatchObject({ kind: 'failed' });
-    expect(invalidate).not.toHaveBeenCalled();
   });
 });
 
 describe('testDiscordWebhook', () => {
-  it('POSTs to the test route and drops the cached /v1/me on 204', async () => {
-    const invalidate = vi.spyOn(accountApi, 'invalidateMe');
+  it('POSTs to the test route', async () => {
     await expect(testDiscordWebhook(BASE)).resolves.toBeUndefined();
     expect(stub.requests()[0]).toMatchObject({ method: 'POST', path: '/v1/notifications/discord/test' });
-    expect(invalidate).toHaveBeenCalledWith(BASE);
   });
 
   it('types 429 as rate-limited', async () => {
@@ -88,15 +84,37 @@ describe('testDiscordWebhook', () => {
 });
 
 describe('deleteDiscordWebhook', () => {
-  it('DELETEs and drops the cached /v1/me', async () => {
-    const invalidate = vi.spyOn(accountApi, 'invalidateMe');
+  it('DELETEs', async () => {
     await deleteDiscordWebhook(BASE);
     expect(stub.requests()[0]).toMatchObject({ method: 'DELETE', path: '/v1/notifications/discord' });
-    expect(invalidate).toHaveBeenCalledWith(BASE);
   });
 
   it('types a failure', async () => {
     stub.failWith('delete', 500, 'boom');
     await expect(deleteDiscordWebhook(BASE)).rejects.toMatchObject({ kind: 'failed' });
+  });
+});
+
+describe('patchMeDiscord', () => {
+  const me: Me = {
+    user: { id: 1, battletag: null, email: null, role: 'member', anonymize: false },
+    characters: [],
+    guilds: [],
+  };
+
+  it('returns a new object with the block, leaves me untouched and writes the cache', () => {
+    const write = vi.spyOn(query, 'setQueryData');
+    const block = discordBlock();
+    const patched = patchMeDiscord(me, block, BASE);
+    expect(patched).not.toBe(me);
+    expect(patched.notifications).toEqual({ discord: block });
+    expect(me.notifications).toBeUndefined();
+    expect(write).toHaveBeenCalledWith(`${BASE}/v1/me`, patched);
+  });
+
+  it('keeps the other channels and can clear discord', () => {
+    const withOther = { ...me, notifications: { discord: discordBlock(), phone: 1 } } as unknown as Me;
+    const patched = patchMeDiscord(withOther, null, BASE);
+    expect(patched.notifications).toEqual({ discord: null, phone: 1 });
   });
 });

@@ -14,7 +14,6 @@
     sendTest,
     type ActionResult,
   } from '../../lib/account/discord-actions';
-  import { discordFocus } from '../../lib/account/discord-focus';
   import { LINK_BUTTON } from '../../lib/account/discord-styles';
   import { blockState } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
@@ -36,8 +35,8 @@
 
   type Busy = 'save' | 'events' | 'test' | 'remove' | null;
 
-  /** `me` is the page's loaded `/v1/me`; `onChanged` asks the page to re-read it after a change. */
-  let { me, onChanged = () => {} }: { me: Me; onChanged?: () => void } = $props();
+  /** `me` is the page's loaded `/v1/me`; a change patches the cache, so `me` updates in place. */
+  let { me }: { me: Me } = $props();
 
   const block = $derived(blockState(me));
   let webhook = $state('');
@@ -48,12 +47,8 @@
   let status = $state<ActionResult | null>(null);
   let fieldFailure = $state<Extract<ActionResult, { ok: false }> | null>(null);
   // Applied by the effect below on the first render where it resolves: a save or remove changes
-  // the state only after the page re-reads /v1/me, so the target does not exist yet.
-  let pendingFocus = $state<string | null>(discordFocus.get());
-  function wantFocus(selector: string | null): void {
-    pendingFocus = selector;
-    discordFocus.set(selector);
-  }
+  // the state when the patched `me` arrives, so the target may not exist yet.
+  let pendingFocus = $state<string | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
   const showForm = $derived(block.state === 'empty' || (replacing && block.state !== 'lapsed'));
@@ -67,7 +62,7 @@
       const target = document.querySelector<HTMLElement>(selector);
       if (target === null) return;
       target.focus();
-      if (pendingFocus === selector) wantFocus(null);
+      if (pendingFocus === selector) pendingFocus = null;
     });
   });
 
@@ -80,44 +75,44 @@
   async function run(kind: Exclude<Busy, null>, action: () => Promise<ActionResult>): Promise<ActionResult> {
     busy = kind;
     status = null;
-    wantFocus(null);
+    pendingFocus = null;
     const result = await action();
     busy = null;
-    if (result.ok) onChanged();
     return result;
   }
 
   async function submit(): Promise<void> {
     fieldFailure = null;
-    const result = await run('save', () => saveWebhook(webhook, formEvents));
+    const result = await run('save', () => saveWebhook(me, webhook, formEvents));
     if (!result.ok) {
       if (result.target === 'status') show(result);
       else fieldFailure = result;
-      wantFocus(INPUT);
+      pendingFocus = INPUT;
       return;
     }
     webhook = '';
     replacing = false;
-    wantFocus(TEST_BUTTON);
+    pendingFocus = TEST_BUTTON;
     show(result);
   }
 
   async function changeEvents(next: DiscordEvents): Promise<boolean> {
-    const result = await run('events', () => saveEvents(next));
+    const result = await run('events', () => saveEvents(me, next));
     show(result);
     return result.ok;
   }
 
   async function test(): Promise<void> {
-    show(await run('test', () => sendTest(block.state === 'disabled')));
+    show(await run('test', () => sendTest(me, block.state === 'disabled')));
   }
 
   async function remove(): Promise<void> {
-    const result = await run('remove', removeWebhook);
+    const afterRemove = block.state === 'lapsed' ? FREE_LINK : INPUT; // the patched `me` flips the state
+    const result = await run('remove', () => removeWebhook(me));
     show(result);
     if (!result.ok) return;
     confirming = false;
-    wantFocus(block.state === 'lapsed' ? FREE_LINK : INPUT);
+    pendingFocus = afterRemove;
   }
 
   function startReplace(): void {
@@ -125,12 +120,12 @@
     fieldFailure = null;
     status = null;
     replacing = true;
-    wantFocus(INPUT);
+    pendingFocus = INPUT;
   }
 
   function askRemove(): void {
     confirming = true;
-    wantFocus(REMOVE_CANCEL);
+    pendingFocus = REMOVE_CANCEL;
   }
 
   function cancel(): void {
