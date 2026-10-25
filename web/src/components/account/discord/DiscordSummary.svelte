@@ -56,8 +56,7 @@
   <p class="text-muted text-[13px]">
     {lineTwo.slice(0, idAt)}<span class="text-text font-mono whitespace-nowrap tabular-nums"
       >{lineTwo.slice(idAt)}</span
-    >{#if openUrl !== null}
-      · <a
+    >{#if openUrl !== null}{' · '}<a
         class="text-text hover:text-gold-hover -my-3 py-3 underline"
         href={openUrl}
         target="_blank"
