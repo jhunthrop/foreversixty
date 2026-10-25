@@ -7,7 +7,7 @@
   import { tick, untrack } from 'svelte';
   import { historyCopy, type ListKind } from '../../lib/character/history-copy';
   import type { HistoryFight } from '../../lib/character/history-api';
-  import { scrollRowIntoView } from '../../lib/character/history-layout';
+  import { afterLayout, opensOnSelection, scrollRowIntoView } from '../../lib/character/history-layout';
   import { listWindow } from '../../lib/character/history-select';
   import CharacterFightTable from './CharacterFightTable.svelte';
 
@@ -38,23 +38,23 @@
   const rowKey = (row: HistoryFight, index: number): string => `${row.report_id}-${row.fight_index}-${index}`;
   const visibilityNote = (row: HistoryFight): string | null => historyCopy.visibilityWord(row.visibility);
 
-  // A selection that marks hidden rows opens the list and brings the first of them into view.
-  // Only the selection triggers it, so `Show fewer` stays collapsed until the next selection.
-  // Keyed on the marked rows' own identity, not the Set's: a rebuilt chart or a hover that leaves
-  // the committed point alone hands over an equal Set and must not re-open a collapsed list.
+  // A selection that marks hidden rows opens the list and jumps the first of them into view, once.
+  // Only a committed selection reaches `marked` (a hover preview never does), so `Show fewer`
+  // stays collapsed until the next selection. Keyed on the marked rows' identity, not the Set's:
+  // a rebuilt chart hands over an equal Set and must not re-open a collapsed list.
   const markedSignature = $derived([...marked].sort().join(','));
+  let scrolledFor = '';
   $effect(() => {
-    void markedSignature;
+    const signature = markedSignature;
     const opens = untrack(() => listWindow(fights, false, marked).needsExpand);
-    if (!opens) return;
+    const previous = scrolledFor;
+    scrolledFor = signature;
+    if (!opensOnSelection(previous, signature, opens)) return;
     expanded = true;
-    // Once the opened rows are in the DOM and have been laid out (two frames), so the scroll
-    // measures the final list rather than the collapsed one.
-    void tick().then(() =>
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => scrollRowIntoView(host?.querySelector('[data-marked="true"]'))),
-      ),
-    );
+    void afterLayout(() => scrollRowIntoView(host), {
+      tick,
+      frame: (run) => requestAnimationFrame(run),
+    });
   });
 </script>
 

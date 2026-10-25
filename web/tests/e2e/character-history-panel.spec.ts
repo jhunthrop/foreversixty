@@ -26,7 +26,7 @@ const SCORED = {
 };
 const RESERVE_KEY = 'fs.history.reserve';
 
-/** Polls until the window has stopped scrolling (a smooth scroll in flight keeps moving). */
+/** Polls until the window has stopped scrolling, so a later reading of scrollY is the settled one. */
 async function expectScrollSettled(page: Page): Promise<void> {
   let last = Number.NaN;
   await expect
@@ -64,6 +64,9 @@ test('selecting a hidden row opens the list once and a later hover never moves i
   const toggle = score.getByTestId('history-score-fights-toggle');
   await expect(plot).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  // The owner's bar above the profile lands after /v1/me; once it is in, nothing above the plot
+  // changes height, so scroll anchoring cannot move scrollY under the hover check below.
+  await expect(page.getByTestId('current-character-bar').first()).toBeVisible();
 
   await plot.focus();
   await page.keyboard.press('Home');

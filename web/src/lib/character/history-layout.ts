@@ -36,22 +36,40 @@ export function reserveToStore(status: string, listOpen: boolean, height: number
   return status === 'ready' && !listOpen ? height : null;
 }
 
-/** How long a smooth scroll gets before its result is checked. */
-export const SCROLL_SETTLE_MS = 800;
+/** The rows a committed selection marks (CharacterFightTable's `data-marked`). */
+export const MARKED_ROW_SELECTOR = '[data-marked="true"]';
 
 /**
- * Brings a list row to the middle of the window. A smooth scroll can be cut short (a headless
- * browser, a layout that moved under it), so once it has had time the row is checked and, if it
- * is still outside the window, jumped to.
+ * Jumps the first marked row inside `host` to the middle of the window (its `scroll-mt-24`
+ * margin holds). Instant on purpose: a smooth scroll can be cut short by a layout that moves
+ * under it, and headless Chromium never finished one. The row is looked up now, not earlier, so
+ * the list is measured as it stands; an unmounted host or a list with no mark does nothing.
  */
-export function scrollRowIntoView(row: Element | null | undefined): void {
-  if (row === null || row === undefined) return;
-  row.scrollIntoView({ block: 'center', behavior: scrollBehavior() });
-  window.setTimeout(() => {
-    if (!row.isConnected) return;
-    const { top, bottom } = row.getBoundingClientRect();
-    if (bottom < 0 || top > window.innerHeight) row.scrollIntoView({ block: 'center', behavior: 'auto' });
-  }, SCROLL_SETTLE_MS);
+export function scrollRowIntoView(host: Element | null | undefined): void {
+  if (host === null || host === undefined || !host.isConnected) return;
+  host.querySelector(MARKED_ROW_SELECTOR)?.scrollIntoView({ block: 'center', behavior: 'auto' });
+}
+
+/** The two waits before a scroll can measure freshly rendered rows. */
+export interface LayoutWait {
+  /** Svelte's `tick`: the rows are in the DOM. */
+  tick: () => Promise<void>;
+  /** `requestAnimationFrame`: the rows have been laid out and have height. */
+  frame: (run: () => void) => unknown;
+}
+
+/** Runs `run` once the DOM holds the new rows and they have been laid out. */
+export async function afterLayout(run: () => void, wait: LayoutWait): Promise<void> {
+  await wait.tick();
+  wait.frame(run);
+}
+
+/**
+ * Whether a change of the committed marks opens the list and scrolls: only a new set of marked
+ * rows (a rebuilt chart hands over an equal one) whose first row sits beyond the collapsed eight.
+ */
+export function opensOnSelection(previous: string, signature: string, needsExpand: boolean): boolean {
+  return signature !== previous && needsExpand;
 }
 
 export function writeHistoryReserve(pixels: number): void {

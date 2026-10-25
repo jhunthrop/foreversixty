@@ -4,7 +4,8 @@ import {
   HISTORY_MAX_RESERVE_PX,
   HISTORY_RESERVE_KEY,
   reserveToStore,
-  SCROLL_SETTLE_MS,
+  afterLayout,
+  opensOnSelection,
   scrollRowIntoView,
   scrollBehavior,
   wrapReason,
@@ -24,34 +25,91 @@ describe('scrollBehavior', () => {
 afterEach(() => localStorage.clear());
 
 describe('scrollRowIntoView', () => {
-  const rowAt = (top: number, scrolls: unknown[]): Element =>
-    ({
-      isConnected: true,
-      scrollIntoView: (options: unknown) => scrolls.push(options),
-      getBoundingClientRect: () => ({ top, bottom: top + 61 }),
-    }) as unknown as Element;
+  /** A mounted list of `rows` items, the ones at `marked` carrying data-marked, with spies. */
+  function listHost(
+    rows: number,
+    marked: number[],
+  ): { host: HTMLElement; spies: ReturnType<typeof vi.fn>[] } {
+    const host = document.createElement('div');
+    const spies = Array.from({ length: rows }, (_, index) => {
+      const row = document.createElement('li');
+      row.dataset.marked = String(marked.includes(index));
+      const spy = vi.fn();
+      row.scrollIntoView = spy;
+      host.append(row);
+      return spy;
+    });
+    document.body.append(host);
+    return { host, spies };
+  }
 
-  afterEach(() => vi.useRealTimers());
+  afterEach(() => document.body.replaceChildren());
 
-  it('scrolls the row to the middle at once, and leaves it when it landed', () => {
+  it('jumps the first marked row to the middle at once, and only that row', () => {
     vi.useFakeTimers();
-    const scrolls: unknown[] = [];
-    scrollRowIntoView(rowAt(300, scrolls));
-    expect(scrolls).toEqual([{ block: 'center', behavior: expect.any(String) }]);
-    vi.advanceTimersByTime(SCROLL_SETTLE_MS);
-    expect(scrolls).toHaveLength(1);
+    const { host, spies } = listHost(12, [9, 10]);
+    scrollRowIntoView(host);
+    expect(spies[9]).toHaveBeenCalledExactlyOnceWith({ block: 'center', behavior: 'auto' });
+    expect(spies.filter((spy) => spy.mock.calls.length > 0)).toHaveLength(1);
+    expect(vi.getTimerCount()).toBe(0);
+    vi.useRealTimers();
   });
 
-  it('jumps once more when the smooth scroll left the row outside the window', () => {
-    vi.useFakeTimers();
-    const scrolls: unknown[] = [];
-    scrollRowIntoView(rowAt(5000, scrolls));
-    vi.advanceTimersByTime(SCROLL_SETTLE_MS);
-    expect(scrolls[1]).toEqual({ block: 'center', behavior: 'auto' });
+  it('finds the row at scroll time, not when the list was handed over', () => {
+    const { host } = listHost(3, []);
+    const late = document.createElement('li');
+    late.dataset.marked = 'true';
+    late.scrollIntoView = vi.fn();
+    host.append(late);
+    scrollRowIntoView(host);
+    expect(late.scrollIntoView).toHaveBeenCalledOnce();
   });
 
-  it('does nothing without a row', () => {
+  it('does nothing for a list with no mark, an unmounted host or no host', () => {
+    const { host, spies } = listHost(4, []);
+    expect(() => scrollRowIntoView(host)).not.toThrow();
+    const detached = listHost(4, [2]);
+    detached.host.remove();
+    scrollRowIntoView(detached.host);
+    expect([...spies, ...detached.spies].every((spy) => spy.mock.calls.length === 0)).toBe(true);
+    expect(() => scrollRowIntoView(undefined)).not.toThrow();
     expect(() => scrollRowIntoView(null)).not.toThrow();
+  });
+});
+
+describe('afterLayout', () => {
+  it('runs only after the DOM update and one laid-out frame', async () => {
+    const order: string[] = [];
+    let frame: (() => void) | undefined;
+    const done = afterLayout(() => order.push('scroll'), {
+      tick: async () => {
+        order.push('tick');
+      },
+      frame: (run) => {
+        order.push('frame');
+        frame = run;
+      },
+    });
+    expect(order).toEqual(['tick']);
+    await done;
+    expect(order).toEqual(['tick', 'frame']);
+    frame?.();
+    expect(order).toEqual(['tick', 'frame', 'scroll']);
+  });
+});
+
+describe('opensOnSelection', () => {
+  it('opens for a new selection whose rows are hidden', () => {
+    expect(opensOnSelection('', 'rpt1:7', true)).toBe(true);
+    expect(opensOnSelection('rpt1:7', 'rpt9:2', true)).toBe(true);
+  });
+
+  it('stays put for an equal selection handed over again (a rebuilt chart, a hover)', () => {
+    expect(opensOnSelection('rpt1:7', 'rpt1:7', true)).toBe(false);
+  });
+
+  it('stays put for a selection whose rows are already shown', () => {
+    expect(opensOnSelection('', 'rpt1:7', false)).toBe(false);
   });
 });
 
