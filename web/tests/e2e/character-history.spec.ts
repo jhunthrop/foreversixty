@@ -165,7 +165,9 @@ test('each of the three gap reasons is named on the chart', async ({ page }) => 
   const named = [
     ...(await page.getByTestId('history-gap-label').allTextContents()),
     ...(await page.getByTestId('history-gap-note').allTextContents()),
-  ].join('\n');
+  ]
+    .join(' ')
+    .replace(/\s+/g, ' ');
   for (const reason of ['No rated fights', 'Report flagged', 'Score not kept']) {
     expect(named).toContain(reason);
   }
@@ -251,6 +253,21 @@ test('a visitor gets the card alone: no section, no sentence, no history request
 test('an anonymised character is the 404 page with no history anywhere', async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   const requests = watchHistoryRequests(page);
+  await stubCharacter(page, false);
+  await routeCharacterHistory(page);
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character-not-found-line')).toBeVisible();
+  await expect(page.getByTestId('character-history-section')).toHaveCount(0);
+  await expect(page.getByTestId('history-free-sentence')).toHaveCount(0);
+  await page.waitForTimeout(500);
+  expect(requests).toEqual([]);
+});
+
+test('an anonymised character is the 404 page for its entitled owner too', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  const requests = watchHistoryRequests(page);
+  await stubOwner(page, true);
   await stubCharacter(page, false);
   await routeCharacterHistory(page);
   await page.goto(CHARACTER_PATH);

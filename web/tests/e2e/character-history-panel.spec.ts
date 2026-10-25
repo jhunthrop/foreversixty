@@ -11,6 +11,7 @@ import {
   ownerMeAnswer,
   routeCharacterHistory,
 } from './support/character-fixture';
+import { HISTORY_MAX_RESERVE_PX } from '../../src/lib/character/history-layout';
 
 const SCORED = {
   ...CHARACTER,
@@ -123,6 +124,9 @@ test('the reserve keeps the collapsed box, not an opened list', async ({ page })
   await toggle.click();
   await expect(toggle).toHaveText('Show fewer');
   await page.waitForTimeout(300);
+  // Under the bound the write would be accepted, so an unchanged value proves the skip.
+  const expanded = await page.getByTestId('character-history-section').boundingBox();
+  expect(expanded?.height ?? Number.POSITIVE_INFINITY).toBeLessThan(HISTORY_MAX_RESERVE_PX);
   expect(await reserve(page)).toBe(collapsed);
 });
 

@@ -41,6 +41,12 @@ describe('scoreDomain', () => {
     expect(scoreDomain([30, 400])).toEqual({ min: 0, max: 500 });
   });
 
+  it('widens a window clamped under 400 away from the clamped edge', () => {
+    expect(scoreDomain([1860, 2100])).toEqual({ min: 1700, max: 2100 });
+    expect(scoreDomain([0, 100])).toEqual({ min: 0, max: 400 });
+    expect(scoreDomain([0, 40])).toEqual({ min: 0, max: 400 });
+  });
+
   it('fails fast with no values', () => {
     expect(() => scoreDomain([])).toThrow();
   });

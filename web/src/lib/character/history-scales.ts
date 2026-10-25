@@ -79,13 +79,20 @@ export function scoreDomain(values: readonly number[]): Domain {
   requireValues(values);
   let min = Math.floor((Math.min(...values) - SCORE_PAD) / DOMAIN_STEP) * DOMAIN_STEP;
   let max = Math.ceil((Math.max(...values) + SCORE_PAD) / DOMAIN_STEP) * DOMAIN_STEP;
-  if (max - min >= MIN_SCORE_SPAN) return { min: Math.max(min, 0), max: Math.min(max, SCORE_MAX) };
-  // Under 400: centre a 400 window, then shift it inside 0..2100 so it keeps its width.
-  min = Math.floor(((min + max) / 2 - MIN_SCORE_SPAN / 2) / DOMAIN_STEP) * DOMAIN_STEP;
-  max = min + MIN_SCORE_SPAN;
-  if (min < 0) return { min: 0, max: MIN_SCORE_SPAN };
-  if (max > SCORE_MAX) return { min: SCORE_MAX - MIN_SCORE_SPAN, max: SCORE_MAX };
-  return { min, max };
+  if (max - min < MIN_SCORE_SPAN) {
+    // Under 400: centre a 400 window, then shift it inside 0..2100 so it keeps its width.
+    min = Math.floor(((min + max) / 2 - MIN_SCORE_SPAN / 2) / DOMAIN_STEP) * DOMAIN_STEP;
+    max = min + MIN_SCORE_SPAN;
+    if (min < 0) return { min: 0, max: MIN_SCORE_SPAN };
+    if (max > SCORE_MAX) return { min: SCORE_MAX - MIN_SCORE_SPAN, max: SCORE_MAX };
+    return { min, max };
+  }
+  const clamped = { min: Math.max(min, 0), max: Math.min(max, SCORE_MAX) };
+  // Clamping can leave a wide window narrow; widen it away from the clamped edge.
+  if (clamped.max - clamped.min >= MIN_SCORE_SPAN) return clamped;
+  return clamped.max === SCORE_MAX
+    ? { min: SCORE_MAX - MIN_SCORE_SPAN, max: SCORE_MAX }
+    : { min: 0, max: MIN_SCORE_SPAN };
 }
 
 /** The ladder's own rungs (0, 25, 50, 75) to 100, never the exact data, so it does not rescale as points arrive. */
