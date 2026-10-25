@@ -168,21 +168,25 @@ func TestReadOwnerHistoryFightsAreDedupedNewestFirstWithVisibility(t *testing.T)
 	prv := histReport(t, pool, "fprv", "private", nil)
 	histRate(t, pool, pub, 1, histBase, true, intp(1000), "50")
 	histRate(t, pool, prv, 1, histBase.Add(time.Hour), true, intp(1100), "60")
+	unl := histReport(t, pool, "funl", "unlisted", nil)
+	histRate(t, pool, unl, 1, histBase.Add(2*time.Hour), true, intp(1200), "70")
+	histMetric(t, pool, unl, 1, histBase.Add(2*time.Hour))
 	histMetric(t, pool, pub, 1, histBase)
 	histMetric(t, pool, prv, 1, histBase.Add(time.Hour))
 	h, err := (&Store{Pool: pool}).ReadOwnerHistory(context.Background(), histKey)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(h.Fights) != 2 {
-		t.Fatalf("fights = %d, want 2 (one per fight)", len(h.Fights))
+	if len(h.Fights) != 3 {
+		t.Fatalf("fights = %d, want 3 (one per fight)", len(h.Fights))
 	}
-	if h.Fights[0].ReportID != prv || h.Fights[0].Visibility != "private" ||
-		h.Fights[1].ReportID != pub || h.Fights[1].Visibility != "public" {
-		t.Errorf("fights = %+v, want the private one first, then the public", h.Fights)
+	if h.Fights[0].ReportID != unl || h.Fights[0].Visibility != "public" ||
+		h.Fights[1].ReportID != prv || h.Fights[1].Visibility != "private" ||
+		h.Fights[2].ReportID != pub || h.Fights[2].Visibility != "public" {
+		t.Errorf("fights = %+v, want unlisted (as public), private, public, newest first", h.Fights)
 	}
-	if h.Fights[0].Metric != "dps" || h.Fights[0].Value != 100 {
-		t.Errorf("fight row shape = %+v", h.Fights[0].CharacterFight)
+	if h.Fights[1].Metric != "dps" || h.Fights[1].Value != 100 {
+		t.Errorf("fight row shape = %+v", h.Fights[1].CharacterFight)
 	}
 }
 

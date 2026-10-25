@@ -36,7 +36,8 @@ func (s *Store) readHistory(ctx context.Context, key, scope string, limit int, s
 		`select m.encounter_id, m.difficulty, m.kill, m.role, m.metric_dps, m.metric_hps,
 		        m.damage_taken, coalesce(m.spec, ''), coalesce(m.talent_split, ''),
 		        coalesce(m.duration_ms, 0), m.fought_at, m.report_id, m.fight_index,
-		        coalesce(m.class, ''), coalesce(m.phase, ''), m.execution_score, r.visibility
+		        coalesce(m.class, ''), coalesce(m.phase, ''), m.execution_score,
+		        case r.visibility when 'unlisted' then 'public' else r.visibility end
 		 from fight_metrics m join reports r on r.id = m.report_id
 		 where m.player_key = $1 and m.state <> 'removed' and `+scope+`
 		 order by m.fought_at desc, m.report_id desc, m.fight_index desc limit $2`,
