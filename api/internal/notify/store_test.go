@@ -218,6 +218,13 @@ func TestExistingWebhooksKeepPostingPrivateLogs(t *testing.T) {
 		}
 	}
 	backfill()
+	var raw string
+	if err := pool.QueryRow(ctx, `select events->>'upload_private' from notification_webhooks where user_id = $1`, old).Scan(&raw); err != nil {
+		t.Fatal(err)
+	}
+	if raw != "true" {
+		t.Fatalf("stored upload_private after the backfill = %q, want \"true\"", raw)
+	}
 	events := map[EventName]bool{EventSimFinished: true, EventUploadParsed: true}
 	if err := st.Save(ctx, fresh, KindDiscord, "8", nil, []byte("b"), events); err != nil {
 		t.Fatal(err)

@@ -18,6 +18,7 @@
     type ConnectDevice,
     type Me,
   } from '../lib/account/api';
+  import { clearAccountReserve } from '../lib/account/layout';
   import { connectCopy } from '../lib/account/connect-copy';
   import { displayCode, normalizeCode, stateForError, type ConnectState } from '../lib/account/connect-flow';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -90,6 +91,7 @@
       // Signing out of a session that is already gone is the same outcome.
     }
     forgetSession();
+    clearAccountReserve();
     me = null;
     state = 'signedOut';
   }

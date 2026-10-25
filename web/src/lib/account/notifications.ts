@@ -3,7 +3,7 @@
 // sections 3 and 4.1): which of five states `/v1/me` puts the block in, what the Premium row
 // reads, and the inline shape check for a pasted URL. The web never decides the entitlement;
 // it reads `entitlements.notifications`.
-import type { DiscordDisabledReason, DiscordNotifications, Me } from './api';
+import type { DiscordNotifications, Me } from './api';
 import { discordHintState } from './layout';
 import { notificationsCopy, premiumRowCopy } from './notifications-copy';
 
@@ -23,9 +23,6 @@ const ACCEPTED_HOSTS: ReadonlySet<string> = new Set(['discord.com', 'discordapp.
 // /api/webhooks/<number>/<token>, with an optional v6 to v10 segment after /api.
 const WEBHOOK_PATH = /^\/api(?:\/v(?:[6-9]|10))?\/webhooks\/\d+\/[\w-]+$/;
 const FAILURES_BEFORE_SWITCH_OFF = 5;
-
-/** The `disabled_reason` the API sets after five failed posts in a row. */
-export const FAILED_FIVE_TIMES: DiscordDisabledReason = 'failed five times';
 
 /**
  * Which state the block shows, in the spec's precedence: `off` (no `notifications` key: the

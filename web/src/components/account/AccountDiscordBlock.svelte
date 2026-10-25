@@ -159,7 +159,7 @@
             onSubmit={submit}
             onCancel={cancel}
           />
-        {:else if 'discord' in block && block.state !== 'empty'}
+        {:else if 'discord' in block}
           <DiscordSaved
             state={block.state}
             discord={block.discord}

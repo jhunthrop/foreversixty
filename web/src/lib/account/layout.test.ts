@@ -9,7 +9,9 @@ import {
   DISCORD_FLOORS,
   clearAccountReserve,
   discordHintState,
+  isTransientAccountState,
   readAccountReserve,
+  recordAccountReserve,
   writeAccountReserve,
   type HintState,
 } from './layout';
@@ -78,6 +80,33 @@ describe('discordHintState (spec 4.1 precedence)', () => {
     expect(Object.keys(DISCORD_FLOORS).sort()).toEqual(['form', 'free', 'lapsed', 'none', 'off', 'saved']);
     expect(DISCORD_FLOORS.none).toEqual({ lg: 0, stack: 0 });
     expect(DISCORD_FLOORS.form).toEqual({ lg: 650, stack: 640 });
+  });
+});
+
+describe('isTransientAccountState', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it.each(['discord-cancel', 'discord-remove-confirm'])('is true while %s is on the page', (testid) => {
+    document.body.innerHTML = `<button data-testid="${testid}"></button>`;
+    expect(isTransientAccountState(document)).toBe(true);
+  });
+
+  it('is false on a settled page', () => {
+    document.body.innerHTML = '<button data-testid="discord-save"></button>';
+    expect(isTransientAccountState(document)).toBe(false);
+  });
+
+  it('keeps recordAccountReserve from storing a passing state', () => {
+    const el = (): Element => {
+      const node = document.createElement('div');
+      node.getBoundingClientRect = () => ({ height: 700 }) as DOMRect;
+      return node;
+    };
+    document.body.innerHTML = '<button data-testid="discord-cancel"></button>';
+    recordAccountReserve(el(), el());
+    expect(localStorage.getItem(ACCOUNT_RESERVE_KEY)).toBeNull();
   });
 });
 

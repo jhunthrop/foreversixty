@@ -111,7 +111,7 @@ function readStoredBuckets(): Partial<AccountReserve> {
   }
 }
 
-/** The stored heights of the last ready pages; null unless both buckets are present and valid. */
+/** The stored heights of the last ready pages (the test reader: Base.astro holds its own copy); null unless both buckets are present and valid. */
 export function readAccountReserve(): AccountReserve | null {
   const { lg, stack } = readStoredBuckets();
   return lg === undefined || stack === undefined ? null : { lg, stack };
@@ -172,9 +172,16 @@ export function currentBucket(): ReserveBucket {
   return typeof window !== 'undefined' && window.matchMedia(LG_MEDIA).matches ? 'lg' : 'stack';
 }
 
-/** Stores the two columns' rendered heights for the current bucket (a missing column writes nothing). */
+const TRANSIENT_SELECTOR = '[data-testid="discord-cancel"], [data-testid="discord-remove-confirm"]';
+
+/** True while the Discord block shows a passing view (replacing a webhook, or the remove question). */
+export function isTransientAccountState(doc: Document): boolean {
+  return doc.querySelector(TRANSIENT_SELECTOR) !== null;
+}
+
+/** Stores the two columns' rendered heights for the current bucket (a missing column or a passing view writes nothing). */
 export function recordAccountReserve(left: Element | null, rail: Element | null): void {
-  if (left === null || rail === null) return;
+  if (left === null || rail === null || isTransientAccountState(document)) return;
   writeAccountReserve(
     currentBucket(),
     left.getBoundingClientRect().height,

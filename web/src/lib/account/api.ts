@@ -230,7 +230,7 @@ export interface DiscordEvents {
 
 /** The saved webhook as `/v1/me` and `PUT /v1/notifications/discord` answer it: never the URL. */
 export interface DiscordNotifications {
-  channel_id: string | null;
+  channel_id: string;
   /** Discord's own name for the webhook; null when Discord returned none. Member-controlled text. */
   name: string | null;
   events: DiscordEvents;
