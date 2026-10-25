@@ -4,12 +4,15 @@
 import type { Page, Route } from '@playwright/test';
 import type { DiscordNotifications } from '../../../src/lib/account/api';
 
+/** The channel the saved webhook posts to; deliberately not the webhook id a pasted URL carries. */
+export const CHANNEL_ID = '1198765432101234568';
+
 export const DISCORD_URL_GLOB = '**/v1/notifications/discord';
 export const DISCORD_TEST_URL_GLOB = '**/v1/notifications/discord/test';
 
 export function discordBlock(overrides: Partial<DiscordNotifications> = {}): DiscordNotifications {
   return {
-    channel_id: '1098765432101234567',
+    channel_id: CHANNEL_ID,
     events: { sim_finished: true, upload_parsed: true },
     disabled_reason: null,
     last_error: null,

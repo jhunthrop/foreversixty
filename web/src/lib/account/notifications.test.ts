@@ -25,12 +25,15 @@ function me(entitled: boolean, discord?: DiscordNotifications | null): Me {
 describe('blockState', () => {
   it('is free when not entitled and nothing is saved', () => {
     expect(blockState(me(false, null)).state).toBe('free');
-    expect(blockState(me(false)).state).toBe('free');
   });
 
-  it('is empty for a payer with nothing saved, including an older /v1/me with no key', () => {
+  it('is off when /v1/me has no notifications key: the deployment has the feature off', () => {
+    expect(blockState(me(false)).state).toBe('off');
+    expect(blockState(me(true)).state).toBe('off');
+  });
+
+  it('is empty for a payer whose /v1/me carries the key with no webhook', () => {
     expect(blockState(me(true, null)).state).toBe('empty');
-    expect(blockState(me(true)).state).toBe('empty');
   });
 
   it('is saved for a working webhook and carries it', () => {
@@ -53,7 +56,7 @@ describe('blockState', () => {
   });
 
   it('is free when an older /v1/me carries no entitlements at all', () => {
-    const bare: Me = { ...me(true), entitlements: undefined };
+    const bare: Me = { ...me(true, null), entitlements: undefined };
     expect(blockState(bare).state).toBe('free');
   });
 });
@@ -80,6 +83,8 @@ describe('premiumRowValue', () => {
       'Off · failed five times',
     ],
     ['lapsed', me(false, discordBlock()), 'Paused · plan lapsed'],
+    ['feature off, entitled', me(true), 'Off'],
+    ['feature off, lapsed', me(false), 'Off'],
   ])('reads %s', (_name, account, expected) => {
     expect(premiumRowValue(account)).toBe(expected);
   });
@@ -88,6 +93,11 @@ describe('premiumRowValue', () => {
     expect(premiumRowLinked(me(false, null))).toBe(false);
     expect(premiumRowLinked(me(true, null))).toBe(true);
     expect(premiumRowLinked(me(false, discordBlock()))).toBe(true);
+  });
+
+  it('does not link when the deployment has notifications off, whatever the entitlement', () => {
+    expect(premiumRowLinked(me(true))).toBe(false);
+    expect(premiumRowLinked(me(false))).toBe(false);
   });
 });
 

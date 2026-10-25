@@ -47,6 +47,12 @@ describe('AccountDiscordBlock', () => {
     expect(body).not.toContain('<form');
   });
 
+  it.each([true, false])('off (no notifications key, entitled %s): renders nothing at all', (entitled) => {
+    const { notifications: _omitted, ...bare } = meWith(entitled, { discord: null });
+    expect(text(html(bare)).trim()).toBe('');
+    expect(html(bare)).not.toContain('id="discord"');
+  });
+
   it('carries the #discord anchor in every state', () => {
     expect(html(meWith(false, { discord: null }))).toContain('id="discord"');
     expect(html(meWith(true, { discord: null }))).toContain('id="discord"');

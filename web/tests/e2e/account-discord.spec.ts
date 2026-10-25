@@ -11,6 +11,7 @@ import type { DiscordNotifications } from '../../src/lib/account/api';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
 import { gotoHydrated } from './support/hydrated';
 import {
+  CHANNEL_ID,
   discordBlock,
   notificationsKey,
   routeDiscordNotifications,
@@ -18,7 +19,7 @@ import {
   type DiscordRoutes,
 } from './support/discord-notifications';
 
-const WEBHOOK_ID = '1098765432101234567';
+const WEBHOOK_ID = '1087654321012345678';
 const WEBHOOK_TOKEN = 'xT9fixtureTokenNotARealOne_abcdEFGH';
 const VALID_URL = `https://discord.com/api/webhooks/${WEBHOOK_ID}/${WEBHOOK_TOKEN}`;
 const INVALID_URL = 'https://example.com/api/webhooks/1/tok';
@@ -27,12 +28,13 @@ const SAVED_CLEAR_TIMEOUT_MS = 6000;
 const MAX_SHIFT = 0.02;
 const PHONE = { width: 390, height: 844 };
 const DESKTOP = { width: 1440, height: 1000 };
-const TEST_URL_GLOB = '**/v1/notifications/discord/test';
 
 type Discord = DiscordNotifications | null;
 
 interface MeStages {
   entitled?: boolean;
+  /** The deployment has notifications off: /v1/me carries no `notifications` key. */
+  featureOff?: boolean;
   initial: Discord;
   /** What /v1/me answers once the PUT has been seen. */
   afterPut?: Discord;
@@ -64,7 +66,7 @@ async function signIn(page: Page, stages: MeStages, seen: DiscordRoutes): Promis
         characters: [],
         guilds: [],
         entitlements: mockEntitlements({ notifications: stages.entitled ?? true }),
-        ...notificationsKey(currentBlock(stages, seen)),
+        ...(stages.featureOff === true ? {} : notificationsKey(currentBlock(stages, seen))),
       }),
     ),
   );
@@ -86,6 +88,15 @@ const panel = (page: Page) => page.getByTestId('account-discord');
 const status = (page: Page) => page.getByTestId('discord-status');
 const input = (page: Page) => page.locator('#discord-webhook');
 const premiumRow = (page: Page) => page.getByTestId('account-premium-notifications');
+
+/** Every localStorage and sessionStorage key and value, as one string. */
+async function browserStorage(page: Page): Promise<string> {
+  return page.evaluate(() =>
+    [localStorage, sessionStorage]
+      .flatMap((store) => Object.keys(store).flatMap((key) => [key, store.getItem(key) ?? '']))
+      .join('\n'),
+  );
+}
 
 async function pasteAndSave(page: Page, url: string): Promise<void> {
   await input(page).fill(url);
@@ -122,14 +133,16 @@ test.describe('paste form', () => {
     const seen = await openAccount(page, { initial: null, afterPut: SAVED });
     await pasteAndSave(page, VALID_URL);
     await expect(page.getByTestId('discord-destination')).toContainText(
-      `${copy.destinationNoun} ${WEBHOOK_ID}`,
+      `${copy.destinationNoun} ${CHANNEL_ID}`,
     );
     expect(seen.puts).toEqual([{ webhook_url: VALID_URL, events: BOTH_EVENTS }]);
     await expect(status(page)).toContainText(copy.savedFirst);
     await expect(page.getByTestId('discord-test')).toBeFocused();
     const html = await page.content();
     expect(html).not.toContain(WEBHOOK_TOKEN);
+    expect(html).not.toContain(WEBHOOK_ID);
     expect(html).not.toContain('discord.com/api/webhooks');
+    expect(await browserStorage(page)).not.toMatch(new RegExp(`${WEBHOOK_TOKEN}|${WEBHOOK_ID}`));
     await expect(premiumRow(page)).toContainText('On · 2 events');
   });
 
@@ -144,29 +157,29 @@ test.describe('paste form', () => {
 });
 
 test.describe('saved webhook', () => {
-  test('a test that is sent, then a test Discord refuses', async ({ page }) => {
+  test('a test that is sent', async ({ page }) => {
     const seen = await openAccount(page, { initial: SAVED });
     await page.getByTestId('discord-test').click();
     await expect(status(page)).toContainText(copy.testSent);
     expect(seen.tests).toBe(1);
-    await page.unroute(TEST_URL_GLOB);
-    await page.route(TEST_URL_GLOB, (route) => {
-      seen.tests += 1;
-      return route.fulfill({
-        status: 502,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          ok: false,
-          data: null,
-          error: { message: 'Missing Permissions' },
-          request_id: 'r',
-        }),
-      });
-    });
+  });
+
+  test('a test Discord refuses shows its words as an alert', async ({ page }) => {
+    const seen = await openAccount(
+      page,
+      { initial: SAVED },
+      { testFailure: { status: 502, message: 'Missing Permissions' } },
+    );
     await page.getByTestId('discord-test').click();
     await expect(status(page)).toContainText(copy.testFailed('Missing Permissions'));
     await expect(status(page).getByRole('alert')).toHaveClass(/text-wipe/);
-    expect(seen.tests).toBe(2);
+    expect(seen.tests).toBe(1);
+  });
+
+  test('a test sent too soon shows the wait sentence', async ({ page }) => {
+    await openAccount(page, { initial: SAVED }, { testFailure: { status: 429, message: 'rate_limited' } });
+    await page.getByTestId('discord-test').click();
+    await expect(status(page)).toContainText(copy.testRateLimited);
   });
 
   test('turning an event off sends the events alone and says Saved.', async ({ page }) => {
@@ -209,7 +222,7 @@ test.describe('saved webhook', () => {
     expect(seen.deletes).toBe(1);
     await expect(input(page)).toBeFocused();
     await expect(panel(page)).toContainText(copy.removed);
-    await expect(premiumRow(page)).toContainText('Off');
+    await expect(premiumRow(page).getByText('Off · set up', { exact: true })).toBeVisible();
   });
 });
 
@@ -256,7 +269,19 @@ test.describe('switched off, lapsed, free', () => {
     await expect(free).toContainText(copy.freeSentence);
     await expect(free.getByRole('link', { name: copy.seePlans })).toHaveAttribute('href', '/premium');
     await expect(panel(page)).toHaveCount(0);
-    await expect(premiumRow(page)).toContainText('Off');
+    await expect(premiumRow(page).getByText('Off', { exact: true })).toBeVisible();
+    await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
+  });
+});
+
+test.describe('deployment with notifications off', () => {
+  test('a payer sees no block and an unlinked Off row', async ({ page }) => {
+    await openAccount(page, { initial: null, featureOff: true });
+    await expect(page.getByTestId('account-premium-notifications')).toBeVisible();
+    await expect(page.locator('#discord')).toHaveCount(0);
+    await expect(panel(page)).toHaveCount(0);
+    await expect(page.getByTestId('discord-free')).toHaveCount(0);
+    await expect(premiumRow(page).getByText('Off', { exact: true })).toBeVisible();
     await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   });
 });
@@ -373,6 +398,7 @@ async function expectNoAxeViolations(page: Page): Promise<void> {
 }
 
 test.describe('axe', () => {
+  // Axe samples colours mid-transition otherwise; reduced motion makes the panels settle at once.
   test.use({ reducedMotion: 'reduce' });
   const states: { name: string; stages: MeStages }[] = [
     { name: 'free', stages: { initial: null, entitled: false } },

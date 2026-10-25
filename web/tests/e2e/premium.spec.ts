@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { premiumCopy } from '../../src/lib/billing/copy';
 
 test("ships only the layout's character selector island", async ({ page }) => {
   await page.goto('/premium');
@@ -39,14 +40,9 @@ test('every buy control is a plain link to /premium/checkout, never a marketing 
   await expect(premiumBuy).toHaveAttribute('href', '/premium/checkout?plan=premium&interval=monthly');
 });
 
-test('lists only what is live, dates what is coming, and promises no retention tier', async ({ page }) => {
+test('lists only what is live and promises no retention tier', async ({ page }) => {
   await page.goto('/premium');
-  for (const line of [
-    'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
-    'Character history charts over time.',
-    'Discord notifications (ships December).',
-    'A supporter mark on your characters.',
-  ]) {
+  for (const line of [...premiumCopy.premiumFeatures]) {
     await expect(page.getByText(line, { exact: true }).first()).toBeVisible();
   }
   await expect(page.getByText('Two years of log retention', { exact: false })).toHaveCount(0);

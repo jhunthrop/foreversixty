@@ -140,8 +140,6 @@
   }
 </script>
 
-<svelte:window onkeydown={onKeydown} />
-
 {#snippet eventRows(discord: DiscordNotifications)}
   <DiscordEventRows
     events={discord.events}
@@ -152,49 +150,51 @@
   />
 {/snippet}
 
-<div id="discord" class="scroll-mt-20">
-  {#if block.state === 'free'}
-    <DiscordFree />
-  {:else}
-    <StatePanel label={notificationsCopy.label} testid="account-discord">
-      {#if showForm}
-        {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
-        <DiscordPasteForm
-          bind:webhook
-          bind:events={formEvents}
-          error={fieldFailure?.message ?? null}
-          offerPlans={fieldFailure?.target === 'plans'}
-          saving={busy === 'save'}
-          {replacing}
-          onSubmit={submit}
-          onCancel={cancel}
-        />
-      {:else if 'discord' in block}
-        {@const discord = block.discord}
-        <DiscordSummary state={block.state} {discord} />
-        {#if block.state !== 'disabled'}{@render eventRows(discord)}{/if}
-        <DiscordActions
-          state={block.state}
-          {confirming}
-          {busy}
-          onTest={test}
-          onAskRemove={askRemove}
-          onRemove={remove}
-          onCancel={cancel}
-        />
-        <DiscordStatusLine {status} />
-        {#if block.state !== 'lapsed'}
-          <button
-            class="{LINK_BUTTON} w-fit"
-            disabled={busy !== null}
-            onclick={startReplace}
-            data-testid="discord-replace"
-          >
-            {notificationsCopy.replace}
-          </button>
+{#if block.state !== 'off'}
+  <div id="discord" class="scroll-mt-20" onkeydown={onKeydown} role="presentation">
+    {#if block.state === 'free'}
+      <DiscordFree />
+    {:else}
+      <StatePanel label={notificationsCopy.label} testid="account-discord">
+        {#if showForm}
+          {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
+          <DiscordPasteForm
+            bind:webhook
+            bind:events={formEvents}
+            error={fieldFailure?.message ?? null}
+            offerPlans={fieldFailure?.target === 'plans'}
+            saving={busy === 'save'}
+            {replacing}
+            onSubmit={submit}
+            onCancel={cancel}
+          />
+        {:else if 'discord' in block}
+          {@const discord = block.discord}
+          <DiscordSummary state={block.state} {discord} />
+          {#if block.state !== 'disabled'}{@render eventRows(discord)}{/if}
+          <DiscordActions
+            state={block.state}
+            {confirming}
+            {busy}
+            onTest={test}
+            onAskRemove={askRemove}
+            onRemove={remove}
+            onCancel={cancel}
+          />
+          <DiscordStatusLine {status} />
+          {#if block.state !== 'lapsed'}
+            <button
+              class="{LINK_BUTTON} w-fit"
+              disabled={busy !== null}
+              onclick={startReplace}
+              data-testid="discord-replace"
+            >
+              {notificationsCopy.replace}
+            </button>
+          {/if}
+          {#if block.state === 'disabled'}{@render eventRows(discord)}{/if}
         {/if}
-        {#if block.state === 'disabled'}{@render eventRows(discord)}{/if}
-      {/if}
-    </StatePanel>
-  {/if}
-</div>
+      </StatePanel>
+    {/if}
+  </div>
+{/if}

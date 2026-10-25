@@ -7,6 +7,7 @@ import type { DiscordDisabledReason, DiscordNotifications, Me } from './api';
 import { notificationsCopy, premiumRowCopy } from './notifications-copy';
 
 export type DiscordBlockState =
+  | { state: 'off' }
   | { state: 'free' }
   | { state: 'empty' }
   | { state: 'saved'; discord: DiscordNotifications }
@@ -23,9 +24,13 @@ const FAILURES_BEFORE_SWITCH_OFF = 5;
 /** The `disabled_reason` the API sets after five failed posts in a row. */
 export const FAILED_FIVE_TIMES: DiscordDisabledReason = 'failed five times';
 
-/** Which of the five states the block shows, in the spec's precedence: lapsed wins over all. */
+/**
+ * Which state the block shows, in the spec's precedence: `off` (no `notifications` key: the
+ * deployment has the feature off) wins over all, then lapsed.
+ */
 export function blockState(me: Me): DiscordBlockState {
-  const discord = me.notifications?.discord ?? null;
+  if (me.notifications === undefined) return { state: 'off' };
+  const discord = me.notifications.discord;
   const entitled = me.entitlements?.notifications === true;
   if (discord !== null) {
     if (!entitled) return { state: 'lapsed', discord };
@@ -42,6 +47,7 @@ function enabledEvents(discord: DiscordNotifications): number {
 export function premiumRowValue(me: Me): string {
   const block = blockState(me);
   switch (block.state) {
+    case 'off':
     case 'free':
       return premiumRowCopy.off;
     case 'empty':
@@ -57,9 +63,10 @@ export function premiumRowValue(me: Me): string {
   }
 }
 
-/** The row links to #discord in every state but `free`, where it is muted text. */
+/** The row links to #discord in every state but `free` and `off`, where it is muted text. */
 export function premiumRowLinked(me: Me): boolean {
-  return blockState(me).state !== 'free';
+  const { state } = blockState(me);
+  return state !== 'free' && state !== 'off';
 }
 
 /**
