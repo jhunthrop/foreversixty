@@ -227,6 +227,7 @@ func TestLookupFailureIs422AndStoresNothing(t *testing.T) {
 	if status != 422 || e.Error.Code != "invalid" || e.Error.Message != invalidMS {
 		t.Fatalf("%d %s", status, raw)
 	}
+	assertNoCredential(t, raw)
 	if _, ok, err := h.svc.Store.Get(context.Background(), h.uid, KindDiscord); err != nil || ok {
 		t.Fatalf("a row was stored (ok=%v err=%v)", ok, err)
 	}
@@ -332,9 +333,25 @@ func TestTestRoutePostsOnceAndResetsTheCounter(t *testing.T) {
 	}
 }
 
+func assertNoCredential(t *testing.T, raw string) {
+	t.Helper()
+	// The fixed invalid-URL sentence legitimately names the path prefix.
+	raw = strings.ReplaceAll(raw, invalidMS, "")
+	for _, leak := range []string{testToken, testID, "webhooks"} {
+		if strings.Contains(raw, leak) {
+			t.Fatalf("body contains %q: %s", leak, raw)
+		}
+	}
+}
+
 func TestFailedTestIs502LeavesCountersAndTruncates(t *testing.T) {
 	h := newAPI(t)
 	h.saveHook()
+	for range 2 {
+		if _, err := h.svc.Store.RecordFailure(context.Background(), h.uid, KindDiscord, "Unknown Webhook", true); err != nil {
+			t.Fatal(err)
+		}
+	}
 	h.poster.PostErr = &DiscordError{Status: 401, Body: strings.Repeat("é", 200)}
 	status, raw, _ := h.call("POST", "/v1/notifications/discord/test", "")
 	var e errEnv
@@ -342,9 +359,10 @@ func TestFailedTestIs502LeavesCountersAndTruncates(t *testing.T) {
 	if status != 502 || e.Error.Code != "upstream" || len([]rune(e.Error.Message)) != 140 {
 		t.Fatalf("%d %s", status, raw)
 	}
+	assertNoCredential(t, raw)
 	wh, _, _ := h.svc.Store.Get(context.Background(), h.uid, KindDiscord)
-	if wh.Failures != 0 {
-		t.Fatalf("failures = %d, a failed test must not count", wh.Failures)
+	if wh.Failures != 2 || wh.LastError != "Unknown Webhook" || wh.DisabledAt != nil {
+		t.Fatalf("a failed test must change nothing: %+v", wh)
 	}
 	h.poster.PostErr = &DiscordError{Status: 429, Body: "rate limited"}
 	if status, _, _ := h.call("POST", "/v1/notifications/discord/test", ""); status != 502 {
@@ -426,5 +444,33 @@ func TestTestEmbedNamesOnlyTheEventsThatAreOn(t *testing.T) {
 		if e.Description != c.want || e.URL != "https://foreversixty.gg/account#discord" || len(e.Fields) != 0 {
 			t.Fatalf("%s: %+v", name, e)
 		}
+	}
+}
+
+func TestMalformedPutBodiesAre400(t *testing.T) {
+	h := newAPI(t)
+	h.saveHook()
+	good := `{"events":{"sim_finished":true,"upload_parsed":true}}`
+	for name, body := range map[string]string{
+		"empty events":  `{"events":{}}`,
+		"one key":       `{"events":{"sim_finished":true}}`,
+		"no events":     `{}`,
+		"unknown field": `{"events":{"sim_finished":true,"upload_parsed":true},"extra":1}`,
+		"unknown event": `{"events":{"sim_finished":true,"upload_parsed":true,"x":true}}`,
+		"trailing data": good + `{}`,
+		"oversize":      `{"webhook_url":"` + strings.Repeat("a", 5000) + `","events":{"sim_finished":true,"upload_parsed":true}}`,
+		"blank url":     `{"webhook_url":"   ","events":{"sim_finished":true,"upload_parsed":true}}`,
+		"not json":      `nope`,
+	} {
+		status, raw, _ := h.call("PUT", "/v1/notifications/discord", body)
+		var e errEnv
+		_ = json.Unmarshal([]byte(raw), &e)
+		if status != 400 || e.Error.Code != "invalid" {
+			t.Fatalf("%s: %d %s", name, status, raw)
+		}
+	}
+	_, raw, _ := h.call("PUT", "/v1/notifications/discord", `{"webhook_url":"   ","events":{"sim_finished":true,"upload_parsed":true}}`)
+	if !strings.Contains(raw, invalidMS) {
+		t.Fatalf("blank url message: %s", raw)
 	}
 }

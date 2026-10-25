@@ -2045,6 +2045,7 @@ paths:
                 webhook_url: { type: string }
                 events:
                   type: object
+                  required: [sim_finished, upload_parsed]
                   properties:
                     sim_finished: { type: boolean }
                     upload_parsed: { type: boolean }

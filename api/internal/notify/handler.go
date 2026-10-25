@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -20,8 +21,14 @@ const (
 	// maxTestErrorRunes is the spec's cap on the Discord text a failed test shows.
 	maxTestErrorRunes = 140
 
-	invalidURLMessage = "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/."
-	noAnswerMessage   = "Discord did not answer"
+	invalidURLMessage  = "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/."
+	noAnswerMessage    = "Discord did not answer"
+	invalidBodyMessage = "the body must be {webhook_url?, events: {sim_finished, upload_parsed}}"
+)
+
+var (
+	errTrailingData  = errors.New("notify: data after the request object")
+	errMissingEvents = errors.New("notify: both event keys are required")
 )
 
 // Entitlementer answers whether an account may use a feature. It has the
@@ -61,11 +68,32 @@ func (s *Service) DiscordBlock(ctx context.Context, userID int64, entitled bool)
 }
 
 type putRequest struct {
-	WebhookURL string `json:"webhook_url"`
+	WebhookURL *string `json:"webhook_url"`
 	Events     *struct {
-		SimFinished  bool `json:"sim_finished"`
-		UploadParsed bool `json:"upload_parsed"`
+		SimFinished  *bool `json:"sim_finished"`
+		UploadParsed *bool `json:"upload_parsed"`
 	} `json:"events"`
+}
+
+// decodePut reads the body strictly: both event keys present, no unknown
+// fields, nothing after the object. The error is never shown to the caller.
+func decodePut(w http.ResponseWriter, r *http.Request) (putRequest, map[EventName]bool, error) {
+	var req putRequest
+	dec := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxPutBodyBytes))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&req); err != nil {
+		return req, nil, err
+	}
+	if _, err := dec.Token(); !errors.Is(err, io.EOF) {
+		return req, nil, errTrailingData
+	}
+	if req.Events == nil || req.Events.SimFinished == nil || req.Events.UploadParsed == nil {
+		return req, nil, errMissingEvents
+	}
+	return req, map[EventName]bool{
+		EventSimFinished:  *req.Events.SimFinished,
+		EventUploadParsed: *req.Events.UploadParsed,
+	}, nil
 }
 
 func (s *Service) put(w http.ResponseWriter, r *http.Request) {
@@ -74,21 +102,16 @@ func (s *Service) put(w http.ResponseWriter, r *http.Request) {
 	if !s.entitled(w, r, actor) {
 		return
 	}
-	var req putRequest
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxPutBodyBytes)).Decode(&req); err != nil || req.Events == nil {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
-			"the body must be {webhook_url?, events: {sim_finished, upload_parsed}}", nil)
+	req, events, err := decodePut(w, r)
+	if err != nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", invalidBodyMessage, nil)
 		return
 	}
-	events := map[EventName]bool{
-		EventSimFinished:  req.Events.SimFinished,
-		EventUploadParsed: req.Events.UploadParsed,
-	}
-	if strings.TrimSpace(req.WebhookURL) == "" {
+	if req.WebhookURL == nil {
 		s.putEvents(w, r, actor, events)
 		return
 	}
-	s.putWebhook(w, r, actor, req.WebhookURL, events)
+	s.putWebhook(w, r, actor, *req.WebhookURL, events)
 }
 
 func (s *Service) putEvents(w http.ResponseWriter, r *http.Request, actor auth.Actor, events map[EventName]bool) {
@@ -143,21 +166,10 @@ func (s *Service) test(w http.ResponseWriter, r *http.Request) {
 	if !s.entitled(w, r, actor) {
 		return
 	}
-	hook, ok, err := s.Store.Get(r.Context(), actor.UserID, KindDiscord)
-	if err == nil && !ok {
-		err = ErrNotFound
-	}
-	var box []byte
-	if err == nil {
-		box, err = s.Store.TokenBox(r.Context(), actor.UserID, KindDiscord)
-	}
+	hook, url, err := s.openSaved(r.Context(), actor.UserID)
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no webhook is saved", nil)
 		return
-	}
-	var url string
-	if err == nil {
-		url, err = s.Sealer.Open(box)
 	}
 	if err != nil {
 		s.fail(w, r, "open", err)
@@ -172,6 +184,23 @@ func (s *Service) test(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// openSaved loads the member's webhook and unseals its URL; ErrNotFound when none is saved.
+func (s *Service) openSaved(ctx context.Context, userID int64) (Webhook, string, error) {
+	hook, ok, err := s.Store.Get(ctx, userID, KindDiscord)
+	if err != nil {
+		return Webhook{}, "", err
+	}
+	if !ok {
+		return Webhook{}, "", ErrNotFound
+	}
+	box, err := s.Store.TokenBox(ctx, userID, KindDiscord)
+	if err != nil {
+		return Webhook{}, "", err
+	}
+	url, err := s.Sealer.Open(box)
+	return hook, url, err
 }
 
 // testFailed answers a failed test post. It changes no counter: only the
