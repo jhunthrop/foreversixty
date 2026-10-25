@@ -180,7 +180,7 @@ type GuildSource interface {
 // "weights" messages: the caller's own history, one page at a time, and
 // one saved result at a time. sims.Store satisfies it.
 type SimSource interface {
-	Mine(ctx context.Context, userID int64, page int, kind string) (sims.Page, error)
+	Mine(ctx context.Context, userID int64, page int, kind, lane string) (sims.Page, error)
 	Get(ctx context.Context, id string) (simapi.SimResult, string, error)
 }
 
@@ -262,7 +262,7 @@ func firstDone(rows []sims.Row) *sims.Row {
 // Widening this to several messages is a producer-only change; the
 // message shape does not move.
 func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug map[string]string) *MessageEntry {
-	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindGear)
+	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindGear, "")
 	if err != nil || len(page.Rows) == 0 {
 		return nil
 	}
@@ -304,7 +304,7 @@ func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug m
 // so an unaddressed one would reach nobody. It reads the newest page of the account's weights
 // runs, so a page of nothing but in-game runs gives no fallback.
 func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug map[string]string, exports map[string]Export) *MessageEntry {
-	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindWeights)
+	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindWeights, "")
 	if err != nil {
 		return nil
 	}

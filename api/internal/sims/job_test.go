@@ -266,7 +266,7 @@ func TestABulkJobStreamsItsStagesAndStoresTheRanking(t *testing.T) {
 	}
 
 	// And the history row says what it found.
-	page, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindGear)
+	page, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindGear, "")
 	if err != nil {
 		t.Fatal(err)
 	}

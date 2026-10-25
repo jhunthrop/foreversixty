@@ -83,7 +83,7 @@ type fakeSims struct {
 	byKind map[string]simapi.SimResult
 }
 
-func (f *fakeSims) Mine(_ context.Context, _ int64, _ int, kind string) (sims.Page, error) {
+func (f *fakeSims) Mine(_ context.Context, _ int64, _ int, kind, _ string) (sims.Page, error) {
 	if _, ok := f.byKind[kind]; !ok {
 		return sims.Page{}, nil
 	}

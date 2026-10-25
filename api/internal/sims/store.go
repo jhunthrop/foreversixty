@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
+	"slices"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -82,6 +84,18 @@ type Row struct {
 	// on the wire: the inbox's website weights fallback reads it to skip in-game runs without
 	// reading each one's result.
 	FromAddon bool `json:"-"`
+	// Lane is where the run happened: server or browser.
+	Lane string `json:"lane"`
+	// FinishedAt is when a server run reached done or error; nil while it is
+	// queued or running, and for a browser save.
+	FinishedAt *time.Time `json:"finished_at,omitempty"`
+	// FailureReason is the plain sentence a failed run stopped with.
+	FailureReason string `json:"failure_reason,omitempty"`
+	// Seen is whether the owner has looked at the finished result.
+	Seen bool `json:"seen"`
+	// EstimateSeconds is how long a queued or running run usually takes,
+	// attached by the handler from EstimateSeconds, never by the store query.
+	EstimateSeconds *int `json:"estimate_seconds,omitempty"`
 }
 
 // Page is a page of that history.
@@ -252,10 +266,11 @@ func (s *Store) ForBuild(ctx context.Context, buildID string) (simapi.SimResult,
 
 // Mine answers one page of a user's own sims, newest first. kind, when
 // set, is one of simapi.Kinds and narrows the list to that tool; "" is
-// every kind. The caller validates it — an unknown kind reaching here
+// every kind; lane, when set, is simapi.LaneServer or simapi.LaneBrowser
+// and "" is both. The caller validates them — an unknown kind reaching here
 // would simply return nothing, which reads as "you have none" rather
 // than as the typo it is.
-func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (Page, error) {
+func (s *Store) Mine(ctx context.Context, userID int64, page int, kind, lane string) (Page, error) {
 	page = clampPage(page)
 	out := Page{Rows: []Row{}, Page: page, PerPage: PerPage}
 	// One predicate, two queries: the count and the page must agree, and
@@ -264,8 +279,12 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 	// index exists for.
 	where, args := "user_id = $1", []any{userID}
 	if kind != "" {
-		where += " and kind = $2"
 		args = append(args, kind)
+		where += fmt.Sprintf(" and kind = $%d", len(args))
+	}
+	if lane != "" {
+		args = append(args, lane)
+		where += fmt.Sprintf(" and lane = $%d", len(args))
 	}
 	if err := s.Pool.QueryRow(ctx,
 		`select count(*) from sims where `+where, args...).Scan(&out.Total); err != nil {
@@ -273,7 +292,7 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 	}
 	rows, err := s.Pool.Query(ctx,
 		`select id, spec, kind, dps_mean, headline, state, engine_version, created_at,
-		        coalesce(title, ''),
+		        coalesce(title, ''), lane, finished_at, failure_reason, seen_at is not null,
 		        exists (select 1 from addon_sim_requests a where a.sim_id = sims.id)
 		 from sims where `+where+
 			fmt.Sprintf(" order by created_at desc, id limit $%d offset $%d",
@@ -286,7 +305,8 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 	for rows.Next() {
 		var r Row
 		if err := rows.Scan(&r.SimID, &r.Spec, &r.Kind, &r.DPS, &r.Headline, &r.State,
-			&r.EngineVersion, &r.CreatedAt, &r.Title, &r.FromAddon); err != nil {
+			&r.EngineVersion, &r.CreatedAt, &r.Title, &r.Lane, &r.FinishedAt, &r.FailureReason, &r.Seen,
+			&r.FromAddon); err != nil {
 			return Page{}, fmt.Errorf("sims: scan: %w", err)
 		}
 		out.Rows = append(out.Rows, r)
@@ -361,7 +381,8 @@ func (s *Store) Finish(ctx context.Context, id string, res simapi.SimResult) err
 	}
 	_, err = s.Pool.Exec(ctx,
 		`update sims set engine_version = $2, dps_mean = $3, dps_error = $4,
-		   iterations = $5, result = $6, state = $7, headline = $8 where id = $1`,
+		   iterations = $5, result = $6, state = $7, headline = $8, finished_at = now()
+		 where id = $1`,
 		id, res.EngineVersion, res.DPS.Mean, res.DPS.Error, res.IterationsRun, body, state,
 		headline)
 	if err != nil {
@@ -371,12 +392,143 @@ func (s *Store) Finish(ctx context.Context, id string, res simapi.SimResult) err
 }
 
 // Fail marks a run that could not be started or could not complete.
-// why is recorded in the error it returns and logged by the caller;
-// the row carries only the state, because the page is shown it.
+// why is the plain sentence the row keeps, and is also in the error
+// it returns for the caller to log.
 func (s *Store) Fail(ctx context.Context, id, why string) error {
-	_, err := s.Pool.Exec(ctx, `update sims set state = $2 where id = $1`, id, StateError)
+	_, err := s.Pool.Exec(ctx,
+		`update sims set state = $2, failure_reason = $3, finished_at = now() where id = $1`,
+		id, StateError, why)
 	if err != nil {
 		return fmt.Errorf("sims: fail %s (%s): %w", id, why, err)
 	}
 	return nil
+}
+
+// MarkSeen records that the owner has looked at a finished run. It is
+// false, and writes nothing, when the row is not the caller's or is not
+// done yet.
+func (s *Store) MarkSeen(ctx context.Context, id string, userID int64) (bool, error) {
+	tag, err := s.Pool.Exec(ctx,
+		`update sims set seen_at = coalesce(seen_at, now())
+		 where id = $1 and user_id = $2 and state = $3`, id, userID, StateDone)
+	if err != nil {
+		return false, fmt.Errorf("sims: mark seen %s: %w", id, err)
+	}
+	return tag.RowsAffected() == 1, nil
+}
+
+// FailedRequest answers the stored request of the caller's own failed
+// run, so it can be run again. Any other row is ErrNotFound.
+func (s *Store) FailedRequest(ctx context.Context, id string, userID int64) (simapi.SimRequest, error) {
+	var body []byte
+	err := s.Pool.QueryRow(ctx,
+		`select result from sims where id = $1 and user_id = $2 and state = $3`,
+		id, userID, StateError).Scan(&body)
+	if isNoRows(err) {
+		return simapi.SimRequest{}, ErrNotFound
+	}
+	if err != nil {
+		return simapi.SimRequest{}, fmt.Errorf("sims: failed request %s: %w", id, err)
+	}
+	var res simapi.SimResult
+	if err := json.Unmarshal(body, &res); err != nil {
+		return simapi.SimRequest{}, fmt.Errorf("sims: decode %s: %w", id, err)
+	}
+	return res.Request, nil
+}
+
+// FinishedRun is one line of "done while away".
+type FinishedRun struct {
+	SimID      string
+	Spec       string
+	Title      string
+	DPS        float64
+	FinishedAt time.Time
+}
+
+// FinishedUnseen answers the member's finished server runs they have not
+// looked at yet, newest first, at most limit of them.
+func (s *Store) FinishedUnseen(ctx context.Context, userID int64, limit int) ([]FinishedRun, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select id, spec, coalesce(title, ''), dps_mean, finished_at from sims
+		 where user_id = $1 and lane = $2 and state = $3 and seen_at is null
+		 order by finished_at desc, id limit $4`,
+		userID, simapi.LaneServer, StateDone, limit)
+	if err != nil {
+		return nil, fmt.Errorf("sims: finished unseen: %w", err)
+	}
+	defer rows.Close()
+	out := []FinishedRun{}
+	for rows.Next() {
+		var r FinishedRun
+		if err := rows.Scan(&r.SimID, &r.Spec, &r.Title, &r.DPS, &r.FinishedAt); err != nil {
+			return nil, fmt.Errorf("sims: scan finished: %w", err)
+		}
+		out = append(out, r)
+	}
+	return out, rows.Err()
+}
+
+// RunsThisMonth counts the server runs the member has started since the
+// first of the month, whatever became of them.
+func (s *Store) RunsThisMonth(ctx context.Context, userID int64) (int, error) {
+	var n int
+	err := s.Pool.QueryRow(ctx,
+		`select count(*) from sims
+		 where user_id = $1 and lane = $2 and created_at >= date_trunc('month', now())`,
+		userID, simapi.LaneServer).Scan(&n)
+	if err != nil {
+		return 0, fmt.Errorf("sims: runs this month: %w", err)
+	}
+	return n, nil
+}
+
+// The estimate is the median of the last estimateWindow done server runs
+// of a spec, offered only once estimateMinRuns have happened.
+const (
+	estimateWindow  = 10
+	estimateMinRuns = 3
+)
+
+// EstimateSeconds answers how long a server run of spec usually takes: the
+// median of the last ten done runs. It is nil under three, when a median
+// would be a guess.
+func (s *Store) EstimateSeconds(ctx context.Context, spec string) (*int, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select (result->>'duration_ms')::bigint from sims
+		 where state = $1 and lane = $2 and spec = $3
+		 order by finished_at desc nulls last, created_at desc limit $4`,
+		StateDone, simapi.LaneServer, spec, estimateWindow)
+	if err != nil {
+		return nil, fmt.Errorf("sims: estimate %s: %w", spec, err)
+	}
+	defer rows.Close()
+	var ms []int64
+	for rows.Next() {
+		var d int64
+		if err := rows.Scan(&d); err != nil {
+			return nil, fmt.Errorf("sims: scan estimate: %w", err)
+		}
+		ms = append(ms, d)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("sims: estimate %s: %w", spec, err)
+	}
+	return medianSeconds(ms), nil
+}
+
+// medianSeconds is the median of durations in milliseconds, in whole
+// seconds, or nil when there are too few to call an estimate.
+func medianSeconds(ms []int64) *int {
+	if len(ms) < estimateMinRuns {
+		return nil
+	}
+	sorted := slices.Sorted(slices.Values(ms))
+	mid := len(sorted) / 2
+	median := sorted[mid]
+	if len(sorted)%2 == 0 {
+		median = (sorted[mid-1] + sorted[mid]) / 2
+	}
+	sec := int(math.Round(float64(median) / 1000))
+	return &sec
 }

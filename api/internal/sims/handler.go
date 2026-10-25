@@ -209,7 +209,7 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 			map[string]string{"kind": strings.Join(filterKinds, "|")})
 		return
 	}
-	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, kind)
+	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, kind, "")
 	if err != nil {
 		s.fail(w, r, "mine", err, "could not read your sims just now")
 		return

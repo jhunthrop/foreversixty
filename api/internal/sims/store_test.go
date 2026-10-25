@@ -1,9 +1,14 @@
 package sims
 
 import (
+	"errors"
+	"fmt"
 	"math"
+	"slices"
 	"testing"
+	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -78,7 +83,7 @@ func TestMyHistoryIsMineAndNewestFirst(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	page, err := h.store.Mine(t.Context(), h.owner, 1, "")
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -253,7 +258,7 @@ func TestAFinishedResultCarryingAnEngineErrorIsStoredAsAnError(t *testing.T) {
 	// result's zero fields as an answer — "0 DPS" — which is a sentence
 	// claiming the run finished and found nothing. The row carries its
 	// state instead, which is what the list has to show.
-	page, err := h.store.Mine(t.Context(), h.owner, 1, "")
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -347,7 +352,7 @@ func TestMyHistoryCarriesTheKindAndHeadlineAndFiltersByKind(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	all, err := h.store.Mine(t.Context(), h.owner, 1, "")
+	all, err := h.store.Mine(t.Context(), h.owner, 1, "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -367,7 +372,7 @@ func TestMyHistoryCarriesTheKindAndHeadlineAndFiltersByKind(t *testing.T) {
 		t.Errorf("gear row: %+v", got)
 	}
 
-	only, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindGear)
+	only, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindGear, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -375,7 +380,7 @@ func TestMyHistoryCarriesTheKindAndHeadlineAndFiltersByKind(t *testing.T) {
 		t.Fatalf("filtered: total %d rows %+v", only.Total, only.Rows)
 	}
 
-	none, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindDrops)
+	none, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindDrops, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -396,7 +401,7 @@ func TestAServerRunsHeadlineIsWrittenWhenItFinishes(t *testing.T) {
 		t.Fatal(err)
 	}
 	// A queued run has nothing to say yet.
-	queued, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights)
+	queued, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -413,7 +418,7 @@ func TestAServerRunsHeadlineIsWrittenWhenItFinishes(t *testing.T) {
 	if err := h.store.Finish(t.Context(), "cccccccccccc", done); err != nil {
 		t.Fatal(err)
 	}
-	finished, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights)
+	finished, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -432,7 +437,7 @@ func TestAnAbsurdPageIsClampedRatherThanFailing(t *testing.T) {
 		browserResult("warrior-fury", 900)); err != nil {
 		t.Fatal(err)
 	}
-	page, err := h.store.Mine(t.Context(), h.owner, math.MaxInt, "")
+	page, err := h.store.Mine(t.Context(), h.owner, math.MaxInt, "", "")
 	if err != nil {
 		t.Fatalf("an absurd page must be empty, not an error: %v", err)
 	}
@@ -514,5 +519,246 @@ func TestForBuildIgnoresASimThatIsNotDoneYet(t *testing.T) {
 func TestTheResultKeyIsLaidOutLikeAReports(t *testing.T) {
 	if got := (Keys{SimID: "aaaaaaaaaaaa"}).Result(); got != "sims/aaaaaaaaaaaa/result.json" {
 		t.Errorf("result key %q", got)
+	}
+}
+
+// serverRun queues a server run for the owner and returns its id.
+func (h *harness) serverRun(id, spec string) string {
+	h.t.Helper()
+	if err := h.store.Queue(h.t.Context(), id, h.owner, browserResult(spec, 0).Request); err != nil {
+		h.t.Fatal(err)
+	}
+	return id
+}
+
+// finishedRun queues and finishes a server run whose engine took durationMS.
+func (h *harness) finishedRun(id, spec string, durationMS int64) {
+	h.t.Helper()
+	h.serverRun(id, spec)
+	res := browserResult(spec, 1000)
+	res.Lane, res.DurationMS = simapi.LaneServer, durationMS
+	if err := h.store.Finish(h.t.Context(), id, res); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
+// setColumn writes one sims column directly, for the timestamps a test must place.
+func (h *harness) setColumn(id, column string, value any) {
+	h.t.Helper()
+	if _, err := h.store.Pool.Exec(h.t.Context(),
+		`update sims set `+column+` = $2 where id = $1`, id, value); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
+func (h *harness) otherUser() int64 {
+	h.t.Helper()
+	id, err := (&auth.Store{Pool: h.store.Pool}).UpsertEmailUser(h.t.Context(), "other@example.com")
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	return id.ID
+}
+
+func (h *harness) finishedAt(id string) *time.Time {
+	h.t.Helper()
+	var at *time.Time
+	if err := h.store.Pool.QueryRow(h.t.Context(),
+		`select finished_at from sims where id = $1`, id).Scan(&at); err != nil {
+		h.t.Fatal(err)
+	}
+	return at
+}
+
+func TestFinishSetsFinishedAt(t *testing.T) {
+	h := newHarness(t)
+	h.serverRun("fin000000001", "warrior-fury")
+	if h.finishedAt("fin000000001") != nil {
+		t.Fatal("a queued run has no finish time")
+	}
+	h.finishedRun("fin000000002", "warrior-fury", 1000)
+	at := h.finishedAt("fin000000002")
+	if at == nil || time.Since(*at) > time.Minute {
+		t.Fatalf("finished_at = %v, want about now", at)
+	}
+}
+
+func TestFailStoresThePlainReasonAndFinishedAt(t *testing.T) {
+	h := newHarness(t)
+	h.serverRun("fail00000001", "warrior-fury")
+	if err := h.store.Fail(t.Context(), "fail00000001", "the engine was busy"); err != nil {
+		t.Fatal(err)
+	}
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Rows) != 1 || page.Rows[0].State != StateError ||
+		page.Rows[0].FailureReason != "the engine was busy" || page.Rows[0].FinishedAt == nil {
+		t.Fatalf("failed row: %+v", page.Rows)
+	}
+}
+
+func TestMineFiltersByLaneAndCarriesLifecycleFields(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Save(t.Context(), "lane00000001", &h.owner, "",
+		browserResult("warrior-fury", 900)); err != nil {
+		t.Fatal(err)
+	}
+	h.finishedRun("lane00000002", "warrior-fury", 5000)
+	server, err := h.store.Mine(t.Context(), h.owner, 1, "", simapi.LaneServer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if server.Total != 1 || len(server.Rows) != 1 {
+		t.Fatalf("server lane: total %d, rows %+v", server.Total, server.Rows)
+	}
+	row := server.Rows[0]
+	if row.SimID != "lane00000002" || row.Lane != simapi.LaneServer ||
+		row.FinishedAt == nil || row.FailureReason != "" || row.Seen {
+		t.Fatalf("server row: %+v", row)
+	}
+	browser, err := h.store.Mine(t.Context(), h.owner, 1, "", simapi.LaneBrowser)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if browser.Total != 1 || browser.Rows[0].SimID != "lane00000001" {
+		t.Fatalf("browser lane: %+v", browser)
+	}
+	all, err := h.store.Mine(t.Context(), h.owner, 1, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if all.Total != 2 {
+		t.Fatalf("every lane: total %d, want 2", all.Total)
+	}
+}
+
+func TestMarkSeenOnlyForTheOwnersDoneRun(t *testing.T) {
+	h := newHarness(t)
+	h.finishedRun("seen00000001", "warrior-fury", 1000)
+	h.serverRun("seen00000002", "warrior-fury")
+	if ok, err := h.store.MarkSeen(t.Context(), "seen00000001", h.otherUser()); err != nil || ok {
+		t.Fatalf("another user: ok=%v err=%v, want false", ok, err)
+	}
+	if ok, err := h.store.MarkSeen(t.Context(), "seen00000002", h.owner); err != nil || ok {
+		t.Fatalf("a queued run: ok=%v err=%v, want false", ok, err)
+	}
+	if ok, err := h.store.MarkSeen(t.Context(), "seen00000001", h.owner); err != nil || !ok {
+		t.Fatalf("the owner's done run: ok=%v err=%v, want true", ok, err)
+	}
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "", simapi.LaneServer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[string]bool{}
+	for _, r := range page.Rows {
+		seen[r.SimID] = r.Seen
+	}
+	if !seen["seen00000001"] || seen["seen00000002"] {
+		t.Fatalf("seen flags: %v", seen)
+	}
+}
+
+func TestFailedRequestReturnsTheOwnersErrorRowOnly(t *testing.T) {
+	h := newHarness(t)
+	h.serverRun("req000000001", "warrior-fury")
+	if err := h.store.Fail(t.Context(), "req000000001", "boom"); err != nil {
+		t.Fatal(err)
+	}
+	h.finishedRun("req000000002", "warrior-fury", 1000)
+	got, err := h.store.FailedRequest(t.Context(), "req000000001", h.owner)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Spec != "warrior-fury" || got.Character.Class != "warrior" {
+		t.Fatalf("request: %+v", got)
+	}
+	other := h.otherUser()
+	cases := map[string]struct {
+		id   string
+		user int64
+	}{
+		"a done row":     {"req000000002", h.owner},
+		"another user's": {"req000000001", other},
+		"an unknown id":  {"zzzzzzzzzzzz", h.owner},
+	}
+	for name, c := range cases {
+		if _, err := h.store.FailedRequest(t.Context(), c.id, c.user); !errors.Is(err, ErrNotFound) {
+			t.Errorf("%s: err = %v, want ErrNotFound", name, err)
+		}
+	}
+}
+
+func TestFinishedUnseenNewestFirstAndCapped(t *testing.T) {
+	h := newHarness(t)
+	base := time.Now().Add(-time.Hour)
+	ids := []string{"unseen000001", "unseen000002", "unseen000003", "unseen000004", "unseen000005"}
+	for i, id := range ids {
+		h.finishedRun(id, "warrior-fury", 1000)
+		h.setColumn(id, "finished_at", base.Add(time.Duration(i)*time.Minute))
+	}
+	h.setColumn("unseen000005", "seen_at", time.Now())
+	got, err := h.store.FinishedUnseen(t.Context(), h.owner, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotIDs := make([]string, len(got))
+	for i, r := range got {
+		gotIDs[i] = r.SimID
+	}
+	want := []string{"unseen000004", "unseen000003", "unseen000002"}
+	if !slices.Equal(gotIDs, want) {
+		t.Fatalf("ids = %v, want %v", gotIDs, want)
+	}
+	if got[0].Spec != "warrior-fury" || got[0].DPS != 1000 || got[0].FinishedAt.IsZero() {
+		t.Errorf("fields: %+v", got[0])
+	}
+}
+
+func TestRunsThisMonthCountsServerRunsOnly(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Save(t.Context(), "month0000001", &h.owner, "",
+		browserResult("warrior-fury", 900)); err != nil {
+		t.Fatal(err)
+	}
+	h.serverRun("month0000002", "warrior-fury")
+	h.finishedRun("month0000003", "warrior-fury", 1000)
+	h.finishedRun("month0000004", "warrior-fury", 1000)
+	h.setColumn("month0000004", "created_at", time.Now().AddDate(0, -1, 0))
+	n, err := h.store.RunsThisMonth(t.Context(), h.owner)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != 2 {
+		t.Fatalf("runs this month = %d, want 2", n)
+	}
+}
+
+func TestEstimateSecondsIsTheMedianOfTheLastTenDoneRuns(t *testing.T) {
+	h := newHarness(t)
+	h.finishedRun("est000000001", "warrior-fury", 60000)
+	h.finishedRun("est000000002", "warrior-fury", 120000)
+	got, err := h.store.EstimateSeconds(t.Context(), "warrior-fury")
+	if err != nil || got != nil {
+		t.Fatalf("two runs: %v, %v, want nil", got, err)
+	}
+	h.finishedRun("est000000003", "warrior-fury", 600000)
+	if got, err = h.store.EstimateSeconds(t.Context(), "warrior-fury"); err != nil ||
+		got == nil || *got != 120 {
+		t.Fatalf("three runs: %v, %v, want 120", got, err)
+	}
+	// Ten newer runs of 10s push the three old ones out of the window.
+	for i := range 10 {
+		id := fmt.Sprintf("est0000001%02d", i)
+		h.finishedRun(id, "warrior-fury", 10000)
+		h.setColumn(id, "finished_at", time.Now().Add(time.Hour))
+	}
+	if got, err = h.store.EstimateSeconds(t.Context(), "warrior-fury"); err != nil ||
+		got == nil || *got != 10 {
+		t.Fatalf("eleven-plus runs: %v, %v, want 10", got, err)
+	}
+	if got, err = h.store.EstimateSeconds(t.Context(), "mage-fire"); err != nil || got != nil {
+		t.Fatalf("another spec: %v, %v, want nil", got, err)
 	}
 }
