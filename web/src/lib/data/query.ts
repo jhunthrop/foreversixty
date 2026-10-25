@@ -57,6 +57,10 @@ interface Entry<T> {
    *  revalidation. Without this, every island mount re-fetched its key, and an island
    *  that mounts inside another's ready state fetched, re-rendered and re-mounted forever. */
   validated: boolean;
+  /** Bumped by every setQueryData write. A load that started before the bump is answering a
+   *  question the page has since settled itself, so its answer is dropped, not written over
+   *  the newer data. */
+  generation: number;
 }
 
 const STORAGE_PREFIX = 'fs.q.';
@@ -241,6 +245,7 @@ function getOrCreateEntry<T>(key: string, options: QueryOptions<T>): Entry<T> {
     version,
     inflight: null,
     validated: false,
+    generation: 0,
   };
   store.set(key, entry as Entry<unknown>);
   return entry;
@@ -264,9 +269,11 @@ function revalidate<T>(
   if (entry.inflight !== null) return entry.inflight;
   if (!background) setState(key, entry, { status: 'loading', error: '' });
 
+  const startedAt = entry.generation;
   const promise = load()
     .then((raw) => {
       entry.inflight = null;
+      if (entry.generation !== startedAt) return entry.state.data as T; // a newer write stands
       const parsed = options.parse !== undefined ? options.parse(raw) : raw;
       const data = sameData(parsed, entry.state.data) ? (entry.state.data as T) : parsed;
       entry.savedAt = Date.now();
@@ -347,7 +354,9 @@ export function setQueryData<T>(key: string, data: T): void {
     version: 0,
     inflight: null,
     validated: false,
+    generation: 0,
   };
+  entry.generation += 1;
   entry.savedAt = Date.now();
   entry.validated = true; // the resource as the server just returned it
   setState(key, entry, { data, status: 'ready', error: '', stale: false });

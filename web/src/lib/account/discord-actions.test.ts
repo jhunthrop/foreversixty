@@ -11,7 +11,7 @@ import { removeWebhook, saveEvents, saveWebhook, sendTest } from './discord-acti
 import { notificationsCopy } from './notifications-copy';
 
 const URL_OK = 'https://discord.com/api/webhooks/123456789/abcDEF_token-1';
-const BOTH = { sim_finished: true, upload_parsed: true };
+const BOTH = { sim_finished: true, upload_parsed: true, upload_private: false };
 const api = createNotificationsApi();
 const ME_KEY = /\/v1\/me$/;
 
@@ -76,10 +76,18 @@ describe('saveWebhook', () => {
 
 describe('saveEvents', () => {
   it('sends events only, no webhook_url key', async () => {
-    api.setBlock(discordBlock({ events: { sim_finished: false, upload_parsed: true } }));
-    const result = await saveEvents(meWith(), { sim_finished: false, upload_parsed: true });
+    api.setBlock(
+      discordBlock({ events: { sim_finished: false, upload_parsed: true, upload_private: false } }),
+    );
+    const result = await saveEvents(meWith(), {
+      sim_finished: false,
+      upload_parsed: true,
+      upload_private: false,
+    });
     expect(result).toEqual({ ok: true, message: notificationsCopy.savedEvents });
-    expect(api.requests()[0]?.body).toEqual({ events: { sim_finished: false, upload_parsed: true } });
+    expect(api.requests()[0]?.body).toEqual({
+      events: { sim_finished: false, upload_parsed: true, upload_private: false },
+    });
   });
 
   it('says it could not save on a failure', async () => {
@@ -148,7 +156,9 @@ describe('writing the answer into /v1/me', () => {
 
   it('an events change patches the cache', async () => {
     const write = vi.spyOn(query, 'setQueryData');
-    const block = discordBlock({ events: { sim_finished: false, upload_parsed: true } });
+    const block = discordBlock({
+      events: { sim_finished: false, upload_parsed: true, upload_private: false },
+    });
     api.setBlock(block);
     await saveEvents(meWith(discordBlock()), block.events);
     expect(cachedDiscord(write)).toEqual(block);

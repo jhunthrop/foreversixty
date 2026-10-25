@@ -48,8 +48,12 @@ const FIVE_FAILURES_LONG = discordBlock({
   last_error: LONG_ERROR,
   failures: 5,
 });
-const ONE_EVENT = discordBlock({ events: { sim_finished: true, upload_parsed: false } });
-const NO_EVENTS = discordBlock({ events: { sim_finished: false, upload_parsed: false } });
+const ONE_EVENT = discordBlock({
+  events: { sim_finished: true, upload_parsed: false, upload_private: false },
+});
+const NO_EVENTS = discordBlock({
+  events: { sim_finished: false, upload_parsed: false, upload_private: false },
+});
 
 interface Stages {
   entitled?: boolean;

@@ -9,6 +9,7 @@ import {
   looksLikeWebhookURL,
   premiumRowLinked,
   premiumRowValue,
+  premiumRowVisible,
   webhookInputError,
 } from './notifications';
 
@@ -62,31 +63,45 @@ describe('blockState', () => {
 });
 
 describe('premiumRowValue', () => {
-  const both = { sim_finished: true, upload_parsed: true };
+  const both = { sim_finished: true, upload_parsed: true, upload_private: false };
+  const none = { sim_finished: false, upload_parsed: false, upload_private: false };
   it.each([
-    ['free', me(false, null), 'Off'],
-    ['payer, nothing saved', me(true, null), 'Off · set up'],
-    ['two events', me(true, discordBlock({ events: both })), 'On · 2 events'],
+    ['free', me(false, null), 'Off\u00A0· Premium'],
+    ['payer, nothing saved', me(true, null), 'Off\u00A0· set up'],
+    ['two events', me(true, discordBlock({ events: both })), 'On\u00A0· 2\u00A0events'],
     [
       'one event',
-      me(true, discordBlock({ events: { sim_finished: false, upload_parsed: true } })),
-      'On · 1 event',
+      me(true, discordBlock({ events: { ...none, upload_parsed: true } })),
+      'On\u00A0· 1\u00A0event',
     ],
-    [
-      'no event',
-      me(true, discordBlock({ events: { sim_finished: false, upload_parsed: false } })),
-      'Off · no events chosen',
-    ],
+    ['no event', me(true, discordBlock({ events: none })), 'Off\u00A0· no events chosen'],
     [
       'switched off',
       me(true, discordBlock({ disabled_reason: 'failed five times', failures: 5 })),
-      'Off · failed five times',
+      'Off\u00A0· needs attention',
     ],
-    ['lapsed', me(false, discordBlock()), 'Paused · plan lapsed'],
-    ['feature off, entitled', me(true), 'Off'],
-    ['feature off, lapsed', me(false), 'Off'],
+    ['lapsed', me(false, discordBlock()), 'Paused\u00A0· plan lapsed'],
+    ['feature off, entitled', me(true), 'Off\u00A0· Premium'],
+    ['feature off, lapsed', me(false), 'Off\u00A0· Premium'],
   ])('reads %s', (_name, account, expected) => {
     expect(premiumRowValue(account)).toBe(expected);
+  });
+
+  it('counts sim_finished plus upload_parsed only: upload_private is not an event', () => {
+    const allThree = { ...both, upload_private: true };
+    expect(premiumRowValue(me(true, discordBlock({ events: allThree })))).toBe('On\u00A0· 2\u00A0events');
+    expect(premiumRowValue(me(true, discordBlock({ events: { ...none, upload_private: true } })))).toBe(
+      'Off\u00A0· no events chosen',
+    );
+  });
+
+  it('shows no row when the deployment has notifications off, and a row in every other state', () => {
+    expect(premiumRowVisible(me(true))).toBe(false);
+    expect(premiumRowVisible(me(false))).toBe(false);
+    expect(premiumRowVisible(me(false, null))).toBe(true);
+    expect(premiumRowVisible(me(true, null))).toBe(true);
+    expect(premiumRowVisible(me(true, discordBlock()))).toBe(true);
+    expect(premiumRowVisible(me(false, discordBlock()))).toBe(true);
   });
 
   it('links in every state but free', () => {
@@ -109,18 +124,18 @@ describe('failureWarning', () => {
 
   it('uses the spec sentences', () => {
     expect(failureWarning(discordBlock({ failures: 3, last_error: 'Missing Permissions' }))).toEqual({
-      failures: 'The last 3 posts failed. At 5 in a row it switches off.',
+      failures: 'The last 3 posts failed. At 5 in a row it switches off. Send a test message to check.',
       lastError: 'Last error from Discord: Missing Permissions.',
     });
     expect(failureWarning(discordBlock({ failures: 1, last_error: 'Unknown Webhook' }))).toEqual({
-      failures: 'The last post failed. At 5 in a row it switches off.',
+      failures: 'The last post failed. At 5 in a row it switches off. Send a test message to check.',
       lastError: 'Last error from Discord: Unknown Webhook.',
     });
   });
 
   it('omits the error clause when there is none', () => {
     expect(failureWarning(discordBlock({ failures: 2, last_error: null }))).toEqual({
-      failures: 'The last 2 posts failed. At 5 in a row it switches off.',
+      failures: 'The last 2 posts failed. At 5 in a row it switches off. Send a test message to check.',
       lastError: null,
     });
   });

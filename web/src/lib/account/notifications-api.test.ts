@@ -12,7 +12,7 @@ import {
 } from './notifications-api';
 
 const BASE = 'https://api.test';
-const EVENTS = { sim_finished: true, upload_parsed: false };
+const EVENTS = { sim_finished: true, upload_parsed: false, upload_private: false };
 const stub = createNotificationsApi();
 
 beforeEach(() => stub.install());

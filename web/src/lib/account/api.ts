@@ -220,15 +220,19 @@ export interface Me {
 /** Why posts stopped while a webhook is kept (spec 2026-10-25-discord-notifications §10). */
 export type DiscordDisabledReason = 'failed five times' | 'plan lapsed';
 
-/** The two events a member can choose to be told about. */
+/** The three event flags a member can choose; the first two are what the Premium row counts. */
 export interface DiscordEvents {
   sim_finished: boolean;
   upload_parsed: boolean;
+  /** Whether a log whose visibility is private is posted too (needs `upload_parsed`). */
+  upload_private: boolean;
 }
 
 /** The saved webhook as `/v1/me` and `PUT /v1/notifications/discord` answer it: never the URL. */
 export interface DiscordNotifications {
   channel_id: string | null;
+  /** Discord's own name for the webhook; null when Discord returned none. Member-controlled text. */
+  name: string | null;
   events: DiscordEvents;
   disabled_reason: DiscordDisabledReason | null;
   /** Discord's own error text with any URL or token removed. */

@@ -13,7 +13,8 @@ export const DISCORD_TEST_URL_GLOB = '**/v1/notifications/discord/test';
 export function discordBlock(overrides: Partial<DiscordNotifications> = {}): DiscordNotifications {
   return {
     channel_id: CHANNEL_ID,
-    events: { sim_finished: true, upload_parsed: true },
+    name: 'Raid pings',
+    events: { sim_finished: true, upload_parsed: true, upload_private: false },
     disabled_reason: null,
     last_error: null,
     failures: 0,

@@ -4,6 +4,7 @@
 // reads, and the inline shape check for a pasted URL. The web never decides the entitlement;
 // it reads `entitlements.notifications`.
 import type { DiscordDisabledReason, DiscordNotifications, Me } from './api';
+import { discordHintState } from './layout';
 import { notificationsCopy, premiumRowCopy } from './notifications-copy';
 
 export type DiscordBlockState =
@@ -41,11 +42,17 @@ export function blockState(me: Me): DiscordBlockState {
   return { state: entitled ? 'empty' : 'free' };
 }
 
+/** The Premium event count is the two post events; `upload_private` only widens one of them. */
 function enabledEvents(discord: DiscordNotifications): number {
   return Number(discord.events.sim_finished) + Number(discord.events.upload_parsed);
 }
 
-/** The Premium row's value: one of the five spec wordings (seven strings with the event counts). */
+/** The row exists unless the deployment has notifications off (no `notifications` key, spec 3.7). */
+export function premiumRowVisible(me: Me): boolean {
+  return discordHintState(me) !== 'none';
+}
+
+/** The Premium row's value: one of the seven spec wordings, non-breaking spaces included. */
 export function premiumRowValue(me: Me): string {
   const block = blockState(me);
   switch (block.state) {
@@ -57,7 +64,7 @@ export function premiumRowValue(me: Me): string {
     case 'lapsed':
       return premiumRowCopy.paused;
     case 'disabled':
-      return premiumRowCopy.offFailed;
+      return premiumRowCopy.offNeedsAttention;
     case 'saved': {
       const events = enabledEvents(block.discord);
       return events === 0 ? premiumRowCopy.offNoEvents : premiumRowCopy.on(events);

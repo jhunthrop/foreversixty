@@ -201,6 +201,26 @@ describe('query()', () => {
     expect(load).not.toHaveBeenCalled();
   });
 
+  it('an inflight answer never overwrites a newer setQueryData write', async () => {
+    let resolveSlow: (value: { n: number }) => void = () => {};
+    const slow = new Promise<{ n: number }>((resolve) => {
+      resolveSlow = resolve;
+    });
+    const pending = query('k-gen', () => slow, { scope: 'public', ttlMs: 60_000 });
+    setQueryData('k-gen', { n: 2 });
+    resolveSlow({ n: 1 });
+
+    expect(await pending).toEqual({ n: 2 });
+    let seen: { status: string; data: { n: number } | null } | null = null;
+    subscribe<{ n: number }>('k-gen', (state) => {
+      seen = { status: state.status, data: state.data };
+    })();
+    expect(seen).toEqual({ status: 'ready', data: { n: 2 } });
+    const load = vi.fn().mockResolvedValue({ n: 3 });
+    expect(await query('k-gen', load, { scope: 'public', ttlMs: 60_000 })).toEqual({ n: 2 });
+    expect(load).not.toHaveBeenCalled();
+  });
+
   it('invalidate(prefix) forces the next query() call to reload', async () => {
     const load = vi.fn().mockResolvedValue({ n: 1 });
     await query('list/a', load, { scope: 'public', ttlMs: 60_000 });

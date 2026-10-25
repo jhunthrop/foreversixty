@@ -23,7 +23,7 @@ const WEBHOOK_ID = '1087654321012345678';
 const WEBHOOK_TOKEN = 'xT9fixtureTokenNotARealOne_abcdEFGH';
 const VALID_URL = `https://discord.com/api/webhooks/${WEBHOOK_ID}/${WEBHOOK_TOKEN}`;
 const INVALID_URL = 'https://example.com/api/webhooks/1/tok';
-const BOTH_EVENTS = { sim_finished: true, upload_parsed: true };
+const BOTH_EVENTS = { sim_finished: true, upload_parsed: true, upload_private: false };
 const SAVED_CLEAR_TIMEOUT_MS = 6000;
 const MAX_SHIFT = 0.02;
 const PHONE = { width: 390, height: 844 };
@@ -185,11 +185,13 @@ test.describe('saved webhook', () => {
   test('turning an event off sends the events alone and says Saved.', async ({ page }) => {
     const seen = await openAccount(page, {
       initial: SAVED,
-      afterPut: discordBlock({ events: { sim_finished: true, upload_parsed: false } }),
+      afterPut: discordBlock({ events: { sim_finished: true, upload_parsed: false, upload_private: false } }),
     });
     await page.getByTestId('discord-event-upload').uncheck();
     await expect(status(page)).toHaveText(copy.savedEvents);
-    expect(seen.puts).toEqual([{ events: { sim_finished: true, upload_parsed: false } }]);
+    expect(seen.puts).toEqual([
+      { events: { sim_finished: true, upload_parsed: false, upload_private: false } },
+    ]);
     expect(JSON.stringify(seen.puts)).not.toContain('webhook_url');
     await expect(premiumRow(page)).toContainText('On · 1 event');
     await expect(status(page)).toHaveText('', { timeout: SAVED_CLEAR_TIMEOUT_MS });

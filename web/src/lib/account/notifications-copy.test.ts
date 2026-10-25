@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   DISCORD_TEXT_LIMIT,
@@ -17,11 +18,6 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['fieldLabel', notificationsCopy.fieldLabel, 'Webhook URL'],
   ['placeholder', notificationsCopy.placeholder, 'https://discord.com/api/webhooks/…'],
   [
-    'howHelper',
-    notificationsCopy.howHelper,
-    'In Discord: Channel settings, Integrations, Webhooks, New Webhook, Copy Webhook URL.',
-  ],
-  [
     'trustHelper',
     notificationsCopy.trustHelper,
     'We store the URL encrypted, never show it again, and delete it with your account.',
@@ -29,11 +25,6 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['eventsLabel', notificationsCopy.eventsLabel, 'Post when'],
   ['eventSimFinished', notificationsCopy.eventSimFinished, 'A server sim finishes'],
   ['eventUploadParsed', notificationsCopy.eventUploadParsed, 'A combat log you upload finishes parsing'],
-  [
-    'eventsNote',
-    notificationsCopy.eventsNote,
-    'Posts every log you upload, including private ones; each message says who can open it.',
-  ],
   ['save', notificationsCopy.save, 'Save webhook'],
   ['saving', notificationsCopy.saving, 'Saving…'],
   ['cancel', notificationsCopy.cancel, 'Cancel'],
@@ -70,15 +61,15 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   [
     'warning, one',
     notificationsCopy.warning(1, 'Missing Permissions'),
-    'The last post failed. At 5 in a row it switches off. Last error from Discord: Missing Permissions.',
+    'The last post failed. At 5 in a row it switches off. Send a test message to check. Last error from Discord: Missing Permissions.',
   ],
   [
     'warning, several',
     notificationsCopy.warning(3, 'Missing Permissions'),
-    'The last 3 posts failed. At 5 in a row it switches off. Last error from Discord: Missing Permissions.',
+    'The last 3 posts failed. At 5 in a row it switches off. Send a test message to check. Last error from Discord: Missing Permissions.',
   ],
   ['switchedOff', notificationsCopy.switchedOff, 'Switched off after 5 failed posts in a row.'],
-  ['lastError', notificationsCopy.lastError('Unknown Webhook'), 'Last error from Discord: Unknown Webhook'],
+  ['lastError', notificationsCopy.lastError('Unknown Webhook'), 'Last error from Discord: Unknown Webhook.'],
   [
     'switchedOffHelper',
     notificationsCopy.switchedOffHelper,
@@ -96,13 +87,13 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
     notificationsCopy.freeSentence,
     'Discord messages tell you when a server sim or a log you uploaded is done.',
   ],
-  ['row off', premiumRowCopy.off, 'Off'],
-  ['row set up', premiumRowCopy.offSetUp, 'Off · set up'],
-  ['row two events', premiumRowCopy.on(2), 'On · 2 events'],
-  ['row one event', premiumRowCopy.on(1), 'On · 1 event'],
-  ['row no events', premiumRowCopy.offNoEvents, 'Off · no events chosen'],
-  ['row failed', premiumRowCopy.offFailed, 'Off · failed five times'],
-  ['row paused', premiumRowCopy.paused, 'Paused · plan lapsed'],
+  ['row off', premiumRowCopy.off, 'Off\u00A0· Premium'],
+  ['row set up', premiumRowCopy.offSetUp, 'Off\u00A0· set up'],
+  ['row two events', premiumRowCopy.on(2), 'On\u00A0· 2\u00A0events'],
+  ['row one event', premiumRowCopy.on(1), 'On\u00A0· 1\u00A0event'],
+  ['row no events', premiumRowCopy.offNoEvents, 'Off\u00A0· no events chosen'],
+  ['row needs attention', premiumRowCopy.offNeedsAttention, 'Off\u00A0· needs attention'],
+  ['row paused', premiumRowCopy.paused, 'Paused\u00A0· plan lapsed'],
 ];
 
 describe('notificationsCopy', () => {
@@ -117,7 +108,7 @@ describe('notificationsCopy', () => {
 
   it('omits the error clause from a warning that has no error', () => {
     expect(notificationsCopy.warning(2, null)).toBe(
-      'The last 2 posts failed. At 5 in a row it switches off.',
+      'The last 2 posts failed. At 5 in a row it switches off. Send a test message to check.',
     );
   });
 
@@ -159,7 +150,90 @@ describe('notificationsCopy', () => {
 
 describe('premiumRowCopy', () => {
   it('counts events', () => {
-    expect(premiumRowCopy.on(2)).toBe('On · 2 events');
-    expect(premiumRowCopy.on(1)).toBe('On · 1 event');
+    expect(premiumRowCopy.on(2)).toBe('On\u00A0· 2\u00A0events');
+    expect(premiumRowCopy.on(1)).toBe('On\u00A0· 1\u00A0event');
+  });
+});
+
+// The amended strings are read out of the spec itself, so a drift in either file fails here.
+const SPEC_PATH = new URL('../../../../design/specs/2026-10-25-discord-notifications.md', import.meta.url);
+const NBSP = ' ';
+
+/** The backticked segments of a 6.1 table row's string cell, by the row's first-column label. */
+function specCell(labelStart: string): string[] {
+  const spec = readFileSync(SPEC_PATH, 'utf8');
+  const row = spec
+    .slice(spec.indexOf('### 6.1'))
+    .split('\n')
+    .find((line) => line.startsWith(`| ${labelStart}`));
+  if (row === undefined) throw new Error(`spec 6.1 has no row starting "${labelStart}"`);
+  const cell = row.split(/\|/)[2] ?? '';
+  return [...cell.matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
+}
+
+/** The spec's U+00A0 rule for the Premium row (3.7): after the state word, and between a count and its noun. */
+function withNonBreakingSpaces(value: string): string {
+  return value.replace(' ·', `${NBSP}·`).replace(/(\d) (events?)$/, `$1${NBSP}$2`);
+}
+
+describe('notificationsCopy against the spec text, read from the spec', () => {
+  it('has the three how-to steps', () => {
+    expect(notificationsCopy.howSteps).toEqual([
+      specCell('Step 1')[0],
+      specCell('Step 2')[0],
+      specCell('Step 3')[0],
+    ]);
+  });
+
+  it('has the third event and its note', () => {
+    expect(notificationsCopy.eventUploadPrivate).toBe(specCell('Event 3')[0]);
+    expect(notificationsCopy.eventsNote).toBe(specCell('Events note')[0]);
+  });
+
+  it('has the destination lines', () => {
+    const [lead, quoted] = specCell('Destination, with a name');
+    expect(notificationsCopy.destinationNamed('Raid pings')).toBe(
+      `${lead} ${quoted?.replace('{name}', 'Raid pings')}`,
+    );
+    expect(notificationsCopy.destinationUnnamed).toBe(specCell('Destination, no name')[0]);
+    expect(notificationsCopy.channelLine('1198765432101234568')).toBe('Channel 1198…4568');
+  });
+
+  it('has the warnings with the test sentence', () => {
+    expect(notificationsCopy.warningLines(1, 'Missing Permissions')).toEqual({
+      failures: specCell('Warning, one')[0],
+      lastError: 'Last error from Discord: Missing Permissions.',
+    });
+    expect(notificationsCopy.warningLines(3, null).failures).toBe(
+      specCell('Warning, several')[0]?.replace('{n}', '3'),
+    );
+  });
+
+  it('has the four-line switched-off notice', () => {
+    const [headline, , fix, replace, test] = specCell('Switched off');
+    expect(notificationsCopy.switchedOff).toBe(headline);
+    expect(notificationsCopy.switchedOffFix).toBe(fix);
+    expect(notificationsCopy.replace).toBe(replace);
+    expect(notificationsCopy.testAndSwitchOn).toBe(test);
+  });
+
+  it('has the Premium row values with non-breaking spaces', () => {
+    const values = specCell('Premium row values').slice(0, 7).map(withNonBreakingSpaces);
+    expect(values).toEqual([
+      premiumRowCopy.off,
+      premiumRowCopy.offSetUp,
+      premiumRowCopy.on(2),
+      premiumRowCopy.on(1),
+      premiumRowCopy.offNoEvents,
+      premiumRowCopy.offNeedsAttention,
+      premiumRowCopy.paused,
+    ]);
+    for (const value of values) expect(value).toContain(NBSP);
+  });
+
+  it('shows at most 40 characters of the webhook name', () => {
+    const shown = notificationsCopy.destinationNamed('x'.repeat(60));
+    expect(shown).toBe(`Posts through “${'x'.repeat(39)}…”`);
+    expect(notificationsCopy.destinationNamed('  Raid pings  ')).toBe('Posts through “Raid pings”');
   });
 });

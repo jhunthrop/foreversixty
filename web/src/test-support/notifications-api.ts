@@ -12,7 +12,8 @@ export const DISCORD_ROUTE = /\/v1\/notifications\/discord(\/test)?$/;
 export function discordBlock(overrides: Partial<DiscordNotifications> = {}): DiscordNotifications {
   return {
     channel_id: '1098765432101234567',
-    events: { sim_finished: true, upload_parsed: true },
+    name: 'Raid pings',
+    events: { sim_finished: true, upload_parsed: true, upload_private: false },
     disabled_reason: null,
     last_error: null,
     failures: 0,
