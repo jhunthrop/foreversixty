@@ -3,6 +3,7 @@
 // 2026-10-24-character-history 3.3 to 3.6, 7 and 8): the API payload and a measured size in,
 // pixel geometry, readouts and notes out. The component draws; nothing here touches the DOM.
 import { utcDayMonthYear } from '../dates';
+import { difficultyLabel } from '../difficulty';
 import { percentileToken } from '../report/format';
 import { SCORE_MAX, TIER_FROM, shortDate, tierColor, tierLabel, tierTextColor } from '../score/score';
 import type { Tier } from '../score/score';
@@ -20,7 +21,6 @@ import {
   type ChartSize,
   type Domain,
   type PlotRect,
-  type TickAnchor,
   axisTicks,
   parseDomain,
   parseTicks,
@@ -35,7 +35,6 @@ const MIN_GAP_LABEL_WIDTH = 72;
 const DOTS_ALL_UP_TO = 40;
 const COMMON_BAND_OPACITY = 0.04;
 const BAND_OPACITY = 0.08;
-const DEFAULT_DIFFICULTY = 'normal';
 const PATH_DECIMALS = 2;
 
 /** No points, exactly one (no chart box, a sentence), or a line of two or more. */
@@ -197,7 +196,7 @@ function xTicksFor(times: readonly number[], plot: PlotRect, phone: boolean): XT
   const withYear = new Date(first).getUTCFullYear() !== new Date(last).getUTCFullYear();
   return axisTicks(first, last, plot.width, phone).map((tick) => ({
     x: plot.left + tick.x,
-    anchor: tick.anchor as TickAnchor,
+    anchor: tick.anchor,
     label: axisLabel(tick.time, withYear),
   }));
 }
@@ -436,26 +435,30 @@ function newestKill(encounter: HistoryEncounter): number {
   return Math.max(...encounter.points.map((point) => Date.parse(point.at)));
 }
 
-function difficultyWord(difficulty: string): string {
-  return `${difficulty.charAt(0).toUpperCase()}${difficulty.slice(1)}`;
+function newestKillOfBoss(encounters: readonly HistoryEncounter[], encounterId: number): number {
+  return Math.max(...encounters.filter((e) => e.encounter_id === encounterId).map(newestKill));
 }
 
 /**
- * One pill per boss and difficulty with a kill, newest kill first (the first is the default).
- * A boss killed on two difficulties writes the word on the non-normal one; with one difficulty
- * the word is never written.
+ * One pill per boss and difficulty with a kill. Bosses run newest kill first; one boss's
+ * difficulties sit together by id ascending, and each writes its word ("Golemagg · 40 Player")
+ * only when the boss has kills at two or more ids.
  */
 export function bossPills(encounters: readonly HistoryEncounter[]): BossPill[] {
   const killed = encounters.filter((encounter) => encounter.points.length > 0);
   return [...killed]
-    .sort((a, b) => newestKill(b) - newestKill(a))
+    .sort(
+      (a, b) =>
+        newestKillOfBoss(killed, b.encounter_id) - newestKillOfBoss(killed, a.encounter_id) ||
+        a.encounter_id - b.encounter_id ||
+        a.difficulty - b.difficulty,
+    )
     .map((encounter) => {
-      const sameBoss = killed.filter((other) => other.encounter_id === encounter.encounter_id);
-      const word =
-        sameBoss.length > 1 && encounter.difficulty !== DEFAULT_DIFFICULTY
-          ? difficultyWord(encounter.difficulty)
-          : null;
-      const label = historyCopy.pillBoss(shortBossName(encounter.encounter), word);
+      const several = killed.filter((other) => other.encounter_id === encounter.encounter_id).length > 1;
+      const label = historyCopy.pillBoss(
+        shortBossName(encounter.encounter),
+        several ? difficultyLabel(encounter.difficulty) : null,
+      );
       return {
         id: `${encounter.encounter_id}:${encounter.difficulty}`,
         label,
@@ -466,9 +469,13 @@ export function bossPills(encounters: readonly HistoryEncounter[]): BossPill[] {
     });
 }
 
-/** The boss with the newest kill. */
+/** The pill of the newest kill. */
 export function defaultBossPill(pills: readonly BossPill[]): BossPill | undefined {
-  return pills[0];
+  return pills.reduce<BossPill | undefined>(
+    (best, pill) =>
+      best === undefined || newestKill(pill.encounter) > newestKill(best.encounter) ? pill : best,
+    undefined,
+  );
 }
 
 // ---------------------------------------------------------------- screen-reader rows

@@ -97,7 +97,7 @@ export type ListButton = 'none' | 'show-all' | 'show-fewer';
 export interface ListWindow {
   rows: HistoryFight[];
   /** The count `Show all N` names: every row, up to 100. */
-  total: number;
+  shownTotal: number;
   button: ListButton;
   /** A marked row sits below the collapsed rows, so the list must open to show it. */
   needsExpand: boolean;
@@ -115,14 +115,13 @@ export function listWindow(
   expanded: boolean,
   marked: ReadonlySet<string>,
 ): ListWindow {
-  const total = Math.min(fights.length, MAX_ROWS);
+  const shownTotal = Math.min(fights.length, MAX_ROWS);
   const needsExpand = firstMarkedRow(fights, marked) >= COLLAPSED_ROWS;
-  const open = expanded;
-  const hasMore = total > COLLAPSED_ROWS;
+  const hasMore = shownTotal > COLLAPSED_ROWS;
   return {
-    rows: fights.slice(0, open ? total : COLLAPSED_ROWS),
-    total,
-    button: !hasMore ? 'none' : open ? 'show-fewer' : 'show-all',
+    rows: fights.slice(0, expanded ? shownTotal : COLLAPSED_ROWS),
+    shownTotal,
+    button: !hasMore ? 'none' : expanded ? 'show-fewer' : 'show-all',
     needsExpand,
   };
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { characterHistoryFixture } from '../../fixtures/character-history';
+import { tierColor } from '../score/score';
 import type { HistoryEncounter, HistoryScorePoint } from './history-api';
 import {
   bossPills,
@@ -26,14 +27,14 @@ function fight(at: string, score: number, overrides: Partial<HistoryScorePoint> 
     report_id: `r${at}`,
     fight_index: 1,
     encounter: 'Ragnaros',
-    difficulty: 'normal',
+    difficulty: 3,
     kill: true,
     visibility: 'public',
     ...overrides,
   };
 }
 
-function encounter(name: string, id: number, difficulty: string, ats: string[]): HistoryEncounter {
+function encounter(name: string, id: number, difficulty: number, ats: string[]): HistoryEncounter {
   return {
     encounter: name,
     encounter_id: id,
@@ -221,8 +222,8 @@ describe('buildParseChart', () => {
 describe('bossPills', () => {
   it('orders by newest kill and defaults to the newest boss', () => {
     const pills = bossPills([
-      encounter('Gehennas', 1, 'normal', ['2026-10-01T00:00:00Z']),
-      encounter('Golemagg the Incinerator', 2, 'normal', ['2026-11-01T00:00:00Z', '2026-12-01T00:00:00Z']),
+      encounter('Gehennas', 1, 3, ['2026-10-01T00:00:00Z']),
+      encounter('Golemagg the Incinerator', 2, 3, ['2026-11-01T00:00:00Z', '2026-12-01T00:00:00Z']),
     ]);
     expect(pills.map((pill) => pill.label)).toEqual(['Golemagg', 'Gehennas']);
     expect(defaultBossPill(pills)?.label).toBe('Golemagg');
@@ -230,18 +231,32 @@ describe('bossPills', () => {
     expect(pills[1].accessibleName).toBe('Gehennas, 1 kill');
   });
 
-  it('writes the difficulty only on the second difficulty of a boss', () => {
+  it('writes the difficulty on every pill of a boss killed at two ids, ordered by id', () => {
     const pills = bossPills([
-      encounter('Golemagg the Incinerator', 2, 'normal', ['2026-12-01T00:00:00Z']),
-      encounter('Golemagg the Incinerator', 2, 'hard', ['2026-12-02T00:00:00Z']),
+      encounter('Golemagg the Incinerator', 2, 9, ['2026-12-01T00:00:00Z']),
+      encounter('Golemagg the Incinerator', 2, 3, ['2026-12-02T00:00:00Z']),
+      encounter('Gehennas', 1, 3, ['2026-12-03T00:00:00Z']),
     ]);
-    expect(pills.map((pill) => pill.label)).toEqual(['Golemagg · Hard', 'Golemagg']);
+    expect(pills.map((pill) => pill.label)).toEqual([
+      'Gehennas',
+      'Golemagg · 10 Player',
+      'Golemagg · 40 Player',
+    ]);
+    expect(pills[2].accessibleName).toBe('Golemagg · 40 Player, 1 kill');
+  });
+
+  it('defaults to the pill of the newest kill', () => {
+    const pills = bossPills([
+      encounter('Golemagg the Incinerator', 2, 3, ['2026-12-01T00:00:00Z']),
+      encounter('Golemagg the Incinerator', 2, 9, ['2026-12-05T00:00:00Z']),
+    ]);
+    expect(defaultBossPill(pills)?.label).toBe('Golemagg · 40 Player');
   });
 
   it('shortens a name to the words before "the" and skips bosses with no kills', () => {
     expect(shortBossName('Golemagg the Incinerator')).toBe('Golemagg');
     expect(shortBossName('The Prophet Skeram')).toBe('The Prophet Skeram');
-    expect(bossPills([encounter('Nobody', 3, 'normal', [])])).toEqual([]);
+    expect(bossPills([encounter('Nobody', 3, 3, [])])).toEqual([]);
   });
 });
 
@@ -257,5 +272,50 @@ describe('screen-reader rows', () => {
   it('lists the kills', () => {
     const chart = buildParseChart(characterHistoryFixture().encounters[0], DESKTOP);
     expect(parseSrRows(chart)[0]).toEqual({ text: '17 Nov 2026', value: '54' });
+  });
+});
+
+describe('score chart thresholds and bands', () => {
+  const flat = (width: number, height: number, phone = false) =>
+    buildScoreChart(
+      {
+        score: [
+          fight('2026-10-01T00:00:00Z', 1000),
+          fight('2026-10-11T00:00:00Z', 1100),
+          fight('2026-10-21T00:00:00Z', 1100),
+        ],
+        gaps: [{ from: '2026-10-01', to: '2026-10-11', reason: 'No rated fights' }],
+      },
+      { width, height, phone },
+    ).geometry!;
+
+  it('puts the gap reason inside its band at exactly 72 px, not at 71.5', () => {
+    expect(flat(198, 200).gaps[0]).toMatchObject({ labelInside: true });
+    expect(flat(198, 200).gaps[0].right - flat(198, 200).gaps[0].left).toBe(72);
+    expect(flat(197, 200).gaps[0].labelInside).toBe(false);
+  });
+
+  it('labels a tier band at exactly 22 px tall, not at 21.5', () => {
+    const at22 = flat(300, 82).bands;
+    expect(at22.map((b) => b.bottom - b.top)).toEqual([22, 22]);
+    expect(at22.every((b) => b.labelled)).toBe(true);
+    expect(flat(300, 81).bands.every((b) => !b.labelled)).toBe(true);
+  });
+
+  it('draws common at 4 percent and the other tiers at 8 percent in the quality colour', () => {
+    const wide = buildScoreChart(
+      { score: [fight('2026-10-01T00:00:00Z', 100), fight('2026-10-02T00:00:00Z', 2000)], gaps: [] },
+      DESKTOP,
+    ).geometry!;
+    expect(wide.bands.map((b) => [b.tier, b.opacity])).toEqual([
+      ['common', 0.04],
+      ['uncommon', 0.08],
+      ['rare', 0.08],
+      ['epic', 0.08],
+      ['legendary', 0.08],
+    ]);
+    expect(wide.bands.map((b) => b.color)).toEqual(
+      ['common', 'uncommon', 'rare', 'epic', 'legendary'].map((tier) => tierColor(tier)),
+    );
   });
 });

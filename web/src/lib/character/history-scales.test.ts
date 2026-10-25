@@ -36,6 +36,11 @@ describe('scoreDomain', () => {
     expect(scoreDomain([2050, 2090])).toEqual({ min: 1700, max: 2100 });
   });
 
+  it('clamps a window already 400 or wider bound by bound', () => {
+    expect(scoreDomain([1500, 2090])).toEqual({ min: 1400, max: 2100 });
+    expect(scoreDomain([30, 400])).toEqual({ min: 0, max: 500 });
+  });
+
   it('fails fast with no values', () => {
     expect(() => scoreDomain([])).toThrow();
   });
@@ -66,8 +71,10 @@ describe('parseDomain', () => {
     expect(parseDomain(values)).toEqual({ min, max: 100 });
   });
 
-  it('never rescales down as a better parse arrives', () => {
-    expect(parseDomain([60, 70])).toEqual(parseDomain([60, 70, 99]));
+  it('depends only on the lowest parse, never on the others', () => {
+    expect(parseDomain([60, 70])).toEqual(parseDomain([60, 99, 100]));
+    expect(parseDomain([60, 70])).toEqual(parseDomain([60]));
+    expect(parseDomain([40, 99])).not.toEqual(parseDomain([60, 99]));
   });
 });
 

@@ -8,8 +8,7 @@ import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { API_BASE_URL } from '../planner/config';
 import type { CharacterFight } from '../rankings/api';
-
-export const HISTORY_FAILED = 'Your history did not load';
+import { historyCopy } from './history-copy';
 
 /** The owner is on the free plan: the API answers 402 (the web never calls without the flag). */
 export const HISTORY_PREMIUM_REQUIRED_STATUS = 402;
@@ -25,8 +24,8 @@ export interface HistoryScorePoint {
   report_id: string;
   fight_index: number;
   encounter: string;
-  /** The API's word: "normal", "hard". */
-  difficulty: string;
+  /** The log's difficulty id, named by `difficultyLabel`. */
+  difficulty: number;
   parse_percentile?: number;
   kill: boolean;
   visibility: HistoryVisibility;
@@ -43,7 +42,8 @@ export interface HistoryKill {
 export interface HistoryEncounter {
   encounter: string;
   encounter_id: number;
-  difficulty: string;
+  /** The log's difficulty id, named by `difficultyLabel`. */
+  difficulty: number;
   points: HistoryKill[];
 }
 
@@ -98,13 +98,13 @@ export async function fetchCharacterHistory(
 ): Promise<CharacterHistory> {
   try {
     const { data, status } = await requestEnvelope<CharacterHistory>(historyPath(path), apiBase, {
-      failureMessage: HISTORY_FAILED,
+      failureMessage: historyCopy.loadFailed,
     });
-    if (data === null) throw new HistoryApiError(HISTORY_FAILED, status);
+    if (data === null) throw new HistoryApiError(historyCopy.loadFailed, status);
     return data;
   } catch (error) {
     if (error instanceof HistoryApiError) throw error;
     if (error instanceof AccountError) throw new HistoryApiError(error.message, error.status);
-    throw new HistoryApiError(HISTORY_FAILED, 0);
+    throw new HistoryApiError(historyCopy.loadFailed, 0);
   }
 }

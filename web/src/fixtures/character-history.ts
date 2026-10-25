@@ -1,7 +1,7 @@
 // web/src/fixtures/character-history.ts
 // A GET /v1/characters/<region>/<ruleset>/<name>/history answer (experience spec
-// 2026-10-24-character-history section 10) for vitest and the e2e specs: eleven score days
-// ending on 11 Dec with two fights, a wide gap and a narrow one, a private and a guild ring,
+// 2026-10-24-character-history section 10) for vitest and the e2e specs: nine rated fights on eight
+// UTC days ending on 11 Dec (the last day holds two fights), a wide gap and a narrow one, a private and a guild ring,
 // Golemagg with five kills and Gehennas with one.
 import type {
   CharacterHistory,
@@ -30,6 +30,9 @@ const SCORE_SEEDS: readonly ScoreSeed[] = [
   { at: '2026-12-11T21:14:03Z', score: 1830, tier: 'epic', report: 'rpt000000009' },
 ];
 
+/** Blizzard's id for 10 Player (web/src/lib/difficulty.ts). */
+export const DIFFICULTY_10_PLAYER = 3;
+
 const BOSS = 'Golemagg the Incinerator';
 const KILLS: readonly { at: string; parse: number; report: string }[] = [
   { at: '2026-11-17T20:00:00Z', parse: 54, report: 'rpt000000004' },
@@ -47,7 +50,7 @@ function scorePoint(seed: ScoreSeed): HistoryScorePoint {
     report_id: seed.report,
     fight_index: 7,
     encounter: BOSS,
-    difficulty: 'normal',
+    difficulty: DIFFICULTY_10_PLAYER,
     parse_percentile: 80,
     kill: true,
     visibility: seed.visibility ?? 'public',
@@ -65,7 +68,7 @@ function fightRow(
   return {
     encounter,
     encounter_id: encounterId,
-    difficulty: 1,
+    difficulty: DIFFICULTY_10_PLAYER,
     metric: 'dps',
     value: 1402,
     percentile: parse,
@@ -91,7 +94,7 @@ export function characterHistoryFixture(overrides: Partial<CharacterHistory> = {
       {
         encounter: BOSS,
         encounter_id: 663,
-        difficulty: 'normal',
+        difficulty: DIFFICULTY_10_PLAYER,
         points: KILLS.map((kill) => ({
           at: kill.at,
           parse_percentile: kill.parse,
@@ -102,7 +105,7 @@ export function characterHistoryFixture(overrides: Partial<CharacterHistory> = {
       {
         encounter: 'Gehennas',
         encounter_id: 662,
-        difficulty: 'normal',
+        difficulty: DIFFICULTY_10_PLAYER,
         points: [
           { at: '2026-10-19T20:00:00Z', parse_percentile: 44, report_id: 'rpt000000002', fight_index: 7 },
         ],

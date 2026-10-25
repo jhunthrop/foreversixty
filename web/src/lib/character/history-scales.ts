@@ -79,13 +79,12 @@ export function scoreDomain(values: readonly number[]): Domain {
   requireValues(values);
   let min = Math.floor((Math.min(...values) - SCORE_PAD) / DOMAIN_STEP) * DOMAIN_STEP;
   let max = Math.ceil((Math.max(...values) + SCORE_PAD) / DOMAIN_STEP) * DOMAIN_STEP;
-  if (max - min < MIN_SCORE_SPAN) {
-    min = Math.floor(((min + max) / 2 - MIN_SCORE_SPAN / 2) / DOMAIN_STEP) * DOMAIN_STEP;
-    max = min + MIN_SCORE_SPAN;
-  }
-  // Clamping shifts the window rather than shrinking it, so the 400 minimum survives.
-  if (min < 0) return { min: 0, max: max - min };
-  if (max > SCORE_MAX) return { min: min - (max - SCORE_MAX), max: SCORE_MAX };
+  if (max - min >= MIN_SCORE_SPAN) return { min: Math.max(min, 0), max: Math.min(max, SCORE_MAX) };
+  // Under 400: centre a 400 window, then shift it inside 0..2100 so it keeps its width.
+  min = Math.floor(((min + max) / 2 - MIN_SCORE_SPAN / 2) / DOMAIN_STEP) * DOMAIN_STEP;
+  max = min + MIN_SCORE_SPAN;
+  if (min < 0) return { min: 0, max: MIN_SCORE_SPAN };
+  if (max > SCORE_MAX) return { min: SCORE_MAX - MIN_SCORE_SPAN, max: SCORE_MAX };
   return { min, max };
 }
 

@@ -108,7 +108,7 @@ describe('the lists', () => {
   it('shows 8 rows and a Show all button above that', () => {
     const window = listWindow(rows(31), false, new Set());
     expect(window.rows).toHaveLength(COLLAPSED_ROWS);
-    expect(window).toMatchObject({ total: 31, button: 'show-all', needsExpand: false });
+    expect(window).toMatchObject({ shownTotal: 31, button: 'show-all', needsExpand: false });
   });
 
   it('shows no button with 8 rows or fewer', () => {
@@ -124,7 +124,7 @@ describe('the lists', () => {
   it('stops at 100 rows and names 100', () => {
     const window = listWindow(rows(130), true, new Set());
     expect(window.rows).toHaveLength(MAX_ROWS);
-    expect(window.total).toBe(MAX_ROWS);
+    expect(window.shownTotal).toBe(MAX_ROWS);
   });
 
   it('asks to expand when a marked row is hidden', () => {
