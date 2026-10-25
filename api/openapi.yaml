@@ -531,6 +531,14 @@ components:
           enum: [failed five times, plan lapsed]
         last_error: { type: string, nullable: true }
         failures: { type: integer }
+        source:
+          type: string
+          enum: [pasted, connected]
+          description: How the webhook got here. A connected webhook has a null name.
+        guild_id:
+          type: string
+          nullable: true
+          description: The Discord server of the channel; null when Discord did not say.
     WeightsSpec:
       type: object
       description: Asks for stat weights instead of a DPS number.
@@ -1501,6 +1509,9 @@ paths:
                             type: object
                             description: Omitted when the deployment has notifications off.
                             properties:
+                              connect:
+                                type: boolean
+                                description: True when the one-click Discord connect is configured.
                               discord:
                                 nullable: true
                                 allOf: [{ $ref: '#/components/schemas/DiscordBlock' }]
@@ -2077,9 +2088,38 @@ paths:
     delete:
       summary: Remove the Discord webhook
       operationId: deleteDiscordWebhook
-      description: Allowed for a lapsed member; deleting an absent webhook is not an error.
+      description: >-
+        Allowed for a lapsed member; deleting an absent webhook is not an error. A connected webhook
+        is also deleted at Discord first (best effort, only while entitled); a pasted one never is.
       responses:
         '204': { description: Removed }
+        '401': { description: Sign in first }
+  /v1/notifications/discord/connect:
+    get:
+      summary: Start the one-click Discord connect (premium)
+      operationId: connectDiscord
+      description: >-
+        Sets the fs_discord_state cookie (httpOnly, SameSite=Lax, path
+        /v1/notifications/discord/callback, 10 minutes) and redirects to Discord's authorize page
+        with scope webhook.incoming.
+      responses:
+        '302': { description: "Discord's authorize URL; or /account?discord=failed#discord when the member lacks the notifications entitlement" }
+        '401': { description: Sign in first }
+        '404': { description: The deployment has no Discord application configured }
+  /v1/notifications/discord/callback:
+    get:
+      summary: Finish the Discord connect
+      operationId: discordConnectCallback
+      description: >-
+        Always clears the state cookie and redirects to the account page with discord=connected,
+        denied (no code, or error=access_denied) or failed. A connect replaces the saved webhook
+        keeping its events and removes the replaced connected webhook from Discord.
+      parameters:
+        - { name: code, in: query, schema: { type: string } }
+        - { name: state, in: query, schema: { type: string } }
+        - { name: error, in: query, schema: { type: string } }
+      responses:
+        '302': { description: "/account?discord=connected|denied|failed#discord" }
         '401': { description: Sign in first }
   /v1/notifications/discord/test:
     post:

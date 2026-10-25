@@ -49,6 +49,9 @@ type Poster interface {
 	Post(ctx context.Context, webhookURL string, embed Embed) error
 	// Lookup reads the webhook's channel id and name (GET on the webhook URL).
 	Lookup(ctx context.Context, webhookURL string) (LookupResult, error)
+	// Delete removes the webhook at Discord (DELETE on its URL). A 404 is
+	// success: it is already gone.
+	Delete(ctx context.Context, webhookURL string) error
 }
 
 // Transport failures, reported without the URL. The deliverer turns them
@@ -95,12 +98,16 @@ type HTTPPoster struct {
 // absolute URL of the Forever Sixty seal every message carries; empty
 // leaves the webhook's own avatar.
 func NewHTTPPoster(avatarURL string) *HTTPPoster {
-	return &HTTPPoster{avatarURL: avatarURL, client: &http.Client{
-		Timeout: posterTimeout,
-		// A redirect would carry the credential to another host; the 3xx
-		// is returned as a *DiscordError instead.
+	return &HTTPPoster{avatarURL: avatarURL, client: newNoRedirectClient()}
+}
+
+// newNoRedirectClient is the 5 s client every Discord call uses. A redirect
+// would carry a credential to another host; the 3xx is returned instead.
+func newNoRedirectClient() *http.Client {
+	return &http.Client{
+		Timeout:       posterTimeout,
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
-	}}
+	}
 }
 
 type embedJSON struct {
@@ -183,7 +190,7 @@ func (p *HTTPPoster) Post(ctx context.Context, webhookURL string, embed Embed) e
 }
 
 // LookupResult is what Discord says about a webhook. Name may be empty.
-type LookupResult struct{ ChannelID, Name string }
+type LookupResult struct{ ChannelID, GuildID, Name string }
 
 // Lookup returns the webhook's channel_id and name.
 func (p *HTTPPoster) Lookup(ctx context.Context, webhookURL string) (LookupResult, error) {
@@ -197,12 +204,26 @@ func (p *HTTPPoster) Lookup(ctx context.Context, webhookURL string) (LookupResul
 	}
 	var out struct {
 		ChannelID string `json:"channel_id"`
+		GuildID   string `json:"guild_id"`
 		Name      string `json:"name"`
 	}
 	if err := json.NewDecoder(io.LimitReader(res.Body, maxResponseLen)).Decode(&out); err != nil || out.ChannelID == "" {
 		return LookupResult{}, errors.New("notify: webhook answered without a channel id")
 	}
-	return LookupResult{ChannelID: out.ChannelID, Name: out.Name}, nil
+	return LookupResult{ChannelID: out.ChannelID, GuildID: out.GuildID, Name: out.Name}, nil
+}
+
+// Delete removes the webhook; any 2xx or a 404 is success.
+func (p *HTTPPoster) Delete(ctx context.Context, webhookURL string) error {
+	res, err := p.do(ctx, http.MethodDelete, webhookURL, nil)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	if res.StatusCode == http.StatusNotFound {
+		return nil
+	}
+	return statusError(res)
 }
 
 // do sends the request; a transport failure is reported without the URL
@@ -266,7 +287,11 @@ type FakePoster struct {
 	LookupErr       error
 	LookupChannelID string
 	LookupName      string
-	posts           []PostCall
+	LookupGuildID   string
+	// DeleteErr, when set, is returned by every Delete.
+	DeleteErr error
+	posts     []PostCall
+	deletes   []string
 }
 
 func (f *FakePoster) Post(_ context.Context, webhookURL string, embed Embed) error {
@@ -279,7 +304,7 @@ func (f *FakePoster) Post(_ context.Context, webhookURL string, embed Embed) err
 func (f *FakePoster) Lookup(context.Context, string) (LookupResult, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	return LookupResult{ChannelID: f.LookupChannelID, Name: f.LookupName}, f.LookupErr
+	return LookupResult{ChannelID: f.LookupChannelID, GuildID: f.LookupGuildID, Name: f.LookupName}, f.LookupErr
 }
 
 // Posts returns a copy of the recorded Post calls.
@@ -287,4 +312,19 @@ func (f *FakePoster) Posts() []PostCall {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	return append([]PostCall(nil), f.posts...)
+}
+
+// Delete records the URL and returns DeleteErr.
+func (f *FakePoster) Delete(_ context.Context, webhookURL string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.deletes = append(f.deletes, webhookURL)
+	return f.DeleteErr
+}
+
+// Deletes returns the URLs Delete was called with.
+func (f *FakePoster) Deletes() []string {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]string(nil), f.deletes...)
 }
