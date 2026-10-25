@@ -294,6 +294,7 @@ function revalidate<T>(
     .catch((error: unknown) => {
       entry.inflight = null;
       if (options.scope === 'private' && isUnauthorized(error)) forgetPrivate();
+      if (entry.generation !== startedAt) return entry.state.data as T; // a newer write stands
       if (background) {
         entry.validated = true; // the next read does not retry; a new page load will
         setState(key, entry, { stale: true });

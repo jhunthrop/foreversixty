@@ -7,93 +7,84 @@ import {
   shortenDiscordText,
 } from './notifications-copy';
 
-// Typed from design/specs/2026-10-25-discord-notifications.md section 6.1, character for character.
+// Every §6.1 string below is read out of the spec itself, so a drift in either file fails here.
+const SPEC_PATH = new URL('../../../../design/specs/2026-10-25-discord-notifications.md', import.meta.url);
+const NBSP = '\u00A0';
+
+/** The backticked segments of a 6.1 table row's string cell, by the row's first-column label. */
+function specCell(labelStart: string): string[] {
+  const spec = readFileSync(SPEC_PATH, 'utf8');
+  const row = spec
+    .slice(spec.indexOf('### 6.1'))
+    .split('\n')
+    .find((line) => line.startsWith(`| ${labelStart}`));
+  if (row === undefined) throw new Error(`spec 6.1 has no row starting "${labelStart}"`);
+  const cell = row.split(/\|/)[2] ?? '';
+  return [...cell.matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
+}
+
+/** The spec's U+00A0 rule for the Premium row (3.7): after the state word, and between a count and its noun. */
+function withNonBreakingSpaces(value: string): string {
+  return value.replace(' ·', `${NBSP}·`).replace(/(\d) (events?)$/, `$1${NBSP}$2`);
+}
+
+/** One backticked segment of a 6.1 row, with `{placeholder}` markers filled in. */
+function spec(label: string, index = 0, fill: Record<string, string> = {}): string {
+  const segment = specCell(label)[index];
+  if (segment === undefined) throw new Error(`spec 6.1 row "${label}" has no segment ${index}`);
+  return Object.entries(fill).reduce((text, [key, value]) => text.replace(`{${key}}`, value), segment);
+}
+
+const ERROR_TEXT = 'Unknown Webhook';
+
 const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
-  ['label', notificationsCopy.label, 'Discord'],
-  [
-    'intro',
-    notificationsCopy.intro,
-    'Get a message in a Discord channel when a server sim finishes or a log finishes parsing.',
-  ],
-  ['fieldLabel', notificationsCopy.fieldLabel, 'Webhook URL'],
-  ['placeholder', notificationsCopy.placeholder, 'https://discord.com/api/webhooks/…'],
-  [
-    'trustHelper',
-    notificationsCopy.trustHelper,
-    'We store the URL encrypted, never show it again, and delete it with your account.',
-  ],
-  ['eventsLabel', notificationsCopy.eventsLabel, 'Post when'],
-  ['eventSimFinished', notificationsCopy.eventSimFinished, 'A server sim finishes'],
-  ['eventUploadParsed', notificationsCopy.eventUploadParsed, 'A combat log you upload finishes parsing'],
-  ['save', notificationsCopy.save, 'Save webhook'],
-  ['saving', notificationsCopy.saving, 'Saving…'],
-  ['cancel', notificationsCopy.cancel, 'Cancel'],
-  ['destinationLead', notificationsCopy.destinationLead, 'Posts to'],
-  ['destinationNoun', notificationsCopy.destinationNoun, 'channel'],
-  ['test', notificationsCopy.test, 'Send test message'],
-  ['testing', notificationsCopy.testing, 'Sending…'],
-  ['remove', notificationsCopy.remove, 'Remove'],
-  ['removing', notificationsCopy.removing, 'Removing…'],
-  [
-    'removeQuestion',
-    notificationsCopy.removeQuestion,
-    'Remove this webhook? Posts stop and we forget the URL.',
-  ],
-  ['replace', notificationsCopy.replace, 'Use a different webhook'],
-  ['savedFirst', notificationsCopy.savedFirst, 'Saved. Send a test message to see it in your channel.'],
-  ['savedEvents', notificationsCopy.savedEvents, 'Saved.'],
-  ['testSent', notificationsCopy.testSent, 'Sent. Check the channel.'],
-  ['testSentSwitchedOn', notificationsCopy.testSentSwitchedOn, 'Sent. Posts are on again.'],
-  ['testFailed', notificationsCopy.testFailed('Unknown Webhook'), 'Discord said: Unknown Webhook.'],
-  ['testRateLimited', notificationsCopy.testRateLimited, 'Wait a minute before sending another test.'],
-  ['testOurError', notificationsCopy.testOurError, 'Could not send the test. Try again.'],
-  ['removed', notificationsCopy.removed, 'Removed.'],
-  ['removeFailed', notificationsCopy.removeFailed, 'Could not remove it. Try again.'],
-  ['saveFailed', notificationsCopy.saveFailed, 'Could not save that. Try again.'],
-  ['emptyField', notificationsCopy.emptyField, 'Paste a Discord webhook URL.'],
-  [
-    'invalidUrl',
-    notificationsCopy.invalidUrl,
-    'That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/.',
-  ],
-  ['notEntitled', notificationsCopy.notEntitled, 'Discord messages are part of Premium.'],
-  ['seePlans', notificationsCopy.seePlans, 'See plans'],
+  ['label', notificationsCopy.label, spec('Panel label')],
+  ['intro', notificationsCopy.intro, spec('Intro (form)')],
+  ['fieldLabel', notificationsCopy.fieldLabel, spec('Field label')],
+  ['placeholder', notificationsCopy.placeholder, spec('Placeholder')],
+  ['trustHelper', notificationsCopy.trustHelper, spec('Helper (trust)')],
+  ['eventsLabel', notificationsCopy.eventsLabel, spec('Events label')],
+  ['eventSimFinished', notificationsCopy.eventSimFinished, spec('Event 1')],
+  ['eventUploadParsed', notificationsCopy.eventUploadParsed, spec('Event 2')],
+  ['save', notificationsCopy.save, spec('Save')],
+  ['saving', notificationsCopy.saving, spec('Save', 1)],
+  ['cancel', notificationsCopy.cancel, spec('Cancel')],
+  ['test', notificationsCopy.test, spec('Test')],
+  ['testing', notificationsCopy.testing, spec('Test', 1)],
+  ['remove', notificationsCopy.remove, spec('Remove')],
+  ['removing', notificationsCopy.removing, spec('Remove', 1)],
+  ['removeQuestion', notificationsCopy.removeQuestion, spec('Remove question')],
+  ['replace', notificationsCopy.replace, spec('Replace')],
+  ['savedFirst', notificationsCopy.savedFirst, spec('Saved status')],
+  ['savedEvents', notificationsCopy.savedEvents, spec('Saved status', 1)],
+  ['testSent', notificationsCopy.testSent, spec('Test sent')],
+  ['testSentSwitchedOn', notificationsCopy.testSentSwitchedOn, spec('Test sent', 1)],
+  ['testFailed', notificationsCopy.testFailed(ERROR_TEXT), spec('Test failed', 0, { error: ERROR_TEXT })],
+  ['testRateLimited', notificationsCopy.testRateLimited, spec('Test rate limited')],
+  ['testOurError', notificationsCopy.testOurError, spec('Test, our error')],
+  ['removed', notificationsCopy.removed, spec('Removed')],
+  ['removeFailed', notificationsCopy.removeFailed, spec('Remove failed')],
+  ['saveFailed', notificationsCopy.saveFailed, spec('Save failed')],
+  ['emptyField', notificationsCopy.emptyField, spec('Empty field')],
+  ['invalidUrl', notificationsCopy.invalidUrl, spec('Invalid URL')],
+  ['notEntitled', notificationsCopy.notEntitled, spec('Not entitled on save')],
+  ['seePlans', notificationsCopy.seePlans, spec('Not entitled on save', 1)],
   [
     'warning, one',
     notificationsCopy.warning(1, 'Missing Permissions'),
-    'The last post failed. At 5 in a row it switches off. Send a test message to check. Last error from Discord: Missing Permissions.',
+    `${spec('Warning, one')} ${spec('Warning, one', 1, { last_error: 'Missing Permissions' })}`,
   ],
   [
     'warning, several',
     notificationsCopy.warning(3, 'Missing Permissions'),
-    'The last 3 posts failed. At 5 in a row it switches off. Send a test message to check. Last error from Discord: Missing Permissions.',
+    `${spec('Warning, several', 0, { n: '3' })} ${spec('Warning, several', 1, { last_error: 'Missing Permissions' })}`,
   ],
-  ['switchedOff', notificationsCopy.switchedOff, 'Switched off after 5 failed posts in a row.'],
-  ['lastError', notificationsCopy.lastError('Unknown Webhook'), 'Last error from Discord: Unknown Webhook.'],
-  [
-    'switchedOffHelper',
-    notificationsCopy.switchedOffHelper,
-    'Sends a test message. If Discord accepts it, posts resume.',
-  ],
-  ['testAndSwitchOn', notificationsCopy.testAndSwitchOn, 'Test and switch on'],
-  ['lapsedTitle', notificationsCopy.lapsedTitle, 'Posts are paused because your plan ended.'],
-  [
-    'lapsedBody',
-    notificationsCopy.lapsedBody,
-    'We kept your webhook. Posts start again when you are back on Premium.',
-  ],
-  [
-    'freeSentence',
-    notificationsCopy.freeSentence,
-    'Discord messages tell you when a server sim or a log you uploaded is done.',
-  ],
-  ['row off', premiumRowCopy.off, 'Off\u00A0· Premium'],
-  ['row set up', premiumRowCopy.offSetUp, 'Off\u00A0· set up'],
-  ['row two events', premiumRowCopy.on(2), 'On\u00A0· 2\u00A0events'],
-  ['row one event', premiumRowCopy.on(1), 'On\u00A0· 1\u00A0event'],
-  ['row no events', premiumRowCopy.offNoEvents, 'Off\u00A0· no events chosen'],
-  ['row needs attention', premiumRowCopy.offNeedsAttention, 'Off\u00A0· needs attention'],
-  ['row paused', premiumRowCopy.paused, 'Paused\u00A0· plan lapsed'],
+  ['switchedOff', notificationsCopy.switchedOff, spec('Switched off')],
+  ['lastError', notificationsCopy.lastError(ERROR_TEXT), spec('Switched off', 1, { last_error: ERROR_TEXT })],
+  ['testAndSwitchOn', notificationsCopy.testAndSwitchOn, spec('Switched off', 4)],
+  ['lapsedTitle', notificationsCopy.lapsedTitle, spec('Lapsed')],
+  ['lapsedBody', notificationsCopy.lapsedBody, spec('Lapsed', 1)],
+  ['freeSentence', notificationsCopy.freeSentence, spec('Free')],
 ];
 
 describe('notificationsCopy', () => {
@@ -154,27 +145,6 @@ describe('premiumRowCopy', () => {
     expect(premiumRowCopy.on(1)).toBe('On\u00A0· 1\u00A0event');
   });
 });
-
-// The amended strings are read out of the spec itself, so a drift in either file fails here.
-const SPEC_PATH = new URL('../../../../design/specs/2026-10-25-discord-notifications.md', import.meta.url);
-const NBSP = ' ';
-
-/** The backticked segments of a 6.1 table row's string cell, by the row's first-column label. */
-function specCell(labelStart: string): string[] {
-  const spec = readFileSync(SPEC_PATH, 'utf8');
-  const row = spec
-    .slice(spec.indexOf('### 6.1'))
-    .split('\n')
-    .find((line) => line.startsWith(`| ${labelStart}`));
-  if (row === undefined) throw new Error(`spec 6.1 has no row starting "${labelStart}"`);
-  const cell = row.split(/\|/)[2] ?? '';
-  return [...cell.matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
-}
-
-/** The spec's U+00A0 rule for the Premium row (3.7): after the state word, and between a count and its noun. */
-function withNonBreakingSpaces(value: string): string {
-  return value.replace(' ·', `${NBSP}·`).replace(/(\d) (events?)$/, `$1${NBSP}$2`);
-}
 
 describe('notificationsCopy against the spec text, read from the spec', () => {
   it('has the three how-to steps', () => {

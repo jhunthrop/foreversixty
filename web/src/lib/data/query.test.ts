@@ -221,6 +221,103 @@ describe('query()', () => {
     expect(load).not.toHaveBeenCalled();
   });
 
+  describe('a newer setQueryData write during a load', () => {
+    const options = { scope: 'public', ttlMs: 60_000 } as const;
+
+    function deferred<T>(): { promise: Promise<T>; resolve: (v: T) => void; reject: (e: unknown) => void } {
+      let resolve: (v: T) => void = () => {};
+      let reject: (e: unknown) => void = () => {};
+      const promise = new Promise<T>((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+      return { promise, resolve, reject };
+    }
+
+    function current(key: string): { status: string; error: string; stale: boolean; data: unknown } {
+      let seen = { status: '', error: '', stale: false, data: null as unknown };
+      subscribe<unknown>(key, (state) => {
+        seen = { status: state.status, error: state.error, stale: state.stale, data: state.data };
+      })();
+      return seen;
+    }
+
+    function persistedData(key: string): unknown {
+      const raw = localStorage.getItem(`fs.q.${hashFor(key)}`);
+      return raw === null ? null : (JSON.parse(raw) as { data: unknown }).data;
+    }
+
+    it('resolves both callers that share the inflight with the newer data', async () => {
+      const slow = deferred<{ n: number }>();
+      const load = vi.fn(() => slow.promise);
+      const first = query('k-share', load, options);
+      const second = query('k-share', load, options);
+      setQueryData('k-share', { n: 2 });
+      slow.resolve({ n: 1 });
+      expect(await Promise.all([first, second])).toEqual([{ n: 2 }, { n: 2 }]);
+      expect(load).toHaveBeenCalledTimes(1);
+    });
+
+    it('a foreground failure leaves the newer data ready and resolves instead of rejecting', async () => {
+      const slow = deferred<{ n: number }>();
+      const pending = query('k-fail', () => slow.promise, options);
+      setQueryData('k-fail', { n: 2 });
+      slow.reject(new Error('boom'));
+      await expect(pending).resolves.toEqual({ n: 2 });
+      expect(current('k-fail')).toEqual({ status: 'ready', error: '', stale: false, data: { n: 2 } });
+    });
+
+    it('a background failure does not mark the newer data stale', async () => {
+      setQueryData('k-bg-fail', { n: 1 });
+      const slow = deferred<{ n: number }>();
+      await query('k-bg-fail', () => slow.promise, { ...options, revalidateOnRead: true });
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+      setQueryData('k-bg-fail', { n: 2 });
+      slow.reject(new Error('boom'));
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(current('k-bg-fail')).toEqual({ status: 'ready', error: '', stale: false, data: { n: 2 } });
+    });
+
+    it('still forgets private entries on a 401 from a load that lost the race', async () => {
+      document.cookie = 'fs_csrf=tok; path=/';
+      const slow = deferred<{ n: number }>();
+      const pending = query('k-401', () => slow.promise, { scope: 'private', ttlMs: 60_000 });
+      setQueryData('k-401', { n: 2 });
+      slow.reject(Object.assign(new Error('unauthorized'), { status: 401 }));
+      await expect(pending).resolves.toEqual({ n: 2 });
+      expect(current('k-401').status).toBe('idle');
+    });
+
+    it('drops a background answer too: no notification, no overwrite, nothing persisted', async () => {
+      setQueryData('k-bg', { n: 1 });
+      const slow = deferred<{ n: number }>();
+      const onRevalidated = vi.fn();
+      await query('k-bg', () => slow.promise, { ...options, revalidateOnRead: true, onRevalidated });
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+      setQueryData('k-bg', { n: 2 });
+      slow.resolve({ n: 1 });
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(onRevalidated).not.toHaveBeenCalled();
+      expect(current('k-bg').data).toEqual({ n: 2 });
+      expect(persistedData('k-bg')).toEqual({ n: 2 });
+    });
+
+    it('does not persist a dropped foreground answer', async () => {
+      const slow = deferred<{ n: number }>();
+      const pending = query('k-persist', () => slow.promise, options);
+      setQueryData('k-persist', { n: 2 });
+      slow.resolve({ n: 1 });
+      await pending;
+      expect(persistedData('k-persist')).toEqual({ n: 2 });
+    });
+  });
+
   it('invalidate(prefix) forces the next query() call to reload', async () => {
     const load = vi.fn().mockResolvedValue({ n: 1 });
     await query('list/a', load, { scope: 'public', ttlMs: 60_000 });

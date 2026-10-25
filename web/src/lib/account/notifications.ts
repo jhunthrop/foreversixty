@@ -52,7 +52,10 @@ export function premiumRowVisible(me: Me): boolean {
   return discordHintState(me) !== 'none';
 }
 
-/** The Premium row's value: one of the seven spec wordings, non-breaking spaces included. */
+/**
+ * The Premium row's value: one of the seven spec wordings, non-breaking spaces included. Callers
+ * check `premiumRowVisible` first: the `none` case has no row, so this value is never shown.
+ */
 export function premiumRowValue(me: Me): string {
   const block = blockState(me);
   switch (block.state) {
