@@ -6,7 +6,7 @@
 // and the dev sign-in all end the same). After that the pointer changes only when the player
 // chooses; signing out clears it.
 import {
-  CURRENT_CHARACTER_CHANGED,
+  announcePageLoadedCharacter,
   clearCurrent,
   readCurrent,
   writeCurrent,
@@ -61,7 +61,9 @@ export function settlePointerForSession(me: Me | null, storage?: Storage): void 
   const next = pointerToHeal(readCurrent(storage), me);
   if (next === null) return;
   writeCurrent(next, storage);
-  if (typeof window !== 'undefined') window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+  // The heal is the site settling its own default, not a player choosing: the displays re-read the
+  // pointer, the followers that load a character in place leave the page alone.
+  announcePageLoadedCharacter();
 }
 
 /** Sign-out: the pointer belongs to the account that is leaving. */

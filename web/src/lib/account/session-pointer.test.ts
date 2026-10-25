@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+// @vitest-environment jsdom
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { onCurrentCharacterChange } from '../current-character-events';
 import type { CurrentCharacter } from '../current-character';
 import type { Me, MeCharacter } from './api';
-import { pointerToHeal } from './session-pointer';
+import { pointerToHeal, settlePointerForSession } from './session-pointer';
 
 const JACKZON: MeCharacter = {
   key: 'us/pvp/bow-jackzon',
@@ -62,5 +64,29 @@ describe('pointerToHeal', () => {
 
   it('writes nothing for an account with no characters', () => {
     expect(pointerToHeal(null, { characters: [] } as unknown as Me)).toBeNull();
+  });
+});
+
+describe('settlePointerForSession', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+  });
+
+  it('announces the heal as a page load, never as a player choosing', () => {
+    const listener = vi.fn();
+    const stop = onCurrentCharacterChange(listener);
+    settlePointerForSession(ME);
+    stop();
+    expect(listener.mock.calls).toEqual([[{ fromPageLoad: true }]]);
+  });
+
+  it('runs once per browser session', () => {
+    settlePointerForSession(ME);
+    const listener = vi.fn();
+    const stop = onCurrentCharacterChange(listener);
+    settlePointerForSession(ME);
+    stop();
+    expect(listener).not.toHaveBeenCalled();
   });
 });
