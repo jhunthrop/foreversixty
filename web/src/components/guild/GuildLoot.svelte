@@ -7,11 +7,14 @@
      item, not one per candidate row). Member sees every drop and ranking read-only (§10.1,
      proposed); only officer sees the Award control. Award asks first ("Award Stormrage Cover to
      Rootbound?" with Award and Cancel, focus on Cancel) and an awarded item offers the officer
-     Undo, which removes the award (lifecycle round 6, R2). -->
+     Undo, which removes the award (lifecycle round 6, R2). Officer tools gate §3/§4: with the
+     guild's officer tools off (officer-read-only) the plan sentence leads the tab, the controls
+     stay on screen disabled, and a server refusal of a click says so once, in the item's card. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
+  import { guildGateCopy } from '../../lib/guild/copy';
   import {
     LOOT_FOOTNOTE,
     NOT_SIMMED_NOTE,
@@ -27,19 +30,31 @@
   } from '../../lib/guild/loot-view';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import EmptyState from '../ui/EmptyState.svelte';
+  import GuildPlanGate from './GuildPlanGate.svelte';
 
   let {
     loot,
     officer,
+    officerTools,
     memberReadOnly,
     busyItemId,
+    refusedItemId,
+    refusedKind,
+    settingsHref,
     onAward,
     onUndo,
   }: {
     loot: GuildLootPage | null;
     officer: boolean;
+    /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
+    officerTools: boolean;
     memberReadOnly: boolean;
     busyItemId: number | null;
+    /** The item whose Award or Undo the server refused with `guild_plan_required` (§4). */
+    refusedItemId: number | null;
+    refusedKind: 'award' | 'undo' | null;
+    /** Where the plan sentence's link goes: the guild's settings tab. */
+    settingsHref: string;
     onAward: (item: GuildLootItem, characterKey: string) => void;
     /** Remove the item's award (the award's id is on `item.awarded_to`). */
     onUndo: (item: GuildLootItem) => void;
@@ -52,20 +67,29 @@
     confirming = null;
     onAward(item, key);
   }
-  /** Focus lands on Cancel, so a stray Enter backs out rather than awards. */
+  /** Focus lands on Cancel, so a stray Enter backs out rather than awards; the §4 refused
+   *  line takes focus the same way, since the button that held it is now disabled. */
   function focusOnMount(node: HTMLElement): void {
     node.focus();
   }
 
   const selectedEncounter = $derived(loot?.encounters.find((e) => e.encounter_id === loot.selected));
   const notSimmed = $derived(loot !== null && anyNotSimmed(loot.items));
+  const officerReadOnly = $derived(officer && !officerTools);
+  /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
+  const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-loot' : undefined);
+  const refusedLine = $derived(
+    refusedKind === 'undo' ? guildGateCopy.undoRefused : guildGateCopy.awardRefused,
+  );
 </script>
 
 <section class="flex flex-col gap-4" data-testid="guild-loot-tab">
   <div class="flex items-center justify-between gap-3">
     <h2 class="section-title text-[18px]">Loot</h2>
-    {#if memberReadOnly}<span class="text-muted text-[12px]">Read-only</span>{/if}
+    {#if memberReadOnly || officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span
+      >{/if}
   </div>
+  {#if officerReadOnly}<GuildPlanGate tab="loot" {settingsHref} />{/if}
 
   {#if loot === null || loot.items.length === 0}
     <EmptyState
@@ -151,9 +175,10 @@
                       Awarded{#if officer}
                         &nbsp;·
                         <button
-                          class="inline-flex h-11 items-center underline lg:h-7"
+                          class="inline-flex h-11 items-center underline disabled:cursor-default disabled:no-underline lg:h-7"
                           onclick={() => onUndo(item)}
-                          disabled={busyItemId === item.item_id}
+                          disabled={officerReadOnly || busyItemId === item.item_id}
+                          aria-describedby={gateDescribedBy}
                           aria-label={`Undo the award of ${item.name} to ${candidate.name}`}
                           data-testid={`guild-loot-row-undo-${item.item_id}`}>{UNDO_AWARD}</button
                         >{/if}
@@ -162,9 +187,10 @@
                     <span class="text-muted text-[12px]">{action.label}</span>
                   {:else if officer}
                     <button
-                      class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase disabled:opacity-50 md:h-7"
+                      class="rounded-control text-strong inline-flex h-11 items-center justify-center border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] uppercase disabled:cursor-default disabled:opacity-50 md:h-7"
                       onclick={() => (confirming = { itemId: item.item_id, key: candidate.character_key })}
-                      disabled={busyItemId === item.item_id || confirming !== null}
+                      disabled={officerReadOnly || busyItemId === item.item_id || confirming !== null}
+                      aria-describedby={gateDescribedBy}
                       aria-label={`Award ${item.name} to ${candidate.name}`}
                       data-testid={`guild-loot-award-${item.item_id}-${candidate.character_key}`}
                     >
@@ -175,7 +201,7 @@
               </div>
               <!-- Escape backs out of the confirm from either button; the group itself takes no action. -->
               <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-              {#if officer && confirming !== null && confirming.itemId === item.item_id && confirming.key === candidate.character_key}
+              {#if officer && !officerReadOnly && confirming !== null && confirming.itemId === item.item_id && confirming.key === candidate.character_key}
                 <div
                   class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2 pl-[38px]"
                   role="group"
@@ -207,6 +233,17 @@
               {/if}
             {/each}
           </div>
+          {#if refusedItemId === item.item_id}
+            <p
+              class="text-[13px] leading-5"
+              role="alert"
+              tabindex="-1"
+              use:focusOnMount
+              data-testid={`guild-loot-plan-refused-${item.item_id}`}
+            >
+              {refusedLine}
+            </p>
+          {/if}
         </div>
       {/each}
     </div>

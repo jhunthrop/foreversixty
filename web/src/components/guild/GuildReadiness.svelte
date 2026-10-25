@@ -3,12 +3,15 @@
      own row pinned, Nudge (officer only) copies to the clipboard -- there is no network
      path from the site to the addon. Desktop renders an eight-column grid; phone replaces
      it with stacked labelled chips per row (§4.E/§7: the fixed-pixel grid overflowed a
-     390px viewport in the round-2 mock review, fixed before these boards shipped). -->
+     390px viewport in the round-2 mock review, fixed before these boards shipped). Officer
+     tools gate §3: with the guild's officer tools off (officer-read-only) the plan sentence
+     sits under the h2 and every Nudge stays on screen, disabled. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { dayWord } from '../../lib/dates';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildReadinessRow } from '../../lib/guild/api';
+  import { guildGateCopy } from '../../lib/guild/copy';
   import {
     consumablesKind,
     consumablesLabel,
@@ -26,12 +29,27 @@
     talentPointsLabel,
     type ReadinessCellKind,
   } from '../../lib/guild/readiness-view';
+  import GuildPlanGate from './GuildPlanGate.svelte';
 
   let {
     rows,
     officer,
+    officerTools,
     myCharacterKey,
-  }: { rows: GuildReadinessRow[]; officer: boolean; myCharacterKey: string | null } = $props();
+    settingsHref,
+  }: {
+    rows: GuildReadinessRow[];
+    officer: boolean;
+    /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
+    officerTools: boolean;
+    myCharacterKey: string | null;
+    /** Where the plan sentence's link goes: the guild's settings tab. */
+    settingsHref: string;
+  } = $props();
+
+  const officerReadOnly = $derived(officer && !officerTools);
+  /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
+  const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-readiness' : undefined);
 
   // Spec §4.0's visibility matrix: Readiness pins the viewer's own row first for a MEMBER
   // only ("own row pinned first, no Nudge button"); an officer's own matrix cell reads
@@ -65,7 +83,7 @@
   // resolves, so a scoped <style> block's CSS is silently dropped from this build's
   // SSR-critical-CSS inlining pass.
   const NUDGE_BTN =
-    'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase';
+    'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase disabled:opacity-50 disabled:cursor-default';
   const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
 
   /** The pill treatment per cell kind (Enchants/Consumables/Talent points): `consent`
@@ -109,7 +127,11 @@
 </script>
 
 <section class="flex flex-col gap-3" data-testid="guild-readiness-tab">
-  <h2 class="section-title text-[18px]">Readiness</h2>
+  <div class="flex items-center justify-between gap-3">
+    <h2 class="section-title text-[18px]">Readiness</h2>
+    {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
+  </div>
+  {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} />{/if}
 
   <div
     class="hidden gap-2 px-1 pb-1 md:grid"
@@ -185,6 +207,8 @@
           <button
             class={NUDGE_BTN}
             onclick={() => void onNudge(row)}
+            disabled={officerReadOnly}
+            aria-describedby={gateDescribedBy}
             aria-label={`Nudge ${row.name}`}
             data-testid={`guild-readiness-nudge-${row.character_key}`}
           >
@@ -251,6 +275,8 @@
           <button
             class={`${NUDGE_BTN} w-fit`}
             onclick={() => void onNudge(row)}
+            disabled={officerReadOnly}
+            aria-describedby={gateDescribedBy}
             aria-label={`Nudge ${row.name}`}
             data-testid={`guild-readiness-nudge-${row.character_key}`}
           >
