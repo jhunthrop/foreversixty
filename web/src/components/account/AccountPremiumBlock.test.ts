@@ -38,6 +38,13 @@ describe('AccountPremiumBlock', () => {
     expect(body).toContain('Supporter mark Shown on your characters');
   });
 
+  it('carries the month count into the server sims row', () => {
+    const html = render(AccountPremiumBlock, {
+      props: { entitlements: mockEntitlements({ server_sims: true }), serverRunsThisMonth: 4 },
+    }).body;
+    expect(text(html)).toContain('Server sims On · 4 runs this month');
+  });
+
   it('shows the free values by default', () => {
     const body = text(renderBlock(mockEntitlements()));
     expect(body).toContain('Server sims Browser lane only');

@@ -381,6 +381,9 @@ export interface TankResult {
   score: Estimate;
 }
 
+/** The lifecycle a server-run row reports (spec 2026-10-24 section 10). */
+export type SimRunState = 'queued' | 'running' | 'done' | 'error';
+
 /** One row of GET /v1/sims?mine=1. */
 export interface SimListRow {
   sim_id: string;
@@ -399,6 +402,17 @@ export interface SimListRow {
   band?: number;
   faction?: string;
   preset?: string;
+  /** Which lane ran it; server rows carry the fields below. */
+  lane?: string;
+  state?: SimRunState;
+  /** RFC3339; done and error rows. */
+  finished_at?: string;
+  /** Plain words, error rows only. */
+  failure_reason?: string;
+  /** Done rows: whether the member has opened or dismissed the result. */
+  seen?: boolean;
+  /** Running rows: median of recent finished runs of the spec; absent with fewer than three. */
+  estimate_seconds?: number;
 }
 
 export interface SimListPage {

@@ -15,7 +15,13 @@
     entitlements,
     characters = [],
     mainKey,
-  }: { entitlements?: EntitlementsView; characters?: readonly MeCharacter[]; mainKey?: string } = $props();
+    serverRunsThisMonth,
+  }: {
+    entitlements?: EntitlementsView;
+    characters?: readonly MeCharacter[];
+    mainKey?: string;
+    serverRunsThisMonth?: number;
+  } = $props();
 
   const main = $derived(mainCharacter(characters, mainKey));
   const supporterHref = $derived(main === null ? null : characterHref(main.region, main.ruleset, main.name));
@@ -23,7 +29,10 @@
   const rows = $derived([
     {
       key: 'serverSims',
-      copy: premiumBlockCopy.rows.serverSims,
+      copy: {
+        ...premiumBlockCopy.rows.serverSims,
+        on: premiumBlockCopy.rows.serverSims.on(serverRunsThisMonth),
+      },
       live: entitlements?.server_sims === true,
       href: SIM_HREF,
       coming: false,

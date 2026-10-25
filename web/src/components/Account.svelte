@@ -905,6 +905,7 @@
                     entitlements={me?.entitlements}
                     characters={me?.characters ?? []}
                     mainKey={me?.main_character_key}
+                    serverRunsThisMonth={me?.server_sims?.runs_this_month}
                   />
                   {#if billing !== null}
                     <button

@@ -175,6 +175,15 @@ export interface GuildBillingView {
   you_are_billing_contact: boolean;
 }
 
+/** A server run that finished while the member was away, from GET /v1/me. */
+export interface FinishedSim {
+  sim_id: string;
+  spec: string;
+  title: string;
+  dps: number;
+  finished_at: string;
+}
+
 export interface Me {
   user: {
     id: number;
@@ -200,6 +209,10 @@ export interface Me {
   /** The account's chosen main character's key; omitted until chosen. Every other
    *  character is an alt. */
   main_character_key?: string;
+  /** Unseen finished server runs, newest first, at most 3. Absent on an older API. */
+  finished_sims?: FinishedSim[];
+  /** Absent on an older API. */
+  server_sims?: { runs_this_month: number };
 }
 
 /**

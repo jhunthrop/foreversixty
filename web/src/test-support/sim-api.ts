@@ -135,6 +135,22 @@ export function createSimApi(): SimApiStub {
       respond: () => (premium ? envelope({ sim_id: NEW_SIM_ID }, 202) : failure('premium required', 402)),
     },
     {
+      method: 'POST',
+      pattern: /\/v1\/sims\/([a-z2-7]{12})\/seen$/,
+      respond: () => new Response(null, { status: 204 }),
+    },
+    {
+      method: 'POST',
+      pattern: /\/v1\/sims\/([a-z2-7]{12})\/rerun$/,
+      respond: () => envelope({ sim_id: NEW_SIM_ID }, 202),
+    },
+    // The payer's server-run list: empty unless a test adds its own route ahead of this one.
+    {
+      method: 'GET',
+      pattern: /\/v1\/sims\?(.*&)?lane=server(&|$)/,
+      respond: () => envelope({ rows: [], total: 0, page: 1, per_page: 100 }),
+    },
+    {
       method: 'GET',
       pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
       respond: () => envelope({ state: 'running', iterations_done: 4200, dps: 1559.7 }),

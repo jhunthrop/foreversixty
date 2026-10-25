@@ -1,6 +1,6 @@
 // web/src/lib/billing/copy.test.ts
 import { describe, expect, it } from 'vitest';
-import { premiumCopy, checkoutCopy, billingBlockCopy } from './copy';
+import { premiumCopy, checkoutCopy, billingBlockCopy, premiumBlockCopy } from './copy';
 
 describe('premiumCopy', () => {
   it('builds a priced plan name from the one price data file, never a hardcoded literal', () => {
@@ -62,5 +62,20 @@ describe('what the page promises', () => {
     ]) {
       expect(text).not.toMatch(/retention|ninety|two-year|two years|Compare more than two/);
     }
+  });
+});
+
+describe('premiumBlockCopy server sims row', () => {
+  const { on } = premiumBlockCopy.rows.serverSims;
+
+  it('counts the month in plain words', () => {
+    expect(on(4)).toBe('On · 4 runs this month');
+    expect(on(1)).toBe('On · 1 run this month');
+    expect(on(0)).toBe('On · no runs yet this month');
+    expect(on(1000)).toBe('On · 1,000 runs this month');
+  });
+
+  it('is plain On when an older /v1/me sent no count', () => {
+    expect(on(undefined)).toBe('On');
   });
 });

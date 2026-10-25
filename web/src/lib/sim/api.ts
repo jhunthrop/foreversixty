@@ -11,13 +11,14 @@
 //     has no machine-readable code in the phase-3 TypeScript mirror, so premium is keyed off
 //     the status, and the copy is ours rather than the API's. Whether to offer the control at
 //     all is decided from `user.premium` on GET /v1/me, not from a failed call.
-import { AccountError, requestEnvelope } from '../account/api';
+import { AccountError, invalidateMe, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { invalidate, query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import type { BuildRecord } from '../planner/types';
 import type { BulkServerProgress } from './bulk-types';
 import { bulkCopy, simCopy } from './copy';
+import { serverRunsCopy } from './server-runs-copy';
 import { landingCopy } from './landing-copy';
 import type { KindFilter } from './history';
 import type { PhaseRow } from './phase';
@@ -77,8 +78,8 @@ function myBuildsKey(apiBase: string, page: number): string {
   return `${apiBase}/v1/builds?mine=1&page=${page}`;
 }
 
-function mySimsKey(apiBase: string, page: number, kind: KindFilter): string {
-  return `${apiBase}/v1/sims?mine=1&page=${page}&kind=${kind}`;
+function mySimsKey(apiBase: string, page: number, kind: KindFilter, lane?: string): string {
+  return `${apiBase}/v1/sims?mine=1&page=${page}&kind=${kind}${laneParam(lane)}`;
 }
 
 /**
@@ -147,18 +148,23 @@ export function fetchMyBuilds(
   );
 }
 
+function laneParam(lane?: string): string {
+  return lane === undefined ? '' : `&lane=${lane}`;
+}
+
 export function listMySims(
   page: number = 1,
   apiBase: string = API_BASE_URL,
   kind: KindFilter = 'all',
+  lane?: string,
 ): Promise<SimListPage> {
   // "all" is the absence of the parameter, not a value: contract 8 gives `kind=` a closed
   // vocabulary of five and adding a sixth for "no filter" would be a word the API has to
   // know about for no reason.
   const filter = kind === 'all' ? '' : `&kind=${kind}`;
   return query<SimListPage>(
-    mySimsKey(apiBase, page, kind),
-    () => call<SimListPage>(`/v1/sims?mine=1&page=${page}${filter}`, apiBase, simCopy.loadFailed),
+    mySimsKey(apiBase, page, kind, lane),
+    () => call<SimListPage>(`/v1/sims?mine=1&page=${page}${filter}${laneParam(lane)}`, apiBase, simCopy.loadFailed),
     { scope: 'private', ttlMs: MY_SIMS_TTL_MS },
   );
 }
@@ -172,6 +178,33 @@ export async function dispatchServerSim(
     method: 'POST',
     body: request,
   });
+  return data.sim_id;
+}
+
+/**
+ * Marks a finished server run seen (204, no body) and drops the cached /v1/me so the band's
+ * "done while away" line re-reads. `call` is not used: it treats an empty body as a failure.
+ */
+export async function markSimSeen(simId: string, apiBase: string = API_BASE_URL): Promise<void> {
+  try {
+    await requestEnvelope<null>(`/v1/sims/${simId}/seen`, apiBase, {
+      method: 'POST',
+      failureMessage: simCopy.saveFailed,
+    });
+  } catch (error) {
+    throw asSimError(error, simCopy.saveFailed);
+  }
+  invalidateMe(apiBase);
+}
+
+/** Starts a failed server run again by id; answers the new run's id. */
+export async function rerunSim(simId: string, apiBase: string = API_BASE_URL): Promise<string> {
+  const data = await call<{ sim_id: string }>(
+    `/v1/sims/${simId}/rerun`,
+    apiBase,
+    serverRunsCopy.runAgainFailed,
+    { method: 'POST' },
+  );
   return data.sim_id;
 }
 

@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CharacterPath } from '../characters';
 import { forgetPrivate, invalidate } from '../data/query';
+import * as account from '../account/api';
 import {
   FIXTURE_MY_BUILD_ID,
   FIXTURE_SIM_ID,
@@ -22,6 +23,8 @@ import {
   fetchSimProgress,
   fetchSpecs,
   listMySims,
+  markSimSeen,
+  rerunSim,
   saveSim,
 } from './api';
 import { simCopy } from './copy';
@@ -142,6 +145,59 @@ describe('dispatchServerSim', () => {
     api.setPremium(false);
     const error = await dispatchServerSim(fixtureResult.request, TEST_API).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(SimApiError);
+    expect((error as SimApiError).status).toBe(PREMIUM_REQUIRED_STATUS);
+    expect((error as SimApiError).message).toBe(simCopy.premiumRequired);
+  });
+});
+
+describe('listMySims lane', () => {
+  it('appends the lane and reads the empty default page', async () => {
+    const page = await listMySims(1, TEST_API, 'all', 'server');
+    expect(api.lastUrl()).toBe(`${TEST_API}/v1/sims?mine=1&page=1&lane=server`);
+    expect(page.rows).toEqual([]);
+  });
+
+  it('keeps a lane read apart from the unfiltered read in the cache', async () => {
+    await listMySims(1, TEST_API);
+    await listMySims(1, TEST_API, 'all', 'server');
+    expect(api.lastUrl()).toContain('lane=server');
+  });
+});
+
+describe('markSimSeen', () => {
+  it('posts to the seen route with the CSRF header and drops the cached /v1/me', async () => {
+    document.cookie = 'fs_csrf=tok123; path=/';
+    const invalidateMe = vi.spyOn(account, 'invalidateMe');
+    await markSimSeen(FIXTURE_SIM_ID, TEST_API);
+    expect(api.lastUrl()).toBe(`${TEST_API}/v1/sims/${FIXTURE_SIM_ID}/seen`);
+    expect(api.lastHeaders()?.get('x-csrf-token')).toBe('tok123');
+    expect(invalidateMe).toHaveBeenCalledWith(TEST_API);
+    invalidateMe.mockRestore();
+  });
+
+  it('raises and leaves /v1/me alone when the call fails', async () => {
+    api.route({
+      method: 'POST',
+      pattern: /\/seen$/,
+      respond: () => failure('boom', 500),
+    });
+    const invalidateMe = vi.spyOn(account, 'invalidateMe');
+    await expect(markSimSeen(FIXTURE_SIM_ID, TEST_API)).rejects.toBeInstanceOf(SimApiError);
+    expect(invalidateMe).not.toHaveBeenCalled();
+    invalidateMe.mockRestore();
+  });
+});
+
+describe('rerunSim', () => {
+  it('posts to the rerun route and returns the new id', async () => {
+    const id = await rerunSim(FIXTURE_SIM_ID, TEST_API);
+    expect(api.lastUrl()).toBe(`${TEST_API}/v1/sims/${FIXTURE_SIM_ID}/rerun`);
+    expect(id).toMatch(/^[a-z2-7]{12}$/);
+  });
+
+  it('turns a 402 into the premium message', async () => {
+    api.route({ method: 'POST', pattern: /\/rerun$/, respond: () => failure('premium required', 402) });
+    const error = await rerunSim(FIXTURE_SIM_ID, TEST_API).catch((e: unknown) => e);
     expect((error as SimApiError).status).toBe(PREMIUM_REQUIRED_STATUS);
     expect((error as SimApiError).message).toBe(simCopy.premiumRequired);
   });

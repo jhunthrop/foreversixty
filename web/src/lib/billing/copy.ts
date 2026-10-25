@@ -85,9 +85,21 @@ export const billingBlockCopy = {
   subscribeTheGuild: 'Subscribe the guild',
 };
 
+/** "On · 4 runs this month"; plain "On" when an older /v1/me sent no count. */
+function serverSimsOn(runsThisMonth?: number): string {
+  if (runsThisMonth === undefined) return 'On';
+  if (runsThisMonth === 0) return 'On · no runs yet this month';
+  const noun = runsThisMonth === 1 ? 'run' : 'runs';
+  return `On · ${runsThisMonth.toLocaleString('en-US')} ${noun} this month`;
+}
+
 export const premiumBlockCopy = {
   rows: {
-    serverSims: { label: 'Server sims', on: 'On', off: 'Browser lane only' },
+    serverSims: {
+      label: 'Server sims',
+      on: serverSimsOn,
+      off: 'Browser lane only',
+    },
     history: {
       label: 'History charts',
       on: `Ships ${shipsMonth.history}`,
