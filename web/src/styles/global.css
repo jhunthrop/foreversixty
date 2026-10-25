@@ -413,7 +413,7 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
    stack numbers are the page below 1024px (measured at 390), the media block the 12-column
    grid (measured at 1440). A visitor with no session hint keeps the collapsed `.session-reserve`
    state above and below: no skeletons, the sign-in prompt only. */
-/* account loading reserve:begin (generated from lib/account/layout.ts's tables; layout.test.ts checks they agree) */
+/* account loading reserve:begin (mirrors lib/account/layout.ts's tables; layout-reserve.test.ts keeps them equal) */
 .account-rail-skeleton {
   min-height: var(--account-rail-reserve, var(--account-rail-floor));
 }
