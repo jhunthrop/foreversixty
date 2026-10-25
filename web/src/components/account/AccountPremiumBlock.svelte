@@ -2,7 +2,7 @@
 <!-- The account page's Premium rows, under the plan line: what the plan gives this account as
      a key/value panel (muted label left, value in a fixed right column). Reads only what
      GET /v1/me says; an older shape with no `entitlements` renders the free state. A live
-     value links to where the benefit lives; a coming one is muted plain text. -->
+     value links to where the benefit lives; one that has not shipped, or is off for the plan, is muted plain text. -->
 <script lang="ts">
   import type { EntitlementsView, MeCharacter } from '../../lib/account/api';
   import { mainCharacter } from '../../lib/account/main-character';
@@ -26,6 +26,12 @@
   const main = $derived(mainCharacter(characters, mainKey));
   const supporterHref = $derived(main === null ? null : characterHref(main.region, main.ruleset, main.name));
 
+  const historyHref = $derived(supporterHref === null ? null : `${supporterHref}#history`);
+  const historyCopy = $derived({
+    ...premiumBlockCopy.rows.history,
+    on: historyHref === null ? premiumBlockCopy.rows.history.on : premiumBlockCopy.rows.history.onWithMain,
+  });
+
   const rows = $derived([
     {
       key: 'serverSims',
@@ -35,22 +41,28 @@
       },
       live: entitlements?.server_sims === true,
       href: SIM_HREF,
-      coming: false,
+      muted: false,
     },
-    { key: 'history', copy: premiumBlockCopy.rows.history, live: false, href: null, coming: true },
+    {
+      key: 'history',
+      copy: historyCopy,
+      live: entitlements?.history === true,
+      href: historyHref,
+      muted: entitlements?.history !== true,
+    },
     {
       key: 'notifications',
       copy: premiumBlockCopy.rows.notifications,
       live: false,
       href: null,
-      coming: true,
+      muted: true,
     },
     {
       key: 'supporter',
       copy: premiumBlockCopy.rows.supporter,
       live: entitlements?.supporter_mark === true,
       href: supporterHref,
-      coming: false,
+      muted: false,
     },
   ]);
 </script>
@@ -68,7 +80,7 @@
           >{value}</a
         >
       {:else}
-        <span class={row.coming ? 'text-muted' : 'text-text'}>{value}</span>
+        <span class={row.muted ? 'text-muted' : 'text-text'}>{value}</span>
       {/if}
     </li>
   {/each}

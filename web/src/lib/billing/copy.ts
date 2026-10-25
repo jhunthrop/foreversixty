@@ -4,8 +4,8 @@
 // discounts. Prices are never written here as literals -- they come from ./plans.
 import { PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 
-/** The month each coming benefit ships: the one source for the /premium line and the account block. */
-export const shipsMonth = { history: 'November', notifications: 'December' } as const;
+/** The month each benefit that has not shipped yet arrives: the one source for the /premium line and the account block. */
+export const shipsMonth = { notifications: 'December' } as const;
 
 export const premiumCopy = {
   freeForeverHeading: 'What is free, forever',
@@ -17,7 +17,7 @@ export const premiumCopy = {
   plansHeading: 'The two plans',
   premiumFeatures: [
     'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
-    `Character history charts over time (ships ${shipsMonth.history}).`,
+    'Character history charts over time.',
     `Discord notifications (ships ${shipsMonth.notifications}).`,
     'A supporter mark on your characters.',
   ],
@@ -102,8 +102,9 @@ export const premiumBlockCopy = {
     },
     history: {
       label: 'History charts',
-      on: `Ships ${shipsMonth.history}`,
-      off: `Ships ${shipsMonth.history}`,
+      on: 'On',
+      onWithMain: 'Open on your main character',
+      off: 'Sparkline only',
     },
     notifications: {
       label: 'Discord notifications',

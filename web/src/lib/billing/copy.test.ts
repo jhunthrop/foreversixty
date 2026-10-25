@@ -1,6 +1,6 @@
 // web/src/lib/billing/copy.test.ts
 import { describe, expect, it } from 'vitest';
-import { premiumCopy, checkoutCopy, billingBlockCopy, premiumBlockCopy } from './copy';
+import { premiumCopy, checkoutCopy, billingBlockCopy, premiumBlockCopy, shipsMonth } from './copy';
 
 describe('premiumCopy', () => {
   it('builds a priced plan name from the one price data file, never a hardcoded literal', () => {
@@ -44,7 +44,7 @@ describe('what the page promises', () => {
   it('promises only what exists, and dates what is coming', () => {
     expect(premiumCopy.premiumFeatures).toEqual([
       'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
-      'Character history charts over time (ships November).',
+      'Character history charts over time.',
       'Discord notifications (ships December).',
       'A supporter mark on your characters.',
     ]);
@@ -62,6 +62,21 @@ describe('what the page promises', () => {
     ]) {
       expect(text).not.toMatch(/retention|ninety|two-year|two years|Compare more than two/);
     }
+  });
+});
+
+describe('premiumBlockCopy history row', () => {
+  it('carries the three states in the spec words', () => {
+    expect(premiumBlockCopy.rows.history).toMatchObject({
+      on: 'On',
+      onWithMain: 'Open on your main character',
+      off: 'Sparkline only',
+    });
+  });
+
+  it('no longer dates history; only notifications still ship later', () => {
+    expect(shipsMonth).toEqual({ notifications: 'December' });
+    expect(premiumCopy.premiumFeatures.join(' ')).not.toMatch(/November/);
   });
 });
 

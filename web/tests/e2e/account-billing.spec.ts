@@ -115,9 +115,13 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil(
-        meWith(mockEntitlements({ server_sims: true, supporter_mark: true }), [HERO_CHARACTER], {
-          runs_this_month: 4,
-        }),
+        meWith(
+          mockEntitlements({ server_sims: true, supporter_mark: true, history: true }),
+          [HERO_CHARACTER],
+          {
+            runs_this_month: 4,
+          },
+        ),
       ),
     ),
   );
@@ -134,7 +138,11 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     'href',
     '/character/us/hardcore/elyra-duskvale',
   );
-  await expect(block).toContainText('Ships November');
+  await expect(page.getByTestId('account-premium-history-link')).toHaveText('Open on your main character');
+  await expect(page.getByTestId('account-premium-history-link')).toHaveAttribute(
+    'href',
+    '/character/us/hardcore/elyra-duskvale#history',
+  );
   await expect(block).toContainText('Ships December');
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
   // The mark belongs to the person: the character rows never carry it.

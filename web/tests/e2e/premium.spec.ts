@@ -43,7 +43,7 @@ test('lists only what is live, dates what is coming, and promises no retention t
   await page.goto('/premium');
   for (const line of [
     'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
-    'Character history charts over time (ships November).',
+    'Character history charts over time.',
     'Discord notifications (ships December).',
     'A supporter mark on your characters.',
   ]) {

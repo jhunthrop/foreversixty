@@ -70,14 +70,34 @@ describe('AccountPremiumBlock', () => {
     expect(body).toContain('Supporter mark Not shown');
   });
 
-  it('carries the month on the two benefits that have not shipped, muted and never linked', () => {
+  it('carries the month on the one benefit that has not shipped, muted and never linked', () => {
     const html = renderBlock(mockEntitlements({ server_sims: true, supporter_mark: true }), [CHARACTER]);
-    expect(text(html)).toContain('History charts Ships November');
     expect(text(html)).toContain('Discord notifications Ships December');
-    expect(html).toContain('text-muted">Ships November<');
     expect(html).toContain('text-muted">Ships December<');
-    expect(html).not.toContain('account-premium-history-link');
     expect(html).not.toContain('account-premium-notifications-link');
+  });
+
+  describe('history row', () => {
+    it('links to the main character history when entitled with a main', () => {
+      const html = renderBlock(mockEntitlements({ history: true }), [CHARACTER]);
+      expect(text(html)).toContain('History charts Open on your main character');
+      expect(html).toMatch(
+        /href="\/character\/us\/hardcore\/elyra-duskvale#history"[^>]*account-premium-history-link/,
+      );
+    });
+
+    it('reads plain On when entitled with no main', () => {
+      const html = renderBlock(mockEntitlements({ history: true }), []);
+      expect(text(html)).toContain('History charts On ');
+      expect(html).not.toContain('account-premium-history-link');
+    });
+
+    it('reads muted Sparkline only when not entitled', () => {
+      const html = renderBlock(mockEntitlements({ history: false }), [CHARACTER]);
+      expect(text(html)).toContain('History charts Sparkline only');
+      expect(html).toContain('text-muted">Sparkline only<');
+      expect(html).not.toContain('account-premium-history-link');
+    });
   });
 
   it('links a live value to where the benefit lives', () => {
