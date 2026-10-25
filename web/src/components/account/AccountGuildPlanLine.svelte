@@ -3,7 +3,7 @@
 <script lang="ts">
   import type { GuildBillingView } from '../../lib/account/api';
   import { guildSettingsHref } from '../../lib/characters';
-  import { accountGuildPlanLine } from '../../lib/guild/settings-view';
+  import { guildPlanLine, settingsWords } from '../../lib/guild/settings-view';
 
   let {
     plan,
@@ -14,9 +14,9 @@
 </script>
 
 <p class="text-muted basis-full text-[13px] leading-5" data-testid="account-guild-plan">
-  {accountGuildPlanLine(plan)} ·
+  {guildPlanLine(plan)} ·
   <a
     class="text-muted hover:text-strong active:text-strong underline"
-    href={guildSettingsHref(region, ruleset, name)}>Guild settings</a
+    href={guildSettingsHref(region, ruleset, name)}>{settingsWords.guildSettingsLink}</a
   >
 </p>

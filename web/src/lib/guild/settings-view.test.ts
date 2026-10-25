@@ -7,7 +7,6 @@ import {
   billingState,
   canManageBilling,
   claimedByLine,
-  accountGuildPlanLine,
   guildPlanLine,
   officerToolsExplanation,
   notOnPlanLines,
@@ -153,11 +152,6 @@ describe('the officer tools scoped grant', () => {
     expect(guildRosterModelCopy.guildMasterOnly).toBe(
       specString(GATE_SPEC, COPY_HEADING, 'Settings, not the claim holder (reused)'),
     );
-  });
-
-  it('hands the account row the same plan line', () => {
-    expect(accountGuildPlanLine(scoped())).toBe(guildPlanLine(scoped()));
-    expect(accountGuildPlanLine(billing())).toBe(guildPlanLine(billing()));
   });
 });
 

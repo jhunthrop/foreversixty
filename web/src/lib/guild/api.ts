@@ -81,8 +81,9 @@ export interface GuildViewerView {
   character_key: string | null;
   verified: boolean;
   /**
-   * True when this verified officer's guild has the officer tools (a plan or a scoped grant), false
-   * otherwise; absent for members. The page treats a missing field as true: the server's 403 is the real gate.
+   * Present on every home response: true only for a verified officer or leader whose guild has the
+   * officer tools (a plan or a scoped grant), false otherwise. The page treats a missing field
+   * (an older API) as true: the server's 403 is the real gate.
    */
   officer_tools?: boolean;
 }

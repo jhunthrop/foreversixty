@@ -50,6 +50,17 @@ describe('GuildReadiness', () => {
     expect(gate).toContain(`href="${SETTINGS_HREF}"`);
   });
 
+  it('leaves a moderator as before: no sentence, Nudge enabled', () => {
+    const markup = html(true, true);
+    expect(markup).not.toContain('guild-readiness-plan-gate');
+    expect(text(markup)).not.toContain(guildGateCopy.readOnly);
+    const nudges = [...markup.matchAll(/<button[^>]*>/g)]
+      .map((m) => m[0])
+      .filter((tag) => tag.includes('nudge'));
+    expect(nudges.length).toBeGreaterThan(0);
+    for (const tag of nudges) expect(tag).not.toMatch(/ disabled(=| |>)/);
+  });
+
   it('shows the Read-only label beside the h2 in officer-read-only only', () => {
     expect(text(html(true, false))).toContain(`Readiness ${guildGateCopy.readOnly}`);
     expect(text(html(true, true))).not.toContain(guildGateCopy.readOnly);
