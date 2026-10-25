@@ -34,7 +34,7 @@ Each state has a full-page PNG, `officer-tools-<state>-<width>.png`, and a panel
 | 10 | Settings, scoped grant, claim holder | `10-settings-scoped-claim-holder` | 360, 390, 1440 |
 | 11 | Settings, scoped grant, officer without the claim | `11-settings-scoped-officer` | 390, 1440 |
 | 12 | Settings, granted full plan (regression) | `12-settings-granted` | 390, 1440 |
-| 13 | Account, Guild panel: one scoped row, one paid row | `13-account-guild-rows` | 360, 390, 1440 |
+| 13 | Account, Guild panel: one scoped row, one paid row, one guild with no plan; plus the scoped row's link focused | `13-account-guild-rows`, `13-account-guild-link-focus` | 360, 390, 1440; focus 1440 |
 
 ## Heights against §3.5
 
@@ -82,3 +82,45 @@ sentence fits on one line.
 - **Not done here.** The ux-designer and wow-player reviews named in the task-9 brief, Step 4,
   were not run, because this task was dispatched with "never dispatch subagents". The
   side-by-side with the mock was not made either. Both are still needed before merge.
+
+## Review round (2026-10-26)
+
+Both reviews (`ux-designer-review.md`, `wow-player-review.md`) returned SHIP WITH FIXES. The
+controller's rulings were applied and these captures were remade from a fresh fixture build:
+02 and 07 at 360 and 390, 06 at 390 and 1440 (the red refused line), 09 at 390 and 1440, 10 at
+360/390/1440, 11 at 390/1440, 13 at 360/390/1440, and a new `13-account-guild-link-focus` at
+1440 (the muted `Guild settings` link with its keyboard focus ring).
+
+What changed:
+
+- **The gate link never wraps.** `Subscribe the guild` is `whitespace-nowrap`. At 360 the
+  break now falls after `plan.`: line 1 `Award and Nudge are part of the guild plan.`, line 2
+  `Subscribe the guild.` (02 and 07 at 360).
+- **The phone focus ring hugs the text.** The link lost `py-3`. Its 44 px phone hit area is a
+  `::after` box, `after:top-1/2 after:h-11 after:-translate-y-1/2`, hidden from `md`. The
+  review's `after:-top-3 after:-bottom-3` measured 40 px, not 44: an inline link's box is its
+  font's content area (about 16 px at 13 px Barlow), not the 20 px line. A fixed 44 px box
+  centred on the link reaches 44, and the e2e now measures it (44 at 360, none at 1440).
+  09 at 390: the ring is the size of the text and clears the boss picker.
+- **The refused line is red.** `guild-loot-plan-refused-{id}` takes `text-wipe` (06).
+- **Copy (spec §3.2, §5.1, §5.2, §7 amended):** the scoped explanation reads `Granted by
+  Forever Sixty for the first raid nights: Award, Undo and Nudge only, until 12 Dec 2026. After
+  that they need the guild plan.` (10, 11). An officer without the claim reads `Only the guild
+  master can subscribe the guild, release the claim or change billing.` (11).
+- **The grant ends 12 Dec 2026.** `--until 2026-12-12` (exclusive at UTC midnight) covers the
+  raid nights of the 9th and 10th in every US zone; the settings and account lines read
+  `until 12 Dec 2026` (10, 11, 13).
+- **The account stub has a third guild with no plan** (`Ashen Vigil`): its row has no plan
+  line, and `account-guild-plan` still counts 2 (13).
+
+Heights, re-measured (every width re-recorded; none moved):
+
+| Width | Loot adds (cap) | Readiness adds (cap) |
+|---|---|---|
+| 360 | 56 px (56), sentence 40, 2 lines, break after `plan.` | 52 px (52), sentence 40, 2 lines |
+| 390 | 36 px (≤ 56), sentence 20, 1 line | 32 px (≤ 52), sentence 20, 1 line |
+| 1440 | 36 px (36), sentence 20 | 32 px (32), sentence 20 |
+| 2000 | 36 px (36), sentence 20 | 32 px (32), sentence 20 |
+
+Not changed, by ruling: the gate sentence keeps `Award and Nudge` (§4.7's fixed wording), and
+the disabled Undo stays a plain muted label.

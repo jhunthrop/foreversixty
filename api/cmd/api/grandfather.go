@@ -20,7 +20,7 @@ import (
 )
 
 const grandfatherUsage = `usage:
-  api grandfather-officer-tools --until 2026-12-11 --note "launch grandfathering" [--apply]`
+  api grandfather-officer-tools --until 2026-12-12 --note "launch grandfathering" [--apply]`
 
 const dateLayout = "2006-01-02"
 

@@ -493,12 +493,12 @@ designed. There is no code path that turns it on.
 
 ### Granting officer tools
 
-    api grant --guild <id> --features officer_views --until 2026-12-11 --note "reason"
+    api grant --guild <id> --features officer_views --until 2026-12-12 --note "reason"
 
 Gives one guild a time-boxed grant that unlocks only the officer views (`--plan` may be omitted
 and must be `guild` if given; `--until` is required; a later grant without `--features` replaces the scope with the whole plan).
 
-    api grandfather-officer-tools --until 2026-12-11 --note "launch grandfathering" [--apply]
+    api grandfather-officer-tools --until 2026-12-12 --note "launch grandfathering" [--apply]
 
 Gives that same scoped grant to every claimed guild without a live plan, printing one line per guild
 and a totals line; it is a dry run unless `--apply` is passed. Order: deploy the API carrying
