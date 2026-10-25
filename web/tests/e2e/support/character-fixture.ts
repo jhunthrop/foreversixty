@@ -4,6 +4,8 @@
 // character-retry.spec.ts drives its failed state, and a fixture that drifted between the
 // two would let one of them pass against a shape the other no longer sees.
 import type { Page } from '@playwright/test';
+import { characterHistoryFixture } from '../../../src/fixtures/character-history';
+import type { CharacterHistory } from '../../../src/lib/character/history-api';
 import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import { readFileSync, existsSync } from 'node:fs';
 import {
@@ -172,5 +174,26 @@ export function ownerMeAnswer(): { ok: true; data: unknown; error: null; request
 export async function routeOwner(page: Page): Promise<void> {
   await page.route('**/v1/me', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ownerMeAnswer()) }),
+  );
+}
+
+/** Answers the owner-only history route (experience spec 2026-10-24-character-history section
+ *  10) with `history`, or with a status (402 lapsed, 404 not the owner, 500). */
+export async function routeCharacterHistory(
+  page: Page,
+  history: CharacterHistory | number = characterHistoryFixture(),
+): Promise<void> {
+  await page.route(`${CHARACTER_URL}/history`, (route) =>
+    typeof history === 'number'
+      ? route.fulfill({
+          status: history,
+          contentType: 'application/json',
+          body: JSON.stringify({ ok: false, data: null, error: { message: 'history failed' } }),
+        })
+      : route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ ok: true, data: history, error: null }),
+        }),
   );
 }
