@@ -117,10 +117,18 @@ func TestCharacterHistoryIs404ForAnAnonymisedOwner(t *testing.T) {
 	}
 }
 
-func TestCharacterHistoryIsNotMountedWithoutOwnersAndEntitlements(t *testing.T) {
+func TestCharacterHistoryIsNotMountedWithoutOwners(t *testing.T) {
 	svc, owner, _ := historyFixture(t, true)
 	svc.Owners = nil
-	if rec := getHistory(svc, owner); rec.Code == http.StatusOK {
-		t.Fatalf("status = %d, want the route unmounted", rec.Code)
+	if rec := getHistory(svc, owner); rec.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 (route unmounted)", rec.Code)
+	}
+}
+
+func TestCharacterHistoryIsNotMountedWithoutEntitlements(t *testing.T) {
+	svc, owner, _ := historyFixture(t, true)
+	svc.Entitlements = nil
+	if rec := getHistory(svc, owner); rec.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 (route unmounted)", rec.Code)
 	}
 }

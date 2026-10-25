@@ -50,7 +50,7 @@ type historyGapDTO struct {
 	Reason string `json:"reason"`
 }
 
-func utc(t time.Time) string { return t.UTC().Format(time.RFC3339) }
+func rfc3339UTC(t time.Time) string { return t.UTC().Format(time.RFC3339) }
 
 func toHistoryDTO(h History) historyDTO {
 	out := historyDTO{
@@ -60,12 +60,13 @@ func toHistoryDTO(h History) historyDTO {
 		Gaps:       make([]historyGapDTO, len(h.Gaps)),
 		Fights:     h.Fights,
 	}
+	// Wire-boundary defence: History promises non-nil, the body must never send null.
 	if out.Fights == nil {
 		out.Fights = []rankings.OwnerFight{}
 	}
 	for i, p := range h.Score {
 		out.Score[i] = historyPointDTO{
-			At: utc(p.At), Score: p.Score, Tier: p.Tier, ReportID: p.ReportID,
+			At: rfc3339UTC(p.At), Score: p.Score, Tier: p.Tier, ReportID: p.ReportID,
 			FightIndex: p.FightIndex, Encounter: p.Encounter, EncounterID: p.EncounterID,
 			Difficulty: p.Difficulty, ParsePercentile: p.ParsePercentile, Kill: p.Kill, Visibility: p.Visibility,
 		}
@@ -73,7 +74,7 @@ func toHistoryDTO(h History) historyDTO {
 	for i, e := range h.Encounters {
 		pts := make([]historyParseDTO, len(e.Points))
 		for j, p := range e.Points {
-			pts[j] = historyParseDTO{At: utc(p.At), ParsePercentile: p.ParsePercentile,
+			pts[j] = historyParseDTO{At: rfc3339UTC(p.At), ParsePercentile: p.ParsePercentile,
 				ReportID: p.ReportID, FightIndex: p.FightIndex}
 		}
 		out.Encounters[i] = historyEncounterDTO{Encounter: e.Encounter, EncounterID: e.EncounterID,
