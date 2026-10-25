@@ -6,6 +6,7 @@
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import CharacterFightTable from './character/CharacterFightTable.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
+  import HistoryMount from './character/HistoryMount.svelte';
   import ProfileDescriptor from './character/ProfileDescriptor.svelte';
   import CharacterNotFound from './CharacterNotFound.svelte';
   import CharacterUnlogged from './CharacterUnlogged.svelte';
@@ -126,6 +127,8 @@
   let owned = $state(false);
   /** /v1/me has answered (or failed), so `owned` is the settled answer, not the first guess. */
   let ownerKnown = $state(false);
+  /** The viewer's plan includes History (`me.entitlements.history`). */
+  let historyEntitled = $state(false);
   /** The latest rated fight and its rating, from the rating panel once it loads (L8.5 fix round
    *  2 item 3): "Every ranked fight" marks that row "rated 65". */
   let rated = $state<{ report_id: string; fight_index: number; overall: number } | null>(null);
@@ -135,6 +138,7 @@
     own = null;
     owned = false;
     ownerKnown = false;
+    historyEntitled = false;
     if (requested === null) return;
     const current = readCurrent();
     const active =
@@ -145,6 +149,7 @@
       .then((me) => {
         if (resolved !== requested) return;
         own = ownCharacter(me?.characters, requested);
+        historyEntitled = me?.entitlements?.history === true;
         owned = active || own !== null;
         ownerKnown = true;
       })
@@ -310,6 +315,14 @@
       name={data.character.name}
       fights={data.history}
       onrated={(next) => (rated = next)}
+    />
+
+    <HistoryMount
+      path={resolved}
+      {ownerKnown}
+      own={own !== null}
+      entitled={historyEntitled}
+      hasScore={hasScore(foreverOf(data))}
     />
 
     <!-- L8.6: the Gear section, right under the score card (-order-2, after it in the page), the

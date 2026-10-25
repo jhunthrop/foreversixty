@@ -322,6 +322,31 @@ html[data-session='1'][data-server-sims='1'] .server-runs-shell-reserve {
   display: block;
 }
 
+/* The owner's History section on the character page holds its box before data (experience
+   spec 2026-10-24-character-history 3.11). Base.astro sets data-history only for an owner on a
+   plan with history, and --history-reserve from fs.history.reserve (px); a first visit falls
+   back to the section's measured height with two full lists: 2120px stacked at 390, 2240px stacked at 1024 and
+   1197px in two columns at 1440. Anyone else reserves nothing. */
+.history-shell-reserve {
+  display: none;
+}
+html[data-session='1'][data-history='1'] .history-shell-reserve {
+  display: block;
+}
+html[data-session='1'][data-history='1'] .history-reserve {
+  min-height: var(--history-reserve, 2120px);
+}
+@media (min-width: 640px) {
+  html[data-session='1'][data-history='1'] .history-reserve {
+    min-height: var(--history-reserve, 2240px);
+  }
+}
+@media (min-width: 1280px) {
+  html[data-session='1'][data-history='1'] .history-reserve {
+    min-height: var(--history-reserve, 1197px);
+  }
+}
+
 /* An island's content the moment its data lands: one short fade so a skeleton or a
    loading line never snaps into a table. Applied to the wrapper of the ready state only,
    never to controls a player is already using (design system, Motion). */

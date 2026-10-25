@@ -12,6 +12,7 @@
      item 7). -->
 <script lang="ts">
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
+  import { fightKey } from '../../lib/character/history-api';
   import { formatDayMonthYear } from '../../lib/dates';
   import { specName } from '../../lib/guild/spec-name';
   import type { CharacterFight } from '../../lib/rankings/api';
@@ -28,6 +29,11 @@
     executionTestid,
     rowId = null,
     rated = null,
+    heading = true,
+    columns = 'full',
+    lead = 'boss',
+    selected = null,
+    note = null,
   }: {
     title: string;
     rows: readonly CharacterFight[];
@@ -41,6 +47,18 @@
     /** The latest rated fight and its rating (L8.5 fix round 2 item 3): its row says "rated 65"
      *  under its parse. */
     rated?: { report_id: string; fight_index: number; overall: number } | null;
+    /** False: no `h2` and no execution caption; `title` becomes the list's own small label (the
+     *  History section's lists, experience spec 2026-10-24-character-history 3.7). */
+    heading?: boolean;
+    /** `no-spec` drops the Spec column (the History lists are one spec's, in a 588px column). */
+    columns?: 'full' | 'no-spec';
+    /** `date`: the first column is the fight's date, linked, and the Date column is blank (a
+     *  list of one boss's kills). */
+    lead?: 'boss' | 'date';
+    /** `report_id:fight_index` keys to mark with the target treatment, with no id or scroll. */
+    selected?: ReadonlySet<string> | null;
+    /** A muted word after the boss name (a private or guild report), or null. */
+    note?: ((row: CharacterFight) => string | null) | null;
   } = $props();
 
   /** The address's target (L8.5 fix round 2 items 3 and 5): a 2px gold left edge and a gold tint
@@ -67,37 +85,72 @@
     return percentile === undefined ? undefined : `${Math.round(percentile)} percentile`;
   }
 
-  const GRID =
-    'grid-cols-[minmax(0,1fr)_auto_auto_auto] md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]';
+  const GRIDS = {
+    full: 'grid-cols-[minmax(0,1fr)_auto_auto_auto] md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]',
+    'no-spec': 'grid-cols-[minmax(0,1fr)_auto_auto_auto] md:grid-cols-[minmax(0,1fr)_64px_88px_112px_72px]',
+  } as const;
+  const GRID = $derived(GRIDS[columns]);
+  const ratedNoteClass = $derived(
+    columns === 'full' ? RATED_NOTE : RATED_NOTE.replace('md:col-span-3', 'md:col-span-2'),
+  );
+  /** The marked row's gold edge and tint: the address target's look, without its id or scroll. */
+  const MARKED = ' scroll-mt-24 bg-[rgba(229,185,85,.08)] shadow-[inset_2px_0_0_var(--color-gold)]';
+  const isMarked = (row: CharacterFight): boolean =>
+    selected !== null && selected.has(fightKey(row.report_id, row.fight_index));
 </script>
 
+{#snippet firstLink(row: CharacterFight)}
+  {#if lead === 'date'}
+    <a class="{rowLink} text-muted tabular truncate font-mono text-[13px]" href={bossHref(row)}
+      >{formatDayMonthYear(new Date(row.fought_at))}</a
+    >
+  {:else}
+    <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
+  {/if}
+{/snippet}
+
 <section class="flex flex-col gap-2">
-  <h2 class="section-title text-[18px]">{title}</h2>
-  <p class="text-muted text-[12px]" data-testid="character-execution-definition">
-    {characterTableCopy.executionDefinition}
-  </p>
+  {#if heading}
+    <h2 class="section-title text-[18px]">{title}</h2>
+    <p class="text-muted text-[12px]" data-testid="character-execution-definition">
+      {characterTableCopy.executionDefinition}
+    </p>
+  {:else}
+    <p class="label text-muted pt-1.5" data-testid="character-table-label">{title}</p>
+  {/if}
   <ul class="flex flex-col" data-testid={testid}>
     <li
       class={`label text-muted border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID}`}
       aria-hidden="true"
       data-testid="character-table-header"
     >
-      <span>{characterTableCopy.boss}</span>
-      <span class="hidden md:inline">{characterTableCopy.spec}</span>
+      <span>{lead === 'date' ? characterTableCopy.date : characterTableCopy.boss}</span>
+      {#if columns === 'full'}<span class="hidden md:inline">{characterTableCopy.spec}</span>{/if}
       <span class="text-right">{characterTableCopy.parse}</span>
       <span class="text-right">{amountHeader(rows)}</span>
-      <span class="hidden md:ml-2 md:inline">{characterTableCopy.date}</span>
+      <span class="hidden md:ml-2 md:inline">{lead === 'date' ? '' : characterTableCopy.date}</span>
       <span class="text-right max-md:ml-1">{characterTableCopy.execution}</span>
     </li>
     {#each rows as row, index (rowKey(row, index))}
+      {@const word = note === null ? null : note(row)}
       <!-- L8.5 ruling 1: the rating card's weakest part links here (fix round 2: the target's
            gold edge and tint, 96px under the window's top). -->
       <li
-        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}${rowId === null ? '' : TARGET}`}
+        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}${rowId === null ? '' : TARGET}${isMarked(row) ? MARKED : ''}`}
         id={rowId === null ? undefined : rowId(row)}
+        data-marked={isMarked(row) ? 'true' : undefined}
       >
-        <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
-        <span class="text-muted hidden truncate text-[13px] md:inline">{specName(row.spec ?? '')}</span>
+        {#if word === null}
+          {@render firstLink(row)}
+        {:else}
+          <span class="flex min-w-0 items-center gap-2">
+            {@render firstLink(row)}
+            <span class="text-muted shrink-0 text-[12px]" data-testid="character-fight-note">{word}</span>
+          </span>
+        {/if}
+        {#if columns === 'full'}<span class="text-muted hidden truncate text-[13px] md:inline"
+            >{specName(row.spec ?? '')}</span
+          >{/if}
         <span
           class="tabular text-right font-mono text-[13px]"
           style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
@@ -114,7 +167,8 @@
         </a>
         <span
           class="text-muted tabular hidden font-mono text-[13px] md:ml-2 md:inline"
-          data-testid="character-fight-date">{formatDayMonthYear(new Date(row.fought_at))}</span
+          data-testid="character-fight-date"
+          >{lead === 'date' ? '' : formatDayMonthYear(new Date(row.fought_at))}</span
         >
         {#if row.execution_score === null}
           <span
@@ -132,7 +186,7 @@
           >
         {/if}
         {#if rated !== null && rated.report_id === row.report_id && rated.fight_index === row.fight_index}
-          <span class={RATED_NOTE} data-testid="character-fight-rated"
+          <span class={ratedNoteClass} data-testid="character-fight-rated"
             >{characterTableCopy.ratedNote(rated.overall)}</span
           >
         {/if}

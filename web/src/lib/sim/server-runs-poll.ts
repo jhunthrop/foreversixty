@@ -4,6 +4,7 @@
 // (experience spec 2026-10-24 sections 3.5 and 3.7) the pre-paint script in Base.astro reads
 // back. Pure functions plus guarded storage access; the reactive wrapper is
 // server-runs-controller.svelte.ts.
+import { MAX_RESERVE_PX, writeReserve } from '../layout-reserve';
 import type { SimListRow } from './types';
 
 /** How often the list re-reads while a run is queued or running and the tab is visible. */
@@ -15,8 +16,7 @@ export const RESERVE_STORAGE_KEY = 'fs.serverRuns.reserve';
 /** When a run was last started or seen in flight (epoch ms); the band's reserve hint. */
 export const LIVE_STORAGE_KEY = 'fs.serverRuns.live';
 export const LIVE_TTL_MS = 2 * 60 * 60 * 1000;
-/** A stored reserve above this is nonsense (tampered or from another layout) and is ignored. */
-export const MAX_RESERVE_PX = 2000;
+export { MAX_RESERVE_PX };
 
 /** What the `Run again` button on a failed row is showing. */
 export type RerunStatus = 'idle' | 'pending' | 'started' | 'failed' | 'lapsed';
@@ -53,12 +53,7 @@ function storage(): Storage | null {
 }
 
 export function writeReserveHeight(pixels: number): void {
-  if (!Number.isFinite(pixels) || pixels <= 0 || pixels > MAX_RESERVE_PX) return;
-  try {
-    storage()?.setItem(RESERVE_STORAGE_KEY, String(Math.round(pixels)));
-  } catch {
-    // Private mode or quota: the hint is a convenience.
-  }
+  writeReserve(RESERVE_STORAGE_KEY, pixels);
 }
 
 export function markLive(now: number = Date.now()): void {

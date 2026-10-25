@@ -201,3 +201,62 @@ describe('CharacterFightTable', () => {
     expect(table()).not.toContain('character-fight-rated');
   });
 });
+
+describe('CharacterFightTable, the History list props', () => {
+  const props = (extra: Record<string, unknown>) => ({
+    title: 'Kills of Golemagg',
+    rows: [row(1, 0.94), row(2, null)],
+    testid: 'history-list',
+    bossHref: () => '/reports/r1',
+    rowKey: (fight: CharacterFight) => String(fight.fight_index),
+    executionTestid: 'history-execution',
+    ...extra,
+  });
+  const html = (extra: Record<string, unknown>): string =>
+    render(CharacterFightTable, { props: props(extra) }).body.replace(/<!--[^>]*-->/g, '');
+
+  it('draws today s table byte for byte when the new props are left out', () => {
+    expect(html({})).toBe(html({ heading: true, columns: 'full', lead: 'boss', selected: null, note: null }));
+    expect(html({})).toContain('<h2');
+    expect(html({})).toContain('character-execution-definition');
+    expect(html({})).not.toContain('data-marked');
+  });
+
+  it('heading false replaces the h2 and the caption with the list s own label', () => {
+    const out = html({ heading: false });
+    expect(out).not.toContain('<h2');
+    expect(out).not.toContain('character-execution-definition');
+    expect(out).toMatch(
+      /<p class="label[^"]*"[^>]*data-testid="character-table-label">Kills of Golemagg<\/p>/,
+    );
+  });
+
+  it('columns no-spec drops the Spec header and cells and the grid column', () => {
+    const out = html({ columns: 'no-spec' });
+    expect(out).not.toContain(characterTableCopy.spec);
+    expect(out).not.toContain('>Holy<');
+    expect(out).toContain('md:grid-cols-[minmax(0,1fr)_64px_88px_112px_72px]');
+    expect(out).not.toContain('112px_64px');
+  });
+
+  it('lead date puts the dated link first and leaves the Date column blank', () => {
+    const out = html({ lead: 'date' });
+    expect(out).not.toContain('Warden Kelthas');
+    expect(out).toContain('12 Oct 2026</a>');
+    expect(out).toMatch(/data-testid="character-fight-date"><\/span>/);
+  });
+
+  it('marks the rows named by selected, with the gold edge and no id', () => {
+    const out = html({ selected: new Set(['r1:2']) });
+    const rows = [...out.matchAll(/<li class="([^"]*)"[^>]*>/g)].slice(1);
+    expect(rows[0][0]).not.toContain('data-marked');
+    expect(rows[1][0]).toContain('data-marked="true"');
+    expect(rows[1][1]).toContain('shadow-[inset_2px_0_0_var(--color-gold)]');
+    expect(rows[1][0]).not.toContain(' id=');
+  });
+
+  it('writes the note word after the first cell', () => {
+    const out = html({ note: (fight: CharacterFight) => (fight.fight_index === 2 ? 'Private' : null) });
+    expect(out.match(/data-testid="character-fight-note">Private</g)).toHaveLength(1);
+  });
+});

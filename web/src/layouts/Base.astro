@@ -37,6 +37,7 @@ import { SITE_NAME, SITE_URL, pageTitle, toJsonLd, websiteLd } from '../lib/seo'
 // query.ts/api.ts actually wrote.
 import { meKey, ME_QUERY_VERSION, ME_TTL_MS } from '../lib/account/api';
 import { storageKey } from '../lib/data/query';
+import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/history-layout';
 import { API_BASE_URL } from '../lib/planner/config';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
@@ -93,6 +94,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-server-runs-live-key={SERVER_RUNS_LIVE_KEY}
       data-server-runs-live-ttl={SERVER_RUNS_LIVE_TTL_MS}
       data-server-runs-max-reserve={SERVER_RUNS_MAX_RESERVE_PX}
+      data-history-reserve-key={HISTORY_RESERVE_KEY}
+      data-history-max-reserve={HISTORY_MAX_RESERVE_PX}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -150,6 +153,35 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           root.style.setProperty('--server-runs-reserve', reserve + 'px');
       } catch {
         /* storage unavailable or malformed: the list reserves one row */
+      }
+      // The owner's History section on a character page (spec 2026-10-24-character-history
+      // 3.11): data-history when the cached /v1/me says the plan has it and lists this page's
+      // character (the hint alone cannot know ownership), and the last rendered height as
+      // --history-reserve. Anyone else reserves nothing.
+      try {
+        const el = document.currentScript;
+        const root = document.documentElement;
+        const cached = localStorage.getItem(el.dataset.meStorageKey);
+        const me = cached ? JSON.parse(cached).data : null;
+        const pageKey = decodeURIComponent(location.pathname)
+          .replace(/^\/character\//, '')
+          .replace(/\/+$/, '')
+          .toLowerCase();
+        const owns =
+          location.pathname.indexOf('/character/') === 0 &&
+          me &&
+          me.characters &&
+          me.characters.some(function (c) {
+            return String(c.key).toLowerCase() === pageKey;
+          });
+        if (root.dataset.session === '1' && owns && me.entitlements && me.entitlements.history === true) {
+          root.dataset.history = '1';
+          const historyReserve = Math.round(Number(localStorage.getItem(el.dataset.historyReserveKey)));
+          if (historyReserve > 0 && historyReserve <= Number(el.dataset.historyMaxReserve))
+            root.style.setProperty('--history-reserve', historyReserve + 'px');
+        }
+      } catch {
+        /* storage unavailable or malformed: the section reserves its fallback height */
       }
     </script>
   </head>
