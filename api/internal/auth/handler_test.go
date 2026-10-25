@@ -850,6 +850,100 @@ func TestMeReflectsAnActivePersonalPremiumEntitlement(t *testing.T) {
 	}
 }
 
+// fakeSims is the auth package's stand-in for the sims store (auth cannot import sims).
+type fakeSims struct {
+	unseen []FinishedSim
+	month  int
+}
+
+func (f fakeSims) FinishedUnseen(_ context.Context, _ int64, limit int) ([]FinishedSim, error) {
+	if len(f.unseen) > limit {
+		return f.unseen[:limit], nil
+	}
+	return f.unseen, nil
+}
+
+func (f fakeSims) RunsThisMonth(context.Context, int64) (int, error) { return f.month, nil }
+
+type meSimsBody struct {
+	FinishedSims []struct {
+		SimID      string  `json:"sim_id"`
+		Spec       string  `json:"spec"`
+		Title      string  `json:"title"`
+		DPS        float64 `json:"dps"`
+		FinishedAt string  `json:"finished_at"`
+	} `json:"finished_sims"`
+	ServerSims *struct {
+		RunsThisMonth int `json:"runs_this_month"`
+	} `json:"server_sims"`
+}
+
+// meSims returns the decoded sims fields of GET /v1/me and the raw body.
+func (h *harness) meSims(t *testing.T, uid int64) (meSimsBody, string) {
+	t.Helper()
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", uid)
+	raw, err := io.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = res.Body.Close()
+	var env struct {
+		Data meSimsBody `json:"data"`
+	}
+	if err := json.Unmarshal(raw, &env); err != nil {
+		t.Fatal(err)
+	}
+	return env.Data, string(raw)
+}
+
+func oneUnseenRunOfTwoThisMonth() fakeSims {
+	return fakeSims{month: 2, unseen: []FinishedSim{
+		{SimID: "sim-1", Spec: "hunter-marksmanship", Title: "Marksmanship vs Patchwerk", DPS: 1234.5, FinishedAt: "2026-10-20T10:00:00Z"},
+	}}
+}
+
+func TestMeListsUnseenFinishedServerRunsForAPayer(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-sims-payer@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (user_id, plan, source, status) values ($1, 'premium', 'grant', 'active')`,
+		uid); err != nil {
+		t.Fatal(err)
+	}
+	h.svc.Sims = oneUnseenRunOfTwoThisMonth()
+	body, _ := h.meSims(t, uid)
+	if len(body.FinishedSims) != 1 || body.FinishedSims[0].SimID != "sim-1" ||
+		body.FinishedSims[0].Spec != "hunter-marksmanship" || body.FinishedSims[0].DPS != 1234.5 ||
+		body.FinishedSims[0].FinishedAt != "2026-10-20T10:00:00Z" {
+		t.Fatalf("finished_sims = %+v", body.FinishedSims)
+	}
+	if body.ServerSims == nil || body.ServerSims.RunsThisMonth != 2 {
+		t.Fatalf("server_sims = %+v", body.ServerSims)
+	}
+}
+
+func TestMeOmitsFinishedSimsForANonPayer(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-sims-free@example.com")
+	h.svc.Sims = oneUnseenRunOfTwoThisMonth()
+	body, raw := h.meSims(t, uid)
+	if !strings.Contains(raw, `"finished_sims":[]`) {
+		t.Fatalf("finished_sims must be [] for a non-payer: %s", raw)
+	}
+	if body.ServerSims == nil || body.ServerSims.RunsThisMonth != 2 {
+		t.Fatalf("a non-payer still sees the true count: %+v", body.ServerSims)
+	}
+}
+
+func TestMeWorksWithNoSimsStoreConfigured(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-sims-none@example.com")
+	_, raw := h.meSims(t, uid)
+	if !strings.Contains(raw, `"finished_sims":[]`) || strings.Contains(raw, `"server_sims":{`) {
+		t.Fatalf("want finished_sims [] and no server_sims key: %s", raw)
+	}
+}
+
 func TestMeShowsGuildPlanOnlyToAVerifiedOfficer(t *testing.T) {
 	h := newHarness(t)
 	gid := h.seedGuild(t, "me-guild-plan")

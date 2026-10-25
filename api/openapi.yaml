@@ -800,6 +800,19 @@ components:
         engine_version: { type: string }
         created_at: { type: string, format: date-time }
         title: { type: string }
+        lane: { type: string, enum: [server, browser], description: Where the run happened. }
+        finished_at:
+          type: string
+          format: date-time
+          description: When a server run reached done or error. Absent while it is queued or running, and for a browser save.
+        failure_reason: { type: string, description: The plain sentence a failed run stopped with. Absent unless state is error. }
+        seen: { type: boolean, description: Whether the owner has looked at the finished result. }
+        estimate_seconds:
+          type: integer
+          description: >-
+            How long a run of this spec usually takes: the median of the last
+            ten finished server runs. Only on queued and running rows, and
+            absent with fewer than three finished runs.
     SpecFidelity:
       type: object
       properties:
@@ -1443,6 +1456,24 @@ paths:
                         type: object
                         properties:
                           user: { $ref: '#/components/schemas/User' }
+                          finished_sims:
+                            type: array
+                            description: >-
+                              Unseen finished server runs, newest first, at most three. Always
+                              present; [] unless the caller holds the server_sims entitlement.
+                            items:
+                              type: object
+                              properties:
+                                sim_id: { type: string }
+                                spec: { type: string }
+                                title: { type: string }
+                                dps: { type: number }
+                                finished_at: { type: string, format: date-time }
+                          server_sims:
+                            type: object
+                            description: Omitted when the server has no sims store configured.
+                            properties:
+                              runs_this_month: { type: integer }
         '401': { description: "Not signed in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     patch:
       summary: Set the read-time pseudonym flag
@@ -1911,6 +1942,13 @@ paths:
           in: query
           schema: { type: string, enum: [run, gear, talents, drops, weights] }
           description: Narrows the list to one tool. Omitted or empty is every kind; an unknown value is 400.
+        - name: lane
+          in: query
+          schema: { type: string, enum: [server, browser] }
+          description: >-
+            Narrows the list to runs made on our servers or saved from the
+            browser. Omitted or empty is both; an unknown value is 400. Queued
+            and running rows carry estimate_seconds.
       responses:
         '200':
           description: One page of the caller's sims
@@ -1983,6 +2021,47 @@ paths:
                     properties:
                       data: { $ref: '#/components/schemas/SimResult' }
         '404': { description: No such sim }
+  /v1/sims/{id}/seen:
+    post:
+      summary: Mark the caller's finished server run as looked at
+      operationId: markSimSeen
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '204': { description: Marked seen (marking twice is the same answer) }
+        '401': { description: Sign in first }
+        '404': { description: Not the caller's finished run }
+  /v1/sims/{id}/rerun:
+    post:
+      summary: Run a failed server run again (premium)
+      description: >-
+        Starts the failed run's stored request as a new run, through the same
+        checks POST /v1/sims/run applies. The failed row is left as it is.
+      operationId: rerunSim
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '202':
+          description: Dispatched as a new run
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          sim_id: { type: string }
+        '400':
+          description: >-
+            The stored request can no longer be run: error.code is "invalid",
+            "cap_exceeded" or "too_large", as for POST /v1/sims/run.
+        '401': { description: Sign in first }
+        '402': { description: 'premium_required: running on our servers is a premium feature' }
+        '404': { description: Not the caller's failed run }
+        '502': { description: The run was recorded but could not be started }
   /v1/sims/{id}/progress:
     get:
       summary: How far a server-lane run has got

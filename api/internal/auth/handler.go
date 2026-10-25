@@ -43,6 +43,26 @@ type GuildCapabilities interface {
 	Capabilities(ctx context.Context, guildID, userID int64, moderator bool) ([]string, error)
 }
 
+// FinishedSim is one server run that finished while its owner was away, as GET /v1/me
+// reports it. FinishedAt is RFC3339 UTC.
+type FinishedSim struct {
+	SimID      string  `json:"sim_id"`
+	Spec       string  `json:"spec"`
+	Title      string  `json:"title"`
+	DPS        float64 `json:"dps"`
+	FinishedAt string  `json:"finished_at"`
+}
+
+// SimsView is the part of the sims store the account read needs. It is an interface
+// because sims imports this package.
+type SimsView interface {
+	FinishedUnseen(ctx context.Context, userID int64, limit int) ([]FinishedSim, error)
+	RunsThisMonth(ctx context.Context, userID int64) (int, error)
+}
+
+// finishedSimsLimit caps the "done while away" list on GET /v1/me.
+const finishedSimsLimit = 3
+
 // Service serves every sign-in route.
 type Service struct {
 	Store  *Store
@@ -57,6 +77,9 @@ type Service struct {
 	// GuildCapabilities answers each guild entry's Can list on GET /v1/me. Nil is safe (every
 	// list reads empty) for a harness that does not mount guilds; guilds.Store satisfies it.
 	GuildCapabilities GuildCapabilities
+	// Sims answers GET /v1/me's finished_sims and server_sims. Nil is safe (the list reads
+	// empty and server_sims is omitted) for a harness that does not mount sims.
+	Sims SimsView
 	// Importer runs the Battle.net character/guild import right after a
 	// successful Battle.net sign-in. Nil means the feature is off (no
 	// Battle.net credentials configured, or a test harness that does
@@ -347,6 +370,16 @@ type Me struct {
 	BnetImportedAt *string `json:"bnet_imported_at,omitempty"`
 	// MainCharacterKey is the account's chosen main, omitted until chosen.
 	MainCharacterKey *string `json:"main_character_key,omitempty"`
+	// FinishedSims are the caller's unseen finished server runs, newest first, at most three.
+	// Always present; empty unless the caller holds the server_sims entitlement.
+	FinishedSims []FinishedSim `json:"finished_sims"`
+	// ServerSims is omitted when no sims store is configured.
+	ServerSims *ServerSimsView `json:"server_sims,omitempty"`
+}
+
+// ServerSimsView is the caller's server-run account row.
+type ServerSimsView struct {
+	RunsThisMonth int `json:"runs_this_month"`
 }
 
 // EntitlementsView is every Can() feature pre-resolved for the caller,
@@ -414,11 +447,39 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
+	finished, serverSims, err := s.buildSimsView(r.Context(), u.ID, ev.ServerSims)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
+		FinishedSims: finished, ServerSims: serverSims,
 	})
+}
+
+// buildSimsView resolves the sims half of /v1/me. The finished list is only read for a
+// caller who holds server_sims (a lapsed payer's unseen rows stay unseen, unannounced); the
+// monthly count is a true fact for everyone. Without a sims store it is an empty list and nil.
+func (s *Service) buildSimsView(ctx context.Context, userID int64, entitled bool) ([]FinishedSim, *ServerSimsView, error) {
+	finished := []FinishedSim{}
+	if s.Sims == nil {
+		return finished, nil, nil
+	}
+	if entitled {
+		rows, err := s.Sims.FinishedUnseen(ctx, userID, finishedSimsLimit)
+		if err != nil {
+			return nil, nil, fmt.Errorf("auth: me: finished sims: %w", err)
+		}
+		finished = append(finished, rows...)
+	}
+	n, err := s.Sims.RunsThisMonth(ctx, userID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("auth: me: runs this month: %w", err)
+	}
+	return finished, &ServerSimsView{RunsThisMonth: n}, nil
 }
 
 // entitlementFeatures pairs every gated Feature with the EntitlementsView

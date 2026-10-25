@@ -576,8 +576,8 @@ func serve(log *slog.Logger) error {
 	}
 	accounts := &auth.Service{
 		Store: authStore, Auth: authenticator, Mailer: mailer, Entitlements: entStore,
-		GuildCapabilities: guildStore,
-		PublicBaseURL:     cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
+		GuildCapabilities: guildStore, Sims: simsAccountView{store: simStore},
+		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
 	if cfg.DevLogin {
 		accounts.DevLogin = true
