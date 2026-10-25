@@ -214,7 +214,12 @@ atWidths('paste form saving', BASE_WIDTHS, async (page, width) => {
 });
 
 atWidths('paste form after the Premium refusal', BASE_WIDTHS, async (page, width) => {
-  await openAccount(page, width, { initial: null }, { putFailure: { status: 402, message: 'premium_required' } });
+  await openAccount(
+    page,
+    width,
+    { initial: null },
+    { putFailure: { status: 402, message: 'premium_required' } },
+  );
   await input(page).fill(VALID_URL);
   await page.getByTestId('discord-save').click();
   await page.getByTestId('discord-webhook-error').waitFor();
@@ -251,14 +256,24 @@ atWidths('test sent', BASE_WIDTHS, async (page, width) => {
 });
 
 atWidths('test failed', BASE_WIDTHS, async (page, width) => {
-  await openAccount(page, width, { initial: SAVED }, { testFailure: { status: 502, message: 'Missing Permissions' } });
+  await openAccount(
+    page,
+    width,
+    { initial: SAVED },
+    { testFailure: { status: 502, message: 'Missing Permissions' } },
+  );
   await page.getByTestId('discord-test').click();
   await page.getByText('Discord said:').waitFor();
   await shoot(page, 'test-failed', width);
 });
 
 atWidths('test rate limited', BASE_WIDTHS, async (page, width) => {
-  await openAccount(page, width, { initial: SAVED }, { testFailure: { status: 429, message: 'rate_limited' } });
+  await openAccount(
+    page,
+    width,
+    { initial: SAVED },
+    { testFailure: { status: 429, message: 'rate_limited' } },
+  );
   await page.getByTestId('discord-test').click();
   await page.getByText('Wait a minute').waitFor();
   await shoot(page, 'test-rate-limited', width);
@@ -368,7 +383,13 @@ test.describe('focus and hover at 1440', () => {
   test('remove', ({ page }) => focusOn(page, { initial: SAVED }, byId('discord-remove'), 'remove'));
   test('replace', ({ page }) => focusOn(page, { initial: SAVED }, byId('discord-replace'), 'replace'));
   test('see plans', ({ page }) =>
-    focusOn(page, { initial: null, entitled: false }, byId('discord-free-link'), 'see-plans', byId('discord-free')));
+    focusOn(
+      page,
+      { initial: null, entitled: false },
+      byId('discord-free-link'),
+      'see-plans',
+      byId('discord-free'),
+    ));
 
   const hoverOn = async (page: Page, stages: Stages, id: string, name: string): Promise<void> => {
     await openAccount(page, WIDTH_DESKTOP, stages);

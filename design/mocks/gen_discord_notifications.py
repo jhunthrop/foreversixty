@@ -21,7 +21,7 @@ MONO, BODYF = H.MONO, H.BODYF
 
 W_DESK, W_PH = 395, 354          # the rail's panel width at 1440 (col-span-4) and at 390 (gutters 18)
 EVENT_SIM = 'A server sim finishes'
-EVENT_UPLOAD = 'A log file you upload finishes parsing'
+EVENT_UPLOAD = 'A combat log you upload finishes parsing'
 EVENTS_NOTE = 'Posts every log you upload, including private ones; each message says who can open it.'
 UPSELL = 'Discord messages tell you when a server sim or a log you uploaded is done.'
 INTRO = 'Get a message in a Discord channel when a server sim finishes or a log finishes parsing.'
@@ -220,7 +220,7 @@ def upload_embed(width, phone=False):
 
 
 def test_embed(width, phone=False):
-    e = embed('Test message from Forever Sixty', [], FOOT, desc='Your webhook works. You will get a message here when a server sim finishes or a log file you upload finishes parsing.',
+    e = embed('Test message from Forever Sixty', [], FOOT, desc='Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing.',
               width=width - 76, phone=phone)
     return message(e, width)
 
