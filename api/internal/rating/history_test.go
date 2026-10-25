@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/digest"
 )
 
 const (
@@ -28,6 +29,7 @@ func histPool(t *testing.T) *pgxpool.Pool {
 		pool.Exec(bg, `delete from fight_metrics where report_id like 'hist-%'`)
 		pool.Exec(bg, `delete from fights where report_id like 'hist-%'`)
 		pool.Exec(bg, `delete from reports where id like 'hist-%'`)
+		pool.Exec(bg, `delete from percentile_digests where encounter_id between 990701 and 990702`)
 	}
 	clean()
 	t.Cleanup(clean)
@@ -109,29 +111,47 @@ func TestReadOwnerHistoryIncludesGuildAndPrivateButNeverFlagged(t *testing.T) {
 	}
 }
 
-func TestReadOwnerHistoryParsePointsComeFromTheOutputComponentOnKillsOnly(t *testing.T) {
+func TestReadOwnerHistoryParsePointsComeFromTheFightsOwnParseElseTheOutputComponent(t *testing.T) {
 	pool := histPool(t)
+	d := digest.New()
+	for v := 1; v <= 100; v++ {
+		d.Add(float64(v))
+	}
+	raw, err := d.MarshalBinary()
+	if err != nil {
+		t.Fatal(err)
+	}
+	mustExec(t, pool, `insert into percentile_digests (encounter_id, difficulty, spec, phase, metric, digest, n)
+		values ($1, 3, 'Arms', '', 'dps', $2, 100)`, histEncounter, raw)
 	id := histReport(t, pool, "parse", "public", nil)
-	histRate(t, pool, id, 1, histBase, true, intp(1000), "40")
-	histRate(t, pool, id, 2, histBase.Add(time.Hour), false, intp(1010), "90")
-	histRate(t, pool, id, 3, histBase.Add(2*time.Hour), true, intp(1020), "null")
-	histRate(t, pool, id, 4, histBase.Add(3*time.Hour), true, intp(1030), "88")
+	histRate(t, pool, id, 1, histBase, true, intp(1000), "88") // own parse: 100 dps placed in the digest
+	histMetric(t, pool, id, 1, histBase)
+	histRate(t, pool, id, 2, histBase.Add(time.Hour), false, intp(1010), "90")    // a wipe: output on the score line
+	histRate(t, pool, id, 3, histBase.Add(2*time.Hour), true, intp(1020), "null") // neither: no point
+	histRate(t, pool, id, 4, histBase.Add(3*time.Hour), true, intp(1030), "40")   // no metrics row: output
 	h, err := (&Store{Pool: pool}).ReadOwnerHistory(context.Background(), histKey)
 	if err != nil {
 		t.Fatal(err)
 	}
+	own := h.Fights[0].Percentile
+	if own == nil || *own == 88 {
+		t.Fatalf("seed error: the fights row percentile = %v, want one different from the output's 88", own)
+	}
+	if p := h.Score[0].ParsePercentile; p == nil || *p != *own {
+		t.Errorf("a kill with a metrics percentile uses it (%v), got %v", *own, p)
+	}
 	if p := h.Score[1].ParsePercentile; p == nil || *p != 90 {
-		t.Errorf("a wipe still carries its output percentile on the score line, got %v", p)
+		t.Errorf("a wipe with no metrics row keeps its output percentile on the score line, got %v", p)
 	}
 	if h.Score[2].ParsePercentile != nil {
-		t.Errorf("a kill with no output percentile must be nil, got %v", *h.Score[2].ParsePercentile)
+		t.Errorf("a kill with neither must be nil, got %v", *h.Score[2].ParsePercentile)
 	}
 	if len(h.Encounters) != 1 || len(h.Encounters[0].Points) != 2 {
 		t.Fatalf("encounters = %+v, want one boss with the two kills that have a parse", h.Encounters)
 	}
 	pts := h.Encounters[0].Points
-	if pts[0].ParsePercentile != 40 || pts[1].ParsePercentile != 88 || pts[1].FightIndex != 4 {
-		t.Errorf("points = %+v, want 40 then 88 (oldest first)", pts)
+	if pts[0].ParsePercentile != *own || pts[1].ParsePercentile != 40 || pts[1].FightIndex != 4 {
+		t.Errorf("points = %+v, want %v then 40 (oldest first)", pts, *own)
 	}
 }
 

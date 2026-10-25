@@ -44,7 +44,8 @@ type HistoryPoint struct {
 	EncounterID int64
 	// Difficulty is the fight's difficulty id, as the public history rows send it.
 	Difficulty int64
-	// ParsePercentile is the fight's output component percentile, nil when it has none.
+	// ParsePercentile is the fight's own parse percentile, the one its fights row carries, else
+	// the output component's; nil when it has neither.
 	ParsePercentile *float64
 	Kill            bool
 	// Visibility is the report's: public, guild or private (the query reads an unlisted report as public).
@@ -109,6 +110,7 @@ func (s *Store) ReadOwnerHistory(ctx context.Context, playerKey string) (History
 	if err != nil {
 		return History{}, err
 	}
+	score = withOwnParse(score, fights)
 	return History{
 		AsOf:       asOf(score, time.Now()),
 		Score:      score,
@@ -116,6 +118,24 @@ func (s *Store) ReadOwnerHistory(ctx context.Context, playerKey string) (History
 		Gaps:       gapsFor(scoreDates(score), marks),
 		Fights:     fights,
 	}, nil
+}
+
+// withOwnParse returns score with each point's parse percentile taken from the fight's own
+// row (the number the fights list shows) where that row has one; a point keeps its output
+// component percentile when its fight has no row or the row has no percentile.
+func withOwnParse(score []HistoryPoint, fights []rankings.OwnerFight) []HistoryPoint {
+	own := map[rankings.FightRef]*float64{}
+	for _, f := range fights {
+		own[rankings.FightRef{ReportID: f.ReportID, FightIndex: f.FightIndex}] = f.Percentile
+	}
+	out := make([]HistoryPoint, len(score))
+	for i, p := range score {
+		if pct := own[rankings.FightRef{ReportID: p.ReportID, FightIndex: p.FightIndex}]; pct != nil {
+			p.ParsePercentile = pct
+		}
+		out[i] = p
+	}
+	return out
 }
 
 // ratedPoint is one rating_scores row with a score snapshot, as read.
