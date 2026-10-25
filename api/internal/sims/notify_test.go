@@ -32,7 +32,7 @@ func (h *harness) withWebhook(t *testing.T) (*notify.Deliverer, *notify.FakePost
 	}
 	st := &notify.Store{Pool: h.store.Pool}
 	events := map[notify.EventName]bool{notify.EventSimFinished: true, notify.EventUploadParsed: true}
-	if err := st.Save(t.Context(), h.owner, notify.KindDiscord, "1", nil, nil, box, events, notify.SourcePasted); err != nil {
+	if err := st.Save(t.Context(), notify.SaveInput{UserID: h.owner, Kind: notify.KindDiscord, ChannelID: "1", TokenBox: box, Events: events, Source: notify.SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	poster := &notify.FakePoster{}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -44,13 +45,38 @@ func (s *Service) mountConnect(mux *http.ServeMux) {
 	if s.OAuth == nil {
 		return
 	}
-	mux.HandleFunc("GET "+connectPath, auth.RequireSession(s.connect))
-	mux.HandleFunc("GET "+callbackPath, auth.RequireSession(s.callback))
+	mux.HandleFunc("GET "+connectPath, s.browserSession(s.connect))
+	mux.HandleFunc("GET "+callbackPath, s.browserSession(s.callback))
 }
 
 // accountRedirect sends the browser back to the account page with the outcome.
 func (s *Service) accountRedirect(w http.ResponseWriter, r *http.Request, outcome string) {
 	http.Redirect(w, r, s.PublicBaseURL+"/account?discord="+outcome+"#discord", http.StatusFound)
+}
+
+// browserSession wraps a browser-navigation handler: without a browser
+// session it redirects to the account page's failed outcome instead of
+// answering 401 JSON the browser would show as raw text.
+func (s *Service) browserSession(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if actor := auth.ActorFrom(r.Context()); !actor.Signed() || actor.IsDevice() {
+			httpx.CachePrivateNoStore(w)
+			s.accountRedirect(w, r, outcomeFailed)
+			return
+		}
+		h(w, r)
+	}
+}
+
+// entitledToConnect reports whether the member may connect; an entitlement
+// error is logged and reads as no.
+func (s *Service) entitledToConnect(r *http.Request, userID int64) bool {
+	allowed, _, err := s.Entitlements.Can(r.Context(), userID, entitlements.FeatureNotifications)
+	if err != nil {
+		s.logger().Error("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "connect premium", "err", err)
+		return false
+	}
+	return allowed
 }
 
 func (s *Service) stateCookie(value string, maxAge int) *http.Cookie {
@@ -62,11 +88,7 @@ func (s *Service) stateCookie(value string, maxAge int) *http.Cookie {
 
 func (s *Service) connect(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	allowed, _, err := s.Entitlements.Can(r.Context(), auth.ActorFrom(r.Context()).UserID, entitlements.FeatureNotifications)
-	if err != nil {
-		s.logger().Error("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "connect premium", "err", err)
-	}
-	if err != nil || !allowed {
+	if !s.entitledToConnect(r, auth.ActorFrom(r.Context()).UserID) {
 		s.accountRedirect(w, r, outcomeFailed)
 		return
 	}
@@ -89,7 +111,12 @@ func (s *Service) callback(w http.ResponseWriter, r *http.Request) {
 		s.accountRedirect(w, r, outcomeFailed)
 		return
 	}
-	if err := s.storeConnected(r.Context(), auth.ActorFrom(r.Context()).UserID, code); err != nil {
+	userID := auth.ActorFrom(r.Context()).UserID
+	if !s.entitledToConnect(r, userID) {
+		s.accountRedirect(w, r, outcomeFailed)
+		return
+	}
+	if err := s.storeConnected(r.Context(), userID, code); err != nil {
 		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "connect", "err", err)
 		s.accountRedirect(w, r, outcomeFailed)
 		return
@@ -97,14 +124,24 @@ func (s *Service) callback(w http.ResponseWriter, r *http.Request) {
 	s.accountRedirect(w, r, outcomeConnected)
 }
 
-// storeConnected exchanges the code, seals and saves the new webhook, then
-// removes the previous connected webhook from Discord. The returned error
-// never carries the code, the token or the URL.
+// storeConnected exchanges the code and saves the new webhook. When the save
+// fails after Discord created the webhook, the orphan is deleted. The returned
+// error never carries the code, the token or the URL.
 func (s *Service) storeConnected(ctx context.Context, userID int64, code string) error {
 	hook, err := s.OAuth.Exchange(ctx, code)
 	if err != nil {
 		return err
 	}
+	if err := s.saveConnected(ctx, userID, hook); err != nil {
+		s.discardOrphan(ctx, hook)
+		return err
+	}
+	return nil
+}
+
+// saveConnected seals and saves hook, then removes the member's previous
+// connected webhook from Discord.
+func (s *Service) saveConnected(ctx context.Context, userID int64, hook OAuthWebhook) error {
 	parsed, err := ParseWebhookURL(hook.URL)
 	if err != nil {
 		return err
@@ -113,23 +150,60 @@ func (s *Service) storeConnected(ctx context.Context, userID int64, code string)
 		return errNoChannel
 	}
 	events := defaultEvents()
-	if previous, ok, err := s.Store.Get(ctx, userID, KindDiscord); err != nil {
+	previous, had, err := s.Store.Get(ctx, userID, KindDiscord)
+	if err != nil {
 		return err
-	} else if ok {
+	}
+	if had {
 		events = previous.Events
 	}
-	oldURL := s.connectedURL(ctx, userID)
 	box, err := s.Sealer.Seal(parsed.URL())
 	if err != nil {
 		return err
 	}
-	if err := s.Store.Save(ctx, userID, KindDiscord, hook.ChannelID, optionalText(hook.GuildID), nil, box, events, SourceConnected); err != nil {
+	oldURL := s.connectedURLOf(ctx, previous, had)
+	in := SaveInput{
+		UserID: userID, Kind: KindDiscord, ChannelID: hook.ChannelID, GuildID: optionalText(hook.GuildID),
+		TokenBox: box, Events: events, Source: SourceConnected,
+	}
+	if err := s.Store.Save(ctx, in); err != nil {
 		return err
 	}
 	if oldURL != "" && oldURL != parsed.URL() {
 		s.deleteAtDiscord(ctx, oldURL, "replace")
 	}
 	return nil
+}
+
+// orphanDeleteTimeout bounds the cleanup of a webhook Discord created but we
+// could not keep.
+const orphanDeleteTimeout = 5 * time.Second
+
+// discardOrphan deletes the webhook Discord just created, best effort, on a
+// fresh context so a cancelled request does not strand it. With no usable URL
+// it only logs that it skipped.
+func (s *Service) discardOrphan(ctx context.Context, hook OAuthWebhook) {
+	url := orphanURL(hook)
+	if url == "" {
+		s.logger().Warn("notify", "op", "discord delete orphan", "outcome", "skipped")
+		return
+	}
+	fresh, cancel := context.WithTimeout(context.WithoutCancel(ctx), orphanDeleteTimeout)
+	defer cancel()
+	s.deleteAtDiscord(fresh, url, "orphan")
+}
+
+// orphanURL is the webhook URL to delete: hook.URL when it parses, else the
+// canonical URL built from a well-formed id and token, else "".
+func orphanURL(hook OAuthWebhook) string {
+	if parsed, err := ParseWebhookURL(hook.URL); err == nil {
+		return parsed.URL()
+	}
+	built := ParsedURL{WebhookID: hook.ID, Token: hook.Token}
+	if parsed, err := ParseWebhookURL(built.URL()); err == nil {
+		return parsed.URL()
+	}
+	return ""
 }
 
 func optionalText(text string) *string {

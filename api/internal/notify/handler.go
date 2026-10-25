@@ -158,7 +158,11 @@ func (s *Service) putWebhook(w http.ResponseWriter, r *http.Request, actor auth.
 		return
 	}
 	oldURL := s.connectedURL(r.Context(), actor.UserID)
-	if err := s.Store.Save(r.Context(), actor.UserID, KindDiscord, found.ChannelID, optionalText(found.GuildID), cleanWebhookName(found.Name), box, events, SourcePasted); err != nil {
+	in := SaveInput{
+		UserID: actor.UserID, Kind: KindDiscord, ChannelID: found.ChannelID, GuildID: optionalText(found.GuildID),
+		Name: cleanWebhookName(found.Name), TokenBox: box, Events: events, Source: SourcePasted,
+	}
+	if err := s.Store.Save(r.Context(), in); err != nil {
 		s.fail(w, r, "save", err)
 		return
 	}
@@ -306,15 +310,21 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 }
 
 // connectedURL is the unsealed URL of the member's saved webhook when it came
-// from the connect, else "". A read failure is logged and reads as "": the
-// caller's own change must not fail because Discord-side cleanup could not start.
+// from the connect, else "".
 func (s *Service) connectedURL(ctx context.Context, userID int64) string {
 	hook, ok, err := s.Store.Get(ctx, userID, KindDiscord)
-	if err != nil || !ok || hook.Source != SourceConnected {
-		s.logOpenFailure(err)
+	s.logOpenFailure(err)
+	return s.connectedURLOf(ctx, hook, ok)
+}
+
+// connectedURLOf is connectedURL for an already-read webhook. A read failure
+// is logged and reads as "": the caller's own change must not fail because
+// Discord-side cleanup could not start.
+func (s *Service) connectedURLOf(ctx context.Context, hook Webhook, saved bool) string {
+	if !saved || hook.Source != SourceConnected {
 		return ""
 	}
-	box, err := s.Store.TokenBox(ctx, userID, KindDiscord)
+	box, err := s.Store.TokenBox(ctx, hook.UserID, KindDiscord)
 	if err != nil {
 		s.logOpenFailure(err)
 		return ""

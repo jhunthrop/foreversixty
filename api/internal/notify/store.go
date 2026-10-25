@@ -13,12 +13,23 @@ import (
 // Store is every notification_webhooks read and write.
 type Store struct{ Pool *pgxpool.Pool }
 
-// Save upserts the member's channel with its guild id, source and name (nil when Discord gave
-// none), a new token and events, and resets the failure counter, last
-// error and disabled flag (a re-save is a re-enable). All three event
-// keys are written explicitly.
-func (s *Store) Save(ctx context.Context, userID int64, kind, channelID string, guildID, name *string, tokenBox []byte, events map[EventName]bool, source Source) error {
-	raw, err := json.Marshal(explicitEvents(events))
+// SaveInput is everything Save writes. GuildID and Name are nil when unknown.
+type SaveInput struct {
+	UserID    int64
+	Kind      string
+	ChannelID string
+	GuildID   *string
+	Name      *string
+	TokenBox  []byte
+	Events    map[EventName]bool
+	Source    Source
+}
+
+// Save upserts the member's channel with its guild id, source and name, a new
+// token and events, and resets the failure counter, last error and disabled
+// flag (a re-save is a re-enable). All three event keys are written explicitly.
+func (s *Store) Save(ctx context.Context, in SaveInput) error {
+	raw, err := json.Marshal(explicitEvents(in.Events))
 	if err != nil {
 		return fmt.Errorf("notify: encode events: %w", err)
 	}
@@ -28,9 +39,9 @@ func (s *Store) Save(ctx context.Context, userID int64, kind, channelID string, 
 		on conflict (user_id, kind) do update set
 		  channel_id = excluded.channel_id, guild_id = excluded.guild_id, source = excluded.source, webhook_name = excluded.webhook_name, token_box = excluded.token_box, events = excluded.events,
 		  failures = 0, last_error = '', disabled_at = null, updated_at = now()`,
-		userID, kind, channelID, guildID, name, tokenBox, raw, string(source))
+		in.UserID, in.Kind, in.ChannelID, in.GuildID, in.Name, in.TokenBox, raw, string(in.Source))
 	if err != nil {
-		return fmt.Errorf("notify: save %d/%s: %w", userID, kind, err)
+		return fmt.Errorf("notify: save %d/%s: %w", in.UserID, in.Kind, err)
 	}
 	return nil
 }
