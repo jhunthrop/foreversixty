@@ -403,6 +403,7 @@ func TestLootCountsAnInvitedMemberAsACandidate(t *testing.T) {
 	real := realTreesStore(t)
 	h.store.Trees, h.store.DataDir = real.Trees, real.DataDir
 	gid := seedGuild(t, h.pool, "Forever")
+	grantOfficerTools(t, h, gid)
 	seedHunterCharacter(t, h, gid, "inv-loot-member@example.com", "us/hardcore/invlootmember", 21524)
 
 	invitee := seedUser(t, h.pool, "inv-loot-invitee@example.com")
