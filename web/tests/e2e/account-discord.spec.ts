@@ -17,6 +17,7 @@ import { gotoHydrated } from './support/hydrated';
 import {
   CHANNEL_ID,
   discordBlock,
+  GUILD_ID,
   routeDiscordNotifications,
   signInMember,
   type DiscordMeStages,
@@ -39,10 +40,11 @@ async function openAccount(
   page: Page,
   stages: DiscordMeStages,
   routeOptions: DiscordRouteOptions = {},
+  path = '/account',
 ): Promise<DiscordRoutes> {
   const seen = await routeDiscordNotifications(page, routeOptions);
   await signInMember(page, stages, seen);
-  await gotoHydrated(page, '/account', 'account');
+  await gotoHydrated(page, path, 'account');
   return seen;
 }
 
@@ -428,6 +430,48 @@ async function expectNoAxeViolations(page: Page): Promise<void> {
     })),
   ).toEqual([]);
 }
+
+const CONNECTED = discordBlock({ source: 'connected', name: null, guild_id: GUILD_ID });
+const ME_PATH = /\/v1\/me$/;
+const SETTLE_MS = 750;
+
+/** Visits /account with `search`, returning how many `/v1/me` reads the page made once settled. */
+async function meReadsAfterVisit(page: Page, search: string): Promise<number> {
+  let reads = 0;
+  page.on('request', (request) => {
+    if (ME_PATH.test(new URL(request.url()).pathname)) reads += 1;
+  });
+  await openAccount(page, { initial: CONNECTED, connect: true }, {}, `/account${search}#discord`);
+  await expect(page.getByTestId('discord-test')).toBeVisible();
+  await page.waitForTimeout(SETTLE_MS);
+  return reads;
+}
+
+test.describe('the return from Discord (connect lane)', () => {
+  test('failed: the alert, focus on the connect control, the flag gone from the address', async ({
+    page,
+  }) => {
+    await openAccount(page, { initial: null, connect: true }, {}, '/account?discord=failed#discord');
+    await expect(page.getByRole('alert')).toHaveText(copy.returnFailed);
+    await expect(page.getByTestId('discord-connect')).toBeFocused();
+    await expect(page).toHaveURL(/\/account#discord$/);
+    await page.reload();
+    await expect(page.getByTestId('discord-connect')).toBeVisible();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+
+  test('connected: the status, focus on Send test message, one extra /v1/me read', async ({
+    page,
+    browser,
+  }) => {
+    const flagged = await meReadsAfterVisit(page, '?discord=connected');
+    await expect(panel(page).getByRole('status')).toHaveText(copy.returnConnected);
+    await expect(page.getByTestId('discord-test')).toBeFocused();
+    await expect(page).toHaveURL(/\/account#discord$/);
+    const plain = await meReadsAfterVisit(await browser.newPage(), '');
+    expect(flagged).toBe(plain + 1);
+  });
+});
 
 test.describe('axe', () => {
   // Axe samples colours mid-transition otherwise; reduced motion makes the panels settle at once.
