@@ -451,9 +451,17 @@ type BillingView struct {
 	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
 }
 
+const (
+	guildPlanScopeWhole        = "plan"
+	guildPlanScopeOfficerTools = "officer_tools"
+)
+
 // GuildBillingView is a guild's billing state, shown only to a verified
 // officer/leader of that guild (spec §1.4; Ruling C).
 type GuildBillingView struct {
+	// Scope is "officer_tools" for a grant covering only the officer views,
+	// "plan" for a whole guild plan.
+	Scope                string  `json:"scope"`
 	Status               string  `json:"status"`
 	CurrentPeriodEnd     *string `json:"current_period_end"`
 	CancelAtPeriodEnd    bool    `json:"cancel_at_period_end"`
@@ -591,13 +599,6 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 	return ev, nil
 }
 
-// isActiveEntitlementStatus mirrors entitlements.Store's own
-// activeStatusClause (unexported there): the three statuses that keep a
-// guild's plan visible/active on this response (spec §1.3 rule 4).
-func isActiveEntitlementStatus(status string) bool {
-	return status == "active" || status == "trialing" || status == "past_due"
-}
-
 // attachGuildCapabilities fills Guild.Can for every guild the account belongs to, from the
 // one rule guilds.Capabilities holds. Every list is non-nil, so the JSON is [] and not null.
 func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u User) ([]Guild, error) {
@@ -637,7 +638,7 @@ func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID i
 		if err != nil {
 			return nil, fmt.Errorf("auth: me: guild billing %d: %w", g.ID, err)
 		}
-		if gb == nil || !isActiveEntitlementStatus(gb.Status) {
+		if gb == nil || !gb.Active {
 			continue
 		}
 		billedBy, youAre := "", false
@@ -655,11 +656,20 @@ func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID i
 			}
 		}
 		out[i].Plan = &GuildBillingView{
+			Scope:  guildPlanScope(gb),
 			Status: gb.Status, CancelAtPeriodEnd: gb.CancelAtPeriodEnd,
 			CurrentPeriodEnd: rfc3339Ptr(gb.CurrentPeriodEnd), BilledBy: billedBy, YouAreBillingContact: youAre,
 		}
 	}
 	return out, nil
+}
+
+// guildPlanScope names what a guild's live entitlement row covers.
+func guildPlanScope(gb *entitlements.GuildBilling) string {
+	if gb.Scoped() {
+		return guildPlanScopeOfficerTools
+	}
+	return guildPlanScopeWhole
 }
 
 // rfc3339Ptr formats t as an RFC 3339 string pointer, nil in, nil out —

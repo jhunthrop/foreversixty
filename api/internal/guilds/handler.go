@@ -49,7 +49,9 @@ type Service struct {
 	R2 Objects
 	// Supporters adds the supporter mark to the home roster; nil means nobody shows it.
 	Supporters Supporters
-	Log        *slog.Logger
+	// Entitlements answers the home viewer's officer_tools flag; nil means false.
+	Entitlements Entitlements
+	Log          *slog.Logger
 }
 
 // Mount registers every /v1/guilds/{id}/... mutation route and the
