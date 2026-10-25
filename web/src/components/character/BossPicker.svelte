@@ -6,6 +6,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import type { BossPill } from '../../lib/character/history-chart';
+  import { historyCopy } from '../../lib/character/history-copy';
   import { scrollBehavior } from '../../lib/character/history-layout';
 
   let {
@@ -61,7 +62,7 @@
     ? `mask-image: linear-gradient(to right, #000 calc(100% - ${FADE_PX}px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - ${FADE_PX}px), transparent)`
     : undefined}
   role="tablist"
-  aria-label="Boss"
+  aria-label={historyCopy.pickerLabel}
   tabindex="-1"
   data-testid="history-picker"
   onscroll={measure}

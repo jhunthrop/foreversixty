@@ -122,6 +122,26 @@ describe('buildScoreChart', () => {
     expect(narrow.gapNotes).toEqual(['Gap 26 Oct to 17 Nov: No rated fights']);
   });
 
+  it('centres a gap reason in its band on lines 14 px apart, and gives none to a narrow band', () => {
+    const wide = buildScoreChart(fixture, { width: 268, height: 179, phone: true }).geometry!;
+    const { plot } = wide;
+    const middle = plot.top + plot.height / 2;
+    const lines = wide.gaps[0].labelLines;
+    expect(lines.map((line) => line.text).join(' ')).toBe('No rated fights');
+    expect(lines).toHaveLength(2);
+    expect(lines[1].y - lines[0].y).toBe(14);
+    expect((lines[0].y + lines[1].y) / 2).toBeCloseTo(middle, 5);
+    const narrow = buildScoreChart(fixture, { width: 200, height: 133, phone: true }).geometry!;
+    expect(narrow.gaps[0].labelLines).toEqual([]);
+  });
+
+  it('marks the tier lower bounds as boundary ticks on the score chart only', () => {
+    const score = buildScoreChart(fixture, DESKTOP).geometry!;
+    expect(score.yTicks.filter((tick) => tick.boundary).map((tick) => tick.value)).toEqual([1000, 1500]);
+    const parse = buildParseChart(characterHistoryFixture().encounters[0], DESKTOP).geometry!;
+    expect(parse.yTicks.some((tick) => tick.boundary)).toBe(false);
+  });
+
   it('draws the tiers inside the domain, labelling only bands 22 px tall', () => {
     const geometry = buildScoreChart(fixture, DESKTOP).geometry!;
     expect(geometry.domain).toEqual({ min: 600, max: 1900 });

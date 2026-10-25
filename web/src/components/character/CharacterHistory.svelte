@@ -12,7 +12,7 @@
     createHistoryController,
     type HistoryController,
   } from '../../lib/character/history-controller.svelte';
-  import { writeHistoryReserve } from '../../lib/character/history-layout';
+  import { reserveToStore, writeHistoryReserve } from '../../lib/character/history-layout';
   import type { ChartSize } from '../../lib/character/history-scales';
   import EmptyState from '../ui/EmptyState.svelte';
   import LoadError from '../ui/LoadError.svelte';
@@ -38,12 +38,15 @@
     if (controller === undefined) untrack(() => source.load());
   });
 
-  // The box's rendered height, for the next visit's reserve. Not while loading: the skeleton
-  // is the reserve itself.
+  // The collapsed, settled box's rendered height, for the next visit's reserve (reserveToStore).
   $effect(() => {
     const element = section;
-    if (element === undefined || source.status === 'loading') return;
-    const observer = new ResizeObserver(() => writeHistoryReserve(element.offsetHeight));
+    if (element === undefined || source.status !== 'ready') return;
+    const observer = new ResizeObserver(() => {
+      const listOpen = element.querySelector('[aria-expanded="true"]') !== null;
+      const height = reserveToStore(source.status, listOpen, element.offsetHeight);
+      if (height !== null) writeHistoryReserve(height);
+    });
     observer.observe(element);
     return () => observer.disconnect();
   });

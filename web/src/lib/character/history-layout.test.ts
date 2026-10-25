@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   HISTORY_MAX_RESERVE_PX,
   HISTORY_RESERVE_KEY,
+  reserveToStore,
   scrollBehavior,
   wrapReason,
   writeHistoryReserve,
@@ -35,6 +36,18 @@ describe('wrapReason', () => {
 
   it('leaves one word alone', () => {
     expect(wrapReason('Unknown', 10)).toEqual(['Unknown']);
+  });
+});
+
+describe('reserveToStore', () => {
+  it('keeps the settled, collapsed height', () => {
+    expect(reserveToStore('ready', false, 1197)).toBe(1197);
+  });
+
+  it('keeps nothing while an owner has opened a list, in an error or while loading', () => {
+    expect(reserveToStore('ready', true, 2400)).toBeNull();
+    expect(reserveToStore('error', false, 120)).toBeNull();
+    expect(reserveToStore('loading', false, 1197)).toBeNull();
   });
 });
 

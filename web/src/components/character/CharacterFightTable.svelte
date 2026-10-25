@@ -10,7 +10,7 @@
      column is explained by a muted 12px caption under the title, at every width (item 7, fix
      round 4 items 6 and 7). The dash is named "Not scored yet" on hover and aloud (fix round 5
      item 7). -->
-<script lang="ts">
+<script lang="ts" generics="Row extends CharacterFight">
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
   import { fightKey } from '../../lib/character/history-api';
   import { formatDayMonthYear } from '../../lib/dates';
@@ -36,14 +36,14 @@
     note = null,
   }: {
     title: string;
-    rows: readonly CharacterFight[];
+    rows: readonly Row[];
     testid: string;
     /** Where the boss name links: its rankings board, or the fight's report. */
-    bossHref: (row: CharacterFight) => string;
-    rowKey: (row: CharacterFight, index: number) => string;
+    bossHref: (row: Row) => string;
+    rowKey: (row: Row, index: number) => string;
     executionTestid: string;
     /** Each row's id, for a link to it ("Every ranked fight", L8.5 ruling 1); none without. */
-    rowId?: ((row: CharacterFight) => string) | null;
+    rowId?: ((row: Row) => string) | null;
     /** The latest rated fight and its rating (L8.5 fix round 2 item 3): its row says "rated 65"
      *  under its parse. */
     rated?: { report_id: string; fight_index: number; overall: number } | null;
@@ -58,7 +58,7 @@
     /** `report_id:fight_index` keys to mark with the target treatment, with no id or scroll. */
     selected?: ReadonlySet<string> | null;
     /** A muted word after the boss name (a private or guild report), or null. */
-    note?: ((row: CharacterFight) => string | null) | null;
+    note?: ((row: Row) => string | null) | null;
   } = $props();
 
   /** The address's target (L8.5 fix round 2 items 3 and 5): a 2px gold left edge and a gold tint
@@ -69,6 +69,8 @@
    *  it never widens a column (Spec is not drawn on a phone, so two columns there, three from
    *  md). */
   const RATED_NOTE = 'text-muted col-span-2 col-start-1 -mt-2 text-right text-[12px] md:col-span-3';
+  /** The same without the Spec column: two columns from md too. */
+  const RATED_NOTE_NO_SPEC = 'text-muted col-span-2 col-start-1 -mt-2 text-right text-[12px] md:col-span-2';
 
   /**
    * A percentile beside a formatted amount has no column heading at any breakpoint --
@@ -90,16 +92,14 @@
     'no-spec': 'grid-cols-[minmax(0,1fr)_auto_auto_auto] md:grid-cols-[minmax(0,1fr)_64px_88px_112px_72px]',
   } as const;
   const GRID = $derived(GRIDS[columns]);
-  const ratedNoteClass = $derived(
-    columns === 'full' ? RATED_NOTE : RATED_NOTE.replace('md:col-span-3', 'md:col-span-2'),
-  );
+  const ratedNoteClass = $derived(columns === 'full' ? RATED_NOTE : RATED_NOTE_NO_SPEC);
   /** The marked row's gold edge and tint: the address target's look, without its id or scroll. */
   const MARKED = ' scroll-mt-24 bg-[rgba(229,185,85,.08)] shadow-[inset_2px_0_0_var(--color-gold)]';
-  const isMarked = (row: CharacterFight): boolean =>
+  const isMarked = (row: Row): boolean =>
     selected !== null && selected.has(fightKey(row.report_id, row.fight_index));
 </script>
 
-{#snippet firstLink(row: CharacterFight)}
+{#snippet firstLink(row: Row)}
   {#if lead === 'date'}
     <a class="{rowLink} text-muted tabular truncate font-mono text-[13px]" href={bossHref(row)}
       >{formatDayMonthYear(new Date(row.fought_at))}</a

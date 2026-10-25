@@ -22,6 +22,8 @@ export const historyCopy = {
   scoreNote: (hasRings: boolean): string =>
     `One point a day: the day's last rated fight.${hasRings ? ' Rings are private or guild reports.' : ''}`,
   parseHeading: 'Parse by boss',
+  /** The boss picker's accessible name. */
+  pickerLabel: 'Boss',
 
   /** The pill's accessible name: "Golemagg, 5 kills". */
   pillName: (boss: string, kills: number): string => `${boss}, ${count(kills, 'kill', 'kills')}`,

@@ -5,10 +5,9 @@
      build that geometry. No animation: the resting state is the only state. -->
 <script lang="ts">
   import { drawnDotIndexes, type ChartGeometry } from '../../lib/character/history-chart';
-  import { wrapReason } from '../../lib/character/history-layout';
   import type { ChartSize } from '../../lib/character/history-scales';
   import { nearestIndex, type Step } from '../../lib/character/history-select';
-  import { TIER_FROM, tierLabel, tierTextColor } from '../../lib/score/score';
+  import { tierLabel, tierTextColor } from '../../lib/score/score';
 
   /** The viewport width below which the chart uses its phone aspect, margins and labels. */
   const PHONE_BELOW_PX = 640;
@@ -18,7 +17,6 @@
     Home: 'first',
     End: 'newest',
   };
-  const TIER_BOUNDARIES: ReadonlySet<number> = new Set(Object.values(TIER_FROM));
 
   let {
     geometry,
@@ -99,7 +97,7 @@
 
 <div
   bind:this={box}
-  class="plot-box relative aspect-[3/2] w-full max-w-full sm:aspect-[16/5] xl:aspect-[2/1]"
+  class="plot-box rounded-control relative aspect-[3/2] w-full max-w-full sm:aspect-[16/5] xl:aspect-[2/1]"
   style="touch-action: pan-y"
   role="group"
   tabindex="0"
@@ -155,7 +153,7 @@
       {/each}
 
       {#each geometry.yTicks as tick (tick.value)}
-        {#if !TIER_BOUNDARIES.has(tick.value) || geometry.bands.length === 0}
+        {#if !tick.boundary}
           <line
             x1={plot.left}
             x2={plot.left + plot.width}
@@ -176,7 +174,6 @@
       {/each}
 
       {#each geometry.gaps as gap (gap.from + gap.to)}
-        {@const lines = gap.labelInside ? wrapReason(gap.reason, gap.right - gap.left) : []}
         <rect
           x={gap.left}
           y={plot.top}
@@ -197,15 +194,15 @@
             stroke-dasharray="3 3"
           />
         {/each}
-        {#each lines as line, row (row)}
+        {#each gap.labelLines as line (line.y)}
           <text
             x={(gap.left + gap.right) / 2}
-            y={plot.top + plot.height / 2 + (row - (lines.length - 1) / 2) * 14}
+            y={line.y}
             dy="0.32em"
             text-anchor="middle"
             font-size="11"
             fill="var(--color-muted)"
-            data-testid="history-gap-label">{line}</text
+            data-testid="history-gap-label">{line.text}</text
           >
         {/each}
       {/each}

@@ -27,6 +27,15 @@ export function scrollBehavior(): ScrollBehavior {
   return reduced ? 'auto' : 'smooth';
 }
 
+/**
+ * The height worth keeping for the next visit's reserve: the settled, collapsed section. The
+ * skeleton is the reserve itself, an error is a short box, and an opened list is the owner's
+ * choice, so none of them is stored (null).
+ */
+export function reserveToStore(status: string, listOpen: boolean, height: number): number | null {
+  return status === 'ready' && !listOpen ? height : null;
+}
+
 export function writeHistoryReserve(pixels: number): void {
   writeReserve(HISTORY_RESERVE_KEY, pixels, HISTORY_MAX_RESERVE_PX);
 }

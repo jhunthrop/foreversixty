@@ -9,7 +9,6 @@
   import type { HistoryFight } from '../../lib/character/history-api';
   import { scrollBehavior } from '../../lib/character/history-layout';
   import { listWindow } from '../../lib/character/history-select';
-  import type { CharacterFight } from '../../lib/rankings/api';
   import CharacterFightTable from './CharacterFightTable.svelte';
 
   let {
@@ -35,17 +34,18 @@
 
   const view = $derived(listWindow(fights, expanded, marked));
 
-  const reportHref = (row: CharacterFight): string => `/reports/${row.report_id}?fight=${row.fight_index}`;
-  const rowKey = (row: CharacterFight, index: number): string =>
-    `${row.report_id}-${row.fight_index}-${index}`;
-  const visibilityNote = (row: CharacterFight): string | null =>
-    historyCopy.visibilityWord((row as HistoryFight).visibility);
+  const reportHref = (row: HistoryFight): string => `/reports/${row.report_id}?fight=${row.fight_index}`;
+  const rowKey = (row: HistoryFight, index: number): string => `${row.report_id}-${row.fight_index}-${index}`;
+  const visibilityNote = (row: HistoryFight): string | null => historyCopy.visibilityWord(row.visibility);
 
   // A selection that marks hidden rows opens the list and brings the first of them into view.
   // Only the selection triggers it, so `Show fewer` stays collapsed until the next selection.
+  // Keyed on the marked rows' own identity, not the Set's: a rebuilt chart or a hover that leaves
+  // the committed point alone hands over an equal Set and must not re-open a collapsed list.
+  const markedSignature = $derived([...marked].sort().join(','));
   $effect(() => {
-    const keys = marked;
-    const opens = untrack(() => listWindow(fights, false, keys).needsExpand);
+    void markedSignature;
+    const opens = untrack(() => listWindow(fights, false, marked).needsExpand);
     if (!opens) return;
     expanded = true;
     void tick().then(() =>

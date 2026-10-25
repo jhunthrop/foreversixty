@@ -16,6 +16,7 @@ import {
   fightKey,
 } from './history-api';
 import { historyCopy } from './history-copy';
+import { wrapReason } from './history-layout';
 import {
   type AxisTick,
   type ChartSize,
@@ -36,6 +37,9 @@ const DOTS_ALL_UP_TO = 40;
 const COMMON_BAND_OPACITY = 0.04;
 const BAND_OPACITY = 0.08;
 const PATH_DECIMALS = 2;
+/** Distance between the baselines of a gap reason's two lines. */
+const GAP_LABEL_LINE_PITCH = 14;
+const TIER_BOUNDARY_VALUES: ReadonlySet<number> = new Set(Object.values(TIER_FROM));
 
 /** No points, exactly one (no chart box, a sentence), or a line of two or more. */
 export type ChartMode = 'empty' | 'single' | 'line';
@@ -103,6 +107,8 @@ export interface ChartDot {
 export interface YTick {
   value: number;
   y: number;
+  /** A tier's lower bound on a chart with tier bands: drawn by the band's own edge, not as grid. */
+  boundary: boolean;
 }
 
 export interface XTick extends Omit<AxisTick, 'time' | 'x'> {
@@ -121,12 +127,19 @@ export interface TierBand {
   labelled: boolean;
 }
 
+export interface GapLabelLine {
+  text: string;
+  y: number;
+}
+
 export interface GapBand {
   left: number;
   right: number;
   reason: string;
   /** Wide enough (72 px) for the reason inside; otherwise it goes under the chart. */
   labelInside: boolean;
+  /** The reason's lines with their baseline y, centred on the band; none when it goes under the chart. */
+  labelLines: GapLabelLine[];
   /** "20 Jul" and "9 Aug". */
   from: string;
   to: string;
@@ -223,6 +236,15 @@ function tierBands(domain: Domain, plot: PlotRect): TierBand[] {
   });
 }
 
+function gapLabelLines(reason: string, width: number, plot: PlotRect): GapLabelLine[] {
+  const lines = wrapReason(reason, width);
+  const middle = plot.top + plot.height / 2;
+  return lines.map((text, row) => ({
+    text,
+    y: middle + (row - (lines.length - 1) / 2) * GAP_LABEL_LINE_PITCH,
+  }));
+}
+
 function gapBands(gaps: readonly HistoryGap[], times: readonly number[], plot: PlotRect): GapBand[] {
   const first = times[0];
   const last = times[times.length - 1];
@@ -233,11 +255,13 @@ function gapBands(gaps: readonly HistoryGap[], times: readonly number[], plot: P
     .map((gap) => {
       const left = x(Math.max(dayStart(gap.from), first));
       const right = x(Math.min(dayStart(gap.to), last));
+      const labelInside = right - left >= MIN_GAP_LABEL_WIDTH;
       return {
         left,
         right,
         reason: gap.reason,
-        labelInside: right - left >= MIN_GAP_LABEL_WIDTH,
+        labelInside,
+        labelLines: labelInside ? gapLabelLines(gap.reason, right - left, plot) : [],
         from: shortDate(gap.from) ?? gap.from,
         to: shortDate(gap.to) ?? gap.to,
       };
@@ -256,7 +280,11 @@ function layout(series: Series, size: ChartSize): ChartGeometry {
   return {
     plot,
     domain: series.domain,
-    yTicks: series.yTicks.map((value) => ({ value, y: y(value) })),
+    yTicks: series.yTicks.map((value) => ({
+      value,
+      y: y(value),
+      boundary: series.bands && TIER_BOUNDARY_VALUES.has(value),
+    })),
     xTicks: xTicksFor(series.times, plot, size.phone),
     dots,
     runs: unbrokenRuns(dots, series.times, series.gaps)

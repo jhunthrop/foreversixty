@@ -52,11 +52,13 @@
   const size = $derived(sizeOverride ?? measured);
   const chart = $derived(buildParseChart(pill?.encounter, size ?? PLACEHOLDER_SIZE));
   const count = $derived(chart.kills.length);
-  const selection = $derived<Selection>({ selected: picked ?? count - 1, hover });
+  /** The committed kill: marks and announcements follow it, never a hover preview. */
+  const committed = $derived(picked ?? count - 1);
+  const selection = $derived<Selection>({ selected: committed, hover });
   const marked = $derived(
     pill === undefined
       ? new Set<string>()
-      : markedKeys(killMarkKeys(pill.encounter), { ...selection, hover: null }),
+      : markedKeys(killMarkKeys(pill.encounter), { selected: committed, hover: null }),
   );
 
   function pickBoss(id: string): void {
@@ -91,6 +93,7 @@
     {#if chart.mode === 'line'}
       <ChartReadout
         readout={parseReadout(chart.kills, shownIndex(selection))}
+        liveText={parseReadout(chart.kills, committed).text}
         earlierLabel={historyCopy.step.parse.earlier}
         laterLabel={historyCopy.step.parse.later}
         canEarlier={canStep(selection, 'earlier', count)}

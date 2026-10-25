@@ -44,12 +44,14 @@
   const size = $derived(sizeOverride ?? measured);
   const chart = $derived(buildScoreChart(history, size ?? PLACEHOLDER_SIZE));
   const count = $derived(chart.days.length);
-  const selection = $derived<Selection>({ selected: picked ?? count - 1, hover });
+  /** The committed point: marks and announcements follow it, never a hover preview. */
+  const committed = $derived(picked ?? count - 1);
+  const selection = $derived<Selection>({ selected: committed, hover });
   const day = $derived(chart.days[shownIndex(selection)]);
   const rings = $derived(
     new Set(chart.days.flatMap((entry, index) => (entry.visibility === 'public' ? [] : [index]))),
   );
-  const marked = $derived(markedKeys(scoreMarkKeys(chart.days), { ...selection, hover: null }));
+  const marked = $derived(markedKeys(scoreMarkKeys(chart.days), { selected: committed, hover: null }));
   const selectedDay = $derived(chart.days[selection.selected]);
 
   function commit(next: Selection): void {
@@ -75,6 +77,7 @@
   {#if day !== undefined}
     <ChartReadout
       readout={scoreReadout(day)}
+      liveText={scoreReadout(chart.days[committed]).text}
       earlierLabel={historyCopy.step.score.earlier}
       laterLabel={historyCopy.step.score.later}
       canEarlier={canStep(selection, 'earlier', count)}

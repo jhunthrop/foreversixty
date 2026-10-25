@@ -8,6 +8,7 @@
 
   let {
     readout,
+    liveText,
     earlierLabel,
     laterLabel,
     canEarlier,
@@ -16,6 +17,8 @@
     testid,
   }: {
     readout: Readout;
+    /** The committed point's readout as one line, for screen readers (a hover preview is not announced). */
+    liveText: string;
     earlierLabel: string;
     laterLabel: string;
     canEarlier: boolean;
@@ -80,5 +83,5 @@
       {@render chevron('right')}
     </button>
   </div>
-  <span class="sr-only" aria-live="polite">{readout.text}</span>
+  <span class="sr-only" aria-live="polite">{liveText}</span>
 </div>
