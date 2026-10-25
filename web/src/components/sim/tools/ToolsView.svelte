@@ -10,7 +10,7 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../../lib/account/api';
-  import { followCurrentCharacter } from '../../../lib/sim/follow-current-character';
+  import { followCurrentCharacter, simHoldsWork } from '../../../lib/sim/follow-current-character';
   import { readCurrent } from '../../../lib/current-character';
   import { VIEW_GAP } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
@@ -176,7 +176,7 @@
     const stopFollowing = followCurrentCharacter({
       loaders: store,
       characterLoaded: () => store.character !== null,
-      holdsWork: () => store.phase === 'running' || bootstrap.code !== '',
+      holdsWork: () => simHoldsWork(store, bootstrap.code),
       onSettled: (loaded) => (restored = loaded),
     });
     return () => {

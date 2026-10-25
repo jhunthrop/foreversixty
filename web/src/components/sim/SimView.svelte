@@ -27,7 +27,7 @@
   import type { Summary } from '../../lib/report/types';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import { codeForCharacterSpec } from '../../lib/sim/character';
-  import { followCurrentCharacter } from '../../lib/sim/follow-current-character';
+  import { followCurrentCharacter, simHoldsWork } from '../../lib/sim/follow-current-character';
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
@@ -380,7 +380,7 @@
       loaders: store,
       characterLoaded: () => store.character !== null,
       pinned: () => hasSavedSimId || bootstrap.request !== null,
-      holdsWork: () => store.phase === 'running' || store.serverRunning || bootstrap.code !== '',
+      holdsWork: () => simHoldsWork(store, bootstrap.code),
       onSettled: (loaded) => (restored = loaded),
       onBusy: (busy) => (landingBusyKey = busy ? RESTORE_BUSY_KEY : null),
     });

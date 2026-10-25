@@ -10,7 +10,7 @@ import {
   type CurrentCharacter,
 } from '../current-character';
 import type { CharacterLoaders } from './character-bootstrap';
-import { followCurrentCharacter } from './follow-current-character';
+import { followCurrentCharacter, simHoldsWork } from './follow-current-character';
 
 function pointer(overrides: Partial<CurrentCharacter>): CurrentCharacter {
   return {
@@ -120,5 +120,22 @@ describe('followCurrentCharacter', () => {
     await flush();
     expect(order).toEqual(['first', 'second']);
     expect(busy.mock.calls.at(-1)).toEqual([false]);
+  });
+});
+
+describe('simHoldsWork', () => {
+  const idle = { phase: 'idle', serverRunning: false };
+
+  it('holds while a run or its engine load is under way, or a server run is', () => {
+    expect(simHoldsWork({ ...idle, phase: 'loading-engine' }, '')).toBe(true);
+    expect(simHoldsWork({ ...idle, phase: 'running' }, '')).toBe(true);
+    expect(simHoldsWork({ ...idle, phase: 'counting' }, '')).toBe(true);
+    expect(simHoldsWork({ ...idle, serverRunning: true }, '')).toBe(true);
+  });
+
+  it('holds a ?code= build, and lets an idle or finished page move', () => {
+    expect(simHoldsWork(idle, 'FS1:x')).toBe(true);
+    expect(simHoldsWork(idle, '')).toBe(false);
+    expect(simHoldsWork({ ...idle, phase: 'done' }, '')).toBe(false);
   });
 });
