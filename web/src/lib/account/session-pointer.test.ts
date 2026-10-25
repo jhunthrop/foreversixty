@@ -73,12 +73,12 @@ describe('settlePointerForSession', () => {
     window.sessionStorage.clear();
   });
 
-  it('announces the heal as a page load, never as a player choosing', () => {
+  it('announces the heal tagged as a session heal, not as a player choosing', () => {
     const listener = vi.fn();
     const stop = onCurrentCharacterChange(listener);
     settlePointerForSession(ME);
     stop();
-    expect(listener.mock.calls).toEqual([[{ fromPageLoad: true }]]);
+    expect(listener.mock.calls).toEqual([[{ fromPageLoad: false, fromSessionHeal: true }]]);
   });
 
   it('runs once per browser session', () => {

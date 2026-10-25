@@ -14,6 +14,7 @@
   import { recordPastedExport } from '../../lib/character-selector/paste';
   import { accountCharacterCode } from '../../lib/planner/account-character';
   import { characterPointsSpent } from '../../lib/planner/send-state';
+  import { healWouldDiscardPlannerWork } from '../../lib/planner/heal-guard';
   import { mainCharacter } from '../../lib/account/main-character';
   import { hasSessionHint } from '../../lib/page-load';
   import { createQueryState } from '../../lib/data/query.svelte';
@@ -421,9 +422,19 @@
   // replaced it for a character chosen there.
   $effect(() => {
     if (!standalone || record !== null) return;
-    return onCurrentCharacterChange(({ fromPageLoad }) => {
+    return onCurrentCharacterChange(({ fromPageLoad, fromSessionHeal }) => {
       pointerVersion += 1;
       if (fromPageLoad) return;
+      // The session's default must not replace a link's build or the visitor's own edits.
+      if (
+        fromSessionHeal &&
+        healWouldDiscardPlannerWork({
+          linkNamesBuild,
+          pointsSpent: store.order.length,
+          gearCount: Object.keys(store.gear).length,
+        })
+      )
+        return;
       const follow = followPointerInPlanner(readCurrent(), store.classSlug);
       if (follow.kind !== 'none') {
         loadedCharacter = null;

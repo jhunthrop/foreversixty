@@ -1,7 +1,11 @@
 // web/src/lib/bis/follow-selector-client.test.ts
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CURRENT_CHARACTER_CHANGED, announcePageLoadedCharacter } from '../current-character-events';
+import {
+  CURRENT_CHARACTER_CHANGED,
+  announcePageLoadedCharacter,
+  announceSessionHeal,
+} from '../current-character-events';
 import { mountBisFollow } from './follow-selector-client';
 
 const follow = vi.fn<(root: HTMLElement) => Promise<void>>(() => Promise.resolve());
@@ -38,5 +42,12 @@ describe('mountBisFollow', () => {
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     await vi.waitFor(() => expect(follow).toHaveBeenCalledWith(root));
     expect(loaded).toBe(true);
+  });
+
+  it("follows the session's pointer heal: a fresh session lands on the main", async () => {
+    const root = document.createElement('div');
+    stop = mountBisFollow(root);
+    announceSessionHeal();
+    await vi.waitFor(() => expect(follow).toHaveBeenCalledWith(root));
   });
 });

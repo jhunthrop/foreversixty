@@ -12,6 +12,9 @@ export interface FollowOptions {
   characterLoaded: () => boolean;
   /** True on a page that shows a fixed request (a saved sim or share link): it never follows. */
   pinned?: () => boolean;
+  /** True while the page holds work a session-default heal must not replace (a run in progress, a
+   *  `?code=` build on screen). A player's own selection still follows. */
+  holdsWork?: () => boolean;
   /** Called with the `restored` flag after each load. */
   onSettled?: (restored: boolean) => void;
   /** Called with true while a load runs and false once the queue is empty. */
@@ -33,9 +36,10 @@ export function followCurrentCharacter(options: FollowOptions): () => void {
     });
     options.onSettled?.(restored);
   };
-  const stop = onCurrentCharacterChange(({ fromPageLoad }) => {
+  const stop = onCurrentCharacterChange(({ fromPageLoad, fromSessionHeal }) => {
     const pointer = readCurrent();
     if (fromPageLoad || pointer === null || options.pinned?.() === true) return;
+    if (fromSessionHeal && options.holdsWork?.() === true) return;
     pending += 1;
     options.onBusy?.(true);
     queue = queue
