@@ -250,6 +250,20 @@
    *  nothing else, so an officer who is not the guild master is never offered a guild master's
    *  controls by inference from her rank. */
   const can = $derived(myGuildMembership?.can ?? []);
+  /** Officer tools gate §3.1/§4: true until the API says the guild's officer tools are off, or
+   *  refuses an Award/Undo with `guild_plan_required` (the grant ended after the page loaded).
+   *  `?? true` is deliberate: the server's 403 is the real gate. */
+  let officerToolsEnded = $state(false);
+  let refusedItemId = $state<number | null>(null);
+  let refusedKind = $state<'award' | 'undo' | null>(null);
+  const officerTools = $derived((home?.viewer?.officer_tools ?? true) && !officerToolsEnded);
+  const officerView = $derived(role === 'officer' || role === 'moderator');
+  /** The plan sentence's link (gate spec §3.2): the guild's settings tab. */
+  const settingsHref = $derived(
+    resolved !== null && home !== null
+      ? guildSettingsHref(resolved.region, resolved.ruleset, home.guild.name)
+      : '',
+  );
   const guildId = $derived(home?.guild.id ?? data?.guild.id ?? null);
   /** Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): `home.guild` (the
    *  member-gated fetch) wins once it resolves -- it is the one place a just-saved/removed
@@ -568,6 +582,16 @@
       });
   });
 
+  /** §4: a `guild_plan_required` refusal flips both tabs to officer-read-only and says so once,
+   *  in the clicked item's card, never in the tab-bottom error line. True when it handled it. */
+  function planRefused(thrown: unknown, item: GuildLootItem, kind: 'award' | 'undo'): boolean {
+    if (!(thrown instanceof GuildApiError) || thrown.code !== 'guild_plan_required') return false;
+    officerToolsEnded = true;
+    refusedItemId = item.item_id;
+    refusedKind = kind;
+    return true;
+  }
+
   async function onAward(item: GuildLootItem, charKey: string): Promise<void> {
     if (guildId === null || loot === null || loot.selected === null) return;
     lootBusyItemId = item.item_id;
@@ -580,6 +604,7 @@
       });
       loot = await fetchGuildLoot(guildId, loot.selected);
     } catch (thrown) {
+      if (planRefused(thrown, item, 'award')) return;
       lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
       lootBusyItemId = null;
@@ -596,6 +621,7 @@
       await unawardLoot(guildId, item.awarded_to.award_id);
       loot = await fetchGuildLoot(guildId, loot.selected);
     } catch (thrown) {
+      if (planRefused(thrown, item, 'undo')) return;
       lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
       lootBusyItemId = null;
@@ -926,8 +952,10 @@
       {:else if readinessLazy.current}
         <readinessLazy.current
           rows={readiness?.rows ?? []}
-          officer={role === 'officer' || role === 'moderator'}
+          officer={officerView}
+          {officerTools}
           {myCharacterKey}
+          {settingsHref}
         />
       {/if}
     {:else if activeTab === 'loot'}
@@ -948,9 +976,13 @@
       {:else if lootLazy.current}
         <lootLazy.current
           loot={lootStatus === 'ready' ? loot : null}
-          officer={role === 'officer' || role === 'moderator'}
+          officer={officerView}
+          {officerTools}
           memberReadOnly={role === 'member'}
           busyItemId={lootBusyItemId}
+          {refusedItemId}
+          {refusedKind}
+          {settingsHref}
           onAward={(item, charKey) => void onAward(item, charKey)}
           onUndo={(item) => void onUndo(item)}
         />
@@ -958,7 +990,7 @@
             {lootError}
           </p>{/if}
       {/if}
-    {:else if activeTab === 'settings' && (role === 'officer' || role === 'moderator') && home !== null}
+    {:else if activeTab === 'settings' && officerView && home !== null}
       {#if settingsLazy.current}
         <settingsLazy.current
           path={resolved}
