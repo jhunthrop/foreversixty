@@ -52,7 +52,7 @@ func saved(t *testing.T) (*Store, int64) {
 	pool := testPool(t)
 	st := &Store{Pool: pool}
 	uid := seedUser(t, pool)
-	if err := st.Save(context.Background(), uid, KindDiscord, "555", nil, nil, []byte("box-1"), bothEvents, SourcePasted); err != nil {
+	if err := st.Save(context.Background(), SaveInput{UserID: uid, Kind: KindDiscord, ChannelID: "555", TokenBox: []byte("box-1"), Events: bothEvents, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	return st, uid
@@ -67,7 +67,7 @@ func TestSaveUpsertsAndResetsFailures(t *testing.T) {
 		}
 	}
 	events := map[EventName]bool{EventSimFinished: true}
-	if err := st.Save(ctx, uid, KindDiscord, "777", nil, nil, []byte("box-2"), events, SourcePasted); err != nil {
+	if err := st.Save(ctx, SaveInput{UserID: uid, Kind: KindDiscord, ChannelID: "777", TokenBox: []byte("box-2"), Events: events, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	w, ok, err := st.Get(ctx, uid, KindDiscord)
@@ -166,7 +166,7 @@ func TestDeleteCascadesWithTheUser(t *testing.T) {
 	if _, ok, _ := st.Get(ctx, uid, KindDiscord); ok {
 		t.Fatal("row survived Delete")
 	}
-	if err := st.Save(ctx, uid, KindDiscord, "1", nil, nil, []byte("b"), bothEvents, SourcePasted); err != nil {
+	if err := st.Save(ctx, SaveInput{UserID: uid, Kind: KindDiscord, ChannelID: "1", TokenBox: []byte("b"), Events: bothEvents, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := st.Pool.Exec(ctx, `delete from users where id = $1`, uid); err != nil {
@@ -226,7 +226,7 @@ func TestExistingWebhooksKeepPostingPrivateLogs(t *testing.T) {
 		t.Fatalf("stored upload_private after the backfill = %q, want \"true\"", raw)
 	}
 	events := map[EventName]bool{EventSimFinished: true, EventUploadParsed: true}
-	if err := st.Save(ctx, fresh, KindDiscord, "8", nil, nil, []byte("b"), events, SourcePasted); err != nil {
+	if err := st.Save(ctx, SaveInput{UserID: fresh, Kind: KindDiscord, ChannelID: "8", TokenBox: []byte("b"), Events: events, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := pool.Exec(ctx, `update notification_webhooks set events = events || '{"upload_private": false}' where user_id = $1`, old); err != nil {
@@ -262,13 +262,13 @@ func TestSaveStoresACleanName(t *testing.T) {
 	}
 	st, uid := saved(t)
 	ctx := context.Background()
-	if err := st.Save(ctx, uid, KindDiscord, "555", nil, ptr("Raid pings"), []byte("box"), bothEvents, SourcePasted); err != nil {
+	if err := st.Save(ctx, SaveInput{UserID: uid, Kind: KindDiscord, ChannelID: "555", Name: ptr("Raid pings"), TokenBox: []byte("box"), Events: bothEvents, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	if w, _, err := st.Get(ctx, uid, KindDiscord); err != nil || w.Name == nil || *w.Name != "Raid pings" {
 		t.Fatalf("stored name = %v (%v)", w.Name, err)
 	}
-	if err := st.Save(ctx, uid, KindDiscord, "555", nil, nil, []byte("box"), bothEvents, SourcePasted); err != nil {
+	if err := st.Save(ctx, SaveInput{UserID: uid, Kind: KindDiscord, ChannelID: "555", TokenBox: []byte("box"), Events: bothEvents, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	if w, _, _ := st.Get(ctx, uid, KindDiscord); w.Name != nil {
@@ -296,7 +296,7 @@ func TestAMissingUploadPrivateKeyReadsTrueAndSaveWritesAllThree(t *testing.T) {
 			t.Fatalf("user %d: %v (%v), want %v", uid, w.Events[EventUploadPrivate], err, want)
 		}
 	}
-	if err := st.Save(ctx, fresh, KindDiscord, "8", nil, nil, []byte("b"), map[EventName]bool{EventSimFinished: true}, SourcePasted); err != nil {
+	if err := st.Save(ctx, SaveInput{UserID: fresh, Kind: KindDiscord, ChannelID: "8", TokenBox: []byte("b"), Events: map[EventName]bool{EventSimFinished: true}, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	var keys int

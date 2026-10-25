@@ -28,7 +28,7 @@ func newNotifyService(cfg config.Config, pool *pgxpool.Pool, ents notify.Entitle
 	return &notify.Service{
 		Store: &notify.Store{Pool: pool}, Sealer: sealer, Entitlements: ents,
 		Poster: notify.NewHTTPPoster(notify.AvatarURL(cfg.PublicBaseURL)), PublicBaseURL: cfg.PublicBaseURL, Log: log,
-		OAuth: newDiscordOAuth(cfg), CookieSecure: strings.HasPrefix(cfg.PublicBaseURL, "https://"),
+		OAuth: newDiscordOAuth(cfg), CookieSecure: strings.HasPrefix(cfg.APIBaseURL, "https://"),
 	}
 }
 

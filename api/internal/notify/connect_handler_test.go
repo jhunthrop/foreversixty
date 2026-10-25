@@ -48,6 +48,18 @@ func (h *apiHarness) get(path string, cookies ...*http.Cookie) (*http.Response, 
 	return res, res.Header.Get("Location")
 }
 
+// getAnonymous issues a GET with no cookies at all.
+func (h *apiHarness) getAnonymous(path string) (*http.Response, string) {
+	h.t.Helper()
+	client := &http.Client{CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	res, err := client.Get(h.server.URL + path)
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	res.Body.Close()
+	return res, res.Header.Get("Location")
+}
+
 // startConnect runs the connect leg and returns the state cookie and the state.
 func (h *apiHarness) startConnect() (*http.Cookie, string) {
 	h.t.Helper()
@@ -213,16 +225,105 @@ func TestCallbackWithWrongStateIsFailedAndStoresNothing(t *testing.T) {
 	}
 }
 
-func TestCallbackStateIsSingleUse(t *testing.T) {
-	h := newAPIWithOAuth(t, connectFake())
+func TestCallbackWithoutTheStateCookieIsFailed(t *testing.T) {
+	fake := connectFake()
+	h := newAPIWithOAuth(t, fake)
 	h.premium()
 	cookie, state := h.startConnect()
 	query := "code=" + authCode + "&state=" + url.QueryEscape(state)
 	_, loc := h.callback(query, cookie)
 	h.assertOutcome(loc, "connected")
-	// The browser dropped the cleared cookie; a replay has none to present.
+	// The callback cleared the cookie, so a replay presents none. The state is
+	// single-use by the cookie alone; there is no server-side marker (the
+	// cookie is the only memory, and a second API instance would not share one).
 	_, loc = h.callback(query, nil)
 	h.assertOutcome(loc, "failed")
+	if len(fake.Codes()) != 1 {
+		t.Fatalf("codes exchanged = %d, want 1", len(fake.Codes()))
+	}
+}
+
+func TestCallbackWithAMismatchedStateCookieIsFailed(t *testing.T) {
+	fake := connectFake()
+	h := newAPIWithOAuth(t, fake)
+	h.premium()
+	_, state := h.startConnect()
+	other := &http.Cookie{Name: discordStateCookie, Value: "another-browsers-state"}
+	_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), other)
+	h.assertOutcome(loc, "failed")
+	h.assertNothingStored()
+	if len(fake.Codes()) != 0 {
+		t.Fatal("a code was exchanged against a mismatched cookie")
+	}
+}
+
+func TestConnectAndCallbackWithoutASessionRedirectToFailed(t *testing.T) {
+	h := newAPIWithOAuth(t, connectFake())
+	for _, path := range []string{"/v1/notifications/discord/connect", "/v1/notifications/discord/callback?code=c&state=s"} {
+		res, loc := h.getAnonymous(path)
+		if res.StatusCode != http.StatusFound {
+			t.Fatalf("%s: status %d, want 302", path, res.StatusCode)
+		}
+		h.assertOutcome(loc, "failed")
+	}
+}
+
+func TestCallbackLapsedSinceConnectIsFailedWithoutAnExchange(t *testing.T) {
+	fake := connectFake()
+	h := newAPIWithOAuth(t, fake)
+	h.premium()
+	cookie, state := h.startConnect()
+	h.lapse()
+	_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), cookie)
+	h.assertOutcome(loc, "failed")
+	h.assertNothingStored()
+	if len(fake.Codes()) != 0 {
+		t.Fatal("a lapsed member's code was exchanged")
+	}
+}
+
+func TestCallbackOrphanedWebhookIsDeletedFromDiscord(t *testing.T) {
+	cases := map[string]OAuthWebhook{
+		"empty channel id": {ID: "111222333444555666", Token: connectedToken, URL: connectedHook, GuildID: connectedGuild},
+		"save fails":       {ID: "111222333444555666", Token: connectedToken, URL: connectedHook, ChannelID: "bad\x00id"},
+	}
+	for name, hook := range cases {
+		t.Run(name, func(t *testing.T) {
+			h := newAPIWithOAuth(t, &FakeOAuthClient{Webhook: hook})
+			h.premium()
+			var logs bytes.Buffer
+			h.svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
+			cookie, state := h.startConnect()
+			_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), cookie)
+			h.assertOutcome(loc, "failed")
+			h.assertNothingStored()
+			if got := h.poster.Deletes(); len(got) != 1 || got[0] != connectedHook {
+				t.Fatalf("deletes = %v, want the orphan", got)
+			}
+			assertNoSecrets(t, logs.String())
+		})
+	}
+}
+
+func TestCallbackOrphanWithAnUnparseableURLIsDeletedFromItsIDAndToken(t *testing.T) {
+	hook := OAuthWebhook{ID: "111222333444555666", Token: connectedToken, URL: "https://evil.example/x", ChannelID: testChan}
+	h := newAPIWithOAuth(t, &FakeOAuthClient{Webhook: hook})
+	h.premium()
+	cookie, state := h.startConnect()
+	_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), cookie)
+	h.assertOutcome(loc, "failed")
+	if got := h.poster.Deletes(); len(got) != 1 || got[0] != connectedHook {
+		t.Fatalf("deletes = %v", got)
+	}
+}
+
+func assertNoSecrets(t *testing.T, logs string) {
+	t.Helper()
+	for _, secret := range []string{authCode, connectedToken, connectedHook, "webhooks/"} {
+		if strings.Contains(logs, secret) {
+			t.Fatalf("%q leaked into the logs: %s", secret, logs)
+		}
+	}
 }
 
 func TestCallbackExchangeFailureIsFailed(t *testing.T) {
@@ -240,10 +341,13 @@ func TestCallbackExchangeFailureIsFailed(t *testing.T) {
 			}
 			h := newAPIWithOAuth(t, fake)
 			h.premium()
+			var logs bytes.Buffer
+			h.svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
 			cookie, state := h.startConnect()
 			_, loc := h.callback("code="+authCode+"&state="+url.QueryEscape(state), cookie)
 			h.assertOutcome(loc, "failed")
 			h.assertNothingStored()
+			assertNoSecrets(t, logs.String())
 		})
 	}
 }

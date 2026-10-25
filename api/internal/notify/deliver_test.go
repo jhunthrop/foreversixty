@@ -42,7 +42,7 @@ func newDeliverRig(t *testing.T, events map[EventName]bool) *deliverRig {
 	}
 	st := &Store{Pool: pool}
 	uid := seedUser(t, pool)
-	if err := st.Save(context.Background(), uid, KindDiscord, "555", nil, nil, box, events, SourcePasted); err != nil {
+	if err := st.Save(context.Background(), SaveInput{UserID: uid, Kind: KindDiscord, ChannelID: "555", TokenBox: box, Events: events, Source: SourcePasted}); err != nil {
 		t.Fatal(err)
 	}
 	rig := &deliverRig{poster: &FakePoster{}, ents: &fakeEnts{allowed: true}, store: st, uid: uid, logs: &bytes.Buffer{}}
