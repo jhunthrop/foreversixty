@@ -34,3 +34,10 @@ func CachePrivate(w http.ResponseWriter) {
 	w.Header().Set("Cache-Control", "private, no-cache")
 	w.Header().Set("Vary", "Cookie, Authorization")
 }
+
+// CachePrivateNoStore is CachePrivate for an answer no cache may keep at all, not even the
+// browser's: the owner's history, a premium read of private reports.
+func CachePrivateNoStore(w http.ResponseWriter) {
+	w.Header().Set("Cache-Control", "private, no-store")
+	w.Header().Set("Vary", "Cookie, Authorization")
+}

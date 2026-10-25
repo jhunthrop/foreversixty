@@ -2197,6 +2197,28 @@ paths:
         '400':
           description: "An unknown region or ruleset, or a limit outside 1 to 10 (code bad_request)"
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+  /v1/characters/{region}/{ruleset}/{name}/history:
+    get:
+      summary: The owner's Forever Score and parse history
+      description: >-
+        Owner-only and premium (the history entitlement). Returns { as_of, score[], encounters[],
+        gaps[], fights[] }, every array present and never null. score[] is { at (RFC 3339 UTC),
+        score, tier, report_id, fight_index, encounter, encounter_id, difficulty (the integer
+        difficulty id), parse_percentile?, kill, visibility }; encounters[] is { encounter,
+        encounter_id, difficulty, points[{ at, parse_percentile, report_id, fight_index }] };
+        gaps[] is { from, to, reason }; fights[] are the public history row shape plus
+        visibility. Anyone who is not the owner, and an anonymised character, answer 404
+        not_found. Cache-Control is private, no-store.
+      operationId: getCharacterHistory
+      parameters:
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: "The history", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: 'Not signed in' }
+        '402': { description: 'premium_required: character history is a premium feature' }
+        '404': { description: 'not_found: not the owner, or an anonymised character' }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
       summary: A character's bests, history, the builds they have been seen in, and their Forever Score

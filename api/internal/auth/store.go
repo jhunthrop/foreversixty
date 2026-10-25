@@ -545,6 +545,17 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 	return s.scanCharacterRows(ctx, rows)
 }
 
+// OwnsCharacter reports whether the character key is linked to userID.
+func (s *Store) OwnsCharacter(ctx context.Context, userID int64, key string) (bool, error) {
+	var owns bool
+	err := s.Pool.QueryRow(ctx,
+		`select exists (select 1 from characters where key = $1 and user_id = $2)`, key, userID).Scan(&owns)
+	if err != nil {
+		return false, fmt.Errorf("auth: owns character: %w", err)
+	}
+	return owns, nil
+}
+
 // CharactersByKeys reads the same per-character shape Characters does,
 // filtered to a specific set of keys rather than an account — what
 // POST /v1/me/exports answers with for the keys it just wrote (spec §4.5).

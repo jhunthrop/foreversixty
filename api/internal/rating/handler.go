@@ -12,7 +12,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
@@ -31,7 +33,20 @@ type Service struct {
 	Store    *Store
 	Reports  *reports.Store
 	Accounts Accounts
-	Log      *slog.Logger
+	// Owners and Entitlements back GET .../history; without both the route is not mounted.
+	Owners       Owners
+	Entitlements Entitlementer
+	Log          *slog.Logger
+}
+
+// Owners answers whether an account owns a character. auth.Store satisfies it.
+type Owners interface {
+	OwnsCharacter(ctx context.Context, userID int64, key string) (bool, error)
+}
+
+// Entitlementer answers whether an account may use a feature. entitlements.Store satisfies it.
+type Entitlementer interface {
+	Can(ctx context.Context, userID int64, feature entitlements.Feature) (bool, entitlements.Reason, error)
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -50,6 +65,9 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/reports/{id}/fights/{n}/ratings", s.fightRatings)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/rating", s.characterRating)
+	if s.Owners != nil && s.Entitlements != nil {
+		mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/history", auth.RequireSession(s.characterHistory))
+	}
 }
 
 func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
@@ -225,4 +243,49 @@ func decodeTrendCursor(s string) (cursorPos, bool) {
 		return cursorPos{}, false
 	}
 	return cursorPos{FoughtAt: t, ReportID: parts[1], FightIndex: n}, true
+}
+
+// characterHistory serves the owner's score and parse history (design/specs/2026-10-24-character-history.md
+// section 10). Anyone but the owner, and an anonymised character, read as no such character.
+func (s *Service) characterHistory(w http.ResponseWriter, r *http.Request) {
+	region, ruleset := strings.ToLower(r.PathValue("region")), strings.ToLower(r.PathValue("ruleset"))
+	if !character.ValidRegion(region) || !character.ValidRuleset(ruleset) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
+		return
+	}
+	playerKey := character.Key(region, ruleset, r.PathValue("name"))
+	actor := auth.ActorFrom(r.Context())
+	owns, err := s.Owners.OwnsCharacter(r.Context(), actor.UserID, playerKey)
+	if err != nil {
+		s.fail(w, r, "history", err, "could not read that character's history just now")
+		return
+	}
+	anon := false
+	if owns {
+		if anon, err = s.Store.anonymized(r.Context(), playerKey); err != nil {
+			s.fail(w, r, "history", err, "could not read that character's history just now")
+			return
+		}
+	}
+	if !owns || anon {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
+		return
+	}
+	allowed, _, err := s.Entitlements.Can(r.Context(), actor.UserID, entitlements.FeatureHistory)
+	if err != nil {
+		s.fail(w, r, "history", err, "could not check your account just now")
+		return
+	}
+	if !allowed {
+		httpx.WriteError(w, r, http.StatusPaymentRequired, "premium_required",
+			"character history is a premium feature", nil)
+		return
+	}
+	h, err := s.Store.ReadOwnerHistory(r.Context(), playerKey)
+	if err != nil {
+		s.fail(w, r, "history", err, "could not read that character's history just now")
+		return
+	}
+	httpx.CachePrivateNoStore(w)
+	httpx.WriteOK(w, r, http.StatusOK, toHistoryDTO(h))
 }
