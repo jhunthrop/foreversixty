@@ -14,4 +14,4 @@ Added Discord notifications. Premium members can paste a Discord webhook on the 
 
 If Discord refuses five posts in a row, the messages switch off and the account page says why. Fix the channel, press Test and switch on, and they resume. If your plan ends, your webhook is kept and posts start again when you are back on Premium. You can remove the webhook at any time. Free members see one line pointing to the plans, and the Premium rows on the account page now show whether Discord messages are on.
 
-Private logs are your choice. New webhooks leave them off; a webhook saved before today keeps posting them until you untick Include private logs on the account page.
+Private logs are your choice. New webhooks leave them off; a webhook saved before today keeps posting them until you untick Include private logs on the account page. You can also connect a channel in one click from the account page: pick the server and channel in Discord and the webhook is made for you, with the paste form still there if you prefer it.
