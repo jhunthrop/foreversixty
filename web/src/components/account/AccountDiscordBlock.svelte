@@ -5,18 +5,22 @@
      copy module. The typed webhook URL is component state only: cleared after a saved webhook,
      kept after a failed one, never written anywhere else. -->
 <script lang="ts">
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import type { DiscordEvents, Me } from '../../lib/account/api';
   import {
+    refreshAfterConnect,
     removeWebhook,
+    returnOutcome,
     saveEvents,
     saveWebhook,
     sendTest,
+    takeReturnFlag,
     type ActionResult,
   } from '../../lib/account/discord-actions';
-  import { blockState } from '../../lib/account/notifications';
+  import { blockState, connectAvailable } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
   import StatePanel from '../ui/StatePanel.svelte';
+  import DiscordConnect from './discord/DiscordConnect.svelte';
   import DiscordFree from './discord/DiscordFree.svelte';
   import DiscordPasteForm from './discord/DiscordPasteForm.svelte';
   import DiscordSaved from './discord/DiscordSaved.svelte';
@@ -30,6 +34,7 @@
   };
 
   const INPUT = '#discord-webhook';
+  const CONNECT = '[data-testid="discord-connect"]';
   const TEST_BUTTON = '[data-testid="discord-test"]';
   const REMOVE_CANCEL = '[data-testid="discord-remove-cancel"]';
   const FREE_LINK = '[data-testid="discord-free-link"]';
@@ -43,6 +48,8 @@
   let webhook = $state('');
   let formEvents = $state<DiscordEvents>(NEW_WEBHOOK_EVENTS);
   let replacing = $state(false);
+  // The member's swap from the Connect view to the paste view; only meaningful where connect is on.
+  let pasteView = $state(false);
   let confirming = $state(false);
   let busy = $state<Busy>(null);
   let status = $state<ActionResult | null>(null);
@@ -52,9 +59,21 @@
   let pendingFocus = $state<string | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
+  const connectOn = $derived(connectAvailable(me));
   const showForm = $derived(block.state === 'empty' || (replacing && block.state !== 'lapsed'));
+  const showConnect = $derived(showForm && connectOn && !pasteView);
 
   $effect(() => () => clearTimeout(statusTimer));
+
+  // The callback redirects here with ?discord=<outcome>: show it once, move focus, drop the flag.
+  onMount(() => {
+    const flag = takeReturnFlag(window.location, window.history);
+    if (flag === null) return;
+    const outcome = returnOutcome(flag);
+    status = outcome.status;
+    pendingFocus = outcome.focus;
+    if (outcome.refresh) refreshAfterConnect();
+  });
   $effect(() => {
     const selector = pendingFocus;
     if (selector === null) return;
@@ -93,6 +112,7 @@
     }
     webhook = '';
     replacing = false;
+    pasteView = false;
     pendingFocus = TEST_BUTTON;
     show(result);
   }
@@ -108,11 +128,12 @@
   }
 
   async function remove(): Promise<void> {
-    const afterRemove = block.state === 'lapsed' ? FREE_LINK : INPUT; // the patched `me` flips the state
+    const afterRemove = block.state === 'lapsed' ? FREE_LINK : connectOn ? CONNECT : INPUT; // the patched `me` flips the state
     const result = await run('remove', () => removeWebhook(me));
     show(result);
     if (!result.ok) return;
     confirming = false;
+    pasteView = false;
     pendingFocus = afterRemove;
   }
 
@@ -121,7 +142,20 @@
     fieldFailure = null;
     status = null;
     replacing = true;
+    pasteView = false;
+    pendingFocus = connectOn ? CONNECT : INPUT;
+  }
+
+  function showPaste(): void {
+    pasteView = true;
     pendingFocus = INPUT;
+  }
+
+  function showConnectView(): void {
+    pasteView = false;
+    webhook = '';
+    fieldFailure = null;
+    pendingFocus = CONNECT;
   }
 
   function askRemove(): void {
@@ -131,6 +165,7 @@
 
   function cancel(): void {
     replacing = false;
+    pasteView = false;
     confirming = false;
     webhook = '';
     fieldFailure = null;
@@ -147,7 +182,9 @@
       <DiscordFree />
     {:else}
       <StatePanel label={notificationsCopy.label} testid="account-discord">
-        {#if showForm}
+        {#if showConnect}
+          <DiscordConnect {status} {replacing} onPaste={showPaste} onCancel={cancel} />
+        {:else if showForm}
           {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
           <DiscordPasteForm
             bind:webhook
@@ -158,6 +195,7 @@
             {replacing}
             onSubmit={submit}
             onCancel={cancel}
+            onConnect={connectOn ? showConnectView : undefined}
           />
         {:else if 'discord' in block}
           <DiscordSaved

@@ -6,9 +6,15 @@
 <script lang="ts">
   import type { DiscordNotifications } from '../../../lib/account/api';
   import { LINK_BUTTON } from '../../../lib/account/discord-styles';
-  import { failureWarning, type DiscordBlockKey } from '../../../lib/account/notifications';
+  import {
+    failureWarning,
+    openInDiscordUrl,
+    sourceOf,
+    type DiscordBlockKey,
+  } from '../../../lib/account/notifications';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import DiscordNotice from './DiscordNotice.svelte';
+  import DiscordReplace from './DiscordReplace.svelte';
 
   let {
     state,
@@ -25,9 +31,12 @@
     onReplace: () => void;
   } = $props();
 
-  const name = $derived(discord.name?.trim() ?? '');
+  const connected = $derived(sourceOf(discord) === 'connected');
+  // A connected webhook's Discord-side name is the application's, so it is never shown (spec 3.2).
+  const name = $derived(connected ? '' : (discord.name?.trim() ?? ''));
   // The copy module owns the sentence and its quotes; the name part is emphasised on its own.
   const named = $derived(name === '' ? null : notificationsCopy.destinationNamed(name));
+  const openUrl = $derived(openInDiscordUrl(discord));
   const lineTwo = $derived(notificationsCopy.channelLine(discord.channel_id));
   const idAt = $derived(lineTwo.lastIndexOf(' ') + 1);
   const warning = $derived(state === 'saved' ? failureWarning(discord) : null);
@@ -35,7 +44,10 @@
 
 <div class="flex flex-col gap-0.5" data-testid="discord-destination">
   <p class="text-[14px] [overflow-wrap:anywhere]">
-    {#if named !== null}
+    {#if connected}
+      <span class="text-muted">{notificationsCopy.destinationConnected.lead}</span>
+      <span class="text-strong font-semibold">{notificationsCopy.destinationConnected.name}</span>
+    {:else if named !== null}
       <span class="text-muted">{named.lead}</span>
       <span class="text-strong font-semibold">{named.name}</span>
     {:else}
@@ -47,6 +59,11 @@
       >{lineTwo.slice(idAt)}</span
     >
   </p>
+  {#if openUrl !== null}
+    <a class="{LINK_BUTTON} w-fit" href={openUrl} target="_blank" rel="noopener" data-testid="discord-open">
+      {notificationsCopy.openInDiscord}
+    </a>
+  {/if}
 </div>
 {#if warning !== null}
   <div class="flex flex-col gap-0.5 text-[13px]">
@@ -62,14 +79,9 @@
   >
     <p class="text-muted text-[13px]">{notificationsCopy.switchedOffFix}</p>
     {#if !replaceHidden}
-      <button
-        class="{LINK_BUTTON} -mt-1 w-fit"
-        disabled={replaceDisabled}
-        onclick={onReplace}
-        data-testid="discord-replace"
-      >
-        {notificationsCopy.replace}
-      </button>
+      <div class="-mt-1">
+        <DiscordReplace {discord} disabled={replaceDisabled} {onReplace} />
+      </div>
     {/if}
   </DiscordNotice>
 {:else if state === 'lapsed'}

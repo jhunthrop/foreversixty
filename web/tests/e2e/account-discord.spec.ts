@@ -259,7 +259,7 @@ test.describe('saved webhook', () => {
   test('Remove asks first, then deletes once and brings the paste form back', async ({ page }) => {
     const seen = await openAccount(page, { initial: SAVED });
     await page.getByTestId('discord-remove').click();
-    await expect(panel(page)).toContainText(copy.removeQuestion);
+    await expect(panel(page)).toContainText(copy.removeQuestionPasted);
     await expect(page.getByTestId('discord-remove-cancel')).toBeFocused();
     await expect(page.getByTestId('discord-replace')).toHaveCount(0);
     await page.getByTestId('discord-remove-cancel').click();
@@ -301,7 +301,7 @@ test.describe('switched off, lapsed, free', () => {
     await openAccount(page, { initial: FIVE_FAILURES });
     await expect(page.getByTestId('discord-replace')).toBeVisible();
     await page.getByTestId('discord-remove').click();
-    await expect(panel(page)).toContainText(copy.removeQuestion);
+    await expect(panel(page)).toContainText(copy.removeQuestionPasted);
     await expect(page.getByTestId('discord-replace')).toHaveCount(0);
     await page.getByTestId('discord-remove-cancel').click();
     await expect(page.getByTestId('discord-replace')).toBeVisible();

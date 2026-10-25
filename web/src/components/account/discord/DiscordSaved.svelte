@@ -5,11 +5,10 @@
      the link while the remove question is open. -->
 <script lang="ts">
   import type { DiscordEvents, DiscordNotifications } from '../../../lib/account/api';
-  import { LINK_BUTTON } from '../../../lib/account/discord-styles';
-  import type { DiscordBlockKey } from '../../../lib/account/notifications';
-  import { notificationsCopy } from '../../../lib/account/notifications-copy';
+  import { removeQuestionFor, type DiscordBlockKey } from '../../../lib/account/notifications';
   import DiscordActions from './DiscordActions.svelte';
   import DiscordEventRows from './DiscordEventRows.svelte';
+  import DiscordReplace from './DiscordReplace.svelte';
   import DiscordStatusLine from './DiscordStatusLine.svelte';
   import DiscordSummary from './DiscordSummary.svelte';
 
@@ -54,17 +53,19 @@
 {#if state !== 'disabled'}{@render eventRows()}{/if}
 <!-- 8 px under the actions row; the replace link's own 44 px hit area is the rest -->
 <div class="flex flex-col">
-  <DiscordActions {state} {confirming} {busy} {onTest} {onAskRemove} {onRemove} {onCancel} />
+  <DiscordActions
+    {state}
+    {confirming}
+    removeQuestion={removeQuestionFor(discord)}
+    {busy}
+    {onTest}
+    {onAskRemove}
+    {onRemove}
+    {onCancel}
+  />
   <DiscordStatusLine {status} />
   {#if state === 'saved' && !confirming}
-    <button
-      class="{LINK_BUTTON} w-fit"
-      disabled={busy !== null}
-      onclick={onReplace}
-      data-testid="discord-replace"
-    >
-      {notificationsCopy.replace}
-    </button>
+    <DiscordReplace {discord} disabled={busy !== null} {onReplace} />
   {/if}
 </div>
 {#if state === 'disabled'}{@render eventRows()}{/if}

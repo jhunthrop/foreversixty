@@ -3,7 +3,7 @@
 // sections 3 and 4.1): which of five states `/v1/me` puts the block in, what the Premium row
 // reads, and the inline shape check for a pasted URL. The web never decides the entitlement;
 // it reads `entitlements.notifications`.
-import type { DiscordNotifications, Me } from './api';
+import type { DiscordNotifications, DiscordSource, Me } from './api';
 import { discordHintState } from './layout';
 import { notificationsCopy, premiumRowCopy } from './notifications-copy';
 
@@ -121,4 +121,44 @@ export function looksLikeWebhookURL(input: string): boolean {
 export function webhookInputError(input: string): string | null {
   if (input.trim() === '') return notificationsCopy.emptyField;
   return looksLikeWebhookURL(input) ? null : notificationsCopy.invalidUrl;
+}
+
+/** Whether this deployment offers the one-click connect (a missing key reads false). */
+export function connectAvailable(me: Me): boolean {
+  return me.notifications?.connect === true;
+}
+
+/** The API's route that answers 302 to Discord's authorise page. */
+export const CONNECT_PATH = '/v1/notifications/discord/connect';
+
+export type DiscordReturnFlag = 'connected' | 'denied' | 'failed';
+
+const RETURN_FLAGS: readonly DiscordReturnFlag[] = ['connected', 'denied', 'failed'];
+
+/** The `discord` outcome the callback left in the query string; any other value is no flag. */
+export function discordReturnFlag(search: string): DiscordReturnFlag | null {
+  const value = new URLSearchParams(search).get('discord');
+  return RETURN_FLAGS.find((flag) => flag === value) ?? null;
+}
+
+/** A webhook saved by an older API has no source: it was pasted. */
+export function sourceOf(discord: DiscordNotifications): DiscordSource {
+  return discord.source ?? 'pasted';
+}
+
+/** The remove question for the webhook's source (spec 4.3). */
+export function removeQuestionFor(discord: DiscordNotifications): string {
+  return sourceOf(discord) === 'connected'
+    ? notificationsCopy.removeQuestionConnected
+    : notificationsCopy.removeQuestionPasted;
+}
+
+const DIGITS = /^\d+$/;
+
+/** Where `Open in Discord` goes; null until the guild is known. Numeric ids only, so nothing else can reach the URL. */
+export function openInDiscordUrl(discord: DiscordNotifications): string | null {
+  const guild = discord.guild_id;
+  if (guild === null || guild === undefined || !DIGITS.test(guild) || !DIGITS.test(discord.channel_id))
+    return null;
+  return `https://discord.com/channels/${guild}/${discord.channel_id}`;
 }

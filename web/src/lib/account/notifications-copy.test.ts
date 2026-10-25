@@ -14,10 +14,11 @@ const NBSP = '\u00A0';
 /** The backticked segments of a 6.1 table row's string cell, by the row's first-column label. */
 function specCell(labelStart: string): string[] {
   const spec = readFileSync(SPEC_PATH, 'utf8');
-  const row = spec
-    .slice(spec.indexOf('### 6.1'))
-    .split('\n')
-    .find((line) => line.startsWith(`| ${labelStart}`));
+  const rows = spec.slice(spec.indexOf('### 6.1')).split('\n');
+  // An exact label wins, so `Remove` is not read as `Remove question, connected`.
+  const row =
+    rows.find((line) => line.startsWith(`| ${labelStart} |`)) ??
+    rows.find((line) => line.startsWith(`| ${labelStart}`));
   if (row === undefined) throw new Error(`spec 6.1 has no row starting "${labelStart}"`);
   const cell = row.split(/\|/)[2] ?? '';
   return [...cell.matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
@@ -58,7 +59,24 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['testing', notificationsCopy.testing, spec('Test', 1)],
   ['remove', notificationsCopy.remove, spec('Remove')],
   ['removing', notificationsCopy.removing, spec('Remove', 1)],
-  ['removeQuestion', notificationsCopy.removeQuestion, spec('Remove question')],
+  ['removeQuestionPasted', notificationsCopy.removeQuestionPasted, spec('Remove question, pasted')],
+  ['removeQuestionConnected', notificationsCopy.removeQuestionConnected, spec('Remove question, connected')],
+  ['connect', notificationsCopy.connect, spec('Connect button')],
+  ['connecting', notificationsCopy.connecting, spec('Connect button', 1)],
+  ['connectExplanation', notificationsCopy.connectExplanation, spec('Connect explanation')],
+  ['pasteInstead', notificationsCopy.pasteInstead, spec('Paste disclosure')],
+  ['connectInstead', notificationsCopy.connectInstead, spec('Back to connect')],
+  ['destinationConnectedLead', notificationsCopy.destinationConnected.lead, spec('Destination, connected')],
+  [
+    'destinationConnectedName',
+    notificationsCopy.destinationConnected.name,
+    spec('Destination, connected', 1),
+  ],
+  ['reconnect', notificationsCopy.reconnect, spec('Reconnect link and note')],
+  ['reconnectNote', notificationsCopy.reconnectNote, spec('Reconnect link and note', 1)],
+  ['returnConnected', notificationsCopy.returnConnected, spec('Return, connected')],
+  ['returnDenied', notificationsCopy.returnDenied, spec('Return, denied')],
+  ['returnFailed', notificationsCopy.returnFailed, spec('Return, failed')],
   ['replace', notificationsCopy.replace, spec('Replace')],
   ['savedFirst', notificationsCopy.savedFirst, spec('Saved status')],
   ['savedEvents', notificationsCopy.savedEvents, spec('Saved status', 1)],
@@ -199,5 +217,11 @@ describe('notificationsCopy against the spec text, read from the spec', () => {
   it('shows at most 40 characters of the webhook name', () => {
     expect(notificationsCopy.destinationNamed('x'.repeat(60)).name).toBe(`“${'x'.repeat(39)}…”`);
     expect(notificationsCopy.destinationNamed('  Raid pings  ').name).toBe('“Raid pings”');
+  });
+});
+
+describe('the connected destination link', () => {
+  it('is in the spec as Open in Discord', () => {
+    expect(readFileSync(SPEC_PATH, 'utf8')).toContain(`the link \`${notificationsCopy.openInDiscord}\``);
   });
 });

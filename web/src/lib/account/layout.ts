@@ -43,7 +43,7 @@ export interface BucketPx {
 }
 
 /** What `data-discord` on `<html>` says the Discord block will be. */
-export type HintState = 'none' | 'free' | 'form' | 'saved' | 'off' | 'lapsed';
+export type HintState = 'none' | 'free' | 'connect' | 'form' | 'saved' | 'off' | 'lapsed';
 
 /** The ready header row: 44 px beside the title at 1024 and up, the stacked row below it. */
 export const HEADER_ROW_H: BucketPx = { lg: 44, stack: 83 };
@@ -62,6 +62,7 @@ export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>>
 export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
   free: { lg: 44, stack: 44 },
+  connect: { lg: 320, stack: 340 },
   form: { lg: 650, stack: 640 },
   saved: { lg: 460, stack: 450 },
   off: { lg: 565, stack: 555 },
@@ -139,14 +140,17 @@ export function clearAccountReserve(): void {
 }
 
 /**
- * Which Discord block the page will draw, from the cached `/v1/me` (spec 4.1 precedence). The
+ * Which Discord block the page will draw, from the cached `/v1/me` (spec 4.1 precedence; `form` with connect on is `connect`). The
  * pre-paint script in Base.astro copies this logic verbatim: keep it small and import-free.
  */
 export function discordHintState(me: Me | null): HintState {
   if (me === null || me.notifications === undefined) return 'none';
   const discord = me.notifications.discord;
   const entitled = me.entitlements && me.entitlements.notifications === true;
-  if (discord === null || discord === undefined) return entitled ? 'form' : 'free';
+  if (discord === null || discord === undefined) {
+    if (!entitled) return 'free';
+    return me.notifications.connect === true ? 'connect' : 'form';
+  }
   if (!entitled) return 'lapsed';
   return discord.disabled_reason === null ? 'saved' : 'off';
 }

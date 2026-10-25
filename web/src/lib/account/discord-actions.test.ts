@@ -7,7 +7,15 @@ import * as accountApi from './api';
 import type { Me } from './api';
 import * as query from '../data/query';
 import { createNotificationsApi, discordBlock } from '../../test-support/notifications-api';
-import { removeWebhook, saveEvents, saveWebhook, sendTest } from './discord-actions';
+import {
+  refreshAfterConnect,
+  removeWebhook,
+  returnOutcome,
+  saveEvents,
+  saveWebhook,
+  sendTest,
+  takeReturnFlag,
+} from './discord-actions';
 import { notificationsCopy } from './notifications-copy';
 
 const URL_OK = 'https://discord.com/api/webhooks/123456789/abcDEF_token-1';
@@ -196,5 +204,64 @@ describe('writing the answer into /v1/me', () => {
     await saveEvents(meWith(discordBlock()), BOTH);
     expect(write).not.toHaveBeenCalled();
     expect(accountApi.fetchMeFresh).not.toHaveBeenCalled();
+  });
+});
+
+describe('takeReturnFlag', () => {
+  afterEach(() => window.history.replaceState({}, '', '/'));
+
+  it.each([
+    ['/account?discord=connected#discord', 'connected', '/account#discord'],
+    ['/account?discord=denied#discord', 'denied', '/account#discord'],
+    ['/account?discord=failed#discord', 'failed', '/account#discord'],
+    ['/account?discord=bogus#discord', null, '/account#discord'],
+    ['/account?x=1&discord=failed#discord', 'failed', '/account?x=1#discord'],
+  ])('%s reads %s and leaves %s', (start, flag, left) => {
+    window.history.replaceState({}, '', start);
+    expect(takeReturnFlag(window.location, window.history)).toBe(flag);
+    expect(window.location.pathname + window.location.search + window.location.hash).toBe(left);
+  });
+
+  it('shows the outcome once: a second read finds nothing', () => {
+    window.history.replaceState({}, '', '/account?discord=connected#discord');
+    expect(takeReturnFlag(window.location, window.history)).toBe('connected');
+    expect(takeReturnFlag(window.location, window.history)).toBeNull();
+  });
+
+  it('does not touch the address when there is no flag', () => {
+    window.history.replaceState({}, '', '/account?refreshed=1#discord');
+    const replace = vi.spyOn(window.history, 'replaceState');
+    expect(takeReturnFlag(window.location, window.history)).toBeNull();
+    expect(replace).not.toHaveBeenCalled();
+  });
+});
+
+describe('returnOutcome', () => {
+  it('connected: a polite status, focus on Send test message, a fresh read', () => {
+    expect(returnOutcome('connected')).toEqual({
+      status: { ok: true, message: notificationsCopy.returnConnected },
+      focus: '[data-testid="discord-test"]',
+      refresh: true,
+    });
+  });
+
+  it.each([
+    ['denied', true, notificationsCopy.returnDenied],
+    ['failed', false, notificationsCopy.returnFailed],
+  ] as const)('%s: focus on the connect control, no refresh', (flag, ok, message) => {
+    const outcome = returnOutcome(flag);
+    expect(outcome.status).toEqual({ ok, message });
+    expect(outcome.focus).toContain('discord-connect');
+    expect(outcome.focus).toContain('discord-replace');
+    expect(outcome.refresh).toBe(false);
+  });
+});
+
+describe('refreshAfterConnect', () => {
+  it('re-reads /v1/me once and swallows a failure', async () => {
+    const fresh = vi.spyOn(accountApi, 'fetchMeFresh').mockRejectedValue(new Error('offline'));
+    refreshAfterConnect();
+    await Promise.resolve();
+    expect(fresh).toHaveBeenCalledTimes(1);
   });
 });

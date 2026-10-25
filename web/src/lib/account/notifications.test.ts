@@ -4,6 +4,11 @@ import { discordBlock } from '../../test-support/notifications-api';
 import type { DiscordNotifications, Me } from './api';
 import {
   blockState,
+  connectAvailable,
+  discordReturnFlag,
+  openInDiscordUrl,
+  removeQuestionFor,
+  sourceOf,
   failureWarning,
   looksLikeWebhookURL,
   premiumRowLinked,
@@ -197,5 +202,56 @@ describe('webhookInputError', () => {
 
   it('is null for a good value', () => {
     expect(webhookInputError('https://discord.com/api/webhooks/1/tok')).toBeNull();
+  });
+});
+
+describe('connectAvailable', () => {
+  it('reads the flag; a missing key or no notifications reads false', () => {
+    const withFlag = (connect: boolean | undefined): Me => ({
+      ...me(true, null),
+      notifications: { ...(connect === undefined ? {} : { connect }), discord: null },
+    });
+    expect(connectAvailable(withFlag(true))).toBe(true);
+    expect(connectAvailable(withFlag(false))).toBe(false);
+    expect(connectAvailable(withFlag(undefined))).toBe(false);
+    expect(connectAvailable(me(true))).toBe(false);
+  });
+});
+
+describe('discordReturnFlag', () => {
+  it.each([
+    ['?discord=connected', 'connected'],
+    ['?discord=denied', 'denied'],
+    ['?discord=failed', 'failed'],
+    ['?a=1&discord=failed', 'failed'],
+    ['?discord=other', null],
+    ['?discord=', null],
+    ['?discord=Connected', null],
+    ['?refreshed=1', null],
+    ['', null],
+  ])('%s -> %s', (search, expected) => {
+    expect(discordReturnFlag(search)).toBe(expected);
+  });
+});
+
+describe('connected destination helpers', () => {
+  it('treats a missing source as pasted', () => {
+    const { source: _source, ...older } = discordBlock();
+    expect(sourceOf(older)).toBe('pasted');
+    expect(sourceOf(discordBlock({ source: 'connected' }))).toBe('connected');
+  });
+
+  it('asks the remove question that matches the source', () => {
+    expect(removeQuestionFor(discordBlock())).toContain('It stays in Discord');
+    expect(removeQuestionFor(discordBlock({ source: 'connected' }))).toContain(
+      'delete its webhook from Discord',
+    );
+  });
+
+  it('builds the Open in Discord link from numeric ids only', () => {
+    const known = discordBlock({ channel_id: '222', guild_id: '111' });
+    expect(openInDiscordUrl(known)).toBe('https://discord.com/channels/111/222');
+    expect(openInDiscordUrl(discordBlock({ guild_id: null }))).toBeNull();
+    expect(openInDiscordUrl(discordBlock({ guild_id: '1/../x' }))).toBeNull();
   });
 });

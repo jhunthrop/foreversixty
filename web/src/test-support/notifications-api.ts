@@ -8,10 +8,15 @@ import { envelope, failure } from './sim-api';
 
 export const DISCORD_ROUTE = /\/v1\/notifications\/discord(\/test)?$/;
 
-/** A saved, working webhook; override any field. */
+/** The Discord server of a connected webhook; distinct from the channel and webhook ids. */
+export const GUILD_ID = '1087654321098765432';
+
+/** A saved, working pasted webhook (no guild known); override any field. */
 export function discordBlock(overrides: Partial<DiscordNotifications> = {}): DiscordNotifications {
   return {
     channel_id: '1098765432101234567',
+    source: 'pasted',
+    guild_id: null,
     name: 'Raid pings',
     events: { sim_finished: true, upload_parsed: true, upload_private: false },
     disabled_reason: null,

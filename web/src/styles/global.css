@@ -449,6 +449,13 @@ html[data-discord='free'] .account-discord-skeleton {
   display: flex;
   min-height: 44px;
 }
+html[data-discord='connect'] .account-rail-skeleton {
+  --account-rail-floor: 1065px;
+}
+html[data-discord='connect'] .account-discord-skeleton {
+  display: flex;
+  min-height: 340px;
+}
 html[data-discord='form'] .account-rail-skeleton {
   --account-rail-floor: 1365px;
 }
@@ -502,6 +509,13 @@ html[data-discord='lapsed'] .account-discord-skeleton {
   html[data-discord='free'] .account-discord-skeleton {
     display: flex;
     min-height: 44px;
+  }
+  html[data-discord='connect'] .account-rail-skeleton {
+    --account-rail-floor: 1045px;
+  }
+  html[data-discord='connect'] .account-discord-skeleton {
+    display: flex;
+    min-height: 320px;
   }
   html[data-discord='form'] .account-rail-skeleton {
     --account-rail-floor: 1375px;

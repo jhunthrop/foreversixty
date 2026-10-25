@@ -204,7 +204,10 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
             if (me === null || me.notifications === undefined) return 'none';
             const discord = me.notifications.discord;
             const entitled = me.entitlements && me.entitlements.notifications === true;
-            if (discord === null || discord === undefined) return entitled ? 'form' : 'free';
+            if (discord === null || discord === undefined) {
+              if (!entitled) return 'free';
+              return me.notifications.connect === true ? 'connect' : 'form';
+            }
             if (!entitled) return 'lapsed';
             return discord.disabled_reason === null ? 'saved' : 'off';
           }

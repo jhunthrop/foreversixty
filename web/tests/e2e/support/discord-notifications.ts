@@ -8,12 +8,18 @@ import { mockEntitlements } from '../../../src/test-support/billing-fixtures';
 /** The channel the saved webhook posts to; deliberately not the webhook id a pasted URL carries. */
 export const CHANNEL_ID = '1198765432101234568';
 
+/** The Discord server of a connected webhook; distinct from the channel id and any webhook id. */
+export const GUILD_ID = '1087654321098765432';
+
+export const CONNECT_URL_GLOB = '**/v1/notifications/discord/connect';
 export const DISCORD_URL_GLOB = '**/v1/notifications/discord';
 export const DISCORD_TEST_URL_GLOB = '**/v1/notifications/discord/test';
 
 export function discordBlock(overrides: Partial<DiscordNotifications> = {}): DiscordNotifications {
   return {
     channel_id: CHANNEL_ID,
+    source: 'pasted',
+    guild_id: null,
     name: 'Raid pings',
     events: { sim_finished: true, upload_parsed: true, upload_private: false },
     disabled_reason: null,
@@ -24,10 +30,13 @@ export function discordBlock(overrides: Partial<DiscordNotifications> = {}): Dis
 }
 
 /** The `/v1/me` `notifications` key for a payer's account. */
-export function notificationsKey(discord: DiscordNotifications | null): {
-  notifications: { discord: DiscordNotifications | null };
+export function notificationsKey(
+  discord: DiscordNotifications | null,
+  connect = false,
+): {
+  notifications: { connect: boolean; discord: DiscordNotifications | null };
 } {
-  return { notifications: { discord } };
+  return { notifications: { connect, discord } };
 }
 
 function envelopeBody(data: unknown): string {
@@ -92,6 +101,8 @@ export async function routeDiscordNotifications(
 /** What the stubbed `/v1/me` answers, as the notification routes are exercised. */
 export interface DiscordMeStages {
   entitled?: boolean;
+  /** The API says the one-click connect is on. */
+  connect?: boolean;
   /** The deployment has notifications off: /v1/me carries no `notifications` key. */
   featureOff?: boolean;
   initial: DiscordNotifications | null;
@@ -124,7 +135,9 @@ export async function signInMember(page: Page, stages: DiscordMeStages, seen: Di
         characters: [],
         guilds: [],
         entitlements: mockEntitlements({ notifications: stages.entitled ?? true }),
-        ...(stages.featureOff === true ? {} : notificationsKey(currentBlock(stages, seen))),
+        ...(stages.featureOff === true
+          ? {}
+          : notificationsKey(currentBlock(stages, seen), stages.connect ?? false)),
       }),
     );
   });

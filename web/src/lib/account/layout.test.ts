@@ -29,6 +29,10 @@ function me(entitled: boolean, discord?: DiscordNotifications | null): Me {
   };
 }
 
+function meConnect(connect: boolean, discord: DiscordNotifications | null): Me {
+  return { ...me(true, discord), notifications: { connect, discord } };
+}
+
 const failed = discordBlock({ disabled_reason: 'failed five times', failures: 5 });
 const planLapsed = discordBlock({ disabled_reason: 'plan lapsed' });
 const noEntitlements: Me = { ...me(true, null), entitlements: undefined };
@@ -46,6 +50,10 @@ describe('discordHintState (spec 4.1 precedence)', () => {
     ['saved', me(true, discordBlock()), 'saved'],
     ['form: entitled, nothing saved', me(true, null), 'form'],
     ['free: not entitled, nothing saved', me(false, null), 'free'],
+    ['connect: entitled, nothing saved, connect on', meConnect(true, null), 'connect'],
+    ['connect false reads form', meConnect(false, null), 'form'],
+    ['connect on does not change saved', meConnect(true, discordBlock()), 'saved'],
+    ['connect on does not change free', { ...meConnect(true, null), entitlements: undefined }, 'free'],
     ['free: no entitlements at all', noEntitlements, 'free'],
   ])('%s -> %s', (_name, account, expected) => {
     expect(discordHintState(account)).toBe(expected);
@@ -77,9 +85,18 @@ describe('discordHintState (spec 4.1 precedence)', () => {
   });
 
   it('has a floor for every hint state, and none for none', () => {
-    expect(Object.keys(DISCORD_FLOORS).sort()).toEqual(['form', 'free', 'lapsed', 'none', 'off', 'saved']);
+    expect(Object.keys(DISCORD_FLOORS).sort()).toEqual([
+      'connect',
+      'form',
+      'free',
+      'lapsed',
+      'none',
+      'off',
+      'saved',
+    ]);
     expect(DISCORD_FLOORS.none).toEqual({ lg: 0, stack: 0 });
     expect(DISCORD_FLOORS.form).toEqual({ lg: 650, stack: 640 });
+    expect(DISCORD_FLOORS.connect).toEqual({ lg: 320, stack: 340 });
   });
 });
 
