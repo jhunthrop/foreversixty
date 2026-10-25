@@ -129,7 +129,6 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
   );
   await page.goto('/account');
-  const block = page.getByTestId('account-premium-block');
   await expect(page.getByTestId('account-premium-serverSims')).toHaveText(
     /Server sims\s*On · 4 runs this month/,
   );
@@ -143,7 +142,8 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     'href',
     '/character/us/hardcore/elyra-duskvale#history',
   );
-  await expect(block).toContainText('Discord notifications');
+  await expect(page.getByTestId('account-premium-notifications')).toHaveText(/Discord notifications\s*Off$/);
+  await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
   // The mark belongs to the person: the character rows never carry it.
   await expect(page.getByTestId('supporter-chip')).toHaveCount(1);

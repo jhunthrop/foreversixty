@@ -24,7 +24,7 @@ export type NotificationsErrorKind = 'invalid' | 'not-entitled' | 'rate-limited'
 export class NotificationsApiError extends Error {
   constructor(
     readonly kind: NotificationsErrorKind,
-    /** The API's message; for `discord` the sanitised Discord text, at most 140 characters. */
+    /** The API's message. For `invalid` the UI shows `notificationsCopy.invalidUrl`, never this text (spec §10). For `discord` the sanitised Discord text, at most 140 characters. */
     message: string,
     readonly status: number,
   ) {

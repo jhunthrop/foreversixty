@@ -129,7 +129,6 @@ describe('looksLikeWebhookURL', () => {
     'https://discordapp.com/api/webhooks/1/tok',
     'https://discord.com/api/v10/webhooks/1/tok',
     'https://discord.com/api/v6/webhooks/1/tok',
-    `${ok}?wait=true#x`,
   ])('accepts %s', (input) => {
     expect(looksLikeWebhookURL(input)).toBe(true);
   });
@@ -149,6 +148,11 @@ describe('looksLikeWebhookURL', () => {
     'https://discord.com/api/webhooks/abc/tok',
     'https://discord.com/api/webhooks/1',
     'https://discord.com/api/webhooks/1/tok/extra',
+    `${ok}?wait=true#x`,
+    `${ok}?wait=true`,
+    `${ok}#x`,
+    `${ok}?`,
+    `${ok}#`,
   ])('rejects %s', (input) => {
     expect(looksLikeWebhookURL(input)).toBe(false);
   });

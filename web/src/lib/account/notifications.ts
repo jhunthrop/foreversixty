@@ -83,13 +83,17 @@ function parseUrl(input: string): URL | null {
 
 /**
  * Mirrors the API's rule: https only, host exactly discord.com or discordapp.com, no userinfo or
- * port, path /api/webhooks/<number>/<token>. A query or fragment is allowed (the API strips it).
+ * port, path /api/webhooks/<number>/<token>. A query or fragment is refused, as the API refuses it.
  * The API is the authority; this only spares a round trip.
  */
 export function looksLikeWebhookURL(input: string): boolean {
-  const url = parseUrl(input.trim());
+  const trimmed = input.trim();
+  const url = parseUrl(trimmed);
   return (
     url !== null &&
+    !/[?#]/.test(trimmed) &&
+    url.search === '' &&
+    url.hash === '' &&
     url.protocol === 'https:' &&
     ACCEPTED_HOSTS.has(url.hostname) &&
     url.username === '' &&
