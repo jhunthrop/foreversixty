@@ -9,6 +9,7 @@
      so until it resolves the grid draws slot names and ids without icons or rarities,
      exactly as it does on /sim before its own fetch lands. -->
 <script lang="ts">
+  import { onMount } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { loadItems, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
@@ -16,6 +17,7 @@
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { loadActionNames, type ActionNames } from '../../lib/sim/action-names';
   import { fetchSpecs } from '../../lib/sim/api';
+  import { markSimSeenOnOpen } from '../../lib/sim/mark-seen-on-open';
   import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
   import {
     MAX_LEVEL,
@@ -37,7 +39,12 @@
   import DetailsCard from './DetailsCard.svelte';
   import RotationCard from './RotationCard.svelte';
 
-  let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
+  let { result, onrerun, simId = '' }: { result: SimResult; onrerun: () => void; simId?: string } = $props();
+
+  // Opening a result marks that server run seen, once (experience spec 2026-10-24 3.6).
+  onMount(() => {
+    void markSimSeenOnOpen(simId !== '' ? simId : (result.sim_id ?? ''));
+  });
 
   let copied = $state(false);
 

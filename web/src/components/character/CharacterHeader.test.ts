@@ -84,3 +84,75 @@ describe('CharacterHeader Supporter chip', () => {
     expect(body).not.toContain('supporter-chip');
   });
 });
+
+describe('CharacterHeader done line', () => {
+  const CHARACTER: MeCharacter = {
+    key: 'us/hardcore/elyra-duskvale',
+    region: 'us',
+    ruleset: 'hardcore',
+    name: 'Elyra Duskvale',
+    class: 'Priest',
+    level: 60,
+  };
+  const RUN = {
+    sim_id: 'sim-1',
+    spec: 'mage-frost',
+    title: '',
+    dps: 1204,
+    finished_at: '2026-10-24T11:00:00Z',
+  };
+
+  function headerWith(
+    server: boolean,
+    finished: unknown[] | undefined,
+    layout: 'band' | 'card' = 'band',
+  ): string {
+    const me = {
+      user: { id: 7 },
+      characters: [CHARACTER],
+      guilds: [],
+      entitlements: mockEntitlements({ server_sims: server }),
+      finished_sims: finished,
+    } as unknown as Me;
+    const source: CharacterCardState = {
+      status: 'ready',
+      error: '',
+      me,
+      character: CHARACTER,
+      refresh: () => {},
+    };
+    return render(CharacterHeader, {
+      props: { action: { label: 'Open', href: '/bis' }, source, layout },
+    }).body;
+  }
+
+  it('draws the line inside the panel for a member with server sims and an unseen run', () => {
+    const body = headerWith(true, [RUN]);
+    expect(body).toContain('data-testid="finished-sim-line"');
+    expect(body).toContain('ch-has-foot');
+    expect(body.indexOf('character-header-action')).toBeLessThan(body.indexOf('finished-sim-line'));
+  });
+
+  it.each([
+    ['no server sims', false, [RUN]],
+    ['an empty list', true, []],
+    ['an older API', true, undefined],
+  ])('draws no line for %s', (_name, server, finished) => {
+    const body = headerWith(server, finished);
+    expect(body).not.toContain('finished-sim-line');
+    expect(body).not.toContain('ch-has-foot');
+  });
+
+  it('draws none in the stacked card layout', () => {
+    expect(headerWith(true, [RUN], 'card')).not.toContain('finished-sim-line');
+  });
+
+  it('the loading skeleton carries the reserve row, shown only under data-finished', () => {
+    const { body } = render(CharacterHeader, {
+      props: { action: { label: 'Open', href: '/bis' }, whenSignedOut: 'none' as const },
+    });
+    expect(body).toContain('ch-foot-reserve');
+    expect(body).toContain('ch-loading');
+    expect(body).not.toContain('finished-sim-line');
+  });
+});

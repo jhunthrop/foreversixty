@@ -16,7 +16,11 @@ const HERO_CHARACTER = {
   level: 60,
 };
 
-function meWith(entitlements: ReturnType<typeof mockEntitlements>, characters: unknown[] = []) {
+function meWith(
+  entitlements: ReturnType<typeof mockEntitlements>,
+  characters: unknown[] = [],
+  serverSims?: { runs_this_month: number },
+) {
   return {
     ok: true,
     data: {
@@ -24,6 +28,7 @@ function meWith(entitlements: ReturnType<typeof mockEntitlements>, characters: u
       characters,
       guilds: [],
       entitlements,
+      server_sims: serverSims,
     },
     error: null,
     request_id: 'r',
@@ -109,7 +114,11 @@ test('past due: shows the payment-failed banner without losing access', async ({
 test('the Premium block names each benefit and shows the Supporter mark when it is on', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(
-      fulfil(meWith(mockEntitlements({ server_sims: true, supporter_mark: true }), [HERO_CHARACTER])),
+      fulfil(
+        meWith(mockEntitlements({ server_sims: true, supporter_mark: true }), [HERO_CHARACTER], {
+          runs_this_month: 4,
+        }),
+      ),
     ),
   );
   await page.route('**/v1/devices', (route) =>
@@ -117,7 +126,9 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
   );
   await page.goto('/account');
   const block = page.getByTestId('account-premium-block');
-  await expect(page.getByTestId('account-premium-serverSims')).toHaveText(/Server sims\s*On/);
+  await expect(page.getByTestId('account-premium-serverSims')).toHaveText(
+    /Server sims\s*On · 4 runs this month/,
+  );
   await expect(page.getByTestId('account-premium-serverSims-link')).toHaveAttribute('href', '/sim');
   await expect(page.getByTestId('account-premium-supporter-link')).toHaveAttribute(
     'href',

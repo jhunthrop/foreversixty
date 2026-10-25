@@ -569,7 +569,7 @@
            it. A single stretched flex item in place of the component's own root: the
            column's gap sits outside it either way, so nothing moves. -->
       <div class="reveal">
-        <SavedSim result={savedSim.result} onrerun={onRerunSaved} />
+        <SavedSim result={savedSim.result} onrerun={onRerunSaved} {simId} />
       </div>
     {:else if savedSim.error !== null}
       <!-- Same reason as the lazyFallback wrapper above: LoadError has no class-passthrough prop. -->

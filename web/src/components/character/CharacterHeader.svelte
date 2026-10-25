@@ -76,7 +76,9 @@
   import { factionLogoSmallSrc, factionName } from '../../lib/faction-mark';
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
+  import { finishedRunsFor } from '../../lib/character-header/finished-sim-line';
   import SupporterChip from '../SupporterChip.svelte';
+  import FinishedSimLine from './FinishedSimLine.svelte';
   import CharacterHeaderSignedOut from './CharacterHeaderSignedOut.svelte';
 
   type ActionProp = HeaderAction | ((context: ActionContext) => HeaderAction);
@@ -110,6 +112,17 @@
   const session = untrack(() => source) ?? createCharacterCardState();
   const character = $derived(session.character);
   const isSupporter = $derived(session.me?.entitlements?.supporter_mark === true);
+  // The band's "your server sim finished" footer (spec 2026-10-24 3.4): the band layout only,
+  // and not once dismissed on this page.
+  let finishedDismissed = $state(false);
+  const finishedRuns = $derived(layout === 'band' && !finishedDismissed ? finishedRunsFor(session.me) : null);
+  let panelEl = $state<HTMLElement | null>(null);
+
+  function onFinishedDismissed(): void {
+    finishedDismissed = true;
+    panelEl?.querySelector<HTMLElement>('[data-testid="character-header-action"]')?.focus();
+  }
+
   const view = $derived<'loading' | 'signed-out' | 'no-characters' | 'ready'>(
     character !== null
       ? 'ready'
@@ -375,8 +388,10 @@
 
 {#if view === 'ready' && character !== null && resolvedAction !== null}
   <section
+    bind:this={panelEl}
     class="ch ch-{layout} ch-{emphasis}"
     class:ch-no-answer={!hasAnswerColumn}
+    class:ch-has-foot={finishedRuns !== null}
     aria-label={characterHeaderCopy.label}
     data-testid="character-header"
     data-layout={layout}
@@ -384,6 +399,9 @@
     data-stale={stale}
   >
     {@render panel(character, answerView, resolvedAction, sync, false)}
+    {#if finishedRuns !== null}
+      <div class="ch-foot"><FinishedSimLine runs={finishedRuns} onDismissed={onFinishedDismissed} /></div>
+    {/if}
   </section>
 {:else if view === 'no-characters'}
   {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut account={accountNameOf(session.me)} />{/if}
@@ -391,7 +409,7 @@
   {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut />{/if}
 {:else if view === 'loading'}
   <section
-    class="ch ch-{layout} ch-{emphasis} ch-hint-only"
+    class="ch ch-{layout} ch-{emphasis} ch-hint-only ch-loading"
     class:ch-no-answer={!hasAnswerColumn}
     role="status"
     aria-busy="true"
@@ -420,6 +438,7 @@
       {/if}
       <span class="skeleton-block ch-sk-cta"></span>
     </div>
+    <div class="ch-foot ch-foot-reserve" aria-hidden="true"></div>
   </section>
   {#if whenSignedOut === 'band'}
     <div class="ch-hint-out-only"><CharacterHeaderSignedOut /></div>
@@ -431,6 +450,11 @@
     --ch-cols: minmax(0, 1fr);
     --ch-gap: 16px;
     --ch-pad: 16px;
+    --ch-pad-x: 16px;
+    --ch-pad-y: 16px;
+    --ch-foot-h: 44px;
+    --ch-foot-phone-h: 56px;
+    --ch-band-min: 136px;
     --ch-crest: 56px;
     --ch-name-size: 22px;
     position: relative;
@@ -449,11 +473,13 @@
       --ch-cols: minmax(0, 1.3fr) minmax(0, 1fr) auto;
       --ch-gap: 28px;
       --ch-pad: 18px 22px;
+      --ch-pad-x: 22px;
+      --ch-pad-y: 18px;
       --ch-crest: 64px;
       --ch-name-size: 24px;
       /* The tallest state (a two-line stale sync under a two-line identity), so no state
          changes the band's height. */
-      min-height: 136px;
+      min-height: var(--ch-band-min);
     }
     .ch-band.ch-no-answer {
       --ch-cols: minmax(0, 1fr) auto;
@@ -465,6 +491,33 @@
     }
     .ch-band.ch-no-answer {
       --ch-cols: minmax(0, 1fr) auto;
+    }
+  }
+
+  /* ---- the done line's footer (FinishedSimLine) ---- */
+  /* Full width, flush inside the border: it cancels the panel's padding on three sides and
+     the gap above it, so the 136 px of the grid above stays exactly the grid's own. */
+  .ch-foot {
+    grid-column: 1 / -1;
+    margin: calc(var(--ch-pad-y) - var(--ch-gap)) calc(-1 * var(--ch-pad-x)) calc(-1 * var(--ch-pad-y));
+    border-radius: 0 0 calc(var(--radius-panel) - 1px) calc(var(--radius-panel) - 1px);
+    overflow: hidden;
+  }
+  /* The reserve (3.7): the skeleton holds the row the line will fill. Hidden unless the
+     pre-paint script stamped data-finished (global.css shows it and sizes the skeleton). */
+  .ch-foot-reserve {
+    display: none;
+    min-height: var(--ch-foot-phone-h);
+  }
+  @media (min-width: 600px) {
+    .ch-foot-reserve {
+      min-height: var(--ch-foot-h);
+    }
+  }
+  @media (min-width: 1024px) {
+    .ch-band.ch-has-foot {
+      min-height: calc(var(--ch-band-min) + var(--ch-foot-h));
+      grid-template-rows: 1fr auto;
     }
   }
 
@@ -810,7 +863,7 @@
   /* ---- loading: the ready box hidden, skeletons drawn over it ---- */
   .ch-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0 0 var(--ch-foot-reserve, 0);
     display: grid;
     grid-template-columns: var(--ch-cols);
     gap: var(--ch-gap);
