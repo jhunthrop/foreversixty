@@ -2,7 +2,10 @@ package notify
 
 import (
 	"context"
+	"fmt"
 	"os"
+	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -171,5 +174,23 @@ func TestDeleteCascadesWithTheUser(t *testing.T) {
 	}
 	if _, ok, _ := st.Get(ctx, uid, KindDiscord); ok {
 		t.Fatal("row survived the user")
+	}
+}
+
+func TestGetNeverReturnsTheToken(t *testing.T) {
+	st, uid := saved(t)
+	wh, ok, err := st.Get(context.Background(), uid, KindDiscord)
+	if err != nil || !ok {
+		t.Fatalf("Get = %v, %v", ok, err)
+	}
+	if strings.Contains(fmt.Sprintf("%+v", wh), "box-1") {
+		t.Fatal("Get returned the sealed box")
+	}
+	typ := reflect.TypeOf(wh)
+	for i := 0; i < typ.NumField(); i++ {
+		name := typ.Field(i).Name
+		if strings.Contains(name, "Token") || strings.Contains(name, "Box") {
+			t.Fatalf("Webhook has a credential field %q", name)
+		}
 	}
 }

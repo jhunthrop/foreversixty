@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 )
 
@@ -29,7 +30,7 @@ func TestHTTPPosterSendsEmbedWithoutMentions(t *testing.T) {
 }
 
 func TestHTTPPosterErrorIsTypedAndSanitised(t *testing.T) {
-	leak := "bad https://discord.com/api/webhooks/1/SECRET and /api/webhooks/2/SECRET2 " + strings.Repeat("x", 400)
+	leak := "bad https://discord.com/api/webhooks/1/SECRET and /api/webhooks/2/SECRET2 and api/v10/webhooks/3/SECRET3 " + strings.Repeat("x", 400)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusTooManyRequests)
 		_, _ = w.Write([]byte(leak))
@@ -45,6 +46,26 @@ func TestHTTPPosterErrorIsTypedAndSanitised(t *testing.T) {
 	}
 	if strings.Contains(err.Error(), "SECRET") {
 		t.Fatalf("Error() leaks: %q", err.Error())
+	}
+}
+
+func TestHTTPPosterDoesNotFollowRedirects(t *testing.T) {
+	var hit atomic.Bool
+	target := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hit.Store(true)
+	}))
+	defer target.Close()
+	redirector := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, target.URL, http.StatusTemporaryRedirect)
+	}))
+	defer redirector.Close()
+	err := NewHTTPPoster().Post(context.Background(), redirector.URL, Embed{})
+	var de *DiscordError
+	if !errors.As(err, &de) || de.Status != http.StatusTemporaryRedirect {
+		t.Fatalf("err = %v; want *DiscordError 307", err)
+	}
+	if hit.Load() {
+		t.Fatal("the redirect target was contacted")
 	}
 }
 

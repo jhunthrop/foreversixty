@@ -9,6 +9,12 @@ func TestParseWebhookURL(t *testing.T) {
 	accept := map[string]ParsedURL{
 		"https://discord.com/api/webhooks/123/abc-DEF_9": {WebhookID: "123", Token: "abc-DEF_9"},
 		"https://discordapp.com/api/webhooks/456/tok":    {WebhookID: "456", Token: "tok"},
+		"https://discord.com/api/v6/webhooks/123/abc":    {WebhookID: "123", Token: "abc"},
+		"https://discord.com/api/v7/webhooks/123/abc":    {WebhookID: "123", Token: "abc"},
+		"https://discord.com/api/v8/webhooks/123/abc":    {WebhookID: "123", Token: "abc"},
+		"https://discord.com/api/v9/webhooks/123/abc":    {WebhookID: "123", Token: "abc"},
+		"https://discord.com/api/v10/webhooks/123/abc":   {WebhookID: "123", Token: "abc"},
+		"  HTTPS://DISCORD.COM/api/webhooks/9/t \n":      {WebhookID: "9", Token: "t"},
 	}
 	for raw, want := range accept {
 		got, err := ParseWebhookURL(raw)
@@ -30,7 +36,10 @@ func TestParseWebhookURL(t *testing.T) {
 		"https://discord.com/api/webhooks/12x/abc",
 		"https://user:pw@discord.com/api/webhooks/123/abc",
 		"https://discord.com:8443/api/webhooks/123/abc",
-		"https://discord.com/api/v10/webhooks/123/abc",
+		"https://discord.com/api/v5/webhooks/123/abc",
+		"https://discord.com/api/v11/webhooks/123/abc",
+		"https://discord.com/api/v1x/webhooks/123/abc",
+		"https://discord.com/api/v10/webhooks/123/abc/extra",
 		"",
 		"not a url",
 	}

@@ -36,7 +36,9 @@ type EmbedField struct {
 }
 
 // Poster is Discord, behind an interface so jobs and handlers test without
-// the network. webhookURL is the full credential URL.
+// the network. webhookURL is the full credential URL. Callers pass only
+// ParsedURL.URL() or Sealer.Open(box) output, which are host-pinned to
+// Discord; the HTTP poster follows no redirects.
 type Poster interface {
 	Post(ctx context.Context, webhookURL string, embed Embed) error
 	// Lookup reads the webhook's channel id (GET on the webhook URL).
@@ -56,7 +58,7 @@ func (e *DiscordError) RateLimited() bool { return e.Status == http.StatusTooMan
 
 var (
 	urlPattern     = regexp.MustCompile(`https?://\S*`)
-	webhookSegment = regexp.MustCompile(`/?api/webhooks/\S*`)
+	webhookSegment = regexp.MustCompile(`/?api/(?:v\d+/)?webhooks/\S*`)
 )
 
 // sanitize strips any URL and webhook path segment from Discord's text and
@@ -74,7 +76,14 @@ func sanitize(text string) string {
 type HTTPPoster struct{ client *http.Client }
 
 // NewHTTPPoster returns a Poster with the 5 s timeout.
-func NewHTTPPoster() *HTTPPoster { return &HTTPPoster{client: &http.Client{Timeout: posterTimeout}} }
+func NewHTTPPoster() *HTTPPoster {
+	return &HTTPPoster{client: &http.Client{
+		Timeout: posterTimeout,
+		// A redirect would carry the credential to another host; the 3xx
+		// is returned as a *DiscordError instead.
+		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
+	}}
+}
 
 type embedJSON struct {
 	Title       string      `json:"title,omitempty"`
