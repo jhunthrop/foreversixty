@@ -28,9 +28,10 @@
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
-  import { premiumRowLinked, premiumRowValue } from '../lib/account/notifications';
+  import { premiumRowLinked, premiumRowValue, premiumRowVisible } from '../lib/account/notifications';
   import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
+  import AccountLoading from './account/AccountLoading.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
   import { accountPageCopy } from '../lib/account/account-page-copy';
@@ -59,7 +60,6 @@
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
-  import Skeleton from './ui/Skeleton.svelte';
   import LoadError from './ui/LoadError.svelte';
   import StatePanel from './ui/StatePanel.svelte';
   import {
@@ -216,6 +216,8 @@
 
   // The ready page's two column heights, stored so the next visit's loading state reserves them
   // (spec 2026-10-25-discord-notifications 9.1; Base.astro reads them before first paint).
+  // Stops the reserve writer; set while the ready account page is mounted, called by sign-out.
+  let stopReserveWrites: (() => void) | null = null;
   const readyAccount = $derived(mode === 'account' && status === 'ready' && signedIn);
   $effect(() => {
     if (!readyAccount) return;
@@ -367,9 +369,6 @@
       await revokeDevice(id);
       devices = devices.filter((device) => device.id !== id);
     });
-
-  // Stops the reserve writer (below); set while the ready account page is mounted.
-  let stopReserveWrites: (() => void) | null = null;
 
   const onSignOut = (): void =>
     void run(async () => {
@@ -565,32 +564,7 @@
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
     {#if status === 'loading'}
-      <!-- The loading state draws the ready page's layout with its contents missing (spec
-           2026-10-25-discord-notifications 9.1): the header row, the 8/4 grid, and the rail's
-           blocks at their floors. global.css's "account loading reserve" block sizes them
-           from the hints Base.astro sets before paint. `.session-reserve` collapses the
-           skeletons when `<html>` carries no data-session hint, i.e. the visitor has no
-           session cookie and this can only resolve to the sign-in prompt, so that page ends
-           under its one button instead of reserving panels of black. -->
-      <div class="account-header-reserve">
-        <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
-      </div>
-      <div class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
-        <div class="lg:col-span-8">
-          <Skeleton lines={3} minHeight="account-left-skeleton" testid="account-left-skeleton" />
-        </div>
-        <div
-          class="account-rail-skeleton flex flex-col gap-8 lg:col-span-4"
-          data-testid="account-rail-skeleton"
-        >
-          <Skeleton lines={3} minHeight="account-devices-skeleton" testid="account-devices-skeleton" />
-          <Skeleton lines={3} minHeight="account-you-skeleton" testid="account-you-skeleton" />
-          <div class="flex flex-col gap-4">
-            <Skeleton lines={3} minHeight="account-plan-skeleton" testid="account-plan-skeleton" />
-            <Skeleton lines={3} minHeight="account-discord-skeleton" testid="account-discord-skeleton" />
-          </div>
-        </div>
-      </div>
+      <AccountLoading />
     {:else if status === 'failed'}
       <div class="account-header-reserve">
         <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
@@ -954,9 +928,9 @@
                     characters={me?.characters ?? []}
                     mainKey={me?.main_character_key}
                     serverRunsThisMonth={me?.server_sims?.runs_this_month}
-                    notifications={me === null
-                      ? undefined
-                      : { value: premiumRowValue(me), linked: premiumRowLinked(me) }}
+                    notifications={me !== null && premiumRowVisible(me)
+                      ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
+                      : null}
                   />
                   {#if billing !== null}
                     <button

@@ -22,7 +22,6 @@ import {
   readAccountReserve,
   recordAccountReserve,
   scheduleAccountReserveWrites,
-  type BucketPx,
   type HintState,
   type ReserveBucket,
 } from './layout';
@@ -108,8 +107,7 @@ describe('the floors', () => {
   });
 
   it('are the signed-out prompt floor, which has no Discord block', () => {
-    const literal = (bucket: BucketPx[keyof BucketPx] extends number ? ReserveBucket : never): string =>
-      px(gridFloor('none', bucket));
+    const literal = (bucket: ReserveBucket): string => px(gridFloor('none', bucket));
     expect(SIGNED_OUT_MIN_H).toBe(`min-h-[${literal('stack')}] lg:min-h-[${literal('lg')}]`);
   });
 });

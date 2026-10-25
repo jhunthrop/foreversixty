@@ -446,32 +446,32 @@ html[data-discord='free'] .account-discord-skeleton {
   min-height: 44px;
 }
 html[data-discord='form'] .account-rail-skeleton {
-  --account-rail-floor: 1355px;
+  --account-rail-floor: 1365px;
 }
 html[data-discord='form'] .account-discord-skeleton {
   display: flex;
-  min-height: 630px;
+  min-height: 640px;
 }
 html[data-discord='saved'] .account-rail-skeleton {
-  --account-rail-floor: 1200px;
+  --account-rail-floor: 1175px;
 }
 html[data-discord='saved'] .account-discord-skeleton {
   display: flex;
-  min-height: 475px;
+  min-height: 450px;
 }
 html[data-discord='off'] .account-rail-skeleton {
-  --account-rail-floor: 1290px;
+  --account-rail-floor: 1280px;
 }
 html[data-discord='off'] .account-discord-skeleton {
   display: flex;
-  min-height: 565px;
+  min-height: 555px;
 }
 html[data-discord='lapsed'] .account-rail-skeleton {
-  --account-rail-floor: 1200px;
+  --account-rail-floor: 1195px;
 }
 html[data-discord='lapsed'] .account-discord-skeleton {
   display: flex;
-  min-height: 475px;
+  min-height: 470px;
 }
 @media (min-width: 1024px) {
   html[data-session='1'] .account-header-reserve {
@@ -500,11 +500,11 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 44px;
   }
   html[data-discord='form'] .account-rail-skeleton {
-    --account-rail-floor: 1335px;
+    --account-rail-floor: 1375px;
   }
   html[data-discord='form'] .account-discord-skeleton {
     display: flex;
-    min-height: 610px;
+    min-height: 650px;
   }
   html[data-discord='saved'] .account-rail-skeleton {
     --account-rail-floor: 1185px;
@@ -514,18 +514,18 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 460px;
   }
   html[data-discord='off'] .account-rail-skeleton {
-    --account-rail-floor: 1265px;
+    --account-rail-floor: 1290px;
   }
   html[data-discord='off'] .account-discord-skeleton {
     display: flex;
-    min-height: 540px;
+    min-height: 565px;
   }
   html[data-discord='lapsed'] .account-rail-skeleton {
-    --account-rail-floor: 1200px;
+    --account-rail-floor: 1205px;
   }
   html[data-discord='lapsed'] .account-discord-skeleton {
     display: flex;
-    min-height: 475px;
+    min-height: 480px;
   }
 }
 /* account loading reserve:end */

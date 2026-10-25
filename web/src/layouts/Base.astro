@@ -191,7 +191,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       // rendered column heights of this viewport's layout become --account-left-reserve and
       // --account-rail-reserve, so the loading state already has the ready page's shape.
       // hintOf below is a verbatim copy of discordHintState in lib/account/layout.ts
-      // (layout.test.ts evaluates this very text against the same fixtures): change both.
+      // (layout-reserve.test.ts evaluates this very text against the same fixtures): change both.
       try {
         const el = document.currentScript;
         const root = document.documentElement;
@@ -203,7 +203,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           function hintOf(me) {
             if (me === null || me.notifications === undefined) return 'none';
             const discord = me.notifications.discord;
-            const entitled = me.entitlements?.notifications === true;
+            const entitled = me.entitlements && me.entitlements.notifications === true;
             if (discord === null || discord === undefined) return entitled ? 'form' : 'free';
             if (!entitled) return 'lapsed';
             return discord.disabled_reason === null ? 'saved' : 'off';

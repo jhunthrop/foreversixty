@@ -67,8 +67,6 @@
     new Set<EventKind>(EVENT_KINDS.map((kind) => kind.id).filter((kind) => !off.includes(kind))),
   );
 
-  /** See FilterBar.svelte: the label around a checkbox is its 44px target, not the box. */
-
   // With the stream loaded, the summary's few hits and heals (the ones before a death) give way
   // to every one of them; the casts, auras and deaths stay the summary's.
   const all = $derived(

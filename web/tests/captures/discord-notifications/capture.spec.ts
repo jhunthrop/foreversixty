@@ -433,7 +433,7 @@ atWidths('account loading skeleton', BASE_WIDTHS, async (page, width) => {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'capture', url: 'http://localhost:4411' }]);
   await signIn(page, { initial: SAVED, holdMe: held.wait }, { puts: [], tests: 0, deletes: 0 });
   await page.goto('/account');
-  await page.getByTestId('account-characters-skeleton').waitFor();
+  await page.getByTestId('account-left-skeleton').waitFor();
   await settle(page);
   await full(page, 'skeleton', width);
   held.release();

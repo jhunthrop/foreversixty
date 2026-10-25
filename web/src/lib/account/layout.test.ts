@@ -77,7 +77,7 @@ describe('discordHintState (spec 4.1 precedence)', () => {
   it('has a floor for every hint state, and none for none', () => {
     expect(Object.keys(DISCORD_FLOORS).sort()).toEqual(['form', 'free', 'lapsed', 'none', 'off', 'saved']);
     expect(DISCORD_FLOORS.none).toEqual({ lg: 0, stack: 0 });
-    expect(DISCORD_FLOORS.form).toEqual({ lg: 610, stack: 630 });
+    expect(DISCORD_FLOORS.form).toEqual({ lg: 650, stack: 640 });
   });
 });
 

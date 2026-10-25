@@ -2,7 +2,7 @@
 // Reserved-height constants for /account's loading state (experience spec
 // 2026-10-25-discord-notifications section 9.1): the loading page draws the ready page's
 // layout, so these tables are the single source for the floors that global.css's
-// "account loading reserve" block repeats as CSS (layout.test.ts asserts the two agree) and for
+// "account loading reserve" block repeats as CSS (layout-reserve.test.ts asserts the two agree) and for
 // SIGNED_OUT_MIN_H. `npm run lhci`'s own account.html run cannot confirm any of it: its sandbox
 // has no CORS allowance for localhost to call the real API, so it always lands on the
 // `failed`/LoadError branch instead.
@@ -20,7 +20,7 @@ export const PLAN_GAP_PX = 16;
  *  `/v1/me` answers, so a hinted visitor who turns out signed out only avoids a layout shift if
  *  the prompt's block holds the same height as the reserved grid under the header row (no
  *  Discord hint then: `data-discord` is `none`, so the rail is Devices + You + Plan). Both
- *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout.test.ts` checks
+ *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
 export const SIGNED_OUT_MIN_H = 'min-h-[1144px] lg:min-h-[709px]';
@@ -30,8 +30,8 @@ export const SIGNED_OUT_MIN_H = 'min-h-[1144px] lg:min-h-[709px]';
 // `lg` is the 12-column grid at 1024 and up (measured at 1440), `stack` is the one-column
 // page below it (measured at 390). The header, left and rail floors were measured on a
 // FOREVER_DATA=fixture build with a stubbed, empty account (no characters, devices, reports or
-// guilds) and rounded down, so a floor never out-grows the real panel. The Discord floors are
-// still the spec's targets: the built panels land with Task 3a, whose measurement replaces them.
+// guilds) and rounded down, so a floor never out-grows the real panel. The Discord floors were
+// measured on the shipped panels (Task 3a) and rounded up to 5.
 // All apply only when no rendered height is stored.
 
 export type ReserveBucket = 'lg' | 'stack';
@@ -62,10 +62,10 @@ export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>>
 export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
   free: { lg: 44, stack: 44 },
-  form: { lg: 610, stack: 630 },
-  saved: { lg: 460, stack: 475 },
-  off: { lg: 540, stack: 565 },
-  lapsed: { lg: 475, stack: 475 },
+  form: { lg: 650, stack: 640 },
+  saved: { lg: 460, stack: 450 },
+  off: { lg: 565, stack: 555 },
+  lapsed: { lg: 480, stack: 470 },
 };
 
 /** Read back by the pre-paint script in Base.astro. */
@@ -145,7 +145,7 @@ export function clearAccountReserve(): void {
 export function discordHintState(me: Me | null): HintState {
   if (me === null || me.notifications === undefined) return 'none';
   const discord = me.notifications.discord;
-  const entitled = me.entitlements?.notifications === true;
+  const entitled = me.entitlements && me.entitlements.notifications === true;
   if (discord === null || discord === undefined) return entitled ? 'form' : 'free';
   if (!entitled) return 'lapsed';
   return discord.disabled_reason === null ? 'saved' : 'off';

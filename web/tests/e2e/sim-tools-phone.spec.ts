@@ -139,7 +139,7 @@ test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
       await expect(page.getByTestId(`${id}-help-panel`)).toHaveText(text);
     }
 
-    // sim-execute/sim-dummy: the drawn mark stays 20x20 on purpose -- native `accent-gold`,
+    // sim-execute/sim-dummy: the drawn mark stays 20x20 on purpose -- the global gold checkbox rule,
     // never resized, per the brief's own "without changing the visual size of the tick" --
     // but each sits inside a `flex min-h-11` label stretched across the full grid cell, the
     // real hit target a tap actually reaches. Measuring the hidden input itself instead is
