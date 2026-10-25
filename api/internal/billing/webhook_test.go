@@ -64,23 +64,8 @@ func fixtureSubscription(id, plan string, userID, guildID int64, status stripe.S
 // fixture sets UserID, a guild fixture sets GuildID (never both — the
 // entitlements_one_subject constraint refuses that combination).
 func entitlementsStripeUpsertFor(sub *stripe.Subscription) entitlements.StripeUpsert {
-	uid, _ := metadataUserID(sub)
-	end, _ := subscriptionPeriodEnd(sub)
-	up := entitlements.StripeUpsert{
-		Plan: sub.Metadata["plan"], Status: string(sub.Status),
-		CurrentPeriodEnd: &end, StripeSubscriptionID: sub.ID, BillingUserID: uid,
-		Actor: "test_fixture", Transfer: sub.Metadata["intent"] == "transfer",
-	}
-	if sub.Created != 0 {
-		up.SubscriptionCreated = time.Unix(sub.Created, 0).UTC()
-	}
-	if up.Plan == entitlements.PlanGuild {
-		gid, _ := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
-		up.GuildID = &gid
-	} else {
-		up.UserID = &uid
-	}
-	return up
+	subject, _ := parseSubject(sub)
+	return stripeUpsertFor(sub, subject, "test_fixture")
 }
 
 func TestWebhookFirstDeliveryIsProcessedAndAudited(t *testing.T) {
@@ -661,9 +646,11 @@ func TestWebhookWritesFromTheFetchTakenInsideTheLock(t *testing.T) {
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 	sub := fixtureSubscription("sub_p", "premium", uid, 0, stripe.SubscriptionStatusPastDue, end)
 	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
-	h.gateway.OnGetSubscription = func(_ string, call int) {
-		if call == 1 {
-			sub.Status = stripe.SubscriptionStatusActive
+	h.gateway.OnGetSubscription = func(id string, call int) {
+		if call == 2 { // the in-lock fetch: Stripe now reports a newer state
+			updated := *sub
+			updated.Status = stripe.SubscriptionStatusActive
+			h.gateway.Subscriptions[id] = &updated
 		}
 	}
 

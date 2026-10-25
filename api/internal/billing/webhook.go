@@ -233,7 +233,7 @@ func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor 
 			return fmt.Errorf("billing: get subscription %s inside lock: %w", subscriptionID, err)
 		}
 		if again, err := parseSubject(sub); err != nil || again != subject {
-			s.Log.Warn("billing: subscription metadata changed between fetches", "subscription", sub.ID)
+			s.logger().Warn("billing: subscription metadata changed between fetches", "subscription", sub.ID)
 			return nil
 		}
 		return s.applyUpsert(ctx, stripeUpsertFor(sub, subject, actor), sub)

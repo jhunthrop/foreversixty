@@ -146,7 +146,7 @@ type Gateway interface {
 	EnsurePortalConfiguration(ctx context.Context, spec PortalSpec) error
 	// CancelSubscriptionAtPeriodEnd sets cancel_at_period_end on a live
 	// Stripe subscription — the newcomer side of the duplicate-
-	// subscription guard (entitlements.UpsertResult.Duplicate,
+	// subscription guard (entitlements.OutcomeDuplicate,
 	// webhook.go's upsertSubscription): the officer who
 	// accidentally paid twice keeps what they already paid for through
 	// the current period; the operator's runbook (spec §2.7) covers

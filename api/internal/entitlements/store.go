@@ -408,7 +408,10 @@ func skippedOutcome(existing existingRow, p StripeUpsert) (skipped bool, outcome
 		return true, OutcomeDeadNewcomer
 	case p.Transfer:
 		newer := existing.stripeSubscriptionCreated == nil || p.SubscriptionCreated.Truncate(createdPrecision).After(existing.stripeSubscriptionCreated.Truncate(createdPrecision))
-		return !newer, OutcomeStaleTransfer
+		if newer {
+			return false, OutcomeWritten
+		}
+		return true, OutcomeStaleTransfer
 	default:
 		return true, OutcomeDuplicate
 	}

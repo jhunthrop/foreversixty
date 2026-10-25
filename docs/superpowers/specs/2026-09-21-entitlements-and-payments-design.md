@@ -690,7 +690,7 @@ row to start walking from). Three independent layers close this, all landed in t
    the identical `409 conflict`/`portal_hint` shape an already-active plan would answer with.
    The row is cleared when its `checkout.session.completed` webhook lands, or by
    §2.8's nightly sweep once it expires with no webhook ever landing (an abandoned checkout).
-2. **`upsertFromSubscription` refuses to overwrite — except a deliberate transfer.** When it
+2. **`upsertFromSubscription` refuses to overwrite — except a deliberate transfer** (stale transfers and dead newcomers are refined by the 2026-10-24 amendment in §2.7). When it
    finds an existing row for a `(subject, plan)` already `active`/`trialing`/`past_due` and
    pointing at a *different* `stripe_subscription_id`, the row is left untouched, and the
    newcomer is recorded in a new `entitlement_anomalies` table
