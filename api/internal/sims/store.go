@@ -496,7 +496,7 @@ const (
 // would be a guess.
 func (s *Store) EstimateSeconds(ctx context.Context, spec string) (*int, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select (result->>'duration_ms')::bigint from sims
+		`select coalesce((result->>'duration_ms')::bigint, 0) from sims
 		 where state = $1 and lane = $2 and spec = $3
 		 order by finished_at desc nulls last, created_at desc limit $4`,
 		StateDone, simapi.LaneServer, spec, estimateWindow)

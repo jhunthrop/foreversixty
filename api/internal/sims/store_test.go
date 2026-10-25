@@ -761,6 +761,11 @@ func TestEstimateSecondsIsTheMedianOfTheLastTenDoneRuns(t *testing.T) {
 	if got, err = h.store.EstimateSeconds(t.Context(), "mage-fire"); err != nil || got != nil {
 		t.Fatalf("another spec: %v, %v, want nil", got, err)
 	}
+	// A done row whose result lacks the duration must not fail the estimate.
+	h.setColumn("est000000100", "result", []byte(`{}`))
+	if _, err = h.store.EstimateSeconds(t.Context(), "warrior-fury"); err != nil {
+		t.Fatalf("a result without duration_ms: %v", err)
+	}
 }
 
 func TestFinishWithAnEngineErrorStoresItAsTheReason(t *testing.T) {

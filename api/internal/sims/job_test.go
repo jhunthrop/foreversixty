@@ -110,6 +110,7 @@ func TestARunTheEngineRefusesIsRecordedAsFailed(t *testing.T) {
 	if p.State != StateError {
 		t.Fatalf("state %q, want %q: the page must stop polling", p.State, StateError)
 	}
+	h.wantFailureReason(t, "cccccccccccc", failureUnknown)
 }
 
 func TestARequestTheEngineRefusesIsRecordedAndNotRetried(t *testing.T) {
@@ -149,6 +150,7 @@ func TestAnAbortedRunIsFailedNotStoredAsDone(t *testing.T) {
 	if p.State != StateError {
 		t.Fatalf("state %q, want %q: a partial result must never read as done", p.State, StateError)
 	}
+	h.wantFailureReason(t, "dddddddddddd", "stopped before completion")
 
 	stored, _, gerr := h.store.Get(t.Context(), "dddddddddddd")
 	if gerr != nil {
@@ -288,4 +290,23 @@ func TestAPlainRunReportsNoStages(t *testing.T) {
 	if p.Stage != 0 || p.CombosDone != 0 || p.CombosTotal != 0 {
 		t.Errorf("a plain run reported stages: %+v", p)
 	}
+}
+
+// wantFailureReason asserts the plain sentence a failed row keeps, which
+// is what the member reads, never the engine's own wording.
+func (h *harness) wantFailureReason(t *testing.T, id, want string) {
+	t.Helper()
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range page.Rows {
+		if r.SimID == id {
+			if r.FailureReason != want {
+				t.Errorf("failure_reason = %q, want %q", r.FailureReason, want)
+			}
+			return
+		}
+	}
+	t.Fatalf("no row %s in %+v", id, page.Rows)
 }

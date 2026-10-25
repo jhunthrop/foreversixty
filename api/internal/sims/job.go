@@ -115,15 +115,18 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 	return d.Store.Finish(ctx, simID, res)
 }
 
+// failureUnknown is what a failed run's row says when the job has no
+// plainer sentence for the member.
+const failureUnknown = "the run could not be completed"
+
 // failed records why a run did not finish and returns the original
 // error, so the job exits non-zero and the page stops polling. reason
-// is what the row remembers; an empty reason uses cause's own message,
-// which is the right default for an internal failure but wrong for an
-// abort, whose cause wraps the engine's own low-level wording rather
-// than something an operator reads on the row.
+// is the plain sentence the row keeps and the member reads; an empty
+// one becomes failureUnknown. The detailed cause is never stored: it
+// goes to the log and to the returned error only.
 func (d JobDeps) failed(ctx context.Context, simID string, cause error, reason string) error {
 	if reason == "" {
-		reason = cause.Error()
+		reason = failureUnknown
 	}
 	d.logger().Error("sims", "op", "run", "sim", simID, "err", cause)
 	if err := d.Store.Fail(ctx, simID, reason); err != nil {
