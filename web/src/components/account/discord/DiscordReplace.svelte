@@ -13,7 +13,13 @@
     discord,
     disabled = false,
     onReplace,
-  }: { discord: DiscordNotifications; disabled?: boolean; onReplace: () => void } = $props();
+    onStuck,
+  }: {
+    discord: DiscordNotifications;
+    disabled?: boolean;
+    onReplace: () => void;
+    onStuck: () => void;
+  } = $props();
 </script>
 
 {#if sourceOf(discord) === 'connected'}
@@ -23,6 +29,7 @@
       class="{LINK_BUTTON} w-fit"
       testid="discord-replace"
       busy={disabled}
+      {onStuck}
     />
     <p class="text-muted text-[13px]" data-testid="discord-replace-note">{notificationsCopy.reconnectNote}</p>
   </div>

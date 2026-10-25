@@ -88,14 +88,16 @@ export const notificationsCopy = {
   connect: 'Connect a Discord channel',
   connecting: 'Opening Discord…',
   connectExplanation:
-    'Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.',
+    'Discord asks which server and channel, then lets Forever Sixty post there. You need to be able to manage webhooks in that channel. We keep only that webhook, encrypted.',
   pasteInstead: 'Paste a webhook URL instead',
   connectInstead: 'Connect a Discord channel instead',
   reconnect: 'Connect a different channel',
   reconnectNote: 'Connecting again replaces this channel and removes its webhook from Discord.',
   returnConnected: 'Connected. Send a test message to see it in your channel.',
   returnDenied: 'Cancelled in Discord. Nothing was connected.',
-  returnFailed: 'Could not connect. Check that you can manage webhooks in that channel, then try again.',
+  returnFailed:
+    'Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.',
+  connectStuck: 'Discord did not open. Try again, or paste a webhook URL instead.',
   openInDiscord: 'Open in Discord',
   destinationConnected: { lead: 'Connected to', name: 'a Discord channel' },
   seePlans: 'See plans',

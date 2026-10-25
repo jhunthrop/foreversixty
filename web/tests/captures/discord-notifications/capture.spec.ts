@@ -566,6 +566,10 @@ atWidths('gold checkbox, rankings filter', [WIDTH_DESKTOP], async (page, width) 
 const CONNECT_ON: DiscordMeStages = { initial: null, connect: true };
 const CONNECTED = discordBlock({ source: 'connected', name: null, guild_id: GUILD_ID });
 const CONNECT_CAP_PX: Readonly<Record<number, number>> = { 360: 340, 390: 340, [WIDTH_DESKTOP]: 320 };
+async function annotateHeight(page: Page, what: string): Promise<void> {
+  const height = (await panel(page).boundingBox())?.height ?? 0;
+  test.info().annotations.push({ type: 'height', description: `${what}: ${height} px` });
+}
 const connectControl = (page: Page): Locator => page.getByTestId('discord-connect');
 
 // 24. The Connect state: default at 360, 390 and 1440 with the height against the cap, then
@@ -604,12 +608,13 @@ atWidths('connect opening Discord', BASE_WIDTHS, async (page, width) => {
 });
 
 // 25. The paste view with connect on (the back link under Save), and paste-first with connect off.
-atWidths('paste view with connect on', BASE_WIDTHS, async (page, width) => {
+atWidths('paste view with connect on', NARROW_WIDTHS, async (page, width) => {
   await openAccount(page, width, CONNECT_ON);
   await page.getByTestId('discord-paste-instead').click();
   await input(page).waitFor();
   await settle(page);
   await shoot(page, 'connect-paste-view', width);
+  await annotateHeight(page, `paste view with back link @${width}`);
 });
 
 atWidths('paste first with connect off', BASE_WIDTHS, async (page, width) => {
@@ -643,7 +648,24 @@ for (const { flag, stages } of RETURNS) {
 atWidths('saved connected', NARROW_WIDTHS, async (page, width) => {
   await openAccount(page, width, { initial: CONNECTED, connect: true });
   await shoot(page, 'connected-saved', width);
+  await annotateHeight(page, `saved connected @${width}`);
   await cropOf(page, page.getByTestId('discord-destination'), `discord-connected-destination-${width}.png`);
+});
+
+// The switched-off connected webhook: the notice holds `Connect a different channel` and its note.
+const CONNECTED_SWITCHED_OFF = discordBlock({
+  source: 'connected',
+  name: null,
+  guild_id: GUILD_ID,
+  disabled_reason: 'failed five times',
+  last_error: 'Unknown Webhook',
+  failures: 5,
+});
+
+atWidths('switched off connected', NARROW_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: CONNECTED_SWITCHED_OFF, connect: true });
+  await shoot(page, 'connected-switched-off', width);
+  await annotateHeight(page, `switched-off connected @${width}`);
 });
 
 atWidths('saved pasted beside connected', BASE_WIDTHS, async (page, width) => {

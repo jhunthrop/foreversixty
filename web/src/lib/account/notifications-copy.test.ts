@@ -63,6 +63,7 @@ const SPEC_STRINGS: ReadonlyArray<readonly [string, string, string]> = [
   ['removeQuestionConnected', notificationsCopy.removeQuestionConnected, spec('Remove question, connected')],
   ['connect', notificationsCopy.connect, spec('Connect button')],
   ['connecting', notificationsCopy.connecting, spec('Connect button', 1)],
+  ['connectStuck', notificationsCopy.connectStuck, spec('Connect did not open')],
   ['connectExplanation', notificationsCopy.connectExplanation, spec('Connect explanation')],
   ['pasteInstead', notificationsCopy.pasteInstead, spec('Paste disclosure')],
   ['connectInstead', notificationsCopy.connectInstead, spec('Back to connect')],
