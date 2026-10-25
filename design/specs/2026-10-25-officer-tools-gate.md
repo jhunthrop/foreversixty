@@ -107,10 +107,10 @@ Needs: `GuildApiError` gains `readonly code: string` from the envelope. Branch o
 
 ### 5.1 A scoped grant (`plan.scope === "officer_tools"`)
 `billingState` gains `'officer-tools'`. Inside the existing `Billing` section, top to bottom:
-1. Plan line, 14 px `--text`, slot `guild-billing-plan`: `Officer tools · until 9 Dec 2026`.
+1. Plan line, 14 px `--text`, slot `guild-billing-plan`: `Officer tools · until 11 Dec 2026`.
    The date comes from `utcDayMonthYear(current_period_end)`.
 2. Explanation, 13 px muted, in the `billedLine` slot (`guild-billing-contact`):
-   `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on 9 Dec 2026; the guild plan keeps them after that.`
+   `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on 11 Dec 2026; the guild plan keeps them after that.`
 3. Price line, 13 px muted: today's `notOnPlanLines().detail`, unchanged.
 4. `Subscribe the guild`, `PRIMARY_BUTTON_FIXED w-fit px-4`, today's checkout href
    (`plan=guild&interval=monthly&guild_id=`). It is the same link as the not-on-plan state.
@@ -123,7 +123,7 @@ The full-plan states `on-plan`, `granted` (`Guild plan · until 31 Dec 2026`) an
 - New: when `guildBilling !== null`, the `Billing` section renders for them too. It holds the plan line
   and its explanation (5.1 rows 1 and 2, or the `on-plan` or `granted` rows 1 and 2), then the
   existing `guildMasterOnly` line in place of any button.
-- Reason: the read-only sentence sends every officer here. They must find "until 9 Dec 2026", not a dead end.
+- Reason: the read-only sentence sends every officer here. They must find "until 11 Dec 2026", not a dead end.
 
 ### 5.3 An expired grant
 `/v1/me` attaches only an active plan (`attachGuildPlans`), so an expired grant arrives as `plan: null`.
@@ -143,7 +143,7 @@ The row:
 - Element: a `p` with `text-muted text-[13px] leading-5 basis-full`, `data-testid="account-guild-plan"`.
 - Text: the line guild settings shows, then `·`, then the muted inline link `Guild settings` to
   `guildSettingsHref`. The link is underlined, `--text-strong` on hover and `:active`, with the 2 px gold focus ring.
-  - `Officer tools · until 9 Dec 2026 · Guild settings`
+  - `Officer tools · until 11 Dec 2026 · Guild settings`
   - `Guild plan · renews 31 Dec 2026 · Guild settings`
 - `guildPlanLine` is extended to return the scoped line, so both pages call one function.
 - Height: the row grows by 32 px (a 20 px line and a 12 px gap) at every width. It does not wrap at 360.

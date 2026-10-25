@@ -493,16 +493,21 @@ designed. There is no code path that turns it on.
 
 ### Granting officer tools
 
-    api grant --guild <id> --features officer_views --until 2026-12-09 --note "reason"
+    api grant --guild <id> --features officer_views --until 2026-12-11 --note "reason"
 
 Gives one guild a time-boxed grant that unlocks only the officer views (`--plan` may be omitted
 and must be `guild` if given; `--until` is required; a later grant without `--features` replaces the scope with the whole plan).
 
-    api grandfather-officer-tools --until 2026-12-09 --note "launch grandfathering" [--apply]
+    api grandfather-officer-tools --until 2026-12-11 --note "launch grandfathering" [--apply]
 
 Gives that same scoped grant to every claimed guild without a live plan, printing one line per guild
 and a totals line; it is a dry run unless `--apply` is passed. Order: deploy the API carrying
 migration 0049 first, then run this command from the deployed sha (it migrates at startup).
+
+Rolling back after `--apply`: a scoped row with its `features` column gone reads as the whole guild
+plan, which would hand every grandfathered guild's members Premium. The 0049 down migration cancels
+every scoped row before dropping the column; an image rollback to a pre-0049 build needs the same
+`update entitlements set status = 'canceled' where features is not null` run first.
 
 ### The bucket's CORS rule
 

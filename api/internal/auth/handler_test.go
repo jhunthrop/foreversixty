@@ -850,6 +850,32 @@ func TestMeReflectsAnActivePersonalPremiumEntitlement(t *testing.T) {
 	}
 }
 
+func TestMeTreatsAnExpiredPersonalGrantAsCanceled(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-expired-grant@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (user_id, plan, source, status, current_period_end)
+		 values ($1, 'premium', 'grant', 'active', now() - interval '1 day')`, uid); err != nil {
+		t.Fatal(err)
+	}
+	var body struct {
+		Entitlements struct {
+			ServerSims    bool `json:"server_sims"`
+			SupporterMark bool `json:"supporter_mark"`
+			Billing       *struct {
+				Status string `json:"status"`
+			} `json:"billing"`
+		} `json:"entitlements"`
+	}
+	h.decode(t, h.sessionRequest(t, http.MethodGet, "/v1/me", uid), &body)
+	if body.Entitlements.ServerSims || body.Entitlements.SupporterMark {
+		t.Fatalf("an expired grant must unlock nothing: %+v", body.Entitlements)
+	}
+	if body.Entitlements.Billing == nil || body.Entitlements.Billing.Status != "canceled" {
+		t.Fatalf("billing = %+v, want status canceled like an ended Stripe row", body.Entitlements.Billing)
+	}
+}
+
 // fakeSims is the auth package's stand-in for the sims store (auth cannot import sims).
 type fakeSims struct {
 	unseen []FinishedSim
@@ -1045,6 +1071,40 @@ func TestMeGuildPlanScope(t *testing.T) {
 				t.Fatalf("scoped grant: billed_by %q, period end %v", plan.BilledBy, plan.CurrentPeriodEnd)
 			}
 		})
+	}
+}
+
+func TestMeScopedGrantOverACanceledStripeRowNamesNoBillingContact(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "me-grant-over-stripe")
+	payer := h.seedUser(t, "me-grant-over-stripe-payer@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(), `
+		insert into entitlements (guild_id, plan, source, status, billing_user_id, cancel_at_period_end, stripe_subscription_id)
+		values ($1, 'guild', 'stripe', 'canceled', $2, true, 'sub_me_grant_over')`, gid, payer); err != nil {
+		t.Fatal(err)
+	}
+	until := time.Now().Add(30 * 24 * time.Hour)
+	es := &entitlements.Store{Pool: h.svc.Store.Pool}
+	if err := es.Grant(t.Context(), entitlements.Subject{GuildID: &gid}, entitlements.PlanGuild, &until, nil, "n", "a",
+		[]string{entitlements.FeatureScopeOfficerViews}); err != nil {
+		t.Fatal(err)
+	}
+	officer := h.seedUser(t, "me-grant-over-stripe-officer@example.com")
+	h.seedGuildMember(t, gid, officer, "officer", true)
+	var body struct {
+		Guilds []struct {
+			Plan *struct {
+				Scope    string `json:"scope"`
+				BilledBy string `json:"billed_by"`
+			} `json:"plan,omitempty"`
+		} `json:"guilds"`
+	}
+	h.decode(t, h.sessionRequest(t, http.MethodGet, "/v1/me", officer), &body)
+	if len(body.Guilds) != 1 || body.Guilds[0].Plan == nil {
+		t.Fatalf("guilds = %+v", body.Guilds)
+	}
+	if p := body.Guilds[0].Plan; p.Scope != "officer_tools" || p.BilledBy != "" {
+		t.Fatalf("plan = %+v, want officer_tools billed by nobody", p)
 	}
 }
 
