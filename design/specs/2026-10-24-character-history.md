@@ -58,7 +58,7 @@ Both columns share four rows so the chart tops line up: sub-heading, control row
 | Row | Content | Style |
 |---|---|---|
 | Sub-heading | `Score over time` | 15 px 600 `--color-strong` |
-| Control row | One sentence: `One point a day: the day's last rated fight.`, plus ` Rings are private or guild reports.` only when at least one ring is drawn | 12 px `--color-muted`, up to two lines, centred in 44 px |
+| Control row | One sentence: `One point a day: the day's last rated fight.`, plus ` Rings are private reports.` only when at least one ring is drawn | 12 px `--color-muted`, up to two lines, centred in 44 px |
 | Readout | Left: the selected point's score, 28 px mono 600 in `tierTextColor(tier)` (no thousands comma, as the card writes `1830`), then the tier word 15 px 600 in the same colour; under it `11 Dec 2026 · 2 fights`, 12 px mono muted (`formatDayMonthYear`). Right: two 44 x 44 step buttons, earlier and later (a left and a right chevron). | Min height 56 px |
 | Chart | 3.5 | |
 | Under the chart | `Up 1090 since 12 Oct` (`scoreCopy.historyChange`), 12 px `--color-text`. Then one 12 px muted line per gap too narrow for an inside label: `Gap 20 Jul to 9 Aug: No rated fights` | |
@@ -193,7 +193,7 @@ New strings live in `web/src/lib/score/history-copy.ts` (functions take the data
 | Section heading | `History` |
 | Section caption | `Includes your private and guild reports. Only you see this section.` |
 | Score sub-heading | `Score over time` |
-| Score note | `One point a day: the day's last rated fight.` and, with rings, ` Rings are private or guild reports.` |
+| Score note | `One point a day: the day's last rated fight.` and, with rings, ` Rings are private reports.` |
 | Parse sub-heading | `Parse by boss` |
 | Picker pill | `Golemagg` + the kill count (`5`); a pill's accessible name: `Golemagg, 5 kills` (`1 kill` for one) |
 | Score readout | `1830`, `Epic`, `11 Dec 2026 · 2 fights` (`1 fight`) |
