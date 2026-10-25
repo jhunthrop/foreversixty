@@ -34,7 +34,12 @@ test.describe('phone layout', () => {
     await page.goto('/');
     // On a phone the Discord link waits behind the header's Menu button.
     await page.getByTestId('menu-button').click();
-    const discord = await page.getByRole('link', { name: 'Discord' }).boundingBox();
+    // The header's link, by name: the home page's changelog teaser also links an entry titled
+    // "Discord notifications", which an unscoped substring match would pick up too.
+    const discord = await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Discord', exact: true })
+      .boundingBox();
     expect(discord?.height ?? 0).toBeGreaterThanOrEqual(44);
   });
 });
