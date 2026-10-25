@@ -2104,7 +2104,6 @@ paths:
         with scope webhook.incoming.
       responses:
         '302': { description: "Discord's authorize URL; or /account?discord=failed#discord when the member lacks the notifications entitlement" }
-        '401': { description: Sign in first }
         '404': { description: The deployment has no Discord application configured }
   /v1/notifications/discord/callback:
     get:
@@ -2120,7 +2119,6 @@ paths:
         - { name: error, in: query, schema: { type: string } }
       responses:
         '302': { description: "/account?discord=connected|denied|failed#discord" }
-        '401': { description: Sign in first }
   /v1/notifications/discord/test:
     post:
       summary: Post the test message (premium)
