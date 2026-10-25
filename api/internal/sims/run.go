@@ -32,15 +32,7 @@ const failCompensationTimeout = 5 * time.Second
 // the page has something to poll.
 func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 	actor := auth.ActorFrom(r.Context())
-	allowed, _, err := s.Accounts.Can(r.Context(), actor.UserID, entitlements.FeatureServerSims)
-	if err != nil {
-		s.fail(w, r, "premium", err, "could not check your account just now")
-		return
-	}
-	if !allowed {
-		// 402, not 403: the account is fine, the feature is paid for.
-		httpx.WriteError(w, r, http.StatusPaymentRequired, "premium_required",
-			"running on our servers is a premium feature", nil)
+	if !s.entitled(w, r, actor) {
 		return
 	}
 	var req simapi.SimRequest
@@ -49,6 +41,65 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 			"the body must be a sim request of at most 256 KB", nil)
 		return
 	}
+	s.startRun(w, r, actor, req)
+}
+
+// rerun starts a failed run's stored request again as a new run, through
+// the same checks and writes run applies; the failed row is left as it is.
+func (s *Service) rerun(w http.ResponseWriter, r *http.Request) {
+	actor := auth.ActorFrom(r.Context())
+	if !s.entitled(w, r, actor) {
+		return
+	}
+	req, err := s.Store.FailedRequest(r.Context(), r.PathValue("id"), actor.UserID)
+	switch {
+	case errors.Is(err, ErrNotFound):
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such failed run", nil)
+	case err != nil:
+		s.fail(w, r, "rerun", err, "could not read that run just now")
+	default:
+		s.startRun(w, r, actor, req)
+	}
+}
+
+// entitled reports whether the actor may run on our servers, and has
+// already written the refusal when not.
+func (s *Service) entitled(w http.ResponseWriter, r *http.Request, actor auth.Actor) bool {
+	allowed, _, err := s.Accounts.Can(r.Context(), actor.UserID, entitlements.FeatureServerSims)
+	if err != nil {
+		s.fail(w, r, "premium", err, "could not check your account just now")
+		return false
+	}
+	if !allowed {
+		// 402, not 403: the account is fine, the feature is paid for.
+		httpx.WriteError(w, r, http.StatusPaymentRequired, "premium_required",
+			"running on our servers is a premium feature", nil)
+	}
+	return allowed
+}
+
+// startRun checks a decoded request against the server lane, queues it
+// and starts its job. Both run and rerun end here, so a re-run can never
+// be admitted on weaker terms than a first run.
+func (s *Service) startRun(w http.ResponseWriter, r *http.Request, actor auth.Actor, req simapi.SimRequest) {
+	if !s.admit(w, r, &req) {
+		return
+	}
+	id := auth.Base32ID(auth.ReportIDChars)
+	if err := s.Store.Queue(r.Context(), id, actor.UserID, req); err != nil {
+		s.fail(w, r, "queue", err, "could not start that run just now")
+		return
+	}
+	if !s.dispatch(w, r, id) {
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"sim_id": id})
+}
+
+// admit applies the deployment's pin, the encounter defaults and the
+// lane's cap to req, then validates and sizes it. It reports whether the
+// request may run, and has already written the refusal when not.
+func (s *Service) admit(w http.ResponseWriter, r *http.Request, req *simapi.SimRequest) bool {
 	// The deployment's own pin wins: a page holding a stale bundle
 	// must not pick which engine our servers run.
 	req.EngineVersion = s.EngineVersion
@@ -63,54 +114,49 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 	// the largest lane's cap, and this is the server lane (contract A1).
 	if err := req.ValidateLane(simapi.LaneServer); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", err.Error(), nil)
-		return
+		return false
 	}
 	// Bulk only, not req.Kind() != KindRun: runner.Planner's own
 	// contract refuses a request with no Bulk block (ErrBadInput), and
 	// a weights request carries req.Weights instead - sending one
 	// through the planner would turn every stat-weights submit into a
 	// 500 rather than skip a check it has no combinations to answer.
-	if req.Bulk != nil && s.checkSize(w, r, req) {
-		return
+	if req.Bulk != nil && s.checkSize(w, r, *req) {
+		return false
 	}
 	// A weights request has no combinations for the Planner to size,
 	// but it is not unbounded either: simapi.WeightsIterations costs
 	// it directly from the engine's own stat-weights arithmetic, and
 	// checkWeightsSize runs it through the same too_large estimate
 	// checkSize does for bulk.
-	if req.Weights != nil && s.checkWeightsSize(w, r, req) {
-		return
-	}
+	return req.Weights == nil || !s.checkWeightsSize(w, r, *req)
+}
 
-	id := auth.Base32ID(auth.ReportIDChars)
-	if err := s.Store.Queue(r.Context(), id, actor.UserID, req); err != nil {
-		s.fail(w, r, "queue", err, "could not start that run just now")
-		return
+// dispatch starts the run's job. When it cannot, the row says it failed
+// rather than sitting on "queued" forever, and the 502 is already written.
+func (s *Service) dispatch(w http.ResponseWriter, r *http.Request, id string) bool {
+	err := s.Jobs.Run(r.Context(), SimRunJobCommand, id)
+	if err == nil {
+		return true
 	}
-	if err := s.Jobs.Run(r.Context(), SimRunJobCommand, id); err != nil {
-		// The row exists and carries the request, so the run can be
-		// retried; the row says it failed rather than sitting on
-		// "queued" forever. The client disconnecting is one of the
-		// reasons Jobs.Run can fail in the first place, so this write
-		// must not ride the request's own (already-cancelled) context
-		// - that would make the exact outcome this branch exists to
-		// prevent. context.WithoutCancel keeps the request's values
-		// (request id, actor) without its cancellation; its own short
-		// timeout stands in for the one the request context would
-		// otherwise have provided.
-		s.logger().Error("sims", "id", httpx.RequestIDFrom(r.Context()), "op", "job",
-			"sim", id, "err", err)
-		failCtx, cancel := context.WithTimeout(context.WithoutCancel(r.Context()), failCompensationTimeout)
-		defer cancel()
-		if err := s.Store.Fail(failCtx, id, "the job could not be started"); err != nil {
-			s.fail(w, r, "job", err, "could not start that run just now")
-			return
-		}
-		httpx.WriteError(w, r, http.StatusBadGateway, "upstream",
-			"the run was recorded but could not be started", nil)
-		return
+	// The row exists and carries the request, so the run can be
+	// retried. The client disconnecting is one of the reasons Jobs.Run
+	// can fail in the first place, so the compensating write must not
+	// ride the request's own (already-cancelled) context -
+	// context.WithoutCancel keeps the request's values (request id,
+	// actor) without its cancellation; its own short timeout stands in
+	// for the one the request context would otherwise have provided.
+	s.logger().Error("sims", "id", httpx.RequestIDFrom(r.Context()), "op", "job",
+		"sim", id, "err", err)
+	failCtx, cancel := context.WithTimeout(context.WithoutCancel(r.Context()), failCompensationTimeout)
+	defer cancel()
+	if err := s.Store.Fail(failCtx, id, "the job could not be started"); err != nil {
+		s.fail(w, r, "job", err, "could not start that run just now")
+		return false
 	}
-	httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"sim_id": id})
+	httpx.WriteError(w, r, http.StatusBadGateway, "upstream",
+		"the run was recorded but could not be started", nil)
+	return false
 }
 
 // planTimeout bounds the plan-only subprocess. Expansion loads the item

@@ -146,13 +146,14 @@ planner mirror them in `web/src/lib/planner/rules.ts`.
 ## Simulator and phase endpoints
 
 The simulator's full surface (`POST /v1/sims`, `POST /v1/sims/run`, `GET /v1/sims/{id}`,
-`GET /v1/sims/{id}/progress`, `GET /v1/specs`, and the sim-input route) is documented in
-`openapi.yaml`, not restated here. The two rows below are the ones the router mounts
-unconditionally that do not belong to any other table in this file:
+`GET /v1/sims/{id}/progress`, `POST /v1/sims/{id}/seen`, `POST /v1/sims/{id}/rerun`, `GET /v1/specs`, and the sim-input route) is documented in
+`openapi.yaml`, not restated here. The rows below are the ones that do not belong to any other table in this file:
 
 | Route | Notes |
 |---|---|
-| `GET /v1/sims?mine=1&kind=` | The caller's own sims, newest first, optionally narrowed to one tool (`run`, `gear`, `talents`, `drops`, `weights`). Each row carries its kind and a composed one-line headline. An unknown kind is 400. |
+| `GET /v1/sims?mine=1&kind=&lane=` | The caller's own sims, newest first, optionally narrowed to one tool (`run`, `gear`, `talents`, `drops`, `weights`) and to one lane (`server`, `browser`). Each row carries its kind, a composed one-line headline, its lane, `finished_at`, `failure_reason` and `seen`; queued and running rows carry `estimate_seconds`. An unknown kind or lane is 400. |
+| `POST /v1/sims/{id}/seen` | Marks the caller's finished server run as looked at (204); 404 when it is not theirs or not done. |
+| `POST /v1/sims/{id}/rerun` | Premium. Starts a failed run's stored request again as a new run (202 `{sim_id}`) under the checks `POST /v1/sims/run` applies; 404 when it is not the caller's failed run. |
 | `GET /v1/phases` | The content phase boundaries, cached an hour. The table is compiled in; `api/internal/phase/boundaries_test.go` holds it to `data/curated/phases.json`. |
 
 ## Keeping the page chrome in step with the site

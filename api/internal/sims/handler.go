@@ -1,6 +1,7 @@
 package sims
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -24,6 +25,9 @@ var filterKinds = []string{
 	simapi.KindRun, simapi.KindGear, simapi.KindTalents,
 	simapi.KindDrops, simapi.KindWeights,
 }
+
+// filterLanes is the two lanes a history filter accepts (contract 1.1).
+var filterLanes = []string{simapi.LaneServer, simapi.LaneBrowser}
 
 const (
 	// maxResultBytes bounds a posted browser result. A 3,000-iteration
@@ -92,11 +96,13 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/sims", auth.RequireSession(s.mine))
 	mux.HandleFunc("GET /v1/sims/{id}", s.get)
 	mux.HandleFunc("GET /v1/sims/{id}/progress", s.progress)
+	mux.HandleFunc("POST /v1/sims/{id}/seen", auth.RequireSession(s.seen))
 	mux.HandleFunc("GET /v1/specs", s.specs)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/sim-input", s.simInput)
 	if s.Jobs != nil && s.Accounts != nil && s.Planner != nil {
 		limit := httpx.RateLimitByKey(simsRunPerMinute, time.Minute, auth.AccountRateLimitKey)
 		mux.Handle("POST /v1/sims/run", limit(auth.RequireSession(s.run)))
+		mux.Handle("POST /v1/sims/{id}/rerun", limit(auth.RequireSession(s.rerun)))
 	}
 }
 
@@ -198,24 +204,76 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	// An unknown kind is refused rather than answered with an empty
-	// list: "you have no topgear sims" is a true sentence about a word
-	// that does not exist, and a typo in a link would read as a real
-	// (empty) answer forever.
-	kind := r.URL.Query().Get("kind")
-	if kind != "" && !slices.Contains(filterKinds, kind) {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
-			"kind must be one of "+strings.Join(filterKinds, ", "),
-			map[string]string{"kind": strings.Join(filterKinds, "|")})
+	kind, ok := queryChoice(w, r, "kind", filterKinds)
+	if !ok {
 		return
 	}
-	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, kind, "")
+	lane, ok := queryChoice(w, r, "lane", filterLanes)
+	if !ok {
+		return
+	}
+	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, kind, lane)
+	if err == nil {
+		err = s.attachEstimates(r.Context(), out.Rows)
+	}
 	if err != nil {
 		s.fail(w, r, "mine", err, "could not read your sims just now")
 		return
 	}
 	httpx.SetPrivateListCache(w)
 	httpx.WriteOK(w, r, http.StatusOK, out)
+}
+
+// queryChoice reads a filter parameter that must be empty or one of
+// choices. An unknown value is refused rather than answered with an empty
+// list: "you have no topgear sims" is a true sentence about a word that
+// does not exist, and a typo in a link would read as a real (empty)
+// answer forever. It reports whether the request may go on.
+func queryChoice(w http.ResponseWriter, r *http.Request, name string, choices []string) (string, bool) {
+	value := r.URL.Query().Get(name)
+	if value == "" || slices.Contains(choices, value) {
+		return value, true
+	}
+	httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+		name+" must be one of "+strings.Join(choices, ", "),
+		map[string]string{name: strings.Join(choices, "|")})
+	return "", false
+}
+
+// attachEstimates fills EstimateSeconds on the queued and running rows,
+// asking the store once per distinct spec on the page.
+func (s *Service) attachEstimates(ctx context.Context, rows []Row) error {
+	bySpec := map[string]*int{}
+	for i := range rows {
+		if rows[i].State != StateQueued && rows[i].State != StateRunning {
+			continue
+		}
+		spec := rows[i].Spec
+		est, known := bySpec[spec]
+		if !known {
+			var err error
+			if est, err = s.Store.EstimateSeconds(ctx, spec); err != nil {
+				return err
+			}
+			bySpec[spec] = est
+		}
+		rows[i].EstimateSeconds = est
+	}
+	return nil
+}
+
+// seen marks the caller's finished run as looked at. A row that is not
+// theirs, or not done, is the same 404 as one that does not exist.
+func (s *Service) seen(w http.ResponseWriter, r *http.Request) {
+	marked, err := s.Store.MarkSeen(r.Context(), r.PathValue("id"), auth.ActorFrom(r.Context()).UserID)
+	switch {
+	case err != nil:
+		s.fail(w, r, "seen", err, "could not mark that run just now")
+	case !marked:
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such finished run", nil)
+	default:
+		w.WriteHeader(http.StatusNoContent)
+	}
 }
 
 func (s *Service) progress(w http.ResponseWriter, r *http.Request) {
