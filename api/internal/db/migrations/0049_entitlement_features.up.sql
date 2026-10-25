@@ -3,5 +3,5 @@
 alter table entitlements add column features text[];
 alter table entitlements add constraint entitlements_features_scope check (
   features is null
-  or (plan = 'guild' and source = 'grant' and features <@ array['officer_views']::text[])
+  or (plan = 'guild' and source = 'grant' and cardinality(features) > 0 and features <@ array['officer_views']::text[])
 );
