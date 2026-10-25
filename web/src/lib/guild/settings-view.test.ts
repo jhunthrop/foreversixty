@@ -79,7 +79,7 @@ describe('billing copy per state', () => {
     const lines = notOnPlanLines();
     expect(lines.headline).toBe('This guild is not on the guild plan yet.');
     expect(lines.detail).toBe(
-      '$15 a month, cancel any time. Officers get the loot, readiness and progression tools.',
+      '$15 a month, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.',
     );
     expect(notOnPlanLines(20).detail).toContain('$20 a month');
   });
@@ -88,7 +88,7 @@ describe('billing copy per state', () => {
     for (const none of [0, Number.NaN, -1]) {
       const detail = notOnPlanLines(none).detail;
       expect(detail).toBe(
-        'Monthly, cancel any time. Officers get the loot, readiness and progression tools.',
+        'Monthly, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.',
       );
       expect(detail).not.toMatch(/\d/);
     }

@@ -84,8 +84,8 @@ export function notOnPlanLines(monthlyUsd: number | undefined = PLANS.guild.mont
   return {
     headline: 'This guild is not on the guild plan yet.',
     detail: priced
-      ? `$${monthlyUsd} a month, cancel any time. Officers get the loot, readiness and progression tools.`
-      : 'Monthly, cancel any time. Officers get the loot, readiness and progression tools.',
+      ? `$${monthlyUsd} a month, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.`
+      : 'Monthly, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.',
   };
 }
 

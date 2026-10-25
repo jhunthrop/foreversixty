@@ -15,7 +15,8 @@
 
 <p class="text-muted basis-full text-[13px] leading-5" data-testid="account-guild-plan">
   {accountGuildPlanLine(plan)} ·
-  <a class="hover:text-strong active:text-strong underline" href={guildSettingsHref(region, ruleset, name)}
-    >Guild settings</a
+  <a
+    class="text-muted hover:text-strong active:text-strong underline"
+    href={guildSettingsHref(region, ruleset, name)}>Guild settings</a
   >
 </p>
