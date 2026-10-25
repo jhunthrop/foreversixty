@@ -122,8 +122,9 @@ const failureUnknown = "the run could not be completed"
 // failed records why a run did not finish and returns the original
 // error, so the job exits non-zero and the page stops polling. reason
 // is the plain sentence the row keeps and the member reads; an empty
-// one becomes failureUnknown. The detailed cause is never stored: it
-// goes to the log and to the returned error only.
+// one becomes failureUnknown. The internal cause is never stored: it
+// goes to the log and to the returned error only. (Finish is the one
+// place a sentence from the engine itself is stored.)
 func (d JobDeps) failed(ctx context.Context, simID string, cause error, reason string) error {
 	if reason == "" {
 		reason = failureUnknown

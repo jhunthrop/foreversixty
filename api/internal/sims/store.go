@@ -359,7 +359,9 @@ func (s *Store) Advance(ctx context.Context, id string, t Tick) error {
 // Finish writes a server run's result over its placeholder. A result
 // carrying its own Error is stored as an error: the engine refusing a
 // request is an answer, and the page must be told rather than left
-// polling.
+// polling. That refusal's own sentence is what the row keeps as its
+// failure reason; it is already plain, unlike the internal causes the job
+// never stores.
 func (s *Store) Finish(ctx context.Context, id string, res simapi.SimResult) error {
 	res.SimID = id
 	body, err := json.Marshal(res)
@@ -449,13 +451,16 @@ type FinishedRun struct {
 }
 
 // FinishedUnseen answers the member's finished server runs they have not
-// looked at yet, newest first, at most limit of them.
+// looked at yet, newest first, at most limit of them. Lane and state are
+// literals, not bound parameters, so a generic plan can use the partial
+// index sims_user_unseen_idx.
 func (s *Store) FinishedUnseen(ctx context.Context, userID int64, limit int) ([]FinishedRun, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select id, spec, coalesce(title, ''), dps_mean, finished_at from sims
-		 where user_id = $1 and lane = $2 and state = $3 and seen_at is null
-		 order by finished_at desc, id limit $4`,
-		userID, simapi.LaneServer, StateDone, limit)
+		 where user_id = $1 and lane = '`+simapi.LaneServer+`' and state = '`+StateDone+`'
+		   and seen_at is null
+		 order by finished_at desc, id limit $2`,
+		userID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("sims: finished unseen: %w", err)
 	}
@@ -495,14 +500,15 @@ const (
 // EstimateSeconds answers how long a server run of spec usually takes: the
 // median of the last ten done runs that recorded a duration. A done row
 // without one is not a sample. It is nil under three, when a median would
-// be a guess.
+// be a guess. Lane and state are literals so a generic plan can use the
+// partial index sims_server_done_spec_idx.
 func (s *Store) EstimateSeconds(ctx context.Context, spec string) (*int, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select (result->>'duration_ms')::bigint from sims
-		 where state = $1 and lane = $2 and spec = $3
+		 where lane = '`+simapi.LaneServer+`' and state = '`+StateDone+`' and spec = $1
 		   and (result->>'duration_ms') is not null
-		 order by finished_at desc nulls last, created_at desc limit $4`,
-		StateDone, simapi.LaneServer, spec, estimateWindow)
+		 order by finished_at desc nulls last, created_at desc limit $2`,
+		spec, estimateWindow)
 	if err != nil {
 		return nil, fmt.Errorf("sims: estimate %s: %w", spec, err)
 	}
