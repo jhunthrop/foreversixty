@@ -296,7 +296,7 @@ The API lane builds exactly this; if it differs, change the contract here first.
       "report_id": "abcd1234efgh",
       "fight_index": 7,
       "encounter": "Golemagg the Incinerator",
-      "difficulty": "normal",
+      "difficulty": 3,
       "parse_percentile": 88,
       "kill": true,
       "visibility": "public"
@@ -306,7 +306,7 @@ The API lane builds exactly this; if it differs, change the contract here first.
     {
       "encounter": "Golemagg the Incinerator",
       "encounter_id": 663,
-      "difficulty": "normal",
+      "difficulty": 3,
       "points": [
         { "at": "2026-12-11T21:14:03Z", "parse_percentile": 88, "report_id": "abcd1234efgh", "fight_index": 7 }
       ]
@@ -327,6 +327,7 @@ Rules, each one tested by the API lane:
 - **`fights`:** the rows behind every point in `score` and `encounters`, newest first, deduplicated by (`report_id`, `fight_index`), each in the shape the public page's `history` rows already use (`CharacterFight`: `encounter`, `encounter_id`, `difficulty`, `metric`, `value`, `percentile`, `spec`, `fought_at`, `report_id`, `fight_index`, `execution_score`) plus `visibility`. The brief's contract did not carry these rows; the lists need amount and execution, so they are added here.
 - **Verify before building (the API lane reports back):** that a private or guild fight's snapshot is written at all (`RollUpScores` calls `ScoreV2`, which reads public reports only, so it is the public score as it stood, or NULL for a character with no public report yet); if rows are NULL the owner's score points for those fights are left out, and the ring treatment in 3.5 simply has fewer rings.
 - **Keys:** the web keys a fight as `report_id:fight_index` everywhere (a score point, an encounter point, a list row).
+- **Difficulty (amended 2026-10-25 by the controller):** `difficulty` is the integer id the public `history` rows already send, never a name; the web names it with the same helper the fight table uses. The API has no difficulty-name table and must not invent one.
 
 ## 11. Decisions the product spec left open (for the controller to rule)
 
