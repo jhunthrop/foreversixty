@@ -24,6 +24,7 @@
     onRemove,
     onCancel,
     onReplace,
+    onStuck,
   }: {
     state: Exclude<DiscordBlockKey, 'off' | 'free' | 'empty'>;
     discord: DiscordNotifications;
@@ -36,6 +37,7 @@
     onRemove: () => void;
     onCancel: () => void;
     onReplace: () => void;
+    onStuck: () => void;
   } = $props();
 </script>
 
@@ -49,7 +51,14 @@
   />
 {/snippet}
 
-<DiscordSummary {state} {discord} replaceHidden={confirming} replaceDisabled={busy !== null} {onReplace} />
+<DiscordSummary
+  {state}
+  {discord}
+  replaceHidden={confirming}
+  replaceDisabled={busy !== null}
+  {onReplace}
+  {onStuck}
+/>
 {#if state !== 'disabled'}{@render eventRows()}{/if}
 <!-- 8 px under the actions row; the replace link's own 44 px hit area is the rest -->
 <div class="flex flex-col">
@@ -65,7 +74,7 @@
   />
   <DiscordStatusLine {status} />
   {#if state === 'saved' && !confirming}
-    <DiscordReplace {discord} disabled={busy !== null} {onReplace} />
+    <DiscordReplace {discord} disabled={busy !== null} {onReplace} {onStuck} />
   {/if}
 </div>
 {#if state === 'disabled'}{@render eventRows()}{/if}

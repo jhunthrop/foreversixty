@@ -101,6 +101,11 @@
     if (result.ok) statusTimer = setTimeout(() => (status = null), STATUS_MS);
   }
 
+  /** The connect click never navigated: say so in the panel's status line (spec 4.3 item 5). */
+  function showStuck(): void {
+    show({ ok: true, message: notificationsCopy.connectStuck });
+  }
+
   async function run(kind: Exclude<Busy, null>, action: () => Promise<ActionResult>): Promise<ActionResult> {
     busy = kind;
     status = null;
@@ -192,7 +197,7 @@
     {:else}
       <StatePanel label={notificationsCopy.label} testid="account-discord">
         {#if showConnect}
-          <DiscordConnect {status} {replacing} onPaste={showPaste} onCancel={cancel} />
+          <DiscordConnect {status} {replacing} onStuck={showStuck} onPaste={showPaste} onCancel={cancel} />
         {:else if showForm}
           {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
           <DiscordPasteForm
@@ -219,6 +224,7 @@
             onRemove={remove}
             onCancel={cancel}
             onReplace={startReplace}
+            onStuck={showStuck}
           />
         {/if}
       </StatePanel>

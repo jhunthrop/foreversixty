@@ -5,6 +5,7 @@
      `pageshow` with `persisted` puts the label back (spec 4.2, 4.3). -->
 <script lang="ts">
   import { connectUrl } from '../../../lib/account/notifications';
+  import { createOpeningWatchdog } from '../../../lib/account/opening-watchdog';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
 
   let {
@@ -12,19 +13,32 @@
     class: className,
     testid,
     busy = false,
-  }: { label: string; class: string; testid: string; busy?: boolean } = $props();
+    onStuck,
+  }: { label: string; class: string; testid: string; busy?: boolean; onStuck: () => void } = $props();
 
   let opening = $state(false);
+  // No navigation 10 s after the click means no `pageshow` will come: restore the label and say so.
+  const watchdog = createOpeningWatchdog(() => {
+    opening = false;
+    onStuck();
+  });
 
   /** A test or remove call is in flight: the click goes nowhere, as a disabled button's would. */
   function onClick(event: MouseEvent): void {
     if (busy) event.preventDefault();
-    else opening = true;
+    else {
+      opening = true;
+      watchdog.start();
+    }
   }
 
   function onPageShow(event: PageTransitionEvent): void {
-    if (event.persisted) opening = false;
+    if (!event.persisted) return;
+    watchdog.cancel();
+    opening = false;
   }
+
+  $effect(() => () => watchdog.cancel());
 </script>
 
 <svelte:window onpageshow={onPageShow} />

@@ -311,7 +311,8 @@ describe('connect state', () => {
 
 describe('connect state, status line', () => {
   const connectHtml = (status: { ok: boolean; message: string } | null): string =>
-    render(DiscordConnect, { props: { status, onPaste: () => {}, onCancel: () => {} } }).body;
+    render(DiscordConnect, { props: { status, onStuck: () => {}, onPaste: () => {}, onCancel: () => {} } })
+      .body;
 
   it('is the reserved line, empty without an outcome', () => {
     const body = connectHtml(null);
@@ -332,7 +333,7 @@ describe('connect state, status line', () => {
 
 describe('connect replace view', () => {
   const body = render(DiscordConnect, {
-    props: { status: null, replacing: true, onPaste: () => {}, onCancel: () => {} },
+    props: { status: null, replacing: true, onStuck: () => {}, onPaste: () => {}, onCancel: () => {} },
   }).body;
 
   it('omits the intro and ends with Cancel', () => {

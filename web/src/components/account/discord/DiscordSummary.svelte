@@ -21,6 +21,7 @@
     replaceHidden = false,
     replaceDisabled = false,
     onReplace,
+    onStuck,
   }: {
     state: DiscordBlockKey;
     discord: DiscordNotifications;
@@ -28,6 +29,7 @@
     replaceHidden?: boolean;
     replaceDisabled?: boolean;
     onReplace: () => void;
+    onStuck: () => void;
   } = $props();
 
   const connected = $derived(sourceOf(discord) === 'connected');
@@ -56,7 +58,7 @@
   <p class="text-muted text-[13px]">
     {lineTwo.slice(0, idAt)}<span class="text-text font-mono whitespace-nowrap tabular-nums"
       >{lineTwo.slice(idAt)}</span
-    >{#if openUrl !== null}{' · '}<a
+    >{#if openUrl !== null}&#32;·&#32;<a
         class="text-text hover:text-gold-hover -my-3 py-3 underline"
         href={openUrl}
         target="_blank"
@@ -80,7 +82,7 @@
     <p class="text-muted text-[13px]">{notificationsCopy.switchedOffFix}</p>
     {#if !replaceHidden}
       <div class="-mt-1">
-        <DiscordReplace {discord} disabled={replaceDisabled} {onReplace} />
+        <DiscordReplace {discord} disabled={replaceDisabled} {onReplace} {onStuck} />
       </div>
     {/if}
   </DiscordNotice>

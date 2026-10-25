@@ -13,11 +13,13 @@
   let {
     status,
     replacing = false,
+    onStuck,
     onPaste,
     onCancel,
   }: {
     status: { ok: boolean; message: string } | null;
     replacing?: boolean;
+    onStuck: () => void;
     onPaste: () => void;
     onCancel: () => void;
   } = $props();
@@ -30,6 +32,7 @@
       label={notificationsCopy.connect}
       class="{PRIMARY_BUTTON_FIXED} px-5 whitespace-nowrap"
       testid="discord-connect"
+      {onStuck}
     />
     <p class="text-muted mt-2 text-[13px]">{notificationsCopy.connectExplanation}</p>
     <div class="w-full"><DiscordStatusLine {status} /></div>
