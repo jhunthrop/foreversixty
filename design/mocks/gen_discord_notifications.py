@@ -33,6 +33,14 @@ INTRO = 'Get a message in a Discord channel when a server sim finishes or a log 
 STEPS = ["In Discord, open the channel's settings, then Integrations, then Webhooks.",
          'Choose New Webhook, name it something you will recognize, then Copy Webhook URL.',
          'Paste it below.']
+CONNECT = 'Connect a Discord channel'          # (amended 2026-10-25, connect lane)
+CONNECT_NOTE = 'Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.'
+PASTE_INSTEAD = 'Paste a webhook URL instead'
+CONNECT_INSTEAD = 'Connect a Discord channel instead'
+RECONNECT = 'Connect a different channel'
+RECONNECT_NOTE = 'Connecting again replaces this channel and removes its webhook from Discord.'
+REMOVE_Q = {'pasted': 'Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.',
+            'connected': 'Remove this connection? Posts stop and we delete its webhook from Discord.'}
 CURE = 'Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.'
 TRUST = 'We store the URL encrypted, never show it again, and delete it with your account.'
 
@@ -109,8 +117,10 @@ def panel(inner, width, phone=False, title='Discord'):
             f'display:flex;flex-direction:column;gap:16px;font-size:14px;color:{TEXT}">{head}{inner}</div>')
 
 
-def posts_to(name=NAME):
-    if name:
+def posts_to(name=NAME, source='pasted'):
+    if source == 'connected':
+        one = f'<span style="color:{MUTED}">Connected to</span> <span style="color:#f2eee4;font-weight:600">a Discord channel</span>'
+    elif name:
         one = f'<span style="color:{MUTED}">Posts through</span> <span style="color:#f2eee4;font-weight:600">\u201c{name}\u201d</span>'
     else:
         one = f'<span style="color:{MUTED}">Posts to a Discord channel</span>'
@@ -141,7 +151,7 @@ def steps():
     return '<ol class="dn-steps">' + ''.join(f'<li>{t}</li>' for t in STEPS) + '</ol>'
 
 
-def paste_form(error='', cancel=False, focus=False, filled=''):
+def paste_form(error='', cancel=False, focus=False, filled='', back=False):
     ph = 'https://discord.com/api/webhooks/…'
     val = f' value="{filled}"' if filled else ''
     bad = 'is-bad' if error else ''
@@ -149,9 +159,18 @@ def paste_form(error='', cancel=False, focus=False, filled=''):
     err = line(error, 'bad under') if error else line('', 'under')
     cancel_html = link('Cancel') if cancel else ''
     intro = '' if cancel else small(INTRO)
+    backlink = f'<div style="margin-top:-12px">{link(CONNECT_INSTEAD)}</div>' if back else ''
     return (f'{intro}{steps()}<div style="display:flex;flex-direction:column;gap:0"><label class="label" style="color:{MUTED};margin-bottom:8px" for="u">Webhook URL</label>'
             f'<input id="u" class="dn-input {bad} {foc}" placeholder="{ph}"{val} autocomplete="off" spellcheck="false">{err}'
-            f'{small(TRUST)}</div>{events()}{row(btn("Save webhook", "primary"), cancel_html)}')
+            f'{small(TRUST)}</div>{events()}{row(btn("Save webhook", "primary"), cancel_html)}{backlink}')
+
+
+def connect_view(status='', status_kind='', replace=False, btn_label=CONNECT, btn_state=''):
+    # Spec 3.2 Connect state: button, one explanation, reserved status line, then the paste disclosure.
+    intro = '' if replace else small(INTRO)
+    cancel = f'<div style="margin-top:-12px">{link("Cancel")}</div>' if replace else ''
+    return (f'{intro}<div style="display:flex;flex-direction:column;gap:8px">{row(btn(btn_label, "primary", btn_state))}{small(CONNECT_NOTE)}'
+            f'{line(status, status_kind)}{link(PASTE_INSTEAD)}</div>{cancel}')
 
 
 def warning(lead, detail):
@@ -160,15 +179,20 @@ def warning(lead, detail):
 
 
 def saved(status='', status_kind='', test_state='', test_label='Send test message', sim=True, upload=True, warn=None, confirm=False,
-          private=False, name=NAME):
+          private=False, name=NAME, source='pasted'):
     if confirm:
-        act = (f'<div style="display:flex;flex-direction:column;gap:12px"><p style="margin:0;font-size:14px;line-height:1.4">Remove this webhook? Posts stop and we forget the URL.</p>'
+        act = (f'<div style="display:flex;flex-direction:column;gap:12px"><p style="margin:0;font-size:14px;line-height:1.4">{REMOVE_Q[source]}</p>'
                f'{row(btn("Remove"), btn("Cancel"))}</div>')
     else:
         act = row(btn(test_label, '', test_state), btn('Remove'))
     w = warning(*warn) if warn else ''
-    swap = '' if confirm else f'<div style="margin-top:-12px">{link("Use a different webhook")}</div>'
-    return (f'{posts_to(name)}{w}{events(sim, upload, private=private)}<div style="display:flex;flex-direction:column;gap:6px">{act}{line(status, status_kind)}</div>'
+    if confirm:
+        swap = ''
+    elif source == 'connected':
+        swap = f'<div style="margin-top:-12px">{link(RECONNECT)}{small(RECONNECT_NOTE)}</div>'
+    else:
+        swap = f'<div style="margin-top:-12px">{link("Use a different webhook")}</div>'
+    return (f'{posts_to(name, source)}{w}{events(sim, upload, private=private)}<div style="display:flex;flex-direction:column;gap:6px">{act}{line(status, status_kind)}</div>'
             f'{swap}')
 
 
@@ -294,8 +318,27 @@ def states_desktop():
         d_('Use a different webhook', paste_form(cancel=True), 'Same form; the saved webhook keeps working until Save succeeds.'),
         d_('Event turned off, saved', saved('Saved.', 'ok', upload=False)),
     ]
+    cells += connect_boards()
     free = H.cell("Free member: the sentence in the block's place (no panel, no form)", upsell_line(), 'One sentence under the Plan panel.', W_DESK)
     return '<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">' + ''.join(cells) + free + '</div>'
+
+
+def connect_boards():
+    # (amended 2026-10-25, connect lane) every state the Connect flow adds; the paste-first boards above are the connect=false state.
+    return [
+        d_('CONNECT ON: nothing saved (the new first state)', connect_view(), 'One gold button, one explanation, the paste path as a quiet link. No steps, no field, no checkboxes: defaults apply and the member edits them once connected.'),
+        d_('Connect: button states, left to right in the capture: hover, focus, opening', connect_view(btn_state='is-hover', btn_label=CONNECT) + connect_view(replace=True, btn_state='is-focus') + connect_view(replace=True, btn_label='Opening Discord\u2026', btn_state='is-off'),
+           'Hover gold-hover, focus 2 px ring, then Opening Discord\u2026 (aria-busy, not clickable) in the instant before the redirect.'),
+        d_('Back from Discord: connected', saved('Connected. Send a test message to see it in your channel.', 'ok', source='connected'), 'Focus lands on Send test message. Line one never shows the Discord-side webhook name (it is "Forever Sixty").'),
+        d_('Back from Discord: cancelled', connect_view('Cancelled in Discord. Nothing was connected.', 'ok'), 'Plain text colour, role=status; focus returns to Connect a Discord channel.'),
+        d_('Back from Discord: failed', connect_view('Could not connect. Check that you can manage webhooks in that channel, then try again.', 'bad'), 'role=alert, --wipe. We know only that it failed.'),
+        d_('Connect on, paste view (disclosed by Paste a webhook URL instead)', paste_form(back=True), 'The same form as today, plus one link back. The view swaps; nothing is hidden behind an accordion.'),
+        d_('Saved, connected (reconnect in one click)', saved(source='connected'), 'Connected to a Discord channel + the shortened channel id. The link goes straight to Discord; its note says the old webhook is removed from Discord.'),
+        d_('Remove, connected', saved(confirm=True, source='connected'), 'We also delete the webhook from Discord.'),
+        d_('Remove, pasted (connect on)', saved(confirm=True, source='pasted'), 'We only forget it; the member made it, so the member deletes it.'),
+        d_('Use a different webhook, pasted + connect on', connect_view(replace=True), 'Replace view for a pasted webhook is the connect view with Cancel; the old webhook keeps posting until a new one is saved.'),
+        d_('Reconnect cancelled (connected, saved)', saved('Cancelled in Discord. Nothing was connected.', 'ok', source='connected'), 'The saved webhook is untouched and keeps posting.'),
+    ]
 
 
 def states_buttons():
@@ -362,7 +405,7 @@ def sk(height, width, text=''):
     return f'<div class="sk" style="height:{height}px;width:{width}px">{text}</div>'
 
 
-DISCORD_FLOORS = (('none', 0, 0), ('free', 44, 44), ('form', 610, 630), ('saved', 460, 475), ('off', 540, 565), ('lapsed', 475, 475))
+DISCORD_FLOORS = (('none', 0, 0), ('free', 44, 44), ('connect', 320, 340), ('form', 610, 630), ('saved', 460, 475), ('off', 540, 565), ('lapsed', 475, 475))
 
 
 def loading_rail(width, discord_h, phone=False):
@@ -401,11 +444,14 @@ def sheet():
              + H.cell('1440: switched off (row and block agree)', off_rail, '', W_DESK) + '</div>')
     ph_saved = phone_frame(rail(W_PH, True, 'On · 2 events', panel(saved('', ''), W_PH, True)))
     ph_form = phone_frame(rail(W_PH, True, 'Off · set up', panel(paste_form(), W_PH, True)))
+    ph_connect = phone_frame(rail(W_PH, True, 'Off · set up', panel(connect_view(), W_PH, True)))
+    ph_conn_saved = phone_frame(rail(W_PH, True, 'On · 2 events', panel(saved(source='connected'), W_PH, True)))
     ph_off = phone_frame(rail(W_PH, True, 'Off · needs attention', panel(disabled_off(), W_PH, True)))
     ph_lapsed = phone_frame(rail(W_PH, True, 'Paused · plan lapsed', panel(lapsed(), W_PH, True)))
     ph_free = phone_frame(rail(W_PH, True, 'Off · Premium', upsell_line(), False, True))
     phones = ('<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">'
-              + H.cell('390: saved', ph_saved, '', 392) + H.cell('390: paste form', ph_form, '', 392)
+              + H.cell('390: saved', ph_saved, '', 392) + H.cell('390: connect (connect on)', ph_connect, '', 392) + H.cell('390: connected, saved', ph_conn_saved, '', 392)
+              + H.cell('390: paste form (connect off)', ph_form, '', 392)
               + H.cell('390: switched off', ph_off, '', 392) + H.cell('390: plan lapsed', ph_lapsed, '', 392)
               + H.cell('390: free member', ph_free, '', 392) + '</div>')
     e_d, e_p = embeds()
