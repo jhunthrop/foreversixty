@@ -203,8 +203,9 @@ atWidths('paste form invalid URL', BASE_WIDTHS, async (page, width) => {
 
 atWidths('paste form saving', BASE_WIDTHS, async (page, width) => {
   const held = gate();
-  await holdRoute(page, '**/v1/notifications/discord', held.wait);
   await openAccount(page, width, { initial: null, afterPut: SAVED });
+  // Registered after the stub, so it runs first and holds the PUT until the frame is taken.
+  await holdRoute(page, '**/v1/notifications/discord', held.wait);
   await input(page).fill(VALID_URL);
   await page.getByTestId('discord-save').click();
   await page.getByText('Saving…').waitFor();
@@ -233,8 +234,9 @@ atWidths('just saved', BASE_WIDTHS, async (page, width) => {
 
 atWidths('sending', BASE_WIDTHS, async (page, width) => {
   const held = gate();
-  await holdRoute(page, '**/v1/notifications/discord/test', held.wait);
   await openAccount(page, width, { initial: SAVED });
+  // Registered after the stub, so it runs first and holds the POST until the frame is taken.
+  await holdRoute(page, '**/v1/notifications/discord/test', held.wait);
   await page.getByTestId('discord-test').click();
   await page.getByText('Sending…').waitFor();
   await shoot(page, 'sending', width);

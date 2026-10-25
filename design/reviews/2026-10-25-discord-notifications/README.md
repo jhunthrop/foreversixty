@@ -1,6 +1,6 @@
 # Discord notifications: acceptance captures
 
-Head sha captured: 8822bf07 (branch worktree-lane-discord-1). Fixture build (`FOREVER_DATA=fixture`), `/v1/me` and the three notification routes stubbed, Chromium at device scale 1, reduced motion on (so fades and hovers show their end state).
+Head sha captured: c0e41c7d (design fixes) plus 1660ae0a, branch worktree-lane-discord-1; re-taken after the design fix round (first take was 8822bf07). Fixture build (`FOREVER_DATA=fixture`), `/v1/me` and the three notification routes stubbed, Chromium at device scale 1, reduced motion on (so fades and hovers show their end state).
 Spec: `design/specs/2026-10-25-discord-notifications.md` section 9. Item 9 (real Discord messages) is the controller's.
 
 Regenerate: build and `astro preview --port 4411`, then from `web/`
@@ -40,16 +40,16 @@ Mobile project: all 0. Load-time footer shift is not zero: at 390 it is 0.4476 f
 
 ## Noticed while capturing
 
-- Fixture artifacts, not the lane: the stub leaves `/v1/reports` unanswered, so Your reports shows "did not load"; `mockEntitlements({ notifications: true })` alone leaves the Plan panel reading "Not on Premium. See plans" beside a live Discord panel and an `On · 2 events` row.
-- The long Discord error is cut mid-word at 140 characters and ends `Mana….` (ellipsis followed by a full stop) in both the switched-off notice and the 4-failure warning.
-- The 1-to-4-failures warning is plain muted text, while switched-off has a coloured bar and a heading line; in the 4-failure state the error sentence reads as small print.
-- Checkboxes are the browser's bright blue native control (and grey when disabled in lapsed); the mock draws a paler blue tick.
-- The channel id is set in the body font with a bolder weight; the mock draws it in a monospace face.
-- Saved: about 70 px of empty space between the buttons and `Use a different webhook` (the reserved status line plus gaps); the mock shows the same reserve at a smaller gap. In switched-off the gap above `Use a different webhook` is of the same size.
-- In switched-off the Post when rows sit below `Use a different webhook`, as the mock draws them; the panel is the tallest state (see `switched-off-long-panel-360.png`).
-- At 2000 the page is centred (content 376 to 1624) and the rail is the right column; nothing stretches.
-- The mock's Plan panel shows Premium renew data (example); the shipped one cannot match it in the fixture.
-- The loading skeleton (`discord-skeleton-*`) has no Discord reserve; the lane deferred this, see CLS above.
+- `saving` and `sending` now hold the PUT and the POST until after the frame: `Saving…` and `Sending…` show with the checkboxes disabled (grey) and the buttons in their busy labels. The `Sending…` button draws a light focus-style border, and in `saving` there is a blank gap of about one line between the URL input and the In Discord helper text.
+- Free sentence: two lines at 1440 and two at 390 (`...or a log you uploaded is done. See plans`), the same 92 px crop height at both widths; no jump between widths.
+- Saved panel: the gap above `Use a different webhook` is now about 50 px (was about 70), still larger than the mock's, which is about 40 px.
+- Warning (2 failures) reads as two lines: `The last 2 posts failed. At 5 in a row it switches off.` then `Last error from Discord: Unknown Webhook.`, in the same muted small text.
+- The long Discord error now cuts at a word and ends `someone with…` with no stray full stop (switched-off-long at 390: 606 px tall with the Post when rows below `Use a different webhook`; warning-long at 360 and 390 also cut at a word).
+- Wording: the shipped event reads `A combat log you upload finishes parsing`; the mock render still says `A log file you upload finishes parsing`, so the side-by-side differs there.
+- Checkboxes are still the browser's bright blue native control (grey when disabled); the mock draws a paler blue tick. The channel id is still in the body font, bolder; the mock uses a monospace face.
+- Fixture artifacts, not the lane: Your reports shows `did not load` (unstubbed route), and the Plan panel reads `Not on Premium` beside a live Discord panel and `On · 2 events`.
+- At 2000 px the page is centred (content 376 to 1624) with the rail as the right column.
+- The loading skeleton has no Discord reserve (deferred); load CLS numbers are above.
 
 ## Verdicts
 
