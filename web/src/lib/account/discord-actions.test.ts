@@ -90,6 +90,12 @@ describe('saveEvents', () => {
     });
   });
 
+  it('sends all three keys, keeping the private value when the log box goes off', async () => {
+    const events = { sim_finished: true, upload_parsed: false, upload_private: true };
+    await saveEvents(meWith(), events);
+    expect(api.requests()[0]?.body).toEqual({ events });
+  });
+
   it('says it could not save on a failure', async () => {
     api.failWith('put', 500, 'x');
     expect(await saveEvents(meWith(), BOTH)).toEqual({

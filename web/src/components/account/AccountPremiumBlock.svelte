@@ -24,8 +24,11 @@
     characters?: readonly MeCharacter[];
     mainKey?: string;
     serverRunsThisMonth?: number;
-    /** The Discord row: `premiumRowValue(me)` and whether it links to #discord. */
-    notifications?: { value: string; linked: boolean };
+    /**
+     * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` leaves the
+     * row out (`premiumRowVisible(me)` is false: the deployment has notifications off).
+     */
+    notifications?: { value: string; linked: boolean } | null;
   } = $props();
 
   const main = $derived(mainCharacter(characters, mainKey));
@@ -36,6 +39,24 @@
     ...premiumBlockCopy.rows.history,
     on: historyHref === null ? premiumBlockCopy.rows.history.on : premiumBlockCopy.rows.history.onWithMain,
   });
+
+  const notificationsRow = $derived(
+    notifications === null
+      ? []
+      : [
+          {
+            key: 'notifications',
+            copy: {
+              label: premiumBlockCopy.rows.notifications.label,
+              on: notifications.value,
+              off: notifications.value,
+            },
+            live: notifications.linked,
+            href: NOTIFICATIONS_HREF,
+            muted: !notifications.linked,
+          },
+        ],
+  );
 
   const rows = $derived([
     {
@@ -55,17 +76,7 @@
       href: historyHref,
       muted: entitlements?.history !== true,
     },
-    {
-      key: 'notifications',
-      copy: {
-        label: premiumBlockCopy.rows.notifications.label,
-        on: notifications.value,
-        off: notifications.value,
-      },
-      live: notifications.linked,
-      href: NOTIFICATIONS_HREF,
-      muted: !notifications.linked,
-    },
+    ...notificationsRow,
     {
       key: 'supporter',
       copy: premiumBlockCopy.rows.supporter,

@@ -6,7 +6,7 @@
      kept after a failed one, never written anywhere else. -->
 <script lang="ts">
   import { tick } from 'svelte';
-  import type { DiscordEvents, DiscordNotifications, Me } from '../../lib/account/api';
+  import type { DiscordEvents, Me } from '../../lib/account/api';
   import {
     removeWebhook,
     saveEvents,
@@ -14,19 +14,20 @@
     sendTest,
     type ActionResult,
   } from '../../lib/account/discord-actions';
-  import { LINK_BUTTON } from '../../lib/account/discord-styles';
   import { blockState } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
   import StatePanel from '../ui/StatePanel.svelte';
-  import DiscordEventRows from './discord/DiscordEventRows.svelte';
-  import DiscordActions from './discord/DiscordActions.svelte';
   import DiscordFree from './discord/DiscordFree.svelte';
   import DiscordPasteForm from './discord/DiscordPasteForm.svelte';
-  import DiscordSummary from './discord/DiscordSummary.svelte';
+  import DiscordSaved from './discord/DiscordSaved.svelte';
   import DiscordStatusLine from './discord/DiscordStatusLine.svelte';
 
   const STATUS_MS = 4000;
-  const BOTH_ON: DiscordEvents = { sim_finished: true, upload_parsed: true };
+  const NEW_WEBHOOK_EVENTS: DiscordEvents = {
+    sim_finished: true,
+    upload_parsed: true,
+    upload_private: false,
+  };
 
   const INPUT = '#discord-webhook';
   const TEST_BUTTON = '[data-testid="discord-test"]';
@@ -40,7 +41,7 @@
 
   const block = $derived(blockState(me));
   let webhook = $state('');
-  let formEvents = $state<DiscordEvents>(BOTH_ON);
+  let formEvents = $state<DiscordEvents>(NEW_WEBHOOK_EVENTS);
   let replacing = $state(false);
   let confirming = $state(false);
   let busy = $state<Busy>(null);
@@ -140,16 +141,6 @@
   }
 </script>
 
-{#snippet eventRows(discord: DiscordNotifications)}
-  <DiscordEventRows
-    events={discord.events}
-    disabled={busy !== null || block.state === 'lapsed'}
-    busy={busy === 'events'}
-    showNote={block.state !== 'lapsed'}
-    onToggle={changeEvents}
-  />
-{/snippet}
-
 {#if block.state !== 'off'}
   <div id="discord" class="scroll-mt-20" onkeydown={onKeydown} role="presentation">
     {#if block.state === 'free'}
@@ -168,34 +159,20 @@
             onSubmit={submit}
             onCancel={cancel}
           />
-        {:else if 'discord' in block}
-          {@const discord = block.discord}
-          <DiscordSummary state={block.state} {discord} />
-          {#if block.state !== 'disabled'}{@render eventRows(discord)}{/if}
-          <!-- 8 px under the actions row; the replace link's own 44 px hit area is the rest -->
-          <div class="flex flex-col">
-            <DiscordActions
-              state={block.state}
-              {confirming}
-              {busy}
-              onTest={test}
-              onAskRemove={askRemove}
-              onRemove={remove}
-              onCancel={cancel}
-            />
-            <DiscordStatusLine {status} />
-            {#if block.state !== 'lapsed'}
-              <button
-                class="{LINK_BUTTON} w-fit"
-                disabled={busy !== null}
-                onclick={startReplace}
-                data-testid="discord-replace"
-              >
-                {notificationsCopy.replace}
-              </button>
-            {/if}
-          </div>
-          {#if block.state === 'disabled'}{@render eventRows(discord)}{/if}
+        {:else if 'discord' in block && block.state !== 'empty'}
+          <DiscordSaved
+            state={block.state}
+            discord={block.discord}
+            {confirming}
+            {busy}
+            {status}
+            onToggleEvents={changeEvents}
+            onTest={test}
+            onAskRemove={askRemove}
+            onRemove={remove}
+            onCancel={cancel}
+            onReplace={startReplace}
+          />
         {/if}
       </StatePanel>
     {/if}

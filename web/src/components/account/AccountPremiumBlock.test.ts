@@ -27,7 +27,10 @@ function renderBlock(entitlements?: EntitlementsView, characters: MeCharacter[] 
 
 describe('AccountPremiumBlock', () => {
   it('has no subheading of its own: the plan line above names the plan', () => {
-    expect(text(renderBlock(mockEntitlements()))).not.toContain('Premium');
+    const html = render(AccountPremiumBlock, {
+      props: { entitlements: mockEntitlements(), notifications: null },
+    }).body;
+    expect(text(html)).not.toContain('Premium');
   });
 
   it('shows the live values when the entitlements are on', () => {
@@ -74,6 +77,15 @@ describe('AccountPremiumBlock', () => {
     const html = renderBlock(mockEntitlements({ server_sims: true, supporter_mark: true }), [CHARACTER]);
     expect(text(html)).toContain('Discord notifications Off');
     expect(html).not.toContain('account-premium-notifications-link');
+  });
+
+  it('leaves the Discord row out when notifications is null (the deployment has it off)', () => {
+    const html = render(AccountPremiumBlock, {
+      props: { entitlements: mockEntitlements(), notifications: null },
+    }).body;
+    expect(html).not.toContain('account-premium-notifications');
+    expect(text(html)).not.toContain('Discord notifications');
+    expect(html).toContain('account-premium-supporter');
   });
 
   it('links the Discord row to #discord with the value it is given', () => {
