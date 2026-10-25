@@ -32,7 +32,9 @@ type apiHarness struct {
 	t       *testing.T
 }
 
-func newAPI(t *testing.T) *apiHarness {
+func newAPI(t *testing.T) *apiHarness { return newAPIWithOAuth(t, nil) }
+
+func newAPIWithOAuth(t *testing.T, oauth OAuthClient) *apiHarness {
 	t.Helper()
 	pool := testPool(t)
 	sealer, err := NewSealer(make([]byte, 32))
@@ -44,7 +46,7 @@ func newAPI(t *testing.T) *apiHarness {
 	ents := &entitlements.Store{Pool: pool}
 	svc := &Service{
 		Store: &Store{Pool: pool}, Sealer: sealer, Entitlements: ents,
-		Poster: poster, PublicBaseURL: "https://foreversixty.gg", Log: quiet,
+		Poster: poster, PublicBaseURL: "https://foreversixty.gg", Log: quiet, OAuth: oauth,
 	}
 	authStore := &auth.Store{Pool: pool}
 	authn := &auth.Authenticator{Store: authStore, Log: quiet}
@@ -181,7 +183,7 @@ func TestSaveThenMeShowsTheBlockAndNoCredential(t *testing.T) {
 func TestMeReadsNullBeforeAnythingIsSavedAndAfterDelete(t *testing.T) {
 	h := newAPI(t)
 	data, _ := h.me()
-	if string(data["notifications"]) != `{"discord":null}` {
+	if string(data["notifications"]) != `{"connect":false,"discord":null}` {
 		t.Fatalf("notifications = %s", data["notifications"])
 	}
 	h.saveHook()
@@ -192,7 +194,7 @@ func TestMeReadsNullBeforeAnythingIsSavedAndAfterDelete(t *testing.T) {
 		t.Fatalf("second delete status %d, want idempotent 204", status)
 	}
 	data, _ = h.me()
-	if string(data["notifications"]) != `{"discord":null}` {
+	if string(data["notifications"]) != `{"connect":false,"discord":null}` {
 		t.Fatalf("notifications after delete = %s", data["notifications"])
 	}
 }

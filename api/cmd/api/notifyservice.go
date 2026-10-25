@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"strings"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -27,7 +28,18 @@ func newNotifyService(cfg config.Config, pool *pgxpool.Pool, ents notify.Entitle
 	return &notify.Service{
 		Store: &notify.Store{Pool: pool}, Sealer: sealer, Entitlements: ents,
 		Poster: notify.NewHTTPPoster(notify.AvatarURL(cfg.PublicBaseURL)), PublicBaseURL: cfg.PublicBaseURL, Log: log,
+		OAuth: newDiscordOAuth(cfg), CookieSecure: strings.HasPrefix(cfg.PublicBaseURL, "https://"),
 	}
+}
+
+// newDiscordOAuth builds the one-click connect's client; nil (connect off)
+// unless the Discord application is configured. config.Load guarantees the
+// id and secret come together.
+func newDiscordOAuth(cfg config.Config) notify.OAuthClient {
+	if cfg.DiscordClientID == "" {
+		return nil
+	}
+	return notify.NewHTTPOAuthClient(cfg.DiscordClientID, cfg.DiscordClientSecret, notify.CallbackURL(cfg.APIBaseURL))
 }
 
 // newJobDeliverer is the poster the sim and parse jobs use, built from the

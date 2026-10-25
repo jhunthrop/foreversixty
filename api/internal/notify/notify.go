@@ -25,6 +25,16 @@ const (
 // MaxFailures is how many counted failures in a row switch a webhook off.
 const MaxFailures = 5
 
+// Source is how a saved webhook got there.
+type Source string
+
+const (
+	// SourcePasted is a webhook URL the member pasted.
+	SourcePasted Source = "pasted"
+	// SourceConnected is a webhook the one-click Discord connect created.
+	SourceConnected Source = "connected"
+)
+
 // ErrNotFound is returned when a member has no webhook of the asked kind.
 var ErrNotFound = errors.New("notify: no webhook saved")
 
@@ -34,6 +44,9 @@ type Webhook struct {
 	UserID    int64
 	Kind      string
 	ChannelID string
+	// GuildID is the Discord server of the channel; nil when unknown.
+	GuildID *string
+	Source  Source
 	// Name is the webhook's own name at Discord; nil when Discord gave none.
 	Name       *string
 	Events     map[EventName]bool

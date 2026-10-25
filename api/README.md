@@ -54,6 +54,8 @@ make run
 | `STRIPE_WEBHOOK_SECRET` | no | — | The signing secret of the `POST /v1/billing/webhook` endpoint in the same mode as the key. |
 | `STRIPE_ENVIRONMENT` | no | — | `test` or `live`. Must be `live` exactly when `PUBLIC_BASE_URL` is the production origin, and the key's own prefix must agree; `config.ValidateStripeKeyEnvironment` refuses to start otherwise. |
 | `NOTIFY_ENCRYPTION_KEY` | no | — | Base64 of 32 random bytes (`openssl rand -base64 32`); seals Discord webhook tokens at rest (AES-256-GCM). Absent, the Discord notifications feature is off; present but malformed, the service refuses to start. Lives in Secret Manager; never logged or printed. When set, the sim-run and parse-report jobs post one Discord embed per finished server sim or parsed upload; five consecutive counted failures (a 429 does not count) switch the webhook off. Migration 0047 adds `webhook_name` and backfills `upload_private` true for existing webhooks (new ones default off). |
+| `DISCORD_CLIENT_ID` | no | — | The Discord application's Client ID (public). Together with `DISCORD_CLIENT_SECRET` it turns the one-click Discord connect on (needs `NOTIFY_ENCRYPTION_KEY` too); `/v1/me` then carries `notifications.connect: true`. Both unset leaves connect off (its routes answer 404); exactly one set refuses to start, naming the missing variable. The redirect URI is `API_BASE_URL` + `/v1/notifications/discord/callback`. |
+| `DISCORD_CLIENT_SECRET` | no | — | The Discord application's Client Secret. Lives in Secret Manager; never logged, printed or returned. |
 | `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
 
 Every Phase 3 variable is optional and degrades honestly: with no R2 credentials the service
@@ -86,6 +88,15 @@ the whole suite runs with `-p 1`:
 ```bash
 go test -race -cover -p 1 ./...
 ```
+
+## Discord application
+
+The one-click connect needs a Discord application (https://discord.com/developers/applications). One application serves every environment.
+
+- Name it `Forever Sixty` and use our seal as the icon (the same image the posts carry as their avatar).
+- OAuth2 > Redirects: add both `https://api.foreversixty.gg/v1/notifications/discord/callback` and, for staging or local runs, the matching `API_BASE_URL` + `/v1/notifications/discord/callback`.
+- Client ID is public: set `DISCORD_CLIENT_ID`. The Client Secret goes in Secret Manager as `DISCORD_CLIENT_SECRET`.
+- No bot, no interactions endpoint, no privileged intents: the only scope is `webhook.incoming`.
 
 ## Cache headers
 
@@ -156,8 +167,10 @@ The simulator's full surface (`POST /v1/sims`, `POST /v1/sims/run`, `GET /v1/sim
 | `POST /v1/sims/{id}/seen` | Marks the caller's finished server run as looked at (204); 404 when it is not theirs or not done. |
 | `POST /v1/sims/{id}/rerun` | Premium. Starts a failed run's stored request again as a new run (202 `{sim_id}`) under the checks `POST /v1/sims/run` applies; 404 when it is not the caller's failed run. |
 | `PUT /v1/notifications/discord` | Premium. Saves the Discord webhook (`webhook_url?`, `events`: all of `sim_finished`, `upload_parsed`, `upload_private`; a private report posts only when `upload_parsed` and `upload_private` are both on) and answers the block `/v1/me` carries under `notifications.discord`; a save with a URL also stores Discord's `name` for the webhook (returned as `name`, null when none); an events-only change omits the URL, keeps the name (404 when none saved). A bad URL is 400, a URL Discord does not accept 422, both `invalid`; 10 per minute per member. Mounted only when `NOTIFY_ENCRYPTION_KEY` is set; otherwise `/v1/me` omits `notifications`. |
-| `DELETE /v1/notifications/discord` | Removes the webhook (204, idempotent, allowed after a lapse). |
+| `DELETE /v1/notifications/discord` | Removes the webhook (204, idempotent, allowed after a lapse). A connected webhook is also deleted at Discord first, best effort, and only while the member is entitled; a pasted one never is. |
 | `POST /v1/notifications/discord/test` | Premium. Posts the test message (204); 502 `upstream` with Discord's own message when it answers with an error, 504 `upstream` when it does not answer; 5 per minute per member. |
+| `GET /v1/notifications/discord/connect` | Premium, session cookie. Sets the `fs_discord_state` cookie (httpOnly, `SameSite=Lax`, path `/v1/notifications/discord/callback`, 10 minutes) and answers 302 to Discord's `oauth2/authorize` with `scope=webhook.incoming`. 302 to `/account?discord=failed#discord` without the entitlement; 404 when connect is off. |
+| `GET /v1/notifications/discord/callback` | Session cookie. Clears the state cookie, then 302 to `/account?discord=` `connected`, `denied` (no `code`, or `error=access_denied`) or `failed` (bad state, failed exchange, unusable webhook, store error) `#discord`. A connect stores the sealed webhook with `source = connected` (no name), keeps an existing webhook's events (defaults sim on, log on, private off), and removes the replaced connected webhook from Discord. The code, token and URL never reach a header or log. |
 | `GET /v1/phases` | The content phase boundaries, cached an hour. The table is compiled in; `api/internal/phase/boundaries_test.go` holds it to `data/curated/phases.json`. |
 
 ## Keeping the page chrome in step with the site

@@ -69,6 +69,10 @@ type DiscordBlock struct {
 	DisabledReason *string       `json:"disabled_reason"`
 	LastError      *string       `json:"last_error"`
 	Failures       int           `json:"failures"`
+	// Source is "pasted" or "connected" (made by the one-click connect).
+	Source string `json:"source"`
+	// GuildID is the Discord server of the channel; null when unknown.
+	GuildID *string `json:"guild_id"`
 }
 
 // DiscordEvents are the two things a Discord channel can be told about, and
@@ -82,6 +86,8 @@ type DiscordEvents struct {
 // NotificationsBlock is /v1/me's notifications object, keyed by channel so a later channel
 // adds a key and changes no field. Discord is nil when nothing is saved.
 type NotificationsBlock struct {
+	// Connect is true when the one-click Discord connect is configured.
+	Connect bool          `json:"connect"`
 	Discord *DiscordBlock `json:"discord"`
 }
 
@@ -91,6 +97,8 @@ type NotificationsView interface {
 	// DiscordBlock answers the member's saved channel, or nil when none is saved. entitled
 	// is their notifications entitlement, which decides whether a kept webhook reads as lapsed.
 	DiscordBlock(ctx context.Context, userID int64, entitled bool) (*DiscordBlock, error)
+	// ConnectEnabled reports whether the one-click connect is configured.
+	ConnectEnabled() bool
 }
 
 // finishedSimsLimit caps the "done while away" list on GET /v1/me.
@@ -512,7 +520,7 @@ func (s *Service) buildNotifications(ctx context.Context, userID int64, entitled
 	if err != nil {
 		return nil, fmt.Errorf("auth: me: notifications: %w", err)
 	}
-	return &NotificationsBlock{Discord: discord}, nil
+	return &NotificationsBlock{Connect: s.Notifications.ConnectEnabled(), Discord: discord}, nil
 }
 
 // buildSimsView resolves the sims half of /v1/me. The finished list is only read for a

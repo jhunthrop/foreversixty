@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"net"
 	"strconv"
@@ -154,6 +155,11 @@ type Config struct {
 	// feature is off; present but malformed, Load refuses to start. The
 	// value is never put in an error or a log.
 	NotifyEncryptionKey []byte
+	// DiscordClientID and DiscordClientSecret are the Discord application the
+	// one-click connect uses (DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET). Both
+	// set turns connect on, neither leaves it off; one alone fails startup.
+	DiscordClientID     string
+	DiscordClientSecret string
 }
 
 // NotifyKeyLen is the byte length of NotifyEncryptionKey.
@@ -263,7 +269,24 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 	c.NotifyEncryptionKey = key
 
+	c.DiscordClientID, c.DiscordClientSecret = getenv("DISCORD_CLIENT_ID"), getenv("DISCORD_CLIENT_SECRET")
+	if err := checkDiscordPair(c.DiscordClientID, c.DiscordClientSecret); err != nil {
+		return c, err
+	}
+
 	return c, nil
+}
+
+// checkDiscordPair requires the Discord application's two values together.
+// The error names the missing variable, never a value.
+func checkDiscordPair(id, secret string) error {
+	switch {
+	case id != "" && secret == "":
+		return errors.New("config: DISCORD_CLIENT_SECRET is required when DISCORD_CLIENT_ID is set")
+	case id == "" && secret != "":
+		return errors.New("config: DISCORD_CLIENT_ID is required when DISCORD_CLIENT_SECRET is set")
+	}
+	return nil
 }
 
 // decodeNotifyKey turns NOTIFY_ENCRYPTION_KEY into key bytes: empty means

@@ -40,7 +40,7 @@ func notifyingWith(t *testing.T, d *Deps, reportID string, events map[notify.Eve
 		t.Fatal(err)
 	}
 	st := &notify.Store{Pool: d.Reports.Pool}
-	if err := st.Save(context.Background(), *rep.OwnerID, notify.KindDiscord, "1", nil, box, events); err != nil {
+	if err := st.Save(context.Background(), *rep.OwnerID, notify.KindDiscord, "1", nil, nil, box, events, notify.SourcePasted); err != nil {
 		t.Fatal(err)
 	}
 	poster := &notify.FakePoster{}

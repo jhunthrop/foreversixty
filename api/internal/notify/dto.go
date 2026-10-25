@@ -20,6 +20,8 @@ func blockOf(w Webhook, entitled bool) *auth.DiscordBlock {
 			UploadPrivate: w.Events[EventUploadPrivate],
 		},
 		Failures: w.Failures,
+		Source:   string(w.Source),
+		GuildID:  w.GuildID,
 	}
 	if w.LastError != "" {
 		block.LastError = &w.LastError

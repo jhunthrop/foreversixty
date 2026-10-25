@@ -48,6 +48,11 @@ type Service struct {
 	Sealer       *Sealer
 	Entitlements Entitlementer
 	Poster       Poster
+	// OAuth is the Discord application's OAuth; nil leaves the one-click
+	// connect off (no routes, connect false in /v1/me).
+	OAuth OAuthClient
+	// CookieSecure marks the connect state cookie Secure (HTTPS deployments).
+	CookieSecure bool
 	// PublicBaseURL is the site origin the test message links to.
 	PublicBaseURL string
 	Log           *slog.Logger
@@ -61,6 +66,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.Handle("PUT /v1/notifications/discord", putLimit(auth.RequireSession(s.put)))
 	mux.HandleFunc("DELETE /v1/notifications/discord", auth.RequireSession(s.remove))
 	mux.Handle("POST /v1/notifications/discord/test", limit(auth.RequireSession(s.test)))
+	s.mountConnect(mux)
 }
 
 // DiscordBlock implements auth.NotificationsView.
@@ -151,9 +157,13 @@ func (s *Service) putWebhook(w http.ResponseWriter, r *http.Request, actor auth.
 		s.fail(w, r, "seal", err)
 		return
 	}
-	if err := s.Store.Save(r.Context(), actor.UserID, KindDiscord, found.ChannelID, cleanWebhookName(found.Name), box, events); err != nil {
+	oldURL := s.connectedURL(r.Context(), actor.UserID)
+	if err := s.Store.Save(r.Context(), actor.UserID, KindDiscord, found.ChannelID, optionalText(found.GuildID), cleanWebhookName(found.Name), box, events, SourcePasted); err != nil {
 		s.fail(w, r, "save", err)
 		return
+	}
+	if oldURL != "" && oldURL != parsed.URL() {
+		s.deleteAtDiscord(r.Context(), oldURL, "replace")
 	}
 	s.answerBlock(w, r, actor.UserID)
 }
@@ -182,7 +192,9 @@ func cleanWebhookName(raw string) *string {
 
 func (s *Service) remove(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	if err := s.Store.Delete(r.Context(), auth.ActorFrom(r.Context()).UserID, KindDiscord); err != nil {
+	userID := auth.ActorFrom(r.Context()).UserID
+	s.deleteConnectedAtDiscord(r.Context(), userID)
+	if err := s.Store.Delete(r.Context(), userID, KindDiscord); err != nil {
 		s.fail(w, r, "delete", err)
 		return
 	}
@@ -291,4 +303,55 @@ func (s *Service) logger() *slog.Logger {
 func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err error) {
 	s.logger().Error("notify", "id", httpx.RequestIDFrom(r.Context()), "op", op, "err", err)
 	httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not save that just now", nil)
+}
+
+// connectedURL is the unsealed URL of the member's saved webhook when it came
+// from the connect, else "". A read failure is logged and reads as "": the
+// caller's own change must not fail because Discord-side cleanup could not start.
+func (s *Service) connectedURL(ctx context.Context, userID int64) string {
+	hook, ok, err := s.Store.Get(ctx, userID, KindDiscord)
+	if err != nil || !ok || hook.Source != SourceConnected {
+		s.logOpenFailure(err)
+		return ""
+	}
+	box, err := s.Store.TokenBox(ctx, userID, KindDiscord)
+	if err != nil {
+		s.logOpenFailure(err)
+		return ""
+	}
+	url, err := s.Sealer.Open(box)
+	if err != nil {
+		s.logOpenFailure(err)
+		return ""
+	}
+	return url
+}
+
+func (s *Service) logOpenFailure(err error) {
+	if err != nil {
+		s.logger().Warn("notify", "op", "discord cleanup", "err", err)
+	}
+}
+
+// deleteConnectedAtDiscord removes a connected webhook from Discord before its
+// row goes, but only for a member who is still entitled: a lapsed plan deletes
+// nothing in Discord, and a pasted webhook is never touched.
+func (s *Service) deleteConnectedAtDiscord(ctx context.Context, userID int64) {
+	allowed, _, err := s.Entitlements.Can(ctx, userID, entitlements.FeatureNotifications)
+	if err != nil || !allowed {
+		return
+	}
+	if url := s.connectedURL(ctx, userID); url != "" {
+		s.deleteAtDiscord(ctx, url, "remove")
+	}
+}
+
+// deleteAtDiscord is the best-effort Discord-side delete; it logs the outcome
+// only, never the URL.
+func (s *Service) deleteAtDiscord(ctx context.Context, url, op string) {
+	if err := s.Poster.Delete(ctx, url); err != nil {
+		s.logger().Warn("notify", "op", "discord delete "+op, "outcome", "failed", "err", err)
+		return
+	}
+	s.logger().Info("notify", "op", "discord delete "+op, "outcome", "deleted")
 }
