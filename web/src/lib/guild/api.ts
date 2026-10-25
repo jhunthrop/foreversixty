@@ -80,7 +80,10 @@ export interface GuildViewerView {
   role: GuildViewerRole;
   character_key: string | null;
   verified: boolean;
-  /** The guild is on a scoped officer-tools grant (not the guild plan); absent on an older API. */
+  /**
+   * True when this verified officer's guild has the officer tools (a plan or a scoped grant), false
+   * otherwise; absent for members. The page treats a missing field as true: the server's 403 is the real gate.
+   */
   officer_tools?: boolean;
 }
 

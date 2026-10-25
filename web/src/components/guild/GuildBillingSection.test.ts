@@ -31,6 +31,12 @@ function html(billing: GuildBillingView | null, mayBill: boolean): string {
   );
 }
 
+function htmlUnavailable(mayBill: boolean): string {
+  return render(GuildBillingSection, {
+    props: { billing: PLAN, mayBill, guildId: 7, unavailable: true },
+  }).body.replace(/<!--.*?-->/g, '');
+}
+
 function slot(body: string, testid: string): string {
   const match = new RegExp(`data-testid="${testid}"[^>]*>([^<]*)<`).exec(body);
   return (match?.[1] ?? '').trim();
@@ -78,5 +84,14 @@ describe('GuildBillingSection, full plan for the claim holder', () => {
     const body = html(PLAN, true);
     expect(body).toContain('guild-manage-billing');
     expect(body).not.toContain(MASTER_ONLY);
+  });
+});
+
+describe('GuildBillingSection, billing unavailable', () => {
+  it('offers retry and the unavailable alert but no Manage billing, even for the claim holder', () => {
+    const body = htmlUnavailable(true);
+    expect(body).toContain('guild-billing-retry');
+    expect(body).toContain('guild-billing-unavailable');
+    expect(body).not.toContain('guild-manage-billing');
   });
 });
