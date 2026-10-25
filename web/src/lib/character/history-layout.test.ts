@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   HISTORY_MAX_RESERVE_PX,
   HISTORY_RESERVE_KEY,
   reserveToStore,
+  SCROLL_SETTLE_MS,
+  scrollRowIntoView,
   scrollBehavior,
   wrapReason,
   writeHistoryReserve,
@@ -20,6 +22,38 @@ describe('scrollBehavior', () => {
 });
 
 afterEach(() => localStorage.clear());
+
+describe('scrollRowIntoView', () => {
+  const rowAt = (top: number, scrolls: unknown[]): Element =>
+    ({
+      isConnected: true,
+      scrollIntoView: (options: unknown) => scrolls.push(options),
+      getBoundingClientRect: () => ({ top, bottom: top + 61 }),
+    }) as unknown as Element;
+
+  afterEach(() => vi.useRealTimers());
+
+  it('scrolls the row to the middle at once, and leaves it when it landed', () => {
+    vi.useFakeTimers();
+    const scrolls: unknown[] = [];
+    scrollRowIntoView(rowAt(300, scrolls));
+    expect(scrolls).toEqual([{ block: 'center', behavior: expect.any(String) }]);
+    vi.advanceTimersByTime(SCROLL_SETTLE_MS);
+    expect(scrolls).toHaveLength(1);
+  });
+
+  it('jumps once more when the smooth scroll left the row outside the window', () => {
+    vi.useFakeTimers();
+    const scrolls: unknown[] = [];
+    scrollRowIntoView(rowAt(5000, scrolls));
+    vi.advanceTimersByTime(SCROLL_SETTLE_MS);
+    expect(scrolls[1]).toEqual({ block: 'center', behavior: 'auto' });
+  });
+
+  it('does nothing without a row', () => {
+    expect(() => scrollRowIntoView(null)).not.toThrow();
+  });
+});
 
 describe('wrapReason', () => {
   it('keeps a short reason on one line', () => {

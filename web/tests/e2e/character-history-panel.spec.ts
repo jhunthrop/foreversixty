@@ -26,6 +26,19 @@ const SCORED = {
 };
 const RESERVE_KEY = 'fs.history.reserve';
 
+/** Polls until the window has stopped scrolling (a smooth scroll in flight keeps moving). */
+async function expectScrollSettled(page: Page): Promise<void> {
+  let last = Number.NaN;
+  await expect
+    .poll(async () => {
+      const now = await page.evaluate(() => window.scrollY);
+      const still = now === last;
+      last = now;
+      return still;
+    })
+    .toBe(true);
+}
+
 async function openHistory(page: Page, history: number | undefined = undefined): Promise<void> {
   await page.route(CHARACTER_URL, (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(SCORED) }),
@@ -59,12 +72,12 @@ test('selecting a hidden row opens the list once and a later hover never moves i
   await expect(toggle).toHaveText('Show fewer');
   const marked = score.locator('[data-marked="true"]');
   await expect(marked).toBeAttached();
-  await expect(marked).toBeInViewport({ timeout: 10_000 });
+  await expect(marked).toBeInViewport({ ratio: 0.5, timeout: 15_000 });
 
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await plot.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(600); // let the smooth scroll of the auto-opened list settle
+  await expectScrollSettled(page);
   const scrolled = await page.evaluate(() => window.scrollY);
   await plot.hover({ position: { x: 300, y: 100 } });
   await plot.hover({ position: { x: 500, y: 100 } });

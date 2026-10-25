@@ -7,7 +7,7 @@
   import { tick, untrack } from 'svelte';
   import { historyCopy, type ListKind } from '../../lib/character/history-copy';
   import type { HistoryFight } from '../../lib/character/history-api';
-  import { scrollBehavior } from '../../lib/character/history-layout';
+  import { scrollRowIntoView } from '../../lib/character/history-layout';
   import { listWindow } from '../../lib/character/history-select';
   import CharacterFightTable from './CharacterFightTable.svelte';
 
@@ -48,12 +48,11 @@
     const opens = untrack(() => listWindow(fights, false, marked).needsExpand);
     if (!opens) return;
     expanded = true;
-    // After the opened rows are in the DOM and painted, so the scroll measures the final list.
+    // Once the opened rows are in the DOM and have been laid out (two frames), so the scroll
+    // measures the final list rather than the collapsed one.
     void tick().then(() =>
       requestAnimationFrame(() =>
-        host
-          ?.querySelector('[data-marked="true"]')
-          ?.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() }),
+        requestAnimationFrame(() => scrollRowIntoView(host?.querySelector('[data-marked="true"]'))),
       ),
     );
   });

@@ -36,6 +36,24 @@ export function reserveToStore(status: string, listOpen: boolean, height: number
   return status === 'ready' && !listOpen ? height : null;
 }
 
+/** How long a smooth scroll gets before its result is checked. */
+export const SCROLL_SETTLE_MS = 800;
+
+/**
+ * Brings a list row to the middle of the window. A smooth scroll can be cut short (a headless
+ * browser, a layout that moved under it), so once it has had time the row is checked and, if it
+ * is still outside the window, jumped to.
+ */
+export function scrollRowIntoView(row: Element | null | undefined): void {
+  if (row === null || row === undefined) return;
+  row.scrollIntoView({ block: 'center', behavior: scrollBehavior() });
+  window.setTimeout(() => {
+    if (!row.isConnected) return;
+    const { top, bottom } = row.getBoundingClientRect();
+    if (bottom < 0 || top > window.innerHeight) row.scrollIntoView({ block: 'center', behavior: 'auto' });
+  }, SCROLL_SETTLE_MS);
+}
+
 export function writeHistoryReserve(pixels: number): void {
   writeReserve(HISTORY_RESERVE_KEY, pixels, HISTORY_MAX_RESERVE_PX);
 }
