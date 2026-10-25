@@ -280,6 +280,39 @@ describe('membership and invite', () => {
     expect(rotated.token).toBe('abc');
   });
 
+  it('carries the envelope error code on the GuildApiError', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: false,
+              data: null,
+              error: { code: 'guild_plan_required', message: 'No' },
+              request_id: 'r',
+            }),
+            { status: 403, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+    const error = await fetchGuildHome(42, undefined, API).catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(GuildApiError);
+    expect((error as GuildApiError).code).toBe('guild_plan_required');
+    expect((error as GuildApiError).status).toBe(403);
+  });
+
+  it('gives a transport failure an empty code', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
+    const error = await fetchGuildHome(42, undefined, API).catch((caught: unknown) => caught);
+    expect((error as GuildApiError).code).toBe('');
+  });
+
   it('surfaces GUILD_API_FAILED when the network fails outright', async () => {
     vi.stubGlobal(
       'fetch',

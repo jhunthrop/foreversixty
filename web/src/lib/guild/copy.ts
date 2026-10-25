@@ -323,3 +323,14 @@ export const guildRosterModelCopy = {
   /** Settings, for an officer who does not hold the claim. */
   guildMasterOnly: 'Only the guild master can release the claim or change billing.',
 } as const;
+
+/** The officer-tools gate (design/specs/2026-10-25-officer-tools-gate.md section 7): the sentence
+ *  and its link are separate so the link can be an anchor; together they read
+ *  "Award and Nudge are part of the guild plan. Subscribe the guild." */
+export const guildGateCopy = {
+  sentence: 'Award and Nudge are part of the guild plan. ',
+  link: 'Subscribe the guild',
+  awardRefused: "Not awarded. This guild's officer tools have ended.",
+  undoRefused: "Not undone. This guild's officer tools have ended.",
+  readOnly: 'Read-only',
+} as const;

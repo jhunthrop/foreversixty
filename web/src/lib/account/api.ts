@@ -165,6 +165,8 @@ export interface BillingView {
 }
 
 export interface GuildBillingView {
+  /** `officer_tools` is a scoped grant for Award, Undo and Nudge only; `plan` is the guild plan. */
+  scope: 'plan' | 'officer_tools';
   status: string;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
