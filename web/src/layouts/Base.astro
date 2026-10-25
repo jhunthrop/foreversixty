@@ -38,6 +38,7 @@ import { SITE_NAME, SITE_URL, pageTitle, toJsonLd, websiteLd } from '../lib/seo'
 import { meKey, ME_QUERY_VERSION, ME_TTL_MS } from '../lib/account/api';
 import { storageKey } from '../lib/data/query';
 import { API_BASE_URL } from '../lib/planner/config';
+import { COUNT_STORAGE_KEY as SERVER_RUNS_COUNT_KEY } from '../lib/sim/server-runs-poll';
 
 interface Props {
   title: string;
@@ -80,7 +81,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <meta name="twitter:card" content="summary_large_image" />
     {ldNodes.length > 0 && <script type="application/ld+json" set:html={toJsonLd(ldNodes)}></script>}
     <slot name="head" />
-    <script is:inline>
+    <script is:inline data-me-storage-key={meStorageKey} data-server-runs-count-key={SERVER_RUNS_COUNT_KEY}>
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
       // home page's "Sign in" block) stays hidden until its island renders the signed-in
@@ -111,6 +112,24 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         }
       } catch {
         /* storage unavailable or malformed: no pointer, no band, no crest */
+      }
+      // "Your server runs" on /sim (experience spec 2026-10-24 section 3.7): data-server-sims
+      // when the cached /v1/me says the account has server sims (the entitlement, else the
+      // legacy premium flag, as account/api.ts's effectiveServerSims reads them), and the
+      // last list's row count as --server-runs-rows, so the page reserves the list's box.
+      try {
+        const el = document.currentScript;
+        const root = document.documentElement;
+        const cached = localStorage.getItem(el.dataset.meStorageKey);
+        const me = cached ? JSON.parse(cached).data : null;
+        const payer =
+          me &&
+          (me.entitlements ? me.entitlements.server_sims === true : !!me.user && me.user.premium === true);
+        if (root.dataset.session === '1' && payer) root.dataset.serverSims = '1';
+        const count = Math.floor(Number(localStorage.getItem(el.dataset.serverRunsCountKey)));
+        if (count >= 1) root.style.setProperty('--server-runs-rows', String(Math.min(count, 5)));
+      } catch {
+        /* storage unavailable or malformed: the list reserves one row */
       }
     </script>
   </head>

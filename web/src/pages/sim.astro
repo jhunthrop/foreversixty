@@ -73,6 +73,9 @@ const COLD_PASTE_SECTION =
     <div id="sim" data-sim-mount class="min-h-[1409px] md:min-h-[971px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
+        <!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's
+             "Your server runs" box, reserved before the island paints (spec 2026-10-24 3.7). -->
+        <div class="server-runs-reserve server-runs-shell-reserve" aria-hidden="true"></div>
         <div class={COLD_PASTE_SECTION}>
           <h2 class="section-title text-[15px]">{landingCopy.pasteHeroTitle}</h2>
           <p class="text-muted text-[12px]">{landingCopy.pasteHeroHintLead}</p>

@@ -45,6 +45,25 @@ describe('AccountPremiumBlock', () => {
     expect(text(html)).toContain('Server sims On · 4 runs this month');
   });
 
+  it.each([
+    [1, 'Server sims On · 1 run this month'],
+    [0, 'Server sims On · no runs yet this month'],
+    [undefined, 'Server sims On '],
+  ])('reads %s runs as %s', (count, expected) => {
+    const html = render(AccountPremiumBlock, {
+      props: { entitlements: mockEntitlements({ server_sims: true }), serverRunsThisMonth: count },
+    }).body;
+    expect(text(html)).toContain(expected);
+    expect(text(html)).not.toContain(count === undefined ? 'runs' : 'Browser lane only');
+  });
+
+  it('keeps the free words when server sims are off, whatever count is sent', () => {
+    const html = render(AccountPremiumBlock, {
+      props: { entitlements: mockEntitlements(), serverRunsThisMonth: 4 },
+    }).body;
+    expect(text(html)).toContain('Server sims Browser lane only');
+  });
+
   it('shows the free values by default', () => {
     const body = text(renderBlock(mockEntitlements()));
     expect(body).toContain('Server sims Browser lane only');

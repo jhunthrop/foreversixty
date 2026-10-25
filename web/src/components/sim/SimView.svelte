@@ -33,6 +33,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import type { KindFilter } from '../../lib/sim/history';
   import { SIM_LAZY_MIN_H } from '../../lib/sim/lazy-layout';
+  import { createServerRunsController } from '../../lib/sim/server-runs-controller.svelte';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
   import { createSavedSimState } from '../../lib/sim/saved-sim-state.svelte';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
@@ -290,6 +291,25 @@
   const simHistoryLazy = createLazyComponent(() => import('./SimHistory.svelte'));
   $effect(() => {
     if (signedIn) simHistoryLazy.load();
+  });
+
+  // Spec 2026-10-24 §3: "Your server runs", for payers only. The list, its ten-second poll
+  // and the localStorage hints live in the controller; the component loads lazily like
+  // SimHistory so a free member and /sim/<id> never download it.
+  const serverRuns = createServerRunsController();
+  const hasServerSims = $derived(effectiveServerSims(me));
+  const serverRunsLazy = createLazyComponent(() => import('./ServerRuns.svelte'));
+  $effect(() => {
+    if (!hasServerSims) return;
+    serverRunsLazy.load();
+    return serverRuns.start();
+  });
+  let wasServerRunning = false;
+  $effect(() => {
+    const running = store.serverRunning;
+    if (running && !wasServerRunning) serverRuns.runStarted();
+    if (!running && wasServerRunning) serverRuns.runEnded();
+    wasServerRunning = running;
   });
 
   // Design 5.4: the finish notification. `notifier` is the real Notification API, or null
@@ -586,6 +606,23 @@
            second, redundant copy of the exact same paragraph. Nothing here replaces it. -->
       <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
     {:else}
+      {#if hasServerSims}
+        {#if serverRunsLazy.current}
+          <serverRunsLazy.current
+            rows={serverRuns.rows}
+            error={serverRuns.error}
+            now={new Date(serverRuns.nowMs)}
+            onretry={() => void serverRuns.reload()}
+            onstarted={() => serverRuns.runStarted()}
+          />
+        {:else}
+          <div class="server-runs-reserve" data-testid="server-runs-reserve"></div>
+        {/if}
+      {:else if sessionPending}
+        <!-- Shown only under the pre-paint hints (global.css), so a free or signed-out
+             visitor reserves nothing; a hinted payer keeps the box the list will fill. -->
+        <div class="server-runs-reserve server-runs-shell-reserve" data-testid="server-runs-reserve"></div>
+      {/if}
       {#if showColdPasteHero}
         <!-- Persona review 2026-10-06, §5/§8 item 1: ahead of the Battle.net hero, the
              intro line and the static example below -- the one action that gets a DPS

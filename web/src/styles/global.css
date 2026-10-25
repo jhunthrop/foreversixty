@@ -294,6 +294,33 @@ html:not([data-pointer='1']):not([data-session='1']) .chip-slot {
   display: none;
 }
 
+/* "Your server runs" on /sim reserves its box before data (experience spec 2026-10-24
+   section 3.7): the heading (24px) and gap (12px), then one row per stored read, 64px on
+   desktop and 100px on phone (measured: a done row is 99.5px at 390). Base.astro sets --server-runs-rows from fs.serverRuns.count and
+   data-server-sims from the cached /v1/me; the static shell's copy of the box is hidden
+   unless both the session and the entitlement are hinted, so a free member or a signed-out
+   visitor reserves nothing. */
+.server-runs-reserve {
+  min-height: calc(36px + var(--server-runs-rows, 1) * 100px);
+}
+.server-runs-rows-reserve {
+  min-height: calc(var(--server-runs-rows, 1) * 100px);
+}
+@media (min-width: 768px) {
+  .server-runs-reserve {
+    min-height: calc(36px + var(--server-runs-rows, 1) * 64px);
+  }
+  .server-runs-rows-reserve {
+    min-height: calc(var(--server-runs-rows, 1) * 64px);
+  }
+}
+.server-runs-shell-reserve {
+  display: none;
+}
+html[data-session='1'][data-server-sims='1'] .server-runs-shell-reserve {
+  display: block;
+}
+
 /* An island's content the moment its data lands: one short fade so a skeleton or a
    loading line never snaps into a table. Applied to the wrapper of the ready state only,
    never to controls a player is already using (design system, Motion). */
