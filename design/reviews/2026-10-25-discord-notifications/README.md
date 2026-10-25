@@ -110,3 +110,18 @@ Mobile project: all 0. Load-time footer shift is not zero: at 390 it is 0.4476 f
 - wow-player: the switched-off helper wording and moving `Use a different webhook` into the notice; the channel NAME instead of the id (Discord's webhook GET carries no channel name — needs a bot or a member-typed label); numbered webhook how-to steps; the private-logs note wording or a separate private-logs checkbox; gold `accent-color` on checkboxes site-wide (ux polish too); Premium row wording (`Off · needs attention`); `Took` → `Run time`, the character name in the sim title, `Boss fights`.
 - ux polish: non-breaking spaces in the Premium row value at 1024; hide `Use a different webhook` while the remove question is open; 8 px less between the input and the `In Discord:` helper.
 - Spec §9 item 9 (the three messages in a real channel) needs a Discord webhook from the owner; the embeds are pinned by golden JSON tests meanwhile.
+
+## Follow-up lane verdicts (2026-10-25)
+
+- ux-designer: **SHIP** on the follow-up captures (no must-fix). Rulings recorded in the spec: §7's 1440 caps are 650 (form) and 565 (one-line switched off), plus a 590 px cap for the saved panel with the 1–4 warning and a 140-character error; the loading reserve is accepted (warm skeletons start within 1 px of the ready panels at both widths; cold is recorded); the gold checkbox rule is accepted; the changelog sentence approved. Report: `ux-designer-review.md` (`## Follow-up lane re-check`).
+- wow-player: **SHIP WITH FIXES** (5). Shipped: the changelog names the webhook and the channel id and gives private logs their own paragraph; the short Premium row values no longer split (`On ·` / `2 events` at 1024 was real; spec §3.7 amended). Deferred below: the disabled-but-ticked private box beside its note, the error cut at a word rather than a clause. Report: `wow-player-review.md` (`## Follow-up lane re-check`).
+
+## Deferred after the follow-up lane
+
+- Cold `/account` load with no stored heights still grows by the Discord panel's height (~660 px) below the fold; §9.1 records cold and gates warm.
+- When the log row is off, `Include private logs` stays ticked (value kept) but disabled while its note still reads "Off, private logs never post." — a note variant for that state is a later pass (ux-designer passed it; wow-player would change it).
+- The long Discord error is cut at a word boundary, not at the last clause.
+- A one-time account-page line for members who saved a webhook before the private-logs opt-in existed (they keep posting private logs; only the changelog says so).
+- Spec §9 item 9 / capture 23: the three messages in a real Discord channel need a webhook from the owner.
+- A checked `anonymize` capture and a disabled sim checkbox capture for the §9.2 record; the Premium value column width at `lg` (three-line values at 1024); 4 px above the trust line when the invalid-URL message wraps.
+- `Account.svelte` is ~960 lines (pre-existing); extracting the rail panels needs the full shared-layout suite.
