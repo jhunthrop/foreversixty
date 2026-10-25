@@ -5,6 +5,7 @@ import type { DiscordNotifications, Me } from './api';
 import {
   blockState,
   connectAvailable,
+  connectUrl,
   discordReturnFlag,
   openInDiscordUrl,
   removeQuestionFor,
@@ -253,5 +254,17 @@ describe('connected destination helpers', () => {
     expect(openInDiscordUrl(known)).toBe('https://discord.com/channels/111/222');
     expect(openInDiscordUrl(discordBlock({ guild_id: null }))).toBeNull();
     expect(openInDiscordUrl(discordBlock({ guild_id: '1/../x' }))).toBeNull();
+  });
+});
+
+describe('connectUrl', () => {
+  it('points at the API origin, never a path on the website host', () => {
+    expect(connectUrl('https://api.example.test')).toBe(
+      'https://api.example.test/v1/notifications/discord/connect',
+    );
+  });
+
+  it('defaults to the configured API base', () => {
+    expect(connectUrl()).toMatch(/^https?:\/\/.+\/v1\/notifications\/discord\/connect$/);
   });
 });

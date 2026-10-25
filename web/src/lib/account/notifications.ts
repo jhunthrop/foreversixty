@@ -4,6 +4,7 @@
 // reads, and the inline shape check for a pasted URL. The web never decides the entitlement;
 // it reads `entitlements.notifications`.
 import type { DiscordNotifications, DiscordSource, Me } from './api';
+import { API_BASE_URL } from '../planner/config';
 import { discordHintState } from './layout';
 import { notificationsCopy, premiumRowCopy } from './notifications-copy';
 
@@ -128,8 +129,13 @@ export function connectAvailable(me: Me): boolean {
   return me.notifications?.connect === true;
 }
 
-/** The API's route that answers 302 to Discord's authorise page. */
-export const CONNECT_PATH = '/v1/notifications/discord/connect';
+const CONNECT_PATH = '/v1/notifications/discord/connect';
+
+/** The API's route that answers 302 to Discord's authorise page; absolute, as the website host
+ *  (Cloudflare Pages) does not serve it. */
+export function connectUrl(apiBase: string = API_BASE_URL): string {
+  return `${apiBase}${CONNECT_PATH}`;
+}
 
 export type DiscordReturnFlag = 'connected' | 'denied' | 'failed';
 

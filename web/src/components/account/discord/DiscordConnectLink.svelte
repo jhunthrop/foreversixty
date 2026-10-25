@@ -4,7 +4,7 @@
      unloads it reads `Opening Discord…`; the back button restores the page from the bfcache and
      `pageshow` with `persisted` puts the label back (spec 4.2, 4.3). -->
 <script lang="ts">
-  import { CONNECT_PATH } from '../../../lib/account/notifications';
+  import { connectUrl } from '../../../lib/account/notifications';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
 
   let {
@@ -30,7 +30,7 @@
 <svelte:window onpageshow={onPageShow} />
 
 <a
-  href={CONNECT_PATH}
+  href={connectUrl()}
   class="{className} {opening || busy ? 'pointer-events-none' : ''}"
   aria-busy={opening}
   aria-disabled={opening || busy ? 'true' : undefined}

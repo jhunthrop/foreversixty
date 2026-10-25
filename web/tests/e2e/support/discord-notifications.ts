@@ -11,7 +11,9 @@ export const CHANNEL_ID = '1198765432101234568';
 /** The Discord server of a connected webhook; distinct from the channel id and any webhook id. */
 export const GUILD_ID = '1087654321098765432';
 
-export const CONNECT_URL_GLOB = '**/v1/notifications/discord/connect';
+/** The API origin the fixture build links to (`lib/planner/config.ts` default). */
+export const E2E_API_BASE = 'https://api.foreversixty.gg';
+export const CONNECT_URL_GLOB = `${E2E_API_BASE}/v1/notifications/discord/connect`;
 export const DISCORD_URL_GLOB = '**/v1/notifications/discord';
 export const DISCORD_TEST_URL_GLOB = '**/v1/notifications/discord/test';
 

@@ -289,7 +289,7 @@ describe('connect state', () => {
 
   it('is a plain same-tab link to the connect route, styled as the one filled control', () => {
     expect(body).toMatch(
-      /<a[^>]*href="\/v1\/notifications\/discord\/connect"[^>]*bg-gold[^>]*data-testid="discord-connect"/,
+      /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*bg-gold[^>]*data-testid="discord-connect"/,
     );
     expect(filledControls(body)).toBe(1);
     expect(body).not.toContain('target=');
@@ -382,7 +382,7 @@ describe('saved, connected', () => {
 
   it('replaces with a link to the connect route and the note, under the status line', () => {
     expect(body).toMatch(
-      /<a[^>]*href="\/v1\/notifications\/discord\/connect"[^>]*data-testid="discord-replace"/,
+      /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*data-testid="discord-replace"/,
     );
     expect(text(body)).toContain(notificationsCopy.reconnect);
     expect(text(body)).toContain(notificationsCopy.reconnectNote);

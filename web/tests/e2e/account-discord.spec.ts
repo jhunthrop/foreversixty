@@ -16,7 +16,9 @@ import {
 import { gotoHydrated } from './support/hydrated';
 import {
   CHANNEL_ID,
+  CONNECT_URL_GLOB,
   discordBlock,
+  E2E_API_BASE,
   GUILD_ID,
   routeDiscordNotifications,
   signInMember,
@@ -447,7 +449,7 @@ async function meReadsAfterVisit(page: Page, search: string): Promise<number> {
   return reads;
 }
 
-const CONNECT_HREF = '/v1/notifications/discord/connect';
+const CONNECT_HREF = CONNECT_URL_GLOB;
 const CONNECT_ON = { initial: null, connect: true } satisfies DiscordMeStages;
 
 test.describe('the connect state (connect lane)', () => {
@@ -458,6 +460,7 @@ test.describe('the connect state (connect lane)', () => {
     const connect = page.getByTestId('discord-connect');
     await expect(connect).toHaveText(copy.connect);
     await expect(connect).toHaveAttribute('href', CONNECT_HREF);
+    expect(await connect.getAttribute('href')).toMatch(new RegExp(`^${E2E_API_BASE}/`));
     await expect(panel(page)).toContainText(copy.connectExplanation);
     await expect(page.getByTestId('discord-paste-instead')).toHaveText(copy.pasteInstead);
     await expect(input(page)).toHaveCount(0);
