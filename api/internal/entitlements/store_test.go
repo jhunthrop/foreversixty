@@ -460,7 +460,7 @@ func TestGrantAndRevokeRoundTrip(t *testing.T) {
 	uid := seedUser(t, pool)
 	grantedBy := seedUser(t, pool)
 	if err := s.Grant(context.Background(), Subject{UserID: i64(uid)}, PlanPremium, nil,
-		&grantedBy, "beta tester", "cli_grant:tester beta tester"); err != nil {
+		&grantedBy, "beta tester", "cli_grant:tester beta tester", nil); err != nil {
 		t.Fatal(err)
 	}
 	if ok, _, err := s.Can(context.Background(), uid, FeatureServerSims); err != nil || !ok {
@@ -475,6 +475,56 @@ func TestGrantAndRevokeRoundTrip(t *testing.T) {
 	}
 	if err := s.Revoke(context.Background(), Subject{UserID: i64(999999)}, PlanPremium, "cli_revoke:x"); err != ErrNotFound {
 		t.Fatalf("revoke unknown subject: %v, want ErrNotFound", err)
+	}
+}
+
+func TestGrantFeaturesScopeAndClear(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool)
+	until := tomorrow().UTC().Truncate(time.Second)
+	readFeatures := func() []string {
+		var f []string
+		if err := pool.QueryRow(ctx, `select features from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&f); err != nil {
+			t.Fatal(err)
+		}
+		return f
+	}
+	if err := s.Grant(ctx, Subject{GuildID: i64(gid)}, PlanGuild, &until, nil, "n", "a",
+		[]string{FeatureScopeOfficerViews}); err != nil {
+		t.Fatal(err)
+	}
+	if f := readFeatures(); len(f) != 1 || f[0] != FeatureScopeOfficerViews {
+		t.Fatalf("features = %v, want {officer_views}", f)
+	}
+	if err := s.Grant(ctx, Subject{GuildID: i64(gid)}, PlanGuild, &until, nil, "n", "a", nil); err != nil {
+		t.Fatal(err)
+	}
+	if f := readFeatures(); f != nil {
+		t.Fatalf("features = %v, want null after a whole-plan re-grant", f)
+	}
+}
+
+func TestClaimedGuildsWithoutActivePlan(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	bare, planned, lapsed := seedGuild(t, pool), seedGuild(t, pool), seedGuild(t, pool)
+	seedGuild(t, pool) // unclaimed
+	for _, gid := range []int64{bare, planned, lapsed} {
+		if _, err := pool.Exec(ctx, `update guilds set claimed_by = $2 where id = $1`, gid, seedUser(t, pool)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	seedEntitlement(t, pool, Subject{GuildID: i64(planned)}, PlanGuild, "active")
+	seedEntitlement(t, pool, Subject{GuildID: i64(lapsed)}, PlanGuild, "canceled")
+	got, err := s.ClaimedGuildsWithoutActivePlan(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 || got[0].ID != bare || got[1].ID != lapsed || got[0].Name == "" {
+		t.Fatalf("got %+v, want [%d %d]", got, bare, lapsed)
 	}
 }
 
@@ -501,7 +551,7 @@ func TestStripeSubscriptionIDsListsOnlyNonCanceledStripeSourcedRows(t *testing.T
 	}
 	// A grant (source = 'grant', no stripe_subscription_id) must never appear.
 	uid3 := seedUser(t, pool)
-	if err := s.Grant(context.Background(), Subject{UserID: i64(uid3)}, PlanPremium, nil, nil, "n", "a"); err != nil {
+	if err := s.Grant(context.Background(), Subject{UserID: i64(uid3)}, PlanPremium, nil, nil, "n", "a", nil); err != nil {
 		t.Fatal(err)
 	}
 
@@ -875,7 +925,7 @@ func TestUpsertStripeReplacesScopedGrant(t *testing.T) {
 	}
 	var oldStatus, newStatus string
 	if err := pool.QueryRow(context.Background(),
-		`select old_status, new_status from entitlement_audit where guild_id = $1`, gid).Scan(&oldStatus, &newStatus); err != nil {
+		`select old_status, new_status from entitlement_audit where guild_id = $1 order by id desc limit 1`, gid).Scan(&oldStatus, &newStatus); err != nil {
 		t.Fatal(err)
 	}
 	if oldStatus != "active" || newStatus != "active" {

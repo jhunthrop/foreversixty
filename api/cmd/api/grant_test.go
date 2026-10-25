@@ -45,3 +45,34 @@ func TestParseUntilAcceptsISODateOrEmpty(t *testing.T) {
 		t.Fatal("a garbage date should refuse")
 	}
 }
+
+func TestParseGrantFlagsFeatures(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    []string
+		wantErr string
+	}{
+		{"without until", []string{"--guild", "3", "--features", "officer_views", "--note", "x"}, "--until is required with --features"},
+		{"unknown feature", []string{"--guild", "3", "--features", "roster_check", "--until", "2026-12-09", "--note", "x"}, "--features must be officer_views"},
+		{"with a user", []string{"--user", "3", "--features", "officer_views", "--until", "2026-12-09", "--note", "x"}, "--features requires --guild"},
+		{"premium plan", []string{"--guild", "3", "--plan", "premium", "--features", "officer_views", "--until", "2026-12-09", "--note", "x"}, "--features requires --plan guild"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := parseGrantFlags(tc.args)
+			if err == nil || err.Error() != tc.wantErr {
+				t.Fatalf("err = %v, want %q", err, tc.wantErr)
+			}
+		})
+	}
+}
+
+func TestParseGrantFlagsFeaturesDefaultsPlanToGuild(t *testing.T) {
+	f, err := parseGrantFlags([]string{"--guild", "3", "--features", "officer_views", "--until", "2026-12-09", "--note", "x"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f.plan != "guild" || f.guild != "3" || f.features != "officer_views" {
+		t.Fatalf("flags = %+v", f)
+	}
+}

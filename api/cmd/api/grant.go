@@ -22,13 +22,14 @@ import (
 const grantRevokeUsage = `usage:
   api grant --user <id|battletag> --plan premium [--until 2026-12-31] --note "beta tester"
   api grant --guild <id> --plan guild [--until 2026-12-31] --note "beta guild"
+  api grant --guild <id> --features officer_views --until 2026-12-09 --note "officer tools grandfathering"
   api revoke --user <id|battletag> --plan premium --note "requested by support"
   api revoke --guild <id> --plan guild --note "requested by support"`
 
 // grantFlags is grant/revoke's small, manual flag set — no external flag
 // package is used elsewhere in this binary's subcommands.
 type grantFlags struct {
-	user, guild, plan, until, note string
+	user, guild, plan, until, note, features string
 }
 
 func parseGrantFlags(args []string) (grantFlags, error) {
@@ -54,6 +55,8 @@ func parseGrantFlags(args []string) (grantFlags, error) {
 			f.until, err = next()
 		case "--note":
 			f.note, err = next()
+		case "--features":
+			f.features, err = next()
 		default:
 			err = fmt.Errorf("unknown flag %q", arg)
 		}
@@ -64,6 +67,9 @@ func parseGrantFlags(args []string) (grantFlags, error) {
 	if (f.user == "") == (f.guild == "") {
 		return grantFlags{}, fmt.Errorf("exactly one of --user or --guild is required")
 	}
+	if err := validateFeatures(&f); err != nil {
+		return grantFlags{}, err
+	}
 	if f.plan != entitlements.PlanPremium && f.plan != entitlements.PlanGuild {
 		return grantFlags{}, fmt.Errorf("--plan must be premium or guild")
 	}
@@ -71,6 +77,38 @@ func parseGrantFlags(args []string) (grantFlags, error) {
 		return grantFlags{}, fmt.Errorf("--note is required")
 	}
 	return f, nil
+}
+
+// validateFeatures applies the scoped-grant rules: only officer_views, only
+// for a guild, only on the guild plan (the default), and always time-boxed.
+func validateFeatures(f *grantFlags) error {
+	if f.features == "" {
+		return nil
+	}
+	if f.features != entitlements.FeatureScopeOfficerViews {
+		return fmt.Errorf("--features must be %s", entitlements.FeatureScopeOfficerViews)
+	}
+	if f.guild == "" {
+		return fmt.Errorf("--features requires --guild")
+	}
+	if f.plan == "" {
+		f.plan = entitlements.PlanGuild
+	}
+	if f.plan != entitlements.PlanGuild {
+		return fmt.Errorf("--features requires --plan guild")
+	}
+	if f.until == "" {
+		return fmt.Errorf("--until is required with --features")
+	}
+	return nil
+}
+
+// grantFeatures is the features column value for the flags: nil for a whole plan.
+func (f grantFlags) grantFeatures() []string {
+	if f.features == "" {
+		return nil
+	}
+	return []string{f.features}
 }
 
 // parseUntil parses --until as an ISO date (UTC midnight), nil for an
@@ -183,7 +221,7 @@ func runGrant(ctx context.Context, log *slog.Logger, args []string) error {
 	operator := operatorTag()
 	note := fmt.Sprintf("%s: %s", operator, f.note)
 	actor := fmt.Sprintf("cli_grant:%s %s", operator, f.note)
-	if err := (&entitlements.Store{Pool: pool}).Grant(ctx, subj, f.plan, until, nil, note, actor); err != nil {
+	if err := (&entitlements.Store{Pool: pool}).Grant(ctx, subj, f.plan, until, nil, note, actor, f.grantFeatures()); err != nil {
 		return fmt.Errorf("grant: %w", err)
 	}
 	log.Info("grant", "plan", f.plan, "operator", operator)

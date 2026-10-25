@@ -114,6 +114,12 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case "grandfather-officer-tools":
+			if err := runGrandfatherOfficerTools(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error("grandfather-officer-tools", "err", err)
+				os.Exit(1)
+			}
+			return
 		case "revoke":
 			if err := runRevoke(context.Background(), log, os.Args[2:]); err != nil {
 				log.Error("revoke", "err", err)
