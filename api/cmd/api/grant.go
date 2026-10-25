@@ -22,7 +22,7 @@ import (
 const grantRevokeUsage = `usage:
   api grant --user <id|battletag> --plan premium [--until 2026-12-31] --note "beta tester"
   api grant --guild <id> --plan guild [--until 2026-12-31] --note "beta guild"
-  api grant --guild <id> --features officer_views --until 2026-12-09 --note "officer tools grandfathering"
+  api grant --guild <id> --features officer_views --until 2026-12-11 --note "officer tools grandfathering"
   api revoke --user <id|battletag> --plan premium --note "requested by support"
   api revoke --guild <id> --plan guild --note "requested by support"`
 
@@ -99,6 +99,18 @@ func validateFeatures(f *grantFlags) error {
 	}
 	if f.until == "" {
 		return fmt.Errorf("--until is required with --features")
+	}
+	until, err := parseUntil(f.until)
+	if err != nil {
+		return err
+	}
+	return requireFutureUntil(*until, time.Now())
+}
+
+// requireFutureUntil refuses a scoped grant that would be born expired.
+func requireFutureUntil(until, now time.Time) error {
+	if !until.After(now) {
+		return fmt.Errorf("--until must be a future date")
 	}
 	return nil
 }

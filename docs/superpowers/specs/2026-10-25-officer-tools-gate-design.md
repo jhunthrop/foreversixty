@@ -14,7 +14,9 @@ Officers of a claimed guild have had the loot council helper and the readiness b
 since 2026-10-04, gated by rank alone. The guild plan promises them as its headline. From
 this lane on, their controls work only for a guild on the plan, with one exception the owner
 chose: every guild claimed before the gate ships keeps them through the first raid night
-(2026-12-09) by an **officer-tools grant** that gives the guild nothing else.
+(2026-12-09) by an **officer-tools grant** that gives the guild nothing else. The grant's
+`--until` is exclusive at UTC midnight (as every grant's is), so the run uses 2026-12-11: that
+covers the raid night of the 9th in every US zone, and the settings line reads `until 11 Dec 2026`.
 
 ## 2. Goals, non-goals, anti-goals
 
@@ -68,7 +70,7 @@ Anti-goals
   **replaced** by the Stripe upsert (`on conflict (guild_id, plan) do update … source =
   'stripe'`, and this lane adds `features = null` to that update). The audit row records the
   change. If the subscription later cancels, the grant is gone with it; the owner re-grants
-  by hand if that ever matters (it should not: grants end 2026-12-09).
+  by hand if that ever matters (it should not: grants end 2026-12-11).
 - `entitlement_audit` gains nothing; the actor string already carries the operator note.
 
 ### 4.2 Active means not expired, for grants
@@ -120,7 +122,7 @@ and `Billing` keep returning the row with no filter, so settings pages can say "
   Readiness tabs; it passes `officerTools` beside it. No extra request.
 - `/v1/me` `guilds[].plan` (`GuildBillingView`) gains `scope: "plan" | "officer_tools"`.
   Guild settings renders the scoped grant as the designer specs it (`Officer tools · until
-  9 Dec 2026` is the working line; the designer's spec is binding).
+  11 Dec 2026` is the working line; the designer's spec is binding).
 - `guilds[].can` is unchanged (`award` stays rank-derived; it answers "may this person
   award in principle", the plan answers "today").
 - The Premium page's officer-tools line already reads "with more as they ship" (lane 1).
@@ -129,15 +131,15 @@ and `Billing` keep returning the row with no filter, so settings pages can say "
 
 ### 4.6 The CLI and the grandfather run
 
-- `api grant --guild <id> --features officer_views --until 2026-12-09 --note "…"`.
+- `api grant --guild <id> --features officer_views --until 2026-12-11 --note "…"`.
   `--features` accepts only `officer_views`, requires `--guild`, and implies `--plan guild`
   (`--plan` may be given and must be `guild`). `--until` is required with `--features` (a
   scoped grant is a bridge, never open-ended). `api revoke --guild <id> --plan guild` is
   unchanged and ends either kind.
-- `api grandfather-officer-tools --until 2026-12-09 --note "claimed before the gate"`:
+- `api grandfather-officer-tools --until 2026-12-11 --note "claimed before the gate"`:
   every guild with `claimed_at is not null` and no active `guild` row (4.2) gets the scoped
   grant; a guild already on the plan or on a grant is skipped and listed. Prints one line
-  per guild (`granted 12 Olympus XXVII until 2026-12-09`, `skipped 7 … on the plan`), then
+  per guild (`granted 12 Olympus XXVII until 2026-12-11`, `skipped 7 … on the plan`), then
   the totals. Idempotent: a second run grants nothing. Dry run by default; `--apply` writes.
 - Audit actor strings: `cli_grant:<operator> <note>` as today; the grandfather run uses
   `cli_grandfather:<operator> <note>`.
@@ -148,10 +150,10 @@ and `Billing` keep returning the row with no filter, so settings pages can say "
    `CanForGuild`, `GuildBilling.Features`, the `/v1/me` `scope` and home `officer_tools`
    fields, the CLI flag and the grandfather command, with tests. Deploy. Verify
    `schema_migrations` reads 49.
-2. The owner runs `api grandfather-officer-tools --until 2026-12-09 --note "…"` from the
+2. The owner runs `api grandfather-officer-tools --until 2026-12-11 --note "…"` from the
    deployed sha (dry run first, then `--apply`), from a shell with `DATABASE_URL` from Secret
    Manager and never printed. Verify: every claimed guild has a row with
-   `features = '{officer_views}'`, `current_period_end = 2026-12-09`.
+   `features = '{officer_views}'`, `current_period_end = 2026-12-11`.
 3. The gate: the handler refusals (4.4), the web read-only state (designer's spec), the
    e2e of §4.7's acceptance. Deploy.
 

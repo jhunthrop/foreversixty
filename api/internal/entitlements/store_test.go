@@ -3,7 +3,10 @@ package entitlements
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -930,5 +933,92 @@ func TestUpsertStripeReplacesScopedGrant(t *testing.T) {
 	}
 	if oldStatus != "active" || newStatus != "active" {
 		t.Fatalf("audit = %q -> %q, want active -> active", oldStatus, newStatus)
+	}
+	member := seedUser(t, pool)
+	seedGuildMember(t, pool, gid, member, "member", true)
+	if ok, _, err := s.Can(context.Background(), member, FeatureServerSims); err != nil || !ok {
+		t.Fatalf("member Can(server_sims) = %v, %v, want true on the whole plan", ok, err)
+	}
+	if sup, err := s.IsSupporter(context.Background(), member); err != nil || !sup {
+		t.Fatalf("member IsSupporter = %v, %v, want true on the whole plan", sup, err)
+	}
+}
+
+// guildRowState is the part of a guild row a scoped Grant may or may not touch.
+type guildRowState struct {
+	Source            string
+	Features          []string
+	BillingUserID     *int64
+	CancelAtPeriodEnd bool
+	SubscriptionID    *string
+	GraceUntil        *time.Time
+}
+
+func readGuildRowState(t *testing.T, pool *pgxpool.Pool, gid int64) guildRowState {
+	t.Helper()
+	var r guildRowState
+	if err := pool.QueryRow(context.Background(), `
+		select source, features, billing_user_id, cancel_at_period_end, stripe_subscription_id, grace_until
+		from entitlements where guild_id = $1 and plan = 'guild'`, gid).
+		Scan(&r.Source, &r.Features, &r.BillingUserID, &r.CancelAtPeriodEnd, &r.SubscriptionID, &r.GraceUntil); err != nil {
+		t.Fatal(err)
+	}
+	return r
+}
+
+// seedFullStripeRow writes a Stripe guild row with every Stripe-only column set.
+func seedFullStripeRow(t *testing.T, pool *pgxpool.Pool, gid int64, status string) {
+	t.Helper()
+	if _, err := pool.Exec(context.Background(), `
+		insert into entitlements (guild_id, plan, source, status, current_period_end, billing_user_id,
+		                          cancel_at_period_end, stripe_subscription_id, grace_until)
+		values ($1, 'guild', 'stripe', $2, now() + interval '10 days', $3, true, $4, now() + interval '30 days')`,
+		gid, status, seedUser(t, pool), fmt.Sprintf("sub_full_%d", gid)); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestScopedGrantNeverDowngradesALiveRow(t *testing.T) {
+	scoped := []string{FeatureScopeOfficerViews}
+	for _, tc := range []struct {
+		name       string
+		seed       func(t *testing.T, pool *pgxpool.Pool, gid int64)
+		wantRefuse bool
+	}{
+		{"active stripe row", func(t *testing.T, pool *pgxpool.Pool, gid int64) { seedFullStripeRow(t, pool, gid, "active") }, true},
+		{"active whole-plan grant", func(t *testing.T, pool *pgxpool.Pool, gid int64) {
+			seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active", nil, timePtr(tomorrow()))
+		}, true},
+		{"expired whole-plan grant", func(t *testing.T, pool *pgxpool.Pool, gid int64) {
+			seedEntitlementUntil(t, pool, Subject{GuildID: i64(gid)}, PlanGuild, "active", nil, timePtr(yesterday()))
+		}, false},
+		{"canceled stripe row", func(t *testing.T, pool *pgxpool.Pool, gid int64) { seedFullStripeRow(t, pool, gid, "canceled") }, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			pool := testPool(t)
+			s := &Store{Pool: pool}
+			gid := seedGuild(t, pool)
+			tc.seed(t, pool, gid)
+			before := readGuildRowState(t, pool, gid)
+			until := tomorrow().UTC().Truncate(time.Second)
+			err := s.Grant(context.Background(), Subject{GuildID: i64(gid)}, PlanGuild, &until, nil, "n", "a", scoped)
+			after := readGuildRowState(t, pool, gid)
+			if tc.wantRefuse {
+				if !errors.Is(err, ErrWouldDowngrade) {
+					t.Fatalf("err = %v, want ErrWouldDowngrade", err)
+				}
+				if !reflect.DeepEqual(before, after) {
+					t.Fatalf("row changed: %+v -> %+v", before, after)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			want := guildRowState{Source: "grant", Features: scoped}
+			if !reflect.DeepEqual(after, want) {
+				t.Fatalf("row = %+v, want %+v (Stripe columns cleared)", after, want)
+			}
+		})
 	}
 }

@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -19,7 +20,7 @@ import (
 )
 
 const grandfatherUsage = `usage:
-  api grandfather-officer-tools --until 2026-12-09 --note "launch grandfathering" [--apply]`
+  api grandfather-officer-tools --until 2026-12-11 --note "launch grandfathering" [--apply]`
 
 const dateLayout = "2006-01-02"
 
@@ -62,6 +63,9 @@ func parseGrandfatherFlags(args []string) (grandfatherOptions, error) {
 	if err != nil {
 		return grandfatherOptions{}, err
 	}
+	if err := requireFutureUntil(*t, time.Now()); err != nil {
+		return grandfatherOptions{}, err
+	}
 	opts.Until = *t
 	return opts, nil
 }
@@ -96,19 +100,34 @@ func grandfatherOfficerTools(ctx context.Context, pool *pgxpool.Pool, opts grand
 	if err != nil {
 		return fmt.Errorf("grandfather: %w", err)
 	}
-	granted := 0
-	for _, g := range todo {
-		if err := grandfatherOne(ctx, store, g, opts, out); err != nil {
-			return err
-		}
-		granted++
+	granted, raced, err := grantAll(ctx, store, todo, opts, out)
+	if err != nil {
+		return err
 	}
 	skipped, err := reportSkipped(ctx, store, planned, out)
 	if err != nil {
 		return err
 	}
-	_, err = fmt.Fprintf(out, "%d %s, %d skipped\n", granted, grantedVerb(opts.Apply), skipped)
+	_, err = fmt.Fprintf(out, "%d %s, %d skipped\n", granted, grantedVerb(opts.Apply), skipped+raced)
 	return err
+}
+
+// grantAll runs grandfatherOne over todo and counts the guilds granted and
+// the ones skipped because they gained a live plan after the list was read.
+func grantAll(ctx context.Context, store *entitlements.Store, todo []entitlements.GuildRef,
+	opts grandfatherOptions, out io.Writer) (granted, skipped int, err error) {
+	for _, g := range todo {
+		wasSkipped, err := grandfatherOne(ctx, store, g, opts, out)
+		if err != nil {
+			return 0, 0, err
+		}
+		if wasSkipped {
+			skipped++
+		} else {
+			granted++
+		}
+	}
+	return granted, skipped, nil
 }
 
 func grantedVerb(apply bool) string {
@@ -118,22 +137,33 @@ func grantedVerb(apply bool) string {
 	return "would be granted"
 }
 
-func grandfatherOne(ctx context.Context, store *entitlements.Store, g entitlements.GuildRef, opts grandfatherOptions, out io.Writer) error {
+// grandfatherOne grants (or, on a dry run, reports) one guild's scoped grant.
+// skipped is true when Grant refused because the guild is on a live plan.
+func grandfatherOne(ctx context.Context, store *entitlements.Store, g entitlements.GuildRef,
+	opts grandfatherOptions, out io.Writer) (skipped bool, err error) {
 	verb := "would grant"
 	if opts.Apply {
-		gid := g.ID
-		note := fmt.Sprintf("%s: %s", opts.Operator, opts.Note)
-		actor := fmt.Sprintf("cli_grandfather:%s %s", opts.Operator, opts.Note)
-		until := opts.Until
-		err := store.Grant(ctx, entitlements.Subject{GuildID: &gid}, entitlements.PlanGuild, &until, nil, note, actor,
-			[]string{entitlements.FeatureScopeOfficerViews})
+		err := grantOfficerTools(ctx, store, g.ID, opts)
+		if errors.Is(err, entitlements.ErrWouldDowngrade) {
+			_, err = fmt.Fprintf(out, "skipped %d %s: on the plan\n", g.ID, g.Name)
+			return true, err
+		}
 		if err != nil {
-			return fmt.Errorf("grandfather: guild %d: %w", g.ID, err)
+			return false, fmt.Errorf("grandfather: guild %d: %w", g.ID, err)
 		}
 		verb = "granted"
 	}
-	_, err := fmt.Fprintf(out, "%s %d %s until %s\n", verb, g.ID, g.Name, opts.Until.Format(dateLayout))
-	return err
+	_, err = fmt.Fprintf(out, "%s %d %s until %s\n", verb, g.ID, g.Name, opts.Until.Format(dateLayout))
+	return false, err
+}
+
+// grantOfficerTools writes guildID's scoped officer_views grant.
+func grantOfficerTools(ctx context.Context, store *entitlements.Store, guildID int64, opts grandfatherOptions) error {
+	note := fmt.Sprintf("%s: %s", opts.Operator, opts.Note)
+	actor := fmt.Sprintf("cli_grandfather:%s %s", opts.Operator, opts.Note)
+	until := opts.Until
+	return store.Grant(ctx, entitlements.Subject{GuildID: &guildID}, entitlements.PlanGuild, &until, nil, note, actor,
+		[]string{entitlements.FeatureScopeOfficerViews})
 }
 
 // reportSkipped prints the claimed guilds that held a live plan before the run

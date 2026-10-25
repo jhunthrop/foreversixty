@@ -203,7 +203,7 @@ func (s *Service) premiumCheckout(w http.ResponseWriter, r *http.Request, userID
 		if err != nil {
 			return err
 		}
-		if current != nil && entitlements.StatusGrantsAccess(current.Status) {
+		if current != nil && current.Active {
 			return alreadyOnPremiumRefusal()
 		}
 		customerID, err := s.customerFor(ctx, userID)

@@ -454,6 +454,8 @@ type BillingView struct {
 const (
 	guildPlanScopeWhole        = "plan"
 	guildPlanScopeOfficerTools = "officer_tools"
+	// billingStatusCanceled is the ended-row status word BillingView shows.
+	billingStatusCanceled = "canceled"
 )
 
 // GuildBillingView is a guild's billing state, shown only to a verified
@@ -592,7 +594,7 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 	}
 	if b != nil {
 		ev.Billing = &BillingView{
-			Plan: b.Plan, Status: b.Status, CancelAtPeriodEnd: b.CancelAtPeriodEnd,
+			Plan: b.Plan, Status: personalBillingStatus(b), CancelAtPeriodEnd: b.CancelAtPeriodEnd,
 			CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd),
 		}
 	}
@@ -662,6 +664,16 @@ func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID i
 		}
 	}
 	return out, nil
+}
+
+// personalBillingStatus is the status the account page shows: an expired
+// grant keeps status 'active' in the row but is no longer live, so it shows
+// as an ended row does, "canceled". Every other row shows its own status.
+func personalBillingStatus(b *entitlements.Billing) string {
+	if !b.Active && entitlements.StatusGrantsAccess(b.Status) {
+		return billingStatusCanceled
+	}
+	return b.Status
 }
 
 // guildPlanScope names what a guild's live entitlement row covers.

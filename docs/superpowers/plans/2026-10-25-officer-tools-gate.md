@@ -127,7 +127,7 @@ func TestGuildCheckoutAllowedOnScopedGrant(t *testing.T) // checkGuildCheckout o
 - Produces (Go): `Grant(ctx, subj, plan, until, grantedBy, note, actor string, features []string)`.
 
 - [ ] **Step 1: Failing tests**
-  - `grant_test.go`: `--features officer_views` without `--until` → error `--until is required with --features`; `--features roster_check` → error; `--features` with `--user` → error; `--features officer_views --guild 3 --until 2026-12-09 --note x` parses with plan defaulted to `guild`.
+  - `grant_test.go`: `--features officer_views` without `--until` → error `--until is required with --features`; `--features roster_check` → error; `--features` with `--user` → error; `--features officer_views --guild 3 --until 2026-12-11 --note x` parses with plan defaulted to `guild`.
   - `store_test.go`: `Grant` with features writes `features = '{officer_views}'`; re-grant without features clears it (full plan).
   - `grandfather_test.go` (DB harness): three guilds (claimed/no row, claimed/scoped grant, unclaimed) + one on a Stripe plan: dry run writes nothing and lists `granted`/`skipped` lines; `--apply` grants exactly the first; second `--apply` grants none.
 - [ ] **Step 2: Run, see FAIL.**
@@ -136,7 +136,7 @@ func TestGuildCheckoutAllowedOnScopedGrant(t *testing.T) // checkGuildCheckout o
 - [ ] **Step 5: README** — add both command forms under the grant section with one sentence each and the order (deploy 0049 first, then grandfather from the deployed sha).
 - [ ] **Step 6: Commit** — `feat(api): grant --features officer_views and the grandfather-officer-tools command`
 
-**PR A gate:** CI green → fast-forward main → ordered deploy (api run with the migration first; verify `schema_migrations` = 49) → run `grandfather-officer-tools` dry run, then `--apply`, from the deployed sha via the production script pattern (never printing `DATABASE_URL`) → verify every claimed guild's row (`features = '{officer_views}'`, `current_period_end = 2026-12-09`) → memory note. Only then Task 5.
+**PR A gate:** CI green → fast-forward main → ordered deploy (api run with the migration first; verify `schema_migrations` = 49) → run `grandfather-officer-tools` dry run, then `--apply`, from the deployed sha via the production script pattern (never printing `DATABASE_URL`) → verify every claimed guild's row (`features = '{officer_views}'`, `current_period_end = 2026-12-11`) → memory note. Only then Task 5.
 
 ---
 
@@ -165,7 +165,7 @@ func TestGuildCheckoutAllowedOnScopedGrant(t *testing.T) // checkGuildCheckout o
 - Produces (settings-view.ts): `BillingState` gains `'officer-tools'`; `billingState` returns it when `billing.scope === 'officer_tools'`; `guildPlanLine` returns `Officer tools · until {d Mon yyyy}` for that scope; `officerToolsExplanation(billing): string` = `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on {d Mon yyyy}; the guild plan keeps them after that.`; `accountGuildPlanLine(billing): string` = `guildPlanLine(billing)` (the account row appends ` · ` and the link itself).
 - Produces: `GuildApiError.code`.
 
-- [ ] **Step 1: Failing tests** — every string above read verbatim from `design/specs/2026-10-25-officer-tools-gate.md` §7's table (the Discord copy test's `specCell` reader is the pattern: copy it into a small `web/src/test-support/spec-table.ts` and use it from both tests); `billingState({scope:'officer_tools', billed_by:''})` → `'officer-tools'`; `guildPlanLine` scoped with `2026-12-09T00:00:00Z` → `Officer tools · until 9 Dec 2026`; `GuildApiError` from an envelope `{code:'guild_plan_required'}` carries `code`.
+- [ ] **Step 1: Failing tests** — every string above read verbatim from `design/specs/2026-10-25-officer-tools-gate.md` §7's table (the Discord copy test's `specCell` reader is the pattern: copy it into a small `web/src/test-support/spec-table.ts` and use it from both tests); `billingState({scope:'officer_tools', billed_by:''})` → `'officer-tools'`; `guildPlanLine` scoped with `2026-12-11T00:00:00Z` → `Officer tools · until 11 Dec 2026`; `GuildApiError` from an envelope `{code:'guild_plan_required'}` carries `code`.
 - [ ] **Step 2: Run `npx vitest run src/lib/guild` → FAIL.**
 - [ ] **Step 3: Implement.**
 - [ ] **Step 4: `npx vitest run src/lib/guild src/lib/account` → PASS; `npm run check`.**
@@ -201,9 +201,9 @@ func TestGuildCheckoutAllowedOnScopedGrant(t *testing.T) // checkGuildCheckout o
 - Consumes: `billingState` `'officer-tools'`, `guildPlanLine`, `officerToolsExplanation`, `notOnPlanLines`, `guildSettingsHref`.
 
 - [ ] **Step 1: Failing tests**
-  - Settings, claim holder, scoped: `guild-billing-plan` = `Officer tools · until 9 Dec 2026`; `guild-billing-contact` = the explanation; price line; `Subscribe the guild` button with the checkout href; no Manage billing.
+  - Settings, claim holder, scoped: `guild-billing-plan` = `Officer tools · until 11 Dec 2026`; `guild-billing-contact` = the explanation; price line; `Subscribe the guild` button with the checkout href; no Manage billing.
   - Settings, `mayBill === false` with a plan: the plan line and explanation render, then `guildMasterOnly`, no button. With no plan: today's single line.
-  - Account guild row: `plan !== null` → `p[data-testid=account-guild-plan]` reading `Officer tools · until 9 Dec 2026 · Guild settings` with the link to `guildSettingsHref`; a paid plan reads `Guild plan · renews 31 Dec 2026 · Guild settings`; `plan === null` → no row.
+  - Account guild row: `plan !== null` → `p[data-testid=account-guild-plan]` reading `Officer tools · until 11 Dec 2026 · Guild settings` with the link to `guildSettingsHref`; a paid plan reads `Guild plan · renews 31 Dec 2026 · Guild settings`; `plan === null` → no row.
 - [ ] **Step 2: Run, see FAIL.**
 - [ ] **Step 3: Implement** per the experience spec §5 and §6 (classes and slots as written there).
 - [ ] **Step 4: `npx vitest run src/components` → PASS; `npm run check`.**

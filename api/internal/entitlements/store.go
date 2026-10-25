@@ -16,6 +16,11 @@ import (
 // entitlements row to revoke.
 var ErrNotFound = errors.New("entitlements: not found")
 
+// ErrWouldDowngrade is returned by Grant when a feature-scoped grant would
+// replace a live Stripe subscription or a live whole-plan row; nothing is
+// written. The wrapped message names the guild.
+var ErrWouldDowngrade = errors.New("entitlements: a scoped grant would downgrade a live plan")
+
 // Store is every entitlements table read and write.
 type Store struct{ Pool *pgxpool.Pool }
 
@@ -175,6 +180,9 @@ type Billing struct {
 	Status            string
 	CurrentPeriodEnd  *time.Time
 	CancelAtPeriodEnd bool
+	// Active is the live-row predicate (activeClause) evaluated now: an
+	// expired grant keeps status 'active' but is not live.
+	Active bool
 }
 
 // PersonalBilling reads userID's own premium entitlement row, regardless
@@ -183,9 +191,9 @@ type Billing struct {
 func (s *Store) PersonalBilling(ctx context.Context, userID int64) (*Billing, error) {
 	var b Billing
 	err := s.Pool.QueryRow(ctx, `
-		select plan, status, current_period_end, cancel_at_period_end
-		from entitlements where user_id = $1 and plan = 'premium'`, userID).
-		Scan(&b.Plan, &b.Status, &b.CurrentPeriodEnd, &b.CancelAtPeriodEnd)
+		select e.plan, e.status, e.current_period_end, e.cancel_at_period_end, (`+activeClause+`) as active
+		from entitlements e where e.user_id = $1 and e.plan = 'premium'`, userID).
+		Scan(&b.Plan, &b.Status, &b.CurrentPeriodEnd, &b.CancelAtPeriodEnd, &b.Active)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
@@ -321,7 +329,17 @@ type existingRow struct {
 	stripeSubscriptionID *string
 	// stripeSubscriptionCreated is nil for rows written before it was stored.
 	stripeSubscriptionCreated *time.Time
+	source                    string
+	// features is nil for a whole-plan row.
+	features []string
+	// active is activeClause evaluated now.
+	active bool
 }
+
+// existingEntitlementColumns is existingEntitlement's select list, in
+// existingRow's Scan order.
+const existingEntitlementColumns = `e.id, e.status, e.stripe_subscription_id, e.stripe_subscription_created,
+	e.source, e.features, (` + activeClause + `)`
 
 // existingEntitlement reads subj's row for plan, inside tx — isNew=true
 // and a zero existingRow when no row exists yet.
@@ -329,14 +347,15 @@ func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan stri
 	var q pgx.Row
 	if subj.UserID != nil {
 		q = tx.QueryRow(ctx,
-			`select id, status, stripe_subscription_id, stripe_subscription_created from entitlements where user_id = $1 and plan = $2`,
+			`select `+existingEntitlementColumns+` from entitlements e where e.user_id = $1 and e.plan = $2`,
 			*subj.UserID, plan)
 	} else {
 		q = tx.QueryRow(ctx,
-			`select id, status, stripe_subscription_id, stripe_subscription_created from entitlements where guild_id = $1 and plan = $2`,
+			`select `+existingEntitlementColumns+` from entitlements e where e.guild_id = $1 and e.plan = $2`,
 			*subj.GuildID, plan)
 	}
-	err = q.Scan(&row.id, &row.status, &row.stripeSubscriptionID, &row.stripeSubscriptionCreated)
+	err = q.Scan(&row.id, &row.status, &row.stripeSubscriptionID, &row.stripeSubscriptionCreated,
+		&row.source, &row.features, &row.active)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return existingRow{}, true, nil
 	}
@@ -577,10 +596,14 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		return err
 	}
 	return s.withTx(ctx, func(tx pgx.Tx) error {
-		oldStatus, isNew, err := existingStatus(ctx, tx, subj, plan)
+		existing, isNew, err := existingEntitlement(ctx, tx, subj, plan)
 		if err != nil {
 			return err
 		}
+		if !isNew && wouldDowngrade(existing, features) {
+			return fmt.Errorf("%w: %s", ErrWouldDowngrade, describeSubject(subj))
+		}
+		oldStatus := existing.status
 		var id int64
 		if err := tx.QueryRow(ctx, `
 			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end, granted_by, grant_note, features)
@@ -588,7 +611,9 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 			on conflict (`+target+`) do update set
 				source = 'grant', status = 'active', current_period_end = excluded.current_period_end,
 				granted_by = excluded.granted_by, grant_note = excluded.grant_note,
-				features = excluded.features, updated_at = now()
+				features = excluded.features, updated_at = now(),
+				billing_user_id = null, cancel_at_period_end = false,
+				stripe_subscription_id = null, grace_until = null
 			returning id`,
 			subj.UserID, subj.GuildID, plan, until, grantedBy, note, features).Scan(&id); err != nil {
 			return fmt.Errorf("entitlements: grant: write: %w", err)
@@ -599,6 +624,23 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		}
 		return recordAudit(ctx, tx, id, subj.UserID, subj.GuildID, plan, oldPtr, "active", actor)
 	})
+}
+
+// wouldDowngrade reports whether a grant scoped to features would cut a live
+// row down: a live Stripe subscription, or a live whole-plan row.
+func wouldDowngrade(existing existingRow, features []string) bool {
+	if len(features) == 0 || !existing.active {
+		return false
+	}
+	return existing.source == "stripe" || existing.features == nil
+}
+
+// describeSubject names subj for an error message.
+func describeSubject(subj Subject) string {
+	if subj.GuildID != nil {
+		return fmt.Sprintf("guild %d", *subj.GuildID)
+	}
+	return fmt.Sprintf("user %d", *subj.UserID)
 }
 
 // GuildRef names a guild for operator listings.

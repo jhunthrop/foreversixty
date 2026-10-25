@@ -354,3 +354,18 @@ func TestCheckoutPremiumConflictsWhileASubscriptionStands(t *testing.T) {
 		t.Fatalf("after cancellation: status = %d, body = %s", w.Code, w.Body.String())
 	}
 }
+
+func TestCheckoutPremiumOpensAfterAPersonalGrantExpires(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "premium-expired-grant@example.com")
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into entitlements (user_id, plan, source, status, current_period_end)
+		 values ($1, 'premium', 'grant', 'active', now() - interval '1 day')`, uid); err != nil {
+		t.Fatal(err)
+	}
+	r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", uid,
+		map[string]string{"plan": "premium", "interval": "monthly"})
+	if w := h.do(t, r); w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+}
