@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
 import {
   billedLine,
   billingState,
   canManageBilling,
   claimedByLine,
+  accountGuildPlanLine,
   guildPlanLine,
+  officerToolsExplanation,
   notOnPlanLines,
   settingsWords,
 } from './settings-view';
@@ -15,6 +18,7 @@ function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
     status: 'active',
     current_period_end: '2026-12-31T00:00:00Z',
     cancel_at_period_end: false,
+    scope: 'plan',
     billed_by: 'hunthrop#1894',
     you_are_billing_contact: false,
     ...overrides,
@@ -106,5 +110,46 @@ describe('billing copy per state', () => {
       'Billing is not available right now. Try again in a few minutes.',
     );
     expect(settingsWords.tryAgain).toBe('Try again');
+  });
+});
+
+// Every officer-tools gate string below is read out of the spec's section 7 table.
+const GATE_SPEC = new URL('../../../../design/specs/2026-10-25-officer-tools-gate.md', import.meta.url);
+const COPY_HEADING = '## 7. Copy, verbatim';
+const DATE_PLACEHOLDER = { 'd Mon yyyy': '11 Dec 2026' };
+const scoped = (overrides: Partial<GuildBillingView> = {}): GuildBillingView =>
+  billing({
+    scope: 'officer_tools',
+    billed_by: '',
+    current_period_end: '2026-12-11T00:00:00Z',
+    ...overrides,
+  });
+
+describe('the officer tools scoped grant', () => {
+  it('is its own billing state, ahead of the billed_by rule', () => {
+    expect(billingState(scoped(), false)).toBe('officer-tools');
+    expect(billingState(scoped({ billed_by: 'hunthrop#1894' }), false)).toBe('officer-tools');
+    expect(billingState(scoped(), true)).toBe('unavailable');
+  });
+
+  it('keeps a full plan on the plan states', () => {
+    expect(billingState(billing(), false)).toBe('on-plan');
+    expect(billingState(billing({ billed_by: '' }), false)).toBe('granted');
+  });
+
+  it('reads the plan line from the spec', () => {
+    const expected = specString(GATE_SPEC, COPY_HEADING, 'Settings plan line, scoped', 0, DATE_PLACEHOLDER);
+    expect(guildPlanLine(scoped())).toBe(expected);
+    expect(guildPlanLine(scoped())).toBe('Officer tools · until 11 Dec 2026');
+  });
+
+  it('reads the explanation from the spec', () => {
+    const expected = specString(GATE_SPEC, COPY_HEADING, 'Settings explanation, scoped', 0, DATE_PLACEHOLDER);
+    expect(officerToolsExplanation(scoped())).toBe(expected);
+  });
+
+  it('hands the account row the same plan line', () => {
+    expect(accountGuildPlanLine(scoped())).toBe(guildPlanLine(scoped()));
+    expect(accountGuildPlanLine(billing())).toBe(guildPlanLine(billing()));
   });
 });

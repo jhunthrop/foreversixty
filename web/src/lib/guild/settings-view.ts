@@ -14,6 +14,7 @@ export const settingsWords = {
   releaseOnClaimPage: 'Release on the claim page',
   visibilityHelp: 'Public, Unlisted (link only) or Guild only. Applies to new reports.',
   guildPlan: 'Guild plan',
+  officerTools: 'Officer tools',
   noBillingContact: 'No billing contact yet',
   grantedByUs: 'Granted by Forever Sixty.',
   billingUnavailable: 'Billing is not available right now. Try again in a few minutes.',
@@ -28,16 +29,33 @@ export function claimedByLine(claim: ClaimStateView, claimedBy: MemberRef | null
   return name === undefined || name === '' ? 'Claimed' : `Claimed by ${name}`;
 }
 
+function planEndDate(billing: GuildBillingView): string {
+  return billing.current_period_end === null ? '' : utcDayMonthYear(billing.current_period_end);
+}
+
 /**
  * "Guild plan · renews 31 Dec 2026", "Guild plan · ends 31 Dec 2026", or for a plan an operator
  * granted (no Stripe billing contact) "Guild plan · until 31 Dec 2026". The date is the one that
  * was stored, read in UTC: a grant until 2026-12-31 is the 31st for a viewer in any zone.
  */
 export function guildPlanLine(billing: GuildBillingView): string {
-  const date = billing.current_period_end === null ? '' : utcDayMonthYear(billing.current_period_end);
+  const date = planEndDate(billing);
+  if (billing.scope === 'officer_tools') {
+    return date === '' ? settingsWords.officerTools : `${settingsWords.officerTools} · until ${date}`;
+  }
   if (date === '') return settingsWords.guildPlan;
   const verb = billing.billed_by === '' ? 'until' : billing.cancel_at_period_end ? 'ends' : 'renews';
   return `${settingsWords.guildPlan} · ${verb} ${date}`;
+}
+
+/** What a scoped grant covers and what follows it, in the grant's own words. */
+export function officerToolsExplanation(billing: GuildBillingView): string {
+  return `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on ${planEndDate(billing)}; the guild plan keeps them after that.`;
+}
+
+/** The account page's guild row text; the row appends ` · ` and the settings link itself. */
+export function accountGuildPlanLine(billing: GuildBillingView): string {
+  return guildPlanLine(billing);
 }
 
 /** Who pays: "Billed to you.", "Billed by hunthrop#1894", or "No billing contact yet". */
@@ -71,10 +89,11 @@ export function notOnPlanLines(monthlyUsd: number | undefined = PLANS.guild.mont
 
 /** What the billing block shows: the plan, the plan granted by an operator, the plan the API could
  *  not reach Stripe for, or no plan. */
-export type BillingState = 'not-on-plan' | 'on-plan' | 'granted' | 'unavailable';
+export type BillingState = 'not-on-plan' | 'on-plan' | 'granted' | 'officer-tools' | 'unavailable';
 
 export function billingState(billing: GuildBillingView | null, unavailable: boolean): BillingState {
   if (unavailable) return 'unavailable';
   if (billing === null) return 'not-on-plan';
+  if (billing.scope === 'officer_tools') return 'officer-tools';
   return billing.billed_by === '' ? 'granted' : 'on-plan';
 }

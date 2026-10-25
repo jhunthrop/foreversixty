@@ -14,6 +14,8 @@ export class GuildApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** The API's own `error.code` ("guild_plan_required"); empty when the envelope carried none. */
+    readonly code: string = '',
   ) {
     super(message);
     this.name = 'GuildApiError';
@@ -78,6 +80,8 @@ export interface GuildViewerView {
   role: GuildViewerRole;
   character_key: string | null;
   verified: boolean;
+  /** The guild is on a scoped officer-tools grant (not the guild plan); absent on an older API. */
+  officer_tools?: boolean;
 }
 
 /** `GET .../home`'s `summary` -- the Overview tab's roster/progression glance, computed
@@ -374,7 +378,7 @@ async function call<T>(
   try {
     result = await requestEnvelope<T>(path, apiBase, { ...init, failureMessage: GUILD_API_FAILED });
   } catch (error) {
-    if (error instanceof AccountError) throw new GuildApiError(error.message, error.status);
+    if (error instanceof AccountError) throw new GuildApiError(error.message, error.status, error.code ?? '');
     throw new GuildApiError(GUILD_API_FAILED, 0);
   }
   if (result.data === null && !allowEmpty) {

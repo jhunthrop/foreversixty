@@ -2,7 +2,8 @@
 // The claim, invite and leave flows' wording (round 4 lane G.5): each state's copy is pinned
 // here because the spec files only see it through a built page.
 import { describe, expect, it } from 'vitest';
-import { guildClaimCopy, guildConsentCopy, guildJoinCopy, guildSettingsCopy } from './copy';
+import { specString } from '../../test-support/spec-table';
+import { guildClaimCopy, guildConsentCopy, guildGateCopy, guildJoinCopy, guildSettingsCopy } from './copy';
 
 describe('guildClaimCopy', () => {
   it('says what claiming gets an officer of an unclaimed guild', () => {
@@ -110,5 +111,21 @@ describe('the Leave confirm for an officer and the hand-over line', () => {
     );
     expect(guildConsentCopy.leaveConfirmButton).toBe('Leave guild');
     expect(guildConsentCopy.shareLabel).toBe('Share with this guild');
+  });
+});
+
+describe('guildGateCopy', () => {
+  const GATE_SPEC = new URL('../../../../design/specs/2026-10-25-officer-tools-gate.md', import.meta.url);
+  const spec = (label: string): string => specString(GATE_SPEC, '## 7. Copy, verbatim', label);
+
+  it('reads the gate sentence from the spec: the sentence, then the link, then a full stop', () => {
+    expect(`${guildGateCopy.sentence}${guildGateCopy.link}.`).toBe(spec('Gate sentence, Loot and Readiness'));
+    expect(guildGateCopy.link).toBe(spec('Settings button (reused)'));
+  });
+
+  it('reads the refusals and the label from the spec', () => {
+    expect(guildGateCopy.awardRefused).toBe(spec('403 on Award'));
+    expect(guildGateCopy.undoRefused).toBe(spec('403 on Undo'));
+    expect(guildGateCopy.readOnly).toBe(spec('Header label (reused)'));
   });
 });
