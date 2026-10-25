@@ -571,7 +571,7 @@ type Subject struct {
 // CLI). until is nil for an open-ended grant; grantedBy is nil when the
 // operator running the CLI is not themselves a users row (Ruling G).
 func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *time.Time,
-	grantedBy *int64, note, actor string) error {
+	grantedBy *int64, note, actor string, features []string) error {
 	target, err := conflictTarget(subj)
 	if err != nil {
 		return err
@@ -583,13 +583,14 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		}
 		var id int64
 		if err := tx.QueryRow(ctx, `
-			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end, granted_by, grant_note)
-			values ($1, $2, $3, 'grant', 'active', $4, $5, $6)
+			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end, granted_by, grant_note, features)
+			values ($1, $2, $3, 'grant', 'active', $4, $5, $6, $7)
 			on conflict (`+target+`) do update set
 				source = 'grant', status = 'active', current_period_end = excluded.current_period_end,
-				granted_by = excluded.granted_by, grant_note = excluded.grant_note, updated_at = now()
+				granted_by = excluded.granted_by, grant_note = excluded.grant_note,
+				features = excluded.features, updated_at = now()
 			returning id`,
-			subj.UserID, subj.GuildID, plan, until, grantedBy, note).Scan(&id); err != nil {
+			subj.UserID, subj.GuildID, plan, until, grantedBy, note, features).Scan(&id); err != nil {
 			return fmt.Errorf("entitlements: grant: write: %w", err)
 		}
 		var oldPtr *string
@@ -598,6 +599,52 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		}
 		return recordAudit(ctx, tx, id, subj.UserID, subj.GuildID, plan, oldPtr, "active", actor)
 	})
+}
+
+// GuildRef names a guild for operator listings.
+type GuildRef struct {
+	ID   int64
+	Name string
+}
+
+// ClaimedGuildsWithoutActivePlan lists, by id, the claimed guilds that have no
+// live guild-plan row (activeClause): the ones the officer-tools gate would
+// lock out.
+func (s *Store) ClaimedGuildsWithoutActivePlan(ctx context.Context) ([]GuildRef, error) {
+	return s.claimedGuilds(ctx, "not")
+}
+
+// ClaimedGuildsWithActivePlan lists, by id, the claimed guilds that already
+// have a live guild-plan row.
+func (s *Store) ClaimedGuildsWithActivePlan(ctx context.Context) ([]GuildRef, error) {
+	return s.claimedGuilds(ctx, "")
+}
+
+// claimedGuilds filters claimed guilds on whether a live guild row exists;
+// negation is "not" or "" and is never caller-supplied text.
+func (s *Store) claimedGuilds(ctx context.Context, negation string) ([]GuildRef, error) {
+	rows, err := s.Pool.Query(ctx, `
+		select g.id, g.name from guilds g
+		where g.claimed_by is not null and `+negation+` exists (
+		  select 1 from entitlements e
+		  where e.guild_id = g.id and e.plan = 'guild' and `+activeClause+`)
+		order by g.id`)
+	if err != nil {
+		return nil, fmt.Errorf("entitlements: claimed guilds: %w", err)
+	}
+	defer rows.Close()
+	var out []GuildRef
+	for rows.Next() {
+		var g GuildRef
+		if err := rows.Scan(&g.ID, &g.Name); err != nil {
+			return nil, fmt.Errorf("entitlements: claimed guilds: %w", err)
+		}
+		out = append(out, g)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("entitlements: claimed guilds: %w", err)
+	}
+	return out, nil
 }
 
 // Revoke sets an existing entitlement's status to canceled. ErrNotFound

@@ -1,6 +1,8 @@
 package guilds
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"testing"
@@ -57,5 +59,22 @@ func TestHomeViewerOfficerToolsFalseWithoutEntitlements(t *testing.T) {
 	seedVerifiedMember(t, h, gid, viewer, "otnil", "officer")
 	if homeViewFor(t, h, gid, viewer).Viewer.OfficerTools {
 		t.Fatal("nil Entitlements must read officer_tools false")
+	}
+}
+
+type failingEntitlements struct{}
+
+func (failingEntitlements) CanForGuild(context.Context, int64, int64, entitlements.Feature) (bool, entitlements.Reason, error) {
+	return false, "", errors.New("entitlements down")
+}
+
+func TestHomeViewerOfficerToolsFalseWhenEntitlementsFail(t *testing.T) {
+	h := newHTTPHarness(t)
+	h.svc.Entitlements = failingEntitlements{}
+	gid := seedGuild(t, h.pool, "OfficerToolsErr")
+	viewer := seedUser(t, h.pool, "ot-err@example.com")
+	seedVerifiedMember(t, h, gid, viewer, "oterr", "officer")
+	if homeViewFor(t, h, gid, viewer).Viewer.OfficerTools {
+		t.Fatal("a failing entitlements ask must read officer_tools false")
 	}
 }
