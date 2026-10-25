@@ -24,6 +24,7 @@
     type Me,
     type PairingCode,
   } from '../lib/account/api';
+  import AccountGuildPlanLine from './account/AccountGuildPlanLine.svelte';
   import communityLinks from '../data/links.json';
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
@@ -845,6 +846,14 @@
                           >
                             {guildConsentCopy.leave}
                           </button>
+                        {/if}
+                        {#if guild.plan}
+                          <AccountGuildPlanLine
+                            plan={guild.plan}
+                            region={guild.region}
+                            ruleset={guild.ruleset}
+                            name={guild.name}
+                          />
                         {/if}
                         {#if leaveAsking !== guild.id || consentSaved === guild.id}
                           <p class="text-muted min-h-[21px] basis-full text-[13px]">

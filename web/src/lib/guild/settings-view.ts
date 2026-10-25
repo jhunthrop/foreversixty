@@ -50,7 +50,9 @@ export function guildPlanLine(billing: GuildBillingView): string {
 
 /** What a scoped grant covers and what follows it, in the grant's own words. */
 export function officerToolsExplanation(billing: GuildBillingView): string {
-  return `Granted by Forever Sixty for Award, Undo and Nudge only. It ends on ${planEndDate(billing)}; the guild plan keeps them after that.`;
+  const date = planEndDate(billing);
+  const keeps = date === '' ? 'The guild plan' : `It ends on ${date}; the guild plan`;
+  return `Granted by Forever Sixty for Award, Undo and Nudge only. ${keeps} keeps them after that.`;
 }
 
 /** The account page's guild row text; the row appends ` · ` and the settings link itself. */
