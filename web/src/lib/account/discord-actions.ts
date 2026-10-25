@@ -15,6 +15,13 @@ import {
 import { discordReturnFlag, webhookInputError, type DiscordReturnFlag } from './notifications';
 import { notificationsCopy } from './notifications-copy';
 
+/** A new webhook starts with the sim and log posts on and private logs off (spec 3.4). */
+export const NEW_WEBHOOK_EVENTS: DiscordEvents = {
+  sim_finished: true,
+  upload_parsed: true,
+  upload_private: false,
+};
+
 /** `field` is the reserved line under the input, `plans` adds the See plans link, `status` the status line. */
 export type FailureTarget = 'field' | 'plans' | 'status';
 

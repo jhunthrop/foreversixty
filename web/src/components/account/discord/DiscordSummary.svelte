@@ -5,7 +5,6 @@
      text only. -->
 <script lang="ts">
   import type { DiscordNotifications } from '../../../lib/account/api';
-  import { LINK_BUTTON } from '../../../lib/account/discord-styles';
   import {
     failureWarning,
     openInDiscordUrl,
@@ -57,13 +56,15 @@
   <p class="text-muted text-[13px]">
     {lineTwo.slice(0, idAt)}<span class="text-text font-mono whitespace-nowrap tabular-nums"
       >{lineTwo.slice(idAt)}</span
-    >
+    >{#if openUrl !== null}
+      · <a
+        class="text-text hover:text-gold-hover -my-3 py-3 underline"
+        href={openUrl}
+        target="_blank"
+        rel="noopener"
+        data-testid="discord-open">{notificationsCopy.openInDiscord}</a
+      >{/if}
   </p>
-  {#if openUrl !== null}
-    <a class="{LINK_BUTTON} w-fit" href={openUrl} target="_blank" rel="noopener" data-testid="discord-open">
-      {notificationsCopy.openInDiscord}
-    </a>
-  {/if}
 </div>
 {#if warning !== null}
   <div class="flex flex-col gap-0.5 text-[13px]">

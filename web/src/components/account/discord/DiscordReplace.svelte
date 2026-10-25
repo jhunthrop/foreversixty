@@ -22,6 +22,7 @@
       label={notificationsCopy.reconnect}
       class="{LINK_BUTTON} w-fit"
       testid="discord-replace"
+      busy={disabled}
     />
     <p class="text-muted text-[13px]" data-testid="discord-replace-note">{notificationsCopy.reconnectNote}</p>
   </div>

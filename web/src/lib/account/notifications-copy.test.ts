@@ -222,6 +222,6 @@ describe('notificationsCopy against the spec text, read from the spec', () => {
 
 describe('the connected destination link', () => {
   it('is in the spec as Open in Discord', () => {
-    expect(readFileSync(SPEC_PATH, 'utf8')).toContain(`the link \`${notificationsCopy.openInDiscord}\``);
+    expect(readFileSync(SPEC_PATH, 'utf8')).toContain(` · ${notificationsCopy.openInDiscord}`);
   });
 });

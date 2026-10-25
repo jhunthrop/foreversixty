@@ -5,18 +5,17 @@
      copy module. The typed webhook URL is component state only: cleared after a saved webhook,
      kept after a failed one, never written anywhere else. -->
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
   import type { DiscordEvents, Me } from '../../lib/account/api';
   import {
-    refreshAfterConnect,
+    NEW_WEBHOOK_EVENTS,
     removeWebhook,
-    returnOutcome,
     saveEvents,
     saveWebhook,
     sendTest,
-    takeReturnFlag,
     type ActionResult,
   } from '../../lib/account/discord-actions';
+  import { createFocusQueue, consumeReturn } from '../../lib/account/discord-return.svelte';
   import { blockState, connectAvailable } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
   import StatePanel from '../ui/StatePanel.svelte';
@@ -27,11 +26,6 @@
   import DiscordStatusLine from './discord/DiscordStatusLine.svelte';
 
   const STATUS_MS = 4000;
-  const NEW_WEBHOOK_EVENTS: DiscordEvents = {
-    sim_finished: true,
-    upload_parsed: true,
-    upload_private: false,
-  };
 
   const INPUT = '#discord-webhook';
   const CONNECT = '[data-testid="discord-connect"]';
@@ -54,9 +48,6 @@
   let busy = $state<Busy>(null);
   let status = $state<ActionResult | null>(null);
   let fieldFailure = $state<Extract<ActionResult, { ok: false }> | null>(null);
-  // Applied by the effect below on the first render where it resolves: a save or remove changes
-  // the state when the patched `me` arrives, so the target may not exist yet.
-  let pendingFocus = $state<string | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
 
   const connectOn = $derived(connectAvailable(me));
@@ -65,25 +56,14 @@
 
   $effect(() => () => clearTimeout(statusTimer));
 
+  const focus = createFocusQueue(() => [block.state, showForm, confirming, busy]);
+
   // The callback redirects here with ?discord=<outcome>: show it once, move focus, drop the flag.
   onMount(() => {
-    const flag = takeReturnFlag(window.location, window.history);
-    if (flag === null) return;
-    const outcome = returnOutcome(flag);
+    const outcome = consumeReturn();
+    if (outcome === null) return;
     status = outcome.status;
-    pendingFocus = outcome.focus;
-    if (outcome.refresh) refreshAfterConnect();
-  });
-  $effect(() => {
-    const selector = pendingFocus;
-    if (selector === null) return;
-    void [block.state, showForm, confirming, busy];
-    void tick().then(() => {
-      const target = document.querySelector<HTMLElement>(selector);
-      if (target === null) return;
-      target.focus();
-      if (pendingFocus === selector) pendingFocus = null;
-    });
+    focus.request(outcome.focus);
   });
 
   function show(result: ActionResult): void {
@@ -95,7 +75,7 @@
   async function run(kind: Exclude<Busy, null>, action: () => Promise<ActionResult>): Promise<ActionResult> {
     busy = kind;
     status = null;
-    pendingFocus = null;
+    focus.request(null);
     const result = await action();
     busy = null;
     return result;
@@ -107,13 +87,13 @@
     if (!result.ok) {
       if (result.target === 'status') show(result);
       else fieldFailure = result;
-      pendingFocus = INPUT;
+      focus.request(INPUT);
       return;
     }
     webhook = '';
     replacing = false;
     pasteView = false;
-    pendingFocus = TEST_BUTTON;
+    focus.request(TEST_BUTTON);
     show(result);
   }
 
@@ -134,7 +114,7 @@
     if (!result.ok) return;
     confirming = false;
     pasteView = false;
-    pendingFocus = afterRemove;
+    focus.request(afterRemove);
   }
 
   function startReplace(): void {
@@ -143,24 +123,24 @@
     status = null;
     replacing = true;
     pasteView = false;
-    pendingFocus = connectOn ? CONNECT : INPUT;
+    focus.request(connectOn ? CONNECT : INPUT);
   }
 
   function showPaste(): void {
     pasteView = true;
-    pendingFocus = INPUT;
+    focus.request(INPUT);
   }
 
   function showConnectView(): void {
     pasteView = false;
     webhook = '';
     fieldFailure = null;
-    pendingFocus = CONNECT;
+    focus.request(CONNECT);
   }
 
   function askRemove(): void {
     confirming = true;
-    pendingFocus = REMOVE_CANCEL;
+    focus.request(REMOVE_CANCEL);
   }
 
   function cancel(): void {

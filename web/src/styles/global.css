@@ -464,11 +464,11 @@ html[data-discord='form'] .account-discord-skeleton {
   min-height: 640px;
 }
 html[data-discord='saved'] .account-rail-skeleton {
-  --account-rail-floor: 1175px;
+  --account-rail-floor: 1215px;
 }
 html[data-discord='saved'] .account-discord-skeleton {
   display: flex;
-  min-height: 450px;
+  min-height: 490px;
 }
 html[data-discord='off'] .account-rail-skeleton {
   --account-rail-floor: 1280px;
@@ -525,11 +525,11 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 650px;
   }
   html[data-discord='saved'] .account-rail-skeleton {
-    --account-rail-floor: 1185px;
+    --account-rail-floor: 1225px;
   }
   html[data-discord='saved'] .account-discord-skeleton {
     display: flex;
-    min-height: 460px;
+    min-height: 500px;
   }
   html[data-discord='off'] .account-rail-skeleton {
     --account-rail-floor: 1290px;

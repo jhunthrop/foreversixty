@@ -64,7 +64,7 @@ export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   free: { lg: 44, stack: 44 },
   connect: { lg: 320, stack: 340 },
   form: { lg: 650, stack: 640 },
-  saved: { lg: 460, stack: 450 },
+  saved: { lg: 500, stack: 490 },
   off: { lg: 565, stack: 555 },
   lapsed: { lg: 480, stack: 470 },
 };
