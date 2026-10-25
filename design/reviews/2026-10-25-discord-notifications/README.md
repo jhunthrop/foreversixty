@@ -1,6 +1,6 @@
 # Discord notifications: acceptance captures
 
-Head sha captured: a71bbb90 (branch worktree-lane-discord-2), re-taken for the follow-up lane; every PNG below is refreshed (the copy changed everywhere). The first-lane sha was c0e41c7d plus 1660ae0a. Fixture build (`FOREVER_DATA=fixture`), `/v1/me` and the three notification routes stubbed, Chromium at device scale 1, reduced motion on (so fades and hovers show their end state).
+Head sha captured: 6613bb1c (branch worktree-lane-discord-3; the tree carried the follow-up commits c5fc10f8, f46eb52c and 9b51612f when the final run was made), re-taken for the connect lane; every PNG below is refreshed (copy and layout changed). The earlier lanes were captured at c0e41c7d plus 1660ae0a and a71bbb90. Fixture build (`FOREVER_DATA=fixture`), `/v1/me` and the notification routes stubbed, Chromium at device scale 1, reduced motion on (so fades and hovers show their end state).
 Spec: `design/specs/2026-10-25-discord-notifications.md` section 9. Item 9 (real Discord messages) is the controller's.
 
 Regenerate: build and `astro preview --port 4411`, then from `web/`
@@ -125,3 +125,38 @@ Mobile project: all 0. Load-time footer shift is not zero: at 390 it is 0.4476 f
 - Spec §9 item 9 / capture 23: the three messages in a real Discord channel need a webhook from the owner.
 - A checked `anonymize` capture and a disabled sim checkbox capture for the §9.2 record; the Premium value column width at `lg` (three-line values at 1024); 4 px above the trust line when the invalid-URL message wraps.
 - `Account.svelte` is ~960 lines (pre-existing); extracting the rail panels needs the full shared-layout suite.
+
+## Connect lane (2026-10-25)
+
+Spec section 9 captures 24 to 28, 30 and 31. Run: `CAPTURE_PORT=4501 npx playwright test -c tests/captures/discord-notifications/playwright.capture.config.ts` against the fixture build (170 tests). 168 passed; the two `connect opening Discord` tests (24) time out under the committed spec: the held cross-origin navigation never shows the `Opening Discord…` label to the locator. Those four PNGs were taken with a throwaway spec (deleted, not committed) that cancels the link's default navigation after the click, so the link's own `opening` state is on screen with no navigation. Item 29 (Discord's own dialog) is manual; item 31 (grep for the logo and `5865f2`) passed as a test.
+
+| Capture | Files (`discord-` prefix; full page, `-panel-` crops where noted) |
+|---|---|
+| 24 connect state | `connect-<360|390|1440>` (+ `connect-panel-<360|390|1440>`), `connect-hover-panel-1440`, `connect-focus-panel-1440`, `connect-opening-<390|1440>` (+ panel) |
+| 25 paste view | `connect-paste-view-<390|1440>` (+ panel), `connect-off-paste-first-<390|1440>` (+ panel) |
+| 26 returns | `return-<connected|denied|failed>-<390|1440>` (+ panel) and `return-<flag>-reloaded-<390|1440>` (+ panel); the URL is asserted to be `/account#discord` by the test |
+| 27 saved connected | `connected-saved-<360|390|1440>` (+ panel), `connected-destination-<360|390|1440>` (crop of the destination), `connected-pasted-beside-<390|1440>` (+ panel) |
+| 28 remove, replace, reconnect | `connect-remove-confirm-<connected|pasted>-<390|1440>` (+ panel), `connect-replace-view-<390|1440>` (+ panel), `connect-reconnect-<390|1440>` (+ panel) |
+| 30 loading reserve | `loading-warm-connect-<390|1440>` and `-ready` beside each |
+| 13 | `discord-side-by-side-1440.png` regenerated after `design/mocks/gen_discord_notifications.py` (the mock render itself is under `design/mocks/renders/`, not part of this commit) |
+
+Panel heights (crop minus 48): connect 305 px at 360, 285 at 390, 293 at 1440 against the caps 340, 340, 320; `Opening Discord…` 285 at 390; saved connected 488 at 360 and 390, 496 at 1440; connect paste view 683 at 390, 691 at 1440; connected remove question 447 at 390.
+
+Reserve numbers for the `connect` state (task-3 report): warm 390 CLS 0.0000, footer 0.5 px; warm 1440 CLS 0.0001, footer 0 px (gates CLS 0.05 / 0.03, footer 8 px). Cold 390 CLS 0.0000, footer 302.5 px; cold 1440 CLS 0.0028, footer 310 px (cold is the `none` hint, as for every state, recorded not gated).
+
+Pixel diff, `connect: false` paste state against the previous lane: `discord-connect-off-paste-first-<390|1440>` (full page and panel) against the follow-up lane's `discord-paste-steps-<390|1440>` (the unfocused paste form): 0 changed pixels in all four pairs (390 full 927030 px, panel 267930; 1440 full 2604960, panel 307190). Against `discord-paste-empty` (input focused) 10084 / 4975 (390) and 11374 / 5035 (1440) pixels differ, which is the focus ring and caret.
+
+### Noticed while capturing (connect lane)
+
+- Connect state at 390: gold `CONNECT A DISCORD CHANNEL` button, then one muted explanation (`Discord asks which server and channel, then lets Forever Sixty post there. We keep only that webhook, encrypted.`, two lines), a gap of about 40 px, then `Paste a webhook URL instead` as an underlined white link. No status line is present until a return flag. At 1440 the same copy wraps in two lines inside a 394 px panel; at 360 the button and copy are the same, the panel is 20 px taller (305 against 285).
+- `Opening Discord…` replaces the button label and the button shrinks to the label's width (about 160 px against 227 px); the panel height is unchanged (285 at 390), the explanation and the paste link stay put.
+- Return outcomes: `denied` reads `Cancelled in Discord. Nothing was connected.` in the body colour, `failed` reads `Could not connect. Check that you can manage webhooks in that channel, then try again.` in red over two lines; both draw the gold button with a focus ring (focus is on `discord-connect`) and the status line sits between the explanation and `Paste a webhook URL instead`. `connected` shows the saved connected panel, focus ring on `Send test message`, and the line `Connected. Send a test message to see it in your channel.` (two lines at 390) under the buttons. After a reload none of the three shows a status line (asserted).
+- Paste view with connect on, 390: the three steps, field, trust line, three event rows, `Save webhook`, then `Connect a Discord channel instead` as a link under Save, 24 px under the button. Panel is 683 px at 390, 691 at 1440, above the 640 / 650 form caps in section 7 (the caps were set before the back link).
+- Paste first with connect off is pixel for pixel the previous lane's paste form (0 changed pixels), with no connect button, no disclosure and no back link.
+- Saved connected, 390 and 360: `Connected to **a Discord channel**` over `Channel 1198…4568· Open in Discord` stays on one line at both 360 and 390 (the destination crop is 90 px tall at both, 368 and 338 px wide). `Open in Discord` is underlined and white like the other links, so it reads as a link; the separator dot sits directly against `4568` with a space only after it (`4568· Open in Discord`), which looks like a glitch in the crop. The channel id is bold and the label muted.
+- Reconnect: `Connect a different channel` is an underlined link about 36 px under the buttons, with the muted note `Connecting again replaces this channel and removes its webhook from Discord.` under it (two lines at 360 and 390, 488 px panel). A saved pasted webhook with connect on still shows `Use a different webhook` and not the reconnect link or note.
+- Remove questions: connected reads `Remove this connection? Posts stop and we delete its webhook from Discord.`, pasted reads `Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.`; both sit over `Remove` and `Cancel` buttons, and the reconnect link and note are hidden while the question is open. The Destination line above stays as it was (`Posts through "Raid pings"` for the pasted one).
+- Replace view of a pasted webhook with connect on, 390: the gold connect button, its explanation, `Paste a webhook URL instead`, then `Cancel`; no `Webhook URL` field until the paste link is chosen.
+- The committed `connect opening Discord` test fails against a held navigation (the label is never seen), see the top of this section; the PNGs exist from the throwaway spec.
+- Capture 29 and the in-staging parts of 26 (real redirect, URL bar) are not captured here: the URL is asserted by the test, not shown.
+- The worktree moved while this ran (commits c5fc10f8 connect link to the API origin, f46eb52c, 9b51612f, later 381e6d7f, and uncommitted edits to the spec and the capture spec by someone else). The first run, at a build made before those landed, linked a relative `/v1/notifications/discord/connect`; the final full run and every PNG here come from a fresh fixture build at 9b51612f, and its output is identical in the panel sizes quoted above.
