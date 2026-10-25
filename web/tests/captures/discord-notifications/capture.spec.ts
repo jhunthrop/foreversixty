@@ -19,7 +19,6 @@ import {
 } from '../../e2e/support/account-reserve';
 import { gotoHydrated } from '../../e2e/support/hydrated';
 import {
-  CONNECT_URL_GLOB,
   discordBlock,
   GUILD_ID,
   routeDiscordNotifications,
@@ -595,14 +594,13 @@ test('connect focus-visible @1440', async ({ page }) => {
 });
 
 atWidths('connect opening Discord', BASE_WIDTHS, async (page, width) => {
-  const held = gate();
   await openAccount(page, width, CONNECT_ON);
-  // The navigation to the API is held, so the link's own `Opening Discord…` frame is on screen.
-  await holdRoute(page, CONNECT_URL_GLOB, held.wait);
+  // A window listener runs after the component's own click handler and cancels the navigation, so
+  // the link stays on its `Opening Discord…` frame for the capture.
+  await page.evaluate(() => window.addEventListener('click', (event) => event.preventDefault()));
   await connectControl(page).click();
   await page.getByText('Opening Discord…').waitFor();
   await shoot(page, 'connect-opening', width);
-  held.release();
 });
 
 // 25. The paste view with connect on (the back link under Save), and paste-first with connect off.
