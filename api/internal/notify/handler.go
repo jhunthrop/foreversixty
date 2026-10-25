@@ -175,7 +175,7 @@ func (s *Service) test(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "open", err)
 		return
 	}
-	if err := s.Poster.Post(r.Context(), url, TestEmbed(s.PublicBaseURL, hook.Events)); err != nil {
+	if err := s.Poster.Post(r.Context(), url, TestEmbed(s.PublicBaseURL, hook.Events, time.Now())); err != nil {
 		s.testFailed(w, r, err)
 		return
 	}

@@ -231,10 +231,14 @@ func runParse(ctx context.Context, log *slog.Logger, args []string) error {
 	}
 	reportStore := &reports.Store{Pool: pool}
 	log.Info("parse-report", "report", args[0])
-	return parse.Report(ctx, parse.Deps{
+	deps := parse.Deps{
 		Reports: reportStore, Objects: client, Log: log,
 		Rank: &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
-	}, args[0])
+	}
+	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
+		deps.Notify = deliverer
+	}
+	return parse.Report(ctx, deps, args[0])
 }
 
 // runSim is the premium lane's Cloud Run job: run one sim natively
@@ -253,9 +257,13 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 		return fmt.Errorf("%s needs R2 credentials", sims.SimRunJobCommand)
 	}
 	log.Info(sims.SimRunJobCommand, "sim", args[0], "engine", enginever.Version)
-	return sims.Run(ctx, sims.JobDeps{
+	deps := sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
-	}, args[0])
+	}
+	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
+		deps.Notify = deliverer
+	}
+	return sims.Run(ctx, deps, args[0])
 }
 
 // runValidate is the nightly Cloud Run job: measure every spec's

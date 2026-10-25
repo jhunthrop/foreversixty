@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/measure"
@@ -48,6 +49,8 @@ type JobDeps struct {
 	Put    store.Putter
 	Engine runner.StageRunner
 	Log    *slog.Logger
+	// Notify, when set, is told of every run that finishes in state done.
+	Notify notify.SimEvents
 }
 
 func (d JobDeps) logger() *slog.Logger {
@@ -112,7 +115,33 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 	if err := d.Put.Put(ctx, Keys{SimID: simID}.Result(), body, ResultPut); err != nil {
 		return d.failed(ctx, simID, err, "")
 	}
-	return d.Store.Finish(ctx, simID, res)
+	if err := d.Store.Finish(ctx, simID, res); err != nil {
+		return err
+	}
+	if res.Error == "" {
+		d.announce(ctx, simID, res)
+	}
+	return nil
+}
+
+// announce tells the owner's channel the run is done. The run already
+// succeeded, so a failure here is logged and never fails the job.
+func (d JobDeps) announce(ctx context.Context, simID string, res simapi.SimResult) {
+	if d.Notify == nil {
+		return
+	}
+	row, err := d.Store.Finished(ctx, simID)
+	if err != nil {
+		d.logger().Error("sims", "op", "notify", "sim", simID, "err", err)
+		return
+	}
+	if row.UserID == nil {
+		return
+	}
+	d.Notify.SimFinished(ctx, notify.SimFinished{
+		UserID: *row.UserID, SimID: simID, Spec: res.Request.Spec, DPS: res.DPS.Mean,
+		Headline: row.Headline, Title: row.Title, CreatedAt: row.CreatedAt, FinishedAt: row.FinishedAt,
+	})
 }
 
 // failureUnknown is what a failed run's row says when the job has no

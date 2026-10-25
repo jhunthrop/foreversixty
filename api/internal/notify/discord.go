@@ -27,6 +27,12 @@ type Embed struct {
 	Fields      []EmbedField
 	URL         string
 	Footer      string
+	// Thumbnail is an absolute image URL; empty omits it.
+	Thumbnail string
+	// Timestamp is the moment the event finished; the zero time omits it.
+	Timestamp time.Time
+	// Color is the embed's side stripe; zero omits it.
+	Color int
 }
 
 // EmbedField is one name/value pair of an Embed.
@@ -73,11 +79,16 @@ func sanitize(text string) string {
 }
 
 // HTTPPoster posts to Discord with a short timeout and no retry.
-type HTTPPoster struct{ client *http.Client }
+type HTTPPoster struct {
+	client    *http.Client
+	avatarURL string
+}
 
-// NewHTTPPoster returns a Poster with the 5 s timeout.
-func NewHTTPPoster() *HTTPPoster {
-	return &HTTPPoster{client: &http.Client{
+// NewHTTPPoster returns a Poster with the 5 s timeout. avatarURL is the
+// absolute URL of the Forever Sixty seal every message carries; empty
+// leaves the webhook's own avatar.
+func NewHTTPPoster(avatarURL string) *HTTPPoster {
+	return &HTTPPoster{avatarURL: avatarURL, client: &http.Client{
 		Timeout: posterTimeout,
 		// A redirect would carry the credential to another host; the 3xx
 		// is returned as a *DiscordError instead.
@@ -91,6 +102,36 @@ type embedJSON struct {
 	URL         string      `json:"url,omitempty"`
 	Fields      []fieldJSON `json:"fields,omitempty"`
 	Footer      *footerJSON `json:"footer,omitempty"`
+	Thumbnail   *imageJSON  `json:"thumbnail,omitempty"`
+	Timestamp   string      `json:"timestamp,omitempty"`
+	Color       int         `json:"color,omitempty"`
+}
+
+type imageJSON struct {
+	URL string `json:"url"`
+}
+
+// messageJSON is the one request body every post sends: one embed, no
+// content, and a mention list that pings no one.
+type messageJSON struct {
+	Username        string          `json:"username"`
+	AvatarURL       string          `json:"avatar_url,omitempty"`
+	Embeds          []embedJSON     `json:"embeds"`
+	AllowedMentions allowedMentions `json:"allowed_mentions"`
+}
+
+type allowedMentions struct {
+	Parse []string `json:"parse"`
+}
+
+// Username is the name every message is posted under.
+const Username = "Forever Sixty"
+
+func newMessage(avatarURL string, embed Embed) messageJSON {
+	return messageJSON{
+		Username: Username, AvatarURL: avatarURL, Embeds: []embedJSON{embed.wire()},
+		AllowedMentions: allowedMentions{Parse: []string{}},
+	}
 }
 
 type fieldJSON struct {
@@ -104,7 +145,13 @@ type footerJSON struct {
 }
 
 func (e Embed) wire() embedJSON {
-	out := embedJSON{Title: e.Title, Description: e.Description, URL: e.URL}
+	out := embedJSON{Title: e.Title, Description: e.Description, URL: e.URL, Color: e.Color}
+	if e.Thumbnail != "" {
+		out.Thumbnail = &imageJSON{URL: e.Thumbnail}
+	}
+	if !e.Timestamp.IsZero() {
+		out.Timestamp = e.Timestamp.UTC().Format(time.RFC3339)
+	}
 	for _, f := range e.Fields {
 		out.Fields = append(out.Fields, fieldJSON(f))
 	}
@@ -116,11 +163,7 @@ func (e Embed) wire() embedJSON {
 
 // Post sends one embed that mentions no one; any 2xx is success.
 func (p *HTTPPoster) Post(ctx context.Context, webhookURL string, embed Embed) error {
-	payload := map[string]any{
-		"embeds":           []embedJSON{embed.wire()},
-		"allowed_mentions": map[string]any{"parse": []string{}},
-	}
-	body, err := json.Marshal(payload)
+	body, err := json.Marshal(newMessage(p.avatarURL, embed))
 	if err != nil {
 		return fmt.Errorf("notify: encode embed: %w", err)
 	}

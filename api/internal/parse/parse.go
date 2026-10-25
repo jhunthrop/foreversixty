@@ -15,9 +15,11 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/zstdx"
+	"github.com/jhunthrop/foreversixty/logs/engine/fight"
 	"github.com/jhunthrop/foreversixty/logs/engine/session"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
@@ -56,6 +58,8 @@ type Deps struct {
 	Objects Objects
 	Rank    reports.Ranker
 	Log     *slog.Logger
+	// Notify, when set, is told of every whole-file upload that completes.
+	Notify notify.UploadEvents
 }
 
 func (d Deps) logger() *slog.Logger {
@@ -113,7 +117,34 @@ func Report(ctx context.Context, d Deps, reportID string) error {
 		return err
 	}
 	rep.Status, rep.EngineVersion, rep.Health = reports.StatusComplete, engine.Version, health
-	return d.writeReport(ctx, pub, rep, s)
+	fights, err := d.writeReport(ctx, pub, rep, s)
+	if err != nil {
+		return err
+	}
+	d.announce(ctx, rep, fights)
+	return nil
+}
+
+// announce tells the owner's channel the log is parsed. The report is
+// already complete, so nothing here can fail the job.
+func (d Deps) announce(ctx context.Context, rep reports.Report, fights []reports.FightEntry) {
+	if d.Notify == nil || rep.OwnerID == nil {
+		return
+	}
+	var counted, kills int
+	for _, f := range fights {
+		if f.Kind == string(fight.Trash) {
+			continue
+		}
+		counted++
+		if f.Kill {
+			kills++
+		}
+	}
+	d.Notify.UploadParsed(ctx, notify.UploadParsed{
+		UserID: *rep.OwnerID, ReportID: rep.ID, Title: rep.Title, Zone: rep.Zone,
+		Visibility: rep.Visibility, Fights: counted, Kills: kills, FinishedAt: time.Now().UTC(),
+	})
 }
 
 // failed records a parse that could not finish, keeping the health the
@@ -178,12 +209,12 @@ func (d Deps) writeFight(ctx context.Context, rep reports.Report, pub store.Publ
 
 // writeReport writes the final report.json, with the health record and
 // the unit list the page names players from.
-func (d Deps) writeReport(ctx context.Context, pub store.Publisher, rep reports.Report, s *session.Session) error {
+func (d Deps) writeReport(ctx context.Context, pub store.Publisher, rep reports.Report, s *session.Session) ([]reports.FightEntry, error) {
 	fights, err := d.Reports.Fights(ctx, rep.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return pub.WriteReport(ctx, store.Report{
+	return fights, pub.WriteReport(ctx, store.Report{
 		ReportID: rep.ID, EngineVersion: engine.Version, Health: s.Health(),
 		Fights: entriesOf(fights), Units: s.Units().All(),
 	})

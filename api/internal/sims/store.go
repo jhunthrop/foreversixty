@@ -542,3 +542,27 @@ func medianSeconds(ms []int64) *int {
 	sec := int(math.Round(float64(median) / 1000))
 	return &sec
 }
+
+// FinishedRow is what a finished server run's message is built from.
+type FinishedRow struct {
+	UserID     *int64
+	Headline   string
+	Title      string
+	CreatedAt  time.Time
+	FinishedAt time.Time
+}
+
+// Finished reads the row Finish just wrote, for the job's notification.
+func (s *Store) Finished(ctx context.Context, id string) (FinishedRow, error) {
+	var r FinishedRow
+	err := s.Pool.QueryRow(ctx,
+		`select user_id, coalesce(headline, ''), coalesce(title, ''), created_at, coalesce(finished_at, now())
+		 from sims where id = $1`, id).Scan(&r.UserID, &r.Headline, &r.Title, &r.CreatedAt, &r.FinishedAt)
+	if isNoRows(err) {
+		return FinishedRow{}, ErrNotFound
+	}
+	if err != nil {
+		return FinishedRow{}, fmt.Errorf("sims: read finished %s: %w", id, err)
+	}
+	return r, nil
+}

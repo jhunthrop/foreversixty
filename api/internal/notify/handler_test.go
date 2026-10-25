@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -440,7 +441,7 @@ func TestTestEmbedNamesOnlyTheEventsThatAreOn(t *testing.T) {
 		"none": {map[EventName]bool{}, "Your webhook works. No events are on yet."},
 	}
 	for name, c := range cases {
-		e := TestEmbed("https://foreversixty.gg/", c.events)
+		e := TestEmbed("https://foreversixty.gg/", c.events, time.Now())
 		if e.Description != c.want || e.URL != "https://foreversixty.gg/account#discord" || len(e.Fields) != 0 {
 			t.Fatalf("%s: %+v", name, e)
 		}

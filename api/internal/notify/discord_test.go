@@ -19,7 +19,7 @@ func TestHTTPPosterSendsEmbedWithoutMentions(t *testing.T) {
 	}))
 	defer srv.Close()
 	embed := Embed{Title: "t", Fields: []EmbedField{{Name: "n", Value: "v", Inline: true}}}
-	if err := NewHTTPPoster().Post(context.Background(), srv.URL, embed); err != nil {
+	if err := NewHTTPPoster("").Post(context.Background(), srv.URL, embed); err != nil {
 		t.Fatal(err)
 	}
 	mentions := body["allowed_mentions"].(map[string]any)["parse"].([]any)
@@ -36,7 +36,7 @@ func TestHTTPPosterErrorIsTypedAndSanitised(t *testing.T) {
 		_, _ = w.Write([]byte(leak))
 	}))
 	defer srv.Close()
-	err := NewHTTPPoster().Post(context.Background(), srv.URL, Embed{})
+	err := NewHTTPPoster("").Post(context.Background(), srv.URL, Embed{})
 	var de *DiscordError
 	if !errors.As(err, &de) || de.Status != 429 || !de.RateLimited() {
 		t.Fatalf("err = %v", err)
@@ -59,7 +59,7 @@ func TestHTTPPosterDoesNotFollowRedirects(t *testing.T) {
 		http.Redirect(w, r, target.URL, http.StatusTemporaryRedirect)
 	}))
 	defer redirector.Close()
-	err := NewHTTPPoster().Post(context.Background(), redirector.URL, Embed{})
+	err := NewHTTPPoster("").Post(context.Background(), redirector.URL, Embed{})
 	var de *DiscordError
 	if !errors.As(err, &de) || de.Status != http.StatusTemporaryRedirect {
 		t.Fatalf("err = %v; want *DiscordError 307", err)
@@ -73,7 +73,7 @@ func TestHTTPPosterTransportErrorHoldsNoURL(t *testing.T) {
 	srv := httptest.NewServer(http.NotFoundHandler())
 	url := srv.URL + "/api/webhooks/1/SECRET"
 	srv.Close()
-	err := NewHTTPPoster().Post(context.Background(), url, Embed{})
+	err := NewHTTPPoster("").Post(context.Background(), url, Embed{})
 	if err == nil || strings.Contains(err.Error(), "SECRET") || strings.Contains(err.Error(), "127.0.0.1") {
 		t.Fatalf("err = %v", err)
 	}
@@ -84,13 +84,13 @@ func TestHTTPPosterLookupReadsTheChannelID(t *testing.T) {
 		_, _ = w.Write([]byte(`{"id":"1","channel_id":"999"}`))
 	}))
 	defer srv.Close()
-	id, err := NewHTTPPoster().Lookup(context.Background(), srv.URL)
+	id, err := NewHTTPPoster("").Lookup(context.Background(), srv.URL)
 	if err != nil || id != "999" {
 		t.Fatalf("Lookup = %q, %v", id, err)
 	}
 	bad := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(404) }))
 	defer bad.Close()
-	if _, err := NewHTTPPoster().Lookup(context.Background(), bad.URL); err == nil {
+	if _, err := NewHTTPPoster("").Lookup(context.Background(), bad.URL); err == nil {
 		t.Fatal("a 404 lookup succeeded")
 	}
 }
