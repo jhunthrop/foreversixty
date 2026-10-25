@@ -28,6 +28,7 @@
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
+  import { premiumRowLinked, premiumRowValue } from '../lib/account/notifications';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
@@ -906,6 +907,9 @@
                     characters={me?.characters ?? []}
                     mainKey={me?.main_character_key}
                     serverRunsThisMonth={me?.server_sims?.runs_this_month}
+                    notifications={me === null
+                      ? undefined
+                      : { value: premiumRowValue(me), linked: premiumRowLinked(me) }}
                   />
                   {#if billing !== null}
                     <button

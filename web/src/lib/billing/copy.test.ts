@@ -1,6 +1,6 @@
 // web/src/lib/billing/copy.test.ts
 import { describe, expect, it } from 'vitest';
-import { premiumCopy, checkoutCopy, billingBlockCopy, premiumBlockCopy, shipsMonth } from './copy';
+import { premiumCopy, checkoutCopy, billingBlockCopy, premiumBlockCopy } from './copy';
 
 describe('premiumCopy', () => {
   it('builds a priced plan name from the one price data file, never a hardcoded literal', () => {
@@ -45,7 +45,7 @@ describe('what the page promises', () => {
     expect(premiumCopy.premiumFeatures).toEqual([
       'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
       'Character history charts over time.',
-      'Discord notifications (ships December).',
+      'Discord notifications when a server sim finishes or a log finishes parsing.',
       'A supporter mark on your characters.',
     ]);
     expect(premiumCopy.guildFeatures).toEqual([
@@ -74,9 +74,8 @@ describe('premiumBlockCopy history row', () => {
     });
   });
 
-  it('no longer dates history; only notifications still ship later', () => {
-    expect(shipsMonth).toEqual({ notifications: 'December' });
-    expect(premiumCopy.premiumFeatures.join(' ')).not.toMatch(/November/);
+  it('dates nothing: every benefit on the page has shipped', () => {
+    expect(premiumCopy.premiumFeatures.join(' ')).not.toMatch(/November|December|ships/i);
   });
 });
 

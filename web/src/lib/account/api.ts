@@ -213,6 +213,28 @@ export interface Me {
   finished_sims?: FinishedSim[];
   /** Absent on an older API. */
   server_sims?: { runs_this_month: number };
+  /** Keyed by channel; `discord` is null when nothing is saved. Absent on an older API. */
+  notifications?: { discord: DiscordNotifications | null };
+}
+
+/** Why posts stopped while a webhook is kept (spec 2026-10-25-discord-notifications §10). */
+export type DiscordDisabledReason = 'failed five times' | 'plan lapsed';
+
+/** The two events a member can choose to be told about. */
+export interface DiscordEvents {
+  sim_finished: boolean;
+  upload_parsed: boolean;
+}
+
+/** The saved webhook as `/v1/me` and `PUT /v1/notifications/discord` answer it: never the URL. */
+export interface DiscordNotifications {
+  channel_id: string | null;
+  events: DiscordEvents;
+  disabled_reason: DiscordDisabledReason | null;
+  /** Discord's own error text with any URL or token removed. */
+  last_error: string | null;
+  /** Consecutive failed posts, 0 to 5. */
+  failures: number;
 }
 
 /**

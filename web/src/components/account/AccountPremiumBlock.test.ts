@@ -70,11 +70,18 @@ describe('AccountPremiumBlock', () => {
     expect(body).toContain('Supporter mark Not shown');
   });
 
-  it('carries the month on the one benefit that has not shipped, muted and never linked', () => {
+  it('shows the Discord row as muted Off by default, never linked', () => {
     const html = renderBlock(mockEntitlements({ server_sims: true, supporter_mark: true }), [CHARACTER]);
-    expect(text(html)).toContain('Discord notifications Ships December');
-    expect(html).toContain('text-muted">Ships December<');
+    expect(text(html)).toContain('Discord notifications Off');
     expect(html).not.toContain('account-premium-notifications-link');
+  });
+
+  it('links the Discord row to #discord with the value it is given', () => {
+    const html = render(AccountPremiumBlock, {
+      props: { entitlements: mockEntitlements(), notifications: { value: 'On · 2 events', linked: true } },
+    }).body;
+    expect(text(html)).toContain('Discord notifications On · 2 events');
+    expect(html).toMatch(/href="#discord"[^>]*account-premium-notifications-link/);
   });
 
   describe('history row', () => {

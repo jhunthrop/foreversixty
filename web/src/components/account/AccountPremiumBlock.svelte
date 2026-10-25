@@ -6,21 +6,26 @@
 <script lang="ts">
   import type { EntitlementsView, MeCharacter } from '../../lib/account/api';
   import { mainCharacter } from '../../lib/account/main-character';
+  import { premiumRowCopy } from '../../lib/account/notifications-copy';
   import { premiumBlockCopy } from '../../lib/billing/copy';
   import { characterHref } from '../../lib/characters';
 
   const SIM_HREF = '/sim';
+  const NOTIFICATIONS_HREF = '#discord';
 
   let {
     entitlements,
     characters = [],
     mainKey,
     serverRunsThisMonth,
+    notifications = { value: premiumRowCopy.off, linked: false },
   }: {
     entitlements?: EntitlementsView;
     characters?: readonly MeCharacter[];
     mainKey?: string;
     serverRunsThisMonth?: number;
+    /** The Discord row: `premiumRowValue(me)` and whether it links to #discord. */
+    notifications?: { value: string; linked: boolean };
   } = $props();
 
   const main = $derived(mainCharacter(characters, mainKey));
@@ -52,10 +57,14 @@
     },
     {
       key: 'notifications',
-      copy: premiumBlockCopy.rows.notifications,
-      live: false,
-      href: null,
-      muted: true,
+      copy: {
+        label: premiumBlockCopy.rows.notifications.label,
+        on: notifications.value,
+        off: notifications.value,
+      },
+      live: notifications.linked,
+      href: NOTIFICATIONS_HREF,
+      muted: !notifications.linked,
     },
     {
       key: 'supporter',

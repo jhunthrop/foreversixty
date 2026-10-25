@@ -143,7 +143,7 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     'href',
     '/character/us/hardcore/elyra-duskvale#history',
   );
-  await expect(block).toContainText('Ships December');
+  await expect(block).toContainText('Discord notifications');
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
   // The mark belongs to the person: the character rows never carry it.
   await expect(page.getByTestId('supporter-chip')).toHaveCount(1);

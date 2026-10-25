@@ -4,9 +4,6 @@
 // discounts. Prices are never written here as literals -- they come from ./plans.
 import { PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 
-/** The month each benefit that has not shipped yet arrives: the one source for the /premium line and the account block. */
-export const shipsMonth = { notifications: 'December' } as const;
-
 export const premiumCopy = {
   freeForeverHeading: 'What is free, forever',
   freeForeverBody: [
@@ -18,7 +15,7 @@ export const premiumCopy = {
   premiumFeatures: [
     'Run sims on our servers (5,000 combinations, any precision, no tab left open).',
     'Character history charts over time.',
-    `Discord notifications (ships ${shipsMonth.notifications}).`,
+    'Discord notifications when a server sim finishes or a log finishes parsing.',
     'A supporter mark on your characters.',
   ],
   guildFeatures: [
@@ -106,11 +103,8 @@ export const premiumBlockCopy = {
       onWithMain: 'Open on your main character',
       off: 'Sparkline only',
     },
-    notifications: {
-      label: 'Discord notifications',
-      on: `Ships ${shipsMonth.notifications}`,
-      off: `Ships ${shipsMonth.notifications}`,
-    },
+    /** The value is a function of the block's state: see account/notifications.ts `premiumRowValue`. */
+    notifications: { label: 'Discord notifications' },
     supporter: { label: 'Supporter mark', on: 'Shown on your characters', off: 'Not shown' },
   },
   supporterChip: 'Supporter',
