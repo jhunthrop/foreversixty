@@ -186,7 +186,7 @@
       <label class="flex min-h-11 items-center gap-2 text-[13px]">
         <input
           type="checkbox"
-          class="accent-gold h-5 w-5"
+          class="h-5 w-5"
           {disabled}
           checked={executeOn}
           onchange={(event) => onchange(withExecutePhase(settings, event.currentTarget.checked))}
@@ -203,7 +203,7 @@
       <label class="flex min-h-11 items-center gap-2 text-[13px]">
         <input
           type="checkbox"
-          class="accent-gold h-5 w-5"
+          class="h-5 w-5"
           {disabled}
           checked={settings.encounter.dummy === true}
           onchange={(event) => onchange(withDummy(settings, event.currentTarget.checked))}

@@ -1,53 +1,38 @@
 // web/src/lib/account/layout.ts
-// Reserved-height constants for /account's loading skeletons and its signed-out/signed-in
-// first-screen match (brief 2026-09-22 §B2/§B6/§B8). Re-measured against a real
-// `FOREVER_DATA=fixture` build at 360px after the page-header/two-column/rail-panel
-// redesign (account-visual lane, 2026-09-22), with route-stubbed /v1/me responses so the
-// measurement isn't confounded by network conditions. The title itself (`<h1>`) now
-// renders identically in every status -- loading, failed, signed-out, ready -- so it is
-// common to all four and excluded from the figures below; what each constant reserves is
-// everything from just under the title to the bottom of its section. As with the previous
-// lane's measurement, `npm run lhci`'s own account.html run cannot confirm this directly:
-// its sandbox has no CORS allowance for localhost to call the real API, so it always lands
-// on the `failed`/LoadError branch instead -- see SIGNED_OUT_MIN_H's own comment.
+// Reserved-height constants for /account's loading state (experience spec
+// 2026-10-25-discord-notifications section 9.1): the loading page draws the ready page's
+// layout, so these tables are the single source for the floors that global.css's
+// "account loading reserve" block repeats as CSS (layout.test.ts asserts the two agree) and for
+// SIGNED_OUT_MIN_H. `npm run lhci`'s own account.html run cannot confirm any of it: its sandbox
+// has no CORS allowance for localhost to call the real API, so it always lands on the
+// `failed`/LoadError branch instead.
 
 import type { Me } from './api';
 import { storage } from '../layout-reserve';
 
-/** The identity line (BattleTag/email, sign-in method, Sign out), the compact
- *  current-character chip, and the Characters panel -- everything the ready view shows
- *  before "Your reports". measured against meBnetFixture at 360px, 2026-09-22 */
-export const CHARACTERS_SKELETON_MIN_H = 'min-h-[692px]';
+/** The gap between the page's stacked blocks (Tailwind `gap-8`). */
+export const SECTION_GAP_PX = 32;
 
-/** "Your reports" and the rail's Devices panel -- the two sections that follow Characters
- *  in reading order at 360px (the two-column grid only applies at `lg`; below that every
- *  panel stacks in one column). measured against meBnetFixture at 360px, 2026-09-22 */
-export const IDENTITY_SKELETON_MIN_H = 'min-h-[332px]';
+/** The gap between the rail's Plan block and the Discord block under it (`gap-4`). */
+export const PLAN_GAP_PX = 16;
 
-/** The rail's You (pseudonym toggle) and Guilds-and-plan panels.
- *  measured against meBnetFixture at 360px, 2026-09-22 */
-export const MORE_SKELETON_MIN_H = 'min-h-[308px]';
-
-/** The signed-out prompt's floor. `/account`'s loading branch always renders all three
- *  skeletons above (Account.svelte does not know `signedIn` until `/v1/me` answers), so a
- *  genuinely signed-out visitor only avoids a layout shift if this block reserves the SAME
- *  total height the loading skeletons already reserved. Same fixed-height-regardless-of-
- *  branch pattern CurrentCharacterChip.svelte's CHIP_HEIGHT and the pairing-mode block
- *  above already use in this file, for the same reason.
- *  1396px = CHARACTERS_SKELETON_MIN_H (692) + IDENTITY_SKELETON_MIN_H (332) +
- *  MORE_SKELETON_MIN_H (308) + two gap-8 gaps (2 x 32) between them, matching the loading
- *  branch's `flex flex-col gap-8` wrapper exactly. Unverifiable against `npm run lhci`'s
- *  own account.html run for the CORS reason above; the previous lane confirmed via direct
- *  DOM/CLS instrumentation that the exact figure does not change lhci's measured CLS
- *  (the sandbox never reaches this branch at all), so 1396px is kept because it is the
- *  mathematically correct value for a real signed-out visitor. */
-export const SIGNED_OUT_MIN_H = 'min-h-[1396px]';
+/** The signed-out prompt's floor. A visitor with the session hint sees the loading reserve until
+ *  `/v1/me` answers, so a hinted visitor who turns out signed out only avoids a layout shift if
+ *  the prompt's block holds the same height as the reserved grid under the header row (no
+ *  Discord hint then: `data-discord` is `none`, so the rail is Devices + You + Plan). Both
+ *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout.test.ts` checks
+ *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
+ *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
+export const SIGNED_OUT_MIN_H = 'min-h-[1144px] lg:min-h-[709px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
 // `lg` is the 12-column grid at 1024 and up (measured at 1440), `stack` is the one-column
-// page below it (measured at 390). The floors are the spec's targets until the lane's
-// measurement pass replaces them; they apply only when no rendered height is stored.
+// page below it (measured at 390). The header, left and rail floors were measured on a
+// FOREVER_DATA=fixture build with a stubbed, empty account (no characters, devices, reports or
+// guilds) and rounded down, so a floor never out-grows the real panel. The Discord floors are
+// still the spec's targets: the built panels land with Task 3a, whose measurement replaces them.
+// All apply only when no rendered height is stored.
 
 export type ReserveBucket = 'lg' | 'stack';
 
@@ -61,16 +46,16 @@ export interface BucketPx {
 export type HintState = 'none' | 'free' | 'form' | 'saved' | 'off' | 'lapsed';
 
 /** The ready header row: 44 px beside the title at 1024 and up, the stacked row below it. */
-export const HEADER_ROW_H: BucketPx = { lg: 44, stack: 84 };
+export const HEADER_ROW_H: BucketPx = { lg: 44, stack: 83 };
 
 /** An empty Characters panel, an empty Your reports panel and the 32 px gap between them. */
-export const LEFT_FLOOR: BucketPx = { lg: 300, stack: 300 };
+export const LEFT_FLOOR: BucketPx = { lg: 298, stack: 403 };
 
 /** The rail's panels with nothing extra in them (Devices, You, Plan). */
 export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>> = {
-  devices: { lg: 232, stack: 232 },
-  you: { lg: 192, stack: 192 },
-  plan: { lg: 219, stack: 219 },
+  devices: { lg: 233, stack: 249 },
+  you: { lg: 193, stack: 185 },
+  plan: { lg: 219, stack: 211 },
 };
 
 /** The Discord block's height by the state `/v1/me` puts it in; `none` and `free` draw no panel. */
@@ -164,4 +149,55 @@ export function discordHintState(me: Me | null): HintState {
   if (discord === null || discord === undefined) return entitled ? 'form' : 'free';
   if (!entitled) return 'lapsed';
   return discord.disabled_reason === null ? 'saved' : 'off';
+}
+
+/** The rail's floor with nothing stored: its three panels, the gaps, and the Discord block under Plan. */
+export function railFloor(state: HintState, bucket: ReserveBucket): number {
+  const panels = RAIL_FLOORS.devices[bucket] + RAIL_FLOORS.you[bucket] + RAIL_FLOORS.plan[bucket];
+  const discord = DISCORD_FLOORS[state][bucket];
+  return panels + 2 * SECTION_GAP_PX + (discord > 0 ? PLAN_GAP_PX + discord : 0);
+}
+
+/** The reserved grid's height under the header row when nothing is stored (the taller column). */
+export function gridFloor(state: HintState, bucket: ReserveBucket): number {
+  const left = LEFT_FLOOR[bucket];
+  const rail = railFloor(state, bucket);
+  return bucket === 'lg' ? Math.max(left, rail) : left + SECTION_GAP_PX + rail;
+}
+
+const LG_MEDIA = '(min-width: 1024px)';
+
+/** The bucket this viewport's page lays out in: the 12-column grid at 1024 and up, else one column. */
+export function currentBucket(): ReserveBucket {
+  return typeof window !== 'undefined' && window.matchMedia(LG_MEDIA).matches ? 'lg' : 'stack';
+}
+
+/** Stores the two columns' rendered heights for the current bucket (a missing column writes nothing). */
+export function recordAccountReserve(left: Element | null, rail: Element | null): void {
+  if (left === null || rail === null) return;
+  writeAccountReserve(
+    currentBucket(),
+    left.getBoundingClientRect().height,
+    rail.getBoundingClientRect().height,
+  );
+}
+
+/**
+ * Runs `record` two animation frames from now (the ready view has laid out) and again on
+ * `pagehide` (the Your reports list that arrives later is counted). Returns the cleanup, which
+ * also stops a later `pagehide` write -- sign-out needs that, or it would store the heights it
+ * just cleared.
+ */
+export function scheduleAccountReserveWrites(record: () => void): () => void {
+  let outer = 0;
+  let inner = 0;
+  outer = requestAnimationFrame(() => {
+    inner = requestAnimationFrame(record);
+  });
+  window.addEventListener('pagehide', record);
+  return () => {
+    cancelAnimationFrame(outer);
+    cancelAnimationFrame(inner);
+    window.removeEventListener('pagehide', record);
+  };
 }

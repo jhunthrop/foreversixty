@@ -38,6 +38,7 @@ import { SITE_NAME, SITE_URL, pageTitle, toJsonLd, websiteLd } from '../lib/seo'
 import { meKey, ME_QUERY_VERSION, ME_TTL_MS } from '../lib/account/api';
 import { storageKey } from '../lib/data/query';
 import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/history-layout';
+import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
@@ -96,6 +97,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-server-runs-max-reserve={SERVER_RUNS_MAX_RESERVE_PX}
       data-history-reserve-key={HISTORY_RESERVE_KEY}
       data-history-max-reserve={HISTORY_MAX_RESERVE_PX}
+      data-account-reserve-key={ACCOUNT_RESERVE_KEY}
+      data-account-max-reserve={ACCOUNT_RESERVE_MAX_PX}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -182,6 +185,44 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         }
       } catch {
         /* storage unavailable or malformed: the section reserves its fallback height */
+      }
+      // The /account loading reserve (spec 2026-10-25-discord-notifications 9.1): data-discord
+      // says which Discord block the ready page will draw, from the cached /v1/me, and the last
+      // rendered column heights of this viewport's layout become --account-left-reserve and
+      // --account-rail-reserve, so the loading state already has the ready page's shape.
+      // hintOf below is a verbatim copy of discordHintState in lib/account/layout.ts
+      // (layout.test.ts evaluates this very text against the same fixtures): change both.
+      try {
+        const el = document.currentScript;
+        const root = document.documentElement;
+        if (
+          (location.pathname === '/account' || location.pathname === '/account/') &&
+          root.dataset.session === '1'
+        ) {
+          // discord-hint:begin
+          function hintOf(me) {
+            if (me === null || me.notifications === undefined) return 'none';
+            const discord = me.notifications.discord;
+            const entitled = me.entitlements?.notifications === true;
+            if (discord === null || discord === undefined) return entitled ? 'form' : 'free';
+            if (!entitled) return 'lapsed';
+            return discord.disabled_reason === null ? 'saved' : 'off';
+          }
+          // discord-hint:end
+          const cached = localStorage.getItem(el.dataset.meStorageKey);
+          root.dataset.discord = hintOf(cached ? JSON.parse(cached).data : null);
+          const stored = JSON.parse(localStorage.getItem(el.dataset.accountReserveKey));
+          if (stored && stored.v === 1) {
+            const bucket = stored[matchMedia('(min-width: 1024px)').matches ? 'lg' : 'stack'];
+            const max = Number(el.dataset.accountMaxReserve);
+            if (bucket && bucket.left > 0 && bucket.left <= max)
+              root.style.setProperty('--account-left-reserve', Math.round(bucket.left) + 'px');
+            if (bucket && bucket.rail > 0 && bucket.rail <= max)
+              root.style.setProperty('--account-rail-reserve', Math.round(bucket.rail) + 'px');
+          }
+        }
+      } catch {
+        /* storage unavailable or malformed: the floors apply */
       }
     </script>
   </head>

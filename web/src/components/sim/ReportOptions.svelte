@@ -41,7 +41,7 @@
       <label class="flex min-h-11 items-center gap-2 text-[13px]">
         <input
           type="checkbox"
-          class="accent-gold h-5 w-5"
+          class="h-5 w-5"
           checked={notifyWanted}
           onchange={(event) => onnotifychange(event.currentTarget.checked)}
           data-testid="sim-notify"

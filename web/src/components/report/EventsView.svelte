@@ -68,7 +68,6 @@
   );
 
   /** See FilterBar.svelte: the label around a checkbox is its 44px target, not the box. */
-  const check = 'accent-gold';
 
   // With the stream loaded, the summary's few hits and heals (the ones before a death) give way
   // to every one of them; the casts, auras and deaths stay the summary's.
@@ -102,7 +101,7 @@
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
     {#each EVENT_KINDS as kind (kind.id)}
       <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
-        <input class={check} type="checkbox" checked={kinds.has(kind.id)} onchange={() => toggle(kind.id)} />
+        <input type="checkbox" checked={kinds.has(kind.id)} onchange={() => toggle(kind.id)} />
         {kind.label}
       </label>
     {/each}

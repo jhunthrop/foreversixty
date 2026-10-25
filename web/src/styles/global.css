@@ -43,6 +43,25 @@
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
   }
+  /* Gold checkboxes, site-wide (spec 2026-10-25-discord-notifications 9.2): the checked box is
+     gold with the browser's dark tick, a disabled one is muted, and the focus ring is the
+     page's gold ring. Surfaces add no local accent-* of their own. */
+  input[type='checkbox'] {
+    accent-color: var(--color-gold);
+    color-scheme: dark;
+  }
+  input[type='checkbox']:disabled {
+    accent-color: var(--color-muted);
+  }
+  input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+}
+/* A disabled checkbox's label reads muted. Outside the layers so a row's own text-* class
+   does not out-rank it. */
+label:has(input[type='checkbox']:disabled) {
+  color: var(--color-muted);
 }
 
 @utility gold-text {
@@ -385,6 +404,131 @@ html:not([data-session='1']) .session-reserve {
 html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
+
+/* /account's loading state draws the ready page's layout (experience spec
+   2026-10-25-discord-notifications 9.1): the header row, the left column, and the rail's
+   blocks, each at its measured floor. Base.astro sets --account-left-reserve and
+   --account-rail-reserve (the last rendered column heights) and data-discord (which Discord
+   block the ready page draws) before first paint; a stored height wins over the floors. The
+   stack numbers are the page below 1024px (measured at 390), the media block the 12-column
+   grid (measured at 1440). A visitor with no session hint keeps the collapsed `.session-reserve`
+   state above and below: no skeletons, the sign-in prompt only. */
+/* account loading reserve:begin (generated from lib/account/layout.ts's tables; layout.test.ts checks they agree) */
+.account-rail-skeleton {
+  min-height: var(--account-rail-reserve, var(--account-rail-floor));
+}
+.account-discord-skeleton {
+  display: none;
+}
+html[data-session='1'] .account-header-reserve {
+  min-height: 83px;
+}
+.account-left-skeleton {
+  min-height: max(var(--account-left-reserve, 0px), 403px);
+}
+.account-devices-skeleton {
+  min-height: 249px;
+}
+.account-you-skeleton {
+  min-height: 185px;
+}
+.account-plan-skeleton {
+  min-height: 211px;
+}
+.account-rail-skeleton {
+  --account-rail-floor: 709px;
+}
+html[data-discord='free'] .account-rail-skeleton {
+  --account-rail-floor: 769px;
+}
+html[data-discord='free'] .account-discord-skeleton {
+  display: flex;
+  min-height: 44px;
+}
+html[data-discord='form'] .account-rail-skeleton {
+  --account-rail-floor: 1355px;
+}
+html[data-discord='form'] .account-discord-skeleton {
+  display: flex;
+  min-height: 630px;
+}
+html[data-discord='saved'] .account-rail-skeleton {
+  --account-rail-floor: 1200px;
+}
+html[data-discord='saved'] .account-discord-skeleton {
+  display: flex;
+  min-height: 475px;
+}
+html[data-discord='off'] .account-rail-skeleton {
+  --account-rail-floor: 1290px;
+}
+html[data-discord='off'] .account-discord-skeleton {
+  display: flex;
+  min-height: 565px;
+}
+html[data-discord='lapsed'] .account-rail-skeleton {
+  --account-rail-floor: 1200px;
+}
+html[data-discord='lapsed'] .account-discord-skeleton {
+  display: flex;
+  min-height: 475px;
+}
+@media (min-width: 1024px) {
+  html[data-session='1'] .account-header-reserve {
+    min-height: 44px;
+  }
+  .account-left-skeleton {
+    min-height: max(var(--account-left-reserve, 0px), 298px);
+  }
+  .account-devices-skeleton {
+    min-height: 233px;
+  }
+  .account-you-skeleton {
+    min-height: 193px;
+  }
+  .account-plan-skeleton {
+    min-height: 219px;
+  }
+  .account-rail-skeleton {
+    --account-rail-floor: 709px;
+  }
+  html[data-discord='free'] .account-rail-skeleton {
+    --account-rail-floor: 769px;
+  }
+  html[data-discord='free'] .account-discord-skeleton {
+    display: flex;
+    min-height: 44px;
+  }
+  html[data-discord='form'] .account-rail-skeleton {
+    --account-rail-floor: 1335px;
+  }
+  html[data-discord='form'] .account-discord-skeleton {
+    display: flex;
+    min-height: 610px;
+  }
+  html[data-discord='saved'] .account-rail-skeleton {
+    --account-rail-floor: 1185px;
+  }
+  html[data-discord='saved'] .account-discord-skeleton {
+    display: flex;
+    min-height: 460px;
+  }
+  html[data-discord='off'] .account-rail-skeleton {
+    --account-rail-floor: 1265px;
+  }
+  html[data-discord='off'] .account-discord-skeleton {
+    display: flex;
+    min-height: 540px;
+  }
+  html[data-discord='lapsed'] .account-rail-skeleton {
+    --account-rail-floor: 1200px;
+  }
+  html[data-discord='lapsed'] .account-discord-skeleton {
+    display: flex;
+    min-height: 475px;
+  }
+}
+/* account loading reserve:end */
 
 /* The shared character header's server-rendered loading state (CharacterHeader.svelte): the
    skeleton box shows only for a visitor with a session hint, the signed-out band only for one

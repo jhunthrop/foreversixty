@@ -97,7 +97,7 @@
                 <label class="flex min-w-0 flex-1 items-center gap-2">
                   <input
                     type="checkbox"
-                    class="accent-gold h-5 w-5 shrink-0"
+                    class="h-5 w-5 shrink-0"
                     {disabled}
                     checked={grade !== 'off'}
                     onchange={(event) => set(row, event.currentTarget.checked ? 'on' : 'off')}

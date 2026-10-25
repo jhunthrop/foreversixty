@@ -34,10 +34,8 @@
   const toggle = 'flex min-h-11 items-center gap-2 text-[13px] md:min-h-0';
   // The 44px hit target for a checkbox is the label around it, not the box: a click
   // anywhere in the label toggles the input, and `toggle` above gives every one of them
-  // min-h-11 on phone. The box keeps its native size and gains only the gold accent the
-  // chart's own range inputs use. (A range input is the other case -- it is dragged, so
-  // its own box has to be the handle; TimeChart.svelte carries that reasoning.)
-  const check = 'accent-gold';
+  // min-h-11 on phone. The box keeps its native size; its gold comes from global.css's
+  // site-wide checkbox rule.
 </script>
 
 <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="filter-bar">
@@ -79,7 +77,6 @@
     <label class={toggle}>
       <input
         type="checkbox"
-        class={check}
         checked={filters.bossOnly}
         data-testid="filter-boss"
         onchange={(event) =>
@@ -91,7 +88,6 @@
   <label class={toggle}>
     <input
       type="checkbox"
-      class={check}
       checked={filters.playersOnly}
       onchange={(event) =>
         onChange({ ...filters, playersOnly: (event.currentTarget as HTMLInputElement).checked })}
@@ -101,7 +97,6 @@
   <label class={toggle}>
     <input
       type="checkbox"
-      class={check}
       checked={filters.countOverkill}
       onchange={(event) =>
         onChange({ ...filters, countOverkill: (event.currentTarget as HTMLInputElement).checked })}
@@ -111,7 +106,6 @@
   <label class={toggle}>
     <input
       type="checkbox"
-      class={check}
       checked={filters.ignoreAfterDeath && afterDeathAvailable}
       disabled={!afterDeathAvailable}
       title={afterDeathAvailable

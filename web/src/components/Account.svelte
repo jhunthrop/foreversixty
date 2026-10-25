@@ -63,10 +63,10 @@
   import LoadError from './ui/LoadError.svelte';
   import StatePanel from './ui/StatePanel.svelte';
   import {
-    CHARACTERS_SKELETON_MIN_H,
-    IDENTITY_SKELETON_MIN_H,
-    MORE_SKELETON_MIN_H,
     SIGNED_OUT_MIN_H,
+    clearAccountReserve,
+    recordAccountReserve,
+    scheduleAccountReserveWrites,
   } from '../lib/account/layout';
   import { accountSignInCopy } from '../lib/account/signin-copy';
 
@@ -213,6 +213,24 @@
   // Keyed on whether `me` exists, not on the object: an in-place patch of it (the Discord block
   // writes its saved state into the cache) must not drop the page back to its loading state.
   const hasMe = $derived(me !== null);
+
+  // The ready page's two column heights, stored so the next visit's loading state reserves them
+  // (spec 2026-10-25-discord-notifications 9.1; Base.astro reads them before first paint).
+  const readyAccount = $derived(mode === 'account' && status === 'ready' && signedIn);
+  $effect(() => {
+    if (!readyAccount) return;
+    const stop = scheduleAccountReserveWrites(() =>
+      recordAccountReserve(
+        document.querySelector('[data-testid="account-left-col"]'),
+        document.querySelector('[data-testid="account-rail-col"]'),
+      ),
+    );
+    stopReserveWrites = stop;
+    return () => {
+      stop();
+      stopReserveWrites = null;
+    };
+  });
   $effect(() => {
     if (!hasMe || (mode !== 'account' && mode !== 'pairing')) {
       devicesStatus = 'idle';
@@ -350,9 +368,16 @@
       devices = devices.filter((device) => device.id !== id);
     });
 
+  // Stops the reserve writer (below); set while the ready account page is mounted.
+  let stopReserveWrites: (() => void) | null = null;
+
   const onSignOut = (): void =>
     void run(async () => {
       await signOut();
+      // The next account may have a different page: forget the heights, and stop pagehide
+      // from storing them again on the way out.
+      stopReserveWrites?.();
+      clearAccountReserve();
       window.location.assign('/');
     });
 
@@ -540,23 +565,41 @@
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
     {#if status === 'loading'}
-      <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
-      <!-- `.session-reserve`: global.css collapses these skeletons (and the signed-out
-           block's floor below) when `<html>` carries no data-session hint, i.e. the visitor
-           has no session cookie and this can only resolve to the sign-in prompt. The reserve
-           existed so a real signed-out visitor's footer did not jump when the skeletons gave
-           way to the prompt; with no skeleton drawn there is nothing to jump from, and the
-           page ends under its one button instead of reserving three panels of black. -->
-      <div class="session-reserve flex flex-col gap-8">
-        <Skeleton lines={3} minHeight={CHARACTERS_SKELETON_MIN_H} testid="account-characters-skeleton" />
-        <Skeleton lines={4} minHeight={IDENTITY_SKELETON_MIN_H} testid="account-identity-skeleton" />
-        <Skeleton lines={3} minHeight={MORE_SKELETON_MIN_H} testid="account-more-skeleton" />
+      <!-- The loading state draws the ready page's layout with its contents missing (spec
+           2026-10-25-discord-notifications 9.1): the header row, the 8/4 grid, and the rail's
+           blocks at their floors. global.css's "account loading reserve" block sizes them
+           from the hints Base.astro sets before paint. `.session-reserve` collapses the
+           skeletons when `<html>` carries no data-session hint, i.e. the visitor has no
+           session cookie and this can only resolve to the sign-in prompt, so that page ends
+           under its one button instead of reserving panels of black. -->
+      <div class="account-header-reserve">
+        <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+      </div>
+      <div class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
+        <div class="lg:col-span-8">
+          <Skeleton lines={3} minHeight="account-left-skeleton" testid="account-left-skeleton" />
+        </div>
+        <div
+          class="account-rail-skeleton flex flex-col gap-8 lg:col-span-4"
+          data-testid="account-rail-skeleton"
+        >
+          <Skeleton lines={3} minHeight="account-devices-skeleton" testid="account-devices-skeleton" />
+          <Skeleton lines={3} minHeight="account-you-skeleton" testid="account-you-skeleton" />
+          <div class="flex flex-col gap-4">
+            <Skeleton lines={3} minHeight="account-plan-skeleton" testid="account-plan-skeleton" />
+            <Skeleton lines={3} minHeight="account-discord-skeleton" testid="account-discord-skeleton" />
+          </div>
+        </div>
       </div>
     {:else if status === 'failed'}
-      <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+      <div class="account-header-reserve">
+        <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+      </div>
       <LoadError message={error} onRetry={() => session.refresh()} testid="account-load-error" />
     {:else if !signedIn}
-      <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+      <div class="account-header-reserve">
+        <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
+      </div>
       <div class="session-reserve {SIGNED_OUT_MIN_H}">
         <SignInPrompt line={accountSignInCopy.reason} testid="account-signin" />
       </div>
@@ -606,7 +649,7 @@
         {/if}
 
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
-          <div class="flex flex-col gap-8 lg:col-span-8">
+          <div class="flex flex-col gap-8 lg:col-span-8" data-testid="account-left-col">
             {#if hero !== null}
               <!-- The current character (brief §B4, loosened §3.1): shown whenever the
                    compact chip's pointer matches a listed character; the render below is
@@ -670,7 +713,7 @@
             </StatePanel>
           </div>
 
-          <div class="flex flex-col gap-8 lg:col-span-4">
+          <div class="flex flex-col gap-8 lg:col-span-4" data-testid="account-rail-col">
             {#if heroPath !== null}
               <!-- Hidden (not unmounted: the panel's own fetch decides) until a rating exists. -->
               <div hidden={!ratingsShown} data-testid="account-ratings-slot">
