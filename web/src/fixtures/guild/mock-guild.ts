@@ -417,6 +417,9 @@ export function buildMockHome(
   // Task L8.3: `false` builds the home a guild with no addon snapshot gets (every row's
   // `addon` null, `addon_snapshot` null) for the Roster tab's null state.
   withAddonSnapshot = true,
+  // Officer tools gate (design/specs/2026-10-25-officer-tools-gate.md §3.1): `officerTools`
+  // sets `viewer.officer_tools`; left out, the field is absent, as from an API that predates it.
+  options: { officerTools?: boolean } = {},
 ): GuildHome {
   // The API sends no Remove on the viewer's own row when it is an officer's or the leader's (the
   // guild master leaves through Leave on the account page); the fixture sends what it would.
@@ -456,6 +459,7 @@ export function buildMockHome(
       role,
       character_key: viewerRow?.character_key ?? null,
       verified: viewerRow?.verified ?? false,
+      ...(options.officerTools === undefined ? {} : { officer_tools: options.officerTools }),
     },
     claim: { state: 'claimed', since: '2026-10-01T00:00:00Z', frozen: false, claimed_by_name: 'Kraggor' },
     summary: {
