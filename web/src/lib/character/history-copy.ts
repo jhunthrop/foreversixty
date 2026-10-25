@@ -18,9 +18,9 @@ export const historyCopy = {
   caption: 'Includes your private and guild reports. Only you see this section.',
 
   scoreHeading: 'Score over time',
-  /** The control row: the collapse rule, and with rings the key to them. */
+  /** The control row: the collapse rule, and with rings (private reports) the key to them. */
   scoreNote: (hasRings: boolean): string =>
-    `One point a day: the day's last rated fight.${hasRings ? ' Rings are private or guild reports.' : ''}`,
+    `One point a day: the day's last rated fight.${hasRings ? ' Rings are private reports.' : ''}`,
   parseHeading: 'Parse by boss',
   /** The boss picker's accessible name. */
   pickerLabel: 'Boss',

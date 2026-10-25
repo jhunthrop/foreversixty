@@ -5,7 +5,6 @@ import {
   COLLAPSED_ROWS,
   MAX_ROWS,
   canStep,
-  initialSelection,
   killListFights,
   killMarkKeys,
   listWindow,
@@ -19,6 +18,7 @@ import {
   withHover,
 } from './history-select';
 import type { HistoryFight } from './history-api';
+import type { Selection } from './history-select';
 
 const history = characterHistoryFixture();
 
@@ -30,12 +30,10 @@ function rows(count: number): HistoryFight[] {
   }));
 }
 
-describe('selection', () => {
-  it('starts on the newest point', () => {
-    expect(initialSelection(8)).toEqual({ selected: 7, hover: null });
-    expect(initialSelection(0).selected).toBe(0);
-  });
+/** The newest point selected, as the section starts. */
+const initialSelection = (count: number): Selection => ({ selected: Math.max(count - 1, 0), hover: null });
 
+describe('selection', () => {
   it('steps one at a time, jumps to the ends, and stays inside', () => {
     const start = initialSelection(5);
     expect(step(start, 'earlier', 5).selected).toBe(3);

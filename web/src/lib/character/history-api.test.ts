@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { characterHistoryFixture } from '../../fixtures/character-history';
 import { createHistoryApi } from '../../test-support/history-api';
-import { HistoryApiError, fetchCharacterHistory, fightKey } from './history-api';
+import { HistoryApiError, fetchCharacterHistory } from './history-api';
 
 const PATH = { region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale' } as const;
 const stub = createHistoryApi();
@@ -27,11 +27,5 @@ describe('fetchCharacterHistory', () => {
   it('throws a HistoryApiError for a server failure', async () => {
     stub.respondWith(500);
     await expect(fetchCharacterHistory(PATH, 'https://api.test')).rejects.toBeInstanceOf(HistoryApiError);
-  });
-});
-
-describe('fightKey', () => {
-  it('is report_id:fight_index', () => {
-    expect(fightKey('abcd1234efgh', 7)).toBe('abcd1234efgh:7');
   });
 });

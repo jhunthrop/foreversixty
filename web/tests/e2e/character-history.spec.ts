@@ -272,11 +272,24 @@ test('an anonymised character is the 404 page for its entitled owner too', async
   await routeCharacterHistory(page);
   await page.goto(CHARACTER_PATH);
 
-  await expect(page.getByTestId('character-not-found-line')).toBeVisible();
+  // The owner's /v1/me lists the character, so the 404 is their own unlogged card.
+  await expect(page.getByTestId('character-unlogged')).toBeVisible();
   await expect(page.getByTestId('character-history-section')).toHaveCount(0);
   await expect(page.getByTestId('history-free-sentence')).toHaveCount(0);
   await page.waitForTimeout(500);
   expect(requests).toEqual([]);
+});
+
+test('#history lands on the section for the entitled owner', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 600 });
+  await stubOwner(page, true);
+  await stubCharacter(page);
+  await routeCharacterHistory(page);
+  await page.goto(`${CHARACTER_PATH}#history`);
+
+  await expect(page.getByTestId('history-score')).toBeVisible();
+  await expect(page.getByTestId('character-history-section')).toBeInViewport();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 });
 
 test('a failed read shows the error with Try again, which reads again', async ({ page }) => {

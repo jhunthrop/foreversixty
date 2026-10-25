@@ -7,7 +7,8 @@
 /** A stored reserve above this is nonsense (tampered or from another layout) and is ignored. */
 export const MAX_RESERVE_PX = 2000;
 
-function storage(): Storage | null {
+/** localStorage, or null where it is missing or throws (private windows, blocked site data). */
+export function storage(): Storage | null {
   try {
     return globalThis.localStorage ?? null;
   } catch {

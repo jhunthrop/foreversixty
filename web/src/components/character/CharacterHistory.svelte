@@ -12,12 +12,15 @@
     createHistoryController,
     type HistoryController,
   } from '../../lib/character/history-controller.svelte';
-  import { reserveToStore, writeHistoryReserve } from '../../lib/character/history-layout';
+  import { reserveToStore, scrollBehavior, writeHistoryReserve } from '../../lib/character/history-layout';
   import type { ChartSize } from '../../lib/character/history-scales';
   import EmptyState from '../ui/EmptyState.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import ParseChart from './ParseChart.svelte';
   import ScoreChart from './ScoreChart.svelte';
+
+  /** The anchor the account page's History row links to. */
+  const SECTION_ID = 'history';
 
   let {
     path,
@@ -38,6 +41,17 @@
     if (controller === undefined) untrack(() => source.load());
   });
 
+  // The account page's "Open on your main character" link ends in #history, and the section
+  // mounts after /v1/me and the page: the browser's own anchor jump has already missed it.
+  let landed = false;
+  $effect(() => {
+    if (section === undefined || landed) return;
+    landed = true;
+    if (window.location.hash === `#${SECTION_ID}`) {
+      section.scrollIntoView({ behavior: scrollBehavior() });
+    }
+  });
+
   // The collapsed, settled box's rendered height, for the next visit's reserve (reserveToStore).
   $effect(() => {
     const element = section;
@@ -54,7 +68,7 @@
 
 <section
   bind:this={section}
-  id="history"
+  id={SECTION_ID}
   class="-order-2 flex flex-col gap-2"
   class:history-reserve={source.status === 'loading'}
   aria-busy={source.status === 'loading' ? 'true' : undefined}

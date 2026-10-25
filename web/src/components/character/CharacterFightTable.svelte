@@ -12,7 +12,7 @@
      item 7). -->
 <script lang="ts" generics="Row extends CharacterFight">
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
-  import { fightKey } from '../../lib/character/history-api';
+  import { fightKey } from '../../lib/character/fight-key';
   import { formatDayMonthYear } from '../../lib/dates';
   import { specName } from '../../lib/guild/spec-name';
   import type { CharacterFight } from '../../lib/rankings/api';

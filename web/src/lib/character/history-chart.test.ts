@@ -152,7 +152,7 @@ describe('buildScoreChart', () => {
     expect(short.bands.some((band) => !band.labelled)).toBe(true);
   });
 
-  it('marks rings when a private or guild point is drawn', () => {
+  it('marks rings when a private point is drawn, not for guild', () => {
     expect(buildScoreChart(fixture, DESKTOP).hasRings).toBe(true);
     expect(buildScoreChart({ score: [fight('2026-12-01T00:00:00Z', 1)], gaps: [] }, DESKTOP).hasRings).toBe(
       false,
@@ -236,6 +236,30 @@ describe('buildParseChart', () => {
     expect(readout).toMatchObject({ value: '88', word: 'parse', detail: '11 Dec 2026 · kill 5 of 5' });
     expect(readout.color).toBe('var(--color-parse-purple)');
     expect(parseReadout(chart.kills, 1).color).toBe('var(--color-parse-blue)');
+  });
+});
+
+describe('a fractional percentile', () => {
+  const golemagg = characterHistoryFixture().encounters[0];
+  const fractional: HistoryEncounter = {
+    ...golemagg,
+    points: [
+      { ...golemagg.points[0], parse_percentile: 54.4 },
+      { ...golemagg.points[1], parse_percentile: 87.53 },
+    ],
+  };
+
+  it('is written as a whole number in the readout, the screen-reader rows and the net change', () => {
+    const chart = buildParseChart(fractional, DESKTOP);
+    expect(parseReadout(chart.kills, 1).value).toBe('88');
+    expect(parseReadout(chart.kills, 1).text).toBe('88 parse · 24 Nov 2026 · kill 2 of 2');
+    expect(parseSrRows(chart).map((row) => row.value)).toEqual(['54', '88']);
+    expect(chart.change).toBe('Up 34 since 17 Nov');
+  });
+
+  it('keeps the percentile for the colour ladder', () => {
+    const chart = buildParseChart(fractional, DESKTOP);
+    expect(chart.kills[1].parse).toBe(87.53);
   });
 });
 

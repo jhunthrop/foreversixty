@@ -4,7 +4,7 @@
 // (experience spec 2026-10-24 sections 3.5 and 3.7) the pre-paint script in Base.astro reads
 // back. Pure functions plus guarded storage access; the reactive wrapper is
 // server-runs-controller.svelte.ts.
-import { MAX_RESERVE_PX, writeReserve } from '../layout-reserve';
+import { MAX_RESERVE_PX, storage, writeReserve } from '../layout-reserve';
 import type { SimListRow } from './types';
 
 /** How often the list re-reads while a run is queued or running and the tab is visible. */
@@ -42,14 +42,6 @@ export function newlyFinished(
 /** `rows` with the given ids marked seen; the input is not changed. */
 export function withSeen(rows: readonly SimListRow[], ids: readonly string[]): SimListRow[] {
   return rows.map((row) => (ids.includes(row.sim_id) ? { ...row, seen: true } : row));
-}
-
-function storage(): Storage | null {
-  try {
-    return globalThis.localStorage ?? null;
-  } catch {
-    return null;
-  }
 }
 
 export function writeReserveHeight(pixels: number): void {

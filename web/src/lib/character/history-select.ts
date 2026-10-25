@@ -3,7 +3,7 @@
 // values: which point is selected, which one the mouse previews, which list rows that marks,
 // and how much of a list shows. Every function returns a new value.
 import type { CharacterHistory, HistoryEncounter, HistoryFight } from './history-api';
-import { fightKey } from './history-api';
+import { fightKey } from './fight-key';
 import type { ScoreDay } from './history-chart';
 
 /** Rows shown before `Show all`, and the most a list ever shows. */
@@ -21,11 +21,6 @@ export type Step = 'earlier' | 'later' | 'first' | 'newest';
 
 function clamp(index: number, count: number): number {
   return Math.min(Math.max(index, 0), Math.max(count - 1, 0));
-}
-
-/** The newest point is selected first. */
-export function initialSelection(count: number): Selection {
-  return { selected: clamp(count - 1, count), hover: null };
 }
 
 export function select(selection: Selection, index: number, count: number): Selection {

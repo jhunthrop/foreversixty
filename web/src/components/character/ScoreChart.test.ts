@@ -17,9 +17,7 @@ describe('ScoreChart, the owner with data', () => {
 
   it('writes the sub-heading, the note with the rings key, and the readout of the newest day', () => {
     expect(html).toContain('Score over time');
-    expect(html).toContain(
-      "One point a day: the day's last rated fight. Rings are private or guild reports.",
-    );
+    expect(html).toContain("One point a day: the day's last rated fight. Rings are private reports.");
     expect(html).toMatch(/data-testid="history-readout-value">1830</);
     expect(html).toContain('Epic');
     expect(html).toContain('11 Dec 2026 · 2 fights');
@@ -36,8 +34,8 @@ describe('ScoreChart, the owner with data', () => {
     expect(html).toContain('data-testid="history-guide"');
   });
 
-  it('draws the private and guild points as rings and the newest as the selected dot', () => {
-    expect(html.match(/data-testid="history-ring"/g)).toHaveLength(2);
+  it('draws the private point as a ring and the newest as the selected dot', () => {
+    expect(html.match(/data-testid="history-ring"/g)).toHaveLength(1);
     expect(html.match(/data-testid="history-selected-dot"/g)).toHaveLength(1);
   });
 

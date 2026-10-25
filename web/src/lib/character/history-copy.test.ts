@@ -27,7 +27,7 @@ describe('historyCopy (spec section 6, verbatim)', () => {
   it('writes the score note with and without rings', () => {
     expect(historyCopy.scoreNote(false)).toBe("One point a day: the day's last rated fight.");
     expect(historyCopy.scoreNote(true)).toBe(
-      "One point a day: the day's last rated fight. Rings are private or guild reports.",
+      "One point a day: the day's last rated fight. Rings are private reports.",
     );
   });
 

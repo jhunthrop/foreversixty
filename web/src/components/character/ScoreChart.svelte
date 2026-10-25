@@ -49,7 +49,7 @@
   const selection = $derived<Selection>({ selected: committed, hover });
   const day = $derived(chart.days[shownIndex(selection)]);
   const rings = $derived(
-    new Set(chart.days.flatMap((entry, index) => (entry.visibility === 'public' ? [] : [index]))),
+    new Set(chart.days.flatMap((entry, index) => (entry.visibility === 'private' ? [index] : []))),
   );
   const marked = $derived(markedKeys(scoreMarkKeys(chart.days), { selected: committed, hover: null }));
   const selectedDay = $derived(chart.days[selection.selected]);

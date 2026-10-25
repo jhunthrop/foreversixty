@@ -62,6 +62,7 @@ test('selecting a hidden row opens the list once and a later hover never moves i
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await plot.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(600); // let the smooth scroll of the auto-opened list settle
   const scrolled = await page.evaluate(() => window.scrollY);
   await plot.hover({ position: { x: 300, y: 100 } });
   await plot.hover({ position: { x: 500, y: 100 } });

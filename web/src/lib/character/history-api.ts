@@ -10,9 +10,6 @@ import { API_BASE_URL } from '../planner/config';
 import type { CharacterFight } from '../rankings/api';
 import { historyCopy } from './history-copy';
 
-/** The owner is on the free plan: the API answers 402 (the web never calls without the flag). */
-export const HISTORY_PREMIUM_REQUIRED_STATUS = 402;
-
 export type HistoryVisibility = 'public' | 'guild' | 'private';
 
 /** One rated fight whose score snapshot was kept, oldest first. `score` is on the 0 to 2100 scale. */
@@ -80,11 +77,6 @@ export class HistoryApiError extends Error {
     super(message);
     this.name = 'HistoryApiError';
   }
-}
-
-/** How a fight is keyed everywhere: a score point, a kill, a list row. */
-export function fightKey(reportId: string, fightIndex: number): string {
-  return `${reportId}:${fightIndex}`;
 }
 
 function historyPath(path: CharacterPath): string {

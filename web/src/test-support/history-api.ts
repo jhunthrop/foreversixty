@@ -4,7 +4,6 @@
 // unmatched request throws rather than reaching the network.
 import { vi } from 'vitest';
 import { characterHistoryFixture } from '../fixtures/character-history';
-import type { CharacterHistory } from '../lib/character/history-api';
 import { envelope, failure } from './sim-api';
 
 export const HISTORY_ROUTE = /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/history$/;
@@ -14,8 +13,6 @@ export interface HistoryApiStub {
   reset(): void;
   /** Answers with a status instead of the payload (402 lapsed, 404 not the owner, 500). */
   respondWith(status: number): void;
-  /** Answers with a different payload. */
-  setHistory(history: CharacterHistory): void;
   lastUrl(): string;
 }
 
@@ -42,9 +39,6 @@ export function createHistoryApi(): HistoryApiStub {
     },
     respondWith: (value) => {
       status = value;
-    },
-    setHistory: (value) => {
-      history = value;
     },
     lastUrl: () => lastUrl,
   };
