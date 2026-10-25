@@ -121,7 +121,7 @@ The value column is about 190 px at 390: `Off · failed five times` (23 characte
 | `form` | entitled and nothing saved (`notifications` or `notifications.discord` is null or missing) | Paste form |
 | `free` | not entitled and nothing saved | The sentence |
 
-An older `/v1/me` with no `notifications` key and `entitlements.notifications` true shows the paste form. A saved webhook with both events off is `saved`; the Premium row says `Off · no events chosen` and the block shows the unchecked boxes.
+A `/v1/me` with no `notifications` key means the deployment has notifications off (§10: the key is omitted when the API has no encryption key): the block renders nothing and the Premium row reads `Off`, unlinked, whatever the entitlement. A saved webhook with both events off is `saved`; the Premium row says `Off · no events chosen` and the block shows the unchecked boxes.
 
 ### 4.2 Interactive elements
 
