@@ -36,12 +36,13 @@ export function createFocusQueue(watch: () => unknown): FocusQueue {
 
 /** Reads and clears `?discord=`; a `connected` outcome also re-reads `/v1/me` once. Null when absent. */
 export function consumeReturn(
+  onRefreshFailure: () => void,
   location: Location = window.location,
   history: History = window.history,
 ): ReturnOutcome | null {
   const flag = takeReturnFlag(location, history);
   if (flag === null) return null;
   const outcome = returnOutcome(flag);
-  if (outcome.refresh) refreshAfterConnect();
+  if (outcome.refresh) refreshAfterConnect(onRefreshFailure);
   return outcome;
 }

@@ -8,6 +8,7 @@ import type { Me } from './api';
 import * as query from '../data/query';
 import { createNotificationsApi, discordBlock } from '../../test-support/notifications-api';
 import {
+  awaitsConnectRefresh,
   refreshAfterConnect,
   removeWebhook,
   returnOutcome,
@@ -260,8 +261,39 @@ describe('returnOutcome', () => {
 describe('refreshAfterConnect', () => {
   it('re-reads /v1/me once and swallows a failure', async () => {
     const fresh = vi.spyOn(accountApi, 'fetchMeFresh').mockRejectedValue(new Error('offline'));
-    refreshAfterConnect();
+    refreshAfterConnect(() => {});
     await Promise.resolve();
     expect(fresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports a failed or empty read so the block stops waiting', async () => {
+    const onFailure = vi.fn();
+    vi.spyOn(accountApi, 'fetchMeFresh').mockRejectedValueOnce(new Error('offline'));
+    refreshAfterConnect(onFailure);
+    await vi.waitFor(() => expect(onFailure).toHaveBeenCalledTimes(1));
+    vi.spyOn(accountApi, 'fetchMeFresh').mockResolvedValueOnce(null);
+    refreshAfterConnect(onFailure);
+    await vi.waitFor(() => expect(onFailure).toHaveBeenCalledTimes(2));
+  });
+
+  it('stays quiet when the read answers', async () => {
+    const onFailure = vi.fn();
+    vi.spyOn(accountApi, 'fetchMeFresh').mockResolvedValue({} as accountApi.Me);
+    refreshAfterConnect(onFailure);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(onFailure).not.toHaveBeenCalled();
+  });
+});
+
+describe('awaitsConnectRefresh', () => {
+  it.each([
+    ['?discord=connected', true],
+    ['?discord=denied', false],
+    ['?discord=failed', false],
+    ['?discord=other', false],
+    ['', false],
+  ])('%s -> %s', (search, expected) => {
+    expect(awaitsConnectRefresh(search)).toBe(expected);
   });
 });

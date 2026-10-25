@@ -20,23 +20,31 @@ afterEach(() => {
 describe('consumeReturn', () => {
   it('connected: the sentence, focus on the test button, one fresh read, the flag gone', () => {
     window.history.replaceState({}, '', '/account?discord=connected#discord');
-    const outcome = consumeReturn();
+    const outcome = consumeReturn(() => {});
     expect(outcome?.status).toEqual({ ok: true, message: notificationsCopy.returnConnected });
     expect(outcome?.focus).toContain('discord-test');
     expect(fresh).toHaveBeenCalledTimes(1);
     expect(window.location.pathname + window.location.search + window.location.hash).toBe('/account#discord');
-    expect(consumeReturn()).toBeNull();
+    expect(consumeReturn(() => {})).toBeNull();
     expect(fresh).toHaveBeenCalledTimes(1);
   });
 
   it.each(['denied', 'failed'])('%s: no fresh read', (flag) => {
     window.history.replaceState({}, '', `/account?discord=${flag}#discord`);
-    expect(consumeReturn()).not.toBeNull();
+    expect(consumeReturn(() => {})).not.toBeNull();
     expect(fresh).not.toHaveBeenCalled();
+  });
+
+  it('connected: a failed read reaches the caller so it can stop waiting', async () => {
+    fresh.mockRejectedValue(new Error('offline'));
+    const onFailure = vi.fn();
+    window.history.replaceState({}, '', '/account?discord=connected');
+    consumeReturn(onFailure);
+    await vi.waitFor(() => expect(onFailure).toHaveBeenCalledTimes(1));
   });
 
   it('no flag: nothing', () => {
     window.history.replaceState({}, '', '/account#discord');
-    expect(consumeReturn()).toBeNull();
+    expect(consumeReturn(() => {})).toBeNull();
   });
 });
