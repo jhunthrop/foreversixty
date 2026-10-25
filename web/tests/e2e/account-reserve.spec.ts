@@ -33,10 +33,11 @@ const FIVE_FAILURES = discordBlock({
   failures: 5,
 });
 
-/** The six `data-discord` states, each with the member that produces it. */
+/** The seven `data-discord` states, each with the member that produces it. */
 const STATES: ReadonlyArray<{ state: HintState; stages: Omit<DiscordMeStages, 'hold'> }> = [
   { state: 'none', stages: { initial: null, featureOff: true } },
   { state: 'free', stages: { initial: null, entitled: false } },
+  { state: 'connect', stages: { initial: null, connect: true } },
   { state: 'form', stages: { initial: null } },
   { state: 'saved', stages: { initial: discordBlock() } },
   { state: 'off', stages: { initial: FIVE_FAILURES } },

@@ -6,7 +6,7 @@
 // by hand; item 13 (side-by-side with the mock) by compose_side_by_side.py in the same folder.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { test, type Locator, type Page } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Locator, type Page } from '@playwright/test';
 import type { DiscordNotifications } from '../../../src/lib/account/api';
 import type { HintState } from '../../../src/lib/account/layout';
 import {
@@ -18,7 +18,9 @@ import {
 } from '../../e2e/support/account-reserve';
 import { gotoHydrated } from '../../e2e/support/hydrated';
 import {
+  CONNECT_URL_GLOB,
   discordBlock,
+  GUILD_ID,
   routeDiscordNotifications,
   signInMember,
   type DiscordMeStages,
@@ -91,11 +93,12 @@ async function openAccount(
   width: number,
   stages: DiscordMeStages,
   routeOptions: DiscordRouteOptions = {},
+  route = '/account',
 ): Promise<DiscordRoutes> {
   await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
   const seen = await routeDiscordNotifications(page, routeOptions);
   await signInMember(page, stages, seen);
-  await gotoHydrated(page, '/account', 'account');
+  await gotoHydrated(page, route, 'account');
   await settle(page);
   return seen;
 }
@@ -486,6 +489,7 @@ for (const [name, block] of [
 const RESERVE_STATES: { state: HintState; stages: Omit<DiscordMeStages, 'hold'> }[] = [
   { state: 'none', stages: { initial: null, featureOff: true } },
   { state: 'free', stages: { initial: null, entitled: false } },
+  { state: 'connect', stages: { initial: null, connect: true } },
   { state: 'form', stages: { initial: null } },
   { state: 'saved', stages: { initial: SAVED } },
   { state: 'off', stages: { initial: FIVE_FAILURES } },
@@ -556,4 +560,150 @@ atWidths('gold checkbox, rankings filter', [WIDTH_DESKTOP], async (page, width) 
   await cropOf(page, today.locator('xpath=..'), `rankings-checkbox-checked-${width}.png`);
   await focusWithKeyboard(page, today);
   await cropOf(page, today.locator('xpath=..'), `rankings-checkbox-focus-${width}.png`);
+});
+
+// 24 to 28. The connect lane (experience spec section 3.2, 4.3 and 9, amended 2026-10-25).
+const CONNECT_ON: DiscordMeStages = { initial: null, connect: true };
+const CONNECTED = discordBlock({ source: 'connected', name: null, guild_id: GUILD_ID });
+const CONNECT_CAP_PX: Readonly<Record<number, number>> = { 360: 340, 390: 340, [WIDTH_DESKTOP]: 320 };
+const connectControl = (page: Page): Locator => page.getByTestId('discord-connect');
+
+// 24. The Connect state: default at 360, 390 and 1440 with the height against the cap, then
+// hover, focus-visible and `Opening Discord…` at 1440.
+atWidths('connect state', NARROW_WIDTHS, async (page, width) => {
+  await openAccount(page, width, CONNECT_ON);
+  await shoot(page, 'connect', width);
+  const height = (await panel(page).boundingBox())?.height ?? 0;
+  test.info().annotations.push({
+    type: 'height',
+    description: `connect @${width}: ${height} px, cap ${CONNECT_CAP_PX[width]}`,
+  });
+});
+
+test('connect hover @1440', async ({ page }) => {
+  await openAccount(page, WIDTH_DESKTOP, CONNECT_ON);
+  await connectControl(page).hover();
+  await settle(page);
+  await cropOf(page, panel(page), `discord-connect-hover-panel-${WIDTH_DESKTOP}.png`);
+});
+
+test('connect focus-visible @1440', async ({ page }) => {
+  await openAccount(page, WIDTH_DESKTOP, CONNECT_ON);
+  await focusWithKeyboard(page, connectControl(page));
+  await cropOf(page, panel(page), `discord-connect-focus-panel-${WIDTH_DESKTOP}.png`);
+});
+
+atWidths('connect opening Discord', BASE_WIDTHS, async (page, width) => {
+  const held = gate();
+  await openAccount(page, width, CONNECT_ON);
+  // The navigation to the API is held, so the link's own `Opening Discord…` frame is on screen.
+  await holdRoute(page, CONNECT_URL_GLOB, held.wait);
+  await connectControl(page).click();
+  await page.getByText('Opening Discord…').waitFor();
+  await shoot(page, 'connect-opening', width);
+  held.release();
+});
+
+// 25. The paste view with connect on (the back link under Save), and paste-first with connect off.
+atWidths('paste view with connect on', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, CONNECT_ON);
+  await page.getByTestId('discord-paste-instead').click();
+  await input(page).waitFor();
+  await settle(page);
+  await shoot(page, 'connect-paste-view', width);
+});
+
+atWidths('paste first with connect off', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: null, connect: false });
+  await shoot(page, 'connect-off-paste-first', width);
+});
+
+// 26. The three return outcomes, each from `/account?discord=<flag>#discord`; the URL is asserted
+// clean (a PNG cannot show the address bar), and a reload shows no status line.
+const RETURNS: { flag: string; stages: DiscordMeStages }[] = [
+  { flag: 'connected', stages: { initial: CONNECTED, connect: true } },
+  { flag: 'denied', stages: CONNECT_ON },
+  { flag: 'failed', stages: CONNECT_ON },
+];
+
+for (const { flag, stages } of RETURNS) {
+  atWidths(`return ${flag}`, BASE_WIDTHS, async (page, width) => {
+    await openAccount(page, width, stages, {}, `/account?discord=${flag}#discord`);
+    await expect(page).toHaveURL(/\/account#discord$/);
+    await shoot(page, `return-${flag}`, width);
+    await page.reload();
+    await settle(page);
+    await expect(panel(page).getByRole('status')).toHaveCount(0);
+    await shoot(page, `return-${flag}-reloaded`, width);
+  });
+}
+
+// 27. Saved connected: the destination with the inline link, the reconnect link and its note at 360
+// and 390, and a saved pasted webhook beside it.
+atWidths('saved connected', NARROW_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: CONNECTED, connect: true });
+  await shoot(page, 'connected-saved', width);
+  await cropOf(page, page.getByTestId('discord-destination'), `discord-connected-destination-${width}.png`);
+});
+
+atWidths('saved pasted beside connected', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: SAVED, connect: true });
+  await shoot(page, 'connected-pasted-beside', width);
+});
+
+// 28. Both remove questions, the replace view of a pasted webhook with connect on, and the reconnect view.
+for (const [name, block] of [
+  ['connected', CONNECTED],
+  ['pasted', SAVED],
+] as const) {
+  atWidths(`remove confirm ${name}, connect on`, BASE_WIDTHS, async (page, width) => {
+    await openAccount(page, width, { initial: block, connect: true });
+    await page.getByTestId('discord-remove').click();
+    await page.getByTestId('discord-remove-cancel').waitFor();
+    await settle(page);
+    await shoot(page, `connect-remove-confirm-${name}`, width);
+  });
+}
+
+atWidths('replace view of a pasted webhook, connect on', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: SAVED, connect: true });
+  await page.getByTestId('discord-replace').click();
+  await page.getByTestId('discord-cancel').waitFor();
+  await settle(page);
+  await shoot(page, 'connect-replace-view', width);
+});
+
+atWidths('reconnect view', BASE_WIDTHS, async (page, width) => {
+  await openAccount(page, width, { initial: CONNECTED, connect: true });
+  await shoot(page, 'connect-reconnect', width);
+});
+
+// 31. The built site carries neither Discord's logo nor its blurple. Not a PNG: the account page,
+// every script, stylesheet and module it reaches are fetched and searched.
+const FORBIDDEN_ASSET = /5865f2|discord[-_ ]?(logo|mark)|clyde/i;
+const ASSET_REFERENCE =
+  /(?:src|href|from|import\()\s*=?\s*["'`]?(\/[^"'`\s)>]+\.(?:js|css|mjs|svg|png|webp))/g;
+const MAX_ASSETS = 400;
+
+async function reachableSources(request: APIRequestContext, entry: string): Promise<Map<string, string>> {
+  const sources = new Map<string, string>();
+  const queue = [entry];
+  while (queue.length > 0 && sources.size < MAX_ASSETS) {
+    const url = queue.shift() as string;
+    if (sources.has(url)) continue;
+    const response = await request.get(url);
+    const body = response.ok() ? await response.text() : '';
+    sources.set(url, body);
+    for (const match of body.matchAll(ASSET_REFERENCE)) queue.push(match[1] as string);
+  }
+  return sources;
+}
+
+test('the built account page and its bundle carry no Discord logo and no blurple', async ({ request }) => {
+  const sources = await reachableSources(request, '/account');
+  expect(sources.size).toBeGreaterThan(1);
+  const offenders = [...sources].filter(
+    ([url, body]) => FORBIDDEN_ASSET.test(url) || FORBIDDEN_ASSET.test(body),
+  );
+  expect(offenders.map(([url]) => url)).toEqual([]);
 });

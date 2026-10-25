@@ -413,6 +413,10 @@ uses for `data_base_url` and the multipart upload URLs. None of those live in `w
 none of them are things this repository's CI can create — they are one-time account-level
 setup the API and infrastructure own.
 
+The one-click Discord connect on the account page needs a Discord application whose Client ID and
+Secret the API holds; its setup is the "Discord application" runbook in `api/README.md`. Without it
+the account page shows the paste form alone.
+
 ## Deploy (Cloudflare Workers, static assets)
 
 The site is served by Cloudflare Workers as static assets, plus the one Worker described above for

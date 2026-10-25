@@ -447,6 +447,113 @@ async function meReadsAfterVisit(page: Page, search: string): Promise<number> {
   return reads;
 }
 
+const CONNECT_HREF = '/v1/notifications/discord/connect';
+const CONNECT_ON = { initial: null, connect: true } satisfies DiscordMeStages;
+
+test.describe('the connect state (connect lane)', () => {
+  test('connect on: the gold link to the connect route, what Discord asks, no paste form', async ({
+    page,
+  }) => {
+    await openAccount(page, CONNECT_ON);
+    const connect = page.getByTestId('discord-connect');
+    await expect(connect).toHaveText(copy.connect);
+    await expect(connect).toHaveAttribute('href', CONNECT_HREF);
+    await expect(panel(page)).toContainText(copy.connectExplanation);
+    await expect(page.getByTestId('discord-paste-instead')).toHaveText(copy.pasteInstead);
+    await expect(input(page)).toHaveCount(0);
+    await expect(page.getByTestId('discord-save')).toHaveCount(0);
+  });
+
+  test('the paste disclosure reveals the form with the way back under Save, and back again', async ({
+    page,
+  }) => {
+    await openAccount(page, CONNECT_ON);
+    await page.getByTestId('discord-paste-instead').click();
+    await expect(input(page)).toBeVisible();
+    const back = page.getByTestId('discord-connect-instead');
+    await expect(back).toHaveText(copy.connectInstead);
+    const saveBottom = await page.getByTestId('discord-save').boundingBox();
+    const backTop = await back.boundingBox();
+    expect((backTop?.y ?? 0) >= (saveBottom?.y ?? Infinity) + (saveBottom?.height ?? 0) - 1).toBe(true);
+    await back.click();
+    await expect(page.getByTestId('discord-connect')).toBeVisible();
+    await expect(input(page)).toHaveCount(0);
+  });
+
+  test('connect off: the paste form alone, with no trace of the connect controls', async ({ page }) => {
+    await openAccount(page, { initial: null, connect: false });
+    await expect(input(page)).toBeVisible();
+    for (const id of ['discord-connect', 'discord-connect-instead', 'discord-paste-instead']) {
+      await expect(page.getByTestId(id)).toHaveCount(0);
+    }
+    expect(await page.content()).not.toContain(CONNECT_HREF);
+  });
+
+  test('denied: the status sentence, focus on the connect control, the flag gone from the address', async ({
+    page,
+  }) => {
+    await openAccount(page, CONNECT_ON, {}, '/account?discord=denied#discord');
+    await expect(panel(page).getByRole('status')).toHaveText(copy.returnDenied);
+    await expect(page.getByTestId('discord-connect')).toBeFocused();
+    await expect(page).toHaveURL(/\/account#discord$/);
+    await page.reload();
+    await expect(page.getByTestId('discord-connect')).toBeVisible();
+    await expect(panel(page).getByRole('status')).toHaveCount(0);
+  });
+});
+
+test.describe('a connected channel (connect lane)', () => {
+  test('the destination, the Open in Discord link, the reconnect link with its note', async ({ page }) => {
+    await openAccount(page, { initial: CONNECTED, connect: true });
+    const destination = page.getByTestId('discord-destination');
+    await expect(destination).toContainText(
+      `${copy.destinationConnected.lead} ${copy.destinationConnected.name}`,
+    );
+    await expect(destination).toContainText(copy.channelLine(CHANNEL_ID));
+    await expect(destination).not.toContainText('Posts through');
+    const open = destination.getByTestId('discord-open');
+    await expect(open).toHaveText(copy.openInDiscord);
+    await expect(open).toHaveAttribute('href', `https://discord.com/channels/${GUILD_ID}/${CHANNEL_ID}`);
+    await expect(open).toHaveAttribute('target', '_blank');
+    const reconnect = page.getByTestId('discord-replace');
+    await expect(reconnect).toHaveText(copy.reconnect);
+    await expect(reconnect).toHaveAttribute('href', CONNECT_HREF);
+    await expect(page.getByTestId('discord-replace-note')).toHaveText(copy.reconnectNote);
+    const html = await page.content();
+    expect(html).not.toContain(WEBHOOK_TOKEN);
+    expect(html).not.toContain('discord.com/api/webhooks');
+  });
+
+  test('a connected webhook without a known server shows no Open in Discord link', async ({ page }) => {
+    await openAccount(page, {
+      initial: discordBlock({ source: 'connected', guild_id: null }),
+      connect: true,
+    });
+    await expect(page.getByTestId('discord-destination')).toBeVisible();
+    await expect(page.getByTestId('discord-open')).toHaveCount(0);
+  });
+
+  test('Remove asks the connected question, and deleting brings the connect state back', async ({ page }) => {
+    const seen = await openAccount(page, { initial: CONNECTED, connect: true });
+    await page.getByTestId('discord-remove').click();
+    await expect(panel(page)).toContainText(copy.removeQuestionConnected);
+    await expect(panel(page)).not.toContainText(copy.removeQuestionPasted);
+    await expect(page.getByTestId('discord-replace')).toHaveCount(0);
+    await page.getByTestId('discord-remove-confirm').click();
+    await expect(page.getByTestId('discord-connect')).toBeVisible();
+    expect(seen.deletes).toBe(1);
+  });
+
+  test('replacing a pasted webhook with connect on opens the connect view with Cancel', async ({ page }) => {
+    await openAccount(page, { initial: SAVED, connect: true });
+    await page.getByTestId('discord-replace').click();
+    await expect(page.getByTestId('discord-connect')).toHaveAttribute('href', CONNECT_HREF);
+    await expect(page.getByTestId('discord-cancel')).toBeVisible();
+    await page.getByTestId('discord-cancel').click();
+    await expect(page.getByTestId('discord-destination')).toBeVisible();
+  });
+});
+
 test.describe('the return from Discord (connect lane)', () => {
   test('failed: the alert, focus on the connect control, the flag gone from the address', async ({
     page,
@@ -479,6 +586,8 @@ test.describe('axe', () => {
   const states: { name: string; stages: DiscordMeStages }[] = [
     { name: 'free', stages: { initial: null, entitled: false } },
     { name: 'paste form', stages: { initial: null } },
+    { name: 'connect', stages: CONNECT_ON },
+    { name: 'saved connected', stages: { initial: CONNECTED, connect: true } },
     { name: 'saved', stages: { initial: SAVED } },
     { name: 'switched off', stages: { initial: FIVE_FAILURES } },
     { name: 'lapsed', stages: { initial: SAVED, entitled: false } },
