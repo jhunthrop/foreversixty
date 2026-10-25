@@ -221,6 +221,9 @@ type ViewerView struct {
 	Role         string  `json:"role"`
 	CharacterKey *string `json:"character_key,omitempty"`
 	Verified     bool    `json:"verified"`
+	// OfficerTools is true when the viewer is a verified officer/leader of a guild
+	// whose officer views are unlocked (a plan or a scoped grant).
+	OfficerTools bool `json:"officer_tools"`
 }
 
 // SummaryView is the Overview tab's own glance row (design spec §4.A).
@@ -644,6 +647,9 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.markSupporters(r.Context(), view.Roster, view.Pending)
+	if verifiedOfficer {
+		view.Viewer.OfficerTools = s.officerTools(r.Context(), guildID, actor.UserID)
+	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }

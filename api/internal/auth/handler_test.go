@@ -998,6 +998,56 @@ func TestMeShowsGuildPlanOnlyToAVerifiedOfficer(t *testing.T) {
 	}
 }
 
+func TestMeGuildPlanScope(t *testing.T) {
+	tests := []struct {
+		name      string
+		insert    string
+		wantPlan  bool
+		wantScope string
+	}{
+		{"live scoped grant", `insert into entitlements (guild_id, plan, source, status, current_period_end, features) values ($1,'guild','grant','active', now()+interval '30 days','{officer_views}')`, true, "officer_tools"},
+		{"expired scoped grant", `insert into entitlements (guild_id, plan, source, status, current_period_end, features) values ($1,'guild','grant','active', now()-interval '1 day','{officer_views}')`, false, ""},
+		{"whole plan", `insert into entitlements (guild_id, plan, source, status) values ($1,'guild','stripe','active')`, true, "plan"},
+	}
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			h := newHarness(t)
+			gid := h.seedGuild(t, fmt.Sprintf("me-scope-%d", i))
+			if _, err := h.svc.Store.Pool.Exec(t.Context(), tc.insert, gid); err != nil {
+				t.Fatal(err)
+			}
+			officer := h.seedUser(t, fmt.Sprintf("me-scope-%d@example.com", i))
+			h.seedGuildMember(t, gid, officer, "officer", true)
+			var body struct {
+				Guilds []struct {
+					Plan *struct {
+						Scope            string  `json:"scope"`
+						BilledBy         string  `json:"billed_by"`
+						CurrentPeriodEnd *string `json:"current_period_end"`
+					} `json:"plan,omitempty"`
+				} `json:"guilds"`
+			}
+			h.decode(t, h.sessionRequest(t, http.MethodGet, "/v1/me", officer), &body)
+			if len(body.Guilds) != 1 {
+				t.Fatalf("guilds = %+v", body.Guilds)
+			}
+			plan := body.Guilds[0].Plan
+			if !tc.wantPlan {
+				if plan != nil {
+					t.Fatalf("want no plan, got %+v", plan)
+				}
+				return
+			}
+			if plan == nil || plan.Scope != tc.wantScope {
+				t.Fatalf("plan = %+v, want scope %q", plan, tc.wantScope)
+			}
+			if tc.wantScope == "officer_tools" && (plan.BilledBy != "" || plan.CurrentPeriodEnd == nil) {
+				t.Fatalf("scoped grant: billed_by %q, period end %v", plan.BilledBy, plan.CurrentPeriodEnd)
+			}
+		})
+	}
+}
+
 // TestMeWorksWithNoEntitlementsStoreConfigured covers the nil-Entitlements
 // success path: a harness that never sets Service.Entitlements (mirrors
 // the doc comment on Service.Entitlements and reports.Service.Guilds's
