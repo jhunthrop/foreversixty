@@ -15,6 +15,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
@@ -27,23 +28,15 @@ var consumableOrder = map[string]int{"short": 0, "unknown": 1, "stocked": 2}
 func (s *Store) reportConsumables(ctx context.Context, vc raidViewContext, reportID string) (ReportConsumablesView, error) {
 	out := ReportConsumablesView{Rows: []ConsumableRow{}}
 	inLog, err := s.reportPlayerKeys(ctx, reportID)
-	if err != nil {
+	if err != nil || len(inLog) == 0 {
 		return out, err
 	}
-	g, err := s.getGuild(ctx, vc.guildID)
-	if err != nil {
-		return out, err
+	keys := make([]string, 0, len(inLog))
+	for k := range inLog {
+		keys = append(keys, k)
 	}
-	roster, err := s.HomeRoster(ctx, vc.guildID, g, 0, false, false)
-	if err != nil {
+	if out.Rows, err = s.consumableRows(ctx, vc, keys); err != nil {
 		return out, err
-	}
-	for _, row := range roster {
-		if !row.Verified || !inLog[row.CharacterKey] {
-			continue
-		}
-		out.Rows = append(out.Rows, ConsumableRow{CharacterKey: row.CharacterKey, Name: row.Name, Class: row.className,
-			Before: consumablesState(row.Consent, row.bags, row.hasBagsSection), own: vc.ownsKey(row.CharacterKey)})
 	}
 	sort.SliceStable(out.Rows, func(i, j int) bool {
 		a, b := out.Rows[i], out.Rows[j]
@@ -55,6 +48,58 @@ func (s *Store) reportConsumables(ctx context.Context, vc raidViewContext, repor
 	return out, nil
 }
 
+// consumableRows reads the bags state of the guild's verified roster characters among keys in
+// one query, with the roster's consent rule: the class and the export are read only for a
+// character whose account shares its gear, the class from its latest evidence fight, else from
+// the export.
+func (s *Store) consumableRows(ctx context.Context, vc raidViewContext, keys []string) ([]ConsumableRow, error) {
+	rows, err := s.Pool.Query(ctx, `
+		select gc.character_key, ae.name, gm.consent,
+		       case when gm.consent in ('gear', 'gear_bags') then fm.class end,
+		       case when gm.consent in ('gear', 'gear_bags') then ae.export end
+		from guild_characters gc
+		join addon_exports ae on ae.character_key = gc.character_key
+		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
+		left join lateral (
+		  select m.class from fight_metrics m join reports r on r.id = m.report_id
+		  where m.player_key = gc.character_key and `+presence.EvidenceReport("r")+`
+		  order by m.fought_at desc limit 1
+		) fm on true
+		where gc.guild_id = $1 and gc.verified_at is not null and gc.character_key = any($2)`, vc.guildID, keys)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: report consumables: %w", err)
+	}
+	defer rows.Close()
+	out := []ConsumableRow{}
+	for rows.Next() {
+		var c ConsumableRow
+		var consent string
+		var class, export *string
+		if err := rows.Scan(&c.CharacterKey, &c.Name, &consent, &class, &export); err != nil {
+			return nil, fmt.Errorf("guilds: report consumables: %w", err)
+		}
+		var bags []int
+		hasBags := false
+		if class != nil {
+			c.Class = *class
+		}
+		if export != nil {
+			if decoded, ok := fs1.Decode(*export); ok {
+				bags, hasBags = decoded.Bags, hasBagsSection(*export)
+				if c.Class == "" {
+					c.Class = decoded.ClassSlug
+				}
+			}
+		}
+		c.Before = consumablesState(consent, bags, hasBags)
+		c.own = vc.ownsKey(c.CharacterKey)
+		out = append(out, c)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("guilds: report consumables: %w", err)
+	}
+	return out, nil
+}
 func (s *Store) reportPlayerKeys(ctx context.Context, reportID string) (map[string]bool, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select distinct m.player_key from fight_metrics m join reports r on r.id = m.report_id
@@ -87,24 +132,39 @@ func (s *Store) reportLoot(ctx context.Context, vc raidViewContext, raidID int64
 		return nil, fmt.Errorf("guilds: report loot: %w", err)
 	}
 	defer rows.Close()
-	bosses := []ReportLootBoss{}
+	type award struct {
+		encounterID int64
+		a           ReportLootAward
+		by          *int64
+	}
+	var read []award
+	var awarders []int64
 	for rows.Next() {
-		var encounterID int64
-		var a ReportLootAward
+		var w award
 		var at time.Time
-		var by *int64
-		if err := rows.Scan(&encounterID, &a.ItemID, &a.CharacterKey, &a.Name, &a.Class, &at, &by); err != nil {
+		if err := rows.Scan(&w.encounterID, &w.a.ItemID, &w.a.CharacterKey, &w.a.Name, &w.a.Class, &at, &w.by); err != nil {
 			return nil, fmt.Errorf("guilds: report loot: %w", err)
 		}
-		a.At = at.UTC().Format(time.RFC3339)
-		a.ItemName, a.Quality = lootItemFacts(a.ItemID)
-		if by != nil && s.Accounts != nil {
-			a.ByName = s.awarderName(ctx, vc.guildID, *by)
+		w.a.At = at.UTC().Format(time.RFC3339)
+		w.a.ItemName, w.a.Quality = lootItemFacts(w.a.ItemID)
+		if w.by != nil {
+			awarders = append(awarders, *w.by)
 		}
-		bosses = addLootAward(bosses, encounterID, a)
+		read = append(read, w)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: report loot: %w", err)
+	}
+	names, err := s.awarderNames(ctx, vc.guildID, awarders)
+	if err != nil {
+		return nil, err
+	}
+	bosses := []ReportLootBoss{}
+	for _, w := range read {
+		if w.by != nil {
+			w.a.ByName = names.of(*w.by)
+		}
+		bosses = addLootAward(bosses, w.encounterID, w.a)
 	}
 	for _, b := range bosses {
 		sort.SliceStable(b.Awards, func(i, j int) bool {
