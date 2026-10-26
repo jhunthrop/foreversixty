@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
@@ -51,4 +52,12 @@ func newJobDeliverer(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *n
 		return nil
 	}
 	return service.Deliverer()
+}
+
+// newJobGuilds is the guilds service a job tells of a completed report
+// (reports.Completed), on the job's own pool. It carries no Discord
+// poster yet: the job's report_ready post arrives with Lane G2's later
+// tasks.
+func newJobGuilds(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *guilds.Service {
+	return &guilds.Service{Store: &guilds.Store{Pool: pool}, PublicBaseURL: cfg.PublicBaseURL, Log: log}
 }

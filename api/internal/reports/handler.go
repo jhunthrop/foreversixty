@@ -81,7 +81,11 @@ type Service struct {
 	// APIBaseURL is this service, which serves a private report's files
 	// through signed redirects.
 	APIBaseURL string
-	Log        *slog.Logger
+	// Completed is told when a patch sets the guild of a complete
+	// report, the late attribution a raid match waits on. Nil tells
+	// nobody.
+	Completed Completed
+	Log       *slog.Logger
 }
 
 // Mount registers the report routes that are not ingest.
@@ -508,6 +512,9 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "patch", err, "could not change that report just now")
 		return
+	}
+	if p.GuildID != nil && updated.Status == StatusComplete {
+		callCompleted(context.WithoutCancel(r.Context()), s.Completed, updated.ID)
 	}
 	view, err := s.view(r.Context(), updated)
 	if err != nil {
