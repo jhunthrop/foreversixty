@@ -129,7 +129,7 @@ describe('RaidForm', () => {
   });
 
   it('says how many more fit and disables the repeat at the cap', () => {
-    const markup = html({ plannedCount: 9 });
+    const markup = html({ plannedCount: 10 });
     expect(text(markup)).toContain('Only 2 more fit: a guild plans at most 12 raids ahead.');
     expect(tag(markup, 'raid-form-repeat')).toMatch(/ disabled/);
     expect(html({ plannedCount: 8 })).not.toContain('raid-form-repeat-helper');

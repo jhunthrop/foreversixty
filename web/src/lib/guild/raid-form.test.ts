@@ -185,9 +185,14 @@ describe('validateRaidForm', () => {
 });
 
 describe('the repeat helper', () => {
-  it('says how many more fit only when fewer than four slots are left', () => {
+  it('counts the slots left, and speaks only when fewer than four are', () => {
     expect(repeatHelper(8)).toBeNull();
-    expect(repeatHelper(9)).toBe('Only 2 more fit: a guild plans at most 12 raids ahead.');
+    expect(repeatHelper(10)).toBe('Only 2 more fit: a guild plans at most 12 raids ahead.');
+    expect(repeatHelper(11)).toBe('Only 1 more fit: a guild plans at most 12 raids ahead.');
+    expect(repeatHelper(RAID_CAP)).toBeNull();
+  });
+
+  it('allows a repeat only when all four raids fit', () => {
     expect(canRepeat(8)).toBe(true);
     expect(canRepeat(9)).toBe(false);
   });
@@ -206,7 +211,9 @@ describe('forYou', () => {
 
 describe('raidPayload', () => {
   it('converts the guild wall clock to UTC and repeats three weeks on create', () => {
-    expect(raidPayload(values({ title: '  Ony  ', repeat: true, postToDiscord: true }), 'create')).toEqual({
+    expect(
+      raidPayload(values({ title: '  Ony  ', repeat: true, postToDiscord: true }), 'create', true),
+    ).toEqual({
       zone: 'onyxias-lair',
       title: 'Ony',
       starts_at: '2026-12-04T02:00:00.000Z',
@@ -219,7 +226,11 @@ describe('raidPayload', () => {
   });
 
   it('carries no repeat on edit', () => {
-    expect(raidPayload(values({ repeat: true }), 'edit')).not.toHaveProperty('repeat_weeks');
+    expect(raidPayload(values({ repeat: true }), 'edit', true)).not.toHaveProperty('repeat_weeks');
+  });
+
+  it('never sends a remembered Discord flag the form does not draw', () => {
+    expect(raidPayload(values({ postToDiscord: true }), 'create', false).post_to_discord).toBe(false);
   });
 });
 

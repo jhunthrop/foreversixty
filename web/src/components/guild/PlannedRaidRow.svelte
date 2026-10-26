@@ -78,7 +78,9 @@
         >{/if}
     </span>
     <span class="min-w-0">
-      <span class="text-text block font-mono text-[14px] tabular-nums">{view.time}</span>
+      <span class="sr-only">{`${view.fullDate}, `}</span><span
+        class="text-text block font-mono text-[14px] tabular-nums">{view.time}</span
+      >
       {#if view.guildTime !== null}<span class="text-muted block text-[12px]">{view.guildTime}</span>{/if}
       <span class="block font-mono text-[12px] tabular-nums {countdownTone}">{view.countdown}</span>
     </span>
@@ -102,7 +104,9 @@
         <span class="flex shrink-0 items-center gap-1.5">{@render chips('phone')}</span>
       </span>
       <span class="text-[12px]">
-        <span class="text-text font-mono tabular-nums">{view.time}</span>
+        <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text font-mono tabular-nums"
+          >{view.time}</span
+        >
         {#if view.guildTime !== null}<span class="text-muted"> · {view.guildTime}</span>{/if}
         <span class="font-mono tabular-nums {countdownTone}"> · {view.countdown}</span>
       </span>

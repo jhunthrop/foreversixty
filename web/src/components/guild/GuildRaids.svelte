@@ -8,15 +8,19 @@
      `Plan a raid` (disabled with the gate sentence in officer-read-only, and with the cap line at
      12) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
+  import { tick } from 'svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
-  import { fetchGuildProgression, type GuildRaidRow } from '../../lib/guild/api';
+  import {
+    fetchGuildProgression,
+    type GuildRaidRow,
+    type GuildRaidView,
+    type GuildZoneView,
+  } from '../../lib/guild/api';
   import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import EmptyState from '../ui/EmptyState.svelte';
   import FactLine from './FactLine.svelte';
-  import { tick } from 'svelte';
-  import type { GuildRaidView, GuildZoneView } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import {
     RAID_CAP,

@@ -79,6 +79,8 @@
   let values = $state<RaidFormValues>(initialValues());
   let errors = $state<RaidFormErrors>({});
   let busy = $state(false);
+  /** The API said the guild's officer tools ended: the form stays to show why, but cannot resend. */
+  let planEnded = $state(false);
   let zoneSelect = $state<HTMLSelectElement | null>(null);
 
   const id = (field: string): string => `raid-form-${mode}-${field}`;
@@ -100,7 +102,8 @@
 
   function set<K extends keyof RaidFormValues>(key: K, value: RaidFormValues[K]): void {
     values = { ...values, [key]: value };
-    if (key === 'zone' || key === 'date' || key === 'time') errors = { ...errors, [key]: undefined };
+    const cleared = key === 'zone' || key === 'date' || key === 'time' ? { [key]: undefined } : {};
+    errors = { ...errors, ...cleared, form: planEnded ? errors.form : undefined };
   }
 
   function focusFirstError(found: RaidFormErrors): void {
@@ -110,7 +113,7 @@
 
   async function submit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
-    if (busy) return;
+    if (busy || planEnded) return;
     const found = validateRaidForm(values, { now: clock(), plannedCount, mode, keepStartsAt });
     errors = found;
     if (Object.keys(found).length > 0) {
@@ -119,8 +122,11 @@
     }
     busy = true;
     try {
-      const result = await onSubmit(raidPayload(values, mode));
-      if (!result.ok) errors = { [result.field ?? 'form']: result.message };
+      const result = await onSubmit(raidPayload(values, mode, discordConnected));
+      if (!result.ok) {
+        errors = { [result.field ?? 'form']: result.message };
+        planEnded = result.code === 'guild_plan_required';
+      }
     } catch {
       errors = { form: raidCopy.form.errors.failed };
     } finally {
@@ -327,7 +333,7 @@
       <button
         type="submit"
         class="{PRIMARY_BUTTON_FIXED} focus-visible:outline-gold px-4 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#cfa64a]"
-        disabled={busy}
+        disabled={busy || planEnded}
         aria-describedby={errors.form !== undefined ? errorId('form') : undefined}
         data-testid="raid-form-submit">{submitLabel}</button
       >
