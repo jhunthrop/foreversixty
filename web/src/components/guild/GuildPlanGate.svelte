@@ -13,13 +13,20 @@
     tab,
     settingsHref,
     sentence = guildGateCopy.sentence,
-  }: { tab: 'loot' | 'readiness' | 'raids' | 'discord'; settingsHref: string; sentence?: string } = $props();
+    withId = true,
+  }: {
+    tab: 'loot' | 'readiness' | 'raids' | 'discord';
+    settingsHref: string;
+    sentence?: string;
+    /** False for a second copy of the sentence on one page (the id is the first copy's). */
+    withId?: boolean;
+  } = $props();
 </script>
 
 <p
-  id={`officer-tools-gate-${tab}`}
+  id={withId ? `officer-tools-gate-${tab}` : undefined}
   class="text-text text-[13px] leading-5"
-  data-testid={`guild-${tab}-plan-gate`}
+  data-testid={withId ? `guild-${tab}-plan-gate` : `guild-${tab}-plan-gate-repeat`}
 >
   {sentence}<a
     class="text-gold hover:text-gold-hover active:text-gold-hover focus-visible:outline-gold relative whitespace-nowrap underline after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 md:after:hidden"

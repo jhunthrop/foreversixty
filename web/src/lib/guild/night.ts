@@ -9,8 +9,10 @@ import {
   REPORT_ROWS_BEFORE_SHOW_ALL,
   SECONDS_PER_MINUTE,
   attendanceCopy,
+  cameAsOutcome,
   cameRatio,
   deaths,
+  lateOutcome,
   durationLabel,
   kills,
   killAfter,
@@ -119,6 +121,18 @@ function roleLabelOf(row: RaidAttendanceRow): string | null {
 /** Minutes after the first pull a late row was first seen; `null` when the log gave no offset. */
 function lateMinutes(row: RaidAttendanceRow): number | null {
   return row.first_seen_offset_s === null ? null : Math.round(row.first_seen_offset_s / SECONDS_PER_MINUTE);
+}
+
+/** The attendance row's outcome cell (spec 3.5): `Not in the log`, `Came as Grimtotem`,
+ *  `Late, first seen 22 min after the first pull`, `Present`; nothing for a Bench or Out character
+ *  who stayed away. */
+export function outcomeText(row: RaidAttendanceRow): string {
+  if (row.came_as !== null) return cameAsOutcome(row.came_as);
+  if (row.outcome === 'no_show') return attendanceCopy.attendance.notInLog;
+  if (row.outcome === 'absent') return '';
+  const minutes = lateMinutes(row);
+  if (row.outcome === 'late' && minutes !== null) return lateOutcome(minutes);
+  return attendanceCopy.attendance.present;
 }
 
 /** The outcome sentence of `Your night` (spec 6.1). */

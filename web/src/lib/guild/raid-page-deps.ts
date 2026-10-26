@@ -4,7 +4,7 @@
 import { fetchMeFresh } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import { fetchGuild } from '../rankings/api';
-import { clearMatch, fetchMatchCandidates, setMatch } from './attendance-api';
+import { clearMatch, fetchMatchCandidates, postReport, setExcused, setMatch } from './attendance-api';
 import { fetchGuildHome, fetchGuildRaids } from './api';
 import { browserStorage } from './reserve-keys';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
@@ -23,6 +23,8 @@ export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
     loadMatchCandidates: (guildId, raidId) => fetchMatchCandidates(guildId, raidId),
     putMatch: (guildId, raidId, reportId) => setMatch(guildId, raidId, reportId),
     deleteMatch: (guildId, raidId) => clearMatch(guildId, raidId),
+    putExcused: (guildId, raidId, key, excused) => setExcused(guildId, raidId, key, excused),
+    postReport: (guildId, raidId) => postReport(guildId, raidId),
     loadZones: (guildId) => fetchGuildRaids(guildId).then((page) => page.zones ?? []),
     isVisible: () => typeof document === 'undefined' || document.visibilityState === 'visible',
     now: () => new Date(),
