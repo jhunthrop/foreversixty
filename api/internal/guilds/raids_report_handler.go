@@ -42,8 +42,11 @@ func (s *Store) ClaimReportPost(ctx context.Context, guildID, raidID int64) (tim
 }
 
 // ReleaseReportPost clears the claim of a post that did not happen.
-func (s *Store) ReleaseReportPost(ctx context.Context, raidID int64) error {
-	if _, err := s.Pool.Exec(ctx, `update guild_raids set report_posted_at = null where id = $1`, raidID); err != nil {
+// It only clears the claim it was given: this guild's raid, still stamped with claimedAt.
+func (s *Store) ReleaseReportPost(ctx context.Context, guildID, raidID int64, claimedAt time.Time) error {
+	if _, err := s.Pool.Exec(ctx,
+		`update guild_raids set report_posted_at = null where id = $1 and guild_id = $2 and report_posted_at = $3`,
+		raidID, guildID, claimedAt); err != nil {
 		return fmt.Errorf("guilds: release report post: %w", err)
 	}
 	return nil
@@ -69,7 +72,7 @@ func (s *Service) postReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := s.sendReport(r, guildID, raid); err != nil {
-		s.releaseReportClaim(r.Context(), raid.ID)
+		s.releaseReportClaim(r.Context(), guildID, raid.ID, at)
 		if errors.Is(err, errReportNotPosted) {
 			httpx.WriteError(w, r, http.StatusBadGateway, "post_failed", "could not post to Discord just now", nil)
 			return
@@ -84,11 +87,11 @@ func (s *Service) postReport(w http.ResponseWriter, r *http.Request) {
 // errReportNotPosted is a post that reached no channel.
 var errReportNotPosted = errors.New("guilds: the report did not reach the channel")
 
-func (s *Service) releaseReportClaim(ctx context.Context, raidID int64) {
+func (s *Service) releaseReportClaim(ctx context.Context, guildID, raidID int64, claimedAt time.Time) {
 	ctx, cancel := s.postContext(ctx)
 	defer cancel()
-	if err := s.Store.ReleaseReportPost(ctx, raidID); err != nil {
-		s.logger().Error("guilds", "op", "raid_report_release", "raid_id", raidID, "err", err)
+	if err := s.Store.ReleaseReportPost(ctx, guildID, raidID, claimedAt); err != nil {
+		s.logger().Error("guilds", "op", "raid_report_release", "guild_id", guildID, "raid_id", raidID, "err", err)
 	}
 }
 
@@ -112,6 +115,10 @@ func (s *Service) sendReport(r *http.Request, guildID int64, raid Raid) error {
 		return fmt.Errorf("guilds: post report: %w", err)
 	}
 	if !posted {
+		if ctx.Err() != nil {
+			// The budget ended; Discord may have taken the post, so a retry can duplicate it.
+			s.logger().Warn("guilds", "op", "report_post_timeout", "guild_id", guildID, "raid_id", raid.ID)
+		}
 		return errReportNotPosted
 	}
 	return nil
