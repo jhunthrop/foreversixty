@@ -2,7 +2,7 @@
 // Every string of design/specs/2026-10-26-guild-raids.md 6.1, in one module: constants where the
 // words are fixed, functions where the data fills them. No number is typed into prose; raid-copy.test.ts
 // reads the spec table itself, so a drift in either file fails.
-import type { GuildRaidRole, GuildRaidSignup, GuildRaidView, GuildSignupState } from './api';
+import type { GuildRaidRole, GuildRaidSignup, GuildRaidView, GuildSignupState, GuildViewerRole } from './api';
 import { clockText, dateLabel, offsetsDiffer } from './raid-time';
 
 const DEFAULT_LOCALE = 'en-US';
@@ -259,18 +259,43 @@ export interface BandLineArgs {
   size: number | null;
 }
 
-function bandClause({ state, role, characterName }: BandLineArgs): string {
-  if (state === null) return 'you have not signed up';
-  if (state === 'bench') return 'you are on the Bench';
-  if (state === 'out') return 'you are Out';
+/** The clause around its state word: `you are ` / `In` / ` as DPS`; no word while unsigned. */
+function bandClause({ state, role, characterName }: BandLineArgs): BandLineParts {
+  if (state === null) return { head: 'you have not signed up', word: '', tail: '' };
+  const word = SIGNED_UP_STATE_WORDS[state];
+  if (state === 'bench') return { head: 'you are on the ', word, tail: '' };
+  if (state === 'out') return { head: 'you are ', word, tail: '' };
   const on = characterName === undefined ? '' : ` on ${characterName}`;
   const as = role === undefined ? '' : ` as ${raidCopy.roleLabels[role]}`;
-  return `you are ${SIGNED_UP_STATE_WORDS[state]}${on}${as}`;
+  return { head: 'you are ', word, tail: `${on}${as}` };
+}
+
+/** The band sentence in three parts, so the state word can read 600 `--strong` (spec 3.4). */
+export interface BandLineParts {
+  head: string;
+  word: string;
+  tail: string;
+}
+
+export function bandLineParts(args: BandLineArgs): BandLineParts {
+  const clause = bandClause(args);
+  return {
+    head: `${args.when}, ${clause.head}`,
+    word: clause.word,
+    tail: `${clause.tail}, ${countLine(args.n, args.size)}.`,
+  };
 }
 
 /** The guild band's raid sentence: `Tonight 8 pm, you are In as DPS, 23 of 40 signed up.` */
 export function bandLine(args: BandLineArgs): string {
-  return `${args.when}, ${bandClause(args)}, ${countLine(args.n, args.size)}.`;
+  const { head, word, tail } = bandLineParts(args);
+  return `${head}${word}${tail}`;
+}
+
+/** Who sees the band line (spec 3.4, R1): verified members and officers, never a visitor or a
+ *  member still waiting for approval. */
+export function showsBandLine(verified: boolean, role: GuildViewerRole): boolean {
+  return verified && role !== 'public';
 }
 
 function signupsIn(signups: readonly GuildRaidSignup[], state: GuildSignupState, role?: GuildRaidRole) {

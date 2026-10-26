@@ -15,6 +15,9 @@ const STARTS = '2026-12-11T02:00:00Z';
 const KEY = 'us/normal/kraggor';
 const ALT = 'us/normal/sunderfel';
 
+/** A `<button>` carrying the `disabled` attribute (not the `disabled:` class variant). */
+const DISABLED_BUTTON = /<button[^>]*\sdisabled(?:=""|\s|>)/g;
+
 type ViewerChar = GuildRaidView['viewer']['characters'][number];
 
 function raid(overrides: Partial<NextRaidView> = {}): NextRaidView {
@@ -142,9 +145,22 @@ describe('RaidBandLine controls', () => {
     expect(text(body, 'guild-raid-line-sentence')).toContain('you have not signed up');
   });
 
-  it('reserves the 20 px status slot', () => {
-    const body = html();
-    expect(body).toMatch(/class="[^"]*min-h-5[^"]*"[^>]*data-testid="guild-raid-line-status"/);
+  it('draws no status line at rest, so the block stays within the 44 px cap', () => {
+    expect(html()).not.toContain('guild-raid-line-status');
+  });
+
+  it('disables the segments on a locked raid and names the reason', () => {
+    const body = html({ nextRaid: raid({ status: 'locked' }) });
+    expect(text(body, 'guild-raid-line-locked')).toBe(raidCopy.raidStates.locked);
+    expect(body).toMatch(/role="radiogroup"[^>]*aria-describedby="guild-raid-line-locked-7"/);
+    expect(body).toMatch(/id="guild-raid-line-locked-7"/);
+    expect([...body.matchAll(DISABLED_BUTTON)]).toHaveLength(4);
+  });
+
+  it('keeps the segments live on a planned raid', () => {
+    const body = html({ nextRaid: raid({ status: 'planned' }) });
+    expect(body).not.toContain('guild-raid-line-locked');
+    expect(body).not.toMatch(DISABLED_BUTTON);
   });
 });
 
@@ -177,7 +193,11 @@ function view(characters: ViewerChar[]): GuildRaidView {
     guild_timezone: TZ,
     notes_html: '',
     counts: { in: 21, late: 3, bench: 1, out: 0, tanks: 4, healers: 7, dps: 13 },
-    signups: [],
+    signups: characters.flatMap((c) =>
+      c.state === null
+        ? []
+        : [{ ...c, state: c.state, note: c.character_key === KEY ? 'Flasks ready' : '', own: true }],
+    ),
     not_signed: [],
     viewer: { characters },
     discord: { connected: false, post_default: false },
@@ -200,7 +220,11 @@ describe('nextRaidAfter', () => {
   it('takes the counts and the current character sign-up from the answer', () => {
     const next = nextRaidAfter(raid(), view([viewerChar(KEY, 'in'), viewerChar(ALT, 'bench')]), KEY);
     expect(next.counts).toEqual({ in: 21, late: 3, tanks: 4, healers: 7, dps: 13 });
-    expect(next.own).toEqual({ character_key: KEY, state: 'in', role: 'tank' });
+    expect(next.own).toEqual({ character_key: KEY, state: 'in', role: 'tank', note: 'Flasks ready' });
+  });
+
+  it('takes the status from the answer', () => {
+    expect(nextRaidAfter(raid(), { ...view([]), status: 'locked' }, KEY).status).toBe('locked');
   });
 
   it('falls back to another own sign-up, then to none', () => {
@@ -208,6 +232,7 @@ describe('nextRaidAfter', () => {
       character_key: ALT,
       state: 'bench',
       role: 'tank',
+      note: '',
     });
     expect(nextRaidAfter(raid(), view([viewerChar(KEY, null)]), KEY).own).toBeNull();
   });

@@ -2,7 +2,8 @@
 <!-- The raid line in the guild band (raids spec 3.4, 6.1, R8): the sentence, the current
      character's segments and the `{Zone} →` link, between the standing line and the needs line.
      From md one 44 px row; on phone the sentence and the link share the first row and the
-     segments take the second (at most 112 px). A press rewrites the sentence in place. -->
+     segments take the second (at most 112 px). A press rewrites the sentence in place; a refused
+     press shows its line under the row for its moment. -->
 <script module lang="ts">
   import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
@@ -13,19 +14,26 @@
     const signed = view.viewer.characters.filter((c) => c.state !== null);
     const own = signed.find((c) => c.character_key === currentKey) ?? signed[0];
     const { tanks, healers, dps } = view.counts;
+    const note = (key: string): string => view.signups.find((s) => s.character_key === key)?.note ?? '';
     return {
       ...prev,
       starts_at: view.starts_at,
+      status: view.status === 'locked' ? 'locked' : 'planned',
       size: view.size,
       counts: { in: view.counts.in, late: view.counts.late, tanks, healers, dps },
       own:
         own === undefined || own.state === null
           ? null
-          : { character_key: own.character_key, state: own.state, role: own.role },
+          : {
+              character_key: own.character_key,
+              state: own.state,
+              role: own.role,
+              note: note(own.character_key),
+            },
     };
   }
 
-  /** The status slot's line after a refused press (spec 4 "Races", 6.1 strip status). */
+  /** The status line after a refused press (spec 4 "Races", 6.1 strip status). */
   export function pressFailedLine(thrown: unknown): string {
     if (thrown instanceof GuildApiError && thrown.code === 'raid_locked') return raidCopy.races.locked;
     if (thrown instanceof GuildApiError && thrown.code === 'raid_cancelled') return raidCopy.races.cancelled;
@@ -37,8 +45,8 @@
   import { tick } from 'svelte';
   import { guildRaidHref } from '../../lib/characters';
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
-  import { bandLine, whenPhrase } from '../../lib/guild/raid-copy';
-  import { fetchGuildRaid, putSignup } from '../../lib/guild/raids-api';
+  import { bandLineParts, whenPhrase } from '../../lib/guild/raid-copy';
+  import { putSignup } from '../../lib/guild/raids-api';
   import SignupSegments from './SignupSegments.svelte';
 
   interface OwnCharacter {
@@ -81,6 +89,8 @@
   let statusLine = $state<HTMLParagraphElement | null>(null);
 
   const own = $derived(nextRaid?.own ?? null);
+  const locked = $derived(nextRaid?.status === 'locked');
+  const lockedId = $derived(nextRaid === null ? '' : `guild-raid-line-locked-${nextRaid.id}`);
   const currentState = $derived(
     pending ?? (own !== null && own.character_key === currentKey ? own.state : null),
   );
@@ -94,12 +104,13 @@
   );
   const currentName = $derived(ownCharacters.find((c) => c.character_key === currentKey)?.name ?? '');
 
-  const sentence = $derived.by(() => {
-    if (nextRaid === null) return '';
+  /** The sentence around its state word, which reads 600 `--strong` (spec 3.4). */
+  const parts = $derived.by(() => {
+    if (nextRaid === null) return { head: '', word: '', tail: '' };
     const startsAt = new Date(nextRaid.starts_at);
     const when = whenPhrase(startsAt, now, locale, nextRaid.guild_timezone ?? viewerTimezone, viewerTimezone);
     const named = ownCharacters.length >= 2 && shown !== null;
-    return bandLine({
+    return bandLineParts({
       when,
       state: shown?.state ?? null,
       role: shown?.role,
@@ -108,32 +119,19 @@
       size: nextRaid.size,
     });
   });
-  /** The sentence around its state word, which reads 600 `--strong` (spec 3.4). */
-  const parts = $derived.by(() => {
-    if (shown === null) return { head: sentence, word: '', tail: '' };
-    const word = raidCopy.segments[shown.state];
-    const at = sentence.indexOf(` ${word}`, sentence.indexOf('you ')) + 1;
-    return { head: sentence.slice(0, at), word, tail: sentence.slice(at + word.length) };
-  });
-
-  /** The PUT replaces the note, so a signed character's note is read from the raid first. */
-  async function savedNote(raidId: number, key: string): Promise<string> {
-    if (own === null) return '';
-    const view = await fetchGuildRaid(guildId, raidId);
-    return view.signups.find((s) => s.character_key === key)?.note ?? '';
-  }
 
   async function press(state: GuildSignupState): Promise<void> {
-    if (nextRaid === null || currentKey === null || busy) return;
+    if (nextRaid === null || currentKey === null || busy || locked) return;
     const prev = nextRaid;
     const key = currentKey;
-    const role = own?.character_key === key ? own.role : defaultRole;
+    const mine = own?.character_key === key ? own : null;
     pending = state;
     busy = true;
     status = '';
     try {
-      const note = await savedNote(prev.id, key);
-      const { raid } = await putSignup(guildId, prev.id, key, { state, role, note });
+      // The PUT replaces the note, so the saved one travels with the press.
+      const body = { state, role: mine?.role ?? defaultRole, note: mine?.note ?? '' };
+      const { raid } = await putSignup(guildId, prev.id, key, body);
       onChange(nextRaidAfter(prev, raid, key));
     } catch (thrown) {
       status = pressFailedLine(thrown);
@@ -172,6 +170,8 @@
             value={currentState}
             name={currentName}
             size="band"
+            disabled={locked}
+            describedBy={locked ? lockedId : undefined}
             onChange={(state) => void press(state)}
             testid="guild-raid-line-segments"
           />
@@ -183,14 +183,21 @@
         data-testid="guild-raid-line-link">{nextRaid.zone_name} →</a
       >
     </div>
-    <p
-      bind:this={statusLine}
-      class="text-wipe min-h-5 text-[13px]"
-      role="alert"
-      tabindex="-1"
-      data-testid="guild-raid-line-status"
-    >
-      {status}
-    </p>
+    {#if locked}
+      <!-- The disabled segments' reason, read with them; sighted viewers see the inert group and
+           the raid page states it in full. Kept off screen so the resting block stays in its cap. -->
+      <p id={lockedId} class="sr-only" data-testid="guild-raid-line-locked">{raidCopy.raidStates.locked}</p>
+    {/if}
+    {#if status !== ''}
+      <p
+        bind:this={statusLine}
+        class="text-wipe text-[13px]"
+        role="alert"
+        tabindex="-1"
+        data-testid="guild-raid-line-status"
+      >
+        {status}
+      </p>
+    {/if}
   </div>
 {/if}

@@ -4,6 +4,7 @@ import { specCell, specString } from '../../test-support/spec-table';
 import type { GuildRaidView } from './api';
 import {
   bandLine,
+  bandLineParts,
   copyList,
   countLine,
   countRatio,
@@ -13,6 +14,7 @@ import {
   nextRaidDeadline,
   raidCopy,
   roleBreakdown,
+  showsBandLine,
   showAll,
   whenPhrase,
 } from './raid-copy';
@@ -281,6 +283,44 @@ describe('bandLine', () => {
       'Tonight 8 pm, you are In on Lightbrand as DPS, 23 of 40 signed up.',
     );
     expect(specCell(SPEC, HEADING, 'Band line')[6]).toBe('you are In on {Name} as {Role}');
+  });
+});
+
+describe('bandLineParts', () => {
+  const base = { when: 'Tonight 8 pm', n: 23, size: 40 as number | null };
+
+  it('splits the sentence around its state word', () => {
+    expect(bandLineParts({ ...base, state: 'in', role: 'dps' })).toEqual({
+      head: 'Tonight 8 pm, you are ',
+      word: 'In',
+      tail: ' as DPS, 23 of 40 signed up.',
+    });
+    expect(bandLineParts({ ...base, state: 'bench', role: 'dps' })).toEqual({
+      head: 'Tonight 8 pm, you are on the ',
+      word: 'Bench',
+      tail: ', 23 of 40 signed up.',
+    });
+    expect(bandLineParts({ ...base, state: 'late', role: 'tank', characterName: 'Late' })).toEqual({
+      head: 'Tonight 8 pm, you are ',
+      word: 'Late',
+      tail: ' on Late as Tank, 23 of 40 signed up.',
+    });
+  });
+
+  it('has no state word while unsigned', () => {
+    const parts = bandLineParts({ ...base, state: null });
+    expect(parts.word).toBe('');
+    expect(parts.head + parts.tail).toBe(bandLine({ ...base, state: null }));
+  });
+});
+
+describe('showsBandLine', () => {
+  it('is for verified members and officers only (spec 3.4, R1)', () => {
+    expect(showsBandLine(true, 'member')).toBe(true);
+    expect(showsBandLine(true, 'officer')).toBe(true);
+    expect(showsBandLine(false, 'member')).toBe(false);
+    expect(showsBandLine(false, 'officer')).toBe(false);
+    expect(showsBandLine(true, 'public')).toBe(false);
   });
 });
 
