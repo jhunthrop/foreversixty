@@ -2,7 +2,7 @@ package guilds
 
 import (
 	"bytes"
-	"log/slog"
+	"fmt"
 	"strings"
 
 	"github.com/microcosm-cc/bluemonday"
@@ -34,15 +34,14 @@ func newNotesPolicy() *bluemonday.Policy {
 
 // RenderNotes turns officer-written raid notes (a markdown subset) into HTML
 // that is safe to show to members. Unsupported constructs are flattened to text
-// or dropped; an empty input renders to an empty string.
-func RenderNotes(markdown string) string {
+// or dropped; an empty input renders to an empty string. The caller logs the error.
+func RenderNotes(markdown string) (string, error) {
 	if markdown == "" {
-		return ""
+		return "", nil
 	}
 	var rendered bytes.Buffer
 	if err := notesMarkdown.Convert([]byte(notesHTMLEscaper.Replace(markdown)), &rendered); err != nil {
-		slog.Error("raid notes markdown conversion failed", "error", err)
-		return ""
+		return "", fmt.Errorf("guilds: render raid notes: %w", err)
 	}
-	return notesPolicy.Sanitize(rendered.String())
+	return notesPolicy.Sanitize(rendered.String()), nil
 }

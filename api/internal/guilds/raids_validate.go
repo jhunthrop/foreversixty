@@ -13,14 +13,18 @@ import (
 
 // Raid form bounds (spec §3.5) and the sign-up note bound (migration 0050).
 const (
-	raidTitleMax       = 80
-	raidNotesMax       = 2000
-	raidDurationMin    = 60
-	raidDurationMax    = 240
-	raidDurationStep   = 30
-	raidRepeatWeeks    = 3 // R7: "Also plan the next 3 weeks"
-	signupNoteMax      = 140
+	raidTitleMax     = 80
+	raidNotesMax     = 2000
+	raidDurationMin  = 60
+	raidDurationMax  = 240
+	raidDurationStep = 30
+	raidRepeatWeeks  = 3 // R7: "Also plan the next 3 weeks"
+	signupNoteMax    = 140
+	// maxRaidAhead is how far ahead a raid may start (and its last repeated week may fall).
+	maxRaidAhead       = 366 * 24 * time.Hour
 	raidStartsAtInPast = "Pick a time after now."
+	raidStartsAtTooFar = "Pick a date within the next year."
+	controlCharMessage = "Remove the control characters."
 )
 
 // raidRequest is the body of POST and PATCH /v1/guilds/{id}/raids[/{raid}]. PATCH ignores
@@ -54,7 +58,10 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	if !ok {
 		fields["zone"] = "Pick a raid."
 	}
-	title := strings.TrimSpace(req.Title)
+	title, titleClean := cleanText(strings.TrimSpace(req.Title))
+	if !titleClean {
+		fields["title"] = controlCharMessage
+	}
 	if title == "" {
 		title = zone.Name
 	}
@@ -67,12 +74,17 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	}
 	if utf8.RuneCountInString(req.Notes) > raidNotesMax {
 		fields["notes"] = "Keep the notes to 2,000 characters."
+	} else if _, notesClean := cleanNotes(req.Notes); !notesClean {
+		fields["notes"] = controlCharMessage
 	}
 	loc, err := loadTimezone(req.Timezone)
 	if err != nil {
 		fields["timezone"] = "Pick a timezone."
 	}
 	startsAt, msg := validateStart(req.StartsAt, now, keepStart)
+	if msg == "" && !repeatWithinReach(startsAt, req.RepeatWeeks, now, keepStart) {
+		msg = raidStartsAtTooFar
+	}
 	if msg != "" {
 		fields["starts_at"] = msg
 	}
@@ -112,7 +124,35 @@ func validateStart(raw string, now time.Time, keepStart *time.Time) (time.Time, 
 	if !t.After(now) {
 		return time.Time{}, raidStartsAtInPast
 	}
+	if t.After(now.Add(maxRaidAhead)) {
+		return time.Time{}, raidStartsAtTooFar
+	}
 	return t, ""
+}
+
+// repeatWithinReach reports whether the last of repeat weekly raids after start is still
+// within maxRaidAhead; an unmoved edit is left alone.
+func repeatWithinReach(start time.Time, repeat int, now time.Time, keepStart *time.Time) bool {
+	if keepStart != nil && start.Equal(*keepStart) {
+		return true
+	}
+	return !start.AddDate(0, 0, 7*repeat).After(now.Add(maxRaidAhead))
+}
+
+// cleanText returns s and whether it holds no control character at all; titles and
+// sign-up notes are one line, and Postgres refuses NUL outright.
+func cleanText(s string) (string, bool) { return s, !hasControl(s, false) }
+
+// cleanNotes is cleanText for the multi-line notes, which may hold newlines and tabs.
+func cleanNotes(s string) (string, bool) { return s, !hasControl(s, true) }
+
+func hasControl(s string, allowLayout bool) bool {
+	for _, r := range s {
+		if r < 0x20 && !(allowLayout && (r == '\n' || r == '\t')) {
+			return true
+		}
+	}
+	return false
 }
 
 // weeklyInputs expands plan into the first raid and plan.repeat weekly ones at the same
@@ -153,6 +193,8 @@ func validateSignup(req signupRequest) (signupRequest, map[string]string) {
 	req.Note = strings.TrimSpace(req.Note)
 	if utf8.RuneCountInString(req.Note) > signupNoteMax {
 		fields["note"] = "Keep the note to 140 characters."
+	} else if _, clean := cleanText(req.Note); !clean {
+		fields["note"] = controlCharMessage
 	}
 	if len(fields) > 0 {
 		return signupRequest{}, fields

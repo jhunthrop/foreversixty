@@ -63,7 +63,10 @@ func TestRenderNotes(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := RenderNotes(tc.input)
+			got, err := RenderNotes(tc.input)
+			if err != nil {
+				t.Fatal(err)
+			}
 			if tc.exact != nil && got != *tc.exact {
 				t.Fatalf("got %q, want %q", got, *tc.exact)
 			}
@@ -86,9 +89,9 @@ func TestRenderNotesTimingBudget(t *testing.T) {
 		t.Skip("timing assertion skipped in short mode")
 	}
 	input := strings.Repeat("**bold** and a [link](https://example.com) - ", 50)[:2000]
-	RenderNotes(input) // warm any lazy state before timing
+	_, _ = RenderNotes(input) // warm any lazy state before timing
 	start := time.Now()
-	RenderNotes(input)
+	_, _ = RenderNotes(input)
 	if elapsed := time.Since(start); elapsed > maxRenderDuration {
 		t.Fatalf("rendering 2000 chars took %v, budget %v", elapsed, maxRenderDuration)
 	}

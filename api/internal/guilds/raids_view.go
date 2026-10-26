@@ -168,17 +168,23 @@ func (s *Store) RaidViews(ctx context.Context, guildID, viewerID int64, raids []
 	}
 	out := make([]RaidView, len(raids))
 	for i, r := range raids {
-		out[i] = buildRaidView(r, byRaid[r.ID], vc)
+		if out[i], err = buildRaidView(r, byRaid[r.ID], vc); err != nil {
+			return nil, err
+		}
 	}
 	return out, nil
 }
 
-func buildRaidView(r Raid, signups []Signup, vc raidViewContext) RaidView {
+func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, error) {
 	zone := zoneOf(r.Zone)
+	notesHTML, err := RenderNotes(r.Notes)
+	if err != nil {
+		return RaidView{}, err
+	}
 	v := RaidView{
 		ID: r.ID, Zone: r.Zone, ZoneName: zone.Name, Title: r.Title, StartsAt: r.StartsAt.UTC(),
 		DurationMinutes: r.DurationMinutes, Status: r.Status, Size: zone.Size, GuildTimezone: vc.timezone,
-		NotesHTML: RenderNotes(r.Notes), Notes: r.Notes, Counts: countSignups(signups),
+		NotesHTML: notesHTML, Notes: r.Notes, Counts: countSignups(signups),
 		Signups: make([]SignupView, 0, len(signups)), NotSigned: []RaidCharacter{},
 		Viewer: RaidViewer{Characters: []ViewerCharacter{}},
 	}
@@ -204,7 +210,7 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) RaidView {
 	sort.SliceStable(v.Viewer.Characters, func(i, j int) bool {
 		return v.Viewer.Characters[i].Name < v.Viewer.Characters[j].Name
 	})
-	return v
+	return v, nil
 }
 
 func viewerCharacter(c raidRosterChar, sg Signup, signed bool) ViewerCharacter {

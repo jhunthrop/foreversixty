@@ -13,7 +13,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 // ErrInvalidConsent is returned for a consent value outside roster,
@@ -222,12 +221,7 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to approve a character", nil)
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "approve", err, "could not approve that character just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "approve", "could not approve that character just now") {
 		return
 	}
 	err = s.Store.ApproveCharacter(r.Context(), guildID, key)
@@ -287,12 +281,7 @@ func (s *Service) removeCharacter(w http.ResponseWriter, r *http.Request) {
 	// Leaving is never frozen by a contested claim - only another
 	// account's officer action against someone else's row is.
 	if !selfOrModerator {
-		if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-			s.fail(w, r, "remove", err, "could not remove that character just now")
-			return
-		} else if frozen {
-			httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-				notify.ClaimContestedMessage, nil)
+		if !s.officerNotFrozen(w, r, guildID, "remove", "could not remove that character just now") {
 			return
 		}
 	}
@@ -424,12 +413,7 @@ func (s *Service) approveAll(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to approve the roster", nil)
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "approve_all", err, "could not approve the roster just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "approve_all", "could not approve the roster just now") {
 		return
 	}
 	keys, err := s.Store.ApproveAll(r.Context(), guildID)

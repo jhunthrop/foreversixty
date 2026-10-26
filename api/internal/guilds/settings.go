@@ -10,7 +10,6 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 // ErrInvalidSettings is returned for a bad default_visibility or
@@ -204,12 +203,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to change its settings", nil)
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "patch_settings", err, "could not change those settings just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "patch_settings", "could not change those settings just now") {
 		return
 	}
 	var in settingsPatchInput

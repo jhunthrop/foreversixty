@@ -19,7 +19,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/imagex"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
@@ -157,12 +156,7 @@ func (s *Service) putCrest(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to change its crest", nil)
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "crest_put", err, "could not save that crest just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "crest_put", "could not save that crest just now") {
 		return
 	}
 	if s.R2 == nil {
@@ -246,12 +240,7 @@ func (s *Service) deleteCrest(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild, or a moderator, to remove its crest", nil)
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "crest_delete", err, "could not remove that crest just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "crest_delete", "could not remove that crest just now") {
 		return
 	}
 	if s.R2 == nil {

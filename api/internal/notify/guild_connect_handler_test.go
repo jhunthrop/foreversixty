@@ -9,6 +9,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
 func TestGuildConnectHidesTheRouteFromNonOfficers(t *testing.T) {
@@ -31,7 +33,7 @@ func TestGuildConnectWithoutThePlanIs403(t *testing.T) {
 	g := newGuildAPI(t, standing)
 	status, raw, _ := g.call("GET", g.route("/connect"), "")
 	if status != http.StatusForbidden || !strings.Contains(raw, `"guild_plan_required"`) ||
-		!strings.Contains(raw, RaidPlanRequiredMessage) {
+		!strings.Contains(raw, refusal.RaidPlanRequired) {
 		t.Fatalf("status %d: %s", status, raw)
 	}
 }
@@ -172,7 +174,7 @@ func TestGuildConnectWithAFrozenClaimIs409(t *testing.T) {
 	g := newGuildAPI(t, standing)
 	status, raw, _ := g.call("GET", g.route("/connect"), "")
 	if status != http.StatusConflict || !strings.Contains(raw, `"claim_contested"`) ||
-		!strings.Contains(raw, ClaimContestedMessage) {
+		!strings.Contains(raw, refusal.ClaimContested) {
 		t.Fatalf("status %d: %s", status, raw)
 	}
 }
