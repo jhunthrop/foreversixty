@@ -18,6 +18,8 @@ export interface ViewerAnswer {
 
 export interface PlannedRowView {
   weekday: string;
+  /** `Thursday 10 December`: the date block is drawn for the eye, so screen readers get this. */
+  fullDate: string;
   day: string;
   month: string;
   title: string;
@@ -76,6 +78,11 @@ export function plannedRowView(
   const status = chipStatus(raid, now);
   return {
     weekday: datePart(startsAt, viewerTz, locale, { weekday: 'short' }),
+    fullDate: [
+      datePart(startsAt, viewerTz, locale, { weekday: 'long' }),
+      datePart(startsAt, viewerTz, locale, { day: 'numeric' }),
+      datePart(startsAt, viewerTz, locale, { month: 'long' }),
+    ].join(' '),
     day: datePart(startsAt, viewerTz, locale, { day: 'numeric' }),
     month: datePart(startsAt, viewerTz, locale, { month: 'short' }),
     title: raid.title,

@@ -167,16 +167,22 @@ export function validateRaidForm(values: RaidFormValues, ctx: ValidateContext): 
   return errors;
 }
 
-/** Whether all four raids of a repeat fit under the cap. */
-export function canRepeat(plannedCount: number): boolean {
-  return plannedCount + REPEAT_TOTAL <= RAID_CAP;
+/** The raids still allowed under the cap. */
+export function slotsLeft(plannedCount: number): number {
+  return Math.max(0, RAID_CAP - plannedCount);
 }
 
-/** `Only 2 more fit: …` when fewer than four slots are left: the repeats that would still fit
- *  after this raid. */
+/** Whether all four raids of a repeat fit under the cap, so the API never refuses one. */
+export function canRepeat(plannedCount: number): boolean {
+  return slotsLeft(plannedCount) >= REPEAT_TOTAL;
+}
+
+/** `Only 2 more fit: …` with fewer than four slots left, n the slots left; none at the cap,
+ *  where the tab's own cap line says it. */
 export function repeatHelper(plannedCount: number): string | null {
-  if (canRepeat(plannedCount)) return null;
-  return raidCopy.form.onlyFit(Math.max(0, RAID_CAP - plannedCount - 1));
+  const left = slotsLeft(plannedCount);
+  if (left === 0 || canRepeat(plannedCount)) return null;
+  return raidCopy.form.onlyFit(left);
 }
 
 /** The line under the zone select; an undated form reads as today on the guild's calendar. */
@@ -186,7 +192,13 @@ export function forYou(values: RaidFormValues, viewerTimezone: string, now: Date
   return forYouLine(date, time, values.timezone, viewerTimezone, locale);
 }
 
-export function raidPayload(values: RaidFormValues, mode: RaidFormMode): RaidInput {
+/** The create or edit body. `discordConnected` gates the Discord flag: a box the form does not
+ *  draw never sends a remembered `true`. */
+export function raidPayload(
+  values: RaidFormValues,
+  mode: RaidFormMode,
+  discordConnected: boolean,
+): RaidInput {
   const body: RaidInput = {
     zone: values.zone,
     title: values.title.trim(),
@@ -194,7 +206,7 @@ export function raidPayload(values: RaidFormValues, mode: RaidFormMode): RaidInp
     duration_minutes: values.duration,
     notes: values.notes,
     timezone: values.timezone,
-    post_to_discord: values.postToDiscord,
+    post_to_discord: values.postToDiscord && discordConnected,
   };
   return mode === 'create' ? { ...body, repeat_weeks: values.repeat ? REPEAT_WEEKS : 0 } : body;
 }

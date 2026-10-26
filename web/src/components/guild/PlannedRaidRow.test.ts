@@ -27,6 +27,12 @@ const desktop = (markup: string): string =>
 const phone = (markup: string): string => text(between(markup, 'planned-raid-7-phone', '__end__'));
 
 describe('PlannedRaidRow', () => {
+  it('gives the link its date in words, since the date block is hidden from screen readers', () => {
+    const markup = html();
+    expect(markup).toMatch(/<span class="sr-only">Thursday 10 December, <\/span>/);
+    expect(markup).toMatch(/border-line rounded-control[^"]*" aria-hidden="true"/);
+  });
+
   it('is one link to the raid page', () => {
     const markup = html();
     expect(markup.match(/<a /g)?.length).toBe(1);
@@ -36,20 +42,20 @@ describe('PlannedRaidRow', () => {
   it('draws the desktop cells in order, in the viewer’s zone', () => {
     const cells = desktop(html());
     expect(cells).toBe(
-      "Thu 10 Dec Onyxia's Lair 9:00 pm 8:00 pm CST guild time in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS In · DPS ›",
+      "Thu 10 Dec Onyxia's Lair Thursday 10 December, 9:00 pm 8:00 pm CST guild time in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS In · DPS ›",
     );
   });
 
   it('runs the phone stack as three lines beside the date block', () => {
     expect(phone(html())).toBe(
-      "Thu 10 Dec Onyxia's Lair In · DPS 9:00 pm · 8:00 pm CST guild time · in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS",
+      "Thu 10 Dec Onyxia's Lair In · DPS Thursday 10 December, 9:00 pm · 8:00 pm CST guild time · in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS",
     );
   });
 
   it('drops the guild-time label when the offsets match, and shows the zone under a custom title', () => {
     const cells = desktop(html(plannedRaid({ title: 'Ony farm' }), CHICAGO));
     expect(cells).not.toContain('guild time');
-    expect(cells).toContain("Ony farm Onyxia's Lair 8:00 pm");
+    expect(cells).toContain("Ony farm Onyxia's Lair Thursday 10 December, 8:00 pm");
   });
 
   it('reads `23 signed up` with no bar while the size is unknown', () => {
