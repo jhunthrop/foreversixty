@@ -25,7 +25,7 @@ const attendanceWindow = 8
 
 // enrichRoster fills in Attendance, BestParse, Rating and LastReportAt on every row of out,
 // in place - called once by HomeRoster after the base query, never per row.
-func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow) error {
+func (s *Store) enrichRoster(ctx context.Context, guildID int64, source string, out []RosterRow) error {
 	byKey := make(map[string]*RosterRow, len(out))
 	keys := make([]string, 0, len(out))
 	for i := range out {
@@ -33,7 +33,7 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow
 		keys = append(keys, out[i].CharacterKey)
 	}
 
-	if err := s.fillAttendance(ctx, guildID, out, keys); err != nil {
+	if err := s.fillAttendance(ctx, guildID, source, out, keys); err != nil {
 		return err
 	}
 
@@ -386,11 +386,7 @@ func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView
 
 // fillAttendance reads the guild's attendance the way its mode says: raids once it has a
 // logged raid, else the report count.
-func (s *Store) fillAttendance(ctx context.Context, guildID int64, out []RosterRow, keys []string) error {
-	source, err := s.attendanceSource(ctx, guildID)
-	if err != nil {
-		return err
-	}
+func (s *Store) fillAttendance(ctx context.Context, guildID int64, source string, out []RosterRow, keys []string) error {
 	if source == AttendanceSourceRaids {
 		return s.fillRaidAttendance(ctx, guildID, out, keys)
 	}

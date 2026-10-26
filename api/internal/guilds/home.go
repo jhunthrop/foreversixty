@@ -339,6 +339,16 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 // officer-rank row - both already in the caller's hands from Home, so
 // this costs no extra query.
 func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID int64, moderator, verifiedOfficer bool) ([]RosterRow, error) {
+	source, err := s.attendanceSource(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
+	return s.homeRoster(ctx, guildID, source, g, actorID, moderator, verifiedOfficer)
+}
+
+// homeRoster is HomeRoster for a caller that has already read the guild's attendance source,
+// so one request reads it once.
+func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g Guild, actorID int64, moderator, verifiedOfficer bool) ([]RosterRow, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select gc.character_key, gc.user_id, ae.region, ae.ruleset, ae.name, gc.rank, gc.verified_at is not null,
 		       ae.updated_at >= now() - interval '24 hours', ae.updated_at, gm.consent,
@@ -375,7 +385,7 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	if err := s.enrichRoster(ctx, guildID, out); err != nil {
+	if err := s.enrichRoster(ctx, guildID, source, out); err != nil {
 		return nil, err
 	}
 	return out, nil
@@ -533,7 +543,11 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	if err != nil {
 		return HomeView{}, err
 	}
-	roster, err := s.HomeRoster(ctx, guildID, g, userID, moderator, verifiedOfficer)
+	source, err := s.attendanceSource(ctx, guildID)
+	if err != nil {
+		return HomeView{}, err
+	}
+	roster, err := s.homeRoster(ctx, guildID, source, g, userID, moderator, verifiedOfficer)
 	if err != nil {
 		return HomeView{}, err
 	}
@@ -547,10 +561,6 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		return HomeView{}, err
 	}
 	members, counts := mergeRoster(roster, invited, snapshotLines)
-	source, err := s.attendanceSource(ctx, guildID)
-	if err != nil {
-		return HomeView{}, err
-	}
 	claim := claimState(g, time.Now())
 	if claim.State == "claimed" && g.ClaimedBy != nil && s.Accounts != nil {
 		if u, uerr := s.Accounts.User(ctx, *g.ClaimedBy); uerr == nil {

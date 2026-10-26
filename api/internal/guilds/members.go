@@ -250,7 +250,11 @@ func (s *Store) invitedRosterRows(ctx context.Context, guildID int64, g Guild) (
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	if err := s.enrichRoster(ctx, guildID, out); err != nil {
+	source, err := s.attendanceSource(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.enrichRoster(ctx, guildID, source, out); err != nil {
 		return nil, err
 	}
 	return out, nil
