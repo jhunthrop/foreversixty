@@ -6,7 +6,6 @@
      arrows move focus across the free rows, Space and Enter select. `Match this log` is the page's
      one fill while the picker is open. -->
 <script lang="ts">
-  import { tick, untrack } from 'svelte';
   import type { MatchCandidate } from '../../lib/guild/attendance-contract';
   import {
     attendanceCopy,
@@ -49,14 +48,9 @@
 
   const copy = attendanceCopy.picker;
   const ROW =
-    'grid min-h-16 grid-cols-[24px_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-3 py-2 md:min-h-14 md:grid-cols-[24px_minmax(0,1fr)_200px_140px_120px] focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2';
+    'grid min-h-16 grid-cols-[24px_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-2 md:items-center md:min-h-14 md:grid-cols-[24px_minmax(0,1fr)_200px_140px_120px] focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2';
   const rows: Record<string, HTMLElement | undefined> = {};
-
-  /** Focus moves to the selected row once the list has drawn. */
-  $effect(() => {
-    if (picker.load !== 'ready') return;
-    untrack(() => void tick().then(() => rows[picker.selected ?? picker.freeIds[0]]?.focus()));
-  });
+  const SENTENCE_ID = (id: string): string => `raid-match-elsewhere-${id}`;
 
   function rowClass(row: MatchCandidate): string {
     return picker.isTaken(row) ? `${ROW} opacity-50` : `${ROW} hover:bg-card-top cursor-pointer`;
@@ -93,7 +87,16 @@
   aria-labelledby="raid-match-heading"
   data-testid="raid-match-picker"
 >
-  <h2 id="raid-match-heading" class="section-title text-[15px]">{copy.head}</h2>
+  <!-- Focus lands here on open, whatever state the list is in (the button that opened it is gone). -->
+  <h2
+    id="raid-match-heading"
+    class="section-title text-[15px]"
+    tabindex="-1"
+    use:focusOnMount
+    data-testid="raid-match-heading"
+  >
+    {copy.head}
+  </h2>
   <p class="text-muted text-[13px]" data-testid="raid-match-helper">
     {pickerHelper(zoneName, picker.zoneKnown)}
   </p>
@@ -115,46 +118,55 @@
         {@const taken = picker.isTaken(row)}
         {@const elsewhere =
           row.matched_raid === null ? null : matchedElsewhereParts(row.matched_raid, guildTimezone, locale)}
-        <div
-          bind:this={rows[row.report_id]}
-          role="radio"
-          aria-checked={picker.selected === row.report_id ? 'true' : 'false'}
-          aria-disabled={taken ? 'true' : undefined}
-          tabindex={taken ? undefined : tabStop(row)}
-          class="{rowClass(row)} border-line-soft border-t first:border-t-0"
-          onclick={() => picker.select(row.report_id)}
-          onkeydown={(event) => onKeydown(event, row)}
-          data-testid={`raid-match-row-${row.report_id}`}
-        >
-          <span
-            class="border-line-warm relative size-4 rounded-full border"
-            aria-hidden="true"
-            data-testid="raid-match-radio"
+        <div class="border-line-soft border-t first:border-t-0">
+          <div
+            bind:this={rows[row.report_id]}
+            role="radio"
+            aria-checked={picker.selected === row.report_id ? 'true' : 'false'}
+            aria-disabled={taken ? 'true' : undefined}
+            aria-describedby={elsewhere === null ? undefined : SENTENCE_ID(row.report_id)}
+            tabindex={taken ? undefined : tabStop(row)}
+            class={rowClass(row)}
+            onclick={() => picker.select(row.report_id)}
+            onkeydown={(event) => onKeydown(event, row)}
+            data-testid={`raid-match-row-${row.report_id}`}
           >
-            {#if picker.selected === row.report_id}<i class="bg-gold absolute inset-[3px] rounded-full"
-              ></i>{/if}
-          </span>
-          <span class="flex min-w-0 flex-col">
-            <span class="flex flex-wrap items-center gap-2">
-              <span class="text-strong text-[14px] font-semibold">{row.zone_name}</span>
-              {#if row.closest}<span class="pill pill-site" data-testid="raid-match-closest"
-                  >{copy.closest}</span
-                >{/if}
+            <span
+              class="border-line-warm relative mt-1 size-4 rounded-full border md:mt-0"
+              aria-hidden="true"
+              data-testid="raid-match-radio"
+            >
+              {#if picker.selected === row.report_id}<i class="bg-gold absolute inset-[3px] rounded-full"
+                ></i>{/if}
             </span>
-            <span class="text-muted text-[12px]">{byName(row.uploaded_by_name)}</span>
-          </span>
-          <span class="col-start-2 md:col-start-auto">{@render when(row)}</span>
-          <span class="col-start-2 text-[13px] md:col-start-auto">{pickerFigures(row.pulls, row.kills)}</span>
-          <span class="col-start-2 font-mono text-[13px] md:col-start-auto"
-            >{durationLabel(row.duration_ms)}</span
-          >
+            <span class="flex min-w-0 flex-col">
+              <span class="flex flex-wrap items-center gap-2">
+                <span class="text-strong text-[14px] font-semibold">{row.zone_name}</span>
+                {#if row.closest}<span class="pill pill-site" data-testid="raid-match-closest"
+                    >{copy.closest}</span
+                  >{/if}
+              </span>
+              <span class="text-muted text-[12px]">{byName(row.uploaded_by_name)}</span>
+            </span>
+            <!-- Phone: line 2 holds the three figures; from md they are the grid's own cells. -->
+            <span class="col-start-2 flex flex-wrap items-baseline gap-x-3 md:contents">
+              {@render when(row)}
+              <span class="text-[13px]">{pickerFigures(row.pulls, row.kills)}</span>
+              <span class="font-mono text-[13px]">{durationLabel(row.duration_ms)}</span>
+            </span>
+          </div>
           {#if elsewhere !== null && row.matched_raid !== null}
-            <span class="text-muted col-start-2 text-[12px] md:col-span-4" data-testid="raid-match-elsewhere"
-              >{elsewhere.lead}<a
+            <!-- Outside the radio, so its link is not a control inside one. -->
+            <p
+              id={SENTENCE_ID(row.report_id)}
+              class="text-muted px-3 pb-2 pl-[48px] text-[12px] opacity-80"
+              data-testid="raid-match-elsewhere"
+            >
+              {elsewhere.lead}<a
                 href={guildRaidHref(guildPath, row.matched_raid.id)}
                 class="text-text underline">{elsewhere.title}</a
-              >{elsewhere.tail}</span
-            >
+              >{elsewhere.tail}
+            </p>
           {/if}
         </div>
       {/each}

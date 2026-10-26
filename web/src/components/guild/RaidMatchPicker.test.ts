@@ -2,7 +2,8 @@
 // The picker rendered with svelte/server from a seeded MatchPicker (attendance spec 3.2, 4): the
 // helper in its two forms, loading, error, empty, the radiogroup with `Closest` preselected, the
 // matched-elsewhere row (disabled, its sentence, the title linked), Match this log's states and the
-// status line. Focus and arrow keys are covered by match-picker.test.ts and the browser.
+// status line. The arrow-key model is in match-picker.test.ts; real focus movement needs a browser and
+// no spec covers it yet (the attendance e2e, Task 10, owns it).
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { MatchCandidate } from '../../lib/guild/attendance-contract';
@@ -56,6 +57,25 @@ describe('RaidMatchPicker', () => {
     expect(text(html({ rows: [row('a')], zoneKnown: false }))).toContain(pickerHelper(ZONE, false));
   });
 
+  it('draws a focus target in every state: the heading, tabindex -1', () => {
+    const seeds: Partial<MatchPickerSeed>[] = [
+      { load: 'loading' },
+      { load: 'failed' },
+      { rows: [] },
+      { rows: [row('a')] },
+    ];
+    for (const seed of seeds) {
+      expect(html(seed)).toMatch(/<h2[^>]*tabindex="-1"[^>]*data-testid="raid-match-heading"/);
+    }
+  });
+
+  it('keeps each row to two lines on phone: the figures share one wrapping span on line 2', () => {
+    const body = html({ rows: [row('a')] });
+    expect(body).toContain('col-start-2 flex flex-wrap');
+    expect(body).toContain('md:contents');
+    expect(body).toContain('min-h-16');
+  });
+
   it('draws three skeleton rows while loading, and no Match this log', () => {
     const body = html({ load: 'loading' });
     expect(body).toContain('raid-match-skeleton');
@@ -106,6 +126,9 @@ describe('RaidMatchPicker', () => {
     });
     const body = html({ rows: [matched, row('b', { closest: true })], selected: 'b' });
     expect(body).toMatch(/aria-disabled="true"[^>]*data-testid="raid-match-row-a"/);
+    // The sentence and its link sit outside the radio element.
+    expect(between(body, 'raid-match-row-a')).not.toContain('<a ');
+    expect(body).toMatch(/aria-describedby="raid-match-elsewhere-a"/);
     expect(body).toContain(`href="${GUILD_PATH}/raids/3"`);
     expect(text(between(body, 'raid-match-elsewhere'))).toBe(
       'Matched to Ony farm · Thu 3 Dec. Clear it there first.',

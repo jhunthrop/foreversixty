@@ -40,15 +40,21 @@ describe('MatchPicker load', () => {
     expect(p.canMatch).toBe(true);
   });
 
-  it('preselects nothing when another raid holds the Closest one', async () => {
+  it('preselects the first free row when another raid holds the Closest one', async () => {
     const p = picker({
       zone_known: true,
-      rows: [candidate('a', { closest: true, matched_raid: OTHER_RAID }), candidate('b')],
+      rows: [candidate('a', { closest: true, matched_raid: OTHER_RAID }), candidate('b'), candidate('c')],
     });
+    await p.start();
+    expect(p.selected).toBe('b');
+    expect(p.freeIds).toEqual(['b', 'c']);
+  });
+
+  it('preselects nothing when every row is held elsewhere', async () => {
+    const p = picker({ zone_known: true, rows: [candidate('a', { matched_raid: OTHER_RAID })] });
     await p.start();
     expect(p.selected).toBeNull();
     expect(p.canMatch).toBe(false);
-    expect(p.freeIds).toEqual(['b']);
   });
 
   it('keeps the unknown-zone flag and caps the list', async () => {
@@ -74,13 +80,13 @@ describe('MatchPicker load', () => {
   it('cannot select a taken row', async () => {
     const p = picker({
       zone_known: true,
-      rows: [candidate('a', { matched_raid: OTHER_RAID }), candidate('b')],
+      rows: [candidate('a', { matched_raid: OTHER_RAID }), candidate('b'), candidate('c')],
     });
     await p.start();
     p.select('a');
-    expect(p.selected).toBeNull();
-    p.select('b');
     expect(p.selected).toBe('b');
+    p.select('c');
+    expect(p.selected).toBe('c');
   });
 });
 
@@ -143,7 +149,7 @@ describe('MatchPicker submit', () => {
 
   it('does nothing with no selection', async () => {
     const match = vi.fn(() => Promise.resolve<MatchOutcome>({ ok: true }));
-    const p = picker({ zone_known: true, rows: [candidate('a')] }, match);
+    const p = picker({ zone_known: true, rows: [candidate('a', { matched_raid: OTHER_RAID })] }, match);
     await p.start();
     await expect(p.submit()).resolves.toBe(false);
     expect(match).not.toHaveBeenCalled();

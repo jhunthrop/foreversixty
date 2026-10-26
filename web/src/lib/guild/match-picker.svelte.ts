@@ -9,6 +9,8 @@ import { segmentKeyAction, type SegmentKeyAction } from './segments-keys';
 
 /** The API's refusal when another raid already holds the log. */
 export const REPORT_MATCHED = 'report_matched';
+/** The API's refusal once the guild's officer tools have ended (officer-tools gate spec 4). */
+export const PLAN_REQUIRED = 'guild_plan_required';
 
 /** The answer of an officer write on the match: done, or refused with the line to show. */
 export type MatchOutcome = { ok: true } | { ok: false; code: string; message: string };
@@ -87,14 +89,15 @@ export class MatchPicker {
       this.load = 'ready';
       if (!quiet) this.selected = this.preselected();
     } catch {
+      // A quiet re-read that fails leaves the rows as they were; the taken row is already disabled.
       if (!quiet) this.load = 'failed';
     }
   }
 
-  /** `Closest` is chosen up front, unless another raid holds it. */
+  /** `Closest` is chosen up front; when another raid holds it, the first free row is. */
   private preselected(): string | null {
     const closest = this.rows.find((row) => row.closest && !this.isTaken(row));
-    return closest?.report_id ?? null;
+    return closest?.report_id ?? this.freeIds[0] ?? null;
   }
 
   select(reportId: string): void {

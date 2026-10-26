@@ -6,7 +6,8 @@
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { attendanceCopy, cameRatio, endedHint, nightFacts } from '../../lib/guild/attendance-copy';
-  import { MatchPicker, type MatchOutcome } from '../../lib/guild/match-picker.svelte';
+  import { focusOnMount } from '../../lib/guild/focus-now';
+  import { MatchPicker, PLAN_REQUIRED, type MatchOutcome } from '../../lib/guild/match-picker.svelte';
   import { raidEndsAt } from '../../lib/guild/planned-row';
   import { RAID_BUTTON } from '../../lib/guild/raid-buttons';
   import { SEP } from '../../lib/guild/raid-copy';
@@ -57,11 +58,27 @@
   /** Bar fill: those who came of those who signed In or Late; no bar before anyone signed. */
   const fill = $derived(night === null || night.signed === 0 ? null : (night.came / night.signed) * 100);
   const picking = $derived(picker !== null);
+  /** `Not saved. This guild's officer tools have ended.`, where the picker was. */
+  let refusal = $state<string | null>(null);
+
+  // The picker is for officers with tools and a raid still without a log: it closes when either
+  // stops being true (the plan ended, or the poll matched the log from elsewhere).
+  $effect(() => {
+    if (picker !== null && (readOnly || raid.match !== null)) picker = null;
+  });
 
   function openPicker(): void {
-    const next = new MatchPicker({ load: loadCandidates, match: onMatch });
+    refusal = null;
+    const next = new MatchPicker({ load: loadCandidates, match });
     picker = next;
     void next.start();
+  }
+
+  /** A plan refusal closes the picker; the gate sentence is the officer row's, the line is ours. */
+  async function match(reportId: string): Promise<MatchOutcome> {
+    const outcome = await onMatch(reportId);
+    if (!outcome.ok && outcome.code === PLAN_REQUIRED) refusal = outcome.message;
+    return outcome;
   }
 
   async function closePicker(): Promise<void> {
@@ -139,6 +156,17 @@
       >
     {/if}
   </div>
+  {#if refusal !== null}
+    <p
+      class="text-wipe text-[13px]"
+      role="alert"
+      tabindex="-1"
+      use:focusOnMount
+      data-testid="raid-match-refused"
+    >
+      {refusal}
+    </p>
+  {/if}
 {/if}
 
 {#if officer && picker !== null}

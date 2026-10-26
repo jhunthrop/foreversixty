@@ -1,7 +1,7 @@
 // web/src/components/guild/RaidClearConfirm.test.ts
 // The clear confirm rendered with svelte/server (attendance spec 3.1): the question, Clear the match
 // in the failure outline (Clearing… in flight) and Keep it. Focus on Keep it and Escape-as-Keep-it
-// run in the browser, as the cancel confirm's do.
+// need a browser; no spec covers them yet (the attendance e2e, Task 10, owns them).
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { attendanceCopy } from '../../lib/guild/attendance-copy';
