@@ -14,6 +14,7 @@
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
+  import type { AttendanceSource } from '../../lib/guild/attendance-contract';
   import { guildGateCopy } from '../../lib/guild/copy';
   import {
     LOOT_FOOTNOTE,
@@ -38,6 +39,7 @@
     officer,
     officerTools,
     memberReadOnly,
+    attendanceSource = 'reports',
     busyItemId,
     refusal,
     settingsHref,
@@ -49,6 +51,8 @@
     /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
     officerTools: boolean;
     memberReadOnly: boolean;
+    /** `raids`: the candidate line counts raids (`7 of 8 raids`). */
+    attendanceSource?: AttendanceSource;
     busyItemId: number | null;
     /** The Award or Undo the server refused with `guild_plan_required` (§4), per boss and item. */
     refusal: GuildPlanRefusal | null;
@@ -164,7 +168,7 @@
                   class="min-w-0 basis-full text-[13px] sm:basis-auto"
                   data-testid="guild-loot-candidate-line"
                 >
-                  {candidateLine(candidate)}
+                  {candidateLine(candidate, attendanceSource)}
                   <!-- One unbreakable chunk, and nothing at all for an empty slot. -->
                   {#if candidateGainLabel(candidate) !== ''}<span
                       class="text-muted tabular font-mono text-[11px] whitespace-nowrap"

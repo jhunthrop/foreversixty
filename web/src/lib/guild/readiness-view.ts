@@ -13,9 +13,11 @@ export function readinessScore(row: GuildReadinessRow): number {
   return row.failing * 100 + (row.gear_gap?.gain_dps ?? 0);
 }
 
-/** Worst-first, stable otherwise -- never mutates `rows`. */
+/** Worst-first, stable otherwise, a signed character with no export last -- never mutates `rows`. */
 export function sortReadinessWorstFirst(rows: readonly GuildReadinessRow[]): GuildReadinessRow[] {
-  return [...rows].sort((a, b) => readinessScore(b) - readinessScore(a));
+  return [...rows].sort(
+    (a, b) => Number(a.no_export) - Number(b.no_export) || readinessScore(b) - readinessScore(a),
+  );
 }
 
 /** The viewer's own row pins first (member and officer, spec §4.E) -- applied after the

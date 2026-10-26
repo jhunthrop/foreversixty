@@ -35,7 +35,6 @@
     fetchGuildHome,
     fetchGuildLoot,
     fetchGuildProgression,
-    fetchGuildReadiness,
     fetchGuildRaids,
     removeCharacter,
     GuildApiError,
@@ -44,7 +43,6 @@
     type GuildLootPage,
     type GuildProgressionPage,
     type GuildRaidsPage,
-    type GuildReadinessPage,
     type GuildRosterRow,
     type GuildViewerRole,
   } from '../lib/guild/api';
@@ -67,6 +65,7 @@
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
+  import { loadReadinessBoard, readinessRows, type ReadinessBoard } from '../lib/guild/readiness-raid';
   import { nextRaidDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
@@ -602,12 +601,14 @@
       });
   });
 
-  let readiness = $state<GuildReadinessPage | null>(null);
+  let readiness = $state<ReadinessBoard | null>(null);
   let readinessStatus = $state<TabFetchStatus>('idle');
+  /** The next-raid toggle, on by default; held here so a re-read never resets it. */
+  let readinessNextRaidOnly = $state(true);
   $effect(() => {
     if (activeTab !== 'readiness' || guildId === null || readinessStatus !== 'idle') return;
     readinessStatus = 'loading';
-    void fetchGuildReadiness(guildId)
+    void loadReadinessBoard(guildId)
       .then((page) => {
         readiness = page;
         readinessStatus = 'ready';
@@ -1018,6 +1019,7 @@
           {rowPath}
           addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
+          attendanceSource={home.attendance_source ?? 'reports'}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
@@ -1086,7 +1088,14 @@
         />
       {:else if readinessLazy.current}
         <readinessLazy.current
-          rows={readiness?.rows ?? []}
+          rows={readiness === null ? [] : readinessRows(readiness, readinessNextRaidOnly)}
+          raid={readiness?.raid?.raid ?? null}
+          nextRaidOnly={readinessNextRaidOnly}
+          onToggleNextRaid={() => (readinessNextRaidOnly = !readinessNextRaidOnly)}
+          raidHref={readiness?.raid?.raid === undefined
+            ? ''
+            : guildRaidHref(guildPath, readiness.raid.raid.id)}
+          guildTimezone={home.next_raid?.guild_timezone ?? null}
           officer={officerView}
           {officerTools}
           {myCharacterKey}
@@ -1114,6 +1123,7 @@
           officer={officerView}
           {officerTools}
           memberReadOnly={role === 'member'}
+          attendanceSource={home?.attendance_source ?? 'reports'}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}
           {settingsHref}

@@ -488,3 +488,29 @@ describe('GuildRosterTable: the Supporter chip', () => {
     expect(entries).not.toContain('supporter-chip');
   });
 });
+
+describe('GuildRosterTable attendance source', () => {
+  const home = buildMockHome(VIEWER_MEMBER);
+  const raidHome = {
+    ...home,
+    roster: home.roster.map((r) => ({
+      ...r,
+      attendance: { present: 7, nights: 8 },
+      attendance_30: { present: 26, nights: 30 },
+    })),
+  };
+
+  it('reads the two-window chip and the one footnote in raid mode', () => {
+    const body = text(
+      render(GuildRosterTable, { props: { ...props(raidHome), attendanceSource: 'raids' } }).body,
+    );
+    expect(body).toContain('Came 7 of 8 \u00b7 26 of 30');
+    expect(body.split('Came: raids attended of raids signed up for or attended').length - 1).toBe(1);
+  });
+
+  it('keeps report mode on nights with no footnote', () => {
+    const body = text(render(GuildRosterTable, { props: props(raidHome) }).body);
+    expect(body).toContain('7 of 8 nights');
+    expect(body).not.toContain('Came: raids attended');
+  });
+});

@@ -11,6 +11,12 @@
   import { dayWord } from '../../lib/dates';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildReadinessRow } from '../../lib/guild/api';
+  import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
+  import { attendanceCopy, nextRaidToggle, showingParts, stampLabel } from '../../lib/guild/attendance-copy';
+  import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
+  import { dateLabel } from '../../lib/guild/raid-time';
+  import { syncCell } from '../../lib/guild/readiness-raid';
+  import EmptyState from '../ui/EmptyState.svelte';
   import { guildGateCopy } from '../../lib/guild/copy';
   import {
     consumablesKind,
@@ -37,6 +43,12 @@
     officerTools,
     myCharacterKey,
     settingsHref,
+    raid = null,
+    nextRaidOnly = false,
+    onToggleNextRaid = () => {},
+    raidHref = '',
+    guildTimezone = null,
+    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
   }: {
     rows: GuildReadinessRow[];
     officer: boolean;
@@ -45,7 +57,28 @@
     myCharacterKey: string | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */
     settingsHref: string;
+    /** The next planned or locked raid's filtered board header; null shows no toggle. */
+    raid?: ReadinessRaid | null;
+    /** The toggle's state, held by the page so it survives a re-read. */
+    nextRaidOnly?: boolean;
+    onToggleNextRaid?: () => void;
+    /** The raid page the `Showing ...` line links. */
+    raidHref?: string;
+    guildTimezone?: string | null;
+    viewerTimezone?: string;
   } = $props();
+
+  const filtered = $derived(raid !== null && nextRaidOnly);
+  const showing = $derived(
+    raid === null
+      ? null
+      : showingParts(
+          rows.length,
+          raid.title,
+          stampLabel(new Date(raid.starts_at), viewerTimezone, guildTimezone ?? viewerTimezone),
+        ),
+  );
+  const cellOf = (row: GuildReadinessRow) => syncCell(row, filtered ? raid : null);
 
   const officerReadOnly = $derived(officer && !officerTools);
   /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
@@ -126,12 +159,50 @@
   }
 </script>
 
+<!-- Last synced: the day, or (next-raid board) a sync older than the raid's cutoff in the warn pill,
+     or a signed character with no export, muted. -->
+{#snippet syncedCell(row: GuildReadinessRow, size: string, dayText: string)}
+  {@const cell = cellOf(row)}
+  {#if cell.kind === 'stale'}
+    <span class={pillClass('warn', true)} data-testid="guild-readiness-stale">{cell.text}</span>
+  {:else}
+    <span
+      class={`text-muted ${size}`}
+      data-testid={cell.kind === 'no_export' ? 'guild-readiness-no-export' : undefined}
+      >{cell.kind === 'no_export' ? cell.text : dayText}</span
+    >
+  {/if}
+{/snippet}
+
 <section class="flex flex-col gap-3" data-testid="guild-readiness-tab">
   <div class="flex items-center justify-between gap-3">
     <h2 class="section-title text-[18px]">Readiness</h2>
     {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
   </div>
   {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} />{/if}
+
+  {#if raid !== null && showing !== null}
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-wrap gap-2">
+        <button
+          class={`${FILTER_BTN} ${nextRaidOnly ? FILTER_BTN_ON : ''}`}
+          aria-pressed={nextRaidOnly}
+          onclick={onToggleNextRaid}
+          data-testid="guild-readiness-next-raid"
+        >
+          {nextRaidToggle(dateLabel(new Date(raid.starts_at), guildTimezone ?? viewerTimezone))}
+        </button>
+      </div>
+      {#if nextRaidOnly && rows.length > 0}
+        <p class="text-muted text-[13px]" data-testid="guild-readiness-showing">
+          {showing.lead}<a href={raidHref} class="text-nav">{showing.title}</a>{showing.tail}
+        </p>
+      {/if}
+    </div>
+  {/if}
+  {#if filtered && rows.length === 0}
+    <EmptyState message={attendanceCopy.readiness.nobodySigned} testid="guild-readiness-nobody" />
+  {/if}
 
   <div
     class="hidden gap-2 px-1 pb-1 md:grid"
@@ -202,7 +273,7 @@
         <span class={`tabular font-mono text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
           >{itemLevelLabel(row)}</span
         >
-        <span class="text-muted text-[11px]">{syncedDay(row)}</span>
+        {@render syncedCell(row, 'text-[11px]', syncedDay(row))}
         {#if officer}
           <button
             class={NUDGE_BTN}
@@ -232,7 +303,7 @@
               {row.name}{pinned ? ' (you)' : ''}
             </span>
           </span>
-          <span class="text-muted text-[11px]">Synced {syncedDay(row)}</span>
+          {@render syncedCell(row, 'text-[11px]', `Synced ${syncedDay(row)}`)}
         </div>
         <div class="flex flex-wrap gap-4">
           <span class={CHIP}

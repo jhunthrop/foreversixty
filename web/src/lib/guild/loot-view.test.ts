@@ -253,3 +253,20 @@ describe('candidateLine', () => {
     expect(candidateLine(base)).toBe('Restoration · 5 of 8 raid nights');
   });
 });
+
+describe('raid mode loot line', () => {
+  it('reads 7 of 8 raids', () => {
+    expect(attendanceLabel(7, 8, 'raids')).toBe('7 of 8 raids');
+    expect(attendanceLabel(1, 1, 'raids')).toBe('1 of 1 raid');
+  });
+
+  it('keeps report mode on raid nights', () => {
+    expect(attendanceLabel(7, 8, 'reports')).toBe('7 of 8 raid nights');
+  });
+
+  it('threads the source through the candidate line', () => {
+    const candidate = item().candidates[0];
+    expect(candidateLine(candidate, 'raids')).toContain('8 of 8 raids');
+    expect(candidateLine(candidate)).toContain('8 of 8 raid nights');
+  });
+});

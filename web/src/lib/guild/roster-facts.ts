@@ -5,16 +5,30 @@
 // words are pinned without a page.
 import { guildRosterAddonCopy } from './copy';
 import type { GuildRosterEntry, GuildRosterRow } from './api';
+import type { AttendanceSource } from './attendance-contract';
+import { attendanceCopy, rosterChip } from './attendance-copy';
 import { nightsLabel } from './nights';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
 
+/** One row's attendance chip: raid mode counts raids over two windows (`Came 7 of 8 · 26 of 30`, or
+ *  `No raids yet` for a character with none), report mode counts nights. */
+function attendanceChip(
+  row: GuildRosterRow,
+  last8: NonNullable<GuildRosterRow['attendance']>,
+  source: AttendanceSource,
+): string {
+  if (source !== 'raids') return nightsLabel(last8.present, last8.nights);
+  if (last8.nights === 0) return attendanceCopy.roster.noRaids;
+  return rosterChip(last8, row.attendance_30);
+}
+
 /** "Item level 68", "5 of 8 nights", "Best DPS 238", "Rating 65": every figure with its unit
  *  named first, never a bare "65 rating". */
-export function rosterStatChips(row: GuildRosterRow): string[] {
+export function rosterStatChips(row: GuildRosterRow, source: AttendanceSource = 'reports'): string[] {
   const chips: string[] = [];
   if (row.item_level !== undefined) chips.push(`Item level ${row.item_level}`);
-  if (row.attendance !== undefined) chips.push(nightsLabel(row.attendance.present, row.attendance.nights));
+  if (row.attendance !== undefined) chips.push(attendanceChip(row, row.attendance, source));
   if (row.best_parse !== undefined && row.best_parse !== null) {
     chips.push(`Best ${row.best_parse.metric.toUpperCase()} ${Math.round(row.best_parse.value)}`);
   }
