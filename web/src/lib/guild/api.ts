@@ -275,6 +275,9 @@ export interface GuildHome {
   members?: GuildRosterEntry[];
   /** The numbers the count line above the roster reads (api `HomeView.counts`). */
   counts?: GuildRosterCounts;
+  /** The guild's next planned or locked raid, for verified members and officers only; absent
+   *  for everyone else and when none is planned (design/specs/2026-10-26-guild-raids.md 3.4). */
+  next_raid?: NextRaidView;
 }
 
 /** One person on the roster (api `RosterEntry`). `approved` is a verified character,
@@ -372,7 +375,7 @@ export interface UpdatedMember {
  * on a successful-but-empty response, since that would otherwise mean the API changed
  * shape under it silently.
  */
-async function call<T>(
+export async function call<T>(
   path: string,
   apiBase: string,
   init: { method?: string; body?: unknown } = {},
@@ -393,7 +396,7 @@ async function call<T>(
 
 /** A guild-scoped private answer older than this is never painted: role, plan and claim
  *  are what a player acts on, and a join, a grant or an approval can land at any moment. */
-const GUILD_TTL_MS = 60 * 1000;
+export const GUILD_TTL_MS = 60 * 1000;
 
 /** The path `fetchGuildHome` itself builds; `invalidateGuild` below drops every cursor page. */
 function guildHomeKey(guildId: number, cursor: string | undefined, apiBase: string): string {
@@ -659,6 +662,98 @@ export interface GuildRaidRow {
 export interface GuildRaidsPage {
   rows: GuildRaidRow[];
   next_cursor: string | null;
+  /** Verified members and officers only; the three keys are absent for every other viewer. */
+  planned?: GuildRaidView[];
+  zones?: GuildZoneView[];
+  guild_timezone?: string;
+}
+
+// Planned raids and sign-ups (design/specs/2026-10-26-guild-raids.md section 9, "Contract this
+// spec assumes"): the key names are the API's own.
+
+export type GuildRaidStatus = 'planned' | 'locked' | 'done' | 'cancelled';
+export type GuildSignupState = 'in' | 'late' | 'bench' | 'out';
+export type GuildRaidRole = 'tank' | 'healer' | 'dps';
+
+export interface GuildRaidCounts {
+  in: number;
+  late: number;
+  bench: number;
+  out: number;
+  tanks: number;
+  healers: number;
+  dps: number;
+}
+
+export interface GuildRaidSignup {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+  role: GuildRaidRole;
+  state: GuildSignupState;
+  note: string;
+  /** The viewer's own character. */
+  own: boolean;
+}
+
+export interface GuildRaidNotSigned {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+}
+
+export interface GuildRaidViewerCharacter {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+  verified: boolean;
+  /** `null` while the character has not signed up. */
+  state: GuildSignupState | null;
+  role: GuildRaidRole;
+}
+
+export interface GuildRaidView {
+  id: number;
+  zone: string;
+  zone_name: string;
+  title: string;
+  /** RFC 3339, UTC. */
+  starts_at: string;
+  duration_minutes: number;
+  status: GuildRaidStatus;
+  /** The curated file's raid size; `null` until sourced (ruling R6). */
+  size: number | null;
+  guild_timezone: string;
+  /** Sanitised by the API: paragraphs, bold, italic, lists and links only. */
+  notes_html: string;
+  counts: GuildRaidCounts;
+  signups: GuildRaidSignup[];
+  not_signed: GuildRaidNotSigned[];
+  viewer: { characters: GuildRaidViewerCharacter[] };
+  discord: { connected: boolean; post_default: boolean };
+}
+
+export interface GuildZoneView {
+  key: string;
+  name: string;
+  size: number | null;
+}
+
+/** The band line's fields: `GuildHome.next_raid`. */
+export interface NextRaidView {
+  id: number;
+  zone: string;
+  zone_name: string;
+  title: string;
+  starts_at: string;
+  size: number | null;
+  guild_timezone: string;
+  counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps'>;
+  /** The current character's sign-up; `null` while unsigned. */
+  own: { character_key: string; state: GuildSignupState; role: GuildRaidRole } | null;
 }
 
 function guildRaidsKey(guildId: number, cursor: string | undefined, apiBase: string): string {

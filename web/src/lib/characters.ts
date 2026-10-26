@@ -204,6 +204,22 @@ export function parseGuildSettingsPath(pathname: string): CharacterPath | null {
   return parseGuildSuffixPath(pathname, 'settings');
 }
 
+/**
+ * A `/guild/<region>/<ruleset>/<slug>/raids/<id>` path: one planned raid's page. The id is a
+ * run of digits only; `/raids` alone and `/raids/abc` are not raid pages.
+ */
+export function parseGuildRaidPath(pathname: string): { guild: CharacterPath; raidId: string } | null {
+  const parts = pathname
+    .replace(/\/+$/, '')
+    .split('/')
+    .filter((part) => part !== '');
+  if (parts.length !== 6 || parts[0] !== 'guild' || parts[4] !== 'raids') return null;
+  const [, region, ruleset, slug, , raidId] = parts;
+  if (!isRegion(region) || !isRuleset(ruleset) || !isCharacterSlug(slug)) return null;
+  if (!/^\d+$/.test(raidId ?? '')) return null;
+  return { guild: { region, ruleset, slug }, raidId: raidId as string };
+}
+
 /** Longer than any real invite token (a 32-byte value, base64url or hex is well under this). */
 const MAX_TOKEN_LENGTH = 128;
 /** Same reasoning as UNSAFE_IN_SLUG: a token is opaque, so nothing that could traverse or
