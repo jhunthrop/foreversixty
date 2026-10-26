@@ -68,6 +68,7 @@ type raidMatchMeta struct {
 	durationMS int64
 	deaths     int
 	postedAt   *time.Time
+	logZone    string // the matched log's own zone; empty when the log named none
 }
 
 // raidMatchSQL reads the match columns of the raids in $1 with the figures of their logs.
@@ -76,7 +77,8 @@ const raidMatchSQL = `
 	select g.id, g.pre_done_status, g.matched_by, g.report_id,
 	       coalesce(r.completed_at, r.created_at, now()),
 	       coalesce(nullif(c.name, ''), split_part(coalesce(r.logging_character, ''), '/', 3)),
-	       coalesce(f.pulls, 0), coalesce(f.kills, 0), coalesce(f.duration_ms, 0), coalesce(f.deaths, 0), g.report_posted_at
+	       coalesce(f.pulls, 0), coalesce(f.kills, 0), coalesce(f.duration_ms, 0), coalesce(f.deaths, 0), g.report_posted_at,
+	       coalesce(r.log_zone, '')
 	from guild_raids g
 	left join reports r on r.id = g.report_id
 	left join characters c on c.key = r.logging_character
@@ -99,7 +101,7 @@ func (s *Store) raidMatchMetas(ctx context.Context, ids []int64) (map[int64]raid
 		var id int64
 		var m raidMatchMeta
 		if err := rows.Scan(&id, &m.preDone, &m.matchedBy, &m.reportID, &m.uploadedAt, &m.uploader,
-			&m.pulls, &m.kills, &m.durationMS, &m.deaths, &m.postedAt); err != nil {
+			&m.pulls, &m.kills, &m.durationMS, &m.deaths, &m.postedAt, &m.logZone); err != nil {
 			return nil, fmt.Errorf("guilds: raid matches: %w", err)
 		}
 		out[id] = m
@@ -120,19 +122,20 @@ func (s *Store) fillMatchViews(ctx context.Context, vc raidViewContext, views []
 	if err != nil {
 		return err
 	}
+	attendance, err := s.attendanceRowsFor(ctx, matchedRaidIDs(views, metas))
+	if err != nil {
+		return err
+	}
 	for i := range views {
 		meta := metas[views[i].ID]
 		views[i].PreDoneStatus = meta.preDone
 		if meta.reportID == nil {
 			continue
 		}
-		views[i].Match = &MatchView{ReportID: *meta.reportID, ZoneName: views[i].ZoneName,
+		views[i].Match = &MatchView{ReportID: *meta.reportID, ZoneName: matchZoneName(meta, views[i]),
 			UploadedAt: meta.uploadedAt.UTC(), UploadedByName: meta.uploader, Pulls: meta.pulls,
 			Kills: meta.kills, DurationMS: meta.durationMS, How: derefString(meta.matchedBy)}
-		rows, err := s.AttendanceRows(ctx, views[i].ID)
-		if err != nil {
-			return err
-		}
+		rows := attendance[views[i].ID]
 		night := nightOf(rows, meta)
 		views[i].Night = &night
 		views[i].Attendance = attendanceViews(rows, vc)
@@ -141,6 +144,25 @@ func (s *Store) fillMatchViews(ctx context.Context, vc raidViewContext, views []
 		}
 	}
 	return nil
+}
+
+// matchZoneName is the matched log's own zone, else the raid's planned zone name.
+func matchZoneName(meta raidMatchMeta, v RaidView) string {
+	if meta.logZone != "" {
+		return meta.logZone
+	}
+	return v.ZoneName
+}
+
+// matchedRaidIDs is the ids of the views whose raid holds a log.
+func matchedRaidIDs(views []RaidView, metas map[int64]raidMatchMeta) []int64 {
+	ids := make([]int64, 0, len(views))
+	for _, v := range views {
+		if metas[v.ID].reportID != nil {
+			ids = append(ids, v.ID)
+		}
+	}
+	return ids
 }
 
 func derefString(s *string) string {
