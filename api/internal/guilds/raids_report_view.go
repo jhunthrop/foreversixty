@@ -14,6 +14,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // movesCap is how many changes the report lists.
@@ -55,7 +57,8 @@ func (s *Store) reportConsumables(ctx context.Context, vc raidViewContext, repor
 
 func (s *Store) reportPlayerKeys(ctx context.Context, reportID string) (map[string]bool, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select distinct player_key from fight_metrics where report_id = $1 and state = 'ok'`, reportID)
+		`select distinct m.player_key from fight_metrics m join reports r on r.id = m.report_id
+		  where m.report_id = $1 and m.state = 'ok' and `+presence.EvidenceReport("r"), reportID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: report players: %w", err)
 	}
@@ -228,9 +231,10 @@ func (s *Store) previousDoneRaid(ctx context.Context, guildID int64, v RaidView)
 	var ref RaidRefView
 	var report string
 	err := s.Pool.QueryRow(ctx, `
-		select id, title, starts_at, report_id from guild_raids
-		where guild_id = $1 and zone = $2 and status = 'done' and report_id is not null and starts_at < $3
-		order by starts_at desc, id desc limit 1`, guildID, v.Zone, v.StartsAt).
+		select g.id, g.title, g.starts_at, g.report_id from guild_raids g
+		join reports r on r.id = g.report_id and `+presence.EvidenceReport("r")+`
+		where g.guild_id = $1 and g.zone = $2 and g.status = 'done' and g.starts_at < $3
+		order by g.starts_at desc, g.id desc limit 1`, guildID, v.Zone, v.StartsAt).
 		Scan(&ref.ID, &ref.Title, &ref.StartsAt, &report)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, "", nil
@@ -244,11 +248,12 @@ func (s *Store) previousDoneRaid(ctx context.Context, guildID int64, v RaidView)
 
 func (s *Store) killStats(ctx context.Context, reportID string) (map[statKey]killStat, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select player_key, coalesce(max(player_name), ''), coalesce(lower(max(class)), ''), encounter_id,
-		       max(metric_dps)::float8, max(metric_hps)::float8, coalesce(bool_or(role = 'healer'), false)
-		from fight_metrics
-		where report_id = $1 and kill and state = 'ok' and encounter_id is not null
-		group by player_key, encounter_id`, reportID)
+		select m.player_key, coalesce(max(m.player_name), ''), coalesce(lower(max(m.class)), ''), m.encounter_id,
+		       max(m.metric_dps)::float8, max(m.metric_hps)::float8, coalesce(bool_or(m.role = 'healer'), false)
+		from fight_metrics m join reports r on r.id = m.report_id
+		where m.report_id = $1 and m.kill and m.state = 'ok' and m.encounter_id is not null
+		  and `+presence.EvidenceReport("r")+`
+		group by m.player_key, m.encounter_id`, reportID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: report kill stats: %w", err)
 	}

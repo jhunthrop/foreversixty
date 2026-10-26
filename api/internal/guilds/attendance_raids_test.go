@@ -14,15 +14,22 @@ type seedAtt struct {
 	excused              bool
 }
 
-// seedDoneRaid stores a done raid starting at startsAt with the given attendance rows.
+// seedDoneRaid stores a done raid starting at startsAt, matched to a log of its own, with the
+// given attendance rows.
 func seedDoneRaid(t *testing.T, h *httpHarness, guildID, createdBy int64, startsAt time.Time, rows ...seedAtt) int64 {
 	t.Helper()
 	ctx := context.Background()
 	var raidID int64
+	reportID := fmt.Sprintf("done-%d-%d", guildID, startsAt.UnixNano())
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, guild_id, visibility, status, created_at) values ($1, $2, 'guild', 'complete', $3)`,
+		reportID, guildID, startsAt); err != nil {
+		t.Fatal(err)
+	}
 	if err := h.pool.QueryRow(ctx, `
-		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, status, created_by)
-		values ($1, 'raid:onyxias-lair', 'Night', $2, 180, 'done', $3) returning id`,
-		guildID, startsAt, createdBy).Scan(&raidID); err != nil {
+		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, status, created_by, report_id)
+		values ($1, 'raid:onyxias-lair', 'Night', $2, 180, 'done', $3, $4) returning id`,
+		guildID, startsAt, createdBy, reportID).Scan(&raidID); err != nil {
 		t.Fatal(err)
 	}
 	for _, r := range rows {

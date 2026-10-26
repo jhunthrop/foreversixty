@@ -146,16 +146,15 @@ func TestSetExcusedNeedsARow(t *testing.T) {
 	}
 }
 
+// A private log is never matched, so it shows nobody (the hand match refuses it).
 func TestAPrivateLogShowsNobody(t *testing.T) {
 	w, raid := attendanceNight(t)
 	w.exec(t, `update reports set visibility = 'private' where id = 'night'`)
-	if _, err := w.h.store.SetMatch(t.Context(), w.gid, raid.ID, "night", MatchedHand); err != nil {
-		t.Fatal(err)
+	if _, err := w.h.store.SetMatch(t.Context(), w.gid, raid.ID, "night", MatchedHand); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("match of a private log = %v, want ErrNotFound", err)
 	}
-	for _, r := range w.attendance(t, raid.ID) {
-		if r.Outcome == OutcomePresent || r.Outcome == OutcomeLate {
-			t.Fatalf("%s present in a private log", r.CharacterKey)
-		}
+	if rows := w.attendance(t, raid.ID); len(rows) != 0 {
+		t.Fatalf("rows = %+v, want none", rows)
 	}
 }
 

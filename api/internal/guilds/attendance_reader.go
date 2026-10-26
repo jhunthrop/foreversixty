@@ -12,6 +12,7 @@ import (
 	"fmt"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 const (
@@ -23,8 +24,11 @@ const (
 	attendanceWindowLong = 30
 )
 
-// loggedRaids is the guild's done raids that carry attendance rows, newest first.
-const loggedRaids = `select r.id from guild_raids r
+// loggedRaids is the guild's done raids that carry attendance rows, newest first. A raid whose
+// log is not evidence (private or flagged) is left out: its rows count for nobody until the log
+// is public again.
+var loggedRaids = `select r.id from guild_raids r
+	join reports rp on rp.id = r.report_id and ` + presence.EvidenceReport("rp") + `
 	where r.guild_id = $1 and r.status = 'done'
 	  and exists (select 1 from guild_raid_attendance a where a.raid_id = r.id)
 	order by r.starts_at desc, r.id desc

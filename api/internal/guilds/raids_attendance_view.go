@@ -9,6 +9,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // MatchView is the log a raid is tied to.
@@ -67,16 +69,20 @@ type raidMatchMeta struct {
 	deaths     int
 	postedAt   *time.Time
 	logZone    string // the matched log's own zone; empty when the log named none
+	// evidence is whether the matched log may be read (not private, not flagged). A raid whose
+	// log is not keeps its match but shows no figures, night, report or attendance.
+	evidence bool
 }
 
-// raidMatchSQL reads the match columns of the raids in $1 with the figures of their logs.
-// The uploader is the logging character's name, as the match picker lists it.
-const raidMatchSQL = `
+// raidMatchSQL reads the match columns of the raids in $1 with the figures of their logs; a
+// log that is not evidence gives no figures. The uploader is the logging character's name, as
+// the match picker lists it.
+var raidMatchSQL = `
 	select g.id, g.pre_done_status, g.matched_by, g.report_id,
 	       coalesce(r.completed_at, r.created_at, now()),
 	       coalesce(nullif(c.name, ''), split_part(coalesce(r.logging_character, ''), '/', 3)),
 	       coalesce(f.pulls, 0), coalesce(f.kills, 0), coalesce(f.duration_ms, 0), coalesce(f.deaths, 0), g.report_posted_at,
-	       coalesce(r.log_zone, '')
+	       coalesce(r.log_zone, ''), coalesce(` + presence.EvidenceReport("r") + `, false)
 	from guild_raids g
 	left join reports r on r.id = g.report_id
 	left join characters c on c.key = r.logging_character
@@ -85,7 +91,7 @@ const raidMatchSQL = `
 	         count(*) filter (where encounter_id is not null and kill) as kills,
 	         coalesce(max(start_ms + duration_ms) - min(start_ms), 0) as duration_ms,
 	         coalesce(sum(deaths) filter (where encounter_id is not null), 0) as deaths
-	  from fights where report_id = g.report_id) f on true
+	  from fights where report_id = g.report_id and ` + presence.EvidenceReport("r") + `) f on true
 	where g.id = any($1)`
 
 func (s *Store) raidMatchMetas(ctx context.Context, ids []int64) (map[int64]raidMatchMeta, error) {
@@ -99,7 +105,7 @@ func (s *Store) raidMatchMetas(ctx context.Context, ids []int64) (map[int64]raid
 		var id int64
 		var m raidMatchMeta
 		if err := rows.Scan(&id, &m.preDone, &m.matchedBy, &m.reportID, &m.uploadedAt, &m.uploader,
-			&m.pulls, &m.kills, &m.durationMS, &m.deaths, &m.postedAt, &m.logZone); err != nil {
+			&m.pulls, &m.kills, &m.durationMS, &m.deaths, &m.postedAt, &m.logZone, &m.evidence); err != nil {
 			return nil, fmt.Errorf("guilds: raid matches: %w", err)
 		}
 		if m.postedAt != nil {
@@ -137,6 +143,9 @@ func (s *Store) fillMatchViews(ctx context.Context, vc raidViewContext, views []
 		views[i].Match = &MatchView{ReportID: *meta.reportID, ZoneName: matchZoneName(meta, views[i]),
 			UploadedAt: meta.uploadedAt.UTC(), UploadedByName: meta.uploader, Pulls: meta.pulls,
 			Kills: meta.kills, DurationMS: meta.durationMS, How: derefString(meta.matchedBy)}
+		if !meta.evidence {
+			continue
+		}
 		rows := attendance[views[i].ID]
 		night := nightOf(rows, meta)
 		views[i].Night = &night
@@ -156,11 +165,11 @@ func matchZoneName(meta raidMatchMeta, v RaidView) string {
 	return v.ZoneName
 }
 
-// matchedRaidIDs is the ids of the views whose raid holds a log.
+// matchedRaidIDs is the ids of the views whose raid holds a log that is evidence.
 func matchedRaidIDs(views []RaidView, metas map[int64]raidMatchMeta) []int64 {
 	ids := make([]int64, 0, len(views))
 	for _, v := range views {
-		if metas[v.ID].reportID != nil {
+		if m := metas[v.ID]; m.reportID != nil && m.evidence {
 			ids = append(ids, v.ID)
 		}
 	}

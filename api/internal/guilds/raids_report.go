@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"sort"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // KillOrderView is one named boss of the night. For a boss never killed, Killed is false,
@@ -168,8 +170,9 @@ type reportFight struct {
 
 func (s *Store) reportFights(ctx context.Context, reportID string) ([]reportFight, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select fight_index, encounter_id, name, kill, duration_ms, deaths
-		from fights where report_id = $1 order by fight_index`, reportID)
+		select f.fight_index, f.encounter_id, f.name, f.kill, f.duration_ms, f.deaths
+		from fights f join reports r on r.id = f.report_id
+		where f.report_id = $1 and `+presence.EvidenceReport("r")+` order by f.fight_index`, reportID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: report fights: %w", err)
 	}
@@ -235,10 +238,11 @@ func killOrderOf(fights []reportFight) ([]KillOrderView, *UnnamedView) {
 
 func (s *Store) reportDeaths(ctx context.Context, vc raidViewContext, reportID string) ([]ReportDeathView, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select player_key, coalesce(max(player_name), ''), coalesce(lower(max(class)), ''),
-		       coalesce(sum(deaths) filter (where not kill), 0), coalesce(sum(deaths) filter (where kill), 0)
-		from fight_metrics where report_id = $1 and state = 'ok'
-		group by player_key having coalesce(sum(deaths), 0) > 0`, reportID)
+		select m.player_key, coalesce(max(m.player_name), ''), coalesce(lower(max(m.class)), ''),
+		       coalesce(sum(m.deaths) filter (where not m.kill), 0), coalesce(sum(m.deaths) filter (where m.kill), 0)
+		from fight_metrics m join reports r on r.id = m.report_id
+		where m.report_id = $1 and m.state = 'ok' and `+presence.EvidenceReport("r")+`
+		group by m.player_key having coalesce(sum(m.deaths), 0) > 0`, reportID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: report deaths: %w", err)
 	}
