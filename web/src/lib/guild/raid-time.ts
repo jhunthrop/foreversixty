@@ -4,7 +4,6 @@
 // here goes through `Intl.DateTimeFormat` alone: no date library, no hand-kept zone table.
 
 const MINUTE_MS = 60_000;
-const WEEK_MS = 7 * 24 * 60 * MINUTE_MS;
 const DEFAULT_LOCALE = 'en-US';
 
 type PartName = Intl.DateTimeFormatPartTypes;
@@ -123,9 +122,15 @@ export function forYouLine(
   return `For you: ${dateLabel(instant, viewerTz, locale)}, ${clockText(instant, viewerTz, locale, true)}.`;
 }
 
-/** The form's default instant: the last raid's weekday and time, a week or more after it, still
- *  ahead of `now`. */
-export function nextWeekday(last: Date, now: Date): Date {
-  const weeks = Math.max(1, Math.floor((now.getTime() - last.getTime()) / WEEK_MS) + 1);
-  return new Date(last.getTime() + weeks * WEEK_MS);
+/** The form's default instant: the last raid's weekday and guild wall time, a whole number of weeks
+ *  after it, the first strictly after `now`. Steps the calendar date in `tz`, so daylight saving
+ *  keeps the wall time (R4). */
+export function nextWeekday(last: Date, now: Date, tz: string): Date {
+  const { date, time } = instantToWallClock(last, tz);
+  const [year, month, day] = date.split('-').map(Number);
+  for (let weeks = 1; ; weeks += 1) {
+    const stepped = new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, (day ?? 1) + weeks * 7));
+    const candidate = wallClockToInstant(stepped.toISOString().slice(0, 10), time, tz);
+    if (candidate.getTime() > now.getTime()) return candidate;
+  }
 }

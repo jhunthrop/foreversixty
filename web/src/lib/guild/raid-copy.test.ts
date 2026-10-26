@@ -31,7 +31,8 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
   it('names the tab button, gate and cap', () => {
     expect(raidCopy.planButton).toBe(str('Tab button'));
     expect(raidCopy.gate).toBe(str('Gate sentence'));
-    expect(raidCopy.gateLink).toBe('Subscribe the guild');
+    expect(raidCopy.gate).toContain(raidCopy.gateLink);
+    expect(specCell(SPEC, HEADING, 'Gate sentence')).toContain(raidCopy.gateLink);
     expect(raidCopy.cap).toBe(str('Cap'));
   });
 
@@ -266,64 +267,58 @@ describe('bandLine', () => {
 });
 
 describe('copyList', () => {
+  const member = (key: string, name: string, role: string, state: string): unknown => ({
+    character_key: key,
+    name,
+    class: 'warrior',
+    spec: 'x',
+    role,
+    state,
+    note: '',
+    own: false,
+  });
   const view = {
-    title: 'Onyxia’s Lair',
-    starts_at: '2026-12-10T02:00:00Z',
+    title: "Onyxia's Lair",
+    starts_at: '2026-12-11T02:00:00Z',
+    size: 40,
+    counts: { in: 4, late: 1, bench: 1, out: 1, tanks: 1, healers: 1, dps: 2 },
     signups: [
-      {
-        character_key: 'a',
-        name: 'Zed',
-        class: 'warrior',
-        spec: 'protection',
-        role: 'tank',
-        state: 'in',
-        note: '',
-        own: false,
-      },
-      {
-        character_key: 'b',
-        name: 'Amy',
-        class: 'priest',
-        spec: 'holy',
-        role: 'healer',
-        state: 'in',
-        note: '',
-        own: false,
-      },
-      {
-        character_key: 'c',
-        name: 'Bo',
-        class: 'mage',
-        spec: 'fire',
-        role: 'dps',
-        state: 'late',
-        note: '',
-        own: false,
-      },
-      {
-        character_key: 'd',
-        name: 'Cy',
-        class: 'rogue',
-        spec: 'combat',
-        role: 'dps',
-        state: 'out',
-        note: '',
-        own: false,
-      },
+      member('a', 'Kraggor', 'tank', 'in'),
+      member('b', 'Amy', 'healer', 'in'),
+      member('c', 'Zed', 'dps', 'in'),
+      member('d', 'Bo', 'dps', 'in'),
+      member('e', 'Late1', 'dps', 'late'),
+      member('f', 'Benched', 'dps', 'bench'),
+      member('g', 'Cy', 'dps', 'out'),
     ],
-    not_signed: [{ character_key: 'e', name: 'Di', class: 'druid', spec: 'balance' }],
+    not_signed: [{ character_key: 'h', name: 'Di', class: 'druid', spec: 'balance' }],
   } as unknown as GuildRaidView;
 
-  it('lists each group on its own line, empty groups left out', () => {
+  it("follows the spec's example: header, count, then one line per non-empty group in roster order", () => {
     expect(copyList(view, CHICAGO)).toBe(
       [
-        'Onyxia’s Lair · Wed 9 Dec, 8:00 pm CST guild time',
-        'Tanks (1): Zed',
-        'Healers (1): Amy',
-        'Late (1): Bo',
-        'Out (1): Cy',
-        'Not signed up (1): Di',
+        "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST",
+        '5 of 40: 1 tank, 1 healer, 2 DPS',
+        'Tanks: Kraggor',
+        'Healers: Amy',
+        'DPS: Zed, Bo',
+        'Late: Late1',
+        'Bench: Benched',
+        'Out: Cy',
       ].join('\n'),
     );
+  });
+
+  it('leaves an empty group out and reads a null size as signed up', () => {
+    const sparse = {
+      ...view,
+      size: null,
+      signups: [member('a', 'Kraggor', 'tank', 'in')],
+    } as unknown as GuildRaidView;
+    expect(copyList(sparse, CHICAGO).split('\n')).toEqual([
+      "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST",
+      '5 signed up: 1 tank, 1 healer, 2 DPS',
+      'Tanks: Kraggor',
+    ]);
   });
 });
