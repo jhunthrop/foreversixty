@@ -25,6 +25,7 @@ import type {
   GuildRosterCounts,
   GuildRosterEntry,
   GuildRosterRow,
+  NextRaidView,
 } from '../../lib/guild/api';
 import type { GuildPage } from '../../lib/rankings/api';
 
@@ -399,7 +400,8 @@ export function buildMockHome(
   withAddonSnapshot = true,
   // Officer tools gate (design/specs/2026-10-25-officer-tools-gate.md §3.1): `officerTools`
   // sets `viewer.officer_tools`; left out, the field is absent, as from an API that predates it.
-  options: { officerTools?: boolean } = {},
+  // Raids spec 3.4: `nextRaid` sets `next_raid`; left out, the field is absent (none planned).
+  options: { officerTools?: boolean; nextRaid?: NextRaidView } = {},
 ): GuildHome {
   // The API sends no Remove on the viewer's own row when it is an officer's or the leader's (the
   // guild master leaves through Leave on the account page); the fixture sends what it would.
@@ -470,6 +472,7 @@ export function buildMockHome(
     addon_snapshot: withAddonSnapshot ? ADDON_SNAPSHOT : null,
     members: model.members,
     counts: model.counts,
+    ...(options.nextRaid === undefined ? {} : { next_raid: options.nextRaid }),
   };
 }
 
