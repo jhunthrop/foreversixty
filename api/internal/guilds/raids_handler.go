@@ -14,10 +14,8 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
-
-// raidPlanRequiredMessage is the guild_plan_required body for the officer raid writes.
-const raidPlanRequiredMessage = "Planning and running raids are part of the guild plan."
 
 const raidFailMessage = "could not save that raid just now"
 
@@ -96,7 +94,7 @@ func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, fo
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", forbiddenMessage, nil)
 		return 0, false
 	}
-	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, raidPlanRequiredMessage, op, raidFailMessage) {
+	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, notify.RaidPlanRequiredMessage, op, raidFailMessage) {
 		return 0, false
 	}
 	if !s.officerNotFrozen(w, r, guildID, op) {
@@ -115,7 +113,7 @@ func (s *Service) officerNotFrozen(w http.ResponseWriter, r *http.Request, guild
 	}
 	if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return false
 	}
 	return true

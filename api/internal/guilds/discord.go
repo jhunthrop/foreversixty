@@ -8,6 +8,7 @@ package guilds
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -61,11 +62,11 @@ func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (not
 		return notify.GuildStanding{}, false, nil
 	}
 	if err != nil {
-		return notify.GuildStanding{}, false, err
+		return notify.GuildStanding{}, false, fmt.Errorf("guilds: standing %d: load guild: %w", guildID, err)
 	}
 	rank, verified, err := s.Accounts.GuildRank(ctx, guildID, userID)
 	if err != nil {
-		return notify.GuildStanding{}, false, err
+		return notify.GuildStanding{}, false, fmt.Errorf("guilds: standing %d: rank: %w", guildID, err)
 	}
 	standing := notify.GuildStanding{
 		Officer: verified && (rank == "officer" || rank == "leader"),
@@ -75,7 +76,7 @@ func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (not
 	if standing.Officer && s.Entitlements != nil {
 		standing.Plan, _, err = s.Entitlements.CanForGuild(ctx, guildID, userID, entitlements.FeatureOfficerViews)
 		if err != nil {
-			return notify.GuildStanding{}, false, err
+			return notify.GuildStanding{}, false, fmt.Errorf("guilds: standing %d: plan: %w", guildID, err)
 		}
 	}
 	return standing, true, nil

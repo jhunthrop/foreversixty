@@ -2,6 +2,7 @@ package notify
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -103,7 +104,7 @@ func (s *Service) guildRedirect(w http.ResponseWriter, r *http.Request, guildPat
 func (s *Service) saveGuildConnected(ctx context.Context, guildID, userID int64, hook OAuthWebhook) error {
 	parsed, box, err := s.sealHook(hook)
 	if err != nil {
-		return err
+		return fmt.Errorf("notify: seal guild webhook %d: %w", guildID, err)
 	}
 	oldURL := s.guildURL(ctx, guildID)
 	in := GuildSaveInput{
@@ -111,7 +112,7 @@ func (s *Service) saveGuildConnected(ctx context.Context, guildID, userID int64,
 		TokenBox: box, ConnectedBy: userID,
 	}
 	if err := s.GuildStore.Save(ctx, in); err != nil {
-		return err
+		return fmt.Errorf("notify: save guild webhook %d: %w", guildID, err)
 	}
 	if oldURL != "" && oldURL != parsed.URL() {
 		s.deleteAtDiscord(ctx, oldURL, "guild replace")

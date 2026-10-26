@@ -20,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
@@ -638,7 +639,7 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	var in lootAwardInput
@@ -688,7 +689,7 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	switch err := s.Store.DeleteLootAward(r.Context(), guildID, awardID); {

@@ -10,6 +10,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 // ErrInvalidSettings is returned for a bad default_visibility or
@@ -208,7 +209,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	var in settingsPatchInput

@@ -31,7 +31,7 @@ func TestGuildConnectWithoutThePlanIs403(t *testing.T) {
 	g := newGuildAPI(t, standing)
 	status, raw, _ := g.call("GET", g.route("/connect"), "")
 	if status != http.StatusForbidden || !strings.Contains(raw, `"guild_plan_required"`) ||
-		!strings.Contains(raw, guildPlanRequiredMessage) {
+		!strings.Contains(raw, RaidPlanRequiredMessage) {
 		t.Fatalf("status %d: %s", status, raw)
 	}
 }
@@ -163,5 +163,16 @@ func TestGuildRoutesAreOffWithoutConnect(t *testing.T) {
 	}
 	if res, _ := h.get("/v1/guilds/1/notifications/discord/connect"); res.StatusCode != http.StatusNotFound {
 		t.Fatalf("connect status %d, want 404", res.StatusCode)
+	}
+}
+
+func TestGuildConnectWithAFrozenClaimIs409(t *testing.T) {
+	standing := officerWithPlan()
+	standing.Frozen = true
+	g := newGuildAPI(t, standing)
+	status, raw, _ := g.call("GET", g.route("/connect"), "")
+	if status != http.StatusConflict || !strings.Contains(raw, `"claim_contested"`) ||
+		!strings.Contains(raw, ClaimContestedMessage) {
+		t.Fatalf("status %d: %s", status, raw)
 	}
 }
