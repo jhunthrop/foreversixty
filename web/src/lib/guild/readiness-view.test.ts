@@ -35,6 +35,8 @@ function row(overrides: Partial<GuildReadinessRow> = {}): GuildReadinessRow {
     item_level_delta: -5,
     logged_at: '2026-12-20T20:00:00Z',
     failing: 4,
+    no_export: false,
+    synced_before_cutoff: null,
     ...overrides,
   };
 }

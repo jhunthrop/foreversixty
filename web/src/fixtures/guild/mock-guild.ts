@@ -683,6 +683,8 @@ export function buildMockReadiness(): GuildReadinessPage {
         item_level_delta: r.item_level === undefined ? null : r.item_level - MEDIAN_ILVL,
         logged_at: r.logged_at ?? '2026-12-18T19:00:00Z',
         failing: fails.length,
+        no_export: false,
+        synced_before_cutoff: null,
         nudge_text: `${r.name}: ${fails.length === 0 ? 'every readiness check passes.' : `${fails.join(', ')} -- check before Thursday.`}`,
       };
     });

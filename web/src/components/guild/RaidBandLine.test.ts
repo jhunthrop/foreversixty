@@ -6,6 +6,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
+import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import RaidBandLine, { nextRaidAfter, nextRaidAfterRefusal, pressFailedLine } from './RaidBandLine.svelte';
 
 const TZ = 'America/Chicago';
@@ -224,6 +225,7 @@ function view(characters: ViewerChar[]): GuildRaidView {
     not_signed: [],
     viewer: { characters },
     discord: { available: true, connected: false, post_default: false },
+    ...NO_LOG_YET,
   };
 }
 

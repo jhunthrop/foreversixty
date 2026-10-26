@@ -1,12 +1,21 @@
 // web/src/test-support/raid-fixtures.ts
 // One planned raid view for the Raids tab's component tests: Onyxia's Lair on Thu 10 Dec 2026,
 // 8:00 pm Chicago, 23 of 40 signed up.
-import type { GuildRaidView, GuildRaidViewerCharacter } from '../lib/guild/api';
+import type { GuildRaidView, GuildRaidViewerCharacter, RaidAttendanceFields } from '../lib/guild/api';
 
 export const CHICAGO = 'America/Chicago';
 export const NEW_YORK = 'America/New_York';
 /** Tue 8 Dec 2026, 12:00 Chicago: the raid is in 2 days 8 h. */
 export const NOW = new Date('2026-12-08T18:00:00Z');
+
+/** A raid with no matched log: every attendance key the API sends, empty. */
+export const NO_LOG_YET: RaidAttendanceFields = {
+  pre_done_status: null,
+  match: null,
+  night: null,
+  attendance: null,
+  report: null,
+};
 
 export function viewerCharacter(extra: Partial<GuildRaidViewerCharacter> = {}): GuildRaidViewerCharacter {
   return {
@@ -38,6 +47,7 @@ export function plannedRaid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
     not_signed: [],
     viewer: { characters: [viewerCharacter()] },
     discord: { available: true, connected: false, post_default: false },
+    ...NO_LOG_YET,
     ...extra,
   };
 }

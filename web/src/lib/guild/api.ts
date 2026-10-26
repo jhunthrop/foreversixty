@@ -750,8 +750,7 @@ export interface GuildRaidViewerCharacter {
   role: GuildRaidRole;
 }
 
-/** The five attendance keys are always sent by the API; optional here so older fixtures still type. */
-export interface GuildRaidView extends Partial<RaidAttendanceFields> {
+export interface GuildRaidView extends RaidAttendanceFields {
   id: number;
   zone: string;
   zone_name: string;
@@ -901,8 +900,7 @@ export interface GuildReadinessConsumables {
   state: 'stocked' | 'short' | 'unknown';
 }
 
-/** `no_export` and `synced_before_cutoff` are always sent; optional so older fixtures still type. */
-export interface GuildReadinessRow extends Partial<ReadinessRaidRowFields> {
+export interface GuildReadinessRow extends ReadinessRaidRowFields {
   character_key: string;
   name: string;
   class: string;

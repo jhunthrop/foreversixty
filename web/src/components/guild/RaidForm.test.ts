@@ -6,6 +6,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidDiscord, GuildRaidView, GuildZoneView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
+import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import RaidForm from './RaidForm.svelte';
 
 const CHICAGO = 'America/Chicago';
@@ -34,6 +35,7 @@ function lastRaid(): GuildRaidView {
     not_signed: [],
     viewer: { characters: [] },
     discord: { available: true, connected: true, post_default: true },
+    ...NO_LOG_YET,
   };
 }
 

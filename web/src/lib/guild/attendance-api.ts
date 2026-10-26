@@ -7,6 +7,7 @@
 // raid view carries `report.posted_at`.
 import { API_BASE_URL } from '../planner/config';
 import {
+  GuildApiError,
   call,
   invalidateGuild,
   type GuildRaidView,
@@ -16,6 +17,8 @@ import {
 import { characterKeyPath, raidPath, type RaidId } from './raids-api';
 
 export { fetchGuildReadiness } from './api';
+
+const ALREADY_POSTED = 'already_posted';
 
 /** The picker's read: fetched when it opens, never cached (the list changes as logs upload). */
 export function fetchMatchCandidates(
@@ -80,9 +83,15 @@ export async function postReport(
   raidId: RaidId,
   apiBase: string = API_BASE_URL,
 ): Promise<PostReportResult> {
-  const result = await call<PostReportResult>(`${raidPath(guildId, raidId)}/report/post`, apiBase, {
-    method: 'POST',
-  });
-  invalidateGuild(guildId, apiBase);
-  return result;
+  try {
+    const result = await call<PostReportResult>(`${raidPath(guildId, raidId)}/report/post`, apiBase, {
+      method: 'POST',
+    });
+    invalidateGuild(guildId, apiBase);
+    return result;
+  } catch (error) {
+    // Another officer posted first: the cached raid view still lacks `report.posted_at`.
+    if (error instanceof GuildApiError && error.code === ALREADY_POSTED) invalidateGuild(guildId, apiBase);
+    throw error;
+  }
 }
