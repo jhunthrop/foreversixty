@@ -10,6 +10,7 @@ import {
   countdown,
   guildTimeLabel,
   needsBefore,
+  nextRaidDeadline,
   raidCopy,
   roleBreakdown,
   showAll,
@@ -229,6 +230,13 @@ describe('counts', () => {
   it('names the needs-line deadline', () => {
     expect(needsBefore('Thursday')).toBe('before Thursday');
     expect(needsBefore(null)).toBe('before the next raid');
+  });
+
+  it('takes the deadline weekday from the next raid in the viewer zone', () => {
+    // 02:00 UTC Friday is Thursday evening in Chicago.
+    expect(nextRaidDeadline('2026-12-11T02:00:00Z', 'en-US', CHICAGO)).toBe('before Thursday');
+    expect(nextRaidDeadline('2026-12-11T02:00:00Z', 'en-US', 'Europe/Berlin')).toBe('before Friday');
+    expect(nextRaidDeadline(undefined, 'en-US', CHICAGO)).toBe('before the next raid');
   });
 });
 

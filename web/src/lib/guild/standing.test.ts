@@ -1,6 +1,6 @@
 // web/src/lib/guild/standing.test.ts
 import { describe, expect, it } from 'vitest';
-import { EVERY_CHECK_PASSES_LINE, needsBeforeThursdaySentence, standingSentence } from './standing';
+import { everyCheckPassesLine, needsBeforeSentence, standingSentence } from './standing';
 import type { GuildHomeStanding } from './api';
 
 function standing(overrides: Partial<GuildHomeStanding> = {}): GuildHomeStanding {
@@ -37,19 +37,30 @@ describe('standingSentence', () => {
   });
 });
 
-describe('needsBeforeThursdaySentence', () => {
+describe('needsBeforeSentence', () => {
   it('joins fails with "; " and the exact template', () => {
-    expect(needsBeforeThursdaySentence(['Enchant chest', 'Spend 1 talent point'])).toBe(
+    expect(needsBeforeSentence(['Enchant chest', 'Spend 1 talent point'], 'before Thursday')).toBe(
       'What the guild needs from you before Thursday: Enchant chest; Spend 1 talent point.',
     );
   });
 
+  it('reads the next raid deadline it is given', () => {
+    expect(needsBeforeSentence(['Enchant chest'], 'before the next raid')).toBe(
+      'What the guild needs from you before the next raid: Enchant chest.',
+    );
+  });
+
   it('reads the exact all-clear line when every check passes', () => {
-    expect(needsBeforeThursdaySentence([])).toBe(EVERY_CHECK_PASSES_LINE);
+    expect(needsBeforeSentence([], 'before Thursday')).toBe(
+      'Every readiness check passes. Nothing needed before Thursday.',
+    );
+    expect(everyCheckPassesLine('before the next raid')).toBe(
+      'Every readiness check passes. Nothing needed before the next raid.',
+    );
   });
 
   it('treats undefined/null the same as empty, never throwing', () => {
-    expect(needsBeforeThursdaySentence(undefined)).toBe(EVERY_CHECK_PASSES_LINE);
-    expect(needsBeforeThursdaySentence(null)).toBe(EVERY_CHECK_PASSES_LINE);
+    expect(needsBeforeSentence(undefined, 'before Thursday')).toBe(everyCheckPassesLine('before Thursday'));
+    expect(needsBeforeSentence(null, 'before Thursday')).toBe(everyCheckPassesLine('before Thursday'));
   });
 });

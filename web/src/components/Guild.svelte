@@ -56,7 +56,8 @@
   import { claimEntryCopy, claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
-  import { needsBeforeThursdaySentence, standingSentence } from '../lib/guild/standing';
+  import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
+  import { nextRaidDeadline } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
@@ -85,6 +86,9 @@
   const readinessLazy = createLazyComponent(() => import('./guild/GuildReadiness.svelte'));
   const lootLazy = createLazyComponent(() => import('./guild/GuildLoot.svelte'));
   const settingsLazy = createLazyComponent(() => import('./guild/GuildSettingsTab.svelte'));
+  /** The raid line in the band (raids spec 3.4): its own chunk, started the moment the viewer's
+   *  membership is known, so it lands alongside /home and keeps the entry chunk under budget. */
+  const bandLineLazy = createLazyComponent(() => import('./guild/RaidBandLine.svelte'));
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -191,6 +195,7 @@
         home = page;
         homeStatus = 'ready';
       };
+      bandLineLazy.load();
       return fetchGuildHome(membership.id, undefined, undefined, show).then(show);
     };
     void fetchMeFresh((fresh) => void apply(fresh)?.catch(() => {}))
@@ -793,12 +798,12 @@
               <!-- Spec §4.A.1: the standing line's four branches (ranked / alone-in-spec /
                    unverified / signed-out) never branch on officer vs member -- every
                    verified viewer sees it, officer included; only the member-only "before
-                   Thursday" sentence (§4.A.2) is role-gated. Kept unconditional here,
+                   {Weekday}" sentence (§4.A.2) is role-gated. Kept unconditional here,
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
-              {#if home.standing !== null && home.standing !== undefined}
-                {@const sentence = standingSentence(home.standing)}
-                <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
+              <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
+                {#if home.standing !== null && home.standing !== undefined}
+                  {@const sentence = standingSentence(home.standing)}
                   <p class="flex flex-wrap items-center gap-3 text-[14px] font-semibold">
                     <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
                          gloss read as a second spec beside the header chip's. -->
@@ -817,19 +822,45 @@
                       </a>
                     {/if}
                   </p>
-                  {#if role === 'member'}
-                    <p
-                      class="text-[13px]"
-                      style={home.standing.needs_before_next_raid.length === 0
-                        ? 'color:#7bff5c'
-                        : 'color:#ff6b5c'}
-                      data-testid="guild-overview-needs-thursday"
-                    >
-                      {needsBeforeThursdaySentence(home.standing.needs_before_next_raid)}
-                    </p>
-                  {/if}
-                </div>
-              {/if}
+                {/if}
+                <!-- Raids spec 3.4: the next raid's line, for every verified viewer, between the
+                     standing line and the needs line. Its chunk loads alongside /home, and the
+                     box it fills is held until it lands. -->
+                {#if bandLineLazy.current === null}
+                  <div
+                    class={home.next_raid === undefined ? 'min-h-5' : 'min-h-[120px] md:min-h-[68px]'}
+                    aria-hidden="true"
+                    data-testid="guild-raid-line-reserve"
+                  ></div>
+                {:else}
+                  <bandLineLazy.current
+                    guildId={home.guild.id}
+                    nextRaid={home.next_raid ?? null}
+                    officer={officerView}
+                    {guildPath}
+                    currentKey={myCharacterKey}
+                    ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
+                    defaultRole={myRosterRow?.role ?? 'dps'}
+                    onChange={(next) => {
+                      if (home !== null) home = { ...home, next_raid: next };
+                    }}
+                  />
+                {/if}
+                {#if role === 'member' && home.standing !== null && home.standing !== undefined}
+                  <p
+                    class="text-[13px]"
+                    style={home.standing.needs_before_next_raid.length === 0
+                      ? 'color:#7bff5c'
+                      : 'color:#ff6b5c'}
+                    data-testid="guild-overview-needs"
+                  >
+                    {needsBeforeSentence(
+                      home.standing.needs_before_next_raid,
+                      nextRaidDeadline(home.next_raid?.starts_at),
+                    )}
+                  </p>
+                {/if}
+              </div>
               <div class="flex flex-wrap items-center justify-between gap-3">
                 {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
                   <a
