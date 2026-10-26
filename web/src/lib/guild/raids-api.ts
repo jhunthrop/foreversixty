@@ -119,6 +119,12 @@ export async function setRaidStatus(
   return raid;
 }
 
+/** A character key is `region/ruleset/name`; the route takes its three segments, so each is
+ *  encoded alone and the slashes stay (encoding the whole key would miss the route). */
+function characterKeyPath(characterKey: string): string {
+  return characterKey.split('/').map(encodeURIComponent).join('/');
+}
+
 export async function putSignup(
   guildId: number,
   raidId: RaidId,
@@ -127,7 +133,7 @@ export async function putSignup(
   apiBase: string = API_BASE_URL,
 ): Promise<SignupResult> {
   const result = await call<SignupResult>(
-    `${raidPath(guildId, raidId)}/signups/${encodeURIComponent(characterKey)}`,
+    `${raidPath(guildId, raidId)}/signups/${characterKeyPath(characterKey)}`,
     apiBase,
     { method: 'PUT', body },
   );

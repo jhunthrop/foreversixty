@@ -153,7 +153,7 @@ describe('putSignup', () => {
     const result = await putSignup(
       7,
       12,
-      'us/pvp/olympus/hunthrop',
+      'us/pvp/hunthrop',
       { state: 'in', role: 'dps', note: 'late 5' },
       API,
     );
@@ -161,7 +161,7 @@ describe('putSignup', () => {
     expect(result.raid.id).toBe(12);
     const request = sentRequest(upstream);
     expect(request.method).toBe('PUT');
-    expect(request.url).toBe(`${API}/v1/guilds/7/raids/12/signups/us%2Fpvp%2Folympus%2Fhunthrop`);
+    expect(request.url).toBe(`${API}/v1/guilds/7/raids/12/signups/us/pvp/hunthrop`);
     expect(await request.json()).toEqual({ state: 'in', role: 'dps', note: 'late 5' });
   });
 
