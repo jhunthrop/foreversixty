@@ -19,7 +19,16 @@ require (
 
 require github.com/stripe/stripe-go/v82 v82.5.1
 
-require github.com/HugoSmits86/nativewebp v1.3.0
+require (
+	github.com/HugoSmits86/nativewebp v1.3.0
+	github.com/microcosm-cc/bluemonday v1.0.27
+	github.com/yuin/goldmark v1.8.6
+)
+
+require (
+	github.com/aymerick/douceur v0.2.0 // indirect
+	github.com/gorilla/css v1.0.1 // indirect
+)
 
 require (
 	cloud.google.com/go/auth v0.20.0 // indirect
