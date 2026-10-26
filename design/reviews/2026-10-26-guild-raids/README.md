@@ -262,3 +262,56 @@ Planned block: 62 + rows × 121.5 on phone (the fixture member's mean of one-lin
 two-line 136.5 rows), 62 + rows × 71 on desktop. Strip unchanged.
 
 Size: `GuildShell` 16292 bytes gzipped (budget 16384).
+
+## Discord section (2026-10-27)
+
+Guild settings · Discord (spec §3.8, lane G1b web half), captured from a fresh fixture build on
+port 4441 by `web/tests/captures/guild-raids/capture-discord.spec.ts` (the capture config now
+matches `capture*.spec.ts`). Files are `guild-raids-<row>-settings-discord-<state>-<width>.png`,
+each with a `-panel-` crop of the section (row 19's crop starts at Billing so the order shows),
+and `heights-discord-<state>-<width>.json`.
+
+- **19** not connected, beside Billing: 360, 390, 1440, 2000.
+- **20** connected at rest, with the 3-failure warning (`three-failures`), and the remove question
+  (focus on `Cancel`): 360, 390, 1440.
+- **21** switched off: 360, 390, 1440. `Test and switch on` is the one fill.
+- **22** returns: `return-connected` (focus ring on `Send test message`, the connected line),
+  `return-denied` and `return-failed` (focus on `Connect a Discord channel`): 360, 390, 1440.
+- **23** officer-read-only, not connected and connected (`Send test message` dimmed and
+  disabled, `Remove` live, the gate sentence's `Subscribe the guild` to `#billing`), and frozen:
+  360, 1440.
+- **24** (the test embed in the Discord clients) needs a staging channel; not captured here.
+
+**Heights against §3.8**
+
+| State | 360 | 390 | 1440 | 2000 | Cap (360 / 1440) |
+|---|---|---|---|---|---|
+| Not connected | 198 | 198 | 139.5 | 139.5 | 210 / 140 |
+| Connected, at rest | 249.5 | 249.5 | 230 | — | 300 / 230 |
+| Connected, remove question | 208.5 | 208.5 | 187.5 | — | 300 / 230 |
+| Connected, 3 failures | **322** | **322** | **283** | — | 300 / 230 |
+| Switched off | 349 | 349 | 310 | — | 440 / 330 |
+| Read-only, not connected | 250 | — | 171.5 | — | no cap (adds the gate sentence) |
+| Read-only, connected | 301.5 | — | 262 | — | no cap (adds the gate sentence) |
+
+- The 140 at 1440 holds only with the explanation on one line (27 + 12 + 44 + 8 + 20 + 8 + 21).
+  Held to the 720 px prose measure, it wraps to two lines and the state is 159 px. So the
+  not-connected column is not capped at 720: the explanation runs 1053 px at 1440. The connected
+  and switched-off columns keep 720.
+- The connected cap is the state at rest (230 exactly). The 1 to 4 failure warning adds its two
+  lines on top (52 px desktop, 72 px phone), so the warned state is over both caps. The designer
+  rules: a cap for the warned state, or a shorter warning.
+- The reserves in `lib/guild/discord-state.ts` are these measured rest heights. They are the
+  placeholder while the section's chunk loads, and the connected hold after a `connected` return.
+
+**Segment ruling (row 5, re-taken at 390 and 1440).** The checked segment's ground is now
+`--kill` at 15 % for In and Late, and `--line-warm` for Bench and Out (§3.3 amended). See
+`guild-raids-05-page-member-in-strip-390.png`: Zulmara is In, Duskstrider on Bench.
+
+**Planned row (§7 amended).** A planned row whose title wraps to two lines at 360 may run to
+140 px. The 136.5 px `Barrow Deeps: first clear` row in the heights table above is inside it. No
+code change.
+
+Size: `GuildShell` 16321 bytes gzipped (budget 16384; 16292 at 9158489e). The Discord section is
+its own chunk, `GuildDiscordSection` 3853 gzipped. It shares the account's Discord components
+chunk (5912) and loads only when `settings.discord` is present.
