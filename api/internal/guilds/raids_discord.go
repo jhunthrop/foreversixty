@@ -25,6 +25,8 @@ import (
 type RaidEvents interface {
 	RaidPosted(ctx context.Context, guildID int64, e notify.RaidPosted)
 	RaidChanged(ctx context.Context, guildID int64, e notify.RaidChanged)
+	// ReportReady posts the raid-night report; posted is false when it did not reach a channel.
+	ReportReady(ctx context.Context, guildID int64, e notify.ReportReady) (posted bool, err error)
 }
 
 // raidPathFormat is the raid page under the guild page's path.

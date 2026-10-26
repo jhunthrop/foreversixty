@@ -67,6 +67,7 @@ func (s *Store) raidRoster(ctx context.Context, guildID int64, key string) ([]ra
 
 // raidViewContext is what every view of one guild's raids shares.
 type raidViewContext struct {
+	guildID  int64
 	viewerID int64
 	timezone *string
 	roster   []raidRosterChar
@@ -92,7 +93,7 @@ func (s *Store) loadRaidOwnership(ctx context.Context, guildID, viewerID int64) 
 	if err != nil {
 		return raidViewContext{}, err
 	}
-	vc := raidViewContext{viewerID: viewerID, ownerOf: map[string]int64{}}
+	vc := raidViewContext{guildID: guildID, viewerID: viewerID, ownerOf: map[string]int64{}}
 	if tz != "" {
 		vc.timezone = &tz
 	}

@@ -442,7 +442,8 @@ func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) (map
 	rows, err := s.Pool.Query(ctx, `
 		select la.item_id, la.id, la.character_key, coalesce(ae.name, ''), la.awarded_at, la.awarded_by
 		from loot_awards la left join addon_exports ae on ae.character_key = la.character_key
-		where la.guild_id = $1 and la.encounter_id = $2`, guildID, encounterID)
+		where la.guild_id = $1 and la.encounter_id = $2
+		order by la.awarded_at, la.id`, guildID, encounterID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: loot awards: %w", err)
 	}
@@ -511,8 +512,9 @@ func validOnyxiaItem(itemID int) bool {
 // CreateLootAward records (or replaces - the partial unique index
 // loot_awards_drop_unmatched_idx on (guild_id, encounter_id, item_id) where raid_id is null,
 // migration 0052, means a second Award for the same drop updates the first row rather than
-// leaving two) an officer's loot decision.
-func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64) (int64, error) {
+// leaving two) an officer's loot decision. raidID names the done raid it was for; nil files it
+// under the guild's latest done Onyxia raid of the last week (loot_raid.go), else no raid.
+func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, raidID *int64) (int64, error) {
 	if encounterID != onyxiaEncounterID || !validOnyxiaItem(itemID) {
 		return 0, ErrInvalidAward
 	}
@@ -525,17 +527,11 @@ func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64,
 	if !exists {
 		return 0, ErrInvalidAward
 	}
-	var id int64
-	if err := s.Pool.QueryRow(ctx, `
-		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by)
-		values ($1, $2, $3, $4, $5)
-		on conflict (guild_id, encounter_id, item_id) where raid_id is null do update set
-		  character_key = excluded.character_key, awarded_by = excluded.awarded_by,
-		  awarded_at = now(), report_id = null
-		returning id`, guildID, encounterID, itemID, characterKey, awardedBy).Scan(&id); err != nil {
-		return 0, fmt.Errorf("guilds: create loot award: %w", err)
+	raidID, err := s.resolveAwardRaid(ctx, guildID, raidID, time.Now())
+	if err != nil {
+		return 0, err
 	}
-	return id, nil
+	return s.upsertAward(ctx, guildID, encounterID, itemID, characterKey, awardedBy, raidID)
 }
 
 // DeleteLootAward removes one award, scoped to guildID so one guild can never delete
@@ -585,6 +581,8 @@ type lootAwardInput struct {
 	EncounterID  int64  `json:"encounter_id"`
 	ItemID       int    `json:"item_id"`
 	CharacterKey string `json:"character_key"`
+	// RaidID optionally names the done raid the award was for.
+	RaidID *int64 `json:"raid_id"`
 }
 
 // requireGuildPlan writes the refusal (a guild_plan_required body of refusal) and returns
@@ -633,7 +631,7 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 	if err := decodeJSON(w, r, &in); err != nil {
 		return
 	}
-	id, err := s.Store.CreateLootAward(r.Context(), guildID, in.EncounterID, in.ItemID, in.CharacterKey, actor.UserID)
+	id, err := s.Store.CreateLootAward(r.Context(), guildID, in.EncounterID, in.ItemID, in.CharacterKey, actor.UserID, in.RaidID)
 	switch {
 	case errors.Is(err, ErrInvalidAward):
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a valid encounter/item/character for this guild", nil)

@@ -98,6 +98,8 @@ type RaidView struct {
 	Match         *MatchView       `json:"match"`
 	Night         *NightView       `json:"night"`
 	Attendance    []AttendanceView `json:"attendance"`
+	// Report is the raid-night report, null until a log is matched.
+	Report *ReportView `json:"report"`
 }
 
 // ZoneView is one schedulable zone as the form lists it.
