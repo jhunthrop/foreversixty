@@ -172,6 +172,8 @@ type Ingest struct {
 	// once its zone and guild are recorded. Nil tells nobody.
 	Completed Completed
 	Log       *slog.Logger
+
+	completions completions
 }
 
 // MountIngest registers the companion's routes.
@@ -651,8 +653,11 @@ func (i *Ingest) complete(w http.ResponseWriter, r *http.Request) {
 	}
 	// A live fight's zone is the header's (engine.Rebuild takes the
 	// report's zone), so the report's zone is what the log named. The
-	// work outlives a companion that hangs up on the 204.
-	FinishCompletion(context.WithoutCancel(r.Context()), i.Store, i.Completed, i.logger(), rep.ID, rep.Zone)
+	// work runs detached: it outlives a companion that hangs up on the
+	// 204 and never holds the 204 back.
+	i.completions.run(r.Context(), func(ctx context.Context) {
+		FinishCompletion(ctx, i.Store, i.Completed, i.logger(), rep.ID, rep.Zone)
+	})
 	w.WriteHeader(http.StatusNoContent)
 }
 
