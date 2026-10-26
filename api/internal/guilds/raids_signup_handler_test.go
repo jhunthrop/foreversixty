@@ -194,3 +194,51 @@ func TestRoleForSpec(t *testing.T) {
 		}
 	}
 }
+
+func TestSignupNotYoursMessage(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	e := expectError(t, w.putSignup(raid.ID, member2Key, `{"state":"in"}`), http.StatusForbidden, "forbidden")
+	if e.Message != "You can only sign up your own characters." {
+		t.Fatalf("message = %q", e.Message)
+	}
+}
+
+func TestSignupRateLimitIsPerAccount(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	for i := 0; i < signupsPerMinute; i++ {
+		res := w.putSignup(raid.ID, memberKeyA, `{"state":"out"}`)
+		res.Body.Close()
+		if res.StatusCode != http.StatusOK {
+			t.Fatalf("PUT %d = %d", i, res.StatusCode)
+		}
+	}
+	expectError(t, w.putSignup(raid.ID, memberKeyA, `{"state":"out"}`), http.StatusTooManyRequests, "rate_limited")
+	w.as(w.member2)
+	if a := w.signup(t, raid.ID, member2Key, `{"state":"in"}`); a.Raid.ID != raid.ID {
+		t.Fatal("another account's budget was spent")
+	}
+}
+
+// TestOfficerOwnSignupOnALockedRaid: an officer with the plan still answers for their own
+// character on a locked raid, unless the claim is contested (officer powers frozen).
+func TestOfficerOwnSignupOnALockedRaid(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.officer)
+	res := w.h.do(http.MethodPost, w.path("/raids/%d/lock", raid.ID), "")
+	res.Body.Close()
+	if a := w.signup(t, raid.ID, officerKey, `{"state":"in"}`); a.Raid.Status != RaidLocked {
+		t.Fatalf("status = %q", a.Raid.Status)
+	}
+	if _, err := w.h.pool.Exec(t.Context(), `update guilds set claim_contested_at = now() where id = $1`, w.gid); err != nil {
+		t.Fatal(err)
+	}
+	expectError(t, w.putSignup(raid.ID, officerKey, `{"state":"late"}`), http.StatusConflict, "claim_contested")
+	expectError(t, w.putSignup(raid.ID, member2Key, `{"state":"late"}`), http.StatusConflict, "claim_contested")
+	w.as(w.member)
+	expectError(t, w.putSignup(raid.ID, memberKeyA, `{"state":"in"}`), http.StatusConflict, "raid_locked")
+}

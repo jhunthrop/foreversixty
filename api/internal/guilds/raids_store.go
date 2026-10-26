@@ -31,6 +31,8 @@ var (
 	ErrRaidCap       = errors.New("guilds: raid cap reached")
 	ErrRaidLocked    = errors.New("guilds: raid is locked")
 	ErrRaidCancelled = errors.New("guilds: raid is cancelled")
+	// ErrRaidStatus is a status move or an edit the raid's current status does not allow.
+	ErrRaidStatus = errors.New("guilds: raid status does not allow that")
 )
 
 // Raid is one scheduled raid night.
@@ -88,7 +90,7 @@ func scanRaids(rows pgx.Rows) ([]Raid, error) {
 // CreateRaid inserts one planned raid unless the guild already holds RaidCap planned or
 // locked ones.
 func (s *Store) CreateRaid(ctx context.Context, in RaidInput) (Raid, error) {
-	raids, err := s.CreateRaids(ctx, in.GuildID, []RaidInput{in})
+	raids, err := s.CreateRaids(ctx, in.GuildID, "", []RaidInput{in})
 	if err != nil {
 		return Raid{}, err
 	}
@@ -97,8 +99,9 @@ func (s *Store) CreateRaid(ctx context.Context, in RaidInput) (Raid, error) {
 
 // CreateRaids inserts every raid of ins for guildID in one transaction, or none of them when
 // the guild's planned and locked raids would then exceed RaidCap. The guild row lock
-// serialises concurrent creates, so the cap holds under a race.
-func (s *Store) CreateRaids(ctx context.Context, guildID int64, ins []RaidInput) ([]Raid, error) {
+// serialises concurrent creates, so the cap holds under a race. A non-empty timezone is
+// stored as the guild's raid timezone in the same transaction.
+func (s *Store) CreateRaids(ctx context.Context, guildID int64, timezone string, ins []RaidInput) ([]Raid, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: create raid: begin: %w", err)
@@ -127,41 +130,84 @@ func (s *Store) CreateRaids(ctx context.Context, guildID int64, ins []RaidInput)
 		}
 		out = append(out, raid)
 	}
+	if err := setRaidTimezone(ctx, tx, guildID, timezone); err != nil {
+		return nil, err
+	}
 	if err := tx.Commit(ctx); err != nil {
 		return nil, fmt.Errorf("guilds: create raid: commit: %w", err)
 	}
 	return out, nil
 }
 
-// UpdateRaid rewrites the editable fields of guildID's raid id; ErrNotFound when the guild
-// has no such raid.
-func (s *Store) UpdateRaid(ctx context.Context, guildID, id int64, in RaidInput) (Raid, error) {
-	raid, err := scanRaid(s.Pool.QueryRow(ctx, `
+// editableStatuses are the statuses a raid's fields may still change in.
+var editableStatuses = []string{RaidPlanned, RaidLocked}
+
+// UpdateRaid rewrites the editable fields of guildID's raid id while it is planned or locked,
+// and stores a non-empty timezone as the guild's raid timezone in the same transaction.
+// ErrNotFound when the guild has no such raid, ErrRaidStatus when it is cancelled or done.
+func (s *Store) UpdateRaid(ctx context.Context, guildID, id int64, timezone string, in RaidInput) (Raid, error) {
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return Raid{}, fmt.Errorf("guilds: update raid: begin: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	raid, err := scanRaid(tx.QueryRow(ctx, `
 		update guild_raids set zone = $3, title = $4, starts_at = $5, duration_minutes = $6,
 			notes = $7, post_default = $8, updated_at = now()
-		where id = $1 and guild_id = $2 returning `+raidColumns,
-		id, guildID, in.Zone, in.Title, in.StartsAt, in.DurationMinutes, in.Notes, in.PostDefault))
-	return raid, raidWriteErr("update raid", err)
+		where id = $1 and guild_id = $2 and status = any($9) returning `+raidColumns,
+		id, guildID, in.Zone, in.Title, in.StartsAt, in.DurationMinutes, in.Notes, in.PostDefault, editableStatuses))
+	if err != nil {
+		return Raid{}, s.raidWriteErr(ctx, "update raid", guildID, id, err)
+	}
+	if err := setRaidTimezone(ctx, tx, guildID, timezone); err != nil {
+		return Raid{}, err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return Raid{}, fmt.Errorf("guilds: update raid: commit: %w", err)
+	}
+	return raid, nil
 }
 
-// SetRaidStatus moves guildID's raid id to a new status; ErrNotFound when the guild has no
-// such raid.
-func (s *Store) SetRaidStatus(ctx context.Context, guildID, id int64, status string) (Raid, error) {
-	raid, err := scanRaid(s.Pool.QueryRow(ctx,
-		`update guild_raids set status = $3, updated_at = now() where id = $1 and guild_id = $2 returning `+raidColumns,
-		id, guildID, status))
-	return raid, raidWriteErr("set raid status", err)
+// SetRaidStatus moves guildID's raid id to status `to` only while its status is one of from,
+// in one guarded write, so two racing moves cannot overwrite each other. ErrNotFound when the
+// guild has no such raid, ErrRaidStatus when its status is not in from.
+func (s *Store) SetRaidStatus(ctx context.Context, guildID, id int64, from []string, to string) (Raid, error) {
+	raid, err := scanRaid(s.Pool.QueryRow(ctx, `
+		update guild_raids set status = $3, updated_at = now()
+		where id = $1 and guild_id = $2 and status = any($4) returning `+raidColumns,
+		id, guildID, to, from))
+	if err != nil {
+		return Raid{}, s.raidWriteErr(ctx, "set raid status", guildID, id, err)
+	}
+	return raid, nil
 }
 
-func raidWriteErr(op string, err error) error {
-	switch {
-	case err == nil:
-		return nil
-	case errors.Is(err, pgx.ErrNoRows):
-		return ErrNotFound
-	default:
+// raidWriteErr maps a guarded write that matched no row to ErrNotFound (no such raid) or
+// ErrRaidStatus (the raid is there, in a status the write refuses).
+func (s *Store) raidWriteErr(ctx context.Context, op string, guildID, id int64, err error) error {
+	if !errors.Is(err, pgx.ErrNoRows) {
 		return fmt.Errorf("guilds: %s: %w", op, err)
 	}
+	_, found, gerr := s.GetRaid(ctx, guildID, id)
+	switch {
+	case gerr != nil:
+		return gerr
+	case !found:
+		return ErrNotFound
+	default:
+		return ErrRaidStatus
+	}
+}
+
+// setRaidTimezone stores tz as the guild's raid timezone; an empty tz leaves it.
+func setRaidTimezone(ctx context.Context, tx pgx.Tx, guildID int64, tz string) error {
+	if tz == "" {
+		return nil
+	}
+	if _, err := tx.Exec(ctx, `update guilds set raid_timezone = $2 where id = $1`, guildID, tz); err != nil {
+		return fmt.Errorf("guilds: set raid timezone: %w", err)
+	}
+	return nil
 }
 
 // GetRaid reads one raid of a guild.

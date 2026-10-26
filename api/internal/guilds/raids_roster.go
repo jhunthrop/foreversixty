@@ -73,21 +73,44 @@ type raidViewContext struct {
 	ownerOf  map[string]int64
 }
 
+// loadRaidViewContext is loadRaidOwnership plus the full roster the raid page lists.
 func (s *Store) loadRaidViewContext(ctx context.Context, guildID, viewerID int64) (raidViewContext, error) {
+	vc, err := s.loadRaidOwnership(ctx, guildID, viewerID)
+	if err != nil {
+		return raidViewContext{}, err
+	}
+	if vc.roster, err = s.raidRoster(ctx, guildID, ""); err != nil {
+		return raidViewContext{}, err
+	}
+	return vc, nil
+}
+
+// loadRaidOwnership reads the guild's raid timezone and who owns each of its character rows
+// (one plain read, no fight lookups): all the band line needs.
+func (s *Store) loadRaidOwnership(ctx context.Context, guildID, viewerID int64) (raidViewContext, error) {
 	tz, err := s.GuildRaidTimezone(ctx, guildID)
 	if err != nil {
 		return raidViewContext{}, err
 	}
-	roster, err := s.raidRoster(ctx, guildID, "")
-	if err != nil {
-		return raidViewContext{}, err
-	}
-	vc := raidViewContext{viewerID: viewerID, roster: roster, ownerOf: make(map[string]int64, len(roster))}
+	vc := raidViewContext{viewerID: viewerID, ownerOf: map[string]int64{}}
 	if tz != "" {
 		vc.timezone = &tz
 	}
-	for _, c := range roster {
-		vc.ownerOf[c.CharacterKey] = c.userID
+	rows, err := s.Pool.Query(ctx, `select character_key, user_id from guild_characters where guild_id = $1`, guildID)
+	if err != nil {
+		return raidViewContext{}, fmt.Errorf("guilds: raid owners: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var key string
+		var owner int64
+		if err := rows.Scan(&key, &owner); err != nil {
+			return raidViewContext{}, fmt.Errorf("guilds: raid owners: %w", err)
+		}
+		vc.ownerOf[key] = owner
+	}
+	if err := rows.Err(); err != nil {
+		return raidViewContext{}, fmt.Errorf("guilds: raid owners: %w", err)
 	}
 	return vc, nil
 }

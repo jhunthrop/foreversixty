@@ -271,3 +271,30 @@ func TestPatchRaidRewritesAndSetsTimezone(t *testing.T) {
 	moved := strings.Replace(same, stored, time.Now().Add(-2*time.Hour).UTC().Format(time.RFC3339), 1)
 	expectError(t, w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), moved), http.StatusUnprocessableEntity, "invalid")
 }
+
+func TestOfficerRaidWritesFreezeWhileContested(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	if _, err := w.h.pool.Exec(t.Context(), `update guilds set claim_contested_at = now() where id = $1`, w.gid); err != nil {
+		t.Fatal(err)
+	}
+	w.as(w.officer)
+	writes := []struct{ method, path, body string }{
+		{http.MethodPost, w.path("/raids"), raidBody(futureStart(), 0)},
+		{http.MethodPatch, w.path("/raids/%d", raid.ID), raidBody(futureStart(), 0)},
+		{http.MethodPost, w.path("/raids/%d/lock", raid.ID), ""},
+		{http.MethodPost, w.path("/raids/%d/cancel", raid.ID), ""},
+	}
+	for _, wr := range writes {
+		expectError(t, w.h.do(wr.method, wr.path, wr.body), http.StatusConflict, "claim_contested")
+	}
+}
+
+func TestPatchRefusesACancelledRaid(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.officer)
+	res := w.h.do(http.MethodPost, w.path("/raids/%d/cancel", raid.ID), "")
+	res.Body.Close()
+	expectError(t, w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), raidBody(futureStart(), 0)), http.StatusConflict, "conflict")
+}
