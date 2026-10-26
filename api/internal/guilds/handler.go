@@ -51,7 +51,10 @@ type Service struct {
 	Supporters Supporters
 	// Entitlements answers the home viewer's officer_tools flag; nil means false.
 	Entitlements Entitlements
-	Log          *slog.Logger
+	// Discord is the guild's raid channel (notify); nil leaves settings.discord out and
+	// every raid view's discord block false.
+	Discord DiscordChannels
+	Log     *slog.Logger
 }
 
 // Mount registers every /v1/guilds/{id}/... mutation route and the

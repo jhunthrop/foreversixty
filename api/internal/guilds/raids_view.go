@@ -62,8 +62,11 @@ type RaidViewer struct {
 	Characters []ViewerCharacter `json:"characters"`
 }
 
-// RaidDiscord is the raid's Discord state; Connected stays false until lane G1b.
+// RaidDiscord is the guild channel's state on a raid view (Service.raidDiscord): Available
+// when the deployment has connect on, Connected when the guild has a channel, PostDefault
+// the guild's remembered "Post to Discord" box.
 type RaidDiscord struct {
+	Available   bool `json:"available"`
 	Connected   bool `json:"connected"`
 	PostDefault bool `json:"post_default"`
 }
@@ -170,15 +173,6 @@ func (s *Store) RaidViews(ctx context.Context, guildID, viewerID int64, raids []
 	return out, nil
 }
 
-// RaidViewOf is RaidViews for one raid.
-func (s *Store) RaidViewOf(ctx context.Context, guildID, viewerID int64, raid Raid) (RaidView, error) {
-	views, err := s.RaidViews(ctx, guildID, viewerID, []Raid{raid})
-	if err != nil {
-		return RaidView{}, err
-	}
-	return views[0], nil
-}
-
 func buildRaidView(r Raid, signups []Signup, vc raidViewContext) RaidView {
 	zone := zoneOf(r.Zone)
 	v := RaidView{
@@ -186,8 +180,7 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) RaidView {
 		DurationMinutes: r.DurationMinutes, Status: r.Status, Size: zone.Size, GuildTimezone: vc.timezone,
 		NotesHTML: RenderNotes(r.Notes), Notes: r.Notes, Counts: countSignups(signups),
 		Signups: make([]SignupView, 0, len(signups)), NotSigned: []RaidCharacter{},
-		Viewer:  RaidViewer{Characters: []ViewerCharacter{}},
-		Discord: RaidDiscord{PostDefault: r.PostDefault},
+		Viewer: RaidViewer{Characters: []ViewerCharacter{}},
 	}
 	byKey := make(map[string]Signup, len(signups))
 	for _, sg := range signups {

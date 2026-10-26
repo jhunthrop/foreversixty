@@ -51,6 +51,10 @@ type Service struct {
 	// OAuth is the Discord application's OAuth; nil leaves the one-click
 	// connect off (no routes, connect false in /v1/me).
 	OAuth OAuthClient
+	// GuildStore holds the guilds' raid channels; Guilds answers an officer's standing.
+	// Either nil (or OAuth nil) leaves the guild channel routes off.
+	GuildStore *GuildStore
+	Guilds     GuildAccess
 	// CookieSecure marks the connect state cookie Secure (HTTPS deployments).
 	CookieSecure bool
 	// PublicBaseURL is the site origin the test message links to.
@@ -67,6 +71,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("DELETE /v1/notifications/discord", auth.RequireSession(s.remove))
 	mux.Handle("POST /v1/notifications/discord/test", limit(auth.RequireSession(s.test)))
 	s.mountConnect(mux)
+	s.mountGuild(mux)
 }
 
 // DiscordBlock implements auth.NotificationsView.

@@ -132,26 +132,7 @@ func (s *Store) RecordSuccess(ctx context.Context, userID int64, kind string) er
 // to the consecutive-failure counter, and at MaxFailures set disabled_at
 // (reported as disabled). A 429 or a manual test passes counts false.
 func (s *Store) RecordFailure(ctx context.Context, userID int64, kind, lastErr string, counts bool) (bool, error) {
-	step := 0
-	if counts {
-		step = 1
-	}
-	var disabled bool
-	err := s.Pool.QueryRow(ctx, `
-		update notification_webhooks set
-		  failures = failures + $3,
-		  last_error = $4,
-		  disabled_at = case when failures + $3 >= $5 then coalesce(disabled_at, now()) else disabled_at end
-		where user_id = $1 and kind = $2
-		returning disabled_at is not null`,
-		userID, kind, step, lastErr, MaxFailures).Scan(&disabled)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return false, ErrNotFound
-	}
-	if err != nil {
-		return false, fmt.Errorf("notify: record failure %d/%s: %w", userID, kind, err)
-	}
-	return disabled, nil
+	return accountFailures.record(ctx, s.Pool, lastErr, counts, userID, kind)
 }
 
 func (s *Store) mustAffect(ctx context.Context, sql string, args ...any) error {

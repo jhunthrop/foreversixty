@@ -257,7 +257,7 @@ func TestPatchRaidRewritesAndSetsTimezone(t *testing.T) {
 	var v RaidView
 	w.h.data(w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), body), &v)
 	if v.Zone != "raid:hyjal-summit" || v.Title != "Hyjal push" || v.DurationMinutes != 240 || v.Size != nil ||
-		!v.Discord.PostDefault || v.Discord.Connected || v.GuildTimezone == nil || *v.GuildTimezone != "America/New_York" {
+		v.Discord != (RaidDiscord{}) || v.GuildTimezone == nil || *v.GuildTimezone != "America/New_York" {
 		t.Fatalf("patched = %+v", v)
 	}
 	// An unchanged past start is fine on an edit; a new past start is not.

@@ -53,6 +53,8 @@ type SettingsView struct {
 	ClaimPending        *ClaimPendingView `json:"claim_pending"`
 	Claim               ClaimStateView    `json:"claim"`
 	Invite              InviteView        `json:"invite"`
+	// Discord is the guild's raid channel, for a verified officer when connect is on.
+	Discord *SettingsDiscord `json:"discord,omitempty"`
 }
 
 func (s *Store) Settings(ctx context.Context, guildID int64) (SettingsView, error) {
@@ -171,6 +173,10 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	if view.Discord, err = s.settingsDiscord(r, guildID); err != nil {
+		s.fail(w, r, "settings", err, "could not read those settings just now")
+		return
+	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }
@@ -225,6 +231,10 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "patch_settings", err, "could not change those settings just now")
 	default:
 		s.logger().Info("guilds", "op", "settings_update", "guild_id", guildID, "user_id", actor.UserID)
+		if view.Discord, err = s.settingsDiscord(r, guildID); err != nil {
+			s.fail(w, r, "patch_settings", err, "could not change those settings just now")
+			return
+		}
 		httpx.WriteOK(w, r, http.StatusOK, view)
 	}
 }

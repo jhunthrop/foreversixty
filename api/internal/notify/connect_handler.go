@@ -46,7 +46,7 @@ func (s *Service) mountConnect(mux *http.ServeMux) {
 		return
 	}
 	mux.HandleFunc("GET "+connectPath, s.browserSession(s.connect))
-	mux.HandleFunc("GET "+callbackPath, s.browserSession(s.callback))
+	mux.HandleFunc("GET "+callbackPath, s.callbackEntry)
 }
 
 // accountRedirect sends the browser back to the account page with the outcome.
@@ -116,7 +116,8 @@ func (s *Service) callback(w http.ResponseWriter, r *http.Request) {
 		s.accountRedirect(w, r, outcomeFailed)
 		return
 	}
-	if err := s.storeConnected(r.Context(), userID, code); err != nil {
+	save := func(ctx context.Context, hook OAuthWebhook) error { return s.saveConnected(ctx, userID, hook) }
+	if err := s.exchangeAndSave(r.Context(), code, save); err != nil {
 		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "connect", "err", err)
 		s.accountRedirect(w, r, outcomeFailed)
 		return
@@ -124,30 +125,43 @@ func (s *Service) callback(w http.ResponseWriter, r *http.Request) {
 	s.accountRedirect(w, r, outcomeConnected)
 }
 
-// storeConnected exchanges the code and saves the new webhook. When the save
-// fails after Discord created the webhook, the orphan is deleted. The returned
-// error never carries the code, the token or the URL.
-func (s *Service) storeConnected(ctx context.Context, userID int64, code string) error {
+// exchangeAndSave exchanges the code and hands the new webhook to save. When the save
+// fails after Discord created the webhook, the orphan is deleted. The returned error never
+// carries the code, the token or the URL.
+func (s *Service) exchangeAndSave(ctx context.Context, code string, save func(context.Context, OAuthWebhook) error) error {
 	hook, err := s.OAuth.Exchange(ctx, code)
 	if err != nil {
 		return err
 	}
-	if err := s.saveConnected(ctx, userID, hook); err != nil {
+	if err := save(ctx, hook); err != nil {
 		s.discardOrphan(ctx, hook)
 		return err
 	}
 	return nil
 }
 
+// sealHook checks the exchanged webhook (a canonical URL and a channel) and seals its URL.
+func (s *Service) sealHook(hook OAuthWebhook) (ParsedURL, []byte, error) {
+	parsed, err := ParseWebhookURL(hook.URL)
+	if err != nil {
+		return ParsedURL{}, nil, err
+	}
+	if hook.ChannelID == "" {
+		return ParsedURL{}, nil, errNoChannel
+	}
+	box, err := s.Sealer.Seal(parsed.URL())
+	if err != nil {
+		return ParsedURL{}, nil, err
+	}
+	return parsed, box, nil
+}
+
 // saveConnected seals and saves hook, then removes the member's previous
 // connected webhook from Discord.
 func (s *Service) saveConnected(ctx context.Context, userID int64, hook OAuthWebhook) error {
-	parsed, err := ParseWebhookURL(hook.URL)
+	parsed, box, err := s.sealHook(hook)
 	if err != nil {
 		return err
-	}
-	if hook.ChannelID == "" {
-		return errNoChannel
 	}
 	events := defaultEvents()
 	previous, had, err := s.Store.Get(ctx, userID, KindDiscord)
@@ -156,10 +170,6 @@ func (s *Service) saveConnected(ctx context.Context, userID int64, hook OAuthWeb
 	}
 	if had {
 		events = previous.Events
-	}
-	box, err := s.Sealer.Seal(parsed.URL())
-	if err != nil {
-		return err
 	}
 	oldURL := s.connectedURLOf(ctx, previous, had)
 	in := SaveInput{
