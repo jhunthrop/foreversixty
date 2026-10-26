@@ -216,8 +216,8 @@ export function parseGuildRaidPath(pathname: string): { guild: CharacterPath; ra
   if (parts.length !== 6 || parts[0] !== 'guild' || parts[4] !== 'raids') return null;
   const [, region, ruleset, slug, , raidId] = parts;
   if (!isRegion(region) || !isRuleset(ruleset) || !isCharacterSlug(slug)) return null;
-  if (!/^\d+$/.test(raidId ?? '')) return null;
-  return { guild: { region, ruleset, slug }, raidId: raidId as string };
+  if (raidId === undefined || !/^\d+$/.test(raidId)) return null;
+  return { guild: { region, ruleset, slug }, raidId };
 }
 
 /** Longer than any real invite token (a 32-byte value, base64url or hex is well under this). */

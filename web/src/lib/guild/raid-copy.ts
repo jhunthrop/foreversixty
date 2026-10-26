@@ -11,8 +11,6 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 /** A day further out than this is written as a date, not a weekday (spec 6.1 `{when}`). */
 const WEEKDAY_WINDOW_DAYS = 6;
-/** Spec 3.7: class in the game's order, then name. */
-const CLASS_ORDER = ['warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid'];
 
 export const raidCopy = {
   planButton: 'Plan a raid',
@@ -251,35 +249,44 @@ export function bandLine(args: BandLineArgs): string {
   return `${args.when}, ${bandClause(args)}, ${countLine(args.n, args.size)}.`;
 }
 
-function byClassThenName(a: { class: string; name: string }, b: { class: string; name: string }): number {
-  return CLASS_ORDER.indexOf(a.class) - CLASS_ORDER.indexOf(b.class) || a.name.localeCompare(b.name);
-}
-
-function groupLine(label: string, rows: readonly { class: string; name: string }[]): string | null {
-  if (rows.length === 0) return null;
-  return `${label} (${rows.length}): ${[...rows]
-    .sort(byClassThenName)
-    .map((row) => row.name)
-    .join(', ')}`;
-}
-
 function signupsIn(signups: readonly GuildRaidSignup[], state: GuildSignupState, role?: GuildRaidRole) {
   return signups.filter((s) => s.state === state && (role === undefined || s.role === role));
 }
 
-/** The plain-text sign-up list an officer pastes into Discord or a whisper. Empty groups are left out. */
+/** `8:00 pm CST`: the guild clock with its zone abbreviation. */
+function guildClock(startsAt: Date, tz: string, locale: string): string {
+  const zone = new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeZone: tz, timeZoneName: 'short' })
+    .formatToParts(startsAt)
+    .find((part) => part.type === 'timeZoneName')?.value;
+  return `${clockText(startsAt, tz, locale, true)} ${zone ?? tz}`;
+}
+
+function namesLine(label: string, rows: readonly GuildRaidSignup[]): string | null {
+  return rows.length === 0 ? null : `${label}: ${rows.map((row) => row.name).join(', ')}`;
+}
+
+function breakdownList(tanks: number, healers: number, dps: number): string {
+  return roleBreakdown(tanks, healers, dps).replaceAll(' · ', ', ');
+}
+
+/** Spec 4 "Copy the sign-up list": plain text in guild time, groups in roster order, empty groups left out. */
 export function copyList(view: GuildRaidView, tz: string, locale: string = DEFAULT_LOCALE): string {
   const startsAt = new Date(view.starts_at);
   const heads = raidCopy.subheads;
-  const header = `${view.title} · ${dateLabel(startsAt, tz, locale)}, ${guildTimeLabel(startsAt, tz, locale)}`;
+  const { counts } = view;
+  const header = `${view.title} · ${dateLabel(startsAt, tz, locale)}, ${guildClock(startsAt, tz, locale)}`;
+  const size =
+    view.size === null
+      ? `${counts.in + counts.late} signed up`
+      : `${counts.in + counts.late} of ${view.size}`;
   const groups = [
-    groupLine(heads.tanks, signupsIn(view.signups, 'in', 'tank')),
-    groupLine(heads.healers, signupsIn(view.signups, 'in', 'healer')),
-    groupLine(heads.dps, signupsIn(view.signups, 'in', 'dps')),
-    groupLine(heads.late, signupsIn(view.signups, 'late')),
-    groupLine(heads.bench, signupsIn(view.signups, 'bench')),
-    groupLine(heads.out, signupsIn(view.signups, 'out')),
-    groupLine(heads.notSigned, view.not_signed),
+    namesLine(heads.tanks, signupsIn(view.signups, 'in', 'tank')),
+    namesLine(heads.healers, signupsIn(view.signups, 'in', 'healer')),
+    namesLine(heads.dps, signupsIn(view.signups, 'in', 'dps')),
+    namesLine(heads.late, signupsIn(view.signups, 'late')),
+    namesLine(heads.bench, signupsIn(view.signups, 'bench')),
+    namesLine(heads.out, signupsIn(view.signups, 'out')),
   ];
-  return [header, ...groups.filter((line): line is string => line !== null)].join('\n');
+  const lines = [header, `${size}: ${breakdownList(counts.tanks, counts.healers, counts.dps)}`];
+  return [...lines, ...groups.filter((line): line is string => line !== null)].join('\n');
 }
