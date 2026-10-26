@@ -229,7 +229,8 @@ func (s *Store) writeMatch(ctx context.Context, guildID, raidID int64, reportID,
 	raid, err := scanRaid(tx.QueryRow(ctx, `
 		update guild_raids set report_id = $3,
 			pre_done_status = case when status = 'done' then pre_done_status else status end,
-			status = 'done', matched_by = $4, matched_at = now(), updated_at = now()
+			status = 'done', matched_by = $4, matched_at = now(), updated_at = now(),
+			report_posted_at = case when report_id is distinct from $3 then null else report_posted_at end
 		where id = $1 and guild_id = $2 and status = any($5) returning `+raidColumns,
 		raidID, guildID, reportID, how, []string{RaidPlanned, RaidLocked, RaidDone}))
 	if isUniqueViolation(err) {
@@ -292,7 +293,7 @@ func (s *Store) ClearMatch(ctx context.Context, guildID, raidID, by int64) (Raid
 func releaseLog(ctx context.Context, tx pgx.Tx, raidID int64, reportID string, by int64) (Raid, error) {
 	raid, err := scanRaid(tx.QueryRow(ctx, `
 		update guild_raids set status = coalesce(pre_done_status, 'planned'), pre_done_status = null,
-			report_id = null, matched_by = null, matched_at = null, updated_at = now()
+			report_id = null, matched_by = null, matched_at = null, report_posted_at = null, updated_at = now()
 		where id = $1 returning `+raidColumns, raidID))
 	if err != nil {
 		return Raid{}, fmt.Errorf("guilds: clear match: restore: %w", err)

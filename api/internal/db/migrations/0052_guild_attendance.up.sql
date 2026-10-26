@@ -16,7 +16,8 @@ create index reports_matched_guild_idx on reports (matched_guild_id) where match
 
 -- A raid record learns its log. pre_done_status is what status returns to when an officer clears
 -- the match; matched_by says whether the auto-matcher or an officer picked the log; matched_at is
--- when; report_posted_at guards the one report_ready post per raid.
+-- when; report_posted_at guards the one report_ready post per raid and log (a clear or a re-match
+-- to another log resets it).
 alter table guild_raids add column pre_done_status text check (pre_done_status in ('planned', 'locked'));
 alter table guild_raids add column matched_by text check (matched_by in ('auto', 'hand'));
 alter table guild_raids add column matched_at timestamptz;
