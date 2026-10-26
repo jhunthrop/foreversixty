@@ -86,6 +86,8 @@ type Service struct {
 	// nobody.
 	Completed Completed
 	Log       *slog.Logger
+
+	completions completions
 }
 
 // Mount registers the report routes that are not ingest.
@@ -514,7 +516,7 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if p.GuildID != nil && updated.Status == StatusComplete {
-		callCompleted(context.WithoutCancel(r.Context()), s.Completed, updated.ID)
+		s.completions.run(r.Context(), func(ctx context.Context) { callCompleted(ctx, s.Completed, updated.ID) })
 	}
 	view, err := s.view(r.Context(), updated)
 	if err != nil {

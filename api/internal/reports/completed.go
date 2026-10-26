@@ -3,7 +3,30 @@ package reports
 import (
 	"context"
 	"log/slog"
+	"sync"
+	"time"
 )
+
+// completionTimeout bounds the completion work a request starts and no longer waits for.
+const completionTimeout = 15 * time.Second
+
+// completions runs a request's completion work detached from it, so a slow database never
+// stalls the caller's answer: the work keeps the request's values but not its cancellation, and
+// gets completionTimeout of its own. Each step logs its own failure. wait is for tests.
+type completions struct{ wg sync.WaitGroup }
+
+func (c *completions) run(parent context.Context, work func(ctx context.Context)) {
+	c.wg.Add(1)
+	go func() {
+		defer c.wg.Done()
+		ctx, cancel := context.WithTimeout(context.WithoutCancel(parent), completionTimeout)
+		defer cancel()
+		work(ctx)
+	}()
+}
+
+// wait blocks until every detached completion has finished.
+func (c *completions) wait() { c.wg.Wait() }
 
 // Completed is told of a report that has just become complete, or whose guild was just set
 // on a complete report. It re-reads the report itself and never fails its caller: the report

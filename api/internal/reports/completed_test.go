@@ -42,6 +42,7 @@ func TestLiveCompleteLearnsTheGuildAndZoneThenCallsTheHook(t *testing.T) {
 	if res.StatusCode != http.StatusNoContent {
 		t.Fatalf("status = %d, want 204", res.StatusCode)
 	}
+	h.ingest.completions.wait()
 	if got := h.reportMatchedGuild(id); !sameGuild(got, g) || h.reportGuild(id) != nil {
 		t.Fatalf("guild_id = %v, want %d", got, g)
 	}
@@ -67,6 +68,7 @@ func TestPatchSettingTheGuildOfACompleteReportCallsTheHook(t *testing.T) {
 	res.Body.Close()
 	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"guild_id":`+strconv.FormatInt(g, 10)+`}`)
 	res.Body.Close()
+	h.service.completions.wait()
 	if got := h.completed.all(); len(got) != 0 {
 		t.Fatalf("a live report's patch called the hook: %v", got)
 	}
@@ -76,11 +78,13 @@ func TestPatchSettingTheGuildOfACompleteReportCallsTheHook(t *testing.T) {
 	}
 	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Renamed"}`)
 	res.Body.Close()
+	h.service.completions.wait()
 	if got := h.completed.all(); len(got) != 0 {
 		t.Fatalf("a patch that sets no guild called the hook: %v", got)
 	}
 	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"guild_id":`+strconv.FormatInt(g, 10)+`}`)
 	res.Body.Close()
+	h.service.completions.wait()
 	if res.StatusCode != http.StatusOK {
 		t.Fatalf("patch = %d, want 200", res.StatusCode)
 	}
