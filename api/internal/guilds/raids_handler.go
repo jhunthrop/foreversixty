@@ -9,7 +9,6 @@ package guilds
 import (
 	"errors"
 	"net/http"
-	"slices"
 	"strconv"
 	"time"
 
@@ -76,44 +75,70 @@ func (s *Service) memberRaid(w http.ResponseWriter, r *http.Request, op string) 
 	return guildID, raid, true
 }
 
+// officerPlanForbidden is the forbidden body for a non-officer on the officer raid routes.
+const officerPlanForbidden = "you must be a verified officer of this guild to plan raids"
+
 // officerRaidGate runs the officer write checks in order: a verified officer or leader
-// (forbidden), the guild plan (guild_plan_required), and the claim freeze (claim_contested).
-func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op string) (int64, bool) {
+// (forbidden, with forbiddenMessage), the guild plan (guild_plan_required), and the claim
+// freeze (claim_contested).
+func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, forbiddenMessage string) (int64, bool) {
 	guildID, ok := guildIDFrom(r)
 	if !ok {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return 0, false
 	}
-	actor := auth.ActorFrom(r.Context())
 	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
 	if err != nil {
 		s.fail(w, r, op, err, raidFailMessage)
 		return 0, false
 	}
 	if !allowed {
-		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
-			"you must be a verified officer of this guild to plan raids", nil)
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", forbiddenMessage, nil)
 		return 0, false
 	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, raidPlanRequiredMessage, op, raidFailMessage) {
+	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, raidPlanRequiredMessage, op, raidFailMessage) {
 		return 0, false
 	}
-	frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator())
-	if err != nil {
-		s.fail(w, r, op, err, raidFailMessage)
-		return 0, false
-	}
-	if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+	if !s.officerNotFrozen(w, r, guildID, op) {
 		return 0, false
 	}
 	return guildID, true
 }
 
+// officerNotFrozen answers 409 claim_contested and returns false while the guild's claim is
+// contested (freezeCheck); true when officer powers may run.
+func (s *Service) officerNotFrozen(w http.ResponseWriter, r *http.Request, guildID int64, op string) bool {
+	frozen, err := s.freezeCheck(r.Context(), guildID, auth.ActorFrom(r.Context()).IsModerator())
+	if err != nil {
+		s.fail(w, r, op, err, raidFailMessage)
+		return false
+	}
+	if frozen {
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
+			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+		return false
+	}
+	return true
+}
+
+// writeRaidWriteErr answers a failed raid write; true when err is nil.
+func (s *Service) writeRaidWriteErr(w http.ResponseWriter, r *http.Request, op string, err error) bool {
+	switch {
+	case err == nil:
+		return true
+	case errors.Is(err, ErrNotFound):
+		writeRaidNotFound(w, r)
+	case errors.Is(err, ErrRaidStatus):
+		httpx.WriteError(w, r, http.StatusConflict, "conflict", "that raid's status does not allow this", nil)
+	default:
+		s.fail(w, r, op, err, raidFailMessage)
+	}
+	return false
+}
+
 // officerRaid is officerRaidGate plus the {raid} the route names, 404 when the guild has none.
 func (s *Service) officerRaid(w http.ResponseWriter, r *http.Request, op string) (int64, Raid, bool) {
-	guildID, ok := s.officerRaidGate(w, r, op)
+	guildID, ok := s.officerRaidGate(w, r, op, officerPlanForbidden)
 	if !ok {
 		return 0, Raid{}, false
 	}
@@ -153,7 +178,7 @@ func (s *Service) writeRaidView(w http.ResponseWriter, r *http.Request, op strin
 }
 
 func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
-	guildID, ok := s.officerRaidGate(w, r, "raid_create")
+	guildID, ok := s.officerRaidGate(w, r, "raid_create", officerPlanForbidden)
 	if !ok {
 		return
 	}
@@ -171,16 +196,13 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 	for i := range inputs {
 		inputs[i].GuildID, inputs[i].CreatedBy = guildID, actor.UserID
 	}
-	raids, err := s.Store.CreateRaids(r.Context(), guildID, inputs)
+	raids, err := s.Store.CreateRaids(r.Context(), guildID, plan.timezone, inputs)
 	if errors.Is(err, ErrRaidCap) {
 		httpx.WriteError(w, r, http.StatusUnprocessableEntity, "raid_cap", "A guild plans at most 12 raids ahead.", nil)
 		return
 	}
 	if err != nil {
 		s.fail(w, r, "raid_create", err, raidFailMessage)
-		return
-	}
-	if !s.saveRaidTimezone(w, r, guildID, plan.timezone, "raid_create") {
 		return
 	}
 	views, err := s.Store.RaidViews(r.Context(), guildID, actor.UserID, raids)
@@ -192,26 +214,9 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteOK(w, r, http.StatusCreated, map[string][]RaidView{"raids": views})
 }
 
-// saveRaidTimezone stores tz as the guild's raid timezone when it differs.
-func (s *Service) saveRaidTimezone(w http.ResponseWriter, r *http.Request, guildID int64, tz, op string) bool {
-	current, err := s.Store.GuildRaidTimezone(r.Context(), guildID)
-	if err == nil && current != tz {
-		err = s.Store.SetGuildRaidTimezone(r.Context(), guildID, tz)
-	}
-	if err != nil {
-		s.fail(w, r, op, err, raidFailMessage)
-		return false
-	}
-	return true
-}
-
 func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	guildID, raid, ok := s.officerRaid(w, r, "raid_update")
 	if !ok {
-		return
-	}
-	if raid.Status != RaidPlanned && raid.Status != RaidLocked {
-		httpx.WriteError(w, r, http.StatusConflict, "conflict", "a cancelled or logged raid cannot be edited", nil)
 		return
 	}
 	var req raidRequest
@@ -223,16 +228,9 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 		writeInvalid(w, r, fields)
 		return
 	}
-	updated, err := s.Store.UpdateRaid(r.Context(), guildID, raid.ID, plan.input)
-	if errors.Is(err, ErrNotFound) {
-		writeRaidNotFound(w, r)
-		return
-	}
-	if err != nil {
-		s.fail(w, r, "raid_update", err, raidFailMessage)
-		return
-	}
-	if !s.saveRaidTimezone(w, r, guildID, plan.timezone, "raid_update") {
+	// The store refuses a cancelled or done raid in the same write (409 conflict).
+	updated, err := s.Store.UpdateRaid(r.Context(), guildID, raid.ID, plan.timezone, plan.input)
+	if !s.writeRaidWriteErr(w, r, "raid_update", err) {
 		return
 	}
 	s.writeRaidView(w, r, "raid_update", guildID, updated, http.StatusOK)
@@ -247,17 +245,10 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 		if !ok {
 			return
 		}
-		if !slices.Contains(move.from, raid.Status) {
-			httpx.WriteError(w, r, http.StatusConflict, "conflict", "that raid is "+raid.Status, nil)
-			return
-		}
-		updated, err := s.Store.SetRaidStatus(r.Context(), guildID, raid.ID, move.to)
-		if errors.Is(err, ErrNotFound) {
-			writeRaidNotFound(w, r)
-			return
-		}
-		if err != nil {
-			s.fail(w, r, op, err, raidFailMessage)
+		// Guarded by the current status in the write itself, so racing moves cannot overwrite
+		// each other (409 conflict when the status no longer allows this one).
+		updated, err := s.Store.SetRaidStatus(r.Context(), guildID, raid.ID, move.from, move.to)
+		if !s.writeRaidWriteErr(w, r, op, err) {
 			return
 		}
 		s.logger().Info("guilds", "op", op, "guild_id", guildID, "raid_id", raid.ID,

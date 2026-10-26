@@ -42,7 +42,7 @@ func (f raidFixture) createRaid(t *testing.T, startsAt time.Time) Raid {
 
 func (f raidFixture) signup(raidID int64, key, state string) Signup {
 	return Signup{RaidID: raidID, CharacterKey: key, Name: key, Class: "warrior", Spec: "arms",
-		Role: "dps", State: state, SignedBy: f.userID}
+		Role: "dps", State: state, SignedBy: f.userID, ActedBy: f.userID}
 }
 
 func TestCreateRaidRefusesTheThirteenth(t *testing.T) {
@@ -59,7 +59,7 @@ func TestCreateRaidRefusesTheThirteenth(t *testing.T) {
 	if _, err := f.store.CreateRaid(ctx, f.input(start)); !errors.Is(err, ErrRaidCap) {
 		t.Fatalf("13th raid: err = %v, want ErrRaidCap", err)
 	}
-	if _, err := f.store.SetRaidStatus(ctx, f.guildID, first.ID, RaidCancelled); err != nil {
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, first.ID, editableStatuses, RaidCancelled); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := f.store.CreateRaid(ctx, f.input(start)); err != nil {
@@ -76,7 +76,7 @@ func TestPlannedRaidsWindow(t *testing.T) {
 	cancelledFuture := f.createRaid(t, now.Add(2*time.Hour))
 	cancelledPast := f.createRaid(t, now.Add(-1*time.Hour))
 	for _, id := range []int64{cancelledFuture.ID, cancelledPast.ID} {
-		if _, err := f.store.SetRaidStatus(ctx, f.guildID, id, RaidCancelled); err != nil {
+		if _, err := f.store.SetRaidStatus(ctx, f.guildID, id, editableStatuses, RaidCancelled); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -138,7 +138,7 @@ func TestUpsertSignupBenchesOnlyOwnCharacters(t *testing.T) {
 	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
 	other := seedUser(t, f.store.Pool, "other@example.com")
 	theirs := f.signup(raid.ID, "theirs", "in")
-	theirs.SignedBy = other
+	theirs.SignedBy, theirs.ActedBy = other, other
 	if _, err := f.store.UpsertSignup(ctx, theirs); err != nil {
 		t.Fatal(err)
 	}
@@ -184,7 +184,7 @@ func TestUpsertSignupIsAtomicUnderRace(t *testing.T) {
 			t.Fatalf("iteration %d: %d characters in, want exactly 1: %+v", i, in, got)
 		}
 		// Free the cap for the next iteration.
-		if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, RaidCancelled); err != nil {
+		if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, editableStatuses, RaidCancelled); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -235,14 +235,14 @@ func TestCreateRaidsIsAllOrNothing(t *testing.T) {
 		f.createRaid(t, startsAt)
 	}
 	four := []RaidInput{f.input(startsAt), f.input(startsAt), f.input(startsAt), f.input(startsAt)}
-	if _, err := f.store.CreateRaids(ctx, f.guildID, four); !errors.Is(err, ErrRaidCap) {
+	if _, err := f.store.CreateRaids(ctx, f.guildID, "", four); !errors.Is(err, ErrRaidCap) {
 		t.Fatalf("err = %v, want ErrRaidCap", err)
 	}
 	planned, err := f.store.PlannedRaids(ctx, f.guildID, time.Now())
 	if err != nil || len(planned) != RaidCap-3 {
 		t.Fatalf("planned = %d err=%v, want %d (nothing inserted)", len(planned), err, RaidCap-3)
 	}
-	if got, err := f.store.CreateRaids(ctx, f.guildID, four[:3]); err != nil || len(got) != 3 {
+	if got, err := f.store.CreateRaids(ctx, f.guildID, "", four[:3]); err != nil || len(got) != 3 {
 		t.Fatalf("three to the cap: %d err=%v", len(got), err)
 	}
 }
@@ -251,7 +251,7 @@ func TestUpsertSignupRefusesADoneRaidLikeLocked(t *testing.T) {
 	f := newRaidFixture(t)
 	ctx := context.Background()
 	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
-	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, RaidDone); err != nil {
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, editableStatuses, RaidDone); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := f.store.UpsertSignup(ctx, f.signup(raid.ID, "a", "in")); !errors.Is(err, ErrRaidLocked) {
@@ -269,10 +269,10 @@ func TestRaidWritesAreScopedToTheGuild(t *testing.T) {
 	ctx := context.Background()
 	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
 	other := seedGuild(t, f.store.Pool, "Elsewhere")
-	if _, err := f.store.UpdateRaid(ctx, other, raid.ID, f.input(raid.StartsAt)); !errors.Is(err, ErrNotFound) {
+	if _, err := f.store.UpdateRaid(ctx, other, raid.ID, "", f.input(raid.StartsAt)); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("UpdateRaid across guilds: err = %v, want ErrNotFound", err)
 	}
-	if _, err := f.store.SetRaidStatus(ctx, other, raid.ID, RaidCancelled); !errors.Is(err, ErrNotFound) {
+	if _, err := f.store.SetRaidStatus(ctx, other, raid.ID, editableStatuses, RaidCancelled); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("SetRaidStatus across guilds: err = %v, want ErrNotFound", err)
 	}
 }
@@ -281,7 +281,7 @@ func TestUpsertSignupRefusesLockedAndCancelled(t *testing.T) {
 	f := newRaidFixture(t)
 	ctx := context.Background()
 	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
-	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, RaidLocked); err != nil {
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, editableStatuses, RaidLocked); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := f.store.UpsertSignup(ctx, f.signup(raid.ID, "a", "in")); !errors.Is(err, ErrRaidLocked) {
@@ -292,7 +292,7 @@ func TestUpsertSignupRefusesLockedAndCancelled(t *testing.T) {
 	if _, err := f.store.UpsertSignup(ctx, officer); err != nil {
 		t.Fatalf("officer on locked: %v", err)
 	}
-	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, RaidCancelled); err != nil {
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, editableStatuses, RaidCancelled); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := f.store.UpsertSignup(ctx, officer); !errors.Is(err, ErrRaidCancelled) {
@@ -309,7 +309,7 @@ func TestRaidCrudAndTimezone(t *testing.T) {
 	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
 	in := f.input(raid.StartsAt)
 	in.Title, in.Notes = "Renamed", "bring flasks"
-	updated, err := f.store.UpdateRaid(ctx, f.guildID, raid.ID, in)
+	updated, err := f.store.UpdateRaid(ctx, f.guildID, raid.ID, "", in)
 	if err != nil || updated.Title != "Renamed" || updated.Notes != "bring flasks" {
 		t.Fatalf("UpdateRaid = %+v err=%v", updated, err)
 	}
@@ -328,5 +328,95 @@ func TestRaidCrudAndTimezone(t *testing.T) {
 	}
 	if tz, err := f.store.GuildRaidTimezone(ctx, f.guildID); err != nil || tz != "America/Chicago" {
 		t.Fatalf("tz = %q err=%v", tz, err)
+	}
+	if _, err := f.store.UpdateRaid(ctx, f.guildID, raid.ID, "America/New_York", in); err != nil {
+		t.Fatal(err)
+	}
+	if tz, err := f.store.GuildRaidTimezone(ctx, f.guildID); err != nil || tz != "America/New_York" {
+		t.Fatalf("tz after UpdateRaid = %q err=%v", tz, err)
+	}
+}
+
+func TestRaidWritesGuardTheStatus(t *testing.T) {
+	f := newRaidFixture(t)
+	ctx := context.Background()
+	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, []string{RaidLocked}, RaidPlanned); !errors.Is(err, ErrRaidStatus) {
+		t.Fatalf("unlock a planned raid: err = %v, want ErrRaidStatus", err)
+	}
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, editableStatuses, RaidCancelled); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.store.UpdateRaid(ctx, f.guildID, raid.ID, "", f.input(raid.StartsAt)); !errors.Is(err, ErrRaidStatus) {
+		t.Fatalf("edit a cancelled raid: err = %v, want ErrRaidStatus", err)
+	}
+	if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID+999, editableStatuses, RaidLocked); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("missing raid: err = %v, want ErrNotFound", err)
+	}
+}
+
+// TestUnlockRacingCancelEndsCancelled: an unlock (locked → planned) and a cancel racing on a
+// locked raid can never bring the cancelled raid back to planned.
+func TestUnlockRacingCancelEndsCancelled(t *testing.T) {
+	f := newRaidFixture(t)
+	ctx := context.Background()
+	for i := 0; i < raceIterations; i++ {
+		raid := f.createRaid(t, time.Now().Add(24*time.Hour))
+		if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, []string{RaidPlanned}, RaidLocked); err != nil {
+			t.Fatal(err)
+		}
+		moves := []struct {
+			from []string
+			to   string
+		}{
+			{[]string{RaidLocked}, RaidPlanned},
+			{editableStatuses, RaidCancelled},
+		}
+		start := make(chan struct{})
+		var wg sync.WaitGroup
+		for _, m := range moves {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				<-start
+				if _, err := f.store.SetRaidStatus(ctx, f.guildID, raid.ID, m.from, m.to); err != nil && !errors.Is(err, ErrRaidStatus) {
+					t.Error(err)
+				}
+			}()
+		}
+		close(start)
+		wg.Wait()
+		got, _, err := f.store.GetRaid(ctx, f.guildID, raid.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got.Status != RaidCancelled {
+			t.Fatalf("iteration %d: status %q, want cancelled", i, got.Status)
+		}
+	}
+}
+
+func TestUpsertSignupRecordsTheActor(t *testing.T) {
+	f := newRaidFixture(t)
+	ctx := context.Background()
+	raid := f.createRaid(t, time.Now().Add(24*time.Hour))
+	officer := seedUser(t, f.store.Pool, "acting-officer@example.com")
+	if _, err := f.store.UpsertSignup(ctx, f.signup(raid.ID, "first", "in")); err != nil {
+		t.Fatal(err)
+	}
+	sg := f.signup(raid.ID, "second", "in")
+	sg.ActedBy = officer
+	if _, err := f.store.UpsertSignup(ctx, sg); err != nil {
+		t.Fatal(err)
+	}
+	got, err := f.store.RaidSignups(ctx, raid.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, s := range got {
+		if s.SignedBy != f.userID || s.ActedBy != officer {
+			t.Fatalf("%s: signed_by %d acted_by %d, want %d and %d (the bench move is the officer's too)",
+				s.CharacterKey, s.SignedBy, s.ActedBy, f.userID, officer)
+		}
 	}
 }

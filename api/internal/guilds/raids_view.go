@@ -320,7 +320,7 @@ func (s *Store) NextRaidFor(ctx context.Context, guildID, viewerID int64, header
 	if err != nil || !ok {
 		return nil, err
 	}
-	vc, err := s.loadRaidViewContext(ctx, guildID, viewerID)
+	vc, err := s.loadRaidOwnership(ctx, guildID, viewerID)
 	if err != nil {
 		return nil, err
 	}

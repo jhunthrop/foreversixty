@@ -21,6 +21,9 @@ const signupsPerMinute = 30
 
 const signupFailMessage = "could not save that sign-up just now"
 
+// signupNotYoursMessage is the forbidden body for a member answering for another's character.
+const signupNotYoursMessage = "You can only sign up your own characters."
+
 // signupAnswerView is the PUT's answer: the raid as it now stands and the character R3 moved
 // to bench, null when none.
 type signupAnswerView struct {
@@ -75,14 +78,18 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 		role = char.defaultRole()
 	}
 	// SignedBy is the character's account, not the caller: R3 groups by it, so an officer's
-	// write for a member benches the member's other character, never the officer's.
+	// write for a member benches the member's other character, never the officer's. ActedBy
+	// records the caller.
+	actorID := auth.ActorFrom(r.Context()).UserID
 	moved, err := s.Store.UpsertSignup(r.Context(), Signup{
 		RaidID: raid.ID, CharacterKey: char.CharacterKey, Name: char.Name, Class: char.Class, Spec: char.Spec,
-		Role: role, State: req.State, Note: req.Note, SignedBy: char.userID, AsOfficer: asOfficer,
+		Role: role, State: req.State, Note: req.Note, SignedBy: char.userID, ActedBy: actorID, AsOfficer: asOfficer,
 	})
 	if !s.writeSignupErr(w, r, err) {
 		return
 	}
+	s.logger().Info("guilds", "op", "raid_signup", "guild_id", guildID, "raid_id", raid.ID,
+		"user_id", char.userID, "actor", actorID, "character_key", char.CharacterKey, "as_officer", asOfficer)
 	s.writeSignupAnswer(w, r, guildID, raid.ID, moved)
 }
 
@@ -92,7 +99,7 @@ func (s *Service) signupStanding(w http.ResponseWriter, r *http.Request, guildID
 	userID := auth.ActorFrom(r.Context()).UserID
 	if char.userID != userID {
 		// Someone else's character: the full officer gate (rank, plan, freeze).
-		if _, ok := s.officerRaidGate(w, r, "raid_signup"); !ok {
+		if _, ok := s.officerRaidGate(w, r, "raid_signup", signupNotYoursMessage); !ok {
 			return false, false
 		}
 		if !char.verified {
@@ -113,7 +120,14 @@ func (s *Service) signupStanding(w http.ResponseWriter, r *http.Request, guildID
 		s.fail(w, r, "raid_signup", err, signupFailMessage)
 		return false, false
 	}
-	return officer && s.officerTools(r.Context(), guildID, userID), true
+	if !officer || !s.officerTools(r.Context(), guildID, userID) {
+		return false, true
+	}
+	// Writing to a locked raid is an officer power, frozen like the others.
+	if !s.officerNotFrozen(w, r, guildID, "raid_signup") {
+		return false, false
+	}
+	return true, true
 }
 
 // writeSignupErr answers a failed UpsertSignup; true when err is nil.

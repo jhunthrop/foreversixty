@@ -26,7 +26,8 @@ const (
 
 // Signup is one character's answer for a raid. Name, Class and Spec are a snapshot the
 // caller supplies. AsOfficer is a write-time flag, never stored: it lets an officer write to
-// a locked raid.
+// a locked raid. SignedBy is the character's account (R3 groups by it); ActedBy is who made
+// the write, the account itself or an officer answering for it.
 type Signup struct {
 	RaidID       int64
 	CharacterKey string
@@ -37,6 +38,7 @@ type Signup struct {
 	State        string
 	Note         string
 	SignedBy     int64
+	ActedBy      int64
 	UpdatedAt    time.Time
 	AsOfficer    bool
 }
@@ -112,9 +114,9 @@ func checkRaidOpen(ctx context.Context, tx pgx.Tx, sg Signup) error {
 
 func benchOtherOwn(ctx context.Context, tx pgx.Tx, sg Signup) (*string, error) {
 	rows, err := tx.Query(ctx, `
-		update guild_raid_signups set state = 'bench', updated_at = now()
+		update guild_raid_signups set state = 'bench', acted_by = $4, updated_at = now()
 		where raid_id = $1 and signed_by = $2 and character_key <> $3 and state in ('in','late')
-		returning name`, sg.RaidID, sg.SignedBy, sg.CharacterKey)
+		returning name`, sg.RaidID, sg.SignedBy, sg.CharacterKey, sg.ActedBy)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: upsert signup: bench others: %w", err)
 	}
@@ -137,12 +139,13 @@ func benchOtherOwn(ctx context.Context, tx pgx.Tx, sg Signup) (*string, error) {
 
 func writeSignup(ctx context.Context, tx pgx.Tx, sg Signup) error {
 	if _, err := tx.Exec(ctx, `
-		insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, note, signed_by)
-		values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by)
+		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 		on conflict (raid_id, character_key) do update set
 			name = excluded.name, class = excluded.class, spec = excluded.spec, role = excluded.role,
-			state = excluded.state, note = excluded.note, signed_by = excluded.signed_by, updated_at = now()`,
-		sg.RaidID, sg.CharacterKey, sg.Name, sg.Class, sg.Spec, sg.Role, sg.State, sg.Note, sg.SignedBy); err != nil {
+			state = excluded.state, note = excluded.note, signed_by = excluded.signed_by,
+			acted_by = excluded.acted_by, updated_at = now()`,
+		sg.RaidID, sg.CharacterKey, sg.Name, sg.Class, sg.Spec, sg.Role, sg.State, sg.Note, sg.SignedBy, sg.ActedBy); err != nil {
 		return fmt.Errorf("guilds: upsert signup: write: %w", err)
 	}
 	return nil
@@ -168,7 +171,7 @@ func (s *Store) SignupsByRaid(ctx context.Context, raidIDs []int64) (map[int64][
 		return out, nil
 	}
 	rows, err := s.Pool.Query(ctx, `
-		select raid_id, character_key, name, class, spec, role, state, note, signed_by, updated_at
+		select raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by, updated_at
 		from guild_raid_signups where raid_id = any($1) order by raid_id, name, character_key`, raidIDs)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: raid signups: %w", err)
@@ -177,7 +180,7 @@ func (s *Store) SignupsByRaid(ctx context.Context, raidIDs []int64) (map[int64][
 	for rows.Next() {
 		var sg Signup
 		if err := rows.Scan(&sg.RaidID, &sg.CharacterKey, &sg.Name, &sg.Class, &sg.Spec, &sg.Role,
-			&sg.State, &sg.Note, &sg.SignedBy, &sg.UpdatedAt); err != nil {
+			&sg.State, &sg.Note, &sg.SignedBy, &sg.ActedBy, &sg.UpdatedAt); err != nil {
 			return nil, fmt.Errorf("guilds: raid signups: %w", err)
 		}
 		out[sg.RaidID] = append(out[sg.RaidID], sg)

@@ -22,7 +22,10 @@ create table guild_raid_signups (
   role text not null check (role in ('tank','healer','dps')),
   state text not null check (state in ('in','late','bench','out')),
   note text not null default '' check (char_length(note) <= 140),
+  -- signed_by is the character's account (rule R3 groups by it); acted_by is who wrote the
+  -- row, the account itself or the officer answering for it.
   signed_by bigint not null references users(id) on delete restrict,
+  acted_by bigint not null references users(id) on delete restrict,
   updated_at timestamptz not null default now(),
   primary key (raid_id, character_key)
 );
