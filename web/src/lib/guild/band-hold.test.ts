@@ -30,6 +30,22 @@ describe('the guild band hold', () => {
     expect(readBandHold(storage, KEY, 'phone')).toBe(208);
   });
 
+  it('keeps the smaller of the stored and the measured height, so a transient tall band never sticks', () => {
+    const storage = memoryStorage();
+    rememberBandHold(storage, KEY, 'desktop', 132);
+    rememberBandHold(storage, KEY, 'desktop', 160);
+    expect(readBandHold(storage, KEY, 'desktop')).toBe(132);
+    rememberBandHold(storage, KEY, 'desktop', 120);
+    expect(readBandHold(storage, KEY, 'desktop')).toBe(120);
+  });
+
+  it('replaces a stored value it does not trust', () => {
+    const storage = memoryStorage();
+    storage.setItem(KEY, '{"desktop":-4}');
+    rememberBandHold(storage, KEY, 'desktop', 132);
+    expect(readBandHold(storage, KEY, 'desktop')).toBe(132);
+  });
+
   it('forgets the hold when the viewer is no longer a verified member', () => {
     const storage = memoryStorage();
     rememberBandHold(storage, KEY, 'desktop', 132);

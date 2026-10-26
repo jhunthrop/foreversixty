@@ -81,6 +81,27 @@ test.describe('a member signs up (§9, R3)', () => {
     await expect(page.getByTestId('raid-roster-dps')).toContainText(VIEWER_MEMBER);
   });
 
+  test('a note typed and then a segment pressed: one save carries both', async ({ page }) => {
+    const stub = await openRaid(page, { viewer: 'member' });
+    await page.getByTestId(stripId('note', VIEWER_MEMBER)).fill('late by 10');
+    await segment(page, VIEWER_MEMBER, 'late').click();
+    await expect(page.getByTestId(stripId('status', VIEWER_MEMBER))).toHaveText(raidCopy.stripStatus.saved);
+    const puts = writesTo(stub, 'PUT', /signups\/us\/pvp\/zulmara$/);
+    expect(puts.map((w) => w.body)).toEqual([{ state: 'late', role: 'dps', note: 'late by 10' }]);
+  });
+
+  test('a segment pressed while the note saves is sent when that save settles, never dropped', async ({
+    page,
+  }) => {
+    const stub = await openRaid(page, { viewer: 'member' });
+    await page.getByTestId(stripId('note', MEMBER_ALT)).fill('late by 10');
+    await segment(page, MEMBER_ALT, 'late').click();
+    await expect(segment(page, MEMBER_ALT, 'late')).toHaveAttribute('aria-checked', 'true');
+    await expect(page.getByTestId(stripId('status', MEMBER_ALT))).toHaveText(raidCopy.stripStatus.saved);
+    const puts = writesTo(stub, 'PUT', /signups\/us\/pvp\/duskstrider$/).map((w) => w.body);
+    expect(puts.at(-1)).toEqual({ state: 'late', role: 'dps', note: 'late by 10' });
+  });
+
   test('from the band line: the segments act on the character the sentence names', async ({ page }) => {
     const stub = await stubGuildRaids(page, { viewer: 'member' });
     await page.clock.install({ time: NOW });
@@ -182,37 +203,44 @@ test.describe('race lines take focus (§4 "Races")', () => {
 test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
   test('every officer control is present and disabled, and Copy still copies', async ({ browser }) => {
     const live = await browser.newPage();
-    await openRaid(live, { viewer: 'officer', officerTools: true });
-    const selects = await rosterSelects(live).count();
-    expect(selects).toBeGreaterThan(0);
-    expect(
-      await rosterSelects(live).evaluateAll((n) => n.every((s) => !(s as HTMLSelectElement).disabled)),
-    ).toBe(true);
-    await live.close();
+    let selects = 0;
+    try {
+      await openRaid(live, { viewer: 'officer', officerTools: true });
+      selects = await rosterSelects(live).count();
+      expect(selects).toBeGreaterThan(0);
+      expect(
+        await rosterSelects(live).evaluateAll((n) => n.every((s) => !(s as HTMLSelectElement).disabled)),
+      ).toBe(true);
+    } finally {
+      await live.close();
+    }
 
     const context = await browser.newContext({ timezoneId: CHICAGO });
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-    const page = await context.newPage();
-    const stub = await openRaid(page, { viewer: 'officer', officerTools: false });
-    for (const id of ['raid-officer-edit', 'raid-officer-lock', 'raid-officer-cancel']) {
-      await expect(page.getByTestId(id)).toBeDisabled();
-      await expect(page.getByTestId(id)).toHaveAttribute('aria-describedby', 'officer-tools-gate-raids');
-    }
-    await expect(page.getByTestId('guild-raids-plan-gate')).toBeVisible();
-    await expect(rosterSelects(page)).toHaveCount(selects);
-    expect(
-      await rosterSelects(page).evaluateAll((n) => n.every((s) => (s as HTMLSelectElement).disabled)),
-    ).toBe(true);
+    try {
+      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+      const page = await context.newPage();
+      const stub = await openRaid(page, { viewer: 'officer', officerTools: false });
+      for (const id of ['raid-officer-edit', 'raid-officer-lock', 'raid-officer-cancel']) {
+        await expect(page.getByTestId(id)).toBeDisabled();
+        await expect(page.getByTestId(id)).toHaveAttribute('aria-describedby', 'officer-tools-gate-raids');
+      }
+      await expect(page.getByTestId('guild-raids-plan-gate')).toBeVisible();
+      await expect(rosterSelects(page)).toHaveCount(selects);
+      expect(
+        await rosterSelects(page).evaluateAll((n) => n.every((s) => (s as HTMLSelectElement).disabled)),
+      ).toBe(true);
 
-    const copy = page.getByTestId('raid-officer-copy');
-    await expect(copy).toBeEnabled();
-    await copy.click();
-    await expect(copy).toHaveText(raidCopy.officerRow.copied);
-    const copied = await page.evaluate(() => navigator.clipboard.readText());
-    expect(copied).toBe(copyList(stub.view(ONYXIA_ID), CHICAGO));
-    expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>");
-    expect(stub.writes).toEqual([]);
-    await context.close();
+      const copy = page.getByTestId('raid-officer-copy');
+      await expect(copy).toBeEnabled();
+      await copy.click();
+      await expect(copy).toHaveText(raidCopy.officerRow.copied);
+      const copied = await page.evaluate(() => navigator.clipboard.readText());
+      expect(copied).toBe(copyList(stub.view(ONYXIA_ID), CHICAGO));
+      expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>");
+      expect(stub.writes).toEqual([]);
+    } finally {
+      await context.close();
+    }
   });
 
   test('the Raids tab keeps Plan a raid, disabled under the gate sentence', async ({ page }) => {

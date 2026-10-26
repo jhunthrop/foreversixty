@@ -43,6 +43,18 @@
     const id = hash.replace(/^#/, '').toLowerCase();
     return (allowed as readonly string[]).includes(id) ? (id as GuildTabId) : allowed[0];
   }
+
+  /** A hash change: one that names a tab (or none) routes; an in-page anchor that names no tab
+   *  (Settings' `#billing`, `#discord`) keeps the open tab, so following it never unmounts it. */
+  export function tabAfterHashChange(
+    hash: string,
+    allowed: readonly GuildTabId[],
+    current: GuildTabId,
+  ): GuildTabId {
+    const id = hash.replace(/^#/, '').toLowerCase();
+    const namesTab = id === '' || GUILD_TABS.some((tab) => tab.id === id);
+    return namesTab ? tabFromHash(hash, allowed) : current;
+  }
 </script>
 
 <script lang="ts">

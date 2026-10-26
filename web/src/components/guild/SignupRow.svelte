@@ -5,7 +5,9 @@
      successful save's raid before resolving, so the props carry the saved values afterwards. -->
 <script lang="ts">
   import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from '../../lib/guild/api';
+  import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { createSerialSave } from '../../lib/guild/serial-save';
   import {
     NOTE_MAX,
     ROLE_FIELD_LABEL,
@@ -68,10 +70,6 @@
 
   $effect(() => () => clearTimeout(savedTimer));
 
-  function focusOnMount(node: HTMLElement): void {
-    node.focus();
-  }
-
   function showSaved(): void {
     clearTimeout(savedTimer);
     status = { kind: 'saved' };
@@ -81,6 +79,7 @@
   }
 
   async function settle(choice: SignupChoice): Promise<SignupOutcome> {
+    sentNote = choice.note;
     try {
       return await onSave(choice);
     } catch {
@@ -88,52 +87,54 @@
     }
   }
 
-  async function commit(choice: SignupChoice, revert: () => void): Promise<void> {
-    busy = true;
-    status = null;
-    sentNote = choice.note;
-    onClearNotice();
-    const outcome = await settle(choice);
-    busy = false;
+  /** One answer. While a follow-up is owed the row keeps its edits: the follow-up carries them. */
+  function settled(outcome: SignupOutcome, choice: SignupChoice, more: boolean): void {
+    if (outcome.ok && outcome.moved !== null) onMoved(outcome.moved);
+    if (more) return;
+    pendingState = undefined;
+    roleChoice = null;
     if (!outcome.ok) {
-      revert();
       sentNote = null;
       status = { kind: 'error', ...failureLine(outcome.code) };
       return;
     }
-    pendingState = undefined;
-    roleChoice = null;
     if (noteEdit === choice.note) noteEdit = null;
     showSaved();
-    if (outcome.moved !== null) onMoved(outcome.moved);
+  }
+
+  /** Saves are serialised per row: a press during a save is sent, merged, when it settles. A
+   *  refusal reverts to the confirmed (props) state, which the caller updates on each success. */
+  const saver = createSerialSave<SignupChoice, SignupOutcome>({
+    read: () => (shownState === null ? null : { state: shownState, role: shownRole, note: shownNote }),
+    send: settle,
+    settled,
+    onBusy: (next) => (busy = next),
+  });
+
+  function save(): void {
+    status = null;
+    onClearNotice();
+    void saver.request();
   }
 
   function isRole(value: string): value is GuildRaidRole {
     return ROLE_OPTIONS.some((option) => option.value === value);
   }
 
-  /** A press while a save is in flight is ignored, so a refusal can only revert to the confirmed
-   *  (props) state, never to an unconfirmed one. */
   function pickState(state: GuildSignupState): void {
-    if (busy) return;
     pendingState = state;
-    void commit({ state, role: shownRole, note: shownNote }, () => {
-      pendingState = undefined;
-    });
+    save();
   }
 
   function pickRole(value: string): void {
     if (!isRole(value)) return;
     roleChoice = value;
-    if (shownState === null) return;
-    void commit({ state: shownState, role: value, note: shownNote }, () => {
-      roleChoice = null;
-    });
+    if (shownState !== null) save();
   }
 
   function commitNote(): void {
     if (shownState === null || shownNote === (sentNote ?? savedNote)) return;
-    void commit({ state: shownState, role: shownRole, note: shownNote }, () => {});
+    save();
   }
 
   function onNoteKeydown(event: KeyboardEvent): void {

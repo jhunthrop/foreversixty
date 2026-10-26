@@ -4,6 +4,7 @@
      lib/guild/raid-form.ts; this file draws the fields and the 6.1 lines under them. The Raid
      select takes focus on open; Escape and Cancel close. -->
 <script lang="ts">
+  import { viewerLocale } from '../../lib/guild/raid-time';
   import { onMount } from 'svelte';
   import type { GuildRaidDiscord, GuildRaidView, GuildZoneView } from '../../lib/guild/api';
   import {
@@ -75,7 +76,7 @@
     onSubmit,
     onCancel,
     now,
-    locale = 'en-US',
+    locale = viewerLocale(),
   }: Props = $props();
 
   function clock(): Date {

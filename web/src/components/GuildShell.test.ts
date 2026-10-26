@@ -1,5 +1,6 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { GUILD_LOADING } from '../lib/guild/layout';
 import { GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
 import GuildShell from './GuildShell.svelte';
 
@@ -20,18 +21,21 @@ describe('GuildShell', () => {
     expect(body).not.toContain('data-testid="guild-join"');
   });
 
-  it('renders the claim view for a /claim path', () => {
+  it("routes a /claim path to the claim chunk, holding the claim view's loading height", () => {
     const { body } = render(GuildShell, {
       props: { path: '/guild/us/hardcore/the-last-watch/claim' },
     });
-    expect(body).toContain('data-testid="guild-claim"');
+    expect(body).toContain('data-testid="guild-claim-chunk-skeleton"');
+    expect(body).toContain(GUILD_LOADING.claim.minHeight);
+    expect(body).not.toContain('data-testid="guild-skeleton"');
   });
 
-  it('renders the settings view for a /settings path', () => {
+  it("routes a /settings path to the settings chunk, holding the settings view's loading height", () => {
     const { body } = render(GuildShell, {
       props: { path: '/guild/us/hardcore/the-last-watch/settings' },
     });
-    expect(body).toContain('data-testid="guild-settings"');
+    expect(body).toContain('data-testid="guild-settings-chunk-skeleton"');
+    expect(body).toContain(GUILD_LOADING.settings.minHeight);
   });
 
   it('routes a raid path to the raid chunk, holding the band height while it loads', () => {
@@ -41,9 +45,10 @@ describe('GuildShell', () => {
     expect(body).not.toContain('data-testid="guild-skeleton"');
   });
 
-  it('renders the join view for an invite path', () => {
+  it("routes an invite path to the join chunk, holding the join view's loading height", () => {
     const { body } = render(GuildShell, { props: { path: '/guild/invite/abc-123' } });
-    expect(body).toContain('data-testid="guild-join"');
+    expect(body).toContain('data-testid="guild-join-chunk-skeleton"');
+    expect(body).toContain(GUILD_LOADING.join.minHeight);
   });
 
   it('falls through to Guild.svelte (which resolves the missing state itself) for anything else', () => {

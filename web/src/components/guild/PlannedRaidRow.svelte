@@ -4,8 +4,10 @@
      block leads a three-line stack. `now` comes from the tab's one minute tick, so rows run no
      timer of their own. Gold shows once a row: the countdown, or the Not signed up chip. -->
 <script lang="ts">
+  import { viewerLocale } from '../../lib/guild/raid-time';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { plannedRowView } from '../../lib/guild/planned-row';
+  import { SEP } from '../../lib/guild/raid-copy';
   import RaidChip from './RaidChip.svelte';
 
   let {
@@ -13,7 +15,7 @@
     href,
     now,
     viewerTimezone,
-    locale = 'en-US',
+    locale = viewerLocale(),
   }: { raid: GuildRaidView; href: string; now: Date; viewerTimezone: string; locale?: string } = $props();
 
   const view = $derived(plannedRowView(raid, now, viewerTimezone, locale));
@@ -26,8 +28,6 @@
   const titleTone = $derived(view.cancelled ? 'text-muted' : 'text-strong');
   const countTone = $derived(view.cancelled ? 'text-muted' : 'text-strong');
   const testid = $derived(`planned-raid-${raid.id}`);
-  /** As an expression: Svelte trims the edge spaces of literal text inside a span. */
-  const SEP = ' · ';
 </script>
 
 {#snippet dateBlock(box: string)}

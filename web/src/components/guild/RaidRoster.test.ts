@@ -8,6 +8,7 @@ import type { GuildRaidNotSigned, GuildRaidSignup, GuildRaidView } from '../../l
 import { raidCopy } from '../../lib/guild/raid-copy';
 import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
 import { between, plannedRaid, text } from '../../test-support/raid-fixtures';
+import { rosterSelectId } from '../../lib/guild/raid-roster';
 import RaidRoster from './RaidRoster.svelte';
 
 const DISABLED = / disabled(=| |>)/;
@@ -49,6 +50,7 @@ interface RosterProps {
   officerTools?: boolean;
   closed?: boolean;
   line?: OfficerLine | null;
+  busyKey?: string | null;
 }
 
 function html({
@@ -57,6 +59,7 @@ function html({
   officerTools = true,
   closed = false,
   line = null,
+  busyKey = null,
 }: RosterProps = {}): string {
   return render(RaidRoster, {
     props: {
@@ -66,6 +69,7 @@ function html({
       closed,
       gateId: GATE,
       line,
+      busyKey,
       onSetState: () => Promise.resolve(true),
     },
   }).body;
@@ -177,5 +181,21 @@ describe('RaidRoster', () => {
     expect(refusal).toContain('data-testid="raid-roster-refusal"');
     const failure = html({ officer: true, line: { control: 'roster', message: raidCopy.officerRow.failed } });
     expect(text(between(failure, 'raid-roster-error', 'never'))).toBe(raidCopy.officerRow.failed);
+  });
+
+  it("keeps a saving row's select enabled (focus stays on it), saying busy instead", () => {
+    const select =
+      /<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(
+        html({ officer: true, busyKey: 'us/pvp/bolt' }),
+      )?.[0] ?? '';
+    expect(select).not.toMatch(DISABLED);
+    expect(select).toContain('aria-busy="true"');
+  });
+
+  it('gives every select the id focus returns to after a move, whatever group the row is in', () => {
+    const moved = plannedRaid({ signups: [signup('Bolt', { state: 'bench' })], not_signed: [] });
+    const body = html({ raid: moved, officer: true });
+    expect(rosterSelectId('us/pvp/bolt')).toBe('raid-roster-state-us/pvp/bolt');
+    expect(between(body, 'raid-roster-bench', 'never')).toContain(`id="${rosterSelectId('us/pvp/bolt')}"`);
   });
 });

@@ -2,14 +2,17 @@
 <!-- Sign-ups (raids spec 3.7, 4 "Officer state select"): In rows under Tanks, Healers and DPS (four
      columns from 1280 with DPS across two, three from 1024, two from 768), then Late, Bench, Out and
      Not signed up. Officers get a label-less state select at the end of every row; a refusal reverts
-     it, with the line under the roster, or under the row for the plan gate (focused). -->
+     it, with the line under the roster, or under the row for the plan gate (focused). A change that
+     moves the row to another group hands focus to its select there; a saving select stays enabled
+     (aria-busy), so the focused control is never disabled under the officer's hand. -->
 <script lang="ts">
+  import { tick } from 'svelte';
   import type { GuildRaidRole, GuildRaidView, GuildSignupState } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
-  import { rosterGroups, type RosterRow } from '../../lib/guild/raid-roster';
+  import { rosterGroups, rosterSelectId, type RosterRow } from '../../lib/guild/raid-roster';
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
   import { classColorVar } from '../../lib/report/format';
@@ -73,16 +76,27 @@
     { id: 'out', label: raidCopy.subheads.out, rows: groups.out, withRole: false },
   ]);
   const shownOthers = $derived(others.filter((group) => group.rows.length > 0));
-  /** Bumped on a refusal: the selects redraw from the raid, which is the revert. */
-  let revert = $state(0);
+  /** The value each select shows while its save is in flight; dropped when it settles, so the
+   *  select reads the raid again (a refusal's revert, a success's saved state). */
+  let chosen = $state<Readonly<Record<string, string>>>({});
 
   function isState(value: string): value is GuildSignupState {
     return (SIGNUP_STATES as readonly string[]).includes(value);
   }
 
+  function shownValue(entry: RosterRow): string {
+    return chosen[entry.character_key] ?? entry.state ?? '';
+  }
+
   async function change(row: RosterRow, value: string): Promise<void> {
     if (!isState(value)) return;
-    if (!(await onSetState(row, value))) revert += 1;
+    const key = row.character_key;
+    chosen = { ...chosen, [key]: value };
+    const saved = await onSetState(row, value);
+    chosen = Object.fromEntries(Object.entries(chosen).filter(([k]) => k !== key));
+    if (!saved) return;
+    await tick();
+    document.getElementById(rosterSelectId(key))?.focus();
   }
 </script>
 
@@ -132,13 +146,13 @@
     {#if officer}
       <div class="w-24 shrink-0">
         <FilterSelect
-          id={`raid-roster-state-${entry.character_key}`}
+          id={rosterSelectId(entry.character_key)}
           label={raidCopy.page.signupFor(entry.name)}
           labelHidden
           compact
-          value={entry.state ?? ''}
+          value={shownValue(entry)}
           options={entry.state === null ? [NOT_SIGNED_OPTION, ...STATE_OPTIONS] : STATE_OPTIONS}
-          disabled={!officerTools || closed || busy}
+          disabled={!officerTools || closed}
           describedBy={officerTools ? undefined : gateId}
           {busy}
           onchange={(value) => void change(entry, value)}
@@ -158,62 +172,60 @@
     <h2 id="raid-roster-heading" class="section-title text-[18px]">{raidCopy.subheads.signups}</h2>
     <span class="text-muted font-mono text-[13px]" data-testid="raid-roster-ratio">{count.ratio}</span>
   </div>
-  {#key revert}
-    <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {#each ROLE_COLUMNS as column (column.role)}
-        {@const rows = groups.roles[column.role]}
-        <div class="flex min-w-0 flex-col gap-2 {column.place}" data-testid={`raid-roster-${column.role}`}>
-          {@render heading(column.label, rows.length, `raid-roster-${column.role}-heading`)}
-          {#if rows.length === 0}
-            <p class="text-muted text-[13px]">{raidCopy.emptyRole[column.role]}</p>
-          {:else}
-            <ul class={column.role === 'dps' ? 'xl:columns-2 xl:gap-4' : ''}>
-              {#each rows as entry (entry.character_key)}{@render row(entry, false)}{/each}
-            </ul>
-          {/if}
-        </div>
-      {/each}
-    </div>
-    <div class="mt-2 flex flex-col gap-6">
-      <!-- Late, Bench and Out side by side from 1024, two columns from 768, stacked below; an empty
+  <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {#each ROLE_COLUMNS as column (column.role)}
+      {@const rows = groups.roles[column.role]}
+      <div class="flex min-w-0 flex-col gap-2 {column.place}" data-testid={`raid-roster-${column.role}`}>
+        {@render heading(column.label, rows.length, `raid-roster-${column.role}-heading`)}
+        {#if rows.length === 0}
+          <p class="text-muted text-[13px]">{raidCopy.emptyRole[column.role]}</p>
+        {:else}
+          <ul class={column.role === 'dps' ? 'xl:columns-2 xl:gap-4' : ''}>
+            {#each rows as entry (entry.character_key)}{@render row(entry, false)}{/each}
+          </ul>
+        {/if}
+      </div>
+    {/each}
+  </div>
+  <div class="mt-2 flex flex-col gap-6">
+    <!-- Late, Bench and Out side by side from 1024, two columns from 768, stacked below; an empty
            group is left out, so the rest flow left (spec 3.7). -->
-      {#if shownOthers.length > 0}
-        <div
-          class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3"
-          data-testid="raid-roster-others"
-        >
-          {#each shownOthers as group (group.id)}
-            <div class="flex min-w-0 flex-col gap-2" data-testid={`raid-roster-${group.id}`}>
-              {@render heading(group.label, group.rows.length, `raid-roster-${group.id}-heading`)}
-              <ul>
-                {#each group.rows as entry (entry.character_key)}{@render row(entry, group.withRole)}{/each}
-              </ul>
-            </div>
-          {/each}
-        </div>
-      {/if}
-      {#if groups.notSigned.length > 0}
-        <div class="flex flex-col gap-2" data-testid="raid-roster-not-signed">
-          {@render heading(
-            raidCopy.subheads.notSigned,
-            groups.notSigned.length,
-            'raid-roster-not-signed-heading',
-          )}
-          {#if officer}
-            <ul class="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-4">
-              {#each groups.notSigned as entry (entry.character_key)}{@render row(entry, false)}{/each}
+    {#if shownOthers.length > 0}
+      <div
+        class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3"
+        data-testid="raid-roster-others"
+      >
+        {#each shownOthers as group (group.id)}
+          <div class="flex min-w-0 flex-col gap-2" data-testid={`raid-roster-${group.id}`}>
+            {@render heading(group.label, group.rows.length, `raid-roster-${group.id}-heading`)}
+            <ul>
+              {#each group.rows as entry (entry.character_key)}{@render row(entry, group.withRole)}{/each}
             </ul>
-          {:else}
-            <p class="flex flex-wrap gap-x-3 gap-y-1 text-[13px]">
-              {#each groups.notSigned as entry (entry.character_key)}
-                <span style={`color:${classColorVar(entry.class)}`}>{entry.name}</span>
-              {/each}
-            </p>
-          {/if}
-        </div>
-      {/if}
-    </div>
-  {/key}
+          </div>
+        {/each}
+      </div>
+    {/if}
+    {#if groups.notSigned.length > 0}
+      <div class="flex flex-col gap-2" data-testid="raid-roster-not-signed">
+        {@render heading(
+          raidCopy.subheads.notSigned,
+          groups.notSigned.length,
+          'raid-roster-not-signed-heading',
+        )}
+        {#if officer}
+          <ul class="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-4">
+            {#each groups.notSigned as entry (entry.character_key)}{@render row(entry, false)}{/each}
+          </ul>
+        {:else}
+          <p class="flex flex-wrap gap-x-3 gap-y-1 text-[13px]">
+            {#each groups.notSigned as entry (entry.character_key)}
+              <span style={`color:${classColorVar(entry.class)}`}>{entry.name}</span>
+            {/each}
+          </p>
+        {/if}
+      </div>
+    {/if}
+  </div>
   {#if line?.control === 'roster'}
     <p class="text-wipe text-[13px]" role="alert" data-testid="raid-roster-error">{line.message}</p>
   {/if}

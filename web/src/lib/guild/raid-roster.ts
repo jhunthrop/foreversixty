@@ -39,6 +39,11 @@ export interface RosterGroups {
   notSigned: RosterRow[];
 }
 
+/** The officer state select's id: focus returns to it after a change moves the row to another group. */
+export function rosterSelectId(characterKey: string): string {
+  return `raid-roster-state-${characterKey}`;
+}
+
 function rank(order: readonly string[], value: string): number {
   const index = order.indexOf(value.toLowerCase());
   return index < 0 ? order.length : index;

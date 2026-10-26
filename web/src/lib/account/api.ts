@@ -8,6 +8,7 @@
 // section; the first draft required both behaviours on /account without naming a route.
 import { API_BASE_URL } from '../planner/config';
 import { forgetPrivate, invalidate, query, refetch, setQueryData } from '../data/query';
+import { forgetGuildReserves } from '../guild/reserve-keys';
 import { clearPointerOnSignOut } from './session-pointer';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
@@ -646,6 +647,7 @@ export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): 
 export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
   forgetRemembered();
   forgetPrivate();
+  forgetGuildReserves();
   clearPointerOnSignOut();
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }

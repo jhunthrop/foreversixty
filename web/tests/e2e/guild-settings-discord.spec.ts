@@ -7,7 +7,9 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
-import { GUILD_URL, stubGuildRaids } from './support/guild-raids';
+import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
+import { CLAIM_HOLDER_CAN, guildBilling } from '../../src/test-support/billing-fixtures';
+import { GUILD_URL, raidsMe, stubGuildRaids } from './support/guild-raids';
 import {
   DISCORD_SETTINGS_URL,
   GUILD_CONNECT_HREF,
@@ -15,11 +17,12 @@ import {
   SETTINGS_GUILD_PATH,
   SWITCHED_OFF,
   guildChannel,
+  settingsBody,
   stubGuildDiscord,
   type GuildDiscordStubOptions,
 } from './support/guild-discord';
 import { gotoHydrated } from './support/hydrated';
-import { expectNoAxeViolations } from './support/officer-tools';
+import { envelope, expectNoAxeViolations } from './support/officer-tools';
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };
@@ -182,6 +185,26 @@ test.describe('officer-read-only', () => {
     await page.locator('#officer-tools-gate-discord a').click();
     await expect(page).toHaveURL(/#billing$/);
     await expect(page.getByTestId('guild-settings-billing')).toBeInViewport();
+  });
+
+  test('on the guild page Settings tab, Subscribe the guild scrolls to Billing and the tab stays', async ({
+    page,
+  }) => {
+    await stubGuildRaids(page, { viewer: 'officer', officerTools: false });
+    const me = raidsMe('officer');
+    const billingMe = {
+      ...me,
+      guilds: me.guilds.map((g) => ({ ...g, can: [...CLAIM_HOLDER_CAN], plan: guildBilling() })),
+    };
+    await page.route('**/v1/me', (route) => route.fulfill(envelope(billingMe)));
+    await page.route(`**/v1/guilds/${GUILD_ID}/settings`, (route) =>
+      route.fulfill(envelope(settingsBody(NOT_CONNECTED, false))),
+    );
+    await gotoHydrated(page, `${GUILD_URL}#settings`, 'guild-settings-tab');
+    await page.locator('#officer-tools-gate-discord a').click();
+    await expect(page.getByTestId('guild-settings-tab')).toBeVisible();
+    await expect(page.getByTestId('guild-settings-billing')).toBeInViewport();
+    await expect(page.getByTestId('guild-tab-settings')).toHaveAttribute('aria-selected', 'true');
   });
 
   test('connected: test disabled, Remove still removes', async ({ page }) => {
