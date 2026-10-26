@@ -28,13 +28,13 @@ func (s *Store) RecomputeAttendance(ctx context.Context, raidID int64) error {
 		return fmt.Errorf("guilds: recompute attendance: read raid: %w", err)
 	}
 	if reportID == nil {
-		return s.replaceAttendance(ctx, raidID, nil)
+		return s.replaceAttendance(ctx, raidID, nil, nil)
 	}
 	in, err := s.attendanceInputFor(ctx, guildID, raidID, *reportID)
 	if err != nil {
 		return err
 	}
-	return s.replaceAttendance(ctx, raidID, computeAttendance(in))
+	return s.replaceAttendance(ctx, raidID, reportID, computeAttendance(in))
 }
 
 func (s *Store) attendanceInputFor(ctx context.Context, guildID, raidID int64, reportID string) (attendanceInput, error) {
@@ -87,7 +87,7 @@ func (s *Store) fillLogFigures(ctx context.Context, reportID string, present map
 	rows, err := s.Pool.Query(ctx, `
 		select m.player_key, max(m.player_name), max(coalesce(m.class, '')), max(coalesce(m.spec, '')),
 		       count(distinct m.fight_index),
-		       ((min(f.start_ms) - (select min(start_ms) from fights where report_id = $1)) / 1000)::int
+		       ((min(f.start_ms) - (select min(start_ms) from fights where report_id = $1 and encounter_id is not null)) / 1000)::int
 		from fight_metrics m
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
 		join reports r on r.id = m.report_id
@@ -124,13 +124,23 @@ func (s *Store) encounterPulls(ctx context.Context, reportID string) (int, error
 	return n, nil
 }
 
-// replaceAttendance swaps raidID's rows for rows in one transaction, keeping excused flags.
-func (s *Store) replaceAttendance(ctx context.Context, raidID int64, rows []AttendanceRow) error {
+// replaceAttendance swaps raidID's rows for rows in one transaction, keeping excused flags. It
+// locks the raid and writes only while the raid still holds the log the rows were computed
+// from (want; nil for none), so a clear or re-match that lands first is never followed by
+// stale rows: the later recompute is the one that counts.
+func (s *Store) replaceAttendance(ctx context.Context, raidID int64, want *string, rows []AttendanceRow) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("guilds: attendance: begin: %w", err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
+	var current *string
+	if err := tx.QueryRow(ctx, `select report_id from guild_raids where id = $1 for update`, raidID).Scan(&current); err != nil {
+		return fmt.Errorf("guilds: attendance: lock raid: %w", err)
+	}
+	if (current == nil) != (want == nil) || (current != nil && *current != *want) {
+		return nil
+	}
 	keys := make([]string, len(rows))
 	for i, r := range rows {
 		keys[i] = r.CharacterKey

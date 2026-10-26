@@ -1,9 +1,12 @@
 package guilds
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
 const (
@@ -59,11 +62,11 @@ func attendanceNight(t *testing.T) (raidWorld, Raid) {
 	withMirelle := append(append([]seedPlayer{}, core...), pl(member2Key, "Mirelle", "priest", 0))
 	m := time.Minute
 	seedNight(t, w.h.pool, w.gid, "night", onyLogZone, start.Add(time.Hour), []seedFight{
-		{offset: 0, duration: 2 * m},
-		{encounterID: 1084, offset: 2 * m, duration: 5 * m, players: core},
-		{encounterID: 1084, offset: 12 * m, duration: 5 * m, players: core},
-		{encounterID: 1084, offset: 22 * m, duration: 5 * m, players: core},
-		{encounterID: 1084, kill: true, offset: 33 * m, duration: 5 * m, players: withMirelle},
+		{offset: 0, duration: 2 * m}, // trash 30 minutes before the first pull
+		{encounterID: 1084, offset: 32 * m, duration: 5 * m, players: core},
+		{encounterID: 1084, offset: 42 * m, duration: 5 * m, players: core},
+		{encounterID: 1084, offset: 52 * m, duration: 5 * m, players: core},
+		{encounterID: 1084, kill: true, offset: 63 * m, duration: 5 * m, players: withMirelle},
 	})
 	return w, raid
 }
@@ -79,7 +82,7 @@ func TestAttendanceFollowsTheSignupsAgainstTheLog(t *testing.T) {
 		t.Fatalf("rows = %d: %+v", len(rows), rows)
 	}
 	if r := by[officerKey]; r.Outcome != OutcomePresent || r.PullsPresent != 4 || r.PullsTotal != 4 ||
-		r.FirstSeenOffsetS == nil || *r.FirstSeenOffsetS != 120 || *r.Signed != SignupIn {
+		r.FirstSeenOffsetS == nil || *r.FirstSeenOffsetS != 0 || *r.Signed != SignupIn {
 		t.Fatalf("thornhide = %+v", r)
 	}
 	k := by[memberKeyA]
@@ -95,7 +98,7 @@ func TestAttendanceFollowsTheSignupsAgainstTheLog(t *testing.T) {
 	if r := by[drifterKey]; r.Outcome != OutcomePresent || r.Signed != nil || r.Role != nil {
 		t.Fatalf("drifter (unsigned) = %+v", r)
 	}
-	if r := by[member2Key]; r.Outcome != OutcomeLate || r.PullsPresent != 1 || *r.FirstSeenOffsetS != 33*60 {
+	if r := by[member2Key]; r.Outcome != OutcomeLate || r.PullsPresent != 1 || *r.FirstSeenOffsetS != 31*60 {
 		t.Fatalf("mirelle (late) = %+v", r)
 	}
 	if r := by[memberKeyC]; r.Outcome != OutcomeAbsent {
@@ -153,5 +156,50 @@ func TestAPrivateLogShowsNobody(t *testing.T) {
 		if r.Outcome == OutcomePresent || r.Outcome == OutcomeLate {
 			t.Fatalf("%s present in a private log", r.CharacterKey)
 		}
+	}
+}
+
+func TestACharacterWithNoFightRowsIsPresentWithNoOffset(t *testing.T) {
+	w, raid := attendanceNight(t)
+	ctx := t.Context()
+	at := raid.StartsAt.Add(time.Hour)
+	if err := db.EnsureRatingsPartition(ctx, w.h.pool, at); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		w.h.pool.Exec(context.Background(), `delete from rating_scores where report_id = 'night'`)
+	})
+	if _, err := w.h.pool.Exec(ctx,
+		`insert into rating_scores (report_id, fight_index, player_key, overall, components, model_version, fought_at, kill)
+		 values ('night', 1, $1, 50, '[]', '', $2, true)`, ghostKey, at); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.h.store.SetMatch(ctx, w.gid, raid.ID, "night", MatchedHand); err != nil {
+		t.Fatal(err)
+	}
+	r := rowsByKey(w.attendance(t, raid.ID))[ghostKey]
+	if r.Outcome != OutcomePresent || r.FirstSeenOffsetS != nil || r.PullsPresent != 0 {
+		t.Fatalf("ghost = %+v", r)
+	}
+}
+
+// An alt with its own in sign-up is not another character's came_as: one appearance, one row.
+func TestCameAsNeverDoubleCountsAnAltWithItsOwnSignup(t *testing.T) {
+	off := 0
+	in := attendanceInput{
+		signups: []Signup{
+			{CharacterKey: "a", Name: "A", State: SignupIn, SignedBy: 1},
+			{CharacterKey: "b", Name: "B", State: SignupIn, SignedBy: 1},
+		},
+		roster: map[string]raidRosterChar{
+			"a": {RaidCharacter: RaidCharacter{CharacterKey: "a", Name: "A"}, userID: 1},
+			"b": {RaidCharacter: RaidCharacter{CharacterKey: "b", Name: "B"}, userID: 1},
+		},
+		present:    map[string]logPresence{"b": {Name: "B", FirstSeenOffsetS: &off, PullsPresent: 2}},
+		pullsTotal: 2,
+	}
+	by := rowsByKey(computeAttendance(in))
+	if by["a"].Outcome != OutcomeNoShow || by["a"].CameAs != nil || by["b"].Outcome != OutcomePresent {
+		t.Fatalf("rows = %+v", by)
 	}
 }

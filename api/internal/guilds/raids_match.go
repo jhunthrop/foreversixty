@@ -92,7 +92,9 @@ func zoneKeysForLog(logZone string) []string {
 // raid with no log, of the zone the log names, whose window (an hour before the start to six
 // after the end) holds the log's anchor, that an officer has not cleared this log from; the
 // raid whose start is nearest the anchor wins. It reports false, with no error, when the
-// report has no guild or zone, no raid fits, or the log is already some raid's.
+// report has no guild or zone, no raid fits, or the log is already some raid's. The candidate
+// subselect skips raids another match holds locked, so two reports racing for the guild's raids
+// each find one rather than the second giving up on a raid that was still free.
 func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, error) {
 	a, ok, err := s.reportAnchor(ctx, reportID)
 	if err != nil || !ok {
@@ -112,7 +114,8 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 			  and $4 >= c.starts_at - make_interval(hours => $6)
 			  and $4 <= c.starts_at + make_interval(mins => c.duration_minutes) + make_interval(hours => $7)
 			  and not exists (select 1 from guild_raid_rejected_reports x where x.raid_id = c.id and x.report_id = $1)
-			order by abs(extract(epoch from (c.starts_at - $4))), c.id limit 1)
+			order by abs(extract(epoch from (c.starts_at - $4))), c.id limit 1
+			for update skip locked)
 		  and status in ('planned','locked') and report_id is null
 		  and not exists (select 1 from guild_raids o where o.report_id = $1)
 		returning `+raidColumns,
