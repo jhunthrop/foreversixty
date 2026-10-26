@@ -1681,17 +1681,28 @@ test.describe('guild facts read as sentences (P.1)', () => {
     });
   }
 
-  test('at 1280 the claim card is one line and the first roster row is above the fold', async ({ page }) => {
+  // Raids spec 3.4 put the next-raid line in the band (y < 300 at 1280, spec §1), so the first
+  // roster row now starts above the fold rather than ending above it.
+  test('at 1280 the claim card is one line, the raid line is in the band and the first roster row starts above the fold', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
     await expect(page.getByTestId('guild-officer-strip-summary')).toBeVisible();
     await expect(page.getByTestId('guild-officer-strip-body')).toBeHidden();
+    const raidLine = page
+      .locator('[data-testid="guild-raid-line"], [data-testid="guild-raid-line-none"]')
+      .first();
+    await expect(raidLine).toBeVisible();
+    const lineBox = await raidLine.boundingBox();
+    expect(lineBox).not.toBeNull();
+    expect(lineBox!.y).toBeLessThan(300);
     const row = page.locator('.guild-roster-row').first();
     await expect(row).toBeVisible();
     const box = await row.boundingBox();
     expect(box).not.toBeNull();
-    expect(box!.y + box!.height).toBeLessThanOrEqual(800);
+    expect(box!.y).toBeLessThan(800);
   });
 
   test('the Overview prints no "no encounter list yet" line of ours', async ({ page }) => {
