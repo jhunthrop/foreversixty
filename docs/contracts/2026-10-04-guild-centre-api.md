@@ -211,9 +211,23 @@ Ranking: every tier-0 candidate ranks ahead of every tier-1 candidate, regardles
 numbers. Within tier 0: `gain_dps` desc (`null` sorts last within the tier). Within tier 1:
 `ilvl_delta` desc. Either tier, attendance (`present` over the candidate's own `nights`, then `present`) breaks the remaining tie.
 
-## POST /v1/guilds/{id}/loot/awards  (officer)   body `{ "encounter_id", "item_id", "character_key" }`
+## POST /v1/guilds/{id}/loot/awards  (officer)   body `{ "encounter_id", "item_id", "character_key", "raid_id"? }`
 ## DELETE /v1/guilds/{id}/loot/awards/{award_id}  (officer)
-Table `loot_awards (id bigserial, guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at, report_id null)`.
+Table `loot_awards (id bigserial, guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at, report_id null, raid_id null, attached_by_match)`.
+
+`raid_id` is optional and names the done Onyxia raid of this guild the award was for. A
+`raid_id` that is not one answers 400 `invalid` ("raid N is not a done Onyxia raid of this
+guild"). Without it the award goes to the guild's most recent done Onyxia raid of the last
+week, else to no raid. One award per drop per raid: re-awarding the same drop in the same raid
+replaces it, and a later raid's award of the same item is a new row.
+
+Attach on match (Lane G2): an award made live has no raid, since a raid is not done until its
+log matches. When a raid's log matches (auto or by hand), the guild's raid-less awards whose
+`awarded_at` falls between an hour before the raid's start and six hours after the log's anchor
+join that raid, in the match's own transaction. If the raid already holds an award of the same
+drop, the newer of the two stays on the raid and the older is left with no raid. Clearing the
+match takes back only the awards the match attached (`attached_by_match`); an award filed under
+the raid with `raid_id` is never detached.
 
 ## Existing officer endpoints stay as they are
 Approve, remove, invite rotate, claim, settings, visibility. Add `POST /v1/guilds/{id}/roster/approve-all` (officer) that approves every pending row and returns the approved keys.
