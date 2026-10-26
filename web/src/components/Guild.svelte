@@ -18,6 +18,7 @@
     characterSlug,
     guildClaimHref,
     guildHref,
+    guildRaidHref,
     guildSettingsHref,
     parseGuildPath,
     rulesetLabel,
@@ -57,7 +58,7 @@
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
-  import { nextRaidDeadline } from '../lib/guild/raid-copy';
+  import { nextRaidDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
@@ -195,7 +196,7 @@
         home = page;
         homeStatus = 'ready';
       };
-      bandLineLazy.load();
+      if (membership.verified) bandLineLazy.load();
       return fetchGuildHome(membership.id, undefined, undefined, show).then(show);
     };
     void fetchMeFresh((fresh) => void apply(fresh)?.catch(() => {}))
@@ -823,28 +824,41 @@
                     {/if}
                   </p>
                 {/if}
-                <!-- Raids spec 3.4: the next raid's line, for every verified viewer, between the
-                     standing line and the needs line. Its chunk loads alongside /home, and the
-                     box it fills is held until it lands. -->
-                {#if bandLineLazy.current === null}
-                  <div
-                    class={home.next_raid === undefined ? 'min-h-5' : 'min-h-[120px] md:min-h-[68px]'}
-                    aria-hidden="true"
-                    data-testid="guild-raid-line-reserve"
-                  ></div>
-                {:else}
-                  <bandLineLazy.current
-                    guildId={home.guild.id}
-                    nextRaid={home.next_raid ?? null}
-                    officer={officerView}
-                    {guildPath}
-                    currentKey={myCharacterKey}
-                    ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
-                    defaultRole={myRosterRow?.role ?? 'dps'}
-                    onChange={(next) => {
-                      if (home !== null) home = { ...home, next_raid: next };
-                    }}
-                  />
+                <!-- Raids spec 3.4: the next raid's line, for verified viewers only (R1), between
+                     the standing line and the needs line. Its chunk loads alongside /home; the box
+                     it fills (the resting caps, 44 desktop, 112 phone) is held until it lands, and
+                     a chunk that fails leaves the plain link in its place. -->
+                {#if showsBandLine(myGuildMembership?.verified === true, role)}
+                  {#if bandLineLazy.current !== null}
+                    <bandLineLazy.current
+                      guildId={home.guild.id}
+                      nextRaid={home.next_raid ?? null}
+                      officer={officerView}
+                      {guildPath}
+                      currentKey={myCharacterKey}
+                      ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
+                      defaultRole={myRosterRow?.role ?? 'dps'}
+                      onChange={(next) => {
+                        if (home !== null) home = { ...home, next_raid: next };
+                      }}
+                    />
+                  {:else if bandLineLazy.error !== '' && home.next_raid != null}
+                    <a
+                      href={guildRaidHref(guildPath, home.next_raid.id)}
+                      class="text-gold text-[13px] font-bold"
+                      data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
+                    >
+                  {:else if bandLineLazy.error !== '' && officerView}
+                    <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
+                      >{raidCopy.bandNone.planLink}</a
+                    >
+                  {:else if bandLineLazy.error === ''}
+                    <div
+                      class={home.next_raid == null ? 'min-h-5' : 'min-h-[112px] md:min-h-11'}
+                      aria-hidden="true"
+                      data-testid="guild-raid-line-reserve"
+                    ></div>
+                  {/if}
                 {/if}
                 {#if role === 'member' && home.standing !== null && home.standing !== undefined}
                   <p
