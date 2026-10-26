@@ -209,8 +209,8 @@ func cameToLog(r AttendanceRow) bool { return r.Outcome == OutcomePresent || r.O
 func nightOf(rows []AttendanceRow, meta raidMatchMeta) NightView {
 	cameAs := map[string]bool{}
 	for _, r := range rows {
-		if r.CameAs != nil {
-			cameAs[*r.CameAs] = true
+		if r.CameAsKey != nil {
+			cameAs[*r.CameAsKey] = true
 		}
 	}
 	n := NightView{Kills: meta.kills, Wipes: meta.pulls - meta.kills, Deaths: meta.deaths, DurationMS: meta.durationMS}
@@ -222,7 +222,7 @@ func nightOf(rows []AttendanceRow, meta raidMatchMeta) NightView {
 		case wasSigned(r):
 			n.Signed++
 			countSigned(&n, r)
-		case cameToLog(r) && !cameAs[r.Name]:
+		case cameToLog(r) && !cameAs[r.CharacterKey]:
 			n.Joined++
 		}
 	}

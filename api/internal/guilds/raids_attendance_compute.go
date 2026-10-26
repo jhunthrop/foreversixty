@@ -24,10 +24,12 @@ type AttendanceRow struct {
 	CharacterKey, Name, Class, Spec string
 	Signed, Role                    *string
 	Outcome                         string
-	CameAs                          *string
-	FirstSeenOffsetS                *int
-	PullsPresent, PullsTotal        int
-	Excused                         bool
+	// CameAs is the name of the other character the account came as; CameAsKey its key, which
+	// the night's counts dedupe by.
+	CameAs, CameAsKey        *string
+	FirstSeenOffsetS         *int
+	PullsPresent, PullsTotal int
+	Excused                  bool
 }
 
 // logPresence is one character as the log shows it. FirstSeenOffsetS is nil when the
@@ -91,7 +93,7 @@ func (in attendanceInput) decide(row AttendanceRow, sg Signup) AttendanceRow {
 	if key, ok := in.sameAccountInLog(row.CharacterKey, sg); ok {
 		p := in.present[key]
 		row = withPresence(row, p, true)
-		row.CameAs = textPtr(in.nameOf(key, p))
+		row.CameAs, row.CameAsKey = textPtr(in.nameOf(key, p)), textPtr(key)
 		return row
 	}
 	row.Outcome = OutcomeNoShow
