@@ -92,20 +92,52 @@ func (s *Service) postGuild(ctx context.Context, guildID int64, op string) (Guil
 	return g, true
 }
 
-// postCreated posts one raid_posted per created raid, soonest first.
+// raidPostBudget bounds every post one request makes, together. The posts stay in the
+// request (no goroutine outlives it on Cloud Run) but on a detached context, so a client
+// that disconnects does not abort them.
+const raidPostBudget = 8 * time.Second
+
+// postContext is ctx detached from its cancel and bounded by the budget.
+func (s *Service) postContext(ctx context.Context) (context.Context, context.CancelFunc) {
+	budget := s.raidPostBudget
+	if budget == 0 {
+		budget = raidPostBudget
+	}
+	return context.WithTimeout(context.WithoutCancel(ctx), budget)
+}
+
+// postCreated posts one raid_posted per created raid, soonest first, within the budget;
+// once it is spent the rest are skipped with one log line.
 func (s *Service) postCreated(ctx context.Context, guildID int64, views []RaidView) {
+	ctx, cancel := s.postContext(ctx)
+	defer cancel()
 	g, ok := s.postGuild(ctx, guildID, "raid_posted")
 	if !ok {
 		return
 	}
 	sorted := slices.SortedFunc(slices.Values(views), func(a, b RaidView) int { return a.StartsAt.Compare(b.StartsAt) })
-	for _, v := range sorted {
+	for i, v := range sorted {
+		if ctx.Err() != nil {
+			s.logSkipped(guildID, sorted[i:])
+			return
+		}
 		s.RaidEvents.RaidPosted(ctx, guildID, s.raidPost(g, v))
 	}
 }
 
+// logSkipped names the raids whose posts the spent budget left out.
+func (s *Service) logSkipped(guildID int64, views []RaidView) {
+	ids := make([]int64, len(views))
+	for i, v := range views {
+		ids[i] = v.ID
+	}
+	s.logger().Warn("guilds", "op", "raid_post_skipped", "guild_id", guildID, "raid_ids", ids)
+}
+
 // postChanged posts raid_changed for v: moved from was, or cancelled when was is nil.
 func (s *Service) postChanged(ctx context.Context, guildID int64, v RaidView, was *time.Time) {
+	ctx, cancel := s.postContext(ctx)
+	defer cancel()
 	g, ok := s.postGuild(ctx, guildID, "raid_changed")
 	if !ok {
 		return

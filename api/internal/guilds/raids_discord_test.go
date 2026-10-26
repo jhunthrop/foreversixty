@@ -129,8 +129,9 @@ func TestPatchRaidPostsOnlyATimeChange(t *testing.T) {
 }
 
 func TestCancelRaidPostsTheCancellationWhenAsked(t *testing.T) {
-	w, events, _ := postingWorld(t)
+	w, events, defaults := postingWorld(t)
 	quiet, loud := w.createRaid(t), w.createRaid(t)
+	writesBefore := len(*defaults)
 	w.as(w.officer)
 	if res := w.h.do(http.MethodPost, w.path("/raids/%d/cancel", quiet.ID), ""); res.StatusCode != http.StatusOK {
 		t.Fatalf("cancel without body = %d: %s", res.StatusCode, readBody(res))
@@ -150,5 +151,9 @@ func TestCancelRaidPostsTheCancellationWhenAsked(t *testing.T) {
 	if len(events.changed) != 1 || !events.changed[0].Cancelled || events.changed[0].Was != nil ||
 		events.changed[0].SignedUp != 1 {
 		t.Fatalf("changed = %+v", events.changed)
+	}
+	// The cancel box pre-ticks from the form's default and never writes it.
+	if len(*defaults) != writesBefore {
+		t.Fatalf("cancel wrote post_default: %v", *defaults)
 	}
 }

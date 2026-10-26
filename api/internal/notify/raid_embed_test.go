@@ -69,7 +69,11 @@ func TestRaidPostedEdges(t *testing.T) {
 	in := onyxiaThursday()
 	in.Title, in.GuildName = "*Ony* @everyone", "Olympus_XXVII"
 	in.SignedUp, in.Timezone, in.CrestURL = 0, "", "/v1/guilds/7/crest.webp?v=abc"
+	in.RaidURL = "/guild/us/normal/olympus-xxvii/raids/7"
 	e := RaidPostedEmbed(in, fixedFinish)
+	if e.URL != "" {
+		t.Fatalf("relative raid link posted as url %q", e.URL)
+	}
 	if e.Title != `\*Ony\* @everyone · Friday 11 December` {
 		t.Fatalf("escaped title in UTC = %q", e.Title)
 	}
