@@ -13,6 +13,7 @@
 // from `../../lib/guild/api` and gets its data from a real fetch (or, in a test, from
 // `page.route`'s response built with this fixture).
 import { createHash } from 'node:crypto';
+import { SPEC_ROLE } from '../../lib/guild/raid-roles';
 import type {
   GuildAddonSnapshot,
   GuildHome,
@@ -80,27 +81,6 @@ const ROSTER_SEED: MockRosterSeed[] = [
   ['Stormtusk', 'shaman', 'Elemental', 'member', false, false, 'gear', 55],
   ['Fulmintide', 'shaman', 'Enhancement', 'member', false, true, 'gear', 59],
 ];
-
-const SPEC_ROLE: Record<string, 'tank' | 'healer' | 'dps'> = {
-  Protection: 'tank',
-  Fury: 'dps',
-  Arms: 'dps',
-  Marksmanship: 'dps',
-  'Beast Mastery': 'dps',
-  Combat: 'dps',
-  Assassination: 'dps',
-  Affliction: 'dps',
-  Destruction: 'dps',
-  Fire: 'dps',
-  Frost: 'dps',
-  Arcane: 'dps',
-  Holy: 'healer',
-  Shadow: 'dps',
-  Restoration: 'healer',
-  Feral: 'dps',
-  Elemental: 'dps',
-  Enhancement: 'dps',
-};
 
 const ALT_OF: Record<string, string> = { Duskstrider: 'Zulmara', Grimtotem: 'Kraggor' };
 
