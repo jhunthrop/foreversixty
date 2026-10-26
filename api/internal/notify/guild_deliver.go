@@ -110,6 +110,12 @@ func (d *GuildDeliverer) deliver(ctx context.Context, guildID int64, event strin
 		return false, nil
 	}
 	if err := d.record(ctx, guildID, event, postErr); err != nil {
+		if postErr == nil {
+			// The post landed; failing the caller over a bookkeeping error would have it retry
+			// and post twice.
+			d.logger().Error("notify", "guild", guildID, "event", event, "outcome", "record_failed", "err", err)
+			return true, nil
+		}
 		return false, err
 	}
 	return postErr == nil, nil

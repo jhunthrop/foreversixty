@@ -21,12 +21,17 @@ type recordingRaidEvents struct {
 	reports []notify.ReportReady
 	// notPosted makes ReportReady answer that the post reached no channel.
 	notPosted bool
+	// reportErr makes ReportReady fail outright.
+	reportErr error
 }
 
 func (f *recordingRaidEvents) ReportReady(_ context.Context, _ int64, e notify.ReportReady) (bool, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.reports = append(f.reports, e)
+	if f.reportErr != nil {
+		return false, f.reportErr
+	}
 	return !f.notPosted, nil
 }
 
