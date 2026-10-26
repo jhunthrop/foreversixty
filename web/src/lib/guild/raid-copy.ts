@@ -176,6 +176,19 @@ export function needsBefore(weekday: string | null): string {
   return weekday === null ? 'before the next raid' : `before ${weekday}`;
 }
 
+/** The needs line's deadline from `home.next_raid.starts_at`: the raid's weekday in the viewer's
+ *  zone, or `before the next raid` with none planned (spec 3.4, 6.1 "Needs line"). */
+export function nextRaidDeadline(
+  startsAt: string | undefined,
+  locale: string = DEFAULT_LOCALE,
+  viewerTz: string = browserZone(),
+): string {
+  if (startsAt === undefined) return needsBefore(null);
+  return needsBefore(
+    new Intl.DateTimeFormat(locale, { timeZone: viewerTz, weekday: 'long' }).format(new Date(startsAt)),
+  );
+}
+
 /** `8:00 pm CST guild time`. */
 export function guildTimeLabel(startsAt: Date, tz: string, locale: string = DEFAULT_LOCALE): string {
   const zone = new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeZone: tz, timeZoneName: 'short' })
