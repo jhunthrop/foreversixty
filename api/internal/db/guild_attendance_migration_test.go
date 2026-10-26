@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// guildAttendanceSchema counts what 0052 adds: its columns, its two tables and its three
+// guildAttendanceSchema counts what 0052 adds: its columns, its two tables and its four
 // new indexes. Zero means none of it is there.
 func guildAttendanceSchema(t *testing.T, url string) (columns, tables, indexes int) {
 	t.Helper()
@@ -17,10 +17,11 @@ func guildAttendanceSchema(t *testing.T, url string) (columns, tables, indexes i
 	ctx := context.Background()
 	if err := pool.QueryRow(ctx,
 		`select count(*) from information_schema.columns
-		  where (table_name = 'reports' and column_name = 'log_zone')
+		  where (table_name = 'reports' and column_name in ('log_zone', 'matched_guild_id'))
 		     or (table_name = 'guild_raids' and column_name in
 		         ('pre_done_status', 'matched_by', 'matched_at', 'report_posted_at'))
-		     or (table_name = 'loot_awards' and column_name = 'raid_id')`).Scan(&columns); err != nil {
+		     or (table_name = 'guild_raid_attendance' and column_name = 'came_as_key')
+		     or (table_name = 'loot_awards' and column_name in ('raid_id', 'attached_by_match'))`).Scan(&columns); err != nil {
 		t.Fatal(err)
 	}
 	if err := pool.QueryRow(ctx,
@@ -30,7 +31,7 @@ func guildAttendanceSchema(t *testing.T, url string) (columns, tables, indexes i
 	}
 	if err := pool.QueryRow(ctx,
 		`select count(*) from pg_indexes
-		  where indexname in ('guild_raids_report_idx', 'loot_awards_drop_unmatched_idx')
+		  where indexname in ('guild_raids_report_idx', 'loot_awards_drop_unmatched_idx', 'reports_matched_guild_idx')
 		     or (indexname = 'loot_awards_drop_idx' and indexdef like '%raid_id%')`).Scan(&indexes); err != nil {
 		t.Fatal(err)
 	}
@@ -49,8 +50,8 @@ func TestMigration0052AddsTheAttendanceSchemaAndDownReversesIt(t *testing.T) {
 			t.Errorf("restoring the latest migration: %v", err)
 		}
 	})
-	if c, tb, ix := guildAttendanceSchema(t, url); c != 6 || tb != 2 || ix != 3 {
-		t.Fatalf("after up: columns %d tables %d indexes %d, want 6 2 3", c, tb, ix)
+	if c, tb, ix := guildAttendanceSchema(t, url); c != 9 || tb != 2 || ix != 4 {
+		t.Fatalf("after up: columns %d tables %d indexes %d, want 9 2 4", c, tb, ix)
 	}
 
 	migrateTo(t, url, 51)
@@ -75,7 +76,7 @@ func TestMigration0052AddsTheAttendanceSchemaAndDownReversesIt(t *testing.T) {
 	if err := Migrate(url); err != nil {
 		t.Fatalf("migrating up again: %v", err)
 	}
-	if c, tb, ix := guildAttendanceSchema(t, url); c != 6 || tb != 2 || ix != 3 {
-		t.Fatalf("after up again: columns %d tables %d indexes %d, want 6 2 3", c, tb, ix)
+	if c, tb, ix := guildAttendanceSchema(t, url); c != 9 || tb != 2 || ix != 4 {
+		t.Fatalf("after up again: columns %d tables %d indexes %d, want 9 2 4", c, tb, ix)
 	}
 }

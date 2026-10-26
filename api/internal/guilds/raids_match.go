@@ -30,6 +30,20 @@ const (
 	matchTailHours = 6
 )
 
+// matchGuildOf is the SQL for the guild the reports row aliased alias is read as by the matcher:
+// the officer's guild_id, else the guild its owner's standing named (matched_guild_id). Only
+// Lane G2's readers use it; everything older reads guild_id alone.
+func matchGuildOf(alias string) string {
+	return "coalesce(" + alias + ".guild_id, " + alias + ".matched_guild_id)"
+}
+
+// matchGuildIs is the condition that the reports row aliased alias is read by the matcher as the
+// guild in the parameter param, written so either column's index serves it.
+func matchGuildIs(alias, param string) string {
+	return "(" + alias + ".guild_id = " + param + " or (" + alias + ".guild_id is null and " +
+		alias + ".matched_guild_id = " + param + "))"
+}
+
 // pgUniqueViolation is the SQLSTATE of a unique index refusing a row.
 const pgUniqueViolation = "23505"
 
@@ -62,7 +76,7 @@ func (s *Store) reportAnchor(ctx context.Context, reportID string) (logAnchor, b
 	var guildID *int64
 	var zone *string
 	err := s.Pool.QueryRow(ctx, `
-		select r.guild_id, r.log_zone, coalesce(r.completed_at, r.created_at)
+		select `+matchGuildOf("r")+`, r.log_zone, coalesce(r.completed_at, r.created_at)
 		from reports r where r.id = $1 and `+presence.EvidenceReport("r"), reportID).Scan(&guildID, &zone, &a.at)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return logAnchor{}, false, nil
@@ -160,7 +174,7 @@ func (s *Store) SetMatch(ctx context.Context, guildID, raidID int64, reportID, h
 func (s *Store) requireGuildReport(ctx context.Context, guildID int64, reportID string) error {
 	var found bool
 	if err := s.Pool.QueryRow(ctx,
-		`select exists (select 1 from reports where id = $1 and guild_id = $2 and status = 'complete')`,
+		`select exists (select 1 from reports r where r.id = $1 and `+matchGuildIs("r", "$2")+` and r.status = 'complete')`,
 		reportID, guildID).Scan(&found); err != nil {
 		return fmt.Errorf("guilds: set match: read report: %w", err)
 	}

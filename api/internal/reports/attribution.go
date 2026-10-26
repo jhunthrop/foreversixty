@@ -26,16 +26,19 @@ const attributedGuild = `coalesce(
 	 having count(distinct gc.guild_id) = 1))`
 
 // AttributeGuild gives a report with no guild the guild its owner's standing names
-// (attributedGuild) and returns the report's guild as it now stands. A guild already set, by
+// (attributedGuild) in reports.matched_guild_id, and returns the report's guild for matching
+// as it now stands: coalesce(guild_id, matched_guild_id). It never writes guild_id, which only
+// the officer PATCH sets because it carries edit rights, the guild leaderboards and character
+// verification; nothing but the guild matcher reads matched_guild_id. A guild already set, by
 // hand or by an earlier attribution, is never overridden.
 func (s *Store) AttributeGuild(ctx context.Context, reportID string) (*int64, error) {
 	if _, err := s.Pool.Exec(ctx,
-		`update reports set guild_id = `+attributedGuild+`
-		  where id = $1 and guild_id is null and `+attributedGuild+` is not null`, reportID); err != nil {
+		`update reports set matched_guild_id = `+attributedGuild+`
+		  where id = $1 and guild_id is null and matched_guild_id is null and `+attributedGuild+` is not null`, reportID); err != nil {
 		return nil, fmt.Errorf("reports: attribute guild of %s: %w", reportID, err)
 	}
 	var guildID *int64
-	err := s.Pool.QueryRow(ctx, `select guild_id from reports where id = $1`, reportID).Scan(&guildID)
+	err := s.Pool.QueryRow(ctx, `select coalesce(guild_id, matched_guild_id) from reports where id = $1`, reportID).Scan(&guildID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, ErrNotFound
 	}

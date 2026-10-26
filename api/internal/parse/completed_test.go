@@ -52,14 +52,14 @@ func TestACompletedUploadLearnsItsZoneAndGuildThenCallsTheHook(t *testing.T) {
 	var zone *string
 	var gid *int64
 	if err := d.Reports.Pool.QueryRow(ctx,
-		`select log_zone, guild_id from reports where id = $1`, reportID).Scan(&zone, &gid); err != nil {
+		`select log_zone, matched_guild_id from reports where guild_id is null and id = $1`, reportID).Scan(&zone, &gid); err != nil {
 		t.Fatal(err)
 	}
 	if zone == nil || *zone != "Blackrock Spire" {
 		t.Fatalf("log_zone = %v, want the fixture log's Blackrock Spire", zone)
 	}
 	if gid == nil || *gid != guildID {
-		t.Fatalf("guild_id = %v, want %d", gid, guildID)
+		t.Fatalf("matched_guild_id = %v, want %d (guild_id null)", gid, guildID)
 	}
 	if got := hook.all(); len(got) != 1 || got[0] != reportID {
 		t.Fatalf("hook calls = %v, want the report once", got)

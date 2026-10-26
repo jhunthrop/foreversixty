@@ -23,6 +23,16 @@ func (h *harness) seedGuildCharacter(guildID, userID int64, characterKey string,
 	}
 }
 
+// reportMatchedGuild reads a report's matched_guild_id straight from the row.
+func (h *harness) reportMatchedGuild(id string) *int64 {
+	h.t.Helper()
+	var g *int64
+	if err := h.store.Pool.QueryRow(h.t.Context(), `select matched_guild_id from reports where id = $1`, id).Scan(&g); err != nil {
+		h.t.Fatal(err)
+	}
+	return g
+}
+
 // reportGuild reads a report's guild_id straight from the row.
 func (h *harness) reportGuild(id string) *int64 {
 	h.t.Helper()
@@ -50,7 +60,7 @@ func TestAttributeGuildPicksTheLoggingCharactersVerifiedGuild(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !sameGuild(got, a) || !sameGuild(h.reportGuild(id), a) {
+	if !sameGuild(got, a) || !sameGuild(h.reportMatchedGuild(id), a) || h.reportGuild(id) != nil {
 		t.Fatalf("attributed %v, stored %v, want guild %d", got, h.reportGuild(id), a)
 	}
 }
@@ -67,7 +77,7 @@ func TestAttributeGuildFallsBackToTheOwnersOnlyVerifiedGuild(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !sameGuild(got, a) || !sameGuild(h.reportGuild(id), a) {
+	if !sameGuild(got, a) || !sameGuild(h.reportMatchedGuild(id), a) || h.reportGuild(id) != nil {
 		t.Fatalf("attributed %v, want the owner's only verified guild %d", got, a)
 	}
 }
@@ -84,7 +94,7 @@ func TestAttributeGuildLeavesAnAmbiguousOwnerUnattributed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got != nil || h.reportGuild(id) != nil {
+	if got != nil || h.reportMatchedGuild(id) != nil || h.reportGuild(id) != nil {
 		t.Fatalf("attributed %v, stored %v, want none for an owner in two guilds", got, h.reportGuild(id))
 	}
 }

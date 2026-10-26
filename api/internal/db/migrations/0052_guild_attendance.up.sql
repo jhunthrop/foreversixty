@@ -7,6 +7,13 @@
 -- ingest learns it; the matcher compares it with the curated zone's log name.
 alter table reports add column log_zone text;
 
+-- The guild the matcher reads a report as, by its owner's standing (reports.AttributeGuild).
+-- Distinct from guild_id, which only the officer PATCH sets and which carries edit rights, the
+-- guild leaderboards and character verification; the matcher reads coalesce(guild_id,
+-- matched_guild_id) and nothing else reads this column.
+alter table reports add column matched_guild_id bigint references guilds (id) on delete set null;
+create index reports_matched_guild_idx on reports (matched_guild_id) where matched_guild_id is not null;
+
 -- A raid record learns its log. pre_done_status is what status returns to when an officer clears
 -- the match; matched_by says whether the auto-matcher or an officer picked the log; matched_at is
 -- when; report_posted_at guards the one report_ready post per raid.
@@ -28,7 +35,7 @@ create table guild_raid_rejected_reports (
 
 -- One row per character per matched raid. signed and role are the sign-up as it stood (null for a
 -- character who joined without one); came_as names the other character of the same account that
--- was in the log (R-A2); excused is an officer's flag and survives a recompute.
+-- was in the log (R-A2) and came_as_key its character key; excused is an officer's flag and survives a recompute.
 create table guild_raid_attendance (
   raid_id             bigint not null references guild_raids (id) on delete cascade,
   character_key       text not null,
@@ -39,6 +46,7 @@ create table guild_raid_attendance (
   role                text,
   outcome             text not null check (outcome in ('present', 'late', 'absent', 'no_show')),
   came_as             text,
+  came_as_key         text,
   first_seen_offset_s int,
   pulls_present       int not null default 0,
   pulls_total         int not null default 0,
@@ -50,6 +58,9 @@ create table guild_raid_attendance (
 -- Loot remembers the raid it dropped in, so re-awarding the same item next week is a new row
 -- rather than an overwrite of last week's.
 alter table loot_awards add column raid_id bigint references guild_raids (id) on delete set null;
+-- True for an award the raid's match attached (it had no raid and was made in the match
+-- window); clearing the match detaches only these, never an award filed under the raid itself.
+alter table loot_awards add column attached_by_match boolean not null default false;
 drop index if exists loot_awards_drop_idx;
 -- One award per drop per raid. Postgres keeps NULL raid_id rows distinct in this index, so the
 -- awards made with no raid keep their one-per-drop rule through the partial index below, which is
