@@ -59,6 +59,8 @@ type Service struct {
 	// PublicBaseURL is the site origin the raid posts link to.
 	PublicBaseURL string
 	Log           *slog.Logger
+	// raidPostBudget bounds one request's raid posts together; zero means the default.
+	raidPostBudget time.Duration
 }
 
 // Mount registers every /v1/guilds/{id}/... mutation route and the

@@ -272,7 +272,7 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 		}
 		s.logger().Info("guilds", "op", op, "guild_id", guildID, "raid_id", raid.ID,
 			"user_id", auth.ActorFrom(r.Context()).UserID)
-		s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
+		// The cancel box only pre-ticks from the raid form's default; it never writes it.
 		var post func(RaidView)
 		if ticked(req.PostToDiscord) {
 			post = func(v RaidView) { s.postChanged(r.Context(), guildID, v, nil) }

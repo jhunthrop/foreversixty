@@ -109,7 +109,13 @@ func raidBaseEmbed(in RaidPosted, prefix string, now time.Time) Embed {
 	date := in.StartsAt.In(guildLocation(in.Timezone)).Format(guildDateLayout)
 	room := maxTitleRunes - len([]rune(prefix)) - len([]rune(fmt.Sprintf(raidCopy.TitleFormat, "", date)))
 	title := prefix + fmt.Sprintf(raidCopy.TitleFormat, escapedWithin(collapse(in.Title), maxRaidTitleRunes, room), date)
-	e := guildBaseEmbed(in.GuildName, title, in.RaidURL, now)
+	// Discord answers 400 to a relative link (which would count toward the five failures),
+	// so the title links only when the URL is absolute.
+	link := ""
+	if isAbsolute(in.RaidURL) {
+		link = in.RaidURL
+	}
+	e := guildBaseEmbed(in.GuildName, title, link, now)
 	if isAbsolute(in.CrestURL) {
 		e.Thumbnail = in.CrestURL
 	}
