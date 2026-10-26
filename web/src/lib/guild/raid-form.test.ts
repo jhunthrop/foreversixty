@@ -137,6 +137,11 @@ describe('editDefaults', () => {
   it('leaves the title empty when it is the zone name', () => {
     expect(editDefaults(raid(), CHICAGO).title).toBe('');
   });
+
+  it('starts Notes from the raw markdown, empty when an older view has none', () => {
+    expect(editDefaults(raid({ notes: '**Flasks**' }), CHICAGO).notes).toBe('**Flasks**');
+    expect(editDefaults(raid(), CHICAGO).notes).toBe('');
+  });
 });
 
 describe('validateRaidForm', () => {

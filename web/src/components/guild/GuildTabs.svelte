@@ -50,10 +50,13 @@
     active,
     role,
     onSelect,
+    hrefBase,
   }: {
     active: GuildTabId;
     role: 'public' | 'member' | 'officer' | 'moderator';
-    onSelect: (tab: GuildTabId) => void;
+    onSelect?: (tab: GuildTabId) => void;
+    /** Off the guild page (a raid page): each tab is a plain link to the guild page's hash. */
+    hrefBase?: string;
   } = $props();
 
   const allowed = $derived(tabsForRole(role));
@@ -67,6 +70,7 @@
   }
 
   function select(tab: GuildTabId, event: MouseEvent): void {
+    if (onSelect === undefined) return;
     event.preventDefault();
     onSelect(tab);
   }
@@ -120,7 +124,7 @@
       {@const isActive = tab.id === active}
       {@const readOnlySuffix = tab.id === 'loot' && role === 'member'}
       <a
-        href={`#${tab.id}`}
+        href={`${hrefBase ?? ''}#${tab.id}`}
         role="tab"
         aria-selected={isActive}
         data-guild-tab={tab.id}

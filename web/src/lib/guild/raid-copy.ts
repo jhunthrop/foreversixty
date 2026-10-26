@@ -123,6 +123,15 @@ export const raidCopy = {
   },
   loadErrors: { raid: 'This raid did not load.', planned: 'Planned raids did not load.' },
   backLink: (guild: string): string => `‹ ${guild} · Raids`,
+  /** The raid page's own words outside the 6.1 table (spec 3.2, 3.7, 4 "Page states"). */
+  page: {
+    eyebrow: 'Raid',
+    loading: 'Loading the raid',
+    /** The officer state select's accessible name (3.7). */
+    signupFor: (name: string): string => `Sign-up for ${name}`,
+    /** The not-signed row's resting option; its accessible name is `Not signed up`. */
+    notSignedMark: '—',
+  },
   changelog:
     "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.",
 } as const;

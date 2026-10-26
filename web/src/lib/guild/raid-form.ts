@@ -124,7 +124,7 @@ export function editDefaults(raid: GuildRaidView, timezone: string): RaidFormVal
     time,
     duration: raid.duration_minutes,
     timezone,
-    notes: '',
+    notes: raid.notes ?? '',
     repeat: false,
     postToDiscord: raid.discord.post_default,
   };
