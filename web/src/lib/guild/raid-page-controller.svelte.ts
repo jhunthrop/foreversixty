@@ -86,6 +86,7 @@ export interface RaidPageSeed {
   currentKey: string | null;
   pollPaused: boolean;
   line: OfficerLine | null;
+  raceLine: string | null;
 }
 
 const PLAN_REQUIRED = 'guild_plan_required';
@@ -125,6 +126,8 @@ export class RaidPageController {
   /** The edit form is open in place of the band's lines 3 to 6. */
   editing = $state(false);
   zones = $state<GuildZoneView[]>([]);
+  /** `This raid was cancelled while you were signing up.`, shown above the cancelled strip. */
+  raceLine = $state<string | null>(null);
 
   private readonly deps: RaidPageDeps;
   private readonly route: RaidRoute;
@@ -149,12 +152,14 @@ export class RaidPageController {
 
   /** Loads the page and starts the poll; answers the stop. */
   start(): () => void {
+    clearInterval(this.timer);
     this.stopped = false;
     void this.loadPage();
     this.timer = setInterval(() => void this.poll(), RAID_POLL_MS);
     return () => {
       this.stopped = true;
       clearInterval(this.timer);
+      this.timer = undefined;
     };
   }
 
@@ -165,7 +170,9 @@ export class RaidPageController {
   private async loadPage(): Promise<void> {
     this.load = 'loading';
     const [page, me] = await Promise.allSettled([this.deps.loadGuild(), this.deps.loadMe()]);
-    if (page.status === 'rejected') {
+    if (this.stopped) return;
+    // A failed /v1/me is not a signed-out answer (`null`): the page fails and offers a retry.
+    if (page.status === 'rejected' || me.status === 'rejected') {
       this.load = 'failed';
       return;
     }
@@ -176,22 +183,26 @@ export class RaidPageController {
       faction: guild.faction ?? null,
       mark: guildMarkSrc(guild),
     };
-    this.resolveAccess(me.status === 'fulfilled' ? me.value : null);
+    this.resolveAccess(me.value);
     if (this.access !== 'member') {
       this.load = 'ready';
       return;
     }
     void this.deps
       .loadHome(guild.id)
-      .then((home) => this.applyHome(home))
+      .then((home) => {
+        if (!this.stopped) this.applyHome(home);
+      })
       .catch(() => {
         // The rank from /v1/me stands; the server's 403 is the real gate.
       });
     try {
-      this.applyRaid(await this.deps.fetchRaid(guild.id, this.route.raidId));
+      const raid = await this.deps.fetchRaid(guild.id, this.route.raidId);
+      if (this.stopped) return;
+      this.applyRaid(raid);
       this.load = 'ready';
     } catch {
-      this.load = 'failed';
+      if (!this.stopped) this.load = 'failed';
     }
   }
 
@@ -284,6 +295,8 @@ export class RaidPageController {
     const code = codeOf(thrown);
     const status = RACE_STATUS[code];
     if (status !== undefined && this.raid !== null) this.raid = { ...this.raid, status };
+    // The cancelled strip drops its rows, so the race line moves up to the page (spec 4 "Races").
+    if (status === 'cancelled') this.raceLine = raidCopy.races.cancelled;
     this.planRefused(thrown);
     return { ok: false, code, message: raidCopy.stripStatus.failed };
   }

@@ -6,6 +6,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
+  import { focusOnMount } from '../../lib/guild/focus-now';
   import { browserStorage } from '../../lib/guild/planned-reserve';
   import { copyList, raidCopy } from '../../lib/guild/raid-copy';
   import { splitAtLink } from '../../lib/guild/raid-form';
@@ -104,10 +105,6 @@
     }
   }
 
-  function focusNow(node: HTMLElement): void {
-    node.focus();
-  }
-
   function selectAll(node: HTMLTextAreaElement): void {
     node.select();
   }
@@ -165,7 +162,7 @@
         class="text-wipe text-[13px] md:text-right"
         role="alert"
         tabindex="-1"
-        use:focusNow
+        use:focusOnMount
         data-testid="raid-officer-error"
       >
         {statusLine.message}

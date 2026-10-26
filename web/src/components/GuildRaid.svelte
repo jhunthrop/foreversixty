@@ -8,11 +8,13 @@
   import { untrack } from 'svelte';
   import { guildHref, guildSettingsHref } from '../lib/characters';
   import { guildClaimCopy } from '../lib/guild/copy';
+  import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/planned-reserve';
   import { raidCopy } from '../lib/guild/raid-copy';
   import { raidCount, raidPageFlags, raidWhen, stripReserveRows } from '../lib/guild/raid-page';
   import { RaidPageController, type RaidRoute } from '../lib/guild/raid-page-controller.svelte';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
+  import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
@@ -73,6 +75,15 @@
   const count = $derived(raid === null ? null : raidCount(raid));
   const guildTimezone = $derived(raid?.guild_timezone ?? viewerTimezone);
 
+  let backLink = $state<HTMLAnchorElement | null>(null);
+
+  /** A done cancel leaves only disabled buttons, so focus moves to the back link. */
+  async function runStatus(action: RaidStatusAction, post?: boolean): Promise<boolean> {
+    const ok = await c.runStatus(action, post);
+    if (ok && action === 'cancel') backLink?.focus();
+    return ok;
+  }
+
   function closeEdit(): void {
     c.closeEdit();
     queueMicrotask(() => document.getElementById('raid-officer-edit')?.focus());
@@ -81,7 +92,7 @@
 
 {#snippet guildHeading()}
   <span class="label text-gold flex items-center gap-2.5">
-    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>Guild
+    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raidCopy.page.guildEyebrow}
   </span>
   <div class="flex items-center gap-4 lg:gap-[18px]">
     <FactionCrest faction={c.guild?.faction ?? null} src={c.guild?.mark ?? null} />
@@ -89,7 +100,16 @@
   </div>
 {/snippet}
 
-{#if c.load === 'loading' || c.access === 'loading'}
+{#if c.load === 'failed'}
+  <div class="flex flex-col gap-[22px] md:gap-8">
+    <GuildBandFrame faction={c.guild?.faction ?? null}>
+      {#if c.guild !== null}{@render guildHeading()}{:else}<h1 class="sr-only">
+          {raidCopy.page.eyebrow}
+        </h1>{/if}
+    </GuildBandFrame>
+    <LoadError message={raidCopy.loadErrors.raid} onRetry={() => c.retry()} testid="raid-load-error" />
+  </div>
+{:else if c.load === 'loading' || c.access === 'loading'}
   <div class="flex flex-col gap-[22px] md:gap-8" data-testid="raid-page-loading">
     <span class="sr-only">{raidCopy.page.loading}</span>
     <GuildBandFrame faction={c.guild?.faction ?? null} minHeight={BAND_MIN}>
@@ -102,15 +122,6 @@
       data-testid="raid-strip-reserve"
     ></div>
     <div class="min-h-[560px] md:min-h-[420px]" aria-hidden="true" data-testid="raid-roster-reserve"></div>
-  </div>
-{:else if c.load === 'failed'}
-  <div class="flex flex-col gap-[22px] md:gap-8">
-    <GuildBandFrame faction={c.guild?.faction ?? null}>
-      {#if c.guild !== null}{@render guildHeading()}{:else}<h1 class="sr-only">
-          {raidCopy.page.eyebrow}
-        </h1>{/if}
-    </GuildBandFrame>
-    <LoadError message={raidCopy.loadErrors.raid} onRetry={() => c.retry()} testid="raid-load-error" />
   </div>
 {:else if !visible}
   <GuildBandFrame faction={c.guild?.faction ?? null} testid="raid-not-visible">
@@ -138,6 +149,7 @@
       <a
         href={`${guildPath}#raids`}
         class="text-muted inline-flex min-h-11 items-center self-start text-[13px] underline"
+        bind:this={backLink}
         data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
       >
       <div class="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
@@ -228,7 +240,7 @@
                 {settingsHref}
                 {guildTimezone}
                 onEdit={() => c.openEdit()}
-                onStatus={(action, post) => c.runStatus(action, post)}
+                onStatus={runStatus}
               />
             </div>
           {/if}
@@ -237,6 +249,17 @@
       <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
     </GuildBandFrame>
 
+    {#if flags.cancelled && c.raceLine !== null}
+      <p
+        class="text-wipe -mb-2 text-[13px] md:-mb-4"
+        role="alert"
+        tabindex="-1"
+        use:focusOnMount
+        data-testid="raid-race-line"
+      >
+        {c.raceLine}
+      </p>
+    {/if}
     <RaidSignupStrip
       {raid}
       locked={flags.locked}
@@ -271,6 +294,7 @@
       officerTools={c.officerTools}
       gateId={GATE_ID}
       cancelled={flags.cancelled}
+      closed={flags.cancelled || flags.done}
       busyKey={c.rosterBusy}
       line={c.line}
       onSetState={(row, state) => c.setRosterState(row, state)}

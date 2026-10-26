@@ -42,9 +42,9 @@ describe('RaidCancelConfirm', () => {
     expect(html(true, false)).toMatch(/<input[^>]*checked[^>]*data-testid="raid-cancel-discord"/);
   });
 
-  it('reads Cancelling… and holds both buttons while the cancel is in flight', () => {
+  it('reads Cancelling… and holds the confirm while the cancel is in flight, Keep it live', () => {
     const body = html(false, true);
     expect(text(body)).toContain(raidCopy.cancelConfirm.confirming);
-    expect(body.match(/<button[^>]* disabled/g)?.length).toBe(2);
+    expect(body.match(/<button[^>]* disabled/g)?.length).toBe(1);
   });
 });
