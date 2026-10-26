@@ -1,0 +1,8 @@
+{
+  "notes": "The first raid tier (opens 9 December 2026). size and log_zone are sourced facts: Onyxia's Lair is 40 and the combat log names it \"Onyxia's Lair\"; the other two stay null until the client data names them (tenet 8).",
+  "zones": [
+    { "key": "raid:barrow-deeps", "name": "Barrow Deeps", "size": null, "log_zone": null },
+    { "key": "raid:hyjal-summit", "name": "Hyjal Summit", "size": null, "log_zone": null },
+    { "key": "raid:onyxias-lair", "name": "Onyxia's Lair", "size": 40, "log_zone": "Onyxia's Lair" }
+  ]
+}
