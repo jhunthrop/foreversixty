@@ -109,6 +109,8 @@ func zoneKeysForLog(logZone string) []string {
 // report has no guild or zone, no raid fits, or the log is already some raid's. The candidate
 // subselect skips raids another match holds locked, so two reports racing for the guild's raids
 // each find one rather than the second giving up on a raid that was still free.
+// The raid's attendance and the loot awarded during it are written in the same transaction; a
+// failure there rolls the match back and is returned.
 func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, error) {
 	a, ok, err := s.reportAnchor(ctx, reportID)
 	if err != nil || !ok {
@@ -118,7 +120,12 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 	if len(keys) == 0 {
 		return Raid{}, false, nil
 	}
-	raid, err := scanRaid(s.Pool.QueryRow(ctx, `
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return Raid{}, false, fmt.Errorf("guilds: auto match: begin: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	raid, err := scanRaid(tx.QueryRow(ctx, `
 		update guild_raids set report_id = $1, pre_done_status = status, status = 'done',
 			matched_by = $5, matched_at = now(), updated_at = now()
 		where id = (
@@ -140,7 +147,26 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 	if err != nil {
 		return Raid{}, false, fmt.Errorf("guilds: auto match: %w", err)
 	}
+	if err := s.finishMatch(ctx, tx, raid); err != nil {
+		return Raid{}, false, err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return Raid{}, false, fmt.Errorf("guilds: auto match: commit: %w", err)
+	}
 	return raid, true, nil
+}
+
+// finishMatch is the rest of every match, in the match's own transaction: the raid's
+// attendance against its new log and the loot awarded during it. A failure rolls the match back.
+func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
+	rows, err := s.attendanceRowsOf(ctx, raid.GuildID, raid.ID, *raid.ReportID)
+	if err != nil {
+		return err
+	}
+	if err := writeAttendanceRows(ctx, tx, raid.ID, rows); err != nil {
+		return err
+	}
+	return attachMatchLoot(ctx, tx, raid.ID)
 }
 
 func isUniqueViolation(err error) bool {
@@ -148,8 +174,8 @@ func isUniqueViolation(err error) bool {
 	return errors.As(err, &pg) && pg.Code == pgUniqueViolation
 }
 
-// SetMatch makes reportID the log of guildID's raid raidID and recomputes the raid's
-// attendance. how is MatchedAuto or MatchedHand. A planned or locked raid must have ended
+// SetMatch makes reportID the log of guildID's raid raidID and, in the same transaction,
+// recomputes the raid's attendance and attaches the loot awarded during it. how is MatchedAuto or MatchedHand. A planned or locked raid must have ended
 // (ErrRaidNotEnded); a done raid may be re-matched to another log and keeps the status it will
 // return to when cleared; a cancelled one is ErrRaidStatus. ErrNotFound when the raid is not
 // the guild's or the report is not a complete report of the guild; ErrReportMatched when the
@@ -161,14 +187,7 @@ func (s *Store) SetMatch(ctx context.Context, guildID, raidID int64, reportID, h
 	if err := s.requireGuildReport(ctx, guildID, reportID); err != nil {
 		return Raid{}, err
 	}
-	raid, err := s.writeMatch(ctx, guildID, raidID, reportID, how)
-	if err != nil {
-		return Raid{}, err
-	}
-	if err := s.RecomputeAttendance(ctx, raidID); err != nil {
-		return Raid{}, err
-	}
-	return raid, nil
+	return s.writeMatch(ctx, guildID, raidID, reportID, how)
 }
 
 func (s *Store) requireGuildReport(ctx context.Context, guildID int64, reportID string) error {
@@ -185,8 +204,8 @@ func (s *Store) requireGuildReport(ctx context.Context, guildID int64, reportID 
 	return nil
 }
 
-// writeMatch is SetMatch's guarded write: one transaction reading the raid under lock, then
-// updating it only while its status is still one a match may replace.
+// writeMatch is SetMatch's guarded write: one transaction reading the raid under lock, updating
+// it only while its status is still one a match may replace, then finishing the match.
 func (s *Store) writeMatch(ctx context.Context, guildID, raidID int64, reportID, how string) (Raid, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -218,6 +237,9 @@ func (s *Store) writeMatch(ctx context.Context, guildID, raidID int64, reportID,
 	}
 	if err != nil {
 		return Raid{}, fmt.Errorf("guilds: set match: write: %w", err)
+	}
+	if err := s.finishMatch(ctx, tx, raid); err != nil {
+		return Raid{}, err
 	}
 	if err := tx.Commit(ctx); err != nil {
 		return Raid{}, fmt.Errorf("guilds: set match: commit: %w", err)
@@ -282,6 +304,9 @@ func releaseLog(ctx context.Context, tx pgx.Tx, raidID int64, reportID string, b
 	}
 	if _, err := tx.Exec(ctx, `delete from guild_raid_attendance where raid_id = $1`, raidID); err != nil {
 		return Raid{}, fmt.Errorf("guilds: clear match: attendance: %w", err)
+	}
+	if err := detachMatchLoot(ctx, tx, raidID); err != nil {
+		return Raid{}, err
 	}
 	return raid, nil
 }

@@ -38,11 +38,20 @@ func (s *Store) RecomputeAttendance(ctx context.Context, raidID int64) error {
 	if !evidence {
 		return nil
 	}
-	in, err := s.attendanceInputFor(ctx, guildID, raidID, *reportID)
+	rows, err := s.attendanceRowsOf(ctx, guildID, raidID, *reportID)
 	if err != nil {
 		return err
 	}
-	return s.replaceAttendance(ctx, raidID, reportID, computeAttendance(in))
+	return s.replaceAttendance(ctx, raidID, reportID, rows)
+}
+
+// attendanceRowsOf computes raidID's rows against reportID, writing nothing.
+func (s *Store) attendanceRowsOf(ctx context.Context, guildID, raidID int64, reportID string) ([]AttendanceRow, error) {
+	in, err := s.attendanceInputFor(ctx, guildID, raidID, reportID)
+	if err != nil {
+		return nil, err
+	}
+	return computeAttendance(in), nil
 }
 
 func (s *Store) attendanceInputFor(ctx context.Context, guildID, raidID int64, reportID string) (attendanceInput, error) {
@@ -149,6 +158,18 @@ func (s *Store) replaceAttendance(ctx context.Context, raidID int64, want *strin
 	if (current == nil) != (want == nil) || (current != nil && *current != *want) {
 		return nil
 	}
+	if err := writeAttendanceRows(ctx, tx, raidID, rows); err != nil {
+		return err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("guilds: attendance: commit: %w", err)
+	}
+	return nil
+}
+
+// writeAttendanceRows swaps raidID's rows for rows inside tx, keeping excused flags of the
+// characters that keep a row.
+func writeAttendanceRows(ctx context.Context, tx pgx.Tx, raidID int64, rows []AttendanceRow) error {
 	keys := make([]string, len(rows))
 	for i, r := range rows {
 		keys[i] = r.CharacterKey
@@ -170,9 +191,6 @@ func (s *Store) replaceAttendance(ctx context.Context, raidID int64, want *strin
 			r.FirstSeenOffsetS, r.PullsPresent, r.PullsTotal); err != nil {
 			return fmt.Errorf("guilds: attendance: write: %w", err)
 		}
-	}
-	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("guilds: attendance: commit: %w", err)
 	}
 	return nil
 }
