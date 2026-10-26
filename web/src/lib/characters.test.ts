@@ -18,6 +18,7 @@ import {
   parseGuildInviteToken,
   parseGuildPath,
   parseGuildRaidPath,
+  guildRaidHref,
   parseGuildSettingsPath,
   rulesetFromRealm,
   rulesetLabel,
@@ -199,6 +200,14 @@ describe('parseGuildSettingsPath', () => {
 
   it('refuses an invalid region or ruleset the same way parseGuildPath does', () => {
     expect(parseGuildSettingsPath('/guild/xx/hardcore/name/settings')).toBeNull();
+  });
+});
+
+describe('guildRaidHref', () => {
+  it('builds the raid page under the guild path, which parses back', () => {
+    const href = guildRaidHref('/guild/us/pvp/olympus-xxvii', 12);
+    expect(href).toBe('/guild/us/pvp/olympus-xxvii/raids/12');
+    expect(parseGuildRaidPath(href)?.raidId).toBe('12');
   });
 });
 

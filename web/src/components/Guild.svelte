@@ -17,6 +17,7 @@
   import {
     characterSlug,
     guildClaimHref,
+    guildHref,
     guildSettingsHref,
     parseGuildPath,
     rulesetLabel,
@@ -48,6 +49,7 @@
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
   import { officerToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
+  import { browserStorage, plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
   import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
@@ -509,19 +511,29 @@
 
   let raids = $state<GuildRaidsPage | null>(null);
   let raidsStatus = $state<TabFetchStatus>('idle');
+  async function loadRaids(id: number): Promise<void> {
+    const page = await fetchGuildRaids(id);
+    raids = page;
+    rememberPlannedRows(id, page, browserStorage());
+  }
   $effect(() => {
     if (activeTab !== 'raids' || guildId === null || raidsStatus !== 'idle') return;
     raidsStatus = 'loading';
-    void fetchGuildRaids(guildId)
-      .then((page) => {
-        raids = page;
+    void loadRaids(guildId)
+      .then(() => {
         raidsStatus = 'ready';
       })
       .catch(() => {
         raidsStatus = 'missing';
       });
   });
-
+  /** Raids spec 4: a verified viewer's tab reserves the planned rows it last drew while it loads. */
+  const plannedReserve = $derived(
+    guildId !== null && role !== 'public' ? plannedReserveRows(guildId, browserStorage()) : null,
+  );
+  const guildPath = $derived(
+    resolved !== null && home !== null ? guildHref(resolved.region, resolved.ruleset, home.guild.name) : '',
+  );
   let progression = $state<GuildProgressionPage | null>(null);
   let progressionStatus = $state<TabFetchStatus>('idle');
   $effect(() => {
@@ -914,6 +926,14 @@
       {/if}
     {:else if activeTab === 'raids'}
       {#if raidsStatus === 'loading' || (raidsStatus === 'ready' && !raidsLazy.current)}
+        {#if plannedReserve !== null}
+          <div
+            class="h-[calc(24px+var(--planned-rows)*108px)] md:h-[calc(24px+var(--planned-rows)*64px)]"
+            style:--planned-rows={plannedReserve}
+            aria-hidden="true"
+            data-testid="guild-planned-reserve"
+          ></div>
+        {/if}
         <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-raids-skeleton" />
         {@render lazyFallback(raidsLazy)}
       {:else if raidsStatus === 'missing'}
@@ -922,7 +942,21 @@
           testid="guild-raids-missing"
         />
       {:else if raidsLazy.current}
-        <raidsLazy.current rows={raids?.rows ?? []} {guildId} publicView={role === 'public'} />
+        <raidsLazy.current
+          rows={raids?.rows ?? []}
+          {guildId}
+          publicView={role === 'public'}
+          planned={raids?.planned}
+          zones={raids?.zones ?? []}
+          guildTimezone={raids?.guild_timezone ?? null}
+          officer={role === 'officer'}
+          {officerTools}
+          memberView={myGuildMembership?.verified === true}
+          {settingsHref}
+          {guildPath}
+          onPlanned={() => (guildId === null ? Promise.resolve() : loadRaids(guildId))}
+          onPlanRefused={() => (officerToolsEnded = true)}
+        />
       {/if}
     {:else if activeTab === 'progression'}
       {#if progressionStatus === 'loading' || (progressionStatus === 'ready' && !progressionLazy.current)}

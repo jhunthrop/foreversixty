@@ -20,6 +20,8 @@ export class AccountError extends Error {
     readonly status: number,
     /** The API's own `error.code` ("not_found", "flagged"), when the envelope carried one. */
     readonly code: string | null = null,
+    /** A 422's per-field lines (`{starts_at: "Pick a time after now."}`), when the envelope carried them. */
+    readonly fields: Readonly<Record<string, string>> | null = null,
   ) {
     super(message);
     this.name = 'AccountError';
@@ -285,7 +287,7 @@ export function csrfToken(): string {
 interface Envelope<T> {
   ok: boolean;
   data: T | null;
-  error: { code?: string; message?: string } | null;
+  error: { code?: string; message?: string; fields?: Record<string, string> } | null;
 }
 
 export interface EnvelopeResult<T> {
@@ -428,6 +430,7 @@ export async function requestEnvelope<T>(
       envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED,
       response.status,
       envelope?.error?.code ?? null,
+      envelope?.error?.fields ?? null,
     );
   }
 

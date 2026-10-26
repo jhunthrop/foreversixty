@@ -16,6 +16,8 @@ export class GuildApiError extends Error {
     readonly status: number,
     /** The API's own `error.code` ("guild_plan_required"); empty when the envelope carried none. */
     readonly code: string = '',
+    /** A 422's per-field lines, keyed by the API's field names. */
+    readonly fields: Readonly<Record<string, string>> | null = null,
   ) {
     super(message);
     this.name = 'GuildApiError';
@@ -385,7 +387,8 @@ export async function call<T>(
   try {
     result = await requestEnvelope<T>(path, apiBase, { ...init, failureMessage: GUILD_API_FAILED });
   } catch (error) {
-    if (error instanceof AccountError) throw new GuildApiError(error.message, error.status, error.code ?? '');
+    if (error instanceof AccountError)
+      throw new GuildApiError(error.message, error.status, error.code ?? '', error.fields);
     throw new GuildApiError(GUILD_API_FAILED, 0);
   }
   if (result.data === null && !allowEmpty) {
@@ -665,7 +668,7 @@ export interface GuildRaidsPage {
   /** Verified members and officers only; the three keys are absent for every other viewer. */
   planned?: GuildRaidView[];
   zones?: GuildZoneView[];
-  guild_timezone?: string;
+  guild_timezone?: string | null;
 }
 
 // Planned raids and sign-ups (design/specs/2026-10-26-guild-raids.md section 9, "Contract this
@@ -726,7 +729,8 @@ export interface GuildRaidView {
   status: GuildRaidStatus;
   /** The curated file's raid size; `null` until sourced (ruling R6). */
   size: number | null;
-  guild_timezone: string;
+  /** `null` until the guild sets a raid zone. */
+  guild_timezone: string | null;
   /** Sanitised by the API: paragraphs, bold, italic, lists and links only. */
   notes_html: string;
   counts: GuildRaidCounts;
@@ -750,7 +754,7 @@ export interface NextRaidView {
   title: string;
   starts_at: string;
   size: number | null;
-  guild_timezone: string;
+  guild_timezone: string | null;
   counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps'>;
   /** The current character's sign-up; `null` while unsigned. */
   own: { character_key: string; state: GuildSignupState; role: GuildRaidRole } | null;
