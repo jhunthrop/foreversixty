@@ -17,6 +17,7 @@ import {
   parseGuildClaimPath,
   parseGuildInviteToken,
   parseGuildPath,
+  parseGuildRaidPath,
   parseGuildSettingsPath,
   rulesetFromRealm,
   rulesetLabel,
@@ -198,6 +199,28 @@ describe('parseGuildSettingsPath', () => {
 
   it('refuses an invalid region or ruleset the same way parseGuildPath does', () => {
     expect(parseGuildSettingsPath('/guild/xx/hardcore/name/settings')).toBeNull();
+  });
+});
+
+describe('parseGuildRaidPath', () => {
+  it('parses a raid page path', () => {
+    expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids/12')).toEqual({
+      guild: { region: 'us', ruleset: 'pvp', slug: 'olympus-xxvii' },
+      raidId: '12',
+    });
+    expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids/12/')?.raidId).toBe('12');
+  });
+
+  it('refuses a non-numeric id, a bare /raids and other suffixes', () => {
+    expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids/abc')).toBeNull();
+    expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids')).toBeNull();
+    expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/settings/12')).toBeNull();
+    expect(parseGuildRaidPath('/guild/us/pvp/olympus-xxvii/raids/12/extra')).toBeNull();
+  });
+
+  it('refuses an invalid region or ruleset the same way parseGuildPath does', () => {
+    expect(parseGuildRaidPath('/guild/xx/pvp/olympus-xxvii/raids/12')).toBeNull();
+    expect(parseGuildRaidPath('/guild/us/arena/olympus-xxvii/raids/12')).toBeNull();
   });
 });
 
