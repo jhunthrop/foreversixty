@@ -181,13 +181,13 @@ func writeAttendanceRows(ctx context.Context, tx pgx.Tx, raidID int64, rows []At
 	for _, r := range rows {
 		if _, err := tx.Exec(ctx, `
 			insert into guild_raid_attendance (raid_id, character_key, name, class, spec, signed, role, outcome,
-				came_as, first_seen_offset_s, pulls_present, pulls_total)
-			values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+				came_as, came_as_key, first_seen_offset_s, pulls_present, pulls_total)
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 			on conflict (raid_id, character_key) do update set name = excluded.name, class = excluded.class,
 				spec = excluded.spec, signed = excluded.signed, role = excluded.role, outcome = excluded.outcome,
-				came_as = excluded.came_as, first_seen_offset_s = excluded.first_seen_offset_s,
+				came_as = excluded.came_as, came_as_key = excluded.came_as_key, first_seen_offset_s = excluded.first_seen_offset_s,
 				pulls_present = excluded.pulls_present, pulls_total = excluded.pulls_total, computed_at = now()`,
-			raidID, r.CharacterKey, r.Name, r.Class, r.Spec, r.Signed, r.Role, r.Outcome, r.CameAs,
+			raidID, r.CharacterKey, r.Name, r.Class, r.Spec, r.Signed, r.Role, r.Outcome, r.CameAs, r.CameAsKey,
 			r.FirstSeenOffsetS, r.PullsPresent, r.PullsTotal); err != nil {
 			return fmt.Errorf("guilds: attendance: write: %w", err)
 		}
@@ -223,7 +223,7 @@ func (s *Store) AttendanceRows(ctx context.Context, raidID int64) ([]AttendanceR
 // ordered by name then key. A raid with no rows maps to an empty, non-nil slice.
 func (s *Store) attendanceRowsFor(ctx context.Context, raidIDs []int64) (map[int64][]AttendanceRow, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select raid_id, character_key, name, class, spec, signed, role, outcome, came_as, first_seen_offset_s,
+		select raid_id, character_key, name, class, spec, signed, role, outcome, came_as, came_as_key, first_seen_offset_s,
 		       pulls_present, pulls_total, excused
 		from guild_raid_attendance where raid_id = any($1) order by raid_id, name, character_key`, raidIDs)
 	if err != nil {
@@ -238,7 +238,7 @@ func (s *Store) attendanceRowsFor(ctx context.Context, raidIDs []int64) (map[int
 		var raidID int64
 		var r AttendanceRow
 		if err := rows.Scan(&raidID, &r.CharacterKey, &r.Name, &r.Class, &r.Spec, &r.Signed, &r.Role, &r.Outcome,
-			&r.CameAs, &r.FirstSeenOffsetS, &r.PullsPresent, &r.PullsTotal, &r.Excused); err != nil {
+			&r.CameAs, &r.CameAsKey, &r.FirstSeenOffsetS, &r.PullsPresent, &r.PullsTotal, &r.Excused); err != nil {
 			return nil, fmt.Errorf("guilds: attendance rows: %w", err)
 		}
 		out[raidID] = append(out[raidID], r)
