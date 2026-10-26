@@ -76,6 +76,8 @@ type harness struct {
 	// a contested-and-frozen claim exercises the real mayEdit hook, not
 	// a stub. It is a no-op for every test that never contests a guild.
 	guilds *guilds.Store
+	// completed records what the ReportCompleted hook was told of.
+	completed *fakeCompleted
 }
 
 func newHarness(t *testing.T) *harness {
@@ -93,7 +95,7 @@ func newHarness(t *testing.T) *harness {
 	h := &harness{
 		t: t, store: &Store{Pool: pool}, dir: t.TempDir(),
 		ranker: &fakeRanker{}, sampler: &fakeSampler{}, jobs: &jobs.Fake{}, parts: newFakeMultipart(),
-		owner: owner.ID, guilds: &guilds.Store{Pool: pool},
+		owner: owner.ID, guilds: &guilds.Store{Pool: pool}, completed: &fakeCompleted{},
 	}
 	h.files = store.NewDir(h.dir)
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "device", DeviceID: "device-1"}
@@ -101,8 +103,11 @@ func newHarness(t *testing.T) *harness {
 	h.service = &Service{
 		Store: h.store, Accounts: accounts, Guilds: h.guilds, Signer: fakeSigner{}, Rank: h.ranker,
 		PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg", Log: quiet,
+		Completed: h.completed,
 	}
-	h.ingest = &Ingest{Store: h.store, Put: h.files, Rank: h.ranker, Samp: h.sampler, Log: quiet}
+	h.ingest = &Ingest{
+		Store: h.store, Put: h.files, Rank: h.ranker, Samp: h.sampler, Completed: h.completed, Log: quiet,
+	}
 	mux := http.NewServeMux()
 	Mount(mux, h.service)
 	MountIngest(mux, h.ingest)

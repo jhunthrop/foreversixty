@@ -208,10 +208,13 @@ func objects(cfg config.Config, log *slog.Logger) *r2.Client {
 // claim disputes) is deliberately still supported, so the guard belongs
 // here, at the one call site that matters for a real deployment, not as
 // a universal nil-check inside reports.Service itself.
+//
+// completed is the ReportCompleted hook (the guilds service), told when
+// a patch sets the guild of a complete report.
 func newReportsService(reportStore *reports.Store, authStore *auth.Store, guildStore *guilds.Store,
-	rankStore *rankings.Store, cfg config.Config, log *slog.Logger) *reports.Service {
+	rankStore *rankings.Store, completed reports.Completed, cfg config.Config, log *slog.Logger) *reports.Service {
 	return &reports.Service{
-		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore,
+		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore, Completed: completed,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
 }
@@ -235,16 +238,23 @@ func runParse(ctx context.Context, log *slog.Logger, args []string) error {
 	if err != nil {
 		return err
 	}
-	reportStore := &reports.Store{Pool: pool}
 	log.Info("parse-report", "report", args[0])
+	return parse.Report(ctx, newParseDeps(cfg, pool, client, treeData, log), args[0])
+}
+
+// newParseDeps builds the parse-report job's dependencies on the job's
+// own pool: the completion hook is a guilds service of its own, the
+// way the job's Discord poster is a notify service of its own.
+func newParseDeps(cfg config.Config, pool *pgxpool.Pool, client parse.Objects, treeData *trees.Data, log *slog.Logger) parse.Deps {
 	deps := parse.Deps{
-		Reports: reportStore, Objects: client, Log: log,
-		Rank: &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
+		Reports: &reports.Store{Pool: pool}, Objects: client, Log: log,
+		Rank:      &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
+		Completed: newJobGuilds(cfg, pool, log),
 	}
 	if deliverer := newJobDeliverer(cfg, pool, log); deliverer != nil {
 		deps.Notify = deliverer
 	}
-	return parse.Report(ctx, deps, args[0])
+	return deps
 }
 
 // runSim is the premium lane's Cloud Run job: run one sim natively
@@ -632,20 +642,21 @@ func serve(log *slog.Logger) error {
 	ratingStore := &rating.Store{Pool: pool, Log: log}
 	client := objects(cfg, log)
 
+	guildService := &guilds.Service{
+		Store: guildStore, Accounts: authStore, Supporters: entStore, Entitlements: entStore,
+		PublicBaseURL: cfg.PublicBaseURL, Log: log,
+	}
 	deps := server.Deps{
 		Version: version, Log: log, AllowedOrigin: cfg.PublicBaseURL,
 		Subscribe: subscribeSvc, Builds: buildsSvc, Site: siteDeps,
 		Auth: authenticator, Accounts: accounts,
-		Reports:  newReportsService(reportStore, authStore, guildStore, rankStore, cfg, log),
+		Reports:  newReportsService(reportStore, authStore, guildStore, rankStore, guildService, cfg, log),
 		Rankings: &rankings.Service{Store: rankStore, Log: log, Supporters: entStore},
 		Addon: &addon.Service{
 			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData,
 			Accounts: authStore, Guilds: guildStore, Sims: simStore, Log: log,
 		},
-		Guilds: &guilds.Service{
-			Store: guildStore, Accounts: authStore, Supporters: entStore, Entitlements: entStore,
-			PublicBaseURL: cfg.PublicBaseURL, Log: log,
-		},
+		Guilds: guildService,
 		Rating: &rating.Service{
 			Store: ratingStore, Reports: reportStore, Accounts: authStore,
 			Owners: authStore, Entitlements: entStore, Log: log,
@@ -704,7 +715,7 @@ func serve(log *slog.Logger) error {
 		})
 		go sampler.Run(ctx)
 		deps.Ingest = &reports.Ingest{
-			Store: reportStore, Put: client, Rank: rankStore, Samp: sampler, Log: log,
+			Store: reportStore, Put: client, Rank: rankStore, Samp: sampler, Completed: deps.Guilds, Log: log,
 		}
 		// After deps.Ingest exists, never beside the sampler above it:
 		// the next line needs the ingest to be there.

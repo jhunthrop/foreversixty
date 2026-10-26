@@ -514,9 +514,10 @@ func validOnyxiaItem(itemID int) bool {
 	return false
 }
 
-// CreateLootAward records (or replaces - the migration's own unique index on
-// (guild_id, encounter_id, item_id) means a second Award for the same drop updates the
-// first row rather than leaving two) an officer's loot decision.
+// CreateLootAward records (or replaces - the partial unique index
+// loot_awards_drop_unmatched_idx on (guild_id, encounter_id, item_id) where raid_id is null,
+// migration 0052, means a second Award for the same drop updates the first row rather than
+// leaving two) an officer's loot decision.
 func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64) (int64, error) {
 	if encounterID != onyxiaEncounterID || !validOnyxiaItem(itemID) {
 		return 0, ErrInvalidAward
@@ -534,7 +535,7 @@ func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64,
 	if err := s.Pool.QueryRow(ctx, `
 		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by)
 		values ($1, $2, $3, $4, $5)
-		on conflict (guild_id, encounter_id, item_id) do update set
+		on conflict (guild_id, encounter_id, item_id) where raid_id is null do update set
 		  character_key = excluded.character_key, awarded_by = excluded.awarded_by,
 		  awarded_at = now(), report_id = null
 		returning id`, guildID, encounterID, itemID, characterKey, awardedBy).Scan(&id); err != nil {

@@ -168,7 +168,10 @@ type Ingest struct {
 	// rating does not). Nil means this deployment rates nothing,
 	// which degrades the same way a nil Score does.
 	Rate Rater
-	Log  *slog.Logger
+	// Completed is told of every report the completion call finishes,
+	// once its zone and guild are recorded. Nil tells nobody.
+	Completed Completed
+	Log       *slog.Logger
 }
 
 // MountIngest registers the companion's routes.
@@ -646,6 +649,10 @@ func (i *Ingest) complete(w http.ResponseWriter, r *http.Request) {
 	if i.Samp != nil {
 		i.Samp.Schedule(rep.ID)
 	}
+	// A live fight's zone is the header's (engine.Rebuild takes the
+	// report's zone), so the report's zone is what the log named. The
+	// work outlives a companion that hangs up on the 204.
+	FinishCompletion(context.WithoutCancel(r.Context()), i.Store, i.Completed, i.logger(), rep.ID, rep.Zone)
 	w.WriteHeader(http.StatusNoContent)
 }
 

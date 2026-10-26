@@ -60,6 +60,9 @@ type Deps struct {
 	Log     *slog.Logger
 	// Notify, when set, is told of every whole-file upload that completes.
 	Notify notify.UploadEvents
+	// Completed, when set, is told of every whole-file upload that
+	// completes, once its zone and guild are recorded.
+	Completed reports.Completed
 }
 
 func (d Deps) logger() *slog.Logger {
@@ -104,7 +107,11 @@ func Report(ctx context.Context, d Deps, reportID string) error {
 
 	s := session.New(engine.SessionOptions(reportID, time.Now().UTC(), true))
 	pub := store.Publisher{Keys: reports.Keys(reportID), Put: d.Objects}
-	onClosed := func(c session.Closed) error { return d.writeFight(readCtx, rep, pub, c) }
+	var zone logZone
+	onClosed := func(c session.Closed) error {
+		zone.see(c.Fight)
+		return d.writeFight(readCtx, rep, pub, c)
+	}
 	if err := stream(readCtx, s, src, onClosed); err != nil {
 		return d.failed(ctx, rep, s.Health(), err)
 	}
@@ -122,7 +129,31 @@ func Report(ctx context.Context, d Deps, reportID string) error {
 		return err
 	}
 	d.announce(ctx, rep, fights)
+	reports.FinishCompletion(ctx, d.Reports, d.Completed, d.logger(), reportID, zone.name())
 	return nil
+}
+
+// logZone picks the zone a log names from the fights as they close:
+// the first encounter fight's, else the first fight's that named one.
+type logZone struct{ encounter, any string }
+
+func (z *logZone) see(f fight.Fight) {
+	if f.Zone == "" {
+		return
+	}
+	if z.any == "" {
+		z.any = f.Zone
+	}
+	if z.encounter == "" && f.EncounterID != 0 {
+		z.encounter = f.Zone
+	}
+}
+
+func (z logZone) name() string {
+	if z.encounter != "" {
+		return z.encounter
+	}
+	return z.any
 }
 
 // announce tells the owner's channel the log is parsed. The report is
