@@ -6,6 +6,7 @@
 <script lang="ts">
   import type { GuildRaidRole, GuildRaidView, GuildSignupState } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
   import { rosterGroups, type RosterRow } from '../../lib/guild/raid-roster';
@@ -21,6 +22,7 @@
     officerTools,
     gateId,
     cancelled = false,
+    closed = false,
     busyKey = null,
     line = null,
     onSetState,
@@ -31,6 +33,8 @@
     /** The gate sentence a read-only select names in aria-describedby. */
     gateId: string;
     cancelled?: boolean;
+    /** A cancelled or done raid takes no sign-up changes: the selects stay, disabled. */
+    closed?: boolean;
     busyKey?: string | null;
     line?: OfficerLine | null;
     /** Resolves false on a refusal, so the select reverts. */
@@ -79,10 +83,6 @@
     if (!isState(value)) return;
     if (!(await onSetState(row, value))) revert += 1;
   }
-
-  function focusNow(node: HTMLElement): void {
-    node.focus();
-  }
 </script>
 
 {#snippet heading(label: string, n: number, testid: string)}
@@ -115,7 +115,7 @@
           class="text-wipe text-[13px]"
           role="alert"
           tabindex="-1"
-          use:focusNow
+          use:focusOnMount
           data-testid="raid-roster-refusal"
         >
           {line.message}
@@ -131,7 +131,7 @@
           compact
           value={entry.state ?? ''}
           options={entry.state === null ? [NOT_SIGNED_OPTION, ...STATE_OPTIONS] : STATE_OPTIONS}
-          disabled={!officerTools || busy}
+          disabled={!officerTools || closed || busy}
           describedBy={officerTools ? undefined : gateId}
           {busy}
           onchange={(value) => void change(entry, value)}

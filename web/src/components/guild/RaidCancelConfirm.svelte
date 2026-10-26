@@ -1,8 +1,9 @@
 <!-- web/src/components/guild/RaidCancelConfirm.svelte -->
 <!-- The cancel confirm (raids spec 4 "Cancel confirm"): it replaces the officer row with the
      question, the remembered `Post the cancellation to Discord` box, `Cancel the raid` and `Keep it`.
-     Focus lands on Keep it; Escape acts as Keep it. -->
+     Focus lands on Keep it, which stays live while the cancel is in flight; Escape acts as Keep it. -->
 <script lang="ts">
+  import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
 
   let {
@@ -21,10 +22,6 @@
     onConfirm: () => void;
     onKeep: () => void;
   } = $props();
-
-  function focusNow(node: HTMLElement): void {
-    node.focus();
-  }
 
   function onKeydown(event: KeyboardEvent): void {
     if (event.key !== 'Escape') return;
@@ -61,13 +58,8 @@
       data-testid="raid-cancel-confirm-button"
       >{busy ? raidCopy.cancelConfirm.confirming : raidCopy.cancelConfirm.confirm}</button
     >
-    <button
-      type="button"
-      class={buttonClass}
-      disabled={busy}
-      use:focusNow
-      onclick={onKeep}
-      data-testid="raid-cancel-keep">{raidCopy.cancelConfirm.keep}</button
+    <button type="button" class={buttonClass} use:focusOnMount onclick={onKeep} data-testid="raid-cancel-keep"
+      >{raidCopy.cancelConfirm.keep}</button
     >
   </div>
 </div>

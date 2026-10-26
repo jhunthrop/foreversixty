@@ -47,12 +47,27 @@ interface RosterProps {
   raid?: GuildRaidView;
   officer?: boolean;
   officerTools?: boolean;
+  closed?: boolean;
   line?: OfficerLine | null;
 }
 
-function html({ raid = RAID, officer = false, officerTools = true, line = null }: RosterProps = {}): string {
+function html({
+  raid = RAID,
+  officer = false,
+  officerTools = true,
+  closed = false,
+  line = null,
+}: RosterProps = {}): string {
   return render(RaidRoster, {
-    props: { raid, officer, officerTools, gateId: GATE, line, onSetState: () => Promise.resolve(true) },
+    props: {
+      raid,
+      officer,
+      officerTools,
+      closed,
+      gateId: GATE,
+      line,
+      onSetState: () => Promise.resolve(true),
+    },
   }).body;
 }
 
@@ -101,6 +116,14 @@ describe('RaidRoster', () => {
     const select = /<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(body)?.[0] ?? '';
     expect(select).toMatch(DISABLED);
     expect(select).toContain(`aria-describedby="${GATE}"`);
+  });
+
+  it('keeps the selects of a cancelled or done raid, disabled', () => {
+    const select = /<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(
+      html({ officer: true, closed: true }),
+    )?.[0];
+    expect(select).toMatch(DISABLED);
+    expect(select).not.toContain('aria-describedby');
   });
 
   it('puts a plan refusal under its row and a failure under the roster', () => {

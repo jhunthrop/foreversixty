@@ -162,6 +162,33 @@ describe('page states', () => {
     expect(body).toMatch(/class="[^"]*opacity-60[^"]*"[^>]*data-testid="raid-roster"/);
   });
 
+  it('puts a cancelled race line above the cancelled strip, focusable', () => {
+    const body = ready(plannedRaid({ status: 'cancelled' }), { raceLine: raidCopy.races.cancelled });
+    expect(body).toMatch(/role="alert"[^>]*tabindex="-1"[^>]*data-testid="raid-race-line"/);
+    expect(body.indexOf('raid-race-line')).toBeLessThan(body.indexOf('raid-signup-strip'));
+    expect(text(between(body, 'raid-race-line', 'raid-signup-strip'))).toBe(raidCopy.races.cancelled);
+    expect(html()).not.toContain('raid-race-line');
+  });
+
+  it('holds the officer roster selects on a cancelled or done raid', () => {
+    const signups = [
+      {
+        character_key: 'us/pvp/bolt',
+        name: 'Bolt',
+        class: 'warrior',
+        spec: 'Fury',
+        role: 'dps' as const,
+        state: 'in' as const,
+        note: '',
+        own: false,
+      },
+    ];
+    for (const status of ['cancelled', 'done'] as const) {
+      const body = ready(plannedRaid({ status, signups }), { role: 'officer' });
+      expect(/<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(body)?.[0]).toMatch(/ disabled/);
+    }
+  });
+
   it('logs a done raid with the link to the night', () => {
     const body = ready(plannedRaid({ status: 'done' }));
     expect(text(between(body, 'raid-done', 'guild-tabs'))).toBe(
@@ -169,7 +196,8 @@ describe('page states', () => {
     );
   });
 
-  it('says the raid did not load, with Try again', () => {
+  it('says the raid did not load, with Try again, even before access is known', () => {
+    expect(text(html({ load: 'failed', access: 'loading', raid: null }))).toContain(raidCopy.loadErrors.raid);
     const body = html({ load: 'failed' });
     expect(text(between(body, 'raid-load-error', 'never'))).toContain(raidCopy.loadErrors.raid);
   });
