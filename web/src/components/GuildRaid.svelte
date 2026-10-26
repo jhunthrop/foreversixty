@@ -5,12 +5,14 @@
      who is not a verified member gets the band and the not-visible line. GuildShell loads this file
      as its own chunk; lib/guild/raid-page-controller.svelte.ts owns the data and the 10 s poll. -->
 <script lang="ts">
+  import { minuteClock } from '../lib/guild/minute-clock.svelte';
+  import { viewerLocale } from '../lib/guild/raid-time';
   import { untrack } from 'svelte';
   import { guildHref, guildSettingsHref } from '../lib/characters';
   import { guildClaimCopy } from '../lib/guild/copy';
   import { focusOnMount } from '../lib/guild/focus-now';
-  import { browserStorage } from '../lib/guild/planned-reserve';
-  import { raidCopy } from '../lib/guild/raid-copy';
+  import { browserStorage } from '../lib/guild/reserve-keys';
+  import { SEP, raidCopy } from '../lib/guild/raid-copy';
   import { raidCount, raidPageFlags, raidWhen, stripReserveRows } from '../lib/guild/raid-page';
   import { RaidPageController, type RaidRoute } from '../lib/guild/raid-page-controller.svelte';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
@@ -29,17 +31,14 @@
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
-  const MINUTE_MS = 60_000;
   const GATE_ID = 'officer-tools-gate-raids';
-  /** The band's separator, as an expression: Svelte trims the edge spaces of literal text. */
-  const SEP = ' · ';
 
   let {
     path,
     controller,
     now: fixedNow,
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
-    locale = 'en-US',
+    locale = viewerLocale(),
   }: {
     path: RaidRoute;
     /** A test passes a seeded controller; the page builds its own otherwise. */
@@ -58,13 +57,8 @@
 
   $effect(() => (ownController ? untrack(() => c.start()) : undefined));
 
-  let tickNow = $state(new Date());
-  $effect(() => {
-    if (fixedNow !== undefined) return;
-    const timer = setInterval(() => (tickNow = new Date()), MINUTE_MS);
-    return () => clearInterval(timer);
-  });
-  const now = $derived(fixedNow ?? tickNow);
+  const clock = minuteClock(() => fixedNow);
+  const now = $derived(clock.now);
 
   const guildName = $derived(c.guild?.name ?? '');
   /** The route's slug stands in for the name until the guild answers, so the loading band's
@@ -218,7 +212,8 @@
           <p class="text-[15px] md:col-span-2" data-testid="raid-when">
             <span class="block md:inline">{when.date}</span><span class="hidden md:inline">{SEP}</span><span
               class="block md:inline"
-              ><span class="font-mono">{when.start}</span>&#32;to&#32;<span class="font-mono">{when.end}</span
+              ><span class="font-mono">{when.start}</span>&#32;{raidCopy.page.timeTo}&#32;<span
+                class="font-mono">{when.end}</span
               ></span
             ><span class="block md:inline"
               ><span class="hidden md:inline">{SEP}</span>{#if when.guildTime !== null}<span

@@ -6,6 +6,7 @@ import type { GuildRaidView } from './api';
 import { countLine, countRatio, countdown, guildTimeLabel, roleBreakdown } from './raid-copy';
 import { clockText, offsetsDiffer } from './raid-time';
 import { chipStatus, raidEndsAt, type RaidChipStatus } from './planned-row';
+import { RAID_ROWS_KEY } from './reserve-keys';
 
 /** Spec 4 "Poll": the raid page asks again every 10 s. */
 export const RAID_POLL_MS = 10_000;
@@ -13,8 +14,6 @@ export const RAID_POLL_MS = 10_000;
 export const POLL_FAILURES_TO_PAUSE = 3;
 /** The poll stops 6 h after the raid's end (G2's match window). */
 const POLL_AFTER_END_MS = 6 * 3_600_000;
-/** The own-character count the strip last drew (spec 4 "Page states", Loading). */
-export const RAID_ROWS_KEY = 'fs.guildRaid.rows';
 const RESERVE_DEFAULT_ROWS = 1;
 /** No account holds more characters in one guild than a realm's character slots. */
 const RESERVE_MAX_ROWS = 10;

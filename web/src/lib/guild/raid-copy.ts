@@ -3,14 +3,23 @@
 // words are fixed, functions where the data fills them. No number is typed into prose; raid-copy.test.ts
 // reads the spec table itself, so a drift in either file fails.
 import type { GuildRaidRole, GuildRaidSignup, GuildRaidView, GuildSignupState, GuildViewerRole } from './api';
-import { clockText, dateLabel, offsetsDiffer } from './raid-time';
+import {
+  DEFAULT_LOCALE,
+  clockText,
+  dateLabel,
+  offsetsDiffer,
+  wallClockToInstant,
+  zoneAbbreviation,
+} from './raid-time';
 
-const DEFAULT_LOCALE = 'en-US';
 const MINUTE_MS = 60_000;
 const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 /** A day further out than this is written as a date, not a weekday (spec 6.1 `{when}`). */
 const WEEKDAY_WINDOW_DAYS = 6;
+/** The middle dot between a line's parts. Svelte trims a literal's edge spaces, so pages write it
+ *  as an expression (`{SEP}`). */
+export const SEP = ' · ';
 
 export const raidCopy = {
   planButton: 'Plan a raid',
@@ -97,6 +106,8 @@ export const raidCopy = {
     submitEdit: 'Save changes',
     submitEditing: 'Saving…',
     cancel: 'Cancel',
+    forYou: (when: string): string => `For you: ${when}.`,
+    forYouSame: 'For you: same time.',
     markdownHelper: 'Markdown: bold, lists and links. Members see this on the raid page.',
     onlyFit: (n: number): string => `Only ${n} more fit: a guild plans at most 12 raids ahead.`,
     connectDiscord: 'Connect a Discord channel in Settings to post raids there.',
@@ -133,6 +144,8 @@ export const raidCopy = {
     signupFor: (name: string): string => `Sign-up for ${name}`,
     /** The not-signed row's resting option; its accessible name is `Not signed up`. */
     notSignedMark: '—',
+    /** Between the start and end clocks: `8:00 pm to 11:00 pm`. */
+    timeTo: 'to',
   },
   changelog:
     "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.",
@@ -162,12 +175,17 @@ export function countRatio(n: number, size: number | null): string {
 /** `3 tanks · 7 healers · 13 DPS · 1 late`: the roles count In rows, so the late clause (only when
  *  someone is late) makes the parts add up to the signed-up count. */
 export function roleBreakdown(tanks: number, healers: number, dps: number, late: number): string {
+  return roleBreakdownParts(tanks, healers, dps, late).join(SEP);
+}
+
+/** The breakdown's clauses, for a line that joins them its own way (the copied list's commas). */
+export function roleBreakdownParts(tanks: number, healers: number, dps: number, late: number): string[] {
   const parts = [
     `${tanks} ${plural(tanks, 'tank', 'tanks')}`,
     `${healers} ${plural(healers, 'healer', 'healers')}`,
     `${dps} DPS`,
   ];
-  return (late > 0 ? [...parts, `${late} late`] : parts).join(' · ');
+  return late > 0 ? [...parts, `${late} late`] : parts;
 }
 
 /** `23 of 40 are in`; `23 are in` while the size is unknown: the unsigned band line's count. */
@@ -199,10 +217,27 @@ export function nextRaidDeadline(
 
 /** `8:00 pm CST guild time`. */
 export function guildTimeLabel(startsAt: Date, tz: string, locale: string = DEFAULT_LOCALE): string {
-  const zone = new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeZone: tz, timeZoneName: 'short' })
-    .formatToParts(startsAt)
-    .find((part) => part.type === 'timeZoneName')?.value;
-  return `${clockText(startsAt, tz, locale, true)} ${zone ?? tz} guild time`;
+  return `${guildClock(startsAt, tz, locale)} guild time`;
+}
+
+/** `8:00 pm CST`: the guild clock with its zone abbreviation. */
+function guildClock(startsAt: Date, tz: string, locale: string): string {
+  return `${clockText(startsAt, tz, locale, true)} ${zoneAbbreviation(tz, startsAt)}`;
+}
+
+/** The form's line under the zone select: the entered guild wall time as the viewer reads it. */
+export function forYouLine(
+  date: string,
+  time: string,
+  guildTz: string,
+  viewerTz: string,
+  locale: string = DEFAULT_LOCALE,
+): string {
+  const instant = wallClockToInstant(date, time, guildTz);
+  if (!offsetsDiffer(instant, guildTz, viewerTz)) return raidCopy.form.forYouSame;
+  return raidCopy.form.forYou(
+    `${dateLabel(instant, viewerTz, locale)}, ${clockText(instant, viewerTz, locale, true)}`,
+  );
 }
 
 function calendarDayDiff(from: Date, to: Date, tz: string): number {
@@ -308,20 +343,12 @@ function signupsIn(signups: readonly GuildRaidSignup[], state: GuildSignupState,
   return signups.filter((s) => s.state === state && (role === undefined || s.role === role));
 }
 
-/** `8:00 pm CST`: the guild clock with its zone abbreviation. */
-function guildClock(startsAt: Date, tz: string, locale: string): string {
-  const zone = new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeZone: tz, timeZoneName: 'short' })
-    .formatToParts(startsAt)
-    .find((part) => part.type === 'timeZoneName')?.value;
-  return `${clockText(startsAt, tz, locale, true)} ${zone ?? tz}`;
-}
-
 function namesLine(label: string, rows: readonly GuildRaidSignup[]): string | null {
   return rows.length === 0 ? null : `${label}: ${rows.map((row) => row.name).join(', ')}`;
 }
 
 function breakdownList(counts: GuildRaidView['counts']): string {
-  return roleBreakdown(counts.tanks, counts.healers, counts.dps, counts.late).replaceAll(' · ', ', ');
+  return roleBreakdownParts(counts.tanks, counts.healers, counts.dps, counts.late).join(', ');
 }
 
 /** Discord's `<t:{unix}:F>` stamp, which each reader's client draws in their own zone. */
@@ -334,7 +361,11 @@ export function copyList(view: GuildRaidView, tz: string, locale: string = DEFAU
   const startsAt = new Date(view.starts_at);
   const heads = raidCopy.subheads;
   const { counts } = view;
-  const header = `${view.title} · ${dateLabel(startsAt, tz, locale)}, ${guildClock(startsAt, tz, locale)} · ${discordStamp(startsAt)}`;
+  const header = [
+    view.title,
+    `${dateLabel(startsAt, tz, locale)}, ${guildClock(startsAt, tz, locale)}`,
+    discordStamp(startsAt),
+  ].join(SEP);
   const size =
     view.size === null
       ? `${counts.in + counts.late} signed up`

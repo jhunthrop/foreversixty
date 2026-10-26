@@ -4,8 +4,8 @@
 // The form takes the guild's wall clock; `wallClockToInstant` turns it into the stored UTC instant.
 import type { FilterOption } from '../rankings/options';
 import type { GuildRaidDiscord, GuildRaidView } from './api';
-import { raidCopy } from './raid-copy';
-import { forYouLine, instantToWallClock, nextWeekday, wallClockToInstant } from './raid-time';
+import { forYouLine, raidCopy } from './raid-copy';
+import { instantToWallClock, nextWeekday, wallClockToInstant } from './raid-time';
 import type { RaidInput } from './raids-api';
 
 /** The most planned or locked raids a guild holds at once (api `RaidCap`). */

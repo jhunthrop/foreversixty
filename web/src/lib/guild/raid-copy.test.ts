@@ -14,6 +14,8 @@ import {
   nextRaidDeadline,
   raidCopy,
   roleBreakdown,
+  roleBreakdownParts,
+  SEP,
   showsBandLine,
   showAll,
   whenPhrase,
@@ -120,6 +122,8 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
       f.submitEditing,
       f.cancel,
     ]).toEqual(cell('Form labels'));
+    expect(f.forYou('Thu 10 Dec, 9:00 pm')).toBe(str('Form helpers', 0));
+    expect(f.forYouSame).toBe(str('Form helpers', 1));
     expect(f.markdownHelper).toBe(str('Form helpers', 2));
     expect(f.onlyFit(2)).toBe(str('Form helpers', 3, { n: '2' }));
     expect(f.connectDiscord).toBe(str('Form helpers', 4));
@@ -358,6 +362,13 @@ describe('copyList', () => {
     ],
     not_signed: [{ character_key: 'h', name: 'Di', class: 'druid', spec: 'balance' }],
   } as unknown as GuildRaidView;
+
+  it('builds its count line from the role parts, never by rewriting the band breakdown', () => {
+    expect(roleBreakdown(1, 1, 2, 1)).toBe(roleBreakdownParts(1, 1, 2, 1).join(SEP));
+    expect(copyList(view, CHICAGO).split('\n')[1]).toBe(
+      `5 of 40: ${roleBreakdownParts(1, 1, 2, 1).join(', ')}`,
+    );
+  });
 
   it('drops the late clause when nobody is late', () => {
     const onTime = { ...view, counts: { ...view.counts, late: 0 } } as GuildRaidView;

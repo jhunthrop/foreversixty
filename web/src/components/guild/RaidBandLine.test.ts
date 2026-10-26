@@ -6,7 +6,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
-import RaidBandLine, { nextRaidAfter, pressFailedLine } from './RaidBandLine.svelte';
+import RaidBandLine, { nextRaidAfter, nextRaidAfterRefusal, pressFailedLine } from './RaidBandLine.svelte';
 
 const TZ = 'America/Chicago';
 // Monday 2026-12-07, noon in Chicago; the raid is Thursday 10 Dec, 8 pm Chicago.
@@ -269,5 +269,22 @@ describe('pressFailedLine', () => {
 
   it('reads the generic line otherwise', () => {
     expect(pressFailedLine(new Error('down'))).toBe(raidCopy.stripStatus.failed);
+  });
+});
+
+describe('nextRaidAfterRefusal', () => {
+  it('locks the band on raid_locked', () => {
+    expect(nextRaidAfterRefusal(raid(), new GuildApiError('x', 409, 'raid_locked'))).toEqual({
+      ...raid(),
+      status: 'locked',
+    });
+  });
+
+  it('drops the raid from the band on raid_cancelled', () => {
+    expect(nextRaidAfterRefusal(raid(), new GuildApiError('x', 409, 'raid_cancelled'))).toBeNull();
+  });
+
+  it('leaves the band as it was on any other failure', () => {
+    expect(nextRaidAfterRefusal(raid(), new Error('down'))).toBeUndefined();
   });
 });

@@ -4,6 +4,7 @@
 // band header's last height, per guild and per layout, held while `/home` is in flight (raids spec
 // 4 "Page states", the guild band), so the tabs and everything under them do not move.
 // Tiny on purpose: Guild.svelte's entry chunk imports it.
+import { GUILD_BAND_KEY_PREFIX } from './reserve-keys';
 
 /** Below md the band stacks its lines; from md they run wider, so each layout keeps its own height. */
 export type BandLayout = 'phone' | 'desktop';
@@ -12,7 +13,7 @@ export type BandLayout = 'phone' | 'desktop';
 const MAX_HOLD_PX = 1200;
 
 export function bandHoldKey(region: string, ruleset: string, slug: string): string {
-  return `fs.guildBand.${region}.${ruleset}.${slug}`;
+  return `${GUILD_BAND_KEY_PREFIX}${region}.${ruleset}.${slug}`;
 }
 
 function readAll(storage: Pick<Storage, 'getItem'> | null, key: string): Partial<Record<BandLayout, number>> {
@@ -39,7 +40,9 @@ export function readBandHold(
   }
 }
 
-/** Stores the member lines' height after a verified viewer's `/home` draws them. */
+/** Stores the member lines' height after a verified viewer's `/home` draws them, at rest (the
+ *  caller skips a band showing a status line). The smaller of the stored and the measured height
+ *  wins: a hold too short moves the tabs a little, one too tall leaves a gap on every visit. */
 export function rememberBandHold(
   storage: Pick<Storage, 'getItem' | 'setItem'> | null,
   key: string,
@@ -47,9 +50,10 @@ export function rememberBandHold(
   height: number,
 ): void {
   try {
-    const all = readAll(storage, key);
-    if (all[layout] === Math.round(height)) return;
-    storage?.setItem(key, JSON.stringify({ ...all, [layout]: Math.round(height) }));
+    const stored = readBandHold(storage, key, layout);
+    const next = Math.round(stored === null ? height : Math.min(stored, height));
+    if (stored === next) return;
+    storage?.setItem(key, JSON.stringify({ ...readAll(storage, key), [layout]: next }));
   } catch {
     // A blocked store only costs the next visit its hold.
   }

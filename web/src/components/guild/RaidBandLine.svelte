@@ -3,7 +3,8 @@
      character's segments and the `{Zone} →` link, between the standing line and the needs line.
      From md one 44 px row; on phone the sentence and the link share the first row and the
      segments take the second (at most 112 px). A press rewrites the sentence in place; a refused
-     press shows its line under the row for its moment. -->
+     press shows its line under the row for 6 s, and a lock or cancel race updates the band. `now`
+     ticks each minute, so `Tonight` turns over at midnight. -->
 <script module lang="ts">
   import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
@@ -39,10 +40,21 @@
     if (thrown instanceof GuildApiError && thrown.code === 'raid_cancelled') return raidCopy.races.cancelled;
     return raidCopy.stripStatus.failed;
   }
+
+  /** The band after a refused press: a lock locks it, a cancel drops the raid (the band then says
+   *  none is planned); `undefined` leaves it as it was. */
+  export function nextRaidAfterRefusal(prev: NextRaidView, thrown: unknown): NextRaidView | null | undefined {
+    if (!(thrown instanceof GuildApiError)) return undefined;
+    if (thrown.code === 'raid_locked') return { ...prev, status: 'locked' };
+    if (thrown.code === 'raid_cancelled') return null;
+    return undefined;
+  }
 </script>
 
 <script lang="ts">
+  import { viewerLocale } from '../../lib/guild/raid-time';
   import { tick } from 'svelte';
+  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
   import { bandLineParts, whenPhrase } from '../../lib/guild/raid-copy';
@@ -63,8 +75,9 @@
     ownCharacters,
     defaultRole,
     onChange,
-    now = new Date(),
-    locale = 'en-US',
+    onStatusLine = () => {},
+    now: fixedNow,
+    locale = viewerLocale(),
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
   }: {
     guildId: number;
@@ -77,16 +90,33 @@
     ownCharacters: readonly OwnCharacter[];
     /** The current character's role when it has not signed up (the roster's server role). */
     defaultRole: GuildRaidRole;
-    onChange: (next: NextRaidView) => void;
+    /** The band's raid after a press; `null` once a race says the raid was cancelled. */
+    onChange: (next: NextRaidView | null) => void;
+    /** Whether a status line shows under the row: the guild band saves its height only at rest. */
+    onStatusLine?: (shown: boolean) => void;
     now?: Date;
     locale?: string;
     viewerTimezone?: string;
   } = $props();
 
+  /** A refused press's line stays this long, then the band is back at rest. */
+  const STATUS_LINE_MS = 6000;
+
   let pending = $state<GuildSignupState | null>(null);
   let busy = $state(false);
   let status = $state('');
   let statusLine = $state<HTMLParagraphElement | null>(null);
+  let statusTimer: ReturnType<typeof setTimeout> | undefined;
+  const clock = minuteClock(() => fixedNow);
+
+  $effect(() => onStatusLine(status !== ''));
+  $effect(() => () => clearTimeout(statusTimer));
+
+  function showStatus(line: string): void {
+    clearTimeout(statusTimer);
+    status = line;
+    statusTimer = setTimeout(() => (status = ''), STATUS_LINE_MS);
+  }
 
   const own = $derived(nextRaid?.own ?? null);
   const locked = $derived(nextRaid?.status === 'locked');
@@ -115,7 +145,13 @@
   const parts = $derived.by(() => {
     if (nextRaid === null) return { head: '', word: '', tail: '' };
     const startsAt = new Date(nextRaid.starts_at);
-    const when = whenPhrase(startsAt, now, locale, nextRaid.guild_timezone ?? viewerTimezone, viewerTimezone);
+    const when = whenPhrase(
+      startsAt,
+      clock.now,
+      locale,
+      nextRaid.guild_timezone ?? viewerTimezone,
+      viewerTimezone,
+    );
     const named = ownCharacters.length >= 2 && shown !== null;
     return bandLineParts({
       when,
@@ -134,6 +170,7 @@
     const mine = bound;
     pending = state;
     busy = true;
+    clearTimeout(statusTimer);
     status = '';
     try {
       // The PUT replaces the note, so the saved one travels with the press.
@@ -141,7 +178,9 @@
       const { raid } = await putSignup(guildId, prev.id, key, body);
       onChange(nextRaidAfter(prev, raid, currentKey ?? key));
     } catch (thrown) {
-      status = pressFailedLine(thrown);
+      const after = nextRaidAfterRefusal(prev, thrown);
+      if (after !== undefined) onChange(after);
+      showStatus(pressFailedLine(thrown));
       await tick();
       // Spec 4 "Races": the race line takes focus; the generic line is only announced.
       if (status !== raidCopy.stripStatus.failed) statusLine?.focus();
@@ -152,6 +191,20 @@
   }
 </script>
 
+{#snippet statusRow()}
+  {#if status !== ''}
+    <p
+      bind:this={statusLine}
+      class="text-wipe text-[13px]"
+      role="alert"
+      tabindex="-1"
+      data-testid="guild-raid-line-status"
+    >
+      {status}
+    </p>
+  {/if}
+{/snippet}
+
 {#if nextRaid === null}
   <p class="text-[14px]" data-testid="guild-raid-line-none">
     {officer ? raidCopy.bandNone.officer : raidCopy.bandNone.member}
@@ -161,6 +214,7 @@
       >
     {/if}
   </p>
+  {@render statusRow()}
 {:else}
   <div class="flex flex-col gap-1" data-testid="guild-raid-line">
     <div
@@ -195,16 +249,6 @@
            the raid page states it in full. Kept off screen so the resting block stays in its cap. -->
       <p id={lockedId} class="sr-only" data-testid="guild-raid-line-locked">{raidCopy.raidStates.locked}</p>
     {/if}
-    {#if status !== ''}
-      <p
-        bind:this={statusLine}
-        class="text-wipe text-[13px]"
-        role="alert"
-        tabindex="-1"
-        data-testid="guild-raid-line-status"
-      >
-        {status}
-      </p>
-    {/if}
+    {@render statusRow()}
   </div>
 {/if}

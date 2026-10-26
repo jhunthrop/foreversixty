@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
+import { forYouLine } from './raid-copy';
 import {
   clockText,
   dateLabel,
-  forYouLine,
   instantToWallClock,
   nextWeekday,
   offsetsDiffer,
+  viewerHourCycle,
+  viewerLocale,
   wallClockToInstant,
+  zoneAbbreviation,
   zoneOffsetMinutes,
 } from './raid-time';
 
@@ -102,6 +105,24 @@ describe('labels', () => {
 
   it('writes a 24-hour clock where the locale does', () => {
     expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, 'de-DE')).toBe('20:00');
+  });
+
+  it("follows the viewer's language for the hour cycle, keeping the English words", () => {
+    expect(viewerHourCycle('de-DE')).toBe('h23');
+    expect(viewerHourCycle('en-US')).toBe('h12');
+    const german = viewerLocale('de-DE');
+    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, german)).toBe('20:00');
+    expect(dateLabel(instant, CHICAGO, german)).toBe('Thu 10 Dec');
+    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, viewerLocale('en-US'))).toBe('8 pm');
+  });
+
+  it('falls back to en-US with no navigator (server render)', () => {
+    expect(viewerLocale(undefined)).toBe('en-US');
+  });
+
+  it('names the zone by its abbreviation at the instant', () => {
+    expect(zoneAbbreviation(CHICAGO, instant)).toBe('CST');
+    expect(zoneAbbreviation(CHICAGO, new Date('2027-07-01T00:00:00Z'))).toBe('CDT');
   });
 
   it('writes the date on the zone calendar', () => {

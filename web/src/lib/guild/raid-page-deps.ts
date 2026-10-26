@@ -5,7 +5,7 @@ import { fetchMeFresh } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import { fetchGuild } from '../rankings/api';
 import { fetchGuildHome, fetchGuildRaids } from './api';
-import { browserStorage } from './planned-reserve';
+import { browserStorage } from './reserve-keys';
 import type { RaidPageDeps, RaidRoute } from './raid-page-controller.svelte';
 import { fetchGuildRaid, putSignup, refetchGuildRaid, setRaidStatus, updateRaid } from './raids-api';
 

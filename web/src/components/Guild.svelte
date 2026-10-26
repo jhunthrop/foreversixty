@@ -50,7 +50,8 @@
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
   import { officerToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
-  import { browserStorage, plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
+  import { plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
+  import { browserStorage } from '../lib/guild/reserve-keys';
   import {
     bandHoldKey,
     forgetBandHold,
@@ -76,7 +77,12 @@
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import GuildOverview from './guild/GuildOverview.svelte';
-  import GuildTabs, { tabFromHash, tabsForRole, type GuildTabId } from './guild/GuildTabs.svelte';
+  import GuildTabs, {
+    tabAfterHashChange,
+    tabFromHash,
+    tabsForRole,
+    type GuildTabId,
+  } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -492,7 +498,7 @@
   $effect(() => {
     if (typeof window === 'undefined') return;
     const onHashChange = (): void => {
-      activeTab = currentHashTab();
+      activeTab = tabAfterHashChange(window.location.hash, tabsForRole(role), activeTab);
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -530,6 +536,13 @@
     raids = page;
     rememberPlannedRows(id, page, browserStorage());
   }
+  /** A band press moved the Raids tab's counts and chips: an open tab reads again in place (no
+   *  skeleton flash); a closed one reads again when next shown. */
+  function raidsChanged(): void {
+    if (activeTab === 'raids' && raidsStatus === 'ready' && guildId !== null) {
+      void loadRaids(guildId).catch(() => {});
+    } else if (raidsStatus !== 'loading') raidsStatus = 'idle';
+  }
   $effect(() => {
     if (activeTab !== 'raids' || guildId === null || raidsStatus !== 'idle') return;
     raidsStatus = 'loading';
@@ -565,8 +578,11 @@
     heldBand !== null && homeStatus !== 'ready' && (!meResolved || homeStatus === 'loading'),
   );
   let bandHeaderHeight = $state(0);
+  /** A refused band press's line is transient: the hold is saved only with the band at rest. */
+  let bandLineStatus = $state(false);
   $effect(() => {
     if (bandKey === null || homeStatus !== 'ready' || !meResolved || bandHeaderHeight <= 0) return;
+    if (bandLineStatus) return;
     if (myGuildMembership?.verified === true) {
       rememberBandHold(browserStorage(), bandKey, bandLayout, bandHeaderHeight);
     } else forgetBandHold(browserStorage(), bandKey);
@@ -876,7 +892,9 @@
                       defaultRole={myRosterRow?.role ?? 'dps'}
                       onChange={(next) => {
                         if (home !== null) home = { ...home, next_raid: next };
+                        raidsChanged();
                       }}
+                      onStatusLine={(shown) => (bandLineStatus = shown)}
                     />
                   {:else if bandLineLazy.error !== '' && home.next_raid != null}
                     <a

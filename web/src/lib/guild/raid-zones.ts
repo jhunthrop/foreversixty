@@ -4,6 +4,8 @@
 // given instant, so it reads CDT in summer. A zone outside the list (a guild's stored zone, a
 // browser's own) is added under `Other` with its IANA name, so the select always holds the value.
 
+import { zoneAbbreviation } from './raid-time';
+
 export interface TimeZoneGroup {
   region: string;
   zones: readonly { tz: string; name: string }[];
@@ -53,26 +55,18 @@ export interface TimeZoneOptionGroup {
   options: { value: string; label: string }[];
 }
 
-function abbreviation(tz: string, at: Date): string {
-  return (
-    new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' })
-      .formatToParts(at)
-      .find((part) => part.type === 'timeZoneName')?.value ?? tz
-  );
-}
-
 /** The select's groups at `at`, with every zone of `include` that the list lacks under `Other`. */
 export function timeZoneOptions(at: Date, include: readonly string[] = []): TimeZoneOptionGroup[] {
   const groups = TIME_ZONE_GROUPS.map(({ region, zones }) => ({
     region,
-    options: zones.map(({ tz, name }) => ({ value: tz, label: `${name} · ${abbreviation(tz, at)}` })),
+    options: zones.map(({ tz, name }) => ({ value: tz, label: `${name} · ${zoneAbbreviation(tz, at)}` })),
   }));
   const known = new Set(TIME_ZONE_GROUPS.flatMap((group) => group.zones.map((zone) => zone.tz)));
   const extra = [...new Set(include)].filter((tz) => tz !== '' && !known.has(tz));
   if (extra.length === 0) return groups;
   const other = extra.map((tz) => ({
     value: tz,
-    label: `${tz.replaceAll('_', ' ')} · ${abbreviation(tz, at)}`,
+    label: `${tz.replaceAll('_', ' ')} · ${zoneAbbreviation(tz, at)}`,
   }));
   return [...groups, { region: OTHER_REGION, options: other }];
 }

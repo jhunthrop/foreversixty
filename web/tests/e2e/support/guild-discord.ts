@@ -88,7 +88,7 @@ function refused({ status, code, message }: Refusal): { status: number; contentT
 
 const NO_CONTENT = { status: 204, body: '' };
 
-function settingsBody(discord: GuildSettingsDiscord | null, frozen: boolean): Record<string, unknown> {
+export function settingsBody(discord: GuildSettingsDiscord | null, frozen: boolean): Record<string, unknown> {
   return {
     default_visibility: 'guild',
     officer_max_rank_index: 1,

@@ -8,6 +8,7 @@
      `Plan a raid` (disabled with the gate sentence in officer-read-only, and with the cap line at
      12) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
+  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { tick } from 'svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
@@ -82,7 +83,6 @@
     onPlanRefused = () => {},
   }: Props = $props();
 
-  const MINUTE_MS = 60_000;
   const GATE_ID = 'officer-tools-gate-raids';
   const CAP_ID = 'guild-raids-cap';
   const gateLead = splitAtLink(raidCopy.gate, raidCopy.gateLink).before;
@@ -93,13 +93,10 @@
   const atCap = $derived(plannedCount >= RAID_CAP);
   const planDescribedBy = $derived(readOnly ? GATE_ID : atCap ? CAP_ID : undefined);
 
-  let ticked = $state(new Date());
-  const rowClock = $derived(now ?? ticked);
-  $effect(() => {
-    if (now !== undefined || !showPlanned) return;
-    const timer = setInterval(() => (ticked = new Date()), MINUTE_MS);
-    return () => clearInterval(timer);
-  });
+  const rowClock = minuteClock(
+    () => now,
+    () => showPlanned,
+  );
 
   let formOpen = $state(false);
   let planButton = $state<HTMLButtonElement | null>(null);
@@ -192,7 +189,7 @@
     />
   {/if}
   {#if showPlanned && planned !== undefined}
-    <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock} {viewerTimezone} />
+    <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock.now} {viewerTimezone} />
     <h3 class="label text-muted mt-4" data-testid="guild-raid-nights-heading">
       {raidCopy.subheads.raidNights}
     </h3>

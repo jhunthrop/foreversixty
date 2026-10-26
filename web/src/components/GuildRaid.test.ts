@@ -9,7 +9,7 @@ import type { GuildRaidView } from '../lib/guild/api';
 import { guildClaimCopy } from '../lib/guild/copy';
 import { raidCopy } from '../lib/guild/raid-copy';
 import { RAID_BAND_LINES_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
-import { RAID_ROWS_KEY } from '../lib/guild/raid-page';
+import { RAID_ROWS_KEY } from '../lib/guild/reserve-keys';
 import {
   RaidPageController,
   type RaidPageDeps,

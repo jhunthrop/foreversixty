@@ -4,7 +4,6 @@
 import { describe, expect, it } from 'vitest';
 import { CHICAGO, NEW_YORK, NOW, plannedRaid, viewerCharacter } from '../../test-support/raid-fixtures';
 import {
-  RAID_ROWS_KEY,
   pollOpen,
   raidCount,
   raidPageFlags,
@@ -12,6 +11,7 @@ import {
   rememberStripRows,
   stripReserveRows,
 } from './raid-page';
+import { RAID_ROWS_KEY } from './reserve-keys';
 
 function memoryStorage(seed: Record<string, string> = {}): Pick<Storage, 'getItem' | 'setItem'> {
   const data = new Map(Object.entries(seed));

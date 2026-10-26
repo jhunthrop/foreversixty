@@ -4,7 +4,10 @@
 // here goes through `Intl.DateTimeFormat` alone: no date library, no hand-kept zone table.
 
 const MINUTE_MS = 60_000;
-const DEFAULT_LOCALE = 'en-US';
+/** The words (weekdays, months, am/pm) are English everywhere; only the hour cycle follows the viewer. */
+export const DEFAULT_LOCALE = 'en-US';
+
+export type HourCycle = 'h12' | 'h23';
 
 type PartName = Intl.DateTimeFormatPartTypes;
 
@@ -14,8 +17,13 @@ function partsOf(formatter: Intl.DateTimeFormat, d: Date): Partial<Record<PartNa
   return parts;
 }
 
+const zoneFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** One formatter per zone: every conversion reads through it, so building one each call adds up. */
 function zoneFormatter(tz: string): Intl.DateTimeFormat {
-  return new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+  const cached = zoneFormatters.get(tz);
+  if (cached !== undefined) return cached;
+  const formatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
     timeZone: tz,
     hourCycle: 'h23',
     year: 'numeric',
@@ -25,6 +33,21 @@ function zoneFormatter(tz: string): Intl.DateTimeFormat {
     minute: '2-digit',
     second: '2-digit',
   });
+  zoneFormatters.set(tz, formatter);
+  return formatter;
+}
+
+/** `CST`, `CDT`, `GMT+1`: the zone's short name at that instant; the zone id when it has none. */
+export function zoneAbbreviation(tz: string, at: Date): string {
+  return (
+    new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeZone: tz, timeZoneName: 'short' })
+      .formatToParts(at)
+      .find((part) => part.type === 'timeZoneName')?.value ?? tz
+  );
+}
+
+function browserLanguage(): string | undefined {
+  return typeof navigator === 'undefined' ? undefined : navigator.language;
 }
 
 /** The zone's wall clock at an instant, read back as if it were UTC. */
@@ -83,6 +106,18 @@ export function usesTwelveHourClock(locale: string): boolean {
   return new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12 === true;
 }
 
+/** The viewer's hour cycle, from their browser language (`de-DE` writes `20:00`). */
+export function viewerHourCycle(language: string | undefined = browserLanguage()): HourCycle {
+  return language !== undefined && !usesTwelveHourClock(language) ? 'h23' : 'h12';
+}
+
+/** The locale every raid clock is written in: English words on the viewer's hour cycle
+ *  (`en-US-u-hc-h23` for a German browser), `en-US` on the server. */
+export function viewerLocale(language: string | undefined = browserLanguage()): string {
+  if (language === undefined) return DEFAULT_LOCALE;
+  return viewerHourCycle(language) === 'h23' ? `${DEFAULT_LOCALE}-u-hc-h23` : DEFAULT_LOCALE;
+}
+
 /** `8 pm`, `8:30 pm`, `20:00`: minutes only off the hour unless `alwaysMinutes`. */
 export function clockText(d: Date, tz: string, locale: string, alwaysMinutes = false): string {
   const twelve = usesTwelveHourClock(locale);
@@ -107,19 +142,6 @@ export function dateLabel(d: Date, tz: string, locale: string = DEFAULT_LOCALE):
     d,
   );
   return `${p.weekday} ${p.day} ${p.month}`;
-}
-
-/** The form's line under the zone select: the entered guild wall time as the viewer reads it. */
-export function forYouLine(
-  date: string,
-  time: string,
-  guildTz: string,
-  viewerTz: string,
-  locale: string = DEFAULT_LOCALE,
-): string {
-  const instant = wallClockToInstant(date, time, guildTz);
-  if (!offsetsDiffer(instant, guildTz, viewerTz)) return 'For you: same time.';
-  return `For you: ${dateLabel(instant, viewerTz, locale)}, ${clockText(instant, viewerTz, locale, true)}.`;
 }
 
 /** The form's default instant: the last raid's weekday and guild wall time, a whole number of weeks
