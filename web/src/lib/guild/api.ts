@@ -733,6 +733,8 @@ export interface GuildRaidView {
   guild_timezone: string | null;
   /** Sanitised by the API: paragraphs, bold, italic, lists and links only. */
   notes_html: string;
+  /** The raw markdown, for the edit form (absent from older fixtures). */
+  notes?: string;
   counts: GuildRaidCounts;
   signups: GuildRaidSignup[];
   not_signed: GuildRaidNotSigned[];
