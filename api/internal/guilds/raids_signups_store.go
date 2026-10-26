@@ -45,6 +45,11 @@ func isAttending(state string) bool { return state == SignupIn || state == Signu
 
 // UpsertSignup writes a sign-up. When the new state is in or late, every other character the
 // same account has in or late for this raid moves to bench; the first moved name is returned.
+//
+// Ownership is the caller's contract: this trusts sg.SignedBy as the account the character
+// belongs to (rule R3 groups by it) and checks neither that the account owns CharacterKey
+// nor that an AsOfficer caller is an officer. The HTTP layer (raids_signup_handler.go) does
+// both.
 func (s *Store) UpsertSignup(ctx context.Context, sg Signup) (*string, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -98,7 +103,8 @@ func checkRaidOpen(ctx context.Context, tx pgx.Tx, sg Signup) error {
 	switch {
 	case status == RaidCancelled:
 		return ErrRaidCancelled
-	case status == RaidLocked && !sg.AsOfficer:
+	case (status == RaidLocked || status == RaidDone) && !sg.AsOfficer:
+		// A done raid is logged; like a locked one, only an officer corrects it.
 		return ErrRaidLocked
 	}
 	return nil
@@ -144,21 +150,37 @@ func writeSignup(ctx context.Context, tx pgx.Tx, sg Signup) error {
 
 // RaidSignups lists a raid's sign-ups in a stable order.
 func (s *Store) RaidSignups(ctx context.Context, raidID int64) ([]Signup, error) {
+	byRaid, err := s.SignupsByRaid(ctx, []int64{raidID})
+	if err != nil {
+		return nil, err
+	}
+	if out := byRaid[raidID]; out != nil {
+		return out, nil
+	}
+	return []Signup{}, nil
+}
+
+// SignupsByRaid reads the sign-ups of every raid in raidIDs in one query, keyed by raid id,
+// each list in a stable order (name, then key).
+func (s *Store) SignupsByRaid(ctx context.Context, raidIDs []int64) (map[int64][]Signup, error) {
+	out := make(map[int64][]Signup, len(raidIDs))
+	if len(raidIDs) == 0 {
+		return out, nil
+	}
 	rows, err := s.Pool.Query(ctx, `
 		select raid_id, character_key, name, class, spec, role, state, note, signed_by, updated_at
-		from guild_raid_signups where raid_id = $1 order by name, character_key`, raidID)
+		from guild_raid_signups where raid_id = any($1) order by raid_id, name, character_key`, raidIDs)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: raid signups: %w", err)
 	}
 	defer rows.Close()
-	out := []Signup{}
 	for rows.Next() {
 		var sg Signup
 		if err := rows.Scan(&sg.RaidID, &sg.CharacterKey, &sg.Name, &sg.Class, &sg.Spec, &sg.Role,
 			&sg.State, &sg.Note, &sg.SignedBy, &sg.UpdatedAt); err != nil {
 			return nil, fmt.Errorf("guilds: raid signups: %w", err)
 		}
-		out = append(out, sg)
+		out[sg.RaidID] = append(out[sg.RaidID], sg)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: raid signups: %w", err)

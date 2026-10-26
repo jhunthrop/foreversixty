@@ -87,6 +87,9 @@ type RaidRow struct {
 type RaidsPage struct {
 	Rows       []RaidRow `json:"rows"`
 	NextCursor string    `json:"next_cursor,omitempty"`
+	// PlannedSection adds planned, zones and guild_timezone for a verified member only; nil
+	// (every key absent) for anyone else (R1).
+	*PlannedSection
 }
 
 const raidsCursorSep = "|"
@@ -345,6 +348,12 @@ func (s *Service) raids(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "raids", err, "could not load that guild's raids just now")
 		return
+	}
+	if verified {
+		if page.PlannedSection, err = s.plannedSection(r, guildID, actor.UserID); err != nil {
+			s.fail(w, r, "raids", err, "could not load that guild's raids just now")
+			return
+		}
 	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, page)

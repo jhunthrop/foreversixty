@@ -85,53 +85,71 @@ func scanRaids(rows pgx.Rows) ([]Raid, error) {
 	return out, rows.Err()
 }
 
-// CreateRaid inserts a planned raid unless the guild already holds RaidCap planned or locked ones.
+// CreateRaid inserts one planned raid unless the guild already holds RaidCap planned or
+// locked ones.
 func (s *Store) CreateRaid(ctx context.Context, in RaidInput) (Raid, error) {
+	raids, err := s.CreateRaids(ctx, in.GuildID, []RaidInput{in})
+	if err != nil {
+		return Raid{}, err
+	}
+	return raids[0], nil
+}
+
+// CreateRaids inserts every raid of ins for guildID in one transaction, or none of them when
+// the guild's planned and locked raids would then exceed RaidCap. The guild row lock
+// serialises concurrent creates, so the cap holds under a race.
+func (s *Store) CreateRaids(ctx context.Context, guildID int64, ins []RaidInput) ([]Raid, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
-		return Raid{}, fmt.Errorf("guilds: create raid: begin: %w", err)
+		return nil, fmt.Errorf("guilds: create raid: begin: %w", err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
-	if _, err := tx.Exec(ctx, `select 1 from guilds where id = $1 for update`, in.GuildID); err != nil {
-		return Raid{}, fmt.Errorf("guilds: create raid: lock guild: %w", err)
+	if _, err := tx.Exec(ctx, `select 1 from guilds where id = $1 for update`, guildID); err != nil {
+		return nil, fmt.Errorf("guilds: create raid: lock guild: %w", err)
 	}
 	var open int
 	if err := tx.QueryRow(ctx,
 		`select count(*) from guild_raids where guild_id = $1 and status in ('planned','locked')`,
-		in.GuildID).Scan(&open); err != nil {
-		return Raid{}, fmt.Errorf("guilds: create raid: count: %w", err)
+		guildID).Scan(&open); err != nil {
+		return nil, fmt.Errorf("guilds: create raid: count: %w", err)
 	}
-	if open >= RaidCap {
-		return Raid{}, ErrRaidCap
+	if open+len(ins) > RaidCap {
+		return nil, ErrRaidCap
 	}
-	raid, err := scanRaid(tx.QueryRow(ctx, `
-		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, notes, post_default, created_by)
-		values ($1, $2, $3, $4, $5, $6, $7, $8) returning `+raidColumns,
-		in.GuildID, in.Zone, in.Title, in.StartsAt, in.DurationMinutes, in.Notes, in.PostDefault, in.CreatedBy))
-	if err != nil {
-		return Raid{}, fmt.Errorf("guilds: create raid: insert: %w", err)
+	out := make([]Raid, 0, len(ins))
+	for _, in := range ins {
+		raid, err := scanRaid(tx.QueryRow(ctx, `
+			insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, notes, post_default, created_by)
+			values ($1, $2, $3, $4, $5, $6, $7, $8) returning `+raidColumns,
+			guildID, in.Zone, in.Title, in.StartsAt, in.DurationMinutes, in.Notes, in.PostDefault, in.CreatedBy))
+		if err != nil {
+			return nil, fmt.Errorf("guilds: create raid: insert: %w", err)
+		}
+		out = append(out, raid)
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return Raid{}, fmt.Errorf("guilds: create raid: commit: %w", err)
+		return nil, fmt.Errorf("guilds: create raid: commit: %w", err)
 	}
-	return raid, nil
+	return out, nil
 }
 
-// UpdateRaid rewrites a raid's editable fields.
-func (s *Store) UpdateRaid(ctx context.Context, id int64, in RaidInput) (Raid, error) {
+// UpdateRaid rewrites the editable fields of guildID's raid id; ErrNotFound when the guild
+// has no such raid.
+func (s *Store) UpdateRaid(ctx context.Context, guildID, id int64, in RaidInput) (Raid, error) {
 	raid, err := scanRaid(s.Pool.QueryRow(ctx, `
-		update guild_raids set zone = $2, title = $3, starts_at = $4, duration_minutes = $5,
-			notes = $6, post_default = $7, updated_at = now()
-		where id = $1 returning `+raidColumns,
-		id, in.Zone, in.Title, in.StartsAt, in.DurationMinutes, in.Notes, in.PostDefault))
+		update guild_raids set zone = $3, title = $4, starts_at = $5, duration_minutes = $6,
+			notes = $7, post_default = $8, updated_at = now()
+		where id = $1 and guild_id = $2 returning `+raidColumns,
+		id, guildID, in.Zone, in.Title, in.StartsAt, in.DurationMinutes, in.Notes, in.PostDefault))
 	return raid, raidWriteErr("update raid", err)
 }
 
-// SetRaidStatus moves a raid to a new status.
-func (s *Store) SetRaidStatus(ctx context.Context, id int64, status string) (Raid, error) {
+// SetRaidStatus moves guildID's raid id to a new status; ErrNotFound when the guild has no
+// such raid.
+func (s *Store) SetRaidStatus(ctx context.Context, guildID, id int64, status string) (Raid, error) {
 	raid, err := scanRaid(s.Pool.QueryRow(ctx,
-		`update guild_raids set status = $2, updated_at = now() where id = $1 returning `+raidColumns,
-		id, status))
+		`update guild_raids set status = $3, updated_at = now() where id = $1 and guild_id = $2 returning `+raidColumns,
+		id, guildID, status))
 	return raid, raidWriteErr("set raid status", err)
 }
 
