@@ -113,7 +113,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 | Where | String |
 |---|---|
 | Night line | `{came} of {signed} came` + ` · {k} kill(s) · {w} wipe(s) · {d} death(s) · {duration}`; a zero clause is left out |
-| Match line | `Logged as a raid night.` + `Open the night`; `Log uploaded {when} by {name} · matched by time` / `· matched by an officer`; `Not this log` (`Clearing…`) |
+| Match line | `Logged as a raid night.` + `Open the night`; `Log uploaded {when} by {name} · matched by time` / `· matched by an officer`; `Not this log` (`Clearing…`); `Open the raid` (a night row's link to its raid) |
 | Ended, no log | `Ended · no log yet`; ` We match the log when it is uploaded.`; ` Upload the log, then match it here.`; `Match a log` |
 | Clear confirm | `Clear the match? This raid's attendance is removed until another log is matched.`, `Clear the match`, `Keep it` |
 | Picker | `Match a log`; `{Zone} logs this guild uploaded in the last 14 days.`; `Logs this guild uploaded in the last 14 days. {Zone}'s log name is not known yet, so every zone shows.`; `by {name}`; `{p} pulls · {k} kill(s)`; `Closest`; `Matched to {Title} · {date}. Clear it there first.`; `Match this log` (`Matching…`), `Cancel`; `No {Zone} logs uploaded in the last 14 days. Upload the log, then match it here.`; `These logs did not load.`; `That log was just matched to another raid.` |
