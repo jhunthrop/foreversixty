@@ -25,7 +25,8 @@ type Candidate struct {
 	UploadedByName string
 	Pulls, Kills   int
 	DurationMS     int64
-	// Closest marks the one log whose anchor is nearest the raid's start.
+	// Closest marks the one selectable log (not matched to another raid) whose anchor is nearest
+	// the raid's start.
 	Closest     bool
 	MatchedRaid *RaidRef
 }
@@ -37,8 +38,8 @@ type MatchCandidatesResult struct {
 }
 
 // MatchCandidates lists the guild's evidence reports from the last candidateWindowDays days at
-// now, nearest the raid's start first, at most candidateCap, the first marked Closest and any
-// raid already holding a log named. A raid zone whose log name is not known yet lists every
+// now, nearest the raid's start first, at most candidateCap, the first selectable one (not
+// another raid's) marked Closest and any raid already holding a log named. A raid zone whose log name is not known yet lists every
 // zone's logs and answers ZoneKnown false. ErrNotFound when the guild has no such raid.
 func (s *Store) MatchCandidates(ctx context.Context, guildID, raidID int64, now time.Time) (MatchCandidatesResult, error) {
 	raid, found, err := s.GetRaid(ctx, guildID, raidID)
@@ -56,8 +57,11 @@ func (s *Store) MatchCandidates(ctx context.Context, guildID, raidID int64, now 
 	if err != nil {
 		return MatchCandidatesResult{}, err
 	}
-	if len(rows) > 0 {
-		rows[0].Closest = true
+	for i := range rows {
+		if rows[i].MatchedRaid == nil || rows[i].MatchedRaid.ID == raidID {
+			rows[i].Closest = true
+			break
+		}
 	}
 	return MatchCandidatesResult{Rows: rows, ZoneKnown: logZone != ""}, nil
 }

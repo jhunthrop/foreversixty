@@ -115,7 +115,7 @@ func TestAttendanceRowsGoToOfficersInFullAndToMembersOwnOnly(t *testing.T) {
 	}
 }
 
-func TestMatchCandidatesIsOfficerOnlyAndMarksTheClosest(t *testing.T) {
+func TestMatchCandidatesIsOfficerOnlyAndNeverPreselectsAnotherRaidsLog(t *testing.T) {
 	w, raid := attendanceNight(t)
 	w.grantPlan(t)
 	other := w.raidAt(t, raidZoneOny, pastStart().Add(dayBefore))
@@ -136,7 +136,7 @@ func TestMatchCandidatesIsOfficerOnlyAndMarksTheClosest(t *testing.T) {
 		t.Fatalf("candidates = %+v", out)
 	}
 	row := out.Rows[0]
-	if row.ReportID != "night" || !row.Closest || row.Pulls != 4 || row.Kills != 1 ||
+	if row.ReportID != "night" || row.Closest || row.Pulls != 4 || row.Kills != 1 ||
 		row.MatchedRaid == nil || row.MatchedRaid.ID != other.ID {
 		t.Fatalf("row = %+v", row)
 	}
