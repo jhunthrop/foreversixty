@@ -50,10 +50,52 @@ type excuseRequest struct {
 
 func mountRaidMatchRoutes(mux *http.ServeMux, s *Service, officerLimit func(http.Handler) http.Handler) {
 	const raid = "/v1/guilds/{id}/raids/{raid}"
-	mux.Handle("GET "+raid+"/match-candidates", officerLimit(auth.RequireSession(s.matchCandidates)))
-	mux.Handle("PUT "+raid+"/match", officerLimit(auth.RequireSession(s.putMatch)))
-	mux.Handle("DELETE "+raid+"/match", officerLimit(auth.RequireSession(s.deleteMatch)))
-	mux.Handle("PUT "+raid+"/attendance/{region}/{ruleset}/{name}", officerLimit(auth.RequireSession(s.putAttendance)))
+	mux.Handle("GET "+raid+"/match-candidates", officerLimit(raidRouteSession(s.matchCandidates)))
+	mux.Handle("PUT "+raid+"/match", officerLimit(raidRouteSession(s.putMatch)))
+	mux.Handle("DELETE "+raid+"/match", officerLimit(raidRouteSession(s.deleteMatch)))
+	mux.Handle("PUT "+raid+"/attendance/{region}/{ruleset}/{name}", officerLimit(raidRouteSession(s.putAttendance)))
+}
+
+// raidRouteSession wraps a Lane G2 raid route for R1: a signed-out caller is told 404, as the
+// raid read tells them; a device token is refused as RequireSession refuses it.
+func raidRouteSession(h http.HandlerFunc) http.HandlerFunc {
+	session := auth.RequireSession(h)
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !auth.ActorFrom(r.Context()).Signed() {
+			writeRaidNotFound(w, r)
+			return
+		}
+		session(w, r)
+	}
+}
+
+// verifiedMemberOr404 answers 404 (R1) unless the caller is a verified member of the route's
+// guild; ok false once it has answered.
+func (s *Service) verifiedMemberOr404(w http.ResponseWriter, r *http.Request, op string) bool {
+	guildID, ok := guildIDFrom(r)
+	if !ok {
+		writeRaidNotFound(w, r)
+		return false
+	}
+	_, verified, err := s.Accounts.GuildRank(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
+	if err != nil {
+		s.fail(w, r, op, err, raidFailMessage)
+		return false
+	}
+	if !verified {
+		writeRaidNotFound(w, r)
+		return false
+	}
+	return true
+}
+
+// matchOfficerRaid is officerRaid behind R1: 404 for anyone who is not a verified member, 403
+// for a verified member who is not an officer.
+func (s *Service) matchOfficerRaid(w http.ResponseWriter, r *http.Request, op string) (int64, Raid, bool) {
+	if !s.verifiedMemberOr404(w, r, op) {
+		return 0, Raid{}, false
+	}
+	return s.officerRaid(w, r, op)
 }
 
 func candidateViews(rows []Candidate) []CandidateView {
@@ -69,7 +111,7 @@ func candidateViews(rows []Candidate) []CandidateView {
 }
 
 func (s *Service) matchCandidates(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.officerRaid(w, r, "raid_match_candidates")
+	guildID, raid, ok := s.matchOfficerRaid(w, r, "raid_match_candidates")
 	if !ok {
 		return
 	}
@@ -83,7 +125,7 @@ func (s *Service) matchCandidates(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) putMatch(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.officerRaid(w, r, "raid_match")
+	guildID, raid, ok := s.matchOfficerRaid(w, r, "raid_match")
 	if !ok {
 		return
 	}
@@ -115,7 +157,7 @@ func (s *Service) putMatch(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) deleteMatch(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.officerRaid(w, r, "raid_match_clear")
+	guildID, raid, ok := s.matchOfficerRaid(w, r, "raid_match_clear")
 	if !ok {
 		return
 	}
@@ -129,7 +171,7 @@ func (s *Service) deleteMatch(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) putAttendance(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.officerRaid(w, r, "raid_excuse")
+	guildID, raid, ok := s.matchOfficerRaid(w, r, "raid_excuse")
 	if !ok {
 		return
 	}

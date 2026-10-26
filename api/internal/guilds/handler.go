@@ -122,7 +122,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// a private response) where anyone else gets the public guild page's (shareable).
 	mux.HandleFunc("GET /v1/guilds/{id}/progression", s.progression)
 	// Readiness is member/officer only (design spec §4.0: "Not shown" to the public).
-	mux.HandleFunc("GET /v1/guilds/{id}/readiness", auth.RequireSession(s.readiness))
+	// With ?raid= it is a raid route and keeps R1 (readinessRoute).
+	mux.HandleFunc("GET /v1/guilds/{id}/readiness", s.readinessRoute)
 	// Loot is member-and-officer (member read-only, officer gets the Award control).
 	mux.HandleFunc("GET /v1/guilds/{id}/loot", auth.RequireSession(s.loot))
 	mux.HandleFunc("POST /v1/guilds/{id}/loot/awards", auth.RequireSession(s.createLootAward))

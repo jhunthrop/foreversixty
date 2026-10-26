@@ -21,7 +21,7 @@ import (
 )
 
 func mountRaidReportRoutes(mux *http.ServeMux, s *Service, officerLimit func(http.Handler) http.Handler) {
-	mux.Handle("POST /v1/guilds/{id}/raids/{raid}/report/post", officerLimit(auth.RequireSession(s.postReport)))
+	mux.Handle("POST /v1/guilds/{id}/raids/{raid}/report/post", officerLimit(raidRouteSession(s.postReport)))
 }
 
 // ClaimReportPost stamps report_posted_at on a done raid that has none; ok is false when it
@@ -54,7 +54,7 @@ func (s *Store) ReleaseReportPost(ctx context.Context, guildID, raidID int64, cl
 
 func (s *Service) postReport(w http.ResponseWriter, r *http.Request) {
 	const op = "raid_report_post"
-	guildID, raid, ok := s.officerRaid(w, r, op)
+	guildID, raid, ok := s.matchOfficerRaid(w, r, op)
 	if !ok {
 		return
 	}
