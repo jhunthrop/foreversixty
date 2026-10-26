@@ -142,7 +142,7 @@ func addLootAward(bosses []ReportLootBoss, encounterID int64, a ReportLootAward)
 type killStat struct {
 	key, name, class string
 	encounterID      int
-	dps, hps         float64
+	dps, hps         *float64 // null when the log carried no such metric for the kill
 	healer           bool
 }
 
@@ -181,6 +181,12 @@ func (s *Store) reportMoves(ctx context.Context, vc raidViewContext, v RaidView,
 			rows = append(rows, row)
 		}
 	}
+	out.Rows = topMoves(rows)
+	return out, nil
+}
+
+// topMoves is the movesCap biggest changes, largest first, ties by name then boss.
+func topMoves(rows []MoveRow) []MoveRow {
 	sort.SliceStable(rows, func(i, j int) bool {
 		if a, b := math.Abs(rows[i].delta), math.Abs(rows[j].delta); a != b {
 			return a > b
@@ -193,22 +199,29 @@ func (s *Store) reportMoves(ctx context.Context, vc raidViewContext, v RaidView,
 	if len(rows) > movesCap {
 		rows = rows[:movesCap]
 	}
-	out.Rows = rows
-	return out, nil
+	return rows
 }
 
 // moveOf is the change of cur against old in the raider's metric (hps for a healer, else
 // dps); moved is false for no change.
+// A switch of role between the raids, or a metric the log lacks on either side, is no change.
 func moveOf(cur, old killStat, encounter string) (MoveRow, bool) {
+	if cur.healer != old.healer {
+		return MoveRow{}, false
+	}
 	metric, after, before := "dps", cur.dps, old.dps
 	if cur.healer {
 		metric, after, before = "hps", cur.hps, old.hps
 	}
-	if after == before {
+	if after == nil || before == nil {
+		return MoveRow{}, false
+	}
+	shown, was := int(math.Round(*after)), int(math.Round(*before))
+	if shown == was {
 		return MoveRow{}, false
 	}
 	return MoveRow{CharacterKey: cur.key, Name: cur.name, Class: cur.class, Metric: metric, Encounter: encounter,
-		Before: int(math.Round(before)), After: int(math.Round(after)), delta: after - before}, true
+		Before: was, After: shown, delta: *after - *before}, true
 }
 
 func (s *Store) previousDoneRaid(ctx context.Context, guildID int64, v RaidView) (*RaidRefView, string, error) {
@@ -231,8 +244,8 @@ func (s *Store) previousDoneRaid(ctx context.Context, guildID int64, v RaidView)
 
 func (s *Store) killStats(ctx context.Context, reportID string) (map[statKey]killStat, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select player_key, max(player_name), lower(max(class)), encounter_id,
-		       coalesce(max(metric_dps), 0)::float8, coalesce(max(metric_hps), 0)::float8, bool_or(role = 'healer')
+		select player_key, coalesce(max(player_name), ''), coalesce(lower(max(class)), ''), encounter_id,
+		       max(metric_dps)::float8, max(metric_hps)::float8, coalesce(bool_or(role = 'healer'), false)
 		from fight_metrics
 		where report_id = $1 and kill and state = 'ok' and encounter_id is not null
 		group by player_key, encounter_id`, reportID)
