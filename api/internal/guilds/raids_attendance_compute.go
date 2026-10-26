@@ -118,7 +118,7 @@ func (in attendanceInput) sameAccountInLog(key string, sg Signup) (string, bool)
 	best, found := "", false
 	for other, rc := range in.roster {
 		p, here := in.present[other]
-		if other == key || !here || rc.userID != owner {
+		if other == key || !here || rc.userID != owner || in.signedAttending(other) {
 			continue
 		}
 		if !found || p.PullsPresent > in.present[best].PullsPresent ||
@@ -134,4 +134,15 @@ func (in attendanceInput) nameOf(key string, p logPresence) string {
 		return rc.Name
 	}
 	return p.Name
+}
+
+// signedAttending is whether key has its own in or late sign-up: such a character has a row of
+// its own and is never another's came_as, so one appearance counts once.
+func (in attendanceInput) signedAttending(key string) bool {
+	for _, sg := range in.signups {
+		if sg.CharacterKey == key {
+			return isAttending(sg.State)
+		}
+	}
+	return false
 }

@@ -2,6 +2,7 @@ package guilds
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 )
@@ -219,9 +220,13 @@ func TestMatchCandidates(t *testing.T) {
 	if _, err := w.h.store.SetMatch(t.Context(), w.gid, other.ID, "held", MatchedHand); err != nil {
 		t.Fatal(err)
 	}
-	got, err := w.h.store.MatchCandidates(t.Context(), w.gid, raid.ID, time.Now())
+	res, err := w.h.store.MatchCandidates(t.Context(), w.gid, raid.ID, time.Now())
 	if err != nil {
 		t.Fatal(err)
+	}
+	got := res.Rows
+	if !res.ZoneKnown || len(got) != 3 || got[0].ReportID != "near" || got[1].ReportID != "far" || got[2].ReportID != "held" {
+		t.Fatalf("order/zone_known: %+v known=%v", got, res.ZoneKnown)
 	}
 	byID := map[string]Candidate{}
 	for _, c := range got {
@@ -256,4 +261,46 @@ func TestReportCompletedMatchesAndComputesAttendance(t *testing.T) {
 		t.Fatalf("rows = %+v %v", rows, err)
 	}
 	w.h.svc.ReportCompleted(t.Context(), "unknown-report") // best effort: no panic
+}
+
+func TestMatchCandidatesForAnUnknownZoneListEveryZone(t *testing.T) {
+	w := newRaidWorld(t, false)
+	start := pastStart()
+	raid := w.raidAt(t, "raid:barrow-deeps", start)
+	w.oneFightNight(t, "ony", onyLogZone, start)
+	w.oneFightNight(t, "mc", "Molten Core", start.Add(time.Hour))
+	res, err := w.h.store.MatchCandidates(t.Context(), w.gid, raid.ID, time.Now())
+	if err != nil || res.ZoneKnown || len(res.Rows) != 2 || !res.Rows[0].Closest || res.Rows[0].ReportID != "ony" {
+		t.Fatalf("result = %+v %v", res, err)
+	}
+}
+
+func TestMatchCandidatesCapAtTwentyNearestFirst(t *testing.T) {
+	w := newRaidWorld(t, false)
+	start := pastStart()
+	raid := w.raidAt(t, raidZoneOny, start)
+	for i := 0; i < candidateCap+3; i++ {
+		w.oneFightNight(t, fmt.Sprintf("log%02d", i), onyLogZone, start.Add(time.Duration(i)*time.Minute))
+	}
+	res, err := w.h.store.MatchCandidates(t.Context(), w.gid, raid.ID, time.Now())
+	if err != nil || len(res.Rows) != candidateCap || res.Rows[0].ReportID != "log00" || !res.Rows[0].Closest {
+		t.Fatalf("rows = %d %v", len(res.Rows), err)
+	}
+	for _, c := range res.Rows[1:] {
+		if c.Closest {
+			t.Fatal("more than one closest")
+		}
+	}
+}
+
+func TestAutoMatchBreaksATieToTheLowerRaidID(t *testing.T) {
+	w := newRaidWorld(t, false)
+	start := pastStart()
+	first := w.raidAt(t, raidZoneOny, start)
+	second := w.raidAt(t, raidZoneOny, start.Add(2*time.Hour))
+	w.oneFightNight(t, "log1", onyLogZone, start.Add(time.Hour))
+	got, ok, err := w.h.store.AutoMatch(t.Context(), "log1")
+	if err != nil || !ok || got.ID != first.ID {
+		t.Fatalf("matched %+v %v %v, want raid %d (not %d)", got, ok, err, first.ID, second.ID)
+	}
 }
