@@ -158,3 +158,107 @@ Guild.svelte's header, not a raid reserve; this round was limited to the reserve
 value varies with how close `/v1/me` and `/home` land to first paint (a diagnostic run read
 0.003 at 390). The fix is a member-band reserve while `/home` is in flight, held to the band's
 ready height. That is a guild-band change for the band's owner.
+
+## Review round (2026-10-27)
+
+The ux-designer and wow-player fixes (both SHIP WITH FIXES), every item accepted, plus the Raids
+tab CLS floor. Spec amended in place, each change marked `(amended 2026-10-27, review round)`.
+Re-taken from a fresh fixture build on port 4441: rows 1, 2, 5, 7, 8, 9 (with the cancel
+confirm), 12, 13 and 14 at their widths. New files:
+`guild-raids-05-page-member-in-new-york-{390,1440}` (+ `-panel-`): the viewer in
+America/New_York, the guild on America/Chicago, so the band's when line reads
+`9:00 pm to 12:00 am · 8:00 pm CST guild time`; and `guild-raids-09-page-officer-roster-1024`
+beside the 1440 roster.
+
+**Raid page**
+- Inert states (07, 08): locked, ended and done draw the segment group, the role select and the
+  note at `opacity-50` with `cursor-not-allowed`. The group dims as one, its border included.
+  `FilterSelect` dims only when its `select` is disabled; a disabled `—` option does not count.
+- Gold only for a raid still ahead (08, 01): a cancelled raid, or one that has started, draws its
+  countdown and bar fill `--muted`. The cancelled page's count is muted too, and the page shows
+  only the `Cancelled` chip.
+- Counts that add up: `14 of 40 signed up · 1 tank · 3 healers · 9 DPS · 1 late`. The late clause
+  shows only when late > 0. The page band, the planned row and the copied list all use it. The
+  copied list reads `Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>`, then
+  `14 of 40: 1 tank, 3 healers, 9 DPS, 1 late`.
+- Chosen segment (05 strip): no class-order bug. The checked segment computes
+  `rgb(19, 24, 36)` (`--card-top`) against `rgb(13, 17, 26)` (`--raised`) at rest, with
+  `--strong` text and the 2 px line, exactly as §3.3 says. The fill was already drawn; the two
+  grounds are close, so it reads faint. The designer rules whether §3.3 needs a stronger ground.
+  The wow-player asked for `--kill` at about 15 % for In and Late.
+- Roster (09 at 1440 and 1024): the name sits over the spec at every width, one line each with
+  an ellipsis and the full text in `title`. Bare rows are 36 / 44 px and line up across columns.
+  Late, Bench and Out form one grid: three columns from 1024, two at 768–1023, stacked below.
+  Empty groups are left out. `Not signed up` runs full width 24 px under them. Every group head
+  is the 11 px `label`, muted, with its count in mono.
+- Cancel confirm (09 confirm): `Cancel the raid` is drawn in the `--wipe` outline. The Discord
+  box starts from `discord.post_default`. The localStorage memory of the last answer
+  (`fs.guildRaid.postCancel`) is deleted.
+- Loading (12): the back link, the eyebrow and `GuildTabs` are drawn for real while the raid
+  loads. Only lines 3–5 are skeleton, at their ready 163 / 105 px. A cached officer adds 108 px
+  on phone and 22 px on desktop for the officer row.
+
+**Raids tab**
+- Cancelled row (01, 02): shows `Cancelled` alone, with a muted countdown and bar. Phone line 1
+  holds one chip: the status chip when there is one, otherwise the viewer's.
+- Planned row: the desktop bar now sits on the count's line. The row stays 71 px, because the
+  56 px date block sets the height, not the count cell. On phone the breakdown has its own
+  fourth line, and the title wraps to two lines (`line-clamp-2`).
+- `Plan a raid` is hidden while the form is open. On close it returns with focus (e2e).
+  `PLANNED` drops its count at 0.
+
+**Form (13)**: `Raid`, `Duration` and `Guild time zone` take `SELECT_CHROME` and the shared
+`SelectChevron`, which is extracted from `FilterSelect`, so no native arrow is left. The repeat
+box at the cap was already `disabled` in the DOM (unit test). It looked live because a native
+disabled box looks the same, so its row now takes the disabled look.
+
+**Band line (14)**: when `own` is another of the account's characters at In or Late, the
+segments act on that character, with its role. Their `aria-label` names it (`Duskstrider's
+sign-up`). That is the designer's narrower rule of fix 11. When the other character is only on
+Bench or Out, the segments stay on the current character, because a press there benches no one.
+The unsigned sentence reads `Thursday 8 pm, you have not signed up yet. 13 of 40 are in.`. The
+needs line is `--text`, not `--wipe`; a passing line stays green.
+
+**Heights**
+
+| Surface | 360 | 390 | 1440 | 2000 | Cap (phone / desktop) |
+|---|---|---|---|---|---|
+| Planned row | 114, **136.5**, 114 | 114, 114, 114 | 71, 71, 71 | 71, 71, 71 | 96–120 / 64–72 |
+| Roster row, no note | 44 | 44 | 36 | 36 | 44 / 36 |
+| Strip row | 183, 182 | 183, 182 | 68 (101/100 whole) | 68 | ≤ 196 / 68 |
+| Band line | 98 | 98 | 44 | 44 | ≤ 112 / 44 |
+| Form | 989 | 989 | 725.5 | — | ≤ 1180 / ≤ 760 |
+
+At 360, `Barrow Deeps: first clear` wraps to two lines under item 9, and with the breakdown on
+its own line under item 11 that row is 136.5 px, over the 120 cap. Both items together cannot fit
+120 px with a two-line title. One-line rows are 114 px. The designer rules: raise the phone cap
+to 140 for a two-line title, or keep one of the two items.
+
+**CLS with a warm reserve** (`cls-<width>.json`). Capture 12 now makes a real warm visit first:
+the page itself stores its strip rows, planned rows and band height. It then drops the read
+cache (`fs.q.*`) and measures a reload with the raid read held.
+
+| Width | Raid page | Raids tab |
+|---|---|---|
+| 390 | 0.0001 | **0.0017** (was 0.206) |
+| 1440 | 0.0001 | **0.0006** (was 0.123) |
+
+**The Raids tab floor took both measures: the band hold, and the one-screen floor in
+`GuildShell`.** The band hold (`lib/guild/band-hold.ts`) stores the band header's last height in
+`fs.guildBand.{region}.{ruleset}.{slug}`, per guild and per layout (phone / desktop), for a
+verified viewer, behind try/catch. While `/home` is in flight it holds that height as the
+header's `min-height`. It is forgotten once the viewer is no longer verified there. It holds the
+measured header, not the designer's flat 44 + 12 / 98 + 12. The member block that `/home` adds
+is 101 px on desktop and 215 px on phone (standing line, raid line, needs line, settings link),
+and `/v1/me` adds the `Claimed by` line, which alone moved the tabs 31 px in a run that held only
+the raid line. The planned reserve now also shows from the first paint for a viewer last seen
+verified. Before, it waited for `/home` to name the role, and the skeleton under it jumped
+307 px. Without `GuildShell`'s `min-h-[calc(100svh-…)]`, the same runs read 0.232 / 0.173 at 390
+and 0.040 / 0.030 at 1440 (page / tab), because the footer starts inside the viewport and moves.
+The floor stays.
+
+**Reserves** (`lib/guild/raid-layout.ts`): raid band lines 163 / 105, officer row 108 / 22.
+Planned block: 62 + rows × 121.5 on phone (the fixture member's mean of one-line 114 and
+two-line 136.5 rows), 62 + rows × 71 on desktop. Strip unchanged.
+
+Size: `GuildShell` 16292 bytes gzipped (budget 16384).
