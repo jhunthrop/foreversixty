@@ -56,6 +56,9 @@ func TestHomeNextRaid(t *testing.T) {
 	if next.Own == nil || next.Own.CharacterKey != memberKeyB || next.Own.State != SignupIn || next.Own.Role != RoleDPS {
 		t.Fatalf("own = %+v", next.Own)
 	}
+	if next.Status != RaidPlanned {
+		t.Fatalf("status = %q, want planned", next.Status)
+	}
 	if next.Counts != (NextRaidCounts{In: 1, Late: 1, Tanks: 0, Healers: 0, DPS: 1}) {
 		t.Fatalf("counts = %+v", next.Counts)
 	}

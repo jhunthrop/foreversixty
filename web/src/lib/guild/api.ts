@@ -755,11 +755,13 @@ export interface NextRaidView {
   zone_name: string;
   title: string;
   starts_at: string;
+  /** `planned` or `locked`; a locked raid's band segments are inert (absent from older fixtures). */
+  status?: 'planned' | 'locked';
   size: number | null;
   guild_timezone: string | null;
   counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps'>;
-  /** The current character's sign-up; `null` while unsigned. */
-  own: { character_key: string; state: GuildSignupState; role: GuildRaidRole } | null;
+  /** The current character's sign-up; `null` while unsigned. `note` travels with it. */
+  own: { character_key: string; state: GuildSignupState; role: GuildRaidRole; note?: string } | null;
 }
 
 function guildRaidsKey(guildId: number, cursor: string | undefined, apiBase: string): string {
