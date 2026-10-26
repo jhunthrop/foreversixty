@@ -32,6 +32,9 @@ func TestNewReportsServiceWiresGuilds(t *testing.T) {
 	if svc.Completed == nil {
 		t.Fatal("reports.Service.Completed is nil: a patch that sets a complete report's guild tells no one")
 	}
+	if svc.Moved == nil {
+		t.Fatal("reports.Service.Moved is nil: a report moved to another guild keeps its old guild's raid")
+	}
 }
 
 // The parse-report job tells guilds of every upload it completes; a Deps without the hook would

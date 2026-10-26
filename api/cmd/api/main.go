@@ -209,12 +209,13 @@ func objects(cfg config.Config, log *slog.Logger) *r2.Client {
 // here, at the one call site that matters for a real deployment, not as
 // a universal nil-check inside reports.Service itself.
 //
-// completed is the ReportCompleted hook (the guilds service), told when
-// a patch sets the guild of a complete report.
+// hooks is the guilds service: told when a patch sets a report's guild
+// (GuildMoved, releasing a match another guild's raid held) and when it
+// sets the guild of a complete report (Completed).
 func newReportsService(reportStore *reports.Store, authStore *auth.Store, guildStore *guilds.Store,
-	rankStore *rankings.Store, completed reports.Completed, cfg config.Config, log *slog.Logger) *reports.Service {
+	rankStore *rankings.Store, hooks reports.GuildHooks, cfg config.Config, log *slog.Logger) *reports.Service {
 	return &reports.Service{
-		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore, Completed: completed,
+		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore, Completed: hooks, Moved: hooks,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
 }
