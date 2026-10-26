@@ -667,6 +667,10 @@ func serve(log *slog.Logger) error {
 	deps.Notify = newNotifyService(cfg, pool, entStore, log)
 	if deps.Notify != nil {
 		accounts.Notifications = deps.Notify
+		// The guild raid channel: notify asks guilds for an officer's standing, guilds
+		// reads the channel back for the settings payload and the raid view.
+		deps.Notify.Guilds = deps.Guilds
+		deps.Guilds.Discord = deps.Notify
 	}
 
 	var gateway billing.Gateway

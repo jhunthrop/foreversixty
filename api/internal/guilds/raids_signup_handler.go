@@ -155,7 +155,7 @@ func (s *Service) writeSignupAnswer(w http.ResponseWriter, r *http.Request, guil
 	}
 	var view RaidView
 	if err == nil {
-		view, err = s.Store.RaidViewOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raid)
+		view, err = s.raidViewOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raid)
 	}
 	if err != nil {
 		s.fail(w, r, "raid_signup", err, signupFailMessage)

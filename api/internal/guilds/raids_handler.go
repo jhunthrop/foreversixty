@@ -168,7 +168,7 @@ func (s *Service) getRaid(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) writeRaidView(w http.ResponseWriter, r *http.Request, op string, guildID int64, raid Raid, status int) {
-	view, err := s.Store.RaidViewOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raid)
+	view, err := s.raidViewOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raid)
 	if err != nil {
 		s.fail(w, r, op, err, "could not load that raid just now")
 		return
@@ -205,7 +205,7 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "raid_create", err, raidFailMessage)
 		return
 	}
-	views, err := s.Store.RaidViews(r.Context(), guildID, actor.UserID, raids)
+	views, err := s.raidViews(r.Context(), guildID, actor.UserID, raids)
 	if err != nil {
 		s.fail(w, r, "raid_create", err, raidFailMessage)
 		return
@@ -263,7 +263,7 @@ func (s *Service) plannedSection(r *http.Request, guildID, viewerID int64) (*Pla
 	if err != nil {
 		return nil, err
 	}
-	views, err := s.Store.RaidViews(r.Context(), guildID, viewerID, raids)
+	views, err := s.raidViews(r.Context(), guildID, viewerID, raids)
 	if err != nil {
 		return nil, err
 	}

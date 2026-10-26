@@ -34,7 +34,10 @@ type apiHarness struct {
 
 func newAPI(t *testing.T) *apiHarness { return newAPIWithOAuth(t, nil) }
 
-func newAPIWithOAuth(t *testing.T, oauth OAuthClient) *apiHarness {
+func newAPIWithOAuth(t *testing.T, oauth OAuthClient) *apiHarness { return newAPIWith(t, oauth, nil) }
+
+// newAPIWith builds the harness; configure, when set, adjusts the Service before it mounts.
+func newAPIWith(t *testing.T, oauth OAuthClient, configure func(*Service)) *apiHarness {
 	t.Helper()
 	pool := testPool(t)
 	sealer, err := NewSealer(make([]byte, 32))
@@ -53,6 +56,9 @@ func newAPIWithOAuth(t *testing.T, oauth OAuthClient) *apiHarness {
 	accounts := &auth.Service{
 		Store: authStore, Auth: authn, Entitlements: ents,
 		Notifications: svc, PublicBaseURL: "https://foreversixty.gg", Log: quiet,
+	}
+	if configure != nil {
+		configure(svc)
 	}
 	mux := http.NewServeMux()
 	auth.Mount(mux, accounts, 0)
