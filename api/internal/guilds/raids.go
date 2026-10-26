@@ -77,6 +77,8 @@ type RaidRow struct {
 	TopParse   *TopParse          `json:"top_parse,omitempty"`
 	Fights     []RaidFight        `json:"fights"`
 	Present    []PresentCharacter `json:"present"`
+	// RaidID is the guild raid this night is matched to (a verified member's read only).
+	RaidID *int64 `json:"raid_id"`
 
 	// evidence is whether the report can show who was there: not private and not flagged
 	// (tampered or unverified). Any other report lists nobody.
@@ -151,8 +153,9 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	       (select count(*) filter (where f.kill) from fights f where f.report_id = r.id),
 	       (select count(*) filter (where not f.kill) from fights f where f.report_id = r.id),
 	       coalesce((select sum(f.deaths) from fights f where f.report_id = r.id), 0),
-	       ` + presence.EvidenceReport("r") + `
+	       ` + presence.EvidenceReport("r") + `, gr.id
 	     from reports r
+	     left join guild_raids gr on gr.report_id = r.id
 	     where r.guild_id = $1 and ` + visibility
 	args := []any{guildID, userID}
 	if before != nil {
@@ -171,8 +174,11 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	for rows.Next() {
 		var row RaidRow
 		if err := rows.Scan(&row.ID, &row.Title, &row.Zone, &row.CreatedAt, &row.DurationMS,
-			&row.FightCount, &row.KillCount, &row.WipeCount, &row.Deaths, &row.evidence); err != nil {
+			&row.FightCount, &row.KillCount, &row.WipeCount, &row.Deaths, &row.evidence, &row.RaidID); err != nil {
 			return RaidsPage{}, fmt.Errorf("guilds: raids: %w", err)
+		}
+		if !verified {
+			row.RaidID = nil
 		}
 		page.Rows = append(page.Rows, row)
 	}

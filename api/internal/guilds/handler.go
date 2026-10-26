@@ -112,6 +112,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	for action := range raidStatusMoves {
 		mux.Handle("POST /v1/guilds/{id}/raids/{raid}/"+action, officerLimit(auth.RequireSession(s.raidStatusAction(action))))
 	}
+	mountRaidMatchRoutes(mux, s, officerLimit)
 	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",
 		signupRateLimit()(auth.RequireSession(s.putSignup)))
 	// Progression is public (design spec §4.0) - no RequireSession wrap - and its counts

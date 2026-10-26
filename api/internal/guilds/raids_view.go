@@ -91,6 +91,13 @@ type RaidView struct {
 	NotSigned []RaidCharacter `json:"not_signed"`
 	Viewer    RaidViewer      `json:"viewer"`
 	Discord   RaidDiscord     `json:"discord"`
+	// PreDoneStatus is what a done raid returns to when its match is cleared; Match, Night and
+	// Attendance are null until a log is matched (Attendance: officers every row, a member
+	// their own characters').
+	PreDoneStatus *string          `json:"pre_done_status"`
+	Match         *MatchView       `json:"match"`
+	Night         *NightView       `json:"night"`
+	Attendance    []AttendanceView `json:"attendance"`
 }
 
 // ZoneView is one schedulable zone as the form lists it.
@@ -173,6 +180,9 @@ func (s *Store) RaidViews(ctx context.Context, guildID, viewerID int64, raids []
 		if out[i], err = buildRaidView(r, byRaid[r.ID], vc); err != nil {
 			return nil, err
 		}
+	}
+	if err := s.fillMatchViews(ctx, vc, out); err != nil {
+		return nil, err
 	}
 	return out, nil
 }
