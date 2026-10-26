@@ -181,6 +181,14 @@ type CharacterGuild struct {
 	Rank      string `json:"rank"`
 	RankIndex *int   `json:"rank_index,omitempty"`
 	Verified  bool   `json:"verified"`
+	// Attendance is the character's raid attendance, present only once its guild counts raids.
+	Attendance *Attendance `json:"attendance,omitempty"`
+}
+
+// Attendance is raids attended over raids counted, as the guild centre states it.
+type Attendance struct {
+	Present int `json:"present"`
+	Nights  int `json:"nights"`
 }
 
 // Guild is a guild the user belongs to.

@@ -43,6 +43,13 @@ type GuildCapabilities interface {
 	Capabilities(ctx context.Context, guildID, userID int64, moderator bool) ([]string, error)
 }
 
+// GuildAttendanceReader is the part of guilds.Store GET /v1/me needs for a character's raid
+// attendance: per character key, empty while the guild still counts reports. It is an interface
+// because guilds imports this package.
+type GuildAttendanceReader interface {
+	CharacterAttendance(ctx context.Context, guildID int64, keys []string) (map[string]Attendance, error)
+}
+
 // FinishedSim is one server run that finished while its owner was away, as GET /v1/me
 // reports it. FinishedAt is RFC3339 UTC.
 type FinishedSim struct {
@@ -118,6 +125,9 @@ type Service struct {
 	// GuildCapabilities answers each guild entry's Can list on GET /v1/me. Nil is safe (every
 	// list reads empty) for a harness that does not mount guilds; guilds.Store satisfies it.
 	GuildCapabilities GuildCapabilities
+	// GuildAttendance fills each guilded character's attendance on GET /v1/me. Nil is safe (no
+	// attendance is shown); guilds.Store satisfies it.
+	GuildAttendance GuildAttendanceReader
 	// Sims answers GET /v1/me's finished_sims and server_sims. Nil is safe (the list reads
 	// empty and server_sims is omitted) for a harness that does not mount sims.
 	Sims SimsView
@@ -483,6 +493,11 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
+	chars, err = s.attachCharacterAttendance(r.Context(), chars)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
 	guilds, err := s.Store.Guilds(r.Context(), u.ID)
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")
@@ -789,4 +804,32 @@ func (s *Service) revokeSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// attachCharacterAttendance fills CharacterGuild.Attendance for every verified guilded
+// character whose guild counts raids.
+func (s *Service) attachCharacterAttendance(ctx context.Context, chars []Character) ([]Character, error) {
+	if s.GuildAttendance == nil {
+		return chars, nil
+	}
+	keysByGuild := map[int64][]string{}
+	for _, c := range chars {
+		if c.Guild != nil && c.Guild.Verified {
+			keysByGuild[c.Guild.ID] = append(keysByGuild[c.Guild.ID], c.Key)
+		}
+	}
+	for guildID, keys := range keysByGuild {
+		found, err := s.GuildAttendance.CharacterAttendance(ctx, guildID, keys)
+		if err != nil {
+			return nil, fmt.Errorf("auth: character attendance: %w", err)
+		}
+		for i := range chars {
+			a, ok := found[chars[i].Key]
+			if ok && chars[i].Guild != nil && chars[i].Guild.ID == guildID {
+				att := a
+				chars[i].Guild.Attendance = &att
+			}
+		}
+	}
+	return chars, nil
 }

@@ -94,7 +94,13 @@ not removed, or `rating_scores`), read by character key, never the log's GUIDs i
 `fights.players`. `attendance` counts the guild's last 8 reports that are non-private,
 unflagged (not tampered or unverified) and carry at least one such row, so a night nobody can
 be present in (private, flagged, trash-only, or not ranked yet) is never everyone's absence
-(task L6.8). Verification by logs (`verified_by: "logs"`) and the moderator's
+(task L6.8). Raid mode (lane G2): once a guild has one done raid with attendance rows, the home
+carries `attendance_source: "raids"` (else `"reports"`), and `attendance` becomes raids
+attended over the raids this character signed in or late for, or attended, among the guild's
+last 8 logged raids; `attendance_30` (raid mode only) is the same over 30. `nights` is then per
+character, so a consumer reads its own row's; an excused raid is neither attended nor a night.
+`GET /v1/me`'s `characters[].guild` gains the same `attendance` in raid mode and omits it
+otherwise. Verification by logs (`verified_by: "logs"`) and the moderator's
 `nights_in_others_reports` read the same presence in non-private, unflagged reports only, so
 they count unflagged, non-private boss fights: the same evidence the Forever Score trusts. The
 guild's readers of rows a player sees (attendance, best parse, rating, class and spec, top
@@ -203,7 +209,7 @@ Candidates, two tiers:
 
 Ranking: every tier-0 candidate ranks ahead of every tier-1 candidate, regardless of either's own
 numbers. Within tier 0: `gain_dps` desc (`null` sorts last within the tier). Within tier 1:
-`ilvl_delta` desc. Either tier, attendance (`present`) breaks the remaining tie.
+`ilvl_delta` desc. Either tier, attendance (`present` over the candidate's own `nights`, then `present`) breaks the remaining tie.
 
 ## POST /v1/guilds/{id}/loot/awards  (officer)   body `{ "encounter_id", "item_id", "character_key" }`
 ## DELETE /v1/guilds/{id}/loot/awards/{award_id}  (officer)

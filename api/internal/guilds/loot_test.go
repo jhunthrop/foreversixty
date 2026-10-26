@@ -430,7 +430,7 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 		},
 	}
 	helmOfWrath := lootItem{ItemID: 16963, Slot: "head"}
-	cands := s.lootCandidates(roster, helmOfWrath, map[string]int{}, 8)
+	cands := s.lootCandidates(roster, helmOfWrath)
 	if len(cands) != 1 {
 		t.Fatalf("candidates = %+v, want exactly 1", cands)
 	}
@@ -486,7 +486,7 @@ func TestAwardCountsAndTheCandidateLine(t *testing.T) {
 		CharacterKey: "us/hardcore/wearer", Name: "Wearer", Verified: true,
 		className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{"head": 21524},
 	}}
-	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"}, map[string]int{}, 8)
+	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"})
 	if len(cands) != 1 || cands[0].Replaces != "Red Winter Hat" {
 		t.Fatalf("candidates = %+v, want one replacing Red Winter Hat", cands)
 	}
