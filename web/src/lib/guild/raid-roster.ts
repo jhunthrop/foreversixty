@@ -49,7 +49,11 @@ function rank(order: readonly string[], value: string): number {
   return index < 0 ? order.length : index;
 }
 
-function rosterOrder(a: RosterRow, b: RosterRow): number {
+/** Role, then class in the game's order, then name: the order every raid group lists in. */
+export function rosterOrder(
+  a: Pick<RosterRow, 'role' | 'class' | 'name'>,
+  b: Pick<RosterRow, 'role' | 'class' | 'name'>,
+): number {
   return (
     rank(ROLE_ORDER, a.role) - rank(ROLE_ORDER, b.role) ||
     rank(CLASS_ORDER, a.class) - rank(CLASS_ORDER, b.class) ||
