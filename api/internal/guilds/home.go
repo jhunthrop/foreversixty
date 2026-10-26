@@ -142,12 +142,14 @@ type RosterRow struct {
 	ItemLevel      *int    `json:"item_level,omitempty"`
 	// LoggedAt is addon_exports.updated_at - the contract's own replacement for
 	// logged_recently (kept below too, unchanged, per the contract's own instruction).
-	LoggedAt    time.Time   `json:"logged_at"`
-	Attendance  Attendance  `json:"attendance"`
-	BestParse   *BestParse  `json:"best_parse,omitempty"`
-	Rating      *RatingView `json:"rating,omitempty"`
-	Professions []string    `json:"professions,omitempty"`
-	AccountKey  string      `json:"account_key"`
+	LoggedAt   time.Time  `json:"logged_at"`
+	Attendance Attendance `json:"attendance"`
+	// Attendance30 is the same figure over the guild's last 30 logged raids; raid mode only.
+	Attendance30 *Attendance `json:"attendance_30,omitempty"`
+	BestParse    *BestParse  `json:"best_parse,omitempty"`
+	Rating       *RatingView `json:"rating,omitempty"`
+	Professions  []string    `json:"professions,omitempty"`
+	AccountKey   string      `json:"account_key"`
 	// Supporter is true when the row's account shows the supporter mark (Service.markSupporters).
 	Supporter    bool       `json:"supporter"`
 	LastReportAt *time.Time `json:"last_report_at"`
@@ -271,6 +273,8 @@ type HomeView struct {
 	// NextRaid is the guild band's raid line: the next planned or locked raid, absent when
 	// there is none (and for anyone but a verified member).
 	NextRaid *NextRaidView `json:"next_raid,omitempty"`
+	// AttendanceSource is "raids" once the guild has a logged raid, else "reports".
+	AttendanceSource string `json:"attendance_source"`
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
@@ -543,6 +547,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		return HomeView{}, err
 	}
 	members, counts := mergeRoster(roster, invited, snapshotLines)
+	source, err := s.attendanceSource(ctx, guildID)
+	if err != nil {
+		return HomeView{}, err
+	}
 	claim := claimState(g, time.Now())
 	if claim.State == "claimed" && g.ClaimedBy != nil && s.Accounts != nil {
 		if u, uerr := s.Accounts.User(ctx, *g.ClaimedBy); uerr == nil {
@@ -594,6 +602,7 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		Standing: standingFor(s, roster, userID),
 		Reports:  reports, Roster: roster, Pending: pending,
 		AddonSnapshot: addonSnapshot, Members: members, Counts: counts,
+		AttendanceSource: source,
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]

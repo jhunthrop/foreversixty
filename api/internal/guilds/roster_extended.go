@@ -33,12 +33,8 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow
 		keys = append(keys, out[i].CharacterKey)
 	}
 
-	nights, present, err := s.attendance(ctx, guildID, keys)
-	if err != nil {
+	if err := s.fillAttendance(ctx, guildID, out, keys); err != nil {
 		return err
-	}
-	for i := range out {
-		out[i].Attendance = Attendance{Present: present[out[i].CharacterKey], Nights: nights}
 	}
 
 	bestParses, err := s.bestParses(ctx, guildID)
@@ -386,4 +382,24 @@ func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView
 		SameSpecCount: len(peers), RankByItemLevel: rank, ItemLevel: *self.ItemLevel,
 		NeedsBeforeNextRaid: cr.Needs(3),
 	}
+}
+
+// fillAttendance reads the guild's attendance the way its mode says: raids once it has a
+// logged raid, else the report count.
+func (s *Store) fillAttendance(ctx context.Context, guildID int64, out []RosterRow, keys []string) error {
+	source, err := s.attendanceSource(ctx, guildID)
+	if err != nil {
+		return err
+	}
+	if source == AttendanceSourceRaids {
+		return s.fillRaidAttendance(ctx, guildID, out, keys)
+	}
+	nights, present, err := s.attendance(ctx, guildID, keys)
+	if err != nil {
+		return err
+	}
+	for i := range out {
+		out[i].Attendance = Attendance{Present: present[out[i].CharacterKey], Nights: nights}
+	}
+	return nil
 }

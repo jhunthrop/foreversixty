@@ -180,15 +180,6 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		return LootView{}, err
 	}
 	roster = append(roster, invited...)
-	// The roster already carries each row's attendance (enrichRoster), the same reading the
-	// home shows. Every roster row carries the same nights (the window's size), so the last
-	// row's is the guild's.
-	nights, present := 0, make(map[string]int, len(roster))
-	for _, row := range roster {
-		present[row.CharacterKey] = row.Attendance.Present
-		nights = row.Attendance.Nights
-	}
-
 	awards, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
 	if err != nil {
 		return LootView{}, err
@@ -220,7 +211,7 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		}
 		iv := LootItemView{ItemID: item.ItemID, Name: item.Name, Icon: item.Icon, Quality: item.Quality, Slot: item.Slot, Copies: 1}
 		iv.AwardedTo = awards[item.ItemID]
-		iv.Candidates = s.lootCandidates(roster, item, present, nights)
+		iv.Candidates = s.lootCandidates(roster, item)
 		for i := range iv.Candidates {
 			iv.Candidates[i].ItemsWon = wonBy[iv.Candidates[i].CharacterKey]
 		}
@@ -249,7 +240,7 @@ func indexOfLootName(items []LootItemView, name string) int {
 // this service already loads it) and it is a real item-level upgrade over what they wear,
 // or the slot is empty. A slotless item (a quest/reputation/crafting drop, six of Onyxia's
 // twenty-two) never has candidates in either tier: there is no slot to compare against.
-func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[string]int, nights int) []LootCandidate {
+func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidate {
 	out := []LootCandidate{}
 	if item.Slot == "" {
 		return out
@@ -264,7 +255,7 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem, present map[st
 		}
 		cand := LootCandidate{
 			CharacterKey: key, Name: row.Name,
-			Attendance: Attendance{Present: present[row.CharacterKey], Nights: nights},
+			Attendance: row.Attendance,
 		}
 		cand.Replaces = s.wornName(row, item.Slot)
 		if row.Class != nil {
@@ -409,7 +400,7 @@ func sortLootCandidates(cands []LootCandidate) {
 // lootCandidateLess reports whether a ranks ahead of b: tier 0 (BiS-matched) always ahead
 // of tier 1 (fallback); within tier 0, gain_dps desc (a nil gain sorts last within the
 // tier, never ahead of a measured one); within tier 1, ilvl_delta desc; either tier,
-// attendance (present) desc breaks the remaining tie.
+// attendance (present over the candidate's own nights, then present) desc breaks the remaining tie.
 func lootCandidateLess(a, b LootCandidate) bool {
 	if a.tier != b.tier {
 		return a.tier < b.tier
@@ -424,6 +415,9 @@ func lootCandidateLess(a, b LootCandidate) bool {
 		if ad != bd {
 			return ad > bd
 		}
+	}
+	if ar, br := attendanceRatio(a.Attendance), attendanceRatio(b.Attendance); ar != br {
+		return ar > br
 	}
 	return a.Attendance.Present > b.Attendance.Present
 }
@@ -700,4 +694,12 @@ func awardCounts(awards map[int]*AwardedTo) map[string]int {
 		out[a.CharacterKey]++
 	}
 	return out
+}
+
+// attendanceRatio is present over nights, 0 for a character with no nights.
+func attendanceRatio(a Attendance) float64 {
+	if a.Nights == 0 {
+		return 0
+	}
+	return float64(a.Present) / float64(a.Nights)
 }
