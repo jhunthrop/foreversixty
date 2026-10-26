@@ -24,6 +24,8 @@
   const titleTone = $derived(view.cancelled ? 'text-muted' : 'text-strong');
   const countTone = $derived(view.cancelled ? 'text-muted' : 'text-strong');
   const testid = $derived(`planned-raid-${raid.id}`);
+  /** As an expression: Svelte trims the edge spaces of literal text inside a span. */
+  const SEP = ' · ';
 </script>
 
 {#snippet dateBlock(box: string)}
@@ -37,7 +39,11 @@
   </span>
 {/snippet}
 
+<!-- The status chip leads the viewer chip, the mock's order (`Cancelled`, then `In · Tank`). -->
 {#snippet chips(layout: string)}
+  {#if view.status !== null}
+    <RaidChip kind="status" status={view.status} testid={`${testid}-${layout}-status-chip`} />
+  {/if}
   {#if view.viewer !== null}
     <RaidChip
       kind="viewer"
@@ -45,9 +51,6 @@
       role={view.viewer.role}
       testid={`${testid}-${layout}-viewer-chip`}
     />
-  {/if}
-  {#if view.status !== null}
-    <RaidChip kind="status" status={view.status} testid={`${testid}-${layout}-status-chip`} />
   {/if}
 {/snippet}
 
@@ -65,7 +68,7 @@
   data-testid={testid}
 >
   <span
-    class="hidden min-h-16 grid-cols-[56px_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_176px_16px] items-center gap-4 px-3.5 py-2.5 md:grid"
+    class="hidden min-h-16 grid-cols-[56px_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_176px_16px] items-center gap-4 px-3.5 py-[7px] md:grid"
     data-testid={`${testid}-desktop`}
   >
     {@render dateBlock('h-14 w-14')}
@@ -106,9 +109,9 @@
       <span class="text-[12px]">
         <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text font-mono tabular-nums"
           >{view.time}</span
+        >{#if view.guildTime !== null}<span class="text-muted">{SEP}{view.guildTime}</span>{/if}<span
+          class="font-mono tabular-nums {countdownTone}">{SEP}{view.countdown}</span
         >
-        {#if view.guildTime !== null}<span class="text-muted"> · {view.guildTime}</span>{/if}
-        <span class="font-mono tabular-nums {countdownTone}"> · {view.countdown}</span>
       </span>
       <span class="flex min-w-0 items-center gap-2 text-[12px]">
         <span class="font-mono text-[13px] tabular-nums {countTone}">{view.count}</span>

@@ -10,3 +10,8 @@ export const FIELD_CHROME = `${FIELD_BASE} h-11`;
 
 /** A textarea: the same chrome, its height from `rows`. */
 export const TEXTAREA_CHROME = `${FIELD_BASE} py-2.5 leading-5`;
+
+/** An inline link inside a line of prose (the GuildPlanGate recipe): below md a 44 px ::after,
+ *  centred on the link, is its phone hit area; the focus ring stays on the text. */
+export const INLINE_LINK =
+  "text-gold hover:text-gold-hover active:text-gold-hover focus-visible:outline-gold relative whitespace-nowrap underline after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 md:after:hidden";

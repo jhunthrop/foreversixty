@@ -51,6 +51,7 @@
   import { guildHomeCopy } from '../lib/guild/copy';
   import { officerToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
   import { browserStorage, plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
+  import { PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
   import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
@@ -973,7 +974,7 @@
       {#if raidsStatus === 'loading' || (raidsStatus === 'ready' && !raidsLazy.current)}
         {#if plannedReserve !== null}
           <div
-            class="h-[calc(24px+var(--planned-rows)*108px)] md:h-[calc(24px+var(--planned-rows)*64px)]"
+            class={PLANNED_RESERVE}
             style:--planned-rows={plannedReserve}
             aria-hidden="true"
             data-testid="guild-planned-reserve"

@@ -72,6 +72,14 @@ function html({
 }
 
 describe('RaidRoster', () => {
+  it('centres a bare row on its 36 px floor, and runs a noted row from the top', () => {
+    const rows = html().match(/<li class="[^"]*"[^>]*data-testid="raid-roster-row"/g) ?? [];
+    const bare = rows.find((row) => !row.includes('py-1.5')) ?? '';
+    expect(bare).toContain('items-center');
+    expect(bare).toContain('md:min-h-9');
+    expect(rows.some((row) => row.includes('items-start py-1.5'))).toBe(true);
+  });
+
   it('draws the heading with the ratio and the role columns in roster order', () => {
     const body = html();
     expect(text(between(body, 'raid-roster', 'raid-roster-tank'))).toContain('Sign-ups 23/40');

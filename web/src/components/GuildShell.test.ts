@@ -1,5 +1,6 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
 import GuildShell from './GuildShell.svelte';
 
 // Guild.svelte only reaches `status === 'ready'`/`'missing'` (and their testids) inside an
@@ -36,7 +37,7 @@ describe('GuildShell', () => {
   it('routes a raid path to the raid chunk, holding the band height while it loads', () => {
     const { body } = render(GuildShell, { props: { path: '/guild/us/pvp/olympus-xxvii/raids/7' } });
     expect(body).toContain('data-testid="raid-chunk-skeleton"');
-    expect(body).toContain('min-h-[300px] md:min-h-[232px]');
+    expect(body).toContain(RAID_BAND_MIN);
     expect(body).not.toContain('data-testid="guild-skeleton"');
   });
 
@@ -51,6 +52,13 @@ describe('GuildShell', () => {
     expect(body).not.toContain('data-testid="guild-claim"');
     expect(body).not.toContain('data-testid="guild-settings"');
     expect(body).not.toContain('data-testid="guild-join"');
+  });
+
+  it('holds every view at least one screen tall from the first paint, so the footer starts below the fold', () => {
+    for (const path of ['/guild/us/pvp/olympus-xxvii', '/guild/us/pvp/olympus-xxvii/raids/7', null]) {
+      const { body } = render(GuildShell, { props: { path } });
+      expect(body).toContain(GUILD_VIEW_MIN);
+    }
   });
 
   it('renders the landing for the bare /guild path and /guild/', () => {

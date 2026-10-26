@@ -140,6 +140,10 @@ describe('RaidForm', () => {
     expect(markup).not.toContain('data-testid="raid-form-discord"');
     expect(text(markup)).toContain(raidCopy.form.connectDiscord);
     expect(markup).toContain('href="/guild/us/pvp/olympus-xxvii/settings"');
+    // The inline link takes the 44 px ::after phone hit area of the gate link.
+    expect(markup).toMatch(
+      /class="[^"]*after:h-11[^"]*md:after:hidden[^"]*"[^>]*data-testid="raid-form-settings-link"/,
+    );
   });
 
   it('remembers the last Post to Discord answer when a channel is connected', () => {

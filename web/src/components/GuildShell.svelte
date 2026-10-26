@@ -21,6 +21,7 @@
   import GuildSettings from './GuildSettings.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
+  import { GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
 
   // The raid page (raids spec 3.2) is its own chunk: this island's entry is at its budget.
   const raidLazy = createLazyComponent(() => import('./GuildRaid.svelte'));
@@ -40,28 +41,32 @@
   });
 </script>
 
-{#if isGuildLandingPath(resolvedPath)}
-  <GuildLanding />
-{:else if claimPath !== null}
-  <GuildClaim path={claimPath} />
-{:else if settingsPath !== null}
-  <GuildSettings path={settingsPath} />
-{:else if inviteToken !== null}
-  <GuildJoin token={inviteToken} />
-{:else if raidPath !== null}
-  {#if raidLazy.current}
-    <raidLazy.current path={raidPath} />
-  {:else}
-    <!-- The band's ready height while the chunk loads (raids spec 4, Page states); the chunk's own
+<!-- One screen tall from the first paint (the server's markup), so the footer starts below the fold
+     and no view's growth moves it into or out of the viewport. The gap is main's own. -->
+<div class="flex flex-col gap-[22px] md:gap-8 {GUILD_VIEW_MIN}" data-testid="guild-view">
+  {#if isGuildLandingPath(resolvedPath)}
+    <GuildLanding />
+  {:else if claimPath !== null}
+    <GuildClaim path={claimPath} />
+  {:else if settingsPath !== null}
+    <GuildSettings path={settingsPath} />
+  {:else if inviteToken !== null}
+    <GuildJoin token={inviteToken} />
+  {:else if raidPath !== null}
+    {#if raidLazy.current}
+      <raidLazy.current path={raidPath} />
+    {:else}
+      <!-- The band's ready height while the chunk loads (raids spec 4, Page states); the chunk's own
          loading view then names it Loading the raid. -->
-    <div class="bg-raised full-bleed min-h-[300px] md:min-h-[232px]">
-      {#if raidLazy.error === ''}
-        <Skeleton lines={0} testid="raid-chunk-skeleton" />
-      {:else}
-        <LoadError message={raidLazy.error} onRetry={() => raidLazy.load()} testid="raid-chunk-error" />
-      {/if}
-    </div>
+      <div class="bg-raised full-bleed {RAID_BAND_MIN}">
+        {#if raidLazy.error === ''}
+          <Skeleton lines={0} testid="raid-chunk-skeleton" />
+        {:else}
+          <LoadError message={raidLazy.error} onRetry={() => raidLazy.load()} testid="raid-chunk-error" />
+        {/if}
+      </div>
+    {/if}
+  {:else}
+    <Guild path={guildPath} />
   {/if}
-{:else}
-  <Guild path={guildPath} />
-{/if}
+</div>

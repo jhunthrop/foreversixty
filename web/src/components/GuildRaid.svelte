@@ -14,6 +14,7 @@
   import { raidCount, raidPageFlags, raidWhen, stripReserveRows } from '../lib/guild/raid-page';
   import { RaidPageController, type RaidRoute } from '../lib/guild/raid-page-controller.svelte';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
+  import { RAID_BAND_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
@@ -29,7 +30,8 @@
 
   const MINUTE_MS = 60_000;
   const GATE_ID = 'officer-tools-gate-raids';
-  const BAND_MIN = 'min-h-[300px] md:min-h-[232px]';
+  /** The band's separator, as an expression: Svelte trims the edge spaces of literal text. */
+  const SEP = ' · ';
 
   let {
     path,
@@ -112,11 +114,11 @@
 {:else if c.load === 'loading' || c.access === 'loading'}
   <div class="flex flex-col gap-[22px] md:gap-8" data-testid="raid-page-loading">
     <span class="sr-only">{raidCopy.page.loading}</span>
-    <GuildBandFrame faction={c.guild?.faction ?? null} minHeight={BAND_MIN}>
+    <GuildBandFrame faction={c.guild?.faction ?? null} minHeight={RAID_BAND_MIN}>
       <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
     </GuildBandFrame>
     <div
-      class="bg-raised border-line rounded-panel h-[calc(56px+var(--strip-rows)*196px)] border md:h-[calc(60px+var(--strip-rows)*68px)]"
+      class="bg-raised border-line rounded-panel border {RAID_STRIP_RESERVE}"
       style:--strip-rows={reserveRows}
       aria-hidden="true"
       data-testid="raid-strip-reserve"
@@ -184,21 +186,21 @@
           <h1 class="font-display text-strong text-[22px] font-bold md:col-span-2" data-testid="raid-title">
             {raid.title}{#if raid.title !== raid.zone_name}<span
                 class="text-muted font-sans text-[15px] font-normal whitespace-nowrap"
-              >
-                · {raid.zone_name}</span
+                >{SEP}{raid.zone_name}</span
               >{/if}
           </h1>
+          <!-- Phone: three lines (date; times; guild time and countdown); one line from md. The
+               separators are entities: Svelte trims a span's edge spaces, which ran the words
+               together from md up. -->
           <p class="text-[15px] md:col-span-2" data-testid="raid-when">
-            <span class="block md:inline">{when.date}</span><span class="hidden md:inline"> · </span><span
+            <span class="block md:inline">{when.date}</span><span class="hidden md:inline">{SEP}</span><span
               class="block md:inline"
-              ><span class="font-mono">{when.start}</span> to <span class="font-mono">{when.end}</span></span
-            ><span class="block md:inline"
-              >{#if when.guildTime !== null}<span class="text-muted"
-                  ><span class="hidden md:inline"> · </span>{when.guildTime}</span
-                >
-              {/if}<span class="text-gold font-mono"
-                ><span class="hidden md:inline"> · </span>{when.countdown}</span
+              ><span class="font-mono">{when.start}</span>&#32;to&#32;<span class="font-mono">{when.end}</span
               ></span
+            ><span class="block md:inline"
+              ><span class="hidden md:inline">{SEP}</span>{#if when.guildTime !== null}<span
+                  class="text-muted">{when.guildTime}</span
+                >{SEP}{/if}<span class="text-gold font-mono">{when.countdown}</span></span
             >
           </p>
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">
@@ -213,9 +215,7 @@
               {/if}
               <span
                 ><span class="text-strong font-mono text-[15px]">{count.line}</span><span
-                  class="text-muted text-[13px]"
-                >
-                  · {count.breakdown}</span
+                  class="text-muted text-[13px]">{SEP}{count.breakdown}</span
                 ></span
               >
             </p>
@@ -280,7 +280,10 @@
           {officer ? raidCopy.notesEmpty.officer : raidCopy.notesEmpty.member}
         </p>
       {:else}
-        <div class="prose-forever [&_a]:text-gold text-[14px] leading-[1.6]">
+        <div
+          class="prose-forever [&_a]:text-gold [&_li]:marker:text-muted text-[14px] leading-[1.6] [&_ol]:list-decimal [&_ul]:list-disc"
+          data-testid="raid-notes-prose"
+        >
           <!-- The API renders and sanitises the notes (paragraphs, bold, italic, lists, links). -->
           <!-- eslint-disable-next-line svelte/no-at-html-tags -->
           {@html raid.notes_html}
