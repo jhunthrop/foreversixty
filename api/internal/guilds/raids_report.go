@@ -211,12 +211,14 @@ func killOrderOf(fights []reportFight) ([]KillOrderView, *UnnamedView) {
 		if e.Killed {
 			continue
 		}
-		e.FightIndex, e.Deaths = f.index, f.deaths
+		e.FightIndex = f.index
 		if f.kill {
+			// A killed boss shows the deaths of its kill; an unkilled one the sum of its pulls.
 			ms := f.durationMS
-			e.Killed, e.KillMS = true, &ms
+			e.Killed, e.KillMS, e.Deaths = true, &ms, f.deaths
 		} else {
 			e.WipesBefore++
+			e.Deaths += f.deaths
 		}
 	}
 	out := make([]KillOrderView, len(order))
@@ -233,7 +235,7 @@ func killOrderOf(fights []reportFight) ([]KillOrderView, *UnnamedView) {
 
 func (s *Store) reportDeaths(ctx context.Context, vc raidViewContext, reportID string) ([]ReportDeathView, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select player_key, max(player_name), lower(max(class)),
+		select player_key, coalesce(max(player_name), ''), coalesce(lower(max(class)), ''),
 		       coalesce(sum(deaths) filter (where not kill), 0), coalesce(sum(deaths) filter (where kill), 0)
 		from fight_metrics where report_id = $1 and state = 'ok'
 		group by player_key having coalesce(sum(deaths), 0) > 0`, reportID)
@@ -253,6 +255,12 @@ func (s *Store) reportDeaths(ctx context.Context, vc raidViewContext, reportID s
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: report deaths: %w", err)
 	}
+	sortDeaths(out)
+	return out, nil
+}
+
+// sortDeaths orders raiders most deaths first, ties by class order then name.
+func sortDeaths(out []ReportDeathView) {
 	sort.SliceStable(out, func(i, j int) bool {
 		if a, b := out[i].OnWipes+out[i].OnKills, out[j].OnWipes+out[j].OnKills; a != b {
 			return a > b
@@ -262,7 +270,6 @@ func (s *Store) reportDeaths(ctx context.Context, vc raidViewContext, reportID s
 		}
 		return out[i].Name < out[j].Name
 	})
-	return out, nil
 }
 
 // ownsKey reports whether the viewer's account holds the roster character key.
