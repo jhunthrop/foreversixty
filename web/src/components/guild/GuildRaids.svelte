@@ -147,18 +147,25 @@
     defaulted = true;
   });
 
-  /** `#raids-{report_id}` opens that night, now and on a later hash change. */
+  /** `#raids-{report_id}` opens that night once per hash (now and on a later hash change); rows
+   *  arriving after the hash are waited for, and a night the viewer collapsed stays collapsed. */
+  let hash = $state(typeof window === 'undefined' ? '' : window.location.hash);
+  let openedHash: string | null = null;
   $effect(() => {
-    const open = (): void => {
-      const id = nightFromHash(window.location.hash);
-      if (id === null || !rows.some((row) => row.id === id)) return;
-      expanded = id;
-      defaulted = true;
-      void tick().then(() => document.getElementById(`guild-raid-night-${id}`)?.scrollIntoView?.());
+    const onChange = (): void => {
+      openedHash = null;
+      hash = window.location.hash;
     };
-    open();
-    window.addEventListener('hashchange', open);
-    return () => window.removeEventListener('hashchange', open);
+    window.addEventListener('hashchange', onChange);
+    return () => window.removeEventListener('hashchange', onChange);
+  });
+  $effect(() => {
+    const id = nightFromHash(hash);
+    if (id === null || id === openedHash || !rows.some((row) => row.id === id)) return;
+    openedHash = id;
+    expanded = id;
+    defaulted = true;
+    void tick().then(() => document.getElementById(`guild-raid-night-${id}`)?.scrollIntoView?.());
   });
 
   function minutes(ms: number): string {
@@ -242,7 +249,7 @@
           </button>
           {#if isOpen}
             <div class="flex flex-col gap-3 pb-4" data-testid={`guild-raid-expanded-${row.id}`}>
-              {#if row.raid_id != null}
+              {#if row.raid_id !== undefined && row.raid_id !== null}
                 <a
                   href={guildRaidHref(guildPath, row.raid_id)}
                   class="text-gold inline-flex min-h-11 items-center self-start text-[13px] font-bold"

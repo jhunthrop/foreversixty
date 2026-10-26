@@ -16,7 +16,7 @@ import {
 import type { MatchCandidates } from './attendance-contract';
 import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
-import { REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
+import { PLAN_REQUIRED, REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
 import { raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
 import type {
@@ -35,7 +35,6 @@ import type { RaidInput, RaidStatusAction } from './raids-api';
 import { submitRefusal } from './raids-tab-controller';
 import type { SignupHandler, SignupOutcome } from './signup-strip';
 
-const PLAN_REQUIRED = 'guild_plan_required';
 const RACE_STATUS: Readonly<Record<string, GuildRaidView['status']>> = {
   raid_locked: 'locked',
   raid_cancelled: 'cancelled',
@@ -227,6 +226,11 @@ export class RaidPageController {
     }
   }
 
+  /** The line for a refused officer write: the plan sentence when the tools ended, else `failed`. */
+  private refusalLine(thrown: unknown, ended: string, failed: string): string {
+    return this.planRefused(thrown) ? ended : failed;
+  }
+
   private planRefused(thrown: unknown): boolean {
     if (codeOf(thrown) !== PLAN_REQUIRED) return false;
     this.officerToolsEnded = true;
@@ -271,9 +275,11 @@ export class RaidPageController {
       this.applyRaid(result.raid);
       return true;
     } catch (thrown) {
-      this.line = this.planRefused(thrown)
-        ? { control: `roster:${row.character_key}`, message: raidCopy.races.officerToolsEnded }
-        : { control: 'roster', message: raidCopy.officerRow.failed };
+      const ended = this.refusalLine(thrown, raidCopy.races.officerToolsEnded, raidCopy.officerRow.failed);
+      this.line = {
+        control: ended === raidCopy.races.officerToolsEnded ? `roster:${row.character_key}` : 'roster',
+        message: ended,
+      };
       return false;
     } finally {
       this.rosterBusy = null;
@@ -289,11 +295,10 @@ export class RaidPageController {
       this.applyRaid(await this.write((id) => this.deps.setStatus(id, this.route.raidId, action, body)));
       return true;
     } catch (thrown) {
-      if (this.planRefused(thrown)) {
-        this.line = { control: action, message: raidCopy.races.officerToolsEnded };
-        return false;
-      }
-      this.line = { control: action, message: raidCopy.officerRow.failed };
+      this.line = {
+        control: action,
+        message: this.refusalLine(thrown, raidCopy.races.officerToolsEnded, raidCopy.officerRow.failed),
+      };
       if (codeOf(thrown) === 'conflict') this.refreshAfterConflict();
       return false;
     } finally {
@@ -328,9 +333,11 @@ export class RaidPageController {
       return { ok: true };
     } catch (thrown) {
       const code = codeOf(thrown);
-      const message = this.planRefused(thrown)
-        ? attendanceCopy.errors.officerToolsEnded
-        : attendanceCopy.errors.buttons;
+      const message = this.refusalLine(
+        thrown,
+        attendanceCopy.errors.officerToolsEnded,
+        attendanceCopy.errors.buttons,
+      );
       return { ok: false, code, message };
     }
   }
