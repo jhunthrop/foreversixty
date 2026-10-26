@@ -2,7 +2,6 @@ package notify
 
 import (
 	"fmt"
-	"net/url"
 	"strings"
 	"time"
 
@@ -100,8 +99,7 @@ var testEventOrder = []EventName{EventSimFinished, EventUploadParsed}
 // absoluteURL joins a site path to the public base, and answers "" when the
 // base is not an absolute http(s) URL (Discord refuses relative links).
 func absoluteURL(base, path string) string {
-	u, err := url.Parse(strings.TrimSpace(base))
-	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+	if !isAbsolute(strings.TrimSpace(base)) {
 		return ""
 	}
 	return strings.TrimRight(base, "/") + path

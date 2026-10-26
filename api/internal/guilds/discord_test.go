@@ -11,10 +11,18 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
-// fakeDiscord is a scripted guild channel.
+// fakeDiscord is a scripted guild channel; defaults, when set, records SetGuildPostDefault.
 type fakeDiscord struct {
-	enabled bool
-	hook    *notify.GuildWebhook
+	enabled  bool
+	hook     *notify.GuildWebhook
+	defaults *[]bool
+}
+
+func (f fakeDiscord) SetGuildPostDefault(_ context.Context, _ int64, on bool) error {
+	if f.defaults != nil {
+		*f.defaults = append(*f.defaults, on)
+	}
+	return nil
 }
 
 func (f fakeDiscord) GuildConnectEnabled() bool { return f.enabled }

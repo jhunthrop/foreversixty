@@ -54,7 +54,11 @@ type Service struct {
 	// Discord is the guild's raid channel (notify); nil leaves settings.discord out and
 	// every raid view's discord block false.
 	Discord DiscordChannels
-	Log     *slog.Logger
+	// RaidEvents posts the raid embeds to the guild's channel; nil posts nothing.
+	RaidEvents RaidEvents
+	// PublicBaseURL is the site origin the raid posts link to.
+	PublicBaseURL string
+	Log           *slog.Logger
 }
 
 // Mount registers every /v1/guilds/{id}/... mutation route and the

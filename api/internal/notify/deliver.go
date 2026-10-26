@@ -137,18 +137,33 @@ func (d *Deliverer) record(ctx context.Context, userID int64, event EventName, p
 		d.logger().Info("notify", "user", userID, "event", string(event), "outcome", "posted")
 		return d.Store.RecordSuccess(ctx, userID, KindDiscord)
 	}
+	f := failureOf(postErr)
+	disabled, err := d.Store.RecordFailure(ctx, userID, KindDiscord, f.text, f.counts)
+	d.logger().Warn("notify", "user", userID, "event", string(event), "outcome", "failed",
+		"status", f.status, "disabled", disabled)
+	return err
+}
+
+// postFailure is a failed post as the five-failure rule reads it.
+type postFailure struct {
+	// counts is false for a 429: a rate limit never counts toward the five.
+	counts bool
+	status int
+	// text is what last_error stores; never the URL, token or message.
+	text string
+}
+
+// failureOf classifies a failed post for the account and guild rules alike.
+func failureOf(postErr error) postFailure {
 	var discordErr *DiscordError
-	counts, status, text := true, 0, sanitize(postErr.Error())
+	f := postFailure{counts: true, text: sanitize(postErr.Error())}
 	switch {
 	case errors.As(postErr, &discordErr):
-		counts, status, text = !discordErr.RateLimited(), discordErr.Status, discordErr.Body
+		f.counts, f.status, f.text = !discordErr.RateLimited(), discordErr.Status, discordErr.Body
 	case errors.Is(postErr, ErrTimeout), errors.Is(postErr, context.DeadlineExceeded):
-		text = timeoutText
+		f.text = timeoutText
 	case errors.Is(postErr, ErrUnreachable):
-		text = unreachableText
+		f.text = unreachableText
 	}
-	disabled, err := d.Store.RecordFailure(ctx, userID, KindDiscord, text, counts)
-	d.logger().Warn("notify", "user", userID, "event", string(event), "outcome", "failed",
-		"status", status, "disabled", disabled)
-	return err
+	return f
 }

@@ -33,7 +33,8 @@ type raidRequest struct {
 	Notes           string `json:"notes"`
 	Timezone        string `json:"timezone"`
 	RepeatWeeks     int    `json:"repeat_weeks"`
-	PostToDiscord   bool   `json:"post_to_discord"`
+	// PostToDiscord is the form's box; nil when the save did not carry it.
+	PostToDiscord *bool `json:"post_to_discord"`
 }
 
 // raidPlan is a validated raidRequest: the first raid's input and the guild's location.
@@ -84,7 +85,7 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	plan.location, plan.timezone = loc, req.Timezone
 	plan.input = RaidInput{
 		Zone: zone.Key, Title: title, StartsAt: startsAt, DurationMinutes: d,
-		Notes: req.Notes, PostDefault: req.PostToDiscord,
+		Notes: req.Notes, PostDefault: ticked(req.PostToDiscord),
 	}
 	return plan, nil
 }
