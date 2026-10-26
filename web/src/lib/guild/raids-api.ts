@@ -3,7 +3,7 @@
 // officer and member writes. Same transport, cache and error class as api.ts, so a failure is a
 // `GuildApiError` carrying the API's `code` (`raid_locked`, `raid_cancelled`, `guild_plan_required`,
 // `raid_cap`, `forbidden`) and every write drops the guild's cached reads through `invalidateGuild`.
-import { query, refetch } from '../data/query';
+import { invalidate, query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import {
   GUILD_TTL_MS,
@@ -66,19 +66,19 @@ export function fetchGuildRaid(
   );
 }
 
-/** The raid page's 10 s poll: asks again right now, whatever the cache holds. */
+/** The raid page's 10 s poll: asks again right now, whatever the cache holds. Rejects on a
+ *  failure, so the page can count failed polls (spec 4 "Poll"). */
 export function refetchGuildRaid(
   guildId: number,
   raidId: RaidId,
-  onData: (raid: GuildRaidView) => void,
   apiBase: string = API_BASE_URL,
-): void {
-  refetch(
-    raidKey(guildId, raidId, apiBase),
-    () => call<GuildRaidView>(raidPath(guildId, raidId), apiBase),
-    { scope: 'private', ttlMs: GUILD_TTL_MS },
-    onData,
-  );
+): Promise<GuildRaidView> {
+  const key = raidKey(guildId, raidId, apiBase);
+  invalidate(key);
+  return query<GuildRaidView>(key, () => call<GuildRaidView>(raidPath(guildId, raidId), apiBase), {
+    scope: 'private',
+    ttlMs: GUILD_TTL_MS,
+  });
 }
 
 /** Plans one raid, or four with `repeat_weeks: 3`; answers every raid made, soonest first. */
@@ -106,14 +106,21 @@ export async function updateRaid(
   return raid;
 }
 
+/** A cancel may ask for the Discord post (spec 4 "Cancel confirm"); lane G1b reads it. */
+export interface RaidStatusBody {
+  post_to_discord: boolean;
+}
+
 export async function setRaidStatus(
   guildId: number,
   raidId: RaidId,
   action: RaidStatusAction,
   apiBase: string = API_BASE_URL,
+  body?: RaidStatusBody,
 ): Promise<GuildRaidView> {
   const raid = await call<GuildRaidView>(`${raidPath(guildId, raidId)}/${action}`, apiBase, {
     method: 'POST',
+    ...(body === undefined ? {} : { body }),
   });
   invalidateGuild(guildId, apiBase);
   return raid;

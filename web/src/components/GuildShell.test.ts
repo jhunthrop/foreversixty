@@ -33,6 +33,13 @@ describe('GuildShell', () => {
     expect(body).toContain('data-testid="guild-settings"');
   });
 
+  it('routes a raid path to the raid chunk, holding the band height while it loads', () => {
+    const { body } = render(GuildShell, { props: { path: '/guild/us/pvp/olympus-xxvii/raids/7' } });
+    expect(body).toContain('data-testid="raid-chunk-skeleton"');
+    expect(body).toContain('min-h-[300px] md:min-h-[232px]');
+    expect(body).not.toContain('data-testid="guild-skeleton"');
+  });
+
   it('renders the join view for an invite path', () => {
     const { body } = render(GuildShell, { props: { path: '/guild/invite/abc-123' } });
     expect(body).toContain('data-testid="guild-join"');

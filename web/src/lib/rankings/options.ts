@@ -13,6 +13,10 @@ import { FACTIONS, RANKING_METRICS } from './url';
 export interface FilterOption {
   value: string;
   label: string;
+  /** A resting option the player cannot pick (the raid roster's `—`, raids spec 3.7). */
+  disabled?: boolean;
+  /** The option's accessible name when its label is a mark, not words. */
+  ariaLabel?: string;
 }
 
 const all = (label: string): FilterOption => ({ value: '', label });

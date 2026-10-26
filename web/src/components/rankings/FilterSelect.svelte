@@ -16,6 +16,8 @@
     grow = 1,
     ownRow = false,
     labelHidden = false,
+    compact = false,
+    busy = false,
     disabled = false,
     describedBy,
   }: {
@@ -34,6 +36,10 @@
     disabled?: boolean;
     /** Read while disabled: the sentence that says why. */
     describedBy?: string;
+    /** 32 px from `md`, 44 px below (the raid roster's officer select, raids spec 3.7). */
+    compact?: boolean;
+    /** The row's save is in flight. */
+    busy?: boolean;
   } = $props();
 </script>
 
@@ -47,16 +53,21 @@
   <span class="relative block">
     <select
       {id}
-      class="border-line-warm bg-raised text-text rounded-control hover:border-gold-hover h-11 w-full min-w-0 cursor-pointer appearance-none truncate border pr-8 pl-3 text-[13px] transition-colors duration-[120ms] disabled:cursor-not-allowed"
+      class="border-line-warm bg-raised text-text rounded-control hover:border-gold-hover {compact
+        ? 'h-11 md:h-8'
+        : 'h-11'} w-full min-w-0 cursor-pointer appearance-none truncate border pr-8 pl-3 text-[13px] transition-colors duration-[120ms] disabled:cursor-not-allowed"
       {value}
       {disabled}
+      aria-busy={busy ? 'true' : undefined}
       aria-label={labelHidden ? label : undefined}
       aria-describedby={disabled ? describedBy : undefined}
       data-testid={testid}
       onchange={(event) => onchange((event.currentTarget as HTMLSelectElement).value)}
     >
       {#each options as option (option.value)}
-        <option value={option.value}>{option.label}</option>
+        <option value={option.value} disabled={option.disabled} aria-label={option.ariaLabel}
+          >{option.label}</option
+        >
       {/each}
     </select>
     <svg

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { specCell, specString } from '../../test-support/spec-table';
 import type { GuildRaidView } from './api';
@@ -133,6 +134,15 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(raidCopy.loadErrors.planned).toBe(str('Load errors', 1));
     expect(raidCopy.backLink('Olympus XXVII')).toBe(str('Back link', 0, { Guild: 'Olympus XXVII' }));
     expect(raidCopy.changelog).toBe(str('Changelog'));
+  });
+
+  it('has the raid page lines of 3.2, 3.7 and 4, each quoted in the spec', () => {
+    const spec = readFileSync(SPEC, 'utf8');
+    const quoted = (words: string): boolean => spec.includes(`\`${words}\``);
+    expect(quoted(raidCopy.page.eyebrow.toUpperCase())).toBe(true);
+    expect(quoted(raidCopy.page.loading)).toBe(true);
+    expect(quoted(raidCopy.page.signupFor('Lightbrand'))).toBe(true);
+    expect(quoted(raidCopy.page.notSignedMark)).toBe(true);
   });
 });
 
