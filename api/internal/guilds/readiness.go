@@ -147,7 +147,7 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		scope.apply(&rr)
 		rr.readinessScore = float64(rr.Failing)*100 + cr.GearGap.GainDps
 		if officerView {
-			text := nudgeText(row.Name, cr) + scope.staleNudge(rr)
+			text := nudgeText(row.Name, cr, scope.staleFailure(rr)...)
 			rr.NudgeText = &text
 		}
 		view.Rows = append(view.Rows, rr)
@@ -167,8 +167,10 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 // check assumed level 60 for want of a level section on the export (maxTalentPoints), the
 // nudge says so explicitly rather than presenting that guess as a fact the officer might
 // repeat to the raider.
-func nudgeText(name string, cr CharacterReadiness) string {
-	fails := cr.failText()
+// extraFails are failures the character's own readiness does not know (a stale sync before a
+// raid); they read as part of the same list.
+func nudgeText(name string, cr CharacterReadiness, extraFails ...string) string {
+	fails := append(cr.failText(), extraFails...)
 	var out string
 	if len(fails) == 0 {
 		out = name + ": every readiness check passes."

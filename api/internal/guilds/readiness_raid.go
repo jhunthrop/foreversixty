@@ -106,13 +106,13 @@ func (sc *readinessScope) apply(rr *ReadinessRow) {
 	}
 }
 
-// staleNudge is the sentence an officer's nudge gains for a stale export.
-func (sc *readinessScope) staleNudge(rr ReadinessRow) string {
+// staleFailure is the failure an officer's nudge gains for a stale export: none, or one phrase.
+func (sc *readinessScope) staleFailure(rr ReadinessRow) []string {
 	if sc == nil || rr.SyncedBeforeCutoff == nil || *rr.SyncedBeforeCutoff {
-		return ""
+		return nil
 	}
 	days := int(sc.raid.StartsAt.Sub(rr.LoggedAt).Hours() / hoursPerDay)
-	return fmt.Sprintf(" Last sync was %d days before the raid.", days)
+	return []string{fmt.Sprintf("last sync was %d days before the raid", days)}
 }
 
 // noExportRows lists the signed characters the board had no export row for, last.
@@ -158,7 +158,8 @@ func (s *Service) readinessRaid(w http.ResponseWriter, r *http.Request, guildID 
 		s.fail(w, r, "readiness", err, "could not load that guild's readiness just now")
 		return nil, true, false
 	}
-	if !exists {
+	// The filter is for a raid still to be played (§3.7); a played or cancelled one is not one.
+	if !exists || (found.Status != RaidPlanned && found.Status != RaidLocked) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such raid", nil)
 		return nil, true, false
 	}
