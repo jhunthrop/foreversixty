@@ -119,15 +119,19 @@ type NextRaidOwn struct {
 	CharacterKey string `json:"character_key"`
 	State        string `json:"state"`
 	Role         string `json:"role"`
+	// Note travels with the sign-up so a press on the band keeps it without a second read.
+	Note string `json:"note"`
 }
 
 // NextRaidView is home.next_raid: the guild band's raid line.
 type NextRaidView struct {
-	ID            int64          `json:"id"`
-	Zone          string         `json:"zone"`
-	ZoneName      string         `json:"zone_name"`
-	Title         string         `json:"title"`
-	StartsAt      time.Time      `json:"starts_at"`
+	ID       int64     `json:"id"`
+	Zone     string    `json:"zone"`
+	ZoneName string    `json:"zone_name"`
+	Title    string    `json:"title"`
+	StartsAt time.Time `json:"starts_at"`
+	// Status is planned or locked (the band shows the next open raid; a locked one is inert).
+	Status        string         `json:"status"`
 	Size          *int           `json:"size"`
 	GuildTimezone *string        `json:"guild_timezone"`
 	Counts        NextRaidCounts `json:"counts"`
@@ -335,7 +339,7 @@ func (s *Store) NextRaidFor(ctx context.Context, guildID, viewerID int64, header
 	c := countSignups(signups)
 	return &NextRaidView{
 		ID: raid.ID, Zone: raid.Zone, ZoneName: zone.Name, Title: raid.Title, StartsAt: raid.StartsAt.UTC(),
-		Size: zone.Size, GuildTimezone: vc.timezone,
+		Status: raid.Status, Size: zone.Size, GuildTimezone: vc.timezone,
 		Counts: NextRaidCounts{In: c.In, Late: c.Late, Tanks: c.Tanks, Healers: c.Healers, DPS: c.DPS},
 		Own:    ownSignup(signups, vc, headerKey),
 	}, nil
@@ -349,7 +353,7 @@ func ownSignup(signups []Signup, vc raidViewContext, headerKey *string) *NextRai
 			continue
 		}
 		if headerKey != nil && sg.CharacterKey == *headerKey {
-			return &NextRaidOwn{CharacterKey: sg.CharacterKey, State: sg.State, Role: sg.Role}
+			return &NextRaidOwn{CharacterKey: sg.CharacterKey, State: sg.State, Role: sg.Role, Note: sg.Note}
 		}
 		if first == nil {
 			first = &signups[i]
@@ -358,5 +362,5 @@ func ownSignup(signups []Signup, vc raidViewContext, headerKey *string) *NextRai
 	if first == nil {
 		return nil
 	}
-	return &NextRaidOwn{CharacterKey: first.CharacterKey, State: first.State, Role: first.Role}
+	return &NextRaidOwn{CharacterKey: first.CharacterKey, State: first.State, Role: first.Role, Note: first.Note}
 }
