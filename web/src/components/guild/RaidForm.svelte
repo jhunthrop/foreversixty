@@ -6,7 +6,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { GuildRaidView, GuildZoneView } from '../../lib/guild/api';
-  import { FIELD_CHROME, TEXTAREA_CHROME } from '../../lib/guild/field-styles';
+  import { FIELD_CHROME, INLINE_LINK, TEXTAREA_CHROME } from '../../lib/guild/field-styles';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import {
     NOTES_MAX,
@@ -322,7 +322,7 @@
     </label>
   {:else}
     <p class="text-muted text-[13px]" data-testid="raid-form-discord-line">
-      {discordLine.before}<a class="text-gold hover:text-gold-hover underline" href={settingsHref}
+      {discordLine.before}<a class={INLINE_LINK} href={settingsHref} data-testid="raid-form-settings-link"
         >{raidCopy.form.connectDiscordLink}</a
       >{discordLine.after}
     </p>

@@ -80,4 +80,21 @@ describe('PlannedRaidRow', () => {
     expect(desktop(ended)).toContain('Ended');
     expect(desktop(html())).not.toContain('Planned');
   });
+
+  it('puts the status chip before the viewer chip, the mock order', () => {
+    const cancelled = html(plannedRaid({ status: 'cancelled' }));
+    expect(desktop(cancelled).indexOf('Cancelled')).toBeLessThan(desktop(cancelled).indexOf('In · DPS'));
+    expect(phone(cancelled).indexOf('Cancelled')).toBeLessThan(phone(cancelled).indexOf('In · DPS'));
+  });
+
+  it('keeps the spaces of the phone separators in the markup itself', () => {
+    const line = between(html(), 'planned-raid-7-phone', '__end__')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<[^>]+>/g, '');
+    expect(line).toContain('9:00 pm · 8:00 pm CST guild time · in 2 days 8 h');
+  });
+
+  it('holds the desktop row to 56 px of content: 7 px padding, within the 72 px cap', () => {
+    expect(html()).toMatch(/py-\[7px\] md:grid"[^>]*data-testid="planned-raid-7-desktop"/);
+  });
 });

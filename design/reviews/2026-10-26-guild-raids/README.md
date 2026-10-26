@@ -96,3 +96,65 @@ ends near 420 px and the strip is shorter, so the notes and roster jump.
   endpoints, which these stubs do not answer. This is fixture-only.
 - The ux-designer and wow-player reviews of these PNGs (brief Step 4) were not run in this task.
   The controller dispatches them.
+
+## Pre-review fix round
+
+Re-taken: rows 1, 2, 5, 9, 12 and 13 at their widths, from a fresh fixture build on port 4441.
+`guild-raids-13-form-checked-panel-1440.png` is new: the form with `Post to Discord` ticked.
+
+- **Separators** (05, 09, 18): the when line, count line and title suffix now read
+  `Thursday 10 December · 8:00 pm to 11:00 pm · in 2 days 7 h` and `14 of 40 signed up · 1 tank …`
+  from `md` up. Svelte trims the edge spaces of literal text inside a span, so each separator is
+  now an expression (`{SEP}`). The planned row's phone line had the same pattern and is fixed too.
+- **Notes lists** (05): the notes container adds `list-disc` and `list-decimal` to the
+  `prose-forever` style, with muted markers.
+- **Checkboxes** (13): no change was needed. The site-wide rule already applies: the computed
+  `accent-color` is `rgb(229, 185, 85)` and `color-scheme` is `dark`. The earlier captures only
+  showed unchecked boxes, and an unchecked box is the native dark box under the §9.2 rule. A
+  checked box is gold (`13-form-checked-panel-1440`).
+- **Settings link** (13): the no-webhook line's link takes the gate link's 44 px `::after` at
+  phone widths (`INLINE_LINK` in `lib/guild/field-styles.ts`). The e2e `test.fail` is removed
+  and the 360 control check passes.
+- **Cancelled row** (01): the status chip now comes before the viewer chip (`CANCELLED`, then
+  `IN · TANK`).
+
+| Surface | 360 | 390 | 1440 | 2000 | Cap (phone / desktop) |
+|---|---|---|---|---|---|
+| Planned row | 97 | 97 | 71.5, 71, 71 | 71.5, 71, 71 | 96–120 / 64–72 |
+| Roster row, no note | 44 | 44 | 36 | 36 | 44 / 36 |
+| Strip row | 183, 182 | 183, 182 | 68 (101/100 whole) | 68 | ≤ 196 / 68 |
+| Form | 989 | 989 | 725.5 | — | ≤ 1180 / ≤ 760 |
+
+The desktop planned row's 5 extra px came from the 56 px date block plus 10 px of vertical
+padding on each side (77). The vertical padding is now 7 px, which holds every cell. A bare
+roster row now centres its crest, name and select on the 36 px floor with no padding past them.
+A row with a note keeps its top padding.
+
+**CLS with a warm reserve** (`cls-<width>.json`):
+
+| Width | Raid page | Raids tab |
+|---|---|---|
+| 390 | **0** (was 0.226) | 0.206 (was 0.359) |
+| 1440 | **0.0001** (was 0.024) | 0.123 (was 0.126) |
+
+Most of the shift came from the footer, not from the reserves. Every /guild/* path serves the
+same prerendered shell. Its first paint was about 630 px of lede and skeleton, so the footer
+started inside the viewport at y 703 and jumped when the hydrated view grew. `GuildShell` now
+holds every guild view at least one screen tall from the first paint
+(`min-h-[calc(100svh-72px)] md:min-h-[calc(100svh-109px)]`), so the footer starts below the
+fold. Content inside the reserves is replaced with new nodes, not moved, so it adds no shift.
+
+The reserves now equal the ready heights measured on the fixture (`lib/guild/raid-layout.ts`):
+- raid band: 347 / 311 px for the member;
+- strip: 62 + rows × 182 px on phone, 70 + rows × 100 px on desktop (426 and 270 for two rows,
+  the same as ready);
+- Raids tab planned block: 62 + rows × 97 px on phone, 62 + rows × 71 px on desktop (the tab's
+  header row, `PLANNED n`, and the rows: 353 and 275 for three rows against ready 353 and 275).
+
+**Floor on the Raids tab:** 0.12–0.21. Layout-shift sources show the guild band itself growing
+when `/home` answers. The tabs move from y 273 to y 417 at 1440, and the needs line and raid
+line appear, so everything under the band moves. This is the guild band's own loading state in
+Guild.svelte's header, not a raid reserve; this round was limited to the reserve block. The
+value varies with how close `/v1/me` and `/home` land to first paint (a diagnostic run read
+0.003 at 390). The fix is a member-band reserve while `/home` is in flight, held to the band's
+ready height. That is a guild-band change for the band's owner.

@@ -93,13 +93,17 @@
 
 {#snippet row(entry: RosterRow, withRole: boolean)}
   {@const busy = busyKey === entry.character_key}
+  <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
+       officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
-    class="rounded-control flex min-h-11 break-inside-avoid items-start gap-3 px-2 py-1.5 md:min-h-9"
+    class="rounded-control flex min-h-11 break-inside-avoid gap-3 px-2 md:min-h-9 {entry.note === ''
+      ? 'items-center'
+      : 'items-start py-1.5'}"
     style={entry.own ? 'background: rgba(229,185,85,.06)' : undefined}
     aria-busy={busy}
     data-testid="raid-roster-row"
   >
-    <span class="mt-0.5 shrink-0"><ClassCrestRing characterClass={entry.class} size={24} /></span>
+    <span class="flex shrink-0"><ClassCrestRing characterClass={entry.class} size={24} /></span>
     <div class="min-w-0 flex-1">
       <p class="leading-5">
         <span class="text-[14px] font-semibold" style={`color:${classColorVar(entry.class)}`}

@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GuildRaidView } from '../lib/guild/api';
 import { guildClaimCopy } from '../lib/guild/copy';
 import { raidCopy } from '../lib/guild/raid-copy';
+import { RAID_BAND_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
 import { RAID_ROWS_KEY } from '../lib/guild/raid-page';
 import {
   RaidPageController,
@@ -75,6 +76,19 @@ describe('the band', () => {
     expect(text(between(body, 'raid-title', 'raid-when'))).toBe("Ony farm · Onyxia's Lair");
   });
 
+  it('keeps the spaces around every separator, which the md-up inline layout shows as is', () => {
+    const body = html({ raid: plannedRaid({ title: 'Ony farm' }) }, NEW_YORK);
+    const markup = (from: string, to: string): string =>
+      between(body, from, to)
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/<[^>]+>/g, '');
+    expect(markup('raid-when', 'raid-count').trim()).toBe(
+      'Thursday 10 December · 9:00 pm to 12:00 am · 8:00 pm CST guild time · in 2 days 8 h',
+    );
+    expect(markup('raid-count', 'guild-tabs')).toContain('23 of 40 signed up · 3 tanks');
+    expect(markup('raid-title', 'raid-when').trim()).toBe("Ony farm · Onyxia's Lair");
+  });
+
   it('reads the when line with the countdown, and guild time only when the offsets differ', () => {
     const chicago = text(between(html(), 'raid-when', 'raid-count'));
     expect(chicago).toBe('Thursday 10 December · 8:00 pm to 11:00 pm · in 2 days 8 h');
@@ -120,6 +134,14 @@ describe('the body', () => {
     expect(strip).toBeGreaterThan(0);
     expect(notes).toBeGreaterThan(strip);
     expect(body.indexOf('data-testid="raid-roster"')).toBeGreaterThan(notes);
+  });
+
+  it('draws the notes lists with their bullets and numbers', () => {
+    const body = ready(plannedRaid({ notes_html: '<ul><li>Cloak</li></ul>' }));
+    expect(body).toMatch(/class="[^"]*\[(?:&|&amp;)_ul\]:list-disc[^"]*"[^>]*data-testid="raid-notes-prose"/);
+    expect(body).toMatch(
+      /class="[^"]*\[(?:&|&amp;)_ol\]:list-decimal[^"]*"[^>]*data-testid="raid-notes-prose"/,
+    );
   });
 
   it('renders the API notes, or the empty line for members and officers', () => {
@@ -228,8 +250,9 @@ describe('loading', () => {
   it('reserves the band, one strip row and the roster, and says Loading the raid', () => {
     const body = html({ load: 'loading', raid: null });
     expect(body).toContain(raidCopy.page.loading);
-    expect(body).toContain('min-h-[300px] md:min-h-[232px]');
+    expect(body).toContain(RAID_BAND_MIN);
     expect(body).toContain('--strip-rows: 1');
+    expect(body).toContain(RAID_STRIP_RESERVE);
     expect(body).toContain('min-h-[560px] md:min-h-[420px]');
   });
 

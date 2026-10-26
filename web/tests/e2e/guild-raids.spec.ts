@@ -361,10 +361,8 @@ test.describe('every control is at least 44 px tall at 360', () => {
   });
 
   test('the form with no webhook: its inline Settings link', async ({ page }) => {
-    // Known gap, reported in the Task 9 report: the `Connect a Discord channel in Settings…`
-    // line's inline link is 16 px tall with no phone hit area (the gate link's ::after recipe).
-    // test.fail keeps the check running; it turns red here once the link is fixed.
-    test.fail(true, 'the no-webhook line inline Settings link has no 44 px hit area');
+    // The `Connect a Discord channel in Settings…` line's inline link takes the gate link's
+    // 44 px ::after hit area below md.
     await openRaidsTab(page, { viewer: 'officer' });
     expect(await shortControls(await openForm(page))).toEqual([]);
   });
