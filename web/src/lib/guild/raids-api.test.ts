@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { forgetPrivate, invalidate } from '../data/query';
+import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import { GuildApiError, type GuildRaidView } from './api';
 import {
   createRaid,
@@ -48,6 +49,7 @@ function raid(id: number): GuildRaidView {
     not_signed: [],
     viewer: { characters: [] },
     discord: { available: true, connected: false, post_default: false },
+    ...NO_LOG_YET,
   };
 }
 

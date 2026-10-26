@@ -4,8 +4,10 @@
 // Discord text, and the readiness freshness count. Strings come from attendance-copy.ts.
 import {
   BIGGEST_CHANGES_ROWS,
+  DAY_MS,
   DISCORD_REPORT_MAX_LINES,
   REPORT_ROWS_BEFORE_SHOW_ALL,
+  SECONDS_PER_MINUTE,
   attendanceCopy,
   cameRatio,
   deaths,
@@ -17,15 +19,20 @@ import {
   moveDelta,
   wipes,
 } from './attendance-copy';
-import type { RaidAttendanceRow, RaidMoveRow, RaidMoves, RaidNight, RaidReport } from './attendance-contract';
+import type {
+  RaidAttendanceRow,
+  RaidKill,
+  RaidMoveRow,
+  RaidMoves,
+  RaidNight,
+  RaidReport,
+} from './attendance-contract';
 import type { GuildRaidRole } from './api';
+import { discordText, yourNightText } from './night-copy';
 import { SEP, raidCopy } from './raid-copy';
 import { rosterOrder } from './raid-roster';
 import { roleForSpec } from './raid-roles';
 import { DEFAULT_LOCALE, dateLabel } from './raid-time';
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-const SECONDS_PER_MINUTE = 60;
 
 export type AttendanceGroupKey = 'noShow' | 'late' | 'joined' | 'present' | 'benchOut';
 
@@ -54,8 +61,9 @@ export function attendanceGroupOf(row: RaidAttendanceRow): AttendanceGroupKey {
   return row.outcome === 'late' ? 'late' : 'present';
 }
 
-function roleOf(row: RaidAttendanceRow): GuildRaidRole {
-  return row.role ?? roleForSpec(row.spec) ?? 'dps';
+/** The role the sign-up gave, else the spec's; `null` when neither knows (such a row sorts last). */
+function roleOf(row: RaidAttendanceRow): GuildRaidRole | null {
+  return row.role ?? roleForSpec(row.spec);
 }
 
 function inRosterOrder(rows: readonly RaidAttendanceRow[]): RaidAttendanceRow[] {
@@ -103,29 +111,30 @@ function signedWord(row: RaidAttendanceRow): string {
   return row.signed === null ? '' : raidCopy.segments[row.signed];
 }
 
-function pullsOf(row: RaidAttendanceRow): string {
-  return `${row.pulls_present} of ${row.pulls_total} pulls`;
+function roleLabelOf(row: RaidAttendanceRow): string | null {
+  const role = roleOf(row);
+  return role === null ? null : raidCopy.roleLabels[role];
 }
 
-function minutesAfterFirstPull(row: RaidAttendanceRow): number {
-  return Math.round((row.first_seen_offset_s ?? 0) / SECONDS_PER_MINUTE);
+/** Minutes after the first pull a late row was first seen; `null` when the log gave no offset. */
+function lateMinutes(row: RaidAttendanceRow): number | null {
+  return row.first_seen_offset_s === null ? null : Math.round(row.first_seen_offset_s / SECONDS_PER_MINUTE);
 }
 
 /** The outcome sentence of `Your night` (spec 6.1). */
 export function yourNightSentence(row: RaidAttendanceRow): string {
-  const word = signedWord(row);
-  const role = raidCopy.roleLabels[roleOf(row)];
-  if (row.signed === null) return `Not signed up. In the log for ${pullsOf(row)}.`;
-  if (row.outcome === 'no_show') {
-    return `Signed ${word} as ${role}. You are not in this log. If you were there under another name, tell an officer.`;
+  const state = signedWord(row);
+  const { pulls_present: n, pulls_total: total } = row;
+  if (row.signed === null) return yourNightText.unsigned(n, total);
+  if (row.outcome === 'no_show') return yourNightText.notInLog(state, roleLabelOf(row));
+  if (row.outcome === 'absent') return yourNightText.stayedOut(state);
+  if (!attending(row)) return yourNightText.joined(state, n, total);
+  if (row.came_as !== null) return yourNightText.cameAs(state, row.name, row.came_as, n, total);
+  const minutes = lateMinutes(row);
+  if (row.outcome === 'late' && minutes !== null) {
+    return yourNightText.late(state, roleLabelOf(row), minutes, n, total);
   }
-  if (row.outcome === 'absent') return `Signed ${word}.`;
-  if (!attending(row)) return `Signed ${word}. Joined for ${pullsOf(row)}.`;
-  if (row.came_as !== null) return `Signed ${word} on ${row.name}; came as ${row.came_as}, ${pullsOf(row)}.`;
-  if (row.outcome === 'late') {
-    return `Signed ${word} as ${role}. First seen ${minutesAfterFirstPull(row)} min after the first pull, ${pullsOf(row)}.`;
-  }
-  return `Signed ${word} as ${role}. Present from the first pull, ${pullsOf(row)}.`;
+  return yourNightText.present(state, roleLabelOf(row), n, total);
 }
 
 /** The muted facts under the sentence; `rising` colours `up 53` in `--kill`. */
@@ -135,19 +144,18 @@ export type YourNightFact =
   | { kind: 'excused'; text: string };
 
 function moveFact(move: RaidMoveRow, previousDate: string): YourNightFact {
-  const { rising } = moveDelta(move.before, move.after);
-  const size = Math.abs(move.after - move.before);
+  const { rising, size } = moveDelta(move.before, move.after);
   return {
     kind: 'move',
     lead: `${metricLabel(move.metric)} ${move.after} on ${move.encounter}, `,
-    change: `${move.after >= move.before ? 'up' : 'down'} ${size}`,
+    change: `${rising ? 'up' : 'down'} ${size}`,
     tail: ` since ${previousDate}`,
     rising,
   };
 }
 
 function ownMoves(moves: RaidMoves, characterKey: string): RaidMoveRow[] {
-  return moves.rows.filter((move) => move.character_key === characterKey);
+  return moves.rows.filter((move) => move.character_key === characterKey && move.after !== move.before);
 }
 
 /** `2 deaths`, the moves against the previous raid, `Excused`: each only when it applies. */
@@ -191,13 +199,17 @@ function summaryLine(night: RaidNight): string {
   return `${head}${cameRatio(night)}.`;
 }
 
+type KilledEntry = RaidKill & { kill_ms: number };
+
+function isKilled(entry: RaidKill): entry is KilledEntry {
+  return entry.killed && entry.kill_ms !== null;
+}
+
 function killsLine(report: RaidReport): string | null {
-  const killed = report.kill_order.filter((k) => k.killed && k.kill_ms !== null);
+  const killed = report.kill_order.filter(isKilled);
   if (killed.length === 0) return null;
-  const parts = killed.map(
-    (k) => `${k.name} ${killTimeLabel(k.kill_ms ?? 0)} (${killAfter(k.wipes_before)})`,
-  );
-  return `Kills: ${parts.join(', ')}`;
+  const parts = killed.map((k) => `${k.name} ${killTimeLabel(k.kill_ms)} (${killAfter(k.wipes_before)})`);
+  return `${discordText.kills} ${parts.join(', ')}`;
 }
 
 const MOST_DEATHS_NAMED = 3;
@@ -208,14 +220,17 @@ function deathsLine(report: RaidReport): string | null {
     .filter((d) => d.count > 0)
     .sort((a, b) => b.count - a.count)
     .slice(0, MOST_DEATHS_NAMED);
-  return ranked.length === 0 ? null : `Most deaths: ${ranked.map((d) => `${d.name} ${d.count}`).join(', ')}`;
+  return ranked.length === 0
+    ? null
+    : `${discordText.mostDeaths} ${ranked.map((d) => `${d.name} ${d.count}`).join(', ')}`;
 }
 
 function lootLines(report: RaidReport): string[] {
   return report.loot
     .filter((group) => group.awards.length > 0)
     .map(
-      (group) => `Loot: ${group.boss}: ${group.awards.map((a) => `${a.item_name} to ${a.name}`).join('; ')}`,
+      (group) =>
+        `${discordText.loot} ${group.boss}: ${group.awards.map((a) => `${a.item_name} to ${a.name}`).join('; ')}`,
     );
 }
 
@@ -227,11 +242,18 @@ function changesLine(report: RaidReport): string | null {
     .slice(0, BIGGEST_CHANGES_ROWS);
   if (rises.length === 0) return null;
   const parts = rises.map((m) => `${m.name} ${metricLabel(m.metric)} ${moveDelta(m.before, m.after).text}`);
-  return `Biggest changes: ${parts.join(', ')}`;
+  return `${discordText.changes} ${parts.join(', ')}`;
 }
 
 function present(lines: readonly (string | null)[]): string[] {
   return lines.filter((line): line is string => line !== null);
+}
+
+/** The loot lines that fit, the last of them `+N more` when the cap leaves some out. */
+function fitLoot(lines: readonly string[], room: number): string[] {
+  if (lines.length <= room) return [...lines];
+  const shown = Math.max(0, room - 1);
+  return room === 0 ? [] : [...lines.slice(0, shown), discordText.more(lines.length - shown)];
 }
 
 /** Plain text in guild time, at most `DISCORD_REPORT_MAX_LINES` lines, no absentee names (R-A3).
@@ -244,9 +266,9 @@ export function discordReportText(input: DiscordReportInput): string {
     summaryLine(input.night),
   ];
   const beforeLoot = present([...head, killsLine(report), deathsLine(report)]);
-  const afterLoot = present([changesLine(report), `Report: ${input.reportUrl}`]);
+  const afterLoot = present([changesLine(report), `${discordText.report} ${input.reportUrl}`]);
   const lootRoom = Math.max(0, DISCORD_REPORT_MAX_LINES - beforeLoot.length - afterLoot.length);
-  return [...beforeLoot, ...lootLines(report).slice(0, lootRoom), ...afterLoot].join('\n');
+  return [...beforeLoot, ...fitLoot(lootLines(report), lootRoom), ...afterLoot].join('\n');
 }
 
 /** Whole days a sync was before the raid (`Synced 9 days before the raid`), never negative. */

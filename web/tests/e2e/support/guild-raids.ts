@@ -31,7 +31,7 @@ import type {
 } from '../../../src/lib/guild/api';
 import { instantToWallClock, wallClockToInstant } from '../../../src/lib/guild/raid-time';
 import type { RaidInput } from '../../../src/lib/guild/raids-api';
-import { CHICAGO, NOW, plannedRaid } from '../../../src/test-support/raid-fixtures';
+import { CHICAGO, NOW, NO_LOG_YET, plannedRaid } from '../../../src/test-support/raid-fixtures';
 import { GUILD_URL, envelope, refusal } from './officer-tools';
 
 export { CHICAGO, NOW, GUILD_URL };
@@ -326,6 +326,7 @@ export class RaidStub {
         spec: r.spec ?? '',
       }));
     return {
+      ...NO_LOG_YET,
       ...raid,
       guild_timezone: this.guildTimezone,
       counts: counts(raid.signups),

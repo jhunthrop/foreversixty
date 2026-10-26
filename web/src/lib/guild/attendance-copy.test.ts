@@ -5,7 +5,13 @@ import {
   attendanceCopy as c,
   attendanceSummary,
   cameGuildLine,
+  PICKER_WINDOW_DAYS,
+  ROSTER_LONG_WINDOW,
+  ROSTER_SHORT_WINDOW,
+  cameAsOutcome,
   durationLabel,
+  lateOutcome,
+  pullsRatio,
   endedHint,
   killRowText,
   killTimeLabel,
@@ -169,6 +175,19 @@ describe('match line', () => {
   });
 });
 
+describe('outcome words', () => {
+  it('writes the attendance outcomes', () => {
+    expect(lateOutcome(22)).toBe(str('Attendance', 9, { m: '22' }));
+    expect(cameAsOutcome('Grimtotem')).toBe(str('Attendance', 10, { Alt: 'Grimtotem' }));
+    expect(pullsRatio(9, 11)).toBe('9/11');
+  });
+
+  it('writes the window constants into prose', () => {
+    expect(c.roster.footnote).toContain(`last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged`);
+    expect(pickerHelper('Onyxia', true)).toContain(`${PICKER_WINDOW_DAYS} days`);
+  });
+});
+
 describe('report words', () => {
   it('kill rows', () => {
     const base = {
@@ -203,8 +222,9 @@ describe('report words', () => {
 
   it('changes and consumables', () => {
     expect(moveFigures('dps', 238, 291)).toBe('DPS 238 → 291');
-    expect(moveDelta(238, 291)).toEqual({ text: '+53', rising: true });
-    expect(moveDelta(291, 279)).toEqual({ text: '−12', rising: false });
+    expect(moveDelta(238, 291)).toEqual({ text: '+53', rising: true, size: 53 });
+    expect(moveDelta(291, 291)).toEqual({ text: '+0', rising: false, size: 0 });
+    expect(moveDelta(291, 279)).toEqual({ text: '−12', rising: false, size: 12 });
     expect(usedChips({ flask: true, food: false, potions: 3 }).map((x) => x.text)).toEqual([
       'Flask',
       'No food',
@@ -238,5 +258,6 @@ describe('attendance, roster and readiness', () => {
       "Showing the 23 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.",
     );
     expect(syncedBefore(9)).toBe('Synced 9 days before the raid');
+    expect(syncedBefore(1)).toBe('Synced 1 day before the raid');
   });
 });

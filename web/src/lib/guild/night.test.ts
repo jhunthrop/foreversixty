@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { specString } from '../../test-support/spec-table';
 import type { RaidAttendanceRow, RaidNight, RaidReport } from './attendance-contract';
 import {
   attendanceGroupOf,
@@ -13,6 +15,8 @@ import {
 } from './night';
 
 const CHICAGO = 'America/Chicago';
+const SPEC = new URL('../../../../design/specs/2026-10-27-guild-attendance.md', import.meta.url);
+const HEADING = '### 6.1 On the page';
 
 function row(extra: Partial<RaidAttendanceRow> = {}): RaidAttendanceRow {
   return {
@@ -65,6 +69,14 @@ describe('groupAttendance', () => {
     expect(attendanceGroupOf(row({ came_as: 'Grimtotem' }))).toBe('present');
   });
 
+  it('sorts a row with no known role last', () => {
+    const [group] = groupAttendance([
+      row({ name: 'Mystery', role: null, spec: 'Unknown', class: 'warrior' }),
+      row({ name: 'Zed', class: 'mage', role: 'dps' }),
+    ]);
+    expect(group?.rows.map((r) => r.name)).toEqual(['Zed', 'Mystery']);
+  });
+
   it('orders a group by role, class, then name', () => {
     const [group] = groupAttendance([
       row({ name: 'Zed', class: 'mage', role: 'dps' }),
@@ -90,25 +102,37 @@ describe('groupAttendance', () => {
 });
 
 describe('yourNightSentence', () => {
-  it('reads each case of spec 6.1', () => {
-    expect(yourNightSentence(row())).toBe('Signed In as DPS. Present from the first pull, 11 of 11 pulls.');
+  const sentence = (index: number, fill: Record<string, string>): string =>
+    specString(SPEC, HEADING, 'Your night sentences', index, fill);
+
+  it('reads each case of spec 6.1, through the spec table', () => {
+    expect(yourNightSentence(row())).toBe(sentence(0, { State: 'In', Role: 'DPS', n: '11', t: '11' }));
     expect(
       yourNightSentence(
         row({ outcome: 'late', signed: 'late', role: 'healer', first_seen_offset_s: 1320, pulls_present: 9 }),
       ),
-    ).toBe('Signed Late as Healer. First seen 22 min after the first pull, 9 of 11 pulls.');
+    ).toBe(sentence(1, { State: 'Late', Role: 'Healer', m: '22', n: '9', t: '11' }));
     expect(yourNightSentence(row({ came_as: 'Grimtotem', pulls_present: 8 }))).toBe(
-      'Signed In on Pyrewisp; came as Grimtotem, 8 of 11 pulls.',
+      sentence(2, { Name: 'Pyrewisp', Alt: 'Grimtotem', n: '8', t: '11' }),
     );
     expect(yourNightSentence(row({ outcome: 'no_show', pulls_present: 0 }))).toBe(
-      'Signed In as DPS. You are not in this log. If you were there under another name, tell an officer.',
+      sentence(3, { Role: 'DPS' }),
     );
     expect(yourNightSentence(row({ signed: null, role: null, pulls_present: 4 }))).toBe(
-      'Not signed up. In the log for 4 of 11 pulls.',
+      sentence(4, { n: '4', t: '11' }),
     );
     expect(yourNightSentence(row({ signed: 'bench', role: null, pulls_present: 6 }))).toBe(
-      'Signed Bench. Joined for 6 of 11 pulls.',
+      sentence(5, { n: '6', t: '11' }),
     );
+  });
+
+  it('falls back to the spec role, and drops the role clause when none is known', () => {
+    expect(yourNightSentence(row({ role: null, spec: 'Fury' }))).toContain(' as DPS.');
+    expect(yourNightSentence(row({ role: null, spec: 'Unknown' }))).toMatch(/^Signed In\. Present/);
+  });
+
+  it('reads a late row with no offset as present', () => {
+    expect(yourNightSentence(row({ outcome: 'late', first_seen_offset_s: null }))).toContain('Present from');
   });
 
   it('never prints the word no-show', () => {
@@ -179,6 +203,14 @@ describe('yourNightRows and facts', () => {
     };
     const [, move] = yourNightFacts(row(), fall, CHICAGO);
     expect(move).toMatchObject({ change: 'down 12', rising: false });
+  });
+
+  it('skips a flat move', () => {
+    const flat = {
+      ...report,
+      moves: { ...report.moves, rows: [{ ...report.moves.rows[0]!, before: 291, after: 291 }] },
+    };
+    expect(yourNightFacts(row(), flat, CHICAGO).map((f) => f.kind)).toEqual(['deaths']);
   });
 
   it('gives nothing without a report', () => {
@@ -305,6 +337,29 @@ describe('discordReportText', () => {
   it('leaves out lines with nothing to say', () => {
     const bare = { ...full, kill_order: [], deaths: [], loot: [], moves: { previous: null, rows: [] } };
     expect(discordReportText({ ...input, report: bare }).split('\n')).toHaveLength(3);
+  });
+
+  it('never passes 12 lines with a full report: loot gives way to a +N more line', () => {
+    const bosses = Array.from({ length: 20 }, (_, i) => ({
+      encounter_id: i,
+      boss: `Boss ${i}`,
+      awards: [award('Item', 'Pyrewisp')],
+    }));
+    const lines = discordReportText({ ...input, report: { ...full, loot: bosses } }).split('\n');
+    expect(lines).toHaveLength(12);
+    expect(lines[2]).toMatch(/^Kills:/);
+    expect(lines[3]).toMatch(/^Most deaths:/);
+    expect(lines.filter((l) => l.startsWith('Loot:'))).toHaveLength(5);
+    expect(lines[9]).toBe('+15 more');
+    expect(lines[10]).toMatch(/^Biggest changes:/);
+    expect(lines[11]).toMatch(/^Report: /);
+  });
+
+  it('writes the labels the spec shows', () => {
+    const spec = readFileSync(SPEC, 'utf8');
+    for (const label of ['Kills:', 'Most deaths:', 'Loot:', 'Biggest changes:', 'Report:']) {
+      expect(spec).toContain(`\`${label}`);
+    }
   });
 
   it('never passes 12 lines: loot gives way', () => {

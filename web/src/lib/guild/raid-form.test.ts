@@ -4,6 +4,7 @@
 // payload in UTC from the guild's wall clock.
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidView } from './api';
+import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import { raidCopy } from './raid-copy';
 import {
   RAID_CAP,
@@ -48,6 +49,7 @@ function raid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
     not_signed: [],
     viewer: { characters: [] },
     discord: { available: true, connected: true, post_default: true },
+    ...NO_LOG_YET,
     ...extra,
   };
 }

@@ -16,10 +16,16 @@ import { nightsLabel } from './nights';
 import { SEP } from './raid-copy';
 import { DEFAULT_LOCALE, clockText, dateLabel, offsetsDiffer } from './raid-time';
 
+export const SECONDS_PER_MINUTE = 60;
 const MINUTE_MS = 60_000;
 const SECOND_MS = 1000;
 const HOUR_MS = 60 * MINUTE_MS;
-const SECONDS_PER_MINUTE = 60;
+export const DAY_MS = 24 * HOUR_MS;
+/** The match picker lists logs uploaded within this many days. */
+export const PICKER_WINDOW_DAYS = 14;
+/** The roster's two attendance windows, in logged raids (spec 3.6). */
+export const ROSTER_SHORT_WINDOW = 8;
+export const ROSTER_LONG_WINDOW = 30;
 const MINUTES_PER_HOUR = 60;
 /** The auto-matcher's window after a raid ends; past it the page asks for an upload (spec 3.1). */
 export const ENDED_MATCH_WINDOW_MS = 6 * HOUR_MS;
@@ -27,14 +33,11 @@ export const ENDED_MATCH_WINDOW_MS = 6 * HOUR_MS;
 export const DISCORD_REPORT_MAX_LINES = 12;
 /** A death or consumables list shows this many rows before `Show all` (spec 7). */
 export const REPORT_ROWS_BEFORE_SHOW_ALL = 10;
-/** The changes block is exactly this many rows. */
 export const BIGGEST_CHANGES_ROWS = 5;
-/** The picker lists at most this many logs. */
 export const PICKER_MAX_ROWS = 20;
 /** How long `Copied` stays up. */
 export const COPIED_VISIBLE_MS = 4000;
-/** A real minus sign: a fall is `−12`, not `-12`. */
-const MINUS = '−';
+const MINUS = '−'; // a real minus sign: a fall is `−12`, not `-12`
 
 /** `3 wipes`, `1 wipe`. */
 function unit(n: number, singular: string): string {
@@ -145,8 +148,7 @@ export const attendanceCopy = {
     excused: 'Excused',
   },
   roster: {
-    footnote:
-      "Came: raids attended of raids signed up for or attended, over this guild's last 8 and 30 logged raids.",
+    footnote: `Came: raids attended of raids signed up for or attended, over this guild's last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged raids.`,
   },
   readiness: {
     noExport: 'No export yet',
@@ -223,12 +225,12 @@ export function endedHint(endsAt: Date, now: Date): EndedHint {
 
 export function pickerHelper(zoneName: string, zoneKnown: boolean): string {
   return zoneKnown
-    ? `${zoneName} logs this guild uploaded in the last 14 days.`
-    : `Logs this guild uploaded in the last 14 days. ${zoneName}'s log name is not known yet, so every zone shows.`;
+    ? `${zoneName} logs this guild uploaded in the last ${PICKER_WINDOW_DAYS} days.`
+    : `Logs this guild uploaded in the last ${PICKER_WINDOW_DAYS} days. ${zoneName}'s log name is not known yet, so every zone shows.`;
 }
 
 export function pickerEmpty(zoneName: string): string {
-  return `No ${zoneName} logs uploaded in the last 14 days. Upload the log, then match it here.`;
+  return `No ${zoneName} logs uploaded in the last ${PICKER_WINDOW_DAYS} days. Upload the log, then match it here.`;
 }
 
 /** `by Kraggor`: the uploader in the picker, the awarding officer on a loot row. */
@@ -318,9 +320,12 @@ export function moveFigures(metric: MoveMetric, before: number, after: number): 
 export const onBoss = (boss: string): string => `on ${boss}`;
 
 /** `+53` (rising) or `−12`; a flat move reads `+0`. */
-export function moveDelta(before: number, after: number): { text: string; rising: boolean } {
+export function moveDelta(before: number, after: number): { text: string; rising: boolean; size: number } {
   const delta = after - before;
-  return delta >= 0 ? { text: `+${delta}`, rising: delta > 0 } : { text: `${MINUS}${-delta}`, rising: false };
+  const size = Math.abs(delta);
+  return delta >= 0
+    ? { text: `+${size}`, rising: delta > 0, size }
+    : { text: `${MINUS}${size}`, rising: false, size };
 }
 
 /** The consumables chips and muted words for one row (`log_has_buffs` true only). */

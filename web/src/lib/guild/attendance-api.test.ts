@@ -110,6 +110,29 @@ describe('postReport', () => {
   });
 });
 
+describe('postReport cache', () => {
+  it('drops the guild cache on already_posted, so the next read carries posted_at', async () => {
+    const upstream = stub(() => envelope({ id: 12 }));
+    await fetchGuildReadiness(7, 12, API);
+    upstream.mockImplementation(async () => errorEnvelope(409, 'already_posted'));
+    await postReport(7, 12, API).catch(() => undefined);
+    upstream.mockClear();
+    upstream.mockImplementation(async () => envelope({ id: 12 }));
+    await fetchGuildReadiness(7, 12, API);
+    expect(upstream).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the cache on a retryable post_failed', async () => {
+    const upstream = stub(() => envelope({ id: 12 }));
+    await fetchGuildReadiness(7, 12, API);
+    upstream.mockImplementation(async () => errorEnvelope(502, 'post_failed'));
+    await postReport(7, 12, API).catch(() => undefined);
+    upstream.mockClear();
+    await fetchGuildReadiness(7, 12, API);
+    expect(upstream).not.toHaveBeenCalled();
+  });
+});
+
 describe('fetchGuildReadiness', () => {
   const page = { median_item_level: 0, generated_at: '', rows: [] };
 

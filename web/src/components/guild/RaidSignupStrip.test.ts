@@ -7,6 +7,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidSignup, GuildRaidView, GuildRaidViewerCharacter } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
+import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import RaidSignupStrip from './RaidSignupStrip.svelte';
 
 function character(name: string, extra: Partial<GuildRaidViewerCharacter> = {}): GuildRaidViewerCharacter {
@@ -39,6 +40,7 @@ function raid(characters: GuildRaidViewerCharacter[], signups: GuildRaidSignup[]
     not_signed: [],
     viewer: { characters },
     discord: { available: true, connected: false, post_default: false },
+    ...NO_LOG_YET,
   };
 }
 
