@@ -4,7 +4,8 @@
 // empty lines, Raid nights under it, and nothing planned for a visitor.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import type { GuildRaidView } from '../../lib/guild/api';
+import type { GuildRaidRow, GuildRaidView } from '../../lib/guild/api';
+import { attendanceCopy } from '../../lib/guild/attendance-copy';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NEW_YORK, NOW, plannedRaid, text } from '../../test-support/raid-fixtures';
 import GuildRaids from './GuildRaids.svelte';
@@ -123,5 +124,41 @@ describe('GuildRaids planned section', () => {
   it('does not count cancelled raids toward the cap', () => {
     const list = [...weeks(11), plannedRaid({ id: 99, status: 'cancelled' })];
     expect(planButton(html({ planned: list, officer: true }))).not.toMatch(DISABLED);
+  });
+});
+
+describe('GuildRaids raid nights linked to raids', () => {
+  const night = (id: string, raidId: number | null): GuildRaidRow => ({
+    id,
+    title: "Onyxia's Lair",
+    zone: "Onyxia's Lair",
+    created_at: '2026-12-11T05:00:00Z',
+    duration_ms: 9_660_000,
+    fight_count: 4,
+    kill_count: 1,
+    wipe_count: 3,
+    raiders: 23,
+    deaths: 14,
+    top_parse: null,
+    fights: [],
+    present: [],
+    raid_id: raidId,
+  });
+
+  function nights(rows: GuildRaidRow[]): string {
+    return render(GuildRaids, {
+      props: { rows, guildPath: '/guild/us/pvp/olympus-xxvii', now: NOW, viewerTimezone: NEW_YORK },
+    }).body;
+  }
+
+  it('links the open night to its raid page by raid_id, with the id the deep link targets', () => {
+    const body = nights([night('abc123def', 7)]);
+    expect(body).toContain('href="/guild/us/pvp/olympus-xxvii/raids/7"');
+    expect(text(body)).toContain(attendanceCopy.match.openRaid);
+    expect(body).toContain('id="guild-raid-night-abc123def"');
+  });
+
+  it('draws no link for a night matched to no raid', () => {
+    expect(nights([night('abc123def', null)])).not.toContain('guild-raid-link-');
   });
 });

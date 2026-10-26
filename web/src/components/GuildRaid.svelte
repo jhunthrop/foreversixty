@@ -9,17 +9,20 @@
   import { viewerLocale } from '../lib/guild/raid-time';
   import { untrack } from 'svelte';
   import { guildHref, guildSettingsHref } from '../lib/characters';
+  import { attendanceCopy } from '../lib/guild/attendance-copy';
   import { guildClaimCopy } from '../lib/guild/copy';
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
   import { SEP, raidCopy } from '../lib/guild/raid-copy';
   import { raidCount, raidPageFlags, raidWhen, stripReserveRows } from '../lib/guild/raid-page';
-  import { RaidPageController, type RaidRoute } from '../lib/guild/raid-page-controller.svelte';
+  import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
+  import type { RaidRoute } from '../lib/guild/raid-page-types';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
   import { RAID_BAND_LINES_MIN, RAID_BAND_OFFICER, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
   import { raidQuiet } from '../lib/guild/planned-row';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
+  import RaidDoneBand from './guild/RaidDoneBand.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
   import RaidChip from './guild/RaidChip.svelte';
@@ -171,6 +174,9 @@
   </GuildBandFrame>
 {:else if raid !== null && flags !== null && when !== null && count !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="raid-page">
+    <p class="sr-only" role="status" data-testid="raid-live-region">
+      {c.logMatched ? attendanceCopy.liveRegion : ''}
+    </p>
     <GuildBandFrame faction={c.guild?.faction ?? null}>
       {@render backLinkRow()}
       <div class="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
@@ -222,30 +228,40 @@
             >
           </p>
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">
-            <p class="flex flex-wrap items-center gap-x-3 gap-y-1">
-              {#if count.fill !== null}
+            {#if raid.night === null}
+              <p class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                {#if count.fill !== null}
+                  <span
+                    class="bg-line-soft relative inline-block h-2 w-[120px] overflow-hidden rounded-full md:w-[160px]"
+                    aria-hidden="true"
+                    ><span class="{goldFill} absolute inset-y-0 left-0" style:width={`${count.fill}%`}
+                    ></span></span
+                  >
+                {/if}
                 <span
-                  class="bg-line-soft relative inline-block h-2 w-[120px] overflow-hidden rounded-full md:w-[160px]"
-                  aria-hidden="true"
-                  ><span class="{goldFill} absolute inset-y-0 left-0" style:width={`${count.fill}%`}
-                  ></span></span
+                  ><span class="{countText} font-mono text-[15px]">{count.line}</span><span
+                    class="text-muted text-[13px]">{SEP}{count.breakdown}</span
+                  ></span
                 >
-              {/if}
-              <span
-                ><span class="{countText} font-mono text-[15px]">{count.line}</span><span
-                  class="text-muted text-[13px]">{SEP}{count.breakdown}</span
-                ></span
-              >
-            </p>
+              </p>
+            {/if}
             {#if c.pollPaused}
               <p class="text-muted text-[13px]" data-testid="raid-poll-paused">{raidCopy.poll}</p>
             {/if}
-            {#if flags.done}
-              <p class="text-[14px]" data-testid="raid-done">
-                {raidCopy.raidStates.done}
-                <a href={`${guildPath}#raids`} class="text-gold font-bold">{raidCopy.raidStates.openNight}</a>
-              </p>
-            {/if}
+            <RaidDoneBand
+              {raid}
+              {now}
+              {guildPath}
+              {viewerTimezone}
+              {guildTimezone}
+              {locale}
+              {officer}
+              readOnly={!c.officerTools}
+              gateId={GATE_ID}
+              loadCandidates={c.loadCandidates}
+              onMatch={c.matchLog}
+              onClear={c.clearMatch}
+            />
           </div>
           {#if officer}
             <div class="md:col-start-2 md:row-start-1">

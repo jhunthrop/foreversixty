@@ -4,9 +4,10 @@
 import { fetchMeFresh } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import { fetchGuild } from '../rankings/api';
+import { clearMatch, fetchMatchCandidates, setMatch } from './attendance-api';
 import { fetchGuildHome, fetchGuildRaids } from './api';
 import { browserStorage } from './reserve-keys';
-import type { RaidPageDeps, RaidRoute } from './raid-page-controller.svelte';
+import type { RaidPageDeps, RaidRoute } from './raid-page-types';
 import { fetchGuildRaid, putSignup, refetchGuildRaid, setRaidStatus, updateRaid } from './raids-api';
 
 export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
@@ -19,6 +20,9 @@ export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
     putSignup: (guildId, raidId, key, body) => putSignup(guildId, raidId, key, body),
     setStatus: (guildId, raidId, action, body) => setRaidStatus(guildId, raidId, action, API_BASE_URL, body),
     updateRaid: (guildId, raidId, body) => updateRaid(guildId, raidId, body),
+    loadMatchCandidates: (guildId, raidId) => fetchMatchCandidates(guildId, raidId),
+    putMatch: (guildId, raidId, reportId) => setMatch(guildId, raidId, reportId),
+    deleteMatch: (guildId, raidId) => clearMatch(guildId, raidId),
     loadZones: (guildId) => fetchGuildRaids(guildId).then((page) => page.zones ?? []),
     isVisible: () => typeof document === 'undefined' || document.visibilityState === 'visible',
     now: () => new Date(),

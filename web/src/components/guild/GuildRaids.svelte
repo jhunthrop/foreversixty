@@ -23,7 +23,10 @@
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import EmptyState from '../ui/EmptyState.svelte';
   import FactLine from './FactLine.svelte';
+  import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { nightFromHash } from '../../lib/guild/raids-hash';
+  import { guildRaidHref } from '../../lib/characters';
   import {
     RAID_CAP,
     lastPlannedRaid,
@@ -128,8 +131,11 @@
       });
   });
 
-  let expanded = $state<string | null>(null);
-  let defaulted = $state(false);
+  // The first night opens from the first paint; rows that arrive later open theirs below.
+  // svelte-ignore state_referenced_locally
+  let expanded = $state<string | null>(rows[0]?.id ?? null);
+  // svelte-ignore state_referenced_locally
+  let defaulted = $state(rows.length > 0);
 
   /** `rows` arrives after this component's own mount (Guild.svelte only renders it once
    *  the raids fetch resolves, but a future caller could pass an empty array first) -- a
@@ -139,6 +145,20 @@
     if (defaulted || rows.length === 0) return;
     expanded = rows[0].id;
     defaulted = true;
+  });
+
+  /** `#raids-{report_id}` opens that night, now and on a later hash change. */
+  $effect(() => {
+    const open = (): void => {
+      const id = nightFromHash(window.location.hash);
+      if (id === null || !rows.some((row) => row.id === id)) return;
+      expanded = id;
+      defaulted = true;
+      void tick().then(() => document.getElementById(`guild-raid-night-${id}`)?.scrollIntoView?.());
+    };
+    open();
+    window.addEventListener('hashchange', open);
+    return () => window.removeEventListener('hashchange', open);
   });
 
   function minutes(ms: number): string {
@@ -205,7 +225,7 @@
     <div class="flex flex-col" data-testid="guild-raids-rows">
       {#each rows as row (row.id)}
         {@const isOpen = expanded === row.id}
-        <div class="border-line-soft border-b">
+        <div class="border-line-soft border-b" id={`guild-raid-night-${row.id}`}>
           <button
             class="flex w-full flex-wrap items-center gap-3 py-2 text-left"
             onclick={() => (expanded = isOpen ? null : row.id)}
@@ -222,6 +242,13 @@
           </button>
           {#if isOpen}
             <div class="flex flex-col gap-3 pb-4" data-testid={`guild-raid-expanded-${row.id}`}>
+              {#if row.raid_id != null}
+                <a
+                  href={guildRaidHref(guildPath, row.raid_id)}
+                  class="text-gold inline-flex min-h-11 items-center self-start text-[13px] font-bold"
+                  data-testid={`guild-raid-link-${row.id}`}>{attendanceCopy.match.openRaid}</a
+                >
+              {/if}
               <div class="flex flex-wrap items-center gap-1">
                 {#each row.present.slice(0, 20) as p (p.character_key)}
                   <ClassCrestRing characterClass={p.class} size={22} />

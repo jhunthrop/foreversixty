@@ -6,16 +6,14 @@
 import { render } from 'svelte/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GuildRaidView } from '../lib/guild/api';
+import { attendanceCopy } from '../lib/guild/attendance-copy';
 import { guildClaimCopy } from '../lib/guild/copy';
 import { raidCopy } from '../lib/guild/raid-copy';
 import { RAID_BAND_LINES_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
 import { RAID_ROWS_KEY } from '../lib/guild/reserve-keys';
-import {
-  RaidPageController,
-  type RaidPageDeps,
-  type RaidPageSeed,
-} from '../lib/guild/raid-page-controller.svelte';
-import { CHICAGO, NEW_YORK, NOW, between, plannedRaid, text } from '../test-support/raid-fixtures';
+import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
+import type { RaidPageDeps, RaidPageSeed } from '../lib/guild/raid-page-types';
+import { CHICAGO, NEW_YORK, NOW, between, doneRaid, plannedRaid, text } from '../test-support/raid-fixtures';
 import GuildRaid from './GuildRaid.svelte';
 
 const ROUTE = { guild: { region: 'us', ruleset: 'pvp', slug: 'olympus-xxvii' }, raidId: '7' } as const;
@@ -35,6 +33,9 @@ const DEPS: RaidPageDeps = {
   putSignup: never,
   setStatus: never,
   updateRaid: never,
+  loadMatchCandidates: never,
+  putMatch: never,
+  deleteMatch: never,
   loadZones: never,
   isVisible: () => true,
   now: () => NOW,
@@ -184,8 +185,8 @@ describe('page states', () => {
     expect(body).toMatch(/<button[^>]*role="radio"[^>]* disabled/);
   });
 
-  it('says an ended raid has ended', () => {
-    expect(html()).not.toContain(raidCopy.raidStates.ended);
+  it('says an ended raid ended with no log yet, in the band', () => {
+    expect(html()).not.toContain(attendanceCopy.ended.noLog);
     const controller = new RaidPageController(DEPS, ROUTE, {
       guild: GUILD,
       access: 'member',
@@ -196,7 +197,9 @@ describe('page states', () => {
     const ended = render(GuildRaid, {
       props: { path: ROUTE, controller, now: afterEnd, viewerTimezone: CHICAGO },
     }).body;
-    expect(text(ended)).toContain(raidCopy.raidStates.ended);
+    expect(text(between(ended, 'raid-ended-line', 'guild-tabs'))).toContain(
+      `${attendanceCopy.ended.noLog}${attendanceCopy.ended.matchSoon}`,
+    );
     expect(text(between(ended, 'raid-status-chip', 'raid-title'))).toContain('Ended');
   });
 
@@ -233,17 +236,72 @@ describe('page states', () => {
     }
   });
 
-  it('logs a done raid with the link to the night', () => {
-    const body = ready(plannedRaid({ status: 'done' }));
-    expect(text(between(body, 'raid-done', 'guild-tabs'))).toBe(
-      `${raidCopy.raidStates.done} ${raidCopy.raidStates.openNight}`,
-    );
-  });
-
   it('says the raid did not load, with Try again, even before access is known', () => {
     expect(text(html({ load: 'failed', access: 'loading', raid: null }))).toContain(raidCopy.loadErrors.raid);
     const body = html({ load: 'failed' });
     expect(text(between(body, 'raid-load-error', 'never'))).toContain(raidCopy.loadErrors.raid);
+  });
+});
+
+describe('a raid with a matched log', () => {
+  const AFTER = new Date('2026-12-11T12:00:00Z');
+
+  function doneHtml(seed: Partial<RaidPageSeed> = {}, raid = doneRaid()): string {
+    const controller = new RaidPageController(DEPS, ROUTE, {
+      guild: GUILD,
+      access: 'member',
+      load: 'ready',
+      raid,
+      ...seed,
+    });
+    return render(GuildRaid, {
+      props: { path: ROUTE, controller, now: AFTER, viewerTimezone: CHICAGO },
+    }).body;
+  }
+
+  it('puts the night line where the count line was, with the match line under it', () => {
+    const body = doneHtml();
+    expect(body).not.toContain('23 of 40 signed up');
+    expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
+      '22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
+    );
+    expect(text(between(body, 'raid-match-line', 'guild-tabs'))).toContain(
+      `${attendanceCopy.match.loggedAsNight} ${attendanceCopy.match.openNight}`,
+    );
+    expect(text(between(body, 'raid-status-chip', 'raid-title'))).toContain('Done');
+  });
+
+  it('shows members the lines without Not this log, and officers with it', () => {
+    expect(doneHtml()).not.toContain('raid-not-this-log');
+    expect(doneHtml({ role: 'officer' })).toContain('raid-not-this-log');
+  });
+
+  it('keeps the count line on a raid without a night', () => {
+    const body = doneHtml({}, doneRaid({ night: null }));
+    expect(text(between(body, 'raid-count', 'raid-match-line'))).toContain('23 of 40 signed up');
+  });
+
+  it('keeps an empty polite live region, which says the log was matched once the poll flips', () => {
+    expect(doneHtml()).toMatch(/role="status"[^>]*data-testid="raid-live-region">\s*<\/p>/);
+    const raised = doneHtml({ logMatched: true });
+    expect(text(between(raised, 'raid-live-region', 'raid-title'))).toContain(attendanceCopy.liveRegion);
+    expect(raised).toMatch(/class="sr-only"[^>]*role="status"/);
+  });
+
+  it('draws the ended line, not the match line, with Match a log for an officer, past a raid`s end', () => {
+    const controller = new RaidPageController(DEPS, ROUTE, {
+      guild: GUILD,
+      access: 'member',
+      load: 'ready',
+      raid: plannedRaid(),
+      role: 'officer',
+    });
+    const body = render(GuildRaid, {
+      props: { path: ROUTE, controller, now: AFTER, viewerTimezone: CHICAGO },
+    }).body;
+    expect(text(body)).toContain(attendanceCopy.ended.noLog);
+    expect(body).toContain('raid-match-open');
+    expect(body).not.toContain('raid-match-line');
   });
 });
 

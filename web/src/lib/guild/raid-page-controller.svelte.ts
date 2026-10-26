@@ -4,8 +4,7 @@
 // the race codes, the officer actions and the plan gate (officer-tools gate spec 4). Every network
 // call and clock comes in through `RaidPageDeps`, so the tests drive it with fakes and fake timers.
 import type { Me } from '../account/api';
-import { characterSlug, type CharacterPath } from '../characters';
-import type { GuildPage } from '../rankings/api';
+import { characterSlug } from '../characters';
 import {
   GuildApiError,
   type GuildHome,
@@ -14,80 +13,27 @@ import {
   type GuildViewerRole,
   type GuildZoneView,
 } from './api';
+import type { MatchCandidates } from './attendance-contract';
+import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
+import { REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
 import { raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
+import type {
+  OfficerLine,
+  RaidAccess,
+  RaidBandGuild,
+  RaidLoad,
+  RaidPageDeps,
+  RaidPageRole,
+  RaidPageSeed,
+  RaidRoute,
+} from './raid-page-types';
 import { POLL_FAILURES_TO_PAUSE, RAID_POLL_MS, pollOpen, rememberStripRows } from './raid-page';
 import type { RosterRow } from './raid-roster';
-import type { RaidInput, RaidStatusAction, RaidStatusBody, SignupInput, SignupResult } from './raids-api';
+import type { RaidInput, RaidStatusAction } from './raids-api';
 import { submitRefusal } from './raids-tab-controller';
 import type { SignupHandler, SignupOutcome } from './signup-strip';
-
-export interface RaidRoute {
-  guild: CharacterPath;
-  raidId: string;
-}
-
-export interface RaidPageDeps {
-  loadGuild: () => Promise<GuildPage>;
-  loadMe: () => Promise<Me | null>;
-  loadHome: (guildId: number) => Promise<GuildHome>;
-  fetchRaid: (guildId: number, raidId: string) => Promise<GuildRaidView>;
-  /** Asks the network now, whatever the cache holds; rejects on a failure. */
-  refetchRaid: (guildId: number, raidId: string) => Promise<GuildRaidView>;
-  putSignup: (guildId: number, raidId: string, key: string, body: SignupInput) => Promise<SignupResult>;
-  setStatus: (
-    guildId: number,
-    raidId: string,
-    action: RaidStatusAction,
-    body?: RaidStatusBody,
-  ) => Promise<GuildRaidView>;
-  updateRaid: (
-    guildId: number,
-    raidId: string,
-    body: Omit<RaidInput, 'repeat_weeks'>,
-  ) => Promise<GuildRaidView>;
-  /** The edit form's Raid list (the raids page carries it). */
-  loadZones: (guildId: number) => Promise<GuildZoneView[]>;
-  isVisible: () => boolean;
-  now: () => Date;
-  storage: Pick<Storage, 'getItem' | 'setItem'> | null;
-}
-
-/** R1: only a verified member reads the raid; everyone else gets the not-visible page. */
-export type RaidAccess = 'loading' | 'signed-out' | 'not-member' | 'unverified' | 'member';
-export type RaidLoad = 'loading' | 'ready' | 'failed';
-export type RaidPageRole = 'officer' | 'member';
-
-export interface RaidBandGuild {
-  id: number;
-  name: string;
-  faction: 'alliance' | 'horde' | null;
-  mark: string | null;
-}
-
-/** Where a failure line sits: under the officer row's button, under the roster, or under a row. */
-export type OfficerControl = RaidStatusAction | 'roster' | `roster:${string}`;
-
-export interface OfficerLine {
-  control: OfficerControl;
-  message: string;
-}
-
-/** The fields a component test seeds, since a server render runs no effects. */
-export interface RaidPageSeed {
-  guild: RaidBandGuild | null;
-  access: RaidAccess;
-  load: RaidLoad;
-  raid: GuildRaidView | null;
-  role: RaidPageRole;
-  officerToolsField: boolean | undefined;
-  officerToolsEnded: boolean;
-  currentKey: string | null;
-  pollPaused: boolean;
-  line: OfficerLine | null;
-  raceLine: string | null;
-}
 
 const PLAN_REQUIRED = 'guild_plan_required';
 const RACE_STATUS: Readonly<Record<string, GuildRaidView['status']>> = {
@@ -128,6 +74,8 @@ export class RaidPageController {
   zones = $state<GuildZoneView[]>([]);
   /** `This raid was cancelled while you were signing up.`, shown above the cancelled strip. */
   raceLine = $state<string | null>(null);
+  /** The poll turned a raid `done`: the page's polite live region says so (attendance spec 4). */
+  logMatched = $state(false);
 
   private readonly deps: RaidPageDeps;
   private readonly route: RaidRoute;
@@ -231,6 +179,13 @@ export class RaidPageController {
     rememberStripRows(raid, this.deps.storage);
   }
 
+  /** A polled raid replaces the page's; one that has just turned `done` is announced. */
+  private applyPolled(fresh: GuildRaidView): void {
+    const turnedDone = this.raid !== null && this.raid.status !== 'done' && fresh.status === 'done';
+    this.applyRaid(fresh);
+    if (turnedDone) this.logMatched = true;
+  }
+
   private canPoll(): boolean {
     return (
       !this.stopped &&
@@ -250,7 +205,7 @@ export class RaidPageController {
     try {
       const fresh = await this.deps.refetchRaid(this.guild.id, this.route.raidId);
       this.pollFailures = 0;
-      if (seq === this.writeSeq && this.writes === 0 && !this.stopped) this.applyRaid(fresh);
+      if (seq === this.writeSeq && this.writes === 0 && !this.stopped) this.applyPolled(fresh);
     } catch {
       this.pollFailures += 1;
       if (this.pollFailures >= POLL_FAILURES_TO_PAUSE) this.pollPaused = true;
@@ -343,6 +298,40 @@ export class RaidPageController {
       return false;
     } finally {
       this.busy = null;
+    }
+  }
+
+  /** The picker's read; fails fast before the guild loaded. */
+  loadCandidates = (): Promise<MatchCandidates> => {
+    if (this.guild === null)
+      return Promise.reject(new Error('the raid page read logs before its guild loaded'));
+    return this.deps.loadMatchCandidates(this.guild.id, this.route.raidId);
+  };
+
+  /** `Match this log`: the answer is the raid, now `done`. 409 `report_matched` is the lost race. */
+  matchLog = async (reportId: string): Promise<MatchOutcome> => {
+    const outcome = await this.officerWrite((id) => this.deps.putMatch(id, this.route.raidId, reportId));
+    if (outcome.ok || outcome.code !== REPORT_MATCHED) return outcome;
+    return { ...outcome, message: attendanceCopy.picker.matchedElsewhere };
+  };
+
+  /** `Not this log`: the raid returns to its status before `done`. */
+  clearMatch = async (): Promise<MatchOutcome> => {
+    const outcome = await this.officerWrite((id) => this.deps.deleteMatch(id, this.route.raidId));
+    if (!outcome.ok && outcome.code === 'conflict') this.refreshAfterConflict();
+    return outcome;
+  };
+
+  private async officerWrite(run: (guildId: number) => Promise<GuildRaidView>): Promise<MatchOutcome> {
+    try {
+      this.applyRaid(await this.write(run));
+      return { ok: true };
+    } catch (thrown) {
+      const code = codeOf(thrown);
+      const message = this.planRefused(thrown)
+        ? attendanceCopy.errors.officerToolsEnded
+        : attendanceCopy.errors.buttons;
+      return { ok: false, code, message };
     }
   }
 

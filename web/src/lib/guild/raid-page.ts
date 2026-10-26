@@ -18,6 +18,9 @@ const RESERVE_DEFAULT_ROWS = 1;
 /** No account holds more characters in one guild than a realm's character slots. */
 const RESERVE_MAX_ROWS = 10;
 
+/** The band's `Ended · no log yet` line: the strip's disabled rows read it. */
+export const RAID_ENDED_LINE_ID = 'raid-ended-line';
+
 /** Planned or locked, and before end + 6 h. */
 export function pollOpen(raid: GuildRaidView, now: Date): boolean {
   const open = raid.status === 'planned' || raid.status === 'locked';

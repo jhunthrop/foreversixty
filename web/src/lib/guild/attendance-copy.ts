@@ -14,7 +14,7 @@ import type {
 } from './attendance-contract';
 import { nightsLabel } from './nights';
 import { SEP } from './raid-copy';
-import { DEFAULT_LOCALE, clockText, dateLabel, offsetsDiffer } from './raid-time';
+import { DEFAULT_LOCALE, clockText, dateLabel, stampParts } from './raid-time';
 
 export const SECONDS_PER_MINUTE = 60;
 const MINUTE_MS = 60_000;
@@ -72,6 +72,7 @@ export const attendanceCopy = {
   match: {
     loggedAsNight: 'Logged as a raid night.',
     openNight: 'Open the night',
+    openRaid: 'Open the raid',
     byTime: 'matched by time',
     byOfficer: 'matched by an officer',
     notThisLog: 'Not this log',
@@ -195,9 +196,8 @@ export function stampLabel(
   guildTz: string,
   locale: string = DEFAULT_LOCALE,
 ): string {
-  const base = `${dateLabel(at, viewerTz, locale)}, ${clockText(at, viewerTz, locale, true)}`;
-  if (!offsetsDiffer(at, viewerTz, guildTz)) return base;
-  return `${base} (${clockText(at, guildTz, locale, true)} guild time)`;
+  const { when, guildTime } = stampParts(at, viewerTz, guildTz, locale);
+  return guildTime === null ? when : `${when} ${guildTime}`;
 }
 
 /** Line 2 of the match line: `Log uploaded Thu 10 Dec, 11:42 pm by Kraggor · matched by time`. */

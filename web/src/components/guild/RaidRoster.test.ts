@@ -6,7 +6,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidNotSigned, GuildRaidSignup, GuildRaidView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
-import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
+import type { OfficerLine } from '../../lib/guild/raid-page-types';
 import { between, plannedRaid, text } from '../../test-support/raid-fixtures';
 import { rosterSelectId } from '../../lib/guild/raid-roster';
 import RaidRoster from './RaidRoster.svelte';

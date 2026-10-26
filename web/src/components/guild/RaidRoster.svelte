@@ -11,7 +11,7 @@
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
-  import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
+  import type { OfficerLine } from '../../lib/guild/raid-page-types';
   import { rosterGroups, rosterSelectId, type RosterRow } from '../../lib/guild/raid-roster';
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';

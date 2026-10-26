@@ -61,10 +61,7 @@ export const raidCopy = {
   waitingCharacter: 'Waiting for approval. You can sign it up once an officer approves it.',
   raidStates: {
     locked: 'Sign-ups are locked. An officer can still change yours.',
-    ended: 'This raid has ended.',
     cancelled: 'This raid was cancelled.',
-    done: 'Logged as a raid night.',
-    openNight: 'Open the night',
   },
   races: {
     locked: 'This raid was locked while you were signing up.',

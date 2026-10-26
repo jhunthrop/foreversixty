@@ -9,19 +9,14 @@
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { copyList, raidCopy } from '../../lib/guild/raid-copy';
   import { splitAtLink } from '../../lib/guild/raid-form';
-  import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
+  import type { OfficerLine } from '../../lib/guild/raid-page-types';
+  import { RAID_BUTTON as BUTTON } from '../../lib/guild/raid-buttons';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import RaidCancelConfirm from './RaidCancelConfirm.svelte';
 
   /** `Copied` stays this long (spec 4). */
   const COPIED_MS = 4000;
-  const BUTTON = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4 active:bg-card-top disabled:cursor-not-allowed disabled:opacity-50`;
-  /** The confirm's destructive answer: the same outline in the failure colour. */
-  const WIPE_BUTTON =
-    'rounded-control border-wipe/60 text-wipe hover:border-wipe hover:bg-wipe/10 active:bg-wipe/15 inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase transition-colors duration-[120ms] disabled:cursor-not-allowed disabled:opacity-50';
-
   let {
     raid,
     readOnly,
@@ -111,8 +106,6 @@
     <RaidCancelConfirm
       {postCancel}
       busy={busy === 'cancel'}
-      buttonClass={BUTTON}
-      confirmClass={WIPE_BUTTON}
       onPostChange={(post) => (postCancel = post)}
       onConfirm={() => void confirmCancel()}
       onKeep={() => void keep()}

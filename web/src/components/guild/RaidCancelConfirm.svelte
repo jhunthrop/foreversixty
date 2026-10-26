@@ -4,13 +4,12 @@
      Focus lands on Keep it, which stays live while the cancel is in flight; Escape acts as Keep it. -->
 <script lang="ts">
   import { focusOnMount } from '../../lib/guild/focus-now';
+  import { RAID_BUTTON, RAID_WIPE_BUTTON } from '../../lib/guild/raid-buttons';
   import { raidCopy } from '../../lib/guild/raid-copy';
 
   let {
     postCancel,
     busy,
-    buttonClass,
-    confirmClass,
     onPostChange,
     onConfirm,
     onKeep,
@@ -18,9 +17,6 @@
     postCancel: boolean;
     /** The cancel is in flight. */
     busy: boolean;
-    buttonClass: string;
-    /** `Cancel the raid`: the failure outline, the one destructive answer. */
-    confirmClass: string;
     onPostChange: (post: boolean) => void;
     onConfirm: () => void;
     onKeep: () => void;
@@ -55,13 +51,13 @@
   <div class="flex flex-wrap gap-2">
     <button
       type="button"
-      class={confirmClass}
+      class={RAID_WIPE_BUTTON}
       disabled={busy}
       onclick={onConfirm}
       data-testid="raid-cancel-confirm-button"
       >{busy ? raidCopy.cancelConfirm.confirming : raidCopy.cancelConfirm.confirm}</button
     >
-    <button type="button" class={buttonClass} use:focusOnMount onclick={onKeep} data-testid="raid-cancel-keep"
+    <button type="button" class={RAID_BUTTON} use:focusOnMount onclick={onKeep} data-testid="raid-cancel-keep"
       >{raidCopy.cancelConfirm.keep}</button
     >
   </div>

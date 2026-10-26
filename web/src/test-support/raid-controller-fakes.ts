@@ -3,7 +3,8 @@
 import { afterEach, beforeEach, vi } from 'vitest';
 import type { Me } from '../lib/account/api';
 import type { GuildHome } from '../lib/guild/api';
-import { RaidPageController, type RaidPageDeps } from '../lib/guild/raid-page-controller.svelte';
+import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
+import type { RaidPageDeps } from '../lib/guild/raid-page-types';
 import type { GuildPage } from '../lib/rankings/api';
 import { NOW, plannedRaid } from './raid-fixtures';
 
@@ -70,6 +71,9 @@ export function deps(extra: Partial<RaidPageDeps> = {}): RaidPageDeps {
       Promise.resolve({ raid: plannedRaid({ counts: { ...plannedRaid().counts, in: 22 } }), moved: null }),
     setStatus: () => Promise.resolve(plannedRaid({ status: 'locked' })),
     updateRaid: () => Promise.resolve(plannedRaid({ title: 'Ony farm' })),
+    loadMatchCandidates: () => Promise.resolve({ zone_known: true, rows: [] }),
+    putMatch: () => Promise.resolve(plannedRaid({ status: 'done' })),
+    deleteMatch: () => Promise.resolve(plannedRaid()),
     loadZones: () => Promise.resolve(ZONES),
     isVisible: () => visibility.visible,
     now: () => new Date(Date.now()),

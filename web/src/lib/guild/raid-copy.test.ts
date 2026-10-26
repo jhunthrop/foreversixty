@@ -87,7 +87,9 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
 
   it('has the raid states, races and poll line', () => {
     const r = raidCopy.raidStates;
-    expect([r.locked, r.ended, r.cancelled, r.done, r.openNight]).toEqual(cell('Raid states'));
+    // The ended, done and open-night lines moved to the attendance copy (its spec 3.1).
+    const [locked, , cancelled] = cell('Raid states');
+    expect([r.locked, r.cancelled]).toEqual([locked, cancelled]);
     const c = raidCopy.races;
     expect([c.locked, c.cancelled, c.officerToolsEnded]).toEqual(cell('Races'));
     expect(raidCopy.poll).toBe(str('Poll'));

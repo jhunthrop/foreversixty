@@ -6,6 +6,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidSignup, GuildRaidView, GuildRaidViewerCharacter } from '../../lib/guild/api';
+import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import RaidSignupStrip from './RaidSignupStrip.svelte';
@@ -149,10 +150,11 @@ describe('RaidSignupStrip', () => {
     expect(markup).toMatch(/<input[^>]*disabled/);
   });
 
-  it('says the raid has ended above disabled rows', () => {
+  it('disables the rows of an ended raid and points them at the band line that says why', () => {
     const markup = html({ ended: true });
-    expect(text(markup)).toContain(raidCopy.raidStates.ended);
-    expect(markup).toContain('aria-describedby="raid-strip-state-7"');
+    expect(markup).not.toContain('data-testid="raid-strip-state"');
+    expect(markup).toMatch(/<select[^>]*disabled/);
+    expect(markup).toContain(`aria-describedby="${RAID_ENDED_LINE_ID}"`);
   });
 
   it('is replaced by the cancelled line when the raid is cancelled', () => {
