@@ -5,6 +5,7 @@
      Encounter, the filter every answer needs, run wider than the rest. -->
 <script lang="ts">
   import type { FilterOption } from '../../lib/rankings/options';
+  import SelectChevron from '../ui/SelectChevron.svelte';
 
   let {
     id,
@@ -50,7 +51,7 @@
   data-testid={testid === undefined ? undefined : `${testid}-field`}
 >
   <span class={labelHidden ? 'sr-only' : 'label text-muted'}>{label}</span>
-  <span class="relative block">
+  <span class="relative block has-[select:disabled]:opacity-50">
     <select
       {id}
       class="border-line-warm bg-raised text-text rounded-control hover:border-gold-hover {compact
@@ -70,16 +71,6 @@
         >
       {/each}
     </select>
-    <svg
-      class="text-muted pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="3"
-      stroke-linecap="round"
-      aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg
-    >
+    <SelectChevron />
   </span>
 </label>

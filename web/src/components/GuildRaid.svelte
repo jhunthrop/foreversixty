@@ -14,7 +14,8 @@
   import { raidCount, raidPageFlags, raidWhen, stripReserveRows } from '../lib/guild/raid-page';
   import { RaidPageController, type RaidRoute } from '../lib/guild/raid-page-controller.svelte';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
-  import { RAID_BAND_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
+  import { RAID_BAND_LINES_MIN, RAID_BAND_OFFICER, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
+  import { raidQuiet } from '../lib/guild/planned-row';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
@@ -66,7 +67,9 @@
   const now = $derived(fixedNow ?? tickNow);
 
   const guildName = $derived(c.guild?.name ?? '');
-  const guildPath = $derived(guildHref(path.guild.region, path.guild.ruleset, guildName));
+  /** The route's slug stands in for the name until the guild answers, so the loading band's
+   *  back link and tabs already point at the guild page. */
+  const guildPath = $derived(guildHref(path.guild.region, path.guild.ruleset, guildName || path.guild.slug));
   const settingsHref = $derived(guildSettingsHref(path.guild.region, path.guild.ruleset, guildName));
   const officer = $derived(c.role === 'officer');
   const reserveRows = stripReserveRows(browserStorage());
@@ -76,6 +79,11 @@
   const when = $derived(raid === null ? null : raidWhen(raid, now, viewerTimezone, locale));
   const count = $derived(raid === null ? null : raidCount(raid));
   const guildTimezone = $derived(raid?.guild_timezone ?? viewerTimezone);
+  /** No gold on a cancelled raid or one already under way (spec 3.2 lines 4–5). */
+  const quiet = $derived(raid !== null && raidQuiet(raid, now));
+  const goldText = $derived(quiet ? 'text-muted' : 'text-gold');
+  const goldFill = $derived(quiet ? 'bg-muted' : 'bg-gold');
+  const countText = $derived(raid?.status === 'cancelled' ? 'text-muted' : 'text-strong');
 
   let backLink = $state<HTMLAnchorElement | null>(null);
 
@@ -91,6 +99,21 @@
     queueMicrotask(() => document.getElementById('raid-officer-edit')?.focus());
   }
 </script>
+
+{#snippet backLinkRow()}
+  <a
+    href={`${guildPath}#raids`}
+    class="text-muted inline-flex min-h-11 items-center self-start text-[13px] underline"
+    bind:this={backLink}
+    data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
+  >
+{/snippet}
+
+{#snippet raidEyebrow()}
+  <span class="label text-gold flex items-center gap-2.5">
+    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raidCopy.page.eyebrow}
+  </span>
+{/snippet}
 
 {#snippet guildHeading()}
   <span class="label text-gold flex items-center gap-2.5">
@@ -114,8 +137,15 @@
 {:else if c.load === 'loading' || c.access === 'loading'}
   <div class="flex flex-col gap-[22px] md:gap-8" data-testid="raid-page-loading">
     <span class="sr-only">{raidCopy.page.loading}</span>
-    <GuildBandFrame faction={c.guild?.faction ?? null} minHeight={RAID_BAND_MIN}>
-      <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
+    <!-- The back link, eyebrow and tabs need only the route, so they are drawn for real; the
+         skeleton holds lines 3–5 (and an officer's wrapped phone row) at their ready height. -->
+    <GuildBandFrame faction={c.guild?.faction ?? null}>
+      {@render backLinkRow()}
+      {@render raidEyebrow()}
+      <div class="{RAID_BAND_LINES_MIN} {officer ? RAID_BAND_OFFICER : ''}">
+        <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
+      </div>
+      <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
     </GuildBandFrame>
     <div
       class="bg-raised border-line rounded-panel border {RAID_STRIP_RESERVE}"
@@ -148,17 +178,10 @@
 {:else if raid !== null && flags !== null && when !== null && count !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="raid-page">
     <GuildBandFrame faction={c.guild?.faction ?? null}>
-      <a
-        href={`${guildPath}#raids`}
-        class="text-muted inline-flex min-h-11 items-center self-start text-[13px] underline"
-        bind:this={backLink}
-        data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
-      >
+      {@render backLinkRow()}
       <div class="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
         <div class="flex flex-wrap items-center gap-3 md:col-start-1 md:row-start-1">
-          <span class="label text-gold flex items-center gap-2.5">
-            <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raidCopy.page.eyebrow}
-          </span>
+          {@render raidEyebrow()}
           <RaidChip kind="status" status={flags.status} testid="raid-status-chip" />
         </div>
         {#if c.editing}
@@ -200,7 +223,7 @@
             ><span class="block md:inline"
               ><span class="hidden md:inline">{SEP}</span>{#if when.guildTime !== null}<span
                   class="text-muted">{when.guildTime}</span
-                >{SEP}{/if}<span class="text-gold font-mono">{when.countdown}</span></span
+                >{SEP}{/if}<span class="{goldText} font-mono">{when.countdown}</span></span
             >
           </p>
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">
@@ -209,12 +232,12 @@
                 <span
                   class="bg-line-soft relative inline-block h-2 w-[120px] overflow-hidden rounded-full md:w-[160px]"
                   aria-hidden="true"
-                  ><span class="bg-gold absolute inset-y-0 left-0" style:width={`${count.fill}%`}
+                  ><span class="{goldFill} absolute inset-y-0 left-0" style:width={`${count.fill}%`}
                   ></span></span
                 >
               {/if}
               <span
-                ><span class="text-strong font-mono text-[15px]">{count.line}</span><span
+                ><span class="{countText} font-mono text-[15px]">{count.line}</span><span
                   class="text-muted text-[13px]">{SEP}{count.breakdown}</span
                 ></span
               >

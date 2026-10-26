@@ -62,7 +62,9 @@
   role="radiogroup"
   aria-label={`${name}'s sign-up`}
   aria-describedby={disabled ? describedBy : undefined}
-  class="border-line rounded-control flex w-full overflow-hidden border md:w-auto"
+  class="border-line rounded-control flex w-full overflow-hidden border md:w-auto {disabled
+    ? 'opacity-50'
+    : ''}"
   data-testid={testid}
 >
   {#each SIGNUP_STATES as state, index (state)}

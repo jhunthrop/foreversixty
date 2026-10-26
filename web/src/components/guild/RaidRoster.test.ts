@@ -89,6 +89,41 @@ describe('RaidRoster', () => {
     expect(dps).toContain('Bringing **flasks** for everyone tonight');
   });
 
+  it('sets the name over the spec, each one line with its full text in title', () => {
+    const body = html();
+    expect(body).toMatch(
+      /<p class="block truncate text-\[14px\] leading-\[18px\] font-semibold"[^>]*title="Bolt"/,
+    );
+    expect(body).toMatch(
+      /<p class="text-muted block truncate text-\[12px\] leading-4" title="Holy · Healer">/,
+    );
+  });
+
+  it('heads every group with the 11 px label, its count in mono', () => {
+    const body = html();
+    expect(body).not.toContain('section-title text-[15px]');
+    expect(body).toMatch(/<h3 class="label text-muted"[^>]*data-testid="raid-roster-late-heading"/);
+  });
+
+  it('lays Late, Bench and Out side by side, then Not signed up full width under them', () => {
+    const body = html();
+    expect(body).toMatch(
+      /class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3" data-testid="raid-roster-others"/,
+    );
+    const others = between(body, 'raid-roster-others', 'raid-roster-not-signed');
+    expect(others).toContain('raid-roster-late');
+    expect(others).toContain('raid-roster-out');
+    expect(others).not.toContain('raid-roster-not-signed');
+  });
+
+  it('leaves an empty group out, so the rest flow left', () => {
+    const raid = plannedRaid({ signups: [signup('Bolt'), signup('Gone', { state: 'out' })], not_signed: [] });
+    const others = between(html({ raid }), 'raid-roster-others', 'never');
+    expect(others).not.toContain('raid-roster-late');
+    expect(others).not.toContain('raid-roster-bench');
+    expect(others).toContain('raid-roster-out');
+  });
+
   it('says an empty role is empty', () => {
     expect(text(between(html(), 'raid-roster-tank', 'raid-roster-healer'))).toContain(
       raidCopy.emptyRole.tank,

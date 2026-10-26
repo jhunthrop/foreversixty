@@ -91,18 +91,25 @@
   const own = $derived(nextRaid?.own ?? null);
   const locked = $derived(nextRaid?.status === 'locked');
   const lockedId = $derived(nextRaid === null ? '' : `guild-raid-line-locked-${nextRaid.id}`);
-  const currentState = $derived(
-    pending ?? (own !== null && own.character_key === currentKey ? own.state : null),
+  /** The character the segments act on (spec 3.4): another of the account's characters the API
+   *  has In or Late, which the sentence names, so a press never benches it unseen; else the
+   *  header's current character. */
+  const boundKey = $derived(
+    own !== null && own.character_key !== currentKey && (own.state === 'in' || own.state === 'late')
+      ? own.character_key
+      : currentKey,
   );
+  const bound = $derived(own !== null && own.character_key === boundKey ? own : null);
+  const boundState = $derived(pending ?? bound?.state ?? null);
   /** What the sentence describes: a press in flight, else the API's own sign-up. */
   const shown = $derived(
-    pending !== null && currentKey !== null
-      ? { key: currentKey, state: pending, role: own?.character_key === currentKey ? own.role : defaultRole }
+    pending !== null && boundKey !== null
+      ? { key: boundKey, state: pending, role: bound?.role ?? defaultRole }
       : own === null
         ? null
         : { key: own.character_key, state: own.state, role: own.role },
   );
-  const currentName = $derived(ownCharacters.find((c) => c.character_key === currentKey)?.name ?? '');
+  const boundName = $derived(ownCharacters.find((c) => c.character_key === boundKey)?.name ?? '');
 
   /** The sentence around its state word, which reads 600 `--strong` (spec 3.4). */
   const parts = $derived.by(() => {
@@ -121,10 +128,10 @@
   });
 
   async function press(state: GuildSignupState): Promise<void> {
-    if (nextRaid === null || currentKey === null || busy || locked) return;
+    if (nextRaid === null || boundKey === null || busy || locked) return;
     const prev = nextRaid;
-    const key = currentKey;
-    const mine = own?.character_key === key ? own : null;
+    const key = boundKey;
+    const mine = bound;
     pending = state;
     busy = true;
     status = '';
@@ -132,7 +139,7 @@
       // The PUT replaces the note, so the saved one travels with the press.
       const body = { state, role: mine?.role ?? defaultRole, note: mine?.note ?? '' };
       const { raid } = await putSignup(guildId, prev.id, key, body);
-      onChange(nextRaidAfter(prev, raid, key));
+      onChange(nextRaidAfter(prev, raid, currentKey ?? key));
     } catch (thrown) {
       status = pressFailedLine(thrown);
       await tick();
@@ -164,11 +171,11 @@
         {parts.head}{#if parts.word !== ''}<strong class="text-strong font-semibold">{parts.word}</strong
           >{/if}{parts.tail}
       </p>
-      {#if currentKey !== null}
+      {#if boundKey !== null}
         <div class="col-span-2 row-start-2 md:shrink-0">
           <SignupSegments
-            value={currentState}
-            name={currentName}
+            value={boundState}
+            name={boundName}
             size="band"
             disabled={locked}
             describedBy={locked ? lockedId : undefined}

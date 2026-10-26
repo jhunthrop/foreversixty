@@ -191,6 +191,8 @@ export interface RaidStubOptions {
   officerTools?: boolean;
   raids?: StoredRaid[];
   discordConnected?: boolean;
+  /** `discord.post_default`: the guild's channel posts raids by default. */
+  postDefault?: boolean;
   guildTimezone?: string | null;
 }
 
@@ -268,6 +270,7 @@ export class RaidStub {
   officerTools: boolean | undefined;
   raids: StoredRaid[];
   discordConnected: boolean;
+  postDefault: boolean;
   guildTimezone: string | null;
   readonly writes: RecordedWrite[] = [];
   /** Every raid read, by id, so R1's tests can say none was made. */
@@ -281,6 +284,7 @@ export class RaidStub {
     this.officerTools = options.officerTools;
     this.raids = options.raids ?? [storedRaid()];
     this.discordConnected = options.discordConnected ?? false;
+    this.postDefault = options.postDefault ?? false;
     this.guildTimezone = options.guildTimezone === undefined ? CHICAGO : options.guildTimezone;
   }
 
@@ -338,7 +342,7 @@ export class RaidStub {
           };
         }),
       },
-      discord: { connected: this.discordConnected, post_default: false },
+      discord: { connected: this.discordConnected, post_default: this.postDefault },
     };
   }
 

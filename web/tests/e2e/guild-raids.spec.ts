@@ -81,26 +81,38 @@ test.describe('a member signs up (§9, R3)', () => {
     await expect(page.getByTestId('raid-roster-dps')).toContainText(VIEWER_MEMBER);
   });
 
-  test('from the band line: the sentence rewrites in place', async ({ page }) => {
+  test('from the band line: the segments act on the character the sentence names', async ({ page }) => {
     const stub = await stubGuildRaids(page, { viewer: 'member' });
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, GUILD_URL, 'guild-raid-line');
     const sentence = page.getByTestId('guild-raid-line-sentence');
+    const segments = page.getByTestId('guild-raid-line-segments');
+    // The alt is In, so the sentence names it and the segments show and act on it (spec 3.4).
     await expect(sentence).toHaveText(
       `Thursday 8 pm, you are In on ${MEMBER_ALT} as DPS, 14 of 40 signed up.`,
     );
-    await page.getByTestId('guild-raid-line-segments-in').click();
-    await expect(sentence).toHaveText(
-      `Thursday 8 pm, you are In on ${VIEWER_MEMBER} as DPS, 14 of 40 signed up.`,
-    );
+    await expect(segments).toHaveAttribute('aria-label', `${MEMBER_ALT}'s sign-up`);
     await expect(page.getByTestId('guild-raid-line-segments-in')).toHaveAttribute('aria-checked', 'true');
-    expect(writesTo(stub, 'PUT', /signups\/us\/pvp\/zulmara$/).map((w) => w.body)).toEqual([
-      { state: 'in', role: 'dps', note: '' },
+    await page.getByTestId('guild-raid-line-segments-late').click();
+    await expect(sentence).toHaveText(
+      `Thursday 8 pm, you are Late on ${MEMBER_ALT} as DPS, 14 of 40 signed up.`,
+    );
+    await expect(page.getByTestId('guild-raid-line-segments-late')).toHaveAttribute('aria-checked', 'true');
+    expect(writesTo(stub, 'PUT', /signups\/us\/pvp\/duskstrider$/).map((w) => w.body)).toMatchObject([
+      { state: 'late', role: 'dps' },
     ]);
-    // R3 on the server: the alt went to Bench, which the raid page then shows.
-    expect(stub.view(ONYXIA_ID).signups.find((s) => s.name === MEMBER_ALT)?.state).toBe('bench');
+    expect(writesTo(stub, 'PUT', /signups\/us\/pvp\/zulmara$/)).toEqual([]);
     await expect(page.getByTestId('guild-raid-line-link')).toHaveAttribute('href', raidUrl(ONYXIA_ID));
   });
+});
+
+test('Plan a raid hides while the form is open, then returns with focus', async ({ page }) => {
+  await openRaidsTab(page, { viewer: 'officer' });
+  await openForm(page);
+  await expect(page.getByTestId('guild-raids-plan')).toHaveCount(0);
+  await page.getByTestId('raid-form-cancel').click();
+  await expect(page.getByTestId('raid-form-create')).toHaveCount(0);
+  await expect(page.getByTestId('guild-raids-plan')).toBeFocused();
 });
 
 test('an officer posts a raid with Post to Discord, and the planned row opens its page', async ({ page }) => {
@@ -198,7 +210,7 @@ test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
     await expect(copy).toHaveText(raidCopy.officerRow.copied);
     const copied = await page.evaluate(() => navigator.clipboard.readText());
     expect(copied).toBe(copyList(stub.view(ONYXIA_ID), CHICAGO));
-    expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8:00 pm CST");
+    expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>");
     expect(stub.writes).toEqual([]);
     await context.close();
   });
@@ -379,6 +391,7 @@ test.describe('the officer row in a browser (Task 7)', () => {
     expect(writesTo(stub, 'POST', /\/cancel$/)).toEqual([]);
 
     await page.getByTestId('raid-officer-cancel').click();
+    await expect(page.getByTestId('raid-cancel-discord')).not.toBeChecked();
     await page.getByTestId('raid-cancel-confirm-button').click();
     await expect(page.getByTestId('raid-status-chip')).toHaveText('Cancelled');
     expect(writesTo(stub, 'POST', /\/raids\/7\/cancel$/).map((w) => w.body)).toEqual([
@@ -426,6 +439,10 @@ test('a cancelled raid keeps its row on the Raids tab with the Cancelled chip', 
     `[data-testid^="planned-raid-${HYJAL_ID}-"][data-testid$="-status-chip"]:visible`,
   );
   await expect(chip).toHaveText('Cancelled');
+  // Spec 3.1 (review round): a cancelled row shows Cancelled alone, no viewer chip.
+  await expect(
+    page.locator(`[data-testid^="planned-raid-${HYJAL_ID}-"][data-testid$="-viewer-chip"]:visible`),
+  ).toHaveCount(0);
   await expect(
     page.locator(`[data-testid^="planned-raid-${ONYXIA_ID}-"][data-testid$="-viewer-chip"]:visible`),
   ).toHaveText('In · DPS');

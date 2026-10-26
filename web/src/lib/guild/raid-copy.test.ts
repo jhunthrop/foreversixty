@@ -216,9 +216,10 @@ describe('counts', () => {
     expect(countLine(23, null)).toBe('23 signed up');
   });
 
-  it('breaks the roles down, singular at one', () => {
-    expect(roleBreakdown(3, 7, 13)).toBe('3 tanks · 7 healers · 13 DPS');
-    expect(roleBreakdown(1, 1, 0)).toBe('1 tank · 1 healer · 0 DPS');
+  it('breaks the roles down, singular at one, late only when there is one', () => {
+    expect(roleBreakdown(3, 7, 13, 1)).toBe(str('Count', 2, { t: '3', h: '7', d: '13', l: '1' }));
+    expect(roleBreakdown(3, 7, 13, 0)).toBe('3 tanks · 7 healers · 13 DPS');
+    expect(roleBreakdown(1, 1, 0, 2)).toBe('1 tank · 1 healer · 0 DPS · 2 late');
   });
 
   it('labels the guild clock', () => {
@@ -265,10 +266,16 @@ describe('bandLine', () => {
 
   it('follows the unsigned sentence', () => {
     expect(bandLine({ ...base, state: null })).toBe(
-      'Tonight 8 pm, you have not signed up, 23 of 40 signed up.',
+      str('Band line', 4, { when: 'Tonight 8 pm', n: '23', size: '40' }),
     );
-    expect(specCell(SPEC, HEADING, 'Band line')[4]).toBe(
-      '{when}, you have not signed up, {n} of {size} signed up.',
+    expect(bandLine({ ...base, state: null })).toBe(
+      'Tonight 8 pm, you have not signed up yet. 23 of 40 are in.',
+    );
+  });
+
+  it('says how many are in while unsigned and the size is unknown', () => {
+    expect(bandLine({ ...base, size: null, state: null })).toBe(
+      `Tonight 8 pm, you have not signed up yet. ${str('Band line', 5, { n: '23' })}`,
     );
   });
 
@@ -282,7 +289,7 @@ describe('bandLine', () => {
     expect(bandLine({ ...base, state: 'in', role: 'dps', characterName: 'Lightbrand' })).toBe(
       'Tonight 8 pm, you are In on Lightbrand as DPS, 23 of 40 signed up.',
     );
-    expect(specCell(SPEC, HEADING, 'Band line')[6]).toBe('you are In on {Name} as {Role}');
+    expect(specCell(SPEC, HEADING, 'Band line')[7]).toBe('you are In on {Name} as {Role}');
   });
 });
 
@@ -352,11 +359,16 @@ describe('copyList', () => {
     not_signed: [{ character_key: 'h', name: 'Di', class: 'druid', spec: 'balance' }],
   } as unknown as GuildRaidView;
 
+  it('drops the late clause when nobody is late', () => {
+    const onTime = { ...view, counts: { ...view.counts, late: 0 } } as GuildRaidView;
+    expect(copyList(onTime, CHICAGO).split('\n')[1]).toBe('4 of 40: 1 tank, 1 healer, 2 DPS');
+  });
+
   it("follows the spec's example: header, count, then one line per non-empty group in roster order", () => {
     expect(copyList(view, CHICAGO)).toBe(
       [
-        "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST",
-        '5 of 40: 1 tank, 1 healer, 2 DPS',
+        "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>",
+        '5 of 40: 1 tank, 1 healer, 2 DPS, 1 late',
         'Tanks: Kraggor',
         'Healers: Amy',
         'DPS: Zed, Bo',
@@ -374,8 +386,8 @@ describe('copyList', () => {
       signups: [member('a', 'Kraggor', 'tank', 'in')],
     } as unknown as GuildRaidView;
     expect(copyList(sparse, CHICAGO).split('\n')).toEqual([
-      "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST",
-      '5 signed up: 1 tank, 1 healer, 2 DPS',
+      "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>",
+      '5 signed up: 1 tank, 1 healer, 2 DPS, 1 late',
       'Tanks: Kraggor',
     ]);
   });

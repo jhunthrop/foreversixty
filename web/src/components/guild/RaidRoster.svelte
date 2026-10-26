@@ -72,6 +72,7 @@
     { id: 'bench', label: raidCopy.subheads.bench, rows: groups.bench, withRole: false },
     { id: 'out', label: raidCopy.subheads.out, rows: groups.out, withRole: false },
   ]);
+  const shownOthers = $derived(others.filter((group) => group.rows.length > 0));
   /** Bumped on a refusal: the selects redraw from the raid, which is the revert. */
   let revert = $state(0);
 
@@ -86,13 +87,14 @@
 </script>
 
 {#snippet heading(label: string, n: number, testid: string)}
-  <h3 class="section-title text-[15px]" data-testid={testid}>
-    {label} <span class="text-muted font-mono">{n}</span>
+  <h3 class="label text-muted" data-testid={testid}>
+    {label} <span class="font-mono tabular-nums">{n}</span>
   </h3>
 {/snippet}
 
 {#snippet row(entry: RosterRow, withRole: boolean)}
   {@const busy = busyKey === entry.character_key}
+  {@const specLine = `${entry.spec}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`}
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
@@ -105,14 +107,15 @@
   >
     <span class="flex shrink-0"><ClassCrestRing characterClass={entry.class} size={24} /></span>
     <div class="min-w-0 flex-1">
-      <p class="leading-5">
-        <span class="text-[14px] font-semibold" style={`color:${classColorVar(entry.class)}`}
-          >{entry.name}</span
-        >
-        <span class="text-muted text-[12px]"
-          >{entry.spec}{withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}</span
-        >
+      <!-- The name over the spec at every width, one line each (34 px), so a column's rows line up. -->
+      <p
+        class="block truncate text-[14px] leading-[18px] font-semibold"
+        style={`color:${classColorVar(entry.class)}`}
+        title={entry.name}
+      >
+        {entry.name}
       </p>
+      <p class="text-muted block truncate text-[12px] leading-4" title={specLine}>{specLine}</p>
       {#if entry.note !== ''}<p class="text-text text-[12px] break-words">{entry.note}</p>{/if}
       {#if line?.control === `roster:${entry.character_key}`}
         <p
@@ -172,14 +175,23 @@
       {/each}
     </div>
     <div class="mt-2 flex flex-col gap-6">
-      {#each others.filter((group) => group.rows.length > 0) as group (group.id)}
-        <div class="flex flex-col gap-2" data-testid={`raid-roster-${group.id}`}>
-          {@render heading(group.label, group.rows.length, `raid-roster-${group.id}-heading`)}
-          <ul class="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-4">
-            {#each group.rows as entry (entry.character_key)}{@render row(entry, group.withRole)}{/each}
-          </ul>
+      <!-- Late, Bench and Out side by side from 1024, two columns from 768, stacked below; an empty
+           group is left out, so the rest flow left (spec 3.7). -->
+      {#if shownOthers.length > 0}
+        <div
+          class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3"
+          data-testid="raid-roster-others"
+        >
+          {#each shownOthers as group (group.id)}
+            <div class="flex min-w-0 flex-col gap-2" data-testid={`raid-roster-${group.id}`}>
+              {@render heading(group.label, group.rows.length, `raid-roster-${group.id}-heading`)}
+              <ul>
+                {#each group.rows as entry (entry.character_key)}{@render row(entry, group.withRole)}{/each}
+              </ul>
+            </div>
+          {/each}
         </div>
-      {/each}
+      {/if}
       {#if groups.notSigned.length > 0}
         <div class="flex flex-col gap-2" data-testid="raid-roster-not-signed">
           {@render heading(

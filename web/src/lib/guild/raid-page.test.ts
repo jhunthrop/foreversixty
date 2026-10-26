@@ -9,9 +9,7 @@ import {
   raidCount,
   raidPageFlags,
   raidWhen,
-  rememberPostCancel,
   rememberStripRows,
-  rememberedPostCancel,
   stripReserveRows,
 } from './raid-page';
 
@@ -84,7 +82,7 @@ describe('raidCount', () => {
     expect(raidCount(plannedRaid())).toEqual({
       line: '23 of 40 signed up',
       ratio: '23/40',
-      breakdown: '3 tanks · 7 healers · 13 DPS',
+      breakdown: '3 tanks · 7 healers · 13 DPS · 2 late',
       fill: 57,
     });
   });
@@ -122,22 +120,5 @@ describe('strip reserve rows', () => {
       },
     };
     expect(() => rememberStripRows(plannedRaid(), throwing)).not.toThrow();
-  });
-});
-
-describe('the remembered cancellation post', () => {
-  it('reads back the last choice, off by default and when the store throws', () => {
-    const storage = memoryStorage();
-    expect(rememberedPostCancel(storage)).toBe(false);
-    rememberPostCancel(storage, true);
-    expect(rememberedPostCancel(storage)).toBe(true);
-    rememberPostCancel(storage, false);
-    expect(rememberedPostCancel(storage)).toBe(false);
-    const throwing = {
-      getItem: (): string | null => {
-        throw new Error('blocked');
-      },
-    };
-    expect(rememberedPostCancel(throwing)).toBe(false);
   });
 });

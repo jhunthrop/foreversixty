@@ -74,6 +74,12 @@ describe('GuildRaids planned section', () => {
     expect(html({ planned: weeks(4) })).not.toContain('guild-planned-show-all');
   });
 
+  it('leaves the count out of the sub-head with none planned', () => {
+    const markup = html({ planned: [] });
+    expect(markup).not.toContain('guild-planned-count');
+    expect(text(markup)).toContain(`${raidCopy.subheads.planned} ${raidCopy.emptyPlanned.member}`);
+  });
+
   it('says the member and the officer empty lines', () => {
     expect(text(html({ planned: [] }))).toContain(raidCopy.emptyPlanned.member);
     expect(text(html({ planned: [], officer: true }))).toContain(raidCopy.emptyPlanned.officer);
