@@ -10,6 +10,23 @@ import GuildShell from './GuildShell.svelte';
 // pre-effect SSR output (the "guild-skeleton" testid, same as Guild.test.ts) plus the
 // absence of the other three views' testids, rather than a testid Guild.svelte cannot
 // produce in this render path.
+describe('GuildShell lazy placeholders carry the view heading', () => {
+  it('holds the settings h1 above the settings loading height', () => {
+    const { body } = render(GuildShell, { props: { path: '/guild/us/hardcore/the-last-watch/settings' } });
+    expect(body).toMatch(/<h1[^>]*>\s*Guild settings\s*<\/h1>/);
+  });
+
+  it('holds the claim h1 above the claim loading height', () => {
+    const { body } = render(GuildShell, { props: { path: '/guild/us/hardcore/the-last-watch/claim' } });
+    expect(body).toMatch(/<h1[^>]*>\s*Claim this guild\s*<\/h1>/);
+  });
+
+  it('names the raid page for assistive tech while the band holds its height', () => {
+    const { body } = render(GuildShell, { props: { path: '/guild/us/pvp/olympus-xxvii/raids/7' } });
+    expect(body).toMatch(/<h1 class="sr-only"[^>]*>/);
+  });
+});
+
 describe('GuildShell', () => {
   it('renders the plain guild view (Guild.svelte) when given a plain guild path', () => {
     const { body } = render(GuildShell, {

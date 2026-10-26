@@ -8,6 +8,7 @@
      held at its own loading height while it loads, with a retry if the chunk fails. -->
 <script lang="ts">
   import {
+    guildHref,
     isGuildLandingPath,
     parseGuildClaimPath,
     parseGuildInviteToken,
@@ -22,6 +23,8 @@
   import Skeleton from './ui/Skeleton.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
+  import { guildClaimCopy, guildSettingsCopy } from '../lib/guild/copy';
+  import { raidCopy } from '../lib/guild/raid-copy';
 
   // This island's entry is at its budget: each view off the guild page is its own chunk.
   const raidLazy = createLazyComponent(() => import('./GuildRaid.svelte'));
@@ -66,13 +69,26 @@
     {#if claimLazy.current}
       <claimLazy.current path={claimPath} />
     {:else}
-      {@render chunkPending(claimLazy, 'guild-claim-chunk', GUILD_LOADING.claim.minHeight)}
+      <!-- The view's own wrapper and h1 (the guild's name is not known yet), so the swap moves nothing. -->
+      <div class="flex flex-col gap-4">
+        <a
+          class="text-nav w-fit text-[13px]"
+          href={guildHref(claimPath.region, claimPath.ruleset, claimPath.slug)}
+        >
+          ← {guildClaimCopy.backToGuild('')}
+        </a>
+        <h1 class="section-title text-[18px]">{guildClaimCopy.heading('')}</h1>
+        {@render chunkPending(claimLazy, 'guild-claim-chunk', GUILD_LOADING.claim.minHeight)}
+      </div>
     {/if}
   {:else if settingsPath !== null}
     {#if settingsLazy.current}
       <settingsLazy.current path={settingsPath} />
     {:else}
-      {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
+      <div class="flex flex-col gap-6">
+        <h1 class="section-title text-[18px]">{guildSettingsCopy.heading}</h1>
+        {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
+      </div>
     {/if}
   {:else if inviteToken !== null}
     {#if joinLazy.current}
@@ -87,6 +103,7 @@
       <!-- The band's ready height while the chunk loads (raids spec 4, Page states); the chunk's own
          loading view then names it Loading the raid. -->
       <div class="bg-raised full-bleed {RAID_BAND_MIN}">
+        <h1 class="sr-only">{raidCopy.page.eyebrow}</h1>
         {@render chunkPending(raidLazy, 'raid-chunk', '')}
       </div>
     {/if}

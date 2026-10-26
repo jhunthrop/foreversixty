@@ -65,6 +65,7 @@
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
+  import { createRefreshingRead } from '../lib/guild/refreshing-read';
   import { loadReadinessBoard, readinessRows, type ReadinessBoard } from '../lib/guild/readiness-raid';
   import { nextRaidDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
@@ -535,17 +536,26 @@
     raids = page;
     rememberPlannedRows(id, page, browserStorage());
   }
-  /** A band press moved the Raids tab's counts and chips: an open tab reads again in place (no
-   *  skeleton flash); a closed one reads again when next shown. */
+  /** The one raids read: a change that lands while it is in flight marks it stale, and it reads again
+   *  when it settles, so a sign-up or officer action during a poll never leaves a stale list. */
+  const raidsRead = createRefreshingRead(async () => {
+    if (guildId !== null) await loadRaids(guildId);
+  });
+  /** A band press moved the Raids tab's counts and chips: an open tab (or one still loading) reads
+   *  again in place (no skeleton flash); a closed one reads again when next shown. */
   function raidsChanged(): void {
-    if (activeTab === 'raids' && raidsStatus === 'ready' && guildId !== null) {
-      void loadRaids(guildId).catch(() => {});
-    } else if (raidsStatus !== 'loading') raidsStatus = 'idle';
+    if (
+      guildId !== null &&
+      (raidsStatus === 'loading' || (activeTab === 'raids' && raidsStatus === 'ready'))
+    ) {
+      raidsRead.invalidate();
+    } else raidsStatus = 'idle';
   }
   $effect(() => {
     if (activeTab !== 'raids' || guildId === null || raidsStatus !== 'idle') return;
     raidsStatus = 'loading';
-    void loadRaids(guildId)
+    void raidsRead
+      .run()
       .then(() => {
         raidsStatus = 'ready';
       })
