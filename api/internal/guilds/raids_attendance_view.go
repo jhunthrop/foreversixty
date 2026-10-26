@@ -9,8 +9,6 @@ import (
 	"context"
 	"fmt"
 	"time"
-
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
 // MatchView is the log a raid is tied to.
@@ -103,6 +101,10 @@ func (s *Store) raidMatchMetas(ctx context.Context, ids []int64) (map[int64]raid
 		if err := rows.Scan(&id, &m.preDone, &m.matchedBy, &m.reportID, &m.uploadedAt, &m.uploader,
 			&m.pulls, &m.kills, &m.durationMS, &m.deaths, &m.postedAt, &m.logZone); err != nil {
 			return nil, fmt.Errorf("guilds: raid matches: %w", err)
+		}
+		if m.postedAt != nil {
+			posted := m.postedAt.UTC()
+			m.postedAt = &posted
 		}
 		out[id] = m
 	}
@@ -230,8 +232,9 @@ func countSigned(n *NightView, r AttendanceRow) {
 	}
 }
 
-// scopeAttendance narrows views' attendance rows to the viewer's: an officer of a guild with
-// the plan keeps every row, anyone else their own characters' (null when they have none).
+// scopeAttendance narrows views' attendance rows to the viewer's: a verified officer or leader
+// keeps every row whether or not the guild has the plan (the plan gates writes, not reads),
+// anyone else their own characters' (null when they have none).
 func (s *Service) scopeAttendance(ctx context.Context, guildID, viewerID int64, views []RaidView) error {
 	if !anyMatched(views) {
 		return nil
@@ -266,11 +269,11 @@ func ownRows(rows []AttendanceView) []AttendanceView {
 	return own
 }
 
+// seesEveryAttendanceRow is the rank rule: a verified officer or leader reads everything.
 func (s *Service) seesEveryAttendanceRow(ctx context.Context, guildID, viewerID int64) (bool, error) {
 	rank, verified, err := s.Accounts.GuildRank(ctx, guildID, viewerID)
-	if err != nil || !verified || (rank != "officer" && rank != "leader") || s.Entitlements == nil {
+	if err != nil {
 		return false, err
 	}
-	ok, _, err := s.Entitlements.CanForGuild(ctx, guildID, viewerID, entitlements.FeatureOfficerViews)
-	return ok, err
+	return verified && (rank == "officer" || rank == "leader"), nil
 }

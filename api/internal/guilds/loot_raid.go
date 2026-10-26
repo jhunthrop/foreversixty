@@ -21,19 +21,28 @@ const (
 	awardDefaultRaidWindow = 7 * 24 * time.Hour
 )
 
+// AwardRaidError is an award that names a raid that cannot take it. It is an ErrInvalidAward.
+type AwardRaidError struct{ RaidID int64 }
+
+func (e *AwardRaidError) Error() string {
+	return fmt.Sprintf("guilds: raid %d is not a done Onyxia raid of this guild", e.RaidID)
+}
+
+func (e *AwardRaidError) Is(target error) bool { return target == ErrInvalidAward }
+
 // resolveAwardRaid is the raid an award is filed under: the named done raid of the guild
-// (ErrInvalidAward when it is not one), else the default, else nil.
+// (an *AwardRaidError when it is not a done raid of the Onyxia zone), else the default, else nil.
 func (s *Store) resolveAwardRaid(ctx context.Context, guildID int64, named *int64, now time.Time) (*int64, error) {
 	if named != nil {
 		var ok bool
 		err := s.Pool.QueryRow(ctx,
-			`select exists(select 1 from guild_raids where id = $1 and guild_id = $2 and status = 'done')`,
-			*named, guildID).Scan(&ok)
+			`select exists(select 1 from guild_raids where id = $1 and guild_id = $2 and zone = $3 and status = 'done')`,
+			*named, guildID, onyxiaZoneKey).Scan(&ok)
 		if err != nil {
 			return nil, fmt.Errorf("guilds: award raid: %w", err)
 		}
 		if !ok {
-			return nil, ErrInvalidAward
+			return nil, &AwardRaidError{RaidID: *named}
 		}
 		return named, nil
 	}

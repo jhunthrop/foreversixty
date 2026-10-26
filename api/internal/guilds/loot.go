@@ -632,7 +632,11 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id, err := s.Store.CreateLootAward(r.Context(), guildID, in.EncounterID, in.ItemID, in.CharacterKey, actor.UserID, in.RaidID)
+	var badRaid *AwardRaidError
 	switch {
+	case errors.As(err, &badRaid):
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+			fmt.Sprintf("raid %d is not a done Onyxia raid of this guild", badRaid.RaidID), nil)
 	case errors.Is(err, ErrInvalidAward):
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a valid encounter/item/character for this guild", nil)
 	case err != nil:

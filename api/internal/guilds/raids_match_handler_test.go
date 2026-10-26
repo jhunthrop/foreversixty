@@ -115,15 +115,6 @@ func TestAttendanceRowsGoToOfficersInFullAndToMembersOwnOnly(t *testing.T) {
 	}
 }
 
-func TestAnOfficerWithoutThePlanSeesOnlyTheirOwnAttendance(t *testing.T) {
-	w, raid := matchedNight(t)
-	w.dropPlan(t)
-	w.as(w.officer)
-	if rows := attendanceKeys(w.getRaid(t, raid.ID)); len(rows) != 1 || !rows[officerKey].Own {
-		t.Fatalf("rows = %+v", rows)
-	}
-}
-
 func TestMatchCandidatesIsOfficerOnlyAndMarksTheClosest(t *testing.T) {
 	w, raid := attendanceNight(t)
 	w.grantPlan(t)
