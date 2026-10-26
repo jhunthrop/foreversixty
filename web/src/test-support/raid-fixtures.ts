@@ -37,7 +37,7 @@ export function plannedRaid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [viewerCharacter()] },
-    discord: { connected: false, post_default: false },
+    discord: { available: true, connected: false, post_default: false },
     ...extra,
   };
 }

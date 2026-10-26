@@ -3,7 +3,7 @@
 // guild's last planned raid, the 6.1 field errors, the repeat helper under the cap, and the payload.
 // The form takes the guild's wall clock; `wallClockToInstant` turns it into the stored UTC instant.
 import type { FilterOption } from '../rankings/options';
-import type { GuildRaidView } from './api';
+import type { GuildRaidDiscord, GuildRaidView } from './api';
 import { raidCopy } from './raid-copy';
 import { forYouLine, instantToWallClock, nextWeekday, wallClockToInstant } from './raid-time';
 import type { RaidInput } from './raids-api';
@@ -190,6 +190,21 @@ export function forYou(values: RaidFormValues, viewerTimezone: string, now: Date
   const date = values.date === '' ? instantToWallClock(now, values.timezone).date : values.date;
   const time = values.time === '' ? FIRST_RAID_TIME : values.time;
   return forYouLine(date, time, values.timezone, viewerTimezone, locale);
+}
+
+/** What the form draws for Discord (spec 3.5 item 8): the box with a connected channel, the
+ *  Settings line without one, and nothing when the deployment has connect off or the guild's
+ *  channel is not known yet (no planned raid carries it). */
+export type DiscordFormPart = 'box' | 'line' | 'none';
+
+export function discordFormPart(discord: GuildRaidDiscord | null): DiscordFormPart {
+  if (discord === null || !discord.available) return 'none';
+  return discord.connected ? 'box' : 'line';
+}
+
+/** The Settings line's link: the settings page's Discord section (spec 3.8, `#discord`). */
+export function discordSettingsHref(settingsHref: string): string {
+  return `${settingsHref}#discord`;
 }
 
 /** The create or edit body. `discordConnected` gates the Discord flag: a box the form does not

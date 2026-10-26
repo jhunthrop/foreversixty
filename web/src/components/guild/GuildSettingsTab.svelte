@@ -30,6 +30,8 @@
     onContestCancel,
     onContestConfirm,
     onCrestChanged,
+    officerTools,
+    onPlanRefused,
   }: {
     path: CharacterPath;
     home: GuildHome;
@@ -42,6 +44,9 @@
     onContestCancel: () => void;
     onContestConfirm: () => void;
     onCrestChanged: () => void;
+    /** Officer tools gate §3.1, for the Discord section's read-only state (raids spec 3.8). */
+    officerTools?: boolean;
+    onPlanRefused?: () => void;
   } = $props();
 
   /** Spec item 2: a verified officer of a different account than the one holding the
@@ -65,7 +70,7 @@
     <GuildCrestSettings guildId={home.guild.id} guild={home.guild} {onCrestChanged} />
   {/if}
 
-  <GuildSettings {path} />
+  <GuildSettings {path} {officerTools} {onPlanRefused} />
 
   {#if canContestHere}
     <div

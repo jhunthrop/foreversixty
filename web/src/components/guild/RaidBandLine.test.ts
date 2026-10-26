@@ -223,7 +223,7 @@ function view(characters: ViewerChar[]): GuildRaidView {
     ),
     not_signed: [],
     viewer: { characters },
-    discord: { connected: false, post_default: false },
+    discord: { available: true, connected: false, post_default: false },
   };
 }
 

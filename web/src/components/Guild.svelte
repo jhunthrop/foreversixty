@@ -1115,6 +1115,8 @@
           {contestBusy}
           {contestError}
           {showContestConfirm}
+          {officerTools}
+          onPlanRefused={() => (officerToolsEnded = true)}
           onCrestChanged={() => void onCrestChanged()}
           onContestStart={() => {
             showContestConfirm = true;

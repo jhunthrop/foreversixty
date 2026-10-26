@@ -21,6 +21,8 @@
   import { can } from '../lib/guild/roster-model';
   import { claimedByLine, settingsWords } from '../lib/guild/settings-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
+  import { guildDiscordReserve } from '../lib/guild/discord-state';
+  import { createLazyComponent } from '../lib/report/lazy-component.svelte';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import GuildBillingSection from './guild/GuildBillingSection.svelte';
@@ -28,7 +30,19 @@
   import GuildStatus from './GuildStatus.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
-  let { path }: { path: CharacterPath } = $props();
+  // The Discord section (raids spec 3.8) is its own chunk: GuildShell's entry is at its budget.
+  const discordLazy = createLazyComponent(() => import('./guild/GuildDiscordSection.svelte'));
+
+  let {
+    path,
+    officerTools,
+    onPlanRefused,
+  }: {
+    path: CharacterPath;
+    /** From the guild page's Settings tab; the standalone route leaves it out. */
+    officerTools?: boolean;
+    onPlanRefused?: () => void;
+  } = $props();
 
   let guildId = $state<number | null>(null);
   /**
@@ -180,6 +194,10 @@
   const frozen = $derived(
     settings !== null && settings.claim.state === 'contested' && settings.claim.frozen === true,
   );
+
+  $effect(() => {
+    if (settings?.discord !== undefined) discordLazy.load();
+  });
 </script>
 
 <div class="reveal flex flex-col gap-6" data-testid="guild-settings">
@@ -224,6 +242,27 @@
       <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
         {guildRosterModelCopy.guildMasterOnly}
       </p>
+    {/if}
+    {#if settings.discord !== undefined && guildId !== null}
+      {#if discordLazy.current}
+        <discordLazy.current
+          {guildId}
+          discord={settings.discord}
+          {frozen}
+          {officerTools}
+          {onPlanRefused}
+          onDiscord={(discord) => {
+            if (settings !== null) settings = { ...settings, discord };
+          }}
+          onSettings={(fresh) => (settings = fresh)}
+        />
+      {:else}
+        <div
+          id="discord"
+          class="scroll-mt-20 {guildDiscordReserve(settings.discord, window.location.search)}"
+          data-testid="guild-settings-discord-reserve"
+        ></div>
+      {/if}
     {/if}
     <section class="flex flex-col gap-3">
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>

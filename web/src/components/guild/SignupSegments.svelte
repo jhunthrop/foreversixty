@@ -33,8 +33,9 @@
   const BASE =
     'min-w-[72px] flex-1 px-2 text-[13px] font-semibold transition-colors duration-[120ms] focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2 active:bg-card-top disabled:cursor-not-allowed [@media(hover:hover)_and_(pointer:fine)]:enabled:hover:text-text';
   const REST = 'text-muted bg-raised';
-  const CHECKED_IN = 'text-strong bg-card-top shadow-[inset_0_-2px_0_var(--color-kill)]';
-  const CHECKED_OUT = 'text-strong bg-card-top shadow-[inset_0_-2px_0_var(--color-muted)]';
+  // The checked ground is visible against the rest's `--raised` (spec 3.3, amended 2026-10-27, review round).
+  const CHECKED_IN = 'text-strong bg-kill/15 shadow-[inset_0_-2px_0_var(--color-kill)]';
+  const CHECKED_OUT = 'text-strong bg-line-warm shadow-[inset_0_-2px_0_var(--color-muted)]';
   const SIZE = { strip: 'h-11', band: 'h-11 md:h-9' } as const;
 
   function segmentClass(state: GuildSignupState, index: number): string {

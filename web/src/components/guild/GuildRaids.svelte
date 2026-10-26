@@ -181,7 +181,7 @@
       {viewerTimezone}
       lastRaid={lastPlannedRaid(planned)}
       {plannedCount}
-      discordConnected={planned.some((raid) => raid.discord.connected)}
+      discord={planned[0]?.discord ?? null}
       {settingsHref}
       onSubmit={submitPlan}
       onCancel={() => void closeForm()}

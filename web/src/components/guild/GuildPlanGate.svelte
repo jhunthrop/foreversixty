@@ -13,7 +13,7 @@
     tab,
     settingsHref,
     sentence = guildGateCopy.sentence,
-  }: { tab: 'loot' | 'readiness' | 'raids'; settingsHref: string; sentence?: string } = $props();
+  }: { tab: 'loot' | 'readiness' | 'raids' | 'discord'; settingsHref: string; sentence?: string } = $props();
 </script>
 
 <p

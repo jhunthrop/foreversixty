@@ -10,6 +10,7 @@ export const GUILD_LOADING = {
   join: { lines: 2, minHeight: 'min-h-[140px]' },
   // Heading, rules list, current-claim line, one action button.
   claim: { lines: 5, minHeight: 'min-h-[320px]' },
-  // Heading, claim-state line, billing panel, visibility/threshold controls, invite block.
-  settings: { lines: 6, minHeight: 'min-h-[400px]' },
+  // Heading, claim-state line, billing panel, the Discord section (its not-connected 140),
+  // visibility/threshold controls, invite block.
+  settings: { lines: 6, minHeight: 'min-h-[540px]' },
 } as const;

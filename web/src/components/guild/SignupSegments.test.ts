@@ -54,15 +54,16 @@ describe('SignupSegments', () => {
     expect(segment(markup, 'in')).toContain('tabindex="-1"');
   });
 
-  it('marks In and Late with the kill line, Bench and Out with the muted line', () => {
+  it('marks In and Late with the kill ground and line, Bench and Out with the warm ground and muted line', () => {
     for (const state of ['in', 'late'] as const) {
       const tag = segment(html({ value: state }), state);
       expect(tag).toContain('text-strong');
-      expect(tag).toContain('bg-card-top');
+      expect(tag).toContain('bg-kill/15');
       expect(tag).toContain('shadow-[inset_0_-2px_0_var(--color-kill)]');
     }
     for (const state of ['bench', 'out'] as const) {
       const tag = segment(html({ value: state }), state);
+      expect(tag).toContain('bg-line-warm');
       expect(tag).toContain('shadow-[inset_0_-2px_0_var(--color-muted)]');
     }
     const rest = segment(html({ value: 'in' }), 'out');

@@ -1,0 +1,36 @@
+// web/src/lib/guild/discord-state.ts
+// Which of the three raids spec §3.8 states the guild's Discord channel is in, and the height each
+// one reserves. Kept apart from discord-settings.ts (the section's words and outcomes) because the
+// settings page's entry chunk needs these two only, to hold the section's place while its own
+// chunk loads; the words stay in that chunk.
+import type { GuildSettingsDiscord } from './api';
+
+export type GuildDiscordState = 'not-connected' | 'connected' | 'switched-off';
+
+export function guildDiscordState(
+  discord: Pick<GuildSettingsDiscord, 'connected' | 'disabled_reason'>,
+): GuildDiscordState {
+  if (!discord.connected) return 'not-connected';
+  return discord.disabled_reason === null ? 'connected' : 'switched-off';
+}
+
+/**
+ * The section's height at rest per state, phone then desktop, measured on the fixture build
+ * (design/reviews/2026-10-26-guild-raids, "Discord section"): the placeholder while the chunk
+ * loads, and the `connected` hold after a return from Discord, so nothing under it moves.
+ */
+export const GUILD_DISCORD_RESERVE: Readonly<Record<GuildDiscordState, string>> = {
+  'not-connected': 'min-h-[198px] md:min-h-[140px]',
+  connected: 'min-h-[250px] md:min-h-[230px]',
+  'switched-off': 'min-h-[349px] md:min-h-[310px]',
+};
+
+/** The placeholder's height while the section's chunk loads: a `connected` return holds the
+ *  connected height, since the settings read in hand may predate the channel (spec §3.8). */
+export function guildDiscordReserve(
+  discord: Pick<GuildSettingsDiscord, 'connected' | 'disabled_reason'>,
+  search: string,
+): string {
+  const returning = new URLSearchParams(search).get('discord') === 'connected';
+  return GUILD_DISCORD_RESERVE[returning ? 'connected' : guildDiscordState(discord)];
+}

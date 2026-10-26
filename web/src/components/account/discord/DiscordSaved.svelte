@@ -5,7 +5,7 @@
      the link while the remove question is open. -->
 <script lang="ts">
   import type { DiscordEvents, DiscordNotifications } from '../../../lib/account/api';
-  import { removeQuestionFor, type DiscordBlockKey } from '../../../lib/account/notifications';
+  import { removeQuestionFor, sourceOf, type DiscordBlockKey } from '../../../lib/account/notifications';
   import DiscordActions from './DiscordActions.svelte';
   import DiscordEventRows from './DiscordEventRows.svelte';
   import DiscordReplace from './DiscordReplace.svelte';
@@ -74,7 +74,7 @@
   />
   <DiscordStatusLine {status} />
   {#if state === 'saved' && !confirming}
-    <DiscordReplace {discord} disabled={busy !== null} {onReplace} {onStuck} />
+    <DiscordReplace source={sourceOf(discord)} disabled={busy !== null} {onReplace} {onStuck} />
   {/if}
 </div>
 {#if state === 'disabled'}{@render eventRows()}{/if}

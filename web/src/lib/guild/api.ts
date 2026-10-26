@@ -319,6 +319,21 @@ export interface GuildSettingsData {
   claim_pending: ClaimPendingView | null;
   claim: ClaimStateView;
   invite: { rotated_at: string | null };
+  /** The guild's Discord channel (raids spec §3.8): present only for a verified officer when
+   *  the deployment has connect on. */
+  discord?: GuildSettingsDiscord;
+}
+
+/** `GET /v1/guilds/{id}/settings`'s `discord` key. `disabled_reason` reads `failed five times`. */
+export interface GuildSettingsDiscord {
+  available: boolean;
+  connected: boolean;
+  channel_id: string | null;
+  discord_guild_id: string | null;
+  disabled_reason: string | null;
+  last_error: string | null;
+  failures: number;
+  post_default: boolean;
 }
 
 export interface ContestResult {
@@ -739,7 +754,15 @@ export interface GuildRaidView {
   signups: GuildRaidSignup[];
   not_signed: GuildRaidNotSigned[];
   viewer: { characters: GuildRaidViewerCharacter[] };
-  discord: { connected: boolean; post_default: boolean };
+  discord: GuildRaidDiscord;
+}
+
+/** The guild channel as the raid view carries it (raids spec §9): `available` is whether the
+ *  deployment has Discord connect on; `post_default` the guild's remembered box. */
+export interface GuildRaidDiscord {
+  available: boolean;
+  connected: boolean;
+  post_default: boolean;
 }
 
 export interface GuildZoneView {

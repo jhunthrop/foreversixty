@@ -13,7 +13,7 @@ const TEST_TIMEOUT_MS = 60_000;
 
 export default defineConfig({
   testDir: '.',
-  testMatch: 'capture.spec.ts',
+  testMatch: 'capture*.spec.ts',
   timeout: TEST_TIMEOUT_MS,
   workers: 4,
   reporter: 'list',

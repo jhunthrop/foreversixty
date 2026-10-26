@@ -4,7 +4,7 @@
 // Typing, the error lines and the submit are clicked through in the raids e2e.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import type { GuildRaidView, GuildZoneView } from '../../lib/guild/api';
+import type { GuildRaidDiscord, GuildRaidView, GuildZoneView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import RaidForm from './RaidForm.svelte';
 
@@ -33,14 +33,17 @@ function lastRaid(): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [] },
-    discord: { connected: true, post_default: true },
+    discord: { available: true, connected: true, post_default: true },
   };
 }
+
+const NOT_CONNECTED: GuildRaidDiscord = { available: true, connected: false, post_default: false };
+const CONNECTED: GuildRaidDiscord = { available: true, connected: true, post_default: true };
 
 interface FormProps {
   last?: GuildRaidView | null;
   plannedCount?: number;
-  discordConnected?: boolean;
+  discord?: GuildRaidDiscord | null;
   viewerTimezone?: string;
   mode?: 'create' | 'edit';
 }
@@ -48,7 +51,7 @@ interface FormProps {
 function html({
   last = null,
   plannedCount = 0,
-  discordConnected = false,
+  discord = NOT_CONNECTED,
   viewerTimezone = NEW_YORK,
   mode = 'create',
 }: FormProps = {}): string {
@@ -61,7 +64,7 @@ function html({
       lastRaid: last,
       raid: mode === 'edit' ? lastRaid() : undefined,
       plannedCount,
-      discordConnected,
+      discord,
       settingsHref: '/guild/us/pvp/olympus-xxvii/settings',
       onSubmit: () => Promise.resolve({ ok: true as const }),
       onCancel: () => {},
@@ -154,7 +157,7 @@ describe('RaidForm', () => {
     const markup = html();
     expect(markup).not.toContain('data-testid="raid-form-discord"');
     expect(text(markup)).toContain(raidCopy.form.connectDiscord);
-    expect(markup).toContain('href="/guild/us/pvp/olympus-xxvii/settings"');
+    expect(markup).toContain('href="/guild/us/pvp/olympus-xxvii/settings#discord"');
     // The inline link takes the 44 px ::after phone hit area of the gate link.
     expect(markup).toMatch(
       /class="[^"]*after:h-11[^"]*md:after:hidden[^"]*"[^>]*data-testid="raid-form-settings-link"/,
@@ -162,14 +165,22 @@ describe('RaidForm', () => {
   });
 
   it('remembers the last Post to Discord answer when a channel is connected', () => {
-    const markup = html({ last: lastRaid(), discordConnected: true });
+    const markup = html({ last: lastRaid(), discord: CONNECTED });
     expect(tag(markup, 'raid-form-discord')).toContain('checked');
     expect(text(markup)).toContain(raidCopy.form.postToDiscord);
     expect(markup).not.toContain('raid-form-discord-line');
   });
 
+  it('draws neither the box nor the line when connect is off or the channel is unknown', () => {
+    for (const discord of [{ ...NOT_CONNECTED, available: false }, null]) {
+      const markup = html({ discord });
+      expect(markup).not.toContain('data-testid="raid-form-discord"');
+      expect(markup).not.toContain('raid-form-discord-line');
+    }
+  });
+
   it('edits with Save changes, the moved-time label and no repeat', () => {
-    const markup = html({ mode: 'edit', discordConnected: true });
+    const markup = html({ mode: 'edit', discord: CONNECTED });
     const words = text(markup);
     expect(words).toContain(raidCopy.form.submitEdit);
     expect(words).toContain(raidCopy.form.postToDiscordIfMoved);
