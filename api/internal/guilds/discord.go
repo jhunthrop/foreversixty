@@ -127,6 +127,9 @@ func (s *Service) raidViews(ctx context.Context, guildID, viewerID int64, raids 
 	if err != nil {
 		return nil, err
 	}
+	if err := s.scopeAttendance(ctx, guildID, viewerID, views); err != nil {
+		return nil, err
+	}
 	out := make([]RaidView, len(views))
 	for i, v := range views {
 		v.Discord = discord
