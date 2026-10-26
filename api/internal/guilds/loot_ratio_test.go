@@ -21,12 +21,18 @@ func TestCandidateSortByAttendanceRatioThenPresent(t *testing.T) {
 
 // Each candidate carries its own roster row's nights, not the last row's.
 func TestLootCandidatesCarryTheirOwnNights(t *testing.T) {
-	s := &Store{}
+	s := realTreesStore(t)
 	roster := []RosterRow{
-		{CharacterKey: "a", Verified: true, className: "warrior", Attendance: Attendance{Present: 2, Nights: 3}},
-		{CharacterKey: "b", Verified: true, className: "warrior", Attendance: Attendance{Present: 6, Nights: 8}},
+		{CharacterKey: "a", Verified: true, className: "warrior", specStr: "Fury", faction: "alliance",
+			Attendance: Attendance{Present: 2, Nights: 3}},
+		{CharacterKey: "b", Verified: true, className: "warrior", specStr: "Fury", faction: "alliance",
+			Attendance: Attendance{Present: 6, Nights: 8}},
 	}
-	for _, c := range s.lootCandidates(roster, lootItem{ItemID: 1, Slot: "head"}) {
+	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"})
+	if len(cands) != len(roster) {
+		t.Fatalf("candidates = %+v, want one per roster row", cands)
+	}
+	for _, c := range cands {
 		for _, row := range roster {
 			if row.CharacterKey == c.CharacterKey && c.Attendance != row.Attendance {
 				t.Errorf("%s attendance = %+v, want its own %+v", c.CharacterKey, c.Attendance, row.Attendance)
