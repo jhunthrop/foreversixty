@@ -476,24 +476,56 @@ const anOfficer = "an officer"
 // never printing the account behind a character), reads "an officer" - the line names no
 // one the guild cannot already see, and never the "user-12" pseudonym a stranger would be told.
 func (s *Store) awarderName(ctx context.Context, guildID, userID int64) string {
-	u, err := s.Accounts.User(ctx, userID)
-	if err != nil || u.Anonymize {
+	names, err := s.awarderNames(ctx, guildID, []int64{userID})
+	if err != nil {
 		return anOfficer
 	}
-	var name string
-	err = s.Pool.QueryRow(ctx, `
-		select ae.name
-		from guild_characters gc
-		join addon_exports ae on ae.character_key = gc.character_key
-		where gc.guild_id = $1 and gc.user_id = $2 and gc.character_key not like 'account:%'
-		order by coalesce((
-		  select m.ilvl from fight_metrics m
-		  where m.player_key = gc.character_key order by m.fought_at desc limit 1), -1) desc, ae.name
-		limit 1`, guildID, userID).Scan(&name)
-	if err != nil || name == "" {
-		return anOfficer
+	return names.of(userID)
+}
+
+// awarderNameSet is awarderNames' answer; of reads one awarder, "an officer" when unnamed.
+type awarderNameSet map[int64]string
+
+func (n awarderNameSet) of(userID int64) string {
+	if name := n[userID]; name != "" {
+		return name
 	}
-	return name
+	return anOfficer
+}
+
+// awarderNames is awarderName for every user in userIDs in one query.
+func (s *Store) awarderNames(ctx context.Context, guildID int64, userIDs []int64) (awarderNameSet, error) {
+	out := awarderNameSet{}
+	if len(userIDs) == 0 {
+		return out, nil
+	}
+	rows, err := s.Pool.Query(ctx, `
+		select u.id, coalesce((
+		  select ae.name
+		  from guild_characters gc
+		  join addon_exports ae on ae.character_key = gc.character_key
+		  where gc.guild_id = $1 and gc.user_id = u.id and gc.character_key not like 'account:%'
+		  order by coalesce((
+		    select m.ilvl from fight_metrics m
+		    where m.player_key = gc.character_key order by m.fought_at desc limit 1), -1) desc, ae.name
+		  limit 1), '')
+		from users u where u.id = any($2) and not u.anonymize`, guildID, userIDs)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: awarder names: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var id int64
+		var name string
+		if err := rows.Scan(&id, &name); err != nil {
+			return nil, fmt.Errorf("guilds: awarder names: %w", err)
+		}
+		out[id] = name
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("guilds: awarder names: %w", err)
+	}
+	return out, nil
 }
 
 // ErrInvalidAward is returned for an award whose encounter/item is not one of Onyxia's
