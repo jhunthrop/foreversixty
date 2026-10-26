@@ -164,17 +164,22 @@ func (s *Service) getRaid(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	s.writeRaidView(w, r, "raid", guildID, raid, http.StatusOK)
+	s.writeRaidView(w, r, "raid", guildID, raid, nil)
 }
 
-func (s *Service) writeRaidView(w http.ResponseWriter, r *http.Request, op string, guildID int64, raid Raid, status int) {
+// writeRaidView answers 200 with raid's view; post, when set, runs on the view first (the
+// Discord posts read its counts at posting).
+func (s *Service) writeRaidView(w http.ResponseWriter, r *http.Request, op string, guildID int64, raid Raid, post func(RaidView)) {
 	view, err := s.raidViewOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raid)
 	if err != nil {
 		s.fail(w, r, op, err, "could not load that raid just now")
 		return
 	}
+	if post != nil {
+		post(view)
+	}
 	httpx.CachePrivate(w)
-	httpx.WriteOK(w, r, status, view)
+	httpx.WriteOK(w, r, http.StatusOK, view)
 }
 
 func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
@@ -211,6 +216,10 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.logger().Info("guilds", "op", "raid_create", "guild_id", guildID, "raids", len(raids), "user_id", actor.UserID)
+	s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
+	if ticked(req.PostToDiscord) {
+		s.postCreated(r.Context(), guildID, views)
+	}
 	httpx.WriteOK(w, r, http.StatusCreated, map[string][]RaidView{"raids": views})
 }
 
@@ -233,7 +242,13 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	if !s.writeRaidWriteErr(w, r, "raid_update", err) {
 		return
 	}
-	s.writeRaidView(w, r, "raid_update", guildID, updated, http.StatusOK)
+	s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
+	var post func(RaidView)
+	// Only a time change posts; a title or notes edit never does.
+	if was := raid.StartsAt; ticked(req.PostToDiscord) && !updated.StartsAt.Equal(was) {
+		post = func(v RaidView) { s.postChanged(r.Context(), guildID, v, &was) }
+	}
+	s.writeRaidView(w, r, "raid_update", guildID, updated, post)
 }
 
 // raidStatusAction serves POST …/raids/{raid}/{action} for one of raidStatusMoves.
@@ -245,6 +260,12 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 		if !ok {
 			return
 		}
+		var req cancelRequest
+		if action == "cancel" {
+			if err := decodeOptionalJSON(w, r, &req); err != nil {
+				return
+			}
+		}
 		// Guarded by the current status in the write itself, so racing moves cannot overwrite
 		// each other (409 conflict when the status no longer allows this one).
 		updated, err := s.Store.SetRaidStatus(r.Context(), guildID, raid.ID, move.from, move.to)
@@ -253,7 +274,12 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 		}
 		s.logger().Info("guilds", "op", op, "guild_id", guildID, "raid_id", raid.ID,
 			"user_id", auth.ActorFrom(r.Context()).UserID)
-		s.writeRaidView(w, r, op, guildID, updated, http.StatusOK)
+		s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
+		var post func(RaidView)
+		if ticked(req.PostToDiscord) {
+			post = func(v RaidView) { s.postChanged(r.Context(), guildID, v, nil) }
+		}
+		s.writeRaidView(w, r, op, guildID, updated, post)
 	}
 }
 

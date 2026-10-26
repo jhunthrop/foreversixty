@@ -23,6 +23,8 @@ import (
 type DiscordChannels interface {
 	GuildConnectEnabled() bool
 	GuildChannel(ctx context.Context, guildID int64) (notify.GuildWebhook, bool, error)
+	// SetGuildPostDefault remembers the raid form's "Post to Discord" box.
+	SetGuildPostDefault(ctx context.Context, guildID int64, on bool) error
 }
 
 // SettingsDiscord is settings.discord: present for a verified officer when the deployment

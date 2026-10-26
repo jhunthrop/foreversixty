@@ -642,7 +642,10 @@ func serve(log *slog.Logger) error {
 			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData,
 			Accounts: authStore, Guilds: guildStore, Sims: simStore, Log: log,
 		},
-		Guilds: &guilds.Service{Store: guildStore, Accounts: authStore, Supporters: entStore, Entitlements: entStore, Log: log},
+		Guilds: &guilds.Service{
+			Store: guildStore, Accounts: authStore, Supporters: entStore, Entitlements: entStore,
+			PublicBaseURL: cfg.PublicBaseURL, Log: log,
+		},
 		Rating: &rating.Service{
 			Store: ratingStore, Reports: reportStore, Accounts: authStore,
 			Owners: authStore, Entitlements: entStore, Log: log,
@@ -671,6 +674,10 @@ func serve(log *slog.Logger) error {
 		// reads the channel back for the settings payload and the raid view.
 		deps.Notify.Guilds = deps.Guilds
 		deps.Guilds.Discord = deps.Notify
+		// The raid posts follow the channel: none while the deployment has connect off.
+		if poster := deps.Notify.GuildDeliverer(); poster != nil && deps.Notify.GuildConnectEnabled() {
+			deps.Guilds.RaidEvents = poster
+		}
 	}
 
 	var gateway billing.Gateway
