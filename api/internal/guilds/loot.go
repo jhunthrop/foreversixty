@@ -20,8 +20,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -592,9 +592,6 @@ type lootAwardInput struct {
 	CharacterKey string `json:"character_key"`
 }
 
-// lootPlanRequiredMessage is the refusal body the web reads for guild_plan_required on loot.
-const lootPlanRequiredMessage = "Award and Undo are part of the guild plan."
-
 // requireGuildPlan writes the refusal (a guild_plan_required body of refusal) and returns
 // false unless the officer's guild holds the officer-tools feature. It runs after the officer
 // check, so a member never learns the plan state. A nil Entitlements refuses, matching
@@ -631,15 +628,10 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to award loot", nil)
 		return
 	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, lootPlanRequiredMessage, "loot_award", "could not record that award just now") {
+	if !s.requireGuildPlan(w, r, guildID, actor.UserID, refusal.AwardPlanRequired, "loot_award", "could not record that award just now") {
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "loot_award", err, "could not record that award just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "loot_award", "could not record that award just now") {
 		return
 	}
 	var in lootAwardInput
@@ -681,15 +673,10 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to remove a loot award", nil)
 		return
 	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, lootPlanRequiredMessage, "loot_award_delete", "could not remove that award just now") {
+	if !s.requireGuildPlan(w, r, guildID, actor.UserID, refusal.AwardPlanRequired, "loot_award_delete", "could not remove that award just now") {
 		return
 	}
-	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
-		s.fail(w, r, "loot_award_delete", err, "could not remove that award just now")
-		return
-	} else if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
+	if !s.officerNotFrozen(w, r, guildID, "loot_award_delete", "could not remove that award just now") {
 		return
 	}
 	switch err := s.Store.DeleteLootAward(r.Context(), guildID, awardID); {

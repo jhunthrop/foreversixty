@@ -9,7 +9,6 @@ package guilds
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -34,10 +33,15 @@ type signupAnswerView struct {
 // signupRateLimit budgets sign-up writes per account; a request with no account passes
 // through to RequireSession's 401.
 func signupRateLimit() func(http.Handler) http.Handler {
-	return httpx.RateLimitByKey(signupsPerMinute, time.Minute, func(r *http.Request) (string, bool) {
-		uid := auth.ActorFrom(r.Context()).UserID
-		return strconv.FormatInt(uid, 10), uid != 0
-	})
+	return httpx.RateLimitByKey(signupsPerMinute, time.Minute, auth.AccountRateLimitKey)
+}
+
+// officerRaidWritesPerMinute budgets the officer raid writes (create, edit, lock, unlock,
+// cancel) per account; the five routes share one budget.
+const officerRaidWritesPerMinute = 20
+
+func officerRaidRateLimit() func(http.Handler) http.Handler {
+	return httpx.RateLimitByKey(officerRaidWritesPerMinute, time.Minute, auth.AccountRateLimitKey)
 }
 
 func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
@@ -124,7 +128,7 @@ func (s *Service) signupStanding(w http.ResponseWriter, r *http.Request, guildID
 		return false, true
 	}
 	// Writing to a locked raid is an officer power, frozen like the others.
-	if !s.officerNotFrozen(w, r, guildID, "raid_signup") {
+	if !s.officerNotFrozen(w, r, guildID, "raid_signup", raidFailMessage) {
 		return false, false
 	}
 	return true, true

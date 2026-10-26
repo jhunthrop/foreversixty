@@ -10,20 +10,15 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
 const (
 	guildChannelPath = "/v1/guilds/{id}/notifications/discord"
 	guildTestPath    = guildChannelPath + "/test"
 
-	// RaidPlanRequiredMessage is the guild_plan_required body of the officer raid writes and
-	// of the channel routes; the guilds package refers to it.
-	RaidPlanRequiredMessage = "Planning and running raids are part of the guild plan."
-	// ClaimContestedMessage is the claim_contested body of every frozen-claim officer
-	// action; the guilds package refers to it.
-	ClaimContestedMessage = "this guild's claim is contested; officer actions are frozen until a moderator resolves it"
-	noGuildMessage        = "no such guild"
-	noChannelMessage      = "no channel is connected"
+	noGuildMessage   = "no such guild"
+	noChannelMessage = "no channel is connected"
 )
 
 // GuildStanding is a viewer's standing in a guild as the channel routes need it. The
@@ -60,7 +55,8 @@ func (s *Service) mountGuild(mux *http.ServeMux) {
 		return
 	}
 	limit := httpx.RateLimitByKey(testsPerMinute, time.Minute, auth.AccountRateLimitKey)
-	mux.HandleFunc("GET "+guildConnectPath, auth.RequireSession(s.guildConnect))
+	connectLimit := httpx.RateLimitByKey(connectsPerMinute, time.Minute, auth.AccountRateLimitKey)
+	mux.Handle("GET "+guildConnectPath, connectLimit(auth.RequireSession(s.guildConnect)))
 	mux.Handle("POST "+guildTestPath, limit(auth.RequireSession(s.guildTest)))
 	// Remove is never behind the plan: stopping posts must always work.
 	mux.HandleFunc("DELETE "+guildChannelPath, auth.RequireSession(s.guildRemove))
@@ -83,9 +79,9 @@ func (s *Service) guildOfficer(w http.ResponseWriter, r *http.Request, needPlan 
 	case !found || !standing.Officer:
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", noGuildMessage, nil)
 	case needPlan && !standing.Plan:
-		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", RaidPlanRequiredMessage, nil)
+		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", refusal.RaidPlanRequired, nil)
 	case standing.Frozen:
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", ClaimContestedMessage, nil)
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", refusal.ClaimContested, nil)
 	default:
 		return guildID, standing, true
 	}

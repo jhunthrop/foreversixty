@@ -98,7 +98,7 @@ func (s *Store) CreateRaid(ctx context.Context, in RaidInput) (Raid, error) {
 }
 
 // CreateRaids inserts every raid of ins for guildID in one transaction, or none of them when
-// the guild's planned and locked raids would then exceed RaidCap. The guild row lock
+// the guild's planned and locked raids that have not ended would then exceed RaidCap. The guild row lock
 // serialises concurrent creates, so the cap holds under a race. A non-empty timezone is
 // stored as the guild's raid timezone in the same transaction.
 func (s *Store) CreateRaids(ctx context.Context, guildID int64, timezone string, ins []RaidInput) ([]Raid, error) {
@@ -112,7 +112,8 @@ func (s *Store) CreateRaids(ctx context.Context, guildID int64, timezone string,
 	}
 	var open int
 	if err := tx.QueryRow(ctx,
-		`select count(*) from guild_raids where guild_id = $1 and status in ('planned','locked')`,
+		`select count(*) from guild_raids where guild_id = $1 and status in ('planned','locked')
+		   and starts_at + make_interval(mins => duration_minutes) > now()`,
 		guildID).Scan(&open); err != nil {
 		return nil, fmt.Errorf("guilds: create raid: count: %w", err)
 	}

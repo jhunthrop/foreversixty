@@ -106,10 +106,11 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// The raid calendar (design/specs/2026-10-26-guild-raids.md §9). The raid read is
 	// session-optional like /raids and answers 404 to anyone but a verified member (R1).
 	mux.HandleFunc("GET /v1/guilds/{id}/raids/{raid}", s.getRaid)
-	mux.HandleFunc("POST /v1/guilds/{id}/raids", auth.RequireSession(s.createRaid))
-	mux.HandleFunc("PATCH /v1/guilds/{id}/raids/{raid}", auth.RequireSession(s.patchRaid))
+	officerLimit := officerRaidRateLimit()
+	mux.Handle("POST /v1/guilds/{id}/raids", officerLimit(auth.RequireSession(s.createRaid)))
+	mux.Handle("PATCH /v1/guilds/{id}/raids/{raid}", officerLimit(auth.RequireSession(s.patchRaid)))
 	for action := range raidStatusMoves {
-		mux.HandleFunc("POST /v1/guilds/{id}/raids/{raid}/"+action, auth.RequireSession(s.raidStatusAction(action)))
+		mux.Handle("POST /v1/guilds/{id}/raids/{raid}/"+action, officerLimit(auth.RequireSession(s.raidStatusAction(action))))
 	}
 	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",
 		signupRateLimit()(auth.RequireSession(s.putSignup)))

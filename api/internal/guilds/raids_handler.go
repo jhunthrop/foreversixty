@@ -14,7 +14,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
-	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
 const raidFailMessage = "could not save that raid just now"
@@ -94,29 +94,13 @@ func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, fo
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", forbiddenMessage, nil)
 		return 0, false
 	}
-	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, notify.RaidPlanRequiredMessage, op, raidFailMessage) {
+	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, refusal.RaidPlanRequired, op, raidFailMessage) {
 		return 0, false
 	}
-	if !s.officerNotFrozen(w, r, guildID, op) {
+	if !s.officerNotFrozen(w, r, guildID, op, raidFailMessage) {
 		return 0, false
 	}
 	return guildID, true
-}
-
-// officerNotFrozen answers 409 claim_contested and returns false while the guild's claim is
-// contested (freezeCheck); true when officer powers may run.
-func (s *Service) officerNotFrozen(w http.ResponseWriter, r *http.Request, guildID int64, op string) bool {
-	frozen, err := s.freezeCheck(r.Context(), guildID, auth.ActorFrom(r.Context()).IsModerator())
-	if err != nil {
-		s.fail(w, r, op, err, raidFailMessage)
-		return false
-	}
-	if frozen {
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			notify.ClaimContestedMessage, nil)
-		return false
-	}
-	return true
 }
 
 // writeRaidWriteErr answers a failed raid write; true when err is nil.

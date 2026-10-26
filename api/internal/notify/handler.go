@@ -17,9 +17,11 @@ import (
 )
 
 const (
-	testsPerMinute  = 5
-	putsPerMinute   = 10
-	maxPutBodyBytes = 4 << 10
+	testsPerMinute = 5
+	putsPerMinute  = 10
+	// connectsPerMinute budgets the guild channel connect redirect per account.
+	connectsPerMinute = 20
+	maxPutBodyBytes   = 4 << 10
 	// maxTestErrorRunes is the spec's cap on the Discord text a failed test shows.
 	maxTestErrorRunes = 140
 	// maxWebhookNameRunes is the spec's cap on the stored webhook name.

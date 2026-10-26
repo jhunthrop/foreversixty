@@ -86,7 +86,13 @@ func (d *GuildDeliverer) Deliver(ctx context.Context, guildID int64, event strin
 	}
 	postCtx, cancel := context.WithTimeout(ctx, d.effectiveTimeout())
 	defer cancel()
-	return d.record(ctx, guildID, event, d.Poster.Post(postCtx, url, embed))
+	postErr := d.Poster.Post(postCtx, url, embed)
+	if postErr != nil && ctx.Err() != nil {
+		// The request's shared budget ended the post; that says nothing about the channel.
+		d.logger().Warn("notify", "guild", guildID, "event", event, "outcome", "raid_post_skipped")
+		return nil
+	}
+	return d.record(ctx, guildID, event, postErr)
 }
 
 // record applies the five-failure rule to the guild's channel on a context that outlives
