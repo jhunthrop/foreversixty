@@ -116,14 +116,7 @@ func computeReadiness(
 		}
 	}
 
-	switch {
-	case consent != "gear_bags" || !hasBagsSection:
-		cr.ConsumablesState = "unknown"
-	case len(bags) > 0:
-		cr.ConsumablesState = "stocked"
-	default:
-		cr.ConsumablesState = "short"
-	}
+	cr.ConsumablesState = consumablesState(consent, bags, hasBagsSection)
 
 	if hasTalents {
 		cr.TalentsRead = true
@@ -140,6 +133,20 @@ func computeReadiness(
 		cr.ItemLevelDelta = &delta
 	}
 	return cr
+}
+
+// consumablesState is the bags rule: "unknown" without the bags share, "stocked" with
+// anything in the bags, else "short". The readiness board and the raid report's Before pill
+// both read it.
+func consumablesState(consent string, bags []int, hasBagsSection bool) string {
+	switch {
+	case consent != "gear_bags" || !hasBagsSection:
+		return "unknown"
+	case len(bags) > 0:
+		return "stocked"
+	default:
+		return "short"
+	}
 }
 
 // plural is "" for 1, "s" otherwise - the only pluralisation this package's copy needs.

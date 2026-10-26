@@ -11,6 +11,7 @@ import (
 const (
 	eventRaidPosted  = "raid_posted"
 	eventRaidChanged = "raid_changed"
+	eventReportReady = "report_ready"
 )
 
 // GuildDeliverer posts the raid embeds to a guild's channel. A nil *GuildDeliverer posts
@@ -57,6 +58,16 @@ func (d *GuildDeliverer) RaidChanged(ctx context.Context, guildID int64, e RaidC
 	d.deliverQuietly(ctx, guildID, eventRaidChanged, RaidChangedEmbed(e, d.clock()))
 }
 
+// ReportReady posts the report_ready embed and says whether it reached the channel: false
+// with no error when the guild has no channel (or it is switched off), so the caller can
+// release its one-post claim.
+func (d *GuildDeliverer) ReportReady(ctx context.Context, guildID int64, e ReportReady) (bool, error) {
+	if d == nil {
+		return false, nil
+	}
+	return d.deliver(ctx, guildID, eventReportReady, ReportReadyEmbed(e, d.clock()))
+}
+
 func (d *GuildDeliverer) deliverQuietly(ctx context.Context, guildID int64, event string, embed Embed) {
 	if err := d.Deliver(ctx, guildID, event, embed); err != nil {
 		d.logger().Error("notify", "guild", guildID, "event", event, "outcome", "error", "err", err)
@@ -66,23 +77,29 @@ func (d *GuildDeliverer) deliverQuietly(ctx context.Context, guildID int64, even
 // Deliver posts embed when the guild has a channel that is switched on. A guild with no
 // channel, or one switched off, is a silent skip. The error never holds the URL or token.
 func (d *GuildDeliverer) Deliver(ctx context.Context, guildID int64, event string, embed Embed) error {
+	_, err := d.deliver(ctx, guildID, event, embed)
+	return err
+}
+
+// deliver is Deliver that also says whether the post reached the channel.
+func (d *GuildDeliverer) deliver(ctx context.Context, guildID int64, event string, embed Embed) (bool, error) {
 	hook, found, err := d.Store.Get(ctx, guildID)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if !found || hook.DisabledReason != nil {
-		return nil
+		return false, nil
 	}
 	box, err := d.Store.TokenBox(ctx, guildID)
 	if errors.Is(err, ErrNotFound) {
-		return nil
+		return false, nil
 	}
 	if err != nil {
-		return err
+		return false, err
 	}
 	url, err := d.Sealer.Open(box)
 	if err != nil {
-		return errors.New("notify: the guild's saved webhook could not be opened")
+		return false, errors.New("notify: the guild's saved webhook could not be opened")
 	}
 	postCtx, cancel := context.WithTimeout(ctx, d.effectiveTimeout())
 	defer cancel()
@@ -90,9 +107,12 @@ func (d *GuildDeliverer) Deliver(ctx context.Context, guildID int64, event strin
 	if postErr != nil && ctx.Err() != nil {
 		// The request's shared budget ended the post; that says nothing about the channel.
 		d.logger().Warn("notify", "guild", guildID, "event", event, "outcome", "raid_post_skipped")
-		return nil
+		return false, nil
 	}
-	return d.record(ctx, guildID, event, postErr)
+	if err := d.record(ctx, guildID, event, postErr); err != nil {
+		return false, err
+	}
+	return postErr == nil, nil
 }
 
 // record applies the five-failure rule to the guild's channel on a context that outlives

@@ -67,6 +67,7 @@ type raidMatchMeta struct {
 	kills      int
 	durationMS int64
 	deaths     int
+	postedAt   *time.Time
 }
 
 // raidMatchSQL reads the match columns of the raids in $1 with the figures of their logs.
@@ -75,7 +76,7 @@ const raidMatchSQL = `
 	select g.id, g.pre_done_status, g.matched_by, g.report_id,
 	       coalesce(r.completed_at, r.created_at, now()),
 	       coalesce(nullif(c.name, ''), split_part(coalesce(r.logging_character, ''), '/', 3)),
-	       coalesce(f.pulls, 0), coalesce(f.kills, 0), coalesce(f.duration_ms, 0), coalesce(f.deaths, 0)
+	       coalesce(f.pulls, 0), coalesce(f.kills, 0), coalesce(f.duration_ms, 0), coalesce(f.deaths, 0), g.report_posted_at
 	from guild_raids g
 	left join reports r on r.id = g.report_id
 	left join characters c on c.key = r.logging_character
@@ -98,7 +99,7 @@ func (s *Store) raidMatchMetas(ctx context.Context, ids []int64) (map[int64]raid
 		var id int64
 		var m raidMatchMeta
 		if err := rows.Scan(&id, &m.preDone, &m.matchedBy, &m.reportID, &m.uploadedAt, &m.uploader,
-			&m.pulls, &m.kills, &m.durationMS, &m.deaths); err != nil {
+			&m.pulls, &m.kills, &m.durationMS, &m.deaths, &m.postedAt); err != nil {
 			return nil, fmt.Errorf("guilds: raid matches: %w", err)
 		}
 		out[id] = m
@@ -135,6 +136,9 @@ func (s *Store) fillMatchViews(ctx context.Context, vc raidViewContext, views []
 		night := nightOf(rows, meta)
 		views[i].Night = &night
 		views[i].Attendance = attendanceViews(rows, vc)
+		if views[i].Report, err = s.buildReport(ctx, vc, views[i], meta); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -207,7 +211,7 @@ func countSigned(n *NightView, r AttendanceRow) {
 // scopeAttendance narrows views' attendance rows to the viewer's: an officer of a guild with
 // the plan keeps every row, anyone else their own characters' (null when they have none).
 func (s *Service) scopeAttendance(ctx context.Context, guildID, viewerID int64, views []RaidView) error {
-	if !anyAttendance(views) {
+	if !anyMatched(views) {
 		return nil
 	}
 	officer, err := s.seesEveryAttendanceRow(ctx, guildID, viewerID)
@@ -216,13 +220,14 @@ func (s *Service) scopeAttendance(ctx context.Context, guildID, viewerID int64, 
 	}
 	for i := range views {
 		views[i].Attendance = ownRows(views[i].Attendance)
+		views[i].Report = views[i].Report.ownOnly()
 	}
 	return nil
 }
 
-func anyAttendance(views []RaidView) bool {
+func anyMatched(views []RaidView) bool {
 	for _, v := range views {
-		if len(v.Attendance) > 0 {
+		if v.Match != nil {
 			return true
 		}
 	}

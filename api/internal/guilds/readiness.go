@@ -52,8 +52,13 @@ type ReadinessRow struct {
 	ItemLevelDelta      *int            `json:"item_level_delta"`
 	LoggedAt            time.Time       `json:"logged_at"`
 	Failing             int             `json:"failing"`
-	NudgeText           *string         `json:"nudge_text,omitempty"`
-	readinessScore      float64
+	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: whether the export was
+	// synced within READINESS_FRESH_DAYS of the raid (null on the unfiltered read and on a
+	// no_export row), and a signed character with no export at all.
+	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
+	NoExport           bool    `json:"no_export"`
+	NudgeText          *string `json:"nudge_text,omitempty"`
+	readinessScore     float64
 }
 
 // ReadinessView is the body of GET /v1/guilds/{id}/readiness.
@@ -61,6 +66,8 @@ type ReadinessView struct {
 	MedianItemLevel *int           `json:"median_item_level"`
 	GeneratedAt     time.Time      `json:"generated_at"`
 	Rows            []ReadinessRow `json:"rows"`
+	// Raid is set on the raid-filtered read only.
+	Raid *ReadinessRaid `json:"raid,omitempty"`
 }
 
 // medianItemLevel is the middle value of every roster row's own known item level (nil
@@ -87,7 +94,11 @@ func medianItemLevel(roster []RosterRow) *int {
 // (readiness is a pre-pull tool for raiders the guild has already vouched for - an
 // unverified row has nothing to ready up for yet, the same reasoning the standing line's
 // own viewer-consent gate uses one level up). officerView adds nudge_text to every row.
-func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool) (ReadinessView, error) {
+func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, raid *Raid) (ReadinessView, error) {
+	scope, err := s.newReadinessScope(ctx, raid)
+	if err != nil {
+		return ReadinessView{}, err
+	}
 	g, err := s.getGuild(ctx, guildID)
 	if err != nil {
 		return ReadinessView{}, err
@@ -101,10 +112,12 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool) 
 
 	median := medianItemLevel(roster)
 	view := ReadinessView{MedianItemLevel: median, GeneratedAt: time.Now().UTC(), Rows: []ReadinessRow{}}
+	seen := map[string]bool{}
 	for _, row := range roster {
-		if !row.Verified {
+		if !row.Verified || !scope.includes(row.CharacterKey) {
 			continue
 		}
+		seen[row.CharacterKey] = true
 		band, hasBand := s.loadBandFor(row.className, row.specStr, row.faction)
 		cr := computeReadiness(row.Consent, band, hasBand, row.gear, row.enchants,
 			row.bags, row.hasBagsSection, row.talentPointsSpent, row.hasTalents,
@@ -131,13 +144,16 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool) 
 		if cr.GearChecked {
 			rr.GearGap = &GearGapView{Upgrades: cr.GearGap.Upgrades, GainDps: cr.GearGap.GainDps, NotSimChecked: cr.GearGap.NotSimChecked}
 		}
+		scope.apply(&rr)
 		rr.readinessScore = float64(rr.Failing)*100 + cr.GearGap.GainDps
 		if officerView {
-			text := nudgeText(row.Name, cr)
+			text := nudgeText(row.Name, cr) + scope.staleNudge(rr)
 			rr.NudgeText = &text
 		}
 		view.Rows = append(view.Rows, rr)
 	}
+	view.Raid = scope.view()
+	view.Rows = append(view.Rows, scope.noExportRows(seen)...)
 
 	sort.SliceStable(view.Rows, func(i, j int) bool {
 		return view.Rows[i].readinessScore > view.Rows[j].readinessScore
@@ -195,11 +211,24 @@ func (s *Service) readiness(w http.ResponseWriter, r *http.Request) {
 	}
 	verifiedOfficer := verified && (rank == "officer" || rank == "leader")
 
-	view, err := s.Store.Readiness(r.Context(), guildID, verifiedOfficer)
+	raid, filtered, ok := s.readinessRaid(w, r, guildID)
+	if !ok {
+		return
+	}
+	view, err := s.Store.Readiness(r.Context(), guildID, verifiedOfficer, raid)
 	if err != nil {
 		s.fail(w, r, "readiness", fmt.Errorf("readiness: %w", err), "could not load that guild's readiness just now")
 		return
 	}
 	httpx.CachePrivate(w)
-	httpx.WriteOK(w, r, http.StatusOK, view)
+	if filtered {
+		httpx.WriteOK(w, r, http.StatusOK, view)
+		return
+	}
+	next, err := s.Store.readinessNextRaid(r.Context(), guildID, time.Now())
+	if err != nil {
+		s.fail(w, r, "readiness", fmt.Errorf("readiness: %w", err), "could not load that guild's readiness just now")
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, readinessWithNext{ReadinessView: view, NextRaid: next})
 }
