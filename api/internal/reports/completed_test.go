@@ -42,7 +42,7 @@ func TestLiveCompleteLearnsTheGuildAndZoneThenCallsTheHook(t *testing.T) {
 	if res.StatusCode != http.StatusNoContent {
 		t.Fatalf("status = %d, want 204", res.StatusCode)
 	}
-	if got := h.reportGuild(id); !sameGuild(got, g) {
+	if got := h.reportMatchedGuild(id); !sameGuild(got, g) || h.reportGuild(id) != nil {
 		t.Fatalf("guild_id = %v, want %d", got, g)
 	}
 	var zone *string
