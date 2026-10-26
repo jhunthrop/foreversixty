@@ -104,6 +104,9 @@ func TestCreateRaidRepeatKeepsGuildWallTime(t *testing.T) {
 		if r.NotesHTML != "<p>Bring <strong>flasks</strong></p>\n" {
 			t.Fatalf("notes_html = %q", r.NotesHTML)
 		}
+		if r.Notes != "Bring **flasks**" {
+			t.Fatalf("notes = %q, want the raw markdown", r.Notes)
+		}
 	}
 }
 

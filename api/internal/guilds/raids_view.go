@@ -70,21 +70,24 @@ type RaidDiscord struct {
 
 // RaidView is GET /v1/guilds/{id}/raids/{raid} and each row of the planned list.
 type RaidView struct {
-	ID              int64           `json:"id"`
-	Zone            string          `json:"zone"`
-	ZoneName        string          `json:"zone_name"`
-	Title           string          `json:"title"`
-	StartsAt        time.Time       `json:"starts_at"`
-	DurationMinutes int             `json:"duration_minutes"`
-	Status          string          `json:"status"`
-	Size            *int            `json:"size"`
-	GuildTimezone   *string         `json:"guild_timezone"`
-	NotesHTML       string          `json:"notes_html"`
-	Counts          RaidCounts      `json:"counts"`
-	Signups         []SignupView    `json:"signups"`
-	NotSigned       []RaidCharacter `json:"not_signed"`
-	Viewer          RaidViewer      `json:"viewer"`
-	Discord         RaidDiscord     `json:"discord"`
+	ID              int64     `json:"id"`
+	Zone            string    `json:"zone"`
+	ZoneName        string    `json:"zone_name"`
+	Title           string    `json:"title"`
+	StartsAt        time.Time `json:"starts_at"`
+	DurationMinutes int       `json:"duration_minutes"`
+	Status          string    `json:"status"`
+	Size            *int      `json:"size"`
+	GuildTimezone   *string   `json:"guild_timezone"`
+	NotesHTML       string    `json:"notes_html"`
+	// Notes is the raw markdown the officer typed, for the edit form; members get it too (it
+	// is the same text notes_html renders).
+	Notes     string          `json:"notes"`
+	Counts    RaidCounts      `json:"counts"`
+	Signups   []SignupView    `json:"signups"`
+	NotSigned []RaidCharacter `json:"not_signed"`
+	Viewer    RaidViewer      `json:"viewer"`
+	Discord   RaidDiscord     `json:"discord"`
 }
 
 // ZoneView is one schedulable zone as the form lists it.
@@ -177,7 +180,7 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) RaidView {
 	v := RaidView{
 		ID: r.ID, Zone: r.Zone, ZoneName: zone.Name, Title: r.Title, StartsAt: r.StartsAt.UTC(),
 		DurationMinutes: r.DurationMinutes, Status: r.Status, Size: zone.Size, GuildTimezone: vc.timezone,
-		NotesHTML: RenderNotes(r.Notes), Counts: countSignups(signups),
+		NotesHTML: RenderNotes(r.Notes), Notes: r.Notes, Counts: countSignups(signups),
 		Signups: make([]SignupView, 0, len(signups)), NotSigned: []RaidCharacter{},
 		Viewer:  RaidViewer{Characters: []ViewerCharacter{}},
 		Discord: RaidDiscord{PostDefault: r.PostDefault},
