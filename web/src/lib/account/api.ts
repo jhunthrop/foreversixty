@@ -40,6 +40,8 @@ export interface MeCharacterGuild {
   rank?: string;
   rank_index?: number;
   verified: boolean;
+  /** Raid mode only: raids this character attended of raids signed up for or attended. */
+  attendance?: { present: number; nights: number };
 }
 
 export interface MeCharacter {

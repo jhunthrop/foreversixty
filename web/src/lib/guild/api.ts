@@ -7,6 +7,15 @@
 import { AccountError, invalidateMe, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { invalidate, query, refetch } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
+import type {
+  AttendanceSource,
+  RaidAttendanceFields,
+  ReadinessNextRaid,
+  ReadinessRaid,
+  ReadinessRaidRowFields,
+} from './attendance-contract';
+
+export type * from './attendance-contract';
 
 export const GUILD_API_FAILED = 'That did not work; try again';
 
@@ -198,6 +207,8 @@ export interface GuildRosterRow {
   item_level?: number;
   consent: GuildConsent;
   attendance?: GuildRosterAttendance;
+  /** Raid mode only: the same figure over the guild's last 30 logged raids. */
+  attendance_30?: GuildRosterAttendance;
   best_parse?: GuildRosterBestParse | null;
   rating?: GuildRosterRating | null;
   professions?: string[];
@@ -280,6 +291,8 @@ export interface GuildHome {
   /** The guild's next planned or locked raid, for verified members and officers only; absent
    *  for everyone else and when none is planned (design/specs/2026-10-26-guild-raids.md 3.4). */
   next_raid?: NextRaidView;
+  /** `raids` once the guild has a logged raid: the roster's attendance then counts raids, not nights. */
+  attendance_source?: AttendanceSource;
 }
 
 /** One person on the roster (api `RosterEntry`). `approved` is a verified character,
@@ -675,6 +688,8 @@ export interface GuildRaidRow {
   top_parse: GuildRaidTopParse | null;
   fights: GuildRaidFight[];
   present: GuildRaidPresentPlayer[];
+  /** The guild raid this night is matched to (a verified member's read only), else `null`. */
+  raid_id?: number | null;
 }
 
 export interface GuildRaidsPage {
@@ -735,7 +750,8 @@ export interface GuildRaidViewerCharacter {
   role: GuildRaidRole;
 }
 
-export interface GuildRaidView {
+/** The five attendance keys are always sent by the API; optional here so older fixtures still type. */
+export interface GuildRaidView extends Partial<RaidAttendanceFields> {
   id: number;
   zone: string;
   zone_name: string;
@@ -885,7 +901,8 @@ export interface GuildReadinessConsumables {
   state: 'stocked' | 'short' | 'unknown';
 }
 
-export interface GuildReadinessRow {
+/** `no_export` and `synced_before_cutoff` are always sent; optional so older fixtures still type. */
+export interface GuildReadinessRow extends Partial<ReadinessRaidRowFields> {
   character_key: string;
   name: string;
   class: string;
@@ -910,21 +927,29 @@ export interface GuildReadinessPage {
   median_item_level: number;
   generated_at: string;
   rows: GuildReadinessRow[];
+  /** The filtered read (`?raid={id}`) only. */
+  raid?: ReadinessRaid;
+  /** The unfiltered read only; `null` when no raid is planned or locked. */
+  next_raid?: ReadinessNextRaid | null;
 }
 
-function guildReadinessKey(guildId: number, apiBase: string): string {
-  return `${apiBase}/v1/guilds/${guildId}/readiness`;
+function readinessPath(guildId: number, raidId: number | undefined): string {
+  const base = `/v1/guilds/${guildId}/readiness`;
+  return raidId === undefined ? base : `${base}?raid=${raidId}`;
 }
 
+/** The readiness board; with `raidId`, only that raid's In and Late sign-ups (404 `not_found`
+ *  for an unknown, foreign, done or cancelled raid). */
 export function fetchGuildReadiness(
   guildId: number,
+  raidId?: number,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildReadinessPage> {
-  return query<GuildReadinessPage>(
-    guildReadinessKey(guildId, apiBase),
-    () => call<GuildReadinessPage>(`/v1/guilds/${guildId}/readiness`, apiBase),
-    { scope: 'private', ttlMs: GUILD_TTL_MS },
-  );
+  const path = readinessPath(guildId, raidId);
+  return query<GuildReadinessPage>(`${apiBase}${path}`, () => call<GuildReadinessPage>(path, apiBase), {
+    scope: 'private',
+    ttlMs: GUILD_TTL_MS,
+  });
 }
 
 export interface GuildLootEncounter {

@@ -43,7 +43,7 @@ export interface SignupResult {
   moved: string | null;
 }
 
-function raidPath(guildId: number, raidId: RaidId): string {
+export function raidPath(guildId: number, raidId: RaidId): string {
   return `/v1/guilds/${guildId}/raids/${encodeURIComponent(String(raidId))}`;
 }
 
@@ -128,7 +128,7 @@ export async function setRaidStatus(
 
 /** A character key is `region/ruleset/name`; the route takes its three segments, so each is
  *  encoded alone and the slashes stay (encoding the whole key would miss the route). */
-function characterKeyPath(characterKey: string): string {
+export function characterKeyPath(characterKey: string): string {
   return characterKey.split('/').map(encodeURIComponent).join('/');
 }
 
