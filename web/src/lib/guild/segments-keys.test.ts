@@ -1,29 +1,32 @@
 // web/src/lib/guild/segments-keys.test.ts
 import { describe, expect, it } from 'vitest';
-import { SIGNUP_STATES, segmentKeyTarget, tabbableSegment } from './segments-keys';
+import { SIGNUP_STATES, segmentKeyAction, tabbableSegment } from './segments-keys';
 
-describe('segmentKeyTarget', () => {
-  it('moves forward on ArrowRight and ArrowDown, wrapping at the end', () => {
-    expect(segmentKeyTarget('ArrowRight', 0, 4)).toBe(1);
-    expect(segmentKeyTarget('ArrowDown', 2, 4)).toBe(3);
-    expect(segmentKeyTarget('ArrowRight', 3, 4)).toBe(0);
+const move = (index: number): { kind: 'move'; index: number } => ({ kind: 'move', index });
+const select = (index: number): { kind: 'select'; index: number } => ({ kind: 'select', index });
+
+describe('segmentKeyAction', () => {
+  it('moves forward on ArrowRight and ArrowDown, wrapping at the end, without selecting', () => {
+    expect(segmentKeyAction('ArrowRight', 0, 4)).toEqual(move(1));
+    expect(segmentKeyAction('ArrowDown', 2, 4)).toEqual(move(3));
+    expect(segmentKeyAction('ArrowRight', 3, 4)).toEqual(move(0));
   });
 
-  it('moves back on ArrowLeft and ArrowUp, wrapping at the start', () => {
-    expect(segmentKeyTarget('ArrowLeft', 2, 4)).toBe(1);
-    expect(segmentKeyTarget('ArrowUp', 1, 4)).toBe(0);
-    expect(segmentKeyTarget('ArrowLeft', 0, 4)).toBe(3);
+  it('moves back on ArrowLeft and ArrowUp, wrapping at the start, without selecting', () => {
+    expect(segmentKeyAction('ArrowLeft', 2, 4)).toEqual(move(1));
+    expect(segmentKeyAction('ArrowUp', 1, 4)).toEqual(move(0));
+    expect(segmentKeyAction('ArrowLeft', 0, 4)).toEqual(move(3));
   });
 
   it('selects the focused segment on Space and Enter', () => {
-    expect(segmentKeyTarget(' ', 2, 4)).toBe(2);
-    expect(segmentKeyTarget('Enter', 1, 4)).toBe(1);
+    expect(segmentKeyAction(' ', 2, 4)).toEqual(select(2));
+    expect(segmentKeyAction('Enter', 1, 4)).toEqual(select(1));
   });
 
   it('ignores every other key', () => {
-    expect(segmentKeyTarget('Tab', 1, 4)).toBeNull();
-    expect(segmentKeyTarget('a', 1, 4)).toBeNull();
-    expect(segmentKeyTarget('Escape', 1, 4)).toBeNull();
+    expect(segmentKeyAction('Tab', 1, 4)).toBeNull();
+    expect(segmentKeyAction('a', 1, 4)).toBeNull();
+    expect(segmentKeyAction('Escape', 1, 4)).toBeNull();
   });
 });
 
