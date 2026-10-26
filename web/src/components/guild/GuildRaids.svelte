@@ -3,7 +3,10 @@
      navigation). A night in Barrow Deeps or Hyjal Summit shows "Pull N — no named
      encounter published" rather than inventing a boss name (§12.1). Shown to every role
      (public sees public reports only, per the existing report-visibility rule server
-     side) -- this component renders whatever `rows` it is given. -->
+     side) -- this component renders whatever `rows` it is given.
+     Raids spec 3.1: above the nights, verified members and officers get `Planned`; officers get
+     `Plan a raid` (disabled with the gate sentence in officer-read-only, and with the cap line at
+     12) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
@@ -12,12 +15,99 @@
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import EmptyState from '../ui/EmptyState.svelte';
   import FactLine from './FactLine.svelte';
+  import { tick } from 'svelte';
+  import type { GuildRaidView, GuildZoneView } from '../../lib/guild/api';
+  import { raidCopy } from '../../lib/guild/raid-copy';
+  import {
+    RAID_CAP,
+    lastPlannedRaid,
+    openRaidCount,
+    splitAtLink,
+    type RaidSubmitResult,
+  } from '../../lib/guild/raid-form';
+  import { createRaid, type RaidInput } from '../../lib/guild/raids-api';
+  import { planRaid } from '../../lib/guild/raids-tab-controller';
+  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import GuildPlanGate from './GuildPlanGate.svelte';
+  import GuildPlannedRaids from './GuildPlannedRaids.svelte';
+  import RaidForm from './RaidForm.svelte';
+
+  interface Props {
+    rows: GuildRaidRow[];
+    guildId?: number | null;
+    publicView?: boolean;
+    /** Verified members and officers only (R1); absent for everyone else. */
+    planned?: readonly GuildRaidView[];
+    zones?: readonly GuildZoneView[];
+    guildTimezone?: string | null;
+    officer?: boolean;
+    officerTools?: boolean;
+    /** A verified member of this guild. */
+    memberView?: boolean;
+    settingsHref?: string;
+    /** The guild page's own path; each planned row links under it. */
+    guildPath?: string;
+    /** Pins the clock (tests); otherwise the tab ticks once a minute. */
+    now?: Date;
+    viewerTimezone?: string;
+    /** Re-reads the raids page after a raid is planned. */
+    onPlanned?: () => Promise<void>;
+    /** A create was refused with `guild_plan_required`: the tab turns officer-read-only. */
+    onPlanRefused?: () => void;
+  }
 
   let {
     rows,
     guildId = null,
     publicView = false,
-  }: { rows: GuildRaidRow[]; guildId?: number | null; publicView?: boolean } = $props();
+    planned,
+    zones = [],
+    guildTimezone = null,
+    officer = false,
+    officerTools = true,
+    memberView = false,
+    settingsHref = '',
+    guildPath = '',
+    now,
+    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    onPlanned = () => Promise.resolve(),
+    onPlanRefused = () => {},
+  }: Props = $props();
+
+  const MINUTE_MS = 60_000;
+  const GATE_ID = 'officer-tools-gate-raids';
+  const CAP_ID = 'guild-raids-cap';
+  const gateLead = splitAtLink(raidCopy.gate, raidCopy.gateLink).before;
+
+  const showPlanned = $derived(planned !== undefined && (memberView || officer));
+  const readOnly = $derived(officer && !officerTools);
+  const plannedCount = $derived(openRaidCount(planned ?? []));
+  const atCap = $derived(plannedCount >= RAID_CAP);
+  const planDescribedBy = $derived(readOnly ? GATE_ID : atCap ? CAP_ID : undefined);
+
+  let ticked = $state(new Date());
+  const rowClock = $derived(now ?? ticked);
+  $effect(() => {
+    if (now !== undefined || !showPlanned) return;
+    const timer = setInterval(() => (ticked = new Date()), MINUTE_MS);
+    return () => clearInterval(timer);
+  });
+
+  let formOpen = $state(false);
+  let planButton = $state<HTMLButtonElement | null>(null);
+
+  async function closeForm(): Promise<void> {
+    formOpen = false;
+    await tick();
+    planButton?.focus();
+  }
+
+  async function submitPlan(payload: RaidInput): Promise<RaidSubmitResult> {
+    if (guildId === null) return { ok: false, code: 'no_guild', message: raidCopy.form.errors.failed };
+    const result = await planRaid(guildId, payload, { create: createRaid, reload: onPlanned, onPlanRefused });
+    if (result.ok) await closeForm();
+    return result;
+  }
 
   /** The tier's boss ids, so a night's kills split into bosses and trash packs; unknown (the
    *  progression read has not answered, or failed) until then, when the API's own count shows. */
@@ -59,7 +149,46 @@
 </script>
 
 <section class="flex flex-col gap-2" data-testid="guild-raids-tab">
-  <h2 class="section-title text-[18px]">Raids</h2>
+  <div class="flex items-center justify-between gap-3" data-testid="guild-raids-header">
+    <h2 class="section-title text-[18px]">Raids</h2>
+    {#if officer && showPlanned}
+      <button
+        type="button"
+        bind:this={planButton}
+        class="{PRIMARY_BUTTON_FIXED} focus-visible:outline-gold px-4 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#cfa64a] disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={readOnly || atCap}
+        aria-describedby={planDescribedBy}
+        aria-expanded={formOpen}
+        onclick={() => (formOpen = true)}
+        data-testid="guild-raids-plan">{raidCopy.planButton}</button
+      >
+    {/if}
+  </div>
+  {#if officer && showPlanned && readOnly}
+    <GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} />
+  {:else if officer && showPlanned && atCap}
+    <p id={CAP_ID} class="text-muted text-[13px]" data-testid="guild-raids-cap">{raidCopy.cap}</p>
+  {/if}
+  {#if formOpen && officer && planned !== undefined}
+    <RaidForm
+      mode="create"
+      {zones}
+      {guildTimezone}
+      {viewerTimezone}
+      lastRaid={lastPlannedRaid(planned)}
+      {plannedCount}
+      discordConnected={planned.some((raid) => raid.discord.connected)}
+      {settingsHref}
+      onSubmit={submitPlan}
+      onCancel={() => void closeForm()}
+    />
+  {/if}
+  {#if showPlanned && planned !== undefined}
+    <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock} {viewerTimezone} />
+    <h3 class="label text-muted mt-4" data-testid="guild-raid-nights-heading">
+      {raidCopy.subheads.raidNights}
+    </h3>
+  {/if}
   {#if rows.length === 0}
     <EmptyState
       message={publicView

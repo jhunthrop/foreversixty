@@ -255,6 +255,11 @@ export function guildSettingsHref(region: string, ruleset: string, name: string)
   return `${guildHref(region, ruleset, name)}/settings`;
 }
 
+/** One planned raid's page, under the guild page's own path (`guildHref`). */
+export function guildRaidHref(guildPath: string, raidId: number | string): string {
+  return `${guildPath}/raids/${encodeURIComponent(String(raidId))}`;
+}
+
 export function guildInviteHref(token: string): string {
   return `/guild/invite/${encodeURIComponent(token)}`;
 }
