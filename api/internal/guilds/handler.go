@@ -94,6 +94,16 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// put in context (the zero Actor for an anonymous request) and the visibility clause
 	// does the rest, a flagged report included (shown only to a verified member who owns it).
 	mux.HandleFunc("GET /v1/guilds/{id}/raids", s.raids)
+	// The raid calendar (design/specs/2026-10-26-guild-raids.md §9). The raid read is
+	// session-optional like /raids and answers 404 to anyone but a verified member (R1).
+	mux.HandleFunc("GET /v1/guilds/{id}/raids/{raid}", s.getRaid)
+	mux.HandleFunc("POST /v1/guilds/{id}/raids", auth.RequireSession(s.createRaid))
+	mux.HandleFunc("PATCH /v1/guilds/{id}/raids/{raid}", auth.RequireSession(s.patchRaid))
+	for action := range raidStatusMoves {
+		mux.HandleFunc("POST /v1/guilds/{id}/raids/{raid}/"+action, auth.RequireSession(s.raidStatusAction(action)))
+	}
+	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",
+		signupRateLimit()(auth.RequireSession(s.putSignup)))
 	// Progression is public (design spec §4.0) - no RequireSession wrap - and its counts
 	// depend on the viewer: the handler reads whatever actor the auth middleware put in
 	// context, and a verified member gets the guild's own numbers (private nights counted,

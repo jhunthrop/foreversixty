@@ -268,6 +268,9 @@ type HomeView struct {
 	// views are built from.
 	Members []RosterEntry `json:"members"`
 	Counts  RosterCounts  `json:"counts"`
+	// NextRaid is the guild band's raid line: the next planned or locked raid, absent when
+	// there is none (and for anyone but a verified member).
+	NextRaid *NextRaidView `json:"next_raid,omitempty"`
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
@@ -645,6 +648,12 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "home", err, "could not load that guild's home just now")
 		return
+	}
+	if verified {
+		if view.NextRaid, err = s.Store.NextRaidFor(r.Context(), guildID, actor.UserID, view.Viewer.CharacterKey, time.Now()); err != nil {
+			s.fail(w, r, "home", err, "could not load that guild's home just now")
+			return
+		}
 	}
 	s.markSupporters(r.Context(), view.Roster, view.Pending)
 	if verifiedOfficer {
