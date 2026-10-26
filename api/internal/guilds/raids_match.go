@@ -174,7 +174,8 @@ func (s *Store) SetMatch(ctx context.Context, guildID, raidID int64, reportID, h
 func (s *Store) requireGuildReport(ctx context.Context, guildID int64, reportID string) error {
 	var found bool
 	if err := s.Pool.QueryRow(ctx,
-		`select exists (select 1 from reports r where r.id = $1 and `+matchGuildIs("r", "$2")+` and r.status = 'complete')`,
+		`select exists (select 1 from reports r where r.id = $1 and `+matchGuildIs("r", "$2")+` and r.status = 'complete'
+		   and `+presence.EvidenceReport("r")+`)`,
 		reportID, guildID).Scan(&found); err != nil {
 		return fmt.Errorf("guilds: set match: read report: %w", err)
 	}

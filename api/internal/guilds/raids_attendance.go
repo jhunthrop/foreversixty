@@ -16,11 +16,16 @@ import (
 )
 
 // RecomputeAttendance rebuilds raidID's attendance rows from its sign-ups and its log. A raid
-// with no log has no rows. Excused flags are kept for characters that still have a row.
+// with no log has no rows. Excused flags are kept for characters that still have a row. A log
+// that is not evidence (made private or flagged after the match) leaves the stored rows as they
+// are: no reader counts them while it is not, and they count again once it is public.
 func (s *Store) RecomputeAttendance(ctx context.Context, raidID int64) error {
 	var guildID int64
 	var reportID *string
-	err := s.Pool.QueryRow(ctx, `select guild_id, report_id from guild_raids where id = $1`, raidID).Scan(&guildID, &reportID)
+	var evidence bool
+	err := s.Pool.QueryRow(ctx, `
+		select g.guild_id, g.report_id, coalesce(`+presence.EvidenceReport("r")+`, true)
+		from guild_raids g left join reports r on r.id = g.report_id where g.id = $1`, raidID).Scan(&guildID, &reportID, &evidence)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ErrNotFound
 	}
@@ -29,6 +34,9 @@ func (s *Store) RecomputeAttendance(ctx context.Context, raidID int64) error {
 	}
 	if reportID == nil {
 		return s.replaceAttendance(ctx, raidID, nil, nil)
+	}
+	if !evidence {
+		return nil
 	}
 	in, err := s.attendanceInputFor(ctx, guildID, raidID, *reportID)
 	if err != nil {
