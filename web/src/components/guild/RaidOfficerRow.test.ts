@@ -34,7 +34,6 @@ function html({ raid = plannedRaid(), readOnly = false, busy = null, line = null
       guildTimezone: CHICAGO,
       onEdit: () => {},
       onStatus: () => Promise.resolve(true),
-      storage: null,
     },
   }).body;
 }

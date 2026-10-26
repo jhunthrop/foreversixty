@@ -98,7 +98,7 @@ export function raidCount(raid: GuildRaidView): RaidCount {
   return {
     line: countLine(n, size),
     ratio: countRatio(n, size),
-    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps),
+    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps, raid.counts.late),
     fill: size === null || size <= 0 ? null : Math.min(100, Math.round((n / size) * 100)),
   };
 }
@@ -120,24 +120,5 @@ export function rememberStripRows(raid: GuildRaidView, storage: Pick<Storage, 's
     storage?.setItem(RAID_ROWS_KEY, String(Math.min(raid.viewer.characters.length, RESERVE_MAX_ROWS)));
   } catch {
     // A blocked store only costs the next visit its warm reserve.
-  }
-}
-
-/** The cancel confirm's `Post the cancellation to Discord`, remembered (spec 4 "Cancel confirm"). */
-export const POST_CANCEL_KEY = 'fs.guildRaid.postCancel';
-
-export function rememberedPostCancel(storage: Pick<Storage, 'getItem'> | null): boolean {
-  try {
-    return storage?.getItem(POST_CANCEL_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-export function rememberPostCancel(storage: Pick<Storage, 'setItem'> | null, post: boolean): void {
-  try {
-    storage?.setItem(POST_CANCEL_KEY, post ? '1' : '0');
-  } catch {
-    // The box only forgets its last value.
   }
 }

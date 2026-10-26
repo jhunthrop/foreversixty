@@ -1,6 +1,6 @@
 <!-- web/src/components/guild/RaidCancelConfirm.svelte -->
 <!-- The cancel confirm (raids spec 4 "Cancel confirm"): it replaces the officer row with the
-     question, the remembered `Post the cancellation to Discord` box, `Cancel the raid` and `Keep it`.
+     question, the `Post the cancellation to Discord` box (ticked when the raid posts by default), `Cancel the raid` and `Keep it`.
      Focus lands on Keep it, which stays live while the cancel is in flight; Escape acts as Keep it. -->
 <script lang="ts">
   import { focusOnMount } from '../../lib/guild/focus-now';
@@ -10,6 +10,7 @@
     postCancel,
     busy,
     buttonClass,
+    confirmClass,
     onPostChange,
     onConfirm,
     onKeep,
@@ -18,6 +19,8 @@
     /** The cancel is in flight. */
     busy: boolean;
     buttonClass: string;
+    /** `Cancel the raid`: the failure outline, the one destructive answer. */
+    confirmClass: string;
     onPostChange: (post: boolean) => void;
     onConfirm: () => void;
     onKeep: () => void;
@@ -52,7 +55,7 @@
   <div class="flex flex-wrap gap-2">
     <button
       type="button"
-      class={buttonClass}
+      class={confirmClass}
       disabled={busy}
       onclick={onConfirm}
       data-testid="raid-cancel-confirm-button"

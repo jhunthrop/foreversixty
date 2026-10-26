@@ -199,7 +199,7 @@
       <div class="relative col-span-2 row-start-3 md:col-span-1 md:col-start-4 md:row-start-1">
         <input
           type="text"
-          class="border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold h-11 w-full min-w-0 border pr-16 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed"
+          class="border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold h-11 w-full min-w-0 border pr-16 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
           maxlength={NOTE_MAX}
           placeholder={raidCopy.placeholders.note}
           aria-label={raidCopy.placeholders.note}

@@ -90,13 +90,13 @@ describe('RaidBandLine sentence', () => {
 
   it('reads the unsigned sentence', () => {
     expect(text(html(), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm, you have not signed up, 23 of 40 signed up.',
+      'Thursday 8 pm, you have not signed up yet. 23 of 40 are in.',
     );
   });
 
-  it('reads `{n} signed up` while the size is unknown', () => {
+  it('reads `{n} are in` while unsigned and the size is unknown', () => {
     expect(text(html({ nextRaid: raid({ size: null }) }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm, you have not signed up, 23 signed up.',
+      'Thursday 8 pm, you have not signed up yet. 23 are in.',
     );
   });
 
@@ -115,7 +115,7 @@ describe('RaidBandLine sentence', () => {
 
   it('adds the guild clock when the offsets differ', () => {
     expect(text(html({ viewerTimezone: 'America/New_York' }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 9 pm (8 pm guild time), you have not signed up, 23 of 40 signed up.',
+      'Thursday 9 pm (8 pm guild time), you have not signed up yet. 23 of 40 are in.',
     );
   });
 });
@@ -134,9 +134,32 @@ describe('RaidBandLine controls', () => {
     expect(body).toMatch(/aria-checked="true"[^>]*data-testid="guild-raid-line-segments-late"/);
   });
 
-  it('leaves the segments unchecked when the sign-up is another character', () => {
-    const body = html({ nextRaid: raid({ own: { character_key: ALT, state: 'in', role: 'dps' } }) });
+  const TWO = [
+    { character_key: KEY, name: 'Kraggor' },
+    { character_key: ALT, name: 'Sunderfel' },
+  ];
+
+  it('acts on the character the sentence names when that one is In or Late', () => {
+    for (const state of ['in', 'late'] as const) {
+      const body = html({
+        nextRaid: raid({ own: { character_key: ALT, state, role: 'healer' } }),
+        ownCharacters: TWO,
+      });
+      expect(text(body, 'guild-raid-line-sentence')).toContain('on Sunderfel as Healer');
+      expect(body).toMatch(
+        new RegExp(`aria-checked="true"[^>]*data-testid="guild-raid-line-segments-${state}"`),
+      );
+      expect(body).toContain('aria-label="Sunderfel\'s sign-up"');
+    }
+  });
+
+  it('acts on the current character when the other one is only on the Bench or Out', () => {
+    const body = html({
+      nextRaid: raid({ own: { character_key: ALT, state: 'bench', role: 'dps' } }),
+      ownCharacters: TWO,
+    });
     expect(body).not.toContain('aria-checked="true"');
+    expect(body).toContain('aria-label="Kraggor\'s sign-up"');
   });
 
   it('draws no segments without a current character', () => {

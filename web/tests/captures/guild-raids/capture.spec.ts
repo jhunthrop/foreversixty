@@ -256,6 +256,15 @@ atWidths('5 raid page member in', ALL, async (page, width) => {
   record('roster-row', width, [...new Set(await heightsOf(bare))]);
 });
 
+// The viewer in New York, the guild on Chicago: the band's when line carries the guild-time label.
+atWidths('5 raid page member in, viewer in New York', PAIR, async (page, width) => {
+  const ny = await page.context().browser()!.newContext(AWAY);
+  const away = await ny.newPage();
+  await openRaid(away, { width, stub: { viewer: 'member', raids: [memberIn()] } });
+  await shoot(away, 5, 'page-member-in-new-york', width, raidBand(away));
+  await ny.close();
+});
+
 atWidths('6 raid page member unsigned', W360_390_1440, async (page, width) => {
   await openRaid(page, { width, stub: { viewer: 'member', raids: [memberUnsigned()] } });
   await shoot(page, 6, 'page-member-unsigned', width, raidBand(page));
@@ -300,6 +309,13 @@ atWidths('9 raid page officer', [390, 1440, 2000], async (page, width) => {
   await openRaid(page, { width, stub: { viewer: 'officer' } });
   await shoot(page, 9, 'page-officer', width, raidBand(page));
   await cropOf(page, page.getByTestId('raid-roster'), `guild-raids-09-page-officer-roster-${width}.png`);
+  if (width === 1440) {
+    await page.setViewportSize({ width: 1024, height: VIEWPORT_HEIGHT });
+    await settle(page);
+    await cropOf(page, page.getByTestId('raid-roster'), `guild-raids-09-page-officer-roster-1024.png`);
+    await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
+    await settle(page);
+  }
   await page.getByTestId('raid-officer-cancel').click();
   await page.getByTestId('raid-cancel-keep').waitFor();
   await settle(page);
@@ -328,27 +344,12 @@ atWidths('11 raid page visitor and unverified', W360_390_1440, async (page, widt
 
 // ---- 12: loading reserves beside ready, CLS printed ----------------------------------------
 
-async function warm(page: Page, key: string, rows: string): Promise<void> {
-  await page.addInitScript(
-    ([k, v]) => {
-      try {
-        window.localStorage.setItem(k, v);
-      } catch {
-        // Captures only: a page without storage draws the one-row reserve.
-      }
-    },
-    [key, rows] as const,
-  );
-}
-
 atWidths('12 loading beside ready', PAIR, async (page, width) => {
   const surfaces = [
     {
       name: 'page',
       url: raidUrl(ONYXIA_ID),
       hold: `**/v1/guilds/${GUILD_ID}/raids/${ONYXIA_ID}`,
-      key: 'fs.guildRaid.rows',
-      rows: '2',
       ready: 'raid-page',
       loading: 'raid-page-loading',
     },
@@ -356,8 +357,6 @@ atWidths('12 loading beside ready', PAIR, async (page, width) => {
       name: 'tab',
       url: `${GUILD_URL}#raids`,
       hold: `**/v1/guilds/${GUILD_ID}/raids`,
-      key: `fs.guildPlanned.${GUILD_ID}`,
-      rows: '3',
       ready: 'guild-planned',
       loading: 'guild-planned-reserve',
     },
@@ -367,11 +366,18 @@ atWidths('12 loading beside ready', PAIR, async (page, width) => {
     const on = index === 0 ? page : await page.context().newPage();
     await on.setViewportSize({ width, height: VIEWPORT_HEIGHT });
     await stubGuildRaids(on, { viewer: 'member', raids: threePlanned() });
-    const held = await heldRoute(on, s.hold, (route) => route.fallback());
-    await warm(on, s.key, s.rows);
-    await trackLayoutShift(on);
     await on.clock.install({ time: NOW });
-    await on.goto(s.url);
+    // A real warm visit first: the page itself stores the strip rows, the planned rows and the
+    // guild band's member height that the measured visit then reserves. The read cache (`fs.q.*`)
+    // is then dropped, so the measured visit loads every read cold behind those reserves.
+    await gotoHydrated(on, s.url, s.ready);
+    await settle(on);
+    await on.evaluate(() => {
+      for (const key of Object.keys(localStorage)) if (key.startsWith('fs.q.')) localStorage.removeItem(key);
+    });
+    const held = await heldRoute(on, s.hold, (route) => route.fallback());
+    await trackLayoutShift(on);
+    await on.reload();
     await held.started;
     await on.getByTestId(s.loading).waitFor();
     await settle(on);

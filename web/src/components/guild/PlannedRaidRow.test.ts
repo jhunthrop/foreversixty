@@ -42,14 +42,32 @@ describe('PlannedRaidRow', () => {
   it('draws the desktop cells in order, in the viewer’s zone', () => {
     const cells = desktop(html());
     expect(cells).toBe(
-      "Thu 10 Dec Onyxia's Lair Thursday 10 December, 9:00 pm 8:00 pm CST guild time in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS In · DPS ›",
+      "Thu 10 Dec Onyxia's Lair Thursday 10 December, 9:00 pm 8:00 pm CST guild time in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS · 2 late In · DPS ›",
     );
   });
 
-  it('runs the phone stack as three lines beside the date block', () => {
-    expect(phone(html())).toBe(
-      "Thu 10 Dec Onyxia's Lair In · DPS Thursday 10 December, 9:00 pm · 8:00 pm CST guild time · in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS",
+  it('runs the phone stack as four lines beside the date block, the breakdown on its own', () => {
+    const markup = html();
+    expect(phone(markup)).toBe(
+      "Thu 10 Dec Onyxia's Lair In · DPS Thursday 10 December, 9:00 pm · 8:00 pm CST guild time · in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS · 2 late",
     );
+    const breakdown = between(markup, 'planned-raid-7-phone-breakdown', '__end__');
+    expect(markup).toMatch(
+      /class="text-muted block text-\[12px\] leading-4" data-testid="planned-raid-7-phone-breakdown"/,
+    );
+    expect(text(breakdown)).toContain('3 tanks · 7 healers · 13 DPS · 2 late');
+  });
+
+  it('wraps a long phone title to two lines instead of cutting it', () => {
+    const phoneMarkup = between(html(), 'planned-raid-7-phone', '__end__');
+    expect(phoneMarkup).toMatch(/line-clamp-2 text-\[15px\] font-semibold/);
+  });
+
+  it('sets the desktop bar on the count line, the breakdown under them', () => {
+    expect(html()).toMatch(
+      /data-testid="planned-raid-7-desktop-count"[^>]*>[\s\S]*?23\/40[\s\S]*?bg-line-soft block h-2[\s\S]*?<\/span><\/span>/,
+    );
+    expect(html()).toMatch(/class="flex items-center gap-2" data-testid="planned-raid-7-desktop-count"/);
   });
 
   it('drops the guild-time label when the offsets match, and shows the zone under a custom title', () => {
@@ -81,10 +99,31 @@ describe('PlannedRaidRow', () => {
     expect(desktop(html())).not.toContain('Planned');
   });
 
-  it('puts the status chip before the viewer chip, the mock order', () => {
+  it('shows a cancelled row with Cancelled alone, its countdown and bar muted', () => {
     const cancelled = html(plannedRaid({ status: 'cancelled' }));
-    expect(desktop(cancelled).indexOf('Cancelled')).toBeLessThan(desktop(cancelled).indexOf('In · DPS'));
-    expect(phone(cancelled).indexOf('Cancelled')).toBeLessThan(phone(cancelled).indexOf('In · DPS'));
+    expect(desktop(cancelled)).not.toContain('In · DPS');
+    expect(phone(cancelled)).not.toContain('In · DPS');
+    expect(phone(cancelled)).toContain('Cancelled');
+    expect(cancelled).not.toMatch(/text-gold">/);
+    expect(cancelled).toMatch(/text-muted">in 2 days/);
+    expect(cancelled).toContain('bg-muted block h-full');
+    expect(cancelled).not.toContain('bg-gold block h-full');
+  });
+
+  it('puts the status chip before the viewer chip on desktop, and one chip on phone', () => {
+    const locked = html(plannedRaid({ status: 'locked' }));
+    expect(desktop(locked).indexOf('Locked')).toBeLessThan(desktop(locked).indexOf('In · DPS'));
+    expect(phone(locked)).toContain('Locked');
+    expect(phone(locked)).not.toContain('In · DPS');
+    expect(phone(html())).toContain('In · DPS');
+  });
+
+  it('mutes the countdown once the raid has started or ended', () => {
+    const started = html(plannedRaid(), NEW_YORK, new Date('2026-12-11T02:30:00Z'));
+    expect(started).toMatch(/text-muted">started 30 min ago/);
+    const ended = html(plannedRaid(), NEW_YORK, new Date('2026-12-11T06:00:00Z'));
+    expect(ended).toMatch(/text-muted">ended 1 h ago/);
+    expect(ended).toContain('bg-muted block h-full');
   });
 
   it('keeps the spaces of the phone separators in the markup itself', () => {

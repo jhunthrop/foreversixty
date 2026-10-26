@@ -51,6 +51,13 @@
   import { guildHomeCopy } from '../lib/guild/copy';
   import { officerToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
   import { browserStorage, plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
+  import {
+    bandHoldKey,
+    forgetBandHold,
+    readBandHold,
+    rememberBandHold,
+    type BandLayout,
+  } from '../lib/guild/band-hold';
   import { PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
@@ -534,13 +541,36 @@
         raidsStatus = 'missing';
       });
   });
-  /** Raids spec 4: a verified viewer's tab reserves the planned rows it last drew while it loads. */
+  /** Raids spec 4: a verified viewer's tab reserves the planned rows it last drew while it loads, from
+   *  the band hold's first paint (a viewer last seen verified) until /home names the role. */
   const plannedReserve = $derived(
-    guildId !== null && role !== 'public' ? plannedReserveRows(guildId, browserStorage()) : null,
+    guildId !== null && (role !== 'public' || holdBand)
+      ? plannedReserveRows(guildId, browserStorage())
+      : null,
   );
   const guildPath = $derived(
     resolved !== null && home !== null ? guildHref(resolved.region, resolved.ruleset, home.guild.name) : '',
   );
+
+  /** The band's member lines (and the claim line /v1/me adds) arrive after the band paints; a viewer
+   *  last seen verified here gets the band header's last height while /home is in flight, so the
+   *  tabs under it never move (band-hold.ts). */
+  const bandLayout: BandLayout =
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches ? 'desktop' : 'phone';
+  const bandKey = $derived(
+    resolved === null ? null : bandHoldKey(resolved.region, resolved.ruleset, resolved.slug),
+  );
+  const heldBand = $derived(bandKey === null ? null : readBandHold(browserStorage(), bandKey, bandLayout));
+  const holdBand = $derived(
+    heldBand !== null && homeStatus !== 'ready' && (!meResolved || homeStatus === 'loading'),
+  );
+  let bandHeaderHeight = $state(0);
+  $effect(() => {
+    if (bandKey === null || homeStatus !== 'ready' || !meResolved || bandHeaderHeight <= 0) return;
+    if (myGuildMembership?.verified === true) {
+      rememberBandHold(browserStorage(), bandKey, bandLayout, bandHeaderHeight);
+    } else forgetBandHold(browserStorage(), bandKey);
+  });
   let progression = $state<GuildProgressionPage | null>(null);
   let progressionStatus = $state<TabFetchStatus>('idle');
   $effect(() => {
@@ -745,7 +775,12 @@
             />
           </div>
         {/if}
-        <header class="relative z-10 flex flex-col gap-3">
+        <header
+          class="relative z-10 flex flex-col gap-3"
+          style:min-height={holdBand ? `${heldBand}px` : undefined}
+          bind:offsetHeight={bandHeaderHeight}
+          data-testid="guild-band-header"
+        >
           <span class="label text-gold flex items-center gap-2.5">
             <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>
             Guild
@@ -862,11 +897,11 @@
                   {/if}
                 {/if}
                 {#if role === 'member' && home.standing !== null && home.standing !== undefined}
+                  <!-- Guild spec 4.A.2: the fails read --text (a to-do list, not a failure); every check
+                       passing reads green. -->
                   <p
-                    class="text-[13px]"
-                    style={home.standing.needs_before_next_raid.length === 0
-                      ? 'color:#7bff5c'
-                      : 'color:#ff6b5c'}
+                    class="text-[13px] {home.standing.needs_before_next_raid.length === 0 ? '' : 'text-text'}"
+                    style={home.standing.needs_before_next_raid.length === 0 ? 'color:#7bff5c' : undefined}
                     data-testid="guild-overview-needs"
                   >
                     {needsBeforeSentence(

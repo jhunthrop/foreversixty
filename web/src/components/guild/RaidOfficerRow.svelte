@@ -7,10 +7,8 @@
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
-  import { browserStorage } from '../../lib/guild/planned-reserve';
   import { copyList, raidCopy } from '../../lib/guild/raid-copy';
   import { splitAtLink } from '../../lib/guild/raid-form';
-  import { rememberPostCancel, rememberedPostCancel } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
@@ -20,6 +18,9 @@
   /** `Copied` stays this long (spec 4). */
   const COPIED_MS = 4000;
   const BUTTON = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4 active:bg-card-top disabled:cursor-not-allowed disabled:opacity-50`;
+  /** The confirm's destructive answer: the same outline in the failure colour. */
+  const WIPE_BUTTON =
+    'rounded-control border-wipe/60 text-wipe hover:border-wipe hover:bg-wipe/10 active:bg-wipe/15 inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase transition-colors duration-[120ms] disabled:cursor-not-allowed disabled:opacity-50';
 
   let {
     raid,
@@ -32,7 +33,6 @@
     onEdit,
     onStatus,
     writeClipboard = (text: string) => navigator.clipboard.writeText(text),
-    storage = browserStorage(),
   }: {
     raid: GuildRaidView;
     /** Officer-read-only (gate spec 3.2). */
@@ -47,11 +47,11 @@
     /** Resolves false on a refusal (the line says why). */
     onStatus: (action: RaidStatusAction, postToDiscord?: boolean) => Promise<boolean>;
     writeClipboard?: (text: string) => Promise<void>;
-    storage?: Pick<Storage, 'getItem' | 'setItem'> | null;
   } = $props();
 
   let confirming = $state(false);
-  let postCancel = $state(rememberedPostCancel(storage));
+  /** Ticked when the guild's channel posts raids by default (spec 4 "Cancel confirm"). */
+  let postCancel = $state(false);
   let copied = $state(false);
   let copyFailed = $state<string | null>(null);
   let copiedTimer: ReturnType<typeof setTimeout> | undefined;
@@ -74,6 +74,7 @@
   );
 
   function openConfirm(): void {
+    postCancel = raid.discord.post_default;
     confirming = true;
   }
 
@@ -85,11 +86,6 @@
 
   async function confirmCancel(): Promise<void> {
     if (await onStatus('cancel', postCancel)) confirming = false;
-  }
-
-  function setPostCancel(post: boolean): void {
-    postCancel = post;
-    rememberPostCancel(storage, post);
   }
 
   async function copy(): Promise<void> {
@@ -116,7 +112,8 @@
       {postCancel}
       busy={busy === 'cancel'}
       buttonClass={BUTTON}
-      onPostChange={setPostCancel}
+      confirmClass={WIPE_BUTTON}
+      onPostChange={(post) => (postCancel = post)}
       onConfirm={() => void confirmCancel()}
       onKeep={() => void keep()}
     />

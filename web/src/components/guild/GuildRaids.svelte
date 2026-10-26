@@ -155,14 +155,14 @@
 <section class="flex flex-col gap-2" data-testid="guild-raids-tab">
   <div class="flex items-center justify-between gap-3" data-testid="guild-raids-header">
     <h2 class="section-title text-[18px]">Raids</h2>
-    {#if officer && showPlanned}
+    <!-- Hidden while the form is open, so the form's own submit is the screen's one fill (3.1). -->
+    {#if officer && showPlanned && !formOpen}
       <button
         type="button"
         bind:this={planButton}
         class="{PRIMARY_BUTTON_FIXED} focus-visible:outline-gold px-4 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#cfa64a] disabled:cursor-not-allowed disabled:opacity-50"
         disabled={readOnly || atCap}
         aria-describedby={planDescribedBy}
-        aria-expanded={formOpen}
         onclick={() => (formOpen = true)}
         data-testid="guild-raids-plan">{raidCopy.planButton}</button
       >

@@ -135,6 +135,21 @@ describe('RaidForm', () => {
     expect(html({ plannedCount: 8 })).not.toContain('raid-form-repeat-helper');
   });
 
+  it('draws the repeat at the cap in the disabled look, described by the helper', () => {
+    const capped = html({ plannedCount: 10 });
+    expect(tag(capped, 'raid-form-repeat-label')).toMatch(/opacity-50/);
+    expect(tag(capped, 'raid-form-repeat')).toContain('aria-describedby="raid-form-create-repeat-helper"');
+    expect(tag(html({ plannedCount: 8 }), 'raid-form-repeat-label')).not.toMatch(/opacity-50/);
+  });
+
+  it('gives every select the FilterSelect chrome: no native arrow, the shared chevron', () => {
+    const markup = html({ last: lastRaid() });
+    for (const field of ['zone', 'duration', 'timezone']) {
+      expect(tag(markup, `raid-form-${field}`)).toMatch(/appearance-none/);
+    }
+    expect(markup.match(/data-testid="select-chevron"/g)?.length).toBe(3);
+  });
+
   it('shows the Settings line and no box without a Discord channel', () => {
     const markup = html();
     expect(markup).not.toContain('data-testid="raid-form-discord"');

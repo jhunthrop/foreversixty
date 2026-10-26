@@ -16,6 +16,7 @@ function html(postCancel: boolean, busy: boolean): string {
       postCancel,
       busy,
       buttonClass: 'btn',
+      confirmClass: 'btn-wipe',
       onPostChange: () => {},
       onConfirm: () => {},
       onKeep: () => {},
@@ -38,8 +39,14 @@ describe('RaidCancelConfirm', () => {
     expect(body).not.toMatch(DISABLED);
   });
 
-  it('ticks the remembered choice', () => {
+  it('ticks the box when the raid posts to Discord by default', () => {
     expect(html(true, false)).toMatch(/<input[^>]*checked[^>]*data-testid="raid-cancel-discord"/);
+  });
+
+  it('draws Cancel the raid in the failure outline and Keep it in the plain one', () => {
+    const body = html(false, false);
+    expect(body).toMatch(/<button[^>]*class="btn-wipe"[^>]*data-testid="raid-cancel-confirm-button"/);
+    expect(body).toMatch(/<button[^>]*class="btn"[^>]*data-testid="raid-cancel-keep"/);
   });
 
   it('reads Cancelling… and holds the confirm while the cancel is in flight, Keep it live', () => {

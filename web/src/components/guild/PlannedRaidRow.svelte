@@ -17,10 +17,12 @@
   }: { raid: GuildRaidView; href: string; now: Date; viewerTimezone: string; locale?: string } = $props();
 
   const view = $derived(plannedRowView(raid, now, viewerTimezone, locale));
-  /** The Not signed up chip is the row's gold mark, so the countdown steps down to muted. */
+  /** The Not signed up chip is the row's gold mark, so the countdown steps down to muted; a
+   *  cancelled or started raid has no gold at all. */
   const countdownTone = $derived(
-    view.viewer !== null && view.viewer.state === null ? 'text-muted' : 'text-gold',
+    view.quiet || (view.viewer !== null && view.viewer.state === null) ? 'text-muted' : 'text-gold',
   );
+  const fillTone = $derived(view.quiet ? 'bg-muted' : 'bg-gold');
   const titleTone = $derived(view.cancelled ? 'text-muted' : 'text-strong');
   const countTone = $derived(view.cancelled ? 'text-muted' : 'text-strong');
   const testid = $derived(`planned-raid-${raid.id}`);
@@ -39,12 +41,13 @@
   </span>
 {/snippet}
 
-<!-- The status chip leads the viewer chip, the mock's order (`Cancelled`, then `In · Tank`). -->
-{#snippet chips(layout: string)}
+<!-- The status chip leads the viewer chip (spec 3.1). Phone line 1 holds one chip: the status
+     when there is one, else the viewer's. -->
+{#snippet chips(layout: 'desktop' | 'phone')}
   {#if view.status !== null}
     <RaidChip kind="status" status={view.status} testid={`${testid}-${layout}-status-chip`} />
   {/if}
-  {#if view.viewer !== null}
+  {#if view.viewer !== null && (layout === 'desktop' || view.status === null)}
     <RaidChip
       kind="viewer"
       state={view.viewer.state}
@@ -57,7 +60,7 @@
 {#snippet bar(width: string)}
   {#if view.fill !== null}
     <span class="bg-line-soft block h-2 overflow-hidden rounded-full {width}" aria-hidden="true">
-      <span class="bg-gold block h-full" style:width={`${view.fill}%`}></span>
+      <span class="{fillTone} block h-full" style:width={`${view.fill}%`}></span>
     </span>
   {/if}
 {/snippet}
@@ -88,8 +91,11 @@
       <span class="block font-mono text-[12px] tabular-nums {countdownTone}">{view.countdown}</span>
     </span>
     <span class="flex min-w-0 flex-col gap-1">
-      <span class="font-mono text-[15px] tabular-nums {countTone}">{view.count}</span>
-      {@render bar('w-24')}
+      <span class="flex items-center gap-2" data-testid={`${testid}-desktop-count`}
+        ><span class="font-mono text-[15px] tabular-nums {countTone}">{view.count}</span>{@render bar(
+          'w-24 shrink-0',
+        )}</span
+      >
       <span class="text-muted truncate text-[12px]">{view.breakdown}</span>
     </span>
     <span class="flex flex-wrap items-center justify-end gap-1.5">{@render chips('desktop')}</span>
@@ -102,8 +108,9 @@
   >
     {@render dateBlock('h-[52px] w-12')}
     <span class="flex min-w-0 flex-col gap-1">
-      <span class="flex min-w-0 items-center justify-between gap-2">
-        <span class="truncate text-[15px] font-semibold {titleTone}" title={view.title}>{view.title}</span>
+      <span class="flex min-w-0 items-start justify-between gap-2">
+        <span class="line-clamp-2 text-[15px] font-semibold {titleTone}" title={view.title}>{view.title}</span
+        >
         <span class="flex shrink-0 items-center gap-1.5">{@render chips('phone')}</span>
       </span>
       <span class="text-[12px]">
@@ -113,11 +120,13 @@
           class="font-mono tabular-nums {countdownTone}">{SEP}{view.countdown}</span
         >
       </span>
-      <span class="flex min-w-0 items-center gap-2 text-[12px]">
+      <span class="flex min-w-0 items-center gap-2">
         <span class="font-mono text-[13px] tabular-nums {countTone}">{view.count}</span>
         {@render bar('w-16 shrink-0')}
-        <span class="text-muted truncate">{view.breakdown}</span>
       </span>
+      <span class="text-muted block text-[12px] leading-4" data-testid={`${testid}-phone-breakdown`}
+        >{view.breakdown}</span
+      >
     </span>
   </span>
 </a>

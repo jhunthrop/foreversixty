@@ -159,12 +159,20 @@ export function countRatio(n: number, size: number | null): string {
   return size === null ? `${n}` : `${n}/${size}`;
 }
 
-export function roleBreakdown(tanks: number, healers: number, dps: number): string {
-  return [
+/** `3 tanks · 7 healers · 13 DPS · 1 late`: the roles count In rows, so the late clause (only when
+ *  someone is late) makes the parts add up to the signed-up count. */
+export function roleBreakdown(tanks: number, healers: number, dps: number, late: number): string {
+  const parts = [
     `${tanks} ${plural(tanks, 'tank', 'tanks')}`,
     `${healers} ${plural(healers, 'healer', 'healers')}`,
     `${dps} DPS`,
-  ].join(' · ');
+  ];
+  return (late > 0 ? [...parts, `${late} late`] : parts).join(' · ');
+}
+
+/** `23 of 40 are in`; `23 are in` while the size is unknown: the unsigned band line's count. */
+function inLine(n: number, size: number | null): string {
+  return size === null ? `${n} are in` : `${n} of ${size} are in`;
 }
 
 export function showAll(n: number): string {
@@ -261,7 +269,7 @@ export interface BandLineArgs {
 
 /** The clause around its state word: `you are ` / `In` / ` as DPS`; no word while unsigned. */
 function bandClause({ state, role, characterName }: BandLineArgs): BandLineParts {
-  if (state === null) return { head: 'you have not signed up', word: '', tail: '' };
+  if (state === null) return { head: 'you have not signed up yet', word: '', tail: '' };
   const word = SIGNED_UP_STATE_WORDS[state];
   if (state === 'bench') return { head: 'you are on the ', word, tail: '' };
   if (state === 'out') return { head: 'you are ', word, tail: '' };
@@ -279,11 +287,9 @@ export interface BandLineParts {
 
 export function bandLineParts(args: BandLineArgs): BandLineParts {
   const clause = bandClause(args);
-  return {
-    head: `${args.when}, ${clause.head}`,
-    word: clause.word,
-    tail: `${clause.tail}, ${countLine(args.n, args.size)}.`,
-  };
+  const count =
+    args.state === null ? `. ${inLine(args.n, args.size)}.` : `, ${countLine(args.n, args.size)}.`;
+  return { head: `${args.when}, ${clause.head}`, word: clause.word, tail: `${clause.tail}${count}` };
 }
 
 /** The guild band's raid sentence: `Tonight 8 pm, you are In as DPS, 23 of 40 signed up.` */
@@ -314,8 +320,13 @@ function namesLine(label: string, rows: readonly GuildRaidSignup[]): string | nu
   return rows.length === 0 ? null : `${label}: ${rows.map((row) => row.name).join(', ')}`;
 }
 
-function breakdownList(tanks: number, healers: number, dps: number): string {
-  return roleBreakdown(tanks, healers, dps).replaceAll(' · ', ', ');
+function breakdownList(counts: GuildRaidView['counts']): string {
+  return roleBreakdown(counts.tanks, counts.healers, counts.dps, counts.late).replaceAll(' · ', ', ');
+}
+
+/** Discord's `<t:{unix}:F>` stamp, which each reader's client draws in their own zone. */
+function discordStamp(at: Date): string {
+  return `<t:${Math.floor(at.getTime() / 1000)}:F>`;
 }
 
 /** Spec 4 "Copy the sign-up list": plain text in guild time, groups in roster order, empty groups left out. */
@@ -323,7 +334,7 @@ export function copyList(view: GuildRaidView, tz: string, locale: string = DEFAU
   const startsAt = new Date(view.starts_at);
   const heads = raidCopy.subheads;
   const { counts } = view;
-  const header = `${view.title} · ${dateLabel(startsAt, tz, locale)}, ${guildClock(startsAt, tz, locale)}`;
+  const header = `${view.title} · ${dateLabel(startsAt, tz, locale)}, ${guildClock(startsAt, tz, locale)} · ${discordStamp(startsAt)}`;
   const size =
     view.size === null
       ? `${counts.in + counts.late} signed up`
@@ -336,6 +347,6 @@ export function copyList(view: GuildRaidView, tz: string, locale: string = DEFAU
     namesLine(heads.bench, signupsIn(view.signups, 'bench')),
     namesLine(heads.out, signupsIn(view.signups, 'out')),
   ];
-  const lines = [header, `${size}: ${breakdownList(counts.tanks, counts.healers, counts.dps)}`];
+  const lines = [header, `${size}: ${breakdownList(counts)}`];
   return [...lines, ...groups.filter((line): line is string => line !== null)].join('\n');
 }

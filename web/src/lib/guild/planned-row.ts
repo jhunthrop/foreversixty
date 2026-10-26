@@ -36,8 +36,17 @@ export interface PlannedRowView {
   fill: number | null;
   /** The status chip, only when not `planned`. */
   status: RaidChipStatus | null;
+  /** The viewer chip; `null` on a cancelled raid, where a sign-up no longer matters. */
   viewer: ViewerAnswer | null;
   cancelled: boolean;
+  /** Cancelled, or already started: no gold on its countdown or bar (spec 3.1 row states). */
+  quiet: boolean;
+}
+
+/** Gold marks only a raid still ahead: a cancelled raid, or one whose start has passed, draws its
+ *  countdown and bar fill muted (spec 3.1, 3.2). */
+export function raidQuiet(raid: GuildRaidView, now: Date): boolean {
+  return raid.status === 'cancelled' || now.getTime() >= Date.parse(raid.starts_at);
 }
 
 export function raidEndsAt(raid: GuildRaidView): Date {
@@ -91,11 +100,12 @@ export function plannedRowView(
     guildTime: offsetsDiffer(startsAt, viewerTz, guildTz) ? guildTimeLabel(startsAt, guildTz, locale) : null,
     countdown: countdown(startsAt, raidEndsAt(raid), now),
     count: raid.size === null ? countLine(n, null) : countRatio(n, raid.size),
-    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps),
+    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps, raid.counts.late),
     fill: raid.size === null || raid.size <= 0 ? null : Math.min(100, Math.round((n / raid.size) * 100)),
     status: status === 'planned' ? null : status,
-    viewer: viewerAnswer(raid),
+    viewer: raid.status === 'cancelled' ? null : viewerAnswer(raid),
     cancelled: raid.status === 'cancelled',
+    quiet: raidQuiet(raid, now),
   };
 }
 

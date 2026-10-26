@@ -86,6 +86,13 @@ describe('SignupSegments', () => {
     expect(markup).toContain('aria-describedby="raid-state-7"');
   });
 
+  it('draws a disabled group in the shared disabled look, and an enabled one at full strength', () => {
+    const group = (markup: string): string => /<div[^>]*role="radiogroup"[^>]*>/.exec(markup)?.[0] ?? '';
+    expect(group(html({ value: 'in', disabled: true }))).toMatch(/\bopacity-50\b/);
+    expect(group(html({ value: 'in' }))).not.toMatch(/\bopacity-50\b/);
+    expect(segment(html({ value: 'in', disabled: true }), 'in')).toContain('disabled:cursor-not-allowed');
+  });
+
   it('carries no description while enabled', () => {
     const markup = html({ value: 'in', describedBy: 'raid-state-7' });
     expect(markup).not.toContain('aria-describedby');

@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GuildRaidView } from '../lib/guild/api';
 import { guildClaimCopy } from '../lib/guild/copy';
 import { raidCopy } from '../lib/guild/raid-copy';
-import { RAID_BAND_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
+import { RAID_BAND_LINES_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
 import { RAID_ROWS_KEY } from '../lib/guild/raid-page';
 import {
   RaidPageController,
@@ -101,10 +101,32 @@ describe('the band', () => {
   it('reads the count line with the bar, and no bar while the size is unknown', () => {
     const body = html();
     expect(text(between(body, 'raid-count', 'guild-tabs'))).toBe(
-      '23 of 40 signed up · 3 tanks · 7 healers · 13 DPS',
+      '23 of 40 signed up · 3 tanks · 7 healers · 13 DPS · 2 late',
     );
     expect(body).toContain('width: 57%');
     expect(ready(plannedRaid({ size: null }))).not.toContain('bg-gold absolute');
+  });
+
+  it('marks a raid still ahead in gold, and a cancelled or started one muted', () => {
+    const live = between(html(), 'raid-when', 'guild-tabs');
+    expect(live).toMatch(/text-gold font-mono">in 2 days/);
+    expect(live).toContain('bg-gold absolute');
+    const cancelled = between(ready(plannedRaid({ status: 'cancelled' })), 'raid-when', 'guild-tabs');
+    expect(cancelled).not.toContain('text-gold');
+    expect(cancelled).not.toContain('bg-gold');
+    expect(cancelled).toMatch(/text-muted font-mono">in 2 days/);
+    expect(cancelled).toContain('bg-muted absolute');
+    expect(cancelled).toMatch(/text-muted font-mono text-\[15px\]">23 of 40 signed up/);
+    const controller = new RaidPageController(DEPS, ROUTE, {
+      guild: GUILD,
+      access: 'member',
+      load: 'ready',
+      raid: plannedRaid(),
+    });
+    const started = render(GuildRaid, {
+      props: { path: ROUTE, controller, now: new Date('2026-12-11T02:30:00Z'), viewerTimezone: CHICAGO },
+    }).body;
+    expect(between(started, 'raid-when', 'guild-tabs')).toMatch(/text-muted font-mono">started 30 min ago/);
   });
 
   it('draws the officer row for officers only', () => {
@@ -247,10 +269,20 @@ describe('not visible (R1)', () => {
 });
 
 describe('loading', () => {
-  it('reserves the band, one strip row and the roster, and says Loading the raid', () => {
+  it('draws the back link, the eyebrow and the tabs for real while the raid loads', () => {
+    const body = html({ load: 'loading', raid: null });
+    expect(text(between(body, 'raid-back-link', 'raid-band-skeleton'))).toContain(
+      `${raidCopy.backLink('Olympus XXVII')} ${raidCopy.page.eyebrow}`,
+    );
+    expect(body).toContain(`href="${GUILD_PATH}#raids"`);
+    expect(body).toMatch(/aria-selected="true"[^>]*data-guild-tab="raids"/);
+    expect(body.indexOf('raid-band-skeleton')).toBeLessThan(body.indexOf('data-guild-tab="raids"'));
+  });
+
+  it('reserves the band lines, one strip row and the roster, and says Loading the raid', () => {
     const body = html({ load: 'loading', raid: null });
     expect(body).toContain(raidCopy.page.loading);
-    expect(body).toContain(RAID_BAND_MIN);
+    expect(body).toContain(RAID_BAND_LINES_MIN);
     expect(body).toContain('--strip-rows: 1');
     expect(body).toContain(RAID_STRIP_RESERVE);
     expect(body).toContain('min-h-[560px] md:min-h-[420px]');
