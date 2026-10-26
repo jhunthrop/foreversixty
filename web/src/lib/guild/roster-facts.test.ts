@@ -22,6 +22,33 @@ describe('rosterStatChips', () => {
   });
 });
 
+describe('rosterStatChips in raid mode', () => {
+  const base = rowNamed('Kraggor');
+  type Window = { present: number; nights: number };
+  const raidRow = (last8: Window, last30?: Window) => ({ ...base, attendance: last8, attendance_30: last30 });
+
+  it('reads Came 7 of 8 \u00b7 26 of 30', () => {
+    const chips = rosterStatChips(raidRow({ present: 7, nights: 8 }, { present: 26, nights: 30 }), 'raids');
+    expect(chips).toContain('Came 7 of 8 \u00b7 26 of 30');
+    expect(chips.some((c) => /nights?$/.test(c))).toBe(false);
+  });
+
+  it('reads Came 3 of 3 alone when the long window adds nothing', () => {
+    const chips = rosterStatChips(raidRow({ present: 3, nights: 3 }, { present: 3, nights: 3 }), 'raids');
+    expect(chips).toContain('Came 3 of 3');
+  });
+
+  it('says No raids yet for a 0 of 0 chip', () => {
+    const chips = rosterStatChips(raidRow({ present: 0, nights: 0 }, { present: 0, nights: 0 }), 'raids');
+    expect(chips).toContain('No raids yet');
+  });
+
+  it('keeps report mode unchanged', () => {
+    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }), 'reports')).toContain('5 of 8 nights');
+    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }))).toContain('5 of 8 nights');
+  });
+});
+
 describe('inGameFacts', () => {
   it('always runs Level, Gear gap, gear set, seen: the spec has its own line', () => {
     const keys = inGameFacts(rowNamed('Zulmara'), NOW).map((f) => f.key);

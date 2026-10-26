@@ -6,6 +6,7 @@
 <script lang="ts">
   import type { MeCharacterGuild } from '../../lib/account/api';
   import { guildHref, guildRankLabel } from '../../lib/characters';
+  import { cameGuildLine } from '../../lib/guild/attendance-copy';
   import { characterListCopy } from '../../lib/account/character-list-copy';
 
   /**
@@ -37,4 +38,7 @@
   {#if guild.verified}
     <span class="text-strong" data-testid={`${testid}-verified`}>{characterListCopy.verified}</span>
   {/if}
+  {#if guild.attendance !== undefined}<span class="tabular" data-testid={`${testid}-came`}
+      >{cameGuildLine(guild.attendance.present, guild.attendance.nights)}</span
+    >{/if}
 </span>

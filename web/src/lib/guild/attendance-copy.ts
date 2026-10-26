@@ -149,6 +149,7 @@ export const attendanceCopy = {
     excused: 'Excused',
   },
   roster: {
+    noRaids: 'No raids yet',
     footnote: `Came: raids attended of raids signed up for or attended, over this guild's last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged raids.`,
   },
   readiness: {

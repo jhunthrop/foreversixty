@@ -26,6 +26,9 @@
     GuildRosterRow,
   } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
+  import type { AttendanceSource } from '../../lib/guild/attendance-contract';
+  import { attendanceCopy } from '../../lib/guild/attendance-copy';
+  import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { addonSnapshotLine } from '../../lib/guild/roster-addon';
   import {
     RANKS_PENDING_LINE,
@@ -82,6 +85,7 @@
     addonSnapshot = null,
     mySiteSpec = null,
     now = new Date(),
+    attendanceSource = 'reports',
   }: {
     roster: GuildRosterRow[];
     pending: GuildRosterRow[];
@@ -112,6 +116,8 @@
     mySiteSpec?: string | null;
     /** The clock the snapshot's "received … ago" and each "seen … ago" read against; a test pins it. */
     now?: Date;
+    /** The home's `attendance_source`: in `raids` mode the chip counts raids over two windows. */
+    attendanceSource?: AttendanceSource;
   } = $props();
 
   const canApprove = $derived(hasCapability(can, 'approve'));
@@ -254,9 +260,6 @@
   // -- this tab's rows only ever mount after the guild's async roster fetch resolves, so
   // a scoped <style> block's CSS is silently dropped from this build's SSR-critical-CSS
   // inlining pass.
-  const FILTER_BTN =
-    'border-line h-11 rounded-control border px-3 text-[12px] font-semibold text-text lg:h-8';
-  const FILTER_BTN_ON = 'border-gold text-gold bg-[rgba(229,185,85,.08)]';
   const ROW =
     'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 lg:flex-nowrap';
   // A name with no account row: the same shape, a different class so the account rows stay
@@ -512,7 +515,7 @@
     <div class="flex flex-col" data-testid="guild-roster-rows">
       {#each ordered as row (row.character_key)}
         {@const pinned = row.character_key === myCharacterKey}
-        {@const chips = rosterStatChips(row)}
+        {@const chips = rosterStatChips(row, attendanceSource)}
         {@const specLine = specLineOf(row)}
         {@const subtitle = altOf.has(row.character_key)
           ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
@@ -696,6 +699,11 @@
         </div>
       {/each}
     </div>
+  {/if}
+  {#if attendanceSource === 'raids' && ordered.length > 0}
+    <p class="text-muted text-[12px]" data-testid="guild-roster-attendance-footnote">
+      {attendanceCopy.roster.footnote}
+    </p>
   {/if}
   {#if rosterActionError !== ''}
     <p class="text-[13px]" role="alert" data-testid="guild-roster-action-error">{rosterActionError}</p>

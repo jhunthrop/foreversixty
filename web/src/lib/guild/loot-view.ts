@@ -3,6 +3,8 @@
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
 import { dayWord } from '../dates';
+import type { AttendanceSource } from './attendance-contract';
+import { raidsAttended } from './attendance-copy';
 import { nightsLabel } from './nights';
 import { specName } from './spec-name';
 import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem } from './api';
@@ -34,9 +36,14 @@ export function anyNotSimmed(items: readonly GuildLootItem[]): boolean {
   return items.some((item) => item.candidates.some((candidate) => candidate.not_sim_checked));
 }
 
-/** "Rootbound · +76 item levels over their current Head · 1 of 1 raid nights", the tail of a row. */
-export function attendanceLabel(present: number, nights: number): string {
-  return nightsLabel(present, nights, 'raid night');
+/** "Rootbound · +76 item levels over their current Head · 1 of 1 raid nights", the tail of a row; in
+ *  raid mode the figure counts raids ("7 of 8 raids"). */
+export function attendanceLabel(
+  present: number,
+  nights: number,
+  source: AttendanceSource = 'reports',
+): string {
+  return source === 'raids' ? raidsAttended(present, nights) : nightsLabel(present, nights, 'raid night');
 }
 
 /** "Awarded to Rootbound · today · by Bow Jackzon": said once, on the item. */
@@ -118,7 +125,7 @@ export function itemsWonLabel(won: number | undefined): string {
  * give a count. An empty slot reads "Empty slot" in the place of the item. The gain figure is not
  * here: it rides after the line as a small muted rider (`candidateGainLabel`).
  */
-export function candidateLine(candidate: GuildLootCandidate): string {
+export function candidateLine(candidate: GuildLootCandidate, source: AttendanceSource = 'reports'): string {
   // An API from before `replaces` sends none: say nothing rather than call every slot empty.
   const replaces =
     candidate.replaces === undefined
@@ -129,7 +136,7 @@ export function candidateLine(candidate: GuildLootCandidate): string {
   return [
     replaces,
     specName(candidate.spec),
-    attendanceLabel(candidate.attendance.present, candidate.attendance.nights),
+    attendanceLabel(candidate.attendance.present, candidate.attendance.nights, source),
     itemsWonLabel(candidate.items_won),
   ]
     .filter((part) => part !== '')

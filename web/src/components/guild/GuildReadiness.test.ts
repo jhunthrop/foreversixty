@@ -95,3 +95,54 @@ describe('GuildReadiness', () => {
     expect(nudges(markup)).toHaveLength(0);
   });
 });
+
+describe('GuildReadiness next-raid filter', () => {
+  const raid = {
+    id: 7,
+    title: "Onyxia's Lair",
+    starts_at: '2026-12-10T20:00:00Z',
+    cutoff_at: '2026-12-03T20:00:00Z',
+  };
+  const base = buildMockReadiness().rows;
+  const rows = [
+    { ...base[0], no_export: false, synced_before_cutoff: true, logged_at: '2026-12-01T20:00:00Z' },
+    { ...base[1], no_export: true, synced_before_cutoff: null },
+  ];
+
+  function filtered(nextRaidOnly: boolean, shown = rows): string {
+    return render(GuildReadiness, {
+      props: {
+        rows: shown,
+        officer: true,
+        officerTools: true,
+        myCharacterKey: null,
+        settingsHref: SETTINGS_HREF,
+        raid,
+        nextRaidOnly,
+        raidHref: '/guild/x/raids/7',
+        guildTimezone: 'UTC',
+        viewerTimezone: 'UTC',
+      },
+    }).body;
+  }
+
+  it('shows the toggle pressed, the showing line, stale and no-export rows', () => {
+    const markup = filtered(true);
+    expect(markup).toContain('aria-pressed="true"');
+    const copy = text(markup.replace(/<\/a>/g, '')).replace(/&#39;/g, "'");
+    expect(copy).toContain('Next raid \u00b7 Thu 10 Dec');
+    expect(copy).toContain("Showing the 2 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.");
+    expect(copy).toContain('Synced 9 days before the raid');
+    expect(copy).toContain('No export yet');
+  });
+
+  it('shows the toggle unpressed without the line, and says so when nobody signed up', () => {
+    expect(filtered(false)).toContain('aria-pressed="false"');
+    expect(text(filtered(false))).not.toContain('Showing the');
+    expect(text(filtered(true, []))).toContain('Nobody signed up for this raid yet.');
+  });
+
+  it('shows no toggle without a raid', () => {
+    expect(html(true, true)).not.toContain('guild-readiness-next-raid');
+  });
+});
