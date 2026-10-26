@@ -82,7 +82,7 @@
     <p class="text-muted text-[13px]">{notificationsCopy.switchedOffFix}</p>
     {#if !replaceHidden}
       <div class="-mt-1">
-        <DiscordReplace {discord} disabled={replaceDisabled} {onReplace} {onStuck} />
+        <DiscordReplace source={sourceOf(discord)} disabled={replaceDisabled} {onReplace} {onStuck} />
       </div>
     {/if}
   </DiscordNotice>

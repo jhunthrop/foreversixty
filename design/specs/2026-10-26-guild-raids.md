@@ -65,7 +65,7 @@ Panel: `bg-raised border-line rounded-panel`, the card's 1 px top highlight `rgb
 | Part | Desktop: grid `minmax(180px,1fr) auto 152px minmax(200px,1.4fr)`, gap 16, row 68 px | Phone (<768) |
 |---|---|---|
 | Who | `ClassCrestRing` 32, the name in Cinzel 14 class colour, the spec 12 px muted under it | line 1, the role select right |
-| State | `SignupSegments`: four 44 px segments `In · Late · Bench · Out`, min 72 px each, 13 px 600, `role="radiogroup"`, `aria-label` `Kraggor's sign-up`. Rest: `--muted` on `--raised`, 1 px `--line` dividers. Checked: `--strong` on `--card-top` plus a 2 px inset bottom line, `--kill` for In and Late, `--muted` for Bench and Out. Unsigned: none checked. Checked draws all three marks: the `--card-top` ground, `--strong` text and the 2 px line (amended 2026-10-27, review round). Disabled (locked, ended, done): the shared disabled look, `opacity-50` and `cursor-not-allowed`, on the segments, the role select and the note (amended 2026-10-27, review round). | line 2, four 25 % segments |
+| State | `SignupSegments`: four 44 px segments `In · Late · Bench · Out`, min 72 px each, 13 px 600, `role="radiogroup"`, `aria-label` `Kraggor's sign-up`. Rest: `--muted` on `--raised`, 1 px `--line` dividers. Checked: `--strong` on a visible ground plus a 2 px inset bottom line: In and Late on `--kill` at 15 % with the `--kill` line, Bench and Out on `--line-warm` with the `--muted` line (amended 2026-10-27, review round: `--card-top` read as no ground against `--raised`). Unsigned: none checked. Checked draws all three marks: the ground, `--strong` text and the 2 px line (amended 2026-10-27, review round). Disabled (locked, ended, done): the shared disabled look, `opacity-50` and `cursor-not-allowed`, on the segments, the role select and the note (amended 2026-10-27, review round). | line 2, four 25 % segments |
 | Role | `FilterSelect` 44 px, `Tank`, `Healer`, `DPS`, prefilled from the spec (`SPEC_ROLE`); label visually hidden, `aria-label` `Role`. | line 1 right, 120 px |
 | Note | text input 44 px, `maxlength=140`, placeholder `Note for the officers (optional)`; from 120 characters a mono 12 px muted counter `20 left` inside the box's right edge. Saves on blur and on Enter. | line 3, full width |
 | Status line | 20 px reserved under the row, 13 px: `Saved.` for 4 s, or the §4 error in `--wipe` with `role="alert"`. | same |
@@ -243,7 +243,7 @@ Thumbnail: the guild's crest when its `crest_url` is absolute, else none. A repe
 
 **Collapses**: Below 768 the planned row stacks (§3.1), the strip row stacks (§3.3), the roster columns stack, the officer buttons wrap (two a row at 360), and the `›` goes. At 360 the four segments are 81 px each in 324 px; `Bench` fits at 13 px. At 1440 the roster columns are about 324 px, leaving 210 px for a name beside the officer select. At **2000** everything stays in the centred 1344 column; the band is full-bleed; no column stretches.
 
-Height caps: planned row 64–72 desktop, 96–120 phone; strip row 68 desktop, at most 196 phone; band line 44 desktop, at most 112 phone; roster row 36 / 44 before a note; the form at most 760 desktop, 1180 phone.
+Height caps: planned row 64–72 desktop, 96–120 phone (a row whose title wraps to two lines at 360 may run to 140 (amended 2026-10-27, review round)); strip row 68 desktop, at most 196 phone; band line 44 desktop, at most 112 phone; roster row 36 / 44 before a note; the form at most 760 desktop, 1180 phone.
 
 ## 8. Rulings
 

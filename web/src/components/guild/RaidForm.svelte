@@ -5,7 +5,7 @@
      select takes focus on open; Escape and Cancel close. -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { GuildRaidView, GuildZoneView } from '../../lib/guild/api';
+  import type { GuildRaidDiscord, GuildRaidView, GuildZoneView } from '../../lib/guild/api';
   import {
     CHECK_ROW,
     DISABLED_LOOK,
@@ -20,6 +20,8 @@
     TITLE_MAX,
     canRepeat,
     createDefaults,
+    discordFormPart,
+    discordSettingsHref,
     durationOptions,
     editDefaults,
     forYou,
@@ -50,7 +52,8 @@
     raid?: GuildRaidView;
     /** Planned and locked raids now held, for the cap. */
     plannedCount: number;
-    discordConnected: boolean;
+    /** The guild channel from the raid view; `null` when no raid has carried it yet. */
+    discord: GuildRaidDiscord | null;
     settingsHref: string;
     onSubmit: (payload: RaidInput) => Promise<RaidSubmitResult>;
     onCancel: () => void;
@@ -67,7 +70,7 @@
     lastRaid = null,
     raid,
     plannedCount,
-    discordConnected,
+    discord,
     settingsHref,
     onSubmit,
     onCancel,
@@ -103,6 +106,7 @@
     if (mode === 'create') return busy ? raidCopy.form.submitCreating : raidCopy.form.submitCreate;
     return busy ? raidCopy.form.submitEditing : raidCopy.form.submitEdit;
   });
+  const discordPart = $derived(discordFormPart(discord));
   const discordLine = splitAtLink(raidCopy.form.connectDiscord, raidCopy.form.connectDiscordLink);
   const keepStartsAt = $derived(mode === 'edit' ? raid?.starts_at : undefined);
 
@@ -130,7 +134,7 @@
     }
     busy = true;
     try {
-      const result = await onSubmit(raidPayload(values, mode, discordConnected));
+      const result = await onSubmit(raidPayload(values, mode, discordPart === 'box'));
       if (!result.ok) {
         errors = { [result.field ?? 'form']: result.message };
         planEnded = result.code === 'guild_plan_required';
@@ -327,7 +331,7 @@
     </div>
   {/if}
 
-  {#if discordConnected}
+  {#if discordPart === 'box'}
     <label class={CHECK_ROW}>
       <input
         type="checkbox"
@@ -338,10 +342,12 @@
       />
       {mode === 'create' ? raidCopy.form.postToDiscord : raidCopy.form.postToDiscordIfMoved}
     </label>
-  {:else}
+  {:else if discordPart === 'line'}
     <p class="text-muted text-[13px]" data-testid="raid-form-discord-line">
-      {discordLine.before}<a class={INLINE_LINK} href={settingsHref} data-testid="raid-form-settings-link"
-        >{raidCopy.form.connectDiscordLink}</a
+      {discordLine.before}<a
+        class={INLINE_LINK}
+        href={discordSettingsHref(settingsHref)}
+        data-testid="raid-form-settings-link">{raidCopy.form.connectDiscordLink}</a
       >{discordLine.after}
     </p>
   {/if}

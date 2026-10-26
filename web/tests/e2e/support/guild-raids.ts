@@ -190,6 +190,8 @@ export interface RaidStubOptions {
   /** `home.viewer.officer_tools`; left out, the field is absent. */
   officerTools?: boolean;
   raids?: StoredRaid[];
+  /** `discord.available`: the deployment has Discord connect on; left out, it is. */
+  discordAvailable?: boolean;
   discordConnected?: boolean;
   /** `discord.post_default`: the guild's channel posts raids by default. */
   postDefault?: boolean;
@@ -269,6 +271,7 @@ export class RaidStub {
   viewer: RaidViewer;
   officerTools: boolean | undefined;
   raids: StoredRaid[];
+  discordAvailable: boolean;
   discordConnected: boolean;
   postDefault: boolean;
   guildTimezone: string | null;
@@ -283,6 +286,7 @@ export class RaidStub {
     this.viewer = options.viewer;
     this.officerTools = options.officerTools;
     this.raids = options.raids ?? [storedRaid()];
+    this.discordAvailable = options.discordAvailable ?? true;
     this.discordConnected = options.discordConnected ?? false;
     this.postDefault = options.postDefault ?? false;
     this.guildTimezone = options.guildTimezone === undefined ? CHICAGO : options.guildTimezone;
@@ -342,7 +346,11 @@ export class RaidStub {
           };
         }),
       },
-      discord: { connected: this.discordConnected, post_default: this.postDefault },
+      discord: {
+        available: this.discordAvailable,
+        connected: this.discordConnected,
+        post_default: this.postDefault,
+      },
     };
   }
 

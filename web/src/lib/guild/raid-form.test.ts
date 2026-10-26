@@ -9,6 +9,8 @@ import {
   RAID_CAP,
   canRepeat,
   createDefaults,
+  discordFormPart,
+  discordSettingsHref,
   durationLabel,
   durationOptions,
   editDefaults,
@@ -45,7 +47,7 @@ function raid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [] },
-    discord: { connected: true, post_default: true },
+    discord: { available: true, connected: true, post_default: true },
     ...extra,
   };
 }
@@ -231,6 +233,19 @@ describe('raidPayload', () => {
 
   it('never sends a remembered Discord flag the form does not draw', () => {
     expect(raidPayload(values({ postToDiscord: true }), 'create', false).post_to_discord).toBe(false);
+  });
+});
+
+describe('discordFormPart', () => {
+  it('draws the box when connected, the line when not, nothing when connect is off or unknown', () => {
+    expect(discordFormPart({ available: true, connected: true, post_default: false })).toBe('box');
+    expect(discordFormPart({ available: true, connected: false, post_default: false })).toBe('line');
+    expect(discordFormPart({ available: false, connected: false, post_default: false })).toBe('none');
+    expect(discordFormPart(null)).toBe('none');
+  });
+
+  it("links the line to the settings page's Discord section", () => {
+    expect(discordSettingsHref('/guild/us/pvp/x/settings')).toBe('/guild/us/pvp/x/settings#discord');
   });
 });
 

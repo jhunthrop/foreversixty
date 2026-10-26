@@ -46,7 +46,7 @@
   {/if}
 {/snippet}
 
-<section class="flex flex-col gap-3" data-testid="guild-settings-billing">
+<section id="billing" class="flex scroll-mt-20 flex-col gap-3" data-testid="guild-settings-billing">
   <h2 class="section-title text-[18px]">Billing</h2>
   {#if billing === null}
     <p class="text-[14px]" data-testid="guild-billing-not-on-plan">{notOnPlanLines().headline}</p>

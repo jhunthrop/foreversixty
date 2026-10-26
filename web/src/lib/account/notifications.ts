@@ -83,7 +83,9 @@ export function premiumRowLinked(me: Me): boolean {
  * The saved panel's warning for 1 to 4 failures in a row; null otherwise (none yet, or already
  * switched off, where the notice replaces it).
  */
-export function failureWarning(discord: DiscordNotifications): WarningLines | null {
+export function failureWarning(
+  discord: Pick<DiscordNotifications, 'failures' | 'last_error'>,
+): WarningLines | null {
   if (discord.failures < 1 || discord.failures >= FAILURES_BEFORE_SWITCH_OFF) return null;
   return notificationsCopy.warningLines(discord.failures, discord.last_error);
 }
@@ -162,7 +164,9 @@ export function removeQuestionFor(discord: DiscordNotifications): string {
 const DIGITS = /^\d+$/;
 
 /** Where `Open in Discord` goes; null until the guild is known. Numeric ids only, so nothing else can reach the URL. */
-export function openInDiscordUrl(discord: DiscordNotifications): string | null {
+export function openInDiscordUrl(
+  discord: Pick<DiscordNotifications, 'guild_id' | 'channel_id'>,
+): string | null {
   const guild = discord.guild_id;
   if (guild === null || guild === undefined || !DIGITS.test(guild) || !DIGITS.test(discord.channel_id))
     return null;

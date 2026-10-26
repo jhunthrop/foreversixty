@@ -47,7 +47,7 @@ function raid(id: number): GuildRaidView {
     signups: [],
     not_signed: [],
     viewer: { characters: [] },
-    discord: { connected: false, post_default: false },
+    discord: { available: true, connected: false, post_default: false },
   };
 }
 

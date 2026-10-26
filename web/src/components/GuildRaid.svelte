@@ -193,7 +193,7 @@
               {viewerTimezone}
               {raid}
               plannedCount={0}
-              discordConnected={raid.discord.connected}
+              discord={raid.discord}
               {settingsHref}
               onSubmit={async (payload) => {
                 const result = await c.saveEdit(payload);

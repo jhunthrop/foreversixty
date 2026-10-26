@@ -2,7 +2,10 @@
 <!-- A navigation to the API's connect route (a link, so middle-click and long-press work), drawn
      either as the gold button or as the underlined text link. From the click until the page
      unloads it reads `Opening Discord…`; the back button restores the page from the bfcache and
-     `pageshow` with `persisted` puts the label back (spec 4.2, 4.3). -->
+     `pageshow` with `persisted` puts the label back (spec 4.2, 4.3). `href` defaults to the
+     account's connect route; the guild passes its own. `gated` (the guild's officer-read-only or
+     frozen claim) draws a link that goes nowhere: no href, aria-disabled, out of the tab order,
+     described by `describedBy`. -->
 <script lang="ts">
   import { connectUrl } from '../../../lib/account/notifications';
   import { createOpeningWatchdog } from '../../../lib/account/opening-watchdog';
@@ -13,8 +16,20 @@
     class: className,
     testid,
     busy = false,
+    href = connectUrl(),
+    gated = false,
+    describedBy,
     onStuck,
-  }: { label: string; class: string; testid: string; busy?: boolean; onStuck: () => void } = $props();
+  }: {
+    label: string;
+    class: string;
+    testid: string;
+    busy?: boolean;
+    href?: string;
+    gated?: boolean;
+    describedBy?: string;
+    onStuck: () => void;
+  } = $props();
 
   let opening = $state(false);
   // No navigation 10 s after the click means no `pageshow` will come: restore the label and say so.
@@ -43,13 +58,23 @@
 
 <svelte:window onpageshow={onPageShow} />
 
-<a
-  href={connectUrl()}
-  class="{className} {opening || busy ? 'pointer-events-none' : ''}"
-  aria-busy={opening}
-  aria-disabled={opening || busy ? 'true' : undefined}
-  onclick={onClick}
-  data-testid={testid}
->
-  {opening ? notificationsCopy.connecting : label}
-</a>
+{#if gated}
+  <a
+    class="{className} pointer-events-none opacity-50"
+    aria-disabled="true"
+    aria-describedby={describedBy}
+    tabindex="-1"
+    data-testid={testid}>{label}</a
+  >
+{:else}
+  <a
+    {href}
+    class="{className} {opening || busy ? 'pointer-events-none' : ''}"
+    aria-busy={opening}
+    aria-disabled={opening || busy ? 'true' : undefined}
+    onclick={onClick}
+    data-testid={testid}
+  >
+    {opening ? notificationsCopy.connecting : label}
+  </a>
+{/if}
