@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,7 +9,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
@@ -168,4 +172,70 @@ func rawData(t *testing.T, res *http.Response) map[string]json.RawMessage {
 		t.Fatal(err)
 	}
 	return env.Data
+}
+
+// seedPlayer is one character's row in a seeded fight.
+type seedPlayer struct {
+	key, name, class, spec, role string
+	deaths                       int
+}
+
+// seedFight is one fight of a seeded night: encounterID 0 is trash (no rows per player).
+type seedFight struct {
+	encounterID int
+	kill        bool
+	offset      time.Duration
+	duration    time.Duration
+	players     []seedPlayer
+}
+
+// seedNight inserts a complete guild-visible report with log_zone zone created at createdAt,
+// its fights (start_ms = createdAt + offset) and one fight_metrics row per player per fight.
+func seedNight(t *testing.T, pool *pgxpool.Pool, guildID int64, reportID, zone string, createdAt time.Time, fights []seedFight) {
+	t.Helper()
+	ctx := context.Background()
+	if err := db.EnsureMetricsPartition(ctx, pool, createdAt); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into reports (id, guild_id, visibility, status, log_zone, created_at)
+		 values ($1, $2, 'guild', 'complete', nullif($3, ''), $4)`, reportID, guildID, zone, createdAt); err != nil {
+		t.Fatal(err)
+	}
+	for i, f := range fights {
+		seedOneFight(t, pool, reportID, createdAt, i, f)
+	}
+}
+
+func seedOneFight(t *testing.T, pool *pgxpool.Pool, reportID string, createdAt time.Time, index int, f seedFight) {
+	t.Helper()
+	ctx := context.Background()
+	at := createdAt.Add(f.offset)
+	var encounter any
+	if f.encounterID != 0 {
+		encounter = f.encounterID
+	}
+	deaths := 0
+	for _, p := range f.players {
+		deaths += p.deaths
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into fights (report_id, fight_index, name, encounter_id, kill, start_ms, duration_ms, deaths, players)
+		 values ($1, $2, 'Fight', $3, $4, $5, $6, $7, $8)`,
+		reportID, index, encounter, f.kill, at.UnixMilli(), f.duration.Milliseconds(), deaths, []string{l68GUID}); err != nil {
+		t.Fatal(err)
+	}
+	if f.encounterID == 0 {
+		return
+	}
+	for _, p := range f.players {
+		if _, err := pool.Exec(ctx,
+			`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, spec, role, metric_dps,
+				deaths, encounter_id, duration_ms, kill, fought_at)
+			 values ($1, $2, $3, $4, $5, $6, $7, 100, $8, $9, $10, $11, $12)`,
+			reportID, index, p.key, p.name, p.class, p.spec, p.role, p.deaths, f.encounterID,
+			f.duration.Milliseconds(), f.kill, at); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
