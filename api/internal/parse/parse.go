@@ -129,7 +129,7 @@ func Report(ctx context.Context, d Deps, reportID string) error {
 		return err
 	}
 	d.announce(ctx, rep, fights)
-	reports.FinishCompletion(ctx, d.Reports, d.Completed, d.logger(), reportID, zone.name())
+	reports.FinishCompletion(ctx, d.Reports, d.Completed, d.logger(), reportID, zone.name(rep.Zone))
 	return nil
 }
 
@@ -149,11 +149,15 @@ func (z *logZone) see(f fight.Fight) {
 	}
 }
 
-func (z logZone) name() string {
+// name is the zone the fights named, else header (the report's own zone).
+func (z logZone) name(header string) string {
 	if z.encounter != "" {
 		return z.encounter
 	}
-	return z.any
+	if z.any != "" {
+		return z.any
+	}
+	return header
 }
 
 // announce tells the owner's channel the log is parsed. The report is
