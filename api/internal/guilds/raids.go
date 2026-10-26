@@ -87,7 +87,7 @@ type RaidRow struct {
 type RaidsPage struct {
 	Rows       []RaidRow `json:"rows"`
 	NextCursor string    `json:"next_cursor,omitempty"`
-	// PlannedSection adds planned, zones and guild_timezone for a verified member only; nil
+	// PlannedSection adds planned, zones, guild_timezone and discord for a verified member only; nil
 	// (every key absent) for anyone else (R1).
 	*PlannedSection
 }

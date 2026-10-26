@@ -1030,6 +1030,7 @@
           planned={raids?.planned}
           zones={raids?.zones ?? []}
           guildTimezone={raids?.guild_timezone ?? null}
+          discord={raids?.discord}
           officer={role === 'officer'}
           {officerTools}
           memberView={myGuildMembership?.verified === true}

@@ -390,6 +390,11 @@ export class RaidStub {
       planned: this.raids.map((r) => this.view(r.id)),
       zones: ZONES,
       guild_timezone: this.guildTimezone,
+      discord: {
+        available: this.discordAvailable,
+        connected: this.discordConnected,
+        post_default: this.postDefault,
+      },
     };
   }
 

@@ -82,6 +82,8 @@ export interface CreateDefaultsArgs {
   /** The guild's `raid_timezone`, `null` before one is set. */
   guildTimezone: string | null;
   viewerTimezone: string;
+  /** The guild channel's state; its remembered Post to Discord answer seeds the box. */
+  discord: GuildRaidDiscord | null;
 }
 
 export function createDefaults({
@@ -89,8 +91,10 @@ export function createDefaults({
   now,
   guildTimezone,
   viewerTimezone,
+  discord,
 }: CreateDefaultsArgs): RaidFormValues {
   const timezone = guildTimezone ?? viewerTimezone;
+  const postDefault = discord?.post_default ?? false;
   const base = { title: '', notes: '', timezone, repeat: false };
   if (last === null) {
     return {
@@ -99,7 +103,7 @@ export function createDefaults({
       date: '',
       time: FIRST_RAID_TIME,
       duration: DEFAULT_DURATION,
-      postToDiscord: false,
+      postToDiscord: postDefault,
     };
   }
   const { date, time } = instantToWallClock(nextWeekday(new Date(last.starts_at), now, timezone), timezone);
@@ -109,7 +113,7 @@ export function createDefaults({
     date,
     time,
     duration: last.duration_minutes,
-    postToDiscord: last.discord.post_default,
+    postToDiscord: postDefault,
   };
 }
 

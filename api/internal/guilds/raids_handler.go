@@ -275,7 +275,11 @@ func (s *Service) plannedSection(r *http.Request, guildID, viewerID int64) (*Pla
 	if err != nil {
 		return nil, err
 	}
-	section := &PlannedSection{Planned: views, Zones: zoneViews()}
+	discord, err := s.raidDiscord(r.Context(), guildID)
+	if err != nil {
+		return nil, err
+	}
+	section := &PlannedSection{Planned: views, Zones: zoneViews(), Discord: discord}
 	tz, err := s.Store.GuildRaidTimezone(r.Context(), guildID)
 	if err != nil {
 		return nil, err

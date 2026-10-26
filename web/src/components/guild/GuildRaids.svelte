@@ -13,6 +13,7 @@
   import { classColorVar } from '../../lib/report/format';
   import {
     fetchGuildProgression,
+    type GuildRaidDiscord,
     type GuildRaidRow,
     type GuildRaidView,
     type GuildZoneView,
@@ -44,6 +45,8 @@
     planned?: readonly GuildRaidView[];
     zones?: readonly GuildZoneView[];
     guildTimezone?: string | null;
+    /** The guild channel's state from the raids page; falls back to a planned raid's. */
+    discord?: GuildRaidDiscord | null;
     officer?: boolean;
     officerTools?: boolean;
     /** A verified member of this guild. */
@@ -67,6 +70,7 @@
     planned,
     zones = [],
     guildTimezone = null,
+    discord = null,
     officer = false,
     officerTools = true,
     memberView = false,
@@ -181,7 +185,7 @@
       {viewerTimezone}
       lastRaid={lastPlannedRaid(planned)}
       {plannedCount}
-      discord={planned[0]?.discord ?? null}
+      discord={discord ?? planned[0]?.discord ?? null}
       {settingsHref}
       onSubmit={submitPlan}
       onCancel={() => void closeForm()}

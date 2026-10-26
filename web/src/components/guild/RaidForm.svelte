@@ -84,7 +84,7 @@
 
   function initialValues(): RaidFormValues {
     if (mode === 'edit' && raid !== undefined) return editDefaults(raid, guildTimezone ?? viewerTimezone);
-    return createDefaults({ last: lastRaid, now: clock(), guildTimezone, viewerTimezone });
+    return createDefaults({ last: lastRaid, now: clock(), guildTimezone, viewerTimezone, discord });
   }
 
   let values = $state<RaidFormValues>(initialValues());

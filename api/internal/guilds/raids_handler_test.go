@@ -29,7 +29,7 @@ func TestRaidRouteHidesFromNonMembers(t *testing.T) {
 			w.as(v.uid)
 			expectError(t, w.h.do(http.MethodGet, w.path("/raids/%d", raid.ID), ""), http.StatusNotFound, "not_found")
 			page := rawData(t, w.h.do(http.MethodGet, w.path("/raids"), ""))
-			for _, key := range []string{"planned", "zones", "guild_timezone"} {
+			for _, key := range []string{"planned", "zones", "guild_timezone", "discord"} {
 				if _, ok := page[key]; ok {
 					t.Fatalf("GET /raids carries %q for a non-member", key)
 				}
@@ -43,7 +43,7 @@ func TestRaidRouteHidesFromNonMembers(t *testing.T) {
 	t.Run("verified member", func(t *testing.T) {
 		w.as(w.member)
 		page := rawData(t, w.h.do(http.MethodGet, w.path("/raids"), ""))
-		for _, key := range []string{"planned", "zones", "guild_timezone"} {
+		for _, key := range []string{"planned", "zones", "guild_timezone", "discord"} {
 			if _, ok := page[key]; !ok {
 				t.Fatalf("GET /raids lacks %q for a member", key)
 			}
