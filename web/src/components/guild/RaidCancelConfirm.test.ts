@@ -4,6 +4,7 @@
 // Escape-as-Keep-it run in the browser, in the raid e2e.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { RAID_BUTTON, RAID_WIPE_BUTTON } from '../../lib/guild/raid-buttons';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { text } from '../../test-support/raid-fixtures';
 import RaidCancelConfirm from './RaidCancelConfirm.svelte';
@@ -15,8 +16,6 @@ function html(postCancel: boolean, busy: boolean): string {
     props: {
       postCancel,
       busy,
-      buttonClass: 'btn',
-      confirmClass: 'btn-wipe',
       onPostChange: () => {},
       onConfirm: () => {},
       onKeep: () => {},
@@ -45,13 +44,13 @@ describe('RaidCancelConfirm', () => {
 
   it('draws Cancel the raid in the failure outline and Keep it in the plain one', () => {
     const body = html(false, false);
-    expect(body).toMatch(/<button[^>]*class="btn-wipe"[^>]*data-testid="raid-cancel-confirm-button"/);
-    expect(body).toMatch(/<button[^>]*class="btn"[^>]*data-testid="raid-cancel-keep"/);
+    expect(body).toContain(`class="${RAID_WIPE_BUTTON}" data-testid="raid-cancel-confirm-button"`);
+    expect(body).toContain(`class="${RAID_BUTTON}" data-testid="raid-cancel-keep"`);
   });
 
   it('reads Cancelling… and holds the confirm while the cancel is in flight, Keep it live', () => {
     const body = html(false, true);
     expect(text(body)).toContain(raidCopy.cancelConfirm.confirming);
-    expect(body.match(/<button[^>]* disabled/g)?.length).toBe(1);
+    expect(body.match(/<button[^>]* disabled(=| |>)/g)?.length).toBe(1);
   });
 });

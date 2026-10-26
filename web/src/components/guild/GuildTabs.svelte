@@ -6,6 +6,8 @@
      view programmatically on load (spec §7: a 2px gold sliver off-screen is not enough on
      its own to say which tab is active). -->
 <script lang="ts" module>
+  import { tabIdOfHash } from '../../lib/guild/raids-hash';
+
   export type GuildTabId =
     'overview' | 'roster' | 'raids' | 'progression' | 'readiness' | 'loot' | 'settings';
 
@@ -40,7 +42,7 @@
   }
 
   export function tabFromHash(hash: string, allowed: readonly GuildTabId[]): GuildTabId {
-    const id = hash.replace(/^#/, '').toLowerCase();
+    const id = tabIdOfHash(hash);
     return (allowed as readonly string[]).includes(id) ? (id as GuildTabId) : allowed[0];
   }
 
@@ -51,7 +53,7 @@
     allowed: readonly GuildTabId[],
     current: GuildTabId,
   ): GuildTabId {
-    const id = hash.replace(/^#/, '').toLowerCase();
+    const id = tabIdOfHash(hash);
     const namesTab = id === '' || GUILD_TABS.some((tab) => tab.id === id);
     return namesTab ? tabFromHash(hash, allowed) : current;
   }

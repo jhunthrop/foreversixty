@@ -135,6 +135,19 @@ export function clockText(d: Date, tz: string, locale: string, alwaysMinutes = f
   return `${p.hour}${minutes} ${(p.dayPeriod ?? '').toLowerCase()}`;
 }
 
+/** `Thu 10 Dec, 11:42 pm` in the viewer's zone, and ` (10:42 pm guild time)` apart (null) when the
+ *  guild's offset is the same, so a caller can set the guild time in its own muted span. */
+export function stampParts(
+  at: Date,
+  viewerTz: string,
+  guildTz: string,
+  locale: string = DEFAULT_LOCALE,
+): { when: string; guildTime: string | null } {
+  const when = `${dateLabel(at, viewerTz, locale)}, ${clockText(at, viewerTz, locale, true)}`;
+  if (!offsetsDiffer(at, viewerTz, guildTz)) return { when, guildTime: null };
+  return { when, guildTime: `(${clockText(at, guildTz, locale, true)} guild time)` };
+}
+
 /** `Thu 10 Dec`, on the zone's calendar. */
 export function dateLabel(d: Date, tz: string, locale: string = DEFAULT_LOCALE): string {
   const p = partsOf(

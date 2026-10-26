@@ -6,6 +6,7 @@
 <script lang="ts">
   import type { GuildRaidView } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
   import { orderedCharacters, type SignupChoice, type SignupHandler } from '../../lib/guild/signup-strip';
   import SignupRow from './SignupRow.svelte';
 
@@ -31,10 +32,11 @@
 
   const rows = $derived(orderedCharacters(raid.viewer.characters, currentKey));
   const savedNotes = $derived(new Map(raid.signups.map((s) => [s.character_key, s.note])));
-  const stateLine = $derived(locked ? raidCopy.raidStates.locked : ended ? raidCopy.raidStates.ended : null);
+  const stateLine = $derived(locked ? raidCopy.raidStates.locked : null);
   const stateLineId = $derived(`raid-strip-state-${raid.id}`);
-  /** A done raid refuses sign-ups like a locked one; its line lives in the band. */
-  const rowsDisabled = $derived(stateLine !== null || raid.status === 'done');
+  /** An ended or done raid refuses sign-ups like a locked one; their line lives in the band. */
+  const rowsDisabled = $derived(stateLine !== null || ended || raid.status === 'done');
+  const describedBy = $derived(stateLine !== null ? stateLineId : ended ? RAID_ENDED_LINE_ID : undefined);
 
   function setNotice(key: string, line: string | null): void {
     const { [key]: _dropped, ...rest } = notices;
@@ -69,7 +71,7 @@
           {character}
           savedNote={savedNotes.get(character.character_key) ?? ''}
           disabled={rowsDisabled}
-          describedBy={stateLine !== null ? stateLineId : undefined}
+          {describedBy}
           notice={notices[character.character_key] ?? null}
           onClearNotice={() => setNotice(character.character_key, null)}
           onSave={(choice) => save(character.character_key, choice)}

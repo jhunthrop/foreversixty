@@ -7,7 +7,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
-import type { OfficerLine } from '../../lib/guild/raid-page-controller.svelte';
+import type { OfficerLine } from '../../lib/guild/raid-page-types';
 import type { RaidStatusAction } from '../../lib/guild/raids-api';
 import { CHICAGO, plannedRaid, text } from '../../test-support/raid-fixtures';
 import RaidOfficerRow from './RaidOfficerRow.svelte';
