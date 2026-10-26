@@ -132,3 +132,16 @@ func TestGuildTestEmbedEscapesTheName(t *testing.T) {
 		t.Fatalf("relative base gave a link %q", e.URL)
 	}
 }
+
+func TestGuildTestRouteIsLimitedToFivePerMinute(t *testing.T) {
+	g := newGuildAPI(t, officerWithPlan())
+	g.saveGuildHook(connectedHook)
+	for i := 1; i <= testsPerMinute; i++ {
+		if status, _, _ := g.call("POST", g.route("/test"), ""); status != http.StatusNoContent {
+			t.Fatalf("call %d status %d", i, status)
+		}
+	}
+	if status, _, _ := g.call("POST", g.route("/test"), ""); status != http.StatusTooManyRequests {
+		t.Fatalf("sixth call status %d, want 429", status)
+	}
+}

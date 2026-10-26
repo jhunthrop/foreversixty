@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/imagex"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
@@ -161,7 +162,7 @@ func (s *Service) putCrest(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	if s.R2 == nil {
@@ -250,7 +251,7 @@ func (s *Service) deleteCrest(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	if s.R2 == nil {

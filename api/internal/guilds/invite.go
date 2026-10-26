@@ -12,6 +12,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 // InviteTokenPrefix marks an invite token wherever it appears, the same
@@ -167,7 +168,7 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	token, rotatedAt, err := s.Store.RotateInvite(r.Context(), guildID)

@@ -3,6 +3,7 @@ package notify
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -15,11 +16,14 @@ const (
 	guildChannelPath = "/v1/guilds/{id}/notifications/discord"
 	guildTestPath    = guildChannelPath + "/test"
 
-	// guildPlanRequiredMessage is the raid writes' guild_plan_required body, word for word.
-	guildPlanRequiredMessage = "Planning and running raids are part of the guild plan."
-	claimContestedMessage    = "this guild's claim is contested; officer actions are frozen until a moderator resolves it"
-	noGuildMessage           = "no such guild"
-	noChannelMessage         = "no channel is connected"
+	// RaidPlanRequiredMessage is the guild_plan_required body of the officer raid writes and
+	// of the channel routes; the guilds package refers to it.
+	RaidPlanRequiredMessage = "Planning and running raids are part of the guild plan."
+	// ClaimContestedMessage is the claim_contested body of every frozen-claim officer
+	// action; the guilds package refers to it.
+	ClaimContestedMessage = "this guild's claim is contested; officer actions are frozen until a moderator resolves it"
+	noGuildMessage        = "no such guild"
+	noChannelMessage      = "no channel is connected"
 )
 
 // GuildStanding is a viewer's standing in a guild as the channel routes need it. The
@@ -79,9 +83,9 @@ func (s *Service) guildOfficer(w http.ResponseWriter, r *http.Request, needPlan 
 	case !found || !standing.Officer:
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", noGuildMessage, nil)
 	case needPlan && !standing.Plan:
-		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", guildPlanRequiredMessage, nil)
+		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", RaidPlanRequiredMessage, nil)
 	case standing.Frozen:
-		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", claimContestedMessage, nil)
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", ClaimContestedMessage, nil)
 	default:
 		return guildID, standing, true
 	}
@@ -140,7 +144,11 @@ func (s *Service) openGuild(ctx context.Context, guildID int64) (string, error) 
 	if err != nil {
 		return "", err
 	}
-	return s.Sealer.Open(box)
+	url, err := s.Sealer.Open(box)
+	if err != nil {
+		return "", fmt.Errorf("notify: open guild webhook %d: %w", guildID, err)
+	}
+	return url, nil
 }
 
 // guildURL is openGuild for Discord-side cleanup: no channel and a failed read both read

@@ -109,7 +109,7 @@ func (s *GuildStore) SetPostDefault(ctx context.Context, guildID int64, on bool)
 // lands switches posting back on.
 func (s *GuildStore) RecordSuccess(ctx context.Context, guildID int64) error {
 	_, err := s.Pool.Exec(ctx, `update guild_notification_webhooks
-		set failures = 0, last_error = null, disabled_reason = null where guild_id = $1`, guildID)
+		set failures = 0, last_error = null, disabled_reason = null, updated_at = now() where guild_id = $1`, guildID)
 	if err != nil {
 		return fmt.Errorf("notify: record guild success %d: %w", guildID, err)
 	}

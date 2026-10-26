@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 // ErrInvalidConsent is returned for a consent value outside roster,
@@ -226,7 +227,7 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	err = s.Store.ApproveCharacter(r.Context(), guildID, key)
@@ -291,7 +292,7 @@ func (s *Service) removeCharacter(w http.ResponseWriter, r *http.Request) {
 			return
 		} else if frozen {
 			httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-				"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+				notify.ClaimContestedMessage, nil)
 			return
 		}
 	}
@@ -428,7 +429,7 @@ func (s *Service) approveAll(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
-			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+			notify.ClaimContestedMessage, nil)
 		return
 	}
 	keys, err := s.Store.ApproveAll(r.Context(), guildID)
