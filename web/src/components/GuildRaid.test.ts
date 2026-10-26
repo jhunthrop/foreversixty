@@ -36,6 +36,8 @@ const DEPS: RaidPageDeps = {
   loadMatchCandidates: never,
   putMatch: never,
   deleteMatch: never,
+  putExcused: never,
+  postReport: never,
   loadZones: never,
   isVisible: () => true,
   now: () => NOW,

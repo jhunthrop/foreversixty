@@ -12,6 +12,7 @@
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
+  import { OWN_ROW_WASH } from '../../lib/guild/raid-report-styles';
   import { rosterGroups, rosterSelectId, type RosterRow } from '../../lib/guild/raid-roster';
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
@@ -115,7 +116,7 @@
     class="rounded-control flex min-h-11 break-inside-avoid gap-3 px-2 md:min-h-9 {entry.note === ''
       ? 'items-center'
       : 'items-start py-1.5'}"
-    style={entry.own ? 'background: rgba(229,185,85,.06)' : undefined}
+    style={entry.own ? `background: ${OWN_ROW_WASH}` : undefined}
     aria-busy={busy}
     data-testid="raid-roster-row"
   >

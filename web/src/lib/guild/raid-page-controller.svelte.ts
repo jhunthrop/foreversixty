@@ -16,6 +16,7 @@ import {
 import type { MatchCandidates } from './attendance-contract';
 import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
+import { NightActions } from './night-actions.svelte';
 import { PLAN_REQUIRED, REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
 import { raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
@@ -76,6 +77,9 @@ export class RaidPageController {
   /** The poll turned a raid `done`: the page's polite live region says so (attendance spec 4). */
   logMatched = $state(false);
 
+  /** The done raid's two officer writes: Excused and Post to Discord. */
+  readonly night: NightActions;
+
   private readonly deps: RaidPageDeps;
   private readonly route: RaidRoute;
   private timer: ReturnType<typeof setInterval> | undefined;
@@ -89,6 +93,7 @@ export class RaidPageController {
   constructor(deps: RaidPageDeps, route: RaidRoute, seed: Partial<RaidPageSeed> = {}) {
     this.deps = deps;
     this.route = route;
+    this.night = new NightActions(this, deps, route);
     Object.assign(this, seed);
   }
 
@@ -173,7 +178,7 @@ export class RaidPageController {
     this.currentKey = home.viewer?.character_key ?? null;
   }
 
-  private applyRaid(raid: GuildRaidView): void {
+  applyRaid(raid: GuildRaidView): void {
     this.raid = raid;
     rememberStripRows(raid, this.deps.storage);
   }
@@ -214,7 +219,7 @@ export class RaidPageController {
   }
 
   /** Runs one write; a poll that spans it is dropped, so a saving row keeps its own answer. */
-  private async write<T>(run: (guildId: number) => Promise<T>): Promise<T> {
+  async write<T>(run: (guildId: number) => Promise<T>): Promise<T> {
     if (this.guild === null) throw new Error('the raid page wrote before its guild loaded');
     this.writes += 1;
     this.writeSeq += 1;
@@ -227,7 +232,7 @@ export class RaidPageController {
   }
 
   /** The line for a refused officer write: the plan sentence when the tools ended, else `failed`. */
-  private refusalLine(thrown: unknown, ended: string, failed: string): string {
+  refusalLine(thrown: unknown, ended: string, failed: string): string {
     return this.planRefused(thrown) ? ended : failed;
   }
 

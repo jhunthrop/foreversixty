@@ -5,3 +5,9 @@
 export function focusOnMount(node: HTMLElement): void {
   node.focus();
 }
+
+/** Selects a textarea's text when it mounts: the copy fallback, so the officer can press copy. */
+export function selectOnMount(node: HTMLTextAreaElement): void {
+  node.focus();
+  node.select();
+}

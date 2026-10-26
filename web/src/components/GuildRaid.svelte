@@ -26,10 +26,12 @@
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
   import RaidChip from './guild/RaidChip.svelte';
+  import RaidDoneSections from './guild/RaidDoneSections.svelte';
   import RaidForm from './guild/RaidForm.svelte';
   import RaidOfficerRow from './guild/RaidOfficerRow.svelte';
   import RaidRoster from './guild/RaidRoster.svelte';
   import RaidSignupStrip from './guild/RaidSignupStrip.svelte';
+  import RaidYourNight from './guild/RaidYourNight.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -80,6 +82,9 @@
   const quiet = $derived(raid !== null && raidQuiet(raid, now));
   const goldText = $derived(quiet ? 'text-muted' : 'text-gold');
   const goldFill = $derived(quiet ? 'bg-muted' : 'bg-gold');
+  /** `Your night` takes the strip's slot for a member with an own character in the log or signed
+   *  up; officers read their rows in the full sections. */
+  const showYourNight = $derived(!officer && (raid?.attendance ?? []).some((row) => row.own));
   const countText = $derived(raid?.status === 'cancelled' ? 'text-muted' : 'text-strong');
 
   let backLink = $state<HTMLAnchorElement | null>(null);
@@ -294,14 +299,32 @@
         {c.raceLine}
       </p>
     {/if}
-    <RaidSignupStrip
-      {raid}
-      locked={flags.locked}
-      ended={flags.ended}
-      cancelled={flags.cancelled}
-      onSignup={c.signup}
-      currentKey={c.currentKey}
-    />
+    {#if raid.status !== 'done'}
+      <RaidSignupStrip
+        {raid}
+        locked={flags.locked}
+        ended={flags.ended}
+        cancelled={flags.cancelled}
+        onSignup={c.signup}
+        currentKey={c.currentKey}
+      />
+    {:else}
+      {#if showYourNight}
+        <RaidYourNight {raid} currentKey={c.currentKey} {locale} />
+      {/if}
+      <RaidDoneSections
+        {raid}
+        actions={c.night}
+        {guildName}
+        {guildPath}
+        {settingsHref}
+        {officer}
+        officerTools={c.officerTools}
+        gateId={GATE_ID}
+        {viewerTimezone}
+        {locale}
+      />
+    {/if}
 
     <section
       class="flex max-w-[720px] flex-col gap-3"

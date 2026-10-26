@@ -6,7 +6,7 @@ import type { Me } from '../account/api';
 import type { CharacterPath } from '../characters';
 import type { GuildPage } from '../rankings/api';
 import type { GuildHome, GuildRaidView, GuildZoneView } from './api';
-import type { MatchCandidates } from './attendance-contract';
+import type { MatchCandidates, PostReportResult } from './attendance-contract';
 import type { RaidInput, RaidStatusAction, RaidStatusBody, SignupInput, SignupResult } from './raids-api';
 
 export interface RaidRoute {
@@ -37,6 +37,15 @@ export interface RaidPageDeps {
   loadMatchCandidates: (guildId: number, raidId: string) => Promise<MatchCandidates>;
   putMatch: (guildId: number, raidId: string, reportId: string) => Promise<GuildRaidView>;
   deleteMatch: (guildId: number, raidId: string) => Promise<GuildRaidView>;
+  /** The Excused tick; answers the raid view. */
+  putExcused: (
+    guildId: number,
+    raidId: string,
+    characterKey: string,
+    excused: boolean,
+  ) => Promise<GuildRaidView>;
+  /** Post to Discord: 409 already_posted, 502 post_failed. */
+  postReport: (guildId: number, raidId: string) => Promise<PostReportResult>;
   /** The edit form's Raid list (the raids page carries it). */
   loadZones: (guildId: number) => Promise<GuildZoneView[]>;
   isVisible: () => boolean;

@@ -1,0 +1,83 @@
+<!-- web/src/components/guild/RaidConsumables.svelte -->
+<!-- Consumables (attendance spec 3.4, officers): who, `Before` (the readiness pill as the board read it
+     at the raid's cutoff) and `In the log` (chips for what was used, muted words for what was not),
+     worst first, ten rows then `Show all n raiders`. A log with no buff events drops the In the log
+     column and says so in one line under the sub-head. Rows stack below 768. -->
+<script lang="ts">
+  import type { ConsumableBefore, RaidConsumables } from '../../lib/guild/attendance-contract';
+  import { attendanceCopy, usedChips } from '../../lib/guild/attendance-copy';
+  import { OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { consumableOrder } from '../../lib/guild/report-view';
+  import { visibleRows } from '../../lib/guild/night';
+  import { classColorVar } from '../../lib/report/format';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import RaidBlock from './RaidBlock.svelte';
+  import RaidShowAll from './RaidShowAll.svelte';
+
+  let {
+    consumables,
+    ownKeys = [],
+    expanded = $bindable(false),
+  }: {
+    consumables: RaidConsumables;
+    ownKeys?: readonly string[];
+    expanded?: boolean;
+  } = $props();
+
+  // The readiness board's own pill colours (GuildReadiness.svelte), by the state it read.
+  const BEFORE_PILL: Record<ConsumableBefore, string> = {
+    stocked: 'pill-community',
+    short: 'text-[#ff6b5c] bg-[rgba(255,107,92,.12)] border-[rgba(255,107,92,.32)]',
+    unknown: 'pill-sample',
+  };
+
+  const ordered = $derived(consumableOrder(consumables.rows));
+  const shown = $derived(visibleRows(ordered, expanded));
+  const hasBuffs = $derived(consumables.log_has_buffs);
+  const columns = $derived(
+    hasBuffs
+      ? 'md:grid-cols-[minmax(180px,1fr)_120px_minmax(0,1.5fr)]'
+      : 'md:grid-cols-[minmax(180px,1fr)_120px]',
+  );
+</script>
+
+<RaidBlock heading={attendanceCopy.report.consumables} count={ordered.length} testid="raid-consumables">
+  {#if !hasBuffs}
+    <p class="text-muted text-[13px]" data-testid="raid-consumables-no-buffs">
+      {attendanceCopy.consumables.noBuffData}
+    </p>
+  {/if}
+  <ul>
+    {#each shown as row (row.character_key)}
+      <li
+        class="{ROW_DIVIDER} grid min-h-11 grid-cols-1 items-center gap-x-4 gap-y-1 px-1 py-2 {columns}"
+        style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+        data-testid="raid-consumable-row"
+      >
+        <span class="flex min-w-0 items-center gap-2">
+          <ClassCrestRing characterClass={row.class} size={20} />
+          <span
+            class="truncate text-[13px] font-semibold"
+            style={`color:${classColorVar(row.class)}`}
+            title={row.name}>{row.name}</span
+          >
+        </span>
+        <span class="pill {BEFORE_PILL[row.before]} justify-self-start"
+          >{attendanceCopy.consumables.state[row.before]}</span
+        >
+        {#if hasBuffs}
+          <span class="flex flex-wrap items-center gap-1.5">
+            {#each usedChips(row) as chip (chip.text)}
+              {#if chip.used}<span class="pill pill-sample">{chip.text}</span>{:else}<span
+                  class="text-muted text-[12px]">{chip.text}</span
+                >{/if}
+            {/each}
+          </span>
+        {/if}
+      </li>
+    {/each}
+  </ul>
+  {#if !expanded && ordered.length > shown.length}
+    <RaidShowAll total={ordered.length} onShow={() => (expanded = true)} testid="raid-consumables-show-all" />
+  {/if}
+</RaidBlock>
