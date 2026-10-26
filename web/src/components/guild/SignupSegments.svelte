@@ -5,7 +5,7 @@
 <script lang="ts">
   import type { GuildSignupState } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
-  import { SIGNUP_STATES, segmentKeyTarget, tabbableSegment } from '../../lib/guild/segments-keys';
+  import { SIGNUP_STATES, segmentKeyAction, tabbableSegment } from '../../lib/guild/segments-keys';
 
   let {
     value,
@@ -47,12 +47,14 @@
     if (state !== value) onChange(state);
   }
 
+  /** Arrows move focus only (DOM focus; the tab stop stays on the checked segment), so stepping
+   *  across the group never saves; Space and Enter select the focused segment. */
   function onKeydown(event: KeyboardEvent, index: number): void {
-    const target = segmentKeyTarget(event.key, index, SIGNUP_STATES.length);
-    if (target === null) return;
+    const action = segmentKeyAction(event.key, index, SIGNUP_STATES.length);
+    if (action === null) return;
     event.preventDefault();
-    buttons[target]?.focus();
-    select(SIGNUP_STATES[target]);
+    if (action.kind === 'move') buttons[action.index]?.focus();
+    else select(SIGNUP_STATES[action.index]);
   }
 </script>
 

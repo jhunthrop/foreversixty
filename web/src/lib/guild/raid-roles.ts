@@ -1,38 +1,23 @@
 // web/src/lib/guild/raid-roles.ts
-// The raid role a spec plays (spec 3.3: the role select is prefilled from the spec). One map for
-// the strip, the band and the mock guild fixture.
+// The raid role a spec plays (spec 3.3: the role select is prefilled from the spec), derived from
+// the generated SPECS so the role has one source. Specs that share a name across classes (Holy,
+// Restoration, Protection) share a role.
+import { SPECS } from '../sim/specs';
 import type { GuildRaidRole } from './api';
 
-export const SPEC_ROLE: Readonly<Record<string, GuildRaidRole>> = {
-  Protection: 'tank',
-  Fury: 'dps',
-  Arms: 'dps',
-  Marksmanship: 'dps',
-  'Beast Mastery': 'dps',
-  Survival: 'dps',
-  Combat: 'dps',
-  Assassination: 'dps',
-  Subtlety: 'dps',
-  Affliction: 'dps',
-  Demonology: 'dps',
-  Destruction: 'dps',
-  Fire: 'dps',
-  Frost: 'dps',
-  Arcane: 'dps',
-  Holy: 'healer',
-  Discipline: 'healer',
-  Shadow: 'dps',
-  Restoration: 'healer',
-  Feral: 'dps',
-  Balance: 'dps',
-  Elemental: 'dps',
-  Enhancement: 'dps',
-  Retribution: 'dps',
-};
+/** Spec display name (`Feral Bear`) → raid role. */
+export const SPEC_ROLE: Readonly<Record<string, GuildRaidRole>> = Object.fromEntries(
+  SPECS.map((spec) => [spec.name, spec.role]),
+);
 
-const BY_LOWER_NAME = new Map(Object.entries(SPEC_ROLE).map(([spec, role]) => [spec.toLowerCase(), role]));
+const BY_LOWER = new Map<string, GuildRaidRole>(
+  SPECS.flatMap((spec) => [
+    [spec.name.toLowerCase(), spec.role],
+    [spec.spec.toLowerCase(), spec.role],
+  ]),
+);
 
-/** The role for a spec name in any case; `null` for an empty or unknown spec. */
+/** The role for a spec name (any case) or spec key (`druid-feral-bear`); `null` when unknown. */
 export function roleForSpec(spec: string): GuildRaidRole | null {
-  return BY_LOWER_NAME.get(spec.trim().toLowerCase()) ?? null;
+  return BY_LOWER.get(spec.trim().toLowerCase()) ?? null;
 }

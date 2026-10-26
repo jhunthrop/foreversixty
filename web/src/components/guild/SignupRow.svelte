@@ -97,6 +97,7 @@
     busy = false;
     if (!outcome.ok) {
       revert();
+      sentNote = null;
       status = { kind: 'error', ...failureLine(outcome.code) };
       return;
     }
@@ -107,20 +108,26 @@
     if (outcome.moved !== null) onMoved(outcome.moved);
   }
 
+  function isRole(value: string): value is GuildRaidRole {
+    return ROLE_OPTIONS.some((option) => option.value === value);
+  }
+
+  /** A press while a save is in flight is ignored, so a refusal can only revert to the confirmed
+   *  (props) state, never to an unconfirmed one. */
   function pickState(state: GuildSignupState): void {
-    const before = pendingState;
+    if (busy) return;
     pendingState = state;
     void commit({ state, role: shownRole, note: shownNote }, () => {
-      pendingState = before;
+      pendingState = undefined;
     });
   }
 
   function pickRole(value: string): void {
-    const before = roleChoice;
-    roleChoice = value as GuildRaidRole;
+    if (!isRole(value)) return;
+    roleChoice = value;
     if (shownState === null) return;
-    void commit({ state: shownState, role: roleChoice, note: shownNote }, () => {
-      roleChoice = before;
+    void commit({ state: shownState, role: value, note: shownNote }, () => {
+      roleChoice = null;
     });
   }
 
