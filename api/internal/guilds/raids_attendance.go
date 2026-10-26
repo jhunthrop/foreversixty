@@ -100,12 +100,12 @@ func (s *Store) fillLogFigures(ctx context.Context, reportID string, present map
 	for rows.Next() {
 		var key string
 		var p logPresence
-		var offset int
+		var offset *int // null when the log has no encounter fight to measure from
 		if err := rows.Scan(&key, &p.Name, &p.Class, &p.Spec, &p.PullsPresent, &offset); err != nil {
 			return fmt.Errorf("guilds: attendance figures: %w", err)
 		}
 		if _, ok := present[key]; ok {
-			p.FirstSeenOffsetS = &offset
+			p.FirstSeenOffsetS = offset
 			present[key] = p
 		}
 	}
