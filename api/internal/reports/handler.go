@@ -85,7 +85,10 @@ type Service struct {
 	// report, the late attribution a raid match waits on. Nil tells
 	// nobody.
 	Completed Completed
-	Log       *slog.Logger
+	// Moved is told when a patch sets a report's guild, so a match the report held in another
+	// guild is released. Nil tells nobody.
+	Moved GuildMoved
+	Log   *slog.Logger
 
 	completions completions
 }
@@ -515,8 +518,8 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "patch", err, "could not change that report just now")
 		return
 	}
-	if p.GuildID != nil && updated.Status == StatusComplete {
-		s.completions.run(r.Context(), func(ctx context.Context) { callCompleted(ctx, s.Completed, updated.ID) })
+	if p.GuildID != nil {
+		s.guildSet(r, updated)
 	}
 	view, err := s.view(r.Context(), updated)
 	if err != nil {
@@ -524,6 +527,20 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusOK, view)
+}
+
+// guildSet runs, detached, what a patch that sets a report's guild starts: release any match a
+// raid of another guild holds (Moved), then, for a complete report, the completion hook.
+func (s *Service) guildSet(r *http.Request, rep Report) {
+	by := auth.ActorFrom(r.Context()).UserID
+	s.completions.run(r.Context(), func(ctx context.Context) {
+		if s.Moved != nil {
+			s.Moved.ReportGuildMoved(ctx, rep.ID, by)
+		}
+		if rep.Status == StatusComplete {
+			callCompleted(ctx, s.Completed, rep.ID)
+		}
+	})
 }
 
 // visibility is what the site Worker asks before serving a report's

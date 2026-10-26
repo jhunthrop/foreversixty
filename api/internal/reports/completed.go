@@ -36,6 +36,18 @@ type Completed interface {
 	ReportCompleted(ctx context.Context, reportID string)
 }
 
+// GuildMoved is told when an officer's PATCH sets a report's guild, before the completion hook,
+// so a raid of another guild still holding the report lets it go. guilds.Service satisfies it.
+type GuildMoved interface {
+	ReportGuildMoved(ctx context.Context, reportID string, by int64)
+}
+
+// GuildHooks is both hooks, as the guilds service provides them.
+type GuildHooks interface {
+	Completed
+	GuildMoved
+}
+
 // callCompleted tells hook of reportID; a nil hook is a deployment that listens to nothing.
 func callCompleted(ctx context.Context, hook Completed, reportID string) {
 	if hook == nil {

@@ -155,7 +155,7 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	       coalesce((select sum(f.deaths) from fights f where f.report_id = r.id), 0),
 	       ` + presence.EvidenceReport("r") + `, gr.id
 	     from reports r
-	     left join guild_raids gr on gr.report_id = r.id
+	     left join guild_raids gr on gr.report_id = r.id and gr.guild_id = $1
 	     where r.guild_id = $1 and ` + visibility
 	args := []any{guildID, userID}
 	if before != nil {
