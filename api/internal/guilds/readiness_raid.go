@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
@@ -143,6 +144,20 @@ func (s *Store) readinessNextRaid(ctx context.Context, guildID int64, now time.T
 
 // readinessRaid reads the optional raid query: filtered is false with no raid param; ok is
 // false once the request is answered (404 for a raid that is not this guild's).
+// readinessRoute is GET …/readiness. With ?raid= it is a raid route under R1: anyone who is not
+// a verified member, signed out included, is told 404. Without, it is the members' board.
+func (s *Service) readinessRoute(w http.ResponseWriter, r *http.Request) {
+	if !r.URL.Query().Has("raid") {
+		auth.RequireSession(s.readiness)(w, r)
+		return
+	}
+	raidRouteSession(func(w http.ResponseWriter, r *http.Request) {
+		if s.verifiedMemberOr404(w, r, "readiness") {
+			s.readiness(w, r)
+		}
+	})(w, r)
+}
+
 func (s *Service) readinessRaid(w http.ResponseWriter, r *http.Request, guildID int64) (raid *Raid, filtered, ok bool) {
 	raw := r.URL.Query().Get("raid")
 	if raw == "" {
