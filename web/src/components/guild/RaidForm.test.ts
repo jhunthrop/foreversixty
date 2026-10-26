@@ -171,6 +171,18 @@ describe('RaidForm', () => {
     expect(markup).not.toContain('raid-form-discord-line');
   });
 
+  it('offers the box from the page-level channel state with no raid planned', () => {
+    const markup = html({ last: null, discord: CONNECTED });
+    expect(tag(markup, 'raid-form-discord')).toContain('checked');
+    expect(markup).not.toContain('raid-form-discord-line');
+  });
+
+  it('offers the Settings line, not the box, for an available but unconnected channel with no raid planned', () => {
+    const markup = html({ last: null, discord: NOT_CONNECTED });
+    expect(markup).not.toContain('data-testid="raid-form-discord"');
+    expect(markup).toContain('raid-form-discord-line');
+  });
+
   it('draws neither the box nor the line when connect is off or the channel is unknown', () => {
     for (const discord of [{ ...NOT_CONNECTED, available: false }, null]) {
       const markup = html({ discord });

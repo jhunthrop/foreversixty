@@ -101,11 +101,13 @@ type ZoneView struct {
 }
 
 // PlannedSection is the members-only half of GET /v1/guilds/{id}/raids. RaidsPage embeds it
-// by pointer, so a nil section leaves all three keys out for everyone else (R1).
+// by pointer, so a nil section leaves all four keys out for everyone else (R1). Discord is the
+// guild channel's state, so the create form can offer the box before any raid is planned.
 type PlannedSection struct {
-	Planned       []RaidView `json:"planned"`
-	Zones         []ZoneView `json:"zones"`
-	GuildTimezone *string    `json:"guild_timezone"`
+	Planned       []RaidView  `json:"planned"`
+	Zones         []ZoneView  `json:"zones"`
+	GuildTimezone *string     `json:"guild_timezone"`
+	Discord       RaidDiscord `json:"discord"`
 }
 
 // NextRaidCounts are the band line's totals (the band count is In + Late).

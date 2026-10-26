@@ -102,9 +102,17 @@ describe('lastPlannedRaid and openRaidCount', () => {
   });
 });
 
+const CONNECTED = { available: true, connected: true, post_default: true };
+
 describe('createDefaults', () => {
   it('takes the last raid’s zone, weekday, guild time and duration', () => {
-    const d = createDefaults({ last: raid(), now: NOW, guildTimezone: CHICAGO, viewerTimezone: NEW_YORK });
+    const d = createDefaults({
+      last: raid(),
+      now: NOW,
+      guildTimezone: CHICAGO,
+      viewerTimezone: NEW_YORK,
+      discord: CONNECTED,
+    });
     expect(d).toMatchObject({
       zone: 'onyxias-lair',
       date: '2026-12-03',
@@ -119,13 +127,36 @@ describe('createDefaults', () => {
   });
 
   it('starts a first raid at 20:00 with no date and no raid chosen, in the browser zone', () => {
-    const d = createDefaults({ last: null, now: NOW, guildTimezone: null, viewerTimezone: NEW_YORK });
+    const d = createDefaults({
+      last: null,
+      now: NOW,
+      guildTimezone: null,
+      viewerTimezone: NEW_YORK,
+      discord: null,
+    });
     expect(d).toMatchObject({ zone: '', date: '', time: '20:00', duration: 180, timezone: NEW_YORK });
     expect(d.postToDiscord).toBe(false);
   });
 
+  it('seeds the box from the guild channel with no raid planned', () => {
+    const d = createDefaults({
+      last: null,
+      now: NOW,
+      guildTimezone: null,
+      viewerTimezone: NEW_YORK,
+      discord: CONNECTED,
+    });
+    expect(d.postToDiscord).toBe(true);
+  });
+
   it('prefers the guild zone over the browser zone', () => {
-    const d = createDefaults({ last: null, now: NOW, guildTimezone: CHICAGO, viewerTimezone: NEW_YORK });
+    const d = createDefaults({
+      last: null,
+      now: NOW,
+      guildTimezone: CHICAGO,
+      viewerTimezone: NEW_YORK,
+      discord: null,
+    });
     expect(d.timezone).toBe(CHICAGO);
   });
 });

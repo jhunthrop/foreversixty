@@ -684,6 +684,8 @@ export interface GuildRaidsPage {
   planned?: GuildRaidView[];
   zones?: GuildZoneView[];
   guild_timezone?: string | null;
+  /** The guild channel's state (verified members only), for the create form with no raid planned. */
+  discord?: GuildRaidDiscord;
 }
 
 // Planned raids and sign-ups (design/specs/2026-10-26-guild-raids.md section 9, "Contract this
