@@ -186,22 +186,36 @@ func (s *Store) SetExcused(ctx context.Context, raidID int64, characterKey strin
 
 // AttendanceRows reads raidID's stored rows, ordered by name then key.
 func (s *Store) AttendanceRows(ctx context.Context, raidID int64) ([]AttendanceRow, error) {
+	byRaid, err := s.attendanceRowsFor(ctx, []int64{raidID})
+	if err != nil {
+		return nil, err
+	}
+	return byRaid[raidID], nil
+}
+
+// attendanceRowsFor reads the stored rows of every raid in raidIDs in one query, each raid's
+// ordered by name then key. A raid with no rows maps to an empty, non-nil slice.
+func (s *Store) attendanceRowsFor(ctx context.Context, raidIDs []int64) (map[int64][]AttendanceRow, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select character_key, name, class, spec, signed, role, outcome, came_as, first_seen_offset_s,
+		select raid_id, character_key, name, class, spec, signed, role, outcome, came_as, first_seen_offset_s,
 		       pulls_present, pulls_total, excused
-		from guild_raid_attendance where raid_id = $1 order by name, character_key`, raidID)
+		from guild_raid_attendance where raid_id = any($1) order by raid_id, name, character_key`, raidIDs)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: attendance rows: %w", err)
 	}
 	defer rows.Close()
-	out := []AttendanceRow{}
+	out := make(map[int64][]AttendanceRow, len(raidIDs))
+	for _, id := range raidIDs {
+		out[id] = []AttendanceRow{}
+	}
 	for rows.Next() {
+		var raidID int64
 		var r AttendanceRow
-		if err := rows.Scan(&r.CharacterKey, &r.Name, &r.Class, &r.Spec, &r.Signed, &r.Role, &r.Outcome,
+		if err := rows.Scan(&raidID, &r.CharacterKey, &r.Name, &r.Class, &r.Spec, &r.Signed, &r.Role, &r.Outcome,
 			&r.CameAs, &r.FirstSeenOffsetS, &r.PullsPresent, &r.PullsTotal, &r.Excused); err != nil {
 			return nil, fmt.Errorf("guilds: attendance rows: %w", err)
 		}
-		out = append(out, r)
+		out[raidID] = append(out[raidID], r)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: attendance rows: %w", err)
