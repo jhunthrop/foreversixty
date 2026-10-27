@@ -135,11 +135,12 @@ export interface MeGuild {
   /** Spec section 2.6: GET /v1/me gains Consent and Verified per Guild entry. */
   consent?: 'roster' | 'gear' | 'gear_bags';
   verified: boolean;
-  /** The live count of distinct verified accounts, leader included. */
   verified_count: number;
   /**
    * Non-null only for a verified officer/leader of a guild with an active guild-plan
-   * entitlement (spec 1.4). Optional: every reader treats a missing key the same as null.
+   * entitlement (spec 1.4) -- billing detail, gated tighter than membership alone. Optional
+   * because the live API does not send it yet (the API lane has not landed); every reader
+   * treats a missing key the same as null.
    */
   plan?: GuildBillingView | null;
   /**
@@ -173,7 +174,6 @@ export interface BillingView extends BillingFacts {
 
 export interface GuildBillingView {
   tier: GuildTier;
-  /** True when the account holds a Premium seat in this guild. */
   you_hold_seat: boolean;
   /** `officer_tools` is a scoped grant for Award, Undo and Nudge only; `plan` is the guild plan. */
   scope: 'plan' | 'officer_tools';
@@ -223,11 +223,8 @@ export interface Me {
   main_character_key?: string;
   /** Unseen finished server runs, newest first, at most 3. Absent on an older API. */
   finished_sims?: FinishedSim[];
-  /** The Premium seat this account holds; null or absent when none (absent on an older API). */
   seat?: MeSeat | null;
-  /** A seat offered to this account while it pays for its own Premium. */
   seat_offer?: MeSeatOffer | null;
-  /** A seat that ended within the last 30 days, with its resubscribe link. */
   ended_seat?: MeEndedSeat | null;
   /** Absent on an older API. */
   server_sims?: { runs_this_month: number };
@@ -322,22 +319,37 @@ export interface EnvelopeResult<T> {
  * (by default -- see `init.credentials` below) for the session cookie, `X-CSRF-Token`
  * from the readable `fs_csrf` cookie on every non-GET, and the JSON envelope parsed and
  * turned into an `AccountError` (carrying the API's own `error.message`) on a failed
- * response. Every module that talks to our API goes through this, so the CSRF header and
- * the credentials mode can only go wrong in one place. It never throws for a *successful*
- * response with no `data`; each caller decides what "no data" means for its endpoint.
+ * response. Every module that talks to our API -- this one, `web/src/lib/upload/
+ * multipart.ts` for the two upload routes, and `web/src/lib/rankings/api.ts` for the
+ * public rankings/character/guild reads -- goes through this, so the CSRF header and the
+ * credentials mode can only go wrong in one place. It never throws for a *successful*
+ * response with no `data`; each caller decides what "no data" means for its own endpoint.
  * Failure is read off the HTTP status alone (`!response.ok`), not the envelope's own `ok`
- * flag: callers such as `fetchMe` (401 means signed out) read a non-2xx status themselves.
+ * flag: every response this API has ever sent keeps the two in agreement, and the
+ * account module's callers (`fetchMe`'s 401-means-signed-out, `listMyReports`'s
+ * empty-page-when-signed-out) rely on reading a non-2xx status themselves. A caller that
+ * needs `data` to be non-null on success (rankings, the two upload routes) checks that
+ * itself, the same way `multipart.ts`'s `post()` already does; the pattern in
+ * `rankings/api.ts`'s `get()` matches it.
  *
- * `init.credentials` overrides the session cookie's `'include'` default: a public read
- * that answers the same for every visitor passes `'omit'` so no cookie or CSRF header
- * rides along (CSRF is skipped on every GET regardless).
+ * `init.credentials` overrides the session cookie's `'include'` default. A public read
+ * that answers the same way for every visitor -- a ranking is not tied to who is asking
+ * -- passes `'omit'` so it does not send a cookie or the CSRF header the API does not
+ * need for it (CSRF is skipped on every GET regardless, since it only guards
+ * state-changing requests, but `'omit'` also keeps the session cookie itself off a
+ * request that has no business carrying one).
  *
  * `failureMessage` overrides the fallback shown when a failed response -- including one
  * the browser never reached at all -- carries no `error.message` of its own; it defaults
  * to `ACCOUNT_FAILED`, the account module's own generic copy.
  */
 
-/** The ETag `requestEnvelope` last saw for a GET, per `${apiBase}${path}`, and its body: a 304 resolves to it. */
+/**
+ * The ETag `requestEnvelope` last saw for a GET, per `${apiBase}${path}`, and the body it
+ * came with. Never touched for a non-GET request. `query.ts`'s stale-while-revalidate
+ * background reload is what actually exercises this: a 304 makes that reload a cheap,
+ * bodiless round trip, resolved transparently to the same data the caller already had.
+ */
 const remembered = new Map<string, { etag: string; data: unknown }>();
 
 /** Tests only: a fresh module has remembered no ETags. */
@@ -345,7 +357,12 @@ export function forgetRemembered(): void {
   remembered.clear();
 }
 
-/** The request headers, with `If-None-Match` for a GET that has a remembered ETag; returns that `known` entry too. */
+/**
+ * Builds the request headers, applying `If-None-Match` for a GET that has a remembered
+ * ETag. Returns the `known` entry too (rather than making `requestEnvelope` look it up
+ * again) so the 304 short-circuit below can resolve to the same body without a second
+ * `remembered.get`.
+ */
 function buildRequestHeaders(
   method: string,
   body: unknown,
@@ -651,15 +668,19 @@ export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }
 
-export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
-  const me = await call<Me>('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+/** PATCH /v1/me; the answer is the new `/v1/me`, normalized and cached. */
+async function patchMe(body: Record<string, unknown>, apiBase: string): Promise<void> {
+  const me = normalizeMeBilling(await call<Me>('/v1/me', apiBase, { method: 'PATCH', body }));
   if (me !== null) setQueryData(meKey(apiBase), me);
+}
+
+export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
+  await patchMe({ anonymize: value }, apiBase);
 }
 
 /** Chooses the account's main character (one of its own); the rest become alts. */
 export async function setMainCharacter(key: string, apiBase: string = API_BASE_URL): Promise<void> {
-  const me = await call<Me>('/v1/me', apiBase, { method: 'PATCH', body: { main_character_key: key } });
-  if (me !== null) setQueryData(meKey(apiBase), me);
+  await patchMe({ main_character_key: key }, apiBase);
 }
 
 /** One character's export, matching `POST /v1/me/exports`'s body (spec 2026-09-22 §4.5) --
