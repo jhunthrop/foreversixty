@@ -139,6 +139,12 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case "billing-daily":
+			if err := runBillingDaily(context.Background(), log); err != nil {
+				log.Error("billing-daily", "err", err)
+				os.Exit(1)
+			}
+			return
 		case "stripe-reconcile":
 			if err := runStripeReconcile(context.Background(), log); err != nil {
 				log.Error("stripe-reconcile", "err", err)
@@ -689,7 +695,7 @@ func serve(log *slog.Logger) error {
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
 	deps.DiscordBot = newDiscordBot(cfg, pool, deps, accounts, log)
 
-	wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
+	wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore, accounts: accounts,
 		guildStore: guildStore, mailer: mailer, log: log})
 
 	var sampler *parse.Worker

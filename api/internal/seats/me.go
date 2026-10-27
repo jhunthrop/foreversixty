@@ -92,7 +92,11 @@ func (s *Store) addFact(ctx context.Context, facts *auth.SeatFacts, userID int64
 			return err
 		}
 		facts.Offer = &auth.SeatOffer{GuildID: fs.guildID, GuildName: fs.guildName, FromName: from, OfferedAt: *r.offeredAt}
-	case facts.Seat == nil && r.givenAt != nil:
+	case r.givenAt != nil:
+		facts.HeldGuildIDs = append(facts.HeldGuildIDs, fs.guildID)
+		if facts.Seat != nil {
+			return nil
+		}
 		from, err := s.giverName(ctx, fs.guildID, r.givenBy)
 		if err != nil {
 			return err

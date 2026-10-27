@@ -22,6 +22,7 @@ type billingWiring struct {
 	deps       *server.Deps
 	entitle    *entitlements.Store
 	authStore  *auth.Store
+	accounts   *auth.Service
 	guildStore *guilds.Store
 	mailer     mail.Mailer
 	log        *slog.Logger
@@ -40,6 +41,7 @@ func wireBilling(w billingWiring) {
 			"effect", "checkout, portal, and the webhook answer 503")
 	}
 	seatStore := &seats.Store{Pool: pool, Entitlements: entStore}
+	w.accounts.Seats = seatStore
 	deps.Seats = &seats.Service{
 		Store:  seatStore,
 		Mailer: mailer, Guilds: guildStore, PublicBaseURL: cfg.PublicBaseURL, Log: log,

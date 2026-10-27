@@ -8,6 +8,8 @@ type SeatFacts struct {
 	Seat  *HeldSeat
 	Offer *SeatOffer
 	Ended *EndedSeat
+	// HeldGuildIDs lists every guild the account holds a seat in.
+	HeldGuildIDs []int64
 }
 
 // HeldSeat is a Premium seat the account holds.
