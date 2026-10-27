@@ -33,7 +33,12 @@ func (c raidRosterChar) defaultRole() string {
 // fight, else characters) and its spec and role (newest logged fight). A non-empty key
 // narrows the read to that one row.
 func (s *Store) raidRoster(ctx context.Context, guildID int64, key string) ([]raidRosterChar, error) {
-	rows, err := s.Pool.Query(ctx, `
+	return raidRosterOn(ctx, s.Pool, guildID, key)
+}
+
+// raidRosterOn is raidRoster on q (the pool, or a match's transaction).
+func raidRosterOn(ctx context.Context, q dbQuerier, guildID int64, key string) ([]raidRosterChar, error) {
+	rows, err := q.Query(ctx, `
 		select gc.character_key, gc.user_id, gc.verified_at is not null,
 		       coalesce(nullif(c.name, ''), nullif(ae.name, ''), split_part(gc.character_key, '/', 3)),
 		       lower(coalesce(fm.class, c.class, '')), coalesce(fm.spec, ''), coalesce(fm.role, '')

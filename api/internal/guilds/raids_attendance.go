@@ -38,28 +38,36 @@ func (s *Store) RecomputeAttendance(ctx context.Context, raidID int64) error {
 	if !evidence {
 		return nil
 	}
-	rows, err := s.attendanceRowsOf(ctx, guildID, raidID, *reportID)
+	rows, err := attendanceRowsOf(ctx, s.Pool, guildID, raidID, *reportID)
 	if err != nil {
 		return err
 	}
 	return s.replaceAttendance(ctx, raidID, reportID, rows)
 }
 
-// attendanceRowsOf computes raidID's rows against reportID, writing nothing.
-func (s *Store) attendanceRowsOf(ctx context.Context, guildID, raidID int64, reportID string) ([]AttendanceRow, error) {
-	in, err := s.attendanceInputFor(ctx, guildID, raidID, reportID)
+// dbQuerier is what the attendance compute reads through: the pool, or a match's transaction so
+// a match holds one connection. presence.In takes it as a character.Querier.
+type dbQuerier interface {
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
+
+// attendanceRowsOf computes raidID's rows against reportID on q, writing nothing.
+func attendanceRowsOf(ctx context.Context, q dbQuerier, guildID, raidID int64, reportID string) ([]AttendanceRow, error) {
+	in, err := attendanceInputFor(ctx, q, guildID, raidID, reportID)
 	if err != nil {
 		return nil, err
 	}
 	return computeAttendance(in), nil
 }
 
-func (s *Store) attendanceInputFor(ctx context.Context, guildID, raidID int64, reportID string) (attendanceInput, error) {
-	signups, err := s.RaidSignups(ctx, raidID)
+func attendanceInputFor(ctx context.Context, q dbQuerier, guildID, raidID int64, reportID string) (attendanceInput, error) {
+	byRaid, err := signupsByRaid(ctx, q, []int64{raidID})
 	if err != nil {
 		return attendanceInput{}, err
 	}
-	chars, err := s.raidRoster(ctx, guildID, "")
+	signups := byRaid[raidID]
+	chars, err := raidRosterOn(ctx, q, guildID, "")
 	if err != nil {
 		return attendanceInput{}, err
 	}
@@ -67,14 +75,14 @@ func (s *Store) attendanceInputFor(ctx context.Context, guildID, raidID int64, r
 	for _, c := range chars {
 		roster[c.CharacterKey] = c
 	}
-	present, err := s.logPresentKeys(ctx, reportID)
+	present, err := logPresentKeys(ctx, q, reportID)
 	if err != nil {
 		return attendanceInput{}, err
 	}
-	if err := s.fillLogFigures(ctx, reportID, present); err != nil {
+	if err := fillLogFigures(ctx, q, reportID, present); err != nil {
 		return attendanceInput{}, err
 	}
-	total, err := s.encounterPulls(ctx, reportID)
+	total, err := encounterPulls(ctx, q, reportID)
 	if err != nil {
 		return attendanceInput{}, err
 	}
@@ -83,8 +91,8 @@ func (s *Store) attendanceInputFor(ctx context.Context, guildID, raidID int64, r
 
 // logPresentKeys is who the log shows, by the presence rules (a private or flagged log shows
 // nobody).
-func (s *Store) logPresentKeys(ctx context.Context, reportID string) (map[string]logPresence, error) {
-	rows, err := presence.In(ctx, s.Pool, []string{reportID}, nil)
+func logPresentKeys(ctx context.Context, q dbQuerier, reportID string) (map[string]logPresence, error) {
+	rows, err := presence.In(ctx, q, []string{reportID}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: attendance presence: %w", err)
 	}
@@ -97,11 +105,11 @@ func (s *Store) logPresentKeys(ctx context.Context, reportID string) (map[string
 
 // fillLogFigures adds each present character's name, class, spec, pulls and log-relative
 // first sighting from their fight_metrics rows.
-func (s *Store) fillLogFigures(ctx context.Context, reportID string, present map[string]logPresence) error {
+func fillLogFigures(ctx context.Context, q dbQuerier, reportID string, present map[string]logPresence) error {
 	if len(present) == 0 {
 		return nil
 	}
-	rows, err := s.Pool.Query(ctx, `
+	rows, err := q.Query(ctx, `
 		select m.player_key, max(m.player_name), max(coalesce(m.class, '')), max(coalesce(m.spec, '')),
 		       count(distinct m.fight_index),
 		       ((min(f.start_ms) - (select min(start_ms) from fights where report_id = $1 and encounter_id is not null)) / 1000)::int
@@ -132,9 +140,9 @@ func (s *Store) fillLogFigures(ctx context.Context, reportID string, present map
 	return nil
 }
 
-func (s *Store) encounterPulls(ctx context.Context, reportID string) (int, error) {
+func encounterPulls(ctx context.Context, q dbQuerier, reportID string) (int, error) {
 	var n int
-	if err := s.Pool.QueryRow(ctx,
+	if err := q.QueryRow(ctx,
 		`select count(*) from fights where report_id = $1 and encounter_id is not null`, reportID).Scan(&n); err != nil {
 		return 0, fmt.Errorf("guilds: attendance pulls: %w", err)
 	}

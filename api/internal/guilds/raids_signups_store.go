@@ -166,11 +166,16 @@ func (s *Store) RaidSignups(ctx context.Context, raidID int64) ([]Signup, error)
 // SignupsByRaid reads the sign-ups of every raid in raidIDs in one query, keyed by raid id,
 // each list in a stable order (name, then key).
 func (s *Store) SignupsByRaid(ctx context.Context, raidIDs []int64) (map[int64][]Signup, error) {
+	return signupsByRaid(ctx, s.Pool, raidIDs)
+}
+
+// signupsByRaid is SignupsByRaid on q (the pool, or a match's transaction).
+func signupsByRaid(ctx context.Context, q dbQuerier, raidIDs []int64) (map[int64][]Signup, error) {
 	out := make(map[int64][]Signup, len(raidIDs))
 	if len(raidIDs) == 0 {
 		return out, nil
 	}
-	rows, err := s.Pool.Query(ctx, `
+	rows, err := q.Query(ctx, `
 		select raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by, updated_at
 		from guild_raid_signups where raid_id = any($1) order by raid_id, name, character_key`, raidIDs)
 	if err != nil {

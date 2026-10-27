@@ -159,7 +159,7 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 // finishMatch is the rest of every match, in the match's own transaction: the raid's
 // attendance against its new log and the loot awarded during it. A failure rolls the match back.
 func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
-	rows, err := s.attendanceRowsOf(ctx, raid.GuildID, raid.ID, *raid.ReportID)
+	rows, err := attendanceRowsOf(ctx, tx, raid.GuildID, raid.ID, *raid.ReportID)
 	if err != nil {
 		return err
 	}
