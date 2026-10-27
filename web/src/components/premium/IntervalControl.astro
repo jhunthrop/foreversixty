@@ -1,0 +1,78 @@
+---
+// web/src/components/premium/IntervalControl.astro
+// A native radiogroup (arrow keys work with no script). The page's CSS reads which radio is
+// checked with :has(); both price sets stay in the DOM, so the switch changes no box size.
+import { INTERVALS } from '../../lib/billing/plans';
+import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+
+const { interval } = plansPageCopy;
+---
+
+<div role="radiogroup" aria-label={interval.groupLabel} class="interval-control">
+  {INTERVALS.map((value, index) => (
+    <div class="seg">
+      <input
+        type="radio"
+        name="interval"
+        id={`iv-${value}`}
+        value={value}
+        checked={index === 0}
+        data-testid={`interval-${value}`}
+      />
+      <label for={`iv-${value}`}>{interval.labels[value]}</label>
+    </div>
+  ))}
+</div>
+
+<style>
+  .interval-control {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: var(--color-raised);
+  }
+  .seg {
+    position: relative;
+    flex: 1;
+    height: 44px;
+  }
+  .seg input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .seg label {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    pointer-events: none;
+    border-bottom: 2px solid transparent;
+    border-radius: var(--radius-control);
+  }
+  .seg input:checked + label {
+    background: var(--color-card-top);
+    color: var(--color-strong);
+    border-bottom-color: var(--color-gold);
+  }
+  .seg input:not(:checked):hover + label {
+    background: var(--color-card-top);
+  }
+  .seg input:focus-visible + label {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  @media (min-width: 1024px) {
+    .interval-control {
+      width: 224px;
+    }
+  }
+</style>
