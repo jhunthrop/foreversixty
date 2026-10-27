@@ -65,8 +65,9 @@ func (s *Service) rememberPostDefault(ctx context.Context, guildID int64, box *b
 func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 	in := notify.RaidPosted{
 		GuildName: g.Name, Title: v.Title, StartsAt: v.StartsAt,
-		RaidURL:  strings.TrimRight(s.PublicBaseURL, "/") + fmt.Sprintf(raidPathFormat, GuildPagePath(g), v.ID),
-		SignedUp: v.Counts.In + v.Counts.Late,
+		RaidID:  v.ID,
+		RaidURL: strings.TrimRight(s.PublicBaseURL, "/") + fmt.Sprintf(raidPathFormat, GuildPagePath(g), v.ID),
+		Counts:  notify.RaidCounts(v.Counts),
 	}
 	if v.GuildTimezone != nil {
 		in.Timezone = *v.GuildTimezone

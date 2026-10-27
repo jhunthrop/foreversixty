@@ -14,7 +14,7 @@ func onyxiaThursday() RaidPosted {
 		StartsAt: time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC), Timezone: "America/Chicago",
 		RaidURL:  "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",
 		CrestURL: "https://api.foreversixty.gg/v1/guilds/7/crest.webp?v=abc",
-		SignedUp: 23, Size: 40, SizeKnown: true,
+		RaidID:   7, Counts: RaidCounts{In: 23}, Size: 40, SizeKnown: true,
 	}
 }
 
@@ -24,7 +24,7 @@ const (
 	raidLink   = `"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",`
 	raidFoot   = `"footer":{"text":"Olympus XXVII · Forever Sixty"},"thumbnail":{"url":"https://api.foreversixty.gg/v1/guilds/7/crest.webp?v=abc"},"timestamp":"2026-10-25T18:30:00Z",`
 	raidWhen   = `{"name":"When","value":"\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)","inline":true}`
-	raidSigned = `{"name":"Signed up","value":"23 of 40","inline":true}`
+	raidSigned = `{"name":"Signed up","value":"**23 of 40**"}`
 )
 
 func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
@@ -46,12 +46,13 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 			RaidChangedEmbed(moved, fixedFinish),
 			`{"title":"Moved: Onyxia's Lair · Friday 11 December","description":"Sign-ups carry over. Check you can still make it.",` +
 				raidLink + `"fields":[{"name":"When","value":"\u003ct:1797040800:F\u003e (\u003ct:1797040800:R\u003e)","inline":true},` +
-				`{"name":"Was","value":"\u003ct:1796954400:F\u003e","inline":true},` + raidSigned + `],` +
+				`{"name":"Was","value":"\u003ct:1796954400:F\u003e","inline":true},` +
+				`{"name":"Guild time","value":"8:00 pm CST","inline":true},` + raidSigned + `],` +
 				raidFoot + `"color":15055189}`,
 		},
 		"cancelled": {
 			RaidChangedEmbed(cancelled, fixedFinish),
-			`{"title":"Cancelled: Onyxia's Lair · Thursday 10 December",` + raidLink +
+			`{"title":"Cancelled: Onyxia's Lair · Thursday 10 December","description":"This raid was cancelled.",` + raidLink +
 				`"fields":[{"name":"When","value":"~~\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)~~","inline":true},` +
 				raidSigned + `],` + raidFoot + `"color":15758187}`,
 		},
@@ -68,7 +69,7 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 func TestRaidPostedEdges(t *testing.T) {
 	in := onyxiaThursday()
 	in.Title, in.GuildName = "*Ony* @everyone", "Olympus_XXVII"
-	in.SignedUp, in.Timezone, in.CrestURL = 0, "", "/v1/guilds/7/crest.webp?v=abc"
+	in.Counts, in.Timezone, in.CrestURL = RaidCounts{}, "", "/v1/guilds/7/crest.webp?v=abc"
 	in.RaidURL = "/guild/us/normal/olympus-xxvii/raids/7"
 	e := RaidPostedEmbed(in, fixedFinish)
 	if e.URL != "" {
@@ -77,7 +78,7 @@ func TestRaidPostedEdges(t *testing.T) {
 	if e.Title != `\*Ony\* @everyone · Friday 11 December` {
 		t.Fatalf("escaped title in UTC = %q", e.Title)
 	}
-	if e.Fields[1].Value != "2:00 am UTC" || e.Fields[2].Value != "None yet" {
+	if len(e.Fields) != 2 || e.Fields[1].Value != "None yet" {
 		t.Fatalf("fields = %+v", e.Fields)
 	}
 	if e.Thumbnail != "" {
@@ -86,8 +87,8 @@ func TestRaidPostedEdges(t *testing.T) {
 	if e.Footer != "Olympus_XXVII · Forever Sixty" {
 		t.Fatalf("footer = %q", e.Footer)
 	}
-	in.SignedUp, in.SizeKnown = 12, false
-	if got := RaidPostedEmbed(in, fixedFinish).Fields[2].Value; got != "12 signed up" {
+	in.Counts, in.SizeKnown = RaidCounts{In: 12}, false
+	if got := RaidPostedEmbed(in, fixedFinish).Fields[1].Value; got != "**12 signed up**" {
 		t.Fatalf("unknown size = %q", got)
 	}
 	in.Title = strings.Repeat("_", 80)

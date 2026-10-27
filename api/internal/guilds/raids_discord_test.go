@@ -87,7 +87,7 @@ func TestCreateRaidPostsOneEmbedPerRaidSoonestFirst(t *testing.T) {
 	first := events.posted[0]
 	wantURL := fmt.Sprintf("%s/guild/us/hardcore/olympus/raids/%d", testSiteBase, views[0].ID)
 	if first.RaidURL != wantURL || first.GuildName != "Olympus" || first.Title != "Onyxia's Lair" ||
-		first.Timezone != "America/Chicago" || first.SignedUp != 0 || !first.SizeKnown || first.Size != 40 ||
+		first.Timezone != "America/Chicago" || first.Counts.In+first.Counts.Late != 0 || !first.SizeKnown || first.Size != 40 ||
 		first.CrestURL != "" {
 		t.Fatalf("first post = %+v, want url %s", first, wantURL)
 	}
@@ -164,7 +164,7 @@ func TestCancelRaidPostsTheCancellationWhenAsked(t *testing.T) {
 		t.Fatalf("cancel = %d: %s", res.StatusCode, readBody(res))
 	}
 	if len(events.changed) != 1 || !events.changed[0].Cancelled || events.changed[0].Was != nil ||
-		events.changed[0].SignedUp != 1 {
+		events.changed[0].Counts.In+events.changed[0].Counts.Late != 1 {
 		t.Fatalf("changed = %+v", events.changed)
 	}
 	// The cancel box pre-ticks from the form's default and never writes it.
