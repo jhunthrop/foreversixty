@@ -1,7 +1,9 @@
 package config
 
 import (
+	"crypto/ed25519"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net"
@@ -160,6 +162,20 @@ type Config struct {
 	// set turns connect on, neither leaves it off; one alone fails startup.
 	DiscordClientID     string
 	DiscordClientSecret string
+	// The bot (DISCORD_APPLICATION_ID, DISCORD_PUBLIC_KEY as 64 hex chars,
+	// DISCORD_BOT_TOKEN) is all or nothing and rides the client pair above.
+	// DiscordCommandsGuildID (DISCORD_COMMANDS_GUILD_ID) is the private test
+	// server that receives unreleased commands.
+	DiscordApplicationID   string
+	DiscordPublicKey       ed25519.PublicKey
+	DiscordBotToken        string
+	DiscordCommandsGuildID string
+}
+
+// DiscordBotConfigured reports whether the application id, public key and bot
+// token are all set.
+func (c Config) DiscordBotConfigured() bool {
+	return c.DiscordApplicationID != "" && len(c.DiscordPublicKey) == ed25519.PublicKeySize && c.DiscordBotToken != ""
 }
 
 // NotifyKeyLen is the byte length of NotifyEncryptionKey.
@@ -273,8 +289,70 @@ func Load(getenv func(string) string) (Config, error) {
 	if err := checkDiscordPair(c.DiscordClientID, c.DiscordClientSecret); err != nil {
 		return c, err
 	}
+	if err := loadDiscordBot(&c, getenv); err != nil {
+		return c, err
+	}
 
 	return c, nil
+}
+
+// loadDiscordBot reads the bot's variables into c and checks them as a set.
+func loadDiscordBot(c *Config, getenv func(string) string) error {
+	c.DiscordApplicationID = getenv("DISCORD_APPLICATION_ID")
+	c.DiscordBotToken = getenv("DISCORD_BOT_TOKEN")
+	c.DiscordCommandsGuildID = getenv("DISCORD_COMMANDS_GUILD_ID")
+	rawKey := getenv("DISCORD_PUBLIC_KEY")
+	if err := checkDiscordBot(*c, rawKey != ""); err != nil {
+		return err
+	}
+	key, err := decodeDiscordPublicKey(rawKey)
+	if err != nil {
+		return err
+	}
+	c.DiscordPublicKey = key
+	return nil
+}
+
+// checkDiscordBot requires the bot's three values together, on top of the
+// client id and secret, and the application id to equal the client id. The
+// errors name variables, never values.
+func checkDiscordBot(c Config, keySet bool) error {
+	anySet := c.DiscordApplicationID != "" || c.DiscordBotToken != "" || keySet
+	if !anySet {
+		return nil
+	}
+	for _, v := range []struct {
+		name string
+		set  bool
+	}{
+		{"DISCORD_APPLICATION_ID", c.DiscordApplicationID != ""},
+		{"DISCORD_PUBLIC_KEY", keySet},
+		{"DISCORD_BOT_TOKEN", c.DiscordBotToken != ""},
+	} {
+		if !v.set {
+			return fmt.Errorf("config: %s is required when any Discord bot variable is set", v.name)
+		}
+	}
+	if c.DiscordClientID == "" || c.DiscordClientSecret == "" {
+		return errors.New("config: DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET are required when the Discord bot is set")
+	}
+	if c.DiscordApplicationID != c.DiscordClientID {
+		return errors.New("config: DISCORD_APPLICATION_ID must equal DISCORD_CLIENT_ID")
+	}
+	return nil
+}
+
+// decodeDiscordPublicKey turns DISCORD_PUBLIC_KEY (hex of a 32-byte Ed25519
+// key) into a key; empty means unset (nil).
+func decodeDiscordPublicKey(raw string) (ed25519.PublicKey, error) {
+	if raw == "" {
+		return nil, nil
+	}
+	key, err := hex.DecodeString(raw)
+	if err != nil || len(key) != ed25519.PublicKeySize {
+		return nil, errors.New("config: DISCORD_PUBLIC_KEY must be 64 hex characters (32 bytes)")
+	}
+	return ed25519.PublicKey(key), nil
 }
 
 // checkDiscordPair requires the Discord application's two values together.

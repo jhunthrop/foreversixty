@@ -1,4 +1,3 @@
-// Package discordbot is everything the Forever Sixty Discord bot does.
 package discordbot
 
 import (

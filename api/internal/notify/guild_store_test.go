@@ -146,3 +146,28 @@ func TestConnectStatesAreSingleUseAndExpire(t *testing.T) {
 		t.Fatal("an empty state matched")
 	}
 }
+
+func TestCreateStateRoundTripsKind(t *testing.T) {
+	ctx := context.Background()
+	st, gid, uid := savedGuild(t)
+	if err := st.CreateState(ctx, "s1", StateKindLink, uid, nil, time.Minute); err != nil {
+		t.Fatal(err)
+	}
+	cs, ok, err := st.TakeConnectState(ctx, "s1")
+	if err != nil || !ok || cs.Kind != StateKindLink || cs.GuildID != 0 || cs.UserID != uid {
+		t.Fatalf("link state = %+v ok=%v err=%v", cs, ok, err)
+	}
+	if err := st.CreateConnectState(ctx, "s2", uid, gid, time.Minute); err != nil {
+		t.Fatal(err)
+	}
+	cs, ok, err = st.TakeConnectState(ctx, "s2")
+	if err != nil || !ok || cs.Kind != StateKindGuildWebhook || cs.GuildID != gid {
+		t.Fatalf("webhook state = %+v ok=%v err=%v", cs, ok, err)
+	}
+	if err := st.CreateState(ctx, "s3", StateKindBotInstall, uid, &gid, time.Minute); err != nil {
+		t.Fatal(err)
+	}
+	if cs, _, _ := st.TakeConnectState(ctx, "s3"); cs.Kind != StateKindBotInstall || cs.GuildID != gid {
+		t.Fatalf("install state = %+v", cs)
+	}
+}

@@ -124,19 +124,34 @@ func (s *GuildStore) RecordFailure(ctx context.Context, guildID int64, lastErr s
 
 // ConnectState is a guild connect in flight.
 type ConnectState struct {
-	UserID, GuildID int64
+	UserID int64
+	// GuildID is 0 for a state with no guild (an account link).
+	GuildID int64
+	Kind    string
 	// Expired is true once the state's ten minutes have passed (by the database clock).
 	Expired bool
 }
 
-// CreateConnectState stores a new state for userID connecting guildID, valid for ttl. It
-// first sweeps the states that have already expired, so the table stays small.
+// The kinds of connect state; the callback routes on them.
+const (
+	StateKindGuildWebhook = "guild_webhook"
+	StateKindBotInstall   = "bot_install"
+	StateKindLink         = "link"
+)
+
+// CreateConnectState stores a guild-webhook state for userID connecting guildID.
 func (s *GuildStore) CreateConnectState(ctx context.Context, state string, userID, guildID int64, ttl time.Duration) error {
+	return s.CreateState(ctx, state, StateKindGuildWebhook, userID, &guildID, ttl)
+}
+
+// CreateState stores a new state of the given kind, valid for ttl; guildID is nil for a
+// link. It first sweeps the states that have already expired, so the table stays small.
+func (s *GuildStore) CreateState(ctx context.Context, state, kind string, userID int64, guildID *int64, ttl time.Duration) error {
 	if _, err := s.Pool.Exec(ctx, `delete from notify_connect_states where expires_at < now()`); err != nil {
 		return fmt.Errorf("notify: sweep connect states: %w", err)
 	}
-	_, err := s.Pool.Exec(ctx, `insert into notify_connect_states (state, user_id, guild_id, expires_at)
-		values ($1, $2, $3, now() + make_interval(secs => $4))`, state, userID, guildID, ttl.Seconds())
+	_, err := s.Pool.Exec(ctx, `insert into notify_connect_states (state, kind, user_id, guild_id, expires_at)
+		values ($1, $2, $3, $4, now() + make_interval(secs => $5))`, state, kind, userID, guildID, ttl.Seconds())
 	if err != nil {
 		return fmt.Errorf("notify: create connect state: %w", err)
 	}
@@ -151,7 +166,8 @@ func (s *GuildStore) TakeConnectState(ctx context.Context, state string) (Connec
 	}
 	var cs ConnectState
 	err := s.Pool.QueryRow(ctx, `delete from notify_connect_states where state = $1
-		returning user_id, guild_id, expires_at <= now()`, state).Scan(&cs.UserID, &cs.GuildID, &cs.Expired)
+		returning user_id, coalesce(guild_id, 0), kind, expires_at <= now()`, state).
+		Scan(&cs.UserID, &cs.GuildID, &cs.Kind, &cs.Expired)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ConnectState{}, false, nil
 	}
