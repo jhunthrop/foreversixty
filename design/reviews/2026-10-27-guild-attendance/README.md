@@ -110,6 +110,8 @@ swap 0.0039 / 0.0008.
 - WP 16: boss health at each wipe, killing blows, named fire-protection potions.
 - UX 26: the mock's night bar is amended to `--muted` (no build change).
 - UX 27: Brightwick's empty roster crest (roster lane).
+- Out of lane (designer's final check): the join page with a bad invite token should say
+  `Ask an officer for a new invite link.` rather than `Try again` (N1-join-bad-token).
 
 ## Final round (2026-10-27, re-reviews)
 
@@ -130,3 +132,10 @@ Both re-reviews SHIP WITH FIXES. API `0d2a4aa0`; web in the `fix(web): final rou
 | UX N4 | `ended 1 h ago`: figures in mono, words in the body face | 01 |
 | UX 23, WP E | The guild line's separator ends the line before (a no-break space ties it to `Verified`); the clause never starts with `·` | 09 |
 | WP D | The officer captures read `Kraggor` in the site header (the stubs answer `/v1/me` as the officer); 01 and 08 re-taken | 01, 08 |
+
+## Final check (2026-10-27)
+
+| Finding | Fix | Capture |
+|---|---|---|
+| Designer, must | The picker's upload time never breaks (`whitespace-nowrap`, the guild time too); below 768 the duration ends line 3: `by Kraggor · 4 pulls · 1 kill · 2 h 41 min`, figures in mono. The nowrap time also stops `11:42 pm` wrapping at 1440 (player) | 04 at 360, 390, 1440 |
+| Player | The readiness capture's failing count comes from the checks the board shows (`readinessFails`; a stale sync adds one), so the rows read in the stated order | 10-readiness-on at 360, 390, 1440 |

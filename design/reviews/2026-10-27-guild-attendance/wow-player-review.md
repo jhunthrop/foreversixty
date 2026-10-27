@@ -190,3 +190,26 @@ E. **nit. On phone the guild line's clause starts its own line with a dot** (09-
 All seven must-fixes from round one are closed on the captures. Before merge: A (the unit), and one capture of
 Notes / Sign-ups open on a done raid showing read-only selects (6). B–E and the `Uploaded` label (11) can ride
 along or follow.
+
+## Final check
+
+- A (roster unit): **fixed** (09-roster-raids-panel-1440). Every row reads e.g. `Came 6 of 8 · 25 of 30 raids`.
+- 6 (Notes / Sign-ups read-only on done): **fixed** (08-sections-open-1440/390, 08-sections-open-roster-1440/390).
+  Notes open with no edit control; every Sign-ups select (`In`, `Late`, `Bench`, `Out`, `—`) is greyed out, on desktop and phone.
+- B (readiness order): **text fixed, fixture contradicts it** (10-readiness-on-panel-1440). The note reads
+  `Sorted by the most checks to fix, then the biggest gear gap.` and the code (`failing * 100 + gain`) does exactly that,
+  but the fixture's `failing` comes from `readinessFailsFor`, not from the pills on screen: Obnoxious Yell
+  (`CLOAK, CHEST`, `1 UNSPENT`, +11) sits below Felsnap (`2 UNSPENT` only, +33) and Mendwhisper (`CHEST` only, +32).
+  A player checking the sentence against the rows sees a broken rule. The API derives `failing` from the same checks
+  (`FailingCount`), so production is right; derive the fixture's `failing` from its shown checks before this capture is used again.
+- C (phone Present head): **fixed** (06-attendance-panel-360/390). `PRESENT 12 ... BOSS PULLS` over the `4/4` column.
+- D (officer signed in): **fixed** (08-sections-open-1440, 01). The header shows `Kraggor / Warrior`.
+- E (phone guild line): **fixed** (09-guild-line-panel-390). `Olympus XXVII · Member Verified ·` then `came 3 of 8 raids`.
+- 11 interim (`Uploaded`): **fixed** (04-picker-closest-panel-1440). New nit: at 1440 the time breaks before its
+  meridiem: `Uploaded Thu 10 Dec, 11:42` / `pm` (all three rows). Keep `11:42 pm` together.
+- Head of Onyxia icon: **fixed** (08-sections-open-1440, Loot). It shows the red dragon head, not a question mark.
+
+### Verdict: SHIP WITH FIXES
+
+Everything I asked for is on the captures. Two small fixes ride along: make the readiness fixture's `failing` match
+its own pills (only the capture is wrong, not the product), and keep `11:42 pm` on one line in the picker.

@@ -39,6 +39,7 @@ import {
   type RaidStubOptions,
   type RecordedWrite,
 } from './guild-raids';
+import { readinessFails } from '../../../src/lib/guild/readiness-view';
 import { envelope } from './officer-tools';
 
 export * from './guild-attendance-data';
@@ -89,10 +90,16 @@ export const NO_EXPORT = 'Shadowquill';
 
 type ReadinessRow = GuildReadinessPage['rows'][number];
 
+/** The row's failing count, from the checks its cells show (readinessFails). */
+function withShownFailing(row: ReadinessRow): ReadinessRow {
+  return { ...row, failing: readinessFails(row).length };
+}
+
 /** A signed character with no export: the API sends no gear, enchants or item level for it. */
 function noExport(row: ReadinessRow): ReadinessRow {
   return {
     ...row,
+    failing: 0,
     no_export: true,
     synced_before_cutoff: null,
     gear_gap: null,
@@ -201,7 +208,9 @@ export class AttendanceStub {
 
   /** The readiness board: the guild's with `next_raid`, or one raid's In and Late sign-ups. */
   readiness(raidParam: string | null): GuildReadinessPage {
-    const board = buildMockReadiness();
+    const seeded = buildMockReadiness();
+    // The failing count is what the board's own cells show (the sort's key), never a separate seed.
+    const board = { ...seeded, rows: seeded.rows.map((row) => withShownFailing(row)) };
     const next = this.raids.nextRaid();
     if (raidParam === null) {
       return {
@@ -222,7 +231,14 @@ export class AttendanceStub {
       if (s.name === STALE_EXPORT) {
         // A stale export that still names a real upgrade (the board never reads `+0 DPS`).
         const gap = found.gear_gap === null ? null : { ...found.gear_gap, gain_dps: 14 };
-        return { ...found, gear_gap: gap, logged_at: '2026-12-01T18:00:00Z', synced_before_cutoff: true };
+        const stale = {
+          ...found,
+          gear_gap: gap,
+          logged_at: '2026-12-01T18:00:00Z',
+          synced_before_cutoff: true,
+        };
+        // A sync before the raid's cutoff is one more failing check (spec 3.7).
+        return { ...stale, failing: stale.failing + 1 };
       }
       return { ...found, synced_before_cutoff: false };
     });

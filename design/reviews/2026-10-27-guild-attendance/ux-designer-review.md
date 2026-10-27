@@ -122,3 +122,26 @@ It shows its real game icon, `inv_misc_head_dragon_01`. The red question mark is
 ### Verdict: SHIP WITH FIXES
 
 Two items block the merge. Finding 4: Head of Onyxia shows `inv_misc_head_dragon_01`, and no `?` fallback remains. N1: the band-less guild views get their 28 px top padding back, shown in the new captures. Finding 15 and N2 land in the same pass. N3, N4 and the finding 23 polish can follow.
+
+## Final check
+
+Reviewer: ux-designer, after the final round (`0d2a4aa0`, `12368a07`). Evidence: the re-taken PNGs in this folder. For the fallback tile, which no capture shows, the evidence is `RaidLootItem.svelte` and `lib/guild/loot-icon.ts`.
+
+- Finding 4: fixed. Head of Onyxia draws `inv_misc_head_dragon_01` at 28 px (01-done-officer-1440) and 20 px (01-done-officer-360). No `?` shows anywhere. `loot.go` fills all six slotless rows. `bag_22` and `monsterscales_07` are in the 70532 published icon set. The fallback is the `/bis` neutral tile: `border-line`, `bg-card-top`, the name's letters. `QUESTION_MARK_ICON` is gone.
+- N1: fixed. The first line now sits 28 px or more below the header rule at 1440 in N1-landing, N1-claim, N1-settings, N1-join-bad-token and N1-not-an-address. The 390 captures keep the phone top. The raid band stays flush (01).
+- Finding 15: partly fixed. Line 1 holds the zone and `Closest` without breaking at 360 and 390. New issue: line 2 now breaks the time. At 360 it reads `Thu 10` / `Dec, 11:42 pm` with a gap before `2 h 41 min`. At 390 it reads `12:20` / `am` (04-picker-closest-panel-360, 04-picker-closest-panel-390). The added `Uploaded` lead-in pushed it over the width. Must fix: make the time `whitespace-nowrap`. Below 768, move the duration to the end of line 3 (`by Kraggor · 4 pulls · 1 kill · 2 h 41 min`), with the figures in mono.
+- N2: fixed. `BOSS PULLS` stays on one line on Mendwhisper's Late row (01-done-officer-360).
+- N3: fixed. The heading breaks as `BIGGEST CHANGES` / `SINCE THU 3 DEC` (01-done-officer-360).
+- N4: fixed. In `ended 1 h ago`, the words use the body face and only the figures are mono (01-done-officer-panel-1440, 01-done-officer-panel-360).
+- Finding 23: fixed. The wrapped line reads `came 3 of 8 raids` with no leading `·` (09-guild-line-panel-360).
+- Polish, out of lane, not blocking: on a bad invite token, the join view offers `Try again`. Retrying cannot fix the token. A heading plus `Ask an officer for a new invite link.` would serve better (N1-join-bad-token). Track it in the README.
+
+### Checklist (final)
+- [x] Real icons on every item, and no red `?` fallback (finding 4).
+- [x] The other guild views keep their top spacing (N1).
+- [ ] Every count and name survives 360: the picker's upload time breaks at 360 and 390 (finding 15).
+- [x] The `BOSS PULLS` lead-in, `since Thu 3 Dec` and the guild line hold at 360 (N2, N3, 23).
+
+### Verdict: SHIP WITH FIXES
+
+Both blockers are closed. One must-fix remains before merge: the picker's upload time is `whitespace-nowrap`, and on phone the duration moves to line 3. Attach new 04-picker-closest-panel captures at 360 and 390. No other re-review is needed.
