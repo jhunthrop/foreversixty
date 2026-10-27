@@ -247,3 +247,45 @@ func TestGuildBilling_SweepsDepartedHolderFirst(t *testing.T) {
 		t.Fatalf("seats = %+v", read.Seats)
 	}
 }
+
+// seedCharacter gives userID a verified character named name in guildID.
+func (h *harness) seedCharacter(t *testing.T, guildID, userID int64, name string) {
+	t.Helper()
+	key := fmt.Sprintf("us/hardcore/%s-%d", name, userID)
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into characters (key, region, ruleset, name, class, user_id) values ($1, 'us', 'hardcore', $2, 'warrior', $3)`,
+		key, name, userID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into guild_characters (guild_id, character_key, user_id, verified_at) values ($1, $2, $3, now())`,
+		guildID, key, userID); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGuildBilling_BilledByNamesThePayersCharacter(t *testing.T) {
+	h := newHarness(t)
+	gid, leader := h.payerGuild(t, "billedby")
+	if _, err := h.pool.Exec(t.Context(), `update users set battletag = 'Kraggor#1234' where id = $1`, leader); err != nil {
+		t.Fatal(err)
+	}
+	h.seedCharacter(t, gid, leader, "Kraggor")
+	officer := h.member(t, gid, "officer", "officer")
+	h.seedPlan(t, gid, guildPlan{subID: "sub_bb", billedBy: leader, key: catalog.LookupKeyGuildMonthly, cents: 1500})
+	read, _ := h.readBilling(t, gid, officer)
+	if read.Billing == nil || read.Billing.BilledBy != "Kraggor" {
+		t.Fatalf("billed_by = %+v, want the character name Kraggor", read.Billing)
+	}
+}
+
+func TestGuildBilling_BilledByFallsBackToPublicName(t *testing.T) {
+	h := newHarness(t)
+	gid, leader := h.payerGuild(t, "billedbyfallback")
+	officer := h.member(t, gid, "officer", "officer")
+	h.seedPlan(t, gid, guildPlan{subID: "sub_bbf", billedBy: leader, key: catalog.LookupKeyGuildMonthly, cents: 1500})
+	read, _ := h.readBilling(t, gid, officer)
+	if read.Billing == nil || read.Billing.BilledBy != fmt.Sprintf("user-%d", leader) {
+		t.Fatalf("billed_by = %+v, want the public name", read.Billing)
+	}
+}
