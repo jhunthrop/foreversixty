@@ -16,11 +16,11 @@ import (
 	"runtime"
 	"sort"
 	"strings"
-)
+	"sync"
 
-// fs1DataBuild is the data build every mock export declares, matching the BiS tables this
-// tool reads gear from (data/builds/1.60.1.70009).
-const fs1DataBuild = "1.60.1.70009"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
+)
 
 // fs1Level is every mock character's level. Forever's beta caps leveling at 30 as this
 // tool is written (2026-10), but the guild page this seed exists to let the owner design
@@ -30,8 +30,25 @@ const fs1DataBuild = "1.60.1.70009"
 // today.
 const fs1Level = 60
 
-// bisBuild is the data build directory the BiS tables live under.
-const bisBuild = "1.60.1.70009"
+// seedBuild is the build the API reads BiS from (guilds.Store.BisBuild over the repo's own
+// data), so the seeded gear and the bands it is judged against come from one build. Every
+// mock export declares it as its data build. Worked out once per run.
+var seedBuild = sync.OnceValues(func() (string, error) {
+	root, err := repoRoot()
+	if err != nil {
+		return "", err
+	}
+	dataDir := filepath.Join(root, "data", "builds")
+	treeData, err := trees.Load(dataDir)
+	if err != nil {
+		return "", fmt.Errorf("seedguild: load build data: %w", err)
+	}
+	build := (&guilds.Store{DataDir: dataDir, Trees: treeData}).BisBuild()
+	if build == "" {
+		return "", fmt.Errorf("seedguild: no build data under %s", dataDir)
+	}
+	return build, nil
+})
 
 // repoRoot finds the repository root from this source file's own location, so the BiS
 // loader works under `go run` regardless of the caller's working directory. This file
@@ -46,11 +63,21 @@ func repoRoot() (string, error) {
 
 // bisDir is the directory a spec's BiS json lives in.
 func bisDir() (string, error) {
+	dir, _, err := bisSource()
+	return dir, err
+}
+
+// bisSource is bisDir and the build it belongs to.
+func bisSource() (dir, build string, err error) {
 	root, err := repoRoot()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return filepath.Join(root, "data", "builds", bisBuild, "bis"), nil
+	build, err = seedBuild()
+	if err != nil {
+		return "", "", err
+	}
+	return filepath.Join(root, "data", "builds", build, "bis"), build, nil
 }
 
 // bisAlternative is one alternative item a BiS slot lists - only the field this tool
@@ -213,7 +240,7 @@ func encodeGearPiece(p gearPiece) string {
 // written in a fixed order so the same character always produces byte-identical output
 // across runs (dry-run output and a real apply must agree, and a rerun's rows must not
 // look like a "different" export to anything that diffs them).
-func buildFS1(classSlug, raceSlug, talents string, gear map[string]gearPiece, professions []string, bags []int) string {
+func buildFS1(build, classSlug, raceSlug, talents string, gear map[string]gearPiece, professions []string, bags []int) string {
 	slots := make([]string, 0, len(gear))
 	for slot := range gear {
 		slots = append(slots, slot)
@@ -223,7 +250,7 @@ func buildFS1(classSlug, raceSlug, talents string, gear map[string]gearPiece, pr
 	for _, slot := range slots {
 		gearParts = append(gearParts, slot+"="+encodeGearPiece(gear[slot]))
 	}
-	head := strings.Join([]string{"FS1", fs1DataBuild, classSlug, raceSlug, talents}, ":") +
+	head := strings.Join([]string{"FS1", build, classSlug, raceSlug, talents}, ":") +
 		":" + strings.Join(gearParts, ",")
 
 	sections := []string{fmt.Sprintf("level=%d", fs1Level)}

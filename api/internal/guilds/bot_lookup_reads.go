@@ -74,12 +74,13 @@ func (s *Service) BuildItem(version, classSlug string, itemID int) (trees.Item, 
 }
 
 // RaceFaction is a race's faction by its display name ("Night Elf", the form the character
-// page's race carries), read from the newest build's races.json; "" when unknown or neutral.
+// page's race carries), read from the BiS build's races.json (BisBuild, as factionForRace
+// reads it); "" when unknown or neutral.
 func (s *Service) RaceFaction(raceName string) string {
 	if raceName == "" || s.Store.Trees == nil {
 		return ""
 	}
-	b, ok := s.Store.Trees.Latest()
+	b, ok := s.Store.Trees.Build(s.Store.BisBuild())
 	if !ok {
 		return ""
 	}

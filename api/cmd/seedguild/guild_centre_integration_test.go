@@ -321,7 +321,7 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 // TestGuildCentreFactionIsComputedAndPublic exercises guilds.RecomputeFaction
 // (api/internal/guilds/faction.go) against the real seeded roster: every known race the
 // mock roster names (roster.go: human, dwarf, gnome, night-elf) is an Alliance race in
-// data/builds/1.60.1.70009/races.json, and nothing in it is Horde - the roster's own two
+// the BiS build's races.json (guilds.Store.BisBuild), and nothing in it is Horde - the roster's own two
 // "skyborne" rows (an unresolvable generic slug, not one of the two faction-specific
 // Skyborne slugs the real addon always exports) are simply unknown races, not a tie
 // contributor. So this seed is not mixed-faction: the only possible majority is alliance,

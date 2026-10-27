@@ -23,9 +23,8 @@ func oneConnStore(t *testing.T, w raidWorld) *Store {
 		t.Fatal(err)
 	}
 	t.Cleanup(pool.Close)
-	s := *w.h.store
-	s.Pool = pool
-	return &s
+	src := w.h.store
+	return &Store{Pool: pool, Accounts: src.Accounts, DataDir: src.DataDir, Trees: src.Trees, APIBaseURL: src.APIBaseURL}
 }
 
 func TestAMatchHoldsOneConnection(t *testing.T) {

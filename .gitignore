@@ -7,6 +7,8 @@ data/.venv/
 dist/
 .astro/
 api/bin/
+# a bare `go build` in api/ names its binary after the module directory
+/api/api
 coverage/
 # sim.wasm, sim.js and forever-sim, built by `make artifacts` at the
 # pinned engine sha. Nothing built is committed from here. `make

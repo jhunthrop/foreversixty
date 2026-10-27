@@ -81,7 +81,7 @@ func ApplySeed(ctx context.Context, pool *pgxpool.Pool, guildID int64, ownerBatt
 }
 
 func writeMockCharacter(ctx context.Context, pool *pgxpool.Pool, tag string, guild guildInfo, pc plannedCharacter, accountUsers map[string]int64) error {
-	dir, err := bisDir()
+	dir, build, err := bisSource()
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func writeMockCharacter(ctx context.Context, pool *pgxpool.Pool, tag string, gui
 	if err != nil {
 		return err
 	}
-	export := buildFS1(classSlugFor(pc.Mock.Class), pc.Mock.RaceSlug, talentStringFor(pc.Mock),
+	export := buildFS1(build, classSlugFor(pc.Mock.Class), pc.Mock.RaceSlug, talentStringFor(pc.Mock),
 		gearWithReadiness(pc.Mock, slots), professionsFor(pc.Mock.Class), bagsFor(pc.Mock))
 
 	tx, err := pool.Begin(ctx)

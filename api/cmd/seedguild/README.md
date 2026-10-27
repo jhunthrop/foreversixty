@@ -39,7 +39,7 @@ minutes: golang-migrate refuses to start a build whose source lacks the database
 - **Readiness variety in the FS1 exports** (`addon_exports.export`, built per
   `addon/ForeverSixty/Codec.lua`'s real section grammar — see "FS1 fidelity" below): most
   raiders are geared exactly to their spec's band-60 BiS pick
-  (`data/builds/1.60.1.70009/bis/*.json`); four raiders have 2–4 slots swapped for that
+  (`data/builds/<build>/bis/*.json`, the build the API reads BiS from: `guilds.Store.BisBuild`); four raiders have 2–4 slots swapped for that
   slot's own real BiS *alternative* item (never an invented id); two raiders are missing
   the enchant on one slot that every other raider's copy of that slot carries; two raiders
   have unspent talent points; every raider carries a `professions=` section (its class's

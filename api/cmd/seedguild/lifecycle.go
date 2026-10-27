@@ -20,10 +20,10 @@
 package main
 
 import (
-	"strings"
 	"context"
 	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -144,7 +144,7 @@ func lifecycleReport() reportPlan {
 // level, bags and professions sections the mock-roster seed builds, then the guild=
 // section the API reads membership from.
 func lifecycleExport(c lifecycleCharacter) (string, error) {
-	dir, err := bisDir()
+	dir, build, err := bisSource()
 	if err != nil {
 		return "", err
 	}
@@ -152,7 +152,7 @@ func lifecycleExport(c lifecycleCharacter) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	export := buildFS1(classSlugFor(c.Mock.Class), c.Mock.RaceSlug, talentStringFor(c.Mock),
+	export := buildFS1(build, classSlugFor(c.Mock.Class), c.Mock.RaceSlug, talentStringFor(c.Mock),
 		gearWithReadiness(c.Mock, slots), professionsFor(c.Mock.Class), bagsFor(c.Mock))
 	if c.Mock.Export != "" {
 		// The verbatim export's head (data build, class, race, gear) replaces the BiS-built

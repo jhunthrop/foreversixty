@@ -1,10 +1,37 @@
 package main
 
 import (
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 )
+
+func testSeedBuild(t *testing.T) string {
+	t.Helper()
+	build, err := seedBuild()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return build
+}
+
+// The seed reads the build the API reads BiS from, and every export declares it.
+func TestSeedBuildIsTheAPIsBisBuild(t *testing.T) {
+	build := testSeedBuild(t)
+	dir, err := bisDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if filepath.Base(filepath.Dir(dir)) != build {
+		t.Fatalf("bis dir %s is not under build %s", dir, build)
+	}
+	export := buildFS1(build, "priest", "gnome", talentString(roleHealer), map[string]gearPiece{}, nil, nil)
+	if !strings.HasPrefix(export, "FS1:"+build+":") {
+		t.Fatalf("export %q does not declare %s", export, build)
+	}
+}
 
 func TestLoadBisGearReadsRealAllianceBand60(t *testing.T) {
 	dir, err := bisDir()
@@ -68,7 +95,7 @@ func TestBuildFS1ProducesAValidDecodableExport(t *testing.T) {
 		"head":  {ItemID: 250528, Enchant: 0},
 		"chest": {ItemID: 12345, Enchant: 41},
 	}
-	export := buildFS1("warrior", "human", talentString(roleDPS), gear, []string{"mining", "blacksmithing"}, nil)
+	export := buildFS1(testSeedBuild(t), "warrior", "human", talentString(roleDPS), gear, []string{"mining", "blacksmithing"}, nil)
 	d, ok := fs1.Decode(export)
 	if !ok {
 		t.Fatalf("fs1.Decode(%q) ok = false", export)
@@ -85,7 +112,7 @@ func TestBuildFS1ProducesAValidDecodableExport(t *testing.T) {
 }
 
 func TestBuildFS1WithNoGearStillDecodes(t *testing.T) {
-	export := buildFS1("priest", "gnome", talentString(roleHealer), map[string]gearPiece{}, nil, nil)
+	export := buildFS1(testSeedBuild(t), "priest", "gnome", talentString(roleHealer), map[string]gearPiece{}, nil, nil)
 	d, ok := fs1.Decode(export)
 	if !ok {
 		t.Fatalf("fs1.Decode(%q) ok = false", export)
@@ -105,7 +132,7 @@ func TestEveryRosterCharacterProducesADecodableExport(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: %v", c.Name, err)
 		}
-		export := buildFS1(c.Class, c.RaceSlug, talentStringFor(c), gearWithReadiness(c, slots),
+		export := buildFS1(testSeedBuild(t), c.Class, c.RaceSlug, talentStringFor(c), gearWithReadiness(c, slots),
 			professionsFor(c.Class), bagsFor(c))
 		if _, ok := fs1.Decode(export); !ok {
 			t.Fatalf("%s: export %q did not decode", c.Name, export)
