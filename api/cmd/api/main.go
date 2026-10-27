@@ -18,7 +18,6 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
-	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetimport"
@@ -690,18 +689,7 @@ func serve(log *slog.Logger) error {
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
 	deps.DiscordBot = newDiscordBot(cfg, pool, deps, accounts, log)
 
-	var gateway billing.Gateway
-	if cfg.StripeConfigured() {
-		gateway = billing.NewStripeGateway(cfg.StripeSecretKey)
-	} else {
-		log.Warn("billing", "state", "stripe is not configured",
-			"effect", "checkout, portal, and the webhook answer 503")
-	}
-	deps.Billing = &billing.Service{
-		Store: &billing.Store{Pool: pool}, Entitlements: entStore,
-		Accounts: authStore, Users: authStore, Guilds: guildStore, Gateway: gateway,
-		PublicBaseURL: cfg.PublicBaseURL, WebhookSecret: cfg.StripeWebhookSecret, Log: log,
-	}
+	wireBilling(cfg, pool, &deps, entStore, authStore, guildStore, mailer, log)
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer
