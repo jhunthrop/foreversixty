@@ -1,6 +1,7 @@
 package billingmail
 
 import (
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -8,23 +9,30 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
-var fixtureDate = time.Date(2027, time.November, 18, 0, 0, 0, 0, time.UTC)
+var fixtureDate = time.Date(2027, time.November, 18, 20, 0, 0, 0, time.UTC)
 
 const (
 	guild = "Olympus XXVII"
 	name  = "Kraggor"
 )
 
+func must(m mail.Message, err error) mail.Message {
+	if err != nil {
+		panic(err)
+	}
+	return m
+}
+
 func allEmails() map[string]mail.Message {
 	return map[string]mail.Message{
-		"renewal": RenewalEmail(Renewal{To: "a@b.c", Plan: "Guild", Guild: guild, RenewsOn: fixtureDate,
-			AmountCents: 12000, Interval: "yearly", Founder: true, ManageURL: "https://x/m"}),
-		"size": SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 31, RenewsOn: fixtureDate,
-			RaidGuildCents: 25000, Interval: "yearly", SettingsURL: "https://x/s"}),
+		"renewal": must(RenewalEmail(Renewal{To: "a@b.c", Plan: PlanGuild, Guild: guild, RenewsOn: fixtureDate,
+			AmountCents: 12000, Interval: "yearly", Founder: true, ManageURL: "https://x/m"})),
+		"size": must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 31, RenewsOn: fixtureDate,
+			RaidGuildCents: 25000, Interval: "yearly", SettingsURL: "https://x/s"})),
 		"offered": SeatOfferedEmail(SeatOffered{To: "a@b.c", Guild: guild, From: name, OwnEndsOn: fixtureDate, AccountURL: "https://x/a"}),
 		"given":   SeatGivenEmail(SeatGiven{To: "a@b.c", Guild: guild, From: name, AccountURL: "https://x/a"}),
-		"removed": SeatRemovedEmail(SeatRemoved{To: "a@b.c", Guild: guild, EndedOn: fixtureDate,
-			AmountCents: 500, Interval: "monthly", ComebackURL: "https://x/c"}),
+		"removed": must(SeatRemovedEmail(SeatRemoved{To: "a@b.c", Guild: guild, EndedOn: fixtureDate,
+			AmountCents: 500, Interval: "monthly", ComebackURL: "https://x/c"})),
 	}
 }
 
@@ -55,8 +63,8 @@ func TestEmailsMatchSpec(t *testing.T) {
 }
 
 func TestPremiumRenewalAtListPrice(t *testing.T) {
-	m := RenewalEmail(Renewal{To: "a@b.c", Plan: "Premium", RenewsOn: fixtureDate,
-		AmountCents: 4000, Interval: "yearly", ManageURL: "https://x/m"})
+	m := must(RenewalEmail(Renewal{To: "a@b.c", Plan: PlanPremium, RenewsOn: fixtureDate,
+		AmountCents: 4000, Interval: "yearly", ManageURL: "https://x/m"}))
 	want := "Your Premium plan renews on 18 November 2027 for $40 a year; to stop it, cancel before then and nothing more is charged."
 	if first := strings.SplitN(m.Text, "\n", 2)[0]; first != want {
 		t.Errorf("first line = %q", first)
@@ -71,5 +79,36 @@ func TestNoExclamationMarks(t *testing.T) {
 		if strings.Contains(m.Subject+m.Text, "!") {
 			t.Errorf("%s contains an exclamation mark", key)
 		}
+	}
+}
+
+func TestMonthlySizeEmail(t *testing.T) {
+	m := must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 40, RenewsOn: fixtureDate,
+		RaidGuildCents: 2500, Interval: "monthly", SettingsURL: "https://x/s"}))
+	if !strings.Contains(m.Text, "Raid guild at $25 a month;") {
+		t.Errorf("text = %q", m.Text)
+	}
+}
+
+func TestGuildNamePassesThroughVerbatim(t *testing.T) {
+	odd := "A <b> & C\nD"
+	m := SeatGivenEmail(SeatGiven{To: "a@b.c", Guild: odd, From: name, AccountURL: "https://x/a"})
+	if !strings.Contains(m.Subject, odd) || !strings.Contains(m.Text, odd) {
+		t.Errorf("name altered: %q / %q", m.Subject, m.Text)
+	}
+}
+
+func TestNegativeAmountsAreRejected(t *testing.T) {
+	_, err := RenewalEmail(Renewal{Plan: PlanGuild, AmountCents: -1, Interval: "yearly"})
+	if !errors.Is(err, ErrNegativeAmount) {
+		t.Errorf("renewal err = %v", err)
+	}
+	_, err = SizeEmail(Size{RaidGuildCents: -1})
+	if !errors.Is(err, ErrNegativeAmount) {
+		t.Errorf("size err = %v", err)
+	}
+	_, err = SeatRemovedEmail(SeatRemoved{AmountCents: -1})
+	if !errors.Is(err, ErrNegativeAmount) {
+		t.Errorf("removed err = %v", err)
 	}
 }

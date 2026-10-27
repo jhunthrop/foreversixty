@@ -7,15 +7,26 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
+// Plan is the plan name as it reads in an email.
+type Plan string
+
+// The plans a renewal email can name.
+const (
+	PlanPremium   Plan = "Premium"
+	PlanGuild     Plan = "Guild"
+	PlanRaidGuild Plan = "Raid guild"
+)
+
 // Renewal is the email sent 7 days before a yearly renewal. Guild is empty
 // for Premium.
 type Renewal struct {
-	To, Plan, Guild string
-	RenewsOn        time.Time
-	AmountCents     int64
-	Interval        string
-	Founder         bool
-	ManageURL       string
+	To, Guild   string
+	Plan        Plan
+	RenewsOn    time.Time
+	AmountCents int64
+	Interval    string
+	Founder     bool
+	ManageURL   string
 }
 
 // Size is the email sent 14 days before renewal when a Guild plan has more
@@ -56,7 +67,11 @@ func compose(to, subject, sentence, label, url string) mail.Message {
 }
 
 // RenewalEmail builds the renewal notice.
-func RenewalEmail(r Renewal) mail.Message {
+func RenewalEmail(r Renewal) (mail.Message, error) {
+	price, err := FormatPrice(r.AmountCents, r.Interval)
+	if err != nil {
+		return mail.Message{}, err
+	}
 	subject := fmt.Sprintf("Your %s plan renews on %s", r.Plan, EmailDayMonth(r.RenewsOn))
 	forGuild, founder := "", ""
 	if r.Guild != "" {
@@ -66,16 +81,20 @@ func RenewalEmail(r Renewal) mail.Message {
 		founder = ", your founder price"
 	}
 	sentence := fmt.Sprintf("Your %s plan%s renews on %s for %s%s; to stop it, cancel before then and nothing more is charged.",
-		r.Plan, forGuild, EmailDate(r.RenewsOn), FormatPrice(r.AmountCents, r.Interval), founder)
-	return compose(r.To, subject, sentence, "Manage or cancel", r.ManageURL)
+		r.Plan, forGuild, EmailDate(r.RenewsOn), price, founder)
+	return compose(r.To, subject, sentence, "Manage or cancel", r.ManageURL), nil
 }
 
 // SizeEmail builds the over-25 notice.
-func SizeEmail(s Size) mail.Message {
+func SizeEmail(s Size) (mail.Message, error) {
+	price, err := FormatPrice(s.RaidGuildCents, s.Interval)
+	if err != nil {
+		return mail.Message{}, err
+	}
 	subject := fmt.Sprintf("%s has %d members; Guild covers 25", s.Guild, s.Members)
 	sentence := fmt.Sprintf("%s has %d verified members and its Guild plan covers up to 25, so when it renews on %s you may want Raid guild at %s; nothing switches off either way.",
-		s.Guild, s.Members, EmailDate(s.RenewsOn), FormatPrice(s.RaidGuildCents, s.Interval))
-	return compose(s.To, subject, sentence, "Look at Raid guild", s.SettingsURL)
+		s.Guild, s.Members, EmailDate(s.RenewsOn), price)
+	return compose(s.To, subject, sentence, "Look at Raid guild", s.SettingsURL), nil
 }
 
 // SeatOfferedEmail builds the offer to a paying member.
@@ -95,10 +114,13 @@ func SeatGivenEmail(g SeatGiven) mail.Message {
 }
 
 // SeatRemovedEmail builds the come-back notice.
-func SeatRemovedEmail(r SeatRemoved) mail.Message {
-	price := FormatPrice(r.AmountCents, r.Interval)
+func SeatRemovedEmail(r SeatRemoved) (mail.Message, error) {
+	price, err := FormatPrice(r.AmountCents, r.Interval)
+	if err != nil {
+		return mail.Message{}, err
+	}
 	subject := fmt.Sprintf("Your Premium seat from %s has ended", r.Guild)
 	sentence := fmt.Sprintf("Your Premium seat in %s ended on %s, and because you gave up your own Premium for it, this link brings it back at %s, the price you had.",
 		r.Guild, EmailDate(r.EndedOn), price)
-	return compose(r.To, subject, sentence, "Come back at "+price, r.ComebackURL)
+	return compose(r.To, subject, sentence, "Come back at "+price, r.ComebackURL), nil
 }
