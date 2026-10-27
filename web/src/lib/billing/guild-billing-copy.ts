@@ -1,9 +1,9 @@
 // web/src/lib/billing/guild-billing-copy.ts
 // The guild settings #billing strings of design/specs/2026-10-27-launch-pricing.md section 6.2:
 // Plan line, Line 2, Chooser, Size line, Upgrade confirm, Records and Gate. Prices and limits come
-// from ./plans, never written here. Every date arrives as stored and is read in UTC.
+// from ./plans, never written here. Dates arrive as stored: a date-only value reads as written, an instant on the viewer calendar.
 import type { GuildBillingView } from '../account/api';
-import { utcDayMonthYear, zonedDayMonth, zonedDayMonthYear } from '../dates';
+import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { settingsWords } from '../guild/settings-view';
 import type { GuildTier } from './contract';
 import {
@@ -136,10 +136,16 @@ export const guildBillingCopy = {
 /**
  * "Guild plan · renews 31 Dec 2026", "Guild plan · ends 31 Dec 2026", or for a plan an operator
  * granted (no Stripe billing contact) "Guild plan · until 31 Dec 2026". The date is the one that
- * was stored, read in UTC: a grant until 2026-12-31 is the 31st for a viewer in any zone.
+ * was stored: a Stripe period end is an instant read on the viewer calendar; an operator grant
+ * (no billing contact, or the scoped officer tools) is a calendar day the API stores at midnight
+ * UTC, so it reads in UTC and is the 31st for a viewer in any zone.
  */
-export function guildPlanLine(billing: GuildBillingView): string {
-  const date = billing.current_period_end === null ? '' : utcDayMonthYear(billing.current_period_end);
+export function guildPlanLine(billing: GuildBillingView, zone?: string): string {
+  const isGrant = billing.scope === 'officer_tools' || billing.billed_by === '';
+  const date =
+    billing.current_period_end === null
+      ? ''
+      : zonedDayMonthYear(billing.current_period_end, isGrant ? 'UTC' : zone);
   if (billing.scope === 'officer_tools') {
     return date === '' ? settingsWords.officerTools : `${settingsWords.officerTools} · until ${date}`;
   }

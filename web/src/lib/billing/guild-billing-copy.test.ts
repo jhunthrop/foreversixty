@@ -138,16 +138,26 @@ describe('moved plan and billed lines', () => {
   });
 
   it('prints the plan line by who bills and whether it ends', () => {
-    expect(guildPlanLine(billing())).toBe('Guild plan · renews 31 Dec 2026');
-    expect(guildPlanLine(billing({ cancel_at_period_end: true }))).toBe('Guild plan · ends 31 Dec 2026');
-    expect(guildPlanLine(billing({ billed_by: '' }))).toBe('Guild plan · until 31 Dec 2026');
-    expect(guildPlanLine(billing({ current_period_end: null }))).toBe('Guild plan');
-    expect(guildPlanLine(billing({ scope: 'officer_tools', billed_by: '' }))).toBe(
+    expect(guildPlanLine(billing(), 'UTC')).toBe('Guild plan · renews 31 Dec 2026');
+    expect(guildPlanLine(billing({ cancel_at_period_end: true }), 'UTC')).toBe(
+      'Guild plan · ends 31 Dec 2026',
+    );
+    expect(guildPlanLine(billing({ billed_by: '' }), 'UTC')).toBe('Guild plan · until 31 Dec 2026');
+    expect(guildPlanLine(billing({ current_period_end: null }), 'UTC')).toBe('Guild plan');
+    expect(guildPlanLine(billing({ scope: 'officer_tools', billed_by: '' }), 'UTC')).toBe(
       'Officer tools · until 31 Dec 2026',
     );
-    expect(guildPlanLine(billing({ scope: 'officer_tools', current_period_end: null }))).toBe(
+    expect(guildPlanLine(billing({ scope: 'officer_tools', current_period_end: null }), 'UTC')).toBe(
       'Officer tools',
     );
+  });
+
+  it('reads a Stripe period end on the viewer calendar and an operator grant as its stored day', () => {
+    const periodEnd = billing({ current_period_end: '2027-01-01T05:00:00Z' });
+    expect(guildPlanLine(periodEnd, 'America/Los_Angeles')).toBe('Guild plan · renews 31 Dec 2026');
+    expect(guildPlanLine(periodEnd, 'Pacific/Auckland')).toBe('Guild plan · renews 1 Jan 2027');
+    const grant = billing({ billed_by: '', current_period_end: '2026-12-31T00:00:00Z' });
+    expect(guildPlanLine(grant, 'Pacific/Auckland')).toBe('Guild plan · until 31 Dec 2026');
   });
 
   it('says who is billed', () => {
@@ -183,6 +193,6 @@ describe('founder line and gate spec', () => {
       billed_by: '',
       you_are_billing_contact: false,
     };
-    expect(guildPlanLine(scoped)).toBe(expected);
+    expect(guildPlanLine(scoped, 'UTC')).toBe(expected);
   });
 });

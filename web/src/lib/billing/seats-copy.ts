@@ -1,6 +1,6 @@
 // web/src/lib/billing/seats-copy.ts
 // The Seats, Seat picker, Who pays and Receiver rows of design/specs/2026-10-27-launch-pricing.md
-// section 6.2, with a function for every {slot}. Dates arrive as stored and are read in UTC;
+// section 6.2, with a function for every {slot}. Dates arrive as stored: date-only values read as written, instants on the viewer calendar;
 // prices are built from ./plans.
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { SEAT_MOVE_LOCK_DAYS, formatCents, type Interval } from './plans';

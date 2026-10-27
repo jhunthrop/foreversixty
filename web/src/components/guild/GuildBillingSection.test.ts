@@ -18,7 +18,7 @@ const SCOPED: GuildBillingView = {
 const PLAN: GuildBillingView = {
   ...SCOPED,
   scope: 'plan',
-  current_period_end: '2026-12-31T00:00:00Z',
+  current_period_end: '2026-12-31T12:00:00Z',
   billed_by: 'hunthrop#1894',
   you_are_billing_contact: true,
 };

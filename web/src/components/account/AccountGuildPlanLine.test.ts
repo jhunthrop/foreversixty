@@ -40,7 +40,7 @@ describe('AccountGuildPlanLine', () => {
     const out = renderLine({
       ...BASE,
       scope: 'plan',
-      current_period_end: '2026-12-31T00:00:00Z',
+      current_period_end: '2026-12-31T12:00:00Z',
       billed_by: 'a#1',
     });
     expect(out.text).toBe('Guild plan · renews 31 Dec 2026 · Guild settings');
