@@ -34,6 +34,15 @@ func (f *fakeGuilds) SettingsDiscordFor(ctx context.Context, guildID, viewerID i
 	return &guilds.SettingsDiscord{BotAvailable: true, Bot: bot, BotRefusal: refusal}, err
 }
 
+// stubConnect only switches the notify service's guild connect on.
+type stubConnect struct{}
+
+func (stubConnect) AuthURL(string) string { return "" }
+
+func (stubConnect) Exchange(context.Context, string) (notify.OAuthWebhook, error) {
+	return notify.OAuthWebhook{}, nil
+}
+
 type installHarness struct {
 	t       *testing.T
 	svc     *Service
@@ -45,6 +54,8 @@ type installHarness struct {
 	uid     int64
 	gid     int64
 	otherID int64
+	// expire makes callback take its state already expired.
+	expire bool
 }
 
 func officerStanding(name, path string) notify.GuildStanding {
@@ -66,7 +77,8 @@ func newInstallHarness(t *testing.T) *installHarness {
 	}}
 	h.svc = New(Deps{
 		Store: st, REST: h.rest, OAuth: h.oauth, PublicBaseURL: installPublic, APIBaseURL: "https://api.test",
-		Guilds: h.guilds, Notify: &notify.Service{GuildStore: &notify.GuildStore{Pool: st.Pool}}, Log: slog_(h.log),
+		Guilds: h.guilds, Log: slog_(h.log),
+		Notify: &notify.Service{OAuth: stubConnect{}, Guilds: h.guilds, GuildStore: &notify.GuildStore{Pool: st.Pool}},
 	})
 	h.guilds.svc = h.svc
 	Mount(h.mux, h.svc, 0)
@@ -77,6 +89,8 @@ func newInstallHarness(t *testing.T) *installHarness {
 			{ID: "c2", Name: "general", Type: 0, Position: 2},
 			{ID: "c1", Name: "raid-signups", Type: 0, Position: 1},
 			{ID: "v1", Name: "voice", Type: 2},
+			{ID: "locked", Name: "mods", Type: 0, Position: 3,
+				Overwrites: []Overwrite{{ID: "srv1", Type: OverwriteRole, Deny: PermSendMessages}}},
 		},
 	}
 	return h
@@ -107,6 +121,12 @@ func (h *installHarness) callback(guildID int64, query string, actor auth.Actor)
 	state, err := h.svc.d.Notify.StartState(ctx, notify.StateKindBotInstall, h.uid, &guildID)
 	if err != nil {
 		h.t.Fatal(err)
+	}
+	if h.expire {
+		_, err := h.svc.d.Store.Pool.Exec(ctx, `update notify_connect_states set expires_at = now() - interval '1 minute' where state = $1`, state)
+		if err != nil {
+			h.t.Fatal(err)
+		}
 	}
 	cs, ok, err := h.svc.d.Notify.GuildStore.TakeConnectState(ctx, state)
 	if err != nil || !ok {
@@ -236,6 +256,13 @@ func TestInstallCallbackOutcomes(t *testing.T) {
 			t.Fatal("a denied install bound or exchanged")
 		}
 	})
+	t.Run("a Discord error other than a refusal fails", func(t *testing.T) {
+		h := newInstallHarness(t)
+		h.wantOutcome(h.callback(h.gid, "error=server_error&code=c", h.officerActor()), olympusPath, "failed")
+		if len(h.oauth.InstallCodes()) != 0 {
+			t.Fatal("exchanged on a Discord error")
+		}
+	})
 	t.Run("failed", func(t *testing.T) {
 		cases := map[string]func(*installHarness) auth.Actor{
 			"demoted": func(h *installHarness) auth.Actor {
@@ -248,6 +275,10 @@ func TestInstallCallbackOutcomes(t *testing.T) {
 			},
 			"frozen": func(h *installHarness) auth.Actor {
 				h.setStanding(func(s *notify.GuildStanding) { s.Frozen = true })
+				return h.officerActor()
+			},
+			"expired state": func(h *installHarness) auth.Actor {
+				h.expire = true
 				return h.officerActor()
 			},
 			"other session": func(h *installHarness) auth.Actor { return auth.Actor{UserID: h.uid + 1000} },
@@ -308,7 +339,7 @@ func TestSaveChannelRefusesAnUnusableChannel(t *testing.T) {
 	if err := h.svc.d.Store.MarkRemovedInDiscord(context.Background(), h.gid, "gone"); err != nil {
 		t.Fatal(err)
 	}
-	for _, id := range []string{"v1", "nope"} {
+	for _, id := range []string{"v1", "nope", "locked"} {
 		rec := h.do(http.MethodPut, h.path(h.gid, "/channel"), `{"channel_id":"`+id+`"}`)
 		if rec.Code != http.StatusUnprocessableEntity || !strings.Contains(rec.Body.String(), "channel_unusable") {
 			t.Fatalf("%s: status %d: %s", id, rec.Code, rec.Body.String())
@@ -349,8 +380,16 @@ func TestBotTestMessage(t *testing.T) {
 		strings.Contains(rec.Body.String(), "https://") {
 		t.Fatalf("refused test: %d %s", rec.Code, rec.Body.String())
 	}
-	if in, _ := h.installFor(h.gid); in.Failures != 1 {
+	if in, _ := h.installFor(h.gid); in.Failures != 1 || in.RemovedInDiscord {
 		t.Fatalf("a test counted: failures = %d", in.Failures)
+	}
+
+	h.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: 403, Code: codeMissingAccess, Message: "Missing Access"}}
+	if rec := h.do(http.MethodPost, h.path(h.gid, "/test"), ""); rec.Code != http.StatusBadGateway {
+		t.Fatalf("gone bot: status %d", rec.Code)
+	}
+	if bot := h.settings(h.gid).Bot; bot == nil || !bot.RemovedInDiscord {
+		t.Fatalf("a test to a server the bot left did not mark it: %+v", bot)
 	}
 
 	h.rest.ErrFor = nil
@@ -382,6 +421,10 @@ func TestRemoveLeavesTheServerWithoutThePlan(t *testing.T) {
 		 select id, guild_id, 'c1' from guild_raids where guild_id = $1`, h.gid); err != nil {
 		t.Fatal(err)
 	}
+	if _, err := pool.Exec(context.Background(),
+		`insert into guild_notification_webhooks (guild_id, token_box, channel_id) values ($1, '\x00', 'w1')`, h.gid); err != nil {
+		t.Fatal(err)
+	}
 	h.setStanding(func(s *notify.GuildStanding) { s.Plan = false })
 	if rec := h.do(http.MethodDelete, h.path(h.gid, ""), ""); rec.Code != http.StatusNoContent {
 		t.Fatalf("status %d: %s", rec.Code, rec.Body.String())
@@ -397,6 +440,12 @@ func TestRemoveLeavesTheServerWithoutThePlan(t *testing.T) {
 	if err := h.svc.d.Store.Pool.QueryRow(context.Background(),
 		`select count(*) from guild_raid_discord_posts where guild_id = $1`, h.gid).Scan(&posts); err != nil || posts != 0 {
 		t.Fatalf("posts = %d (%v)", posts, err)
+	}
+
+	var hooks int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from guild_notification_webhooks where guild_id = $1`, h.gid).Scan(&hooks); err != nil || hooks != 1 {
+		t.Fatalf("webhook rows = %d (%v): remove must leave the connected webhook", hooks, err)
 	}
 
 	h.setStanding(func(s *notify.GuildStanding) { s.Frozen = true })
@@ -439,5 +488,35 @@ func TestSettingsBotCountsLinkedMembers(t *testing.T) {
 	bot := h.settings(h.gid).Bot
 	if bot == nil || bot.LinkedMembers != 1 || bot.Members != 1 || bot.ServerName != "Olympus" {
 		t.Fatalf("bot = %+v", bot)
+	}
+}
+
+func TestInstallReturnsThroughTheSharedCallback(t *testing.T) {
+	h := newInstallHarness(t)
+	mux := http.NewServeMux()
+	notify.Mount(mux, h.svc.d.Notify)
+	state, err := h.svc.d.Notify.StartState(context.Background(), notify.StateKindBotInstall, h.uid, &h.gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := httptest.NewRequest(http.MethodGet, "/v1/notifications/discord/callback?code=c0de&state="+url.QueryEscape(state), nil)
+	req = req.WithContext(auth.WithActor(req.Context(), h.officerActor()))
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	h.wantOutcome(rec.Header().Get("Location"), olympusPath, "installed")
+	if _, ok := h.installFor(h.gid); !ok {
+		t.Fatal("the shared callback did not install")
+	}
+}
+
+func TestChannelRoutesAreRateLimitedPerAccount(t *testing.T) {
+	h := newInstallHarness(t)
+	h.callback(h.gid, "code=c", h.officerActor())
+	var last int
+	for i := 0; i <= layoutReadsPerMinute; i++ {
+		last = h.do(http.MethodGet, h.path(h.gid, "/channels"), "").Code
+	}
+	if last != http.StatusTooManyRequests {
+		t.Fatalf("call %d: status %d, want 429", layoutReadsPerMinute+1, last)
 	}
 }
