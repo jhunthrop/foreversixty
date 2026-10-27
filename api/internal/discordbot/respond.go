@@ -74,7 +74,10 @@ func unboundReply() Reply {
 
 func (s *Service) writeReply(w http.ResponseWriter, rep Reply, kind int) {
 	if rep.Update && kind == respMessage {
-		kind = respUpdateMessage
+		// An update replaces the message: what it leaves out (the select) must go, so it
+		// sends the edit body, which writes every part explicitly.
+		writeCallback(w, callbackBody{Type: respUpdateMessage, Data: rep.Message.edit()})
+		return
 	}
 	writeCallback(w, callbackBody{Type: kind, Data: rep.Message})
 }
