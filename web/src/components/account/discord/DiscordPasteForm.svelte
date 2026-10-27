@@ -6,7 +6,7 @@
   import type { DiscordEvents } from '../../../lib/account/api';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { LINK_BUTTON } from '../../../lib/account/discord-styles';
-  import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import DiscordEventRows from './DiscordEventRows.svelte';
 
   let {
@@ -16,6 +16,7 @@
     offerPlans = false,
     saving = false,
     replacing = false,
+    secondary = false,
     onSubmit,
     onCancel,
     onConnect,
@@ -26,6 +27,8 @@
     offerPlans?: boolean;
     saving?: boolean;
     replacing?: boolean;
+    /** Another block holds the page's one fill (a seat offer, launch pricing spec 5): Save is an outline. */
+    secondary?: boolean;
     onSubmit: () => void;
     onCancel: () => void;
     /** Present only where connect is on: swaps back to the Connect view. */
@@ -90,7 +93,7 @@
   <div class="flex flex-wrap items-center gap-x-4">
     <button
       type="submit"
-      class="{PRIMARY_BUTTON_FIXED} px-5"
+      class="{secondary ? `${SECONDARY_BUTTON_FIXED} border-gold text-gold` : PRIMARY_BUTTON_FIXED} px-5"
       disabled={saving}
       aria-busy={saving}
       data-testid="discord-save"

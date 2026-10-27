@@ -87,7 +87,7 @@ describe('Who pays and Receiver rows', () => {
     expect(r.take).toBe(spec('Receiver', 2));
     expect(r.opening).toBe(spec('Receiver', 3));
     expect(r.notNow).toBe(spec('Receiver', 4));
-    expect(r.staysWithGuild('Aela')).toBe(spec('Receiver', 5, { Name: 'Aela' }));
+    expect(r.staysWithGuild).toBe(spec('Receiver', 5));
   });
 });
 

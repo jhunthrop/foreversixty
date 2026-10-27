@@ -226,4 +226,15 @@ const cardId = plan === 'free' ? 'free' : undefined;
       line-height: 34px;
     }
   }
+  /* Four columns at 1024-1279 leave a guild label about 170 px: 16 px card padding, no extra
+     tracking and a 6 px inset keep `Subscribe a guild · $200 a year` on one line (UX N5). */
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .plan-card {
+      padding: 16px;
+    }
+    .plan-button {
+      padding-inline: 6px;
+      letter-spacing: 0;
+    }
+  }
 </style>

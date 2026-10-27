@@ -68,7 +68,7 @@
         <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>
           <span class="text-strong tabular font-mono text-[20px]"
             >{formatAmount(priceFor(key, interval, founder))}</span
-          >{#if founder}&#32;<s class="font-mono">{formatAmount(priceFor(key, interval, false))}</s>{/if}<span
+          >{#if founder}<s class="ml-2 font-mono">{formatAmount(priceFor(key, interval, false))}</s>{/if}<span
             >{intervalUnit(interval)}</span
           >
         </span>

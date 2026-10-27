@@ -24,6 +24,7 @@ function html(props: {
   failed?: boolean;
   crests?: Record<number, string | null> | null;
   summary?: string;
+  plan?: 'guild' | 'raid_guild' | null;
 }): string {
   return render(CheckoutGuildChooser, {
     props: { onChoose: () => {}, onRetry: () => {}, ...props },
@@ -44,6 +45,15 @@ describe('CheckoutGuildChooser', () => {
     const body = html({ guilds: GUILDS });
     expect(body).toContain('Raid guild fits 28 members');
     expect(body).toContain('>Guild<');
+  });
+
+  it('with a picked plan, a row only flags a guild that plan does not fit', () => {
+    const raid = html({ guilds: GUILDS, plan: 'raid_guild' });
+    expect(raid).not.toContain('>Guild<');
+    expect(raid).not.toContain('Raid guild fits');
+    const guild = html({ guilds: GUILDS, plan: 'guild' });
+    expect(guild).toContain('Raid guild fits 28 members');
+    expect(guild).not.toContain('>Guild<');
   });
 
   it('says so, with the Find your guild link, when nothing is billable', () => {

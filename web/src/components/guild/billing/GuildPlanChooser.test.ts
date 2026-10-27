@@ -32,7 +32,7 @@ describe('GuildPlanChooser', () => {
         body,
       )?.[1] ?? '';
     expect(price).toMatch(/<span class="text-strong tabular font-mono text-\[20px\]">\$120<\/span>/);
-    expect(price).toMatch(/<s class="font-mono">\$150<\/s>/);
+    expect(price).toMatch(/<s class="ml-2 font-mono">\$150<\/s>/);
     expect(price).toMatch(/<span> a year<\/span>/);
     expect(body).toContain('max-w-[720px]');
   });

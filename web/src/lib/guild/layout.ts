@@ -15,5 +15,19 @@ export const GUILD_LOADING = {
   settings: { lines: 6, minHeight: 'min-h-[540px]' },
 } as const;
 
-/** The #billing section while the billing read loads: 420 px on desktop, 640 px on phone (launch pricing spec 4). */
-export const GUILD_BILLING_LOADING = { lines: 6, minHeight: 'min-h-[640px] md:min-h-[420px]' } as const;
+/**
+ * The #billing section while the billing read loads (launch pricing spec 4, amended in the
+ * persona round 2). A first visit reserves the measured ready height of the common states (a
+ * paid plan with its seats, Who pays and Records: about 520 px from 768, 760 px on a phone);
+ * a return visit reserves the height this guild's section last rendered at that layout, so a
+ * warm load holds CLS under 0.02 whatever state the guild is in.
+ */
+export const GUILD_BILLING_LOADING = { lines: 6, minHeight: 'min-h-[760px] md:min-h-[520px]' } as const;
+
+/** Read and written by GuildBillingSection; one key per guild and per layout (phone or from 768). */
+export function guildBillingReserveKey(guildId: number, phone: boolean): string {
+  return `fs.guildBilling.reserve.${guildId}.${phone ? 'phone' : 'wide'}`;
+}
+
+/** Below this width the section stacks (Tailwind `md`). */
+export const GUILD_BILLING_PHONE_MAX_PX = 767;

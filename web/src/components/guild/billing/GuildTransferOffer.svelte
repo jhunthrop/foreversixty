@@ -24,9 +24,6 @@
     onChanged,
   }: { guildId: number; plan: GuildPlanView; transfer: TransferView; onChanged: () => void } = $props();
 
-  /** The receiver is the viewer: the offer names them by the name the sender saw. */
-  const viewerName = $derived(transfer.to_name);
-
   let opening = $state(false);
   let declining = $state(false);
   let error = $state('');
@@ -74,7 +71,7 @@
   {#if sentence !== ''}
     <p class="text-[14px]" data-testid="guild-transfer-offer-text">{sentence}</p>
     <p class="text-muted text-[13px]" data-testid="guild-transfer-offer-stays">
-      {copy.staysWithGuild(viewerName)}
+      {copy.staysWithGuild}
     </p>
   {/if}
   {#if error !== ''}

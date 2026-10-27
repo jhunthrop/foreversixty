@@ -3,6 +3,7 @@
 // states themselves are pinned in billing/*.test.ts and lib/guild/billing-state.test.ts.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { GUILD_BILLING_LOADING, guildBillingReserveKey } from '../../lib/guild/layout';
 import GuildBillingSection from './GuildBillingSection.svelte';
 
 describe('GuildBillingSection', () => {
@@ -10,7 +11,13 @@ describe('GuildBillingSection', () => {
     const body = render(GuildBillingSection, { props: { guildId: 7 } }).body;
     expect(body).toContain('id="billing"');
     expect(body).toContain('guild-billing-skeleton');
-    expect(body).toContain('min-h-[640px] md:min-h-[420px]');
+    expect(body).toContain(GUILD_BILLING_LOADING.minHeight);
+    expect(GUILD_BILLING_LOADING.minHeight).toBe('min-h-[760px] md:min-h-[520px]');
     expect(body).not.toContain('guild-records');
+  });
+
+  it('keys the stored ready height per guild and per layout', () => {
+    expect(guildBillingReserveKey(7, true)).toBe('fs.guildBilling.reserve.7.phone');
+    expect(guildBillingReserveKey(7, false)).toBe('fs.guildBilling.reserve.7.wide');
   });
 });
