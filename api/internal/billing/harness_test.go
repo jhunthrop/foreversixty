@@ -15,6 +15,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/seats"
 )
 
 const testWebhookSecret = "whsec_test_fixture_secret_do_not_use_in_prod"
@@ -39,9 +40,12 @@ func newHarness(t *testing.T) *harness {
 		gw.Prices[p.LookupKey] = "price_" + p.LookupKey
 	}
 	authStore := &auth.Store{Pool: pool}
+	entStore := &entitlements.Store{Pool: pool}
+	seatStore := &seats.Store{Pool: pool, Entitlements: entStore}
 	svc := &Service{
-		Store: &Store{Pool: pool}, Entitlements: &entitlements.Store{Pool: pool},
+		Store: &Store{Pool: pool}, Entitlements: entStore,
 		Accounts: authStore, Users: authStore, Guilds: nil, Gateway: gw,
+		Seats:         seats.BillingReader{Store: seatStore, Sweeper: &seats.Service{Store: seatStore, Log: slog.Default()}},
 		PublicBaseURL: testPublicBaseURL, WebhookSecret: testWebhookSecret, Log: slog.Default(),
 	}
 	mux := http.NewServeMux()

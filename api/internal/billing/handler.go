@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/seats"
 )
 
 // maxBillingBody bounds a checkout/portal request body: both are a
@@ -71,6 +72,19 @@ type Entitlements interface {
 		kind entitlements.AnomalyKind, stripeSubscriptionID, actor string) error
 }
 
+// SeatReader is what the guild billing read needs from the seats package.
+// seats.BillingReader satisfies it.
+type SeatReader interface {
+	List(ctx context.Context, guildID int64, now time.Time) ([]seats.Seat, error)
+	// IsPayer is the claim holder or the plan's billing user, a verified officer.
+	IsPayer(ctx context.Context, guildID, userID int64) (bool, error)
+	// IsSubscriber is the plan's billing user.
+	IsSubscriber(ctx context.Context, guildID, userID int64) (bool, error)
+	SweepGuild(ctx context.Context, guildID int64, now time.Time) error
+	Officers(ctx context.Context, guildID int64) ([]seats.Officer, error)
+	MemberName(ctx context.Context, guildID, userID int64) (string, error)
+}
+
 // Service serves every billing route.
 type Service struct {
 	Store        *Store
@@ -78,6 +92,8 @@ type Service struct {
 	Accounts     GuildRanker
 	Users        UserReader
 	Guilds       FrozenClaimant
+	// Seats backs the guild billing routes; nil answers them 503.
+	Seats SeatReader
 	// Gateway is nil when Stripe is not configured on this deployment
 	// (no STRIPE_SECRET_KEY) — every route answers 503 rather than the
 	// API failing to start (coordinator's lane constraint).
@@ -98,6 +114,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.Handle("POST /v1/billing/checkout", limit(auth.RequireSession(s.checkout)))
 	mux.Handle("POST /v1/billing/portal", limit(auth.RequireSession(s.portal)))
 	mux.HandleFunc("POST /v1/billing/webhook", s.webhook)
+	mountGuild(mux, s, trustedProxyHops)
 }
 
 func (s *Service) logger() *slog.Logger {

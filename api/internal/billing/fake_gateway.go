@@ -8,6 +8,8 @@ import (
 	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
+
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
 // fakeCheckoutExpiry is CreateCheckoutSession's default ExpiresAt when a
@@ -240,7 +242,26 @@ func (f *FakeGateway) ChangePrice(_ context.Context, subscriptionID, priceID str
 		return f.ChangePriceErr
 	}
 	f.PriceChanges = append(f.PriceChanges, PriceChangeCall{SubscriptionID: subscriptionID, PriceID: priceID, ProrationDate: prorationDate})
+	f.swapRegisteredPrice(subscriptionID, priceID)
 	return nil
+}
+
+// swapRegisteredPrice moves a registered subscription's single item onto
+// priceID, as Stripe would, so a later GetSubscription reads the new price.
+// Callers hold f.mu.
+func (f *FakeGateway) swapRegisteredPrice(subscriptionID, priceID string) {
+	sub, ok := f.Subscriptions[subscriptionID]
+	if !ok || sub.Items == nil || len(sub.Items.Data) != 1 {
+		return
+	}
+	for key, id := range f.Prices {
+		if id != priceID {
+			continue
+		}
+		price, _ := catalog.Lookup(key)
+		sub.Items.Data[0].Price = &stripe.Price{ID: priceID, LookupKey: key, UnitAmount: price.AmountCents}
+		return
+	}
 }
 
 func (f *FakeGateway) ArchivePrice(_ context.Context, lookupKey string) error {
