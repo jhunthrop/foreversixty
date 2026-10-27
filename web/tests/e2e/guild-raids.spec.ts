@@ -8,6 +8,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { copyList, raidCopy } from '../../src/lib/guild/raid-copy';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
+import { shortControls } from './support/short-controls';
 import {
   CHICAGO,
   FIRST_NEW_ID,
@@ -32,7 +33,6 @@ const NEW_YORK = 'America/New_York';
 const POLL_MS = 10_000;
 const COPIED_MS = 4_000;
 const PHONE = { width: 360, height: 800 };
-const MIN_TARGET_PX = 44;
 
 test.use({ timezoneId: CHICAGO });
 
@@ -350,31 +350,6 @@ test.describe('axe (§9)', () => {
     await expectNoAxeViolations(page, '[data-testid="raid-form-create"]');
   });
 });
-
-const CONTROLS =
-  'button, select, input:not([type="checkbox"]), textarea, a:not(.prose-forever a), label:has(input[type="checkbox"])';
-
-/** Visible controls inside `scope` shorter than 44 px, by test id or text. */
-async function shortControls(scope: Locator): Promise<string[]> {
-  return scope.locator(CONTROLS).evaluateAll(
-    (nodes, min) =>
-      nodes
-        .filter((node) => {
-          const box = node.getBoundingClientRect();
-          return box.width > 0 && box.height > 0 && getComputedStyle(node).visibility !== 'hidden';
-        })
-        .filter((node) => {
-          const own = node.getBoundingClientRect().height;
-          const after = parseFloat(getComputedStyle(node, '::after').height) || 0;
-          return Math.max(own, after) < min;
-        })
-        .map(
-          (node) =>
-            `${node.getAttribute('data-testid') ?? node.textContent?.trim()}: ${node.getBoundingClientRect().height}`,
-        ),
-    MIN_TARGET_PX,
-  );
-}
 
 test.describe('every control is at least 44 px tall at 360', () => {
   test.beforeEach(({ page }, testInfo) => {

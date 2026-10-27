@@ -1,0 +1,28 @@
+// web/tests/captures/guild-attendance/playwright.capture.config.ts
+// Run from web/ with the fixture site served on port 4451:
+//   FOREVER_DATA=fixture npm run build && cp -R dist <dir>
+//   npx astro preview --outDir <dir> --port 4451   # in the background
+//   python3 ../design/mocks/gen_guild_attendance.py  # the mock boards for capture 13
+//   npx playwright test -c tests/captures/guild-attendance/playwright.capture.config.ts
+// It lives under web/ so that `@playwright/test` resolves; the PNGs go to
+// design/reviews/2026-10-27-guild-attendance/ (see capture.spec.ts).
+import { defineConfig } from '@playwright/test';
+
+const PORT = process.env.CAPTURE_PORT ?? '4451';
+const TEST_TIMEOUT_MS = 60_000;
+
+export default defineConfig({
+  testDir: '.',
+  testMatch: 'capture*.spec.ts',
+  timeout: TEST_TIMEOUT_MS,
+  workers: 4,
+  reporter: 'list',
+  use: {
+    baseURL: `http://localhost:${PORT}`,
+    browserName: 'chromium',
+    deviceScaleFactor: 1,
+    timezoneId: 'America/Chicago',
+    // The reveal fade and hover transitions settle at once, so every capture is the end state.
+    reducedMotion: 'reduce',
+  },
+});
