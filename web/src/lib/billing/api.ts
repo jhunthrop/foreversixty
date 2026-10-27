@@ -23,23 +23,37 @@ export class BillingApiError extends Error {
   }
 }
 
-export async function call<T>(
+async function send<T>(
   path: string,
   apiBase: string,
-  init: { method?: string; body?: unknown } = {},
-  allowEmpty = false,
-): Promise<T> {
-  let result: EnvelopeResult<T>;
+  init: { method?: string; body?: unknown },
+): Promise<EnvelopeResult<T>> {
   try {
-    result = await requestEnvelope<T>(path, apiBase, { ...init, failureMessage: BILLING_API_FAILED });
+    return await requestEnvelope<T>(path, apiBase, { ...init, failureMessage: BILLING_API_FAILED });
   } catch (error) {
     if (error instanceof AccountError)
       throw new BillingApiError(error.message, error.status, error.code, error.fields);
     throw new BillingApiError(BILLING_API_FAILED, 0);
   }
-  if (result.data === null && !allowEmpty)
-    throw new BillingApiError(result.message ?? BILLING_API_FAILED, result.status);
-  return result.data as T;
+}
+
+export async function call<T>(
+  path: string,
+  apiBase: string,
+  init: { method?: string; body?: unknown } = {},
+): Promise<T> {
+  const result = await send<T>(path, apiBase, init);
+  if (result.data === null) throw new BillingApiError(result.message ?? BILLING_API_FAILED, result.status);
+  return result.data;
+}
+
+/** A call whose success answers with no data (204, or a body the caller ignores). */
+export async function callVoid(
+  path: string,
+  apiBase: string,
+  init: { method?: string; body?: unknown } = {},
+): Promise<void> {
+  await send<unknown>(path, apiBase, init);
 }
 
 export interface CheckoutRequest {

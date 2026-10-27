@@ -2,6 +2,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { heldSeat, SEAT_CANDIDATES } from '../../test-support/billing-fixtures';
+import { invalidateGuild } from '../guild/api';
 import { BillingApiError } from './api';
 import {
   acceptSeatOffer,
@@ -11,6 +12,8 @@ import {
   seatCandidates,
   withdrawSeat,
 } from './seats-api';
+
+vi.mock('../guild/api', () => ({ invalidateGuild: vi.fn() }));
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
@@ -50,7 +53,10 @@ function stubFetch(respond: () => Response): Seen[] {
   return seen;
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.mocked(invalidateGuild).mockClear();
+});
 
 describe('seat reads', () => {
   it('GETs the candidates and unwraps the list', async () => {
@@ -92,6 +98,19 @@ describe('seat writes', () => {
 });
 
 describe('seat errors', () => {
+  it('leaves the guild cache alone when an action fails', async () => {
+    stubFetch(() => envelope(null, 409, { code: 'seat_locked', message: 'Locked.' }));
+    await expect(moveSeat(5, 1, 31, API)).rejects.toBeInstanceOf(BillingApiError);
+    await expect(acceptSeatOffer(5, API)).rejects.toBeInstanceOf(BillingApiError);
+    expect(invalidateGuild).not.toHaveBeenCalled();
+  });
+
+  it('drops the guild cache after a successful give', async () => {
+    stubFetch(() => envelope(heldSeat(1)));
+    await giveSeat(5, 1, 31, API);
+    expect(invalidateGuild).toHaveBeenCalledWith(5, API);
+  });
+
   it('propagates the code and movable_at of a 409 seat_locked', async () => {
     stubFetch(() =>
       envelope(null, 409, {

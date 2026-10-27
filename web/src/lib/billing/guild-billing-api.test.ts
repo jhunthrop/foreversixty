@@ -1,6 +1,7 @@
 // web/src/lib/billing/guild-billing-api.test.ts
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidateGuild } from '../guild/api';
 import { BillingApiError } from './api';
 import {
   declineTransfer,
@@ -12,6 +13,8 @@ import {
   withdrawTransfer,
 } from './guild-billing-api';
 import { guildBillingRead, UPGRADE_PREVIEW } from '../../test-support/billing-fixtures';
+
+vi.mock('../guild/api', () => ({ invalidateGuild: vi.fn() }));
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
@@ -48,7 +51,10 @@ function stubFetch(respond: () => Response): Seen[] {
   return seen;
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.mocked(invalidateGuild).mockClear();
+});
 
 describe('guild billing reads', () => {
   it('GETs the billing read', async () => {
@@ -66,7 +72,9 @@ describe('guild billing reads', () => {
 
   it('answers a 404 as a BillingApiError for a member', async () => {
     stubFetch(() => envelope(null, 404, 'not_found'));
-    await expect(getGuildBilling(5, API)).rejects.toMatchObject({ status: 404, code: 'not_found' });
+    const failure = await getGuildBilling(5, API).catch((error: unknown) => error);
+    expect(failure).toBeInstanceOf(BillingApiError);
+    expect(failure).toMatchObject({ status: 404, code: 'not_found' });
   });
 });
 
@@ -105,6 +113,21 @@ describe('guild billing writes', () => {
   it('carries not_member for a target who is not an officer', async () => {
     stubFetch(() => envelope(null, 409, 'not_member'));
     await expect(sendTransfer(5, 9, API)).rejects.toMatchObject({ status: 409, code: 'not_member' });
+  });
+});
+
+describe('cache invalidation', () => {
+  it('drops the guild cache after a successful action', async () => {
+    stubFetch(() => envelope({}));
+    await withdrawTransfer(5, API);
+    expect(invalidateGuild).toHaveBeenCalledWith(5, API);
+  });
+
+  it('leaves the cache alone when an action fails', async () => {
+    stubFetch(() => envelope(null, 409, 'upgrade_failed'));
+    await expect(upgrade(5, API)).rejects.toBeInstanceOf(BillingApiError);
+    await expect(sendTransfer(5, 9, API)).rejects.toBeInstanceOf(BillingApiError);
+    expect(invalidateGuild).not.toHaveBeenCalled();
   });
 });
 

@@ -3,7 +3,7 @@
 // whose `code` is `seat_locked` (with `fields.movable_at`), `not_member`, `no_plan` or `conflict`.
 import { invalidateGuild } from '../guild/api';
 import { API_BASE_URL } from '../planner/config';
-import { call } from './api';
+import { call, callVoid } from './api';
 import type { SeatCandidate, SeatView } from './contract';
 
 function seatsPath(guildId: number): string {
@@ -64,7 +64,7 @@ export function withdrawSeat(
 }
 
 async function offerAction(guildId: number, action: 'accept' | 'decline', apiBase: string): Promise<void> {
-  await call<unknown>(`${seatsPath(guildId)}/offer/${action}`, apiBase, { method: 'POST', body: {} }, true);
+  await callVoid(`${seatsPath(guildId)}/offer/${action}`, apiBase, { method: 'POST', body: {} });
   invalidateGuild(guildId, apiBase);
 }
 
