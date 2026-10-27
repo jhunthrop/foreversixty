@@ -30,8 +30,9 @@ func (s *Store) SeatFactsForUser(ctx context.Context, userID int64, now time.Tim
 	if err != nil {
 		return facts, err
 	}
+	tiers := map[int64]string{}
 	for _, fs := range seats {
-		standing, err := s.slotStands(ctx, fs.guildID, fs.row.slot)
+		standing, err := s.slotStands(ctx, tiers, fs.guildID, fs.row.slot)
 		if err != nil {
 			return facts, err
 		}
@@ -68,11 +69,16 @@ func (s *Store) factSeats(ctx context.Context, userID int64) ([]factSeat, error)
 	return out, nil
 }
 
-// slotStands is true when the guild's live whole plan has the slot.
-func (s *Store) slotStands(ctx context.Context, guildID int64, slot int) (bool, error) {
-	tier, err := s.activeTier(ctx, guildID)
-	if err != nil {
-		return false, err
+// slotStands is true when the guild's live whole plan has the slot; tiers
+// caches each guild's tier for the one read.
+func (s *Store) slotStands(ctx context.Context, tiers map[int64]string, guildID int64, slot int) (bool, error) {
+	tier, cached := tiers[guildID]
+	if !cached {
+		var err error
+		if tier, err = s.activeTier(ctx, guildID); err != nil {
+			return false, err
+		}
+		tiers[guildID] = tier
 	}
 	return slot <= catalog.SeatsForTier(tier), nil
 }

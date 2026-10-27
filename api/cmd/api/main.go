@@ -695,7 +695,7 @@ func serve(log *slog.Logger) error {
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
 	deps.DiscordBot = newDiscordBot(cfg, pool, deps, accounts, log)
 
-	wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore, accounts: accounts,
+	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})
 
 	var sampler *parse.Worker

@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -166,9 +167,31 @@ func TestMe_EndedSeatUnknownKeyKeepsComebackLink(t *testing.T) {
 	h.svc.Seats = &fakeSeats{facts: SeatFacts{Ended: &EndedSeat{
 		GuildName: "G", EndedAt: time.Now(), ComebackID: 9, PriceLookupKey: "gone"}}}
 	got := field(t, h.meRaw(t, uid)["ended_seat"])
-	if got["resubscribe_url"] != "/premium/checkout?plan=premium&comeback=9" ||
+	if got["resubscribe_url"] != "/premium" ||
 		got["amount_cents"] != nil || got["interval"] != nil {
 		t.Fatalf("ended seat = %+v", got)
+	}
+}
+
+// failingSeats errors on every read.
+type failingSeats struct{}
+
+func (failingSeats) SeatFactsForUser(context.Context, int64, time.Time) (SeatFacts, error) {
+	return SeatFacts{}, errors.New("seats down")
+}
+
+func TestMe_SeatFactsErrorOmitsSeatKeys(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "seatsdown@example.com")
+	h.svc.Seats = failingSeats{}
+	raw := h.meRaw(t, uid)
+	if _, there := raw["user"]; !there {
+		t.Fatal("/v1/me must still answer")
+	}
+	for _, k := range []string{"seat", "seat_offer", "ended_seat"} {
+		if _, there := raw[k]; there {
+			t.Fatalf("%s must be omitted, got %s", k, raw[k])
+		}
 	}
 }
 

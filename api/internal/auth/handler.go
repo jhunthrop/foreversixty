@@ -439,11 +439,7 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
-	facts, err := s.seatFacts(r.Context(), u.ID)
-	if err != nil {
-		s.fail(w, r, "me", err, "could not load your account just now")
-		return
-	}
+	facts := s.seatFacts(r.Context(), u.ID)
 	guilds, err = s.attachGuildPlans(r.Context(), guilds, u.ID, facts.HeldGuildIDs)
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")

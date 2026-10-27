@@ -249,3 +249,31 @@ func SeatsForTier(tier string) int {
 	}
 	return 0
 }
+
+// PriceFacts is the price a row was bought at, from its lookup key. A row
+// with no catalog price (a grant) has null interval and amount.
+type PriceFacts struct {
+	Founder     bool    `json:"founder"`
+	Interval    *string `json:"interval"`
+	AmountCents *int64  `json:"amount_cents"`
+}
+
+// FactsOf reads founder and interval from the catalog. The amount is the
+// row's own when it has one, else the catalog's; a key outside the catalog
+// with no amount has none.
+func FactsOf(lookupKey string, unitAmountCents int64) PriceFacts {
+	var facts PriceFacts
+	price, known := Lookup(lookupKey)
+	if known {
+		interval := string(price.Interval)
+		facts.Founder, facts.Interval = price.Founder, &interval
+	}
+	switch {
+	case unitAmountCents > 0:
+		facts.AmountCents = &unitAmountCents
+	case known:
+		amount := price.AmountCents
+		facts.AmountCents = &amount
+	}
+	return facts
+}
