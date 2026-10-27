@@ -30,8 +30,9 @@ func TestLootItemFactsCarriesTheLootTabIcon(t *testing.T) {
 	if name, quality, icon := lootItemFacts(16914); name != "Netherwind Crown" || quality != 4 || icon != "inv_helmet_70" {
 		t.Fatalf("16914 = %q %d %q", name, quality, icon)
 	}
-	if _, _, icon := lootItemFacts(18423); icon != "" {
-		t.Fatalf("Head of Onyxia has no icon in the build: %q", icon)
+	// A quest item's icon comes from the client's Item.IconFileDataID, not the class item files.
+	if _, _, icon := lootItemFacts(18423); icon != "inv_misc_head_dragon_01" {
+		t.Fatalf("Head of Onyxia = %q", icon)
 	}
 	if name, _, icon := lootItemFacts(1); name != "Item 1" || icon != "" {
 		t.Fatalf("unknown = %q %q", name, icon)
