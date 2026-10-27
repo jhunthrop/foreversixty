@@ -34,12 +34,18 @@ export function guildChannel(overrides: Partial<GuildSettingsDiscord> = {}): Gui
   };
 }
 
-export const NOT_CONNECTED = guildChannel({
+/** What removing the webhook leaves: nothing saved, and the bot (if any) untouched. */
+const WEBHOOK_REMOVED: Partial<GuildSettingsDiscord> = {
   connected: false,
   channel_id: null,
   discord_guild_id: null,
   post_default: false,
-});
+  failures: 0,
+  disabled_reason: null,
+  last_error: null,
+};
+
+export const NOT_CONNECTED = guildChannel(WEBHOOK_REMOVED);
 export const SWITCHED_OFF = guildChannel({
   failures: 5,
   disabled_reason: 'failed five times',
@@ -68,9 +74,12 @@ export interface GuildDiscordStub {
   settingsReads: number;
   tests: number;
   deletes: number;
+  /** The `discord` key the settings read answers now; a bot route changes it with `set`. */
+  current: () => GuildSettingsDiscord | null;
+  set: (next: GuildSettingsDiscord) => void;
 }
 
-function envelope(data: unknown, status = 200): { status: number; contentType: string; body: string } {
+export function envelope(data: unknown, status = 200): { status: number; contentType: string; body: string } {
   return {
     status,
     contentType: 'application/json',
@@ -78,7 +87,11 @@ function envelope(data: unknown, status = 200): { status: number; contentType: s
   };
 }
 
-function refused({ status, code, message }: Refusal): { status: number; contentType: string; body: string } {
+export function refused({ status, code, message }: Refusal): {
+  status: number;
+  contentType: string;
+  body: string;
+} {
   return {
     status,
     contentType: 'application/json',
@@ -107,8 +120,16 @@ export async function stubGuildDiscord(
   page: Page,
   options: GuildDiscordStubOptions,
 ): Promise<GuildDiscordStub> {
-  const seen: GuildDiscordStub = { settingsReads: 0, tests: 0, deletes: 0 };
   let discord = options.discord;
+  const seen: GuildDiscordStub = {
+    settingsReads: 0,
+    tests: 0,
+    deletes: 0,
+    current: () => discord,
+    set: (next) => {
+      discord = next;
+    },
+  };
   const { region, ruleset, id } = SETTINGS_GUILD;
   await page.route(`**/v1/guilds/${region}/${ruleset}/the-last-watch`, (route) =>
     route.fulfill(envelope({ guild: SETTINGS_GUILD, progression: [], roster_best: [], reports: [] })),
@@ -134,7 +155,7 @@ export async function stubGuildDiscord(
   await page.route(`**/v1/guilds/${id}/notifications/discord`, (route: Route) => {
     if (route.request().method() !== 'DELETE') return route.fallback();
     seen.deletes += 1;
-    if (discord !== null) discord = NOT_CONNECTED;
+    if (discord !== null) discord = { ...discord, ...WEBHOOK_REMOVED };
     return route.fulfill(NO_CONTENT);
   });
   return seen;

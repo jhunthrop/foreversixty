@@ -4,6 +4,9 @@
 // settings page's entry chunk needs these two only, to hold the section's place while its own
 // chunk loads; the words stay in that chunk.
 import type { GuildSettingsDiscord } from './api';
+import { BOT_RETURN_PARAM, GUILD_BOT_RESERVE, guildBotState } from './discord-bot-state';
+
+const BOT_INSTALLED = 'installed';
 
 export type GuildDiscordState = 'not-connected' | 'connected' | 'switched-off';
 
@@ -26,11 +29,17 @@ export const GUILD_DISCORD_RESERVE: Readonly<Record<GuildDiscordState, string>> 
 };
 
 /** The placeholder's height while the section's chunk loads: a `connected` return holds the
- *  connected height, since the settings read in hand may predate the channel (spec §3.8). */
+ *  connected height, since the settings read in hand may predate the channel (spec §3.8), and an
+ *  `installed` bot return holds the picker's (bot spec §3.1). With the bot on, its state decides. */
 export function guildDiscordReserve(
-  discord: Pick<GuildSettingsDiscord, 'connected' | 'disabled_reason'>,
+  discord: Pick<GuildSettingsDiscord, 'connected' | 'disabled_reason' | 'bot_available' | 'bot'>,
   search: string,
 ): string {
-  const returning = new URLSearchParams(search).get('discord') === 'connected';
+  const params = new URLSearchParams(search);
+  if (discord.bot_available === true) {
+    if (params.get(BOT_RETURN_PARAM) === BOT_INSTALLED) return GUILD_BOT_RESERVE.picker;
+    return GUILD_BOT_RESERVE[guildBotState(discord, false)];
+  }
+  const returning = params.get('discord') === 'connected';
   return GUILD_DISCORD_RESERVE[returning ? 'connected' : guildDiscordState(discord)];
 }

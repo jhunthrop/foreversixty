@@ -347,6 +347,32 @@ export interface GuildSettingsDiscord {
   last_error: string | null;
   failures: number;
   post_default: boolean;
+  /** The deployment runs the Forever Sixty bot (discord bot spec §9); absent reads false. */
+  bot_available?: boolean;
+  /** The bot installed in this guild's Discord server; null or absent when it is not. */
+  bot?: GuildBot | null;
+  /** Why the officer's last install was refused: the guild that already holds the server. */
+  bot_refusal?: { guild_name: string } | null;
+}
+
+/** `settings.discord.bot`: `channel_id` and `channel_name` are null until the picker saves. */
+export interface GuildBot {
+  server_id: string;
+  server_name: string;
+  channel_id: string | null;
+  channel_name: string | null;
+  linked_members: number;
+  members: number;
+  failures: number;
+  last_error: string | null;
+  removed_in_discord: boolean;
+}
+
+/** One entry of `GET …/discord/bot/channels`, in Discord's order. */
+export interface GuildBotChannel {
+  id: string;
+  name: string;
+  category: string | null;
 }
 
 export interface ContestResult {

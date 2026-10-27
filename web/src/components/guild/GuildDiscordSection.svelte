@@ -5,7 +5,11 @@
      sentence, a connect link that goes nowhere and disabled tests, and keeps Remove live; a frozen
      claim turns every control off. A return from Discord (`?discord=`) is read once, dropped from
      the address with `#discord` kept, and the section scrolled to; `connected` holds the connected
-     height until the settings read answers. Words and outcomes: lib/guild/discord-settings.ts. -->
+     height until the settings read answers. Words and outcomes: lib/guild/discord-settings.ts.
+     With the bot on for the deployment (discord bot spec §3.1) the section adds the bot's states:
+     add (nothing connected, and the offer above a webhook), the picker, installed and removed in
+     Discord (GuildDiscordBot); its install return (`?discord_bot=`) is read once like the
+     webhook's. With the bot off every branch below draws exactly as before. -->
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
@@ -19,6 +23,18 @@
     type GuildSettingsDiscord,
   } from '../../lib/guild/api';
   import { guildDiscordConnectUrl, removeGuildDiscord, testGuildDiscord } from '../../lib/guild/discord-api';
+  import { guildBotInstallUrl, removeGuildBot, testGuildBot } from '../../lib/guild/discord-bot-api';
+  import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
+  import {
+    BOT_FOCUS,
+    GUILD_BOT_RESERVE,
+    botReturnOutcome,
+    clearedBotFailures,
+    guildBotState,
+    takeBotReturnFlag,
+    BOT_RETURN_PARAM,
+    type BotReturnOutcome,
+  } from '../../lib/guild/discord-bot-state';
   import {
     DISCORD_FOCUS,
     clearedFailures,
@@ -37,6 +53,8 @@
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
+  import GuildDiscordAdd from './GuildDiscordAdd.svelte';
+  import GuildDiscordBot from './GuildDiscordBot.svelte';
   import GuildDiscordChannel from './GuildDiscordChannel.svelte';
   import GuildPlanGate from './GuildPlanGate.svelte';
 
@@ -77,11 +95,21 @@
   let settling = $state(
     typeof window !== 'undefined' && discordReturnFlag(window.location.search) === 'connected',
   );
+  let changing = $state(false);
+  let focusSelect = $state(false);
+  let botSettling = $state(
+    typeof window !== 'undefined' &&
+      new URLSearchParams(window.location.search).get(BOT_RETURN_PARAM) === 'installed',
+  );
   let section = $state<HTMLElement | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
   let settleTimer: ReturnType<typeof setTimeout> | undefined;
 
   const state = $derived(guildDiscordState(discord));
+  const botOn = $derived(discord.bot_available === true);
+  const botState = $derived(guildBotState(discord, changing));
+  const bot = $derived(botOn ? (discord.bot ?? null) : null);
+  const installHref = $derived(guildBotInstallUrl(guildId));
   const tools = $derived(officerTools ?? homeTools ?? true);
   const readOnly = $derived(!frozen && (planEnded || !tools));
   const gateId = $derived(readOnly ? GATE_ID : undefined);
@@ -89,7 +117,10 @@
   const gateLead = $derived(
     guildDiscordCopy.gate.slice(0, guildDiscordCopy.gate.indexOf(guildDiscordCopy.gateLink)),
   );
-  const focus = createFocusQueue(() => [state, confirming, busy, settling, readOnly]);
+  const focus = createFocusQueue(() => [state, botState, confirming, busy, settling, botSettling, readOnly]);
+  const held = $derived(
+    settling ? GUILD_DISCORD_RESERVE.connected : botSettling ? GUILD_BOT_RESERVE.picker : '',
+  );
 
   $effect(() => () => {
     clearTimeout(statusTimer);
@@ -102,11 +133,36 @@
     if (next.ok && next.stays !== true) statusTimer = setTimeout(() => (status = null), STATUS_MS);
   }
 
+  /** A status from a child: a plan refusal turns the section read-only; `focusLine` moves focus. */
+  function report(next: DiscordStatus | null, focusLine = false): void {
+    if (next === null) {
+      clearTimeout(statusTimer);
+      status = null;
+      return;
+    }
+    show(next);
+    if (next.planEnded === true) {
+      planEnded = true;
+      onPlanRefused();
+    }
+    if (focusLine) focus.request(DISCORD_FOCUS.status);
+  }
+
   function reveal(outcome: GuildReturnOutcome): void {
     clearTimeout(settleTimer);
     settling = false;
     show(outcome.status);
     focus.request(outcome.focus);
+  }
+
+  /** The bot's install return: the line stays, and focus goes to the select if the picker drew. */
+  function revealBot(outcome: BotReturnOutcome, read: GuildSettingsDiscord): void {
+    clearTimeout(settleTimer);
+    botSettling = false;
+    show({ ok: outcome.role === 'status', message: outcome.message, stays: true });
+    if (outcome.focus !== BOT_FOCUS.select) return focus.request(outcome.focus);
+    if (guildBotState(read, false) === 'picker') focusSelect = true;
+    else focus.request(BOT_FOCUS.testButton);
   }
 
   /** The callback's `?discord=` flag: taken once, the section scrolled to, the outcome shown. */
@@ -126,8 +182,26 @@
     });
   }
 
+  /** The callback's `?discord_bot=` flag, read once like the webhook's (bot spec §3.1). */
+  function takeBotReturn(): void {
+    const flag = takeBotReturnFlag(window.location, window.history);
+    const outcome = flag === null ? null : botReturnOutcome(flag, discord.bot_refusal ?? null);
+    if (outcome === null) {
+      botSettling = false;
+      return;
+    }
+    void tick().then(() => section?.scrollIntoView({ block: 'start' }));
+    if (!outcome.holdsPicker) return revealBot(outcome, discord);
+    settleTimer = setTimeout(() => revealBot(outcome, discord), CONNECT_SETTLE_MS);
+    refetchGuildSettings(guildId, (fresh) => {
+      onSettings(fresh);
+      revealBot(outcome, fresh.discord ?? discord);
+    });
+  }
+
   onMount(() => {
     takeReturn();
+    takeBotReturn();
     if (officerTools !== undefined) return;
     fetchGuildHome(guildId)
       .then((home) => (homeTools = home.viewer?.officer_tools ?? true))
@@ -148,38 +222,61 @@
     }
   }
 
+  /** The bot is what a test and a remove reach while it is installed (picker or installed). */
+  const botActive = $derived(bot !== null && botState !== 'removed');
+
   async function test(): Promise<void> {
     const before = discord;
-    const error = await run('test', () => testGuildDiscord(guildId));
+    const viaBot = botActive;
+    const error = await run('test', () => (viaBot ? testGuildBot(guildId) : testGuildDiscord(guildId)));
     if (error === null) {
-      if (before.failures > 0 || before.disabled_reason !== null) onDiscord(clearedFailures(before));
-      return show(testSent(before.disabled_reason !== null));
+      if (viaBot) onDiscord(clearedBotFailures(before));
+      else if (before.failures > 0 || before.disabled_reason !== null) onDiscord(clearedFailures(before));
+      return show(testSent(!viaBot && before.disabled_reason !== null));
     }
-    const refused = testRefused(error);
-    show(refused);
-    if (refused.planEnded !== true) return;
-    planEnded = true;
-    onPlanRefused();
-    focus.request(DISCORD_FOCUS.status);
+    report(testRefused(error), true);
   }
 
   async function remove(): Promise<void> {
-    const error = await run('remove', () => removeGuildDiscord(guildId));
-    if (error !== null) return show(removeRefused());
+    const viaBot = botActive;
+    const error = await run('remove', () => (viaBot ? removeGuildBot(guildId) : removeGuildDiscord(guildId)));
+    if (error !== null)
+      return show(viaBot ? { ok: false, message: guildBotCopy.remove.failed } : removeRefused());
     confirming = false;
-    onDiscord(removedChannel(discord));
+    changing = false;
+    onDiscord(viaBot ? { ...discord, bot: null } : removedChannel(discord));
     show(removed());
-    focus.request(DISCORD_FOCUS.connect);
+    focus.request(botOn ? BOT_FOCUS.add : DISCORD_FOCUS.connect);
   }
 
   function askRemove(): void {
     status = null;
     confirming = true;
-    focus.request(DISCORD_FOCUS.removeCancel);
+    focus.request(botActive ? BOT_FOCUS.removeCancel : DISCORD_FOCUS.removeCancel);
   }
 
   function cancel(): void {
     confirming = false;
+  }
+
+  function change(): void {
+    status = null;
+    focusSelect = true;
+    changing = true;
+  }
+
+  function cancelChange(): void {
+    changing = false;
+    focusSelect = false;
+    focus.request(BOT_FOCUS.change);
+  }
+
+  function saved(next: GuildSettingsDiscord): void {
+    onDiscord(next);
+    changing = false;
+    focusSelect = false;
+    show({ ok: true, message: guildBotCopy.installed.saved, stays: true });
+    focus.request(BOT_FOCUS.testButton);
   }
 
   function onKeydown(event: KeyboardEvent): void {
@@ -190,13 +287,55 @@
 <section
   id="discord"
   bind:this={section}
-  class="flex scroll-mt-20 flex-col gap-3 {settling ? GUILD_DISCORD_RESERVE.connected : ''}"
+  class="flex scroll-mt-20 flex-col gap-3 {held}"
   data-testid="guild-settings-discord"
 >
   <h2 class="section-title text-[18px]">{guildDiscordCopy.heading}</h2>
   {#if readOnly}<GuildPlanGate tab="discord" settingsHref="#billing" sentence={gateLead} />{/if}
-  {#if settling}
-    <!-- the connected height, held until the settings read answers (spec 3.8, Return) -->
+  {#snippet addParts(variant: 'nothing' | 'offer')}
+    <GuildDiscordAdd
+      {variant}
+      {installHref}
+      webhookHref={connectHref}
+      gated={frozen || readOnly}
+      {gateId}
+      busy={busy !== null}
+      {status}
+      onStuck={() => show(connectStuck())}
+    />
+  {/snippet}
+  {#snippet offerPart()}{@render addParts('offer')}{/snippet}
+  {#if settling || botSettling}
+    <!-- the connected or picker height, held until the settings read answers (spec 3.8, Return) -->
+  {:else if botOn && botState === 'nothing'}
+    {@render addParts('nothing')}
+  {:else if botOn && bot !== null}
+    <div class="flex max-w-[720px] flex-col gap-3" onkeydown={onKeydown} role="presentation">
+      <GuildDiscordBot
+        {guildId}
+        {discord}
+        {bot}
+        botState={botState as 'picker' | 'installed' | 'removed'}
+        {installHref}
+        {changing}
+        {focusSelect}
+        {readOnly}
+        {frozen}
+        {gateId}
+        {confirming}
+        {busy}
+        {status}
+        onStatus={report}
+        onSaved={saved}
+        onTest={() => void test()}
+        onChange={change}
+        onCancelChange={cancelChange}
+        onAskRemove={askRemove}
+        onRemove={() => void remove()}
+        onCancelRemove={cancel}
+        onStuck={() => show(connectStuck())}
+      />
+    </div>
   {:else if state === 'not-connected'}
     <!-- One line at 1440: the 140 cap counts the explanation as one line, so it is not held to 720. -->
     <div class="flex flex-col items-start">
@@ -233,6 +372,7 @@
         onRemove={() => void remove()}
         onCancel={cancel}
         onStuck={() => show(connectStuck())}
+        offer={botOn ? offerPart : undefined}
       />
     </div>
   {/if}
