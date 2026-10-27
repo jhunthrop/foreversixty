@@ -376,3 +376,72 @@ func TestValidateStripeKeyEnvironmentRejectsMismatchedKeyPrefix(t *testing.T) {
 		})
 	}
 }
+
+const (
+	testDiscordKeyHex = "0101010101010101010101010101010101010101010101010101010101010101"
+	testDiscordToken  = "bot-token-value-xyz"
+)
+
+func discordEnv(extra map[string]string) func(string) string {
+	m := map[string]string{
+		"DISCORD_CLIENT_ID": "app1", "DISCORD_CLIENT_SECRET": "sec",
+		"DISCORD_APPLICATION_ID": "app1", "DISCORD_PUBLIC_KEY": testDiscordKeyHex,
+		"DISCORD_BOT_TOKEN": testDiscordToken,
+	}
+	for k, v := range extra {
+		m[k] = v
+	}
+	return base(m)
+}
+
+func TestDiscordBotConfigIsAllOrNothing(t *testing.T) {
+	c, err := Load(discordEnv(nil))
+	if err != nil || !c.DiscordBotConfigured() || len(c.DiscordPublicKey) != 32 {
+		t.Fatalf("full config: %+v err=%v", c, err)
+	}
+	_, err = Load(discordEnv(map[string]string{"DISCORD_BOT_TOKEN": ""}))
+	if err == nil || !strings.Contains(err.Error(), "DISCORD_BOT_TOKEN") {
+		t.Fatalf("err = %v, want it to name DISCORD_BOT_TOKEN", err)
+	}
+	if strings.Contains(err.Error(), testDiscordKeyHex) {
+		t.Fatalf("error leaks the key: %v", err)
+	}
+	_, err = Load(discordEnv(map[string]string{"DISCORD_PUBLIC_KEY": ""}))
+	if err == nil || !strings.Contains(err.Error(), "DISCORD_PUBLIC_KEY") || strings.Contains(err.Error(), testDiscordToken) {
+		t.Fatalf("err = %v", err)
+	}
+	_, err = Load(discordEnv(map[string]string{"DISCORD_APPLICATION_ID": ""}))
+	if err == nil || !strings.Contains(err.Error(), "DISCORD_APPLICATION_ID") {
+		t.Fatalf("err = %v", err)
+	}
+}
+
+func TestDiscordPublicKeyMustBe32HexBytes(t *testing.T) {
+	for _, bad := range []string{"zz", strings.Repeat("01", 31)} {
+		_, err := Load(discordEnv(map[string]string{"DISCORD_PUBLIC_KEY": bad}))
+		if err == nil || !strings.Contains(err.Error(), "DISCORD_PUBLIC_KEY") {
+			t.Fatalf("key %q: err = %v", bad, err)
+		}
+		if len(bad) > 2 && strings.Contains(err.Error(), bad) {
+			t.Fatalf("error leaks the key: %v", err)
+		}
+	}
+}
+
+func TestDiscordApplicationIDMustMatchClientID(t *testing.T) {
+	_, err := Load(discordEnv(map[string]string{"DISCORD_APPLICATION_ID": "other"}))
+	if err == nil || !strings.Contains(err.Error(), "DISCORD_APPLICATION_ID") {
+		t.Fatalf("err = %v", err)
+	}
+	c, err := Load(base(nil))
+	if err != nil || c.DiscordBotConfigured() {
+		t.Fatalf("unset: configured=%v err=%v", c.DiscordBotConfigured(), err)
+	}
+}
+
+func TestDiscordBotNeedsTheClientPair(t *testing.T) {
+	_, err := Load(discordEnv(map[string]string{"DISCORD_CLIENT_ID": "", "DISCORD_CLIENT_SECRET": ""}))
+	if err == nil || !strings.Contains(err.Error(), "DISCORD_CLIENT_ID") {
+		t.Fatalf("err = %v, want it to name DISCORD_CLIENT_ID", err)
+	}
+}
