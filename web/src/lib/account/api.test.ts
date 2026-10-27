@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 // web/src/lib/account/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { mockEntitlements } from '../../test-support/billing-fixtures';
 import { invalidate } from '../data/query';
 import {
   ACCOUNT_FAILED,
   AccountError,
+  type BillingView,
   battlenetStartUrl,
   connectDeviceApprove,
   connectDeviceDeny,
@@ -23,6 +25,7 @@ import {
   requestEnvelope,
   revokeDevice,
   setAnonymize,
+  setMainCharacter,
   signOut,
 } from './api';
 
@@ -200,6 +203,36 @@ describe('the account API', () => {
     expect(patch.method).toBe('PATCH');
     expect(patch.url).toBe(`${apiBase}/v1/me`);
     expect(await patch.json()).toEqual({ anonymize: true });
+  });
+
+  it.each([
+    ['setAnonymize', (base: string) => setAnonymize(true, base)],
+    ['setMainCharacter', (base: string) => setMainCharacter('us/hardcore/elyra', base)],
+  ])('%s caches the PATCH answer with its price facts normalized', async (name, patch) => {
+    const apiBase = `${API}/patch-normalize-${name}`;
+    const me = {
+      user: { id: 1, battletag: null, email: null, role: 'user', anonymize: false },
+      characters: [],
+      guilds: [],
+      entitlements: mockEntitlements({
+        billing: {
+          plan: 'premium',
+          status: 'active',
+          current_period_end: null,
+          cancel_at_period_end: false,
+          founder: false,
+          interval: '',
+          amount_cents: '',
+        } as unknown as BillingView,
+      }),
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(me)),
+    );
+    await patch(apiBase);
+    const cached = await fetchMeOnce(apiBase);
+    expect(cached?.entitlements?.billing).toMatchObject({ interval: null, amount_cents: null });
   });
 
   it('turns a network failure into an AccountError with a message a page can print', async () => {
