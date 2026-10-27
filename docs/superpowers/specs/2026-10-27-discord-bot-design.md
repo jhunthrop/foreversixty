@@ -193,8 +193,12 @@ copy rules, and the command option names beyond those above.
    drained by a per-raid worker with a 2 s debounce and retries with backoff; any instance can
    drain. Deferred command answers use the interaction token within its 15 minutes; past that
    the answer is dropped and logged.
-10. **Staging.** OPEN — owner decision (see below). Commands are registered per application
-    at deploy with a hash check, so an unchanged command set is not re-sent.
+10. **Staging.** The controller's default while the owner has not chosen: test against the
+    production application in a private Discord test server, with guild-scoped command
+    registration to that server for unreleased commands. Config is per environment
+    (`DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY`, `DISCORD_BOT_TOKEN`), so a separate
+    staging application can be added later with no code change. Commands are registered per
+    application at deploy with a hash check, so an unchanged command set is not re-sent.
 11. **Embeds.** One raid embed builder with an optional counts line; webhook posts omit the
     buttons and keep the counts line.
 12. **Order.** Must-have before 9 December: install, link, buttons, post edits, `/raid`,
