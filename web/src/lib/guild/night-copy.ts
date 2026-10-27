@@ -14,6 +14,9 @@ export const yourNightText = {
     `Signed ${state}${asRole(role)}. Present from the first pull, ${pulls(n, total)}.`,
   late: (state: string, role: string | null, minutes: number, n: number, total: number): string =>
     `Signed ${state}${asRole(role)}. First seen ${minutes} min after the first pull, ${pulls(n, total)}.`,
+  /** A late row whose first-seen offset is unknown: the late sentence without the minutes. */
+  lateUnknown: (state: string, role: string | null, n: number, total: number): string =>
+    `Signed ${state}${asRole(role)}, ${pulls(n, total)}.`,
   cameAs: (state: string, name: string, alt: string, n: number, total: number): string =>
     `Signed ${state} on ${name}; came as ${alt}, ${pulls(n, total)}.`,
   notInLog: (state: string, role: string | null): string =>

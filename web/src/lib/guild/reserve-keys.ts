@@ -10,10 +10,15 @@ export const GUILD_BAND_KEY_PREFIX = 'fs.guildBand.';
 export const GUILD_PLANNED_KEY_PREFIX = 'fs.guildPlanned.';
 /** The own-character count the raid strip last drew. */
 export const RAID_ROWS_KEY = 'fs.guildRaid.rows';
+/** `fs.guildRaidDone.{raidId}`: the raid was last drawn `done`, so its loading holds the report. */
+export const RAID_DONE_KEY_PREFIX = 'fs.guildRaidDone.';
 
 function isGuildReserve(key: string): boolean {
   return (
-    key.startsWith(GUILD_BAND_KEY_PREFIX) || key.startsWith(GUILD_PLANNED_KEY_PREFIX) || key === RAID_ROWS_KEY
+    key.startsWith(GUILD_BAND_KEY_PREFIX) ||
+    key.startsWith(GUILD_PLANNED_KEY_PREFIX) ||
+    key.startsWith(RAID_DONE_KEY_PREFIX) ||
+    key === RAID_ROWS_KEY
   );
 }
 

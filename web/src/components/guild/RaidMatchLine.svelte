@@ -7,6 +7,7 @@
   import { tick } from 'svelte';
   import type { RaidMatch } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, uploadedLine } from '../../lib/guild/attendance-copy';
+  import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import type { MatchOutcome } from '../../lib/guild/match-picker.svelte';
   import { RAID_TEXT_BUTTON } from '../../lib/guild/raid-buttons';
@@ -68,7 +69,7 @@
     {copy.loggedAsNight}&#32;<a
       id="raid-open-night"
       href={nightHref(guildPath, match.report_id)}
-      class="text-gold font-bold"
+      class="text-gold font-bold {PHONE_HIT_AREA}"
       data-testid="raid-open-night">{copy.openNight}</a
     >
   </p>

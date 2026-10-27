@@ -26,6 +26,21 @@ export const RAID_STRIP_RESERVE =
 export const PLANNED_RESERVE =
   'h-[calc(62px+var(--planned-rows)*121.5px)] md:h-[calc(62px+var(--planned-rows)*71px)]';
 
+/** A done raid's band lines 3-5 (attendance spec 4 "Page states"): the h1, the when line, the
+ *  night line and the match line in place of the count line. */
+export const RAID_DONE_BAND_LINES_MIN = 'min-h-[207px] md:min-h-[167px]';
+
+/** `Your night` for a member: one row per own character the strip last drew (68 / 172 each, spec 7)
+ *  plus the section head. */
+export const YOUR_NIGHT_RESERVE =
+  'h-[calc(62px+var(--strip-rows)*172px)] md:h-[calc(62px+var(--strip-rows)*68px)]';
+
+/** The Report, ready (spec 4 "Page states"): one column below 1024, two from it. */
+export const REPORT_RESERVE = 'min-h-[900px] lg:min-h-[520px]';
+
+/** Attendance for a cached officer (spec 4 "Page states"). */
+export const ATTENDANCE_RESERVE = 'min-h-[420px]';
+
 /** A guild view is at least one screen tall from its first paint, so the footer starts below the
  *  fold and never jumps when the view under it grows (phone content starts at 72 px, desktop at 109). */
 export const GUILD_VIEW_MIN = 'min-h-[calc(100svh-72px)] md:min-h-[calc(100svh-109px)]';

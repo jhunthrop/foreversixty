@@ -20,7 +20,10 @@ export const CHECK_ROW = 'flex min-h-11 items-center gap-3 text-[14px]';
 /** The shared disabled look, for a row whose control cannot be used at all (not merely busy). */
 export const DISABLED_LOOK = 'cursor-not-allowed opacity-50';
 
-/** An inline link inside a line of prose (the GuildPlanGate recipe): below md a 44 px ::after,
- *  centred on the link, is its phone hit area; the focus ring stays on the text. */
-export const INLINE_LINK =
-  "text-gold hover:text-gold-hover active:text-gold-hover focus-visible:outline-gold relative whitespace-nowrap underline after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 md:after:hidden";
+/** Below md a 44 px ::after, centred on an inline link, is its phone hit area. */
+export const PHONE_HIT_AREA =
+  "relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] md:after:hidden";
+
+/** An inline link inside a line of prose (the GuildPlanGate recipe): the phone hit area; the focus
+ *  ring stays on the text. */
+export const INLINE_LINK = `text-gold hover:text-gold-hover active:text-gold-hover focus-visible:outline-gold whitespace-nowrap underline focus-visible:outline-2 focus-visible:outline-offset-2 ${PHONE_HIT_AREA}`;

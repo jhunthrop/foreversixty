@@ -48,7 +48,7 @@ describe('RaidMatchLine', () => {
     const body = html();
     expect(text(body)).toContain(`${attendanceCopy.match.loggedAsNight} ${attendanceCopy.match.openNight}`);
     expect(body).toContain(`href="${GUILD_PATH}#raids-abc123def"`);
-    expect(body).toMatch(/class="text-gold font-bold"/);
+    expect(body).toMatch(/class="text-gold font-bold relative after:absolute/);
   });
 
   it('reads line 2 with the uploader and `matched by time`, no guild time in the same zone', () => {

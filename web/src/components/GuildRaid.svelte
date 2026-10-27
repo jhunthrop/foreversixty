@@ -14,11 +14,19 @@
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
   import { SEP, raidCopy } from '../lib/guild/raid-copy';
-  import { raidCount, raidPageFlags, raidWhen, stripReserveRows } from '../lib/guild/raid-page';
+  import { raidCount, raidPageFlags, raidWhen, reservedDone, stripReserveRows } from '../lib/guild/raid-page';
   import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
   import type { RaidRoute } from '../lib/guild/raid-page-types';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
-  import { RAID_BAND_LINES_MIN, RAID_BAND_OFFICER, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
+  import {
+    ATTENDANCE_RESERVE,
+    RAID_BAND_LINES_MIN,
+    RAID_BAND_OFFICER,
+    RAID_DONE_BAND_LINES_MIN,
+    RAID_STRIP_RESERVE,
+    REPORT_RESERVE,
+    YOUR_NIGHT_RESERVE,
+  } from '../lib/guild/raid-layout';
   import { raidQuiet } from '../lib/guild/planned-row';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
@@ -72,6 +80,8 @@
   const settingsHref = $derived(guildSettingsHref(path.guild.region, path.guild.ruleset, guildName));
   const officer = $derived(c.role === 'officer');
   const reserveRows = stripReserveRows(browserStorage());
+  /** The raid was last drawn `done`: the loading page holds the night, not the sign-up strip. */
+  const doneReserve = reservedDone(path.raidId, browserStorage());
   const visible = $derived(c.access === 'member');
   const raid = $derived(c.raid);
   const flags = $derived(raid === null ? null : raidPageFlags(raid, now));
@@ -144,17 +154,36 @@
     <GuildBandFrame faction={c.guild?.faction ?? null}>
       {@render backLinkRow()}
       {@render raidEyebrow()}
-      <div class="{RAID_BAND_LINES_MIN} {officer ? RAID_BAND_OFFICER : ''}">
+      <div
+        class="{doneReserve ? RAID_DONE_BAND_LINES_MIN : RAID_BAND_LINES_MIN} {officer
+          ? RAID_BAND_OFFICER
+          : ''}"
+      >
         <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
       </div>
       <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
     </GuildBandFrame>
-    <div
-      class="bg-raised border-line rounded-panel border {RAID_STRIP_RESERVE}"
-      style:--strip-rows={reserveRows}
-      aria-hidden="true"
-      data-testid="raid-strip-reserve"
-    ></div>
+    {#if !doneReserve}
+      <div
+        class="bg-raised border-line rounded-panel border {RAID_STRIP_RESERVE}"
+        style:--strip-rows={reserveRows}
+        aria-hidden="true"
+        data-testid="raid-strip-reserve"
+      ></div>
+    {:else}
+      {#if !officer}
+        <div
+          class="bg-raised border-line rounded-panel border {YOUR_NIGHT_RESERVE}"
+          style:--strip-rows={reserveRows}
+          aria-hidden="true"
+          data-testid="raid-your-night-reserve"
+        ></div>
+      {/if}
+      <div class={REPORT_RESERVE} aria-hidden="true" data-testid="raid-report-reserve"></div>
+      {#if officer}
+        <div class={ATTENDANCE_RESERVE} aria-hidden="true" data-testid="raid-attendance-reserve"></div>
+      {/if}
+    {/if}
     <div class="min-h-[560px] md:min-h-[420px]" aria-hidden="true" data-testid="raid-roster-reserve"></div>
   </div>
 {:else if !visible}

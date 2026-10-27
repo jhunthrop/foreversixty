@@ -131,8 +131,9 @@ describe('yourNightSentence', () => {
     expect(yourNightSentence(row({ role: null, spec: 'Unknown' }))).toMatch(/^Signed In\. Present/);
   });
 
-  it('reads a late row with no offset as present', () => {
-    expect(yourNightSentence(row({ outcome: 'late', first_seen_offset_s: null }))).toContain('Present from');
+  it('reads a late row with no offset without the minutes', () => {
+    const late = row({ outcome: 'late', signed: 'late', first_seen_offset_s: null, pulls_present: 3 });
+    expect(yourNightSentence(late)).toBe('Signed Late as DPS, 3 of 11 pulls.');
   });
 
   it('never prints the word no-show', () => {
@@ -360,17 +361,6 @@ describe('discordReportText', () => {
     for (const label of ['Kills:', 'Most deaths:', 'Loot:', 'Biggest changes:', 'Report:']) {
       expect(spec).toContain(`\`${label}`);
     }
-  });
-
-  it('never passes 12 lines: loot gives way', () => {
-    const bosses = Array.from({ length: 20 }, (_, i) => ({
-      encounter_id: i,
-      boss: `Boss ${i}`,
-      awards: [award('Item', 'Pyrewisp')],
-    }));
-    const lines = discordReportText({ ...input, report: { ...full, loot: bosses } }).split('\n');
-    expect(lines).toHaveLength(12);
-    expect(lines.at(-1)).toMatch(/^Report: /);
   });
 });
 

@@ -14,6 +14,8 @@
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, nextRaidToggle, showingParts, stampLabel } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
+  import { PILL_WARN } from '../../lib/guild/pill-styles';
+  import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
   import { dateLabel } from '../../lib/guild/raid-time';
   import { syncCell } from '../../lib/guild/readiness-raid';
   import EmptyState from '../ui/EmptyState.svelte';
@@ -124,7 +126,6 @@
    *  green, `warn` red/gold depending on the cell. */
   const PILL_BASE = 'pill';
   const PILL_OK = 'text-[#7bff5c] bg-[rgba(30,255,0,.10)] border-[rgba(30,255,0,.25)]';
-  const PILL_WARN = 'text-[#ff6b5c] bg-[rgba(255,107,92,.12)] border-[rgba(255,107,92,.32)]';
   const PILL_GOLD = 'text-gold bg-[rgba(229,185,85,.14)] border-[rgba(229,185,85,.35)]';
   // Overrides .pill's fixed single-line 22px height for the Enchants pill alone (inline,
   // never a scoped <style> rule touching the shared .pill class every other pill on the
@@ -201,7 +202,8 @@
       </div>
       {#if nextRaidOnly && rows.length > 0}
         <p class="text-muted text-[13px]" data-testid="guild-readiness-showing">
-          {showing.lead}{#if raidHref !== null}<a href={raidHref} class="text-nav">{showing.title}</a
+          {showing.lead}{#if raidHref !== null}<a href={raidHref} class="text-nav underline {PHONE_HIT_AREA}"
+              >{showing.title}</a
             >{:else}{showing.title}{/if}{showing.tail}
         </p>
       {/if}
