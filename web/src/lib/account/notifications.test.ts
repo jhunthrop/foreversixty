@@ -253,6 +253,7 @@ describe('connected destination helpers', () => {
     const known = discordBlock({ channel_id: '222', guild_id: '111' });
     expect(openInDiscordUrl(known)).toBe('https://discord.com/channels/111/222');
     expect(openInDiscordUrl(discordBlock({ guild_id: null }))).toBeNull();
+    expect(openInDiscordUrl({ guild_id: '111', channel_id: '' })).toBeNull();
     expect(openInDiscordUrl(discordBlock({ guild_id: '1/../x' }))).toBeNull();
   });
 });

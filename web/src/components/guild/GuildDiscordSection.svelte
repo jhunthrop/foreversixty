@@ -295,6 +295,7 @@
     onDiscord(next);
     changing = false;
     focusSelect = false;
+    pickerSaving = false;
     show({ ok: true, message: guildBotCopy.installed.saved, stays: true });
     focus.request(BOT_FOCUS.testButton);
   }

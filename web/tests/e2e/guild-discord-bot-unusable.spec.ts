@@ -197,6 +197,21 @@ test.describe('14b · Escape on the state 2 Change channel picker', () => {
   });
 });
 
+test.describe('14c · Escape after a save', () => {
+  test('a saved channel does not leave Escape stuck for the next Change channel picker', async ({ page }) => {
+    await open(page, { discord: unusable(DELETED) });
+    await id(page, 'bot-choose-channel').click();
+    await id(page, 'bot-channel').selectOption(RAID_CHANNEL_ID);
+    await id(page, 'bot-channel-save').click();
+    await expect(id(page, 'bot-test')).toBeFocused();
+    await id(page, 'bot-change').click();
+    await expect(id(page, 'bot-channel')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(id(page, 'bot-destination')).toBeVisible();
+    await expect(id(page, 'bot-change')).toBeFocused();
+  });
+});
+
 test.describe('15 · fix by saving the same channel', () => {
   test('still unusable: the 422 says so, focused, and the list is fresh; fixed: the 200 clears it', async ({
     page,
