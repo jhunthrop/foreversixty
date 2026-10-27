@@ -16,7 +16,7 @@ describe('GuildWhoPays', () => {
     const body = html(null);
     expect(text(body)).toContain('Who pays');
     expect(body).toContain('guild-transfer-open');
-    expect(body).not.toContain('disabled');
+    expect(body).not.toMatch(/\sdisabled(=|\s|>)/);
   });
 
   it('with no officer to send to, disables the button and says why', () => {

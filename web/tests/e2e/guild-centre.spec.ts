@@ -899,7 +899,7 @@ test.describe('settings: billing and release belong to the guild master', () => 
     await expect(billing.getByTestId('guild-billing-subscribe')).toHaveCount(0);
     await expect(billing.getByTestId('guild-manage-billing')).toHaveCount(0);
     await expect(page.getByTestId('guild-settings-master-only')).toHaveText(
-      'Only the guild master can subscribe the guild, release the claim or change billing.',
+      'The subscriber or the guild leader manages billing and seats.',
     );
     // Everything else on the page is still hers.
     await expect(page.getByTestId('guild-invite-rotate')).toBeVisible();

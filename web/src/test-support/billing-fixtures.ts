@@ -163,7 +163,8 @@ export function planView(overrides: Partial<GuildPlanView> = {}): GuildPlanView 
     founder: false,
     interval: 'monthly',
     amount_cents: 1500,
-    billed_by: 'Fixture#1234',
+    // The payer's character name (the API's Billed by), the same officer who offers the transfer.
+    billed_by: 'Thornwick',
     you_are_billing_contact: true,
     ...overrides,
   };
@@ -287,7 +288,7 @@ export const ME_SEAT_OFFER: MeSeatOffer = {
 /** §9 case 17: an account that holds a seat from 20 Dec 2026. */
 export const ME_SEAT: MeSeat = {
   guild_name: SETTINGS_GUILD.name,
-  given_by: 'Fixture#1234',
+  given_by: 'Thornwick',
   since: '2026-11-10T00:00:00Z',
   starts_at: '2026-12-20T00:00:00Z',
 };
@@ -295,7 +296,7 @@ export const ME_SEAT: MeSeat = {
 /** §9 case 17: a seat that ended, with its resubscribe link. */
 export const ME_ENDED_SEAT: MeEndedSeat = {
   guild_name: SETTINGS_GUILD.name,
-  ended_at: '2026-11-25T00:00:00Z',
+  ended_at: '2026-11-18T12:00:00Z',
   resubscribe_url: '/premium/checkout?plan=premium&interval=monthly&comeback=9',
   amount_cents: 600,
   interval: 'monthly',

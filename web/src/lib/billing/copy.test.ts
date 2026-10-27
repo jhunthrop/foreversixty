@@ -22,7 +22,13 @@ describe('checkout chooser', () => {
       checkoutCopy.findYourGuild,
       checkoutCopy.guildsDidNotLoad,
       checkoutCopy.tryAgain,
+      '{Plan} · {price}',
     ]).toEqual(specCell(spec, '### 6.1', 'Checkout chooser'));
+  });
+
+  it('names the plan and price picked on /premium', () => {
+    expect(checkoutCopy.chosenPlan('raid_guild', 'yearly', true)).toBe('Raid guild · $200 a year');
+    expect(checkoutCopy.chosenPlan('guild', 'monthly', false)).toBe('Guild · $15 a month');
   });
 });
 

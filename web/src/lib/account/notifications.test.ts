@@ -71,7 +71,7 @@ describe('premiumRowValue', () => {
   const both = { sim_finished: true, upload_parsed: true, upload_private: false };
   const none = { sim_finished: false, upload_parsed: false, upload_private: false };
   it.each([
-    ['free', me(false, null), 'Off\u00A0·\u00A0Premium'],
+    ['free', me(false, null), 'Premium\u00A0only'],
     ['payer, nothing saved', me(true, null), 'Off\u00A0·\u00A0set\u00A0up'],
     ['two events', me(true, discordBlock({ events: both })), 'On\u00A0·\u00A02\u00A0events'],
     [
@@ -86,8 +86,8 @@ describe('premiumRowValue', () => {
       'Off\u00A0· needs attention',
     ],
     ['lapsed', me(false, discordBlock()), 'Paused\u00A0· plan lapsed'],
-    ['feature off, entitled', me(true), 'Off\u00A0·\u00A0Premium'],
-    ['feature off, lapsed', me(false), 'Off\u00A0·\u00A0Premium'],
+    ['feature off, entitled', me(true), 'Premium\u00A0only'],
+    ['feature off, lapsed', me(false), 'Premium\u00A0only'],
   ])('reads %s', (_name, account, expected) => {
     expect(premiumRowValue(account)).toBe(expected);
   });

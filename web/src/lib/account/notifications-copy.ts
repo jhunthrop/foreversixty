@@ -45,7 +45,8 @@ function shortenName(name: string): string {
 
 export const premiumRowCopy = {
   /** Not entitled: the row is muted text, not a link. */
-  off: `Off${NBSP}·${NBSP}Premium`,
+  // Controller's 2026-10-27 persona round (player 13): plain words, not a feature matrix.
+  off: `Premium${NBSP}only`,
   offSetUp: `Off${NBSP}·${NBSP}set${NBSP}up`,
   offNoEvents: `Off${NBSP}· no events chosen`,
   offNeedsAttention: `Off${NBSP}· needs attention`,

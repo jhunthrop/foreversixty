@@ -28,7 +28,7 @@ function specCell(labelStart: string): string[] {
 function withNonBreakingSpaces(value: string): string {
   // Spec 3.7 (amended after the follow-up captures): the short values never wrap, so every
   // space in them is U+00A0; the longer values keep only the state-dot and count-noun joins.
-  if (/^(On · \d+ events?|Off · Premium|Off · set up)$/.test(value)) return value.replace(/ /g, NBSP);
+  if (/^(On · \d+ events?|Premium only|Off · set up)$/.test(value)) return value.replace(/ /g, NBSP);
   return value.replace(' ·', `${NBSP}·`).replace(/(\d) (events?)$/, `$1${NBSP}$2`);
 }
 

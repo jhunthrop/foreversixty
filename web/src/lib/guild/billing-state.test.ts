@@ -3,7 +3,9 @@ import {
   FOUNDER_RAID_GUILD_READ,
   GUILD_TIER_28_READ,
   LAPSED_READ,
+  TRANSFER_RECEIVED,
   TRIAL_READ,
+  emptySeat,
   guildBillingRead,
   planView,
 } from '../../test-support/billing-fixtures';
@@ -13,8 +15,11 @@ import {
   fitsTier,
   lineTwoState,
   movesFromPlanLine,
+  offeredToReader,
+  planSeatCount,
   showSizeLine,
   showsChooser,
+  showsReadOnlyLine,
 } from './billing-state';
 
 const NOW = new Date('2026-11-15T12:00:00Z');
@@ -119,9 +124,28 @@ describe('the derived rules', () => {
     expect(lineTwoState(active, planView())).toEqual({ kind: 'billed-to-you' });
     expect(lineTwoState(active, planView({ you_are_billing_contact: false }))).toEqual({
       kind: 'billed-by',
-      name: 'Fixture#1234',
+      name: 'Thornwick',
     });
     expect(lineTwoState({ kind: 'lapsed', ended: '' }, null)).toEqual({ kind: 'read-only' });
     expect(lineTwoState({ kind: 'none' }, null)).toBeNull();
+  });
+});
+
+describe('the read-only line and the seat count', () => {
+  const plan = planView({ you_are_billing_contact: false });
+
+  it('a non-payer reads the line unless an offer to take over billing waits for them', () => {
+    expect(showsReadOnlyLine(guildBillingRead({ billing: plan }), false)).toBe(true);
+    const offered = guildBillingRead({ billing: plan, transfer: TRANSFER_RECEIVED });
+    expect(offeredToReader(offered)).toBe(true);
+    expect(showsReadOnlyLine(offered, false)).toBe(false);
+    expect(showsReadOnlyLine(guildBillingRead({ billing: plan }), true)).toBe(false);
+  });
+
+  it('the seat count is the plan tier own, not the rows sent', () => {
+    const raid = guildBillingRead({ billing: planView({ tier: 'raid_guild' }), seats: [emptySeat(1)] });
+    expect(planSeatCount(raid)).toBe(3);
+    expect(planSeatCount(guildBillingRead({ billing: planView() }))).toBe(1);
+    expect(planSeatCount(guildBillingRead({ seats: [emptySeat(1), emptySeat(2)] }))).toBe(2);
   });
 });

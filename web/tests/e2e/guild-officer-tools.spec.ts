@@ -32,7 +32,7 @@ import {
 } from './support/officer-tools';
 
 const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe the guild.';
-const MASTER_ONLY = 'Only the guild master can subscribe the guild, release the claim or change billing.';
+const MASTER_ONLY = 'The subscriber or the guild leader manages billing and seats.';
 const SCOPED_PLAN_LINE = 'Officer tools · until 12 Dec 2026';
 const CLIPBOARD_SENTINEL = 'clipboard untouched';
 /** The scoped CLI grant as GET /v1/guilds/{id}/billing sends it: Award, Undo and Nudge until 12 Dec 2026. */

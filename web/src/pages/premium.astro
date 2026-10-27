@@ -12,9 +12,6 @@ import PlanCard from '../components/premium/PlanCard.astro';
 import { checkoutCopy } from '../lib/billing/copy';
 import { FOUNDER_WINDOW_CLOSES } from '../lib/billing/plans';
 import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
-
-const FOUNDER_DATE = '6 January';
-const [founderBefore, founderAfter] = copy.founder.open.split(FOUNDER_DATE);
 ---
 
 <Base title={copy.title} description={copy.description} path="/premium">
@@ -36,11 +33,7 @@ const [founderBefore, founderAfter] = copy.founder.open.split(FOUNDER_DATE);
         <p class="lede">{copy.band.lede}</p>
         <p class="founder-row" data-fd="open" data-testid="founder-row">
           <span class="pill pill-site">{copy.founder.label}</span>
-          <span>
-            {founderBefore}
-            <span class="mono">{FOUNDER_DATE}</span>
-            {founderAfter}
-          </span>
+          <span>{copy.founder.open}</span>
         </p>
         <div class="interval-slot">
           <IntervalControl />
@@ -158,9 +151,6 @@ const [founderBefore, founderAfter] = copy.founder.open.split(FOUNDER_DATE);
   .founder-row .pill {
     flex: none;
   }
-  .founder-row .mono {
-    font-family: var(--font-mono);
-  }
   .body {
     display: flex;
     flex-direction: column;
@@ -241,9 +231,10 @@ const [founderBefore, founderAfter] = copy.founder.open.split(FOUNDER_DATE);
       font-size: 15px;
       line-height: 1.45;
     }
+    /* The band's inner column takes the site gutter, so its edge is the cards' edge (UX 10). */
     .hero {
-      gap: 10px;
-      padding-block: 28px 24px;
+      gap: 8px;
+      padding: 28px var(--page-gutter) 24px;
     }
     .body {
       gap: 32px;
@@ -271,10 +262,12 @@ const [founderBefore, founderAfter] = copy.founder.open.split(FOUNDER_DATE);
     .hero > :not(.interval-slot) {
       grid-column: 1;
     }
+    /* The control spans the eyebrow and h1 rows, so it never stretches the h1 row: the lede
+       sits 8 px under the h1 (UX 11). */
     .interval-slot {
       grid-column: 2;
-      grid-row: 2;
-      align-self: center;
+      grid-row: 1 / span 2;
+      align-self: end;
     }
     .cards {
       grid-template-columns: repeat(4, minmax(0, 1fr));

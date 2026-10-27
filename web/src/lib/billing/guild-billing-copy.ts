@@ -126,7 +126,7 @@ export const guildBillingCopy = {
     },
     subscribeAgain: 'Subscribe again',
     trialLine: plansPageCopy.trial,
-    founderLine: 'Founder price until 6 January, kept while the plan stays active.',
+    founderLine: 'Founder price until 6 January 2027, kept while the plan stays active.',
     opening: 'Opening checkout…',
     failed: 'Checkout did not open. Try again.',
   },
@@ -139,12 +139,10 @@ export const guildBillingCopy = {
     sentence: upgradeSentence,
     parts: upgradeParts,
     leadIn: UPGRADE_LEAD_IN,
-    // An addition: the design spec has no string for an upgrade Stripe has not confirmed.
-    unconfirmed: 'Stripe is still confirming the change. The plan below is up to date.',
-    // An addition: the design spec has no string for an unconfirmed upgrade whose plan could not be re-read.
-    unconfirmedStale: 'Stripe is still confirming the change. Reload to see where it stands.',
-    // An addition: the design spec has no string for an expired preview.
-    previewExpired: 'Prices changed. Review the new amount.',
+    // Controller's 2026-10-27 persona-round wording (spec 6.2, Upgrade confirm).
+    unconfirmed: 'Moved. Stripe is still confirming the charge.',
+    unconfirmedStale: 'Stripe is still confirming the move. Reload in a minute to see the plan.',
+    previewExpired: "Today's amount was updated. Check it, then move.",
     commit: 'Move to Raid guild',
     committing: 'Moving…',
     keep: 'Keep Guild',
@@ -160,6 +158,8 @@ export const guildBillingCopy = {
     failed: 'The file did not download. Try again.',
     fileName: (guildSlug: string, kind: 'attendance' | 'loot'): string => `${guildSlug}-${kind}.csv`,
   },
+  /** An officer who may not bill (spec 6.2, Read-only officer; controller's 2026-10-27 persona round). */
+  readOnly: 'The subscriber or the guild leader manages billing and seats.',
   gate: {
     text: 'Loot council and the readiness board are part of Raid guild. ',
     action: 'Move to Raid guild',

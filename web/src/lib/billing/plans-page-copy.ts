@@ -31,7 +31,7 @@ export const plansPageCopy = {
   },
   founder: {
     label: 'Founder',
-    open: 'Founder prices until 6 January. Buy by then and the price stays for as long as you stay subscribed.',
+    open: 'Founder prices until 6 January 2027. Buy by then and the price stays for as long as you stay subscribed.',
   },
   interval: {
     groupLabel: 'Billing interval',

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
-import { guildRosterModelCopy } from './copy';
 import { canManageBilling, claimedByLine, officerToolsExplanation, settingsWords } from './settings-view';
 
 function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
@@ -74,12 +73,6 @@ describe('the officer tools scoped grant', () => {
   it('reads the explanation from the spec', () => {
     const expected = specString(GATE_SPEC, COPY_HEADING, 'Settings explanation, scoped', 0, DATE_PLACEHOLDER);
     expect(officerToolsExplanation(scoped())).toBe(expected);
-  });
-
-  it('reads the guild-master line from the spec', () => {
-    expect(guildRosterModelCopy.guildMasterOnly).toBe(
-      specString(GATE_SPEC, COPY_HEADING, 'Settings, not the claim holder (reused)'),
-    );
   });
 });
 

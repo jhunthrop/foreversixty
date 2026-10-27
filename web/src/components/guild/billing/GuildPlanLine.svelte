@@ -7,7 +7,11 @@
   import { billedLine, guildBillingCopy, guildPlanLine } from '../../../lib/billing/guild-billing-copy';
   import { billingBlockCopy } from '../../../lib/billing/copy';
   import { lineTwoState, type BillingViewState } from '../../../lib/guild/billing-state';
-  import { BILLING_MOVE_BUTTON, BILLING_OUTLINE_BUTTON } from '../../../lib/guild/billing-styles';
+  import {
+    BILLING_MOVE_BUTTON,
+    BILLING_OUTLINE_BUTTON,
+    OPENER_PRESSED,
+  } from '../../../lib/guild/billing-styles';
   import { canManageBilling, officerToolsExplanation, settingsWords } from '../../../lib/guild/settings-view';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
 
@@ -17,6 +21,7 @@
     lineState,
     payer,
     showMove,
+    expanded = false,
     onMove,
   }: {
     guildId: number;
@@ -26,6 +31,8 @@
     payer: boolean;
     /** Move to Raid guild draws here (the size line is not showing). */
     showMove: boolean;
+    /** The upgrade confirm is showing: Move to Raid guild draws pressed. */
+    expanded?: boolean;
     onMove: () => void;
   } = $props();
 
@@ -103,7 +110,8 @@
       {#if payer && showMove}
         <button
           type="button"
-          class={BILLING_MOVE_BUTTON}
+          class="{BILLING_MOVE_BUTTON} {expanded ? OPENER_PRESSED : ''}"
+          aria-expanded={expanded}
           onclick={onMove}
           data-testid="guild-move-raid-guild"
         >

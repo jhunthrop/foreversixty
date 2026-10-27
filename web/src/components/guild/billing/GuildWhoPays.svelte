@@ -1,14 +1,20 @@
 <!-- web/src/components/guild/billing/GuildWhoPays.svelte -->
 <!-- Who pays (spec 3.2.6), the subscriber only: transfer the plan to another officer as an offer, the
      waiting line with Withdraw, and the declined line with the button back. The consequence sentence
-     reads from the current plan; nothing changes until the officer accepts. -->
+     reads from the current plan, then what stays with the guild; nothing changes until the officer
+     accepts. After a send or a withdraw, focus lands on the block's new action once it is enabled. -->
 <script lang="ts">
   import { tick } from 'svelte';
   import type { GuildPlanView, TransferCandidate, TransferView } from '../../../lib/billing/contract';
   import { sendTransfer, withdrawTransfer } from '../../../lib/billing/guild-billing-api';
   import { seatsCopy } from '../../../lib/billing/seats-copy';
   import { transferErrorLine } from '../../../lib/guild/billing-errors';
-  import { BILLING_OUTLINE_BUTTON, BILLING_TEXT_BUTTON } from '../../../lib/guild/billing-styles';
+  import {
+    BILLING_OUTLINE_BUTTON,
+    BILLING_SAFE_TEXT_BUTTON,
+    CONFIRM_ACTION_WIDTH,
+    CONFIRM_ACTIONS,
+  } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
@@ -53,19 +59,25 @@
     rootEl?.querySelector<HTMLElement>('[data-whopays-action]')?.focus();
   }
 
+  const openOfferTo = $derived(transfer !== null && transfer.state === 'offered' ? transfer.to_name : null);
+
+  /** Focus moves only after `busy` clears: the new action (Withdraw) is disabled while busy, and a
+   *  disabled button cannot take focus, which let it fall through to Records (UX 9). */
   async function run(action: () => Promise<void>, after: () => void = () => {}): Promise<void> {
     busy = true;
     error = '';
+    let done = false;
     try {
       await action();
       after();
       await onChanged();
-      await refocusAction();
+      done = true;
     } catch (thrown) {
-      error = transferErrorLine(thrown);
+      error = transferErrorLine(thrown, openOfferTo);
     } finally {
       busy = false;
     }
+    if (done) await refocusAction();
   }
 
   const send = (): Promise<void> => {
@@ -100,7 +112,7 @@
       </p>
       <button
         type="button"
-        class="{BILLING_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
+        class="{BILLING_SAFE_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
         disabled={busy}
         aria-busy={busy}
         onclick={() => void run(() => withdrawTransfer(guildId))}
@@ -139,16 +151,19 @@
           <SelectChevron />
         </span>
       </label>
-      {#if consequence !== ''}
+      {#if consequence !== '' && chosen !== null}
         <p class="text-[14px]" data-testid="guild-transfer-consequence">{consequence}</p>
+        <p class="text-muted text-[13px]" data-testid="guild-transfer-stays">
+          {copy.staysWithGuild(chosen.name)}
+        </p>
       {/if}
       {#if error !== ''}
         <p class="text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
       {/if}
-      <div class="flex flex-wrap items-center gap-3">
+      <div class={CONFIRM_ACTIONS}>
         <button
           type="button"
-          class="{PRIMARY_BUTTON_FIXED} px-4 {busy ? BUSY_CLASS : ''}"
+          class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4 {busy ? BUSY_CLASS : ''}"
           disabled={busy}
           aria-busy={busy}
           onclick={() => void send()}
@@ -156,7 +171,9 @@
         >
           {busy ? copy.sending : copy.send}
         </button>
-        <button type="button" class={BILLING_TEXT_BUTTON} onclick={close}>{copy.cancel}</button>
+        <button type="button" class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}" onclick={close}
+          >{copy.cancel}</button
+        >
       </div>
     </div>
   {:else}

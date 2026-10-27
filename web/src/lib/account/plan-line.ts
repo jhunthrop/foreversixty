@@ -98,3 +98,15 @@ export function guildRowPlanLine(plan: GuildBillingView, zone?: string): string 
       : base;
   return plan.you_hold_seat ? `${named}${accountPlanCopy.guildRow.youHoldSeat}` : named;
 }
+
+/**
+ * Whether the account is on Premium by any road: its own plan, a held seat, or a grant the API
+ * resolved into the Premium features. Such an account never sees the free plan line's See plans
+ * link (premium experience spec 2).
+ */
+export function onPremium(me: Me | null): boolean {
+  if (me === null) return false;
+  const seat = me.seat ?? null;
+  const billing = me.entitlements?.billing ?? null;
+  return seat !== null || billing !== null || me.entitlements?.server_sims === true;
+}

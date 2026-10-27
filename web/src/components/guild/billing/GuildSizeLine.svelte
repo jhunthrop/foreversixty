@@ -3,9 +3,20 @@
      payers get the one Move to Raid guild button beside it. Nothing switches off. -->
 <script lang="ts">
   import { guildBillingCopy as copy } from '../../../lib/billing/guild-billing-copy';
-  import { BILLING_MOVE_BUTTON } from '../../../lib/guild/billing-styles';
+  import { BILLING_MOVE_BUTTON, OPENER_PRESSED } from '../../../lib/guild/billing-styles';
 
-  let { count, payer, onMove }: { count: number; payer: boolean; onMove: () => void } = $props();
+  let {
+    count,
+    payer,
+    expanded = false,
+    onMove,
+  }: {
+    count: number;
+    payer: boolean;
+    /** The confirm block it opens is showing: the opener draws pressed. */
+    expanded?: boolean;
+    onMove: () => void;
+  } = $props();
 </script>
 
 <div
@@ -14,7 +25,13 @@
 >
   <p class="border-gold border-l-2 pl-3.5 text-[14px]">{copy.size.line(count)}</p>
   {#if payer}
-    <button type="button" class={BILLING_MOVE_BUTTON} onclick={onMove} data-testid="guild-move-raid-guild">
+    <button
+      type="button"
+      class="{BILLING_MOVE_BUTTON} {expanded ? OPENER_PRESSED : ''}"
+      aria-expanded={expanded}
+      onclick={onMove}
+      data-testid="guild-move-raid-guild"
+    >
       {copy.size.move}
     </button>
   {/if}

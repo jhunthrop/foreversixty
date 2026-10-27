@@ -22,7 +22,8 @@ const GUILDS: MeGuild[] = [
 function html(props: {
   guilds: MeGuild[] | null;
   failed?: boolean;
-  crests?: Record<number, string | null>;
+  crests?: Record<number, string | null> | null;
+  summary?: string;
 }): string {
   return render(CheckoutGuildChooser, {
     props: { onChoose: () => {}, onRetry: () => {}, ...props },
@@ -63,6 +64,17 @@ describe('CheckoutGuildChooser', () => {
     const body = html({ guilds: null });
     expect(body).toContain('checkout-chooser-loading');
     expect(body.match(/skeleton-block/g)).toHaveLength(3);
+  });
+
+  it('keeps the rows in the Skeleton until the crests settle, so each crest arrives with its row', () => {
+    const body = html({ guilds: GUILDS, crests: null });
+    expect(body).toContain('checkout-chooser-loading');
+    expect(body).not.toContain('checkout-guild-row');
+  });
+
+  it('names the plan and price picked on /premium under the heading', () => {
+    const body = html({ guilds: GUILDS, summary: 'Raid guild · $200 a year' });
+    expect(body).toContain('data-testid="checkout-chooser-plan">Raid guild · $200 a year<');
   });
 
   it('draws a known crest inside the ring, and the heading is focusable', () => {

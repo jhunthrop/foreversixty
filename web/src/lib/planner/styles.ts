@@ -19,6 +19,12 @@
 const SECONDARY_BUTTON_HOVER =
   'transition-colors duration-[120ms] hover:border-gold-hover hover:text-gold-hover';
 
+/**
+ * Launch pricing spec 4, Disabled: a disabled or aria-disabled _FIXED button reads as off at
+ * 50 % with a not-allowed cursor (global.css `.control-fixed`). A busy one keeps its own look.
+ */
+const FIXED_BUTTON_DISABLED = 'control-fixed';
+
 export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9 ${SECONDARY_BUTTON_HOVER}`;
 
 /**
@@ -26,7 +32,7 @@ export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center b
  * 36px on desktop. For controls outside the planner -- the homepage subscribe button -- where
  * the 44px hit target is a fixed requirement, not just a phone-only minimum.
  */
-export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase ${SECONDARY_BUTTON_HOVER}`;
+export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The primary button: the same recipe filled gold, for the single action a page is for
@@ -38,8 +44,7 @@ export const PRIMARY_BUTTON =
   'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
 
 /** PRIMARY_BUTTON at 44px on every breakpoint, as SECONDARY_BUTTON_FIXED is to SECONDARY_BUTTON. */
-export const PRIMARY_BUTTON_FIXED =
-  'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase';
+export const PRIMARY_BUTTON_FIXED = `rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The four states a talent cell is read at a glance by, from design/DESIGN-SYSTEM.md

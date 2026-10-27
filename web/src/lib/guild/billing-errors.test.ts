@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { BillingApiError } from '../billing/api';
 import { guildBillingCopy } from '../billing/guild-billing-copy';
 import { seatsCopy } from '../billing/seats-copy';
-import { transferErrorLine, upgradeOutcome } from './billing-errors';
+import { inProgressLine, transferErrorLine, upgradeOutcome } from './billing-errors';
 
 const refusal = (status: number, code: string | null): BillingApiError =>
   new BillingApiError('x', status, code);
@@ -43,6 +43,14 @@ describe('transferErrorLine', () => {
     expect(transferErrorLine(refusal(503, 'billing_unavailable'))).toBe(seatsCopy.whoPays.billingUnavailable);
   });
 
+  it('names the waiting offer when one is open', () => {
+    expect(transferErrorLine(refusal(409, 'transfer_in_progress'), 'Mirelle')).toBe(
+      'An offer to Mirelle is already waiting. Withdraw it first.',
+    );
+    expect(inProgressLine(null)).toBe(seatsCopy.whoPays.inProgress);
+    expect(inProgressLine('')).toBe(seatsCopy.whoPays.inProgress);
+  });
+
   it('anything else keeps the spec line', () => {
     expect(transferErrorLine(refusal(500, null))).toBe('The offer did not send. Try again.');
   });
@@ -50,10 +58,8 @@ describe('transferErrorLine', () => {
 
 describe('the strings added beyond the design spec', () => {
   it('are stated', () => {
-    expect(guildBillingCopy.upgrade.unconfirmed).toBe(
-      'Stripe is still confirming the change. The plan below is up to date.',
-    );
-    expect(seatsCopy.whoPays.inProgress).toContain('already in progress');
+    expect(guildBillingCopy.upgrade.unconfirmed).toBe('Moved. Stripe is still confirming the charge.');
+    expect(seatsCopy.whoPays.inProgress).toBe('A plan change is already under way. Reload to see it.');
     expect(seatsCopy.whoPays.billingUnavailable).toBe(
       'Billing is not available right now. Try again in a few minutes.',
     );

@@ -24,6 +24,7 @@
   import { fetchMeOnce, forgetSession, type Me, type MeGuild } from '../lib/account/api';
   import { BillingApiError, startCheckout } from '../lib/billing/api';
   import { checkoutCopy } from '../lib/billing/copy';
+  import { founderOpen } from '../lib/billing/plans';
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import {
@@ -44,7 +45,9 @@
   let request = $state<CheckoutParams | null>(null);
   let chooserGuilds = $state<MeGuild[] | null>(null);
   let chooserFailed = $state(false);
-  let chooserCrests = $state<Record<number, string | null>>({});
+  /** Null until every billable guild's crest read has settled, so rows and crests arrive together. */
+  let chooserCrests = $state<Record<number, string | null> | null>(null);
+  let chooserSummary = $state('');
   let choosing = $state(false);
   let messageEl = $state<HTMLParagraphElement | undefined>(undefined);
   let refocusMessage = $state(false);
@@ -108,8 +111,9 @@
     chooserCrests = Object.fromEntries(entries);
   }
 
-  function showChooser(me: Me): void {
+  function showChooser(me: Me, parsed: CheckoutParams): void {
     choosing = true;
+    chooserSummary = checkoutCopy.chosenPlan(parsed.plan, parsed.interval, founderOpen(new Date()));
     chooserFailed = false;
     chooserGuilds = me.guilds;
     void loadCrests(me.guilds);
@@ -118,6 +122,7 @@
   async function reloadChooser(): Promise<void> {
     chooserFailed = false;
     chooserGuilds = null;
+    chooserCrests = null;
     forgetSession();
     try {
       const me = await fetchMeOnce();
@@ -152,7 +157,7 @@
       return;
     }
     if (isGuildPlan(parsed.plan) && parsed.guildId === undefined) {
-      showChooser(me);
+      showChooser(me, parsed);
       return;
     }
     try {
@@ -226,6 +231,7 @@
         guilds={chooserGuilds}
         failed={chooserFailed}
         crests={chooserCrests}
+        summary={chooserSummary}
         onChoose={chooseGuild}
         onRetry={() => void reloadChooser()}
       />

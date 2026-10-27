@@ -83,9 +83,14 @@ export function formatAmount(usd: number): string {
   return cents % CENTS_PER_DOLLAR === 0 ? `$${dollars}` : `$${dollars.toFixed(2)}`;
 }
 
+/** The words after a price figure: ` a year`, ` a month` (leading space included). */
+export function intervalUnit(interval: Interval): string {
+  return ` a ${interval === 'monthly' ? 'month' : 'year'}`;
+}
+
 /** Running-text price: `$40 a year`, `$5 a month`. */
 export function formatPrice(usd: number, interval: Interval): string {
-  return `${formatAmount(usd)} a ${interval === 'monthly' ? 'month' : 'year'}`;
+  return `${formatAmount(usd)}${intervalUnit(interval)}`;
 }
 
 export function perMonthLine(yearlyUsd: number): string {

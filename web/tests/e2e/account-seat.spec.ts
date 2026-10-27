@@ -121,7 +121,7 @@ test('own Premium ending into a seat reads the hand-over', async ({ page }) => {
 test('a seat holder sees a seat from the guild and no Manage billing', async ({ page }) => {
   await openAccount(page, { seat: { ...ME_SEAT, starts_at: null } });
   await expect(page.getByTestId('account-billing-row')).toContainText('Premium · a seat from The Last Watch');
-  await expect(page.getByTestId('account-plan-line2')).toContainText('Given by Fixture#1234');
+  await expect(page.getByTestId('account-plan-line2')).toContainText('Given by Thornwick');
   await expect(page.getByRole('button', { name: 'Manage billing' })).toHaveCount(0);
   await expectClean(page);
 });
@@ -137,7 +137,7 @@ test('a founder sees the Founder mark with its title', async ({ page }) => {
 test('the ended seat line links to its resubscribe URL', async ({ page }) => {
   await openAccount(page, { ended_seat: ME_ENDED_SEAT });
   const line = page.getByTestId('account-seat-ended');
-  await expect(line).toContainText('Your seat from The Last Watch ended 25 Nov.');
+  await expect(line).toContainText('Your seat from The Last Watch ended 18 Nov.');
   await expect(line.getByRole('link', { name: 'Come back at $6 a month' })).toHaveAttribute(
     'href',
     ME_ENDED_SEAT.resubscribe_url,

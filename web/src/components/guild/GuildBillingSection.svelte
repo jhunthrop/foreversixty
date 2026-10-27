@@ -18,10 +18,12 @@
     billingState,
     canBill,
     movesFromPlanLine,
+    offeredToReader,
+    planSeatCount,
     showSizeLine,
+    showsReadOnlyLine,
     showsChooser,
   } from '../../lib/guild/billing-state';
-  import { guildRosterModelCopy } from '../../lib/guild/copy';
   import { GUILD_BILLING_LOADING } from '../../lib/guild/layout';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import LoadError from '../ui/LoadError.svelte';
@@ -81,6 +83,7 @@
     reload: load,
     adopt: (fresh) => (view = fresh),
     onState: (next) => (flow = next),
+    openTransferTo: () => (view?.transfer?.state === 'offered' ? view.transfer.to_name : null),
   });
   $effect(() => () => upgradeFlow.dispose());
 
@@ -125,7 +128,7 @@
       <Skeleton lines={GUILD_BILLING_LOADING.lines} testid="guild-billing-skeleton" />
     </div>
   {:else}
-    {#if view.billing !== null && view.transfer?.to_you === true && view.transfer.state === 'offered'}
+    {#if view.billing !== null && view.transfer !== null && offeredToReader(view)}
       <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={reload} />
     {/if}
     {#if view.billing !== null && viewState.kind !== 'none'}
@@ -135,14 +138,21 @@
         lineState={viewState}
         {payer}
         showMove={movesFromPlanLine(view, viewState)}
+        expanded={flow.confirming}
         onMove={() => void upgradeFlow.open()}
       />
     {/if}
     {#if showSizeLine(view)}
-      <GuildSizeLine count={view.verified_count} {payer} onMove={() => void upgradeFlow.open()} />
+      <GuildSizeLine
+        count={view.verified_count}
+        {payer}
+        expanded={flow.confirming}
+        onMove={() => void upgradeFlow.open()}
+      />
     {/if}
     {#if flow.confirming}
       <GuildUpgradeConfirm
+        plan={view.billing}
         preview={flow.preview}
         committing={flow.committing}
         error={flow.error}
@@ -160,7 +170,14 @@
       />
     {/if}
     <div data-testid="guild-billing-seats-slot">
-      <GuildSeats {guildId} seats={view.seats} manage={view.can.includes('seats')} {now} onChanged={reload} />
+      <GuildSeats
+        {guildId}
+        seats={view.seats}
+        total={planSeatCount(view)}
+        manage={view.can.includes('seats')}
+        {now}
+        onChanged={reload}
+      />
     </div>
     <div data-testid="guild-billing-whopays-slot">
       {#if view.billing !== null && view.can.includes('transfer')}
@@ -174,9 +191,9 @@
       {/if}
     </div>
     <GuildRecords {guildId} />
-    {#if !payer}
+    {#if showsReadOnlyLine(view, payer)}
       <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
-        {guildRosterModelCopy.guildMasterOnly}
+        {copy.readOnly}
       </p>
     {/if}
   {/if}

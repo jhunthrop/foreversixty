@@ -11,7 +11,7 @@ import { plansPageCopy } from '../../lib/billing/plans-page-copy';
   <dl>
     {plansPageCopy.rules.map((rule) => (
       <div class="row">
-        <dt class="label">{rule.term}</dt>
+        <dt class="term">{rule.term}</dt>
         <dd>{rule.sentence}</dd>
       </div>
     ))}
@@ -37,8 +37,12 @@ import { plansPageCopy } from '../../lib/billing/plans-page-copy';
     padding-block: 10px;
     border-top: 1px solid var(--color-line-soft);
   }
-  dt {
-    color: var(--color-muted);
+  /* The mock's term: 12 px --strong 600, so an officer can scan the eight rules (UX 25). */
+  .term {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-strong);
   }
   dd {
     margin: 0;

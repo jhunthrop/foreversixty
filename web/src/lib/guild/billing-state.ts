@@ -2,7 +2,7 @@
 // What the guild settings #billing section shows, from the guild billing read: which plan line,
 // which line 2, whether the chooser, the size line and the payer buttons draw. Pure, so every
 // state is pinned without a page.
-import { GUILD_TIER_MEMBER_LIMIT, type Interval } from '../billing/plans';
+import { GUILD_TIER_MEMBER_LIMIT, PLANS, type Interval } from '../billing/plans';
 import type { GuildBillingSettings, GuildPlanView, GuildTier } from '../billing/contract';
 import type { GuildPlanLineState, Line2State } from '../billing/guild-billing-copy';
 
@@ -107,4 +107,19 @@ export function movesFromPlanLine(view: GuildBillingSettings, state: BillingView
     (state.kind === 'active' || state.kind === 'trial') &&
     !showSizeLine(view)
   );
+}
+
+/** The plan's seat count (Guild 1, Raid guild 3); without a plan, the rows the read sent. */
+export function planSeatCount(view: GuildBillingSettings): number {
+  return view.billing === null ? view.seats.length : PLANS[view.billing.tier].seats;
+}
+
+/** An offer to take over billing waits for this reader: the receiver's block is drawn. */
+export function offeredToReader(view: GuildBillingSettings): boolean {
+  return view.transfer?.to_you === true && view.transfer.state === 'offered';
+}
+
+/** The read-only line under Records: every non-payer, except while an offer waits for them. */
+export function showsReadOnlyLine(view: GuildBillingSettings, payer: boolean): boolean {
+  return !payer && !offeredToReader(view);
 }

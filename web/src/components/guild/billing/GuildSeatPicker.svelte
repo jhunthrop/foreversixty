@@ -5,7 +5,11 @@
 <script lang="ts">
   import type { SeatCandidate } from '../../../lib/billing/contract';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
-  import { BILLING_TEXT_BUTTON } from '../../../lib/guild/billing-styles';
+  import {
+    BILLING_SAFE_TEXT_BUTTON,
+    CONFIRM_ACTION_WIDTH,
+    CONFIRM_ACTIONS,
+  } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import { sortedByName } from '../../../lib/guild/seat-view';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
@@ -57,7 +61,7 @@
     <Skeleton lines={1} rowHeight="h-11" label="Loading members" testid={`guild-seat-${slot}-loading`} />
   {:else if options.length === 0}
     <p class="text-[14px]" data-testid={`guild-seat-${slot}-empty`}>{copy.picker.everyoneHasPremium}</p>
-    <button type="button" class={BILLING_TEXT_BUTTON} use:focusOnMount onclick={onCancel}>
+    <button type="button" class={BILLING_SAFE_TEXT_BUTTON} use:focusOnMount onclick={onCancel}>
       {copy.picker.cancel}
     </button>
   {:else}
@@ -92,10 +96,10 @@
     {#if error !== ''}
       <p class="text-[13px]" role="alert" data-testid={`guild-seat-${slot}-error`}>{error}</p>
     {/if}
-    <div class="flex flex-wrap items-center gap-3">
+    <div class={CONFIRM_ACTIONS}>
       <button
         type="button"
-        class="{PRIMARY_BUTTON_FIXED} px-4 {busy ? BUSY_CLASS : ''}"
+        class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4 {busy ? BUSY_CLASS : ''}"
         disabled={busy || chosen === null}
         aria-busy={busy}
         onclick={() => chosen !== null && onSubmit(chosen)}
@@ -104,7 +108,9 @@
       >
         {submitText}
       </button>
-      <button type="button" class={BILLING_TEXT_BUTTON} onclick={onCancel}>{copy.picker.cancel}</button>
+      <button type="button" class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}" onclick={onCancel}
+        >{copy.picker.cancel}</button
+      >
     </div>
   {/if}
 </div>

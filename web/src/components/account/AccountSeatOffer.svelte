@@ -13,6 +13,7 @@
   } from '../../lib/account/seat-offer-flow';
   import { accountPlanCopy } from '../../lib/billing/account-plan-copy';
   import type { MeSeatOffer } from '../../lib/billing/contract';
+  import { CONFIRM_ACTION_WIDTH, CONFIRM_ACTIONS } from '../../lib/guild/billing-styles';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { acceptSeatOffer, declineSeatOffer } from '../../lib/billing/seats-api';
 
@@ -50,7 +51,11 @@
   const statusLine = $derived(offerStatusLine(outcome, offer, zone));
 </script>
 
-<div class="border-gold flex flex-col gap-2 border-l-2 pl-3" data-testid="account-seat-offer">
+<!-- Answered, the block is a plain 13 px muted status line: no gold rule, no padding (spec 3.3). -->
+<div
+  class="flex flex-col gap-2 {answered ? '' : 'border-gold border-l-2 pl-3'}"
+  data-testid="account-seat-offer"
+>
   <div role="status" data-testid="account-seat-offer-status">
     {#if answered}<p class="text-muted text-[13px]">{statusLine}</p>{/if}
   </div>
@@ -62,9 +67,9 @@
         {copy.consequence(offer.own_ends_at, offer.own_amount_cents, offer.own_interval, zone)}
       </p>
     {/if}
-    <div class="flex flex-wrap items-center gap-4">
+    <div class={CONFIRM_ACTIONS}>
       <button
-        class="{PRIMARY_BUTTON_FIXED} px-4"
+        class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4"
         type="button"
         disabled={busy}
         onclick={() => void respond(accept, 'accepting', 'accepted')}
@@ -73,7 +78,7 @@
         {outcome === 'accepting' ? copy.accepting : copy.accept}
       </button>
       <button
-        class="text-text min-h-11 text-[14px] underline disabled:opacity-60"
+        class="text-text inline-flex min-h-11 items-center text-[14px] underline disabled:opacity-60 {CONFIRM_ACTION_WIDTH}"
         type="button"
         disabled={busy}
         onclick={() => void respond(decline, 'declining', 'declined')}

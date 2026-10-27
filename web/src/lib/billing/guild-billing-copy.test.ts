@@ -98,6 +98,13 @@ describe('upgrade confirm', () => {
     expect(copy.upgrade.keep).toBe(spec('Upgrade confirm', 3));
     expect(copy.upgrade.done).toBe(spec('Upgrade confirm', 4));
     expect(copy.upgrade.failed).toBe(spec('Upgrade confirm', 5));
+    expect(copy.upgrade.unconfirmed).toBe(spec('Upgrade confirm', 6));
+    expect(copy.upgrade.unconfirmedStale).toBe(spec('Upgrade confirm', 7));
+    expect(copy.upgrade.previewExpired).toBe(spec('Upgrade confirm', 8));
+  });
+
+  it('the read-only officer line', () => {
+    expect(copy.readOnly).toBe(spec('Read-only officer', 0));
   });
 });
 
@@ -175,7 +182,7 @@ describe('founder line and gate spec', () => {
       day: 'numeric',
       month: 'long',
     }).format(lastSecond);
-    expect(copy.chooser.founderLine).toContain(`until ${day},`);
+    expect(copy.chooser.founderLine).toContain(`until ${day} 2027,`);
   });
 
   it('reads the scoped plan line from the officer tools gate spec', () => {
@@ -197,9 +204,8 @@ describe('founder line and gate spec', () => {
   });
 });
 
-describe('additions the design spec has no string for', () => {
-  it('states the expired preview and exposes the lead-in', () => {
-    expect(copy.upgrade.previewExpired).toBe('Prices changed. Review the new amount.');
+describe('the lead-in', () => {
+  it('starts the sentence', () => {
     expect(copy.upgrade.sentence(600, 'monthly', '2026-12-01T12:00:00Z', 2500)).toContain(
       copy.upgrade.leadIn,
     );
