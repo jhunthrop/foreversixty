@@ -13,6 +13,11 @@ export function isBotReturnFlag(value: string): value is BotReturnFlag {
   return (BOT_RETURN_FLAGS as readonly string[]).includes(value);
 }
 
+/** Whether the address bar holds the `installed` return, whose settings read the section waits for. */
+export function awaitsBotInstallRead(search: string): boolean {
+  return new URLSearchParams(search).get(BOT_RETURN_PARAM) === 'installed';
+}
+
 /** Reads and drops `?discord_bot=` with `history.replaceState`, keeping every other query
  *  parameter and the hash. Null when the parameter is absent. */
 export function takeBotReturnFlag(location: Location, history: History): string | null {

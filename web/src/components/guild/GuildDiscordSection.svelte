@@ -9,46 +9,32 @@
      With the bot on for the deployment (discord bot spec §3.1) the section adds the bot's states:
      add (nothing connected, and the offer above a webhook), the picker, installed and removed in
      Discord (GuildDiscordBot); its install return (`?discord_bot=`) is read once like the
-     webhook's. With the bot off every branch below draws exactly as before. -->
+     webhook's. With the bot off every branch below draws exactly as before. The two returns and
+     their held heights live in lib/guild/discord-returns.svelte.ts. -->
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
-  import { takeReturnFlag } from '../../lib/account/discord-actions';
-  import { discordReturnFlag } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
-  import {
-    clearCachedBotRefusal,
-    fetchGuildHome,
-    refetchGuildSettings,
-    type GuildSettingsData,
-    type GuildSettingsDiscord,
-  } from '../../lib/guild/api';
+  import { fetchGuildHome, type GuildSettingsData, type GuildSettingsDiscord } from '../../lib/guild/api';
   import { guildDiscordConnectUrl, removeGuildDiscord, testGuildDiscord } from '../../lib/guild/discord-api';
   import { guildBotInstallUrl, removeGuildBot, testGuildBot } from '../../lib/guild/discord-bot-api';
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
-  import {
-    BOT_FOCUS,
-    botReturnOutcome,
-    clearedBotFailures,
-    takeBotReturnFlag,
-    type BotReturnOutcome,
-  } from '../../lib/guild/discord-bot-state';
-  import { BOT_RETURN_PARAM, GUILD_BOT_RESERVE, guildBotView } from '../../lib/guild/discord-bot-view';
+  import { BOT_FOCUS, clearedBotFailures } from '../../lib/guild/discord-bot-state';
+  import { GUILD_BOT_RESERVE, guildBotView } from '../../lib/guild/discord-bot-view';
+  import { GuildDiscordReturns } from '../../lib/guild/discord-returns.svelte';
   import {
     DISCORD_FOCUS,
     clearedFailures,
     connectStuck,
     guildDiscordCopy,
-    guildReturnOutcome,
     removeRefused,
     removed,
     removedChannel,
     testRefused,
     testSent,
     type DiscordStatus,
-    type GuildReturnOutcome,
   } from '../../lib/guild/discord-settings';
-  import { GUILD_DISCORD_RESERVE, guildDiscordState } from '../../lib/guild/discord-state';
+  import { guildDiscordState } from '../../lib/guild/discord-state';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
   import DiscordStatusLine from '../account/discord/DiscordStatusLine.svelte';
@@ -59,8 +45,6 @@
 
   /** How long `Removed.` stays (account spec 4.3); a `stays` line holds until the next press. */
   const STATUS_MS = 4000;
-  /** The longest a `connected` return waits for the settings read before drawing what it has. */
-  const CONNECT_SETTLE_MS = 4000;
   const GATE_ID = 'officer-tools-gate-discord';
 
   let {
@@ -91,20 +75,11 @@
   let confirming = $state(false);
   let busy = $state<'test' | 'remove' | null>(null);
   let status = $state<DiscordStatus | null>(null);
-  let settling = $state(
-    typeof window !== 'undefined' && discordReturnFlag(window.location.search) === 'connected',
-  );
   let changing = $state(false);
   let focusSelect = $state(false);
   let pickerSaving = $state(false);
-  let botReturnDone = false;
-  let botSettling = $state(
-    typeof window !== 'undefined' &&
-      new URLSearchParams(window.location.search).get(BOT_RETURN_PARAM) === 'installed',
-  );
   let section = $state<HTMLElement | null>(null);
   let statusTimer: ReturnType<typeof setTimeout> | undefined;
-  let settleTimer: ReturnType<typeof setTimeout> | undefined;
 
   const state = $derived(guildDiscordState(discord));
   const botOn = $derived(discord.bot_available === true);
@@ -117,25 +92,32 @@
   const gateLead = $derived(
     guildDiscordCopy.gate.slice(0, guildDiscordCopy.gate.indexOf(guildDiscordCopy.gateLink)),
   );
+  const returns = new GuildDiscordReturns({
+    guildId: () => guildId,
+    discord: () => discord,
+    onSettings: (fresh) => onSettings(fresh),
+    show: (next) => show(next),
+    focus: (selector) => focus.request(selector),
+    focusSelect: () => (focusSelect = true),
+    scrollToSection: () => section?.scrollIntoView({ block: 'start' }),
+  });
   const focus = createFocusQueue(() => [
     state,
     view.state,
     confirming,
     busy,
-    settling,
-    botSettling,
+    returns.settling,
+    returns.botSettling,
     readOnly,
   ]);
   /** The bot's states hold their reserved heights live, as the chunk placeholder does, so a save
    *  from the can't-be-used notice to state 2 moves the page by the cap change only (A.2, item 17). */
   const botReserve = $derived(!botOn || view.state === 'webhook-only' ? '' : GUILD_BOT_RESERVE[view.state]);
-  const held = $derived(
-    settling ? GUILD_DISCORD_RESERVE.connected : botSettling ? GUILD_BOT_RESERVE.picker : botReserve,
-  );
+  const held = $derived(returns.held(botReserve));
 
   $effect(() => () => {
     clearTimeout(statusTimer);
-    clearTimeout(settleTimer);
+    returns.dispose();
   });
 
   function show(next: DiscordStatus): void {
@@ -159,83 +141,8 @@
     if (focusLine) focus.request(DISCORD_FOCUS.status);
   }
 
-  function reveal(outcome: GuildReturnOutcome): void {
-    clearTimeout(settleTimer);
-    settling = false;
-    show(outcome.status);
-    focus.request(outcome.focus);
-  }
-
-  /** The bot's install return, shown once: the line stays, and focus goes where the outcome says
-   *  if that control is drawn for the read in hand (the select in the picker, else Send test). */
-  function revealBot(outcome: BotReturnOutcome, read: GuildSettingsDiscord): void {
-    if (botReturnDone) return;
-    botReturnDone = true;
-    if (read.bot_refusal != null) void clearCachedBotRefusal(guildId).catch(() => {});
-    clearTimeout(settleTimer);
-    botSettling = false;
-    show({ ok: outcome.role === 'status', message: outcome.message, stays: true });
-    if (outcome.focus !== BOT_FOCUS.select) return focus.request(outcome.focus);
-    const { state: shown } = guildBotView(read, false);
-    if (shown === 'picker') focusSelect = true;
-    else if (shown === 'installed') focus.request(BOT_FOCUS.testButton);
-  }
-
-  /** The settle timer: reveal on the read in hand only if it holds a bot. A stale read keeps the
-   *  picker's held height (no state 5 flash) until the fresh read answers or the refetch fails. */
-  function settleBot(outcome: BotReturnOutcome): void {
-    if (guildBotView(discord, false).bot !== null) revealBot(outcome, discord);
-  }
-
-  /** The fresh read failed: stop holding and draw the read in hand; `Bot added` only if it
-   *  holds a bot. */
-  function failBotRefetch(outcome: BotReturnOutcome): void {
-    botSettling = false;
-    settleBot(outcome);
-  }
-
-  /** The callback's `?discord=` flag: taken once, the section scrolled to, the outcome shown. */
-  function takeReturn(): void {
-    const flag = takeReturnFlag(window.location, window.history);
-    if (flag === null) {
-      settling = false;
-      return;
-    }
-    void tick().then(() => section?.scrollIntoView({ block: 'start' }));
-    const outcome = guildReturnOutcome(flag);
-    if (!outcome.refresh) return reveal(outcome);
-    settleTimer = setTimeout(() => reveal(outcome), CONNECT_SETTLE_MS);
-    refetchGuildSettings(guildId, (fresh) => {
-      onSettings(fresh);
-      reveal(outcome);
-    });
-  }
-
-  /** The callback's `?discord_bot=` flag, read once like the webhook's (bot spec §3.1). */
-  function takeBotReturn(): void {
-    const flag = takeBotReturnFlag(window.location, window.history);
-    const outcome = flag === null ? null : botReturnOutcome(flag, discord.bot_refusal ?? null);
-    if (outcome === null) {
-      botSettling = false;
-      return;
-    }
-    void tick().then(() => section?.scrollIntoView({ block: 'start' }));
-    if (!outcome.holdsPicker) return revealBot(outcome, discord);
-    settleTimer = setTimeout(() => settleBot(outcome), CONNECT_SETTLE_MS);
-    refetchGuildSettings(
-      guildId,
-      (fresh) => {
-        onSettings(fresh);
-        revealBot(outcome, fresh.discord ?? discord);
-      },
-      undefined,
-      () => failBotRefetch(outcome),
-    );
-  }
-
   onMount(() => {
-    takeReturn();
-    takeBotReturn();
+    returns.take();
     if (officerTools !== undefined) return;
     fetchGuildHome(guildId)
       .then((home) => (homeTools = home.viewer?.officer_tools ?? true))
@@ -345,7 +252,7 @@
     />
   {/snippet}
   {#snippet offerPart()}{@render addParts('offer')}{/snippet}
-  {#if settling || botSettling}
+  {#if returns.settling || returns.botSettling}
     <!-- the connected or picker height, held until the settings read answers (spec 3.8, Return) -->
   {:else if botOn && view.state === 'nothing'}
     {@render addParts('nothing')}
