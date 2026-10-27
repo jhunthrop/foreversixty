@@ -38,7 +38,7 @@ func TestRegisterOnlyWhenChanged(t *testing.T) {
 	if len(calls) != 2 || calls[0].ServerID != "" || calls[1].ServerID != registerGuild {
 		t.Fatalf("first run calls = %+v", calls)
 	}
-	if len(calls[0].Commands) != 4 || len(calls[1].Commands) != 5 {
+	if len(calls[0].Commands) != len(commandsOf(Commands(), true)) || len(calls[1].Commands) != len(commandsOf(Commands(), false)) {
 		t.Fatalf("released %d, unreleased %d", len(calls[0].Commands), len(calls[1].Commands))
 	}
 	if err := w.svc.RegisterCommands(ctx); err != nil || len(putCalls(w.rest)) != 2 {

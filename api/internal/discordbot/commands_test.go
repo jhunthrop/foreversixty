@@ -31,7 +31,7 @@ func TestCommandDefinitions(t *testing.T) {
 		t.Fatalf("%d commands", len(cmds))
 	}
 	desc := descriptionSegments(t)
-	released := map[string]bool{"raid": true, "signup": true, "link": true, "help": true}
+	released := map[string]bool{"raid": true, "signup": true, "char": true, "bis": true, "link": true, "help": true}
 	for i, c := range cmds {
 		if c.Name != order[i] || c.Description != desc[c.Name] || c.Released != released[c.Name] {
 			t.Errorf("command %d = %+v, want %s %q", i, c, order[i], desc[c.Name])
