@@ -1,7 +1,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { SeatView } from '../../../lib/billing/contract';
-import { emptySeat, heldSeat, offeredSeat } from '../../../test-support/billing-fixtures';
+import { emptySeat, heldSeat, offeredSeat, pendingSeat } from '../../../test-support/billing-fixtures';
 import { text } from '../../../test-support/raid-fixtures';
 import GuildSeatRow from './GuildSeatRow.svelte';
 
@@ -9,7 +9,7 @@ const NOON = { given_at: '2026-11-02T12:00:00Z', movable_at: '2026-12-02T12:00:0
 const held = (): SeatView => heldSeat(1, NOON);
 const NOW = new Date('2026-11-20T12:00:00Z');
 const html = (seat: SeatView, manage = true, now = NOW): string =>
-  render(GuildSeatRow, { props: { guildId: 7, seat, manage, now, onChanged: () => {} } }).body;
+  render(GuildSeatRow, { props: { guildId: 7, seat, manage, now, onChanged: () => Promise.resolve() } }).body;
 
 describe('GuildSeatRow', () => {
   it('Held and locked: Move seat is aria-disabled and its date is visible text', () => {
@@ -31,6 +31,26 @@ describe('GuildSeatRow', () => {
     expect(text(body)).toContain('Waiting');
     expect(text(body)).toContain('They pay for Premium, so they accept it first.');
     expect(body).toContain('guild-seat-1-withdraw');
+  });
+
+  it('Pending: the holder, a Waiting pill, the offer wording, and Withdraw beside Move seat', () => {
+    const body = html(pendingSeat(1, NOON));
+    expect(text(body)).toContain('Kraggor');
+    expect(text(body)).toContain('Mirelle');
+    expect(text(body)).toContain('Waiting');
+    expect(text(body)).toContain('Offered 10 Nov. They pay for Premium, so they accept it first.');
+    expect(body).toContain('guild-seat-1-move');
+    expect(body).toContain('guild-seat-1-withdraw');
+    expect(body).not.toContain('guild-seat-1-give');
+  });
+
+  it('Pending on an empty seat: the offeree stands in, with Withdraw only', () => {
+    const body = html(
+      emptySeat(1, { offeree: { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' } }),
+    );
+    expect(text(body)).toContain('Mirelle');
+    expect(body).toContain('guild-seat-1-withdraw');
+    expect(body).not.toContain('guild-seat-1-move');
   });
 
   it('Accepted: the start line, then the lock date', () => {

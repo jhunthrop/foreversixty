@@ -11,7 +11,7 @@ describe('GuildTransferOffer', () => {
         guildId: 7,
         plan: planView(),
         transfer: { ...TRANSFER_RECEIVED, starts_at: '2026-12-01T12:00:00Z' },
-        onChanged: () => {},
+        onChanged: () => Promise.resolve(),
       },
     }).body;
     expect(text(body)).toContain('Fixture#1234 offers you the guild plan.');

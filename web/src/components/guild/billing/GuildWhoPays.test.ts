@@ -8,7 +8,7 @@ import GuildWhoPays from './GuildWhoPays.svelte';
 const CANDIDATES = [{ user_id: 40, name: 'Mirelle' }];
 const html = (transfer: TransferView | null, candidates = CANDIDATES): string =>
   render(GuildWhoPays, {
-    props: { guildId: 7, plan: planView(), transfer, candidates, onChanged: () => {} },
+    props: { guildId: 7, plan: planView(), transfer, candidates, onChanged: () => Promise.resolve() },
   }).body;
 
 describe('GuildWhoPays', () => {

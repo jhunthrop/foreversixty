@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Me } from '../account/api';
 import {
+  emptySeat,
   guildBillingRead,
   ME_ENDED_SEAT,
   ME_SEAT_OFFER,
@@ -9,7 +10,7 @@ import {
   planView,
   TRANSFER_OFFERED,
 } from '../../test-support/billing-fixtures';
-import type { GuildBillingSettings } from './contract';
+import type { GuildBillingSettings, SeatView } from './contract';
 import { normalizeGuildBilling, normalizeMeBilling } from './normalize';
 
 /** What the API sends for a row with no price: empty strings where the types say null. */
@@ -75,5 +76,14 @@ describe('normalizeMeBilling', () => {
     expect(out?.seat_offer).toBeNull();
     expect(out !== null && 'ended_seat' in out).toBe(false);
     expect(out?.entitlements).toBeUndefined();
+  });
+});
+
+describe('normalizeGuildBilling seats', () => {
+  it('reads an absent offeree as null and keeps a present one', () => {
+    const offeree = { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' };
+    const absent = { ...emptySeat(1), offeree: undefined } as unknown as SeatView;
+    const read = guildBillingRead({ seats: [absent, emptySeat(2, { offeree })] });
+    expect(normalizeGuildBilling(read).seats.map((seat) => seat.offeree)).toEqual([null, offeree]);
   });
 });

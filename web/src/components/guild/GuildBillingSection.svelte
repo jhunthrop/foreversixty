@@ -16,6 +16,7 @@
   } from '../../lib/guild/billing-state';
   import { guildRosterModelCopy } from '../../lib/guild/copy';
   import { GUILD_BILLING_LOADING } from '../../lib/guild/layout';
+  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import GuildPlanChooser from './billing/GuildPlanChooser.svelte';
@@ -27,7 +28,11 @@
   import GuildUpgradeConfirm from './billing/GuildUpgradeConfirm.svelte';
   import GuildWhoPays from './billing/GuildWhoPays.svelte';
 
-  let { guildId, now = new Date() }: { guildId: number; now?: Date } = $props();
+  let { guildId, now: fixedNow }: { guildId: number; now?: Date } = $props();
+
+  /** The minute tick: a seat lock that expires while the page is open turns over without a reload. */
+  const clock = minuteClock(() => fixedNow);
+  const now = $derived(clock.now);
 
   let view = $state<GuildBillingSettings | null>(null);
   let failed = $state(false);
@@ -115,12 +120,7 @@
     </div>
   {:else}
     {#if view.billing !== null && view.transfer?.to_you === true && view.transfer.state === 'offered'}
-      <GuildTransferOffer
-        {guildId}
-        plan={view.billing}
-        transfer={view.transfer}
-        onChanged={() => void load()}
-      />
+      <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={load} />
     {/if}
     {#if view.billing !== null && viewState.kind !== 'none'}
       <GuildPlanLine
@@ -157,13 +157,7 @@
       />
     {/if}
     <div data-testid="guild-billing-seats-slot">
-      <GuildSeats
-        {guildId}
-        seats={view.seats}
-        manage={view.can.includes('seats')}
-        {now}
-        onChanged={() => void load()}
-      />
+      <GuildSeats {guildId} seats={view.seats} manage={view.can.includes('seats')} {now} onChanged={load} />
     </div>
     <div data-testid="guild-billing-whopays-slot">
       {#if view.billing !== null && view.can.includes('transfer')}
@@ -172,7 +166,7 @@
           plan={view.billing}
           transfer={view.transfer}
           candidates={view.transfer_candidates}
-          onChanged={() => void load()}
+          onChanged={load}
         />
       {/if}
     </div>

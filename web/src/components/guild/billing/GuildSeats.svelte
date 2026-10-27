@@ -18,7 +18,7 @@
     seats: readonly SeatView[];
     manage: boolean;
     now: Date;
-    onChanged: () => void;
+    onChanged: () => Promise<void>;
   } = $props();
 </script>
 

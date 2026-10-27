@@ -39,6 +39,9 @@ export const seatsCopy = {
     cancel: 'Cancel',
     everyoneHasPremium: 'Every verified member already has Premium from this guild.',
     saveFailed: 'That did not save. Try again.',
+    // Additions to spec 6.2 (the API's 409 `seat_count` and `offer_pending`), pending an owner line.
+    seatCount: 'This plan has no seat to give. Reload to see the current seats.',
+    offerPending: 'That seat already has an offer waiting. Withdraw it first.',
     lockedError: (date: string, zone?: string): string =>
       `That seat can move from ${zonedDayMonth(date, zone)}.`,
     notMember: (name: string): string => `${name} is no longer a verified member.`,

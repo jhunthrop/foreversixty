@@ -34,6 +34,7 @@ export function normalizeGuildBilling(read: GuildBillingSettings): GuildBillingS
             interval: intervalOrNull(read.billing.interval),
             amount_cents: centsOrNull(read.billing.amount_cents),
           },
+    seats: read.seats.map((seat) => ({ ...seat, offeree: seat.offeree ?? null })),
     transfer: normalizeTransfer(read.transfer),
   };
 }
