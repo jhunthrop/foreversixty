@@ -1,7 +1,7 @@
 // web/src/lib/billing/account-plan-copy.ts
 // The account page Plan panel strings of design/specs/2026-10-27-launch-pricing.md section 6.3:
-// Offer, Plan line, Founder, Seat ended and Guild row. Dates arrive as stored and are read in
-// UTC; prices are built from ./plans.
+// Offer, Plan line, Founder, Seat ended and Guild row. Dates arrive as stored: date-only
+// values read as written, instants on the viewer calendar; prices are built from ./plans.
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { PLANS, formatCents, type Interval } from './plans';
 
