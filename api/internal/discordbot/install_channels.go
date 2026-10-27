@@ -151,7 +151,8 @@ func (s *Service) botTest(w http.ResponseWriter, r *http.Request) {
 	}
 	embed := notify.GuildTestEmbed(s.d.PublicBaseURL, standing.Name, standing.Path, s.now())
 	if _, err := s.d.REST.CreateMessage(r.Context(), *in.ChannelID, Message{Embeds: []notify.Embed{embed}}); err != nil {
-		// A manual test never counts toward the failures.
+		// A manual test never counts toward the failures, but it does learn the bot is gone.
+		s.markIfBotGone(r, in, err)
 		s.testFailed(w, r, err)
 		return
 	}
@@ -160,6 +161,18 @@ func (s *Service) botTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// markIfBotGone records removed_in_discord when Discord says the bot cannot see the server
+// (missing access or unknown server); a missing permission in one channel is not that.
+func (s *Service) markIfBotGone(r *http.Request, in Install, err error) {
+	var api *APIError
+	if !errors.As(err, &api) || (api.Code != codeMissingAccess && api.Code != codeUnknownGuild) {
+		return
+	}
+	if markErr := s.d.Store.MarkRemovedInDiscord(r.Context(), in.GuildID, removedInDiscordNote); markErr != nil {
+		s.logFailure(r, "mark removed", markErr)
+	}
 }
 
 const noChannelMessage = "no channel is chosen"

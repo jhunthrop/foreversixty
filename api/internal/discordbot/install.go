@@ -20,7 +20,10 @@ const (
 	botTestPath     = botPath + "/test"
 
 	installsPerMinute = 20
-	botTestsPerMinute = 5
+	// layoutReadsPerMinute caps an account's channel list and channel save together: each
+	// one reads the server's layout through the shared bot token.
+	layoutReadsPerMinute = 20
+	botTestsPerMinute    = 5
 	// refusalTTL is how long an officer's "server taken" refusal waits for the next page load.
 	refusalTTL = 10 * time.Minute
 
@@ -40,8 +43,9 @@ func (s *Service) mountInstall(mux *http.ServeMux) {
 	install := httpx.RateLimitByKey(installsPerMinute, time.Minute, auth.AccountRateLimitKey)
 	test := httpx.RateLimitByKey(botTestsPerMinute, time.Minute, auth.AccountRateLimitKey)
 	mux.Handle("GET "+botInstallPath, install(auth.RequireSession(s.installStart)))
-	mux.HandleFunc("GET "+botChannelsPath, auth.RequireSession(s.channelsList))
-	mux.HandleFunc("PUT "+botChannelPath, auth.RequireSession(s.channelSave))
+	layout := httpx.RateLimitByKey(layoutReadsPerMinute, time.Minute, auth.AccountRateLimitKey)
+	mux.Handle("GET "+botChannelsPath, layout(auth.RequireSession(s.channelsList)))
+	mux.Handle("PUT "+botChannelPath, layout(auth.RequireSession(s.channelSave)))
 	mux.Handle("POST "+botTestPath, test(auth.RequireSession(s.botTest)))
 	// Remove is never behind the plan: stopping posts must always work.
 	mux.HandleFunc("DELETE "+botPath, auth.RequireSession(s.botRemove))
@@ -78,27 +82,36 @@ func (s *Service) Active(ctx context.Context, guildID int64) (Install, bool, err
 
 // SettingsBot implements guilds.DiscordBot.
 func (s *Service) SettingsBot(ctx context.Context, guildID, viewerID int64) (*guilds.SettingsBot, *guilds.BotRefusal, error) {
+	bot, err := s.installView(ctx, guildID)
+	if err != nil {
+		return nil, nil, err
+	}
+	// The refusal is read last, so a failure above never consumes it.
 	held, err := s.d.Store.TakeRefusal(ctx, viewerID, guildID)
 	if err != nil {
 		return nil, nil, err
 	}
-	var refused *guilds.BotRefusal
-	if held != nil {
-		refused = &guilds.BotRefusal{GuildName: *held}
+	if held == nil {
+		return bot, nil, nil
 	}
+	return bot, &guilds.BotRefusal{GuildName: *held}, nil
+}
+
+// installView is the guild's install as settings shows it; nil when there is none.
+func (s *Service) installView(ctx context.Context, guildID int64) (*guilds.SettingsBot, error) {
 	in, found, err := s.d.Store.InstallFor(ctx, guildID)
 	if err != nil || !found {
-		return nil, refused, err
+		return nil, err
 	}
 	linked, members, err := s.d.Store.LinkedMembers(ctx, guildID)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	return &guilds.SettingsBot{
 		ServerID: in.ServerID, ServerName: in.ServerName, ChannelID: in.ChannelID, ChannelName: in.ChannelName,
 		LinkedMembers: linked, Members: members, Failures: in.Failures, LastError: in.LastError,
 		RemovedInDiscord: in.RemovedInDiscord,
-	}, refused, nil
+	}, nil
 }
 
 // installStart sends a plan-holding officer to Discord's install page.
