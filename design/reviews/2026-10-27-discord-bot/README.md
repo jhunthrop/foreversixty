@@ -108,6 +108,8 @@ One example throughout: Olympus XXVII (server Olympus, `#raid-signups`, raid zon
 
 `discord-render.ts` draws the JSON as a Discord-like card: dark theme, colour bar, fields, the real thumbnail (item icons from `data/builds/<build>/icons`, crests from `web/public/icons/hd/crests`, routed in place of foreversixty.gg), buttons and the string select (closed, and opened in the `-open` frames). A shared follow-up is drawn under Discord's `Zulmara used /bis` line. It is NOT the real client: fonts, spacing and the APP tag are stand-ins. Widths: desktop 640, phone 390. Real captures from the private test server (spec D1-D12) are still owed.
 
+Re-rendered after persona round 2 (commit 62a25dd2c): item sources are the BiS page's own lines (`Vendor: …`, `Quest: … · Level n`, `Crafted: …`, reputation with its standing), /char reads its gains against the band /bis defaults to (`Top 3 upgrades · level 60 Phase 1 raid`, the same gains as /bis), /raid reads `Zulmara is In as DPS.`, the report's Loot reads `4 items:`, and the Guild-tier readiness line names the Raid guild plan. No site surface changed in round 2, so the site captures stand.
+
 | Row | File | Message | Clock (UTC) |
 |---|---|---|---|
 | D1 | `discord-msg-post-cancelled-{desktop,phone}.png` | Raid post: cancelled | 2026-12-10T22:00:00Z |
