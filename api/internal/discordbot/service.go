@@ -127,9 +127,10 @@ func (s *Service) Drain(ctx context.Context) error {
 	return errors.Join(drainerErr, s.bg.Drain(ctx))
 }
 
-// StartDrainer runs d in this process until Drain. Call it once, before serving.
-func (s *Service) StartDrainer(d *Drainer) {
-	ctx, cancel := context.WithCancel(context.Background())
+// StartDrainer runs d in this process until stop ends (the stop signal) or Drain, whichever
+// comes first. Call it once, before serving.
+func (s *Service) StartDrainer(stop context.Context, d *Drainer) {
+	ctx, cancel := context.WithCancel(stop)
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
@@ -146,10 +147,9 @@ func (s *Service) StartDrainer(d *Drainer) {
 	}
 }
 
-// NewDrainer is a drainer over the service's store and REST client, reading facts from
-// facts; a bot that lost its channel marks the install removed.
+// NewDrainer is a drainer over the service's store and REST client, reading facts from facts.
 func (s *Service) NewDrainer(facts PostFacts) *Drainer {
-	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, OnRemoved: s.MarkRemoved, Log: s.log}
+	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Log: s.log}
 }
 
 // serverGuild is the guild the interaction's server is installed for.

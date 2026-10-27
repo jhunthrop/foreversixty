@@ -1,7 +1,11 @@
 package main
 
 import (
+	"context"
 	"log/slog"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -40,8 +44,16 @@ func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, acco
 	// The raid posts: the bot's one edited post where it is installed, the webhook elsewhere.
 	deps.Guilds.RaidEvents = &discordbot.RaidRouter{Bot: bot, Webhook: deps.Notify.GuildDeliverer()}
 	deps.Guilds.RaidPosts = store
-	// The drainer runs in this process (one warm instance, always-on CPU) until the stop's
-	// drainDiscordBot, inside the shared shutdown budget.
-	bot.StartDrainer(bot.NewDrainer(deps.Guilds))
+	// The drainer runs in this process (one warm instance, always-on CPU). It stops claiming
+	// at the stop signal itself, so it does not take rows late in the 9 s shutdown budget;
+	// drainDiscordBot then waits for the row in flight within that budget.
+	bot.StartDrainer(drainerStop(), bot.NewDrainer(deps.Guilds))
 	return bot
+}
+
+// drainerStop ends at the process's stop signal, the same signals serve stops on. It lives
+// for the process, so its own stop function is never needed.
+func drainerStop() context.Context {
+	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	return ctx
 }

@@ -118,13 +118,6 @@ func (s *Service) channelSave(w http.ResponseWriter, r *http.Request) {
 		s.internalError(w, r, "channel save", err)
 		return
 	}
-	if in.ChannelID != nil && *in.ChannelID != picked.ID {
-		// The old posts live in the old channel; the next raid change posts afresh here.
-		if err := s.d.Store.DeletePostsForGuild(r.Context(), guildID); err != nil {
-			s.internalError(w, r, "channel posts", err)
-			return
-		}
-	}
 	view, err := s.d.Guilds.SettingsDiscordFor(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
 	if err != nil || view == nil {
 		s.internalError(w, r, "channel settings", errors.Join(err, errors.New("no settings view")))
@@ -158,8 +151,7 @@ func (s *Service) botTest(w http.ResponseWriter, r *http.Request) {
 	}
 	embed := notify.GuildTestEmbed(s.d.PublicBaseURL, standing.Name, standing.Path, s.now())
 	if _, err := s.d.REST.CreateMessage(r.Context(), *in.ChannelID, Message{Embeds: []notify.Embed{embed}}); err != nil {
-		// A manual test never counts toward the failures, but it does learn the bot is gone.
-		s.markIfBotGone(r, in, err)
+		s.judgeRefusal(r, in, err)
 		s.testFailed(w, r, err)
 		return
 	}
@@ -170,15 +162,16 @@ func (s *Service) botTest(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// markIfBotGone records removed_in_discord when Discord says the bot cannot see the server
-// (missing access or unknown server); a missing permission in one channel is not that.
-func (s *Service) markIfBotGone(r *http.Request, in Install, err error) {
+// judgeRefusal applies the drain's mapping to a refused test message: a channel or server
+// refusal is settled with one read of the server, as removed_in_discord or the unusable
+// channel. A manual test never counts toward the failures.
+func (s *Service) judgeRefusal(r *http.Request, in Install, err error) {
 	var api *APIError
-	if !errors.As(err, &api) || (api.Code != codeMissingAccess && api.Code != codeUnknownGuild) {
+	if in.ChannelID == nil || !errors.As(err, &api) || !channelRefused(api) {
 		return
 	}
-	if markErr := s.d.Store.MarkRemovedInDiscord(r.Context(), in.GuildID, removedInDiscordNote); markErr != nil {
-		s.logFailure(r, "mark removed", markErr)
+	if _, judgeErr := judgeChannel(r.Context(), s.d.Store, s.d.REST, in.GuildID, *in.ChannelID, err); judgeErr != nil {
+		s.logFailure(r, "judge channel", judgeErr)
 	}
 }
 

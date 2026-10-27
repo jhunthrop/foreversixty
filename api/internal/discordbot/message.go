@@ -105,7 +105,13 @@ type Message struct {
 	Embeds     []notify.Embed
 	Components []ActionRow
 	Ephemeral  bool
+	// Nonce, on a create, makes Discord answer a repeat (same nonce, same author, within a
+	// few minutes) with the message it already made instead of a second one. At most 25 chars.
+	Nonce string
 }
+
+// maxNonceRunes is Discord's nonce bound.
+const maxNonceRunes = 25
 
 type mentions struct {
 	Parse []string `json:"parse"`
@@ -119,9 +125,14 @@ func (m Message) MarshalJSON() ([]byte, error) {
 		Components      []ActionRow    `json:"components,omitempty"`
 		Flags           int            `json:"flags,omitempty"`
 		AllowedMentions mentions       `json:"allowed_mentions"`
+		Nonce           string         `json:"nonce,omitempty"`
+		EnforceNonce    bool           `json:"enforce_nonce,omitempty"`
 	}{
 		Content: m.Content, Embeds: m.Embeds, Components: m.Components,
-		AllowedMentions: mentions{Parse: []string{}},
+		AllowedMentions: mentions{Parse: []string{}}, Nonce: m.Nonce, EnforceNonce: m.Nonce != "",
+	}
+	if len([]rune(m.Nonce)) > maxNonceRunes {
+		return nil, fmt.Errorf("discordbot: nonce over %d characters", maxNonceRunes)
 	}
 	if m.Ephemeral {
 		out.Flags = ephemeralFlag

@@ -32,8 +32,10 @@ type Install struct {
 	Failures         int
 	LastError        *string
 	RemovedInDiscord bool
-	InstalledBy      *int64
-	UpdatedAt        time.Time
+	// ChannelUnusable is set while the bot is in the server but cannot post in ChannelID.
+	ChannelUnusable *ChannelUnusable
+	InstalledBy     *int64
+	UpdatedAt       time.Time
 }
 
 // BindOutcome is the answer to BindServer.
@@ -52,12 +54,17 @@ type BindResult struct {
 }
 
 const installColumns = `guild_id, server_id, server_name, channel_id, channel_name, failures,
-	last_error, removed_in_discord, installed_by, updated_at`
+	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, installed_by, updated_at`
 
 func scanInstall(row pgx.Row) (Install, error) {
 	var in Install
+	var reason *string
+	var missing []string
 	err := row.Scan(&in.GuildID, &in.ServerID, &in.ServerName, &in.ChannelID, &in.ChannelName,
-		&in.Failures, &in.LastError, &in.RemovedInDiscord, &in.InstalledBy, &in.UpdatedAt)
+		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.InstalledBy, &in.UpdatedAt)
+	if reason != nil {
+		in.ChannelUnusable = &ChannelUnusable{Reason: *reason, Missing: append([]string{}, missing...)}
+	}
 	return in, err
 }
 
@@ -157,13 +164,6 @@ func (s *Store) oneInstall(ctx context.Context, query string, arg any) (Install,
 		return Install{}, false, fmt.Errorf("discordbot: read install: %w", err)
 	}
 	return in, true, nil
-}
-
-// SetChannel saves the raid channel and clears the failure state.
-func (s *Store) SetChannel(ctx context.Context, guildID int64, channelID, channelName string) error {
-	return s.exec(ctx, `update guild_discord_installs set channel_id = $2, channel_name = $3,
-		failures = 0, last_error = null, removed_in_discord = false, updated_at = now() where guild_id = $1`,
-		guildID, channelID, channelName)
 }
 
 // RemoveBot deletes the guild's install and its raid post rows together.

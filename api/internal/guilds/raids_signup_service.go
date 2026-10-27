@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -36,6 +37,9 @@ var errOfficerTargetUnverified = fmt.Errorf("%w: officer target", ErrCharacterNo
 // nothing is told.
 type RaidPostMarker interface {
 	MarkRaidDirty(ctx context.Context, raidID int64)
+	// MarkRaidMoved is MarkRaidDirty for a start that moved from was, announced or not: the
+	// post shows the Moved state either way.
+	MarkRaidMoved(ctx context.Context, raidID int64, was time.Time)
 }
 
 // SignupCommand is one sign-up answer. Role "" is the character's default; a nil Note keeps
@@ -285,5 +289,12 @@ func signupLimitKey(userID int64) string { return fmt.Sprintf("signup:%d", userI
 func (s *Service) markRaid(ctx context.Context, raidID int64) {
 	if s.RaidPosts != nil {
 		s.RaidPosts.MarkRaidDirty(ctx, raidID)
+	}
+}
+
+// markRaidMoved tells the post the raid's start moved from was.
+func (s *Service) markRaidMoved(ctx context.Context, raidID int64, was time.Time) {
+	if s.RaidPosts != nil {
+		s.RaidPosts.MarkRaidMoved(ctx, raidID, was)
 	}
 }

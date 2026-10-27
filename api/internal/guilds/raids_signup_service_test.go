@@ -15,6 +15,18 @@ import (
 type fakeMarker struct {
 	mu  sync.Mutex
 	ids []int64
+	// moves are the MarkRaidMoved calls' old starts by raid (they also count in ids).
+	moves map[int64]time.Time
+}
+
+func (m *fakeMarker) MarkRaidMoved(_ context.Context, raidID int64, was time.Time) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.ids = append(m.ids, raidID)
+	if m.moves == nil {
+		m.moves = map[int64]time.Time{}
+	}
+	m.moves[raidID] = was
 }
 
 func (m *fakeMarker) MarkRaidDirty(_ context.Context, raidID int64) {

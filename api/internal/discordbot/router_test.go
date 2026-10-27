@@ -124,7 +124,8 @@ func TestReportReadyGoesThroughTheBot(t *testing.T) {
 		t.Fatal("the report made a post row")
 	}
 
-	w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusForbidden, Code: codeMissingAccess}}
+	gone := &APIError{Status: http.StatusForbidden, Code: codeMissingAccess}
+	w.rest.ErrFor = map[string]error{"CreateMessage": gone, "ServerLayout": gone}
 	if ok, err := w.router.ReportReady(ctx, w.gid, report); ok || err != nil {
 		t.Fatalf("refused report = %v, %v", ok, err)
 	}
@@ -147,7 +148,7 @@ func TestRouterWithoutABotUsesTheWebhook(t *testing.T) {
 	}
 }
 
-func TestChangingTheChannelDropsTheOldPosts(t *testing.T) {
+func TestSavingAnotherChannelRepointsThePosts(t *testing.T) {
 	h := newInstallHarness(t)
 	h.callback(h.gid, "code=c", h.officerActor())
 	ctx := context.Background()
@@ -162,16 +163,17 @@ func TestChangingTheChannelDropsTheOldPosts(t *testing.T) {
 	if err := h.svc.d.Store.EnqueuePost(ctx, raidID, h.gid, "c1"); err != nil {
 		t.Fatal(err)
 	}
-	if rec := h.do(http.MethodPut, h.path(h.gid, "/channel"), `{"channel_id":"c1"}`); rec.Code != http.StatusOK {
+	channelOf := func() string {
+		var channel string
+		if err := h.svc.d.Store.Pool.QueryRow(ctx, `select channel_id from guild_raid_discord_posts where raid_id = $1`, raidID).Scan(&channel); err != nil {
+			t.Fatal(err)
+		}
+		return channel
+	}
+	if rec := h.do(http.MethodPut, h.path(h.gid, "/channel"), `{"channel_id":"c1"}`); rec.Code != http.StatusOK || channelOf() != "c1" {
 		t.Fatalf("same save = %d", rec.Code)
 	}
-	if ok, _ := h.svc.d.Store.PostExists(ctx, raidID); !ok {
-		t.Fatal("re-saving the same channel dropped the post")
-	}
-	if rec := h.do(http.MethodPut, h.path(h.gid, "/channel"), `{"channel_id":"c2"}`); rec.Code != http.StatusOK {
-		t.Fatalf("move = %d", rec.Code)
-	}
-	if ok, _ := h.svc.d.Store.PostExists(ctx, raidID); ok {
-		t.Fatal("the old channel's post survived the move")
+	if rec := h.do(http.MethodPut, h.path(h.gid, "/channel"), `{"channel_id":"c2"}`); rec.Code != http.StatusOK || channelOf() != "c2" {
+		t.Fatalf("move = %d, channel %s", rec.Code, channelOf())
 	}
 }

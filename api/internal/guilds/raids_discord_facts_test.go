@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"net/http"
 	"strconv"
 	"strings"
 	"testing"
@@ -60,5 +61,24 @@ func TestRaidPostFactsOfAPlannedRaidAndAMissingOne(t *testing.T) {
 	}
 	if _, ok, err := w.h.svc.RaidPostFacts(t.Context(), raid.ID+1000); err != nil || ok {
 		t.Fatalf("missing raid = %v, %v", ok, err)
+	}
+}
+
+func TestAStartChangeMarksTheMoveTickedOrNot(t *testing.T) {
+	w := newRaidWorld(t, true)
+	marker := &fakeMarker{}
+	w.h.svc.RaidPosts = marker
+	raid := w.createRaid(t)
+	w.as(w.officer)
+	if res := w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), raidBody(raid.StartsAt.Format(time.RFC3339), 0)); res.StatusCode != http.StatusOK {
+		t.Fatalf("patch = %d: %s", res.StatusCode, readBody(res))
+	}
+	moved := time.Now().Add(9 * 24 * time.Hour).UTC().Truncate(time.Minute).Format(time.RFC3339)
+	if res := w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), raidBody(moved, 0)); res.StatusCode != http.StatusOK {
+		t.Fatalf("move = %d: %s", res.StatusCode, readBody(res))
+	}
+	was, ok := marker.moves[raid.ID]
+	if !ok || !was.Equal(raid.StartsAt) || marker.count() != 2 {
+		t.Fatalf("moves = %v (want %v), marks %v", marker.moves, raid.StartsAt, marker.ids)
 	}
 }

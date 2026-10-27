@@ -39,27 +39,36 @@ func (r *RaidRouter) RaidPosted(ctx context.Context, guildID int64, e notify.Rai
 // RaidChanged edits the raid's one post: a raid with a row is marked (and its old start
 // kept when moved); a webhook-era raid gets its first bot post. Without an active bot the
 // webhook posts the change, and a row the bot left behind is still brought up to date for
-// its return. A gone row is never re-posted.
+// its return. A gone row is never re-posted. With the bot active the webhook never posts a
+// raid change, even when the row could not be read: the raid is marked (a no-op without a
+// row) and the failure logged.
 func (r *RaidRouter) RaidChanged(ctx context.Context, guildID int64, e notify.RaidChanged) {
 	channel, active := r.activeChannel(ctx, guildID)
 	exists, err := r.postExists(ctx, e.RaidID)
 	switch {
+	case err != nil && active:
+		r.markChanged(ctx, e)
+		return
 	case err != nil:
 	case exists:
-		r.setMovedFrom(ctx, e)
-		r.Bot.d.Store.MarkRaidDirty(ctx, e.RaidID)
+		r.markChanged(ctx, e)
 		if active {
 			return
 		}
 	case active:
 		if err := r.Bot.d.Store.EnqueuePost(ctx, e.RaidID, guildID, channel); err != nil {
 			r.Bot.log.Error("discordbot", "op", "enqueue_post", "raid_id", e.RaidID, "err", err)
-			break
+			return
 		}
 		r.setMovedFrom(ctx, e)
 		return
 	}
 	r.Webhook.RaidChanged(ctx, guildID, e)
+}
+
+func (r *RaidRouter) markChanged(ctx context.Context, e notify.RaidChanged) {
+	r.setMovedFrom(ctx, e)
+	r.Bot.d.Store.MarkRaidDirty(ctx, e.RaidID)
 }
 
 // ReportReady posts the night's report to the bot's channel as its own message (Ruling 6),
@@ -71,7 +80,7 @@ func (r *RaidRouter) ReportReady(ctx context.Context, guildID int64, e notify.Re
 	}
 	msg := Message{Embeds: []notify.Embed{notify.ReportReadyEmbed(e, r.Bot.now())}}
 	if _, err := r.Bot.d.REST.CreateMessage(ctx, channel, msg); err != nil {
-		r.Bot.reportRefused(ctx, guildID, err)
+		r.Bot.reportRefused(ctx, guildID, channel, err)
 		return false, nil
 	}
 	if err := r.Bot.d.Store.RecordPostSuccess(ctx, guildID); err != nil {
@@ -118,24 +127,18 @@ func (r *RaidRouter) setMovedFrom(ctx context.Context, e notify.RaidChanged) {
 	}
 }
 
-// reportRefused records a report Discord did not take: a bot that lost access marks the
-// install removed; any other refusal counts a failure.
-func (s *Service) reportRefused(ctx context.Context, guildID int64, err error) {
+// reportRefused records a report Discord did not take: a channel or server refusal is
+// judged as the drainer judges it; any other refusal counts a failure.
+func (s *Service) reportRefused(ctx context.Context, guildID int64, channelID string, err error) {
 	s.log.Warn("discordbot", "op", "report_post", "guild_id", guildID, "err", describe(err))
 	var api *APIError
-	if errors.As(err, &api) && api.MissingAccess() {
-		s.MarkRemoved(ctx, guildID, removedInDiscordNote)
+	if errors.As(err, &api) && channelRefused(api) {
+		if _, judgeErr := judgeChannel(ctx, s.d.Store, s.d.REST, guildID, channelID, err); judgeErr != nil {
+			s.log.Error("discordbot", "op", "report_judge", "guild_id", guildID, "err", judgeErr)
+		}
 		return
 	}
 	if recErr := s.d.Store.RecordPostFailure(ctx, guildID, describe(err)); recErr != nil {
 		s.log.Error("discordbot", "op", "report_record", "guild_id", guildID, "err", recErr)
-	}
-}
-
-// MarkRemoved records that Discord says the bot cannot reach the guild's channel: the
-// router then posts through the webhook, and the guild's rows wait for a new channel.
-func (s *Service) MarkRemoved(ctx context.Context, guildID int64, lastErr string) {
-	if err := s.d.Store.MarkRemovedInDiscord(ctx, guildID, lastErr); err != nil {
-		s.log.Error("discordbot", "op", "mark_removed", "guild_id", guildID, "err", err)
 	}
 }

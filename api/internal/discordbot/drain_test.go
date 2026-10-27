@@ -97,11 +97,20 @@ func newPostWorld(t *testing.T) *postWorld {
 	if err := st.SetChannel(ctx, w.gid, postChannel, "raid-signups"); err != nil {
 		t.Fatal(err)
 	}
+	w.rest.Layout = postableLayout()
 	w.svc = New(Deps{Store: st, REST: w.rest, Log: slog_(w.log)})
 	w.svc.now = w.clock.now
 	w.router = &RaidRouter{Bot: w.svc, Webhook: webhookOf(t, st.Pool, w.gid, w.uid, w.poster)}
 	w.raidID = w.addRaid(t)
 	return w
+}
+
+// postableLayout is srv1 with postChannel and chan2, where the bot holds every permission.
+func postableLayout() ServerLayout {
+	return ServerLayout{
+		BotUserID: "bot", Roles: []Role{{ID: "srv1", Permissions: InstallPermissions}},
+		Channels: []RawChannel{{ID: postChannel, Name: "raid-signups"}, {ID: "chan2", Name: "general"}},
+	}
 }
 
 // webhookOf saves a sealed webhook channel for the guild and delivers through poster.
@@ -342,7 +351,8 @@ func TestDrainHonoursDiscordRefusals(t *testing.T) {
 	t.Run("403 50001 removes the install and the router falls back", func(t *testing.T) {
 		w := newPostWorld(t)
 		w.enqueue(t, w.raidID)
-		w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusForbidden, Code: codeMissingAccess}}
+		missing := &APIError{Status: http.StatusForbidden, Code: codeMissingAccess}
+		w.rest.ErrFor = map[string]error{"CreateMessage": missing, "ServerLayout": missing}
 		w.drain(t)
 		in, _, err := w.st.InstallFor(context.Background(), w.gid)
 		if err != nil || !in.RemovedInDiscord {
@@ -350,8 +360,8 @@ func TestDrainHonoursDiscordRefusals(t *testing.T) {
 		}
 		w.clock.advance(time.Hour)
 		w.drain(t)
-		if n := len(w.rest.Calls()); n != 1 {
-			t.Fatalf("the refused row was retried: %d calls", n)
+		if n := len(w.callsOf("CreateMessage")); n != 1 {
+			t.Fatalf("the refused row was retried: %d creates", n)
 		}
 		other := w.addRaid(t)
 		w.router.RaidPosted(context.Background(), w.gid, notify.RaidPosted{RaidID: other, GuildName: "Olympus XXVII", Title: "Next"})
@@ -402,7 +412,8 @@ func TestDrainHonoursDiscordRefusals(t *testing.T) {
 			t.Fatalf("calls after a global 429 = %d, want 1", n)
 		}
 		for _, id := range []int64{w.raidID, second} {
-			if r, _ := w.row(t, id); r.attempts != 1 || !r.nextAttempt.After(w.clock.now()) {
+			// The one sent counts an attempt; the one held is deferred uncounted.
+			if r, _ := w.row(t, id); r.attempts > 1 || !r.nextAttempt.After(w.clock.now()) {
 				t.Fatalf("raid %d row = %+v", id, r)
 			}
 		}
@@ -523,7 +534,7 @@ func TestDrainStopsTheDrainer(t *testing.T) {
 	w.enqueue(t, w.raidID)
 	d := w.drainer()
 	d.Tick = 10 * time.Millisecond
-	w.svc.StartDrainer(d)
+	w.svc.StartDrainer(context.Background(), d)
 	deadline := time.Now().Add(5 * time.Second)
 	for len(w.callsOf("CreateMessage")) == 0 && time.Now().Before(deadline) {
 		time.Sleep(10 * time.Millisecond)
