@@ -1,0 +1,206 @@
+---
+// web/src/components/premium/PlanCard.astro
+// One plan card: name, audience, price block, button, trial slot, features. Fixed-height
+// regions on desktop so the four prices and buttons sit on one line each. `plan="free"`
+// renders the Free card (no button; its slot holds the sign-in line).
+import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
+import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+import PriceBlock from './PriceBlock.astro';
+import { FOUNDER_STATES, buttonLabel, checkoutHref, founderKey, planBlock, trialParts } from './model';
+
+interface Props {
+  plan: PlanKey | 'free';
+}
+const { plan } = Astro.props;
+const { free } = plansPageCopy;
+const block = plan === 'free' ? free : planBlock(plan);
+const priced = plan === 'free' ? null : plan;
+const buttonClass = `${SECONDARY_BUTTON_FIXED} plan-button border-gold text-gold w-full justify-center text-center`;
+const trial = trialParts();
+const cardId = plan === 'free' ? 'free' : undefined;
+---
+
+<article class="plan-card" id={cardId} data-testid={`plan-${plan}`} data-plan={plan}>
+  <h2 class="plan-name">{block.name}</h2>
+  <p class="audience">{block.audience}</p>
+
+  {priced ? (
+    <PriceBlock plan={priced} />
+  ) : (
+    <div class="free-price">
+      <p class="free-amount tabular">{free.price}</p>
+      <p class="free-note">{free.note}</p>
+    </div>
+  )}
+
+  <div class="action-slot">
+    {priced ? (
+      INTERVALS.flatMap((interval) =>
+        FOUNDER_STATES.map((founder) => (
+          <a
+            href={checkoutHref(priced, interval)}
+            class={buttonClass}
+            data-iv={interval}
+            data-fd={founderKey(founder)}
+          >
+            {buttonLabel(priced, interval, founder)}
+          </a>
+        )),
+      )
+    ) : (
+      <p class="free-note">{free.signIn}</p>
+    )}
+  </div>
+
+  <p class="trial-slot">
+    {priced && PLANS[priced].guild && (
+      <>
+        <strong>{trial.lead}</strong>
+        {trial.rest}
+      </>
+    )}
+  </p>
+
+  <ul class="features">
+    {block.features.map((line, index) => (
+      <li class:list={['feature', { lead: priced === 'raid_guild' && index === 0 }]}>
+        <svg class="tick" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
+          <path
+            d="M2.5 7.5l3 3 6-7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span>{line}</span>
+      </li>
+    ))}
+  </ul>
+  {plan === 'free' && <p class="promise">{free.promise}</p>}
+</article>
+
+<style>
+  .plan-card {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 20px 20px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-top-color: rgba(229, 185, 85, 0.35);
+    border-radius: 6px;
+    scroll-margin-top: 16px;
+  }
+  .plan-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--color-strong);
+  }
+  .audience,
+  .free-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-muted);
+  }
+  .audience {
+    margin-bottom: 4px;
+  }
+  .free-price {
+    height: 70px;
+  }
+  .free-amount {
+    margin: 0;
+    height: 32px;
+    line-height: 32px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--color-strong);
+  }
+  .action-slot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .plan-button {
+    height: auto;
+    min-height: 44px;
+    padding: 8px 10px;
+    line-height: 1.25;
+  }
+  .trial-slot {
+    margin: 8px 0 0;
+    min-height: 40px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-text);
+  }
+  .trial-slot strong {
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .trial-slot:empty {
+    display: none;
+  }
+  .features {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+    color: var(--color-text);
+  }
+  .feature {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    min-height: 32px;
+    padding-block: 6px;
+    border-top: 1px solid var(--color-line-soft);
+    line-height: 20px;
+  }
+  .feature.lead {
+    color: var(--color-strong);
+  }
+  .tick {
+    flex: none;
+    margin-top: 3px;
+    color: var(--color-kill);
+  }
+  .promise {
+    margin: 12px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  @media (min-width: 768px) {
+    .plan-card {
+      padding: 20px;
+    }
+    .audience {
+      margin-bottom: 12px;
+    }
+    .action-slot {
+      height: 60px;
+    }
+    .trial-slot {
+      height: 40px;
+    }
+    .trial-slot:empty {
+      display: block;
+    }
+    .free-price {
+      height: 116px;
+    }
+    .free-amount {
+      height: 44px;
+      line-height: 44px;
+    }
+  }
+</style>

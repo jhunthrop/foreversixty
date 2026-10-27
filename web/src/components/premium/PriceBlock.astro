@@ -1,0 +1,86 @@
+---
+// web/src/components/premium/PriceBlock.astro
+// One fixed-height cell holding every price state (interval x founder). The page's CSS shows
+// exactly one; the others stay in the DOM, so no state changes the card's height.
+import type { PlanKey } from '../../lib/billing/plans';
+import { FOUNDER_STATES, founderKey, priceCell } from './model';
+import { INTERVALS } from '../../lib/billing/plans';
+
+interface Props {
+  plan: PlanKey;
+}
+const { plan } = Astro.props;
+---
+
+<div class="price-block" data-testid={`price-${plan}`}>
+  {INTERVALS.flatMap((interval) =>
+    FOUNDER_STATES.map((founder) => {
+      const cell = priceCell(plan, interval, founder);
+      return (
+        <div class="price-state" data-iv={interval} data-fd={founderKey(founder)}>
+          <p class="price-line">
+            <span class="amount tabular">{cell.amount}</span>
+            <span class="suffix">{cell.suffix}</span>
+            {cell.listAmount && <s class="list-amount tabular">{cell.listAmount}</s>}
+          </p>
+          <p class="second-line">{cell.secondLine}</p>
+          {cell.founderLine && <p class="founder-line">{cell.founderLine}</p>}
+        </div>
+      );
+    }),
+  )}
+</div>
+
+<style>
+  .price-block {
+    height: 70px;
+  }
+  .price-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 0;
+    height: 32px;
+    line-height: 32px;
+  }
+  .amount {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--color-strong);
+  }
+  .suffix {
+    font-size: 15px;
+    color: var(--color-muted);
+    margin-right: 2px;
+  }
+  .list-amount {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--color-muted);
+  }
+  .second-line {
+    margin: 0;
+    font-size: 13px;
+    line-height: 16px;
+    color: var(--color-muted);
+  }
+  .founder-line {
+    margin: 4px 0 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-gold);
+  }
+  @media (min-width: 768px) {
+    .price-block {
+      height: 116px;
+    }
+    .price-line {
+      height: 44px;
+      line-height: 44px;
+    }
+    .amount {
+      font-size: 32px;
+    }
+  }
+</style>
