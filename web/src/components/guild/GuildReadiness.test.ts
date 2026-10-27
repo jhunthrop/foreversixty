@@ -136,6 +136,36 @@ describe('GuildReadiness next-raid filter', () => {
     expect(copy).toContain('No export yet');
   });
 
+  it('lets the stale pill wrap instead of clipping in the Synced column', () => {
+    const markup = filtered(true);
+    const pill = markup.match(/<span class="([^"]*)" data-testid="guild-readiness-stale"/);
+    expect(pill?.[1]).toContain('h-auto');
+    expect(pill?.[1]).toContain('whitespace-normal');
+  });
+
+  it('draws no column header over the empty state', () => {
+    expect(filtered(true, [])).not.toContain('guild-readiness-header');
+    expect(filtered(true)).toContain('guild-readiness-header');
+  });
+
+  it('prints the raid title without a link when there is no raid page', () => {
+    const body = render(GuildReadiness, {
+      props: {
+        rows,
+        officer: true,
+        officerTools: true,
+        myCharacterKey: null,
+        settingsHref: SETTINGS_HREF,
+        raid,
+        nextRaidOnly: true,
+        guildTimezone: 'UTC',
+        viewerTimezone: 'UTC',
+      },
+    }).body;
+    expect(body).not.toContain('href="/guild/x/raids/7"');
+    expect(body).toContain('Onyxia');
+  });
+
   it('shows the toggle unpressed without the line, and says so when nobody signed up', () => {
     expect(filtered(false)).toContain('aria-pressed="false"');
     expect(text(filtered(false))).not.toContain('Showing the');
