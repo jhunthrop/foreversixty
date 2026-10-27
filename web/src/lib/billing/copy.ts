@@ -15,6 +15,8 @@ export const checkoutCopy = {
   confirmationSlow: 'This can take a moment; refresh if it does not update.',
   retry: 'Try again',
   whichGuild: 'Which guild?',
+  guildPlanLabel: 'Guild',
+  comebackGone: 'That resubscribe link is no longer available. Start again from the premium page.',
   verifiedMembers: (n: number): string => `${n} verified members`,
   fitsRaidGuild: (n: number): string => `Raid guild fits ${n} members`,
   noBillableGuild: 'You can subscribe a guild you lead or have claimed.',

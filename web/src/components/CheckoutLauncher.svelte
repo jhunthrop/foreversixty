@@ -27,6 +27,9 @@
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { isGuildPlan, parseCheckoutParams, type CheckoutParams } from '../lib/billing/checkout-params';
+  import { fetchGuildHome } from '../lib/guild/api';
+  import { guildMarkSrc } from '../lib/guild/mark';
+  import { billableGuilds } from '../lib/billing/checkout-params';
   import CheckoutGuildChooser from './checkout/CheckoutGuildChooser.svelte';
 
   const INVALID_LINK_MESSAGE = 'Something is wrong with that link. Start again from the premium page.';
@@ -37,7 +40,13 @@
   let request = $state<CheckoutParams | null>(null);
   let chooserGuilds = $state<MeGuild[] | null>(null);
   let chooserFailed = $state(false);
+  let chooserCrests = $state<Record<number, string | null>>({});
   let choosing = $state(false);
+  let messageEl = $state<HTMLParagraphElement | undefined>(undefined);
+  let refocusMessage = $state(false);
+
+  const ALREADY_ON_PLAN_CODE = 'conflict';
+  const NOT_FOUND = 404;
 
   const POLL_INTERVAL_MS = 1500;
   const POLL_ATTEMPTS = 4;
@@ -77,10 +86,29 @@
     message = checkoutCopy.confirmationSlow;
   }
 
+  function redirectToLogin(): void {
+    window.location.assign(`/login?next=${encodeURIComponent(safeNextPath(currentUrl(), '/premium'))}`);
+  }
+
+  /** Best effort: a guild whose read fails keeps the plain ring. */
+  async function loadCrests(guilds: readonly MeGuild[]): Promise<void> {
+    const entries = await Promise.all(
+      billableGuilds(guilds).map(async (guild): Promise<[number, string | null]> => {
+        try {
+          return [guild.id, guildMarkSrc((await fetchGuildHome(guild.id)).guild)];
+        } catch {
+          return [guild.id, null];
+        }
+      }),
+    );
+    chooserCrests = Object.fromEntries(entries);
+  }
+
   function showChooser(me: Me): void {
     choosing = true;
     chooserFailed = false;
     chooserGuilds = me.guilds;
+    void loadCrests(me.guilds);
   }
 
   async function reloadChooser(): Promise<void> {
@@ -89,8 +117,12 @@
     forgetSession();
     try {
       const me = await fetchMeOnce();
-      if (me === null) throw new Error('signed out');
+      if (me === null) {
+        redirectToLogin();
+        return;
+      }
       chooserGuilds = me.guilds;
+      void loadCrests(me.guilds);
     } catch {
       chooserFailed = true;
     }
@@ -101,13 +133,14 @@
     choosing = false;
     request = { ...request, guildId };
     message = checkoutCopy.redirecting;
+    refocusMessage = true;
     void launch(request);
   }
 
   async function launch(parsed: CheckoutParams): Promise<void> {
     const me = await fetchMeOnce();
     if (me === null) {
-      window.location.assign(`/login?next=${encodeURIComponent(safeNextPath(currentUrl(), '/premium'))}`);
+      redirectToLogin();
       return;
     }
     if (parsed.status === 'success') {
@@ -131,8 +164,15 @@
       if (error instanceof BillingApiError) {
         if (error.status === 503) {
           message = checkoutCopy.notOpenYet;
+        } else if (error.status === NOT_FOUND) {
+          message = checkoutCopy.comebackGone;
         } else if (error.status === 409) {
-          message = checkoutCopy.guildAlreadyOnPlan;
+          // Only the already-on-plan refusal has this sentence; any other 409 (for example
+          // no_transfer_offer) states its own reason.
+          message =
+            error.code === ALREADY_ON_PLAN_CODE && isGuildPlan(parsed.plan)
+              ? checkoutCopy.guildAlreadyOnPlan
+              : error.message;
         } else if (error.status === 403) {
           // The API's own sentence, verbatim (RunControl.svelte's own convention for an
           // engine's words: "never paraphrased, never hidden"). A 403 here covers two
@@ -152,6 +192,12 @@
       }
     }
   }
+
+  $effect(() => {
+    if (!refocusMessage || messageEl === undefined) return;
+    messageEl.focus();
+    refocusMessage = false;
+  });
 
   $effect(() => {
     const parsed = parseCheckoutParams(window.location.search);
@@ -175,11 +221,20 @@
       <CheckoutGuildChooser
         guilds={chooserGuilds}
         failed={chooserFailed}
+        crests={chooserCrests}
         onChoose={chooseGuild}
         onRetry={() => void reloadChooser()}
       />
     {:else}
-      <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">{message}</p>
+      <p
+        bind:this={messageEl}
+        tabindex="-1"
+        class="min-h-[21px] text-[14px] outline-none"
+        role="alert"
+        data-testid="checkout-message"
+      >
+        {message}
+      </p>
     {/if}
     {#if showRetry && request !== null}
       <button
