@@ -126,7 +126,7 @@ func (s *Service) signupFlow(ctx context.Context, a signupAsk) (Reply, error) {
 	if refusal := s.raidRefusal(raid); refusal != "" {
 		return a.reply(refusal), nil
 	}
-	cands, err := s.signupCandidates(ctx, a.GuildID, a.UserID)
+	cands, err := s.freshCandidates(ctx, a.GuildID, a.UserID)
 	if err != nil {
 		return Reply{}, err
 	}
