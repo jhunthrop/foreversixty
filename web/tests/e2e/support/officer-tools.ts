@@ -200,9 +200,21 @@ interface AxeResults {
   violations: { id: string; nodes: { target: string[] }[] }[];
 }
 
-/** Runs axe on the element matching `selector` and expects no violations. */
+/**
+ * Runs axe on the element matching `selector` and expects no violations. It first waits for the
+ * running animations to settle; one cancelled on the way (a loading shimmer whose element is
+ * replaced by its loaded or failed state) has settled too, so its AbortError is not a failure.
+ */
 export async function expectNoAxeViolations(page: Page, selector: string): Promise<void> {
-  await page.evaluate(() => Promise.all(document.getAnimations().map((animation) => animation.finished)));
+  await page.evaluate(() =>
+    Promise.all(
+      document.getAnimations().map((animation) =>
+        animation.finished.catch((error: unknown) => {
+          if (!(error instanceof DOMException && error.name === 'AbortError')) throw error;
+        }),
+      ),
+    ),
+  );
   await page.addScriptTag({ path: AXE_SOURCE });
   const results = await page.evaluate(async (context): Promise<AxeResults> => {
     const axe = (window as unknown as { axe: { run: (context: string) => Promise<AxeResults> } }).axe;

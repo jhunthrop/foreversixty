@@ -123,7 +123,7 @@
       </button>
       {#if unusable.reason === 'permissions' && openUrl !== null}
         <a
-          class="text-text hover:text-gold-hover -my-3 py-3 text-[13px] underline"
+          class="text-text hover:text-gold-hover inline-flex min-h-11 items-center text-[13px] underline"
           href={openUrl}
           target="_blank"
           rel="noopener"

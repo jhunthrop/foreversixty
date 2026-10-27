@@ -91,8 +91,23 @@ test('guild already on the plan: shows the conflict message', async ({ page }) =
       }),
     ),
   );
+  // The API's already-on-the-plan refusal (api/internal/billing/handler.go alreadyOnThePlanRefusal).
   await page.route('**/v1/billing/checkout', (route) =>
-    route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 409)),
+    route.fulfill(
+      fulfil(
+        {
+          ok: false,
+          data: null,
+          error: {
+            code: 'conflict',
+            message: 'this guild already has the plan',
+            fields: { portal_hint: '1' },
+          },
+          request_id: 'r',
+        },
+        409,
+      ),
+    ),
   );
   await page.goto('/premium/checkout?plan=guild&interval=monthly&guild_id=42');
   await expect(page.getByTestId('checkout-message')).toContainText('already on the plan');

@@ -45,6 +45,8 @@ async function open(page: Page, options: GuildBotStubOptions) {
   const seen = await stubGuildBot(page, options);
   await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings');
   await expect(section(page).locator('h2')).toHaveText(guildDiscordCopy.heading);
+  // The Billing section sits above: its read settled, nothing above #discord moves after this.
+  await expect(page.getByTestId('guild-billing-planline')).toBeVisible();
   return seen;
 }
 

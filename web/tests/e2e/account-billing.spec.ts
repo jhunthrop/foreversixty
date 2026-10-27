@@ -3,6 +3,10 @@ import { expect, test } from '@playwright/test';
 import { mockEntitlements, NO_PRICE_FACTS } from '../../src/test-support/billing-fixtures';
 import { ownerMeAnswer } from './support/character-fixture';
 
+// A Stripe date reads on the viewer's calendar (launch pricing spec §6, lib/dates.ts zonedDayMonthYear);
+// the fixtures' instants are midnight UTC, so the viewer is in UTC for them to read as written.
+test.use({ timezoneId: 'UTC' });
+
 function fulfil(body: unknown, status = 200) {
   return { status, contentType: 'application/json', body: JSON.stringify(body) };
 }

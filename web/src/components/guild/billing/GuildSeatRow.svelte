@@ -99,10 +99,18 @@
     close();
   }
 
+  /** A refused submit keeps the picker open: focus goes back to its button, which `busy` disabled
+   *  (and so blurred), so the alert is read in place and Escape still acts as Cancel. */
+  async function refocusSubmit(): Promise<void> {
+    await tick();
+    rowEl?.querySelector<HTMLElement>('[data-seat-submit]')?.focus();
+  }
+
   async function submit(candidate: SeatCandidate): Promise<void> {
     if (picking === null) return;
     busy = true;
     error = '';
+    let refused = false;
     try {
       const send = picking === 'give' ? giveSeat : moveSeat;
       await send(guildId, seat.slot, candidate.user_id);
@@ -110,11 +118,13 @@
       await onChanged();
       await refocusAction();
     } catch (failure) {
+      refused = true;
       error = seatErrorLine(failure, candidate.name, seat.movable_at);
       if (staleReadRefusal(failure)) await onChanged();
     } finally {
       busy = false;
     }
+    if (refused) await refocusSubmit();
   }
 
   async function withdraw(): Promise<void> {

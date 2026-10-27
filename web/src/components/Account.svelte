@@ -211,9 +211,13 @@
   // to apply around its own `listDevices()` call -- the devices read alongside it, so this
   // stays 'loading' until both reads that used to be one sequential `await` chain have
   // settled, and 'failed' if either one did.
+  // A `session.refresh()` after an action (a seat offer answered, consent saved, a guild left)
+  // re-reads `/v1/me` with the account already on screen: that read keeps the page as it is,
+  // so the panel that acted (the seat offer's status line) is not unmounted under the reader.
+  const rereading = $derived(session.status === 'loading' && session.data !== null);
   const status = $derived.by<'loading' | 'ready' | 'failed'>(() => {
     if (session.status === 'failed') return 'failed';
-    if (session.status !== 'ready') return 'loading';
+    if (session.status !== 'ready' && !rereading) return 'loading';
     const needsDevices = (mode === 'account' || mode === 'pairing') && me !== null;
     if (!needsDevices) return 'ready';
     if (devicesStatus === 'failed') return 'failed';

@@ -99,6 +99,7 @@
         disabled={busy || chosen === null}
         aria-busy={busy}
         onclick={() => chosen !== null && onSubmit(chosen)}
+        data-seat-submit
         data-testid={`guild-seat-${slot}-submit`}
       >
         {submitText}
