@@ -403,6 +403,16 @@ func (s *Service) customerFor(ctx context.Context, userID int64) (string, error)
 	return id, nil
 }
 
+// listPortalFamily is the portal configuration a subscriber gets until the
+// session is chosen by the subscription's own price: the list family of
+// the plan the request is about.
+func listPortalFamily(guildID *int64) string {
+	if guildID != nil {
+		return string(catalog.OfferGuild)
+	}
+	return string(catalog.OfferPremium)
+}
+
 type portalRequest struct {
 	GuildID *int64 `json:"guild_id"`
 }
@@ -442,7 +452,7 @@ func (s *Service) portal(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no billing account on file yet", nil)
 		return
 	}
-	url, err := s.Gateway.CreatePortalSession(r.Context(), customerID, s.PublicBaseURL+"/account", "")
+	url, err := s.Gateway.CreatePortalSession(r.Context(), customerID, s.PublicBaseURL+"/account", listPortalFamily(in.GuildID))
 	if err != nil {
 		s.fail(w, r, "portal", err, "could not open billing just now")
 		return

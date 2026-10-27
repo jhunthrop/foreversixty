@@ -267,7 +267,7 @@ func TestPortalReadsTheCallersOwnCustomerAndFailsWithNone(t *testing.T) {
 	if w.Code != http.StatusOK {
 		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
 	}
-	if len(h.gateway.Portals) != 1 || h.gateway.Portals[0].CustomerID != "cus_portal_1" {
+	if len(h.gateway.Portals) != 1 || h.gateway.Portals[0].CustomerID != "cus_portal_1" || h.gateway.Portals[0].ConfigurationKey != "premium" {
 		t.Fatalf("portals = %+v", h.gateway.Portals)
 	}
 }

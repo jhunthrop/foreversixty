@@ -5,7 +5,10 @@
 // See docs/superpowers/specs/2026-10-27-pricing-design.md §3, §4 and §8.
 package catalog
 
-import "time"
+import (
+	"slices"
+	"time"
+)
 
 // Stripe Product ids, fixed so stripe-setup is idempotent without Search.
 const (
@@ -120,8 +123,8 @@ type Price struct {
 	Sold bool
 }
 
-// Prices lists all fourteen lookup keys, each family monthly then yearly.
-var Prices = []Price{
+// prices lists all fourteen lookup keys, each family monthly then yearly.
+var prices = []Price{
 	{LookupKeyPremiumMonthly, OfferPremium, Monthly, false, 400, false},
 	{LookupKeyPremiumYearly, OfferPremium, Yearly, false, 4000, false},
 	{LookupKeyPremiumMonthlyLaunch, OfferPremium, Monthly, false, 600, true},
@@ -138,16 +141,23 @@ var Prices = []Price{
 	{LookupKeyRaidGuildFounderYearly, OfferRaidGuild, Yearly, true, 20000, true},
 }
 
-// FounderWindowCloses is the one end instant of the founder window,
+// Prices returns a copy of the fourteen prices, each family monthly then
+// yearly.
+func Prices() []Price { return slices.Clone(prices) }
+
+// founderWindowCloses is the one end instant of the founder window,
 // 6 January 2027 23:59:59 America/Los_Angeles, exclusive.
-var FounderWindowCloses = time.Date(2027, 1, 7, 8, 0, 0, 0, time.UTC)
+var founderWindowCloses = time.Date(2027, 1, 7, 8, 0, 0, 0, time.UTC)
+
+// FounderWindowCloses is the instant the founder window ends (exclusive).
+func FounderWindowCloses() time.Time { return founderWindowCloses }
 
 // FounderOpen reports whether a checkout created at now gets founder prices.
-func FounderOpen(now time.Time) bool { return now.Before(FounderWindowCloses) }
+func FounderOpen(now time.Time) bool { return now.Before(founderWindowCloses) }
 
 // Lookup finds a price by lookup key.
 func Lookup(lookupKey string) (Price, bool) {
-	for _, p := range Prices {
+	for _, p := range prices {
 		if p.LookupKey == lookupKey {
 			return p, true
 		}
@@ -156,7 +166,7 @@ func Lookup(lookupKey string) (Price, bool) {
 }
 
 func find(o Offer, i Interval, founder bool) (Price, bool) {
-	for _, p := range Prices {
+	for _, p := range prices {
 		if p.Sold && p.Offer == o && p.Interval == i && p.Founder == founder {
 			return p, true
 		}
@@ -183,10 +193,12 @@ func UpgradeLookupKey(fromLookupKey string) (string, bool) {
 	return to.LookupKey, ok
 }
 
-// PortalFamilies lists the customer portal configurations, one per family.
-var PortalFamilies = []string{
+var portalFamilies = []string{
 	"premium", "premium_founder", "guild", "guild_founder", "raid_guild", "raid_guild_founder",
 }
+
+// PortalFamilies returns the customer portal configurations, one per family.
+func PortalFamilies() []string { return slices.Clone(portalFamilies) }
 
 // PortalFamily is the portal configuration a subscription on lookupKey
 // belongs to. The legacy Premium keys use the plain premium family.
@@ -204,7 +216,7 @@ func PortalFamily(lookupKey string) (string, bool) {
 // FamilyLookupKeys is a family's two sold keys, monthly then yearly.
 func FamilyLookupKeys(family string) []string {
 	var keys []string
-	for _, p := range Prices {
+	for _, p := range prices {
 		if f, _ := PortalFamily(p.LookupKey); f == family && p.Sold {
 			keys = append(keys, p.LookupKey)
 		}

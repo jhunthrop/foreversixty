@@ -35,8 +35,8 @@ func TestPrices_MatchProductSpec(t *testing.T) {
 			t.Errorf("%s = %+v, want %+v sold", key, p, w)
 		}
 	}
-	if len(Prices) != 14 {
-		t.Errorf("catalog has %d prices, want 14", len(Prices))
+	if len(Prices()) != 14 {
+		t.Errorf("catalog has %d prices, want 14", len(Prices()))
 	}
 	for _, key := range []string{LookupKeyPremiumMonthly, LookupKeyPremiumYearly} {
 		if p, ok := Lookup(key); !ok || p.Sold {
@@ -52,24 +52,24 @@ func TestCheckoutLookupKey_FounderBoundary(t *testing.T) {
 		at       time.Time
 		want     string
 	}{
-		{OfferPremium, Yearly, FounderWindowCloses.Add(-time.Second), LookupKeyPremiumFounderYearly},
-		{OfferPremium, Yearly, FounderWindowCloses, LookupKeyPremiumYearlyLaunch},
-		{OfferRaidGuild, Monthly, FounderWindowCloses.Add(-time.Second), LookupKeyRaidGuildFounderMonthly},
-		{OfferRaidGuild, Monthly, FounderWindowCloses, LookupKeyRaidGuildMonthly},
-		{OfferGuild, Yearly, FounderWindowCloses.Add(time.Hour), LookupKeyGuildYearly},
+		{OfferPremium, Yearly, FounderWindowCloses().Add(-time.Second), LookupKeyPremiumFounderYearly},
+		{OfferPremium, Yearly, FounderWindowCloses(), LookupKeyPremiumYearlyLaunch},
+		{OfferRaidGuild, Monthly, FounderWindowCloses().Add(-time.Second), LookupKeyRaidGuildFounderMonthly},
+		{OfferRaidGuild, Monthly, FounderWindowCloses(), LookupKeyRaidGuildMonthly},
+		{OfferGuild, Yearly, FounderWindowCloses().Add(time.Hour), LookupKeyGuildYearly},
 	}
 	for _, c := range cases {
 		if got := CheckoutLookupKey(c.offer, c.interval, c.at); got != c.want {
 			t.Errorf("%s %s at %s = %s, want %s", c.offer, c.interval, c.at, got, c.want)
 		}
 	}
-	if FounderWindowCloses != time.Date(2027, 1, 7, 8, 0, 0, 0, time.UTC) {
-		t.Errorf("window closes at %s", FounderWindowCloses)
+	if FounderWindowCloses() != time.Date(2027, 1, 7, 8, 0, 0, 0, time.UTC) {
+		t.Errorf("window closes at %s", FounderWindowCloses())
 	}
 }
 
 func TestCheckoutLookupKey_NeverLegacy(t *testing.T) {
-	times := []time.Time{{}, FounderWindowCloses.Add(-time.Second), FounderWindowCloses, FounderWindowCloses.AddDate(5, 0, 0)}
+	times := []time.Time{{}, FounderWindowCloses().Add(-time.Second), FounderWindowCloses(), FounderWindowCloses().AddDate(5, 0, 0)}
 	for _, o := range []Offer{OfferPremium, OfferGuild, OfferRaidGuild} {
 		for _, i := range []Interval{Monthly, Yearly} {
 			for _, at := range times {
@@ -129,7 +129,7 @@ func TestPortalFamily(t *testing.T) {
 	if _, ok := PortalFamily("nope"); ok {
 		t.Error("an unknown key has no family")
 	}
-	for _, family := range PortalFamilies {
+	for _, family := range PortalFamilies() {
 		keys := FamilyLookupKeys(family)
 		if len(keys) != 2 {
 			t.Fatalf("%s has keys %v, want two", family, keys)
@@ -160,5 +160,18 @@ func TestOfferAndTierRules(t *testing.T) {
 	}
 	if SeatsForTier("guild") != SeatsGuild || SeatsForTier("raid_guild") != SeatsRaidGuild || SeatsForTier("") != 0 {
 		t.Error("SeatsForTier")
+	}
+}
+
+func TestAccessorsReturnCopies(t *testing.T) {
+	p := Prices()
+	p[0].AmountCents = 1
+	if Prices()[0].AmountCents == 1 {
+		t.Error("Prices exposes the catalog's own slice")
+	}
+	f := PortalFamilies()
+	f[0] = "x"
+	if PortalFamilies()[0] == "x" {
+		t.Error("PortalFamilies exposes the catalog's own slice")
 	}
 }

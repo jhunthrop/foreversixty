@@ -23,15 +23,15 @@ func TestEveryPriceSpecCarriesTheSaaSTaxCode(t *testing.T) {
 // priceSpecs is the catalog and nothing else: same keys, same order, the
 // amount, the product and Stripe's interval word for each.
 func TestPriceSpecs_FromCatalog(t *testing.T) {
-	if len(priceSpecs) != len(catalog.Prices) {
-		t.Fatalf("priceSpecs has %d entries, catalog has %d", len(priceSpecs), len(catalog.Prices))
+	if len(priceSpecs) != len(catalog.Prices()) {
+		t.Fatalf("priceSpecs has %d entries, catalog has %d", len(priceSpecs), len(catalog.Prices()))
 	}
 	wantNames := map[string]string{
 		catalog.ProductIDPremium:   "Forever Sixty Premium",
 		catalog.ProductIDGuild:     "Forever Sixty Guild",
 		catalog.ProductIDRaidGuild: "Forever Sixty Raid Guild",
 	}
-	for i, p := range catalog.Prices {
+	for i, p := range catalog.Prices() {
 		s := priceSpecs[i]
 		interval := "month"
 		if p.Interval == catalog.Yearly {

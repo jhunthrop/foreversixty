@@ -88,10 +88,18 @@ type PortalCall struct {
 // PriceChangePreview is what a subscription price change would charge:
 // the prorated amount due now, the amount of the next regular invoice,
 // and the end of the current period.
+//
+// AmountDueCents is Stripe's amount_due for the preview invoice, so it
+// includes tax and any customer balance; NextAmountCents is the new
+// price's pre-tax unit amount. The two are therefore not on the same
+// footing and a caller must label them accordingly. ProrationDate is the
+// instant the proration was computed at; pass it to ChangePrice so the
+// amount charged equals the amount shown.
 type PriceChangePreview struct {
 	AmountDueCents  int64
 	NextAmountCents int64
 	PeriodEnd       time.Time
+	ProrationDate   time.Time
 }
 
 // CheckoutSession is what CreateCheckoutSession returns: the checkout
@@ -163,7 +171,13 @@ type Gateway interface {
 	PreviewPriceChange(ctx context.Context, subscriptionID, priceID string) (PriceChangePreview, error)
 	// ChangePrice moves the subscription's single item to priceID, invoicing
 	// the proration at once and failing rather than leaving a payment pending.
-	ChangePrice(ctx context.Context, subscriptionID, priceID string) error
-	// ArchivePrice sets active=false on the price with that lookup key.
+	// prorationDate is the preview's ProrationDate; the zero time means now.
+	ChangePrice(ctx context.Context, subscriptionID, priceID string, prorationDate time.Time) error
+	// ArchivePrice sets active=false on the price with that lookup key. It is
+	// idempotent: a missing or already archived price is not an error.
 	ArchivePrice(ctx context.Context, lookupKey string) error
+	// DisableDefaultPortalSwitching turns subscription_update off on the
+	// account's default portal configuration (the one stripe-setup does not
+	// own), so no portal session can switch plans across products.
+	DisableDefaultPortalSwitching(ctx context.Context) error
 }
