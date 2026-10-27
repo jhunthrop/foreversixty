@@ -82,7 +82,10 @@
   let emptyPress = $state(false);
   let saving = $state(false);
 
-  $effect(() => onSaving(saving));
+  $effect(() => {
+    onSaving(saving);
+    return () => onSaving(false);
+  });
 
   const groups = $derived(
     groupChannels(channels).map((group) => ({
