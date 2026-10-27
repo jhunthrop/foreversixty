@@ -4,8 +4,11 @@
      worst first, ten rows then `Show all n raiders`. A log with no buff events drops the In the log
      column and says so in one line under the sub-head. Rows stack below 768. -->
 <script lang="ts">
+  import { tick } from 'svelte';
+  import { focusRowAt } from '../../lib/guild/focus-now';
   import type { ConsumableBefore, RaidConsumables } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, usedChips } from '../../lib/guild/attendance-copy';
+  import { PILL_WARN } from '../../lib/guild/pill-styles';
   import { OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { consumableOrder } from '../../lib/guild/report-view';
   import { visibleRows } from '../../lib/guild/night';
@@ -27,11 +30,20 @@
   // The readiness board's own pill colours (GuildReadiness.svelte), by the state it read.
   const BEFORE_PILL: Record<ConsumableBefore, string> = {
     stocked: 'pill-community',
-    short: 'text-[#ff6b5c] bg-[rgba(255,107,92,.12)] border-[rgba(255,107,92,.32)]',
+    short: PILL_WARN,
     unknown: 'pill-sample',
   };
 
-  const ordered = $derived(consumableOrder(consumables.rows));
+  let list = $state<HTMLElement | null>(null);
+
+  async function reveal(): Promise<void> {
+    const from = shown.length;
+    expanded = true;
+    await tick();
+    focusRowAt(list, from);
+  }
+
+  const ordered = $derived(consumableOrder(consumables.rows, consumables.log_has_buffs));
   const shown = $derived(visibleRows(ordered, expanded));
   const hasBuffs = $derived(consumables.log_has_buffs);
   const columns = $derived(
@@ -47,11 +59,12 @@
       {attendanceCopy.consumables.noBuffData}
     </p>
   {/if}
-  <ul>
+  <ul bind:this={list}>
     {#each shown as row (row.character_key)}
       <li
         class="{ROW_DIVIDER} grid min-h-11 grid-cols-1 items-center gap-x-4 gap-y-1 px-1 py-2 {columns}"
         style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+        tabindex="-1"
         data-testid="raid-consumable-row"
       >
         <span class="flex min-w-0 items-center gap-2">
@@ -78,6 +91,6 @@
     {/each}
   </ul>
   {#if !expanded && ordered.length > shown.length}
-    <RaidShowAll total={ordered.length} onShow={() => (expanded = true)} testid="raid-consumables-show-all" />
+    <RaidShowAll total={ordered.length} onShow={() => void reveal()} testid="raid-consumables-show-all" />
   {/if}
 </RaidBlock>

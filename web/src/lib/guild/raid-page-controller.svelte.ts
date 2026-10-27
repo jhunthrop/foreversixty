@@ -93,7 +93,16 @@ export class RaidPageController {
   constructor(deps: RaidPageDeps, route: RaidRoute, seed: Partial<RaidPageSeed> = {}) {
     this.deps = deps;
     this.route = route;
-    this.night = new NightActions(this, deps, route);
+    this.night = new NightActions(
+      {
+        raid: () => this.raid,
+        write: (run) => this.write(run),
+        applyRaid: (raid) => this.applyRaid(raid),
+        refusalLine: (thrown, ended, failed) => this.refusalLine(thrown, ended, failed),
+      },
+      deps,
+      route,
+    );
     Object.assign(this, seed);
   }
 
@@ -178,7 +187,7 @@ export class RaidPageController {
     this.currentKey = home.viewer?.character_key ?? null;
   }
 
-  applyRaid(raid: GuildRaidView): void {
+  private applyRaid(raid: GuildRaidView): void {
     this.raid = raid;
     rememberStripRows(raid, this.deps.storage);
   }
@@ -219,7 +228,7 @@ export class RaidPageController {
   }
 
   /** Runs one write; a poll that spans it is dropped, so a saving row keeps its own answer. */
-  async write<T>(run: (guildId: number) => Promise<T>): Promise<T> {
+  private async write<T>(run: (guildId: number) => Promise<T>): Promise<T> {
     if (this.guild === null) throw new Error('the raid page wrote before its guild loaded');
     this.writes += 1;
     this.writeSeq += 1;
@@ -232,7 +241,7 @@ export class RaidPageController {
   }
 
   /** The line for a refused officer write: the plan sentence when the tools ended, else `failed`. */
-  refusalLine(thrown: unknown, ended: string, failed: string): string {
+  private refusalLine(thrown: unknown, ended: string, failed: string): string {
     return this.planRefused(thrown) ? ended : failed;
   }
 

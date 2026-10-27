@@ -33,7 +33,23 @@ describe('consumableOrder', () => {
   });
   it('reads Short with nothing used first, then Short, then the rest', () => {
     const rows = [row('A', 'stocked', false), row('B', 'short', true), row('C', 'short', false)];
-    expect(consumableOrder(rows).map((r) => r.name)).toEqual(['C', 'B', 'A']);
+    expect(consumableOrder(rows, true).map((r) => r.name)).toEqual(['C', 'B', 'A']);
+  });
+});
+
+describe('consumableOrder without buff data', () => {
+  it('ranks every Short row alike, then the game order', () => {
+    const row = (name: string, before: 'stocked' | 'short') => ({
+      character_key: name,
+      name,
+      class: 'mage',
+      before,
+      flask: null,
+      food: null,
+      potions: null,
+    });
+    const rows = [row('B', 'short'), row('A', 'stocked'), row('A2', 'short')];
+    expect(consumableOrder(rows, false).map((r) => r.name)).toEqual(['A2', 'B', 'A']);
   });
 });
 

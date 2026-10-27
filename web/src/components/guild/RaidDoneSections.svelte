@@ -35,13 +35,16 @@
 
   const report = $derived(raid.report);
   const night = $derived(raid.night);
+  const match = $derived(raid.match);
   const attendance = $derived(raid.attendance);
 </script>
 
-{#if report !== null}
+{#if report !== null && night !== null && match !== null}
   <RaidReport
     {raid}
     {report}
+    {night}
+    reportId={match.report_id}
     {guildName}
     {guildPath}
     {settingsHref}

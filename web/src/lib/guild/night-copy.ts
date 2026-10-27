@@ -34,3 +34,6 @@ export const discordText = {
   /** The line that stands for loot lines the 12-line cap leaves out. */
   more: (n: number): string => `+${n} more`,
 } as const;
+
+/** The Excused checkbox's accessible name: the visible word, then whose row it is. */
+export const excusedLabel = (name: string): string => `Excused, ${name}`;

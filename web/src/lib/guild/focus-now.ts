@@ -11,3 +11,9 @@ export function selectOnMount(node: HTMLTextAreaElement): void {
   node.focus();
   node.select();
 }
+
+/** After `Show all`: focus the first row the expansion revealed (`from` is the old row count). */
+export function focusRowAt(list: HTMLElement | null, from: number): void {
+  const row = list?.children.item(from);
+  if (row instanceof HTMLElement) row.focus();
+}

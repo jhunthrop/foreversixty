@@ -15,7 +15,7 @@ type NightDeps = Pick<RaidPageDeps, 'putExcused' | 'postReport' | 'refetchRaid'>
 
 /** What the controller lends: its raid, its guarded write, its raid setter and the plan flip. */
 export interface NightActionHost {
-  readonly raid: GuildRaidView | null;
+  raid(): GuildRaidView | null;
   write<T>(run: (guildId: number) => Promise<T>): Promise<T>;
   applyRaid(raid: GuildRaidView): void;
   refusalLine(thrown: unknown, ended: string, failed: string): string;
@@ -30,6 +30,8 @@ export class NightActions {
   /** `Could not post. Try again.` (or the plan sentence) under the header buttons. */
   postLine = $state<string | null>(null);
 
+  /** Excused writes in flight: only the last to settle applies the server's raid. */
+  private excusesInFlight = 0;
   private readonly host: NightActionHost;
   private readonly deps: NightDeps;
   private readonly raidId: string;
@@ -54,16 +56,18 @@ export class NightActions {
   excuse = async (characterKey: string, excused: boolean): Promise<boolean> => {
     this.setLine(characterKey, null);
     this.setBusy(characterKey, true);
+    this.excusesInFlight += 1;
     try {
       const fresh = await this.host.write((id) => {
-        const { raid } = this.host;
+        const raid = this.host.raid();
         if (raid !== null) this.host.applyRaid(withExcused(raid, characterKey, excused));
         return this.deps.putExcused(id, this.raidId, characterKey, excused);
       });
-      this.host.applyRaid(fresh);
+      // Another tick still in flight owns the optimistic state; its answer will follow.
+      if (this.excusesInFlight === 1) this.host.applyRaid(fresh);
       return true;
     } catch (thrown) {
-      const { raid } = this.host;
+      const raid = this.host.raid();
       if (raid !== null) this.host.applyRaid(withExcused(raid, characterKey, !excused));
       this.setLine(
         characterKey,
@@ -71,6 +75,7 @@ export class NightActions {
       );
       return false;
     } finally {
+      this.excusesInFlight -= 1;
       this.setBusy(characterKey, false);
     }
   };
@@ -82,7 +87,7 @@ export class NightActions {
     this.postLine = null;
     try {
       const { posted_at: postedAt } = await this.host.write((id) => this.deps.postReport(id, this.raidId));
-      const { raid } = this.host;
+      const raid = this.host.raid();
       if (raid !== null) this.host.applyRaid(withPosted(raid, postedAt));
     } catch (thrown) {
       await this.postRefused(thrown);
