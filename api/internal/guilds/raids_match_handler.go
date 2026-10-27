@@ -151,6 +151,7 @@ func (s *Service) putMatch(w http.ResponseWriter, r *http.Request) {
 	case !s.writeRaidWriteErr(w, r, "raid_match", err):
 		return
 	}
+	s.markRaid(r.Context(), updated.ID)
 	s.logger().Info("guilds", "op", "raid_match", "guild_id", guildID, "raid_id", raid.ID,
 		"report_id", req.ReportID, "user_id", auth.ActorFrom(r.Context()).UserID)
 	s.writeRaidView(w, r, "raid_match", guildID, updated, nil)

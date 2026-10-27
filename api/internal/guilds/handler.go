@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -59,6 +60,13 @@ type Service struct {
 	// PublicBaseURL is the site origin the raid posts link to.
 	PublicBaseURL string
 	Log           *slog.Logger
+	// RaidPosts is told when a raid changes so its channel post can be refreshed; nil
+	// tells nothing.
+	RaidPosts RaidPostMarker
+	// SignupLimiter is the per-account sign-up budget the PUT route and SignUp share; nil
+	// builds the default on first use.
+	SignupLimiter *httpx.KeyLimiter
+	limiterOnce   sync.Once
 	// raidPostBudget bounds one request's raid posts together; zero means the default.
 	raidPostBudget time.Duration
 }
@@ -115,7 +123,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mountRaidMatchRoutes(mux, s, officerLimit)
 	mountRaidReportRoutes(mux, s, officerLimit)
 	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",
-		signupRateLimit()(auth.RequireSession(s.putSignup)))
+		s.signupRateLimit()(auth.RequireSession(s.putSignup)))
 	// Progression is public (design spec §4.0) - no RequireSession wrap - and its counts
 	// depend on the viewer: the handler reads whatever actor the auth middleware put in
 	// context, and a verified member gets the guild's own numbers (private nights counted,
@@ -133,6 +141,16 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// including an unauthenticated caller, so the route's existence is
 	// never advertised by a 401/403 that a wrap would otherwise leak.
 	mux.HandleFunc("GET /v1/moderation/claims", s.moderationClaims)
+}
+
+// signupLimiter is the shared sign-up budget, built once when none was injected.
+func (s *Service) signupLimiter() *httpx.KeyLimiter {
+	s.limiterOnce.Do(func() {
+		if s.SignupLimiter == nil {
+			s.SignupLimiter = httpx.NewKeyLimiter(signupsPerMinute, time.Minute)
+		}
+	})
+	return s.SignupLimiter
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -158,8 +176,13 @@ func guildIDFrom(r *http.Request) (int64, bool) {
 // verifiedOfficerOrModerator (settings), matching the spec's own auth
 // column for invite rotation and roster approve.
 func (s *Service) verifiedOfficerOrLeader(r *http.Request, guildID int64) (bool, error) {
-	actor := auth.ActorFrom(r.Context())
-	rank, ok, err := s.Accounts.GuildRank(r.Context(), guildID, actor.UserID)
+	return s.officerOrLeaderOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
+}
+
+// officerOrLeaderOf is verifiedOfficerOrLeader for an account named rather than read from a
+// request.
+func (s *Service) officerOrLeaderOf(ctx context.Context, guildID, userID int64) (bool, error) {
+	rank, ok, err := s.Accounts.GuildRank(ctx, guildID, userID)
 	if err != nil || !ok {
 		return false, err
 	}

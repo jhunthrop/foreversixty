@@ -3,7 +3,8 @@
 // PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}: a member answers for
 // one of their own verified characters; an officer of a guild with the plan answers for any
 // verified roster character (and may still write to a locked raid). The character key is the
-// path's three segments, as on every roster route.
+// path's three segments, as on every roster route. The rules live in SignUp
+// (raids_signup_service.go); this file maps its answers to HTTP.
 package guilds
 
 import (
@@ -13,6 +14,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
 // signupsPerMinute is the per-account budget for sign-up writes.
@@ -30,10 +32,13 @@ type signupAnswerView struct {
 	Moved *string  `json:"moved"`
 }
 
-// signupRateLimit budgets sign-up writes per account; a request with no account passes
-// through to RequireSession's 401.
-func signupRateLimit() func(http.Handler) http.Handler {
-	return httpx.RateLimitByKey(signupsPerMinute, time.Minute, auth.AccountRateLimitKey)
+// signupRateLimit budgets sign-up writes per account against the Service's shared limiter;
+// a request with no account passes through to RequireSession's 401.
+func (s *Service) signupRateLimit() func(http.Handler) http.Handler {
+	return httpx.RateLimitWith(s.signupLimiter(), func(r *http.Request) (string, bool) {
+		uid := auth.ActorFrom(r.Context()).UserID
+		return signupLimitKey(uid), uid != 0
+	})
 }
 
 // officerRaidWritesPerMinute budgets the officer raid writes (create, edit, lock, unlock,
@@ -63,108 +68,42 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 		writeInvalid(w, r, fields)
 		return
 	}
-	chars, err := s.Store.raidRoster(r.Context(), guildID, key)
+	res, err := s.signUp(r.Context(), SignupCommand{
+		GuildID: guildID, RaidID: raid.ID, ActorID: auth.ActorFrom(r.Context()).UserID,
+		CharacterKey: key, State: req.State, Role: req.Role, Note: &req.Note,
+	}, false)
 	if err != nil {
-		s.fail(w, r, "raid_signup", err, signupFailMessage)
+		s.writeSignupErr(w, r, err)
 		return
 	}
-	if len(chars) == 0 {
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character in this guild", nil)
-		return
-	}
-	char := chars[0]
-	asOfficer, ok := s.signupStanding(w, r, guildID, raid, char)
-	if !ok {
-		return
-	}
-	role := req.Role
-	if role == "" {
-		role = char.defaultRole()
-	}
-	// SignedBy is the character's account, not the caller: R3 groups by it, so an officer's
-	// write for a member benches the member's other character, never the officer's. ActedBy
-	// records the caller.
-	actorID := auth.ActorFrom(r.Context()).UserID
-	moved, err := s.Store.UpsertSignup(r.Context(), Signup{
-		RaidID: raid.ID, CharacterKey: char.CharacterKey, Name: char.Name, Class: char.Class, Spec: char.Spec,
-		Role: role, State: req.State, Note: req.Note, SignedBy: char.userID, ActedBy: actorID, AsOfficer: asOfficer,
-	})
-	if !s.writeSignupErr(w, r, err) {
-		return
-	}
-	s.logger().Info("guilds", "op", "raid_signup", "guild_id", guildID, "raid_id", raid.ID,
-		"user_id", char.userID, "actor", actorID, "character_key", char.CharacterKey, "as_officer", asOfficer)
-	s.writeSignupAnswer(w, r, guildID, raid.ID, moved)
+	httpx.CachePrivate(w)
+	httpx.WriteOK(w, r, http.StatusOK, signupAnswerView{Raid: res.Raid, Moved: res.Moved})
 }
 
-// signupStanding decides whether the caller may answer for char, and whether as an officer
-// (which a locked raid needs). ok false once it has answered.
-func (s *Service) signupStanding(w http.ResponseWriter, r *http.Request, guildID int64, raid Raid, char raidRosterChar) (bool, bool) {
-	userID := auth.ActorFrom(r.Context()).UserID
-	if char.userID != userID {
-		// Someone else's character: the full officer gate (rank, plan, freeze).
-		if _, ok := s.officerRaidGate(w, r, "raid_signup", signupNotYoursMessage); !ok {
-			return false, false
-		}
-		if !char.verified {
-			httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "that character is not verified in this guild", nil)
-			return false, false
-		}
-		return true, true
-	}
-	if !char.verified {
-		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "verify that character before signing it up", nil)
-		return false, false
-	}
-	if raid.Status != RaidLocked && raid.Status != RaidDone {
-		return false, true
-	}
-	officer, err := s.verifiedOfficerOrLeader(r, guildID)
-	if err != nil {
-		s.fail(w, r, "raid_signup", err, signupFailMessage)
-		return false, false
-	}
-	if !officer || !s.officerTools(r.Context(), guildID, userID) {
-		return false, true
-	}
-	// Writing to a locked raid is an officer power, frozen like the others.
-	if !s.officerNotFrozen(w, r, guildID, "raid_signup", raidFailMessage) {
-		return false, false
-	}
-	return true, true
-}
-
-// writeSignupErr answers a failed UpsertSignup; true when err is nil.
-func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err error) bool {
+// writeSignupErr answers a failed sign-up in the shapes the PUT route has always used.
+func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err error) {
 	switch {
-	case err == nil:
-		return true
+	case errors.Is(err, ErrNotMember), errors.Is(err, ErrNotFound):
+		writeRaidNotFound(w, r)
+	case errors.Is(err, ErrCharacterNotFound):
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character in this guild", nil)
+	case errors.Is(err, ErrNotYourCharacter):
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", signupNotYoursMessage, nil)
+	case errors.Is(err, errOfficerTargetUnverified):
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "that character is not verified in this guild", nil)
+	case errors.Is(err, ErrCharacterNotVerified):
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "verify that character before signing it up", nil)
+	case errors.Is(err, ErrPlanRequired):
+		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", refusal.RaidPlanRequired, nil)
+	case errors.Is(err, ErrClaimContested):
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", refusal.ClaimContested, nil)
+	case errors.Is(err, ErrSignupRateLimited):
+		httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
 	case errors.Is(err, ErrRaidLocked):
 		httpx.WriteError(w, r, http.StatusConflict, "raid_locked", "sign-ups for this raid are locked", nil)
 	case errors.Is(err, ErrRaidCancelled):
 		httpx.WriteError(w, r, http.StatusConflict, "raid_cancelled", "this raid was cancelled", nil)
-	case errors.Is(err, ErrNotFound):
-		writeRaidNotFound(w, r)
 	default:
 		s.fail(w, r, "raid_signup", err, signupFailMessage)
 	}
-	return false
-}
-
-// writeSignupAnswer re-reads the raid (its status may have moved meanwhile) and answers.
-func (s *Service) writeSignupAnswer(w http.ResponseWriter, r *http.Request, guildID, raidID int64, moved *string) {
-	raid, found, err := s.Store.GetRaid(r.Context(), guildID, raidID)
-	if err == nil && !found {
-		err = ErrNotFound
-	}
-	var view RaidView
-	if err == nil {
-		view, err = s.raidViewOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raid)
-	}
-	if err != nil {
-		s.fail(w, r, "raid_signup", err, signupFailMessage)
-		return
-	}
-	httpx.CachePrivate(w)
-	httpx.WriteOK(w, r, http.StatusOK, signupAnswerView{Raid: view, Moved: moved})
 }
