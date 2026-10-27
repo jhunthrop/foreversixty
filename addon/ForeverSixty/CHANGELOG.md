@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.19
+
+Data for client build 1.60.1.70630: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
+
 ## 2.0.18
 
 - The line, the Gear page's bag rows and the minimap count never offer a piece you cannot wear: its level, its class line and your armor and weapon training are checked first (a level-21 warrior was offered the Shaman tier-1 gauntlets). /fs loot says why when you ask: "Not for you: requires level 60", "Not for you: Shaman only".
