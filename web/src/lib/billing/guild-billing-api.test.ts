@@ -81,13 +81,14 @@ describe('guild billing reads', () => {
 describe('guild billing writes', () => {
   it('POSTs the upgrade and returns the read', async () => {
     const seen = stubFetch(() => envelope(guildBillingRead()));
-    await upgrade(5, API);
+    await upgrade(5, 1790000000, API);
     expect(seen[0]).toMatchObject({ method: 'POST', path: '/v1/guilds/5/billing/upgrade' });
+    expect(seen[0].body).toEqual({ proration_date: 1790000000 });
   });
 
   it('carries upgrade_failed on a declined card', async () => {
     stubFetch(() => envelope(null, 409, 'upgrade_failed'));
-    const failure = await upgrade(5, API).catch((error: unknown) => error);
+    const failure = await upgrade(5, 1790000000, API).catch((error: unknown) => error);
     expect(failure).toBeInstanceOf(BillingApiError);
     expect(failure).toMatchObject({ status: 409, code: 'upgrade_failed' });
   });
@@ -125,7 +126,7 @@ describe('cache invalidation', () => {
 
   it('leaves the cache alone when an action fails', async () => {
     stubFetch(() => envelope(null, 409, 'upgrade_failed'));
-    await expect(upgrade(5, API)).rejects.toBeInstanceOf(BillingApiError);
+    await expect(upgrade(5, 1790000000, API)).rejects.toBeInstanceOf(BillingApiError);
     await expect(sendTransfer(5, 9, API)).rejects.toBeInstanceOf(BillingApiError);
     expect(invalidateGuild).not.toHaveBeenCalled();
   });

@@ -196,3 +196,12 @@ describe('founder line and gate spec', () => {
     expect(guildPlanLine(scoped, 'UTC')).toBe(expected);
   });
 });
+
+describe('additions the design spec has no string for', () => {
+  it('states the expired preview and exposes the lead-in', () => {
+    expect(copy.upgrade.previewExpired).toBe('Prices changed. Review the new amount.');
+    expect(copy.upgrade.sentence(600, 'monthly', '2026-12-01T12:00:00Z', 2500)).toContain(
+      copy.upgrade.leadIn,
+    );
+  });
+});

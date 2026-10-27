@@ -27,13 +27,15 @@ export function previewUpgrade(guildId: number, apiBase: string = API_BASE_URL):
   return call<UpgradePreview>(`${billingPath(guildId)}/upgrade-preview`, apiBase);
 }
 
-/** Moves the plan to Raid guild; answers the billing read as it now stands. */
+/** Moves the plan to Raid guild at the previewed proration date (409 `preview_expired` after 10 minutes); answers the billing read as it now stands. */
 export async function upgrade(
   guildId: number,
+  prorationDate: number,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildBillingSettings> {
   const data = await call<GuildBillingSettings>(`${billingPath(guildId)}/upgrade`, apiBase, {
     method: 'POST',
+    body: { proration_date: prorationDate },
   });
   invalidateGuild(guildId, apiBase);
   return normalizeGuildBilling(data);
