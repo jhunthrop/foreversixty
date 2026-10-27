@@ -35,7 +35,7 @@ func TestCheckoutPersonalPremiumCreatesACustomerAndSession(t *testing.T) {
 	if data["checkout_url"] == "" {
 		t.Fatal("checkout_url missing")
 	}
-	if len(h.gateway.Checkouts) != 1 || h.gateway.Checkouts[0].PriceID != "price_premium_monthly" {
+	if len(h.gateway.Checkouts) != 1 || h.gateway.Checkouts[0].PriceID != "price_premium_founder_monthly" {
 		t.Fatalf("checkouts = %+v", h.gateway.Checkouts)
 	}
 	if h.gateway.Checkouts[0].Metadata["plan"] != "premium" {
@@ -137,6 +137,7 @@ func TestCheckoutGuildConflictsWhenAlreadyOnThePlanUnlessTransfer(t *testing.T) 
 	// intent: transfer bypasses the conflict.
 	newOfficer := h.seedUser(t, "already-plan-newofficer@example.com")
 	h.seedGuildMember(t, gid, newOfficer, "officer")
+	h.seedTransferOffer(t, gid, officer, newOfficer)
 	r = h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", newOfficer,
 		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid, "intent": "transfer"})
 	if w := h.do(t, r); w.Code != http.StatusOK {
