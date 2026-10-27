@@ -15,8 +15,9 @@ const (
 	OutcomeNoShow  = "no_show"
 )
 
-// lateGraceSeconds is how long after the log's first fight a signed-up raider may first
-// appear before the night calls them late.
+// lateGraceSeconds is how long after the log's first fight a raider signed In may first
+// appear before the night calls them late. A raider signed Late said so, so arriving after it is
+// present (spec §3.5, WP 9 ruling).
 const lateGraceSeconds = 15 * 60
 
 // AttendanceRow is one character's night.
@@ -83,8 +84,9 @@ func computeAttendance(in attendanceInput) []AttendanceRow {
 func (in attendanceInput) decide(row AttendanceRow, sg Signup) AttendanceRow {
 	row.PullsTotal = in.pullsTotal
 	attending := row.Signed != nil && isAttending(*row.Signed)
+	signedIn := row.Signed != nil && *row.Signed == SignupIn
 	if p, ok := in.present[row.CharacterKey]; ok {
-		return withPresence(row, p, attending)
+		return withPresence(row, p, signedIn)
 	}
 	if !attending {
 		row.Outcome = OutcomeAbsent
@@ -92,7 +94,7 @@ func (in attendanceInput) decide(row AttendanceRow, sg Signup) AttendanceRow {
 	}
 	if key, ok := in.sameAccountInLog(row.CharacterKey, sg); ok {
 		p := in.present[key]
-		row = withPresence(row, p, true)
+		row = withPresence(row, p, signedIn)
 		row.CameAs, row.CameAsKey = textPtr(in.nameOf(key, p)), textPtr(key)
 		return row
 	}
@@ -100,11 +102,13 @@ func (in attendanceInput) decide(row AttendanceRow, sg Signup) AttendanceRow {
 	return row
 }
 
-func withPresence(row AttendanceRow, p logPresence, attending bool) AttendanceRow {
+// withPresence marks a character the log shows: late only when signed In and first seen past the
+// grace.
+func withPresence(row AttendanceRow, p logPresence, signedIn bool) AttendanceRow {
 	row.Outcome = OutcomePresent
 	row.FirstSeenOffsetS = p.FirstSeenOffsetS
 	row.PullsPresent = p.PullsPresent
-	if attending && p.FirstSeenOffsetS != nil && *p.FirstSeenOffsetS > lateGraceSeconds {
+	if signedIn && p.FirstSeenOffsetS != nil && *p.FirstSeenOffsetS > lateGraceSeconds {
 		row.Outcome = OutcomeLate
 	}
 	return row

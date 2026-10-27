@@ -65,9 +65,12 @@ type ReportConsumablesView struct {
 
 // ReportLootAward is one award made for this raid.
 type ReportLootAward struct {
-	ItemID       int    `json:"item_id"`
-	ItemName     string `json:"item_name"`
-	Quality      int    `json:"quality"`
+	ItemID   int    `json:"item_id"`
+	ItemName string `json:"item_name"`
+	Quality  int    `json:"quality"`
+	// Icon is the item's icon file name from the loot table, "" when the build has none (the
+	// page then draws the client's question mark).
+	Icon         string `json:"icon"`
 	CharacterKey string `json:"character_key"`
 	Name         string `json:"name"`
 	Class        string `json:"class"`

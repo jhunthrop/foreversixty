@@ -81,7 +81,8 @@ func TestAMatchedRaidViewShowsTheMatchAndTheNightToEveryone(t *testing.T) {
 			m.Pulls != 4 || m.Kills != 1 || m.DurationMS != nightDuration.Milliseconds() || m.UploadedAt.IsZero() {
 			t.Fatalf("match = %+v", m)
 		}
-		want := NightView{Signed: 4, Came: 3, Late: 1, NotInLog: 1, Joined: 1, Excused: 0, Kills: 1, Wipes: 3,
+		// Mirelle signed Late and came late: present, not late (WP 9 ruling).
+		want := NightView{Signed: 4, Came: 3, Late: 0, NotInLog: 1, Joined: 1, Excused: 0, Kills: 1, Wipes: 3,
 			Deaths: 12, DurationMS: nightDuration.Milliseconds()}
 		if v.Night == nil || *v.Night != want {
 			t.Fatalf("night = %+v, want %+v", v.Night, want)
@@ -110,7 +111,7 @@ func TestAttendanceRowsGoToOfficersInFullAndToMembersOwnOnly(t *testing.T) {
 		t.Fatalf("kraggor = %+v", k)
 	}
 	w.as(w.member2)
-	if rows := attendanceKeys(w.getRaid(t, raid.ID)); len(rows) != 1 || rows[member2Key].Outcome != OutcomeLate {
+	if rows := attendanceKeys(w.getRaid(t, raid.ID)); len(rows) != 1 || rows[member2Key].Outcome != OutcomePresent {
 		t.Fatalf("member2 rows = %+v", rows)
 	}
 }

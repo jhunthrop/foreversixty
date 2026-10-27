@@ -98,8 +98,9 @@ func TestAttendanceFollowsTheSignupsAgainstTheLog(t *testing.T) {
 	if r := by[drifterKey]; r.Outcome != OutcomePresent || r.Signed != nil || r.Role != nil {
 		t.Fatalf("drifter (unsigned) = %+v", r)
 	}
-	if r := by[member2Key]; r.Outcome != OutcomeLate || r.PullsPresent != 1 || *r.FirstSeenOffsetS != 31*60 {
-		t.Fatalf("mirelle (late) = %+v", r)
+	// Mirelle signed Late and came late, as she said: present (WP 9 ruling).
+	if r := by[member2Key]; r.Outcome != OutcomePresent || r.PullsPresent != 1 || *r.FirstSeenOffsetS != 31*60 {
+		t.Fatalf("mirelle (signed late, came late) = %+v", r)
 	}
 	if r := by[memberKeyC]; r.Outcome != OutcomeAbsent {
 		t.Fatalf("unverifiedalt (bench, not there) = %+v", r)
