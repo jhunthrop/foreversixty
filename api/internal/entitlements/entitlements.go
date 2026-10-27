@@ -25,6 +25,10 @@ const (
 	// (FeatureScopeOfficerViews); Store.CanForGuild answers it per guild.
 	FeatureOfficerViews Feature = "officer_views"
 	FeatureRosterCheck  Feature = "roster_check"
+	// FeatureRaidGuildTools is the Raid guild tier's per-guild tools: a
+	// verified officer/leader of a guild whose active row covers officer
+	// views and carries tier raid_guild (Store.CanForGuild).
+	FeatureRaidGuildTools Feature = "raid_guild_tools"
 )
 
 // Reason is why Can answered the way it did — informational for the

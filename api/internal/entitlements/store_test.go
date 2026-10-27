@@ -120,7 +120,7 @@ func TestCanPersonalPremiumStatuses(t *testing.T) {
 	}
 }
 
-func TestCanGuildPlanRequiresVerifiedMembership(t *testing.T) {
+func TestCanSeatRequiresVerifiedMembership(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}
 	gid := seedGuild(t, pool)
@@ -128,12 +128,14 @@ func TestCanGuildPlanRequiresVerifiedMembership(t *testing.T) {
 
 	verified := seedUser(t, pool)
 	seedGuildMember(t, pool, gid, verified, "member", true)
+	seedSeat(t, pool, gid, verified, 1, "held", nil)
 	if ok, _, err := s.Can(context.Background(), verified, FeatureHistory); err != nil || !ok {
-		t.Fatalf("verified member: Can = %v, %v", ok, err)
+		t.Fatalf("verified seat holder: Can = %v, %v", ok, err)
 	}
 
 	unverified := seedUser(t, pool)
 	seedGuildMember(t, pool, gid, unverified, "member", false)
+	seedSeat(t, pool, gid, unverified, 2, "held", nil)
 	ok, reason, err := s.Can(context.Background(), unverified, FeatureHistory)
 	if err != nil {
 		t.Fatal(err)
@@ -936,11 +938,12 @@ func TestUpsertStripeReplacesScopedGrant(t *testing.T) {
 	}
 	member := seedUser(t, pool)
 	seedGuildMember(t, pool, gid, member, "member", true)
+	seedSeat(t, pool, gid, member, 1, "held", nil)
 	if ok, _, err := s.Can(context.Background(), member, FeatureServerSims); err != nil || !ok {
-		t.Fatalf("member Can(server_sims) = %v, %v, want true on the whole plan", ok, err)
+		t.Fatalf("seat holder Can(server_sims) = %v, %v, want true on the whole plan", ok, err)
 	}
 	if sup, err := s.IsSupporter(context.Background(), member); err != nil || !sup {
-		t.Fatalf("member IsSupporter = %v, %v, want true on the whole plan", sup, err)
+		t.Fatalf("seat holder IsSupporter = %v, %v, want true on the whole plan", sup, err)
 	}
 }
 

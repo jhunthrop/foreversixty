@@ -47,11 +47,18 @@ func TestRosterRowsCarryTheSupporterMark(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if _, err := h.pool.Exec(context.Background(),
+		`insert into premium_seats (guild_id, slot, state, holder_user_id, given_at, movable_at)
+		 values ($1, 1, 'held', $2, now(), now() + interval '30 days')`, gid, member); err != nil {
+		t.Fatal(err)
+	}
+
 	rows := h.roster(gid, leader)
-	for _, key := range []string{leaderKey, memberKey} {
-		if !rows[key].Supporter {
-			t.Errorf("%s under an active guild plan: supporter = false, want true", key)
-		}
+	if !rows[memberKey].Supporter {
+		t.Errorf("%s holds a seat: supporter = false, want true", memberKey)
+	}
+	if rows[leaderKey].Supporter {
+		t.Errorf("%s has no seat: supporter = true, want false (membership grants nothing)", leaderKey)
 	}
 
 	if _, err := h.pool.Exec(context.Background(),
