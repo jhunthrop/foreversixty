@@ -33,6 +33,8 @@
   import AccountDiscordLink from './account/AccountDiscordLink.svelte';
   import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
+  import AccountSeatOffer from './account/AccountSeatOffer.svelte';
+  import { accountPlanLine } from '../lib/account/plan-line';
   import AccountLoading from './account/AccountLoading.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
@@ -55,7 +57,7 @@
   import { createPairingPoll, type PairingPoll } from '../lib/reports/pairing-poll';
   import { API_BASE_URL } from '../lib/planner/config';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { relativeTime, utcDayMonthYear } from '../lib/dates';
+  import { relativeTime, viewerZone } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterList from './account/CharacterList.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
@@ -146,6 +148,7 @@
   // Optional chaining all the way through: `entitlements` itself may be absent on an
   // older/stubbed /v1/me response (see the `Me.entitlements` doc comment in account/api.ts).
   const billing = $derived(me?.entitlements?.billing ?? null);
+  const planLine = $derived(me === null ? undefined : accountPlanLine(me, new Date(), viewerZone()));
   const isSupporter = $derived(me?.entitlements?.supporter_mark === true);
   const signedInMethod = $derived(
     me?.user.battletag !== undefined && me?.user.battletag !== null
@@ -919,22 +922,15 @@
               {/if}
               <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
                 <div class="flex flex-col gap-3">
-                  {#if billing === null}
-                    <p class="text-[14px]" data-testid="account-billing-row">
-                      <span class="text-muted">{accountPageCopy.planKey}</span> · {billingBlockCopy.notSubscribed}
-                      <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>
-                    </p>
-                  {:else}
-                    <p class="text-[14px]">
-                      {billing.plan} —
-                      {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
-                      {billing.current_period_end ? utcDayMonthYear(billing.current_period_end) : ''}
-                    </p>
-                    {#if billing.status === 'past_due'}
-                      <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-                    {/if}
+                  {#if me?.seat_offer}
+                    <AccountSeatOffer offer={me.seat_offer} zone={viewerZone()} />
+                  {/if}
+                  {#if billing?.status === 'past_due'}
+                    <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
                   {/if}
                   <AccountPremiumBlock
+                    plan={planLine}
+                    seePlans={billing === null && me?.seat == null}
                     entitlements={me?.entitlements}
                     characters={me?.characters ?? []}
                     mainKey={me?.main_character_key}
@@ -943,7 +939,7 @@
                       ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
                       : null}
                   />
-                  {#if billing !== null}
+                  {#if planLine?.manageBilling === true}
                     <button
                       class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
                       onclick={onManageBilling}

@@ -45,4 +45,16 @@ describe('AccountGuildPlanLine', () => {
     });
     expect(out.text).toBe('Guild plan · renews 31 Dec 2026 · Guild settings');
   });
+
+  it('names the raid tier and the seat the account holds', () => {
+    const out = renderLine({
+      ...BASE,
+      tier: 'raid_guild',
+      scope: 'plan',
+      current_period_end: '2026-12-12T12:00:00Z',
+      billed_by: 'a#1',
+      you_hold_seat: true,
+    });
+    expect(out.text).toBe('Raid guild plan · renews 12 Dec 2026 · you hold a seat · Guild settings');
+  });
 });
