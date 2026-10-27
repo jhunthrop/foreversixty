@@ -132,7 +132,7 @@ func TestRespondHandlerErrorAnswersFailure(t *testing.T) {
 func TestRespondDropsAnswersPastTokenLife(t *testing.T) {
 	h := newHarness(t, nil)
 	in := Interaction{ID: "i9", Token: testToken, ReceivedAt: time.Now().Add(-interactionTokenLife - time.Second)}
-	h.svc.deliver(in, handled{reply: Reply{Message: Message{Content: "late"}}})
+	h.svc.deliver(in, handled{reply: Reply{Message: Message{Content: "late"}}}, false)
 	if len(h.rest.Calls()) != 0 {
 		t.Fatal("an expired answer was sent")
 	}

@@ -15,6 +15,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -59,9 +60,12 @@ type pressGuilds struct {
 	*guilds.Service
 	candidates []guilds.SignupCandidate
 	signUpErr  error
+	// candidateReads counts SignupCandidates calls.
+	candidateReads int
 }
 
 func (p *pressGuilds) SignupCandidates(ctx context.Context, guildID, userID int64) ([]guilds.SignupCandidate, error) {
+	p.candidateReads++
 	if p.candidates != nil {
 		return p.candidates, nil
 	}
@@ -370,6 +374,13 @@ func TestPressFlowSentences(t *testing.T) {
 			w.gs.SignupLimiter = httpx.NewKeyLimiter(1, time.Minute)
 			w.press(t, "late")
 		}, want: func(*pressWorld) string { return spec(t, "Press: refusals", 7, nil) }},
+		{name: "locked before only pending", setup: func(t *testing.T, w *pressWorld) {
+			w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", false)
+			w.exec(t, `update guild_raids set status = 'locked' where id = $1`, w.raidID)
+		}, want: func(*pressWorld) string { return spec(t, "Press: refusals", 0, nil) }},
+		{name: "locked before not a member", setup: func(t *testing.T, w *pressWorld) {
+			w.exec(t, `update guild_raids set status = 'locked' where id = $1`, w.raidID)
+		}, want: func(*pressWorld) string { return spec(t, "Press: refusals", 0, nil) }},
 		{name: "service locked", setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)
 			w.port.signUpErr = fmt.Errorf("wrapped: %w", guilds.ErrRaidLocked)
@@ -454,6 +465,79 @@ func TestSelectOrderAndCap(t *testing.T) {
 	}
 	if sel.CustomID != pickCustomID(w.raidID, "in") || w.signups(t) != 0 {
 		t.Fatalf("custom id %q, signups %d", sel.CustomID, w.signups(t))
+	}
+}
+
+// forgetCandidates drops the bot's cached candidates, as 30 s passing would.
+func (w *pressWorld) forgetCandidates() {
+	w.svc.candidates.mu.Lock()
+	defer w.svc.candidates.mu.Unlock()
+	w.svc.candidates.by = nil
+}
+
+func TestCandidatesAreCachedPerAccount(t *testing.T) {
+	w := newPressWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", true)
+	clock := &testClock{t: time.Now()}
+	w.svc.now = clock.now
+	for range 3 {
+		w.suggest(t, pressDiscord, optCharacter, "z")
+	}
+	w.press(t, "in")
+	if w.port.candidateReads != 1 {
+		t.Fatalf("candidate reads = %d, want 1 inside the window", w.port.candidateReads)
+	}
+	clock.advance(candidatesTTL)
+	w.suggest(t, pressDiscord, optCharacter, "")
+	if w.port.candidateReads != 2 {
+		t.Fatalf("candidate reads = %d, want a fresh read after %s", w.port.candidateReads, candidatesTTL)
+	}
+}
+
+func TestSelectOptionsCarryTheLoggedSpec(t *testing.T) {
+	w := newPressWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", true)
+	fought := time.Now()
+	// fight_metrics is partitioned by month: make this month's, so a fresh database on any date works.
+	if err := db.EnsureMetricsPartition(context.Background(), w.st.Pool, fought); err != nil {
+		t.Fatal(err)
+	}
+	w.exec(t, `insert into reports (id, guild_id, visibility, status) values ('t9-spec', $1, 'public', 'complete')`, w.gid)
+	w.exec(t, `insert into fight_metrics (report_id, fight_index, player_key, class, spec, role, ilvl, faction, fought_at)
+		values ('t9-spec', 0, $1, 'hunter', 'Marksmanship', 'dps', 60, 'alliance', $2)`, keyZulmara, fought)
+	sel := selectOf(t, w.press(t, "in"))
+	var got string
+	for _, o := range sel.Options {
+		if o.Value == keyZulmara {
+			got = o.Description
+		}
+	}
+	if want := spec(t, "Press: select", 2, map[string]string{"Spec": "Marksmanship", "Class": "Hunter", "Role": "DPS"}); got != want {
+		t.Fatalf("description = %q, want %q", got, want)
+	}
+}
+
+func TestASelectWithNoUsableOptionLinksTheRaidPage(t *testing.T) {
+	w := newPressWorld(t)
+	long := strings.Repeat("k", maxOptionRunes+1)
+	w.port.candidates = []guilds.SignupCandidate{
+		{CharacterKey: long + "a", Name: "A", Class: "hunter", Role: "dps", Verified: true},
+		{CharacterKey: long + "b", Name: "B", Class: "hunter", Role: "dps", Verified: true},
+	}
+	wantReply(t, w.press(t, "in"), pressCopy.Failure, false, wantButton{postCopy.RaidPage, w.raidURL()})
+}
+
+func TestAFailedPickStillReplacesTheSelect(t *testing.T) {
+	w := newPressWorld(t)
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": pickCustomID(w.raidID, "in")})
+	rep := w.svc.replyOf(in, handled{err: errors.New("boom")}, true)
+	if !rep.Update || rep.Message.Content != commonCopy.Failure {
+		t.Fatalf("reply = %+v", rep)
+	}
+	if rep := w.svc.replyOf(in, handled{err: errors.New("boom")}, false); rep.Update {
+		t.Fatal("a press's failure must be a new message")
 	}
 }
 

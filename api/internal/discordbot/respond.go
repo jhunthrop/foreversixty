@@ -163,10 +163,10 @@ func (s *Service) answerOrDefer(ctx context.Context, w http.ResponseWriter, in I
 	defer timer.Stop()
 	select {
 	case res := <-done:
-		s.writeReply(w, s.replyOf(in, res), respMessage)
+		s.writeReply(w, s.replyOf(in, res, update), respMessage)
 	case <-timer.C:
 		s.writeDeferral(w, update)
-		if !s.bg.Start(func() { s.deliver(in, <-done) }) {
+		if !s.bg.Start(func() { s.deliver(in, <-done, update) }) {
 			s.log.Warn("discordbot", "op", "discord_answer", "outcome", "dropped_shutdown", "interaction", in.ID)
 		}
 	}
@@ -181,24 +181,28 @@ func (s *Service) writeDeferral(w http.ResponseWriter, update bool) {
 }
 
 // replyOf turns a handler's outcome into the reply to send; an error is the
-// ephemeral failure sentence, logged without the interaction token.
-func (s *Service) replyOf(in Interaction, res handled) Reply {
+// ephemeral failure sentence, logged without the interaction token. On a route
+// whose press updates its message (update), the failure replaces that message
+// too, so a failed choice does not leave the select live.
+func (s *Service) replyOf(in Interaction, res handled, update bool) Reply {
 	if res.err != nil {
 		s.log.Error("discordbot", "op", "discord_answer", "outcome", "handler_failed", "interaction", in.ID, "err", res.err)
-		return failureReply()
+		rep := failureReply()
+		rep.Update = update
+		return rep
 	}
 	return res.reply
 }
 
 // deliver edits the deferred answer in, unless the token has expired.
-func (s *Service) deliver(in Interaction, res handled) {
+func (s *Service) deliver(in Interaction, res handled, update bool) {
 	if s.now().Sub(in.ReceivedAt) > interactionTokenLife {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "expired", "interaction", in.ID)
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := s.d.REST.EditOriginal(ctx, in.Token, s.replyOf(in, res).Message); err != nil {
+	if err := s.d.REST.EditOriginal(ctx, in.Token, s.replyOf(in, res, update).Message); err != nil {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "edit_failed", "interaction", in.ID, "err", err)
 	}
 }

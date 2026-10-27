@@ -126,9 +126,9 @@ func (s *Service) signupFlow(ctx context.Context, a signupAsk) (Reply, error) {
 	if refusal := s.raidRefusal(raid); refusal != "" {
 		return a.reply(refusal), nil
 	}
-	cands, err := s.d.Guilds.SignupCandidates(ctx, a.GuildID, a.UserID)
+	cands, err := s.signupCandidates(ctx, a.GuildID, a.UserID)
 	if err != nil {
-		return Reply{}, fmt.Errorf("discordbot: signup candidates: %w", err)
+		return Reply{}, err
 	}
 	verified := verifiedOf(cands)
 	if len(verified) == 0 {
@@ -144,7 +144,7 @@ func (s *Service) signupFlow(ctx context.Context, a signupAsk) (Reply, error) {
 	if len(verified) == 1 {
 		return s.signUp(ctx, a, verified[0])
 	}
-	return characterSelect(a, raid, verified), nil
+	return s.characterSelect(ctx, a, raid, verified), nil
 }
 
 // raidRefusal is the sentence of a raid nobody can sign up for from Discord: cancelled, ended
@@ -290,12 +290,20 @@ func countClause(v guilds.RaidView) string {
 
 // noteURL is the raid page's sign-up section; "" (no button) when it cannot be read.
 func (s *Service) noteURL(ctx context.Context, raidID int64) string {
+	if page := s.raidPageURL(ctx, raidID); page != "" {
+		return page + signupAnchor
+	}
+	return ""
+}
+
+// raidPageURL is the raid page; "" (no button) when it cannot be read.
+func (s *Service) raidPageURL(ctx context.Context, raidID int64) string {
 	facts, found, err := s.d.Guilds.RaidPostFacts(ctx, raidID)
-	if err != nil || !found || facts.RaidURL == "" {
-		if err != nil {
-			s.log.Warn("discordbot", "op", "discord_signup", "outcome", "note_link_failed", "raid_id", raidID, "err", err)
-		}
+	if err != nil {
+		s.log.Warn("discordbot", "op", "discord_signup", "outcome", "raid_link_failed", "raid_id", raidID, "err", err)
+	}
+	if err != nil || !found {
 		return ""
 	}
-	return facts.RaidURL + signupAnchor
+	return facts.RaidURL
 }
