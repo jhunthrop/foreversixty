@@ -55,6 +55,24 @@ func TestPostableChannelsAdministratorGrantsEverything(t *testing.T) {
 	}
 }
 
+// The post never replies, so Read Message History is no part of the gate: a channel lacking
+// only it is still pickable.
+func TestPostableChannelsWithoutReadMessageHistory(t *testing.T) {
+	layout := ServerLayout{
+		BotUserID: "bot",
+		Roles:     []Role{{ID: "srv", Permissions: postPermissions}},
+		Channels: []RawChannel{
+			{ID: "1", Name: "no-history", Type: 0},
+			{ID: "2", Name: "denied-history", Type: 0,
+				Overwrites: []Overwrite{{ID: "srv", Type: OverwriteRole, Deny: PermReadMessageHistory}}},
+		},
+	}
+	got := PostableChannels("srv", layout)
+	if len(got) != 2 {
+		t.Fatalf("got %+v, want both channels", got)
+	}
+}
+
 func TestPostableChannelsMissingPermissionsYieldsNothing(t *testing.T) {
 	layout := ServerLayout{BotUserID: "bot", Channels: []RawChannel{{ID: "1", Name: "a", Type: 0}}}
 	if got := PostableChannels("srv", layout); len(got) != 0 {

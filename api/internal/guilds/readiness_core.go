@@ -82,7 +82,7 @@ func hasGearConsent(consent string) bool { return consent == "gear" || consent =
 //
 // The enchant check is deliberately not gated on anything the BiS band names: no BiS file
 // in this repo carries a per-slot recommended enchant (checked against every band in
-// data/builds/1.60.1.70009/bis/ - none of the seventeen inventory slots an alternatives-
+// data/builds/<build>/bis/ (Store.BisBuild; last checked on 1.60.1.70630) - none of the seventeen inventory slots an alternatives-
 // bearing file lists ever carries an "enchant" key), matching design spec §9's own "no
 // curated recommended-enchant-per-spec table exists yet" - so this implements the design
 // spec's narrower EXISTS claim instead: whether an enchantable, equipped slot carries any

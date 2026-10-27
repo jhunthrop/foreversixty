@@ -11,9 +11,8 @@ import (
 // Discord's option type numbers the bot uses.
 const optionString = 3
 
-// slotChoices' values are the BiS data's own slot keys (bis.Slot.Slot).
-// classChoices are the nine classes; slotChoices the 17 gear slots; phaseChoices the level
-// bands and the Phase 1 raid.
+// classChoices are the nine classes; slotChoices the 17 gear slots, valued by the BiS data's
+// own slot keys (bis.Slot.Slot); phaseChoices the level bands and the Phase 1 raid.
 var (
 	classChoices = choicesOf("Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior")
 	slotChoices  = []Choice{

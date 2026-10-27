@@ -108,13 +108,21 @@ func TestRaidCommandShowsAMovedRaidAsItsPostDoes(t *testing.T) {
 	}
 }
 
+// The nameless sentences are the /raid row's segments 7 to 10, read back from the spec.
 func TestRaidCommandNamesNoCharacterItCannotFind(t *testing.T) {
-	w := newPressWorld(t)
-	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
-	w.press(t, "in")
-	w.port.candidates = []guilds.SignupCandidate{{CharacterKey: "us/normal/other", Name: "Other", Verified: true}}
-	got := w.raidCmdAs(t, pressDiscord).Message.Embeds[0].Description
-	if got != "You are In as DPS." {
-		t.Fatalf("description = %q", got)
+	nameless := func(i int) string {
+		return specString(t, commandHeading, "`/raid`", i, map[string]string{"Role": "DPS"})
+	}
+	for i, state := range []string{"in", "late", "bench", "out"} {
+		t.Run(state, func(t *testing.T) {
+			w := newPressWorld(t)
+			w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+			w.press(t, state)
+			w.port.candidates = []guilds.SignupCandidate{{CharacterKey: "us/normal/other", Name: "Other", Verified: true}}
+			got := w.raidCmdAs(t, pressDiscord).Message.Embeds[0].Description
+			if want := nameless(7 + i); got != want {
+				t.Fatalf("description = %q, want %q", got, want)
+			}
+		})
 	}
 }

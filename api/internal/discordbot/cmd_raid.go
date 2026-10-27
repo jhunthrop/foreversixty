@@ -25,6 +25,8 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 		return pressReply(commonCopy.Unbound, false), nil
 	}
 	ask := signupAsk{GuildID: guildID, UserID: userID}
+	// Read fresh on purpose, not through a cache: by ruling a press always answers from the
+	// member's characters as they stand now.
 	cands, err := s.d.Guilds.SignupCandidates(ctx, guildID, userID)
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: raid candidates: %w", err)

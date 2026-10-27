@@ -5,9 +5,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 const (
@@ -15,10 +20,50 @@ const (
 	maxDiscordText      = 100
 )
 
-// The BiS data's slot keys, which the slot choice values must be exactly.
-var bisSlotKeys = []string{
-	"head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs", "feet",
-	"finger1", "finger2", "trinket1", "trinket2", "main_hand", "off_hand", "ranged",
+const repoBuildsDir = "../../../data/builds"
+
+// bisSlotKeys is every band's slot keys, in order, from the BiS build the bot reads; every
+// file and band must agree, and the slot choice values must be exactly these.
+func bisSlotKeys(t *testing.T) []string {
+	t.Helper()
+	treeData, err := trees.Load(repoBuildsDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	build := (&guilds.Store{DataDir: repoBuildsDir, Trees: treeData}).BisBuild()
+	files, err := filepath.Glob(filepath.Join(repoBuildsDir, build, "bis", "*.json"))
+	if err != nil || len(files) == 0 {
+		t.Fatalf("no BiS files for build %q: %v", build, err)
+	}
+	var keys []string
+	for _, f := range files {
+		raw, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var file struct {
+			Bands []struct {
+				Slots []struct {
+					Slot string `json:"slot"`
+				} `json:"slots"`
+			} `json:"bands"`
+		}
+		if err := json.Unmarshal(raw, &file); err != nil {
+			t.Fatalf("%s: %v", f, err)
+		}
+		for _, b := range file.Bands {
+			var got []string
+			for _, s := range b.Slots {
+				got = append(got, s.Slot)
+			}
+			if keys == nil {
+				keys = got
+			} else if !slices.Equal(got, keys) {
+				t.Fatalf("%s: slots %v differ from %v", f, got, keys)
+			}
+		}
+	}
+	return keys
 }
 
 func TestChoicesStayInsideDiscordLimits(t *testing.T) {
@@ -72,9 +117,14 @@ func TestSlotAndPhaseChoicesMatchTheSpecAndData(t *testing.T) {
 			t.Errorf("%s names = %q, spec %q", c.option, got, c.list)
 		}
 	}
-	for i, ch := range bisOption(t, "slot").Choices {
-		if ch.Value != bisSlotKeys[i] {
-			t.Errorf("slot %s value = %q, want the data key %q", ch.Name, ch.Value, bisSlotKeys[i])
+	keys := bisSlotKeys(t)
+	choices := bisOption(t, "slot").Choices
+	if len(choices) != len(keys) {
+		t.Fatalf("%d slot choices, the data has %d slots", len(choices), len(keys))
+	}
+	for i, ch := range choices {
+		if ch.Value != keys[i] {
+			t.Errorf("slot %s value = %q, want the data key %q", ch.Name, ch.Value, keys[i])
 		}
 	}
 }

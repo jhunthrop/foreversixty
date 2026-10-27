@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"bytes"
 	"context"
 	"encoding/csv"
 	"errors"
@@ -101,29 +102,84 @@ func (s *Service) serveExport(w http.ResponseWriter, r *http.Request, kind strin
 		s.fail(w, r, "export_"+kind, err, exportFailText)
 		return
 	}
-	httpx.CachePrivate(w)
-	w.Header().Set("Content-Type", csvContentType)
-	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s-%s.csv"`, exportSlug(guild.Name), kind))
-	out := csv.NewWriter(w)
+	err = writeExport(r.Context(), w, guildID, header, stream, func() {
+		httpx.CachePrivate(w)
+		w.Header().Set("Content-Type", csvContentType)
+		w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s-%s.csv"`, exportSlug(guild.Name), kind))
+	})
+	var early heldError
+	switch {
+	case errors.As(err, &early):
+		s.fail(w, r, "export_"+kind, early.err, exportFailText)
+	case err != nil:
+		// The status line is already sent; all that is left is to say so in the log.
+		s.logger().Warn("guilds", "id", httpx.RequestIDFrom(r.Context()), "op", "export_"+kind, "guild_id", guildID, "err", err)
+	}
+}
+
+// heldError is a failure before any byte of the file reached the client, so
+// the request can still answer an error instead of a short file.
+type heldError struct{ err error }
+
+func (e heldError) Error() string { return e.err.Error() }
+func (e heldError) Unwrap() error { return e.err }
+
+// writeExport streams the CSV. The first exportFlushEvery rows are held back,
+// so a query that fails early answers an error, not a header-only file;
+// headers runs just before the first byte goes out.
+func writeExport(ctx context.Context, w http.ResponseWriter, guildID int64, header []string, stream rowStream,
+	headers func()) error {
+	held := &heldWriter{w: w, onOpen: headers}
+	out := csv.NewWriter(held)
 	_ = out.Write(header)
 	written := 0
-	err = stream(r.Context(), guildID, func(row []string) error {
+	err := stream(ctx, guildID, func(row []string) error {
 		if err := out.Write(row); err != nil {
 			return err
 		}
 		if written++; written%exportFlushEvery == 0 {
-			out.Flush()
+			return held.flush(out)
 		}
-		return out.Error()
+		return nil
 	})
+	switch {
+	case err != nil && !held.open:
+		return heldError{err: err}
+	case err != nil:
+		return err
+	}
+	return held.flush(out)
+}
+
+// heldWriter keeps the response's bytes until flush opens it.
+type heldWriter struct {
+	w      http.ResponseWriter
+	onOpen func()
+	buf    bytes.Buffer
+	open   bool
+}
+
+func (h *heldWriter) Write(p []byte) (int, error) {
+	if h.open {
+		return h.w.Write(p)
+	}
+	return h.buf.Write(p)
+}
+
+// flush sends what out has written, opening the response on the first call.
+func (h *heldWriter) flush(out *csv.Writer) error {
 	out.Flush()
-	if err == nil {
-		err = out.Error()
+	if err := out.Error(); err != nil {
+		return err
 	}
-	if err != nil {
-		// The status line is already sent; all that is left is to say so in the log.
-		s.logger().Warn("guilds", "id", httpx.RequestIDFrom(r.Context()), "op", "export_"+kind, "guild_id", guildID, "err", err)
+	if h.open {
+		return nil
 	}
+	h.open = true
+	h.onOpen()
+	_, err := h.w.Write(h.buf.Bytes())
+	h.buf.Reset()
+	return err
 }
 
 // rowStream feeds each CSV row of a guild's export to emit as it is read.

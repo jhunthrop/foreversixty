@@ -101,6 +101,8 @@ type Store struct {
 	// /v1/guilds/{id}/crest.webp is served from. Empty in a harness that never reads
 	// crest_url (CrestURL then simply returns a relative path).
 	APIBaseURL string
+
+	bisBuild bisBuildCache
 }
 
 func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {

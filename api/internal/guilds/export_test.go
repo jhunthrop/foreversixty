@@ -1,9 +1,13 @@
 package guilds
 
 import (
+	"context"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -214,5 +218,64 @@ func TestExport_ModeratorAllowed(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		t.Fatalf("moderator export = %d, want 200", res.StatusCode)
+	}
+}
+
+// serveDirect runs serveExport on stream as the fixture's officer.
+func (f exportFixture) serveDirect(stream rowStream) *httptest.ResponseRecorder {
+	f.h.t.Helper()
+	r := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/export/loot.csv", f.gid), nil)
+	r.SetPathValue("id", strconv.FormatInt(f.gid, 10))
+	r = r.WithContext(auth.WithActor(r.Context(), f.h.actor))
+	w := httptest.NewRecorder()
+	f.h.svc.serveExport(w, r, "loot", lootExportHeader, stream)
+	return w
+}
+
+func emitRows(n int, err error) rowStream {
+	return func(_ context.Context, _ int64, emit func([]string) error) error {
+		for i := range n {
+			if e := emit([]string{strconv.Itoa(i)}); e != nil {
+				return e
+			}
+		}
+		return err
+	}
+}
+
+// A query that fails before the first flush answers an error, not a short file.
+func TestExport_EarlyFailureAnswersError(t *testing.T) {
+	f := newExportFixture(t, "Export Early Failure")
+	boom := errors.New("boom")
+	for name, stream := range map[string]rowStream{
+		"first row": emitRows(0, boom),
+		"some rows": emitRows(exportFlushEvery-1, boom),
+	} {
+		w := f.serveDirect(stream)
+		if w.Code != http.StatusInternalServerError || w.Header().Get("Content-Disposition") != "" ||
+			strings.HasPrefix(w.Body.String(), "date,") {
+			t.Fatalf("%s: status = %d, disposition = %q, body = %.60q", name, w.Code,
+				w.Header().Get("Content-Disposition"), w.Body.String())
+		}
+	}
+}
+
+// Past the first flush the file is already going out: a failure ends it short.
+func TestExport_LateFailureKeepsTheFile(t *testing.T) {
+	f := newExportFixture(t, "Export Late Failure")
+	w := f.serveDirect(emitRows(exportFlushEvery+1, errors.New("boom")))
+	if w.Code != http.StatusOK || w.Header().Get("Content-Type") != csvContentType {
+		t.Fatalf("status = %d, type = %q", w.Code, w.Header().Get("Content-Type"))
+	}
+	if rows := strings.Count(w.Body.String(), "\n"); rows != exportFlushEvery+1 {
+		t.Fatalf("lines = %d, want header plus %d", rows, exportFlushEvery)
+	}
+}
+
+func TestExport_SuccessUnderOneFlushSendsEverything(t *testing.T) {
+	f := newExportFixture(t, "Export Small")
+	w := f.serveDirect(emitRows(3, nil))
+	if w.Code != http.StatusOK || strings.Count(w.Body.String(), "\n") != 4 {
+		t.Fatalf("status = %d, body = %q", w.Code, w.Body.String())
 	}
 }

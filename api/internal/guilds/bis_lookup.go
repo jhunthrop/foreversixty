@@ -1,22 +1,48 @@
 // api/internal/guilds/bis_lookup.go
 package guilds
 
-import "github.com/jhunthrop/foreversixty/api/internal/bis"
+import (
+	"sync"
+
+	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
+)
 
 // BisBuild is the client build every BiS read of this service uses (the guild control
 // centre's readiness, loot and roster reads, and the Discord bot's lookups): the site BiS
 // page's own rule (bis.SourceBuild of the newest loaded build, web/scripts/
 // bis-source-build.mjs), so the API and the site never read two different BiS builds. Empty
-// when no build data is loaded, which every caller reads as "no band".
+// when no build data is loaded, which every caller reads as "no band". SourceBuild reads the
+// filesystem, and this runs per roster row and per loot item, so the answer is kept for as
+// long as DataDir and Trees stay the ones it was worked out from (both are set at boot).
 func (s *Store) BisBuild() string {
-	if s.Trees == nil {
+	s.bisBuild.mu.Lock()
+	defer s.bisBuild.mu.Unlock()
+	c := &s.bisBuild
+	if !c.set || c.dataDir != s.DataDir || c.trees != s.Trees {
+		c.build, c.dataDir, c.trees, c.set = sourceBuildOf(s.DataDir, s.Trees), s.DataDir, s.Trees, true
+	}
+	return c.build
+}
+
+// bisBuildCache is BisBuild's kept answer and the inputs it came from.
+type bisBuildCache struct {
+	mu      sync.Mutex
+	set     bool
+	dataDir string
+	trees   *trees.Data
+	build   string
+}
+
+func sourceBuildOf(dataDir string, data *trees.Data) string {
+	if data == nil {
 		return ""
 	}
-	latest, ok := s.Trees.Latest()
+	latest, ok := data.Latest()
 	if !ok {
 		return ""
 	}
-	return bis.SourceBuild(s.DataDir, latest.Version)
+	return bis.SourceBuild(dataDir, latest.Version)
 }
 
 // BisBuild is Store.BisBuild.

@@ -2,7 +2,7 @@
 //
 // GET /v1/guilds/{id}/loot, POST .../loot/awards, DELETE .../loot/awards/{award_id}
 // (contract step 6, docs/contracts/2026-10-04-guild-centre-api.md): the loot council
-// helper, Onyxia's own real 22-item table (data/builds/1.60.1.70009/loot.json's
+// helper, Onyxia's own real 22-item table (data/builds/1.60.1.70630/loot.json's
 // raid:onyxias-lair, npc 10184). Member read-only, officer gets the Award control (design
 // spec §4.F / §10.1's own proposed ruling, recorded as "Shown, read-only" for a member).
 package guilds
@@ -31,8 +31,9 @@ import (
 const onyxiaEncounterID = encounterOnyxia
 
 // lootItem is one of Onyxia's own 22 drops: id, name and quality from
-// data/builds/1.60.1.70009/items.json (every item carries a real row there); slot from that same
-// build's data/builds/<build>/items/<class>.json where one of the nine per-class weighted item pools
+// data/builds/1.60.1.70630/items.json (every item carries a real row there; the 22 are unchanged
+// since 1.60.1.70009); slot from the BiS build's (Store.BisBuild)
+// data/builds/<build>/items/<class>.json where one of the nine per-class weighted item pools
 // carries it. Icon is the client's own: Item.IconFileDataID through ManifestInterfaceData (wago.tools,
 // build 1.60.1.70532), so the six quest, reputation and crafting items with no inventory slot (Scale
 // of Onyxia, Onyxia Hide Backpack, both Head of Onyxia stacks, Mature Black Dragon Sinew and Draconic
