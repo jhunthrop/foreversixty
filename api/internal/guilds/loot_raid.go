@@ -1,8 +1,8 @@
 // api/internal/guilds/loot_raid.go
 //
 // Lane G2: a loot award remembers the raid it dropped in. The body may name a raid (a done raid
-// of the guild); without one the award goes to the guild's most recent done Onyxia raid of the
-// last week, else to no raid. Re-awarding the same drop in a later raid is a new row.
+// of the guild); without one the award goes to the raid being played now, else to no raid until
+// a match attaches it. Re-awarding the same drop in a later raid is a new row.
 package guilds
 
 import (
@@ -17,8 +17,6 @@ import (
 const (
 	// onyxiaZoneKey is the curated zone every award's encounter belongs to.
 	onyxiaZoneKey = "raid:onyxias-lair"
-	// awardDefaultRaidWindow is how far back a done raid still takes an award with no raid named.
-	awardDefaultRaidWindow = 7 * 24 * time.Hour
 )
 
 // AwardRaidError is an award that names a raid that cannot take it. It is an ErrInvalidAward.
@@ -31,7 +29,11 @@ func (e *AwardRaidError) Error() string {
 func (e *AwardRaidError) Is(target error) bool { return target == ErrInvalidAward }
 
 // resolveAwardRaid is the raid an award is filed under: the named done raid of the guild
-// (an *AwardRaidError when it is not a done raid of the Onyxia zone), else the default, else nil.
+// (an *AwardRaidError when it is not a done raid of the Onyxia zone), else the raid being
+// played now - the guild's Onyxia raid, of any status but cancelled, whose match window (an hour
+// before the start to six after the end) holds now, the start nearest now winning - else nil, and
+// the award joins its raid when that raid's log matches (attachMatchLoot). A previous done raid
+// never takes a default award, so a later raid's award never overwrites an earlier one's.
 func (s *Store) resolveAwardRaid(ctx context.Context, guildID int64, named *int64, now time.Time) (*int64, error) {
 	if named != nil {
 		var ok bool
@@ -49,9 +51,11 @@ func (s *Store) resolveAwardRaid(ctx context.Context, guildID int64, named *int6
 	var id int64
 	err := s.Pool.QueryRow(ctx, `
 		select id from guild_raids
-		where guild_id = $1 and zone = $2 and status = 'done' and starts_at >= $3 and starts_at <= $4
-		order by starts_at desc, id desc limit 1`,
-		guildID, onyxiaZoneKey, now.Add(-awardDefaultRaidWindow), now).Scan(&id)
+		where guild_id = $1 and zone = $2 and status <> 'cancelled'
+		  and $3 >= starts_at - make_interval(hours => $4)
+		  and $3 <= starts_at + make_interval(mins => duration_minutes) + make_interval(hours => $5)
+		order by abs(extract(epoch from (starts_at - $3))), id limit 1`,
+		guildID, onyxiaZoneKey, now, matchLeadHours, matchTailHours).Scan(&id)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}

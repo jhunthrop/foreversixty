@@ -217,8 +217,10 @@ Table `loot_awards (id bigserial, guild_id, encounter_id, item_id, character_key
 
 `raid_id` is optional and names the done Onyxia raid of this guild the award was for. A
 `raid_id` that is not one answers 400 `invalid` ("raid N is not a done Onyxia raid of this
-guild"). Without it the award goes to the guild's most recent done Onyxia raid of the last
-week, else to no raid. One award per drop per raid: re-awarding the same drop in the same raid
+guild"). Without it the award goes to the raid being played now: the guild's Onyxia raid (any
+status but cancelled) whose match window, an hour before its start to six hours after its end,
+holds the award's time. Otherwise it has no raid until a match attaches it; a previous done raid
+never takes it. One award per drop per raid: re-awarding the same drop in the same raid
 replaces it, and a later raid's award of the same item is a new row.
 
 Attach on match (Lane G2): an award made live has no raid, since a raid is not done until its
