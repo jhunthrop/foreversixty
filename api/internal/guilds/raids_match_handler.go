@@ -167,6 +167,7 @@ func (s *Service) deleteMatch(w http.ResponseWriter, r *http.Request) {
 	if !s.writeRaidWriteErr(w, r, "raid_match_clear", err) {
 		return
 	}
+	s.markRaid(r.Context(), updated.ID)
 	s.logger().Info("guilds", "op", "raid_match_clear", "guild_id", guildID, "raid_id", raid.ID, "user_id", userID)
 	s.writeRaidView(w, r, "raid_match_clear", guildID, updated, nil)
 }

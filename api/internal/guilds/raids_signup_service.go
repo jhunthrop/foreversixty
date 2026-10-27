@@ -92,17 +92,6 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 		role = char.defaultRole()
 	}
 	result := SignupResult{Character: char.candidate(role, false)}
-	if skipUnchanged {
-		same, err := s.signupHolds(ctx, raid.ID, char.CharacterKey, cmd, role)
-		if err != nil {
-			return SignupResult{}, err
-		}
-		if same {
-			result.Unchanged = true
-			result.Raid, err = s.signupRaidView(ctx, cmd)
-			return result, err
-		}
-	}
 	// SignedBy is the character's account, not the actor: R3 groups by it, so an officer's
 	// write for a member benches the member's other character, never the officer's.
 	sg := Signup{
@@ -113,8 +102,19 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	if cmd.Note != nil {
 		sg.Note = *cmd.Note
 	}
-	if result.Moved, err = s.Store.UpsertSignup(ctx, sg); err != nil {
+	wrote := true
+	if skipUnchanged {
+		result.Moved, wrote, err = s.Store.UpsertSignupIfChanged(ctx, sg)
+	} else {
+		result.Moved, err = s.Store.UpsertSignup(ctx, sg)
+	}
+	if err != nil {
 		return SignupResult{}, err
+	}
+	if !wrote {
+		result.Unchanged = true
+		result.Raid, err = s.signupRaidView(ctx, cmd)
+		return result, err
 	}
 	s.logger().Info("guilds", "op", "raid_signup", "guild_id", cmd.GuildID, "raid_id", raid.ID,
 		"user_id", char.userID, "actor", cmd.ActorID, "character_key", char.CharacterKey, "as_officer", asOfficer)
@@ -177,7 +177,7 @@ func (s *Service) signupStanding(ctx context.Context, actorID int64, raid Raid, 
 		return false, nil
 	}
 	// Writing to a locked raid is an officer power, frozen like the others.
-	if err := s.notFrozen(ctx, raid.GuildID); err != nil {
+	if err := s.notFrozen(ctx, raid.GuildID, actorID); err != nil {
 		return false, err
 	}
 	return true, nil
@@ -203,11 +203,14 @@ func (s *Service) officerGateFor(ctx context.Context, guildID, actorID int64) er
 	if !ok {
 		return ErrPlanRequired
 	}
-	return s.notFrozen(ctx, guildID)
+	return s.notFrozen(ctx, guildID, actorID)
 }
 
-func (s *Service) notFrozen(ctx context.Context, guildID int64) error {
-	frozen, err := s.freezeCheck(ctx, guildID, auth.ActorFrom(ctx).IsModerator())
+// notFrozen refuses while the guild's claim is contested. A moderator's bypass counts only
+// when the context's actor is the very account answering.
+func (s *Service) notFrozen(ctx context.Context, guildID, actorID int64) error {
+	ctxActor := auth.ActorFrom(ctx)
+	frozen, err := s.freezeCheck(ctx, guildID, ctxActor.UserID == actorID && ctxActor.IsModerator())
 	if err != nil {
 		return err
 	}
@@ -215,21 +218,6 @@ func (s *Service) notFrozen(ctx context.Context, guildID int64) error {
 		return ErrClaimContested
 	}
 	return nil
-}
-
-// signupHolds reports whether the character's stored row already has the asked state, role
-// and (when one is asked) note.
-func (s *Service) signupHolds(ctx context.Context, raidID int64, key string, cmd SignupCommand, role string) (bool, error) {
-	signups, err := s.Store.RaidSignups(ctx, raidID)
-	if err != nil {
-		return false, err
-	}
-	for _, sg := range signups {
-		if sg.CharacterKey == key {
-			return sg.State == cmd.State && sg.Role == role && (cmd.Note == nil || sg.Note == *cmd.Note), nil
-		}
-	}
-	return false, nil
 }
 
 // signupRaidView re-reads the raid (its status may have moved meanwhile) as the actor sees it.
