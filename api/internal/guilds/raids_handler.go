@@ -143,11 +143,23 @@ func (s *Service) officerRaid(w http.ResponseWriter, r *http.Request, op string)
 }
 
 func (s *Service) getRaid(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.memberRaid(w, r, "raid")
-	if !ok {
+	guildID, gok := guildIDFrom(r)
+	raidID, rok := raidIDFrom(r)
+	if !gok || !rok {
+		writeRaidNotFound(w, r)
 		return
 	}
-	s.writeRaidView(w, r, "raid", guildID, raid, nil)
+	view, found, err := s.MemberRaidView(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raidID)
+	if err != nil {
+		s.fail(w, r, "raid", err, "could not load that raid just now")
+		return
+	}
+	if !found {
+		writeRaidNotFound(w, r)
+		return
+	}
+	httpx.CachePrivate(w)
+	httpx.WriteOK(w, r, http.StatusOK, view)
 }
 
 // writeRaidView answers 200 with raid's view; post, when set, runs on the view first (the
