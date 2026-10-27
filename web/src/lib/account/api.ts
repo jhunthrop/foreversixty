@@ -222,6 +222,12 @@ export interface Me {
   server_sims?: { runs_this_month: number };
   /** Keyed by channel; `discord` is null when nothing is saved. Absent on an older API. */
   notifications?: { connect?: boolean; discord: DiscordNotifications | null };
+  /** The deployment has the Discord bot on: the account page draws the link row. Absent on an older API. */
+  discord_link_available?: boolean;
+  /** The Discord account this account is linked to; null or absent when unlinked. */
+  discord_link?: { display_name: string } | null;
+  /** The name of a guild of this account that signs up in Discord, when the account is unlinked. */
+  discord_link_suggested?: string | null;
 }
 
 /** Why posts stopped while a webhook is kept (spec 2026-10-25-discord-notifications §10). */

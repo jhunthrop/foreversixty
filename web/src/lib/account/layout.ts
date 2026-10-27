@@ -69,6 +69,17 @@ export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   lapsed: { lg: 480, stack: 470 },
 };
 
+/** What `data-discord-link` on `<html>` says the You panel's Discord link row will be. */
+export type LinkHintState = 'none' | 'unlinked' | 'suggested' | 'linked';
+
+/** The link row's height in the You panel, its gap included (experience spec 2026-10-27-discord-bot 3.2). */
+export const ACCOUNT_DISCORD_LINK_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
+  none: { lg: 0, stack: 0 },
+  unlinked: { lg: 115, stack: 135 },
+  suggested: { lg: 120, stack: 140 },
+  linked: { lg: 95, stack: 95 },
+};
+
 /** Read back by the pre-paint script in Base.astro. */
 export const ACCOUNT_RESERVE_KEY = 'fs.accountReserve';
 
@@ -153,6 +164,16 @@ export function discordHintState(me: Me | null): HintState {
   }
   if (!entitled) return 'lapsed';
   return discord.disabled_reason === null ? 'saved' : 'off';
+}
+
+/**
+ * Which link row the You panel will draw, from the cached `/v1/me`. The pre-paint script in
+ * Base.astro copies this logic verbatim: keep it small and import-free.
+ */
+export function discordLinkHint(me: Me | null): LinkHintState {
+  if (me === null || me.discord_link_available !== true) return 'none';
+  if (me.discord_link && me.discord_link.display_name) return 'linked';
+  return me.discord_link_suggested ? 'suggested' : 'unlinked';
 }
 
 /** The rail's floor with nothing stored: its three panels, the gaps, and the Discord block under Plan. */

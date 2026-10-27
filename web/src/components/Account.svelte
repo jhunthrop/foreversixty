@@ -30,6 +30,7 @@
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
   import { premiumRowLinked, premiumRowValue, premiumRowVisible } from '../lib/account/notifications';
+  import AccountDiscordLink from './account/AccountDiscordLink.svelte';
   import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import AccountLoading from './account/AccountLoading.svelte';
@@ -797,19 +798,22 @@
               </StatePanel>
             </div>
 
-            <StatePanel label={accountPageCopy.youLabel} testid="account-you">
-              <label class="flex min-h-11 items-center gap-3 text-[14px]">
-                <input
-                  type="checkbox"
-                  checked={me!.user.anonymize}
-                  onchange={onAnonymize}
-                  disabled={busy}
-                  data-testid="anonymize"
-                />
-                {accountPageCopy.pseudonymLabel}
-              </label>
-              <p class="text-muted text-[13px]">{accountPageCopy.pseudonymNote}</p>
-            </StatePanel>
+            <div id="you" class="scroll-mt-20">
+              <StatePanel label={accountPageCopy.youLabel} testid="account-you">
+                <label class="flex min-h-11 items-center gap-3 text-[14px]">
+                  <input
+                    type="checkbox"
+                    checked={me!.user.anonymize}
+                    onchange={onAnonymize}
+                    disabled={busy}
+                    data-testid="anonymize"
+                  />
+                  {accountPageCopy.pseudonymLabel}
+                </label>
+                <p class="text-muted text-[13px]">{accountPageCopy.pseudonymNote}</p>
+                <AccountDiscordLink {me} />
+              </StatePanel>
+            </div>
 
             <div id="plan" class="flex flex-col gap-4">
               {#if me!.guilds.length > 0}

@@ -415,7 +415,7 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
    state above and below: no skeletons, the sign-in prompt only. */
 /* account loading reserve:begin (mirrors lib/account/layout.ts's tables; layout-reserve.test.ts keeps them equal) */
 .account-rail-skeleton {
-  min-height: var(--account-rail-reserve, var(--account-rail-floor));
+  min-height: var(--account-rail-reserve, calc(var(--account-rail-floor) + var(--account-link-floor, 0px)));
   /* With a stored height the rail is exactly that tall: a floor sum above it (a Plan panel with
      no Premium row is shorter than its floor) is clipped, not pushed into the footer. */
   max-height: var(--account-rail-reserve, none);
@@ -423,6 +423,15 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
 }
 .account-discord-skeleton {
   display: none;
+}
+html[data-discord-link='unlinked'] {
+  --account-link-floor: 135px;
+}
+html[data-discord-link='suggested'] {
+  --account-link-floor: 140px;
+}
+html[data-discord-link='linked'] {
+  --account-link-floor: 95px;
 }
 html[data-session='1'] .account-header-reserve {
   min-height: 83px;
@@ -434,7 +443,7 @@ html[data-session='1'] .account-header-reserve {
   min-height: 249px;
 }
 .account-you-skeleton {
-  min-height: 185px;
+  min-height: calc(185px + var(--account-link-floor, 0px));
 }
 .account-plan-skeleton {
   min-height: 211px;
@@ -485,6 +494,15 @@ html[data-discord='lapsed'] .account-discord-skeleton {
   min-height: 470px;
 }
 @media (min-width: 1024px) {
+  html[data-discord-link='unlinked'] {
+    --account-link-floor: 115px;
+  }
+  html[data-discord-link='suggested'] {
+    --account-link-floor: 120px;
+  }
+  html[data-discord-link='linked'] {
+    --account-link-floor: 95px;
+  }
   html[data-session='1'] .account-header-reserve {
     min-height: 44px;
   }
@@ -495,7 +513,7 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 233px;
   }
   .account-you-skeleton {
-    min-height: 193px;
+    min-height: calc(193px + var(--account-link-floor, 0px));
   }
   .account-plan-skeleton {
     min-height: 219px;
