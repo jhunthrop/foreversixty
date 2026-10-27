@@ -38,6 +38,7 @@ func (s *Service) ReportGuildMoved(ctx context.Context, reportID string, by int6
 			s.logger().Error("guilds", "op", "report_guild_moved", "report", reportID, "raid", m.raidID, "err", err)
 			continue
 		}
+		s.markRaid(ctx, m.raidID)
 		s.logger().Info("guilds", "op", "report_guild_moved", "report", reportID, "raid", m.raidID, "user_id", by)
 	}
 }

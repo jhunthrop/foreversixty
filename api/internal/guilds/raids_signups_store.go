@@ -56,30 +56,64 @@ func isAttending(state string) bool { return state == SignupIn || state == Signu
 // nor that an AsOfficer caller is an officer. The HTTP layer (raids_signup_handler.go) does
 // both.
 func (s *Store) UpsertSignup(ctx context.Context, sg Signup) (*string, error) {
+	moved, _, err := s.upsertSignup(ctx, sg, false)
+	return moved, err
+}
+
+// UpsertSignupIfChanged is UpsertSignup that writes nothing when the character's stored row
+// already holds the asked state, role and (when a note is asked) note, judged under the same
+// lock and after the same raid-open check as a write; wrote is false then.
+func (s *Store) UpsertSignupIfChanged(ctx context.Context, sg Signup) (moved *string, wrote bool, err error) {
+	return s.upsertSignup(ctx, sg, true)
+}
+
+func (s *Store) upsertSignup(ctx context.Context, sg Signup, skipSame bool) (*string, bool, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("guilds: upsert signup: begin: %w", err)
+		return nil, false, fmt.Errorf("guilds: upsert signup: begin: %w", err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 	if err := lockOwnSignups(ctx, tx, sg.RaidID, sg.SignedBy); err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	if err := checkRaidOpen(ctx, tx, sg); err != nil {
-		return nil, err
+		return nil, false, err
+	}
+	if skipSame {
+		same, err := signupHolds(ctx, tx, sg)
+		if err != nil || same {
+			return nil, false, err
+		}
 	}
 	var moved *string
 	if isAttending(sg.State) {
 		if moved, err = benchOtherOwn(ctx, tx, sg); err != nil {
-			return nil, err
+			return nil, false, err
 		}
 	}
 	if err := writeSignup(ctx, tx, sg); err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return nil, fmt.Errorf("guilds: upsert signup: commit: %w", err)
+		return nil, false, fmt.Errorf("guilds: upsert signup: commit: %w", err)
 	}
-	return moved, nil
+	return moved, true, nil
+}
+
+// signupHolds reports whether the character's stored row already has sg's state, role and
+// (unless the note is kept) note.
+func signupHolds(ctx context.Context, tx pgx.Tx, sg Signup) (bool, error) {
+	var state, role, note string
+	err := tx.QueryRow(ctx,
+		`select state, role, note from guild_raid_signups where raid_id = $1 and character_key = $2`,
+		sg.RaidID, sg.CharacterKey).Scan(&state, &role, &note)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("guilds: upsert signup: read row: %w", err)
+	}
+	return state == sg.State && role == sg.Role && (sg.KeepNote || note == sg.Note), nil
 }
 
 // lockOwnSignups serialises one account's writes to one raid: the advisory lock covers the
