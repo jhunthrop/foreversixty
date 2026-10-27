@@ -21288,7 +21288,7 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4792,
+                  "item_id": 4793,
                   "source_kind": "vendor",
                   "source": "Jennabink Powerseam"
                 },
@@ -46096,14 +46096,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13066,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 220795,
                   "source_kind": "vendor",
                   "source": "Captain Dirgehammer"
+                },
+                {
+                  "item_id": 13066,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -46245,16 +46245,16 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 19302,
+                  "item_id": 272069,
                   "source_kind": "vendor",
-                  "source": "Lhara"
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
             "finger2": {
-              "item_id": 272069,
+              "item_id": 19302,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "source": "Lhara",
               "chance": null,
               "alternatives": [
                 {
@@ -46263,9 +46263,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 1980,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 272069,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -46324,20 +46324,20 @@
               ]
             },
             "off_hand": {
-              "item_id": 1203,
+              "item_id": 1979,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 1203,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 11631,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Lord Roccor"
-                },
-                {
-                  "item_id": 14852,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             }
@@ -46373,9 +46373,9 @@
                   "source": "Creeg Bothunk"
                 },
                 {
-                  "item_id": 274749,
-                  "source_kind": "vendor",
-                  "source": "Gezzy Gunkgear"
+                  "item_id": 19159,
+                  "source_kind": "quest",
+                  "source": "Wanted: Vile Priestess Hexx and Her Minions"
                 }
               ]
             },
@@ -46391,9 +46391,9 @@
                   "source": "PvP rank 11 · Blood Guard · Horde"
                 },
                 {
-                  "item_id": 13066,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9531,
+                  "source_kind": "quest",
+                  "source": "Tiara of the Deep"
                 }
               ]
             },
@@ -46614,20 +46614,20 @@
               ]
             },
             "off_hand": {
-              "item_id": 1203,
+              "item_id": 1979,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 1203,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 11631,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Lord Roccor"
-                },
-                {
-                  "item_id": 14852,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             }
@@ -46646,11 +46646,11 @@
             220797,
             220799,
             272065,
-            272069,
+            19302,
             272061,
             272060,
             1721,
-            1203
+            1979
           ],
           "horde": [
             10749,
@@ -46668,7 +46668,7 @@
             272061,
             272060,
             1721,
-            1203
+            1979
           ]
         },
         "weights": {
@@ -73520,9 +73520,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 277289,
-                  "source_kind": "quest",
-                  "source": "Wrongly Blamed, Justly Corrected"
+                  "item_id": 6378,
+                  "source_kind": "dungeon",
+                  "source": "Wailing Caverns: Large Battered Chest"
                 }
               ]
             },
@@ -92629,9 +92629,9 @@
                   "source": "Captain Dirgehammer"
                 },
                 {
-                  "item_id": 17776,
-                  "source_kind": "quest",
-                  "source": "Twisted Evils"
+                  "item_id": 13073,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -92654,9 +92654,9 @@
               ]
             },
             "shoulder": {
-              "item_id": 220795,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "item_id": 17779,
+              "source_kind": "quest",
+              "source": "Twisted Evils",
               "chance": null,
               "alternatives": [
                 {
@@ -92701,9 +92701,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 220794,
-                  "source_kind": "vendor",
-                  "source": "Captain Dirgehammer"
+                  "item_id": 15064,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -92780,9 +92780,9 @@
               ]
             },
             "feet": {
-              "item_id": 220799,
-              "source_kind": "vendor",
-              "source": "PvP rank 9 · Sergeant Major · Alliance",
+              "item_id": 14549,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
@@ -92791,9 +92791,9 @@
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 250563,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 220799,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 9 · Sergeant Major · Alliance"
                 }
               ]
             },
@@ -92888,20 +92888,20 @@
               ]
             },
             "off_hand": {
-              "item_id": 1203,
+              "item_id": 1979,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 1203,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 11631,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Lord Roccor"
-                },
-                {
-                  "item_id": 14852,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -93040,12 +93040,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 250553,
+                  "item_id": 250552,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 250552,
+                  "item_id": 250553,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 }
@@ -93196,20 +93196,20 @@
               ]
             },
             "off_hand": {
-              "item_id": 1203,
+              "item_id": 1979,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 1203,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 11631,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Lord Roccor"
-                },
-                {
-                  "item_id": 14852,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -93237,20 +93237,19 @@
           "alliance": [
             10749,
             18444,
-            220795,
+            17779,
             12465,
             13067,
             18447,
             226870,
             250572,
             220797,
-            220799,
             272065,
             19302,
             272061,
             272060,
             13014,
-            1203,
+            1979,
             285277
           ],
           "horde": [
@@ -93269,7 +93268,7 @@
             272061,
             272060,
             13014,
-            1203,
+            1979,
             285277
           ]
         },
@@ -110278,6 +110277,7 @@
     "1974": "Mindthrust Bracers",
     "1975": "Pysan's Old Greatsword",
     "1978": "Wolfclaw Gloves",
+    "1979": "Wall of the Dead",
     "1980": "Underworld Band",
     "1981": "Icemail Jerkin",
     "1982": "Nightblade",
@@ -110641,6 +110641,7 @@
     "9509": "Petrolspill Leggings",
     "9510": "Caverndeep Trudgers",
     "9527": "Spellshifter Rod",
+    "9531": "Gemshale Pauldrons",
     "9533": "Masons Fraternity Ring",
     "9534": "Engineer's Guild Headpiece",
     "9536": "Fairywing Mantle",
@@ -110911,7 +110912,6 @@
     "14841": "Tyrant's Epaulets",
     "14844": "Sunscale Chestguard",
     "14849": "Sunscale Helmet",
-    "14852": "Sunscale Shield",
     "15057": "Stormshroud Pants",
     "15058": "Stormshroud Shoulders",
     "15061": "Living Shoulders",
@@ -112077,7 +112077,6 @@
     "277210": "Pyrewood Signet Ring",
     "277226": "Disjointed Shoes",
     "277234": "Alacritous Treads",
-    "277289": "Traveler's Shawl",
     "279246": "Torch of Light",
     "279252": "Elderwild Waistcord",
     "279253": "Outlaw's Collar",

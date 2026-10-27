@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T14:37:59Z",
+  "generated_at": "2026-10-27T11:07:57Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -1017,8 +1017,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.062557411,
-      "verify_run_seconds": 1.263757375,
+      "weights_run_seconds": 2.2209026610000002,
+      "verify_run_seconds": 1.367623842,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1673,16 +1673,16 @@
               "item_name": "Lesser Staff of the Spire"
             },
             {
-              "item_id": 269716,
-              "item_name": "Keen Skinning Knife"
-            },
-            {
               "item_id": 1391,
               "item_name": "Riverpaw Mystic Staff"
             },
             {
               "item_id": 15444,
               "item_name": "Staff of Orgrimmar"
+            },
+            {
+              "item_id": 269716,
+              "item_name": "Keen Skinning Knife"
             },
             {
               "item_id": 1928,
@@ -2233,8 +2233,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.062557411,
-      "verify_run_seconds": 1.274029829,
+      "weights_run_seconds": 2.2209026610000002,
+      "verify_run_seconds": 1.369729433,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -3105,8 +3105,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.052462847,
-      "verify_run_seconds": 1.198976093,
+      "weights_run_seconds": 2.255477468,
+      "verify_run_seconds": 1.27509229,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3982,8 +3982,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.052462847,
-      "verify_run_seconds": 1.255604342,
+      "weights_run_seconds": 2.255477468,
+      "verify_run_seconds": 1.266133606,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4898,8 +4898,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.033976367,
-      "verify_run_seconds": 1.473182337,
+      "weights_run_seconds": 2.116571256,
+      "verify_run_seconds": 1.48168214,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5795,8 +5795,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.033976367,
-      "verify_run_seconds": 1.48197113,
+      "weights_run_seconds": 2.116571256,
+      "verify_run_seconds": 1.4793872750000001,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6706,8 +6706,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.336906926,
-      "verify_run_seconds": 1.681628,
+      "weights_run_seconds": 5.590343318,
+      "verify_run_seconds": 1.745773869,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7629,8 +7629,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.336906926,
-      "verify_run_seconds": 1.646803464,
+      "weights_run_seconds": 5.590343318,
+      "verify_run_seconds": 1.6892553559999999,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8584,8 +8584,8 @@
         "trinket2: Serenity Field",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 6.018301112,
-      "verify_run_seconds": 3.115800896,
+      "weights_run_seconds": 6.209652229,
+      "verify_run_seconds": 3.226457249,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9536,8 +9536,8 @@
         "trinket2: Serenity Field",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 6.018301112,
-      "verify_run_seconds": 3.030635742,
+      "weights_run_seconds": 6.209652229,
+      "verify_run_seconds": 3.184636747,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10485,8 +10485,8 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 7.02447951,
-      "verify_run_seconds": 3.382456714,
+      "weights_run_seconds": 7.123396669,
+      "verify_run_seconds": 3.476041391,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11433,8 +11433,8 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 7.02447951,
-      "verify_run_seconds": 3.315504361,
+      "weights_run_seconds": 7.123396669,
+      "verify_run_seconds": 3.424995498,
       "coverage": {
         "back": {
           "eligible": 390,

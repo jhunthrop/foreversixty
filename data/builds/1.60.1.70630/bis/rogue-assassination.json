@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T14:19:35Z",
+  "generated_at": "2026-10-27T10:48:06Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -746,8 +746,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.8225515909999999,
-      "verify_run_seconds": 3.517178854,
+      "weights_run_seconds": 2.133696548,
+      "verify_run_seconds": 3.931810202,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1568,8 +1568,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.8225515909999999,
-      "verify_run_seconds": 3.571362839,
+      "weights_run_seconds": 2.133696548,
+      "verify_run_seconds": 3.973261496,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2462,8 +2462,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.952127789,
-      "verify_run_seconds": 3.782800926,
+      "weights_run_seconds": 2.191882052,
+      "verify_run_seconds": 4.33854369,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3360,8 +3360,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.952127789,
-      "verify_run_seconds": 3.8174571630000003,
+      "weights_run_seconds": 2.191882052,
+      "verify_run_seconds": 4.390510513,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4235,8 +4235,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.98783524,
-      "verify_run_seconds": 2.037721383,
+      "weights_run_seconds": 2.261510813,
+      "verify_run_seconds": 2.309539238,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5109,8 +5109,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.98783524,
-      "verify_run_seconds": 2.009997929,
+      "weights_run_seconds": 2.261510813,
+      "verify_run_seconds": 2.258088029,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5999,8 +5999,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.849311329,
-      "verify_run_seconds": 2.479983569,
+      "weights_run_seconds": 3.210301688,
+      "verify_run_seconds": 2.833591998,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6895,8 +6895,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.849311329,
-      "verify_run_seconds": 2.464017399,
+      "weights_run_seconds": 3.210301688,
+      "verify_run_seconds": 2.820587705,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7833,8 +7833,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.696569322,
-      "verify_run_seconds": 7.233004873,
+      "weights_run_seconds": 3.013664083,
+      "verify_run_seconds": 8.16048845,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8800,8 +8800,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.696569322,
-      "verify_run_seconds": 7.195649153,
+      "weights_run_seconds": 3.013664083,
+      "verify_run_seconds": 8.097830074,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9737,8 +9737,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.905841939,
-      "verify_run_seconds": 7.293671355,
+      "weights_run_seconds": 3.231033134,
+      "verify_run_seconds": 8.21255859,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10703,8 +10703,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 2.905841939,
-      "verify_run_seconds": 7.655585229,
+      "weights_run_seconds": 3.231033134,
+      "verify_run_seconds": 8.534892205,
       "coverage": {
         "back": {
           "eligible": 390,

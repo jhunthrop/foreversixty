@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T14:25:32Z",
+  "generated_at": "2026-10-27T10:54:45Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -673,8 +673,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.788450486,
-      "verify_run_seconds": 3.019065077,
+      "weights_run_seconds": 2.011213291,
+      "verify_run_seconds": 3.332843934,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1444,8 +1444,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.788450486,
-      "verify_run_seconds": 2.790689606,
+      "weights_run_seconds": 2.011213291,
+      "verify_run_seconds": 3.091207266,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2256,8 +2256,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.896525627,
-      "verify_run_seconds": 1.815635281,
+      "weights_run_seconds": 2.066647767,
+      "verify_run_seconds": 2.023651362,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3069,8 +3069,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.896525627,
-      "verify_run_seconds": 1.721141512,
+      "weights_run_seconds": 2.066647767,
+      "verify_run_seconds": 1.913507514,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3886,8 +3886,8 @@
         "finger2: Mark of Kern",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.165343402,
-      "verify_run_seconds": 2.022343573,
+      "weights_run_seconds": 2.385404606,
+      "verify_run_seconds": 2.266898426,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4700,8 +4700,8 @@
         "finger2: Mark of Kern",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.165343402,
-      "verify_run_seconds": 1.929284412,
+      "weights_run_seconds": 2.385404606,
+      "verify_run_seconds": 2.173755512,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5554,8 +5554,8 @@
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.207385795,
-      "verify_run_seconds": 4.17386618,
+      "weights_run_seconds": 2.460989614,
+      "verify_run_seconds": 4.580479457,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5608,8 +5608,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 276,
-          "sourced": 215,
+          "eligible": 277,
+          "sourced": 216,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -6405,8 +6405,8 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 2.207385795,
-      "verify_run_seconds": 2.34872187,
+      "weights_run_seconds": 2.460989614,
+      "verify_run_seconds": 2.595676064,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6459,8 +6459,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 273,
-          "sourced": 218,
+          "eligible": 274,
+          "sourced": 219,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -7291,8 +7291,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.2357869790000002,
-      "verify_run_seconds": 7.802533103,
+      "weights_run_seconds": 2.4126445309999998,
+      "verify_run_seconds": 8.65210409,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7345,8 +7345,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 361,
-          "sourced": 268,
+          "eligible": 362,
+          "sourced": 269,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -8153,8 +8153,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.2357869790000002,
-      "verify_run_seconds": 8.03811241,
+      "weights_run_seconds": 2.4126445309999998,
+      "verify_run_seconds": 8.86372544,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -8207,8 +8207,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 360,
-          "sourced": 273,
+          "eligible": 361,
+          "sourced": 274,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -9032,8 +9032,8 @@
         "trinket2: Darkmoon Card: Heroism",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.419970467,
-      "verify_run_seconds": 6.569754296,
+      "weights_run_seconds": 2.614754254,
+      "verify_run_seconds": 7.276748356,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9086,8 +9086,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 361,
-          "sourced": 268,
+          "eligible": 362,
+          "sourced": 269,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -9927,8 +9927,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.419970467,
-      "verify_run_seconds": 8.007538748,
+      "weights_run_seconds": 2.614754254,
+      "verify_run_seconds": 8.940886487,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9981,8 +9981,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 360,
-          "sourced": 273,
+          "eligible": 361,
+          "sourced": 274,
           "rare_spawn_skipped": 8
         },
         "ranged": {

@@ -2,7 +2,7 @@
   "spec": "warrior-protection",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T14:45:29Z",
+  "generated_at": "2026-10-27T11:16:00Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -888,8 +888,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 4.9022469520000005,
-      "verify_run_seconds": 2.175271149,
+      "weights_run_seconds": 5.299220658,
+      "verify_run_seconds": 2.269753787,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1877,8 +1877,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 4.9022469520000005,
-      "verify_run_seconds": 2.101458683,
+      "weights_run_seconds": 5.299220658,
+      "verify_run_seconds": 2.197978236,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2908,8 +2908,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 4.822836994,
-      "verify_run_seconds": 2.050944514,
+      "weights_run_seconds": 5.217449022,
+      "verify_run_seconds": 2.167011814,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3933,8 +3933,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 4.822836994,
-      "verify_run_seconds": 2.047064944,
+      "weights_run_seconds": 5.217449022,
+      "verify_run_seconds": 2.135695949,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4990,8 +4990,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.422781352,
-      "verify_run_seconds": 2.257698172,
+      "weights_run_seconds": 4.816217569,
+      "verify_run_seconds": 2.488500436,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -6048,8 +6048,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.422781352,
-      "verify_run_seconds": 2.3378136019999998,
+      "weights_run_seconds": 4.816217569,
+      "verify_run_seconds": 2.562524737,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6328,19 +6328,19 @@
               "dps_delta": -511.405186457
             },
             {
+              "item_id": 13073,
+              "item_name": "Mugthol's Helm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -515.442498895,
+              "verified": true
+            },
+            {
               "item_id": 17776,
               "item_name": "Sprightring Helm",
               "source_kind": "quest",
               "source": "Twisted Evils",
               "dps_delta": -542.484179167
-            },
-            {
-              "item_id": 13073,
-              "item_name": "Mugthol's Helm",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -622.651805396,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -6350,9 +6350,9 @@
               "source": "Captain Dirgehammer"
             },
             {
-              "item_id": 17776,
-              "source_kind": "quest",
-              "source": "Twisted Evils"
+              "item_id": 13073,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -6402,11 +6402,11 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 220795,
-          "item_name": "Knight-Lieutenant's Plate Pauldrons",
-          "source": "Captain Dirgehammer",
-          "source_kind": "vendor",
-          "sim_dps": 15770.721556922872,
+          "item_id": 17779,
+          "item_name": "Hulkstone Pauldrons",
+          "source": "Twisted Evils",
+          "source_kind": "quest",
+          "score": 28.328227666,
           "verified": true,
           "alternatives": [
             {
@@ -6414,22 +6414,21 @@
               "item_name": "Sentinel's Pauldrons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0
+              "dps_delta": -75.164280547
             },
             {
               "item_id": 250578,
               "item_name": "Warder's Pauldrons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": 0
+              "dps_delta": -84.791197242
             },
             {
-              "item_id": 17779,
-              "item_name": "Hulkstone Pauldrons",
-              "source_kind": "quest",
-              "source": "Twisted Evils",
-              "dps_delta": -580.20035369,
-              "verified": true
+              "item_id": 13066,
+              "item_name": "Wyrmslayer Spaulders",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -170.572146566
             }
           ],
           "runners_up": [
@@ -6443,12 +6442,7 @@
               "source_kind": "crafted",
               "source": "Blacksmithing"
             }
-          ],
-          "set_bonus": {
-            "set": "Knight-Lieutenant's Plate",
-            "pieces": 3,
-            "bonus": "+15 Stamina."
-          }
+          ]
         },
         {
           "slot": "back",
@@ -6511,19 +6505,19 @@
               "dps_delta": -119.872205963
             },
             {
+              "item_id": 15064,
+              "item_name": "Warbear Harness",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -217.123976414,
+              "verified": true
+            },
+            {
               "item_id": 220794,
               "item_name": "Knight's Plate Hauberk",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "dps_delta": -221.831580031
-            },
-            {
-              "item_id": 15064,
-              "item_name": "Warbear Harness",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -397.688966995,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -6533,9 +6527,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 220794,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 15064,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             }
           ]
         },
@@ -6604,7 +6598,7 @@
               "item_name": "Sentinel's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -344.481638786,
+              "dps_delta": -334.05465757,
               "verified": true
             },
             {
@@ -6700,7 +6694,7 @@
               "item_name": "Slagplate Leggings",
               "source_kind": "quest",
               "source": "STOLEN: Smithing Tuyere and Lookout's Spyglass",
-              "dps_delta": -1202.746477467,
+              "dps_delta": -488.773454836,
               "verified": true
             }
           ],
@@ -6719,11 +6713,11 @@
         },
         {
           "slot": "feet",
-          "item_id": 220799,
-          "item_name": "Sergeant Major's Plate Greaves",
-          "source": "PvP rank 9 · Sergeant Major · Alliance",
-          "source_kind": "vendor",
-          "sim_dps": 15770.721556922872,
+          "item_id": 14549,
+          "item_name": "Boots of Avoidance",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 29.779299591,
           "verified": true,
           "alternatives": [
             {
@@ -6731,22 +6725,22 @@
               "item_name": "Sentinel's Sabatons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -93.090334651
+              "dps_delta": -154.650526148
+            },
+            {
+              "item_id": 220799,
+              "item_name": "Sergeant Major's Plate Greaves",
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · Sergeant Major · Alliance",
+              "dps_delta": -158.263637629,
+              "verified": true
             },
             {
               "item_id": 250563,
               "item_name": "Warder's Sabatons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -107.530709718
-            },
-            {
-              "item_id": 14549,
-              "item_name": "Boots of Avoidance",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -619.498613391,
-              "verified": true
+              "dps_delta": -169.090901215
             }
           ],
           "runners_up": [
@@ -6756,16 +6750,11 @@
               "source": "Blacksmithing"
             },
             {
-              "item_id": 250563,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 220799,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             }
-          ],
-          "set_bonus": {
-            "set": "Knight-Lieutenant's Plate",
-            "pieces": 3,
-            "bonus": "+15 Stamina."
-          }
+          ]
         },
         {
           "slot": "finger1",
@@ -6775,8 +6764,8 @@
           "source_kind": "vendor",
           "score": 14.113852233,
           "verified": true,
-          "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +611.0 DPS (15770.7 vs 15159.7 set DPS)",
-          "dps_delta": 611.0391562139921,
+          "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +658.9 DPS (15525.5 vs 14866.6 set DPS)",
+          "dps_delta": 658.8833774633858,
           "alternatives": [
             {
               "item_id": 1447,
@@ -6873,7 +6862,7 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 15770.721556922872,
+          "sim_dps": 15525.483059436423,
           "verified": true,
           "alternatives": [
             {
@@ -6917,7 +6906,7 @@
           "item_name": "Relentless Raider's Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 15770.721556922872,
+          "sim_dps": 15525.483059436423,
           "verified": true,
           "alternatives": [
             {
@@ -6961,7 +6950,7 @@
           "item_name": "Axe of Rin'ji",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 15770.721556922872,
+          "sim_dps": 15525.483059436423,
           "verified": true,
           "alternatives": [
             {
@@ -6983,7 +6972,7 @@
               "item_name": "Thrash Blade",
               "source_kind": "quest",
               "source": "Corruption of Earth and Seed",
-              "dps_delta": -508.640885193,
+              "dps_delta": -542.115585488,
               "verified": true
             }
           ],
@@ -7002,46 +6991,47 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 1203,
-          "item_name": "Aegis of Stormwind",
+          "item_id": 1979,
+          "item_name": "Wall of the Dead",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 63.86166315,
+          "score": 65.816244404,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 1203,
+              "item_name": "Aegis of Stormwind",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -200.879344075,
+              "verified": true
+            },
             {
               "item_id": 11631,
               "item_name": "Stoneshell Guard",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Lord Roccor",
-              "dps_delta": -246.713928621,
-              "verified": true
+              "dps_delta": -327.610064708
             },
             {
               "item_id": 14852,
               "item_name": "Sunscale Shield",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -485.003263394
-            },
-            {
-              "item_id": 8282,
-              "item_name": "Valorous Shield",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -634.607016277
+              "dps_delta": -576.615100841
             }
           ],
           "runners_up": [
             {
+              "item_id": 1203,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            {
               "item_id": 11631,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Lord Roccor"
-            },
-            {
-              "item_id": 14852,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -7051,7 +7041,7 @@
           "item_name": "Satchel of Iron Bombs",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 15770.721556922872,
+          "sim_dps": 15525.483059436423,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7074,7 +7064,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -243.442750049,
+              "dps_delta": -288.601218175,
               "verified": true
             }
           ],
@@ -7092,7 +7082,7 @@
           ]
         }
       ],
-      "set_dps": 122.21495063335888,
+      "set_dps": 120.43537221279328,
       "no_source_count": 901,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -7114,24 +7104,23 @@
       "new_at_band": [
         "head: Avenguard Helm",
         "neck: Master Sergeant's Insignia",
-        "shoulder: Knight-Lieutenant's Plate Pauldrons",
+        "shoulder: Hulkstone Pauldrons",
         "back: Nightfall Drape",
         "chest: Hydralick Armor",
         "wrist: Sergeant Major's Plate Wristguards",
         "hands: Handguards of Heroism",
         "waist: Sentinel's Waistguard",
         "legs: Knight's Plate Leggings",
-        "feet: Sergeant Major's Plate Greaves",
         "finger1: Insurgent's Band",
         "finger2: Darkmoon Ring",
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal",
         "main_hand: Axe of Rin'ji",
-        "off_hand: Aegis of Stormwind",
+        "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 4.863214077,
-      "verify_run_seconds": 4.444181696,
+      "weights_run_seconds": 5.189120679,
+      "verify_run_seconds": 3.031764456,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7184,8 +7173,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 277,
-          "sourced": 216,
+          "eligible": 278,
+          "sourced": 217,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -7232,12 +7221,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 312.265261496671,
-        "tmi": 54.89146397517021,
-        "chance_of_death": 0.07133333333333333,
-        "tps": 429.3512681369075,
-        "effective_health": 14343.510428456586,
-        "dps": 122.21495063335888
+        "dtps": 302.98646773836185,
+        "tmi": 56.1565454037908,
+        "chance_of_death": 0.047,
+        "tps": 425.7668320575091,
+        "effective_health": 14282.114177210171,
+        "dps": 120.43537221279328
       }
     },
     {
@@ -7407,7 +7396,7 @@
               "item_name": "Mugthol's Helm",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -496.433433585,
+              "dps_delta": -430.79279339,
               "verified": true
             },
             {
@@ -7576,7 +7565,7 @@
           "item_name": "Stone Guard's Plate Armor",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "sim_dps": 16548.48184583044,
+          "sim_dps": 16680.325132466292,
           "verified": true,
           "alternatives": [
             {
@@ -7598,7 +7587,7 @@
               "item_name": "Hydralick Armor",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -433.471797677,
+              "dps_delta": -490.517870601,
               "verified": true
             }
           ],
@@ -7680,19 +7669,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 250552,
+              "item_name": "Sentinel's Gloves",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -194.976806015,
+              "verified": true
+            },
+            {
               "item_id": 250553,
               "item_name": "Warder's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": -278.205355896
-            },
-            {
-              "item_id": 250552,
-              "item_name": "Sentinel's Gloves",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -296.980393489,
-              "verified": true
             },
             {
               "item_id": 272096,
@@ -7704,12 +7693,12 @@
           ],
           "runners_up": [
             {
-              "item_id": 250553,
+              "item_id": 250552,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
             {
-              "item_id": 250552,
+              "item_id": 250553,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             }
@@ -7787,7 +7776,7 @@
               "item_name": "Slagplate Leggings",
               "source_kind": "quest",
               "source": "STOLEN: Smithing Tuyere and Lookout's Spyglass",
-              "dps_delta": -1078.429184853,
+              "dps_delta": -1063.409585386,
               "verified": true
             }
           ],
@@ -7810,7 +7799,7 @@
           "item_name": "First Sergeant's Plate Greaves",
           "source": "PvP rank 9 · First Sergeant · Horde",
           "source_kind": "vendor",
-          "sim_dps": 16548.48184583044,
+          "sim_dps": 16680.325132466292,
           "verified": true,
           "alternatives": [
             {
@@ -7832,7 +7821,7 @@
               "item_name": "Boots of Avoidance",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -525.856639753,
+              "dps_delta": -566.931408471,
               "verified": true
             }
           ],
@@ -7862,8 +7851,8 @@
           "source_kind": "vendor",
           "score": 14.113852233,
           "verified": true,
-          "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +637.2 DPS (16548.5 vs 15911.3 set DPS)",
-          "dps_delta": 637.1916454131751,
+          "swap_note": "confirmed by the sim against Darkmoon Ring (id 19302): kept the pick, +645.0 DPS (16680.3 vs 16035.3 set DPS)",
+          "dps_delta": 645.0462244209593,
           "alternatives": [
             {
               "item_id": 1447,
@@ -7960,7 +7949,7 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 16548.48184583044,
+          "sim_dps": 16680.325132466292,
           "verified": true,
           "alternatives": [
             {
@@ -8004,7 +7993,7 @@
           "item_name": "Relentless Raider's Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 16548.48184583044,
+          "sim_dps": 16680.325132466292,
           "verified": true,
           "alternatives": [
             {
@@ -8048,7 +8037,7 @@
           "item_name": "Axe of Rin'ji",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 16548.48184583044,
+          "sim_dps": 16680.325132466292,
           "verified": true,
           "alternatives": [
             {
@@ -8070,7 +8059,7 @@
               "item_name": "Thrash Blade",
               "source_kind": "quest",
               "source": "Corruption of Earth and Seed",
-              "dps_delta": -448.637045289,
+              "dps_delta": -357.240318154,
               "verified": true
             }
           ],
@@ -8089,46 +8078,47 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 1203,
-          "item_name": "Aegis of Stormwind",
+          "item_id": 1979,
+          "item_name": "Wall of the Dead",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 63.86166315,
+          "score": 65.816244404,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 1203,
+              "item_name": "Aegis of Stormwind",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -131.843286636,
+              "verified": true
+            },
             {
               "item_id": 11631,
               "item_name": "Stoneshell Guard",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Lord Roccor",
-              "dps_delta": -153.590471423,
-              "verified": true
+              "dps_delta": -327.610064708
             },
             {
               "item_id": 14852,
               "item_name": "Sunscale Shield",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -485.003263394
-            },
-            {
-              "item_id": 8282,
-              "item_name": "Valorous Shield",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -634.607016277
+              "dps_delta": -576.615100841
             }
           ],
           "runners_up": [
             {
+              "item_id": 1203,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            {
               "item_id": 11631,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Lord Roccor"
-            },
-            {
-              "item_id": 14852,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -8138,7 +8128,7 @@
           "item_name": "Satchel of Iron Bombs",
           "source": "Engineering",
           "source_kind": "crafted",
-          "sim_dps": 16548.48184583044,
+          "sim_dps": 16680.325132466292,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8154,7 +8144,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -268.869012755,
+              "dps_delta": -271.120543266,
               "verified": true
             }
           ],
@@ -8172,7 +8162,7 @@
           ]
         }
       ],
-      "set_dps": 121.89120689959651,
+      "set_dps": 122.22837547053824,
       "no_source_count": 843,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -8207,11 +8197,11 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal",
         "main_hand: Axe of Rin'ji",
-        "off_hand: Aegis of Stormwind",
+        "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 4.863214077,
-      "verify_run_seconds": 4.401209282,
+      "weights_run_seconds": 5.189120679,
+      "verify_run_seconds": 4.857710322,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8264,8 +8254,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 274,
-          "sourced": 219,
+          "eligible": 275,
+          "sourced": 220,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -8312,12 +8302,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 315.96957248566116,
-        "tmi": 51.949996402713296,
-        "chance_of_death": 0.06,
-        "tps": 429.3084659323956,
-        "effective_health": 14951.332112333019,
-        "dps": 121.89120689959651
+        "dtps": 314.8389235052302,
+        "tmi": 51.65274853037414,
+        "chance_of_death": 0.050333333333333334,
+        "tps": 429.67094079206146,
+        "effective_health": 15005.025309542205,
+        "dps": 122.22837547053824
       }
     },
     {
@@ -9266,8 +9256,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 5.064945623,
-      "verify_run_seconds": 8.272855059,
+      "weights_run_seconds": 5.451438803,
+      "verify_run_seconds": 9.058119069,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9320,8 +9310,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 362,
-          "sourced": 269,
+          "eligible": 363,
+          "sourced": 270,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -10321,8 +10311,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 5.064945623,
-      "verify_run_seconds": 8.02801421,
+      "weights_run_seconds": 5.451438803,
+      "verify_run_seconds": 8.80614436,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10375,8 +10365,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 361,
-          "sourced": 274,
+          "eligible": 362,
+          "sourced": 275,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -11369,7 +11359,6 @@
         "wrist: Wristguards of Heroism",
         "waist: Valiant's Waistguard",
         "legs: Sentinel's Plate Legguards",
-        "feet: Boots of Avoidance",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Ring of Awareness",
         "trinket1: Defender's Grip Stabilizer",
@@ -11378,8 +11367,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.638176576,
-      "verify_run_seconds": 9.080318341,
+      "weights_run_seconds": 6.119538727,
+      "verify_run_seconds": 9.764392673,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11432,8 +11421,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 362,
-          "sourced": 269,
+          "eligible": 363,
+          "sourced": 270,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -12434,8 +12423,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.638176576,
-      "verify_run_seconds": 8.914727983,
+      "weights_run_seconds": 6.119538727,
+      "verify_run_seconds": 9.591222833,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -12488,8 +12477,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 361,
-          "sourced": 274,
+          "eligible": 362,
+          "sourced": 275,
           "rare_spawn_skipped": 8
         },
         "ranged": {
