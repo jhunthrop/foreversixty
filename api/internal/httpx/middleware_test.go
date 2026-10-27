@@ -392,3 +392,19 @@ func TestRateLimitByCredentialExemptRequestsPass(t *testing.T) {
 		t.Fatalf("exempt request = %d, want 200", rec.Code)
 	}
 }
+
+func TestKeyLimiterAllowsNPerWindow(t *testing.T) {
+	frozenClock(t)
+	l := NewKeyLimiter(30, time.Minute)
+	for i := 1; i <= 30; i++ {
+		if !l.Allow("k") {
+			t.Fatalf("Allow #%d = false, want true", i)
+		}
+	}
+	if l.Allow("k") {
+		t.Fatal("31st Allow = true, want false")
+	}
+	if !l.Allow("other") {
+		t.Fatal("another key must have its own bucket")
+	}
+}

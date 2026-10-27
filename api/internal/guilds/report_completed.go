@@ -19,6 +19,7 @@ func (s *Service) ReportCompleted(ctx context.Context, reportID string) {
 		s.logger().Info("guilds", "op", "report_completed", "report", reportID, "matched", false)
 		return
 	}
+	s.markRaid(ctx, raid.ID)
 	s.logger().Info("guilds", "op", "report_completed", "report", reportID, "raid", raid.ID, "matched", true)
 }
 

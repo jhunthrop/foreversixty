@@ -41,6 +41,9 @@ type Signup struct {
 	ActedBy      int64
 	UpdatedAt    time.Time
 	AsOfficer    bool
+	// KeepNote is a write-time flag, never stored: an existing row keeps its note rather
+	// than taking Note (a first answer still starts from Note).
+	KeepNote bool
 }
 
 func isAttending(state string) bool { return state == SignupIn || state == SignupLate }
@@ -143,9 +146,11 @@ func writeSignup(ctx context.Context, tx pgx.Tx, sg Signup) error {
 		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 		on conflict (raid_id, character_key) do update set
 			name = excluded.name, class = excluded.class, spec = excluded.spec, role = excluded.role,
-			state = excluded.state, note = excluded.note, signed_by = excluded.signed_by,
+			state = excluded.state, signed_by = excluded.signed_by,
+			note = case when $11 then guild_raid_signups.note else excluded.note end,
 			acted_by = excluded.acted_by, updated_at = now()`,
-		sg.RaidID, sg.CharacterKey, sg.Name, sg.Class, sg.Spec, sg.Role, sg.State, sg.Note, sg.SignedBy, sg.ActedBy); err != nil {
+		sg.RaidID, sg.CharacterKey, sg.Name, sg.Class, sg.Spec, sg.Role, sg.State, sg.Note, sg.SignedBy, sg.ActedBy,
+		sg.KeepNote); err != nil {
 		return fmt.Errorf("guilds: upsert signup: write: %w", err)
 	}
 	return nil

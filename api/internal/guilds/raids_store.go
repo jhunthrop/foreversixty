@@ -52,6 +52,16 @@ type Raid struct {
 	UpdatedAt       time.Time
 }
 
+// EndsAt is when the raid's window closes.
+func (r Raid) EndsAt() time.Time {
+	return r.StartsAt.Add(time.Duration(r.DurationMinutes) * time.Minute)
+}
+
+// Ended reports whether the raid is past its end and still open: not done, not cancelled.
+func (r Raid) Ended(now time.Time) bool {
+	return r.Status != RaidDone && r.Status != RaidCancelled && now.After(r.EndsAt())
+}
+
 // RaidInput carries the editable fields of a raid. GuildID and CreatedBy matter on create only.
 type RaidInput struct {
 	GuildID         int64

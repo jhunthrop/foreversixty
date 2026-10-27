@@ -311,7 +311,25 @@ func RateLimitPer(n int, window time.Duration, trustedHops int) func(http.Handle
 // which is refused downstream anyway and should not spend or contend for
 // a shared "no key" bucket.
 func RateLimitByKey(n int, window time.Duration, keyOf func(*http.Request) (key string, ok bool)) func(http.Handler) http.Handler {
-	l := newIPLimiter(n, window)
+	return RateLimitWith(NewKeyLimiter(n, window), keyOf)
+}
+
+// KeyLimiter is a token bucket per string key: n allowed per window, burst n.
+// RateLimitWith puts one behind a route; a caller outside HTTP (the Discord bot's
+// sign-up) shares the same budget by calling Allow on the same instance.
+type KeyLimiter struct{ l *ipLimiter }
+
+// NewKeyLimiter builds a limiter allowing n per window per key.
+func NewKeyLimiter(n int, window time.Duration) *KeyLimiter {
+	return &KeyLimiter{l: newIPLimiter(n, window)}
+}
+
+// Allow spends one token of key's bucket, false when it is empty.
+func (k *KeyLimiter) Allow(key string) bool { return k.l.allow(key, Now()) }
+
+// RateLimitWith is RateLimitByKey over a caller-owned limiter, so the budget can be shared
+// with code that is not an HTTP route.
+func RateLimitWith(l *KeyLimiter, keyOf func(*http.Request) (key string, ok bool)) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			key, ok := keyOf(r)
@@ -319,7 +337,7 @@ func RateLimitByKey(n int, window time.Duration, keyOf func(*http.Request) (key 
 				next.ServeHTTP(w, r)
 				return
 			}
-			if !l.allow(key, Now()) {
+			if !l.Allow(key) {
 				WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
 				return
 			}

@@ -224,6 +224,7 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	if !s.writeRaidWriteErr(w, r, "raid_update", err) {
 		return
 	}
+	s.markRaid(r.Context(), updated.ID)
 	s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
 	var post func(RaidView)
 	// Only a time change posts; a title or notes edit never does.
@@ -254,6 +255,7 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 		if !s.writeRaidWriteErr(w, r, op, err) {
 			return
 		}
+		s.markRaid(r.Context(), updated.ID)
 		s.logger().Info("guilds", "op", op, "guild_id", guildID, "raid_id", raid.ID,
 			"user_id", auth.ActorFrom(r.Context()).UserID)
 		// The cancel box only pre-ticks from the raid form's default; it never writes it.
