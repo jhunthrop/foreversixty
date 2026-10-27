@@ -782,7 +782,7 @@ func TestEntitlementsUserAndGuildPlanRowsDoNotCollideOnNulls(t *testing.T) {
 	}
 	for _, gid := range []int64{g1, g2} {
 		if _, err := pool.Exec(ctx,
-			`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'grant', 'active')`,
+			`insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild', 'grant', 'active')`,
 			gid); err != nil {
 			t.Fatalf("guild %d: %v", gid, err)
 		}

@@ -74,8 +74,8 @@ func seedGuildMember(t *testing.T, pool *pgxpool.Pool, guildID, userID int64, ra
 func seedEntitlement(t *testing.T, pool *pgxpool.Pool, subj Subject, plan, status string) {
 	t.Helper()
 	if _, err := pool.Exec(context.Background(),
-		`insert into entitlements (user_id, guild_id, plan, source, status)
-		 values ($1, $2, $3, 'grant', $4)`, subj.UserID, subj.GuildID, plan, status); err != nil {
+		`insert into entitlements (user_id, guild_id, plan, source, status, tier)
+		 values ($1, $2, $3, 'grant', $4, case when $3 = 'guild' then 'raid_guild' end)`, subj.UserID, subj.GuildID, plan, status); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -244,7 +244,7 @@ func TestUpsertStripeGuildPlanUpsertsByGuildID(t *testing.T) {
 	officer := seedUser(t, pool)
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 	up := StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_guild_1", BillingUserID: officer, Actor: "stripe_webhook:evt_1",
 	}
 	if _, err := s.UpsertStripe(context.Background(), up); err != nil {
@@ -275,7 +275,7 @@ func TestUpsertStripeKeepsAnExistingActiveRowOnADifferentSubscriptionID(t *testi
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 
 	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_a", BillingUserID: officerA, Actor: "stripe_webhook:evt_a",
 	})
 	if err != nil {
@@ -286,7 +286,7 @@ func TestUpsertStripeKeepsAnExistingActiveRowOnADifferentSubscriptionID(t *testi
 	}
 
 	res, err = s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_b", BillingUserID: officerB, Actor: "stripe_webhook:evt_b",
 	})
 	if err != nil {
@@ -387,7 +387,7 @@ func TestUpsertStripeTransferOverwritesInsteadOfFlaggingADuplicate(t *testing.T)
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 
 	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_old_officer", BillingUserID: oldOfficer, Actor: "stripe_webhook:evt_old",
 		SubscriptionCreated: time.Now().Add(-2 * time.Hour),
 	}); err != nil {
@@ -395,7 +395,7 @@ func TestUpsertStripeTransferOverwritesInsteadOfFlaggingADuplicate(t *testing.T)
 	}
 
 	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_new_officer", BillingUserID: newOfficer, Actor: "stripe_webhook:evt_transfer",
 		Transfer: true, SubscriptionCreated: time.Now().Add(-time.Hour),
 	})
@@ -591,7 +591,7 @@ func upsertGuildSub(t *testing.T, s *Store, gid, billing int64, subID, status st
 	t.Helper()
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: status, CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: status, CurrentPeriodEnd: &end,
 		StripeSubscriptionID: subID, BillingUserID: billing, Actor: "stripe_webhook:evt_" + subID,
 		Transfer: transfer, SubscriptionCreated: created,
 	})
@@ -610,7 +610,7 @@ func TestUpsertStripeStaleTransferLeavesTheNewerRowUntouched(t *testing.T) {
 
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end, CancelAtPeriodEnd: true,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end, CancelAtPeriodEnd: true,
 		StripeSubscriptionID: "sub_b", BillingUserID: officer, Actor: "stripe_webhook:evt_b",
 		Transfer: true, SubscriptionCreated: time.Now().Add(-2 * time.Hour),
 	})
@@ -912,7 +912,7 @@ func TestUpsertStripeReplacesScopedGrant(t *testing.T) {
 		[]string{FeatureScopeOfficerViews}, timePtr(tomorrow()))
 	end := tomorrow().UTC().Truncate(time.Second)
 	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
-		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		GuildID: i64(gid), Plan: PlanGuild, Tier: TierGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_scoped", BillingUserID: uid, Actor: "stripe_webhook:evt_s",
 	}); err != nil {
 		t.Fatal(err)
@@ -970,9 +970,9 @@ func readGuildRowState(t *testing.T, pool *pgxpool.Pool, gid int64) guildRowStat
 func seedFullStripeRow(t *testing.T, pool *pgxpool.Pool, gid int64, status string) {
 	t.Helper()
 	if _, err := pool.Exec(context.Background(), `
-		insert into entitlements (guild_id, plan, source, status, current_period_end, billing_user_id,
+		insert into entitlements (guild_id, tier, plan, source, status, current_period_end, billing_user_id,
 		                          cancel_at_period_end, stripe_subscription_id, grace_until)
-		values ($1, 'guild', 'stripe', $2, now() + interval '10 days', $3, true, $4, now() + interval '30 days')`,
+		values ($1, 'raid_guild', 'guild', 'stripe', $2, now() + interval '10 days', $3, true, $4, now() + interval '30 days')`,
 		gid, status, seedUser(t, pool), fmt.Sprintf("sub_full_%d", gid)); err != nil {
 		t.Fatal(err)
 	}
