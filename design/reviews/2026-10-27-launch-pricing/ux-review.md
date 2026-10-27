@@ -58,3 +58,54 @@ Fix the three HIGH items before merge, then recapture rows 8, 9 and 14. Fix the 
 - [~] Row 14. The layout is centred at 2000 and the cards keep their width. Open: misalignment (10) and the 1024 clipping (1).
 - [x] CLS for a warm #billing load is 0.0001 at 1440 and 0 at 390, under the 0.02 cap.
 - [x] Provenance stays quiet, each page keeps one job, and the seat crests are ClassCrestRing.
+
+## Re-review 1 (2026-10-27, captures at 1d7aee9c7; fixes 62facb8a6, 0c67dfa43; perf 0b6e1ec1d)
+
+### Verdict: SHIP WITH FIXES
+
+29 of my 31 findings are fixed. #23 needed no change, and #31 is out of scope (controller ruling). The fresh captures show 1 HIGH and 3 MED new defects (N1-N4). Fix those four, then recapture rows 6, 7, 8, 10 and 11 and the CLS run before merge. N5-N8 are LOW.
+
+### Per finding
+
+1. Fixed: `14-built-1024`. The trial slot grows to three lines and nothing is clipped.
+2. Fixed: `08-confirm-loading-crop-1440`, `07-trial-crop-1440`. The disabled commit and `Transfer the plan` render at 50 %.
+3. Fixed: `09-seats-crop-1440/360`. Lightbrand holds the seat, the middle reads "Moving to Mirelle · offered 10 Nov" with Waiting, and only Withdraw shows.
+4. Fixed: `09-seats-*`, `09-seats-open-*`. 3 of 3 seats, distinct names, and coherent 30-day dates.
+5. Fixed: `09-seats-crop-360`. Rows are two lines with the button at the right.
+6. Fixed: `08-confirm-ready-crop-360`, `10-send-confirm-crop-390`. Buttons are full width, commit first.
+7. Fixed: `08-confirm-loading-crop-1440`. The full sentence renders around the Skeleton.
+8. Fixed: `08-confirm-ready-crop-1440`. Keep Guild carries the gold ring.
+9. Fixed: `10-waiting-crop-1440`. Focus is on Withdraw and Records is plain.
+10. Fixed: `01-founder-yearly-1440/2000`, `14-side-by-side-*`. The band and the cards share one edge.
+11. Fixed: `01-founder-yearly-1440`. The Premium button bottom is at about 520 px.
+12. Fixed: `04-hover-card-button-crop-1440`. There is a gold ground and no focus ring.
+13. Partly fixed: `06-trial-available-crop-1440`, `11-lapsed-records-crop-1440`. The unit is in prose, only the list figure is struck, and the chooser is capped at 720 px. A new spacing defect appears; see N2.
+14. Fixed: `05-two-guilds-1440/390`. Crests render, and the picked plan and price head the list.
+15. Fixed: `12-seat-ended-crop-1440`. The ended sentence replaces the plan line, with a gold link and a past date.
+16. Fixed: `12-offer/accepted/founder/seat-holder-crop-*`. Premium rows read On and Shown, and there is no See plans line.
+17. Fixed: `10-receiver-offer-crop-1440`, `11-read-only-officer-crop-1440`, `12-seat-holder-crop-360`. "Billed by Thornwick" and "Given by Thornwick" now agree with the offer.
+18. Fixed: `09-picker-payer-crop-1440`. The option reads "Bramblewood · Druid · pays for Premium", and the waiting offeree is gone from the list.
+19. Fixed: copy adopted.
+20. Fixed: copy adopted.
+21. Fixed: copy adopted.
+22. Fixed: copy adopted.
+23. No change needed (accepted as written).
+24. Fixed: `01-founder-yearly-*`. The line reads "6 January 2027" in the sentence font.
+25. Fixed: `14-side-by-side-1440`. Terms are 12 px `--strong` 600 (sentence case; acceptable).
+26. Fixed: `06-trial-available-crop-1440`. The chooser is capped at 720 px.
+27. Fixed: `10-receiver-offer-crop-1440`. The guild-master line is gone.
+28. Fixed: `09-picker-payer-crop-1440`, `08-confirm-*`. The opener draws pressed.
+29. Fixed: `12-accepted-crop-1440`. The accepted state is a plain muted status line.
+30. Fixed: `01-founder-yearly-360`. The spec now amends the row to 64 minimum and 80 at 360.
+31. Out of scope (controller ruling).
+
+### New
+
+- N1. HIGH: `cls-1440.json`. The warm #billing CLS is 0.0281 against the 0.02 cap (spec §9, tenet 13). At 390 it is 0.019, just under. The new two-line seat rows, the 720 px chooser and the founder pill changed the ready height, but the reserve still uses 420/640. Fix: re-measure the ready height per state and size the Skeleton reserve to it, then recapture CLS at 390 and 1440.
+- N2. MED: `06-trial-available-crop-1440`, `11-lapsed-records-crop-1440`. The chooser price reads "$120$150 a year", with the struck list figure glued to the price. Fix: 8 px before the struck figure (spec §3.1.2 recipe), as "$120  $150 a year".
+- N3. MED: `07-trial-crop-1440`, `08-*`, `10-*`, `11-read-only-officer-crop-1440`. The guild plan line reads "$12 a monthFounder": the pill is `pill-sample` grey, glued with no gap. Spec §3.2.1 and §2 ask for the gold `pill-site`, 8 px after, as the account panel already draws it. Fix: `pill-site` and `ml-2` in GuildPlanLine.svelte.
+- N4. MED: `10-receiver-offer-crop-1440`. The receiver (Mirelle) reads "…Mirelle manages seats from then", about herself in the third person. Fix: give `receiver.staysWithGuild` the words `Seats, raids and records stay with the guild; you manage seats from then.`, and keep the named form for the sender.
+- N5. LOW: `14-built-1024`. The guild card buttons wrap to two lines ("SUBSCRIBE A GUILD · $120 A / YEAR"). Fix: 11 px label or 0.04em tracking from 1024 to 1279.
+- N6. LOW: `05-two-guilds-1440`. Under "Raid guild · $200 a year", Olympus reads "Guild" at the right, which reads as a different plan. Fix: show the fits label only when the picked plan does not fit the guild.
+- N7. LOW: `12-offer-crop-1440`. While the offer stands, `Save webhook` in the Discord panel is a second gold fill (§5: the offer is the page's only fill). Fix: draw Save webhook as a secondary button, or accept and amend §5.
+- N8. LOW: `README.md`. The new `09-seats-open-*` captures are not listed. Fix: add the row.

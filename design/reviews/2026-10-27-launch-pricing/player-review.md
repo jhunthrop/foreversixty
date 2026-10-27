@@ -31,3 +31,39 @@ The /premium page is good. I understood what I get and what it costs in about fi
 - "This list never shrinks" and the history promise ("records stay readable for good, CSV any time") are the two lines that make an officer trust this. Keep both above the fold on phone (360 does).
 - The trial line says up front that a card is taken and that cancelling before day 8 charges nothing. The 7-day renewal email and the 14-day refund rule are stated. Nothing feels like an auto-renew trap.
 - The seat picker's payer note ("They pay for Premium, so they get an offer... seat starts when it ends") and the offer's "You are not charged twice" line answer the exact question a member would ask.
+
+## Re-review 1
+
+Captures at 1d7aee9c7 (fixes 62facb8a6, 0c67dfa43). Same persona. I read the fresh 1440 crops and full pages, and the 390 seats.
+
+### Verdict: SHIP WITH FIXES
+
+Every original finding is fixed. The trust problems are gone: a Founder sees their Premium, seats add up, money lines agree, and the hand-over says what happens to seats. The fixes left two layout regressions on money lines, and those are the kind of thing a player screenshots: the guild Founder mark is glued to the price, and the chooser prices run together. Fix N1 and N2 before merge. N3 to N6 are small.
+
+### Original findings
+
+1. Fixed. launch-pricing-12-founder-crop-1440.png and 12-seat-holder-crop-1440.png: Server sims On, History charts On, Supporter mark "Shown on your characters", and no See plans.
+2. Fixed. launch-pricing-09-seats-crop-1440.png / -390: "3 of 3 given", Kraggor / Lightbrand / Sagebloom in class colours, and the pending row titled with the current holder ("Moving to Mirelle"). The empty and returned rows are in 09-picker-payer-crop-1440.png ("Free since 15 Nov: Thistle left the guild.").
+3. Fixed. launch-pricing-09-seats-crop-1440.png: the waiting row shows only Withdraw, with no Move seat and no lock date.
+4. Fixed. launch-pricing-07-trial-crop-1440.png reads "$12"; 08-confirm-ready-crop-1440.png says "$5 ... From 1 Dec 2026 it is $20 a month", with Founder on the plan lines. (The mark itself is broken; see N1.)
+5. Fixed. launch-pricing-11-read-only-officer-crop-1440.png: "The subscriber or the guild leader manages billing and seats." It's gone from the receiver's view (10-receiver-offer-crop-1440.png).
+6. Fixed. launch-pricing-11-read-only-officer-crop-1440.png and 10-receiver-offer-crop-1440.png read "Billed by Thornwick", and the offer is from Thornwick. 12-seat-holder-crop-1440.png reads "Given by Thornwick".
+7. Fixed. launch-pricing-08-confirm-ready-crop-1440.png: "renews 1 Dec 2026" and "From 1 Dec 2026" agree.
+8. Fixed. launch-pricing-10-send-confirm-crop-1440.png: "Seats, raids and records stay with the guild; Mirelle manages seats from then." (See N4 for the receiver's wording.)
+9. Fixed. launch-pricing-05-two-guilds-1440.png: real faction crests, and "Raid guild · $200 a year" under Which guild?
+10. Fixed. launch-pricing-05-two-guilds-1440.png: the header shows Fixture#1234 signed in.
+11. Fixed. launch-pricing-01-founder-yearly-1440.png: "Founder prices until 6 January 2027.", in the sentence's font.
+12. Fixed. launch-pricing-01-founder-yearly-1440.png: the band and the cards share the column edge.
+13. Fixed. launch-pricing-12-*: "On", "Off · set up", "Shown on your characters". No more "Browser lane".
+14. Fixed. launch-pricing-09-picker-payer-crop-1440.png: "Bramblewood · Druid · pays for Premium".
+15. Fixed. launch-pricing-10-waiting-crop-1440.png: the CSV buttons are plain. The ring is now on Withdraw, the expected focus after sending.
+16. Fixed. launch-pricing-11-lapsed-records-crop-1440.png: "Guild plan ended 15 Nov 2026."
+
+### New
+
+N1. HIGH, launch-pricing-07-trial-crop-1440.png, 08-confirm-ready, 10-*, 11-read-only-officer: on every guild plan line the Founder mark renders as "$12Founder" / "$12 a monthFounder". There's no gap, no gold border and no capitals; it's a grey box glued to the price, nothing like the account's FOUNDER pill (12-founder-crop-1440.png). Fix: use the same `pill-site` pill as the account panel, 8 px after the price.
+N2. MED, launch-pricing-11-lapsed-records-crop-1440.png (and the not-on-a-plan chooser): the option prices now read "$120$150 a year" and "$200$250 a year", with the struck price glued to the founder price. At a glance that's $120150. In the first round it was "$120 a year  $150 a year". Fix: put a space between them as on /premium ("$120  ~~$150~~ a year").
+N3. MED, launch-pricing-09-seats-crop-1440.png: Lightbrand was "Given 29 Oct", so the seat can't move before 28 Nov, but a move was "offered 10 Nov". Either the data breaks the 30-day rule or the rule doesn't cover offers. Fix: the fixture gives Lightbrand a date at least 30 days before the offer, and the API refuses a move offer while the seat is locked.
+N4. LOW, launch-pricing-10-receiver-offer-crop-1440.png: the receiver is told "Mirelle manages seats from then". That's third person to Mirelle herself. Fix: on the receiver's view, "you manage seats from then".
+N5. LOW, launch-pricing-05-two-guilds-1440.png: under "Raid guild · $200 a year", Olympus XXVII's row says "Guild" on the right. I can't tell whether clicking it buys Raid guild or Guild. Fix: when a plan is already chosen, the right-hand hint only flags a mismatch ("12 members; Guild would cover them").
+N6. LOW, launch-pricing-01-founder-yearly-1440.png: the "How the guild plans work" terms changed from small uppercase labels to bold mixed case. It's fine, but now it doesn't match the other label rows on the site. Fix: pick one and keep it.

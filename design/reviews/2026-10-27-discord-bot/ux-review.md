@@ -34,3 +34,31 @@ The site surfaces are close: SHIP WITH FIXES on their own (findings 3 to 9). The
 - CLS: 0 and 0.0001 against the 0.02 cap, at 390 and 1440.
 - Raid post (render): titles, colours, descriptions, field order, the two-line counts with the first clause bold, `In` as the only Success button, disabled buttons when locked and ended, `Raid page` / `Open the night` links, and no row on the webhook post. On the phone the post fits one screen, with `Raid page` on row two.
 - Press sentences (render): In, Late with `Add a note`, Bench, Out, already, the move, rate limit, pending, refusals. All verbatim.
+
+## Re-review 1
+
+Evidence: commit 705c0093d, the site captures retaken, every discord-msg PNG rebuilt by the bot's real handlers on the seeded test database, and payloads.json (I checked the link URLs, embed URLs and thumbnails). Spec as amended on 2026-10-27: `Raid channel in`, `{n} signed In or Late.`, the R3 wording and the press day.
+
+### Verdict: SHIP WITH FIXES
+
+All eleven findings are fixed. The three new findings below are LOW. N3 goes to the wow-player review.
+
+### The eleven findings
+
+1. Fixed · discord-msg-readiness-officer, bis-slot, press-select-open, attendance-own, press-unlinked, press-not-member · The renders now come from the real handlers. Footers read `{Guild} · Forever Sixty` and, on /bis, the band footer. `Readiness board` and `Roster` go to the right tabs. `Link Discord` opens the start route and `Get set up` opens /setup. The pressed state is bold, and ` · your main` sits in the option description. /bis shows the lead line, `Best in slot`, two alternatives with their deltas, real icons and the Share and Open row.
+2. Fixed · discord-msg-raid, raid-unlinked, signup, char-upgrades/no-gear/unknown, report-member/officer/shared/after-share, readiness-member/lapsed/guild-tier/nobody/unlinked, link-linked/unlinked · All present. Every controller ruling shows on a screenshot: one unit per /char card (DPS), `Stocked` / `Not shared`, `No one has signed In or Late yet.`, `Move to Raid guild`, the R3 wording and the press day.
+3. Fixed · discord-bot-03-loading-crop-360 · `Save channel` is disabled at 50 %.
+4. Fixed · discord-bot-08-unlink-question-crop-360 · The linked line stays, `Cancel` is an outline button, and the focus ring shows on it.
+5. Fixed · discord-bot-08-linked-crop-1440 · The line, then `Unlink`, are stacked.
+6. Fixed · discord-bot-09-installed-focus-bot-open-crop-390 · The outline is tight to the link and clear of line one.
+7. Fixed · discord-bot-04-just-saved-crop-1440 · The focus ring shows on `Send test message`.
+8. Fixed · discord-bot-08-unlinked-1440 · The header reads Fixture#1234.
+9. Fixed · discord-bot-03-open-list-* plus the README · The README names the e2e assertion on optgroup order (web/tests/e2e/guild-discord-bot.spec.ts, `the picker › ready`). That evidence is accepted.
+10. Fixed · discord-msg-bis-slot, bis-top, char-upgrades, report-officer · The items come from the real build 1.60.1.70630, with real icons, qualities, item levels and sources.
+11. Fixed · discord-msg-post-ended (`4 hours ago`), post-done (`13 hours ago`) · Each frame has its own clock.
+
+### New
+
+N1. LOW · discord-msg-bis-slot, bis-top · Every /bis item title, `Open on Forever Sixty` and `All 17 slots` go to `#band-alliance-60`. Spec §3.3.3 asks for the BiS page's slot anchor on item titles, and the BiS page has no slot anchors · Fix: give each gear row a `slot-{key}` id and link the item titles to it, or amend §3.3.3 to the band anchor.
+N2. LOW · discord-msg-report-officer, report-member · `4 items. The first 4:` repeats itself when every item is shown · Fix: drop ` The first {k}:` when k equals n, and amend §6.2 to match.
+N3. LOW (for wow-player) · discord-msg-char-upgrades vs discord-msg-bis-top · The same items show different gains: Sentinel's Chain Leggings `+3.0 DPS` on /char against `+7.4 DPS` on /bis, and the Signet Ring `+2.4` against `+5.0`. The two answers read different bands (bare level 60 against level 60 Phase 1 raid), and the /char card does not say which band. An item-level-80 Anachronos ring in a Phase 1 raid band also needs the phase-gate check · Fix: wow-player confirms the band and phase. If it holds, /char names its band in `By DPS gained, against the guide build.`, or uses the /bis default band.
