@@ -96,6 +96,8 @@ type Service struct {
 	components    map[string]Handler
 	autocompletes map[string]Autocomplete
 	updating      map[string]bool
+	// commandSet replaces Commands() when set (tests).
+	commandSet func() []Command
 	// stopDrainer ends the post drainer StartDrainer began; nil when none runs.
 	stopDrainer func(ctx context.Context) error
 }

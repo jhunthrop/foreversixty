@@ -1,0 +1,92 @@
+package discordbot
+
+import (
+	"context"
+	"reflect"
+	"strings"
+	"testing"
+)
+
+func (w *pressWorld) raidCmdAs(t *testing.T, discordUser string) Reply {
+	t.Helper()
+	rep, err := w.svc.cmdRaid(context.Background(), interactionOf(typeCommand, discordUser, map[string]any{"name": "raid"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return rep
+}
+
+func TestRaidCommandStates(t *testing.T) {
+	segment := func(i int) string { return specString(t, commandHeading, "`/raid`", i, nil) }
+	if segment(0) != "You are In on {Name} as {Role}." || segment(5) != commandCopy.RaidNone {
+		t.Fatalf("spec segments moved: %q %q", segment(0), segment(5))
+	}
+	cases := []struct {
+		state, want string
+	}{
+		{"in", "You are In on Zulmara as DPS."},
+		{"late", "You are Late on Zulmara as DPS."},
+		{"bench", "You are on the Bench on Zulmara."},
+		{"out", "You are Out on Zulmara."},
+	}
+	for _, c := range cases {
+		t.Run(c.state, func(t *testing.T) {
+			w := newPressWorld(t)
+			w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+			w.press(t, c.state)
+			rep := w.raidCmdAs(t, pressDiscord)
+			m := rep.Message
+			if !m.Ephemeral || rep.Update || len(m.Embeds) != 1 || m.Embeds[0].Description != c.want {
+				t.Fatalf("reply = %+v", rep)
+			}
+			assertRowMatchesPost(t, w, m)
+		})
+	}
+	t.Run("unsigned", func(t *testing.T) {
+		w := newPressWorld(t)
+		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+		rep := w.raidCmdAs(t, pressDiscord)
+		if got := rep.Message.Embeds[0].Description; got != segment(4) {
+			t.Fatalf("description = %q", got)
+		}
+	})
+	t.Run("unlinked", func(t *testing.T) {
+		w := newPressWorld(t)
+		wantReply(t, w.raidCmdAs(t, "d-stranger"), segment(6), false, wantButton{linkCopy.LinkButton, w.svc.linkStartURL()})
+	})
+	t.Run("non-member", func(t *testing.T) {
+		w := newPressWorld(t)
+		rep := w.raidCmdAs(t, pressDiscord)
+		if !strings.HasPrefix(rep.Message.Content, "Sign-ups are for members of Olympus XXVII.") || len(rep.Message.Embeds) != 0 {
+			t.Fatalf("reply = %+v", rep)
+		}
+	})
+	t.Run("none planned", func(t *testing.T) {
+		w := newPressWorld(t)
+		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+		w.exec(t, `delete from guild_raids`)
+		wantReply(t, w.raidCmdAs(t, pressDiscord), segment(5), false)
+	})
+}
+
+// assertRowMatchesPost: the answer's embed and row are the raid post's own.
+func assertRowMatchesPost(t *testing.T, w *pressWorld, m Message) {
+	t.Helper()
+	facts, _, err := w.gs.RaidPostFacts(context.Background(), w.raidID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	post := PostMessage(postFor(facts, PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, nil, w.svc.now()), nil),
+		facts.RaidURL, facts.NightURL, w.svc.now())
+	if len(m.Components) != len(post.Components) || len(m.Components[0]) != len(post.Components[0]) {
+		t.Fatalf("row = %+v, post row = %+v", m.Components, post.Components)
+	}
+	for i, c := range post.Components[0] {
+		if !reflect.DeepEqual(m.Components[0][i], c) {
+			t.Fatalf("button %d = %+v, want %+v", i, m.Components[0][i], c)
+		}
+	}
+	if m.Embeds[0].Title != post.Embeds[0].Title || m.Embeds[0].Footer != post.Embeds[0].Footer {
+		t.Fatalf("embed = %+v", m.Embeds[0])
+	}
+}

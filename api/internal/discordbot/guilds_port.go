@@ -24,6 +24,8 @@ type GuildService interface {
 	PlannedRaids(ctx context.Context, guildID int64, now time.Time) ([]guilds.Raid, error)
 	// GetRaid is one raid of the guild; found is false for another guild's raid.
 	GetRaid(ctx context.Context, guildID, raidID int64) (guilds.Raid, bool, error)
+	// NextRaidFor is the guild's next raid with the viewer's own sign-up; nil when none.
+	NextRaidFor(ctx context.Context, guildID, viewerID int64, headerKey *string, now time.Time) (*guilds.NextRaidView, error)
 	GuildName(ctx context.Context, guildID int64) (string, error)
 	// GuildRaidTimezone is the guild's IANA raid zone, "" when never set.
 	GuildRaidTimezone(ctx context.Context, guildID int64) (string, error)
