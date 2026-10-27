@@ -38,6 +38,8 @@ const (
 	probeNeeds = 3 * time.Second
 	// authHold is how long a 401 (a bad or rotated bot token) holds every post.
 	authHold = 10 * time.Minute
+	// shareSweepEvery is how often the drainer deletes Share tokens past their keep.
+	shareSweepEvery = time.Hour
 )
 
 // PostFacts reads what a raid's post shows; *guilds.Service implements it.
@@ -70,9 +72,16 @@ type Drainer struct {
 func (d *Drainer) Run(ctx context.Context) {
 	ticker := time.NewTicker(orDefault(d.Tick, defaultDrainTick))
 	defer ticker.Stop()
+	var swept time.Time
 	for {
 		if err := d.DrainOnce(ctx); err != nil && ctx.Err() == nil {
 			d.logger().Error("discordbot", "op", "drain", "err", err)
+		}
+		if now := d.now(); now.Sub(swept) >= shareSweepEvery {
+			swept = now
+			if err := d.Store.SweepShares(ctx, now); err != nil && ctx.Err() == nil {
+				d.logger().Error("discordbot", "op", "sweep_shares", "err", err)
+			}
 		}
 		select {
 		case <-ctx.Done():

@@ -3,6 +3,7 @@ package discordbot
 import (
 	"context"
 	"encoding/json"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
@@ -135,6 +136,79 @@ func TestReplyAfterRunsOnceTheAnswerIsOut(t *testing.T) {
 	}
 }
 
+func TestShareIsThePressersAlone(t *testing.T) {
+	w := newLookupWorld(t)
+	id := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message.Components[0][0].CustomID
+	in := interactionOf(typeComponent, "d-someone-else", map[string]any{"custom_id": id})
+	rep, err := w.svc.share(context.Background(), in)
+	if err != nil || rep.Message.Content != commonCopy.Failure || rep.After != nil {
+		t.Fatalf("another presser = %+v, %v", rep, err)
+	}
+	if again := w.pressShare(t, id); again.After == nil {
+		t.Fatal("the answer's own presser could not share after a refused press")
+	}
+}
+
+// TestADroppedShareAnswerFreesTheToken: when the Shared answer never reaches Discord (the
+// deferred edit fails, the token expired, or shutdown refused the work), After runs marked
+// dropped, posts nothing and frees the token.
+func TestADroppedShareAnswerFreesTheToken(t *testing.T) {
+	w := newLookupWorld(t)
+	id := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message.Components[0][0].CustomID
+	rep := w.pressShare(t, id)
+	w.rest.ErrFor = map[string]error{"EditOriginal": &APIError{Status: 500, Message: "boom"}}
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": id})
+	in.ReceivedAt = time.Now()
+	w.svc.deliver(in, handled{reply: rep}, true)
+	if len(w.followUps()) != 0 {
+		t.Fatal("a dropped answer still shared")
+	}
+	w.rest.ErrFor = nil
+	if again := w.pressShare(t, id); again.After == nil || again.Message.Components[0][0].Label != "Shared" {
+		t.Fatalf("the token was not freed: %+v", again)
+	}
+	w.exec(t, `update discord_shares set used_at = null`)
+	rep = w.pressShare(t, id)
+	in.ReceivedAt = time.Now().Add(-interactionTokenLife - time.Minute)
+	w.svc.deliver(in, handled{reply: rep}, true)
+	var used bool
+	if err := w.st.Pool.QueryRow(context.Background(), `select used_at is not null from discord_shares`).Scan(&used); err != nil || used {
+		t.Fatalf("an expired answer kept its claim: %v %v", used, err)
+	}
+}
+
+func TestAShareRefusedAtShutdownFreesTheToken(t *testing.T) {
+	w := newLookupWorld(t)
+	id := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message.Components[0][0].CustomID
+	rep := w.pressShare(t, id)
+	if err := w.svc.Drain(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	w.svc.runAfter(httptest.NewRecorder(), Interaction{ID: "i1"}, rep)
+	var used bool
+	if err := w.st.Pool.QueryRow(context.Background(), `select used_at is not null from discord_shares`).Scan(&used); err != nil || used {
+		t.Fatalf("a share refused at shutdown kept its claim: %v %v", used, err)
+	}
+	if len(w.followUps()) != 0 {
+		t.Fatal("a share refused at shutdown still posted")
+	}
+}
+
+func TestSweepSharesDeletesADayPastExpiry(t *testing.T) {
+	w := newLookupWorld(t)
+	w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"})
+	w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"})
+	w.exec(t, `update discord_shares set expires_at = now() - interval '25 hours'
+		where token = (select token from discord_shares limit 1)`)
+	if err := w.st.SweepShares(context.Background(), time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	var left int
+	if err := w.st.Pool.QueryRow(context.Background(), `select count(*) from discord_shares`).Scan(&left); err != nil || left != 1 {
+		t.Fatalf("left = %d, %v", left, err)
+	}
+}
+
 func TestShareFollowUpFailureFreesTheToken(t *testing.T) {
 	w := newLookupWorld(t)
 	answer := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
@@ -148,7 +222,8 @@ func TestShareFollowUpFailureFreesTheToken(t *testing.T) {
 			edits = append(edits, c)
 		}
 	}
-	if len(edits) != 1 || edits[0].Message.Components[0][0].Label != lookupCopy.Share || edits[0].Message.Components[0][0].Disabled {
+	if len(edits) != 1 || edits[0].Message.Components[0][0].Label != lookupCopy.Share || edits[0].Message.Components[0][0].Disabled ||
+		edits[0].Message.Content != commonCopy.Failure {
 		t.Fatalf("restore edit = %+v", edits)
 	}
 	w.rest.ErrFor = nil

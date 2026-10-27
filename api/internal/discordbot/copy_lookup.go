@@ -34,7 +34,7 @@ var lookupCopy = struct {
 	Synced:          "Synced",
 	TopUpgrades:     "Top 3 upgrades",
 	UpgradesByDPS:   "By DPS gained, against the guide build.",
-	UpgradesByScore: "By score gained, against the guide build.",
+	UpgradesByScore: "By Forever Score gained, against the guide build.",
 	NoGear:          "No gear shared yet. Upgrades show once the character is synced.",
 	CharacterPage:   "Character page",
 	NoCharacter:     "No public character by that name.",

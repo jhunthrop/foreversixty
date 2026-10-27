@@ -68,11 +68,10 @@ func repoRoot(t *testing.T) string {
 }
 
 // TestRaceFactionsMatchesTheClientBuildsRaceTable cross-checks raceFactions against
-// data/builds/1.60.1.70009/races.json (the build bis_lookup.go's bisDataBuild already
-// hardcodes as this package's one real catalogue) directly, so a future reassignment of
+// the races.json of the build Store.BisBuild reads (the newest ranked build) directly, so a future reassignment of
 // a race's faction there fails here instead of silently drifting out of sync.
 func TestRaceFactionsMatchesTheClientBuildsRaceTable(t *testing.T) {
-	path := filepath.Join(repoRoot(t), "data", "builds", bisDataBuild, "races.json")
+	path := filepath.Join(repoRoot(t), "data", "builds", realTreesStore(t).BisBuild(), "races.json")
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)

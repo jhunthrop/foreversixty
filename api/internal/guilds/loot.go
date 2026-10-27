@@ -359,7 +359,7 @@ func fallbackVerdict(dropItemLevel int, wornItemLevel *int) (delta int, qualifie
 // already applied when it built that per-class file), not a second check this package
 // would otherwise have to reimplement.
 func (s *Store) buildItemFor(classSlug string, itemID int) (trees.Item, bool) {
-	return s.ItemIn(bisDataBuild, classSlug, itemID)
+	return s.ItemIn(s.BisBuild(), classSlug, itemID)
 }
 
 // ItemIn is itemID in version's per-class item table, the one the loot tab and the BiS page
