@@ -991,7 +991,7 @@ func TestMeShowsGuildPlanOnlyToAVerifiedOfficer(t *testing.T) {
 	h := newHarness(t)
 	gid := h.seedGuild(t, "me-guild-plan")
 	if _, err := h.svc.Store.Pool.Exec(t.Context(),
-		`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'grant', 'active')`,
+		`insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild', 'grant', 'active')`,
 		gid); err != nil {
 		t.Fatal(err)
 	}
@@ -1031,9 +1031,9 @@ func TestMeGuildPlanScope(t *testing.T) {
 		wantPlan  bool
 		wantScope string
 	}{
-		{"live scoped grant", `insert into entitlements (guild_id, plan, source, status, current_period_end, features) values ($1,'guild','grant','active', now()+interval '30 days','{officer_views}')`, true, "officer_tools"},
-		{"expired scoped grant", `insert into entitlements (guild_id, plan, source, status, current_period_end, features) values ($1,'guild','grant','active', now()-interval '1 day','{officer_views}')`, false, ""},
-		{"whole plan", `insert into entitlements (guild_id, plan, source, status) values ($1,'guild','stripe','active')`, true, "plan"},
+		{"live scoped grant", `insert into entitlements (guild_id, tier, plan, source, status, current_period_end, features) values ($1, 'raid_guild', 'guild','grant','active', now()+interval '30 days','{officer_views}')`, true, "officer_tools"},
+		{"expired scoped grant", `insert into entitlements (guild_id, tier, plan, source, status, current_period_end, features) values ($1, 'raid_guild', 'guild','grant','active', now()-interval '1 day','{officer_views}')`, false, ""},
+		{"whole plan", `insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild','stripe','active')`, true, "plan"},
 	}
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -1079,8 +1079,8 @@ func TestMeScopedGrantOverACanceledStripeRowNamesNoBillingContact(t *testing.T) 
 	gid := h.seedGuild(t, "me-grant-over-stripe")
 	payer := h.seedUser(t, "me-grant-over-stripe-payer@example.com")
 	if _, err := h.svc.Store.Pool.Exec(t.Context(), `
-		insert into entitlements (guild_id, plan, source, status, billing_user_id, cancel_at_period_end, stripe_subscription_id)
-		values ($1, 'guild', 'stripe', 'canceled', $2, true, 'sub_me_grant_over')`, gid, payer); err != nil {
+		insert into entitlements (guild_id, tier, plan, source, status, billing_user_id, cancel_at_period_end, stripe_subscription_id)
+		values ($1, 'raid_guild', 'guild', 'stripe', 'canceled', $2, true, 'sub_me_grant_over')`, gid, payer); err != nil {
 		t.Fatal(err)
 	}
 	until := time.Now().Add(30 * 24 * time.Hour)
@@ -1122,7 +1122,7 @@ func TestMeWorksWithNoEntitlementsStoreConfigured(t *testing.T) {
 
 	gid := h.seedGuild(t, "me-guild-no-entitlements-store")
 	if _, err := h.svc.Store.Pool.Exec(t.Context(),
-		`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'grant', 'active')`,
+		`insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild', 'grant', 'active')`,
 		gid); err != nil {
 		t.Fatal(err)
 	}

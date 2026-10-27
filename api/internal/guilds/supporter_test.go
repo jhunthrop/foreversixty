@@ -43,7 +43,7 @@ func TestRosterRowsCarryTheSupporterMark(t *testing.T) {
 	leaderKey := seedVerifiedMember(t, h, gid, leader, "supleader", "leader")
 	memberKey := seedVerifiedMember(t, h, gid, member, "supmember", "member")
 	if _, err := h.pool.Exec(context.Background(),
-		`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'stripe', 'active')`, gid); err != nil {
+		`insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild', 'stripe', 'active')`, gid); err != nil {
 		t.Fatal(err)
 	}
 

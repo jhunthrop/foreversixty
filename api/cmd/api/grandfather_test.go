@@ -68,8 +68,8 @@ func seedPlan(t *testing.T, pool *pgxpool.Pool, guildID int64, source, features 
 func seedPlanRow(t *testing.T, pool *pgxpool.Pool, guildID int64, source, status, offset, features string) {
 	t.Helper()
 	if _, err := pool.Exec(context.Background(), `
-		insert into entitlements (guild_id, plan, source, status, current_period_end, features)
-		values ($1, 'guild', $2, $3, now() + $4::interval, nullif($5, '')::text[])`,
+		insert into entitlements (guild_id, tier, plan, source, status, current_period_end, features)
+		values ($1, 'raid_guild', 'guild', $2, $3, now() + $4::interval, nullif($5, '')::text[])`,
 		guildID, source, status, offset, features); err != nil {
 		t.Fatal(err)
 	}

@@ -183,6 +183,12 @@ type Billing struct {
 	// Active is the live-row predicate (activeClause) evaluated now: an
 	// expired grant keeps status 'active' but is not live.
 	Active bool
+	// Source is "stripe" or "grant"; the three fields below are the
+	// subscription and price facts Stripe last sent (empty/zero for a grant).
+	Source               string
+	StripeSubscriptionID string
+	PriceLookupKey       string
+	UnitAmountCents      int64
 }
 
 // PersonalBilling reads userID's own premium entitlement row, regardless
@@ -191,9 +197,12 @@ type Billing struct {
 func (s *Store) PersonalBilling(ctx context.Context, userID int64) (*Billing, error) {
 	var b Billing
 	err := s.Pool.QueryRow(ctx, `
-		select e.plan, e.status, e.current_period_end, e.cancel_at_period_end, (`+activeClause+`) as active
+		select e.plan, e.status, e.current_period_end, e.cancel_at_period_end, (`+activeClause+`) as active,
+		       e.source, coalesce(e.stripe_subscription_id, ''), coalesce(e.price_lookup_key, ''),
+		       coalesce(e.unit_amount_cents, 0)
 		from entitlements e where e.user_id = $1 and e.plan = 'premium'`, userID).
-		Scan(&b.Plan, &b.Status, &b.CurrentPeriodEnd, &b.CancelAtPeriodEnd, &b.Active)
+		Scan(&b.Plan, &b.Status, &b.CurrentPeriodEnd, &b.CancelAtPeriodEnd, &b.Active,
+			&b.Source, &b.StripeSubscriptionID, &b.PriceLookupKey, &b.UnitAmountCents)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
@@ -207,10 +216,17 @@ func (s *Store) PersonalBilling(ctx context.Context, userID int64) (*Billing, er
 // not (spec §1.4's GuildBillingView, and billing's own §2.3 conflict
 // check reuse this one method — see Task 2's Interfaces block).
 type GuildBilling struct {
-	Status            string
-	CurrentPeriodEnd  *time.Time
-	CancelAtPeriodEnd bool
-	BillingUserID     *int64
+	// ID is the entitlements row id.
+	ID                   int64
+	Tier                 string
+	PriceLookupKey       string
+	UnitAmountCents      int64
+	TrialEnd             *time.Time
+	StripeSubscriptionID string
+	Status               string
+	CurrentPeriodEnd     *time.Time
+	CancelAtPeriodEnd    bool
+	BillingUserID        *int64
 	// Features is nil for a whole-plan row, or the scoped feature list.
 	Features []string
 	// Active is the live-row predicate (activeClause) evaluated now; the row
@@ -227,10 +243,13 @@ func (g GuildBilling) Scoped() bool { return len(g.Features) > 0 }
 func (s *Store) GuildBilling(ctx context.Context, guildID int64) (*GuildBilling, error) {
 	var g GuildBilling
 	err := s.Pool.QueryRow(ctx, `
-		select e.status, e.current_period_end, e.cancel_at_period_end, e.billing_user_id,
+		select e.id, coalesce(e.tier, ''), coalesce(e.price_lookup_key, ''), coalesce(e.unit_amount_cents, 0),
+		       e.trial_end, coalesce(e.stripe_subscription_id, ''),
+		       e.status, e.current_period_end, e.cancel_at_period_end, e.billing_user_id,
 		       e.features, (`+activeClause+`) as active
 		from entitlements e where e.guild_id = $1 and e.plan = 'guild'`, guildID).
-		Scan(&g.Status, &g.CurrentPeriodEnd, &g.CancelAtPeriodEnd, &g.BillingUserID, &g.Features, &g.Active)
+		Scan(&g.ID, &g.Tier, &g.PriceLookupKey, &g.UnitAmountCents, &g.TrialEnd, &g.StripeSubscriptionID,
+			&g.Status, &g.CurrentPeriodEnd, &g.CancelAtPeriodEnd, &g.BillingUserID, &g.Features, &g.Active)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
@@ -429,6 +448,40 @@ type StripeUpsert struct {
 	Transfer bool
 	// SubscriptionCreated is sub.Created; zero when unknown.
 	SubscriptionCreated time.Time
+	// Tier is the guild tier (TierGuild or TierRaidGuild); required for a
+	// guild row, ignored for premium.
+	Tier string
+	// PriceLookupKey, UnitAmountCents and TrialEnd are the price facts of
+	// the subscription's item, written verbatim.
+	PriceLookupKey  string
+	UnitAmountCents int64
+	TrialEnd        *time.Time
+}
+
+// rowTier is the tier the entitlement row stores: null for premium, the
+// given tier for a guild, and an error when a guild row has none.
+func rowTier(p StripeUpsert) (*string, error) {
+	if p.Plan != PlanGuild {
+		return nil, nil
+	}
+	if p.Tier != TierGuild && p.Tier != TierRaidGuild {
+		return nil, fmt.Errorf("entitlements: upsert stripe: guild row needs a tier, got %q", p.Tier)
+	}
+	return &p.Tier, nil
+}
+
+func nullableText(v string) *string {
+	if v == "" {
+		return nil
+	}
+	return &v
+}
+
+func unitAmountOrNil(cents int64) *int64 {
+	if cents == 0 {
+		return nil
+	}
+	return &cents
 }
 
 // UpsertOutcome says what UpsertStripe did with a subscription.
@@ -504,6 +557,10 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 	if err != nil {
 		return UpsertResult{}, err
 	}
+	tier, err := rowTier(p)
+	if err != nil {
+		return UpsertResult{}, err
+	}
 	var result UpsertResult
 	err = s.withTx(ctx, func(tx pgx.Tx) error {
 		existing, isNew, err := existingEntitlement(ctx, tx, subj, p.Plan)
@@ -524,8 +581,9 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 		var id int64
 		if err := tx.QueryRow(ctx, `
 			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end,
-				cancel_at_period_end, stripe_subscription_id, billing_user_id, stripe_subscription_created)
-			values ($1, $2, $3, 'stripe', $4, $5, $6, $7, $8, $9)
+				cancel_at_period_end, stripe_subscription_id, billing_user_id, stripe_subscription_created,
+				tier, price_lookup_key, unit_amount_cents, trial_end)
+			values ($1, $2, $3, 'stripe', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 			on conflict (`+target+`) do update set
 				source = 'stripe', features = null, status = excluded.status, current_period_end = excluded.current_period_end,
 				cancel_at_period_end = excluded.cancel_at_period_end,
@@ -535,10 +593,13 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
 					then coalesce(excluded.stripe_subscription_created, entitlements.stripe_subscription_created)
 					else excluded.stripe_subscription_created end,
+				tier = excluded.tier, price_lookup_key = excluded.price_lookup_key,
+				unit_amount_cents = excluded.unit_amount_cents, trial_end = excluded.trial_end,
 				updated_at = now()
 			returning id`,
 			p.UserID, p.GuildID, p.Plan, p.Status, p.CurrentPeriodEnd, p.CancelAtPeriodEnd,
-			p.StripeSubscriptionID, p.BillingUserID, subscriptionCreatedOrNil(p.SubscriptionCreated)).Scan(&id); err != nil {
+			p.StripeSubscriptionID, p.BillingUserID, subscriptionCreatedOrNil(p.SubscriptionCreated),
+			tier, nullableText(p.PriceLookupKey), unitAmountOrNil(p.UnitAmountCents), p.TrialEnd).Scan(&id); err != nil {
 			return fmt.Errorf("entitlements: upsert stripe: write: %w", err)
 		}
 		var oldPtr *string
@@ -606,16 +667,17 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		oldStatus := existing.status
 		var id int64
 		if err := tx.QueryRow(ctx, `
-			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end, granted_by, grant_note, features)
-			values ($1, $2, $3, 'grant', 'active', $4, $5, $6, $7)
+			insert into entitlements (user_id, guild_id, plan, source, status, current_period_end, granted_by, grant_note, features, tier)
+			values ($1, $2, $3, 'grant', 'active', $4, $5, $6, $7, $8)
 			on conflict (`+target+`) do update set
 				source = 'grant', status = 'active', current_period_end = excluded.current_period_end,
 				granted_by = excluded.granted_by, grant_note = excluded.grant_note,
 				features = excluded.features, updated_at = now(),
 				billing_user_id = null, cancel_at_period_end = false,
-				stripe_subscription_id = null, grace_until = null
+				stripe_subscription_id = null, grace_until = null,
+				tier = excluded.tier, price_lookup_key = null, unit_amount_cents = null, trial_end = null
 			returning id`,
-			subj.UserID, subj.GuildID, plan, until, grantedBy, note, features).Scan(&id); err != nil {
+			subj.UserID, subj.GuildID, plan, until, grantedBy, note, features, grantTier(plan)).Scan(&id); err != nil {
 			return fmt.Errorf("entitlements: grant: write: %w", err)
 		}
 		var oldPtr *string
@@ -624,6 +686,16 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		}
 		return recordAudit(ctx, tx, id, subj.UserID, subj.GuildID, plan, oldPtr, "active", actor)
 	})
+}
+
+// grantTier is the tier a grant writes: every guild grant, whole-plan or
+// scoped, is raid_guild so it keeps the loot council and readiness.
+func grantTier(plan string) *string {
+	if plan != PlanGuild {
+		return nil
+	}
+	tier := TierRaidGuild
+	return &tier
 }
 
 // wouldDowngrade reports whether a grant scoped to features would cut a live

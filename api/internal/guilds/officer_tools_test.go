@@ -20,8 +20,8 @@ func homeViewFor(t *testing.T, h *httpHarness, guildID, viewerID int64) HomeView
 }
 
 func TestHomeViewerOfficerTools(t *testing.T) {
-	const grantSQL = `insert into entitlements (guild_id, plan, source, status, current_period_end, features)
-		values ($1,'guild','grant','active', now()+$2::interval,'{officer_views}')`
+	const grantSQL = `insert into entitlements (guild_id, tier, plan, source, status, current_period_end, features)
+		values ($1, 'raid_guild', 'guild','grant','active', now()+$2::interval,'{officer_views}')`
 	tests := []struct {
 		name     string
 		interval string // "" seeds no grant

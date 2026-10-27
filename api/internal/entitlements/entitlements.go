@@ -45,6 +45,13 @@ const (
 	PlanGuild   = "guild"
 )
 
+// TierGuild and TierRaidGuild are the two values entitlements.tier holds
+// on a guild-plan row (null on premium rows).
+const (
+	TierGuild     = "guild"
+	TierRaidGuild = "raid_guild"
+)
+
 // AnomalyKind is entitlement_anomalies.kind (migration 0020, security
 // review 2026-09-21's double-billing fix).
 type AnomalyKind string

@@ -566,10 +566,10 @@ func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
 
 // Plan rows the gate tests seed: a scoped grant, and a whole Stripe guild plan.
 const (
-	scopedGrantSQL = `insert into entitlements (guild_id, plan, source, status, current_period_end, features)
-		values ($1,'guild','grant','active', now()+interval '30 days','{officer_views}')`
-	stripePlanSQL = `insert into entitlements (guild_id, plan, source, status, current_period_end, stripe_subscription_id)
-		values ($1,'guild','stripe','active', now()+interval '30 days', $2)`
+	scopedGrantSQL = `insert into entitlements (guild_id, tier, plan, source, status, current_period_end, features)
+		values ($1, 'raid_guild', 'guild','grant','active', now()+interval '30 days','{officer_views}')`
+	stripePlanSQL = `insert into entitlements (guild_id, tier, plan, source, status, current_period_end, stripe_subscription_id)
+		values ($1, 'raid_guild', 'guild','stripe','active', now()+interval '30 days', $2)`
 )
 
 // grantOfficerTools wires the real entitlements store and gives gid a scoped grant.

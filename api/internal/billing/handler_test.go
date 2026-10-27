@@ -120,7 +120,7 @@ func TestCheckoutGuildConflictsWhenAlreadyOnThePlanUnlessTransfer(t *testing.T) 
 	officer := h.seedUser(t, "already-plan-officer@example.com")
 	h.seedGuildMember(t, gid, officer, "leader")
 	if _, err := h.pool.Exec(t.Context(),
-		`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'stripe', 'active')`, gid); err != nil {
+		`insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild', 'stripe', 'active')`, gid); err != nil {
 		t.Fatal(err)
 	}
 	r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", officer,
@@ -161,8 +161,8 @@ func TestGuildCheckoutAllowedOnScopedGrant(t *testing.T) {
 			officer := h.seedUser(t, "scoped-officer-"+strings.ReplaceAll(tc.name, " ", "-")+"@example.com")
 			h.seedGuildMember(t, gid, officer, "leader")
 			if _, err := h.pool.Exec(t.Context(),
-				`insert into entitlements (guild_id, plan, source, status, current_period_end, features)
-				 values ($1, 'guild', 'grant', 'active', `+tc.until+`, `+tc.features+`)`, gid); err != nil {
+				`insert into entitlements (guild_id, tier, plan, source, status, current_period_end, features)
+				 values ($1, 'raid_guild', 'guild', 'grant', 'active', `+tc.until+`, `+tc.features+`)`, gid); err != nil {
 				t.Fatal(err)
 			}
 			r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", officer,
@@ -283,8 +283,8 @@ func TestPortalForAGuildRequiresBeingTheBillingContact(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(t.Context(),
-		`insert into entitlements (guild_id, plan, source, status, billing_user_id)
-		 values ($1, 'guild', 'stripe', 'active', $2)`, gid, billingOfficer); err != nil {
+		`insert into entitlements (guild_id, tier, plan, source, status, billing_user_id)
+		 values ($1, 'raid_guild', 'guild', 'stripe', 'active', $2)`, gid, billingOfficer); err != nil {
 		t.Fatal(err)
 	}
 	r := h.sessionRequest(t, http.MethodPost, "/v1/billing/portal", otherOfficer,
