@@ -119,10 +119,19 @@ func (g *StripeGateway) CreatePortalSession(ctx context.Context, customerID, ret
 
 func (g *StripeGateway) GetSubscription(ctx context.Context, id string) (*stripe.Subscription, error) {
 	sub, err := g.client.V1Subscriptions.Retrieve(ctx, id, nil)
+	if resourceMissing(err) {
+		return nil, fmt.Errorf("billing: get subscription %s: %w: %w", id, ErrSubscriptionNotFound, err)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("billing: get subscription %s: %w", id, err)
 	}
 	return sub, nil
+}
+
+// resourceMissing is Stripe's answer for an id it does not know.
+func resourceMissing(err error) bool {
+	var stripeErr *stripe.Error
+	return errors.As(err, &stripeErr) && stripeErr.Code == stripe.ErrorCodeResourceMissing
 }
 
 func (g *StripeGateway) PriceIDForLookupKey(ctx context.Context, lookupKey string) (string, error) {

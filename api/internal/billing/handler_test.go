@@ -307,6 +307,8 @@ func TestBillingRoutesAnswer503WhenStripeIsNotConfigured(t *testing.T) {
 	for _, req := range []*http.Request{
 		h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", uid, map[string]string{"plan": "premium", "interval": "monthly"}),
 		h.sessionRequest(t, http.MethodPost, "/v1/billing/portal", uid, nil),
+		// A transfer completes only through Checkout and its guard reads Stripe.
+		h.sessionRequest(t, http.MethodPost, billingPath(1, "/transfer"), uid, map[string]any{"to_user_id": 2}),
 	} {
 		w := h.do(t, req)
 		if w.Code != http.StatusServiceUnavailable {

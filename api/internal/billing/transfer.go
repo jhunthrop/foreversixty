@@ -151,9 +151,16 @@ func (s *Service) checkTransferTarget(ctx context.Context, a guildActor, toUserI
 // checkOutgoingEnded refuses a new offer while an accepted transfer's
 // outgoing subscription has not ended at Stripe: the accepted row is what
 // keeps retiredByTransfer and stripe-reconcile from treating it as a stray,
-// so it must not be overwritten until Stripe has ended it.
+// so it must not be overwritten until Stripe has ended it. A subscription
+// Stripe no longer knows has ended too; refusing on it would block every
+// offer for good.
 func (s *Service) checkOutgoingEnded(ctx context.Context, subscriptionID string) error {
 	sub, err := s.Gateway.GetSubscription(ctx, subscriptionID)
+	if errors.Is(err, ErrSubscriptionNotFound) {
+		s.logger().Warn("billing", "op", "outgoing subscription missing at stripe",
+			"subscription_id", subscriptionID, "effect", "treated as ended")
+		return nil
+	}
 	if err != nil {
 		return fmt.Errorf("billing: outgoing subscription %s: %w", subscriptionID, err)
 	}

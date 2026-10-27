@@ -30,6 +30,8 @@ type fakeCanceller struct {
 	ids     []string
 	resumed []string
 	err     error
+	// during runs inside the cancel call, before it answers.
+	during func(ctx context.Context)
 }
 
 func (f *fakeCanceller) ResumeSubscription(_ context.Context, id string) error {
@@ -37,7 +39,10 @@ func (f *fakeCanceller) ResumeSubscription(_ context.Context, id string) error {
 	return nil
 }
 
-func (f *fakeCanceller) CancelSubscriptionAtPeriodEnd(_ context.Context, id string) error {
+func (f *fakeCanceller) CancelSubscriptionAtPeriodEnd(ctx context.Context, id string) error {
+	if f.during != nil {
+		f.during(ctx)
+	}
 	if f.err != nil {
 		return f.err
 	}

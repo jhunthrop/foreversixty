@@ -378,15 +378,33 @@ func (s *Store) withGuildLockStep(ctx context.Context, guildID int64, fn func(tx
 	if err != nil {
 		return err
 	}
-	if step != nil {
-		if err := step.do(ctx); err != nil {
-			return err
+	if step == nil {
+		if err := tx.Commit(ctx); err != nil {
+			return fmt.Errorf("seats: commit: %w", err)
 		}
+		return nil
 	}
-	if err := tx.Commit(ctx); err != nil {
-		if step != nil {
-			step.undo(context.WithoutCancel(ctx))
-		}
+	return commitAfterStep(ctx, tx, step)
+}
+
+// externalStepTimeout bounds the external step, which runs detached from the
+// request so a client that goes away cannot cut it off halfway.
+const externalStepTimeout = 20 * time.Second
+
+// commitAfterStep runs step then commits, both detached from the request: once
+// the other system may have applied the change, the database must follow it or
+// the change must be undone. Any failure of either runs undo; a step that fails
+// may still have landed on the other side.
+func commitAfterStep(ctx context.Context, tx pgx.Tx, step *externalStep) error {
+	detached := context.WithoutCancel(ctx)
+	stepCtx, cancel := context.WithTimeout(detached, externalStepTimeout)
+	defer cancel()
+	if err := step.do(stepCtx); err != nil {
+		step.undo(detached)
+		return err
+	}
+	if err := tx.Commit(detached); err != nil {
+		step.undo(detached)
 		return fmt.Errorf("seats: commit: %w", err)
 	}
 	return nil

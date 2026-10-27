@@ -145,7 +145,7 @@ func (f *FakeGateway) GetSubscription(_ context.Context, id string) (*stripe.Sub
 	}
 	sub, ok := f.Subscriptions[id]
 	if !ok {
-		return nil, fmt.Errorf("billing: fake gateway: no such subscription %s", id)
+		return nil, fmt.Errorf("billing: fake gateway: %s: %w", id, ErrSubscriptionNotFound)
 	}
 	return sub, nil
 }

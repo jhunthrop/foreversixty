@@ -101,6 +101,32 @@ func TestTransfer_ReceiverSeesToYou(t *testing.T) {
 	}
 }
 
+// An outgoing subscription Stripe no longer knows has ended: a new offer
+// goes through instead of failing on it forever.
+func TestTransfer_OutgoingMissingAtStripeCountsAsEnded(t *testing.T) {
+	h := newHarness(t)
+	gid, leader := h.payerGuild(t, "outgoinggone")
+	officer := h.member(t, gid, "officer", "officer")
+	h.seedPlan(t, gid, guildPlan{subID: "sub_new", billedBy: leader, key: catalog.LookupKeyGuildMonthly, cents: 1500})
+	h.offerTransfer(t, gid, officer, leader, "sub_prev", transferAccepted)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{}
+
+	h.expectNoContent(t, billingPath(gid, "/transfer"), leader, map[string]any{"to_user_id": officer})
+	if _, from, state := h.transferRow(t, gid); from != "sub_new" || state != transferOffered {
+		t.Fatalf("row = %q %q", from, state)
+	}
+}
+
+func TestResourceMissing(t *testing.T) {
+	missing := fmt.Errorf("wrapped: %w", &stripe.Error{Code: stripe.ErrorCodeResourceMissing})
+	if !resourceMissing(missing) {
+		t.Error("resource_missing not recognised")
+	}
+	if resourceMissing(&stripe.Error{Code: stripe.ErrorCodeRateLimit}) || resourceMissing(nil) {
+		t.Error("other errors read as missing")
+	}
+}
+
 func TestTransfer_NoPlanRefused(t *testing.T) {
 	h := newHarness(t)
 	gid, leader := h.payerGuild(t, "noplantr")
