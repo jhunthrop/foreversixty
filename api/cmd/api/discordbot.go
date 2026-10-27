@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -46,5 +47,19 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	// at the stop signal itself, so it does not take rows late in the 9 s shutdown budget;
 	// drainDiscordBot then waits for the row in flight within that budget.
 	bot.StartDrainer(stop, bot.NewDrainer(deps.Guilds))
+	go registerDiscordCommands(stop, bot, log)
 	return bot
+}
+
+// commandsRegisterWithin bounds the startup registration (two Discord calls and a lock wait).
+const commandsRegisterWithin = time.Minute
+
+// registerDiscordCommands pushes the slash commands to Discord off the serving path. A failure
+// is logged (the error carries no token) and the next start tries again.
+func registerDiscordCommands(stop context.Context, bot *discordbot.Service, log *slog.Logger) {
+	ctx, cancel := context.WithTimeout(stop, commandsRegisterWithin)
+	defer cancel()
+	if err := bot.RegisterCommands(ctx); err != nil {
+		log.Error("discordbot", "op", "register_commands", "outcome", "failed", "err", err)
+	}
 }

@@ -1,0 +1,28 @@
+package discordbot
+
+// commandCopy is the words of /raid and /help (experience spec §6.2); the tests read each
+// string back out of the spec.
+var commandCopy = struct {
+	// RaidUnlinked answers /raid for an unlinked Discord account; RaidNone when nothing is planned.
+	RaidUnlinked, RaidNone string
+	// The viewer's state sentences on /raid.
+	RaidIn, RaidLate, RaidBench, RaidOut, RaidUnsigned string
+	// HelpTitle heads /help; HelpLine is one command's line.
+	HelpTitle, HelpLine string
+}{
+	RaidUnlinked: "Link your Discord account to see your guild's next raid.",
+	RaidNone:     "No raid planned yet.",
+	RaidIn:       "You are In on {Name} as {Role}.",
+	RaidLate:     "You are Late on {Name} as {Role}.",
+	RaidBench:    "You are on the Bench on {Name}.",
+	RaidOut:      "You are Out on {Name}.",
+	RaidUnsigned: "You have not signed up yet.",
+	HelpTitle:    "Forever Sixty commands",
+	HelpLine:     "**/{name}** {description}",
+}
+
+// The option descriptions that more than one command shares.
+const (
+	descRaidOption = "Which raid. The next one if left out."
+	descName       = "A character name."
+)

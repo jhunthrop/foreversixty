@@ -36,6 +36,10 @@ func (f *fakeGuilds) GetRaid(context.Context, int64, int64) (guilds.Raid, bool, 
 	return guilds.Raid{}, false, nil
 }
 
+func (f *fakeGuilds) NextRaidFor(context.Context, int64, int64, *string, time.Time) (*guilds.NextRaidView, error) {
+	return nil, nil
+}
+
 func (f *fakeGuilds) GuildName(context.Context, int64) (string, error) { return "", nil }
 
 func (f *fakeGuilds) GuildRaidTimezone(context.Context, int64) (string, error) { return "", nil }

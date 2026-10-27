@@ -21,6 +21,11 @@ func (s *Service) PlannedRaids(ctx context.Context, guildID int64, now time.Time
 	return s.Store.PlannedRaids(ctx, guildID, now)
 }
 
+// NextRaidFor is the guild's next raid as viewerID sees it (Store.NextRaidFor); nil when none.
+func (s *Service) NextRaidFor(ctx context.Context, guildID, viewerID int64, headerKey *string, now time.Time) (*NextRaidView, error) {
+	return s.Store.NextRaidFor(ctx, guildID, viewerID, headerKey, now)
+}
+
 // GuildName is the guild's name as its page shows it.
 func (s *Service) GuildName(ctx context.Context, guildID int64) (string, error) {
 	g, err := s.Store.getGuild(ctx, guildID)
