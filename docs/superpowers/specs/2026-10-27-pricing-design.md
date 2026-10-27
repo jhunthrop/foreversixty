@@ -66,7 +66,7 @@ spring population drop.
 | Who holds a seat | The subscriber or the guild leader gives seats to any verified member. |
 | Moving a seat | Once every 30 days per seat. The old holder keeps Premium until the move. |
 | A seat holder leaves the guild | The seat returns to the pool at once (the 30-day lock does not apply). |
-| A paying Premium player receives a seat | Their own subscription is cancelled with a prorated refund of unused time. |
+| A paying Premium player is offered a seat | They accept it first. On accepting, their own subscription is set to cancel at period end and the seat starts when that paid period ends, so nobody pays twice and no refund is needed. |
 | A seat is taken away from someone who cancelled their own Premium for it | They get an email with a one-click link to resubscribe at the price they had. |
 | Plan lapses | Officer tools become read-only; attendance, loot and reports stay readable forever; CSV export of attendance and loot always available. Seats end at period end. |
 | Guild leader changes | The subscriber can transfer the plan to another officer from guild settings; the founder price travels with it. |
@@ -100,3 +100,35 @@ spring population drop.
 
 Product and lookup key names, table names beyond those given, email wording within the site's
 copy rules, the seat UI within the guild settings design system.
+
+## 8. Decisions from the builder check (2026-10-27, the controller's calls)
+
+1. **Chip-in is deferred until after launch** (recommended answer to open question 2). Stripe
+   has no cross-customer credit and Stripe is merchant of record under Managed Payments, so a
+   member's contribution is a sale to that member; the mechanism needs its own design.
+2. **Founder prices are separate price objects** per plan and interval, offered by Checkout
+   only while the window is open (the window is measured at Checkout session creation) and
+   kept active, unlisted, afterwards. Founder customers get their own portal configuration
+   listing only founder prices, so monthly↔yearly keeps the lock. The lock lasts while the
+   subscription stays continuous; a lapse and resubscribe pays list price. Guild → Raid guild
+   for a founder uses an upgrade endpoint of ours (the portal cannot switch products) and
+   lands on the founder Raid guild price.
+3. **Seats for paying players** — see §4: accept first, own subscription cancels at period
+   end, the seat starts then. No automated refunds; the 14-day goodwill refund stays manual
+   (the existing refund policy).
+4. **Guild size is a soft cap.** Verified members, including the leader, are counted daily.
+   Above 25 the officer sees a line in guild settings and gets an email 14 days before
+   renewal offering Raid guild. Nothing is switched or cancelled automatically. Upgrading
+   mid-period uses our endpoint with Stripe's proration.
+5. **Trial** is Stripe's `trial_period_days` on Checkout with the card collected up front;
+   it applies to every price (founder and yearly included) and grants the tier's full
+   features including seats. The 14-day goodwill window starts at the first charge. "One
+   trial per guild" is enforced in our own table, so transfers and new subscribers do not get
+   a second one. The length stays open question 3.
+6. **Lapse** is derived, not a new state: no plan with access → officer tools read-only;
+   seats end when the plan's access ends (`past_due` keeps access as today). **Transfer**
+   creates the new officer's subscription at the same price (founder prices are still active)
+   starting when the current period ends, and sets the old one to cancel at period end.
+7. **No subscribers to migrate**: billing went live 2026-10-24 and no real purchase has gone
+   through (memory: forever-stripe-billing); the builder verifies with a Stripe list call
+   before archiving. The new prices take new lookup keys; the old keys' prices are archived.
