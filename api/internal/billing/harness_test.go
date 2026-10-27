@@ -34,12 +34,10 @@ type harness struct {
 func newHarness(t *testing.T) *harness {
 	t.Helper()
 	pool := testPool(t)
-	gw := &FakeGateway{Prices: map[string]string{
-		catalog.LookupKeyPremiumMonthly: "price_premium_monthly",
-		catalog.LookupKeyPremiumYearly:  "price_premium_yearly",
-		catalog.LookupKeyGuildMonthly:   "price_guild_monthly",
-		catalog.LookupKeyGuildYearly:    "price_guild_yearly",
-	}}
+	gw := &FakeGateway{Prices: map[string]string{}}
+	for _, p := range catalog.Prices() {
+		gw.Prices[p.LookupKey] = "price_" + p.LookupKey
+	}
 	authStore := &auth.Store{Pool: pool}
 	svc := &Service{
 		Store: &Store{Pool: pool}, Entitlements: &entitlements.Store{Pool: pool},

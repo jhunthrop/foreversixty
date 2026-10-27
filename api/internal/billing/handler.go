@@ -4,11 +4,9 @@ package billing
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -87,6 +85,8 @@ type Service struct {
 	PublicBaseURL string
 	WebhookSecret string
 	Log           *slog.Logger
+	// Now is the clock; nil means time.Now.
+	Now func() time.Time
 }
 
 // Mount registers every billing route unconditionally: with Gateway nil
@@ -117,127 +117,6 @@ func writeUnavailable(w http.ResponseWriter, r *http.Request) {
 		"billing is not configured on this deployment", nil)
 }
 
-type checkoutRequest struct {
-	Plan     string `json:"plan"`
-	Interval string `json:"interval"`
-	GuildID  *int64 `json:"guild_id"`
-	Intent   string `json:"intent"`
-}
-
-// lookupKeyFor maps a (plan, interval) pair to spec §2.1's fixed lookup
-// key, the only place that mapping exists.
-func lookupKeyFor(plan, interval string) (string, bool) {
-	switch {
-	case plan == entitlements.PlanPremium && interval == "monthly":
-		return catalog.LookupKeyPremiumMonthly, true
-	case plan == entitlements.PlanPremium && interval == "yearly":
-		return catalog.LookupKeyPremiumYearly, true
-	case plan == entitlements.PlanGuild && interval == "monthly":
-		return catalog.LookupKeyGuildMonthly, true
-	case plan == entitlements.PlanGuild && interval == "yearly":
-		return catalog.LookupKeyGuildYearly, true
-	default:
-		return "", false
-	}
-}
-
-func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
-	if s.Gateway == nil {
-		writeUnavailable(w, r)
-		return
-	}
-	var in checkoutRequest
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBillingBody)).Decode(&in); err != nil {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON", nil)
-		return
-	}
-	lookupKey, ok := lookupKeyFor(in.Plan, in.Interval)
-	if !ok {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
-			"plan must be premium or guild, interval monthly or yearly", nil)
-		return
-	}
-	actor := auth.ActorFrom(r.Context())
-	userIDStr := strconv.FormatInt(actor.UserID, 10)
-	metadata := map[string]string{"plan": in.Plan, "user_id": userIDStr}
-	clientRef := "user:" + userIDStr
-
-	if in.Plan == entitlements.PlanGuild {
-		if in.GuildID == nil {
-			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "guild_id is required for the guild plan", nil)
-			return
-		}
-		metadata["guild_id"] = strconv.FormatInt(*in.GuildID, 10)
-		clientRef = fmt.Sprintf("guild:%d:user:%d", *in.GuildID, actor.UserID)
-		transfer := in.Intent == "transfer"
-		if transfer {
-			// Carried onto the Subscription itself (subscription_data.metadata,
-			// same as every other field here) so upsertSubscription can
-			// tell a deliberate "Take over billing" handoff (spec §2.9
-			// RULING 10) apart from the double-billing security finding's
-			// race: RULING 10 intends the new subscription to become the
-			// one entitlements points at, with the old one left for the
-			// guild to cancel by hand — the opposite of the duplicate guard
-			// UpsertStripe otherwise applies here.
-			metadata["intent"] = "transfer"
-		}
-		s.guildCheckout(w, r, *in.GuildID, actor.UserID, transfer, lookupKey, clientRef, metadata)
-		return
-	}
-
-	s.premiumCheckout(w, r, actor.UserID, lookupKey, clientRef, metadata)
-}
-
-// premiumCheckout is the personal path, serialized per user by the same
-// lock the webhook's upsert takes, so the "already subscribed" read below
-// and the Customer creation cannot race a double click or an in-flight
-// webhook. A live premium row (active, trialing or past_due, including
-// one set to cancel at the period's end) answers 409 with the portal
-// hint: a second subscription would be flagged as a duplicate by
-// entitlements.UpsertStripe and set to cancel, and the member would lose
-// access when the first one ended despite having paid for the second.
-// The portal is where a cancelled-at-period-end subscription is resumed.
-func (s *Service) premiumCheckout(w http.ResponseWriter, r *http.Request, userID int64, lookupKey, clientRef string, metadata map[string]string) {
-	var result CheckoutSession
-	err := s.Store.WithUserLock(r.Context(), userID, func(ctx context.Context) error {
-		current, err := s.Entitlements.PersonalBilling(ctx, userID)
-		if err != nil {
-			return err
-		}
-		if current != nil && current.Active {
-			return alreadyOnPremiumRefusal()
-		}
-		customerID, err := s.customerFor(ctx, userID)
-		if err != nil {
-			return err
-		}
-		priceID, err := s.Gateway.PriceIDForLookupKey(ctx, lookupKey)
-		if err != nil {
-			return err
-		}
-		session, err := s.Gateway.CreateCheckoutSession(ctx, CheckoutParams{
-			CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
-			SuccessURL: s.PublicBaseURL + "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}",
-			CancelURL:  s.PublicBaseURL + "/premium?canceled=1",
-		})
-		if err != nil {
-			return err
-		}
-		result = session
-		return nil
-	})
-	if err != nil {
-		var refusal *checkoutRefusal
-		if errors.As(err, &refusal) {
-			httpx.WriteError(w, r, refusal.status, refusal.code, refusal.message, refusal.fields)
-			return
-		}
-		s.fail(w, r, "checkout", err, "could not start checkout just now")
-		return
-	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": result.URL})
-}
-
 // alreadyOnPremiumRefusal is the personal counterpart of
 // alreadyOnThePlanRefusal: the account already has Premium, and the
 // portal is where it is changed or resumed.
@@ -258,60 +137,6 @@ type checkoutRefusal struct {
 }
 
 func (e *checkoutRefusal) Error() string { return e.message }
-
-// guildCheckout is the guild-plan checkout path, wholly serialized per
-// guild by an advisory lock held from the entitlement read through
-// Checkout Session creation and the pending_checkouts write (security
-// review fix, 2026-09-21): without it, two officers checking out for the
-// same guild at once could each read "no active plan," each create a
-// session, and each pay — the second webhook's upsert would then silently
-// overwrite the first subscription id (entitlements.UpsertStripe's
-// duplicate guard is the second, independent layer against that half of
-// the race, for a delivery this lock's window does not cover).
-func (s *Service) guildCheckout(w http.ResponseWriter, r *http.Request, guildID, userID int64,
-	transfer bool, lookupKey, clientRef string, metadata map[string]string) {
-	var result CheckoutSession
-	err := s.Store.WithGuildLock(r.Context(), guildID, func(ctx context.Context) error {
-		refusal, err := s.checkGuildCheckout(ctx, guildID, userID, transfer)
-		if err != nil {
-			return err
-		}
-		if refusal != nil {
-			return refusal
-		}
-		customerID, err := s.customerFor(ctx, userID)
-		if err != nil {
-			return err
-		}
-		priceID, err := s.Gateway.PriceIDForLookupKey(ctx, lookupKey)
-		if err != nil {
-			return err
-		}
-		session, err := s.Gateway.CreateCheckoutSession(ctx, CheckoutParams{
-			CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
-			SuccessURL: s.PublicBaseURL + "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}",
-			CancelURL:  s.PublicBaseURL + "/premium?canceled=1",
-		})
-		if err != nil {
-			return err
-		}
-		if err := s.Store.RecordPendingCheckout(ctx, guildID, userID, session.SessionID, session.ExpiresAt); err != nil {
-			return err
-		}
-		result = session
-		return nil
-	})
-	if err != nil {
-		var refusal *checkoutRefusal
-		if errors.As(err, &refusal) {
-			httpx.WriteError(w, r, refusal.status, refusal.code, refusal.message, refusal.fields)
-			return
-		}
-		s.fail(w, r, "checkout", err, "could not start checkout just now")
-		return
-	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": result.URL})
-}
 
 // alreadyOnThePlanRefusal is the 409/portal_hint shape both an already-
 // active entitlement and a pending, in-flight checkout answer with —
@@ -403,16 +228,6 @@ func (s *Service) customerFor(ctx context.Context, userID int64) (string, error)
 	return id, nil
 }
 
-// listPortalFamily is the portal configuration a subscriber gets until the
-// session is chosen by the subscription's own price: the list family of
-// the plan the request is about.
-func listPortalFamily(guildID *int64) string {
-	if guildID != nil {
-		return string(catalog.OfferGuild)
-	}
-	return string(catalog.OfferPremium)
-}
-
 type portalRequest struct {
 	GuildID *int64 `json:"guild_id"`
 }
@@ -431,7 +246,17 @@ func (s *Service) portal(w http.ResponseWriter, r *http.Request) {
 	}
 	actor := auth.ActorFrom(r.Context())
 	billingUserID := actor.UserID
-	if in.GuildID != nil {
+	family := string(catalog.OfferPremium)
+	if in.GuildID == nil {
+		personal, err := s.Entitlements.PersonalBilling(r.Context(), actor.UserID)
+		if err != nil {
+			s.fail(w, r, "portal", err, "could not open billing just now")
+			return
+		}
+		if personal != nil {
+			family = portalFamily(personal.PriceLookupKey, family)
+		}
+	} else {
 		gb, err := s.Entitlements.GuildBilling(r.Context(), *in.GuildID)
 		if err != nil {
 			s.fail(w, r, "portal", err, "could not open billing just now")
@@ -442,6 +267,7 @@ func (s *Service) portal(w http.ResponseWriter, r *http.Request) {
 				"you are not this guild's billing contact", nil)
 			return
 		}
+		family = portalFamily(gb.PriceLookupKey, gb.Tier)
 	}
 	customerID, ok, err := s.Store.CustomerID(r.Context(), billingUserID)
 	if err != nil {
@@ -452,10 +278,20 @@ func (s *Service) portal(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no billing account on file yet", nil)
 		return
 	}
-	url, err := s.Gateway.CreatePortalSession(r.Context(), customerID, s.PublicBaseURL+"/account", listPortalFamily(in.GuildID))
+	url, err := s.Gateway.CreatePortalSession(r.Context(), customerID, s.PublicBaseURL+"/account", family)
 	if err != nil {
 		s.fail(w, r, "portal", err, "could not open billing just now")
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"portal_url": url})
+}
+
+// portalFamily is the portal configuration for a subscription on
+// lookupKey: its price's family, or fallback (the offer's wire name) when
+// the row carries no known key.
+func portalFamily(lookupKey, fallback string) string {
+	if family, ok := catalog.PortalFamily(lookupKey); ok {
+		return family
+	}
+	return fallback
 }
