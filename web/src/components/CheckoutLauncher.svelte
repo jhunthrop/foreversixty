@@ -24,7 +24,7 @@
   import { fetchMeOnce, forgetSession, type Me, type MeGuild } from '../lib/account/api';
   import { BillingApiError, startCheckout } from '../lib/billing/api';
   import { checkoutCopy } from '../lib/billing/copy';
-  import { founderOpen } from '../lib/billing/plans';
+  import { founderOpen, type PlanKey } from '../lib/billing/plans';
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import {
@@ -48,6 +48,7 @@
   /** Null until every billable guild's crest read has settled, so rows and crests arrive together. */
   let chooserCrests = $state<Record<number, string | null> | null>(null);
   let chooserSummary = $state('');
+  let chooserPlan = $state<PlanKey | null>(null);
   let choosing = $state(false);
   let messageEl = $state<HTMLParagraphElement | undefined>(undefined);
   let refocusMessage = $state(false);
@@ -114,6 +115,7 @@
   function showChooser(me: Me, parsed: CheckoutParams): void {
     choosing = true;
     chooserSummary = checkoutCopy.chosenPlan(parsed.plan, parsed.interval, founderOpen(new Date()));
+    chooserPlan = parsed.plan;
     chooserFailed = false;
     chooserGuilds = me.guilds;
     void loadCrests(me.guilds);
@@ -232,6 +234,7 @@
         failed={chooserFailed}
         crests={chooserCrests}
         summary={chooserSummary}
+        plan={chooserPlan}
         onChoose={chooseGuild}
         onRetry={() => void reloadChooser()}
       />

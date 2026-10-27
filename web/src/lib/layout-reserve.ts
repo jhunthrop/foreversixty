@@ -25,3 +25,13 @@ export function writeReserve(key: string, pixels: number, max: number = MAX_RESE
     // Private mode or quota: the hint is a convenience.
   }
 }
+
+/** The stored height under `key`, or null when it is missing, malformed or out of bounds. */
+export function readReserve(key: string, max: number = MAX_RESERVE_PX): number | null {
+  try {
+    const pixels = Math.round(Number(storage()?.getItem(key)));
+    return Number.isFinite(pixels) && pixels > 0 && pixels <= max ? pixels : null;
+  } catch {
+    return null;
+  }
+}

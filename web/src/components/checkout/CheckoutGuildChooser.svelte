@@ -9,6 +9,7 @@
   import type { MeGuild } from '../../lib/account/api';
   import { billableGuilds, guildFitsRaidTier } from '../../lib/billing/checkout-params';
   import { checkoutCopy } from '../../lib/billing/copy';
+  import type { PlanKey } from '../../lib/billing/plans';
   import Skeleton from '../ui/Skeleton.svelte';
   import LoadError from '../ui/LoadError.svelte';
 
@@ -21,6 +22,7 @@
     failed = false,
     crests = {},
     summary = '',
+    plan = null,
     onChoose,
     onRetry,
   }: {
@@ -28,6 +30,8 @@
     failed?: boolean;
     crests?: Readonly<Record<number, string | null>> | null;
     summary?: string;
+    /** The plan picked on /premium; with it, a row only flags a guild that plan does not fit. */
+    plan?: PlanKey | null;
     onChoose: (guildId: number) => void;
     onRetry: () => void;
   } = $props();
@@ -36,10 +40,12 @@
 
   const rows = $derived(guilds === null ? [] : billableGuilds(guilds));
 
+  /** Without a picked plan, the plan that fits; with one, only a mismatch (Guild for a guild over
+   *  25), so a row never names a plan other than the one being bought (persona round 2, UX N6). */
   function fitLabel(verifiedCount: number): string {
-    return guildFitsRaidTier(verifiedCount)
-      ? checkoutCopy.fitsRaidGuild(verifiedCount)
-      : checkoutCopy.guildPlanLabel;
+    const raidFits = guildFitsRaidTier(verifiedCount);
+    if (plan !== null) return plan === 'guild' && raidFits ? checkoutCopy.fitsRaidGuild(verifiedCount) : '';
+    return raidFits ? checkoutCopy.fitsRaidGuild(verifiedCount) : checkoutCopy.guildPlanLabel;
   }
 </script>
 
@@ -92,7 +98,9 @@
               <span class="text-strong truncate text-[15px]">{guild.name}</span>
               <span class="text-muted text-[13px]">{checkoutCopy.verifiedMembers(guild.verified_count)}</span>
             </span>
-            <span class="text-muted shrink-0 text-[13px]">{fitLabel(guild.verified_count)}</span>
+            {#if fitLabel(guild.verified_count) !== ''}
+              <span class="text-muted shrink-0 text-[13px]">{fitLabel(guild.verified_count)}</span>
+            {/if}
           </button>
         </li>
       {/each}

@@ -963,7 +963,7 @@
                 </div>
               </StatePanel>
               {#if me !== null}
-                <AccountDiscordBlock {me} />
+                <AccountDiscordBlock {me} quiet={(me.seat_offer ?? null) !== null} />
               {/if}
             </div>
           </div>

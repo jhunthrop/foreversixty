@@ -215,10 +215,16 @@ const CAPTURE_CANDIDATES: readonly SeatCandidate[] = [
   { user_id: 52, name: 'Bramblewood', class: 'druid', pays_premium: true },
 ];
 
-async function billingPage(page: Page, width: number, read: GuildBillingSettings, live = false) {
+async function billingPage(
+  page: Page,
+  width: number,
+  read: GuildBillingSettings,
+  live = false,
+  time = BILLING_DAY,
+) {
   await sizeTo(page, width);
   await signIn(page);
-  await page.clock.install({ time: BILLING_DAY });
+  await page.clock.install({ time });
   await page.route(`**/v1/guilds/${GUILD_ID}/seats/candidates`, (route) =>
     route.fulfill(envelope({ candidates: CAPTURE_CANDIDATES })),
   );
@@ -297,44 +303,49 @@ const holder = (user_id: number, name: string, cls: string) => ({
   name,
   class: cls,
 });
+/** Row 9's clock: late enough after launch that a seat given on 30 Oct has passed its 30-day lock,
+ *  so the move offered on 1 Dec obeys the rule the API enforces (player round 2, N3). */
+const SEATS_DAY = DECEMBER;
 /** The Raid guild's three seats taken: held and locked, moving to a payer, accepted and starting later. */
 const SEAT_STATES = [
   heldSeat(1, {
-    given_at: '2026-11-02T12:00:00Z',
-    starts_at: '2026-11-02T12:00:00Z',
-    movable_at: '2026-12-02T12:00:00Z',
+    given_at: '2026-11-20T12:00:00Z',
+    starts_at: '2026-11-20T12:00:00Z',
+    movable_at: '2026-12-20T12:00:00Z',
   }),
   pendingSeat(2, {
     holder: holder(33, 'Lightbrand', 'paladin'),
-    given_at: '2026-10-29T12:00:00Z',
-    starts_at: '2026-10-29T12:00:00Z',
-    movable_at: '2026-11-28T12:00:00Z',
-    offeree: { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' },
+    given_at: '2026-10-30T12:00:00Z',
+    starts_at: '2026-10-30T12:00:00Z',
+    movable_at: '2026-11-29T12:00:00Z',
+    offeree: { name: 'Mirelle', class: 'priest', offered_at: '2026-12-01T12:00:00Z' },
   }),
   heldSeat(3, {
     state: 'accepted',
     holder: holder(34, 'Sagebloom', 'druid'),
-    given_at: '2026-11-12T12:00:00Z',
+    given_at: '2026-12-02T12:00:00Z',
     starts_at: '2026-12-22T12:00:00Z',
-    movable_at: '2026-12-12T12:00:00Z',
+    movable_at: '2027-01-01T12:00:00Z',
   }),
 ];
 /** The same three seats with one held, one empty and one returned for 14 days. */
 const OPEN_SEAT_STATES = [
   SEAT_STATES[0]!,
   emptySeat(2),
-  emptySeat(3, { returned: { name: 'Thistle', at: '2026-11-15T12:00:00Z' } }),
+  emptySeat(3, { returned: { name: 'Thistle', at: '2026-12-01T12:00:00Z' } }),
 ];
 
 atWidths('9 billing, Raid guild seats', ALL, async (page, width) => {
   const read = guildBillingRead({ billing: RAID_PLAN, verified_count: 31, seats: SEAT_STATES });
-  await billingPage(page, width, read);
+  await billingPage(page, width, read, false, SEATS_DAY);
   await shoot(page, 9, 'seats', width, page.getByTestId('guild-seats'));
   const open = await fresh(page);
   await billingPage(
     open,
     width,
     guildBillingRead({ billing: RAID_PLAN, verified_count: 31, seats: OPEN_SEAT_STATES }),
+    false,
+    SEATS_DAY,
   );
   await shoot(open, 9, 'seats-open', width, open.getByTestId('guild-seats'));
   await open.getByTestId('guild-seat-2-give').click();
@@ -476,7 +487,7 @@ atWidths('12 account plan', THREE, async (page, width) => {
 
 atWidths('CLS billing warm', PAIR, async (page, width) => {
   await sizeTo(page, width);
-  await page.clock.install({ time: BILLING_DAY });
+  await page.clock.install({ time: SEATS_DAY });
   await trackLayoutShift(page);
   await signIn(page);
   const read = guildBillingRead({ billing: RAID_PLAN, verified_count: 31, seats: SEAT_STATES });

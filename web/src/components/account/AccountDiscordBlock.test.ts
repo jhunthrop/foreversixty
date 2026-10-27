@@ -266,6 +266,15 @@ describe('connect off: the paste state is unchanged', () => {
     expect(uncommented(html(meWith(true, notifications)))).toBe(PASTE_STATE_BEFORE_CONNECT);
   });
 
+  it('quiet (a seat offer holds the page fill): Save webhook is a gold outline, not a fill', () => {
+    const me = meWith(true, { connect: false, discord: null });
+    const body = render(AccountDiscordBlock, { props: { me, quiet: true } }).body;
+    expect(filledButtons(body)).toBe(0);
+    expect(body).toMatch(
+      /<button[^>]*class="[^"]*border-gold text-gold[^"]*"[^>]*data-testid="discord-save"/,
+    );
+  });
+
   it('has no connect control, disclosure or back link', () => {
     const body = html(meWith(true, { connect: false, discord: null }));
     for (const id of ['discord-connect', 'discord-paste-instead', 'discord-connect-instead'])

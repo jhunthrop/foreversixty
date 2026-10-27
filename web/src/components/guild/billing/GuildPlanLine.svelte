@@ -78,8 +78,8 @@
 >
   <div class="flex flex-col gap-1">
     <p class="text-[14px]" data-testid="guild-billing-plan">
-      {planText}{#if plan.founder && lineState.kind !== 'lapsed'}&#32;<span
-          class="pill-sample"
+      {planText}{#if plan.founder && lineState.kind !== 'lapsed'}<span
+          class="pill pill-site ml-2"
           data-testid="guild-billing-founder">{guildBillingCopy.founderPill}</span
         >{/if}
     </p>

@@ -87,8 +87,8 @@ export const seatsCopy = {
       zone?: string,
     ): string =>
       `${name} offers you the guild plan. You would be billed from ${zonedDayMonthYear(from, zone)} at ${formatCents(amountCents, interval)}${founder ? ', the founder price' : ''}. Nothing is charged before then.`,
-    staysWithGuild: (name: string): string =>
-      `Seats, raids and records stay with the guild; ${name} manages seats from then.`,
+    /** The receiver reads it about themselves (persona round 2, UX N4). */
+    staysWithGuild: 'Seats, raids and records stay with the guild; you manage seats from then.',
     take: 'Take over the plan',
     opening: 'Opening checkout…',
     notNow: 'Not now',

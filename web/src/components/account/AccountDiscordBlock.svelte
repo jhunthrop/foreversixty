@@ -41,7 +41,14 @@
   type Busy = 'save' | 'events' | 'test' | 'remove' | null;
 
   /** `me` is the page's loaded `/v1/me`; a change patches the cache, so `me` updates in place. */
-  let { me }: { me: Me } = $props();
+  let {
+    me,
+    quiet = false,
+  }: {
+    me: Me;
+    /** Another block holds the page's one fill (a seat offer): this block draws no fill of its own. */
+    quiet?: boolean;
+  } = $props();
 
   const block = $derived(blockState(me));
   let webhook = $state('');
@@ -211,6 +218,7 @@
             offerPlans={fieldFailure?.target === 'plans'}
             saving={busy === 'save'}
             {replacing}
+            secondary={quiet}
             onSubmit={submit}
             onCancel={cancel}
             onConnect={connectOn ? showConnectView : undefined}

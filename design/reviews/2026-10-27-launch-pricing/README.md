@@ -27,10 +27,12 @@ File names: `<prefix><state>-<width>.png`; widths are the viewport widths. `-cro
 | `launch-pricing-08-confirm-ready-crop-<w>.png` | 360, 390, 1440 | Upgrade confirm ready: preview amount, Keep Guild focused (crop of the subject region) |
 | `launch-pricing-08-size-line-<w>.png` | 360, 390, 1440 | #billing Guild tier with 28 members: size line and Move to Raid guild |
 | `launch-pricing-08-size-line-crop-<w>.png` | 360, 390, 1440 | #billing Guild tier with 28 members: size line and Move to Raid guild (crop of the subject region) |
-| `launch-pricing-09-picker-payer-<w>.png` | 360, 390, 1440, 2000 | Seats with the picker open on an empty seat and a paying member chosen (payer note) |
+| `launch-pricing-09-picker-payer-<w>.png` | 360, 390, 1440, 2000 | The open seats with the picker open on the empty seat and a paying member chosen (payer note) |
 | `launch-pricing-09-picker-payer-crop-<w>.png` | 360, 390, 1440, 2000 | Seats with the picker open on an empty seat and a paying member chosen (payer note) (crop of the subject region) |
-| `launch-pricing-09-seats-<w>.png` | 360, 390, 1440, 2000 | #billing Raid guild seats: held and locked, waiting (pending offeree), accepted, empty, returned |
-| `launch-pricing-09-seats-crop-<w>.png` | 360, 390, 1440, 2000 | #billing Raid guild seats: held and locked, waiting (pending offeree), accepted, empty, returned (crop of the subject region) |
+| `launch-pricing-09-seats-<w>.png` | 360, 390, 1440, 2000 | #billing Raid guild, 3 of 3 seats: held and locked (Kraggor), moving to a payer (Lightbrand to Mirelle, Waiting), accepted and starting later (Sagebloom) |
+| `launch-pricing-09-seats-crop-<w>.png` | 360, 390, 1440, 2000 | The same, cropped to the seats |
+| `launch-pricing-09-seats-open-<w>.png` | 360, 390, 1440, 2000 | #billing Raid guild, 1 of 3 seats: held (Kraggor), empty, returned (Thistle left the guild) |
+| `launch-pricing-09-seats-open-crop-<w>.png` | 360, 390, 1440, 2000 | The same, cropped to the seats |
 | `launch-pricing-10-receiver-offer-<w>.png` | 390, 1440 | Who pays: the receiver's view of the offer, Take over the plan |
 | `launch-pricing-10-receiver-offer-crop-<w>.png` | 390, 1440 | Who pays: the receiver's view of the offer, Take over the plan (crop of the subject region) |
 | `launch-pricing-10-send-confirm-<w>.png` | 390, 1440 | Who pays: send-transfer confirm with its consequence line |

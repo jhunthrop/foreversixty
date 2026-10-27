@@ -19,5 +19,8 @@ describe('GuildTransferOffer', () => {
     expect(text(body)).toContain('Nothing is charged before then.');
     expect(text(body)).toContain('Take over the plan');
     expect(text(body)).toContain('Not now');
+    // The receiver reads what stays with the guild about themselves (persona round 2).
+    expect(text(body)).toContain('Seats, raids and records stay with the guild; you manage seats from then.');
+    expect(text(body)).not.toContain('Mirelle manages');
   });
 });
