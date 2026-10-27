@@ -83,7 +83,8 @@ type Channel struct {
 	Category *string `json:"category"`
 }
 
-// PostableChannels lists the text channels where the bot may post an embed:
+// PostableChannels lists the text channels where the bot may post an embed (postPermissions,
+// the same set channel_unusable names):
 // uncategorised first, then by category position, each by position, ties by id.
 func PostableChannels(serverID string, l ServerLayout) []Channel {
 	base := basePermissions(serverID, l)
@@ -95,7 +96,7 @@ func PostableChannels(serverID string, l ServerLayout) []Channel {
 	}
 	var picked []RawChannel
 	for _, c := range l.Channels {
-		if c.Type == channelText && channelPermissions(base, serverID, l, c)&InstallPermissions == InstallPermissions {
+		if c.Type == channelText && channelPermissions(base, serverID, l, c)&postPermissions == postPermissions {
 			picked = append(picked, c)
 		}
 	}

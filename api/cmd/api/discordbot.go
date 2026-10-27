@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"log/slog"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -20,7 +17,8 @@ import (
 // warn line, unless the bot's variables are all set and the guild connect it
 // installs through is on. A live bot also becomes the accounts service's Discord link view
 // and routes and drains the raid posts.
-func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, accounts *auth.Service, log *slog.Logger) *discordbot.Service {
+// stop is serve's signal context: the drainer stops claiming when it ends.
+func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, deps server.Deps, accounts *auth.Service, log *slog.Logger) *discordbot.Service {
 	if !cfg.DiscordBotConfigured() {
 		log.Warn("discordbot", "state", "bot off", "effect", "no interactions endpoint")
 		return nil
@@ -47,13 +45,6 @@ func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, acco
 	// The drainer runs in this process (one warm instance, always-on CPU). It stops claiming
 	// at the stop signal itself, so it does not take rows late in the 9 s shutdown budget;
 	// drainDiscordBot then waits for the row in flight within that budget.
-	bot.StartDrainer(drainerStop(), bot.NewDrainer(deps.Guilds))
+	bot.StartDrainer(stop, bot.NewDrainer(deps.Guilds))
 	return bot
-}
-
-// drainerStop ends at the process's stop signal, the same signals serve stops on. It lives
-// for the process, so its own stop function is never needed.
-func drainerStop() context.Context {
-	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	return ctx
 }

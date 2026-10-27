@@ -160,8 +160,8 @@ func TestSavingAnotherChannelRepointsThePosts(t *testing.T) {
 		values ($1, 'raid:onyxias-lair', 'Ony', now() + interval '1 day', 180, $2) returning id`, h.gid, h.uid).Scan(&raidID); err != nil {
 		t.Fatal(err)
 	}
-	if err := h.svc.d.Store.EnqueuePost(ctx, raidID, h.gid, "c1"); err != nil {
-		t.Fatal(err)
+	if queued, err := h.svc.d.Store.EnqueuePost(ctx, raidID, h.gid); err != nil || !queued {
+		t.Fatalf("enqueue = %v, %v", queued, err)
 	}
 	channelOf := func() string {
 		var channel string

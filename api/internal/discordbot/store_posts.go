@@ -29,18 +29,39 @@ type Post struct {
 	CreatedAt time.Time
 }
 
-// EnqueuePost records a raid's post, due now (the row is born dirty). A raid that already
-// has a row, even a gone one, keeps it: one post per raid, never re-posted.
-func (s *Store) EnqueuePost(ctx context.Context, raidID, guildID int64, channelID string) error {
-	return s.exec(ctx, `insert into guild_raid_discord_posts (raid_id, guild_id, channel_id)
-		values ($1, $2, $3) on conflict (raid_id) do nothing`, raidID, guildID, channelID)
+// enqueueSQL queues the post in the install's channel, read in the same statement: for share
+// waits on a channel save in flight and reads the channel it saved.
+const enqueueSQL = `
+	with i as (
+	  select channel_id from guild_discord_installs
+	  where guild_id = $2 and channel_id is not null and not removed_in_discord
+	    and channel_unusable_reason is null
+	  for share),
+	ins as (
+	  insert into guild_raid_discord_posts (raid_id, guild_id, channel_id)
+	  select $1, $2, channel_id from i
+	  on conflict (raid_id) do nothing)
+	select exists (select 1 from i)`
+
+// EnqueuePost records a raid's post in the guild's channel, due now (the row is born dirty).
+// queued is false when the guild has no channel the bot can post in, so nothing was queued. A
+// raid that already has a row, even a gone one, keeps it: one post per raid, never re-posted.
+func (s *Store) EnqueuePost(ctx context.Context, raidID, guildID int64) (queued bool, err error) {
+	if err := s.Pool.QueryRow(ctx, enqueueSQL, raidID, guildID).Scan(&queued); err != nil {
+		return false, fmt.Errorf("discordbot: enqueue post: %w", err)
+	}
+	return queued, nil
 }
+
+// unparkSet, in a mark, gives a parked row another go: the raid changed, so the message did.
+const unparkSet = `next_attempt_at = case when next_attempt_at = 'infinity' then now() else next_attempt_at end,
+	attempts = case when next_attempt_at = 'infinity' then 0 else attempts end`
 
 // MarkRaidDirty implements guilds.RaidPostMarker: the raid's post is out of date. A raid
 // with no post row is a no-op. A failure is logged: the raid change itself was saved.
 func (s *Store) MarkRaidDirty(ctx context.Context, raidID int64) {
 	err := s.exec(ctx, `update guild_raid_discord_posts
-		set dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now())
+		set dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now()), `+unparkSet+`
 		where raid_id = $1 and not gone`, raidID)
 	if err != nil {
 		s.logger().Error("discordbot", "op", "mark_raid_dirty", "raid_id", raidID, "err", err)
@@ -51,7 +72,7 @@ func (s *Store) MarkRaidDirty(ctx context.Context, raidID int64) {
 // not, so the post shows Moved and Was. A failure is logged.
 func (s *Store) MarkRaidMoved(ctx context.Context, raidID int64, was time.Time) {
 	err := s.exec(ctx, `update guild_raid_discord_posts
-		set moved_from = $2, dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now())
+		set moved_from = $2, dirty_seq = dirty_seq + 1, dirty_at = coalesce(dirty_at, now()), `+unparkSet+`
 		where raid_id = $1 and not gone`, raidID, was)
 	if err != nil {
 		s.logger().Error("discordbot", "op", "mark_raid_moved", "raid_id", raidID, "err", err)
@@ -141,7 +162,8 @@ func (s *Store) DeferPost(ctx context.Context, p Post, at time.Time) error {
 		where raid_id = $1 and lease_until = $2`, p.RaidID, p.Lease, at)
 }
 
-// ParkPost stops retrying a row Discord will never take as it is; a channel save unparks it.
+// ParkPost stops retrying a row Discord will never take as it is; its next mark, or a channel
+// save, unparks it.
 func (s *Store) ParkPost(ctx context.Context, p Post, lastErr string) error {
 	return s.execLeased(ctx, `update guild_raid_discord_posts set attempts = attempts + 1,
 		next_attempt_at = 'infinity', lease_until = null, last_error = $3

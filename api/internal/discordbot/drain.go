@@ -30,8 +30,14 @@ const (
 	// backoffBase and backoffCap shape the retry delay: 2 s doubling, at most 5 minutes.
 	backoffBase = 2 * time.Second
 	backoffCap  = 5 * time.Minute
-	// maxAttempts is when a failing row is parked instead of retried again.
-	maxAttempts = 8
+	// writeBudget bounds one store write after Discord answered, on its own context, so a
+	// slow Discord call never leaves the row unrecorded (waiting out its lease).
+	writeBudget = time.Second
+	// probeNeeds is the row budget a channel refusal's server read must have left; with less,
+	// the row is retried instead.
+	probeNeeds = 3 * time.Second
+	// authHold is how long a 401 (a bad or rotated bot token) holds every post.
+	authHold = 10 * time.Minute
 )
 
 // PostFacts reads what a raid's post shows; *guilds.Service implements it.
@@ -55,6 +61,8 @@ type Drainer struct {
 	mu         sync.Mutex
 	held       map[string]time.Time
 	globalTill time.Time
+	// authTill is the 401 hold's end; one error line is logged per hold.
+	authTill time.Time
 }
 
 // Run drains every Tick until ctx ends. The row in flight when ctx ends still lands; the
@@ -106,9 +114,16 @@ func (d *Drainer) release(ctx context.Context, posts []Post) {
 	}
 }
 
+// write runs one store write on its own short context, detached from the row's budget.
+func (d *Drainer) write(ctx context.Context, op string, raidID int64, do func(context.Context) error) {
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), writeBudget)
+	defer cancel()
+	d.logIfErr(do(ctx), op, raidID)
+}
+
 func (d *Drainer) drainRow(ctx context.Context, p Post, now time.Time) {
 	if at, held := d.holdFor(p.ChannelID, now); held {
-		d.logIfErr(d.Store.DeferPost(ctx, p, at), "post_defer", p.RaidID)
+		d.write(ctx, "post_defer", p.RaidID, func(ctx context.Context) error { return d.Store.DeferPost(ctx, p, at) })
 		return
 	}
 	facts, found, err := d.Facts.RaidPostFacts(ctx, p.RaidID)
@@ -127,8 +142,10 @@ func (d *Drainer) drainRow(ctx context.Context, p Post, now time.Time) {
 		d.refused(ctx, p, now, err)
 		return
 	}
-	d.logIfErr(d.Store.FinishEdit(ctx, p, messageID, wakeAt(state, facts), now), "post_finish", p.RaidID)
-	d.logIfErr(d.Store.RecordPostSuccess(ctx, p.GuildID), "post_success", p.RaidID)
+	d.write(ctx, "post_finish", p.RaidID, func(ctx context.Context) error {
+		return d.Store.FinishEdit(ctx, p, messageID, wakeAt(state, facts), now)
+	})
+	d.write(ctx, "post_success", p.RaidID, func(ctx context.Context) error { return d.Store.RecordPostSuccess(ctx, p.GuildID) })
 }
 
 // postFor is the raid's post in state; a moved post shows where it was.
@@ -176,34 +193,56 @@ func wakeAt(state notify.RaidPostState, facts guilds.RaidPostFacts) *time.Time {
 //   - 10008, the message was deleted: gone for good (Ruling 7);
 //   - a channel or server refusal: one read of the server decides removed_in_discord or the
 //     unusable channel, and either pauses the guild's rows and sends the router to the webhook;
-//   - a 429: wait retry_after, holding the channel (or everything, on the global limit);
-//   - a 400 or 401: Discord will never take it as it is, so the row is parked;
-//   - anything else: back off, parking after maxAttempts.
+//   - a 429: wait retry_after, holding the channel (or everything, on the global limit),
+//     without counting an attempt;
+//   - a 401: the bot token is bad, so every post waits authHold (one error line per hold);
+//   - any other 4xx: Discord will never take the message as it is, so the row is parked
+//     until its next mark;
+//   - anything else (no answer, a 5xx, an unexplained refusal): back off, at most 5 minutes,
+//     and keep trying.
 func (d *Drainer) refused(ctx context.Context, p Post, now time.Time, err error) {
 	var api *APIError
 	errors.As(err, &api)
 	switch {
 	case api != nil && api.Code == codeUnknownMessage:
 		d.logger().Info("discordbot", "op", "post_gone", "raid_id", p.RaidID)
-		d.logIfErr(d.Store.MarkGone(ctx, p), "post_gone", p.RaidID)
+		d.write(ctx, "post_gone", p.RaidID, func(ctx context.Context) error { return d.Store.MarkGone(ctx, p) })
 	case api != nil && channelRefused(api):
 		d.channelRefused(ctx, p, now, err)
 	case api != nil && api.RateLimited():
-		retry := now.Add(backoff(p.Attempts, api.RetryAfter))
+		retry := now.Add(backoff(0, api.RetryAfter))
 		d.hold(p.ChannelID, retry, api.Global)
 		d.logger().Warn("discordbot", "op", "post_rate_limited", "raid_id", p.RaidID,
 			"retry_after", api.RetryAfter, "global", api.Global)
-		d.logIfErr(d.Store.FailEdit(ctx, p, retry, describe(err)), "post_fail", p.RaidID)
-	case api != nil && (api.Status == http.StatusBadRequest || api.Status == http.StatusUnauthorized):
+		d.write(ctx, "post_defer", p.RaidID, func(ctx context.Context) error { return d.Store.DeferPost(ctx, p, retry) })
+	case api != nil && api.Status == http.StatusUnauthorized:
+		until := d.holdAuth(now)
+		d.write(ctx, "post_defer", p.RaidID, func(ctx context.Context) error { return d.Store.DeferPost(ctx, p, until) })
+	case api != nil && nonRetryable(api):
 		d.park(ctx, p, err)
 	default:
 		d.retry(ctx, p, now, err)
 	}
 }
 
+// nonRetryable is a 4xx that no wait will change: not 401 (the token), 403 or 404 (judged
+// as channel refusals or retried) or 429 (a wait).
+func nonRetryable(api *APIError) bool {
+	switch api.Status {
+	case http.StatusUnauthorized, http.StatusForbidden, http.StatusNotFound, http.StatusTooManyRequests:
+		return false
+	}
+	return api.Status >= 400 && api.Status < 500
+}
+
 // channelRefused judges a channel-level refusal; a decided one waits, uncounted, for the
-// officer's next channel save (the claim skips the guild's rows until then).
+// officer's next channel save (the claim skips the guild's rows until then). Without time
+// left in the row budget for the server read, the row is retried instead.
 func (d *Drainer) channelRefused(ctx context.Context, p Post, now time.Time, err error) {
+	if deadline, ok := ctx.Deadline(); ok && time.Until(deadline) < probeNeeds {
+		d.retry(ctx, p, now, err)
+		return
+	}
 	verdict, judgeErr := judgeChannel(ctx, d.Store, d.REST, p.GuildID, p.ChannelID, err)
 	if judgeErr != nil {
 		d.logger().Error("discordbot", "op", "post_judge", "raid_id", p.RaidID, "err", judgeErr)
@@ -214,24 +253,41 @@ func (d *Drainer) channelRefused(ctx context.Context, p Post, now time.Time, err
 	}
 	d.logger().Warn("discordbot", "op", "post_refused", "raid_id", p.RaidID, "guild_id", p.GuildID,
 		"removed", verdict == verdictRemoved, "err", describe(err))
-	d.logIfErr(d.Store.DeferPost(ctx, p, now), "post_defer", p.RaidID)
+	d.write(ctx, "post_defer", p.RaidID, func(ctx context.Context) error { return d.Store.DeferPost(ctx, p, now) })
 }
 
-// retry backs the row off and counts the failure on the install; the last attempt parks it.
+// retry backs the row off (at most 5 minutes) and counts the failure on the install. It never
+// parks: a transient failure outlasts no outage.
 func (d *Drainer) retry(ctx context.Context, p Post, now time.Time, err error) {
-	if p.Attempts+1 >= maxAttempts {
-		d.park(ctx, p, err)
-		return
-	}
 	d.logger().Warn("discordbot", "op", "post_failed", "raid_id", p.RaidID, "attempts", p.Attempts+1, "err", describe(err))
-	d.logIfErr(d.Store.FailEdit(ctx, p, now.Add(backoff(p.Attempts, 0)), describe(err)), "post_fail", p.RaidID)
-	d.logIfErr(d.Store.RecordPostFailure(ctx, p.GuildID, describe(err)), "post_failure", p.RaidID)
+	d.write(ctx, "post_fail", p.RaidID, func(ctx context.Context) error {
+		return d.Store.FailEdit(ctx, p, now.Add(backoff(p.Attempts, 0)), describe(err))
+	})
+	d.write(ctx, "post_failure", p.RaidID, func(ctx context.Context) error {
+		return d.Store.RecordPostFailure(ctx, p.GuildID, describe(err))
+	})
 }
 
 func (d *Drainer) park(ctx context.Context, p Post, err error) {
-	d.logger().Error("discordbot", "op", "post_parked", "raid_id", p.RaidID, "attempts", p.Attempts+1, "err", describe(err))
-	d.logIfErr(d.Store.ParkPost(ctx, p, describe(err)), "post_park", p.RaidID)
-	d.logIfErr(d.Store.RecordPostFailure(ctx, p.GuildID, describe(err)), "post_failure", p.RaidID)
+	d.logger().Error("discordbot", "op", "post_parked", "raid_id", p.RaidID, "err", describe(err))
+	d.write(ctx, "post_park", p.RaidID, func(ctx context.Context) error { return d.Store.ParkPost(ctx, p, describe(err)) })
+	d.write(ctx, "post_failure", p.RaidID, func(ctx context.Context) error {
+		return d.Store.RecordPostFailure(ctx, p.GuildID, describe(err))
+	})
+}
+
+// holdAuth starts, or keeps, the 401 hold and answers its end. The first 401 of a hold logs.
+func (d *Drainer) holdAuth(now time.Time) time.Time {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	if !d.authTill.After(now) {
+		d.authTill = now.Add(authHold)
+		d.logger().Error("discordbot", "op", "post_unauthorized", "effect", "every post waits", "hold", authHold)
+	}
+	if d.authTill.After(d.globalTill) {
+		d.globalTill = d.authTill
+	}
+	return d.authTill
 }
 
 func (d *Drainer) hold(channelID string, until time.Time, global bool) {

@@ -11,7 +11,7 @@ import (
 
 func TestNewDiscordBotStaysOffWithoutConfig(t *testing.T) {
 	accounts := &auth.Service{}
-	if bot := newDiscordBot(config.Config{}, nil, server.Deps{}, accounts, slog.Default()); bot != nil {
+	if bot := newDiscordBot(t.Context(), config.Config{}, nil, server.Deps{}, accounts, slog.Default()); bot != nil {
 		t.Fatal("bot built without its variables")
 	}
 	if accounts.DiscordLinks != nil {

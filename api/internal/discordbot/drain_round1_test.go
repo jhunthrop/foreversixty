@@ -20,6 +20,16 @@ func (w *postWorld) install(t *testing.T) Install {
 	return in
 }
 
+func (w *postWorld) parked(t *testing.T, raidID int64) bool {
+	t.Helper()
+	var parked bool
+	if err := w.st.Pool.QueryRow(context.Background(), `select next_attempt_at = 'infinity'
+		from guild_raid_discord_posts where raid_id = $1`, raidID).Scan(&parked); err != nil {
+		t.Fatal(err)
+	}
+	return parked
+}
+
 func TestAMissingPermissionMarksTheChannelUnusable(t *testing.T) {
 	w := newPostWorld(t)
 	ctx := context.Background()
@@ -264,39 +274,126 @@ func TestA429HoldsTheChannelAcrossTicks(t *testing.T) {
 	}
 }
 
-func TestPermanentRefusalsPark(t *testing.T) {
-	t.Run("a 400 parks at once", func(t *testing.T) {
-		w := newPostWorld(t)
-		w.enqueue(t, w.raidID)
-		w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusBadRequest, Code: 50035}}
-		w.drain(t)
-		w.clock.advance(24 * time.Hour)
-		w.drain(t)
-		if n := len(w.rest.Calls()); n != 1 || !strings.Contains(w.log.String(), "post_parked") {
-			t.Fatalf("calls = %d, log %s", n, w.log.String())
-		}
-		w.rest.ErrFor = nil
-		if err := w.st.SetChannel(context.Background(), w.gid, postChannel, "raid-signups"); err != nil {
+func TestANonRetryable4xxParksUntilTheNextMark(t *testing.T) {
+	w := newPostWorld(t)
+	w.enqueue(t, w.raidID)
+	w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusBadRequest, Code: 50035}}
+	w.drain(t)
+	w.clock.advance(24 * time.Hour)
+	w.drain(t)
+	if n := len(w.rest.Calls()); n != 1 || !strings.Contains(w.log.String(), "post_parked") {
+		t.Fatalf("calls = %d, log %s", n, w.log.String())
+	}
+	if !w.parked(t, w.raidID) {
+		t.Fatal("row not parked")
+	}
+	// The raid changes (a sign-up): the mark unparks the row and the post goes out.
+	w.rest.ErrFor = nil
+	w.st.MarkRaidDirty(context.Background(), w.raidID)
+	w.clock.advance(time.Second)
+	w.drain(t)
+	if r, _ := w.row(t, w.raidID); r.messageID == nil || r.attempts != 0 {
+		t.Fatalf("the mark did not unpark the row: %+v", r)
+	}
+}
+
+func TestAChannelSaveUnparksTheGuildsRows(t *testing.T) {
+	w := newPostWorld(t)
+	w.enqueue(t, w.raidID)
+	w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusRequestEntityTooLarge}}
+	w.drain(t)
+	w.rest.ErrFor = nil
+	if err := w.st.SetChannel(context.Background(), w.gid, postChannel, "raid-signups"); err != nil {
+		t.Fatal(err)
+	}
+	w.clock.advance(time.Second)
+	w.drain(t)
+	if r, _ := w.row(t, w.raidID); r.messageID == nil {
+		t.Fatalf("a save did not unpark the row: %+v", r)
+	}
+}
+
+func TestTransientFailuresNeverPark(t *testing.T) {
+	for name, err := range map[string]error{
+		"timeout":         ErrTimeout,
+		"5xx":             &APIError{Status: http.StatusBadGateway},
+		"unexplained 403": &APIError{Status: http.StatusForbidden, Code: codeMissingPerms},
+		"other 404":       &APIError{Status: http.StatusNotFound, Code: codeUnknownWebhook},
+	} {
+		t.Run(name, func(t *testing.T) {
+			w := newPostWorld(t)
+			w.enqueue(t, w.raidID)
+			w.rest.ErrFor = map[string]error{"CreateMessage": err}
+			for range 10 {
+				w.drain(t)
+				w.clock.advance(backoffCap + time.Second)
+			}
+			if n := len(w.callsOf("CreateMessage")); n != 10 {
+				t.Fatalf("creates = %d, want a try every round", n)
+			}
+			r, _ := w.row(t, w.raidID)
+			if r.attempts != 10 || r.nextAttempt.After(w.clock.now()) || strings.Contains(w.log.String(), "post_parked") {
+				t.Fatalf("row = %+v, now %v", r, w.clock.now())
+			}
+		})
+	}
+}
+
+func TestA401HoldsEveryPostWithoutParking(t *testing.T) {
+	w := newPostWorld(t)
+	second := w.addRaid(t)
+	w.enqueue(t, w.raidID)
+	w.enqueueIn(t, second, "chan2")
+	d := w.drainer()
+	w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusUnauthorized, Code: 0}}
+	for range 3 {
+		if err := d.DrainOnce(context.Background()); err != nil {
 			t.Fatal(err)
 		}
-		w.clock.advance(time.Second)
-		w.drain(t)
-		if r, _ := w.row(t, w.raidID); r.messageID == nil {
-			t.Fatalf("a save did not unpark the row: %+v", r)
+		w.clock.advance(time.Minute)
+	}
+	if n := len(w.rest.Calls()); n != 1 {
+		t.Fatalf("calls under a 401 hold = %d, want 1", n)
+	}
+	if got := strings.Count(w.log.String(), "post_unauthorized"); got != 1 {
+		t.Fatalf("401 log lines = %d, want 1", got)
+	}
+	for _, id := range []int64{w.raidID, second} {
+		if r, _ := w.row(t, id); w.parked(t, id) || r.attempts != 0 {
+			t.Fatalf("raid %d row = %+v", id, r)
 		}
-	})
-	t.Run("the eighth failure parks", func(t *testing.T) {
-		w := newPostWorld(t)
-		w.enqueue(t, w.raidID)
-		w.rest.ErrFor = map[string]error{"CreateMessage": ErrTimeout}
-		for range maxAttempts + 2 {
-			w.drain(t)
-			w.clock.advance(backoffCap + time.Second)
-		}
-		if n := len(w.rest.Calls()); n != maxAttempts {
-			t.Fatalf("attempts = %d, want %d", n, maxAttempts)
-		}
-	})
+	}
+	w.rest.ErrFor = nil
+	w.clock.advance(authHold)
+	if err := d.DrainOnce(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if n := len(w.callsOf("CreateMessage")); n != 3 {
+		t.Fatalf("creates after the hold = %d, want 3", n)
+	}
+}
+
+func TestEnqueueReadsTheInstallsChannel(t *testing.T) {
+	w := newPostWorld(t)
+	ctx := context.Background()
+	if err := w.st.SetChannel(ctx, w.gid, "chan2", "general"); err != nil {
+		t.Fatal(err)
+	}
+	w.enqueue(t, w.raidID)
+	var channel string
+	if err := w.st.Pool.QueryRow(ctx, `select channel_id from guild_raid_discord_posts where raid_id = $1`, w.raidID).Scan(&channel); err != nil || channel != "chan2" {
+		t.Fatalf("channel = %q, %v", channel, err)
+	}
+	if err := w.st.MarkRemovedInDiscord(ctx, w.gid, "gone"); err != nil {
+		t.Fatal(err)
+	}
+	other := w.addRaid(t)
+	if queued, err := w.st.EnqueuePost(ctx, other, w.gid); err != nil || queued {
+		t.Fatalf("enqueue without a usable channel = %v, %v", queued, err)
+	}
+	if _, found := w.row(t, other); found {
+		t.Fatal("a row was queued without a usable channel")
+	}
 }
 
 func TestChangingTheChannelRepointsOpenRaids(t *testing.T) {
@@ -309,14 +406,14 @@ func TestChangingTheChannelRepointsOpenRaids(t *testing.T) {
 		t.Fatal(err)
 	}
 	w.enqueue(t, ended)
-	was := w.clock.now()
+	was := w.clock.now().Truncate(time.Second)
 	w.st.MarkRaidMoved(ctx, w.raidID, was)
 	if err := w.st.SetChannel(ctx, w.gid, "chan2", "general"); err != nil {
 		t.Fatal(err)
 	}
 	r, found := w.row(t, w.raidID)
-	if !found || r.messageID != nil || r.movedFrom != nil || !r.dirty {
-		t.Fatalf("open raid row = %+v, found %v", r, found)
+	if !found || r.messageID != nil || r.movedFrom == nil || !r.movedFrom.Equal(was) || !r.dirty {
+		t.Fatalf("open raid row = %+v, found %v (moved_from belongs to the raid)", r, found)
 	}
 	var channel string
 	if err := w.st.Pool.QueryRow(ctx, `select channel_id from guild_raid_discord_posts where raid_id = $1`, w.raidID).Scan(&channel); err != nil || channel != "chan2" {
