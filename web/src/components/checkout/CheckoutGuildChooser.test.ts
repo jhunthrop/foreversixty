@@ -19,7 +19,11 @@ const GUILDS: MeGuild[] = [
   { ...base, id: 4, name: 'Member', verified_count: 5, can: [] },
 ];
 
-function html(props: { guilds: MeGuild[] | null; failed?: boolean }): string {
+function html(props: {
+  guilds: MeGuild[] | null;
+  failed?: boolean;
+  crests?: Record<number, string | null>;
+}): string {
   return render(CheckoutGuildChooser, {
     props: { onChoose: () => {}, onRetry: () => {}, ...props },
   }).body.replace(/<!--.*?-->/g, '');
@@ -59,5 +63,12 @@ describe('CheckoutGuildChooser', () => {
     const body = html({ guilds: null });
     expect(body).toContain('checkout-chooser-loading');
     expect(body.match(/skeleton-block/g)).toHaveLength(3);
+  });
+
+  it('draws a known crest inside the ring, and the heading is focusable', () => {
+    const body = html({ guilds: GUILDS, crests: { 1: '/crest/1.png' } });
+    expect(body.match(/<img /g)).toHaveLength(1);
+    expect(body).toContain('src="/crest/1.png"');
+    expect(body).toContain('tabindex="-1"');
   });
 });

@@ -39,6 +39,7 @@ export function parseCheckoutParams(search: string): CheckoutParams | null {
   if (!isGuildPlan(plan) && guildId !== undefined) return null;
   if (isGuildPlan(plan) && comebackId !== undefined) return null;
   const status = params.get('status') === 'success' ? 'success' : null;
+  if (status === 'success' && isGuildPlan(plan) && guildId === undefined) return null;
   return { plan, interval, guildId, comebackId, status };
 }
 

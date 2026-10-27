@@ -30,6 +30,7 @@ describe('parseCheckoutParams', () => {
     '?plan=guild&interval=yearly&comeback=3',
     '?plan=premium&interval=yearly&comeback=0',
     '?plan=premium&interval=yearly&guild_id=4',
+    '?plan=guild&interval=yearly&status=success',
   ])('rejects %s', (search) => {
     expect(parseCheckoutParams(search)).toBeNull();
   });

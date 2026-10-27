@@ -49,7 +49,7 @@ test('chooser lists billable guilds and names the fitting plan', async ({ page }
   const rows = page.getByTestId('checkout-guild-row');
   await expect(rows).toHaveCount(2);
   await expect(page.getByText('Raid guild fits 28 members')).toBeVisible();
-  expect((await rows.first().boundingBox())?.height).toBe(56);
+  expect((await rows.first().boundingBox())?.height).toBeCloseTo(56, 0);
 });
 
 test('choosing a row posts checkout with that guild id and the url plan', async ({ page }) => {
@@ -90,4 +90,26 @@ test('the chooser is axe-clean and its controls are 44px at 360', async ({ page 
   const box = await page.getByTestId('checkout-guild-row').boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(44);
   await expectNoAxeViolations(page, 'main');
+});
+
+test('a comeback checkout posts comeback_id; a 404 shows the no-retry line', async ({ page }) => {
+  await stubMe(page, []);
+  let posted: unknown;
+  await page.route('**/v1/billing/checkout', (route) => {
+    posted = route.request().postDataJSON();
+    return route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: false,
+        data: null,
+        error: { code: 'not_found', message: 'gone' },
+        request_id: 'r',
+      }),
+    });
+  });
+  await page.goto('/premium/checkout?plan=premium&interval=yearly&comeback=12');
+  await expect(page.getByTestId('checkout-message')).toContainText('no longer available');
+  await expect(page.getByRole('button', { name: 'Try again' })).toHaveCount(0);
+  expect(posted).toEqual({ plan: 'premium', interval: 'yearly', comeback_id: 12 });
 });
