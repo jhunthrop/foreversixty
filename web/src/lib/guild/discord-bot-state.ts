@@ -1,35 +1,11 @@
 // web/src/lib/guild/discord-bot-state.ts
 // Which of the bot spec §3.1 states the guild's Discord section is in, what each install return
-// says and where focus goes, and the channel picker's pure helpers. No API call, no Svelte.
+// says and where focus goes, and the channel picker's pure helpers. No API call, no Svelte. The
+// state itself and its heights are in discord-bot-view.ts, which carries no copy.
 import type { GuildBotChannel, GuildSettingsDiscord } from './api';
 import { guildBotCopy } from './discord-bot-copy';
+import { BOT_RETURN_PARAM } from './discord-bot-view';
 
-export type GuildBotState = 'picker' | 'installed' | 'removed' | 'webhook-only' | 'nothing';
-
-type BotFacts = Pick<GuildSettingsDiscord, 'bot_available' | 'bot' | 'connected'>;
-
-/** §3.1's precedence. With the bot off for the deployment only the webhook states can occur. */
-export function guildBotState(discord: BotFacts, changingChannel: boolean): GuildBotState {
-  const bot = discord.bot_available === true ? (discord.bot ?? null) : null;
-  if (bot === null) return discord.connected ? 'webhook-only' : 'nothing';
-  if (bot.removed_in_discord) return 'removed';
-  if (bot.channel_id === null || changingChannel) return 'picker';
-  return 'installed';
-}
-
-/** Section heights per state, phone then desktop: the §3.1 caps for the picker (held on the
- *  install return until the read answers), measured rest heights for the others. */
-export const GUILD_BOT_RESERVE: Readonly<Record<GuildBotState, string>> = {
-  picker: 'min-h-[400px] md:min-h-[330px]',
-  installed: 'min-h-[330px] md:min-h-[250px]',
-  removed: 'min-h-[300px] md:min-h-[230px]',
-  'webhook-only': 'min-h-[350px] md:min-h-[330px]',
-  nothing: 'min-h-[340px] md:min-h-[250px]',
-};
-
-/** The query parameter the install callback leaves (`?discord_bot=`), its own name so it never
- *  collides with the webhook's `discord=`. */
-export const BOT_RETURN_PARAM = 'discord_bot';
 export const BOT_RETURN_FLAGS = ['installed', 'denied', 'failed', 'taken'] as const;
 export type BotReturnFlag = (typeof BOT_RETURN_FLAGS)[number];
 

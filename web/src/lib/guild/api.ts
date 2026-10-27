@@ -509,8 +509,24 @@ export function fetchGuildSettings(
   );
 }
 
-function loadGuildSettings(guildId: number, apiBase: string): Promise<GuildSettingsData> {
-  return call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase);
+/**
+ * `bot_available: true` with no `bot` key breaks the contract (the key is an object or null).
+ * It reads as the bot being unavailable, so the section draws the webhook states it can trust
+ * rather than an add flow that cannot know whether a bot is installed.
+ */
+export function normalizeGuildDiscord(discord: GuildSettingsDiscord): GuildSettingsDiscord {
+  if (discord.bot_available === true && discord.bot === undefined)
+    return { ...discord, bot_available: false };
+  return discord;
+}
+
+export function normalizeGuildSettings(settings: GuildSettingsData): GuildSettingsData {
+  if (settings.discord === undefined) return settings;
+  return { ...settings, discord: normalizeGuildDiscord(settings.discord) };
+}
+
+async function loadGuildSettings(guildId: number, apiBase: string): Promise<GuildSettingsData> {
+  return normalizeGuildSettings(await call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase));
 }
 
 /**

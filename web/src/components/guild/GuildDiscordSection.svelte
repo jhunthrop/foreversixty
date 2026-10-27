@@ -27,14 +27,12 @@
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
   import {
     BOT_FOCUS,
-    GUILD_BOT_RESERVE,
     botReturnOutcome,
     clearedBotFailures,
-    guildBotState,
     takeBotReturnFlag,
-    BOT_RETURN_PARAM,
     type BotReturnOutcome,
   } from '../../lib/guild/discord-bot-state';
+  import { BOT_RETURN_PARAM, GUILD_BOT_RESERVE, guildBotView } from '../../lib/guild/discord-bot-view';
   import {
     DISCORD_FOCUS,
     clearedFailures,
@@ -97,6 +95,7 @@
   );
   let changing = $state(false);
   let focusSelect = $state(false);
+  let botReturnDone = false;
   let botSettling = $state(
     typeof window !== 'undefined' &&
       new URLSearchParams(window.location.search).get(BOT_RETURN_PARAM) === 'installed',
@@ -107,8 +106,7 @@
 
   const state = $derived(guildDiscordState(discord));
   const botOn = $derived(discord.bot_available === true);
-  const botState = $derived(guildBotState(discord, changing));
-  const bot = $derived(botOn ? (discord.bot ?? null) : null);
+  const view = $derived(guildBotView(discord, changing));
   const installHref = $derived(guildBotInstallUrl(guildId));
   const tools = $derived(officerTools ?? homeTools ?? true);
   const readOnly = $derived(!frozen && (planEnded || !tools));
@@ -117,7 +115,15 @@
   const gateLead = $derived(
     guildDiscordCopy.gate.slice(0, guildDiscordCopy.gate.indexOf(guildDiscordCopy.gateLink)),
   );
-  const focus = createFocusQueue(() => [state, botState, confirming, busy, settling, botSettling, readOnly]);
+  const focus = createFocusQueue(() => [
+    state,
+    view.state,
+    confirming,
+    busy,
+    settling,
+    botSettling,
+    readOnly,
+  ]);
   const held = $derived(
     settling ? GUILD_DISCORD_RESERVE.connected : botSettling ? GUILD_BOT_RESERVE.picker : '',
   );
@@ -155,14 +161,25 @@
     focus.request(outcome.focus);
   }
 
-  /** The bot's install return: the line stays, and focus goes to the select if the picker drew. */
+  /** The bot's install return, shown once: the line stays, and focus goes where the outcome says
+   *  if that control is drawn for the read in hand (the select in the picker, else Send test). */
   function revealBot(outcome: BotReturnOutcome, read: GuildSettingsDiscord): void {
+    if (botReturnDone) return;
+    botReturnDone = true;
     clearTimeout(settleTimer);
     botSettling = false;
     show({ ok: outcome.role === 'status', message: outcome.message, stays: true });
     if (outcome.focus !== BOT_FOCUS.select) return focus.request(outcome.focus);
-    if (guildBotState(read, false) === 'picker') focusSelect = true;
-    else focus.request(BOT_FOCUS.testButton);
+    const { state: shown } = guildBotView(read, false);
+    if (shown === 'picker') focusSelect = true;
+    else if (shown === 'installed') focus.request(BOT_FOCUS.testButton);
+  }
+
+  /** The settle timer: draw the read in hand, and say `Bot added` only if it holds a bot (a
+   *  stale read is not one; the fresh read, when it lands, shows the line). */
+  function settleBot(outcome: BotReturnOutcome): void {
+    botSettling = false;
+    if (guildBotView(discord, false).bot !== null) revealBot(outcome, discord);
   }
 
   /** The callback's `?discord=` flag: taken once, the section scrolled to, the outcome shown. */
@@ -192,7 +209,7 @@
     }
     void tick().then(() => section?.scrollIntoView({ block: 'start' }));
     if (!outcome.holdsPicker) return revealBot(outcome, discord);
-    settleTimer = setTimeout(() => revealBot(outcome, discord), CONNECT_SETTLE_MS);
+    settleTimer = setTimeout(() => settleBot(outcome), CONNECT_SETTLE_MS);
     refetchGuildSettings(guildId, (fresh) => {
       onSettings(fresh);
       revealBot(outcome, fresh.discord ?? discord);
@@ -223,7 +240,7 @@
   }
 
   /** The bot is what a test and a remove reach while it is installed (picker or installed). */
-  const botActive = $derived(bot !== null && botState !== 'removed');
+  const botActive = $derived(view.bot !== null && view.state !== 'removed');
 
   async function test(): Promise<void> {
     const before = discord;
@@ -307,15 +324,15 @@
   {#snippet offerPart()}{@render addParts('offer')}{/snippet}
   {#if settling || botSettling}
     <!-- the connected or picker height, held until the settings read answers (spec 3.8, Return) -->
-  {:else if botOn && botState === 'nothing'}
+  {:else if botOn && view.state === 'nothing'}
     {@render addParts('nothing')}
-  {:else if botOn && bot !== null}
+  {:else if view.bot !== null}
     <div class="flex max-w-[720px] flex-col gap-3" onkeydown={onKeydown} role="presentation">
       <GuildDiscordBot
         {guildId}
         {discord}
-        {bot}
-        botState={botState as 'picker' | 'installed' | 'removed'}
+        bot={view.bot}
+        botState={view.state}
         {installHref}
         {changing}
         {focusSelect}

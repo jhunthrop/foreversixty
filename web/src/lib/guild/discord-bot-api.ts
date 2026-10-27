@@ -4,7 +4,13 @@
 // refusal is a `GuildApiError` carrying the API's status and `code` (`channel_unusable`,
 // `guild_plan_required`). Each write drops the guild's cached reads, as discord-api.ts does.
 import { API_BASE_URL } from '../planner/config';
-import { call, invalidateGuild, type GuildBotChannel, type GuildSettingsDiscord } from './api';
+import {
+  call,
+  invalidateGuild,
+  normalizeGuildDiscord,
+  type GuildBotChannel,
+  type GuildSettingsDiscord,
+} from './api';
 
 function botPath(guildId: number): string {
   return `/v1/guilds/${guildId}/discord/bot`;
@@ -37,7 +43,7 @@ export async function saveBotChannel(
     body: { channel_id: channelId },
   });
   invalidateGuild(guildId, apiBase);
-  return data;
+  return normalizeGuildDiscord(data);
 }
 
 /** Posts the guild test embed through the bot; resolves on 204 and clears the failures. */
