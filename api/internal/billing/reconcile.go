@@ -15,7 +15,7 @@ const reconcileActor = "stripe_reconcile"
 
 // reconcileProducts is every Stripe Product id the orphan check (below)
 // scans — both plans' products, spec §2.8's "our product ids" scope.
-var reconcileProducts = []string{catalog.ProductIDPremium, catalog.ProductIDGuild}
+var reconcileProducts = []string{catalog.ProductIDPremium, catalog.ProductIDGuild, catalog.ProductIDRaidGuild}
 
 // Reconcile is the stripe-reconcile job's whole job (spec §2.8), now
 // two-directional (security review fix, 2026-09-21; the original design
@@ -50,6 +50,13 @@ func (s *Service) Reconcile(ctx context.Context) (int, error) {
 			return 0, fmt.Errorf("billing: reconcile: upsert %s: %w", id, err)
 		}
 	}
+	outgoing, err := s.Store.OutgoingTransferSubscriptionIDs(ctx)
+	if err != nil {
+		return len(ids), fmt.Errorf("billing: reconcile: %w", err)
+	}
+	for _, id := range outgoing {
+		known[id] = true
+	}
 	if _, err := s.Store.SweepExpiredPendingCheckouts(ctx); err != nil {
 		return len(ids), fmt.Errorf("billing: reconcile: sweep pending checkouts: %w", err)
 	}
@@ -73,7 +80,7 @@ func (s *Service) reportOrphanSubscriptions(ctx context.Context, known map[strin
 				continue
 			}
 			plan := entitlements.PlanPremium
-			if productID == catalog.ProductIDGuild {
+			if productID != catalog.ProductIDPremium {
 				plan = entitlements.PlanGuild
 			}
 			if err := s.Entitlements.RecordAnomaly(ctx, nil, nil, plan,
