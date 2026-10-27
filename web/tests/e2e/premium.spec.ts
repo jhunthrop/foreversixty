@@ -16,8 +16,8 @@ test('states what is free forever, the two plans, and that there are no ads', as
   ).toBeVisible();
   // A plan's price shows up twice on load (the plan heading and its buy link), so scope to
   // the first match -- the assertion only cares that the price is visible somewhere.
-  await expect(page.getByText('$4/month', { exact: false }).first()).toBeVisible();
-  await expect(page.getByText('$15/month', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('$6 a month', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('$15 a month', { exact: false }).first()).toBeVisible();
   // Case-insensitive substring match also picks up "no ads" inside the free-forever
   // paragraph, so scope to the first hit.
   await expect(page.getByText('No ads.', { exact: false }).first()).toBeVisible();
@@ -28,15 +28,15 @@ test('states what is free forever, the two plans, and that there are no ads', as
 
 test('the monthly/yearly toggle works with no JavaScript', async ({ page }) => {
   await page.goto('/premium');
-  await expect(page.getByText('$4/month', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('$6 a month', { exact: false }).first()).toBeVisible();
   await page.getByRole('link', { name: 'Yearly' }).first().click();
   await expect(page).toHaveURL(/#yearly$/);
-  await expect(page.getByText('$40/year', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('$50 a year', { exact: false }).first()).toBeVisible();
 });
 
 test('every buy control is a plain link to /premium/checkout, never a marketing button', async ({ page }) => {
   await page.goto('/premium');
-  const premiumBuy = page.getByRole('link', { name: /Subscribe.*\$4\/month/ });
+  const premiumBuy = page.getByRole('link', { name: /Subscribe.*\$6 a month/ });
   await expect(premiumBuy).toHaveAttribute('href', '/premium/checkout?plan=premium&interval=monthly');
 });
 
