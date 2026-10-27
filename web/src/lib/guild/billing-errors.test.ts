@@ -27,9 +27,12 @@ describe('upgradeOutcome', () => {
     expect(upgradeOutcome(refusal(0, null))).toBe('unconfirmed');
   });
 
+  it('an open transfer checkout says a change is already in progress', () => {
+    expect(upgradeOutcome(refusal(409, 'transfer_in_progress'))).toBe('in-progress');
+  });
+
   it('any other 4xx, and a throw that is not an API answer, is the generic failure', () => {
     expect(upgradeOutcome(refusal(403, 'forbidden'))).toBe('generic');
-    expect(upgradeOutcome(refusal(409, 'transfer_in_progress'))).toBe('generic');
     expect(upgradeOutcome(new TypeError('bug'))).toBe('generic');
   });
 });

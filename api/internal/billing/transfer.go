@@ -121,6 +121,9 @@ func (s *Service) offerTransfer(ctx context.Context, a guildActor, toUserID int6
 	if err := s.checkTransferTarget(ctx, a, toUserID); err != nil {
 		return err
 	}
+	if err := s.refuseWhileCheckoutOpen(ctx, a.guildID); err != nil {
+		return err
+	}
 	current, err := s.Store.GuildTransfer(ctx, a.guildID)
 	if err != nil {
 		return err
@@ -155,20 +158,44 @@ func (s *Service) checkTransferTarget(ctx context.Context, a guildActor, toUserI
 // Stripe no longer knows has ended too; refusing on it would block every
 // offer for good.
 func (s *Service) checkOutgoingEnded(ctx context.Context, subscriptionID string) error {
+	ended, err := s.outgoingEnded(ctx, subscriptionID)
+	if err != nil || ended {
+		return err
+	}
+	return transferInProgress("the last transfer finishes when the previous subscription's period ends")
+}
+
+// outgoingEnded reports whether a transfer's outgoing subscription has
+// ended at Stripe: canceled, expired unpaid, or no longer known there.
+func (s *Service) outgoingEnded(ctx context.Context, subscriptionID string) (bool, error) {
 	sub, err := s.Gateway.GetSubscription(ctx, subscriptionID)
 	if errors.Is(err, ErrSubscriptionNotFound) {
 		s.logger().Warn("billing", "op", "outgoing subscription missing at stripe",
 			"subscription_id", subscriptionID, "effect", "treated as ended")
-		return nil
+		return true, nil
 	}
 	if err != nil {
-		return fmt.Errorf("billing: outgoing subscription %s: %w", subscriptionID, err)
+		return false, fmt.Errorf("billing: outgoing subscription %s: %w", subscriptionID, err)
 	}
-	if sub.Status == stripe.SubscriptionStatusCanceled || sub.Status == stripe.SubscriptionStatusIncompleteExpired {
-		return nil
+	return sub.Status == stripe.SubscriptionStatusCanceled || sub.Status == stripe.SubscriptionStatusIncompleteExpired, nil
+}
+
+// refuseWhileCheckoutOpen refuses a transfer or plan change while a
+// Checkout for the guild is open: the subscription it makes was priced
+// and pointed at the plan as it stood when the session began.
+func (s *Service) refuseWhileCheckoutOpen(ctx context.Context, guildID int64) error {
+	pending, err := s.Store.PendingGuildCheckout(ctx, guildID)
+	if err != nil {
+		return err
 	}
-	return &checkoutRefusal{status: http.StatusConflict, code: "transfer_in_progress",
-		message: "the last transfer finishes when the previous subscription's period ends"}
+	if pending {
+		return transferInProgress("a checkout for this guild is open; try again once it finishes")
+	}
+	return nil
+}
+
+func transferInProgress(message string) *checkoutRefusal {
+	return &checkoutRefusal{status: http.StatusConflict, code: "transfer_in_progress", message: message}
 }
 
 func notMemberRefusal() *checkoutRefusal {
@@ -203,6 +230,9 @@ func (s *Service) declineTransfer(w http.ResponseWriter, r *http.Request) {
 func (s *Service) closeTransfer(w http.ResponseWriter, r *http.Request, op string, a guildActor,
 	closeOffer func(context.Context) (bool, error)) {
 	err := s.Store.WithGuildLock(r.Context(), a.guildID, func(ctx context.Context) error {
+		if err := s.refuseWhileCheckoutOpen(ctx, a.guildID); err != nil {
+			return err
+		}
 		closed, err := closeOffer(ctx)
 		if err == nil && !closed {
 			return &checkoutRefusal{status: http.StatusNotFound, code: "no_transfer_offer",

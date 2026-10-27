@@ -14,6 +14,8 @@ export type UpgradeOutcome =
   | 'reload-quiet'
   /** The change may have applied: show the plan as it is and say Stripe is confirming. */
   | 'unconfirmed'
+  /** A transfer Checkout is open (409 transfer_in_progress): nothing changed; say a change is underway. */
+  | 'in-progress'
   /** Any other refusal (a 4xx that is not a clean decline, or a throw that is not an API answer). */
   | 'generic';
 
@@ -23,6 +25,7 @@ export function upgradeOutcome(thrown: unknown): UpgradeOutcome {
   if (!(thrown instanceof BillingApiError)) return 'generic';
   if (thrown.code === 'preview_expired') return 'reopen';
   if (thrown.code === 'not_upgradable') return 'reload-quiet';
+  if (thrown.code === 'transfer_in_progress') return 'in-progress';
   if (thrown.code === 'upgrade_unconfirmed' || thrown.status >= 500 || thrown.status === 0) {
     return 'unconfirmed';
   }

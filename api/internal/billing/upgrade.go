@@ -128,14 +128,21 @@ func (s *Service) upgradePreview(w http.ResponseWriter, r *http.Request) {
 // half-done apply): the subscription is already on the Raid guild price, so
 // the row is brought up to date instead of previewing a second move.
 func (s *Service) alreadyOnTarget(ctx context.Context, t upgradeTarget) (bool, error) {
+	done, err := s.liveOnTarget(ctx, t)
+	if err != nil || !done {
+		return false, err
+	}
+	return true, s.upsertSubscription(ctx, t.plan.StripeSubscriptionID, s.upgradeActor(t))
+}
+
+// liveOnTarget reports whether Stripe's item already bills the target price.
+func (s *Service) liveOnTarget(ctx context.Context, t upgradeTarget) (bool, error) {
 	sub, err := s.Gateway.GetSubscription(ctx, t.plan.StripeSubscriptionID)
 	if err != nil {
 		return false, err
 	}
-	if price := itemPrice(sub); price == nil || price.ID != t.priceID {
-		return false, nil
-	}
-	return true, s.upsertSubscription(ctx, sub.ID, s.upgradeActor(t))
+	price := itemPrice(sub)
+	return price != nil && price.ID == t.priceID, nil
 }
 
 func (s *Service) upgradeActor(t upgradeTarget) string {
@@ -196,6 +203,16 @@ func (s *Service) changeToRaidGuild(ctx context.Context, t upgradeTarget, prorat
 	if _, ok := upgradable(gb); !ok {
 		return &checkoutRefusal{status: http.StatusConflict, code: "not_upgradable",
 			message: "only a Guild plan can move to Raid guild"}
+	}
+	// An open transfer Checkout priced its subscription at the Guild key; an
+	// upgrade now would be lost when that subscription takes the row.
+	if err := s.refuseWhileCheckoutOpen(ctx, t.actor.guildID); err != nil {
+		return err
+	}
+	// A double submit reaches here a second time before the row is upserted;
+	// Stripe's own item says whether the move already happened.
+	if done, err := s.liveOnTarget(ctx, t); err != nil || done {
+		return err
 	}
 	if err := s.Gateway.ChangePrice(ctx, gb.StripeSubscriptionID, t.priceID, prorationDate); err != nil {
 		return priceChangeError{err: err}

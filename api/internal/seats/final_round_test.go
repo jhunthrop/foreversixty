@@ -55,6 +55,79 @@ func TestAccept_CancelErrorResumes(t *testing.T) {
 	}
 }
 
+// acceptedUnstarted is Amy holding slot 1, accepted while her own Premium
+// (ending in 5 days) runs out, set to end as the webhook would record it.
+func acceptedUnstarted(t *testing.T, h *harness) (gid, amy int64) {
+	t.Helper()
+	gid, leader := h.guild(t, "guild")
+	amy = h.member(t, gid, "Amy", "member")
+	h.payingPremium(t, amy, testNow.Add(5*24*time.Hour))
+	if _, err := h.svc.Give(bg, gid, 1, leader, amy); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.svc.Accept(bg, gid, amy); err != nil {
+		t.Fatal(err)
+	}
+	h.exec(t, `update entitlements set cancel_at_period_end = true where user_id = $1`, amy)
+	h.mailer.Sent = nil
+	return gid, amy
+}
+
+// A seat released before it starts resumes the holder's own Premium instead
+// of opening a comeback their Checkout would refuse.
+func TestSweep_UnstartedSeatResumesOwnPremium(t *testing.T) {
+	h := newHarness(t)
+	gid, amy := acceptedUnstarted(t, h)
+	h.exec(t, `update entitlements set status = 'canceled' where guild_id = $1`, gid)
+	if res, err := h.svc.Sweep(bg, testNow); err != nil || res.Released != 1 {
+		t.Fatalf("sweep = %+v, %v", res, err)
+	}
+	sub := fmt.Sprintf("sub_user_%d", amy)
+	if len(h.cancel.resumed) != 1 || h.cancel.resumed[0] != sub {
+		t.Fatalf("resumed %v", h.cancel.resumed)
+	}
+	var n int
+	if err := h.pool.QueryRow(bg, `select count(*) from seat_comebacks where user_id = $1`, amy).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 || len(h.mailer.Sent) != 0 {
+		t.Fatalf("comebacks=%d mails=%d", n, len(h.mailer.Sent))
+	}
+	if state := slotState(t, h, gid, 1); state != string(StateEmpty) {
+		t.Fatalf("state = %s", state)
+	}
+}
+
+func slotState(t *testing.T, h *harness, gid int64, slot int) string {
+	t.Helper()
+	var state string
+	if err := h.pool.QueryRow(bg, `select state from premium_seats where guild_id = $1 and slot = $2`, gid, slot).
+		Scan(&state); err != nil {
+		t.Fatal(err)
+	}
+	return state
+}
+
+// A failed resume releases nothing; the next sweep tries again.
+func TestSweep_FailedResumeKeepsTheSeat(t *testing.T) {
+	h := newHarness(t)
+	gid, _ := acceptedUnstarted(t, h)
+	h.exec(t, `update entitlements set status = 'canceled' where guild_id = $1`, gid)
+	h.svc.Canceller = failingResume{h.cancel}
+	if _, err := h.svc.Sweep(bg, testNow); err == nil {
+		t.Fatal("sweep should report the failed guild")
+	}
+	if state := slotState(t, h, gid, 1); state != string(StateAccepted) {
+		t.Fatalf("state = %s", state)
+	}
+}
+
+type failingResume struct{ *fakeCanceller }
+
+func (failingResume) ResumeSubscription(context.Context, string) error {
+	return errors.New("stripe down")
+}
+
 func TestSweepResult_TotalFailure(t *testing.T) {
 	cases := []struct {
 		name string

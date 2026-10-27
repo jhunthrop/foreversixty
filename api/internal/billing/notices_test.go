@@ -104,6 +104,22 @@ func TestNotices_RenewalPremiumAndGuild(t *testing.T) {
 	}
 }
 
+// A transfer's incoming subscription trials until the outgoing period ends;
+// its first yearly charge gets the 7-day email, and its size email, too.
+func TestNotices_TrialingRowsAreNoticed(t *testing.T) {
+	h := newNoticeHarness(t)
+	u := h.seedUser(t, "trialing@example.com")
+	g := h.seedGuild(t, "Trialing", true)
+	id := h.seedRow(t, g, u, catalog.TierGuild, catalog.LookupKeyGuildYearly, inDays(3), false)
+	h.seedMembers(t, g, catalog.GuildTierMemberLimit+1)
+	if _, err := h.pool.Exec(t.Context(), `update entitlements set status = 'trialing' where id = $1`, id); err != nil {
+		t.Fatal(err)
+	}
+	if n := h.send(t); n != 2 {
+		t.Fatalf("sent %d, want the renewal and the size email", n)
+	}
+}
+
 func TestNotices_RenewalSkipsCanceling(t *testing.T) {
 	h := newNoticeHarness(t)
 	u := h.seedUser(t, "leaving@example.com")

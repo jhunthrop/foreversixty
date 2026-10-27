@@ -293,11 +293,6 @@ func parseSubject(sub *stripe.Subscription) (subscriptionSubject, error) {
 	return subject, nil
 }
 
-func stripeUpsertFor(sub *stripe.Subscription, subject subscriptionSubject, actor string) entitlements.StripeUpsert {
-	p, _ := buildUpsert(sub, subject, actor)
-	return p
-}
-
 // buildUpsert is the upsert a subscription calls for, and whether its
 // price is one the catalog sells for the subscription's plan. A guild row
 // of an unrecognised price takes the plain guild tier.
@@ -382,6 +377,13 @@ func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, 
 	if retired, err := s.retiredByTransfer(ctx, p); err != nil || retired {
 		return err
 	}
+	if p.Transfer {
+		state, err := s.transferStateFor(ctx, *p.GuildID, sub.Metadata["from_subscription_id"])
+		if err != nil {
+			return err
+		}
+		p.OfferGone = state != transferOffered && state != transferAccepted
+	}
 	result, err := s.Entitlements.UpsertStripe(ctx, p)
 	if err != nil {
 		return err
@@ -392,6 +394,8 @@ func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, 
 	case entitlements.OutcomeStaleTransfer:
 		s.logger().Info("billing", "op", "stale_transfer_ignored",
 			"subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID)
+	case entitlements.OutcomeStrayTransfer:
+		return s.cancelStrayTransfer(ctx, p, sub)
 	case entitlements.OutcomeDeadNewcomer:
 		s.logger().Info("billing", "op", "dead_newcomer_ignored",
 			"subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID)
@@ -442,33 +446,60 @@ func (s *Service) afterWritten(ctx context.Context, p entitlements.StripeUpsert,
 	return s.Store.MarkComebackUsed(ctx, id, p.BillingUserID)
 }
 
+// transferStateFor is the state of the transfer away from the
+// subscription a transfer upsert names; transferNone when it names none.
+func (s *Service) transferStateFor(ctx context.Context, guildID int64, from string) (string, error) {
+	if from == "" {
+		return transferNone, nil
+	}
+	return s.Store.TransferState(ctx, guildID, from)
+}
+
+// cancelStrayTransfer is the other half of OutcomeStrayTransfer: a
+// transfer subscription whose offer was withdrawn, declined or replaced
+// while its Checkout was open is recorded and canceled at period end (it
+// is still in its trial, so nothing was charged). One already set to end,
+// or no longer live, needs no cancel.
+func (s *Service) cancelStrayTransfer(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription) error {
+	s.logger().Error("billing", "op", "stray_transfer_canceled", "subscription_id", sub.ID,
+		"from_subscription_id", sub.Metadata["from_subscription_id"], "guild_id", *p.GuildID)
+	if err := s.Entitlements.RecordAnomaly(ctx, nil, p.GuildID, entitlements.PlanGuild,
+		entitlements.AnomalyUnexpectedTransfer, p.StripeSubscriptionID, p.Actor); err != nil {
+		return err
+	}
+	if sub.CancelAtPeriodEnd || !entitlements.StatusGrantsAccess(string(sub.Status)) {
+		return nil
+	}
+	if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, sub.ID); err != nil {
+		return fmt.Errorf("billing: cancel stray transfer subscription %s: %w", sub.ID, err)
+	}
+	return nil
+}
+
 // completeTransfer cancels the outgoing subscription at period end and
-// marks the transfer accepted. An already accepted transfer is left alone,
-// so a later event for the same subscription cancels nothing twice; one
-// with no offer behind it is recorded as an anomaly, because the old
-// subscription keeps billing.
+// marks the transfer accepted. An outgoing subscription that has already
+// ended at Stripe needs no cancel (Stripe would refuse one). An already
+// accepted transfer is left alone, so a later event for the same
+// subscription cancels nothing twice; any other state means the row was
+// already this subscription's (cancelStrayTransfer keeps strays off it)
+// and a later offer has replaced the transfer row, so there is nothing
+// to complete.
 func (s *Service) completeTransfer(ctx context.Context, p entitlements.StripeUpsert, from string) error {
 	guildID := *p.GuildID
-	state := transferNone
-	if from != "" {
-		var err error
-		if state, err = s.Store.TransferState(ctx, guildID, from); err != nil {
-			return err
-		}
+	state, err := s.transferStateFor(ctx, guildID, from)
+	if err != nil || state != transferOffered {
+		return err
 	}
-	switch state {
-	case transferAccepted:
-		return nil
-	case transferOffered:
+	ended, err := s.outgoingEnded(ctx, from)
+	if err != nil {
+		return err
+	}
+	if !ended {
 		if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, from); err != nil {
 			return fmt.Errorf("billing: cancel outgoing subscription %s: %w", from, err)
 		}
-		return s.Store.MarkTransferAccepted(ctx, guildID, from)
 	}
-	s.logger().Error("billing", "op", "unexpected_transfer", "subscription_id", p.StripeSubscriptionID,
-		"from_subscription_id", from, "guild_id", guildID, "transfer_state", state)
-	return s.Entitlements.RecordAnomaly(ctx, nil, p.GuildID, entitlements.PlanGuild,
-		entitlements.AnomalyUnexpectedTransfer, p.StripeSubscriptionID, p.Actor)
+	return s.Store.MarkTransferAccepted(ctx, guildID, from)
 }
 
 // cancelDuplicate is the other half of a caught duplicate (security

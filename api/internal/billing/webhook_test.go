@@ -65,7 +65,8 @@ func fixtureSubscription(id, plan string, userID, guildID int64, status stripe.S
 // entitlements_one_subject constraint refuses that combination).
 func entitlementsStripeUpsertFor(sub *stripe.Subscription) entitlements.StripeUpsert {
 	subject, _ := parseSubject(sub)
-	return stripeUpsertFor(sub, subject, "test_fixture")
+	p, _ := buildUpsert(sub, subject, "test_fixture")
+	return p
 }
 
 func TestWebhookFirstDeliveryIsProcessedAndAudited(t *testing.T) {

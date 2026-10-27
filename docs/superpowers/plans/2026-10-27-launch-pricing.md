@@ -898,7 +898,7 @@ The controller does this task by hand; no subagent.
 - [ ] **Step 2:** Confirm that `MAIL_FROM` on the API service reads `Forever Sixty <help@foreversixty.gg>`.
 - [ ] **Step 3:** Merge PR A. Run `stripe-setup` from the new image against sandbox. Expected: six `fs_portal` configurations; the price lookups are unchanged.
 - [ ] **Step 4:** In sandbox, run Checkout for Premium yearly and for Raid guild monthly on a test guild. Confirm the keys are `premium_founder_yearly` and `raid_guild_founder_monthly`, the 7-day trial applies, and the founder portal opens.
-- [ ] **Step 5:** Deploy PR A, then run `stripe-setup` against live. Portal sessions answer an error until it has run, which is acceptable because no live subscriber exists yet.
+- [ ] **Step 5:** Run stripe-setup live from the new image immediately before the API deploy; deploy the web right after the API. (Every portal session names an `fs_portal` configuration, so the API must not go out first; stripe-setup never opens the database and is safe beside the old code. The old `/premium` shows the old prices until the web follows.)
 - [ ] **Step 6:** Create the `billing-daily` Cloud Run job and its daily Cloud Scheduler trigger, shaped like `stripe-reconcile`. Then deploy PR B.
 - [ ] **Step 7:** Confirm in production that user 78's `/v1/me` still shows Premium.
 - [ ] **Step 8:** Run `api stripe-archive-prices` (dry run) against live. It must list only `premium_monthly` and `premium_yearly`, and must find no live subscription on them. Then run it with `--apply` against live, then against sandbox.

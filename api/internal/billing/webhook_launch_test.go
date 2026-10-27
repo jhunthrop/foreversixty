@@ -16,11 +16,19 @@ import (
 
 func (h *harness) deliverSubscription(t *testing.T, sub *stripe.Subscription) {
 	t.Helper()
-	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+	h.registerSubscription(sub)
 	w := h.do(t, signedWebhookRequest(t, "customer.subscription.updated", map[string]any{"id": sub.ID}))
 	if w.Code != http.StatusOK {
 		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
 	}
+}
+
+// registerSubscription adds sub to the subscriptions the fake gateway knows.
+func (h *harness) registerSubscription(sub *stripe.Subscription) {
+	if h.gateway.Subscriptions == nil {
+		h.gateway.Subscriptions = map[string]*stripe.Subscription{}
+	}
+	h.gateway.Subscriptions[sub.ID] = sub
 }
 
 func guildFixture(h *harness, t *testing.T, subID, lookupKey string, amount int64) (*stripe.Subscription, int64, int64) {
@@ -115,6 +123,8 @@ func TestWebhook_TransferCancelsOutgoing(t *testing.T) {
 	}
 	sub.Metadata["intent"] = "transfer"
 	sub.Metadata["from_subscription_id"] = "sub_old"
+	h.registerSubscription(fixtureSubscription("sub_old", "guild", oldUID, gid, stripe.SubscriptionStatusActive,
+		time.Now().Add(time.Hour)))
 	h.deliverSubscription(t, sub)
 	h.deliverSubscription(t, sub)
 	if !slices.Equal(h.gateway.CanceledAtPeriodEnd, []string{"sub_old"}) {
@@ -292,12 +302,12 @@ func TestWebhook_OutgoingSubscriptionEventsAreIgnoredAfterTransfer(t *testing.T)
 	h.offerTransfer(t, gid, oldUID, newUID, "sub_old_ev", "offered")
 	sub.Metadata["intent"] = "transfer"
 	sub.Metadata["from_subscription_id"] = "sub_old_ev"
+	old := fixtureSubscription("sub_old_ev", "guild", oldUID, gid, stripe.SubscriptionStatusActive, time.Now().Add(time.Hour))
+	old.Items.Data[0].Price = &stripe.Price{ID: "price_old", LookupKey: catalog.LookupKeyGuildMonthly, UnitAmount: 1500}
+	h.registerSubscription(old)
 	h.deliverSubscription(t, sub)
 
-	old := fixtureSubscription("sub_old_ev", "guild", oldUID, gid, stripe.SubscriptionStatusActive, time.Now().Add(time.Hour))
 	old.CancelAtPeriodEnd = true
-	old.Items.Data[0].Price = &stripe.Price{ID: "price_old", LookupKey: catalog.LookupKeyGuildMonthly, UnitAmount: 1500}
-	h.gateway.Subscriptions["sub_old_ev"] = old
 	w := h.do(t, signedWebhookRequest(t, "customer.subscription.updated", map[string]any{"id": "sub_old_ev"}))
 	if w.Code != http.StatusOK {
 		t.Fatalf("status = %d", w.Code)
@@ -313,7 +323,9 @@ func TestWebhook_OutgoingSubscriptionEventsAreIgnoredAfterTransfer(t *testing.T)
 	}
 }
 
-func TestWebhook_TransferWithoutAnOfferIsAnAnomaly(t *testing.T) {
+// A transfer subscription whose offer was withdrawn, declined or never
+// there never takes the row: it is canceled (still in its trial) and recorded.
+func TestWebhook_TransferWithoutAnOfferIsCanceledAndRecorded(t *testing.T) {
 	cases := map[string]struct{ state, from string }{
 		"withdrawn": {"declined", "sub_gone"},
 		"no row":    {"", "sub_gone"},
@@ -335,8 +347,13 @@ func TestWebhook_TransferWithoutAnOfferIsAnAnomaly(t *testing.T) {
 			if n := h.anomalyCount(t, "unexpected_transfer", sub.ID); n != 1 {
 				t.Fatalf("unexpected_transfer anomalies = %d", n)
 			}
-			if len(h.gateway.CanceledAtPeriodEnd) != 0 {
+			if !slices.Equal(h.gateway.CanceledAtPeriodEnd, []string{sub.ID}) {
 				t.Fatalf("canceled = %v", h.gateway.CanceledAtPeriodEnd)
+			}
+			var rows int
+			if err := h.pool.QueryRow(t.Context(), `select count(*) from entitlements where guild_id = $1`, gid).
+				Scan(&rows); err != nil || rows != 0 {
+				t.Fatalf("rows = %d, err = %v: the stray took the guild's row", rows, err)
 			}
 		})
 	}
@@ -350,6 +367,8 @@ func TestWebhook_FailedCancelThenRetryCompletesTheTransfer(t *testing.T) {
 	sub.Metadata["intent"] = "transfer"
 	sub.Metadata["from_subscription_id"] = "sub_retry_old"
 	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+	h.registerSubscription(fixtureSubscription("sub_retry_old", "guild", oldUID, gid, stripe.SubscriptionStatusActive,
+		time.Now().Add(time.Hour)))
 	h.gateway.CancelErr = errors.New("stripe is down")
 	w := h.do(t, signedWebhookRequest(t, "customer.subscription.updated", map[string]any{"id": sub.ID}))
 	if w.Code == http.StatusOK {

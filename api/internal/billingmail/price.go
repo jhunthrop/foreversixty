@@ -24,6 +24,9 @@ const (
 // ErrNegativeAmount rejects a negative price.
 var ErrNegativeAmount = errors.New("billingmail: negative amount")
 
+// ErrNoMemberLimit rejects a size notice built without the tier's member limit.
+var ErrNoMemberLimit = errors.New("billingmail: size notice needs the member limit")
+
 var pacific = mustLoadZone(emailZone)
 
 func mustLoadZone(name string) *time.Location {
