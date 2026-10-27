@@ -5,6 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -13,8 +14,8 @@ import (
 
 // newDiscordBot builds the bot's interactions service. It is nil, with one
 // warn line, unless the bot's variables are all set and the guild connect it
-// installs through is on.
-func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, log *slog.Logger) *discordbot.Service {
+// installs through is on. A live bot also becomes the accounts service's Discord link view.
+func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, accounts *auth.Service, log *slog.Logger) *discordbot.Service {
 	if !cfg.DiscordBotConfigured() {
 		log.Warn("discordbot", "state", "bot off", "effect", "no interactions endpoint")
 		return nil
@@ -23,7 +24,7 @@ func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, log 
 		log.Warn("discordbot", "state", "bot off", "effect", "guild connect is off, so the bot has nothing to install through")
 		return nil
 	}
-	return discordbot.New(discordbot.Deps{
+	bot := discordbot.New(discordbot.Deps{
 		Store:         &discordbot.Store{Pool: pool},
 		REST:          discordbot.NewHTTPREST(cfg.DiscordApplicationID, cfg.DiscordBotToken),
 		OAuth:         discordbot.NewHTTPOAuth(cfg.DiscordClientID, cfg.DiscordClientSecret, notify.CallbackURL(cfg.APIBaseURL)),
@@ -32,4 +33,6 @@ func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, log 
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL,
 		Guilds: deps.Guilds, Notify: deps.Notify, Log: log,
 	})
+	accounts.DiscordLinks = bot
+	return bot
 }

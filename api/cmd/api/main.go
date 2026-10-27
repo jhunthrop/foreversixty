@@ -682,7 +682,7 @@ func serve(log *slog.Logger) error {
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
-	deps.DiscordBot = newDiscordBot(cfg, pool, deps, log)
+	deps.DiscordBot = newDiscordBot(cfg, pool, deps, accounts, log)
 
 	var gateway billing.Gateway
 	if cfg.StripeConfigured() {

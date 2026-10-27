@@ -123,7 +123,7 @@ func NewRouter(d Deps) http.Handler {
 		billing.Mount(mux, d.Billing, d.TrustedProxyHops)
 	}
 	if d.DiscordBot != nil {
-		discordbot.Mount(mux, d.DiscordBot)
+		discordbot.Mount(mux, d.DiscordBot, d.TrustedProxyHops)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)
