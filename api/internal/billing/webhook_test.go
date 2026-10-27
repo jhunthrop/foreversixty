@@ -304,6 +304,8 @@ func TestWebhookTransferSubscriptionOverwritesInsteadOfBeingCanceled(t *testing.
 	newSub.Metadata["intent"] = "transfer"
 	newSub.Created = oldSub.Created + 60
 	h.gateway.Subscriptions["sub_transfer_new"] = newSub
+	newSub.Metadata["from_subscription_id"] = oldSub.ID
+	h.offerTransfer(t, gid, oldOfficer, newOfficer, oldSub.ID, "offered")
 
 	r := signedWebhookRequest(t, "customer.subscription.created", map[string]any{"id": newSub.ID})
 	if w := h.do(t, r); w.Code != http.StatusOK {
@@ -318,8 +320,8 @@ func TestWebhookTransferSubscriptionOverwritesInsteadOfBeingCanceled(t *testing.
 	if subID != "sub_transfer_new" {
 		t.Fatalf("stripe_subscription_id = %q, want sub_transfer_new (the transfer must overwrite)", subID)
 	}
-	if len(h.gateway.CanceledAtPeriodEnd) != 0 {
-		t.Fatalf("CanceledAtPeriodEnd = %v, want none — a transfer must never be canceled", h.gateway.CanceledAtPeriodEnd)
+	if len(h.gateway.CanceledAtPeriodEnd) != 1 || h.gateway.CanceledAtPeriodEnd[0] != oldSub.ID {
+		t.Fatalf("CanceledAtPeriodEnd = %v, want only the outgoing subscription canceled", h.gateway.CanceledAtPeriodEnd)
 	}
 	var anomalies int
 	if err := h.pool.QueryRow(t.Context(),

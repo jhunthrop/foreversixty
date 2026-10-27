@@ -237,7 +237,11 @@ func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor 
 			s.logger().Warn("billing: subscription metadata changed between fetches", "subscription", sub.ID)
 			return nil
 		}
-		return s.applyUpsert(ctx, s.upsertFor(sub, subject, actor), sub)
+		p, err := s.upsertFor(ctx, sub, subject, actor)
+		if err != nil {
+			return err
+		}
+		return s.applyUpsert(ctx, p, sub)
 	})
 }
 
@@ -290,6 +294,14 @@ func parseSubject(sub *stripe.Subscription) (subscriptionSubject, error) {
 }
 
 func stripeUpsertFor(sub *stripe.Subscription, subject subscriptionSubject, actor string) entitlements.StripeUpsert {
+	p, _ := buildUpsert(sub, subject, actor)
+	return p
+}
+
+// buildUpsert is the upsert a subscription calls for, and whether its
+// price is one the catalog sells for the subscription's plan. A guild row
+// of an unrecognised price takes the plain guild tier.
+func buildUpsert(sub *stripe.Subscription, subject subscriptionSubject, actor string) (entitlements.StripeUpsert, bool) {
 	p := entitlements.StripeUpsert{
 		Plan: subject.plan, Status: string(sub.Status), CancelAtPeriodEnd: sub.CancelAtPeriodEnd,
 		StripeSubscriptionID: sub.ID, BillingUserID: subject.billingUserID, Actor: actor,
@@ -305,23 +317,29 @@ func stripeUpsertFor(sub *stripe.Subscription, subject subscriptionSubject, acto
 		p.CurrentPeriodEnd = &end
 	}
 	applyPriceFacts(&p, sub)
+	offer, known := catalog.Offer(""), false
+	if price, ok := catalog.Lookup(p.PriceLookupKey); ok {
+		offer, known = price.Offer, true
+	}
 	if subject.plan == entitlements.PlanGuild {
 		p.GuildID = &subject.guildID
 		p.Tier = catalog.TierGuild
-		if offer, ok := guildOffer(p.PriceLookupKey); ok {
+		if known && offer.Tier() != "" {
 			p.Tier = offer.Tier()
+		} else {
+			known = false
 		}
 	} else {
 		p.UserID = &subject.billingUserID
+		known = known && offer == catalog.OfferPremium
 	}
-	return p
+	return p, known
 }
 
 // applyPriceFacts copies the first item's price key and amount, and the
 // trial end, onto the upsert.
 func applyPriceFacts(p *entitlements.StripeUpsert, sub *stripe.Subscription) {
-	if sub.Items != nil && len(sub.Items.Data) > 0 && sub.Items.Data[0].Price != nil {
-		price := sub.Items.Data[0].Price
+	if price := itemPrice(sub); price != nil {
 		p.PriceLookupKey = price.LookupKey
 		p.UnitAmountCents = price.UnitAmount
 	}
@@ -331,39 +349,39 @@ func applyPriceFacts(p *entitlements.StripeUpsert, sub *stripe.Subscription) {
 	}
 }
 
-// guildOffer is the catalog offer a guild price key belongs to.
-func guildOffer(lookupKey string) (catalog.Offer, bool) {
-	price, ok := catalog.Lookup(lookupKey)
-	if !ok || price.Offer.Tier() == "" {
-		return "", false
+// itemPrice is the price of sub's first line item, nil when it has none.
+func itemPrice(sub *stripe.Subscription) *stripe.Price {
+	if sub.Items == nil || len(sub.Items.Data) == 0 {
+		return nil
 	}
-	return price.Offer, true
+	return sub.Items.Data[0].Price
 }
 
-// upsertFor is stripeUpsertFor plus the warning an unrecognised guild
-// price key deserves (the row falls back to the plain guild tier).
-func (s *Service) upsertFor(sub *stripe.Subscription, subject subscriptionSubject, actor string) entitlements.StripeUpsert {
-	p := stripeUpsertFor(sub, subject, actor)
-	if subject.plan == entitlements.PlanGuild {
-		if _, ok := guildOffer(p.PriceLookupKey); !ok {
-			s.logger().Warn("billing: guild subscription price not in the catalog; using the guild tier",
-				"subscription", sub.ID, "price", priceID(sub), "lookup_key", p.PriceLookupKey)
-		}
+// upsertFor is buildUpsert plus the anomaly a priced subscription outside
+// the catalog for its plan deserves. A subscription carrying no price at
+// all has no price facts to judge and is left alone.
+func (s *Service) upsertFor(ctx context.Context, sub *stripe.Subscription, subject subscriptionSubject, actor string) (entitlements.StripeUpsert, error) {
+	p, known := buildUpsert(sub, subject, actor)
+	price := itemPrice(sub)
+	if known || price == nil {
+		return p, nil
 	}
-	return p
-}
-
-func priceID(sub *stripe.Subscription) string {
-	if sub.Items == nil || len(sub.Items.Data) == 0 || sub.Items.Data[0].Price == nil {
-		return ""
+	s.logger().Error("billing", "op", "unknown_price", "subscription_id", sub.ID,
+		"plan", subject.plan, "price_id", price.ID, "lookup_key", p.PriceLookupKey)
+	if err := s.Entitlements.RecordAnomaly(ctx, p.UserID, p.GuildID, subject.plan,
+		entitlements.AnomalyUnknownPrice, sub.ID, actor); err != nil {
+		return p, err
 	}
-	return sub.Items.Data[0].Price.ID
+	return p, nil
 }
 
 // applyUpsert is upsertSubscription's locked half: the entitlements
 // write, then the action its outcome calls for. Always called from
 // inside WithGuildLock/WithUserLock.
 func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription) error {
+	if retired, err := s.retiredByTransfer(ctx, p); err != nil || retired {
+		return err
+	}
 	result, err := s.Entitlements.UpsertStripe(ctx, p)
 	if err != nil {
 		return err
@@ -383,13 +401,29 @@ func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, 
 	return nil
 }
 
+// retiredByTransfer reports whether the subscription is the one an
+// accepted transfer retired. It keeps sending events until its period
+// ends; they are acknowledged and written nowhere, so they neither record
+// a false duplicate nor cancel it a second time.
+func (s *Service) retiredByTransfer(ctx context.Context, p entitlements.StripeUpsert) (bool, error) {
+	if p.GuildID == nil {
+		return false, nil
+	}
+	state, err := s.Store.TransferState(ctx, *p.GuildID, p.StripeSubscriptionID)
+	if err != nil || state != transferAccepted {
+		return false, err
+	}
+	s.logger().Info("billing", "op", "outgoing_transfer_event_ignored", "subscription_id", p.StripeSubscriptionID)
+	return true, nil
+}
+
 // afterWritten runs the follow-ups a written upsert owes: the guild's
 // trial record, a transfer's retirement of the outgoing subscription,
 // and a premium comeback's redemption. Each is idempotent.
 func (s *Service) afterWritten(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription) error {
 	if p.Plan == entitlements.PlanGuild {
 		if p.Transfer {
-			return s.completeTransfer(ctx, *p.GuildID, sub.Metadata["from_subscription_id"])
+			return s.completeTransfer(ctx, p, sub.Metadata["from_subscription_id"])
 		}
 		if p.TrialEnd != nil {
 			return s.Store.RecordGuildTrial(ctx, *p.GuildID, sub.ID)
@@ -405,24 +439,36 @@ func (s *Service) afterWritten(ctx context.Context, p entitlements.StripeUpsert,
 		s.logger().Warn("billing: ignoring malformed comeback_id", "subscription", sub.ID)
 		return nil
 	}
-	return s.Store.MarkComebackUsed(ctx, id)
+	return s.Store.MarkComebackUsed(ctx, id, p.BillingUserID)
 }
 
 // completeTransfer cancels the outgoing subscription at period end and
-// marks the transfer accepted; a transfer no longer offered is left alone,
-// so a later event for the same subscription cancels nothing twice.
-func (s *Service) completeTransfer(ctx context.Context, guildID int64, from string) error {
-	if from == "" {
+// marks the transfer accepted. An already accepted transfer is left alone,
+// so a later event for the same subscription cancels nothing twice; one
+// with no offer behind it is recorded as an anomaly, because the old
+// subscription keeps billing.
+func (s *Service) completeTransfer(ctx context.Context, p entitlements.StripeUpsert, from string) error {
+	guildID := *p.GuildID
+	state := transferNone
+	if from != "" {
+		var err error
+		if state, err = s.Store.TransferState(ctx, guildID, from); err != nil {
+			return err
+		}
+	}
+	switch state {
+	case transferAccepted:
 		return nil
+	case transferOffered:
+		if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, from); err != nil {
+			return fmt.Errorf("billing: cancel outgoing subscription %s: %w", from, err)
+		}
+		return s.Store.MarkTransferAccepted(ctx, guildID, from)
 	}
-	offered, err := s.Store.TransferOffered(ctx, guildID, from)
-	if err != nil || !offered {
-		return err
-	}
-	if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, from); err != nil {
-		return fmt.Errorf("billing: cancel outgoing subscription %s: %w", from, err)
-	}
-	return s.Store.MarkTransferAccepted(ctx, guildID, from)
+	s.logger().Error("billing", "op", "unexpected_transfer", "subscription_id", p.StripeSubscriptionID,
+		"from_subscription_id", from, "guild_id", guildID, "transfer_state", state)
+	return s.Entitlements.RecordAnomaly(ctx, nil, p.GuildID, entitlements.PlanGuild,
+		entitlements.AnomalyUnexpectedTransfer, p.StripeSubscriptionID, p.Actor)
 }
 
 // cancelDuplicate is the other half of a caught duplicate (security

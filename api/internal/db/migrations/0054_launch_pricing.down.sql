@@ -1,3 +1,8 @@
+delete from entitlement_anomalies where kind in ('unexpected_transfer', 'unknown_price');
+alter table entitlement_anomalies drop constraint entitlement_anomalies_kind_check;
+alter table entitlement_anomalies add constraint entitlement_anomalies_kind_check
+  check (kind in ('duplicate_subscription', 'orphan_subscription'));
+
 drop table billing_notices;
 drop table seat_comebacks;
 drop table plan_transfers;

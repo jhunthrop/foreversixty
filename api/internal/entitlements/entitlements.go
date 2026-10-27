@@ -70,6 +70,12 @@ const (
 	// subscription for one of our own products with no matching
 	// entitlements row at all (spec §2.8's two-directional check).
 	AnomalyOrphanSubscription AnomalyKind = "orphan_subscription"
+	// AnomalyUnexpectedTransfer is a transfer subscription with no offered
+	// transfer behind it: the old subscription keeps billing.
+	AnomalyUnexpectedTransfer AnomalyKind = "unexpected_transfer"
+	// AnomalyUnknownPrice is a subscription whose price is not in the
+	// catalog for its plan.
+	AnomalyUnknownPrice AnomalyKind = "unknown_price"
 )
 
 // StatusGrantsAccess reports whether a Stripe subscription status counts

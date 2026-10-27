@@ -54,13 +54,10 @@ func (s *Service) Reconcile(ctx context.Context) (int, error) {
 	if err != nil {
 		return len(ids), fmt.Errorf("billing: reconcile: %w", err)
 	}
-	for _, id := range outgoing {
-		known[id] = true
-	}
 	if _, err := s.Store.SweepExpiredPendingCheckouts(ctx); err != nil {
 		return len(ids), fmt.Errorf("billing: reconcile: sweep pending checkouts: %w", err)
 	}
-	if err := s.reportOrphanSubscriptions(ctx, known); err != nil {
+	if err := s.reportOrphanSubscriptions(ctx, known, outgoingSet(outgoing)); err != nil {
 		return len(ids), err
 	}
 	return len(ids), nil
@@ -69,14 +66,14 @@ func (s *Service) Reconcile(ctx context.Context) (int, error) {
 // reportOrphanSubscriptions is Reconcile's Stripe→database half (spec
 // §2.8's last paragraph, security review fix 2026-09-21): known is every
 // stripe_subscription_id Reconcile already believes live.
-func (s *Service) reportOrphanSubscriptions(ctx context.Context, known map[string]bool) error {
+func (s *Service) reportOrphanSubscriptions(ctx context.Context, known, outgoing map[string]bool) error {
 	for _, productID := range reconcileProducts {
 		subs, err := s.Gateway.ListSubscriptions(ctx, productID)
 		if err != nil {
 			return fmt.Errorf("billing: reconcile: list subscriptions for %s: %w", productID, err)
 		}
 		for _, sub := range subs {
-			if known[sub.ID] {
+			if known[sub.ID] || (outgoing[sub.ID] && sub.CancelAtPeriodEnd) {
 				continue
 			}
 			plan := entitlements.PlanPremium
@@ -90,4 +87,15 @@ func (s *Service) reportOrphanSubscriptions(ctx context.Context, known map[strin
 		}
 	}
 	return nil
+}
+
+// outgoingSet indexes the subscriptions accepted transfers retire. One
+// counts as known only while Stripe shows it canceling at period end; a
+// re-enabled one is an orphan again.
+func outgoingSet(ids []string) map[string]bool {
+	set := make(map[string]bool, len(ids))
+	for _, id := range ids {
+		set[id] = true
+	}
+	return set
 }
