@@ -20,6 +20,10 @@ import (
 // carries that lookup key yet (stripe-setup has not run, or is stale).
 var ErrPriceNotFound = errors.New("billing: no active price for that lookup key")
 
+// ErrSubscriptionNotFound is GetSubscription's answer when Stripe has no
+// subscription with that id (resource_missing).
+var ErrSubscriptionNotFound = errors.New("billing: no such subscription")
+
 // CheckoutParams is what CreateCheckoutSession turns into a Stripe
 // Checkout Session (spec §2.2). Metadata is set identically on both the
 // session and subscription_data.metadata by the real implementation —

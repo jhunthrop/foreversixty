@@ -3,6 +3,7 @@ package billing
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -122,6 +123,37 @@ func TestUpgrade_FounderLandsOnFounderRaidGuild(t *testing.T) {
 	}
 	if _, tier, key, _ := h.guildRow(t, gid); tier != catalog.TierRaidGuild || key != catalog.LookupKeyRaidGuildFounderYearly {
 		t.Fatalf("row tier = %q, key = %q", tier, key)
+	}
+}
+
+// The locked half re-reads the plan: a subscription or price that changed
+// since resolveUpgrade is refused not_upgradable and Stripe is not called.
+func TestUpgrade_PlanChangedUnderLockRefused(t *testing.T) {
+	for name, change := range map[string]string{
+		"subscription": `update entitlements set stripe_subscription_id = 'sub_other' where guild_id = $1`,
+		"price":        `update entitlements set price_lookup_key = '` + catalog.LookupKeyGuildYearly + `' where guild_id = $1`,
+	} {
+		t.Run(name, func(t *testing.T) {
+			h := newHarness(t)
+			gid, leader := h.stripeGuildPlan(t, "changed"+name, "sub_ch_"+name, catalog.LookupKeyGuildMonthly)
+			plan, err := h.svc.Entitlements.GuildBilling(t.Context(), gid)
+			if err != nil || plan == nil {
+				t.Fatalf("plan = %+v, err = %v", plan, err)
+			}
+			target := upgradeTarget{actor: guildActor{guildID: gid, userID: leader}, plan: plan,
+				priceID: "price_" + catalog.LookupKeyRaidGuildMonthly}
+			if _, err := h.pool.Exec(t.Context(), change, gid); err != nil {
+				t.Fatal(err)
+			}
+			err = h.svc.changeToRaidGuild(t.Context(), target, time.Now())
+			var refusal *checkoutRefusal
+			if !errors.As(err, &refusal) || refusal.code != "not_upgradable" {
+				t.Fatalf("err = %v", err)
+			}
+			if len(h.gateway.PriceChanges) != 0 {
+				t.Fatalf("price changes = %+v", h.gateway.PriceChanges)
+			}
+		})
 	}
 }
 

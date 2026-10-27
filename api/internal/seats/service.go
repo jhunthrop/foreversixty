@@ -255,6 +255,9 @@ func (s *Service) offerMove(ctx context.Context, tx pgx.Tx, guildID int64, row s
 	if !member {
 		return nil, ErrNotMember
 	}
+	if err := refuseSeated(ctx, tx, guildID, toUserID); err != nil {
+		return nil, err
+	}
 	if _, err := tx.Exec(ctx, `update premium_seats set pending_user_id = $3, pending_by = $4, pending_offered_at = $5
 		where guild_id = $1 and slot = $2`, guildID, row.slot, toUserID, actorID, now); err != nil {
 		return nil, mapUnique("offer move", err)
@@ -264,6 +267,20 @@ func (s *Service) offerMove(ctx context.Context, tx pgx.Tx, guildID int64, row s
 		return nil, err
 	}
 	return []mail.Message{msg}, nil
+}
+
+// refuseSeated refuses a recipient who already holds, or waits on an offer
+// of, any seat in the guild: accepting would collide with that seat.
+func refuseSeated(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
+	var seated bool
+	if err := tx.QueryRow(ctx, `select exists (select 1 from premium_seats
+		where guild_id = $1 and $2 in (holder_user_id, pending_user_id))`, guildID, userID).Scan(&seated); err != nil {
+		return wrap("seated check", err)
+	}
+	if seated {
+		return ErrTaken
+	}
+	return nil
 }
 
 const pgUniqueViolation = "23505"
@@ -342,6 +359,9 @@ func (s *Service) assign(ctx context.Context, tx pgx.Tx, guildID int64, slot int
 	}
 	if !member {
 		return nil, ErrNotMember
+	}
+	if err := refuseSeated(ctx, tx, guildID, toUserID); err != nil {
+		return nil, err
 	}
 	state, offeredAt, givenAt := StateHeld, (*time.Time)(nil), &now
 	movableAt := now.Add(catalog.SeatMoveLock)
@@ -506,7 +526,7 @@ func (s *Service) cancelStep(subscriptionID string) *externalStep {
 				s.logger().Error("seats", "op", "resume after failed accept", "subscription", subscriptionID, "err", err)
 				return
 			}
-			s.logger().Error("seats", "op", "accept commit failed", "subscription", subscriptionID,
+			s.logger().Error("seats", "op", "accept failed", "subscription", subscriptionID,
 				"effect", "own subscription resumed")
 		},
 	}
