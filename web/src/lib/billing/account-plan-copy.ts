@@ -17,6 +17,7 @@ export const accountPlanCopy = {
     decline: 'Decline',
     accepted: (ownEnds: string, zone?: string): string =>
       `Accepted. Your Premium ends ${zonedDayMonthYear(ownEnds, zone)}; the seat starts then.`,
+    acceptedNoDate: 'Accepted. The seat starts when your Premium ends.',
     declined: 'Declined. Your Premium carries on as before.',
     failed: 'That did not save. Try again.',
   },

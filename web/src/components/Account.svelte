@@ -34,6 +34,7 @@
   import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import AccountSeatOffer from './account/AccountSeatOffer.svelte';
+  import type { MeSeatOffer } from '../lib/billing/contract';
   import { accountPlanLine } from '../lib/account/plan-line';
   import AccountLoading from './account/AccountLoading.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
@@ -148,6 +149,12 @@
   // Optional chaining all the way through: `entitlements` itself may be absent on an
   // older/stubbed /v1/me response (see the `Me.entitlements` doc comment in account/api.ts).
   const billing = $derived(me?.entitlements?.billing ?? null);
+  // The offer just answered stays on screen as its status line after /v1/me stops sending it.
+  let answeredOffer = $state<MeSeatOffer | null>(null);
+  const onOfferAnswered = (): void => {
+    answeredOffer = me?.seat_offer ?? answeredOffer;
+    session.refresh();
+  };
   const planLine = $derived(me === null ? undefined : accountPlanLine(me, new Date(), viewerZone()));
   const isSupporter = $derived(me?.entitlements?.supporter_mark === true);
   const signedInMethod = $derived(
@@ -922,8 +929,12 @@
               {/if}
               <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
                 <div class="flex flex-col gap-3">
-                  {#if me?.seat_offer}
-                    <AccountSeatOffer offer={me.seat_offer} zone={viewerZone()} />
+                  {#if answeredOffer ?? me?.seat_offer}
+                    <AccountSeatOffer
+                      offer={(answeredOffer ?? me?.seat_offer)!}
+                      zone={viewerZone()}
+                      onAnswered={onOfferAnswered}
+                    />
                   {/if}
                   {#if billing?.status === 'past_due'}
                     <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
