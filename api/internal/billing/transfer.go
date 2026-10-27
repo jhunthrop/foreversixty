@@ -5,9 +5,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
+	stripe "github.com/stripe/stripe-go/v82"
+
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -18,19 +22,29 @@ func transferablePlan(gb *entitlements.GuildBilling) bool {
 	return gb != nil && gb.Active && !gb.Scoped() && gb.StripeSubscriptionID != ""
 }
 
-// outgoingStillBilling reports whether an accepted transfer's outgoing
-// subscription is still in its last period. The incoming subscription's
-// trial runs to that period's end (or later), so while it lasts the
-// accepted row is what keeps stripe-reconcile from flagging the outgoing
-// subscription as an orphan.
-func outgoingStillBilling(t *planTransfer, gb *entitlements.GuildBilling, now time.Time) bool {
-	return t != nil && t.state == transferAccepted && t.fromSubscriptionID != gb.StripeSubscriptionID &&
-		gb.TrialEnd != nil && gb.TrialEnd.After(now)
+// transferStartsAt is when a transfer's new subscriber first pays: the
+// current period's end, floored at transferTrialFloor because Stripe
+// refuses a Checkout trial_end closer than 48 hours. Checkout trials the
+// new subscription to exactly this instant.
+func transferStartsAt(periodEnd *time.Time, now time.Time) time.Time {
+	start := now.Add(transferTrialFloor)
+	if periodEnd != nil && periodEnd.After(start) {
+		return *periodEnd
+	}
+	return start
+}
+
+// acceptedFromEarlier reports whether t is an accepted transfer away from a
+// subscription other than gb's current one: its outgoing subscription may
+// still be running out its last period.
+func acceptedFromEarlier(t *planTransfer, gb *entitlements.GuildBilling) bool {
+	return t != nil && t.state == transferAccepted && t.fromSubscriptionID != gb.StripeSubscriptionID
 }
 
 // transferView is the guild's transfer as the reader sees it: an offer or
-// decline away from the current subscription, or an accepted transfer whose
-// outgoing subscription still runs. Anything older is history and not shown.
+// decline away from the current subscription, or an accepted transfer while
+// the incoming subscription's trial covers the outgoing one's last period.
+// Anything older is history and not shown. Display only: no Stripe call.
 func (s *Service) transferView(ctx context.Context, a guildActor, gb *entitlements.GuildBilling) (*TransferView, error) {
 	if gb == nil {
 		return nil, nil
@@ -39,16 +53,19 @@ func (s *Service) transferView(ctx context.Context, a guildActor, gb *entitlemen
 	if err != nil || t == nil {
 		return nil, err
 	}
-	startsAt := gb.CurrentPeriodEnd
+	now := s.now()
+	var startsAt time.Time
 	switch {
-	case outgoingStillBilling(t, gb, s.now()):
-		startsAt = gb.TrialEnd
+	case acceptedFromEarlier(t, gb) && gb.TrialEnd != nil && gb.TrialEnd.After(now):
+		startsAt = *gb.TrialEnd
 	case t.state == transferAccepted || t.fromSubscriptionID != gb.StripeSubscriptionID:
 		return nil, nil
+	default:
+		startsAt = transferStartsAt(gb.CurrentPeriodEnd, now)
 	}
 	v := &TransferView{
 		ToYou: t.toUserID == a.userID, State: t.state, At: *rfc3339(&t.offeredAt),
-		StartsAt: rfc3339(startsAt), PriceFacts: priceFactsOf(gb.PriceLookupKey, gb.UnitAmountCents),
+		StartsAt: rfc3339(&startsAt), PriceFacts: catalog.FactsOf(gb.PriceLookupKey, gb.UnitAmountCents),
 	}
 	if t.decidedAt != nil {
 		v.At = *rfc3339(t.decidedAt)
@@ -63,8 +80,12 @@ func (s *Service) transferView(ctx context.Context, a guildActor, gb *entitlemen
 }
 
 func (s *Service) sendTransfer(w http.ResponseWriter, r *http.Request) {
-	// The subscriber check waits for the plan read, so a guild with no plan
-	// answers guild_plan_required to every officer.
+	if s.Gateway == nil {
+		writeUnavailable(w, r)
+		return
+	}
+	// The subscriber check waits for the plan read inside the lock, so a
+	// guild with no plan answers guild_plan_required to every officer.
 	a, ok := s.actingActor(w, r, "transfer", anyOfficer)
 	if !ok {
 		return
@@ -83,7 +104,7 @@ func (s *Service) sendTransfer(w http.ResponseWriter, r *http.Request) {
 }
 
 // offerTransfer is sendTransfer's locked half, serialized against the
-// webhook's acceptance of an earlier offer.
+// webhook's acceptance of an earlier offer. Every fact is re-read here.
 func (s *Service) offerTransfer(ctx context.Context, a guildActor, toUserID int64) error {
 	gb, err := s.Entitlements.GuildBilling(ctx, a.guildID)
 	if err != nil {
@@ -93,10 +114,27 @@ func (s *Service) offerTransfer(ctx context.Context, a guildActor, toUserID int6
 		return &checkoutRefusal{status: http.StatusForbidden, code: "guild_plan_required",
 			message: "this guild has no guild plan to transfer"}
 	}
-	if !a.subscriber {
+	if gb.BillingUserID == nil || *gb.BillingUserID != a.userID {
 		return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden",
 			message: "only the plan's subscriber can transfer it"}
 	}
+	if err := s.checkTransferTarget(ctx, a, toUserID); err != nil {
+		return err
+	}
+	current, err := s.Store.GuildTransfer(ctx, a.guildID)
+	if err != nil {
+		return err
+	}
+	if acceptedFromEarlier(current, gb) {
+		if err := s.checkOutgoingEnded(ctx, current.fromSubscriptionID); err != nil {
+			return err
+		}
+	}
+	return s.Store.OfferTransfer(ctx, a.guildID, a.userID, toUserID, gb.StripeSubscriptionID)
+}
+
+// checkTransferTarget refuses anyone but another verified officer or leader.
+func (s *Service) checkTransferTarget(ctx context.Context, a guildActor, toUserID int64) error {
 	if toUserID == a.userID {
 		return notMemberRefusal()
 	}
@@ -107,15 +145,23 @@ func (s *Service) offerTransfer(ctx context.Context, a guildActor, toUserID int6
 	if !verified || (rank != "officer" && rank != "leader") {
 		return notMemberRefusal()
 	}
-	current, err := s.Store.GuildTransfer(ctx, a.guildID)
+	return nil
+}
+
+// checkOutgoingEnded refuses a new offer while an accepted transfer's
+// outgoing subscription has not ended at Stripe: the accepted row is what
+// keeps retiredByTransfer and stripe-reconcile from treating it as a stray,
+// so it must not be overwritten until Stripe has ended it.
+func (s *Service) checkOutgoingEnded(ctx context.Context, subscriptionID string) error {
+	sub, err := s.Gateway.GetSubscription(ctx, subscriptionID)
 	if err != nil {
-		return err
+		return fmt.Errorf("billing: outgoing subscription %s: %w", subscriptionID, err)
 	}
-	if outgoingStillBilling(current, gb, s.now()) {
-		return &checkoutRefusal{status: http.StatusConflict, code: "transfer_in_progress",
-			message: "the last transfer finishes when the previous subscription's period ends"}
+	if sub.Status == stripe.SubscriptionStatusCanceled || sub.Status == stripe.SubscriptionStatusIncompleteExpired {
+		return nil
 	}
-	return s.Store.OfferTransfer(ctx, a.guildID, a.userID, toUserID, gb.StripeSubscriptionID)
+	return &checkoutRefusal{status: http.StatusConflict, code: "transfer_in_progress",
+		message: "the last transfer finishes when the previous subscription's period ends"}
 }
 
 func notMemberRefusal() *checkoutRefusal {
@@ -129,12 +175,14 @@ func (s *Service) withdrawTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.closeTransfer(w, r, "withdraw transfer", a, func(ctx context.Context) (bool, error) {
-		return s.Store.WithdrawTransfer(ctx, a.guildID)
+		return s.Store.WithdrawTransfer(ctx, a.guildID, a.userID)
 	})
 }
 
+// declineTransfer skips the frozen-claimant check: declining an offer
+// changes nobody's billing, so a contested claim is no reason to keep it.
 func (s *Service) declineTransfer(w http.ResponseWriter, r *http.Request) {
-	a, ok := s.actingActor(w, r, "decline transfer", anyOfficer)
+	a, ok := s.guildActorFor(w, r, "decline transfer")
 	if !ok {
 		return
 	}

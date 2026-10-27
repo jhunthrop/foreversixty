@@ -298,9 +298,6 @@ func (s *Service) transferTerms(ctx context.Context, req guildCheckoutRequest) (
 		tierOffer, _ := catalog.ParseOffer(current.Tier)
 		lookupKey = catalog.CheckoutLookupKey(tierOffer, req.interval, s.now())
 	}
-	trialEnd := s.now().Add(transferTrialFloor)
-	if end := current.CurrentPeriodEnd; end != nil && end.After(trialEnd) {
-		trialEnd = *end
-	}
+	trialEnd := transferStartsAt(current.CurrentPeriodEnd, s.now())
 	return lookupKey, &checkoutTrial{end: &trialEnd}, nil
 }

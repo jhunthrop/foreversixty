@@ -3,7 +3,6 @@ package billing
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -147,7 +146,7 @@ func TestUpgrade_PreviewExpired(t *testing.T) {
 func TestUpgrade_DeclinedLeavesGuild(t *testing.T) {
 	h := newHarness(t)
 	gid, leader := h.stripeGuildPlan(t, "declined", "sub_dc", catalog.LookupKeyGuildMonthly)
-	h.gateway.ChangePriceErr = errors.New("card_declined")
+	h.gateway.ChangePriceErr = &stripe.Error{Type: stripe.ErrorTypeCard, Code: stripe.ErrorCodeCardDeclined}
 	status, body := h.post(t, billingPath(gid, "/upgrade"), leader, map[string]any{"proration_date": time.Now().Unix()})
 	if status != http.StatusConflict || errorCode(t, body) != "upgrade_failed" {
 		t.Fatalf("status = %d, body = %s", status, body)
