@@ -11,6 +11,8 @@ import (
 // The custom-id shape of a raid post button.
 const (
 	raidIDPrefix = "raid"
+	// pickIDPrefix leads the character select's custom id (the press flow reads it).
+	pickIDPrefix = "pick"
 	idSeparator  = ":"
 	idParts      = 3
 )
@@ -63,9 +65,9 @@ func PostMessage(p notify.RaidPost, raidURL, nightURL string, now time.Time) Mes
 func postRows(p notify.RaidPost, raidURL, nightURL string) []ActionRow {
 	switch p.State {
 	case notify.PostDone:
-		return []ActionRow{{linkButton(postCopy.OpenNight, nightURL)}}
+		return rowOf(linkButton(postCopy.OpenNight, nightURL))
 	case notify.PostCancelled:
-		return []ActionRow{{linkButton(postCopy.RaidPage, raidURL)}}
+		return rowOf(linkButton(postCopy.RaidPage, raidURL))
 	}
 	live := p.State == notify.PostOpen || p.State == notify.PostMoved
 	row := make(ActionRow, 0, len(signUpStates)+1)
@@ -79,7 +81,22 @@ func postRows(p notify.RaidPost, raidURL, nightURL string) []ActionRow {
 			CustomID: raidCustomID(p.RaidID, s.State), Disabled: !live,
 		})
 	}
-	return []ActionRow{append(row, linkButton(postCopy.RaidPage, raidURL))}
+	return rowOf(append(row, linkButton(postCopy.RaidPage, raidURL))...)
+}
+
+// rowOf is one action row of the components that can be sent: a link button with no url is
+// left out, and no components is no row (an edit sends an empty list).
+func rowOf(components ...Component) []ActionRow {
+	row := make(ActionRow, 0, len(components))
+	for _, c := range components {
+		if c.Style != StyleLink || c.URL != "" {
+			row = append(row, c)
+		}
+	}
+	if len(row) == 0 {
+		return nil
+	}
+	return []ActionRow{row}
 }
 
 func linkButton(label, url string) Component {
@@ -94,7 +111,7 @@ func raidCustomID(raidID int64, state string) string {
 // parseRaidCustomID reads a post button's custom id; ok is false for any other shape.
 func parseRaidCustomID(id string) (raidID int64, state string, ok bool) {
 	parts := strings.Split(id, idSeparator)
-	if len(parts) != idParts || parts[0] != raidIDPrefix || parts[2] == "" {
+	if len(parts) != idParts || parts[0] != raidIDPrefix || !knownSignUpState(parts[2]) {
 		return 0, "", false
 	}
 	raidID, err := strconv.ParseInt(parts[1], 10, 64)
@@ -102,4 +119,13 @@ func parseRaidCustomID(id string) (raidID int64, state string, ok bool) {
 		return 0, "", false
 	}
 	return raidID, parts[2], true
+}
+
+func knownSignUpState(state string) bool {
+	for _, s := range signUpStates {
+		if s.State == state {
+			return true
+		}
+	}
+	return false
 }
