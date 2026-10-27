@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 const commandHeading = "### 6.2 In Discord"
@@ -118,7 +121,7 @@ func TestHelpListsEveryCommand(t *testing.T) {
 	if e.Title != specString(t, commandHeading, "`/help` title", 0, nil) {
 		t.Fatalf("title = %q", e.Title)
 	}
-	if e.Footer != "Forever Sixty" || e.Color != 15055189 {
+	if e.Footer != "Forever Sixty" || e.Color != notify.BrandEmbed("", "", time.Time{}).Color {
 		t.Fatalf("footer %q color %d", e.Footer, e.Color)
 	}
 	lines := strings.Split(e.Description, "\n")

@@ -7,22 +7,29 @@ var commandCopy = struct {
 	RaidUnlinked, RaidNone string
 	// The viewer's state sentences on /raid.
 	RaidIn, RaidLate, RaidBench, RaidOut, RaidUnsigned string
+	// The same sentences when the signed character cannot be named.
+	RaidInNameless, RaidLateNameless, RaidBenchNameless, RaidOutNameless string
 	// HelpTitle heads /help; HelpLine is one command's line.
 	HelpTitle, HelpLine string
 }{
-	RaidUnlinked: "Link your Discord account to see your guild's next raid.",
-	RaidNone:     "No raid planned yet.",
-	RaidIn:       "You are In on {Name} as {Role}.",
-	RaidLate:     "You are Late on {Name} as {Role}.",
-	RaidBench:    "You are on the Bench on {Name}.",
-	RaidOut:      "You are Out on {Name}.",
-	RaidUnsigned: "You have not signed up yet.",
-	HelpTitle:    "Forever Sixty commands",
-	HelpLine:     "**/{name}** {description}",
+	RaidUnlinked:      "Link your Discord account to see your guild's next raid.",
+	RaidNone:          "No raid planned yet.",
+	RaidIn:            "You are In on {Name} as {Role}.",
+	RaidLate:          "You are Late on {Name} as {Role}.",
+	RaidBench:         "You are on the Bench on {Name}.",
+	RaidOut:           "You are Out on {Name}.",
+	RaidUnsigned:      "You have not signed up yet.",
+	RaidInNameless:    "You are In as {Role}.",
+	RaidLateNameless:  "You are Late as {Role}.",
+	RaidBenchNameless: "You are on the Bench.",
+	RaidOutNameless:   "You are Out.",
+	HelpTitle:         "Forever Sixty commands",
+	HelpLine:          "**/{name}** {description}",
 }
 
 // The option descriptions that more than one command shares.
 const (
-	descRaidOption = "Which raid. The next one if left out."
-	descName       = "A character name."
+	descRaidOption       = "Which raid. The next one if left out."
+	descReportRaidOption = "Which raid. The last one if left out."
+	descName             = "A character name."
 )
