@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/seats"
 )
 
@@ -97,7 +98,9 @@ type Service struct {
 	// Gateway is nil when Stripe is not configured on this deployment
 	// (no STRIPE_SECRET_KEY) — every route answers 503 rather than the
 	// API failing to start (coordinator's lane constraint).
-	Gateway       Gateway
+	Gateway Gateway
+	// Mailer sends the billing-daily notices; the routes never use it.
+	Mailer        mail.Mailer
 	PublicBaseURL string
 	WebhookSecret string
 	Log           *slog.Logger
