@@ -208,8 +208,8 @@ func TestSweep_DowngradeReleasesUpperSlots(t *testing.T) {
 	_, _ = h.svc.Give(bg, gid, 2, leader, b)
 	h.exec(t, `update entitlements set tier = 'guild' where guild_id = $1`, gid)
 	n, err := h.svc.Sweep(bg, testNow)
-	if err != nil || n != 1 {
-		t.Fatalf("n=%d err=%v", n, err)
+	if err != nil || n.Released != 1 {
+		t.Fatalf("n=%+v err=%v", n, err)
 	}
 	var holder *int64
 	_ = h.pool.QueryRow(bg, `select holder_user_id from premium_seats where guild_id=$1 and slot=2`, gid).Scan(&holder)

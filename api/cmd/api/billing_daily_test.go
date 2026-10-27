@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 	"testing"
 	"time"
@@ -10,16 +9,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
-
-func TestFailedGuilds(t *testing.T) {
-	joined := errors.Join(errors.New("a"), errors.New("b"))
-	if got := failedGuilds(joined); got != 2 {
-		t.Fatalf("joined = %d, want 2", got)
-	}
-	if got := failedGuilds(errors.New("one")); got != 1 {
-		t.Fatalf("single = %d, want 1", got)
-	}
-}
 
 func TestBillingDaily_SendsRenewalOnce(t *testing.T) {
 	pool := grandfatherPool(t)

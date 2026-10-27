@@ -190,7 +190,7 @@ Strings live in `web/src/lib/billing/copy.ts` (`premiumCopy`, `checkoutCopy`, `b
 
 | Email | Subject | First sentence | Link |
 |---|---|---|---|
-| Renewal, 7 days before | `Your {Plan} plan renews on {d MMMM}` | `Your {Plan} plan{ for {Guild}} renews on {d MMMM yyyy} for {price}{, your founder price}; to stop it, cancel before then and nothing more is charged.` | `Manage or cancel` (the Stripe portal) |
+| Renewal, 7 days before | `Your {Plan} plan renews on {d MMMM}` | `Your {Plan} plan{ for {Guild}} renews on {d MMMM yyyy} for {price}{, your founder price}; to stop it, cancel before then and nothing more is charged.` | `Manage or cancel` (the site's plan page: `/account#plan`, or the guild's settings `#billing`) |
 | Size over 25, 14 days before | `{Guild} has {n} members; Guild covers 25` | `{Guild} has {n} verified members and its Guild plan covers up to 25, so when it renews on {d MMMM yyyy} you may want Raid guild at {price}; nothing switches off either way.` | `Look at Raid guild` (guild settings, the Billing section) |
 | Seat offered, to a payer | `{Guild} offers you a Premium seat` | `{Name} offered you a Premium seat in {Guild}; if you accept, your own Premium stops renewing and ends on {d MMMM yyyy}, the seat starts then, and you are not charged twice.` | `Accept or decline` (the account page, Plan panel) |
 | Seat given, to a non-payer | `You have Premium from {Guild}` | `{Name} gave you a Premium seat in {Guild}, so you have Premium for as long as the guild's plan lasts, with nothing billed to you.` | `See your plan` (the account page, Plan panel) |

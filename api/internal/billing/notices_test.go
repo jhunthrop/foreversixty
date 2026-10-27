@@ -166,6 +166,17 @@ func TestNotices_SizeAbove25Only(t *testing.T) {
 	}
 }
 
+func TestNotices_SizeOncePerPeriod(t *testing.T) {
+	h := newNoticeHarness(t)
+	u := h.seedUser(t, "boss2@example.com")
+	g := h.seedGuild(t, "Olympus XXVII", true)
+	h.seedRow(t, g, u, catalog.TierGuild, catalog.LookupKeyGuildYearly, inDays(12), false)
+	h.seedMembers(t, g, 26)
+	if h.send(t) != 1 || h.send(t) != 0 || len(h.mailer.Sent) != 1 {
+		t.Fatalf("sent %d messages", len(h.mailer.Sent))
+	}
+}
+
 func TestNotices_SizeRaidGuildTierNever(t *testing.T) {
 	h := newNoticeHarness(t)
 	u := h.seedUser(t, "raid@example.com")
