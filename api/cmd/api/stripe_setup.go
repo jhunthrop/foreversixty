@@ -29,6 +29,33 @@ var priceSpecs = []billing.PriceSpec{
 		LookupKey: billing.LookupKeyGuildMonthly, Interval: "month", UnitAmountCents: 15 * centsPerDollar},
 	{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild", TaxCode: billing.ProductTaxCodeSaaSPersonal,
 		LookupKey: billing.LookupKeyGuildYearly, Interval: "year", UnitAmountCents: 150 * centsPerDollar},
+	// The launch prices (docs/superpowers/specs/2026-10-27-pricing-design.md §3), sold once
+	// the pricing lane switches the site over.
+	premiumSpec(billing.LookupKeyPremiumMonthlyLaunch, "month", 6*centsPerDollar),
+	premiumSpec(billing.LookupKeyPremiumYearlyLaunch, "year", 50*centsPerDollar),
+	premiumSpec(billing.LookupKeyPremiumFounderMonthly, "month", 5*centsPerDollar),
+	premiumSpec(billing.LookupKeyPremiumFounderYearly, "year", 40*centsPerDollar),
+	guildSpec(billing.LookupKeyGuildFounderMonthly, "month", 12*centsPerDollar),
+	guildSpec(billing.LookupKeyGuildFounderYearly, "year", 120*centsPerDollar),
+	raidGuildSpec(billing.LookupKeyRaidGuildMonthly, "month", 25*centsPerDollar),
+	raidGuildSpec(billing.LookupKeyRaidGuildYearly, "year", 250*centsPerDollar),
+	raidGuildSpec(billing.LookupKeyRaidGuildFounderMonthly, "month", 20*centsPerDollar),
+	raidGuildSpec(billing.LookupKeyRaidGuildFounderYearly, "year", 200*centsPerDollar),
+}
+
+func premiumSpec(lookupKey, interval string, cents int64) billing.PriceSpec {
+	return billing.PriceSpec{ProductID: billing.ProductIDPremium, ProductName: "Forever Sixty Premium",
+		TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: lookupKey, Interval: interval, UnitAmountCents: cents}
+}
+
+func guildSpec(lookupKey, interval string, cents int64) billing.PriceSpec {
+	return billing.PriceSpec{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild",
+		TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: lookupKey, Interval: interval, UnitAmountCents: cents}
+}
+
+func raidGuildSpec(lookupKey, interval string, cents int64) billing.PriceSpec {
+	return billing.PriceSpec{ProductID: billing.ProductIDRaidGuild, ProductName: "Forever Sixty Raid Guild",
+		TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: lookupKey, Interval: interval, UnitAmountCents: cents}
 }
 
 // portalSpec is the Customer Portal stripe-setup ensures (spec §2.5):

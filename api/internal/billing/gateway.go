@@ -26,6 +26,24 @@ const (
 	LookupKeyGuildYearly    = "guild_yearly"
 )
 
+// The launch prices (docs/superpowers/specs/2026-10-27-pricing-design.md §3). They live
+// beside the original four under their own keys, because an existing lookup key's price is
+// never changed in place (EnsurePrice is create-only), and no checkout sells them until the
+// pricing lane switches the site over. The Guild tier keeps guild_monthly / guild_yearly,
+// whose $15 / $150 amounts are unchanged.
+const (
+	LookupKeyPremiumMonthlyLaunch    = "premium_monthly_launch"
+	LookupKeyPremiumYearlyLaunch     = "premium_yearly_launch"
+	LookupKeyPremiumFounderMonthly   = "premium_founder_monthly"
+	LookupKeyPremiumFounderYearly    = "premium_founder_yearly"
+	LookupKeyGuildFounderMonthly     = "guild_founder_monthly"
+	LookupKeyGuildFounderYearly      = "guild_founder_yearly"
+	LookupKeyRaidGuildMonthly        = "raid_guild_monthly"
+	LookupKeyRaidGuildYearly         = "raid_guild_yearly"
+	LookupKeyRaidGuildFounderMonthly = "raid_guild_founder_monthly"
+	LookupKeyRaidGuildFounderYearly  = "raid_guild_founder_yearly"
+)
+
 // ErrPriceNotFound is PriceIDForLookupKey's answer when no active Price
 // carries that lookup key yet (stripe-setup has not run, or is stale).
 var ErrPriceNotFound = errors.New("billing: no active price for that lookup key")
@@ -51,6 +69,9 @@ type CheckoutParams struct {
 const (
 	ProductIDPremium = "prod_fs_premium"
 	ProductIDGuild   = "prod_fs_guild"
+	// ProductIDRaidGuild is the launch pricing's second guild tier. It joins
+	// stripe-reconcile's check when the pricing lane starts selling it.
+	ProductIDRaidGuild = "prod_fs_raid_guild"
 )
 
 // ProductTaxCodeSaaSPersonal is Stripe's tax code for software as a
