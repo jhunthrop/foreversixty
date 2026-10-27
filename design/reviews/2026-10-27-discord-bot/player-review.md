@@ -24,3 +24,38 @@ Not approved, because I have not seen them rendered: `/char`, `/raid`, `/report`
 12. LOW, discord-msg-press-select-phone.png: "· your main" sits in the option label, not the description, and the pressed state "In" is not bold as the spec says. A class icon beside each name would help someone with eight alts. Fix: move "your main" to the description and bold the state.
 13. LOW, discord-bot-raid-form-post-to-discord-bot-only-crop-390.png: "Post to Discord" does not say where it posts or that the post gets buttons. Fix: "Post to #raid-signups with sign-up buttons".
 14. LOW, discord-bot-02-state-4-offer-crop-1440.png: "Channel 1198…4568" shows a raw channel ID to a GM. This is G1's existing webhook state and is not new here. Fix: show the channel name where the webhook API gives it, else "a Discord channel" alone.
+
+## Re-review 1
+
+Same reviewer, after 705c0093d. This round I read the handler-backed renders: every D1 post state, every D3 press reply, plus /raid, /signup, /char (upgrades, no gear, unknown), /bis (slot, top, shared, after share), /report (member, officer, shared, after share), /attendance (own, officer, refusal), /readiness (officer, member, unlinked, lapsed, Guild tier, nobody), /link (both states) and /help. I also re-read the site crops for 4, 8 and the account row.
+
+### Findings from the first round
+
+1. Fixed. discord-msg-press-moved-phone.png reads "Your other character Zulmara moved to Bench."
+2. Fixed. discord-msg-press-in-phone.png and discord-msg-signup-phone.png both say "for Onyxia's Lair, Thu 10 Dec."
+3. Deferred to the owner (role ping). I accept that; it is still the first thing a Raid-Helper guild will ask for.
+4. Fixed. discord-bot-04-warning-3-failures-crop-390.png names #raid-signups and the three missing permissions in plain words.
+5. Fixed. discord-msg-bis-slot-phone.png now has real icons, the "Best in slot" author line, the text line, two alternatives with deltas, and Share / Open on Forever Sixty.
+6. Kept by ruling (it is the site's attendance chip, word for word). Accepted.
+7. Kept by ruling. discord-msg-readiness-officer-phone.png now uses the board's own words; the unit-less "gear 12 below" line is gone. Accepted.
+8. Fixed. discord-bot-12-permissions-no-webhook-picker-open-crop-390.png reads "Raid channel in Olympus Discord". #raid-signups is still preselected, but that comes from the capture's stubbed list: the real list comes from PostableChannels and drops the broken channel. Optional: re-capture with a list that matches the real one.
+9. Deferred to the owner (role choice for hybrids). Accepted.
+10. Fixed. "33 of 40" is the same on the post, /raid and the In reply; the Done post says "30 of 33"; the relative stamps match each frame's clock ("in 4 hours", "13 hours ago").
+11. Fixed. "33 signed In or Late. 4 have something to fix."
+12. Fixed. discord-msg-press-select-open-phone.png has "your main" in the description, and "In" is bold.
+13. Kept by ruling. Accepted.
+14. Deferred to the owner. Accepted.
+
+### New
+
+N1. MED, discord-msg-bis-slot-phone.png, discord-msg-bis-top-phone.png, discord-msg-char-upgrades-phone.png: the source line drops how you get the item. "Anachronos", "Pix Xizzix", "Illiyana Moonblaze", "Divino-matic Rod" and "Stormpike Guard" are bare names, so a raider can't tell a vendor from a quest from a mob, and the reputation level is missing. Wowhead writes "Vendor: Pix Xizzix", "Quest: The Divino-matic Rod" and "Stormpike Guard, Exalted". The BiS data already carries the kind ([vendor], [quest], [rep]). Fix: put the kind (and the reputation standing) in front of the source in ItemEmbed. "Stratholme: Baron Rivendare", "Leatherworking" and "to Zulmara · Onyxia" already read right.
+N2. MED, for the BiS accuracy owner (not a bot defect), discord-msg-bis-top-phone.png and discord-msg-bis-slot-phone.png: "level 60 Phase 1 raid" lists no raid drops at all; every pick is vendor, crafted, reputation or dungeon gear. A raider reads "Phase 1 raid" as Molten Core and Onyxia loot. If the band means "raid buffs, launch gear", the label should say that. Separately, "Signet Ring of the Bronze Dragonflight · Anachronos" reads to every Classic player as the AQ40 ring. Id 234202 looks like Forever's own vendor version, but please confirm it can really be bought at launch. Discord makes this more visible: Share puts it in the channel.
+N3. LOW, discord-msg-raid-phone.png: "You are In on Zulmara as DPS." is awkward and doesn't match the press replies. Fix: "Zulmara is In as DPS."
+N4. LOW, discord-msg-report-member-phone.png and discord-msg-report-officer-phone.png: "4 items. The first 4:" says the same thing twice when every item is shown. Fix: "4 items:" when nothing is cut off.
+N5. LOW, discord-msg-readiness-guild-tier-phone.png: "part of Raid guild ... move the guild to Raid guild" reads as if Raid guild were a guild's name. Fix: "the Raid guild plan".
+
+Good, and worth saying: the report's Onyxia loot is right (Dragonstalker's Helm, Sapphiron Drape, Ring of Binding, Eskhandar's Collar). The shared report drops loot, deaths and consumables. /attendance refuses a member who looks up someone else, and /readiness refuses members without naming anyone. /char with no gear says so plainly. The unlinked and link replies are one sentence with one button. Nothing leaks, and nothing shames.
+
+### Verdict: SHIP WITH FIXES
+
+Fix N1 before ship. Send N2 to the BiS accuracy owner, since it is the site's data and the same problem is on the BiS page. N3 to N5 are wording only.
