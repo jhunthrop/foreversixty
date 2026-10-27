@@ -128,19 +128,21 @@ test.describe('return flags', () => {
   for (const { flag, message, role, focus } of cases) {
     test(`${flag}: the line, its role, focus, and the flag dropped`, async ({ page }) => {
       await openAccount(page, {}, `/account?discord_link=${flag}#you`);
-      await expect(status(page).getByRole(role)).toHaveText(message);
+      await expect(status(page)).toHaveAttribute('role', role);
+      await expect(status(page)).toContainText(message);
       await expect(page.getByTestId(focus)).toBeFocused();
       await expect(page).toHaveURL(/\/account#you$/);
       if (flag === 'conflict') {
         await expect(status(page)).toContainText(copy.conflictHelp);
-        await expect(status(page).getByRole('alert')).toHaveClass(/text-wipe/);
+        await expect(status(page).locator('p').first()).toHaveClass(/text-wipe/);
       }
     });
   }
 
   test('linked: the linked row, the line, focus on Unlink', async ({ page }) => {
     await openAccount(page, { linked: true }, '/account?discord_link=linked#you');
-    await expect(status(page).getByRole('status')).toHaveText(copy.returnLinked);
+    await expect(status(page)).toHaveAttribute('role', 'status');
+    await expect(status(page)).toHaveText(copy.returnLinked);
     await expect(unlink(page)).toBeFocused();
     await expect(page.getByTestId('discord-linked-as')).toContainText(`${copy.linkedLead} ${DISPLAY_NAME}`);
     await expect(page).toHaveURL(/\/account#you$/);
@@ -180,7 +182,8 @@ test.describe('unlink', () => {
     await openAccount(page, { linked: true, unlinkStatus: 500 });
     await unlink(page).click();
     await page.getByTestId('discord-unlink-confirm').click();
-    await expect(status(page).getByRole('alert')).toHaveText(copy.unlinkFailed);
+    await expect(status(page)).toHaveAttribute('role', 'alert');
+    await expect(status(page)).toHaveText(copy.unlinkFailed);
     await expect(page.getByTestId('discord-unlink-question')).toBeVisible();
   });
 });

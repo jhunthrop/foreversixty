@@ -16,12 +16,17 @@
     label,
     updated = '',
     testid,
+    id,
+    class: className = '',
     aside,
     children,
   }: {
     label: string;
     updated?: string;
     testid?: string;
+    /** The panel's anchor, with its `class` (a scroll margin, say) when something links to it. */
+    id?: string;
+    class?: string;
     /** The label row's right-hand slot for something richer than plain text -- Characters'
      *  "Imported from Battle.net 4 hours ago · Refresh from Battle.net" link (brief
      *  2026-09-22 §B3). Takes priority over `updated` when both are given. */
@@ -31,7 +36,11 @@
 </script>
 
 <div
-  class="bg-raised border-line rounded-panel flex flex-col gap-4 border px-4 py-4 md:px-6 md:py-5"
+  {id}
+  class={[
+    'bg-raised border-line rounded-panel flex flex-col gap-4 border px-4 py-4 md:px-6 md:py-5',
+    className,
+  ]}
   data-testid={testid}
 >
   <div class="flex items-center gap-[10px]">
