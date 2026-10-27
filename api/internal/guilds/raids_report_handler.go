@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 func mountRaidReportRoutes(mux *http.ServeMux, s *Service, officerLimit func(http.Handler) http.Handler) {
@@ -41,6 +42,19 @@ func (s *Store) ClaimReportPost(ctx context.Context, guildID, raidID int64) (tim
 	return at.UTC(), true, nil
 }
 
+// matchedLogIsEvidence reports whether raidID holds a log that is evidence (not private, not
+// flagged); false for a raid with no log.
+func (s *Store) matchedLogIsEvidence(ctx context.Context, raidID int64) (bool, error) {
+	var ok bool
+	err := s.Pool.QueryRow(ctx, `
+		select exists (select 1 from guild_raids g join reports r on r.id = g.report_id
+		               where g.id = $1 and `+presence.EvidenceReport("r")+`)`, raidID).Scan(&ok)
+	if err != nil {
+		return false, fmt.Errorf("guilds: matched log evidence: %w", err)
+	}
+	return ok, nil
+}
+
 // ReleaseReportPost clears the claim of a post that did not happen.
 // It only clears the claim it was given: this guild's raid, still stamped with claimedAt.
 func (s *Store) ReleaseReportPost(ctx context.Context, guildID, raidID int64, claimedAt time.Time) error {
@@ -60,6 +74,16 @@ func (s *Service) postReport(w http.ResponseWriter, r *http.Request) {
 	}
 	if raid.Status != RaidDone {
 		httpx.WriteError(w, r, http.StatusConflict, "conflict", "only a raid with a matched log has a report", nil)
+		return
+	}
+	public, err := s.Store.matchedLogIsEvidence(r.Context(), raid.ID)
+	if err != nil {
+		s.fail(w, r, op, err, raidFailMessage)
+		return
+	}
+	if !public {
+		// The presence rules leave such a raid with no report, so there is nothing to post.
+		httpx.WriteError(w, r, http.StatusConflict, "conflict", "this raid's log is not public", nil)
 		return
 	}
 	at, claimed, err := s.Store.ClaimReportPost(r.Context(), guildID, raid.ID)
