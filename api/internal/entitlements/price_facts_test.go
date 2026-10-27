@@ -42,7 +42,11 @@ func TestUpsertStripe_GuildWithoutTierFails(t *testing.T) {
 	if err == nil {
 		t.Fatal("a guild upsert without a tier must fail fast")
 	}
-	if gb, _ := s.GuildBilling(context.Background(), gid); gb != nil {
+	gb, err := s.GuildBilling(context.Background(), gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if gb != nil {
 		t.Fatalf("nothing may be written, got %+v", gb)
 	}
 }
