@@ -84,7 +84,7 @@ func (s *Service) buildGuildBillingRead(ctx context.Context, a guildActor) (Guil
 	transferable := transferablePlan(gb)
 	read := GuildBillingRead{Can: canFor(a, transferable), TransferCandidates: []seats.Officer{}}
 	if gb != nil {
-		if read.Billing, err = s.planView(ctx, gb, a.userID); err != nil {
+		if read.Billing, err = s.planView(ctx, gb, a.guildID, a.userID); err != nil {
 			return GuildBillingRead{}, err
 		}
 	}
@@ -125,7 +125,7 @@ func canFor(a guildActor, transferable bool) []string {
 	return can
 }
 
-func (s *Service) planView(ctx context.Context, gb *entitlements.GuildBilling, viewerID int64) (*GuildPlanView, error) {
+func (s *Service) planView(ctx context.Context, gb *entitlements.GuildBilling, guildID, viewerID int64) (*GuildPlanView, error) {
 	v := &GuildPlanView{
 		Scope: scopeWholePlan, Tier: gb.Tier, Status: gb.Status,
 		CurrentPeriodEnd: rfc3339(gb.CurrentPeriodEnd), CancelAtPeriodEnd: gb.CancelAtPeriodEnd,
@@ -139,11 +139,12 @@ func (s *Service) planView(ctx context.Context, gb *entitlements.GuildBilling, v
 		v.Status = statusCanceled
 	}
 	if gb.BillingUserID != nil {
-		u, err := s.Users.User(ctx, *gb.BillingUserID)
+		// The payer's character in the guild; their public name only without one.
+		name, err := s.displayName(ctx, guildID, *gb.BillingUserID, "")
 		if err != nil {
 			return nil, fmt.Errorf("billing: billing user of guild row %d: %w", gb.ID, err)
 		}
-		v.BilledBy = u.PublicName()
+		v.BilledBy = name
 		v.YouAreBillingContact = *gb.BillingUserID == viewerID
 	}
 	return v, nil
