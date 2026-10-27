@@ -192,13 +192,19 @@ atWidths('5 checkout chooser', PAIR, async (page, width) => {
   await page.locator('[data-testid="checkout-guild-row"] img').first().waitFor();
   await settle(page);
   await shoot(page, 5, 'two-guilds', width);
-  const none = await fresh(page);
-  await sizeTo(none, width);
-  await stubMe(none, [chooserGuild(3, 'Other', 9, [])]);
-  await none.goto('/premium/checkout?plan=guild&interval=yearly');
-  await none.getByText('Find your guild').waitFor();
-  await settle(none);
-  await shoot(none, 5, 'no-billable-guild', width);
+  // Same page and clock, re-stubbed. The site caches /v1/me in storage, so clear it first or the
+  // chooser keeps the previous state's guilds; the chooser also waits for each guild's crest read.
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
+  await stubCrests(page, {});
+  await stubMe(page, [chooserGuild(3, 'Other', 9, [])]);
+  await page.goto('/premium/checkout?plan=guild&interval=yearly');
+  await page.getByText('Find your guild').waitFor();
+  await settle(page);
+  await shoot(page, 5, 'no-billable-guild', width);
 });
 
 // ---- 6-11: guild settings #billing ------------------------------------------------------------
