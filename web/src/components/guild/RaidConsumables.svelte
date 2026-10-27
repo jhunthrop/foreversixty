@@ -46,11 +46,9 @@
   const ordered = $derived(consumableOrder(consumables.rows, consumables.log_has_buffs));
   const shown = $derived(visibleRows(ordered, expanded));
   const hasBuffs = $derived(consumables.log_has_buffs);
-  const columns = $derived(
-    hasBuffs
-      ? 'md:grid-cols-[minmax(180px,1fr)_120px_minmax(0,1.5fr)]'
-      : 'md:grid-cols-[minmax(180px,1fr)_120px]',
-  );
+  /** Three columns with or without buff data, so `Before` holds its x (spec 3.4). */
+  const COLUMNS = 'md:grid-cols-[minmax(180px,1fr)_120px_minmax(0,1.5fr)]';
+  const LEAD = 'label text-muted text-[11px] md:hidden';
 </script>
 
 <RaidBlock heading={attendanceCopy.report.consumables} count={ordered.length} testid="raid-consumables">
@@ -59,10 +57,18 @@
       {attendanceCopy.consumables.noBuffData}
     </p>
   {/if}
+  <div
+    class="border-line-soft hidden min-h-6 items-end gap-x-4 border-b px-1 pb-1 md:grid {COLUMNS}"
+    data-testid="raid-consumables-heads"
+  >
+    <span></span>
+    <span class="label text-muted text-[11px]">{attendanceCopy.consumables.before}</span>
+    {#if hasBuffs}<span class="label text-muted text-[11px]">{attendanceCopy.consumables.inTheLog}</span>{/if}
+  </div>
   <ul bind:this={list}>
     {#each shown as row (row.character_key)}
       <li
-        class="{ROW_DIVIDER} grid min-h-11 grid-cols-1 items-center gap-x-4 gap-y-1 px-1 py-2 {columns}"
+        class="{ROW_DIVIDER} grid min-h-11 grid-cols-1 items-center gap-x-4 gap-y-1 px-1 py-2 {COLUMNS}"
         style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
         tabindex="-1"
         data-testid="raid-consumable-row"
@@ -75,11 +81,15 @@
             title={row.name}>{row.name}</span
           >
         </span>
-        <span class="pill {BEFORE_PILL[row.before]} justify-self-start"
-          >{attendanceCopy.consumables.state[row.before]}</span
+        <span class="flex items-center gap-2"
+          ><span class={LEAD}>{attendanceCopy.consumables.before}</span><span
+            class="pill {BEFORE_PILL[row.before]} justify-center md:w-full"
+            >{attendanceCopy.consumables.state[row.before]}</span
+          ></span
         >
         {#if hasBuffs}
           <span class="flex flex-wrap items-center gap-1.5">
+            <span class={LEAD}>{attendanceCopy.consumables.inTheLog}</span>
             {#each usedChips(row) as chip (chip.text)}
               {#if chip.used}<span class="pill pill-sample">{chip.text}</span>{:else}<span
                   class="text-muted text-[12px]">{chip.text}</span

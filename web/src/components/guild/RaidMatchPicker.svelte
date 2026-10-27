@@ -20,6 +20,7 @@
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { MatchPicker, pickerKeyAction } from '../../lib/guild/match-picker.svelte';
   import { RAID_TEXT_BUTTON } from '../../lib/guild/raid-buttons';
+  import { SEP } from '../../lib/guild/raid-copy';
   import { stampParts } from '../../lib/guild/raid-time';
   import { guildRaidHref } from '../../lib/characters';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
@@ -49,7 +50,7 @@
 
   const copy = attendanceCopy.picker;
   const ROW =
-    'grid min-h-16 grid-cols-[24px_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-2 md:items-center md:min-h-14 md:grid-cols-[24px_minmax(0,1fr)_200px_140px_120px] focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2';
+    'grid grid-cols-[24px_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-2 md:items-center md:min-h-14 md:grid-cols-[24px_minmax(0,1fr)_200px_140px_120px] focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2';
   const rows: Record<string, HTMLElement | undefined> = {};
   let heading = $state<HTMLElement | undefined>();
 
@@ -109,9 +110,12 @@
   >
     {copy.head}
   </h2>
-  <p class="text-muted text-[13px]" data-testid="raid-match-helper">
-    {pickerHelper(zoneName, picker.zoneKnown)}
-  </p>
+  <!-- The empty list says the zone and the window itself (UX 22), so the helper steps aside. -->
+  {#if !(picker.load === 'ready' && picker.rows.length === 0)}
+    <p class="text-muted text-[13px]" data-testid="raid-match-helper">
+      {pickerHelper(zoneName, picker.zoneKnown)}
+    </p>
+  {/if}
 
   {#if picker.load === 'loading'}
     <Skeleton lines={3} rowHeight="h-14" testid="raid-match-skeleton" />
@@ -151,21 +155,28 @@
               {#if picker.selected === row.report_id}<i class="bg-gold absolute inset-[3px] rounded-full"
                 ></i>{/if}
             </span>
+            <!-- Phone, three lines (UX 15): zone, Closest and the duration; the upload time; then
+                 `by Kraggor · 4 pulls · 1 kill`. From md the time, figures and duration are cells. -->
             <span class="flex min-w-0 flex-col">
-              <span class="flex flex-wrap items-center gap-2">
+              <span class="flex items-center gap-2">
                 <span class="text-strong text-[14px] font-semibold">{row.zone_name}</span>
                 {#if row.closest}<span class="pill pill-site" data-testid="raid-match-closest"
                     >{copy.closest}</span
                   >{/if}
+                <span class="ml-auto font-mono text-[13px] whitespace-nowrap md:hidden"
+                  >{durationLabel(row.duration_ms)}</span
+                >
               </span>
-              <span class="text-muted text-[12px]">{byName(row.uploaded_by_name)}</span>
+              <span class="md:hidden">{@render when(row)}</span>
+              <span class="text-muted text-[12px]"
+                >{byName(row.uploaded_by_name)}<span class="md:hidden"
+                  >{SEP}{pickerFigures(row.pulls, row.kills)}</span
+                ></span
+              >
             </span>
-            <!-- Phone: line 2 holds the three figures; from md they are the grid's own cells. -->
-            <span class="col-start-2 flex flex-wrap items-baseline gap-x-3 md:contents">
-              {@render when(row)}
-              <span class="text-[13px]">{pickerFigures(row.pulls, row.kills)}</span>
-              <span class="font-mono text-[13px]">{durationLabel(row.duration_ms)}</span>
-            </span>
+            <span class="hidden md:inline">{@render when(row)}</span>
+            <span class="hidden text-[13px] md:inline">{pickerFigures(row.pulls, row.kills)}</span>
+            <span class="hidden font-mono text-[13px] md:inline">{durationLabel(row.duration_ms)}</span>
           </div>
           {#if elsewhere !== null && row.matched_raid !== null}
             <!-- Outside the radio, so its link is not a control inside one. -->

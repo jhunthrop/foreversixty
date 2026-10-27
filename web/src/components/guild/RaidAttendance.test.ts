@@ -146,10 +146,17 @@ describe('the outcome cell', () => {
   });
 
   it('shows pulls with the ratio and the compact row ratio, text colour when pulls were missed', () => {
-    expect(flat).toContain('2/4');
+    // Full rows read `2 of 4` under the `Boss pulls` head (WP 8).
+    expect(flat).toContain('Boss pulls 2 of 4');
+    expect(view(ALL)).toContain('data-testid="raid-attendance-heads"');
     const compact = view([row('Wanderer', { pulls_present: 3 }), row('Full')]);
     expect(compact).toContain('text-text font-mono text-[13px]">3/4');
     expect(compact).toContain('text-muted font-mono text-[13px]">4/4');
+  });
+
+  it('says Bench or Out, muted, for a bench-and-out row instead of a pull count', () => {
+    expect(flat).toMatch(/Benchwarmer Bench$/);
+    expect(flat).not.toContain('Benchwarmer 0/4');
   });
 
   it('washes the own row', () => {

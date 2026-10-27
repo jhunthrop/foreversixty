@@ -38,7 +38,7 @@
   {#if guild.verified}
     <span class="text-strong" data-testid={`${testid}-verified`}>{characterListCopy.verified}</span>
   {/if}
-  {#if guild.attendance !== undefined}<span class="tabular" data-testid={`${testid}-came`}
+  {#if guild.attendance !== undefined}<span class="tabular whitespace-nowrap" data-testid={`${testid}-came`}
       >{cameGuildLine(guild.attendance.present, guild.attendance.nights)}</span
     >{/if}
 </span>

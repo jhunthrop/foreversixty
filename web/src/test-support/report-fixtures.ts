@@ -64,6 +64,7 @@ export function raidReport(extra: Partial<RaidReport> = {}): RaidReport {
             item_id: 18423,
             item_name: 'Head of Onyxia',
             quality: 4,
+            icon: '',
             character_key: 'us-pvp-kraggor',
             name: 'Kraggor',
             class: 'warrior',

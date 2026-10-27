@@ -12,6 +12,7 @@
   import { ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Figures from './Figures.svelte';
   import RaidLootItem from './RaidLootItem.svelte';
 
   let {
@@ -65,12 +66,11 @@
             </p>
             {#if facts.length > 0}
               <p class="text-muted text-[13px]" data-testid="raid-your-night-facts">
-                {#each facts as fact, index (index)}{#if index > 0}{SEP}{/if}{#if fact.kind === 'move'}<span
-                      class="font-mono"
-                      >{fact.lead}<span class={fact.rising ? 'text-kill' : ''}>{fact.change}</span
-                      >{fact.tail}</span
-                    >{:else if fact.kind === 'deaths'}<span class="font-mono">{fact.text}</span
-                    >{:else}{fact.text}{/if}{/each}
+                {#each facts as fact, index (index)}{#if index > 0}{SEP}{/if}{#if fact.kind === 'move'}<Figures
+                      text={fact.lead}
+                    /><Figures text={fact.change} class={fact.rising ? 'text-kill' : ''} /><Figures
+                      text={fact.tail}
+                    />{:else}<Figures text={fact.text} />{/if}{/each}
               </p>
             {/if}
           </div>

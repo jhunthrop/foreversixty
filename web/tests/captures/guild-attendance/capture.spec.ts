@@ -17,6 +17,7 @@ import {
   bareReport,
   fixtureCandidates,
   memberNoShow,
+  rosterAttendance,
   storedNight,
   stubGuildAttendance,
   type AttendanceStub,
@@ -174,8 +175,8 @@ atWidths('4 picker', W3, async (page, width) => {
 
 atWidths('5 clear confirm', PAIR, async (page, width) => {
   await openRaid(page, width, { viewer: 'officer', nights: DONE });
-  await page.keyboard.press('Shift');
-  await page.getByTestId('raid-not-this-log').click();
+  await page.getByTestId('raid-not-this-log').focus();
+  await page.keyboard.press('Enter');
   await page.getByTestId('raid-clear-keep').waitFor();
   await settle(page);
   await shoot(page, 5, 'clear-confirm', width, page.getByTestId('raid-match-line'));
@@ -223,15 +224,16 @@ function accountMe() {
   return {
     user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false, premium: false },
     characters: [
-      ['Zulmara', 'hunter', { present: 7, nights: 8 }],
-      ['Duskstrider', 'rogue', { present: 3, nights: 5 }],
-    ].map(([name, cls, attendance]) => ({
+      // The same read as the roster chip (WP 4): rosterAttendance's last 8.
+      ['Zulmara', 'hunter'],
+      ['Duskstrider', 'rogue'],
+    ].map(([name, cls]) => ({
       key: `us/pvp/${String(name).toLowerCase()}`,
       region: 'us',
       ruleset: 'pvp',
       name,
       class: cls,
-      guild: { ...guild, attendance },
+      guild: { ...guild, attendance: rosterAttendance(name).last8 },
     })),
     guilds: [{ ...guild, region: GUILD.region, ruleset: GUILD.ruleset, consent: 'gear' }],
   };
@@ -281,6 +283,49 @@ atWidths('10 readiness next raid', W3, async (page, width) => {
 
 // ---- 11: loading beside ready, CLS -------------------------------------------------------------
 
+/** Loading beside ready (UX 8): the y of the tabs, and of the first region under the band. */
+const LOADING_EDGES = {
+  tabsTop: '[data-testid="raid-page-loading"] [data-testid="guild-tabs"]',
+  bandBottom: '[data-testid="raid-page-loading"] > :nth-child(2)',
+  yourNightBottom: '[data-testid="raid-your-night-reserve"]',
+  reportTop: '[data-testid="raid-report-reserve"]',
+};
+const READY_EDGES = {
+  tabsTop: '[data-testid="raid-page"] [data-testid="guild-tabs"]',
+  bandBottom: '[data-testid="raid-page"] > :nth-child(2)',
+  yourNightBottom: '[data-testid="raid-your-night"]',
+  reportTop: '[data-testid="raid-report"]',
+};
+type Edges = Record<keyof typeof LOADING_EDGES, number | null>;
+
+async function edgesOf(page: Page, selectors: typeof LOADING_EDGES): Promise<Edges> {
+  return page.evaluate((sel) => {
+    const y = (css: string, edge: 'top' | 'bottom'): number | null => {
+      const node = document.querySelector(css);
+      if (node === null) return null;
+      const box = node.getBoundingClientRect();
+      return Math.round((edge === 'top' ? box.top : box.bottom) + window.scrollY);
+    };
+    return {
+      tabsTop: y(sel.tabsTop, 'top'),
+      bandBottom: y(sel.bandBottom, 'bottom'),
+      yourNightBottom: y(sel.yourNightBottom, 'bottom'),
+      reportTop: y(sel.reportTop, 'top'),
+    };
+  }, selectors);
+}
+
+function deltas(loading: Edges, ready: Edges): Record<string, number | null> {
+  const keys = Object.keys(loading) as (keyof Edges)[];
+  return Object.fromEntries(
+    keys.map((key) => {
+      const a = loading[key];
+      const b = ready[key];
+      return [key, a === null || b === null ? null : b - a];
+    }),
+  );
+}
+
 async function warmCls(
   page: Page,
   width: number,
@@ -305,9 +350,15 @@ async function warmCls(
     path: target(`guild-attendance-11-loading-${viewer}-${width}.png`),
     fullPage: true,
   });
+  const loading = await edgesOf(page, LOADING_EDGES);
   held.release();
   await page.getByTestId('raid-page').waitFor();
   await settle(page);
+  const ready = await edgesOf(page, READY_EDGES);
+  writeFileSync(
+    target(`heights-reserve-${viewer}-${width}.json`),
+    `${JSON.stringify({ viewer, width, loading, ready, delta: deltas(loading, ready) })}\n`,
+  );
   await page.screenshot({ path: target(`guild-attendance-11-ready-${viewer}-${width}.png`), fullPage: true });
   return Math.round((await readLayoutShift(page)) * 10_000) / 10_000;
 }
@@ -337,6 +388,58 @@ atWidths('11 loading beside ready', PAIR, async (page, width) => {
   });
   writeFileSync(target(`cls-${width}.json`), `${JSON.stringify({ width, ...cls, cap: 0.02 })}\n`);
 });
+
+// ---- 1b: the first screen against §1 (UX 6) ----------------------------------------------------
+
+const FIRST_SCREENS = [
+  {
+    name: 'officer',
+    width: 1440,
+    height: 800,
+    guide: 620,
+    stub: { viewer: 'officer', nights: DONE } as const,
+    subject: '[data-testid="raid-kill-row"]',
+    edge: 'bottom' as const,
+  },
+  {
+    name: 'member',
+    width: 360,
+    height: 640,
+    guide: 620,
+    stub: { viewer: 'member', nights: DONE } as const,
+    subject: '[data-testid="raid-your-night-sentence"]',
+    edge: 'top' as const,
+  },
+];
+
+for (const screen of FIRST_SCREENS) {
+  test(`1b first screen ${screen.name} @${screen.width}`, async ({ page }) => {
+    await page.setViewportSize({ width: screen.width, height: screen.height });
+    await stubGuildAttendance(page, screen.stub);
+    await page.clock.install({ time: AFTER_END });
+    await gotoHydrated(page, raidUrl(ONYXIA_ID), 'raid-page');
+    await settle(page);
+    const y = await page
+      .locator(screen.subject)
+      .first()
+      .evaluate((node, edge) => {
+        const box = node.getBoundingClientRect();
+        return Math.round(edge === 'top' ? box.top : box.bottom);
+      }, screen.edge);
+    await page.evaluate((guide) => {
+      const line = document.createElement('div');
+      line.style.cssText = `position:fixed;left:0;right:0;top:${guide}px;height:1px;background:#ff00ff;z-index:9999`;
+      document.body.append(line);
+    }, screen.guide);
+    await page.screenshot({
+      path: target(`guild-attendance-01b-first-screen-${screen.name}-${screen.width}.png`),
+    });
+    writeFileSync(
+      target(`first-screen-${screen.name}-${screen.width}.json`),
+      `${JSON.stringify({ ...screen, stub: undefined, y, within: y <= screen.guide })}\n`,
+    );
+  });
+}
 
 // ---- 13: side by side with the mock boards ------------------------------------------------------
 
@@ -372,7 +475,8 @@ for (const width of [1024, 1440, 2000]) {
       const context = await browser.newContext(AWAY);
       const mockPage = await context.newPage();
       await mockPage.setViewportSize({ width: shotWidth, height: VIEWPORT_HEIGHT });
-      await mockPage.goto(`file://${path.join(MOCK_DIR, `${board}.html`)}`);
+      const boardFile = shotWidth === 1024 ? `${board}-1024` : board;
+      await mockPage.goto(`file://${path.join(MOCK_DIR, `${boardFile}.html`)}`);
       await mockPage.waitForLoadState('networkidle');
       const mockPng = target(`guild-attendance-13-mock-${name}-${shotWidth}.png`);
       await mockPage.screenshot({ path: mockPng, fullPage: true });

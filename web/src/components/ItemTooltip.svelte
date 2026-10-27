@@ -68,7 +68,9 @@
       <span class={`text-[15px] font-semibold ${rarityClassFor(model.quality)}`}>
         {model.name}
       </span>
-      <span class="tabular text-muted font-mono text-[11px]">Item Level {model.itemLevel}</span>
+      {#if model.itemLevel > 0}
+        <span class="tabular text-muted font-mono text-[11px]">Item Level {model.itemLevel}</span>
+      {/if}
       {#if model.unique}
         <span class="text-muted text-[11px]">Unique</span>
       {/if}
@@ -78,10 +80,12 @@
     </div>
   </div>
 
-  <div class="text-muted flex flex-wrap justify-between gap-x-2 text-[12px]">
-    <span>{model.slotLabel}</span>
-    {#if model.typeLabel}<span>{model.typeLabel}</span>{/if}
-  </div>
+  {#if model.slotLabel !== '' || model.typeLabel}
+    <div class="text-muted flex flex-wrap justify-between gap-x-2 text-[12px]">
+      <span>{model.slotLabel}</span>
+      {#if model.typeLabel}<span>{model.typeLabel}</span>{/if}
+    </div>
+  {/if}
 
   {#if model.armor !== null}
     <span class="text-[12px]">{model.armor} Armor</span>

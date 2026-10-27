@@ -28,6 +28,7 @@ import {
   fixtureMatch,
   fixtureReport,
   nightOf,
+  rosterAttendance,
 } from './guild-attendance-data';
 import {
   MEMBER_ALT,
@@ -85,6 +86,21 @@ export interface AttendanceStubOptions extends RaidStubOptions {
 /** The ids of the readiness board's stale and missing exports on the next-raid filter. */
 export const STALE_EXPORT = 'Windtalon';
 export const NO_EXPORT = 'Shadowquill';
+
+type ReadinessRow = GuildReadinessPage['rows'][number];
+
+/** A signed character with no export: the API sends no gear, enchants or item level for it. */
+function noExport(row: ReadinessRow): ReadinessRow {
+  return {
+    ...row,
+    no_export: true,
+    synced_before_cutoff: null,
+    gear_gap: null,
+    enchants: { missing_slots: [], checked: false },
+    item_level: null,
+    item_level_delta: null,
+  };
+}
 
 export class AttendanceStub {
   readonly raids: RaidStub;
@@ -202,9 +218,11 @@ export class AttendanceStub {
     const rows = signed.map((s) => {
       const found = board.rows.find((r) => r.character_key === s.character_key);
       if (found === undefined) throw new Error(`guild-attendance stub: no readiness row for ${s.name}`);
-      if (s.name === NO_EXPORT) return { ...found, no_export: true, synced_before_cutoff: null };
+      if (s.name === NO_EXPORT) return noExport(found);
       if (s.name === STALE_EXPORT) {
-        return { ...found, logged_at: '2026-12-01T18:00:00Z', synced_before_cutoff: true };
+        // A stale export that still names a real upgrade (the board never reads `+0 DPS`).
+        const gap = found.gear_gap === null ? null : { ...found.gear_gap, gain_dps: 14 };
+        return { ...found, gear_gap: gap, logged_at: '2026-12-01T18:00:00Z', synced_before_cutoff: true };
       }
       return { ...found, synced_before_cutoff: false };
     });
@@ -229,13 +247,12 @@ export class AttendanceStub {
     return {
       ...home,
       attendance_source: 'raids' as const,
-      roster: home.roster.map((row, index) =>
-        row.attendance === undefined
-          ? row
-          : index === 0
-            ? { ...row, attendance: { present: 0, nights: 0 }, attendance_30: { present: 0, nights: 0 } }
-            : { ...row, attendance_30: { present: 20 + (index % 7), nights: 30 } },
-      ),
+      // One attendance read for the roster and the guild line (WP 4).
+      roster: home.roster.map((row) => {
+        if (row.attendance === undefined) return row;
+        const { last8, last30 } = rosterAttendance(row.name);
+        return { ...row, attendance: last8, attendance_30: last30 };
+      }),
     };
   }
 }
@@ -322,9 +339,20 @@ export const DONE: Record<number, StoredNight> = { [ONYXIA_ID]: storedNight() };
 
 /** The member's no-show variant: Duskstrider signed In and is not in the log. */
 export function memberNoShow(): Record<number, StoredNight> {
+  const report = fixtureReport();
+  const alt = keyOf(MEMBER_ALT);
+  const away = <T extends { character_key: string }>(rows: T[]): T[] =>
+    rows.filter((r) => r.character_key !== alt);
   return {
     [ONYXIA_ID]: storedNight({
       attendance: allAttendance({ [MEMBER_ALT]: { outcome: 'no_show', pulls: 0 } }),
+      // Not in the log: no deaths, consumables or moves of the alt's (the API reads them from it).
+      report: {
+        ...report,
+        deaths: away(report.deaths),
+        consumables: { ...report.consumables, rows: away(report.consumables.rows) },
+        moves: { ...report.moves, rows: away(report.moves.rows) },
+      },
     }),
   };
 }

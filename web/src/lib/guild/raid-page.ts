@@ -125,24 +125,28 @@ export function rememberStripRows(raid: GuildRaidView, storage: Pick<Storage, 's
   }
 }
 
-/** Spec 4 "Page states": whether this raid was last drawn `done`, so its loading reserves the
- *  night line, the match line and the report instead of the sign-up strip. */
-export function reservedDone(raidId: string, storage: Pick<Storage, 'getItem'> | null): boolean {
+/** Spec 4 "Page states": the `Your night` rows this raid drew when it was last seen `done`, or
+ *  null when it was not; the loading page then reserves the night, not the sign-up strip. */
+export function reservedDoneRows(raidId: string, storage: Pick<Storage, 'getItem'> | null): number | null {
   try {
-    return storage?.getItem(`${RAID_DONE_KEY_PREFIX}${raidId}`) === '1';
+    const raw = storage?.getItem(`${RAID_DONE_KEY_PREFIX}${raidId}`) ?? null;
+    const rows = raw === null ? Number.NaN : Number(raw);
+    return Number.isInteger(rows) && rows >= 0 && rows <= RESERVE_MAX_ROWS ? rows : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
-/** Stores whether the raid is `done` after a load; any other status forgets it. */
+/** Stores a `done` raid's own attendance rows (its `Your night` rows) after a load; any other
+ *  status forgets it. */
 export function rememberDone(
   raid: GuildRaidView,
   storage: Pick<Storage, 'setItem' | 'removeItem'> | null,
 ): void {
   const key = `${RAID_DONE_KEY_PREFIX}${raid.id}`;
   try {
-    if (raid.status === 'done') storage?.setItem(key, '1');
+    const ownRows = (raid.attendance ?? []).filter((row) => row.own).length;
+    if (raid.status === 'done') storage?.setItem(key, String(Math.min(ownRows, RESERVE_MAX_ROWS)));
     else storage?.removeItem(key);
   } catch {
     // A blocked store only costs the next visit its warm reserve.

@@ -118,6 +118,7 @@ export const attendanceCopy = {
     consumables: 'Consumables',
     loot: 'Loot',
     firstPull: 'first pull',
+    changes: 'Biggest changes',
   },
   deaths: { none: 'Nobody died.' },
   consumables: {
@@ -171,7 +172,7 @@ export const attendanceCopy = {
 
 /** The night line, the figures apart from the `came` ratio: a zero clause is left out. */
 export function nightFacts(night: RaidNight): string[] {
-  const facts: string[] = [];
+  const facts: string[] = night.joined > 0 ? [`${night.joined} joined`] : [];
   if (night.kills > 0) facts.push(kills(night.kills));
   if (night.wipes > 0) facts.push(wipes(night.wipes));
   if (night.deaths > 0) facts.push(deaths(night.deaths));
@@ -184,7 +185,7 @@ export function cameRatio(night: Pick<RaidNight, 'came' | 'signed'>): string {
   return `${night.came} of ${night.signed} ${attendanceCopy.cameWord}`;
 }
 
-/** `22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min` as one string. */
+/** `22 of 23 came · 2 joined · 1 kill · 3 wipes · 14 deaths · 2 h 41 min` as one string. */
 export function nightLine(night: RaidNight): string {
   return [cameRatio(night), ...nightFacts(night)].join(SEP);
 }
@@ -261,8 +262,7 @@ export function postedTime(postedAt: string, tz: string, locale: string = DEFAUL
   return clockText(new Date(postedAt), tz, locale, true);
 }
 
-export const changesHead = (date: string): string => `Biggest changes since ${date}`;
-
+export const changesHead = (date: string): string => `${attendanceCopy.report.changes} since ${date}`;
 export const firstRaidLine = (zoneName: string): string =>
   `First ${zoneName} raid logged. Changes show from the next one.`;
 
