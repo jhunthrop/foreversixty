@@ -257,3 +257,5 @@ Email cases (unit, the billing mailer's tests): each subject and first sentence 
 | 12 | Account: offer, accepted, seat holder, founder, seat ended | x | x | x | |
 | 13 | The five emails in Gmail web and iOS Mail | | | | |
 | 14 | Same-scale side-by-side with the mock boards at 1440, plus 1024 and 2000 | | | x | x |
+
+**Controller ruling on R-P8 (2026-10-27):** founder prices apply from the day the launch pricing ships until 6 January 2027, 23:59:59 America/Los_Angeles. There is no "from 4 November" line; anyone who buys before launch gets the founder price.
