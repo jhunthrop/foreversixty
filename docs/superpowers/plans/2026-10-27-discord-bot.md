@@ -904,7 +904,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ## After merge (owner and capture checklist, not tasks)
 
-1. Owner, product §5 steps 1–4: create the bot user, store `DISCORD_BOT_TOKEN` in Secret Manager, set `DISCORD_PUBLIC_KEY`, `DISCORD_APPLICATION_ID` and `DISCORD_COMMANDS_GUILD_ID` on the service, deploy, then set the Interactions Endpoint URL `https://api.foreversixty.gg/v1/discord/interactions`.
+1. Owner, product §5 steps 1–4: create the bot user, store `DISCORD_BOT_TOKEN` in Secret Manager, set `DISCORD_PUBLIC_KEY`, `DISCORD_APPLICATION_ID` and `DISCORD_COMMANDS_GUILD_ID` on the service, deploy, then set the Interactions Endpoint URL `https://api.foreversixty.gg/v1/discord/interactions`. Set DISCORD_* env and the always-on CPU flags in the same api.yml deploy commit.
 2. Experience §9 Discord captures D1–D12 in the private test server, desktop and phone clients, beside the mock frames; this includes G1's rows 17 and 24.
 
 ## Self-review
