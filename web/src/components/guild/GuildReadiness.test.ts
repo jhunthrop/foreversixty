@@ -8,7 +8,7 @@ import { buildMockReadiness } from '../../fixtures/guild/mock-guild';
 import { guildGateCopy } from '../../lib/guild/copy';
 import GuildReadiness from './GuildReadiness.svelte';
 
-const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/#settings';
+const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/settings';
 
 function html(officer: boolean, officerTools: boolean, raidGuildTools = true): string {
   return render(GuildReadiness, {

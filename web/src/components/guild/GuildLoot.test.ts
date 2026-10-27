@@ -10,7 +10,7 @@ import type { GuildPlanRefusal } from '../../lib/guild/officer-tools';
 import { guildGateCopy } from '../../lib/guild/copy';
 import GuildLoot from './GuildLoot.svelte';
 
-const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/#settings';
+const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/settings';
 
 type LootProps = {
   loot?: GuildLootPage | null;

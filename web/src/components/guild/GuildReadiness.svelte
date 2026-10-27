@@ -2,10 +2,9 @@
 <!-- Guild control-centre spec §4.E: the raid leader's pre-pull board. Worst-first sort,
      own row pinned, Nudge (officer only) copies to the clipboard -- there is no network
      path from the site to the addon. Desktop renders an eight-column grid; phone replaces
-     it with stacked labelled chips per row (§4.E/§7: the fixed-pixel grid overflowed a
-     390px viewport in the round-2 mock review, fixed before these boards shipped). Officer
-     tools gate §3: with the guild's officer tools off (officer-read-only) the plan sentence
-     sits under the h2 and every Nudge stays on screen, disabled. -->
+     it with stacked labelled chips per row (§4.E/§7: the grid overflowed 390px). Officer
+     tools gate §3: with the officer tools off (officer-read-only) the plan sentence sits under
+     the h2 and every Nudge stays on screen, disabled. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { dayWord } from '../../lib/dates';
@@ -57,7 +56,7 @@
     officer: boolean;
     /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
     officerTools: boolean;
-    /** False for an officer of a Guild-tier guild: Readiness is part of Raid guild (pricing spec §3.2.8). */
+    /** False for an officer of a Guild-tier guild (pricing spec §3.2.8). */
     raidGuildTools: boolean;
     myCharacterKey: string | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */

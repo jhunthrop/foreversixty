@@ -47,7 +47,12 @@
     type GuildViewerRole,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
-  import { officerToolsOn, raidGuildToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
+  import {
+    officerToolsOn,
+    raidGuildToolsOn,
+    refusalGate,
+    type GuildPlanRefusal,
+  } from '../lib/guild/officer-tools';
   import { plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
   import { browserStorage } from '../lib/guild/reserve-keys';
   import {
@@ -283,9 +288,13 @@
    *  refuses an Award/Undo with `guild_plan_required` (the grant ended after the page loaded).
    *  `?? true` is deliberate: the server's 403 is the real gate. */
   let officerToolsEnded = $state(false);
+  /** `raid_guild_required` on an Award/Undo: the guild is Guild tier, so Loot and Readiness gate to Raid guild. */
+  let raidGuildEnded = $state(false);
   let planRefusal = $state<GuildPlanRefusal | null>(null);
   const officerTools = $derived(officerToolsOn(role, home?.viewer?.officer_tools, officerToolsEnded));
-  const raidGuildTools = $derived(raidGuildToolsOn(role, home?.viewer?.raid_guild_tools));
+  const raidGuildTools = $derived(
+    raidGuildToolsOn(role, home?.viewer?.raid_guild_tools ?? true, raidGuildEnded),
+  );
   const officerView = $derived(role === 'officer' || role === 'moderator');
   /** The plan sentence's link (gate spec §3.2): the guild's settings tab. */
   const settingsHref = $derived(
@@ -663,9 +672,16 @@
   });
 
   /** §4: a `guild_plan_required` refusal flips both tabs to officer-read-only and says so once,
-   *  in the clicked item's card, never in the tab-bottom error line. True when it handled it. */
+   *  in the clicked item's card, never in the tab-bottom error line. `raid_guild_required` flips
+   *  them to the Raid guild gate sentence instead. True when it handled it. */
   function planRefused(thrown: unknown, item: GuildLootItem, kind: 'award' | 'undo'): boolean {
-    if (!(thrown instanceof GuildApiError) || thrown.code !== 'guild_plan_required') return false;
+    if (!(thrown instanceof GuildApiError)) return false;
+    const gate = refusalGate(thrown.code);
+    if (gate === null) return false;
+    if (gate === 'raid-guild') {
+      raidGuildEnded = true;
+      return true;
+    }
     officerToolsEnded = true;
     if (loot !== null && loot.selected !== null) {
       planRefusal = { encounterId: loot.selected, itemId: item.item_id, kind };
