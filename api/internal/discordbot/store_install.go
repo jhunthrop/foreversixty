@@ -157,7 +157,29 @@ func (s *Store) oneInstall(ctx context.Context, query string, arg any) (Install,
 // SetChannel saves the raid channel and clears the failure state.
 func (s *Store) SetChannel(ctx context.Context, guildID int64, channelID, channelName string) error {
 	return s.exec(ctx, `update guild_discord_installs set channel_id = $2, channel_name = $3,
-		failures = 0, last_error = null, updated_at = now() where guild_id = $1`, guildID, channelID, channelName)
+		failures = 0, last_error = null, removed_in_discord = false, updated_at = now() where guild_id = $1`,
+		guildID, channelID, channelName)
+}
+
+// RemoveBot deletes the guild's install and its raid post rows together.
+func (s *Store) RemoveBot(ctx context.Context, guildID int64) error {
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("discordbot: remove begin: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	for _, query := range []string{
+		`delete from guild_raid_discord_posts where guild_id = $1`,
+		`delete from guild_discord_installs where guild_id = $1`,
+	} {
+		if _, err := tx.Exec(ctx, query, guildID); err != nil {
+			return fmt.Errorf("discordbot: remove guild %d: %w", guildID, err)
+		}
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("discordbot: remove commit: %w", err)
+	}
+	return nil
 }
 
 // MarkRemovedInDiscord records that Discord says the bot is gone from the server.

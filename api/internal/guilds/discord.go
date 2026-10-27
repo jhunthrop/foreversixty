@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -39,6 +40,38 @@ type SettingsDiscord struct {
 	LastError      *string `json:"last_error"`
 	Failures       int     `json:"failures"`
 	PostDefault    bool    `json:"post_default"`
+	// BotAvailable is whether this deployment runs the Forever Sixty bot.
+	BotAvailable bool `json:"bot_available"`
+	// Bot is the bot installed in this guild's server; null when none is.
+	Bot *SettingsBot `json:"bot"`
+	// BotRefusal is read once: why the officer's last install was refused.
+	BotRefusal *BotRefusal `json:"bot_refusal"`
+}
+
+// SettingsBot is settings.discord.bot.
+type SettingsBot struct {
+	ServerID         string  `json:"server_id"`
+	ServerName       string  `json:"server_name"`
+	ChannelID        *string `json:"channel_id"`
+	ChannelName      *string `json:"channel_name"`
+	LinkedMembers    int     `json:"linked_members"`
+	Members          int     `json:"members"`
+	Failures         int     `json:"failures"`
+	LastError        *string `json:"last_error"`
+	RemovedInDiscord bool    `json:"removed_in_discord"`
+}
+
+// BotRefusal names the guild that already holds the server the officer tried to install into.
+type BotRefusal struct {
+	GuildName string `json:"guild_name"`
+}
+
+// DiscordBot is the Forever Sixty bot as the settings read sees it; nil on Service means
+// the deployment has no bot.
+type DiscordBot interface {
+	BotAvailable() bool
+	// SettingsBot is the guild's install and the viewer's one-time install refusal.
+	SettingsBot(ctx context.Context, guildID, viewerID int64) (*SettingsBot, *BotRefusal, error)
 }
 
 // discordOn reports whether the guild channel exists in this deployment.
@@ -82,25 +115,41 @@ func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (not
 	return standing, true, nil
 }
 
-// settingsDiscord is settings.discord for the request's viewer: nil unless the channel
-// is on and the viewer is a verified officer or leader (a moderator sees none).
+// botOn reports whether the deployment runs the bot.
+func (s *Service) botOn() bool { return s.Bot != nil && s.Bot.BotAvailable() }
+
+// settingsDiscord is settings.discord for the request's viewer.
 func (s *Service) settingsDiscord(r *http.Request, guildID int64) (*SettingsDiscord, error) {
-	if !s.discordOn() {
+	return s.SettingsDiscordFor(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
+}
+
+// SettingsDiscordFor is settings.discord for viewerID: nil unless the webhook channel or
+// the bot is on and the viewer is a verified officer or leader (a moderator sees none).
+func (s *Service) SettingsDiscordFor(ctx context.Context, guildID, viewerID int64) (*SettingsDiscord, error) {
+	if !s.discordOn() && !s.botOn() {
 		return nil, nil
 	}
-	officer, err := s.verifiedOfficerOrLeader(r, guildID)
+	officer, err := s.officerOrLeaderOf(ctx, guildID, viewerID)
 	if err != nil || !officer {
 		return nil, err
 	}
-	w, connected, err := s.Discord.GuildChannel(r.Context(), guildID)
-	if err != nil {
-		return nil, err
+	out := &SettingsDiscord{Available: s.discordOn(), BotAvailable: s.botOn()}
+	if out.Available {
+		w, connected, err := s.Discord.GuildChannel(ctx, guildID)
+		if err != nil {
+			return nil, err
+		}
+		out.Connected = connected
+		if connected {
+			out.ChannelID, out.DiscordGuildID = &w.ChannelID, w.DiscordGuildID
+			out.DisabledReason, out.LastError = w.DisabledReason, w.LastError
+			out.Failures, out.PostDefault = w.Failures, w.PostDefault
+		}
 	}
-	out := &SettingsDiscord{Available: true, Connected: connected}
-	if connected {
-		out.ChannelID, out.DiscordGuildID = &w.ChannelID, w.DiscordGuildID
-		out.DisabledReason, out.LastError = w.DisabledReason, w.LastError
-		out.Failures, out.PostDefault = w.Failures, w.PostDefault
+	if out.BotAvailable {
+		if out.Bot, out.BotRefusal, err = s.Bot.SettingsBot(ctx, guildID, viewerID); err != nil {
+			return nil, err
+		}
 	}
 	return out, nil
 }

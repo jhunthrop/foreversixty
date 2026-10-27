@@ -108,6 +108,7 @@ func New(d Deps) *Service {
 	s.commands, s.components = s.commandRoutes(), s.componentRoutes()
 	if d.Notify != nil {
 		d.Notify.OnState(notify.StateKindLink, s.linkCallback)
+		d.Notify.OnState(notify.StateKindBotInstall, s.installCallback)
 	}
 	s.autocompletes, s.updating = s.autocompleteRoutes(), updateComponents()
 	return s

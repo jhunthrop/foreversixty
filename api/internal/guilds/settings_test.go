@@ -3,6 +3,7 @@ package guilds
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -132,5 +133,59 @@ func TestGetSettingsSetsPrivateCacheControl(t *testing.T) {
 	res.Body.Close()
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q", got)
+	}
+}
+
+// fakeBot is a scripted DiscordBot.
+type fakeBot struct {
+	on      bool
+	bot     *SettingsBot
+	refusal *BotRefusal
+}
+
+func (f fakeBot) BotAvailable() bool { return f.on }
+
+func (f fakeBot) SettingsBot(context.Context, int64, int64) (*SettingsBot, *BotRefusal, error) {
+	return f.bot, f.refusal, nil
+}
+
+func TestSettingsCarryTheBot(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.as(w.officer)
+	read := func() SettingsDiscord {
+		t.Helper()
+		raw, ok := w.settingsDiscordAs(t)
+		if !ok {
+			t.Fatal("no discord key")
+		}
+		var got SettingsDiscord
+		if err := json.Unmarshal(raw, &got); err != nil {
+			t.Fatal(err)
+		}
+		return got
+	}
+
+	// A bot with no webhook channel wired still opens the key, with available false.
+	channel, name := "c1", "raid-signups"
+	w.h.svc.Bot = fakeBot{on: true, bot: &SettingsBot{
+		ServerID: "srv1", ServerName: "Olympus", ChannelID: &channel, ChannelName: &name,
+		LinkedMembers: 3, Members: 5, Failures: 1,
+	}, refusal: &BotRefusal{GuildName: "Mograine Raiders"}}
+	got := read()
+	if got.Available || !got.BotAvailable || got.Bot == nil || got.Bot.ServerID != "srv1" ||
+		got.Bot.LinkedMembers != 3 || got.Bot.Members != 5 || got.Bot.ChannelName == nil ||
+		*got.Bot.ChannelName != "raid-signups" || got.BotRefusal == nil || got.BotRefusal.GuildName != "Mograine Raiders" {
+		t.Fatalf("discord = %+v", got)
+	}
+
+	w.h.svc.Bot = fakeBot{on: true}
+	if got = read(); !got.BotAvailable || got.Bot != nil || got.BotRefusal != nil {
+		t.Fatalf("no install = %+v", got)
+	}
+
+	w.h.svc.Bot = nil
+	w.h.svc.Discord = fakeDiscord{enabled: true}
+	if got = read(); got.BotAvailable || got.Bot != nil {
+		t.Fatalf("bot nil = %+v", got)
 	}
 }

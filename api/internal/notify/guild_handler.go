@@ -62,20 +62,28 @@ func (s *Service) mountGuild(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE "+guildChannelPath, auth.RequireSession(s.guildRemove))
 }
 
-// guildOfficer runs the channel routes' checks in order: a verified officer or leader
-// (404 for anyone else, so a non-member never learns the route), the guild plan when
-// needPlan (403 guild_plan_required), and the claim freeze (409). ok is false once it has
-// answered.
+// guildOfficer is GuildOfficerGate for the webhook channel routes.
 func (s *Service) guildOfficer(w http.ResponseWriter, r *http.Request, needPlan bool) (int64, GuildStanding, bool) {
+	return GuildOfficerGate(w, r, s.Guilds, needPlan, func(op string, err error) {
+		s.logger().Error("notify", "id", httpx.RequestIDFrom(r.Context()), "op", op, "err", err)
+	})
+}
+
+// GuildOfficerGate runs the guild routes' checks in order: a verified officer or leader
+// (404 for anyone else, so a non-member never learns the route), the guild plan when
+// needPlan (403 guild_plan_required), and the claim freeze (409). A lookup error is logged
+// through fail and answered 500. ok is false once it has answered.
+func GuildOfficerGate(w http.ResponseWriter, r *http.Request, access GuildAccess, needPlan bool, fail func(op string, err error)) (int64, GuildStanding, bool) {
 	guildID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil || guildID <= 0 {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", noGuildMessage, nil)
 		return 0, GuildStanding{}, false
 	}
-	standing, found, err := s.Guilds.GuildStanding(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
+	standing, found, err := access.GuildStanding(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
 	switch {
 	case err != nil:
-		s.fail(w, r, "guild standing", err)
+		fail("guild standing", err)
+		httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not save that just now", nil)
 	case !found || !standing.Officer:
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", noGuildMessage, nil)
 	case needPlan && !standing.Plan:
