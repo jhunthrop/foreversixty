@@ -8,8 +8,9 @@ var officerCopy = struct {
 	ReportPrefix string
 	// The report's field names.
 	KillOrder, MostDeaths, Consumables, Loot string
-	// LootCount and LootFirst are the Loot field: "6 items." and, when items follow, " The first 6:".
-	LootCount, LootFirst string
+	// LootAll is the Loot field when every item follows ("4 items:"); otherwise LootCount and
+	// LootFirst: "10 items." and " The first 8:".
+	LootAll, LootCount, LootFirst string
 	// LootTo is an award's source line.
 	LootTo string
 	// OpenReport is the report's link button.
@@ -40,6 +41,7 @@ var officerCopy = struct {
 	MostDeaths:            "Most deaths",
 	Consumables:           "Consumables",
 	Loot:                  "Loot",
+	LootAll:               "{n} items:",
 	LootCount:             "{n} items.",
 	LootFirst:             " The first {k}:",
 	LootTo:                "to {Name} · {Boss}",
@@ -67,7 +69,7 @@ var officerCopy = struct {
 	PlanLapsed:            "Planning and running raids are part of the guild plan. An officer can subscribe the guild.",
 	Subscribe:             "Subscribe the guild",
 	Frozen:                "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
-	RaidGuild:             "The readiness board is part of Raid guild. An officer can move the guild to Raid guild.",
+	RaidGuild:             "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
 	MoveToRaidGuild:       "Move to Raid guild",
 }
 

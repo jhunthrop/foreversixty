@@ -21,16 +21,16 @@ func (w *pressWorld) raidCmdAs(t *testing.T, discordUser string) Reply {
 
 func TestRaidCommandStates(t *testing.T) {
 	segment := func(i int) string { return specString(t, commandHeading, "`/raid`", i, nil) }
-	if segment(0) != "You are In on {Name} as {Role}." || segment(5) != commandCopy.RaidNone {
+	if segment(0) != "{Name} is In as {Role}." || segment(5) != commandCopy.RaidNone {
 		t.Fatalf("spec segments moved: %q %q", segment(0), segment(5))
 	}
 	cases := []struct {
 		state, want string
 	}{
-		{"in", "You are In on Zulmara as DPS."},
-		{"late", "You are Late on Zulmara as DPS."},
-		{"bench", "You are on the Bench on Zulmara."},
-		{"out", "You are Out on Zulmara."},
+		{"in", "Zulmara is In as DPS."},
+		{"late", "Zulmara is Late as DPS."},
+		{"bench", "Zulmara is on the Bench."},
+		{"out", "Zulmara is Out."},
 	}
 	for _, c := range cases {
 		t.Run(c.state, func(t *testing.T) {

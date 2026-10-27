@@ -194,7 +194,7 @@
    "allowed_mentions": {
     "parse": []
    },
-   "nonce": "r1.mvqy0aeh",
+   "nonce": "r1.mvr12yj5",
    "enforce_nonce": true
   }
  },
@@ -248,7 +248,7 @@
    "embeds": [
     {
      "title": "Onyxia's Lair · Thursday 10 December",
-     "description": "You are In on Zulmara as DPS.",
+     "description": "Zulmara is In as DPS.",
      "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
      "fields": [
       {
@@ -372,7 +372,7 @@
        "inline": true
       },
       {
-       "name": "Top 3 upgrades",
+       "name": "Top 3 upgrades · level 60 Phase 1 raid",
        "value": "By DPS gained, against the guide build."
       }
      ],
@@ -383,7 +383,7 @@
     },
     {
      "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+3.0 DPS · Illiyana Moonblaze",
+     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
      "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-legs",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
@@ -391,23 +391,23 @@
      "color": 10696174
     },
     {
-     "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+2.4 DPS · Anachronos",
-     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-finger1",
+     "title": "Dawn Armor",
+     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
+     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-chest",
      "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
+      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
      },
      "color": 10696174
     },
     {
-     "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+2.1 DPS · Leatherworking",
-     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-chest",
+     "title": "Signet Ring of the Bronze Dragonflight",
+     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-finger1",
      "footer": {
       "text": "Forever Sixty"
      },
      "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
+      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
      },
      "timestamp": "2026-12-10T22:00:00Z",
      "color": 10696174
@@ -421,7 +421,7 @@
        "type": 2,
        "style": 2,
        "label": "Share in channel",
-       "custom_id": "share:u5nrFJWSBkA40iMDGDm210exo0cRkUWnxCkYuO-mn7M"
+       "custom_id": "share:7zv8CA4ygQyO88pSJBy7-yvp66h0Wiv9kd8tYrEHqiw"
       },
       {
        "type": 2,
@@ -479,7 +479,7 @@
        "type": 2,
        "style": 2,
        "label": "Share in channel",
-       "custom_id": "share:N7BM17Bw6ekd7Mkz_yMo3t5I0Z5TfjDUI5hB8PmHiA8"
+       "custom_id": "share:mDAm6E8KKW7GA2quGDlKGi7ynoq2AiX--lN25MSvDvA"
       },
       {
        "type": 2,
@@ -521,7 +521,7 @@
    "embeds": [
     {
      "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\nAnachronos",
+     "description": "Ring 1 · Epic · item level 80\nVendor: Anachronos",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "author": {
       "name": "Best in slot"
@@ -533,7 +533,7 @@
     },
     {
      "title": "Don Julio's Band",
-     "description": "Ring 1 · Epic · item level 60\n−5.0 DPS · Stormpike Guard",
+     "description": "Ring 1 · Epic · item level 60\n−5.0 DPS · Frostwolf Clan (exalted)",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_35.webp"
@@ -542,7 +542,7 @@
     },
     {
      "title": "Masons Fraternity Ring",
-     "description": "Ring 1 · Rare · item level 49\n−8.2 DPS · Divino-matic Rod",
+     "description": "Ring 1 · Rare · item level 49\n−8.2 DPS · Quest: Divino-matic Rod · Level 47",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "footer": {
       "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -562,7 +562,7 @@
        "type": 2,
        "style": 2,
        "label": "Share in channel",
-       "custom_id": "share:4suFcjavmERjy6YUqzVeSkOw3WlH3_SPBE1LJDxrm3Q"
+       "custom_id": "share:uae82N52hk4r_tCwOivCeVMj6ND5-GZFoCZXOzruQHE"
       },
       {
        "type": 2,
@@ -590,7 +590,7 @@
    "embeds": [
     {
      "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Illiyana Moonblaze",
+     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
@@ -599,7 +599,7 @@
     },
     {
      "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Leatherworking",
+     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
@@ -608,7 +608,7 @@
     },
     {
      "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Anachronos",
+     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
@@ -617,7 +617,7 @@
     },
     {
      "title": "Cape of the Black Baron",
-     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme: Baron Rivendare",
+     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
@@ -626,7 +626,7 @@
     },
     {
      "title": "Cutthroat's Signet",
-     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Pix Xizzix",
+     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "footer": {
       "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -646,7 +646,7 @@
        "type": 2,
        "style": 2,
        "label": "Share in channel",
-       "custom_id": "share:K8l2bz6IIaAcibtiCHYfdQ7yYdm3BjdBNMPPmwe3G7w"
+       "custom_id": "share:kXqBdmm4-aERjpr2qtio1kM-KyImdikzQBjF2KwVero"
       },
       {
        "type": 2,
@@ -674,7 +674,7 @@
    "embeds": [
     {
      "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Illiyana Moonblaze",
+     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
@@ -683,7 +683,7 @@
     },
     {
      "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Leatherworking",
+     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
@@ -692,7 +692,7 @@
     },
     {
      "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Anachronos",
+     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
@@ -701,7 +701,7 @@
     },
     {
      "title": "Cape of the Black Baron",
-     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme: Baron Rivendare",
+     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
@@ -710,7 +710,7 @@
     },
     {
      "title": "Cutthroat's Signet",
-     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Pix Xizzix",
+     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "footer": {
       "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -751,7 +751,7 @@
    "embeds": [
     {
      "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Illiyana Moonblaze",
+     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
@@ -760,7 +760,7 @@
     },
     {
      "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Leatherworking",
+     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
@@ -769,7 +769,7 @@
     },
     {
      "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Anachronos",
+     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
@@ -778,7 +778,7 @@
     },
     {
      "title": "Cape of the Black Baron",
-     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme: Baron Rivendare",
+     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "thumbnail": {
       "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
@@ -787,7 +787,7 @@
     },
     {
      "title": "Cutthroat's Signet",
-     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Pix Xizzix",
+     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
      "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
      "footer": {
       "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
@@ -807,7 +807,7 @@
        "type": 2,
        "style": 2,
        "label": "Shared",
-       "custom_id": "share:K8l2bz6IIaAcibtiCHYfdQ7yYdm3BjdBNMPPmwe3G7w",
+       "custom_id": "share:kXqBdmm4-aERjpr2qtio1kM-KyImdikzQBjF2KwVero",
        "disabled": true
       },
       {
@@ -1120,7 +1120,7 @@
    "allowed_mentions": {
     "parse": []
    },
-   "nonce": "r1.mvqy0boj",
+   "nonce": "r1.mvr12ysk",
    "enforce_nonce": true
   }
  },
@@ -1218,7 +1218,7 @@
    "allowed_mentions": {
     "parse": []
    },
-   "nonce": "r1.mvqy0bpv",
+   "nonce": "r1.mvr12yst",
    "enforce_nonce": true
   }
  },
@@ -1268,7 +1268,7 @@
    "allowed_mentions": {
     "parse": []
    },
-   "nonce": "r1.mvqy0bs0",
+   "nonce": "r1.mvr12yt3",
    "enforce_nonce": true
   }
  },
@@ -1365,7 +1365,7 @@
    "allowed_mentions": {
     "parse": []
    },
-   "nonce": "r1.mvqy0bt6",
+   "nonce": "r1.mvr12ytd",
    "enforce_nonce": true
   }
  },
@@ -1434,7 +1434,7 @@
    "allowed_mentions": {
     "parse": []
    },
-   "nonce": "r1.mvqy0bu2",
+   "nonce": "r1.mvr12ytm",
    "enforce_nonce": true
   }
  },
@@ -1457,7 +1457,7 @@
       },
       {
        "name": "Loot",
-       "value": "4 items. The first 4:"
+       "value": "4 items:"
       }
      ],
      "color": 8377482
@@ -1511,7 +1511,7 @@
        "type": 2,
        "style": 2,
        "label": "Share in channel",
-       "custom_id": "share:88j7kgxa3-BEzy5fLLmhuKZwquR01YVwZdkQgTrcSmA"
+       "custom_id": "share:crebcW8zV8hrNdIA-rKOv5Hml2JYZ45bcpqpRN0nV8M"
       },
       {
        "type": 2,
@@ -1555,7 +1555,7 @@
       },
       {
        "name": "Loot",
-       "value": "4 items. The first 4:"
+       "value": "4 items:"
       }
      ],
      "color": 8377482
@@ -1609,7 +1609,7 @@
        "type": 2,
        "style": 2,
        "label": "Share in channel",
-       "custom_id": "share:kgRaGBBTkW9s7HHWdGkgzVZJUgOjdAbm7TDLrwVX1J0"
+       "custom_id": "share:0UDKnK03n9W-FKNt_QnvGvB-6gB8rI40jgYZgkTJe5M"
       },
       {
        "type": 2,
@@ -1696,7 +1696,7 @@
       },
       {
        "name": "Loot",
-       "value": "4 items. The first 4:"
+       "value": "4 items:"
       }
      ],
      "color": 8377482
@@ -1750,7 +1750,7 @@
        "type": 2,
        "style": 2,
        "label": "Shared",
-       "custom_id": "share:kgRaGBBTkW9s7HHWdGkgzVZJUgOjdAbm7TDLrwVX1J0",
+       "custom_id": "share:0UDKnK03n9W-FKNt_QnvGvB-6gB8rI40jgYZgkTJe5M",
        "disabled": true
       },
       {
@@ -2001,7 +2001,7 @@
   "surface": "ephemeral",
   "clock": "2026-12-10T22:00:00Z",
   "message": {
-   "content": "The readiness board is part of Raid guild. An officer can move the guild to Raid guild.",
+   "content": "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
    "components": [
     {
      "type": 1,

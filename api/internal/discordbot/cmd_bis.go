@@ -203,7 +203,7 @@ func (s *Service) answerBis(ctx context.Context, guildID int64, _ *int64, opts m
 		return Message{}, false, err
 	}
 	page := s.bisPageURL(sp, faction, band, preset)
-	view := bisView{s: s, spec: sp, build: build, page: page}
+	view := bisView{s: s, spec: sp, build: build, page: page, faction: faction}
 	var embeds []notify.Embed
 	lead, button := "", ""
 	if slot := opts[optSlot]; slot != "" {
@@ -239,25 +239,27 @@ func (s *Service) bisPageURL(sp specs.Spec, faction string, band int, preset str
 }
 
 type bisView struct {
-	s     *Service
-	spec  specs.Spec
-	build string
-	page  string
+	s       *Service
+	spec    specs.Spec
+	build   string
+	page    string
+	faction string
 }
 
-func (v bisView) facts(id int, name, source string) ItemFacts {
-	return v.s.itemFacts(v.build, v.spec.ClassSlug, id, name, source, v.page)
+// facts is an item of the band with the BiS page's own source line for its kind.
+func (v bisView) facts(id int, name, kind, raw string) ItemFacts {
+	return v.s.itemFacts(v.build, v.spec.ClassSlug, id, name, v.s.sourceLine(id, kind, v.faction, raw), v.page)
 }
 
 // slotEmbeds are the pick under "Best in slot" and its first two alternatives with their deltas.
 func (v bisView) slotEmbeds(pick bis.Slot) []notify.Embed {
 	label := slotLabel(pick.Slot)
-	out := []notify.Embed{ItemEmbed(v.facts(pick.ItemID, pick.ItemName, pick.Source), label, "", lookupCopy.BisAuthor)}
+	out := []notify.Embed{ItemEmbed(v.facts(pick.ItemID, pick.ItemName, pick.SourceKind, pick.Source), label, "", lookupCopy.BisAuthor)}
 	for i, alt := range pick.Alternatives {
 		if i == slotAlternatives {
 			break
 		}
-		out = append(out, ItemEmbed(v.facts(alt.ItemID, alt.ItemName, alt.Source), label, signedDPS(alt.DpsDelta), ""))
+		out = append(out, ItemEmbed(v.facts(alt.ItemID, alt.ItemName, alt.SourceKind, alt.Source), label, signedDPS(alt.DpsDelta), ""))
 	}
 	return out
 }
@@ -279,7 +281,7 @@ func (v bisView) topEmbeds(band bis.Band) []notify.Embed {
 	out := make([]notify.Embed, 0, len(ranked))
 	for _, sl := range ranked {
 		gain := signedDPS(-sl.Alternatives[0].DpsDelta)
-		out = append(out, ItemEmbed(v.facts(sl.ItemID, sl.ItemName, sl.Source), slotLabel(sl.Slot), gain, ""))
+		out = append(out, ItemEmbed(v.facts(sl.ItemID, sl.ItemName, sl.SourceKind, sl.Source), slotLabel(sl.Slot), gain, ""))
 	}
 	return out
 }

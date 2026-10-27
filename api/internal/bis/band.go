@@ -18,6 +18,9 @@ type Alternative struct {
 	// Source is where the item comes from, in the game's words ("PvP rank 14 · Champion ·
 	// Horde", "Blacksmithing").
 	Source string `json:"source"`
+	// SourceKind is the source's kind ("vendor", "rep", "quest", "crafted", "dungeon", ...),
+	// from which the site's BiS page resolves the full source line (loot.json).
+	SourceKind string `json:"source_kind"`
 }
 
 // Slot is one band's pick for one gear slot. ItemID <= 0 means the band has no known
@@ -28,6 +31,7 @@ type Slot struct {
 	ItemID       int           `json:"item_id"`
 	ItemName     string        `json:"item_name"`
 	Source       string        `json:"source"`
+	SourceKind   string        `json:"source_kind"`
 	Alternatives []Alternative `json:"alternatives"`
 }
 

@@ -278,12 +278,16 @@ func lootCount(r *guilds.ReportView) int {
 
 // lootLine is "6 items." and, when items follow, " The first 6:".
 func lootLine(n int) string {
-	line := fill(officerCopy.LootCount, "{n}", strconv.Itoa(n))
+	template := officerCopy.LootCount
+	if n > 0 && n <= maxLootEmbeds { // every item follows: no "The first" repeating the count
+		template = officerCopy.LootAll
+	}
+	line := fill(template, "{n}", strconv.Itoa(n))
 	if n == 1 {
 		line = strings.Replace(line, "items", "item", 1)
 	}
-	if n > 0 {
-		line += fill(officerCopy.LootFirst, "{k}", strconv.Itoa(min(n, maxLootEmbeds)))
+	if n > maxLootEmbeds {
+		line += fill(officerCopy.LootFirst, "{k}", strconv.Itoa(maxLootEmbeds))
 	}
 	return line
 }
