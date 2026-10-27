@@ -438,6 +438,7 @@ export function buildMockHome(
   return {
     guild: { ...GUILD, faction, crest_url: crestUrl },
     viewer: {
+      raid_guild_tools: false,
       role,
       character_key: viewerRow?.character_key ?? null,
       verified: viewerRow?.verified ?? false,

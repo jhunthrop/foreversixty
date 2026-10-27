@@ -6,6 +6,8 @@ import { notOnPlanLines } from '../../lib/guild/settings-view';
 import GuildBillingSection from './GuildBillingSection.svelte';
 
 const SCOPED: GuildBillingView = {
+  tier: 'guild',
+  you_hold_seat: false,
   scope: 'officer_tools',
   status: 'active',
   current_period_end: '2026-12-12T00:00:00Z',

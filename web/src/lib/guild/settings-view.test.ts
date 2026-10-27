@@ -15,6 +15,8 @@ import {
 
 function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
   return {
+    tier: 'guild',
+    you_hold_seat: false,
     status: 'active',
     current_period_end: '2026-12-31T00:00:00Z',
     cancel_at_period_end: false,

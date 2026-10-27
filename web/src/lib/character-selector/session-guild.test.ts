@@ -11,6 +11,7 @@ const guild = (overrides: Partial<MeGuild>): MeGuild => ({
   ruleset: 'pvp',
   name: 'OLYMPUS XXVII',
   verified: true,
+  verified_count: 1,
   ...overrides,
 });
 

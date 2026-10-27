@@ -1,6 +1,6 @@
 // web/tests/e2e/account-billing.spec.ts
 import { expect, test } from '@playwright/test';
-import { mockEntitlements } from '../../src/test-support/billing-fixtures';
+import { mockEntitlements, NO_PRICE_FACTS } from '../../src/test-support/billing-fixtures';
 import { ownerMeAnswer } from './support/character-fixture';
 
 function fulfil(body: unknown, status = 200) {
@@ -57,6 +57,7 @@ test('active subscription: shows the renewal date and a working manage-billing b
           mockEntitlements({
             server_sims: true,
             billing: {
+              ...NO_PRICE_FACTS,
               plan: 'premium',
               status: 'active',
               current_period_end: '2026-12-01T00:00:00Z',
@@ -98,6 +99,7 @@ test('past due: shows the payment-failed banner without losing access', async ({
           mockEntitlements({
             server_sims: true,
             billing: {
+              ...NO_PRICE_FACTS,
               plan: 'premium',
               status: 'past_due',
               current_period_end: '2026-12-01T00:00:00Z',

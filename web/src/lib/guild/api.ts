@@ -97,6 +97,8 @@ export interface GuildViewerView {
    * (an older API) as true: the server's 403 is the real gate.
    */
   officer_tools?: boolean;
+  /** True only for a verified officer or leader of a Raid guild: the loot council and readiness board. */
+  raid_guild_tools: boolean;
 }
 
 /** `GET .../home`'s `summary` -- the Overview tab's roster/progression glance, computed
