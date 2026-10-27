@@ -6,7 +6,7 @@
 <script lang="ts">
   import type { MeCharacterGuild } from '../../lib/account/api';
   import { guildHref, guildRankLabel } from '../../lib/characters';
-  import { cameGuildLine } from '../../lib/guild/attendance-copy';
+  import { cameGuildClause } from '../../lib/guild/attendance-copy';
   import { characterListCopy } from '../../lib/account/character-list-copy';
 
   /**
@@ -26,6 +26,8 @@
   const href = $derived(
     region !== undefined && ruleset !== undefined ? guildHref(region, ruleset, guild.name) : null,
   );
+  /** ` · ` with a no-break space before the dot: a wrapped clause never starts with it. */
+  const SEP_TAIL = '\u00a0· ';
 </script>
 
 <span class="text-muted text-[13px]" data-testid={`${testid}-line`}>
@@ -38,7 +40,9 @@
   {#if guild.verified}
     <span class="text-strong" data-testid={`${testid}-verified`}>{characterListCopy.verified}</span>
   {/if}
-  {#if guild.attendance !== undefined}<span class="tabular whitespace-nowrap" data-testid={`${testid}-came`}
-      >{cameGuildLine(guild.attendance.present, guild.attendance.nights)}</span
+  {#if guild.attendance !== undefined}<span class="tabular" data-testid={`${testid}-came`}
+      >{SEP_TAIL}<span class="whitespace-nowrap"
+        >{cameGuildClause(guild.attendance.present, guild.attendance.nights)}</span
+      ></span
     >{/if}
 </span>

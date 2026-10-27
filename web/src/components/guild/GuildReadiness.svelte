@@ -141,6 +141,8 @@
   const NO_EXPORT_CELLS = ['Gear gap', 'Enchants', 'Consumables', 'Talent points', 'Item level'] as const;
   const DASH = '—';
   /** An expression, so its leading space survives (Svelte trims a block's edge whitespace; WP 20). */
+  /** What `sortReadinessWorstFirst` sorts by (WP B). */
+  const SORT_NOTE = 'Sorted by the most checks to fix, then the biggest gear gap.';
   const NUDGE_NOTE = ' Nudge copies a message you can paste to them.';
   const STALE_PILL = 'h-auto min-h-[22px] whitespace-normal py-0.5 text-left leading-[1.3]';
 
@@ -391,6 +393,6 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    Sorted worst first.{#if officer}{NUDGE_NOTE}{/if}
+    {SORT_NOTE}{#if officer}{NUDGE_NOTE}{/if}
   </p>
 </section>

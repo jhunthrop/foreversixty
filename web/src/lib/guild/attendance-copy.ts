@@ -101,6 +101,8 @@ export const attendanceCopy = {
     loadFailed: 'These logs did not load.',
     tryAgain: 'Try again',
     matchedElsewhere: 'That log was just matched to another raid.',
+    /** Before a candidate's time: it is the upload time, not the raid's (WP 11, interim). */
+    uploaded: 'Uploaded',
   },
   yourNight: {
     head: 'Your night',
@@ -262,7 +264,9 @@ export function postedTime(postedAt: string, tz: string, locale: string = DEFAUL
   return clockText(new Date(postedAt), tz, locale, true);
 }
 
-export const changesHead = (date: string): string => `${attendanceCopy.report.changes} since ${date}`;
+/** `since Thu 3 Dec`: the heading's tail, which breaks as one unit (UX N3). */
+export const changesSince = (date: string): string => `since ${date}`;
+export const changesHead = (date: string): string => `${attendanceCopy.report.changes} ${changesSince(date)}`;
 export const firstRaidLine = (zoneName: string): string =>
   `First ${zoneName} raid logged. Changes show from the next one.`;
 
@@ -366,14 +370,15 @@ export const cameAsOutcome = (alt: string): string => `Came as ${alt}`;
 /** `9/11`. */
 export const pullsRatio = (present: number, total: number): string => `${present}/${total}`;
 
-/** The roster chip: `Came 7 of 8 · 26 of 30`, or `Came 3 of 3` alone while the longer window adds nothing. */
+/** The roster chip: `Came 7 of 8 · 26 of 30 raids`, or `Came 3 of 3 raids` alone while the longer window adds nothing. */
 export function rosterChip(
   last8: { present: number; nights: number },
   last30: { present: number; nights: number } | undefined,
 ): string {
+  // One unit for both windows, named once at the end (WP A): `Came 7 of 8 · 26 of 30 raids`.
   const head = `Came ${last8.present} of ${last8.nights}`;
-  if (last30 === undefined || last30.nights <= last8.nights) return head;
-  return `${head}${SEP}${last30.present} of ${last30.nights}`;
+  if (last30 === undefined || last30.nights <= last8.nights) return `${head} raids`;
+  return `${head}${SEP}${last30.present} of ${last30.nights} raids`;
 }
 
 /** The loot line in raid mode: `7 of 8 raids`. */
@@ -381,8 +386,11 @@ export const raidsAttended = (present: number, nights: number): string =>
   nightsLabel(present, nights, 'raid');
 
 /** The character guild line's tail in raid mode: ` · came 7 of 8 raids`. */
+/** `came 7 of 8 raids`, the clause the guild line appends after its separator. */
+export const cameGuildClause = (present: number, nights: number): string =>
+  `came ${raidsAttended(present, nights)}`;
 export const cameGuildLine = (present: number, nights: number): string =>
-  `${SEP}came ${raidsAttended(present, nights)}`;
+  `${SEP}${cameGuildClause(present, nights)}`;
 
 export const nextRaidToggle = (date: string): string => `Next raid${SEP}${date}`;
 

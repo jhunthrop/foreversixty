@@ -22,7 +22,7 @@
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
-  import { GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
+  import { GUILD_BANDLESS_TOP, GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
   import { guildClaimCopy, guildSettingsCopy } from '../lib/guild/copy';
   import { raidCopy } from '../lib/guild/raid-copy';
 
@@ -70,7 +70,7 @@
       <claimLazy.current path={claimPath} />
     {:else}
       <!-- The view's own wrapper and h1 (the guild's name is not known yet), so the swap moves nothing. -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 {GUILD_BANDLESS_TOP}">
         <a
           class="text-nav w-fit text-[13px]"
           href={guildHref(claimPath.region, claimPath.ruleset, claimPath.slug)}
@@ -85,7 +85,7 @@
     {#if settingsLazy.current}
       <settingsLazy.current path={settingsPath} />
     {:else}
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-6 {GUILD_BANDLESS_TOP}">
         <h1 class="section-title text-[18px]">{guildSettingsCopy.heading}</h1>
         {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
       </div>
@@ -94,7 +94,9 @@
     {#if joinLazy.current}
       <joinLazy.current token={inviteToken} />
     {:else}
-      {@render chunkPending(joinLazy, 'guild-join-chunk', GUILD_LOADING.join.minHeight)}
+      <div class={GUILD_BANDLESS_TOP}>
+        {@render chunkPending(joinLazy, 'guild-join-chunk', GUILD_LOADING.join.minHeight)}
+      </div>
     {/if}
   {:else if raidPath !== null}
     {#if raidLazy.current}

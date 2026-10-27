@@ -57,7 +57,7 @@
     rememberBandHold,
     type BandLayout,
   } from '../lib/guild/band-hold';
-  import { PLANNED_RESERVE } from '../lib/guild/raid-layout';
+  import { GUILD_BANDLESS_TOP, PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
   import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
@@ -715,7 +715,7 @@
        the client (an address that does not parse never fetches), so the server-rendered
        lede stays the first paint and a footer that jumps up the page by the skeleton's
        height (the layout shift the guild Lighthouse row measured) stays put. -->
-  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight}">
+  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
     <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
     <p class="text-[14px]" data-testid="guild-missing">
       That is not a guild address. They look like <code class="font-mono"
@@ -729,7 +729,7 @@
        contentful paint does not wait for the island's scripts (W.16). The box keeps the
        loading skeleton's height, so the lede and the skeleton rows share it and nothing
        moves when the guild arrives or the address turns out wrong. -->
-  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight}">
+  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
     <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
     <GuildStatus
       status={status === 'loading' ? 'loading' : 'failed'}

@@ -69,9 +69,12 @@ describe('RaidMatchPicker', () => {
     }
   });
 
-  it('keeps each phone row to three lines: zone and duration, the time, then who and the figures', () => {
-    const first = text(html({ rows: [row('a')] }));
-    expect(first).toContain(`${ZONE} 2 h 41 min Thu 10 Dec, 11:42 pm by Kraggor · 9 pulls · 1 kill`);
+  it('keeps each phone row to three lines: the zone, the upload time and duration, then who and the figures', () => {
+    const body = html({ rows: [row('a')] });
+    expect(text(body)).toContain(
+      `${ZONE} Uploaded Thu 10 Dec, 11:42 pm 2 h 41 min by Kraggor · 9 pulls · 1 kill`,
+    );
+    expect(body).toContain('text-strong text-[14px] font-semibold whitespace-nowrap');
   });
 
   it('drops the helper beside the empty line, which says the same', () => {
@@ -114,9 +117,13 @@ describe('RaidMatchPicker', () => {
     );
     expect(body.match(/raid-match-closest/g)).toHaveLength(1);
     const first = text(body.slice(body.indexOf('raid-match-row-a'), body.indexOf('raid-match-row-b')));
-    expect(first).toContain(`${ZONE} ${attendanceCopy.picker.closest} 2 h 41 min`);
+    expect(first).toContain(
+      `${ZONE} ${attendanceCopy.picker.closest} Uploaded Thu 10 Dec, 11:42 pm 2 h 41 min`,
+    );
     // The desktop cells, after the phone lines.
-    expect(first).toContain('by Kraggor · 9 pulls · 1 kill Thu 10 Dec, 11:42 pm 9 pulls · 1 kill 2 h 41 min');
+    expect(first).toContain(
+      'by Kraggor · 9 pulls · 1 kill Uploaded Thu 10 Dec, 11:42 pm 9 pulls · 1 kill 2 h 41 min',
+    );
     expect(text(body)).toContain('1 pull · 0 kills');
   });
 

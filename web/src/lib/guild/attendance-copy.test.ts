@@ -245,9 +245,11 @@ describe('attendance, roster and readiness', () => {
   });
 
   it('roster chip and lines', () => {
-    expect(rosterChip({ present: 7, nights: 8 }, { present: 26, nights: 30 })).toBe('Came 7 of 8 · 26 of 30');
-    expect(rosterChip({ present: 3, nights: 3 }, { present: 3, nights: 3 })).toBe('Came 3 of 3');
-    expect(rosterChip({ present: 3, nights: 3 }, undefined)).toBe('Came 3 of 3');
+    expect(rosterChip({ present: 7, nights: 8 }, { present: 26, nights: 30 })).toBe(
+      'Came 7 of 8 · 26 of 30 raids',
+    );
+    expect(rosterChip({ present: 3, nights: 3 }, { present: 3, nights: 3 })).toBe('Came 3 of 3 raids');
+    expect(rosterChip({ present: 3, nights: 3 }, undefined)).toBe('Came 3 of 3 raids');
     expect(raidsAttended(7, 8)).toBe('7 of 8 raids');
     expect(raidsAttended(1, 1)).toBe('1 of 1 raid');
     expect(cameGuildLine(7, 8)).toBe(' · came 7 of 8 raids');

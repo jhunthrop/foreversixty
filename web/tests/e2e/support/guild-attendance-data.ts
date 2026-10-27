@@ -160,9 +160,9 @@ const DEATHS: [string, number, number][] = [
   ['Mendwhisper', 1, 0],
 ];
 
-/** id, name, icon (the API's loot table: Head of Onyxia, a quest item, has none), awardee. */
+/** id, name, icon (the API's loot table: the client's own art, quest items too), awardee. */
 const LOOT: [number, string, string, string][] = [
-  [18423, 'Head of Onyxia', '', 'Kraggor'],
+  [18423, 'Head of Onyxia', 'inv_misc_head_dragon_01', 'Kraggor'],
   [17075, "Vis'kag the Bloodletter", 'inv_sword_18', 'Vexlash'],
   [16914, 'Netherwind Crown', 'inv_helmet_70', 'Pyrewisp'],
   [18813, 'Ring of Binding', 'inv_jewelry_ring_13', 'Thornhide'],

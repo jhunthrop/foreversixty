@@ -110,3 +110,23 @@ swap 0.0039 / 0.0008.
 - WP 16: boss health at each wipe, killing blows, named fire-protection potions.
 - UX 26: the mock's night bar is amended to `--muted` (no build change).
 - UX 27: Brightwick's empty roster crest (roster lane).
+
+## Final round (2026-10-27, re-reviews)
+
+Both re-reviews SHIP WITH FIXES. API `0d2a4aa0`; web in the `fix(web): final round …` commit.
+
+| Finding | Fix | Capture |
+|---|---|---|
+| UX 4 (must) | Head of Onyxia shows `inv_misc_head_dragon_01`. The loot table's six slotless drops take the client's own icon, `Item.IconFileDataID` through `ManifestInterfaceData` (wago.tools, build 1.60.1.70532), never guessed: Scale of Onyxia `inv_misc_monsterscales_07`, Onyxia Hide Backpack `inv_misc_bag_22`, Mature Black Dragon Sinew `spell_holy_dispelmagic`, Draconic for Dummies `inv_misc_stonetablet_03`. The two files missing from the build's icon set (published through `web/public/data/<build>/icons`) were added from CASC with the pipeline's `download_icons`. No question-mark step remains: an item with no icon draws the `/bis` neutral tile with the name's letters | 01, 02 |
+| UX N1 (must) | `main` stays `md:pt-0`; every band-less view's root takes `md:pt-7` (`GUILD_BANDLESS_TOP`): GuildLanding, GuildSettings, GuildClaim, GuildJoin, GuildShell's claim, settings and join chunk placeholders, Guild.svelte's missing, loading and failed states | `N1-{landing,claim,settings,join-bad-token,not-an-address}-{390,1440}` |
+| WP A (must) | The roster chip names its unit once for both windows: `Came 7 of 8 · 26 of 30 raids` | 09 |
+| WP 6 (must) | Notes and Sign-ups opened on a done raid: the selects are disabled | `08-sections-open`, `08-sections-open-roster` |
+| UX 15 | Picker phone line 1 is the zone and `Closest`, never broken; the duration moves to line 2 beside the time | 04 |
+| UX N2 | The `Boss pulls` lead-in never wraps | 01 (360), 06 |
+| WP B | The readiness note names the order: `Sorted by the most checks to fix, then the biggest gear gap.` | 10 |
+| WP C | On phone the Present group head carries `Boss pulls` | 06 (360, 390) |
+| WP 11 (interim) | A muted `Uploaded` before each candidate's time | 04 |
+| UX N3 | `since Thu 3 Dec` breaks as one unit | 01 (360) |
+| UX N4 | `ended 1 h ago`: figures in mono, words in the body face | 01 |
+| UX 23, WP E | The guild line's separator ends the line before (a no-break space ties it to `Verified`); the clause never starts with `·` | 09 |
+| WP D | The officer captures read `Kraggor` in the site header (the stubs answer `/v1/me` as the officer); 01 and 08 re-taken | 01, 08 |

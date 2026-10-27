@@ -6,21 +6,29 @@
 
   let {
     heading,
+    tail = null,
     count = null,
     testid,
     children,
   }: {
     heading: string;
+    /** A tail after the heading that breaks as one unit (`since Thu 3 Dec`). */
+    tail?: string | null;
     /** The mono muted count after the sub-head; none when null or 0. */
     count?: number | null;
     testid: string;
     children: Snippet;
   } = $props();
+
+  /** An expression, so Svelte keeps the space at the block edge before the tail. */
+  const SPACE = ' ';
 </script>
 
 <div class="flex min-w-0 flex-col gap-3" data-testid={testid}>
   <h3 class="section-title flex items-baseline gap-2 text-[15px]">
-    {heading}{#if count !== null && count > 0}<span class="text-muted font-mono text-[13px] tabular-nums"
+    <span
+      >{heading}{#if tail !== null}{SPACE}<span class="whitespace-nowrap">{tail}</span>{/if}</span
+    >{#if count !== null && count > 0}<span class="text-muted font-mono text-[13px] tabular-nums"
         >{count}</span
       >{/if}
   </h3>

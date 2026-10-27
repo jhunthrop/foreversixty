@@ -75,7 +75,7 @@
         data-testid="raid-attendance-outcome">{outcomeText(row)}</span
       >
       <span class="flex items-center gap-2">
-        <span class="label text-muted text-[11px] md:hidden">{bossPullsHead}</span>
+        <span class="label text-muted text-[11px] whitespace-nowrap md:hidden">{bossPullsHead}</span>
         <span class="text-text text-[13px]"
           ><Figures text={pullsOf(row.pulls_present, row.pulls_total)} /></span
         >
@@ -156,8 +156,11 @@
   {/if}
   {#each groups as group (group.key)}
     <div class="flex min-w-0 flex-col gap-2" data-testid={`raid-attendance-${group.key}`}>
-      <h3 class="label text-muted">
-        {group.label} <span class="font-mono tabular-nums">{group.rows.length}</span>
+      <h3 class="label text-muted flex items-baseline justify-between gap-3">
+        <span>{group.label} <span class="font-mono tabular-nums">{group.rows.length}</span></span>
+        {#if group.key === 'present'}<span class="text-[11px] whitespace-nowrap md:hidden"
+            >{bossPullsHead}</span
+          >{/if}
       </h3>
       {#if group.compact}
         <ul class="grid grid-cols-1 gap-x-4 md:grid-cols-2 lg:grid-cols-3">

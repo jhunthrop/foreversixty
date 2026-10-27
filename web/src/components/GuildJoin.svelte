@@ -6,6 +6,7 @@
      says so plainly with no button; a member of the guild already is told so. Joining calls
      POST /v1/guilds/invite/{token}/accept and goes to the guild's own page. -->
 <script lang="ts">
+  import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { battlenetStartUrl, fetchMeOnce, type Me } from '../lib/account/api';
   import { guildHref, guildInviteHref, rulesetLabel } from '../lib/characters';
   import {
@@ -74,7 +75,7 @@
   }
 </script>
 
-<div class="reveal flex flex-col gap-4" data-testid="guild-join">
+<div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-4" data-testid="guild-join">
   {#if status === 'loading' || status === 'failed'}
     <GuildStatus
       status={status === 'loading' ? 'loading' : 'failed'}

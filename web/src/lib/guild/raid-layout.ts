@@ -49,6 +49,11 @@ export const REPORT_RESERVE = 'min-h-[900px] lg:min-h-[520px]';
 /** Attendance for a cached officer (spec 4 "Page states"). */
 export const ATTENDANCE_RESERVE = 'min-h-[420px]';
 
+/** A guild view with no full-bleed band at its top (the landing, claim, join, settings, the address
+ *  that does not parse, and their chunk placeholders) keeps 28 px under the header from `md`: `main`
+ *  itself has none there, so a band sits flush against the header (UX N1). */
+export const GUILD_BANDLESS_TOP = 'md:pt-7';
+
 /** A guild view is at least one screen tall from its first paint, so the footer starts below the
  *  fold and never jumps when the view under it grows (phone content starts at 72 px, desktop at 81). */
 export const GUILD_VIEW_MIN = 'min-h-[calc(100svh-72px)] md:min-h-[calc(100svh-81px)]';

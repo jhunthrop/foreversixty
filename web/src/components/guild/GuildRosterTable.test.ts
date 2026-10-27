@@ -504,7 +504,7 @@ describe('GuildRosterTable attendance source', () => {
     const body = text(
       render(GuildRosterTable, { props: { ...props(raidHome), attendanceSource: 'raids' } }).body,
     );
-    expect(body).toContain('Came 7 of 8 \u00b7 26 of 30');
+    expect(body).toContain('Came 7 of 8 \u00b7 26 of 30 raids');
     expect(body.split('Came: raids attended of raids signed up for or attended').length - 1).toBe(1);
   });
 

@@ -329,7 +329,7 @@ test.describe('a done raid band and its closed sections (§3.1, R-A4)', () => {
     expect(await selects.evaluateAll((n) => n.every((s) => (s as HTMLSelectElement).disabled))).toBe(true);
   });
 
-  test('loot draws the award icon, the question mark for none, and a tooltip for a quest item', async ({
+  test('loot draws the client icons, a quest item too, and opens a tooltip for a quest item', async ({
     page,
   }) => {
     await openRaid(page, officerDone());
@@ -340,7 +340,7 @@ test.describe('a done raid band and its closed sections (§3.1, R-A4)', () => {
     );
     await expect(row('Head of Onyxia').getByTestId('raid-loot-icon').locator('img')).toHaveAttribute(
       'src',
-      /icons\/inv_misc_questionmark\.webp$/,
+      /icons\/inv_misc_head_dragon_01\.webp$/,
     );
     await page.getByTestId('item-hover-18423').first().focus();
     await expect(page.getByTestId('item-tooltip')).toContainText('Head of Onyxia');
@@ -407,11 +407,11 @@ test.describe('the roster chip (§3.6)', () => {
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
     const rows = page.getByTestId('guild-roster-rows');
-    await expect(rows).toContainText(/Came \d of 8 · \d+ of 30/);
+    await expect(rows).toContainText(/Came \d of 8 · \d+ of 30 raids/);
     await expect(rows).toContainText(attendanceCopy.roster.noRaids);
     // One read for the roster and the guild line (WP 4): Kraggor, who led the raid, has raids.
     const { last8, last30 } = rosterAttendance('Kraggor');
-    await expect(rows).toContainText(`Came ${last8.present} of 8 · ${last30.present} of 30`);
+    await expect(rows).toContainText(`Came ${last8.present} of 8 · ${last30.present} of 30 raids`);
     await expect(page.getByTestId('guild-roster-attendance-footnote')).toHaveText(
       attendanceCopy.roster.footnote,
     );
