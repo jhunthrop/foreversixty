@@ -12,12 +12,15 @@
   let {
     tab,
     settingsHref,
-    sentence = guildGateCopy.sentence,
+    raidGuild = false,
+    sentence = raidGuild ? guildGateCopy.raidGuildSentence : guildGateCopy.sentence,
     id = undefined,
     testid = undefined,
   }: {
     tab: 'loot' | 'readiness' | 'raids' | 'discord';
     settingsHref: string;
+    /** A Guild-tier guild: the Raid guild sentence, linking to the settings tab's `#billing`. */
+    raidGuild?: boolean;
     sentence?: string;
     /** The element id the disabled controls name; `null` for a second copy on one page. */
     id?: string | null;
@@ -32,6 +35,7 @@
 >
   {sentence}<a
     class="text-gold hover:text-gold-hover active:text-gold-hover focus-visible:outline-gold relative whitespace-nowrap underline after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 md:after:hidden"
-    href={settingsHref}>{guildGateCopy.link}</a
+    href={raidGuild ? `${settingsHref}#billing` : settingsHref}
+    >{raidGuild ? guildGateCopy.raidGuildLink : guildGateCopy.link}</a
   >.
 </p>

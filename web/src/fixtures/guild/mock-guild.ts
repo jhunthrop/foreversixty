@@ -400,8 +400,9 @@ export function buildMockHome(
   withAddonSnapshot = true,
   // Officer tools gate (design/specs/2026-10-25-officer-tools-gate.md §3.1): `officerTools`
   // sets `viewer.officer_tools`; left out, the field is absent, as from an API that predates it.
+  // Launch pricing spec 3.2.8: `raidGuildTools` (default true) sets `viewer.raid_guild_tools`; false is a Guild-tier guild.
   // Raids spec 3.4: `nextRaid` sets `next_raid`; left out, the field is absent (none planned).
-  options: { officerTools?: boolean; nextRaid?: NextRaidView } = {},
+  options: { officerTools?: boolean; raidGuildTools?: boolean; nextRaid?: NextRaidView } = {},
 ): GuildHome {
   // The API sends no Remove on the viewer's own row when it is an officer's or the leader's (the
   // guild master leaves through Leave on the account page); the fixture sends what it would.
@@ -438,7 +439,7 @@ export function buildMockHome(
   return {
     guild: { ...GUILD, faction, crest_url: crestUrl },
     viewer: {
-      raid_guild_tools: false,
+      raid_guild_tools: options.raidGuildTools ?? true,
       role,
       character_key: viewerRow?.character_key ?? null,
       verified: viewerRow?.verified ?? false,

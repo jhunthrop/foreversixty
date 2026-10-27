@@ -131,6 +131,14 @@ describe('guildGateCopy', () => {
     expect(guildGateCopy.readOnly).toBe(spec('Header label (reused)'));
   });
 
+  it('reads the Guild-tier gate sentence from the launch pricing spec §6.2', () => {
+    const pricing = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
+    const row = (index: number): string =>
+      specString(pricing, '## 6. Copy, verbatim', 'Gate, Guild tier', index);
+    expect(guildGateCopy.raidGuildSentence).toBe(row(0));
+    expect(guildGateCopy.raidGuildLink).toBe(row(1));
+  });
+
   it('reads the account guild row link text from the spec', () => {
     expect(settingsWords.guildSettingsLink).toBe(spec('Account guild row', 1));
   });

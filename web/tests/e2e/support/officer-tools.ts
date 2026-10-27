@@ -38,6 +38,8 @@ export interface GuildCentreStub {
   viewer: Viewer;
   /** `home.viewer.officer_tools`; left out, the field is absent. */
   officerTools?: boolean;
+  /** `home.viewer.raid_guild_tools`; defaults to true, false is a Guild-tier guild. */
+  raidGuildTools?: boolean;
   /** No boss killed yet this tier: the Loot tab's empty state. */
   emptyLoot?: boolean;
 }
@@ -88,7 +90,10 @@ function guildCentreMe(viewer: Viewer) {
 /** Routes the public page, /v1/me, the home and the four depth endpoints of the mock guild. */
 export async function stubGuildCentre(page: Page, stub: GuildCentreStub): Promise<void> {
   const name = viewerName(stub.viewer);
-  const home = buildMockHome(name, GUILD.faction, null, true, { officerTools: stub.officerTools });
+  const home = buildMockHome(name, GUILD.faction, null, true, {
+    officerTools: stub.officerTools,
+    raidGuildTools: stub.raidGuildTools,
+  });
   const loot = stub.emptyLoot === true ? { ...buildMockLoot(), items: [] } : buildMockLoot();
   await page.route(`**/v1/guilds/${GUILD.region}/${GUILD.ruleset}/${GUILD_SLUG}`, (route) =>
     route.fulfill(envelope(buildMockGuildPage())),

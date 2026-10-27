@@ -38,6 +38,7 @@
     loot,
     officer,
     officerTools,
+    raidGuildTools,
     memberReadOnly,
     attendanceSource = 'reports',
     busyItemId,
@@ -50,6 +51,8 @@
     officer: boolean;
     /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
     officerTools: boolean;
+    /** False for an officer of a Guild-tier guild: Loot is part of Raid guild (pricing spec §3.2.8). */
+    raidGuildTools: boolean;
     memberReadOnly: boolean;
     /** `raids`: the candidate line counts raids (`7 of 8 raids`). */
     attendanceSource?: AttendanceSource;
@@ -89,7 +92,7 @@
 
   const selectedEncounter = $derived(loot?.encounters.find((e) => e.encounter_id === loot.selected));
   const notSimmed = $derived(loot !== null && anyNotSimmed(loot.items));
-  const officerReadOnly = $derived(officer && !officerTools);
+  const officerReadOnly = $derived(officer && !(officerTools && raidGuildTools));
   /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
   const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-loot' : undefined);
   const refusedLine = $derived(
@@ -103,7 +106,7 @@
     {#if memberReadOnly || officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span
       >{/if}
   </div>
-  {#if officerReadOnly}<GuildPlanGate tab="loot" {settingsHref} />{/if}
+  {#if officerReadOnly}<GuildPlanGate tab="loot" {settingsHref} raidGuild={officerTools} />{/if}
 
   {#if loot === null || loot.items.length === 0}
     <EmptyState

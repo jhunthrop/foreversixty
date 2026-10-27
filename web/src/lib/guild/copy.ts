@@ -330,6 +330,9 @@ export const guildRosterModelCopy = {
 export const guildGateCopy = {
   sentence: 'Award and Nudge are part of the guild plan. ',
   link: 'Subscribe the guild',
+  /** A Guild-tier guild (officer tools on, no Raid guild): launch pricing spec §3.2.8. */
+  raidGuildSentence: 'Loot council and the readiness board are part of Raid guild. ',
+  raidGuildLink: 'Move to Raid guild',
   awardRefused: "Not awarded. This guild's officer tools have ended.",
   undoRefused: "Not undone. This guild's officer tools have ended.",
   readOnly: 'Read-only',

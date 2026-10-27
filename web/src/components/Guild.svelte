@@ -47,7 +47,7 @@
     type GuildViewerRole,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
-  import { officerToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
+  import { officerToolsOn, raidGuildToolsOn, type GuildPlanRefusal } from '../lib/guild/officer-tools';
   import { plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
   import { browserStorage } from '../lib/guild/reserve-keys';
   import {
@@ -285,6 +285,7 @@
   let officerToolsEnded = $state(false);
   let planRefusal = $state<GuildPlanRefusal | null>(null);
   const officerTools = $derived(officerToolsOn(role, home?.viewer?.officer_tools, officerToolsEnded));
+  const raidGuildTools = $derived(raidGuildToolsOn(role, home?.viewer?.raid_guild_tools));
   const officerView = $derived(role === 'officer' || role === 'moderator');
   /** The plan sentence's link (gate spec §3.2): the guild's settings tab. */
   const settingsHref = $derived(
@@ -1109,6 +1110,7 @@
           guildTimezone={readinessView.guildTimezone}
           officer={officerView}
           {officerTools}
+          {raidGuildTools}
           {myCharacterKey}
           {settingsHref}
         />
@@ -1133,6 +1135,7 @@
           loot={lootStatus === 'ready' ? loot : null}
           officer={officerView}
           {officerTools}
+          {raidGuildTools}
           memberReadOnly={role === 'member'}
           attendanceSource={attendanceSourceOf(home)}
           busyItemId={lootBusyItemId}

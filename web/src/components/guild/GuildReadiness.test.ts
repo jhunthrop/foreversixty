@@ -10,12 +10,13 @@ import GuildReadiness from './GuildReadiness.svelte';
 
 const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/#settings';
 
-function html(officer: boolean, officerTools: boolean): string {
+function html(officer: boolean, officerTools: boolean, raidGuildTools = true): string {
   return render(GuildReadiness, {
     props: {
       rows: buildMockReadiness().rows,
       officer,
       officerTools,
+      raidGuildTools,
       myCharacterKey: null,
       settingsHref: SETTINGS_HREF,
     },
@@ -89,6 +90,26 @@ describe('GuildReadiness', () => {
     }
   });
 
+  it('says the Raid guild sentence, linking to #billing, on a Guild-tier guild', () => {
+    const markup = html(true, true, false);
+    const gateAt = markup.indexOf('data-testid="guild-readiness-plan-gate"');
+    expect(gateAt).toBeGreaterThan(-1);
+    const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
+    expect(text(gate)).toContain(`${guildGateCopy.raidGuildSentence.trim()} ${guildGateCopy.raidGuildLink}`);
+    expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
+    for (const tag of nudges(markup)) expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
+  });
+
+  it("keeps today's sentence for a lapsed guild", () => {
+    const markup = text(html(true, false, false));
+    expect(markup).toContain(guildGateCopy.link);
+    expect(markup).not.toContain(guildGateCopy.raidGuildLink);
+  });
+
+  it('shows a member nothing of the Raid guild gate', () => {
+    expect(html(false, true, false)).not.toContain('guild-readiness-plan-gate');
+  });
+
   it('leaves a member exactly as before: no sentence, no Nudge', () => {
     const markup = html(false, false);
     expect(markup).not.toContain('guild-readiness-plan-gate');
@@ -115,6 +136,7 @@ describe('GuildReadiness next-raid filter', () => {
         rows: shown,
         officer: true,
         officerTools: true,
+        raidGuildTools: true,
         myCharacterKey: null,
         settingsHref: SETTINGS_HREF,
         raid,
@@ -167,6 +189,7 @@ describe('GuildReadiness next-raid filter', () => {
         rows,
         officer: true,
         officerTools: true,
+        raidGuildTools: true,
         myCharacterKey: null,
         settingsHref: SETTINGS_HREF,
         raid,
