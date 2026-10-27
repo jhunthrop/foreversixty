@@ -36,3 +36,9 @@ describe('safeNextPath', () => {
     expect(safeNextPath('/\t\\evil.example', '/logs')).toBe('/logs');
   });
 });
+
+describe('safeNextPath with the Discord link return', () => {
+  it('keeps the flag and the #you anchor', () => {
+    expect(safeNextPath('/account?discord_link=start#you', '/x')).toBe('/account?discord_link=start#you');
+  });
+});

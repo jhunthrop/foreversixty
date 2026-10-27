@@ -43,3 +43,12 @@ test('an unsafe protocol-relative ?next= value is rejected and falls back to the
   await expect(battlenet).toHaveAttribute('href', /next=%2Faccount%3Fsigned_in%3D1$/);
   await expect(battlenet).not.toHaveAttribute('href', /evil\.example/);
 });
+
+test('the Discord link flag and the #you anchor survive a percent-encoded ?next=', async ({ page }) => {
+  await page.goto('/login?next=%2Faccount%3Fdiscord_link%3Dstart%23you');
+
+  await expect(page.getByTestId('battlenet')).toHaveAttribute(
+    'href',
+    /next=%2Faccount%3Fdiscord_link%3Dstart%23you$/,
+  );
+});

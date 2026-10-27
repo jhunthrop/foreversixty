@@ -80,12 +80,12 @@
     }
     if (!outcome.refresh) return reveal(outcome);
     settling = true;
-    settleTimer = setTimeout(() => reveal(outcome), SETTLE_MS);
+    // A link that never shows up in `me` is a failed link: Unlink would never exist to take focus.
+    const settle = (): void => reveal(linkedName !== null ? outcome : discordLinkReturn('failed'));
+    settleTimer = setTimeout(settle, SETTLE_MS);
     fetchMeFresh().then(
-      (fresh) => {
-        if (fresh?.discord_link) reveal(outcome);
-      },
-      () => reveal(outcome),
+      (fresh) => reveal(fresh?.discord_link ? outcome : discordLinkReturn('failed')),
+      settle,
     );
   });
 
@@ -170,7 +170,9 @@
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
           <p class="text-[14px] [overflow-wrap:anywhere]" data-testid="discord-linked-as">
             <span class="text-muted">{discordLinkCopy.linkedLead}</span>
-            <strong class="text-strong font-semibold">{linkedName.slice(0, NAME_MAX)}</strong>
+            <strong class="text-strong font-semibold"
+              >{Array.from(linkedName).slice(0, NAME_MAX).join('')}</strong
+            >
           </p>
           <button type="button" class={OUTLINE} onclick={askUnlink} data-testid="discord-unlink">
             {discordLinkCopy.unlink}
@@ -189,9 +191,9 @@
         onStuck={showStuck}
       />
     {/if}
-    <div class="min-h-[21px] text-[13px]" data-testid="discord-link-status">
+    <div class="min-h-[21px] text-[13px]" role={line?.role ?? 'status'} data-testid="discord-link-status">
       {#if line !== null}
-        <p class={line.role === 'alert' ? 'text-wipe' : 'text-text'} role={line.role}>{line.message}</p>
+        <p class={line.role === 'alert' ? 'text-wipe' : 'text-text'}>{line.message}</p>
         {#if line.help !== undefined}
           <p class="text-muted mt-1 text-[13px]">{line.help}</p>
         {/if}
