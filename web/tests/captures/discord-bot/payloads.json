@@ -1,2062 +1,2062 @@
 [
- {
-  "id": "press-unlinked",
-  "row": "D3",
-  "title": "Press: not linked",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Link your Discord account to Forever Sixty to sign up from here, then press the button again.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Link Discord",
-       "url": "https://api.foreversixty.gg/v1/discord/link/start"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-not-member",
-  "row": "D3",
-  "title": "Press: not a member",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Sign-ups are for members of Olympus XXVII. Save your character on Forever Sixty and an officer can approve it.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Get set up",
-       "url": "https://foreversixty.gg/setup"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-pending",
-  "row": "D3",
-  "title": "Press: waiting for approval",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Thalwyn is waiting for approval. You can sign it up once an officer approves it.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-select",
-  "row": "D3",
-  "title": "Press: two characters, the select",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Sign up as **In** for Onyxia's Lair, \u003ct:1796954400:f\u003e, with which character?",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 3,
-       "custom_id": "pick:1:in",
-       "placeholder": "Choose a character",
-       "options": [
+  {
+    "id": "press-unlinked",
+    "row": "D3",
+    "title": "Press: not linked",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Link your Discord account to Forever Sixty to sign up from here, then press the button again.",
+      "components": [
         {
-         "label": "Zulmara",
-         "value": "us/normal/zulmara",
-         "description": "Beast Mastery Hunter · DPS · your main"
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Link Discord",
+              "url": "https://api.foreversixty.gg/v1/discord/link/start"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-not-member",
+    "row": "D3",
+    "title": "Press: not a member",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Sign-ups are for members of Olympus XXVII. Save your character on Forever Sixty and an officer can approve it.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Get set up",
+              "url": "https://foreversixty.gg/setup"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-pending",
+    "row": "D3",
+    "title": "Press: waiting for approval",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Thalwyn is waiting for approval. You can sign it up once an officer approves it.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-select",
+    "row": "D3",
+    "title": "Press: two characters, the select",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Sign up as **In** for Onyxia's Lair, \u003ct:1796954400:f\u003e, with which character?",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 3,
+              "custom_id": "pick:1:in",
+              "placeholder": "Choose a character",
+              "options": [
+                {
+                  "label": "Zulmara",
+                  "value": "us/normal/zulmara",
+                  "description": "Beast Mastery Hunter · DPS · your main"
+                },
+                {
+                  "label": "Duskstrider",
+                  "value": "us/normal/duskstrider",
+                  "description": "Combat Rogue · DPS"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-in",
+    "row": "D3",
+    "title": "Press: In (from the select)",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Zulmara is In as DPS for Onyxia's Lair, Thu 10 Dec. 33 of 40 signed up.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "post-open",
+    "row": "D1",
+    "title": "Raid post: open",
+    "surface": "channel",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Onyxia's Lair · Thursday 10 December",
+          "description": "Sign up with the buttons below.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Guild time",
+              "value": "8:00 pm CST",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 3,
+              "label": "In",
+              "custom_id": "raid:1:in"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Late",
+              "custom_id": "raid:1:late"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Bench",
+              "custom_id": "raid:1:bench"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Out",
+              "custom_id": "raid:1:out"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Raid page",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      },
+      "nonce": "r1.mvr12yj5",
+      "enforce_nonce": true
+    }
+  },
+  {
+    "id": "post-webhook",
+    "row": "D1",
+    "title": "Raid post through a webhook (no buttons, never edited)",
+    "surface": "channel",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Onyxia's Lair · Thursday 10 December",
+          "description": "Sign up on Forever Sixty.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Guild time",
+              "value": "8:00 pm CST",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "raid",
+    "row": "D4",
+    "title": "/raid",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Onyxia's Lair · Thursday 10 December",
+          "description": "Zulmara is In as DPS.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Guild time",
+              "value": "8:00 pm CST",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 3,
+              "label": "In",
+              "custom_id": "raid:1:in"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Late",
+              "custom_id": "raid:1:late"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Bench",
+              "custom_id": "raid:1:bench"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Out",
+              "custom_id": "raid:1:out"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Raid page",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "raid-unlinked",
+    "row": "D4",
+    "title": "/raid, not linked",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Link your Discord account to see your guild's next raid.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Link Discord",
+              "url": "https://api.foreversixty.gg/v1/discord/link/start"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "char-upgrades",
+    "row": "D5",
+    "title": "/char with upgrades (a member's view)",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Zulmara",
+          "description": "Level 60 Beast Mastery Hunter · Olympus XXVII",
+          "url": "https://foreversixty.gg/character/us/normal/zulmara",
+          "fields": [
+            {
+              "name": "Item level",
+              "value": "63.5",
+              "inline": true
+            },
+            {
+              "name": "Readiness",
+              "value": "Stocked",
+              "inline": true
+            },
+            {
+              "name": "Synced",
+              "value": "\u003ct:1796760000:R\u003e",
+              "inline": true
+            },
+            {
+              "name": "Top 3 upgrades · level 60 Phase 1 raid",
+              "value": "By DPS gained, against the guide build."
+            }
+          ],
+          "thumbnail": {
+            "url": "https://foreversixty.gg/icons/hd/crests/hunter.webp"
+          },
+          "color": 11195250
         },
         {
-         "label": "Duskstrider",
-         "value": "us/normal/duskstrider",
-         "description": "Combat Rogue · DPS"
+          "title": "Sentinel's Chain Leggings",
+          "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
+          "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-legs",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Dawn Armor",
+          "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
+          "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-chest",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Signet Ring of the Bronze Dragonflight",
+          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-finger1",
+          "footer": {
+            "text": "Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 10696174
         }
-       ]
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Share in channel",
+              "custom_id": "share:7zv8CA4ygQyO88pSJBy7-yvp66h0Wiv9kd8tYrEHqiw"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Character page",
+              "url": "https://foreversixty.gg/character/us/normal/zulmara"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
       }
-     ]
     }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
+  },
+  {
+    "id": "char-no-gear",
+    "row": "D5",
+    "title": "/char with no gear shared",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Duskstrider",
+          "description": "Level 60 Combat Rogue · Olympus XXVII",
+          "url": "https://foreversixty.gg/character/us/normal/duskstrider",
+          "fields": [
+            {
+              "name": "Readiness",
+              "value": "Not shared",
+              "inline": true
+            },
+            {
+              "name": "Top 3 upgrades",
+              "value": "No gear shared yet. Upgrades show once the character is synced."
+            }
+          ],
+          "footer": {
+            "text": "Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/icons/hd/crests/rogue.webp"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 16774248
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Share in channel",
+              "custom_id": "share:mDAm6E8KKW7GA2quGDlKGi7ynoq2AiX--lN25MSvDvA"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Character page",
+              "url": "https://foreversixty.gg/character/us/normal/duskstrider"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "char-unknown",
+    "row": "D5",
+    "title": "/char unknown",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "No public character by that name.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "bis-slot",
+    "row": "D6",
+    "title": "/bis slot:Ring 1 (defaults from the main)",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Ring 1 for a Beast Mastery Hunter, level 60 Phase 1 raid:",
+      "embeds": [
+        {
+          "title": "Signet Ring of the Bronze Dragonflight",
+          "description": "Ring 1 · Epic · item level 80\nVendor: Anachronos",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "author": {
+            "name": "Best in slot"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Don Julio's Band",
+          "description": "Ring 1 · Epic · item level 60\n−5.0 DPS · Frostwolf Clan (exalted)",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_35.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Masons Fraternity Ring",
+          "description": "Ring 1 · Rare · item level 49\n−8.2 DPS · Quest: Divino-matic Rod · Level 47",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "footer": {
+            "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_03.webp"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 28893
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Share in channel",
+              "custom_id": "share:uae82N52hk4r_tCwOivCeVMj6ND5-GZFoCZXOzruQHE"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open on Forever Sixty",
+              "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "bis-top",
+    "row": "D6",
+    "title": "/bis without a slot",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
+      "embeds": [
+        {
+          "title": "Sentinel's Chain Leggings",
+          "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Dawn Armor",
+          "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Signet Ring of the Bronze Dragonflight",
+          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Cape of the Black Baron",
+          "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
+          },
+          "color": 28893
+        },
+        {
+          "title": "Cutthroat's Signet",
+          "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "footer": {
+            "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_01.webp"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 28893
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Share in channel",
+              "custom_id": "share:kXqBdmm4-aERjpr2qtio1kM-KyImdikzQBjF2KwVero"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "All 17 slots",
+              "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "bis-shared",
+    "row": "D6",
+    "title": "/bis shared in the channel",
+    "surface": "channel",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
+      "embeds": [
+        {
+          "title": "Sentinel's Chain Leggings",
+          "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Dawn Armor",
+          "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Signet Ring of the Bronze Dragonflight",
+          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Cape of the Black Baron",
+          "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
+          },
+          "color": 28893
+        },
+        {
+          "title": "Cutthroat's Signet",
+          "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "footer": {
+            "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_01.webp"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 28893
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "All 17 slots",
+              "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "bis-after-share",
+    "row": "D6",
+    "title": "/bis ephemeral after sharing",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
+      "embeds": [
+        {
+          "title": "Sentinel's Chain Leggings",
+          "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Dawn Armor",
+          "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Signet Ring of the Bronze Dragonflight",
+          "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Cape of the Black Baron",
+          "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
+          },
+          "color": 28893
+        },
+        {
+          "title": "Cutthroat's Signet",
+          "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
+          "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
+          "footer": {
+            "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_01.webp"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 28893
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Shared",
+              "custom_id": "share:kXqBdmm4-aERjpr2qtio1kM-KyImdikzQBjF2KwVero",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "All 17 slots",
+              "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "link-unlinked",
+    "row": "D10",
+    "title": "/link, not linked",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Link this Discord account to Forever Sixty so sign-up buttons and commands know your characters.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Link Discord",
+              "url": "https://api.foreversixty.gg/v1/discord/link/start"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "link-linked",
+    "row": "D10",
+    "title": "/link, linked",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "This Discord account is linked to Forever Sixty. Unlink it on your account page.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Account page",
+              "url": "https://foreversixty.gg/account#you"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "help",
+    "row": "D10",
+    "title": "/help",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Forever Sixty commands",
+          "description": "**/raid** Your guild's next raid. Sign up from the answer.\n**/signup** Sign up for a raid without the post.\n**/char** A character: item level, readiness and the top 3 upgrades.\n**/bis** Best in slot for a class and spec.\n**/report** The last logged raid: kills and loot.\n**/attendance** Your attendance. Officers can name anyone.\n**/readiness** Officers: who is not ready for the next raid.\n**/link** Link this Discord account to Forever Sixty.\n**/help** This list.",
+          "footer": {
+            "text": "Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-already",
+    "row": "D3",
+    "title": "Press: already In",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Zulmara is already In as DPS for Onyxia's Lair, Thu 10 Dec.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-late",
+    "row": "D3",
+    "title": "Press: Late, with Add a note",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Zulmara is Late as DPS for Onyxia's Lair, Thu 10 Dec. Add a note for the officers on the raid page.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Add a note",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#signup"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-bench",
+    "row": "D3",
+    "title": "Press: Bench",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Zulmara is on the Bench for Onyxia's Lair, Thu 10 Dec.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-out",
+    "row": "D3",
+    "title": "Press: Out",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Zulmara is Out for Onyxia's Lair, Thu 10 Dec.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-moved",
+    "row": "D3",
+    "title": "Press: In on the other character, the R3 move",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Duskstrider is In as DPS for Onyxia's Lair, Thu 10 Dec. Your other character Zulmara moved to Bench.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "signup",
+    "row": "D4",
+    "title": "/signup status:Late character:Zulmara",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Zulmara is Late as DPS for Onyxia's Lair, Thu 10 Dec. Add a note for the officers on the raid page.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Add a note",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#signup"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-failure",
+    "row": "D3",
+    "title": "Press: the save failed",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "That did not save. Try again.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "press-rate-limit",
+    "row": "D3",
+    "title": "Press: rate limit",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Too many sign-up changes. Wait a minute, then try again.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "post-locked",
+    "row": "D1",
+    "title": "Raid post: locked",
+    "surface": "channel",
+    "clock": "2026-12-11T01:30:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Onyxia's Lair · Thursday 10 December",
+          "description": "Sign-ups are locked. An officer can still change yours.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Guild time",
+              "value": "8:00 pm CST",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-11T01:30:00Z",
+          "color": 10130564
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 3,
+              "label": "In",
+              "custom_id": "raid:1:in",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Late",
+              "custom_id": "raid:1:late",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Bench",
+              "custom_id": "raid:1:bench",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Out",
+              "custom_id": "raid:1:out",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Raid page",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      },
+      "nonce": "r1.mvr12ysk",
+      "enforce_nonce": true
+    }
+  },
+  {
+    "id": "press-locked",
+    "row": "D3",
+    "title": "Press: locked",
+    "surface": "ephemeral",
+    "clock": "2026-12-11T01:30:00Z",
+    "message": {
+      "content": "Sign-ups are locked. An officer can still change yours.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "post-moved",
+    "row": "D1",
+    "title": "Raid post: moved to Friday",
+    "surface": "channel",
+    "clock": "2026-12-09T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Moved: Onyxia's Lair · Friday 11 December",
+          "description": "Sign-ups carry over. Check you can still make it.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1797040800:F\u003e (\u003ct:1797040800:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Was",
+              "value": "\u003ct:1796954400:F\u003e",
+              "inline": true
+            },
+            {
+              "name": "Guild time",
+              "value": "8:00 pm CST",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-09T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 3,
+              "label": "In",
+              "custom_id": "raid:1:in"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Late",
+              "custom_id": "raid:1:late"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Bench",
+              "custom_id": "raid:1:bench"
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Out",
+              "custom_id": "raid:1:out"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Raid page",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      },
+      "nonce": "r1.mvr12yst",
+      "enforce_nonce": true
+    }
+  },
+  {
+    "id": "post-cancelled",
+    "row": "D1",
+    "title": "Raid post: cancelled",
+    "surface": "channel",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Cancelled: Onyxia's Lair · Thursday 10 December",
+          "description": "This raid was cancelled.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "~~\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)~~",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15758187
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Raid page",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      },
+      "nonce": "r1.mvr12yt3",
+      "enforce_nonce": true
+    }
+  },
+  {
+    "id": "press-cancelled",
+    "row": "D3",
+    "title": "Press: cancelled",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "This raid was cancelled.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "post-ended",
+    "row": "D1",
+    "title": "Raid post: ended, no log yet",
+    "surface": "channel",
+    "clock": "2026-12-11T05:30:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Onyxia's Lair · Thursday 10 December",
+          "description": "This raid has ended.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Guild time",
+              "value": "8:00 pm CST",
+              "inline": true
+            },
+            {
+              "name": "Signed up",
+              "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-11T05:30:00Z",
+          "color": 10130564
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 3,
+              "label": "In",
+              "custom_id": "raid:1:in",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Late",
+              "custom_id": "raid:1:late",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Bench",
+              "custom_id": "raid:1:bench",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Out",
+              "custom_id": "raid:1:out",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Raid page",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      },
+      "nonce": "r1.mvr12ytd",
+      "enforce_nonce": true
+    }
+  },
+  {
+    "id": "press-ended",
+    "row": "D3",
+    "title": "Press: ended",
+    "surface": "ephemeral",
+    "clock": "2026-12-11T05:30:00Z",
+    "message": {
+      "content": "This raid has ended.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "post-done",
+    "row": "D1",
+    "title": "Raid post: done",
+    "surface": "channel",
+    "clock": "2026-12-11T15:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Done: Onyxia's Lair · Thursday 10 December",
+          "description": "Logged as a raid night.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
+          "fields": [
+            {
+              "name": "When",
+              "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+              "inline": true
+            },
+            {
+              "name": "Came",
+              "value": "30 of 33",
+              "inline": true
+            },
+            {
+              "name": "Kills",
+              "value": "Onyxia 4:12"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-11T15:00:00Z",
+          "color": 8377482
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open the night",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      },
+      "nonce": "r1.mvr12ytm",
+      "enforce_nonce": true
+    }
+  },
+  {
+    "id": "report-member",
+    "row": "D7",
+    "title": "/report, a member",
+    "surface": "ephemeral",
+    "clock": "2026-12-11T15:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Report: Onyxia's Lair · Thursday 10 December",
+          "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "fields": [
+            {
+              "name": "Kill order",
+              "value": "1. Onyxia 4:12 after 2 wipes"
+            },
+            {
+              "name": "Loot",
+              "value": "4 items:"
+            }
+          ],
+          "color": 8377482
+        },
+        {
+          "title": "Dragonstalker's Helm",
+          "description": "Epic · item level 76\nto Zulmara · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_helmet_05.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Sapphiron Drape",
+          "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_16.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Ring of Binding",
+          "description": "Epic · item level 73\nto Kraggor · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_13.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Eskhandar's Collar",
+          "description": "Epic · item level 71\nto Hollowmere · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_belt_12.webp"
+          },
+          "timestamp": "2026-12-11T15:00:00Z",
+          "color": 10696174
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Share in channel",
+              "custom_id": "share:crebcW8zV8hrNdIA-rKOv5Hml2JYZ45bcpqpRN0nV8M"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open the report",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "report-officer",
+    "row": "D7",
+    "title": "/report, an officer",
+    "surface": "ephemeral",
+    "clock": "2026-12-11T15:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Report: Onyxia's Lair · Thursday 10 December",
+          "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "fields": [
+            {
+              "name": "Kill order",
+              "value": "1. Onyxia 4:12 after 2 wipes"
+            },
+            {
+              "name": "Most deaths",
+              "value": "Pyrewisp 3 · Windtalon 2 · Vexlash 2"
+            },
+            {
+              "name": "Consumables",
+              "value": "3 short before the raid · 2 with no flask in the log"
+            },
+            {
+              "name": "Loot",
+              "value": "4 items:"
+            }
+          ],
+          "color": 8377482
+        },
+        {
+          "title": "Dragonstalker's Helm",
+          "description": "Epic · item level 76\nto Zulmara · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_helmet_05.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Sapphiron Drape",
+          "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_16.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Ring of Binding",
+          "description": "Epic · item level 73\nto Kraggor · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_13.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Eskhandar's Collar",
+          "description": "Epic · item level 71\nto Hollowmere · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_belt_12.webp"
+          },
+          "timestamp": "2026-12-11T15:00:00Z",
+          "color": 10696174
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Share in channel",
+              "custom_id": "share:0UDKnK03n9W-FKNt_QnvGvB-6gB8rI40jgYZgkTJe5M"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open the report",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "report-shared",
+    "row": "D7",
+    "title": "/report shared in the channel",
+    "surface": "channel",
+    "clock": "2026-12-11T15:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Report: Onyxia's Lair · Thursday 10 December",
+          "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
+          "url": "https://foreversixty.gg/reports/Kq7mD2xLpR9vTb4c",
+          "fields": [
+            {
+              "name": "Kill order",
+              "value": "1. Onyxia 4:12 after 2 wipes"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-11T15:00:00Z",
+          "color": 8377482
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open the report",
+              "url": "https://foreversixty.gg/reports/Kq7mD2xLpR9vTb4c"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "report-after-share",
+    "row": "D7",
+    "title": "/report ephemeral after sharing",
+    "surface": "ephemeral",
+    "clock": "2026-12-11T15:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Report: Onyxia's Lair · Thursday 10 December",
+          "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "fields": [
+            {
+              "name": "Kill order",
+              "value": "1. Onyxia 4:12 after 2 wipes"
+            },
+            {
+              "name": "Most deaths",
+              "value": "Pyrewisp 3 · Windtalon 2 · Vexlash 2"
+            },
+            {
+              "name": "Consumables",
+              "value": "3 short before the raid · 2 with no flask in the log"
+            },
+            {
+              "name": "Loot",
+              "value": "4 items:"
+            }
+          ],
+          "color": 8377482
+        },
+        {
+          "title": "Dragonstalker's Helm",
+          "description": "Epic · item level 76\nto Zulmara · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_helmet_05.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Sapphiron Drape",
+          "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_16.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Ring of Binding",
+          "description": "Epic · item level 73\nto Kraggor · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_13.webp"
+          },
+          "color": 10696174
+        },
+        {
+          "title": "Eskhandar's Collar",
+          "description": "Epic · item level 71\nto Hollowmere · Onyxia",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "thumbnail": {
+            "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_belt_12.webp"
+          },
+          "timestamp": "2026-12-11T15:00:00Z",
+          "color": 10696174
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 2,
+              "label": "Shared",
+              "custom_id": "share:0UDKnK03n9W-FKNt_QnvGvB-6gB8rI40jgYZgkTJe5M",
+              "disabled": true
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open the report",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "attendance-own",
+    "row": "D8",
+    "title": "/attendance, own (two characters)",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Zulmara · attendance",
+          "description": "Came 7 of 8 · 26 of 30 raids",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster",
+          "fields": [
+            {
+              "name": "Last 5 raids",
+              "value": "Thu 3 Dec Present\nThu 26 Nov Late, excused\nThu 19 Nov Present\nThu 12 Nov Not in the log\nThu 5 Nov Present"
+            }
+          ],
+          "color": 11195250
+        },
+        {
+          "title": "Duskstrider · attendance",
+          "description": "Came 2 of 2 raids",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster",
+          "fields": [
+            {
+              "name": "Last 5 raids",
+              "value": "Thu 29 Oct Present\nThu 22 Oct Present"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 16774248
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Roster",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "attendance-officer",
+    "row": "D8",
+    "title": "/attendance name:Zulmara, an officer",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Zulmara · attendance",
+          "description": "Came 7 of 8 · 26 of 30 raids",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster",
+          "fields": [
+            {
+              "name": "Last 5 raids",
+              "value": "Thu 3 Dec Present\nThu 26 Nov Late, excused\nThu 19 Nov Present\nThu 12 Nov Not in the log\nThu 5 Nov Present"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 11195250
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Roster",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "attendance-refusal",
+    "row": "D8",
+    "title": "/attendance name:Kraggor, a member",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Only officers can look up another member's attendance.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "readiness-officer",
+    "row": "D9",
+    "title": "/readiness, an officer",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Readiness · Onyxia's Lair · Thursday 10 December",
+          "description": "33 signed In or Late. 4 have something to fix.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness",
+          "fields": [
+            {
+              "name": "To fix, most checks first",
+              "value": "Pyrewisp · Short · Synced 9 days before the raid\nWindtalon · 2 upgrades · +15 DPS · No enchant: Chest, Boots\nKraggor · 3 unspent talent points\nVexlash · No export yet"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Readiness board",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "readiness-member",
+    "row": "D9",
+    "title": "/readiness, a member",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Readiness is for officers of Olympus XXVII.",
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "readiness-unlinked",
+    "row": "D9",
+    "title": "/readiness, not linked",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Readiness is for officers of Olympus XXVII. Link your Discord account if you are one.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Link Discord",
+              "url": "https://api.foreversixty.gg/v1/discord/link/start"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "readiness-lapsed",
+    "row": "D9",
+    "title": "/readiness, plan lapsed",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "Planning and running raids are part of the guild plan. An officer can subscribe the guild.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Subscribe the guild",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/settings#billing"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "readiness-guild-tier",
+    "row": "D9",
+    "title": "/readiness, Guild tier",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "content": "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Move to Raid guild",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/settings#billing"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "readiness-nobody",
+    "row": "D9",
+    "title": "/readiness, nobody signed In or Late",
+    "surface": "ephemeral",
+    "clock": "2026-12-10T22:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Readiness · Onyxia's Lair · Thursday 10 December",
+          "description": "No one has signed In or Late yet.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness",
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-10T22:00:00Z",
+          "color": 15055189
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Readiness board",
+              "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness"
+            }
+          ]
+        }
+      ],
+      "flags": 64,
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
   }
- },
- {
-  "id": "press-in",
-  "row": "D3",
-  "title": "Press: In (from the select)",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Zulmara is In as DPS for Onyxia's Lair, Thu 10 Dec. 33 of 40 signed up.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "post-open",
-  "row": "D1",
-  "title": "Raid post: open",
-  "surface": "channel",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Onyxia's Lair · Thursday 10 December",
-     "description": "Sign up with the buttons below.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Guild time",
-       "value": "8:00 pm CST",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 3,
-       "label": "In",
-       "custom_id": "raid:1:in"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Late",
-       "custom_id": "raid:1:late"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Bench",
-       "custom_id": "raid:1:bench"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Out",
-       "custom_id": "raid:1:out"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Raid page",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   },
-   "nonce": "r1.mvr12yj5",
-   "enforce_nonce": true
-  }
- },
- {
-  "id": "post-webhook",
-  "row": "D1",
-  "title": "Raid post through a webhook (no buttons, never edited)",
-  "surface": "channel",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Onyxia's Lair · Thursday 10 December",
-     "description": "Sign up on Forever Sixty.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Guild time",
-       "value": "8:00 pm CST",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "raid",
-  "row": "D4",
-  "title": "/raid",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Onyxia's Lair · Thursday 10 December",
-     "description": "Zulmara is In as DPS.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Guild time",
-       "value": "8:00 pm CST",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 3,
-       "label": "In",
-       "custom_id": "raid:1:in"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Late",
-       "custom_id": "raid:1:late"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Bench",
-       "custom_id": "raid:1:bench"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Out",
-       "custom_id": "raid:1:out"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Raid page",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "raid-unlinked",
-  "row": "D4",
-  "title": "/raid, not linked",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Link your Discord account to see your guild's next raid.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Link Discord",
-       "url": "https://api.foreversixty.gg/v1/discord/link/start"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "char-upgrades",
-  "row": "D5",
-  "title": "/char with upgrades (a member's view)",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Zulmara",
-     "description": "Level 60 Beast Mastery Hunter · Olympus XXVII",
-     "url": "https://foreversixty.gg/character/us/normal/zulmara",
-     "fields": [
-      {
-       "name": "Item level",
-       "value": "63.5",
-       "inline": true
-      },
-      {
-       "name": "Readiness",
-       "value": "Stocked",
-       "inline": true
-      },
-      {
-       "name": "Synced",
-       "value": "\u003ct:1796760000:R\u003e",
-       "inline": true
-      },
-      {
-       "name": "Top 3 upgrades · level 60 Phase 1 raid",
-       "value": "By DPS gained, against the guide build."
-      }
-     ],
-     "thumbnail": {
-      "url": "https://foreversixty.gg/icons/hd/crests/hunter.webp"
-     },
-     "color": 11195250
-    },
-    {
-     "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
-     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-legs",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
-     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-chest",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
-     "url": "https://foreversixty.gg/character/us/normal/zulmara#gear-slot-finger1",
-     "footer": {
-      "text": "Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 10696174
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Share in channel",
-       "custom_id": "share:7zv8CA4ygQyO88pSJBy7-yvp66h0Wiv9kd8tYrEHqiw"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Character page",
-       "url": "https://foreversixty.gg/character/us/normal/zulmara"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "char-no-gear",
-  "row": "D5",
-  "title": "/char with no gear shared",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Duskstrider",
-     "description": "Level 60 Combat Rogue · Olympus XXVII",
-     "url": "https://foreversixty.gg/character/us/normal/duskstrider",
-     "fields": [
-      {
-       "name": "Readiness",
-       "value": "Not shared",
-       "inline": true
-      },
-      {
-       "name": "Top 3 upgrades",
-       "value": "No gear shared yet. Upgrades show once the character is synced."
-      }
-     ],
-     "footer": {
-      "text": "Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/icons/hd/crests/rogue.webp"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 16774248
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Share in channel",
-       "custom_id": "share:mDAm6E8KKW7GA2quGDlKGi7ynoq2AiX--lN25MSvDvA"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Character page",
-       "url": "https://foreversixty.gg/character/us/normal/duskstrider"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "char-unknown",
-  "row": "D5",
-  "title": "/char unknown",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "No public character by that name.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "bis-slot",
-  "row": "D6",
-  "title": "/bis slot:Ring 1 (defaults from the main)",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Ring 1 for a Beast Mastery Hunter, level 60 Phase 1 raid:",
-   "embeds": [
-    {
-     "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\nVendor: Anachronos",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "author": {
-      "name": "Best in slot"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Don Julio's Band",
-     "description": "Ring 1 · Epic · item level 60\n−5.0 DPS · Frostwolf Clan (exalted)",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_35.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Masons Fraternity Ring",
-     "description": "Ring 1 · Rare · item level 49\n−8.2 DPS · Quest: Divino-matic Rod · Level 47",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "footer": {
-      "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_03.webp"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 28893
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Share in channel",
-       "custom_id": "share:uae82N52hk4r_tCwOivCeVMj6ND5-GZFoCZXOzruQHE"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Open on Forever Sixty",
-       "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "bis-top",
-  "row": "D6",
-  "title": "/bis without a slot",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
-   "embeds": [
-    {
-     "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Cape of the Black Baron",
-     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
-     },
-     "color": 28893
-    },
-    {
-     "title": "Cutthroat's Signet",
-     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "footer": {
-      "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_01.webp"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 28893
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Share in channel",
-       "custom_id": "share:kXqBdmm4-aERjpr2qtio1kM-KyImdikzQBjF2KwVero"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "All 17 slots",
-       "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "bis-shared",
-  "row": "D6",
-  "title": "/bis shared in the channel",
-  "surface": "channel",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
-   "embeds": [
-    {
-     "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Cape of the Black Baron",
-     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
-     },
-     "color": 28893
-    },
-    {
-     "title": "Cutthroat's Signet",
-     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "footer": {
-      "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_01.webp"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 28893
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "All 17 slots",
-       "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "bis-after-share",
-  "row": "D6",
-  "title": "/bis ephemeral after sharing",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Beast Mastery Hunter, level 60 Phase 1 raid. The five slots where the best item gains the most over the next best:",
-   "embeds": [
-    {
-     "title": "Sentinel's Chain Leggings",
-     "description": "Legs · Epic · item level 78\n+7.4 DPS · Vendor: Illiyana Moonblaze",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_pants_03.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Dawn Armor",
-     "description": "Chest · Epic · item level 61\n+5.4 DPS · Crafted: Leatherworking",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_chest_leather_08.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Signet Ring of the Bronze Dragonflight",
-     "description": "Ring 1 · Epic · item level 80\n+5.0 DPS · Vendor: Anachronos",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_40.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Cape of the Black Baron",
-     "description": "Back · Rare · item level 63\n+0.9 DPS · Stratholme · Baron Rivendare",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_20.webp"
-     },
-     "color": 28893
-    },
-    {
-     "title": "Cutthroat's Signet",
-     "description": "Ring 2 · Rare · item level 65\n+0.9 DPS · Vendor: Pix Xizzix",
-     "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60",
-     "footer": {
-      "text": "Beast Mastery Hunter · level 60 Phase 1 raid · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_01.webp"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 28893
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Shared",
-       "custom_id": "share:kXqBdmm4-aERjpr2qtio1kM-KyImdikzQBjF2KwVero",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "All 17 slots",
-       "url": "https://foreversixty.gg/bis/hunter/beast-mastery?faction=alliance\u0026preset=raid#band-alliance-60"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "link-unlinked",
-  "row": "D10",
-  "title": "/link, not linked",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Link this Discord account to Forever Sixty so sign-up buttons and commands know your characters.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Link Discord",
-       "url": "https://api.foreversixty.gg/v1/discord/link/start"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "link-linked",
-  "row": "D10",
-  "title": "/link, linked",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "This Discord account is linked to Forever Sixty. Unlink it on your account page.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Account page",
-       "url": "https://foreversixty.gg/account#you"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "help",
-  "row": "D10",
-  "title": "/help",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Forever Sixty commands",
-     "description": "**/raid** Your guild's next raid. Sign up from the answer.\n**/signup** Sign up for a raid without the post.\n**/char** A character: item level, readiness and the top 3 upgrades.\n**/bis** Best in slot for a class and spec.\n**/report** The last logged raid: kills and loot.\n**/attendance** Your attendance. Officers can name anyone.\n**/readiness** Officers: who is not ready for the next raid.\n**/link** Link this Discord account to Forever Sixty.\n**/help** This list.",
-     "footer": {
-      "text": "Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-already",
-  "row": "D3",
-  "title": "Press: already In",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Zulmara is already In as DPS for Onyxia's Lair, Thu 10 Dec.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-late",
-  "row": "D3",
-  "title": "Press: Late, with Add a note",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Zulmara is Late as DPS for Onyxia's Lair, Thu 10 Dec. Add a note for the officers on the raid page.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Add a note",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#signup"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-bench",
-  "row": "D3",
-  "title": "Press: Bench",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Zulmara is on the Bench for Onyxia's Lair, Thu 10 Dec.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-out",
-  "row": "D3",
-  "title": "Press: Out",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Zulmara is Out for Onyxia's Lair, Thu 10 Dec.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-moved",
-  "row": "D3",
-  "title": "Press: In on the other character, the R3 move",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Duskstrider is In as DPS for Onyxia's Lair, Thu 10 Dec. Your other character Zulmara moved to Bench.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "signup",
-  "row": "D4",
-  "title": "/signup status:Late character:Zulmara",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Zulmara is Late as DPS for Onyxia's Lair, Thu 10 Dec. Add a note for the officers on the raid page.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Add a note",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#signup"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-failure",
-  "row": "D3",
-  "title": "Press: the save failed",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "That did not save. Try again.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "press-rate-limit",
-  "row": "D3",
-  "title": "Press: rate limit",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Too many sign-up changes. Wait a minute, then try again.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "post-locked",
-  "row": "D1",
-  "title": "Raid post: locked",
-  "surface": "channel",
-  "clock": "2026-12-11T01:30:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Onyxia's Lair · Thursday 10 December",
-     "description": "Sign-ups are locked. An officer can still change yours.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Guild time",
-       "value": "8:00 pm CST",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-11T01:30:00Z",
-     "color": 10130564
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 3,
-       "label": "In",
-       "custom_id": "raid:1:in",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Late",
-       "custom_id": "raid:1:late",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Bench",
-       "custom_id": "raid:1:bench",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Out",
-       "custom_id": "raid:1:out",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Raid page",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   },
-   "nonce": "r1.mvr12ysk",
-   "enforce_nonce": true
-  }
- },
- {
-  "id": "press-locked",
-  "row": "D3",
-  "title": "Press: locked",
-  "surface": "ephemeral",
-  "clock": "2026-12-11T01:30:00Z",
-  "message": {
-   "content": "Sign-ups are locked. An officer can still change yours.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "post-moved",
-  "row": "D1",
-  "title": "Raid post: moved to Friday",
-  "surface": "channel",
-  "clock": "2026-12-09T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Moved: Onyxia's Lair · Friday 11 December",
-     "description": "Sign-ups carry over. Check you can still make it.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1797040800:F\u003e (\u003ct:1797040800:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Was",
-       "value": "\u003ct:1796954400:F\u003e",
-       "inline": true
-      },
-      {
-       "name": "Guild time",
-       "value": "8:00 pm CST",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-09T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 3,
-       "label": "In",
-       "custom_id": "raid:1:in"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Late",
-       "custom_id": "raid:1:late"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Bench",
-       "custom_id": "raid:1:bench"
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Out",
-       "custom_id": "raid:1:out"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Raid page",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   },
-   "nonce": "r1.mvr12yst",
-   "enforce_nonce": true
-  }
- },
- {
-  "id": "post-cancelled",
-  "row": "D1",
-  "title": "Raid post: cancelled",
-  "surface": "channel",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Cancelled: Onyxia's Lair · Thursday 10 December",
-     "description": "This raid was cancelled.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "~~\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)~~",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15758187
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Raid page",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   },
-   "nonce": "r1.mvr12yt3",
-   "enforce_nonce": true
-  }
- },
- {
-  "id": "press-cancelled",
-  "row": "D3",
-  "title": "Press: cancelled",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "This raid was cancelled.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "post-ended",
-  "row": "D1",
-  "title": "Raid post: ended, no log yet",
-  "surface": "channel",
-  "clock": "2026-12-11T05:30:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Onyxia's Lair · Thursday 10 December",
-     "description": "This raid has ended.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Guild time",
-       "value": "8:00 pm CST",
-       "inline": true
-      },
-      {
-       "name": "Signed up",
-       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-11T05:30:00Z",
-     "color": 10130564
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 3,
-       "label": "In",
-       "custom_id": "raid:1:in",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Late",
-       "custom_id": "raid:1:late",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Bench",
-       "custom_id": "raid:1:bench",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Out",
-       "custom_id": "raid:1:out",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Raid page",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   },
-   "nonce": "r1.mvr12ytd",
-   "enforce_nonce": true
-  }
- },
- {
-  "id": "press-ended",
-  "row": "D3",
-  "title": "Press: ended",
-  "surface": "ephemeral",
-  "clock": "2026-12-11T05:30:00Z",
-  "message": {
-   "content": "This raid has ended.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "post-done",
-  "row": "D1",
-  "title": "Raid post: done",
-  "surface": "channel",
-  "clock": "2026-12-11T15:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Done: Onyxia's Lair · Thursday 10 December",
-     "description": "Logged as a raid night.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1",
-     "fields": [
-      {
-       "name": "When",
-       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
-       "inline": true
-      },
-      {
-       "name": "Came",
-       "value": "30 of 33",
-       "inline": true
-      },
-      {
-       "name": "Kills",
-       "value": "Onyxia 4:12"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-11T15:00:00Z",
-     "color": 8377482
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Open the night",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   },
-   "nonce": "r1.mvr12ytm",
-   "enforce_nonce": true
-  }
- },
- {
-  "id": "report-member",
-  "row": "D7",
-  "title": "/report, a member",
-  "surface": "ephemeral",
-  "clock": "2026-12-11T15:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Report: Onyxia's Lair · Thursday 10 December",
-     "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "fields": [
-      {
-       "name": "Kill order",
-       "value": "1. Onyxia 4:12 after 2 wipes"
-      },
-      {
-       "name": "Loot",
-       "value": "4 items:"
-      }
-     ],
-     "color": 8377482
-    },
-    {
-     "title": "Dragonstalker's Helm",
-     "description": "Epic · item level 76\nto Zulmara · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_helmet_05.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Sapphiron Drape",
-     "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_16.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Ring of Binding",
-     "description": "Epic · item level 73\nto Kraggor · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_13.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Eskhandar's Collar",
-     "description": "Epic · item level 71\nto Hollowmere · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_belt_12.webp"
-     },
-     "timestamp": "2026-12-11T15:00:00Z",
-     "color": 10696174
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Share in channel",
-       "custom_id": "share:crebcW8zV8hrNdIA-rKOv5Hml2JYZ45bcpqpRN0nV8M"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Open the report",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "report-officer",
-  "row": "D7",
-  "title": "/report, an officer",
-  "surface": "ephemeral",
-  "clock": "2026-12-11T15:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Report: Onyxia's Lair · Thursday 10 December",
-     "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "fields": [
-      {
-       "name": "Kill order",
-       "value": "1. Onyxia 4:12 after 2 wipes"
-      },
-      {
-       "name": "Most deaths",
-       "value": "Pyrewisp 3 · Windtalon 2 · Vexlash 2"
-      },
-      {
-       "name": "Consumables",
-       "value": "3 short before the raid · 2 with no flask in the log"
-      },
-      {
-       "name": "Loot",
-       "value": "4 items:"
-      }
-     ],
-     "color": 8377482
-    },
-    {
-     "title": "Dragonstalker's Helm",
-     "description": "Epic · item level 76\nto Zulmara · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_helmet_05.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Sapphiron Drape",
-     "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_16.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Ring of Binding",
-     "description": "Epic · item level 73\nto Kraggor · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_13.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Eskhandar's Collar",
-     "description": "Epic · item level 71\nto Hollowmere · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_belt_12.webp"
-     },
-     "timestamp": "2026-12-11T15:00:00Z",
-     "color": 10696174
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Share in channel",
-       "custom_id": "share:0UDKnK03n9W-FKNt_QnvGvB-6gB8rI40jgYZgkTJe5M"
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Open the report",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "report-shared",
-  "row": "D7",
-  "title": "/report shared in the channel",
-  "surface": "channel",
-  "clock": "2026-12-11T15:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Report: Onyxia's Lair · Thursday 10 December",
-     "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
-     "url": "https://foreversixty.gg/reports/Kq7mD2xLpR9vTb4c",
-     "fields": [
-      {
-       "name": "Kill order",
-       "value": "1. Onyxia 4:12 after 2 wipes"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-11T15:00:00Z",
-     "color": 8377482
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Open the report",
-       "url": "https://foreversixty.gg/reports/Kq7mD2xLpR9vTb4c"
-      }
-     ]
-    }
-   ],
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "report-after-share",
-  "row": "D7",
-  "title": "/report ephemeral after sharing",
-  "surface": "ephemeral",
-  "clock": "2026-12-11T15:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Report: Onyxia's Lair · Thursday 10 December",
-     "description": "30 of 33 came · 1 kill · 2 wipes · 11 deaths · 52 min",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "fields": [
-      {
-       "name": "Kill order",
-       "value": "1. Onyxia 4:12 after 2 wipes"
-      },
-      {
-       "name": "Most deaths",
-       "value": "Pyrewisp 3 · Windtalon 2 · Vexlash 2"
-      },
-      {
-       "name": "Consumables",
-       "value": "3 short before the raid · 2 with no flask in the log"
-      },
-      {
-       "name": "Loot",
-       "value": "4 items:"
-      }
-     ],
-     "color": 8377482
-    },
-    {
-     "title": "Dragonstalker's Helm",
-     "description": "Epic · item level 76\nto Zulmara · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_helmet_05.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Sapphiron Drape",
-     "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_misc_cape_16.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Ring of Binding",
-     "description": "Epic · item level 73\nto Kraggor · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_jewelry_ring_13.webp"
-     },
-     "color": 10696174
-    },
-    {
-     "title": "Eskhandar's Collar",
-     "description": "Epic · item level 71\nto Hollowmere · Onyxia",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report",
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "thumbnail": {
-      "url": "https://foreversixty.gg/data/1.60.1.70630/icons/inv_belt_12.webp"
-     },
-     "timestamp": "2026-12-11T15:00:00Z",
-     "color": 10696174
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 2,
-       "label": "Shared",
-       "custom_id": "share:0UDKnK03n9W-FKNt_QnvGvB-6gB8rI40jgYZgkTJe5M",
-       "disabled": true
-      },
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Open the report",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/1#report"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "attendance-own",
-  "row": "D8",
-  "title": "/attendance, own (two characters)",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Zulmara · attendance",
-     "description": "Came 7 of 8 · 26 of 30 raids",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster",
-     "fields": [
-      {
-       "name": "Last 5 raids",
-       "value": "Thu 3 Dec Present\nThu 26 Nov Late, excused\nThu 19 Nov Present\nThu 12 Nov Not in the log\nThu 5 Nov Present"
-      }
-     ],
-     "color": 11195250
-    },
-    {
-     "title": "Duskstrider · attendance",
-     "description": "Came 2 of 2 raids",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster",
-     "fields": [
-      {
-       "name": "Last 5 raids",
-       "value": "Thu 29 Oct Present\nThu 22 Oct Present"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 16774248
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Roster",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "attendance-officer",
-  "row": "D8",
-  "title": "/attendance name:Zulmara, an officer",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Zulmara · attendance",
-     "description": "Came 7 of 8 · 26 of 30 raids",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster",
-     "fields": [
-      {
-       "name": "Last 5 raids",
-       "value": "Thu 3 Dec Present\nThu 26 Nov Late, excused\nThu 19 Nov Present\nThu 12 Nov Not in the log\nThu 5 Nov Present"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 11195250
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Roster",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/roster"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "attendance-refusal",
-  "row": "D8",
-  "title": "/attendance name:Kraggor, a member",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Only officers can look up another member's attendance.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "readiness-officer",
-  "row": "D9",
-  "title": "/readiness, an officer",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Readiness · Onyxia's Lair · Thursday 10 December",
-     "description": "33 signed In or Late. 4 have something to fix.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness",
-     "fields": [
-      {
-       "name": "To fix, most checks first",
-       "value": "Pyrewisp · Short · Synced 9 days before the raid\nWindtalon · 2 upgrades · +15 DPS · No enchant: Chest, Boots\nKraggor · 3 unspent talent points\nVexlash · No export yet"
-      }
-     ],
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Readiness board",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "readiness-member",
-  "row": "D9",
-  "title": "/readiness, a member",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Readiness is for officers of Olympus XXVII.",
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "readiness-unlinked",
-  "row": "D9",
-  "title": "/readiness, not linked",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Readiness is for officers of Olympus XXVII. Link your Discord account if you are one.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Link Discord",
-       "url": "https://api.foreversixty.gg/v1/discord/link/start"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "readiness-lapsed",
-  "row": "D9",
-  "title": "/readiness, plan lapsed",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "Planning and running raids are part of the guild plan. An officer can subscribe the guild.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Subscribe the guild",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/settings#billing"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "readiness-guild-tier",
-  "row": "D9",
-  "title": "/readiness, Guild tier",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "content": "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Move to Raid guild",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/settings#billing"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- },
- {
-  "id": "readiness-nobody",
-  "row": "D9",
-  "title": "/readiness, nobody signed In or Late",
-  "surface": "ephemeral",
-  "clock": "2026-12-10T22:00:00Z",
-  "message": {
-   "embeds": [
-    {
-     "title": "Readiness · Onyxia's Lair · Thursday 10 December",
-     "description": "No one has signed In or Late yet.",
-     "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness",
-     "footer": {
-      "text": "Olympus XXVII · Forever Sixty"
-     },
-     "timestamp": "2026-12-10T22:00:00Z",
-     "color": 15055189
-    }
-   ],
-   "components": [
-    {
-     "type": 1,
-     "components": [
-      {
-       "type": 2,
-       "style": 5,
-       "label": "Readiness board",
-       "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/readiness"
-      }
-     ]
-    }
-   ],
-   "flags": 64,
-   "allowed_mentions": {
-    "parse": []
-   }
-  }
- }
 ]
