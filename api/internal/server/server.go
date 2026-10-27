@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
+	"github.com/jhunthrop/foreversixty/api/internal/seats"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
@@ -56,6 +57,8 @@ type Deps struct {
 	Notify   *notify.Service
 	Rating   *rating.Service
 	Billing  *billing.Service
+	// Seats serves the Premium seat routes; nil leaves them unmounted.
+	Seats *seats.Service
 	// DiscordBot serves the signed interactions endpoint; nil leaves it unmounted.
 	DiscordBot *discordbot.Service
 
@@ -121,6 +124,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Billing != nil {
 		billing.Mount(mux, d.Billing, d.TrustedProxyHops)
+	}
+	if d.Seats != nil {
+		seats.Mount(mux, d.Seats, d.TrustedProxyHops)
 	}
 	if d.DiscordBot != nil {
 		discordbot.Mount(mux, d.DiscordBot, d.TrustedProxyHops)
