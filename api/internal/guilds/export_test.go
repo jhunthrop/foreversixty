@@ -106,9 +106,10 @@ func TestExportLoot_RowsResolveNames(t *testing.T) {
 		values ($1, 1084, 16963, 'us/hardcore/zed', $2, '2026-10-20 21:00+00', $3)`, f.gid, f.officer, raid); err != nil {
 		t.Fatal(err)
 	}
+	seedExport(t, f.h.pool, f.officer, "us/hardcore/zed", "us", "hardcore", "Zed")
 	rows := f.rows("loot")
 	if len(rows) != 2 || rows[1][0] != "2026-10-20" || rows[1][1] != "Onyxia night" ||
-		rows[1][2] != encounterName || rows[1][3] != "16963" || rows[1][4] != "Helm of Wrath" || rows[1][5] != "us/hardcore/zed" {
+		rows[1][2] != encounterName || rows[1][3] != "16963" || rows[1][4] != "Helm of Wrath" || rows[1][5] != "Zed" {
 		t.Fatalf("rows = %v", rows)
 	}
 }
@@ -157,5 +158,61 @@ func TestExport_FilenameSlug(t *testing.T) {
 	}
 	if got := res.Header.Get("Content-Type"); got != "text/csv; charset=utf-8" {
 		t.Fatalf("Content-Type = %q", got)
+	}
+}
+
+func TestExport_ControlCharacterCellsEscaped(t *testing.T) {
+	for _, lead := range []string{"\t", "\r"} {
+		f := newExportFixture(t, "Export Control")
+		raid := f.seedRaid("Onyxia night")
+		f.seedAttendance(raid, "us/hardcore/ctl", lead+"x", "mage", "present")
+		if got := f.rows("attendance")[1][2]; got != "'"+lead+"x" {
+			t.Fatalf("cell = %q, want apostrophe prefix", got)
+		}
+	}
+}
+
+func TestExport_SpecialCharactersRoundTrip(t *testing.T) {
+	f := newExportFixture(t, "Export Special")
+	raid := f.seedRaid("Night, \"one\"\nsecond line")
+	f.seedAttendance(raid, "us/hardcore/odd", "A,B \"C\"\nD", "mage", "present")
+	row := f.rows("attendance")[1]
+	if row[1] != "Night, \"one\"\nsecond line" || row[2] != "A,B \"C\"\nD" {
+		t.Fatalf("row = %q", row)
+	}
+}
+
+func TestExport_NonASCIINameFallsBackToGuildSlug(t *testing.T) {
+	f := newExportFixture(t, "Олимп")
+	res := f.get("loot")
+	res.Body.Close()
+	if got, want := res.Header.Get("Content-Disposition"), `attachment; filename="guild-loot.csv"`; got != want {
+		t.Fatalf("Content-Disposition = %q, want %q", got, want)
+	}
+}
+
+func TestExport_NonOfficersRefused(t *testing.T) {
+	f := newExportFixture(t, "Export Refused")
+	unverified := seedUser(t, f.h.pool, "export-unverified@example.com")
+	seedCharacter(t, f.h.pool, f.gid, unverified, "us/hardcore/unverifiedofficer", "officer", false)
+	stranger := seedUser(t, f.h.pool, "export-stranger@example.com")
+	for name, uid := range map[string]int64{"unverified officer": unverified, "visitor": stranger} {
+		f.h.actor = auth.Actor{UserID: uid, Role: "user", Method: "session"}
+		res := f.get("attendance")
+		res.Body.Close()
+		if res.StatusCode != http.StatusNotFound {
+			t.Fatalf("%s = %d, want 404", name, res.StatusCode)
+		}
+	}
+}
+
+func TestExport_ModeratorAllowed(t *testing.T) {
+	f := newExportFixture(t, "Export Moderator")
+	mod := seedUser(t, f.h.pool, "export-mod@example.com")
+	f.h.actor = auth.Actor{UserID: mod, Role: "moderator", Method: "session"}
+	res := f.get("loot")
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("moderator export = %d, want 200", res.StatusCode)
 	}
 }
