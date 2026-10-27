@@ -57,7 +57,9 @@ type APIError struct {
 	Status     int
 	Code       int
 	RetryAfter time.Duration
-	Message    string
+	// Global is a 429 from the bot's global limit rather than one route's bucket.
+	Global  bool
+	Message string
 }
 
 func (e *APIError) Error() string {
@@ -167,6 +169,7 @@ func answerError(res *http.Response) error {
 		Message    string  `json:"message"`
 		Code       int     `json:"code"`
 		RetryAfter float64 `json:"retry_after"`
+		Global     bool    `json:"global"`
 	}
 	_ = json.Unmarshal(raw, &body)
 	msg := body.Message
@@ -182,6 +185,7 @@ func answerError(res *http.Response) error {
 	}
 	return &APIError{
 		Status: res.StatusCode, Code: body.Code, Message: msg,
+		Global:     body.Global || res.Header.Get("X-RateLimit-Global") != "",
 		RetryAfter: time.Duration(retry * float64(time.Second)),
 	}
 }

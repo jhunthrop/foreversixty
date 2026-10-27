@@ -22,10 +22,16 @@ type FakeREST struct {
 	// MessageID is what CreateMessage returns (default "m1").
 	MessageID string
 	Layout    ServerLayout
-	calls     []RESTCall
+	// OnCall, when set, runs inside every call before it answers (a test acts while
+	// Discord is being called).
+	OnCall func(RESTCall)
+	calls  []RESTCall
 }
 
 func (f *FakeREST) record(c RESTCall) error {
+	if f.OnCall != nil {
+		f.OnCall(c)
+	}
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.calls = append(f.calls, c)
