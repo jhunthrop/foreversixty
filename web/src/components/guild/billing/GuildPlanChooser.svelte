@@ -5,7 +5,14 @@
 <script lang="ts">
   import { guildBillingCopy as copy } from '../../../lib/billing/guild-billing-copy';
   import type { GuildTier } from '../../../lib/billing/contract';
-  import { PLAN_ORDER, founderOpen, formatPrice, priceFor, type Interval } from '../../../lib/billing/plans';
+  import {
+    PLAN_ORDER,
+    founderOpen,
+    formatAmount,
+    intervalUnit,
+    priceFor,
+    type Interval,
+  } from '../../../lib/billing/plans';
   import { fitsTier } from '../../../lib/guild/billing-state';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import IntervalSegments from './IntervalSegments.svelte';
@@ -39,7 +46,7 @@
   });
 </script>
 
-<div class="flex flex-col gap-3" data-testid="guild-billing-chooser">
+<div class="flex max-w-[720px] flex-col gap-3" data-testid="guild-billing-chooser">
   <IntervalSegments value={interval} name="guild-billing-interval" onChange={(next) => (interval = next)} />
   <div role="radiogroup" aria-label="Plan" class="grid gap-3 md:grid-cols-2">
     {#each TIERS as key (key)}
@@ -56,11 +63,14 @@
           onchange={() => (picked = key)}
         />
         <span class="section-title text-[15px]">{copy.chooser.tierName(key)}</span>
-        <span class="font-mono text-[20px]">
-          {formatPrice(priceFor(key, interval, founder), interval)}
-          {#if founder}
-            <s class="text-muted text-[13px]">{formatPrice(priceFor(key, interval, false), interval)}</s>
-          {/if}
+        <!-- Only the figures are mono (spec 3.2.2); the unit is 13 px muted prose and only the list
+             figure is struck. -->
+        <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>
+          <span class="text-strong tabular font-mono text-[20px]"
+            >{formatAmount(priceFor(key, interval, founder))}</span
+          >{#if founder}&#32;<s class="font-mono">{formatAmount(priceFor(key, interval, false))}</s>{/if}<span
+            >{intervalUnit(interval)}</span
+          >
         </span>
         <span class="text-muted text-[13px]">{copy.chooser.tierLine(key)}</span>
       </label>

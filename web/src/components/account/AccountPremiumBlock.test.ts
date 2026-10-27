@@ -58,25 +58,25 @@ describe('AccountPremiumBlock', () => {
       props: { entitlements: mockEntitlements({ server_sims: true }), serverRunsThisMonth: count },
     }).body;
     expect(text(html)).toContain(expected);
-    expect(text(html)).not.toContain(count === undefined ? 'runs' : 'Browser lane only');
+    expect(text(html)).not.toContain(count === undefined ? 'runs' : 'In your browser');
   });
 
   it('keeps the free words when server sims are off, whatever count is sent', () => {
     const html = render(AccountPremiumBlock, {
       props: { entitlements: mockEntitlements(), serverRunsThisMonth: 4 },
     }).body;
-    expect(text(html)).toContain('Server sims Browser lane only');
+    expect(text(html)).toContain('Server sims In your browser');
   });
 
   it('shows the free values by default', () => {
     const body = text(renderBlock(mockEntitlements()));
-    expect(body).toContain('Server sims Browser lane only');
+    expect(body).toContain('Server sims In your browser');
     expect(body).toContain('Supporter mark Not shown');
   });
 
-  it('shows the Discord row as muted Off by default, never linked', () => {
+  it('shows the Discord row as muted Premium only by default, never linked', () => {
     const html = renderBlock(mockEntitlements({ server_sims: true, supporter_mark: true }), [CHARACTER]);
-    expect(text(html)).toContain('Discord notifications Off');
+    expect(text(html)).toContain('Discord notifications Premium only');
     expect(html).not.toContain('account-premium-notifications-link');
   });
 
@@ -142,7 +142,7 @@ describe('AccountPremiumBlock', () => {
   it('renders the free state for an older /v1/me with no entitlements at all', () => {
     const html = renderBlock(undefined);
     expect(html).toContain('data-testid="account-premium-block"');
-    expect(text(html)).toContain('Server sims Browser lane only');
+    expect(text(html)).toContain('Server sims In your browser');
     expect(text(html)).toContain('Supporter mark Not shown');
   });
 });
@@ -191,5 +191,17 @@ describe('AccountPremiumBlock plan headline', () => {
     const html = renderPlan({ ...PLAN, ended });
     expect(html).toContain('href="/premium/checkout?comeback=9"');
     expect(text(html)).toContain('Your seat ended 25 Nov. Come back at $6 a month');
+  });
+
+  it('an ended seat takes the plan line place: no Not on Premium, no See plans, a gold link', () => {
+    const ended = {
+      text: 'Your seat ended 18 Nov. ',
+      action: 'Come back',
+      href: '/premium/checkout?comeback=9',
+    };
+    const html = renderPlan({ ...PLAN, line: 'Not on Premium.', ended }, true);
+    expect(html).not.toContain('account-billing-row');
+    expect(html).not.toContain('href="/premium"');
+    expect(html).toMatch(/<a class="text-gold[^"]*" href="\/premium\/checkout\?comeback=9"/);
   });
 });

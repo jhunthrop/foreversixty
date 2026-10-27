@@ -26,23 +26,38 @@ describe('GuildSeatRow', () => {
     expect(body).not.toContain('aria-disabled="true"');
   });
 
-  it('Offered: Waiting pill, the payer line and Withdraw', () => {
-    const body = html(offeredSeat());
+  it('Offered: Waiting pill, the payer line and only Withdraw: no lock date, no Move seat', () => {
+    const body = html(offeredSeat(1));
     expect(text(body)).toContain('Waiting');
     expect(text(body)).toContain('They pay for Premium, so they accept it first.');
     expect(body).toContain('guild-seat-1-withdraw');
+    expect(body).not.toContain('guild-seat-1-move');
+    expect(text(body)).not.toContain('Can move');
   });
 
-  it('Pending: the holder, a Waiting pill, the offer wording, and Withdraw beside Move seat', () => {
+  it('Pending: line 1 the holder and Given date; the middle Moving to with Waiting; only Withdraw', () => {
     const body = html(pendingSeat(1, NOON));
-    expect(text(body)).toContain('Kraggor');
-    expect(text(body)).toContain('Mirelle');
-    expect(text(body)).toContain('Waiting');
-    expect(text(body)).toContain('Offered 10 Nov. They pay for Premium, so they accept it first.');
-    expect(body).toContain('guild-seat-1-move');
-    expect(body).toContain('aria-disabled="true"');
+    const name = /data-testid="guild-seat-1-name">([^<]*)</.exec(body)?.[1];
+    expect(name).toBe('Kraggor');
+    expect(text(body)).toContain('Given 2 Nov');
+    const note = /data-testid="guild-seat-1-note">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
+    expect(text(note)).toBe('Moving to Mirelle · offered 10 Nov Waiting');
+    expect(text(body)).not.toContain('Can move from');
+    expect(body).not.toContain('guild-seat-1-move');
     expect(body).toContain('guild-seat-1-withdraw');
     expect(body).not.toContain('guild-seat-1-give');
+  });
+
+  it('below 768 the row is two lines: who and the button share line 1, the middle spans line 2', () => {
+    const body = html(held());
+    expect(body).toMatch(/data-testid="guild-seat-1-grid"/);
+    expect(body).toContain('grid-cols-[minmax(0,1fr)_auto]');
+    expect(body).toContain('col-span-full row-start-2');
+    expect(body).toContain('col-start-2 row-start-1');
+  });
+
+  it('an opener draws closed until its picker opens', () => {
+    expect(html(emptySeat(2))).toContain('aria-expanded="false"');
   });
 
   it('Pending on an empty seat: the offeree stands in, with Withdraw only', () => {

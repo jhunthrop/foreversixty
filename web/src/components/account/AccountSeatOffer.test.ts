@@ -28,4 +28,12 @@ describe('AccountSeatOffer', () => {
     expect(body).not.toContain('autofocus');
     expect(body).not.toContain('role="alert"');
   });
+
+  it('an open offer carries the gold rule, its buttons full width below 768 with the commit first', () => {
+    expect(body).toMatch(/class="flex flex-col gap-2 border-gold border-l-2 pl-3"/);
+    expect(body).toContain('flex flex-col items-stretch');
+    expect(body.indexOf('account-seat-offer-accept')).toBeLessThan(
+      body.indexOf('account-seat-offer-decline'),
+    );
+  });
 });

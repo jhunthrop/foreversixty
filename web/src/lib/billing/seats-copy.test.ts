@@ -25,6 +25,7 @@ describe('Seats row', () => {
     expect(copy.give).toBe(spec('Seats', 14));
     expect(copy.giving).toBe(spec('Seats', 15));
     expect(copy.freedSince('2026-12-05', 'Aela')).toBe(spec('Seats', 16, { 'd MMM': '5 Dec', Name: 'Aela' }));
+    expect(copy.movingTo('Aela', '2026-12-05')).toBe(spec('Seats', 17, { Name: 'Aela', 'd MMM': '5 Dec' }));
   });
 });
 
@@ -36,6 +37,7 @@ describe('Seat picker row', () => {
     expect(p.moveTitle).toBe(spec('Seat picker', 1));
     expect(p.option('Aela', 'Hunter', false)).toBe(spec('Seat picker', 2, who));
     expect(p.option('Aela', 'Hunter', true)).toBe(spec('Seat picker', 3, who));
+    expect(p.option('Mirelle', 'priest', true)).toBe('Mirelle · Priest · pays for Premium');
     expect(p.paysNote).toBe(spec('Seat picker', 4));
     expect(p.keepsNote('Aela')).toBe(spec('Seat picker', 5, who));
     expect(p.give).toBe(spec('Seat picker', 6));
@@ -67,6 +69,9 @@ describe('Who pays and Receiver rows', () => {
     expect(w.declined('Aela')).toBe(spec('Who pays', 10, { Name: 'Aela' }));
     expect(w.noCandidates).toBe(spec('Who pays', 11));
     expect(w.failed).toBe(spec('Who pays', 12));
+    expect(w.staysWithGuild('Aela')).toBe(spec('Who pays', 13, { Name: 'Aela' }));
+    expect(w.inProgressOffer('Aela')).toBe(spec('Who pays', 14, { Name: 'Aela' }));
+    expect(w.inProgress).toBe(spec('Who pays', 15));
   });
 
   it('receiver, with and without the founder clause', () => {
@@ -82,6 +87,7 @@ describe('Who pays and Receiver rows', () => {
     expect(r.take).toBe(spec('Receiver', 2));
     expect(r.opening).toBe(spec('Receiver', 3));
     expect(r.notNow).toBe(spec('Receiver', 4));
+    expect(r.staysWithGuild('Aela')).toBe(spec('Receiver', 5, { Name: 'Aela' }));
   });
 });
 

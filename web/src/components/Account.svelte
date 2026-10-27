@@ -35,7 +35,7 @@
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import AccountSeatOffer from './account/AccountSeatOffer.svelte';
   import type { MeSeatOffer } from '../lib/billing/contract';
-  import { accountPlanLine } from '../lib/account/plan-line';
+  import { accountPlanLine, onPremium } from '../lib/account/plan-line';
   import AccountLoading from './account/AccountLoading.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
@@ -942,7 +942,7 @@
                   {/if}
                   <AccountPremiumBlock
                     plan={planLine}
-                    seePlans={billing === null && me?.seat == null}
+                    seePlans={!onPremium(me)}
                     entitlements={me?.entitlements}
                     characters={me?.characters ?? []}
                     mainKey={me?.main_character_key}

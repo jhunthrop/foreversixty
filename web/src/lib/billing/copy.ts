@@ -2,6 +2,7 @@
 // Every visible string /premium, /premium/checkout and the account page's billing block
 // use, in the site's own honest voice: no exclamation marks, no urgency, no invented
 // discounts. Prices are never written here as literals -- they come from ./plans.
+import { PLANS, formatPrice, priceFor, type Interval, type PlanKey } from './plans';
 
 export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',
@@ -15,6 +16,9 @@ export const checkoutCopy = {
   confirmationSlow: 'This can take a moment; refresh if it does not update.',
   retry: 'Try again',
   whichGuild: 'Which guild?',
+  /** Under Which guild? (player 9): the plan and price picked on /premium, `Raid guild · $200 a year`. */
+  chosenPlan: (plan: PlanKey, interval: Interval, founder: boolean): string =>
+    `${PLANS[plan].name} · ${formatPrice(priceFor(plan, interval, founder), interval)}`,
   guildPlanLabel: 'Guild',
   comebackGone: 'That resubscribe link is no longer available. Start again from the premium page.',
   verifiedMembers: (n: number): string => `${n} verified members`,
@@ -50,7 +54,8 @@ export const premiumBlockCopy = {
     serverSims: {
       label: 'Server sims',
       on: serverSimsOn,
-      off: 'Browser lane only',
+      // Controller's 2026-10-27 persona round (player 13).
+      off: 'In your browser',
     },
     history: {
       label: 'History charts',

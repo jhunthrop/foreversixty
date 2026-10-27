@@ -320,8 +320,6 @@ export const guildRosterModelCopy = {
     `Approve ${total}, including ${officers} officer${officers === 1 ? '' : 's'}?`,
   confirm: 'Yes',
   cancel: 'Cancel',
-  /** Settings, for an officer who does not hold the claim. */
-  guildMasterOnly: 'Only the guild master can subscribe the guild, release the claim or change billing.',
 } as const;
 
 /** The officer-tools gate (design/specs/2026-10-25-officer-tools-gate.md section 7): the sentence

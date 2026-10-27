@@ -60,7 +60,7 @@ describe('GuildPlanLine', () => {
     expect(payer).toContain('guild-move-raid-guild');
     const reader = html(guildBillingRead({ billing: planView({ you_are_billing_contact: false }) }), false);
     expect(reader).not.toContain('guild-manage-billing');
-    expect(text(reader)).toContain('Billed by Fixture#1234');
+    expect(text(reader)).toContain('Billed by Thornwick');
   });
 
   it('a lapsed plan reads the read-only line and has no Manage billing', () => {

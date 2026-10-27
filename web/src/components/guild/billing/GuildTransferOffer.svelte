@@ -7,7 +7,11 @@
   import { guildBillingCopy } from '../../../lib/billing/guild-billing-copy';
   import { declineTransfer } from '../../../lib/billing/guild-billing-api';
   import { seatsCopy } from '../../../lib/billing/seats-copy';
-  import { BILLING_TEXT_BUTTON } from '../../../lib/guild/billing-styles';
+  import {
+    BILLING_TEXT_BUTTON,
+    CONFIRM_ACTION_WIDTH,
+    CONFIRM_ACTIONS,
+  } from '../../../lib/guild/billing-styles';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
 
@@ -19,6 +23,9 @@
     transfer,
     onChanged,
   }: { guildId: number; plan: GuildPlanView; transfer: TransferView; onChanged: () => void } = $props();
+
+  /** The receiver is the viewer: the offer names them by the name the sender saw. */
+  const viewerName = $derived(transfer.to_name);
 
   let opening = $state(false);
   let declining = $state(false);
@@ -66,14 +73,17 @@
 >
   {#if sentence !== ''}
     <p class="text-[14px]" data-testid="guild-transfer-offer-text">{sentence}</p>
+    <p class="text-muted text-[13px]" data-testid="guild-transfer-offer-stays">
+      {copy.staysWithGuild(viewerName)}
+    </p>
   {/if}
   {#if error !== ''}
     <p class="text-[13px]" role="alert" data-testid="guild-transfer-offer-error">{error}</p>
   {/if}
-  <div class="flex flex-wrap items-center gap-3">
+  <div class={CONFIRM_ACTIONS}>
     <button
       type="button"
-      class="{PRIMARY_BUTTON_FIXED} px-4 {opening ? BUSY_CLASS : ''}"
+      class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4 {opening ? BUSY_CLASS : ''}"
       disabled={opening || declining}
       aria-busy={opening}
       onclick={() => void take()}
@@ -83,7 +93,7 @@
     </button>
     <button
       type="button"
-      class="{BILLING_TEXT_BUTTON} {declining ? BUSY_CLASS : ''}"
+      class="{BILLING_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH} {declining ? BUSY_CLASS : ''}"
       disabled={opening || declining}
       onclick={() => void notNow()}
       data-testid="guild-transfer-not-now"

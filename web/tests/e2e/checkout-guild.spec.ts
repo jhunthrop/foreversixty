@@ -20,6 +20,14 @@ function guild(id: number, name: string, verifiedCount: number, can: string[]) {
 }
 
 async function stubMe(page: Page, guilds: unknown[]): Promise<void> {
+  // The chooser waits for each guild's crest read; a guild with no home answer keeps the plain ring.
+  await page.route('**/v1/guilds/*/home', (route) =>
+    route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: '{"ok":false,"data":null,"error":{"code":"not_found","message":"no"},"request_id":"r"}',
+    }),
+  );
   await page.route('**/v1/me', (route) =>
     route.fulfill({
       status: 200,
@@ -50,6 +58,8 @@ test('chooser lists billable guilds and names the fitting plan', async ({ page }
   await expect(rows).toHaveCount(2);
   await expect(page.getByText('Raid guild fits 28 members')).toBeVisible();
   expect((await rows.first().boundingBox())?.height).toBeCloseTo(56, 0);
+  // Player 9: the plan and price picked on /premium stand under Which guild?.
+  await expect(page.getByTestId('checkout-chooser-plan')).toHaveText(/^Guild · \$1[25]0 a year$/);
 });
 
 test('choosing a row posts checkout with that guild id and the url plan', async ({ page }) => {

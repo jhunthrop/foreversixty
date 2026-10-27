@@ -238,7 +238,9 @@ test('a 409 preview_expired shows the prices-changed line and reloads the previe
   });
   await page.getByTestId('guild-move-raid-guild').click();
   await page.getByTestId('guild-upgrade-commit').click();
-  await expect(page.getByTestId('guild-upgrade-error')).toHaveText('Prices changed. Review the new amount.');
+  await expect(page.getByTestId('guild-upgrade-error')).toHaveText(
+    "Today's amount was updated. Check it, then move.",
+  );
   expect(previews).toBe(2);
 });
 

@@ -1,8 +1,10 @@
 <!-- web/src/components/checkout/CheckoutGuildChooser.svelte -->
 <!-- Spec 3.1.7: a guild plan with no guild id asks "Which guild?" -- one 56px row per guild
      the account may subscribe. `guilds` null means loading; `failed` shows the load error.
-     `crests` maps guild id to its mark (guildMarkSrc); the ring shows it, or stays a plain
-     gold ring while a guild's mark is unknown. The h2 takes focus when the chooser shows. -->
+     `crests` maps guild id to its mark (guildMarkSrc); null while those reads settle, so the rows
+     wait in the Skeleton and each crest arrives with its row (no flash-in). A guild whose mark is
+     unknown keeps a plain gold ring. `summary` names the plan and price picked on /premium. The h2
+     takes focus when the chooser shows. -->
 <script lang="ts">
   import type { MeGuild } from '../../lib/account/api';
   import { billableGuilds, guildFitsRaidTier } from '../../lib/billing/checkout-params';
@@ -18,12 +20,14 @@
     guilds,
     failed = false,
     crests = {},
+    summary = '',
     onChoose,
     onRetry,
   }: {
     guilds: readonly MeGuild[] | null;
     failed?: boolean;
-    crests?: Readonly<Record<number, string | null>>;
+    crests?: Readonly<Record<number, string | null>> | null;
+    summary?: string;
     onChoose: (guildId: number) => void;
     onRetry: () => void;
   } = $props();
@@ -48,9 +52,12 @@
   >
     {checkoutCopy.whichGuild}
   </h2>
+  {#if summary !== ''}
+    <p class="text-muted text-[13px]" data-testid="checkout-chooser-plan">{summary}</p>
+  {/if}
   {#if failed}
     <LoadError message={checkoutCopy.guildsDidNotLoad} {onRetry} testid="checkout-chooser-error" />
-  {:else if guilds === null}
+  {:else if guilds === null || (crests === null && rows.length > 0)}
     <Skeleton lines={SKELETON_ROWS} rowHeight="h-14" testid="checkout-chooser-loading" />
   {:else if rows.length === 0}
     <p class="text-muted text-[14px]" data-testid="checkout-chooser-none">
@@ -71,8 +78,14 @@
               class="border-gold h-8 w-8 shrink-0 overflow-hidden rounded-full border-2"
               aria-hidden="true"
             >
-              {#if crests[guild.id]}
-                <img src={crests[guild.id]} alt="" class="h-full w-full object-cover" />
+              {#if crests?.[guild.id]}
+                <img
+                  src={crests[guild.id]}
+                  alt=""
+                  width="32"
+                  height="32"
+                  class="h-full w-full object-cover"
+                />
               {/if}
             </span>
             <span class="flex min-w-0 flex-1 flex-col">

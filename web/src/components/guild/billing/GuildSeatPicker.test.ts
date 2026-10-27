@@ -28,8 +28,8 @@ describe('GuildSeatPicker', () => {
   it('lists members by name with the payer marked', () => {
     const body = text(html());
     expect(body).toContain('Give this seat to');
-    expect(body).toContain('Kraggor · warrior');
-    expect(body).toContain('Mirelle · priest · pays for Premium');
+    expect(body).toContain('Kraggor · Warrior');
+    expect(body).toContain('Mirelle · Priest · pays for Premium');
     expect(body.indexOf('Kraggor')).toBeLessThan(body.indexOf('Mirelle'));
   });
 

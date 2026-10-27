@@ -53,7 +53,7 @@ test('case 12: give to a payer shows the payer note, then Waiting, and Withdraw 
   await page.getByTestId('guild-seat-1-give').click();
   await page
     .getByTestId('guild-seat-1-select')
-    .selectOption({ label: 'Mirelle · priest · pays for Premium' });
+    .selectOption({ label: 'Mirelle · Priest · pays for Premium' });
   await expect(page.getByTestId('guild-seat-1-pays-note')).toBeVisible();
   await page.getByTestId('guild-seat-1-submit').click();
   await expect(page.getByTestId('guild-seat-1')).toContainText('Waiting');
@@ -62,12 +62,14 @@ test('case 12: give to a payer shows the payer note, then Waiting, and Withdraw 
   await expect(page.getByTestId('guild-seat-1-give')).toBeFocused();
 });
 
-test('case 12: a held seat with a paying offeree shows Waiting with Withdraw beside Move seat', async ({
+test('case 12: a held seat moving to a payer names the holder, then Moving to with Waiting, and only Withdraw', async ({
   page,
 }) => {
   await openLive(page, SEATED([pendingSeat(1, { movable_at: '2000-01-01T12:00:00Z' })]));
-  await expect(page.getByTestId('guild-seat-1')).toContainText('Waiting');
-  await expect(page.getByTestId('guild-seat-1-move')).toBeVisible();
+  await expect(page.getByTestId('guild-seat-1-name')).toHaveText('Kraggor');
+  await expect(page.getByTestId('guild-seat-1-note')).toContainText('Moving to Mirelle · offered 10 Nov');
+  await expect(page.getByTestId('guild-seat-1-note')).toContainText('Waiting');
+  await expect(page.getByTestId('guild-seat-1-move')).toHaveCount(0);
   await expect(page.getByTestId('guild-seat-1-withdraw')).toBeVisible();
 });
 
@@ -112,8 +114,12 @@ test('case 13: send, wait and withdraw puts the button back', async ({ page }) =
   await expect(page.getByTestId('guild-transfer-consequence')).toContainText(
     'Nothing changes until they accept.',
   );
+  await expect(page.getByTestId('guild-transfer-stays')).toHaveText(
+    'Seats, raids and records stay with the guild; Mirelle manages seats from then.',
+  );
   await page.getByTestId('guild-transfer-send').click();
   await expect(page.getByTestId('guild-transfer-waiting')).toContainText('Waiting for them.');
+  await expect(page.getByTestId('guild-transfer-withdraw')).toBeFocused();
   await page.getByTestId('guild-transfer-withdraw').click();
   await expect(page.getByTestId('guild-transfer-open')).toBeVisible();
   await expect(page.getByTestId('guild-transfer-open')).toBeFocused();

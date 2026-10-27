@@ -194,6 +194,14 @@ label:has(input[type='checkbox']:disabled) {
     background: rgba(154, 148, 132, 0.12);
     border-color: rgba(154, 148, 132, 0.3);
   }
+  /* SECONDARY_BUTTON_FIXED and PRIMARY_BUTTON_FIXED (lib/planner/styles.ts), launch pricing
+     spec 4 Disabled: off reads at 50 % with a not-allowed cursor. A busy button (aria-busy,
+     BUSY_CLASS) keeps its own look. In the components layer, so a caller's utility still wins. */
+  .control-fixed:disabled:not([aria-busy='true']),
+  .control-fixed[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 @layer components {

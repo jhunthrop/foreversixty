@@ -11,6 +11,7 @@
   import { accountPlanCopy } from '../../lib/billing/account-plan-copy';
   import { billingBlockCopy, premiumBlockCopy } from '../../lib/billing/copy';
   import { characterHref } from '../../lib/characters';
+  import { INLINE_LINK } from '../../lib/guild/field-styles';
 
   const SIM_HREF = '/sim';
   const NOTIFICATIONS_HREF = '#discord';
@@ -35,7 +36,7 @@
     /**
      * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` hides the
      * row (`premiumRowVisible(me)` is false: the deployment has notifications off); `undefined`
-     * keeps the muted `Off · Premium` row. `Account.svelte` is the only caller.
+     * keeps the muted `Premium only` row. `Account.svelte` is the only caller.
      */
     notifications?: { value: string; linked: boolean } | null;
   } = $props();
@@ -99,24 +100,26 @@
 
 {#if plan !== undefined}
   <div class="mb-3 flex flex-col gap-1" data-testid="account-plan-headline">
-    <p class="flex flex-wrap items-center gap-x-2 text-[14px]" data-testid="account-billing-row">
-      <span>{plan.line}</span>
-      {#if plan.founder}
-        <span class="pill pill-site" title={accountPlanCopy.founder.title} data-testid="account-founder"
-          >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></span
-        >
-      {/if}
-      {#if seePlans}
-        <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>
-      {/if}
-    </p>
+    {#if plan.ended !== null}
+      <!-- Spec 3.3: the ended sentence takes the plan line's place, with the gold come-back link. -->
+      <p class="text-[14px]" data-testid="account-seat-ended">
+        {plan.ended.text}<a class={INLINE_LINK} href={plan.ended.href}>{plan.ended.action}</a>
+      </p>
+    {:else}
+      <p class="flex flex-wrap items-center gap-x-2 text-[14px]" data-testid="account-billing-row">
+        <span>{plan.line}</span>
+        {#if plan.founder}
+          <span class="pill pill-site" title={accountPlanCopy.founder.title} data-testid="account-founder"
+            >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></span
+          >
+        {/if}
+        {#if seePlans}
+          <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>
+        {/if}
+      </p>
+    {/if}
     {#if plan.line2 !== null}
       <p class="text-muted text-[13px]" data-testid="account-plan-line2">{plan.line2}</p>
-    {/if}
-    {#if plan.ended !== null}
-      <p class="text-[14px]" data-testid="account-seat-ended">
-        {plan.ended.text}<a class="text-text underline" href={plan.ended.href}>{plan.ended.action}</a>
-      </p>
     {/if}
   </div>
 {/if}

@@ -18,6 +18,26 @@ describe('GuildSeats', () => {
     expect(body).toContain('A seat can move once every 30 days.');
   });
 
+  it('counts out of the plan seat count, never the rows sent', () => {
+    const rows = [
+      heldSeat(1),
+      heldSeat(2),
+      emptySeat(3),
+      emptySeat(4, { returned: { name: 'A', at: '2026-11-19' } }),
+    ];
+    const body = render(GuildSeats, {
+      props: {
+        guildId: 7,
+        seats: rows,
+        total: 3,
+        manage: true,
+        now: NOW,
+        onChanged: () => Promise.resolve(),
+      },
+    }).body;
+    expect(text(body)).toContain('2 of 3 given');
+  });
+
   it('draws nothing when the plan has no seats', () => {
     expect(html([])).not.toContain('guild-seats');
   });

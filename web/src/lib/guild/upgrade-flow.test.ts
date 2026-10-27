@@ -119,6 +119,18 @@ describe('commit', () => {
     expect(h.state()).toMatchObject({ confirming: true, error: seatsCopy.whoPays.inProgress });
   });
 
+  it('an open transfer offer is named in the in-progress line', async () => {
+    const h = harness({
+      upgrade: async () => {
+        throw refusal(409, 'transfer_in_progress');
+      },
+      openTransferTo: () => 'Mirelle',
+    });
+    await h.flow.open();
+    await h.flow.commit();
+    expect(h.state().error).toBe(seatsCopy.whoPays.inProgressOffer('Mirelle'));
+  });
+
   it('not_upgradable closes, invalidates and reloads with no line', async () => {
     const h = harness({
       upgrade: async () => {
@@ -294,7 +306,7 @@ describe('fix round 2', () => {
 
   it('states the stale-unconfirmed addition', () => {
     expect(guildBillingCopy.upgrade.unconfirmedStale).toBe(
-      'Stripe is still confirming the change. Reload to see where it stands.',
+      'Stripe is still confirming the move. Reload in a minute to see the plan.',
     );
   });
 });

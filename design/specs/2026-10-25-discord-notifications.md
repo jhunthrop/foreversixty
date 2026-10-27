@@ -309,7 +309,7 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 | Lapsed | `Posts are paused because your plan ended.` / `We kept your webhook. Posts start again when you are back on Premium.` / `See plans` |
 | Free | `Discord messages tell you when a server sim or a log you uploaded is done.` + `See plans` |
 | Premium row label | `Discord notifications` |
-| Premium row values (amended 2026-10-25, follow-up lane) | `Off · Premium`, `Off · set up`, `On · 2 events`, `On · 1 event`, `Off · no events chosen`, `Off · needs attention`, `Paused · plan lapsed` (U+00A0 as in 3.7: between the state word and the dot, and between a count and its noun) |
+| Premium row values (amended 2026-10-25, follow-up lane; the free value amended 2026-10-27 by the launch pricing persona round, player 13) | `Premium only`, `Off · set up`, `On · 2 events`, `On · 1 event`, `Off · no events chosen`, `Off · needs attention`, `Paused · plan lapsed` (U+00A0 as in 3.7: between the state word and the dot, and between a count and its noun) |
 | /premium line | `Discord notifications when a server sim finishes or a log finishes parsing.` (replaces `Discord notifications (ships December).`; the line is edited when the lane ships, never ahead) |
 | Changelog entry | `Added Discord notifications. Premium members can paste a Discord webhook on the account page and get a message when a server sim finishes or a log finishes parsing.` (dated the day it ships, past tense) |
 

@@ -2,6 +2,7 @@
 // The Seats, Seat picker, Who pays and Receiver rows of design/specs/2026-10-27-launch-pricing.md
 // section 6.2, with a function for every {slot}. Dates arrive as stored: date-only values read as written, instants on the viewer calendar;
 // prices are built from ./plans.
+import { titleCase } from '../character-profile';
 import { settingsWords } from '../guild/settings-view';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { SEAT_MOVE_LOCK_DAYS, formatCents, type Interval } from './plans';
@@ -18,6 +19,9 @@ export const seatsCopy = {
   waiting: 'Waiting',
   offeredOn: (date: string, zone?: string): string =>
     `Offered ${zonedDayMonth(date, zone)}. They pay for Premium, so they accept it first.`,
+  /** A held seat moving to a member who pays for Premium: the holder keeps it until they accept. */
+  movingTo: (name: string, date: string, zone?: string): string =>
+    `Moving to ${name} · offered ${zonedDayMonth(date, zone)}`,
   withdraw: 'Withdraw',
   withdrawing: 'Withdrawing…',
   accepted: (starts: string, zone?: string): string =>
@@ -31,7 +35,7 @@ export const seatsCopy = {
     giveTitle: 'Give this seat to',
     moveTitle: 'Move this seat to',
     option: (name: string, className: string, paysPremium: boolean): string =>
-      `${name} · ${className}${paysPremium ? ' · pays for Premium' : ''}`,
+      `${name} · ${titleCase(className)}${paysPremium ? ' · pays for Premium' : ''}`,
     paysNote:
       'They pay for Premium, so they get an offer to accept. Their own Premium stops renewing and the seat starts when it ends.',
     keepsNote: (name: string): string => `${name} keeps Premium until the seat moves.`,
@@ -54,6 +58,9 @@ export const seatsCopy = {
     transferTo: 'Transfer to',
     offerNote: (name: string, from: string, amountCents: number, interval: Interval, zone?: string): string =>
       `${name} gets an offer to take over. When they add a card, they are billed from ${zonedDayMonthYear(from, zone)} at ${formatCents(amountCents, interval)}, and your plan stops renewing. Nothing changes until they accept.`,
+    /** Controller's 2026-10-27 persona-round addition: what stays with the guild. */
+    staysWithGuild: (name: string): string =>
+      `Seats, raids and records stay with the guild; ${name} manages seats from then.`,
     send: 'Send the offer',
     sending: 'Sending…',
     cancel: 'Cancel',
@@ -64,7 +71,9 @@ export const seatsCopy = {
     noCandidates: 'No other officer has a Forever Sixty account yet.',
     failed: 'The offer did not send. Try again.',
     // An addition: the design spec has no string for transfer_in_progress.
-    inProgress: 'An offer or a plan change is already in progress. Reload to see where it stands.',
+    // Controller's 2026-10-27 persona-round wording: name the open offer when there is one.
+    inProgressOffer: (name: string): string => `An offer to ${name} is already waiting. Withdraw it first.`,
+    inProgress: 'A plan change is already under way. Reload to see it.',
     // An addition: reuses the settings page's billing-unavailable sentence (one source).
     billingUnavailable: settingsWords.billingUnavailable,
   },
@@ -78,6 +87,8 @@ export const seatsCopy = {
       zone?: string,
     ): string =>
       `${name} offers you the guild plan. You would be billed from ${zonedDayMonthYear(from, zone)} at ${formatCents(amountCents, interval)}${founder ? ', the founder price' : ''}. Nothing is charged before then.`,
+    staysWithGuild: (name: string): string =>
+      `Seats, raids and records stay with the guild; ${name} manages seats from then.`,
     take: 'Take over the plan',
     opening: 'Opening checkout…',
     notNow: 'Not now',

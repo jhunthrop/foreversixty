@@ -163,7 +163,7 @@ New strings live in `web/src/lib/sim/server-runs-copy.ts`; the account strings i
 | Account row, one | `On · 1 run this month` |
 | Account row, none | `On · no runs yet this month` |
 | Account row, no count sent (older `/v1/me`) | `On` |
-| Account row, off | `Browser lane only` (unchanged) |
+| Account row, off | `In your browser` (amended 2026-10-27, launch pricing persona round, player 13; was `Browser lane only`) |
 
 Numbers: `toLocaleString('en-US')` (1,204; 1,000 runs). Ages: relative inside 14 days (`14 minutes ago`, `2 hours ago`, `3 days ago`), else `Nov 25`; the absolute stamp is in each time's `title`.
 

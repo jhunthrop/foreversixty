@@ -10,12 +10,15 @@
   let {
     guildId,
     seats,
+    total = seats.length,
     manage,
     now,
     onChanged,
   }: {
     guildId: number;
     seats: readonly SeatView[];
+    /** The plan's seat count (3 on Raid guild); a returned row fills a slot, it never adds one. */
+    total?: number;
     manage: boolean;
     now: Date;
     onChanged: () => Promise<void>;
@@ -27,7 +30,7 @@
     <div class="flex items-baseline gap-3">
       <h3 class="section-title text-[15px]">{copy.heading}</h3>
       <span class="text-muted font-mono text-[12px]" data-testid="guild-seats-count">
-        {copy.given(givenCount(seats), seats.length)}
+        {copy.given(Math.min(givenCount(seats), total), total)}
       </span>
     </div>
     <p class="text-muted text-[13px]">{copy.explainer}</p>

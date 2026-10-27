@@ -6,7 +6,7 @@ import {
   mockEntitlements,
 } from '../../test-support/billing-fixtures';
 import type { BillingView, GuildBillingView, Me } from './api';
-import { accountPlanLine, guildRowPlanLine } from './plan-line';
+import { accountPlanLine, guildRowPlanLine, onPremium } from './plan-line';
 
 const ZONE = 'UTC';
 const NOW = new Date('2026-11-12T12:00:00Z');
@@ -65,7 +65,7 @@ describe('accountPlanLine', () => {
     const out = accountPlanLine(meWith({ seat }), NOW, ZONE);
     expect(out.line).toBe('Premium · a seat from The Last Watch');
     expect(out.line2).toBe(
-      "Given by Fixture#1234. It lasts while the guild's plan does; nothing is billed to you.",
+      "Given by Thornwick. It lasts while the guild's plan does; nothing is billed to you.",
     );
     expect(out.manageBilling).toBe(false);
     expect(out.founder).toBe(false);
@@ -91,7 +91,7 @@ describe('accountPlanLine', () => {
     const out = accountPlanLine(meWith({ ended_seat: ME_ENDED_SEAT }), NOW, ZONE);
     expect(out.line).toBe('Not on Premium.');
     expect(out.ended).toEqual({
-      text: 'Your seat from The Last Watch ended 25 Nov. ',
+      text: 'Your seat from The Last Watch ended 18 Nov. ',
       action: 'Come back at $6 a month',
       href: '/premium/checkout?plan=premium&interval=monthly&comeback=9',
     });
@@ -126,5 +126,18 @@ describe('guildRowPlanLine', () => {
     expect(guildRowPlanLine({ ...plan, you_hold_seat: true }, ZONE)).toBe(
       'Guild plan · renews 12 Dec 2026 · you hold a seat',
     );
+  });
+});
+
+describe('onPremium: an account on Premium never sees the free See plans link', () => {
+  it('own plan, a seat and a resolved grant are all Premium', () => {
+    expect(onPremium(meWith({}, OWN))).toBe(true);
+    expect(onPremium(meWith({ seat: ME_SEAT }))).toBe(true);
+    expect(onPremium(meWith({ entitlements: mockEntitlements({ server_sims: true }) }))).toBe(true);
+  });
+
+  it('a free account and no account are not', () => {
+    expect(onPremium(meWith({}))).toBe(false);
+    expect(onPremium(null)).toBe(false);
   });
 });

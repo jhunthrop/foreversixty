@@ -5,8 +5,7 @@
 import type { GuildBillingSettings, UpgradePreview } from '../billing/contract';
 import { BILLING_API_FAILED } from '../billing/api';
 import { guildBillingCopy as copy } from '../billing/guild-billing-copy';
-import { seatsCopy } from '../billing/seats-copy';
-import { upgradeOutcome } from './billing-errors';
+import { inProgressLine, upgradeOutcome } from './billing-errors';
 
 /** Stripe may still be settling an unconfirmed change: the plan is read once more after this. */
 export const UNCONFIRMED_RECHECK_MS = 5000;
@@ -42,6 +41,8 @@ export interface UpgradeFlowDeps {
   /** The view took the plan the upgrade answered with. */
   adopt: (view: GuildBillingSettings) => void;
   onState: (state: UpgradeFlowState) => void;
+  /** The officer an open transfer offer waits on, so a refusal can name it. */
+  openTransferTo?: () => string | null;
   setTimer?: (run: () => void, ms: number) => unknown;
   clearTimer?: (handle: unknown) => void;
 }
@@ -142,7 +143,7 @@ export function createUpgradeFlow(deps: UpgradeFlowDeps): UpgradeFlow {
     } else if (outcome === 'generic') {
       set({ error: BILLING_API_FAILED });
     } else if (outcome === 'in-progress') {
-      set({ error: seatsCopy.whoPays.inProgress });
+      set({ error: inProgressLine(deps.openTransferTo?.() ?? null) });
     } else if (outcome === 'reload-quiet') {
       await reloadAndRefocus({ error: '' }, token);
     } else {

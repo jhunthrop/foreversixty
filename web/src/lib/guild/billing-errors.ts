@@ -32,11 +32,18 @@ export function upgradeOutcome(thrown: unknown): UpgradeOutcome {
   return thrown.status === 409 && thrown.code === 'upgrade_failed' ? 'declined' : 'generic';
 }
 
-/** The line under a failed transfer send or withdraw. */
-export function transferErrorLine(thrown: unknown): string {
+/** 409 transfer_in_progress: name the waiting offer when there is one, else a plan change. */
+export function inProgressLine(openOfferTo: string | null): string {
+  return openOfferTo === null || openOfferTo === ''
+    ? seatsCopy.whoPays.inProgress
+    : seatsCopy.whoPays.inProgressOffer(openOfferTo);
+}
+
+/** The line under a failed transfer send or withdraw; `openOfferTo` names an offer still waiting. */
+export function transferErrorLine(thrown: unknown, openOfferTo: string | null = null): string {
   switch (code(thrown)) {
     case 'transfer_in_progress':
-      return seatsCopy.whoPays.inProgress;
+      return inProgressLine(openOfferTo);
     case 'billing_unavailable':
       return seatsCopy.whoPays.billingUnavailable;
     default:

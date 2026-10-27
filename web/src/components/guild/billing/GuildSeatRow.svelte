@@ -11,6 +11,7 @@
     BILLING_MOVE_BUTTON,
     BILLING_OUTLINE_BUTTON,
     BILLING_TEXT_BUTTON,
+    OPENER_PRESSED,
   } from '../../../lib/guild/billing-styles';
   import { isSeatLocked, seatErrorLine, seatRowKind, staleReadRefusal } from '../../../lib/guild/seat-view';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
@@ -45,7 +46,11 @@
   const lockId = $derived(`guild-seat-${seat.slot}-lock`);
   const holderName = $derived(seat.holder?.name ?? '');
   const middle = $derived.by(() => {
-    if (kind === 'pending' && seat.offeree !== null) return copy.offeredOn(seat.offeree.offered_at);
+    if (kind === 'pending' && seat.offeree !== null) {
+      return seat.holder === null
+        ? copy.offeredOn(seat.offeree.offered_at)
+        : copy.movingTo(seat.offeree.name, seat.offeree.offered_at);
+    }
     if (kind === 'offered' && seat.given_at !== null) return copy.offeredOn(seat.given_at);
     if (kind === 'accepted' && seat.starts_at !== null) return copy.accepted(seat.starts_at);
     if (kind === 'returned' && seat.returned !== null) {
@@ -56,17 +61,17 @@
     }
     return '';
   });
-  /** The middle of an accepted or pending seat is not its lock; the lock date follows on a line of its own. */
+  /** The middle of an accepted seat is not its lock; the lock date follows on a line of its own. An
+   *  offer starts no lock (R-P3), so an offered or pending row never shows one. */
   const lockLine = $derived(
-    (kind === 'accepted' || kind === 'pending') && locked && seat.movable_at !== null
-      ? copy.canMoveFrom(seat.movable_at)
-      : '',
+    kind === 'accepted' && locked && seat.movable_at !== null ? copy.canMoveFrom(seat.movable_at) : '',
   );
-  const canMove = $derived(seat.holder !== null && kind !== 'offered');
-  /** A lock still running, or an offer pending (the API refuses a move with 409 offer_pending). */
-  const moveDisabled = $derived(locked || kind === 'pending');
+  /** A waiting offer has only Withdraw: the API refuses a move with 409 offer_pending. */
+  const canMove = $derived(seat.holder !== null && kind !== 'offered' && kind !== 'pending');
+  const moveDisabled = $derived(locked);
   const canWithdraw = $derived(kind === 'offered' || kind === 'pending');
-  const waitingName = $derived(seat.holder === null ? '' : (seat.offeree?.name ?? ''));
+  /** A held seat moving to a payer: line 1 stays the holder, the Waiting pill sits in the middle. */
+  const moving = $derived(kind === 'pending' && seat.holder !== null);
 
   /** Puts focus back on the row's action once the opener it came from has re-rendered. */
   async function refocusAction(): Promise<void> {
@@ -151,10 +156,12 @@
 >
   <div
     class="grid items-center gap-x-4 gap-y-2 md:min-h-12 {manage
-      ? 'md:grid-cols-[minmax(220px,1fr)_minmax(0,1.4fr)_auto]'
-      : 'md:grid-cols-[minmax(220px,1fr)_minmax(0,1.4fr)]'}"
+      ? 'grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(220px,1fr)_minmax(0,1.4fr)_auto]'
+      : 'grid-cols-1 md:grid-cols-[minmax(220px,1fr)_minmax(0,1.4fr)]'}"
+    data-testid={`guild-seat-${seat.slot}-grid`}
   >
-    <div class="flex items-center gap-3">
+    <!-- Below 768 the row is two lines (spec 7): who and the button on line 1, the middle on line 2. -->
+    <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
       {#if seat.holder !== null}
         <ClassCrestRing characterClass={seat.holder.class} size={32} />
         <div class="flex min-w-0 flex-col">
@@ -163,12 +170,9 @@
             style={`color: ${classColorVar(seat.holder.class)}`}
             data-testid={`guild-seat-${seat.slot}-name`}>{seat.holder.name}</span
           >
-          {#if kind === 'offered' || kind === 'pending'}
-            <span class="flex items-center gap-2">
-              {#if waitingName !== ''}<span class="text-muted text-[12px]">{waitingName}</span>{/if}
-              <span class="pill pill-sample">{copy.waiting}</span>
-            </span>
-          {:else if seat.given_at !== null && kind === 'held'}
+          {#if kind === 'offered'}
+            <span><span class="pill pill-sample">{copy.waiting}</span></span>
+          {:else if seat.given_at !== null && (kind === 'held' || moving)}
             <span class="text-muted text-[12px]">{copy.givenOn(seat.given_at)}</span>
           {/if}
         </div>
@@ -190,14 +194,18 @@
         <span class="text-muted text-[14px]">{copy.notGiven}</span>
       {/if}
     </div>
-    <div class="flex flex-col gap-1 text-[13px]">
+    <div
+      class="col-span-full row-start-2 flex flex-col gap-1 text-[13px] md:col-span-1 md:col-start-2 md:row-start-1"
+    >
       {#if middle !== ''}
         <p
           id={noteId}
-          class={kind === 'held' && !locked ? 'text-text' : 'text-muted'}
+          class="{kind === 'held' && !locked ? 'text-text' : 'text-muted'} {moving
+            ? 'flex flex-wrap items-center gap-2'
+            : ''}"
           data-testid={`guild-seat-${seat.slot}-note`}
         >
-          {middle}
+          {middle}{#if moving}<span class="pill pill-sample">{copy.waiting}</span>{/if}
         </p>
       {/if}
       {#if lockLine !== ''}
@@ -205,12 +213,13 @@
       {/if}
     </div>
     {#if manage}
-      <div class="flex items-center gap-2">
+      <div class="col-start-2 row-start-1 flex items-center justify-end gap-2 md:col-start-3">
         {#if canMove}
           <button
             type="button"
-            class="{BILLING_OUTLINE_BUTTON} {moveDisabled ? 'cursor-not-allowed opacity-50' : ''}"
+            class="{BILLING_OUTLINE_BUTTON} {picking === 'move' ? OPENER_PRESSED : ''}"
             aria-disabled={moveDisabled}
+            aria-expanded={picking === 'move'}
             aria-describedby={moveDisabled ? (lockLine !== '' ? lockId : noteId) : undefined}
             onclick={() => void open('move')}
             data-seat-action
@@ -234,7 +243,8 @@
         {:else if !canMove}
           <button
             type="button"
-            class={BILLING_MOVE_BUTTON}
+            class="{BILLING_MOVE_BUTTON} {picking === 'give' ? OPENER_PRESSED : ''}"
+            aria-expanded={picking === 'give'}
             onclick={() => void open('give')}
             data-seat-action
             data-testid={`guild-seat-${seat.slot}-give`}
