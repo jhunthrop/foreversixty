@@ -38,3 +38,19 @@ func TestDiscordInteractionsPingThroughTheRouter(t *testing.T) {
 		}
 	}
 }
+
+// With the bot off the interactions path is an unmounted 404, so it keeps the
+// router's per-IP limit.
+func TestDiscordInteractionsPathIsLimitedWithTheBotOff(t *testing.T) {
+	h := NewRouter(Deps{Version: "test", Auth: &auth.Authenticator{}})
+	last := 0
+	for i := 0; i <= routerRequestsPerMinute; i++ {
+		req := httptest.NewRequest(http.MethodPost, discordbot.InteractionsPath, strings.NewReader(`{"type":1}`))
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+		last = rec.Code
+	}
+	if last != http.StatusTooManyRequests {
+		t.Fatalf("request %d past the budget = %d, want 429", routerRequestsPerMinute+1, last)
+	}
+}

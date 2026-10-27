@@ -25,10 +25,6 @@ const (
 	codeUnknownChannel = 10003
 	codeUnknownGuild   = 10004
 	codeUnknownMessage = 10008
-	// Unknown Webhook and Invalid Webhook Token: an interaction token is
-	// good for 15 minutes.
-	codeUnknownWebhook = 10015
-	codeInvalidWebhook = 50027
 	codeMissingAccess  = 50001
 	codeMissingPerms   = 50013
 )
@@ -76,15 +72,6 @@ func (e *APIError) MissingAccess() bool {
 		return true
 	}
 	return e.Status == http.StatusForbidden
-}
-
-// Gone reports that the channel or message no longer exists.
-func (e *APIError) Gone() bool {
-	switch e.Code {
-	case codeUnknownChannel, codeUnknownMessage, codeUnknownWebhook, codeInvalidWebhook:
-		return true
-	}
-	return false
 }
 
 // newClient is the 5 s client every Discord call uses. A redirect would carry

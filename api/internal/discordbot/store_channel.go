@@ -29,7 +29,8 @@ const channelSaveSQL = `update guild_discord_installs set channel_id = $2, chann
 // repointSQL moves the posts of raids that have not ended to the new channel as fresh posts:
 // their old message ids belong to the old channel. moved_from stays: it belongs to the raid,
 // not the message. A row a drainer holds loses its lease, so that drainer's guarded writes no
-// longer land.
+// longer land. "Not ended" is guilds.Raid.Signable's rule (planned or locked, ending after
+// now) restated in SQL; TestRepointFollowsRaidSignable pins the two together.
 const repointSQL = `update guild_raid_discord_posts p set channel_id = $2, message_id = null, gone = false,
 	dirty_seq = p.dirty_seq + 1, dirty_at = now(), edited_at = null, wake_at = null,
 	attempts = 0, next_attempt_at = now(), lease_until = null, last_error = null, created_at = now()

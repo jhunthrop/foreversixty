@@ -83,6 +83,10 @@ func TestEditOriginalUsesTheInteractionWebhookWithoutBotAuth(t *testing.T) {
 	}
 }
 
+// codeUnknownWebhook is Discord's Unknown Webhook (an expired interaction token), a 404 the
+// bot does not react to as a deleted post or channel.
+const codeUnknownWebhook = 10015
+
 func TestAPIErrorClassifies(t *testing.T) {
 	cases := []struct {
 		status int
@@ -92,7 +96,6 @@ func TestAPIErrorClassifies(t *testing.T) {
 	}{
 		{429, `{"message":"You are being rate limited.","retry_after":1.5,"global":false}`, (*APIError).RateLimited, 1500 * time.Millisecond},
 		{403, `{"message":"Missing Access","code":50001}`, (*APIError).MissingAccess, 0},
-		{404, `{"message":"Unknown Message","code":10008}`, (*APIError).Gone, 0},
 	}
 	for _, c := range cases {
 		rest, _ := serve(t, c.status, c.answer)
@@ -105,8 +108,8 @@ func TestAPIErrorClassifies(t *testing.T) {
 			t.Fatalf("error leaks the token: %v", err)
 		}
 	}
-	if !(&APIError{Status: 404, Code: 10015}).Gone() || !(&APIError{Status: 401, Code: 50027}).Gone() || !(&APIError{Status: 404, Code: 10003}).Gone() || !(&APIError{Status: 400, Code: 50013}).MissingAccess() ||
-		!(&APIError{Status: 404, Code: 10004}).MissingAccess() || (&APIError{Status: 500}).Gone() {
+	if !(&APIError{Status: 400, Code: 50013}).MissingAccess() || !(&APIError{Status: 404, Code: 10004}).MissingAccess() ||
+		(&APIError{Status: 500}).MissingAccess() {
 		t.Fatal("classification table wrong")
 	}
 }

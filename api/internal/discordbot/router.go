@@ -59,7 +59,7 @@ func (r *RaidRouter) RaidChanged(ctx context.Context, guildID int64, e notify.Ra
 }
 
 // enqueue queues the raid's post; false (logged on a failure) when nothing was queued
-// because the channel went away since Active read it, so the caller uses the webhook.
+// because the channel went away since ActiveInstall read it, so the caller uses the webhook.
 func (r *RaidRouter) enqueue(ctx context.Context, guildID, raidID int64) bool {
 	queued, err := r.Bot.d.Store.EnqueuePost(ctx, raidID, guildID)
 	if err != nil {
@@ -99,7 +99,7 @@ func (r *RaidRouter) activeChannel(ctx context.Context, guildID int64) (string, 
 	if r.Bot == nil {
 		return "", false
 	}
-	in, active, err := r.Bot.Active(ctx, guildID)
+	in, active, err := r.Bot.ActiveInstall(ctx, guildID)
 	if err != nil {
 		r.Bot.log.Error("discordbot", "op", "router_install", "guild_id", guildID, "err", err)
 		return "", false

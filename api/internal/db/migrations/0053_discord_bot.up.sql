@@ -28,6 +28,8 @@ create table guild_discord_installs (
   -- Messages and Embed Links. Saving a channel clears it.
   channel_unusable_reason text check (channel_unusable_reason in ('deleted', 'permissions')),
   channel_unusable_missing text[] not null default '{}',
+  -- post_default is the raid form's remembered "Post to Discord" box while the bot posts.
+  post_default boolean not null default false,
   installed_by bigint references users(id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

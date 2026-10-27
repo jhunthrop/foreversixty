@@ -42,7 +42,7 @@ func TestAMissingPermissionMarksTheChannelUnusable(t *testing.T) {
 		!slices.Equal(in.ChannelUnusable.Missing, []string{"Send Messages", "Embed Links"}) {
 		t.Fatalf("install = %+v unusable %+v", in, in.ChannelUnusable)
 	}
-	if _, active, _ := w.svc.Active(ctx, w.gid); active {
+	if _, active, _ := w.svc.ActiveInstall(ctx, w.gid); active {
 		t.Fatal("an unusable channel is still active")
 	}
 	other := w.addRaid(t)
@@ -207,7 +207,7 @@ func TestRowsReachedNearTheLeaseEndAreReleased(t *testing.T) {
 	w.enqueue(t, w.raidID)
 	w.enqueue(t, second)
 	// The first create takes so long that the second row would start past its lease.
-	w.rest.OnCall = func(RESTCall) { w.clock.advance(25 * time.Second) }
+	w.rest.OnCall = func(RESTCall) { w.clock.advance(defaultDrainLease - rowBudget + time.Second) }
 	w.drain(t)
 	if n := len(w.callsOf("CreateMessage")); n != 1 {
 		t.Fatalf("creates = %d, want 1", n)

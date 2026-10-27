@@ -62,9 +62,9 @@ type RaidViewer struct {
 	Characters []ViewerCharacter `json:"characters"`
 }
 
-// RaidDiscord is the guild channel's state on a raid view (Service.raidDiscord): Available
-// when the deployment has connect on, Connected when the guild has a channel, PostDefault
-// the guild's remembered "Post to Discord" box.
+// RaidDiscord is the guild's Discord destination on a raid view (Service.raidDiscord):
+// Available when the deployment has connect or the bot on, Connected when the guild's bot is
+// active or it has a webhook channel, PostDefault the guild's remembered "Post to Discord" box.
 type RaidDiscord struct {
 	Available   bool `json:"available"`
 	Connected   bool `json:"connected"`

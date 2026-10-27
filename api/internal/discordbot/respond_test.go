@@ -6,6 +6,8 @@ import (
 	"io"
 	"log/slog"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -139,5 +141,48 @@ func TestRespondDropsAnswersPastTokenLife(t *testing.T) {
 	logged := h.log.String()
 	if !strings.Contains(logged, "outcome=expired") || strings.Contains(logged, testToken) {
 		t.Fatalf("log %q", logged)
+	}
+}
+
+// firstOnly is a Background that runs its first work and refuses the rest, as a shutdown
+// that began while a handler ran.
+type firstOnly struct {
+	mu      sync.Mutex
+	started bool
+}
+
+func (b *firstOnly) Start(work func()) bool {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if b.started {
+		return false
+	}
+	b.started = true
+	go work()
+	return true
+}
+
+func (b *firstOnly) Drain(context.Context) error { return nil }
+
+// A deferral whose delivery shutdown refused still undoes what the handler holds: After runs
+// once the handler finishes, marked dropped, and nothing reaches Discord.
+func TestRespondRefusedDeferralRunsAfterDropped(t *testing.T) {
+	var dropped atomic.Int32
+	h := newHarness(t, func(context.Context, Interaction) (Reply, error) {
+		time.Sleep(100 * time.Millisecond)
+		return Reply{Message: Message{Content: "shared", Ephemeral: true}, After: func(ctx context.Context) {
+			if answerDropped(ctx) {
+				dropped.Add(1)
+			}
+		}}, nil
+	})
+	h.svc.bg = &firstOnly{}
+	h.svc.answerWithin = 20 * time.Millisecond
+	rec := h.post(commandBody("spy"), time.Now(), nil)
+	if strings.TrimSpace(rec.Body.String()) != `{"type":5,"data":{"flags":64}}` {
+		t.Fatalf("deferral %s", rec.Body)
+	}
+	if dropped.Load() != 1 || len(h.rest.Calls()) != 0 {
+		t.Fatalf("dropped After runs = %d, calls %+v", dropped.Load(), h.rest.Calls())
 	}
 }

@@ -21,10 +21,12 @@ const (
 	defaultDrainLease    = 30 * time.Second
 	// drainBatch is how many rows one DrainOnce claims.
 	drainBatch = 10
-	// rowBudget bounds one row's facts read, Discord calls and bookkeeping. It runs detached
-	// from the drain's cancel, so a stop lets the row in flight land, and it stays inside the
-	// API's 9 s shutdown budget. A row reached later than its lease less this is released.
-	rowBudget = 7 * time.Second
+	// rowBudget bounds one row's facts read and Discord calls. It runs detached from the
+	// drain's cancel, so a stop lets the row in flight land. A stop's worst case is this, the
+	// row's two writes and the release: 5 + 2 × 1 + 2 = 9 s, the API's shutdown budget, and
+	// the drain's landing context (drain_stop.go) caps all of it at StopWithin regardless. A
+	// row reached later than its lease less this is released.
+	rowBudget = 5 * time.Second
 	// releaseBudget bounds handing unreached rows back.
 	releaseBudget = 2 * time.Second
 	// backoffBase and backoffCap shape the retry delay: 2 s doubling, at most 5 minutes.
@@ -56,7 +58,10 @@ type Drainer struct {
 	Facts                 PostFacts
 	Now                   func() time.Time
 	Tick, Debounce, Lease time.Duration
-	Log                   *slog.Logger
+	// StopWithin is how long a stop lets the drain's last work run once its context ends;
+	// zero means defaultStopWithin.
+	StopWithin time.Duration
+	Log        *slog.Logger
 
 	// The rate-limit holds Discord answered, kept across ticks: a channel whose bucket is
 	// spent, and the bot's global limit. 429s count against Discord's invalid-request limit.
@@ -102,12 +107,14 @@ func (d *Drainer) DrainOnce(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	land, end := landing(ctx, orDefault(d.StopWithin, defaultStopWithin))
+	defer end()
 	for i, p := range posts {
 		if ctx.Err() != nil || d.now().After(p.Lease.Add(-rowBudget)) {
-			d.release(ctx, posts[i:])
+			d.release(land, posts[i:])
 			return nil
 		}
-		rowCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), rowBudget)
+		rowCtx, cancel := context.WithTimeout(land, rowBudget)
 		d.drainRow(rowCtx, p, now)
 		cancel()
 	}
@@ -116,16 +123,17 @@ func (d *Drainer) DrainOnce(ctx context.Context) error {
 
 // release hands rows back unsent: a stop, or a lease too near its end to finish inside.
 func (d *Drainer) release(ctx context.Context, posts []Post) {
-	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), releaseBudget)
+	ctx, cancel := detached(ctx, releaseBudget)
 	defer cancel()
 	if err := d.Store.ReleaseClaim(ctx, posts); err != nil {
 		d.logger().Error("discordbot", "op", "post_release", "rows", len(posts), "err", err)
 	}
 }
 
-// write runs one store write on its own short context, detached from the row's budget.
+// write runs one store write on its own short context, detached from the row's budget but
+// capped by the drain's landing context, so a stop still ends it in time.
 func (d *Drainer) write(ctx context.Context, op string, raidID int64, do func(context.Context) error) {
-	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), writeBudget)
+	ctx, cancel := detached(ctx, writeBudget)
 	defer cancel()
 	d.logIfErr(do(ctx), op, raidID)
 }

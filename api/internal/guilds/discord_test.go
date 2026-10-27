@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -119,6 +120,40 @@ func TestRaidViewCarriesTheGuildChannel(t *testing.T) {
 	created := w.createRaid(t)
 	if created.Discord != (RaidDiscord{Available: true, Connected: true, PostDefault: true}) {
 		t.Fatalf("create answer: discord = %+v", created.Discord)
+	}
+}
+
+// TestRaidViewCountsAnActiveBotAsConnected pins a guild with only the bot (spec state 5's
+// primary path): the raid view offers the box, a ticked create reaches the poster (the
+// bot's router), and the box is remembered on the install.
+func TestRaidViewCountsAnActiveBotAsConnected(t *testing.T) {
+	w, events, hookDefaults := postingWorld(t)
+	w.h.svc.Discord = fakeDiscord{enabled: true, defaults: hookDefaults}
+	botDefaults := &[]bool{}
+	w.h.svc.Bot = fakeBot{on: true, defaults: botDefaults}
+	raid := w.createRaid(t)
+	if got := w.getRaid(t, raid.ID).Discord; got != (RaidDiscord{Available: true}) {
+		t.Fatalf("bot installed but not active: discord = %+v", got)
+	}
+
+	w.h.svc.Bot = fakeBot{on: true, active: true, postDefault: true, defaults: botDefaults}
+	w.as(w.member)
+	if got := w.getRaid(t, raid.ID).Discord; got != (RaidDiscord{Available: true, Connected: true, PostDefault: true}) {
+		t.Fatalf("bot only: discord = %+v", got)
+	}
+	created := w.createRaids(t, postingBody(time.Now().Add(9*24*time.Hour).UTC().Truncate(time.Minute).Format(time.RFC3339), 0, "true"))
+	if created[0].Discord != (RaidDiscord{Available: true, Connected: true, PostDefault: true}) || len(events.posted) != 1 {
+		t.Fatalf("create answer: discord = %+v, posted %d", created[0].Discord, len(events.posted))
+	}
+	// The first create carried the box unticked, the second ticked.
+	if len(*botDefaults) != 2 || (*botDefaults)[0] || !(*botDefaults)[1] {
+		t.Fatalf("bot post_default writes = %v", *botDefaults)
+	}
+
+	// The bot without connect still counts: the router posts through it.
+	w.h.svc.Discord = nil
+	if got := w.getRaid(t, raid.ID).Discord; got != (RaidDiscord{Available: true, Connected: true, PostDefault: true}) {
+		t.Fatalf("bot, connect off: discord = %+v", got)
 	}
 }
 

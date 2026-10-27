@@ -459,24 +459,57 @@ func TestRemoveLeavesTheServerWithoutThePlan(t *testing.T) {
 func TestActiveNeedsAChannelAndAPresentBot(t *testing.T) {
 	h := newInstallHarness(t)
 	ctx := context.Background()
-	if _, ok, _ := h.svc.Active(ctx, h.gid); ok {
+	if _, ok, _ := h.svc.ActiveInstall(ctx, h.gid); ok {
 		t.Fatal("active with no install")
 	}
 	h.callback(h.gid, "code=c", h.officerActor())
-	if _, ok, _ := h.svc.Active(ctx, h.gid); ok {
+	if _, ok, _ := h.svc.ActiveInstall(ctx, h.gid); ok {
 		t.Fatal("active with no channel")
 	}
 	if err := h.svc.d.Store.SetChannel(ctx, h.gid, "c1", "raid-signups"); err != nil {
 		t.Fatal(err)
 	}
-	if in, ok, err := h.svc.Active(ctx, h.gid); err != nil || !ok || in.ServerID != "srv1" {
+	if in, ok, err := h.svc.ActiveInstall(ctx, h.gid); err != nil || !ok || in.ServerID != "srv1" {
 		t.Fatalf("active = %+v %v %v", in, ok, err)
 	}
 	if err := h.svc.d.Store.MarkRemovedInDiscord(ctx, h.gid, "gone"); err != nil {
 		t.Fatal(err)
 	}
-	if _, ok, _ := h.svc.Active(ctx, h.gid); ok {
+	if _, ok, _ := h.svc.ActiveInstall(ctx, h.gid); ok {
 		t.Fatal("active after removal in Discord")
+	}
+}
+
+// TestActivePortCarriesThePostDefault pins guilds.DiscordBot's Active to ActiveInstall's rule
+// and the box SetPostDefault remembers on the install.
+func TestActivePortCarriesThePostDefault(t *testing.T) {
+	h := newInstallHarness(t)
+	ctx := context.Background()
+	if err := h.svc.SetPostDefault(ctx, h.gid, true); err != nil {
+		t.Fatalf("no install: %v", err)
+	}
+	h.callback(h.gid, "code=c", h.officerActor())
+	if active, _, err := h.svc.Active(ctx, h.gid); err != nil || active {
+		t.Fatalf("no channel: active %v err %v", active, err)
+	}
+	if err := h.svc.d.Store.SetChannel(ctx, h.gid, "c1", "raid-signups"); err != nil {
+		t.Fatal(err)
+	}
+	if active, def, err := h.svc.Active(ctx, h.gid); err != nil || !active || def {
+		t.Fatalf("channel saved: active %v default %v err %v", active, def, err)
+	}
+	if err := h.svc.SetPostDefault(ctx, h.gid, true); err != nil {
+		t.Fatal(err)
+	}
+	if active, def, _ := h.svc.Active(ctx, h.gid); !active || !def {
+		t.Fatalf("default on: active %v default %v", active, def)
+	}
+	unusable := ChannelUnusable{Reason: UnusableDeleted}
+	if err := h.svc.d.Store.MarkChannelUnusable(ctx, h.gid, unusable, "Unknown Channel"); err != nil {
+		t.Fatal(err)
+	}
+	if active, def, _ := h.svc.Active(ctx, h.gid); active || def {
+		t.Fatalf("channel unusable: active %v default %v", active, def)
 	}
 }
 
