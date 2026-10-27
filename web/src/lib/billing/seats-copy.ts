@@ -62,6 +62,9 @@ export const seatsCopy = {
     declined: (name: string): string => `${name} declined.`,
     noCandidates: 'No other officer has a Forever Sixty account yet.',
     failed: 'The offer did not send. Try again.',
+    // Additions: the design spec has no string for these two refusals.
+    inProgress: 'An offer or a plan change is already in progress. Reload to see where it stands.',
+    billingUnavailable: 'Billing is not available right now. Try again in a few minutes.',
   },
   receiver: {
     offer: (

@@ -3,7 +3,8 @@
      itself, reserves its ready height with Skeleton lines while that loads, and draws the blocks in
      order: plan line, size line, chooser, the seats and Who pays mount points, Records. -->
 <script lang="ts">
-  import { BillingApiError } from '../../lib/billing/api';
+  import { invalidateGuild } from '../../lib/guild/api';
+  import { upgradeOutcome } from '../../lib/guild/billing-errors';
   import { getGuildBilling, previewUpgrade, upgrade } from '../../lib/billing/guild-billing-api';
   import type { GuildBillingSettings, UpgradePreview } from '../../lib/billing/contract';
   import { guildBillingCopy as copy } from '../../lib/billing/guild-billing-copy';
@@ -41,6 +42,9 @@
   let committing = $state(false);
   let upgradeError = $state('');
   let moved = $state(false);
+  let unconfirmed = $state(false);
+  /** Stripe may still be settling an unconfirmed change: read the plan once more after this. */
+  const UNCONFIRMED_RECHECK_MS = 5000;
 
   const viewState = $derived(billingState(view, now));
   const payer = $derived(view !== null && canBill(view));
@@ -68,8 +72,14 @@
     try {
       const fresh = await previewUpgrade(guildId);
       if (token === previewToken) preview = fresh;
-    } catch {
-      if (token === previewToken) upgradeError = copy.upgrade.failed;
+    } catch (thrown) {
+      if (token !== previewToken) return;
+      if (upgradeOutcome(thrown) === 'reload-quiet') {
+        confirming = false;
+        await reloadFresh();
+      } else {
+        upgradeError = copy.upgrade.failed;
+      }
     }
   }
 
@@ -79,19 +89,27 @@
     upgradeError = '';
   }
 
-  /** A failure that is not a clean decline may have charged: show the plan as it now stands. */
+  /** Drops the cached guild pages and reads the billing view again. */
+  async function reloadFresh(): Promise<void> {
+    invalidateGuild(guildId);
+    await load();
+  }
+
   async function failCommit(thrown: unknown): Promise<void> {
-    if (thrown instanceof BillingApiError && thrown.code === 'preview_expired') {
+    const outcome = upgradeOutcome(thrown);
+    if (outcome === 'reopen') {
       await openConfirm();
       upgradeError = copy.upgrade.previewExpired;
-      return;
-    }
-    if (thrown instanceof BillingApiError && thrown.status === 409) {
+    } else if (outcome === 'declined') {
       upgradeError = copy.upgrade.failed;
-      return;
+    } else {
+      confirming = false;
+      await reloadFresh();
+      if (outcome === 'unconfirmed') {
+        unconfirmed = true;
+        window.setTimeout(() => void load(), UNCONFIRMED_RECHECK_MS);
+      }
     }
-    confirming = false;
-    await load();
   }
 
   async function commit(): Promise<void> {
@@ -131,6 +149,11 @@
         showMove={movesFromPlanLine(view, viewState)}
         onMove={() => void openConfirm()}
       />
+    {/if}
+    {#if unconfirmed}
+      <p class="text-muted text-[13px]" role="status" data-testid="guild-upgrade-unconfirmed">
+        {copy.upgrade.unconfirmed}
+      </p>
     {/if}
     {#if moved}
       <p class="text-muted text-[13px]" role="status" data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
