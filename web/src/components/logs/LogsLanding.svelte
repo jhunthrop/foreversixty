@@ -19,7 +19,7 @@
   import { waysOrder } from '../../lib/logs/panel-order';
   import { logsCompanionCopy } from '../../lib/reports/copy';
   import { myReportsCopy } from '../../lib/reports/my-reports-copy';
-  import Account from '../Account.svelte';
+  import type AccountIsland from '../Account.svelte';
   import CharacterHeader from '../character/CharacterHeader.svelte';
   import CompanionStatus from '../CompanionStatus.svelte';
   import MyReports from '../MyReports.svelte';
@@ -39,6 +39,11 @@
   /** `null` until a signed-in visitor's device list has answered. */
   let devices = $state<Device[] | null>(null);
   let newestReport = $state<NewestReport | null>(null);
+  /** The pairing block (Account.svelte's 'pairing' mode), imported only for a signed-in
+   *  visitor: the account island is the site's heaviest chunk and a signed-out /logs never
+   *  draws it, so it stays off the page's first-paint module graph. Loaded alongside the
+   *  device list, so it is ready before the hidden right column is revealed. */
+  let PairingAccount = $state<typeof AccountIsland | null>(null);
   let phone = $state(false);
   let upload = $state<Upload | undefined>(undefined);
 
@@ -59,8 +64,14 @@
       if (cancelled) return;
       me = session;
       if (session === null) return;
-      const [list, newest] = await Promise.all([listDevices().catch((): Device[] => []), newestOwnReport()]);
+      const [list, newest, pairingAccount] = await Promise.all([
+        listDevices().catch((): Device[] => []),
+        newestOwnReport(),
+        // A chunk that fails to load leaves the block out rather than the column hidden.
+        import('../Account.svelte').then((imported) => imported.default).catch(() => null),
+      ]);
       if (cancelled) return;
+      PairingAccount = pairingAccount;
       devices = list;
       newestReport = newest;
     })();
@@ -138,12 +149,12 @@
           <!-- The pairing code is for an account that has one to pair: signed out, the card is
                the sentence and the button, sized to its content, and the code block is not drawn. A signed-in visitor gets it once the session read answers, while
                the column is still hidden (.logs-pending), so nothing visibly moves. -->
-          {#if signedIn}
+          {#if signedIn && PairingAccount !== null}
             <div class="border-line-soft flex flex-col gap-3 border-t pt-3">
               <h3 class="label text-muted">
                 {paired ? logsCompanionCopy.pairAnotherLabel : logsCompanionCopy.pairLabel}
               </h3>
-              <Account mode="pairing" />
+              <PairingAccount mode="pairing" />
             </div>
           {/if}
         </LogsPanel>
