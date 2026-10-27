@@ -84,3 +84,22 @@ describe('Who pays and Receiver rows', () => {
     expect(r.notNow).toBe(spec('Receiver', 4));
   });
 });
+
+describe('instants read on the viewer calendar', () => {
+  const unlocks = '2026-12-20T20:00:00Z';
+
+  it('a seat that unlocks at 20:00 UTC is the 20th in Los Angeles and the 21st in Auckland', () => {
+    expect(copy.canMoveFrom(unlocks, 'America/Los_Angeles')).toBe('Can move from 20 Dec');
+    expect(copy.canMoveFrom(unlocks, 'Pacific/Auckland')).toBe('Can move from 21 Dec');
+    expect(copy.picker.lockedError(unlocks, 'Pacific/Auckland')).toBe('That seat can move from 21 Dec.');
+    const offer = copy.receiver.offer(
+      'Aela',
+      '2026-12-31T20:00:00Z',
+      12000,
+      'yearly',
+      true,
+      'Pacific/Auckland',
+    );
+    expect(offer).toContain('billed from 1 Jan 2027');
+  });
+});

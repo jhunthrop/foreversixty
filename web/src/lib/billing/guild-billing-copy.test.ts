@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
 import { billedLine, guildBillingCopy as copy, guildPlanLine } from './guild-billing-copy';
+import { FOUNDER_WINDOW_CLOSES } from './plans';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
 const spec = (label: string, index: number, fill: Record<string, string> = {}): string =>
@@ -153,5 +154,35 @@ describe('moved plan and billed lines', () => {
     expect(billedLine(billing())).toBe(spec('Line 2', 2, { Name: 'hunthrop#1894' }));
     expect(billedLine(billing({ you_are_billing_contact: true }))).toBe(spec('Line 2', 1));
     expect(billedLine(billing({ billed_by: '' }))).toBe('Granted by Forever Sixty.');
+  });
+});
+
+describe('founder line and gate spec', () => {
+  it('the closing day in the line is the 6th in the founder window own zone', () => {
+    const lastSecond = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1000);
+    const day = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'America/Los_Angeles',
+      day: 'numeric',
+      month: 'long',
+    }).format(lastSecond);
+    expect(copy.chooser.founderLine).toContain(`until ${day},`);
+  });
+
+  it('reads the scoped plan line from the officer tools gate spec', () => {
+    const gate = new URL('../../../../design/specs/2026-10-25-officer-tools-gate.md', import.meta.url);
+    const expected = specString(gate, '## 7. Copy, verbatim', 'Settings plan line, scoped', 0, {
+      'd Mon yyyy': '12 Dec 2026',
+    });
+    const scoped: GuildBillingView = {
+      tier: 'guild',
+      you_hold_seat: false,
+      status: 'active',
+      current_period_end: '2026-12-12T00:00:00Z',
+      cancel_at_period_end: false,
+      scope: 'officer_tools',
+      billed_by: '',
+      you_are_billing_contact: false,
+    };
+    expect(guildPlanLine(scoped)).toBe(expected);
   });
 });

@@ -3,7 +3,7 @@
 // Plan line, Line 2, Chooser, Size line, Upgrade confirm, Records and Gate. Prices and limits come
 // from ./plans, never written here. Every date arrives as stored and is read in UTC.
 import type { GuildBillingView } from '../account/api';
-import { utcDayMonth, utcDayMonthYear } from '../dates';
+import { utcDayMonthYear, zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { settingsWords } from '../guild/settings-view';
 import type { GuildTier } from './contract';
 import {
@@ -37,25 +37,25 @@ export type Line2State =
 
 const tierName = (tier: GuildTier): string => PLANS[tier].name;
 
-function planLine(state: GuildPlanLineState): string {
+function planLine(state: GuildPlanLineState, zone?: string): string {
   switch (state.kind) {
     case 'trial':
-      return `${tierName(state.tier)} · trial · first charge ${utcDayMonthYear(state.firstCharge)}: ${formatAmount(state.amountCents / CENTS_PER_DOLLAR)}`;
+      return `${tierName(state.tier)} · trial · first charge ${zonedDayMonthYear(state.firstCharge, zone)}: ${formatAmount(state.amountCents / CENTS_PER_DOLLAR)}`;
     case 'active':
-      return `${tierName(state.tier)} · renews ${utcDayMonthYear(state.renews)} · ${formatCents(state.amountCents, state.interval)}`;
+      return `${tierName(state.tier)} · renews ${zonedDayMonthYear(state.renews, zone)} · ${formatCents(state.amountCents, state.interval)}`;
     case 'ending':
-      return `${tierName(state.tier)} · ends ${utcDayMonthYear(state.ends)}`;
+      return `${tierName(state.tier)} · ends ${zonedDayMonthYear(state.ends, zone)}`;
     case 'ending-transfer':
-      return `${tierName(state.tier)} · ends ${utcDayMonthYear(state.ends)} · then billed by ${state.toName}`;
+      return `${tierName(state.tier)} · ends ${zonedDayMonthYear(state.ends, zone)} · then billed by ${state.toName}`;
     case 'lapsed':
-      return `Guild plan ended ${utcDayMonthYear(state.ended)}.`;
+      return `Guild plan ended ${zonedDayMonthYear(state.ended, zone)}.`;
   }
 }
 
-function line2(state: Line2State): string {
+function line2(state: Line2State, zone?: string): string {
   switch (state.kind) {
     case 'trial':
-      return `Cancel before ${utcDayMonth(state.cancelBefore)} and nothing is charged. Billed to you.`;
+      return `Cancel before ${zonedDayMonth(state.cancelBefore, zone)} and nothing is charged. Billed to you.`;
     case 'billed-to-you':
       return 'Billed to you.';
     case 'billed-by':
@@ -68,9 +68,15 @@ function line2(state: Line2State): string {
 }
 
 /** The prorated sentence: the rest of "this year" or "this month", then the next price. */
-function upgradeSentence(proratedCents: number, interval: Interval, from: string, nextCents: number): string {
+function upgradeSentence(
+  proratedCents: number,
+  interval: Interval,
+  from: string,
+  nextCents: number,
+  zone?: string,
+): string {
   const period = interval === 'yearly' ? 'year' : 'month';
-  return `Move to Raid guild? Today you pay ${formatAmount(proratedCents / CENTS_PER_DOLLAR)} for the rest of this ${period}. From ${utcDayMonthYear(from)} it is ${formatCents(nextCents, interval)}.`;
+  return `Move to Raid guild? Today you pay ${formatAmount(proratedCents / CENTS_PER_DOLLAR)} for the rest of this ${period}. From ${zonedDayMonthYear(from, zone)} it is ${formatCents(nextCents, interval)}.`;
 }
 
 const tierMemberLine = (tier: GuildTier): string => {
