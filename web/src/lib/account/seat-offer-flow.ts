@@ -21,9 +21,18 @@ export async function answerOffer(
   }
 }
 
+/** An answer is in flight: both buttons are disabled so it cannot be sent twice. */
+export const isBusy = (outcome: OfferOutcome): boolean => outcome === 'accepting' || outcome === 'declining';
+
+/** The offer has been answered for good: its buttons never come back. */
+export const isAnswered = (outcome: OfferOutcome): boolean =>
+  outcome === 'accepted' || outcome === 'declined';
+
 /** The line that replaces the offer once it is answered; empty while it is still open. */
 export function offerStatusLine(outcome: OfferOutcome, offer: MeSeatOffer, zone?: string): string {
   if (outcome === 'declined') return accountPlanCopy.offer.declined;
-  if (outcome !== 'accepted' || offer.own_ends_at === null) return '';
-  return accountPlanCopy.offer.accepted(offer.own_ends_at, zone);
+  if (outcome !== 'accepted') return '';
+  return offer.own_ends_at === null
+    ? accountPlanCopy.offer.acceptedNoDate
+    : accountPlanCopy.offer.accepted(offer.own_ends_at, zone);
 }

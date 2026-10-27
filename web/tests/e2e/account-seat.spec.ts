@@ -67,11 +67,36 @@ test('a payer sees the offer, accepts, and reads the new status', async ({ page 
     hit = route.request().url();
     return route.fulfill({ status: 204, body: '' });
   });
+  // After the accept the API sends the seat and no offer.
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      envelope({
+        user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
+        characters: [],
+        guilds: [],
+        entitlements: mockEntitlements({ billing: OWN_PREMIUM as never }),
+        notifications: { discord: null },
+        seat: ME_SEAT,
+      }),
+    ),
+  );
   await page.getByTestId('account-seat-offer-accept').click();
   await expect(page.getByTestId('account-seat-offer-status')).toHaveText(
     'Accepted. Your Premium ends 20 Dec 2026; the seat starts then.',
   );
   expect(hit).toContain('/seats/offer/accept');
+  await expect(page.getByTestId('account-seat-offer-accept')).toHaveCount(0);
+  await expect(page.getByTestId('account-billing-row')).toContainText(
+    'Premium · ends 20 Dec 2026 · then a seat from The Last Watch',
+  );
+});
+
+test('a refused accept shows the error line and keeps the offer open', async ({ page }) => {
+  await openAccount(page, { seat_offer: ME_SEAT_OFFER }, OWN_PREMIUM);
+  await page.route('**/v1/guilds/501/seats/offer/accept', (route) => route.fulfill(envelope(null, 500)));
+  await page.getByTestId('account-seat-offer-accept').click();
+  await expect(page.getByTestId('account-seat-offer-error')).toHaveText('That did not save. Try again.');
+  await expect(page.getByTestId('account-seat-offer-accept')).toBeEnabled();
 });
 
 test('declining gives its status', async ({ page }) => {
