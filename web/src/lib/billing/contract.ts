@@ -96,6 +96,8 @@ export interface UpgradePreview {
   next_amount_cents: number;
   interval: Interval;
   renews_at: string;
+  /** Unix seconds the amounts were priced at; the upgrade must send it back so the charge matches. */
+  proration_date: number;
 }
 
 /** `me.seat`: the Premium seat this account holds. */

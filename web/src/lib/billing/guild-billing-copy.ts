@@ -73,6 +73,8 @@ function line2(state: Line2State, zone?: string): string {
   }
 }
 
+const UPGRADE_LEAD_IN = 'Move to Raid guild? Today you pay ';
+
 /** The prorated sentence in three pieces, so the amount can be a placeholder while the preview loads. */
 function upgradeParts(
   proratedCents: number,
@@ -83,7 +85,7 @@ function upgradeParts(
 ): { before: string; amount: string; after: string } {
   const period = interval === 'yearly' ? 'year' : 'month';
   return {
-    before: 'Move to Raid guild? Today you pay ',
+    before: UPGRADE_LEAD_IN,
     amount: formatAmount(proratedCents / CENTS_PER_DOLLAR),
     after: ` for the rest of this ${period}. From ${zonedDayMonthYear(from, zone)} it is ${formatCents(nextCents, interval)}.`,
   };
@@ -136,6 +138,9 @@ export const guildBillingCopy = {
   upgrade: {
     sentence: upgradeSentence,
     parts: upgradeParts,
+    leadIn: UPGRADE_LEAD_IN,
+    // An addition: the design spec has no string for an expired preview.
+    previewExpired: 'Prices changed. Review the new amount.',
     commit: 'Move to Raid guild',
     committing: 'Moving…',
     keep: 'Keep Guild',

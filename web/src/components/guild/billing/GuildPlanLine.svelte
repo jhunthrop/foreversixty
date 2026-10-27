@@ -2,7 +2,7 @@
 <!-- The plan line, line 2, the past-due alert and the payer's buttons (spec 3.2.1): Manage billing
      (the Stripe portal) and, on Guild only, Move to Raid guild unless the size line carries it. -->
 <script lang="ts">
-  import { openPortal } from '../../../lib/billing/api';
+  import { BillingApiError, openPortal } from '../../../lib/billing/api';
   import type { GuildPlanView } from '../../../lib/billing/contract';
   import { billedLine, guildBillingCopy, guildPlanLine } from '../../../lib/billing/guild-billing-copy';
   import { billingBlockCopy } from '../../../lib/billing/copy';
@@ -51,9 +51,9 @@
     try {
       const result = await openPortal(guildId);
       window.location.assign(result.portal_url);
-    } catch {
-      // Any refusal reads the same to the payer: the portal did not open, try again.
-      unavailable = true;
+    } catch (thrown) {
+      // Retry helps for Stripe being down or the network, not for a refusal (403, 404).
+      unavailable = !(thrown instanceof BillingApiError) || thrown.status === 0 || thrown.status >= 500;
     } finally {
       busy = false;
     }

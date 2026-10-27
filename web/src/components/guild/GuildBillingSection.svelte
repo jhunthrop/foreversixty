@@ -3,6 +3,7 @@
      itself, reserves its ready height with Skeleton lines while that loads, and draws the blocks in
      order: plan line, size line, chooser, the seats and Who pays mount points, Records. -->
 <script lang="ts">
+  import { BillingApiError } from '../../lib/billing/api';
   import { getGuildBilling, previewUpgrade, upgrade } from '../../lib/billing/guild-billing-api';
   import type { GuildBillingSettings, UpgradePreview } from '../../lib/billing/contract';
   import { guildBillingCopy as copy } from '../../lib/billing/guild-billing-copy';
@@ -20,8 +21,11 @@
   import GuildPlanChooser from './billing/GuildPlanChooser.svelte';
   import GuildPlanLine from './billing/GuildPlanLine.svelte';
   import GuildRecords from './billing/GuildRecords.svelte';
+  import GuildSeats from './billing/GuildSeats.svelte';
   import GuildSizeLine from './billing/GuildSizeLine.svelte';
+  import GuildTransferOffer from './billing/GuildTransferOffer.svelte';
   import GuildUpgradeConfirm from './billing/GuildUpgradeConfirm.svelte';
+  import GuildWhoPays from './billing/GuildWhoPays.svelte';
 
   let { guildId, now = new Date() }: { guildId: number; now?: Date } = $props();
 
@@ -49,31 +53,52 @@
     void load();
   });
 
+  let previewToken = 0;
+
   async function openConfirm(): Promise<void> {
+    const token = ++previewToken;
     confirming = true;
     preview = null;
     upgradeError = '';
     try {
-      preview = await previewUpgrade(guildId);
+      const fresh = await previewUpgrade(guildId);
+      if (token === previewToken) preview = fresh;
     } catch {
-      upgradeError = copy.upgrade.failed;
+      if (token === previewToken) upgradeError = copy.upgrade.failed;
     }
   }
 
   function closeConfirm(): void {
+    previewToken += 1;
     confirming = false;
     upgradeError = '';
   }
 
+  /** A failure that is not a clean decline may have charged: show the plan as it now stands. */
+  async function failCommit(thrown: unknown): Promise<void> {
+    if (thrown instanceof BillingApiError && thrown.code === 'preview_expired') {
+      await openConfirm();
+      upgradeError = copy.upgrade.previewExpired;
+      return;
+    }
+    if (thrown instanceof BillingApiError && thrown.status === 409) {
+      upgradeError = copy.upgrade.failed;
+      return;
+    }
+    confirming = false;
+    await load();
+  }
+
   async function commit(): Promise<void> {
+    if (preview === null) return;
     committing = true;
     upgradeError = '';
     try {
-      view = await upgrade(guildId);
+      view = await upgrade(guildId, preview.proration_date);
       confirming = false;
       moved = true;
-    } catch {
-      upgradeError = copy.upgrade.failed;
+    } catch (thrown) {
+      await failCommit(thrown);
     } finally {
       committing = false;
     }
@@ -89,6 +114,14 @@
       <Skeleton lines={GUILD_BILLING_LOADING.lines} testid="guild-billing-skeleton" />
     </div>
   {:else}
+    {#if view.billing !== null && view.transfer?.to_you === true && view.transfer.state === 'offered'}
+      <GuildTransferOffer
+        {guildId}
+        plan={view.billing}
+        transfer={view.transfer}
+        onChanged={() => void load()}
+      />
+    {/if}
     {#if view.billing !== null && viewState.kind !== 'none'}
       <GuildPlanLine
         {guildId}
@@ -123,8 +156,26 @@
         {now}
       />
     {/if}
-    <div data-testid="guild-billing-seats-slot"></div>
-    <div data-testid="guild-billing-whopays-slot"></div>
+    <div data-testid="guild-billing-seats-slot">
+      <GuildSeats
+        {guildId}
+        seats={view.seats}
+        manage={view.can.includes('seats')}
+        {now}
+        onChanged={() => void load()}
+      />
+    </div>
+    <div data-testid="guild-billing-whopays-slot">
+      {#if view.billing !== null && view.can.includes('transfer')}
+        <GuildWhoPays
+          {guildId}
+          plan={view.billing}
+          transfer={view.transfer}
+          candidates={view.transfer_candidates}
+          onChanged={() => void load()}
+        />
+      {/if}
+    </div>
     <GuildRecords {guildId} />
     {#if !payer}
       <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">

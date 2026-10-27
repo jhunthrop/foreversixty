@@ -95,7 +95,7 @@ test('case 11: 28 members shows the size line and one Move to Raid guild; Escape
   await expect(page.getByTestId('guild-size-line')).toContainText('28 verified members.');
   await expect(page.getByRole('button', { name: 'Move to Raid guild' })).toHaveCount(1);
 
-  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade-preview`, (route) =>
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade-preview`, (route) =>
     route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
   );
   await page.getByTestId('guild-move-raid-guild').click();
@@ -107,10 +107,10 @@ test('case 11: 28 members shows the size line and one Move to Raid guild; Escape
 
 test('case 11: the commit updates the plan line and says it is done', async ({ page }) => {
   await openWith(page, GUILD_TIER_28_READ);
-  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade-preview`, (route) =>
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade-preview`, (route) =>
     route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
   );
-  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade`, (route) =>
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade`, (route) =>
     route.fulfill(
       envelope({
         ...GUILD_TIER_28_READ,
@@ -128,10 +128,10 @@ test('case 11: the commit updates the plan line and says it is done', async ({ p
 
 test('a 409 upgrade_failed shows its line and nothing moves', async ({ page }) => {
   await openWith(page, GUILD_TIER_28_READ);
-  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade-preview`, (route) =>
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade-preview`, (route) =>
     route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
   );
-  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade`, (route) =>
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade`, (route) =>
     route.fulfill(envelope({ code: 'upgrade_failed', message: 'declined' }, 409)),
   );
   await page.getByTestId('guild-move-raid-guild').click();
@@ -208,4 +208,55 @@ test('case 18: axe finds no violations and every control is at least 44px tall a
     .locator('a:visible, button:visible, input:visible')
     .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
   for (const height of heights) expect(height).toBeGreaterThanOrEqual(MIN_TAP_PX);
+});
+
+test('Manage billing: Stripe 503 shows the unavailable line, and Try again succeeds', async ({ page }) => {
+  await openWith(page, guildBillingRead({ billing: planView({ current_period_end: NOON }) }));
+  let asked = 0;
+  await page.route('**/v1/billing/portal', (route) => {
+    asked += 1;
+    if (asked === 1) {
+      return route.fulfill(
+        envelope({ code: 'billing_unavailable', message: 'billing is not available' }, 503),
+      );
+    }
+    return route.fulfill(envelope({ portal_url: 'https://billing.stripe.com/guild' }));
+  });
+  await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
+  await page.getByTestId('guild-manage-billing').click();
+  await expect(page.getByTestId('guild-billing-unavailable')).toBeVisible();
+  await page.getByTestId('guild-billing-retry').click();
+  await page.waitForURL('https://billing.stripe.com/**');
+  expect(asked).toBe(2);
+});
+
+test('a 409 preview_expired shows the prices-changed line and reloads the preview', async ({ page }) => {
+  await openWith(page, GUILD_TIER_28_READ);
+  let previews = 0;
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade-preview`, (route) => {
+    previews += 1;
+    return route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON }));
+  });
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade`, (route) => {
+    expect(route.request().postDataJSON()).toEqual({ proration_date: UPGRADE_PREVIEW.proration_date });
+    return route.fulfill(envelope({ code: 'preview_expired', message: 'old' }, 409));
+  });
+  await page.getByTestId('guild-move-raid-guild').click();
+  await page.getByTestId('guild-upgrade-commit').click();
+  await expect(page.getByTestId('guild-upgrade-error')).toHaveText('Prices changed. Review the new amount.');
+  expect(previews).toBe(2);
+});
+
+test.describe('a viewer in Los Angeles', () => {
+  test.use({ timezoneId: 'America/Los_Angeles' });
+
+  test('a Stripe date just after midnight UTC reads as the day before; an operator grant stays on its day', async ({
+    page,
+  }) => {
+    await openWith(
+      page,
+      guildBillingRead({ billing: planView({ current_period_end: '2026-12-01T03:00:00Z' }) }),
+    );
+    await expect(page.getByTestId('guild-billing-plan')).toContainText('renews 30 Nov 2026');
+  });
 });

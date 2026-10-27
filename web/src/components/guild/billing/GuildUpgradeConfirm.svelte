@@ -36,8 +36,6 @@
         ),
   );
 
-  const lead = copy.upgrade.parts(0, 'monthly', '2026-01-01', 0).before;
-
   function onKeydown(event: KeyboardEvent): void {
     if (event.key !== 'Escape') return;
     event.preventDefault();
@@ -55,7 +53,7 @@
 >
   <div id="guild-upgrade-sentence" class="flex flex-wrap items-center text-[14px]">
     {#if parts === null}
-      <span>{lead}</span>
+      <span>{copy.upgrade.leadIn}</span>
       <span class="w-16"
         ><Skeleton
           lines={1}

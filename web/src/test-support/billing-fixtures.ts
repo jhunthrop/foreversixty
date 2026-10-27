@@ -233,6 +233,7 @@ export const UPGRADE_PREVIEW: UpgradePreview = {
   next_amount_cents: 2500,
   interval: 'monthly',
   renews_at: '2026-12-01T00:00:00Z',
+  proration_date: 1792000000,
 };
 
 /** §9 case 13: the sender's view while the offer waits, the receiver's view, and a decline. */
