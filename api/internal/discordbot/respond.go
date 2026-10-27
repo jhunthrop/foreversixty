@@ -90,11 +90,19 @@ func (s *Service) route(in Interaction) (h Handler, update, ok bool) {
 	return h, s.updating[prefix], ok
 }
 
+// guildFreeCommands are the commands that need no installed guild: they answer the same in
+// an unbound server or a DM.
+func guildFreeCommands() map[string]bool { return map[string]bool{"link": true, "help": true} }
+
 // dispatch resolves the route and the server, then answers or defers.
 func (s *Service) dispatch(ctx context.Context, w http.ResponseWriter, in Interaction) {
 	h, update, ok := s.route(in)
 	if !ok {
 		s.writeReply(w, failureReply(), respMessage)
+		return
+	}
+	if in.Type == typeCommand && guildFreeCommands()[in.CommandName()] {
+		s.answerOrDefer(ctx, w, in, h, update)
 		return
 	}
 	_, bound, err := s.serverGuild(ctx, in)

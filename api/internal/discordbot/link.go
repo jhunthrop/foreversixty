@@ -3,6 +3,7 @@ package discordbot
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -50,13 +51,16 @@ func (s *Service) LinkAvailable() bool { return s.d.Notify != nil && s.d.OAuth !
 func (s *Service) DiscordLink(ctx context.Context, userID int64) (*auth.DiscordLinkBlock, *string, error) {
 	link, linked, err := s.d.Store.LinkByUser(ctx, userID)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("discordbot: discord link: %w", err)
 	}
 	if linked {
 		return &auth.DiscordLinkBlock{DisplayName: link.DisplayName}, nil, nil
 	}
 	suggested, err := s.d.Store.SuggestedGuild(ctx, userID)
-	return nil, suggested, err
+	if err != nil {
+		return nil, nil, fmt.Errorf("discordbot: discord link: %w", err)
+	}
+	return nil, suggested, nil
 }
 
 func (s *Service) accountRedirect(w http.ResponseWriter, r *http.Request, outcome string) {
@@ -96,6 +100,10 @@ func (s *Service) linkCallback(w http.ResponseWriter, r *http.Request, cs notify
 	}
 	query := r.URL.Query()
 	code := query.Get("code")
+	if discordError := query.Get("error"); discordError != "" && discordError != oauthAccessDenied {
+		s.accountRedirect(w, r, linkFailed)
+		return
+	}
 	if code == "" || query.Get("error") == oauthAccessDenied {
 		s.accountRedirect(w, r, linkDenied)
 		return
@@ -124,10 +132,12 @@ func (s *Service) finishLink(r *http.Request, userID int64, code string) string 
 
 // unlink removes the caller's link; 204 whether or not one existed.
 func (s *Service) unlink(w http.ResponseWriter, r *http.Request) {
-	if err := s.d.Store.DeleteLink(r.Context(), auth.ActorFrom(r.Context()).UserID); err != nil {
+	userID := auth.ActorFrom(r.Context()).UserID
+	if err := s.d.Store.DeleteLink(r.Context(), userID); err != nil {
 		s.log.Error("discordbot", "id", httpx.RequestIDFrom(r.Context()), "op", "unlink", "err", err)
 		httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not unlink just now", nil)
 		return
 	}
+	s.log.Info("discordbot", "op", "unlink", "user_id", userID)
 	w.WriteHeader(http.StatusNoContent)
 }
