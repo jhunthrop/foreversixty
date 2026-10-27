@@ -135,8 +135,12 @@ test.describe('the picker', () => {
     await expect(id(page, 'bot-picker-server')).toContainText(`${guildBotCopy.picker.added} Olympus Discord`);
     const select = id(page, 'bot-channel');
     await expect(select).toHaveValue(RAID_CHANNEL_ID);
+    // The list's order (the native list cannot be screenshotted open): the uncategorised channels
+    // first, then one optgroup per Discord category in Discord's order.
     await expect(select.locator('optgroup')).toHaveCount(1);
+    await expect(select.locator('optgroup')).toHaveAttribute('label', 'Olympus Raids');
     await expect(select.locator('option').nth(1)).toHaveText('#general');
+    await expect(select.locator('optgroup option')).toHaveText(['#raid-signups', '#officers']);
     await select.selectOption('');
     await id(page, 'bot-channel-save').click();
     await expect(id(page, 'bot-channel-empty-press')).toHaveText(guildBotCopy.picker.emptyPress);
@@ -145,6 +149,7 @@ test.describe('the picker', () => {
     await id(page, 'bot-channel-save').click();
     await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.installed.saved);
     await expect(id(page, 'bot-test')).toBeFocused();
+    expect(await id(page, 'bot-test').evaluate((el) => el.matches(':focus-visible'))).toBe(true);
     await expect(id(page, 'bot-destination')).toContainText('#raid-signups');
     expect(seen.saves).toEqual([RAID_CHANNEL_ID]);
   });
@@ -166,6 +171,7 @@ test.describe('the picker', () => {
     await expect(id(page, 'bot-channel')).toContainText(guildBotCopy.picker.loading);
     await expect(id(page, 'bot-channel')).toHaveAttribute('aria-busy', 'true');
     await expect(id(page, 'bot-channel-save')).toBeDisabled();
+    await expect(id(page, 'bot-channel-save')).toHaveClass(/opacity-50/);
     await expect(id(page, 'bot-channel')).toBeEnabled();
   });
 
@@ -227,8 +233,13 @@ test.describe('installed', () => {
   });
 
   test('three failures warn; a test clears them and says to check the channel', async ({ page }) => {
-    const seen = await open(page, { discord: botSettings({ failures: 3, last_error: 'Missing Access' }) });
-    await expect(id(page, 'bot-warning')).toContainText('The last 3 posts failed');
+    const seen = await open(page, {
+      discord: botSettings({ failures: 3, last_error: 'discord status 403 code 50013' }),
+    });
+    const warning = id(page, 'bot-warning');
+    await expect(warning).toContainText(guildBotCopy.failureWarning.failures(3, 'raid-signups'));
+    await expect(warning).toContainText(guildBotCopy.failureWarning.permissions('raid-signups'));
+    await expect(warning).not.toContainText('switches off');
     await id(page, 'bot-test').click();
     await expect(section(page).getByRole('status')).toHaveText(copy.testSent);
     await expect(id(page, 'bot-warning')).toHaveCount(0);
@@ -238,6 +249,9 @@ test.describe('installed', () => {
   test('Change channel reopens the picker with the current channel and Cancel', async ({ page }) => {
     await open(page, { discord: botSettings({}) });
     await id(page, 'bot-change').click();
+    await expect(id(page, 'bot-picker-server')).toContainText(
+      `${guildBotCopy.picker.serverLead} Olympus Discord`,
+    );
     await expect(id(page, 'bot-channel')).toHaveValue(RAID_CHANNEL_ID);
     await expect(id(page, 'bot-channel')).toBeFocused();
     await id(page, 'bot-channel-cancel').click();
@@ -351,7 +365,7 @@ test.describe('axe, 44 px targets at 360, and the §3.1 caps', () => {
     { name: 'installed', options: { discord: botSettings({}) }, cap: CAPS.installed },
     {
       name: 'installed with warning',
-      options: { discord: botSettings({ failures: 3, last_error: 'Missing Access' }) },
+      options: { discord: botSettings({ failures: 3, last_error: 'discord status 403 code 50013' }) },
       cap: CAPS['installed with warning'],
     },
     {

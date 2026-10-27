@@ -157,7 +157,7 @@
 </script>
 
 <p class="text-[14px]" data-testid="bot-picker-server">
-  <span class="text-muted">{guildBotCopy.picker.added}</span>
+  <span class="text-muted">{changing ? guildBotCopy.picker.serverLead : guildBotCopy.picker.added}</span>
   <span class="text-strong font-semibold">{serverName}</span>
 </p>
 
@@ -218,9 +218,7 @@
         </button>
       {:else}
         <button
-          class="{PRIMARY_BUTTON_FIXED} px-4 {saveOff && listState !== 'loading'
-            ? 'cursor-not-allowed opacity-50'
-            : ''}"
+          class="{PRIMARY_BUTTON_FIXED} px-4 {saveOff ? 'cursor-not-allowed opacity-50' : ''}"
           disabled={saveOff}
           aria-busy={saving}
           onclick={() => void save()}

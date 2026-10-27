@@ -3,6 +3,7 @@ import type { GuildBot, GuildBotChannel, GuildChannelUnusable } from './api';
 import { guildBotCopy, joinPermissions } from './discord-bot-copy';
 import {
   BOT_FOCUS,
+  botFailureWarning,
   botReturnOutcome,
   groupChannels,
   preselectAfterUnusable,
@@ -153,5 +154,32 @@ describe('state 2b, the channel cannot be used', () => {
     expect(preselectAfterUnusable(list, '2', NO_SEND.reason)).toBe('2');
     expect(preselectAfterUnusable(list, '9', NO_SEND.reason)).toBeNull();
     expect(preselectAfterUnusable(list, null, NO_SEND.reason)).toBeNull();
+  });
+});
+
+describe('botFailureWarning', () => {
+  const w = guildBotCopy.failureWarning;
+  const failed = (failures: number, last_error: string | null) =>
+    botFailureWarning({ ...BOT, failures, last_error });
+
+  it('is absent until a post fails, and stays past five (the bot never switches itself off)', () => {
+    expect(failed(0, null)).toBeNull();
+    expect(failed(1, null)).toEqual({ failures: w.failures(1, 'raid-signups'), cause: null });
+    expect(failed(7, 'discord status 503 code 0')?.failures).toBe(w.failures(7, 'raid-signups'));
+  });
+
+  it("names the permissions and the channel for Discord's permission refusals, never the raw error", () => {
+    for (const error of [
+      'discord status 403 code 50013',
+      'discord status 403 code 50001',
+      'discord status 404 code 50001',
+    ])
+      expect(failed(3, error)?.cause).toBe(w.permissions('raid-signups'));
+  });
+
+  it('says Discord did not answer for a 5xx or a transport failure, and nothing for any other refusal', () => {
+    expect(failed(3, 'discord status 502 code 0')?.cause).toBe(w.noAnswer);
+    expect(failed(3, 'context deadline exceeded')?.cause).toBe(w.noAnswer);
+    expect(failed(3, 'discord status 400 code 50035')?.cause).toBeNull();
   });
 });

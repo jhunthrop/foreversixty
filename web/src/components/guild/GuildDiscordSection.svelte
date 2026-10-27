@@ -221,7 +221,7 @@
     focusSelect = false;
     pickerSaving = false;
     show({ ok: true, message: guildBotCopy.installed.saved, stays: true });
-    focus.request(BOT_FOCUS.testButton);
+    focus.request(BOT_FOCUS.testButton, { visible: true });
   }
 
   function onKeydown(event: KeyboardEvent): void {

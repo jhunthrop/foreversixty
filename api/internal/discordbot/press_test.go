@@ -91,6 +91,8 @@ type pressWorld struct {
 	gid    int64
 	uid    int64
 	raidID int64
+	// raidStart is the raid's start, for the outcomes' day.
+	raidStart time.Time
 }
 
 func newPressWorld(t *testing.T) *pressWorld {
@@ -115,9 +117,13 @@ func newPressWorld(t *testing.T) *pressWorld {
 	}
 	w.port = &pressGuilds{Service: w.gs}
 	w.svc = New(Deps{Store: st, REST: w.rest, Guilds: w.port, PublicBaseURL: pressPublic, APIBaseURL: pressAPI, Log: slog_(w.log)})
-	w.raidID = w.addRaid(t, w.gid, time.Now().Add(48*time.Hour))
+	w.raidStart = time.Now().Add(48 * time.Hour).Truncate(time.Minute)
+	w.raidID = w.addRaid(t, w.gid, w.raidStart)
 	return w
 }
+
+// day is the raid's day as the press outcomes name it (the guild has no raid zone: UTC).
+func (w *pressWorld) day() string { return w.raidStart.UTC().Format("Mon 2 Jan") }
 
 func (w *pressWorld) addRaid(t *testing.T, guildID int64, starts time.Time) int64 {
 	t.Helper()
@@ -280,8 +286,8 @@ func TestPressCopyMatchesTheSpec(t *testing.T) {
 		"Out":          {pressCopy.OutSaved, outcome(4)},
 		"Moved":        {pressCopy.Moved, outcome(5)},
 		"Already":      {pressCopy.Already, outcome(6)},
-		"AlreadyBench": {pressCopy.AlreadyBench, "{Name} " + outcome(7) + " for {Title}."},
-		"AlreadyOut":   {pressCopy.AlreadyOut, "{Name} " + outcome(8) + " for {Title}."},
+		"AlreadyBench": {pressCopy.AlreadyBench, "{Name} " + outcome(7) + " for {Title}, {Date}."},
+		"AlreadyOut":   {pressCopy.AlreadyOut, "{Name} " + outcome(8) + " for {Title}, {Date}."},
 		"NoRaid":       {pressCopy.NoRaid, specString(t, pressHeading, "`/raid`", 5, nil)},
 		"CountOpen":    {pressCopy.CountOpen, " " + specString(t, pressHeading, "Post fields", 12, nil) + "."},
 	}
@@ -295,8 +301,8 @@ func TestPressCopyMatchesTheSpec(t *testing.T) {
 func TestPressFlowSentences(t *testing.T) {
 	title := "Onyxia's Lair"
 	zulmara := func(t *testing.T, w *pressWorld) { w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true) }
-	inSentence := func(signed string) string {
-		return spec(t, "Press: outcomes", 0, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "signed": signed, "size": "40"})
+	inSentence := func(w *pressWorld, signed string) string {
+		return spec(t, "Press: outcomes", 0, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day(), "signed": signed, "size": "40"})
 	}
 	cases := []struct {
 		name    string
@@ -341,22 +347,22 @@ func TestPressFlowSentences(t *testing.T) {
 			w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", false)
 		}, want: func(*pressWorld) string { return spec(t, "Press: refusals", 6, nil) }},
 		{name: "one verified In", setup: zulmara,
-			want: func(*pressWorld) string { return inSentence("1") }},
+			want: func(w *pressWorld) string { return inSentence(w, "1") }},
 		{name: "late", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "late") },
-			want: func(*pressWorld) string {
-				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title})
+			want: func(w *pressWorld) string {
+				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day()})
 			},
 			buttons: func(w *pressWorld) []wantButton { return []wantButton{{pressCopy.NoteButton, w.raidURL() + "#signup"}} }},
 		{name: "bench", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "bench") },
-			want: func(*pressWorld) string {
-				return spec(t, "Press: outcomes", 3, map[string]string{"Name": "Zulmara", "Title": title})
+			want: func(w *pressWorld) string {
+				return spec(t, "Press: outcomes", 3, map[string]string{"Name": "Zulmara", "Title": title, "Date": w.day()})
 			}},
 		{name: "out", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "out") },
-			want: func(*pressWorld) string {
-				return spec(t, "Press: outcomes", 4, map[string]string{"Name": "Zulmara", "Title": title})
+			want: func(w *pressWorld) string {
+				return spec(t, "Press: outcomes", 4, map[string]string{"Name": "Zulmara", "Title": title, "Date": w.day()})
 			}},
 		{name: "R3 move", update: true, setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)
@@ -366,15 +372,15 @@ func TestPressFlowSentences(t *testing.T) {
 			}
 		},
 			act: func(t *testing.T, w *pressWorld) Reply { return w.pick(t, "in", keyZulmara) },
-			want: func(*pressWorld) string {
-				return strings.TrimSuffix(inSentence("1"), " 1 of 40 signed up.") +
+			want: func(w *pressWorld) string {
+				return strings.TrimSuffix(inSentence(w, "1"), " 1 of 40 signed up.") +
 					spec(t, "Press: outcomes", 5, map[string]string{"Other": "Duskstrider"})
 			}},
 		{name: "already", setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)
 			w.press(t, "in")
-		}, want: func(*pressWorld) string {
-			return spec(t, "Press: outcomes", 6, map[string]string{"Name": "Zulmara", "State": "In", "Role": "DPS", "Title": title})
+		}, want: func(w *pressWorld) string {
+			return spec(t, "Press: outcomes", 6, map[string]string{"Name": "Zulmara", "State": "In", "Role": "DPS", "Title": title, "Date": w.day()})
 		}},
 		{name: "rate limited", setup: func(t *testing.T, w *pressWorld) {
 			zulmara(t, w)

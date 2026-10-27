@@ -243,10 +243,10 @@ func signupRefusal(err error) (string, bool) {
 // outcome words what the sign-up now says. The post is not touched: the service's mark
 // brings it up to date through the coalesced edit.
 func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupResult) Reply {
-	name, title := memberText(res.Character.Name), memberText(res.Raid.Title)
-	role := roleWord(res.Character.Role)
+	raid := []string{"{Name}", memberText(res.Character.Name), "{Role}", roleWord(res.Character.Role),
+		"{Title}", memberText(res.Raid.Title), "{Date}", raidDay(res.Raid)}
 	if res.Unchanged {
-		return a.reply(alreadySentence(a.State, name, role, title))
+		return a.reply(alreadySentence(a.State, raid))
 	}
 	moved := ""
 	if res.Moved != nil {
@@ -254,28 +254,40 @@ func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupRes
 	}
 	switch a.State {
 	case guilds.SignupIn:
-		lead := fill(pressCopy.InSaved, "{Name}", name, "{Role}", role, "{Title}", title)
+		lead := fill(pressCopy.InSaved, raid...)
 		if moved != "" {
 			return a.reply(lead + moved)
 		}
 		return a.reply(lead + countClause(res.Raid))
 	case guilds.SignupLate:
-		text := fill(pressCopy.LateSaved, "{Name}", name, "{Role}", role, "{Title}", title) + moved
+		text := fill(pressCopy.LateSaved, raid...) + moved
 		return a.reply(text, linkButton(pressCopy.NoteButton, s.noteURL(ctx, a.RaidID)))
 	case guilds.SignupBench:
-		return a.reply(fill(pressCopy.BenchSaved, "{Name}", name, "{Title}", title))
+		return a.reply(fill(pressCopy.BenchSaved, raid...))
 	}
-	return a.reply(fill(pressCopy.OutSaved, "{Name}", name, "{Title}", title))
+	return a.reply(fill(pressCopy.OutSaved, raid...))
 }
 
-func alreadySentence(state, name, role, title string) string {
+// raidDay is the raid's day as the outcomes name it, "Thu 10 Dec", in the guild's raid zone
+// (UTC when the guild never set one), the /signup raid choices' own date.
+func raidDay(v guilds.RaidView) string {
+	zone := ""
+	if v.GuildTimezone != nil {
+		zone = *v.GuildTimezone
+	}
+	return v.StartsAt.In(raidLocation(zone)).Format(raidChoiceDate)
+}
+
+// alreadySentence is a press of the state the character already has; raid is the outcome's
+// marker pairs.
+func alreadySentence(state string, raid []string) string {
 	switch state {
 	case guilds.SignupBench:
-		return fill(pressCopy.AlreadyBench, "{Name}", name, "{Title}", title)
+		return fill(pressCopy.AlreadyBench, raid...)
 	case guilds.SignupOut:
-		return fill(pressCopy.AlreadyOut, "{Name}", name, "{Title}", title)
+		return fill(pressCopy.AlreadyOut, raid...)
 	}
-	return fill(pressCopy.Already, "{Name}", name, "{State}", stateWord(state), "{Role}", role, "{Title}", title)
+	return fill(pressCopy.Already, append(raid, "{State}", stateWord(state))...)
 }
 
 // countClause is " 23 of 40 signed up." (In plus Late), or " 23 signed up." for a raid of

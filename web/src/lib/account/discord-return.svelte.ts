@@ -6,7 +6,9 @@ import { refreshAfterConnect, returnOutcome, takeReturnFlag, type ReturnOutcome 
 
 export interface FocusQueue {
   /** Focus the first element matching `selector` once it exists (null cancels). */
-  request: (selector: string | null) => void;
+  /** `visible` draws the focus ring even when a mouse press led here (Chromium otherwise hides
+   *  it after programmatic focus that follows a click). */
+  request: (selector: string | null, options?: { visible?: boolean }) => void;
 }
 
 /**
@@ -16,6 +18,7 @@ export interface FocusQueue {
  */
 export function createFocusQueue(watch: () => unknown): FocusQueue {
   let pending = $state<string | null>(null);
+  let visible = false;
   $effect(() => {
     const selector = pending;
     if (selector === null) return;
@@ -23,12 +26,13 @@ export function createFocusQueue(watch: () => unknown): FocusQueue {
     void tick().then(() => {
       const target = document.querySelector<HTMLElement>(selector);
       if (target === null) return;
-      target.focus();
+      target.focus(visible ? { focusVisible: true } : undefined);
       if (pending === selector) pending = null;
     });
   });
   return {
-    request: (selector) => {
+    request: (selector, options) => {
+      visible = options?.visible === true;
       pending = selector;
     },
   };
