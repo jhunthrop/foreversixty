@@ -491,7 +491,7 @@ func (w *pressWorld) forgetCandidates() {
 func TestAutocompleteCachesCandidatesPerAccount(t *testing.T) {
 	w := newPressWorld(t)
 	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
-	clock := &testClock{t: time.Now()}
+	clock := &testClock{t: time.Now().Truncate(time.Microsecond)} // Postgres keeps microseconds
 	w.svc.now = clock.now
 	for range 3 {
 		w.suggest(t, pressDiscord, optCharacter, "z")

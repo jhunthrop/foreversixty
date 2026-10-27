@@ -86,7 +86,10 @@ func newPostWorld(t *testing.T) *postWorld {
 	st := testStore(t)
 	w := &postWorld{
 		st: st, rest: &FakeREST{}, facts: &fakeFacts{by: map[int64]guilds.RaidPostFacts{}},
-		clock: &testClock{t: time.Now().Add(time.Second)}, poster: &notify.FakePoster{}, log: &bytes.Buffer{},
+		// Postgres keeps microseconds, so the clock starts on one: an instant read back from a
+		// row then compares exactly with the clock instead of landing a few nanoseconds before it.
+		clock:  &testClock{t: time.Now().Add(time.Second).Truncate(time.Microsecond)},
+		poster: &notify.FakePoster{}, log: &bytes.Buffer{},
 	}
 	w.uid = seedUser(t, st.Pool)
 	w.gid = seedGuild(t, st.Pool, "Olympus XXVII")
