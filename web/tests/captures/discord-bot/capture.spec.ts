@@ -137,7 +137,10 @@ atWidths('4 installed', ALL, async (page, width) => {
   await settle(page);
   await shoot(page, 4, 'just-saved', width, section(page));
   await eachState(await fresh(page), 4, width, [
-    ['warning-3-failures', { discord: botSettings({ failures: 3, last_error: 'discord status 403 code 50001' }) }],
+    [
+      'warning-3-failures',
+      { discord: botSettings({ failures: 3, last_error: 'discord status 403 code 50001' }) },
+    ],
   ]);
   const remove = await fresh(page);
   await openSettings(remove, width, { discord: botSettings({}, WEBHOOK) });
