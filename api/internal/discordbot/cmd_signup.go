@@ -37,6 +37,10 @@ func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) 
 			return a.reply(pressCopy.Failure), nil
 		}
 		a.RaidID = id
+		// A named raid's state is told only to a member, so its ids cannot be probed.
+		if rep, member, err := s.memberGate(ctx, a); err != nil || !member {
+			return s.gateAnswer(in, rep, err), nil
+		}
 		return s.runFlow(ctx, in, a), nil
 	}
 	raidID, rep, err := s.nextRaidFor(ctx, a)
@@ -50,15 +54,31 @@ func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) 
 	return s.runFlow(ctx, in, a), nil
 }
 
-// nextRaidFor is the guild's next signable raid. A non-member learns nothing of the calendar
-// (R1): the member sentences answer first. raidID is 0 with the answer when there is none.
-func (s *Service) nextRaidFor(ctx context.Context, a signupAsk) (int64, Reply, error) {
-	cands, err := s.d.Guilds.SignupCandidates(ctx, a.GuildID, a.UserID)
+// memberGate answers an account with no verified character in the guild with the member
+// sentences (R1: nothing of the calendar before that); member is true otherwise.
+func (s *Service) memberGate(ctx context.Context, a signupAsk) (Reply, bool, error) {
+	cands, err := s.signupCandidates(ctx, a.GuildID, a.UserID)
 	if err != nil {
-		return 0, Reply{}, fmt.Errorf("discordbot: signup candidates: %w", err)
+		return Reply{}, false, err
 	}
-	if len(verifiedOf(cands)) == 0 {
-		rep, err := s.notSignable(ctx, a, cands)
+	if len(verifiedOf(cands)) > 0 {
+		return Reply{}, true, nil
+	}
+	rep, err := s.notSignable(ctx, a, cands)
+	return rep, false, err
+}
+
+func (s *Service) gateAnswer(in Interaction, rep Reply, err error) Reply {
+	if err != nil {
+		return s.saveFailed(in, false, err)
+	}
+	return rep
+}
+
+// nextRaidFor is the guild's next signable raid, asked only for a member. raidID is 0 with the
+// answer when there is none.
+func (s *Service) nextRaidFor(ctx context.Context, a signupAsk) (int64, Reply, error) {
+	if rep, member, err := s.memberGate(ctx, a); err != nil || !member {
 		return 0, rep, err
 	}
 	raids, err := s.signableRaids(ctx, a.GuildID)
@@ -71,7 +91,7 @@ func (s *Service) nextRaidFor(ctx context.Context, a signupAsk) (int64, Reply, e
 	return raids[0].ID, Reply{}, nil
 }
 
-// signableRaids are the guild's planned or locked raids that have not ended, soonest first.
+// signableRaids are the guild's Signable raids, soonest first.
 func (s *Service) signableRaids(ctx context.Context, guildID int64) ([]guilds.Raid, error) {
 	now := s.now()
 	raids, err := s.d.Guilds.PlannedRaids(ctx, guildID, now)
@@ -80,7 +100,7 @@ func (s *Service) signableRaids(ctx context.Context, guildID int64) ([]guilds.Ra
 	}
 	out := make([]guilds.Raid, 0, len(raids))
 	for _, r := range raids {
-		if (r.Status == guilds.RaidPlanned || r.Status == guilds.RaidLocked) && !r.Ended(now) {
+		if r.Signable(now) {
 			out = append(out, r)
 		}
 	}

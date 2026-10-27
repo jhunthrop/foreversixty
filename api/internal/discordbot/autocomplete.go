@@ -35,9 +35,9 @@ func (s *Service) autocompleteSignup(ctx context.Context, in Interaction) ([]Cho
 	if err != nil || !bound {
 		return []Choice{}, err
 	}
-	cands, err := s.d.Guilds.SignupCandidates(ctx, guildID, userID)
+	cands, err := s.signupCandidates(ctx, guildID, userID)
 	if err != nil {
-		return nil, fmt.Errorf("discordbot: signup autocomplete: %w", err)
+		return nil, err
 	}
 	verified := verifiedOf(cands)
 	if len(verified) == 0 {

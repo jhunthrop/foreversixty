@@ -98,6 +98,8 @@ type Service struct {
 	updating      map[string]bool
 	// commandSet replaces Commands() when set (tests).
 	commandSet func() []Command
+	// candidates caches each account's sign-up candidates briefly (candidates.go).
+	candidates candidateCache
 	// stopDrainer ends the post drainer StartDrainer began; nil when none runs.
 	stopDrainer func(ctx context.Context) error
 }

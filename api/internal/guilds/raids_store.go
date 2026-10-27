@@ -62,6 +62,12 @@ func (r Raid) Ended(now time.Time) bool {
 	return r.Status != RaidDone && r.Status != RaidCancelled && now.After(r.EndsAt())
 }
 
+// Signable reports whether members can still answer the raid at now: planned or locked, and
+// not yet ended. It is NextRaid's rule; the bot's /signup lists the raids it holds for.
+func (r Raid) Signable(now time.Time) bool {
+	return (r.Status == RaidPlanned || r.Status == RaidLocked) && r.EndsAt().After(now)
+}
+
 // RaidInput carries the editable fields of a raid. GuildID and CreatedBy matter on create only.
 type RaidInput struct {
 	GuildID         int64
@@ -254,7 +260,7 @@ func (s *Store) PlannedRaids(ctx context.Context, guildID int64, now time.Time) 
 	return raids, nil
 }
 
-// NextRaid is the first planned or locked raid that has not yet ended.
+// NextRaid is the first raid that is Signable at now.
 func (s *Store) NextRaid(ctx context.Context, guildID int64, now time.Time) (Raid, bool, error) {
 	raid, err := scanRaid(s.Pool.QueryRow(ctx, `
 		select `+raidColumns+` from guild_raids

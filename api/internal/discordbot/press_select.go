@@ -17,8 +17,9 @@ const (
 )
 
 // characterSelect asks which verified character to sign up: the main first, then the
-// service's order, at most 25, the text saying how many were left out.
-func characterSelect(a signupAsk, raid guilds.Raid, verified []guilds.SignupCandidate) Reply {
+// service's order, at most 25, the text saying how many were left out. With no option Discord
+// would take, it answers the failure sentence with the raid page, where they can be signed up.
+func (s *Service) characterSelect(ctx context.Context, a signupAsk, raid guilds.Raid, verified []guilds.SignupCandidate) Reply {
 	options := make([]SelectOption, 0, maxSelectOptions)
 	selectable := 0
 	for _, c := range verified {
@@ -29,6 +30,9 @@ func characterSelect(a signupAsk, raid guilds.Raid, verified []guilds.SignupCand
 		if len(options) < maxSelectOptions {
 			options = append(options, characterOption(c))
 		}
+	}
+	if len(options) == 0 {
+		return a.reply(pressCopy.Failure, linkButton(postCopy.RaidPage, s.raidPageURL(ctx, raid.ID)))
 	}
 	text := fill(pressCopy.SelectPrompt, "{State}", "**"+stateWord(a.State)+"**",
 		"{Title}", memberText(raid.Title), "{unix}", strconv.FormatInt(raid.StartsAt.Unix(), 10))

@@ -58,6 +58,14 @@ func TestSignupCommand(t *testing.T) {
 			t.Fatalf("reply = %q", rep.Message.Content)
 		}
 	})
+	t.Run("a named raid's state is told only to a member", func(t *testing.T) {
+		w := newPressWorld(t)
+		w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", false)
+		w.exec(t, `update guild_raids set status = 'cancelled' where id = $1`, w.raidID)
+		want := spec(t, "Press: refusals", 5, map[string]string{"Name": "Duskstrider"})
+		wantReply(t, w.signupCmd(t, opt(optStatus, "in"), opt(optRaid, fmt.Sprint(w.raidID))), want, false)
+		wantReply(t, w.signupCmd(t, opt(optStatus, "in"), opt(optRaid, "999999")), want, false)
+	})
 	t.Run("the character option skips the select", func(t *testing.T) {
 		w := newPressWorld(t)
 		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
@@ -151,6 +159,7 @@ func TestSignupAutocomplete(t *testing.T) {
 		t.Fatalf("unlinked got %+v", got)
 	}
 	w.exec(t, `update guild_characters set verified_at = null where user_id = $1`, w.uid)
+	w.forgetCandidates()
 	if got := w.suggest(t, pressDiscord, optRaid, ""); len(got) != 0 {
 		t.Fatalf("non-member got the calendar: %+v", got)
 	}
