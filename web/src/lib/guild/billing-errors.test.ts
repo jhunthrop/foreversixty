@@ -25,7 +25,12 @@ describe('upgradeOutcome', () => {
     expect(upgradeOutcome(refusal(503, 'billing_unavailable'))).toBe('unconfirmed');
     expect(upgradeOutcome(refusal(500, null))).toBe('unconfirmed');
     expect(upgradeOutcome(refusal(0, null))).toBe('unconfirmed');
-    expect(upgradeOutcome(new TypeError('offline'))).toBe('unconfirmed');
+  });
+
+  it('any other 4xx, and a throw that is not an API answer, is the generic failure', () => {
+    expect(upgradeOutcome(refusal(403, 'forbidden'))).toBe('generic');
+    expect(upgradeOutcome(refusal(409, 'transfer_in_progress'))).toBe('generic');
+    expect(upgradeOutcome(new TypeError('bug'))).toBe('generic');
   });
 });
 

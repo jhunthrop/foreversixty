@@ -139,9 +139,9 @@ export const guildBillingCopy = {
     sentence: upgradeSentence,
     parts: upgradeParts,
     leadIn: UPGRADE_LEAD_IN,
-    // An addition: the design spec has no string for an expired preview.
     // An addition: the design spec has no string for an upgrade Stripe has not confirmed.
     unconfirmed: 'Stripe is still confirming the change. The plan below is up to date.',
+    // An addition: the design spec has no string for an expired preview.
     previewExpired: 'Prices changed. Review the new amount.',
     commit: 'Move to Raid guild',
     committing: 'Moving…',

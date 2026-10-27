@@ -2,6 +2,7 @@
 // The Seats, Seat picker, Who pays and Receiver rows of design/specs/2026-10-27-launch-pricing.md
 // section 6.2, with a function for every {slot}. Dates arrive as stored: date-only values read as written, instants on the viewer calendar;
 // prices are built from ./plans.
+import { settingsWords } from '../guild/settings-view';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { SEAT_MOVE_LOCK_DAYS, formatCents, type Interval } from './plans';
 
@@ -62,9 +63,10 @@ export const seatsCopy = {
     declined: (name: string): string => `${name} declined.`,
     noCandidates: 'No other officer has a Forever Sixty account yet.',
     failed: 'The offer did not send. Try again.',
-    // Additions: the design spec has no string for these two refusals.
+    // An addition: the design spec has no string for transfer_in_progress.
     inProgress: 'An offer or a plan change is already in progress. Reload to see where it stands.',
-    billingUnavailable: 'Billing is not available right now. Try again in a few minutes.',
+    // An addition: reuses the settings page's billing-unavailable sentence (one source).
+    billingUnavailable: settingsWords.billingUnavailable,
   },
   receiver: {
     offer: (
