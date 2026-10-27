@@ -101,14 +101,15 @@ func parseCheckoutRequest(in checkoutRequest) (catalog.Offer, catalog.Interval, 
 	if !ok {
 		return "", "", false
 	}
+	if in.Intent != "" && (in.Intent != intentTransfer || offer == catalog.OfferPremium) {
+		return "", "", false
+	}
+	if in.ComebackID != nil {
+		// The comeback's own price decides the interval, so none is checked.
+		return offer, "", offer == catalog.OfferPremium
+	}
 	interval := catalog.Interval(in.Interval)
-	if interval != catalog.Monthly && interval != catalog.Yearly {
-		return "", "", false
-	}
-	if in.ComebackID != nil && offer != catalog.OfferPremium {
-		return "", "", false
-	}
-	return offer, interval, true
+	return offer, interval, interval == catalog.Monthly || interval == catalog.Yearly
 }
 
 // checkoutTrial is a trial on a checkout: days from the start, or an end
@@ -206,7 +207,7 @@ func (s *Service) premiumLookupKey(ctx context.Context, req premiumCheckoutReque
 	if err != nil {
 		return "", err
 	}
-	if !ok {
+	if price, known := catalog.Lookup(key); !ok || !known || price.Offer != catalog.OfferPremium {
 		return "", &checkoutRefusal{status: http.StatusNotFound, code: "not_found", message: "that offer is not available"}
 	}
 	return key, nil
@@ -281,24 +282,25 @@ func (s *Service) transferTerms(ctx context.Context, req guildCheckoutRequest) (
 	if err != nil {
 		return "", nil, err
 	}
-	if !ok {
-		return "", nil, &checkoutRefusal{status: http.StatusConflict, code: "no_transfer_offer",
-			message: "there is no billing transfer offered to you for this guild"}
-	}
-	req.metadata["from_subscription_id"] = fromSubscriptionID
 	current, err := s.Entitlements.GuildBilling(ctx, req.guildID)
 	if err != nil {
 		return "", nil, err
 	}
-	lookupKey := catalog.CheckoutLookupKey(req.offer, req.interval, s.now())
+	if !ok || current == nil || !current.Active || current.Scoped() || current.StripeSubscriptionID != fromSubscriptionID {
+		return "", nil, &checkoutRefusal{status: http.StatusConflict, code: "no_transfer_offer",
+			message: "there is no billing transfer offered to you for this guild"}
+	}
+	req.metadata["from_subscription_id"] = fromSubscriptionID
+	lookupKey := current.PriceLookupKey
+	if lookupKey == "" {
+		// A row with no key gets the price on offer for its own tier,
+		// never the client's plan.
+		tierOffer, _ := catalog.ParseOffer(current.Tier)
+		lookupKey = catalog.CheckoutLookupKey(tierOffer, req.interval, s.now())
+	}
 	trialEnd := s.now().Add(transferTrialFloor)
-	if current != nil {
-		if current.PriceLookupKey != "" {
-			lookupKey = current.PriceLookupKey
-		}
-		if end := current.CurrentPeriodEnd; end != nil && end.After(trialEnd) {
-			trialEnd = *end
-		}
+	if end := current.CurrentPeriodEnd; end != nil && end.After(trialEnd) {
+		trialEnd = *end
 	}
 	return lookupKey, &checkoutTrial{end: &trialEnd}, nil
 }
