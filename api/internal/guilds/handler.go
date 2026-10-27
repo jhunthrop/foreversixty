@@ -134,6 +134,9 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// Readiness is member/officer only (design spec §4.0: "Not shown" to the public).
 	// With ?raid= it is a raid route and keeps R1 (readinessRoute).
 	mux.HandleFunc("GET /v1/guilds/{id}/readiness", s.readinessRoute)
+	// CSV exports are officer reads by rank in any plan state (history is never locked).
+	mux.HandleFunc("GET /v1/guilds/{id}/export/attendance.csv", auth.RequireSession(s.exportAttendance))
+	mux.HandleFunc("GET /v1/guilds/{id}/export/loot.csv", auth.RequireSession(s.exportLoot))
 	// Loot is member-and-officer (member read-only, officer gets the Award control).
 	mux.HandleFunc("GET /v1/guilds/{id}/loot", auth.RequireSession(s.loot))
 	mux.HandleFunc("POST /v1/guilds/{id}/loot/awards", auth.RequireSession(s.createLootAward))

@@ -585,7 +585,7 @@ func grantOfficerTools(t *testing.T, h *httpHarness, gid int64) {
 // plan (forbidden first), an officer without it gets guild_plan_required, and either a scoped
 // grant or a whole Stripe plan lets Award and Undo through.
 func TestLootAwardAndUndoNeedTheGuildPlan(t *testing.T) {
-	const planMessage = "Award and Undo are part of the guild plan."
+	const planMessage = "Loot council and the readiness board are part of Raid guild."
 	tests := []struct {
 		name     string
 		planSQL  string
@@ -672,7 +672,7 @@ func assertRefusal(t *testing.T, res *http.Response, wantCode, planMessage strin
 	if env.Error.Code != wantCode {
 		t.Fatalf("code = %q, want %q", env.Error.Code, wantCode)
 	}
-	if wantCode == "guild_plan_required" && env.Error.Message != planMessage {
+	if (wantCode == "guild_plan_required" || wantCode == "raid_guild_required") && env.Error.Message != planMessage {
 		t.Fatalf("message = %q, want %q", env.Error.Message, planMessage)
 	}
 }

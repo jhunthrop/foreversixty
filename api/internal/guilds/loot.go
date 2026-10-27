@@ -616,13 +616,16 @@ type lootAwardInput struct {
 	RaidID *int64 `json:"raid_id"`
 }
 
-// requireGuildPlan writes the refusal (a guild_plan_required body of refusal) and returns
-// false unless the officer's guild holds the officer-tools feature. It runs after the officer
-// check, so a member never learns the plan state. A nil Entitlements refuses, matching
-// officerTools (nil means no tools); a failed lookup is a server error, not a refusal.
-func (s *Service) requireGuildPlan(w http.ResponseWriter, r *http.Request, guildID, userID int64, refusal, op, failMessage string) bool {
+// requireGuildPlan writes the refusal and returns false unless the officer's guild holds
+// feature. It runs after the officer check, so a member never learns the plan state. A guild
+// with no plan (or no Entitlements wired) gets guild_plan_required; a guild on a plan that
+// covers the officer views but not feature (the Guild tier asking for Raid guild tools) gets
+// raid_guild_required, which the web maps to the Raid guild sentence. A failed lookup is a
+// server error, not a refusal.
+func (s *Service) requireGuildPlan(w http.ResponseWriter, r *http.Request, guildID, userID int64, feature entitlements.Feature, message, op, failMessage string) bool {
+	code := "guild_plan_required"
 	if s.Entitlements != nil {
-		ok, _, err := s.Entitlements.CanForGuild(r.Context(), guildID, userID, entitlements.FeatureOfficerViews)
+		ok, _, err := s.Entitlements.CanForGuild(r.Context(), guildID, userID, feature)
 		if err != nil {
 			s.fail(w, r, op, err, failMessage)
 			return false
@@ -630,8 +633,18 @@ func (s *Service) requireGuildPlan(w http.ResponseWriter, r *http.Request, guild
 		if ok {
 			return true
 		}
+		if feature != entitlements.FeatureOfficerViews {
+			covered, _, err := s.Entitlements.CanForGuild(r.Context(), guildID, userID, entitlements.FeatureOfficerViews)
+			if err != nil {
+				s.fail(w, r, op, err, failMessage)
+				return false
+			}
+			if covered {
+				code = "raid_guild_required"
+			}
+		}
 	}
-	httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", refusal, nil)
+	httpx.WriteError(w, r, http.StatusForbidden, code, message, nil)
 	return false
 }
 
@@ -652,7 +665,7 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to award loot", nil)
 		return
 	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, refusal.AwardPlanRequired, "loot_award", "could not record that award just now") {
+	if !s.requireGuildPlan(w, r, guildID, actor.UserID, entitlements.FeatureRaidGuildTools, refusal.AwardPlanRequired, "loot_award", "could not record that award just now") {
 		return
 	}
 	if !s.officerNotFrozen(w, r, guildID, "loot_award", "could not record that award just now") {
@@ -701,7 +714,7 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to remove a loot award", nil)
 		return
 	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, refusal.AwardPlanRequired, "loot_award_delete", "could not remove that award just now") {
+	if !s.requireGuildPlan(w, r, guildID, actor.UserID, entitlements.FeatureRaidGuildTools, refusal.AwardPlanRequired, "loot_award_delete", "could not remove that award just now") {
 		return
 	}
 	if !s.officerNotFrozen(w, r, guildID, "loot_award_delete", "could not remove that award just now") {

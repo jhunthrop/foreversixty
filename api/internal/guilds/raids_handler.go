@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
@@ -94,7 +95,7 @@ func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, fo
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", forbiddenMessage, nil)
 		return 0, false
 	}
-	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, refusal.RaidPlanRequired, op, raidFailMessage) {
+	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, entitlements.FeatureOfficerViews, refusal.RaidPlanRequired, op, raidFailMessage) {
 		return 0, false
 	}
 	if !s.officerNotFrozen(w, r, guildID, op, raidFailMessage) {
