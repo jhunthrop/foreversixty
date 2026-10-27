@@ -12,7 +12,8 @@ type Reply struct {
 	Update  bool
 }
 
-// Handler answers a command or a component press.
+// Handler answers a command or a component press. An error it returns is
+// logged, so it must carry no member text or credential.
 type Handler func(ctx context.Context, in Interaction) (Reply, error)
 
 // Autocomplete answers an option's live suggestions.

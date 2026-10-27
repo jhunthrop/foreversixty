@@ -3,6 +3,7 @@ package discordbot
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -104,7 +105,7 @@ func (s *Service) dispatch(ctx context.Context, w http.ResponseWriter, in Intera
 	case !bound:
 		s.writeReply(w, unboundReply(), respMessage)
 	default:
-		s.answerOrDefer(w, in, h, update)
+		s.answerOrDefer(ctx, w, in, h, update)
 	}
 }
 
@@ -113,35 +114,50 @@ type handled struct {
 	err   error
 }
 
+var errShuttingDown = errors.New("discordbot: shutting down")
+
 // runHandler runs h on its own goroutine, tracked by Background, bounded by
-// the token's work budget and detached from the request's cancellation. A
-// panic is an error, not a crash.
-func (s *Service) runHandler(in Interaction, h Handler) <-chan handled {
+// the token's work budget and detached from the request's cancellation (its
+// values, the request id, stay). A panic is an error carrying only its type,
+// never its value. Handler errors must be free of member data: they are logged.
+func (s *Service) runHandler(reqCtx context.Context, in Interaction, h Handler) <-chan handled {
 	done := make(chan handled, 1)
-	ctx, cancel := context.WithDeadline(context.Background(), in.ReceivedAt.Add(workBudget))
-	s.bg.Start(func() {
+	ctx, cancel := context.WithDeadline(context.WithoutCancel(reqCtx), in.ReceivedAt.Add(workBudget))
+	started := s.bg.Start(func() {
 		defer cancel()
 		defer func() {
 			if p := recover(); p != nil {
-				done <- handled{err: fmt.Errorf("handler panicked: %v", p)}
+				done <- handled{err: fmt.Errorf("handler panicked: %T", p)}
 			}
 		}()
 		rep, err := h(ctx, in)
 		done <- handled{rep, err}
 	})
+	if !started {
+		cancel()
+		done <- handled{err: errShuttingDown}
+	}
 	return done
 }
 
-func (s *Service) answerOrDefer(w http.ResponseWriter, in Interaction, h Handler, update bool) {
-	done := s.runHandler(in, h)
-	timer := time.NewTimer(s.answerWithin)
+// remaining is what is left of the answer window, counted from when Discord
+// sent the interaction, so the server lookup before it is not extra.
+func (s *Service) remaining(in Interaction) time.Duration {
+	return max(0, s.answerWithin-s.now().Sub(in.ReceivedAt))
+}
+
+func (s *Service) answerOrDefer(ctx context.Context, w http.ResponseWriter, in Interaction, h Handler, update bool) {
+	done := s.runHandler(ctx, in, h)
+	timer := time.NewTimer(s.remaining(in))
 	defer timer.Stop()
 	select {
 	case res := <-done:
 		s.writeReply(w, s.replyOf(in, res), respMessage)
 	case <-timer.C:
 		s.writeDeferral(w, update)
-		s.bg.Start(func() { s.deliver(in, <-done) })
+		if !s.bg.Start(func() { s.deliver(in, <-done) }) {
+			s.log.Warn("discordbot", "op", "discord_answer", "outcome", "dropped_shutdown", "interaction", in.ID)
+		}
 	}
 }
 
@@ -180,24 +196,42 @@ func (s *Service) deliver(in Interaction, res handled) {
 func (s *Service) autocomplete(ctx context.Context, w http.ResponseWriter, in Interaction) {
 	choices := []Choice{}
 	if h, ok := s.autocompletes[in.CommandName()]; ok {
-		ctx, cancel := context.WithTimeout(ctx, s.answerWithin)
-		defer cancel()
-		type result struct {
-			choices []Choice
-			err     error
-		}
-		done := make(chan result, 1)
-		go func() {
-			c, err := h(ctx, in)
-			done <- result{c, err}
-		}()
-		select {
-		case res := <-done:
-			if res.err == nil && res.choices != nil {
-				choices = res.choices
-			}
-		case <-ctx.Done():
-		}
+		choices = s.suggest(ctx, in, h)
 	}
 	writeCallback(w, callbackBody{Type: respAutocompleteResult, Data: map[string][]Choice{"choices": choices}})
+}
+
+type suggestions struct {
+	choices []Choice
+	err     error
+}
+
+// suggest runs h through Background, bounded by the answer window. A timeout,
+// an error, a panic or a shutdown is no choices.
+func (s *Service) suggest(ctx context.Context, in Interaction, h Autocomplete) []Choice {
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), s.remaining(in))
+	defer cancel()
+	done := make(chan suggestions, 1)
+	started := s.bg.Start(func() {
+		defer func() {
+			if p := recover(); p != nil {
+				done <- suggestions{err: fmt.Errorf("autocomplete panicked: %T", p)}
+			}
+		}()
+		c, err := h(ctx, in)
+		done <- suggestions{c, err}
+	})
+	if !started {
+		return []Choice{}
+	}
+	select {
+	case res := <-done:
+		if res.err != nil {
+			s.log.Error("discordbot", "op", "discord_autocomplete", "interaction", in.ID, "err", res.err)
+		} else if res.choices != nil {
+			return res.choices
+		}
+	case <-ctx.Done():
+	}
+	return []Choice{}
 }

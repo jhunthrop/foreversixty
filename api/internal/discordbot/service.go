@@ -41,24 +41,38 @@ type Deps struct {
 // process, which needs CPU outside a request (Cloud Run: always-on CPU). A
 // separate worker would implement this instead and run the work elsewhere.
 type Background interface {
-	// Start runs work without blocking the caller.
-	Start(work func())
-	// Drain waits for started work, until ctx ends.
+	// Start runs work without blocking the caller. It reports false, and
+	// runs nothing, once Drain has begun.
+	Start(work func()) bool
+	// Drain refuses new work, then waits for started work, until ctx ends.
 	Drain(ctx context.Context) error
 }
 
 // inProcess is the default Background.
-type inProcess struct{ wg sync.WaitGroup }
+type inProcess struct {
+	mu       sync.Mutex
+	draining bool
+	wg       sync.WaitGroup
+}
 
-func (p *inProcess) Start(work func()) {
+func (p *inProcess) Start(work func()) bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.draining {
+		return false
+	}
 	p.wg.Add(1)
 	go func() {
 		defer p.wg.Done()
 		work()
 	}()
+	return true
 }
 
 func (p *inProcess) Drain(ctx context.Context) error {
+	p.mu.Lock()
+	p.draining = true
+	p.mu.Unlock()
 	done := make(chan struct{})
 	go func() { p.wg.Wait(); close(done) }()
 	select {
