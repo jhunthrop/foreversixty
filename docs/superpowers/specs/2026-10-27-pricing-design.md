@@ -93,7 +93,7 @@ spring population drop.
 ## 6. Open for the owner
 
 1. The founder window end: 3 January 2027 (60 days) or the first raid night plus 4 weeks.
-2. Chip-in: build for launch, or right after (it is the largest piece here).
+2. ~~Chip-in: build for launch, or right after.~~ ANSWERED 2026-10-27 (owner): after launch, with its own design.
 3. Trial: 7 days, or "until the guild's first matched raid log, at most 14 days".
 
 ## 7. Left to the builder
