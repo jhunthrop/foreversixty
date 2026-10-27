@@ -126,7 +126,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 | Loot | `by {officer}`; `No loot awarded for this raid. Award it on the Loot tab.`; `No loot recorded for this raid.` |
 | Changes | `on {Boss}`; `{Metric} {before} → {after}`; `+{x}`, `−{x}`; `First {Zone} raid logged. Changes show from the next one.` |
 | Attendance | `Attendance`; `{came} of {signed} came · {l} late · {n} not in the log · {j} more joined · {e} excused`; `Signed up, not in the log`, `Late`, `Joined from the bench or without a sign-up`, `Present`, `Bench and out`; `Present`, `Not in the log`, `Late, first seen {m} min after the first pull`, `Came as {Alt}`; `Excused` |
-| Roster | `Came {p} of {n} · {p30} of {n30}`; `Came: raids attended of raids signed up for or attended, over this guild's last 8 and 30 logged raids.`; loot line `{p} of {n} raids`; guild line ` · came {p} of {n} raids` |
+| Roster | `Came {p} of {n} · {p30} of {n30}`; `Came: raids attended of raids signed up for or attended, over this guild's last 8 and 30 logged raids.`; loot line `{p} of {n} raids`; guild line ` · came {p} of {n} raids`; `No raids yet` (a chip with no raids signed up for or attended) |
 | Readiness | `Next raid · {Thu 10 Dec}`; `Showing the {n} signed In or Late for {Title}, {Thu 10 Dec, 8:00 pm}.`; `Synced {d} days before the raid`; `No export yet`; `Nobody signed up for this raid yet.` |
 | Errors | `That did not save; try again.` (buttons), `That did not save. Try again.` (rows), `Could not post. Try again.`, `This report did not load.`, `Not saved. This guild's officer tools have ended.`, `Could not copy. Select the report and copy it.` |
 | Live region | `The raid's log was matched.` |
