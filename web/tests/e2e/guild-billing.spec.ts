@@ -214,6 +214,17 @@ test('Manage billing: Stripe 503 shows the unavailable line, and Try again succe
   expect(asked).toBe(2);
 });
 
+test('Manage billing: a 404 refusal shows the unavailable line and no Try again', async ({ page }) => {
+  await openWith(page, guildBillingRead({ billing: planView({ current_period_end: NOON }) }));
+  await page.route('**/v1/billing/portal', (route) =>
+    route.fulfill(envelope({ code: 'not_found', message: 'no customer' }, 404)),
+  );
+  await page.getByTestId('guild-manage-billing').click();
+  await expect(page.getByTestId('guild-billing-unavailable')).toBeVisible();
+  await expect(page.getByTestId('guild-billing-retry')).toHaveCount(0);
+  await expect(page.getByTestId('guild-manage-billing')).toBeVisible();
+});
+
 test('a 409 preview_expired shows the prices-changed line and reloads the preview', async ({ page }) => {
   await openWith(page, GUILD_TIER_28_READ);
   let previews = 0;
@@ -242,5 +253,15 @@ test.describe('a viewer in Los Angeles', () => {
       guildBillingRead({ billing: planView({ current_period_end: '2026-12-01T03:00:00Z' }) }),
     );
     await expect(page.getByTestId('guild-billing-plan')).toContainText('renews 30 Nov 2026');
+  });
+
+  test('an operator grant at midnight UTC stays on its day', async ({ page }) => {
+    await openWith(
+      page,
+      guildBillingRead({
+        billing: planView({ current_period_end: '2026-12-01T00:00:00Z', billed_by: '' }),
+      }),
+    );
+    await expect(page.getByTestId('guild-billing-plan')).toContainText('until 1 Dec 2026');
   });
 });

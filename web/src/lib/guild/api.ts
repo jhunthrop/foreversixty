@@ -5,7 +5,7 @@
 // (account/api.ts's requestEnvelope), a module-local error class, and typed reads/writes
 // with no bespoke fetch() call anywhere else in this lane's own code.
 import { AccountError, invalidateMe, requestEnvelope, type EnvelopeResult } from '../account/api';
-import { invalidate, query, refetch } from '../data/query';
+import { invalidate, query, refetch, setQueryData } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import type {
   AttendanceSource,
@@ -554,13 +554,29 @@ export function refetchGuildSettings(
   guildId: number,
   onData: (settings: GuildSettingsData) => void,
   apiBase: string = API_BASE_URL,
+  onError?: () => void,
 ): void {
   refetch(
     guildSettingsKey(guildId, apiBase),
     () => loadGuildSettings(guildId, apiBase),
     { scope: 'private', ttlMs: GUILD_TTL_MS },
     onData,
+    onError,
   );
+}
+
+/**
+ * `bot_refusal` is one-time (it names the refusal of the officer's last install): once the
+ * section has shown it, the cached read drops it so a reload cannot draw it again.
+ */
+export async function clearCachedBotRefusal(guildId: number, apiBase: string = API_BASE_URL): Promise<void> {
+  const key = guildSettingsKey(guildId, apiBase);
+  const cached = await query<GuildSettingsData>(key, () => loadGuildSettings(guildId, apiBase), {
+    scope: 'private',
+    ttlMs: GUILD_TTL_MS,
+  });
+  if (cached.discord?.bot_refusal == null) return;
+  setQueryData(key, { ...cached, discord: { ...cached.discord, bot_refusal: null } });
 }
 
 export async function updateGuildSettings(

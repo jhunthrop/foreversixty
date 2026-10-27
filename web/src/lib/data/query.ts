@@ -392,13 +392,10 @@ export function refetch<T>(
   load: () => Promise<T>,
   options: QueryOptions<T>,
   onData: (data: T) => void,
+  onError: () => void = () => {},
 ): void {
   invalidate(key);
-  void query(key, load, options)
-    .then(onData)
-    .catch(() => {
-      // The answer already on screen stays; nothing visible logs.
-    });
+  void query(key, load, options).then(onData).catch(onError); // The answer already on screen stays; nothing visible logs.
 }
 
 /** Calls `fn` each time the window regains focus; returns the remover. */

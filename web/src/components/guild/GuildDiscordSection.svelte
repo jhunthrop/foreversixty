@@ -17,6 +17,7 @@
   import { discordReturnFlag } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
   import {
+    clearCachedBotRefusal,
     fetchGuildHome,
     refetchGuildSettings,
     type GuildSettingsData,
@@ -167,6 +168,7 @@
   function revealBot(outcome: BotReturnOutcome, read: GuildSettingsDiscord): void {
     if (botReturnDone) return;
     botReturnDone = true;
+    if (read.bot_refusal != null) void clearCachedBotRefusal(guildId).catch(() => {});
     clearTimeout(settleTimer);
     botSettling = false;
     show({ ok: outcome.role === 'status', message: outcome.message, stays: true });
@@ -176,11 +178,17 @@
     else if (shown === 'installed') focus.request(BOT_FOCUS.testButton);
   }
 
-  /** The settle timer: draw the read in hand, and say `Bot added` only if it holds a bot (a
-   *  stale read is not one; the fresh read, when it lands, shows the line). */
+  /** The settle timer: reveal on the read in hand only if it holds a bot. A stale read keeps the
+   *  picker's held height (no state 5 flash) until the fresh read answers or the refetch fails. */
   function settleBot(outcome: BotReturnOutcome): void {
-    botSettling = false;
     if (guildBotView(discord, false).bot !== null) revealBot(outcome, discord);
+  }
+
+  /** The fresh read failed: stop holding and draw the read in hand; `Bot added` only if it
+   *  holds a bot. */
+  function failBotRefetch(outcome: BotReturnOutcome): void {
+    botSettling = false;
+    settleBot(outcome);
   }
 
   /** The callback's `?discord=` flag: taken once, the section scrolled to, the outcome shown. */
@@ -211,10 +219,15 @@
     void tick().then(() => section?.scrollIntoView({ block: 'start' }));
     if (!outcome.holdsPicker) return revealBot(outcome, discord);
     settleTimer = setTimeout(() => settleBot(outcome), CONNECT_SETTLE_MS);
-    refetchGuildSettings(guildId, (fresh) => {
-      onSettings(fresh);
-      revealBot(outcome, fresh.discord ?? discord);
-    });
+    refetchGuildSettings(
+      guildId,
+      (fresh) => {
+        onSettings(fresh);
+        revealBot(outcome, fresh.discord ?? discord);
+      },
+      undefined,
+      () => failBotRefetch(outcome),
+    );
   }
 
   onMount(() => {
