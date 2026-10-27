@@ -136,6 +136,17 @@ describe('GuildReadiness next-raid filter', () => {
     expect(copy).toContain('No export yet');
   });
 
+  it('reads a dash in Gear gap through Item level for a row with no export', () => {
+    const markup = filtered(true, [rows[1]]);
+    // Five on the desktop row and five on the phone card.
+    expect(markup.match(/data-testid="guild-readiness-dash"/g)).toHaveLength(10);
+    expect(text(markup)).not.toContain('upgrade');
+  });
+
+  it('keeps the space before the Nudge note', () => {
+    expect(filtered(true)).toMatch(/Sorted worst first\.(<!--[^>]*-->)* Nudge copies/);
+  });
+
   it('lets the stale pill wrap instead of clipping in the Synced column', () => {
     const markup = filtered(true);
     const pill = markup.match(/<span class="([^"]*)" data-testid="guild-readiness-stale"/);

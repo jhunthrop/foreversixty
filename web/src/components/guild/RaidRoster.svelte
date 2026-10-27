@@ -19,6 +19,7 @@
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import FilterSelect from '../rankings/FilterSelect.svelte';
+  import RaidDisclosure from './RaidDisclosure.svelte';
 
   let {
     raid,
@@ -27,6 +28,7 @@
     gateId,
     cancelled = false,
     closed = false,
+    collapsed = false,
     busyKey = null,
     line = null,
     onSetState,
@@ -39,6 +41,8 @@
     cancelled?: boolean;
     /** A cancelled or done raid takes no sign-up changes: the selects stay, disabled. */
     closed?: boolean;
+    /** A done raid (R-A4): the roster sits closed below Attendance, its heading in the summary. */
+    collapsed?: boolean;
     busyKey?: string | null;
     line?: OfficerLine | null;
     /** Resolves false on a refusal, so the select reverts. */
@@ -164,15 +168,7 @@
   </li>
 {/snippet}
 
-<section
-  class="flex flex-col gap-4 {cancelled ? 'opacity-60' : ''}"
-  aria-labelledby="raid-roster-heading"
-  data-testid="raid-roster"
->
-  <div class="flex items-baseline gap-3">
-    <h2 id="raid-roster-heading" class="section-title text-[18px]">{raidCopy.subheads.signups}</h2>
-    <span class="text-muted font-mono text-[13px]" data-testid="raid-roster-ratio">{count.ratio}</span>
-  </div>
+{#snippet body()}
   <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     {#each ROLE_COLUMNS as column (column.role)}
       {@const rows = groups.roles[column.role]}
@@ -230,4 +226,29 @@
   {#if line?.control === 'roster'}
     <p class="text-wipe text-[13px]" role="alert" data-testid="raid-roster-error">{line.message}</p>
   {/if}
-</section>
+{/snippet}
+
+{#if collapsed}
+  <RaidDisclosure
+    heading={raidCopy.subheads.signups}
+    headingId="raid-roster-heading"
+    count={count.ratio}
+    testid="raid-roster-disclosure"
+  >
+    <section class="flex flex-col gap-4" aria-labelledby="raid-roster-heading" data-testid="raid-roster">
+      {@render body()}
+    </section>
+  </RaidDisclosure>
+{:else}
+  <section
+    class="flex flex-col gap-4 {cancelled ? 'opacity-60' : ''}"
+    aria-labelledby="raid-roster-heading"
+    data-testid="raid-roster"
+  >
+    <div class="flex items-baseline gap-3">
+      <h2 id="raid-roster-heading" class="section-title text-[18px]">{raidCopy.subheads.signups}</h2>
+      <span class="text-muted font-mono text-[13px]" data-testid="raid-roster-ratio">{count.ratio}</span>
+    </div>
+    {@render body()}
+  </section>
+{/if}

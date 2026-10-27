@@ -69,11 +69,15 @@ describe('RaidMatchPicker', () => {
     }
   });
 
-  it('keeps each row to two lines on phone: the figures share one wrapping span on line 2', () => {
-    const body = html({ rows: [row('a')] });
-    expect(body).toContain('col-start-2 flex flex-wrap');
-    expect(body).toContain('md:contents');
-    expect(body).toContain('min-h-16');
+  it('keeps each phone row to three lines: zone and duration, the time, then who and the figures', () => {
+    const first = text(html({ rows: [row('a')] }));
+    expect(first).toContain(`${ZONE} 2 h 41 min Thu 10 Dec, 11:42 pm by Kraggor · 9 pulls · 1 kill`);
+  });
+
+  it('drops the helper beside the empty line, which says the same', () => {
+    const body = html({ rows: [] });
+    expect(body).toContain('raid-match-empty');
+    expect(body).not.toContain('raid-match-helper');
   });
 
   it('draws three skeleton rows while loading, and no Match this log', () => {
@@ -110,8 +114,9 @@ describe('RaidMatchPicker', () => {
     );
     expect(body.match(/raid-match-closest/g)).toHaveLength(1);
     const first = text(body.slice(body.indexOf('raid-match-row-a'), body.indexOf('raid-match-row-b')));
-    expect(first).toContain(`${ZONE} ${attendanceCopy.picker.closest} by Kraggor`);
-    expect(first).toContain('Thu 10 Dec, 11:42 pm 9 pulls · 1 kill 2 h 41 min');
+    expect(first).toContain(`${ZONE} ${attendanceCopy.picker.closest} 2 h 41 min`);
+    // The desktop cells, after the phone lines.
+    expect(first).toContain('by Kraggor · 9 pulls · 1 kill Thu 10 Dec, 11:42 pm 9 pulls · 1 kill 2 h 41 min');
     expect(text(body)).toContain('1 pull · 0 kills');
   });
 

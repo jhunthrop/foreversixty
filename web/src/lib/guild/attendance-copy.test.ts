@@ -130,8 +130,10 @@ describe('constants, verbatim from spec 6.1', () => {
 
 describe('night line', () => {
   it('reads the spec example and leaves out zero clauses', () => {
-    expect(nightLine(NIGHT)).toBe('22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min');
-    expect(nightLine({ ...NIGHT, kills: 0, wipes: 0, deaths: 0, duration_ms: 0 })).toBe('22 of 23 came');
+    expect(nightLine(NIGHT)).toBe('22 of 23 came · 2 joined · 1 kill · 3 wipes · 14 deaths · 2 h 41 min');
+    expect(nightLine({ ...NIGHT, joined: 0, kills: 0, wipes: 0, deaths: 0, duration_ms: 0 })).toBe(
+      '22 of 23 came',
+    );
     expect(nightLine({ ...NIGHT, kills: 2, deaths: 1 })).toContain('2 kills · 3 wipes · 1 death ·');
   });
 

@@ -50,14 +50,15 @@ describe('the night line', () => {
   it('reads the ratio and the facts, figures in mono', () => {
     const body = html(doneRaid());
     expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
-      '22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
+      '22 of 23 came · 2 joined · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
     );
-    expect(body).toContain('font-mono text-[15px]">22 of 23 came');
+    expect(body).toContain('font-mono text-[15px] whitespace-nowrap">22 of 23 came');
+    expect(body).toMatch(/<span class="font-mono">41<\/span>(<!--.*?-->)* min/);
   });
 
   it('leaves a zero clause out and fills the bar by came over signed', () => {
     const body = html(
-      doneRaid({ night: raidNight({ came: 10, signed: 20, kills: 0, wipes: 0, deaths: 0 }) }),
+      doneRaid({ night: raidNight({ came: 10, signed: 20, joined: 0, kills: 0, wipes: 0, deaths: 0 }) }),
     );
     expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
       `${cameRatio({ came: 10, signed: 20 })} · 2 h 41 min`,

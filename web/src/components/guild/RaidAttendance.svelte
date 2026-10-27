@@ -7,11 +7,13 @@
 <script lang="ts">
   import type { RaidAttendanceRow, RaidNight } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, attendanceSummary, pullsRatio } from '../../lib/guild/attendance-copy';
-  import { excusedLabel } from '../../lib/guild/night-copy';
+  import { bossPullsHead, excusedLabel, pullsOf } from '../../lib/guild/night-copy';
+  import { raidCopy } from '../../lib/guild/raid-copy';
   import { canExcuse, groupAttendance, outcomeText } from '../../lib/guild/night';
   import { BAR_FILL, BAR_TRACK, OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Figures from './Figures.svelte';
   import RaidChip from './RaidChip.svelte';
 
   let {
@@ -73,7 +75,10 @@
         data-testid="raid-attendance-outcome">{outcomeText(row)}</span
       >
       <span class="flex items-center gap-2">
-        <span class="text-text font-mono text-[13px]">{pullsRatio(row.pulls_present, row.pulls_total)}</span>
+        <span class="label text-muted text-[11px] md:hidden">{bossPullsHead}</span>
+        <span class="text-text text-[13px]"
+          ><Figures text={pullsOf(row.pulls_present, row.pulls_total)} /></span
+        >
         <span class="{BAR_TRACK} w-12" aria-hidden="true"
           ><span
             class={BAR_FILL}
@@ -122,9 +127,14 @@
       <span class="text-[14px] font-semibold" style={`color:${classColorVar(row.class)}`}>{row.name}</span>
       {#if row.came_as !== null}<span class="text-muted text-[12px]"> as {row.came_as}</span>{/if}
     </span>
-    <span class="{missed(row) ? 'text-text' : 'text-muted'} font-mono text-[13px]"
-      >{pullsRatio(row.pulls_present, row.pulls_total)}</span
-    >
+    {#if row.outcome === 'absent' && row.signed !== null}
+      <!-- Bench and out: which one, muted, in place of a pull count (UX 20, WP 17). -->
+      <span class="text-muted text-[13px]">{raidCopy.segments[row.signed]}</span>
+    {:else}
+      <span class="{missed(row) ? 'text-text' : 'text-muted'} font-mono text-[13px]"
+        >{pullsRatio(row.pulls_present, row.pulls_total)}</span
+      >
+    {/if}
   </li>
 {/snippet}
 
@@ -136,6 +146,14 @@
 >
   <h2 id="raid-attendance-heading" class="section-title text-[18px]">{attendanceCopy.attendance.head}</h2>
   <p class="text-text text-[14px]" data-testid="raid-attendance-summary">{attendanceSummary(night)}</p>
+  {#if groups.some((group) => !group.compact)}
+    <div
+      class="hidden gap-x-4 px-2 md:grid md:grid-cols-[minmax(200px,1.4fr)_132px_minmax(180px,1fr)_120px_112px]"
+      data-testid="raid-attendance-heads"
+    >
+      <span class="label text-muted col-start-4 text-[11px]">{bossPullsHead}</span>
+    </div>
+  {/if}
   {#each groups as group (group.key)}
     <div class="flex min-w-0 flex-col gap-2" data-testid={`raid-attendance-${group.key}`}>
       <h3 class="label text-muted">

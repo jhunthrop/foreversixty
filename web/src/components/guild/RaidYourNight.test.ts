@@ -84,11 +84,11 @@ describe('Your night', () => {
     expect(text(body)).toContain('Waiting for approval.');
   });
 
-  it('shows no facts line when there is nothing to say', () => {
+  it('shows no facts line for a character not in the log', () => {
     const body = view(
       doneRaid({
-        attendance: [KRAGGOR],
-        report: raidReport({ deaths: [], moves: { previous: null, rows: [] } }),
+        attendance: [{ ...KRAGGOR, outcome: 'no_show', pulls_present: 0 }],
+        report: raidReport(),
       }),
     );
     expect(body).not.toContain('raid-your-night-facts');

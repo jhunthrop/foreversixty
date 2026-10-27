@@ -3,6 +3,7 @@
 
   python3 design/mocks/gen_guild_attendance.py
     writes guild-attendance-page.html        (1440, officer, done raid: band, Report, Attendance)
+    writes guild-attendance-page-1024.html   (1024, the officer board again, for the same-scale side by side)
     writes guild-attendance-page-phone.html  (390, member, done raid: band, Your night, Report)
     writes guild-attendance-match.html       (1440, ended with no log, picker, clear confirm, no-show)
     writes guild-attendance-record.html      (1440, roster chip, guild line, readiness next-raid filter)
@@ -459,6 +460,7 @@ def page_body(role, phone):
 
 if __name__ == '__main__':
     print(board('guild-attendance-page', EXTRA_CSS + band('officer', False), page_body('officer', False), 1440, False))
+    print(board('guild-attendance-page-1024', EXTRA_CSS + band('officer', False), page_body('officer', False), 1024, False))
     print(board('guild-attendance-page-phone', EXTRA_CSS + band('member', True), page_body('member', True), 390, True))
     print(sheet('guild-attendance-match', 'Attendance: match states', EXTRA_CSS + match_board()))
     print(sheet('guild-attendance-record', 'Attendance: the member record and readiness', EXTRA_CSS + record_board()))

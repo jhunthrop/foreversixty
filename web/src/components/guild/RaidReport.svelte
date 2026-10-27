@@ -139,7 +139,7 @@
       tab="raids"
       {settingsHref}
       sentence={gateLead}
-      id={null}
+      id={gateId}
       testid="guild-raids-plan-gate-report"
     />
   {/if}

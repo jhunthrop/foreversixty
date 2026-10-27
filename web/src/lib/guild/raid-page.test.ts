@@ -10,10 +10,11 @@ import {
   raidWhen,
   rememberDone,
   rememberStripRows,
-  reservedDone,
+  reservedDoneRows,
   stripReserveRows,
 } from './raid-page';
 import { RAID_ROWS_KEY } from './reserve-keys';
+import { attendanceRow } from '../../test-support/report-fixtures';
 
 function memoryStorage(
   seed: Record<string, string> = {},
@@ -131,12 +132,24 @@ describe('strip reserve rows', () => {
 describe('done reserve', () => {
   it('remembers a done raid by id and forgets it once the raid is not done', () => {
     const storage = memoryStorage();
-    expect(reservedDone('7', storage)).toBe(false);
+    expect(reservedDoneRows('7', storage)).toBeNull();
     rememberDone(plannedRaid({ status: 'done' }), storage);
-    expect(reservedDone('7', storage)).toBe(true);
-    expect(reservedDone('8', storage)).toBe(false);
+    expect(reservedDoneRows('7', storage)).toBe(0);
+    expect(reservedDoneRows('8', storage)).toBeNull();
     rememberDone(plannedRaid(), storage);
-    expect(reservedDone('7', storage)).toBe(false);
+    expect(reservedDoneRows('7', storage)).toBeNull();
+  });
+
+  it('counts the own attendance rows Your night draws', () => {
+    const storage = memoryStorage();
+    rememberDone(
+      plannedRaid({
+        status: 'done',
+        attendance: [attendanceRow({ own: true }), attendanceRow({ character_key: 'x', own: false })],
+      }),
+      storage,
+    );
+    expect(reservedDoneRows('7', storage)).toBe(1);
   });
 
   it('survives a store that throws', () => {
@@ -151,7 +164,7 @@ describe('done reserve', () => {
         throw new Error('blocked');
       },
     };
-    expect(reservedDone('7', throwing)).toBe(false);
+    expect(reservedDoneRows('7', throwing)).toBeNull();
     expect(() => rememberDone(plannedRaid({ status: 'done' }), throwing)).not.toThrow();
   });
 });

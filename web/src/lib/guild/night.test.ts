@@ -131,6 +131,15 @@ describe('yourNightSentence', () => {
     expect(yourNightSentence(row({ role: null, spec: 'Unknown' }))).toMatch(/^Signed In\. Present/);
   });
 
+  it('says when a raider signed Late came, though they count as present', () => {
+    const came = row({ signed: 'late', outcome: 'present', first_seen_offset_s: 540, pulls_present: 11 });
+    expect(yourNightSentence(came)).toBe(
+      'Signed Late as DPS. First seen 9 min after the first pull, 11 of 11 pulls.',
+    );
+    const onTime = row({ signed: 'late', outcome: 'present', first_seen_offset_s: 0 });
+    expect(yourNightSentence(onTime)).toContain('Present from the first pull');
+  });
+
   it('reads a late row with no offset without the minutes', () => {
     const late = row({ outcome: 'late', signed: 'late', first_seen_offset_s: null, pulls_present: 3 });
     expect(yourNightSentence(late)).toBe('Signed Late as DPS, 3 of 11 pulls.');
@@ -214,8 +223,15 @@ describe('yourNightRows and facts', () => {
     expect(yourNightFacts(row(), flat, CHICAGO).map((f) => f.kind)).toEqual(['deaths']);
   });
 
-  it('gives nothing without a report', () => {
-    expect(yourNightFacts(row(), null, CHICAGO)).toEqual([]);
+  it('gives 0 deaths for a character in the log, even without a report', () => {
+    expect(yourNightFacts(row(), null, CHICAGO)).toEqual([{ kind: 'deaths', text: '0 deaths' }]);
+  });
+
+  it('gives a character not in the log nothing from the log, only Excused when set', () => {
+    expect(yourNightFacts(row({ outcome: 'no_show' }), report, CHICAGO)).toEqual([]);
+    expect(yourNightFacts(row({ outcome: 'no_show', excused: true }), report, CHICAGO)).toEqual([
+      { kind: 'excused', text: 'Excused' },
+    ]);
   });
 });
 
@@ -236,6 +252,7 @@ describe('discordReportText', () => {
     item_id: 1,
     item_name: item,
     quality: 4,
+    icon: '',
     character_key: name,
     name,
     class: 'mage',

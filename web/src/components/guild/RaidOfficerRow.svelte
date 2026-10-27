@@ -2,7 +2,9 @@
 <!-- The raid page's officer row (raids spec 3.2 line 6, 4 "Officer buttons", "Cancel confirm",
      "Copy the sign-up list"): Edit, Lock or Unlock, Copy the sign-up list and Cancel raid, all
      outline buttons. Officer-read-only keeps every button but Copy disabled, with the gate sentence
-     under the row. Cancel raid swaps the row for RaidCancelConfirm; Keep it returns focus here. -->
+     under the row. Cancel raid swaps the row for RaidCancelConfirm; Keep it returns focus here.
+     An ended raid with no log keeps Edit alone (attendance spec 3.1): fixing the time helps the
+     match; the band's `Match a log` is the other control. A done raid draws no officer row. -->
 <script lang="ts">
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
@@ -27,6 +29,7 @@
     guildTimezone,
     onEdit,
     onStatus,
+    ended = false,
     writeClipboard = (text: string) => navigator.clipboard.writeText(text),
   }: {
     raid: GuildRaidView;
@@ -41,6 +44,8 @@
     onEdit: () => void;
     /** Resolves false on a refusal (the line says why). */
     onStatus: (action: RaidStatusAction, postToDiscord?: boolean) => Promise<boolean>;
+    /** Past its end with no log: Edit only. */
+    ended?: boolean;
     writeClipboard?: (text: string) => Promise<void>;
   } = $props();
 
@@ -121,26 +126,28 @@
         onclick={onEdit}
         data-testid="raid-officer-edit">{raidCopy.officerRow.edit}</button
       >
-      <button
-        type="button"
-        class={BUTTON}
-        disabled={writesDisabled}
-        aria-describedby={describedBy}
-        onclick={() => void onStatus(lockAction)}
-        data-testid="raid-officer-lock">{lockLabel}</button
-      >
-      <button type="button" class={BUTTON} onclick={() => void copy()} data-testid="raid-officer-copy"
-        >{copied ? raidCopy.officerRow.copied : raidCopy.officerRow.copy}</button
-      >
-      <button
-        type="button"
-        class={BUTTON}
-        bind:this={cancelButton}
-        disabled={writesDisabled}
-        aria-describedby={describedBy}
-        onclick={openConfirm}
-        data-testid="raid-officer-cancel">{raidCopy.officerRow.cancel}</button
-      >
+      {#if !ended}
+        <button
+          type="button"
+          class={BUTTON}
+          disabled={writesDisabled}
+          aria-describedby={describedBy}
+          onclick={() => void onStatus(lockAction)}
+          data-testid="raid-officer-lock">{lockLabel}</button
+        >
+        <button type="button" class={BUTTON} onclick={() => void copy()} data-testid="raid-officer-copy"
+          >{copied ? raidCopy.officerRow.copied : raidCopy.officerRow.copy}</button
+        >
+        <button
+          type="button"
+          class={BUTTON}
+          bind:this={cancelButton}
+          disabled={writesDisabled}
+          aria-describedby={describedBy}
+          onclick={openConfirm}
+          data-testid="raid-officer-cancel">{raidCopy.officerRow.cancel}</button
+        >
+      {/if}
     </div>
   {/if}
   {#if readOnly}

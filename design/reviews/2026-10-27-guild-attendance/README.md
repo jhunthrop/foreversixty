@@ -58,3 +58,55 @@ it is measured from a settled ended page to the done one and reported, not cappe
 ## Reviews
 
 The ux-designer and wow-player reviews of these PNGs are dispatched by the controller.
+
+## Persona fix round (2026-10-27)
+
+The ux-designer (UX 1–27) and wow-player (WP 1–21) reviews, both SHIP WITH FIXES, with the
+controller's rulings. Every capture row was re-taken from a fresh fixture build on port 4451. API
+commit `b6f2b9da`; the web fixes are in the `fix(web): persona round …` commit after it.
+
+| Finding | Fix | Capture |
+|---|---|---|
+| UX 1, WP 5, WP 18 | No G1 officer row on a `done` raid; an ended raid keeps `Edit` only beside `Match a log`; the read-only gate sentence shows once, under the Report header | 01, 03, 08 |
+| UX 2, WP 6 | Notes and Sign-ups are closed `<details>` (`RaidDisclosure`, 44 px summary, chevron) below Attendance; the selects inside stay disabled | 01, 02 |
+| UX 3, UX 13, WP 3 | Consumables: `Before` / `In the log` heads from 768, inline lead-ins below; rows only for raiders in the log (the API already filtered; the fixture now matches); three columns kept without buff data; the pill fills its column (UX 25) | 01, 07 |
+| UX 4, WP 1 | Awards carry `icon` from the API's loot table; none (Head of Onyxia) or a failed file shows the client's question mark, then the name's letters; the tooltip opens with the award's own facts for an item outside every class file | 01, 02 |
+| UX 5, WP 2 | A character not in the log shows no deaths and no move; only `Excused` when set; the no-show fixture drops the alt's rows | 02 |
+| UX 6 | The 28 px strip above the band is gone (guild pages' `md:pt-7`); `Not this log` is 44 px on phone only; the phone bar sits on the count's line; done and ended when lines are two phone lines. Kill-order row 1 ends at y 609 at 1440 × 800; the member's first sentence starts at y 602 at 360 × 640 (`first-screen-*.json`, guide line drawn in `01b-first-screen-*`) | 01b |
+| UX 7, WP 13, WP 19 | Night line and Your night facts: words in the body face, figures in mono (`Figures`), each clause whole | 01, 02 |
+| UX 8 | Reserves equal the ready render: loading beside ready deltas are 0 px for the tabs, the band, Your night and the Report top (`heights-reserve-*.json`) | 11 |
+| UX 9, UX 10 | Deaths: two phone lines (whole name and count; bar and split); the bar caps at 96 px from 1024 to 1279; the split never wraps | 01 |
+| UX 11 | Deaths sub-head counts deaths (17); `Show all 11 raiders` counts raiders | 01 |
+| UX 12 | Loot and Changes on aligned grids from 768, two lines below | 01 |
+| UX 14, WP 12 | `Biggest changes` heading kept over the no-previous line | 07 |
+| UX 15, UX 22 | Picker phone rows: three lines (zone, Closest, duration; time; `by · figures`); the empty list hides the helper | 04 |
+| UX 16, WP 14 | `No export yet` rows read `—` from Gear gap to Item level; the fixture sends no gear for them | 10 |
+| UX 17 | The officer mock board is drawn at 1024 for the 1024 side by side (`guild-attendance-page-1024`) | 13 |
+| UX 18 | Row 5 opens the confirm from the keyboard, so `Keep it` shows its ring | 05 |
+| UX 19 | `0 deaths` shows for a character in the log | 02 |
+| UX 20, WP 17 | `Bench and out` rows say `Bench` or `Out`, muted, in place of `0/4` | 06 |
+| UX 21 | A count of 0 is left out of a sub-head (`LOOT`) | 07 |
+| UX 23 | The guild line's `came 7 of 8 raids` never breaks | 09 |
+| UX 24 | Kill time and note right-aligned | 01 |
+| WP 4 | Cause: the fixture, not the code. The API reads both from one `raidAttendance`; the stub now builds the roster chip and the account's guild line from one map (`rosterAttendance`), and Kraggor reads his raids | 09 |
+| WP 8 | A `Boss pulls` column head; full rows read `4 of 4` | 06 |
+| WP 9 | A raider signed Late who came late is present (API, test); their sentence still says when they came; spec §3.5 amended | 06, 02 |
+| WP 10 | The night line adds ` · 2 joined` | 01 |
+| WP 20 | `Sorted worst first. Nudge …` keeps its space | 10 |
+| WP 21 | A one-boss raid drops the boss head over its loot | 01 |
+| Fixture realism | Onyxia 4:12 after 3 wipes; consumables = every raider in the log; no `+0 DPS` on the stale readiness row | 01, 10 |
+
+**CLS** (cap 0.02): officer 0.0001 / 0.0035 (1440 / 390), member 0.0001 / 0.0001, the poll's done
+swap 0.0039 / 0.0008.
+
+**Reserves** (`lib/guild/raid-layout.ts`, measured): done band lines, member 223 / 157 px, officer
+267 / 157 px (phone / desktop); Your night 56 + rows × 172 / 68 + rows × 68 px, rows from
+`fs.guildRaidDone.{id}` (the own attendance rows last drawn).
+
+### Follow-ups (deferred, not built)
+
+- WP 11: the picker leads with the first pull's time; the candidates carry no pull time yet.
+- WP 15: `Felsnap as Mirestalk` in Deaths, Consumables and Changes.
+- WP 16: boss health at each wipe, killing blows, named fire-protection potions.
+- UX 26: the mock's night bar is amended to `--muted` (no build change).
+- UX 27: Brightwick's empty roster crest (roster lane).

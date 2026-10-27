@@ -44,23 +44,31 @@
   {:else}
     {#each filled as group (group.encounter_id)}
       <div class="flex flex-col" data-testid="raid-loot-group">
-        <h4 class="label text-muted pb-1">
-          {group.boss} <span class="font-mono tabular-nums">{group.awards.length}</span>
-        </h4>
+        {#if filled.length > 1}
+          <h4 class="label text-muted pb-1">
+            {group.boss} <span class="font-mono tabular-nums">{group.awards.length}</span>
+          </h4>
+        {/if}
         <ul>
           {#each lootOrder(group.awards) as award (`${award.item_id}-${award.character_key}-${award.at}`)}
+            <!-- From 768: item, arrow, awardee, `by` right-aligned on one grid. Below: the item, then
+                 the arrow, awardee and `by` on line 2. -->
             <li
-              class="{ROW_DIVIDER} flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 px-1 py-1.5"
+              class="{ROW_DIVIDER} grid min-h-11 grid-cols-[16px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-1 py-1.5 md:grid-cols-[minmax(0,1fr)_16px_minmax(0,1fr)_auto]"
               style={ownKeys.includes(award.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
               data-testid="raid-loot-row"
             >
-              <RaidLootItem {award} iconSize={28} nameSize="text-[14px]" />
-              <span class="text-muted" aria-hidden="true">→</span>
-              <ClassCrestRing characterClass={award.class} size={20} />
-              <span class="text-[13px] font-semibold" style={`color:${classColorVar(award.class)}`}
-                >{award.name}</span
+              <span class="col-span-3 min-w-0 md:col-span-1"
+                ><RaidLootItem {award} iconSize={28} nameSize="text-[14px]" /></span
               >
-              <span class="text-muted text-[12px]">{byName(award.by_name)}</span>
+              <span class="text-muted" aria-hidden="true">→</span>
+              <span class="flex min-w-0 items-center gap-2">
+                <ClassCrestRing characterClass={award.class} size={20} />
+                <span class="truncate text-[13px] font-semibold" style={`color:${classColorVar(award.class)}`}
+                  >{award.name}</span
+                >
+              </span>
+              <span class="text-muted text-right text-[12px] whitespace-nowrap">{byName(award.by_name)}</span>
             </li>
           {/each}
         </ul>

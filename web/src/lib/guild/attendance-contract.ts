@@ -108,6 +108,8 @@ export interface RaidLootAward {
   item_id: number;
   item_name: string;
   quality: number;
+  /** The icon file name from the Loot tab's loot table; "" when the build has none. */
+  icon: string;
   character_key: string;
   name: string;
   class: string;

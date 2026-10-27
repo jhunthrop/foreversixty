@@ -112,12 +112,12 @@ describe('the band', () => {
 
   it('marks a raid still ahead in gold, and a cancelled or started one muted', () => {
     const live = between(html(), 'raid-when', 'guild-tabs');
-    expect(live).toMatch(/text-gold font-mono">in 2 days/);
+    expect(live).toMatch(/text-gold font-mono whitespace-nowrap">in 2 days/);
     expect(live).toContain('bg-gold absolute');
     const cancelled = between(ready(plannedRaid({ status: 'cancelled' })), 'raid-when', 'guild-tabs');
     expect(cancelled).not.toContain('text-gold');
     expect(cancelled).not.toContain('bg-gold');
-    expect(cancelled).toMatch(/text-muted font-mono">in 2 days/);
+    expect(cancelled).toMatch(/text-muted font-mono whitespace-nowrap">in 2 days/);
     expect(cancelled).toContain('bg-muted absolute');
     expect(cancelled).toMatch(/text-muted font-mono text-\[15px\]">23 of 40 signed up/);
     const controller = new RaidPageController(DEPS, ROUTE, {
@@ -129,7 +129,9 @@ describe('the band', () => {
     const started = render(GuildRaid, {
       props: { path: ROUTE, controller, now: new Date('2026-12-11T02:30:00Z'), viewerTimezone: CHICAGO },
     }).body;
-    expect(between(started, 'raid-when', 'guild-tabs')).toMatch(/text-muted font-mono">started 30 min ago/);
+    expect(between(started, 'raid-when', 'guild-tabs')).toMatch(
+      /text-muted font-mono whitespace-nowrap">started 30 min ago/,
+    );
   });
 
   it('draws the officer row for officers only', () => {
@@ -265,7 +267,7 @@ describe('a raid with a matched log', () => {
     const body = doneHtml();
     expect(body).not.toContain('23 of 40 signed up');
     expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
-      '22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
+      '22 of 23 came · 2 joined · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
     );
     expect(text(between(body, 'raid-match-line', 'guild-tabs'))).toContain(
       `${attendanceCopy.match.loggedAsNight} ${attendanceCopy.match.openNight}`,

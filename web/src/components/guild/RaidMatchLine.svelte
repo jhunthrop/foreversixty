@@ -80,7 +80,7 @@
     {#if officer && !confirming}
       <button
         type="button"
-        class={RAID_TEXT_BUTTON}
+        class="{RAID_TEXT_BUTTON} md:min-h-0"
         bind:this={notThisLog}
         disabled={readOnly || clearing}
         aria-describedby={readOnly ? gateId : undefined}

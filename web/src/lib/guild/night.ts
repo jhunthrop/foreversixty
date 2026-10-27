@@ -144,7 +144,10 @@ export function yourNightSentence(row: RaidAttendanceRow): string {
   if (row.outcome === 'absent') return yourNightText.stayedOut(state);
   if (!attending(row)) return yourNightText.joined(state, n, total);
   if (row.came_as !== null) return yourNightText.cameAs(state, row.name, row.came_as, n, total);
-  if (row.outcome === 'late') {
+  // A raider signed Late who arrived after the grace is present (WP 9), and their sentence still
+  // says when they came.
+  const signedLateAndCameLate = row.signed === 'late' && (lateMinutes(row) ?? 0) > 0;
+  if (row.outcome === 'late' || signedLateAndCameLate) {
     const minutes = lateMinutes(row);
     return minutes === null
       ? yourNightText.lateUnknown(state, roleLabelOf(row), n, total)
@@ -182,15 +185,18 @@ export function yourNightFacts(
   locale: string = DEFAULT_LOCALE,
 ): YourNightFact[] {
   const facts: YourNightFact[] = [];
+  const excused: YourNightFact[] = row.excused
+    ? [{ kind: 'excused', text: attendanceCopy.yourNight.excused }]
+    : [];
+  // Deaths and moves come from the log: a character not in it has neither (spec 3.3).
+  if (row.outcome === 'no_show' || row.outcome === 'absent') return excused;
   const died = report?.deaths.find((d) => d.character_key === row.character_key);
-  const deathCount = died === undefined ? 0 : died.on_wipes + died.on_kills;
-  if (deathCount > 0) facts.push({ kind: 'deaths', text: deaths(deathCount) });
+  facts.push({ kind: 'deaths', text: deaths(died === undefined ? 0 : died.on_wipes + died.on_kills) });
   if (report?.moves.previous != null) {
     const previousDate = dateLabel(new Date(report.moves.previous.starts_at), tz, locale);
     for (const move of ownMoves(report.moves, row.character_key)) facts.push(moveFact(move, previousDate));
   }
-  if (row.excused) facts.push({ kind: 'excused', text: attendanceCopy.yourNight.excused });
-  return facts;
+  return [...facts, ...excused];
 }
 
 export interface DiscordReportInput {

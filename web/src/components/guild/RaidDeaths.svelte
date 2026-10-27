@@ -39,31 +39,41 @@
   const ordered = $derived(deathOrder(rows));
   const most = $derived(ordered.length === 0 ? 1 : deathCount(ordered[0]));
   const shown = $derived(visibleRows(ordered, expanded));
+  /** The sub-head counts deaths (the night line's figure), `Show all` counts raiders. */
+  const total = $derived(ordered.reduce((sum, row) => sum + deathCount(row), 0));
 </script>
 
-<RaidBlock heading={attendanceCopy.report.deaths} count={ordered.length} testid="raid-deaths">
+<RaidBlock heading={attendanceCopy.report.deaths} count={total} testid="raid-deaths">
   {#if ordered.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-deaths-none">{attendanceCopy.deaths.none}</p>
   {:else}
     <ul bind:this={list}>
       {#each shown as row (row.character_key)}
+        <!-- Phone: line 1 crest, the whole name and the count; line 2 the bar and the split.
+             From 768 one 40 px row: crest, name, bar, count, split. -->
         <li
-          class="{ROW_DIVIDER} flex min-h-10 items-center gap-3 px-1"
+          class="{ROW_DIVIDER} grid min-h-[52px] grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-1 py-1.5 md:flex md:min-h-10 md:py-0"
           style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
           tabindex="-1"
           data-testid="raid-death-row"
         >
           <ClassCrestRing characterClass={row.class} size={20} />
           <span
-            class="w-28 truncate text-[13px] font-semibold"
+            class="text-[13px] font-semibold break-words md:w-28 md:truncate"
             style={`color:${classColorVar(row.class)}`}
             title={row.name}>{row.name}</span
           >
-          <span class="{BAR_TRACK} hidden w-full max-w-[160px] sm:inline-block" aria-hidden="true"
-            ><span class={BAR_FILL} style:width={`${(deathCount(row) / most) * 100}%`}></span></span
-          >
-          <span class="text-strong font-mono text-[13px]">{deathCount(row)}</span>
-          <span class="text-muted text-[12px]">{deathSplit(row.on_wipes, row.on_kills)}</span>
+          <span class="text-strong font-mono text-[13px] md:order-2">{deathCount(row)}</span>
+          <span class="col-span-3 flex items-center gap-3 pl-8 md:contents">
+            <span
+              class="{BAR_TRACK} inline-block w-full max-w-[160px] flex-1 md:order-1 lg:max-w-[96px] xl:max-w-[160px]"
+              aria-hidden="true"
+              ><span class={BAR_FILL} style:width={`${(deathCount(row) / most) * 100}%`}></span></span
+            >
+            <span class="text-muted text-[12px] whitespace-nowrap md:order-3"
+              >{deathSplit(row.on_wipes, row.on_kills)}</span
+            >
+          </span>
         </li>
       {/each}
     </ul>

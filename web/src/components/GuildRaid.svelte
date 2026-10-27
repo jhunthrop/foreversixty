@@ -14,18 +14,22 @@
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
   import { SEP, raidCopy } from '../lib/guild/raid-copy';
-  import { raidCount, raidPageFlags, raidWhen, reservedDone, stripReserveRows } from '../lib/guild/raid-page';
+  import {
+    raidCount,
+    raidPageFlags,
+    raidWhen,
+    reservedDoneRows,
+    stripReserveRows,
+  } from '../lib/guild/raid-page';
   import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
   import type { RaidRoute } from '../lib/guild/raid-page-types';
   import { liveRaidPageDeps } from '../lib/guild/raid-page-deps';
   import {
     ATTENDANCE_RESERVE,
-    RAID_BAND_LINES_MIN,
-    RAID_BAND_OFFICER,
-    RAID_DONE_BAND_LINES_MIN,
     RAID_STRIP_RESERVE,
     REPORT_RESERVE,
     YOUR_NIGHT_RESERVE,
+    bandLinesReserve,
   } from '../lib/guild/raid-layout';
   import { raidQuiet } from '../lib/guild/planned-row';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
@@ -34,6 +38,7 @@
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
   import RaidChip from './guild/RaidChip.svelte';
+  import RaidDisclosure from './guild/RaidDisclosure.svelte';
   import RaidDoneSections from './guild/RaidDoneSections.svelte';
   import RaidForm from './guild/RaidForm.svelte';
   import RaidOfficerRow from './guild/RaidOfficerRow.svelte';
@@ -80,8 +85,10 @@
   const settingsHref = $derived(guildSettingsHref(path.guild.region, path.guild.ruleset, guildName));
   const officer = $derived(c.role === 'officer');
   const reserveRows = stripReserveRows(browserStorage());
-  /** The raid was last drawn `done`: the loading page holds the night, not the sign-up strip. */
-  const doneReserve = reservedDone(path.raidId, browserStorage());
+  /** The raid was last drawn `done` (its Your night rows, else null): the loading page holds the
+   *  night, not the sign-up strip. */
+  const doneRows = reservedDoneRows(path.raidId, browserStorage());
+  const doneReserve = doneRows !== null;
   const visible = $derived(c.access === 'member');
   const raid = $derived(c.raid);
   const flags = $derived(raid === null ? null : raidPageFlags(raid, now));
@@ -96,6 +103,8 @@
    *  up; officers read their rows in the full sections. */
   const showYourNight = $derived(!officer && (raid?.attendance ?? []).some((row) => row.own));
   const countText = $derived(raid?.status === 'cancelled' ? 'text-muted' : 'text-strong');
+  /** A done or ended raid sets its when line in two lines on phone (attendance spec 3.1). */
+  const pastLines = $derived(flags !== null && (flags.done || flags.ended));
 
   let backLink = $state<HTMLAnchorElement | null>(null);
 
@@ -154,11 +163,7 @@
     <GuildBandFrame faction={c.guild?.faction ?? null}>
       {@render backLinkRow()}
       {@render raidEyebrow()}
-      <div
-        class="{doneReserve ? RAID_DONE_BAND_LINES_MIN : RAID_BAND_LINES_MIN} {officer
-          ? RAID_BAND_OFFICER
-          : ''}"
-      >
+      <div class={bandLinesReserve(doneReserve, officer)}>
         <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
       </div>
       <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
@@ -174,7 +179,7 @@
       {#if !officer}
         <div
           class="bg-raised border-line rounded-panel border {YOUR_NIGHT_RESERVE}"
-          style:--strip-rows={reserveRows}
+          style:--strip-rows={doneRows}
           aria-hidden="true"
           data-testid="raid-your-night-reserve"
         ></div>
@@ -251,14 +256,14 @@
                together from md up. -->
           <p class="text-[15px] md:col-span-2" data-testid="raid-when">
             <span class="block md:inline">{when.date}</span><span class="hidden md:inline">{SEP}</span><span
-              class="block md:inline"
+              class="{pastLines ? 'inline' : 'block md:inline'} whitespace-nowrap"
               ><span class="font-mono">{when.start}</span>&#32;{raidCopy.page.timeTo}&#32;<span
                 class="font-mono">{when.end}</span
               ></span
-            ><span class="block md:inline"
-              ><span class="hidden md:inline">{SEP}</span>{#if when.guildTime !== null}<span
-                  class="text-muted">{when.guildTime}</span
-                >{SEP}{/if}<span class="{goldText} font-mono">{when.countdown}</span></span
+            ><span class={pastLines ? 'inline' : 'block md:inline'}
+              ><span class={pastLines ? 'inline' : 'hidden md:inline'}>{SEP}</span
+              >{#if when.guildTime !== null}<span class="text-muted whitespace-nowrap">{when.guildTime}</span
+                >{SEP}{/if}<span class="{goldText} font-mono whitespace-nowrap">{when.countdown}</span></span
             >
           </p>
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">
@@ -297,10 +302,11 @@
               onClear={c.clearMatch}
             />
           </div>
-          {#if officer}
+          {#if officer && !flags.done}
             <div class="md:col-start-2 md:row-start-1">
               <RaidOfficerRow
                 {raid}
+                ended={flags.ended}
                 readOnly={!c.officerTools}
                 busy={c.busy}
                 line={c.line}
@@ -355,12 +361,7 @@
       />
     {/if}
 
-    <section
-      class="flex max-w-[720px] flex-col gap-3"
-      aria-labelledby="raid-notes-heading"
-      data-testid="raid-notes"
-    >
-      <h2 id="raid-notes-heading" class="section-title text-[18px]">{raidCopy.subheads.notes}</h2>
+    {#snippet notesBody()}
       {#if raid.notes_html.trim() === ''}
         <p class="text-muted text-[14px]" data-testid="raid-notes-empty">
           {officer ? raidCopy.notesEmpty.officer : raidCopy.notesEmpty.member}
@@ -375,7 +376,31 @@
           {@html raid.notes_html}
         </div>
       {/if}
-    </section>
+    {/snippet}
+    {#if flags.done}
+      <RaidDisclosure
+        heading={raidCopy.subheads.notes}
+        headingId="raid-notes-heading"
+        testid="raid-notes-disclosure"
+      >
+        <section
+          class="flex max-w-[720px] flex-col gap-3"
+          aria-labelledby="raid-notes-heading"
+          data-testid="raid-notes"
+        >
+          {@render notesBody()}
+        </section>
+      </RaidDisclosure>
+    {:else}
+      <section
+        class="flex max-w-[720px] flex-col gap-3"
+        aria-labelledby="raid-notes-heading"
+        data-testid="raid-notes"
+      >
+        <h2 id="raid-notes-heading" class="section-title text-[18px]">{raidCopy.subheads.notes}</h2>
+        {@render notesBody()}
+      </section>
+    {/if}
 
     <RaidRoster
       {raid}
@@ -384,6 +409,7 @@
       gateId={GATE_ID}
       cancelled={flags.cancelled}
       closed={flags.cancelled || flags.done}
+      collapsed={flags.done}
       busyKey={c.rosterBusy}
       line={c.line}
       onSetState={(row, state) => c.setRosterState(row, state)}

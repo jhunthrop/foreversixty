@@ -14,6 +14,7 @@
   import { SEP } from '../../lib/guild/raid-copy';
   import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
   import type { MatchCandidates } from '../../lib/guild/attendance-contract';
+  import Figures from './Figures.svelte';
   import RaidMatchLine from './RaidMatchLine.svelte';
   import RaidMatchPicker from './RaidMatchPicker.svelte';
 
@@ -114,19 +115,18 @@
 </script>
 
 {#if night !== null}
-  <p class="flex flex-wrap items-center gap-x-3 gap-y-1" data-testid="raid-night-line">
+  <!-- One flow: the bar sits on the count's line and the clauses wrap whole, so the phone line is
+       two lines at most (spec 7). -->
+  <p class="leading-[22px]" data-testid="raid-night-line">
     {#if fill !== null}
       <span
-        class="bg-line-soft relative inline-block h-2 w-[120px] overflow-hidden rounded-full md:w-[160px]"
+        class="bg-line-soft relative mr-3 inline-block h-2 w-[120px] overflow-hidden rounded-full align-middle md:w-[160px]"
         aria-hidden="true"
         ><span class="bg-muted absolute inset-y-0 left-0" style:width={`${fill}%`}></span></span
       >
-    {/if}
-    <span
-      ><span class="text-strong font-mono text-[15px]">{cameRatio(night)}</span><span
-        class="text-muted text-[13px]"
-        >{#each nightFacts(night) as fact (fact)}{SEP}<span class="font-mono">{fact}</span>{/each}</span
-      ></span
+    {/if}<span class="text-strong font-mono text-[15px] whitespace-nowrap">{cameRatio(night)}</span><span
+      class="text-muted text-[13px]"
+      >{#each nightFacts(night) as fact (fact)}{SEP}<Figures text={fact} />{/each}</span
     >
   </p>
 {/if}

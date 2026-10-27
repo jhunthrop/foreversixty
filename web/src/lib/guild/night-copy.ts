@@ -38,5 +38,10 @@ export const discordText = {
   more: (n: number): string => `+${n} more`,
 } as const;
 
+/** The full attendance rows' pulls column (WP 8): boss pulls, which a late arrival can still
+ *  make every one of, so the head names them and the cell reads `4 of 4`. */
+export const bossPullsHead = 'Boss pulls';
+export const pullsOf = (present: number, total: number): string => `${present} of ${total}`;
+
 /** The Excused checkbox's accessible name: the visible word, then whose row it is. */
 export const excusedLabel = (name: string): string => `Excused, ${name}`;

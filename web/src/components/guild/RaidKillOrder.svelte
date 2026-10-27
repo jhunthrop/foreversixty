@@ -27,8 +27,9 @@
           <span class="{text.time === null ? 'text-muted' : 'text-strong'} text-[14px] font-semibold"
             >{entry.name}</span
           >
-          {#if text.time !== null}<span class="text-text font-mono text-[14px]">{text.time}</span>{/if}
-          <span class="text-muted text-[13px]"
+          {#if text.time !== null}<span class="text-text ml-auto font-mono text-[14px]">{text.time}</span
+            >{/if}
+          <span class="text-muted text-[13px] {text.time === null ? 'ml-auto' : ''}"
             >{#if text.firstPull}<span class="text-kill">{text.note}</span
               >{:else}{text.note}{/if}{text.deaths}</span
           >

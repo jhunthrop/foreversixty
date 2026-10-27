@@ -5,12 +5,14 @@
 <script lang="ts">
   import type { RaidMoves } from '../../lib/guild/attendance-contract';
   import {
+    attendanceCopy,
     changesHead,
     firstRaidLine,
     moveDelta,
     moveFigures,
     onBoss,
   } from '../../lib/guild/attendance-copy';
+  import { SEP } from '../../lib/guild/raid-copy';
   import { OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { dateLabel } from '../../lib/guild/raid-time';
   import { biggestMoves } from '../../lib/guild/report-view';
@@ -40,26 +42,40 @@
 </script>
 
 {#if previous === null}
-  <p class="text-muted text-[14px]" data-testid="raid-moves-first">{firstRaidLine(zoneName)}</p>
+  <RaidBlock heading={attendanceCopy.report.changes} testid="raid-moves">
+    <p class="text-muted text-[14px]" data-testid="raid-moves-first">{firstRaidLine(zoneName)}</p>
+  </RaidBlock>
 {:else}
   <RaidBlock {heading} testid="raid-moves">
     <ul>
       {#each rows as move (`${move.character_key}-${move.metric}-${move.encounter}`)}
         {@const delta = moveDelta(move.before, move.after)}
+        <!-- From 768: who, `on {Boss}`, the figures and the delta right-aligned. Below: who and the
+             delta, then `on Onyxia · DPS 238 → 291`. -->
         <li
-          class="{ROW_DIVIDER} flex min-h-11 flex-wrap items-center gap-x-3 gap-y-0.5 px-1 py-1.5"
+          class="{ROW_DIVIDER} grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 px-1 py-1.5 md:grid-cols-[minmax(0,1fr)_auto_auto_56px]"
           style={ownKeys.includes(move.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
           data-testid="raid-move-row"
         >
-          <ClassCrestRing characterClass={move.class} size={20} />
-          <span class="text-[13px] font-semibold" style={`color:${classColorVar(move.class)}`}
-            >{move.name}</span
+          <span class="flex min-w-0 items-center gap-2">
+            <ClassCrestRing characterClass={move.class} size={20} />
+            <span class="truncate text-[13px] font-semibold" style={`color:${classColorVar(move.class)}`}
+              >{move.name}</span
+            >
+          </span>
+          <span
+            class="{delta.rising ? 'text-kill' : 'text-muted'} text-right font-mono text-[13px] md:order-last"
+            >{delta.text}</span
           >
-          <span class="text-muted text-[13px]">{onBoss(move.encounter)}</span>
-          <span class="text-text font-mono text-[14px]"
+          <span class="text-muted col-span-2 pl-7 text-[13px] whitespace-nowrap md:col-span-1 md:pl-0"
+            >{onBoss(move.encounter)}<span class="md:hidden">{SEP}</span><span
+              class="text-text font-mono text-[14px] md:hidden"
+              >{moveFigures(move.metric, move.before, move.after)}</span
+            ></span
+          >
+          <span class="text-text hidden font-mono text-[14px] whitespace-nowrap md:inline"
             >{moveFigures(move.metric, move.before, move.after)}</span
           >
-          <span class="{delta.rising ? 'text-kill' : 'text-muted'} font-mono text-[13px]">{delta.text}</span>
         </li>
       {/each}
     </ul>

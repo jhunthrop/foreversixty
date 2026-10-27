@@ -6,7 +6,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { ReportCopy } from '../../lib/guild/report-copy.svelte';
-import { doneRaid, text } from '../../test-support/raid-fixtures';
+import { between, doneRaid, text } from '../../test-support/raid-fixtures';
 import { raidReport } from '../../test-support/report-fixtures';
 import type { GuildRaidView, RaidDeathRow, RaidNight, RaidReport as Report } from '../../lib/guild/api';
 import RaidReport from './RaidReport.svelte';
@@ -207,7 +207,14 @@ describe('consumables', () => {
     const body = view(done(raidReport({ consumables: { ...base.consumables, log_has_buffs: false } })));
     expect(text(body)).toContain('This log carries no buff data, so only the readiness check shows.');
     expect(body).not.toContain('Potions 3');
-    expect(body).not.toContain('1.5fr');
+    expect(text(body)).not.toContain('In the log');
+    // The three columns stay, so Before keeps its x (UX 14).
+    expect(body).toContain('1.5fr');
+  });
+
+  it('heads the columns Before and In the log', () => {
+    const heads = between(view(done()), 'raid-consumables-heads', 'raid-consumable-row');
+    expect(text(heads)).toBe('Before In the log');
   });
 });
 
