@@ -8,7 +8,7 @@
   import { failureWarning, openInDiscordUrl } from '../../lib/account/notifications';
   import type { GuildBot, GuildSettingsDiscord } from '../../lib/guild/api';
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
-  import type { GuildBotState } from '../../lib/guild/discord-bot-state';
+  import type { GuildBotView } from '../../lib/guild/discord-bot-view';
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import DiscordConnectLink from '../account/discord/DiscordConnectLink.svelte';
@@ -47,7 +47,7 @@
     guildId: number;
     discord: GuildSettingsDiscord;
     bot: GuildBot;
-    botState: Extract<GuildBotState, 'picker' | 'installed' | 'removed'>;
+    botState: Extract<GuildBotView, { bot: GuildBot }>['state'];
     installHref: string;
     changing: boolean;
     focusSelect: boolean;

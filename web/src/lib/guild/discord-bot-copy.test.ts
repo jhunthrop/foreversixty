@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
+import { notificationsCopy } from '../account/notifications-copy';
 import { guildBotCopy, shortServerName } from './discord-bot-copy';
+import { guildDiscordCopy } from './discord-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-discord-bot.md', import.meta.url);
 const HEADING = '### 6.1 On the site';
@@ -18,7 +20,7 @@ function expectRow(label: string, texts: readonly string[]): void {
 
 describe('guildBotCopy, verbatim from spec 6.1', () => {
   it('pins the add path', () => {
-    expectRow('Add button', [guildBotCopy.add, guildBotCopy.adding]);
+    expectRow('Add button', [guildBotCopy.add]);
     expectRow('Add explanation', [guildBotCopy.addExplanation]);
     expectRow('Webhook path', [guildBotCopy.webhookPath, guildBotCopy.webhookPathNote]);
     expectRow('Bot offer', [guildBotCopy.offer]);
@@ -79,14 +81,22 @@ describe('guildBotCopy, verbatim from spec 6.1', () => {
     const lead = row('Remove question', 0, { Server: SERVER });
     expect(q.question(SERVER, true)).toBe(lead + row('Remove question', 1));
     expect(q.question(SERVER, false)).toBe(lead + row('Remove question', 2));
-    expectRow('Remove question', [DATA, DATA, DATA, q.confirm, q.cancel, q.removed, q.failed]);
+    expectRow('Remove question', [DATA, DATA, DATA, q.confirm, q.cancel, DATA, q.failed]);
   });
 
   it('pins the read-only refusal and the install returns', () => {
     expect(guildBotCopy.planEnded).toBe(row('Read-only', 3));
     const r = guildBotCopy.returns;
-    expectRow('Install returns', [r.installed, r.denied, r.failed, DATA, r.takenExpired, r.stuck]);
+    expectRow('Install returns', [r.installed, r.denied, r.failed, DATA, r.takenExpired]);
     expect(r.taken('Mograine Raiders')).toBe(row('Install returns', 3, { Guild: 'Mograine Raiders' }));
+  });
+});
+
+describe('strings the section shares with the webhook, pinned to the bot rows', () => {
+  it('reads the same pending, removed and stuck lines', () => {
+    expect(notificationsCopy.connecting).toBe(row('Add button', 1));
+    expect(notificationsCopy.removed).toBe(row('Remove question', 5));
+    expect(guildDiscordCopy.connectStuck).toBe(row('Install returns', 5));
   });
 });
 

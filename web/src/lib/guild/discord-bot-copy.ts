@@ -24,7 +24,6 @@ const WEBHOOK_FALLBACK = ' Raids post through your webhook channel again.';
 
 export const guildBotCopy = {
   add: 'Add the Forever Sixty bot',
-  adding: 'Opening Discord…',
   addExplanation:
     'Raid posts get In, Late, Bench and Out buttons, and members can ask /raid, /bis and /char in the server. Discord asks which server; you need Manage Server in it.',
   webhookPath: 'Connect a channel without the bot',
@@ -88,7 +87,6 @@ export const guildBotCopy = {
       }`,
     confirm: 'Remove',
     cancel: 'Cancel',
-    removed: 'Removed.',
     failed: 'Could not remove it. Try again.',
   },
 
@@ -101,7 +99,6 @@ export const guildBotCopy = {
       `That Discord server is linked to ${guild}. One server works with one guild: ask their officers to remove the bot from their guild settings, or add it to another server.`,
     takenExpired:
       'That Discord server is linked to another guild. One server works with one guild: ask its officers to remove the bot from their guild settings, or add it to another server.',
-    stuck: 'Discord did not open. Try again.',
   },
 
   planEnded: raidCopy.races.officerToolsEnded,

@@ -197,7 +197,7 @@ test.describe('the picker', () => {
     await expect(id(page, 'bot-remove-cancel')).toBeFocused();
     await id(page, 'bot-remove-confirm').click();
     await expect(id(page, 'bot-add')).toBeFocused();
-    await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.remove.removed);
+    await expect(section(page).getByRole('status')).toHaveText(copy.removed);
     expect(seen.botDeletes).toBe(1);
   });
 });
@@ -257,7 +257,7 @@ test.describe('installed', () => {
     await id(page, 'bot-remove-confirm').click();
     await expect(id(page, 'bot-offer')).toBeVisible();
     await expect(id(page, 'bot-add')).toBeFocused();
-    await expect(section(page).getByRole('status')).toHaveText(guildBotCopy.remove.removed);
+    await expect(section(page).getByRole('status')).toHaveText(copy.removed);
     expect(seen.botDeletes).toBe(1);
   });
 });

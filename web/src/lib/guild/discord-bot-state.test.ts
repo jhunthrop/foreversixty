@@ -1,13 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildBot, GuildBotChannel } from './api';
 import { guildBotCopy } from './discord-bot-copy';
-import {
-  BOT_FOCUS,
-  botReturnOutcome,
-  groupChannels,
-  guildBotState,
-  preselectChannel,
-} from './discord-bot-state';
+import { BOT_FOCUS, botReturnOutcome, groupChannels, preselectChannel } from './discord-bot-state';
+import { guildBotState, guildBotView } from './discord-bot-view';
 
 const BOT: GuildBot = {
   server_id: '1',
@@ -21,6 +16,14 @@ const BOT: GuildBot = {
   removed_in_discord: false,
 };
 const on = (bot: GuildBot | null, connected = false) => ({ bot_available: true, bot, connected });
+
+describe('guildBotView', () => {
+  it('carries the bot exactly for the three bot states', () => {
+    expect(guildBotView(on(BOT), false)).toEqual({ state: 'installed', bot: BOT });
+    expect(guildBotView(on(null, true), false)).toEqual({ state: 'webhook-only', bot: null });
+    expect(guildBotView({ bot_available: false, bot: BOT, connected: false }, false).bot).toBeNull();
+  });
+});
 
 describe('guildBotState', () => {
   it('follows the §3.1 precedence', () => {
