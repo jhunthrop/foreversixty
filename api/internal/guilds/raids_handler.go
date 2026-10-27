@@ -45,33 +45,43 @@ func raidIDFrom(r *http.Request) (int64, bool) {
 }
 
 // memberRaid resolves the guild and raid of a member route: ok false once it has answered
-// (404 for a non-member, a missing raid or a bad id; 500 on a failed read).
+// (404 for a non-member, a missing raid or a bad id; 500 on a failed read). getRaid runs the
+// same steps through MemberRaidView (routeRaidIDs, memberRaidOf, answeredMemberRaid).
 func (s *Service) memberRaid(w http.ResponseWriter, r *http.Request, op string) (int64, Raid, bool) {
+	guildID, raidID, ok := routeRaidIDs(w, r)
+	if !ok {
+		return 0, Raid{}, false
+	}
+	raid, found, err := s.memberRaidOf(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raidID)
+	if !s.answeredMemberRaid(w, r, op, found, err) {
+		return 0, Raid{}, false
+	}
+	return guildID, raid, true
+}
+
+// routeRaidIDs parses {id} and {raid}; false once it has answered 404 for a bad one.
+func routeRaidIDs(w http.ResponseWriter, r *http.Request) (guildID, raidID int64, ok bool) {
 	guildID, gok := guildIDFrom(r)
 	raidID, rok := raidIDFrom(r)
 	if !gok || !rok {
 		writeRaidNotFound(w, r)
-		return 0, Raid{}, false
+		return 0, 0, false
 	}
-	_, verified, err := s.Accounts.GuildRank(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
+	return guildID, raidID, true
+}
+
+// answeredMemberRaid writes a member raid read's failure: 500 on err, 404 when not found. It
+// is true when the read succeeded and nothing was written.
+func (s *Service) answeredMemberRaid(w http.ResponseWriter, r *http.Request, op string, found bool, err error) bool {
 	if err != nil {
 		s.fail(w, r, op, err, "could not load that raid just now")
-		return 0, Raid{}, false
-	}
-	if !verified {
-		writeRaidNotFound(w, r)
-		return 0, Raid{}, false
-	}
-	raid, found, err := s.Store.GetRaid(r.Context(), guildID, raidID)
-	if err != nil {
-		s.fail(w, r, op, err, "could not load that raid just now")
-		return 0, Raid{}, false
+		return false
 	}
 	if !found {
 		writeRaidNotFound(w, r)
-		return 0, Raid{}, false
+		return false
 	}
-	return guildID, raid, true
+	return true
 }
 
 // officerPlanForbidden is the forbidden body for a non-officer on the officer raid routes.
@@ -143,19 +153,12 @@ func (s *Service) officerRaid(w http.ResponseWriter, r *http.Request, op string)
 }
 
 func (s *Service) getRaid(w http.ResponseWriter, r *http.Request) {
-	guildID, gok := guildIDFrom(r)
-	raidID, rok := raidIDFrom(r)
-	if !gok || !rok {
-		writeRaidNotFound(w, r)
+	guildID, raidID, ok := routeRaidIDs(w, r)
+	if !ok {
 		return
 	}
 	view, found, err := s.MemberRaidView(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID, raidID)
-	if err != nil {
-		s.fail(w, r, "raid", err, "could not load that raid just now")
-		return
-	}
-	if !found {
-		writeRaidNotFound(w, r)
+	if !s.answeredMemberRaid(w, r, "raid", found, err) {
 		return
 	}
 	httpx.CachePrivate(w)

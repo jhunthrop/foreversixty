@@ -27,11 +27,13 @@ var (
 	ErrNoSuchMember = errors.New("guilds: no member by that name")
 )
 
-// ReportAnswer is a done raid's report as one viewer sees it. Officer is a verified officer
-// or leader (every row of the report); Public is a matched log a signed-out visitor may open.
+// ReportAnswer is a done raid's report as one viewer sees it. Member is a verified member of
+// the guild (the raid page's reader: loot and the raid page link); Officer a verified officer
+// or leader (every row of the report); Public a matched log a signed-out visitor may open.
 type ReportAnswer struct {
 	Raid    RaidView
 	Report  *ReportView
+	Member  bool
 	Officer bool
 	Public  bool
 }
@@ -39,11 +41,7 @@ type ReportAnswer struct {
 // MemberRaidView is raidID's view for a verified member of the guild (R1): found is false for
 // anyone else and for a raid that is not the guild's.
 func (s *Service) MemberRaidView(ctx context.Context, guildID, viewerID, raidID int64) (RaidView, bool, error) {
-	_, verified, err := s.Accounts.GuildRank(ctx, guildID, viewerID)
-	if err != nil || !verified {
-		return RaidView{}, false, err
-	}
-	raid, found, err := s.Store.GetRaid(ctx, guildID, raidID)
+	raid, found, err := s.memberRaidOf(ctx, guildID, viewerID, raidID)
 	if err != nil || !found {
 		return RaidView{}, false, err
 	}
@@ -52,6 +50,21 @@ func (s *Service) MemberRaidView(ctx context.Context, guildID, viewerID, raidID 
 		return RaidView{}, false, err
 	}
 	return view, true, nil
+}
+
+// memberRaidOf is raidID of the guild for a verified member (the member routes' memberRaid);
+// found is false for anyone else and for another guild's raid.
+func (s *Service) memberRaidOf(ctx context.Context, guildID, viewerID, raidID int64) (Raid, bool, error) {
+	_, verified, err := s.Accounts.GuildRank(ctx, guildID, viewerID)
+	if err != nil || !verified {
+		return Raid{}, false, err
+	}
+	return s.Store.GetRaid(ctx, guildID, raidID)
+}
+
+// RaidPagePath is the raid page's site path under the guild page's path.
+func RaidPagePath(guildPath string, raidID int64) string {
+	return fmt.Sprintf(raidPathFormat, guildPath, raidID)
 }
 
 // ReportFor is the named done raid's report (raidID nil: the guild's last one) as viewerID sees
@@ -85,7 +98,7 @@ func (s *Service) ReportFor(ctx context.Context, guildID, viewerID int64, raidID
 			return ReportAnswer{}, false, err
 		}
 	}
-	return ReportAnswer{Raid: view, Report: view.Report, Officer: officer, Public: public}, true, nil
+	return ReportAnswer{Raid: view, Report: view.Report, Member: member, Officer: officer, Public: public}, true, nil
 }
 
 // reportRaidID is the named raid, or the guild's last logged one (public only when asked).

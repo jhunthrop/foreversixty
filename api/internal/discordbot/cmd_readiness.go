@@ -19,6 +19,8 @@ const (
 	goldColor = 15055189
 	// readinessLineMax bounds one failing row; the guilds read keeps the rows inside a field.
 	readinessLineMax = 300
+	// readinessMoreReserve is room kept in the field for the "+n more on the board" line.
+	readinessMoreReserve = 40
 )
 
 // cmdReadiness answers /readiness: the next raid's readiness board for an officer, its failing
@@ -90,23 +92,39 @@ func readinessEmbed(ans guilds.ReadinessAnswer, board, zone string) notify.Embed
 	if ans.Failing == 0 {
 		return e
 	}
-	lines := make([]string, 0, len(ans.Rows)+1)
-	for _, r := range ans.Rows {
-		lines = append(lines, notify.EscapeWithin(notify.Collapse(r), readinessLineMax, readinessLineMax))
-	}
-	if ans.More > 0 {
-		lines = append(lines, fill(officerCopy.ReadinessMore, "{n}", strconv.Itoa(ans.More)))
+	lines, more := fittedRows(ans.Rows, ans.More)
+	if more > 0 {
+		lines = append(lines, fill(officerCopy.ReadinessMore, "{n}", strconv.Itoa(more)))
 	}
 	e.Fields = []notify.EmbedField{{Name: officerCopy.ToFix, Value: strings.Join(lines, "\n")}}
 	return e
 }
 
+// fittedRows are the rows escaped, as many as fit the field with room for the "+n more" line,
+// measured after escaping; more counts the rows that did not fit with the ones never listed.
+func fittedRows(rows []string, more int) ([]string, int) {
+	out := make([]string, 0, len(rows)+1)
+	used := 0
+	for i, r := range rows {
+		line := notify.EscapeWithin(notify.Collapse(r), readinessLineMax, readinessLineMax)
+		size := len([]rune(line)) + 1 // the newline before it, or the "+n more" line after it
+		if used+size > fieldValueMax-readinessMoreReserve {
+			return out, more + len(rows) - i
+		}
+		out = append(out, line)
+		used += size
+	}
+	return out, more
+}
+
 func readinessLead(ans guilds.ReadinessAnswer) string {
 	n := strconv.Itoa(ans.Signed)
-	switch ans.Failing {
-	case 0:
+	switch {
+	case ans.Signed == 0:
+		return officerCopy.ReadinessNobodySigned
+	case ans.Failing == 0:
 		return officerCopy.ReadinessAllReady
-	case 1:
+	case ans.Failing == 1:
 		return fill(officerCopy.ReadinessLeadOne, "{n}", n)
 	default:
 		return fill(officerCopy.ReadinessLead, "{n}", n, "{k}", strconv.Itoa(ans.Failing))

@@ -25,6 +25,8 @@ var officerCopy = struct {
 	ReadinessTitle string
 	// ReadinessLead and ReadinessLeadOne say how many signed and how many have something to fix.
 	ReadinessLead, ReadinessLeadOne, ReadinessAllReady string
+	// ReadinessNobodySigned (the controller's addition) is a raid nobody signed In or Late for.
+	ReadinessNobodySigned string
 	// ToFix is the failing rows' field; ReadinessMore follows the tenth row; Board the link.
 	ToFix, ReadinessMore, Board string
 	// The refusals: a member, an unlinked viewer, a lapsed plan (with Subscribe), a frozen claim.
@@ -33,39 +35,40 @@ var officerCopy = struct {
 	// part of Raid guild (launch pricing §3.2.8, the site's GuildPlanGate sentence).
 	RaidGuild, MoveToRaidGuild string
 }{
-	ReportPrefix:       "Report: ",
-	KillOrder:          "Kill order",
-	MostDeaths:         "Most deaths",
-	Consumables:        "Consumables",
-	Loot:               "Loot",
-	LootCount:          "{n} items.",
-	LootFirst:          " The first {k}:",
-	LootTo:             "to {Name} · {Boss}",
-	OpenReport:         "Open the report",
-	ReportNone:         "No raid logged yet. A raid shows here once its log is matched.",
-	ReportUnlinked:     "Link your Discord account to see your guild's raids.",
-	AttendanceTitle:    "{Name} · attendance",
-	LastRaids:          "Last 5 raids",
-	Roster:             "Roster",
-	OfficersOnly:       "Only officers can look up another member's attendance.",
-	NoMember:           "No member of {Guild} by that name.",
-	NoRaids:            "No raids yet.",
-	AttendanceUnlinked: "Link your Discord account to see your attendance.",
-	AttendanceMembers:  "Attendance is for members of {Guild}.",
-	ReadinessTitle:     "Readiness · ",
-	ReadinessLead:      "The {n} signed In or Late. {k} have something to fix.",
-	ReadinessLeadOne:   "The {n} signed In or Late. 1 has something to fix.",
-	ReadinessAllReady:  "Everyone signed In or Late is ready.",
-	ToFix:              "To fix, most checks first",
-	ReadinessMore:      "+{n} more on the board",
-	Board:              "Readiness board",
-	NotOfficer:         "Readiness is for officers of {Guild}.",
-	ReadinessUnlinked:  "Readiness is for officers of {Guild}. Link your Discord account if you are one.",
-	PlanLapsed:         "Planning and running raids are part of the guild plan. An officer can subscribe the guild.",
-	Subscribe:          "Subscribe the guild",
-	Frozen:             "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
-	RaidGuild:          "The readiness board is part of Raid guild. An officer can move the guild to Raid guild.",
-	MoveToRaidGuild:    "Move to Raid guild",
+	ReportPrefix:          "Report: ",
+	KillOrder:             "Kill order",
+	MostDeaths:            "Most deaths",
+	Consumables:           "Consumables",
+	Loot:                  "Loot",
+	LootCount:             "{n} items.",
+	LootFirst:             " The first {k}:",
+	LootTo:                "to {Name} · {Boss}",
+	OpenReport:            "Open the report",
+	ReportNone:            "No raid logged yet. A raid shows here once its log is matched.",
+	ReportUnlinked:        "Link your Discord account to see your guild's raids.",
+	AttendanceTitle:       "{Name} · attendance",
+	LastRaids:             "Last 5 raids",
+	Roster:                "Roster",
+	OfficersOnly:          "Only officers can look up another member's attendance.",
+	NoMember:              "No member of {Guild} by that name.",
+	NoRaids:               "No raids yet.",
+	AttendanceUnlinked:    "Link your Discord account to see your attendance.",
+	AttendanceMembers:     "Attendance is for members of {Guild}.",
+	ReadinessTitle:        "Readiness · ",
+	ReadinessLead:         "The {n} signed In or Late. {k} have something to fix.",
+	ReadinessLeadOne:      "The {n} signed In or Late. 1 has something to fix.",
+	ReadinessAllReady:     "Everyone signed In or Late is ready.",
+	ReadinessNobodySigned: "No one has signed In or Late yet.",
+	ToFix:                 "To fix, most checks first",
+	ReadinessMore:         "+{n} more on the board",
+	Board:                 "Readiness board",
+	NotOfficer:            "Readiness is for officers of {Guild}.",
+	ReadinessUnlinked:     "Readiness is for officers of {Guild}. Link your Discord account if you are one.",
+	PlanLapsed:            "Planning and running raids are part of the guild plan. An officer can subscribe the guild.",
+	Subscribe:             "Subscribe the guild",
+	Frozen:                "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
+	RaidGuild:             "The readiness board is part of Raid guild. An officer can move the guild to Raid guild.",
+	MoveToRaidGuild:       "Move to Raid guild",
 }
 
 // nightCopy is the raid page's night and kill-order words (G2, attendance-copy.ts): the night

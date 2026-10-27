@@ -71,8 +71,32 @@ func TestReadinessGate(t *testing.T) {
 	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0].Description; got != "The 23 signed In or Late. 1 has something to fix." {
 		t.Fatalf("one = %q", got)
 	}
+	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid}
+	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0]; got.Description != segment(14, nil) || len(got.Fields) != 0 {
+		t.Fatalf("nobody signed = %+v", got)
+	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23}
 	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0]; got.Description != segment(3, nil) || len(got.Fields) != 0 {
 		t.Fatalf("all ready = %+v", got)
+	}
+}
+
+// TestReadinessRowsFitTheFieldAfterEscaping: the field budget is measured on the escaped rows,
+// and a row that does not fit joins the "+n more" count.
+func TestReadinessRowsFitTheFieldAfterEscaping(t *testing.T) {
+	rows := make([]string, 10)
+	for i := range rows {
+		rows[i] = strings.Repeat("*", 60) + " · Short" // every * doubles once escaped
+	}
+	lines, more := fittedRows(rows, 2)
+	total := 0
+	for _, l := range lines {
+		total += len([]rune(l)) + 1
+	}
+	if len(lines) == len(rows) || more != 2+len(rows)-len(lines) || total > fieldValueMax-readinessMoreReserve {
+		t.Fatalf("%d lines, %d more, %d runes", len(lines), more, total)
+	}
+	if !strings.HasPrefix(lines[0], `\*`) {
+		t.Fatalf("line not escaped: %q", lines[0])
 	}
 }
