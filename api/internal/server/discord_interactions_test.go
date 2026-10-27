@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 )
 
@@ -21,15 +22,19 @@ func TestDiscordInteractionsPingThroughTheRouter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	h := NewRouter(Deps{Version: "test", DiscordBot: discordbot.New(discordbot.Deps{PublicKey: pub})})
+	h := NewRouter(Deps{Version: "test", Auth: &auth.Authenticator{}, DiscordBot: discordbot.New(discordbot.Deps{PublicKey: pub})})
 	body := `{"type":1}`
 	ts := strconv.FormatInt(time.Now().Unix(), 10)
-	req := httptest.NewRequest(http.MethodPost, discordbot.InteractionsPath, strings.NewReader(body))
-	req.Header.Set("X-Signature-Ed25519", hex.EncodeToString(ed25519.Sign(priv, []byte(ts+body))))
-	req.Header.Set("X-Signature-Timestamp", ts)
-	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, req)
-	if rec.Code != http.StatusOK || strings.TrimSpace(rec.Body.String()) != `{"type":1}` {
-		t.Fatalf("ping = %d %s", rec.Code, rec.Body)
+	sig := hex.EncodeToString(ed25519.Sign(priv, []byte(ts+body)))
+	// One past the router's per-IP budget: Discord's egress IPs are few.
+	for i := 0; i <= routerRequestsPerMinute; i++ {
+		req := httptest.NewRequest(http.MethodPost, discordbot.InteractionsPath, strings.NewReader(body))
+		req.Header.Set("X-Signature-Ed25519", sig)
+		req.Header.Set("X-Signature-Timestamp", ts)
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, req)
+		if rec.Code != http.StatusOK || strings.TrimSpace(rec.Body.String()) != `{"type":1}` {
+			t.Fatalf("ping %d = %d %s", i+1, rec.Code, rec.Body)
+		}
 	}
 }
