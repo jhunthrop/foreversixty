@@ -126,6 +126,10 @@ type StripeSubscriptionSummary struct {
 	Status string
 	// PriceLookupKey is the lookup key of the subscription's single item.
 	PriceLookupKey string
+	// ItemLookupKeys are the lookup keys of every item on the subscription
+	// (empty for an item whose price has none), so a caller can refuse a
+	// subscription that carries a price as a second item.
+	ItemLookupKeys []string
 }
 
 // Gateway is every Stripe API call this package makes. StripeGateway
