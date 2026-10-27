@@ -13,6 +13,7 @@ import (
 	stripe "github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/webhook"
 
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -236,7 +237,7 @@ func (s *Service) upsertSubscription(ctx context.Context, subscriptionID, actor 
 			s.logger().Warn("billing: subscription metadata changed between fetches", "subscription", sub.ID)
 			return nil
 		}
-		return s.applyUpsert(ctx, stripeUpsertFor(sub, subject, actor), sub)
+		return s.applyUpsert(ctx, s.upsertFor(sub, subject, actor), sub)
 	})
 }
 
@@ -303,12 +304,60 @@ func stripeUpsertFor(sub *stripe.Subscription, subject subscriptionSubject, acto
 	if end, ok := subscriptionPeriodEnd(sub); ok {
 		p.CurrentPeriodEnd = &end
 	}
+	applyPriceFacts(&p, sub)
 	if subject.plan == entitlements.PlanGuild {
 		p.GuildID = &subject.guildID
+		p.Tier = catalog.TierGuild
+		if offer, ok := guildOffer(p.PriceLookupKey); ok {
+			p.Tier = offer.Tier()
+		}
 	} else {
 		p.UserID = &subject.billingUserID
 	}
 	return p
+}
+
+// applyPriceFacts copies the first item's price key and amount, and the
+// trial end, onto the upsert.
+func applyPriceFacts(p *entitlements.StripeUpsert, sub *stripe.Subscription) {
+	if sub.Items != nil && len(sub.Items.Data) > 0 && sub.Items.Data[0].Price != nil {
+		price := sub.Items.Data[0].Price
+		p.PriceLookupKey = price.LookupKey
+		p.UnitAmountCents = price.UnitAmount
+	}
+	if sub.TrialEnd != 0 {
+		end := time.Unix(sub.TrialEnd, 0).UTC()
+		p.TrialEnd = &end
+	}
+}
+
+// guildOffer is the catalog offer a guild price key belongs to.
+func guildOffer(lookupKey string) (catalog.Offer, bool) {
+	price, ok := catalog.Lookup(lookupKey)
+	if !ok || price.Offer.Tier() == "" {
+		return "", false
+	}
+	return price.Offer, true
+}
+
+// upsertFor is stripeUpsertFor plus the warning an unrecognised guild
+// price key deserves (the row falls back to the plain guild tier).
+func (s *Service) upsertFor(sub *stripe.Subscription, subject subscriptionSubject, actor string) entitlements.StripeUpsert {
+	p := stripeUpsertFor(sub, subject, actor)
+	if subject.plan == entitlements.PlanGuild {
+		if _, ok := guildOffer(p.PriceLookupKey); !ok {
+			s.logger().Warn("billing: guild subscription price not in the catalog; using the guild tier",
+				"subscription", sub.ID, "price", priceID(sub), "lookup_key", p.PriceLookupKey)
+		}
+	}
+	return p
+}
+
+func priceID(sub *stripe.Subscription) string {
+	if sub.Items == nil || len(sub.Items.Data) == 0 || sub.Items.Data[0].Price == nil {
+		return ""
+	}
+	return sub.Items.Data[0].Price.ID
 }
 
 // applyUpsert is upsertSubscription's locked half: the entitlements
@@ -328,8 +377,52 @@ func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, 
 	case entitlements.OutcomeDeadNewcomer:
 		s.logger().Info("billing", "op", "dead_newcomer_ignored",
 			"subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID)
+	case entitlements.OutcomeWritten:
+		return s.afterWritten(ctx, p, sub)
 	}
 	return nil
+}
+
+// afterWritten runs the follow-ups a written upsert owes: the guild's
+// trial record, a transfer's retirement of the outgoing subscription,
+// and a premium comeback's redemption. Each is idempotent.
+func (s *Service) afterWritten(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription) error {
+	if p.Plan == entitlements.PlanGuild {
+		if p.Transfer {
+			return s.completeTransfer(ctx, *p.GuildID, sub.Metadata["from_subscription_id"])
+		}
+		if p.TrialEnd != nil {
+			return s.Store.RecordGuildTrial(ctx, *p.GuildID, sub.ID)
+		}
+		return nil
+	}
+	raw, ok := sub.Metadata["comeback_id"]
+	if !ok {
+		return nil
+	}
+	id, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil {
+		s.logger().Warn("billing: ignoring malformed comeback_id", "subscription", sub.ID)
+		return nil
+	}
+	return s.Store.MarkComebackUsed(ctx, id)
+}
+
+// completeTransfer cancels the outgoing subscription at period end and
+// marks the transfer accepted; a transfer no longer offered is left alone,
+// so a later event for the same subscription cancels nothing twice.
+func (s *Service) completeTransfer(ctx context.Context, guildID int64, from string) error {
+	if from == "" {
+		return nil
+	}
+	offered, err := s.Store.TransferOffered(ctx, guildID, from)
+	if err != nil || !offered {
+		return err
+	}
+	if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, from); err != nil {
+		return fmt.Errorf("billing: cancel outgoing subscription %s: %w", from, err)
+	}
+	return s.Store.MarkTransferAccepted(ctx, guildID, from)
 }
 
 // cancelDuplicate is the other half of a caught duplicate (security

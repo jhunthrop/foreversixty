@@ -593,7 +593,11 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
 					then coalesce(excluded.stripe_subscription_created, entitlements.stripe_subscription_created)
 					else excluded.stripe_subscription_created end,
-				tier = excluded.tier, price_lookup_key = excluded.price_lookup_key,
+				tier = excluded.tier,
+				price_lookup_key = case
+					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
+					then coalesce(excluded.price_lookup_key, entitlements.price_lookup_key)
+					else excluded.price_lookup_key end,
 				unit_amount_cents = excluded.unit_amount_cents, trial_end = excluded.trial_end,
 				updated_at = now()
 			returning id`,
