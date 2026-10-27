@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func (w raidWorld) postAward(raidID *int64, key string) *http.Response {
@@ -65,14 +66,38 @@ func TestAnAwardRefusesARaidThatIsNotDone(t *testing.T) {
 	expectError(t, w.postAward(&missing, officerKey), http.StatusBadRequest, "invalid")
 }
 
-func TestAnAwardDefaultsToTheLatestDoneRaidOfTheWeek(t *testing.T) {
-	w, night, _ := reportNight(t)
+// An award with no raid named goes to the raid being played now (its match window holds now),
+// never to a previous done raid: two raids five days apart keep their own awards.
+func TestAnAwardDefaultsToTheRaidBeingPlayedNow(t *testing.T) {
+	w := newRaidWorld(t, true)
+	now := time.Now().UTC().Truncate(time.Minute)
+	first := w.raidAt(t, raidZoneOny, now.Add(-5*24*time.Hour))
+	w.oneFightNight(t, "first", onyLogZone, first.StartsAt.Add(time.Hour))
+	if _, err := w.h.store.SetMatch(t.Context(), w.gid, first.ID, "first", MatchedHand); err != nil {
+		t.Fatal(err)
+	}
+	w.as(w.officer)
+	if res := w.postAward(&first.ID, officerKey); res.StatusCode != http.StatusOK {
+		t.Fatalf("first award = %d: %s", res.StatusCode, readBody(res))
+	}
+	second := w.raidAt(t, raidZoneOny, now.Add(-30*time.Minute))
+	if res := w.postAward(nil, memberKeyA); res.StatusCode != http.StatusOK {
+		t.Fatalf("live award = %d: %s", res.StatusCode, readBody(res))
+	}
+	if got := w.awardRaids(t); len(got) != 2 || got[0] != first.ID || got[1] != second.ID {
+		t.Fatalf("award raids = %v, want [%d %d]", got, first.ID, second.ID)
+	}
+}
+
+// A done raid whose window has passed takes no default award.
+func TestAnAwardAfterTheWindowHasNoRaid(t *testing.T) {
+	w, _, _ := reportNight(t)
 	w.as(w.officer)
 	if res := w.postAward(nil, officerKey); res.StatusCode != http.StatusOK {
 		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
 	}
-	if got := w.awardRaids(t); len(got) != 1 || got[0] != night.ID {
-		t.Fatalf("default raid = %v, want %d (the previous raid is eight days back)", got, night.ID)
+	if got := w.awardRaids(t); len(got) != 1 || got[0] != -1 {
+		t.Fatalf("default raid = %v, want none (the night's window has ended)", got)
 	}
 }
 
