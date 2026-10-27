@@ -15,6 +15,9 @@ type Alternative struct {
 	ItemID   int     `json:"item_id"`
 	ItemName string  `json:"item_name"`
 	DpsDelta float64 `json:"dps_delta"`
+	// Source is where the item comes from, in the game's words ("PvP rank 14 · Champion ·
+	// Horde", "Blacksmithing").
+	Source string `json:"source"`
 }
 
 // Slot is one band's pick for one gear slot. ItemID <= 0 means the band has no known
@@ -24,6 +27,7 @@ type Slot struct {
 	Slot         string        `json:"slot"`
 	ItemID       int           `json:"item_id"`
 	ItemName     string        `json:"item_name"`
+	Source       string        `json:"source"`
 	Alternatives []Alternative `json:"alternatives"`
 }
 
@@ -42,8 +46,8 @@ func (b Band) BySlot() map[string]Slot {
 	return out
 }
 
-// bisFile and bisBand are the on-disk JSON shape - unexported, since LoadBand is the only
-// thing that ever needs the whole file.
+// bisFile and bisBand are the on-disk JSON shape - unexported, since the loaders are the
+// only things that ever need the whole file.
 type bisFile struct {
 	Bands []bisBand `json:"bands"`
 }
@@ -51,7 +55,21 @@ type bisFile struct {
 type bisBand struct {
 	Band    int    `json:"band"`
 	Faction string `json:"faction"`
+	Preset  string `json:"preset"`
 	Slots   []Slot `json:"slots"`
+}
+
+// The presets a band entry is ranked under; an entry with no preset is bare.
+const (
+	BarePreset = "bare"
+	RaidPreset = "raid"
+)
+
+func (b bisBand) preset() string {
+	if b.Preset == "" {
+		return BarePreset
+	}
+	return b.Preset
 }
 
 // LoadBand reads fileSlug's band/faction entry out of dataDir/build/bis/<fileSlug>.json
@@ -62,20 +80,9 @@ type bisBand struct {
 // spec - the catalogue only ever simmed DPS specs), or a file with no matching band/faction
 // entry. A real I/O or parse error on a file that does exist is still returned as an error.
 func LoadBand(dataDir, build, fileSlug string, band int, faction string) (Band, bool, error) {
-	if fileSlug == "" || dataDir == "" {
-		return Band{}, false, nil
-	}
-	path := filepath.Join(dataDir, build, "bis", fileSlug+".json")
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return Band{}, false, nil
-		}
-		return Band{}, false, fmt.Errorf("bis: read %s: %w", path, err)
-	}
-	var file bisFile
-	if err := json.Unmarshal(raw, &file); err != nil {
-		return Band{}, false, fmt.Errorf("bis: parse %s: %w", path, err)
+	file, ok, err := readFile(dataDir, build, fileSlug)
+	if err != nil || !ok {
+		return Band{}, false, err
 	}
 	for _, b := range file.Bands {
 		if b.Band == band && b.Faction == faction {
@@ -83,4 +90,52 @@ func LoadBand(dataDir, build, fileSlug string, band int, faction string) (Band, 
 		}
 	}
 	return Band{}, false, nil
+}
+
+// LoadPresetBand is LoadBand under a preset, the site's own selection
+// (web/src/lib/bis/presets.ts selectBand): the entry ranked under preset, else the bare one,
+// else the first entry for the band and faction. ok is false as LoadBand's.
+func LoadPresetBand(dataDir, build, fileSlug string, band int, faction, preset string) (Band, bool, error) {
+	file, ok, err := readFile(dataDir, build, fileSlug)
+	if err != nil || !ok {
+		return Band{}, false, err
+	}
+	var candidates []bisBand
+	for _, b := range file.Bands {
+		if b.Band == band && b.Faction == faction {
+			candidates = append(candidates, b)
+		}
+	}
+	for _, want := range []string{preset, BarePreset} {
+		for _, b := range candidates {
+			if b.preset() == want {
+				return Band{Slots: b.Slots}, true, nil
+			}
+		}
+	}
+	if len(candidates) > 0 {
+		return Band{Slots: candidates[0].Slots}, true, nil
+	}
+	return Band{}, false, nil
+}
+
+// readFile reads dataDir/build/bis/<fileSlug>.json; ok is false, with no error, when there is
+// no such file (or no slug or directory to look in).
+func readFile(dataDir, build, fileSlug string) (bisFile, bool, error) {
+	if fileSlug == "" || dataDir == "" {
+		return bisFile{}, false, nil
+	}
+	path := filepath.Join(dataDir, build, "bis", fileSlug+".json")
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return bisFile{}, false, nil
+		}
+		return bisFile{}, false, fmt.Errorf("bis: read %s: %w", path, err)
+	}
+	var file bisFile
+	if err := json.Unmarshal(raw, &file); err != nil {
+		return bisFile{}, false, fmt.Errorf("bis: parse %s: %w", path, err)
+	}
+	return file, true, nil
 }

@@ -31,8 +31,10 @@ type Deps struct {
 	PublicKey                                                 ed25519.PublicKey
 	ApplicationID, CommandsGuildID, PublicBaseURL, APIBaseURL string
 	Guilds                                                    GuildService
-	Notify                                                    *notify.Service
-	Log                                                       *slog.Logger
+	// Characters answers /char: the public character page.
+	Characters CharacterCards
+	Notify     *notify.Service
+	Log        *slog.Logger
 	// Background runs work that outlives a request. Nil means in-process
 	// goroutines tracked by Drain; see Background.
 	Background Background

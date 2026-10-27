@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -188,6 +189,73 @@ func nudgeText(name string, cr CharacterReadiness, extraFails ...string) string 
 		out += " (no level on file - talent points assume level 60)"
 	}
 	return out
+}
+
+// The readiness words a one-character answer uses: the board's own (web/src/lib/guild/
+// readiness-view.ts consumablesLabel and NOT_SHARED).
+const (
+	readinessStocked   = "Stocked"
+	readinessShort     = "Short: "
+	readinessNotShared = "Not shared"
+	// readinessShortMax is how many failing checks follow "Short: ".
+	readinessShortMax = 2
+)
+
+// ReadinessFacts is one roster character's readiness as the board computes it: the word,
+// and when its export was last synced (nil off the roster or with no export).
+type ReadinessFacts struct {
+	Word     string
+	SyncedAt *time.Time
+	OnRoster bool
+}
+
+// CharacterReadinessWord is the board's word for one character: Stocked, Short: and its
+// first failing checks, or Not shared (off the verified roster, or nothing to read).
+func (s *Service) CharacterReadinessWord(ctx context.Context, guildID int64, characterKey string) (string, error) {
+	facts, err := s.CharacterReadinessFacts(ctx, guildID, characterKey)
+	return facts.Word, err
+}
+
+// CharacterReadinessFacts is CharacterReadinessWord with the sync time beside it.
+func (s *Service) CharacterReadinessFacts(ctx context.Context, guildID int64, characterKey string) (ReadinessFacts, error) {
+	none := ReadinessFacts{Word: readinessNotShared}
+	g, err := s.Store.getGuild(ctx, guildID)
+	if err != nil {
+		return none, fmt.Errorf("guilds: readiness word: %w", err)
+	}
+	roster, err := s.Store.HomeRoster(ctx, guildID, g, 0, false, false)
+	if err != nil {
+		return none, fmt.Errorf("guilds: readiness word: %w", err)
+	}
+	for _, row := range roster {
+		if row.Verified && row.CharacterKey == characterKey {
+			return s.Store.readinessFactsOf(row, medianItemLevel(roster)), nil
+		}
+	}
+	return none, nil
+}
+
+func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
+	band, hasBand := s.loadBandFor(row.className, row.specStr, row.faction)
+	cr := computeReadiness(row.Consent, band, hasBand, row.gear, row.enchants,
+		row.bags, row.hasBagsSection, row.talentPointsSpent, row.hasTalents,
+		row.level, row.hasLevel, row.ItemLevel, median)
+	facts := ReadinessFacts{Word: readinessWord(cr), OnRoster: true}
+	if !row.LoggedAt.IsZero() {
+		synced := row.LoggedAt
+		facts.SyncedAt = &synced
+	}
+	return facts
+}
+
+func readinessWord(cr CharacterReadiness) string {
+	if fails := cr.Needs(readinessShortMax); len(fails) > 0 {
+		return readinessShort + strings.Join(fails, ", ")
+	}
+	if cr.ConsumablesState == "stocked" {
+		return readinessStocked
+	}
+	return readinessNotShared
 }
 
 func (s *Service) readiness(w http.ResponseWriter, r *http.Request) {

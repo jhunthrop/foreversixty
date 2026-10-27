@@ -163,7 +163,9 @@ func (s *Service) answerOrDefer(ctx context.Context, w http.ResponseWriter, in I
 	defer timer.Stop()
 	select {
 	case res := <-done:
-		s.writeReply(w, s.replyOf(in, res, update), respMessage)
+		rep := s.replyOf(in, res, update)
+		s.writeReply(w, rep, respMessage)
+		s.runAfter(w, in, rep)
 	case <-timer.C:
 		s.writeDeferral(w, update)
 		if !s.bg.Start(func() { s.deliver(in, <-done, update) }) {
@@ -202,8 +204,34 @@ func (s *Service) deliver(in Interaction, res handled, update bool) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := s.d.REST.EditOriginal(ctx, in.Token, s.replyOf(in, res, update).Message); err != nil {
+	rep := s.replyOf(in, res, update)
+	if err := s.d.REST.EditOriginal(ctx, in.Token, rep.Message); err != nil {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "edit_failed", "interaction", in.ID, "err", err)
+		return
+	}
+	if rep.After != nil {
+		rep.After(ctx)
+	}
+}
+
+// afterWithin bounds a reply's After work.
+const afterWithin = 10 * time.Second
+
+// runAfter flushes the answer to Discord, then runs the reply's After off the request.
+func (s *Service) runAfter(w http.ResponseWriter, in Interaction, rep Reply) {
+	if rep.After == nil {
+		return
+	}
+	if f, ok := w.(http.Flusher); ok {
+		f.Flush()
+	}
+	started := s.bg.Start(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), afterWithin)
+		defer cancel()
+		rep.After(ctx)
+	})
+	if !started {
+		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "after_dropped_shutdown", "interaction", in.ID)
 	}
 }
 

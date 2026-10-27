@@ -1,0 +1,158 @@
+package discordbot
+
+import (
+	"context"
+	"encoding/json"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+)
+
+func (w *lookupWorld) pressShare(t *testing.T, customID string) Reply {
+	t.Helper()
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": customID})
+	in.Token = "tok-share"
+	rep, err := w.svc.share(context.Background(), in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return rep
+}
+
+func (w *lookupWorld) followUps() []RESTCall {
+	var out []RESTCall
+	for _, c := range w.rest.Calls() {
+		if c.Method == "FollowUp" {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
+func TestShareRecomputesAsAVisitorOnce(t *testing.T) {
+	w := newLookupWorld(t)
+	w.port.candidates = []guilds.SignupCandidate{{CharacterKey: keyZulmaraLookup, Name: "Zulmara", Verified: true, Main: true}}
+	w.lg.readiness[keyZulmaraLookup] = guilds.ReadinessFacts{Word: "Stocked", SyncedAt: ref(time.Now()), OnRoster: true}
+	answer := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
+	shareID := answer.Components[0][0].CustomID
+	if !strings.HasPrefix(shareID, "share:") || len(shareID) > 100 {
+		t.Fatalf("share id = %q", shareID)
+	}
+
+	rep := w.pressShare(t, shareID)
+	if !rep.Update || rep.After == nil {
+		t.Fatalf("first press = %+v", rep)
+	}
+	if b := rep.Message.Components[0][0]; b.Label != "Shared" || !b.Disabled || b.CustomID != shareID {
+		t.Fatalf("button after = %+v", b)
+	}
+	if len(w.followUps()) != 0 {
+		t.Fatal("the follow-up went before the press was answered")
+	}
+	rep.After(context.Background())
+	ups := w.followUps()
+	if len(ups) != 1 || ups[0].Token != "tok-share" {
+		t.Fatalf("follow-ups = %+v", ups)
+	}
+	public := ups[0].Message
+	raw, _ := json.Marshal(public)
+	if public.Ephemeral || strings.Contains(string(raw), `"flags"`) {
+		t.Fatalf("follow-up is not public: %s", raw)
+	}
+	if got := strings.Join(fieldNames(public.Embeds[0]), ","); got != "Item level,Top 3 upgrades" {
+		t.Fatalf("the visitor's card shows member fields: %s", got)
+	}
+	for _, row := range public.Components {
+		for _, c := range row {
+			if c.Style != StyleLink {
+				t.Fatalf("the public answer carries a button that acts: %+v", c)
+			}
+		}
+	}
+
+	again := w.pressShare(t, shareID)
+	if !again.Update || again.After != nil || again.Message.Components[0][0].Label != "Shared" {
+		t.Fatalf("second press = %+v", again)
+	}
+	if len(w.followUps()) != 1 {
+		t.Fatal("a second press shared again")
+	}
+
+	fresh := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
+	delete(w.cards.cards, "zulmara") // the character turned private since
+	gone := w.pressShare(t, fresh.Components[0][0].CustomID)
+	if gone.Update || gone.Message.Content != "That is no longer public, so it was not shared." || !gone.Message.Ephemeral {
+		t.Fatalf("private since = %+v", gone)
+	}
+	if len(w.followUps()) != 1 {
+		t.Fatal("a private character was shared")
+	}
+}
+
+func TestShareRefusesAnotherGuildsOrAnExpiredToken(t *testing.T) {
+	w := newLookupWorld(t)
+	answer := w.command(t, pressDiscord, "bis", map[string]string{"spec": "hunter-marksmanship", "phase": "60"}).Message
+	id := answer.Components[0][0].CustomID
+	w.exec(t, `update discord_shares set expires_at = now() - interval '1 minute'`)
+	if rep := w.pressShare(t, id); rep.Message.Content != commonCopy.Failure {
+		t.Fatalf("expired = %+v", rep)
+	}
+	other := seedGuild(t, w.st.Pool, "Other")
+	w.exec(t, `update discord_shares set expires_at = now() + interval '1 hour', guild_id = $1`, other)
+	if rep := w.pressShare(t, id); rep.Message.Content != commonCopy.Failure {
+		t.Fatalf("another guild's token = %+v", rep)
+	}
+}
+
+// TestReplyAfterRunsOnceTheAnswerIsOut: inline, After runs after the answer is written;
+// deferred, after the deferred answer's edit.
+func TestReplyAfterRunsOnceTheAnswerIsOut(t *testing.T) {
+	for _, c := range []struct {
+		name  string
+		delay time.Duration
+		first string
+	}{{"inline", time.Millisecond, "FollowUp"}, {"deferred", 200 * time.Millisecond, "EditOriginal"}} {
+		t.Run(c.name, func(t *testing.T) {
+			var h *harness
+			h = newHarness(t, func(ctx context.Context, in Interaction) (Reply, error) {
+				time.Sleep(c.delay)
+				return Reply{Message: Message{Content: "done", Ephemeral: true}, After: func(ctx context.Context) {
+					_ = h.rest.FollowUp(ctx, in.Token, Message{Content: "public"})
+				}}, nil
+			})
+			h.svc.answerWithin = 50 * time.Millisecond
+			h.post(commandBody("spy"), time.Now(), nil)
+			if err := h.svc.Drain(context.Background()); err != nil {
+				t.Fatal(err)
+			}
+			calls := h.rest.Calls()
+			if len(calls) == 0 || calls[0].Method != c.first || calls[len(calls)-1].Method != "FollowUp" {
+				t.Fatalf("calls %+v", calls)
+			}
+		})
+	}
+}
+
+func TestShareFollowUpFailureFreesTheToken(t *testing.T) {
+	w := newLookupWorld(t)
+	answer := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
+	id := answer.Components[0][0].CustomID
+	w.rest.ErrFor = map[string]error{"FollowUp": &APIError{Status: 500, Message: "boom"}}
+	rep := w.pressShare(t, id)
+	rep.After(context.Background())
+	var edits []RESTCall
+	for _, c := range w.rest.Calls() {
+		if c.Method == "EditOriginal" {
+			edits = append(edits, c)
+		}
+	}
+	if len(edits) != 1 || edits[0].Message.Components[0][0].Label != lookupCopy.Share || edits[0].Message.Components[0][0].Disabled {
+		t.Fatalf("restore edit = %+v", edits)
+	}
+	w.rest.ErrFor = nil
+	if again := w.pressShare(t, id); again.After == nil {
+		t.Fatal("the freed token did not share on the next press")
+	}
+}

@@ -36,7 +36,7 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 		PublicKey:     cfg.DiscordPublicKey,
 		ApplicationID: cfg.DiscordApplicationID, CommandsGuildID: cfg.DiscordCommandsGuildID,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL,
-		Guilds: deps.Guilds, Notify: deps.Notify, Log: log,
+		Guilds: deps.Guilds, Characters: deps.Rankings, Notify: deps.Notify, Log: log,
 	})
 	accounts.DiscordLinks = bot
 	deps.Guilds.Bot = bot

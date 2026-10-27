@@ -321,12 +321,7 @@ func (s *Service) encounters(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) character(w http.ResponseWriter, r *http.Request) {
-	region, ruleset := strings.ToLower(r.PathValue("region")), strings.ToLower(r.PathValue("ruleset"))
-	if !character.ValidRegion(region) || !character.ValidRuleset(ruleset) {
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
-		return
-	}
-	c, ok, err := s.Store.Character(r.Context(), region, ruleset, character.Slug(r.PathValue("name")))
+	c, ok, err := s.CharacterCard(r.Context(), r.PathValue("region"), r.PathValue("ruleset"), r.PathValue("name"))
 	if err != nil {
 		s.fail(w, r, "character", err, "could not read that character just now")
 		return
@@ -335,12 +330,34 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
 		return
 	}
-	// A score that cannot be read is logged and left null; the rest of the page still renders.
+	cache(w)
+	httpx.WriteOK(w, r, http.StatusOK, c)
+}
+
+// CharacterCard is the public character page (GET /v1/characters/{region}/{ruleset}/{name})
+// without HTTP: found is false for an unknown region or ruleset, an unknown character and an
+// anonymised one. A score or gear panel that cannot be read is logged and left empty.
+func (s *Service) CharacterCard(ctx context.Context, region, ruleset, name string) (Character, bool, error) {
+	region, ruleset = strings.ToLower(region), strings.ToLower(ruleset)
+	if !character.ValidRegion(region) || !character.ValidRuleset(ruleset) {
+		return Character{}, false, nil
+	}
+	c, ok, err := s.Store.Character(ctx, region, ruleset, character.Slug(name))
+	if err != nil || !ok {
+		return Character{}, ok, err
+	}
+	s.addScoreAndGear(ctx, &c)
+	c.Supporter = s.supporterOf(ctx, c.ownerID)
+	return c, true, nil
+}
+
+// addScoreAndGear fills the Forever Score and the gear panel; a failed read leaves them null.
+func (s *Service) addScoreAndGear(ctx context.Context, c *Character) {
 	switch {
 	case s.ScoreGear != nil:
-		score, gear, err := s.ScoreGear.ScoreAndGear(r.Context(), c.Character.Key)
+		score, gear, err := s.ScoreGear.ScoreAndGear(ctx, c.Character.Key)
 		if err != nil {
-			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "forever_score",
+			s.logger().Error("rankings", "id", httpx.RequestIDFrom(ctx), "op", "forever_score",
 				"character", c.Character.Key, "err", err)
 		} else {
 			c.ForeverScore = score
@@ -353,17 +370,14 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	case s.Scores != nil:
-		score, err := s.Scores.ForeverScore(r.Context(), c.Character.Key)
+		score, err := s.Scores.ForeverScore(ctx, c.Character.Key)
 		if err != nil {
-			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "forever_score",
+			s.logger().Error("rankings", "id", httpx.RequestIDFrom(ctx), "op", "forever_score",
 				"character", c.Character.Key, "err", err)
 		} else {
 			c.ForeverScore = score
 		}
 	}
-	c.Supporter = s.supporterOf(r.Context(), c.ownerID)
-	cache(w)
-	httpx.WriteOK(w, r, http.StatusOK, c)
 }
 
 func (s *Service) guild(w http.ResponseWriter, r *http.Request) {
