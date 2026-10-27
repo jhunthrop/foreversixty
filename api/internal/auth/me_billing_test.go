@@ -161,7 +161,7 @@ func TestMe_EndedSeatWithin30Days(t *testing.T) {
 	}
 }
 
-func TestMe_EndedSeatUnknownKeyKeepsComebackLink(t *testing.T) {
+func TestMe_EndedSeatUnknownKeyLinksToPlans(t *testing.T) {
 	h := newHarness(t)
 	uid := h.seedUser(t, "ended2@example.com")
 	h.svc.Seats = &fakeSeats{facts: SeatFacts{Ended: &EndedSeat{
