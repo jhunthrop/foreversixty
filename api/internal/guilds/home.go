@@ -226,6 +226,9 @@ type ViewerView struct {
 	// OfficerTools is true when the viewer is a verified officer/leader of a guild
 	// whose officer views are unlocked (a plan or a scoped grant).
 	OfficerTools bool `json:"officer_tools"`
+	// RaidGuildTools is true when the guild also holds the Raid guild tier, which
+	// unlocks the loot council and the readiness board.
+	RaidGuildTools bool `json:"raid_guild_tools"`
 }
 
 // SummaryView is the Overview tab's own glance row (design spec §4.A).
@@ -677,6 +680,7 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 	s.markSupporters(r.Context(), view.Roster, view.Pending)
 	if verifiedOfficer {
 		view.Viewer.OfficerTools = s.officerTools(r.Context(), guildID, actor.UserID)
+		view.Viewer.RaidGuildTools = s.raidGuildTools(r.Context(), guildID, actor.UserID)
 	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)

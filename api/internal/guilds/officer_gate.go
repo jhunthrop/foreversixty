@@ -1,9 +1,11 @@
 package guilds
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
@@ -22,4 +24,19 @@ func (s *Service) officerNotFrozen(w http.ResponseWriter, r *http.Request, guild
 		return false
 	}
 	return true
+}
+
+// raidGuildTools reports whether the Raid guild tools (loot council, readiness board) are
+// unlocked for guildID. Like officerTools, a failed ask never takes the home down: it reads
+// false and logs at warn.
+func (s *Service) raidGuildTools(ctx context.Context, guildID, userID int64) bool {
+	if s.Entitlements == nil {
+		return false
+	}
+	ok, _, err := s.Entitlements.CanForGuild(ctx, guildID, userID, entitlements.FeatureRaidGuildTools)
+	if err != nil {
+		s.logger().Warn("guilds", "id", httpx.RequestIDFrom(ctx), "op", "raid_guild_tools", "guild_id", guildID, "err", err)
+		return false
+	}
+	return ok
 }
