@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 )
@@ -108,14 +109,47 @@ func slotState(t *testing.T, h *harness, gid int64, slot int) string {
 	return state
 }
 
-// A failed resume releases nothing; the next sweep tries again.
-func TestSweep_FailedResumeKeepsTheSeat(t *testing.T) {
+// A resume Stripe refuses falls back to the comeback: the sweep succeeds,
+// the seat empties and the seat-removed email goes out.
+func TestSweep_FailedResumeFallsBackToTheComeback(t *testing.T) {
 	h := newHarness(t)
-	gid, _ := acceptedUnstarted(t, h)
+	gid, amy := acceptedUnstarted(t, h)
 	h.exec(t, `update entitlements set status = 'canceled' where guild_id = $1`, gid)
 	h.svc.Canceller = failingResume{h.cancel}
+	if res, err := h.svc.Sweep(bg, testNow); err != nil || res.Released != 1 || res.Failed != 0 {
+		t.Fatalf("sweep = %+v, %v", res, err)
+	}
+	if state := slotState(t, h, gid, 1); state != string(StateEmpty) {
+		t.Fatalf("state = %s", state)
+	}
+	var n int
+	if err := h.pool.QueryRow(bg, `select count(*) from seat_comebacks where user_id = $1`, amy).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 || len(h.mailer.Sent) != 1 || !strings.Contains(h.mailer.Sent[0].Text, "comeback=") {
+		t.Fatalf("comebacks=%d mails=%+v", n, h.mailer.Sent)
+	}
+}
+
+// A resumed subscription is set to end again when the sweep's commit fails.
+func TestSweep_CommitFailureRecancelsTheResume(t *testing.T) {
+	h := newHarness(t)
+	gid, amy := acceptedUnstarted(t, h)
+	h.exec(t, `update entitlements set status = 'canceled' where guild_id = $1`, gid)
+	h.exec(t, `create function seats_t_fail2() returns trigger as $$ begin raise exception 'boom'; end $$ language plpgsql`)
+	h.exec(t, `create constraint trigger seats_t_fail2 after update on premium_seats deferrable initially deferred
+		for each row execute function seats_t_fail2()`)
+	t.Cleanup(func() {
+		h.exec(t, `drop trigger seats_t_fail2 on premium_seats`)
+		h.exec(t, `drop function seats_t_fail2()`)
+	})
+	h.cancel.ids = nil
 	if _, err := h.svc.Sweep(bg, testNow); err == nil {
 		t.Fatal("sweep should report the failed guild")
+	}
+	sub := fmt.Sprintf("sub_user_%d", amy)
+	if len(h.cancel.resumed) != 1 || len(h.cancel.ids) != 1 || h.cancel.ids[0] != sub {
+		t.Fatalf("resumed %v re-cancelled %v", h.cancel.resumed, h.cancel.ids)
 	}
 	if state := slotState(t, h, gid, 1); state != string(StateAccepted) {
 		t.Fatalf("state = %s", state)

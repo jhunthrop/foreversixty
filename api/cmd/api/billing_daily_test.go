@@ -10,6 +10,19 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
+// The daily job's sweep gets the Stripe gateway as its Canceller, so a seat
+// released before it starts resumes its holder's own Premium; without Stripe
+// it stays nil and the sweep falls back to the comeback.
+func TestBillingDaily_SeatsCancellerFollowsStripeConfig(t *testing.T) {
+	configured := config.Config{StripeSecretKey: "sk_test_x", StripeWebhookSecret: "whsec_x"}
+	if svc := newBillingDailyServices(configured, nil, &mail.Fake{}, slog.Default()); svc.Seats.Canceller == nil {
+		t.Fatal("configured Stripe left the seats Canceller nil")
+	}
+	if svc := newBillingDailyServices(config.Config{}, nil, &mail.Fake{}, slog.Default()); svc.Seats.Canceller != nil {
+		t.Fatalf("unconfigured Stripe set a Canceller: %#v", svc.Seats.Canceller)
+	}
+}
+
 func TestBillingDaily_SendsRenewalOnce(t *testing.T) {
 	pool := grandfatherPool(t)
 	now := time.Date(2027, 11, 10, 20, 0, 0, 0, time.UTC)
