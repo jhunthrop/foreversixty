@@ -120,7 +120,7 @@ func TestCheckoutGuildConflictsWhenAlreadyOnThePlanUnlessTransfer(t *testing.T) 
 	officer := h.seedUser(t, "already-plan-officer@example.com")
 	h.seedGuildMember(t, gid, officer, "leader")
 	if _, err := h.pool.Exec(t.Context(),
-		`insert into entitlements (guild_id, tier, plan, source, status) values ($1, 'raid_guild', 'guild', 'stripe', 'active')`, gid); err != nil {
+		`insert into entitlements (guild_id, tier, plan, source, status, stripe_subscription_id) values ($1, 'raid_guild', 'guild', 'stripe', 'active', 'sub_old')`, gid); err != nil {
 		t.Fatal(err)
 	}
 	r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", officer,
