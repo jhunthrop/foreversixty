@@ -39,14 +39,16 @@ func wireBilling(w billingWiring) {
 		log.Warn("billing", "state", "stripe is not configured",
 			"effect", "checkout, portal, and the webhook answer 503")
 	}
+	seatStore := &seats.Store{Pool: pool, Entitlements: entStore}
+	deps.Seats = &seats.Service{
+		Store:  seatStore,
+		Mailer: mailer, Guilds: guildStore, PublicBaseURL: cfg.PublicBaseURL, Log: log,
+	}
 	deps.Billing = &billing.Service{
 		Store: &billing.Store{Pool: pool}, Entitlements: entStore,
 		Accounts: authStore, Users: authStore, Guilds: guildStore, Gateway: gateway,
+		Seats:         seats.BillingReader{Store: seatStore, Sweeper: deps.Seats},
 		PublicBaseURL: cfg.PublicBaseURL, WebhookSecret: cfg.StripeWebhookSecret, Log: log,
-	}
-	deps.Seats = &seats.Service{
-		Store:  &seats.Store{Pool: pool, Entitlements: entStore},
-		Mailer: mailer, Guilds: guildStore, PublicBaseURL: cfg.PublicBaseURL, Log: log,
 	}
 	// A nil gateway must stay a nil interface so Accept answers 503.
 	if gateway != nil {
