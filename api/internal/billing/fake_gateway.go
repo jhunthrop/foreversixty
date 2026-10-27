@@ -63,6 +63,7 @@ type FakeGateway struct {
 	Archived              []string          // lookup keys passed to ArchivePrice, in order
 	EnsuredSpecs          []PriceSpec
 	CanceledAtPeriodEnd   []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
+	Resumed               []string // subscription ids passed to ResumeSubscription, in order
 	// GetSubscriptionCalls records the ids passed to GetSubscription, in order.
 	GetSubscriptionCalls []string
 	// OnGetSubscription, when set, runs after each GetSubscription call is
@@ -170,6 +171,16 @@ func (f *FakeGateway) CancelSubscriptionAtPeriodEnd(_ context.Context, subscript
 		return f.CancelErr
 	}
 	f.CanceledAtPeriodEnd = append(f.CanceledAtPeriodEnd, subscriptionID)
+	return nil
+}
+
+func (f *FakeGateway) ResumeSubscription(_ context.Context, subscriptionID string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	f.Resumed = append(f.Resumed, subscriptionID)
 	return nil
 }
 

@@ -168,6 +168,10 @@ type Gateway interface {
 	// the current period; the operator's runbook (spec §2.7) covers
 	// refunding that charge by hand.
 	CancelSubscriptionAtPeriodEnd(ctx context.Context, subscriptionID string) error
+	// ResumeSubscription clears cancel_at_period_end, undoing
+	// CancelSubscriptionAtPeriodEnd (the seats package's compensation when
+	// accepting a seat fails after Stripe was told to cancel).
+	ResumeSubscription(ctx context.Context, subscriptionID string) error
 	// ListSubscriptions lists every subscription Stripe currently
 	// considers live against productID — stripe-reconcile's
 	// two-directional check (spec §2.8): Stripe → our database, the

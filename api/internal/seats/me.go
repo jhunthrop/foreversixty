@@ -9,48 +9,97 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
-// SeatFactsForUser reads the seat facts /v1/me carries for userID.
+// maxFactRows bounds the seats read for one account: a seat held and a move
+// offered in each guild is far more than anyone has.
+const maxFactRows = 2 * catalog.SeatsRaidGuild
+
+type factSeat struct {
+	guildID   int64
+	guildName string
+	row       seatRow
+}
+
+// SeatFactsForUser reads the seat facts /v1/me carries for userID. A seat
+// whose plan has lapsed, or whose slot the plan no longer has, shows nothing.
 func (s *Store) SeatFactsForUser(ctx context.Context, userID int64, now time.Time) (auth.SeatFacts, error) {
 	var facts auth.SeatFacts
-	rows, err := s.Pool.Query(ctx, `
-		select s.guild_id, g.name, s.state, s.given_at, s.offered_at, s.starts_at, s.given_by
-		from premium_seats s join guilds g on g.id = s.guild_id
-		where s.holder_user_id = $1 and s.state in ('held', 'accepted', 'offered')
-		order by s.guild_id limit 4`, userID)
+	seats, err := s.factSeats(ctx, userID)
 	if err != nil {
-		return facts, fmt.Errorf("seats: facts of %d: %w", userID, err)
+		return facts, err
 	}
-	type held struct {
-		guildID                      int64
-		guild                        string
-		state                        State
-		givenAt, offeredAt, startsAt *time.Time
-		givenBy                      *int64
-	}
-	held0, err := pgx.CollectRows(rows, func(r pgx.CollectableRow) (held, error) {
-		var h held
-		err := r.Scan(&h.guildID, &h.guild, &h.state, &h.givenAt, &h.offeredAt, &h.startsAt, &h.givenBy)
-		return h, err
-	})
-	if err != nil {
-		return facts, fmt.Errorf("seats: facts of %d: %w", userID, err)
-	}
-	for _, h := range held0 {
-		from, err := s.giverName(ctx, h.guildID, h.givenBy)
+	for _, fs := range seats {
+		standing, err := s.slotStands(ctx, fs.guildID, fs.row.slot)
 		if err != nil {
 			return facts, err
 		}
-		switch {
-		case h.state == StateOffered && facts.Offer == nil && h.offeredAt != nil:
-			facts.Offer = &auth.SeatOffer{GuildID: h.guildID, GuildName: h.guild, FromName: from, OfferedAt: *h.offeredAt}
-		case h.state != StateOffered && facts.Seat == nil && h.givenAt != nil:
-			facts.Seat = &auth.HeldSeat{GuildName: h.guild, GivenBy: from, Since: *h.givenAt, StartsAt: h.startsAt}
+		if !standing {
+			continue
+		}
+		if err := s.addFact(ctx, &facts, userID, fs); err != nil {
+			return facts, err
 		}
 	}
 	facts.Ended, err = s.endedSeat(ctx, userID, now)
 	return facts, err
+}
+
+func (s *Store) factSeats(ctx context.Context, userID int64) ([]factSeat, error) {
+	rows, err := s.Pool.Query(ctx, `
+		select s.guild_id, g.name, `+qualifiedSeatColumns+`
+		from premium_seats s join guilds g on g.id = s.guild_id
+		where s.holder_user_id = $1 or s.pending_user_id = $1
+		order by s.guild_id, s.slot limit $2`, userID, maxFactRows)
+	if err != nil {
+		return nil, fmt.Errorf("seats: facts of %d: %w", userID, err)
+	}
+	out, err := pgx.CollectRows(rows, func(r pgx.CollectableRow) (factSeat, error) {
+		var fs factSeat
+		err := r.Scan(&fs.guildID, &fs.guildName, &fs.row.slot, &fs.row.state, &fs.row.holderID, &fs.row.givenBy,
+			&fs.row.givenAt, &fs.row.offeredAt, &fs.row.startsAt, &fs.row.movableAt, &fs.row.gaveUpKey,
+			&fs.row.returnedName, &fs.row.returnedAt, &fs.row.pendingID, &fs.row.pendingBy, &fs.row.pendingAt)
+		return fs, err
+	})
+	if err != nil {
+		return nil, fmt.Errorf("seats: facts of %d: %w", userID, err)
+	}
+	return out, nil
+}
+
+// slotStands is true when the guild's live whole plan has the slot.
+func (s *Store) slotStands(ctx context.Context, guildID int64, slot int) (bool, error) {
+	tier, err := s.activeTier(ctx, guildID)
+	if err != nil {
+		return false, err
+	}
+	return slot <= catalog.SeatsForTier(tier), nil
+}
+
+func (s *Store) addFact(ctx context.Context, facts *auth.SeatFacts, userID int64, fs factSeat) error {
+	r := fs.row
+	switch {
+	case r.pendingID != nil && *r.pendingID == userID:
+		from, err := s.giverName(ctx, fs.guildID, r.pendingBy)
+		if err != nil || facts.Offer != nil || r.pendingAt == nil {
+			return err
+		}
+		facts.Offer = &auth.SeatOffer{GuildID: fs.guildID, GuildName: fs.guildName, FromName: from, OfferedAt: *r.pendingAt}
+	case r.state == StateOffered:
+		from, err := s.giverName(ctx, fs.guildID, r.givenBy)
+		if err != nil || facts.Offer != nil || r.offeredAt == nil {
+			return err
+		}
+		facts.Offer = &auth.SeatOffer{GuildID: fs.guildID, GuildName: fs.guildName, FromName: from, OfferedAt: *r.offeredAt}
+	case facts.Seat == nil && r.givenAt != nil:
+		from, err := s.giverName(ctx, fs.guildID, r.givenBy)
+		if err != nil {
+			return err
+		}
+		facts.Seat = &auth.HeldSeat{GuildName: fs.guildName, GivenBy: from, Since: *r.givenAt, StartsAt: r.startsAt}
+	}
+	return nil
 }
 
 func (s *Store) giverName(ctx context.Context, guildID int64, giver *int64) (string, error) {

@@ -30,13 +30,21 @@ create table premium_seats (
   holder_gave_up_lookup_key text,
   returned_name             text,
   returned_at               timestamptz,
+  -- A move to a member who pays for their own Premium: the holder keeps the seat until the
+  -- offeree accepts and swaps in.
+  pending_user_id           bigint references users(id) on delete cascade,
+  pending_by                bigint references users(id) on delete set null,
+  pending_offered_at        timestamptz,
   primary key (guild_id, slot),
   check ((state = 'empty') = (holder_user_id is null)),
   check (state <> 'accepted' or starts_at is not null),
-  check (state <> 'held' or (given_at is not null and movable_at is not null))
+  check (state <> 'held' or (given_at is not null and movable_at is not null)),
+  check (pending_user_id is null or state in ('held', 'accepted'))
 );
 create unique index premium_seats_holder_idx
   on premium_seats (guild_id, holder_user_id) where holder_user_id is not null;
+create unique index premium_seats_pending_idx
+  on premium_seats (guild_id, pending_user_id) where pending_user_id is not null;
 -- Premium resolution looks a seat up by its holder alone.
 create index premium_seats_holder_user_idx
   on premium_seats (holder_user_id) where holder_user_id is not null;

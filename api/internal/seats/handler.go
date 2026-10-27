@@ -128,7 +128,9 @@ func (s *Service) refuse(w http.ResponseWriter, r *http.Request, op string, err 
 	case errors.Is(err, ErrNoPlan):
 		httpx.WriteError(w, r, http.StatusConflict, "no_plan", "this guild's plan has no seats", nil)
 	case errors.Is(err, ErrNoSuchSlot):
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such seat", nil)
+		httpx.WriteError(w, r, http.StatusConflict, "seat_count", "that seat is outside the plan's seat count", nil)
+	case errors.Is(err, ErrOfferPending):
+		httpx.WriteError(w, r, http.StatusConflict, "offer_pending", "an offer is waiting on that seat; withdraw it first", nil)
 	case errors.Is(err, ErrNotMember):
 		httpx.WriteError(w, r, http.StatusConflict, "not_member", "that account is not a verified member of this guild", nil)
 	case errors.As(err, &locked):

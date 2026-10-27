@@ -2,6 +2,7 @@ package seats
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 	"time"
@@ -16,7 +17,8 @@ import (
 // clearSeatSQL empties a slot, keeping only what a returned seat shows.
 const clearSeatSQL = `update premium_seats set state = 'empty', holder_user_id = null, given_by = null,
 	given_at = null, offered_at = null, starts_at = null, movable_at = null,
-	holder_gave_up_lookup_key = null, returned_name = $3, returned_at = $4
+	holder_gave_up_lookup_key = null, returned_name = $3, returned_at = $4,
+	pending_user_id = null, pending_by = null, pending_offered_at = null
 	where guild_id = $1 and slot = $2`
 
 // release empties a held or accepted seat inside the guild lock. It records
@@ -55,18 +57,17 @@ func (s *Service) openComeback(ctx context.Context, tx pgx.Tx, guildID, userID i
 			"err", "price is not in the catalog, so there is nothing to come back to")
 		return nil, nil
 	}
-	var guildName, email string
-	if err := tx.QueryRow(ctx, `select g.name, u.email from guilds g, users u where g.id = $1 and u.id = $2`,
-		guildID, userID).Scan(&guildName, &email); err != nil {
-		return nil, wrap("comeback parties", err)
+	guildName, email, err := emailParties(ctx, tx, guildID, userID)
+	if err != nil {
+		return nil, err
 	}
 	var id int64
-	err := tx.QueryRow(ctx, `
+	err = tx.QueryRow(ctx, `
 		insert into seat_comebacks (user_id, guild_name, ended_at, price_lookup_key, expires_at)
 		values ($1, $2, $3, $4, $5)
 		on conflict (user_id, guild_name, ended_at) do nothing returning id`,
 		userID, guildName, endedAt, lookupKey, endedAt.Add(catalog.ComebackValid)).Scan(&id)
-	if err == pgx.ErrNoRows {
+	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {
@@ -88,8 +89,10 @@ func (s *Service) comebackURL(interval catalog.Interval, id int64) string {
 }
 
 // Sweep releases, in every guild with seats in use, the holders who are no
-// longer verified members, and every seat of a guild whose plan has lapsed.
-// It returns how many seats it released.
+// longer verified members, every seat above the plan's seat count, and every
+// seat of a guild whose plan has lapsed. It returns how many seats it
+// released. A guild that fails is logged and skipped; the errors come back
+// joined once every guild has been tried.
 func (s *Service) Sweep(ctx context.Context, now time.Time) (int, error) {
 	rows, err := s.Store.Pool.Query(ctx, `select distinct guild_id from premium_seats where state <> 'empty' order by guild_id`)
 	if err != nil {
@@ -100,14 +103,16 @@ func (s *Service) Sweep(ctx context.Context, now time.Time) (int, error) {
 		return 0, wrap("sweep list", err)
 	}
 	total := 0
+	var errs []error
 	for _, id := range ids {
 		n, err := s.sweepGuild(ctx, id, now)
-		if err != nil {
-			return total, err
-		}
 		total += n
+		if err != nil {
+			s.logger().Error("seats", "op", "sweep", "guild", id, "err", err)
+			errs = append(errs, fmt.Errorf("guild %d: %w", id, err))
+		}
 	}
-	return total, nil
+	return total, errors.Join(errs...)
 }
 
 // SweepGuild is Sweep for one guild.
@@ -129,22 +134,13 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 			return err
 		}
 		for slot := 1; slot <= catalog.SeatsRaidGuild; slot++ {
-			row, ok := rows[slot]
-			if !ok || row.holderID == nil {
-				continue
-			}
-			keep, err := s.keepSeat(ctx, tx, guildID, tier, row)
-			if err != nil || keep {
-				if err != nil {
-					return err
-				}
-				continue
-			}
-			msg, err := s.release(ctx, tx, guildID, row, now)
+			msg, did, err := s.sweepSeat(ctx, tx, guildID, tier, rows[slot], now)
 			if err != nil {
 				return err
 			}
-			released++
+			if did {
+				released++
+			}
 			if msg != nil {
 				outbox = append(outbox, *msg)
 			}
@@ -158,14 +154,37 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 	return released, nil
 }
 
-// keepSeat is false for a seat whose plan has no access or whose holder is
-// no longer a verified member.
+// sweepSeat releases one seat that no longer stands, or drops a move offer
+// whose offeree is gone.
+func (s *Service) sweepSeat(ctx context.Context, tx pgx.Tx, guildID int64, tier string, row seatRow, now time.Time) (*mail.Message, bool, error) {
+	if row.holderID == nil {
+		return nil, false, nil
+	}
+	keep, err := s.keepSeat(ctx, tx, guildID, tier, row)
+	if err != nil {
+		return nil, false, err
+	}
+	if !keep {
+		msg, err := s.release(ctx, tx, guildID, row, now)
+		return msg, err == nil, err
+	}
+	if row.pendingID != nil {
+		member, err := isVerifiedMember(ctx, tx, guildID, *row.pendingID)
+		if err != nil {
+			return nil, false, err
+		}
+		if !member {
+			return nil, false, wrap("drop move offer", clearPending(ctx, tx, guildID, row.slot))
+		}
+	}
+	return nil, false, nil
+}
+
+// keepSeat is false for a seat whose plan has no access, whose slot the
+// plan's tier no longer has, or whose holder is no longer a verified member.
 func (s *Service) keepSeat(ctx context.Context, tx pgx.Tx, guildID int64, tier string, row seatRow) (bool, error) {
-	if tier == "" {
+	if row.slot > catalog.SeatsForTier(tier) {
 		return false, nil
 	}
-	var member bool
-	err := tx.QueryRow(ctx, `select exists (select 1 from guild_members
-		where guild_id = $1 and user_id = $2 and verified_at is not null)`, guildID, *row.holderID).Scan(&member)
-	return member, wrap("holder membership", err)
+	return isVerifiedMember(ctx, tx, guildID, *row.holderID)
 }
