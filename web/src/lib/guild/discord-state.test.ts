@@ -13,6 +13,7 @@ const BOT: GuildBot = {
   failures: 0,
   last_error: null,
   removed_in_discord: false,
+  channel_unusable: null,
 };
 type Webhook = Pick<GuildSettingsDiscord, 'connected' | 'disabled_reason'>;
 const NONE: Webhook = { connected: false, disabled_reason: null };

@@ -10,7 +10,7 @@ import { raidCopy } from './raid-copy';
 const SERVER_NAME_LIMIT = 60;
 const ELLIPSIS = '…';
 
-/** The server name as the page shows it: trimmed, at most 60 characters. */
+/** A server or channel name as the page shows it: trimmed, at most 60 characters. */
 export function shortServerName(name: string): string {
   const characters = [...name.trim()];
   if (characters.length <= SERVER_NAME_LIMIT) return characters.join('');
@@ -21,6 +21,14 @@ export function shortServerName(name: string): string {
 }
 
 const WEBHOOK_FALLBACK = ' Raids post through your webhook channel again.';
+const UNUSABLE_WEBHOOK = ' Raids post through your webhook channel until then.';
+const UNUSABLE_NO_WEBHOOK = ' Raids stop posting to Discord until then.';
+
+/** `Send Messages`; `Send Messages and Embed Links`; `View Channel, Send Messages and Embed Links`. */
+export function joinPermissions(missing: readonly string[]): string {
+  if (missing.length <= 1) return missing.join('');
+  return `${missing.slice(0, -1).join(', ')} and ${missing[missing.length - 1]}`;
+}
 
 export const guildBotCopy = {
   add: 'Add the Forever Sixty bot',
@@ -78,6 +86,32 @@ export const guildBotCopy = {
     detail: 'It was removed in Discord.',
     withWebhook: WEBHOOK_FALLBACK,
     withoutWebhook: ' Raids stop posting to Discord until the bot is added again.',
+  },
+
+  channelUnusable: {
+    choose: 'Choose a channel',
+    open: 'Open in Discord',
+    /** Line one; `strong` is the channel name drawn `--strong` 600 (the permissions case only). */
+    title: (
+      reason: 'deleted' | 'permissions',
+      channelName: string | null,
+      server: string,
+    ): { text: string; strong: string | null } => {
+      const channel = channelName === null ? null : `#${shortServerName(channelName)}`;
+      const serverName = shortServerName(server);
+      if (reason === 'permissions') {
+        return { text: `The bot cannot post in ${channel ?? 'the raid channel'}.`, strong: channel };
+      }
+      if (channel === null) return { text: `The raid channel in ${serverName} was deleted.`, strong: null };
+      return { text: `The raid channel ${channel} was deleted in ${serverName}.`, strong: null };
+    },
+    detail: (reason: 'deleted' | 'permissions', missing: readonly string[], webhook: boolean): string => {
+      const lead =
+        reason === 'deleted'
+          ? 'The bot cannot post there. Choose another channel.'
+          : `In Discord, give the Forever Sixty role ${joinPermissions(missing)} in that channel, or choose another channel.`;
+      return lead + (webhook ? UNUSABLE_WEBHOOK : UNUSABLE_NO_WEBHOOK);
+    },
   },
 
   remove: {

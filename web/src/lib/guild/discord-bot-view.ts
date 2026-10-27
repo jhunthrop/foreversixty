@@ -5,21 +5,22 @@
 // returns and picker helpers live in discord-bot-state.ts and discord-bot-copy.ts.
 import type { GuildBot, GuildSettingsDiscord } from './api';
 
-export type GuildBotState = 'picker' | 'installed' | 'removed' | 'webhook-only' | 'nothing';
+export type GuildBotState = 'picker' | 'installed' | 'unusable' | 'removed' | 'webhook-only' | 'nothing';
 
 /** The state with the bot it was read from: the bot is present exactly for the three bot states. */
 export type GuildBotView =
   | { state: 'webhook-only' | 'nothing'; bot: null }
-  | { state: 'picker' | 'installed' | 'removed'; bot: GuildBot };
+  | { state: 'picker' | 'installed' | 'unusable' | 'removed'; bot: GuildBot };
 
 type BotFacts = Pick<GuildSettingsDiscord, 'bot_available' | 'bot' | 'connected'>;
 
-/** §3.1's precedence. With the bot off for the deployment only the webhook states can occur. */
+/** §3.1's precedence, with state 2b (`unusable`) below removed and the picker, above installed. With the bot off for the deployment only the webhook states can occur. */
 export function guildBotView(discord: BotFacts, changingChannel: boolean): GuildBotView {
   const bot = discord.bot_available === true ? (discord.bot ?? null) : null;
   if (bot === null) return { state: discord.connected ? 'webhook-only' : 'nothing', bot: null };
   if (bot.removed_in_discord) return { state: 'removed', bot };
   if (bot.channel_id === null || changingChannel) return { state: 'picker', bot };
+  if (bot.channel_unusable != null) return { state: 'unusable', bot };
   return { state: 'installed', bot };
 }
 
@@ -35,6 +36,7 @@ export const guildBotState = (discord: BotFacts, changingChannel: boolean): Guil
 export const GUILD_BOT_RESERVE: Readonly<Record<Exclude<GuildBotState, 'webhook-only'>, string>> = {
   picker: 'min-h-[400px] md:min-h-[330px]',
   installed: 'min-h-[330px] md:min-h-[250px]',
+  unusable: 'min-h-[320px] md:min-h-[240px]',
   removed: 'min-h-[300px] md:min-h-[230px]',
   nothing: 'min-h-[340px] md:min-h-[250px]',
 };

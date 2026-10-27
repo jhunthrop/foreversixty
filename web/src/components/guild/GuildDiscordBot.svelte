@@ -89,6 +89,7 @@
     {confirming}
     removing={busy === 'remove'}
     {focusSelect}
+    unusable={bot.channel_unusable}
     {onStatus}
     {onSaved}
     onCancel={onCancelChange}
@@ -96,6 +97,38 @@
     {onRemove}
     {onCancelRemove}
   />
+{:else if botState === 'unusable' && bot.channel_unusable !== null}
+  {@const unusable = bot.channel_unusable}
+  {@const title = guildBotCopy.channelUnusable.title(unusable.reason, bot.channel_name, bot.server_name)}
+  <DiscordNotice
+    tone="gold"
+    title={title.text}
+    strong={title.strong}
+    detail={guildBotCopy.channelUnusable.detail(unusable.reason, unusable.missing, discord.connected)}
+  />
+  <div class="flex flex-col">
+    <div class="flex flex-wrap items-center gap-3">
+      <button
+        class="{PRIMARY_BUTTON_FIXED} px-4 {dimmed}"
+        disabled={off || gated}
+        aria-describedby={gateId}
+        onclick={onChange}
+        data-testid="bot-choose-channel"
+      >
+        {guildBotCopy.channelUnusable.choose}
+      </button>
+      {#if unusable.reason === 'permissions' && openUrl !== null}
+        <a
+          class="text-text hover:text-gold-hover -my-3 py-3 text-[13px] underline"
+          href={openUrl}
+          target="_blank"
+          rel="noopener"
+          data-testid="bot-open">{guildBotCopy.channelUnusable.open}</a
+        >
+      {/if}
+    </div>
+    <div id="guild-discord-status" tabindex="-1" class="outline-none"><DiscordStatusLine {status} /></div>
+  </div>
 {:else if botState === 'removed'}
   <DiscordNotice
     tone="gold"

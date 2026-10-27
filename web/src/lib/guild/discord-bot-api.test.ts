@@ -14,6 +14,19 @@ const WEBHOOK = {
   post_default: false,
 };
 
+const BOT_READ = {
+  server_id: '1',
+  server_name: 'Olympus',
+  channel_id: '10',
+  channel_name: 'raid-signups',
+  linked_members: 0,
+  members: 0,
+  failures: 0,
+  last_error: null,
+  removed_in_discord: false,
+  channel_unusable: null,
+};
+
 describe('guildBotInstallUrl', () => {
   it('builds the install URL on the API origin', () => {
     expect(guildBotInstallUrl(7, 'https://api.example')).toBe(
@@ -34,6 +47,13 @@ describe('normalizeGuildDiscord', () => {
     expect(normalizeGuildDiscord(read)).toBe(read);
     const off = { ...WEBHOOK };
     expect(normalizeGuildDiscord(off)).toBe(off);
+  });
+
+  it('reads an absent channel_unusable as null', () => {
+    const bot = { ...BOT_READ };
+    delete (bot as { channel_unusable?: unknown }).channel_unusable;
+    const read = normalizeGuildDiscord({ ...WEBHOOK, bot_available: true, bot });
+    expect(read.bot?.channel_unusable).toBeNull();
   });
 
   it('normalizes the discord key of a settings read, and tolerates its absence', () => {

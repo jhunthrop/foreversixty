@@ -6,10 +6,15 @@
      The remove question replaces the actions row, as everywhere else in the section. -->
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { GuildApiError, type GuildBotChannel, type GuildSettingsDiscord } from '../../lib/guild/api';
+  import {
+    GuildApiError,
+    type GuildBotChannel,
+    type GuildChannelUnusable,
+    type GuildSettingsDiscord,
+  } from '../../lib/guild/api';
   import { guildBotCopy, shortServerName } from '../../lib/guild/discord-bot-copy';
   import { fetchBotChannels, saveBotChannel } from '../../lib/guild/discord-bot-api';
-  import { groupChannels, preselectChannel } from '../../lib/guild/discord-bot-state';
+  import { groupChannels, preselectAfterUnusable, preselectChannel } from '../../lib/guild/discord-bot-state';
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
   import { LINK_BUTTON } from '../../lib/account/discord-styles';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
@@ -37,6 +42,7 @@
     confirming,
     removing,
     focusSelect,
+    unusable,
     onStatus,
     onSaved,
     onCancel,
@@ -58,6 +64,8 @@
     removing: boolean;
     /** Move focus to the select once the list is ready (the install return, `Change channel`). */
     focusSelect: boolean;
+    /** Why the saved channel cannot be used, when the picker was opened from that notice. */
+    unusable: GuildChannelUnusable | null;
     onStatus: (status: DiscordStatus | null, focusLine?: boolean) => void;
     onSaved: (discord: GuildSettingsDiscord) => void;
     onCancel: () => void;
@@ -86,6 +94,11 @@
   const serverName = $derived(shortServerName(server));
   const saveOff = $derived(gated || saving || listState === 'loading');
 
+  function initialChoice(): string | null {
+    if (unusable === null) return preselectChannel(channels, currentChannelId);
+    return preselectAfterUnusable(channels, currentChannelId, unusable.reason);
+  }
+
   async function load(preselect: boolean): Promise<void> {
     listState = 'loading';
     try {
@@ -94,7 +107,7 @@
       listState = 'error';
       return;
     }
-    selected = preselect ? (preselectChannel(channels, currentChannelId) ?? '') : '';
+    selected = preselect ? (initialChoice() ?? '') : '';
     listState = channels.length === 0 ? 'empty' : 'ready';
     if (listState === 'ready' && focusSelect) {
       await tick();
