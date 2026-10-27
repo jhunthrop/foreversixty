@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
@@ -14,7 +15,7 @@ const reconcileActor = "stripe_reconcile"
 
 // reconcileProducts is every Stripe Product id the orphan check (below)
 // scans — both plans' products, spec §2.8's "our product ids" scope.
-var reconcileProducts = []string{ProductIDPremium, ProductIDGuild}
+var reconcileProducts = []string{catalog.ProductIDPremium, catalog.ProductIDGuild}
 
 // Reconcile is the stripe-reconcile job's whole job (spec §2.8), now
 // two-directional (security review fix, 2026-09-21; the original design
@@ -72,7 +73,7 @@ func (s *Service) reportOrphanSubscriptions(ctx context.Context, known map[strin
 				continue
 			}
 			plan := entitlements.PlanPremium
-			if productID == ProductIDGuild {
+			if productID == catalog.ProductIDGuild {
 				plan = entitlements.PlanGuild
 			}
 			if err := s.Entitlements.RecordAnomaly(ctx, nil, nil, plan,

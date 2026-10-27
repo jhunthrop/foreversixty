@@ -11,67 +11,56 @@ import (
 	"os"
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 )
 
-// centsPerDollar keeps priceSpecs' amounts readable as dollars.
-const centsPerDollar = 100
+// productNames are the Stripe product names, by offer.
+var productNames = map[catalog.Offer]string{
+	catalog.OfferPremium:   "Forever Sixty Premium",
+	catalog.OfferGuild:     "Forever Sixty Guild",
+	catalog.OfferRaidGuild: "Forever Sixty Raid Guild",
+}
 
-// priceSpecs is spec §2.1's table verbatim — the only place a Stripe
-// amount or product name is hardcoded (Ruling D: fixed product ids so
+// stripeIntervals maps the catalog's intervals to Stripe's recurring ones.
+var stripeIntervals = map[catalog.Interval]string{catalog.Monthly: "month", catalog.Yearly: "year"}
+
+// priceSpecs is derived from the catalog, the only place an amount, a
+// lookup key or a product id is written (Ruling D: fixed product ids so
 // this is idempotent with no Search API dependency).
-var priceSpecs = []billing.PriceSpec{
-	{ProductID: billing.ProductIDPremium, ProductName: "Forever Sixty Premium", TaxCode: billing.ProductTaxCodeSaaSPersonal,
-		LookupKey: billing.LookupKeyPremiumMonthly, Interval: "month", UnitAmountCents: 4 * centsPerDollar},
-	{ProductID: billing.ProductIDPremium, ProductName: "Forever Sixty Premium", TaxCode: billing.ProductTaxCodeSaaSPersonal,
-		LookupKey: billing.LookupKeyPremiumYearly, Interval: "year", UnitAmountCents: 40 * centsPerDollar},
-	{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild", TaxCode: billing.ProductTaxCodeSaaSPersonal,
-		LookupKey: billing.LookupKeyGuildMonthly, Interval: "month", UnitAmountCents: 15 * centsPerDollar},
-	{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild", TaxCode: billing.ProductTaxCodeSaaSPersonal,
-		LookupKey: billing.LookupKeyGuildYearly, Interval: "year", UnitAmountCents: 150 * centsPerDollar},
-	// The launch prices (docs/superpowers/specs/2026-10-27-pricing-design.md §3), sold once
-	// the pricing lane switches the site over.
-	premiumSpec(billing.LookupKeyPremiumMonthlyLaunch, "month", 6*centsPerDollar),
-	premiumSpec(billing.LookupKeyPremiumYearlyLaunch, "year", 50*centsPerDollar),
-	premiumSpec(billing.LookupKeyPremiumFounderMonthly, "month", 5*centsPerDollar),
-	premiumSpec(billing.LookupKeyPremiumFounderYearly, "year", 40*centsPerDollar),
-	guildSpec(billing.LookupKeyGuildFounderMonthly, "month", 12*centsPerDollar),
-	guildSpec(billing.LookupKeyGuildFounderYearly, "year", 120*centsPerDollar),
-	raidGuildSpec(billing.LookupKeyRaidGuildMonthly, "month", 25*centsPerDollar),
-	raidGuildSpec(billing.LookupKeyRaidGuildYearly, "year", 250*centsPerDollar),
-	raidGuildSpec(billing.LookupKeyRaidGuildFounderMonthly, "month", 20*centsPerDollar),
-	raidGuildSpec(billing.LookupKeyRaidGuildFounderYearly, "year", 200*centsPerDollar),
-}
+var priceSpecs = derivePriceSpecs(catalog.Prices)
 
-func premiumSpec(lookupKey, interval string, cents int64) billing.PriceSpec {
-	return billing.PriceSpec{ProductID: billing.ProductIDPremium, ProductName: "Forever Sixty Premium",
-		TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: lookupKey, Interval: interval, UnitAmountCents: cents}
-}
-
-func guildSpec(lookupKey, interval string, cents int64) billing.PriceSpec {
-	return billing.PriceSpec{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild",
-		TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: lookupKey, Interval: interval, UnitAmountCents: cents}
-}
-
-func raidGuildSpec(lookupKey, interval string, cents int64) billing.PriceSpec {
-	return billing.PriceSpec{ProductID: billing.ProductIDRaidGuild, ProductName: "Forever Sixty Raid Guild",
-		TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: lookupKey, Interval: interval, UnitAmountCents: cents}
-}
-
-// portalSpec is the Customer Portal stripe-setup ensures (spec §2.5):
-// the site's own legal pages, a return to the account page, and each
-// product's two prices as the only switch a subscriber can make there.
-func portalSpec(publicBaseURL string) billing.PortalSpec {
-	return billing.PortalSpec{
-		Headline:          "Forever Sixty",
-		PrivacyPolicyURL:  publicBaseURL + "/privacy",
-		TermsOfServiceURL: publicBaseURL + "/terms",
-		DefaultReturnURL:  publicBaseURL + "/account",
-		Products: []billing.PortalProduct{
-			{ProductID: billing.ProductIDPremium, LookupKeys: []string{billing.LookupKeyPremiumMonthly, billing.LookupKeyPremiumYearly}},
-			{ProductID: billing.ProductIDGuild, LookupKeys: []string{billing.LookupKeyGuildMonthly, billing.LookupKeyGuildYearly}},
-		},
+func derivePriceSpecs(prices []catalog.Price) []billing.PriceSpec {
+	specs := make([]billing.PriceSpec, 0, len(prices))
+	for _, p := range prices {
+		specs = append(specs, billing.PriceSpec{
+			ProductID: p.Offer.ProductID(), ProductName: productNames[p.Offer],
+			TaxCode: billing.ProductTaxCodeSaaSPersonal, LookupKey: p.LookupKey,
+			Interval: stripeIntervals[p.Interval], UnitAmountCents: p.AmountCents,
+		})
 	}
+	return specs
+}
+
+// portalSpecs is the six Customer Portal configurations stripe-setup
+// ensures (one per family, so a founder keeps the founder prices when
+// switching monthly to yearly): the site's own legal pages, a return to
+// the account page, and the family's two prices under its one product.
+func portalSpecs(publicBaseURL string) []billing.PortalSpec {
+	specs := make([]billing.PortalSpec, 0, len(catalog.PortalFamilies))
+	for _, family := range catalog.PortalFamilies {
+		keys := catalog.FamilyLookupKeys(family)
+		price, _ := catalog.Lookup(keys[0])
+		specs = append(specs, billing.PortalSpec{
+			Key:               family,
+			Headline:          "Forever Sixty",
+			PrivacyPolicyURL:  publicBaseURL + "/privacy",
+			TermsOfServiceURL: publicBaseURL + "/terms",
+			DefaultReturnURL:  publicBaseURL + "/account",
+			Products:          []billing.PortalProduct{{ProductID: price.Offer.ProductID(), LookupKeys: keys}},
+		})
+	}
+	return specs
 }
 
 func runStripeSetup(ctx context.Context, log *slog.Logger) error {
@@ -92,9 +81,11 @@ func runStripeSetup(ctx context.Context, log *slog.Logger) error {
 		}
 		log.Info("stripe-setup", "lookup_key", spec.LookupKey, "product", spec.ProductID)
 	}
-	if err := gw.EnsurePortalConfiguration(ctx, portalSpec(cfg.PublicBaseURL)); err != nil {
-		return fmt.Errorf("stripe-setup: portal: %w", err)
+	for _, spec := range portalSpecs(cfg.PublicBaseURL) {
+		if err := gw.EnsurePortalConfiguration(ctx, spec); err != nil {
+			return fmt.Errorf("stripe-setup: portal %s: %w", spec.Key, err)
+		}
+		log.Info("stripe-setup", "portal", spec.Key)
 	}
-	log.Info("stripe-setup", "portal", "ensured")
 	return nil
 }

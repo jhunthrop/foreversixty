@@ -6,6 +6,8 @@ import (
 	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
+
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
 func TestReconcileUpsertsEveryLiveStripeSubscriptionFresh(t *testing.T) {
@@ -48,7 +50,7 @@ func TestReconcileUpsertsEveryLiveStripeSubscriptionFresh(t *testing.T) {
 func TestReconcileReportsAStripeSubscriptionWithNoLocalRowAsAnOrphan(t *testing.T) {
 	h := newHarness(t)
 	h.gateway.ListSubscriptionsResult = map[string][]StripeSubscriptionSummary{
-		ProductIDGuild: {{ID: "sub_orphan_guild", Status: "active"}},
+		catalog.ProductIDGuild: {{ID: "sub_orphan_guild", Status: "active"}},
 	}
 	if _, err := h.svc.Reconcile(t.Context()); err != nil {
 		t.Fatal(err)
@@ -77,7 +79,7 @@ func TestReconcileDoesNotReportAKnownSubscriptionAsAnOrphan(t *testing.T) {
 	}
 	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
 	h.gateway.ListSubscriptionsResult = map[string][]StripeSubscriptionSummary{
-		ProductIDPremium: {{ID: "sub_known", Status: "active"}},
+		catalog.ProductIDPremium: {{ID: "sub_known", Status: "active"}},
 	}
 	if _, err := h.svc.Reconcile(t.Context()); err != nil {
 		t.Fatal(err)

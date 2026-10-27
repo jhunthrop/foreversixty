@@ -16,34 +16,6 @@ import (
 	stripe "github.com/stripe/stripe-go/v82"
 )
 
-// The four lookup keys spec §2.1's table fixes — the only Stripe price
-// identifiers application code ever hardcodes; every checkout resolves a
-// Price id from one of these at request time.
-const (
-	LookupKeyPremiumMonthly = "premium_monthly"
-	LookupKeyPremiumYearly  = "premium_yearly"
-	LookupKeyGuildMonthly   = "guild_monthly"
-	LookupKeyGuildYearly    = "guild_yearly"
-)
-
-// The launch prices (docs/superpowers/specs/2026-10-27-pricing-design.md §3). They live
-// beside the original four under their own keys, because an existing lookup key's price is
-// never changed in place (EnsurePrice is create-only), and no checkout sells them until the
-// pricing lane switches the site over. The Guild tier keeps guild_monthly / guild_yearly,
-// whose $15 / $150 amounts are unchanged.
-const (
-	LookupKeyPremiumMonthlyLaunch    = "premium_monthly_launch"
-	LookupKeyPremiumYearlyLaunch     = "premium_yearly_launch"
-	LookupKeyPremiumFounderMonthly   = "premium_founder_monthly"
-	LookupKeyPremiumFounderYearly    = "premium_founder_yearly"
-	LookupKeyGuildFounderMonthly     = "guild_founder_monthly"
-	LookupKeyGuildFounderYearly      = "guild_founder_yearly"
-	LookupKeyRaidGuildMonthly        = "raid_guild_monthly"
-	LookupKeyRaidGuildYearly         = "raid_guild_yearly"
-	LookupKeyRaidGuildFounderMonthly = "raid_guild_founder_monthly"
-	LookupKeyRaidGuildFounderYearly  = "raid_guild_founder_yearly"
-)
-
 // ErrPriceNotFound is PriceIDForLookupKey's answer when no active Price
 // carries that lookup key yet (stripe-setup has not run, or is stale).
 var ErrPriceNotFound = errors.New("billing: no active price for that lookup key")
@@ -59,20 +31,11 @@ type CheckoutParams struct {
 	Metadata          map[string]string
 	SuccessURL        string
 	CancelURL         string
+	// TrialPeriodDays and TrialEnd put a trial on subscription_data. At
+	// most one is set; the real gateway rejects both.
+	TrialPeriodDays int64
+	TrialEnd        *time.Time
 }
-
-// ProductIDPremium and ProductIDGuild are the two fixed Stripe Product
-// ids stripe-setup creates (cmd/api/stripe_setup.go's priceSpecs) — the
-// single source of truth for both that command and stripe-reconcile's
-// two-directional check (spec §2.8, security review fix 2026-09-21),
-// which lists Stripe's own live subscriptions against exactly these ids.
-const (
-	ProductIDPremium = "prod_fs_premium"
-	ProductIDGuild   = "prod_fs_guild"
-	// ProductIDRaidGuild is the launch pricing's second guild tier. It joins
-	// stripe-reconcile's check when the pricing lane starts selling it.
-	ProductIDRaidGuild = "prod_fs_raid_guild"
-)
 
 // ProductTaxCodeSaaSPersonal is Stripe's tax code for software as a
 // service sold for personal use, which is what a Premium or guild plan
@@ -97,6 +60,9 @@ type PriceSpec struct {
 // test and live mode identical). Products lists what a subscriber may
 // switch between, by lookup key.
 type PortalSpec struct {
+	// Key is the fs_portal metadata value that names this configuration;
+	// CreatePortalSession resolves a configuration by it.
+	Key               string
 	Headline          string
 	PrivacyPolicyURL  string
 	TermsOfServiceURL string
@@ -114,8 +80,18 @@ type PortalProduct struct {
 // PortalCall is one CreatePortalSession invocation, recorded by
 // FakeGateway for test assertions.
 type PortalCall struct {
-	CustomerID string
-	ReturnURL  string
+	CustomerID       string
+	ReturnURL        string
+	ConfigurationKey string
+}
+
+// PriceChangePreview is what a subscription price change would charge:
+// the prorated amount due now, the amount of the next regular invoice,
+// and the end of the current period.
+type PriceChangePreview struct {
+	AmountDueCents  int64
+	NextAmountCents int64
+	PeriodEnd       time.Time
 }
 
 // CheckoutSession is what CreateCheckoutSession returns: the checkout
@@ -140,6 +116,8 @@ type CheckoutSession struct {
 type StripeSubscriptionSummary struct {
 	ID     string
 	Status string
+	// PriceLookupKey is the lookup key of the subscription's single item.
+	PriceLookupKey string
 }
 
 // Gateway is every Stripe API call this package makes. StripeGateway
@@ -150,7 +128,9 @@ type StripeSubscriptionSummary struct {
 type Gateway interface {
 	CreateCustomer(ctx context.Context, email string) (customerID string, err error)
 	CreateCheckoutSession(ctx context.Context, p CheckoutParams) (CheckoutSession, error)
-	CreatePortalSession(ctx context.Context, customerID, returnURL string) (portalURL string, err error)
+	// CreatePortalSession opens the portal configuration whose fs_portal
+	// metadata equals configurationKey; a missing configuration is an error.
+	CreatePortalSession(ctx context.Context, customerID, returnURL, configurationKey string) (portalURL string, err error)
 	// GetSubscription re-fetches a Subscription fresh by id — the one
 	// call every webhook event handler makes instead of trusting the
 	// event's own embedded snapshot (spec RULING 8).
@@ -178,4 +158,12 @@ type Gateway interface {
 	// two-directional check (spec §2.8): Stripe → our database, the
 	// direction the original design deferred and this fix implements.
 	ListSubscriptions(ctx context.Context, productID string) ([]StripeSubscriptionSummary, error)
+	// PreviewPriceChange previews moving the subscription's single item to
+	// priceID with an immediate prorated invoice.
+	PreviewPriceChange(ctx context.Context, subscriptionID, priceID string) (PriceChangePreview, error)
+	// ChangePrice moves the subscription's single item to priceID, invoicing
+	// the proration at once and failing rather than leaving a payment pending.
+	ChangePrice(ctx context.Context, subscriptionID, priceID string) error
+	// ArchivePrice sets active=false on the price with that lookup key.
+	ArchivePrice(ctx context.Context, lookupKey string) error
 }
