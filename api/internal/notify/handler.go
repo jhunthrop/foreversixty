@@ -62,6 +62,8 @@ type Service struct {
 	// PublicBaseURL is the site origin the test message links to.
 	PublicBaseURL string
 	Log           *slog.Logger
+	// stateHandlers finish the flows other than the guild webhook; see OnState.
+	stateHandlers map[string]StateHandler
 }
 
 // Mount registers the Discord routes. The caller mounts only when the

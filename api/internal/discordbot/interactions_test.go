@@ -55,7 +55,7 @@ func newHarness(t *testing.T, handler Handler) *harness {
 	h.svc.components = map[string]Handler{"spy": spy}
 	h.svc.updating = map[string]bool{"upd": true}
 	h.svc.components["upd"] = spy
-	Mount(h.mux, h.svc)
+	Mount(h.mux, h.svc, 0)
 	return h
 }
 

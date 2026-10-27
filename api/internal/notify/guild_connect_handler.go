@@ -2,6 +2,7 @@ package notify
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,6 +10,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
+
+var errNoStateStore = errors.New("notify: no connect state store")
 
 const (
 	guildConnectPath = "/v1/guilds/{id}/notifications/discord/connect"
@@ -36,8 +39,33 @@ func (s *Service) guildConnect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, s.OAuth.AuthURL(state), http.StatusFound)
 }
 
-// callbackEntry is the one redirect URI both connects share. A state matching a guild
-// connect row (taken, so used once) is the guild's; anything else is the account's flow.
+// StateHandler finishes a flow whose state row was taken at the shared callback.
+type StateHandler func(w http.ResponseWriter, r *http.Request, cs ConnectState)
+
+// OnState registers the handler for states of the given kind; call it before serving.
+func (s *Service) OnState(kind string, h StateHandler) {
+	if s.stateHandlers == nil {
+		s.stateHandlers = map[string]StateHandler{}
+	}
+	s.stateHandlers[kind] = h
+}
+
+// StartState stores a state of the given kind for userID, good for ten minutes, and returns
+// it. guildID is nil for a flow with no guild.
+func (s *Service) StartState(ctx context.Context, kind string, userID int64, guildID *int64) (string, error) {
+	if s.GuildStore == nil {
+		return "", errNoStateStore
+	}
+	state := auth.NewSessionID()
+	if err := s.GuildStore.CreateState(ctx, state, kind, userID, guildID, guildConnectStateTTL); err != nil {
+		return "", err
+	}
+	return state, nil
+}
+
+// callbackEntry is the one redirect URI every connect shares. A state matching a stored
+// row (taken, so used once) goes to its kind's handler, the guild webhook's being
+// guildCallback; anything else is the account's flow.
 func (s *Service) callbackEntry(w http.ResponseWriter, r *http.Request) {
 	if s.GuildConnectEnabled() {
 		cs, ok, err := s.GuildStore.TakeConnectState(r.Context(), r.URL.Query().Get("state"))
@@ -48,11 +76,27 @@ func (s *Service) callbackEntry(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if ok {
-			s.guildCallback(w, r, cs)
+			s.dispatchState(w, r, cs)
 			return
 		}
 	}
 	s.browserSession(s.callback)(w, r)
+}
+
+// dispatchState hands a taken state to its kind's handler; a kind nobody registered fails.
+func (s *Service) dispatchState(w http.ResponseWriter, r *http.Request, cs ConnectState) {
+	if cs.Kind == StateKindGuildWebhook {
+		s.guildCallback(w, r, cs)
+		return
+	}
+	handler, ok := s.stateHandlers[cs.Kind]
+	if !ok {
+		httpx.CachePrivateNoStore(w)
+		s.logger().Warn("notify", "id", httpx.RequestIDFrom(r.Context()), "op", "connect state", "kind", cs.Kind, "err", "no handler")
+		s.accountRedirect(w, r, outcomeFailed)
+		return
+	}
+	handler(w, r, cs)
 }
 
 // guildCallback finishes a guild connect. It answers failed unless the session is the

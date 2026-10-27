@@ -21,7 +21,9 @@ type Autocomplete func(ctx context.Context, in Interaction) ([]Choice, error)
 
 // commandRoutes maps a slash command's name to its handler. Each later task
 // adds one entry.
-func (s *Service) commandRoutes() map[string]Handler { return map[string]Handler{} }
+func (s *Service) commandRoutes() map[string]Handler {
+	return map[string]Handler{"link": s.cmdLink}
+}
 
 // componentRoutes maps a custom id's prefix (the part before the first colon)
 // to its handler.

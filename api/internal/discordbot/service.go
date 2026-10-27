@@ -106,6 +106,9 @@ func New(d Deps) *Service {
 		s.bg = &inProcess{}
 	}
 	s.commands, s.components = s.commandRoutes(), s.componentRoutes()
+	if d.Notify != nil {
+		d.Notify.OnState(notify.StateKindLink, s.linkCallback)
+	}
 	s.autocompletes, s.updating = s.autocompleteRoutes(), updateComponents()
 	return s
 }
