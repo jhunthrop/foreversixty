@@ -2,6 +2,7 @@ package discordbot
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
@@ -61,15 +62,30 @@ type componentJSON struct {
 	Options     []SelectOption `json:"options,omitempty"`
 }
 
-// MarshalJSON writes only the fields that belong to the component's kind.
+// MarshalJSON writes only the fields that belong to the component's kind. A
+// link button needs a url and no custom_id; any other button needs a
+// custom_id and no url. Anything else fails here, not at Discord.
 func (c Component) MarshalJSON() ([]byte, error) {
 	out := componentJSON{Type: c.Kind, CustomID: c.CustomID, Disabled: c.Disabled}
 	if c.Kind == KindStringSelect {
 		out.Placeholder, out.Options = c.Placeholder, c.Options
 	} else {
+		if err := c.checkButton(); err != nil {
+			return nil, err
+		}
 		out.Style, out.Label, out.URL = c.Style, c.Label, c.URL
 	}
 	return json.Marshal(out)
+}
+
+func (c Component) checkButton() error {
+	switch {
+	case c.Style == StyleLink && (c.URL == "" || c.CustomID != ""):
+		return fmt.Errorf("discordbot: link button %q needs a url and no custom_id", c.Label)
+	case c.Style != StyleLink && (c.CustomID == "" || c.URL != ""):
+		return fmt.Errorf("discordbot: button %q needs a custom_id and no url", c.Label)
+	}
+	return nil
 }
 
 // ActionRow is one row of components.
@@ -111,4 +127,26 @@ func (m Message) MarshalJSON() ([]byte, error) {
 		out.Flags = ephemeralFlag
 	}
 	return json.Marshal(out)
+}
+
+// edit is the body of an edit. Discord leaves an omitted field unchanged, so
+// an edit writes content, embeds and components explicitly: an empty one
+// clears it (a locked raid post loses its buttons). The ephemeral flag is
+// fixed by the first answer and is not sent.
+func (m Message) edit() editBody {
+	b := editBody{Content: m.Content, Embeds: m.Embeds, Components: m.Components, AllowedMentions: mentions{Parse: []string{}}}
+	if b.Embeds == nil {
+		b.Embeds = []notify.Embed{}
+	}
+	if b.Components == nil {
+		b.Components = []ActionRow{}
+	}
+	return b
+}
+
+type editBody struct {
+	Content         string         `json:"content"`
+	Embeds          []notify.Embed `json:"embeds"`
+	Components      []ActionRow    `json:"components"`
+	AllowedMentions mentions       `json:"allowed_mentions"`
 }

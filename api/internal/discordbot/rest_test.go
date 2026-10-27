@@ -105,7 +105,7 @@ func TestAPIErrorClassifies(t *testing.T) {
 			t.Fatalf("error leaks the token: %v", err)
 		}
 	}
-	if !(&APIError{Status: 404, Code: 10003}).Gone() || !(&APIError{Status: 400, Code: 50013}).MissingAccess() ||
+	if !(&APIError{Status: 404, Code: 10015}).Gone() || !(&APIError{Status: 401, Code: 50027}).Gone() || !(&APIError{Status: 404, Code: 10003}).Gone() || !(&APIError{Status: 400, Code: 50013}).MissingAccess() ||
 		!(&APIError{Status: 404, Code: 10004}).MissingAccess() || (&APIError{Status: 500}).Gone() {
 		t.Fatal("classification table wrong")
 	}
@@ -169,6 +169,7 @@ func TestMessageJSON(t *testing.T) {
 		Components: []ActionRow{{
 			{Kind: KindButton, Style: StyleSuccess, Label: "Go", CustomID: "go"},
 			{Kind: KindButton, Style: StyleLink, Label: "Site", URL: "https://x.test"},
+		}, {
 			{Kind: KindStringSelect, CustomID: "pick", Placeholder: "p", Options: []SelectOption{{Label: "l", Value: "v", Description: "d"}}},
 		}},
 	}
@@ -186,6 +187,7 @@ func TestMessageJSON(t *testing.T) {
 		t.Fatalf("row = %v", row)
 	}
 	parts := row["components"].([]any)
+	selRow := out["components"].([]any)[1].(map[string]any)["components"].([]any)
 	btn := parts[0].(map[string]any)
 	if btn["type"] != float64(2) || btn["style"] != float64(3) || btn["custom_id"] != "go" {
 		t.Fatalf("button = %v", btn)
@@ -194,7 +196,7 @@ func TestMessageJSON(t *testing.T) {
 	if link["url"] != "https://x.test" || link["custom_id"] != nil {
 		t.Fatalf("link = %v", link)
 	}
-	sel := parts[2].(map[string]any)
+	sel := selRow[0].(map[string]any)
 	if sel["type"] != float64(3) || sel["options"] == nil || sel["style"] != nil {
 		t.Fatalf("select = %v", sel)
 	}
@@ -215,5 +217,59 @@ func TestCommandJSON(t *testing.T) {
 	opt := out["options"].([]any)[0].(map[string]any)
 	if opt["required"] != true || opt["autocomplete"] != true || opt["choices"] == nil {
 		t.Fatalf("option = %v", opt)
+	}
+}
+
+func TestEditsClearWhatTheyLeaveEmptyAndNeverSendFlags(t *testing.T) {
+	rest, got := serve(t, 200, `{}`)
+	m := Message{Ephemeral: true}
+	if err := rest.EditMessage(context.Background(), "c1", "m1", m); err != nil {
+		t.Fatal(err)
+	}
+	assertCleared := func() {
+		t.Helper()
+		for _, k := range []string{"embeds", "components"} {
+			if v, ok := got.body[k].([]any); !ok || len(v) != 0 {
+				t.Fatalf("%s = %v in %v", k, got.body[k], got.body)
+			}
+		}
+		if c, ok := got.body["content"]; !ok || c != "" || got.body["flags"] != nil {
+			t.Fatalf("body = %v", got.body)
+		}
+	}
+	assertCleared()
+	if err := rest.EditOriginal(context.Background(), "tok", m); err != nil {
+		t.Fatal(err)
+	}
+	assertCleared()
+}
+
+func TestRetryAfterFallsBackToTheHeaderOnANonJSON429(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Retry-After", "2")
+		w.WriteHeader(429)
+		_, _ = w.Write([]byte("<html>blocked</html>"))
+	}))
+	defer srv.Close()
+	rest := NewHTTPREST("app1", "t0k")
+	rest.BaseURL = srv.URL
+	_, err := rest.CreateMessage(context.Background(), "c1", Message{})
+	apiErr, ok := err.(*APIError)
+	if !ok || !apiErr.RateLimited() || apiErr.RetryAfter != 2*time.Second {
+		t.Fatalf("err = %#v", err)
+	}
+}
+
+func TestInvalidButtonsFailFast(t *testing.T) {
+	bad := []Component{
+		{Kind: KindButton, Style: StyleSuccess, Label: "no id"},
+		{Kind: KindButton, Style: StyleLink, Label: "no url"},
+		{Kind: KindButton, Style: StyleLink, Label: "both", URL: "https://x.test", CustomID: "x"},
+		{Kind: KindButton, Style: StyleSuccess, Label: "url", CustomID: "x", URL: "https://x.test"},
+	}
+	for _, c := range bad {
+		if _, err := json.Marshal(Message{Components: []ActionRow{{c}}}); err == nil {
+			t.Fatalf("%q marshalled", c.Label)
+		}
 	}
 }

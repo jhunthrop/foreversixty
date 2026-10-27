@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -24,6 +25,10 @@ const (
 	codeUnknownChannel = 10003
 	codeUnknownGuild   = 10004
 	codeUnknownMessage = 10008
+	// Unknown Webhook and Invalid Webhook Token: an interaction token is
+	// good for 15 minutes.
+	codeUnknownWebhook = 10015
+	codeInvalidWebhook = 50027
 	codeMissingAccess  = 50001
 	codeMissingPerms   = 50013
 )
@@ -73,7 +78,11 @@ func (e *APIError) MissingAccess() bool {
 
 // Gone reports that the channel or message no longer exists.
 func (e *APIError) Gone() bool {
-	return e.Code == codeUnknownChannel || e.Code == codeUnknownMessage
+	switch e.Code {
+	case codeUnknownChannel, codeUnknownMessage, codeUnknownWebhook, codeInvalidWebhook:
+		return true
+	}
+	return false
 }
 
 // newClient is the 5 s client every Discord call uses. A redirect would carry
@@ -167,9 +176,13 @@ func answerError(res *http.Response) error {
 	if runes := []rune(msg); len(runes) > maxErrorRunes {
 		msg = string(runes[:maxErrorRunes])
 	}
+	retry := body.RetryAfter
+	if retry == 0 {
+		retry, _ = strconv.ParseFloat(res.Header.Get("Retry-After"), 64)
+	}
 	return &APIError{
 		Status: res.StatusCode, Code: body.Code, Message: msg,
-		RetryAfter: time.Duration(body.RetryAfter * float64(time.Second)),
+		RetryAfter: time.Duration(retry * float64(time.Second)),
 	}
 }
 
@@ -189,7 +202,7 @@ func (r *HTTPREST) CreateMessage(ctx context.Context, channelID string, m Messag
 
 func (r *HTTPREST) EditMessage(ctx context.Context, channelID, messageID string, m Message) error {
 	path := "/channels/" + url.PathEscape(channelID) + "/messages/" + url.PathEscape(messageID)
-	return r.do(ctx, call{method: http.MethodPatch, path: path, botAuth: true, body: m})
+	return r.do(ctx, call{method: http.MethodPatch, path: path, botAuth: true, body: m.edit()})
 }
 
 func (r *HTTPREST) LeaveServer(ctx context.Context, serverID string) error {
@@ -214,7 +227,7 @@ func (r *HTTPREST) interactionPath(token string) string {
 }
 
 func (r *HTTPREST) EditOriginal(ctx context.Context, interactionToken string, m Message) error {
-	return r.do(ctx, call{method: http.MethodPatch, path: r.interactionPath(interactionToken) + "/messages/@original", body: m})
+	return r.do(ctx, call{method: http.MethodPatch, path: r.interactionPath(interactionToken) + "/messages/@original", body: m.edit()})
 }
 
 func (r *HTTPREST) FollowUp(ctx context.Context, interactionToken string, m Message) error {
