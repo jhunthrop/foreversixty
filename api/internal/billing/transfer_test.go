@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	stripe "github.com/stripe/stripe-go/v82"
+
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
@@ -109,17 +111,21 @@ func TestTransfer_NoPlanRefused(t *testing.T) {
 	}
 }
 
-// An accepted transfer's outgoing subscription runs to its period end, which
-// the incoming subscription's trial covers; a new offer then would overwrite
-// the row reconcile reads, so it waits until that trial is over.
+// An accepted transfer's outgoing subscription runs to its period end; a new
+// offer then would overwrite the row retiredByTransfer and reconcile read,
+// so it waits until Stripe has ended that subscription, whatever the
+// incoming subscription's trial says.
 func TestTransfer_AcceptedInLastPeriodRefused(t *testing.T) {
 	h := newHarness(t)
 	gid, leader := h.payerGuild(t, "inprogress")
 	officer := h.member(t, gid, "officer", "officer")
-	trialEnd := time.Now().Add(10 * 24 * time.Hour)
+	trialEnded := time.Now().Add(-time.Hour)
 	h.seedPlan(t, gid, guildPlan{subID: "sub_new", billedBy: leader, key: catalog.LookupKeyGuildMonthly, cents: 1500,
-		status: "trialing", trialEnd: &trialEnd})
+		trialEnd: &trialEnded})
 	h.offerTransfer(t, gid, officer, leader, "sub_prev", transferAccepted)
+	outgoing := fixtureSubscription("sub_prev", "guild", officer, gid, stripe.SubscriptionStatusActive, time.Now().Add(time.Hour))
+	outgoing.CancelAtPeriodEnd = true
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{"sub_prev": outgoing}
 
 	status, body := h.post(t, billingPath(gid, "/transfer"), leader, map[string]any{"to_user_id": officer})
 	if status != http.StatusConflict || errorCode(t, body) != "transfer_in_progress" {
@@ -129,12 +135,27 @@ func TestTransfer_AcceptedInLastPeriodRefused(t *testing.T) {
 		t.Fatalf("row overwritten: %q %q", from, state)
 	}
 
-	if _, err := h.pool.Exec(t.Context(), `update entitlements set trial_end = now() - interval '1 hour', status = 'active'
-		where guild_id = $1`, gid); err != nil {
-		t.Fatal(err)
-	}
+	outgoing.Status = stripe.SubscriptionStatusCanceled
 	h.expectNoContent(t, billingPath(gid, "/transfer"), leader, map[string]any{"to_user_id": officer})
 	if _, from, state := h.transferRow(t, gid); from != "sub_new" || state != transferOffered {
 		t.Fatalf("row = %q %q", from, state)
+	}
+}
+
+// The offer's starts_at is the instant the transfer checkout trials to: the
+// period end, floored 49 hours ahead.
+func TestTransfer_StartsAtAppliesTrialFloor(t *testing.T) {
+	h := newHarness(t)
+	gid, leader := h.payerGuild(t, "floor")
+	officer := h.member(t, gid, "officer", "officer")
+	now := time.Now().UTC().Truncate(time.Second)
+	h.clockAt(now)
+	h.seedPlan(t, gid, guildPlan{subID: "sub_fl", billedBy: leader, key: catalog.LookupKeyGuildMonthly, cents: 1500,
+		periodEnd: now.Add(time.Hour)})
+	h.expectNoContent(t, billingPath(gid, "/transfer"), leader, map[string]any{"to_user_id": officer})
+	read, _ := h.readBilling(t, gid, officer)
+	want := now.Add(transferTrialFloor).Format(time.RFC3339)
+	if read.Transfer == nil || read.Transfer.StartsAt == nil || *read.Transfer.StartsAt != want {
+		t.Fatalf("transfer = %+v, want starts_at %s", read.Transfer, want)
 	}
 }

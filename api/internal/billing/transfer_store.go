@@ -55,11 +55,12 @@ func (s *Store) OfferTransfer(ctx context.Context, guildID, fromUserID, toUserID
 	return nil
 }
 
-// WithdrawTransfer closes the guild's open offer; false when none is open.
-func (s *Store) WithdrawTransfer(ctx context.Context, guildID int64) (bool, error) {
+// WithdrawTransfer closes the guild's open offer sent by fromUserID; false
+// when that sender has none open.
+func (s *Store) WithdrawTransfer(ctx context.Context, guildID, fromUserID int64) (bool, error) {
 	tag, err := s.Pool.Exec(ctx, `
 		update plan_transfers set state = 'declined', decided_at = now()
-		where guild_id = $1 and state = 'offered'`, guildID)
+		where guild_id = $1 and from_user_id = $2 and state = 'offered'`, guildID, fromUserID)
 	if err != nil {
 		return false, fmt.Errorf("billing: withdraw transfer of guild %d: %w", guildID, err)
 	}

@@ -31,14 +31,6 @@ type GuildBillingRead struct {
 	Can                []string        `json:"can"`
 }
 
-// PriceFacts is the price a row was bought at, from its lookup key. A row
-// with no catalog price (a grant) has null interval and amount.
-type PriceFacts struct {
-	Founder     bool    `json:"founder"`
-	Interval    *string `json:"interval"`
-	AmountCents *int64  `json:"amount_cents"`
-}
-
 // GuildPlanView is the guild's plan row, ended or live.
 type GuildPlanView struct {
 	Scope             string  `json:"scope"`
@@ -47,7 +39,7 @@ type GuildPlanView struct {
 	CurrentPeriodEnd  *string `json:"current_period_end"`
 	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
 	TrialEnd          *string `json:"trial_end"`
-	PriceFacts
+	catalog.PriceFacts
 	// BilledBy is empty for a grant: there is no billing contact to name.
 	BilledBy             string `json:"billed_by"`
 	YouAreBillingContact bool   `json:"you_are_billing_contact"`
@@ -61,7 +53,7 @@ type TransferView struct {
 	At       string  `json:"at"`
 	State    string  `json:"state"`
 	StartsAt *string `json:"starts_at"`
-	PriceFacts
+	catalog.PriceFacts
 }
 
 func (s *Service) guildBilling(w http.ResponseWriter, r *http.Request) {
@@ -137,7 +129,7 @@ func (s *Service) planView(ctx context.Context, gb *entitlements.GuildBilling, v
 	v := &GuildPlanView{
 		Scope: scopeWholePlan, Tier: gb.Tier, Status: gb.Status,
 		CurrentPeriodEnd: rfc3339(gb.CurrentPeriodEnd), CancelAtPeriodEnd: gb.CancelAtPeriodEnd,
-		TrialEnd: rfc3339(gb.TrialEnd), PriceFacts: priceFactsOf(gb.PriceLookupKey, gb.UnitAmountCents),
+		TrialEnd: rfc3339(gb.TrialEnd), PriceFacts: catalog.FactsOf(gb.PriceLookupKey, gb.UnitAmountCents),
 	}
 	if gb.Scoped() {
 		v.Scope = scopeOfficerTools
@@ -155,26 +147,6 @@ func (s *Service) planView(ctx context.Context, gb *entitlements.GuildBilling, v
 		v.YouAreBillingContact = *gb.BillingUserID == viewerID
 	}
 	return v, nil
-}
-
-// priceFactsOf reads founder and interval from the catalog. The amount is the
-// row's own when it has one, else the catalog's; a key outside the catalog
-// with no amount has none.
-func priceFactsOf(lookupKey string, unitAmountCents int64) PriceFacts {
-	var facts PriceFacts
-	price, known := catalog.Lookup(lookupKey)
-	if known {
-		interval := string(price.Interval)
-		facts.Founder, facts.Interval = price.Founder, &interval
-	}
-	switch {
-	case unitAmountCents > 0:
-		facts.AmountCents = &unitAmountCents
-	case known:
-		amount := price.AmountCents
-		facts.AmountCents = &amount
-	}
-	return facts
 }
 
 // transferCandidates is every verified officer the subscriber could hand the

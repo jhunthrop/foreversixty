@@ -2,6 +2,7 @@
 package billing
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 	"time"
@@ -50,7 +51,8 @@ type guildActor struct {
 
 // guildActorFor resolves the caller, answering the refusal itself when
 // ok is false: 503 without seats wiring, 404 for a bad id or anyone who is
-// not a verified officer or leader of the guild.
+// neither a verified officer or leader of the guild nor its plan's verified
+// billing user (a demoted billing user still pays, as on the seat routes).
 func (s *Service) guildActorFor(w http.ResponseWriter, r *http.Request, op string) (guildActor, bool) {
 	if s.Seats == nil {
 		writeUnavailable(w, r)
@@ -61,32 +63,41 @@ func (s *Service) guildActorFor(w http.ResponseWriter, r *http.Request, op strin
 		writeNoSuchGuild(w, r)
 		return guildActor{}, false
 	}
-	ctx := r.Context()
-	a := guildActor{guildID: guildID, userID: auth.ActorFrom(ctx).UserID}
-	rank, verified, err := s.Accounts.GuildRank(ctx, guildID, a.userID)
+	a, admitted, err := s.loadGuildActor(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
 	if err != nil {
 		s.fail(w, r, op, err, "could not read billing just now")
 		return guildActor{}, false
 	}
-	if !verified || (rank != "officer" && rank != "leader") {
+	if !admitted {
 		writeNoSuchGuild(w, r)
 		return guildActor{}, false
 	}
+	return a, true
+}
+
+// loadGuildActor reads the caller's standing in the guild; admitted is
+// false for anyone the billing routes do not serve.
+func (s *Service) loadGuildActor(ctx context.Context, guildID, userID int64) (guildActor, bool, error) {
+	a := guildActor{guildID: guildID, userID: userID}
+	rank, verified, err := s.Accounts.GuildRank(ctx, guildID, userID)
+	if err != nil || !verified {
+		return guildActor{}, false, err
+	}
+	if a.subscriber, err = s.Seats.IsSubscriber(ctx, guildID, userID); err != nil {
+		return guildActor{}, false, err
+	}
+	if rank != "officer" && rank != "leader" && !a.subscriber {
+		return guildActor{}, false, nil
+	}
 	if s.Guilds != nil {
-		if a.frozen, err = s.Guilds.FrozenClaimant(ctx, guildID, a.userID); err != nil {
-			s.fail(w, r, op, err, "could not read billing just now")
-			return guildActor{}, false
+		if a.frozen, err = s.Guilds.FrozenClaimant(ctx, guildID, userID); err != nil {
+			return guildActor{}, false, err
 		}
 	}
-	if a.payer, err = s.Seats.IsPayer(ctx, guildID, a.userID); err != nil {
-		s.fail(w, r, op, err, "could not read billing just now")
-		return guildActor{}, false
+	if a.payer, err = s.Seats.IsPayer(ctx, guildID, userID); err != nil {
+		return guildActor{}, false, err
 	}
-	if a.subscriber, err = s.Seats.IsSubscriber(ctx, guildID, a.userID); err != nil {
-		s.fail(w, r, op, err, "could not read billing just now")
-		return guildActor{}, false
-	}
-	return a, true
+	return a, true, nil
 }
 
 // actingActor is guildActorFor for a write: a frozen claimant is refused,
@@ -101,10 +112,14 @@ func (s *Service) actingActor(w http.ResponseWriter, r *http.Request, op string,
 		return guildActor{}, false
 	}
 	if !allowed(a) {
-		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "only the guild's payer can do that", nil)
+		writeNotPayer(w, r)
 		return guildActor{}, false
 	}
 	return a, true
+}
+
+func writeNotPayer(w http.ResponseWriter, r *http.Request) {
+	httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "only the guild's payer can do that", nil)
 }
 
 func isPayer(a guildActor) bool      { return a.payer }
