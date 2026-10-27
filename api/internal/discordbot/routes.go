@@ -28,6 +28,7 @@ func (s *Service) commandRoutes() map[string]Handler {
 	return map[string]Handler{
 		"link": s.cmdLink, "signup": s.cmdSignup, "raid": s.cmdRaid, "help": s.cmdHelp,
 		"char": s.cmdChar, "bis": s.cmdBis,
+		"report": s.cmdReport, "attendance": s.cmdAttendance, "readiness": s.cmdReadiness,
 	}
 }
 
@@ -39,7 +40,10 @@ func (s *Service) componentRoutes() map[string]Handler {
 
 // autocompleteRoutes maps a command's name to its suggester.
 func (s *Service) autocompleteRoutes() map[string]Autocomplete {
-	return map[string]Autocomplete{"signup": s.autocompleteSignup, "char": s.autocompleteChar, "bis": s.autocompleteSpec}
+	return map[string]Autocomplete{
+		"signup": s.autocompleteSignup, "char": s.autocompleteChar, "bis": s.autocompleteSpec,
+		"report": s.autocompleteReport, "attendance": s.autocompleteMember,
+	}
 }
 
 // updateComponents names the custom-id prefixes whose press edits the message

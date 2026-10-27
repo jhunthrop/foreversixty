@@ -31,7 +31,7 @@ type lookupAnswer func(ctx context.Context, guildID int64, viewer *int64, opts m
 
 // lookups are the answers Share in channel can recompute, by command (spec §3.3.4).
 func (s *Service) lookups() map[string]lookupAnswer {
-	return map[string]lookupAnswer{"char": s.answerChar, "bis": s.answerBis}
+	return map[string]lookupAnswer{"char": s.answerChar, "bis": s.answerBis, "report": s.answerReport}
 }
 
 // visitorAnswer is command's answer as a signed-out visitor sees it; nil for a command that

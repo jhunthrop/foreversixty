@@ -62,13 +62,13 @@ func Commands() []Command {
 			stringOption("slot", "One slot. The top five if left out.", false, false, slotChoices),
 			stringOption("phase", "Level band or Phase 1 raid.", false, false, phaseChoices),
 		}},
-		{Name: "report", Description: "The last logged raid: kills and loot.", Options: []CommandOption{
+		{Name: "report", Description: "The last logged raid: kills and loot.", Released: true, Options: []CommandOption{
 			stringOption("raid", descReportRaidOption, false, true, nil),
 		}},
-		{Name: "attendance", Description: "Your attendance. Officers can name anyone.", Options: []CommandOption{
+		{Name: "attendance", Description: "Your attendance. Officers can name anyone.", Released: true, Options: []CommandOption{
 			stringOption("name", "Officers: a member of the guild.", false, true, nil),
 		}},
-		{Name: "readiness", Description: "Officers: who is not ready for the next raid."},
+		{Name: "readiness", Description: "Officers: who is not ready for the next raid.", Released: true},
 		{Name: "link", Description: "Link this Discord account to Forever Sixty.", Released: true},
 		{Name: "help", Description: "This list.", Released: true},
 	}
