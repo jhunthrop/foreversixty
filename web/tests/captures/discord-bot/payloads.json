@@ -1,0 +1,812 @@
+[
+ {
+  "id": "post-open",
+  "title": "Raid post: open",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Onyxia's Lair · Thursday 10 December",
+     "description": "Sign up with the buttons below.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+       "inline": true
+      },
+      {
+       "name": "Guild time",
+       "value": "9:00 pm EST",
+       "inline": true
+      },
+      {
+       "name": "Signed up",
+       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 15055189
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 3,
+       "label": "In",
+       "custom_id": "raid:42:in"
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Late",
+       "custom_id": "raid:42:late"
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Bench",
+       "custom_id": "raid:42:bench"
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Out",
+       "custom_id": "raid:42:out"
+      },
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Raid page",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "post-locked",
+  "title": "Raid post: locked",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Onyxia's Lair · Thursday 10 December",
+     "description": "Sign-ups are locked. An officer can still change yours.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+       "inline": true
+      },
+      {
+       "name": "Guild time",
+       "value": "9:00 pm EST",
+       "inline": true
+      },
+      {
+       "name": "Signed up",
+       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 10130564
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 3,
+       "label": "In",
+       "custom_id": "raid:42:in",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Late",
+       "custom_id": "raid:42:late",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Bench",
+       "custom_id": "raid:42:bench",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Out",
+       "custom_id": "raid:42:out",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Raid page",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "post-moved",
+  "title": "Raid post: moved",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Moved: Onyxia's Lair · Thursday 10 December",
+     "description": "Sign-ups carry over. Check you can still make it.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+       "inline": true
+      },
+      {
+       "name": "Was",
+       "value": "\u003ct:1796868000:F\u003e",
+       "inline": true
+      },
+      {
+       "name": "Guild time",
+       "value": "9:00 pm EST",
+       "inline": true
+      },
+      {
+       "name": "Signed up",
+       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 15055189
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 3,
+       "label": "In",
+       "custom_id": "raid:42:in"
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Late",
+       "custom_id": "raid:42:late"
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Bench",
+       "custom_id": "raid:42:bench"
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Out",
+       "custom_id": "raid:42:out"
+      },
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Raid page",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "post-cancelled",
+  "title": "Raid post: cancelled",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Cancelled: Onyxia's Lair · Thursday 10 December",
+     "description": "This raid was cancelled.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "~~\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)~~",
+       "inline": true
+      },
+      {
+       "name": "Signed up",
+       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 15758187
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Raid page",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "post-ended",
+  "title": "Raid post: ended",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Onyxia's Lair · Thursday 10 December",
+     "description": "This raid has ended.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+       "inline": true
+      },
+      {
+       "name": "Guild time",
+       "value": "9:00 pm EST",
+       "inline": true
+      },
+      {
+       "name": "Signed up",
+       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 10130564
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 3,
+       "label": "In",
+       "custom_id": "raid:42:in",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Late",
+       "custom_id": "raid:42:late",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Bench",
+       "custom_id": "raid:42:bench",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 2,
+       "label": "Out",
+       "custom_id": "raid:42:out",
+       "disabled": true
+      },
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Raid page",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "post-done",
+  "title": "Raid post: done",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Done: Onyxia's Lair · Thursday 10 December",
+     "description": "Logged as a raid night.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+       "inline": true
+      },
+      {
+       "name": "Came",
+       "value": "29 of 31",
+       "inline": true
+      },
+      {
+       "name": "Kills",
+       "value": "Onyxia 4:12"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 8377482
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Open the night",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42#report"
+      }
+     ]
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "post-webhook",
+  "title": "Raid post through a webhook (no buttons, never edited)",
+  "surface": "channel",
+  "message": {
+   "embeds": [
+    {
+     "title": "Onyxia's Lair · Thursday 10 December",
+     "description": "Sign up on Forever Sixty.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "When",
+       "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+       "inline": true
+      },
+      {
+       "name": "Guild time",
+       "value": "9:00 pm EST",
+       "inline": true
+      },
+      {
+       "name": "Signed up",
+       "value": "**33 of 40** · 3 tanks · 8 healers · 20 DPS · 2 late\nBench 3 · Out 4"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII · Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 15055189
+    }
+   ],
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-unlinked",
+  "title": "Press reply: not linked",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Link your Discord account to Forever Sixty to sign up from here, then press the button again.",
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Link Discord",
+       "url": "https://foreversixty.gg/account#you"
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-locked",
+  "title": "Press reply: locked",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Sign-ups are locked. An officer can still change yours.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-cancelled",
+  "title": "Press reply: cancelled",
+  "surface": "ephemeral",
+  "message": {
+   "content": "This raid was cancelled.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-ended",
+  "title": "Press reply: ended",
+  "surface": "ephemeral",
+  "message": {
+   "content": "This raid has ended.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-not-member",
+  "title": "Press reply: not a member",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Sign-ups are for members of Olympus XXVII. Save your character on Forever Sixty and an officer can approve it.",
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Get set up",
+       "url": "https://foreversixty.gg/connect"
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-pending",
+  "title": "Press reply: waiting for approval",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is waiting for approval. You can sign it up once an officer approves it.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-rate-limit",
+  "title": "Press reply: rate limit",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Too many sign-up changes. Wait a minute, then try again.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-failure",
+  "title": "Press reply: save failed",
+  "surface": "ephemeral",
+  "message": {
+   "content": "That did not save. Try again.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-in",
+  "title": "Press reply: In",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is In as DPS for Onyxia's Lair. 31 of 40 signed up.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-late",
+  "title": "Press reply: Late",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is Late as DPS for Onyxia's Lair. Add a note for the officers on the raid page.",
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Add a note",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-bench",
+  "title": "Press reply: Bench",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is on the Bench for Onyxia's Lair.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-out",
+  "title": "Press reply: Out",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is Out for Onyxia's Lair.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-moved",
+  "title": "Press reply: In, with a Bench move",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is In as DPS for Onyxia's Lair. 40 of 40 signed up. Mendwhisper moved to Bench.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-already",
+  "title": "Press reply: already",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Zulmara is already In as DPS for Onyxia's Lair.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "press-select",
+  "title": "Press reply: character select",
+  "surface": "ephemeral",
+  "message": {
+   "content": "Sign up as In for Onyxia's Lair, \u003ct:1796954400:f\u003e, with which character?",
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 3,
+       "custom_id": "pick:42:in",
+       "placeholder": "Choose a character",
+       "options": [
+        {
+         "label": "Zulmara · your main",
+         "value": "us/forever/zulmara",
+         "description": "Beast Mastery Hunter · DPS"
+        },
+        {
+         "label": "Duskstrider",
+         "value": "us/forever/duskstrider",
+         "description": "Combat Rogue · DPS"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "help",
+  "title": "/help",
+  "surface": "ephemeral",
+  "message": {
+   "embeds": [
+    {
+     "title": "Forever Sixty commands",
+     "description": "**/raid** Your guild's next raid. Sign up from the answer.\n**/signup** Sign up for a raid without the post.\n**/char** A character: item level, readiness and the top 3 upgrades.\n**/bis** Best in slot for a class and spec.\n**/report** The last logged raid: kills and loot.\n**/attendance** Your attendance. Officers can name anyone.\n**/readiness** Officers: who is not ready for the next raid.\n**/link** Link this Discord account to Forever Sixty.\n**/help** This list.",
+     "footer": {
+      "text": "Forever Sixty"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 15055189
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "attendance",
+  "title": "/attendance",
+  "surface": "ephemeral",
+  "message": {
+   "embeds": [
+    {
+     "title": "Zulmara · attendance",
+     "description": "Came 7 of 8 · 26 of 30 raids",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42",
+     "fields": [
+      {
+       "name": "Last 5 raids",
+       "value": "Thu 10 Dec Present\nThu 3 Dec Late, excused\nThu 26 Nov Not in the log"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 11195250
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Roster",
+       "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "readiness",
+  "title": "/readiness",
+  "surface": "ephemeral",
+  "message": {
+   "embeds": [
+    {
+     "title": "Readiness · Onyxia's Lair · Thursday 10 December",
+     "description": "The 31 signed In or Late. 3 have something to fix.",
+     "url": "https://foreversixty.gg/guild/us/forever/olympus/raids/42#readiness",
+     "fields": [
+      {
+       "name": "To fix, most checks first",
+       "value": "Mendwhisper: no flask\nKraggor: gear 12 below the raid line\nDuskstrider: missing Onyxia attunement"
+      }
+     ],
+     "footer": {
+      "text": "Olympus XXVII"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 15055189
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "bis-slot",
+  "title": "/bis slot (item grammar)",
+  "surface": "ephemeral",
+  "message": {
+   "embeds": [
+    {
+     "title": "Quel'Serrar",
+     "description": "Main hand · Epic · item level 69\n+9.2 DPS · Dire Maul",
+     "url": "https://foreversixty.gg/item/18348",
+     "footer": {
+      "text": "Forever Sixty"
+     },
+     "author": {
+      "name": "Zulmara"
+     },
+     "timestamp": "2026-12-10T20:00:00Z",
+     "color": 10696174
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ }
+]

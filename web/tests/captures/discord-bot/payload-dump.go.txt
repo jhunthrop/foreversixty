@@ -1,0 +1,107 @@
+package discordbot
+
+import (
+	"encoding/json"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
+)
+
+type dumped struct {
+	ID      string          `json:"id"`
+	Title   string          `json:"title"`
+	Surface string          `json:"surface"`
+	Message json.RawMessage `json:"message"`
+}
+
+func TestCaptureDump(t *testing.T) {
+	now := time.Date(2026, 12, 10, 20, 0, 0, 0, time.UTC)
+	start := time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC)
+	moved := start.Add(-24 * time.Hour)
+	var out []dumped
+	add := func(id, title, surface string, m Message) {
+		b, err := json.Marshal(m)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out = append(out, dumped{id, title, surface, b})
+	}
+	raid := "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
+	base := notify.RaidPosted{RaidID: 42, GuildName: "Olympus XXVII", Title: "Onyxia's Lair", StartsAt: start, Timezone: "America/New_York",
+		RaidURL: raid, Counts: notify.RaidCounts{In: 31, Late: 2, Bench: 3, Out: 4, Tanks: 3, Healers: 8, DPS: 20}, Size: 40, SizeKnown: true}
+	for _, st := range []notify.RaidPostState{notify.PostOpen, notify.PostLocked, notify.PostMoved, notify.PostCancelled, notify.PostEnded, notify.PostDone} {
+		p := notify.RaidPost{RaidPosted: base, State: st}
+		if st == notify.PostMoved {
+			p.Was = &moved
+		}
+		if st == notify.PostDone {
+			p.Came, p.CameOf = 29, 31
+			p.Kills = []notify.KillLine{{Boss: "Onyxia", Duration: 4*time.Minute + 12*time.Second}}
+		}
+		add("post-"+string(st), "Raid post: "+string(st), "channel", PostMessage(p, raid, raid+"#report", now))
+	}
+	add("post-webhook", "Raid post through a webhook (no buttons, never edited)", "channel",
+		Message{Embeds: []notify.Embed{notify.RaidPostedEmbed(base, now)}})
+
+	press := func(id, title, text string, buttons ...Component) {
+		add("press-"+id, "Press reply: "+title, "ephemeral", pressReply(text, false, buttons...).Message)
+	}
+	f := func(s string, extra ...string) string {
+		pairs := []string{"{Name}", "Zulmara", "{Role}", "DPS", "{Title}", "Onyxia's Lair", "{Guild}", "Olympus XXVII", "{State}", "In"}
+		return fill(s, append(pairs, extra...)...)
+	}
+	press("unlinked", "not linked", pressCopy.NotLinked, linkButton("Link Discord", "https://foreversixty.gg/account#you"))
+	press("locked", "locked", pressCopy.Locked)
+	press("cancelled", "cancelled", pressCopy.Cancelled)
+	press("ended", "ended", pressCopy.Ended)
+	press("not-member", "not a member", f(pressCopy.NotMember), linkButton(pressCopy.SetupButton, "https://foreversixty.gg/connect"))
+	press("pending", "waiting for approval", f(pressCopy.WaitingOne))
+	press("rate-limit", "rate limit", pressCopy.RateLimited)
+	press("failure", "save failed", pressCopy.Failure)
+	press("in", "In", f(pressCopy.InSaved)+f(pressCopy.Count, "{signed}", "31", "{size}", "40"))
+	press("late", "Late", f(pressCopy.LateSaved), linkButton(pressCopy.NoteButton, raid))
+	press("bench", "Bench", f(pressCopy.BenchSaved))
+	press("out", "Out", f(pressCopy.OutSaved))
+	press("moved", "In, with a Bench move", f(pressCopy.InSaved)+f(pressCopy.Count, "{signed}", "40", "{size}", "40")+f(pressCopy.Moved, "{Other}", "Mendwhisper"))
+	press("already", "already", f(pressCopy.Already))
+	sel := Component{Kind: KindStringSelect, CustomID: "pick:42:in", Placeholder: pressCopy.SelectPlaceholder, Options: []SelectOption{
+		{Label: "Zulmara" + pressCopy.OptionMain, Value: "us/forever/zulmara", Description: "Beast Mastery Hunter · DPS"},
+		{Label: "Duskstrider", Value: "us/forever/duskstrider", Description: "Combat Rogue · DPS"},
+	}}
+	add("press-select", "Press reply: character select", "ephemeral", Message{
+		Content:    f(pressCopy.SelectPrompt, "{unix}", "1796954400"),
+		Components: []ActionRow{{sel}}, Ephemeral: true})
+
+	lines := []string{}
+	for _, c := range (&Service{}).commandList() {
+		lines = append(lines, fill(commandCopy.HelpLine, "{name}", c.Name, "{description}", c.Description))
+	}
+	add("help", "/help", "ephemeral", Message{Embeds: []notify.Embed{notify.BrandEmbed(commandCopy.HelpTitle, strings.Join(lines, "\n"), now)}, Ephemeral: true})
+
+	zone := "America/New_York"
+	rec := guilds.AttendanceRecord{Name: "Zulmara", Class: "hunter", Chip: "Came 7 of 8 · 26 of 30 raids", Last: []guilds.AttendanceLine{
+		{StartsAt: start, Outcome: "present"}, {StartsAt: start.Add(-7 * 24 * time.Hour), Outcome: "late", Excused: true},
+		{StartsAt: start.Add(-14 * 24 * time.Hour), Outcome: "no_show"}}}
+	e := []notify.Embed{attendanceEmbed(rec, raid, zone)}
+	closeEmbeds(e, "Olympus XXVII", now)
+	add("attendance", "/attendance", "ephemeral", Message{Embeds: e, Components: []ActionRow{{{Kind: KindButton, Style: StyleLink, Label: officerCopy.Roster, URL: raid}}}, Ephemeral: true})
+
+	r := guilds.Raid{Title: "Onyxia's Lair", StartsAt: start}
+	ans := guilds.ReadinessAnswer{Raid: &r, Signed: 31, Failing: 3, Rows: []string{"Mendwhisper: no flask", "Kraggor: gear 12 below the raid line", "Duskstrider: missing Onyxia attunement"}}
+	re := []notify.Embed{readinessEmbed(ans, raid+"#readiness", zone)}
+	closeEmbeds(re, "Olympus XXVII", now)
+	add("readiness", "/readiness", "ephemeral", Message{Embeds: re, Ephemeral: true})
+
+	item := []notify.Embed{ItemEmbed(ItemFacts{Name: "Quel'Serrar", Quality: 4, ItemLevel: 69, Source: "Dire Maul", URL: "https://foreversixty.gg/item/18348"}, "Main hand", "+9.2 DPS", "Zulmara")}
+	closeEmbeds(item, "Forever Sixty", now)
+	add("bis-slot", "/bis slot (item grammar)", "ephemeral", Message{Embeds: item, Ephemeral: true})
+
+	b, _ := json.MarshalIndent(out, "", " ")
+	if err := os.WriteFile(os.Getenv("PAYLOAD_OUT"), b, 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
