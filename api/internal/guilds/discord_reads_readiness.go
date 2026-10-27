@@ -20,11 +20,7 @@ import (
 const (
 	// readinessRowsShown is how many failing rows the answer lists before "+n more".
 	readinessRowsShown = 10
-	// readinessFieldMax is Discord's field value limit, which the listed rows stay inside.
-	readinessFieldMax = 1024
-	// readinessMoreReserve is room kept for the "+n more on the board" line.
-	readinessMoreReserve = 40
-	readinessLineJoin    = " · "
+	readinessLineJoin  = " · "
 )
 
 // ReadinessAnswer is the next raid's board for an officer: Signed is who signed In or Late,
@@ -76,16 +72,13 @@ func (s *Service) readinessGate(ctx context.Context, guildID, viewerID int64) er
 
 func readinessAnswerOf(raid Raid, view ReadinessView) ReadinessAnswer {
 	out := ReadinessAnswer{Raid: &raid, Signed: len(view.Rows), Rows: []string{}}
-	size := 0
 	for _, row := range view.Rows {
 		if row.Failing == 0 && !row.NoExport {
 			continue
 		}
 		out.Failing++
-		line := readinessLine(row, raid.StartsAt)
-		if len(out.Rows) < readinessRowsShown && size+len(line)+1 <= readinessFieldMax-readinessMoreReserve {
-			out.Rows = append(out.Rows, line)
-			size += len(line) + 1
+		if len(out.Rows) < readinessRowsShown {
+			out.Rows = append(out.Rows, readinessLine(row, raid.StartsAt))
 			continue
 		}
 		out.More++

@@ -93,14 +93,19 @@ func (s *Service) reportMessage(ctx context.Context, guildID int64, viewer *int6
 		return Message{}, ans, false, fmt.Errorf("discordbot: report guild: %w", err)
 	}
 	link := s.d.PublicBaseURL + "/reports/" + ans.Raid.Match.ReportID
-	var embeds []notify.Embed
-	if viewer == nil {
-		embeds = []notify.Embed{reportHead(ans, link, false)}
-	} else {
-		if page := s.raidPageURL(ctx, ans.Raid.ID); page != "" {
-			link = page + reportAnchor
+	// Anyone who is not a verified member (a visitor, a share, a linked non-member) gets the
+	// public answer: the night line and kill order, linking the public report. Loot and the raid
+	// page are the members'.
+	if ans.Member {
+		path, err := s.d.Guilds.GuildPagePathOf(ctx, guildID)
+		if err != nil {
+			return Message{}, ans, false, fmt.Errorf("discordbot: report path: %w", err)
 		}
-		embeds = append([]notify.Embed{reportHead(ans, link, true)}, s.lootEmbeds(ans.Report, link)...)
+		link = s.d.PublicBaseURL + guilds.RaidPagePath(path, ans.Raid.ID) + reportAnchor
+	}
+	embeds := []notify.Embed{reportHead(ans, link)}
+	if ans.Member {
+		embeds = append(embeds, s.lootEmbeds(ans.Report, link)...)
 	}
 	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	button := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.OpenReport, URL: link}
@@ -119,9 +124,9 @@ func raidTitle(title string, startsAt time.Time, zone *string) string {
 	return memberText(title) + lineJoin + startsAt.In(loc).Format(raidTitleDate)
 }
 
-// reportHead is the report's main embed: the night line and kill order, and with withLoot
-// (any member) the officer rows and the Loot count.
-func reportHead(ans guilds.ReportAnswer, link string, withLoot bool) notify.Embed {
+// reportHead is the report's main embed: the night line and kill order, and for a member the
+// Loot count, with the officer rows before it for an officer.
+func reportHead(ans guilds.ReportAnswer, link string) notify.Embed {
 	v := ans.Raid
 	e := notify.Embed{
 		Title: officerCopy.ReportPrefix + raidTitle(v.Title, v.StartsAt, v.GuildTimezone), URL: link, Color: doneGreen,
@@ -130,7 +135,7 @@ func reportHead(ans guilds.ReportAnswer, link string, withLoot bool) notify.Embe
 	if kills := boundedLines(killLines(ans.Report.KillOrder)); kills != "" {
 		e.Fields = append(e.Fields, notify.EmbedField{Name: officerCopy.KillOrder, Value: kills})
 	}
-	if !withLoot {
+	if !ans.Member {
 		return e
 	}
 	if ans.Officer {
@@ -301,16 +306,18 @@ func (s *Service) lootEmbeds(r *guilds.ReportView, link string) []notify.Embed {
 	if len(awards) > maxLootEmbeds {
 		awards = awards[:maxLootEmbeds]
 	}
-	build, _ := s.d.Guilds.ActiveBuild()
+	build, haveBuild := s.d.Guilds.ActiveBuild()
 	out := make([]notify.Embed, 0, len(awards))
 	for _, a := range awards {
 		source := fill(officerCopy.LootTo, "{Name}", notify.Collapse(a.Name), "{Boss}", notify.Collapse(a.boss))
 		facts := ItemFacts{ID: a.ItemID, Name: a.ItemName, Quality: a.Quality, Source: source, URL: link}
-		if it, ok := s.d.Guilds.BuildItem(build, a.Class, a.ItemID); ok {
-			facts.ItemLevel = it.ItemLevel
-		}
-		if a.Icon != "" && build != "" {
-			facts.Icon = s.d.PublicBaseURL + "/data/" + build + "/icons/" + a.Icon + ".webp"
+		if haveBuild { // without a build there is no item table and no icon path: name and quality only
+			if it, ok := s.d.Guilds.BuildItem(build, a.Class, a.ItemID); ok {
+				facts.ItemLevel = it.ItemLevel
+			}
+			if a.Icon != "" {
+				facts.Icon = s.d.PublicBaseURL + "/data/" + build + "/icons/" + a.Icon + ".webp"
+			}
 		}
 		out = append(out, ItemEmbed(facts, "", "", ""))
 	}

@@ -11,7 +11,9 @@ type Reply struct {
 	Message Message
 	Update  bool
 	// After runs once the answer has gone to Discord, off the request: a follow-up message
-	// needs the interaction acknowledged first. Nil runs nothing.
+	// needs the interaction acknowledged first. Nil runs nothing. When the answer could not be
+	// delivered, After still runs, under a context marked dropped (answerDropped): it must then
+	// only release what the handler held (a claimed token), never send.
 	After func(ctx context.Context)
 }
 

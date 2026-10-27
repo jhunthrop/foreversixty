@@ -22,15 +22,20 @@ type officerGuilds struct {
 	readyErr   error
 }
 
-func (o *officerGuilds) ReportFor(_ context.Context, _, viewerID int64, _ *int64) (guilds.ReportAnswer, bool, error) {
+// ReportFor scripts the report but takes membership from the real guild (GuildRank, as
+// guilds.ReportFor does): anyone who is not a verified member sees a public log only, as no member.
+func (o *officerGuilds) ReportFor(ctx context.Context, guildID, viewerID int64, _ *int64) (guilds.ReportAnswer, bool, error) {
 	o.reportSeen = append(o.reportSeen, viewerID)
-	if o.report == nil || (viewerID == 0 && !o.report.Public) {
+	_, member, err := o.Accounts.GuildRank(ctx, guildID, viewerID)
+	if err != nil {
+		return guilds.ReportAnswer{}, false, err
+	}
+	if o.report == nil || (!member && !o.report.Public) {
 		return guilds.ReportAnswer{}, false, nil
 	}
 	ans := *o.report
-	if viewerID == 0 {
-		ans.Officer = false
-	}
+	ans.Member = member
+	ans.Officer = ans.Officer && member
 	return ans, true, nil
 }
 
@@ -70,8 +75,12 @@ func (w *officerWorld) run(t *testing.T, discordUser, name string, options ...ma
 	return rep
 }
 
-// strangerDiscord is a Discord user with no link.
-const strangerDiscord = "999000999"
+// strangerDiscord is a Discord user with no link; outsiderDiscord one linked to an account with
+// no character in the guild.
+const (
+	strangerDiscord = "999000999"
+	outsiderDiscord = "888000888"
+)
 
 func onyxiaReport(officer, public bool) *guilds.ReportAnswer {
 	tz := "America/Chicago"
@@ -117,9 +126,13 @@ func hasShare(rep Reply) bool {
 func TestReportMemberAndOfficer(t *testing.T) {
 	w := newOfficerWorld(t)
 	segment := func(i int) string { return specString(t, pressHeading, "`/report`", i, nil) }
+	w.addChar(t, w.gid, w.uid, "us/normal/zulmara", "Zulmara", true)
 
 	w.og.report = onyxiaReport(false, false)
 	member := w.run(t, pressDiscord, "report")
+	if b := member.Message.Components[0][0]; b.URL != pressPublic+"/guild/us/normal/olympus-xxvii/raids/7#report" {
+		t.Fatalf("member link = %q", b.URL)
+	}
 	assertMessageLimits(t, member.Message)
 	head := member.Message.Embeds[0]
 	wantTitle := specString(t, pressHeading, "`/report`", 0, map[string]string{"Title": "Onyxia's Lair", "Weekday": "Thursday", "d": "10", "Month": "December"})
@@ -161,6 +174,34 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	if err != nil || !found || len(visitor.Embeds) != 1 || len(visitor.Embeds[0].Fields) != 1 ||
 		visitor.Embeds[0].URL != pressPublic+"/reports/abc" || visitor.Components[0][0].URL != pressPublic+"/reports/abc" {
 		t.Fatalf("shared answer = %+v %v %v", visitor, found, err)
+	}
+
+	// A linked account with no character in the guild is no member: a private log is not
+	// there for it, and a public one is the visitor's answer (no loot, no raid page).
+	outsider := seedUser(t, w.st.Pool)
+	if err := w.st.SaveLink(context.Background(), outsider, outsiderDiscord, "outsider"); err != nil {
+		t.Fatal(err)
+	}
+	w.og.report = onyxiaReport(false, false)
+	if rep := w.run(t, outsiderDiscord, "report"); rep.Message.Content != segment(9) {
+		t.Fatalf("non-member on a private log = %+v", rep.Message)
+	}
+	w.og.report = onyxiaReport(false, true)
+	out := w.run(t, outsiderDiscord, "report")
+	assertMessageLimits(t, out.Message)
+	if len(out.Message.Embeds) != 1 || len(out.Message.Embeds[0].Fields) != 1 ||
+		out.Message.Embeds[0].URL != pressPublic+"/reports/abc" || !hasShare(out) {
+		t.Fatalf("non-member on a public log = %+v", out.Message)
+	}
+	if _, ok := headFields(out)[segment(4)]; ok {
+		t.Fatal("a non-member sees the Loot field")
+	}
+	for _, row := range out.Message.Components {
+		for _, c := range row {
+			if strings.Contains(c.URL, "/raids/") {
+				t.Fatalf("a non-member gets the raid page link %q", c.URL)
+			}
+		}
 	}
 
 	w.og.report = nil

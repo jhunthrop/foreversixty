@@ -31,17 +31,23 @@ func TestExtractedReadsMatchTheRoutes(t *testing.T) {
 			if jsonOf(t, got.Raid) != jsonOf(t, route) || jsonOf(t, got.Report) != jsonOf(t, route.Report) {
 				t.Fatalf("report for %d differs from the route:\n%s\n%s", who, jsonOf(t, got.Raid), jsonOf(t, route))
 			}
-			if got.Officer != (who == w.officer) || got.Public {
-				t.Fatalf("report for %d: officer %v public %v", who, got.Officer, got.Public)
+			if !got.Member || got.Officer != (who == w.officer) || got.Public {
+				t.Fatalf("report for %d: member %v officer %v public %v", who, got.Member, got.Officer, got.Public)
 			}
 		}
-		if _, found, err := w.h.svc.ReportFor(t.Context(), w.gid, 0, nil); err != nil || found {
-			t.Fatalf("a visitor read a guild-only log: %v %v", found, err)
+		outsider := seedUser(t, w.h.pool, "outsider@example.com") // signed in, no character in the guild
+		for _, who := range []int64{0, outsider} {
+			if _, found, err := w.h.svc.ReportFor(t.Context(), w.gid, who, nil); err != nil || found {
+				t.Fatalf("%d read a guild-only log: %v %v", who, found, err)
+			}
 		}
 		w.exec(t, `update reports set visibility = 'public' where id = 'night'`)
-		got, found, err := w.h.svc.ReportFor(t.Context(), w.gid, 0, &night.ID)
-		if err != nil || !found || !got.Public || got.Officer || len(got.Report.Deaths) != 0 || len(got.Report.Consumables.Rows) != 0 {
-			t.Fatalf("visitor report = %+v %v %v", got, found, err)
+		for _, who := range []int64{0, outsider} {
+			got, found, err := w.h.svc.ReportFor(t.Context(), w.gid, who, &night.ID)
+			if err != nil || !found || !got.Public || got.Member || got.Officer || len(got.Report.Deaths) != 0 ||
+				len(got.Report.Consumables.Rows) != 0 {
+				t.Fatalf("report for %d (no member) = %+v %v %v", who, got, found, err)
+			}
 		}
 		other := w.raidAt(t, raidZoneOny, time.Now().Add(72*time.Hour))
 		if _, found, _ := w.h.svc.ReportFor(t.Context(), w.gid, w.officer, &other.ID); found {
@@ -74,7 +80,7 @@ func TestExtractedReadsMatchTheRoutes(t *testing.T) {
 			}
 		}
 		// Kraggor came as Sunderfel: the night counts once, on Kraggor.
-		if recs[0].Chip == "" || len(recs[0].Last) != 1 || recs[1].Chip != "" || len(recs[1].Last) != 0 {
+		if recs[0].Chip != "Came 1 of 1 raids" || len(recs[0].Last) != 1 || recs[1].Chip != "" || len(recs[1].Last) != 0 {
 			t.Fatalf("records = %+v", recs)
 		}
 		if l := recs[0].Last[0]; l.Outcome != OutcomePresent || l.CameAs != "Sunderfel" {
@@ -167,5 +173,42 @@ func TestReadinessListsTenRowsThenTheRest(t *testing.T) {
 	got := readinessAnswerOf(Raid{ID: 1}, ReadinessView{Rows: rows})
 	if got.Signed != 13 || got.Failing != 12 || len(got.Rows) != 10 || got.More != 2 || got.Rows[0] != "Raider · Short" {
 		t.Fatalf("answer = %+v", got)
+	}
+}
+
+// TestAttendanceChipIsTheRosterChipVerbatim: the web's own strings (roster-facts.ts
+// attendanceChip; attendance-copy.ts rosterChip; nights.ts nightsLabel), in both modes.
+func TestAttendanceChipIsTheRosterChipVerbatim(t *testing.T) {
+	row := func(p, n int, long *Attendance) RosterRow {
+		return RosterRow{Attendance: Attendance{Present: p, Nights: n}, Attendance30: long}
+	}
+	for _, c := range []struct {
+		row    RosterRow
+		source string
+		want   string
+	}{
+		{row(5, 8, nil), AttendanceSourceReports, "5 of 8 nights"},
+		{row(1, 1, nil), AttendanceSourceReports, "1 of 1 night"},
+		{row(0, 0, nil), AttendanceSourceReports, ""},
+		{row(7, 8, &Attendance{Present: 26, Nights: 30}), AttendanceSourceRaids, "Came 7 of 8 · 26 of 30 raids"},
+		{row(3, 3, &Attendance{Present: 3, Nights: 3}), AttendanceSourceRaids, "Came 3 of 3 raids"},
+		{row(0, 0, &Attendance{}), AttendanceSourceRaids, ""},
+	} {
+		if got := attendanceChip(c.row, c.source); got != c.want {
+			t.Errorf("%+v %s = %q, want %q", c.row.Attendance, c.source, got, c.want)
+		}
+	}
+}
+
+// TestAnOfficersNameLookupIsStable: two verified characters of one name (two realms) resolve to
+// the same one, the lower key, every time.
+func TestAnOfficersNameLookupIsStable(t *testing.T) {
+	w, _ := matchedNight(t)
+	w.seedRaider(t, "twin@example.com", "member", raidChar{"us/aardvark/mirelle", "Mirelle", "mage", true})
+	for i := 0; i < 5; i++ {
+		recs, err := w.h.svc.AttendanceFor(t.Context(), w.gid, w.officer, "Mirelle")
+		if err != nil || len(recs) != 1 || recs[0].Class != "mage" {
+			t.Fatalf("lookup %d = %+v %v", i, recs, err)
+		}
 	}
 }

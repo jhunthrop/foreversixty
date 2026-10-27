@@ -10,6 +10,7 @@ package guilds
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 )
@@ -34,7 +35,7 @@ type AttendanceLine struct {
 }
 
 // AttendanceRecord is one character's attendance. Chip is the Roster tab's chip ("Came 7 of 8 ·
-// 26 of 30 raids", report mode "Came 5 of 8 nights"), "" when the character has no night yet.
+// 26 of 30 raids", report mode "5 of 8 nights"), "" when the character has no night yet.
 type AttendanceRecord struct {
 	Name, Class, Chip string
 	Last              []AttendanceLine
@@ -142,25 +143,31 @@ func (s *Service) attendanceKeys(ctx context.Context, guildID, viewerID int64, o
 	if !officer {
 		return nil, ErrOfficerOnly
 	}
-	for k, r := range roster {
-		if strings.EqualFold(r.Name, name) {
+	keys := make([]string, 0, len(roster))
+	for k := range roster {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys) // two characters of one name (two realms) resolve the same way every time
+	for _, k := range keys {
+		if strings.EqualFold(roster[k].Name, name) {
 			return []string{k}, nil
 		}
 	}
 	return nil, ErrNoSuchMember
 }
 
-// attendanceChip is the Roster tab's chip (web/src/lib/guild/roster-facts.ts attendanceChip and
-// attendance-copy.ts rosterChip), "" with no night yet.
+// attendanceChip is the Roster tab's chip verbatim (web/src/lib/guild/roster-facts.ts
+// attendanceChip): report mode nightsLabel ("5 of 8 nights"), raid mode rosterChip ("Came 7 of
+// 8 · 26 of 30 raids"); "" with no night yet.
 func attendanceChip(row RosterRow, source string) string {
 	last8 := row.Attendance
 	if last8.Nights == 0 {
 		return ""
 	}
-	head := fmt.Sprintf("Came %d of %d", last8.Present, last8.Nights)
 	if source != AttendanceSourceRaids {
-		return head + " night" + plural(last8.Nights)
+		return fmt.Sprintf("%d of %d night%s", last8.Present, last8.Nights, plural(last8.Nights))
 	}
+	head := fmt.Sprintf("Came %d of %d", last8.Present, last8.Nights)
 	if row.Attendance30 == nil || row.Attendance30.Nights <= last8.Nights {
 		return head + " raids"
 	}

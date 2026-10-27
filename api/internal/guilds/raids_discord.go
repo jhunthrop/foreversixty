@@ -10,7 +10,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"slices"
@@ -66,7 +65,7 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 	in := notify.RaidPosted{
 		GuildName: g.Name, Title: v.Title, StartsAt: v.StartsAt,
 		RaidID:  v.ID,
-		RaidURL: strings.TrimRight(s.PublicBaseURL, "/") + fmt.Sprintf(raidPathFormat, GuildPagePath(g), v.ID),
+		RaidURL: strings.TrimRight(s.PublicBaseURL, "/") + RaidPagePath(GuildPagePath(g), v.ID),
 		Counts:  notify.RaidCounts(v.Counts),
 	}
 	if v.GuildTimezone != nil {
