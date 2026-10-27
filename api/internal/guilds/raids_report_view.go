@@ -146,7 +146,7 @@ func (s *Store) reportLoot(ctx context.Context, vc raidViewContext, raidID int64
 			return nil, fmt.Errorf("guilds: report loot: %w", err)
 		}
 		w.a.At = at.UTC().Format(time.RFC3339)
-		w.a.ItemName, w.a.Quality = lootItemFacts(w.a.ItemID)
+		w.a.ItemName, w.a.Quality, w.a.Icon = lootItemFacts(w.a.ItemID)
 		if w.by != nil {
 			awarders = append(awarders, *w.by)
 		}
@@ -177,14 +177,14 @@ func (s *Store) reportLoot(ctx context.Context, vc raidViewContext, raidID int64
 	return bosses, nil
 }
 
-// lootItemFacts is an award's item name and quality from the loot table.
-func lootItemFacts(itemID int) (string, int) {
+// lootItemFacts is an award's item name, quality and icon from the loot table (the Loot tab's).
+func lootItemFacts(itemID int) (string, int, string) {
 	for _, it := range onyxiaLoot {
 		if it.ItemID == itemID {
-			return it.Name, it.Quality
+			return it.Name, it.Quality, it.Icon
 		}
 	}
-	return fmt.Sprintf("Item %d", itemID), 0
+	return fmt.Sprintf("Item %d", itemID), 0, ""
 }
 
 func addLootAward(bosses []ReportLootBoss, encounterID int64, a ReportLootAward) []ReportLootBoss {
