@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 func testStore(t *testing.T) *Store {
@@ -97,6 +98,40 @@ func TestBindServerOneServerOneGuild(t *testing.T) {
 	}
 	if by, ok, _ := st.InstallByServer(ctx, "srv1"); !ok || by.GuildID != a {
 		t.Fatalf("by server = %+v ok=%v", by, ok)
+	}
+}
+
+// A new install takes the webhook's remembered "Post to Discord" box; a rebind of the same
+// server keeps the install's own.
+func TestBindServerCopiesTheWebhookPostDefault(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	ticked, bare := seedGuild(t, st.Pool, "Ticked"), seedGuild(t, st.Pool, "Bare")
+	webhookOf(t, st.Pool, ticked, u, &notify.FakePoster{})
+	if _, err := st.Pool.Exec(ctx, `update guild_notification_webhooks set post_default = true where guild_id = $1`, ticked); err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		guild  int64
+		server string
+		want   bool
+	}{{ticked, "srv-ticked", true}, {bare, "srv-bare", false}} {
+		if _, err := st.BindServer(ctx, c.guild, c.server, "S", u); err != nil {
+			t.Fatal(err)
+		}
+		if in, _, _ := st.InstallFor(ctx, c.guild); in.PostDefault != c.want {
+			t.Fatalf("guild %d: post_default = %v, want %v", c.guild, in.PostDefault, c.want)
+		}
+	}
+	if err := st.SetPostDefault(ctx, ticked, false); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := st.BindServer(ctx, ticked, "srv-ticked", "S", u); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ := st.InstallFor(ctx, ticked); in.PostDefault {
+		t.Fatal("a rebind copied the webhook's box over the install's own")
 	}
 }
 

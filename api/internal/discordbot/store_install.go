@@ -110,8 +110,11 @@ func (s *Store) bindOnce(ctx context.Context, guildID int64, serverID, serverNam
 	case !errors.Is(err, pgx.ErrNoRows):
 		return BindResult{}, fmt.Errorf("discordbot: bind read server: %w", err)
 	}
-	_, err = tx.Exec(ctx, `insert into guild_discord_installs (guild_id, server_id, server_name, installed_by)
-		values ($1, $2, $3, $4)`, guildID, serverID, serverName, by)
+	// A new install starts from the webhook's remembered box, so a guild that posted by default
+	// keeps doing so once the bot takes over the posts.
+	_, err = tx.Exec(ctx, `insert into guild_discord_installs (guild_id, server_id, server_name, installed_by, post_default)
+		values ($1, $2, $3, $4, coalesce((select post_default from guild_notification_webhooks where guild_id = $1), false))`,
+		guildID, serverID, serverName, by)
 	return s.commit(ctx, tx, BindResult{Outcome: BindInstalled}, err)
 }
 
