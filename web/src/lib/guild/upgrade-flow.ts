@@ -10,7 +10,14 @@ import { upgradeOutcome } from './billing-errors';
 /** Stripe may still be settling an unconfirmed change: the plan is read once more after this. */
 export const UNCONFIRMED_RECHECK_MS = 5000;
 
-export type UpgradeNotice = 'none' | 'moved' | 'unconfirmed';
+/** `unconfirmed-stale`: Stripe is confirming and the plan on screen could not be re-read. */
+export type UpgradeNotice = 'none' | 'moved' | 'unconfirmed' | 'unconfirmed-stale';
+export type FocusTarget = 'plan' | 'failure';
+
+/** A focus request is handled once: only a counter newer than the last handled one moves focus. */
+export function focusIsPending(request: number, lastHandled: number): boolean {
+  return request > lastHandled;
+}
 
 export interface UpgradeFlowState {
   confirming: boolean;
@@ -20,6 +27,8 @@ export interface UpgradeFlowState {
   notice: UpgradeNotice;
   /** Bumps each time the confirm closes onto a reloaded plan, so the view can move focus. */
   focusRequest: number;
+  /** Where that focus goes: the plan line, or the reload failure when the plan could not be read. */
+  focusTarget: FocusTarget;
 }
 
 export interface UpgradeFlowDeps {
@@ -43,6 +52,7 @@ export const INITIAL_UPGRADE_STATE: UpgradeFlowState = {
   error: '',
   notice: 'none',
   focusRequest: 0,
+  focusTarget: 'plan',
 };
 
 export interface UpgradeFlow {
@@ -76,8 +86,21 @@ export function createUpgradeFlow(deps: UpgradeFlowDeps): UpgradeFlow {
   async function reloadAndRefocus(patch: Partial<UpgradeFlowState>, token: number): Promise<void> {
     deps.invalidate();
     const ok = await deps.reload();
-    if (token === generation)
-      set({ ...patch, confirming: false, focusRequest: state.focusRequest + (ok ? 1 : 0) });
+    if (token !== generation) return;
+    const notice = patch.notice === 'unconfirmed' && !ok ? 'unconfirmed-stale' : patch.notice;
+    set({
+      ...patch,
+      ...(notice === undefined ? {} : { notice }),
+      confirming: false,
+      focusRequest: state.focusRequest + 1,
+      focusTarget: ok ? 'plan' : 'failure',
+    });
+  }
+
+  /** An answer that arrives after a newer action is never dropped: the plan is read again. */
+  async function reloadStale(): Promise<void> {
+    deps.invalidate();
+    await deps.reload();
   }
 
   function armRecheck(token: number): void {
@@ -112,7 +135,7 @@ export function createUpgradeFlow(deps: UpgradeFlowDeps): UpgradeFlow {
     const outcome = upgradeOutcome(thrown);
     if (outcome === 'reopen') {
       await open();
-      if (state.confirming) set({ error: copy.upgrade.previewExpired });
+      if (state.preview !== null) set({ error: copy.upgrade.previewExpired });
     } else if (outcome === 'declined') {
       set({ error: copy.upgrade.failed });
     } else if (outcome === 'generic') {
@@ -132,11 +155,17 @@ export function createUpgradeFlow(deps: UpgradeFlowDeps): UpgradeFlow {
     set({ committing: true, error: '', notice: 'none' });
     try {
       const view = await deps.upgrade(preview.proration_date);
-      if (token !== generation) return;
+      if (token !== generation) return await reloadStale();
       deps.adopt(view);
-      set({ confirming: false, notice: 'moved', focusRequest: state.focusRequest + 1 });
+      set({
+        confirming: false,
+        notice: 'moved',
+        focusRequest: state.focusRequest + 1,
+        focusTarget: 'plan',
+      });
     } catch (thrown) {
       if (token === generation) await failCommit(thrown, token);
+      else if (upgradeOutcome(thrown) !== 'declined') await reloadStale();
     } finally {
       if (token === generation) set({ committing: false });
     }
