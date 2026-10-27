@@ -16,6 +16,7 @@
     pickerHelper,
     durationLabel,
   } from '../../lib/guild/attendance-copy';
+  import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { MatchPicker, pickerKeyAction } from '../../lib/guild/match-picker.svelte';
   import { RAID_TEXT_BUTTON } from '../../lib/guild/raid-buttons';
@@ -50,6 +51,16 @@
   const ROW =
     'grid min-h-16 grid-cols-[24px_minmax(0,1fr)] items-start gap-x-3 gap-y-1 px-3 py-2 md:items-center md:min-h-14 md:grid-cols-[24px_minmax(0,1fr)_200px_140px_120px] focus-visible:outline-gold focus-visible:outline-2 focus-visible:-outline-offset-2';
   const rows: Record<string, HTMLElement | undefined> = {};
+  let heading = $state<HTMLElement | undefined>();
+
+  // Spec 3.2: once the list is ready, focus still on the heading moves to the chosen row (or the
+  // first free one), so the arrows work at once; focus the officer moved elsewhere stays put.
+  $effect(() => {
+    if (picker.load !== 'ready') return;
+    const stop = picker.selected ?? picker.freeIds[0];
+    if (stop === undefined || heading === undefined || document.activeElement !== heading) return;
+    rows[stop]?.focus();
+  });
   const SENTENCE_ID = (id: string): string => `raid-match-elsewhere-${id}`;
 
   function rowClass(row: MatchCandidate): string {
@@ -92,6 +103,7 @@
     id="raid-match-heading"
     class="section-title text-[15px]"
     tabindex="-1"
+    bind:this={heading}
     use:focusOnMount
     data-testid="raid-match-heading"
   >
@@ -159,12 +171,12 @@
             <!-- Outside the radio, so its link is not a control inside one. -->
             <p
               id={SENTENCE_ID(row.report_id)}
-              class="text-muted px-3 pb-2 pl-[48px] text-[12px] opacity-80"
+              class="text-muted px-3 pb-2 pl-[48px] text-[12px]"
               data-testid="raid-match-elsewhere"
             >
               {elsewhere.lead}<a
                 href={guildRaidHref(guildPath, row.matched_raid.id)}
-                class="text-text underline">{elsewhere.title}</a
+                class="text-text underline {PHONE_HIT_AREA}">{elsewhere.title}</a
               >{elsewhere.tail}
             </p>
           {/if}

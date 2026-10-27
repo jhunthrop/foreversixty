@@ -144,9 +144,11 @@ export function yourNightSentence(row: RaidAttendanceRow): string {
   if (row.outcome === 'absent') return yourNightText.stayedOut(state);
   if (!attending(row)) return yourNightText.joined(state, n, total);
   if (row.came_as !== null) return yourNightText.cameAs(state, row.name, row.came_as, n, total);
-  const minutes = lateMinutes(row);
-  if (row.outcome === 'late' && minutes !== null) {
-    return yourNightText.late(state, roleLabelOf(row), minutes, n, total);
+  if (row.outcome === 'late') {
+    const minutes = lateMinutes(row);
+    return minutes === null
+      ? yourNightText.lateUnknown(state, roleLabelOf(row), n, total)
+      : yourNightText.late(state, roleLabelOf(row), minutes, n, total);
   }
   return yourNightText.present(state, roleLabelOf(row), n, total);
 }

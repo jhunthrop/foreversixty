@@ -28,6 +28,10 @@ describe('yourNightText, verbatim from spec 6.1', () => {
     );
   });
 
+  it('degrades the late sentence when the first-seen minutes are unknown', () => {
+    expect(yourNightText.lateUnknown('Late', 'Healer', 9, 11)).toBe('Signed Late as Healer, 9 of 11 pulls.');
+  });
+
   it('labels the overflow line', () => {
     expect(discordText.more(15)).toBe('+15 more');
   });

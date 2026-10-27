@@ -6,6 +6,7 @@
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { attendanceCopy, cameRatio, endedHint, nightFacts } from '../../lib/guild/attendance-copy';
+  import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { MatchPicker, PLAN_REQUIRED, type MatchOutcome } from '../../lib/guild/match-picker.svelte';
   import { raidEndsAt } from '../../lib/guild/planned-row';
@@ -18,6 +19,7 @@
 
   const UPLOAD_HREF = '/upload';
   const MATCH_A_LOG_ID = 'raid-match-a-log';
+  const OPEN_NIGHT_ID = 'raid-open-night';
 
   let {
     raid,
@@ -60,12 +62,24 @@
   const picking = $derived(picker !== null);
   /** `Not saved. This guild's officer tools have ended.`, where the picker was. */
   let refusal = $state<string | null>(null);
+  let pickerHost = $state<HTMLElement | undefined>();
 
   // The picker is for officers with tools and a raid still without a log: it closes when either
-  // stops being true (the plan ended, or the poll matched the log from elsewhere).
+  // stops being true (the plan ended, or the poll matched the log from elsewhere). A poll match
+  // under the officer's focus hands it to the match line's link, never to the page body.
   $effect(() => {
-    if (picker !== null && (readOnly || raid.match !== null)) picker = null;
+    if (picker === null) return;
+    const matchedElsewhere = raid.match !== null;
+    if (!readOnly && !matchedElsewhere) return;
+    const hadFocus = pickerHost?.contains(document.activeElement) ?? false;
+    picker = null;
+    if (matchedElsewhere && hadFocus) void focusAfterTick(OPEN_NIGHT_ID);
   });
+
+  async function focusAfterTick(id: string): Promise<void> {
+    await tick();
+    document.getElementById(id)?.focus();
+  }
 
   function openPicker(): void {
     refusal = null;
@@ -83,23 +97,18 @@
 
   async function closePicker(): Promise<void> {
     picker = null;
-    await tick();
-    document.getElementById(MATCH_A_LOG_ID)?.focus();
+    await focusAfterTick(MATCH_A_LOG_ID);
   }
 
   /** A matched log swaps the ended line for the match line; focus goes to its link. */
   async function matched(): Promise<void> {
     picker = null;
-    await tick();
-    document.getElementById('raid-open-night')?.focus();
+    await focusAfterTick(OPEN_NIGHT_ID);
   }
 
   async function cleared(): Promise<MatchOutcome> {
     const outcome = await onClear();
-    if (outcome.ok) {
-      await tick();
-      document.getElementById(MATCH_A_LOG_ID)?.focus();
-    }
+    if (outcome.ok) await focusAfterTick(MATCH_A_LOG_ID);
     return outcome;
   }
 </script>
@@ -140,7 +149,7 @@
       {attendanceCopy.ended.noLog}<span class="text-muted"
         >{#if hint.kind === 'soon'}{hint.text}{:else}{hint.lead}<a
             href={UPLOAD_HREF}
-            class="text-text underline">{hint.link}</a
+            class="text-text underline {PHONE_HIT_AREA}">{hint.link}</a
           >{hint.tail}{/if}</span
       >
     </p>
@@ -170,14 +179,16 @@
 {/if}
 
 {#if officer && picker !== null}
-  <RaidMatchPicker
-    {picker}
-    zoneName={raid.zone_name}
-    {guildPath}
-    {viewerTimezone}
-    {guildTimezone}
-    {locale}
-    onMatched={() => void matched()}
-    onCancel={() => void closePicker()}
-  />
+  <div class="contents" bind:this={pickerHost}>
+    <RaidMatchPicker
+      {picker}
+      zoneName={raid.zone_name}
+      {guildPath}
+      {viewerTimezone}
+      {guildTimezone}
+      {locale}
+      onMatched={() => void matched()}
+      onCancel={() => void closePicker()}
+    />
+  </div>
 {/if}

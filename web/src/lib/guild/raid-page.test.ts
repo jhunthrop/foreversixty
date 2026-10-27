@@ -8,16 +8,21 @@ import {
   raidCount,
   raidPageFlags,
   raidWhen,
+  rememberDone,
   rememberStripRows,
+  reservedDone,
   stripReserveRows,
 } from './raid-page';
 import { RAID_ROWS_KEY } from './reserve-keys';
 
-function memoryStorage(seed: Record<string, string> = {}): Pick<Storage, 'getItem' | 'setItem'> {
+function memoryStorage(
+  seed: Record<string, string> = {},
+): Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> {
   const data = new Map(Object.entries(seed));
   return {
     getItem: (key) => data.get(key) ?? null,
     setItem: (key, value) => void data.set(key, value),
+    removeItem: (key) => void data.delete(key),
   };
 }
 
@@ -120,5 +125,33 @@ describe('strip reserve rows', () => {
       },
     };
     expect(() => rememberStripRows(plannedRaid(), throwing)).not.toThrow();
+  });
+});
+
+describe('done reserve', () => {
+  it('remembers a done raid by id and forgets it once the raid is not done', () => {
+    const storage = memoryStorage();
+    expect(reservedDone('7', storage)).toBe(false);
+    rememberDone(plannedRaid({ status: 'done' }), storage);
+    expect(reservedDone('7', storage)).toBe(true);
+    expect(reservedDone('8', storage)).toBe(false);
+    rememberDone(plannedRaid(), storage);
+    expect(reservedDone('7', storage)).toBe(false);
+  });
+
+  it('survives a store that throws', () => {
+    const throwing = {
+      getItem: (): string | null => {
+        throw new Error('blocked');
+      },
+      setItem: (): void => {
+        throw new Error('quota');
+      },
+      removeItem: (): void => {
+        throw new Error('blocked');
+      },
+    };
+    expect(reservedDone('7', throwing)).toBe(false);
+    expect(() => rememberDone(plannedRaid({ status: 'done' }), throwing)).not.toThrow();
   });
 });

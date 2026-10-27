@@ -50,7 +50,7 @@ export interface RaidPageDeps {
   loadZones: (guildId: number) => Promise<GuildZoneView[]>;
   isVisible: () => boolean;
   now: () => Date;
-  storage: Pick<Storage, 'getItem' | 'setItem'> | null;
+  storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> | null;
 }
 
 /** R1: only a verified member reads the raid; everyone else gets the not-visible page. */

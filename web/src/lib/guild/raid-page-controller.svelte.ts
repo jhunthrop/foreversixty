@@ -30,7 +30,7 @@ import type {
   RaidPageSeed,
   RaidRoute,
 } from './raid-page-types';
-import { POLL_FAILURES_TO_PAUSE, RAID_POLL_MS, pollOpen, rememberStripRows } from './raid-page';
+import { POLL_FAILURES_TO_PAUSE, RAID_POLL_MS, pollOpen, rememberDone, rememberStripRows } from './raid-page';
 import type { RosterRow } from './raid-roster';
 import type { RaidInput, RaidStatusAction } from './raids-api';
 import { submitRefusal } from './raids-tab-controller';
@@ -190,6 +190,7 @@ export class RaidPageController {
   private applyRaid(raid: GuildRaidView): void {
     this.raid = raid;
     rememberStripRows(raid, this.deps.storage);
+    rememberDone(raid, this.deps.storage);
   }
 
   /** A polled raid replaces the page's; one that has just turned `done` is announced. */
@@ -289,10 +290,10 @@ export class RaidPageController {
       this.applyRaid(result.raid);
       return true;
     } catch (thrown) {
-      const ended = this.refusalLine(thrown, raidCopy.races.officerToolsEnded, raidCopy.officerRow.failed);
+      const ended = this.planRefused(thrown);
       this.line = {
-        control: ended === raidCopy.races.officerToolsEnded ? `roster:${row.character_key}` : 'roster',
-        message: ended,
+        control: ended ? `roster:${row.character_key}` : 'roster',
+        message: ended ? raidCopy.races.officerToolsEnded : raidCopy.officerRow.failed,
       };
       return false;
     } finally {

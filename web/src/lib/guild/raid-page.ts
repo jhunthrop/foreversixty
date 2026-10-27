@@ -6,7 +6,7 @@ import type { GuildRaidView } from './api';
 import { countLine, countRatio, countdown, guildTimeLabel, roleBreakdown } from './raid-copy';
 import { clockText, offsetsDiffer } from './raid-time';
 import { chipStatus, raidEndsAt, type RaidChipStatus } from './planned-row';
-import { RAID_ROWS_KEY } from './reserve-keys';
+import { RAID_DONE_KEY_PREFIX, RAID_ROWS_KEY } from './reserve-keys';
 
 /** Spec 4 "Poll": the raid page asks again every 10 s. */
 export const RAID_POLL_MS = 10_000;
@@ -120,6 +120,30 @@ export function stripReserveRows(storage: Pick<Storage, 'getItem'> | null): numb
 export function rememberStripRows(raid: GuildRaidView, storage: Pick<Storage, 'setItem'> | null): void {
   try {
     storage?.setItem(RAID_ROWS_KEY, String(Math.min(raid.viewer.characters.length, RESERVE_MAX_ROWS)));
+  } catch {
+    // A blocked store only costs the next visit its warm reserve.
+  }
+}
+
+/** Spec 4 "Page states": whether this raid was last drawn `done`, so its loading reserves the
+ *  night line, the match line and the report instead of the sign-up strip. */
+export function reservedDone(raidId: string, storage: Pick<Storage, 'getItem'> | null): boolean {
+  try {
+    return storage?.getItem(`${RAID_DONE_KEY_PREFIX}${raidId}`) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/** Stores whether the raid is `done` after a load; any other status forgets it. */
+export function rememberDone(
+  raid: GuildRaidView,
+  storage: Pick<Storage, 'setItem' | 'removeItem'> | null,
+): void {
+  const key = `${RAID_DONE_KEY_PREFIX}${raid.id}`;
+  try {
+    if (raid.status === 'done') storage?.setItem(key, '1');
+    else storage?.removeItem(key);
   } catch {
     // A blocked store only costs the next visit its warm reserve.
   }
