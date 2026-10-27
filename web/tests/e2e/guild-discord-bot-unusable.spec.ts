@@ -26,6 +26,8 @@ const DESKTOP = { width: 1440, height: 1000 };
 const MIN_TARGET = 44;
 /** A.2's caps, phone then desktop. */
 const CAP = [320, 240] as const;
+/** The reserves of 2b and state 2 differ by design (320 / 330 and 240 / 250). */
+const RESERVE_DELTA = 10;
 const ALL_PERMISSIONS: GuildChannelPermission[] = ['View Channel', 'Send Messages', 'Embed Links'];
 const DELETED: GuildChannelUnusable = { reason: 'deleted', missing: [] };
 const permissions = (missing: GuildChannelPermission[]): GuildChannelUnusable => ({
@@ -52,7 +54,7 @@ async function expectNoDestination(page: Page): Promise<void> {
 }
 
 test.describe('11 · deleted', () => {
-  test('name known, with a webhook', async ({ page }) => {
+  test('name known, without a webhook', async ({ page }) => {
     await open(page, { discord: unusable(DELETED, {}) });
     await expect(id(page, 'discord-notice')).toContainText(
       guildBotCopy.channelUnusable.title('deleted', 'raid-signups', 'Olympus Discord').text,
@@ -66,7 +68,7 @@ test.describe('11 · deleted', () => {
     await expectNoDestination(page);
   });
 
-  test('name unknown, with a webhook; the stop sentence without', async ({ page }) => {
+  test('name unknown: the webhook sentence with a webhook, the stop sentence without', async ({ page }) => {
     await open(page, {
       discord: botSettings({ channel_unusable: DELETED, channel_name: null }, WITH_WEBHOOK),
     });
@@ -184,6 +186,17 @@ test.describe('14 · fix by picking', () => {
   });
 });
 
+test.describe('14b · Escape on the state 2 Change channel picker', () => {
+  test('Escape cancels it and focus returns to Change channel', async ({ page }) => {
+    await open(page, { discord: botSettings({}) });
+    await id(page, 'bot-change').click();
+    await expect(id(page, 'bot-channel')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(id(page, 'bot-destination')).toBeVisible();
+    await expect(id(page, 'bot-change')).toBeFocused();
+  });
+});
+
 test.describe('15 · fix by saving the same channel', () => {
   test('still unusable: the 422 says so, focused, and the list is fresh; fixed: the 200 clears it', async ({
     page,
@@ -235,8 +248,7 @@ test.describe('17 · axe, 44 px targets, caps and layout', () => {
             .locator('button, a[data-testid="bot-open"]')
             .evaluateAll((nodes) =>
               nodes.map((node) => {
-                const box = node.getBoundingClientRect();
-                return node.tagName === 'A' ? box.height + 24 : box.height;
+                return node.getBoundingClientRect().height;
               }),
             );
           for (const h of heights) expect(h).toBeGreaterThanOrEqual(MIN_TARGET);
@@ -247,13 +259,20 @@ test.describe('17 · axe, 44 px targets, caps and layout', () => {
 
   test('no layout shift between the notice and state 2', async ({ page }) => {
     await open(page, { discord: unusable(DELETED) });
-    const top = (): Promise<number> =>
-      section(page).evaluate((node) => node.getBoundingClientRect().top + window.scrollY);
-    const before = await top();
+    const tops = (): Promise<{ section: number; next: number; height: number }> =>
+      section(page).evaluate((node) => {
+        const box = node.getBoundingClientRect();
+        const next = node.nextElementSibling?.getBoundingClientRect().top ?? box.bottom;
+        return { section: box.top + window.scrollY, next: next + window.scrollY, height: box.height };
+      });
+    const before = await tops();
     await id(page, 'bot-choose-channel').click();
     await id(page, 'bot-channel').selectOption(RAID_CHANNEL_ID);
     await id(page, 'bot-channel-save').click();
     await expect(id(page, 'bot-test')).toBeFocused();
-    expect(await top()).toBe(before);
+    const after = await tops();
+    expect(after.section).toBe(before.section);
+    expect(Math.abs(after.height - before.height)).toBeLessThanOrEqual(RESERVE_DELTA);
+    expect(Math.abs(after.next - before.next)).toBeLessThanOrEqual(RESERVE_DELTA);
   });
 });

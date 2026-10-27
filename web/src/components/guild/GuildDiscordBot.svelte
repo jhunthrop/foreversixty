@@ -28,6 +28,7 @@
     installHref,
     changing,
     focusSelect,
+    onSaving,
     readOnly,
     frozen,
     gateId,
@@ -51,6 +52,8 @@
     installHref: string;
     changing: boolean;
     focusSelect: boolean;
+    /** The picker's save in flight: Escape must not unmount it and lose a refusal. */
+    onSaving: (saving: boolean) => void;
     readOnly: boolean;
     frozen: boolean;
     gateId: string | undefined;
@@ -90,6 +93,7 @@
     removing={busy === 'remove'}
     {focusSelect}
     unusable={bot.channel_unusable}
+    {onSaving}
     {onStatus}
     {onSaved}
     onCancel={onCancelChange}
