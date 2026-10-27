@@ -12,6 +12,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/billingmail"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
@@ -19,11 +20,12 @@ import (
 var (
 	ErrNotPayer           = errors.New("seats: only the guild's payer can do that")
 	ErrNoPlan             = errors.New("seats: the guild has no plan with seats")
-	ErrNoSuchSlot         = errors.New("seats: no such seat")
+	ErrNoSuchSlot         = errors.New("seats: that seat is outside the plan's seat count")
 	ErrNotMember          = errors.New("seats: that account is not a verified member")
 	ErrTaken              = errors.New("seats: the seat or the account already holds a seat")
 	ErrNoOffer            = errors.New("seats: no offer to act on")
 	ErrNotHeld            = errors.New("seats: the seat has no holder to move")
+	ErrOfferPending       = errors.New("seats: an offer is waiting on that seat; withdraw it first")
 	ErrClaimContested     = errors.New("seats: the guild's claim is contested")
 	ErrBillingUnavailable = errors.New("seats: billing is not configured")
 )
@@ -35,10 +37,12 @@ func (e ErrLocked) Error() string {
 	return "seats: the seat moves again on " + e.MovableAt.Format(time.RFC3339)
 }
 
-// Canceller stops a Stripe subscription at the end of its period.
-// billing.Gateway satisfies it.
+// Canceller stops a Stripe subscription at the end of its period, and
+// resumes it. billing.Gateway satisfies it.
 type Canceller interface {
 	CancelSubscriptionAtPeriodEnd(ctx context.Context, id string) error
+	// ResumeSubscription undoes the cancel when accepting a seat fails after it.
+	ResumeSubscription(ctx context.Context, id string) error
 }
 
 // FrozenClaimant is guilds.Store's freeze hook; nil makes the check a no-op.
@@ -81,10 +85,12 @@ func wrap(op string, err error) error {
 	return fmt.Errorf("seats: %s: %w", op, err)
 }
 
+// send mails after commit; a client that has gone away must not cancel it.
 func (s *Service) send(ctx context.Context, msgs []mail.Message) {
 	if s.Mailer == nil {
 		return
 	}
+	ctx = context.WithoutCancel(ctx)
 	for _, m := range msgs {
 		if err := s.Mailer.Send(ctx, m); err != nil {
 			s.logger().Error("seats", "op", "send email", "subject", m.Subject, "err", err)
@@ -139,24 +145,25 @@ func (s *Service) checkSlot(tier string, slot int) error {
 	return nil
 }
 
-// payingRow is the recipient's own live Stripe Premium, nil when they pay for none.
-type payingRow struct {
+// ownPremium is what a recipient pays for their own Premium.
+type ownPremium struct {
 	endsAt time.Time
 }
 
-func (s *Service) recipientPays(ctx context.Context, userID int64, now time.Time) (*payingRow, error) {
+// recipientPays is nil when the recipient pays for no Premium of their own.
+func (s *Service) recipientPays(ctx context.Context, userID int64, now time.Time) (*ownPremium, error) {
 	b, err := s.Store.Entitlements.PersonalBilling(ctx, userID)
 	if err != nil {
 		return nil, wrap("recipient billing", err)
 	}
-	if b == nil || b.Source != "stripe" || !b.Active {
+	if b == nil || !paysPremium(b.Source, b.Status) || !b.Active {
 		return nil, nil
 	}
 	ends := now
 	if b.CurrentPeriodEnd != nil {
 		ends = *b.CurrentPeriodEnd
 	}
-	return &payingRow{endsAt: ends}, nil
+	return &ownPremium{endsAt: ends}, nil
 }
 
 func loadSeat(ctx context.Context, tx pgx.Tx, guildID int64, slot int) (seatRow, error) {
@@ -168,8 +175,8 @@ func loadSeat(ctx context.Context, tx pgx.Tx, guildID int64, slot int) (seatRow,
 	return r, wrap("load seat", err)
 }
 
-// Give hands a slot to a member: a payer is offered it, anyone else holds
-// it at once.
+// Give hands an empty slot to a member: a payer is offered it, anyone else
+// holds it at once.
 func (s *Service) Give(ctx context.Context, guildID int64, slot int, actorID, toUserID int64) (Seat, error) {
 	tier, err := s.authorize(ctx, guildID, actorID)
 	if err != nil {
@@ -184,6 +191,9 @@ func (s *Service) Give(ctx context.Context, guildID int64, slot int, actorID, to
 		return Seat{}, err
 	}
 	return s.inLock(ctx, guildID, slot, now, func(tx pgx.Tx, row seatRow) ([]mail.Message, error) {
+		if row.pendingID != nil {
+			return nil, ErrOfferPending
+		}
 		if row.state != "" && row.state != StateEmpty {
 			return nil, ErrTaken
 		}
@@ -191,8 +201,9 @@ func (s *Service) Give(ctx context.Context, guildID int64, slot int, actorID, to
 	})
 }
 
-// Move releases a held seat's holder and gives it to someone else, once per
-// lock period.
+// Move gives a held seat to someone else, once per lock period. A
+// non-paying recipient takes it at once; a paying one is offered it and the
+// holder keeps it until they accept.
 func (s *Service) Move(ctx context.Context, guildID int64, slot int, actorID, toUserID int64) (Seat, error) {
 	tier, err := s.authorize(ctx, guildID, actorID)
 	if err != nil {
@@ -210,17 +221,23 @@ func (s *Service) Move(ctx context.Context, guildID int64, slot int, actorID, to
 		if row.state != StateHeld && row.state != StateAccepted {
 			return nil, ErrNotHeld
 		}
+		if row.pendingID != nil {
+			return nil, ErrOfferPending
+		}
 		if row.movableAt != nil && row.movableAt.After(now) {
 			return nil, ErrLocked{MovableAt: *row.movableAt}
 		}
 		if row.holderID != nil && *row.holderID == toUserID {
 			return nil, ErrTaken
 		}
+		if pays != nil {
+			return s.offerMove(ctx, tx, guildID, row, actorID, toUserID, pays, now)
+		}
 		removed, err := s.release(ctx, tx, guildID, row, now)
 		if err != nil {
 			return nil, err
 		}
-		msgs, err := s.assign(ctx, tx, guildID, slot, actorID, toUserID, pays, now)
+		msgs, err := s.assign(ctx, tx, guildID, slot, actorID, toUserID, nil, now)
 		if removed != nil {
 			msgs = append(msgs, *removed)
 		}
@@ -228,7 +245,39 @@ func (s *Service) Move(ctx context.Context, guildID int64, slot int, actorID, to
 	})
 }
 
-// Withdraw takes back an offer that was not yet answered.
+// offerMove records toUserID as the seat's offeree, leaving the holder in place.
+func (s *Service) offerMove(ctx context.Context, tx pgx.Tx, guildID int64, row seatRow, actorID, toUserID int64,
+	pays *ownPremium, now time.Time) ([]mail.Message, error) {
+	member, err := isVerifiedMember(ctx, tx, guildID, toUserID)
+	if err != nil {
+		return nil, err
+	}
+	if !member {
+		return nil, ErrNotMember
+	}
+	if _, err := tx.Exec(ctx, `update premium_seats set pending_user_id = $3, pending_by = $4, pending_offered_at = $5
+		where guild_id = $1 and slot = $2`, guildID, row.slot, toUserID, actorID, now); err != nil {
+		return nil, mapUnique("offer move", err)
+	}
+	msg, err := s.assignedEmail(ctx, tx, guildID, actorID, toUserID, pays)
+	if err != nil {
+		return nil, err
+	}
+	return []mail.Message{msg}, nil
+}
+
+const pgUniqueViolation = "23505"
+
+func mapUnique(op string, err error) error {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == pgUniqueViolation {
+		return ErrTaken
+	}
+	return wrap(op, err)
+}
+
+// Withdraw takes back an offer that was not yet answered: a seat offered to
+// its first holder empties, a move offer clears and the holder stays.
 func (s *Service) Withdraw(ctx context.Context, guildID int64, slot int, actorID int64) (Seat, error) {
 	tier, err := s.authorize(ctx, guildID, actorID)
 	if err != nil {
@@ -238,12 +287,21 @@ func (s *Service) Withdraw(ctx context.Context, guildID int64, slot int, actorID
 		return Seat{}, err
 	}
 	return s.inLock(ctx, guildID, slot, s.now(), func(tx pgx.Tx, row seatRow) ([]mail.Message, error) {
-		if row.state != StateOffered {
-			return nil, ErrNoOffer
+		switch {
+		case row.pendingID != nil:
+			return nil, wrap("withdraw move", clearPending(ctx, tx, guildID, slot))
+		case row.state == StateOffered:
+			_, err := tx.Exec(ctx, clearSeatSQL, guildID, slot, nil, nil)
+			return nil, wrap("withdraw", err)
 		}
-		_, err := tx.Exec(ctx, clearSeatSQL, guildID, slot, nil, nil)
-		return nil, wrap("withdraw", err)
+		return nil, ErrNoOffer
 	})
+}
+
+func clearPending(ctx context.Context, tx pgx.Tx, guildID int64, slot int) error {
+	_, err := tx.Exec(ctx, `update premium_seats set pending_user_id = null, pending_by = null,
+		pending_offered_at = null where guild_id = $1 and slot = $2`, guildID, slot)
+	return err
 }
 
 // inLock runs fn on the slot's row under the guild lock, sends the emails fn
@@ -277,17 +335,17 @@ func (s *Service) inLock(ctx context.Context, guildID int64, slot int, now time.
 // assign writes the slot for toUserID: offered to a payer, held by anyone
 // else. It returns the email to send after commit.
 func (s *Service) assign(ctx context.Context, tx pgx.Tx, guildID int64, slot int, actorID, toUserID int64,
-	pays *payingRow, now time.Time) ([]mail.Message, error) {
-	var member bool
-	if err := tx.QueryRow(ctx, `select exists (select 1 from guild_members
-		where guild_id = $1 and user_id = $2 and verified_at is not null)`, guildID, toUserID).Scan(&member); err != nil {
-		return nil, wrap("recipient membership", err)
+	pays *ownPremium, now time.Time) ([]mail.Message, error) {
+	member, err := isVerifiedMember(ctx, tx, guildID, toUserID)
+	if err != nil {
+		return nil, err
 	}
 	if !member {
 		return nil, ErrNotMember
 	}
-	state, offeredAt, givenAt, movableAt := StateHeld, (*time.Time)(nil), &now, now.Add(catalog.SeatMoveLock)
-	var lock *time.Time = &movableAt
+	state, offeredAt, givenAt := StateHeld, (*time.Time)(nil), &now
+	movableAt := now.Add(catalog.SeatMoveLock)
+	lock := &movableAt
 	if pays != nil {
 		state, offeredAt, givenAt, lock = StateOffered, &now, nil, nil
 	}
@@ -299,11 +357,7 @@ func (s *Service) assign(ctx context.Context, tx pgx.Tx, guildID int64, slot int
 		  given_at = excluded.given_at, offered_at = excluded.offered_at, movable_at = excluded.movable_at,
 		  starts_at = null, holder_gave_up_lookup_key = null, returned_name = null, returned_at = null`,
 		guildID, slot, state, toUserID, actorID, givenAt, offeredAt, lock); err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-			return nil, ErrTaken
-		}
-		return nil, wrap("assign seat", err)
+		return nil, mapUnique("assign seat", err)
 	}
 	msg, err := s.assignedEmail(ctx, tx, guildID, actorID, toUserID, pays)
 	if err != nil {
@@ -312,11 +366,10 @@ func (s *Service) assign(ctx context.Context, tx pgx.Tx, guildID int64, slot int
 	return []mail.Message{msg}, nil
 }
 
-func (s *Service) assignedEmail(ctx context.Context, tx pgx.Tx, guildID, actorID, toUserID int64, pays *payingRow) (mail.Message, error) {
-	var guildName, to string
-	if err := tx.QueryRow(ctx, `select g.name, u.email from guilds g, users u where g.id = $1 and u.id = $2`,
-		guildID, toUserID).Scan(&guildName, &to); err != nil {
-		return mail.Message{}, wrap("email parties", err)
+func (s *Service) assignedEmail(ctx context.Context, tx pgx.Tx, guildID, actorID, toUserID int64, pays *ownPremium) (mail.Message, error) {
+	guildName, to, err := emailParties(ctx, tx, guildID, toUserID)
+	if err != nil {
+		return mail.Message{}, err
 	}
 	from, err := characterOf(ctx, tx, guildID, actorID)
 	if err != nil {
@@ -334,8 +387,15 @@ func (s *Service) assignedEmail(ctx context.Context, tx pgx.Tx, guildID, actorID
 		To: to, Guild: guildName, From: fromName, AccountURL: s.accountURL()}), nil
 }
 
-// Accept takes the seat offered to userID. When they pay for their own
-// Premium it is set to end with its period and the seat starts then.
+// offerRowSQL finds the seat userID has been offered: as its first holder, or
+// as the offeree of a move.
+const offerRowSQL = `select ` + seatColumns + ` from premium_seats
+	where guild_id = $1 and ((holder_user_id = $2 and state = 'offered') or pending_user_id = $2)
+	order by slot limit 1 for update`
+
+// Accept takes the seat offered to userID. A member who pays for their own
+// Premium has it set to end with its period and the seat starts then; the
+// Stripe call is the last step before commit, undone if the commit fails.
 func (s *Service) Accept(ctx context.Context, guildID, userID int64) error {
 	if err := s.frozen(ctx, guildID, userID); err != nil {
 		return err
@@ -344,68 +404,132 @@ func (s *Service) Accept(ctx context.Context, guildID, userID int64) error {
 	if err != nil {
 		return wrap("own billing", err)
 	}
-	paying := b != nil && b.Source == "stripe" && b.Active
-	if paying && s.Canceller == nil {
-		return ErrBillingUnavailable
-	}
+	paying := b != nil && paysPremium(b.Source, b.Status) && b.Active
 	now := s.now()
-	return s.Store.withGuildLock(ctx, guildID, func(tx pgx.Tx) error {
-		row, err := scanSeatRow(tx.QueryRow(ctx, `select `+seatColumns+` from premium_seats
-			where guild_id = $1 and holder_user_id = $2 for update`, guildID, userID))
-		if errors.Is(err, pgx.ErrNoRows) || (err == nil && row.state != StateOffered) {
-			return ErrNoOffer
+	var outbox []mail.Message
+	err = s.Store.withGuildLockStep(ctx, guildID, func(tx pgx.Tx) (*externalStep, error) {
+		row, err := scanSeatRow(tx.QueryRow(ctx, offerRowSQL, guildID, userID))
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrNoOffer
 		}
 		if err != nil {
-			return wrap("load offer", err)
+			return nil, wrap("load offer", err)
 		}
-		startsAt, gaveUp := now, (*string)(nil)
-		if paying {
-			if startsAt, gaveUp, err = s.stepDown(ctx, b.StripeSubscriptionID, b.CancelAtPeriodEnd, b.CurrentPeriodEnd, b.PriceLookupKey, now); err != nil {
-				return err
-			}
+		if err := s.offerStillStands(ctx, tx, guildID, userID, row); err != nil {
+			return nil, err
 		}
-		_, err = tx.Exec(ctx, `update premium_seats set state = 'accepted', starts_at = $3, given_at = $4,
-			movable_at = $5, holder_gave_up_lookup_key = $6 where guild_id = $1 and slot = $2`,
-			guildID, row.slot, startsAt, now, now.Add(catalog.SeatMoveLock), gaveUp)
-		return wrap("accept seat", err)
+		if paying && s.Canceller == nil {
+			return nil, ErrBillingUnavailable
+		}
+		return s.takeSeat(ctx, tx, guildID, userID, row, b, paying, now, &outbox)
 	})
+	if err != nil {
+		return err
+	}
+	s.send(ctx, outbox)
+	return nil
 }
 
-// stepDown ends the holder's own subscription at its period end and
-// returns when the seat starts and which price they gave up.
-func (s *Service) stepDown(ctx context.Context, subscriptionID string, alreadyCanceling bool,
-	periodEnd *time.Time, lookupKey string, now time.Time) (time.Time, *string, error) {
-	if !alreadyCanceling {
-		if err := s.Canceller.CancelSubscriptionAtPeriodEnd(ctx, subscriptionID); err != nil {
-			return time.Time{}, nil, wrap("cancel own subscription", err)
+// offerStillStands re-checks, under the lock and before anything outside the
+// database is touched, that the plan still has the slot and the offeree is
+// still a verified member.
+func (s *Service) offerStillStands(ctx context.Context, tx pgx.Tx, guildID, userID int64, row seatRow) error {
+	tier, err := s.Store.activeTier(ctx, guildID)
+	if err != nil {
+		return err
+	}
+	if catalog.SeatsForTier(tier) == 0 {
+		return ErrNoPlan
+	}
+	if err := s.checkSlot(tier, row.slot); err != nil {
+		return err
+	}
+	member, err := isVerifiedMember(ctx, tx, guildID, userID)
+	if err != nil {
+		return err
+	}
+	if !member {
+		return ErrNotMember
+	}
+	return nil
+}
+
+// takeSeat writes the acceptance. For a move offer the old holder is
+// released first. It returns the Stripe cancel as the commit's last step.
+func (s *Service) takeSeat(ctx context.Context, tx pgx.Tx, guildID, userID int64, row seatRow, b *entitlements.Billing,
+	paying bool, now time.Time, outbox *[]mail.Message) (*externalStep, error) {
+	giver := row.givenBy
+	if row.pendingID != nil {
+		giver = row.pendingBy
+		removed, err := s.release(ctx, tx, guildID, row, now)
+		if err != nil {
+			return nil, err
+		}
+		if removed != nil {
+			*outbox = append(*outbox, *removed)
 		}
 	}
-	startsAt := now
-	if periodEnd != nil {
-		startsAt = *periodEnd
+	startsAt, cancelNow, gaveUp := now, false, (*string)(nil)
+	if paying {
+		cancelNow = !b.CancelAtPeriodEnd
+		if b.CurrentPeriodEnd != nil {
+			startsAt = *b.CurrentPeriodEnd
+		}
+		if cancelNow && b.PriceLookupKey != "" {
+			gaveUp = &b.PriceLookupKey
+		}
 	}
-	var key *string
-	if lookupKey != "" {
-		key = &lookupKey
+	lockFrom := startsAt
+	if now.After(lockFrom) {
+		lockFrom = now
 	}
-	return startsAt, key, nil
+	if _, err := tx.Exec(ctx, `update premium_seats set state = 'accepted', holder_user_id = $3, given_by = $4,
+		starts_at = $5, given_at = $6, offered_at = null, movable_at = $7, holder_gave_up_lookup_key = $8,
+		returned_name = null, returned_at = null, pending_user_id = null, pending_by = null, pending_offered_at = null
+		where guild_id = $1 and slot = $2`,
+		guildID, row.slot, userID, giver, startsAt, now, lockFrom.Add(catalog.SeatMoveLock), gaveUp); err != nil {
+		return nil, mapUnique("accept seat", err)
+	}
+	if !cancelNow {
+		return nil, nil
+	}
+	return s.cancelStep(b.StripeSubscriptionID), nil
 }
 
-// Decline turns down the seat offered to userID.
+func (s *Service) cancelStep(subscriptionID string) *externalStep {
+	return &externalStep{
+		do: func(ctx context.Context) error {
+			return wrap("cancel own subscription", s.Canceller.CancelSubscriptionAtPeriodEnd(ctx, subscriptionID))
+		},
+		undo: func(ctx context.Context) {
+			if err := s.Canceller.ResumeSubscription(ctx, subscriptionID); err != nil {
+				s.logger().Error("seats", "op", "resume after failed accept", "subscription", subscriptionID, "err", err)
+				return
+			}
+			s.logger().Error("seats", "op", "accept commit failed", "subscription", subscriptionID,
+				"effect", "own subscription resumed")
+		},
+	}
+}
+
+// Decline turns down the seat offered to userID: a first offer empties the
+// slot, a move offer clears and the holder stays.
 func (s *Service) Decline(ctx context.Context, guildID, userID int64) error {
 	if err := s.frozen(ctx, guildID, userID); err != nil {
 		return err
 	}
 	return s.Store.withGuildLock(ctx, guildID, func(tx pgx.Tx) error {
-		tag, err := tx.Exec(ctx, `update premium_seats set state = 'empty', holder_user_id = null, given_by = null,
-			given_at = null, offered_at = null, starts_at = null, movable_at = null, holder_gave_up_lookup_key = null
-			where guild_id = $1 and holder_user_id = $2 and state = 'offered'`, guildID, userID)
-		if err != nil {
-			return wrap("decline", err)
-		}
-		if tag.RowsAffected() == 0 {
+		row, err := scanSeatRow(tx.QueryRow(ctx, offerRowSQL, guildID, userID))
+		if errors.Is(err, pgx.ErrNoRows) {
 			return ErrNoOffer
 		}
-		return nil
+		if err != nil {
+			return wrap("load offer", err)
+		}
+		if row.pendingID != nil {
+			return wrap("decline move", clearPending(ctx, tx, guildID, row.slot))
+		}
+		_, err = tx.Exec(ctx, clearSeatSQL, guildID, row.slot, nil, nil)
+		return wrap("decline", err)
 	})
 }

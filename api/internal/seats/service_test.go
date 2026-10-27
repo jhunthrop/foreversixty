@@ -3,6 +3,7 @@ package seats
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 	"testing"
@@ -120,7 +121,9 @@ func TestMove_OldHolderKeepsUntilMove(t *testing.T) {
 	if _, err := h.svc.Give(bg, gid, 1, leader, bob); err != nil {
 		t.Fatal(err)
 	}
-	_, _ = h.svc.Move(bg, gid, 1, leader, cy) // locked
+	if _, err := h.svc.Move(bg, gid, 1, leader, cy); !errors.As(err, new(ErrLocked)) {
+		t.Fatalf("early move: %v", err)
+	}
 	if seat, _ := h.svc.Store.List(bg, gid, testNow); seat[0].Holder.UserID != bob {
 		t.Fatalf("holder = %+v", seat[0].Holder)
 	}
@@ -165,14 +168,14 @@ func TestAccept_CancelsOwnAtPeriodEnd(t *testing.T) {
 	if err := h.svc.Accept(bg, gid, amy); err != nil {
 		t.Fatal(err)
 	}
-	if len(h.cancel.ids) != 1 || h.cancel.ids[0] == "" {
+	if len(h.cancel.ids) != 1 || h.cancel.ids[0] != fmt.Sprintf("sub_user_%d", amy) {
 		t.Fatalf("cancels = %v", h.cancel.ids)
 	}
 	seat, _ := h.svc.Store.List(bg, gid, testNow)
 	if seat[0].State != StateAccepted || !seat[0].StartsAt.Equal(end) {
 		t.Fatalf("seat = %+v", seat[0])
 	}
-	if !seat[0].MovableAt.Equal(testNow.Add(30 * 24 * time.Hour)) {
+	if !seat[0].MovableAt.Equal(end.Add(30 * 24 * time.Hour)) {
 		t.Fatalf("lock = %v", seat[0].MovableAt)
 	}
 	var key string

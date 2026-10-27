@@ -51,7 +51,7 @@ func TestHandler_StatusCodes(t *testing.T) {
 
 	expect("non-payer", h.call(t, "POST", gid, "1/give", off, to(bob)), 403, "forbidden")
 	expect("not member", h.call(t, "POST", gid, "1/give", leader, to(outsider)), 409, "not_member")
-	expect("no slot", h.call(t, "POST", gid, "9/give", leader, to(bob)), 404, "not_found")
+	expect("no slot", h.call(t, "POST", gid, "9/give", leader, to(bob)), 409, "seat_count")
 	given := h.call(t, "POST", gid, "1/give", leader, to(bob))
 	expect("give", given, 200, "")
 	if given.data["state"] != "held" {

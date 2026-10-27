@@ -284,6 +284,16 @@ func (g *StripeGateway) CancelSubscriptionAtPeriodEnd(ctx context.Context, subsc
 	return nil
 }
 
+// ResumeSubscription implements Gateway.ResumeSubscription.
+func (g *StripeGateway) ResumeSubscription(ctx context.Context, subscriptionID string) error {
+	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, &stripe.SubscriptionUpdateParams{
+		CancelAtPeriodEnd: stripe.Bool(false),
+	}); err != nil {
+		return fmt.Errorf("billing: resume subscription %s: %w", subscriptionID, err)
+	}
+	return nil
+}
+
 // ListSubscriptions implements Gateway.ListSubscriptions. Stripe's
 // Subscriptions List API filters by Price, not Product, so productID is
 // applied client-side against each subscription's own line items —

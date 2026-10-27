@@ -27,8 +27,14 @@ const testBaseURL = "https://foreversixty.gg"
 var testNow = time.Date(2026, 11, 10, 12, 0, 0, 0, time.UTC)
 
 type fakeCanceller struct {
-	ids []string
-	err error
+	ids     []string
+	resumed []string
+	err     error
+}
+
+func (f *fakeCanceller) ResumeSubscription(_ context.Context, id string) error {
+	f.resumed = append(f.resumed, id)
+	return nil
 }
 
 func (f *fakeCanceller) CancelSubscriptionAtPeriodEnd(_ context.Context, id string) error {
@@ -132,6 +138,13 @@ func (h *harness) payingPremium(t *testing.T, userID int64, end time.Time) {
 	h.exec(t, `insert into entitlements (user_id, plan, source, status, stripe_subscription_id, billing_user_id, current_period_end, price_lookup_key, unit_amount_cents)
 		values ($1,'premium','stripe','active',$2,$1,$3,$4,500)`,
 		userID, fmt.Sprintf("sub_user_%d", userID), end, catalog.LookupKeyPremiumFounderMonthly)
+}
+
+// payingPremiumCanceling is payingPremium for a subscription already set to end.
+func (h *harness) payingPremiumCanceling(t *testing.T, userID int64, end time.Time) {
+	t.Helper()
+	h.payingPremium(t, userID, end)
+	h.exec(t, `update entitlements set cancel_at_period_end = true where user_id = $1`, userID)
 }
 
 func (h *harness) request(method, path string, userID int64, body any) *httptest.ResponseRecorder {

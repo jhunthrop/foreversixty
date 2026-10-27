@@ -52,6 +52,16 @@ type Seat struct {
 	StartsAt  *time.Time `json:"starts_at"`
 	MovableAt *time.Time `json:"movable_at"`
 	Returned  *Returned  `json:"returned"`
+	// Offeree is the member a move has been offered to; the holder keeps the
+	// seat until they accept.
+	Offeree *Offeree `json:"offeree"`
+}
+
+// Offeree is the member a seat move waits on.
+type Offeree struct {
+	Name      string     `json:"name"`
+	Class     string     `json:"class"`
+	OfferedAt *time.Time `json:"offered_at"`
 }
 
 // Candidate is a verified member who holds no seat here. PaysPremium marks
@@ -95,15 +105,24 @@ type seatRow struct {
 	gaveUpKey    *string
 	returnedName *string
 	returnedAt   *time.Time
+	pendingID    *int64
+	pendingBy    *int64
+	pendingAt    *time.Time
 }
 
 const seatColumns = `slot, state, holder_user_id, given_by, given_at, offered_at, starts_at, movable_at,
-	holder_gave_up_lookup_key, returned_name, returned_at`
+	holder_gave_up_lookup_key, returned_name, returned_at,
+	pending_user_id, pending_by, pending_offered_at`
+
+// qualifiedSeatColumns is seatColumns for a query that aliases premium_seats as s.
+const qualifiedSeatColumns = `s.slot, s.state, s.holder_user_id, s.given_by, s.given_at, s.offered_at, s.starts_at,
+	s.movable_at, s.holder_gave_up_lookup_key, s.returned_name, s.returned_at,
+	s.pending_user_id, s.pending_by, s.pending_offered_at`
 
 func scanSeatRow(row pgx.Row) (seatRow, error) {
 	var r seatRow
 	err := row.Scan(&r.slot, &r.state, &r.holderID, &r.givenBy, &r.givenAt, &r.offeredAt, &r.startsAt,
-		&r.movableAt, &r.gaveUpKey, &r.returnedName, &r.returnedAt)
+		&r.movableAt, &r.gaveUpKey, &r.returnedName, &r.returnedAt, &r.pendingID, &r.pendingBy, &r.pendingAt)
 	return r, err
 }
 
@@ -195,6 +214,13 @@ func (s *Store) view(ctx context.Context, q querier, guildID int64, slot int, r 
 		}
 		seat.Holder = &Holder{UserID: *r.holderID, CharacterKey: ch.key, Name: ch.name, Class: ch.class}
 	}
+	if r.pendingID != nil {
+		ch, err := characterOf(ctx, q, guildID, *r.pendingID)
+		if err != nil {
+			return Seat{}, err
+		}
+		seat.Offeree = &Offeree{Name: ch.name, Class: ch.class, OfferedAt: r.pendingAt}
+	}
 	if r.returnedName != nil && r.returnedAt != nil && r.returnedAt.After(now.Add(-catalog.SeatReturnedShown)) {
 		seat.Returned = &Returned{Name: *r.returnedName, At: *r.returnedAt}
 	}
@@ -231,18 +257,19 @@ func (s *Store) listForTier(ctx context.Context, q querier, guildID int64, tier 
 	return seats, nil
 }
 
-// IsPayer reports whether userID is a verified officer or leader of guildID
-// who holds its claim or is its plan's billing user.
+// IsPayer reports whether userID may manage guildID's seats: a verified
+// member who is the plan's billing user (the subscriber, of any rank), or a
+// verified officer or leader who holds the guild's claim.
 func (s *Store) IsPayer(ctx context.Context, guildID, userID int64) (bool, error) {
 	var ok bool
 	err := s.Pool.QueryRow(ctx, `
 		select exists (
 		  select 1 from guild_members m join guilds g on g.id = m.guild_id
 		  where m.guild_id = $1 and m.user_id = $2 and m.verified_at is not null
-		    and m.rank in ('officer', 'leader')
-		    and (g.claimed_by = $2 or exists (
-		      select 1 from entitlements e
-		      where e.guild_id = $1 and e.plan = 'guild' and e.billing_user_id = $2))
+		    and (exists (
+		          select 1 from entitlements e
+		          where e.guild_id = $1 and e.plan = 'guild' and e.billing_user_id = $2)
+		      or (g.claimed_by = $2 and m.rank in ('officer', 'leader')))
 		)`, guildID, userID).Scan(&ok)
 	if err != nil {
 		return false, fmt.Errorf("seats: payer check %d/%d: %w", guildID, userID, err)
@@ -265,13 +292,13 @@ func (s *Store) IsSubscriber(ctx context.Context, guildID, userID int64) (bool, 
 // Candidates returns the verified members holding no seat here, by name.
 func (s *Store) Candidates(ctx context.Context, guildID int64) ([]Candidate, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select m.user_id, coalesce(ch.name, ''), coalesce(ch.class, ''), pe.status
+		select m.user_id, coalesce(ch.name, ''), coalesce(ch.class, ''), pe.status is not null, coalesce(pe.status, '')
 		from guild_members m
 		left join lateral `+bestCharacterLateral+` on true
 		left join entitlements pe on pe.user_id = m.user_id and pe.plan = 'premium' and pe.source = 'stripe'
 		where m.guild_id = $1 and m.verified_at is not null
 		  and not exists (select 1 from premium_seats s
-		    where s.guild_id = m.guild_id and s.holder_user_id = m.user_id)
+		    where s.guild_id = m.guild_id and m.user_id in (s.holder_user_id, s.pending_user_id))
 		order by lower(coalesce(ch.name, '')), m.user_id`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("seats: candidates of %d: %w", guildID, err)
@@ -280,19 +307,64 @@ func (s *Store) Candidates(ctx context.Context, guildID int64) ([]Candidate, err
 	out := []Candidate{}
 	for rows.Next() {
 		var c Candidate
-		var status *string
-		if err := rows.Scan(&c.UserID, &c.Name, &c.Class, &status); err != nil {
+		var hasRow bool
+		var status string
+		if err := rows.Scan(&c.UserID, &c.Name, &c.Class, &hasRow, &status); err != nil {
 			return nil, fmt.Errorf("seats: scan candidate: %w", err)
 		}
-		c.PaysPremium = status != nil && entitlements.StatusGrantsAccess(*status)
+		c.PaysPremium = hasRow && paysPremium(sourceStripe, status)
 		out = append(out, c)
 	}
 	return out, rows.Err()
 }
 
+// sourceStripe is entitlements.source for a paid subscription.
+const sourceStripe = "stripe"
+
+// paysPremium is the one rule for "this account pays for its own Premium":
+// a Stripe row whose status still grants access. Candidates and Give share it.
+func paysPremium(source, status string) bool {
+	return source == sourceStripe && entitlements.StatusGrantsAccess(status)
+}
+
+// isVerifiedMember reports whether userID is a verified member of guildID.
+func isVerifiedMember(ctx context.Context, q querier, guildID, userID int64) (bool, error) {
+	var ok bool
+	err := q.QueryRow(ctx, `select exists (select 1 from guild_members
+		where guild_id = $1 and user_id = $2 and verified_at is not null)`, guildID, userID).Scan(&ok)
+	if err != nil {
+		return false, fmt.Errorf("seats: membership %d/%d: %w", guildID, userID, err)
+	}
+	return ok, nil
+}
+
+// emailParties is the guild's name and the account's email address.
+func emailParties(ctx context.Context, q querier, guildID, userID int64) (guildName, email string, err error) {
+	err = q.QueryRow(ctx, `select g.name, u.email from guilds g, users u where g.id = $1 and u.id = $2`,
+		guildID, userID).Scan(&guildName, &email)
+	if err != nil {
+		return "", "", fmt.Errorf("seats: parties %d/%d: %w", guildID, userID, err)
+	}
+	return guildName, email, nil
+}
+
+// externalStep is a call to another system made as the last step before
+// commit. undo runs if the commit then fails.
+type externalStep struct {
+	do   func(ctx context.Context) error
+	undo func(ctx context.Context)
+}
+
 // withGuildLock runs fn in a transaction holding the guild's seat lock, so
 // two actions on one guild's seats never interleave.
 func (s *Store) withGuildLock(ctx context.Context, guildID int64, fn func(tx pgx.Tx) error) error {
+	return s.withGuildLockStep(ctx, guildID, func(tx pgx.Tx) (*externalStep, error) { return nil, fn(tx) })
+}
+
+// withGuildLockStep is withGuildLock whose fn may return one external step.
+// The step runs after fn and immediately before commit; if the commit fails
+// its undo runs, so the other system is never left ahead of the database.
+func (s *Store) withGuildLockStep(ctx context.Context, guildID int64, fn func(tx pgx.Tx) (*externalStep, error)) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("seats: begin: %w", err)
@@ -302,10 +374,19 @@ func (s *Store) withGuildLock(ctx context.Context, guildID int64, fn func(tx pgx
 		guildID); err != nil {
 		return fmt.Errorf("seats: lock guild %d: %w", guildID, err)
 	}
-	if err := fn(tx); err != nil {
+	step, err := fn(tx)
+	if err != nil {
 		return err
 	}
+	if step != nil {
+		if err := step.do(ctx); err != nil {
+			return err
+		}
+	}
 	if err := tx.Commit(ctx); err != nil {
+		if step != nil {
+			step.undo(context.WithoutCancel(ctx))
+		}
 		return fmt.Errorf("seats: commit: %w", err)
 	}
 	return nil

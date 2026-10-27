@@ -15,10 +15,23 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 )
 
+// billingWiring is what wireBilling reads from serve.
+type billingWiring struct {
+	cfg        config.Config
+	pool       *pgxpool.Pool
+	deps       *server.Deps
+	entitle    *entitlements.Store
+	authStore  *auth.Store
+	guildStore *guilds.Store
+	mailer     mail.Mailer
+	log        *slog.Logger
+}
+
 // wireBilling builds the Stripe gateway (nil, with one warn line, when Stripe
 // is not configured) and the billing and seats services that share it.
-func wireBilling(cfg config.Config, pool *pgxpool.Pool, deps *server.Deps, entStore *entitlements.Store,
-	authStore *auth.Store, guildStore *guilds.Store, mailer mail.Mailer, log *slog.Logger) {
+func wireBilling(w billingWiring) {
+	cfg, pool, deps, entStore := w.cfg, w.pool, w.deps, w.entitle
+	authStore, guildStore, mailer, log := w.authStore, w.guildStore, w.mailer, w.log
 	var gateway billing.Gateway
 	if cfg.StripeConfigured() {
 		gateway = billing.NewStripeGateway(cfg.StripeSecretKey)
