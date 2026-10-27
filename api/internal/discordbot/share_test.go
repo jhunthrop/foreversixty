@@ -62,7 +62,7 @@ func TestShareRecomputesAsAVisitorOnce(t *testing.T) {
 	if public.Ephemeral || strings.Contains(string(raw), `"flags"`) {
 		t.Fatalf("follow-up is not public: %s", raw)
 	}
-	if got := strings.Join(fieldNames(public.Embeds[0]), ","); got != "Item level,Top 3 upgrades" {
+	if got := strings.Join(fieldNames(public.Embeds[0]), ","); got != "Item level,Top 3 upgrades · level 60 Phase 1 raid" {
 		t.Fatalf("the visitor's card shows member fields: %s", got)
 	}
 	for _, row := range public.Components {

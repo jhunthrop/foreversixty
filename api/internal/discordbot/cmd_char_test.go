@@ -184,7 +184,7 @@ func fieldNames(e notify.Embed) []string {
 func TestLookupCopyMatchesTheSpec(t *testing.T) {
 	cell := func(label string) []string { return specCell(t, pressHeading, label) }
 	char := cell("`/char`")
-	wantChar := []string{lookupCopy.CharLine, lookupCopy.ItemLevel, lookupCopy.Readiness, lookupCopy.Synced, lookupCopy.TopUpgrades,
+	wantChar := []string{lookupCopy.CharLine, lookupCopy.ItemLevel, lookupCopy.Readiness, lookupCopy.Synced, lookupCopy.TopUpgrades, lookupCopy.UpgradesBand,
 		lookupCopy.UpgradesByDPS, lookupCopy.UpgradesByScore, lookupCopy.NoGear, lookupCopy.CharacterPage, lookupCopy.NoCharacter}
 	bis := cell("`/bis`")
 	wantBis := []string{lookupCopy.BisSlotLead, lookupCopy.BisTopLead, lookupCopy.BisAuthor, lookupCopy.BisOpen, lookupCopy.BisAllSlots,
@@ -261,6 +261,11 @@ func TestItemEmbedGrammar(t *testing.T) {
 func TestCharCard(t *testing.T) {
 	t.Run("card and three upgrades", func(t *testing.T) {
 		w := newLookupWorld(t)
+		// The band measured nothing she wears, so the list reads in points from the gear panel.
+		writeBis(t, w.lg.dir, "hunter-marksmanship", []map[string]any{{"band": 60, "faction": "alliance", "slots": []map[string]any{
+			{"slot": "head", "item_id": 100, "item_name": "Pick head", "alternatives": []map[string]any{
+				{"item_id": 199, "item_name": "Other head", "dps_delta": -9.2}}},
+		}}})
 		w.port.candidates = []guilds.SignupCandidate{{CharacterKey: keyZulmaraLookup, Name: "Zulmara", Verified: true, Main: true}}
 		w.lg.readiness[keyZulmaraLookup] = guilds.ReadinessFacts{Word: "Stocked", SyncedAt: ref(time.Unix(1700000000, 0)), OnRoster: true}
 		rep := w.command(t, pressDiscord, "char", map[string]string{"name": "zulmara"})
@@ -274,14 +279,14 @@ func TestCharCard(t *testing.T) {
 			card.Thumbnail != pressPublic+"/icons/hd/crests/hunter.webp" || card.URL != pressPublic+"/character/"+keyZulmaraLookup {
 			t.Fatalf("card = %+v", card)
 		}
-		if got := strings.Join(fieldNames(card), ","); got != "Item level,Readiness,Synced,Top 3 upgrades" {
+		if got := strings.Join(fieldNames(card), ","); got != "Item level,Readiness,Synced,Top 3 upgrades · level 60" {
 			t.Fatalf("fields = %s", got)
 		}
 		if card.Fields[0].Value != "56.0" || card.Fields[1].Value != "Stocked" || card.Fields[2].Value != "<t:1700000000:R>" ||
 			card.Fields[3].Value != lookupCopy.UpgradesByScore || card.Fields[3].Inline {
 			t.Fatalf("field values = %+v", card.Fields)
 		}
-		// Only head's gain was measured, so the list reads in points throughout, largest gap first.
+		// Nothing measured, so the list reads in points, largest gap first.
 		wantLines := []string{"Head · Epic · item level 61\n+9.0 points · Source head",
 			"Hands · Epic · item level 61\n+7.0 points · Source hands", "Feet · Epic · item level 61\n+5.0 points · Source feet"}
 		for i, want := range wantLines {
@@ -299,35 +304,36 @@ func TestCharCard(t *testing.T) {
 			t.Fatalf("row = %+v", row)
 		}
 	})
-	t.Run("DPS only when every shown row is measured for that pick", func(t *testing.T) {
+	t.Run("DPS against the band /bis defaults to, the same gain as /bis", func(t *testing.T) {
 		measured := func(slot string, pick, worn int, delta float64) map[string]any {
-			return map[string]any{"slot": slot, "item_id": pick, "item_name": "Pick " + slot,
-				"alternatives": []map[string]any{{"item_id": worn, "item_name": "Worn " + slot, "dps_delta": delta}}}
+			return map[string]any{"slot": slot, "item_id": pick, "item_name": "Pick " + slot, "source_kind": "vendor",
+				"source": "Somebody", "alternatives": []map[string]any{{"item_id": worn, "item_name": "Worn " + slot, "dps_delta": delta}}}
 		}
-		all := []map[string]any{measured("head", 100, 200, -9.2), measured("hands", 102, 202, -3.1), measured("feet", 101, 201, -4.4)}
+		all := []map[string]any{measured("head", 100, 200, -9.2), measured("hands", 150, 202, -3.1), measured("feet", 101, 201, -4.4)}
+		bands := func(faction string) []map[string]any {
+			return []map[string]any{
+				{"band": 60, "faction": faction, "preset": "bare", "slots": []map[string]any{measured("head", 100, 200, -1)}},
+				{"band": 60, "faction": faction, "preset": "raid", "slots": all},
+			}
+		}
 		w := newLookupWorld(t)
-		writeBis(t, w.lg.dir, "hunter-marksmanship", []map[string]any{{"band": 60, "faction": "alliance", "slots": all}})
+		writeBis(t, w.lg.dir, "hunter-marksmanship", bands("alliance"))
 		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
-		if got := m.Embeds[0].Fields[len(m.Embeds[0].Fields)-1].Value; got != lookupCopy.UpgradesByDPS {
-			t.Fatalf("field = %q", got)
+		field := m.Embeds[0].Fields[len(m.Embeds[0].Fields)-1]
+		if field.Name != "Top 3 upgrades · level 60 Phase 1 raid" || field.Value != lookupCopy.UpgradesByDPS {
+			t.Fatalf("field = %+v", field)
 		}
-		// Ordered by gap (head 9, hands 7, feet 5), each with its own measured DPS.
-		for i, want := range []string{"+9.2 DPS", "+3.1 DPS", "+4.4 DPS"} {
-			if !strings.Contains(m.Embeds[i+1].Description, "\n"+want+" · ") {
-				t.Fatalf("upgrade %d = %q, want %s", i, m.Embeds[i+1].Description, want)
+		// The raid band's picks (hands is the band's own 150, not the panel's 102), largest gain
+		// first, each the band's measured gain over what she wears, with the page's source line.
+		for i, want := range []string{"Head · Epic · item level 61\n+9.2 DPS · Vendors", "Feet · Epic · item level 61\n+4.4 DPS · Vendors",
+			"Hands · Epic · item level 61\n+3.1 DPS · Vendors"} {
+			if m.Embeds[i+1].Description != want {
+				t.Fatalf("upgrade %d = %q, want %q", i, m.Embeds[i+1].Description, want)
 			}
 		}
 
-		// The band names another hands pick than the panel shows: its gain is not this pick's.
-		other := []map[string]any{measured("head", 100, 200, -9.2), measured("hands", 150, 202, -3.1), measured("feet", 101, 201, -4.4)}
-		writeBis(t, w.lg.dir, "hunter-marksmanship", []map[string]any{{"band": 60, "faction": "alliance", "slots": other}})
-		m = w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
-		if m.Embeds[0].Fields[len(m.Embeds[0].Fields)-1].Value != lookupCopy.UpgradesByScore || !strings.Contains(m.Embeds[1].Description, "+9.0 points") {
-			t.Fatalf("another pick = %+v", m.Embeds[:2])
-		}
-
 		// The character's own faction wins over the guild's.
-		writeBis(t, w.lg.dir, "hunter-marksmanship", []map[string]any{{"band": 60, "faction": "horde", "slots": all}})
+		writeBis(t, w.lg.dir, "hunter-marksmanship", bands("horde"))
 		c := zulmaraCard()
 		c.Character.Race = ref("Orc")
 		w.cards.cards["zulmara"] = c
@@ -339,7 +345,7 @@ func TestCharCard(t *testing.T) {
 	t.Run("a viewer outside the guild sees no readiness", func(t *testing.T) {
 		w := newLookupWorld(t)
 		rep := w.command(t, "d-stranger", "char", map[string]string{"name": "Zulmara"})
-		if got := strings.Join(fieldNames(rep.Message.Embeds[0]), ","); got != "Item level,Top 3 upgrades" {
+		if got := strings.Join(fieldNames(rep.Message.Embeds[0]), ","); got != "Item level,Top 3 upgrades · level 60 Phase 1 raid" {
 			t.Fatalf("fields = %s", got)
 		}
 	})

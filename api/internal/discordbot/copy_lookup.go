@@ -7,6 +7,8 @@ var lookupCopy = struct {
 	CharLine string
 	// The card's field names.
 	ItemLevel, Readiness, Synced, TopUpgrades string
+	// UpgradesBand follows TopUpgrades: the band the gains are against.
+	UpgradesBand string
 	// UpgradesByDPS and UpgradesByScore say what the upgrades are ranked by (tanks by score).
 	UpgradesByDPS, UpgradesByScore string
 	// NoGear stands in the upgrades field when the character has no gear shared.
@@ -33,6 +35,7 @@ var lookupCopy = struct {
 	Readiness:       "Readiness",
 	Synced:          "Synced",
 	TopUpgrades:     "Top 3 upgrades",
+	UpgradesBand:    " · {band label}",
 	UpgradesByDPS:   "By DPS gained, against the guide build.",
 	UpgradesByScore: "By Forever Score gained, against the guide build.",
 	NoGear:          "No gear shared yet. Upgrades show once the character is synced.",

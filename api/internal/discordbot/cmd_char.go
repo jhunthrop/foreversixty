@@ -3,10 +3,8 @@ package discordbot
 import (
 	"context"
 	"fmt"
-	"sort"
 	"strings"
 
-	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/sim/specs"
@@ -85,9 +83,9 @@ func (s *Service) answerChar(ctx context.Context, guildID int64, viewer *int64, 
 			return Message{}, false, err
 		}
 	}
-	ups, byDPS := s.upgrades(card, spec, g.Faction)
-	head.Fields = append(head.Fields, upgradesField(card, byDPS))
-	embeds := append([]notify.Embed{head}, s.upgradeEmbeds(card, ups, byDPS)...)
+	ups := s.upgrades(card, spec, g.Faction)
+	head.Fields = append(head.Fields, upgradesField(card, ups))
+	embeds := append([]notify.Embed{head}, s.upgradeEmbeds(card, ups, s.characterFaction(card, g.Faction))...)
 	closeEmbeds(embeds, lookupCopy.Footer, s.now())
 	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(card.Character.Key)}
 	return Message{Embeds: embeds, Components: []ActionRow{{link}}}, true, nil
@@ -170,110 +168,6 @@ func (s *Service) memberFields(ctx context.Context, guildID int64, key string, f
 		fields = append(fields, notify.EmbedField{Name: lookupCopy.Synced, Value: fmt.Sprintf("<t:%d:R>", facts.SyncedAt.Unix()), Inline: true})
 	}
 	return fields, nil
-}
-
-// upgrade is one of the card's top gaps, with the DPS the BiS data measured for that very
-// pick over the worn item, when it did.
-type upgrade struct {
-	slot rankings.GearSlot
-	dps  *float64
-}
-
-// upgrades are the gear panel's three largest gaps and whether they all read in DPS: only a
-// non-tank spec whose every shown row has a measured gain does; otherwise every row reads in
-// Forever Score points, so one list never mixes units.
-func (s *Service) upgrades(card rankings.Character, spec specs.Spec, guildFaction string) ([]upgrade, bool) {
-	slots := upgradeSlots(card.Gear)
-	measured := s.measuredBand(card, spec, s.characterFaction(card, guildFaction))
-	out := make([]upgrade, len(slots))
-	allDPS := spec.Role != tankRole && len(slots) > 0
-	for i, g := range slots {
-		out[i] = upgrade{slot: g}
-		// The DPS is the pick's only when the band names the same pick the panel shows.
-		if pick, ok := measured[g.Slot]; ok && pick.ItemID == g.Pick.ID {
-			out[i].dps = bis.VerdictFor(pick, wornID(g), g.Worn != nil).GainDps
-		}
-		allDPS = allDPS && out[i].dps != nil
-	}
-	return out, allDPS
-}
-
-// characterFaction is the character's own faction (its race's), else the guild's.
-func (s *Service) characterFaction(card rankings.Character, guildFaction string) string {
-	if f := s.d.Guilds.RaceFaction(deref(card.Character.Race)); f != "" {
-		return f
-	}
-	return guildFaction
-}
-
-// upgradesField says what the upgrades are ranked by, or that no gear is shared.
-func upgradesField(card rankings.Character, byDPS bool) notify.EmbedField {
-	value := lookupCopy.UpgradesByScore
-	switch {
-	case len(card.Gear) == 0:
-		value = lookupCopy.NoGear
-	case byDPS:
-		value = lookupCopy.UpgradesByDPS
-	}
-	return notify.EmbedField{Name: lookupCopy.TopUpgrades, Value: value}
-}
-
-// upgradeEmbeds are the upgrades as item embeds, each with its gain in the list's one unit.
-func (s *Service) upgradeEmbeds(card rankings.Character, ups []upgrade, byDPS bool) []notify.Embed {
-	build, _ := s.d.Guilds.ActiveBuild()
-	class := strings.ToLower(card.Character.Class)
-	out := make([]notify.Embed, 0, len(ups))
-	for _, u := range ups {
-		g := u.slot
-		delta := signedPoints(*g.Gap)
-		if byDPS {
-			delta = signedDPS(*u.dps)
-		}
-		url := s.characterURL(card.Character.Key) + "#gear-slot-" + g.Slot
-		facts := s.itemFacts(build, class, g.Pick.ID, g.Pick.Name, g.Pick.Source, url)
-		out = append(out, ItemEmbed(facts, slotLabel(g.Slot), delta, ""))
-	}
-	return out
-}
-
-// upgradeSlots are the slots with a pick that gains, largest gap first, at most three.
-func upgradeSlots(gear []rankings.GearSlot) []rankings.GearSlot {
-	var out []rankings.GearSlot
-	for _, g := range gear {
-		if g.Pick != nil && g.Gap != nil && *g.Gap > 0 && (g.Worn == nil || g.Worn.ID != g.Pick.ID) {
-			out = append(out, g)
-		}
-	}
-	sort.SliceStable(out, func(i, j int) bool { return *out[i].Gap > *out[j].Gap })
-	if len(out) > maxUpgrades {
-		out = out[:maxUpgrades]
-	}
-	return out
-}
-
-func wornID(g rankings.GearSlot) int {
-	if g.Worn == nil {
-		return 0
-	}
-	return g.Worn.ID
-}
-
-// measuredBand is the character's bare band by slot, the one the gear panel's picks come from;
-// empty when any part is unknown.
-func (s *Service) measuredBand(card rankings.Character, spec specs.Spec, faction string) map[string]bis.Slot {
-	band, ok := levelBand(card.Character.Level)
-	build := s.d.Guilds.BisBuild()
-	if spec.Spec == "" || faction == "" || build == "" || !ok {
-		return nil
-	}
-	b, found, err := bis.LoadPresetBand(s.d.Guilds.BisDataDir(), build, spec.Spec, band, faction, bis.BarePreset)
-	if err != nil {
-		s.log.Warn("discordbot", "op", "char_band", "spec", spec.Spec, "err", err)
-	}
-	if !found {
-		return nil
-	}
-	return b.BySlot()
 }
 
 // levelBands are the BiS data's level bands.

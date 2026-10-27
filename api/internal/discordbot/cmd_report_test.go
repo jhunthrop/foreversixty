@@ -183,7 +183,7 @@ func TestReportMemberAndOfficer(t *testing.T) {
 		t.Fatal(err)
 	}
 	w.og.report = onyxiaReport(false, false)
-	if rep := w.run(t, outsiderDiscord, "report"); rep.Message.Content != segment(9) {
+	if rep := w.run(t, outsiderDiscord, "report"); rep.Message.Content != segment(10) {
 		t.Fatalf("non-member on a private log = %+v", rep.Message)
 	}
 	w.og.report = onyxiaReport(false, true)
@@ -205,11 +205,11 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	}
 
 	w.og.report = nil
-	if rep := w.run(t, pressDiscord, "report"); rep.Message.Content != segment(9) {
+	if rep := w.run(t, pressDiscord, "report"); rep.Message.Content != segment(10) {
 		t.Fatalf("none = %q", rep.Message.Content)
 	}
 	rep := w.run(t, strangerDiscord, "report")
-	if rep.Message.Content != segment(10) || rep.Message.Components[0][0].Label != linkCopy.LinkButton {
+	if rep.Message.Content != segment(11) || rep.Message.Components[0][0].Label != linkCopy.LinkButton {
 		t.Fatalf("unlinked = %+v", rep.Message)
 	}
 }

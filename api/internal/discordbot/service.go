@@ -102,6 +102,8 @@ type Service struct {
 	commandSet func() []Command
 	// candidates caches each account's sign-up candidates briefly (candidates.go).
 	candidates candidateCache
+	// sources is the BiS build's loot.json, for item source lines (item_source.go).
+	sources sourceBook
 	// stopDrainer ends the post drainer StartDrainer began; nil when none runs.
 	stopDrainer func(ctx context.Context) error
 }
