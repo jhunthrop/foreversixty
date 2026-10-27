@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-27T09:56:36Z",
+  "generated_at": "2026-10-27T12:40:43Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -704,8 +704,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 5.832283853,
-      "verify_run_seconds": 20.525402976,
+      "weights_run_seconds": 5.524277402,
+      "verify_run_seconds": 19.340220697,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1499,8 +1499,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 5.832283853,
-      "verify_run_seconds": 19.286607269,
+      "weights_run_seconds": 5.524277402,
+      "verify_run_seconds": 18.166381244,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2366,8 +2366,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 8.085844656,
-      "verify_run_seconds": 27.842900385,
+      "weights_run_seconds": 7.846878036,
+      "verify_run_seconds": 26.577710942,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3224,8 +3224,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 8.085844656,
-      "verify_run_seconds": 28.111103296,
+      "weights_run_seconds": 7.846878036,
+      "verify_run_seconds": 26.924839345,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4091,8 +4091,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.971921385,
-      "verify_run_seconds": 31.068655279,
+      "weights_run_seconds": 8.713556858,
+      "verify_run_seconds": 29.891647412,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4959,8 +4959,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.971921385,
-      "verify_run_seconds": 33.734780984,
+      "weights_run_seconds": 8.713556858,
+      "verify_run_seconds": 32.776488347,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5856,8 +5856,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.08084821,
-      "verify_run_seconds": 33.13247344,
+      "weights_run_seconds": 8.878820429,
+      "verify_run_seconds": 32.245296106,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6752,8 +6752,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.08084821,
-      "verify_run_seconds": 31.605127736,
+      "weights_run_seconds": 8.878820429,
+      "verify_run_seconds": 30.985803397,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7658,8 +7658,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 9.229822031,
-      "verify_run_seconds": 66.87375644,
+      "weights_run_seconds": 9.131925902,
+      "verify_run_seconds": 65.33466715,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8565,8 +8565,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 9.229822031,
-      "verify_run_seconds": 63.72568732,
+      "weights_run_seconds": 9.131925902,
+      "verify_run_seconds": 62.206457068,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9476,8 +9476,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 6.682974847,
-      "verify_run_seconds": 62.344334784,
+      "weights_run_seconds": 6.578695514,
+      "verify_run_seconds": 60.863258066,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10387,8 +10387,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 6.682974847,
-      "verify_run_seconds": 60.163604237,
+      "weights_run_seconds": 6.578695514,
+      "verify_run_seconds": 58.72367853,
       "coverage": {
         "back": {
           "eligible": 391,

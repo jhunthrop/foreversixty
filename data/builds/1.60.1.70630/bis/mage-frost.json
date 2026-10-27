@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-27T10:05:01Z",
+  "generated_at": "2026-10-27T12:48:43Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -706,8 +706,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.053967418,
-      "verify_run_seconds": 0.741792564,
+      "weights_run_seconds": 0.948540894,
+      "verify_run_seconds": 0.692055238,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1517,8 +1517,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.053967418,
-      "verify_run_seconds": 0.767015909,
+      "weights_run_seconds": 0.948540894,
+      "verify_run_seconds": 0.692753527,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2397,8 +2397,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.057342331,
-      "verify_run_seconds": 0.73906882,
+      "weights_run_seconds": 0.993240327,
+      "verify_run_seconds": 0.664513768,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3276,8 +3276,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.057342331,
-      "verify_run_seconds": 0.749080971,
+      "weights_run_seconds": 0.993240327,
+      "verify_run_seconds": 0.685249525,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4192,8 +4192,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.155165948,
-      "verify_run_seconds": 0.926065594,
+      "weights_run_seconds": 1.112721766,
+      "verify_run_seconds": 0.869707853,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5092,8 +5092,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.155165948,
-      "verify_run_seconds": 0.94203601,
+      "weights_run_seconds": 1.112721766,
+      "verify_run_seconds": 0.910168784,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5967,8 +5967,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.0754947,
-      "verify_run_seconds": 1.132049388,
+      "weights_run_seconds": 1.053578858,
+      "verify_run_seconds": 1.050272709,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6852,8 +6852,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.0754947,
-      "verify_run_seconds": 1.050800052,
+      "weights_run_seconds": 1.053578858,
+      "verify_run_seconds": 0.987405721,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7815,8 +7815,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.140157419,
-      "verify_run_seconds": 2.313252916,
+      "weights_run_seconds": 1.089047953,
+      "verify_run_seconds": 2.140718646,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8777,8 +8777,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.140157419,
-      "verify_run_seconds": 3.168063567,
+      "weights_run_seconds": 1.089047953,
+      "verify_run_seconds": 2.935387193,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9732,8 +9732,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.157624251,
-      "verify_run_seconds": 2.327561192,
+      "weights_run_seconds": 1.167057264,
+      "verify_run_seconds": 2.235286008,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10686,8 +10686,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.157624251,
-      "verify_run_seconds": 2.281260127,
+      "weights_run_seconds": 1.167057264,
+      "verify_run_seconds": 2.164526865,
       "coverage": {
         "back": {
           "eligible": 390,
