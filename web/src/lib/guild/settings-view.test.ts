@@ -2,14 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
 import { guildRosterModelCopy } from './copy';
-import {
-  billingState,
-  canManageBilling,
-  claimedByLine,
-  officerToolsExplanation,
-  notOnPlanLines,
-  settingsWords,
-} from './settings-view';
+import { canManageBilling, claimedByLine, officerToolsExplanation, settingsWords } from './settings-view';
 
 function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
   return {
@@ -51,30 +44,7 @@ describe('the Manage billing rule', () => {
 });
 
 describe('billing copy per state', () => {
-  it('not on the plan: the fact, then the real price and what officers get', () => {
-    const lines = notOnPlanLines();
-    expect(lines.headline).toBe('This guild is not on the guild plan yet.');
-    expect(lines.detail).toBe(
-      '$15 a month, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.',
-    );
-    expect(notOnPlanLines(20).detail).toContain('$20 a month');
-  });
-
-  it('with no price it says monthly and prints no number', () => {
-    for (const none of [0, Number.NaN, -1]) {
-      const detail = notOnPlanLines(none).detail;
-      expect(detail).toBe(
-        'Monthly, cancel any time. Officers get the loot council helper and the raid readiness board, with more as they ship.',
-      );
-      expect(detail).not.toMatch(/\d/);
-    }
-  });
-
-  it('an operator grant is told apart from a Stripe plan and from no plan', () => {
-    expect(billingState(null, false)).toBe('not-on-plan');
-    expect(billingState(billing(), false)).toBe('on-plan');
-    expect(billingState(billing({ billed_by: '' }), false)).toBe('granted');
-    expect(billingState(billing(), true)).toBe('unavailable');
+  it('a plan with no Stripe customer cannot open the portal', () => {
     expect(canManageBilling(billing({ billed_by: '', current_period_end: '2026-12-01T00:00:00Z' }))).toBe(
       false,
     );
@@ -101,17 +71,6 @@ const scoped = (overrides: Partial<GuildBillingView> = {}): GuildBillingView =>
   });
 
 describe('the officer tools scoped grant', () => {
-  it('is its own billing state, ahead of the billed_by rule', () => {
-    expect(billingState(scoped(), false)).toBe('officer-tools');
-    expect(billingState(scoped({ billed_by: 'hunthrop#1894' }), false)).toBe('officer-tools');
-    expect(billingState(scoped(), true)).toBe('unavailable');
-  });
-
-  it('keeps a full plan on the plan states', () => {
-    expect(billingState(billing(), false)).toBe('on-plan');
-    expect(billingState(billing({ billed_by: '' }), false)).toBe('granted');
-  });
-
   it('reads the explanation from the spec', () => {
     const expected = specString(GATE_SPEC, COPY_HEADING, 'Settings explanation, scoped', 0, DATE_PLACEHOLDER);
     expect(officerToolsExplanation(scoped())).toBe(expected);

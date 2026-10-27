@@ -27,7 +27,9 @@ const (
 	FeatureRosterCheck  Feature = "roster_check"
 	// FeatureRaidGuildTools is the Raid guild tier's per-guild tools: a
 	// verified officer/leader of a guild whose active row covers officer
-	// views and carries tier raid_guild (Store.CanForGuild).
+	// views and carries tier raid_guild (Store.CanForGuild; Can refuses it).
+	// It is officer-only by construction: a member-level "this guild is on
+	// raid_guild" check reads GuildBilling.Tier, not CanForGuild.
 	FeatureRaidGuildTools Feature = "raid_guild_tools"
 )
 
@@ -89,4 +91,10 @@ func StatusGrantsAccess(status string) bool {
 		return true
 	}
 	return false
+}
+
+// Standard reports whether f resolves from the account's own Premium (a
+// personal plan or a held seat) rather than per guild.
+func (f Feature) Standard() bool {
+	return f != FeatureOfficerViews && f != FeatureRaidGuildTools
 }

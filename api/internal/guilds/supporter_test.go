@@ -83,18 +83,24 @@ func TestRosterSupporterIsFalseWithoutAService(t *testing.T) {
 	}
 }
 
-// countingSupporters records every account it is asked about; err, when set, fails each ask.
+// countingSupporters records every ask and the accounts in it; err, when set, fails each ask.
 type countingSupporters struct {
+	asks  int
 	asked []int64
 	err   error
 }
 
-func (c *countingSupporters) IsSupporter(_ context.Context, userID int64) (bool, error) {
-	c.asked = append(c.asked, userID)
-	return c.err == nil, c.err
+func (c *countingSupporters) SupportersAmong(_ context.Context, userIDs []int64) (map[int64]bool, error) {
+	c.asks++
+	c.asked = append(c.asked, userIDs...)
+	out := map[int64]bool{}
+	for _, id := range userIDs {
+		out[id] = c.err == nil
+	}
+	return out, c.err
 }
 
-func TestRosterAsksOncePerDistinctAccount(t *testing.T) {
+func TestRosterAsksOncePerRoster(t *testing.T) {
 	h := newHTTPHarness(t)
 	counter := &countingSupporters{}
 	h.svc.Supporters = counter
@@ -110,8 +116,8 @@ func TestRosterAsksOncePerDistinctAccount(t *testing.T) {
 	if len(rows) != 3 {
 		t.Fatalf("roster has %d rows, want 3", len(rows))
 	}
-	if len(counter.asked) != 2 {
-		t.Errorf("IsSupporter asked %v, want one ask per distinct account (2)", counter.asked)
+	if counter.asks != 1 || len(counter.asked) != 2 {
+		t.Errorf("SupportersAmong asked %d times for %v, want one ask for the 2 distinct accounts", counter.asks, counter.asked)
 	}
 }
 
@@ -122,6 +128,6 @@ func TestRosterSurvivesASupporterError(t *testing.T) {
 	leader := seedUser(t, h.pool, "err-leader@example.com")
 	key := seedVerifiedMember(t, h, gid, leader, "errleader", "leader")
 	if h.roster(gid, leader)[key].Supporter {
-		t.Error("an IsSupporter error must read as false")
+		t.Error("a SupportersAmong error must read as false")
 	}
 }

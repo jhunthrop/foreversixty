@@ -14,3 +14,6 @@ export const GUILD_LOADING = {
   // visibility/threshold controls, invite block.
   settings: { lines: 6, minHeight: 'min-h-[540px]' },
 } as const;
+
+/** The #billing section while the billing read loads: 420 px on desktop, 640 px on phone (launch pricing spec 4). */
+export const GUILD_BILLING_LOADING = { lines: 6, minHeight: 'min-h-[640px] md:min-h-[420px]' } as const;

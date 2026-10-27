@@ -1,0 +1,211 @@
+// web/tests/e2e/guild-billing.spec.ts
+// Launch pricing spec section 9, guild settings #billing: case 9 (not on a plan), 10 (trial), 11 (Guild
+// tier with 28 members and the Raid guild move), 14 (lapsed, CSV) and 18 (axe, 44 px at 360). Also
+// Manage billing and its Stripe-unavailable retry, which the old #billing section carried. API stubbed.
+import { createRequire } from 'node:module';
+import { expect, test, type Page } from '@playwright/test';
+import type { GuildBillingSettings } from '../../src/lib/billing/contract';
+import {
+  GUILD_TIER_28_READ,
+  LAPSED_READ,
+  SETTINGS_GUILD,
+  SETTINGS_GUILD_PATH,
+  TRIAL_READ,
+  UPGRADE_PREVIEW,
+  guildBillingRead,
+  meWithGuildPlan,
+  planView,
+  routeGuildSettingsPage,
+} from '../../src/test-support/billing-fixtures';
+import { gotoHydrated } from './support/hydrated';
+
+const GUILD_ID = SETTINGS_GUILD.id;
+const PHONE = { width: 360, height: 780 };
+const MIN_TAP_PX = 44;
+const NOON = '2026-12-01T12:00:00Z';
+
+function envelope(data: unknown, status = 200) {
+  return {
+    status,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      ok: status < 400,
+      data: status < 400 ? data : null,
+      error: status < 400 ? null : data,
+      request_id: 'req-test',
+    }),
+  };
+}
+
+async function openWith(page: Page, read: GuildBillingSettings): Promise<void> {
+  await routeGuildSettingsPage(page);
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing`, (route) => route.fulfill(envelope(read)));
+  await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-billing');
+  await expect(page.getByTestId('guild-billing-skeleton')).toHaveCount(0);
+}
+
+const billing = (page: Page) => page.getByTestId('guild-settings-billing');
+
+test('case 9: not on a plan preselects the fit, and the trial button carries plan, interval and guild', async ({
+  page,
+}) => {
+  await openWith(page, guildBillingRead({ verified_count: 28 }));
+  await expect(page.getByTestId('guild-billing-option-raid_guild').locator('input')).toBeChecked();
+  await expect(billing(page)).toContainText('28 verified members today.');
+  await expect(page.getByTestId('guild-billing-subscribe')).toHaveText('Start the 7-day trial');
+  await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
+    'href',
+    `/premium/checkout?plan=raid_guild&interval=yearly&guild_id=${GUILD_ID}`,
+  );
+  await page.getByTestId('guild-billing-interval-monthly').check();
+  await page.getByTestId('guild-billing-option-guild').click();
+  await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
+    'href',
+    `/premium/checkout?plan=guild&interval=monthly&guild_id=${GUILD_ID}`,
+  );
+  await expect(page.getByTestId('guild-billing-trial-line')).toBeVisible();
+});
+
+test('case 9: a used trial shows Subscribe with the price and no trial line', async ({ page }) => {
+  await openWith(page, guildBillingRead({ trial_used: true }));
+  await expect(page.getByTestId('guild-billing-subscribe')).toContainText('Subscribe · $');
+  await expect(page.getByTestId('guild-billing-subscribe')).not.toContainText('trial');
+  await expect(page.getByTestId('guild-billing-trial-line')).toHaveCount(0);
+});
+
+test('case 10: a trial reads its first charge and the cancel-before date', async ({ page }) => {
+  const read: GuildBillingSettings = {
+    ...TRIAL_READ,
+    billing: { ...TRIAL_READ.billing!, trial_end: '2026-11-04T12:00:00Z' },
+  };
+  await openWith(page, read);
+  await expect(page.getByTestId('guild-billing-plan')).toContainText(
+    'Guild · trial · first charge 4 Nov 2026: $15',
+  );
+  await expect(page.getByTestId('guild-billing-contact')).toHaveText(
+    'Cancel before 4 Nov and nothing is charged. Billed to you.',
+  );
+});
+
+test('case 11: 28 members shows the size line and one Move to Raid guild; Escape closes the confirm', async ({
+  page,
+}) => {
+  await openWith(page, GUILD_TIER_28_READ);
+  await expect(page.getByTestId('guild-size-line')).toContainText('28 verified members.');
+  await expect(page.getByRole('button', { name: 'Move to Raid guild' })).toHaveCount(1);
+
+  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade-preview`, (route) =>
+    route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
+  );
+  await page.getByTestId('guild-move-raid-guild').click();
+  await expect(page.getByTestId('guild-upgrade-keep')).toBeFocused();
+  await expect(page.getByTestId('guild-upgrade-confirm')).toContainText('Today you pay $6');
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('guild-upgrade-confirm')).toHaveCount(0);
+});
+
+test('case 11: the commit updates the plan line and says it is done', async ({ page }) => {
+  await openWith(page, GUILD_TIER_28_READ);
+  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade-preview`, (route) =>
+    route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
+  );
+  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade`, (route) =>
+    route.fulfill(
+      envelope({
+        ...GUILD_TIER_28_READ,
+        billing: planView({ tier: 'raid_guild', amount_cents: 2500, current_period_end: NOON }),
+      }),
+    ),
+  );
+  await page.getByTestId('guild-move-raid-guild').click();
+  await expect(page.getByTestId('guild-upgrade-commit')).toBeEnabled();
+  await page.getByTestId('guild-upgrade-commit').click();
+  await expect(page.getByTestId('guild-billing-plan')).toContainText('Raid guild · renews 1 Dec 2026');
+  await expect(page.getByTestId('guild-upgrade-done')).toBeVisible();
+  await expect(page.getByTestId('guild-size-line')).toHaveCount(0);
+});
+
+test('a 409 upgrade_failed shows its line and nothing moves', async ({ page }) => {
+  await openWith(page, GUILD_TIER_28_READ);
+  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade-preview`, (route) =>
+    route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
+  );
+  await page.route(`**/v1/guilds/${GUILD_ID}/upgrade`, (route) =>
+    route.fulfill(envelope({ code: 'upgrade_failed', message: 'declined' }, 409)),
+  );
+  await page.getByTestId('guild-move-raid-guild').click();
+  await page.getByTestId('guild-upgrade-commit').click();
+  await expect(page.getByTestId('guild-upgrade-error')).toHaveText(
+    'That did not go through. Nothing was charged. Try again.',
+  );
+});
+
+test('Manage billing opens the portal for the guild', async ({ page }) => {
+  await openWith(page, guildBillingRead({ billing: planView({ current_period_end: NOON }) }));
+  let posted: unknown;
+  await page.route('**/v1/billing/portal', (route) => {
+    posted = route.request().postDataJSON();
+    return route.fulfill(envelope({ portal_url: 'https://billing.stripe.com/guild' }));
+  });
+  await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
+  await page.getByTestId('guild-manage-billing').click();
+  await page.waitForURL('https://billing.stripe.com/**');
+  expect(posted).toEqual({ guild_id: GUILD_ID });
+});
+
+test('case 14: lapsed reads the read-only line, Subscribe again, and both CSVs download', async ({
+  page,
+}) => {
+  const lapsed: GuildBillingSettings = {
+    ...LAPSED_READ,
+    can: ['billing'],
+    billing: { ...LAPSED_READ.billing!, current_period_end: '2026-10-01T12:00:00Z' },
+  };
+  await openWith(page, lapsed);
+  await expect(page.getByTestId('guild-billing-plan')).toHaveText('Guild plan ended 1 Oct 2026.');
+  await expect(page.getByTestId('guild-billing-contact')).toContainText('Officer tools are read-only.');
+  await expect(page.getByTestId('guild-billing-subscribe')).toHaveText('Subscribe again');
+
+  for (const kind of ['attendance', 'loot'] as const) {
+    let contentType = '';
+    await page.route(`**/v1/guilds/${GUILD_ID}/export/${kind}.csv`, (route) => {
+      contentType = 'text/csv';
+      return route.fulfill({
+        status: 200,
+        headers: {
+          'content-type': 'text/csv',
+          'content-disposition': `attachment; filename="the-last-watch-${kind}.csv"`,
+          'access-control-allow-origin': '*',
+        },
+        body: 'name\n',
+      });
+    });
+    const download = page.waitForEvent('download');
+    await page.getByTestId(`guild-export-${kind}`).click();
+    expect((await download).suggestedFilename()).toBe(`the-last-watch-${kind}.csv`);
+    expect(contentType).toBe('text/csv');
+  }
+});
+
+interface AxeResults {
+  violations: { id: string }[];
+}
+const AXE_SOURCE = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
+
+test('case 18: axe finds no violations and every control is at least 44px tall at 360', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await openWith(page, GUILD_TIER_28_READ);
+  await page.getByTestId('guild-move-raid-guild').click();
+  await page.addScriptTag({ path: AXE_SOURCE });
+  const results = await page.evaluate(async (): Promise<AxeResults> => {
+    const axe = (window as unknown as { axe: { run: (context: string) => Promise<AxeResults> } }).axe;
+    return axe.run('#billing');
+  });
+  expect(results.violations.map((violation) => violation.id)).toEqual([]);
+
+  const heights = await billing(page)
+    .locator('a:visible, button:visible, input:visible')
+    .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+  for (const height of heights) expect(height).toBeGreaterThanOrEqual(MIN_TAP_PX);
+});

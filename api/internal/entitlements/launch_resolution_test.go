@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
 var standardFeatures = []Feature{
@@ -107,14 +109,99 @@ func TestCan_OfferedSeatGrantsNothing(t *testing.T) {
 	assertStandard(t, s, uid, false)
 }
 
-func TestCan_SeatEndsWithPlan(t *testing.T) {
-	s, pool, gid, uid := seatFixture(t, TierRaidGuild, 1, "held", nil)
-	assertStandard(t, s, uid, true)
-	if _, err := pool.Exec(context.Background(),
-		`update entitlements set status = 'canceled' where guild_id = $1`, gid); err != nil {
+func TestCan_SeatFollowsPlanLifecycle(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		seed func(t *testing.T, pool *pgxpool.Pool, gid int64)
+		want bool
+	}{
+		{"active", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "active") }, true},
+		{"past_due", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "past_due") }, true},
+		{"trialing", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "trialing") }, true},
+		{"canceled", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "canceled") }, false},
+		{"unpaid", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "unpaid") }, false},
+		{"expired whole-plan grant", func(t *testing.T, p *pgxpool.Pool, g int64) {
+			seedEntitlementUntil(t, p, Subject{GuildID: i64(g)}, PlanGuild, "active", nil, timePtr(yesterday()))
+		}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			pool := testPool(t)
+			gid := seedGuild(t, pool)
+			tc.seed(t, pool, gid)
+			uid := seedUser(t, pool)
+			seedGuildMember(t, pool, gid, uid, "member", true)
+			seedSeat(t, pool, gid, uid, 1, "held", nil)
+			assertStandard(t, &Store{Pool: pool}, uid, tc.want)
+		})
+	}
+}
+
+func TestCan_SeatHolderVerifiedElsewhereOnly(t *testing.T) {
+	pool := testPool(t)
+	seatGuild := seedGuild(t, pool)
+	seedTieredGuildPlan(t, pool, seatGuild, TierRaidGuild, "active")
+	elsewhere := seedGuild(t, pool)
+	uid := seedUser(t, pool)
+	seedGuildMember(t, pool, elsewhere, uid, "member", true)
+	seedGuildMember(t, pool, seatGuild, uid, "member", false)
+	seedSeat(t, pool, seatGuild, uid, 1, "held", nil)
+	assertStandard(t, &Store{Pool: pool}, uid, false)
+}
+
+func TestHeldSeatClauseMatchesCatalogSeatCounts(t *testing.T) {
+	for _, tier := range []string{TierGuild, TierRaidGuild} {
+		t.Run(tier, func(t *testing.T) {
+			pool := testPool(t)
+			s := &Store{Pool: pool}
+			gid := seedGuild(t, pool)
+			seedTieredGuildPlan(t, pool, gid, tier, "active")
+			resolving := 0
+			for slot := 1; slot <= 3; slot++ {
+				uid := seedUser(t, pool)
+				seedGuildMember(t, pool, gid, uid, "member", true)
+				seedSeat(t, pool, gid, uid, slot, "held", nil)
+				ok, err := s.IsSupporter(context.Background(), uid)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if ok {
+					resolving++
+				}
+			}
+			if want := catalog.SeatsForTier(tier); resolving != want {
+				t.Fatalf("%d seats resolve Premium on %s, catalog says %d", resolving, tier, want)
+			}
+		})
+	}
+}
+
+func TestCan_RaidGuildToolsIsPerGuild(t *testing.T) {
+	pool := testPool(t)
+	uid := seedUser(t, pool)
+	seedEntitlement(t, pool, Subject{UserID: i64(uid)}, PlanPremium, "active")
+	if ok, _, err := (&Store{Pool: pool}).Can(context.Background(), uid, FeatureRaidGuildTools); err == nil || ok {
+		t.Fatalf("Can(raid_guild_tools) = %v, %v, want an error and false", ok, err)
+	}
+}
+
+func TestSupportersAmong(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	seedTieredGuildPlan(t, pool, gid, TierGuild, "active")
+	seated, personal, none := seedUser(t, pool), seedUser(t, pool), seedUser(t, pool)
+	seedGuildMember(t, pool, gid, seated, "member", true)
+	seedSeat(t, pool, gid, seated, 1, "held", nil)
+	seedGuildMember(t, pool, gid, none, "member", true)
+	seedEntitlement(t, pool, Subject{UserID: i64(personal)}, PlanPremium, "active")
+
+	got, err := s.SupportersAmong(context.Background(), []int64{seated, personal, none})
+	if err != nil {
 		t.Fatal(err)
 	}
-	assertStandard(t, s, uid, false)
+	if !got[seated] || !got[personal] || got[none] || len(got) != 3 {
+		t.Fatalf("SupportersAmong = %v", got)
+	}
 }
 
 func TestCan_SeatHolderNoLongerVerified(t *testing.T) {
@@ -147,6 +234,11 @@ func TestCan_OpenEndedPersonalGrantSurvives(t *testing.T) {
 	seedTieredGuildPlan(t, pool, seated, TierGuild, "active")
 	seedGuildMember(t, pool, seated, owner, "member", true)
 	seedSeat(t, pool, seated, owner, 1, "held", nil)
+	// The seat's plan lapses, so only the grant can resolve.
+	if _, err := pool.Exec(context.Background(),
+		`update entitlements set status = 'canceled' where guild_id = $1`, seated); err != nil {
+		t.Fatal(err)
+	}
 
 	other := seedGuild(t, pool)
 	seedTieredGuildPlan(t, pool, other, TierGuild, "active")
@@ -156,25 +248,33 @@ func TestCan_OpenEndedPersonalGrantSurvives(t *testing.T) {
 }
 
 func TestCanForGuild_RaidGuildTools(t *testing.T) {
+	raid := func(status string) func(*testing.T, *pgxpool.Pool, int64) {
+		return func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, status) }
+	}
 	for _, tc := range []struct {
-		name   string
-		setup  func(t *testing.T, pool *pgxpool.Pool, gid int64)
-		wantOK bool
-		reason Reason
+		name     string
+		setup    func(t *testing.T, pool *pgxpool.Pool, gid int64)
+		rank     string
+		verified bool
+		wantOK   bool
+		reason   Reason
 	}{
-		{"guild tier", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierGuild, "active") }, false, ReasonNoPlan},
-		{"raid guild", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "active") }, true, ReasonEntitled},
+		{"guild tier", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierGuild, "active") }, "officer", true, false, ReasonNoPlan},
+		{"raid guild", raid("active"), "officer", true, true, ReasonEntitled},
+		{"raid guild past_due", raid("past_due"), "officer", true, true, ReasonEntitled},
+		{"raid guild member", raid("active"), "member", true, false, ReasonNotOfficer},
+		{"raid guild unverified officer", raid("active"), "officer", false, false, ReasonNoPlan},
 		{"scoped grant", func(t *testing.T, p *pgxpool.Pool, g int64) {
 			seedEntitlementUntil(t, p, Subject{GuildID: i64(g)}, PlanGuild, "active", []string{FeatureScopeOfficerViews}, timePtr(tomorrow()))
-		}, true, ReasonEntitled},
-		{"lapsed", func(t *testing.T, p *pgxpool.Pool, g int64) { seedTieredGuildPlan(t, p, g, TierRaidGuild, "canceled") }, false, ReasonNoPlan},
+		}, "officer", true, true, ReasonEntitled},
+		{"lapsed", raid("canceled"), "officer", true, false, ReasonNoPlan},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			pool := testPool(t)
 			gid := seedGuild(t, pool)
 			tc.setup(t, pool, gid)
 			uid := seedUser(t, pool)
-			seedGuildMember(t, pool, gid, uid, "officer", true)
+			seedGuildMember(t, pool, gid, uid, tc.rank, tc.verified)
 			ok, reason, err := (&Store{Pool: pool}).CanForGuild(context.Background(), gid, uid, FeatureRaidGuildTools)
 			if err != nil {
 				t.Fatal(err)

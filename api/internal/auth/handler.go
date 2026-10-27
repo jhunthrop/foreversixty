@@ -528,8 +528,8 @@ func (s *Service) buildSimsView(ctx context.Context, userID int64, entitled bool
 }
 
 // entitlementFeatures pairs every gated Feature with the EntitlementsView
-// field it sets, so buildEntitlementsView is one loop rather than seven
-// near-identical Can calls.
+// field it sets, so buildEntitlementsView is one loop; Premium resolves once
+// and fans out to every standard feature.
 var entitlementFeatures = []struct {
 	feature entitlements.Feature
 	set     func(*EntitlementsView, bool)
@@ -548,18 +548,21 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 	if s.Entitlements == nil {
 		return ev, nil
 	}
-	for _, f := range entitlementFeatures {
-		ok, _, err := s.Entitlements.Can(ctx, userID, f.feature)
-		if err != nil {
-			return EntitlementsView{}, fmt.Errorf("auth: me: entitlements: %w", err)
-		}
-		f.set(&ev, ok)
-	}
 	supporter, err := s.Entitlements.IsSupporter(ctx, userID)
 	if err != nil {
 		return EntitlementsView{}, fmt.Errorf("auth: me: supporter: %w", err)
 	}
 	ev.SupporterMark = supporter
+	for _, f := range entitlementFeatures {
+		ok := supporter
+		if !f.feature.Standard() {
+			ok, _, err = s.Entitlements.Can(ctx, userID, f.feature)
+			if err != nil {
+				return EntitlementsView{}, fmt.Errorf("auth: me: entitlements: %w", err)
+			}
+		}
+		f.set(&ev, ok)
+	}
 	b, err := s.Entitlements.PersonalBilling(ctx, userID)
 	if err != nil {
 		return EntitlementsView{}, fmt.Errorf("auth: me: billing: %w", err)
