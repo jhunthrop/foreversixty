@@ -305,7 +305,8 @@ func (g *StripeGateway) ListSubscriptions(ctx context.Context, productID string)
 		if !subscriptionHasProduct(sub, productID) {
 			continue
 		}
-		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status), PriceLookupKey: itemLookupKey(sub)})
+		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status), PriceLookupKey: itemLookupKey(sub),
+			ItemLookupKeys: itemLookupKeys(sub)})
 	}
 	return out, nil
 }
@@ -368,6 +369,22 @@ func itemLookupKey(sub *stripe.Subscription) string {
 		return ""
 	}
 	return sub.Items.Data[0].Price.LookupKey
+}
+
+// itemLookupKeys is the lookup key of every item, in order.
+func itemLookupKeys(sub *stripe.Subscription) []string {
+	if sub.Items == nil {
+		return nil
+	}
+	keys := make([]string, 0, len(sub.Items.Data))
+	for _, item := range sub.Items.Data {
+		if item == nil || item.Price == nil {
+			keys = append(keys, "")
+			continue
+		}
+		keys = append(keys, item.Price.LookupKey)
+	}
+	return keys
 }
 
 // singleItem is the one line item every subscription of ours has.

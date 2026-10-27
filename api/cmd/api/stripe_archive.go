@@ -1,6 +1,6 @@
 // api/cmd/api/stripe_archive.go
 //
-// stripe-archive-prices retires the catalog's unsold prices in Stripe once
+// stripe-archive-prices retires the two legacy Premium prices in Stripe once
 // no live subscription still bills on them. It runs last in the launch
 // pricing rollout and never opens the database.
 package main
@@ -20,70 +20,83 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 )
 
+// retiredPriceKeys are the two legacy Premium prices this command archives,
+// written out on purpose: a catalog flag flipping must never widen what it
+// archives to a launch, founder or Guild price.
+var retiredPriceKeys = []string{catalog.LookupKeyPremiumMonthly, catalog.LookupKeyPremiumYearly}
+
+// retiredProductID is the product that holds the retired prices.
+const retiredProductID = catalog.ProductIDPremium
+
 // endedSubscriptionStatuses are the statuses that can never bill again; any
 // other status (active, trialing, past_due, and also unpaid, paused or
 // incomplete, which can still be revived) keeps its price in use.
 var endedSubscriptionStatuses = []string{"canceled", "incomplete_expired"}
 
-// unsoldKeysByProduct groups the catalog's unsold lookup keys by product id.
-func unsoldKeysByProduct() map[string][]string {
-	byProduct := map[string][]string{}
-	for _, p := range catalog.Prices() {
-		if !p.Sold {
-			product := p.Offer.ProductID()
-			byProduct[product] = append(byProduct[product], p.LookupKey)
-		}
+// itemKeys are the lookup keys of every item on the subscription.
+func itemKeys(s billing.StripeSubscriptionSummary) []string {
+	if len(s.ItemLookupKeys) > 0 {
+		return s.ItemLookupKeys
 	}
-	return byProduct
+	return []string{s.PriceLookupKey}
 }
 
-// liveOnUnsoldPrices returns "subscription (status, price)" for every live
-// subscription billing on an unsold price.
-func liveOnUnsoldPrices(ctx context.Context, gw billing.Gateway) ([]string, error) {
+// blocksArchive explains why a not-yet-ended subscription keeps the retired
+// prices in use, or returns "" when it does not. A subscription with more
+// than one item is refused outright: ours have exactly one.
+func blocksArchive(s billing.StripeSubscriptionSummary) string {
+	keys := itemKeys(s)
+	if len(keys) > 1 {
+		return "has more than one item"
+	}
+	if slices.Contains(retiredPriceKeys, keys[0]) {
+		return "bills on " + keys[0]
+	}
+	return ""
+}
+
+// liveOnRetiredPrices returns one line per subscription that blocks archiving.
+func liveOnRetiredPrices(ctx context.Context, gw billing.Gateway) ([]string, error) {
+	subs, err := gw.ListSubscriptions(ctx, retiredProductID)
+	if err != nil {
+		return nil, fmt.Errorf("stripe-archive-prices: list subscriptions on %s: %w", retiredProductID, err)
+	}
 	var live []string
-	for product, keys := range unsoldKeysByProduct() {
-		subs, err := gw.ListSubscriptions(ctx, product)
-		if err != nil {
-			return nil, fmt.Errorf("list subscriptions on %s: %w", product, err)
+	for _, s := range subs {
+		if slices.Contains(endedSubscriptionStatuses, s.Status) {
+			continue
 		}
-		for _, s := range subs {
-			if slices.Contains(keys, s.PriceLookupKey) && !slices.Contains(endedSubscriptionStatuses, s.Status) {
-				live = append(live, fmt.Sprintf("%s (%s, %s)", s.ID, s.Status, s.PriceLookupKey))
-			}
+		if reason := blocksArchive(s); reason != "" {
+			live = append(live, fmt.Sprintf("%s (%s, %s)", s.ID, s.Status, reason))
 		}
 	}
 	slices.Sort(live)
 	return live, nil
 }
 
-// archiveUnsoldPrices refuses while a live subscription uses an unsold
+// archiveRetiredPrices refuses while a live subscription uses a retired
 // price; otherwise it prints the keys and, only when apply is set, archives
-// them.
-func archiveUnsoldPrices(ctx context.Context, gw billing.Gateway, apply bool, out io.Writer) error {
-	live, err := liveOnUnsoldPrices(ctx, gw)
+// them, reporting each one after Stripe accepted it.
+func archiveRetiredPrices(ctx context.Context, gw billing.Gateway, apply bool, out io.Writer) error {
+	live, err := liveOnRetiredPrices(ctx, gw)
 	if err != nil {
 		return err
 	}
 	if len(live) > 0 {
 		for _, s := range live {
-			fmt.Fprintf(out, "live subscription on an unsold price: %s\n", s)
+			fmt.Fprintf(out, "live subscription blocks archiving: %s\n", s)
 		}
-		return fmt.Errorf("stripe-archive-prices: refusing, %d live subscription(s) still use unsold prices", len(live))
+		return fmt.Errorf("stripe-archive-prices: refusing, %d live subscription(s) still use the retired prices", len(live))
 	}
-	verb := "would archive"
-	if apply {
-		verb = "archiving"
-	}
-	for _, p := range catalog.Prices() {
-		if p.Sold {
+	for _, key := range retiredPriceKeys {
+		if !apply {
+			fmt.Fprintf(out, "would archive %s\n", key)
 			continue
 		}
-		fmt.Fprintf(out, "%s %s\n", verb, p.LookupKey)
-		if apply {
-			if err := gw.ArchivePrice(ctx, p.LookupKey); err != nil {
-				return fmt.Errorf("stripe-archive-prices: %s: %w", p.LookupKey, err)
-			}
+		if err := gw.ArchivePrice(ctx, key); err != nil {
+			return fmt.Errorf("stripe-archive-prices: %s: %w", key, err)
 		}
+		fmt.Fprintf(out, "archived %s\n", key)
 	}
 	if !apply {
 		fmt.Fprintln(out, "dry run: pass --apply to archive")
@@ -104,9 +117,9 @@ func runStripeArchivePrices(ctx context.Context, log *slog.Logger, args []string
 	if err := cfg.ValidateStripeKeyEnvironment(); err != nil {
 		return err
 	}
-	if !cfg.StripeConfigured() {
-		return errors.New("stripe-archive-prices: STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are required")
+	if cfg.StripeSecretKey == "" {
+		return errors.New("stripe-archive-prices: STRIPE_SECRET_KEY is required")
 	}
 	log.Info("stripe-archive-prices", "apply", *apply)
-	return archiveUnsoldPrices(ctx, billing.NewStripeGateway(cfg.StripeSecretKey), *apply, os.Stdout)
+	return archiveRetiredPrices(ctx, billing.NewStripeGateway(cfg.StripeSecretKey), *apply, os.Stdout)
 }
