@@ -529,11 +529,14 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }
 
+// DrainCompletions waits, until ctx ends, for the hooks guild patches started.
+func (s *Service) DrainCompletions(ctx context.Context) error { return s.completions.drain(ctx) }
+
 // guildSet runs, detached, what a patch that sets a report's guild starts: release any match a
 // raid of another guild holds (Moved), then, for a complete report, the completion hook.
 func (s *Service) guildSet(r *http.Request, rep Report) {
 	by := auth.ActorFrom(r.Context()).UserID
-	s.completions.run(r.Context(), func(ctx context.Context) {
+	s.completions.run(r.Context(), s.Log, rep.ID, func(ctx context.Context) {
 		if s.Moved != nil {
 			s.Moved.ReportGuildMoved(ctx, rep.ID, by)
 		}

@@ -176,6 +176,9 @@ type Ingest struct {
 	completions completions
 }
 
+// DrainCompletions waits, until ctx ends, for the completion hooks complete calls started.
+func (i *Ingest) DrainCompletions(ctx context.Context) error { return i.completions.drain(ctx) }
+
 // MountIngest registers the companion's routes.
 func MountIngest(mux *http.ServeMux, i *Ingest) {
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}", auth.RequireDevice(i.putFight))
@@ -653,10 +656,12 @@ func (i *Ingest) complete(w http.ResponseWriter, r *http.Request) {
 	}
 	// A live fight's zone is the header's (engine.Rebuild takes the
 	// report's zone), so the report's zone is what the log named. The
-	// work runs detached: it outlives a companion that hangs up on the
-	// 204 and never holds the 204 back.
-	i.completions.run(r.Context(), func(ctx context.Context) {
-		FinishCompletion(ctx, i.Store, i.Completed, i.logger(), rep.ID, rep.Zone)
+	// zone and the guild are written before the 204; the hook runs
+	// detached, outliving a companion that hangs up and never holding
+	// the 204 back.
+	recordCompletionBounded(r.Context(), i.Store, i.logger(), rep.ID, rep.Zone)
+	i.completions.run(r.Context(), i.logger(), rep.ID, func(ctx context.Context) {
+		callCompleted(ctx, i.Completed, rep.ID)
 	})
 	w.WriteHeader(http.StatusNoContent)
 }

@@ -58,6 +58,8 @@ const (
 	maxSendsPerHour = 300
 
 	shutdownTimeout = 10 * time.Second
+	// completionDrainTimeout bounds the wait at shutdown for detached report completion hooks.
+	completionDrainTimeout = 15 * time.Second
 )
 
 func main() {
@@ -777,6 +779,7 @@ func serve(log *slog.Logger) error {
 		}
 		<-serveErr // wait for the listener goroutine to actually return
 	}
+	drainCompletions(deps, log)
 	subscribeSvc.Wait()
 	views.Close()
 	if sampler != nil {
@@ -790,4 +793,21 @@ func serve(log *slog.Logger) error {
 	}
 	log.Info("stopped")
 	return nil
+}
+
+// drainCompletions waits, bounded, for the report completion hooks the last requests started
+// (a raid match each), so a deploy does not drop them.
+func drainCompletions(deps server.Deps, log *slog.Logger) {
+	ctx, cancel := context.WithTimeout(context.Background(), completionDrainTimeout)
+	defer cancel()
+	if deps.Reports != nil {
+		if err := deps.Reports.DrainCompletions(ctx); err != nil {
+			log.Error("shutdown", "step", "report_hooks", "err", err)
+		}
+	}
+	if deps.Ingest != nil {
+		if err := deps.Ingest.DrainCompletions(ctx); err != nil {
+			log.Error("shutdown", "step", "ingest_hooks", "err", err)
+		}
+	}
 }
