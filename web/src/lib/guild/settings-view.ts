@@ -34,32 +34,11 @@ function planEndDate(billing: GuildBillingView): string {
   return billing.current_period_end === null ? '' : utcDayMonthYear(billing.current_period_end);
 }
 
-/**
- * "Guild plan · renews 31 Dec 2026", "Guild plan · ends 31 Dec 2026", or for a plan an operator
- * granted (no Stripe billing contact) "Guild plan · until 31 Dec 2026". The date is the one that
- * was stored, read in UTC: a grant until 2026-12-31 is the 31st for a viewer in any zone.
- */
-export function guildPlanLine(billing: GuildBillingView): string {
-  const date = planEndDate(billing);
-  if (billing.scope === 'officer_tools') {
-    return date === '' ? settingsWords.officerTools : `${settingsWords.officerTools} · until ${date}`;
-  }
-  if (date === '') return settingsWords.guildPlan;
-  const verb = billing.billed_by === '' ? 'until' : billing.cancel_at_period_end ? 'ends' : 'renews';
-  return `${settingsWords.guildPlan} · ${verb} ${date}`;
-}
-
 /** What a scoped grant covers and what follows it, in the grant's own words. */
 export function officerToolsExplanation(billing: GuildBillingView): string {
   const date = planEndDate(billing);
   const until = date === '' ? '' : `, until ${date}`;
   return `Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only${until}. After that they need the guild plan.`;
-}
-
-/** Who pays: "Billed to you.", "Billed by hunthrop#1894", or "No billing contact yet". */
-export function billedLine(billing: GuildBillingView): string {
-  if (billing.you_are_billing_contact) return 'Billed to you.';
-  return billing.billed_by === '' ? settingsWords.grantedByUs : `Billed by ${billing.billed_by}`;
 }
 
 /** Manage billing needs a Stripe customer: the billing contact, and only a plan with one. */

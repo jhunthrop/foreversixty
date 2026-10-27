@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
+import { billedLine, guildPlanLine } from '../billing/guild-billing-copy';
 import { guildRosterModelCopy } from './copy';
 import {
-  billedLine,
   billingState,
   canManageBilling,
   claimedByLine,
-  guildPlanLine,
   officerToolsExplanation,
   notOnPlanLines,
   settingsWords,

@@ -128,6 +128,12 @@ export function utcDayMonthYear(value: string): string {
   return formatDayMonthYear(new Date(value));
 }
 
+/** "31 Dec", always read in UTC, for a stored date-only value or an RFC 3339 instant: the short
+ *  sibling of `utcDayMonthYear` for a date that cannot fall in another year. */
+export function utcDayMonth(value: string): string {
+  return utcDayMonthYear(value).replace(/ \d{4}$/, '');
+}
+
 const SHORT_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 /** "Tue 20 Oct" ("Tue 20 Oct 2025" in another year) for a calendar day. */

@@ -60,6 +60,7 @@ export const PLANS: Record<PlanKey, Plan> = {
 export const FOUNDER_WINDOW_CLOSES = '2027-01-07T08:00:00Z';
 export const GUILD_TIER_MEMBER_LIMIT = 25;
 export const GUILD_TRIAL_DAYS = 7;
+export const SEAT_MOVE_LOCK_DAYS = 30;
 
 const MONTHS_PER_YEAR = 12;
 const CENTS_PER_DOLLAR = 100;

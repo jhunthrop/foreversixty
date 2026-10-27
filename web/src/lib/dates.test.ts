@@ -10,8 +10,16 @@ import {
   nightDateOnly,
   relativeDay,
   relativeTime,
+  utcDayMonth,
   utcDayMonthYear,
 } from './dates';
+
+describe('utcDayMonth', () => {
+  it('drops the year and reads the date in UTC', () => {
+    expect(utcDayMonth('2026-12-31')).toBe('31 Dec');
+    expect(utcDayMonth('2026-12-31T00:00:00Z')).toBe('31 Dec');
+  });
+});
 
 describe('formatDate', () => {
   it('uses the site month style', () => {

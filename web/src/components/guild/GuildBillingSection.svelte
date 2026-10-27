@@ -4,12 +4,11 @@
 <script lang="ts">
   import type { GuildBillingView } from '../../lib/account/api';
   import { billingBlockCopy } from '../../lib/billing/copy';
+  import { billedLine, guildPlanLine } from '../../lib/billing/guild-billing-copy';
   import { guildRosterModelCopy } from '../../lib/guild/copy';
   import {
-    billedLine,
     billingState,
     canManageBilling,
-    guildPlanLine,
     notOnPlanLines,
     officerToolsExplanation,
     settingsWords,
