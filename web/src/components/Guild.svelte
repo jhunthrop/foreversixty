@@ -66,7 +66,13 @@
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
   import { createRefreshingRead } from '../lib/guild/refreshing-read';
-  import { loadReadinessBoard, readinessRows, type ReadinessBoard } from '../lib/guild/readiness-raid';
+  import {
+    attendanceSourceOf,
+    raidsChangeAction,
+    readinessTabView,
+    type TabFetchStatus,
+  } from '../lib/guild/guild-page-decisions';
+  import { loadReadinessBoard, type ReadinessBoard } from '../lib/guild/readiness-raid';
   import { nextRaidDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
@@ -527,7 +533,6 @@
   // 404 from an endpoint the api lane has not deployed yet -- lands the tab on 'missing',
   // its own honest empty state with a next-step line, never a crash (hard rule).
   // ---------------------------------------------------------------------------------------
-  type TabFetchStatus = 'idle' | 'loading' | 'ready' | 'missing';
 
   let raids = $state<GuildRaidsPage | null>(null);
   let raidsStatus = $state<TabFetchStatus>('idle');
@@ -544,10 +549,7 @@
   /** A band press moved the Raids tab's counts and chips: an open tab (or one still loading) reads
    *  again in place (no skeleton flash); a closed one reads again when next shown. */
   function raidsChanged(): void {
-    if (
-      guildId !== null &&
-      (raidsStatus === 'loading' || (activeTab === 'raids' && raidsStatus === 'ready'))
-    ) {
+    if (raidsChangeAction(guildId !== null, raidsStatus, activeTab === 'raids') === 'reread') {
       raidsRead.invalidate();
     } else raidsStatus = 'idle';
   }
@@ -615,6 +617,7 @@
   let readinessStatus = $state<TabFetchStatus>('idle');
   /** The next-raid toggle, on by default; held here so a re-read never resets it. */
   let readinessNextRaidOnly = $state(true);
+  const readinessView = $derived(readinessTabView(readiness, readinessNextRaidOnly, home?.next_raid ?? null));
   $effect(() => {
     if (activeTab !== 'readiness' || guildId === null || readinessStatus !== 'idle') return;
     readinessStatus = 'loading';
@@ -1029,7 +1032,7 @@
           {rowPath}
           addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
-          attendanceSource={home.attendance_source ?? 'reports'}
+          attendanceSource={attendanceSourceOf(home)}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
@@ -1098,14 +1101,12 @@
         />
       {:else if readinessLazy.current}
         <readinessLazy.current
-          rows={readiness === null ? [] : readinessRows(readiness, readinessNextRaidOnly)}
-          raid={readiness?.raid?.raid ?? null}
+          rows={readinessView.rows}
+          raid={readinessView.raid}
           nextRaidOnly={readinessNextRaidOnly}
           onToggleNextRaid={() => (readinessNextRaidOnly = !readinessNextRaidOnly)}
-          raidHref={readiness?.raid?.raid === undefined
-            ? ''
-            : guildRaidHref(guildPath, readiness.raid.raid.id)}
-          guildTimezone={home.next_raid?.guild_timezone ?? null}
+          raidHref={readinessView.raidId === null ? null : guildRaidHref(guildPath, readinessView.raidId)}
+          guildTimezone={readinessView.guildTimezone}
           officer={officerView}
           {officerTools}
           {myCharacterKey}
@@ -1133,7 +1134,7 @@
           officer={officerView}
           {officerTools}
           memberReadOnly={role === 'member'}
-          attendanceSource={home?.attendance_source ?? 'reports'}
+          attendanceSource={attendanceSourceOf(home)}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}
           {settingsHref}

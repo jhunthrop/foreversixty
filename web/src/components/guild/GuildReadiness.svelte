@@ -46,7 +46,7 @@
     raid = null,
     nextRaidOnly = false,
     onToggleNextRaid = () => {},
-    raidHref = '',
+    raidHref = null,
     guildTimezone = null,
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
   }: {
@@ -63,7 +63,7 @@
     nextRaidOnly?: boolean;
     onToggleNextRaid?: () => void;
     /** The raid page the `Showing ...` line links. */
-    raidHref?: string;
+    raidHref?: string | null;
     guildTimezone?: string | null;
     viewerTimezone?: string;
   } = $props();
@@ -134,6 +134,10 @@
   const ENCHANT_PILL_STYLE =
     'height:auto;min-height:22px;white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left;';
 
+  // The stale pill's text (`Synced 9 days before the raid`) is longer than the 130px Synced column:
+  // it drops .pill's fixed 22px height and wraps instead of clipping.
+  const STALE_PILL = 'h-auto min-h-[22px] whitespace-normal py-0.5 text-left leading-[1.3]';
+
   function pillClass(kind: ReadinessCellKind, warnIsGold = false): string {
     if (kind === 'consent') return '';
     if (kind === 'ok') return `${PILL_BASE} ${PILL_OK}`;
@@ -164,7 +168,9 @@
 {#snippet syncedCell(row: GuildReadinessRow, size: string, dayText: string)}
   {@const cell = cellOf(row)}
   {#if cell.kind === 'stale'}
-    <span class={pillClass('warn', true)} data-testid="guild-readiness-stale">{cell.text}</span>
+    <span class={`${pillClass('warn', true)} ${STALE_PILL}`} data-testid="guild-readiness-stale"
+      >{cell.text}</span
+    >
   {:else}
     <span
       class={`text-muted ${size}`}
@@ -195,7 +201,8 @@
       </div>
       {#if nextRaidOnly && rows.length > 0}
         <p class="text-muted text-[13px]" data-testid="guild-readiness-showing">
-          {showing.lead}<a href={raidHref} class="text-nav">{showing.title}</a>{showing.tail}
+          {showing.lead}{#if raidHref !== null}<a href={raidHref} class="text-nav">{showing.title}</a
+            >{:else}{showing.title}{/if}{showing.tail}
         </p>
       {/if}
     </div>
@@ -204,38 +211,38 @@
     <EmptyState message={attendanceCopy.readiness.nobodySigned} testid="guild-readiness-nobody" />
   {/if}
 
-  <div
-    class="hidden gap-2 px-1 pb-1 md:grid"
-    style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
-    data-testid="guild-readiness-header"
-  >
-    <span class="label text-muted">Raider</span>
-    <span
-      class="label text-muted"
-      style="cursor:help"
-      title="Slots with a better item in the best-in-slot list, and the DPS a simulation says they are worth"
-      >Gear gap</span
+  {#if ordered.length > 0}<div
+      class="hidden gap-2 px-1 pb-1 md:grid"
+      style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
+      data-testid="guild-readiness-header"
     >
-    <span
-      class="label text-muted"
-      style="cursor:help"
-      title="Weapon, chest, cloak and boots checked for an enchant">Enchants</span
-    >
-    <span
-      class="label text-muted"
-      style="cursor:help"
-      title="Flasks, food and potions in bags. Only members who share their bags are checked."
-      >Consumables</span
-    >
-    <span class="label text-muted" style="cursor:help" title="Spent points vs 51 at level 60"
-      >Talent points</span
-    >
-    <span class="label text-muted" style="cursor:help" title="This character vs the roster's own median"
-      >Item level</span
-    >
-    <span class="label text-muted">Last synced</span>
-    <span></span>
-  </div>
+      <span class="label text-muted">Raider</span>
+      <span
+        class="label text-muted"
+        style="cursor:help"
+        title="Slots with a better item in the best-in-slot list, and the DPS a simulation says they are worth"
+        >Gear gap</span
+      >
+      <span
+        class="label text-muted"
+        style="cursor:help"
+        title="Weapon, chest, cloak and boots checked for an enchant">Enchants</span
+      >
+      <span
+        class="label text-muted"
+        style="cursor:help"
+        title="Flasks, food and potions in bags. Only members who share their bags are checked."
+        >Consumables</span
+      >
+      <span class="label text-muted" style="cursor:help" title="Spent points vs 51 at level 60"
+        >Talent points</span
+      >
+      <span class="label text-muted" style="cursor:help" title="This character vs the roster's own median"
+        >Item level</span
+      >
+      <span class="label text-muted">Last synced</span>
+      <span></span>
+    </div>{/if}
 
   <div class="flex flex-col" data-testid="guild-readiness-rows">
     {#each ordered as row (row.character_key)}

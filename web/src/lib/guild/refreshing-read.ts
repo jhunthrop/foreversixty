@@ -4,30 +4,36 @@
 // that predates the change.
 
 export interface RefreshingRead {
-  /** Runs the read (and any re-read a change asked for); rejects when a read fails. */
+  /** Runs the read (and any re-read a change asked for); a call while one runs joins it. Rejects when a
+   *  read fails: a read that fails after being marked stale reports that failure (the tab shows
+   *  `missing`) although a further re-read might have succeeded. */
   run: () => Promise<void>;
   /** The data changed: re-read now, or once the read in flight settles. A failed re-read is dropped. */
   invalidate: () => void;
 }
 
 export function createRefreshingRead(read: () => Promise<void>): RefreshingRead {
-  let inFlight = false;
+  let inFlight: Promise<void> | null = null;
   let stale = false;
 
-  async function run(): Promise<void> {
-    inFlight = true;
+  async function loop(): Promise<void> {
     try {
       do {
         stale = false;
         await read();
       } while (stale);
     } finally {
-      inFlight = false;
+      inFlight = null;
     }
   }
 
+  function run(): Promise<void> {
+    inFlight ??= loop();
+    return inFlight;
+  }
+
   function invalidate(): void {
-    if (inFlight) stale = true;
+    if (inFlight !== null) stale = true;
     else void run().catch(() => {});
   }
 

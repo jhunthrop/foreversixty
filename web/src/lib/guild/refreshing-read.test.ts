@@ -59,4 +59,22 @@ describe('createRefreshingRead', () => {
     fail = false;
     await expect(reading.run()).resolves.toBeUndefined();
   });
+
+  it('joins overlapping runs and still re-reads once for an invalidate', async () => {
+    const gates = [deferred(), deferred()];
+    let calls = 0;
+    const reading = createRefreshingRead(() => gates[calls++].promise);
+    const first = reading.run();
+    const second = reading.run();
+    reading.invalidate();
+    expect(second).toBe(first);
+    expect(calls).toBe(1);
+    gates[0].resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(calls).toBe(2);
+    gates[1].resolve();
+    await Promise.all([first, second]);
+    expect(calls).toBe(2);
+  });
 });
