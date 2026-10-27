@@ -75,3 +75,9 @@ create table billing_notices (
 
 create unique index seat_comebacks_once_idx on seat_comebacks (user_id, guild_name, ended_at);
 create index seat_comebacks_user_idx on seat_comebacks (user_id);
+
+-- Billing anomalies the launch webhook raises: a transfer with no offer behind
+-- it, and a subscription whose price is not in the catalog for its plan.
+alter table entitlement_anomalies drop constraint entitlement_anomalies_kind_check;
+alter table entitlement_anomalies add constraint entitlement_anomalies_kind_check
+  check (kind in ('duplicate_subscription', 'orphan_subscription', 'unexpected_transfer', 'unknown_price'));

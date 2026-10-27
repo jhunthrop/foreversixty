@@ -130,6 +130,9 @@ type StripeSubscriptionSummary struct {
 	// (empty for an item whose price has none), so a caller can refuse a
 	// subscription that carries a price as a second item.
 	ItemLookupKeys []string
+	// CancelAtPeriodEnd is true while the subscription is set to end at
+	// its period end.
+	CancelAtPeriodEnd bool
 }
 
 // Gateway is every Stripe API call this package makes. StripeGateway

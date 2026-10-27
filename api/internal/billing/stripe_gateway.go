@@ -305,8 +305,8 @@ func (g *StripeGateway) ListSubscriptions(ctx context.Context, productID string)
 		if !subscriptionHasProduct(sub, productID) {
 			continue
 		}
-		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status), PriceLookupKey: itemLookupKey(sub),
-			ItemLookupKeys: itemLookupKeys(sub)})
+		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status), PriceLookupKey: itemLookupKey(sub), ItemLookupKeys: itemLookupKeys(sub),
+			CancelAtPeriodEnd: sub.CancelAtPeriodEnd})
 	}
 	return out, nil
 }

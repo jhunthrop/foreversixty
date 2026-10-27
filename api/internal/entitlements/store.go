@@ -602,12 +602,20 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
 					then coalesce(excluded.stripe_subscription_created, entitlements.stripe_subscription_created)
 					else excluded.stripe_subscription_created end,
-				tier = excluded.tier,
+				tier = case
+					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
+					     and excluded.price_lookup_key is null
+					then coalesce(entitlements.tier, excluded.tier)
+					else excluded.tier end,
 				price_lookup_key = case
 					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
 					then coalesce(excluded.price_lookup_key, entitlements.price_lookup_key)
 					else excluded.price_lookup_key end,
-				unit_amount_cents = excluded.unit_amount_cents, trial_end = excluded.trial_end,
+				unit_amount_cents = case
+					when excluded.stripe_subscription_id = entitlements.stripe_subscription_id
+					then coalesce(excluded.unit_amount_cents, entitlements.unit_amount_cents)
+					else excluded.unit_amount_cents end,
+				trial_end = excluded.trial_end,
 				updated_at = now()
 			returning id`,
 			p.UserID, p.GuildID, p.Plan, p.Status, p.CurrentPeriodEnd, p.CancelAtPeriodEnd,

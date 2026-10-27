@@ -3,7 +3,10 @@ package billing
 
 import (
 	"context"
+	"errors"
 	"fmt"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // RecordGuildTrial notes that a guild has used its one trial; a second
@@ -17,17 +20,28 @@ func (s *Store) RecordGuildTrial(ctx context.Context, guildID int64, subscriptio
 	return nil
 }
 
-// TransferOffered reports whether the guild has an offered, not yet
-// accepted, transfer away from fromSubscriptionID.
-func (s *Store) TransferOffered(ctx context.Context, guildID int64, fromSubscriptionID string) (bool, error) {
-	var offered bool
-	if err := s.Pool.QueryRow(ctx, `
-		select exists (select 1 from plan_transfers
-		where guild_id = $1 and from_subscription_id = $2 and state = 'offered')`,
-		guildID, fromSubscriptionID).Scan(&offered); err != nil {
-		return false, fmt.Errorf("billing: read transfer: %w", err)
+// Transfer states a guild's plan_transfers row can be in, as far as the
+// webhook cares; transferNone means no row away from that subscription.
+const (
+	transferNone     = ""
+	transferOffered  = "offered"
+	transferAccepted = "accepted"
+)
+
+// TransferState is the state of the guild's transfer away from
+// fromSubscriptionID, or transferNone when there is no such row.
+func (s *Store) TransferState(ctx context.Context, guildID int64, fromSubscriptionID string) (string, error) {
+	var state string
+	err := s.Pool.QueryRow(ctx, `
+		select state from plan_transfers where guild_id = $1 and from_subscription_id = $2`,
+		guildID, fromSubscriptionID).Scan(&state)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return transferNone, nil
 	}
-	return offered, nil
+	if err != nil {
+		return transferNone, fmt.Errorf("billing: read transfer: %w", err)
+	}
+	return state, nil
 }
 
 // MarkTransferAccepted completes an offered transfer; accepting an
@@ -42,10 +56,13 @@ func (s *Store) MarkTransferAccepted(ctx context.Context, guildID int64, fromSub
 	return nil
 }
 
-// MarkComebackUsed stamps a comeback offer as redeemed, once.
-func (s *Store) MarkComebackUsed(ctx context.Context, id int64) error {
-	if _, err := s.Pool.Exec(ctx,
-		`update seat_comebacks set used_at = now() where id = $1 and used_at is null`, id); err != nil {
+// MarkComebackUsed stamps the user's own unexpired comeback offer as
+// redeemed, once; any other id, user or state changes nothing.
+func (s *Store) MarkComebackUsed(ctx context.Context, id, userID int64) error {
+	if _, err := s.Pool.Exec(ctx, `
+		update seat_comebacks set used_at = now()
+		where id = $1 and user_id = $2 and used_at is null and expires_at > now()`,
+		id, userID); err != nil {
 		return fmt.Errorf("billing: mark comeback used: %w", err)
 	}
 	return nil
