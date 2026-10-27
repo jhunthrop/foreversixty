@@ -2,7 +2,13 @@
 // Every visible string on /premium except the checkout chooser (billing/copy.ts), verbatim from
 // design/specs/2026-10-27-launch-pricing.md section 6.1. No exclamation marks, no urgency. Price
 // text is built from ./plans, never written here.
-import { GUILD_TIER_MEMBER_LIMIT, GUILD_TRIAL_DAYS, perMonthLine, type Interval } from './plans';
+import {
+  GUILD_TIER_MEMBER_LIMIT,
+  GUILD_TRIAL_DAYS,
+  SEAT_MOVE_LOCK_DAYS,
+  perMonthLine,
+  type Interval,
+} from './plans';
 
 export interface PlanRule {
   term: string;
@@ -114,8 +120,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Moving a seat',
-      sentence:
-        'A seat can move once every 30 days. The old holder keeps Premium until it moves. If a holder leaves the guild, the seat comes back at once.',
+      sentence: `A seat can move once every ${SEAT_MOVE_LOCK_DAYS} days. The old holder keeps Premium until it moves. If a holder leaves the guild, the seat comes back at once.`,
     },
     {
       term: 'Already on Premium',

@@ -46,3 +46,12 @@ describe('account page rows', () => {
     expect(copy.guildRow.youHoldSeat).toBe(spec('Guild row', 2));
   });
 });
+
+describe('instants read on the viewer calendar', () => {
+  it('an instant near midnight UTC lands on the viewer day', () => {
+    const ends = '2027-01-01T05:00:00Z';
+    expect(copy.offer.accepted(ends, 'America/Los_Angeles')).toContain('ends 31 Dec 2026');
+    expect(copy.offer.accepted(ends, 'Pacific/Auckland')).toContain('ends 1 Jan 2027');
+    expect(copy.seatEnded.text('Olympus', ends, 'America/Los_Angeles')).toContain('ended 31 Dec.');
+  });
+});

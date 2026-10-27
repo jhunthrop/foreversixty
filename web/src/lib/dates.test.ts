@@ -12,6 +12,9 @@ import {
   relativeTime,
   utcDayMonth,
   utcDayMonthYear,
+  viewerZone,
+  zonedDayMonth,
+  zonedDayMonthYear,
 } from './dates';
 
 describe('utcDayMonth', () => {
@@ -176,5 +179,27 @@ describe('nightDate (P.1: one night, one date)', () => {
     expect(nightDateOnly('2026-10-20', now)).toBe('Tue 20 Oct');
     expect(nightDateOnly('nope', now)).toBe('');
     expect(nightDate(new Date('nope'), now)).toBe('');
+  });
+});
+
+describe('zoned day helpers', () => {
+  const instant = '2026-12-20T20:00:00Z';
+
+  it('reads an instant on the viewer zone calendar around a day boundary', () => {
+    expect(zonedDayMonth(instant, 'America/Los_Angeles')).toBe('20 Dec');
+    expect(zonedDayMonth(instant, 'UTC')).toBe('20 Dec');
+    expect(zonedDayMonth(instant, 'Pacific/Auckland')).toBe('21 Dec');
+    expect(zonedDayMonthYear('2026-12-31T20:00:00Z', 'Pacific/Auckland')).toBe('1 Jan 2027');
+    expect(zonedDayMonthYear('2027-01-01T05:00:00Z', 'America/Los_Angeles')).toBe('31 Dec 2026');
+  });
+
+  it('reads a date-only value as written in every zone', () => {
+    expect(zonedDayMonth('2026-12-20', 'Pacific/Auckland')).toBe('20 Dec');
+    expect(zonedDayMonth('2026-12-20', 'America/Los_Angeles')).toBe('20 Dec');
+  });
+
+  it('renders an unreadable instant as nothing and defaults to the resolved zone', () => {
+    expect(zonedDayMonthYear('nope', 'UTC')).toBe('');
+    expect(zonedDayMonthYear(instant)).toBe(zonedDayMonthYear(instant, viewerZone()));
   });
 });

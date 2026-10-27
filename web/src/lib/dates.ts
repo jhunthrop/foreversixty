@@ -134,6 +134,46 @@ export function utcDayMonth(value: string): string {
   return utcDayMonthYear(value).replace(/ \d{4}$/, '');
 }
 
+/** The viewer's own IANA zone, the default for the zoned day helpers. */
+export function viewerZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+function zonedParts(instant: string, zone: string): { day: number; month: string; year: string } | null {
+  const date = new Date(instant);
+  if (Number.isNaN(date.getTime())) return null;
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: zone,
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+  }).formatToParts(date);
+  const part = (type: string): string => parts.find((entry) => entry.type === type)?.value ?? '';
+  return {
+    day: Number(part('day')),
+    month: SHORT_MONTHS[Number(part('month')) - 1] ?? '',
+    year: part('year'),
+  };
+}
+
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * "20 Dec 2026" for a stored value: a date-only value is a calendar day and reads as written,
+ * an instant reads on the calendar of `zone` (the viewer's by default), so a seat that unlocks
+ * at 20:00 UTC on the 20th is the 21st for a viewer in Auckland.
+ */
+export function zonedDayMonthYear(value: string, zone: string = viewerZone()): string {
+  if (DATE_ONLY.test(value)) return utcDayMonthYear(value);
+  const parts = zonedParts(value, zone);
+  return parts === null ? '' : `${parts.day} ${parts.month} ${parts.year}`;
+}
+
+/** "20 Dec": the short sibling of `zonedDayMonthYear`, for a date that cannot fall in another year. */
+export function zonedDayMonth(value: string, zone: string = viewerZone()): string {
+  return zonedDayMonthYear(value, zone).replace(/ \d{4}$/, '');
+}
+
 const SHORT_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 /** "Tue 20 Oct" ("Tue 20 Oct 2025" in another year) for a calendar day. */
