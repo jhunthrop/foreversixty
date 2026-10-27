@@ -38,6 +38,7 @@
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
   import RaidChip from './guild/RaidChip.svelte';
+  import Figures from './guild/Figures.svelte';
   import RaidDisclosure from './guild/RaidDisclosure.svelte';
   import RaidDoneSections from './guild/RaidDoneSections.svelte';
   import RaidForm from './guild/RaidForm.svelte';
@@ -263,7 +264,7 @@
             ><span class={pastLines ? 'inline' : 'block md:inline'}
               ><span class={pastLines ? 'inline' : 'hidden md:inline'}>{SEP}</span
               >{#if when.guildTime !== null}<span class="text-muted whitespace-nowrap">{when.guildTime}</span
-                >{SEP}{/if}<span class="{goldText} font-mono whitespace-nowrap">{when.countdown}</span></span
+                >{SEP}{/if}<Figures text={when.countdown} class={goldText} /></span
             >
           </p>
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">

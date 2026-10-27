@@ -62,3 +62,63 @@ The report, attendance, picker, clear confirm, read-only gate, roster chip, guil
 - [ ] R-A4: Notes and Sign-ups closed (finding 2).
 - [ ] Loading beside ready matches ±1 px (finding 8).
 - [ ] Every count and name survives 360 (findings 9, 12).
+
+## Re-review
+
+Reviewer: ux-designer, after the persona fix round (`b6f2b9da`, `7ed80843`). Evidence: the re-taken PNGs and JSON in this folder, plus the guild views' source for the shared padding change (no captures exist for the views without a band).
+
+### Ruling: Head of Onyxia's icon
+
+It shows its real game icon, `inv_misc_head_dragon_01`. The red question mark is not acceptable. `inv_misc_questionmark` is the client's missing-texture icon, and `/bis` already refuses it (`GearRow.astro`, `lib/gear/qualities.ts`: "never a red ?"). The premise is also wrong: the icon is in the build's data. `data/builds/1.60.1.70532/icons/inv_misc_head_dragon_01.webp` exists. Only `items.json` carries no `icon` for the quest item, and the loot table in `api/internal/guilds/loot.go` leaves it `""`.
+- Fix: fill `icon` for 18422 and 18423 with `inv_misc_head_dragon_01` in `loot.go`. Fill every other `""` in that table (15410, 17966, 18705, 21108) from the client's item data, not by guessing. Make sure the published icon set for the build (`web/public/data/<build>/icons`) includes each file.
+- Fallback, when an item really has no icon: use the `/bis` neutral tile. That is the empty-slot square in `--line` with a `bg-card-top` ground, at the same 28 / 20 px. Then show the name's letters. Remove the `QUESTION_MARK_ICON` step from `RaidLootItem` and `lib/guild/loot-icon.ts`.
+
+### Findings
+
+1. Fixed. There is no officer row on `done`. The gate sentence shows once (01-done-officer-1440, 01-done-officer-360, 08-read-only-panel-390). Ended keeps `Edit` (03-ended-officer-window-panel-1440).
+2. Fixed. `Notes` and `Sign-ups 14/40` are closed, each with its chevron (01-done-officer-1440, 02-member-present-1440).
+3. Fixed. The `Before` / `In the log` heads show from 768, and inline lead-ins show at 360 (01-done-officer-1440, 01-done-officer-360).
+4. Not fixed for Head of Onyxia. It still shows the red `?`. The other three awards show real icons (01-done-officer-1440, 01b-first-screen-officer-1440, 02-member-present-390). Must fix, per the ruling above.
+5. Fixed. The no-show row shows only the sentence and `No loot this raid.` (02-member-no-show-panel-360).
+6. Fixed. The kill row ends at y 609 at 1440 × 800. The member's sentence starts at y 602 at 360 × 640. The phone bar sits on the count's line, and the when line takes two lines (01b-first-screen-*, first-screen-*.json).
+7. Fixed. Separators are spaced, words are in the body face and figures are in mono, on both the night line and the facts line (01-done-officer-panel-1440, 02-member-present-panel-1440).
+8. Fixed. Loading beside ready differs by 0 px for the tabs, the band, `Your night` and the Report top (heights-reserve-*.json, 11-loading-member-390 beside 11-ready-member-390). CLS is 0.0035 at most.
+9. Fixed. Deaths take two phone lines, with whole names and nothing wrapping (01-done-officer-360).
+10. Fixed. At 1024 the bar is capped and the split is on one line (13-side-by-side-officer-1024).
+11. Fixed. `Deaths 17` matches `17 deaths`, and the link reads `Show all 11 raiders` (01-done-officer-1440).
+12. Fixed. Loot and Changes sit on aligned grids from 768 and take two lines at 360 (01-done-officer-1440, 01-done-officer-360).
+13. Fixed. Hexbramble is gone from Consumables, and every row is a raider in the log (01-done-officer-1440).
+14. Fixed. `Biggest changes` is kept. The `Before` column sits at the same x as in the full report (07-bare-report-panel-1440).
+15. Partly fixed. The rows are three lines, but at 360 the zone name breaks (`Onyxia's` / `Lair`) beside `Closest` and `2 h 41 min` (04-picker-closest-panel-360). Should fix: line 1 holds the zone and `Closest`, `whitespace-nowrap`. The duration moves to line 2, mono and right-aligned on the time's line.
+16. Fixed. Shadowquill reads `—` from Gear gap to Item level (10-readiness-on-panel-1440).
+17. Fixed. The 1024 board is drawn at 1024, and the side-by-side is at the same scale (13-side-by-side-officer-1024).
+18. Fixed. `Keep it` draws the 2 px gold ring (05-clear-confirm-panel-1440).
+19. Fixed. `0 deaths` shows (02-member-present-panel-1440).
+20. Fixed. The row reads `Out` in `--muted` (06-attendance-panel-1440).
+21. Fixed. The sub-head reads `LOOT` with no count (07-bare-report-panel-1440).
+22. Fixed. The empty state shows no helper (04-picker-empty-panel-390).
+23. Fixed. The figure no longer breaks (09-guild-line-panel-360). Polish: the wrapped line starts with a stray `·`. Below 768, drop the separator when the clause starts its own line.
+24. Fixed. The kill time and note are right-aligned (01-done-officer-1440, 01-done-officer-360).
+25. Fixed. The pill fills the 120 px column (01-done-officer-1440).
+26. No change, as ruled. The mock amendment is deferred in the README.
+27. Open, out of lane. It is deferred to the roster lane in the README. It stays tracked.
+
+### New
+
+- N1, must fix: a regression from the shared padding change. `md:pt-7` became `md:pt-0` on `main` in `guild.astro` and `guild/[...path].astro`. That is correct for the views that open with a full-bleed band: the raid page and the guild home (01, 09-roster-raids-1440). It is not correct for the views with no band. At 768 and up, their first line now sits flush against the header's bottom rule with 0 px between. Those views are `GuildLanding` (`/guild`), `GuildSettings`, `GuildClaim`, `GuildJoin`, the claim and settings chunk-pending wrappers in `GuildShell`, and `Guild.svelte`'s `missing`, `loading` and `failed` states. None of them is captured. Fix: keep `main` at `md:pt-0`, and give each band-less view's root `md:pt-7`. Attach 1440 and 390 captures of `/guild`, a guild's settings, claim, join with a bad token, and a guild address that does not parse. Shared layout changed, so run the full web vitest, the full Playwright suite and the lhci shard.
+- N2, should fix: in the Attendance phone rows, the `BOSS PULLS` lead-in wraps to two lines on Mendwhisper's row (01-done-officer-360, Late group). Fix: `whitespace-nowrap` on the lead-in.
+- N3, polish: at 360, `Biggest changes since Thu 3 Dec` leaves `DEC` alone on line 2 (01-done-officer-360). Fix: `since Thu 3 Dec` is `whitespace-nowrap`, so it breaks as one unit.
+- N4, polish: in the when line, the words in `ended 1 h ago` are set in mono (01-done-officer-panel-1440). This is G1's grammar, but finding 7's rule applies: only the figures go in mono.
+
+### Checklist (re-run)
+- [x] The first screen meets §1 at 360 and 1280 (finding 6).
+- [x] Copy is verbatim: ` · ` spacing, `Before` / `In the log` (findings 3, 7).
+- [ ] Real icons on every item: Head of Onyxia still shows the red `?` (finding 4).
+- [x] R-A4: Notes and Sign-ups are closed (finding 2).
+- [x] Loading beside ready matches within ±1 px (finding 8).
+- [ ] Every count and name survives 360: the picker zone and the `BOSS PULLS` lead-in break (15, N2).
+- [ ] The other guild views keep their top spacing after the shared padding change (N1).
+
+### Verdict: SHIP WITH FIXES
+
+Two items block the merge. Finding 4: Head of Onyxia shows `inv_misc_head_dragon_01`, and no `?` fallback remains. N1: the band-less guild views get their 28 px top padding back, shown in the new captures. Finding 15 and N2 land in the same pass. N3, N4 and the finding 23 polish can follow.

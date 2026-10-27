@@ -122,3 +122,71 @@ who was not there shown as having used no consumables, and a finished raid that 
 - **Notes and the sign-up roster below Attendance:** keep them, but closed and read-only. Attendance is
   the record of the night. The sign-up roster is the plan, and its selects must not stay live after the
   raid (finding 6).
+
+## Re-review (2026-10-27, re-taken captures)
+
+Seen rendered: 01 (1440, report 1440/390, panel 390), 02 (member no-show 1440, present panel 1440),
+03-ended-officer-after-panel-1440, 04-picker-closest-panel-1440, 06-attendance-panel-390,
+07-bare-report-panel-1440, 08-read-only-1440, 09-roster-raids-panel-1440, 09-guild-line-panel-390,
+10-readiness-on-panel-1440.
+
+### Findings
+
+1. Loot icons: **fixed** (01-report-1440/390, 02-no-show-1440). Netherwind Crown, Ring of Binding and
+   Vis'kag show their icons with the purple name; Head of Onyxia shows the red question mark, as the client does.
+2. DPS on a not-in-log member: **fixed** (02-member-no-show-1440). It now shows only `Signed In as DPS. You are
+   not in this log. If you were there under another name, tell an officer.` and `No loot this raid.`
+3. Hexbramble in Consumables: **fixed** (01-report-1440). 15 rows = 13 came + 2 joined, and Hexbramble is gone.
+4. Roster against the guild line: **fixed** (09-roster-raids-panel-1440, 09-guild-line-panel-390). Zulmara reads
+   `Came 3 of 8` and `came 3 of 8 raids`, and Kraggor reads `Came 6 of 8`.
+5. Officer row on done: **fixed** (01-1440, 08-1440: only `Not this log`; 03-ended-officer-after-panel-1440:
+   `Edit` and `Match a log` only).
+6. Notes and Sign-ups: **fixed for closed** (01, 02, 08: `NOTES ⌄`, `SIGN-UPS 14/40 ⌄`). **Not verified for
+   read-only.** No capture shows the disclosure open, so I have not seen the selects disabled. Add one capture.
+7. Death names on phone: **fixed** (01-report-390). Every name is whole, with the bar and `3 on wipes · 1 on kills` on line two.
+8. Pull count unit: **fixed** (06, 01). There is a `Boss pulls` head, full rows read `0 of 4` / `3 of 4`, and on
+   phone each row carries `BOSS PULLS`. The compact Present grid keeps `4/4` with no head over it; see new item C.
+9. Signed Late and came late: **fixed** (01-1440, 06). Arcanemoor is in Present and the summary reads `1 late`
+   (Mendwhisper, who signed In).
+10. Joined count: **fixed** (01-panel-390, 01-1440): `13 of 14 came · 2 joined · 1 kill · 3 wipes · 17 deaths · 2 h 41 min`.
+11. Picker time: **deferred, I agree** because the candidates do not carry a pull time yet. Interim ask: the time
+    column has no label (`Thu 10 Dec, 11:42 pm`), so a muted `Uploaded` before it costs nothing and stops officers
+    reading it as raid time (04-picker-closest-panel-1440).
+12. Biggest changes heading: **fixed** (07-bare-report-panel-1440).
+13. Duration wrap: **fixed** (01-panel-390). `2 h 41 min` stays whole.
+14. Readiness without an export: **fixed** (10-readiness-on-panel-1440). Shadowquill reads `—` across with `No export yet`.
+15. `Felsnap as Mirestalk` in Deaths, Consumables and Changes: **deferred, I agree**. Attendance already says
+    `Felsnap as Mirestalk`, which is where it matters most.
+16. Wipe health, killing blows, named fire-protection potions: **deferred, I agree**, as I allowed in round one.
+17. Bench and out: **fixed** (01-1440: `Frostnettle  Out`, muted).
+18. Gate sentence twice: **fixed** (08-1440). It shows once, under Report. I had asked for under the band, but
+    once is the point.
+19. Your night font: **fixed** (02-member-present-panel-1440). Words are in the body face and only the figures stand out.
+20. Missing space: **fixed** (10). It reads `Sorted worst first. Nudge copies…`.
+21. One-boss loot head: **fixed** (01). There is `LOOT 4` and no `ONYXIA 4`.
+
+Fixture data: Onyxia `4:12` after 3 wipes, **fixed**. Consumables 15 = every raider in the log, **fixed**.
+`+0 DPS` is gone, **fixed**. The night still has 15 raiders for a 40-player raid. That is fine for a review
+fixture, but keep it out of promotional captures.
+
+### New
+
+A. **should-fix. The roster attendance has a second figure with no unit.** 09-roster-raids-panel-1440:
+   `Came 6 of 8 · 25 of 30` (and on every row). 30 of what: pulls, bosses, or days? Say `25 of 30 pulls`, or
+   whatever it counts.
+B. **nit. Readiness says `Sorted worst first`, but the order does not read that way by gear gap.** Felsnap
+   `+33 DPS` sits under Windtalon `+14 DPS`. If the sort blends enchants, consumables and talents, say so
+   (`Sorted by most to fix`).
+C. **nit. The Present grid's `4/4` has no head over it.** On phone (06-390) the `BOSS PULLS` label is on each full
+   row but not over the Present grid. Fine on desktop, where the column head sits above.
+D. **nit. Officer captures show a signed-out header** (`Sign in / or paste an export`) over an officer page with
+   `Not this log`, `Excused` and Settings (01-1440, 08-1440). If this is only the fixture, retake it signed in,
+   because a player reads it as a permissions bug.
+E. **nit. On phone the guild line's clause starts its own line with a dot** (09-guild-line-390:
+   `· came 3 of 8 raids`). Put the separator at the end of the line before.
+
+### Verdict: SHIP WITH FIXES
+
+All seven must-fixes from round one are closed on the captures. Before merge: A (the unit), and one capture of
+Notes / Sign-ups open on a done raid showing read-only selects (6). B–E and the `Uploaded` label (11) can ride
+along or follow.

@@ -4,6 +4,7 @@
      guilds, and a line for officers. A signed-in member with a verified guild is sent on to
      it once `/v1/me` answers; the lookup is already on screen meanwhile. -->
 <script lang="ts">
+  import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { onMount } from 'svelte';
   import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
   import { fetchMeOnce } from '../lib/account/api';
@@ -40,7 +41,7 @@
   });
 </script>
 
-<div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="guild-landing">
+<div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-[22px] md:gap-8" data-testid="guild-landing">
   <header class="flex flex-col gap-2">
     <h1 class="section-title text-[24px]">{copy.heading}</h1>
     <p class="text-muted text-[15px]">{copy.lead}</p>

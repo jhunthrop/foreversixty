@@ -29,13 +29,13 @@ describe('rosterStatChips in raid mode', () => {
 
   it('reads Came 7 of 8 \u00b7 26 of 30', () => {
     const chips = rosterStatChips(raidRow({ present: 7, nights: 8 }, { present: 26, nights: 30 }), 'raids');
-    expect(chips).toContain('Came 7 of 8 \u00b7 26 of 30');
+    expect(chips).toContain('Came 7 of 8 \u00b7 26 of 30 raids');
     expect(chips.some((c) => /nights?$/.test(c))).toBe(false);
   });
 
   it('reads Came 3 of 3 alone when the long window adds nothing', () => {
     const chips = rosterStatChips(raidRow({ present: 3, nights: 3 }, { present: 3, nights: 3 }), 'raids');
-    expect(chips).toContain('Came 3 of 3');
+    expect(chips).toContain('Came 3 of 3 raids');
   });
 
   it('says No raids yet for a 0 of 0 chip', () => {

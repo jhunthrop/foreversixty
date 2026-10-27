@@ -6,7 +6,7 @@
   import type { RaidMoves } from '../../lib/guild/attendance-contract';
   import {
     attendanceCopy,
-    changesHead,
+    changesSince,
     firstRaidLine,
     moveDelta,
     moveFigures,
@@ -35,8 +35,8 @@
   } = $props();
 
   const previous = $derived(moves.previous);
-  const heading = $derived(
-    previous === null ? '' : changesHead(dateLabel(new Date(previous.starts_at), guildTimezone, locale)),
+  const sinceTail = $derived(
+    previous === null ? '' : changesSince(dateLabel(new Date(previous.starts_at), guildTimezone, locale)),
   );
   const rows = $derived(biggestMoves(moves.rows));
 </script>
@@ -46,7 +46,7 @@
     <p class="text-muted text-[14px]" data-testid="raid-moves-first">{firstRaidLine(zoneName)}</p>
   </RaidBlock>
 {:else}
-  <RaidBlock {heading} testid="raid-moves">
+  <RaidBlock heading={attendanceCopy.report.changes} tail={sinceTail} testid="raid-moves">
     <ul>
       {#each rows as move (`${move.character_key}-${move.metric}-${move.encounter}`)}
         {@const delta = moveDelta(move.before, move.after)}

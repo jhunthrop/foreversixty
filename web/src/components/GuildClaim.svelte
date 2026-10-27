@@ -10,6 +10,7 @@
      -- and the page always says who can act and what to do next. It used to render only
      its heading to a plain member (found live, 2026-09-28). -->
 <script lang="ts">
+  import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { fetchMeFresh, type Me } from '../lib/account/api';
   import { characterSlug, guildHref, guildSettingsHref, type CharacterPath } from '../lib/characters';
   import { SETUP_NAV_ITEM } from '../lib/nav';
@@ -167,7 +168,7 @@
     });
 </script>
 
-<div class="reveal flex flex-col gap-4" data-testid="guild-claim">
+<div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-4" data-testid="guild-claim">
   <a class="text-nav w-fit text-[13px]" href={guildHref(path.region, path.ruleset, guildName || path.slug)}>
     ← {guildClaimCopy.backToGuild(guildName)}
   </a>

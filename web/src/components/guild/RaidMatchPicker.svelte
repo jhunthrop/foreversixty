@@ -88,9 +88,9 @@
 
 {#snippet when(row: MatchCandidate)}
   {@const stamp = stampParts(new Date(row.uploaded_at), viewerTimezone, guildTimezone, locale)}
-  <span class="font-mono text-[13px]"
-    >{stamp.when}{#if stamp.guildTime !== null}&#32;<span class="text-muted">{stamp.guildTime}</span
-      >{/if}</span
+  <span class="text-[13px]"
+    ><span class="text-muted">{copy.uploaded}</span>&#32;<span class="font-mono">{stamp.when}</span
+    >{#if stamp.guildTime !== null}&#32;<span class="text-muted">{stamp.guildTime}</span>{/if}</span
   >
 {/snippet}
 
@@ -159,15 +159,16 @@
                  `by Kraggor · 4 pulls · 1 kill`. From md the time, figures and duration are cells. -->
             <span class="flex min-w-0 flex-col">
               <span class="flex items-center gap-2">
-                <span class="text-strong text-[14px] font-semibold">{row.zone_name}</span>
+                <span class="text-strong text-[14px] font-semibold whitespace-nowrap">{row.zone_name}</span>
                 {#if row.closest}<span class="pill pill-site" data-testid="raid-match-closest"
                     >{copy.closest}</span
                   >{/if}
-                <span class="ml-auto font-mono text-[13px] whitespace-nowrap md:hidden"
-                  >{durationLabel(row.duration_ms)}</span
-                >
               </span>
-              <span class="md:hidden">{@render when(row)}</span>
+              <span class="flex items-baseline justify-between gap-3 md:hidden"
+                >{@render when(row)}<span class="font-mono text-[13px] whitespace-nowrap"
+                  >{durationLabel(row.duration_ms)}</span
+                ></span
+              >
               <span class="text-muted text-[12px]"
                 >{byName(row.uploaded_by_name)}<span class="md:hidden"
                   >{SEP}{pickerFigures(row.pulls, row.kills)}</span

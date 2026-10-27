@@ -216,6 +216,62 @@ atWidths('8 read-only', PAIR, async (page, width) => {
   );
 });
 
+// ---- 8b: Notes and Sign-ups opened on a done raid, read-only (WP 6) --------------------------
+
+atWidths('8b notes and sign-ups opened', PAIR, async (page, width) => {
+  await openRaid(page, width, { viewer: 'officer', nights: DONE });
+  await page.getByTestId('raid-notes-disclosure-summary').click();
+  await page.getByTestId('raid-roster-disclosure-summary').click();
+  await page.getByTestId('raid-roster').waitFor();
+  await settle(page);
+  await shoot(page, 8, 'sections-open', width, page.getByTestId('raid-notes-disclosure'));
+  await cropOf(
+    page,
+    page.getByTestId('raid-roster-disclosure'),
+    `guild-attendance-08-sections-open-roster-${width}.png`,
+    TOP_CROP_PX,
+  );
+});
+
+// ---- N1: the guild views with no band keep their top spacing (UX N1) ----------------------------
+
+/** The fixture build's prerendered guild shells (lib/report/shell-paths.ts, which reads the site
+ *  config and so is not imported here). */
+const FIXTURE_GUILD = '/guild/us/hardcore/the-last-watch';
+const FIXTURE_INVITE = '/guild/invite/fixtureinvitetoken1';
+
+const BANDLESS: [name: string, url: string, ready: string][] = [
+  ['landing', '/guild', 'guild-landing'],
+  ['claim', `${FIXTURE_GUILD}/claim`, 'guild-view'],
+  ['settings', `${FIXTURE_GUILD}/settings`, 'guild-view'],
+  ['join-bad-token', FIXTURE_INVITE, 'guild-view'],
+  ['not-an-address', '/guild/not-a-guild-address', 'guild-missing'],
+];
+
+atWidths('N1 band-less guild views', PAIR, async (page, width) => {
+  await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
+  // Every route answers as a signed-in officer with no claim or invite to show: the views draw
+  // their refusals, which is what has no band.
+  await page.route('**/v1/**', (route) =>
+    route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: '{"ok":false,"data":null,"error":{"code":"not_found","message":"Not found."}}',
+    }),
+  );
+  // The fixture build prerenders no unknown guild address; the Worker serves the guild shell.
+  await page.route('**/guild/not-a-guild-address', async (route) => {
+    const shell = new URL(FIXTURE_GUILD, route.request().url()).toString();
+    return route.fulfill({ response: await route.fetch({ url: shell }) });
+  });
+  for (const [name, url, ready] of BANDLESS) {
+    await page.goto(url);
+    await page.getByTestId(ready).first().waitFor();
+    await settle(page);
+    await page.screenshot({ path: target(`guild-attendance-N1-${name}-${width}.png`) });
+  }
+});
+
 // ---- 9-10: the member record and readiness ------------------------------------------------------
 
 /** `/v1/me` for the account page: the member's two characters with their guild line in raid mode. */

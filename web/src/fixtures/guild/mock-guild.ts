@@ -143,7 +143,7 @@ const ONYXIA_DROPS: [
   slot: string,
   classes: string[],
 ][] = [
-  [15410, 'Scale of Onyxia', '', 3, '', []],
+  [15410, 'Scale of Onyxia', 'inv_misc_monsterscales_07', 3, '', []],
   [16900, 'Stormrage Cover', 'inv_helmet_09', 4, 'head', ['druid']],
   [16908, 'Bloodfang Hood', 'inv_helmet_41', 4, 'head', ['rogue']],
   [16914, 'Netherwind Crown', 'inv_helmet_70', 4, 'head', ['mage']],
@@ -167,13 +167,13 @@ const ONYXIA_DROPS: [
   [17068, 'Deathbringer', 'inv_axe_09', 4, 'main_hand', ['warrior', 'shaman', 'hunter']],
   [17075, "Vis'kag the Bloodletter", 'inv_sword_18', 4, 'main_hand', ['rogue', 'warrior']],
   [17078, 'Sapphiron Drape', 'inv_misc_cape_16', 4, 'back', ALL_CLASSES],
-  [17966, 'Onyxia Hide Backpack', '', 2, '', []],
+  [17966, 'Onyxia Hide Backpack', 'inv_misc_bag_22', 2, '', []],
   [18205, "Eskhandar's Collar", 'inv_belt_12', 4, 'neck', ALL_CLASSES],
-  [18422, 'Head of Onyxia', '', 4, '', []],
-  [18423, 'Head of Onyxia', '', 4, '', []],
-  [18705, 'Mature Black Dragon Sinew', '', 4, '', []],
+  [18422, 'Head of Onyxia', 'inv_misc_head_dragon_01', 4, '', []],
+  [18423, 'Head of Onyxia', 'inv_misc_head_dragon_01', 4, '', []],
+  [18705, 'Mature Black Dragon Sinew', 'spell_holy_dispelmagic', 4, '', []],
   [18813, 'Ring of Binding', 'inv_jewelry_ring_13', 4, 'finger', ALL_CLASSES],
-  [21108, 'Draconic for Dummies', '', 4, '', []],
+  [21108, 'Draconic for Dummies', 'inv_misc_stonetablet_03', 4, '', []],
 ];
 
 const ONYXIA_ENCOUNTER_ID = 1084;

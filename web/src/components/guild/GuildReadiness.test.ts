@@ -144,7 +144,9 @@ describe('GuildReadiness next-raid filter', () => {
   });
 
   it('keeps the space before the Nudge note', () => {
-    expect(filtered(true)).toMatch(/Sorted worst first\.(<!--[^>]*-->)* Nudge copies/);
+    expect(filtered(true)).toMatch(
+      /Sorted by the most checks to fix, then the biggest gear gap\.(<!--[^>]*-->)* Nudge copies/,
+    );
   });
 
   it('lets the stale pill wrap instead of clipping in the Synced column', () => {
