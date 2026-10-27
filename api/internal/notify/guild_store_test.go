@@ -147,6 +147,18 @@ func TestConnectStatesAreSingleUseAndExpire(t *testing.T) {
 	}
 }
 
+func TestGuildCheckRejectsANonLinkStateWithoutAGuild(t *testing.T) {
+	st, _, uid := savedGuild(t)
+	for _, kind := range []string{StateKindGuildWebhook, StateKindBotInstall} {
+		if err := st.CreateState(context.Background(), "nog-"+kind, kind, uid, nil, time.Minute); err == nil {
+			t.Fatalf("kind %s with a null guild was accepted", kind)
+		}
+	}
+	if err := st.CreateState(context.Background(), "bad-kind", "other", uid, nil, time.Minute); err == nil {
+		t.Fatal("unknown kind was accepted")
+	}
+}
+
 func TestCreateStateRoundTripsKind(t *testing.T) {
 	ctx := context.Background()
 	st, gid, uid := savedGuild(t)

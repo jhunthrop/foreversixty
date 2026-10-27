@@ -35,6 +35,7 @@ create table guild_discord_refusals (
   expires_at timestamptz not null,
   primary key (user_id, guild_id)
 );
+create index guild_discord_refusals_guild_idx on guild_discord_refusals (guild_id);
 
 create table guild_raid_discord_posts (
   raid_id bigint primary key references guild_raids(id) on delete cascade,
@@ -53,6 +54,7 @@ create table guild_raid_discord_posts (
   gone boolean not null default false,
   created_at timestamptz not null default now()
 );
+create index guild_raid_discord_posts_guild_idx on guild_raid_discord_posts (guild_id);
 create index guild_raid_discord_posts_due_idx on guild_raid_discord_posts (next_attempt_at)
   where not gone and (dirty_at is not null or wake_at is not null);
 
@@ -72,3 +74,5 @@ create table discord_shares (
   used_at timestamptz,
   expires_at timestamptz not null
 );
+create index discord_shares_guild_idx on discord_shares (guild_id);
+create index discord_shares_expires_idx on discord_shares (expires_at);
