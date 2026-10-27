@@ -254,8 +254,8 @@ func TestSweep_LapsedPlanReleasesSeats(t *testing.T) {
 	_, _ = h.svc.Give(bg, gid, 2, leader, bob)
 	h.exec(t, `update entitlements set status = 'canceled' where guild_id = $1`, gid)
 	n, err := h.svc.Sweep(bg, testNow)
-	if err != nil || n != 1 {
-		t.Fatalf("n=%d err=%v", n, err)
+	if err != nil || n.Released != 1 {
+		t.Fatalf("n=%+v err=%v", n, err)
 	}
 	var state string
 	_ = h.pool.QueryRow(bg, `select state from premium_seats where guild_id=$1 and slot=2`, gid).Scan(&state)

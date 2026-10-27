@@ -90,29 +90,42 @@ func (s *Service) comebackURL(interval catalog.Interval, id int64) string {
 
 // Sweep releases, in every guild with seats in use, the holders who are no
 // longer verified members, every seat above the plan's seat count, and every
-// seat of a guild whose plan has lapsed. It returns how many seats it
-// released. A guild that fails is logged and skipped; the errors come back
-// joined once every guild has been tried.
-func (s *Service) Sweep(ctx context.Context, now time.Time) (int, error) {
+// seat of a guild whose plan has lapsed. A guild that fails is logged and
+// skipped; the errors come back joined once every guild has been tried.
+func (s *Service) Sweep(ctx context.Context, now time.Time) (SweepResult, error) {
 	rows, err := s.Store.Pool.Query(ctx, `select distinct guild_id from premium_seats where state <> 'empty' order by guild_id`)
 	if err != nil {
-		return 0, wrap("sweep list", err)
+		return SweepResult{ListFailed: true}, wrap("sweep list", err)
 	}
 	ids, err := pgx.CollectRows(rows, pgx.RowTo[int64])
 	if err != nil {
-		return 0, wrap("sweep list", err)
+		return SweepResult{ListFailed: true}, wrap("sweep list", err)
 	}
-	total := 0
+	result := SweepResult{Attempted: len(ids)}
 	var errs []error
 	for _, id := range ids {
 		n, err := s.sweepGuild(ctx, id, now)
-		total += n
+		result.Released += n
 		if err != nil {
+			result.Failed++
 			s.logger().Error("seats", "op", "sweep", "guild", id, "err", err)
 			errs = append(errs, fmt.Errorf("guild %d: %w", id, err))
 		}
 	}
-	return total, errors.Join(errs...)
+	return result, errors.Join(errs...)
+}
+
+// SweepResult is what one Sweep did: seats released, guilds tried and guilds
+// that failed. ListFailed means the guild list itself could not be read.
+type SweepResult struct {
+	Released, Attempted, Failed int
+	ListFailed                  bool
+}
+
+// TotalFailure reports whether the sweep did nothing: the list failed, or
+// every guild it tried failed.
+func (r SweepResult) TotalFailure() bool {
+	return r.ListFailed || (r.Attempted > 0 && r.Failed == r.Attempted)
 }
 
 // SweepGuild is Sweep for one guild.
