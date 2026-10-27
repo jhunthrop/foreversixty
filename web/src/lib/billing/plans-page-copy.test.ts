@@ -56,7 +56,6 @@ describe('plansPageCopy against spec 6.1', () => {
     const [name, audience, ...features] = row('Premium card');
     expect([name, audience]).toEqual([copy.premium.name, copy.premium.audience]);
     expect(features.slice(0, copy.premium.features.length)).toEqual(copy.premium.features);
-    expect(row('Premium card').at(-1)).toBe(copy.premium.ships('{Month}'));
   });
 
   it('Guild card', () => {

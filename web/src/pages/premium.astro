@@ -19,6 +19,9 @@ const [founderBefore, founderAfter] = copy.founder.open.split(FOUNDER_DATE);
 
 <Base title={copy.title} description={copy.description} path="/premium">
   <script slot="head" is:inline define:vars={{ closes: FOUNDER_WINDOW_CLOSES }}>
+    // With JavaScript off the attribute is never set and the page keeps showing founder prices
+    // (open is the CSS default), even after the window closes. Checkout charges whatever the
+    // server decides, so only the display can be stale.
     // No "before" state: founder prices apply from launch until the window closes.
     document.documentElement.dataset.founder = Date.now() < Date.parse(closes) ? 'open' : 'closed';
   </script>
