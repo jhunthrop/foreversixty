@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -128,13 +129,13 @@ type checkoutRequest struct {
 func lookupKeyFor(plan, interval string) (string, bool) {
 	switch {
 	case plan == entitlements.PlanPremium && interval == "monthly":
-		return LookupKeyPremiumMonthly, true
+		return catalog.LookupKeyPremiumMonthly, true
 	case plan == entitlements.PlanPremium && interval == "yearly":
-		return LookupKeyPremiumYearly, true
+		return catalog.LookupKeyPremiumYearly, true
 	case plan == entitlements.PlanGuild && interval == "monthly":
-		return LookupKeyGuildMonthly, true
+		return catalog.LookupKeyGuildMonthly, true
 	case plan == entitlements.PlanGuild && interval == "yearly":
-		return LookupKeyGuildYearly, true
+		return catalog.LookupKeyGuildYearly, true
 	default:
 		return "", false
 	}
@@ -441,7 +442,7 @@ func (s *Service) portal(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no billing account on file yet", nil)
 		return
 	}
-	url, err := s.Gateway.CreatePortalSession(r.Context(), customerID, s.PublicBaseURL+"/account")
+	url, err := s.Gateway.CreatePortalSession(r.Context(), customerID, s.PublicBaseURL+"/account", "")
 	if err != nil {
 		s.fail(w, r, "portal", err, "could not open billing just now")
 		return

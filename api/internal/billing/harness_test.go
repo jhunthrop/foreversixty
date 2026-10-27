@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -34,10 +35,10 @@ func newHarness(t *testing.T) *harness {
 	t.Helper()
 	pool := testPool(t)
 	gw := &FakeGateway{Prices: map[string]string{
-		LookupKeyPremiumMonthly: "price_premium_monthly",
-		LookupKeyPremiumYearly:  "price_premium_yearly",
-		LookupKeyGuildMonthly:   "price_guild_monthly",
-		LookupKeyGuildYearly:    "price_guild_yearly",
+		catalog.LookupKeyPremiumMonthly: "price_premium_monthly",
+		catalog.LookupKeyPremiumYearly:  "price_premium_yearly",
+		catalog.LookupKeyGuildMonthly:   "price_guild_monthly",
+		catalog.LookupKeyGuildYearly:    "price_guild_yearly",
 	}}
 	authStore := &auth.Store{Pool: pool}
 	svc := &Service{

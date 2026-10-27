@@ -3,6 +3,7 @@ package billing
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -55,6 +56,10 @@ func (g *StripeGateway) CreateCustomer(ctx context.Context, email string) (strin
 const checkoutSessionLifetime = 30 * time.Minute
 
 func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutParams) (CheckoutSession, error) {
+	subscriptionData, err := checkoutSubscriptionData(p)
+	if err != nil {
+		return CheckoutSession{}, err
+	}
 	sess, err := g.client.V1CheckoutSessions.Create(ctx, &stripe.CheckoutSessionCreateParams{
 		Mode:              stripe.String(string(stripe.CheckoutSessionModeSubscription)),
 		Customer:          stripe.String(p.CustomerID),
@@ -63,7 +68,7 @@ func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutPar
 		LineItems: []*stripe.CheckoutSessionCreateLineItemParams{
 			{Price: stripe.String(p.PriceID), Quantity: stripe.Int64(1)},
 		},
-		SubscriptionData:    &stripe.CheckoutSessionCreateSubscriptionDataParams{Metadata: p.Metadata},
+		SubscriptionData:    subscriptionData,
 		AutomaticTax:        &stripe.CheckoutSessionCreateAutomaticTaxParams{Enabled: stripe.Bool(true)},
 		AllowPromotionCodes: stripe.Bool(true),
 		// Stripe's shortest expiry. A guild checkout that is abandoned on
@@ -80,9 +85,30 @@ func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutPar
 	return CheckoutSession{URL: sess.URL, SessionID: sess.ID, ExpiresAt: time.Unix(sess.ExpiresAt, 0).UTC()}, nil
 }
 
-func (g *StripeGateway) CreatePortalSession(ctx context.Context, customerID, returnURL string) (string, error) {
+// checkoutSubscriptionData is the Checkout session's subscription_data:
+// the metadata and, when asked, one trial (days or an end instant).
+func checkoutSubscriptionData(p CheckoutParams) (*stripe.CheckoutSessionCreateSubscriptionDataParams, error) {
+	if p.TrialPeriodDays != 0 && p.TrialEnd != nil {
+		return nil, errors.New("billing: checkout takes TrialPeriodDays or TrialEnd, not both")
+	}
+	data := &stripe.CheckoutSessionCreateSubscriptionDataParams{Metadata: p.Metadata}
+	if p.TrialPeriodDays != 0 {
+		data.TrialPeriodDays = stripe.Int64(p.TrialPeriodDays)
+	}
+	if p.TrialEnd != nil {
+		data.TrialEnd = stripe.Int64(p.TrialEnd.Unix())
+	}
+	return data, nil
+}
+
+func (g *StripeGateway) CreatePortalSession(ctx context.Context, customerID, returnURL, configurationKey string) (string, error) {
+	configID, err := g.portalConfigurationID(ctx, configurationKey)
+	if err != nil {
+		return "", err
+	}
 	sess, err := g.client.V1BillingPortalSessions.Create(ctx, &stripe.BillingPortalSessionCreateParams{
 		Customer: stripe.String(customerID), ReturnURL: stripe.String(returnURL),
+		Configuration: stripe.String(configID),
 	})
 	if err != nil {
 		return "", fmt.Errorf("billing: create portal session: %w", err)
@@ -147,46 +173,44 @@ func (g *StripeGateway) ensureProduct(ctx context.Context, spec PriceSpec) error
 	return nil
 }
 
-// EnsurePortalConfiguration makes the account's default Customer Portal
-// configuration match spec: created when there is none, otherwise its
-// legal links, return page and the prices a subscriber may switch
-// between are set again (the Dashboard is not the source of truth, spec
-// RULING 5). A subscriber can read invoices, change the card, cancel at
-// the period's end, and move between a product's own prices.
+// portalMetadataKey tags each portal configuration with its family key.
+const portalMetadataKey = "fs_portal"
+
+// errNoPortalConfiguration marks portalConfigurationID's "none tagged" answer.
+var errNoPortalConfiguration = errors.New("billing: no portal configuration")
+
+// portalConfigurationID finds the active configuration tagged fs_portal=key.
+func (g *StripeGateway) portalConfigurationID(ctx context.Context, key string) (string, error) {
+	if key == "" {
+		return "", errors.New("billing: portal configuration key is empty")
+	}
+	for cfg, err := range g.client.V1BillingPortalConfigurations.List(ctx, &stripe.BillingPortalConfigurationListParams{
+		Active: stripe.Bool(true),
+	}) {
+		if err != nil {
+			return "", fmt.Errorf("billing: list portal configurations: %w", err)
+		}
+		if cfg.Metadata[portalMetadataKey] == key {
+			return cfg.ID, nil
+		}
+	}
+	return "", fmt.Errorf("%w tagged %s=%s (stripe-setup has not run)", errNoPortalConfiguration, portalMetadataKey, key)
+}
+
+// EnsurePortalConfiguration creates the portal configuration tagged
+// fs_portal=spec.Key when none carries that key, and does nothing
+// otherwise, so a Dashboard edit made later is never overwritten. A
+// subscriber can read invoices, change the card, cancel at the period's
+// end, and move between the family's own prices.
 func (g *StripeGateway) EnsurePortalConfiguration(ctx context.Context, spec PortalSpec) error {
+	if _, err := g.portalConfigurationID(ctx, spec.Key); err == nil {
+		return nil
+	} else if !errors.Is(err, errNoPortalConfiguration) {
+		return err
+	}
 	products, err := g.portalProducts(ctx, spec)
 	if err != nil {
 		return err
-	}
-	for existing, err := range g.client.V1BillingPortalConfigurations.List(ctx, &stripe.BillingPortalConfigurationListParams{
-		IsDefault: stripe.Bool(true), Active: stripe.Bool(true),
-	}) {
-		if err != nil {
-			return fmt.Errorf("billing: list portal configurations: %w", err)
-		}
-		if _, err := g.client.V1BillingPortalConfigurations.Update(ctx, existing.ID, &stripe.BillingPortalConfigurationUpdateParams{
-			BusinessProfile: &stripe.BillingPortalConfigurationUpdateBusinessProfileParams{
-				Headline:          stripe.String(spec.Headline),
-				PrivacyPolicyURL:  stripe.String(spec.PrivacyPolicyURL),
-				TermsOfServiceURL: stripe.String(spec.TermsOfServiceURL),
-			},
-			DefaultReturnURL: stripe.String(spec.DefaultReturnURL),
-			Features: &stripe.BillingPortalConfigurationUpdateFeaturesParams{
-				SubscriptionUpdate: &stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateParams{
-					Enabled: stripe.Bool(true), DefaultAllowedUpdates: []*string{stripe.String("price")},
-					Products: products, ProrationBehavior: stripe.String("create_prorations"),
-				},
-			},
-		}); err != nil {
-			return fmt.Errorf("billing: update portal configuration %s: %w", existing.ID, err)
-		}
-		return nil
-	}
-	createProducts := make([]*stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams, 0, len(products))
-	for _, p := range products {
-		createProducts = append(createProducts, &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams{
-			Product: p.Product, Prices: p.Prices,
-		})
 	}
 	if _, err := g.client.V1BillingPortalConfigurations.Create(ctx, &stripe.BillingPortalConfigurationCreateParams{
 		BusinessProfile: &stripe.BillingPortalConfigurationCreateBusinessProfileParams{
@@ -195,6 +219,7 @@ func (g *StripeGateway) EnsurePortalConfiguration(ctx context.Context, spec Port
 			TermsOfServiceURL: stripe.String(spec.TermsOfServiceURL),
 		},
 		DefaultReturnURL: stripe.String(spec.DefaultReturnURL),
+		Metadata:         map[string]string{portalMetadataKey: spec.Key},
 		Features: &stripe.BillingPortalConfigurationCreateFeaturesParams{
 			CustomerUpdate: &stripe.BillingPortalConfigurationCreateFeaturesCustomerUpdateParams{
 				Enabled: stripe.Bool(true), AllowedUpdates: []*string{stripe.String("email"), stripe.String("address")},
@@ -210,19 +235,19 @@ func (g *StripeGateway) EnsurePortalConfiguration(ctx context.Context, spec Port
 			},
 			SubscriptionUpdate: &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateParams{
 				Enabled: stripe.Bool(true), DefaultAllowedUpdates: []*string{stripe.String("price")},
-				Products: createProducts, ProrationBehavior: stripe.String("create_prorations"),
+				Products: products, ProrationBehavior: stripe.String("create_prorations"),
 			},
 		},
 	}); err != nil {
-		return fmt.Errorf("billing: create portal configuration: %w", err)
+		return fmt.Errorf("billing: create portal configuration %s: %w", spec.Key, err)
 	}
 	return nil
 }
 
 // portalProducts resolves spec's lookup keys to the price ids the portal
 // lets a subscriber switch between, product by product.
-func (g *StripeGateway) portalProducts(ctx context.Context, spec PortalSpec) ([]*stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateProductParams, error) {
-	products := make([]*stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateProductParams, 0, len(spec.Products))
+func (g *StripeGateway) portalProducts(ctx context.Context, spec PortalSpec) ([]*stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams, error) {
+	products := make([]*stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams, 0, len(spec.Products))
 	for _, p := range spec.Products {
 		prices := make([]*string, 0, len(p.LookupKeys))
 		for _, key := range p.LookupKeys {
@@ -232,7 +257,7 @@ func (g *StripeGateway) portalProducts(ctx context.Context, spec PortalSpec) ([]
 			}
 			prices = append(prices, stripe.String(id))
 		}
-		products = append(products, &stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateProductParams{
+		products = append(products, &stripe.BillingPortalConfigurationCreateFeaturesSubscriptionUpdateProductParams{
 			Product: stripe.String(p.ProductID), Prices: prices,
 		})
 	}
@@ -270,7 +295,7 @@ func (g *StripeGateway) ListSubscriptions(ctx context.Context, productID string)
 		if !subscriptionHasProduct(sub, productID) {
 			continue
 		}
-		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status)})
+		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status), PriceLookupKey: itemLookupKey(sub)})
 	}
 	return out, nil
 }
@@ -308,5 +333,95 @@ func (g *StripeGateway) EnsurePrice(ctx context.Context, spec PriceSpec) error {
 	}); err != nil {
 		return fmt.Errorf("billing: create price %s: %w", spec.LookupKey, err)
 	}
+	return nil
+}
+
+// itemLookupKey is the lookup key of sub's first line item, "" when none.
+func itemLookupKey(sub *stripe.Subscription) string {
+	if sub.Items == nil || len(sub.Items.Data) == 0 || sub.Items.Data[0].Price == nil {
+		return ""
+	}
+	return sub.Items.Data[0].Price.LookupKey
+}
+
+// singleItem is the one line item every subscription of ours has.
+func singleItem(sub *stripe.Subscription) (*stripe.SubscriptionItem, error) {
+	if sub.Items == nil || len(sub.Items.Data) != 1 {
+		return nil, fmt.Errorf("billing: subscription %s does not have exactly one item", sub.ID)
+	}
+	return sub.Items.Data[0], nil
+}
+
+// priceChangeProration is the proration behaviour of both the preview and
+// the change, so the preview shows exactly what the change charges.
+const priceChangeProration = "always_invoice"
+
+// PreviewPriceChange implements Gateway.PreviewPriceChange with a preview
+// invoice of the item swapped under always_invoice proration.
+func (g *StripeGateway) PreviewPriceChange(ctx context.Context, subscriptionID, priceID string) (PriceChangePreview, error) {
+	sub, err := g.GetSubscription(ctx, subscriptionID)
+	if err != nil {
+		return PriceChangePreview{}, err
+	}
+	item, err := singleItem(sub)
+	if err != nil {
+		return PriceChangePreview{}, err
+	}
+	price, err := g.client.V1Prices.Retrieve(ctx, priceID, nil)
+	if err != nil {
+		return PriceChangePreview{}, fmt.Errorf("billing: get price %s: %w", priceID, err)
+	}
+	inv, err := g.client.V1Invoices.CreatePreview(ctx, &stripe.InvoiceCreatePreviewParams{
+		Subscription: stripe.String(subscriptionID),
+		SubscriptionDetails: &stripe.InvoiceCreatePreviewSubscriptionDetailsParams{
+			Items: []*stripe.InvoiceCreatePreviewSubscriptionDetailsItemParams{
+				{ID: stripe.String(item.ID), Price: stripe.String(priceID)},
+			},
+			ProrationBehavior: stripe.String(priceChangeProration),
+		},
+	})
+	if err != nil {
+		return PriceChangePreview{}, fmt.Errorf("billing: preview price change on %s: %w", subscriptionID, err)
+	}
+	return PriceChangePreview{
+		AmountDueCents:  inv.AmountDue,
+		NextAmountCents: price.UnitAmount,
+		PeriodEnd:       time.Unix(item.CurrentPeriodEnd, 0).UTC(),
+	}, nil
+}
+
+// ChangePrice implements Gateway.ChangePrice.
+func (g *StripeGateway) ChangePrice(ctx context.Context, subscriptionID, priceID string) error {
+	sub, err := g.GetSubscription(ctx, subscriptionID)
+	if err != nil {
+		return err
+	}
+	item, err := singleItem(sub)
+	if err != nil {
+		return err
+	}
+	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, &stripe.SubscriptionUpdateParams{
+		Items:             []*stripe.SubscriptionUpdateItemParams{{ID: stripe.String(item.ID), Price: stripe.String(priceID)}},
+		ProrationBehavior: stripe.String(priceChangeProration),
+		PaymentBehavior:   stripe.String("error_if_incomplete"),
+	}); err != nil {
+		return fmt.Errorf("billing: change price on subscription %s: %w", subscriptionID, err)
+	}
+	return nil
+}
+
+// ArchivePrice implements Gateway.ArchivePrice. An archived price keeps
+// serving its existing subscribers; it only stops being sold.
+func (g *StripeGateway) ArchivePrice(ctx context.Context, lookupKey string) error {
+	id, err := g.PriceIDForLookupKey(ctx, lookupKey)
+	if err != nil {
+		return err
+	}
+	if _, err := g.client.V1Prices.Update(ctx, id, &stripe.PriceUpdateParams{Active: stripe.Bool(false)}); err != nil {
+		return fmt.Errorf("billing: archive price %s: %w", lookupKey, err)
+	}
+	g.mu.Lock()
+	delete(g.cache, lookupKey)
+	g.mu.Unlock()
 	return nil
 }

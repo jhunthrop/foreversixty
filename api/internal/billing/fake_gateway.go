@@ -27,6 +27,10 @@ type FakeGateway struct {
 	// CancelErr, when non-nil, is returned by CancelSubscriptionAtPeriodEnd
 	// alone, for testing a failed duplicate cancel.
 	CancelErr error
+	// ChangePriceErr, when non-nil, is returned by ChangePrice alone.
+	ChangePriceErr error
+	// NextPreview is PreviewPriceChange's canned answer.
+	NextPreview PriceChangePreview
 
 	nextCustomerID int
 	nextSessionID  int
@@ -49,6 +53,8 @@ type FakeGateway struct {
 	Customers           []string // emails passed to CreateCustomer, in order
 	Checkouts           []CheckoutParams
 	Portals             []PortalCall
+	PriceChanges        []PriceChangeCall
+	Archived            []string // lookup keys passed to ArchivePrice, in order
 	EnsuredSpecs        []PriceSpec
 	CanceledAtPeriodEnd []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
 	// GetSubscriptionCalls records the ids passed to GetSubscription, in order.
@@ -98,13 +104,19 @@ func (f *FakeGateway) CreateCheckoutSession(_ context.Context, p CheckoutParams)
 	}, nil
 }
 
-func (f *FakeGateway) CreatePortalSession(_ context.Context, customerID, returnURL string) (string, error) {
+// PriceChangeCall is one ChangePrice invocation.
+type PriceChangeCall struct {
+	SubscriptionID string
+	PriceID        string
+}
+
+func (f *FakeGateway) CreatePortalSession(_ context.Context, customerID, returnURL, configurationKey string) (string, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	if f.Err != nil {
 		return "", f.Err
 	}
-	f.Portals = append(f.Portals, PortalCall{CustomerID: customerID, ReturnURL: returnURL})
+	f.Portals = append(f.Portals, PortalCall{CustomerID: customerID, ReturnURL: returnURL, ConfigurationKey: configurationKey})
 	if f.NextPortalURL != "" {
 		return f.NextPortalURL, nil
 	}
@@ -187,5 +199,37 @@ func (f *FakeGateway) EnsurePrice(_ context.Context, spec PriceSpec) error {
 	if _, ok := f.Prices[spec.LookupKey]; !ok {
 		f.Prices[spec.LookupKey] = "price_fake_" + spec.LookupKey
 	}
+	return nil
+}
+
+func (f *FakeGateway) PreviewPriceChange(_ context.Context, _, _ string) (PriceChangePreview, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return PriceChangePreview{}, f.Err
+	}
+	return f.NextPreview, nil
+}
+
+func (f *FakeGateway) ChangePrice(_ context.Context, subscriptionID, priceID string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	if f.ChangePriceErr != nil {
+		return f.ChangePriceErr
+	}
+	f.PriceChanges = append(f.PriceChanges, PriceChangeCall{SubscriptionID: subscriptionID, PriceID: priceID})
+	return nil
+}
+
+func (f *FakeGateway) ArchivePrice(_ context.Context, lookupKey string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	f.Archived = append(f.Archived, lookupKey)
 	return nil
 }
