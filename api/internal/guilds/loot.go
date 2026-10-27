@@ -31,13 +31,12 @@ import (
 const onyxiaEncounterID = encounterOnyxia
 
 // lootItem is one of Onyxia's own 22 drops: id, name and quality from
-// data/builds/1.60.1.70009/items.json (every item carries a real row there); icon and slot
-// from that same build's data/builds/<build>/items/<class>.json where one of the nine
-// per-class weighted item pools happens to carry it (sixteen of the twenty-two do - the
-// other six are quest/reputation/crafting items with no inventory slot at all: Scale of
-// Onyxia, Onyxia Hide Backpack, both Head of Onyxia stacks, Mature Black Dragon Sinew and
-// Draconic for Dummies, which is exactly why they carry no slot below and therefore never
-// gain a candidates list - a quest item has no "best in slot," correctly never one here).
+// data/builds/1.60.1.70009/items.json (every item carries a real row there); slot from that same
+// build's data/builds/<build>/items/<class>.json where one of the nine per-class weighted item pools
+// carries it. Icon is the client's own: Item.IconFileDataID through ManifestInterfaceData (wago.tools,
+// build 1.60.1.70532), so the six quest, reputation and crafting items with no inventory slot (Scale
+// of Onyxia, Onyxia Hide Backpack, both Head of Onyxia stacks, Mature Black Dragon Sinew and Draconic
+// for Dummies) show their real art too; having no slot, they never gain a candidates list.
 type lootItem struct {
 	ItemID  int
 	Name    string
@@ -54,7 +53,7 @@ type lootItem struct {
 // "a small, real subset... read by hand from that file" convention for exactly this kind
 // of small, fixed catalogue.
 var onyxiaLoot = []lootItem{
-	{15410, "Scale of Onyxia", "", 3, ""},
+	{15410, "Scale of Onyxia", "inv_misc_monsterscales_07", 3, ""},
 	{16900, "Stormrage Cover", "inv_helmet_09", 4, "head"},
 	{16908, "Bloodfang Hood", "inv_helmet_41", 4, "head"},
 	{16914, "Netherwind Crown", "inv_helmet_70", 4, "head"},
@@ -69,13 +68,13 @@ var onyxiaLoot = []lootItem{
 	{17068, "Deathbringer", "inv_axe_09", 4, "main_hand"},
 	{17075, "Vis'kag the Bloodletter", "inv_sword_18", 4, "main_hand"},
 	{17078, "Sapphiron Drape", "inv_misc_cape_16", 4, "back"},
-	{17966, "Onyxia Hide Backpack", "", 2, ""},
+	{17966, "Onyxia Hide Backpack", "inv_misc_bag_22", 2, ""},
 	{18205, "Eskhandar's Collar", "inv_belt_12", 4, "neck"},
-	{18422, "Head of Onyxia", "", 4, ""},
-	{18423, "Head of Onyxia", "", 4, ""},
-	{18705, "Mature Black Dragon Sinew", "", 4, ""},
+	{18422, "Head of Onyxia", "inv_misc_head_dragon_01", 4, ""},
+	{18423, "Head of Onyxia", "inv_misc_head_dragon_01", 4, ""},
+	{18705, "Mature Black Dragon Sinew", "spell_holy_dispelmagic", 4, ""},
 	{18813, "Ring of Binding", "inv_jewelry_ring_13", 4, "finger"},
-	{21108, "Draconic for Dummies", "", 4, ""},
+	{21108, "Draconic for Dummies", "inv_misc_stonetablet_03", 4, ""},
 }
 
 // AwardedTo is a loot item's own award, when one exists. AwardID is the row
