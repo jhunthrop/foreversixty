@@ -212,8 +212,17 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
             return discord.disabled_reason === null ? 'saved' : 'off';
           }
           // discord-hint:end
+          // discord-link-hint:begin
+          function linkHintOf(me) {
+            if (me === null || me.discord_link_available !== true) return 'none';
+            if (me.discord_link && me.discord_link.display_name) return 'linked';
+            return me.discord_link_suggested ? 'suggested' : 'unlinked';
+          }
+          // discord-link-hint:end
           const cached = localStorage.getItem(el.dataset.meStorageKey);
-          root.dataset.discord = hintOf(cached ? JSON.parse(cached).data : null);
+          const cachedMe = cached ? JSON.parse(cached).data : null;
+          root.dataset.discord = hintOf(cachedMe);
+          root.dataset.discordLink = linkHintOf(cachedMe);
           const stored = JSON.parse(localStorage.getItem(el.dataset.accountReserveKey));
           if (stored && stored.v === 1) {
             const bucket = stored[matchMedia('(min-width: 1024px)').matches ? 'lg' : 'stack'];

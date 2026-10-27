@@ -10,6 +10,7 @@ import type { Me } from './api';
 import {
   ACCOUNT_RESERVE_KEY,
   ACCOUNT_RESERVE_MAX_PX,
+  ACCOUNT_DISCORD_LINK_RESERVE,
   DISCORD_FLOORS,
   HEADER_ROW_H,
   LEFT_FLOOR,
@@ -17,6 +18,8 @@ import {
   SIGNED_OUT_MIN_H,
   currentBucket,
   discordHintState,
+  discordLinkHint,
+  type LinkHintState,
   gridFloor,
   railFloor,
   readAccountReserve,
@@ -67,9 +70,12 @@ describe('global.css agrees with layout.ts', () => {
     expect(declared(bucket, '.account-left-skeleton', 'min-height')).toBe(
       `max(var(--account-left-reserve, 0px), ${px(LEFT_FLOOR[bucket])})`,
     );
-    for (const key of ['devices', 'you', 'plan'] as const) {
+    for (const key of ['devices', 'plan'] as const) {
       expect(declared(bucket, `.account-${key}-skeleton`, 'min-height')).toBe(px(RAIL_FLOORS[key][bucket]));
     }
+    expect(declared(bucket, '.account-you-skeleton', 'min-height')).toBe(
+      `calc(${px(RAIL_FLOORS.you[bucket])} + var(--account-link-floor, 0px))`,
+    );
   });
 
   it.each(BUCKETS)('the rail floor and the Discord block by state at %s', (bucket) => {
@@ -86,8 +92,18 @@ describe('global.css agrees with layout.ts', () => {
     }
   });
 
-  it('shows the rail at its stored height when there is one, else at its floor', () => {
-    expect(css).toContain('min-height: var(--account-rail-reserve, var(--account-rail-floor))');
+  it('shows the rail at its stored height when there is one, else at its floor plus the link row', () => {
+    expect(css).toContain(
+      'min-height: var(--account-rail-reserve, calc(var(--account-rail-floor) + var(--account-link-floor, 0px)))',
+    );
+  });
+
+  it.each(BUCKETS)('the Discord link row floors by state at %s', (bucket) => {
+    for (const state of ['unlinked', 'suggested', 'linked'] as const) {
+      expect(declared(bucket, `html[data-discord-link='${state}']`, '--account-link-floor')).toBe(
+        px(ACCOUNT_DISCORD_LINK_RESERVE[state][bucket]),
+      );
+    }
   });
 
   it('draws no Discord block for `none` (the default)', () => {
@@ -156,6 +172,38 @@ describe('Base.astro hint script', () => {
     // The cache holds JSON, so the script sees the fixture after a round trip.
     const cached = fixture === null ? null : (JSON.parse(JSON.stringify(fixture)) as Me);
     expect(hintOf(cached)).toBe(discordHintState(fixture));
+  });
+
+  describe('the link hint', () => {
+    const linkHintOf = ((): ((account: Me | null) => LinkHintState) => {
+      const begin = base.indexOf('// discord-link-hint:begin');
+      const end = base.indexOf('// discord-link-hint:end');
+      expect(begin).toBeGreaterThan(-1);
+      return new Function(`${base.slice(begin, end)}; return linkHintOf;`)() as (
+        account: Me | null,
+      ) => LinkHintState;
+    })();
+    const base2 = account(true, null);
+    it.each<[string, Me | null]>([
+      ['no cache', null],
+      ['older API', base2],
+      ['unavailable', { ...base2, discord_link_available: false }],
+      ['unlinked', { ...base2, discord_link_available: true }],
+      ['unlinked null', { ...base2, discord_link_available: true, discord_link: null }],
+      ['suggested', { ...base2, discord_link_available: true, discord_link_suggested: 'Olympus' }],
+      [
+        'linked',
+        {
+          ...base2,
+          discord_link_available: true,
+          discord_link: { display_name: 'zulmara' },
+          discord_link_suggested: 'Olympus',
+        },
+      ],
+    ])('Base.astro returns discordLinkHint for %s', (_name, fixture) => {
+      const cached = fixture === null ? null : (JSON.parse(JSON.stringify(fixture)) as Me);
+      expect(linkHintOf(cached)).toBe(discordLinkHint(fixture));
+    });
   });
 
   describe('as a whole', () => {
