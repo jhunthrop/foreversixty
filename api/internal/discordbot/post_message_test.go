@@ -97,20 +97,54 @@ func TestRaidCustomIDRoundTrip(t *testing.T) {
 	if raidID, state, ok := parseRaidCustomID(id); !ok || raidID != 42 || state != "late" {
 		t.Fatalf("parse %q = %d %q %v", id, raidID, state, ok)
 	}
-	for _, bad := range []string{"", "raid:x:in", "raid:42", "pick:42:in", "raid:0:in", "raid:42:", "raid:42:in:x"} {
+	for _, bad := range []string{"", "raid:x:in", "raid:42", "pick:42:in", "raid:0:in", "raid:42:", "raid:42:in:x", "raid:42:maybe"} {
 		if _, _, ok := parseRaidCustomID(bad); ok {
 			t.Fatalf("%q parsed", bad)
 		}
 	}
-	if len(raidCustomID(1<<62, "bench")) > 100 {
-		t.Fatal("custom id over 100")
+	if len(raidCustomID(1<<62, "bench")) > 100 || pickIDPrefix == raidIDPrefix {
+		t.Fatal("custom id over 100 or prefixes collide")
 	}
 }
 
 func TestPostSurvivesHostileTitles(t *testing.T) {
-	p := testPost(notify.PostOpen)
-	p.Title = strings.Repeat("*", 80) + "@everyone <@123>"
-	m := PostMessage(p, testRaidURL, testNightURL, postStart)
+	states := []notify.RaidPostState{notify.PostOpen, notify.PostMoved, notify.PostCancelled, notify.PostDone}
+	for _, state := range states {
+		t.Run(string(state), func(t *testing.T) {
+			p := testPost(state)
+			p.Title = strings.Repeat("*", 80) + "@everyone <@123>"
+			p.Kills = hostileKills()
+			checkHostile(t, PostMessage(p, testRaidURL, testNightURL, postStart))
+		})
+	}
+}
+
+func hostileKills() []notify.KillLine {
+	kills := make([]notify.KillLine, 8)
+	for i := range kills {
+		kills[i] = notify.KillLine{Boss: strings.Repeat("_", 80), Duration: time.Minute}
+	}
+	return kills
+}
+
+func TestEmptyLinksAreLeftOut(t *testing.T) {
+	open := PostMessage(testPost(notify.PostOpen), "", "", postStart)
+	if len(open.Components[0]) != 4 {
+		t.Fatalf("open row = %+v", open.Components[0])
+	}
+	for _, state := range []notify.RaidPostState{notify.PostCancelled, notify.PostDone} {
+		m := PostMessage(testPost(state), "", "", postStart)
+		if len(m.Components) != 0 {
+			t.Fatalf("%s rows = %+v", state, m.Components)
+		}
+		if _, err := json.Marshal(m.edit()); err != nil {
+			t.Fatalf("%s edit: %v", state, err)
+		}
+	}
+}
+
+func checkHostile(t *testing.T, m Message) {
+	t.Helper()
 	e := m.Embeds[0]
 	if n := len([]rune(e.Title)); n > 256 {
 		t.Fatalf("title %d runes", n)
