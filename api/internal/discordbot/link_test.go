@@ -136,6 +136,7 @@ func TestLinkCallbackOutcomes(t *testing.T) {
 	}{
 		{"linked", "code=" + linkCode, linkLinked, func(h *linkHarness, _ string) auth.Actor { return signedIn(h) }},
 		{"denied at discord", "error=access_denied", linkDenied, func(h *linkHarness, _ string) auth.Actor { return signedIn(h) }},
+		{"discord server error", "error=server_error", linkFailed, func(h *linkHarness, _ string) auth.Actor { return signedIn(h) }},
 		{"empty code", "code=", linkDenied, func(h *linkHarness, _ string) auth.Actor { return signedIn(h) }},
 		{"other session user", "code=" + linkCode, linkFailed, func(h *linkHarness, _ string) auth.Actor {
 			return auth.Actor{UserID: seedUser(t, h.svc.d.Store.Pool)}
@@ -290,5 +291,37 @@ func TestLinkCommandNeverShowsAnotherAccountsData(t *testing.T) {
 	}
 	if strings.Contains(reply.Message.Content, "otherperson") || strings.Contains(reply.Message.Content, strconv.FormatInt(other, 10)) {
 		t.Fatalf("reply mentions another account: %q", reply.Message.Content)
+	}
+}
+
+func TestGuildFreeCommandsAnswerInAnUnboundServerAndADM(t *testing.T) {
+	h := newLinkHarness(t)
+	pub, priv := newKeys(t)
+	h.svc.d.PublicKey = pub
+	for _, tc := range []struct{ name, command, guild string }{
+		{"link in an unbound server", "link", "7777"},
+		{"link in a DM", "link", ""},
+		{"char in an unbound server", "char", "7777"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			body := `{"id":"i1","application_id":"app","type":2,"token":"tok","guild_id":"` + tc.guild +
+				`","user":{"id":"d-77"},"data":{"name":"` + tc.command + `"}}`
+			h.svc.commands["char"] = func(context.Context, Interaction) (Reply, error) {
+				return Reply{Message: Message{Content: "char answer", Ephemeral: true}}, nil
+			}
+			req := httptest.NewRequest(http.MethodPost, InteractionsPath, strings.NewReader(body))
+			sig, ts := signedAt(t, priv, h.svc.now(), []byte(body))
+			req.Header.Set("X-Signature-Ed25519", sig)
+			req.Header.Set("X-Signature-Timestamp", ts)
+			rec := httptest.NewRecorder()
+			h.mux.ServeHTTP(rec, req)
+			got := rec.Body.String()
+			if tc.command == "link" && (!strings.Contains(got, linkCopy.LinkButton) || strings.Contains(got, commonCopy.Unbound)) {
+				t.Fatalf("answer = %s, want the link text", got)
+			}
+			if tc.command == "char" && !strings.Contains(got, "not linked to a Forever Sixty guild") {
+				t.Fatalf("answer = %s, want the unbound sentence", got)
+			}
+		})
 	}
 }
