@@ -3,8 +3,8 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70532:shaman:dwarf:551033130000135/03/503352:'
-raidBuild: 'FS1:1.60.1.70532:shaman:dwarf:551033130000135/03/053352:'
+build: 'FS1:1.60.1.70630:shaman:dwarf:551033130000135/03/503352:'
+raidBuild: 'FS1:1.60.1.70630:shaman:dwarf:551033130000135/03/053352:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
