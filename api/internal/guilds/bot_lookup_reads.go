@@ -35,6 +35,8 @@ func (s *Service) BotGuildFacts(ctx context.Context, guildID int64) (BotGuild, e
 
 // PublicRosterNames is the names of the guild's verified characters whose account is not
 // anonymised (each has a public character page), containing typed, alphabetical, at most limit.
+// The anonymise rule is rankings' (rankings/character_extras.go Store.anonymized: the owning
+// account's users.anonymize), restated here as a join; change both together.
 func (s *Service) PublicRosterNames(ctx context.Context, guildID int64, typed string, limit int) ([]string, error) {
 	rows, err := s.Store.Pool.Query(ctx, `
 		select c.name from guild_characters gc
@@ -69,6 +71,24 @@ func (s *Service) ActiveBuild() (string, bool) {
 // BuildItem is Store.ItemIn: one item of a build's per-class table.
 func (s *Service) BuildItem(version, classSlug string, itemID int) (trees.Item, bool) {
 	return s.Store.ItemIn(version, classSlug, itemID)
+}
+
+// RaceFaction is a race's faction by its display name ("Night Elf", the form the character
+// page's race carries), read from the newest build's races.json; "" when unknown or neutral.
+func (s *Service) RaceFaction(raceName string) string {
+	if raceName == "" || s.Store.Trees == nil {
+		return ""
+	}
+	b, ok := s.Store.Trees.Latest()
+	if !ok {
+		return ""
+	}
+	for _, r := range b.Races() {
+		if strings.EqualFold(r.Name, raceName) && (r.Faction == FactionAlliance || r.Faction == FactionHorde) {
+			return r.Faction
+		}
+	}
+	return ""
 }
 
 // BisDataDir is the root the BiS files are read under (data/builds).

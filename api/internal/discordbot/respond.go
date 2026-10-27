@@ -198,15 +198,17 @@ func (s *Service) replyOf(in Interaction, res handled, update bool) Reply {
 
 // deliver edits the deferred answer in, unless the token has expired.
 func (s *Service) deliver(in Interaction, res handled, update bool) {
+	rep := s.replyOf(in, res, update)
 	if s.now().Sub(in.ReceivedAt) > interactionTokenLife {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "expired", "interaction", in.ID)
+		s.dropAfter(rep)
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	rep := s.replyOf(in, res, update)
 	if err := s.d.REST.EditOriginal(ctx, in.Token, rep.Message); err != nil {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "edit_failed", "interaction", in.ID, "err", err)
+		s.dropAfter(rep)
 		return
 	}
 	if rep.After != nil {
@@ -232,7 +234,30 @@ func (s *Service) runAfter(w http.ResponseWriter, in Interaction, rep Reply) {
 	})
 	if !started {
 		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "after_dropped_shutdown", "interaction", in.ID)
+		s.dropAfter(rep)
 	}
+}
+
+// droppedKey marks the context After runs under when its answer did not reach Discord.
+type droppedKey struct{}
+
+// answerDropped reports whether After is running for an answer that never reached Discord
+// (a deferred edit that failed or came past the token's life, or a shutdown that refused the
+// work), so it undoes what the answer promised instead of acting on it. Reply.After lives in
+// routes.go; this is its second half, kept here beside the paths that call it.
+func answerDropped(ctx context.Context) bool {
+	dropped, _ := ctx.Value(droppedKey{}).(bool)
+	return dropped
+}
+
+// dropAfter runs rep.After, marked dropped, on the caller's goroutine.
+func (s *Service) dropAfter(rep Reply) {
+	if rep.After == nil {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), afterWithin)
+	defer cancel()
+	rep.After(context.WithValue(ctx, droppedKey{}, true))
 }
 
 // autocomplete never defers: it answers inside answerWithin or with no choices.

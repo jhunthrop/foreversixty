@@ -23,9 +23,8 @@ const (
 )
 
 // raceFactions maps an FS1 export's race slug to its faction, for exactly the races whose
-// faction this feature counts. Mirrors data/builds/1.60.1.70009/races.json's own slug/
-// faction fields - the same build this package's one real BiS catalogue already hardcodes
-// (bis_lookup.go's bisDataBuild) - faction_test.go cross-checks this table against that
+// faction this feature counts. Mirrors races.json's own slug/faction fields in the build
+// Store.BisBuild reads - faction_test.go cross-checks this table against that
 // file directly, so a future race/faction reassignment there fails a test here rather
 // than silently drifting.
 //

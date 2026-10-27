@@ -40,8 +40,12 @@ type GuildService interface {
 	// ActiveBuild is the client build the site serves; BuildItem one item of its tables.
 	ActiveBuild() (string, bool)
 	BuildItem(version, classSlug string, itemID int) (trees.Item, bool)
-	// BisDataDir is the root the BiS files are read under.
+	// BisDataDir is the root the BiS files are read under; BisBuild the build they are read
+	// from, the site BiS page's own rule.
 	BisDataDir() string
+	BisBuild() string
+	// RaceFaction is a race name's faction ("Night Elf" is alliance); "" when unknown.
+	RaceFaction(raceName string) string
 }
 
 // CharacterCards is the public character page as a read: rankings.Service.CharacterCard.

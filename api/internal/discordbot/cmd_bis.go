@@ -58,7 +58,7 @@ func (s *Service) cmdBis(ctx context.Context, in Interaction) (Reply, error) {
 	if !found {
 		return failureReply(), nil
 	}
-	button, err := s.offerShare(ctx, guildID, "bis", opts)
+	button, err := s.offerShare(ctx, in, guildID, "bis", opts)
 	if err != nil {
 		return Reply{}, err
 	}
@@ -198,8 +198,7 @@ func (s *Service) answerBis(ctx context.Context, guildID int64, _ *int64, opts m
 	}
 	band, preset := phaseBand(opts[optPhase])
 	build, _ := s.d.Guilds.ActiveBuild()
-	dir := s.d.Guilds.BisDataDir()
-	data, found, err := bis.LoadPresetBand(dir, bis.SourceBuild(dir, build), sp.Spec, band, faction, preset)
+	data, found, err := bis.LoadPresetBand(s.d.Guilds.BisDataDir(), s.d.Guilds.BisBuild(), sp.Spec, band, faction, preset)
 	if err != nil || !found {
 		return Message{}, false, err
 	}

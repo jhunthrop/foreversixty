@@ -46,11 +46,19 @@ func (s *Service) visitorAnswer(command string) func(ctx context.Context, guildI
 	}
 }
 
-// offerShare stores the answer's resolved options under a fresh token for an hour and
-// returns its Share in channel button. The token names no account.
-func (s *Service) offerShare(ctx context.Context, guildID int64, command string, opts map[string]string) (Component, error) {
+// storedShare is a discord_shares row's options column: the answer's resolved options and the
+// Discord user it was answered to, the only one whose press shares it.
+type storedShare struct {
+	By      string            `json:"by"`
+	Options map[string]string `json:"options"`
+}
+
+// offerShare stores the answer's resolved options under a fresh token for an hour, bound to
+// the Discord user it answered, and returns its Share in channel button. The token names no
+// account.
+func (s *Service) offerShare(ctx context.Context, in Interaction, guildID int64, command string, opts map[string]string) (Component, error) {
 	token := auth.NewSessionID()
-	raw, err := json.Marshal(opts)
+	raw, err := json.Marshal(storedShare{By: in.DiscordUserID, Options: opts})
 	if err != nil {
 		return Component{}, fmt.Errorf("discordbot: share options: %w", err)
 	}
@@ -82,6 +90,7 @@ func withShare(msg Message, button Component) Message {
 
 type shareRow struct {
 	command string
+	by      string
 	opts    map[string]string
 	used    bool
 }
@@ -99,7 +108,7 @@ func (s *Service) share(ctx context.Context, in Interaction) (Reply, error) {
 		return Reply{}, err
 	}
 	visitor := s.visitorAnswer(row.command)
-	if !found || visitor == nil {
+	if !found || visitor == nil || row.by != in.DiscordUserID {
 		return failureReply(), nil
 	}
 	if row.used {
@@ -126,7 +135,13 @@ func (s *Service) share(ctx context.Context, in Interaction) (Reply, error) {
 	}
 	public.Ephemeral = false
 	restored := withLiveShare(rep.Message, token)
-	rep.After = func(ctx context.Context) { s.postShare(ctx, in, token, public, restored, row.command) }
+	rep.After = func(ctx context.Context) {
+		if answerDropped(ctx) { // the Shared answer never reached Discord: free the token
+			s.releaseShare(ctx, token)
+			return
+		}
+		s.postShare(ctx, in, token, public, restored, row.command)
+	}
 	return rep, nil
 }
 
@@ -153,11 +168,12 @@ func (s *Service) sharedReply(ctx context.Context, in Interaction, guildID int64
 	return Reply{Message: msg, Update: true}, nil
 }
 
-// withLiveShare is a Shared answer with its button live again.
+// withLiveShare is a Shared answer with its button live again, saying the share failed.
 func withLiveShare(shared Message, token string) Message {
 	rows := append([]ActionRow(nil), shared.Components...)
 	rows[0] = append(ActionRow{shareButton(token, false)}, rows[0][1:]...)
 	shared.Components = rows
+	shared.Content = commonCopy.Failure
 	return shared
 }
 
@@ -196,9 +212,11 @@ func (s *Service) shareRow(ctx context.Context, token string, guildID int64) (sh
 	if err != nil {
 		return shareRow{}, false, fmt.Errorf("discordbot: read share: %w", err)
 	}
-	if err := json.Unmarshal(raw, &row.opts); err != nil {
+	var stored storedShare
+	if err := json.Unmarshal(raw, &stored); err != nil {
 		return shareRow{}, false, fmt.Errorf("discordbot: share options: %w", err)
 	}
+	row.by, row.opts = stored.By, stored.Options
 	return row, true, nil
 }
 
@@ -209,6 +227,15 @@ func (s *Service) claimShare(ctx context.Context, token string) (bool, error) {
 		return false, fmt.Errorf("discordbot: claim share: %w", err)
 	}
 	return tag.RowsAffected() == 1, nil
+}
+
+// shareKeep is how long past its expiry a Share token's row is kept before the sweep.
+const shareKeep = 24 * time.Hour
+
+// SweepShares deletes Share tokens a day past their expiry. The post drainer's loop runs it
+// hourly (Drainer.Run), the bot's one periodic loop.
+func (s *Store) SweepShares(ctx context.Context, now time.Time) error {
+	return s.exec(ctx, `delete from discord_shares where expires_at < $1`, now.Add(-shareKeep))
 }
 
 func (s *Service) releaseShare(ctx context.Context, token string) {
