@@ -153,7 +153,8 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     '/character/us/hardcore/elyra-duskvale#history',
   );
   await expect(page.getByTestId('account-premium-notifications')).toHaveText(
-    /Discord notifications\s*Off\s*·\s*Premium$/,
+    // Not entitled to notifications: the free wording (launch pricing spec §6 amendment).
+    /Discord notifications\s*Premium\s*only$/,
   );
   await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
   await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
