@@ -10,6 +10,8 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
 // ErrNotFound is returned by Revoke when the named subject/plan has no
@@ -59,29 +61,39 @@ func (s *Store) Can(ctx context.Context, userID int64, feature Feature) (bool, R
 	return true, ReasonEntitled, nil
 }
 
-// hasStandardEntitlement is every feature's rule except officer_views
-// (spec §1.3 rule 3): an active personal premium entitlement, or verified
-// membership (any rank) in a guild that currently has the guild plan.
-// IsSupporter reuses this exact query (spec: the supporter mark and every
+// heldSeatClause matches a premium_seats row (alias s, joined to the
+// holder's verified guild_members row m and the guild's whole-plan
+// entitlements row e) that currently gives its holder Premium: held or
+// accepted and started, inside the seat count of the guild's tier.
+var heldSeatClause = fmt.Sprintf(`s.state in ('held', 'accepted')
+	and (s.starts_at is null or s.starts_at <= now())
+	and s.slot <= case e.tier when '%s' then %d when '%s' then %d else 0 end`,
+	TierRaidGuild, catalog.SeatsRaidGuild, TierGuild, catalog.SeatsGuild)
+
+// hasStandardEntitlement is every feature's rule except officer_views: an
+// active personal premium entitlement, or a held Premium seat on a guild
+// plan the holder still verifiably belongs to. Guild membership alone grants
+// nothing. IsSupporter reuses this exact query (the supporter mark and every
 // non-officer feature share one threshold).
 func (s *Store) hasStandardEntitlement(ctx context.Context, userID int64) (bool, error) {
-	var personal bool
+	var ok bool
 	if err := s.Pool.QueryRow(ctx, `
 		select exists (
 		  select 1 from entitlements e
 		  where e.user_id = $1 and e.plan = 'premium' and `+activeClause+`
-		)`, userID).Scan(&personal); err != nil {
+		) or exists (
+		  select 1 from premium_seats s
+		  join guild_members m on m.guild_id = s.guild_id and m.user_id = s.holder_user_id and m.verified_at is not null
+		  join entitlements e on e.guild_id = s.guild_id and e.plan = 'guild' and e.features is null and `+activeClause+`
+		  where s.holder_user_id = $1 and `+heldSeatClause+`
+		)`, userID).Scan(&ok); err != nil {
 		return false, fmt.Errorf("entitlements: standard check %d: %w", userID, err)
 	}
-	if personal {
-		return true, nil
-	}
-	return s.hasVerifiedGuildPlan(ctx, userID)
+	return ok, nil
 }
 
 // hasVerifiedGuildPlan reports whether userID is a verified member (any
-// rank) of a guild that currently has an active guild-plan entitlement —
-// the join hasStandardEntitlement and canOfficerViews both need.
+// rank) of a guild that currently has an active whole-plan guild entitlement.
 func (s *Store) hasVerifiedGuildPlan(ctx context.Context, userID int64) (bool, error) {
 	var ok bool
 	err := s.Pool.QueryRow(ctx, `
@@ -113,22 +125,12 @@ func (s *Store) canOfficerViews(ctx context.Context, userID int64) (bool, Reason
 	if officer {
 		return true, ReasonEntitled, nil
 	}
-	member, err := s.hasStandardEntitlement(ctx, userID)
+	member, err := s.hasVerifiedGuildPlan(ctx, userID)
 	if err != nil {
 		return false, "", err
 	}
-	// hasStandardEntitlement also counts a personal premium entitlement,
-	// which never implies guild membership; re-check the guild half alone
-	// so a premium-only account with no guild plan correctly gets
-	// ReasonNoPlan, not ReasonNotOfficer.
 	if member {
-		guildMember, err := s.hasVerifiedGuildPlan(ctx, userID)
-		if err != nil {
-			return false, "", err
-		}
-		if guildMember {
-			return false, ReasonNotOfficer, nil
-		}
+		return false, ReasonNotOfficer, nil
 	}
 	return false, ReasonNoPlan, nil
 }
@@ -136,10 +138,16 @@ func (s *Store) canOfficerViews(ctx context.Context, userID int64) (bool, Reason
 // CanForGuild answers a per-guild feature question for userID: true for a
 // verified officer/leader of guildID whose active row covers the feature,
 // ReasonNotOfficer for a verified member below officer rank of a covered
-// guild, ReasonNoPlan otherwise. Only FeatureOfficerViews is per-guild.
+// guild, ReasonNoPlan otherwise. FeatureOfficerViews and
+// FeatureRaidGuildTools are per-guild; the latter also needs the raid_guild
+// tier.
 func (s *Store) CanForGuild(ctx context.Context, guildID, userID int64, feature Feature) (bool, Reason, error) {
-	if feature != FeatureOfficerViews {
+	if feature != FeatureOfficerViews && feature != FeatureRaidGuildTools {
 		return false, "", fmt.Errorf("entitlements: %s is not a per-guild feature", feature)
+	}
+	tierClause := "true"
+	if feature == FeatureRaidGuildTools {
+		tierClause = "e.tier = '" + TierRaidGuild + "'"
 	}
 	var member, officer, covered bool
 	err := s.Pool.QueryRow(ctx, `
@@ -150,7 +158,8 @@ func (s *Store) CanForGuild(ctx context.Context, guildID, userID int64, feature 
 		    where m.guild_id = $1 and m.user_id = $2 and m.verified_at is not null
 		      and m.rank in ('officer', 'leader')),
 		  exists (select 1 from entitlements e
-		    where e.guild_id = $1 and e.plan = 'guild' and `+coversOfficerViewsClause+` and `+activeClause+`)`,
+		    where e.guild_id = $1 and e.plan = 'guild' and `+coversOfficerViewsClause+` and `+activeClause+`
+		      and `+tierClause+`)`,
 		guildID, userID).Scan(&member, &officer, &covered)
 	if err != nil {
 		return false, "", fmt.Errorf("entitlements: guild check %d/%d: %w", guildID, userID, err)
