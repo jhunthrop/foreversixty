@@ -1,107 +1,713 @@
 package discordbot
 
+// Throwaway, for the Discord captures only: run through `go test -overlay` from /private/tmp,
+// never added to api/. Every message is produced by the bot's own Service handlers (press,
+// pick, the slash commands, share) and its drainer, against the real guilds service on a
+// seeded test database and the repo's real build data (data/builds: the BiS files and the
+// item tables, so every item is the game's own, with its icon, quality, item level and
+// source). Where a read needs a matched log or an export the test database cannot hold
+// (the report, attendance, readiness, the character card), the guilds answer is scripted in
+// the guilds package's own types, with the board's and the roster's words produced by their
+// own functions. One example throughout: Olympus XXVII, Onyxia's Lair on Thursday 10
+// December 2026 at 8:00 pm CST.
+
 import (
+	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"log/slog"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
+)
+
+const (
+	capPublic  = "https://foreversixty.gg"
+	capAPI     = "https://api.foreversixty.gg"
+	capServer  = "srv-olympus"
+	capChannel = "chan-raid-signups"
+	dZul       = "d-zulmara"
+	dOfficer   = "d-mendwhisper"
+	dOutsider  = "d-outsider"
+	dPending   = "d-thalwyn"
+	dStranger  = "d-stranger"
+	keyZul     = "us/normal/zulmara"
+	keyDuskC   = "us/normal/duskstrider"
+	keyMend    = "us/normal/mendwhisper"
+	keyThal    = "us/normal/thalwyn"
+	capZone    = "America/Chicago"
+	capSpec    = "hunter-beast-mastery"
+	capReport  = "Kq7mD2xLpR9vTb4c"
 )
 
 type dumped struct {
 	ID      string          `json:"id"`
+	Row     string          `json:"row"`
 	Title   string          `json:"title"`
 	Surface string          `json:"surface"`
+	Clock   time.Time       `json:"clock"`
 	Message json.RawMessage `json:"message"`
 }
 
+// capPort is the real guilds service with the reads a test database cannot back scripted.
+type capPort struct {
+	*guilds.Service
+	clock       *time.Time
+	officerID   int64
+	signUpErr   error
+	readinessBy func(viewer int64) (guilds.ReadinessAnswer, error)
+	report      *guilds.ReportAnswer
+	attendance  func(viewer int64, name string) ([]guilds.AttendanceRecord, error)
+	facts       map[string]guilds.ReadinessFacts
+	done        *notify.RaidPost
+}
+
+func (p *capPort) SignUp(ctx context.Context, cmd guilds.SignupCommand) (guilds.SignupResult, error) {
+	if p.signUpErr != nil {
+		return guilds.SignupResult{}, p.signUpErr
+	}
+	return p.Service.SignUp(ctx, cmd)
+}
+
+func (p *capPort) NextRaidReadiness(_ context.Context, _, viewer int64, _ time.Time) (guilds.ReadinessAnswer, error) {
+	return p.readinessBy(viewer)
+}
+
+func (p *capPort) ReportFor(ctx context.Context, guildID, viewerID int64, _ *int64) (guilds.ReportAnswer, bool, error) {
+	_, member, err := p.Accounts.GuildRank(ctx, guildID, viewerID)
+	if err != nil {
+		return guilds.ReportAnswer{}, false, err
+	}
+	if p.report == nil || (!member && !p.report.Public) {
+		return guilds.ReportAnswer{}, false, nil
+	}
+	ans := *p.report
+	ans.Member = member
+	ans.Officer = member && viewerID == p.officerID
+	return ans, true, nil
+}
+
+func (p *capPort) AttendanceFor(_ context.Context, _, viewer int64, name string) ([]guilds.AttendanceRecord, error) {
+	return p.attendance(viewer, name)
+}
+
+func (p *capPort) CharacterReadinessFacts(_ context.Context, _ int64, key string) (guilds.ReadinessFacts, error) {
+	return p.facts[key], nil
+}
+
+// RaidPostFacts is the real read; a done raid adds what its matched log would (Came, Kills).
+func (p *capPort) RaidPostFacts(ctx context.Context, raidID int64) (guilds.RaidPostFacts, bool, error) {
+	f, ok, err := p.Service.RaidPostFacts(ctx, raidID)
+	if err == nil && ok && p.done != nil && f.Status == guilds.RaidDone {
+		f.Post.Came, f.Post.CameOf, f.Post.Kills = p.done.Came, p.done.CameOf, p.done.Kills
+	}
+	return f, ok, err
+}
+
+type capCards struct{ cards map[string]rankings.Character }
+
+func (c *capCards) CharacterCard(_ context.Context, region, ruleset, name string) (rankings.Character, bool, error) {
+	card, ok := c.cards[strings.ToLower(name)]
+	if !ok || card.Character.Region != region || card.Character.Ruleset != ruleset {
+		return rankings.Character{}, false, nil
+	}
+	return card, true, nil
+}
+
+type capWorld struct {
+	t      *testing.T
+	st     *Store
+	gs     *guilds.Service
+	port   *capPort
+	svc    *Service
+	rest   *FakeREST
+	clock  time.Time
+	gid    int64
+	zul    int64
+	raidID int64
+	start  time.Time
+	out    []dumped
+	row    string
+}
+
+func (w *capWorld) exec(q string, args ...any) {
+	w.t.Helper()
+	if _, err := w.st.Pool.Exec(context.Background(), q, args...); err != nil {
+		w.t.Fatal(err)
+	}
+}
+
+func (w *capWorld) add(id, title, surface string, m Message) {
+	w.t.Helper()
+	raw, err := json.Marshal(m)
+	if err != nil {
+		w.t.Fatal(err)
+	}
+	w.out = append(w.out, dumped{ID: id, Row: w.row, Title: title, Surface: surface, Clock: w.clock, Message: raw})
+}
+
+func (w *capWorld) reply(id, title string, rep Reply, err error) Reply {
+	w.t.Helper()
+	if err != nil {
+		w.t.Fatal(err)
+	}
+	w.add(id, title, "ephemeral", rep.Message)
+	return rep
+}
+
+func (w *capWorld) in(kind int, discordUser string, data any) Interaction {
+	raw, _ := json.Marshal(data)
+	return Interaction{ID: "i1", Token: "tok", GuildID: capServer, DiscordUserID: discordUser, Type: kind, Data: raw}
+}
+
+func (w *capWorld) press(user, state string) (Reply, error) {
+	return w.svc.press(context.Background(), w.in(typeComponent, user, map[string]any{"custom_id": raidCustomID(w.raidID, state)}))
+}
+
+func (w *capWorld) pick(state, key string) (Reply, error) {
+	return w.svc.pick(context.Background(), w.in(typeComponent, dZul,
+		map[string]any{"custom_id": pickCustomID(w.raidID, state), "values": []string{key}}))
+}
+
+func (w *capWorld) command(user, name string, options map[string]string) (Reply, error) {
+	opts := []map[string]any{}
+	for k, v := range options {
+		opts = append(opts, map[string]any{"name": k, "value": v})
+	}
+	return w.svc.commands[name](context.Background(), w.in(typeCommand, user, map[string]any{"name": name, "options": opts}))
+}
+
+func (w *capWorld) user(email string) int64 {
+	w.t.Helper()
+	var id int64
+	if err := w.st.Pool.QueryRow(context.Background(), `insert into users (email) values ($1) returning id`, email).Scan(&id); err != nil {
+		w.t.Fatal(err)
+	}
+	return id
+}
+
+// char puts a character of userID on the roster, its spec from a logged fight.
+func (w *capWorld) char(userID int64, key, name, class, spec, rank string, verified bool) {
+	w.t.Helper()
+	w.exec(`insert into characters (key, region, ruleset, name, class, user_id) values ($1, 'us', 'normal', $2, $3, $4)`,
+		key, name, strings.ToLower(class), userID)
+	w.exec(`insert into guild_characters (guild_id, character_key, user_id, rank, verified_at)
+		values ($1, $2, $3, $4, case when $5 then now() else null end)`, w.gid, key, userID, rank, verified)
+	w.exec(`insert into fight_metrics (report_id, fight_index, player_key, class, spec, ilvl, fought_at)
+		values ('capfight', (select count(*) from fight_metrics where report_id = 'capfight'), $1, $2, $3, 60, now())`, key, class, spec)
+	ctx := context.Background()
+	tx, err := w.st.Pool.Begin(ctx)
+	if err != nil {
+		w.t.Fatal(err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if err := guilds.RecomputeMembership(ctx, tx, w.gid, &userID); err != nil {
+		w.t.Fatal(err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		w.t.Fatal(err)
+	}
+}
+
+// post renders the raid's post as the drainer sends it, from a fresh post row, at the clock.
+func (w *capWorld) post(id, title string, moved *time.Time) {
+	w.t.Helper()
+	ctx := context.Background()
+	w.exec(`delete from guild_raid_discord_posts where raid_id = $1`, w.raidID)
+	if ok, err := w.st.EnqueuePost(ctx, w.raidID, w.gid); err != nil || !ok {
+		w.t.Fatalf("enqueue %v %v", ok, err)
+	}
+	if moved != nil {
+		if err := w.st.SetMovedFrom(ctx, w.raidID, *moved); err != nil {
+			w.t.Fatal(err)
+		}
+	}
+	before := len(w.rest.Calls())
+	d := w.svc.NewDrainer(w.port)
+	d.Now = func() time.Time { return w.clock }
+	if err := d.DrainOnce(ctx); err != nil {
+		w.t.Fatal(err)
+	}
+	calls := w.rest.Calls()[before:]
+	for _, c := range calls {
+		if c.Method == "CreateMessage" {
+			w.add(id, title, "channel", c.Message)
+			return
+		}
+	}
+	w.t.Fatalf("%s: no post sent: %+v", id, calls)
+}
+
+func at(layout string) time.Time {
+	t, err := time.Parse(time.RFC3339, layout)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
 func TestCaptureDump(t *testing.T) {
-	now := time.Date(2026, 12, 10, 20, 0, 0, 0, time.UTC)
-	start := time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC)
-	moved := start.Add(-24 * time.Hour)
-	var out []dumped
-	add := func(id, title, surface string, m Message) {
-		b, err := json.Marshal(m)
-		if err != nil {
+	ctx := context.Background()
+	dataDir := os.Getenv("CAPTURE_DATA_DIR")
+	data, err := trees.Load(dataDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	st := testStore(t)
+	if err := db.EnsureMetricsPartitions(ctx, st.Pool, time.Now(), 0); err != nil {
+		t.Fatal(err)
+	}
+	w := &capWorld{t: t, st: st, rest: &FakeREST{}}
+	w.start = at("2026-12-11T02:00:00Z") // Thursday 10 December, 8:00 pm CST
+	w.clock = at("2026-12-10T22:00:00Z") // Thursday, 4:00 pm CST
+	w.zul = w.user("zulmara@example.com")
+	officer := w.user("mendwhisper@example.com")
+	outsider := w.user("outsider@example.com")
+	pending := w.user("thalwyn@example.com")
+	filler := w.user("roster@example.com")
+	w.gid = seedGuild(t, st.Pool, "Olympus XXVII")
+	w.exec(`update guilds set faction = 'alliance', raid_timezone = $2 where id = $1`, w.gid, capZone)
+	w.exec(`insert into reports (id, owner_id, guild_id, visibility, status, created_at) values ('capfight', $1, $2, 'guild', 'complete', now())`, w.zul, w.gid)
+	if _, err := st.BindServer(ctx, w.gid, capServer, "Olympus", officer); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.SetChannel(ctx, w.gid, capChannel, "raid-signups"); err != nil {
+		t.Fatal(err)
+	}
+	for user, d := range map[int64]string{w.zul: dZul, officer: dOfficer, outsider: dOutsider, pending: dPending} {
+		if err := st.SaveLink(ctx, user, d, "member"); err != nil {
 			t.Fatal(err)
 		}
-		out = append(out, dumped{id, title, surface, b})
 	}
-	raid := "https://foreversixty.gg/guild/us/forever/olympus/raids/42"
-	base := notify.RaidPosted{RaidID: 42, GuildName: "Olympus XXVII", Title: "Onyxia's Lair", StartsAt: start, Timezone: "America/New_York",
-		RaidURL: raid, Counts: notify.RaidCounts{In: 31, Late: 2, Bench: 3, Out: 4, Tanks: 3, Healers: 8, DPS: 20}, Size: 40, SizeKnown: true}
-	for _, st := range []notify.RaidPostState{notify.PostOpen, notify.PostLocked, notify.PostMoved, notify.PostCancelled, notify.PostEnded, notify.PostDone} {
-		p := notify.RaidPost{RaidPosted: base, State: st}
-		if st == notify.PostMoved {
-			p.Was = &moved
-		}
-		if st == notify.PostDone {
-			p.Came, p.CameOf = 29, 31
-			p.Kills = []notify.KillLine{{Boss: "Onyxia", Duration: 4*time.Minute + 12*time.Second}}
-		}
-		add("post-"+string(st), "Raid post: "+string(st), "channel", PostMessage(p, raid, raid+"#report", now))
+	w.char(w.zul, keyZul, "Zulmara", "Hunter", "Beast Mastery", "member", true)
+	w.char(w.zul, keyDuskC, "Duskstrider", "Rogue", "Combat", "member", true)
+	w.char(officer, keyMend, "Mendwhisper", "Priest", "Holy", "officer", true)
+	w.char(pending, keyThal, "Thalwyn", "Mage", "Frost", "member", false)
+	w.exec(`update users set main_character_key = $2 where id = $1`, w.zul, keyZul)
+
+	w.gs = &guilds.Service{
+		Store:    &guilds.Store{Pool: st.Pool, DataDir: dataDir, Trees: data},
+		Accounts: &auth.Store{Pool: st.Pool}, PublicBaseURL: capPublic, RaidPosts: st,
+		Log: slog.New(slog.NewTextHandler(io.Discard, nil)),
 	}
-	add("post-webhook", "Raid post through a webhook (no buttons, never edited)", "channel",
-		Message{Embeds: []notify.Embed{notify.RaidPostedEmbed(base, now)}})
-
-	press := func(id, title, text string, buttons ...Component) {
-		add("press-"+id, "Press reply: "+title, "ephemeral", pressReply(text, false, buttons...).Message)
+	w.port = &capPort{Service: w.gs, officerID: officer, facts: map[string]guilds.ReadinessFacts{}}
+	build, ok := w.gs.ActiveBuild()
+	if !ok {
+		t.Fatal("no active build")
 	}
-	f := func(s string, extra ...string) string {
-		pairs := []string{"{Name}", "Zulmara", "{Role}", "DPS", "{Title}", "Onyxia's Lair", "{Guild}", "Olympus XXVII", "{State}", "In"}
-		return fill(s, append(pairs, extra...)...)
+	t.Logf("active build %s, BiS build %s", build, w.gs.BisBuild())
+	cards := &capCards{cards: map[string]rankings.Character{}}
+	w.svc = New(Deps{Store: st, REST: w.rest, Guilds: w.port, Characters: cards,
+		PublicBaseURL: capPublic, APIBaseURL: capAPI, Log: slog.New(slog.NewTextHandler(io.Discard, nil))})
+	w.svc.now = func() time.Time { return w.clock }
+
+	if err := st.Pool.QueryRow(ctx, `insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, created_by)
+		values ($1, 'raid:onyxias-lair', 'Onyxia''s Lair', $2, 180, $3) returning id`, w.gid, w.start, officer).Scan(&w.raidID); err != nil {
+		t.Fatal(err)
 	}
-	press("unlinked", "not linked", pressCopy.NotLinked, linkButton("Link Discord", "https://foreversixty.gg/account#you"))
-	press("locked", "locked", pressCopy.Locked)
-	press("cancelled", "cancelled", pressCopy.Cancelled)
-	press("ended", "ended", pressCopy.Ended)
-	press("not-member", "not a member", f(pressCopy.NotMember), linkButton(pressCopy.SetupButton, "https://foreversixty.gg/connect"))
-	press("pending", "waiting for approval", f(pressCopy.WaitingOne))
-	press("rate-limit", "rate limit", pressCopy.RateLimited)
-	press("failure", "save failed", pressCopy.Failure)
-	press("in", "In", f(pressCopy.InSaved)+f(pressCopy.Count, "{signed}", "31", "{size}", "40"))
-	press("late", "Late", f(pressCopy.LateSaved), linkButton(pressCopy.NoteButton, raid))
-	press("bench", "Bench", f(pressCopy.BenchSaved))
-	press("out", "Out", f(pressCopy.OutSaved))
-	press("moved", "In, with a Bench move", f(pressCopy.InSaved)+f(pressCopy.Count, "{signed}", "40", "{size}", "40")+f(pressCopy.Moved, "{Other}", "Mendwhisper"))
-	press("already", "already", f(pressCopy.Already))
-	sel := Component{Kind: KindStringSelect, CustomID: "pick:42:in", Placeholder: pressCopy.SelectPlaceholder, Options: []SelectOption{
-		{Label: "Zulmara" + pressCopy.OptionMain, Value: "us/forever/zulmara", Description: "Beast Mastery Hunter · DPS"},
-		{Label: "Duskstrider", Value: "us/forever/duskstrider", Description: "Combat Rogue · DPS"},
-	}}
-	add("press-select", "Press reply: character select", "ephemeral", Message{
-		Content:    f(pressCopy.SelectPrompt, "{unix}", "1796954400"),
-		Components: []ActionRow{{sel}}, Ephemeral: true})
+	seedSignups(w, filler)
 
-	lines := []string{}
-	for _, c := range (&Service{}).commandList() {
-		lines = append(lines, fill(commandCopy.HelpLine, "{name}", c.Name, "{description}", c.Description))
-	}
-	add("help", "/help", "ephemeral", Message{Embeds: []notify.Embed{notify.BrandEmbed(commandCopy.HelpTitle, strings.Join(lines, "\n"), now)}, Ephemeral: true})
+	cards.cards["zulmara"] = zulmaraCapCard(t, w, dataDir, build)
+	cards.cards["duskstrider"] = rankings.Character{Character: rankings.CharacterRef{Key: keyDuskC, Region: "us", Ruleset: "normal",
+		Name: "Duskstrider", Class: "rogue", Level: ref(60), Race: ref("Human"), Guild: &rankings.CharacterGuild{Name: "Olympus XXVII"}},
+		GearSpec: ref("rogue-combat")}
+	synced := w.clock.Add(-50 * time.Hour)
+	w.port.facts[keyZul] = guilds.ReadinessFacts{Word: "Stocked", SyncedAt: &synced, OnRoster: true}
+	w.port.facts[keyDuskC] = guilds.ReadinessFacts{Word: "Not shared", OnRoster: true}
 
-	zone := "America/New_York"
-	rec := guilds.AttendanceRecord{Name: "Zulmara", Class: "hunter", Chip: "Came 7 of 8 · 26 of 30 raids", Last: []guilds.AttendanceLine{
-		{StartsAt: start, Outcome: "present"}, {StartsAt: start.Add(-7 * 24 * time.Hour), Outcome: "late", Excused: true},
-		{StartsAt: start.Add(-14 * 24 * time.Hour), Outcome: "no_show"}}}
-	e := []notify.Embed{attendanceEmbed(rec, raid, zone)}
-	closeEmbeds(e, "Olympus XXVII", now)
-	add("attendance", "/attendance", "ephemeral", Message{Embeds: e, Components: []ActionRow{{{Kind: KindButton, Style: StyleLink, Label: officerCopy.Roster, URL: raid}}}, Ephemeral: true})
+	pressFrames(w)
+	w.row = "D1"
+	w.post("post-open", "Raid post: open", nil)
+	webhookFrame(w, filler)
+	commandFrames(w, officer)
+	pressOutcomeFrames(w)
+	stateFrames(w)
+	officerFrames(w, officer, build)
 
-	r := guilds.Raid{Title: "Onyxia's Lair", StartsAt: start}
-	ans := guilds.ReadinessAnswer{Raid: &r, Signed: 31, Failing: 3, Rows: []string{"Mendwhisper: no flask", "Kraggor: gear 12 below the raid line", "Duskstrider: missing Onyxia attunement"}}
-	re := []notify.Embed{readinessEmbed(ans, raid+"#readiness", zone)}
-	closeEmbeds(re, "Olympus XXVII", now)
-	add("readiness", "/readiness", "ephemeral", Message{Embeds: re, Ephemeral: true})
-
-	item := []notify.Embed{ItemEmbed(ItemFacts{Name: "Quel'Serrar", Quality: 4, ItemLevel: 69, Source: "Dire Maul", URL: "https://foreversixty.gg/item/18348"}, "Main hand", "+9.2 DPS", "Zulmara")}
-	closeEmbeds(item, "Forever Sixty", now)
-	add("bis-slot", "/bis slot (item grammar)", "ephemeral", Message{Embeds: item, Ephemeral: true})
-
-	b, _ := json.MarshalIndent(out, "", " ")
+	b, _ := json.MarshalIndent(w.out, "", " ")
 	if err := os.WriteFile(os.Getenv("PAYLOAD_OUT"), b, 0o644); err != nil {
 		t.Fatal(err)
 	}
+}
+
+// seedSignups is the rest of the raid before Zulmara: 30 In (3 tanks, 8 healers, 19 DPS),
+// 2 Late, 3 Bench and 4 Out, so Zulmara's In makes 33 of 40 · 3 tanks · 8 healers · 20 DPS.
+func seedSignups(w *capWorld, filler int64) {
+	type s struct{ name, class, spec, role, state string }
+	rows := []s{
+		{"Kraggor", "warrior", "Protection", "tank", "in"}, {"Bramblehide", "druid", "Feral", "tank", "in"},
+		{"Ironvale", "warrior", "Protection", "tank", "in"},
+	}
+	healers := []string{"Lightwell", "Aurelith", "Mossgrove", "Dawnmere", "Sablewind", "Halcyra", "Embertide", "Vaelora"}
+	healerClass := []string{"priest", "paladin", "druid", "priest", "shaman", "paladin", "priest", "druid"}
+	for i, n := range healers {
+		rows = append(rows, s{n, healerClass[i], "Holy", "healer", "in"})
+	}
+	dps := []string{"Pyrewisp", "Windtalon", "Vexlash", "Grimhollow", "Ashenra", "Thornquill", "Nightbrand", "Corvane",
+		"Frostwhisk", "Duskmantle", "Ravenmoor", "Stormvale", "Brightshot", "Kelthar", "Orivane", "Sundermark",
+		"Wyrmbane", "Cindrel", "Talvorn"}
+	for _, n := range dps {
+		rows = append(rows, s{n, "mage", "Fire", "dps", "in"})
+	}
+	rows = append(rows, s{"Glimmerfen", "warlock", "Destruction", "dps", "late"}, s{"Hollowmere", "rogue", "Combat", "dps", "late"})
+	for _, n := range []string{"Quillfeather", "Marrowind", "Selwyn"} {
+		rows = append(rows, s{n, "hunter", "Marksmanship", "dps", "bench"})
+	}
+	for _, n := range []string{"Fennrick", "Ysolde", "Garrowe", "Lunetta"} {
+		rows = append(rows, s{n, "warlock", "Affliction", "dps", "out"})
+	}
+	for _, r := range rows {
+		w.exec(`insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, signed_by, acted_by)
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $8)`, w.raidID, "us/normal/"+strings.ToLower(r.name), r.name, r.class, r.spec, r.role, r.state, filler)
+	}
+}
+
+// zulmaraCapCard is Zulmara's public card: a level 60 Night Elf Beast Mastery Hunter wearing
+// the bare level-60 Alliance band's picks, except three slots where she wears the band's own
+// first alternative. Names, sources and item levels are the build's; the gaps only order the
+// three (the DPS each shows is the BiS file's measured delta for that very pair).
+func zulmaraCapCard(t *testing.T, w *capWorld, dataDir, build string) rankings.Character {
+	band, found, err := bis.LoadPresetBand(dataDir, w.gs.BisBuild(), capSpec, 60, "alliance", bis.BarePreset)
+	if err != nil || !found {
+		t.Fatalf("band %v %v", found, err)
+	}
+	wornAlt := map[string]bool{"legs": true, "finger1": true, "chest": true}
+	var gear []rankings.GearSlot
+	for _, sl := range band.Slots {
+		if sl.ItemID <= 0 {
+			continue
+		}
+		pick := &rankings.GearPick{ID: sl.ItemID, Name: sl.ItemName, Source: sl.Source}
+		wornID, gap := sl.ItemID, 0.0
+		if wornAlt[sl.Slot] && len(sl.Alternatives) > 0 {
+			wornID, gap = sl.Alternatives[0].ItemID, -sl.Alternatives[0].DpsDelta
+		}
+		it, ok := w.gs.BuildItem(build, "hunter", wornID)
+		if !ok {
+			t.Fatalf("item %d not in the build", wornID)
+		}
+		name, ilvl := it.Name, it.ItemLevel
+		gear = append(gear, rankings.GearSlot{Slot: sl.Slot, Worn: &rankings.GearWorn{ID: wornID, Name: &name, ItemLevel: &ilvl},
+			Pick: pick, Gap: ref(gap)})
+	}
+	return rankings.Character{
+		Character: rankings.CharacterRef{Key: keyZul, Region: "us", Ruleset: "normal", Name: "Zulmara", Class: "hunter",
+			Level: ref(60), Race: ref("Night Elf"), Guild: &rankings.CharacterGuild{Name: "Olympus XXVII"}},
+		GearSpec: ref(capSpec), Gear: gear,
+	}
+}
+
+func pressFrames(w *capWorld) {
+	w.row = "D3"
+	rep, err := w.press(dStranger, "in")
+	w.reply("press-unlinked", "Press: not linked", rep, err)
+	rep, err = w.press(dOutsider, "in")
+	w.reply("press-not-member", "Press: not a member", rep, err)
+	rep, err = w.press(dPending, "in")
+	w.reply("press-pending", "Press: waiting for approval", rep, err)
+	rep, err = w.press(dZul, "in")
+	w.reply("press-select", "Press: two characters, the select", rep, err)
+	rep, err = w.pick("in", keyZul)
+	w.reply("press-in", "Press: In (from the select)", rep, err)
+}
+
+func webhookFrame(w *capWorld, _ int64) {
+	f, ok, err := w.gs.RaidPostFacts(context.Background(), w.raidID)
+	if err != nil || !ok {
+		w.t.Fatal(err)
+	}
+	w.add("post-webhook", "Raid post through a webhook (no buttons, never edited)", "channel",
+		Message{Embeds: []notify.Embed{notify.RaidPostedEmbed(f.Post.RaidPosted, w.clock)}})
+}
+
+func commandFrames(w *capWorld, officer int64) {
+	w.row = "D4"
+	rep, err := w.command(dZul, "raid", nil)
+	w.reply("raid", "/raid", rep, err)
+	rep, err = w.command(dStranger, "raid", nil)
+	w.reply("raid-unlinked", "/raid, not linked", rep, err)
+
+	w.row = "D5"
+	rep, err = w.command(dZul, "char", map[string]string{"name": "Zulmara"})
+	w.reply("char-upgrades", "/char with upgrades (a member's view)", rep, err)
+	rep, err = w.command(dZul, "char", map[string]string{"name": "Duskstrider"})
+	w.reply("char-no-gear", "/char with no gear shared", rep, err)
+	rep, err = w.command(dZul, "char", map[string]string{"name": "Nobody"})
+	w.reply("char-unknown", "/char unknown", rep, err)
+
+	w.row = "D6"
+	rep, err = w.command(dZul, "bis", map[string]string{"slot": "finger1"})
+	w.reply("bis-slot", "/bis slot:Ring 1 (defaults from the main)", rep, err)
+	rep, err = w.command(dZul, "bis", nil)
+	top := w.reply("bis-top", "/bis without a slot", rep, err)
+	shareFrames(w, top, "bis", dZul)
+
+	w.row = "D10"
+	rep, err = w.command(dStranger, "link", nil)
+	w.reply("link-unlinked", "/link, not linked", rep, err)
+	rep, err = w.command(dZul, "link", nil)
+	w.reply("link-linked", "/link, linked", rep, err)
+	rep, err = w.command(dZul, "help", nil)
+	w.reply("help", "/help", rep, err)
+	_ = officer
+}
+
+// shareFrames presses Share in channel on answer: the public follow-up, then the ephemeral
+// with its Shared button.
+func shareFrames(w *capWorld, answer Reply, command, presser string) {
+	w.t.Helper()
+	var id string
+	for _, row := range answer.Message.Components {
+		for _, c := range row {
+			if strings.HasPrefix(c.CustomID, shareIDPrefix) {
+				id = c.CustomID
+			}
+		}
+	}
+	if id == "" {
+		w.t.Fatalf("%s: no share button", command)
+	}
+	in := w.in(typeComponent, presser, map[string]any{"custom_id": id})
+	in.Token = "tok-share-" + command
+	rep, err := w.svc.share(context.Background(), in)
+	if err != nil {
+		w.t.Fatal(err)
+	}
+	if rep.After != nil {
+		rep.After(context.Background())
+	}
+	for _, c := range w.rest.Calls() {
+		if c.Method == "FollowUp" && c.Token == in.Token {
+			w.add(command+"-shared", "/"+command+" shared in the channel", "channel", c.Message)
+		}
+	}
+	w.add(command+"-after-share", "/"+command+" ephemeral after sharing", "ephemeral", rep.Message)
+}
+
+func pressOutcomeFrames(w *capWorld) {
+	w.row = "D3"
+	rep, err := w.pick("in", keyZul)
+	w.reply("press-already", "Press: already In", rep, err)
+	rep, err = w.pick("late", keyZul)
+	w.reply("press-late", "Press: Late, with Add a note", rep, err)
+	rep, err = w.pick("bench", keyZul)
+	w.reply("press-bench", "Press: Bench", rep, err)
+	rep, err = w.pick("out", keyZul)
+	w.reply("press-out", "Press: Out", rep, err)
+	if _, err := w.pick("in", keyZul); err != nil {
+		w.t.Fatal(err)
+	}
+	rep, err = w.pick("in", keyDuskC)
+	w.reply("press-moved", "Press: In on the other character, the R3 move", rep, err)
+	// Back to the example: Zulmara In, Duskstrider not signed.
+	w.exec(`delete from guild_raid_signups where raid_id = $1 and character_key = $2`, w.raidID, keyDuskC)
+	w.exec(`update guild_raid_signups set state = 'in' where raid_id = $1 and character_key = $2`, w.raidID, keyZul)
+
+	w.row = "D4"
+	rep, err = w.command(dZul, "signup", map[string]string{"status": "late", "character": keyZul})
+	w.reply("signup", "/signup status:Late character:Zulmara", rep, err)
+	w.exec(`update guild_raid_signups set state = 'in' where raid_id = $1 and character_key = $2`, w.raidID, keyZul)
+
+	w.row = "D3"
+	w.port.signUpErr = errors.New("capture: the save failed")
+	rep, err = w.pick("in", keyZul)
+	w.reply("press-failure", "Press: the save failed", rep, err)
+	w.port.signUpErr = nil
+	for i := 0; i < 60; i++ {
+		rep, err = w.pick("in", keyZul)
+		if err != nil {
+			w.t.Fatal(err)
+		}
+		if rep.Message.Content == pressCopy.RateLimited {
+			w.reply("press-rate-limit", "Press: rate limit", rep, nil)
+			break
+		}
+	}
+	w.gs.SignupLimiter = httpx.NewKeyLimiter(1000, time.Minute)
+}
+
+func stateFrames(w *capWorld) {
+	thursday := w.start
+	w.row = "D1"
+	w.clock = at("2026-12-11T01:30:00Z") // 7:30 pm CST
+	w.exec(`update guild_raids set status = 'locked' where id = $1`, w.raidID)
+	w.post("post-locked", "Raid post: locked", nil)
+	w.row = "D3"
+	rep, err := w.press(dZul, "in")
+	w.reply("press-locked", "Press: locked", rep, err)
+
+	w.row = "D1"
+	w.clock = at("2026-12-09T22:00:00Z") // Wednesday 4:00 pm CST
+	friday := thursday.Add(24 * time.Hour)
+	w.exec(`update guild_raids set status = 'planned', starts_at = $2 where id = $1`, w.raidID, friday)
+	w.post("post-moved", "Raid post: moved to Friday", &thursday)
+	w.exec(`update guild_raids set starts_at = $2 where id = $1`, w.raidID, thursday)
+
+	w.clock = at("2026-12-10T22:00:00Z")
+	w.exec(`update guild_raids set status = 'cancelled' where id = $1`, w.raidID)
+	w.post("post-cancelled", "Raid post: cancelled", nil)
+	w.row = "D3"
+	rep, err = w.press(dZul, "in")
+	w.reply("press-cancelled", "Press: cancelled", rep, err)
+
+	w.row = "D1"
+	w.clock = at("2026-12-11T05:30:00Z") // 11:30 pm CST, after the 11:00 pm end
+	w.exec(`update guild_raids set status = 'planned' where id = $1`, w.raidID)
+	w.post("post-ended", "Raid post: ended, no log yet", nil)
+	w.row = "D3"
+	rep, err = w.press(dZul, "in")
+	w.reply("press-ended", "Press: ended", rep, err)
+
+	w.row = "D1"
+	w.clock = at("2026-12-11T15:00:00Z") // Friday 9:00 am CST
+	w.exec(`update guild_raids set status = 'done' where id = $1`, w.raidID)
+	w.port.done = &notify.RaidPost{Came: 30, CameOf: 33, Kills: []notify.KillLine{{Boss: "Onyxia", Duration: 4*time.Minute + 12*time.Second}}}
+	w.post("post-done", "Raid post: done", nil)
+}
+
+func officerFrames(w *capWorld, officer int64, build string) {
+	ctx := context.Background()
+	raid, found, err := w.gs.GetRaid(ctx, w.gid, w.raidID)
+	if err != nil || !found {
+		w.t.Fatal(err)
+	}
+	// /report at the done clock.
+	w.row = "D7"
+	w.port.report = capReportAnswer(w, raid, build)
+	rep, err := w.command(dZul, "report", nil)
+	w.reply("report-member", "/report, a member", rep, err)
+	rep, err = w.command(dOfficer, "report", nil)
+	w.reply("report-officer", "/report, an officer", rep, err)
+	shareFrames(w, rep, "report", dOfficer)
+
+	// /attendance and /readiness before the raid, Thursday 4:00 pm CST.
+	w.clock = at("2026-12-10T22:00:00Z")
+	w.exec(`update guild_raids set status = 'planned' where id = $1`, w.raidID)
+	raid.Status = guilds.RaidPlanned
+	w.row = "D8"
+	w.port.attendance = capAttendance(w, officer)
+	rep, err = w.command(dZul, "attendance", nil)
+	w.reply("attendance-own", "/attendance, own (two characters)", rep, err)
+	rep, err = w.command(dOfficer, "attendance", map[string]string{"name": "Zulmara"})
+	w.reply("attendance-officer", "/attendance name:Zulmara, an officer", rep, err)
+	rep, err = w.command(dZul, "attendance", map[string]string{"name": "Kraggor"})
+	w.reply("attendance-refusal", "/attendance name:Kraggor, a member", rep, err)
+
+	w.row = "D9"
+	board := guilds.CaptureReadinessAnswer(raid, capReadinessView(raid))
+	mode := "officer"
+	w.port.readinessBy = func(viewer int64) (guilds.ReadinessAnswer, error) {
+		switch {
+		case viewer != officer:
+			return guilds.ReadinessAnswer{}, guilds.ErrNotOfficer
+		case mode == "lapsed":
+			return guilds.ReadinessAnswer{}, guilds.ErrPlanRequired
+		case mode == "guild-tier":
+			return guilds.ReadinessAnswer{}, guilds.ErrRaidGuildRequired
+		case mode == "nobody":
+			return guilds.ReadinessAnswer{Raid: &raid, Rows: []string{}}, nil
+		}
+		return board, nil
+	}
+	rep, err = w.command(dOfficer, "readiness", nil)
+	w.reply("readiness-officer", "/readiness, an officer", rep, err)
+	rep, err = w.command(dZul, "readiness", nil)
+	w.reply("readiness-member", "/readiness, a member", rep, err)
+	rep, err = w.command(dStranger, "readiness", nil)
+	w.reply("readiness-unlinked", "/readiness, not linked", rep, err)
+	mode = "lapsed"
+	rep, err = w.command(dOfficer, "readiness", nil)
+	w.reply("readiness-lapsed", "/readiness, plan lapsed", rep, err)
+	mode = "guild-tier"
+	rep, err = w.command(dOfficer, "readiness", nil)
+	w.reply("readiness-guild-tier", "/readiness, Guild tier", rep, err)
+	mode = "nobody"
+	rep, err = w.command(dOfficer, "readiness", nil)
+	w.reply("readiness-nobody", "/readiness, nobody signed In or Late", rep, err)
+}
+
+// capReportAnswer is the done raid's matched log: Onyxia killed after two wipes, and four of
+// her real drops (the build's loot table), awarded.
+func capReportAnswer(w *capWorld, raid guilds.Raid, build string) *guilds.ReportAnswer {
+	zone := capZone
+	kill := int64(4*60_000 + 12_000)
+	award := func(id int, name, class string) guilds.ReportLootAward {
+		it, ok := w.gs.BuildItem(build, class, id)
+		if !ok {
+			w.t.Fatalf("loot item %d not in the %s table", id, class)
+		}
+		return guilds.ReportLootAward{ItemID: id, ItemName: it.Name, Quality: it.Quality, Icon: it.Icon, Name: name, Class: class}
+	}
+	flask, noFlask := true, false
+	return &guilds.ReportAnswer{
+		Raid: guilds.RaidView{ID: raid.ID, Title: raid.Title, Status: guilds.RaidDone, GuildTimezone: &zone, StartsAt: raid.StartsAt,
+			Match: &guilds.MatchView{ReportID: capReport},
+			Night: &guilds.NightView{Signed: 33, Came: 30, Kills: 1, Wipes: 2, Deaths: 11, DurationMS: 52 * 60_000}},
+		Report: &guilds.ReportView{
+			KillOrder: []guilds.KillOrderView{{Name: "Onyxia", Killed: true, KillMS: &kill, WipesBefore: 2}},
+			Deaths: []guilds.ReportDeathView{{Name: "Pyrewisp", OnWipes: 2, OnKills: 1}, {Name: "Windtalon", OnWipes: 2},
+				{Name: "Vexlash", OnWipes: 1, OnKills: 1}, {Name: "Corvane", OnWipes: 1}},
+			Consumables: guilds.ReportConsumablesView{LogHasBuffs: true, Rows: []guilds.ConsumableRow{
+				{Name: "Vexlash", Before: "short", Flask: &noFlask}, {Name: "Corvane", Before: "short", Flask: &noFlask},
+				{Name: "Talvorn", Before: "short", Flask: &flask}, {Name: "Pyrewisp", Before: "stocked", Flask: &flask}}},
+			Loot: []guilds.ReportLootBoss{{Boss: "Onyxia", Awards: []guilds.ReportLootAward{
+				award(16939, "Zulmara", "hunter"), award(17078, "Pyrewisp", "mage"),
+				award(18813, "Kraggor", "warrior"), award(18205, "Hollowmere", "rogue")}}},
+		},
+		Public: true,
+	}
+}
+
+// capAttendance is the roster's attendance: Zulmara 7 of the last 8, 26 of 30; Duskstrider,
+// a newer alt, 2 of 2. A member naming someone else is refused, as AttendanceFor refuses.
+func capAttendance(w *capWorld, officer int64) func(int64, string) ([]guilds.AttendanceRecord, error) {
+	day := func(d int) time.Time { return w.start.AddDate(0, 0, -7*d) }
+	zul := guilds.AttendanceRecord{Name: "Zulmara", Class: "hunter",
+		Chip: guilds.CaptureAttendanceChip(guilds.RosterRow{Attendance: guilds.Attendance{Present: 7, Nights: 8},
+			Attendance30: &guilds.Attendance{Present: 26, Nights: 30}}),
+		Last: []guilds.AttendanceLine{{StartsAt: day(1), Outcome: "present"}, {StartsAt: day(2), Outcome: "late", Excused: true},
+			{StartsAt: day(3), Outcome: "present"}, {StartsAt: day(4), Outcome: "no_show"}, {StartsAt: day(5), Outcome: "present"}}}
+	dusk := guilds.AttendanceRecord{Name: "Duskstrider", Class: "rogue",
+		Chip: guilds.CaptureAttendanceChip(guilds.RosterRow{Attendance: guilds.Attendance{Present: 2, Nights: 2}}),
+		Last: []guilds.AttendanceLine{{StartsAt: day(6), Outcome: "present"}, {StartsAt: day(7), Outcome: "present"}}}
+	return func(viewer int64, name string) ([]guilds.AttendanceRecord, error) {
+		switch {
+		case name == "":
+			return []guilds.AttendanceRecord{zul, dusk}, nil
+		case viewer == officer && strings.EqualFold(name, "Zulmara"):
+			return []guilds.AttendanceRecord{zul}, nil
+		case viewer != officer:
+			return nil, guilds.ErrOfficerOnly
+		}
+		return nil, guilds.ErrNoSuchMember
+	}
+}
+
+// capReadinessView is the board for the 33 signed In or Late, four of them with something to fix.
+func capReadinessView(raid guilds.Raid) guilds.ReadinessView {
+	stale := false
+	rows := []guilds.ReadinessRow{
+		{Name: "Pyrewisp", Consumables: guilds.ConsumablesView{State: "short"}, SyncedBeforeCutoff: &stale,
+			LoggedAt: raid.StartsAt.Add(-9 * 24 * time.Hour), Failing: 2},
+		{Name: "Windtalon", GearGap: &guilds.GearGapView{Upgrades: 2, GainDps: 14.6}, Enchants: guilds.EnchantsView{Checked: true,
+			MissingSlots: []string{"chest", "feet"}}, Failing: 2},
+		{Name: "Kraggor", TalentPointsUnspent: 3, TalentPointsRead: true, Failing: 1},
+		{Name: "Vexlash", NoExport: true},
+	}
+	for i := len(rows); i < 33; i++ {
+		rows = append(rows, guilds.ReadinessRow{Name: fmt.Sprintf("Ready%d", i)})
+	}
+	return guilds.ReadinessView{Rows: rows}
 }

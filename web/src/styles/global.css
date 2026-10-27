@@ -439,7 +439,7 @@ html[data-discord-link='suggested'] {
   --account-link-floor: 140px;
 }
 html[data-discord-link='linked'] {
-  --account-link-floor: 95px;
+  --account-link-floor: 120px;
 }
 html[data-session='1'] .account-header-reserve {
   min-height: 83px;
@@ -509,7 +509,7 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     --account-link-floor: 120px;
   }
   html[data-discord-link='linked'] {
-    --account-link-floor: 95px;
+    --account-link-floor: 115px;
   }
   html[data-session='1'] .account-header-reserve {
     min-height: 44px;

@@ -5,9 +5,10 @@
      the busy flag and every call; this draws and reports presses. Officer-read-only: test and
      change are off, `Remove` stays live; a frozen claim turns every control off. -->
 <script lang="ts">
-  import { failureWarning, openInDiscordUrl } from '../../lib/account/notifications';
+  import { openInDiscordUrl } from '../../lib/account/notifications';
   import type { GuildBot, GuildSettingsDiscord } from '../../lib/guild/api';
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
+  import { botFailureWarning } from '../../lib/guild/discord-bot-state';
   import type { GuildBotView } from '../../lib/guild/discord-bot-view';
   import type { DiscordStatus } from '../../lib/guild/discord-settings';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
@@ -74,7 +75,7 @@
   const gated = $derived(readOnly || frozen);
   const channelName = $derived(bot.channel_name ?? '');
   const openUrl = $derived(openInDiscordUrl({ guild_id: bot.server_id, channel_id: bot.channel_id ?? '' }));
-  const warning = $derived(failureWarning(bot));
+  const warning = $derived(botFailureWarning(bot));
   const off = $derived(busy !== null || frozen);
   const dimmed = $derived(gated ? DIM : '');
 </script>
@@ -164,7 +165,7 @@
     </p>
     <p class="text-muted text-[13px]">
       {guildBotCopy.installed.withButtons}{#if openUrl !== null}&#32;·&#32;<a
-          class="text-text hover:text-gold-hover -my-3 py-3 underline"
+          class="text-text hover:text-gold-hover relative rounded-[2px] underline before:absolute before:inset-x-0 before:-inset-y-3 before:content-['']"
           href={openUrl}
           target="_blank"
           rel="noopener"
@@ -175,7 +176,7 @@
   {#if warning !== null}
     <div class="flex flex-col gap-0.5 text-[13px]" data-testid="bot-warning">
       <p class="text-text">{warning.failures}</p>
-      {#if warning.lastError !== null}<p class="text-muted">{warning.lastError}</p>{/if}
+      {#if warning.cause !== null}<p class="text-muted">{warning.cause}</p>{/if}
     </div>
   {/if}
   <p class="text-muted text-[13px]" data-testid="bot-linked-members">

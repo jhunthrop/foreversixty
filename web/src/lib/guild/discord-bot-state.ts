@@ -2,7 +2,7 @@
 // Which of the bot spec §3.1 states the guild's Discord section is in, what each install return
 // says and where focus goes, and the channel picker's pure helpers. No API call, no Svelte. The
 // state itself and its heights are in discord-bot-view.ts, which carries no copy.
-import type { GuildBotChannel, GuildSettingsDiscord } from './api';
+import type { GuildBot, GuildBotChannel, GuildSettingsDiscord } from './api';
 import { guildBotCopy } from './discord-bot-copy';
 import { BOT_RETURN_PARAM } from './discord-bot-view';
 
@@ -38,6 +38,42 @@ export function takeBotReturnFlag(location: Location, history: History): string 
 export function clearedBotFailures(discord: GuildSettingsDiscord): GuildSettingsDiscord {
   if (discord.bot === null || discord.bot === undefined) return discord;
   return { ...discord, bot: { ...discord.bot, failures: 0, last_error: null } };
+}
+
+/**
+ * The API keeps a failed bot post's error as `discord status {http} code {discord}` (drain.go
+ * describe) or the transport's own text. 403 and Discord's codes 50001 (Missing Access) and
+ * 50013 (Missing Permissions) are a permission the channel lacks; 5xx or no status at all is
+ * Discord not answering.
+ */
+const BOT_ERROR = /^discord status (\d+) code (\d+)$/;
+const PERMISSION_CODES = new Set([50001, 50013]);
+const HTTP_FORBIDDEN = 403;
+const HTTP_SERVER_ERROR = 500;
+
+export interface BotWarning {
+  failures: string;
+  cause: string | null;
+}
+
+/** The installed state's warning: from the first failed post on, in words a GM can act on. */
+export function botFailureWarning(
+  bot: Pick<GuildBot, 'failures' | 'last_error' | 'channel_name'>,
+): BotWarning | null {
+  if (bot.failures < 1) return null;
+  const channel = bot.channel_name ?? '';
+  const copy = guildBotCopy.failureWarning;
+  return { failures: copy.failures(bot.failures, channel), cause: botFailureCause(bot.last_error, channel) };
+}
+
+function botFailureCause(lastError: string | null, channel: string): string | null {
+  if (lastError === null) return null;
+  const match = BOT_ERROR.exec(lastError.trim());
+  if (match === null) return guildBotCopy.failureWarning.noAnswer;
+  const status = Number(match[1]);
+  if (status === HTTP_FORBIDDEN || PERMISSION_CODES.has(Number(match[2])))
+    return guildBotCopy.failureWarning.permissions(channel);
+  return status >= HTTP_SERVER_ERROR ? guildBotCopy.failureWarning.noAnswer : null;
 }
 
 /** The selectors focus moves to, scoped to the section. */

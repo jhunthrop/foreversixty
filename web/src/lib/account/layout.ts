@@ -77,7 +77,7 @@ export const ACCOUNT_DISCORD_LINK_RESERVE: Readonly<Record<LinkHintState, Bucket
   none: { lg: 0, stack: 0 },
   unlinked: { lg: 115, stack: 135 },
   suggested: { lg: 120, stack: 140 },
-  linked: { lg: 95, stack: 95 },
+  linked: { lg: 115, stack: 120 },
 };
 
 /** Read back by the pre-paint script in Base.astro. */

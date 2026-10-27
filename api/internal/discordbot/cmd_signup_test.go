@@ -37,7 +37,7 @@ func TestSignupCommand(t *testing.T) {
 		w.addRaid(t, w.gid, time.Now().Add(96*time.Hour))
 		w.addRaid(t, w.gid, time.Now().Add(-5*time.Hour))
 		rep := w.signupCmd(t, opt(optStatus, "in"))
-		if !strings.HasPrefix(rep.Message.Content, "Zulmara is In as DPS for Onyxia's Lair.") || !rep.Message.Ephemeral {
+		if !strings.HasPrefix(rep.Message.Content, "Zulmara is In as DPS for Onyxia's Lair, "+w.day()+".") || !rep.Message.Ephemeral {
 			t.Fatalf("reply = %+v", rep)
 		}
 		if got := w.signedRaid(t, keyZulmara); got != w.raidID {
@@ -71,9 +71,9 @@ func TestSignupCommand(t *testing.T) {
 		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
 		w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", true)
 		rep := w.signupCmd(t, opt(optStatus, "bench"), opt(optRaid, fmt.Sprint(w.raidID)), opt(optCharacter, keyDusk))
-		wantReply(t, rep, "Duskstrider is on the Bench for Onyxia's Lair.", false)
+		wantReply(t, rep, "Duskstrider is on the Bench for Onyxia's Lair, "+w.day()+".", false)
 		rep = w.signupCmd(t, opt(optStatus, "out"), opt(optCharacter, "zulmara"))
-		wantReply(t, rep, "Zulmara is Out for Onyxia's Lair.", false)
+		wantReply(t, rep, "Zulmara is Out for Onyxia's Lair, "+w.day()+".", false)
 	})
 	t.Run("a character not the account's is refused", func(t *testing.T) {
 		w := newPressWorld(t)

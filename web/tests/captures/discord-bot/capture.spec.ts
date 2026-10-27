@@ -7,6 +7,7 @@
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { test, type Locator, type Page } from '@playwright/test';
+import type { GuildChannelPermission } from '../../../src/lib/guild/api';
 import { mockEntitlements } from '../../../src/test-support/billing-fixtures';
 import { addSessionHint, createHold, seedWarm } from '../../e2e/support/account-reserve';
 import { envelope as plainEnvelope } from '../../e2e/support/discord-notifications';
@@ -136,7 +137,7 @@ atWidths('4 installed', ALL, async (page, width) => {
   await settle(page);
   await shoot(page, 4, 'just-saved', width, section(page));
   await eachState(await fresh(page), 4, width, [
-    ['warning-3-failures', { discord: botSettings({ failures: 3, last_error: 'Missing Access' }) }],
+    ['warning-3-failures', { discord: botSettings({ failures: 3, last_error: 'discord status 403 code 50001' }) }],
   ]);
   const remove = await fresh(page);
   await openSettings(remove, width, { discord: botSettings({}, WEBHOOK) });
@@ -216,8 +217,13 @@ async function stubAccount(page: Page, state: LinkState): Promise<void> {
   await page.route('**/v1/discord/link', (route) => route.fulfill({ status: 204 }));
 }
 
+/** The capture server's origin, for the session cookie the header reads as signed in. */
+const CAPTURE_ORIGIN =
+  process.env.CAPTURE_BASE_URL ?? `http://localhost:${process.env.CAPTURE_PORT ?? '4481'}`;
+
 async function openAccount(page: Page, width: number, state: LinkState, url = '/account#you') {
   await sizeTo(page, width);
+  await addSessionHint(page, CAPTURE_ORIGIN);
   await stubAccount(page, state);
   await gotoHydrated(page, url, 'account');
   await settle(page);
@@ -276,7 +282,13 @@ atWidths('9 focus-visible and hover', PAIR, async (page, width) => {
   await focusEach(page, width, section(page), ['bot-add', 'discord-test'], 'offer');
   const installed = await fresh(page);
   await openSettings(installed, width, { discord: botSettings({}) });
-  await focusEach(installed, width, section(installed), ['bot-test', 'bot-change', 'bot-remove', 'bot-open'], 'installed');
+  await focusEach(
+    installed,
+    width,
+    section(installed),
+    ['bot-test', 'bot-change', 'bot-remove', 'bot-open'],
+    'installed',
+  );
   const account = await fresh(page);
   await openAccount(account, width, { suggested: GUILD_NAME });
   await focusEach(account, width, you(account), ['discord-link-start'], 'account');
@@ -323,7 +335,7 @@ atWidths('10 loading beside ready', PAIR, async (page, width) => {
   const account = await fresh(page);
   await sizeTo(account, width);
   const hold = createHold();
-  await addSessionHint(account, process.env.CAPTURE_BASE_URL ?? `http://localhost:${process.env.CAPTURE_PORT ?? '4481'}`);
+  await addSessionHint(account, CAPTURE_ORIGIN);
   await trackLayoutShift(account);
   await stubAccount(account, { linked: true, hold: hold.wait });
   await seedWarm(account);
@@ -348,7 +360,11 @@ atWidths('10 loading beside ready', PAIR, async (page, width) => {
 test('11 side by side @1440', async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: 'reduce', timezoneId: 'America/Chicago' });
   const boards: [board: string, name: string, open: (page: Page) => Promise<void>][] = [
-    ['discord-bot-settings', 'settings', (page) => openSettings(page, 1440, { discord: botSettings({}, WEBHOOK) }).then(() => undefined)],
+    [
+      'discord-bot-settings',
+      'settings',
+      (page) => openSettings(page, 1440, { discord: botSettings({}, WEBHOOK) }).then(() => undefined),
+    ],
     ['discord-bot-account', 'account', (page) => openAccount(page, 1440, { suggested: GUILD_NAME })],
   ];
   for (const [board, name, open] of boards) {
@@ -362,7 +378,13 @@ test('11 side by side @1440', async ({ browser }) => {
     await open(built);
     const builtPng = file(11, `built-${name}`, 1440);
     await built.screenshot({ path: builtPng, fullPage: true });
-    await sideBySide(await context.newPage(), mockPng, builtPng, file(11, `side-by-side-${name}`, 1440), 1440);
+    await sideBySide(
+      await context.newPage(),
+      mockPng,
+      builtPng,
+      file(11, `side-by-side-${name}`, 1440),
+      1440,
+    );
   }
   await context.close();
 });
@@ -398,7 +420,7 @@ atWidths('12 channel cannot be used', THREE, async (page, width) => {
   }
 });
 
-type GuildBotCause = { reason: 'deleted' | 'permissions'; missing: readonly string[] };
+type GuildBotCause = { reason: 'deleted' | 'permissions'; missing: readonly GuildChannelPermission[] };
 
 // ---- the raid form for a bot-only guild ----------------------------------------------------------
 
@@ -417,4 +439,3 @@ atWidths('raid form, bot-only Post to Discord', THREE, async (page, width) => {
   await settle(page);
   await shoot(page, 'raid-form', 'post-to-discord-bot-only', width, page.getByTestId('raid-form-create'));
 });
-

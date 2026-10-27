@@ -31,6 +31,8 @@ describe('guildBotCopy, verbatim from spec 6.1', () => {
     expectRow('Picker', [
       p.added,
       DATA,
+      p.serverLead,
+      DATA,
       p.label,
       p.placeholder,
       p.helper,
@@ -43,6 +45,17 @@ describe('guildBotCopy, verbatim from spec 6.1', () => {
     expectRow('Picker list states', [p.loading, DATA, p.reload, p.loadFailed, p.retry]);
     expect(p.empty(SERVER)).toBe(row('Picker list states', 1, { Server: SERVER }));
     expectRow('Picker race', [p.race]);
+  });
+
+  it('pins the failure warning, which names the channel and never the switch-off', () => {
+    const w = guildBotCopy.failureWarning;
+    const channel = { channel: 'raid-signups' };
+    expect(w.failures(1, 'raid-signups')).toBe(row('Failure warning', 0, channel));
+    expect(w.failures(3, 'raid-signups')).toBe(
+      `${row('Failure warning', 1, { n: '3', ...channel })} Send a test message to check.`,
+    );
+    expect(w.permissions('raid-signups')).toBe(row('Failure warning', 2, channel));
+    expect(w.noAnswer).toBe(row('Failure warning', 3));
   });
 
   it('pins the installed state', () => {

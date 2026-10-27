@@ -1,0 +1,13 @@
+package guilds
+
+// Throwaway, for the Discord captures only (go test -overlay); never in the tree. It exposes
+// the readiness answer and the attendance chip the bot's reads build, so the dump renders the
+// board's own words instead of typed ones.
+
+// CaptureReadinessAnswer is NextRaidReadiness's answer for raid and view.
+func CaptureReadinessAnswer(raid Raid, view ReadinessView) ReadinessAnswer {
+	return readinessAnswerOf(raid, view)
+}
+
+// CaptureAttendanceChip is the Roster tab's chip for row in raid mode.
+func CaptureAttendanceChip(row RosterRow) string { return attendanceChip(row, AttendanceSourceRaids) }

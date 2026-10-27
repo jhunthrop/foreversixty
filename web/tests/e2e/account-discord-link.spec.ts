@@ -162,7 +162,11 @@ test.describe('unlink', () => {
     await openAccount(page, { linked: true });
     await unlink(page).click();
     await expect(page.getByTestId('discord-unlink-question')).toHaveText(copy.unlinkQuestion);
+    await expect(page.getByTestId('discord-linked-as')).toBeVisible();
     await expect(page.getByTestId('discord-unlink-cancel')).toBeFocused();
+    expect(
+      await page.getByTestId('discord-unlink-cancel').evaluate((el) => el.matches(':focus-visible')),
+    ).toBe(true);
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('discord-unlink-question')).toHaveCount(0);
     await expect(unlink(page)).toBeFocused();

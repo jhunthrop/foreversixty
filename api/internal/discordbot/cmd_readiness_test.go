@@ -57,7 +57,7 @@ func TestReadinessGate(t *testing.T) {
 	assertMessageLimits(t, rep.Message)
 	e := rep.Message.Embeds[0]
 	wantTitle := segment(0, map[string]string{"Title": "Onyxia's Lair", "Weekday": "Thursday", "d": "10", "Month": "December"})
-	if e.Title != wantTitle || e.Description != "The 23 signed In or Late. 12 have something to fix." || e.Fields[0].Name != segment(4, nil) {
+	if e.Title != wantTitle || e.Description != "23 signed In or Late. 12 have something to fix." || e.Fields[0].Name != segment(4, nil) {
 		t.Fatalf("embed = %+v", e)
 	}
 	lines := strings.Split(e.Fields[0].Value, "\n")
@@ -68,7 +68,7 @@ func TestReadinessGate(t *testing.T) {
 		t.Fatalf("row = %+v", rep.Message.Components)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23, Failing: 1, Rows: rows[:1]}
-	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0].Description; got != "The 23 signed In or Late. 1 has something to fix." {
+	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0].Description; got != "23 signed In or Late. 1 has something to fix." {
 		t.Fatalf("one = %q", got)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid}

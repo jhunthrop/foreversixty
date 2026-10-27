@@ -13,7 +13,8 @@ var pressCopy = struct {
 	// The character select.
 	SelectPrompt, SelectPlaceholder, OptionDescription, OptionMain, Showing string
 	// Outcomes. InSaved plus Count is the spec's In sentence; CountOpen is the count of a raid
-	// whose size is unknown.
+	// whose size is unknown. {Date} is the raid's day, "Thu 10 Dec", in the guild's raid zone,
+	// so a guild with two raids of one title a week can tell which the press landed on.
 	InSaved, Count, CountOpen, LateSaved, NoteButton, BenchSaved, OutSaved, Moved string
 	// Already is for In and Late; AlreadyBench and AlreadyOut have no role.
 	Already, AlreadyBench, AlreadyOut string
@@ -35,17 +36,17 @@ var pressCopy = struct {
 	OptionDescription: "{Spec} {Class} · {Role}",
 	OptionMain:        " · your main",
 	Showing:           "Showing 25 of {n}. Sign up the others on the raid page.",
-	InSaved:           "{Name} is In as {Role} for {Title}.",
+	InSaved:           "{Name} is In as {Role} for {Title}, {Date}.",
 	Count:             " {signed} of {size} signed up.",
 	CountOpen:         " {n} signed up.",
-	LateSaved:         "{Name} is Late as {Role} for {Title}. Add a note for the officers on the raid page.",
+	LateSaved:         "{Name} is Late as {Role} for {Title}, {Date}. Add a note for the officers on the raid page.",
 	NoteButton:        "Add a note",
-	BenchSaved:        "{Name} is on the Bench for {Title}.",
-	OutSaved:          "{Name} is Out for {Title}.",
-	Moved:             " {Other} moved to Bench.",
-	Already:           "{Name} is already {State} as {Role} for {Title}.",
-	AlreadyBench:      "{Name} is already on the Bench for {Title}.",
-	AlreadyOut:        "{Name} is already Out for {Title}.",
+	BenchSaved:        "{Name} is on the Bench for {Title}, {Date}.",
+	OutSaved:          "{Name} is Out for {Title}, {Date}.",
+	Moved:             " Your other character {Other} moved to Bench.",
+	Already:           "{Name} is already {State} as {Role} for {Title}, {Date}.",
+	AlreadyBench:      "{Name} is already on the Bench for {Title}, {Date}.",
+	AlreadyOut:        "{Name} is already Out for {Title}, {Date}.",
 	NoRaid:            "No raid planned yet.",
 }
 

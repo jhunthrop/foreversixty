@@ -101,7 +101,7 @@
   function askUnlink(): void {
     show(null);
     confirming = true;
-    focus.request(CANCEL);
+    focus.request(CANCEL, { visible: true });
   }
 
   function cancel(): void {
@@ -142,6 +142,11 @@
     {#if settling}
       <div style="min-height: {settledMinHeight}px" aria-hidden="true"></div>
     {:else if linkedName !== null}
+      <p class="text-[14px] [overflow-wrap:anywhere]" data-testid="discord-linked-as">
+        <span class="text-muted">{discordLinkCopy.linkedLead}</span>
+        <strong class="text-strong font-semibold">{Array.from(linkedName).slice(0, NAME_MAX).join('')}</strong
+        >
+      </p>
       {#if confirming}
         <p class="text-text text-[14px]" data-testid="discord-unlink-question">
           {discordLinkCopy.unlinkQuestion}
@@ -158,7 +163,7 @@
           </button>
           <button
             type="button"
-            class="text-text hover:text-gold-hover inline-flex min-h-11 items-center text-[13px] underline"
+            class={OUTLINE}
             disabled={busy}
             onclick={cancel}
             data-testid="discord-unlink-cancel"
@@ -167,17 +172,9 @@
           </button>
         </div>
       {:else}
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <p class="text-[14px] [overflow-wrap:anywhere]" data-testid="discord-linked-as">
-            <span class="text-muted">{discordLinkCopy.linkedLead}</span>
-            <strong class="text-strong font-semibold"
-              >{Array.from(linkedName).slice(0, NAME_MAX).join('')}</strong
-            >
-          </p>
-          <button type="button" class={OUTLINE} onclick={askUnlink} data-testid="discord-unlink">
-            {discordLinkCopy.unlink}
-          </button>
-        </div>
+        <button type="button" class={OUTLINE} onclick={askUnlink} data-testid="discord-unlink">
+          {discordLinkCopy.unlink}
+        </button>
       {/if}
     {:else}
       <p class={suggested === null ? 'text-muted text-[13px]' : 'text-text text-[14px]'}>

@@ -40,7 +40,9 @@ export const guildBotCopy = {
     'Add the bot and raid posts get In, Late, Bench and Out buttons. This channel stays as the fallback.',
 
   picker: {
+    /** The first pick after the install; `Change channel` and the can't-be-used notice read `serverLead`. */
     added: 'Bot added to',
+    serverLead: 'Raid channel in',
     label: 'Raid channel',
     placeholder: 'Choose a channel',
     helper: 'Text channels the bot can post in.',
@@ -79,6 +81,16 @@ export const guildBotCopy = {
       if (linked === 1) return `1 of ${members} members has linked Discord.`;
       return `${linked} of ${members} members have linked Discord. The others get a link when they press a button.`;
     },
+  },
+
+  /** The installed state's failure warning. The bot never switches itself off (it keeps
+   *  retrying), so unlike the webhook's warning there is no "at 5 in a row" clause. */
+  failureWarning: {
+    failures: (failures: number, channel: string): string =>
+      `${failures === 1 ? 'The last post' : `The last ${failures} posts`} to #${shortServerName(channel)} failed. Send a test message to check.`,
+    permissions: (channel: string): string =>
+      `Discord refused it for a missing permission. In Discord, give the Forever Sixty role View Channel, Send Messages and Embed Links in #${shortServerName(channel)}.`,
+    noAnswer: 'Discord did not answer, so the post is tried again on its own.',
   },
 
   removedInDiscord: {
