@@ -5,6 +5,7 @@ import { GUILD_TIER_28_READ, UPGRADE_PREVIEW } from '../../test-support/billing-
 import {
   INITIAL_UPGRADE_STATE,
   UNCONFIRMED_RECHECK_MS,
+  focusIsPending,
   createUpgradeFlow,
   type UpgradeFlowDeps,
   type UpgradeFlowState,
@@ -203,5 +204,85 @@ describe('unconfirmed', () => {
     h.flow.close();
     await vi.advanceTimersByTimeAsync(UNCONFIRMED_RECHECK_MS);
     expect(h.deps.reload).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('fix round 2', () => {
+  it('a commit that lands after a newer action still invalidates and reloads, and is not adopted', async () => {
+    let land!: (view: typeof GUILD_TIER_28_READ) => void;
+    const h = harness({ upgrade: () => new Promise((resolve) => (land = resolve)) });
+    await h.flow.open();
+    const committing = h.flow.commit();
+    await h.flow.open();
+    land(GUILD_TIER_28_READ);
+    await committing;
+    expect(h.deps.adopt).not.toHaveBeenCalled();
+    expect(h.deps.invalidate).toHaveBeenCalled();
+    expect(h.deps.reload).toHaveBeenCalledTimes(1);
+  });
+
+  it('a stale failure that is not a clean decline also reloads', async () => {
+    let fail!: (error: unknown) => void;
+    const h = harness({ upgrade: () => new Promise((_, reject) => (fail = reject)) });
+    await h.flow.open();
+    const committing = h.flow.commit();
+    h.flow.close();
+    fail(refusal(502, 'upgrade_unconfirmed'));
+    await committing;
+    expect(h.deps.reload).toHaveBeenCalledTimes(1);
+  });
+
+  it('focus is pending once per request', () => {
+    expect(focusIsPending(1, 0)).toBe(true);
+    expect(focusIsPending(1, 1)).toBe(false);
+    expect(focusIsPending(0, 0)).toBe(false);
+  });
+
+  it('a failed reload sends focus to the failure and uses the stale unconfirmed line', async () => {
+    const h = harness({
+      upgrade: async () => {
+        throw refusal(502, 'upgrade_unconfirmed');
+      },
+      reload: vi.fn(async () => false),
+    });
+    await h.flow.open();
+    await h.flow.commit();
+    expect(h.state()).toMatchObject({ notice: 'unconfirmed-stale', focusTarget: 'failure' });
+    expect(h.state().focusRequest).toBeGreaterThan(0);
+  });
+
+  it('a good reload sends focus to the plan', async () => {
+    const h = harness({
+      upgrade: async () => {
+        throw refusal(409, 'not_upgradable');
+      },
+    });
+    await h.flow.open();
+    await h.flow.commit();
+    expect(h.state().focusTarget).toBe('plan');
+  });
+
+  it('preview_expired shows the prices-changed line only if the new preview loaded', async () => {
+    let previews = 0;
+    const h = harness({
+      previewUpgrade: async () => {
+        previews += 1;
+        if (previews === 1) return UPGRADE_PREVIEW;
+        throw refusal(500, null);
+      },
+      upgrade: async () => {
+        throw refusal(409, 'preview_expired');
+      },
+    });
+    await h.flow.open();
+    await h.flow.commit();
+    expect(h.state().preview).toBeNull();
+    expect(h.state().error).toBe(guildBillingCopy.upgrade.failed);
+  });
+
+  it('states the stale-unconfirmed addition', () => {
+    expect(guildBillingCopy.upgrade.unconfirmedStale).toBe(
+      'Stripe is still confirming the change. Reload to see where it stands.',
+    );
   });
 });

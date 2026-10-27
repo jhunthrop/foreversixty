@@ -7,6 +7,7 @@
   import { invalidateGuild } from '../../lib/guild/api';
   import {
     INITIAL_UPGRADE_STATE,
+    focusIsPending,
     createUpgradeFlow,
     type UpgradeFlowState,
   } from '../../lib/guild/upgrade-flow';
@@ -49,13 +50,18 @@
   const viewState = $derived(billingState(view, now));
   const payer = $derived(view !== null && canBill(view));
 
+  /** A read that finishes after a newer one began is ignored, so it cannot overwrite the newer view. */
+  let loadSequence = 0;
+
   async function load(): Promise<boolean> {
+    const sequence = ++loadSequence;
     failed = false;
     try {
-      view = await getGuildBilling(guildId);
+      const fresh = await getGuildBilling(guildId);
+      if (sequence === loadSequence) view = fresh;
       return true;
     } catch {
-      failed = true;
+      if (sequence === loadSequence) failed = true;
       return false;
     }
   }
@@ -78,12 +84,20 @@
   });
   $effect(() => () => upgradeFlow.dispose());
 
-  /** After the confirm closes onto a reloaded plan: focus the plan line's button, else the status line. */
+  let lastFocusHandled = 0;
+
+  /** After the confirm closes onto a reloaded plan: the plan line's button, else the status line;
+   *  when the reload failed, the load error's retry button. Once per request. */
   $effect(() => {
-    if (flow.focusRequest === 0) return;
+    if (!focusIsPending(flow.focusRequest, lastFocusHandled)) return;
+    lastFocusHandled = flow.focusRequest;
+    const target = flow.focusTarget;
     void tick().then(() => {
-      const move = sectionEl?.querySelector<HTMLElement>('[data-testid="guild-move-raid-guild"]');
-      (move ?? statusEl)?.focus();
+      const found =
+        target === 'failure'
+          ? sectionEl?.querySelector<HTMLElement>('[data-testid="guild-billing-load-error"] button')
+          : sectionEl?.querySelector<HTMLElement>('[data-testid="guild-move-raid-guild"]');
+      (found ?? statusEl)?.focus();
     });
   });
 </script>
@@ -98,6 +112,8 @@
   <div bind:this={statusEl} role="status" tabindex="-1" class="text-muted text-[13px] empty:hidden">
     {#if flow.notice === 'unconfirmed'}
       <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmed}</p>
+    {:else if flow.notice === 'unconfirmed-stale'}
+      <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmedStale}</p>
     {:else if flow.notice === 'moved'}
       <p data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
     {/if}

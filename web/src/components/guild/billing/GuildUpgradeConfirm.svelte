@@ -37,7 +37,7 @@
   );
 
   function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape') return;
+    if (event.key !== 'Escape' || committing) return;
     event.preventDefault();
     onKeep();
   }
@@ -83,6 +83,7 @@
       type="button"
       class={BILLING_TEXT_BUTTON}
       use:focusOnMount
+      disabled={committing}
       onclick={onKeep}
       data-testid="guild-upgrade-keep"
     >
