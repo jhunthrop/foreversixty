@@ -5,6 +5,9 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
 func (w *pressWorld) raidCmdAs(t *testing.T, discordUser string) Reply {
@@ -88,5 +91,30 @@ func assertRowMatchesPost(t *testing.T, w *pressWorld, m Message) {
 	}
 	if m.Embeds[0].Title != post.Embeds[0].Title || m.Embeds[0].Footer != post.Embeds[0].Footer {
 		t.Fatalf("embed = %+v", m.Embeds[0])
+	}
+}
+
+func TestRaidCommandShowsAMovedRaidAsItsPostDoes(t *testing.T) {
+	w := newPressWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	ctx := context.Background()
+	if _, err := w.st.EnqueuePost(ctx, w.raidID, w.gid); err != nil {
+		t.Fatal(err)
+	}
+	w.st.MarkRaidMoved(ctx, w.raidID, time.Now().Add(24*time.Hour))
+	e := w.raidCmdAs(t, pressDiscord).Message.Embeds[0]
+	if !strings.HasPrefix(e.Title, "Moved: ") {
+		t.Fatalf("title = %q", e.Title)
+	}
+}
+
+func TestRaidCommandNamesNoCharacterItCannotFind(t *testing.T) {
+	w := newPressWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	w.press(t, "in")
+	w.port.candidates = []guilds.SignupCandidate{{CharacterKey: "us/normal/other", Name: "Other", Verified: true}}
+	got := w.raidCmdAs(t, pressDiscord).Message.Embeds[0].Description
+	if got != "You are In as DPS." {
+		t.Fatalf("description = %q", got)
 	}
 }

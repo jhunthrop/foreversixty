@@ -89,10 +89,17 @@ func TestRegisterFailureDoesNotStopStartup(t *testing.T) {
 }
 
 func TestCommandsHashIsStableAndSensitive(t *testing.T) {
-	a, b := commandsHash(Commands()), commandsHash(Commands())
+	hash := func(cmds []Command) string {
+		h, err := commandsHash(cmds)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return h
+	}
+	a, b := hash(Commands()), hash(Commands())
 	cmds := Commands()
 	cmds[0].Description += "!"
-	if a != b || a == commandsHash(cmds) || len(a) != 64 || strings.Trim(a, "0123456789abcdef") != "" {
+	if a != b || a == hash(cmds) || len(a) != 64 || strings.Trim(a, "0123456789abcdef") != "" {
 		t.Fatalf("hashes %s %s", a, b)
 	}
 }

@@ -47,30 +47,42 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 	if !found {
 		return pressReply(commandCopy.RaidNone, false), nil
 	}
-	state := PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, nil, now)
-	msg := PostMessage(postFor(facts, state, nil), facts.RaidURL, facts.NightURL, now)
+	movedFrom, err := s.d.Store.MovedFrom(ctx, next.ID)
+	if err != nil {
+		return Reply{}, fmt.Errorf("discordbot: raid moved: %w", err)
+	}
+	state := PostState(facts.Status, facts.Post.StartsAt, facts.EndsAt, movedFrom, now)
+	msg := PostMessage(postFor(facts, state, movedFrom), facts.RaidURL, facts.NightURL, now)
 	msg.Embeds[0].Description = ownStateSentence(next.Own, cands)
 	msg.Ephemeral = true
 	return Reply{Message: msg}, nil
 }
 
 // ownStateSentence is the viewer's state on the raid, named by the character that signed.
+// A character missing from the candidates is not named (its key is not a name).
 func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) string {
 	if own == nil {
 		return commandCopy.RaidUnsigned
 	}
-	name := own.CharacterKey
+	name, named := "", false
 	for _, c := range cands {
 		if c.CharacterKey == own.CharacterKey {
-			name = c.Name
+			name, named = memberText(c.Name), true
 		}
 	}
-	template := map[string]string{
-		guilds.SignupIn: commandCopy.RaidIn, guilds.SignupLate: commandCopy.RaidLate,
-		guilds.SignupBench: commandCopy.RaidBench, guilds.SignupOut: commandCopy.RaidOut,
-	}[own.State]
-	if template == "" {
+	templates := map[string][2]string{
+		guilds.SignupIn:    {commandCopy.RaidInNameless, commandCopy.RaidIn},
+		guilds.SignupLate:  {commandCopy.RaidLateNameless, commandCopy.RaidLate},
+		guilds.SignupBench: {commandCopy.RaidBenchNameless, commandCopy.RaidBench},
+		guilds.SignupOut:   {commandCopy.RaidOutNameless, commandCopy.RaidOut},
+	}
+	pair, ok := templates[own.State]
+	if !ok {
 		return commandCopy.RaidUnsigned
 	}
-	return fill(template, "{Name}", memberText(name), "{Role}", roleWord(own.Role))
+	template := pair[0]
+	if named {
+		template = pair[1]
+	}
+	return fill(template, "{Name}", name, "{Role}", roleWord(own.Role))
 }

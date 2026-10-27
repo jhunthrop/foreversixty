@@ -36,7 +36,10 @@ func (s *Service) RegisterCommands(ctx context.Context) error {
 }
 
 func (s *Service) registerScope(ctx context.Context, serverID, scope string, cmds []Command) error {
-	hash := commandsHash(cmds)
+	hash, err := commandsHash(cmds)
+	if err != nil {
+		return err
+	}
 	stored, err := s.d.Store.CommandsHash(ctx, s.d.ApplicationID, scope)
 	if err != nil {
 		return err

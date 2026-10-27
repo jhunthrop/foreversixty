@@ -4,12 +4,14 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
 // Discord's option type numbers the bot uses.
 const optionString = 3
 
+// slotChoices' values are the BiS data's own slot keys (bis.Slot.Slot).
 // classChoices are the nine classes; slotChoices the 17 gear slots; phaseChoices the level
 // bands and the Phase 1 raid.
 var (
@@ -17,9 +19,9 @@ var (
 	slotChoices  = []Choice{
 		{"Head", "head"}, {"Neck", "neck"}, {"Shoulder", "shoulder"}, {"Back", "back"},
 		{"Chest", "chest"}, {"Wrist", "wrist"}, {"Hands", "hands"}, {"Waist", "waist"},
-		{"Legs", "legs"}, {"Feet", "feet"}, {"Ring 1", "ring1"}, {"Ring 2", "ring2"},
-		{"Trinket 1", "trinket1"}, {"Trinket 2", "trinket2"}, {"Main hand", "mainhand"},
-		{"Off hand", "offhand"}, {"Ranged", "ranged"},
+		{"Legs", "legs"}, {"Feet", "feet"}, {"Ring 1", "finger1"}, {"Ring 2", "finger2"},
+		{"Trinket 1", "trinket1"}, {"Trinket 2", "trinket2"}, {"Main hand", "main_hand"},
+		{"Off hand", "off_hand"}, {"Ranged", "ranged"},
 	}
 	phaseChoices = []Choice{
 		{"Level 20", "20"}, {"Level 30", "30"}, {"Level 40", "40"}, {"Level 50", "50"},
@@ -61,7 +63,7 @@ func Commands() []Command {
 			stringOption("phase", "Level band or Phase 1 raid.", false, false, phaseChoices),
 		}},
 		{Name: "report", Description: "The last logged raid: kills and loot.", Options: []CommandOption{
-			stringOption("raid", descRaidOption, false, true, nil),
+			stringOption("raid", descReportRaidOption, false, true, nil),
 		}},
 		{Name: "attendance", Description: "Your attendance. Officers can name anyone.", Options: []CommandOption{
 			stringOption("name", "Officers: a member of the guild.", false, true, nil),
@@ -83,12 +85,17 @@ func commandsOf(cmds []Command, released bool) []Command {
 	return out
 }
 
-// commandsHash is the sha256 of the commands' canonical JSON: what Discord is sent.
-func commandsHash(cmds []Command) string {
+// commandsHashVersion is bumped to make every scope register again (commands deleted in the
+// Developer Portal, a change to how they are sent).
+const commandsHashVersion = "v1"
+
+// commandsHash is the sha256 of the commands' canonical JSON, under the hash version: what
+// Discord is sent.
+func commandsHash(cmds []Command) (string, error) {
 	raw, err := json.Marshal(cmds)
-	if err != nil { // plain structs of strings and ints cannot fail to marshal
-		panic("discordbot: commands do not marshal: " + err.Error())
+	if err != nil {
+		return "", fmt.Errorf("discordbot: marshal commands: %w", err)
 	}
-	sum := sha256.Sum256(raw)
-	return hex.EncodeToString(sum[:])
+	sum := sha256.Sum256(append([]byte(commandsHashVersion+"\n"), raw...))
+	return hex.EncodeToString(sum[:]), nil
 }
