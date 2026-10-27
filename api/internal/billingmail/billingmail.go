@@ -32,8 +32,10 @@ type Renewal struct {
 // Size is the email sent 14 days before renewal when a Guild plan has more
 // than 25 verified members.
 type Size struct {
-	To, Guild      string
-	Members        int
+	To, Guild string
+	Members   int
+	// MemberLimit is the member count the Guild tier covers (catalog.GuildTierMemberLimit).
+	MemberLimit    int
 	RenewsOn       time.Time
 	RaidGuildCents int64
 	Interval       string
@@ -85,15 +87,18 @@ func RenewalEmail(r Renewal) (mail.Message, error) {
 	return compose(r.To, subject, sentence, "Manage or cancel", r.ManageURL), nil
 }
 
-// SizeEmail builds the over-25 notice.
+// SizeEmail builds the notice for a Guild-tier guild over its member limit.
 func SizeEmail(s Size) (mail.Message, error) {
 	price, err := FormatPrice(s.RaidGuildCents, s.Interval)
 	if err != nil {
 		return mail.Message{}, err
 	}
-	subject := fmt.Sprintf("%s has %d members; Guild covers 25", s.Guild, s.Members)
-	sentence := fmt.Sprintf("%s has %d verified members and its Guild plan covers up to 25, so when it renews on %s you may want Raid guild at %s; nothing switches off either way.",
-		s.Guild, s.Members, EmailDate(s.RenewsOn), price)
+	if s.MemberLimit <= 0 {
+		return mail.Message{}, ErrNoMemberLimit
+	}
+	subject := fmt.Sprintf("%s has %d members; Guild covers %d", s.Guild, s.Members, s.MemberLimit)
+	sentence := fmt.Sprintf("%s has %d verified members and its Guild plan covers up to %d, so when it renews on %s you may want Raid guild at %s; nothing switches off either way.",
+		s.Guild, s.Members, s.MemberLimit, EmailDate(s.RenewsOn), price)
 	return compose(s.To, subject, sentence, "Look at Raid guild", s.SettingsURL), nil
 }
 

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BILLING_API_FAILED, BillingApiError } from '../billing/api';
 import { guildBillingCopy } from '../billing/guild-billing-copy';
+import { seatsCopy } from '../billing/seats-copy';
 import { GUILD_TIER_28_READ, UPGRADE_PREVIEW } from '../../test-support/billing-fixtures';
 import {
   INITIAL_UPGRADE_STATE,
@@ -105,6 +106,17 @@ describe('commit', () => {
     await h.flow.open();
     await h.flow.commit();
     expect(h.state().error).toBe(BILLING_API_FAILED);
+  });
+
+  it('an open transfer checkout keeps the confirm and says a change is in progress', async () => {
+    const h = harness({
+      upgrade: async () => {
+        throw refusal(409, 'transfer_in_progress');
+      },
+    });
+    await h.flow.open();
+    await h.flow.commit();
+    expect(h.state()).toMatchObject({ confirming: true, error: seatsCopy.whoPays.inProgress });
   });
 
   it('not_upgradable closes, invalidates and reloads with no line', async () => {

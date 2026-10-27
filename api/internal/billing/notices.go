@@ -104,7 +104,7 @@ func (s *Service) sizeMessage(to string, due DueNotice) (mail.Message, error) {
 	}
 	raid, _ := catalog.Lookup(raidKey)
 	return billingmail.SizeEmail(billingmail.Size{
-		To: to, Guild: due.Guild, Members: due.Members, RenewsOn: due.PeriodEnd,
+		To: to, Guild: due.Guild, Members: due.Members, MemberLimit: catalog.GuildTierMemberLimit, RenewsOn: due.PeriodEnd,
 		RaidGuildCents: raid.AmountCents, Interval: string(raid.Interval), SettingsURL: s.guildBillingURL(due),
 	})
 }

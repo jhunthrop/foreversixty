@@ -141,24 +141,28 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 	}
 	var outbox []mail.Message
 	released := 0
-	err = s.Store.withGuildLock(ctx, guildID, func(tx pgx.Tx) error {
+	err = s.Store.withGuildLockStep(ctx, guildID, func(tx pgx.Tx) (*externalStep, error) {
 		rows, err := s.Store.seatRows(ctx, tx, guildID)
 		if err != nil {
-			return err
+			return nil, err
 		}
+		var resumes []string
 		for slot := 1; slot <= catalog.SeatsRaidGuild; slot++ {
-			msg, did, err := s.sweepSeat(ctx, tx, guildID, tier, rows[slot], now)
+			out, err := s.sweepSeat(ctx, tx, guildID, tier, rows[slot], now)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if did {
+			if out.released {
 				released++
 			}
-			if msg != nil {
-				outbox = append(outbox, *msg)
+			if out.msg != nil {
+				outbox = append(outbox, *out.msg)
+			}
+			if out.resume != "" {
+				resumes = append(resumes, out.resume)
 			}
 		}
-		return nil
+		return s.resumeStep(resumes), nil
 	})
 	if err != nil {
 		return 0, err
@@ -167,30 +171,104 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 	return released, nil
 }
 
+// sweptSeat is what sweeping one seat did: released it, with the email to
+// send after commit, or the holder's own subscription to resume before it.
+type sweptSeat struct {
+	released bool
+	msg      *mail.Message
+	resume   string
+}
+
 // sweepSeat releases one seat that no longer stands, or drops a move offer
 // whose offeree is gone.
-func (s *Service) sweepSeat(ctx context.Context, tx pgx.Tx, guildID int64, tier string, row seatRow, now time.Time) (*mail.Message, bool, error) {
+func (s *Service) sweepSeat(ctx context.Context, tx pgx.Tx, guildID int64, tier string, row seatRow, now time.Time) (sweptSeat, error) {
 	if row.holderID == nil {
-		return nil, false, nil
+		return sweptSeat{}, nil
 	}
 	keep, err := s.keepSeat(ctx, tx, guildID, tier, row)
 	if err != nil {
-		return nil, false, err
+		return sweptSeat{}, err
 	}
 	if !keep {
-		msg, err := s.release(ctx, tx, guildID, row, now)
-		return msg, err == nil, err
+		return s.releaseSwept(ctx, tx, guildID, row, now)
 	}
 	if row.pendingID != nil {
 		member, err := isVerifiedMember(ctx, tx, guildID, *row.pendingID)
 		if err != nil {
-			return nil, false, err
+			return sweptSeat{}, err
 		}
 		if !member {
-			return nil, false, wrap("drop move offer", clearPending(ctx, tx, guildID, row.slot))
+			return sweptSeat{}, wrap("drop move offer", clearPending(ctx, tx, guildID, row.slot))
 		}
 	}
-	return nil, false, nil
+	return sweptSeat{}, nil
+}
+
+// releaseSwept releases a seat the sweep found no longer stands. A holder
+// who gave up their own Premium for a seat that has not started yet still
+// has that subscription running to its end: it is resumed, and no comeback
+// is opened (its Checkout would refuse them while the subscription runs).
+func (s *Service) releaseSwept(ctx context.Context, tx pgx.Tx, guildID int64, row seatRow, now time.Time) (sweptSeat, error) {
+	own, err := s.resumableOwn(ctx, row, now)
+	if err != nil {
+		return sweptSeat{}, err
+	}
+	if own == "" {
+		msg, err := s.release(ctx, tx, guildID, row, now)
+		return sweptSeat{released: err == nil, msg: msg}, err
+	}
+	ch, err := characterOf(ctx, tx, guildID, *row.holderID)
+	if err != nil {
+		return sweptSeat{}, err
+	}
+	if _, err := tx.Exec(ctx, clearSeatSQL, guildID, row.slot, ch.name, now); err != nil {
+		return sweptSeat{}, wrap("release unstarted seat", err)
+	}
+	return sweptSeat{released: true, resume: own}, nil
+}
+
+// resumableOwn is the holder's own Stripe subscription when the seat is
+// accepted but not started, the holder gave up their Premium for it, and
+// that subscription is still live and set to end; "" otherwise (or when
+// Stripe is not configured, which leaves the comeback path).
+func (s *Service) resumableOwn(ctx context.Context, row seatRow, now time.Time) (string, error) {
+	if s.Canceller == nil || row.state != StateAccepted || row.gaveUpKey == nil ||
+		row.startsAt == nil || !row.startsAt.After(now) {
+		return "", nil
+	}
+	b, err := s.Store.Entitlements.PersonalBilling(ctx, *row.holderID)
+	if err != nil {
+		return "", wrap("holder billing", err)
+	}
+	if b == nil || !b.Active || !b.CancelAtPeriodEnd || b.StripeSubscriptionID == "" {
+		return "", nil
+	}
+	return b.StripeSubscriptionID, nil
+}
+
+// resumeStep resumes the given own subscriptions as the sweep's last step
+// before commit; undo sets them to end again. nil when there are none.
+func (s *Service) resumeStep(ids []string) *externalStep {
+	if len(ids) == 0 {
+		return nil
+	}
+	return &externalStep{
+		do: func(ctx context.Context) error {
+			for _, id := range ids {
+				if err := s.Canceller.ResumeSubscription(ctx, id); err != nil {
+					return wrap("resume own subscription", err)
+				}
+			}
+			return nil
+		},
+		undo: func(ctx context.Context) {
+			for _, id := range ids {
+				if err := s.Canceller.CancelSubscriptionAtPeriodEnd(ctx, id); err != nil {
+					s.logger().Error("seats", "op", "re-cancel after failed release", "subscription", id, "err", err)
+				}
+			}
+		},
+	}
 }
 
 // keepSeat is false for a seat whose plan has no access, whose slot the

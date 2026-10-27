@@ -38,7 +38,8 @@ type DueNotice struct {
 	Members         int
 }
 
-// dueNoticeQuery selects the live, not-canceling Stripe rows with a period
+// dueNoticeQuery selects the live (active or trialing: a transfer trials to
+// its first charge), not-canceling Stripe rows with a period
 // end in (now, now+lead]; %s is a kind-specific extra filter.
 const dueNoticeQuery = `
 	select e.id, e.billing_user_id, coalesce(e.tier, ''), coalesce(e.price_lookup_key, ''),
@@ -47,7 +48,7 @@ const dueNoticeQuery = `
 	       coalesce((select count(distinct m.user_id) from guild_members m
 	                 where m.guild_id = e.guild_id and m.verified_at is not null), 0)
 	from entitlements e left join guilds g on g.id = e.guild_id
-	where e.source = 'stripe' and e.status = 'active' and not e.cancel_at_period_end
+	where e.source = 'stripe' and e.status in ('active', 'trialing') and not e.cancel_at_period_end
 	  and e.billing_user_id is not null
 	  and e.current_period_end > $1 and e.current_period_end <= $1 + $2::interval
 	  %s

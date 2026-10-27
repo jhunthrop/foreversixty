@@ -10,8 +10,6 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
-
-	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
 
 // ErrNotFound is returned by Revoke when the named subject/plan has no
@@ -62,66 +60,6 @@ func (s *Store) Can(ctx context.Context, userID int64, feature Feature) (bool, R
 		return false, ReasonNoPlan, nil
 	}
 	return true, ReasonEntitled, nil
-}
-
-// heldSeatClause (its CASE mirrors catalog.SeatsForTier, which a test walks
-// tier by tier) matches a premium_seats row (alias s, joined to the
-// holder's verified guild_members row m and the guild's whole-plan
-// entitlements row e) that currently gives its holder Premium: held or
-// accepted and started, inside the seat count of the guild's tier.
-var heldSeatClause = fmt.Sprintf(`s.state in ('held', 'accepted')
-	and (s.starts_at is null or s.starts_at <= now())
-	and s.slot <= case e.tier when '%s' then %d when '%s' then %d else 0 end`,
-	TierRaidGuild, catalog.SeatsRaidGuild, TierGuild, catalog.SeatsGuild)
-
-// standardEntitlementSQL is the boolean expression "userExpr holds Premium":
-// an active personal premium row, or a held seat on a guild plan the holder
-// still verifiably belongs to. userExpr is a SQL expression for the user id.
-func standardEntitlementSQL(userExpr string) string {
-	return `(exists (
-		  select 1 from entitlements e
-		  where e.user_id = ` + userExpr + ` and e.plan = 'premium' and ` + activeClause + `
-		) or exists (
-		  select 1 from premium_seats s
-		  join guild_members m on m.guild_id = s.guild_id and m.user_id = s.holder_user_id and m.verified_at is not null
-		  join entitlements e on e.guild_id = s.guild_id and e.plan = 'guild' and e.features is null and ` + activeClause + `
-		  where s.holder_user_id = ` + userExpr + ` and ` + heldSeatClause + `
-		))`
-}
-
-// hasStandardEntitlement is every feature's rule except the per-guild ones:
-// Premium from a personal plan or a held seat. Guild membership alone grants
-// nothing. IsSupporter reuses this exact rule (the supporter mark and every
-// non-officer feature share one threshold).
-func (s *Store) hasStandardEntitlement(ctx context.Context, userID int64) (bool, error) {
-	var ok bool
-	if err := s.Pool.QueryRow(ctx, `select `+standardEntitlementSQL("$1"), userID).Scan(&ok); err != nil {
-		return false, fmt.Errorf("entitlements: standard check %d: %w", userID, err)
-	}
-	return ok, nil
-}
-
-// SupportersAmong answers IsSupporter for many accounts in one query; the map
-// holds an entry for every id asked about.
-func (s *Store) SupportersAmong(ctx context.Context, userIDs []int64) (map[int64]bool, error) {
-	out := make(map[int64]bool, len(userIDs))
-	for _, id := range userIDs {
-		out[id] = false
-	}
-	rows, err := s.Pool.Query(ctx, `
-		select u.id from unnest($1::bigint[]) as u(id) where `+standardEntitlementSQL("u.id"), userIDs)
-	if err != nil {
-		return nil, fmt.Errorf("entitlements: supporters among: %w", err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var id int64
-		if err := rows.Scan(&id); err != nil {
-			return nil, fmt.Errorf("entitlements: supporters among: %w", err)
-		}
-		out[id] = true
-	}
-	return out, rows.Err()
 }
 
 // hasVerifiedGuildPlan reports whether userID is a verified member (any
@@ -203,15 +141,6 @@ func (s *Store) CanForGuild(ctx context.Context, guildID, userID int64, feature 
 		return false, ReasonNotOfficer, nil
 	}
 	return true, ReasonEntitled, nil
-}
-
-// IsSupporter is a lighter question than Can (spec §1.3): does this
-// account show the supporter mark. Signed-out never does.
-func (s *Store) IsSupporter(ctx context.Context, userID int64) (bool, error) {
-	if userID == 0 {
-		return false, nil
-	}
-	return s.hasStandardEntitlement(ctx, userID)
 }
 
 // Billing is a personal premium entitlement's state, as GET /v1/me's
@@ -487,6 +416,10 @@ type StripeUpsert struct {
 	// row has; otherwise the upsert is a stale transfer and writes nothing.
 	// Every other caller gets the duplicate-subscription guard instead.
 	Transfer bool
+	// OfferGone marks a Transfer whose offer was withdrawn, declined or
+	// replaced while its Checkout was open: it never takes a row that is
+	// not already its own (OutcomeStrayTransfer).
+	OfferGone bool
 	// SubscriptionCreated is sub.Created; zero when unknown.
 	SubscriptionCreated time.Time
 	// Tier is the guild tier (TierGuild or TierRaidGuild); required for a
@@ -541,6 +474,9 @@ const (
 	// OutcomeDeadNewcomer: the newcomer's status grants no access and an
 	// active row points elsewhere. Nothing written or recorded.
 	OutcomeDeadNewcomer UpsertOutcome = "dead_newcomer"
+	// OutcomeStrayTransfer: a transfer whose offer is gone (OfferGone)
+	// would have taken the row. Nothing written; the caller cancels it.
+	OutcomeStrayTransfer UpsertOutcome = "stray_transfer"
 )
 
 // UpsertResult is UpsertStripe's outcome. ExistingSubscriptionID names
@@ -556,6 +492,11 @@ type UpsertResult struct {
 func conflictsWithActiveRow(existing existingRow, isNew bool, p StripeUpsert) bool {
 	return !isNew && isActiveStatus(existing.status) &&
 		existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID != p.StripeSubscriptionID
+}
+
+// ownRow is true when the existing row already points at p's subscription.
+func ownRow(existing existingRow, isNew bool, p StripeUpsert) bool {
+	return !isNew && existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID == p.StripeSubscriptionID
 }
 
 // createdPrecision is Stripe's created resolution (whole seconds); the
@@ -617,6 +558,13 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 				return recordAnomaly(ctx, tx, &existing.id, p.UserID, p.GuildID, p.Plan,
 					AnomalyDuplicateSubscription, p.StripeSubscriptionID, p.Actor)
 			}
+		}
+		if p.Transfer && p.OfferGone && !ownRow(existing, isNew, p) {
+			result = UpsertResult{Outcome: OutcomeStrayTransfer}
+			if existing.stripeSubscriptionID != nil {
+				result.ExistingSubscriptionID = *existing.stripeSubscriptionID
+			}
+			return nil
 		}
 		result = UpsertResult{Outcome: OutcomeWritten}
 		var id int64

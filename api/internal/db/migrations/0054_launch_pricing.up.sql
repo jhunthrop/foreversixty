@@ -19,6 +19,7 @@ alter table entitlements add constraint entitlements_tier check (
 
 create table premium_seats (
   guild_id                  bigint not null references guilds(id) on delete cascade,
+  -- 3 is catalog.SeatsRaidGuild, the most seats any tier includes; change both together.
   slot                      smallint not null check (slot between 1 and 3),
   state                     text not null check (state in ('empty', 'held', 'offered', 'accepted')),
   holder_user_id            bigint references users(id) on delete cascade,

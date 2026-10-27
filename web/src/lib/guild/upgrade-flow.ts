@@ -5,6 +5,7 @@
 import type { GuildBillingSettings, UpgradePreview } from '../billing/contract';
 import { BILLING_API_FAILED } from '../billing/api';
 import { guildBillingCopy as copy } from '../billing/guild-billing-copy';
+import { seatsCopy } from '../billing/seats-copy';
 import { upgradeOutcome } from './billing-errors';
 
 /** Stripe may still be settling an unconfirmed change: the plan is read once more after this. */
@@ -140,6 +141,8 @@ export function createUpgradeFlow(deps: UpgradeFlowDeps): UpgradeFlow {
       set({ error: copy.upgrade.failed });
     } else if (outcome === 'generic') {
       set({ error: BILLING_API_FAILED });
+    } else if (outcome === 'in-progress') {
+      set({ error: seatsCopy.whoPays.inProgress });
     } else if (outcome === 'reload-quiet') {
       await reloadAndRefocus({ error: '' }, token);
     } else {

@@ -27,7 +27,7 @@ func allEmails() map[string]mail.Message {
 	return map[string]mail.Message{
 		"renewal": must(RenewalEmail(Renewal{To: "a@b.c", Plan: PlanGuild, Guild: guild, RenewsOn: fixtureDate,
 			AmountCents: 12000, Interval: "yearly", Founder: true, ManageURL: "https://x/m"})),
-		"size": must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 31, RenewsOn: fixtureDate,
+		"size": must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 31, MemberLimit: 25, RenewsOn: fixtureDate,
 			RaidGuildCents: 25000, Interval: "yearly", SettingsURL: "https://x/s"})),
 		"offered": SeatOfferedEmail(SeatOffered{To: "a@b.c", Guild: guild, From: name, OwnEndsOn: fixtureDate, AccountURL: "https://x/a"}),
 		"given":   SeatGivenEmail(SeatGiven{To: "a@b.c", Guild: guild, From: name, AccountURL: "https://x/a"}),
@@ -83,10 +83,22 @@ func TestNoExclamationMarks(t *testing.T) {
 }
 
 func TestMonthlySizeEmail(t *testing.T) {
-	m := must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 40, RenewsOn: fixtureDate,
+	m := must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 40, MemberLimit: 25, RenewsOn: fixtureDate,
 		RaidGuildCents: 2500, Interval: "monthly", SettingsURL: "https://x/s"}))
 	if !strings.Contains(m.Text, "Raid guild at $25 a month;") {
 		t.Errorf("text = %q", m.Text)
+	}
+}
+
+// The member limit is the caller's (the catalog's), never typed here.
+func TestSizeEmailNamesTheGivenLimit(t *testing.T) {
+	m := must(SizeEmail(Size{To: "a@b.c", Guild: guild, Members: 40, MemberLimit: 30, RenewsOn: fixtureDate,
+		RaidGuildCents: 2500, Interval: "monthly", SettingsURL: "https://x/s"}))
+	if !strings.Contains(m.Subject, "Guild covers 30") || !strings.Contains(m.Text, "covers up to 30,") {
+		t.Errorf("subject = %q, text = %q", m.Subject, m.Text)
+	}
+	if _, err := SizeEmail(Size{RaidGuildCents: 2500, Interval: "monthly"}); !errors.Is(err, ErrNoMemberLimit) {
+		t.Errorf("no limit err = %v", err)
 	}
 }
 
