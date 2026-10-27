@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"time"
@@ -461,13 +462,19 @@ func (s *Service) transferStateFor(ctx context.Context, guildID int64, from stri
 // is still in its trial, so nothing was charged). One already set to end,
 // or no longer live, needs no cancel.
 func (s *Service) cancelStrayTransfer(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription) error {
-	s.logger().Error("billing", "op", "stray_transfer_canceled", "subscription_id", sub.ID,
+	settled := sub.CancelAtPeriodEnd || !entitlements.StatusGrantsAccess(string(sub.Status))
+	// A stray already set to end is a later event of one handled before: Warn.
+	level := slog.LevelError
+	if settled {
+		level = slog.LevelWarn
+	}
+	s.logger().Log(ctx, level, "billing", "op", "stray_transfer_canceled", "subscription_id", sub.ID,
 		"from_subscription_id", sub.Metadata["from_subscription_id"], "guild_id", *p.GuildID)
 	if err := s.Entitlements.RecordAnomaly(ctx, nil, p.GuildID, entitlements.PlanGuild,
 		entitlements.AnomalyUnexpectedTransfer, p.StripeSubscriptionID, p.Actor); err != nil {
 		return err
 	}
-	if sub.CancelAtPeriodEnd || !entitlements.StatusGrantsAccess(string(sub.Status)) {
+	if settled {
 		return nil
 	}
 	if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, sub.ID); err != nil {

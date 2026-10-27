@@ -146,7 +146,7 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 		if err != nil {
 			return nil, err
 		}
-		var resumes []string
+		var resumed []string
 		for slot := 1; slot <= catalog.SeatsRaidGuild; slot++ {
 			out, err := s.sweepSeat(ctx, tx, guildID, tier, rows[slot], now)
 			if err != nil {
@@ -158,11 +158,11 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 			if out.msg != nil {
 				outbox = append(outbox, *out.msg)
 			}
-			if out.resume != "" {
-				resumes = append(resumes, out.resume)
+			if out.resumed != "" {
+				resumed = append(resumed, out.resumed)
 			}
 		}
-		return s.resumeStep(resumes), nil
+		return s.recancelOnFailure(resumed), nil
 	})
 	if err != nil {
 		return 0, err
@@ -172,11 +172,11 @@ func (s *Service) sweepGuild(ctx context.Context, guildID int64, now time.Time) 
 }
 
 // sweptSeat is what sweeping one seat did: released it, with the email to
-// send after commit, or the holder's own subscription to resume before it.
+// send after commit, or with the holder's own subscription resumed.
 type sweptSeat struct {
 	released bool
 	msg      *mail.Message
-	resume   string
+	resumed  string
 }
 
 // sweepSeat releases one seat that no longer stands, or drops a move offer
@@ -208,10 +208,16 @@ func (s *Service) sweepSeat(ctx context.Context, tx pgx.Tx, guildID int64, tier 
 // who gave up their own Premium for a seat that has not started yet still
 // has that subscription running to its end: it is resumed, and no comeback
 // is opened (its Checkout would refuse them while the subscription runs).
+// A resume Stripe refuses is logged and the release takes the comeback path,
+// so one refusal never fails the guild's sweep (or the billing read that
+// runs it).
 func (s *Service) releaseSwept(ctx context.Context, tx pgx.Tx, guildID int64, row seatRow, now time.Time) (sweptSeat, error) {
 	own, err := s.resumableOwn(ctx, row, now)
 	if err != nil {
 		return sweptSeat{}, err
+	}
+	if own != "" && !s.resumeOwn(ctx, guildID, own) {
+		own = ""
 	}
 	if own == "" {
 		msg, err := s.release(ctx, tx, guildID, row, now)
@@ -224,7 +230,20 @@ func (s *Service) releaseSwept(ctx context.Context, tx pgx.Tx, guildID int64, ro
 	if _, err := tx.Exec(ctx, clearSeatSQL, guildID, row.slot, ch.name, now); err != nil {
 		return sweptSeat{}, wrap("release unstarted seat", err)
 	}
-	return sweptSeat{released: true, resume: own}, nil
+	return sweptSeat{released: true, resumed: own}, nil
+}
+
+// resumeOwn resumes a holder's own subscription, detached from the request
+// and bounded; false (logged) when Stripe refuses.
+func (s *Service) resumeOwn(ctx context.Context, guildID int64, subscriptionID string) bool {
+	stepCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), externalStepTimeout)
+	defer cancel()
+	if err := s.Canceller.ResumeSubscription(stepCtx, subscriptionID); err != nil {
+		s.logger().Warn("seats", "op", "resume own subscription", "guild", guildID, "subscription", subscriptionID,
+			"err", err, "effect", "comeback opened instead")
+		return false
+	}
+	return true
 }
 
 // resumableOwn is the holder's own Stripe subscription when the seat is
@@ -246,21 +265,15 @@ func (s *Service) resumableOwn(ctx context.Context, row seatRow, now time.Time) 
 	return b.StripeSubscriptionID, nil
 }
 
-// resumeStep resumes the given own subscriptions as the sweep's last step
-// before commit; undo sets them to end again. nil when there are none.
-func (s *Service) resumeStep(ids []string) *externalStep {
+// recancelOnFailure sets the resumed subscriptions to end again if the
+// sweep's commit fails, so Stripe never runs ahead of the seat rows. nil
+// when nothing was resumed.
+func (s *Service) recancelOnFailure(ids []string) *externalStep {
 	if len(ids) == 0 {
 		return nil
 	}
 	return &externalStep{
-		do: func(ctx context.Context) error {
-			for _, id := range ids {
-				if err := s.Canceller.ResumeSubscription(ctx, id); err != nil {
-					return wrap("resume own subscription", err)
-				}
-			}
-			return nil
-		},
+		do: func(context.Context) error { return nil },
 		undo: func(ctx context.Context) {
 			for _, id := range ids {
 				if err := s.Canceller.CancelSubscriptionAtPeriodEnd(ctx, id); err != nil {

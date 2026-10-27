@@ -33,10 +33,8 @@ type billingWiring struct {
 func wireBilling(w billingWiring) *seats.Store {
 	cfg, pool, deps, entStore := w.cfg, w.pool, w.deps, w.entitle
 	authStore, guildStore, mailer, log := w.authStore, w.guildStore, w.mailer, w.log
-	var gateway billing.Gateway
-	if cfg.StripeConfigured() {
-		gateway = billing.NewStripeGateway(cfg.StripeSecretKey)
-	} else {
+	gateway := stripeGatewayFor(cfg)
+	if gateway == nil {
 		log.Warn("billing", "state", "stripe is not configured",
 			"effect", "checkout, portal, and the webhook answer 503")
 	}
@@ -51,9 +49,23 @@ func wireBilling(w billingWiring) *seats.Store {
 		Seats:         seats.BillingReader{Store: seatStore, Sweeper: deps.Seats},
 		PublicBaseURL: cfg.PublicBaseURL, WebhookSecret: cfg.StripeWebhookSecret, Log: log,
 	}
-	// A nil gateway must stay a nil interface so Accept answers 503.
-	if gateway != nil {
-		deps.Seats.Canceller = gateway
-	}
+	deps.Seats.Canceller = cancellerFor(gateway)
 	return seatStore
+}
+
+// stripeGatewayFor is the Stripe gateway, nil when Stripe is not configured.
+func stripeGatewayFor(cfg config.Config) billing.Gateway {
+	if !cfg.StripeConfigured() {
+		return nil
+	}
+	return billing.NewStripeGateway(cfg.StripeSecretKey)
+}
+
+// cancellerFor is the seats service's Canceller. A nil gateway stays a nil
+// interface, so Accept answers 503 and a release falls back to the comeback.
+func cancellerFor(gateway billing.Gateway) seats.Canceller {
+	if gateway == nil {
+		return nil
+	}
+	return gateway
 }

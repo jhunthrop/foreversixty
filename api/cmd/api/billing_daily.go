@@ -40,9 +40,11 @@ type billingDailyServices struct {
 func newBillingDailyServices(cfg config.Config, pool *pgxpool.Pool, mailer mail.Mailer, log *slog.Logger) billingDailyServices {
 	entStore := &entitlements.Store{Pool: pool}
 	return billingDailyServices{
+		// The Canceller lets the sweep resume a holder's own Premium when it
+		// releases a seat that never started.
 		Seats: &seats.Service{
 			Store:  &seats.Store{Pool: pool, Entitlements: entStore},
-			Mailer: mailer, PublicBaseURL: cfg.PublicBaseURL, Log: log,
+			Mailer: mailer, Canceller: cancellerFor(stripeGatewayFor(cfg)), PublicBaseURL: cfg.PublicBaseURL, Log: log,
 		},
 		Billing: &billing.Service{
 			Store: &billing.Store{Pool: pool}, Users: &auth.Store{Pool: pool},
