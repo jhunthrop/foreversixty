@@ -18,16 +18,9 @@ const (
 	billingStatusCanceled = "canceled"
 	// resubscribePath is where an ended seat's comeback link goes.
 	resubscribePath = "/premium/checkout"
+	// plansPath is where an ended seat whose price is unknown links to.
+	plansPath = "/premium"
 )
-
-// PriceFacts are the price facts of a subscription: whether it was bought at
-// a founder price, its interval and its amount. A grant has no interval or
-// amount, so both are null.
-type PriceFacts struct {
-	Founder     bool    `json:"founder"`
-	Interval    *string `json:"interval"`
-	AmountCents *int64  `json:"amount_cents"`
-}
 
 // BillingView is the caller's own personal premium subscription state,
 // nil when they have none (spec §1.4).
@@ -36,7 +29,7 @@ type BillingView struct {
 	Status            string  `json:"status"`
 	CurrentPeriodEnd  *string `json:"current_period_end"`
 	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
-	PriceFacts
+	catalog.PriceFacts
 }
 
 // GuildBillingView is a guild's billing state, shown only to a verified
@@ -95,32 +88,12 @@ type SeatViews struct {
 	EndedSeat *MeEndedSeat `json:"ended_seat,omitempty"`
 }
 
-// priceFactsOf reads founder and interval from the catalog. The amount is the
-// row's own when it has one, else the catalog's; a key outside the catalog
-// with no amount has none.
-func priceFactsOf(lookupKey string, unitAmountCents int64) PriceFacts {
-	var facts PriceFacts
-	price, known := catalog.Lookup(lookupKey)
-	if known {
-		interval := string(price.Interval)
-		facts.Founder, facts.Interval = price.Founder, &interval
-	}
-	switch {
-	case unitAmountCents > 0:
-		facts.AmountCents = &unitAmountCents
-	case known:
-		amount := price.AmountCents
-		facts.AmountCents = &amount
-	}
-	return facts
-}
-
 // personalBillingView is the account page's view of the caller's own Premium row.
 func personalBillingView(b *entitlements.Billing) *BillingView {
 	return &BillingView{
 		Plan: b.Plan, Status: personalBillingStatus(b), CancelAtPeriodEnd: b.CancelAtPeriodEnd,
 		CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd),
-		PriceFacts:       priceFactsOf(b.PriceLookupKey, b.UnitAmountCents),
+		PriceFacts:       catalog.FactsOf(b.PriceLookupKey, b.UnitAmountCents),
 	}
 }
 
@@ -135,15 +108,17 @@ func personalBillingStatus(b *entitlements.Billing) string {
 }
 
 // seatFacts reads the account's seat facts; none when no source is wired.
-func (s *Service) seatFacts(ctx context.Context, userID int64) (SeatFacts, error) {
+// A failed read is logged and leaves the seat keys out rather than failing /v1/me.
+func (s *Service) seatFacts(ctx context.Context, userID int64) SeatFacts {
 	if s.Seats == nil {
-		return SeatFacts{}, nil
+		return SeatFacts{}
 	}
 	facts, err := s.Seats.SeatFactsForUser(ctx, userID, time.Now())
 	if err != nil {
-		return SeatFacts{}, fmt.Errorf("auth: me: seat facts: %w", err)
+		s.Log.ErrorContext(ctx, "auth: me: seat facts", "user", userID, "err", err)
+		return SeatFacts{}
 	}
-	return facts, nil
+	return facts
 }
 
 // seatViewsOf renders the seat facts; own is the caller's own Premium row.
@@ -172,14 +147,15 @@ func seatViewsOf(facts SeatFacts, own *BillingView) SeatViews {
 }
 
 func endedSeatView(f *EndedSeat) *MeEndedSeat {
-	price := priceFactsOf(f.PriceLookupKey, 0)
-	link := resubscribePath + "?plan=premium"
+	price := catalog.FactsOf(f.PriceLookupKey, 0)
+	link := plansPath
 	if price.Interval != nil {
-		link += "&interval=" + *price.Interval
+		link = resubscribePath + "?plan=premium&interval=" + *price.Interval +
+			"&comeback=" + strconv.FormatInt(f.ComebackID, 10)
 	}
 	return &MeEndedSeat{
 		GuildName: f.GuildName, EndedAt: f.EndedAt.UTC().Format(time.RFC3339),
-		ResubscribeURL: link + "&comeback=" + strconv.FormatInt(f.ComebackID, 10),
+		ResubscribeURL: link,
 		AmountCents:    price.AmountCents, Interval: price.Interval,
 	}
 }

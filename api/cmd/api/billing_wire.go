@@ -22,15 +22,15 @@ type billingWiring struct {
 	deps       *server.Deps
 	entitle    *entitlements.Store
 	authStore  *auth.Store
-	accounts   *auth.Service
 	guildStore *guilds.Store
 	mailer     mail.Mailer
 	log        *slog.Logger
 }
 
 // wireBilling builds the Stripe gateway (nil, with one warn line, when Stripe
-// is not configured) and the billing and seats services that share it.
-func wireBilling(w billingWiring) {
+// is not configured) and the billing and seats services that share it. It
+// returns the seats store the account read needs.
+func wireBilling(w billingWiring) *seats.Store {
 	cfg, pool, deps, entStore := w.cfg, w.pool, w.deps, w.entitle
 	authStore, guildStore, mailer, log := w.authStore, w.guildStore, w.mailer, w.log
 	var gateway billing.Gateway
@@ -41,7 +41,6 @@ func wireBilling(w billingWiring) {
 			"effect", "checkout, portal, and the webhook answer 503")
 	}
 	seatStore := &seats.Store{Pool: pool, Entitlements: entStore}
-	w.accounts.Seats = seatStore
 	deps.Seats = &seats.Service{
 		Store:  seatStore,
 		Mailer: mailer, Guilds: guildStore, PublicBaseURL: cfg.PublicBaseURL, Log: log,
@@ -56,4 +55,5 @@ func wireBilling(w billingWiring) {
 	if gateway != nil {
 		deps.Seats.Canceller = gateway
 	}
+	return seatStore
 }
