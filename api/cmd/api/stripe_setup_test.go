@@ -57,3 +57,54 @@ func TestPortalSpecOffersEachProductsOwnPricesOnTheSitesPages(t *testing.T) {
 		}
 	}
 }
+
+// launchPrice is one row of the launch pricing table.
+type launchPrice struct {
+	product  string
+	interval string
+	cents    int64
+}
+
+// launchPriceTable is docs/superpowers/specs/2026-10-27-pricing-design.md §3, plus the
+// original four lookup keys, which stay until the code that sells the launch prices ships.
+var launchPriceTable = map[string]launchPrice{
+	billing.LookupKeyPremiumMonthly:          {billing.ProductIDPremium, "month", 400},
+	billing.LookupKeyPremiumYearly:           {billing.ProductIDPremium, "year", 4000},
+	billing.LookupKeyPremiumMonthlyLaunch:    {billing.ProductIDPremium, "month", 600},
+	billing.LookupKeyPremiumYearlyLaunch:     {billing.ProductIDPremium, "year", 5000},
+	billing.LookupKeyPremiumFounderMonthly:   {billing.ProductIDPremium, "month", 500},
+	billing.LookupKeyPremiumFounderYearly:    {billing.ProductIDPremium, "year", 4000},
+	billing.LookupKeyGuildMonthly:            {billing.ProductIDGuild, "month", 1500},
+	billing.LookupKeyGuildYearly:             {billing.ProductIDGuild, "year", 15000},
+	billing.LookupKeyGuildFounderMonthly:     {billing.ProductIDGuild, "month", 1200},
+	billing.LookupKeyGuildFounderYearly:      {billing.ProductIDGuild, "year", 12000},
+	billing.LookupKeyRaidGuildMonthly:        {billing.ProductIDRaidGuild, "month", 2500},
+	billing.LookupKeyRaidGuildYearly:         {billing.ProductIDRaidGuild, "year", 25000},
+	billing.LookupKeyRaidGuildFounderMonthly: {billing.ProductIDRaidGuild, "month", 2000},
+	billing.LookupKeyRaidGuildFounderYearly:  {billing.ProductIDRaidGuild, "year", 20000},
+}
+
+// The launch prices sit beside the original four under their own lookup keys, so ensuring
+// them changes no live checkout until the code that sells them ships.
+func TestPriceSpecsCarryTheLaunchPricingTable(t *testing.T) {
+	got := map[string]billing.PriceSpec{}
+	for _, spec := range priceSpecs {
+		if _, dup := got[spec.LookupKey]; dup {
+			t.Errorf("lookup key %s appears twice", spec.LookupKey)
+		}
+		got[spec.LookupKey] = spec
+	}
+	if len(got) != len(launchPriceTable) {
+		t.Errorf("priceSpecs has %d lookup keys, want %d", len(got), len(launchPriceTable))
+	}
+	for key, want := range launchPriceTable {
+		s, ok := got[key]
+		if !ok {
+			t.Errorf("priceSpecs has no %s", key)
+			continue
+		}
+		if s.ProductID != want.product || s.Interval != want.interval || s.UnitAmountCents != want.cents {
+			t.Errorf("%s = %s %s %d, want %s %s %d", key, s.ProductID, s.Interval, s.UnitAmountCents, want.product, want.interval, want.cents)
+		}
+	}
+}
