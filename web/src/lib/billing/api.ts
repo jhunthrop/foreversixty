@@ -13,26 +13,33 @@ export class BillingApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** The API's own `error.code` (`seat_locked`, `not_member`, `upgrade_failed`), when the envelope carried one. */
+    readonly code: string | null = null,
+    /** A refusal's per-field lines (`seat_locked` carries `movable_at`), when the envelope carried them. */
+    readonly fields: Readonly<Record<string, string>> | null = null,
   ) {
     super(message);
     this.name = 'BillingApiError';
   }
 }
 
-async function call<T>(
+export async function call<T>(
   path: string,
   apiBase: string,
   init: { method?: string; body?: unknown } = {},
+  allowEmpty = false,
 ): Promise<T> {
   let result: EnvelopeResult<T>;
   try {
     result = await requestEnvelope<T>(path, apiBase, { ...init, failureMessage: BILLING_API_FAILED });
   } catch (error) {
-    if (error instanceof AccountError) throw new BillingApiError(error.message, error.status);
+    if (error instanceof AccountError)
+      throw new BillingApiError(error.message, error.status, error.code, error.fields);
     throw new BillingApiError(BILLING_API_FAILED, 0);
   }
-  if (result.data === null) throw new BillingApiError(result.message ?? BILLING_API_FAILED, result.status);
-  return result.data;
+  if (result.data === null && !allowEmpty)
+    throw new BillingApiError(result.message ?? BILLING_API_FAILED, result.status);
+  return result.data as T;
 }
 
 export interface CheckoutRequest {
@@ -42,6 +49,8 @@ export interface CheckoutRequest {
   guildId?: number;
   /** Only ever sent from the guild settings page's "Take over billing" button. */
   intent?: 'transfer';
+  /** The ended-seat line's resubscribe link carries it: the API honours the seat holder's old price. */
+  comebackId?: number;
 }
 
 export interface CheckoutResult {
@@ -59,6 +68,7 @@ export function startCheckout(
   const body: Record<string, unknown> = { plan: input.plan, interval: input.interval };
   if (input.guildId !== undefined) body.guild_id = input.guildId;
   if (input.intent !== undefined) body.intent = input.intent;
+  if (input.comebackId !== undefined) body.comeback_id = input.comebackId;
   return call<CheckoutResult>('/v1/billing/checkout', apiBase, { method: 'POST', body });
 }
 

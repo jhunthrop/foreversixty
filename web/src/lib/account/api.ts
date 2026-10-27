@@ -9,6 +9,7 @@
 import { API_BASE_URL } from '../planner/config';
 import { forgetPrivate, invalidate, query, refetch, setQueryData } from '../data/query';
 import { forgetGuildReserves } from '../guild/reserve-keys';
+import type { BillingFacts, GuildTier, MeEndedSeat, MeSeat, MeSeatOffer } from '../billing/contract';
 import { clearPointerOnSignOut } from './session-pointer';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
@@ -133,6 +134,8 @@ export interface MeGuild {
   /** Spec section 2.6: GET /v1/me gains Consent and Verified per Guild entry. */
   consent?: 'roster' | 'gear' | 'gear_bags';
   verified: boolean;
+  /** The live count of distinct verified accounts, leader included. */
+  verified_count: number;
   /**
    * Non-null only for a verified officer/leader of a guild with an active guild-plan
    * entitlement (spec 1.4) -- billing detail, gated tighter than membership alone. Optional
@@ -162,7 +165,7 @@ export interface EntitlementsView {
   billing: BillingView | null;
 }
 
-export interface BillingView {
+export interface BillingView extends BillingFacts {
   plan: string;
   status: string;
   current_period_end: string | null;
@@ -170,6 +173,9 @@ export interface BillingView {
 }
 
 export interface GuildBillingView {
+  tier: GuildTier;
+  /** True when the account holds a Premium seat in this guild. */
+  you_hold_seat: boolean;
   /** `officer_tools` is a scoped grant for Award, Undo and Nudge only; `plan` is the guild plan. */
   scope: 'plan' | 'officer_tools';
   status: string;
@@ -218,6 +224,12 @@ export interface Me {
   main_character_key?: string;
   /** Unseen finished server runs, newest first, at most 3. Absent on an older API. */
   finished_sims?: FinishedSim[];
+  /** The Premium seat this account holds; null or absent when none (absent on an older API). */
+  seat?: MeSeat | null;
+  /** A seat offered to this account while it pays for its own Premium. */
+  seat_offer?: MeSeatOffer | null;
+  /** A seat that ended within the last 30 days, with its resubscribe link. */
+  ended_seat?: MeEndedSeat | null;
   /** Absent on an older API. */
   server_sims?: { runs_this_month: number };
   /** Keyed by channel; `discord` is null when nothing is saved. Absent on an older API. */

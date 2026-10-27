@@ -28,6 +28,45 @@ describe('startCheckout', () => {
     expect(body).toEqual({ plan: 'premium', interval: 'monthly' });
   });
 
+  it('sends comeback_id when a comeback is carried, and omits it otherwise', async () => {
+    const bodies: unknown[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async (input) => {
+        bodies.push(JSON.parse(await (input as Request).text()));
+        return envelope({ checkout_url: 'https://checkout.stripe.com/x' });
+      }),
+    );
+    await startCheckout({ plan: 'premium', interval: 'monthly', comebackId: 9 }, API);
+    await startCheckout({ plan: 'premium', interval: 'monthly' }, API);
+    expect(bodies).toEqual([
+      { plan: 'premium', interval: 'monthly', comeback_id: 9 },
+      { plan: 'premium', interval: 'monthly' },
+    ]);
+  });
+
+  it('carries the envelope code on the error', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: false,
+              data: null,
+              error: { code: 'seat_locked', message: 'Locked.' },
+              request_id: 'r',
+            }),
+            { status: 409, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+    await expect(startCheckout({ plan: 'premium', interval: 'monthly' }, API)).rejects.toMatchObject({
+      status: 409,
+      code: 'seat_locked',
+    });
+  });
+
   it('throws BillingApiError(503) when billing is not configured yet', async () => {
     vi.stubGlobal(
       'fetch',

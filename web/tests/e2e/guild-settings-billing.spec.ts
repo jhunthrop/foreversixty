@@ -50,6 +50,8 @@ test('on the plan, billing contact: shows renewal info and a working manage-bill
     route.fulfill(
       envelope(
         meWithGuildPlan({
+          tier: 'guild',
+          you_hold_seat: false,
           status: 'active',
           current_period_end: '2026-12-01T00:00:00Z',
           cancel_at_period_end: false,
@@ -83,6 +85,8 @@ test('on the plan, not the billing contact: shows renewal info but no manage-bil
     route.fulfill(
       envelope(
         meWithGuildPlan({
+          tier: 'guild',
+          you_hold_seat: false,
           status: 'active',
           current_period_end: '2026-12-01T00:00:00Z',
           cancel_at_period_end: false,
@@ -110,6 +114,8 @@ test('on the plan via a CLI grant (no Stripe billing contact): shows renewal inf
     route.fulfill(
       envelope(
         meWithGuildPlan({
+          tier: 'guild',
+          you_hold_seat: false,
           status: 'active',
           current_period_end: '2026-12-01T00:00:00Z',
           cancel_at_period_end: false,
@@ -135,6 +141,8 @@ test('Stripe unavailable: Manage billing says so and offers Try again, which ask
     route.fulfill(
       envelope(
         meWithGuildPlan({
+          tier: 'guild',
+          you_hold_seat: false,
           status: 'active',
           current_period_end: '2026-12-01T00:00:00Z',
           cancel_at_period_end: false,
