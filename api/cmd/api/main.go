@@ -681,18 +681,8 @@ func serve(log *slog.Logger) error {
 	deps.Addon.SimRequests = deps.Sims
 	// sims.GearScore reads the item tables and the per-build weights.
 	sims.SetGearData(treeData, cfg.TreeDataDir)
-	deps.Notify = newNotifyService(cfg, pool, entStore, log)
-	if deps.Notify != nil {
-		accounts.Notifications = deps.Notify
-		// The guild raid channel: notify asks guilds for an officer's standing, guilds
-		// reads the channel back for the settings payload and the raid view.
-		deps.Notify.Guilds = deps.Guilds
-		deps.Guilds.Discord = deps.Notify
-		// The raid posts follow the channel: none while the deployment has connect off.
-		if poster := deps.Notify.GuildDeliverer(); poster != nil && deps.Notify.GuildConnectEnabled() {
-			deps.Guilds.RaidEvents = poster
-		}
-	}
+	wireNotify(cfg, pool, entStore, accounts, &deps, log)
+	deps.DiscordBot = newDiscordBot(cfg, pool, deps, log)
 
 	var gateway billing.Gateway
 	if cfg.StripeConfigured() {
@@ -785,6 +775,7 @@ func serve(log *slog.Logger) error {
 		<-serveErr // wait for the listener goroutine to actually return
 	}
 	drainCompletions(stopCtx, deps, log)
+	drainDiscordBot(stopCtx, deps, log)
 	subscribeSvc.Wait()
 	views.Close()
 	if sampler != nil {
@@ -798,19 +789,4 @@ func serve(log *slog.Logger) error {
 	}
 	log.Info("stopped")
 	return nil
-}
-
-// drainCompletions waits, until ctx's deadline (the stop's shared budget), for the report
-// completion hooks the last requests started (a raid match each), so a deploy does not drop them.
-func drainCompletions(ctx context.Context, deps server.Deps, log *slog.Logger) {
-	if deps.Reports != nil {
-		if err := deps.Reports.DrainCompletions(ctx); err != nil {
-			log.Error("shutdown", "step", "report_hooks", "err", err)
-		}
-	}
-	if deps.Ingest != nil {
-		if err := deps.Ingest.DrainCompletions(ctx); err != nil {
-			log.Error("shutdown", "step", "ingest_hooks", "err", err)
-		}
-	}
 }
