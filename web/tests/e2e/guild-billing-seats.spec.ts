@@ -11,12 +11,13 @@ import {
   emptySeat,
   guildBillingRead,
   heldSeat,
-  offeredSeat,
+  pendingSeat,
   planView,
   returnedSeat,
 } from '../../src/test-support/billing-fixtures';
 import { GUILD_ID, envelope, openLive, stubCandidates } from './support/guild-billing';
 
+const PENDING_OFFEREE = { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' };
 const SEATED = (seats: GuildBillingSettings['seats']): GuildBillingSettings =>
   guildBillingRead({ billing: planView(), seats });
 
@@ -42,7 +43,7 @@ test('case 12: give to a payer shows the payer note, then Waiting, and Withdraw 
   const cell = await openLive(page, SEATED([emptySeat(1)]));
   await stubCandidates(page);
   await page.route(`**/v1/guilds/${GUILD_ID}/seats/1/give`, (route) => {
-    cell.current = SEATED([offeredSeat(1)]);
+    cell.current = SEATED([emptySeat(1, { offeree: PENDING_OFFEREE })]);
     return route.fulfill(envelope(cell.current.seats[0]));
   });
   await page.route(`**/v1/guilds/${GUILD_ID}/seats/1/withdraw`, (route) => {
@@ -58,6 +59,16 @@ test('case 12: give to a payer shows the payer note, then Waiting, and Withdraw 
   await expect(page.getByTestId('guild-seat-1')).toContainText('Waiting');
   await page.getByTestId('guild-seat-1-withdraw').click();
   await expect(page.getByTestId('guild-seat-1-give')).toBeVisible();
+  await expect(page.getByTestId('guild-seat-1-give')).toBeFocused();
+});
+
+test('case 12: a held seat with a paying offeree shows Waiting with Withdraw beside Move seat', async ({
+  page,
+}) => {
+  await openLive(page, SEATED([pendingSeat(1, { movable_at: '2000-01-01T12:00:00Z' })]));
+  await expect(page.getByTestId('guild-seat-1')).toContainText('Waiting');
+  await expect(page.getByTestId('guild-seat-1-move')).toBeVisible();
+  await expect(page.getByTestId('guild-seat-1-withdraw')).toBeVisible();
 });
 
 test('case 12: a 409 seat_locked and a returned seat each show their line; Escape cancels', async ({
@@ -79,9 +90,10 @@ test('case 12: a 409 seat_locked and a returned seat each show their line; Escap
   await expect(page.getByTestId('guild-seat-1-error')).toHaveText('That seat can move from 2 Dec.');
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('guild-seat-1-picker')).toHaveCount(0);
+  await expect(page.getByTestId('guild-seat-1-move')).toBeFocused();
 });
 
-test('case 13: send, wait and withdraw; a decline shows to the sender', async ({ page }) => {
+test('case 13: send, wait and withdraw puts the button back', async ({ page }) => {
   const read = guildBillingRead({
     billing: planView(),
     transfer_candidates: [{ user_id: 40, name: 'Mirelle' }],
@@ -92,7 +104,7 @@ test('case 13: send, wait and withdraw; a decline shows to the sender', async ({
     return route.fulfill({ status: 204 });
   });
   await page.route(`**/v1/guilds/${GUILD_ID}/billing/transfer/withdraw`, (route) => {
-    cell.current = { ...read, transfer: TRANSFER_DECLINED };
+    cell.current = read;
     return route.fulfill({ status: 204 });
   });
   await page.getByTestId('guild-transfer-open').click();
@@ -103,6 +115,19 @@ test('case 13: send, wait and withdraw; a decline shows to the sender', async ({
   await page.getByTestId('guild-transfer-send').click();
   await expect(page.getByTestId('guild-transfer-waiting')).toContainText('Waiting for them.');
   await page.getByTestId('guild-transfer-withdraw').click();
+  await expect(page.getByTestId('guild-transfer-open')).toBeVisible();
+  await expect(page.getByTestId('guild-transfer-open')).toBeFocused();
+});
+
+test('case 13: a decline shows to the sender and the button returns', async ({ page }) => {
+  await openLive(
+    page,
+    guildBillingRead({
+      billing: planView(),
+      transfer: TRANSFER_DECLINED,
+      transfer_candidates: [{ user_id: 40, name: 'Mirelle' }],
+    }),
+  );
   await expect(page.getByTestId('guild-transfer-declined')).toHaveText('Mirelle declined.');
   await expect(page.getByTestId('guild-transfer-open')).toBeVisible();
 });

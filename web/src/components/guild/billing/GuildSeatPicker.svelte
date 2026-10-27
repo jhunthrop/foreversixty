@@ -1,7 +1,7 @@
 <!-- web/src/components/guild/billing/GuildSeatPicker.svelte -->
 <!-- Give and Move, in place under the row (spec 3.2.5): a native select of verified members who hold no
      seat here, the payer note when a member who pays for Premium is chosen, focus on the select,
-     Escape cancels. Presentational: the row loads the candidates and sends the choice. -->
+     Escape is handled by the row. Presentational: the row loads the candidates and sends the choice. -->
 <script lang="ts">
   import type { SeatCandidate } from '../../../lib/billing/contract';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
@@ -44,12 +44,6 @@
     return mode === 'give' ? copy.picker.give : copy.picker.move;
   });
   const selectId = $derived(`guild-seat-${slot}-select`);
-
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape') return;
-    event.preventDefault();
-    onCancel();
-  }
 </script>
 
 <div
@@ -57,7 +51,6 @@
   role="group"
   aria-labelledby={`${selectId}-label`}
   aria-busy={candidates === null || busy}
-  onkeydown={onKeydown}
   data-testid={`guild-seat-${slot}-picker`}
 >
   {#if candidates === null}

@@ -178,6 +178,7 @@ export function emptySeat(slot: number, overrides: Partial<SeatView> = {}): Seat
     starts_at: null,
     movable_at: null,
     returned: null,
+    offeree: null,
     ...overrides,
   };
 }
@@ -197,6 +198,14 @@ export function heldSeat(slot = 1, overrides: Partial<SeatView> = {}): SeatView 
 /** §9 case 12: a seat offered to a member who pays for their own Premium (no lock yet). */
 export function offeredSeat(slot = 1): SeatView {
   return heldSeat(slot, { state: 'offered', starts_at: null, movable_at: null });
+}
+
+/** A held seat whose holder keeps it while a member who pays for Premium is offered it. */
+export function pendingSeat(slot = 1, overrides: Partial<SeatView> = {}): SeatView {
+  return heldSeat(slot, {
+    offeree: { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' },
+    ...overrides,
+  });
 }
 
 /** §9 case 12: a seat whose holder left the guild. */

@@ -42,6 +42,13 @@ export interface SeatReturned {
   at: string;
 }
 
+/** A member who pays for their own Premium and has been offered this seat; they accept it first. */
+export interface SeatOfferee {
+  name: string;
+  class: string;
+  offered_at: string;
+}
+
 export interface SeatView {
   slot: number;
   state: SeatState;
@@ -50,6 +57,8 @@ export interface SeatView {
   starts_at: string | null;
   movable_at: string | null;
   returned: SeatReturned | null;
+  /** Waiting on a paying recipient; the holder, if any, keeps the seat until they accept. */
+  offeree: SeatOfferee | null;
 }
 
 export interface TransferView {

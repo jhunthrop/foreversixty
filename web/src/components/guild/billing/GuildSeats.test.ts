@@ -7,7 +7,8 @@ import GuildSeats from './GuildSeats.svelte';
 
 const NOW = new Date('2026-11-20T12:00:00Z');
 const html = (seats: SeatView[], manage = true): string =>
-  render(GuildSeats, { props: { guildId: 7, seats, manage, now: NOW, onChanged: () => {} } }).body;
+  render(GuildSeats, { props: { guildId: 7, seats, manage, now: NOW, onChanged: () => Promise.resolve() } })
+    .body;
 
 describe('GuildSeats', () => {
   it('heads the list with its count and the helper', () => {
