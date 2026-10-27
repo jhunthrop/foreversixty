@@ -22,19 +22,23 @@ type Autocomplete func(ctx context.Context, in Interaction) ([]Choice, error)
 // commandRoutes maps a slash command's name to its handler. Each later task
 // adds one entry.
 func (s *Service) commandRoutes() map[string]Handler {
-	return map[string]Handler{"link": s.cmdLink}
+	return map[string]Handler{"link": s.cmdLink, "signup": s.cmdSignup}
 }
 
 // componentRoutes maps a custom id's prefix (the part before the first colon)
 // to its handler.
-func (s *Service) componentRoutes() map[string]Handler { return map[string]Handler{} }
+func (s *Service) componentRoutes() map[string]Handler {
+	return map[string]Handler{raidIDPrefix: s.press, pickIDPrefix: s.pick}
+}
 
 // autocompleteRoutes maps a command's name to its suggester.
-func (s *Service) autocompleteRoutes() map[string]Autocomplete { return map[string]Autocomplete{} }
+func (s *Service) autocompleteRoutes() map[string]Autocomplete {
+	return map[string]Autocomplete{"signup": s.autocompleteSignup}
+}
 
 // updateComponents names the custom-id prefixes whose press edits the message
 // it sits on, so a slow one is deferred as type 6, not type 5.
-func updateComponents() map[string]bool { return map[string]bool{} }
+func updateComponents() map[string]bool { return map[string]bool{pickIDPrefix: true} }
 
 // customPrefix is the route key of a custom id.
 func customPrefix(customID string) string {
