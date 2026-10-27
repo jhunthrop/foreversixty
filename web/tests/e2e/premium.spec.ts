@@ -25,6 +25,7 @@ async function openAt(page: Page, time: string, path = '/premium'): Promise<void
 
 const premiumButton = (page: Page) => page.getByRole('link', { name: /^Subscribe · / });
 
+// The page itself ships no island: the one astro-island is the layout's CharacterSelector.
 test('ships only the layout character selector island', async ({ page }) => {
   await page.goto('/premium');
   const islands = page.locator('astro-island');
@@ -90,12 +91,6 @@ test('the founder window ends at the instant, to the second', async ({ page }) =
   await expect(page.getByTestId('price-premium').locator('s:visible')).toHaveCount(0);
 });
 
-test('/pricing resolves to /premium', async ({ page }) => {
-  // The static build turns Astro.redirect into a redirect page; the 301 itself is the edge's.
-  await page.goto('/pricing');
-  await expect(page).toHaveURL(/\/premium$/);
-});
-
 test('at 360 the free summary comes first, Premium is above the fold and #free holds the promise', async ({
   page,
 }) => {
@@ -116,6 +111,18 @@ test('at 360 the free summary comes first, Premium is above the fold and #free h
         .map((node) => node.getAttribute('data-plan') ?? node.getAttribute('data-testid')),
     );
   expect(order).toEqual(['free-summary', 'premium', 'guild', 'raid_guild', 'history-promise', 'free']);
+});
+
+test('at 1024 the three subscribe buttons share top and height', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await openAt(page, DECEMBER);
+  const boxes = await page
+    .locator('[data-plan] a:visible')
+    .evaluateAll((links) =>
+      links.map((link) => link.getBoundingClientRect()).map(({ top, height }) => ({ top, height })),
+    );
+  expect(boxes).toHaveLength(PLAN_ORDER.length);
+  for (const box of boxes) expect(box).toEqual(boxes[0]);
 });
 
 test('no text says retention, compare more than, or shouts', async ({ page }) => {

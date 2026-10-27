@@ -69,8 +69,6 @@ export const plansPageCopy = {
       'Discord notifications when a server sim or a log finishes',
       'A supporter mark on your characters',
     ],
-    /** Suffix for a benefit that is not yet live. */
-    ships: (month: string): string => ` · ships ${month}`,
   },
   guild: {
     name: 'Guild',

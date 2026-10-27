@@ -1,0 +1,59 @@
+// web/src/components/premium/model.test.ts
+import { describe, expect, it } from 'vitest';
+import { GUILD_TRIAL_DAYS, PLANS, formatPrice, perMonthLine } from '../../lib/billing/plans';
+import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { buttonLabel, checkoutHref, founderKey, planBlock, priceCell, trialParts } from './model';
+
+describe('checkoutHref', () => {
+  it('carries the plan and interval and no guild id', () => {
+    expect(checkoutHref('premium', 'yearly')).toBe('/premium/checkout?plan=premium&interval=yearly');
+    expect(checkoutHref('raid_guild', 'monthly')).toBe('/premium/checkout?plan=raid_guild&interval=monthly');
+  });
+});
+
+describe('buttonLabel', () => {
+  it('says Subscribe for Premium and Subscribe a guild for the guild plans', () => {
+    expect(buttonLabel('premium', 'yearly', true)).toBe(
+      `Subscribe · ${formatPrice(PLANS.premium.founderYearly, 'yearly')}`,
+    );
+    expect(buttonLabel('guild', 'monthly', false)).toBe(
+      `Subscribe a guild · ${formatPrice(PLANS.guild.monthly, 'monthly')}`,
+    );
+  });
+});
+
+describe('priceCell', () => {
+  it('strikes the list price and shows the founder line while founder is open', () => {
+    const cell = priceCell('premium', 'yearly', true);
+    expect(cell.amount).toBe(`$${PLANS.premium.founderYearly}`);
+    expect(cell.listAmount).toBe(`$${PLANS.premium.yearly}`);
+    expect(cell.suffix).toBe(plansPageCopy.price.suffix.yearly);
+    expect(cell.secondLine).toBe(perMonthLine(PLANS.premium.founderYearly));
+    expect(cell.founderLine).toBe(plansPageCopy.price.founder);
+  });
+
+  it('shows list prices with no strike and no founder line once it is closed', () => {
+    const cell = priceCell('guild', 'monthly', false);
+    expect(cell.amount).toBe(`$${PLANS.guild.monthly}`);
+    expect(cell.listAmount).toBeNull();
+    expect(cell.founderLine).toBeNull();
+    expect(cell.secondLine).toBe(plansPageCopy.price.orYearly(formatPrice(PLANS.guild.yearly, 'yearly')));
+  });
+});
+
+describe('trialParts', () => {
+  it('slices the strong lead off the trial sentence without losing a word', () => {
+    const { lead, rest } = trialParts();
+    expect(lead).toBe(`First ${GUILD_TRIAL_DAYS} days free`);
+    expect(lead + rest).toBe(plansPageCopy.trial);
+    expect(rest.startsWith(', once per guild')).toBe(true);
+  });
+});
+
+describe('planBlock and founderKey', () => {
+  it('maps each plan to its copy block', () => {
+    expect(planBlock('raid_guild')).toBe(plansPageCopy.raidGuild);
+    expect(founderKey(true)).toBe('open');
+    expect(founderKey(false)).toBe('closed');
+  });
+});

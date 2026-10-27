@@ -35,6 +35,12 @@ describe('distDirOf', () => {
 });
 
 describe('removedRouteFailures', () => {
+  it('names a built /pricing page: the edge 301 owns that path', () => {
+    writeFileSync(path.join(dist, 'setup.html'), '');
+    writeFileSync(path.join(dist, 'pricing.html'), '');
+    expect(removedRouteFailures(dist)).toEqual(['dist/pricing.html still exists']);
+  });
+
   it('passes a dist with /setup and none of the removed routes', () => {
     writeFileSync(path.join(dist, 'setup.html'), '');
     writeFileSync(path.join(dist, 'about.html'), '');

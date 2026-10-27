@@ -22,6 +22,8 @@ export const MUST_NOT_EXIST = [
   'everything-we-know.html',
   'editions.html',
   'addon.html',
+  // /pricing is an edge 301 to /premium (public/_redirects), not a built page.
+  'pricing.html',
 ];
 
 /** Dynamic sections that build one file per entry under their own directory. */

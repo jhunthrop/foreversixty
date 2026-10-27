@@ -189,6 +189,14 @@ const cardId = plan === 'free' ? 'free' : undefined;
     .action-slot {
       height: 60px;
     }
+    /* The guild label is too wide for one line in a 1024px column, so every button fills the
+       same slot: tops and heights match whether a label wraps or not. */
+    .plan-button {
+      height: 100%;
+      padding: 6px 8px;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+    }
     .trial-slot {
       height: 40px;
     }
@@ -196,11 +204,11 @@ const cardId = plan === 'free' ? 'free' : undefined;
       display: block;
     }
     .free-price {
-      height: 116px;
+      height: 96px;
     }
     .free-amount {
-      height: 44px;
-      line-height: 44px;
+      height: 34px;
+      line-height: 34px;
     }
   }
 </style>
