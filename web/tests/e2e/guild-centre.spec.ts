@@ -22,6 +22,7 @@ import {
   buildMockReadiness,
   buildMockRaids,
 } from '../../src/fixtures/guild/mock-guild';
+import { guildBillingRead } from '../../src/test-support/billing-fixtures';
 
 // Not imported from lib/report/shell-paths.ts: that module reaches lib/rankings/api.ts,
 // which reads `import.meta.env.PUBLIC_API_BASE_URL` (lib/planner/config.ts) -- fine for
@@ -857,6 +858,12 @@ test.describe('settings: billing and release belong to the guild master', () => 
         }),
       ),
     );
+    // GET /v1/guilds/{id}/billing (launch pricing spec 3.2): the guild master pays, an officer reads.
+    await page.route('**/v1/guilds/501/billing', (route) =>
+      route.fulfill(
+        envelope(guildBillingRead({ can: rank === 'leader' ? ['billing', 'seats', 'transfer'] : [] })),
+      ),
+    );
     await page.route('**/v1/guilds/501/settings', (route) =>
       route.fulfill(
         envelope({
@@ -880,11 +887,17 @@ test.describe('settings: billing and release belong to the guild master', () => 
     await expect(page.getByTestId('guild-settings-master-only')).toHaveCount(0);
   });
 
-  test('an officer sees no billing section and is told what only the guild master can do', async ({
+  // Launch pricing spec 3.2: every officer reads the Billing section, with no buttons, and the
+  // master-only line (6.2 "Read-only officer").
+  test('an officer reads billing with no controls and is told what only the guild master can do', async ({
     page,
   }) => {
     await openSettings(page, 'officer');
-    await expect(page.getByTestId('guild-settings-billing')).toHaveCount(0);
+    const billing = page.getByTestId('guild-settings-billing');
+    await expect(billing).toBeVisible();
+    await expect(billing.getByTestId('guild-billing-chooser')).toHaveCount(0);
+    await expect(billing.getByTestId('guild-billing-subscribe')).toHaveCount(0);
+    await expect(billing.getByTestId('guild-manage-billing')).toHaveCount(0);
     await expect(page.getByTestId('guild-settings-master-only')).toHaveText(
       'Only the guild master can subscribe the guild, release the claim or change billing.',
     );

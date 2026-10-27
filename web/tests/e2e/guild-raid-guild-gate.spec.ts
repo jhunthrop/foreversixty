@@ -47,7 +47,8 @@ test('Guild tier: every Award, Undo and Nudge is in place and disabled', async (
   }
   await page.getByTestId('guild-tab-readiness').click();
   const nudges = nudgeButtons(page);
-  expect(await nudges.count()).toBeGreaterThan(0);
+  // The Readiness tab reads its board after the click; count() does not wait for it.
+  await expect.poll(() => nudges.count()).toBeGreaterThan(0);
   expect(await nudges.evaluateAll((nodes) => nodes.every((n) => (n as HTMLButtonElement).disabled))).toBe(
     true,
   );

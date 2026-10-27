@@ -126,8 +126,11 @@
     botSettling,
     readOnly,
   ]);
+  /** The bot's states hold their reserved heights live, as the chunk placeholder does, so a save
+   *  from the can't-be-used notice to state 2 moves the page by the cap change only (A.2, item 17). */
+  const botReserve = $derived(!botOn || view.state === 'webhook-only' ? '' : GUILD_BOT_RESERVE[view.state]);
   const held = $derived(
-    settling ? GUILD_DISCORD_RESERVE.connected : botSettling ? GUILD_BOT_RESERVE.picker : '',
+    settling ? GUILD_DISCORD_RESERVE.connected : botSettling ? GUILD_BOT_RESERVE.picker : botReserve,
   );
 
   $effect(() => () => {
@@ -296,12 +299,13 @@
     changing = true;
   }
 
+  /** Focus returns to the opener: `Choose a channel` on the can't-be-used notice, else `Change channel`.
+   *  Read before `changing` drops, which turns the view back from the picker. */
   function cancelChange(): void {
+    const opener = view.bot?.channel_unusable != null ? BOT_FOCUS.choose : BOT_FOCUS.change;
     changing = false;
     focusSelect = false;
-    focus.request(
-      view.state === 'picker' && view.bot.channel_unusable !== null ? BOT_FOCUS.choose : BOT_FOCUS.change,
-    );
+    focus.request(opener);
   }
 
   function saved(next: GuildSettingsDiscord): void {

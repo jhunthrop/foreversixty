@@ -11,7 +11,9 @@ import {
   SETTINGS_GUILD,
   SETTINGS_GUILD_PATH,
   guildBilling,
+  guildBillingRead,
   meWithGuildPlan,
+  planView,
 } from '../../../src/test-support/billing-fixtures';
 import { CHANNEL_ID, E2E_API_BASE, GUILD_ID as DISCORD_SERVER_ID } from './discord-notifications';
 
@@ -139,6 +141,11 @@ export async function stubGuildDiscord(
   );
   await page.route(`**/v1/guilds/${id}/home`, (route) =>
     route.fulfill(envelope({ viewer: { officer_tools: options.officerTools ?? true } })),
+  );
+  // The Billing section above Discord reads its own route; answered here (the paid plan `/v1/me`
+  // carries) so its height settles on the stub, never on an unrouted request's timing.
+  await page.route(`**/v1/guilds/${id}/billing`, (route) =>
+    route.fulfill(envelope(guildBillingRead({ billing: planView() }))),
   );
   await page.route(`**/v1/guilds/${id}/settings`, (route) => {
     seen.settingsReads += 1;

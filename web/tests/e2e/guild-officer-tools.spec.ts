@@ -6,14 +6,14 @@
 // the account page's guild rows say what the guild has. Members see nothing new.
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { guildGateCopy } from '../../src/lib/guild/copy';
+import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
-  OFFICER_CAN,
+  SETTINGS_GUILD,
   SETTINGS_GUILD_PATH,
-  guildBilling,
-  meWithGuildPlan,
-  routeGuildSettingsPage,
-  scopedGrant,
+  guildBillingRead,
+  planView,
 } from '../../src/test-support/billing-fixtures';
+import { openWith } from './support/guild-billing';
 import { gotoHydrated } from './support/hydrated';
 import {
   GUILD_SETTINGS_PATH,
@@ -35,6 +35,15 @@ const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe the guil
 const MASTER_ONLY = 'Only the guild master can subscribe the guild, release the claim or change billing.';
 const SCOPED_PLAN_LINE = 'Officer tools · until 12 Dec 2026';
 const CLIPBOARD_SENTINEL = 'clipboard untouched';
+/** The scoped CLI grant as GET /v1/guilds/{id}/billing sends it: Award, Undo and Nudge until 12 Dec 2026. */
+const SCOPED_GRANT_PLAN = planView({
+  scope: 'officer_tools',
+  current_period_end: '2026-12-12T00:00:00Z',
+  interval: null,
+  amount_cents: null,
+  billed_by: '',
+  you_are_billing_contact: false,
+});
 
 type Tab = 'loot' | 'readiness';
 
@@ -224,9 +233,7 @@ test.describe('axe on the gate states (§8: 2, 7, 10, 13)', () => {
   });
 
   test('state 10: settings, scoped grant, claim holder', async ({ page }) => {
-    await routeGuildSettingsPage(page);
-    await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(scopedGrant()).data)));
-    await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-billing');
+    await openWith(page, guildBillingRead({ billing: SCOPED_GRANT_PLAN }));
     await expectNoAxeViolations(page, '[data-testid="guild-settings-billing"]');
   });
 
@@ -284,101 +291,107 @@ test.describe('members see nothing new (states 5 and 8)', () => {
   });
 });
 
+// Guild settings #billing reads GET /v1/guilds/{id}/billing (launch pricing spec 3.2): a grant keeps
+// its line and explanation, then the chooser for the claim holder (3.2.1); an officer without the
+// claim reads the plan line and the master-only line, with no buttons (3.2, 6.2).
 test.describe('guild settings billing on a scoped grant (§5, states 10–12)', () => {
-  async function openSettings(page: Page, me: ReturnType<typeof meWithGuildPlan>): Promise<Locator> {
-    await routeGuildSettingsPage(page);
-    await page.route('**/v1/me', (route) => route.fulfill(envelope(me.data)));
-    await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-billing');
-    return page.getByTestId('guild-settings-billing');
-  }
+  const GRANT_ID = SETTINGS_GUILD.id;
+  const READ_ONLY: GuildBillingSettings['can'] = [];
+  const FULL_GRANT_PLAN = planView({
+    current_period_end: '2026-12-31T00:00:00Z',
+    interval: null,
+    amount_cents: null,
+    billed_by: '',
+    you_are_billing_contact: false,
+  });
 
   test('state 10: the claim holder reads the grant and can subscribe the guild', async ({ page }) => {
-    await openSettings(page, meWithGuildPlan(scopedGrant()));
+    await openWith(page, guildBillingRead({ billing: SCOPED_GRANT_PLAN }));
     await expect(page.getByTestId('guild-billing-plan')).toHaveText(SCOPED_PLAN_LINE);
     await expect(page.getByTestId('guild-billing-contact')).toHaveText(
       'Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until 12 Dec 2026. After that they need the guild plan.',
     );
-    await expect(page.getByTestId('guild-billing-price')).toBeVisible();
-    await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(
+    await expect(page.getByTestId('guild-billing-chooser')).toBeVisible();
+    await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
       'href',
-      '/premium/checkout?plan=guild&interval=monthly&guild_id=501',
+      `/premium/checkout?plan=guild&interval=yearly&guild_id=${GRANT_ID}`,
     );
     await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
+    await expect(page.getByTestId('guild-settings-master-only')).toHaveCount(0);
   });
 
   test('state 11: an officer without the claim reads the grant, then the master-only line', async ({
     page,
   }) => {
-    await openSettings(page, meWithGuildPlan(scopedGrant(), OFFICER_CAN));
+    await openWith(page, guildBillingRead({ billing: SCOPED_GRANT_PLAN, can: READ_ONLY }));
     await expect(page.getByTestId('guild-billing-plan')).toHaveText(SCOPED_PLAN_LINE);
     await expect(page.getByTestId('guild-billing-contact')).toContainText('Award, Undo and Nudge only');
     await expect(page.getByTestId('guild-settings-master-only')).toHaveText(MASTER_ONLY);
-    await expect(page.getByTestId('guild-subscribe-link')).toHaveCount(0);
+    await expect(page.getByTestId('guild-billing-chooser')).toHaveCount(0);
+    await expect(page.getByTestId('guild-billing-subscribe')).toHaveCount(0);
     await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
   });
 
   test('an officer without the claim and no plan reads only the master-only line', async ({ page }) => {
-    await routeGuildSettingsPage(page);
-    await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null, OFFICER_CAN).data)));
-    await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-master-only');
+    await openWith(page, guildBillingRead({ can: READ_ONLY }));
     await expect(page.getByTestId('guild-settings-master-only')).toHaveText(MASTER_ONLY);
     await expect(page.getByTestId('guild-billing-plan')).toHaveCount(0);
-    await expect(page.getByTestId('guild-subscribe-link')).toHaveCount(0);
+    await expect(page.getByTestId('guild-billing-chooser')).toHaveCount(0);
+    await expect(page.getByTestId('guild-billing-subscribe')).toHaveCount(0);
     await expect(page.getByRole('link', { name: guildGateCopy.link })).toHaveCount(0);
   });
 
-  test('the claim holder with no plan keeps the not-on-plan block', async ({ page }) => {
-    const billing = await openSettings(page, meWithGuildPlan(null));
-    await expect(page.getByTestId('guild-billing-not-on-plan')).toBeVisible();
-    await expect(page.getByTestId('guild-billing-price')).toBeVisible();
-    await expect(page.getByTestId('guild-subscribe-link')).toHaveAttribute(
+  test('the claim holder with no plan gets the chooser and nothing else above Records', async ({ page }) => {
+    const billing = page.getByTestId('guild-settings-billing');
+    await openWith(page, guildBillingRead());
+    await expect(page.getByTestId('guild-billing-chooser')).toBeVisible();
+    await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
       'href',
-      '/premium/checkout?plan=guild&interval=monthly&guild_id=501',
+      `/premium/checkout?plan=guild&interval=yearly&guild_id=${GRANT_ID}`,
     );
     await expect(page.getByTestId('guild-billing-plan')).toHaveCount(0);
     await expect(billing.getByTestId('guild-settings-master-only')).toHaveCount(0);
   });
 
   test('state 12: a granted full plan is unchanged', async ({ page }) => {
-    await openSettings(
-      page,
-      meWithGuildPlan(
-        guildBilling({
-          current_period_end: '2026-12-31T00:00:00Z',
-          billed_by: '',
-          you_are_billing_contact: false,
-        }),
-      ),
-    );
+    await openWith(page, guildBillingRead({ billing: FULL_GRANT_PLAN }));
     await expect(page.getByTestId('guild-billing-plan')).toHaveText('Guild plan · until 31 Dec 2026');
     await expect(page.getByTestId('guild-billing-contact')).toHaveText('Granted by Forever Sixty.');
-    await expect(page.getByTestId('guild-subscribe-link')).toHaveCount(0);
+    await expect(page.getByTestId('guild-billing-chooser')).toHaveCount(0);
+    await expect(page.getByTestId('guild-billing-subscribe')).toHaveCount(0);
+    await expect(page.getByTestId('guild-manage-billing')).toHaveCount(0);
   });
 });
 
-test('state 13: the account page shows each guild plan on its own row, never in Premium', async ({
-  page,
-}) => {
-  await stubAccountGuildRows(page);
-  await gotoHydrated(page, '/account', 'account-guilds');
-  const lines = page.getByTestId('account-guild-plan');
-  await expect(page.getByTestId('account-guild-row')).toHaveCount(3);
-  await expect(lines).toHaveCount(2);
-  await expect(
-    page
-      .getByTestId('account-guild-row')
-      .filter({ hasText: 'Ashen Vigil' })
-      .getByTestId('account-guild-plan'),
-  ).toHaveCount(0);
-  await expect(lines.nth(0)).toHaveText(/^Officer tools · until 12 Dec 2026 ·\s*Guild settings$/);
-  await expect(lines.nth(1)).toHaveText(/^Guild plan · renews 31 Dec 2026 ·\s*Guild settings$/);
-  await expect(lines.nth(0).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
-    'href',
-    GUILD_SETTINGS_PATH,
-  );
-  await expect(lines.nth(1).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
-    'href',
-    SETTINGS_GUILD_PATH,
-  );
-  await expect(page.getByTestId('account-premium-block').getByText('Officer tools')).toHaveCount(0);
+// A Stripe renewal reads on the viewer's calendar (launch pricing spec §6); the fixture's instants are
+// midnight UTC, so the viewer is in UTC for the dates to read as written.
+test.describe('the account page guild rows', () => {
+  test.use({ timezoneId: 'UTC' });
+
+  test('state 13: the account page shows each guild plan on its own row, never in Premium', async ({
+    page,
+  }) => {
+    await stubAccountGuildRows(page);
+    await gotoHydrated(page, '/account', 'account-guilds');
+    const lines = page.getByTestId('account-guild-plan');
+    await expect(page.getByTestId('account-guild-row')).toHaveCount(3);
+    await expect(lines).toHaveCount(2);
+    await expect(
+      page
+        .getByTestId('account-guild-row')
+        .filter({ hasText: 'Ashen Vigil' })
+        .getByTestId('account-guild-plan'),
+    ).toHaveCount(0);
+    await expect(lines.nth(0)).toHaveText(/^Officer tools · until 12 Dec 2026 ·\s*Guild settings$/);
+    await expect(lines.nth(1)).toHaveText(/^Guild plan · renews 31 Dec 2026 ·\s*Guild settings$/);
+    await expect(lines.nth(0).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
+      'href',
+      GUILD_SETTINGS_PATH,
+    );
+    await expect(lines.nth(1).getByRole('link', { name: 'Guild settings' })).toHaveAttribute(
+      'href',
+      SETTINGS_GUILD_PATH,
+    );
+    await expect(page.getByTestId('account-premium-block').getByText('Officer tools')).toHaveCount(0);
+  });
 });
