@@ -38,7 +38,8 @@ func scanMatchedAward(row pgx.Row) (matchedAward, error) {
 
 // attachMatchLoot runs inside a match's transaction, once raidID holds its log: every award of
 // the guild with no raid whose awarded_at falls between an hour before the raid's start and six
-// hours after the log's anchor joins the raid, marked attached_by_match. An Onyxia raid only:
+// hours after the earlier of the log's anchor and the raid's end (a log uploaded days later never
+// sweeps a later night's awards) joins the raid, marked attached_by_match. An Onyxia raid only:
 // awards are Onyxia's. When the raid already holds an award of the same drop, the newer of the
 // two stays on the raid and the older is left with no raid.
 func attachMatchLoot(ctx context.Context, tx pgx.Tx, raidID int64) error {
@@ -48,7 +49,8 @@ func attachMatchLoot(ctx context.Context, tx pgx.Tx, raidID int64) error {
 		join reports r on r.id = g.report_id
 		join loot_awards la on la.guild_id = g.guild_id and la.raid_id is null
 		 and la.awarded_at >= g.starts_at - make_interval(hours => $2)
-		 and la.awarded_at <= coalesce(r.completed_at, r.created_at) + make_interval(hours => $3)
+		 and la.awarded_at <= least(coalesce(r.completed_at, r.created_at),
+		                            g.starts_at + make_interval(mins => g.duration_minutes)) + make_interval(hours => $3)
 		where g.id = $1 and g.zone = $4
 		order by la.awarded_at, la.id
 		for update of la`, raidID, matchLeadHours, matchTailHours, onyxiaZoneKey)
