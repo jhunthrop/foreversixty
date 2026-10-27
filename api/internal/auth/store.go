@@ -200,6 +200,8 @@ type Guild struct {
 	Rank     string `json:"rank,omitempty"`
 	Consent  string `json:"consent,omitempty"`
 	Verified bool   `json:"verified"`
+	// VerifiedCount is the live count of distinct verified accounts in the guild, leader included.
+	VerifiedCount int `json:"verified_count"`
 	// Plan is non-nil only when this guild currently has an active guild
 	// plan and the caller is a verified officer/leader of it (spec §1.4;
 	// Ruling C — a non-officer member sees the features it unlocks, not
@@ -639,7 +641,9 @@ func (s *Store) MemberKeys(ctx context.Context, keys []string) (map[string]bool,
 // position [0].
 func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select g.id, g.region, g.ruleset, g.name, m.rank, m.consent, m.verified_at is not null
+		`select g.id, g.region, g.ruleset, g.name, m.rank, m.consent, m.verified_at is not null,
+		        (select count(distinct v.user_id) from guild_members v
+		         where v.guild_id = g.id and v.verified_at is not null)
 		 from guilds g
 		 join guild_members m on m.guild_id = g.id
 		 where m.user_id = $1 order by m.refreshed_at desc`, userID)
@@ -650,7 +654,7 @@ func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	out := []Guild{}
 	for rows.Next() {
 		var g Guild
-		if err := rows.Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.Rank, &g.Consent, &g.Verified); err != nil {
+		if err := rows.Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.Rank, &g.Consent, &g.Verified, &g.VerifiedCount); err != nil {
 			return nil, fmt.Errorf("auth: list guilds: %w", err)
 		}
 		out = append(out, g)

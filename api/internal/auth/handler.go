@@ -118,6 +118,8 @@ type Service struct {
 	Notifications NotificationsView
 	// DiscordLinks answers GET /v1/me's Discord link fields. Nil means the bot is off.
 	DiscordLinks DiscordLinkView
+	// Seats answers GET /v1/me's seat, seat_offer and ended_seat. Nil means they are left out.
+	Seats SeatFactsSource
 	// Importer runs the Battle.net character/guild import right after a
 	// successful Battle.net sign-in. Nil means the feature is off (no
 	// Battle.net credentials configured, or a test harness that does
@@ -415,35 +417,6 @@ type EntitlementsView struct {
 	Billing       *BillingView `json:"billing"`
 }
 
-// BillingView is the caller's own personal premium subscription state,
-// nil when they have none (spec §1.4).
-type BillingView struct {
-	Plan              string  `json:"plan"`
-	Status            string  `json:"status"`
-	CurrentPeriodEnd  *string `json:"current_period_end"`
-	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
-}
-
-const (
-	guildPlanScopeWhole        = "plan"
-	guildPlanScopeOfficerTools = "officer_tools"
-	// billingStatusCanceled is the ended-row status word BillingView shows.
-	billingStatusCanceled = "canceled"
-)
-
-// GuildBillingView is a guild's billing state, shown only to a verified
-// officer/leader of that guild (spec §1.4; Ruling C).
-type GuildBillingView struct {
-	// Scope is "officer_tools" for a grant covering only the officer views,
-	// "plan" for a whole guild plan.
-	Scope                string  `json:"scope"`
-	Status               string  `json:"status"`
-	CurrentPeriodEnd     *string `json:"current_period_end"`
-	CancelAtPeriodEnd    bool    `json:"cancel_at_period_end"`
-	BilledBy             string  `json:"billed_by"`
-	YouAreBillingContact bool    `json:"you_are_billing_contact"`
-}
-
 func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 	a := ActorFrom(r.Context())
 	u, err := s.Store.User(r.Context(), a.UserID)
@@ -466,7 +439,12 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
-	guilds, err = s.attachGuildPlans(r.Context(), guilds, u.ID)
+	facts, err := s.seatFacts(r.Context(), u.ID)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
+	guilds, err = s.attachGuildPlans(r.Context(), guilds, u.ID, facts.HeldGuildIDs)
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
@@ -502,6 +480,7 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
 		FinishedSims: finished, ServerSims: serverSims, Notifications: notifications,
 		DiscordLinkAvailable: link.available, DiscordLink: link.block, DiscordLinkSuggested: link.suggested,
+		SeatViews: seatViewsOf(facts, ev.Billing),
 	})
 }
 
@@ -568,10 +547,7 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 		return EntitlementsView{}, fmt.Errorf("auth: me: billing: %w", err)
 	}
 	if b != nil {
-		ev.Billing = &BillingView{
-			Plan: b.Plan, Status: personalBillingStatus(b), CancelAtPeriodEnd: b.CancelAtPeriodEnd,
-			CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd),
-		}
+		ev.Billing = personalBillingView(b)
 	}
 	return ev, nil
 }
@@ -596,67 +572,6 @@ func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u
 		}
 	}
 	return out, nil
-}
-
-// attachGuildPlans fills Guild.Plan for every guild in guilds where
-// userID is a verified officer/leader and that guild currently has an
-// active plan (spec §1.4; Ruling C).
-func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID int64) ([]Guild, error) {
-	if s.Entitlements == nil {
-		return guilds, nil
-	}
-	out := make([]Guild, len(guilds))
-	copy(out, guilds)
-	for i, g := range out {
-		if !g.Verified || (g.Rank != "officer" && g.Rank != "leader") {
-			continue
-		}
-		gb, err := s.Entitlements.GuildBilling(ctx, g.ID)
-		if err != nil {
-			return nil, fmt.Errorf("auth: me: guild billing %d: %w", g.ID, err)
-		}
-		if gb == nil || !gb.Active {
-			continue
-		}
-		billedBy, youAre := "", false
-		switch {
-		case gb.BillingUserID == nil:
-			// A CLI grant, never billed through Stripe — no billing
-			// contact to name.
-		case *gb.BillingUserID == userID:
-			billedBy, youAre = "you", true
-		default:
-			if bu, err := s.Store.User(ctx, *gb.BillingUserID); err == nil {
-				billedBy = bu.PublicName()
-			} else {
-				billedBy = "a former member"
-			}
-		}
-		out[i].Plan = &GuildBillingView{
-			Scope:  guildPlanScope(gb),
-			Status: gb.Status, CancelAtPeriodEnd: gb.CancelAtPeriodEnd,
-			CurrentPeriodEnd: rfc3339Ptr(gb.CurrentPeriodEnd), BilledBy: billedBy, YouAreBillingContact: youAre,
-		}
-	}
-	return out, nil
-}
-
-// personalBillingStatus is the status the account page shows: an expired
-// grant keeps status 'active' in the row but is no longer live, so it shows
-// as an ended row does, "canceled". Every other row shows its own status.
-func personalBillingStatus(b *entitlements.Billing) string {
-	if !b.Active && entitlements.StatusGrantsAccess(b.Status) {
-		return billingStatusCanceled
-	}
-	return b.Status
-}
-
-// guildPlanScope names what a guild's live entitlement row covers.
-func guildPlanScope(gb *entitlements.GuildBilling) string {
-	if gb.Scoped() {
-		return guildPlanScopeOfficerTools
-	}
-	return guildPlanScopeWhole
 }
 
 // rfc3339Ptr formats t as an RFC 3339 string pointer, nil in, nil out —

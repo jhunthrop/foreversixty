@@ -48,6 +48,8 @@ type Me struct {
 	DiscordLink *DiscordLinkBlock `json:"discord_link"`
 	// DiscordLinkSuggested names a guild whose bot a link would unlock; only while unlinked.
 	DiscordLinkSuggested *string `json:"discord_link_suggested"`
+	// SeatViews adds seat, seat_offer and ended_seat; each is omitted while absent.
+	SeatViews
 }
 
 // buildNotifications resolves the notifications half of /v1/me; nil when the feature is off.
