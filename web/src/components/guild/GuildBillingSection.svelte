@@ -3,10 +3,15 @@
      itself, reserves its ready height with Skeleton lines while that loads, and draws the blocks in
      order: plan line, size line, chooser, the seats and Who pays mount points, Records. -->
 <script lang="ts">
+  import { tick } from 'svelte';
   import { invalidateGuild } from '../../lib/guild/api';
-  import { upgradeOutcome } from '../../lib/guild/billing-errors';
+  import {
+    INITIAL_UPGRADE_STATE,
+    createUpgradeFlow,
+    type UpgradeFlowState,
+  } from '../../lib/guild/upgrade-flow';
   import { getGuildBilling, previewUpgrade, upgrade } from '../../lib/billing/guild-billing-api';
-  import type { GuildBillingSettings, UpgradePreview } from '../../lib/billing/contract';
+  import type { GuildBillingSettings } from '../../lib/billing/contract';
   import { guildBillingCopy as copy } from '../../lib/billing/guild-billing-copy';
   import {
     billingState,
@@ -37,99 +42,66 @@
 
   let view = $state<GuildBillingSettings | null>(null);
   let failed = $state(false);
-  let confirming = $state(false);
-  let preview = $state<UpgradePreview | null>(null);
-  let committing = $state(false);
-  let upgradeError = $state('');
-  let moved = $state(false);
-  let unconfirmed = $state(false);
-  /** Stripe may still be settling an unconfirmed change: read the plan once more after this. */
-  const UNCONFIRMED_RECHECK_MS = 5000;
+  let flow = $state<UpgradeFlowState>(INITIAL_UPGRADE_STATE);
+  let sectionEl = $state<HTMLElement | null>(null);
+  let statusEl = $state<HTMLElement | null>(null);
 
   const viewState = $derived(billingState(view, now));
   const payer = $derived(view !== null && canBill(view));
 
-  async function load(): Promise<void> {
+  async function load(): Promise<boolean> {
     failed = false;
     try {
       view = await getGuildBilling(guildId);
+      return true;
     } catch {
       failed = true;
+      return false;
     }
   }
+
+  const reload = async (): Promise<void> => {
+    await load();
+  };
 
   $effect(() => {
     void load();
   });
 
-  let previewToken = 0;
+  const upgradeFlow = createUpgradeFlow({
+    previewUpgrade: () => previewUpgrade(guildId),
+    upgrade: (prorationDate) => upgrade(guildId, prorationDate),
+    invalidate: () => invalidateGuild(guildId),
+    reload: load,
+    adopt: (fresh) => (view = fresh),
+    onState: (next) => (flow = next),
+  });
+  $effect(() => () => upgradeFlow.dispose());
 
-  async function openConfirm(): Promise<void> {
-    const token = ++previewToken;
-    confirming = true;
-    preview = null;
-    upgradeError = '';
-    try {
-      const fresh = await previewUpgrade(guildId);
-      if (token === previewToken) preview = fresh;
-    } catch (thrown) {
-      if (token !== previewToken) return;
-      if (upgradeOutcome(thrown) === 'reload-quiet') {
-        confirming = false;
-        await reloadFresh();
-      } else {
-        upgradeError = copy.upgrade.failed;
-      }
-    }
-  }
-
-  function closeConfirm(): void {
-    previewToken += 1;
-    confirming = false;
-    upgradeError = '';
-  }
-
-  /** Drops the cached guild pages and reads the billing view again. */
-  async function reloadFresh(): Promise<void> {
-    invalidateGuild(guildId);
-    await load();
-  }
-
-  async function failCommit(thrown: unknown): Promise<void> {
-    const outcome = upgradeOutcome(thrown);
-    if (outcome === 'reopen') {
-      await openConfirm();
-      upgradeError = copy.upgrade.previewExpired;
-    } else if (outcome === 'declined') {
-      upgradeError = copy.upgrade.failed;
-    } else {
-      confirming = false;
-      await reloadFresh();
-      if (outcome === 'unconfirmed') {
-        unconfirmed = true;
-        window.setTimeout(() => void load(), UNCONFIRMED_RECHECK_MS);
-      }
-    }
-  }
-
-  async function commit(): Promise<void> {
-    if (preview === null) return;
-    committing = true;
-    upgradeError = '';
-    try {
-      view = await upgrade(guildId, preview.proration_date);
-      confirming = false;
-      moved = true;
-    } catch (thrown) {
-      await failCommit(thrown);
-    } finally {
-      committing = false;
-    }
-  }
+  /** After the confirm closes onto a reloaded plan: focus the plan line's button, else the status line. */
+  $effect(() => {
+    if (flow.focusRequest === 0) return;
+    void tick().then(() => {
+      const move = sectionEl?.querySelector<HTMLElement>('[data-testid="guild-move-raid-guild"]');
+      (move ?? statusEl)?.focus();
+    });
+  });
 </script>
 
-<section id="billing" class="flex scroll-mt-20 flex-col gap-5" data-testid="guild-settings-billing">
+<section
+  bind:this={sectionEl}
+  id="billing"
+  class="flex scroll-mt-20 flex-col gap-5"
+  data-testid="guild-settings-billing"
+>
   <h2 class="section-title text-[18px]">Billing</h2>
+  <div bind:this={statusEl} role="status" tabindex="-1" class="text-muted text-[13px] empty:hidden">
+    {#if flow.notice === 'unconfirmed'}
+      <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmed}</p>
+    {:else if flow.notice === 'moved'}
+      <p data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
+    {/if}
+  </div>
   {#if failed}
     <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="guild-billing-load-error" />
   {:else if view === null}
@@ -138,7 +110,7 @@
     </div>
   {:else}
     {#if view.billing !== null && view.transfer?.to_you === true && view.transfer.state === 'offered'}
-      <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={load} />
+      <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={reload} />
     {/if}
     {#if view.billing !== null && viewState.kind !== 'none'}
       <GuildPlanLine
@@ -147,27 +119,19 @@
         lineState={viewState}
         {payer}
         showMove={movesFromPlanLine(view, viewState)}
-        onMove={() => void openConfirm()}
+        onMove={() => void upgradeFlow.open()}
       />
     {/if}
-    {#if unconfirmed}
-      <p class="text-muted text-[13px]" role="status" data-testid="guild-upgrade-unconfirmed">
-        {copy.upgrade.unconfirmed}
-      </p>
-    {/if}
-    {#if moved}
-      <p class="text-muted text-[13px]" role="status" data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
-    {/if}
     {#if showSizeLine(view)}
-      <GuildSizeLine count={view.verified_count} {payer} onMove={() => void openConfirm()} />
+      <GuildSizeLine count={view.verified_count} {payer} onMove={() => void upgradeFlow.open()} />
     {/if}
-    {#if confirming}
+    {#if flow.confirming}
       <GuildUpgradeConfirm
-        {preview}
-        {committing}
-        error={upgradeError}
-        onCommit={() => void commit()}
-        onKeep={closeConfirm}
+        preview={flow.preview}
+        committing={flow.committing}
+        error={flow.error}
+        onCommit={() => void upgradeFlow.commit()}
+        onKeep={upgradeFlow.close}
       />
     {/if}
     {#if showsChooser(viewState) && payer}
@@ -180,7 +144,7 @@
       />
     {/if}
     <div data-testid="guild-billing-seats-slot">
-      <GuildSeats {guildId} seats={view.seats} manage={view.can.includes('seats')} {now} onChanged={load} />
+      <GuildSeats {guildId} seats={view.seats} manage={view.can.includes('seats')} {now} onChanged={reload} />
     </div>
     <div data-testid="guild-billing-whopays-slot">
       {#if view.billing !== null && view.can.includes('transfer')}
@@ -189,7 +153,7 @@
           plan={view.billing}
           transfer={view.transfer}
           candidates={view.transfer_candidates}
-          onChanged={load}
+          onChanged={reload}
         />
       {/if}
     </div>

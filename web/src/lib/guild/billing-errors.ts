@@ -13,18 +13,20 @@ export type UpgradeOutcome =
   /** The plan changed under the reader (or is already Raid guild): show the plan as it is, no line. */
   | 'reload-quiet'
   /** The change may have applied: show the plan as it is and say Stripe is confirming. */
-  | 'unconfirmed';
+  | 'unconfirmed'
+  /** Any other refusal (a 4xx that is not a clean decline, or a throw that is not an API answer). */
+  | 'generic';
 
-const status = (thrown: unknown): number => (thrown instanceof BillingApiError ? thrown.status : 0);
 const code = (thrown: unknown): string | null => (thrown instanceof BillingApiError ? thrown.code : null);
 
 export function upgradeOutcome(thrown: unknown): UpgradeOutcome {
-  if (code(thrown) === 'preview_expired') return 'reopen';
-  if (code(thrown) === 'not_upgradable') return 'reload-quiet';
-  if (code(thrown) === 'upgrade_unconfirmed' || status(thrown) >= 500 || status(thrown) === 0) {
+  if (!(thrown instanceof BillingApiError)) return 'generic';
+  if (thrown.code === 'preview_expired') return 'reopen';
+  if (thrown.code === 'not_upgradable') return 'reload-quiet';
+  if (thrown.code === 'upgrade_unconfirmed' || thrown.status >= 500 || thrown.status === 0) {
     return 'unconfirmed';
   }
-  return 'declined';
+  return thrown.status === 409 && thrown.code === 'upgrade_failed' ? 'declined' : 'generic';
 }
 
 /** The line under a failed transfer send or withdraw. */
