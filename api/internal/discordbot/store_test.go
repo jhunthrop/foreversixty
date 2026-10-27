@@ -1,0 +1,239 @@
+package discordbot
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"os"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/db"
+)
+
+func testStore(t *testing.T) *Store {
+	t.Helper()
+	url := os.Getenv("TEST_DATABASE_URL")
+	if url == "" {
+		t.Skip("TEST_DATABASE_URL not set; start docker-compose.test.yml")
+	}
+	if err := db.Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := db.Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(pool.Close)
+	if _, err := pool.Exec(context.Background(), `truncate users, guilds cascade`); err != nil {
+		t.Fatal(err)
+	}
+	return &Store{Pool: pool}
+}
+
+var seq atomic.Int64
+
+func seedUser(t *testing.T, pool *pgxpool.Pool) int64 {
+	t.Helper()
+	var id int64
+	err := pool.QueryRow(context.Background(), `insert into users (email) values ($1) returning id`,
+		fmt.Sprintf("d-%d@example.com", seq.Add(1))).Scan(&id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return id
+}
+
+func seedGuild(t *testing.T, pool *pgxpool.Pool, name string) int64 {
+	t.Helper()
+	var id int64
+	err := pool.QueryRow(context.Background(),
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', $1) returning id`, name).Scan(&id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return id
+}
+
+func addMember(t *testing.T, pool *pgxpool.Pool, guildID, userID int64, verified bool) {
+	t.Helper()
+	q := `insert into guild_members (guild_id, user_id) values ($1, $2)`
+	if verified {
+		q = `insert into guild_members (guild_id, user_id, verified_at) values ($1, $2, now())`
+	}
+	if _, err := pool.Exec(context.Background(), q, guildID, userID); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestBindServerOneServerOneGuild(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	a, b := seedGuild(t, st.Pool, "A"), seedGuild(t, st.Pool, "B")
+
+	if r, err := st.BindServer(ctx, a, "srv1", "Srv One", u); err != nil || r.Outcome != BindInstalled || r.HeldBy != 0 {
+		t.Fatalf("first bind = %+v err=%v", r, err)
+	}
+	if r, err := st.BindServer(ctx, b, "srv1", "Srv One", u); err != nil || r.Outcome != BindTaken || r.HeldBy != a {
+		t.Fatalf("other guild = %+v err=%v", r, err)
+	}
+	if r, err := st.BindServer(ctx, a, "srv2", "Srv Two", u); err != nil || r.Outcome != BindTaken || r.HeldBy != a {
+		t.Fatalf("other server = %+v err=%v", r, err)
+	}
+	if err := st.SetChannel(ctx, a, "chan1", "raids"); err != nil {
+		t.Fatal(err)
+	}
+	if r, err := st.BindServer(ctx, a, "srv1", "Srv One Renamed", u); err != nil || r.Outcome != BindInstalled {
+		t.Fatalf("rebind = %+v err=%v", r, err)
+	}
+	in, ok, err := st.InstallFor(ctx, a)
+	if err != nil || !ok || in.ChannelID == nil || *in.ChannelID != "chan1" || in.ServerName != "Srv One Renamed" {
+		t.Fatalf("install = %+v ok=%v err=%v", in, ok, err)
+	}
+	if by, ok, _ := st.InstallByServer(ctx, "srv1"); !ok || by.GuildID != a {
+		t.Fatalf("by server = %+v ok=%v", by, ok)
+	}
+}
+
+func TestInstallFailureBookkeepingAndDelete(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	g := seedGuild(t, st.Pool, "A")
+	if _, err := st.BindServer(ctx, g, "srv1", "S", u); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.RecordPostFailure(ctx, g, "boom"); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ := st.InstallFor(ctx, g); in.Failures != 1 || in.LastError == nil || *in.LastError != "boom" {
+		t.Fatalf("after failure = %+v", in)
+	}
+	if err := st.RecordPostSuccess(ctx, g); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ := st.InstallFor(ctx, g); in.Failures != 0 || in.LastError != nil {
+		t.Fatalf("after success = %+v", in)
+	}
+	if err := st.MarkRemovedInDiscord(ctx, g, "403"); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ := st.InstallFor(ctx, g); !in.RemovedInDiscord {
+		t.Fatalf("not marked removed: %+v", in)
+	}
+	if _, err := st.BindServer(ctx, g, "srv1", "S", u); err != nil {
+		t.Fatal(err)
+	}
+	if in, _, _ := st.InstallFor(ctx, g); in.RemovedInDiscord {
+		t.Fatalf("rebind should clear removed: %+v", in)
+	}
+	if err := st.DeleteInstall(ctx, g); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok, _ := st.InstallFor(ctx, g); ok {
+		t.Fatal("install survived delete")
+	}
+}
+
+func TestSaveLinkOneToOne(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u1, u2 := seedUser(t, st.Pool), seedUser(t, st.Pool)
+	if err := st.SaveLink(ctx, u1, "d1", "One"); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.SaveLink(ctx, u2, "d1", "Two"); !errors.Is(err, ErrLinkConflict) {
+		t.Fatalf("conflict err = %v", err)
+	}
+	if err := st.SaveLink(ctx, u1, "d9", "One B"); err != nil {
+		t.Fatal(err)
+	}
+	l, ok, err := st.LinkByUser(ctx, u1)
+	if err != nil || !ok || l.DiscordUserID != "d9" || l.DisplayName != "One B" {
+		t.Fatalf("link = %+v ok=%v err=%v", l, ok, err)
+	}
+	if _, ok, _ := st.UserByDiscord(ctx, "d1"); ok {
+		t.Fatal("old discord id still resolves")
+	}
+	if id, ok, _ := st.UserByDiscord(ctx, "d9"); !ok || id != u1 {
+		t.Fatalf("by discord = %d ok=%v", id, ok)
+	}
+	if err := st.DeleteLink(ctx, u1); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok, _ := st.LinkByUser(ctx, u1); ok {
+		t.Fatal("link survived delete")
+	}
+}
+
+func TestLinkedMembersCountsVerifiedOnly(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	g := seedGuild(t, st.Pool, "A")
+	v1, v2, pending := seedUser(t, st.Pool), seedUser(t, st.Pool), seedUser(t, st.Pool)
+	addMember(t, st.Pool, g, v1, true)
+	addMember(t, st.Pool, g, v2, true)
+	addMember(t, st.Pool, g, pending, false)
+	if err := st.SaveLink(ctx, v1, "d1", "V1"); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.SaveLink(ctx, pending, "d3", "P"); err != nil {
+		t.Fatal(err)
+	}
+	linked, members, err := st.LinkedMembers(ctx, g)
+	if err != nil || linked != 1 || members != 2 {
+		t.Fatalf("linked=%d members=%d err=%v", linked, members, err)
+	}
+}
+
+func TestSuggestedGuildNeedsAChannelAndAPresentBot(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	g := seedGuild(t, st.Pool, "Olympus XXVII")
+	addMember(t, st.Pool, g, u, true)
+	if _, err := st.BindServer(ctx, g, "srv1", "S", u); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := st.SuggestedGuild(ctx, u); err != nil || got != nil {
+		t.Fatalf("no channel = %v err=%v", got, err)
+	}
+	if err := st.SetChannel(ctx, g, "c1", "raids"); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := st.SuggestedGuild(ctx, u); err != nil || got == nil || *got != "Olympus XXVII" {
+		t.Fatalf("with channel = %v err=%v", got, err)
+	}
+	if err := st.MarkRemovedInDiscord(ctx, g, "gone"); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := st.SuggestedGuild(ctx, u); err != nil || got != nil {
+		t.Fatalf("removed = %v err=%v", got, err)
+	}
+}
+
+func TestTakeRefusalReadsOnceAndExpires(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	g := seedGuild(t, st.Pool, "A")
+	if err := st.SaveRefusal(ctx, u, g, "Mograine Raiders", time.Minute); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := st.TakeRefusal(ctx, u, g); err != nil || got == nil || *got != "Mograine Raiders" {
+		t.Fatalf("take = %v err=%v", got, err)
+	}
+	if got, err := st.TakeRefusal(ctx, u, g); err != nil || got != nil {
+		t.Fatalf("second take = %v err=%v", got, err)
+	}
+	if err := st.SaveRefusal(ctx, u, g, "Old", -time.Second); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := st.TakeRefusal(ctx, u, g); err != nil || got != nil {
+		t.Fatalf("expired take = %v err=%v", got, err)
+	}
+}

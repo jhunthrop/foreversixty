@@ -84,3 +84,10 @@ func joinUnits(lead string, rest int, unit string) string {
 	}
 	return fmt.Sprintf("%s %d %s", lead, rest, unit)
 }
+
+// EscapeWithin is escapedWithin for other packages that render member text
+// into Discord messages.
+func EscapeWithin(raw string, rawMax, outMax int) string { return escapedWithin(raw, rawMax, outMax) }
+
+// Collapse is collapse for other packages: member text as one line.
+func Collapse(s string) string { return collapse(s) }

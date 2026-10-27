@@ -27,6 +27,8 @@ type Embed struct {
 	Fields      []EmbedField
 	URL         string
 	Footer      string
+	// Author is the small line above the title; empty omits it.
+	Author string
 	// Thumbnail is an absolute image URL; empty omits it.
 	Thumbnail string
 	// Timestamp is the moment the event finished; the zero time omits it.
@@ -116,6 +118,7 @@ type embedJSON struct {
 	URL         string      `json:"url,omitempty"`
 	Fields      []fieldJSON `json:"fields,omitempty"`
 	Footer      *footerJSON `json:"footer,omitempty"`
+	Author      *authorJSON `json:"author,omitempty"`
 	Thumbnail   *imageJSON  `json:"thumbnail,omitempty"`
 	Timestamp   string      `json:"timestamp,omitempty"`
 	Color       int         `json:"color,omitempty"`
@@ -158,6 +161,14 @@ type footerJSON struct {
 	Text string `json:"text"`
 }
 
+type authorJSON struct {
+	Name string `json:"name"`
+}
+
+// MarshalJSON writes the webhook wire shape, so a bot message embeds an Embed
+// exactly as a webhook post does.
+func (e Embed) MarshalJSON() ([]byte, error) { return json.Marshal(e.wire()) }
+
 func (e Embed) wire() embedJSON {
 	out := embedJSON{Title: e.Title, Description: e.Description, URL: e.URL, Color: e.Color}
 	if e.Thumbnail != "" {
@@ -171,6 +182,9 @@ func (e Embed) wire() embedJSON {
 	}
 	if e.Footer != "" {
 		out.Footer = &footerJSON{Text: e.Footer}
+	}
+	if e.Author != "" {
+		out.Author = &authorJSON{Name: e.Author}
 	}
 	return out
 }

@@ -153,3 +153,30 @@ func TestTransportErrorsAreTheSentinels(t *testing.T) {
 		t.Fatalf("cancelled = %v; want ErrTimeout", err)
 	}
 }
+
+func TestEmbedMarshalsLikeTheWebhookWireAndCarriesAuthor(t *testing.T) {
+	e := Embed{Title: "t", Author: "Olympus", Footer: "f", Fields: []EmbedField{{Name: "n", Value: "v"}}}
+	got, err := json.Marshal(e)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, _ := json.Marshal(e.wire())
+	if string(got) != string(want) {
+		t.Fatalf("got %s want %s", got, want)
+	}
+	if !strings.Contains(string(got), `"author":{"name":"Olympus"}`) {
+		t.Fatalf("no author in %s", got)
+	}
+	if strings.Contains(mustJSON(t, Embed{Title: "t"}), "author") {
+		t.Fatal("empty author must be omitted")
+	}
+}
+
+func mustJSON(t *testing.T, v any) string {
+	t.Helper()
+	b, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
