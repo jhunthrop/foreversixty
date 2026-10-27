@@ -1,11 +1,12 @@
 // web/src/lib/billing/copy.test.ts
 import { describe, expect, it } from 'vitest';
+import { specCell } from '../../test-support/spec-table';
 import { premiumCopy, checkoutCopy, billingBlockCopy, premiumBlockCopy } from './copy';
 
 describe('premiumCopy', () => {
   it('builds a priced plan name from the one price data file, never a hardcoded literal', () => {
-    expect(premiumCopy.pricedName('premium', 'monthly')).toBe('Premium — $4/month');
-    expect(premiumCopy.pricedName('guild', 'yearly')).toBe('Guild — $150/year');
+    expect(premiumCopy.pricedName('premium', 'monthly')).toBe('Premium — $6 a month');
+    expect(premiumCopy.pricedName('guild', 'yearly')).toBe('Guild — $150 a year');
   });
 
   it('has no exclamation marks anywhere (honest-copy rule)', () => {
@@ -31,6 +32,22 @@ describe('checkoutCopy', () => {
   it('has an honest, non-failing sentence for a not-yet-open storefront', () => {
     expect(checkoutCopy.notOpenYet).not.toContain('!');
     expect(checkoutCopy.notOpenYet.length).toBeGreaterThan(0);
+  });
+});
+
+describe('checkout chooser', () => {
+  it('matches spec 6.1', () => {
+    const spec = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
+    expect([
+      checkoutCopy.whichGuild,
+      checkoutCopy.verifiedMembers(0).replace('0', '{n}'),
+      'Guild',
+      checkoutCopy.fitsRaidGuild(0).replace('0', '{n}'),
+      checkoutCopy.noBillableGuild,
+      checkoutCopy.findYourGuild,
+      checkoutCopy.guildsDidNotLoad,
+      checkoutCopy.tryAgain,
+    ]).toEqual(specCell(spec, '### 6.1', 'Checkout chooser'));
   });
 });
 

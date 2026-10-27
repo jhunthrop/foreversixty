@@ -68,6 +68,13 @@ export const checkoutCopy = {
   confirmed: "You're all set.",
   confirmationSlow: 'This can take a moment; refresh if it does not update.',
   retry: 'Try again',
+  whichGuild: 'Which guild?',
+  verifiedMembers: (n: number): string => `${n} verified members`,
+  fitsRaidGuild: (n: number): string => `Raid guild fits ${n} members`,
+  noBillableGuild: 'You can subscribe a guild you lead or have claimed.',
+  findYourGuild: 'Find your guild',
+  guildsDidNotLoad: 'Your guilds did not load.',
+  tryAgain: 'Try again',
 };
 
 export const billingBlockCopy = {
