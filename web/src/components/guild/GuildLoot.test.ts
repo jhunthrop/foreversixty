@@ -15,6 +15,7 @@ const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/#settings';
 type LootProps = {
   loot?: GuildLootPage | null;
   officerTools?: boolean;
+  raidGuildTools?: boolean;
   refusal?: GuildPlanRefusal | null;
 };
 
@@ -24,6 +25,7 @@ function html(officer: boolean, extra: LootProps = {}): string {
       loot: buildMockLoot(),
       officer,
       officerTools: true,
+      raidGuildTools: true,
       memberReadOnly: !officer,
       busyItemId: null,
       refusal: null,
@@ -197,6 +199,32 @@ describe('GuildLoot', () => {
       for (const tag of buttons(markup, 'guild-loot-row-undo-'))
         expect(tag).toContain('disabled:no-underline');
       expect(markup).not.toContain('guild-loot-award-confirm-');
+    });
+
+    it('says the Raid guild sentence, linking to #billing, on a Guild-tier guild', () => {
+      const markup = html(true, { raidGuildTools: false });
+      const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
+      expect(gateAt).toBeGreaterThan(-1);
+      const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
+      expect(text(gate)).toContain(
+        `${guildGateCopy.raidGuildSentence.trim()} ${guildGateCopy.raidGuildLink}`,
+      );
+      expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
+      expect(text(markup)).toContain(guildGateCopy.readOnly);
+      for (const tag of buttons(markup, 'guild-loot-award-')) {
+        expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
+        expect(tag).toContain('aria-describedby="officer-tools-gate-loot"');
+      }
+    });
+
+    it("keeps today's sentence for a lapsed guild, even if Raid guild is also off", () => {
+      const markup = html(true, { officerTools: false, raidGuildTools: false });
+      expect(text(markup)).toContain(guildGateCopy.link);
+      expect(text(markup)).not.toContain(guildGateCopy.raidGuildLink);
+    });
+
+    it('shows a member nothing of the Raid guild gate', () => {
+      expect(html(false, { raidGuildTools: false })).not.toContain('guild-loot-plan-gate');
     });
 
     it('keeps the officer view free of the gate while tools are on', () => {

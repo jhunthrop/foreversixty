@@ -43,6 +43,7 @@
     rows,
     officer,
     officerTools,
+    raidGuildTools,
     myCharacterKey,
     settingsHref,
     raid = null,
@@ -56,6 +57,8 @@
     officer: boolean;
     /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
     officerTools: boolean;
+    /** False for an officer of a Guild-tier guild: Readiness is part of Raid guild (pricing spec §3.2.8). */
+    raidGuildTools: boolean;
     myCharacterKey: string | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */
     settingsHref: string;
@@ -82,7 +85,7 @@
   );
   const cellOf = (row: GuildReadinessRow) => syncCell(row, filtered ? raid : null);
 
-  const officerReadOnly = $derived(officer && !officerTools);
+  const officerReadOnly = $derived(officer && !(officerTools && raidGuildTools));
   /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
   const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-readiness' : undefined);
 
@@ -193,7 +196,7 @@
     <h2 class="section-title text-[18px]">Readiness</h2>
     {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
   </div>
-  {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} />{/if}
+  {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} raidGuild={officerTools} />{/if}
 
   {#if raid !== null && showing !== null}
     <div class="flex flex-col gap-2">

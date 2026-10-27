@@ -24,3 +24,13 @@ export function officerToolsOn(
   if (role !== 'officer') return true;
   return (officerToolsField ?? true) && !ended;
 }
+
+/**
+ * Launch pricing spec §3.2.8: Loot council and the readiness board belong to Raid guild. False
+ * only for an officer whose guild has the officer tools but not Raid guild (`raid_guild_tools:
+ * false`). A missing field counts as on: the server's 403 is the real gate.
+ */
+export function raidGuildToolsOn(role: GuildViewerRole, raidGuildToolsField: boolean | undefined): boolean {
+  if (role !== 'officer') return true;
+  return raidGuildToolsField ?? true;
+}
