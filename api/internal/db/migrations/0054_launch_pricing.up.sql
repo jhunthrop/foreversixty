@@ -14,14 +14,14 @@ update entitlements set tier = 'raid_guild' where plan = 'guild';
 
 alter table entitlements add constraint entitlements_tier check (
   (plan = 'premium' and tier is null)
-  or (plan = 'guild' and tier in ('guild', 'raid_guild'))
+  or (plan = 'guild' and tier is not null and tier in ('guild', 'raid_guild'))
 );
 
 create table premium_seats (
   guild_id                  bigint not null references guilds(id) on delete cascade,
   slot                      smallint not null check (slot between 1 and 3),
   state                     text not null check (state in ('empty', 'held', 'offered', 'accepted')),
-  holder_user_id            bigint references users(id) on delete set null,
+  holder_user_id            bigint references users(id) on delete cascade,
   given_by                  bigint references users(id) on delete set null,
   given_at                  timestamptz,
   offered_at                timestamptz,
@@ -31,11 +31,14 @@ create table premium_seats (
   returned_name             text,
   returned_at               timestamptz,
   primary key (guild_id, slot),
-  check ((state = 'empty') = (holder_user_id is null))
+  check ((state = 'empty') = (holder_user_id is null)),
+  check (state <> 'accepted' or starts_at is not null),
+  check (state <> 'held' or (given_at is not null and movable_at is not null))
 );
 create unique index premium_seats_holder_idx
   on premium_seats (guild_id, holder_user_id) where holder_user_id is not null;
 
+-- Cascades with the guild: a re-created guild may trial again.
 create table guild_trials (
   guild_id               bigint primary key references guilds(id) on delete cascade,
   stripe_subscription_id text not null,
@@ -44,8 +47,8 @@ create table guild_trials (
 
 create table plan_transfers (
   guild_id             bigint primary key references guilds(id) on delete cascade,
-  from_user_id         bigint not null references users(id),
-  to_user_id           bigint not null references users(id),
+  from_user_id         bigint not null references users(id) on delete cascade,
+  to_user_id           bigint not null references users(id) on delete cascade,
   from_subscription_id text not null,
   state                text not null check (state in ('offered', 'declined', 'accepted')),
   offered_at           timestamptz not null default now(),
@@ -69,3 +72,6 @@ create table billing_notices (
   sent_at        timestamptz not null default now(),
   primary key (kind, entitlement_id, period_end)
 );
+
+create unique index seat_comebacks_once_idx on seat_comebacks (user_id, guild_name, ended_at);
+create index seat_comebacks_user_idx on seat_comebacks (user_id);

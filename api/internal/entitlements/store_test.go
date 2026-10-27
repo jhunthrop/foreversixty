@@ -758,8 +758,8 @@ func TestRecordAnomalyIsIdempotentPerKindAndSubscription(t *testing.T) {
 func seedEntitlementUntil(t *testing.T, pool *pgxpool.Pool, subj Subject, plan, status string, features []string, until *time.Time) {
 	t.Helper()
 	if _, err := pool.Exec(context.Background(),
-		`insert into entitlements (user_id, guild_id, plan, source, status, features, current_period_end)
-		 values ($1, $2, $3, 'grant', $4, $5, $6)`,
+		`insert into entitlements (user_id, guild_id, plan, source, status, features, current_period_end, tier)
+		 values ($1, $2, $3, 'grant', $4, $5, $6, case when $3 = 'guild' then 'raid_guild' end)`,
 		subj.UserID, subj.GuildID, plan, status, features, until); err != nil {
 		t.Fatal(err)
 	}
@@ -768,8 +768,8 @@ func seedEntitlementUntil(t *testing.T, pool *pgxpool.Pool, subj Subject, plan, 
 func seedStripeEntitlement(t *testing.T, pool *pgxpool.Pool, subj Subject, plan, status string, periodEnd time.Time) {
 	t.Helper()
 	if _, err := pool.Exec(context.Background(),
-		`insert into entitlements (user_id, guild_id, plan, source, status, stripe_subscription_id, current_period_end)
-		 values ($1, $2, $3, 'stripe', $4, $5, $6)`,
+		`insert into entitlements (user_id, guild_id, plan, source, status, stripe_subscription_id, current_period_end, tier)
+		 values ($1, $2, $3, 'stripe', $4, $5, $6, case when $3 = 'guild' then 'raid_guild' end)`,
 		subj.UserID, subj.GuildID, plan, status, "sub_"+time.Now().Format("150405.000000000"), periodEnd); err != nil {
 		t.Fatal(err)
 	}
