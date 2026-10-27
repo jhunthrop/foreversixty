@@ -25,6 +25,7 @@
   import { guildRaidHref } from '../../lib/characters';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import LoadError from '../ui/LoadError.svelte';
+  import Figures from './Figures.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 
   let {
@@ -89,8 +90,10 @@
 {#snippet when(row: MatchCandidate)}
   {@const stamp = stampParts(new Date(row.uploaded_at), viewerTimezone, guildTimezone, locale)}
   <span class="text-[13px]"
-    ><span class="text-muted">{copy.uploaded}</span>&#32;<span class="font-mono">{stamp.when}</span
-    >{#if stamp.guildTime !== null}&#32;<span class="text-muted">{stamp.guildTime}</span>{/if}</span
+    ><span class="text-muted">{copy.uploaded}</span>&#32;<span class="font-mono whitespace-nowrap"
+      >{stamp.when}</span
+    >{#if stamp.guildTime !== null}&#32;<span class="text-muted whitespace-nowrap">{stamp.guildTime}</span
+      >{/if}</span
   >
 {/snippet}
 
@@ -164,14 +167,14 @@
                     >{copy.closest}</span
                   >{/if}
               </span>
-              <span class="flex items-baseline justify-between gap-3 md:hidden"
-                >{@render when(row)}<span class="font-mono text-[13px] whitespace-nowrap"
-                  >{durationLabel(row.duration_ms)}</span
-                ></span
-              >
+              <!-- Phone (final check): line 2 the upload time, never broken; line 3 who, the figures
+                   and the duration, figures in mono. -->
+              <span class="md:hidden">{@render when(row)}</span>
               <span class="text-muted text-[12px]"
                 >{byName(row.uploaded_by_name)}<span class="md:hidden"
-                  >{SEP}{pickerFigures(row.pulls, row.kills)}</span
+                  >{SEP}<Figures text={pickerFigures(row.pulls, row.kills)} />{SEP}<Figures
+                    text={durationLabel(row.duration_ms)}
+                  /></span
                 ></span
               >
             </span>
