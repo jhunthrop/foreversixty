@@ -57,9 +57,9 @@ const (
 	resendCooldown  = 15 * time.Minute
 	maxSendsPerHour = 300
 
-	shutdownTimeout = 10 * time.Second
-	// completionDrainTimeout bounds the wait at shutdown for detached report completion hooks.
-	completionDrainTimeout = 15 * time.Second
+	// shutdownBudget is the one deadline for the whole stop: the server's shutdown and the drain
+	// of detached report completion hooks share it, inside Cloud Run's 10 s grace period.
+	shutdownBudget = 9 * time.Second
 )
 
 func main() {
@@ -765,21 +765,26 @@ func serve(log *slog.Logger) error {
 		serveErr <- srv.ListenAndServe()
 	}()
 
+	var stopCtx context.Context
 	select {
 	case err := <-serveErr:
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return fmt.Errorf("serve: %w", err)
 		}
+		var cancel context.CancelFunc
+		stopCtx, cancel = context.WithTimeout(context.Background(), shutdownBudget)
+		defer cancel()
 	case <-ctx.Done():
 		log.Info("shutting down")
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+		var cancel context.CancelFunc
+		stopCtx, cancel = context.WithTimeout(context.Background(), shutdownBudget)
 		defer cancel()
-		if err := srv.Shutdown(shutdownCtx); err != nil {
+		if err := srv.Shutdown(stopCtx); err != nil {
 			log.Error("shutdown", "err", err)
 		}
 		<-serveErr // wait for the listener goroutine to actually return
 	}
-	drainCompletions(deps, log)
+	drainCompletions(stopCtx, deps, log)
 	subscribeSvc.Wait()
 	views.Close()
 	if sampler != nil {
@@ -795,11 +800,9 @@ func serve(log *slog.Logger) error {
 	return nil
 }
 
-// drainCompletions waits, bounded, for the report completion hooks the last requests started
-// (a raid match each), so a deploy does not drop them.
-func drainCompletions(deps server.Deps, log *slog.Logger) {
-	ctx, cancel := context.WithTimeout(context.Background(), completionDrainTimeout)
-	defer cancel()
+// drainCompletions waits, until ctx's deadline (the stop's shared budget), for the report
+// completion hooks the last requests started (a raid match each), so a deploy does not drop them.
+func drainCompletions(ctx context.Context, deps server.Deps, log *slog.Logger) {
 	if deps.Reports != nil {
 		if err := deps.Reports.DrainCompletions(ctx); err != nil {
 			log.Error("shutdown", "step", "report_hooks", "err", err)
