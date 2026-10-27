@@ -70,14 +70,27 @@ func (s *Service) BotAvailable() bool {
 	return s != nil && s.d.OAuth != nil && s.d.Notify != nil && s.d.Guilds != nil
 }
 
-// Active is the guild's install when the bot can post: it has a channel, Discord has not
-// said it was removed, and the channel is not unusable.
-func (s *Service) Active(ctx context.Context, guildID int64) (Install, bool, error) {
+// ActiveInstall is the guild's install when the bot can post: it has a channel, Discord has
+// not said it was removed, and the channel is not unusable.
+func (s *Service) ActiveInstall(ctx context.Context, guildID int64) (Install, bool, error) {
 	in, found, err := s.d.Store.InstallFor(ctx, guildID)
 	if err != nil || !found || in.ChannelID == nil || in.RemovedInDiscord || in.ChannelUnusable != nil {
 		return Install{}, false, err
 	}
 	return in, true, nil
+}
+
+// Active implements guilds.DiscordBot: whether the bot posts the guild's raids
+// (ActiveInstall's rule) and, when it does, the remembered "Post to Discord" box.
+func (s *Service) Active(ctx context.Context, guildID int64) (active, postDefault bool, err error) {
+	in, active, err := s.ActiveInstall(ctx, guildID)
+	return active, active && in.PostDefault, err
+}
+
+// SetPostDefault implements guilds.DiscordBot: it remembers the raid form's box on the
+// guild's install; a guild with no install is left as it is.
+func (s *Service) SetPostDefault(ctx context.Context, guildID int64, on bool) error {
+	return s.d.Store.SetPostDefault(ctx, guildID, on)
 }
 
 // SettingsBot implements guilds.DiscordBot.

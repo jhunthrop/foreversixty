@@ -193,11 +193,11 @@ func TestInstallFailureBookkeepingAndDelete(t *testing.T) {
 	if in, _, _ := st.InstallFor(ctx, g); in.RemovedInDiscord {
 		t.Fatalf("rebind should clear removed: %+v", in)
 	}
-	if err := st.DeleteInstall(ctx, g); err != nil {
+	if err := st.RemoveBot(ctx, g); err != nil {
 		t.Fatal(err)
 	}
 	if _, ok, _ := st.InstallFor(ctx, g); ok {
-		t.Fatal("install survived delete")
+		t.Fatal("install survived RemoveBot")
 	}
 }
 

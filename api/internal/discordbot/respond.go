@@ -170,7 +170,26 @@ func (s *Service) answerOrDefer(ctx context.Context, w http.ResponseWriter, in I
 		s.writeDeferral(w, update)
 		if !s.bg.Start(func() { s.deliver(in, <-done, update) }) {
 			s.log.Warn("discordbot", "op", "discord_answer", "outcome", "dropped_shutdown", "interaction", in.ID)
+			s.dropRefused(w, in, done, update)
 		}
+	}
+}
+
+// dropRefused is a deferred answer shutdown refused to deliver: it sends the deferral, then
+// waits, within the stop's budget, for the handler and undoes what its reply holds (a
+// claimed Share token) through After, marked dropped. The request stays open meanwhile, so
+// the server's shutdown waits for it.
+func (s *Service) dropRefused(w http.ResponseWriter, in Interaction, done <-chan handled, update bool) {
+	if f, ok := w.(http.Flusher); ok {
+		f.Flush()
+	}
+	wait := time.NewTimer(defaultStopWithin)
+	defer wait.Stop()
+	select {
+	case res := <-done:
+		s.dropAfter(s.replyOf(in, res, update))
+	case <-wait.C:
+		s.log.Warn("discordbot", "op", "discord_answer", "outcome", "drop_unfinished", "interaction", in.ID)
 	}
 }
 

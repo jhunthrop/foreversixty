@@ -50,13 +50,23 @@ func decodeOptionalJSON(w http.ResponseWriter, r *http.Request, v any) error {
 }
 
 // rememberPostDefault stores the box as the guild's remembered default when the save
-// carried it. A failure is logged: the raid itself was saved.
+// carried it, on the webhook channel and on the bot's install, so whichever posts reads it
+// back. A failure is logged: the raid itself was saved.
 func (s *Service) rememberPostDefault(ctx context.Context, guildID int64, box *bool) {
-	if box == nil || !s.discordOn() {
+	if box == nil {
 		return
 	}
-	if err := s.Discord.SetGuildPostDefault(ctx, guildID, *box); err != nil {
-		s.logger().Error("guilds", "op", "raid_post_default", "guild_id", guildID, "err", err)
+	if s.discordOn() {
+		s.logPostDefault(guildID, "webhook", s.Discord.SetGuildPostDefault(ctx, guildID, *box))
+	}
+	if s.botOn() {
+		s.logPostDefault(guildID, "bot", s.Bot.SetPostDefault(ctx, guildID, *box))
+	}
+}
+
+func (s *Service) logPostDefault(guildID int64, destination string, err error) {
+	if err != nil {
+		s.logger().Error("guilds", "op", "raid_post_default", "guild_id", guildID, "destination", destination, "err", err)
 	}
 }
 

@@ -136,7 +136,7 @@ func NewRouter(d Deps) http.Handler {
 	})
 	mws := []func(http.Handler) http.Handler{
 		httpx.RequestID(), httpx.Recover(d.Log), httpx.Logger(d.Log), httpx.CORS(d.AllowedOrigin),
-		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, skipsRouterLimit),
+		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, routerLimitSkip(d.DiscordBot != nil)),
 	}
 	if d.Auth != nil {
 		mws = append(mws, d.Auth.Middleware)
@@ -144,12 +144,15 @@ func NewRouter(d Deps) http.Handler {
 	return httpx.Chain(mux, mws...)
 }
 
-// skipsRouterLimit reports whether r skips the router-wide limiter: the shared
-// reads, and Discord's interactions. Discord posts every interaction from a
-// few egress IPs, so one IP bucket would 429 a busy bot; the endpoint's
-// Ed25519 signature check (cheap, before any work) is what guards it.
-func skipsRouterLimit(r *http.Request) bool {
-	return sharedRead(r) || (r.Method == http.MethodPost && r.URL.Path == discordbot.InteractionsPath)
+// routerLimitSkip is which requests skip the router-wide limiter: the shared
+// reads, and Discord's interactions while the bot is mounted. Discord posts
+// every interaction from a few egress IPs, so one IP bucket would 429 a busy
+// bot; the endpoint's Ed25519 signature check (cheap, before any work) is what
+// guards it. With the bot off the path is a 404 like any other, and limited.
+func routerLimitSkip(botMounted bool) func(*http.Request) bool {
+	return func(r *http.Request) bool {
+		return sharedRead(r) || (botMounted && r.Method == http.MethodPost && r.URL.Path == discordbot.InteractionsPath)
+	}
 }
 
 // sharedRead reports whether r is a read of the shared, cached surface -

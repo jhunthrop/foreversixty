@@ -34,8 +34,10 @@ type Install struct {
 	RemovedInDiscord bool
 	// ChannelUnusable is set while the bot is in the server but cannot post in ChannelID.
 	ChannelUnusable *ChannelUnusable
-	InstalledBy     *int64
-	UpdatedAt       time.Time
+	// PostDefault is the raid form's remembered "Post to Discord" box.
+	PostDefault bool
+	InstalledBy *int64
+	UpdatedAt   time.Time
 }
 
 // BindOutcome is the answer to BindServer.
@@ -54,14 +56,14 @@ type BindResult struct {
 }
 
 const installColumns = `guild_id, server_id, server_name, channel_id, channel_name, failures,
-	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, installed_by, updated_at`
+	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, post_default, installed_by, updated_at`
 
 func scanInstall(row pgx.Row) (Install, error) {
 	var in Install
 	var reason *string
 	var missing []string
 	err := row.Scan(&in.GuildID, &in.ServerID, &in.ServerName, &in.ChannelID, &in.ChannelName,
-		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.InstalledBy, &in.UpdatedAt)
+		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.PostDefault, &in.InstalledBy, &in.UpdatedAt)
 	if reason != nil {
 		in.ChannelUnusable = &ChannelUnusable{Reason: *reason, Missing: append([]string{}, missing...)}
 	}
@@ -205,9 +207,10 @@ func (s *Store) RecordPostFailure(ctx context.Context, guildID int64, lastErr st
 		updated_at = now() where guild_id = $1`, guildID, lastErr)
 }
 
-// DeleteInstall removes the guild's install; an absent one is not an error.
-func (s *Store) DeleteInstall(ctx context.Context, guildID int64) error {
-	return s.exec(ctx, `delete from guild_discord_installs where guild_id = $1`, guildID)
+// SetPostDefault stores the raid form's remembered "Post to Discord" box; a guild with no
+// install is left as it is.
+func (s *Store) SetPostDefault(ctx context.Context, guildID int64, on bool) error {
+	return s.exec(ctx, `update guild_discord_installs set post_default = $2 where guild_id = $1`, guildID, on)
 }
 
 func (s *Store) exec(ctx context.Context, query string, args ...any) error {

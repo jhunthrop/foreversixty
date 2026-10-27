@@ -46,7 +46,9 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	// The drainer runs in this process (one warm instance, always-on CPU). It stops claiming
 	// at the stop signal itself, so it does not take rows late in the 9 s shutdown budget;
 	// drainDiscordBot then waits for the row in flight within that budget.
-	bot.StartDrainer(stop, bot.NewDrainer(deps.Guilds))
+	drainer := bot.NewDrainer(deps.Guilds)
+	drainer.StopWithin = shutdownBudget
+	bot.StartDrainer(stop, drainer)
 	go registerDiscordCommands(stop, bot, log)
 	return bot
 }

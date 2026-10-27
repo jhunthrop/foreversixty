@@ -29,13 +29,13 @@ func TestRouterPostsThroughTheBotWhenActive(t *testing.T) {
 func TestRouterFallsBackToTheWebhook(t *testing.T) {
 	cases := map[string]func(t *testing.T, w *postWorld){
 		"no install": func(t *testing.T, w *postWorld) {
-			if err := w.st.DeleteInstall(context.Background(), w.gid); err != nil {
+			if err := w.st.RemoveBot(context.Background(), w.gid); err != nil {
 				t.Fatal(err)
 			}
 		},
 		"no channel": func(t *testing.T, w *postWorld) {
 			ctx := context.Background()
-			if err := w.st.DeleteInstall(ctx, w.gid); err != nil {
+			if err := w.st.RemoveBot(ctx, w.gid); err != nil {
 				t.Fatal(err)
 			}
 			if _, err := w.st.BindServer(ctx, w.gid, "srv1", "Olympus", w.uid); err != nil {

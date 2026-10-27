@@ -82,6 +82,12 @@ type DiscordBot interface {
 	BotAvailable() bool
 	// SettingsBot is the guild's install and the viewer's one-time install refusal.
 	SettingsBot(ctx context.Context, guildID, viewerID int64) (*SettingsBot, *BotRefusal, error)
+	// Active is whether the bot posts the guild's raids: installed with a channel, not
+	// removed in Discord, the channel usable. postDefault is the remembered box, false when
+	// the bot is not active.
+	Active(ctx context.Context, guildID int64) (active, postDefault bool, err error)
+	// SetPostDefault remembers the raid form's "Post to Discord" box on the guild's install.
+	SetPostDefault(ctx context.Context, guildID int64, on bool) error
 }
 
 // discordOn reports whether the guild channel exists in this deployment.
@@ -164,10 +170,23 @@ func (s *Service) SettingsDiscordFor(ctx context.Context, guildID, viewerID int6
 	return out, nil
 }
 
-// raidDiscord is every raid view's discord block: the guild's channel, not the raid's.
+// raidDiscord is every raid view's discord block: the guild's Discord destination, not the
+// raid's. An active bot is one (the router posts through it), else the webhook channel.
 func (s *Service) raidDiscord(ctx context.Context, guildID int64) (RaidDiscord, error) {
-	if !s.discordOn() {
+	if !s.discordOn() && !s.botOn() {
 		return RaidDiscord{}, nil
+	}
+	if s.botOn() {
+		active, postDefault, err := s.Bot.Active(ctx, guildID)
+		if err != nil {
+			return RaidDiscord{}, err
+		}
+		if active {
+			return RaidDiscord{Available: true, Connected: true, PostDefault: postDefault}, nil
+		}
+	}
+	if !s.discordOn() {
+		return RaidDiscord{Available: true}, nil
 	}
 	w, connected, err := s.Discord.GuildChannel(ctx, guildID)
 	if err != nil {
