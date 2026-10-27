@@ -1,9 +1,10 @@
 <!-- web/src/components/guild/GuildDiscordChannel.svelte -->
 <!-- A saved guild channel (raids spec §3.8, Connected and Switched off): where it posts, the 1 to 4
      failure warning or the switched-off notice, the actions row (or the remove question), the
-     status line, and `Connect a different channel` with its note. The status line is a focus
+     status line, and `Connect a different channel` with its note. `offer` is the bot offer. The status line is a focus
      target for the plan-ended line, so its wrapper takes tabindex -1. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { failureWarning, openInDiscordUrl } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
   import type { GuildSettingsDiscord } from '../../lib/guild/api';
@@ -27,6 +28,7 @@
     onRemove,
     onCancel,
     onStuck,
+    offer,
   }: {
     discord: GuildSettingsDiscord;
     switchedOff: boolean;
@@ -42,6 +44,8 @@
     onRemove: () => void;
     onCancel: () => void;
     onStuck: () => void;
+    /** The bot offer (bot spec §3.1, state 4): sits above the actions row. */
+    offer?: Snippet;
   } = $props();
 
   const channelId = $derived(discord.channel_id ?? '');
@@ -96,6 +100,7 @@
     {#if !confirming}<div class="-mt-1">{@render replace()}</div>{/if}
   </DiscordNotice>
 {/if}
+{@render offer?.()}
 <div class="flex flex-col">
   <DiscordActions
     state={switchedOff ? 'disabled' : 'saved'}

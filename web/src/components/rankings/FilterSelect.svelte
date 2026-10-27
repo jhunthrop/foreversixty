@@ -20,6 +20,8 @@
     compact = false,
     busy = false,
     disabled = false,
+    invalid = false,
+    groups,
     describedBy,
   }: {
     id: string;
@@ -35,7 +37,11 @@
     /** Keeps the label for screen readers only (the raid strip's Role select, raids spec 3.3). */
     labelHidden?: boolean;
     disabled?: boolean;
-    /** Read while disabled: the sentence that says why. */
+    /** The value was refused: `aria-invalid`, read with `describedBy`'s sentence. */
+    invalid?: boolean;
+    /** Options under `<optgroup>` headings, drawn after `options` (a null label draws bare). */
+    groups?: readonly { label: string | null; options: readonly FilterOption[] }[];
+    /** Read while disabled or invalid: the sentence that says why. */
     describedBy?: string;
     /** 32 px from `md`, 44 px below (the raid roster's officer select, raids spec 3.7). */
     compact?: boolean;
@@ -61,14 +67,25 @@
       {disabled}
       aria-busy={busy ? 'true' : undefined}
       aria-label={labelHidden ? label : undefined}
-      aria-describedby={disabled ? describedBy : undefined}
+      aria-invalid={invalid ? 'true' : undefined}
+      aria-describedby={disabled || invalid ? describedBy : undefined}
       data-testid={testid}
       onchange={(event) => onchange((event.currentTarget as HTMLSelectElement).value)}
     >
-      {#each options as option (option.value)}
-        <option value={option.value} disabled={option.disabled} aria-label={option.ariaLabel}
-          >{option.label}</option
-        >
+      {#snippet choices(list: readonly FilterOption[])}
+        {#each list as option (option.value)}
+          <option value={option.value} disabled={option.disabled} aria-label={option.ariaLabel}
+            >{option.label}</option
+          >
+        {/each}
+      {/snippet}
+      {@render choices(options)}
+      {#each groups ?? [] as group (group.label ?? '')}
+        {#if group.label === null}
+          {@render choices(group.options)}
+        {:else}
+          <optgroup label={group.label}>{@render choices(group.options)}</optgroup>
+        {/if}
       {/each}
     </select>
     <SelectChevron />
