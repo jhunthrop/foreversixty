@@ -225,11 +225,18 @@ func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
 	if !s.writeRaidWriteErr(w, r, "raid_update", err) {
 		return
 	}
-	s.markRaid(r.Context(), updated.ID)
+	was := raid.StartsAt
+	moved := !updated.StartsAt.Equal(was)
+	// A moved start shows on the bot's post ticked or not; the box decides only the announcement.
+	if moved {
+		s.markRaidMoved(r.Context(), updated.ID, was)
+	} else {
+		s.markRaid(r.Context(), updated.ID)
+	}
 	s.rememberPostDefault(r.Context(), guildID, req.PostToDiscord)
 	var post func(RaidView)
 	// Only a time change posts; a title or notes edit never does.
-	if was := raid.StartsAt; ticked(req.PostToDiscord) && !updated.StartsAt.Equal(was) {
+	if ticked(req.PostToDiscord) && moved {
 		post = func(v RaidView) { s.postChanged(r.Context(), guildID, v, &was) }
 	}
 	s.writeRaidView(w, r, "raid_update", guildID, updated, post)

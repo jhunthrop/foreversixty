@@ -59,6 +59,16 @@ type SettingsBot struct {
 	Failures         int     `json:"failures"`
 	LastError        *string `json:"last_error"`
 	RemovedInDiscord bool    `json:"removed_in_discord"`
+	// ChannelUnusable is null while the bot can post in its channel.
+	ChannelUnusable *ChannelUnusable `json:"channel_unusable"`
+}
+
+// ChannelUnusable is a channel the bot is in the server for but cannot post in: Reason
+// "deleted" or "permissions"; Missing the lacking subset of View Channel, Send Messages and
+// Embed Links, in that order, empty when deleted.
+type ChannelUnusable struct {
+	Reason  string   `json:"reason"`
+	Missing []string `json:"missing"`
 }
 
 // BotRefusal names the guild that already holds the server the officer tried to install into.

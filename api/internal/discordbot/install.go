@@ -70,11 +70,11 @@ func (s *Service) BotAvailable() bool {
 	return s != nil && s.d.OAuth != nil && s.d.Notify != nil && s.d.Guilds != nil
 }
 
-// Active is the guild's install when the bot can post: it has a channel and Discord has not
-// said it was removed.
+// Active is the guild's install when the bot can post: it has a channel, Discord has not
+// said it was removed, and the channel is not unusable.
 func (s *Service) Active(ctx context.Context, guildID int64) (Install, bool, error) {
 	in, found, err := s.d.Store.InstallFor(ctx, guildID)
-	if err != nil || !found || in.ChannelID == nil || in.RemovedInDiscord {
+	if err != nil || !found || in.ChannelID == nil || in.RemovedInDiscord || in.ChannelUnusable != nil {
 		return Install{}, false, err
 	}
 	return in, true, nil
@@ -110,7 +110,7 @@ func (s *Service) installView(ctx context.Context, guildID int64) (*guilds.Setti
 	return &guilds.SettingsBot{
 		ServerID: in.ServerID, ServerName: in.ServerName, ChannelID: in.ChannelID, ChannelName: in.ChannelName,
 		LinkedMembers: linked, Members: members, Failures: in.Failures, LastError: in.LastError,
-		RemovedInDiscord: in.RemovedInDiscord,
+		RemovedInDiscord: in.RemovedInDiscord, ChannelUnusable: unusableView(in.ChannelUnusable),
 	}, nil
 }
 
@@ -203,4 +203,12 @@ func (s *Service) holderName(ctx context.Context, heldBy int64, cs notify.Connec
 		return "", fmt.Errorf("discordbot: holder guild %d not found", heldBy)
 	}
 	return standing.Name, nil
+}
+
+// unusableView is the settings shape of an unusable channel; nil while the channel is fine.
+func unusableView(u *ChannelUnusable) *guilds.ChannelUnusable {
+	if u == nil {
+		return nil
+	}
+	return &guilds.ChannelUnusable{Reason: u.Reason, Missing: append([]string{}, u.Missing...)}
 }

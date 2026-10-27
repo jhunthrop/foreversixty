@@ -384,7 +384,9 @@ func TestBotTestMessage(t *testing.T) {
 		t.Fatalf("a test counted: failures = %d", in.Failures)
 	}
 
-	h.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: 403, Code: codeMissingAccess, Message: "Missing Access"}}
+	// The server read decides: the bot cannot read the server, so it was removed.
+	gone := &APIError{Status: 403, Code: codeMissingAccess, Message: "Missing Access"}
+	h.rest.ErrFor = map[string]error{"CreateMessage": gone, "ServerLayout": gone}
 	if rec := h.do(http.MethodPost, h.path(h.gid, "/test"), ""); rec.Code != http.StatusBadGateway {
 		t.Fatalf("gone bot: status %d", rec.Code)
 	}

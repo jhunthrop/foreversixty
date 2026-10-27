@@ -23,6 +23,11 @@ create table guild_discord_installs (
   failures int not null default 0,
   last_error text,
   removed_in_discord boolean not null default false,
+  -- The bot is in the server but cannot post in its channel: 'deleted' (Discord 10003) or
+  -- 'permissions' (a 403 on the channel), with the lacking subset of View Channel, Send
+  -- Messages and Embed Links. Saving a channel clears it.
+  channel_unusable_reason text check (channel_unusable_reason in ('deleted', 'permissions')),
+  channel_unusable_missing text[] not null default '{}',
   installed_by bigint references users(id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
