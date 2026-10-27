@@ -357,6 +357,16 @@ export interface GuildSettingsDiscord {
   bot_refusal?: { guild_name: string } | null;
 }
 
+/** The three permissions the bot needs in the raid channel, in the order the API lists them. */
+export type GuildChannelPermission = 'View Channel' | 'Send Messages' | 'Embed Links';
+
+/** Why the bot cannot post in its raid channel (spec amendment "channel can't be used"):
+ *  `missing` is empty when the channel was deleted. */
+export interface GuildChannelUnusable {
+  reason: 'deleted' | 'permissions';
+  missing: GuildChannelPermission[];
+}
+
 /** `settings.discord.bot`: `channel_id` and `channel_name` are null until the picker saves. */
 export interface GuildBot {
   server_id: string;
@@ -368,6 +378,8 @@ export interface GuildBot {
   failures: number;
   last_error: string | null;
   removed_in_discord: boolean;
+  /** Null when the channel works; an older API's absent key is read as null. */
+  channel_unusable: GuildChannelUnusable | null;
 }
 
 /** One entry of `GET …/discord/bot/channels`, in Discord's order. */
@@ -519,6 +531,8 @@ export function fetchGuildSettings(
 export function normalizeGuildDiscord(discord: GuildSettingsDiscord): GuildSettingsDiscord {
   if (discord.bot_available === true && discord.bot === undefined)
     return { ...discord, bot_available: false };
+  if (discord.bot != null && discord.bot.channel_unusable === undefined)
+    return { ...discord, bot: { ...discord.bot, channel_unusable: null } };
   return discord;
 }
 

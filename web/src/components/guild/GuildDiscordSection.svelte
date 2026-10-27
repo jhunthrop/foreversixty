@@ -285,7 +285,7 @@
   function cancelChange(): void {
     changing = false;
     focusSelect = false;
-    focus.request(BOT_FOCUS.change);
+    focus.request(view.bot?.channel_unusable != null ? BOT_FOCUS.choose : BOT_FOCUS.change);
   }
 
   function saved(next: GuildSettingsDiscord): void {
@@ -297,7 +297,9 @@
   }
 
   function onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape' && confirming && busy === null) cancel();
+    if (event.key !== 'Escape' || busy !== null) return;
+    if (confirming) cancel();
+    else if (changing && view.state === 'picker') cancelChange();
   }
 </script>
 

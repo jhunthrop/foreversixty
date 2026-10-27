@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import type { GuildBot, GuildBotChannel } from './api';
-import { guildBotCopy } from './discord-bot-copy';
-import { BOT_FOCUS, botReturnOutcome, groupChannels, preselectChannel } from './discord-bot-state';
+import type { GuildBot, GuildBotChannel, GuildChannelUnusable } from './api';
+import { guildBotCopy, joinPermissions } from './discord-bot-copy';
+import {
+  BOT_FOCUS,
+  botReturnOutcome,
+  groupChannels,
+  preselectAfterUnusable,
+  preselectChannel,
+} from './discord-bot-state';
 import { guildBotState, guildBotView } from './discord-bot-view';
 
 const BOT: GuildBot = {
@@ -14,6 +20,7 @@ const BOT: GuildBot = {
   failures: 0,
   last_error: null,
   removed_in_discord: false,
+  channel_unusable: null,
 };
 const on = (bot: GuildBot | null, connected = false) => ({ bot_available: true, bot, connected });
 
@@ -89,5 +96,58 @@ describe('botReturnOutcome', () => {
     );
     expect(botReturnOutcome('taken', null)?.message).toBe(guildBotCopy.returns.takenExpired);
     expect(botReturnOutcome('nonsense', null)).toBeNull();
+  });
+});
+
+const DELETED: GuildChannelUnusable = { reason: 'deleted', missing: [] };
+const NO_SEND: GuildChannelUnusable = { reason: 'permissions', missing: ['Send Messages'] };
+
+describe('state 2b, the channel cannot be used', () => {
+  it('sits below removed and the picker, above installed', () => {
+    expect(guildBotState(on({ ...BOT, channel_unusable: DELETED }), false)).toBe('unusable');
+    expect(guildBotState(on({ ...BOT, channel_unusable: DELETED, removed_in_discord: true }), false)).toBe(
+      'removed',
+    );
+    expect(guildBotState(on({ ...BOT, channel_unusable: DELETED }), true)).toBe('picker');
+    expect(guildBotState(on({ ...BOT, channel_unusable: null }), false)).toBe('installed');
+  });
+
+  it('reads the notice copy verbatim', () => {
+    const copy = guildBotCopy.channelUnusable;
+    expect(copy.title('deleted', 'raid-signups', 'Olympus')).toEqual({
+      text: 'The raid channel #raid-signups was deleted in Olympus.',
+      strong: null,
+    });
+    expect(copy.title('deleted', null, 'Olympus').text).toBe('The raid channel in Olympus was deleted.');
+    expect(copy.title('permissions', 'raid-signups', 'Olympus')).toEqual({
+      text: 'The bot cannot post in #raid-signups.',
+      strong: '#raid-signups',
+    });
+    expect(copy.title('deleted', 'x'.repeat(70), 'Olympus').text).toContain(`#${'x'.repeat(59)}…`);
+    expect(copy.detail('deleted', [], true)).toBe(
+      'The bot cannot post there. Choose another channel. Raids post through your webhook channel until then.',
+    );
+    expect(copy.detail('deleted', [], false)).toBe(
+      'The bot cannot post there. Choose another channel. Raids stop posting to Discord until then.',
+    );
+    expect(copy.detail('permissions', ['Send Messages', 'Embed Links'], false)).toBe(
+      'In Discord, give the Forever Sixty role Send Messages and Embed Links in that channel, or choose another channel. Raids stop posting to Discord until then.',
+    );
+  });
+
+  it('joins permissions with commas and and', () => {
+    expect(joinPermissions(['Send Messages'])).toBe('Send Messages');
+    expect(joinPermissions(['Send Messages', 'Embed Links'])).toBe('Send Messages and Embed Links');
+    expect(joinPermissions(['View Channel', 'Send Messages', 'Embed Links'])).toBe(
+      'View Channel, Send Messages and Embed Links',
+    );
+  });
+
+  it('preselects nothing when deleted, the current channel only when listed for permissions', () => {
+    const list = [channel('1', 'general'), channel('2', 'raid-signups')];
+    expect(preselectAfterUnusable(list, '2', DELETED.reason)).toBeNull();
+    expect(preselectAfterUnusable(list, '2', NO_SEND.reason)).toBe('2');
+    expect(preselectAfterUnusable(list, '9', NO_SEND.reason)).toBeNull();
+    expect(preselectAfterUnusable(list, null, NO_SEND.reason)).toBeNull();
   });
 });

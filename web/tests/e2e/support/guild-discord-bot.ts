@@ -33,6 +33,7 @@ export const BOT: GuildBot = {
   failures: 0,
   last_error: null,
   removed_in_discord: false,
+  channel_unusable: null,
 };
 
 export const CHANNELS: GuildBotChannel[] = [
@@ -103,7 +104,12 @@ export async function stubGuildBot(page: Page, options: GuildBotStubOptions): Pr
     const name = (
       options.channels === undefined || options.channels === 'error' ? CHANNELS : options.channels
     ).find((channel) => channel.id === channelId)?.name;
-    const next = withBot((bot) => ({ ...bot, channel_id: channelId, channel_name: name ?? null }));
+    const next = withBot((bot) => ({
+      ...bot,
+      channel_id: channelId,
+      channel_name: name ?? null,
+      channel_unusable: null,
+    }));
     return route.fulfill(envelope(next));
   });
   await page.route(botRoute('/test'), (route: Route) => {

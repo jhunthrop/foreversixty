@@ -40,6 +40,7 @@ export const BOT_FOCUS = {
   select: '#discord [data-testid="bot-channel"]',
   add: '#discord [data-testid="bot-add"]',
   change: '#discord [data-testid="bot-change"]',
+  choose: '#discord [data-testid="bot-choose-channel"]',
   testButton: '#discord [data-testid="bot-test"]',
   removeCancel: '#discord [data-testid="bot-remove-cancel"]',
   status: '#guild-discord-status',
@@ -86,6 +87,17 @@ export function preselectChannel(
 ): string | null {
   if (current !== null && channels.some((channel) => channel.id === current)) return current;
   return channels.find((channel) => RAID_CHANNEL.test(channel.name))?.id ?? null;
+}
+
+/** The picker opened from the unusable notice: nothing when the channel was deleted, the current
+ *  channel only when it is back in the list. No raid-channel guess: the officer chooses. */
+export function preselectAfterUnusable(
+  channels: readonly GuildBotChannel[],
+  current: string | null,
+  reason: 'deleted' | 'permissions',
+): string | null {
+  if (reason === 'deleted' || current === null) return null;
+  return channels.some((channel) => channel.id === current) ? current : null;
 }
 
 export interface ChannelGroup {
