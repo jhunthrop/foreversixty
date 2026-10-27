@@ -1,6 +1,7 @@
 // web/tests/e2e/guild-billing.spec.ts
 // Launch pricing spec section 9, guild settings #billing: case 9 (not on a plan), 10 (trial), 11 (Guild
-// tier with 28 members and the Raid guild move), 14 (lapsed, CSV) and 18 (axe, 44 px at 360). Also
+// tier with 28 members and the Raid guild move), 14 (lapsed, CSV) and
+// 18 (axe, 44 px at 360, the seat picker open). Seats, transfer and case 15 live in guild-billing-seats.spec.ts. Also
 // Manage billing and its Stripe-unavailable retry, which the old #billing section carried. API stubbed.
 import { createRequire } from 'node:module';
 import { expect, test, type Page } from '@playwright/test';
@@ -8,42 +9,18 @@ import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
   GUILD_TIER_28_READ,
   LAPSED_READ,
-  SETTINGS_GUILD,
-  SETTINGS_GUILD_PATH,
+  emptySeat,
+  heldSeat,
   TRIAL_READ,
   UPGRADE_PREVIEW,
   guildBillingRead,
-  meWithGuildPlan,
   planView,
-  routeGuildSettingsPage,
 } from '../../src/test-support/billing-fixtures';
-import { gotoHydrated } from './support/hydrated';
+import { GUILD_ID, envelope, openWith, stubCandidates } from './support/guild-billing';
 
-const GUILD_ID = SETTINGS_GUILD.id;
 const PHONE = { width: 360, height: 780 };
 const MIN_TAP_PX = 44;
 const NOON = '2026-12-01T12:00:00Z';
-
-function envelope(data: unknown, status = 200) {
-  return {
-    status,
-    contentType: 'application/json',
-    body: JSON.stringify({
-      ok: status < 400,
-      data: status < 400 ? data : null,
-      error: status < 400 ? null : data,
-      request_id: 'req-test',
-    }),
-  };
-}
-
-async function openWith(page: Page, read: GuildBillingSettings): Promise<void> {
-  await routeGuildSettingsPage(page);
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
-  await page.route(`**/v1/guilds/${GUILD_ID}/billing`, (route) => route.fulfill(envelope(read)));
-  await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-billing');
-  await expect(page.getByTestId('guild-billing-skeleton')).toHaveCount(0);
-}
 
 const billing = (page: Page) => page.getByTestId('guild-settings-billing');
 
@@ -195,8 +172,15 @@ const AXE_SOURCE = createRequire(import.meta.url).resolve('axe-core/axe.min.js')
 
 test('case 18: axe finds no violations and every control is at least 44px tall at 360', async ({ page }) => {
   await page.setViewportSize(PHONE);
-  await openWith(page, GUILD_TIER_28_READ);
+  await stubCandidates(page);
+  await openWith(page, {
+    ...GUILD_TIER_28_READ,
+    seats: [emptySeat(1), heldSeat(2)],
+    transfer_candidates: [{ user_id: 40, name: 'Mirelle' }],
+  });
   await page.getByTestId('guild-move-raid-guild').click();
+  await page.getByTestId('guild-seat-1-give').click();
+  await expect(page.getByTestId('guild-seat-1-select')).toBeVisible();
   await page.addScriptTag({ path: AXE_SOURCE });
   const results = await page.evaluate(async (): Promise<AxeResults> => {
     const axe = (window as unknown as { axe: { run: (context: string) => Promise<AxeResults> } }).axe;
