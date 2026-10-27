@@ -56,6 +56,20 @@ func TestLootAward_NoPlanKeepsGuildPlanRequired(t *testing.T) {
 	assertRefusal(t, res, "guild_plan_required", refusal.AwardPlanRequired)
 }
 
+func TestLootGate_NoPlanAndLapsedPlan(t *testing.T) {
+	lapsed := `insert into entitlements (guild_id, tier, plan, source, status, current_period_end)
+		values ($1, 'raid_guild', 'guild', 'grant', 'active', now() - interval '1 day')`
+	for name, planSQL := range map[string]string{"no plan": "", "lapsed plan": lapsed} {
+		t.Run(name, func(t *testing.T) {
+			h, gid, target := awardFixture(t, "Gate "+name, planSQL)
+			res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/loot/awards", gid), awardBody(target))
+			assertRefusal(t, res, "guild_plan_required", refusal.AwardPlanRequired)
+			res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/loot/awards/1", gid), "")
+			assertRefusal(t, res, "guild_plan_required", refusal.AwardPlanRequired)
+		})
+	}
+}
+
 func TestLootAward_RaidGuildAllowed(t *testing.T) {
 	h, gid, target := awardFixture(t, "RaidGuildGate", raidGuildTierSQL)
 	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/loot/awards", gid), awardBody(target))
