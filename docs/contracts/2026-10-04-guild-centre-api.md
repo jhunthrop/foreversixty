@@ -223,10 +223,11 @@ holds the award's time. Otherwise it has no raid until a match attaches it; a pr
 never takes it. One award per drop per raid: re-awarding the same drop in the same raid
 replaces it, and a later raid's award of the same item is a new row.
 
-Attach on match (Lane G2): an award made live has no raid, since a raid is not done until its
-log matches. When a raid's log matches (auto or by hand), the guild's raid-less awards whose
-`awarded_at` falls between an hour before the raid's start and six hours after the log's anchor
-join that raid, in the match's own transaction. If the raid already holds an award of the same
+Attach on match (Lane G2): an award made with no `raid_id` goes to the guild's raid (not
+cancelled) whose match window holds the award's time, whatever that raid's status; outside every
+window it has no raid. When a raid's log matches (auto or by hand), the guild's raid-less awards
+whose `awarded_at` falls between an hour before the raid's start and six hours after the earlier
+of the log's anchor and the raid's end join that raid, in the match's own transaction. If the raid already holds an award of the same
 drop, the newer of the two stays on the raid and the older is left with no raid. Clearing the
 match takes back only the awards the match attached (`attached_by_match`); an award filed under
 the raid with `raid_id` is never detached.
