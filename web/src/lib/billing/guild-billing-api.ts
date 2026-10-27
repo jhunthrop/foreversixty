@@ -4,7 +4,8 @@
 // `BillingApiError` carrying the API's status and `code` (`upgrade_failed`, `not_member`).
 import { invalidateGuild } from '../guild/api';
 import { API_BASE_URL } from '../planner/config';
-import { call } from './api';
+import { call, callVoid } from './api';
+import { normalizeGuildBilling } from './normalize';
 import type { GuildBillingSettings, UpgradePreview } from './contract';
 
 export type ExportKind = 'attendance' | 'loot';
@@ -14,11 +15,11 @@ function billingPath(guildId: number): string {
 }
 
 /** Verified officers and leaders only; anyone else gets a 404 `BillingApiError`. */
-export function getGuildBilling(
+export async function getGuildBilling(
   guildId: number,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildBillingSettings> {
-  return call<GuildBillingSettings>(billingPath(guildId), apiBase);
+  return normalizeGuildBilling(await call<GuildBillingSettings>(billingPath(guildId), apiBase));
 }
 
 /** What the Guild to Raid guild move charges now and from the next renewal. A payer's read. */
@@ -35,7 +36,7 @@ export async function upgrade(
     method: 'POST',
   });
   invalidateGuild(guildId, apiBase);
-  return data;
+  return normalizeGuildBilling(data);
 }
 
 async function transferAction(
@@ -44,7 +45,7 @@ async function transferAction(
   body: unknown,
   apiBase: string,
 ): Promise<void> {
-  await call<unknown>(`${billingPath(guildId)}/transfer${action}`, apiBase, { method: 'POST', body }, true);
+  await callVoid(`${billingPath(guildId)}/transfer${action}`, apiBase, { method: 'POST', body });
   invalidateGuild(guildId, apiBase);
 }
 
@@ -65,7 +66,11 @@ export function declineTransfer(guildId: number, apiBase: string = API_BASE_URL)
   return transferAction(guildId, '/decline', {}, apiBase);
 }
 
-/** The CSV download link: absolute to the API origin, because the website host does not serve `/v1`. */
+/**
+ * The CSV download link: absolute to the API origin, because the website host does not serve
+ * `/v1`. Cross-origin, so a `download` attribute is ignored: the file name comes from the
+ * API's Content-Disposition header, and nothing here can set it.
+ */
 export function exportHref(guildId: number, kind: ExportKind, apiBase: string = API_BASE_URL): string {
   return `${apiBase}/v1/guilds/${guildId}/export/${kind}.csv`;
 }

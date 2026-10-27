@@ -7,6 +7,7 @@ import type { Interval } from './plans';
 
 export type GuildTier = 'guild' | 'raid_guild';
 export type SeatState = 'empty' | 'held' | 'offered' | 'accepted';
+export type GuildBillingCan = 'billing' | 'seats' | 'transfer';
 export type TransferState = 'offered' | 'declined' | 'accepted';
 
 /** The price facts stamped on a subscription row; the founder flag is the Stripe price it was bought at. */
@@ -87,7 +88,7 @@ export interface GuildBillingSettings {
   seats: SeatView[];
   transfer: TransferView | null;
   transfer_candidates: TransferCandidate[];
-  can: string[];
+  can: GuildBillingCan[];
 }
 
 export interface UpgradePreview {
