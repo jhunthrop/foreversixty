@@ -61,3 +61,40 @@ func TestPostableChannelsMissingPermissionsYieldsNothing(t *testing.T) {
 		t.Fatalf("got %+v", got)
 	}
 }
+
+func TestPostableChannelsOverwriteOrdering(t *testing.T) {
+	const srv, bot = "srv", "bot"
+	base := PermViewChannel | PermSendMessages | PermEmbedLinks | PermReadMessageHistory
+	cases := []struct {
+		name       string
+		overwrites []Overwrite
+		want       bool
+	}{
+		{"role allow beats everyone deny", []Overwrite{
+			{ID: srv, Type: OverwriteRole, Deny: PermSendMessages}, {ID: "bot-role", Type: OverwriteRole, Allow: PermSendMessages}}, true},
+		{"role deny beats everyone allow", []Overwrite{
+			{ID: srv, Type: OverwriteRole, Allow: PermSendMessages}, {ID: "bot-role", Type: OverwriteRole, Deny: PermSendMessages}}, false},
+		{"several bot roles combine, allow wins over deny", []Overwrite{
+			{ID: "bot-role", Type: OverwriteRole, Deny: PermSendMessages}, {ID: "bot-role-2", Type: OverwriteRole, Allow: PermSendMessages}}, true},
+		{"deny from one bot role stands when no role allows", []Overwrite{
+			{ID: "bot-role", Type: OverwriteRole, Deny: PermViewChannel}, {ID: "bot-role-2", Type: OverwriteRole, Deny: PermSendMessages}}, false},
+		{"a role the bot does not hold is ignored", []Overwrite{
+			{ID: "other-role", Type: OverwriteRole, Deny: PermSendMessages}}, true},
+		{"member allow beats role deny", []Overwrite{
+			{ID: "bot-role", Type: OverwriteRole, Deny: PermSendMessages}, {ID: bot, Type: OverwriteMember, Allow: PermSendMessages}}, true},
+		{"another member's overwrite is ignored", []Overwrite{
+			{ID: "someone", Type: OverwriteMember, Deny: PermSendMessages}}, true},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			layout := ServerLayout{
+				BotUserID: bot, BotRoleIDs: []string{"bot-role", "bot-role-2"},
+				Roles:    []Role{{ID: srv, Permissions: base}, {ID: "bot-role"}, {ID: "bot-role-2"}},
+				Channels: []RawChannel{{ID: "1", Name: "a", Type: 0, Overwrites: c.overwrites}},
+			}
+			if got := len(PostableChannels(srv, layout)) == 1; got != c.want {
+				t.Fatalf("postable = %v, want %v", got, c.want)
+			}
+		})
+	}
+}
