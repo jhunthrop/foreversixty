@@ -18,8 +18,8 @@ tells us about you — is ever sold or gated behind a subscription.
 
 ## Billing and auto-renewal
 
-Premium is $4/month or $40/year; the guild plan is $15/month or $150/year and covers every
-member. A subscription renews automatically at the end of each billing period until you
+Premium is $6 a month or $50 a year; Guild is $15 a month or $150 a year; Raid guild is $25 a
+month or $250 a year. Founder prices apply until 6 January 2027, as stated on the pricing page. A subscription renews automatically at the end of each billing period until you
 cancel. Stripe processes every payment; we never see or store your card.
 
 ## Cancelling

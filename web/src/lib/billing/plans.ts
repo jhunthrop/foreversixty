@@ -5,6 +5,11 @@
 export type PlanKey = 'premium' | 'guild' | 'raid_guild';
 export type Interval = 'monthly' | 'yearly';
 
+/** Display order: yearly first. */
+export const INTERVALS: readonly Interval[] = ['yearly', 'monthly'];
+/** Display order of the plan cards. */
+export const PLAN_ORDER: readonly PlanKey[] = ['premium', 'guild', 'raid_guild'];
+
 export interface Plan {
   key: PlanKey;
   name: 'Premium' | 'Guild' | 'Raid guild';

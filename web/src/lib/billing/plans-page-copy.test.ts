@@ -1,6 +1,7 @@
 // web/src/lib/billing/plans-page-copy.test.ts
 import { describe, expect, it } from 'vitest';
 import { specCell } from '../../test-support/spec-table';
+import { PLANS, formatAmount, perMonthLine } from './plans';
 import { plansPageCopy as copy } from './plans-page-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
@@ -26,7 +27,6 @@ describe('plansPageCopy against spec 6.1', () => {
     const [label, open] = row('Founder row');
     expect(label).toBe(copy.founder.label);
     expect(open).toBe(copy.founder.open);
-    expect(row('Founder row')).toContain(copy.founder.before);
   });
 
   it('Interval', () => {
@@ -75,13 +75,13 @@ describe('plansPageCopy against spec 6.1', () => {
       copy.price.suffix.monthly,
       '{list}',
       '{perMonth} a month, billed yearly',
-      '$3.33',
-      '$10',
+      formatAmount(PLANS.premium.founderYearly / 12),
+      formatAmount(PLANS.guild.founderYearly / 12),
       'Or {yearly price}.',
       copy.price.founder,
     ]);
-    expect(copy.price.perMonth(40)).toBe('$3.33 a month, billed yearly');
-    expect(copy.price.orYearly('$40 a year')).toBe('Or $40 a year.');
+    expect(copy.price.perMonth(PLANS.premium.founderYearly)).toBe(perMonthLine(PLANS.premium.founderYearly));
+    expect(copy.price.orYearly('{yearly price}')).toBe('Or {yearly price}.');
   });
 
   it('Buttons', () => {

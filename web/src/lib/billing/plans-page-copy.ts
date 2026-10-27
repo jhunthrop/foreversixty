@@ -2,8 +2,7 @@
 // Every visible string on /premium except the checkout chooser (billing/copy.ts), verbatim from
 // design/specs/2026-10-27-launch-pricing.md section 6.1. No exclamation marks, no urgency. Price
 // text is built from ./plans, never written here.
-import { GUILD_TRIAL_DAYS } from './plans';
-import { formatAmount, perMonthLine, type Interval } from './plans';
+import { GUILD_TIER_MEMBER_LIMIT, GUILD_TRIAL_DAYS, perMonthLine, type Interval } from './plans';
 
 export interface PlanRule {
   term: string;
@@ -27,7 +26,6 @@ export const plansPageCopy = {
   founder: {
     label: 'Founder',
     open: 'Founder prices until 6 January. Buy by then and the price stays for as long as you stay subscribed.',
-    before: 'Founder prices from 4 November until 6 January.',
   },
   interval: {
     groupLabel: 'Billing interval',
@@ -70,9 +68,9 @@ export const plansPageCopy = {
   },
   guild: {
     name: 'Guild',
-    audience: 'For a guild of up to 25',
+    audience: `For a guild of up to ${GUILD_TIER_MEMBER_LIMIT}`,
     features: [
-      'Up to 25 verified members',
+      `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
       'Raids and sign-ups, on the site and in Discord',
       'Attendance and the raid-night report',
       "The guild's Discord channel and bot",
@@ -92,7 +90,6 @@ export const plansPageCopy = {
   },
   price: {
     suffix: { yearly: ' /year', monthly: ' /month' } as Record<Interval, string>,
-    struck: (listUsd: number): string => formatAmount(listUsd),
     perMonth: (yearlyUsd: number): string => perMonthLine(yearlyUsd),
     orYearly: (yearlyPrice: string): string => `Or ${yearlyPrice}.`,
     founder: 'Founder price, kept while you stay subscribed.',
@@ -108,8 +105,7 @@ export const plansPageCopy = {
   rules: [
     {
       term: 'Size',
-      sentence:
-        'Guild counts verified members each day, the leader included. Above 25 the officer is told before renewal and offered Raid guild. Nothing switches off mid-plan.',
+      sentence: `Guild counts verified members each day, the leader included. Above ${GUILD_TIER_MEMBER_LIMIT} the officer is told before renewal and offered Raid guild. Nothing switches off mid-plan.`,
     },
     {
       term: 'Seats',
