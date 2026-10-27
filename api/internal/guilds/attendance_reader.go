@@ -48,6 +48,8 @@ func (s *Store) attendanceSource(ctx context.Context, guildID int64) (string, er
 
 // raidAttendance is, per key in keys, the raids it attended over the raids it counted a night
 // for, within the guild's last window logged raids. A key with no night is absent from the map.
+// An alt a signed main came as (came_as_key) earns no night of its own on that raid: one
+// appearance counts once, on the main.
 func (s *Store) raidAttendance(ctx context.Context, guildID int64, keys []string, window int) (map[string]Attendance, error) {
 	out := map[string]Attendance{}
 	if len(keys) == 0 {
@@ -61,6 +63,8 @@ func (s *Store) raidAttendance(ctx context.Context, guildID int64, keys []string
 		where a.raid_id in (`+loggedRaids+`)
 		  and a.character_key = any($3) and not a.excused
 		  and (a.signed in ('in', 'late') or a.outcome in ('present', 'late'))
+		  and not exists (select 1 from guild_raid_attendance m
+		                  where m.raid_id = a.raid_id and m.came_as_key = a.character_key)
 		group by a.character_key`, guildID, window, keys)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: raid attendance: %w", err)
