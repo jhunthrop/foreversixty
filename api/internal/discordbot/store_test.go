@@ -29,7 +29,7 @@ func testStore(t *testing.T) *Store {
 		t.Fatal(err)
 	}
 	t.Cleanup(pool.Close)
-	if _, err := pool.Exec(context.Background(), `truncate users, guilds cascade`); err != nil {
+	if _, err := pool.Exec(context.Background(), `truncate users, guilds, reports, fight_metrics cascade`); err != nil {
 		t.Fatal(err)
 	}
 	return &Store{Pool: pool}

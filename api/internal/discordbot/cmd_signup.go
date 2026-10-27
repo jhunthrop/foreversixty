@@ -57,7 +57,7 @@ func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) 
 // memberGate answers an account with no verified character in the guild with the member
 // sentences (R1: nothing of the calendar before that); member is true otherwise.
 func (s *Service) memberGate(ctx context.Context, a signupAsk) (Reply, bool, error) {
-	cands, err := s.signupCandidates(ctx, a.GuildID, a.UserID)
+	cands, err := s.freshCandidates(ctx, a.GuildID, a.UserID)
 	if err != nil {
 		return Reply{}, false, err
 	}

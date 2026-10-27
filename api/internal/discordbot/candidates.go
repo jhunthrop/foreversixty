@@ -9,9 +9,9 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
-// candidatesTTL is how long an account's candidates are reused. Each read scans the guild's
-// roster, and autocomplete asks on every keystroke; a character approved meanwhile shows
-// within this window. SignUp checks the character itself, so a stale list never writes.
+// candidatesTTL is how long autocomplete reuses an account's candidates: each read scans the
+// guild's roster, and autocomplete asks on every keystroke. Presses, picks and /signup read
+// fresh (freshCandidates), so a just-approved character is never answered as waiting.
 const candidatesTTL = 30 * time.Second
 
 // candidateSweepAt is the cache size past which a put first drops expired entries.
@@ -56,16 +56,26 @@ func (c *candidateCache) put(k candidateKey, cands []guilds.SignupCandidate, now
 	c.by[k] = candidateEntry{cands: cands, until: now.Add(candidatesTTL)}
 }
 
-// signupCandidates is the account's characters in the guild, read through the cache.
-func (s *Service) signupCandidates(ctx context.Context, guildID, userID int64) ([]guilds.SignupCandidate, error) {
+// cachedCandidates is the account's characters in the guild, read through the cache
+// (autocomplete only).
+func (s *Service) cachedCandidates(ctx context.Context, guildID, userID int64) ([]guilds.SignupCandidate, error) {
 	k, now := candidateKey{guildID, userID}, s.now()
 	if cands, ok := s.candidates.get(k, now); ok {
 		return cands, nil
 	}
+	cands, err := s.freshCandidates(ctx, guildID, userID)
+	if err != nil {
+		return nil, err
+	}
+	s.candidates.put(k, cands, now)
+	return cands, nil
+}
+
+// freshCandidates is the account's characters in the guild as they stand now.
+func (s *Service) freshCandidates(ctx context.Context, guildID, userID int64) ([]guilds.SignupCandidate, error) {
 	cands, err := s.d.Guilds.SignupCandidates(ctx, guildID, userID)
 	if err != nil {
 		return nil, fmt.Errorf("discordbot: signup candidates: %w", err)
 	}
-	s.candidates.put(k, cands, now)
 	return cands, nil
 }

@@ -35,7 +35,7 @@ func (s *Service) autocompleteSignup(ctx context.Context, in Interaction) ([]Cho
 	if err != nil || !bound {
 		return []Choice{}, err
 	}
-	cands, err := s.signupCandidates(ctx, guildID, userID)
+	cands, err := s.cachedCandidates(ctx, guildID, userID)
 	if err != nil {
 		return nil, err
 	}

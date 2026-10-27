@@ -144,6 +144,13 @@ func (w *pressWorld) addChar(t *testing.T, guildID, userID int64, key, name stri
 		values ($1, $2, $3, 'member', case when $4 then now() else null end)`, guildID, key, userID, verified); err != nil {
 		t.Fatal(err)
 	}
+	w.recompute(t, guildID, userID)
+}
+
+// recompute re-derives userID's guild membership from its characters, as an approval does.
+func (w *pressWorld) recompute(t *testing.T, guildID, userID int64) {
+	t.Helper()
+	ctx := context.Background()
 	tx, err := w.st.Pool.Begin(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -475,16 +482,14 @@ func (w *pressWorld) forgetCandidates() {
 	w.svc.candidates.by = nil
 }
 
-func TestCandidatesAreCachedPerAccount(t *testing.T) {
+func TestAutocompleteCachesCandidatesPerAccount(t *testing.T) {
 	w := newPressWorld(t)
 	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
-	w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", true)
 	clock := &testClock{t: time.Now()}
 	w.svc.now = clock.now
 	for range 3 {
 		w.suggest(t, pressDiscord, optCharacter, "z")
 	}
-	w.press(t, "in")
 	if w.port.candidateReads != 1 {
 		t.Fatalf("candidate reads = %d, want 1 inside the window", w.port.candidateReads)
 	}
@@ -492,6 +497,17 @@ func TestCandidatesAreCachedPerAccount(t *testing.T) {
 	w.suggest(t, pressDiscord, optCharacter, "")
 	if w.port.candidateReads != 2 {
 		t.Fatalf("candidate reads = %d, want a fresh read after %s", w.port.candidateReads, candidatesTTL)
+	}
+}
+
+func TestAPressReadsCandidatesFresh(t *testing.T) {
+	w := newPressWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", false)
+	w.suggest(t, pressDiscord, optCharacter, "") // caches the pending character
+	w.exec(t, `update guild_characters set verified_at = now() where character_key = $1`, keyZulmara)
+	w.recompute(t, w.gid, w.uid)
+	if rep := w.press(t, "in"); !strings.HasPrefix(rep.Message.Content, "Zulmara is In as DPS") {
+		t.Fatalf("press after approval = %q", rep.Message.Content)
 	}
 }
 
