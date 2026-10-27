@@ -400,7 +400,8 @@ export function buildMockHome(
   withAddonSnapshot = true,
   // Officer tools gate (design/specs/2026-10-25-officer-tools-gate.md §3.1): `officerTools`
   // sets `viewer.officer_tools`; left out, the field is absent, as from an API that predates it.
-  // Launch pricing spec 3.2.8: `raidGuildTools` (default true) sets `viewer.raid_guild_tools`; false is a Guild-tier guild.
+  // Launch pricing spec 3.2.8: `raidGuildTools` (default true) sets `viewer.raid_guild_tools`;
+  // false is opt-in, for a Guild-tier guild, so every other spec keeps live Loot and Readiness.
   // Raids spec 3.4: `nextRaid` sets `next_raid`; left out, the field is absent (none planned).
   options: { officerTools?: boolean; raidGuildTools?: boolean; nextRaid?: NextRaidView } = {},
 ): GuildHome {
