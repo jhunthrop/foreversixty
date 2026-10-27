@@ -3,7 +3,8 @@
 <script lang="ts">
   import type { GuildBillingView } from '../../lib/account/api';
   import { guildSettingsHref } from '../../lib/characters';
-  import { guildPlanLine, settingsWords } from '../../lib/guild/settings-view';
+  import { guildPlanLine } from '../../lib/billing/guild-billing-copy';
+  import { settingsWords } from '../../lib/guild/settings-view';
 
   let {
     plan,
