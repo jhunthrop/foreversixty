@@ -7,6 +7,7 @@
   import type { GuildPlanView, TransferCandidate, TransferView } from '../../../lib/billing/contract';
   import { sendTransfer, withdrawTransfer } from '../../../lib/billing/guild-billing-api';
   import { seatsCopy } from '../../../lib/billing/seats-copy';
+  import { transferErrorLine } from '../../../lib/guild/billing-errors';
   import { BILLING_OUTLINE_BUTTON, BILLING_TEXT_BUTTON } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
@@ -60,8 +61,8 @@
       after();
       await onChanged();
       await refocusAction();
-    } catch {
-      error = copy.failed;
+    } catch (thrown) {
+      error = transferErrorLine(thrown);
     } finally {
       busy = false;
     }
