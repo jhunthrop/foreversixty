@@ -1,0 +1,505 @@
+{
+  "from": "1.60.1.70532",
+  "to": "1.60.1.70630",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        {
+          "id": 1979,
+          "before": {
+            "id": 1979,
+            "name": "Wall of the Dead",
+            "quality": 4,
+            "item_level": 50,
+            "required_level": 45,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 1979,
+            "name": "Wall of the Dead",
+            "quality": 4,
+            "item_level": 50,
+            "required_level": 45,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 269716,
+          "before": {
+            "id": 269716,
+            "name": "Keen Skinning Knife",
+            "quality": 2,
+            "item_level": 19,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 15,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 269716,
+            "name": "Keen Skinning Knife",
+            "quality": 2,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 15,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 269717,
+          "before": {
+            "id": 269717,
+            "name": "Wildgore Greatsword",
+            "quality": 2,
+            "item_level": 19,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 8,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 269717,
+            "name": "Wildgore Greatsword",
+            "quality": 2,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 8,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 269742,
+          "before": {
+            "id": 269742,
+            "name": "Walton's Second-Favorite Gun",
+            "quality": 2,
+            "item_level": 20,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 3,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 269742,
+            "name": "Walton's Second-Favorite Gun",
+            "quality": 2,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 3,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273654,
+          "before": {
+            "id": 273654,
+            "name": "Crystal Thread Cloak",
+            "quality": 2,
+            "item_level": 30,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273654,
+            "name": "Crystal Thread Cloak",
+            "quality": 2,
+            "item_level": 29,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273659,
+          "before": {
+            "id": 273659,
+            "name": "Bloody Parchment",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 30,
+            "class_id": 12,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273659,
+            "name": "Bloody Parchment",
+            "quality": 1,
+            "item_level": 1,
+            "required_level": 1,
+            "class_id": 12,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level"
+          ]
+        },
+        {
+          "id": 276891,
+          "before": {
+            "id": 276891,
+            "name": "Spidersilk Pouch",
+            "quality": 2,
+            "item_level": 30,
+            "required_level": 0,
+            "class_id": 1,
+            "subclass_id": 0,
+            "inventory_type": 18,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 276891,
+            "name": "Spidersilk Pouch",
+            "quality": 2,
+            "item_level": 29,
+            "required_level": 0,
+            "class_id": 1,
+            "subclass_id": 0,
+            "inventory_type": 18,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 276892,
+          "before": {
+            "id": 276892,
+            "name": "Spidersilk Sack",
+            "quality": 2,
+            "item_level": 30,
+            "required_level": 0,
+            "class_id": 1,
+            "subclass_id": 11,
+            "inventory_type": 18,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 276892,
+            "name": "Spidersilk Sack",
+            "quality": 2,
+            "item_level": 29,
+            "required_level": 0,
+            "class_id": 1,
+            "subclass_id": 11,
+            "inventory_type": 18,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 277286,
+          "before": {
+            "id": 277286,
+            "name": "Encroacher's Claim",
+            "quality": 3,
+            "item_level": 23,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 277286,
+            "name": "Encroacher's Claim",
+            "quality": 2,
+            "item_level": 23,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 277288,
+          "before": {
+            "id": 277288,
+            "name": "Pathfinder's Clearway",
+            "quality": 3,
+            "item_level": 23,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 0,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 277288,
+            "name": "Pathfinder's Clearway",
+            "quality": 2,
+            "item_level": 23,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 0,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 277289,
+          "before": {
+            "id": 277289,
+            "name": "Traveler's Shawl",
+            "quality": 3,
+            "item_level": 23,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 277289,
+            "name": "Traveler's Shawl",
+            "quality": 2,
+            "item_level": 23,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [
+        {
+          "id": 1326608,
+          "name": "Wind Bridge"
+        },
+        {
+          "id": 1326850,
+          "name": "(DNT) Add Threat"
+        },
+        {
+          "id": 1326891,
+          "name": "Frigid Power"
+        },
+        {
+          "id": 1326896,
+          "name": "Victory"
+        },
+        {
+          "id": 1326990,
+          "name": "Mind Blast"
+        },
+        {
+          "id": 1327009,
+          "name": "(DNT) Immol'thar Encounter Record Aura"
+        },
+        {
+          "id": 1327341,
+          "name": "Dreamfall"
+        },
+        {
+          "id": 1327368,
+          "name": "Fixate"
+        },
+        {
+          "id": 1327369,
+          "name": "Fixate"
+        }
+      ],
+      "removed": [],
+      "changed": []
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}
