@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T13:20:06Z",
+  "generated_at": "2026-10-27T09:43:46Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -692,8 +692,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.959601891,
-      "verify_run_seconds": 4.6020292640000005,
+      "weights_run_seconds": 4.622513271,
+      "verify_run_seconds": 5.264641859,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1475,8 +1475,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.959601891,
-      "verify_run_seconds": 4.60155594,
+      "weights_run_seconds": 4.622513271,
+      "verify_run_seconds": 5.236773162,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2285,8 +2285,8 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.346735005,
-      "verify_run_seconds": 2.818223989,
+      "weights_run_seconds": 4.928379966,
+      "verify_run_seconds": 3.158241689,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3099,8 +3099,8 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.346735005,
-      "verify_run_seconds": 2.8009690799999998,
+      "weights_run_seconds": 4.928379966,
+      "verify_run_seconds": 3.135957021,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3917,8 +3917,8 @@
         "finger1: Protector's Band",
         "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 4.776231072,
-      "verify_run_seconds": 2.943127305,
+      "weights_run_seconds": 5.383050487,
+      "verify_run_seconds": 3.32340436,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4734,8 +4734,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 4.776231072,
-      "verify_run_seconds": 2.89913887,
+      "weights_run_seconds": 5.383050487,
+      "verify_run_seconds": 3.288318658,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5574,8 +5574,8 @@
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 4.819920339,
-      "verify_run_seconds": 3.849547542,
+      "weights_run_seconds": 5.366605727,
+      "verify_run_seconds": 4.36870861,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6409,8 +6409,8 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 4.819920339,
-      "verify_run_seconds": 3.6106062,
+      "weights_run_seconds": 5.366605727,
+      "verify_run_seconds": 4.034903354,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7302,8 +7302,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.741020625,
-      "verify_run_seconds": 11.125423189,
+      "weights_run_seconds": 5.273959175,
+      "verify_run_seconds": 12.262177529,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8212,8 +8212,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.741020625,
-      "verify_run_seconds": 10.649955055,
+      "weights_run_seconds": 5.273959175,
+      "verify_run_seconds": 11.740178019,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9093,8 +9093,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.597620968,
-      "verify_run_seconds": 10.681908091,
+      "weights_run_seconds": 5.155143988,
+      "verify_run_seconds": 11.82235722,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9991,8 +9991,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.597620968,
-      "verify_run_seconds": 10.220291918,
+      "weights_run_seconds": 5.155143988,
+      "verify_run_seconds": 11.354463385,
       "coverage": {
         "back": {
           "eligible": 391,

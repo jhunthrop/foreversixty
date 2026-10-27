@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T14:37:01Z",
+  "generated_at": "2026-10-27T11:06:56Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -701,8 +701,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 5.700256396,
-      "verify_run_seconds": 21.469865523,
+      "weights_run_seconds": 6.38280386,
+      "verify_run_seconds": 24.108808611,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1002,18 +1002,18 @@
               "dps_delta": -0.175303247
             },
             {
-              "item_id": 277289,
-              "item_name": "Traveler's Shawl",
-              "source_kind": "quest",
-              "source": "Wrongly Blamed, Justly Corrected",
-              "dps_delta": -0.195614704
-            },
-            {
               "item_id": 6378,
               "item_name": "Seer's Cape",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Large Battered Chest",
               "dps_delta": -0.216119372
+            },
+            {
+              "item_id": 4792,
+              "item_name": "Spirit Cloak",
+              "source_kind": "vendor",
+              "source": "Jennabink Powerseam",
+              "dps_delta": -0.256935497
             }
           ],
           "runners_up": [
@@ -1023,9 +1023,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 277289,
-              "source_kind": "quest",
-              "source": "Wrongly Blamed, Justly Corrected"
+              "item_id": 6378,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Large Battered Chest"
             }
           ]
         },
@@ -1491,8 +1491,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 5.700256396,
-      "verify_run_seconds": 19.535576194,
+      "weights_run_seconds": 6.38280386,
+      "verify_run_seconds": 21.872314117,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2346,8 +2346,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 5.683456574,
-      "verify_run_seconds": 20.843870551,
+      "weights_run_seconds": 6.379669688,
+      "verify_run_seconds": 23.357082529,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3204,8 +3204,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 5.683456574,
-      "verify_run_seconds": 19.965863795,
+      "weights_run_seconds": 6.379669688,
+      "verify_run_seconds": 22.447774171,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4064,8 +4064,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 6.607739449,
-      "verify_run_seconds": 28.344701167,
+      "weights_run_seconds": 7.302078348,
+      "verify_run_seconds": 31.268588549,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4933,8 +4933,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Ravager's Shield"
       ],
-      "weights_run_seconds": 6.607739449,
-      "verify_run_seconds": 26.94164496,
+      "weights_run_seconds": 7.302078348,
+      "verify_run_seconds": 29.735183538,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5840,8 +5840,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.650058758,
-      "verify_run_seconds": 45.183074873,
+      "weights_run_seconds": 10.929098432,
+      "verify_run_seconds": 46.864790071,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5894,8 +5894,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 276,
-          "sourced": 215,
+          "eligible": 277,
+          "sourced": 216,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -6750,8 +6750,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.650058758,
-      "verify_run_seconds": 43.775130991,
+      "weights_run_seconds": 10.929098432,
+      "verify_run_seconds": 46.102705186,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6804,8 +6804,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 273,
-          "sourced": 218,
+          "eligible": 274,
+          "sourced": 219,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -7638,8 +7638,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 10.842071482,
-      "verify_run_seconds": 90.238083956,
+      "weights_run_seconds": 11.158884747,
+      "verify_run_seconds": 93.018623357,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7692,8 +7692,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 361,
-          "sourced": 268,
+          "eligible": 362,
+          "sourced": 269,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -8526,8 +8526,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 10.842071482,
-      "verify_run_seconds": 88.509803793,
+      "weights_run_seconds": 11.158884747,
+      "verify_run_seconds": 92.167578994,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -8580,8 +8580,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 360,
-          "sourced": 273,
+          "eligible": 361,
+          "sourced": 274,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -9431,8 +9431,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 8.139698579,
-      "verify_run_seconds": 50.998039217,
+      "weights_run_seconds": 8.242188948,
+      "verify_run_seconds": 54.247367462,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9485,8 +9485,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 361,
-          "sourced": 268,
+          "eligible": 362,
+          "sourced": 269,
           "rare_spawn_skipped": 8
         },
         "ranged": {
@@ -10337,8 +10337,8 @@
         "finger2: Band of Piety",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 8.139698579,
-      "verify_run_seconds": 50.098910736,
+      "weights_run_seconds": 8.242188948,
+      "verify_run_seconds": 53.469745108,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -10391,8 +10391,8 @@
           "rare_spawn_skipped": 5
         },
         "off_hand": {
-          "eligible": 360,
-          "sourced": 273,
+          "eligible": 361,
+          "sourced": 274,
           "rare_spawn_skipped": 8
         },
         "ranged": {

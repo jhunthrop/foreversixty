@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70630",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-26T13:32:22Z",
+  "generated_at": "2026-10-27T09:56:36Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -704,8 +704,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 5.419708238,
-      "verify_run_seconds": 18.977458810999998,
+      "weights_run_seconds": 5.832283853,
+      "verify_run_seconds": 20.525402976,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1001,8 +1001,8 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 4792,
-              "item_name": "Spirit Cloak",
+              "item_id": 4793,
+              "item_name": "Sylvan Cloak",
               "source_kind": "vendor",
               "source": "Jennabink Powerseam",
               "dps_delta": -0.607585469
@@ -1015,17 +1015,17 @@
               "dps_delta": -0.607585469
             },
             {
-              "item_id": 277289,
-              "item_name": "Traveler's Shawl",
-              "source_kind": "quest",
-              "source": "Wrongly Blamed, Justly Corrected",
-              "dps_delta": -3.704669061,
+              "item_id": 4792,
+              "item_name": "Spirit Cloak",
+              "source_kind": "vendor",
+              "source": "Jennabink Powerseam",
+              "dps_delta": -1.324063801,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 4792,
+              "item_id": 4793,
               "source_kind": "vendor",
               "source": "Jennabink Powerseam"
             },
@@ -1499,8 +1499,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 5.419708238,
-      "verify_run_seconds": 17.756546342,
+      "weights_run_seconds": 5.832283853,
+      "verify_run_seconds": 19.286607269,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2366,8 +2366,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.917238032,
-      "verify_run_seconds": 26.361760899,
+      "weights_run_seconds": 8.085844656,
+      "verify_run_seconds": 27.842900385,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3224,8 +3224,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.917238032,
-      "verify_run_seconds": 26.664739475,
+      "weights_run_seconds": 8.085844656,
+      "verify_run_seconds": 28.111103296,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4091,8 +4091,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.664804482,
-      "verify_run_seconds": 29.62677133,
+      "weights_run_seconds": 8.971921385,
+      "verify_run_seconds": 31.068655279,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4959,8 +4959,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 8.664804482,
-      "verify_run_seconds": 31.947545432,
+      "weights_run_seconds": 8.971921385,
+      "verify_run_seconds": 33.734780984,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5856,8 +5856,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 8.770101326,
-      "verify_run_seconds": 31.646855814,
+      "weights_run_seconds": 9.08084821,
+      "verify_run_seconds": 33.13247344,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6752,8 +6752,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 8.770101326,
-      "verify_run_seconds": 30.1212235,
+      "weights_run_seconds": 9.08084821,
+      "verify_run_seconds": 31.605127736,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7658,8 +7658,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 9.124623188,
-      "verify_run_seconds": 64.206714828,
+      "weights_run_seconds": 9.229822031,
+      "verify_run_seconds": 66.87375644,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8565,8 +8565,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 9.124623188,
-      "verify_run_seconds": 61.531955763,
+      "weights_run_seconds": 9.229822031,
+      "verify_run_seconds": 63.72568732,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9476,8 +9476,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 6.639516437,
-      "verify_run_seconds": 60.127424731,
+      "weights_run_seconds": 6.682974847,
+      "verify_run_seconds": 62.344334784,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10387,8 +10387,8 @@
         "finger2: Band of Piety",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 6.639516437,
-      "verify_run_seconds": 58.147092183,
+      "weights_run_seconds": 6.682974847,
+      "verify_run_seconds": 60.163604237,
       "coverage": {
         "back": {
           "eligible": 391,
