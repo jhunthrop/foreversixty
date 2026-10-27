@@ -2,8 +2,8 @@
 <!-- The plan line on an account page guild row: what the guild has, then a link to its settings. -->
 <script lang="ts">
   import type { GuildBillingView } from '../../lib/account/api';
+  import { guildRowPlanLine } from '../../lib/account/plan-line';
   import { guildSettingsHref } from '../../lib/characters';
-  import { guildPlanLine } from '../../lib/billing/guild-billing-copy';
   import { settingsWords } from '../../lib/guild/settings-view';
 
   let {
@@ -15,7 +15,7 @@
 </script>
 
 <p class="text-muted basis-full text-[13px] leading-5" data-testid="account-guild-plan">
-  {guildPlanLine(plan)} ·
+  {guildRowPlanLine(plan)} ·
   <a
     class="text-muted hover:text-strong active:text-strong underline"
     href={guildSettingsHref(region, ruleset, name)}>{settingsWords.guildSettingsLink}</a

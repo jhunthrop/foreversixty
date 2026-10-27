@@ -2,6 +2,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { EntitlementsView, MeCharacter } from '../../lib/account/api';
+import type { AccountPlanLine } from '../../lib/account/plan-line';
 import { mockEntitlements } from '../../test-support/billing-fixtures';
 import AccountPremiumBlock from './AccountPremiumBlock.svelte';
 
@@ -143,5 +144,52 @@ describe('AccountPremiumBlock', () => {
     expect(html).toContain('data-testid="account-premium-block"');
     expect(text(html)).toContain('Server sims Browser lane only');
     expect(text(html)).toContain('Supporter mark Not shown');
+  });
+});
+
+describe('AccountPremiumBlock plan headline', () => {
+  const PLAN: AccountPlanLine = {
+    line: 'Premium · renews 20 Dec 2026 · $6 a month',
+    line2: null,
+    founder: false,
+    manageBilling: true,
+    ended: null,
+  };
+  const renderPlan = (plan: AccountPlanLine, seePlans = false): string =>
+    render(AccountPremiumBlock, { props: { plan, seePlans, notifications: null } }).body;
+
+  it('draws no headline without a plan', () => {
+    expect(renderBlock(mockEntitlements())).not.toContain('account-plan-headline');
+  });
+
+  it('reads the plan line and a Founder pill with a title and a screen-reader tail', () => {
+    const html = renderPlan({ ...PLAN, founder: true });
+    expect(text(html)).toContain('Premium · renews 20 Dec 2026 · $6 a month');
+    expect(html).toContain('pill pill-site');
+    expect(html).toContain('title="Founder price, kept while your plan stays active."');
+    expect(html).toMatch(/class="sr-only"> ?Founder price, kept while your plan stays active\./);
+    expect(renderPlan(PLAN)).not.toContain('account-founder');
+  });
+
+  it('the free state links to the plans', () => {
+    const html = renderPlan({ ...PLAN, line: 'Not on Premium.' }, true);
+    expect(html).toContain('href="/premium"');
+    expect(renderPlan(PLAN)).not.toContain('href="/premium"');
+  });
+
+  it('a seat holder reads who gave it', () => {
+    const html = renderPlan({ ...PLAN, line: 'Premium · a seat from The Last Watch', line2: 'Given by X.' });
+    expect(text(html)).toContain('Given by X.');
+  });
+
+  it('an ended seat links its resubscribe URL', () => {
+    const ended = {
+      text: 'Your seat ended 25 Nov. ',
+      action: 'Come back at $6 a month',
+      href: '/premium/checkout?comeback=9',
+    };
+    const html = renderPlan({ ...PLAN, ended });
+    expect(html).toContain('href="/premium/checkout?comeback=9"');
+    expect(text(html)).toContain('Your seat ended 25 Nov. Come back at $6 a month');
   });
 });

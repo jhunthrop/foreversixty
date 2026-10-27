@@ -25,6 +25,9 @@ export const accountPlanCopy = {
       `Premium · renews ${zonedDayMonthYear(date, zone)} · ${formatCents(amountCents, interval)}`,
     endsThenSeat: (date: string, guild: string, zone?: string): string =>
       `Premium · ends ${zonedDayMonthYear(date, zone)} · then a seat from ${guild}`,
+    ends: (date: string, zone?: string): string => `Premium · ends ${zonedDayMonthYear(date, zone)}`,
+    renewsNoPrice: (date: string, zone?: string): string =>
+      `Premium · renews ${zonedDayMonthYear(date, zone)}`,
     seat: (guild: string): string => `Premium · a seat from ${guild}`,
     givenBy: (name: string): string =>
       `Given by ${name}. It lasts while the guild's plan does; nothing is billed to you.`,
@@ -38,6 +41,7 @@ export const accountPlanCopy = {
       `Your seat from ${guild} ended ${zonedDayMonth(date, zone)}. `,
     action: (amountCents: number, interval: Interval): string =>
       `Come back at ${formatCents(amountCents, interval)}`,
+    actionNoPrice: 'Come back',
   },
   guildRow: {
     plan: `${PLANS.guild.name} plan`,

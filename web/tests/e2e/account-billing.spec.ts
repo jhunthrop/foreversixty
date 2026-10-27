@@ -85,7 +85,7 @@ test('active subscription: shows the renewal date and a working manage-billing b
   });
   await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
   await page.goto('/account');
-  await expect(page.getByTestId('account')).toContainText('Renews');
+  await expect(page.getByTestId('account')).toContainText('renews 1 Dec 2026');
   await page.getByRole('button', { name: 'Manage billing' }).click();
   await page.waitForURL('https://billing.stripe.com/**');
   expect(posted).toEqual({});

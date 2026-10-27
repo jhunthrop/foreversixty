@@ -7,7 +7,9 @@
   import type { EntitlementsView, MeCharacter } from '../../lib/account/api';
   import { mainCharacter } from '../../lib/account/main-character';
   import { premiumRowCopy } from '../../lib/account/notifications-copy';
-  import { premiumBlockCopy } from '../../lib/billing/copy';
+  import type { AccountPlanLine } from '../../lib/account/plan-line';
+  import { accountPlanCopy } from '../../lib/billing/account-plan-copy';
+  import { billingBlockCopy, premiumBlockCopy } from '../../lib/billing/copy';
   import { characterHref } from '../../lib/characters';
 
   const SIM_HREF = '/sim';
@@ -18,12 +20,18 @@
     characters = [],
     mainKey,
     serverRunsThisMonth,
+    plan,
+    seePlans = false,
     notifications = { value: premiumRowCopy.off, linked: false },
   }: {
     entitlements?: EntitlementsView;
     characters?: readonly MeCharacter[];
     mainKey?: string;
     serverRunsThisMonth?: number;
+    /** The headline above the rows: `accountPlanLine(me, now)`. Omitted, the block draws rows only. */
+    plan?: AccountPlanLine;
+    /** The free state links to the plans page. */
+    seePlans?: boolean;
     /**
      * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` hides the
      * row (`premiumRowVisible(me)` is false: the deployment has notifications off); `undefined`
@@ -32,6 +40,7 @@
     notifications?: { value: string; linked: boolean } | null;
   } = $props();
 
+  const founderTail = ` ${accountPlanCopy.founder.title}`;
   const main = $derived(mainCharacter(characters, mainKey));
   const supporterHref = $derived(main === null ? null : characterHref(main.region, main.ruleset, main.name));
 
@@ -88,6 +97,29 @@
   ]);
 </script>
 
+{#if plan !== undefined}
+  <div class="mb-3 flex flex-col gap-1" data-testid="account-plan-headline">
+    <p class="flex flex-wrap items-center gap-x-2 text-[14px]" data-testid="account-billing-row">
+      <span>{plan.line}</span>
+      {#if plan.founder}
+        <span class="pill pill-site" title={accountPlanCopy.founder.title} data-testid="account-founder"
+          >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></span
+        >
+      {/if}
+      {#if seePlans}
+        <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>
+      {/if}
+    </p>
+    {#if plan.line2 !== null}
+      <p class="text-muted text-[13px]" data-testid="account-plan-line2">{plan.line2}</p>
+    {/if}
+    {#if plan.ended !== null}
+      <p class="text-[14px]" data-testid="account-seat-ended">
+        {plan.ended.text}<a class="text-text underline" href={plan.ended.href}>{plan.ended.action}</a>
+      </p>
+    {/if}
+  </div>
+{/if}
 <ul class="m-0 flex list-none flex-col p-0 text-[14px]" data-testid="account-premium-block">
   {#each rows as row (row.key)}
     {@const value = row.live ? row.copy.on : row.copy.off}
