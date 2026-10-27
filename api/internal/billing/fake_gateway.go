@@ -32,6 +32,10 @@ type FakeGateway struct {
 	// NextPreview is PreviewPriceChange's canned answer.
 	NextPreview PriceChangePreview
 
+	// archivedKeys are lookup keys ArchivePrice archived; EnsurePrice treats
+	// them as present, like Stripe does.
+	archivedKeys map[string]bool
+
 	nextCustomerID int
 	nextSessionID  int
 	// Subscriptions is looked up by GetSubscription — tests register a
@@ -50,13 +54,15 @@ type FakeGateway struct {
 	// database has never heard of.
 	ListSubscriptionsResult map[string][]StripeSubscriptionSummary
 
-	Customers           []string // emails passed to CreateCustomer, in order
-	Checkouts           []CheckoutParams
-	Portals             []PortalCall
-	PriceChanges        []PriceChangeCall
-	Archived            []string // lookup keys passed to ArchivePrice, in order
-	EnsuredSpecs        []PriceSpec
-	CanceledAtPeriodEnd []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
+	Customers             []string // emails passed to CreateCustomer, in order
+	Checkouts             []CheckoutParams
+	Portals               []PortalCall
+	PriceChanges          []PriceChangeCall
+	Previews              []PriceChangeCall // PreviewPriceChange calls (PriceID is the target price)
+	DisabledDefaultPortal int               // DisableDefaultPortalSwitching calls
+	Archived              []string          // lookup keys passed to ArchivePrice, in order
+	EnsuredSpecs          []PriceSpec
+	CanceledAtPeriodEnd   []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
 	// GetSubscriptionCalls records the ids passed to GetSubscription, in order.
 	GetSubscriptionCalls []string
 	// OnGetSubscription, when set, runs after each GetSubscription call is
@@ -108,6 +114,7 @@ func (f *FakeGateway) CreateCheckoutSession(_ context.Context, p CheckoutParams)
 type PriceChangeCall struct {
 	SubscriptionID string
 	PriceID        string
+	ProrationDate  time.Time
 }
 
 func (f *FakeGateway) CreatePortalSession(_ context.Context, customerID, returnURL, configurationKey string) (string, error) {
@@ -196,22 +203,23 @@ func (f *FakeGateway) EnsurePrice(_ context.Context, spec PriceSpec) error {
 	if f.Prices == nil {
 		f.Prices = map[string]string{}
 	}
-	if _, ok := f.Prices[spec.LookupKey]; !ok {
+	if _, ok := f.Prices[spec.LookupKey]; !ok && !f.archivedKeys[spec.LookupKey] {
 		f.Prices[spec.LookupKey] = "price_fake_" + spec.LookupKey
 	}
 	return nil
 }
 
-func (f *FakeGateway) PreviewPriceChange(_ context.Context, _, _ string) (PriceChangePreview, error) {
+func (f *FakeGateway) PreviewPriceChange(_ context.Context, subscriptionID, priceID string) (PriceChangePreview, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	if f.Err != nil {
 		return PriceChangePreview{}, f.Err
 	}
+	f.Previews = append(f.Previews, PriceChangeCall{SubscriptionID: subscriptionID, PriceID: priceID})
 	return f.NextPreview, nil
 }
 
-func (f *FakeGateway) ChangePrice(_ context.Context, subscriptionID, priceID string) error {
+func (f *FakeGateway) ChangePrice(_ context.Context, subscriptionID, priceID string, prorationDate time.Time) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	if f.Err != nil {
@@ -220,7 +228,7 @@ func (f *FakeGateway) ChangePrice(_ context.Context, subscriptionID, priceID str
 	if f.ChangePriceErr != nil {
 		return f.ChangePriceErr
 	}
-	f.PriceChanges = append(f.PriceChanges, PriceChangeCall{SubscriptionID: subscriptionID, PriceID: priceID})
+	f.PriceChanges = append(f.PriceChanges, PriceChangeCall{SubscriptionID: subscriptionID, PriceID: priceID, ProrationDate: prorationDate})
 	return nil
 }
 
@@ -231,5 +239,22 @@ func (f *FakeGateway) ArchivePrice(_ context.Context, lookupKey string) error {
 		return f.Err
 	}
 	f.Archived = append(f.Archived, lookupKey)
+	if _, ok := f.Prices[lookupKey]; ok {
+		delete(f.Prices, lookupKey)
+		if f.archivedKeys == nil {
+			f.archivedKeys = map[string]bool{}
+		}
+		f.archivedKeys[lookupKey] = true
+	}
+	return nil
+}
+
+func (f *FakeGateway) DisableDefaultPortalSwitching(_ context.Context) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	f.DisabledDefaultPortal++
 	return nil
 }

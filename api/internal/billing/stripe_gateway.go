@@ -28,15 +28,16 @@ type cachedPrice struct {
 type StripeGateway struct {
 	client *stripe.Client
 
-	mu    sync.Mutex
-	cache map[string]cachedPrice
+	mu          sync.Mutex
+	cache       map[string]cachedPrice
+	portalCache map[string]cachedPrice
 }
 
 // NewStripeGateway builds a Gateway bound to secretKey (test or
 // live — the caller's config.ValidateStripeKeyEnvironment already
 // checked which).
 func NewStripeGateway(secretKey string) *StripeGateway {
-	return &StripeGateway{client: stripe.NewClient(secretKey), cache: map[string]cachedPrice{}}
+	return &StripeGateway{client: stripe.NewClient(secretKey), cache: map[string]cachedPrice{}, portalCache: map[string]cachedPrice{}}
 }
 
 func (g *StripeGateway) CreateCustomer(ctx context.Context, email string) (string, error) {
@@ -184,6 +185,12 @@ func (g *StripeGateway) portalConfigurationID(ctx context.Context, key string) (
 	if key == "" {
 		return "", errors.New("billing: portal configuration key is empty")
 	}
+	g.mu.Lock()
+	if c, ok := g.portalCache[key]; ok && time.Now().Before(c.expiresAt) {
+		g.mu.Unlock()
+		return c.id, nil
+	}
+	g.mu.Unlock()
 	for cfg, err := range g.client.V1BillingPortalConfigurations.List(ctx, &stripe.BillingPortalConfigurationListParams{
 		Active: stripe.Bool(true),
 	}) {
@@ -191,6 +198,9 @@ func (g *StripeGateway) portalConfigurationID(ctx context.Context, key string) (
 			return "", fmt.Errorf("billing: list portal configurations: %w", err)
 		}
 		if cfg.Metadata[portalMetadataKey] == key {
+			g.mu.Lock()
+			g.portalCache[key] = cachedPrice{id: cfg.ID, expiresAt: time.Now().Add(priceCacheTTL)}
+			g.mu.Unlock()
 			return cfg.ID, nil
 		}
 	}
@@ -314,6 +324,19 @@ func subscriptionHasProduct(sub *stripe.Subscription, productID string) bool {
 	return false
 }
 
+// findPrice resolves a lookup key to its price whether active or archived.
+func (g *StripeGateway) findPrice(ctx context.Context, lookupKey string) (*stripe.Price, error) {
+	for price, err := range g.client.V1Prices.List(ctx, &stripe.PriceListParams{
+		LookupKeys: []*string{stripe.String(lookupKey)},
+	}) {
+		if err != nil {
+			return nil, fmt.Errorf("billing: list prices for %s: %w", lookupKey, err)
+		}
+		return price, nil
+	}
+	return nil, ErrPriceNotFound
+}
+
 // EnsurePrice is stripe-setup's price call (Ruling D): retrieve-or-create
 // the product by its fixed id, give it its tax code, then list-or-create
 // the price by its lookup key. Never mutates an existing price's amount.
@@ -321,9 +344,12 @@ func (g *StripeGateway) EnsurePrice(ctx context.Context, spec PriceSpec) error {
 	if err := g.ensureProduct(ctx, spec); err != nil {
 		return err
 	}
-	if _, err := g.PriceIDForLookupKey(ctx, spec.LookupKey); err == nil {
+	// An archived price still owns its lookup key (Stripe keeps keys unique
+	// across archived prices), so it counts as present: recreating it would
+	// fail, or with transfer_lookup_key would start selling it again.
+	if _, err := g.findPrice(ctx, spec.LookupKey); err == nil {
 		return nil
-	} else if err != ErrPriceNotFound {
+	} else if !errors.Is(err, ErrPriceNotFound) {
 		return err
 	}
 	if _, err := g.client.V1Prices.Create(ctx, &stripe.PriceCreateParams{
@@ -357,7 +383,8 @@ func singleItem(sub *stripe.Subscription) (*stripe.SubscriptionItem, error) {
 const priceChangeProration = "always_invoice"
 
 // PreviewPriceChange implements Gateway.PreviewPriceChange with a preview
-// invoice of the item swapped under always_invoice proration.
+// invoice of the item swapped under always_invoice proration, computed at a
+// fixed ProrationDate that ChangePrice then reuses.
 func (g *StripeGateway) PreviewPriceChange(ctx context.Context, subscriptionID, priceID string) (PriceChangePreview, error) {
 	sub, err := g.GetSubscription(ctx, subscriptionID)
 	if err != nil {
@@ -371,6 +398,7 @@ func (g *StripeGateway) PreviewPriceChange(ctx context.Context, subscriptionID, 
 	if err != nil {
 		return PriceChangePreview{}, fmt.Errorf("billing: get price %s: %w", priceID, err)
 	}
+	prorationDate := time.Now().UTC().Truncate(time.Second)
 	inv, err := g.client.V1Invoices.CreatePreview(ctx, &stripe.InvoiceCreatePreviewParams{
 		Subscription: stripe.String(subscriptionID),
 		SubscriptionDetails: &stripe.InvoiceCreatePreviewSubscriptionDetailsParams{
@@ -378,6 +406,7 @@ func (g *StripeGateway) PreviewPriceChange(ctx context.Context, subscriptionID, 
 				{ID: stripe.String(item.ID), Price: stripe.String(priceID)},
 			},
 			ProrationBehavior: stripe.String(priceChangeProration),
+			ProrationDate:     stripe.Int64(prorationDate.Unix()),
 		},
 	})
 	if err != nil {
@@ -387,11 +416,12 @@ func (g *StripeGateway) PreviewPriceChange(ctx context.Context, subscriptionID, 
 		AmountDueCents:  inv.AmountDue,
 		NextAmountCents: price.UnitAmount,
 		PeriodEnd:       time.Unix(item.CurrentPeriodEnd, 0).UTC(),
+		ProrationDate:   prorationDate,
 	}, nil
 }
 
 // ChangePrice implements Gateway.ChangePrice.
-func (g *StripeGateway) ChangePrice(ctx context.Context, subscriptionID, priceID string) error {
+func (g *StripeGateway) ChangePrice(ctx context.Context, subscriptionID, priceID string, prorationDate time.Time) error {
 	sub, err := g.GetSubscription(ctx, subscriptionID)
 	if err != nil {
 		return err
@@ -400,28 +430,66 @@ func (g *StripeGateway) ChangePrice(ctx context.Context, subscriptionID, priceID
 	if err != nil {
 		return err
 	}
-	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, &stripe.SubscriptionUpdateParams{
+	params := &stripe.SubscriptionUpdateParams{
 		Items:             []*stripe.SubscriptionUpdateItemParams{{ID: stripe.String(item.ID), Price: stripe.String(priceID)}},
 		ProrationBehavior: stripe.String(priceChangeProration),
 		PaymentBehavior:   stripe.String("error_if_incomplete"),
-	}); err != nil {
+	}
+	if !prorationDate.IsZero() {
+		params.ProrationDate = stripe.Int64(prorationDate.Unix())
+	}
+	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, params); err != nil {
 		return fmt.Errorf("billing: change price on subscription %s: %w", subscriptionID, err)
 	}
 	return nil
 }
 
 // ArchivePrice implements Gateway.ArchivePrice. An archived price keeps
-// serving its existing subscribers; it only stops being sold.
+// serving its existing subscribers; it only stops being sold. A missing or
+// already archived price is already in the wanted state.
 func (g *StripeGateway) ArchivePrice(ctx context.Context, lookupKey string) error {
-	id, err := g.PriceIDForLookupKey(ctx, lookupKey)
-	if err != nil {
-		return err
+	price, err := g.findPrice(ctx, lookupKey)
+	if errors.Is(err, ErrPriceNotFound) {
+		return nil
 	}
-	if _, err := g.client.V1Prices.Update(ctx, id, &stripe.PriceUpdateParams{Active: stripe.Bool(false)}); err != nil {
+	if err != nil {
+		return fmt.Errorf("billing: archive price %s: %w", lookupKey, err)
+	}
+	if !price.Active {
+		return nil
+	}
+	if _, err := g.client.V1Prices.Update(ctx, price.ID, &stripe.PriceUpdateParams{Active: stripe.Bool(false)}); err != nil {
 		return fmt.Errorf("billing: archive price %s: %w", lookupKey, err)
 	}
 	g.mu.Lock()
 	delete(g.cache, lookupKey)
 	g.mu.Unlock()
+	return nil
+}
+
+// DisableDefaultPortalSwitching implements Gateway.DisableDefaultPortalSwitching.
+// Configurations tagged fs_portal are ours and keep their switching; the
+// untagged default is the legacy one with its Premium and Guild switch.
+func (g *StripeGateway) DisableDefaultPortalSwitching(ctx context.Context) error {
+	for cfg, err := range g.client.V1BillingPortalConfigurations.List(ctx, &stripe.BillingPortalConfigurationListParams{
+		IsDefault: stripe.Bool(true), Active: stripe.Bool(true),
+	}) {
+		if err != nil {
+			return fmt.Errorf("billing: list default portal configuration: %w", err)
+		}
+		if cfg.Metadata[portalMetadataKey] != "" {
+			continue
+		}
+		if cfg.Features == nil || cfg.Features.SubscriptionUpdate == nil || !cfg.Features.SubscriptionUpdate.Enabled {
+			continue
+		}
+		if _, err := g.client.V1BillingPortalConfigurations.Update(ctx, cfg.ID, &stripe.BillingPortalConfigurationUpdateParams{
+			Features: &stripe.BillingPortalConfigurationUpdateFeaturesParams{
+				SubscriptionUpdate: &stripe.BillingPortalConfigurationUpdateFeaturesSubscriptionUpdateParams{Enabled: stripe.Bool(false)},
+			},
+		}); err != nil {
+			return fmt.Errorf("billing: disable switching on default portal configuration %s: %w", cfg.ID, err)
+		}
+	}
 	return nil
 }

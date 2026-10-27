@@ -28,7 +28,7 @@ var stripeIntervals = map[catalog.Interval]string{catalog.Monthly: "month", cata
 // priceSpecs is derived from the catalog, the only place an amount, a
 // lookup key or a product id is written (Ruling D: fixed product ids so
 // this is idempotent with no Search API dependency).
-var priceSpecs = derivePriceSpecs(catalog.Prices)
+var priceSpecs = derivePriceSpecs(catalog.Prices())
 
 func derivePriceSpecs(prices []catalog.Price) []billing.PriceSpec {
 	specs := make([]billing.PriceSpec, 0, len(prices))
@@ -47,10 +47,17 @@ func derivePriceSpecs(prices []catalog.Price) []billing.PriceSpec {
 // switching monthly to yearly): the site's own legal pages, a return to
 // the account page, and the family's two prices under its one product.
 func portalSpecs(publicBaseURL string) []billing.PortalSpec {
-	specs := make([]billing.PortalSpec, 0, len(catalog.PortalFamilies))
-	for _, family := range catalog.PortalFamilies {
+	families := catalog.PortalFamilies()
+	specs := make([]billing.PortalSpec, 0, len(families))
+	for _, family := range families {
 		keys := catalog.FamilyLookupKeys(family)
-		price, _ := catalog.Lookup(keys[0])
+		if len(keys) == 0 {
+			panic("stripe-setup: portal family " + family + " has no lookup keys in the catalog")
+		}
+		price, ok := catalog.Lookup(keys[0])
+		if !ok {
+			panic("stripe-setup: portal family " + family + " lists " + keys[0] + ", which the catalog does not know")
+		}
 		specs = append(specs, billing.PortalSpec{
 			Key:               family,
 			Headline:          "Forever Sixty",
@@ -87,5 +94,9 @@ func runStripeSetup(ctx context.Context, log *slog.Logger) error {
 		}
 		log.Info("stripe-setup", "portal", spec.Key)
 	}
+	if err := gw.DisableDefaultPortalSwitching(ctx); err != nil {
+		return fmt.Errorf("stripe-setup: default portal: %w", err)
+	}
+	log.Info("stripe-setup", "portal", "default switching off")
 	return nil
 }
