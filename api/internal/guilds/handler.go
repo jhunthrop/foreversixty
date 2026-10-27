@@ -55,6 +55,8 @@ type Service struct {
 	// Discord is the guild's raid channel (notify); nil leaves settings.discord out and
 	// every raid view's discord block false.
 	Discord DiscordChannels
+	// Bot is the Forever Sixty bot; nil leaves bot_available false.
+	Bot DiscordBot
 	// RaidEvents posts the raid embeds to the guild's channel; nil posts nothing.
 	RaidEvents RaidEvents
 	// PublicBaseURL is the site origin the raid posts link to.

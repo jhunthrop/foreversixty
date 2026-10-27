@@ -34,5 +34,6 @@ func newDiscordBot(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, acco
 		Guilds: deps.Guilds, Notify: deps.Notify, Log: log,
 	})
 	accounts.DiscordLinks = bot
+	deps.Guilds.Bot = bot
 	return bot
 }

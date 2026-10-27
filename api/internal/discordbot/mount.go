@@ -10,4 +10,5 @@ const InteractionsPath = "/v1/discord/interactions"
 func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST "+InteractionsPath, s.serveInteraction)
 	s.mountLink(mux, trustedProxyHops)
+	s.mountInstall(mux)
 }

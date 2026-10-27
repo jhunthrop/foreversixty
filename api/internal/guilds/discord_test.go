@@ -76,7 +76,8 @@ func TestSettingsCarryTheDiscordChannelForAnOfficer(t *testing.T) {
 	w.h.svc.Discord = fakeDiscord{enabled: true}
 	raw, _ = w.settingsDiscordAs(t)
 	if string(raw) != `{"available":true,"connected":false,"channel_id":null,"discord_guild_id":null,`+
-		`"disabled_reason":null,"last_error":null,"failures":0,"post_default":false}` {
+		`"disabled_reason":null,"last_error":null,"failures":0,"post_default":false,`+
+		`"bot_available":false,"bot":null,"bot_refusal":null}` {
 		t.Fatalf("not connected = %s", raw)
 	}
 }
