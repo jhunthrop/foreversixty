@@ -95,6 +95,7 @@
   );
   let changing = $state(false);
   let focusSelect = $state(false);
+  let pickerSaving = $state(false);
   let botReturnDone = false;
   let botSettling = $state(
     typeof window !== 'undefined' &&
@@ -285,7 +286,9 @@
   function cancelChange(): void {
     changing = false;
     focusSelect = false;
-    focus.request(view.bot?.channel_unusable != null ? BOT_FOCUS.choose : BOT_FOCUS.change);
+    focus.request(
+      view.state === 'picker' && view.bot.channel_unusable !== null ? BOT_FOCUS.choose : BOT_FOCUS.change,
+    );
   }
 
   function saved(next: GuildSettingsDiscord): void {
@@ -297,7 +300,7 @@
   }
 
   function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape' || busy !== null) return;
+    if (event.key !== 'Escape' || busy !== null || pickerSaving) return;
     if (confirming) cancel();
     else if (changing && view.state === 'picker') cancelChange();
   }
@@ -338,6 +341,7 @@
         {installHref}
         {changing}
         {focusSelect}
+        onSaving={(saving) => (pickerSaving = saving)}
         {readOnly}
         {frozen}
         {gateId}

@@ -135,6 +135,10 @@ describe('state 2b, the channel cannot be used', () => {
     );
   });
 
+  it('has no channel to open when channel_id is null (the picker draws instead)', () => {
+    expect(guildBotState(on({ ...BOT, channel_id: null, channel_unusable: NO_SEND }), false)).toBe('picker');
+  });
+
   it('joins permissions with commas and and', () => {
     expect(joinPermissions(['Send Messages'])).toBe('Send Messages');
     expect(joinPermissions(['Send Messages', 'Embed Links'])).toBe('Send Messages and Embed Links');

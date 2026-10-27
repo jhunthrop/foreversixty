@@ -17,6 +17,10 @@
     detail?: string | null;
     children?: Snippet;
   } = $props();
+
+  const at = $derived(strong === null ? -1 : title.indexOf(strong));
+  const head = $derived(at < 0 ? title : title.slice(0, at));
+  const tail = $derived(strong === null || at < 0 ? '' : title.slice(at + strong.length));
 </script>
 
 <div
@@ -24,9 +28,7 @@
   data-testid="discord-notice"
 >
   <p class="text-strong text-[14px]">
-    {#if strong !== null && title.includes(strong)}{title.slice(0, title.indexOf(strong))}<span
-        class="font-semibold">{strong}</span
-      >{title.slice(title.indexOf(strong) + strong.length)}{:else}{title}{/if}
+    {head}{#if at >= 0}<span class="font-semibold">{strong}</span>{tail}{/if}
   </p>
   {#if detail !== null}<p class="text-muted text-[13px]">{detail}</p>{/if}
   {@render children?.()}

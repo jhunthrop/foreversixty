@@ -43,6 +43,7 @@
     removing,
     focusSelect,
     unusable,
+    onSaving,
     onStatus,
     onSaved,
     onCancel,
@@ -66,6 +67,7 @@
     focusSelect: boolean;
     /** Why the saved channel cannot be used, when the picker was opened from that notice. */
     unusable: GuildChannelUnusable | null;
+    onSaving: (saving: boolean) => void;
     onStatus: (status: DiscordStatus | null, focusLine?: boolean) => void;
     onSaved: (discord: GuildSettingsDiscord) => void;
     onCancel: () => void;
@@ -79,6 +81,8 @@
   let selected = $state('');
   let emptyPress = $state(false);
   let saving = $state(false);
+
+  $effect(() => onSaving(saving));
 
   const groups = $derived(
     groupChannels(channels).map((group) => ({

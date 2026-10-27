@@ -392,3 +392,72 @@ Discord captures. The mock boards are the reference until real captures exist. R
 | D12 | G1's still-uncaptured rows 17 (posted, moved, cancelled) and 24 (test embed), through the bot | x | x |
 
 A Discord capture that differs from its mock frame in words, colour, button style or order is a defect against this spec; a difference in Discord's own chrome (font rendering, spacing, the APP tag) is not.
+
+## Amendment 2026-10-27: channel can't be used
+
+Source: the controller's ruling of 2026-10-27. The bot is still in the server, but it cannot post in the chosen raid channel: the channel was deleted, or the bot lacks View Channel, Send Messages or Embed Links there. Raid posts fall back to the guild's webhook when one is set; otherwise nothing posts. Saving a channel, the same one or another, clears the state. Reference: this is state 3's notice, one step milder, because the bot is still here and the fix is one pick.
+
+### A.1 Contract
+
+`settings.discord.bot` gains `channel_unusable`: null, or an object `{ reason, missing }`. `reason` is `deleted` or `permissions`. `missing` is the list of lacking permissions, a subset of `View Channel`, `Send Messages`, `Embed Links`, in that order; empty when `deleted`. `channel_name` is null when the API never knew the name. `PUT …/discord/bot/channel` clears `channel_unusable` when it answers 200. The API sets it when a post answers Discord 404 (unknown channel) or 403 on the channel (not on the server, which is state 3).
+
+### A.2 Where it sits
+
+A new row in the §3.1 precedence table, between rows 2 and 3 in weight, evaluated after `removed_in_discord`:
+
+| # | State | When |
+|---|---|---|
+| 1 | Picker | unchanged |
+| 3 | Removed in Discord | unchanged, wins over everything below |
+| 2b | Channel can't be used | `bot.channel_unusable` non-null, `removed_in_discord` false, the picker not open |
+| 2 | Installed | unchanged |
+
+State 2b, channel can't be used. Replaces state 2's body; the destination line, the linked-members line and the three action buttons are not drawn (a destination that does not work is not a destination). Top to bottom:
+1. h2 `Discord`.
+2. A notice with a 2 px `--gold` left bar, state 3's grammar exactly (same padding, same bar, no `--wipe`: nothing is lost, the officer has one step to take). Line one, 14 px `--strong`. Line two, 13 px `--muted`. In the permissions case `#raid-signups` is `--strong` 600 within line one.
+3. 12 px gap, the actions: `Choose a channel`, `PRIMARY_BUTTON_FIXED px-4`, the section's one fill. In the permissions case, 12 px to its right, wrapping, `Open in Discord`: 13 px `--text` underlined link-button, 44 px hit area, opens the channel on discord.com in a new tab with `rel="noopener"`. In the deleted case there is no secondary action: the channel does not exist.
+4. The status line (reserved 21 px).
+5. When a webhook is connected, nothing more is drawn; its controls stay hidden as in state 2.
+
+Primary action. `Choose a channel` opens the picker (state 1, `Change channel` variant): the channel list is fetched, the select takes focus, nothing is preselected when `deleted`, and the current channel is preselected when `permissions` and it is still in the list (it is not, unless the officer fixed permissions meanwhile). The cancel link reads `Cancel` and returns to state 2b with focus on `Choose a channel`. Escape acts as `Cancel`. A successful save shows state 2 with `Saved. Raids post here with sign-up buttons.` and focus on `Send test message`, as state 1 does.
+
+Read-only and frozen follow §3.1: `Choose a channel` is native `disabled` when read-only or frozen; `Open in Discord` stays live; the gate sentence sits under the h2 as in the other states.
+
+Caps: 240 at 1440, 320 at 360 (state 3's 230 and 300 plus the extra line of the permissions copy and the secondary link). The picker keeps its own caps (330 and 400).
+
+States of the new controls: `Choose a channel` has the add button's row in §4.1 (hover `--gold-hover` fill, gold focus-visible outline with 2 px offset, active `#cfa64a`, disabled `opacity-50`; loading is the picker's `Loading channels…`). `Open in Discord` has the existing `Open in Discord` row. Touch and keyboard parity: 44 px tall at every width; tab order `Choose a channel`, `Open in Discord`.
+
+### A.3 Copy, verbatim
+
+Where the channel name is known, `{channel}` is `#raid-signups` (escaped, at most 60 characters, then `…`). `{Server}` is the server name. `{list}` joins the missing permissions with commas and `and` (`Send Messages`; `Send Messages and Embed Links`; `View Channel, Send Messages and Embed Links`).
+
+| Case | Line one (14 px `--strong`) | Line two (13 px `--muted`) |
+|---|---|---|
+| Deleted, name known | `The raid channel {channel} was deleted in {Server}.` | `The bot cannot post there. Choose another channel.` + fallback |
+| Deleted, name unknown | `The raid channel in {Server} was deleted.` | `The bot cannot post there. Choose another channel.` + fallback |
+| Permissions | `The bot cannot post in {channel}.` | `In Discord, give the Forever Sixty role {list} in that channel, or choose another channel.` + fallback |
+| Permissions, name unknown (controller's ruling, 2026-10-27) | `The bot cannot post in the raid channel.` (no `--strong` run) | As the Permissions row |
+
+Fallback, appended to line two with a leading space: ` Raids post through your webhook channel until then.` when a webhook is connected; ` Raids stop posting to Discord until then.` when not.
+
+Controls: `Choose a channel`; `Open in Discord`. The picker, its placeholder `Choose a channel`, `Cancel` and the saved line are §6.1 verbatim. A 422 `channel_unusable` on save (the same channel still unusable, or another that turned bad) reads the §3.1 picker-race line verbatim: `That channel is gone, or the bot cannot post there. Choose another; the list is fresh.`
+
+Add to §6.1: one row, `Channel can't be used`, holding the table above.
+
+### A.4 What the raid list and the raid page show meanwhile
+
+Nothing new. The removed state adds nothing to the raid list or the raid page, and neither does this one. A raid still posts through the webhook when one is set, and the raid page reads as for a webhook-only guild. When nothing posts, the raid page and list read as for a guild with no Discord destination: no error line, no badge. The notice lives in guild settings only, where the officer fixes it. Members are never shown the state. Existing bot posts keep their buttons and keep trying to edit; an edit that fails is not shown.
+
+### A.5 Acceptance
+
+E2E, added to `guild-discord-bot.spec.ts` (API stubbed), numbered after §9's 1 to 10:
+11. Channel can't be used, deleted: the notice with the name known and with `channel_name` null; line two carries the webhook fallback with a webhook and the stop sentence without; `Choose a channel` is the only fill; there is no `Open in Discord`; the destination line and the three action buttons are absent.
+12. Channel can't be used, permissions: line one names `#raid-signups`; line two lists exactly the stubbed `missing` permissions in the specified order and joining (one, two and three items); `Open in Discord` has the channel URL, `target="_blank"` and `rel="noopener"`.
+13. Precedence: `removed_in_discord` true with `channel_unusable` set draws state 3; `channel_unusable` set with the picker open draws the picker; null draws state 2.
+14. Fix by picking: `Choose a channel` opens the picker with focus on the select and nothing preselected (deleted); `Cancel` and Escape return to the notice with focus on `Choose a channel`; a save shows state 2 with `Saved. Raids post here with sign-up buttons.` and focus on `Send test message`; the stubbed read after save has `channel_unusable` null.
+15. Fix by saving the same channel: with the channel still unusable the 422 shows the picker-race line, focused, and refetches; with it fixed the 200 clears the notice.
+16. Officer-read-only and frozen: `Choose a channel` is `disabled`; `Open in Discord` works.
+17. Axe clean and 44 px controls at 360 in both causes; heights inside the A.2 caps at 360 and 1440; zero layout shift between the notice and state 2 beyond the cap change.
+18. API unit tests: a Discord 404 on post sets `channel_unusable` `deleted`; a 403 on the channel sets `permissions` with the computed `missing`; a 403 on the server sets `removed_in_discord`, not this; a successful `PUT …/channel` clears it; with a webhook the raid posts through it, without one nothing posts and no error reaches the raid page.
+
+Site captures, added to §9: 12. Channel can't be used, deleted with webhook and permissions without webhook, each with the picker open, at 360, 390 and 1440.
