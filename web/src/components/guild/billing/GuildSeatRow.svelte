@@ -63,6 +63,8 @@
       : '',
   );
   const canMove = $derived(seat.holder !== null && kind !== 'offered');
+  /** A lock still running, or an offer pending (the API refuses a move with 409 offer_pending). */
+  const moveDisabled = $derived(locked || kind === 'pending');
   const canWithdraw = $derived(kind === 'offered' || kind === 'pending');
   const waitingName = $derived(seat.holder === null ? '' : (seat.offeree?.name ?? ''));
 
@@ -73,7 +75,7 @@
   }
 
   async function open(mode: 'give' | 'move'): Promise<void> {
-    if (mode === 'move' && locked) return;
+    if (mode === 'move' && moveDisabled) return;
     picking = mode;
     error = '';
     candidates = null;
@@ -197,9 +199,9 @@
         {#if canMove}
           <button
             type="button"
-            class="{BILLING_OUTLINE_BUTTON} {locked ? 'cursor-not-allowed opacity-50' : ''}"
-            aria-disabled={locked}
-            aria-describedby={locked ? (lockLine !== '' ? lockId : noteId) : undefined}
+            class="{BILLING_OUTLINE_BUTTON} {moveDisabled ? 'cursor-not-allowed opacity-50' : ''}"
+            aria-disabled={moveDisabled}
+            aria-describedby={moveDisabled ? (lockLine !== '' ? lockId : noteId) : undefined}
             onclick={() => void open('move')}
             data-seat-action
             data-testid={`guild-seat-${seat.slot}-move`}

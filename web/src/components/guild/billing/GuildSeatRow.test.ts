@@ -40,6 +40,7 @@ describe('GuildSeatRow', () => {
     expect(text(body)).toContain('Waiting');
     expect(text(body)).toContain('Offered 10 Nov. They pay for Premium, so they accept it first.');
     expect(body).toContain('guild-seat-1-move');
+    expect(body).toContain('aria-disabled="true"');
     expect(body).toContain('guild-seat-1-withdraw');
     expect(body).not.toContain('guild-seat-1-give');
   });

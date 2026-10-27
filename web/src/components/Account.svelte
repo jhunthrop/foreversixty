@@ -155,6 +155,7 @@
     answeredOffer = me?.seat_offer ?? answeredOffer;
     session.refresh();
   };
+  const shownOffer = $derived(answeredOffer ?? me?.seat_offer ?? null);
   const planLine = $derived(me === null ? undefined : accountPlanLine(me, new Date(), viewerZone()));
   const isSupporter = $derived(me?.entitlements?.supporter_mark === true);
   const signedInMethod = $derived(
@@ -929,12 +930,8 @@
               {/if}
               <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
                 <div class="flex flex-col gap-3">
-                  {#if answeredOffer ?? me?.seat_offer}
-                    <AccountSeatOffer
-                      offer={(answeredOffer ?? me?.seat_offer)!}
-                      zone={viewerZone()}
-                      onAnswered={onOfferAnswered}
-                    />
+                  {#if shownOffer !== null}
+                    <AccountSeatOffer offer={shownOffer} zone={viewerZone()} onAnswered={onOfferAnswered} />
                   {/if}
                   {#if billing?.status === 'past_due'}
                     <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>

@@ -445,8 +445,8 @@ Chip-in is deferred and is not in this plan.
     - `transfer_candidates` lists verified officers other than the subscriber, filled for the subscriber only.
     - `TransferView{to_name, to_you, from_name, at, state, starts_at, amount_cents, interval, founder}`.
     - `founder` and `interval` come from `catalog.Lookup(price_lookup_key)`.
-  - **`GET /v1/guilds/{id}/billing/upgrade-preview`.** Payers only. Answers `{amount_due_cents, next_amount_cents, interval, renews_at}`. Only a Guild-tier Stripe row can upgrade; anything else answers 409 `not_upgradable`.
-  - **`POST /v1/guilds/{id}/billing/upgrade`.** Payers only.
+  - **`GET /v1/guilds/{id}/billing/upgrade-preview`.** Payers only. Answers `{amount_due_cents, next_amount_cents, interval, renews_at, proration_date}`. Only a Guild-tier Stripe row can upgrade; anything else answers 409 `not_upgradable`.
+  - **`POST /v1/guilds/{id}/billing/upgrade`.** Payers only. The body carries the preview's `proration_date`, which apply requires, so the charge matches the amount shown.
     - Calls `ChangePrice` to `catalog.UpgradeLookupKey(row.PriceLookupKey)`, then `upsertSubscription`, so the tier is `raid_guild` before the response.
     - A gateway error answers 409 `upgrade_failed` and changes nothing.
     - Success answers with the full billing read.

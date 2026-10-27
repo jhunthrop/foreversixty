@@ -249,7 +249,7 @@ export const UPGRADE_PREVIEW: UpgradePreview = {
 export const TRANSFER_OFFERED: TransferView = {
   to_name: 'Mirelle',
   to_you: false,
-  from_name: 'Fixture#1234',
+  from_name: 'Thornwick',
   at: '2026-11-10T00:00:00Z',
   state: 'offered',
   starts_at: '2026-12-01T00:00:00Z',
@@ -277,7 +277,7 @@ export const READ_ONLY_OFFICER_READ: GuildBillingSettings = guildBillingRead({
 export const ME_SEAT_OFFER: MeSeatOffer = {
   guild_id: SETTINGS_GUILD.id,
   guild_name: SETTINGS_GUILD.name,
-  from_name: 'Fixture#1234',
+  from_name: 'Thornwick',
   offered_at: '2026-11-10T00:00:00Z',
   own_ends_at: '2026-12-20T00:00:00Z',
   own_amount_cents: 600,

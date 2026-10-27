@@ -30,7 +30,8 @@
   } = $props();
 
   let busy = $state(false);
-  let unavailable = $state(false);
+  /** `retry`: Stripe or the network failed, Try again may work. `refused`: a 403/404 never will. */
+  let failure = $state<'retry' | 'refused' | null>(null);
 
   const planText = $derived.by(() => {
     if (lineState.kind === 'grant' || lineState.kind === 'none') return guildPlanLine(plan);
@@ -45,15 +46,19 @@
   });
   const manageable = $derived(payer && lineState.kind !== 'lapsed' && canManageBilling(plan));
 
+  function isRetryable(thrown: unknown): boolean {
+    return !(thrown instanceof BillingApiError) || thrown.status === 0 || thrown.status >= 500;
+  }
+
   async function manage(): Promise<void> {
     busy = true;
-    unavailable = false;
+    failure = null;
     try {
       const result = await openPortal(guildId);
       window.location.assign(result.portal_url);
     } catch (thrown) {
       // Retry helps for Stripe being down or the network, not for a refusal (403, 404).
-      unavailable = !(thrown instanceof BillingApiError) || thrown.status === 0 || thrown.status >= 500;
+      failure = isRetryable(thrown) ? 'retry' : 'refused';
     } finally {
       busy = false;
     }
@@ -75,7 +80,7 @@
     {#if payer && plan.status === 'past_due'}
       <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
     {/if}
-    {#if unavailable}
+    {#if failure !== null}
       <p class="text-[14px]" role="alert" data-testid="guild-billing-unavailable">
         {settingsWords.billingUnavailable}
       </p>
@@ -90,9 +95,9 @@
           disabled={busy}
           aria-busy={busy}
           onclick={() => void manage()}
-          data-testid={unavailable ? 'guild-billing-retry' : 'guild-manage-billing'}
+          data-testid={failure === 'retry' ? 'guild-billing-retry' : 'guild-manage-billing'}
         >
-          {unavailable ? settingsWords.tryAgain : billingBlockCopy.manageBilling}
+          {failure === 'retry' ? settingsWords.tryAgain : billingBlockCopy.manageBilling}
         </button>
       {/if}
       {#if payer && showMove}

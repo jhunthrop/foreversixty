@@ -29,6 +29,11 @@ describe('seat-view', () => {
     expect(givenCount([heldSeat(1), emptySeat(2), offeredSeat(3)])).toBe(2);
   });
 
+  it('counts an empty seat that carries an offeree', () => {
+    const offeree = { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' } as const;
+    expect(givenCount([emptySeat(1, { offeree }), emptySeat(2)])).toBe(1);
+  });
+
   it('locks while movable_at is ahead and frees on or after it', () => {
     expect(isSeatLocked(heldSeat(), NOW)).toBe(true);
     expect(isSeatLocked(heldSeat(1, { movable_at: '2026-11-20T12:00:00Z' }), NOW)).toBe(false);

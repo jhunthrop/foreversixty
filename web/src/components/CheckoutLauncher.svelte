@@ -26,10 +26,14 @@
   import { checkoutCopy } from '../lib/billing/copy';
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { isGuildPlan, parseCheckoutParams, type CheckoutParams } from '../lib/billing/checkout-params';
+  import {
+    billableGuilds,
+    isGuildPlan,
+    parseCheckoutParams,
+    type CheckoutParams,
+  } from '../lib/billing/checkout-params';
   import { fetchGuildHome } from '../lib/guild/api';
   import { guildMarkSrc } from '../lib/guild/mark';
-  import { billableGuilds } from '../lib/billing/checkout-params';
   import CheckoutGuildChooser from './checkout/CheckoutGuildChooser.svelte';
 
   const INVALID_LINK_MESSAGE = 'Something is wrong with that link. Start again from the premium page.';

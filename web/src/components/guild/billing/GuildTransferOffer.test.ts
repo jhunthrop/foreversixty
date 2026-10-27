@@ -14,7 +14,7 @@ describe('GuildTransferOffer', () => {
         onChanged: () => Promise.resolve(),
       },
     }).body;
-    expect(text(body)).toContain('Fixture#1234 offers you the guild plan.');
+    expect(text(body)).toContain('Thornwick offers you the guild plan.');
     expect(text(body)).toContain('billed from 1 Dec 2026');
     expect(text(body)).toContain('Nothing is charged before then.');
     expect(text(body)).toContain('Take over the plan');

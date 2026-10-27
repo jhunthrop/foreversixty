@@ -14,9 +14,10 @@ export function seatRowKind(seat: SeatView): SeatRowKind {
   return seat.state;
 }
 
-/** Seats that name someone: held, offered or accepted. */
+/** Seats that name someone: held, offered or accepted, or an empty one with an offeree (the API
+ *  keeps state `offered` for a seat given to a payer; the offeree check also covers a bare one). */
 export function givenCount(seats: readonly SeatView[]): number {
-  return seats.filter((seat) => seat.state !== 'empty').length;
+  return seats.filter((seat) => seat.state !== 'empty' || seat.offeree !== null).length;
 }
 
 export function isSeatLocked(seat: SeatView, now: Date): boolean {

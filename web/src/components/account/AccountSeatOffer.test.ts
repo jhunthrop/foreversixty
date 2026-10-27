@@ -17,7 +17,7 @@ describe('AccountSeatOffer', () => {
   it('names the guild, the sender and what happens to their own subscription', () => {
     const out = text(body);
     expect(out).toContain('The Last Watch offers you a Premium seat.');
-    expect(out).toContain('From Fixture#1234, 10 Nov.');
+    expect(out).toContain('From Thornwick, 10 Nov.');
     expect(out).toContain('your own Premium stops renewing and ends 20 Dec 2026, and the seat starts then.');
     expect(out).toContain('come back at $6 a month');
   });

@@ -18,6 +18,7 @@ import {
   approveAllRoster,
   approveCharacter,
   awardLoot,
+  clearCachedBotRefusal,
   claimGuild,
   confirmClaim,
   contestClaim,
@@ -227,5 +228,36 @@ describe('the settings read on window focus', () => {
     off();
     window.dispatchEvent(new Event('focus'));
     expect(upstream).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('the settings read after a bot install return', () => {
+  it('tells the caller when the fresh read fails, and keeps the cached answer', async () => {
+    setQueryData(`${API}/v1/guilds/7/settings`, { plan: null });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope({ code: 'boom', message: 'x' }, 500)),
+    );
+    const onData = vi.fn();
+    const onError = vi.fn();
+
+    refetchGuildSettings(7, onData, API, onError);
+    await vi.waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
+    expect(onData).not.toHaveBeenCalled();
+  });
+
+  it('drops bot_refusal from the cached read once shown, so a reload cannot draw it again', async () => {
+    const discord = { available: true, connected: false, bot_available: true, bot: null };
+    setQueryData(`${API}/v1/guilds/7/settings`, {
+      plan: 'guild',
+      discord: { ...discord, bot_refusal: { guild_name: 'Olympus' } },
+    });
+    const upstream = vi.fn<GlobalFetch>(async () => envelope({}));
+    vi.stubGlobal('fetch', upstream);
+
+    await clearCachedBotRefusal(7, API);
+
+    const settings = await fetchGuildSettings(7, API);
+    expect(settings.discord?.bot_refusal).toBeNull();
   });
 });
