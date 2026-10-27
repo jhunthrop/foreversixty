@@ -27,10 +27,11 @@ const channelSaveSQL = `update guild_discord_installs set channel_id = $2, chann
 	where guild_id = $1`
 
 // repointSQL moves the posts of raids that have not ended to the new channel as fresh posts:
-// their old message ids belong to the old channel. A row a drainer holds loses its lease, so
-// that drainer's FinishEdit or FailEdit no longer lands.
+// their old message ids belong to the old channel. moved_from stays: it belongs to the raid,
+// not the message. A row a drainer holds loses its lease, so that drainer's guarded writes no
+// longer land.
 const repointSQL = `update guild_raid_discord_posts p set channel_id = $2, message_id = null, gone = false,
-	moved_from = null, dirty_seq = p.dirty_seq + 1, dirty_at = now(), edited_at = null, wake_at = null,
+	dirty_seq = p.dirty_seq + 1, dirty_at = now(), edited_at = null, wake_at = null,
 	attempts = 0, next_attempt_at = now(), lease_until = null, last_error = null, created_at = now()
 	from guild_raids r
 	where r.id = p.raid_id and p.guild_id = $1 and p.channel_id <> $2

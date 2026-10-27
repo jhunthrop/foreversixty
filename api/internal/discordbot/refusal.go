@@ -6,7 +6,13 @@ import (
 	"fmt"
 )
 
-// The permissions a raid channel needs, by name and in the order settings lists them.
+// The permissions a raid channel needs, by name and in the order settings lists them. A post
+// is a create (Send Messages, Embed Links for the embed) and edits of the bot's own message,
+// which Discord gates on nothing more; View Channel underlies both. Read Message History is
+// not needed: the bot never replies to or reads a message.
+// postPermissions is channelNeeds as one set: the channel picker's gate.
+var postPermissions = PermViewChannel | PermSendMessages | PermEmbedLinks
+
 var channelNeeds = []struct {
 	Perm Perm
 	Name string
@@ -80,5 +86,8 @@ func unusableIn(serverID string, layout ServerLayout, channelID string) (Channel
 		}
 		return ChannelUnusable{Reason: UnusablePermissions, Missing: missing}, true
 	}
+	// Absent means deleted: GET /guilds/{id}/channels answers a bot every channel of the
+	// server, those hidden from it by overwrites included, so a hidden channel is listed (and
+	// judged on its permissions above), never mistaken for a deleted one.
 	return ChannelUnusable{Reason: UnusableDeleted, Missing: []string{}}, true
 }

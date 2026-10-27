@@ -170,7 +170,16 @@ func (w *postWorld) drain(t *testing.T) {
 
 func (w *postWorld) enqueue(t *testing.T, raidID int64) {
 	t.Helper()
-	if err := w.st.EnqueuePost(context.Background(), raidID, w.gid, postChannel); err != nil {
+	if queued, err := w.st.EnqueuePost(context.Background(), raidID, w.gid); err != nil || !queued {
+		t.Fatalf("enqueue = %v, %v", queued, err)
+	}
+}
+
+// enqueueIn writes a post row in channel directly (the store always uses the install's).
+func (w *postWorld) enqueueIn(t *testing.T, raidID int64, channel string) {
+	t.Helper()
+	if _, err := w.st.Pool.Exec(context.Background(), `insert into guild_raid_discord_posts (raid_id, guild_id, channel_id)
+		values ($1, $2, $3)`, raidID, w.gid, channel); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -339,7 +348,8 @@ func TestDrainHonoursDiscordRefusals(t *testing.T) {
 		w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusTooManyRequests, RetryAfter: 7 * time.Second}}
 		w.drain(t)
 		r, _ := w.row(t, w.raidID)
-		if r.nextAttempt.Before(w.clock.now().Add(7*time.Second)) || r.attempts != 1 || r.messageID != nil || !r.dirty {
+		// A 429 is a wait, not a failed attempt.
+		if r.nextAttempt.Before(w.clock.now().Add(7*time.Second)) || r.attempts != 0 || r.messageID != nil || !r.dirty {
 			t.Fatalf("row = %+v, now %v", r, w.clock.now())
 		}
 		w.clock.advance(5 * time.Second)
@@ -403,17 +413,15 @@ func TestDrainHonoursDiscordRefusals(t *testing.T) {
 		w := newPostWorld(t)
 		second := w.addRaid(t)
 		w.enqueue(t, w.raidID)
-		if err := w.st.EnqueuePost(context.Background(), second, w.gid, "chan2"); err != nil {
-			t.Fatal(err)
-		}
+		w.enqueueIn(t, second, "chan2")
 		w.rest.ErrFor = map[string]error{"CreateMessage": &APIError{Status: http.StatusTooManyRequests, Global: true, RetryAfter: time.Second}}
 		w.drain(t)
 		if n := len(w.rest.Calls()); n != 1 {
 			t.Fatalf("calls after a global 429 = %d, want 1", n)
 		}
 		for _, id := range []int64{w.raidID, second} {
-			// The one sent counts an attempt; the one held is deferred uncounted.
-			if r, _ := w.row(t, id); r.attempts > 1 || !r.nextAttempt.After(w.clock.now()) {
+			// Neither counts an attempt: one was a 429, the other held without a request.
+			if r, _ := w.row(t, id); r.attempts != 0 || !r.nextAttempt.After(w.clock.now()) {
 				t.Fatalf("raid %d row = %+v", id, r)
 			}
 		}

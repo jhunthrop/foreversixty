@@ -26,12 +26,8 @@ type RaidRouter struct {
 
 // RaidPosted queues the raid's post when the bot is active, else posts through the webhook.
 func (r *RaidRouter) RaidPosted(ctx context.Context, guildID int64, e notify.RaidPosted) {
-	if channel, ok := r.activeChannel(ctx, guildID); ok {
-		err := r.Bot.d.Store.EnqueuePost(ctx, e.RaidID, guildID, channel)
-		if err == nil {
-			return
-		}
-		r.Bot.log.Error("discordbot", "op", "enqueue_post", "raid_id", e.RaidID, "err", err)
+	if _, ok := r.activeChannel(ctx, guildID); ok && r.enqueue(ctx, guildID, e.RaidID) {
+		return
 	}
 	r.Webhook.RaidPosted(ctx, guildID, e)
 }
@@ -43,7 +39,7 @@ func (r *RaidRouter) RaidPosted(ctx context.Context, guildID int64, e notify.Rai
 // raid change, even when the row could not be read: the raid is marked (a no-op without a
 // row) and the failure logged.
 func (r *RaidRouter) RaidChanged(ctx context.Context, guildID int64, e notify.RaidChanged) {
-	channel, active := r.activeChannel(ctx, guildID)
+	_, active := r.activeChannel(ctx, guildID)
 	exists, err := r.postExists(ctx, e.RaidID)
 	switch {
 	case err != nil && active:
@@ -55,15 +51,22 @@ func (r *RaidRouter) RaidChanged(ctx context.Context, guildID int64, e notify.Ra
 		if active {
 			return
 		}
-	case active:
-		if err := r.Bot.d.Store.EnqueuePost(ctx, e.RaidID, guildID, channel); err != nil {
-			r.Bot.log.Error("discordbot", "op", "enqueue_post", "raid_id", e.RaidID, "err", err)
-			return
-		}
+	case active && r.enqueue(ctx, guildID, e.RaidID):
 		r.setMovedFrom(ctx, e)
 		return
 	}
 	r.Webhook.RaidChanged(ctx, guildID, e)
+}
+
+// enqueue queues the raid's post; false (logged on a failure) when nothing was queued
+// because the channel went away since Active read it, so the caller uses the webhook.
+func (r *RaidRouter) enqueue(ctx context.Context, guildID, raidID int64) bool {
+	queued, err := r.Bot.d.Store.EnqueuePost(ctx, raidID, guildID)
+	if err != nil {
+		r.Bot.log.Error("discordbot", "op", "enqueue_post", "raid_id", raidID, "err", err)
+		return false
+	}
+	return queued
 }
 
 func (r *RaidRouter) markChanged(ctx context.Context, e notify.RaidChanged) {
