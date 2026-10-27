@@ -29,13 +29,16 @@ function usedNothing(row: RaidConsumableRow): boolean {
 }
 
 /** 0: Short with nothing used; 1: Short; 2: the rest. */
-function consumableRank(row: RaidConsumableRow): number {
+function consumableRank(row: RaidConsumableRow, hasBuffs: boolean): number {
   if (row.before !== 'short') return 2;
-  return usedNothing(row) ? 0 : 1;
+  // Without buff events "used nothing" is unknown, so Short rows are one rank.
+  return hasBuffs && usedNothing(row) ? 0 : 1;
 }
 
-export function consumableOrder(rows: readonly RaidConsumableRow[]): RaidConsumableRow[] {
-  return [...rows].sort((a, b) => consumableRank(a) - consumableRank(b) || gameOrder(a, b));
+export function consumableOrder(rows: readonly RaidConsumableRow[], hasBuffs: boolean): RaidConsumableRow[] {
+  return [...rows].sort(
+    (a, b) => consumableRank(a, hasBuffs) - consumableRank(b, hasBuffs) || gameOrder(a, b),
+  );
 }
 
 /** Quality (best first), then item name. */

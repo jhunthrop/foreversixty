@@ -7,7 +7,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
-  import type { RaidReport as Report } from '../../lib/guild/attendance-contract';
+  import type { RaidNight, RaidReport as Report } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, postedLine, postedTime } from '../../lib/guild/attendance-copy';
   import { selectOnMount } from '../../lib/guild/focus-now';
   import { discordReportText } from '../../lib/guild/night';
@@ -30,6 +30,8 @@
   let {
     raid,
     report,
+    night,
+    reportId,
     guildName,
     guildPath,
     settingsHref,
@@ -47,6 +49,9 @@
   }: {
     raid: GuildRaidView;
     report: Report;
+    night: RaidNight;
+    /** The matched log's id, for the kill order's fight links. */
+    reportId: string;
     guildName: string;
     guildPath: string;
     settingsHref: string;
@@ -67,16 +72,13 @@
 
   onDestroy(() => copy.stop());
 
-  const night = $derived(raid.night);
   const ownKeys = $derived((raid.attendance ?? []).filter((row) => row.own).map((row) => row.character_key));
-  const reportId = $derived(raid.match?.report_id ?? '');
   const posted = $derived(report.posted_at);
   const copyLabel = $derived(
     copy.state === 'copied' ? attendanceCopy.report.copied : attendanceCopy.report.copy,
   );
 
   function copyForDiscord(): void {
-    if (night === null) return;
     void copy.copy(
       discordReportText({
         title: raid.title,
@@ -105,6 +107,9 @@
         <button type="button" class={RAID_BUTTON} onclick={copyForDiscord} data-testid="raid-report-copy"
           >{copyLabel}</button
         >
+        <span class="sr-only" role="status" aria-live="polite" data-testid="raid-report-copied"
+          >{copy.state === 'copied' ? attendanceCopy.report.copied : ''}</span
+        >
         {#if posted !== null}
           <p class="text-muted text-[13px]" data-testid="raid-report-posted">
             {postedLine(postedTime(posted, viewerTimezone, locale))}
@@ -130,7 +135,13 @@
     {/if}
   </div>
   {#if officer && !officerTools}
-    <GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} withId={false} />
+    <GuildPlanGate
+      tab="raids"
+      {settingsHref}
+      sentence={gateLead}
+      id={null}
+      testid="guild-raids-plan-gate-report"
+    />
   {/if}
   {#if postLine !== null}
     <p class="text-wipe text-[13px]" role="alert" data-testid="raid-report-post-error">{postLine}</p>

@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { ReportCopy } from '../../lib/guild/report-copy.svelte';
 import { doneRaid, text } from '../../test-support/raid-fixtures';
 import { raidReport } from '../../test-support/report-fixtures';
-import type { GuildRaidView, RaidDeathRow, RaidReport as Report } from '../../lib/guild/api';
+import type { GuildRaidView, RaidDeathRow, RaidNight, RaidReport as Report } from '../../lib/guild/api';
 import RaidReport from './RaidReport.svelte';
 
 const SETTINGS = '/guild/us/pvp/olympus-xxvii#settings';
@@ -23,6 +23,8 @@ function view(
     props: {
       raid,
       report,
+      night: raid.night as RaidNight,
+      reportId: raid.match?.report_id as string,
       guildName: 'Olympus XXVII',
       guildPath: '/guild/us/pvp/olympus-xxvii',
       settingsHref: SETTINGS,

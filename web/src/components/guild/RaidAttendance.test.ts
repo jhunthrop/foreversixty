@@ -91,6 +91,17 @@ describe('the groups', () => {
   });
 });
 
+describe('Excused labels and phone rows', () => {
+  it('names each checkbox with its raider', () => {
+    expect(view(ALL)).toContain('aria-label="Excused, Grimtotem"');
+  });
+
+  it('puts outcome and pulls in one line below md', () => {
+    const body = view([row('Grimtotem', { outcome: 'no_show' })]);
+    expect(body).toMatch(/md:contents[^>]*>\s*<span[^>]*data-testid="raid-attendance-outcome"/);
+  });
+});
+
 describe('Excused', () => {
   it('shows on Not in the log and Late rows only', () => {
     const body = view(ALL);

@@ -29,6 +29,17 @@ function night(excused = false): GuildRaidView {
   });
 }
 
+function withOnly(raid: GuildRaidView, key: string): GuildRaidView {
+  const attendance = (raid.attendance ?? []).map((r) =>
+    r.character_key === key ? { ...r, excused: true } : r,
+  );
+  return {
+    ...raid,
+    attendance,
+    night: raid.night && { ...raid.night, excused: attendance.filter((r) => r.excused).length },
+  };
+}
+
 describe('Excused', () => {
   it('moves the row and the summary at once, then keeps the server answer', async () => {
     const answer = deferred<GuildRaidView>();
@@ -44,6 +55,34 @@ describe('Excused', () => {
     await expect(pending).resolves.toBe(true);
     expect(putExcused).toHaveBeenCalledWith(2, '7', KEY, true);
     expect(c.night.excuseBusy[KEY]).toBeUndefined();
+    stop();
+  });
+
+  it('keeps both ticks when two overlap and answers arrive out of order', async () => {
+    const a = deferred<GuildRaidView>();
+    const b = deferred<GuildRaidView>();
+    const answers = [a, b];
+    const putExcused = vi.fn(() => answers.shift()!.promise);
+    const two = doneRaid({
+      attendance: [
+        attendanceRow({ character_key: KEY, name: 'Grimtotem', outcome: 'no_show' }),
+        attendanceRow({ character_key: 'k2', name: 'Slow', outcome: 'late' }),
+      ],
+      report: raidReport(),
+    });
+    const { c, stop } = await started(
+      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(two), putExcused }),
+    );
+    const first = c.night.excuse(KEY, true);
+    const second = c.night.excuse('k2', true);
+    // The first answer is stale (it predates the second tick): it must not overwrite.
+    a.resolve(withOnly(two, KEY));
+    await first;
+    expect(c.raid?.attendance?.map((r) => r.excused)).toEqual([true, true]);
+    b.resolve(withOnly(withOnly(two, KEY), 'k2'));
+    await second;
+    expect(c.raid?.attendance?.map((r) => r.excused)).toEqual([true, true]);
+    expect(c.raid?.night?.excused).toBe(2);
     stop();
   });
 

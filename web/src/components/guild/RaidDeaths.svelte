@@ -3,6 +3,8 @@
      muted bar (never `--wipe`, R-A3), the count, and the wipe/kill split. The first ten show, then
      `Show all n raiders`. None: `Nobody died.` -->
 <script lang="ts">
+  import { tick } from 'svelte';
+  import { focusRowAt } from '../../lib/guild/focus-now';
   import type { RaidDeathRow } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, deathSplit } from '../../lib/guild/attendance-copy';
   import { BAR_FILL, BAR_TRACK, OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
@@ -25,6 +27,15 @@
     expanded?: boolean;
   } = $props();
 
+  let list = $state<HTMLElement | null>(null);
+
+  async function reveal(): Promise<void> {
+    const from = shown.length;
+    expanded = true;
+    await tick();
+    focusRowAt(list, from);
+  }
+
   const ordered = $derived(deathOrder(rows));
   const most = $derived(ordered.length === 0 ? 1 : deathCount(ordered[0]));
   const shown = $derived(visibleRows(ordered, expanded));
@@ -34,11 +45,12 @@
   {#if ordered.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-deaths-none">{attendanceCopy.deaths.none}</p>
   {:else}
-    <ul>
+    <ul bind:this={list}>
       {#each shown as row (row.character_key)}
         <li
           class="{ROW_DIVIDER} flex min-h-10 items-center gap-3 px-1"
           style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+          tabindex="-1"
           data-testid="raid-death-row"
         >
           <ClassCrestRing characterClass={row.class} size={20} />
@@ -56,7 +68,7 @@
       {/each}
     </ul>
     {#if !expanded && ordered.length > shown.length}
-      <RaidShowAll total={ordered.length} onShow={() => (expanded = true)} testid="raid-deaths-show-all" />
+      <RaidShowAll total={ordered.length} onShow={() => void reveal()} testid="raid-deaths-show-all" />
     {/if}
   {/if}
 </RaidBlock>

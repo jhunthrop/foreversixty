@@ -7,6 +7,7 @@
 <script lang="ts">
   import type { RaidAttendanceRow, RaidNight } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, attendanceSummary, pullsRatio } from '../../lib/guild/attendance-copy';
+  import { excusedLabel } from '../../lib/guild/night-copy';
   import { canExcuse, groupAttendance, outcomeText } from '../../lib/guild/night';
   import { BAR_FILL, BAR_TRACK, OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { classColorVar } from '../../lib/report/format';
@@ -65,19 +66,22 @@
     <span class="justify-self-end md:justify-self-start"
       ><RaidChip kind="viewer" state={row.signed} role={row.role ?? 'dps'} /></span
     >
-    <span
-      class="col-span-2 text-[13px] md:col-span-1 {row.outcome === 'no_show' ? 'text-muted' : 'text-text'}"
-      data-testid="raid-attendance-outcome">{outcomeText(row)}</span
-    >
-    <span class="col-span-2 flex items-center gap-2 md:col-span-1">
-      <span class="text-text font-mono text-[13px]">{pullsRatio(row.pulls_present, row.pulls_total)}</span>
-      <span class="{BAR_TRACK} w-12" aria-hidden="true"
-        ><span
-          class={BAR_FILL}
-          style:width={`${row.pulls_total === 0 ? 0 : (row.pulls_present / row.pulls_total) * 100}%`}
-        ></span></span
+    <!-- Phone: outcome and pulls share line 2; from md each takes its own grid cell. -->
+    <div class="col-span-2 flex items-center justify-between gap-3 md:contents">
+      <span
+        class="text-[13px] {row.outcome === 'no_show' ? 'text-muted' : 'text-text'}"
+        data-testid="raid-attendance-outcome">{outcomeText(row)}</span
       >
-    </span>
+      <span class="flex items-center gap-2">
+        <span class="text-text font-mono text-[13px]">{pullsRatio(row.pulls_present, row.pulls_total)}</span>
+        <span class="{BAR_TRACK} w-12" aria-hidden="true"
+          ><span
+            class={BAR_FILL}
+            style:width={`${row.pulls_total === 0 ? 0 : (row.pulls_present / row.pulls_total) * 100}%`}
+          ></span></span
+        >
+      </span>
+    </div>
     <span class="col-span-2 md:col-span-1">
       {#if canExcuse(row)}
         <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
@@ -86,6 +90,7 @@
             class="accent-gold size-4"
             checked={row.excused}
             disabled={readOnly}
+            aria-label={excusedLabel(row.name)}
             aria-describedby={readOnly ? gateId : undefined}
             onchange={(event) => onExcuse(row.character_key, event.currentTarget.checked)}
             data-testid="raid-attendance-excused"
