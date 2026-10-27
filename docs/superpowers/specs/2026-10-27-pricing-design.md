@@ -45,7 +45,7 @@ Anti-goals
 | Guild | $15 | $150 | Up to 25 verified members: raids and sign-ups (site and Discord), attendance, the raid-night report, the guild Discord channel and bot, guild-wide retention, 1 Premium seat |
 | Raid guild | $25 | $250 | Any size: everything in Guild plus loot council, the readiness board and consumables, 3 Premium seats |
 
-Founder prices, for purchases between 4 November 2026 and 3 January 2027, locked while the
+Founder prices, for purchases between 4 November 2026 and 6 January 2027 (four weeks after the first raid night), locked while the
 subscription stays active (Stripe's card-retry window counts as active):
 
 | Plan | Founder monthly | Founder yearly |
@@ -87,14 +87,14 @@ spring population drop.
   (guild, holder, assigned_at) with the 30-day move rule; seat holders resolve as Premium.
 - **Guild settings**: seats list, transfer the plan, contributions view, export CSV.
 - **Guild page**: chip-in for members.
-- **Premium and pricing pages**: the new table, founder badge until 3 January, the free promise.
+- **Premium and pricing pages**: the new table, founder badge until 6 January, the free promise.
 - **Reconcile job**: tier size checks before renewal, seat expiry, founder lock checks.
 
 ## 6. Open for the owner
 
-1. The founder window end: 3 January 2027 (60 days) or the first raid night plus 4 weeks.
+1. ~~The founder window end.~~ ANSWERED 2026-10-27 (owner): 6 January 2027, four weeks after the first raid night.
 2. ~~Chip-in: build for launch, or right after.~~ ANSWERED 2026-10-27 (owner): after launch, with its own design.
-3. Trial: 7 days, or "until the guild's first matched raid log, at most 14 days".
+3. ~~Trial length.~~ ANSWERED 2026-10-27 (owner): a flat 7 days (Stripe's built-in trial).
 
 ## 7. Left to the builder
 
