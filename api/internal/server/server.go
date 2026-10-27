@@ -10,6 +10,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
+	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -55,6 +56,8 @@ type Deps struct {
 	Notify   *notify.Service
 	Rating   *rating.Service
 	Billing  *billing.Service
+	// DiscordBot serves the signed interactions endpoint; nil leaves it unmounted.
+	DiscordBot *discordbot.Service
 
 	TrustedProxyHops int
 }
@@ -118,6 +121,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Billing != nil {
 		billing.Mount(mux, d.Billing, d.TrustedProxyHops)
+	}
+	if d.DiscordBot != nil {
+		discordbot.Mount(mux, d.DiscordBot)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

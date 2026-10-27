@@ -6,10 +6,12 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/server"
 )
 
 // newNotifyService builds the Discord notification routes. Without the
@@ -60,4 +62,23 @@ func newJobDeliverer(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *n
 // tasks.
 func newJobGuilds(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *guilds.Service {
 	return &guilds.Service{Store: &guilds.Store{Pool: pool}, PublicBaseURL: cfg.PublicBaseURL, Log: log}
+}
+
+// wireNotify builds the notify service into deps and connects it to the
+// accounts and guilds services it talks to. It leaves deps.Notify nil when
+// notifications are off.
+func wireNotify(cfg config.Config, pool *pgxpool.Pool, ents notify.Entitlementer, accounts *auth.Service, deps *server.Deps, log *slog.Logger) {
+	deps.Notify = newNotifyService(cfg, pool, ents, log)
+	if deps.Notify == nil {
+		return
+	}
+	accounts.Notifications = deps.Notify
+	// The guild raid channel: notify asks guilds for an officer's standing, guilds
+	// reads the channel back for the settings payload and the raid view.
+	deps.Notify.Guilds = deps.Guilds
+	deps.Guilds.Discord = deps.Notify
+	// The raid posts follow the channel: none while the deployment has connect off.
+	if poster := deps.Notify.GuildDeliverer(); poster != nil && deps.Notify.GuildConnectEnabled() {
+		deps.Guilds.RaidEvents = poster
+	}
 }
