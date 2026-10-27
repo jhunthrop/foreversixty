@@ -115,7 +115,7 @@ func (s *Service) seatFacts(ctx context.Context, userID int64) SeatFacts {
 	}
 	facts, err := s.Seats.SeatFactsForUser(ctx, userID, time.Now())
 	if err != nil {
-		s.Log.ErrorContext(ctx, "auth: me: seat facts", "user", userID, "err", err)
+		s.logger().ErrorContext(ctx, "auth: me: seat facts", "user", userID, "err", err)
 		return SeatFacts{}
 	}
 	return facts
