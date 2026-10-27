@@ -118,6 +118,13 @@ func (s *Service) channelSave(w http.ResponseWriter, r *http.Request) {
 		s.internalError(w, r, "channel save", err)
 		return
 	}
+	if in.ChannelID != nil && *in.ChannelID != picked.ID {
+		// The old posts live in the old channel; the next raid change posts afresh here.
+		if err := s.d.Store.DeletePostsForGuild(r.Context(), guildID); err != nil {
+			s.internalError(w, r, "channel posts", err)
+			return
+		}
+	}
 	view, err := s.d.Guilds.SettingsDiscordFor(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
 	if err != nil || view == nil {
 		s.internalError(w, r, "channel settings", errors.Join(err, errors.New("no settings view")))

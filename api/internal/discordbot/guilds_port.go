@@ -13,4 +13,6 @@ type GuildService interface {
 	GuildStanding(ctx context.Context, guildID, userID int64) (notify.GuildStanding, bool, error)
 	// SettingsDiscordFor is the settings.discord object a viewer would read.
 	SettingsDiscordFor(ctx context.Context, guildID, viewerID int64) (*guilds.SettingsDiscord, error)
+	// RaidPostFacts is what a raid's channel post shows (the drainer's PostFacts).
+	RaidPostFacts(ctx context.Context, raidID int64) (guilds.RaidPostFacts, bool, error)
 }

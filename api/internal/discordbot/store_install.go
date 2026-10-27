@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -14,8 +15,12 @@ import (
 // pgUniqueViolation is Postgres's unique_violation SQLSTATE.
 const pgUniqueViolation = "23505"
 
-// Store is every read and write of the bot's tables.
-type Store struct{ Pool *pgxpool.Pool }
+// Store is every read and write of the bot's tables. Log takes the failures of the writes
+// that report none (MarkRaidDirty); nil means slog.Default.
+type Store struct {
+	Pool *pgxpool.Pool
+	Log  *slog.Logger
+}
 
 // Install is a guild's one Discord server and its raid channel.
 type Install struct {

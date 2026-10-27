@@ -3,6 +3,8 @@ package discordbot
 import (
 	"context"
 	"crypto/ed25519"
+	"errors"
+	"fmt"
 	"log/slog"
 	"sync"
 	"time"
@@ -94,6 +96,8 @@ type Service struct {
 	components    map[string]Handler
 	autocompletes map[string]Autocomplete
 	updating      map[string]bool
+	// stopDrainer ends the post drainer StartDrainer began; nil when none runs.
+	stopDrainer func(ctx context.Context) error
 }
 
 // New builds the service.
@@ -114,8 +118,39 @@ func New(d Deps) *Service {
 	return s
 }
 
-// Drain waits for deferred answers still running, until ctx ends.
-func (s *Service) Drain(ctx context.Context) error { return s.bg.Drain(ctx) }
+// Drain stops the post drainer, then waits for deferred answers still running, until ctx ends.
+func (s *Service) Drain(ctx context.Context) error {
+	var drainerErr error
+	if s.stopDrainer != nil {
+		drainerErr = s.stopDrainer(ctx)
+	}
+	return errors.Join(drainerErr, s.bg.Drain(ctx))
+}
+
+// StartDrainer runs d in this process until Drain. Call it once, before serving.
+func (s *Service) StartDrainer(d *Drainer) {
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		d.Run(ctx)
+	}()
+	s.stopDrainer = func(wait context.Context) error {
+		cancel()
+		select {
+		case <-done:
+			return nil
+		case <-wait.Done():
+			return fmt.Errorf("discordbot: post drainer: %w", wait.Err())
+		}
+	}
+}
+
+// NewDrainer is a drainer over the service's store and REST client, reading facts from
+// facts; a bot that lost its channel marks the install removed.
+func (s *Service) NewDrainer(facts PostFacts) *Drainer {
+	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, OnRemoved: s.MarkRemoved, Log: s.log}
+}
 
 // serverGuild is the guild the interaction's server is installed for.
 func (s *Service) serverGuild(ctx context.Context, in Interaction) (guildID int64, bound bool, err error) {
