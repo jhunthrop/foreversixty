@@ -123,7 +123,14 @@ func (s *Store) bindConflict(ctx context.Context, guildID int64, serverID string
 	if ok {
 		return BindResult{Outcome: BindTaken, HeldBy: in.GuildID}, nil
 	}
-	return BindResult{Outcome: BindTaken, HeldBy: guildID}, nil
+	own, ok, err := s.InstallFor(ctx, guildID)
+	if err != nil {
+		return BindResult{}, err
+	}
+	if ok && own.ServerID != serverID {
+		return BindResult{Outcome: BindTaken, HeldBy: guildID}, nil
+	}
+	return BindResult{}, fmt.Errorf("discordbot: bind guild %d: conflicting install vanished, retry", guildID)
 }
 
 // InstallFor returns the guild's install; ok is false when none exists.

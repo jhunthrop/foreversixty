@@ -172,6 +172,21 @@ type Config struct {
 	DiscordCommandsGuildID string
 }
 
+// String and GoString redact the whole Config so a stray %v or %+v never prints the
+// bot token, the Stripe keys or the database URLs.
+func (Config) String() string   { return "config.Config{redacted}" }
+func (Config) GoString() string { return "config.Config{redacted}" }
+
+// isDigits reports whether s is empty or only ASCII digits.
+func isDigits(s string) bool {
+	for _, r := range s {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
+}
+
 // DiscordBotConfigured reports whether the application id, public key and bot
 // token are all set.
 func (c Config) DiscordBotConfigured() bool {
@@ -298,10 +313,14 @@ func Load(getenv func(string) string) (Config, error) {
 
 // loadDiscordBot reads the bot's variables into c and checks them as a set.
 func loadDiscordBot(c *Config, getenv func(string) string) error {
-	c.DiscordApplicationID = getenv("DISCORD_APPLICATION_ID")
-	c.DiscordBotToken = getenv("DISCORD_BOT_TOKEN")
-	c.DiscordCommandsGuildID = getenv("DISCORD_COMMANDS_GUILD_ID")
-	rawKey := getenv("DISCORD_PUBLIC_KEY")
+	trimmed := func(name string) string { return strings.TrimSpace(getenv(name)) }
+	c.DiscordApplicationID = trimmed("DISCORD_APPLICATION_ID")
+	c.DiscordBotToken = trimmed("DISCORD_BOT_TOKEN")
+	c.DiscordCommandsGuildID = trimmed("DISCORD_COMMANDS_GUILD_ID")
+	if !isDigits(c.DiscordCommandsGuildID) {
+		return errors.New("config: DISCORD_COMMANDS_GUILD_ID must be a Discord server id (digits only)")
+	}
+	rawKey := trimmed("DISCORD_PUBLIC_KEY")
 	if err := checkDiscordBot(*c, rawKey != ""); err != nil {
 		return err
 	}

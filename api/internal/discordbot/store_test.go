@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -96,6 +97,67 @@ func TestBindServerOneServerOneGuild(t *testing.T) {
 	}
 	if by, ok, _ := st.InstallByServer(ctx, "srv1"); !ok || by.GuildID != a {
 		t.Fatalf("by server = %+v ok=%v", by, ok)
+	}
+}
+
+func TestBindServerConcurrentGuildsOneWins(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u := seedUser(t, st.Pool)
+	gs := []int64{seedGuild(t, st.Pool, "A"), seedGuild(t, st.Pool, "B")}
+	results := make([]BindResult, len(gs))
+	errs := make([]error, len(gs))
+	var wg sync.WaitGroup
+	for i := range gs {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			results[i], errs[i] = st.BindServer(ctx, gs[i], "srv1", "S", u)
+		}()
+	}
+	wg.Wait()
+	installed := 0
+	for i, r := range results {
+		if errs[i] != nil {
+			t.Fatalf("bind %d: %v", i, errs[i])
+		}
+		if r.Outcome == BindInstalled {
+			installed++
+		} else if r.HeldBy == 0 || r.HeldBy == gs[i] {
+			t.Fatalf("taken result %d = %+v, want the other guild", i, r)
+		}
+	}
+	if installed != 1 {
+		t.Fatalf("installed = %d, want exactly 1", installed)
+	}
+}
+
+func TestSaveLinkConcurrentUsersOneWins(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	users := []int64{seedUser(t, st.Pool), seedUser(t, st.Pool)}
+	errs := make([]error, len(users))
+	var wg sync.WaitGroup
+	for i := range users {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			errs[i] = st.SaveLink(ctx, users[i], "same", "N")
+		}()
+	}
+	wg.Wait()
+	conflicts := 0
+	for _, err := range errs {
+		switch {
+		case err == nil:
+		case errors.Is(err, ErrLinkConflict):
+			conflicts++
+		default:
+			t.Fatalf("unexpected error: %v", err)
+		}
+	}
+	if conflicts != 1 {
+		t.Fatalf("conflicts = %d, want exactly 1", conflicts)
 	}
 }
 

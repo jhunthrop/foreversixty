@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/base64"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -436,6 +437,32 @@ func TestDiscordApplicationIDMustMatchClientID(t *testing.T) {
 	c, err := Load(base(nil))
 	if err != nil || c.DiscordBotConfigured() {
 		t.Fatalf("unset: configured=%v err=%v", c.DiscordBotConfigured(), err)
+	}
+}
+
+func TestDiscordCommandsGuildIDIsDigitsAndBotVarsAreTrimmed(t *testing.T) {
+	_, err := Load(discordEnv(map[string]string{"DISCORD_COMMANDS_GUILD_ID": "abc"}))
+	if err == nil || !strings.Contains(err.Error(), "DISCORD_COMMANDS_GUILD_ID") {
+		t.Fatalf("err = %v", err)
+	}
+	c, err := Load(discordEnv(map[string]string{
+		"DISCORD_COMMANDS_GUILD_ID": " 123456 ", "DISCORD_BOT_TOKEN": "  " + testDiscordToken + "\n",
+		"DISCORD_PUBLIC_KEY": testDiscordKeyHex + "\n",
+	}))
+	if err != nil || c.DiscordCommandsGuildID != "123456" || c.DiscordBotToken != testDiscordToken || !c.DiscordBotConfigured() {
+		t.Fatalf("trimmed config: %v err=%v", c.DiscordCommandsGuildID, err)
+	}
+}
+
+func TestConfigNeverPrintsItsSecrets(t *testing.T) {
+	c, err := Load(discordEnv(nil))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, out := range []string{fmt.Sprintf("%v", c), fmt.Sprintf("%+v", c), fmt.Sprintf("%#v", c), fmt.Sprintf("%v", &c)} {
+		if strings.Contains(out, testDiscordToken) || strings.Contains(out, "sec") && strings.Contains(out, "DiscordClientSecret") {
+			t.Fatalf("config printed secrets: %s", out)
+		}
 	}
 }
 
