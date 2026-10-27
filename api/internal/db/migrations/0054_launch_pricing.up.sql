@@ -37,6 +37,9 @@ create table premium_seats (
 );
 create unique index premium_seats_holder_idx
   on premium_seats (guild_id, holder_user_id) where holder_user_id is not null;
+-- Premium resolution looks a seat up by its holder alone.
+create index premium_seats_holder_user_idx
+  on premium_seats (holder_user_id) where holder_user_id is not null;
 
 -- Cascades with the guild: a re-created guild may trial again.
 create table guild_trials (

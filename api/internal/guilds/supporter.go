@@ -7,39 +7,49 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
-// Supporters answers whether an account shows the supporter mark; nil means
+// Supporters answers which accounts show the supporter mark, in one ask; nil means
 // nobody does (the fixture build, and tests that do not care).
 type Supporters interface {
-	IsSupporter(ctx context.Context, userID int64) (bool, error)
+	SupportersAmong(ctx context.Context, userIDs []int64) (map[int64]bool, error)
 }
 
 // markSupporters sets Supporter on every row of the given lists from its owning account,
-// asking once per distinct account however many characters it has. A cosmetic flag never
-// takes the home down: no service, or a failed ask, leaves that account's rows false (the
-// failure logged at warn).
+// asking once per roster however many accounts and characters it has. A cosmetic flag never
+// takes the home down: no service, or a failed ask, leaves every row false (the failure
+// logged at warn).
 func (s *Service) markSupporters(ctx context.Context, lists ...[]RosterRow) {
 	if s.Supporters == nil {
 		return
 	}
-	answers := map[int64]bool{}
+	owners := distinctOwners(lists)
+	if len(owners) == 0 {
+		return
+	}
+	answers, err := s.Supporters.SupportersAmong(ctx, owners)
+	if err != nil {
+		s.logger().Warn("guilds", "id", httpx.RequestIDFrom(ctx), "op", "supporter", "err", err)
+		return
+	}
 	for _, rows := range lists {
 		for i := range rows {
-			owner := rows[i].ownerUserID
-			if owner == 0 {
-				continue
-			}
-			supporter, asked := answers[owner]
-			if !asked {
-				ok, err := s.Supporters.IsSupporter(ctx, owner)
-				if err != nil {
-					s.logger().Warn("guilds", "id", httpx.RequestIDFrom(ctx), "op", "supporter", "user_id", owner, "err", err)
-				}
-				supporter = ok && err == nil
-				answers[owner] = supporter
-			}
-			rows[i].Supporter = supporter
+			rows[i].Supporter = answers[rows[i].ownerUserID]
 		}
 	}
+}
+
+// distinctOwners lists each owning account of the rows once, skipping unowned rows.
+func distinctOwners(lists [][]RosterRow) []int64 {
+	seen := map[int64]bool{}
+	var owners []int64
+	for _, rows := range lists {
+		for i := range rows {
+			if owner := rows[i].ownerUserID; owner != 0 && !seen[owner] {
+				seen[owner] = true
+				owners = append(owners, owner)
+			}
+		}
+	}
+	return owners
 }
 
 // Entitlements answers whether a user holds a per-guild feature; nil means nobody does.

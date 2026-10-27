@@ -1,96 +1,135 @@
 <!-- web/src/components/guild/GuildBillingSection.svelte -->
-<!-- The Billing section of guild settings: the plan line and its explanation for every viewer who
-     may see the plan, the price line and buttons only for the claim holder (spec 5.1 to 5.3). -->
+<!-- The Billing section of guild settings (launch pricing spec 3.2): it reads the guild billing view
+     itself, reserves its ready height with Skeleton lines while that loads, and draws the blocks in
+     order: plan line, size line, chooser, the seats and Who pays mount points, Records. -->
 <script lang="ts">
-  import type { GuildBillingView } from '../../lib/account/api';
-  import { billingBlockCopy } from '../../lib/billing/copy';
-  import { billedLine, guildPlanLine } from '../../lib/billing/guild-billing-copy';
-  import { guildRosterModelCopy } from '../../lib/guild/copy';
+  import { getGuildBilling, previewUpgrade, upgrade } from '../../lib/billing/guild-billing-api';
+  import type { GuildBillingSettings, UpgradePreview } from '../../lib/billing/contract';
+  import { guildBillingCopy as copy } from '../../lib/billing/guild-billing-copy';
   import {
     billingState,
-    canManageBilling,
-    notOnPlanLines,
-    officerToolsExplanation,
-    settingsWords,
-  } from '../../lib/guild/settings-view';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+    canBill,
+    movesFromPlanLine,
+    showSizeLine,
+    showsChooser,
+  } from '../../lib/guild/billing-state';
+  import { guildRosterModelCopy } from '../../lib/guild/copy';
+  import { GUILD_BILLING_LOADING } from '../../lib/guild/layout';
+  import LoadError from '../ui/LoadError.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
+  import GuildPlanChooser from './billing/GuildPlanChooser.svelte';
+  import GuildPlanLine from './billing/GuildPlanLine.svelte';
+  import GuildRecords from './billing/GuildRecords.svelte';
+  import GuildSizeLine from './billing/GuildSizeLine.svelte';
+  import GuildUpgradeConfirm from './billing/GuildUpgradeConfirm.svelte';
 
-  let {
-    billing,
-    mayBill,
-    guildId,
-    busy = false,
-    unavailable = false,
-    onManageBilling = () => {},
-  }: {
-    billing: GuildBillingView | null;
-    /** Whether this account holds the claim: only then do the price line and buttons draw. */
-    mayBill: boolean;
-    guildId: number | null;
-    busy?: boolean;
-    unavailable?: boolean;
-    onManageBilling?: () => void;
-  } = $props();
+  let { guildId, now = new Date() }: { guildId: number; now?: Date } = $props();
 
-  const state = $derived(billingState(billing, unavailable));
-  const checkoutHref = $derived(`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`);
+  let view = $state<GuildBillingSettings | null>(null);
+  let failed = $state(false);
+  let confirming = $state(false);
+  let preview = $state<UpgradePreview | null>(null);
+  let committing = $state(false);
+  let upgradeError = $state('');
+  let moved = $state(false);
+
+  const viewState = $derived(billingState(view, now));
+  const payer = $derived(view !== null && canBill(view));
+
+  async function load(): Promise<void> {
+    failed = false;
+    try {
+      view = await getGuildBilling(guildId);
+    } catch {
+      failed = true;
+    }
+  }
+
+  $effect(() => {
+    void load();
+  });
+
+  async function openConfirm(): Promise<void> {
+    confirming = true;
+    preview = null;
+    upgradeError = '';
+    try {
+      preview = await previewUpgrade(guildId);
+    } catch {
+      upgradeError = copy.upgrade.failed;
+    }
+  }
+
+  function closeConfirm(): void {
+    confirming = false;
+    upgradeError = '';
+  }
+
+  async function commit(): Promise<void> {
+    committing = true;
+    upgradeError = '';
+    try {
+      view = await upgrade(guildId);
+      confirming = false;
+      moved = true;
+    } catch {
+      upgradeError = copy.upgrade.failed;
+    } finally {
+      committing = false;
+    }
+  }
 </script>
 
-{#snippet subscribe()}
-  {#if guildId !== null}
-    <a href={checkoutHref} class="{PRIMARY_BUTTON_FIXED} w-fit px-4" data-testid="guild-subscribe-link">
-      {billingBlockCopy.subscribeTheGuild}
-    </a>
-  {/if}
-{/snippet}
-
-<section id="billing" class="flex scroll-mt-20 flex-col gap-3" data-testid="guild-settings-billing">
+<section id="billing" class="flex scroll-mt-20 flex-col gap-5" data-testid="guild-settings-billing">
   <h2 class="section-title text-[18px]">Billing</h2>
-  {#if billing === null}
-    <p class="text-[14px]" data-testid="guild-billing-not-on-plan">{notOnPlanLines().headline}</p>
-    <p class="text-muted text-[13px]" data-testid="guild-billing-price">{notOnPlanLines().detail}</p>
-    {@render subscribe()}
+  {#if failed}
+    <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="guild-billing-load-error" />
+  {:else if view === null}
+    <div class={GUILD_BILLING_LOADING.minHeight}>
+      <Skeleton lines={GUILD_BILLING_LOADING.lines} testid="guild-billing-skeleton" />
+    </div>
   {:else}
-    <p class="text-[14px]" data-testid="guild-billing-plan">{guildPlanLine(billing)}</p>
-    <p class="text-muted text-[13px]" data-testid="guild-billing-contact">
-      {state === 'officer-tools' ? officerToolsExplanation(billing) : billedLine(billing)}
-    </p>
-    {#if mayBill && state === 'officer-tools'}
-      <p class="text-muted text-[13px]" data-testid="guild-billing-price">{notOnPlanLines().detail}</p>
-      {@render subscribe()}
-    {:else if mayBill}
-      {#if billing.status === 'past_due'}
-        <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-      {/if}
-      {#if state === 'unavailable'}
-        <p class="text-[14px]" role="alert" data-testid="guild-billing-unavailable">
-          {settingsWords.billingUnavailable}
-        </p>
-        <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-          onclick={onManageBilling}
-          disabled={busy}
-          data-testid="guild-billing-retry"
-        >
-          {settingsWords.tryAgain}
-        </button>
-      {:else if canManageBilling(billing)}
-        <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-          onclick={onManageBilling}
-          disabled={busy}
-          aria-busy={busy}
-          data-testid="guild-manage-billing"
-        >
-          {billingBlockCopy.manageBilling}
-        </button>
-      {/if}
+    {#if view.billing !== null && viewState.kind !== 'none'}
+      <GuildPlanLine
+        {guildId}
+        plan={view.billing}
+        lineState={viewState}
+        {payer}
+        showMove={movesFromPlanLine(view, viewState)}
+        onMove={() => void openConfirm()}
+      />
     {/if}
-  {/if}
-  {#if !mayBill}
-    <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
-      {guildRosterModelCopy.guildMasterOnly}
-    </p>
+    {#if moved}
+      <p class="text-muted text-[13px]" role="status" data-testid="guild-upgrade-done">{copy.upgrade.done}</p>
+    {/if}
+    {#if showSizeLine(view)}
+      <GuildSizeLine count={view.verified_count} {payer} onMove={() => void openConfirm()} />
+    {/if}
+    {#if confirming}
+      <GuildUpgradeConfirm
+        {preview}
+        {committing}
+        error={upgradeError}
+        onCommit={() => void commit()}
+        onKeep={closeConfirm}
+      />
+    {/if}
+    {#if showsChooser(viewState) && payer}
+      <GuildPlanChooser
+        {guildId}
+        verifiedCount={view.verified_count}
+        trialUsed={view.trial_used}
+        lapsed={viewState.kind === 'lapsed'}
+        {now}
+      />
+    {/if}
+    <div data-testid="guild-billing-seats-slot"></div>
+    <div data-testid="guild-billing-whopays-slot"></div>
+    <GuildRecords {guildId} />
+    {#if !payer}
+      <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
+        {guildRosterModelCopy.guildMasterOnly}
+      </p>
+    {/if}
   {/if}
 </section>

@@ -35,6 +35,12 @@ export type Line2State =
   | { kind: 'ending' }
   | { kind: 'read-only' };
 
+/** The facts a plan line reads: shared by the account's `me` view and the guild billing read. */
+type PlanLineFacts = Pick<
+  GuildBillingView,
+  'scope' | 'billed_by' | 'current_period_end' | 'cancel_at_period_end' | 'you_are_billing_contact'
+>;
+
 const tierName = (tier: GuildTier): string => PLANS[tier].name;
 
 function planLine(state: GuildPlanLineState, zone?: string): string {
@@ -67,6 +73,22 @@ function line2(state: Line2State, zone?: string): string {
   }
 }
 
+/** The prorated sentence in three pieces, so the amount can be a placeholder while the preview loads. */
+function upgradeParts(
+  proratedCents: number,
+  interval: Interval,
+  from: string,
+  nextCents: number,
+  zone?: string,
+): { before: string; amount: string; after: string } {
+  const period = interval === 'yearly' ? 'year' : 'month';
+  return {
+    before: 'Move to Raid guild? Today you pay ',
+    amount: formatAmount(proratedCents / CENTS_PER_DOLLAR),
+    after: ` for the rest of this ${period}. From ${zonedDayMonthYear(from, zone)} it is ${formatCents(nextCents, interval)}.`,
+  };
+}
+
 /** The prorated sentence: the rest of "this year" or "this month", then the next price. */
 function upgradeSentence(
   proratedCents: number,
@@ -75,8 +97,8 @@ function upgradeSentence(
   nextCents: number,
   zone?: string,
 ): string {
-  const period = interval === 'yearly' ? 'year' : 'month';
-  return `Move to Raid guild? Today you pay ${formatAmount(proratedCents / CENTS_PER_DOLLAR)} for the rest of this ${period}. From ${zonedDayMonthYear(from, zone)} it is ${formatCents(nextCents, interval)}.`;
+  const { before, amount, after } = upgradeParts(proratedCents, interval, from, nextCents, zone);
+  return `${before}${amount}${after}`;
 }
 
 const tierMemberLine = (tier: GuildTier): string => {
@@ -88,6 +110,7 @@ const tierMemberLine = (tier: GuildTier): string => {
 };
 
 export const guildBillingCopy = {
+  loadFailed: 'Billing did not load. Try again.',
   planLine,
   founderPill: 'Founder',
   line2,
@@ -112,6 +135,7 @@ export const guildBillingCopy = {
   },
   upgrade: {
     sentence: upgradeSentence,
+    parts: upgradeParts,
     commit: 'Move to Raid guild',
     committing: 'Moving…',
     keep: 'Keep Guild',
@@ -140,7 +164,7 @@ export const guildBillingCopy = {
  * (no billing contact, or the scoped officer tools) is a calendar day the API stores at midnight
  * UTC, so it reads in UTC and is the 31st for a viewer in any zone.
  */
-export function guildPlanLine(billing: GuildBillingView, zone?: string): string {
+export function guildPlanLine(billing: PlanLineFacts, zone?: string): string {
   const isGrant = billing.scope === 'officer_tools' || billing.billed_by === '';
   const date =
     billing.current_period_end === null
@@ -155,7 +179,7 @@ export function guildPlanLine(billing: GuildBillingView, zone?: string): string 
 }
 
 /** Who pays: "Billed to you.", "Billed by hunthrop#1894", or "Granted by Forever Sixty." */
-export function billedLine(billing: GuildBillingView): string {
+export function billedLine(billing: Pick<PlanLineFacts, 'billed_by' | 'you_are_billing_contact'>): string {
   if (billing.you_are_billing_contact) return line2({ kind: 'billed-to-you' });
   return billing.billed_by === ''
     ? settingsWords.grantedByUs

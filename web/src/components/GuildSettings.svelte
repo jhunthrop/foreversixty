@@ -7,9 +7,8 @@
 <script lang="ts">
   import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { guildClaimHref, type CharacterPath } from '../lib/characters';
-  import { fetchMeFresh, refetchMe, type GuildBillingView, type Me } from '../lib/account/api';
+  import { fetchMeFresh, refetchMe, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
-  import { BillingApiError, openPortal } from '../lib/billing/api';
   import {
     GuildApiError,
     fetchGuildSettings,
@@ -18,7 +17,7 @@
     type GuildSettingsData,
     type GuildVisibility,
   } from '../lib/guild/api';
-  import { guildRosterModelCopy, guildSettingsCopy } from '../lib/guild/copy';
+  import { guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
   import { claimedByLine, settingsWords } from '../lib/guild/settings-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -46,13 +45,6 @@
   } = $props();
 
   let guildId = $state<number | null>(null);
-  /**
-   * Whether this account may see and change the guild's billing, from the `can` list on its
-   * /v1/me guild entry (the API's one rule: the account holding the claim, not an officer). `null`
-   * until /v1/me has answered, and when it fails: the section then stays out rather than guessing
-   * from the rank.
-   */
-  let mayBill = $state<boolean | null>(null);
   /** Whether this account may release the claim (the `release` word on its /v1/me guild entry). */
   let mayRelease = $state(false);
   let guildName = $state('');
@@ -61,18 +53,6 @@
   let notice = $state('');
   let error = $state('');
   let busy = $state(false);
-  /**
-   * A guild's billing view is not part of GET /v1/guilds/{id}/settings's own response (the
-   * entitlements work landed after that endpoint did, in a lane that could not edit it) --
-   * it lives on GET /v1/me's guilds[] entry for this same guild instead (spec 1.4). This
-   * page already knows guildId once `load()` resolves, so finding the matching entry is a
-   * plain lookup, not a second "which guild" round-trip; the one extra cost is the /v1/me
-   * fetch itself, shared via fetchMeOnce's own cache with anything else on the page that
-   * already asked.
-   */
-  let guildBilling = $state<GuildBillingView | null>(null);
-  /** Stripe could not be reached for Manage billing (the API answered 503 billing_unavailable). */
-  let billingUnavailable = $state(false);
 
   /**
    * A 403 from GET .../settings is read directly off the thrown GuildApiError's status --
@@ -100,15 +80,12 @@
       const me = await fetchMeFresh(applyBilling);
       applyBilling(me);
     } catch {
-      guildBilling = null;
-      mayBill = null;
+      mayRelease = false;
     }
   }
 
   function applyBilling(me: Me | null): void {
     const entry = me?.guilds.find((g) => g.id === guildId);
-    guildBilling = entry?.plan ?? null;
-    mayBill = entry === undefined ? null : can(entry.can, 'billing');
     mayRelease = entry === undefined ? false : can(entry.can, 'release');
   }
 
@@ -168,23 +145,6 @@
       else notice = guildSettingsCopy.saved;
     });
 
-  const onManageBilling = (): void =>
-    void run(async () => {
-      if (guildId === null) return;
-      billingUnavailable = false;
-      let result;
-      try {
-        result = await openPortal(guildId);
-      } catch (thrown) {
-        if (thrown instanceof BillingApiError && thrown.status === 503) {
-          billingUnavailable = true;
-          return;
-        }
-        throw thrown;
-      }
-      window.location.assign(result.portal_url);
-    });
-
   /**
    * A contest always freezes officer tools now (a later security-review response
    * simplified the freeze rule): `frozen` is guaranteed true whenever `state ===
@@ -230,19 +190,8 @@
         {guildSettingsCopy.frozenNotice}
       </p>
     {/if}
-    {#if mayBill === true || (mayBill === false && guildBilling !== null)}
-      <GuildBillingSection
-        billing={guildBilling}
-        {mayBill}
-        {guildId}
-        {busy}
-        unavailable={billingUnavailable}
-        {onManageBilling}
-      />
-    {:else if mayBill === false}
-      <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
-        {guildRosterModelCopy.guildMasterOnly}
-      </p>
+    {#if guildId !== null}
+      <GuildBillingSection {guildId} />
     {/if}
     {#if settings.discord !== undefined && guildId !== null}
       {#if discordLazy.current}
