@@ -2,10 +2,15 @@ package discordbot
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"os"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
 const coachURL = "https://forever.test/coach/abc"
@@ -173,4 +178,87 @@ func TestCoachBudgetIsClippedByTheContext(t *testing.T) {
 	if got := coachBudget(ctx); got <= 0 || got > 300*time.Millisecond {
 		t.Fatalf("clipped budget = %v", got)
 	}
+}
+
+// ---- The A11 capture payloads ----
+
+const (
+	dumpEnv  = "COACH_DUMP_PAYLOADS"
+	dumpPath = "../../../web/tests/captures/log-coach/payloads.json"
+	// dumpCoachURL is the Coach tab of the example raid, as the real adapter links it.
+	dumpCoachURL = "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach"
+)
+
+type dumpedFrame struct {
+	ID      string  `json:"id"`
+	Row     string  `json:"row"`
+	Title   string  `json:"title"`
+	Surface string  `json:"surface"`
+	Clock   string  `json:"clock"`
+	Message Message `json:"message"`
+}
+
+var dumpClock = time.Date(2026, 12, 11, 4, 0, 0, 0, time.UTC)
+
+// moltenCoreNight is the §5.3 example night: eight bosses, so "5 of 8 bosses" is real.
+func moltenCoreNight(officer, public bool) *guilds.ReportAnswer {
+	ans := onyxiaReport(officer, public)
+	ans.Raid.Title = "Molten Core"
+	bosses := []string{"Lucifron", "Magmadar", "Gehennas", "Garr", "Shazzrah", "Baron Geddon", "Golemagg", "Ragnaros"}
+	order := make([]guilds.KillOrderView, 0, len(bosses))
+	for i, name := range bosses {
+		ms := int64(150_000 + i*20_000)
+		order = append(order, guilds.KillOrderView{Name: name, Killed: true, KillMS: &ms})
+	}
+	ans.Report.KillOrder = order
+	ans.Raid.Night.Kills, ans.Raid.Night.Wipes = len(bosses), 0
+	return ans
+}
+
+// TestDumpCoachPayloads writes the messages the A11 captures render, produced by the bot's own
+// handlers and the notify embed: COACH_DUMP_PAYLOADS=1 go test -run DumpCoachPayloads.
+func TestDumpCoachPayloads(t *testing.T) {
+	if os.Getenv(dumpEnv) == "" {
+		t.Skip(dumpEnv + " is not set")
+	}
+	w, fc := coachWorld(t)
+	w.svc.now = func() time.Time { return dumpClock }
+	w.og.report = moltenCoreNight(false, false)
+	frames := []dumpedFrame{
+		w.dumpReport(t, fc, "report-coach-one", "one character", line("Zulmara", "Bloodthirst casts lost", 5, 8)),
+		w.dumpReport(t, fc, "report-coach-two", "two characters, every boss",
+			line("Zulmara", "Bloodthirst casts lost", 5, 8), line("Duskstrider", "Aimed Shot clipped", 8, 8)),
+		w.dumpReport(t, fc, "report-coach-pending", "pending", CoachLine{Character: "Zulmara", Pending: true}),
+		dumpRaidNight(),
+	}
+	raw, err := json.MarshalIndent(frames, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(dumpPath, append(raw, '\n'), 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func (w *officerWorld) dumpReport(t *testing.T, fc *fakeCoach, id, title string, lines ...CoachLine) dumpedFrame {
+	t.Helper()
+	for i := range lines {
+		lines[i].URL = dumpCoachURL
+	}
+	fc.lines = lines
+	rep := w.run(t, pressDiscord, "report")
+	return dumpedFrame{ID: id, Row: "A11", Title: "/report, Premium: " + title, Surface: "ephemeral", Clock: dumpClock.Format(time.RFC3339), Message: rep.Message}
+}
+
+func dumpRaidNight() dumpedFrame {
+	post := notify.ReportReady{
+		RaidPosted: notify.RaidPosted{
+			RaidID: 7, GuildName: "Olympus XXVII", Title: "Molten Core",
+			StartsAt: time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC), Timezone: "America/Chicago",
+			RaidURL: "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",
+		},
+		Kills: []notify.ReportKill{{Boss: "Ragnaros", Duration: 150 * time.Second}}, Came: 22, Signed: 23, LootItems: 6, CoachReady: true,
+	}
+	return dumpedFrame{ID: "report-ready-coach", Row: "A11", Title: "report_ready with the coach sentence", Surface: "channel",
+		Clock: dumpClock.Format(time.RFC3339), Message: Message{Embeds: []notify.Embed{notify.ReportReadyEmbed(post, dumpClock)}}}
 }
