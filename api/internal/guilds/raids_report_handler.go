@@ -134,7 +134,7 @@ func (s *Service) sendReport(r *http.Request, guildID int64, raid Raid) error {
 	if err != nil {
 		return err
 	}
-	posted, err := s.RaidEvents.ReportReady(ctx, guildID, s.reportReady(g, view))
+	posted, err := s.RaidEvents.ReportReady(ctx, guildID, s.reportReady(g, view, s.coachReady(ctx, view)))
 	if err != nil {
 		return fmt.Errorf("guilds: post report: %w", err)
 	}
@@ -148,9 +148,22 @@ func (s *Service) sendReport(r *http.Request, guildID int64, raid Raid) error {
 	return nil
 }
 
+// coachReady is whether the post gains the coach sentence; a failed read logs and leaves it out.
+func (s *Service) coachReady(ctx context.Context, v RaidView) bool {
+	if s.CoachHolders == nil || v.Match == nil {
+		return false
+	}
+	holds, err := s.CoachHolders.AnyCoachHolder(ctx, v.Match.ReportID)
+	if err != nil {
+		s.logger().Warn("guilds", "op", "report_coach_holders", "raid_id", v.ID, "err", err)
+		return false
+	}
+	return holds
+}
+
 // reportReady is the embed input of a done raid's view: counts and kill times only.
-func (s *Service) reportReady(g Guild, v RaidView) notify.ReportReady {
-	in := notify.ReportReady{RaidPosted: s.raidPost(g, v), Wipes: v.Night.Wipes, Came: v.Night.Came, Signed: v.Night.Signed}
+func (s *Service) reportReady(g Guild, v RaidView, coachReady bool) notify.ReportReady {
+	in := notify.ReportReady{RaidPosted: s.raidPost(g, v), Wipes: v.Night.Wipes, Came: v.Night.Came, Signed: v.Night.Signed, CoachReady: coachReady}
 	in.RaidURL = strings.TrimRight(in.RaidURL, "/")
 	for _, k := range v.Report.KillOrder {
 		if k.Killed && k.KillMS != nil {

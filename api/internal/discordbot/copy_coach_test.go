@@ -2,6 +2,8 @@ package discordbot
 
 import (
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/spectable"
 )
 
 const (
@@ -13,11 +15,11 @@ const (
 // specQuoted does.
 func coachSpecWords(t *testing.T, key string) string {
 	t.Helper()
-	segments := specCellIn(t, coachSpecPath, coachSpecHeading, key)
+	segments := spectable.Cell(t, coachSpecPath, coachSpecHeading, key)
 	if len(segments) != 1 {
 		t.Fatalf("§8.3 %s has %d quoted strings", key, len(segments))
 	}
-	return collapseSpaces(segments[0])
+	return spectable.Collapse(segments[0])
 }
 
 func TestCoachCopyIsTheSpec(t *testing.T) {

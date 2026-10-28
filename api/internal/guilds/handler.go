@@ -59,6 +59,8 @@ type Service struct {
 	Bot DiscordBot
 	// RaidEvents posts the raid embeds to the guild's channel; nil posts nothing.
 	RaidEvents RaidEvents
+	// CoachHolders tells whether any raider in a log holds log_coach; nil: never.
+	CoachHolders CoachHolders
 	// PublicBaseURL is the site origin the raid posts link to.
 	PublicBaseURL string
 	Log           *slog.Logger
@@ -311,4 +313,10 @@ func (s *Service) releaseClaim(w http.ResponseWriter, r *http.Request) {
 		s.logger().Info("guilds", "op", "claim_release", "guild_id", guildID, "user_id", actor.UserID)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "released"})
 	}
+}
+
+// CoachHolders answers the report_ready post's coach sentence, which names nobody.
+type CoachHolders interface {
+	// AnyCoachHolder reports whether any raider in the log holds log_coach on an owned character.
+	AnyCoachHolder(ctx context.Context, reportID string) (bool, error)
 }

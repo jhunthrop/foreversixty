@@ -1,6 +1,8 @@
 package guilds
 
 import (
+	"context"
+	"errors"
 	"net/http"
 	"strconv"
 	"testing"
@@ -206,5 +208,34 @@ func TestAPostThatMissesTheChannelCanBeRetried(t *testing.T) {
 	events.notPosted = false
 	if res := w.h.do(http.MethodPost, w.path("/raids/%d/report/post", night.ID), ""); res.StatusCode != http.StatusOK {
 		t.Fatalf("retry = %d: %s", res.StatusCode, readBody(res))
+	}
+}
+
+type fakeCoachHolders struct {
+	any bool
+	err error
+}
+
+func (f fakeCoachHolders) AnyCoachHolder(context.Context, string) (bool, error) { return f.any, f.err }
+
+func TestSendReport_SetsCoachReadyFromHolders(t *testing.T) {
+	for name, tc := range map[string]struct {
+		holders CoachHolders
+		want    bool
+	}{
+		"holder":  {fakeCoachHolders{any: true}, true},
+		"none":    {fakeCoachHolders{}, false},
+		"error":   {fakeCoachHolders{any: true, err: errors.New("down")}, false},
+		"not set": {nil, false},
+	} {
+		w, night, events := postWorld(t)
+		w.h.svc.CoachHolders = tc.holders
+		w.as(w.officer)
+		if res := w.h.do(http.MethodPost, w.path("/raids/%d/report/post", night.ID), ""); res.StatusCode != http.StatusOK {
+			t.Fatalf("%s: post = %d", name, res.StatusCode)
+		}
+		if got := events.reports[0].CoachReady; got != tc.want {
+			t.Errorf("%s: CoachReady = %v, want %v", name, got, tc.want)
+		}
 	}
 }

@@ -5,7 +5,11 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/spectable"
 )
+
+const coachSpecPath = "../../../design/specs/2026-10-28-log-coach.md"
 
 func onyxiaReport() ReportReady {
 	return ReportReady{
@@ -49,5 +53,21 @@ func TestReportReadyEmbedEdges(t *testing.T) {
 	e := ReportReadyEmbed(in, fixedFinish)
 	if e.Fields[0].Value != "No kills" || e.URL != "" {
 		t.Fatalf("no kills / relative link = %q %q", e.Fields[0].Value, e.URL)
+	}
+}
+
+func TestReportReadyEmbed_CoachSentenceNamesNobody(t *testing.T) {
+	in := onyxiaReport()
+	in.CoachReady = true
+	want := "Kill times, loot and the biggest changes on Forever Sixty. " +
+		spectable.Collapse(spectable.Cell(t, coachSpecPath, "### 8.3 Discord", "raidNight")[0])
+	if got := ReportReadyEmbed(in, fixedFinish).Description; got != want {
+		t.Fatalf("description = %q, want %q", got, want)
+	}
+}
+
+func TestReportReadyEmbed_NoSentenceWithoutCoachReady(t *testing.T) {
+	if got := ReportReadyEmbed(onyxiaReport(), fixedFinish).Description; got != "Kill times, loot and the biggest changes on Forever Sixty." {
+		t.Fatal(got)
 	}
 }

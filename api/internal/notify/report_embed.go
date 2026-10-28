@@ -21,29 +21,33 @@ const (
 var reportCopy = struct {
 	TitlePrefix string
 	Description string
-	KillsName   string
-	KillLine    string // %s the escaped boss, %s the kill time
-	MoreKills   string // %d the kills left out
-	NoKills     string
-	WipesName   string
-	CameName    string
-	CameOf      string // %d came, %d signed
-	LootName    string
-	LootOne     string
-	LootMany    string // %d items
+	// CoachSentence follows Description after one space when a raider has the log coach: it
+	// names and counts nobody (R-A3; experience spec 2026-10-28-log-coach §8.3 raidNight).
+	CoachSentence string
+	KillsName     string
+	KillLine      string // %s the escaped boss, %s the kill time
+	MoreKills     string // %d the kills left out
+	NoKills       string
+	WipesName     string
+	CameName      string
+	CameOf        string // %d came, %d signed
+	LootName      string
+	LootOne       string
+	LootMany      string // %d items
 }{
-	TitlePrefix: "Report: ",
-	Description: "Kill times, loot and the biggest changes on Forever Sixty.",
-	KillsName:   "Kills",
-	KillLine:    "%s %s",
-	MoreKills:   "+%d more",
-	NoKills:     "No kills",
-	WipesName:   "Wipes",
-	CameName:    "Came",
-	CameOf:      "%d of %d",
-	LootName:    "Loot",
-	LootOne:     "1 item",
-	LootMany:    "%d items",
+	TitlePrefix:   "Report: ",
+	Description:   "Kill times, loot and the biggest changes on Forever Sixty.",
+	CoachSentence: "Coach reviews for tonight's pulls are ready on Forever Sixty and in /report.",
+	KillsName:     "Kills",
+	KillLine:      "%s %s",
+	MoreKills:     "+%d more",
+	NoKills:       "No kills",
+	WipesName:     "Wipes",
+	CameName:      "Came",
+	CameOf:        "%d of %d",
+	LootName:      "Loot",
+	LootOne:       "1 item",
+	LootMany:      "%d items",
 }
 
 // ReportKill is one boss killed on the night.
@@ -61,6 +65,8 @@ type ReportReady struct {
 	Wipes        int
 	Came, Signed int
 	LootItems    int
+	// CoachReady adds the coach sentence: some raider in the log holds log_coach.
+	CoachReady bool
 }
 
 // ReportReadyEmbed is the report_ready message.
@@ -71,7 +77,7 @@ func ReportReadyEmbed(in ReportReady, now time.Time) Embed {
 	}
 	e := raidBaseEmbed(post, reportCopy.TitlePrefix, now)
 	e.Color = reportColor
-	e.Description = reportCopy.Description
+	e.Description = reportDescription(in.CoachReady)
 	e.Fields = []EmbedField{
 		raidField(reportCopy.KillsName, killsValue(in.Kills)),
 		raidField(reportCopy.WipesName, fmt.Sprint(in.Wipes)),
@@ -79,6 +85,13 @@ func ReportReadyEmbed(in ReportReady, now time.Time) Embed {
 		raidField(reportCopy.LootName, lootValue(in.LootItems)),
 	}
 	return e
+}
+
+func reportDescription(coachReady bool) string {
+	if coachReady {
+		return reportCopy.Description + " " + reportCopy.CoachSentence
+	}
+	return reportCopy.Description
 }
 
 func killsValue(kills []ReportKill) string {
