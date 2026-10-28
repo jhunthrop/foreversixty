@@ -93,11 +93,11 @@ describe('CheckoutGuildStep: loading', () => {
     expect(body).toMatch(new RegExp(`class="sr-only" role="status"[^>]*>${copy.loading}<`));
   });
 
-  it('reads the skeleton count from fs.meGuildCount as readMeGuildCount clamps it (0..4)', () => {
+  it('reads the skeleton count from fs.meGuildCount clamped to 1..4 (spec §5.7)', () => {
     localStorage.setItem(ME_GUILD_COUNT_KEY, '3');
     expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(3);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '0');
-    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toBeNull();
+    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(1);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '9');
     expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(4);
   });

@@ -65,18 +65,18 @@ describe('the guild count', () => {
     expect(readMeGuildCount()).toBe(3);
   });
 
-  it('keeps zero as zero and clearMeGuildCount forgets it', () => {
+  it('reads a stored zero as one (spec §5.7: at least one skeleton card) and clearMeGuildCount forgets it', () => {
     writeMeGuildCount(0);
-    expect(readMeGuildCount()).toBe(0);
+    expect(readMeGuildCount()).toBe(1);
     clearMeGuildCount();
     expect(readMeGuildCount()).toBe(2);
   });
 
-  it('clamps to 0..4, else 2', () => {
+  it('clamps to 1..4, else 2', () => {
     localStorage.setItem(ME_GUILD_COUNT_KEY, '9');
     expect(readMeGuildCount()).toBe(4);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '-3');
-    expect(readMeGuildCount()).toBe(0);
+    expect(readMeGuildCount()).toBe(1);
     localStorage.setItem(ME_GUILD_COUNT_KEY, 'x');
     expect(readMeGuildCount()).toBe(2);
     localStorage.removeItem(ME_GUILD_COUNT_KEY);
