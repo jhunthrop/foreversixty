@@ -30,6 +30,10 @@
     refreshDelayMs?: number;
   } = $props();
 
+  // An expression, not literal text: Svelte trims the edges of a tag's text, which would drop
+  // the space before the dot ("Last raid· Onyxia's").
+  const SEPARATOR = ' · ';
+
   let state = $state<LastRaidState>({ kind: 'loading' });
 
   const ROLE_CLASS: Record<LastRaidRole, string> = {
@@ -89,11 +93,9 @@
   {:else if view !== null}
     <p>
       {#each view.segments as segment, index (index)}
-        {#if index > 0}<span class="text-muted"> · </span>{/if}
+        {#if index > 0}<span class="text-muted">{SEPARATOR}</span>{/if}
         {#if segment.role === 'link' && view.href !== null}
-          <a class={ROLE_CLASS.link} href={view.href} data-testid="coach-last-raid-link"
-            >{segment.text}</a
-          >
+          <a class={ROLE_CLASS.link} href={view.href} data-testid="coach-last-raid-link">{segment.text}</a>
         {:else if view.stem !== null && segment.text.includes(view.stem)}
           {@const [before, after] = segment.text.split(view.stem)}
           <span class={ROLE_CLASS[segment.role]}

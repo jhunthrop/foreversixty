@@ -1,0 +1,13 @@
+{
+  "before": {
+    "thenLabelY": 1657.5,
+    "doingWellLabelY": 2516,
+    "cardBottomY": 2735.5
+  },
+  "after": {
+    "thenLabelY": 1657.5,
+    "doingWellLabelY": 2516,
+    "cardBottomY": 2735.5
+  },
+  "equal": true
+}

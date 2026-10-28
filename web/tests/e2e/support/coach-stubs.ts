@@ -3,7 +3,7 @@
 // one fixture pack per panel state of the experience spec (design/specs/2026-10-28-log-coach.md
 // section 4.2), all built from the worked example (a Fury warrior, "Bloodthirst: 9 casts lost").
 // The report is the e2e fixture night (src/fixtures/report): Baelgrim (warrior) and Sunwick
-// (priest) are in fight 3, Thalgrit (also in the pull) is the officer's pick.
+// (priest) are in fight 3, Morrowlyn (a third damage dealer) is the officer's pick.
 import type { Page, Route } from '@playwright/test';
 import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import type { Me } from '../../../src/lib/account/me-types';
@@ -31,12 +31,12 @@ export const FIGHT = 3;
 export const GUID = {
   baelgrim: 'Player-4184-000000A1',
   sunwick: 'Player-4184-000000A2',
-  thalgrit: 'Player-4184-000000A4',
+  morrowlyn: 'Player-4184-000000A3',
 };
 export const KEY = {
   baelgrim: 'us/hardcore/baelgrim',
   sunwick: 'us/hardcore/sunwick',
-  thalgrit: 'us/hardcore/thalgrit',
+  morrowlyn: 'us/hardcore/morrowlyn',
 };
 export const PANEL_URL = (guid: string = GUID.baelgrim): string =>
   `${REPORT}?fight=${FIGHT}&tab=coach&source=${guid}`;
@@ -119,7 +119,7 @@ export async function routeCoach(
 /** The pull's rating rows, which is where an officer's pick finds the character key. */
 export async function routeRatingKeys(page: Page): Promise<void> {
   const players = [
-    ['Thalgrit', KEY.thalgrit, 'Warrior'],
+    ['Morrowlyn', KEY.morrowlyn, 'Warrior'],
     ['Baelgrim', KEY.baelgrim, 'Warrior'],
     ['Sunwick', KEY.sunwick, 'Priest'],
   ].map(([name, key, cls]) => ({

@@ -239,7 +239,7 @@ test.describe('officer', () => {
     await routeCoach(page, STATES.officer);
     await page.goto(ROWS_URL);
     await expect(page.getByTestId('coach-row-line')).toHaveCount(0);
-    await page.getByTestId(`actor-${GUID.thalgrit}`).getByRole('button').first().click();
+    await page.getByTestId(`actor-${GUID.morrowlyn}`).getByRole('button').first().click();
     await page.getByTestId('coach-officer-open').click();
     await expect(page).toHaveURL(/tab=coach/);
     await expect(page.getByTestId('coach-officer-pill')).toHaveText(coachCopy.officerPill);

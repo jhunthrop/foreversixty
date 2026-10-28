@@ -6,7 +6,7 @@ import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { MOCK_DIR, settle, sideBySide, sizeTo, targetIn } from '../support/capture-kit';
 
-export const target = targetIn('2026-10-28-log-coach');
+export const target = targetIn('2026-10-27-log-coach');
 /** 390 phone, 1024 narrow desktop, 1440 the mock width, 1920 and 2000 the owner's wide screens. */
 export const WIDTHS = [390, 1024, 1440, 1920, 2000] as const;
 export const PHONE_AND_DESKTOP = [390, 1440] as const;

@@ -4,7 +4,7 @@
 // the report row strip, the Coach tab in every state, the writing-to-ready swap (with the logged
 // y values), the account line and the Discord messages (rendered from the real handlers'
 // payloads.json) with the API stubbed, writing PNGs and same-scale boards against the mock renders
-// to design/reviews/2026-10-28-log-coach/. Widths: 390, 1024, 1440, 1920, 2000.
+// to design/reviews/2026-10-27-log-coach/. Widths: 390, 1024, 1440, 1920, 2000.
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -116,7 +116,7 @@ atWidths('A3 officer on a member row, a stranger, signed out', PHONE_AND_DESKTOP
   await signInAs(page, 'officer');
   await routeCoach(page, STATES.officer);
   await openAt(page, ROWS_URL, width);
-  await page.getByTestId('actor-Player-4184-000000A4').getByRole('button').first().click();
+  await page.getByTestId('actor-Player-4184-000000A3').getByRole('button').first().click();
   await settle(page);
   await shoot(page, 'a3-officer', 'opened-row', width);
   for (const kind of ['stranger', 'signedOut'] as const) {
