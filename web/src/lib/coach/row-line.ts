@@ -1,6 +1,7 @@
 // web/src/lib/coach/row-line.ts
 // What the row strip says for a settled `line=1` answer (experience spec 3.2 and 8.2). Pure, so
-// the strip and its tests share one decision. `null` renders nothing.
+// the strip and its tests share one decision. `null` renders nothing. The strip never collapses:
+// every settled answer but "not reviewable" has a line, and the slot is reserved at its tallest.
 import { coachCopy, fill } from './copy';
 import type { CoachFull, CoachTeaser } from './types';
 
@@ -20,10 +21,21 @@ export interface RowLine {
 
 const count = (n: number, one: string, many: string): string => (n === 1 ? one : fill(many, { n }));
 
+const UPGRADE_TAIL = ` · ${coachCopy.upgrade}`;
+
+function plain(text: string): RowLine {
+  return { lead: text, title: '', spellId: null, upgrade: '' };
+}
+
 function freeLine(answer: CoachTeaser): RowLine | null {
-  if (answer.status !== 'ready' || answer.finding_count === 0) return null;
+  if (answer.status !== 'ready') return null;
   const { finding_count: n, fix_first: first } = answer;
-  if (first === null) return plain(count(n, coachCopy.rowFreeNoFirstOne, coachCopy.rowFreeNoFirst));
+  if (n === 0) return plain(coachCopy.rowClean);
+  if (first === null) {
+    // The Premium sentence is its own target: the gold link, not muted lead text.
+    const lead = count(n, coachCopy.rowFreeNoFirstOne, coachCopy.rowFreeNoFirst).replace(UPGRADE_TAIL, '');
+    return { lead, title: '', spellId: null, upgrade: coachCopy.upgrade };
+  }
   const template = n === 1 ? coachCopy.rowFreeOne : coachCopy.rowFree;
   const [lead = ''] = template.split('{title}');
   return {
@@ -32,10 +44,6 @@ function freeLine(answer: CoachTeaser): RowLine | null {
     spellId: first.spell_id,
     upgrade: coachCopy.upgrade,
   };
-}
-
-function plain(text: string): RowLine {
-  return { lead: text, title: '', spellId: null, upgrade: '' };
 }
 
 function fullLine(answer: CoachFull): RowLine | null {
@@ -53,7 +61,15 @@ function fullLine(answer: CoachFull): RowLine | null {
   return { lead, title: first.title, spellId: firstSpell ?? null, upgrade: '' };
 }
 
-export function rowLineFor(answer: CoachFull | CoachTeaser | null): RowLine | null {
+/**
+ * `fallbackSpec` is the roster's class label, for an answer that carries no spec (a teaser from an
+ * API that does not send one yet).
+ */
+export function rowLineFor(answer: CoachFull | CoachTeaser | null, fallbackSpec = ''): RowLine | null {
   if (answer === null) return null;
+  if (answer.status === 'preparing') {
+    const spec = answer.spec !== undefined && answer.spec !== '' ? answer.spec : fallbackSpec;
+    return plain(fill(coachCopy.rowPreparing, { Spec: spec }));
+  }
   return answer.access === 'teaser' ? freeLine(answer) : fullLine(answer);
 }

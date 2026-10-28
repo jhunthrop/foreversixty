@@ -147,6 +147,7 @@ function teaser(raw: Raw): CoachTeaser {
     status: status(raw.status),
     access: 'teaser',
     finding_count: num(raw.finding_count),
+    ...(str(raw.spec) === '' ? {} : { spec: str(raw.spec) }),
     fix_first:
       first === null
         ? null

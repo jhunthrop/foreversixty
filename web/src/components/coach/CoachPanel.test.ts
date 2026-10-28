@@ -160,6 +160,21 @@ describe('CoachPanel', () => {
     expect(panel(null, { view: viewOf('loading') })).toContain('Reading the pull…');
   });
 
+  it('the status slot is its own row on phone, so the swap moves nothing', () => {
+    const writing = coachWritingReview();
+    const reserve = reserveFor(writing.review);
+    for (const html of [panel(writing, { reserve }), panel(coachModelReview(), { reserve })]) {
+      expect(html).toMatch(/class="[^"]*basis-full[^"]*md:basis-auto[^"]*"\s+aria-live="polite"/);
+    }
+  });
+
+  it('the rail is three card surfaces', () => {
+    const body = panel(coachModelReview());
+    for (const id of ['coach-player-card', 'coach-cannot', 'coach-footer-card']) {
+      expect(body).toMatch(new RegExp(`bg-raised border-line[^"]*"[^>]*data-testid="${id}"`));
+    }
+  });
+
   it('reserves the tab height and names the heading for focus', () => {
     const body = panel(coachModelReview());
     expect(body).toContain('min-h-[420px]');

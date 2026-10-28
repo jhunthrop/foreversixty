@@ -21,7 +21,11 @@
     actor,
     rowOpen = false,
     apiBase = undefined,
-  }: { actor: { guid: string; name: string }; rowOpen?: boolean; apiBase?: string } = $props();
+  }: {
+    actor: { guid: string; name: string; class?: string };
+    rowOpen?: boolean;
+    apiBase?: string;
+  } = $props();
 
   const readReport = useCoachRow();
   // svelte-ignore state_referenced_locally
@@ -51,7 +55,7 @@
     fetchFightCoach(wanted.reportId, wanted.fightIndex, wanted.playerKey, apiBase, { line: true })
       .then((answer) => {
         if (!current) return;
-        line = rowLineFor(answer);
+        line = rowLineFor(answer, actor.class ?? '');
         phase = 'line';
       })
       .catch(() => {

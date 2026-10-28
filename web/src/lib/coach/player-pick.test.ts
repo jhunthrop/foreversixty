@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Me } from '../account/me-types';
-import { pickPlayer } from './player-pick';
+import { pickPlayer, showsOfficerPick } from './player-pick';
 import { viewerFromMe } from './viewer';
 
 const roster = [
@@ -39,5 +39,12 @@ describe('pickPlayer', () => {
   it('enemies and unknown sources choose nobody', () => {
     expect(pickPlayer(owner, roster, 'enemies').unit).toBeNull();
     expect(pickPlayer(owner, roster, 'Gone').unit).toBeNull();
+  });
+
+  it('the officer prompt shows for an officer with nobody chosen, never for anyone else', () => {
+    const officer = viewerFromMe(meWith(true));
+    expect(showsOfficerPick(officer, pickPlayer(officer, roster, 'enemies'))).toBe(true);
+    expect(showsOfficerPick(owner, pickPlayer(owner, roster, 'enemies'))).toBe(false);
+    expect(showsOfficerPick(officer, pickPlayer(officer, roster, 'P-3'))).toBe(false);
   });
 });

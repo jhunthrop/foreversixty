@@ -32,7 +32,7 @@ describe('CoachRowStrip', () => {
   });
   it('loading holds the strip height and says so to screen readers', () => {
     const { body } = render(CoachRowStrip, { props: props(null, 'loading') });
-    expect(body).toContain('min-h-[52px]');
+    expect(body).toContain('min-h-[88px]');
     expect(body).toContain('Reading the pull…');
   });
   it('error offers Try again', () => {

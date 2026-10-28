@@ -5,7 +5,7 @@ import { SIGNED_OUT_VIEWER, coachTabListed, ownedKey, viewerFromMe } from './vie
 function me(overrides: Partial<Me> = {}): Me {
   return {
     user: { id: 1, battletag: null, email: null, role: 'user', anonymize: false },
-    characters: [{ key: 'us/normal/bow-jackzon', region: 'us', ruleset: 'normal', name: 'Bow Jackzon' }],
+    characters: [{ key: 'us/pvp/bow-jackzon', region: 'us', ruleset: 'pvp', name: 'Bow Jackzon' }],
     guilds: [],
     ...overrides,
   } as Me;
@@ -29,7 +29,23 @@ describe('viewerFromMe', () => {
 describe('ownedKey', () => {
   const viewer = viewerFromMe(me());
   it('matches the logged unit by display name, ignoring case and the realm segment', () => {
-    expect(ownedKey(viewer, 'Bow-Jackzon-ClassicBetaPvP-')).toBe('us/normal/bow-jackzon');
+    expect(ownedKey(viewer, 'Bow-Jackzon-ClassicBetaPvP-')).toBe('us/pvp/bow-jackzon');
+  });
+  it('a same-named stranger on another ruleset is not the viewer', () => {
+    expect(ownedKey(viewer, 'Bow-Jackzon-ClassicBetaPvE-')).toBeNull();
+  });
+  it('two own characters of one name resolve by ruleset, and an unknown realm is ambiguous', () => {
+    const twins = viewerFromMe(
+      me({
+        characters: [
+          { key: 'us/pvp/bow-jackzon', region: 'us', ruleset: 'pvp', name: 'Bow Jackzon' },
+          { key: 'us/normal/bow-jackzon', region: 'us', ruleset: 'normal', name: 'Bow Jackzon' },
+        ],
+      }),
+    );
+    expect(ownedKey(twins, 'Bow-Jackzon-ClassicBetaPvP-')).toBe('us/pvp/bow-jackzon');
+    expect(ownedKey(twins, 'Bow-Jackzon-ClassicBetaPvE-')).toBe('us/normal/bow-jackzon');
+    expect(ownedKey(twins, 'Bow-Jackzon')).toBeNull();
   });
   it('is null for anyone else', () => {
     expect(ownedKey(viewer, 'Simfury-ClassicBetaPvP-')).toBeNull();

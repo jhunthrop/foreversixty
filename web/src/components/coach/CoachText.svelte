@@ -1,5 +1,7 @@
 <!-- web/src/components/coach/CoachText.svelte -->
-<!-- A line of coach prose with its spell and item names as tokens (spec 3.1, tenets 2 and 3):
+<!-- Follow-up: spell tokens carry a native title only; the site has no spell tooltip component (the
+     planner's is talent-specific), so a shared one is a separate piece of work.
+     A line of coach prose with its spell and item names as tokens (spec 3.1, tenets 2 and 3):
      a spell is its 16 px icon and name, an item opens the shared item tooltip. A name the build's
      dictionary does not hold stays plain text. -->
 <script lang="ts">
@@ -22,6 +24,6 @@
   {#if !('entry' in part)}{part.text}{:else if part.entry.kind === 'spell'}<span
       class="inline-flex items-center gap-1 align-bottom"
       data-testid="coach-name-spell"
-      ><SpellIcon url={names.iconUrl(part.entry.id)} size={16} />{part.text}</span
+      ><SpellIcon url={names.iconUrl(part.entry.id)} size={16} name={part.text} />{part.text}</span
     >{:else}<ItemHover itemId={part.entry.id} {classSlug} {build} />{/if}
 {/each}

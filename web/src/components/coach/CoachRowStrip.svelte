@@ -30,7 +30,7 @@
   } = $props();
 
   const BASE =
-    'border-line-soft flex min-h-[52px] items-center border-t bg-[#0b0f17] pr-2 pl-12 text-[13px] leading-[18px] md:min-h-9 md:pl-[100px]';
+    'border-line-soft flex min-h-[88px] items-center border-t bg-[#0b0f17] pr-2 pl-12 text-[13px] leading-[18px] md:min-h-9 md:pl-[100px]';
   const FOCUS = 'focus-visible:outline-gold focus-visible:-outline-offset-2 focus-visible:outline-2';
 </script>
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   coachModelReview,
   coachNotReviewable,
+  coachPreparing,
   coachRulesReview,
   coachTeaser,
 } from '../../test-support/coach-fixtures';
@@ -28,11 +29,6 @@ describe('rowLineFor', () => {
   it('free with one finding reads in the singular', () => {
     expect(rowLineFor(coachTeaser({ finding_count: 1 }))?.lead).toBe('1 thing to fix · First: ');
   });
-  it('free with a count and no first title', () => {
-    expect(rowLineFor(coachTeaser({ fix_first: null }))?.lead).toBe(
-      '3 things to fix · Read the full review with Premium',
-    );
-  });
   it('Premium with no Fix first but Then items', () => {
     const base = coachRulesReview();
     const answer = { ...base, review: { ...base.review, fixFirst: null } };
@@ -43,9 +39,30 @@ describe('rowLineFor', () => {
     const answer = { ...base, review: { ...base.review, fixFirst: null, thenFix: [] } };
     expect(rowLineFor(answer)?.lead).toBe('Nothing to fix on this pull that the log can show.');
   });
-  it('null, zero findings and not reviewable render nothing', () => {
+  it('free with a count and no first title keeps Premium as the gold link', () => {
+    const line = rowLineFor(coachTeaser({ fix_first: null }));
+    expect(line).toEqual({
+      lead: '3 things to fix',
+      title: '',
+      spellId: null,
+      upgrade: 'Read the full review with Premium',
+    });
+  });
+  it('a free owner with no findings shows the no-findings line, not nothing', () => {
+    expect(rowLineFor(coachTeaser({ finding_count: 0, fix_first: null }))?.lead).toBe(
+      'Nothing to fix on this pull that the log can show.',
+    );
+  });
+  it('preparing names the spec from the answer, else the roster fallback', () => {
+    expect(rowLineFor(coachPreparing(), 'Warrior')?.lead).toBe(
+      'Top Warrior logs for this boss are still loading.',
+    );
+    expect(rowLineFor({ ...coachPreparing(), spec: 'Fury' }, 'Warrior')?.lead).toBe(
+      'Top Fury logs for this boss are still loading.',
+    );
+  });
+  it('null and not reviewable render nothing', () => {
     expect(rowLineFor(null)).toBeNull();
-    expect(rowLineFor(coachTeaser({ finding_count: 0, fix_first: null }))).toBeNull();
     expect(rowLineFor(coachNotReviewable())).toBeNull();
   });
 });

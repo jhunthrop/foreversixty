@@ -22,10 +22,10 @@
   {:else}
     <h3 class="label text-gold" data-testid="coach-teaser-count">{count}</h3>
     {#if answer.fix_first !== null}
-      <div class="mt-2 flex items-center gap-2">
+      <div class="border-gold mt-2 flex items-center gap-2 border-l-2 pl-4">
         <SpellIcon url={names.iconUrl(answer.fix_first.spell_id)} size={32} />
         <p class="text-strong text-[20px] leading-7 font-bold" data-testid="coach-teaser-first">
-          {answer.fix_first.title}
+          {fill(coachCopy.teaserFirst, { title: answer.fix_first.title })}
         </p>
       </div>
     {/if}

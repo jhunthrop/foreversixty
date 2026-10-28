@@ -9,6 +9,7 @@ const anchors: Record<string, CoachAnchor> = {
   a2: { kind: 'death', death: `death-${FIXTURE_GUID}-200000` },
   a3: { kind: 'time', at_ms: 65_000 },
   a4: { kind: 'aura', spell_id: 5, debuff: true },
+  a5: { kind: 'resource', at_ms: 10_000, to_ms: 25_000 },
 };
 const context = {
   anchors,
@@ -20,12 +21,13 @@ const context = {
 
 describe('chips', () => {
   it('labels by the copy grammar and links through coachAnchorHref', () => {
-    const chips = chipsFor(['a1', 'a2', 'a3', 'a4'], context);
+    const chips = chipsFor(['a1', 'a2', 'a3', 'a4', 'a5'], context);
     expect(chips.map((chip) => chip.label)).toEqual([
       'Bloodthirst · Casts',
       'Death · 3:20',
       'Timelines · 1:05',
       'Sunder · Debuffs',
+      'Resources · 0:10–0:25',
     ]);
     expect(chips[0]?.href).toBe(coachAnchorHref(3, 1, FIXTURE_GUID, anchors['a1']!));
   });

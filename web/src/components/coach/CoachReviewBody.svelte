@@ -121,7 +121,13 @@
               {@render linkLines(item.links, index + 1)}
               <CoachChips chips={chipsOf(item.anchors)} {names} reserved={held} />
             {:else}
-              <div class="{slotClass('thenWhy', held)} {slotClass('chips', held)}" aria-hidden="true"></div>
+              <!-- The replaced item's height: title row, why, links when it had any, chips. -->
+              <div aria-hidden="true" data-testid="coach-then-empty">
+                <div class="h-6"></div>
+                <div class="mt-1 {slotClass('thenWhy', held)}"></div>
+                {#if held && linkSlot(index + 1)}<div class="mt-2 {slotClass('links', held)}"></div>{/if}
+                <div class="mt-3 {slotClass('chips', held)}"></div>
+              </div>
             {/if}
           </li>
         {/each}

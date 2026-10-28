@@ -12,7 +12,7 @@ const boss = {
 const report = { reportId: 'abc123', fight: boss, firstFight: 1 };
 const owner = viewerFromMe({
   user: { id: 1 },
-  characters: [{ key: 'us/normal/bow-jackzon', name: 'Bow Jackzon' }],
+  characters: [{ key: 'us/pvp/bow-jackzon', ruleset: 'pvp', name: 'Bow Jackzon' }],
   guilds: [],
   entitlements: { log_coach: true, officer_views: true },
 } as unknown as Me);
@@ -22,7 +22,7 @@ describe('lineRequestFor', () => {
     expect(lineRequestFor(owner, 'Bow-Jackzon-ClassicBetaPvP-', report)).toEqual({
       reportId: 'abc123',
       fightIndex: 3,
-      playerKey: 'us/normal/bow-jackzon',
+      playerKey: 'us/pvp/bow-jackzon',
     });
   });
   it('asks for nobody else, the signed-out, trash or the whole night', () => {

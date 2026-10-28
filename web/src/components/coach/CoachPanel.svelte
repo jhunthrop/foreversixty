@@ -63,7 +63,7 @@
 
   const displayName = $derived(splitUnitName(playerName).name);
   const full = $derived(answer !== null && answer.access !== 'teaser' ? answer : null);
-  const specName = $derived(full?.spec ?? spec);
+  const specName = $derived(answer?.spec ?? spec);
   const swapped = $derived(view.state === 'ready_model' && reserve !== null);
 
   const title = $derived.by(() => {
@@ -116,7 +116,11 @@
       >
         {title}
       </h2>
-      <div class="flex h-5 items-center gap-2 text-[13px]" aria-live="polite" data-testid="coach-status">
+      <div
+        class="flex h-5 basis-full items-center gap-2 text-[13px] md:basis-auto"
+        aria-live="polite"
+        data-testid="coach-status"
+      >
         {#if view.officer}
           <span class="pill-site" data-testid="coach-officer-pill">{coachCopy.officerPill}</span>
         {:else if statusText !== ''}
@@ -206,7 +210,7 @@
       class="flex w-full flex-col gap-5 min-[1100px]:w-[320px] min-[1100px]:shrink-0"
       data-testid="coach-rail"
     >
-      <div class="flex items-center gap-3" data-testid="coach-player-card">
+      <div class="{CARD} hidden items-center gap-3 p-4 md:flex" data-testid="coach-player-card">
         <ClassIcon {className} size={40} />
         <div class="min-w-0">
           <p class="truncate text-[15px] font-semibold" style={`color: ${classColorVar(className)}`}>
@@ -216,7 +220,7 @@
         </div>
       </div>
       {#if full.review.couldntCheck.length > 0}
-        <section data-testid="coach-cannot">
+        <section class="{CARD} p-4" data-testid="coach-cannot">
           <h3 class="label text-muted">{coachCopy.labelCannot}</h3>
           <ul class="mt-1 flex flex-col gap-1">
             {#each full.review.couldntCheck as line, index (index)}
@@ -226,14 +230,16 @@
         </section>
       {/if}
       {#if showBody}
-        <p class="text-muted text-[12px] leading-[18px]" data-testid="coach-footer">{footer}</p>
-        {#if historyHref !== null && !view.officer}
-          <a
-            href={historyHref}
-            class="text-text hover:text-strong focus-visible:outline-gold inline-flex min-h-11 items-center text-[13px] underline focus-visible:outline-2"
-            data-testid="coach-history">{coachCopy.history}</a
-          >
-        {/if}
+        <div class="{CARD} p-4" data-testid="coach-footer-card">
+          <p class="text-muted text-[12px] leading-[18px]" data-testid="coach-footer">{footer}</p>
+          {#if historyHref !== null && !view.officer}
+            <a
+              href={historyHref}
+              class="text-text hover:text-strong focus-visible:outline-gold inline-flex min-h-11 items-center text-[13px] underline focus-visible:outline-2"
+              data-testid="coach-history">{coachCopy.history}</a
+            >
+          {/if}
+        </div>
       {/if}
     </aside>
   {/if}

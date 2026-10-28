@@ -30,3 +30,8 @@ export function pickPlayer(viewer: CoachViewer, roster: readonly RosterUnit[], s
   if (ownKey === null && !viewer.officer) return { unit: null, owned, ownKey: null };
   return { unit, owned, ownKey };
 }
+
+/** "Open a player's row and choose Coach review" is for an officer with nobody chosen (spec 14). */
+export function showsOfficerPick(viewer: CoachViewer, pick: PlayerPick): boolean {
+  return pick.unit === null && viewer.signedIn && viewer.officer;
+}

@@ -25,6 +25,14 @@ function deathMs(death: string | undefined): number | null {
   return Number.isFinite(tail) ? tail : null;
 }
 
+/** `m:ss`, or `m:ss–m:ss` when the anchor names a window that ends after it starts. */
+function span(anchor: CoachAnchor): string {
+  const start = anchor.at_ms ?? 0;
+  return anchor.to_ms !== undefined && anchor.to_ms > start
+    ? `${clock(start)}–${clock(anchor.to_ms)}`
+    : clock(start);
+}
+
 export function chipLabel(anchor: CoachAnchor, spellName: (id: number) => string): string | null {
   const spell = anchor.spell_id === undefined ? '' : spellName(anchor.spell_id);
   switch (anchor.kind) {
@@ -37,9 +45,9 @@ export function chipLabel(anchor: CoachAnchor, spellName: (id: number) => string
     case 'healing':
       return fill(coachCopy.anchorHealing, { Spell: spell });
     case 'time':
-      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorTime, { t: clock(anchor.at_ms) });
+      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorTime, { t: span(anchor) });
     case 'resource':
-      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorResource, { t: clock(anchor.at_ms) });
+      return anchor.at_ms === undefined ? null : fill(coachCopy.anchorResource, { t: span(anchor) });
     case 'death': {
       const at = deathMs(anchor.death);
       return at === null ? null : fill(coachCopy.anchorDeath, { t: clock(at) });

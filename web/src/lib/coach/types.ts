@@ -19,6 +19,8 @@ export interface CoachTeaser {
   readonly access: 'teaser';
   readonly finding_count: number;
   readonly fix_first: CoachTeaserFirst | null;
+  /** The reviewed player's spec, when the API sends it (it does not for older answers). */
+  readonly spec?: string;
 }
 
 export type CoachAnchorKind = 'cast' | 'aura' | 'death' | 'resource' | 'time' | 'buffs' | 'healing';

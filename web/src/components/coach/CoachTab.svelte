@@ -9,7 +9,7 @@
   import { coachCopy } from '../../lib/coach/copy';
   import { EMPTY_NAMES, loadCoachNames, type CoachNames } from '../../lib/coach/names';
   import { createCoachPanelState } from '../../lib/coach/panel-state.svelte';
-  import { pickPlayer, type RosterUnit } from '../../lib/coach/player-pick';
+  import { pickPlayer, showsOfficerPick, type RosterUnit } from '../../lib/coach/player-pick';
   import { playerCardLine } from '../../lib/coach/player-card';
   import { viewOf } from '../../lib/coach/states';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
@@ -96,7 +96,7 @@
 
   const view = $derived.by(() => {
     if (viewerState.resolved && !viewer.signedIn) return viewOf('signed_out');
-    if (unresolved) return viewOf('not_available');
+    if (unresolved || (unit === null && viewerState.resolved)) return viewOf('not_available');
     return panel.view;
   });
   const signInHref = $derived(
@@ -130,7 +130,7 @@
     </ul>
   {/if}
 
-  {#if unit === null && viewerState.resolved && viewer.signedIn}
+  {#if viewerState.resolved && showsOfficerPick(viewer, pick)}
     <p class="text-muted text-[14px]" data-testid="coach-pick">{coachCopy.officerPick}</p>
   {:else}
     <CoachPanel
@@ -141,7 +141,7 @@
       {names}
       build={activeBuild.build}
       {classSlug}
-      spec=""
+      spec={unit?.class ?? ''}
       playerName={unit?.name ?? ''}
       playerGuid={unit?.guid ?? ''}
       {firstFight}
