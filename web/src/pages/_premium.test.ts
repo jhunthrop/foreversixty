@@ -1,10 +1,12 @@
 // web/src/pages/_premium.test.ts
 // Container renders of the plans page (spec 2026-10-27-launch-pricing §B3). `renderPremium` is the
 // shared entry point: later lanes render the same page through it and add their own cases.
+import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../lib/billing/plans-page-copy';
 import { createPageContainer } from '../test-support/page-container';
+import { specCell, specString } from '../test-support/spec-table';
 import Premium from './premium.astro';
 
 /** Renders /premium through Base.astro and returns its parsed document. */
@@ -98,5 +100,65 @@ describe('the plans page region B', () => {
 
   it('no loot-council example', async () => {
     expect((await renderPremium()).body.textContent).not.toContain('EXAMPLE · A REAL LOOT COUNCIL');
+  });
+});
+
+describe('the Premium card when the account has Premium', () => {
+  const SPEC = new URL('../../../design/specs/2026-10-27-subscribe-and-join.md', import.meta.url);
+  const HEADING = '### 9.2';
+  const SOURCES = ['own', 'seat', 'grant'] as const;
+  const premiumCard = async (): Promise<Element> => {
+    const card = (await renderPremium()).querySelector('[data-region=a] [data-plan=premium]');
+    if (!card) throw new Error('no Premium card');
+    return card;
+  };
+  const sourceScripts = (doc: Document): Element[] =>
+    [...doc.head.querySelectorAll('script:not([src])')].filter((s) =>
+      s.textContent?.includes('fs.premiumSource'),
+    );
+
+  it('one head inline script copies the three stored words onto data-premium', async () => {
+    const doc = await renderPremium();
+    const scripts = sourceScripts(doc);
+    expect(scripts).toHaveLength(1);
+    const text = scripts[0]?.textContent ?? '';
+    expect(text).toContain('dataset.premium');
+    for (const word of SOURCES) expect(text).toContain(word);
+    expect(doc.querySelectorAll('script[src*="_astro"]')).toHaveLength(0);
+  });
+
+  it('holds all three source lines beside the default audience, each in the reserved cell', async () => {
+    const card = await premiumCard();
+    const cell = card.querySelector('[data-part=audience]');
+    expect(classesOf(cell)).toContain('min-h-[18px]');
+    expect(cell?.querySelector('[data-default]')?.textContent?.trim()).toBe(plansPageCopy.premium.audience);
+    const lines = specCell(SPEC, HEADING, '`/premium` card line');
+    SOURCES.forEach((source, index) => {
+      expect(cell?.querySelector(`[data-source=${source}]`)?.textContent?.trim()).toBe(lines[index]);
+    });
+  });
+
+  it('holds See your plan beside the default buttons, in the fixed action slot', async () => {
+    const card = await premiumCard();
+    const slot = card.querySelector('.action-slot');
+    expect(classesOf(slot)).toContain('min-h-11');
+    const link = slot?.querySelector('a[data-owned]');
+    expect(link?.textContent?.trim()).toBe(specString(SPEC, HEADING, 'Buttons', 2));
+    expect(link?.getAttribute('href')).toBe('/account#plan');
+    expect(classesOf(link)).toEqual(expect.arrayContaining(['border-line-warm-strong', 'text-strong']));
+    expect(classesOf(link)).not.toContain('text-gold');
+    expect(slot?.querySelectorAll('a[data-iv]').length).toBeGreaterThan(0);
+  });
+
+  it('the other cards carry no owned versions', async () => {
+    const doc = await renderPremium();
+    expect(
+      doc.querySelectorAll('[data-plan=guild] [data-owned], [data-plan=free] [data-source]'),
+    ).toHaveLength(0);
+  });
+
+  it('has a data-premium selector for each word', () => {
+    const source = readFileSync(new URL('../components/premium/PlanCard.astro', import.meta.url), 'utf8');
+    for (const word of SOURCES) expect(source).toMatch(new RegExp(`html\\[data-premium=['"]${word}['"]\\]`));
   });
 });

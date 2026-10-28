@@ -11,7 +11,12 @@ import PlanCard from '../components/premium/PlanCard.astro';
 import PremiumExampleCard from '../components/premium/PremiumExampleCard.astro';
 import { checkoutCopy } from '../lib/billing/copy';
 import { FOUNDER_WINDOW_CLOSES } from '../lib/billing/plans';
+import { premiumSourceCopy } from '../lib/billing/premium-source-copy';
+import { PREMIUM_SOURCE_KEY } from '../lib/account/premium-hint';
 import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
+
+// The three words the session stores (premium-hint.ts); the head script accepts only these.
+const PREMIUM_SOURCES = Object.keys(premiumSourceCopy.premiumCard);
 ---
 
 <Base title={copy.title} description={copy.description} path="/premium">
@@ -21,6 +26,12 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     // server decides, so only the display can be stale.
     // No "before" state: founder prices apply from launch until the window closes.
     document.documentElement.dataset.founder = Date.now() < Date.parse(closes) ? 'open' : 'closed';
+  </script>
+  <script slot="head" is:inline define:vars={{ key: PREMIUM_SOURCE_KEY, sources: PREMIUM_SOURCES }}>
+    try {
+      const source = localStorage.getItem(key);
+      if (sources.includes(source)) document.documentElement.dataset.premium = source;
+    } catch {}
   </script>
   <main id="main" tabindex="-1" class="plans-page" data-testid="plans-page">
     <div class="band full-bleed">

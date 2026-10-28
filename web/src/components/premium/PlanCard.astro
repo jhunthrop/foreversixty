@@ -6,6 +6,7 @@
 import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
 import PriceBlock from './PriceBlock.astro';
 import { FOUNDER_STATES, buttonLabel, checkoutHref, founderKey, planBlock, trialParts } from './model';
 
@@ -22,6 +23,9 @@ const buttonTone = guild
   ? 'border-line-warm-strong text-text active:bg-card-top'
   : 'plan-button-gold border-gold text-gold';
 const buttonClass = `${SECONDARY_BUTTON_FIXED} plan-button ${buttonTone} w-full justify-center text-center`;
+// The owned state's neutral link: never gold, even on the gold card.
+const ownedButtonClass = `${SECONDARY_BUTTON_FIXED} plan-button plan-owned border-line-warm-strong text-strong w-full justify-center text-center`;
+const OWNED_SOURCES = Object.entries(premiumSourceCopy.premiumCard);
 const trial = trialParts();
 const cardId = plan === 'free' ? 'free' : undefined;
 ---
@@ -34,7 +38,20 @@ const cardId = plan === 'free' ? 'free' : undefined;
   data-highlight={guild ? undefined : ''}
 >
   <h2 class="plan-name">{block.name}</h2>
-  <p class="audience">{block.audience}</p>
+  {plan === 'premium' ? (
+    <div class="audience-cell min-h-[18px]" data-part="audience">
+      <p class="audience" data-default>
+        {block.audience}
+      </p>
+      {OWNED_SOURCES.map(([source, line]) => (
+        <p class="audience owned-line" data-source={source}>
+          {line}
+        </p>
+      ))}
+    </div>
+  ) : (
+    <p class="audience">{block.audience}</p>
+  )}
 
   {priced ? (
     <PriceBlock plan={priced} />
@@ -45,7 +62,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
     </div>
   )}
 
-  <div class="action-slot">
+  <div class="action-slot min-h-11">
     {priced ? (
       INTERVALS.flatMap((interval) =>
         FOUNDER_STATES.map((founder) => (
@@ -61,6 +78,11 @@ const cardId = plan === 'free' ? 'free' : undefined;
       )
     ) : (
       <p class="free-note">{free.signIn}</p>
+    )}
+    {plan === 'premium' && (
+      <a href="/account#plan" class={ownedButtonClass} data-owned>
+        {premiumSourceCopy.buttons.seePlan}
+      </a>
     )}
   </div>
 
@@ -135,6 +157,38 @@ const cardId = plan === 'free' ? 'free' : undefined;
   }
   .audience {
     margin-bottom: 4px;
+  }
+  /* Premium's audience line: the default and the three source lines stack in one grid cell, so the
+     cell is as tall as the tallest and the card never changes height; the unpicked ones are
+     visibility:hidden (out of the accessibility tree too). data-premium is set before first paint. */
+  .audience-cell {
+    display: grid;
+    margin-bottom: 4px;
+  }
+  .audience-cell > .audience {
+    grid-area: 1 / 1;
+    margin-bottom: 0;
+  }
+  .owned-line {
+    visibility: hidden;
+  }
+  :global(html[data-premium]) .audience-cell [data-default] {
+    visibility: hidden;
+  }
+  :global(html[data-premium='own']) .owned-line[data-source='own'],
+  :global(html[data-premium='seat']) .owned-line[data-source='seat'],
+  :global(html[data-premium='grant']) .owned-line[data-source='grant'] {
+    visibility: visible;
+  }
+  /* The See your plan link replaces the subscribe buttons in the same 44 px slot. */
+  .plan-owned {
+    display: none;
+  }
+  :global(html[data-premium]) .plan-owned {
+    display: inline-flex;
+  }
+  :global(html[data-premium]) .action-slot .plan-button:not(.plan-owned) {
+    display: none;
   }
   .free-price {
     height: 86px;
