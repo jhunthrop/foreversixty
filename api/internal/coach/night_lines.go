@@ -12,6 +12,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 )
 
@@ -40,11 +41,13 @@ join rating_scores rs on rs.player_key = c.key
 where rs.report_id = $1 and c.user_id = $2
 order by c.name, c.key`
 
-// holdersInReportSQL is the accounts owning a character with a rated fight in the report.
-const holdersInReportSQL = `
+// holdersInReportSQL is the accounts owning a character with a rated fight in the report,
+// when the report is evidence (presence.EvidenceReport: not private, not flagged).
+var holdersInReportSQL = `
 select distinct c.user_id from characters c
 join rating_scores rs on rs.player_key = c.key
-where rs.report_id = $1 and c.user_id is not null
+join reports rep on rep.id = rs.report_id
+where rs.report_id = $1 and c.user_id is not null and ` + presence.EvidenceReport("rep") + `
 order by c.user_id`
 
 // CoachLine is one character's night line for Discord (Task 32): Pending when its packs
@@ -241,19 +244,10 @@ func (s *Service) ownedInReport(ctx context.Context, userID int64, reportID stri
 }
 
 // AnyCoachHolder answers notify's raid-night sentence (Task 32): whether any account owning
-// a character with a rated fight in the report holds log_coach. A flagged or private report
-// has no coach sentence: its coach routes refuse it.
+// a character with a rated fight in the report holds log_coach. Only an evidence report
+// (presence.EvidenceReport) has the sentence: it is posted to the guild's channel, so a
+// private report (open only to its uploader) and a flagged one never carry it.
 func (s *Service) AnyCoachHolder(ctx context.Context, reportID string) (bool, error) {
-	rep, err := s.Reports.Get(ctx, reportID)
-	if errors.Is(err, reports.ErrNotFound) {
-		return false, nil
-	}
-	if err != nil {
-		return false, fmt.Errorf("coach: holders in %s: %w", reportID, err)
-	}
-	if rep.Flagged != nil || rep.Visibility == reports.Private {
-		return false, nil
-	}
 	rows, err := s.Store.DB.Query(ctx, holdersInReportSQL, reportID)
 	if err != nil {
 		return false, fmt.Errorf("coach: holders in %s: %w", reportID, err)
