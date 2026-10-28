@@ -9,7 +9,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/jackc/pgx/v5"
 
@@ -17,19 +16,19 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
 
-// rulesetRealmNames is the realm a ruleset is on Forever, as the site writes it (the web's
-// rulesetLabel): on Forever a realm is its ruleset.
-var rulesetRealmNames = map[string]string{
-	character.RulesetNormal:   "Normal",
-	character.RulesetPvP:      "PvP",
-	character.RulesetRP:       "Roleplay",
-	character.RulesetHardcore: "Hardcore",
-}
-
-// realmDisplay is ruleset's realm name; a ruleset the site has not heard of is echoed.
-func realmDisplay(ruleset string) string {
-	if name, ok := rulesetRealmNames[ruleset]; ok {
-		return name
+// rulesetLabel is a ruleset as the site writes it (the web's rulesetLabel; the character
+// package carries only the ids): on Forever a realm is its ruleset. A ruleset the site has
+// not heard of is echoed.
+func rulesetLabel(ruleset string) string {
+	switch ruleset {
+	case character.RulesetNormal:
+		return "Normal"
+	case character.RulesetPvP:
+		return "PvP"
+	case character.RulesetRP:
+		return "Roleplay"
+	case character.RulesetHardcore:
+		return "Hardcore"
 	}
 	return ruleset
 }
@@ -38,6 +37,7 @@ func realmDisplay(ruleset string) string {
 // (nil members: the guild has no snapshot).
 type identityRow struct {
 	id       int64
+	name     string
 	ruleset  string
 	faction  *string
 	crestKey *string
@@ -45,8 +45,11 @@ type identityRow struct {
 	snapshot bool
 }
 
-// GuildStanding returns each of guildIDs' identity facts: realm, faction, crest url and the
-// roster count. A guild id that does not exist is absent from the map.
+// GuildStanding returns each of guildIDs' identity facts: ruleset label, slug, faction, crest
+// url and the roster count. A guild id that does not exist is absent from the map. The roster
+// count costs three queries per call whatever the guild count (identity with the newest
+// snapshot, roster rows, invited accounts); cache it by snapshot received_at if /v1/me latency
+// ever shows it.
 func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]auth.GuildStanding, error) {
 	out := make(map[int64]auth.GuildStanding, len(guildIDs))
 	if len(guildIDs) == 0 {
@@ -71,11 +74,12 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 	for _, id := range identities {
 		claim, verified := claims[id.id], verify[id.id]
 		st := auth.GuildStanding{
-			Claim:    &claim,
-			Verify:   &verified,
-			Realm:    realmDisplay(id.ruleset),
-			CrestURL: CrestURL(s.APIBaseURL, id.id, id.crestKey),
-			Faction:  id.faction,
+			Claim:        &claim,
+			Verify:       &verified,
+			RulesetLabel: rulesetLabel(id.ruleset),
+			Slug:         character.Slug(id.name),
+			CrestURL:     CrestURL(s.APIBaseURL, id.id, id.crestKey),
+			Faction:      id.faction,
 		}
 		if id.snapshot {
 			_, counts := mergeRoster(rows[id.id], invited[id.id], id.members)
@@ -90,7 +94,7 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 // identityRows reads every guild's identity and newest snapshot in one query.
 func (s *Store) identityRows(ctx context.Context, guildIDs []int64) ([]identityRow, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select g.id, g.ruleset, g.faction, g.crest_key, snap.members
+		select g.id, g.name, g.ruleset, g.faction, g.crest_key, snap.members
 		from guilds g
 		left join guild_roster_snapshots snap on snap.guild_id = g.id
 		where g.id = any($1)`, guildIDs)
@@ -102,7 +106,7 @@ func (s *Store) identityRows(ctx context.Context, guildIDs []int64) ([]identityR
 	for rows.Next() {
 		var r identityRow
 		var raw []byte
-		if err := rows.Scan(&r.id, &r.ruleset, &r.faction, &r.crestKey, &raw); err != nil {
+		if err := rows.Scan(&r.id, &r.name, &r.ruleset, &r.faction, &r.crestKey, &raw); err != nil {
 			return nil, fmt.Errorf("guilds: standing identity: %w", err)
 		}
 		if raw != nil {
@@ -141,8 +145,8 @@ func (s *Store) rosterRowsByGuild(ctx context.Context, guildIDs []int64) (map[in
 	return out, rows.Err()
 }
 
-// invitedByGuild is invitedMembers for many guilds at once. A name falls back to a synthetic
-// one rather than a user lookup: the roster count only needs it to tell people apart.
+// invitedByGuild is invitedMembers for many guilds at once, naming each account by the same
+// rule (inviteeName), so the roster count here matches the home's.
 func (s *Store) invitedByGuild(ctx context.Context, guildIDs []int64) (map[int64][]invitedMember, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select gc.guild_id, gc.user_id, c.name
@@ -158,11 +162,11 @@ func (s *Store) invitedByGuild(ctx context.Context, guildIDs []int64) (map[int64
 	if err != nil {
 		return nil, fmt.Errorf("guilds: standing invited: %w", err)
 	}
-	return collectInvited(rows)
+	return s.collectInvited(ctx, rows)
 }
 
 // collectInvited reads the rows invitedByGuild selects.
-func collectInvited(rows pgx.Rows) (map[int64][]invitedMember, error) {
+func (s *Store) collectInvited(ctx context.Context, rows pgx.Rows) (map[int64][]invitedMember, error) {
 	defer rows.Close()
 	out := map[int64][]invitedMember{}
 	for rows.Next() {
@@ -172,10 +176,7 @@ func collectInvited(rows pgx.Rows) (map[int64][]invitedMember, error) {
 		if err := rows.Scan(&guildID, &m.UserID, &name); err != nil {
 			return nil, fmt.Errorf("guilds: standing invited: %w", err)
 		}
-		m.Name = fmt.Sprintf("user-%d", m.UserID)
-		if name != nil && strings.TrimSpace(*name) != "" {
-			m.Name = *name
-		}
+		m.Name = s.inviteeName(ctx, m.UserID, name)
 		out[guildID] = append(out[guildID], m)
 	}
 	return out, rows.Err()

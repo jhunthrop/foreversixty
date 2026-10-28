@@ -2,54 +2,76 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"testing"
 )
 
-// fakeGuildStanding answers GuildStandingSource from a table keyed by guild.
-type fakeGuildStanding map[int64]GuildStanding
-
-func (f fakeGuildStanding) GuildStanding(_ context.Context, _ int64, _ []int64) (map[int64]GuildStanding, error) {
-	return f, nil
+// fakeGuildStanding answers GuildStandingSource from a table keyed by guild, or fails.
+type fakeGuildStanding struct {
+	byGuild map[int64]GuildStanding
+	err     error
 }
 
-// TestMe_GuildsCarryIdentity: with a Standing source every guild entry carries realm,
-// crest_url, faction and roster_count; with none, /v1/me still answers 200 and the entry
-// carries no identity facts.
+func (f fakeGuildStanding) GuildStanding(_ context.Context, _ int64, _ []int64) (map[int64]GuildStanding, error) {
+	return f.byGuild, f.err
+}
+
+type standingMeBody struct {
+	Guilds []struct {
+		RulesetLabel *string `json:"ruleset_label"`
+		Slug         *string `json:"slug"`
+		CrestURL     *string `json:"crest_url"`
+		Faction      *string `json:"faction"`
+		RosterCount  *int    `json:"roster_count"`
+	} `json:"guilds"`
+}
+
+func readStandingMe(t *testing.T, h *harness, user int64) standingMeBody {
+	t.Helper()
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", user)
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+	var b standingMeBody
+	h.decode(t, res, &b)
+	return b
+}
+
+// TestMe_GuildsCarryIdentity: with a Standing source every guild entry carries ruleset_label,
+// slug, crest_url, faction and roster_count; with none, or a source that fails, /v1/me still
+// answers 200 and the string facts are absent.
 func TestMe_GuildsCarryIdentity(t *testing.T) {
 	h := newHarness(t)
 	gid := h.seedGuild(t, "me-guild-identity")
 	user := h.seedUser(t, "me-identity@example.com")
 	h.seedGuildMember(t, gid, user, "member", true)
 
-	type meBody struct {
-		Guilds []struct {
-			Realm       string  `json:"realm"`
-			CrestURL    *string `json:"crest_url"`
-			Faction     *string `json:"faction"`
-			RosterCount *int    `json:"roster_count"`
-		} `json:"guilds"`
-	}
-	read := func() meBody {
-		res := h.sessionRequest(t, http.MethodGet, "/v1/me", user)
-		if res.StatusCode != http.StatusOK {
-			t.Fatalf("status = %d, want 200", res.StatusCode)
+	assertOlder := func(label string) {
+		t.Helper()
+		b := readStandingMe(t, h, user)
+		if len(b.Guilds) != 1 || b.Guilds[0].RulesetLabel != nil || b.Guilds[0].Slug != nil || b.Guilds[0].CrestURL != nil ||
+			b.Guilds[0].Faction != nil || b.Guilds[0].RosterCount != nil {
+			t.Fatalf("%s: guilds = %+v, want no identity facts", label, b.Guilds)
 		}
-		var b meBody
-		h.decode(t, res, &b)
-		return b
 	}
+	assertOlder("no Standing wired")
 
-	if b := read(); len(b.Guilds) != 1 || b.Guilds[0].Realm != "" || b.Guilds[0].CrestURL != nil ||
-		b.Guilds[0].Faction != nil || b.Guilds[0].RosterCount != nil {
-		t.Fatalf("with no Standing wired, guilds = %+v, want no identity facts", b.Guilds)
-	}
+	h.svc.Standing = fakeGuildStanding{err: errors.New("standing read failed")}
+	assertOlder("failing Standing")
 
 	crest, faction, roster := "https://api.example.test/crest.webp?v=abc", "horde", 38
-	h.svc.Standing = fakeGuildStanding{gid: {Realm: "Hardcore", CrestURL: &crest, Faction: &faction, RosterCount: &roster}}
-	b := read()
-	if len(b.Guilds) != 1 || b.Guilds[0].Realm != "Hardcore" || b.Guilds[0].CrestURL == nil || *b.Guilds[0].CrestURL != crest ||
-		b.Guilds[0].Faction == nil || *b.Guilds[0].Faction != "horde" || b.Guilds[0].RosterCount == nil || *b.Guilds[0].RosterCount != 38 {
-		t.Fatalf("guilds = %+v, want the standing's identity facts", b.Guilds)
+	h.svc.Standing = fakeGuildStanding{byGuild: map[int64]GuildStanding{gid: {
+		RulesetLabel: "Hardcore", Slug: "me-guild-identity", CrestURL: &crest, Faction: &faction, RosterCount: &roster,
+	}}}
+	b := readStandingMe(t, h, user)
+	if len(b.Guilds) != 1 {
+		t.Fatalf("guilds = %+v", b.Guilds)
+	}
+	g := b.Guilds[0]
+	if g.RulesetLabel == nil || *g.RulesetLabel != "Hardcore" || g.Slug == nil || *g.Slug != "me-guild-identity" ||
+		g.CrestURL == nil || *g.CrestURL != crest || g.Faction == nil || *g.Faction != "horde" ||
+		g.RosterCount == nil || *g.RosterCount != 38 {
+		t.Fatalf("guild = %+v, want the standing's identity facts", g)
 	}
 }

@@ -3,9 +3,13 @@ package guilds
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
 
 func TestGuildStanding_IdentityFacts(t *testing.T) {
@@ -33,8 +37,11 @@ func TestGuildStanding_IdentityFacts(t *testing.T) {
 	if !ok {
 		t.Fatalf("no standing for guild %d: %+v", gid, got)
 	}
-	if st.Realm != "Hardcore" {
-		t.Errorf("Realm = %q, want Hardcore", st.Realm)
+	if st.RulesetLabel != "Hardcore" {
+		t.Errorf("RulesetLabel = %q, want Hardcore", st.RulesetLabel)
+	}
+	if st.Slug != "forever" {
+		t.Errorf("Slug = %q, want forever", st.Slug)
 	}
 	if st.CrestURL == nil || !strings.HasPrefix(*st.CrestURL, "https://api.example.test/v1/guilds/") ||
 		!strings.Contains(*st.CrestURL, "?v=0123456789abcdef") {
@@ -60,26 +67,49 @@ func TestGuildStanding_NoSnapshotNoCrest(t *testing.T) {
 	if st.RosterCount != nil || st.CrestURL != nil || st.Faction != nil {
 		t.Errorf("standing = %+v, want nil roster count, crest and faction", st)
 	}
-	if st.Realm != "Hardcore" {
-		t.Errorf("Realm = %q, want Hardcore", st.Realm)
+	if st.RulesetLabel != "Hardcore" {
+		t.Errorf("RulesetLabel = %q, want Hardcore", st.RulesetLabel)
 	}
 }
 
-func TestGuildStanding_OneQueryForManyGuilds(t *testing.T) {
+// TestGuildStanding_ManyGuildsEachItsOwnFacts: three guilds on three rulesets answer their
+// own label and slug, and a guild id that does not exist is simply absent.
+func TestGuildStanding_ManyGuildsEachItsOwnFacts(t *testing.T) {
 	h := newHTTPHarness(t)
+	ctx := context.Background()
 	user := seedUser(t, h.pool, "many@example.com")
-	ids := []int64{seedGuild(t, h.pool, "One"), seedGuild(t, h.pool, "Two"), seedGuild(t, h.pool, "Three")}
+	want := map[int64][2]string{}
+	for _, g := range []struct{ name, ruleset, label, slug string }{
+		{"Alpha Wolves", "hardcore", "Hardcore", "alpha-wolves"},
+		{"Beta Team", "pvp", "PvP", "beta-team"},
+		{"Gamma", "rp", "Roleplay", "gamma"},
+	} {
+		var id int64
+		if err := h.pool.QueryRow(ctx,
+			`insert into guilds (region, ruleset, name) values ('us', $1, $2) returning id`, g.ruleset, g.name).Scan(&id); err != nil {
+			t.Fatal(err)
+		}
+		want[id] = [2]string{g.label, g.slug}
+	}
+	ids := []int64{}
+	for id := range want {
+		ids = append(ids, id)
+	}
+	const missingID = int64(999999999)
 
-	got, err := h.store.GuildStanding(context.Background(), user, ids)
+	got, err := h.store.GuildStanding(ctx, user, append(ids, missingID))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(got) != 3 {
 		t.Fatalf("got %d entries, want 3: %+v", len(got), got)
 	}
-	for _, id := range ids {
-		if _, ok := got[id]; !ok {
-			t.Errorf("missing guild %d", id)
+	if _, ok := got[missingID]; ok {
+		t.Errorf("a nonexistent guild must be absent: %+v", got[missingID])
+	}
+	for id, w := range want {
+		if got[id].RulesetLabel != w[0] || got[id].Slug != w[1] {
+			t.Errorf("guild %d = %q/%q, want %q/%q", id, got[id].RulesetLabel, got[id].Slug, w[0], w[1])
 		}
 	}
 }
@@ -89,5 +119,63 @@ func TestGuildStanding_NoGuildsAnswersEmpty(t *testing.T) {
 	got, err := h.store.GuildStanding(context.Background(), 1, nil)
 	if err != nil || len(got) != 0 {
 		t.Fatalf("got %+v, %v; want an empty map", got, err)
+	}
+}
+
+// TestGuildStanding_RosterCountMatchesHome: the count equals the home's on_roster plus
+// in_game_no_account for a guild with a waiting account, an invitee with a character, an
+// invitee with none (named by its public name, which the snapshot also names) and two names
+// no account has claimed.
+func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
+	h := newHTTPHarness(t)
+	h.store.Accounts = h.svc.Accounts
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+
+	master := seedUser(t, h.pool, "std-master@example.com")
+	seedCharacter(t, h.pool, gid, master, "us/hardcore/stdmaster", "leader", true)
+	seedExport(t, h.pool, master, "us/hardcore/stdmaster", "us", "hardcore", "Stdmaster")
+	recomputeMembership(t, h.pool, gid, master)
+	pending := seedUser(t, h.pool, "std-pending@example.com")
+	seedCharacter(t, h.pool, gid, pending, "us/hardcore/stdpending", "member", false)
+	seedExport(t, h.pool, pending, "us/hardcore/stdpending", "us", "hardcore", "Stdpending")
+	recomputeMembership(t, h.pool, gid, pending)
+
+	withChar := seedUser(t, h.pool, "std-invitee@example.com")
+	seedCharacter(t, h.pool, gid, withChar, syntheticKey(withChar), "member", true)
+	recomputeMembership(t, h.pool, gid, withChar)
+	if _, err := h.pool.Exec(ctx, `insert into characters (key, user_id, region, ruleset, name, class)
+		values ('us/hardcore/driftwood', $1, 'us', 'hardcore', 'Driftwood', 'rogue')`, withChar); err != nil {
+		t.Fatal(err)
+	}
+	bare := seedUser(t, h.pool, "std-bare@example.com")
+	seedCharacter(t, h.pool, gid, bare, syntheticKey(bare), "member", true)
+	recomputeMembership(t, h.pool, gid, bare)
+	u, err := h.svc.Accounts.User(ctx, bare)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := h.pool.Exec(ctx, `insert into characters (key, user_id, region, ruleset, name)
+		values ('us/hardcore/stdmaster', $1, 'us', 'hardcore', 'Stdmaster') on conflict do nothing`, master); err != nil {
+		t.Fatal(err)
+	}
+	putSnapshot(t, h, gid, "us/hardcore/stdmaster", fmt.Sprintf(`[
+		{"name":"Stdmaster","level":60,"spec":"hunter-beast-mastery","gear_gap":0,"seen_at":"2026-10-20 18:00"},
+		{"name":%q,"level":60,"spec":"mage-frost","gear_gap":0,"seen_at":"2026-10-20 18:01"},
+		{"name":"Strayhound","level":60,"spec":"warrior-protection","gear_gap":0,"seen_at":"2026-10-20 17:00"},
+		{"name":"Oldmarrow","level":58,"spec":"warrior-arms","gear_gap":0,"seen_at":"2026-10-19 21:00"}]`, u.PublicName()))
+
+	h.actor = auth.Actor{UserID: master, Role: "user", Method: "session"}
+	var view HomeView
+	h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
+	want := view.Counts.OnRoster + view.Counts.InGameNoAccount
+
+	got, err := h.store.GuildStanding(ctx, master, []int64{gid})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got[gid].RosterCount == nil || *got[gid].RosterCount != want {
+		t.Fatalf("RosterCount = %v, want the home's %d (counts %+v)", got[gid].RosterCount, want, view.Counts)
 	}
 }

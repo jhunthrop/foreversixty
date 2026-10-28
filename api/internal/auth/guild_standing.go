@@ -45,14 +45,17 @@ type GuildSubscribeView struct {
 
 // GuildStanding is everything GuildStandingSource knows about one guild for one viewer.
 type GuildStanding struct {
-	Realm       string
-	CrestURL    *string
-	Faction     *string // "alliance" | "horde" | nil
-	RosterCount *int    // counts.on_roster + counts.in_game_no_account; nil without a snapshot
-	Claim       *GuildClaimView
-	Verify      *GuildVerifyView
-	Covered     *GuildCoveredView
-	Subscribe   *GuildSubscribeView
+	// RulesetLabel is the guild's ruleset as the site words it ("Hardcore"); Slug is the guild
+	// page's URL slug for its name.
+	RulesetLabel string
+	Slug         string
+	CrestURL     *string
+	Faction      *string // "alliance" | "horde" | nil
+	RosterCount  *int    // counts.on_roster + counts.in_game_no_account; nil without a snapshot
+	Claim        *GuildClaimView
+	Verify       *GuildVerifyView
+	Covered      *GuildCoveredView
+	Subscribe    *GuildSubscribeView
 }
 
 // GuildStandingSource answers each guild's standing for a viewer in one read. It is an
@@ -79,7 +82,7 @@ func (s *Service) attachStanding(ctx context.Context, userID int64, gs []Guild) 
 	out := make([]Guild, len(gs))
 	for i, g := range gs {
 		if st, ok := standing[g.ID]; ok {
-			g.Realm, g.CrestURL, g.Faction, g.RosterCount = st.Realm, st.CrestURL, st.Faction, st.RosterCount
+			g.RulesetLabel, g.Slug, g.CrestURL, g.Faction, g.RosterCount = st.RulesetLabel, st.Slug, st.CrestURL, st.Faction, st.RosterCount
 			g.Claim, g.Verify, g.Covered, g.Subscribe = st.Claim, st.Verify, st.Covered, st.Subscribe
 		}
 		out[i] = g
