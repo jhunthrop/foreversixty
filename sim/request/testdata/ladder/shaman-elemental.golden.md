@@ -99,7 +99,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.6 | 4 | spell:3606=65.4, other:attack/1=38.5, spell:529=30.8, spell:3599=5.9, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:277288 off_hand:4820 | 17.4 | 4 | spell:6350=62.8, other:attack/1=45.2, spell:915=25.5, spell:6363=4.9, spell:20572=2.0 | - |
+| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 17.9 | 4 | other:attack/1=66.8, spell:6350=63.5, spell:915=25.8, spell:6363=5.0, spell:20572=2.0 | - |
 | 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:273053 off_hand:4066 | 30.7 | 5 | other:attack/1=67.4, spell:6351=66.2, spell:943=30.4, spell:6364=4.6, spell:20572=2.0 | {SpellID: 408490} |
 | 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 41.4 | 6 | other:attack/1=85.6, spell:6351=66.3, spell:10391=16.7, spell:408490=10.0, spell:6364=4.6 | - |
 | 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 45.7 | 6 | other:attack/1=83.8, spell:6352=64.4, spell:10391=22.3, spell:1238299=4.4, spell:6365=4.0 | - |
