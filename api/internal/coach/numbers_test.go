@@ -65,7 +65,7 @@ func TestNumberWords(t *testing.T) {
 }
 
 func TestNumberWords_FractionsAndMultiples(t *testing.T) {
-	for _, in := range []string{"half the casts", "a third of them", "a quarter of the pull", "two-thirds of it", "twice as often", "double the gap", "triple 3 casts", "½ of it", "¼", "⅓", "¾"} {
+	for _, in := range []string{"half the casts", "a third of them", "a quarter of the pull", "a third were late", "It fell by a third", "down by half", "two-thirds of it", "twice as often", "double the gap", "triple 3 casts", "½ of it", "¼", "⅓", "¾"} {
 		if len(NumberWords(in)) == 0 {
 			t.Errorf("%q: no number word found", in)
 		}

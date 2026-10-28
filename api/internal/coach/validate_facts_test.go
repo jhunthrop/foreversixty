@@ -134,7 +134,7 @@ func TestValidate_BetweenRangeNeedsThePackPair(t *testing.T) {
 }
 
 func TestValidate_FractionsAndSymbolsAreProblems(t *testing.T) {
-	for in, word := range map[string]string{"Half the casts went unused.": "half", "A third of them were late.": "third", "It was ½ of them.": "½", "Triple the casts.": "triple", "Twice as often.": "twice"} {
+	for in, word := range map[string]string{"Half the casts went unused.": "half", "A third of them were late.": "third", "It was ½ of them.": "½", "Triple the casts.": "triple", "It fell by a third.": "third", "Down by half.": "half", "A quarter were late.": "quarter", "Twice as often.": "twice"} {
 		if probs := validateEdited(t, withWhy(in)); !hasProblem(probs, ProblemNumberWord, word) {
 			t.Errorf("%q: %+v", in, probs)
 		}

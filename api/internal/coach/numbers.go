@@ -148,32 +148,60 @@ const numberWordPattern = `(?i)\b(?:four|five|six|seven|eight|nine|ten|eleven|tw
 const quantifiedWordPattern = `(?i)\b(half|halves|thirds?|quarters?|twice|double|doubled|triple|tripled)\b` +
 	`(?:\s+(?:of|as|the|an?|your|their|its|all|every|each|that|this|those|these|many|much|often)\b|\s+\p{Nd})`
 
+// alwaysQuantifiedPattern lists the phrases that are a fraction whatever follows: "a third",
+// "a quarter" ("It fell by a third", "a third were late") and "by half".
+const alwaysQuantifiedPattern = `(?i)\b(?:a\s+(third|quarter)|by\s+(half))\b`
+
 var (
-	numberWordRE     = regexp.MustCompile(numberWordPattern)
-	quantifiedWordRE = regexp.MustCompile(quantifiedWordPattern)
+	numberWordRE         = regexp.MustCompile(numberWordPattern)
+	quantifiedWordRE     = regexp.MustCompile(quantifiedWordPattern)
+	alwaysQuantifiedWord = regexp.MustCompile(alwaysQuantifiedPattern)
 )
 
 // figurativeHalf is the one quantified use of "half" that counts nothing: "the other half of the story".
 const figurativeHalf = "other half"
 
+// wordHit is a number word and where it starts.
+type wordHit struct {
+	at   int
+	word string
+}
+
+// alwaysQuantifiedHits finds the phrases of alwaysQuantifiedPattern that known has not
+// already reported at the same place.
+func alwaysQuantifiedHits(s string, known []wordHit) []wordHit {
+	seen := map[int]bool{}
+	for _, h := range known {
+		seen[h.at] = true
+	}
+	var out []wordHit
+	for _, m := range alwaysQuantifiedWord.FindAllStringSubmatchIndex(s, -1) {
+		start, end := m[2], m[3]
+		if start < 0 {
+			start, end = m[4], m[5]
+		}
+		if !seen[start] {
+			out = append(out, wordHit{start, strings.ToLower(s[start:end])})
+		}
+	}
+	return out
+}
+
 // NumberWords finds number words above "three", and fractions and multiples that quantify
 // something, lowercased, in the order written.
 func NumberWords(s string) []string {
-	type hit struct {
-		at   int
-		word string
-	}
-	var hits []hit
+	var hits []wordHit
 	for _, loc := range numberWordRE.FindAllStringIndex(s, -1) {
-		hits = append(hits, hit{loc[0], strings.ToLower(s[loc[0]:loc[1]])})
+		hits = append(hits, wordHit{loc[0], strings.ToLower(s[loc[0]:loc[1]])})
 	}
 	for _, m := range quantifiedWordRE.FindAllStringSubmatchIndex(s, -1) {
 		word := strings.ToLower(s[m[2]:m[3]])
 		if word == "half" && strings.HasSuffix(strings.ToLower(s[:m[3]]), figurativeHalf) {
 			continue
 		}
-		hits = append(hits, hit{m[2], word})
+		hits = append(hits, wordHit{m[2], word})
 	}
+	hits = append(hits, alwaysQuantifiedHits(s, hits)...)
 	sort.Slice(hits, func(i, j int) bool { return hits[i].at < hits[j].at })
 	out := make([]string, len(hits))
 	for i, h := range hits {
