@@ -164,6 +164,7 @@ func (s *Service) versionedTables(ctx context.Context, row summary.RosterRow, en
 		return Tables{}, "", fmt.Errorf("coach: tables: %w", err)
 	}
 	if err != nil {
+		s.warnNoTables(row, encounterID, err)
 		tables = Tables{}
 	}
 	rules, err := json.Marshal(tables.Rules)
@@ -175,6 +176,18 @@ func (s *Service) versionedTables(ctx context.Context, row summary.RosterRow, en
 		return Tables{}, "", err
 	}
 	return tables, PackVersion(rules, cat), nil
+}
+
+// warnNoTables tells the operator that a row with a class and spec has no data tables (a
+// build file missing): its rule-file checks go to Couldn't check. A row with no class or
+// spec is not a data defect and stays quiet. The reason never enters the pack.
+func (s *Service) warnNoTables(row summary.RosterRow, encounterID int64, err error) {
+	if row.Class == "" || row.Spec == "" {
+		return
+	}
+	s.logger().Warn("coach: no tables; the rule file's checks go to Couldn't check",
+		slog.String("class", row.Class), slog.String("spec", row.Spec),
+		slog.Int64("encounter", encounterID), slog.String("error", err.Error()))
 }
 
 // catalogueBytes is the consumables catalogue as the pack version hashes it.

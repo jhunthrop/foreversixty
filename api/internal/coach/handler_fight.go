@@ -140,7 +140,7 @@ func (s *Service) serve(ctx context.Context, req fightRequest, l loaded, account
 	if err != nil {
 		return served{}, err
 	}
-	if ok && (stored.Source == SourceModel || !stored.Retryable) {
+	if ok && stored.final() {
 		return served{doc: stored.Doc, source: stored.Source, status: string(StatusReady), persona: persona,
 			hasPersona: true, at: stored.GeneratedAt}, nil
 	}

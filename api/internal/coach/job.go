@@ -41,12 +41,19 @@ func parseReviewJob(args []string) (reviewJob, error) {
 // RunReviewJob is the coach-review job: coach-review <report> <fight> <player_key>
 // <account_id> <holder>. It loads the pack (cached, else built), the persona and the
 // fight's roster, writes the review through a Generator of its own, and releases the lease
-// the route took under holder when it ends.
+// the route took under holder when it ends, on every path: by holder, not by key, so an
+// early error, a pack that is not ready, or a version that moved since the route leased
+// never leaves "writing" held.
 func RunReviewJob(ctx context.Context, s *Service, args []string) error {
 	job, err := parseReviewJob(args)
 	if err != nil {
 		return err
 	}
+	defer s.release(job.holder)
+	return s.runReview(ctx, job)
+}
+
+func (s *Service) runReview(ctx context.Context, job reviewJob) error {
 	if s.Generator == nil {
 		return errors.New("coach-review: no generator")
 	}
@@ -74,7 +81,6 @@ func RunReviewJob(ctx context.Context, s *Service, args []string) error {
 		return nil // nothing to write: the route serves the pack's own status
 	}
 	key := NewReviewKey(rep.ID, job.fight, job.player, l.pack, s.Generator.Model, persona)
-	defer s.release(key, job.holder)
 	return s.write(ctx, key, l.pack, persona, fightPlayerNames(sum), job.account)
 }
 
@@ -85,7 +91,7 @@ func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Pers
 	if err != nil {
 		return err
 	}
-	if ok && (stored.Source == SourceModel || !stored.Retryable) {
+	if ok && stored.final() {
 		return nil
 	}
 	g := *s.Generator
@@ -96,9 +102,28 @@ func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Pers
 	return nil
 }
 
-// release deletes the lease; it runs on its own context so a cancelled job still frees it.
-func (s *Service) release(key ReviewKey, holder string) {
-	if err := s.Store.ReleaseLease(context.Background(), key, holder); err != nil {
+// final reports a stored review that is served as is and never regenerated: a model
+// review, or a rules review that is not retryable (§14).
+func (r StoredReview) final() bool { return r.Source == SourceModel || !r.Retryable }
+
+// release deletes the holder's lease; it runs on its own context so a cancelled job still
+// frees it.
+func (s *Service) release(holder string) {
+	if err := s.Store.ReleaseHolder(context.Background(), holder); err != nil {
 		s.logger().Error("coach-review: release lease", slog.String("error", err.Error()))
 	}
+}
+
+const releaseHolderSQL = `delete from coach_review_leases where holder = $1`
+
+// ReleaseHolder deletes every lease holder holds. A holder token is unique to one claim,
+// so this frees exactly the lease the route took, whatever key the job ends up computing.
+func (s *Store) ReleaseHolder(ctx context.Context, holder string) error {
+	if holder == "" {
+		return errors.New("coach: release needs a holder")
+	}
+	if _, err := s.DB.Exec(ctx, releaseHolderSQL, holder); err != nil {
+		return fmt.Errorf("coach: release lease of %s: %w", holder, err)
+	}
+	return nil
 }

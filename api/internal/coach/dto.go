@@ -5,14 +5,6 @@ import (
 	"time"
 )
 
-// The panel header the API sends as persona.label (§5.1). The web holds the same strings
-// (coachCopy titleModel, titleStarter, titleRules) and ignores the label on an officer view.
-const (
-	PersonaLabelModel   = "Your {Spec} coach"
-	PersonaLabelStarter = "Your {Spec} coach · early version"
-	PersonaLabelRules   = "Your {Spec} review"
-)
-
 // Answer statuses beyond the pack's own (§17.2).
 const statusWriting = "writing"
 

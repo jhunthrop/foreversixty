@@ -278,13 +278,24 @@ func (s *Store) ReadFightRatings(ctx context.Context, reportID string, fightInde
 	return out, len(out) > 0, nil
 }
 
-// anonymized reports whether playerKey's owning account has asked to be anonymous
+// RowQuerier is the one call CharacterAnonymized makes; a pool and a transaction have it.
+type RowQuerier interface {
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
+
+// anonymized is CharacterAnonymized on the store's pool.
+func (s *Store) anonymized(ctx context.Context, playerKey string) (bool, error) {
+	return CharacterAnonymized(ctx, s.Pool, playerKey)
+}
+
+// CharacterAnonymized reports whether playerKey's owning account has asked to be anonymous
 // (users.anonymize), joined the same way auth.User.PublicName's own doc names as the join
 // a character-scoped anonymize check would need. A player_key with no characters row, or
-// no linked account, is never anonymized - there is nothing to hide.
-func (s *Store) anonymized(ctx context.Context, playerKey string) (bool, error) {
+// no linked account, is never anonymized - there is nothing to hide. It is the one
+// anonymize rule: rating and the coach both read it.
+func CharacterAnonymized(ctx context.Context, q RowQuerier, playerKey string) (bool, error) {
 	var anon bool
-	err := s.Pool.QueryRow(ctx,
+	err := q.QueryRow(ctx,
 		`select u.anonymize from characters c join users u on u.id = c.user_id where c.key = $1`,
 		playerKey).Scan(&anon)
 	if errors.Is(err, pgx.ErrNoRows) {

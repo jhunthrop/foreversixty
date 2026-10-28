@@ -1,12 +1,16 @@
 package coach
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestPackStore_RefusesAPackWithoutAVersion(t *testing.T) {
@@ -82,6 +86,35 @@ func TestPackFor_PreparingIsNotCached(t *testing.T) {
 	if body["status"] != "preparing" || body["finding_count"] != float64(0) {
 		t.Fatalf("the teaser says preparing too: %v", body)
 	}
+}
+
+func TestPackFor_WarnsWhenABuildHasNoTables(t *testing.T) {
+	f := newT30(t)
+	ctx := context.Background()
+	// 1.60.1.69893 (fetched 2026-09-21) ships no trainables/warrior.json.
+	early := time.Date(2026, 9, 21, 13, 0, 0, 0, time.UTC)
+	if _, err := f.pool.Exec(ctx, `update fights set start_ms = $1 where report_id = $2`, early.UnixMilli(), t30Report); err != nil {
+		t.Fatal(err)
+	}
+	var logged bytes.Buffer
+	f.svc.Log = slog.New(slog.NewTextHandler(&logged, nil))
+	p, err := f.svc.PackFor(ctx, f.rep(t), t30Fight, f.furyKey)
+	if err != nil || p.Version == "" {
+		t.Fatalf("the pack is still built: %+v %v", p, err)
+	}
+	out := logged.String()
+	if !strings.Contains(out, "no tables") || !strings.Contains(out, "spec=Fury") || strings.Contains(string(mustMarshal(t, p)), "trainables") {
+		t.Fatalf("a warning for the operator, nothing in the pack: %q", out)
+	}
+}
+
+func mustMarshal(t *testing.T, v any) []byte {
+	t.Helper()
+	b, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
 }
 
 func TestPackFor_DebuffAurasAreFlagged(t *testing.T) {

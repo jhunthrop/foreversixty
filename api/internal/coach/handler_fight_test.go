@@ -333,6 +333,19 @@ func TestFightCoach_UnknownPlayerIs404(t *testing.T) {
 	wantNotFound(t, code, body, "not_found")
 }
 
+// TestFightCoach_PersonaLabelsAreTheWebCopy pins the labels one way to the experience spec's
+// §8.2 web copy rows; they are not §8.1 pack copy.
+func TestFightCoach_PersonaLabelsAreTheWebCopy(t *testing.T) {
+	rows := experienceRows(t, "### 8.2 Web copy")
+	for key, want := range map[string]string{
+		"titleModel": PersonaLabelModel, "titleStarter": PersonaLabelStarter, "titleRules": PersonaLabelRules,
+	} {
+		if cell := rows[key]; len(cell) == 0 || cell[0] != want {
+			t.Errorf("%s: §8.2 says %q, copy.go has %q", key, cell, want)
+		}
+	}
+}
+
 func TestServiceCapsPeek_DecidesWithoutCounting(t *testing.T) {
 	f := newT30(t)
 	caps := f.svc.Caps

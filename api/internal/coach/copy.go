@@ -331,6 +331,16 @@ func joinAnd(items []string) string {
 	return strings.Join(items[:len(items)-1], ", ") + " and " + items[len(items)-1]
 }
 
+// The panel header the fight route sends as persona.label (§5.1). These are web copy, the
+// experience spec's §8.2 keys titleModel, titleStarter and titleRules, not §8.1 pack copy,
+// so they stay out of the §8.1 registry; a one-way test pins them to the §8.2 rows. The web
+// ignores the label on an officer view.
+const (
+	PersonaLabelModel   = "Your {Spec} coach"
+	PersonaLabelStarter = "Your {Spec} coach · early version"
+	PersonaLabelRules   = "Your {Spec} review"
+)
+
 // Fill replaces every {name} in format with fields[name]. A field the format names but
 // fields lacks is a defect: it panics under go test and is logged in production, where
 // the placeholder is left in place for the validator to reject.

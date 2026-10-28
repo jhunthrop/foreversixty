@@ -2,13 +2,11 @@ package coach
 
 import (
 	"context"
-	"errors"
 	"fmt"
-
-	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 )
 
@@ -26,10 +24,6 @@ const (
 const verifiedMemberSQL = `
 select exists (select 1 from characters c join guild_members gm on gm.user_id = c.user_id
   where c.key = $1 and gm.guild_id = $2 and gm.verified_at is not null)`
-
-// anonymizedSQL is rating's anonymize join: a character with no linked account is never
-// anonymised.
-const anonymizedSQL = `select u.anonymize from characters c join users u on u.id = c.user_id where c.key = $1`
 
 // AccessFor decides what actor may see of playerKey's row on rep (§3, §19), and the
 // account a generation counts against: the report's viewers only; the owner (full with
@@ -100,13 +94,9 @@ func (s *Service) officerOf(ctx context.Context, actor auth.Actor, rep reports.R
 }
 
 func (s *Service) anonymized(ctx context.Context, playerKey string) (bool, error) {
-	var anon bool
-	err := s.Store.DB.QueryRow(ctx, anonymizedSQL, playerKey).Scan(&anon)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return false, nil
-	}
+	anon, err := rating.CharacterAnonymized(ctx, s.Store.DB, playerKey)
 	if err != nil {
-		return false, fmt.Errorf("coach: anonymize check: %w", err)
+		return false, fmt.Errorf("coach: %w", err)
 	}
 	return anon, nil
 }

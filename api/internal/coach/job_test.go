@@ -26,6 +26,42 @@ func TestRunReviewJob_ReleasesTheLease(t *testing.T) {
 	}
 }
 
+func TestRunReviewJob_ReleasesTheLeaseOnAnEarlyError(t *testing.T) {
+	f := newT30(t)
+	ctx := context.Background()
+	key := f.key(t) // builds and caches the pack, so the job's only bucket read is the summary
+	until := time.Now().Add(5 * time.Minute)
+	if ok, _ := f.svc.Store.TakeLease(ctx, key, "holder-early", until); !ok {
+		t.Fatal("first lease")
+	}
+	f.bucket.files = map[string][]byte{} // the summary read fails
+	if err := RunReviewJob(ctx, f.svc, []string{t30Report, "1", f.furyKey, strconv.FormatInt(f.premium, 10), "holder-early"}); err == nil {
+		t.Fatal("the summary read fails the job")
+	}
+	if ok, _ := f.svc.Store.TakeLease(ctx, key, "holder-next", until); !ok {
+		t.Fatal("a failed job still frees its lease")
+	}
+}
+
+func TestRunReviewJob_ReleasesOnlyItsOwnHolder(t *testing.T) {
+	f := newT30(t)
+	ctx := context.Background()
+	key := f.key(t)
+	until := time.Now().Add(5 * time.Minute)
+	if ok, _ := f.svc.Store.TakeLease(ctx, key, "holder-live", until); !ok {
+		t.Fatal("first lease")
+	}
+	if err := f.svc.Store.ReleaseHolder(ctx, "holder-other"); err != nil {
+		t.Fatal(err)
+	}
+	if ok, _ := f.svc.Store.TakeLease(ctx, key, "holder-next", until); ok {
+		t.Fatal("another holder's release leaves the live lease")
+	}
+	if err := f.svc.Store.ReleaseHolder(ctx, ""); err == nil {
+		t.Fatal("an empty holder is refused")
+	}
+}
+
 func TestRunReviewJob_NeverRewritesAStoredModelReview(t *testing.T) {
 	f := newT30(t)
 	f.store(t, SourceModel, false)
