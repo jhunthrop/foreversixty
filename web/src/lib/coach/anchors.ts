@@ -41,6 +41,16 @@ function patchFor(guid: string, anchor: CoachAnchor): StatePatch | null {
   }
 }
 
+/**
+ * DeathsTab's own anchor is `death-<guid>-<at_ms>`. The pack carries only `at_ms` (no identifier
+ * leaves the pack), so it is rebuilt from the viewed player's guid; an older API that still sends
+ * the finished `death` string is honoured.
+ */
+function deathHref(fightIndex: number, guid: string, anchor: CoachAnchor): string | null {
+  const id = anchor.death ?? (anchor.at_ms === undefined ? '' : `death-${guid}-${anchor.at_ms}`);
+  return id === '' ? null : `?fight=${fightIndex}&tab=deaths#${id}`;
+}
+
 /** The report query string a coach anchor opens, or null when it cannot be built. */
 export function coachAnchorHref(
   fightIndex: number,
@@ -49,11 +59,7 @@ export function coachAnchorHref(
   anchor: CoachAnchor,
 ): string | null {
   if (playerGuid === '') return null;
-  if (anchor.kind === 'death') {
-    return anchor.death === undefined || anchor.death === ''
-      ? null
-      : `?fight=${fightIndex}&tab=deaths#${anchor.death}`;
-  }
+  if (anchor.kind === 'death') return deathHref(fightIndex, playerGuid, anchor);
   const patch = patchFor(playerGuid, anchor);
   if (patch === null) return null;
   const search = reportSearch(

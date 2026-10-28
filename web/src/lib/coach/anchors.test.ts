@@ -26,6 +26,10 @@ describe('coachAnchorHref', () => {
     expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'buffs' })).toBe(
       search({ fight: 3, tab: 'buffs', source: 'Player-1' }),
     ));
+  it('death rebuilds the DeathsTab anchor from the guid and at_ms', () =>
+    expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'death', at_ms: 200000 })).toBe(
+      '?fight=3&tab=deaths#death-Player-1-200000',
+    ));
   it('death keeps the DeathsTab convention', () =>
     expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'death', death: 'death-Player-1-200000' })).toBe(
       '?fight=3&tab=deaths#death-Player-1-200000',
