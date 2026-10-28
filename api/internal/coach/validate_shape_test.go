@@ -83,7 +83,8 @@ func TestValidate_ALinkThatDoesNotInvolveTheItemDoesNotCount(t *testing.T) {
 		d.ThenFix[0].Why = "Bring a flask, because the rage cap is the other half of the story."
 		d.ThenFix[0].Links = []string{"l1"}
 	})
-	if len(probs) != 1 || probs[0].Kind != ProblemLink {
+	// Two problems: the cited link joins another finding, and the relation has no link of its own.
+	if len(probs) != 2 || probs[0].Kind != ProblemLink || probs[1].Kind != ProblemLink {
 		t.Fatalf("%+v", probs)
 	}
 }

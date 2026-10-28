@@ -64,7 +64,7 @@ func requiredProblem(field, s string) []Problem {
 func shapeProblems(doc ReviewDoc, p Pack, persona Persona) []Problem {
 	var out []Problem
 	out = append(out, openingProblems(doc.Opening)...)
-	out = append(out, refProblems("opening", nil, doc.OpeningLinks, p)...)
+	out = append(out, refProblems("opening", refOwner{}, nil, doc.OpeningLinks, p)...)
 	out = append(out, fixFirstProblems(doc.FixFirst, p, persona)...)
 	out = append(out, thenFixProblems(doc, p)...)
 	out = append(out, doingWellProblems(doc.DoingWell, p)...)
@@ -122,7 +122,7 @@ func fixFirstProblems(item *FixItem, p Pack, persona Persona) []Problem {
 	if _, ok := persona.Drills[item.Drill]; !ok {
 		out = append(out, shape("fixFirst.drill %q is not one of the persona's drills", item.Drill))
 	}
-	return append(out, refProblems("fixFirst", item.Anchors, item.Links, p)...)
+	return append(out, refProblems("fixFirst", findingOwner(p, item.Finding), item.Anchors, item.Links, p)...)
 }
 
 func titleProblems(field, id, title string, p Pack) []Problem {
@@ -136,16 +136,54 @@ func titleProblems(field, id, title string, p Pack) []Problem {
 	return nil
 }
 
-func refProblems(field string, anchors, links []string, p Pack) []Problem {
-	var out []Problem
-	for _, a := range anchors {
-		if !slices.ContainsFunc(p.Anchors, func(x Anchor) bool { return x.ID == a }) {
-			out = append(out, shape("%s cites anchor %q, which is not in the pack", field, a))
+// refOwner is what an item is about, for the anchors and links it may cite: a finding item
+// cites its finding's anchors (and, through a cited link that joins its finding, the linked
+// finding's) and only links that join its finding; a doingWell item cites its strength's
+// anchors and any link; the opening (the zero refOwner) cites any pack link.
+type refOwner struct {
+	scoped  bool     // false for the opening: any pack anchor or link
+	finding string   // the item's finding id; "" for a strength
+	anchors []string // the finding's or strength's own anchors
+}
+
+func findingOwner(p Pack, id string) refOwner {
+	f, _ := packFinding(p, id)
+	return refOwner{scoped: true, finding: id, anchors: f.Anchors}
+}
+
+func strengthOwner(p Pack, id string) refOwner {
+	for _, s := range p.Strengths {
+		if s.ID == id {
+			return refOwner{scoped: true, anchors: s.Anchors}
 		}
 	}
-	for _, l := range links {
-		if !slices.ContainsFunc(p.Links, func(x Link) bool { return x.ID == l }) {
-			out = append(out, Problem{Kind: ProblemLink, Value: fmt.Sprintf("%s cites link %q, which is not one of the pack's links", field, l)})
+	return refOwner{scoped: true}
+}
+
+func refProblems(field string, owner refOwner, anchors, links []string, p Pack) []Problem {
+	var out []Problem
+	owned := slices.Clone(owner.anchors)
+	for _, id := range links {
+		i := slices.IndexFunc(p.Links, func(x Link) bool { return x.ID == id })
+		switch {
+		case i < 0:
+			out = append(out, Problem{Kind: ProblemLink, Value: fmt.Sprintf("%s cites link %q, which is not one of the pack's links", field, id)})
+		case owner.finding == "":
+		case !slices.Contains(p.Links[i].Findings[:], owner.finding):
+			out = append(out, Problem{Kind: ProblemLink, Value: fmt.Sprintf("%s cites link %q, which does not join its finding %q", field, id, owner.finding)})
+		default:
+			for _, other := range p.Links[i].Findings {
+				f, _ := packFinding(p, other)
+				owned = append(owned, f.Anchors...)
+			}
+		}
+	}
+	for _, a := range anchors {
+		switch {
+		case !slices.ContainsFunc(p.Anchors, func(x Anchor) bool { return x.ID == a }):
+			out = append(out, shape("%s cites anchor %q, which is not in the pack", field, a))
+		case owner.scoped && !slices.Contains(owned, a):
+			out = append(out, shape("%s cites anchor %q, which belongs neither to what it is about nor to a finding its links join", field, a))
 		}
 	}
 	return out
@@ -170,7 +208,7 @@ func thenFixProblems(doc ReviewDoc, p Pack) []Problem {
 		out = append(out, titleProblems(field, it.Finding, it.Title, p)...)
 		out = append(out, requiredProblem(field+".why", it.Why)...)
 		out = append(out, capProblem(field+".why", it.Why, CapThenWhyChars)...)
-		out = append(out, refProblems(field, it.Anchors, it.Links, p)...)
+		out = append(out, refProblems(field, findingOwner(p, it.Finding), it.Anchors, it.Links, p)...)
 	}
 	return out
 }
@@ -195,7 +233,7 @@ func doingWellProblems(items []WellItem, p Pack) []Problem {
 		seen[it.Strength] = true
 		out = append(out, requiredProblem(field+".text", it.Text)...)
 		out = append(out, capProblem(field+".text", it.Text, CapWellChars)...)
-		out = append(out, refProblems(field, it.Anchors, it.Links, p)...)
+		out = append(out, refProblems(field, strengthOwner(p, it.Strength), it.Anchors, it.Links, p)...)
 	}
 	return out
 }
