@@ -1,21 +1,33 @@
 // web/tests/captures/premium-examples/capture.spec.ts
 // Not a test of behaviour: it produces the premium example's assets from one real run. It opens
-// /sim/{SIM_ID} at 440 x 900 CSS px (DPR 2), clips the top 440 x 330 box to
+// /sim/{SIM_ID} at 440 x 900 CSS px (DPR 2), clips a 440 x 330 box from the saved title down to
 // web/public/premium/example-server-run.{webp,avif} (880 x 660), and writes
 // web/src/data/premium-examples.json from the sim response. It fails unless the result answers 200
 // signed out and is a finished server Top Gear run, and unless the written file parses.
 // SIM_ID and SIM_RAN_AT (the owner's /mine row finished_at) are required; API_BASE defaults to
 // production; PRESET_BUILD names the site build when the run used the preset gear.
+// The crop shows what a player recognises as a real result: the saved title band and the top of
+// the character strip (name and descriptor: spec, level), never the gear grid or the swaps table.
+// The numbers (combinations, ranAt, preset) are not in the image: they go into the data file and
+// the card's caption (serverRunCaption) renders them.
 // Depends on these test ids (src/components/sim): sim-saved-title (SavedSim.svelte, the clip's top
-// edge) and sim-character (CharacterStrip.svelte, which must lie inside the clip).
+// edge); sim-character, sim-character-descriptor and sim-character-name (CharacterStrip.svelte;
+// the strip's top, the descriptor and, when present, the name must lie inside the clip).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import sharp from 'sharp';
 import { parseServerRunExample } from '../../../src/lib/billing/premium-examples';
 import { specLabel } from '../../../src/lib/sim/spec-label';
 import type { SimResult } from '../../../src/lib/sim/types';
+
+interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const WEB_ROOT = path.resolve(HERE, '../../..');
@@ -32,6 +44,8 @@ const AVIF_QUALITY_STEP = 5;
 const WEBP_QUALITY = 82;
 const SAVED_TITLE_TEST_ID = 'sim-saved-title';
 const CHARACTER_TEST_ID = 'sim-character';
+const NAME_TEST_ID = 'sim-character-name';
+const DESCRIPTOR_TEST_ID = 'sim-character-descriptor';
 const SETTLE_MS = 800;
 const TOP_GEAR_MODE = 'gear';
 const DEFAULT_API_BASE = 'https://api.foreversixty.gg';
@@ -84,6 +98,21 @@ function combinationCount(result: SimResult): number {
   return first;
 }
 
+/** Fails unless the element (or, with `top`, just its top edge) lies inside the clip. */
+async function assertInside(
+  page: Page,
+  testId: string,
+  clip: Rect,
+  options: { top?: boolean } = {},
+): Promise<void> {
+  const box = await page.getByTestId(testId).boundingBox();
+  if (box === null) throw new Error(`${testId} has no box`);
+  const bottom = options.top === true ? box.y : box.y + box.height;
+  if (box.y < clip.y || bottom > clip.y + clip.height) {
+    throw new Error(`${testId} does not fit inside the ${clip.width} x ${clip.height} clip`);
+  }
+}
+
 async function encodeAvifUnderBudget(png: Buffer): Promise<Buffer> {
   for (let quality = AVIF_START_QUALITY; quality >= AVIF_MIN_QUALITY; quality -= AVIF_QUALITY_STEP) {
     const avif = await sharp(png).avif({ quality }).toBuffer();
@@ -109,12 +138,11 @@ test('capture the premium server-run example', async ({ browser }) => {
   await page.getByTestId(CHARACTER_TEST_ID).waitFor();
   await page.waitForTimeout(SETTLE_MS);
   const top = await title.boundingBox();
-  const strip = await page.getByTestId(CHARACTER_TEST_ID).boundingBox();
-  if (top === null || strip === null) throw new Error('the saved result title or character strip has no box');
+  if (top === null) throw new Error('the saved result title has no box');
   const clip = { ...CLIP, x: top.x, y: top.y };
-  if (strip.y < clip.y || strip.y + strip.height > clip.y + clip.height) {
-    throw new Error('the character strip does not fit inside the 440 x 330 clip');
-  }
+  await assertInside(page, CHARACTER_TEST_ID, clip, { top: true });
+  await assertInside(page, DESCRIPTOR_TEST_ID, clip);
+  if ((await page.getByTestId(NAME_TEST_ID).count()) > 0) await assertInside(page, NAME_TEST_ID, clip);
   const png = await page.screenshot({ clip, type: 'png' });
   await context.close();
 
