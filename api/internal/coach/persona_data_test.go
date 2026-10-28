@@ -96,3 +96,50 @@ func personaFileRole(path string) (string, error) {
 }
 
 // TestPersonas_NoRealPeople needs Task 27's dictionaries; Task 27 adds it to this file (F7).
+
+const starterStatus = "starter"
+
+// TestAllPersonas_Parse: every spec in specs.json has a persona that loads, whose
+// front-matter role is specs.json's role; three are full and the rest starters.
+func TestAllPersonas_Parse(t *testing.T) {
+	full := map[string]bool{}
+	for _, spec := range fullPersonaSpecs {
+		full[spec] = true
+	}
+	var fullCount, starterCount int
+	for _, s := range loadSpecs(t) {
+		p, err := LoadPersona(personaDir, s.Spec)
+		if err != nil {
+			t.Fatalf("%s: %v", s.Spec, err)
+		}
+		role, err := personaFileRole(filepath.Join(personaDir, s.Spec+".md"))
+		if err != nil || role != s.Role {
+			t.Errorf("%s: front-matter role %q (err %v), specs.json says %q", s.Spec, role, err, s.Role)
+		}
+		switch {
+		case full[s.Spec] && p.Status == PersonaFull:
+			fullCount++
+		case !full[s.Spec] && string(p.Status) == starterStatus:
+			starterCount++
+		default:
+			t.Errorf("%s: status %q does not fit its place in the launch set", s.Spec, p.Status)
+		}
+	}
+	if fullCount != len(fullPersonaSpecs) || starterCount != 25 {
+		t.Errorf("got %d full and %d starter personas, want %d and 25", fullCount, starterCount, len(fullPersonaSpecs))
+	}
+}
+
+// TestStarterPersonas_Reviewed fails on purpose until wow-player has read each starter
+// and the controller has recorded the read in `reviewed` (§8.2).
+func TestStarterPersonas_Reviewed(t *testing.T) {
+	for _, s := range loadSpecs(t) {
+		p, err := LoadPersona(personaDir, s.Spec)
+		if err != nil {
+			t.Fatalf("%s: %v", s.Spec, err)
+		}
+		if string(p.Status) == starterStatus && (p.Reviewed == "" || p.Reviewed == reviewPending) {
+			t.Errorf("%s: reviewed is %q; a wow-player read must be recorded before it ships", s.Spec, p.Reviewed)
+		}
+	}
+}
