@@ -19,3 +19,18 @@ export const serverRunCaptionTemplates: CaptionTemplates = {
 export function serverRunCaption(ex: ServerRunExample = serverRunExample): string {
   return exampleCaption(ex, serverRunCaptionTemplates);
 }
+
+const NUMBER_RUN = /(\d{1,3}(?:,\d{3})+|\d+)/;
+
+export interface CaptionPart {
+  text: string;
+  mono: boolean;
+}
+
+/** Splits a caption into plain and number runs; both example cards set the numbers in mono. */
+export function splitCaptionNumbers(caption: string): CaptionPart[] {
+  return caption
+    .split(NUMBER_RUN)
+    .map((text, index) => ({ text, mono: index % 2 === 1 }))
+    .filter((part) => part.text !== '');
+}

@@ -4,7 +4,8 @@
 // web/public/premium/example-server-run.{webp,avif} (880 x 660), and writes
 // web/src/data/premium-examples.json from the sim response. It fails unless the result answers 200
 // signed out and is a finished server Top Gear run, and unless the written file parses.
-// SIM_ID is required; API_BASE defaults to production; SIM_RAN_AT overrides the run's instant.
+// SIM_ID and SIM_RAN_AT (the owner's /mine row finished_at) are required; API_BASE defaults to
+// production; PRESET_BUILD names the site build when the run used the preset gear.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,6 +28,7 @@ const AVIF_START_QUALITY = 60;
 const AVIF_MIN_QUALITY = 20;
 const AVIF_QUALITY_STEP = 5;
 const WEBP_QUALITY = 82;
+const RESULT_TEST_ID = 'sim-results';
 const SETTLE_MS = 800;
 const TOP_GEAR_MODE = 'gear';
 const DEFAULT_API_BASE = 'https://api.foreversixty.gg';
@@ -40,12 +42,12 @@ function requireEnv(name: string): string {
   return value;
 }
 
-async function fetchRun(simId: string, apiBase: string): Promise<{ result: SimResult; ranAt: string }> {
+async function fetchRun(simId: string, apiBase: string): Promise<SimResult> {
   const res = await fetch(`${apiBase}/v1/sims/${encodeURIComponent(simId)}`);
   if (res.status !== 200) throw new Error(`GET /v1/sims/${simId} answered ${res.status}, expected 200`);
-  const body = (await res.json()) as { data?: SimResult } & Partial<SimResult>;
-  const result = body.data ?? (body as SimResult);
-  return { result, ranAt: process.env.SIM_RAN_AT ?? result.request?.source?.captured_at ?? '' };
+  const body = (await res.json()) as { data?: SimResult };
+  if (body.data === undefined) throw new Error('the sim response has no `data` envelope');
+  return body.data;
 }
 
 function assertFinishedServerTopGear(result: SimResult): void {
@@ -59,13 +61,20 @@ function assertFinishedServerTopGear(result: SimResult): void {
     throw new Error(`SIM_ID is not a finished server Top Gear run: ${problems.join('; ')}`);
 }
 
-function isPresetGear(result: SimResult): boolean {
-  const kind = result.request.source.kind;
-  if (kind === PRESET_SOURCE) return true;
+/** With PRESET_BUILD set the run must be that site build; without it the run must be own gear. */
+function isPresetGear(result: SimResult, presetBuild: string | undefined): boolean {
+  const { kind, ref } = result.request.source;
+  if (presetBuild !== undefined) {
+    if (kind !== PRESET_SOURCE || ref !== presetBuild) {
+      throw new Error(`the run's gear source is ${kind}:${ref}, expected ${PRESET_SOURCE}:${presetBuild}`);
+    }
+    return true;
+  }
   if (OWN_GEAR_SOURCES.includes(kind)) return false;
-  throw new Error(`cannot tell whether gear source "${kind}" is the site's preset`);
+  throw new Error(`gear source "${kind}" needs PRESET_BUILD to be named as the site's preset`);
 }
 
+/** The first stage ranks every combination, so its count is the run's combinations. */
 function combinationCount(result: SimResult): number {
   const first = result.stages?.[0]?.combos;
   if (first === undefined || first < 1) throw new Error('the run has no stage with a combination count');
@@ -83,15 +92,21 @@ async function encodeAvifUnderBudget(png: Buffer): Promise<Buffer> {
 test('capture the premium server-run example', async ({ browser }) => {
   const simId = requireEnv('SIM_ID');
   const apiBase = process.env.API_BASE ?? DEFAULT_API_BASE;
-  const { result, ranAt } = await fetchRun(simId, apiBase);
+  const ranAt = requireEnv('SIM_RAN_AT');
+  const result = await fetchRun(simId, apiBase);
   assertFinishedServerTopGear(result);
-  const preset = isPresetGear(result);
+  const preset = isPresetGear(result, process.env.PRESET_BUILD || undefined);
 
   const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: PIXEL_RATIO });
   const page = await context.newPage();
-  await page.goto(`/sim/${encodeURIComponent(simId)}`, { waitUntil: 'networkidle' });
+  const response = await page.goto(`/sim/${encodeURIComponent(simId)}`, { waitUntil: 'networkidle' });
+  expect(response?.status()).toBe(200);
+  const root = page.getByTestId(RESULT_TEST_ID);
+  await root.waitFor();
   await page.waitForTimeout(SETTLE_MS);
-  const png = await page.screenshot({ clip: CLIP, type: 'png' });
+  const box = await root.boundingBox();
+  if (box === null) throw new Error('the result root has no bounding box');
+  const png = await page.screenshot({ clip: { ...CLIP, x: box.x, y: box.y }, type: 'png' });
   await context.close();
 
   const size = { width: CLIP.width * PIXEL_RATIO, height: CLIP.height * PIXEL_RATIO };

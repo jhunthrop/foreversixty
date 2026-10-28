@@ -5,7 +5,7 @@
      reserved so a failed image still leaves label, caption and hint. No fetch, no link. -->
 <script lang="ts">
   import { exampleImage } from '../../lib/billing/example-image';
-  import { serverRunCaption } from '../../lib/billing/premium-example-copy';
+  import { serverRunCaption, splitCaptionNumbers } from '../../lib/billing/premium-example-copy';
   import { serverRunExample, type ServerRunExample } from '../../lib/billing/premium-examples';
   import { landingCopy } from '../../lib/sim/landing-copy';
 
@@ -15,7 +15,7 @@
   const { example = serverRunExample }: Props = $props();
 
   const image = $derived(exampleImage(example));
-  const caption = $derived(serverRunCaption(example));
+  const captionParts = $derived(splitCaptionNumbers(serverRunCaption(example)));
 </script>
 
 <!-- No gutter of its own: every caller (SourceSwitcher.svelte's hero branch) already
@@ -30,7 +30,7 @@
       <source srcset={image.avif} type="image/avif" />
       <source srcset={image.webp} type="image/webp" />
       <img
-        class="border-line-soft block h-auto w-full rounded-[4px] border"
+        class="border-line-soft box-border block h-auto w-full rounded-[4px] border"
         style="aspect-ratio: 4 / 3"
         src={image.webp}
         width={image.width}
@@ -41,6 +41,9 @@
       />
     </picture>
   </div>
-  <p class="text-strong font-semibold">{caption}</p>
+  <p class="text-muted text-[13px]" data-testid="sim-example-caption">
+    {#each captionParts as part, index (index)}{#if part.mono}<span class="font-mono">{part.text}</span
+        >{:else}{part.text}{/if}{/each}
+  </p>
   <p class="text-muted text-[13px]">{landingCopy.exampleHint}</p>
 </div>

@@ -2,7 +2,7 @@
 import { JSDOM } from 'jsdom';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { EXAMPLE_IMAGE_HEIGHT, EXAMPLE_IMAGE_WIDTH } from '../../lib/billing/example-image';
+import { EXAMPLE_IMAGE_HEIGHT, EXAMPLE_IMAGE_WIDTH, exampleImage } from '../../lib/billing/example-image';
 import { serverRunCaption } from '../../lib/billing/premium-example-copy';
 import type { ServerRunExample } from '../../lib/billing/premium-examples';
 import { landingCopy } from '../../lib/sim/landing-copy';
@@ -39,6 +39,18 @@ describe('ExampleResultCard', () => {
     expect(img?.getAttribute('height')).toBe(String(EXAMPLE_IMAGE_HEIGHT));
     const types = [...doc.querySelectorAll('picture source')].map((s) => s.getAttribute('type'));
     expect(types).toEqual(['image/avif', 'image/webp']);
+    expect(img?.getAttribute('src')).toBe(exampleImage(VALID).webp);
+    expect(img?.getAttribute('class')).toContain('box-border');
+    expect(img?.closest('div')?.getAttribute('style')).toMatch(/aspect-ratio:\s*4\s*\/\s*3/);
+  });
+
+  it('sets the caption muted at 13 px with its numbers in mono', () => {
+    const doc = renderCard(VALID);
+    const caption = doc.querySelector('[data-testid=sim-example-caption]');
+    expect(caption?.className).toContain('text-muted');
+    expect(caption?.className).toContain('text-[13px]');
+    const mono = [...(caption?.querySelectorAll('.font-mono') ?? [])].map((n) => n.textContent);
+    expect(mono).toContain('4,812');
   });
 
   it('no invented figure and no link', () => {

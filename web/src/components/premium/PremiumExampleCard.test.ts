@@ -1,10 +1,13 @@
 // web/src/components/premium/PremiumExampleCard.test.ts
+import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { serverRunCaption } from '../../lib/billing/plans-page-copy';
 import type { ServerRunExample } from '../../lib/billing/premium-examples';
 import { createPageContainer } from '../../test-support/page-container';
 import PremiumExampleCard from './PremiumExampleCard.astro';
+
+const source = readFileSync(new URL('./PremiumExampleCard.astro', import.meta.url), 'utf8');
 
 const VALID: ServerRunExample = {
   simId: 'abc123',
@@ -68,9 +71,9 @@ describe('PremiumExampleCard', () => {
     expect(doc.querySelector('[data-testid=premium-example-link]')).not.toBeNull();
   });
 
-  it('reserves a 4 / 3 box and has no gold top highlight', async () => {
-    const { html } = await render(VALID);
-    expect(html).toMatch(/aspect-ratio:\s*4\s*\/\s*3/);
-    expect(html).not.toContain('229, 185, 85');
+  it('reserves a 4 / 3 box and has no gold top highlight', () => {
+    // Scoped CSS is not part of the container's HTML, so read the component source.
+    expect(source.match(/aspect-ratio:\s*4\s*\/\s*3/g)).toHaveLength(1);
+    expect(source).not.toMatch(/229,\s*185,\s*85|border-top-color|gold-top/);
   });
 });

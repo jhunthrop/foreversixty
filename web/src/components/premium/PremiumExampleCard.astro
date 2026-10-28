@@ -4,7 +4,8 @@
 // in a reserved 4:3 box, the caption with its numbers in mono, and a link to the result. The box
 // holds its height with aspect-ratio, so a failed image still leaves box, caption and link.
 import { exampleImage } from '../../lib/billing/example-image';
-import { plansPageCopy, serverRunCaption } from '../../lib/billing/plans-page-copy';
+import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { serverRunCaption, splitCaptionNumbers } from '../../lib/billing/premium-example-copy';
 import { exampleHref, serverRunExample, type ServerRunExample } from '../../lib/billing/premium-examples';
 
 interface Props {
@@ -14,14 +15,14 @@ const { example = serverRunExample } = Astro.props;
 const { label, link } = plansPageCopy.examples.serverRun;
 const image = exampleImage(example);
 const caption = serverRunCaption(example);
-const captionParts = caption.split(/(\d[\d,]*)/);
+const captionParts = splitCaptionNumbers(caption);
 ---
 
 <article class="example-card" data-testid="premium-example">
   <p class="example-label" data-part="label">
     {label}
   </p>
-  <div class="image-box" data-part="image" style="aspect-ratio: 4 / 3">
+  <div class="image-box" data-part="image">
     <picture>
       <source srcset={image.avif} type="image/avif" />
       <source srcset={image.webp} type="image/webp" />
@@ -36,7 +37,7 @@ const captionParts = caption.split(/(\d[\d,]*)/);
     </picture>
   </div>
   <p class="example-caption" data-part="caption" data-testid="premium-example-caption">
-    {captionParts.map((part, index) => (index % 2 === 1 ? <span class="mono">{part}</span> : part))}
+    {captionParts.map((part) => (part.mono ? <span class="mono">{part.text}</span> : part.text))}
   </p>
   <a class="example-link" data-part="link" data-testid="premium-example-link" href={exampleHref(example)}>
     {link}
@@ -64,8 +65,8 @@ const captionParts = caption.split(/(\d[\d,]*)/);
   }
   .image-box img {
     display: block;
+    box-sizing: border-box;
     width: 100%;
-    aspect-ratio: 4 / 3;
     height: auto;
     border: 1px solid var(--color-line-soft);
     border-radius: 4px;
