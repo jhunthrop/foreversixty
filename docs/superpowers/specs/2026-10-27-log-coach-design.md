@@ -863,8 +863,9 @@ Profiles add one ~1 KB insert per rated kill row.
   per-request cost (usage block or headers), and record it.
 - **Evaluation before launch:** run the same 20 sample fights (mixed specs, including the three
   full personas, a 10-player and a 20-player night, a wipe) through DeepSeek V4.1 Flash and
-  Kimi K3 (the Reasoning leader). Record both outputs, validation pass rates and measured tokens, and update §15.3's
-  estimate. The owner reads both sets. Switch to Kimi K3 only if DeepSeek V4.1 Flash's
+  MiniMax M3.1 Flash (the owner ruled Kimi K3 too expensive on 2026-10-27: stay with cheap
+  models that score high on Reasoning and Data Analysis). Record both outputs, validation pass rates and measured tokens, and update §15.3's
+  estimate. The owner reads both sets. Switch to MiniMax M3.1 Flash only if DeepSeek V4.1 Flash's
   quality is clearly worse.
 - **Order of work:** §13's consumables fix and the rating bump. Then the `<spec>.json` rule files
   (DPS first), the catalogue's `complete` flags and `raid_buffs`. Then `Profile` and
