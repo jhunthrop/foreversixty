@@ -4,7 +4,8 @@
 // cached under that guild), so the next read asks the network. Also: the guild reads
 // revalidate on every mount, and Settings asks again when the window regains focus.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchMeFresh, meKey } from '../account/api';
+import { fetchMeFresh, meKey, type Me } from '../account/api';
+import { normalizeMeBilling } from '../billing/normalize';
 import {
   forgetPrivate,
   invalidate,
@@ -209,7 +210,7 @@ describe('guild reads revalidate on every read', () => {
     );
     const onFresh = vi.fn();
     expect(await fetchMeFresh(onFresh, API)).toEqual(before);
-    await vi.waitFor(() => expect(onFresh).toHaveBeenCalledWith(normalizeMeBilling(after as Me)));
+    await vi.waitFor(() => expect(onFresh).toHaveBeenCalledWith(normalizeMeBilling(after as unknown as Me)));
   });
 });
 
