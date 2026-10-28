@@ -1,0 +1,118 @@
+// web/tests/captures/premium-examples/capture.spec.ts
+// Not a test of behaviour: it produces the premium example's assets from one real run. It opens
+// /sim/{SIM_ID} at 440 x 900 CSS px (DPR 2), clips the top 440 x 330 box to
+// web/public/premium/example-server-run.{webp,avif} (880 x 660), and writes
+// web/src/data/premium-examples.json from the sim response. It fails unless the result answers 200
+// signed out and is a finished server Top Gear run, and unless the written file parses.
+// SIM_ID is required; API_BASE defaults to production; SIM_RAN_AT overrides the run's instant.
+import { mkdirSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { expect, test } from '@playwright/test';
+import sharp from 'sharp';
+import { parseServerRunExample } from '../../../src/lib/billing/premium-examples';
+import { specLabel } from '../../../src/lib/sim/spec-label';
+import type { SimResult } from '../../../src/lib/sim/types';
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const WEB_ROOT = path.resolve(HERE, '../../..');
+const IMAGE_BASE = path.join(WEB_ROOT, 'public/premium/example-server-run');
+const DATA_FILE = path.join(WEB_ROOT, 'src/data/premium-examples.json');
+
+const VIEWPORT = { width: 440, height: 900 };
+const CLIP = { x: 0, y: 0, width: 440, height: 330 };
+const PIXEL_RATIO = 2;
+const AVIF_MAX_BYTES = 45 * 1024;
+const AVIF_START_QUALITY = 60;
+const AVIF_MIN_QUALITY = 20;
+const AVIF_QUALITY_STEP = 5;
+const WEBP_QUALITY = 82;
+const SETTLE_MS = 800;
+const TOP_GEAR_MODE = 'gear';
+const DEFAULT_API_BASE = 'https://api.foreversixty.gg';
+/** Gear sources that are the player's own character; a site build is the preset. */
+const OWN_GEAR_SOURCES: readonly string[] = ['armory', 'addon', 'blizzard', 'manual', 'fight'];
+const PRESET_SOURCE = 'build';
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (value === undefined || value === '') throw new Error(`${name} is required`);
+  return value;
+}
+
+async function fetchRun(simId: string, apiBase: string): Promise<{ result: SimResult; ranAt: string }> {
+  const res = await fetch(`${apiBase}/v1/sims/${encodeURIComponent(simId)}`);
+  if (res.status !== 200) throw new Error(`GET /v1/sims/${simId} answered ${res.status}, expected 200`);
+  const body = (await res.json()) as { data?: SimResult } & Partial<SimResult>;
+  const result = body.data ?? (body as SimResult);
+  return { result, ranAt: process.env.SIM_RAN_AT ?? result.request?.source?.captured_at ?? '' };
+}
+
+function assertFinishedServerTopGear(result: SimResult): void {
+  const problems: string[] = [];
+  if (result.lane !== 'server') problems.push(`lane is "${result.lane}", not server`);
+  if (result.request?.bulk?.mode !== TOP_GEAR_MODE) problems.push('not a Top Gear (gear mode) run');
+  if (result.error !== undefined && result.error !== '') problems.push(`run failed: ${result.error}`);
+  if (result.aborted === true) problems.push('run was aborted');
+  if ((result.combos ?? []).length === 0) problems.push('no ranked combinations: not finished');
+  if (problems.length > 0)
+    throw new Error(`SIM_ID is not a finished server Top Gear run: ${problems.join('; ')}`);
+}
+
+function isPresetGear(result: SimResult): boolean {
+  const kind = result.request.source.kind;
+  if (kind === PRESET_SOURCE) return true;
+  if (OWN_GEAR_SOURCES.includes(kind)) return false;
+  throw new Error(`cannot tell whether gear source "${kind}" is the site's preset`);
+}
+
+function combinationCount(result: SimResult): number {
+  const first = result.stages?.[0]?.combos;
+  if (first === undefined || first < 1) throw new Error('the run has no stage with a combination count');
+  return first;
+}
+
+async function encodeAvifUnderBudget(png: Buffer): Promise<Buffer> {
+  for (let quality = AVIF_START_QUALITY; quality >= AVIF_MIN_QUALITY; quality -= AVIF_QUALITY_STEP) {
+    const avif = await sharp(png).avif({ quality }).toBuffer();
+    if (avif.length <= AVIF_MAX_BYTES) return avif;
+  }
+  throw new Error(`AVIF stays over ${AVIF_MAX_BYTES} bytes down to quality ${AVIF_MIN_QUALITY}`);
+}
+
+test('capture the premium server-run example', async ({ browser }) => {
+  const simId = requireEnv('SIM_ID');
+  const apiBase = process.env.API_BASE ?? DEFAULT_API_BASE;
+  const { result, ranAt } = await fetchRun(simId, apiBase);
+  assertFinishedServerTopGear(result);
+  const preset = isPresetGear(result);
+
+  const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: PIXEL_RATIO });
+  const page = await context.newPage();
+  await page.goto(`/sim/${encodeURIComponent(simId)}`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(SETTLE_MS);
+  const png = await page.screenshot({ clip: CLIP, type: 'png' });
+  await context.close();
+
+  const size = { width: CLIP.width * PIXEL_RATIO, height: CLIP.height * PIXEL_RATIO };
+  const meta = await sharp(png).metadata();
+  expect({ width: meta.width, height: meta.height }).toEqual(size);
+
+  mkdirSync(path.dirname(IMAGE_BASE), { recursive: true });
+  writeFileSync(`${IMAGE_BASE}.webp`, await sharp(png).webp({ quality: WEBP_QUALITY }).toBuffer());
+  writeFileSync(`${IMAGE_BASE}.avif`, await encodeAvifUnderBudget(png));
+
+  const serverRun = {
+    simId,
+    characterName: preset ? '' : result.request.character.name,
+    level: result.request.character.level,
+    specLabel: specLabel(result.request.spec),
+    preset,
+    placeholder: false,
+    combinations: combinationCount(result),
+    ranAt,
+  };
+  const file = { serverRun };
+  expect(() => parseServerRunExample(file)).not.toThrow();
+  writeFileSync(DATA_FILE, `${JSON.stringify(file, null, 2)}\n`);
+});
