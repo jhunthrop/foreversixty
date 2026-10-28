@@ -822,8 +822,10 @@ Profiles add one ~1 KB insert per rated kill row.
 - **What leaves our systems:** the evidence pack goes through the Vercel AI Gateway to the
   model provider behind the chosen slug. It holds spec,
   boss, size and the numbers of one fight, and **no character name, account, guild, realm or
-  Battle.net data**. The provider must not train on API inputs. Its retention terms are
-  recorded with the model choice (see Owner decisions).
+  Battle.net data**. The provider's training and retention stance is recorded with the model
+  choice (see Owner decisions) and disclosed on the privacy page; it is not a gate. Owner,
+  2026-10-27: "I don't care if they train on this — it's open data on our site anyway."
+  The gate that holds is the one above: nothing personal leaves.
 - **Channels:** nothing personal is ever posted to one.
 - **Private reports** are reviewable by their owner, and never enter the pool.
 
@@ -952,11 +954,12 @@ Re-read as a builder new to the codebase, with the answers the codebase or the b
    damage specs get the most findings.`
 3. **"Top" for healers and tanks.** I chose the rating's overall score. Confirm, or name another
    measure, such as effective HPS.
-4. **The model provider's data terms.** The DeepSeek V4.1 Flash slug on the gateway may route to a
-   provider outside the US and EU. I recommend two conditions on the choice: the provider behind
-   the slug must not train on API inputs, and must state its retention. Where the gateway offers
-   the same model from several providers, pick one that meets both, even at a higher price.
-   Approve those conditions, or set your own.
+4. **The model provider's data terms.** Decided 2026-10-27. DeepSeek makes no training or
+   retention commitment for API traffic and is not on the gateway's no-training list (nor are
+   MiniMax, Zai, Xiaomi, NVIDIA or StepFun; only Alibaba Cloud and Moonshot AI qualify among the
+   cheap models). The owner ruled that training on the pack is acceptable because the pack holds
+   only data already public on the site and nothing personal (§19). The stance is recorded in the
+   plan's build notes and disclosed on the privacy page; `disallowPromptTraining` is NOT set.
 5. **The privacy page** (legal pages finalised 2026-10-24) should name Vercel (the AI Gateway)
    and the model provider as processors of fight data sent for coaching. The pack carries no
    names or account data. Approve the addition.
