@@ -2,13 +2,15 @@
 package rating
 
 import (
+	"sort"
+
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// window is one closed-open millisecond span, used for both curated
-// downtime windows and an officer's assignment windows.
-type window struct{ fromMS, toMS int64 }
+// Window is one closed-open millisecond span [FromMS, ToMS), used for curated
+// downtime windows, an officer's assignment windows and idle spans.
+type Window struct{ FromMS, ToMS int64 }
 
 // scoreActivity implements spec §1.3's Activity component. With no curated
 // downtime windows (and no assignment windows) it falls back to the
@@ -23,10 +25,7 @@ func scoreActivity(fight summary.Summary, player string, bracket Bracket, table 
 		return placeBoundedOrSelf(c, src, bracket, 0)
 	}
 
-	aliveMS := timeAliveMS(fight, player)
-	windows := downtimeWindows(fight, table, aliveMS)
-	windows = append(windows, assignmentWindows(assignments, player, aliveMS)...)
-
+	aliveMS, windows := excludedWindows(fight, player, table, assignments)
 	if len(windows) == 0 {
 		return placeBoundedOrSelf(c, src, bracket, clamp(row.ActivityPct, 0, 100))
 	}
@@ -41,66 +40,119 @@ func scoreActivity(fight summary.Summary, player string, bracket Bracket, table 
 
 // ActivityIdleMS is the time the Activity component counts against player, in its own
 // measure: the time alive outside the curated downtime windows and the player's assignment
-// windows, less the seconds in it the player did damage or healing (activeExcludingDowntime).
-// With no window at all it is the time alive less the roster's ActiveMS, the whole-fight
-// figure scoreActivity falls back to. Never negative; 0 for a player not on the roster.
+// windows, less the seconds in it the player did damage or healing (activeExcludingDowntime),
+// which is the sum of IdleWindows' spans. With no window at all it is the time alive less
+// the roster's ActiveMS, the whole-fight figure scoreActivity falls back to. Never
+// negative; 0 for a player not on the roster.
 func ActivityIdleMS(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) int64 {
 	row, ok := rosterRow(fight, player)
 	if !ok {
 		return 0
 	}
-	aliveMS := timeAliveMS(fight, player)
-	windows := downtimeWindows(fight, table, aliveMS)
-	windows = append(windows, assignmentWindows(assignments, player, aliveMS)...)
-	idle := aliveMS - row.ActiveMS
-	if len(windows) > 0 {
-		if activeMS, denomMS := activeExcludingDowntime(fight, player, aliveMS, windows); denomMS > 0 {
-			idle = denomMS - activeMS
-		}
+	aliveMS, windows := excludedWindows(fight, player, table, assignments)
+	if len(windows) == 0 {
+		return max(aliveMS-row.ActiveMS, 0)
 	}
-	return max(idle, 0)
+	var idle int64
+	for _, w := range idleSpans(fight, player, aliveMS, windows) {
+		idle += w.ToMS - w.FromMS
+	}
+	return idle
 }
 
-// downtimeWindows expands the encounter's curated Downtime entries into
+// IdleWindows is the windows variant of ActivityIdleMS, on the same four parameters: the
+// idle spans it counts (whole seconds alive, outside every downtime and assignment window,
+// with no damage or healing done), joined into runs, longest first, ties earliest first.
+// With windows in force they sum to ActivityIdleMS. With none, ActivityIdleMS falls back to
+// the roster's ActiveMS, which the per-second spans approximate. nil for a player not on
+// the roster.
+func IdleWindows(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) []Window {
+	if _, ok := rosterRow(fight, player); !ok {
+		return nil
+	}
+	aliveMS, windows := excludedWindows(fight, player, table, assignments)
+	spans := idleSpans(fight, player, aliveMS, windows)
+	sort.SliceStable(spans, func(i, j int) bool {
+		return spans[i].ToMS-spans[i].FromMS > spans[j].ToMS-spans[j].FromMS
+	})
+	return spans
+}
+
+// excludedWindows is player's time alive and the downtime and assignment windows inside it.
+func excludedWindows(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) (int64, []Window) {
+	aliveMS := TimeAliveMS(fight, player)
+	windows := DowntimeWindows(fight, table, aliveMS)
+	return aliveMS, append(windows, assignmentWindows(assignments, player, aliveMS)...)
+}
+
+// idleSpans walks the same per-second buckets as activeExcludingDowntime and joins every
+// idle second (alive, outside windows, no damage or healing) into runs, in time order.
+func idleSpans(fight summary.Summary, player string, aliveMS int64, windows []Window) []Window {
+	active := activeSecondSet(fight, player)
+	var out []Window
+	for secStart := int64(0); secStart < aliveMS; secStart += 1000 {
+		secEnd := min(secStart+1000, aliveMS)
+		if active[int(secStart/1000)] || overlapsAny(windows, secStart, secEnd) {
+			continue
+		}
+		if n := len(out); n > 0 && out[n-1].ToMS == secStart {
+			out[n-1].ToMS = secEnd
+			continue
+		}
+		out = append(out, Window{FromMS: secStart, ToMS: secEnd})
+	}
+	return out
+}
+
+func overlapsAny(windows []Window, from, to int64) bool {
+	for _, w := range windows {
+		if overlapsMS(w.FromMS, w.ToMS, from, to) {
+			return true
+		}
+	}
+	return false
+}
+
+// DowntimeWindows expands the encounter's curated Downtime entries into
 // concrete [from, to) spans, clipped to [0, aliveMS).
-func downtimeWindows(fight summary.Summary, table *mechanics.Table, aliveMS int64) []window {
+func DowntimeWindows(fight summary.Summary, table *mechanics.Table, aliveMS int64) []Window {
 	if table == nil {
 		return nil
 	}
-	var out []window
+	var out []Window
 	for _, d := range table.Downtime {
 		for _, at := range triggerInstantsMS(fight, d.Trigger) {
-			w := window{fromMS: at, toMS: at + d.DurationMS}
+			w := Window{FromMS: at, ToMS: at + d.DurationMS}
 			out = append(out, w)
 		}
 	}
 	return clipWindows(out, aliveMS)
 }
 
-func assignmentWindows(assignments []Assignment, player string, aliveMS int64) []window {
-	var out []window
+func assignmentWindows(assignments []Assignment, player string, aliveMS int64) []Window {
+	var out []Window
 	for _, a := range assignments {
 		if a.PlayerKey != player {
 			continue
 		}
-		out = append(out, window{fromMS: a.FromMS, toMS: a.ToMS})
+		out = append(out, Window{FromMS: a.FromMS, ToMS: a.ToMS})
 	}
 	return clipWindows(out, aliveMS)
 }
 
-func clipWindows(windows []window, aliveMS int64) []window {
-	out := make([]window, 0, len(windows))
+func clipWindows(windows []Window, aliveMS int64) []Window {
+	out := make([]Window, 0, len(windows))
 	for _, w := range windows {
-		if w.fromMS >= aliveMS || w.toMS <= 0 {
+		if w.FromMS >= aliveMS || w.ToMS <= 0 {
 			continue
 		}
-		if w.fromMS < 0 {
-			w.fromMS = 0
+		if w.FromMS < 0 {
+			w.FromMS = 0
 		}
-		if w.toMS > aliveMS {
-			w.toMS = aliveMS
+		if w.ToMS > aliveMS {
+			w.ToMS = aliveMS
 		}
-		if w.toMS > w.fromMS {
+		if w.ToMS > w.FromMS {
 			out = append(out, w)
 		}
 	}
@@ -116,7 +168,7 @@ func overlapsMS(aFrom, aTo, bFrom, bTo int64) bool {
 // each whole second the player did damage or healing (Actor.Series is
 // already one entry per second) counts as active, excluding any second
 // that overlaps a downtime or assignment window.
-func activeExcludingDowntime(fight summary.Summary, player string, aliveMS int64, windows []window) (activeMS, denomMS int64) {
+func activeExcludingDowntime(fight summary.Summary, player string, aliveMS int64, windows []Window) (activeMS, denomMS int64) {
 	activeSeconds := activeSecondSet(fight, player)
 	totalSeconds := int(aliveMS / 1000)
 	if aliveMS%1000 != 0 {
@@ -129,14 +181,7 @@ func activeExcludingDowntime(fight summary.Summary, player string, aliveMS int64
 		if secEndMS > aliveMS {
 			secEndMS = aliveMS
 		}
-		inDowntime := false
-		for _, w := range windows {
-			if overlapsMS(w.fromMS, w.toMS, secStartMS, secEndMS) {
-				inDowntime = true
-				break
-			}
-		}
-		if inDowntime {
+		if overlapsAny(windows, secStartMS, secEndMS) {
 			overlapMS += secEndMS - secStartMS
 			continue
 		}

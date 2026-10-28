@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
@@ -336,5 +337,37 @@ func TestEveryCuratedExclusionNameIsAClassFamily(t *testing.T) {
 	}
 	if checked < minNames {
 		t.Errorf("checked %d curated names in %s, want at least %d", checked, build, minNames)
+	}
+}
+
+// OffRotation is the n most-cast counted spells the rotation does not list: the casts
+// adherence counts against the player, most first, ties by spell id. A listed spell, an
+// excluded one (the combat potion) and someone else's casts never appear.
+func TestOffRotationTopThree(t *testing.T) {
+	useRepoGearData(t)
+	rot, ok := sims.RotationFor("", DataSpecSlug("Warrior", "Fury"), 60)
+	if !ok {
+		t.Fatal("no fury rotation in the newest data build")
+	}
+	const guid = "Player-Off"
+	const spellRend7, spellOverpower4 = 11574, 11585
+	casts := castRows(guid,
+		[2]int64{spellBloodthirst4, 20}, [2]int64{spellMightyRagePot, 9},
+		[2]int64{spellHamstring3, 5}, [2]int64{spellOverpower4, 4}, [2]int64{spellRend7, 4},
+		[2]int64{spellSunderArmor5, 2})
+	casts = append(casts, castRows("Player-Else", [2]int64{spellSunderArmor5, 30})...)
+	fight := summary.Summary{Casts: casts}
+	got := OffRotation(fight, summary.RosterRow{GUID: guid}, rot, 3)
+	want := []int64{spellHamstring3, spellRend7, spellOverpower4}
+	if len(got) != len(want) {
+		t.Fatalf("OffRotation = %+v, want spells %v", got, want)
+	}
+	for i, id := range want {
+		if got[i].SpellID != id || got[i].GUID != guid {
+			t.Errorf("OffRotation[%d] = %d (%s), want %d", i, got[i].SpellID, got[i].GUID, id)
+		}
+	}
+	if got := FightAdherence(fight, summary.RosterRow{GUID: guid}, rot); got == nil || *got != 0.57 {
+		t.Errorf("FightAdherence = %v, want 0.57 (20 of 35 counted casts)", got)
 	}
 }

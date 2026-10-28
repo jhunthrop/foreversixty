@@ -11,6 +11,7 @@ package rating
 import (
 	"context"
 	"math"
+	"sort"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
@@ -27,14 +28,14 @@ const (
 	adherenceDefaultLevel = 60
 )
 
-// fightAdherence is the adherence of row's player in fight to rot, rounded to two decimals:
+// FightAdherence is the adherence of row's player in fight to rot, rounded to two decimals:
 // casts of abilities rot lists (at any rank) over every ability cast. Ability casts are the
 // player's own successful casts (a pet's or a guardian's rows carry the pet's GUID and are
 // not the player's), less the casts adherence_exclusions.go sets aside (white hits, items,
 // racials, consumables, dispels, interrupts, taunts, resurrections, self-buffs, mounts,
 // movement, utility); a cast of an ability rot lists always counts.
 // nil under AdherenceMinCasts ability casts.
-func fightAdherence(fight summary.Summary, row summary.RosterRow, rot sims.Rotation) *float64 {
+func FightAdherence(fight summary.Summary, row summary.RosterRow, rot sims.Rotation) *float64 {
 	var listed, total int64
 	for _, c := range fight.Casts {
 		if c.GUID != row.GUID || c.Succeeded <= 0 {
@@ -54,6 +55,33 @@ func fightAdherence(fight summary.Summary, row summary.RosterRow, rot sims.Rotat
 	}
 	v := math.Round(float64(listed)/float64(total)*100) / 100
 	return &v
+}
+
+// OffRotation is the n most-cast spells FightAdherence counts against row's player: their
+// own successful casts of spells rot does not list and adherence_exclusions.go does not set
+// aside, one row per spell id (Succeeded summed), most Succeeded first, ties by spell id.
+func OffRotation(fight summary.Summary, row summary.RosterRow, rot sims.Rotation, n int) []summary.CastRow {
+	bySpell := map[int64]summary.CastRow{}
+	for _, c := range fight.Casts {
+		if c.GUID != row.GUID || c.Succeeded <= 0 || rot.Lists(c.SpellID) || excludedFromAdherence(c, rot) {
+			continue
+		}
+		if prev, ok := bySpell[c.SpellID]; ok {
+			c.Succeeded += prev.Succeeded
+		}
+		bySpell[c.SpellID] = c
+	}
+	out := make([]summary.CastRow, 0, len(bySpell))
+	for _, c := range bySpell {
+		out = append(out, c)
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Succeeded != out[j].Succeeded {
+			return out[i].Succeeded > out[j].Succeeded
+		}
+		return out[i].SpellID < out[j].SpellID
+	})
+	return out[:min(max(n, 0), len(out))]
 }
 
 // rosterLevels reads every roster player's level for the adherence band, in one query on the
@@ -105,5 +133,5 @@ func adherence(fight summary.Summary, row summary.RosterRow, level *int, levelKn
 	if !ok {
 		return nil
 	}
-	return fightAdherence(fight, row, rot)
+	return FightAdherence(fight, row, rot)
 }

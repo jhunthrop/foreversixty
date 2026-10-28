@@ -34,7 +34,7 @@ func scoreMechanicsComponent(fight summary.Summary, player, role string, bracket
 		return c
 	}
 
-	aliveSeconds := float64(timeAliveMS(fight, player)) / 1000
+	aliveSeconds := float64(TimeAliveMS(fight, player)) / 1000
 	var scores []float64
 	var moments []Moment
 	usedPercentile, usedAbsolute := false, false

@@ -160,21 +160,21 @@ func TestTriggerInstantsMSSupportsAuraAndCastTriggersOnly(t *testing.T) {
 }
 
 func TestClipWindowsDropsAndClampsOutOfRangeWindows(t *testing.T) {
-	windows := []window{
-		{fromMS: -5000, toMS: 3000},    // clamped to [0, 3000)
-		{fromMS: 200000, toMS: 210000}, // entirely past aliveMS: dropped
-		{fromMS: 170000, toMS: 190000}, // clamped to [170000, 180000)
-		{fromMS: 50000, toMS: 50000},   // zero-width: dropped
-		{fromMS: -10000, toMS: -5000},  // entirely negative: dropped
+	windows := []Window{
+		{FromMS: -5000, ToMS: 3000},    // clamped to [0, 3000)
+		{FromMS: 200000, ToMS: 210000}, // entirely past aliveMS: dropped
+		{FromMS: 170000, ToMS: 190000}, // clamped to [170000, 180000)
+		{FromMS: 50000, ToMS: 50000},   // zero-width: dropped
+		{FromMS: -10000, ToMS: -5000},  // entirely negative: dropped
 	}
 	got := clipWindows(windows, 180000)
 	if len(got) != 2 {
 		t.Fatalf("clipWindows = %+v, want 2 surviving windows", got)
 	}
-	if got[0].fromMS != 0 || got[0].toMS != 3000 {
+	if got[0].FromMS != 0 || got[0].ToMS != 3000 {
 		t.Errorf("window 0 = %+v, want [0,3000)", got[0])
 	}
-	if got[1].fromMS != 170000 || got[1].toMS != 180000 {
+	if got[1].FromMS != 170000 || got[1].ToMS != 180000 {
 		t.Errorf("window 1 = %+v, want [170000,180000)", got[1])
 	}
 }
