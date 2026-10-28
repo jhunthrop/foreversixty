@@ -21,12 +21,8 @@ This is the Restoration Druid as the site's guide describes it. Restoration is t
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - The tank keeps Regrowth and Rejuvenation up for the whole fight, and the heals over time carry most of the work.
-- Rejuvenation.
-- Healing Touch.
 - Party members get Wild Growth when two are hurt, Rejuvenation when one is, and Tranquility when two are well down.
-- Tranquility.
 - Nature's Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
-- Innervate.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

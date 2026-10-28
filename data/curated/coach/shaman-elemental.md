@@ -20,12 +20,12 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is Sham
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Single target: Searing Totem is the higher damage fire totem.
-- Magma Totem.
-- Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage.
-- Lightning Bolt is the rest of the single-target rotation.
-- Lava Burst is the first line when you have the talent.
-- Mana Spring Totem goes down first.
+- Mana Spring Totem goes down first, one global before the cooldowns. The loop runs short of mana long before the fight ends.
+- Lava Burst on every cooldown when you have the talent, ahead of the totems and the cooldowns.
+- Searing Totem against a single target, for the higher fire damage.
+- Lightning Bolt on every free global.
+- Chain Lightning only against two or more targets. It hits every target for close to single-target Lightning Bolt damage.
+- Magma Totem in place of Searing Totem against two or more targets.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

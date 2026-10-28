@@ -20,8 +20,7 @@ This is the Feral Bear Druid as the site's guide describes it. Feral Bear is the
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Bear Form.
-- Dire Bear Form.
+- Everything is in Bear Form, which Dire Bear Form replaces at level forty.
 - Primal Bite on its cooldown.
 - Lacerate kept ticking: it stacks, and Rend and Tear reads it.
 - Maul, queued on your next swing with spare Rage.

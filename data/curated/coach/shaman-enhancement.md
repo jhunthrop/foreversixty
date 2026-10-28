@@ -20,13 +20,13 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Windfury Weapon.
+- Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
 - Strength of Earth Totem.
-- Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.
+- Keep Windfury Totem down. It is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.
 - Stormstrike on cooldown: it is the highest damage per global Enhancement has, on an eight second cooldown.
-- Keep Searing Totem down for the extra fire damage, but not with less than twenty seconds left -- no point paying for a totem that will barely tick.
+- Keep Searing Totem down for the extra fire damage, but not with less than twenty seconds left. No point paying for a totem that will barely tick.
 - Mana Spring Totem is dropped before the pull and kept up.
-- Earth Shock.
+- Earth Shock last, and only while mana is above half.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

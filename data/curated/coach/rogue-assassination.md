@@ -20,8 +20,7 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Deadly Poison.
-- Instant Poison.
+- Poisons come first: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at thirty.
 - Mutilate is this tree's builder: both weapons strike for two combo points a cast.
 - Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under three seconds remaining, at four or more combo points.
 - Eviscerate at four or more combo points, whenever its thirty-five energy is there.

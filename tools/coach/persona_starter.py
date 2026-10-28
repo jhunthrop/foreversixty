@@ -16,10 +16,19 @@ from pathlib import Path
 from typing import Any
 
 from starter_kit import ALL_CODES, ROLE_CODES, consumable_paragraph, drills, mistakes
+from starter_overrides import GUIDE_LINES, GUIDE_ORDER, corrected
 from starter_priority import corroborated_note, is_bare, priority_entries
 from starter_text import DIGIT, number_words, spell_out_numbers, usable_sentence
 
-__all__ = ["ALL_CODES", "ROLE_CODES", "corroborated_note", "number_words", "usable_sentence"]
+__all__ = [
+    "ALL_CODES",
+    "GUIDE_LINES",
+    "GUIDE_ORDER",
+    "ROLE_CODES",
+    "corroborated_note",
+    "number_words",
+    "usable_sentence",
+]
 
 TOOLS_DIR = Path(__file__).resolve().parent
 REPO = TOOLS_DIR.parent.parent
@@ -99,7 +108,8 @@ def castable_names(row: dict[str, Any]) -> set[str]:
 def priority_entries_of(row: dict[str, Any]) -> list[tuple[str, str]]:
     prose = section_after(read_text(guide_path(row)), ROTATION_HEADING)
     items = load_json(apl_path(row["spec"]))["rotation"]["priorityList"]
-    return priority_entries(items, spell_names(row), castable_names(row), prose, read_text(guide_path(row)))
+    entries = priority_entries(items, spell_names(row), castable_names(row), prose, read_text(guide_path(row)))
+    return corrected(row["spec"], entries)
 
 
 def priority_lines(row: dict[str, Any]) -> list[str]:

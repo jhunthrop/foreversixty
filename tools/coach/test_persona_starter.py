@@ -15,6 +15,7 @@ import persona_starter as ps  # noqa: E402
 
 HEADS = ["## Who they are", "## What they know", "## Drills", "## Voice"]
 MAX_DRILL_CHARS = 240
+MAX_SENTENCE_WORDS = 20
 
 
 def run_starter(slug: str, tmp_path: Path) -> str:
@@ -219,13 +220,13 @@ def priority_text(slug: str) -> str:
         ("mage-fire", ["Frostfire Bolt"]),
         ("mage-arcane", ["Frostfire Bolt"]),
         ("shaman-elemental", ["Flame Shock", "Earth Shock", "Fire Nova"]),
-        ("shaman-enhancement", ["Flame Shock", "Fire Nova", "Rockbiter Weapon"]),
-        ("warrior-arms", ["Heroic Strike", "Hamstring", "Recklessness"]),
+        ("shaman-enhancement", ["Flame Shock", "Fire Nova"]),
+        ("warrior-arms", ["Heroic Strike", "Recklessness"]),
         ("rogue-assassination", ["Sinister Strike", "Venom"]),
         ("paladin-retribution", ["Seal of Command"]),
         ("paladin-protection", ["Lay on Hands", "Exorcism"]),
         ("priest-discipline", ["Shadowfiend", "Dark Sacrifice"]),
-        ("hunter-survival", ["Aimed Shot", "Serpent Sting", "Wing Clip"]),
+        ("hunter-survival", ["Aimed Shot", "Serpent Sting"]),
         ("hunter-marksmanship", ["Serpent Sting"]),
     ],
 )
@@ -262,7 +263,7 @@ def test_order_follows_the_guide() -> None:
     bear = priority_names("druid-feral-bear")
     assert bear.index("Primal Bite") < bear.index("Lacerate") < bear.index("Maul") < bear.index("Barkskin")
     feral = priority_names("druid-feral")
-    assert feral.index("Tiger's Fury") < feral.index("Rip") < feral.index("Ferocious Bite") < feral.index("Shred")
+    assert feral.index("Tiger's Fury") < feral.index("Rip") < feral.index("Shred")
     beast = priority_names("hunter-beast-mastery")
     assert beast.index("Bestial Wrath") < beast.index("Aimed Shot") < beast.index("Arcane Shot")
 
@@ -285,3 +286,68 @@ def test_figures_must_be_in_the_guide() -> None:
 
 def test_pyroblast_carries_the_guides_condition() -> None:
     assert any(line.startswith("Pyroblast only") for line in ps.priority_lines(ps.spec_row("mage-fire")))
+
+
+# Round 5 (wow-player read 4 rulings).
+
+def test_totem_conditional_abilities_carry_their_condition() -> None:
+    for slug, name in (("hunter-survival", "Wing Clip"), ("warrior-arms", "Hamstring")):
+        line = next(line for n, line in ps.priority_entries_of(ps.spec_row(slug)) if n == name)
+        assert "only with a Windfury Totem in the group" in line, (slug, line)
+
+
+def test_guide_order_statements_win() -> None:
+    elemental = priority_names("shaman-elemental")
+    assert elemental[:2] == ["Mana Spring Totem", "Lava Burst"]
+    shadow = priority_names("priest-shadow")
+    assert shadow.index("Mind Flay") < shadow.index("Mind Blast")
+    prot = priority_names("paladin-protection")
+    assert prot.index("Holy Shield") < prot.index("Judgement") < prot.index("Consecration")
+    assert priority_names("druid-feral")[0] == "Shifting Power"
+
+
+def test_no_bare_line_repeats_a_named_ability() -> None:
+    for slug in ps.spec_slugs():
+        if slug in ps.FULL_SPECS:
+            continue
+        entries = ps.priority_entries_of(ps.spec_row(slug))
+        for name, line in entries:
+            if line == f"{name}.":
+                others = [o for n, o in entries if n != name]
+                assert not any(re.search(rf"\b{re.escape(name)}\b", o) for o in others), (slug, name)
+
+
+def test_no_tool_speak(tmp_path: Path) -> None:
+    ps.write_all(tmp_path)
+    for path in tmp_path.glob("*.md"):
+        text = path.read_text()
+        assert "curated rotation" not in text and "reserve floor" not in text, path.stem
+
+
+def test_every_correction_restates_its_guide() -> None:
+    for slug, lines in ps.GUIDE_LINES.items():
+        prose = ps.section_after(ps.read_text(ps.guide_path(ps.spec_row(slug))), ps.ROTATION_HEADING)
+        for name, line in lines.items():
+            assert line.startswith(name) and not re.search(r"\d", line), (slug, line)
+            assert name in prose or (name == "Shoot" and "wand" in prose.lower()), (slug, name)
+    for slug, order in ps.GUIDE_ORDER.items():
+        assert set(order) <= set(priority_names(slug)) | {"Holy Strike"}, slug
+
+
+def test_guide_lines_are_short() -> None:
+    for lines in ps.GUIDE_LINES.values():
+        for line in lines.values():
+            for sentence in re.split(r"(?<=\.) ", line):
+                assert len(sentence.split()) <= MAX_SENTENCE_WORDS, sentence
+
+
+def test_long_sentences_split_where_the_part_reads_alone() -> None:
+    from starter_text import short_sentences
+
+    line = (
+        "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, "
+        "so recast it the moment it fires."
+    )
+    assert short_sentences(line, "Bane of Doom").startswith("Bane of Doom is the one curse kept up. It deals")
+    prefixed = "Wrath: Eclipse, if talented, rewards weaving in a Wrath cast: it shortens your next two Starfire casts a lot."
+    assert short_sentences(prefixed, "Wrath").startswith("Wrath: Eclipse")

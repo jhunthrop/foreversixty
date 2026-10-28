@@ -20,12 +20,13 @@ This is the Arms Warrior as the site's guide describes it. Arms is Forever's two
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Bloodrage.
+- Bloodrage whenever Rage drops below eighty, since Rage limits everything else here.
 - Keep Battle Shout up.
 - Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking.
 - Mortal Strike is the highest damage per rage button and comes off a six second cooldown.
 - Overpower is a free follow-up whenever the target dodges you, so it's cast on sight rather than held for later.
 - Execute below twenty percent.
+- Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Without the totem it loses damage.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

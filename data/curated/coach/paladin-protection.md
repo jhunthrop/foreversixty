@@ -22,13 +22,11 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 
 - Righteous Fury is a setting, not a button: keep it on.
 - Seal of Fury kept up.
-- Judgement on cooldown; with Swift Judgement the next one is free.
 - Holy Shield on cooldown.
-- Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.
-- Holy Strike.
-- Swift Judgement.
+- Hammer of the Righteous and Holy Strike on their cooldowns. Hammer of the Righteous is the largest single threat gain in this list.
+- Judgement on cooldown; with Swift Judgement the next one is free.
+- Consecration only with spare mana, where it pays for itself in threat.
 - Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are losing.
-- Divine Protection.
 - Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar's Bulwark.
 
 **The mistakes the coach looks for, by finding.**

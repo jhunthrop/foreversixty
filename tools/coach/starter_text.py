@@ -38,7 +38,9 @@ DANGLING_REFERENCE = re.compile(
 PARENTHETICAL = re.compile(r"\s*\([^)]*\)")
 MARKDOWN_EMPHASIS = re.compile(r"\*+")
 SECONDS_SUFFIX = re.compile(r"(?<![\w.])(\d{1,3})\s?s\b(?!\w)")
-NUMBER = re.compile(r"(?<![\w.])(\d{1,3})(%?)(?![\w.]|\d)")
+NUMBER = re.compile(r"(?<![\w.])(\d{1,3})(%?)(?!\w|\.\d|\d)")
+# Words about the site's own tooling that a player would not say, and their plain replacements.
+TOOL_SPEAK = {"The curated rotation": "The rotation", ", hence the reserve floor": ", so keep a mana reserve"}
 PERCENT_WORD = " percent"
 DIGIT = re.compile(r"\d")
 HALF = re.compile(r"(?<![\w.])(\d{1,2})\.5(?![\w.]|\d)")
@@ -46,6 +48,11 @@ HALF = re.compile(r"(?<![\w.])(\d{1,2})\.5(?![\w.]|\d)")
 FIGURE = re.compile(r"(\d+(?:\.\d+)?)\s?-?(%|percent\b|s\b|sec\b|seconds?\b|x\b)", re.IGNORECASE)
 UNIT_KIND = {"%": "percent", "percent": "percent", "x": "times"}
 SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+# A colon (not the one in "Shadow Word: Pain"), a semicolon or a dash that can end a sentence instead.
+SENTENCE_JOIN = re.compile(r"(?<!Word): |; | -- | — ")
+MAX_SENTENCE_WORDS = 20
+# Words that open a clause able to stand as its own sentence.
+STANDALONE_OPENERS = frozenset({"it", "its", "the", "once", "then", "recast", "health", "no", "they", "this"})
 
 
 def number_words(n: int) -> str:
@@ -69,9 +76,15 @@ def sentences(text: str) -> list[str]:
     return SENTENCE_END.split(MARKDOWN_EMPHASIS.sub("", text).strip())
 
 
+def plain_words(text: str) -> str:
+    for tool, plain in TOOL_SPEAK.items():
+        text = text.replace(tool, plain)
+    return text
+
+
 def plain_sentence(sentence: str) -> str | None:
     """The sentence in words, or None when it cannot stand alone."""
-    words = spell_out_numbers(PARENTHETICAL.sub("", sentence).replace("!", ".").strip())
+    words = spell_out_numbers(plain_words(PARENTHETICAL.sub("", sentence).replace("!", ".").strip()))
     if DIGIT.search(words) or any(p.search(words) for p in (NOT_ABOUT_PLAYING, CHANGELOG, DANGLING_REFERENCE)):
         return None
     if len(words) < MIN_SENTENCE_CHARS:
@@ -91,3 +104,20 @@ def digit_tokens(text: str) -> set[str]:
 def figures(text: str) -> set[tuple[str, str]]:
     """(number, unit kind) for every figure in the text, so "15 s" and "15-second" match."""
     return {(m[1], UNIT_KIND.get(m[2].lower(), "seconds")) for m in FIGURE.finditer(text)}
+
+
+def short_sentences(line: str, name: str) -> str:
+    """Sentences longer than the limit split where the next part reads alone (read 4, ruling 3)."""
+    prefix = f"{name}: " if line.startswith(f"{name}: ") else ""
+    return prefix + " ".join(split_long(part) for part in SENTENCE_END.split(line.removeprefix(prefix)))
+
+
+def split_long(sentence: str) -> str:
+    if len(sentence.split()) <= MAX_SENTENCE_WORDS:
+        return sentence
+    pieces = SENTENCE_JOIN.split(sentence.rstrip("."))
+    joined = pieces[0]
+    for piece, separator in zip(pieces[1:], SENTENCE_JOIN.findall(sentence), strict=True):
+        reads_alone = piece.split()[0].lower() in STANDALONE_OPENERS
+        joined += f". {piece[:1].upper()}{piece[1:]}" if reads_alone else f"{separator}{piece}"
+    return joined + "."

@@ -24,7 +24,7 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship i
 - Before the pull, Aspect of the Hawk goes up and the opening Aimed Shot begins casting so it lands close to the start of the fight.
 - Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.
 - Multi-Shot as the filler between Aimed Shots.
-- Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor.
+- Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, so keep a mana reserve.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

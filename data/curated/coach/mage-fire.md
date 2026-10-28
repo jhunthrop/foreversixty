@@ -20,7 +20,7 @@ This is the Fire Mage as the site's guide describes it. Fire is the Mage sustain
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.
+- Scorch on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews the Improved Scorch debuff.
 - Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.
 - Pyroblast only when Heating Up has stacked three times: three Fire crits cut the six second cast to one and a half seconds, and the cast spends the buff.
 - Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.

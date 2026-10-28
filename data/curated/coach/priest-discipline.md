@@ -20,10 +20,8 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- The curated rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul.
-- Power Word: Shield.
+- The rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul.
 - Renew and Prayer of Mending go on the tank.
-- Prayer of Mending.
 - Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
 - Prayer of Healing answers several party members being hurt together.
 - Heal is the efficient filler.

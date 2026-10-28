@@ -22,10 +22,11 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 
 - Raptor Strike.
 - Counterattack.
-- Mongoose Bite is a counterattack.
+- Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
 - Lacerate.
 - Strider Kick as the lowest-priority filler on its own eight second cooldown.
 - Immolation Trap.
+- Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

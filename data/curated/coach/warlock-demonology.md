@@ -20,12 +20,12 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.
+- Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires.
 - Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.
-- Immolate is the addition that matters: recast it when under three seconds remain, since a running Immolate out-damages the globals it displaces.
+- Immolate is the addition that matters. Recast it when under three seconds remain, since a running Immolate out-damages the globals it displaces.
 - Soul Fire.
 - Searing Pain fills every other global.
-- Shoot with your wand once mana is under fifty percent: it costs nothing, so mana regenerates while it keeps damage going.
+- Shoot with your wand once mana is under fifty percent. It costs nothing, so mana regenerates while it keeps damage going.
 - Life Tap to keep casting once mana runs low.
 
 **The mistakes the coach looks for, by finding.**

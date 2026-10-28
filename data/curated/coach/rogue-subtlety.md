@@ -21,7 +21,6 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rog
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Open from stealth with Stealth, Premeditation and Ambush, then play from Hemorrhage.
-- Ambush.
 - Hemorrhage is the builder, hitting for one hundred forty-five percent weapon damage with a dagger and awarding a combo point, and its debuff makes the target take fifteen percent more damage from your Rupture for fifteen seconds, so keep it going.
 - Rupture at four or more combo points whenever it is not running.
 - Ghostly Strike on cooldown: cheaper than Backstab, hits for one hundred eighty percent weapon damage with a dagger, and builds a combo point.

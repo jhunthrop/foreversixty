@@ -21,7 +21,7 @@ This is the Frost Mage as the site's guide describes it. Frost is the Mage contr
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Frostbolt is the filler between Fingers of Frost charges.
-- Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.
+- Ice Lance on a Fingers of Frost charge. The charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

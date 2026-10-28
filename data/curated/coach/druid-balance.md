@@ -20,7 +20,7 @@ This is the Balance Druid as the site's guide describes it. Balance is the Druid
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Be in Moonkin Form before the pull and stay in it: the form gives you three percent more critical strike chance, and every spell in this loop can be cast from it.
+- Be in Moonkin Form before the pull and stay in it. The form gives you three percent more critical strike chance, and every spell in this loop can be cast from it.
 - Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.
 - Starfire is the whole rest of the rotation once Insect Swarm is ticking.
 - Wrath: Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
