@@ -33,8 +33,10 @@ type Deps struct {
 	Guilds                                                    GuildService
 	// Characters answers /char: the public character page.
 	Characters CharacterCards
-	Notify     *notify.Service
-	Log        *slog.Logger
+	// Coach words the log coach's fix-first line in /report. Nil: no coach lines.
+	Coach  CoachLines
+	Notify *notify.Service
+	Log    *slog.Logger
 	// Background runs work that outlives a request. Nil means in-process
 	// goroutines tracked by Drain; see Background.
 	Background Background

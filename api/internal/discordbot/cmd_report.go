@@ -57,6 +57,7 @@ func (s *Service) cmdReport(ctx context.Context, in Interaction) (Reply, error) 
 		}
 		msg = withShare(msg, button)
 	}
+	msg = s.withCoachLines(ctx, msg, *viewer, ans.Raid.Match.ReportID)
 	msg.Ephemeral = true
 	return Reply{Message: msg}, nil
 }

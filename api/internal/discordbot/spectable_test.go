@@ -15,7 +15,18 @@ var backticked = regexp.MustCompile("`([^`]+)`")
 // by the row's first-column label, as web/src/test-support/spec-table.ts does.
 func specCell(t *testing.T, heading, label string) []string {
 	t.Helper()
-	raw, err := os.ReadFile(specPath)
+	return specCellIn(t, specPath, heading, label)
+}
+
+var whitespaceRun = regexp.MustCompile(`\s+`)
+
+// collapseSpaces turns every whitespace run into one space: spec strings may wrap inside their backticks.
+func collapseSpaces(s string) string { return whitespaceRun.ReplaceAllString(s, " ") }
+
+// specCellIn is specCell for the spec at path.
+func specCellIn(t *testing.T, path, heading, label string) []string {
+	t.Helper()
+	raw, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
 	}
