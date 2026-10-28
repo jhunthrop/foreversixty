@@ -516,35 +516,68 @@ var holyRules = SpecRules{
 }
 
 // examplePack is the §5.3 Fury pack, value for value (invented values: tests only).
+// The ids are the spec's (f1, f6, f4); Review numbers its own in rank order. Allowed is
+// allowedOf's, the set Review would compute.
 func examplePack() Pack {
-	at := func(id string) Anchor { return Anchor{ID: id, Kind: AnchorCast} }
-	return Pack{
+	ms := func(v int64) *int64 { return &v }
+	casts := func(v float64, of string) NumberFact {
+		return NumberFact{V: v, Text: PctNumber(v), Unit: "casts", Of: of}
+	}
+	top25 := func(label string) *Basis { return &Basis{Label: label, Kind: BasisTopLogs, N: 25} }
+	p := Pack{
 		Version: "pack-v1.example", Status: StatusReady,
 		Context: Context{SpecLabel: "Fury", Class: "Warrior", Role: "dps", Boss: "Onyxia", Size: 40, Kill: true, Duration: "3:52"},
 		Findings: []Finding{
 			{ID: "f1", Code: CodeCoreCasts, Severity: SeverityMajor, Rank: 1, Title: "Bloodthirst: 9 casts lost",
-				Detail: "31 of a possible 40 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.",
-				Facts:  Facts{Spells: []SpellFact{{Name: "Bloodthirst"}}}, Anchors: []string{"a1", "a2", "a3"}},
+				Detail:     "31 of a possible 40 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.",
+				Basis:      Basis{Label: "Measured against Bloodthirst's 6-second cooldown and your own rage bar.", Kind: BasisSpellData},
+				Comparison: top25("Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0."),
+				Facts: Facts{
+					Numbers: []NumberFact{casts(31, "Bloodthirst"), casts(40, "Bloodthirst"), casts(9, "Bloodthirst"),
+						{V: 9.1, Text: "9.1", Unit: "casts per minute", Of: "Bloodthirst"}, {V: 8, Text: "8.0", Unit: "casts per minute", Of: "Bloodthirst"}},
+					Spells: []SpellFact{{ID: 23894, Name: "Bloodthirst", Rank: 4}},
+					Times:  []string{"1:12–1:25", "2:40–2:51"},
+				},
+				Anchors: []string{"a1", "a2", "a3"}},
 			{ID: "f6", Code: CodePreparation, Severity: SeverityMajor, Rank: 2, Title: "No flask at the pull",
-				Detail: "You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.",
-				Facts:  Facts{Items: []string{"Grilled Squid", "Elemental Sharpening Stone"}}, Anchors: []string{"a4"}},
+				Detail:  "You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.",
+				Basis:   Basis{Label: "From the character sheet in your log, against the site's consumable list for damage dealers.", Kind: BasisOwnLog},
+				Facts:   Facts{Items: []string{"Elemental Sharpening Stone", "Grilled Squid"}},
+				Anchors: []string{"a4"}},
 			{ID: "f4", Code: CodeResource, Severity: SeverityMinor, Rank: 3, Title: "Rage full for 14 seconds",
-				Detail: "Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.", Anchors: []string{"a5"}},
+				Detail:     "Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.",
+				Basis:      Basis{Label: "Measured against your own rage bar, air phase left out.", Kind: BasisOwnLog},
+				Comparison: top25("Top 25 Fury warriors here: 3 s."),
+				Facts:      Facts{Numbers: []NumberFact{{V: 14, Text: "14", Unit: "s", Of: "rage at its cap"}}, Times: []string{"2:41", "2:50"}},
+				Anchors:    []string{"a5"}},
 		},
 		Strengths: []Strength{
 			{ID: "s1", Sentence: "Alive the whole fight."},
-			{ID: "s2", Sentence: "Battle Shout up 100% of the fight. Top 25: 97%."},
+			{ID: "s2", Sentence: "Battle Shout up 100% of the fight. Top 25: 97%.", Facts: Facts{
+				Numbers: []NumberFact{{V: 100, Text: "100", Unit: "%", Of: "Battle Shout uptime"}, {V: 97, Text: "97", Unit: "%", Of: "Battle Shout uptime in the comparison"}},
+				Spells:  []SpellFact{{ID: 25289, Name: "Battle Shout", Rank: 7}},
+			}},
 		},
 		Links: []Link{{ID: "l1", Findings: [2]string{"f1", "f4"}, Kind: LinkGapOverlapsCap,
 			Sentence: "The Bloodthirst gap at 2:40–2:51 overlaps the rage cap at 2:41–2:50."}},
 		CouldNotCheck: []string{"Talents and race: Forever logs don't record them.", "Range and movement: the log doesn't say where you stood."},
-		Anchors:       []Anchor{at("a1"), at("a2"), at("a3"), at("a4"), at("a5")},
-		Allowed: Allowed{
-			Numbers: []string{"31", "40", "9", "8", "9.1", "14", "3", "25", "100%", "97%", "3:52", "0:21", "1:12", "2:40", "2:41", "2:50", "2:51", "1:12–1:25", "2:40–2:51", "2:41–2:50"},
-			Names:   []string{"Bloodthirst", "Heroic Strike", "Battle Shout", "Onyxia", "Grilled Squid", "Elemental Sharpening Stone"},
-			IDs:     []string{"a1", "a2", "a3", "a4", "a5", "f1", "f4", "f6", "l1", "s1", "s2"},
+		Anchors: []Anchor{
+			{ID: "a1", Kind: AnchorCast, SpellID: 23894},
+			{ID: "a2", Kind: AnchorTime, AtMS: ms(72_000), ToMS: ms(85_000)},
+			{ID: "a3", Kind: AnchorTime, AtMS: ms(160_000), ToMS: ms(171_000)},
+			{ID: "a4", Kind: AnchorBuffs},
+			{ID: "a5", Kind: AnchorResource, AtMS: ms(161_000), ToMS: ms(170_000)},
 		},
+		BasisLabels: []string{"Measured against Bloodthirst's 6-second cooldown and your own rage bar.",
+			"Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.",
+			"From the character sheet in your log, against the site's consumable list for damage dealers.",
+			"Measured against your own rage bar, air phase left out.", "Top 25 Fury warriors here: 3 s."},
 	}
+	p.Allowed = allowedOf(p)
+	// §5.3's review names Heroic Strike in a then-fix why, not only in the drill, so the
+	// worked example's pack must allow it.
+	p.Allowed.Names = append(p.Allowed.Names, "Heroic Strike")
+	return p
 }
 
 // exampleReview is the §5.3 Fury review, word for word.
