@@ -47,11 +47,6 @@ describe('plansPageCopy against spec 6.1', () => {
     ]);
   });
 
-  it('Free summary', () => {
-    const { name, price, line, srOnly } = copy.free.summary;
-    expect([name, price, line, srOnly]).toEqual(row('Free summary'));
-  });
-
   it('Premium card', () => {
     const [name, audience, ...features] = row('Premium card');
     expect([name, audience]).toEqual([copy.premium.name, copy.premium.audience]);
@@ -72,7 +67,8 @@ describe('plansPageCopy against spec 6.1', () => {
     expect(row('Price block')).toEqual([
       copy.price.suffix.yearly,
       copy.price.suffix.monthly,
-      '{list}',
+      '{list} after 6 Jan 2027',
+      '{list} a month after 6 Jan 2027',
       '{perMonth} a month, billed yearly',
       formatAmount(PLANS.premium.founderYearly / 12),
       formatAmount(PLANS.guild.founderYearly / 12),

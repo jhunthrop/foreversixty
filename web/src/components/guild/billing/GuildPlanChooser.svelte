@@ -10,6 +10,7 @@
     founderOpen,
     formatAmount,
     intervalUnit,
+    listPriceAfterFounder,
     priceFor,
     type Interval,
   } from '../../../lib/billing/plans';
@@ -63,15 +64,18 @@
           onchange={() => (picked = key)}
         />
         <span class="section-title text-[15px]">{copy.chooser.tierName(key)}</span>
-        <!-- Only the figures are mono (spec 3.2.2); the unit is 13 px muted prose and only the list
-             figure is struck. -->
+        <!-- Only the figures are mono (spec 3.2.2); the unit is 13 px muted prose and the founder
+             list price is plain text below. -->
         <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>
           <span class="text-strong tabular font-mono text-[20px]"
             >{formatAmount(priceFor(key, interval, founder))}</span
-          >{#if founder}<s class="ml-2 font-mono">{formatAmount(priceFor(key, interval, false))}</s>{/if}<span
-            >{intervalUnit(interval)}</span
-          >
+          ><span>{intervalUnit(interval)}</span>
         </span>
+        {#if founder}
+          <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-list`}
+            >{listPriceAfterFounder(key, interval)}</span
+          >
+        {/if}
         <span class="text-muted text-[13px]">{copy.chooser.tierLine(key)}</span>
       </label>
     {/each}

@@ -53,12 +53,6 @@ export const plansPageCopy = {
       'Class guides',
     ],
     promise: 'This list never shrinks.',
-    summary: {
-      name: 'Free',
-      price: '$0',
-      line: 'Everything a player needs. This list never shrinks.',
-      srOnly: 'See the free list',
-    },
   },
   premium: {
     name: 'Premium',

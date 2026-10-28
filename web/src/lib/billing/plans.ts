@@ -58,6 +58,13 @@ export const PLANS: Record<PlanKey, Plan> = {
 
 /** The founder window closes at 6 January 23:59:59 America/Los_Angeles; it has no opening instant. */
 export const FOUNDER_WINDOW_CLOSES = '2027-01-07T08:00:00Z';
+/** The last founder day, one date style for every surface: `6 Jan 2027`. */
+export const FOUNDER_LAST_DAY = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'America/Los_Angeles',
+});
 export const GUILD_TIER_MEMBER_LIMIT = 25;
 export const GUILD_TRIAL_DAYS = 7;
 export const SEAT_MOVE_LOCK_DAYS = 30;
@@ -91,6 +98,12 @@ export function intervalUnit(interval: Interval): string {
 /** Running-text price: `$40 a year`, `$5 a month`. */
 export function formatPrice(usd: number, interval: Interval): string {
   return `${formatAmount(usd)}${intervalUnit(interval)}`;
+}
+
+/** The list price shown beside a founder price: `$50 after 6 Jan 2027`, `$6 a month after 6 Jan 2027`. */
+export function listPriceAfterFounder(plan: PlanKey, interval: Interval): string {
+  const amount = formatAmount(priceFor(plan, interval, false));
+  return `${amount}${interval === 'monthly' ? ' a month' : ''} after ${FOUNDER_LAST_DAY}`;
 }
 
 export function perMonthLine(yearlyUsd: number): string {
