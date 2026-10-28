@@ -1,0 +1,91 @@
+---
+// web/src/components/premium/PremiumExampleCard.astro
+// The example card (spec 2026-10-27-launch-pricing §B3.2): a label, the real server run's picture
+// in a reserved 4:3 box, the caption with its numbers in mono, and a link to the result. The box
+// holds its height with aspect-ratio, so a failed image still leaves box, caption and link.
+import { exampleImage } from '../../lib/billing/example-image';
+import { plansPageCopy, serverRunCaption } from '../../lib/billing/plans-page-copy';
+import { exampleHref, serverRunExample, type ServerRunExample } from '../../lib/billing/premium-examples';
+
+interface Props {
+  example?: ServerRunExample;
+}
+const { example = serverRunExample } = Astro.props;
+const { label, link } = plansPageCopy.examples.serverRun;
+const image = exampleImage(example);
+const caption = serverRunCaption(example);
+const captionParts = caption.split(/(\d[\d,]*)/);
+---
+
+<article class="example-card" data-testid="premium-example">
+  <p class="example-label" data-part="label">
+    {label}
+  </p>
+  <div class="image-box" data-part="image" style="aspect-ratio: 4 / 3">
+    <picture>
+      <source srcset={image.avif} type="image/avif" />
+      <source srcset={image.webp} type="image/webp" />
+      <img
+        src={image.webp}
+        width={image.width}
+        height={image.height}
+        alt={image.alt}
+        loading={image.loading}
+        decoding={image.decoding}
+      />
+    </picture>
+  </div>
+  <p class="example-caption" data-part="caption" data-testid="premium-example-caption">
+    {captionParts.map((part, index) => (index % 2 === 1 ? <span class="mono">{part}</span> : part))}
+  </p>
+  <a class="example-link" data-part="link" data-testid="premium-example-link" href={exampleHref(example)}>
+    {link}
+  </a>
+</article>
+
+<style>
+  .example-card {
+    padding: 16px 20px 8px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+  }
+  .example-label {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+  }
+  .image-box {
+    margin-top: 8px;
+    aspect-ratio: 4 / 3;
+    background: var(--color-card-top);
+    border-radius: 4px;
+  }
+  .image-box img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    height: auto;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 4px;
+  }
+  .example-caption {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .mono {
+    font-family: var(--font-mono);
+  }
+  .example-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-gold);
+    font-size: 13px;
+  }
+  .example-link:hover {
+    color: var(--color-gold-hover);
+  }
+</style>
