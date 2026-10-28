@@ -11,6 +11,8 @@ export function allStrings(value: unknown): string[] {
   return [];
 }
 
+/** A copy function that cannot run with no arguments (it reads a property of its slot) contributes
+ *  nothing: the scan sees only what it can print without inputs. */
 function callWithNoArguments(fn: () => unknown): unknown {
   try {
     return fn();

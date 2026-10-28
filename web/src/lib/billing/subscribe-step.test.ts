@@ -6,9 +6,11 @@ import {
   STEP_ORDER,
   claimedAskLine,
   copyFieldLabel,
+  handoffStepOf,
   handoffUrl,
   leadSentence,
   orderGuildCards,
+  showsCopyField,
   showsModeratorFallback,
   showsOtherCharacter,
   switchNote,
@@ -114,8 +116,35 @@ describe('leadSentence, no guilds', () => {
 });
 
 describe('step gates', () => {
+  const stepsWhere = (gate: (g: StepGuild) => boolean, yours = false): SubscribeStep[] =>
+    STEP_ORDER.filter((step) =>
+      gate(guild(1, step, { claim: { state: 'claimed', yours, holder_name: null } })),
+    );
+
   it('the moderator fallback shows on ask_leader and claimed_ask only', () => {
-    expect(STEP_ORDER.filter(showsModeratorFallback)).toEqual(['claimed_ask', 'ask_leader']);
+    expect(stepsWhere(showsModeratorFallback)).toEqual(['claimed_ask', 'ask_leader']);
+  });
+
+  it('the claim holder own claimed_ask card has no moderator fallback', () => {
+    expect(stepsWhere(showsModeratorFallback, true)).toEqual(['ask_leader']);
+  });
+
+  it('the copy field shows on the four hand-off steps', () => {
+    expect(stepsWhere(showsCopyField)).toEqual([
+      'claimed_ask',
+      'ask_leader',
+      'claim_pending_yours',
+      'claim_pending_ask',
+    ]);
+  });
+
+  it('the claim holder own claimed_ask card has no copy field and no hand-off step', () => {
+    expect(stepsWhere(showsCopyField, true)).not.toContain('claimed_ask');
+    const mine = guild(1, 'claimed_ask', { claim: { state: 'claimed', yours: true, holder_name: null } });
+    expect(handoffStepOf(mine)).toBeNull();
+    expect(handoffStepOf(guild(1, 'claimed_ask'))).toBe('claimed_ask');
+    expect(handoffStepOf(guild(1, 'ready'))).toBeNull();
+    expect(handoffStepOf(guild(1, null))).toBeNull();
   });
 
   it('the other-character line shows on ask_leader only', () => {

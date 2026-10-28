@@ -135,7 +135,7 @@ export function handoffUrl(
 }
 
 /** The screen-reader label of the hand-off link's field, by who it is for. */
-export function copyFieldLabel(guild: StepGuild, step: SubscribeStep, viewerIsOfficer: boolean): string {
+export function copyFieldLabel(guild: StepGuild, step: HandoffStep, viewerIsOfficer: boolean): string {
   if (step === 'claim_pending_yours' || step === 'claim_pending_ask')
     return copy.copyField.labelSecondOfficer;
   const holder = guild.claim?.holder_name;
@@ -143,9 +143,34 @@ export function copyFieldLabel(guild: StepGuild, step: SubscribeStep, viewerIsOf
   return copy.copyField.labelGuildMaster(guild.name);
 }
 
-/** Spec §5.4 / Decision 8: the moderator fallback shows on `ask_leader` and `claimed_ask` only. */
-export function showsModeratorFallback(step: SubscribeStep): boolean {
-  return step === 'ask_leader' || step === 'claimed_ask';
+const HANDOFF_STEPS: readonly SubscribeStep[] = [
+  'ask_leader',
+  'claimed_ask',
+  'claim_pending_yours',
+  'claim_pending_ask',
+];
+
+/** The claim holder's own `claimed_ask` card has nobody to send a link to (controller ruling 2026-10-27). */
+function holdsClaimedAsk(guild: StepGuild): boolean {
+  return stepOf(guild) === 'claimed_ask' && guild.claim?.yours === true;
+}
+
+/** The card's hand-off step, or null when its card shows no copy field. Callers build the link from this. */
+export function handoffStepOf(guild: StepGuild): HandoffStep | null {
+  const step = stepOf(guild);
+  if (step === null || !HANDOFF_STEPS.includes(step) || holdsClaimedAsk(guild)) return null;
+  return step as HandoffStep;
+}
+
+/** Spec §5.3: the card holds a copy field, except for the claim holder's own `claimed_ask`. */
+export function showsCopyField(guild: StepGuild): boolean {
+  return handoffStepOf(guild) !== null;
+}
+
+/** Spec §5.4 / Decision 8: the moderator fallback shows on `ask_leader` and `claimed_ask`, not the holder's own. */
+export function showsModeratorFallback(guild: StepGuild): boolean {
+  const step = stepOf(guild);
+  return step === 'ask_leader' || (step === 'claimed_ask' && !holdsClaimedAsk(guild));
 }
 
 /** Spec §5.4: the other-character line shows on `ask_leader` only. */
