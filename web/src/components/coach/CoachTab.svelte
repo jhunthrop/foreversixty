@@ -88,6 +88,8 @@
   let focused = false;
   $effect(() => {
     if (focused || panel.view.state === 'loading') return;
+    // The panel's load can resolve after a test's DOM is torn down; there is nothing to focus then.
+    if (typeof document === 'undefined') return;
     focused = true;
     const heading = document.getElementById('coach-panel-heading');
     heading?.focus({ preventScroll: true });
