@@ -7,6 +7,7 @@ import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
+import { CARD_SURFACE } from '../../lib/ui/card';
 import PriceBlock from './PriceBlock.astro';
 import { FOUNDER_STATES, buttonLabel, checkoutHref, founderKey, planBlock, trialParts } from './model';
 
@@ -34,7 +35,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
 ---
 
 <article
-  class="plan-card"
+  class={`plan-card ${CARD_SURFACE}`}
   id={cardId}
   data-testid={`plan-${plan}`}
   data-plan={plan}
@@ -135,13 +136,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
     display: flex;
     flex-direction: column;
     padding: 12px 20px 20px;
-    background: var(--color-raised);
-    border: 1px solid var(--color-line);
-    border-radius: 6px;
     scroll-margin-top: 16px;
-  }
-  .plan-card[data-highlight] {
-    border-top-color: rgba(229, 185, 85, 0.35);
   }
   .plan-name {
     margin: 0;
@@ -312,9 +307,9 @@ const cardId = plan === 'free' ? 'free' : undefined;
       line-height: 34px;
     }
   }
-  /* Written for the old four-column row (about 170 px per guild label at 1024); the rows are now
-     three columns, about 299 px each at 1024. Kept until capture rows 15 and 17 confirm the 20 px
-     padding fits: 16 px card padding, no extra tracking and a 6 px inset (UX N5). */
+  /* Capture-row note (rows 15 and 17, not yet run): written for the old four-column row; the rows
+     are now three columns, about 299 px each at 1024, where the 20 px padding may fit. This
+     16 px padding, no extra tracking and 6 px inset is the conservative setting (UX N5). */
   @media (min-width: 1024px) and (max-width: 1279px) {
     .plan-card {
       padding: 16px;

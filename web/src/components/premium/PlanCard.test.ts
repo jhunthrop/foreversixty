@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+import { CARD_SURFACE } from '../../lib/ui/card';
 import { createPageContainer } from '../../test-support/page-container';
 import PlanCard from './PlanCard.astro';
 import { trialParts } from './model';
@@ -42,6 +43,14 @@ describe('PlanCard, Premium', () => {
     const list = doc.querySelector('ul');
     expect(list && scope && list.compareDocumentPosition(scope) & 4).toBeTruthy();
   });
+
+  it.each(['free', 'premium', 'guild', 'raid_guild'] as const)(
+    '%s card wears the shared CARD_SURFACE',
+    async (plan) => {
+      const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);
+      for (const cls of CARD_SURFACE.split(' ')) expect(card?.classList.contains(cls)).toBe(true);
+    },
+  );
 
   it('keeps the gold top highlight', async () => {
     const card = (await renderCard('premium')).querySelector('[data-plan=premium]');

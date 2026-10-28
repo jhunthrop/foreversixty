@@ -1,13 +1,17 @@
 // web/src/lib/billing/plans-page-copy.test.ts
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { fillSlots, specCell, specKeyCell, specLineAfter } from '../../test-support/spec-table';
 import { exampleCaption, serverRunExample } from './premium-examples';
 import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
 import {
+  FOUNDER_PRICE_UNTIL,
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
   PLANS,
   RAID_SIZES,
+  REFUND_WINDOW_DAYS,
+  RENEWAL_REMINDER_DAYS,
   TRIAL_REMINDER_DAYS,
   formatAmount,
   perMonthLine,
@@ -251,5 +255,28 @@ describe('plansPageCopy guild region against spec B5', () => {
   });
   it('serverRunCaption reads the data file through the templates', () => {
     expect(serverRunCaption()).toBe(exampleCaption(serverRunExample, copy.examples.serverRun.caption));
+  });
+});
+
+describe('typed figures come from the plan constants', () => {
+  const specText = readFileSync(SPEC, 'utf8');
+  const ruleSentence = (term: string): string => copy.rules.find((r) => r.term === term)?.sentence ?? '';
+
+  it.each([
+    ['founder date', `Founder prices until ${FOUNDER_PRICE_UNTIL}`, copy.founder.open],
+    [
+      'renewal reminder',
+      `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal`,
+      ruleSentence('Renewals'),
+    ],
+    ['refund window', `Ask within ${REFUND_WINDOW_DAYS} days of a first charge`, ruleSentence('Refunds')],
+  ])('%s: the spec states the constant and the copy renders it', (_name, phrase, rendered) => {
+    expect(specText).toContain(phrase);
+    expect(rendered).toContain(phrase);
+  });
+
+  it('the copy source writes none of the three figures as a literal', () => {
+    const source = readFileSync(new URL('./plans-page-copy.ts', import.meta.url), 'utf8');
+    expect(source).not.toMatch(/6 January 2027|email 7 days|within 14 days/);
   });
 });

@@ -16,6 +16,7 @@
   import { RATING_COMPONENT_ORDER, type RatingComponent } from '../lib/rating/types';
   import { scoreCopy } from '../lib/score/copy';
   import { ratingSparkline } from '../lib/score/sparkline';
+  import { CARD } from '../lib/ui/card';
   import Sparkline from './Sparkline.svelte';
 
   let {
@@ -46,8 +47,7 @@
     columns?: boolean;
   } = $props();
 
-  const CARD =
-    'bg-raised border-line rounded-panel flex flex-col gap-3 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5';
+  const PANEL = `${CARD} flex flex-col gap-3 p-4 md:p-5`;
   /** Underlined; the gold is the base `a` rule's, so hover and pressed take --gold-hover
    *  (L8.4 fix round 5 item 2). */
   const LINK = 'inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
@@ -70,7 +70,7 @@
   const rated = $derived(overall === null ? null : Math.round(overall));
 </script>
 
-<div class={CARD} data-testid="rating-card">
+<div class={PANEL} data-testid="rating-card">
   <div
     class={columns ? 'flex flex-col gap-3 xl:grid xl:grid-cols-2 xl:gap-x-8' : 'flex flex-col gap-3'}
     data-testid="rating-card-columns"

@@ -43,6 +43,7 @@
   } from '../lib/score/score';
   import { scoreHistoryFirst, scoreHistoryLine } from '../lib/score/sparkline';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { CARD } from '../lib/ui/card';
   import ScoreBadge from './ScoreBadge.svelte';
   import Sparkline from './Sparkline.svelte';
   import TierStrip from './TierStrip.svelte';
@@ -87,8 +88,7 @@
     return Math.round(Math.min(1, Math.max(0, points / max)) * 1000) / 10;
   }
 
-  const CARD =
-    'bg-raised border-line rounded-panel flex flex-col gap-4 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5';
+  const PANEL = `${CARD} flex flex-col gap-4 p-4 md:p-5`;
   /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). The gold is
    *  the base `a` rule's, so its hover and pressed --gold-hover apply (fix round 5 item 2). */
   const LINK = 'inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
@@ -123,7 +123,7 @@
 {#snippet card()}
   <!-- L8.5 ruling 3: the no-logs card is capped at 720px, so on a desktop its button and "What
        the score counts" do not sit a page-width apart. -->
-  <div class={hasScore(forever) ? CARD : `${CARD} max-w-[720px]`} data-testid="forever-score-card">
+  <div class={hasScore(forever) ? PANEL : `${PANEL} max-w-[720px]`} data-testid="forever-score-card">
     {#if hasScore(forever)}
       {@const tier = tierLabel(forever.tier)}
       <!-- Fix round 3 item 13: from 1280 two columns -- left the number, the tier word and the

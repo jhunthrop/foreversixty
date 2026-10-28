@@ -65,6 +65,20 @@ export const FOUNDER_LAST_DAY = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1).
   year: 'numeric',
   timeZone: 'America/Los_Angeles',
 });
+/** The founder line's long date style, `6 January 2027`; the same last day as FOUNDER_LAST_DAY. */
+export const FOUNDER_PRICE_UNTIL = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1).toLocaleDateString(
+  'en-GB',
+  {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'America/Los_Angeles',
+  },
+);
+/** Days before a yearly renewal that the renewal email goes out. */
+export const RENEWAL_REMINDER_DAYS = 7;
+/** Days after a first charge within which a refund is granted. */
+export const REFUND_WINDOW_DAYS = 14;
 export const GUILD_TIER_MEMBER_LIMIT = 25;
 export const GUILD_TRIAL_DAYS = 7;
 /** Days before a guild trial ends that the reminder goes out. */

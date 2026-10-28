@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1264px] lg:min-h-[809px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1284px] lg:min-h-[829px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -63,13 +63,18 @@ const PLAN_EMPTY_FLOOR: BucketPx = { lg: 219, stack: 211 };
  */
 export const PLAN_HEADLINE_RESERVE: BucketPx = { lg: 12 + 44 + 4 + 2 * 20, stack: 12 + 44 + 4 + 3 * 20 };
 
+/** One 13 px `{Guild} has no plan.` line under a guild row in the Plan panel (20 px line). The
+ *  reserve holds one row; an account with more no-plan guilds grows the panel, which is not a
+ *  first-load shift (the stored height takes over). */
+export const PLAN_NO_PLAN_ROW_RESERVE = 20;
+
 /** The rail's panels with nothing extra in them (Devices, You, Plan at its tallest headline). */
 export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>> = {
   devices: { lg: 233, stack: 249 },
   you: { lg: 193, stack: 185 },
   plan: {
-    lg: PLAN_EMPTY_FLOOR.lg + PLAN_HEADLINE_RESERVE.lg,
-    stack: PLAN_EMPTY_FLOOR.stack + PLAN_HEADLINE_RESERVE.stack,
+    lg: PLAN_EMPTY_FLOOR.lg + PLAN_HEADLINE_RESERVE.lg + PLAN_NO_PLAN_ROW_RESERVE,
+    stack: PLAN_EMPTY_FLOOR.stack + PLAN_HEADLINE_RESERVE.stack + PLAN_NO_PLAN_ROW_RESERVE,
   },
 };
 

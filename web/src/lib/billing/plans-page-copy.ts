@@ -7,9 +7,12 @@ import { perMemberAmount, perRaiderAmounts } from './plan-costs';
 import { serverRunCaptionTemplates } from './premium-example-copy';
 import {
   GUILD_TIER_MEMBER_LIMIT,
+  FOUNDER_PRICE_UNTIL,
   GUILD_TRIAL_DAYS,
   PLANS,
   RAID_SIZES,
+  REFUND_WINDOW_DAYS,
+  RENEWAL_REMINDER_DAYS,
   TRIAL_REMINDER_DAYS,
   SEAT_MOVE_LOCK_DAYS,
   perMonthLine,
@@ -62,7 +65,7 @@ export const plansPageCopy = {
   },
   founder: {
     label: 'Founder',
-    open: 'Founder prices until 6 January 2027. Buy by then and the price stays for as long as you stay subscribed.',
+    open: `Founder prices until ${FOUNDER_PRICE_UNTIL}. Buy by then and the price stays for as long as you stay subscribed.`,
   },
   interval: {
     groupLabel: 'Billing interval',
@@ -187,8 +190,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Renewals',
-      sentence:
-        'We email 7 days before every yearly renewal. Cancel in one click; the plan runs to the end of the period you paid for.',
+      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal. Cancel in one click; the plan runs to the end of the period you paid for.`,
     },
     {
       term: 'A new guild leader',
@@ -197,8 +199,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Refunds',
-      sentence:
-        'Ask within 14 days of a first charge for a refund. After that there are no part-year refunds.',
+      sentence: `Ask within ${REFUND_WINDOW_DAYS} days of a first charge for a refund. After that there are no part-year refunds.`,
     },
   ] as PlanRule[],
   foot: 'Prices in US dollars. Cancel any time; you keep the plan to the end of the period you paid for.',

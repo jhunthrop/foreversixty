@@ -454,48 +454,48 @@ html[data-session='1'] .account-header-reserve {
   min-height: calc(185px + var(--account-link-floor, 0px));
 }
 .account-plan-skeleton {
-  min-height: 331px;
+  min-height: 351px;
 }
 .account-rail-skeleton {
-  --account-rail-floor: 829px;
+  --account-rail-floor: 849px;
 }
 html[data-discord='free'] .account-rail-skeleton {
-  --account-rail-floor: 889px;
+  --account-rail-floor: 909px;
 }
 html[data-discord='free'] .account-discord-skeleton {
   display: flex;
   min-height: 44px;
 }
 html[data-discord='connect'] .account-rail-skeleton {
-  --account-rail-floor: 1185px;
+  --account-rail-floor: 1205px;
 }
 html[data-discord='connect'] .account-discord-skeleton {
   display: flex;
   min-height: 340px;
 }
 html[data-discord='form'] .account-rail-skeleton {
-  --account-rail-floor: 1485px;
+  --account-rail-floor: 1505px;
 }
 html[data-discord='form'] .account-discord-skeleton {
   display: flex;
   min-height: 640px;
 }
 html[data-discord='saved'] .account-rail-skeleton {
-  --account-rail-floor: 1335px;
+  --account-rail-floor: 1355px;
 }
 html[data-discord='saved'] .account-discord-skeleton {
   display: flex;
   min-height: 490px;
 }
 html[data-discord='off'] .account-rail-skeleton {
-  --account-rail-floor: 1400px;
+  --account-rail-floor: 1420px;
 }
 html[data-discord='off'] .account-discord-skeleton {
   display: flex;
   min-height: 555px;
 }
 html[data-discord='lapsed'] .account-rail-skeleton {
-  --account-rail-floor: 1315px;
+  --account-rail-floor: 1335px;
 }
 html[data-discord='lapsed'] .account-discord-skeleton {
   display: flex;
@@ -524,48 +524,48 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: calc(193px + var(--account-link-floor, 0px));
   }
   .account-plan-skeleton {
-    min-height: 319px;
+    min-height: 339px;
   }
   .account-rail-skeleton {
-    --account-rail-floor: 809px;
+    --account-rail-floor: 829px;
   }
   html[data-discord='free'] .account-rail-skeleton {
-    --account-rail-floor: 869px;
+    --account-rail-floor: 889px;
   }
   html[data-discord='free'] .account-discord-skeleton {
     display: flex;
     min-height: 44px;
   }
   html[data-discord='connect'] .account-rail-skeleton {
-    --account-rail-floor: 1145px;
+    --account-rail-floor: 1165px;
   }
   html[data-discord='connect'] .account-discord-skeleton {
     display: flex;
     min-height: 320px;
   }
   html[data-discord='form'] .account-rail-skeleton {
-    --account-rail-floor: 1475px;
+    --account-rail-floor: 1495px;
   }
   html[data-discord='form'] .account-discord-skeleton {
     display: flex;
     min-height: 650px;
   }
   html[data-discord='saved'] .account-rail-skeleton {
-    --account-rail-floor: 1325px;
+    --account-rail-floor: 1345px;
   }
   html[data-discord='saved'] .account-discord-skeleton {
     display: flex;
     min-height: 500px;
   }
   html[data-discord='off'] .account-rail-skeleton {
-    --account-rail-floor: 1390px;
+    --account-rail-floor: 1410px;
   }
   html[data-discord='off'] .account-discord-skeleton {
     display: flex;
     min-height: 565px;
   }
   html[data-discord='lapsed'] .account-rail-skeleton {
-    --account-rail-floor: 1305px;
+    --account-rail-floor: 1325px;
   }
   html[data-discord='lapsed'] .account-discord-skeleton {
     display: flex;

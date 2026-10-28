@@ -28,10 +28,6 @@ describe('cost amounts (B3.3)', () => {
     expect(perRaiderAmounts(interval, founder)).toEqual(want);
   });
 
-  it('perRaiderAmounts monthly list rounds $0.625 to $0.63', () => {
-    expect(perRaiderAmounts('monthly', false)[0]).toBe('$0.63');
-  });
-
   it.each([
     ['yearly', true, '$4.80'],
     ['yearly', false, '$6'],
