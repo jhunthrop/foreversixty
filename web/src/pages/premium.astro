@@ -8,6 +8,7 @@ import Base from '../layouts/Base.astro';
 import GuildRules from '../components/premium/GuildRules.astro';
 import IntervalControl from '../components/premium/IntervalControl.astro';
 import PlanCard from '../components/premium/PlanCard.astro';
+import PremiumExampleCard from '../components/premium/PremiumExampleCard.astro';
 import { checkoutCopy } from '../lib/billing/copy';
 import { FOUNDER_WINDOW_CLOSES } from '../lib/billing/plans';
 import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
@@ -54,14 +55,27 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
         {checkoutCopy.canceled}
       </p>
 
-      <div class="cards">
-        <PlanCard plan="free" />
-        <PlanCard plan="premium" />
-        <PlanCard plan="guild" />
-        <PlanCard plan="raid_guild" />
-        <p class="history-promise" data-testid="history-promise">
-          {copy.historyPromise}
-        </p>
+      <div class="regions">
+        <!-- Region A, for your character (§B3.2): no heading, the band asks the question. Free and
+             Premium are one subgrid row set; the example spans that row set from 1024. -->
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3" data-region="a">
+          <PlanCard plan="free" />
+          <PlanCard plan="premium" />
+          <div
+            class="grid md:col-span-2 md:max-w-[480px] lg:col-span-1 lg:row-span-6 lg:max-w-none"
+            data-plan="example"
+          >
+            <PremiumExampleCard />
+          </div>
+        </div>
+
+        <div class="guild-row mt-7 grid grid-cols-1 gap-3 md:mt-10 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+          <PlanCard plan="guild" />
+          <PlanCard plan="raid_guild" />
+          <p class="history-promise md:col-span-2 lg:col-span-1" data-testid="history-promise">
+            {copy.historyPromise}
+          </p>
+        </div>
       </div>
 
       <GuildRules />
@@ -168,28 +182,8 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     margin: 0;
     font-size: 14px;
   }
-  .cards {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-  }
-  /* Phone order: the Free card, Premium, Guild, Raid guild, then the promise. */
-  .cards > :global([data-plan='free']) {
-    order: 0;
-  }
-  .cards > :global([data-plan='premium']) {
-    order: 1;
-  }
-  .cards > :global([data-plan='guild']) {
-    order: 2;
-  }
-  .cards > :global([data-plan='raid_guild']) {
-    order: 3;
-  }
   .history-promise {
-    order: 4;
-  }
-  .history-promise {
+    align-self: start;
     margin: 0;
     max-width: 720px;
     padding-left: 14px;
@@ -247,18 +241,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
       gap: 32px;
       padding: 24px 0 64px;
     }
-    .cards {
-      gap: 16px;
-    }
-    .cards {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .cards > :global(*) {
-      order: 0 !important;
-    }
-    .history-promise {
-      grid-column: 1 / -1;
-    }
   }
   @media (min-width: 1024px) {
     .hero {
@@ -275,12 +257,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
       grid-column: 2;
       grid-row: 1 / span 2;
       align-self: end;
-    }
-    .cards {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-    .history-promise {
-      grid-column: 3 / span 2;
     }
   }
 </style>
