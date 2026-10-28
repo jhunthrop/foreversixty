@@ -102,6 +102,8 @@ FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/api /api
 # TREE_DATA_DIR defaults to /data; one directory per client build.
 COPY data/builds /data
+# COACH_DATA_DIR defaults to /coach: the log coach's spec rule files and personas.
+COPY data/curated/coach/ /coach/
 # The native simulator binary. The jobs run /engine/forever-sim; the
 # runner falls back to the checked-in fixture if it is ever absent.
 COPY --from=engine /out/forever-sim /engine/forever-sim

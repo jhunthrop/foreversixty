@@ -191,6 +191,21 @@ func TestLastRaidMessageNamesEveryBossOfTheNewestRankedRaid(t *testing.T) {
 	}
 }
 
+func TestLastRaidFightsCarryTheirFightIndex(t *testing.T) {
+	h := newHarness(t)
+	cleanL63(t, h)
+	now := time.Now().UTC()
+	for _, index := range []int{3, 7} {
+		h.seedRatedFight(ratedFight{report: "l63-index", visibility: "public", zone: "Molten Core", boss: "Lucifron",
+			index: index, encounter: 663, foughtAt: now.Add(-time.Duration(10-index) * time.Hour), overall: 50, kill: true,
+			missed: []string{}})
+	}
+	fights, err := h.store.LastRaidFights(context.Background(), []string{l63Key}, now.Add(-LastRaidWindow))
+	if err != nil || len(fights) != 2 || fights[0].FightIndex != 3 || fights[1].FightIndex != 7 {
+		t.Fatalf("%+v %v", fights, err)
+	}
+}
+
 func TestACharacterWithNoRecentRaidGetsNoLastRaid(t *testing.T) {
 	h := newHarness(t)
 	cleanL63(t, h)

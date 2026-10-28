@@ -16,9 +16,9 @@ type jobCommand struct {
 
 // extraJobs is the table of job commands kept out of main's switch (main.go is at its line
 // budget): a new command is a row here, never another case.
-var extraJobs = []jobCommand{
+var extraJobs = append([]jobCommand{
 	{rating.RebuildPreparationJobCommand, runRebuildPreparation},
-}
+}, coachJobs...)
 
 // runJobTable runs the row of table named by args[0] with args[1:], then calls exit(0), or
 // exit(1) after one log.Error(name, "err", err) line, as main's own cases do. It returns,

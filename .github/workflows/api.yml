@@ -2,9 +2,9 @@ name: api
 on:
   push:
     branches: [main]
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'docs/contracts/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'docs/contracts/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
   test:

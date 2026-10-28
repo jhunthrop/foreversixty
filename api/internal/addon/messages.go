@@ -562,7 +562,7 @@ func (s *Service) lastRaidMessages(ctx context.Context, keys []string, now time.
 	if len(keys) == 0 {
 		return nil, nil
 	}
-	fights, err := s.Store.lastRaidFights(ctx, keys, now.Add(-LastRaidWindow))
+	fights, err := s.Store.LastRaidFights(ctx, keys, now.Add(-LastRaidWindow))
 	if err != nil {
 		s.logger().Warn("addon", "op", "messages_last_raid", "err", err)
 		return nil, nil

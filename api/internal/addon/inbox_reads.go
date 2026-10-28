@@ -17,9 +17,11 @@ import (
 // LastRaidWindow is how far back a raid can be and still be the character's last raid.
 const LastRaidWindow = 14 * 24 * time.Hour
 
-// lastRaidFight is one rated boss fight of a character's last raid.
-type lastRaidFight struct {
+// LastRaidFight is one rated boss fight of a character's last raid.
+type LastRaidFight struct {
 	CharacterKey, ReportID, Zone, Boss string
+	// FightIndex is the fight's index in its report, counted from one.
+	FightIndex int
 	// Class and Spec are the log's own names ("Warrior", "Arms").
 	Class, Spec       string
 	FoughtAt          time.Time
@@ -32,7 +34,7 @@ type lastRaidFight struct {
 	Adherence *float64
 }
 
-// lastRaidFights reads, for each of keys, every rated boss fight of its last raid: the
+// LastRaidFights reads, for each of keys, every rated boss fight of its last raid: the
 // newest report that is evidence (presence.EvidenceReport: not private, not flagged) holding
 // a rated fight of the character fought since since, oldest fight first. A card the engine
 // marked insufficient is not a rated fight here: its overall is a zero it cannot support. The
@@ -43,7 +45,7 @@ type lastRaidFight struct {
 // rather than shown as zeros; the report is still the one chosen, so a last raid whose
 // every fight predates 0036 reads as no bosses and gets no message. A backfill re-rate
 // fills the facts; whether to run one is the ops team's call.
-func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Time) ([]lastRaidFight, error) {
+func (s *Store) LastRaidFights(ctx context.Context, keys []string, since time.Time) ([]LastRaidFight, error) {
 	rows, err := s.Pool.Query(ctx,
 		`with mine as (
 		   select rs.player_key, rs.report_id, rs.fight_index, rs.encounter_id, rs.fought_at, rs.overall,
@@ -59,7 +61,7 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 		   select distinct on (player_key) player_key, report_id
 		     from mine order by player_key, fought_at desc, report_id desc
 		 )
-		 select m.player_key, m.report_id, coalesce(r.zone, ''),
+		 select m.player_key, m.report_id, m.fight_index, coalesce(r.zone, ''),
 		        coalesce(nullif(f.name, ''),
 		          (select f2.name from fights f2 where f2.encounter_id = m.encounter_id and f2.name <> ''
 		            order by f2.start_ms desc limit 1), ''),
@@ -75,10 +77,10 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 		return nil, fmt.Errorf("addon: read last raids: %w", err)
 	}
 	defer rows.Close()
-	var out []lastRaidFight
+	var out []LastRaidFight
 	for rows.Next() {
-		var f lastRaidFight
-		if err := rows.Scan(&f.CharacterKey, &f.ReportID, &f.Zone, &f.Boss, &f.Class, &f.Spec, &f.FoughtAt,
+		var f LastRaidFight
+		if err := rows.Scan(&f.CharacterKey, &f.ReportID, &f.FightIndex, &f.Zone, &f.Boss, &f.Class, &f.Spec, &f.FoughtAt,
 			&f.Overall, &f.BiggestLoss, &f.LossSeconds, &f.Deaths, &f.ConsumablesMissed, &f.Adherence); err != nil {
 			return nil, fmt.Errorf("addon: read last raids: %w", err)
 		}

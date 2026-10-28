@@ -10,6 +10,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
+	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -61,6 +62,8 @@ type Deps struct {
 	Seats *seats.Service
 	// DiscordBot serves the signed interactions endpoint; nil leaves it unmounted.
 	DiscordBot *discordbot.Service
+	// Coach serves the log coach's routes; nil leaves them unmounted.
+	Coach *coach.Service
 
 	TrustedProxyHops int
 }
@@ -130,6 +133,10 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.DiscordBot != nil {
 		discordbot.Mount(mux, d.DiscordBot, d.TrustedProxyHops)
+	}
+	if d.Coach != nil {
+		coach.Mount(mux, d.Coach)
+		coach.MountLines(mux, d.Coach)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

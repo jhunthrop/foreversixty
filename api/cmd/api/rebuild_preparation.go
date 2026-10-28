@@ -36,7 +36,7 @@ func runRebuildPreparation(ctx context.Context, log *slog.Logger, args []string)
 	}
 	opts.Progress = logRebuildProgress(log)
 	counts, err := rating.RebuildPreparationWith(ctx, rating.BackfillDeps{
-		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
+		Store: ratingStoreWithCoach(cfg, pool, log), Summaries: client, Log: log,
 	}, opts)
 	logRebuildCounts(log, "done", counts, opts.DryRun)
 	if err != nil {

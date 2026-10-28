@@ -334,7 +334,7 @@ func runRatingBackfill(ctx context.Context, log *slog.Logger) error {
 		return fmt.Errorf("%s needs R2 credentials", rating.BackfillJobCommand)
 	}
 	n, err := rating.Backfill(ctx, rating.BackfillDeps{
-		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
+		Store: ratingStoreWithCoach(cfg, pool, log), Summaries: client, Log: log,
 	}, rating.BackfillBatchSize)
 	if err != nil {
 		return err
@@ -359,7 +359,7 @@ func runRerateFlagged(ctx context.Context, log *slog.Logger) error {
 		return fmt.Errorf("%s needs R2 credentials", rating.RerateFlaggedJobCommand)
 	}
 	return rerateFlagged(ctx, rating.BackfillDeps{
-		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
+		Store: ratingStoreWithCoach(cfg, pool, log), Summaries: client, Log: log,
 	}, log)
 }
 
@@ -683,6 +683,7 @@ func serve(log *slog.Logger) error {
 	// lane and share one read of the character.
 	deps.Rankings.Scores = deps.Rating
 	deps.Rankings.ScoreGear = deps.Rating
+	deps.Coach = mountCoach(ctx, coachWiring{cfg: cfg, pool: pool, deps: &deps, rating: ratingStore, reports: reportStore, auth: authStore, entitle: entStore, sims: simStore, summaries: bucketOrNil(client), log: log})
 
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: entStore, Planner: simEngine(log),
