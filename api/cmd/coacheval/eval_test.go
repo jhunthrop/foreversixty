@@ -166,9 +166,9 @@ func TestRun_OutcomesFirstRetryFallbackAndError(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			r := runner.Run(context.Background(), built, Model{Slug: "m", Client: c.client})
 			if r.Outcome != c.want || r.Calls != c.calls {
-				t.Fatalf("outcome %s calls %d note %q first %v last %v", r.Outcome, r.Calls, r.Note, r.FirstProblems, r.LastProblems)
+				t.Fatalf("outcome %s calls %d note %q problems %v", r.Outcome, r.Calls, r.Note, r.Problems)
 			}
-			if c.want == OutcomeFallback && (len(r.FirstProblems) == 0 || len(r.LastProblems) == 0) {
+			if c.want == OutcomeFallback && (len(r.Problems) == 0) {
 				t.Fatal("problems not named")
 			}
 			if c.calls == 2 && r.TokensIn != 2*scriptedIn {
@@ -199,7 +199,7 @@ func TestPackCarriesNoIdentifier(t *testing.T) {
 }
 
 func TestWriteOutputs_RedactsIdentifiersAndMapsFightsPrivately(t *testing.T) {
-	leak := "Zorgrimthak should use REPORT-secret-b more, said " + otherName
+	leak := "RAWSENTINEL Zorgrimthak should use REPORT-secret-b more, said " + otherName
 	ev := testEvaluation(t, 1, scripted(leak, leak))
 	targets, results, err := ev.Evaluate(context.Background())
 	if err != nil {
@@ -214,7 +214,7 @@ func TestWriteOutputs_RedactsIdentifiersAndMapsFightsPrivately(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		for _, id := range []string{furyName, otherName, furyGUID, "REPORT-secret"} {
+		for _, id := range []string{furyName, otherName, furyGUID, "REPORT-secret", "RAWSENTINEL"} {
 			if strings.Contains(string(data), id) {
 				t.Fatalf("%s carries %q", f, id)
 			}
@@ -229,7 +229,7 @@ func TestWriteOutputs_RedactsIdentifiersAndMapsFightsPrivately(t *testing.T) {
 func TestReport_BuildNotesRowsAndFakeBanner(t *testing.T) {
 	results := []Result{
 		{Label: "f01", Model: "a", Outcome: OutcomePassFirst, TokensIn: 2000, TokensOut: 600, CostUSD: 0.01, CostEstimated: true},
-		{Label: "f02", Model: "a", Outcome: OutcomeFallback, TokensIn: 4000, TokensOut: 800, FirstProblems: []Problem{{Kind: "fact", Value: "12 casts"}}},
+		{Label: "f02", Model: "a", Outcome: OutcomeFallback, TokensIn: 4000, TokensOut: 800, Problems: []Problem{{Kind: "fact", Value: "12 casts"}}},
 		{Label: "f03", Model: "a", Outcome: OutcomeSkipped},
 	}
 	md := RenderReport(results, RunMeta{Fake: true, Planned: 3})

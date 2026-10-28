@@ -69,7 +69,7 @@ func statsOf(model string, rs []Result) ModelStats {
 		in, out = append(in, float64(r.TokensIn)), append(out, float64(r.TokensOut))
 		lat, cost = append(lat, float64(r.LatencyMS)), append(cost, r.CostUSD)
 		s.CostEstimated = s.CostEstimated || r.CostEstimated
-		for _, p := range r.FirstProblems {
+		for _, p := range r.Problems {
 			s.ProblemKinds[p.Kind]++
 		}
 	}

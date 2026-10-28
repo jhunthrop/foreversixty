@@ -61,12 +61,7 @@ func (r Redactor) Clean(s string) string {
 // redact cleans every free-text field of a result.
 func (r Redactor) redact(res Result) Result {
 	res.Note = r.Clean(res.Note)
-	res.FirstProblems, res.LastProblems = r.problems(res.FirstProblems), r.problems(res.LastProblems)
-	outs := make([]string, len(res.Outputs))
-	for i, o := range res.Outputs {
-		outs[i] = r.Clean(o)
-	}
-	res.Outputs = outs
+	res.Problems = r.problems(res.Problems)
 	if res.Pack != nil {
 		var pack any
 		if err := json.Unmarshal([]byte(r.Clean(mustJSON(res.Pack))), &pack); err == nil {

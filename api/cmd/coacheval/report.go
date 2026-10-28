@@ -67,7 +67,7 @@ func usd(x float64, estimated bool) string {
 }
 
 func writeProblemKinds(b *strings.Builder, stats []ModelStats) {
-	b.WriteString("\n## First-answer problems by kind\n\n")
+	b.WriteString("\n## Final-answer problems by kind\n\n")
 	for _, s := range stats {
 		kinds := make([]string, 0, len(s.ProblemKinds))
 		for k, n := range s.ProblemKinds {
@@ -82,10 +82,10 @@ func writeProblemKinds(b *strings.Builder, stats []ModelStats) {
 }
 
 func writeFightLines(b *strings.Builder, results []Result) {
-	b.WriteString("\n## Per fight\n\n| Fight | Spec | Size | Model | Outcome | Tokens in/out | Problems (first answer) |\n|---|---|---|---|---|---|---|\n")
+	b.WriteString("\n## Per fight\n\n| Fight | Spec | Size | Model | Outcome | Tokens in/out | Problems (last answer) |\n|---|---|---|---|---|---|---|\n")
 	for _, r := range results {
 		fmt.Fprintf(b, "| %s | %s | %d | %s | %s | %d / %d | %s |\n", r.Label, r.Spec, r.Size, r.Model, outcomeCell(r),
-			r.TokensIn, r.TokensOut, problemCell(r.FirstProblems))
+			r.TokensIn, r.TokensOut, problemCell(r.Problems))
 	}
 }
 
