@@ -6,44 +6,30 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Me, MeGuild } from '../../lib/account/api';
 import { ME_GUILD_COUNT_KEY } from '../../lib/account/premium-hint';
 import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
+import type { GuildCoveredView, SubscribeStep } from '../../lib/billing/contract';
+import {
+  buildMe,
+  coveredView,
+  meCharacter,
+  stepGuild,
+  subscribeView,
+} from '../../test-support/subscribe-fixtures';
 import CheckoutGuildStep from './CheckoutGuildStep.svelte';
 
 const SELF = '/premium/checkout?plan=guild&interval=yearly';
 const SETUP_NEXT = `/setup?next=${encodeURIComponent(SELF)}`;
 
-function guild(id: number, name: string, step: string | null): MeGuild {
-  return {
-    id,
-    name,
-    region: 'us',
-    ruleset: 'forever',
-    ruleset_label: 'Forever',
-    slug: name.toLowerCase().replace(/ /g, '-'),
-    verified: false,
-    verified_count: 0,
-    crest_url: null,
-    subscribe:
-      step === null
-        ? null
-        : ({
-            step,
-            trial_used: null,
-            available_at: null,
-            reason: null,
-            other_guild_name: null,
-          } as MeGuild['subscribe']),
-  };
+const slugOf = (name: string): string => name.toLowerCase().replace(/ /g, '-');
+
+function guild(id: number, name: string, step: SubscribeStep | null): MeGuild {
+  const base = { id, name, slug: slugOf(name) };
+  return step === null ? stepGuild({ ...base, subscribe: null }) : stepGuild({ ...base, step });
 }
 
-const CHARACTER = { key: 'us/forever/obnoxious', region: 'us', ruleset: 'forever', name: 'Obnoxious' };
+const CHARACTER = meCharacter('Obnoxious');
 
 function me(guilds: MeGuild[], characters = [CHARACTER], extra: Partial<Me> = {}): Me {
-  return {
-    user: { id: 1, battletag: null, email: null, role: 'user', anonymize: false },
-    characters,
-    guilds,
-    ...extra,
-  } as Me;
+  return buildMe({ guilds, characters, extra: { main_character_key: undefined, ...extra } });
 }
 
 function html(props: {
@@ -188,33 +174,24 @@ describe('CheckoutGuildStep: ready shell', () => {
   });
 });
 
-const READY = (id: number, name: string, extra: Partial<MeGuild> = {}): MeGuild => ({
-  ...guild(id, name, 'ready'),
-  verified_count: 12,
-  subscribe: {
-    step: 'ready',
-    trial_used: false,
-    available_at: null,
-    reason: null,
-    other_guild_name: null,
-  } as MeGuild['subscribe'],
-  ...extra,
-});
+const READY = (id: number, name: string, extra: Partial<MeGuild> = {}): MeGuild =>
+  stepGuild({
+    id,
+    name,
+    slug: slugOf(name),
+    verified_count: 12,
+    subscribe: subscribeView('ready', { trial_used: false }),
+    ...extra,
+  });
 
-const ON_PLAN = (id: number, name: string, covered: Record<string, unknown>): MeGuild => ({
-  ...guild(id, name, 'on_plan'),
-  covered: {
-    tier: 'guild',
-    state: 'active',
-    ends_at: null,
-    billed_by: 'Dara',
-    you_pay: false,
-    you_hold_seat: false,
-    seats_given: 0,
-    seats_total: 0,
-    ...covered,
-  } as MeGuild['covered'],
-});
+const ON_PLAN = (id: number, name: string, covered: Partial<GuildCoveredView>): MeGuild =>
+  stepGuild({
+    id,
+    name,
+    slug: slugOf(name),
+    step: 'on_plan',
+    covered: coveredView({ ends_at: null, billed_by: 'Dara', seats_total: 0, ...covered }),
+  });
 
 describe('CheckoutGuildStep: ready card', () => {
   it('one ready guild: the only fill, labelled with the trial, named for the guild', () => {
@@ -286,7 +263,7 @@ describe('CheckoutGuildStep: on_plan actions', () => {
   });
 
   it('checkout_open and frozen show no buy button', () => {
-    for (const step of ['checkout_open', 'frozen']) {
+    for (const step of ['checkout_open', 'frozen'] as const) {
       const body = html({ me: me([guild(1, 'Olympus', step)]) });
       expect(body).not.toContain('data-step-action');
       expect(body).not.toMatch(/Subscribe|trial/);

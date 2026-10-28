@@ -3,7 +3,6 @@
 // section 8): the owner's account as production holds it, one fixture per subscribe step, one per
 // premium source, and the empty and older-API shapes. Each is a full `Me`, so `npm run check` proves
 // it against the contract; e2e stubs it with `routeMe`.
-import type { Page } from '@playwright/test';
 import type { BillingView, Me, MeCharacter, MeGuild } from '../lib/account/me-types';
 import type {
   BillingFacts,
@@ -13,6 +12,15 @@ import type {
   SubscribeStep,
 } from '../lib/billing/contract';
 import { NO_PRICE_FACTS, mockEntitlements } from './billing-fixtures';
+
+/** Freezes a fixture and everything under it, so a test cannot mutate what other tests share. */
+function deepFreeze<T>(value: T): T {
+  if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
+    Object.values(value).forEach(deepFreeze);
+    Object.freeze(value);
+  }
+  return value;
+}
 
 // --- builders -----------------------------------------------------------------------------------
 
@@ -59,7 +67,7 @@ export function stepGuild(overrides: Partial<MeGuild> & { step?: SubscribeStep }
     verified_count: 0,
     crest_url: null,
     rank: 'member',
-    claim: UNCLAIMED,
+    claim: { ...UNCLAIMED },
     verify: { has_approver: false },
     covered: null,
     subscribe: subscribeView(step),
@@ -84,7 +92,7 @@ export function meCharacter(
   };
 }
 
-const OWNER_CHARACTER: MeCharacter = {
+const OWNER_BARE: MeCharacter = {
   key: 'us/forever/obnoxious-yell',
   region: 'us',
   ruleset: 'forever',
@@ -93,23 +101,27 @@ const OWNER_CHARACTER: MeCharacter = {
   spec: 'Fury',
   level: 21,
   faction: 'horde',
+};
+const OWNER_CHARACTER: MeCharacter = {
+  ...OWNER_BARE,
   guild: { id: OLYMPUS.id, name: OLYMPUS.name, rank: 'member', verified: false },
 };
 
-export const GRANT_OPEN_ENDED: BillingView = {
+export const GRANT_OPEN_ENDED: BillingView = deepFreeze({
   ...NO_PRICE_FACTS,
   source: 'grant',
   plan: 'premium',
   status: 'active',
   current_period_end: null,
   cancel_at_period_end: false,
-};
+});
 
 interface MeParts {
   characters?: MeCharacter[];
   guilds?: MeGuild[];
   billing?: BillingView | null;
   personalPortal?: boolean;
+  serverSims?: boolean;
   extra?: Partial<Me>;
 }
 
@@ -119,16 +131,19 @@ export function buildMe({
   guilds = [],
   billing = null,
   personalPortal = false,
+  serverSims = false,
   extra,
 }: MeParts): Me {
-  return {
-    user: { id: 78, battletag: 'hunthrop#1894', email: null, role: 'user', anonymize: false },
-    characters: characters ?? [OWNER_CHARACTER],
-    guilds,
-    main_character_key: OWNER_CHARACTER.key,
-    entitlements: mockEntitlements({ billing, personal_portal: personalPortal }),
-    ...extra,
-  };
+  return deepFreeze(
+    structuredClone({
+      user: { id: 78, battletag: 'hunthrop#1894', email: null, role: 'user', anonymize: false },
+      characters: characters ?? [OWNER_CHARACTER],
+      guilds,
+      main_character_key: OWNER_CHARACTER.key,
+      entitlements: mockEntitlements({ billing, personal_portal: personalPortal, server_sims: serverSims }),
+      ...extra,
+    }),
+  );
 }
 
 // --- the owner ----------------------------------------------------------------------------------
@@ -176,15 +191,24 @@ const PENDING_CLAIM: GuildClaimView = {
   holder_name: null,
 };
 
-function ready(verified: number, tier: 'guild' | 'raid_guild'): MeGuild {
+function ready(verified: number): MeGuild {
   return stepGuild({
     rank: 'officer',
     verified: true,
     verified_count: verified,
     claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Obnoxious Yell' },
-    covered: coveredView({ tier, state: 'lapsed', ends_at: null, billed_by: '' }),
+    covered: null,
     subscribe: subscribeView('ready', { trial_used: false }),
   });
+}
+
+/** A claimed guild whose plan lapsed: the trial is spent, the card says "Subscribe again". */
+function readyLapsed(tier: 'guild' | 'raid_guild'): MeGuild {
+  return {
+    ...ready(12),
+    covered: coveredView({ tier, state: 'lapsed', ends_at: null, billed_by: '' }),
+    subscribe: subscribeView('ready', { trial_used: true }),
+  };
 }
 
 /** An `on_plan` guild; `covered` overrides pick the variant. */
@@ -204,19 +228,19 @@ const stepFixture = (guild: MeGuild): Me => buildMe({ guilds: [guild] });
 /** One `Me` per subscribe step, the guild varying only in what the step needs. */
 export const STEP_FIXTURES: Record<SubscribeStep, Me> = {
   on_plan: stepFixture(onPlan({ you_pay: true })),
-  checkout_open: stepFixture(stepGuild({ step: 'checkout_open', rank: 'officer', verified: true })),
+  checkout_open: stepFixture(
+    stepGuild({ step: 'checkout_open', rank: 'officer', verified: true, claim: OFFICER_CLAIM }),
+  ),
   frozen: stepFixture(stepGuild({ step: 'frozen', rank: 'officer', verified: true, claim: OFFICER_CLAIM })),
-  ready: stepFixture(ready(12, 'guild')),
-  claimed_ask: stepFixture(stepGuild({ step: 'claimed_ask', claim: OFFICER_CLAIM, rank: 'officer' })),
+  ready: stepFixture(ready(12)),
+  claimed_ask: stepFixture(stepGuild({ step: 'claimed_ask', claim: MEMBER_CLAIM })),
   claim_pending_yours: stepFixture(
     stepGuild({
       step: 'claim_pending_yours',
       claim: { ...PENDING_CLAIM, pending_yours: true },
     }),
   ),
-  confirm_claim: stepFixture(
-    stepGuild({ step: 'confirm_claim', claim: { ...PENDING_CLAIM, holder_name: 'Thornwick' } }),
-  ),
+  confirm_claim: stepFixture(stepGuild({ step: 'confirm_claim', claim: PENDING_CLAIM })),
   claim_pending_ask: stepFixture(stepGuild({ step: 'claim_pending_ask', claim: PENDING_CLAIM })),
   claim: stepFixture(stepGuild({ step: 'claim', rank: 'guild master' })),
   claim_link_bnet: stepFixture(stepGuild({ step: 'claim_link_bnet', rank: 'guild master' })),
@@ -257,15 +281,14 @@ export const ON_PLAN_ENDING: Me = stepFixture(
 );
 
 /** `ready` on a Raid guild with 12 verified, and on a Guild with 28 (the size line offers Raid guild). */
-export const READY_RAID_GUILD_12: Me = stepFixture(ready(12, 'raid_guild'));
-export const READY_GUILD_28: Me = stepFixture(ready(28, 'guild'));
+export const READY_RAID_GUILD_12: Me = stepFixture(ready(12));
+export const READY_GUILD_28: Me = stepFixture(ready(28));
+/** A lapsed Raid guild plan: the trial is spent and the card says "Subscribe again". */
+export const READY_LAPSED: Me = stepFixture(readyLapsed('raid_guild'));
 
 /** One `ready` (trial unused) and one `on_plan` where the viewer is a member with seats free. */
 export const MIXED: Me = buildMe({
-  guilds: [
-    ready(12, 'guild'),
-    { ...onPlan({ seats_given: 1 }), ...MILLENNIALS, rank: 'member', verified: true },
-  ],
+  guilds: [ready(12), { ...onPlan({ seats_given: 1 }), ...MILLENNIALS, rank: 'member', verified: true }],
 });
 
 // --- one per premium source ---------------------------------------------------------------------
@@ -311,11 +334,7 @@ export const PREMIUM_GRANT_UNTIL: Me = premiumMe({
   current_period_end: '2027-03-31T00:00:00Z',
 });
 /** Premium that arrives only through the server's fallback (no billing row of any kind). */
-export const PREMIUM_FALLBACK: Me = buildMe({
-  extra: {
-    user: { id: 78, battletag: 'hunthrop#1894', email: null, role: 'user', anonymize: false, premium: true },
-  },
-});
+export const PREMIUM_FALLBACK: Me = buildMe({ serverSims: true });
 export const PREMIUM_FREE: Me = premiumMe(null);
 
 // --- empty and older shapes ---------------------------------------------------------------------
@@ -323,23 +342,18 @@ export const PREMIUM_FREE: Me = premiumMe(null);
 /** No characters at all. */
 export const EMPTY_A: Me = buildMe({ characters: [] });
 /** Characters, none in a guild. */
-export const EMPTY_B: Me = buildMe({ characters: [meCharacter('Obnoxious Yell')] });
+export const EMPTY_B: Me = buildMe({ characters: [OWNER_BARE] });
 /** An older API: guild entries carry no standing fields, so `subscribe` is absent. */
 export const OLDER_ME: Me = buildMe({
   guilds: [
-    { ...OLYMPUS, region: 'us', ruleset: 'forever', rank: 'member', verified: false, verified_count: 0 },
+    {
+      id: OLYMPUS.id,
+      name: OLYMPUS.name,
+      region: 'us',
+      ruleset: 'forever',
+      rank: 'member',
+      verified: false,
+      verified_count: 0,
+    },
   ],
 });
-
-// --- e2e ----------------------------------------------------------------------------------------
-
-/** Stub `GET /v1/me` with a fixture, in the API's envelope (the pattern of support/guild-billing.ts). */
-export async function routeMe(page: Page, me: Me): Promise<void> {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ ok: true, data: me, error: null, request_id: 'req-test' }),
-    }),
-  );
-}
