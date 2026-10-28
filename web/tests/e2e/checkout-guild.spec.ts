@@ -114,6 +114,11 @@ test.describe('the owner, a member of two unclaimed guilds', () => {
       'href',
       communityLinks.discordInvite,
     );
+    // The owner's second character sits in Employed Millennials, so that card names it too.
+    const secondYou = cards.nth(1).getByTestId('guild-you');
+    await expect(secondYou).toContainText('Bow Jackzon');
+    await expect(secondYou).toContainText(copy.rank.member);
+    await expect(secondYou).toContainText(copy.verifyMark.notVerified);
     await expect(page.getByRole('link', { name: copy.foot.getPremium })).toHaveCount(0);
     await expect(page.getByText(copy.facts.noPlan).first()).toBeVisible();
   });
@@ -387,7 +392,7 @@ test.describe('on_plan', () => {
       copy.onPlan.billedBy(GUILD_NAME, 'guild', 'Thornwick'),
     );
     await expect(page.getByTestId('checkout-guild-card')).toContainText(
-      copy.onPlan.seatsGiven(0, 3, 'Thornwick'),
+      copy.onPlan.seatsGiven(0, 1, 'Thornwick'),
     );
 
     await page.unrouteAll({ behavior: 'ignoreErrors' });

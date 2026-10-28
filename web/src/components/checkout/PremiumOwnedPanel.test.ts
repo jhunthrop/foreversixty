@@ -6,6 +6,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { BillingView, Me } from '../../lib/account/api';
 import { ME_SEAT, mockEntitlements } from '../../test-support/billing-fixtures';
+import { PREMIUM_OWN_FOUNDER } from '../../test-support/subscribe-fixtures';
 import PremiumOwnedPanel from './PremiumOwnedPanel.svelte';
 
 const NOW = new Date('2026-11-12T12:00:00Z');
@@ -81,6 +82,12 @@ describe('PremiumOwnedPanel', () => {
   it('an own plan with the founder price shows the pill', () => {
     expect(html(meWith({ ...STRIPE, founder: true }))).toContain('Founder');
     expect(html(meWith(STRIPE))).not.toContain('Founder');
+  });
+
+  it('a founder row renders the founder figure Stripe bills, never the list price', () => {
+    const body = html(PREMIUM_OWN_FOUNDER);
+    expect(body).toContain('$40 a year');
+    expect(body).not.toContain('$50');
   });
 
   it('an account whose source is unknown gets the generic panel, never an API sentence', () => {

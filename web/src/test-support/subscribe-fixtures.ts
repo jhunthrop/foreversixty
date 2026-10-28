@@ -11,7 +11,8 @@ import type {
   GuildSubscribeView,
   SubscribeStep,
 } from '../lib/billing/contract';
-import { NO_PRICE_FACTS, mockEntitlements } from './billing-fixtures';
+import { PLANS } from '../lib/billing/plans';
+import { NO_PRICE_FACTS, mockEntitlements, premiumEntitlements } from './billing-fixtures';
 
 /** Freezes a fixture and everything under it, so a test cannot mutate what other tests share. */
 function deepFreeze<T>(value: T): T {
@@ -41,21 +42,24 @@ export function subscribeView(
   return { step, trial_used: null, available_at: null, reason: null, other_guild_name: null, ...overrides };
 }
 
+/** A plan's coverage; `seats_total` follows the tier (Guild 1, Raid guild 3) unless overridden. */
 export function coveredView(overrides: Partial<GuildCoveredView> = {}): GuildCoveredView {
+  const tier = overrides.tier ?? 'guild';
   return {
-    tier: 'guild',
+    tier,
     state: 'active',
     ends_at: '2026-12-01T00:00:00Z',
     billed_by: 'Thornwick',
     you_pay: false,
     you_hold_seat: false,
     seats_given: 0,
-    seats_total: 3,
+    seats_total: PLANS[tier].seats,
     ...overrides,
   };
 }
 
-/** A `/v1/me` guild entry on a given subscribe step; the owner's OLYMPUS XXVII unless overridden. */
+/** A `/v1/me` guild entry on a given subscribe step; the owner's OLYMPUS XXVII (Horde, as production
+ *  holds it) unless overridden. The owner's character in it reads its rank and verify mark from here. */
 export function stepGuild(overrides: Partial<MeGuild> & { step?: SubscribeStep } = {}): MeGuild {
   const { step = 'ask_leader', ...rest } = overrides;
   return {
@@ -66,6 +70,7 @@ export function stepGuild(overrides: Partial<MeGuild> & { step?: SubscribeStep }
     verified: false,
     verified_count: 0,
     crest_url: null,
+    faction: 'horde',
     rank: 'member',
     claim: { ...UNCLAIMED },
     verify: { has_approver: false },
@@ -106,6 +111,34 @@ const OWNER_CHARACTER: MeCharacter = {
   ...OWNER_BARE,
   guild: { id: OLYMPUS.id, name: OLYMPUS.name, rank: 'member', verified: false },
 };
+/** The owner's character in Employed Millennials, as production holds it. */
+const OWNER_SECOND_BARE: MeCharacter = {
+  key: 'us/pvp/bow-jackzon',
+  region: 'us',
+  ruleset: 'pvp',
+  name: 'Bow Jackzon',
+  class: 'Hunter',
+  spec: 'Beast Mastery',
+  level: 24,
+  faction: 'horde',
+};
+
+/** `bare` in `guild`: the character's rank and verify mark are the guild entry's, as production moves them together. */
+function inGuild(bare: MeCharacter, guild: MeGuild): MeCharacter {
+  return { ...bare, guild: { id: guild.id, name: guild.name, rank: guild.rank, verified: guild.verified } };
+}
+
+/**
+ * The owner's characters for a set of guild entries: Obnoxious Yell in OLYMPUS XXVII and Bow Jackzon
+ * in Employed Millennials, each carrying that entry's rank and verify mark. Without an OLYMPUS XXVII
+ * entry the main keeps its production membership there; Bow Jackzon appears with Employed Millennials.
+ */
+function ownerCharacters(guilds: readonly MeGuild[]): MeCharacter[] {
+  const olympus = guilds.find((guild) => guild.id === OLYMPUS.id);
+  const millennials = guilds.find((guild) => guild.id === MILLENNIALS.id);
+  const main = olympus === undefined ? OWNER_CHARACTER : inGuild(OWNER_BARE, olympus);
+  return millennials === undefined ? [main] : [main, inGuild(OWNER_SECOND_BARE, millennials)];
+}
 
 export const GRANT_OPEN_ENDED: BillingView = deepFreeze({
   ...NO_PRICE_FACTS,
@@ -125,7 +158,15 @@ interface MeParts {
   extra?: Partial<Me>;
 }
 
-/** A signed-in `Me`: the owner's character by default, entitlements carrying the given billing row. */
+/** True when the parts give the account Premium from any source (a billing row, a seat, or the fallback). */
+function hasPremium({ billing, serverSims, extra }: MeParts): boolean {
+  return billing != null || serverSims === true || extra?.seat != null;
+}
+
+/**
+ * A signed-in `Me`: the owner's characters in the given guilds by default, entitlements carrying
+ * the given billing row. Any Premium source turns every Premium feature on, as the API does.
+ */
 export function buildMe({
   characters,
   guilds = [],
@@ -137,10 +178,12 @@ export function buildMe({
   return deepFreeze(
     structuredClone({
       user: { id: 78, battletag: 'hunthrop#1894', email: null, role: 'user', anonymize: false },
-      characters: characters ?? [OWNER_CHARACTER],
+      characters: characters ?? ownerCharacters(guilds),
       guilds,
       main_character_key: OWNER_CHARACTER.key,
-      entitlements: mockEntitlements({ billing, personal_portal: personalPortal, server_sims: serverSims }),
+      entitlements: hasPremium({ billing, serverSims, extra })
+        ? premiumEntitlements({ billing, personal_portal: personalPortal })
+        : mockEntitlements({ billing, personal_portal: personalPortal, server_sims: serverSims }),
       ...extra,
     }),
   );
@@ -191,9 +234,10 @@ const PENDING_CLAIM: GuildClaimView = {
   holder_name: null,
 };
 
+/** The viewer holds the claim, so they are its verified guild master (claiming verifies the claimant). */
 function ready(verified: number): MeGuild {
   return stepGuild({
-    rank: 'officer',
+    rank: 'leader',
     verified: true,
     verified_count: verified,
     claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Obnoxious Yell' },
@@ -211,29 +255,50 @@ function readyLapsed(tier: 'guild' | 'raid_guild'): MeGuild {
   };
 }
 
-/** An `on_plan` guild; `covered` overrides pick the variant. */
+/** An `on_plan` guild; `covered` overrides pick the variant. The payer is the verified guild master
+ *  holding the claim; anyone else is a verified officer, so the payer's name may reach them (§8). */
 function onPlan(covered: Partial<GuildCoveredView>): MeGuild {
+  const youPay = covered.you_pay === true;
   return stepGuild({
-    rank: 'officer',
+    rank: youPay ? 'leader' : 'officer',
     verified: true,
     verified_count: 12,
-    claim: OFFICER_CLAIM,
+    claim: youPay ? { ...OFFICER_CLAIM, yours: true, holder_name: OWNER_BARE.name } : OFFICER_CLAIM,
+    verify: { has_approver: true },
     covered: coveredView(covered),
     subscribe: subscribeView('on_plan'),
   });
 }
 
-const stepFixture = (guild: MeGuild): Me => buildMe({ guilds: [guild] });
+/** A claimed guild someone else holds: the holder is verified, so it counts and can approve. */
+function claimedByOther(step: SubscribeStep, overrides: Partial<MeGuild> = {}): MeGuild {
+  return stepGuild({
+    step,
+    verified_count: 9,
+    claim: MEMBER_CLAIM,
+    verify: { has_approver: true },
+    ...overrides,
+  });
+}
+
+const stepFixture = (guild: MeGuild, extra?: Partial<Me>): Me => buildMe({ guilds: [guild], extra });
+
+const SEAT_ROW = {
+  guild_name: OLYMPUS.name,
+  given_by: 'Thornwick',
+  since: '2026-11-10T00:00:00Z',
+  starts_at: '2026-11-10T00:00:00Z',
+};
 
 /** One `Me` per subscribe step, the guild varying only in what the step needs. */
 export const STEP_FIXTURES: Record<SubscribeStep, Me> = {
   on_plan: stepFixture(onPlan({ you_pay: true })),
   checkout_open: stepFixture(
-    stepGuild({ step: 'checkout_open', rank: 'officer', verified: true, claim: OFFICER_CLAIM }),
+    claimedByOther('checkout_open', { rank: 'officer', verified: true, claim: OFFICER_CLAIM }),
   ),
-  frozen: stepFixture(stepGuild({ step: 'frozen', rank: 'officer', verified: true, claim: OFFICER_CLAIM })),
+  frozen: stepFixture(claimedByOther('frozen', { rank: 'officer', verified: true, claim: OFFICER_CLAIM })),
   ready: stepFixture(ready(12)),
-  claimed_ask: stepFixture(stepGuild({ step: 'claimed_ask', claim: MEMBER_CLAIM })),
+  claimed_ask: stepFixture(claimedByOther('claimed_ask')),
   claim_pending_yours: stepFixture(
     stepGuild({
       step: 'claim_pending_yours',
@@ -259,9 +324,9 @@ export const STEP_FIXTURES: Record<SubscribeStep, Me> = {
 
 /** `claimed_ask` as the officer sees the holder's name, and as a member, who does not. */
 export const CLAIMED_ASK_OFFICER: Me = stepFixture(
-  stepGuild({ step: 'claimed_ask', rank: 'officer', verified: true, claim: OFFICER_CLAIM }),
+  claimedByOther('claimed_ask', { rank: 'officer', verified: true, claim: OFFICER_CLAIM }),
 );
-export const CLAIMED_ASK_MEMBER: Me = stepFixture(stepGuild({ step: 'claimed_ask', claim: MEMBER_CLAIM }));
+export const CLAIMED_ASK_MEMBER: Me = stepFixture(claimedByOther('claimed_ask'));
 
 /** Both `claim_blocked` reasons. */
 export const CLAIM_BLOCKED_RATE_LIMITED: Me = STEP_FIXTURES.claim_blocked;
@@ -272,10 +337,15 @@ export const CLAIM_BLOCKED_HOLDS_OTHER: Me = stepFixture(
   }),
 );
 
-/** The four `on_plan` variants: the viewer pays, holds a seat, someone else pays, and the plan is ending. */
+/** The `on_plan` variants: the viewer pays, holds a seat (so has Premium through it), someone else
+ *  pays, every seat is given (a Raid guild's three), and the plan is ending. */
 export const ON_PLAN_YOU_PAY: Me = STEP_FIXTURES.on_plan;
-export const ON_PLAN_SEAT: Me = stepFixture(onPlan({ you_hold_seat: true, seats_given: 1 }));
+export const ON_PLAN_SEAT: Me = stepFixture(
+  { ...onPlan({ you_hold_seat: true, seats_given: 1 }), rank: 'member' },
+  { seat: SEAT_ROW },
+);
 export const ON_PLAN_OTHER_PAYS: Me = stepFixture(onPlan({}));
+export const ON_PLAN_ALL_SEATS_GIVEN: Me = stepFixture(onPlan({ tier: 'raid_guild', seats_given: 3 }));
 export const ON_PLAN_ENDING: Me = stepFixture(
   onPlan({ you_pay: true, state: 'ending', ends_at: '2026-12-15T00:00:00Z' }),
 );
@@ -286,9 +356,12 @@ export const READY_GUILD_28: Me = stepFixture(ready(28));
 /** A lapsed Raid guild plan: the trial is spent and the card says "Subscribe again". */
 export const READY_LAPSED: Me = stepFixture(readyLapsed('raid_guild'));
 
-/** One `ready` (trial unused) and one `on_plan` where the viewer is a member with seats free. */
+/** One `ready` (trial unused) and one Raid guild `on_plan` where the viewer is a member with seats free. */
 export const MIXED: Me = buildMe({
-  guilds: [ready(12), { ...onPlan({ seats_given: 1 }), ...MILLENNIALS, rank: 'member', verified: true }],
+  guilds: [
+    ready(12),
+    { ...onPlan({ tier: 'raid_guild', seats_given: 1 }), ...MILLENNIALS, rank: 'member', verified: true },
+  ],
 });
 
 // --- one per premium source ---------------------------------------------------------------------
@@ -310,15 +383,12 @@ function stripeBilling(overrides: Partial<BillingView> = {}): BillingView {
 const premiumMe = (billing: BillingView | null, personalPortal = false, extra?: Partial<Me>): Me =>
   buildMe({ billing, personalPortal, extra });
 
-const SEAT_ROW = {
-  guild_name: OLYMPUS.name,
-  given_by: 'Thornwick',
-  since: '2026-11-10T00:00:00Z',
-  starts_at: '2026-11-10T00:00:00Z',
-};
+/** The founder yearly price Stripe bills ($40), not the list price. */
+const CENTS_PER_DOLLAR = 100;
+const FOUNDER_YEARLY_CENTS = PLANS.premium.founderYearly * CENTS_PER_DOLLAR;
 
 export const PREMIUM_OWN_FOUNDER: Me = premiumMe(
-  stripeBilling({ founder: true, interval: 'yearly', amount_cents: 5000 }),
+  stripeBilling({ founder: true, interval: 'yearly', amount_cents: FOUNDER_YEARLY_CENTS }),
   true,
 );
 export const PREMIUM_OWN_ENDING: Me = premiumMe(stripeBilling({ cancel_at_period_end: true }), true);

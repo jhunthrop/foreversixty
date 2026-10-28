@@ -56,7 +56,7 @@ describe('GuildStepCard identity', () => {
     expect(html([guild({ faction: 'horde' })])).toMatch(
       /<img[^>]*src="\/icons\/hd\/faction\/horde-logo-512\.webp"[^>]*width="40"/,
     );
-    const empty = html([guild({})]);
+    const empty = html([guild({ faction: null })]);
     expect(empty).not.toMatch(/<img[^>]*width="40"/);
     expect(empty).toContain('data-testid="guild-crest"');
   });
