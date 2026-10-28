@@ -251,8 +251,21 @@ func TestRecordSpend_RejectsNegativeCost(t *testing.T) {
 	if err := c.RecordSpend(context.Background(), 1, llm.Response{CostUSD: -1}); err == nil {
 		t.Fatal("negative cost accepted")
 	}
-	if err := c.RecordSpend(context.Background(), 0, llm.Response{CostUSD: 1}); err == nil {
-		t.Fatal("spend without an account accepted")
+}
+
+// A call with no account still counts against the site's day, and says so.
+func TestRecordSpend_NoAccountStillWritesTheSiteRow(t *testing.T) {
+	pool := capsPool(t)
+	c := newCaps(pool)
+	ctx := context.Background()
+	if err := c.RecordSpend(ctx, 0, llm.Response{CostUSD: 1}); err == nil {
+		t.Fatal("spend without an account returned no error")
+	}
+	var usd float64
+	var rows int
+	if err := pool.QueryRow(ctx, `select coalesce(sum(usd), 0)::float8, (select count(*) from coach_account_day) from llm_spend`).
+		Scan(&usd, &rows); err != nil || usd != 1 || rows != 0 {
+		t.Fatalf("llm_spend usd %v, account rows %d, %v", usd, rows, err)
 	}
 }
 

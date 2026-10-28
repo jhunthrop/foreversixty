@@ -135,9 +135,10 @@ written in one transaction to the day's `llm_spend` row and to the `coach_accoun
 their own budget. An account's month is the sum of its day rows in the UTC calendar month.
 
 The monthly cap follows the account's plan tier, from the same entitlements the access rules
-read: a verified officer or leader of a guild on the Raid guild or Guild plan uses that plan's
-cap (the higher wins); a Premium holder (personal plan or a held seat) uses Premium's; an
-account with no plan (a moderator) uses Premium's. Each monthly cap is about a sixth of the
+read: a verified officer or leader of a guild paying (Stripe) for the Raid guild or Guild plan
+uses that plan's cap (the higher wins); a guild grant (comp, or the grandfathered
+`officer_views` scope) raises nothing; a Premium holder (personal plan or a held seat) uses
+Premium's; an account with no plan (a moderator, a grant-only officer) uses Premium's. Each monthly cap is about a sixth of the
 plan's monthly price ($6, $15, $25); a review costs about $0.0005 at the pinned prices, so the
 caps allow thousands of reviews and only stop abuse. The daily cap ($0.15) stops a burst.
 

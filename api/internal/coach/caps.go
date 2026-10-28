@@ -219,13 +219,12 @@ func (c *Caps) accountCap(day time.Time, period CapPeriod) Verdict {
 }
 
 // RecordSpend adds one call's cost to today's llm_spend row and to accountID's day row, in
-// one transaction. An estimated cost is multiplied by estimatedCostMargin first.
+// one transaction. An estimated cost is multiplied by estimatedCostMargin first. Without an
+// account (accountID <= 0) the site's row is still written, and the missing account is
+// returned as an error for the caller to log.
 func (c *Caps) RecordSpend(ctx context.Context, accountID int64, res llm.Response) error {
 	if res.CostUSD < 0 {
 		return errors.New("coach: a negative call cost cannot be recorded")
-	}
-	if accountID <= 0 {
-		return errors.New("coach: spend needs the account that opened the review")
 	}
 	cost, estimated := res.CostUSD, 0
 	if res.CostEstimated {
@@ -233,7 +232,7 @@ func (c *Caps) RecordSpend(ctx context.Context, accountID int64, res llm.Respons
 	}
 	day := c.today()
 	err := pgx.BeginFunc(ctx, c.DB, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(ctx, recordSQL, day, cost, estimated); err != nil {
+		if _, err := tx.Exec(ctx, recordSQL, day, cost, estimated); err != nil || accountID <= 0 {
 			return err
 		}
 		_, err := tx.Exec(ctx, recordAccountSQL, day, accountID, cost)
@@ -241,6 +240,9 @@ func (c *Caps) RecordSpend(ctx context.Context, accountID int64, res llm.Respons
 	})
 	if err != nil {
 		return fmt.Errorf("coach: record spend: %w", err)
+	}
+	if accountID <= 0 {
+		return errors.New("coach: spend recorded for the site only; the call had no account to charge")
 	}
 	return nil
 }
