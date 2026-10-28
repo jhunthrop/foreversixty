@@ -12,7 +12,7 @@ func MedianProfile(ps []Profile) Profile {
 	return Profile{
 		AliveMS:         median(collect(ps, func(p Profile) int64 { return p.AliveMS })),
 		CountedMS:       median(collect(ps, func(p Profile) int64 { return p.CountedMS })),
-		ActivePct:       median(collect(ps, func(p Profile) float64 { return p.ActivePct })),
+		ActivePct:       medianOfPresent(ps, func(p Profile) *float64 { return p.ActivePct }),
 		CastsPerMin:     medianMaps(ps, func(p Profile) map[string]float64 { return p.CastsPerMin }),
 		Uptime:          medianMaps(ps, func(p Profile) map[string]float64 { return p.Uptime }),
 		CappedPct:       median(collect(ps, func(p Profile) float64 { return p.CappedPct })),

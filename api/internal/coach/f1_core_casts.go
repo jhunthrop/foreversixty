@@ -115,7 +115,7 @@ func assessAbility(in Input, c Counted, e RuleEntry) (coreAbility, bool) {
 	for _, g := range a.gaps {
 		a.lost += g.lost
 	}
-	a.compare(in, c)
+	a.compare(in, c, countedCasts(seq, c))
 	return a, true
 }
 
@@ -250,11 +250,11 @@ func hadResourceForOneSecond(series []int64, sec, cost int64) bool {
 
 // compare fills the ability's casts per minute and its comparison (§11), skipping the sim
 // for a WorstActions family.
-func (a *coreAbility) compare(in Input, c Counted) {
+func (a *coreAbility) compare(in Input, c Counted, counted int) {
 	if c.CountedMS <= 0 {
 		return
 	}
-	a.youCPM = float64(a.actual) / (float64(c.CountedMS) / float64(ratingMinuteMS))
+	a.youCPM = float64(counted) / (float64(c.CountedMS) / float64(ratingMinuteMS))
 	pool := func(p Profile) (float64, bool) { return p.CastsPerMinOf(a.family) }
 	sim := func(s SimRef) (float64, bool) { v, ok := s.CastsPerMin[a.family]; return v, ok }
 	a.refCPM, a.cmp, a.thin = comparison(in, pool, sim, !in.Tables.WorstActions[a.family])

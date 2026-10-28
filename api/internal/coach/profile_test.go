@@ -54,7 +54,7 @@ func TestProfileJSONNames(t *testing.T) {
 	if err := json.Unmarshal(b, &m); err != nil {
 		t.Fatal(err)
 	}
-	for _, k := range []string{"alive_ms", "counted_ms", "active_pct", "cpm", "uptime", "capped_pct", "mana_low_ms", "overheal", "defensive", "consumables"} {
+	for _, k := range []string{"alive_ms", "counted_ms", "cpm", "uptime", "capped_pct", "mana_low_ms", "overheal", "defensive", "consumables"} {
 		if _, ok := m[k]; !ok {
 			t.Errorf("profile json lacks %q: %s", k, b)
 		}

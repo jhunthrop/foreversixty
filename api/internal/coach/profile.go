@@ -6,9 +6,13 @@ import "strconv"
 // jsonb (about 1 KB). The pool's median is a Profile too, which F1–F8 read through the
 // accessors. Task 17 builds it from a fight and writes it.
 type Profile struct {
-	AliveMS         int64              `json:"alive_ms"`
-	CountedMS       int64              `json:"counted_ms"`
-	ActivePct       float64            `json:"active_pct"`
+	AliveMS   int64 `json:"alive_ms"`
+	CountedMS int64 `json:"counted_ms"`
+	// ActivePct is the active share of counted time, 100 − counted idle / CountedMS, the
+	// measure F3 prints for the player (DPS and tank; nil for a healer). Profiles written
+	// before 2026-10-28 stored the roster's whole-fight share under active_pct, which is
+	// no longer read: the median takes the profiles that carry the new key.
+	ActivePct       *float64           `json:"counted_active_pct,omitempty"`
 	CastsPerMin     map[string]float64 `json:"cpm"`    // ability family -> casts per counted minute
 	Uptime          map[string]float64 `json:"uptime"` // owned aura spell id -> % (sole applier only)
 	CappedPct       float64            `json:"capped_pct"`

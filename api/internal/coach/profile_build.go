@@ -20,7 +20,7 @@ var profileCategories = []string{
 func BuildProfile(in Input) Profile {
 	c := CountedTime(in)
 	p := Profile{
-		AliveMS: c.AliveMS, CountedMS: c.CountedMS, ActivePct: in.Row.ActivityPct,
+		AliveMS: c.AliveMS, CountedMS: c.CountedMS, ActivePct: countedActivePct(in, c),
 		CastsPerMin: castsPerMinute(in, c), Uptime: map[string]float64{},
 		OverhealByRank: overhealByRank(in), DefensiveUptime: map[string]float64{},
 		Consumables: consumablesAtPull(in),

@@ -38,17 +38,18 @@ func TestMedianProfile_KeyInSomeProfilesTakesTheirMedian(t *testing.T) {
 
 func TestMedianProfile_ScalarsPointersAndFlags(t *testing.T) {
 	adh1, adh3 := 0.5, 0.9
+	act90, act70 := 90.0, 70.0 // the third profile predates the counted share: the median is of the two
 	first := int64(100_000)
 	ps := []Profile{
-		{CountedMS: 100, ActivePct: 90, CappedPct: 1, ManaLowMS: 10, Adherence: &adh1,
+		{CountedMS: 100, ActivePct: &act90, CappedPct: 1, ManaLowMS: 10, Adherence: &adh1,
 			Uptime: map[string]float64{"6673": 100}, Consumables: map[string]bool{"flask": true}},
-		{CountedMS: 300, ActivePct: 70, CappedPct: 3, ManaLowMS: 30, Adherence: &adh3, ManaLowFirstMS: &first,
+		{CountedMS: 300, ActivePct: &act70, CappedPct: 3, ManaLowMS: 30, Adherence: &adh3, ManaLowFirstMS: &first,
 			OverhealByRank: map[string]float64{"10965": 20}, DefensiveUptime: map[string]float64{"2565": 30},
 			Consumables: map[string]bool{"flask": true}},
-		{CountedMS: 200, ActivePct: 80, CappedPct: 2, ManaLowMS: 20, Consumables: map[string]bool{"flask": false}},
+		{CountedMS: 200, CappedPct: 2, ManaLowMS: 20, Consumables: map[string]bool{"flask": false}},
 	}
 	m := MedianProfile(ps)
-	if m.CountedMS != 200 || m.ActivePct != 80 || m.CappedPct != 2 || m.ManaLowMS != 20 {
+	if m.CountedMS != 200 || m.ActivePct == nil || *m.ActivePct != 80 || m.CappedPct != 2 || m.ManaLowMS != 20 {
 		t.Fatalf("scalar medians wrong: %+v", m)
 	}
 	if v, ok := m.AdherenceOf(); !ok || v != 0.7 {

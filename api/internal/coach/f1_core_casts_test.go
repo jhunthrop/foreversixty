@@ -183,3 +183,22 @@ func TestCoreCasts_NoListIsCouldntCheck(t *testing.T) {
 		}
 	}
 }
+
+// The player's casts a minute count only casts in counted time, as the pool's do (A6): two
+// casts after a death at 0:30 never inflate the rate.
+func TestCoreCasts_CastsPerMinuteCountsOnlyCountedCasts(t *testing.T) {
+	casts := []int64{0, 6000, 12000, 18000, 24000, 40_000, 46_000}
+	in := furyFightDeadAt(t, 60_000, 23881, casts, repeat(500, 60), 30_000)
+	c := CountedTime(in)
+	a, ok := assessAbility(in, c, in.Tables.Rules.Core[0])
+	if !ok {
+		t.Fatal("Bloodthirst not assessed")
+	}
+	want := float64(countedCasts(casts, c)) * millisPerMinute / float64(c.CountedMS)
+	if a.youCPM != want || a.youCPM != BuildProfile(in).CastsPerMin["Bloodthirst"] {
+		t.Fatalf("you %v, want %v (the profile's own rate)", a.youCPM, want)
+	}
+	if countedCasts(casts, c) != 5 {
+		t.Fatalf("counted %d casts, want the 5 before the death", countedCasts(casts, c))
+	}
+}

@@ -107,5 +107,5 @@ func withFirstCast(in Input, atMS int64) Input {
 
 // idlePool is a pool of n players whose median is active percent of counted time.
 func idlePool(active float64, n int) Refs {
-	return poolOf(n, Profile{ActivePct: active})
+	return poolOf(n, Profile{ActivePct: &active})
 }

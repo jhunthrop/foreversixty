@@ -120,10 +120,28 @@ func idleFinding(in Input, idleMS int64, idlePct float64, shown []ratingengine.W
 	}
 }
 
-// idleBasis is the top logs' median active share when the pool has one, else the
-// threshold from the player's own log.
+// activeShare is a profile's active share of counted time, when it records one.
+func activeShare(p Profile) (float64, bool) {
+	if p.ActivePct == nil {
+		return 0, false
+	}
+	return *p.ActivePct, true
+}
+
+// countedActivePct is the player's active share of counted time (100 − F3's idle share),
+// the unit the pool's median is in; nil for a role F3 never judges or no counted time.
+func countedActivePct(in Input, c Counted) *float64 {
+	if (in.Row.Role != RoleDPS && in.Row.Role != RoleTank) || c.CountedMS <= 0 {
+		return nil
+	}
+	v := percentOf - float64(IdleTotalMS(countedIdleWindows(in, c)))/float64(c.CountedMS)*percentOf
+	return &v
+}
+
+// idleBasis is the top logs' median active share of counted time when the pool has one,
+// set beside the player's own in the same unit, else the threshold from the player's log.
 func idleBasis(in Input, idlePct float64) (Basis, []NumberFact) {
-	ref, b, _ := comparison(in, func(p Profile) (float64, bool) { return p.ActivePct, p.ActivePct > 0 }, nil, false)
+	ref, b, _ := comparison(in, activeShare, nil, false)
 	if b == nil {
 		return Basis{Label: BasisIdle, Kind: BasisOwnLog}, nil
 	}

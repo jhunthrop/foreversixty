@@ -153,3 +153,22 @@ func TestIdleStatedTotalIsTheSumOfTheWindows(t *testing.T) {
 		t.Fatalf("detail %q", o.Finding.Detail)
 	}
 }
+
+// The pool's active share and the player's are one measure over one window (A5): the
+// profile stores 100 − counted idle / counted time, the number F3 prints as "You".
+func TestIdleBasisComparesTheSameMeasureOverCountedTime(t *testing.T) {
+	in := furyIdle(t, 200_000, span(40_000, 64_000))
+	in.Row.ActivityPct = 55 // the roster's whole-fight share: never the comparison
+	p := BuildProfile(in)
+	if p.ActivePct == nil {
+		t.Fatal("a DPS profile records its counted active share")
+	}
+	pooled := withPool(in, idlePool(*p.ActivePct, 25))
+	f := idle(pooled, CountedTime(pooled)).Finding
+	if f == nil || !strings.HasSuffix(f.Basis.Label, "% active. You: "+PctNumber(*p.ActivePct)+"%.") {
+		t.Fatalf("the player's own profile reads as the pool would: %+v", f)
+	}
+	if holy := BuildProfile(holyIdle(t, 200_000, span(40_000, 64_000))); holy.ActivePct != nil {
+		t.Errorf("a healer is never idle-judged, so records no active share: %v", *holy.ActivePct)
+	}
+}
