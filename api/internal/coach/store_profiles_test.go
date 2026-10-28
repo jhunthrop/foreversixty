@@ -3,7 +3,7 @@ package coach
 import (
 	"context"
 	"errors"
-	"math"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -114,26 +114,29 @@ func TestProfileWriter_KillOnRankedEvidenceReport(t *testing.T) {
 	if n := countProfiles(t, pool, f.ReportID); n != 2 {
 		t.Fatalf("%d profiles, want 2 (the row with no spec writes none)", n)
 	}
-	var warMetric, priestMetric, overall float64
+	var warMetric float64
 	var ph, version string
-	ctx := context.Background()
-	if err := pool.QueryRow(ctx, `select metric, phase, model_version from coach_profiles
+	if err := pool.QueryRow(context.Background(), `select metric, phase, model_version from coach_profiles
 	  where report_id = $1 and spec = 'Fury'`, f.ReportID).Scan(&warMetric, &ph, &version); err != nil {
-		t.Fatal(err)
-	}
-	if err := pool.QueryRow(ctx, `select p.metric, r.overall from coach_profiles p
-	  join rating_scores r on r.report_id = p.report_id and r.fight_index = p.fight_index and r.player_key = p.player_key
-	  where p.report_id = $1 and p.spec = 'Holy'`, f.ReportID).Scan(&priestMetric, &overall); err != nil {
 		t.Fatal(err)
 	}
 	if warMetric != writerDPS {
 		t.Errorf("warrior metric %v, want its DPS %v", warMetric, writerDPS)
 	}
-	if math.Abs(priestMetric-overall) > 1e-9 {
-		t.Errorf("priest metric %v, want the card's overall %v", priestMetric, overall)
-	}
 	if ph != phase.At(writerFoughtAt) || version != RulesVersion {
 		t.Errorf("phase %q version %q, want %q %q", ph, version, phase.At(writerFoughtAt), RulesVersion)
+	}
+}
+
+func TestProfileMetric_IsDPSForDamageAndOverallForHealersAndTanks(t *testing.T) {
+	card := rating.CardRow{Overall: 77.5}
+	if got := profileMetric(summary.RosterRow{Role: RoleDPS, DPS: 900}, card); got != 900 {
+		t.Errorf("dps metric %v, want 900", got)
+	}
+	for _, role := range []string{RoleHealer, RoleTank} {
+		if got := profileMetric(summary.RosterRow{Role: role, DPS: 900}, card); got != 77.5 {
+			t.Errorf("%s metric %v, want the overall 77.5", role, got)
+		}
 	}
 }
 
@@ -195,14 +198,44 @@ func TestProfileWriter_ErrorRollsTheRatingBack(t *testing.T) {
 	}
 }
 
-func TestProfileWriter_MissingTablesSkipTheRowNotTheRating(t *testing.T) {
+func TestProfileWriter_NoTablesSkipsTheRowNotTheRating(t *testing.T) {
 	pool := writerPool(t)
 	seedReport(t, pool, "prof-tables", "public", nil)
-	w := &ProfileWriter{Tables: fakeTables{err: errors.New("no tables")}}
+	w := &ProfileWriter{Tables: fakeTables{err: fmt.Errorf("spec: %w", ErrNoTables)}}
 	if err := rateWith(t, pool, w, writerFight("prof-tables", true)); err != nil {
 		t.Fatal(err)
 	}
 	if n := countProfiles(t, pool, "prof-tables"); n != 0 {
 		t.Fatalf("%d profiles written without tables", n)
+	}
+}
+
+func TestProfileWriter_OtherTablesErrorFailsTheHook(t *testing.T) {
+	pool := writerPool(t)
+	seedReport(t, pool, "prof-tables-err", "public", nil)
+	w := &ProfileWriter{Tables: fakeTables{err: errors.New("disk on fire")}}
+	if err := rateWith(t, pool, w, writerFight("prof-tables-err", true)); err == nil {
+		t.Fatal("RateFight returned nil for a tables failure")
+	}
+	var scores int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from rating_scores where report_id = 'prof-tables-err'`).Scan(&scores); err != nil {
+		t.Fatal(err)
+	}
+	if scores != 0 {
+		t.Fatalf("%d rating rows survived", scores)
+	}
+}
+
+func TestProfileWriter_InsufficientHealerCardWritesNoProfile(t *testing.T) {
+	row := summary.RosterRow{Role: RoleHealer}
+	if !unmeasured(row, rating.CardRow{Insufficient: true}) {
+		t.Fatal("an insufficient healer card must be skipped")
+	}
+	if unmeasured(summary.RosterRow{Role: RoleDPS}, rating.CardRow{Insufficient: true}) {
+		t.Fatal("a DPS metric is its DPS, insufficient or not")
+	}
+	if unmeasured(row, rating.CardRow{}) {
+		t.Fatal("a sufficient healer card is measured")
 	}
 }

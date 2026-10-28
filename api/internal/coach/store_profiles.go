@@ -3,6 +3,7 @@ package coach
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -20,6 +21,11 @@ import (
 type TableSource interface {
 	TablesFor(ctx context.Context, row summary.RosterRow, encounterID int64, foughtAt time.Time) (Tables, error)
 }
+
+// ErrNoTables is what a TableSource returns when it has no data tables for the row (a spec
+// without rule files, a build it does not know). The writer skips that row; any other
+// TablesFor error fails the hook.
+var ErrNoTables = errors.New("coach: no data tables for this player")
 
 // ProfileWriter writes coach_profiles for a rated fight: kills only, on reports that are
 // ranked (reports.Ranked: not private) and evidence (presence.EvidenceReport), read in the
@@ -74,7 +80,7 @@ func (w *ProfileWriter) InTx(ctx context.Context, tx pgx.Tx, f rating.RatedFight
 	}
 	for _, row := range f.Summary.Roster {
 		card, ok := cardOf[row.Name]
-		if !ok || row.Spec == "" {
+		if !ok || row.Spec == "" || unmeasured(row, card) {
 			continue
 		}
 		if err := w.writeRow(ctx, tx, f, row, card); err != nil {
@@ -87,11 +93,16 @@ func (w *ProfileWriter) InTx(ctx context.Context, tx pgx.Tx, f rating.RatedFight
 func (w *ProfileWriter) writeRow(ctx context.Context, tx pgx.Tx, f rating.RatedFight,
 	row summary.RosterRow, card rating.CardRow) error {
 	tables, err := w.Tables.TablesFor(ctx, row, f.EncounterID, f.FoughtAt)
-	if err != nil {
-		// One player's missing data must not undo the whole fight's rating.
+	if errors.Is(err, ErrNoTables) {
+		// The spec has no data tables: that row has no profile, the rest of the fight does.
 		w.logger().Warn("coach", "op", "profile_tables", "report", f.ReportID, "fight", f.FightIndex,
 			"player", card.PlayerKey, "err", err)
 		return nil
+	}
+	if err != nil {
+		// Any other failure rolls the rating back, so the fight is retried and the old
+		// profile survives.
+		return fmt.Errorf("coach: tables for %s: %w", card.PlayerKey, err)
 	}
 	profile := BuildProfile(Input{Fight: f.Summary, Row: row, Size: card.Size, Tables: tables})
 	raw, err := json.Marshal(profile)
@@ -105,6 +116,12 @@ func (w *ProfileWriter) writeRow(ctx context.Context, tx pgx.Tx, f rating.RatedF
 		return fmt.Errorf("coach: write profile of %s: %w", card.PlayerKey, err)
 	}
 	return nil
+}
+
+// unmeasured reports a healer or tank whose card is insufficient: its Overall is 0 by
+// contract, and a 0 must never enter the pool as a metric.
+func unmeasured(row summary.RosterRow, card rating.CardRow) bool {
+	return row.Role != RoleDPS && card.Insufficient
 }
 
 // profileMetric is what "top" means: DPS for damage dealers, the rating's overall score
