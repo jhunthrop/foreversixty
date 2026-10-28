@@ -613,6 +613,9 @@
   // own breakpoint, not this component's `lg`-gated table tabs, which answer a different
   // question (does a pill row or a select fit).
   const CHART_OPEN_KEY = 'fs.report.chartOpen';
+  // The subtitle's separator as an expression: Svelte trims a block's leading space, which read
+  // "4 fights· complete" when it was literal text.
+  const SUBTITLE_SEPARATOR = ' · ';
   function prefersOpenChart(): boolean {
     try {
       return globalThis.matchMedia?.('(min-width: 768px)').matches ?? true;
@@ -1700,8 +1703,7 @@
         {#if facts.zone !== ''}{facts.zone} ·{/if}
         {#if fights.length > 0}<span class="tabular font-mono whitespace-nowrap">{facts.date}</span> ·{/if}
         <span class="tabular font-mono whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
-          <!-- An expression, not literal text: Svelte trims the block's leading space ("4 fights· complete"). -->
-          {' · '}{meta.status}{/if}
+          {SUBTITLE_SEPARATOR}{meta.status}{/if}
         <!-- The bundled sample was logged by no one the site knows: no credit line. -->
         {#if !isSampleReport(reportId)}
           ·
