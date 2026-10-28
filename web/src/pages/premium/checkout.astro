@@ -14,8 +14,10 @@ import CheckoutLauncher from '../../components/CheckoutLauncher.svelte';
 ---
 
 <Base title="Checkout" description="Continue to checkout." path="/premium/checkout">
-  <main id="main" tabindex="-1" class="measure-form flex flex-col gap-4 px-[18px] pt-10 pb-16 md:px-0">
-    <h1 class="section-title text-[18px]">Checkout</h1>
+  <!-- No measure: the island draws the full-bleed band (its h1 and its height reserve, spec
+       §5.1 / §7) on its static render, then the guild step's 880 column or the narrow message
+       and plan=premium column under it. -->
+  <main id="main" tabindex="-1" class="flex w-full flex-col">
     <CheckoutLauncher client:load />
   </main>
 </Base>

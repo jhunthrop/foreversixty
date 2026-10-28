@@ -1,0 +1,21 @@
+// web/src/lib/billing/checkout-layout.ts
+// The /premium/checkout frame's height reserves (spec 2026-10-27-subscribe-and-join §5.7, §7,
+// §11): every box that fills in after the static render or after /v1/me answers holds its
+// ready height from the first paint, so the page's CLS stays within 0.02. Tailwind classes,
+// written whole so the class scanner sees them.
+
+/** The band: the same box for a guild plan, Premium and the moment before the URL is read. */
+export const CHECKOUT_BAND_RESERVE = 'min-h-[156px] md:min-h-[184px] lg:min-h-[148px]';
+
+/**
+ * The narrow body under the band (redirect message, refusals, invalid link): it holds Task 12's
+ * PremiumOwnedPanel (§4.2) — padding 20, title, plan line, line 2, the 44 px button 12 px below —
+ * so the panel replacing the one-line message moves nothing. Line 2 wraps once on a phone.
+ */
+export const CHECKOUT_BODY_RESERVE = 'min-h-[204px] md:min-h-[184px]';
+
+/** The guild step's lead slot while loading: one line, two below 768. */
+export const GUILD_LEAD_RESERVE = 'min-h-[42px] md:min-h-[21px]';
+
+/** A skeleton guild card at the ready card's height. */
+export const GUILD_SKELETON_CARD = 'h-[260px] md:h-[156px]';

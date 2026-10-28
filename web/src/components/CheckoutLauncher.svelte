@@ -27,6 +27,7 @@
   import { checkoutCopy } from '../lib/billing/copy';
   import { checkoutGuildCopy, type GuildTier } from '../lib/billing/checkout-guild-copy';
   import { replacePlanInUrl } from '../lib/billing/checkout-plan-switch';
+  import { CHECKOUT_BODY_RESERVE } from '../lib/billing/checkout-layout';
   import { founderOpen } from '../lib/billing/plans';
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -255,40 +256,39 @@
 {:else}
   <!-- The narrow body under the band: the redirect and refusal messages, the invalid-link
        line, and the plan=premium slot (Task 12's PremiumOwnedPanel, spec §4.2). -->
-  <div
-    class="mx-auto flex w-full max-w-[640px] flex-col gap-3 px-[18px] pt-10 pb-16 md:px-0"
-    data-testid="checkout-body"
-  >
-    {#if invalid}
-      <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
-        {checkoutGuildCopy.invalidLink.text}
-        <a href={PREMIUM_HREF} class="underline">{checkoutGuildCopy.invalidLink.button}</a>
-      </p>
-    {:else if ownedMe !== null}
-      <PremiumOwnedPanel
-        me={ownedMe}
-        now={ownedNow}
-        busy={portalBusy}
-        onPortal={() => void openBillingPortal()}
-      />
-      {#if portalFailed}
-        <p class="text-[14px]" role="alert" data-testid="checkout-portal-error">
-          {checkoutCopy.genericFailure}
+  <div class="mx-auto w-full max-w-[640px] px-[18px] pt-10 pb-16 md:px-0">
+    <div class={`flex flex-col gap-3 ${CHECKOUT_BODY_RESERVE}`} data-testid="checkout-body">
+      {#if invalid}
+        <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
+          {checkoutGuildCopy.invalidLink.text}
+          <a href={PREMIUM_HREF} class="underline">{checkoutGuildCopy.invalidLink.button}</a>
+        </p>
+      {:else if ownedMe !== null}
+        <PremiumOwnedPanel
+          me={ownedMe}
+          now={ownedNow}
+          busy={portalBusy}
+          onPortal={() => void openBillingPortal()}
+        />
+        {#if portalFailed}
+          <p class="text-[14px]" role="alert" data-testid="checkout-portal-error">
+            {checkoutCopy.genericFailure}
+          </p>
+        {/if}
+      {:else}
+        <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
+          {message}
         </p>
       {/if}
-    {:else}
-      <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
-        {message}
-      </p>
-    {/if}
-    {#if !invalid && showRetry && request !== null}
-      <button
-        type="button"
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`}
-        onclick={() => void launch(request!)}
-      >
-        {checkoutCopy.retry}
-      </button>
-    {/if}
+      {#if !invalid && showRetry && request !== null}
+        <button
+          type="button"
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`}
+          onclick={() => void launch(request!)}
+        >
+          {checkoutCopy.retry}
+        </button>
+      {/if}
+    </div>
   </div>
 {/if}
