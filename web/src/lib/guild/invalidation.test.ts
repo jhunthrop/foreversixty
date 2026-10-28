@@ -209,7 +209,7 @@ describe('guild reads revalidate on every read', () => {
     );
     const onFresh = vi.fn();
     expect(await fetchMeFresh(onFresh, API)).toEqual(before);
-    await vi.waitFor(() => expect(onFresh).toHaveBeenCalledWith(after));
+    await vi.waitFor(() => expect(onFresh).toHaveBeenCalledWith(normalizeMeBilling(after as Me)));
   });
 });
 
