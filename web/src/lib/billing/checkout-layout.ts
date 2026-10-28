@@ -68,16 +68,26 @@ export const GUILD_CARDS_PROPERTY = '--checkout-guild-cards';
 
 /**
  * Set on <html> by the head script while the guild step loads. The site footer is hidden meanwhile:
- * a real card can be taller than its 156 / 260 px skeleton (the owner's `ask_leader` card is about
- * 330 px), and the footer would otherwise be seen moving down when the rows arrive (a layout
- * shift); revealed at its final place, it never moves on screen.
+ * a real card can be taller or shorter than its 156 / 260 px skeleton (the owner's `ask_leader`
+ * card is about 330 px), and the footer would otherwise be seen moving when the rows arrive (a
+ * layout shift, which Chromium counts even for a move into view); first drawn at its final place,
+ * it never moves on screen.
  */
 export const GUILD_LOADING_ATTRIBUTE = 'data-checkout-loading';
 
-/** Spec §7 (G2): the pre-paint reserve holds only while the step loads; once rows, an empty state or
- *  the error render, the page is as tall as its content and the footer shows. */
+/** Spec §7 (G2): the pre-paint reserve holds only while the step loads; once rows or an empty state
+ *  render, the page is as tall as its content and the footer shows. */
 export function releaseGuildFrameReserve(root: HTMLElement): void {
   root.style.removeProperty(GUILD_CARDS_PROPERTY);
+  root.removeAttribute(GUILD_LOADING_ATTRIBUTE);
+}
+
+/**
+ * The load error keeps the reserve (at least the viewport, so the footer stays below the fold) and
+ * only shows the footer. Released there, the footer would be first drawn in view seconds after
+ * load and become the page's largest paint (Lighthouse's signed-out run reaches this state).
+ */
+export function showFooterKeepReserve(root: HTMLElement): void {
   root.removeAttribute(GUILD_LOADING_ATTRIBUTE);
 }
 

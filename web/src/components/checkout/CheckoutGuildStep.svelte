@@ -45,6 +45,7 @@
     GUILD_LEAD_RESERVE,
     GUILD_SKELETON_CARD,
     releaseGuildFrameReserve,
+    showFooterKeepReserve,
   } from '../../lib/billing/checkout-layout';
   import { priceFor } from '../../lib/billing/plan-costs';
   import { formatPrice, type Interval } from '../../lib/billing/plans';
@@ -127,9 +128,11 @@
   /** The skeleton shows: /v1/me is in flight, or the rows wait for their crests. */
   const loading = $derived(!failed && (me === null || (empty === null && !crestsReady)));
 
-  // Spec §7 (G2): the page's pre-paint height reserve holds only while the skeleton shows.
+  // Spec §7 (G2): the page's pre-paint height reserve holds only while the skeleton shows; the load
+  // error keeps it (the footer stays below the fold) and only shows the footer.
   $effect(() => {
-    if (!loading) releaseGuildFrameReserve(document.documentElement);
+    if (failed) showFooterKeepReserve(document.documentElement);
+    else if (!loading) releaseGuildFrameReserve(document.documentElement);
   });
 
   $effect(() => {

@@ -122,14 +122,16 @@ const lg = guildFrameReserve('lg');
     --measure-wide: 880px;
   }
   /* The guild step's height from the first paint while it loads: band, step padding, lead, the
-     skeleton's cards and the foot (checkout-layout.ts guildFrameReserve). CheckoutGuildStep removes
-     --checkout-guild-cards (GUILD_CARDS_PROPERTY) once its rows render, which voids the calc and
-     lets the page be as tall as its content. */
+     skeleton's cards and the foot (checkout-layout.ts guildFrameReserve), and at least the
+     viewport, so the site footer starts below the fold. CheckoutGuildStep removes
+     --checkout-guild-cards (GUILD_CARDS_PROPERTY) once rows or an empty state render, which voids
+     the declaration and lets the page be as tall as its content. */
   :global(html[data-checkout-step='guild']) .checkout-main {
-    min-height: calc((var(--phoneFixed) + var(--checkout-guild-cards) * var(--phoneCard)) * 1px);
+    min-height: max(calc((var(--phoneFixed) + var(--checkout-guild-cards) * var(--phoneCard)) * 1px), 100svh);
   }
   /* While the step loads, the site footer keeps its box but is not drawn (checkout-layout.ts
-     GUILD_LOADING_ATTRIBUTE): a card taller than its skeleton would otherwise move it on screen. */
+     GUILD_LOADING_ATTRIBUTE): released with the reserve, it is first drawn at its final place, so
+     a card taller or shorter than its skeleton never moves it on screen. */
   :global(html[data-checkout-loading] .page-column ~ footer) {
     visibility: hidden;
   }
@@ -140,12 +142,12 @@ const lg = guildFrameReserve('lg');
   }
   @media (min-width: 768px) {
     :global(html[data-checkout-step='guild']) .checkout-main {
-      min-height: calc((var(--mdFixed) + var(--checkout-guild-cards) * var(--mdCard)) * 1px);
+      min-height: max(calc((var(--mdFixed) + var(--checkout-guild-cards) * var(--mdCard)) * 1px), 100svh);
     }
   }
   @media (min-width: 1024px) {
     :global(html[data-checkout-step='guild']) .checkout-main {
-      min-height: calc((var(--lgFixed) + var(--checkout-guild-cards) * var(--lgCard)) * 1px);
+      min-height: max(calc((var(--lgFixed) + var(--checkout-guild-cards) * var(--lgCard)) * 1px), 100svh);
     }
   }
 </style>

@@ -14,6 +14,7 @@ import {
   GUILD_LEAD_RESERVE,
   guildFrameReserve,
   releaseGuildFrameReserve,
+  showFooterKeepReserve,
 } from './checkout-layout';
 
 describe('checkout layout reserves', () => {
@@ -73,6 +74,20 @@ describe('the premium band', () => {
     );
     expect(band).toContain(`min-height: ${PREMIUM_BAND_PX.md}px;`);
     expect(CHECKOUT_BAND_ATTRIBUTE).toBe('data-checkout-band');
+  });
+});
+
+describe('showFooterKeepReserve', () => {
+  it('drops the loading mark and keeps the card count', () => {
+    const properties = new Map<string, string>([[GUILD_CARDS_PROPERTY, '2']]);
+    const attributes = new Set<string>([GUILD_LOADING_ATTRIBUTE]);
+    const root = {
+      style: { removeProperty: (name: string) => properties.delete(name) },
+      removeAttribute: (name: string) => attributes.delete(name),
+    } as unknown as HTMLElement;
+    showFooterKeepReserve(root);
+    expect([...properties.keys()]).toEqual([GUILD_CARDS_PROPERTY]);
+    expect([...attributes]).toEqual([]);
   });
 });
 

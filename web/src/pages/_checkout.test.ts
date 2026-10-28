@@ -112,7 +112,7 @@ describe('checkout page frame: the CSS', () => {
       ['lgFixed', 'lgCard'],
     ]) {
       expect(source).toContain(
-        `min-height: calc((var(--${fixed}) + var(--checkout-guild-cards) * var(--${card})) * 1px);`,
+        `min-height: max(calc((var(--${fixed}) + var(--checkout-guild-cards) * var(--${card})) * 1px), 100svh);`,
       );
     }
     expect(source).toMatch(/@media \(min-width: 768px\)/);
