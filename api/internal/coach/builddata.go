@@ -1,5 +1,11 @@
 package coach
 
+// Task 29b's file tables load Tables.Spells and Tables.Trainable through ParseSpellConst
+// (data/builds/<build>/spellconst/<class>.json) and ParseTrainables
+// (data/builds/<build>/trainables/<class>.json, the SkillLineAbility "what a Forever player
+// learns" source), never spellranks.json, so production reads the files the fixtures are
+// proved against (TestFixtureSpellConstMatchesData, TestFixtureTrainablesMatchData).
+
 import (
 	"encoding/json"
 	"fmt"

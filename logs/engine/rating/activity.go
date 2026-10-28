@@ -38,12 +38,14 @@ func scoreActivity(fight summary.Summary, player string, bracket Bracket, table 
 	return placeBoundedOrSelf(c, src, bracket, share)
 }
 
-// ActivityIdleMS is the time the Activity component counts against player, in its own
-// measure: the time alive outside the curated downtime windows and the player's assignment
-// windows, less the seconds in it the player did damage or healing (activeExcludingDowntime),
-// which is the sum of IdleWindows' spans. With no window at all it is the time alive less
-// the roster's ActiveMS, the whole-fight figure scoreActivity falls back to. Never
-// negative; 0 for a player not on the roster.
+// ActivityIdleMS is the rating's own measure of the time the Activity component counts
+// against player: the time alive outside the curated downtime windows and the player's
+// assignment windows, less the seconds in it the player did damage or healing
+// (activeExcludingDowntime), which is then the sum of IdleWindows' spans. With no window at
+// all it is the time alive less the roster's ActiveMS (markActive's credit per event), the
+// whole-fight figure scoreActivity falls back to, and it may then differ from the sum of
+// IdleWindows. A reader that states idle time with its windows (the coach's F3) uses
+// IdleWindows alone. Never negative; 0 for a player not on the roster.
 func ActivityIdleMS(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) int64 {
 	row, ok := rosterRow(fight, player)
 	if !ok {
@@ -60,12 +62,13 @@ func ActivityIdleMS(fight summary.Summary, player string, table *mechanics.Table
 	return idle
 }
 
-// IdleWindows is the windows variant of ActivityIdleMS, on the same four parameters: the
-// idle spans it counts (whole seconds alive, outside every downtime and assignment window,
-// with no damage or healing done), joined into runs, longest first, ties earliest first.
-// With windows in force they sum to ActivityIdleMS. With none, ActivityIdleMS falls back to
-// the roster's ActiveMS, which the per-second spans approximate. nil for a player not on
-// the roster.
+// IdleWindows is the authoritative idle measure for anyone who states idle time with its
+// windows: every whole second alive, outside every downtime and assignment window, with no
+// damage or healing done, joined into runs, longest first, ties earliest first. Their sum
+// is the idle total; the longest is the first. It takes ActivityIdleMS's four parameters
+// and equals it whenever a downtime or assignment window is in force; with none,
+// ActivityIdleMS is the rating's roster-based figure and may differ. nil for a player not
+// on the roster.
 func IdleWindows(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) []Window {
 	if _, ok := rosterRow(fight, player); !ok {
 		return nil
@@ -82,7 +85,7 @@ func IdleWindows(fight summary.Summary, player string, table *mechanics.Table, a
 func excludedWindows(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) (int64, []Window) {
 	aliveMS := TimeAliveMS(fight, player)
 	windows := DowntimeWindows(fight, table, aliveMS)
-	return aliveMS, append(windows, assignmentWindows(assignments, player, aliveMS)...)
+	return aliveMS, append(windows, AssignmentWindows(assignments, player, aliveMS)...)
 }
 
 // idleSpans walks the same per-second buckets as activeExcludingDowntime and joins every
@@ -129,7 +132,8 @@ func DowntimeWindows(fight summary.Summary, table *mechanics.Table, aliveMS int6
 	return clipWindows(out, aliveMS)
 }
 
-func assignmentWindows(assignments []Assignment, player string, aliveMS int64) []Window {
+// AssignmentWindows is player's officer assignment windows, clipped to [0, aliveMS).
+func AssignmentWindows(assignments []Assignment, player string, aliveMS int64) []Window {
 	var out []Window
 	for _, a := range assignments {
 		if a.PlayerKey != player {

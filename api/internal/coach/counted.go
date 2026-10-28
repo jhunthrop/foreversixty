@@ -8,24 +8,28 @@ import (
 )
 
 // Counted is the time a fight counts against a player (§6.1): alive, outside the
-// encounter's curated downtime, and from their first cast on.
+// encounter's curated downtime and the player's assignment windows (the windows
+// ratingengine.ActivityIdleMS subtracts), and from their first cast on.
 type Counted struct {
 	AliveMS     int64 // ratingengine.TimeAliveMS: to the first death, else the whole fight
 	CountedMS   int64 // AliveMS less every Excluded window
 	FirstCastMS int64 // the player's (or their pet's) first successful cast; 0 with no cast
-	// Excluded is the time set aside inside [0, AliveMS): the curated downtime and the
-	// time before the first cast, merged, in time order, never overlapping.
+	// Excluded is the time set aside inside [0, AliveMS): the curated downtime, the
+	// player's assignment windows and the time before the first cast, merged, in time
+	// order, never overlapping.
 	Excluded []ratingengine.Window
 }
 
 // CountedTime is the player's counted time: time alive (ratingengine.TimeAliveMS) less
-// curated downtime (ratingengine.DowntimeWindows) less the time before the first cast. A
+// curated downtime (ratingengine.DowntimeWindows) less the officer's assignment windows
+// for the player (ratingengine.AssignmentWindows) less the time before the first cast. A
 // player with no cast at all has no first cast to measure from, so nothing is set aside
 // for it.
 func CountedTime(in Input) Counted {
 	guid := in.Row.GUID
 	alive := ratingengine.TimeAliveMS(in.Fight, guid)
 	excluded := ratingengine.DowntimeWindows(in.Fight, in.Tables.Mechanics, alive)
+	excluded = append(excluded, ratingengine.AssignmentWindows(in.Tables.Assignments, guid, alive)...)
 	first := firstCastMS(in.Fight, guid)
 	if first > 0 {
 		excluded = append(excluded, ratingengine.Window{FromMS: 0, ToMS: min(first, alive)})
@@ -77,4 +81,15 @@ func mergeWindows(ws []ratingengine.Window) []ratingengine.Window {
 		out = append(out, w)
 	}
 	return out
+}
+
+// IdleTotalMS is the idle time F3 states: the sum of ratingengine.IdleWindows' windows,
+// whose first is the longest. It is the coach's one idle measure; the rating's
+// ActivityIdleMS may differ when no downtime or assignment window is in force.
+func IdleTotalMS(windows []ratingengine.Window) int64 {
+	var total int64
+	for _, w := range windows {
+		total += w.ToMS - w.FromMS
+	}
+	return total
 }

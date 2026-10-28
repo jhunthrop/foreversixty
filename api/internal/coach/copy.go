@@ -63,9 +63,11 @@ const (
 	DetailUptime         = "{Aura} was up for {n} s of {duration}."
 	DetailLowRank        = "Rank {next} is trainable at your level. Rank {r} was cast {n} times."
 
-	StrengthAlive  = "Alive the whole fight."
-	StrengthUptime = "{Aura} up {pct}% of the fight. Top {n}: {ref}%."
-	StrengthAtPull = "{Item} at the pull."
+	StrengthAlive     = "Alive the whole fight."
+	StrengthUptime    = "{Aura} up {pct}% of the fight. Top {n}: {ref}%."
+	StrengthUptimeOwn = "{Aura} up {pct}% of the fight."
+	StrengthStacks    = "{Aura} at {n} stacks from {t} to the end."
+	StrengthAtPull    = "{Item} at the pull."
 
 	LinkGapCap           = "The {Spell} gap at {gap} overlaps the {resource} cap at {cap}."
 	LinkOutOfManaDeath   = "You died while out of mana."
@@ -131,6 +133,8 @@ var verbatim = map[string]verbatimEntry{
 	"DetailLowRank":        {DetailLowRank, map[string]string{"next": "5", "r": "4", "n": "22"}},
 	"StrengthAlive":        {StrengthAlive, nil},
 	"StrengthUptime":       {StrengthUptime, map[string]string{"Aura": "Battle Shout", "pct": "100", "n": "25", "ref": "97"}},
+	"StrengthUptimeOwn":    {StrengthUptimeOwn, map[string]string{"Aura": "Inner Fire", "pct": "100"}},
+	"StrengthStacks":       {StrengthStacks, map[string]string{"Aura": "Sunder Armor", "n": "5", "t": "0:21"}},
 	"StrengthAtPull":       {StrengthAtPull, map[string]string{"Item": "Flask of Distilled Wisdom"}},
 	"LinkGapCap":           {LinkGapCap, map[string]string{"Spell": "Bloodthirst", "gap": "2:40–2:51", "resource": "rage", "cap": "2:41–2:50"}},
 	"LinkOutOfManaDeath":   {LinkOutOfManaDeath, nil},

@@ -104,4 +104,8 @@ func TestDowntimeWindowsAndTimeAliveAreExported(t *testing.T) {
 	if len(got) != 1 || got[0] != (Window{FromMS: 60000, ToMS: 62000}) {
 		t.Fatalf("DowntimeWindows = %+v, want one window clipped to the death", got)
 	}
+	marks := []Assignment{{PlayerKey: "p", FromMS: 50000, ToMS: 70000}, {PlayerKey: "q", FromMS: 0, ToMS: 1000}}
+	if got := AssignmentWindows(marks, "p", alive); len(got) != 1 || got[0] != (Window{FromMS: 50000, ToMS: 62000}) {
+		t.Fatalf("AssignmentWindows = %+v, want p's one window clipped to the death", got)
+	}
 }

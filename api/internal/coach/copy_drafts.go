@@ -9,14 +9,19 @@ var Drafts = map[string]string{
 	// F1: the detail when there is one counted gap.
 	"detail_core_one_gap": "{actual} of a possible {possible} with {resource} in your bar. Longest gap {gap1}.",
 
-	// F3 dead time.
-	"title_idle":           "Nothing cast for {n} seconds",
+	// F3 dead time, measured by ratingengine.IdleWindows: the title's {n} is the longest
+	// window in seconds, the detail's {n} the sum of every window (IdleTotalMS).
+	"title_idle":           "No damage or healing for {n} seconds",
 	"detail_idle":          "{n} s idle of your {counted} counted, longest at {spans}.",
 	"basis_idle_threshold": "From your log: dead time counts from 10 s and 5% of your counted time.",
 
 	// F4: a cap with no downtime to leave out, and mana that ran low to the end.
 	"detail_capped_no_downtime": "Your {resource} sat at its cap for {n} s, longest at {span}.",
 	"detail_out_of_mana_to_end": "Your mana stayed under 5% from {t} to the end, {n} s in all.",
+
+	// A pool whose median lacks the measurement (comparison): not a thin pool, so never
+	// ThinPool's line, which would be false.
+	"pool_lacks_measure": "Top {Spec} logs on {Boss} ({size}) don't record this yet.",
 
 	// F5: no level in the log.
 	"cannot_level": "Spell ranks: your log doesn't record your level.",

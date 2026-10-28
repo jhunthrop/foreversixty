@@ -7,9 +7,10 @@ import "strconv"
 // WorstActions), else none. The first that exists wins. The basis label is the prefix the
 // caller appends its value to (BasisTop, BasisSimLabel).
 //
-// thin is ThinPool filled with the real count when there is no pool and no usable sim;
-// "" when one answers. A pool whose median lacks this measurement is not a thin pool, so
-// it says nothing rather than claim too few logs.
+// thin is the "Couldn't check" line when nothing answers: ThinPool filled with the real
+// count when there is no pool, or, when a pool exists but its median lacks this
+// measurement, Drafts["pool_lacks_measure"] (never ThinPool, which would be false); ""
+// when one answers. Either way the caller makes no finding.
 func comparison(in Input, pool func(Profile) (float64, bool), sim func(SimRef) (float64, bool), simAllowed bool) (ref float64, b *Basis, thin string) {
 	if p := in.Refs.Pool; p != nil && pool != nil {
 		if v, ok := pool(p.Median); ok {
@@ -23,7 +24,7 @@ func comparison(in Input, pool func(Profile) (float64, bool), sim func(SimRef) (
 		}
 	}
 	if in.Refs.Pool != nil {
-		return 0, nil, ""
+		return 0, nil, Fill(Drafts["pool_lacks_measure"], topFields(in, in.Refs.Pool.N))
 	}
 	return 0, nil, Fill(ThinPool, topFields(in, in.Refs.PoolCount))
 }

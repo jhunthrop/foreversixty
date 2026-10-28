@@ -51,6 +51,55 @@ func TestCountedTime_LeavesOutCuratedDowntime(t *testing.T) {
 	}
 }
 
+// §6.1: the windows ActivityIdleMS subtracts include the officer's assignment windows; a
+// mark on another player sets nothing aside for this one.
+func TestCountedTime_LeavesOutAssignmentWindows(t *testing.T) {
+	in := countedFury(t)
+	in.Tables.Assignments = []ratingengine.Assignment{
+		{PlayerKey: furyGUID, Job: "decurse", FromMS: 30_000, ToMS: 40_000},
+		{PlayerKey: priestGUID, Job: "dispel", FromMS: 10_000, ToMS: 20_000},
+	}
+	got := CountedTime(in)
+	if got.CountedMS != 60_000-4_000-10_000 {
+		t.Fatalf("CountedMS = %d, want 46000 (60 s less [0, 4 s) and the mark's [30 s, 40 s))", got.CountedMS)
+	}
+	want := []ratingengine.Window{{FromMS: 0, ToMS: 4_000}, {FromMS: 30_000, ToMS: 40_000}}
+	if len(got.Excluded) != 2 || got.Excluded[0] != want[0] || got.Excluded[1] != want[1] {
+		t.Fatalf("Excluded = %+v, want %+v", got.Excluded, want)
+	}
+}
+
+// Ruling B1: F3's one measure is IdleWindows. The total it states is IdleTotalMS, the sum
+// of the windows, and the title's longest window is the first. With no downtime or
+// assignment window the rating's ActivityIdleMS (alive less the roster's ActiveMS) is a
+// different figure, which F3 never states.
+func TestIdleTotalMS_IsTheSumOfIdleWindows(t *testing.T) {
+	in := countedFury(t)
+	series := repeat(100, 60)
+	for _, sec := range []int{10, 11, 12, 30, 31, 32, 33, 34} { // idle 0:10–0:13 and 0:30–0:35
+		series[sec] = 0
+	}
+	in.Fight.DamageDone = []summary.Actor{{GUID: furyGUID, Series: series}}
+	in.Fight.Healing = nil // the golden's own heals by the warrior would mark seconds active
+	in.Fight = mapRosterRow(in.Fight, furyGUID, func(r summary.RosterRow) summary.RosterRow { r.ActiveMS = 58_000; return r })
+	windows := ratingengine.IdleWindows(in.Fight, furyGUID, nil, nil)
+	if len(windows) != 2 || windows[0] != (ratingengine.Window{FromMS: 30_000, ToMS: 35_000}) {
+		t.Fatalf("IdleWindows = %+v, want the 5 s window first", windows)
+	}
+	if got := IdleTotalMS(windows); got != 8_000 {
+		t.Fatalf("IdleTotalMS = %d, want 8000 (5 s + 3 s)", got)
+	}
+	if rating := ratingengine.ActivityIdleMS(in.Fight, furyGUID, nil, nil); rating != 2_000 {
+		t.Fatalf("ActivityIdleMS = %d, want the rating's own 2000 (60 s less ActiveMS 58 s)", rating)
+	}
+	// With an assignment window in force the two measures agree.
+	marks := []ratingengine.Assignment{{PlayerKey: furyGUID, FromMS: 50_000, ToMS: 52_000}}
+	w := ratingengine.IdleWindows(in.Fight, furyGUID, nil, marks)
+	if got, rating := IdleTotalMS(w), ratingengine.ActivityIdleMS(in.Fight, furyGUID, nil, marks); got != rating || got != 8_000 {
+		t.Fatalf("with a window in force IdleTotalMS %d and ActivityIdleMS %d, want both 8000", got, rating)
+	}
+}
+
 func TestCountedTime_PetCastsCountAsTheOwners(t *testing.T) {
 	in := countedFury(t)
 	in.Fight.Casts = append(in.Fight.Casts, summary.CastRow{GUID: "Pet-0-1", OwnerGUID: furyGUID, SpellID: 1, Succeeded: 1, Sequence: []int64{1_000}})
