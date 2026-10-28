@@ -41,6 +41,7 @@ func TestPackStore_RoundTrip(t *testing.T) {
 
 func TestPackFor_CachedByVersion(t *testing.T) {
 	f := newT30(t)
+	f.seedFullPool(t) // a thin-pool pack is never cached
 	ctx := context.Background()
 	first, err := f.svc.PackFor(ctx, f.rep(t), t30Fight, f.furyKey)
 	if err != nil || first.Status != StatusReady || first.Version == "" || len(first.Findings) == 0 {

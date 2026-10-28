@@ -125,7 +125,9 @@ func (s *Service) cachedPack(ctx context.Context, reportID string, entry reports
 	return loaded{pack: p, tables: tables}, true, nil
 }
 
-// buildPack reviews the player's row of sum and caches the pack unless it is preparing.
+// buildPack reviews the player's row of sum and caches the pack unless it is preparing or
+// its comparison pool is below the floor ("not enough logs yet"): that pack is served but
+// rebuilt on the next view, so it picks up the top-logs basis once the pool fills.
 func (s *Service) buildPack(ctx context.Context, rep reports.Report, entry reports.FightEntry, sum summary.Summary, playerKey string) (loaded, error) {
 	row, ok := rosterRow(rep, sum, playerKey)
 	if !ok {
@@ -143,12 +145,17 @@ func (s *Service) buildPack(ctx context.Context, rep reports.Report, entry repor
 	}
 	p := Review(in)
 	p.Version = version
-	if p.Status != StatusPreparing {
+	if p.Status != StatusPreparing && !thinPool(in) {
 		if err := s.Store.SavePack(ctx, rep.ID, entry.Index, playerKey, p); err != nil {
 			return loaded{}, err
 		}
 	}
 	return loaded{pack: p, tables: tables}, nil
+}
+
+// thinPool reports a reviewable pull whose comparison pool is below PoolMinPlayers.
+func thinPool(in Input) bool {
+	return notReviewable(in) == "" && in.Refs.Pool == nil
 }
 
 func (s *Service) refs(ctx context.Context, in Input, playerKey string, fought time.Time) (Refs, error) {
