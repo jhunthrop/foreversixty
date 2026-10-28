@@ -437,7 +437,7 @@ No state on these paths ends on a page without a next step. The one wait we cann
 ## 8. API this spec needs
 
 `GET /v1/me`, per `guilds[]` entry. These keys are new. The web treats an older response as unknown, and draws a card with only the identity rows and `Open the guild`.
-- `realm` (display string), `crest_url` (string or null), `faction` (`alliance`, `horde` or null), `roster_count` (the home's `counts.on_roster + counts.in_game_no_account`; null without a snapshot).
+- `ruleset_label` (the ruleset word: Normal, PvP, Hardcore — shipped in place of the `realm` the first draft named; the web renders `{ruleset} · {REGION}`), `slug` (the guild page's URL slug, sent raw; the web escapes it), `crest_url` (string or null), `faction` (`alliance`, `horde` or null), `roster_count` (the home's `counts.on_roster + counts.in_game_no_account`; null without a snapshot).
 - `claim`: `{ state: 'unclaimed'|'pending'|'claimed'|'contested', yours: boolean, pending_yours: boolean, holder_name: string|null }`. `holder_name` is the claim holder's or pending claimant's character in the guild, sent only to a verified officer of the guild; null otherwise.
 - `verify`: `{ has_approver: boolean }`, true when the guild has at least one verified officer or leader.
 - `covered`: null, or `{ tier, state: 'trial'|'active'|'ending'|'past_due'|'lapsed', ends_at: string|null, billed_by: string, you_pay: boolean, you_hold_seat: boolean, seats_given: number, seats_total: number }`, for any account with a character in the guild. `billed_by` is empty for a grant, and for a viewer with no verified character there. `lapsed` stays for 90 days after the end. This is separate from today's officer-only `plan`, which keeps its shape.

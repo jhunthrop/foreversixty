@@ -6,7 +6,7 @@
 
 **Architecture:**
 - **One step rule in Go.** `guilds.SubscribeStep(StepFacts) StepResult`, beside `guilds.Capabilities`, resolves the 13 `step` values first-match in §8 order from the predicates `billing.checkGuildCheckout` and `guilds.Claim` already use. The web never derives a step from a rank.
-- **One standing read per guild.** `auth.Service` gains a `Standing GuildStandingSource` (an interface in `auth`, like `Seats SeatFactsSource`). `guilds.Store.GuildStanding` implements it (guilds already imports auth) and fills `realm`, `crest_url`, `faction`, `roster_count`, `claim`, `verify`, `covered` and `subscribe` on each `/v1/me` `guilds[]` entry. Billing facts reach it through a small interface that `billing.Store` satisfies, wired in `cmd/api`.
+- **One standing read per guild.** `auth.Service` gains a `Standing GuildStandingSource` (an interface in `auth`, like `Seats SeatFactsSource`). `guilds.Store.GuildStanding` implements it (guilds already imports auth) and fills `ruleset_label`, `slug`, `crest_url`, `faction`, `roster_count`, `claim`, `verify`, `covered` and `subscribe` on each `/v1/me` `guilds[]` entry. Billing facts reach it through a small interface that `billing.Store` satisfies, wired in `cmd/api`.
 - **`/v1/me` entitlements** gain `billing.source` and `personal_portal`; the personal checkout 409 gains `fields.source`; the guild home `viewer` gains `verify.has_approver`; the Discord bot's plan links move to the checkout guild step.
 - **Web.** `premiumSource(me)` in `plan-line.ts` is the one source rule for the account panel, the checkout "already have it" panel and the `/premium` stored hint. The checkout guild step is rebuilt inside the existing single island (`CheckoutLauncher`). `CopyLinkField` is extracted from `GuildInviteLink`. The claim page, guild page, settings `#billing`, account guild rows and invite joined state gain their hand-off lines.
 
@@ -85,7 +85,7 @@
   - `TestGuildStanding_IdentityFacts`: a guild with a crest, faction `horde`, a snapshot of 30 on the roster and 8 in game without an account answers `Realm` (display string), a `CrestURL` with `?v=`, `Faction` `horde`, `RosterCount` 38.
   - `TestGuildStanding_NoSnapshotNoCrest`: `RosterCount` nil, `CrestURL` nil, `Faction` nil when unknown.
   - `TestGuildStanding_OneQueryForManyGuilds`: three ids answer three entries.
-  - `TestMe_GuildsCarryIdentity` (auth handler test with a fake `Standing`): the JSON has `realm`, `crest_url`, `faction`, `roster_count`; with `Standing` nil, `/v1/me` answers 200 without them.
+  - `TestMe_GuildsCarryIdentity` (auth handler test with a fake `Standing`): the JSON has `ruleset_label`, `slug`, `crest_url`, `faction`, `roster_count`; with `Standing` nil, `/v1/me` answers 200 without them.
 - [ ] **Step 2: Run to fail.** `cd api && TEST_DATABASE_URL=…/subjoin_t1… go test -p 1 ./internal/guilds/ ./internal/auth/ -run 'GuildStanding_Identity|NoSnapshotNoCrest|OneQueryForManyGuilds|GuildsCarryIdentity'`. Expected: FAIL.
 - [ ] **Step 3: Implement.** Wire `Standing: guildStore` in `cmd/api/main.go`.
 - [ ] **Step 4: Run to pass**, then `go build ./... && go test -p 1 ./internal/auth/ ./internal/guilds/`.
