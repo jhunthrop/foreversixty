@@ -128,6 +128,9 @@ function anchor(raw: Raw): CoachAnchor | null {
     ...(to === undefined ? {} : { to_ms: to }),
     ...(typeof raw.death === 'string' && raw.death !== '' ? { death: raw.death } : {}),
     ...(raw.debuff === true ? { debuff: true } : {}),
+    ...(typeof raw.target_guid === 'string' && raw.target_guid !== ''
+      ? { target_guid: raw.target_guid }
+      : {}),
   };
 }
 

@@ -46,6 +46,19 @@ describe('normalizeFightCoach', () => {
     expect(got).toMatchObject({ anchors: { a: { kind: 'aura', spell_id: 3, debuff: true } } });
     expect(Object.keys((got as { anchors: object }).anchors)).toEqual(['a']);
   });
+
+  it("keeps a debuff anchor's NPC target", () => {
+    const boss = 'Creature-0-1-1084-1-10184-0000000001';
+    const got = normalizeFightCoach({
+      access: 'full',
+      anchors: {
+        a: { kind: 'aura', spell_id: 3, debuff: true, target_guid: boss },
+        b: { kind: 'aura', spell_id: 4, target_guid: '' },
+      },
+    });
+    expect(got).toMatchObject({ anchors: { a: { target_guid: boss } } });
+    expect((got as { anchors: Record<string, object> }).anchors.b).not.toHaveProperty('target_guid');
+  });
 });
 
 describe('normalizeRecent and normalizeHistory', () => {

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
 // uptimeKindsByRole is the aura kinds F2 judges for a role (§6.2).
@@ -83,6 +84,9 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 	if track != nil {
 		up, den, ok = measureUptime(*track, c)
 		anchor.SpellID = track.SpellID
+		if track.TargetGUID != in.Row.GUID && npcGUID(track.TargetGUID) {
+			anchor.TargetGUID = track.TargetGUID // a debuff's row is the NPC's
+		}
 	} else {
 		// No aura row exists to open, so the finding points at the time it counts.
 		at, to := c.FirstCastMS, c.AliveMS
@@ -109,6 +113,15 @@ func appliedByOthers(in Input, rule AuraRule) bool {
 		return false
 	}
 	return longestTrack(in, rule.IDs(), func(*summary.AuraTrack) bool { return true }) != nil
+}
+
+// npcGUID reports a GUID that names an NPC (a creature or vehicle), never a player or a pet.
+func npcGUID(guid string) bool {
+	switch units.Parse(guid).Kind {
+	case units.KindCreature, units.KindVehicle:
+		return true
+	}
+	return false
 }
 
 func addUptimeCannot(o *outcome, line string) {

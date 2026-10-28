@@ -68,7 +68,14 @@ export function coachAnchorHref(
     withState(defaultState(firstFight), { fight: fightIndex, ...patch }),
     firstFight,
   );
-  return anchor.kind === 'aura' && anchor.debuff !== true
-    ? `${search}#aura-${playerGuid}-${anchor.spell_id}`
-    : search;
+  return anchor.kind === 'aura' ? `${search}${auraFragment(playerGuid, anchor)}` : search;
+}
+
+/**
+ * AuraTable keys a row `aura-<target>-<spell>`: a buff's target is the player, a debuff's is the
+ * NPC the API names in `target_guid`. A debuff with no target opens the tab without a fragment.
+ */
+function auraFragment(playerGuid: string, anchor: CoachAnchor): string {
+  if (anchor.debuff !== true) return `#aura-${playerGuid}-${anchor.spell_id}`;
+  return anchor.target_guid === undefined ? '' : `#aura-${anchor.target_guid}-${anchor.spell_id}`;
 }

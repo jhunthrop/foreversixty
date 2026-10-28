@@ -322,3 +322,36 @@ func TestUptime_NeverAppliedUnlistedAuraIsSkipped(t *testing.T) {
 		t.Fatalf("finding %+v, text %q", o.Finding, textOf(o))
 	}
 }
+
+// A debuff aura anchor carries its NPC target, the key of the report's aura row, and opens
+// the Debuffs tab even for a tank's defensive on the boss; a self-buff carries none (D2).
+func TestUptime_DebuffAnchorsCarryTheirNPCTarget(t *testing.T) {
+	for name, in := range map[string]Input{
+		"dot":                furyRendLow(t, poolUptime(f2RendID, 80, 25)),
+		"defensive on boss":  protThunderClap(t, f2FightMS*2/5, poolDefensive(f2ThunderClapID, 90, 25)),
+		"self-buff":          furyBattleShout(t, 0.2, poolUptime(f2BattleShoutID, 99, 25)),
+		"debuff on a player": withDebuffOnPlayer(t),
+	} {
+		o := uptime(in, CountedTime(in))
+		if o.Finding == nil || len(o.Anchors) == 0 {
+			t.Fatalf("%s: %+v", name, o)
+		}
+		a := o.Anchors[0]
+		a.ID = "a1"
+		dto := anchorsOf(Pack{Anchors: []Anchor{a}}, SpecRules{})["a1"]
+		wantTarget := map[string]string{"dot": f2BossGUID, "defensive on boss": f2BossGUID}[name]
+		if a.TargetGUID != wantTarget || dto.TargetGUID != wantTarget || dto.Debuff != (wantTarget != "") {
+			t.Errorf("%s: anchor %+v dto %+v, want target %q", name, a, dto, wantTarget)
+		}
+	}
+}
+
+// withDebuffOnPlayer is the Fury warrior whose Rend sits on another player (a duel's
+// shape): a player's GUID never leaves in an anchor.
+func withDebuffOnPlayer(t *testing.T) Input {
+	t.Helper()
+	in := f2Steady(furyInput(t))
+	in.Tables.Rules.Auras = []AuraRule{{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified}}
+	in.Fight = withAura(in.Fight, f2SecondaryGUID, f2RendID, f2RendName, []string{furyGUID}, f2Segments(f2FightMS/5)...)
+	return withPool(in, poolUptime(f2RendID, 80, 25))
+}

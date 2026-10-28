@@ -123,13 +123,16 @@ const (
 
 // Anchor maps an id to a report-page target: a Casts row, an aura row, a death, the
 // resource graph or a time. A death is its time alone: the page rebuilds the Deaths
-// tab's `death-<guid>-<at_ms>` from the player it shows, so the pack carries no GUID.
+// tab's `death-<guid>-<at_ms>` from the player it shows, so the pack carries no player
+// GUID. A debuff aura anchor carries its NPC target's GUID (never a player's or a pet's):
+// the report's aura rows are keyed by target, and an NPC's GUID is not personal data.
 type Anchor struct {
-	ID      string     `json:"id"`
-	Kind    AnchorKind `json:"kind"`
-	SpellID int64      `json:"spell_id,omitempty"`
-	AtMS    *int64     `json:"at_ms,omitempty"`
-	ToMS    *int64     `json:"to_ms,omitempty"`
+	ID         string     `json:"id"`
+	Kind       AnchorKind `json:"kind"`
+	SpellID    int64      `json:"spell_id,omitempty"`
+	AtMS       *int64     `json:"at_ms,omitempty"`
+	ToMS       *int64     `json:"to_ms,omitempty"`
+	TargetGUID string     `json:"target_guid,omitempty"`
 }
 
 // Context is the fight as the model may see it: no character name, account, guild or

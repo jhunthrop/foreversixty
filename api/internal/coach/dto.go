@@ -88,11 +88,12 @@ type linkDTO struct {
 }
 
 type anchorDTO struct {
-	Kind    AnchorKind `json:"kind"`
-	SpellID int64      `json:"spell_id,omitempty"`
-	AtMS    *int64     `json:"at_ms,omitempty"`
-	ToMS    *int64     `json:"to_ms,omitempty"`
-	Debuff  bool       `json:"debuff,omitempty"`
+	Kind       AnchorKind `json:"kind"`
+	SpellID    int64      `json:"spell_id,omitempty"`
+	AtMS       *int64     `json:"at_ms,omitempty"`
+	ToMS       *int64     `json:"to_ms,omitempty"`
+	Debuff     bool       `json:"debuff,omitempty"`
+	TargetGUID string     `json:"target_guid,omitempty"`
 }
 
 // served is what one answer carries beside the pack: the review, where it came from and
@@ -193,13 +194,14 @@ func linksDTO(p Pack, ids []string) []linkDTO {
 	return out
 }
 
-// anchorsOf keys the pack's anchors by id. An aura anchor whose spell is one of the rule
-// file's DoTs or debuffs opens the Debuffs tab (debuff: true).
+// anchorsOf keys the pack's anchors by id. An aura anchor on an NPC target (target_guid,
+// which the page's `aura-<target>-<spell>` row is keyed by), or whose spell is one of the
+// rule file's DoTs or debuffs, opens the Debuffs tab (debuff: true).
 func anchorsOf(p Pack, rules SpecRules) map[string]anchorDTO {
 	out := make(map[string]anchorDTO, len(p.Anchors))
 	for _, a := range p.Anchors {
-		out[a.ID] = anchorDTO{Kind: a.Kind, SpellID: a.SpellID, AtMS: a.AtMS, ToMS: a.ToMS,
-			Debuff: a.Kind == AnchorAura && debuffAura(rules, a.SpellID)}
+		out[a.ID] = anchorDTO{Kind: a.Kind, SpellID: a.SpellID, AtMS: a.AtMS, ToMS: a.ToMS, TargetGUID: a.TargetGUID,
+			Debuff: a.Kind == AnchorAura && (a.TargetGUID != "" || debuffAura(rules, a.SpellID))}
 	}
 	return out
 }

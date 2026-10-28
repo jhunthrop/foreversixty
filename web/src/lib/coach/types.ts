@@ -33,6 +33,8 @@ export interface CoachAnchor {
   readonly death?: string;
   /** Sent by the API when an aura anchor is a debuff; absent means the Buffs tab. */
   readonly debuff?: boolean;
+  /** A debuff aura anchor's NPC target (never a player): the AuraTable row's key. */
+  readonly target_guid?: string;
 }
 
 /** A computed link between two findings, as the rule-only rendering carries it. */

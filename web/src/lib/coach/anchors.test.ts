@@ -23,6 +23,16 @@ describe('coachAnchorHref', () => {
     expect(href).toBe(search({ fight: 3, tab: 'debuffs', source: 'Player-1' }));
     expect(href).not.toContain('#');
   });
+  it('a debuff aura with its NPC target scrolls to the AuraTable row keyed by that target', () => {
+    const boss = 'Creature-0-1-1084-1-10184-0000000001';
+    const href = coachAnchorHref(3, 1, 'Player-1', {
+      kind: 'aura',
+      spell_id: 9,
+      debuff: true,
+      target_guid: boss,
+    });
+    expect(href).toBe(`${search({ fight: 3, tab: 'debuffs', source: 'Player-1' })}#aura-${boss}-9`);
+  });
   it('buffs opens the player Buffs tab', () =>
     expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'buffs' })).toBe(
       search({ fight: 3, tab: 'buffs', source: 'Player-1' }),
