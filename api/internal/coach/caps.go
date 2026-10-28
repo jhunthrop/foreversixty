@@ -58,6 +58,8 @@ func NewCaps(cfg config.CoachConfig, pool *pgxpool.Pool, now func() time.Time) (
 
 const spendSQL = `select coalesce((select usd::float8 from llm_spend where day = $1), 0)`
 
+const generationsSQL = `select coalesce((select generations from coach_account_day where day = $1 and user_id = $2), 0)`
+
 // admitSQL reserves one slot in a single statement: a first generation inserts
 // the row, later ones increment it only while below the cap, and the row lock
 // of the conflicting update serialises concurrent callers. No row returned
@@ -86,6 +88,44 @@ func (c *Caps) Admit(ctx context.Context, accountID int64) (Refusal, error) {
 		return RefusalSwitchOff, nil
 	}
 	day := c.today()
+	if refusal, err := c.dayRefusal(ctx, day); refusal != RefusalNone || err != nil {
+		return refusal, err
+	}
+	var generations int
+	err := c.DB.QueryRow(ctx, admitSQL, day, accountID, c.PerAccount).Scan(&generations)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return RefusalAccountCap, nil
+	}
+	if err != nil {
+		return RefusalError, fmt.Errorf("coach: reserve a generation: %w", err)
+	}
+	return RefusalNone, nil
+}
+
+// Peek answers what Admit would for accountID now without counting anything: the switch,
+// today's spend, then the account's generations so far. The fight route uses it to decide
+// between queueing a generation and the busy answer (§15.4); the job's Admit still counts.
+func (c *Caps) Peek(ctx context.Context, accountID int64) (Refusal, error) {
+	if !c.Enabled {
+		return RefusalSwitchOff, nil
+	}
+	day := c.today()
+	if refusal, err := c.dayRefusal(ctx, day); refusal != RefusalNone || err != nil {
+		return refusal, err
+	}
+	var generations int
+	if err := c.DB.QueryRow(ctx, generationsSQL, day, accountID).Scan(&generations); err != nil {
+		return RefusalError, fmt.Errorf("coach: read the account's generations: %w", err)
+	}
+	if generations >= c.PerAccount {
+		return RefusalAccountCap, nil
+	}
+	return RefusalNone, nil
+}
+
+// dayRefusal is the refusal that holds for every account today: the spend cap, or a
+// per-account cap below one.
+func (c *Caps) dayRefusal(ctx context.Context, day time.Time) (Refusal, error) {
 	var spent float64
 	if err := c.DB.QueryRow(ctx, spendSQL, day).Scan(&spent); err != nil {
 		return RefusalError, fmt.Errorf("coach: read today's spend: %w", err)
@@ -95,14 +135,6 @@ func (c *Caps) Admit(ctx context.Context, accountID int64) (Refusal, error) {
 	}
 	if c.PerAccount < 1 {
 		return RefusalAccountCap, nil
-	}
-	var generations int
-	err := c.DB.QueryRow(ctx, admitSQL, day, accountID, c.PerAccount).Scan(&generations)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return RefusalAccountCap, nil
-	}
-	if err != nil {
-		return RefusalError, fmt.Errorf("coach: reserve a generation: %w", err)
 	}
 	return RefusalNone, nil
 }
