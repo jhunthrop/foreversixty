@@ -394,16 +394,50 @@ func isDrillCode(id string) bool {
 }
 
 // checkProse enforces §8.2 on the body: no digits outside Drills, no exclamation mark,
-// and no banned tone word except in the Voice section's rule lines.
+// and no banned tone word except in the Voice section's rule lines. The tone check reads
+// each paragraph as one run too, so a phrase split across a line break is still caught.
 func checkProse(sections map[string]section) error {
 	for _, name := range personaSections {
-		for _, l := range sections[name].lines {
+		lines := sections[name].lines
+		for _, l := range lines {
 			if err := checkProseLine(name, l); err != nil {
 				return err
 			}
 		}
+		for _, p := range tonedParagraphs(name, lines) {
+			if bad := toneProblems(p.text); len(bad) > 0 {
+				return personaErr(p.n, "banned tone %q in section %q", bad, name)
+			}
+		}
 	}
 	return nil
+}
+
+// tonedParagraphs joins each run of consecutive non-blank lines into one line (numbered by
+// its first line), leaving out the Voice section's rule lines, which may name a rule.
+func tonedParagraphs(name string, lines []numberedLine) []numberedLine {
+	var out []numberedLine
+	var cur []string
+	first := 0
+	flush := func() {
+		if len(cur) > 0 {
+			out = append(out, numberedLine{n: first, text: strings.Join(cur, " ")})
+			cur = nil
+		}
+	}
+	for _, l := range lines {
+		text := strings.TrimSpace(l.text)
+		if text == "" || isVoiceRule(name, l) {
+			flush()
+			continue
+		}
+		if len(cur) == 0 {
+			first = l.n
+		}
+		cur = append(cur, text)
+	}
+	flush()
+	return out
 }
 
 func checkProseLine(name string, l numberedLine) error {
@@ -413,11 +447,16 @@ func checkProseLine(name string, l numberedLine) error {
 	if name != sectionDrills && strings.IndexFunc(l.text, unicode.IsDigit) >= 0 {
 		return personaErr(l.n, "digit in section %q; prose quotes no numbers", name)
 	}
-	if name == sectionVoice && strings.HasPrefix(l.text, bulletPrefix) {
+	if isVoiceRule(name, l) {
 		return nil
 	}
 	if bad := toneProblems(l.text); len(bad) > 0 {
 		return personaErr(l.n, "banned tone %q in section %q", bad, name)
 	}
 	return nil
+}
+
+// isVoiceRule reports a Voice section bullet, which may name a rule in its own words.
+func isVoiceRule(name string, l numberedLine) bool {
+	return name == sectionVoice && strings.HasPrefix(l.text, bulletPrefix)
 }

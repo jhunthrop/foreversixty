@@ -217,3 +217,14 @@ func TestPersonas_CachesBySpecAndReturnsCopies(t *testing.T) {
 		t.Fatal("missing spec accepted")
 	}
 }
+
+func TestParsePersona_BannedPhraseSplitAcrossLinesIsCaught(t *testing.T) {
+	bad := insertAfter("## Voice", "Just heal\nmore.")(fixture(t))
+	if _, err := ParsePersona([]byte(bad)); err == nil || !strings.Contains(err.Error(), "heal") {
+		t.Fatalf("a phrase split across a line break passed: %v", err)
+	}
+	ok := insertAfter("## Voice", "- Never tell a healer to heal more.")(fixture(t))
+	if _, err := ParsePersona([]byte(ok)); err != nil {
+		t.Fatalf("a Voice rule line is still exempt: %v", err)
+	}
+}
