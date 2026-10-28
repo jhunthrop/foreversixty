@@ -1,6 +1,7 @@
 package coach
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
 )
 
 // sampleItem is one sampled review as the moderator reads it.
@@ -84,5 +86,26 @@ func daySamples(r *http.Request, pool *pgxpool.Pool, day time.Time) ([]sampleIte
 		}
 		items = append(items, s)
 	}
-	return items, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return withoutAnonymised(r.Context(), pool, items)
+}
+
+// withoutAnonymised blanks the name and review of each sample whose character's account
+// asked to be anonymous (rating.CharacterAnonymized, the one anonymize rule): moderators
+// never see that character's row anywhere else either (AccessFor).
+func withoutAnonymised(ctx context.Context, pool *pgxpool.Pool, items []sampleItem) ([]sampleItem, error) {
+	out := make([]sampleItem, 0, len(items))
+	for _, s := range items {
+		anon, err := rating.CharacterAnonymized(ctx, pool, s.PlayerKey)
+		if err != nil {
+			return nil, err
+		}
+		if anon {
+			s.CharacterName, s.Review = "", json.RawMessage("null")
+		}
+		out = append(out, s)
+	}
+	return out, nil
 }
