@@ -23,8 +23,10 @@ func quoteAll(words []string) []string {
 }
 
 // claimRE is a claim about a guild, a ranking or a first: the coach never makes one, so
-// no real player or group can be named by implication (§8.2, §9.3).
-var claimRE = regexp.MustCompile(`(?i)\b(guilds?|ranked|ranking|rank\s+\d+|world\s+first|server\s+first|parses?|top\s+(?:player|parser|guild)s?)\b`)
+// no real player or group can be named by implication (§8.2, §9.3). A ranking claim is
+// "ranked", "ranking", "rank #N", "top N%" or "parse"; the pack's own spell-rank wording
+// ("Rank 4") is not one.
+var claimRE = regexp.MustCompile(`(?i)\b(?:guilds?|ranked|ranking|rank\s*#\s*\d+|world\s+first|server\s+first|parses?|top\s+(?:player|parser|guild)s?)\b|\btop\s+\d+(?:\.\d+)?\s*%`)
 
 const exclamation = "!"
 
