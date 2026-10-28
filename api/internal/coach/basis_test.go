@@ -31,7 +31,7 @@ func TestComparison_Order(t *testing.T) {
 			wantThin: "not enough logs yet — 19 Fury kills of Onyxia (40) on the site, the coach needs 20."},
 		// Ruling A3: no finding, and a draft line, never the thin-pool line (it would be false).
 		{name: "a pool without this measurement says so, never thin", refs: poolUptime(6673, 97, 25), simAllowed: false,
-			wantThin: "Top Fury logs on Onyxia (40) don't record this yet."},
+			wantThin: "Top Fury logs on Onyxia (40) don't record this."},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

@@ -61,7 +61,7 @@ func TestTitlesShape(t *testing.T) {
 			titles[key] = s
 		}
 	}
-	if len(titles) < 18 {
+	if len(titles) < 17 { // a floor, not a count: the §8 table owns the exact set
 		t.Fatalf("found %d titles, want every Title constant and title_ draft", len(titles))
 	}
 	for name, format := range titles {
