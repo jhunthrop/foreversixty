@@ -41,7 +41,11 @@
     type PayBusy,
   } from '../../lib/billing/card-checkout';
   import { checkoutGuildCopy as copy, type GuildTier } from '../../lib/billing/checkout-guild-copy';
-  import { GUILD_CARD_MIN, GUILD_LEAD_RESERVE } from '../../lib/billing/checkout-layout';
+  import {
+    GUILD_LEAD_RESERVE,
+    GUILD_SKELETON_CARD,
+    releaseGuildFrameReserve,
+  } from '../../lib/billing/checkout-layout';
   import { priceFor } from '../../lib/billing/plan-costs';
   import { formatPrice, type Interval } from '../../lib/billing/plans';
   import { leadSentence, orderGuildCards, type StepGuild } from '../../lib/billing/subscribe-step';
@@ -119,6 +123,14 @@
   );
   const showsPremiumLine = $derived(me !== null && premiumSource(me, new Date()) === 'none');
   const premiumPrice = $derived(formatPrice(priceFor('premium', interval, founder), interval));
+
+  /** The skeleton shows: /v1/me is in flight, or the rows wait for their crests. */
+  const loading = $derived(!failed && (me === null || (empty === null && !crestsReady)));
+
+  // Spec §7 (G2): the page's pre-paint height reserve holds only while the skeleton shows.
+  $effect(() => {
+    if (!loading) releaseGuildFrameReserve(document.documentElement);
+  });
 
   $effect(() => {
     if (me === null || failed || crestsReady) return;
@@ -287,12 +299,12 @@
   <div class="measure-wide flex flex-col">
     {#if failed}
       <LoadError message={copy.loadError.title} {onRetry} testid="checkout-guild-error" />
-    {:else if me === null || (empty === null && !crestsReady)}
+    {:else if loading}
       <p class={`m-0 mb-4 ${GUILD_LEAD_RESERVE}`} aria-hidden="true"></p>
       <ul class="m-0 flex list-none flex-col gap-3 p-0" aria-busy="true" data-testid="checkout-guild-loading">
         <li class="sr-only" role="status">{copy.loading}</li>
         {#each Array.from({ length: skeletonCards }, (_, index) => index) as index (index)}
-          <li class={`skeleton-block rounded-panel ${GUILD_CARD_MIN}`} aria-hidden="true"></li>
+          <li class={`skeleton-block rounded-panel ${GUILD_SKELETON_CARD}`} aria-hidden="true"></li>
         {/each}
       </ul>
     {:else if empty !== null}

@@ -11,7 +11,6 @@
   import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
   import { guildFacts, youRow } from '../../lib/billing/guild-card-model';
   import { guildMarkSrc } from '../../lib/guild/mark';
-  import { GUILD_CARD_MIN } from '../../lib/billing/checkout-layout';
   import { CARD } from '../../lib/ui/card';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
@@ -45,7 +44,7 @@
 <li
   id={`guild-${guild.id}`}
   aria-labelledby={nameId}
-  class={`${CARD} ${GUILD_CARD_MIN} grid scroll-mt-24 grid-cols-1 items-start gap-[14px] p-4 md:grid-cols-[minmax(0,1fr)_320px] md:gap-6 md:p-5`}
+  class={`${CARD} grid scroll-mt-24 grid-cols-1 items-start gap-[14px] p-4 md:grid-cols-[minmax(0,1fr)_320px] md:gap-6 md:p-5`}
   data-testid="checkout-guild-card"
 >
   <div class="flex min-w-0 flex-col">

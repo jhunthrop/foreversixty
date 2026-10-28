@@ -5,9 +5,12 @@ import {
   CHECKOUT_BAND_RESERVE,
   CHECKOUT_BODY_RESERVE,
   CHECKOUT_FRAME_PX,
-  GUILD_CARD_MIN,
+  GUILD_CARDS_PROPERTY,
+  GUILD_LOADING_ATTRIBUTE,
+  GUILD_SKELETON_CARD,
   GUILD_LEAD_RESERVE,
   guildFrameReserve,
+  releaseGuildFrameReserve,
 } from './checkout-layout';
 
 describe('checkout layout reserves', () => {
@@ -23,8 +26,8 @@ describe('checkout layout reserves', () => {
     expect(GUILD_LEAD_RESERVE).toBe('min-h-[63px] md:min-h-[42px]');
   });
 
-  it('a card and its skeleton hold the ask_leader card: 532 px phone, 376 px from 768', () => {
-    expect(GUILD_CARD_MIN).toBe('min-h-[532px] md:min-h-[376px]');
+  it('the skeleton card is the ready height: 260 px phone, 156 px from 768', () => {
+    expect(GUILD_SKELETON_CARD).toBe('h-[260px] md:h-[156px]');
   });
 });
 
@@ -36,20 +39,34 @@ describe('the pixel table matches the classes', () => {
       `min-h-[${px.band.phone}px] md:min-h-[${px.band.md}px] lg:min-h-[${px.band.lg}px]`,
     );
     expect(GUILD_LEAD_RESERVE).toBe(`min-h-[${px.lead.phone}px] md:min-h-[${px.lead.md}px]`);
-    expect(GUILD_CARD_MIN).toBe(`min-h-[${px.card.phone}px] md:min-h-[${px.card.md}px]`);
+    expect(GUILD_SKELETON_CARD).toBe(`h-[${px.card.phone}px] md:h-[${px.card.md}px]`);
   });
 });
 
 describe('guildFrameReserve', () => {
-  it('phone: band 156 + 20 + lead 63 + 16 + foot 63 + 64 - 12, then 532 + 12 a card', () => {
-    expect(guildFrameReserve('phone')).toEqual({ fixedPx: 370, perCardPx: 544 });
+  it('phone: band 156 + 20 + lead 63 + 16 + foot 63 + 64 - 12, then 260 + 12 a card', () => {
+    expect(guildFrameReserve('phone')).toEqual({ fixedPx: 370, perCardPx: 272 });
   });
 
-  it('md: band 190 + 32 + lead 42 + 16 + 63 + 64 - 12, then 376 + 12 a card', () => {
-    expect(guildFrameReserve('md')).toEqual({ fixedPx: 395, perCardPx: 388 });
+  it('md: band 190 + 32 + lead 42 + 16 + 63 + 64 - 12, then 156 + 12 a card', () => {
+    expect(guildFrameReserve('md')).toEqual({ fixedPx: 395, perCardPx: 168 });
   });
 
   it('lg: the band is 150, the rest as md', () => {
-    expect(guildFrameReserve('lg')).toEqual({ fixedPx: 355, perCardPx: 388 });
+    expect(guildFrameReserve('lg')).toEqual({ fixedPx: 355, perCardPx: 168 });
+  });
+});
+
+describe('releaseGuildFrameReserve', () => {
+  it('removes the card count the min-height reads and the loading mark, and only those', () => {
+    const properties = new Map<string, string>([[GUILD_CARDS_PROPERTY, '2'], ['color', 'red']]);
+    const attributes = new Set<string>([GUILD_LOADING_ATTRIBUTE, 'lang']);
+    const root = {
+      style: { removeProperty: (name: string) => properties.delete(name) },
+      removeAttribute: (name: string) => attributes.delete(name),
+    } as unknown as HTMLElement;
+    releaseGuildFrameReserve(root);
+    expect([...properties.keys()]).toEqual(['color']);
+    expect([...attributes]).toEqual(['lang']);
   });
 });

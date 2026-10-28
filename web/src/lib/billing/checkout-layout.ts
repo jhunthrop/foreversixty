@@ -29,19 +29,11 @@ export const CHECKOUT_BODY_RESERVE = 'min-h-[204px] md:min-h-[184px]';
 export const GUILD_LEAD_RESERVE = 'min-h-[63px] md:min-h-[42px]';
 
 /**
- * A guild card's floor and the skeleton card's height: the tallest common card, `ask_leader`
- * (the owner's case), so a skeleton never grows when its row arrives. From the classes (line
- * height 1.5; the step block is 320 px wide at md and about 322 px on a 390 phone, gap 10):
- * sentence 2 lines 42 + CopyLinkField (label 16.5 + 4 + field 44 + 8 + buttons 44 = 116.5) +
- * short verify line 2 lines 39 + other-character line 3 lines 58.5 + Discord fallback 2 lines 39
- * + 4 gaps 40 = 335.
- * - md (two columns): padding 40 + max(step block 335, identity/you/facts ~110) = 375 -> 376.
- * - phone (one column): padding 32 + identity 40 + you row 8 + 42 (two lines) + facts 6 + 39
- *   + gap 14 + rule 1 + 14 + step block 335 = 531 -> 532.
- * Shorter cards (ready, on_plan) keep this floor. Estimates: Task 28 reads the CLS e2e annotation
- * and adjusts this once from the measurement if it is still above 0.02.
+ * The skeleton card's height while /v1/me is in flight: a `ready` card, 156 px from 768 and 260 px
+ * on a phone (spec §5.7, §7). Real cards carry no floor and size to their content; a taller card
+ * (the owner's `ask_leader`) grows below the fold, and the CLS e2e holds the result at 0.02.
  */
-export const GUILD_CARD_MIN = 'min-h-[532px] md:min-h-[376px]';
+export const GUILD_SKELETON_CARD = 'h-[260px] md:h-[156px]';
 
 /** The pixel figures behind the classes above, for the pre-paint frame reserve below. */
 export const CHECKOUT_FRAME_PX = {
@@ -51,7 +43,7 @@ export const CHECKOUT_FRAME_PX = {
   lead: { phone: 63, md: 42 },
   /** The lead's margin below (mb-4). */
   leadGap: 16,
-  card: { phone: 532, md: 376 },
+  card: { phone: 260, md: 156 },
   /** The card list's gap (gap-3). */
   cardGap: 12,
   /** The foot: 24 px above, two 13 px lines. */
@@ -59,6 +51,25 @@ export const CHECKOUT_FRAME_PX = {
   /** The guild step's bottom padding (pb-16). */
   bottom: 64,
 } as const;
+
+/** The custom property checkout.astro's head script sets to the skeleton card count; the main
+ *  column's min-height reads it, so removing it releases the reserve. */
+export const GUILD_CARDS_PROPERTY = '--checkout-guild-cards';
+
+/**
+ * Set on <html> by the head script while the guild step loads. The site footer is hidden meanwhile:
+ * a real card can be taller than its 156 / 260 px skeleton (the owner's `ask_leader` card is about
+ * 330 px), and the footer would otherwise be seen moving down when the rows arrive (a layout
+ * shift); revealed at its final place, it never moves on screen.
+ */
+export const GUILD_LOADING_ATTRIBUTE = 'data-checkout-loading';
+
+/** Spec §7 (G2): the pre-paint reserve holds only while the step loads; once rows, an empty state or
+ *  the error render, the page is as tall as its content and the footer shows. */
+export function releaseGuildFrameReserve(root: HTMLElement): void {
+  root.style.removeProperty(GUILD_CARDS_PROPERTY);
+  root.removeAttribute(GUILD_LOADING_ATTRIBUTE);
+}
 
 export type FrameBreakpoint = 'phone' | 'md' | 'lg';
 
@@ -70,8 +81,8 @@ export interface GuildFrameReserve {
 }
 
 /**
- * Spec §7 / §11: the main column's height for the guild step, as fixed + cards x perCard, held
- * from the first paint by checkout.astro's head script so hydration and /v1/me move no footer.
+ * Spec §7 / §11: the main column's height for the guild step while it loads, as fixed + cards x
+ * perCard, held from the first paint by checkout.astro's head script so hydration moves no footer.
  */
 export function guildFrameReserve(breakpoint: FrameBreakpoint): GuildFrameReserve {
   const px = CHECKOUT_FRAME_PX;

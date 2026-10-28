@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Me, MeGuild } from '../../lib/account/api';
 import { ME_GUILD_COUNT_KEY } from '../../lib/account/premium-hint';
 import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
-import { GUILD_CARD_MIN } from '../../lib/billing/checkout-layout';
+import { GUILD_SKELETON_CARD } from '../../lib/billing/checkout-layout';
 import type { GuildCoveredView, SubscribeStep } from '../../lib/billing/contract';
 import {
   buildMe,
@@ -79,7 +79,7 @@ beforeEach(() => vi.stubGlobal('localStorage', memoryStorage()));
 afterEach(() => vi.unstubAllGlobals());
 
 /** One skeleton card: the shared card floor (checkout-layout.ts). */
-const SKELETON_CARD = new RegExp(`skeleton-block[^"]*${GUILD_CARD_MIN.replace(/[[\]]/g, '\\$&')}`, 'g');
+const SKELETON_CARD = new RegExp(`skeleton-block[^"]*${GUILD_SKELETON_CARD.replace(/[[\]]/g, '\\$&')}`, 'g');
 
 describe('CheckoutGuildStep: loading', () => {
   it('reserves the lead line and skeleton cards at the ask_leader card height, aria-busy, sr-only label', () => {

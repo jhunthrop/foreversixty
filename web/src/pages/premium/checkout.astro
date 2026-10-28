@@ -13,7 +13,7 @@
 // The one exception is layout, never content: a head script reads the query string before
 // first paint only to decide whether the guild step will draw (the same rule as
 // showsGuildStep, never echoed), and if so marks <html data-checkout-step="guild"> with the
-// skeleton card count. The CSS below then holds the guild step's whole height from the first
+// skeleton card count. The CSS below then holds the guild step's loading height from the first
 // paint and hides the static narrow body, so hydration and /v1/me move no footer (spec §7,
 // §11: CLS at most 0.02). The same signal reveals the band's static Guild summary frame, so the
 // LCP text (the size line) is in the first HTML instead of waiting for hydration, and
@@ -27,7 +27,7 @@ import {
   ME_GUILD_COUNT_KEY,
   MIN_GUILD_COUNT,
 } from '../../lib/account/premium-hint';
-import { guildFrameReserve } from '../../lib/billing/checkout-layout';
+import { GUILD_CARDS_PROPERTY, GUILD_LOADING_ATTRIBUTE, guildFrameReserve } from '../../lib/billing/checkout-layout';
 import { checkoutGuildCopy } from '../../lib/billing/checkout-guild-copy';
 import { INTERVALS, PLANS, PLAN_ORDER } from '../../lib/billing/plans';
 
@@ -49,6 +49,8 @@ const lg = guildFrameReserve('lg');
       max: MAX_GUILD_COUNT,
       fallback: DEFAULT_GUILD_COUNT,
       raidGuildSizeLine: checkoutGuildCopy.sizeLine.raidGuild,
+      cardsProperty: GUILD_CARDS_PROPERTY,
+      loadingAttribute: GUILD_LOADING_ATTRIBUTE,
     }}
   >
     // Layout only: the launcher still validates every param after hydration.
@@ -77,7 +79,8 @@ const lg = guildFrameReserve('lg');
           if (line) line.textContent = raidGuildSizeLine;
         });
       }
-      document.documentElement.style.setProperty('--checkout-guild-cards', String(cards));
+      document.documentElement.style.setProperty(cardsProperty, String(cards));
+      document.documentElement.setAttribute(loadingAttribute, '');
     }
   </script>
   <!-- No measure: the island draws the full-bleed band (its h1 and its height reserve, spec
@@ -105,10 +108,17 @@ const lg = guildFrameReserve('lg');
     --measure-form: 640px;
     --measure-wide: 880px;
   }
-  /* The guild step's height from the first paint: band, step padding, lead, the skeleton's
-     cards and the foot (checkout-layout.ts guildFrameReserve). */
+  /* The guild step's height from the first paint while it loads: band, step padding, lead, the
+     skeleton's cards and the foot (checkout-layout.ts guildFrameReserve). CheckoutGuildStep removes
+     --checkout-guild-cards (GUILD_CARDS_PROPERTY) once its rows render, which voids the calc and
+     lets the page be as tall as its content. */
   :global(html[data-checkout-step='guild']) .checkout-main {
     min-height: calc((var(--phoneFixed) + var(--checkout-guild-cards) * var(--phoneCard)) * 1px);
+  }
+  /* While the step loads, the site footer keeps its box but is not drawn (checkout-layout.ts
+     GUILD_LOADING_ATTRIBUTE): a card taller than its skeleton would otherwise move it on screen. */
+  :global(html[data-checkout-loading] .page-column ~ footer) {
+    visibility: hidden;
   }
   /* The static render's narrow body ("Redirecting…") is never the guild step's: keep its box,
      show nothing, until hydration swaps in the step. */
