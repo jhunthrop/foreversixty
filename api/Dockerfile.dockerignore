@@ -21,7 +21,11 @@ web
 data/pipeline
 data/tests
 data/diffs
-data/curated
+# data/curated stays out except the log coach's rule files and personas,
+# which the final stage copies to /coach (COACH_DATA_DIR). The persona
+# files are markdown, so they are re-included below the **/*.md rule.
+data/curated/*
+!data/curated/coach
 data/__pycache__
 data/conftest.py
 data/pyproject.toml
@@ -32,3 +36,4 @@ logs/bench
 **/testdata
 !sim/adapter/testdata
 **/*.md
+!data/curated/coach/*.md
