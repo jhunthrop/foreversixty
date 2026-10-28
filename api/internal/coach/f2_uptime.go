@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
@@ -71,10 +70,10 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 		}))
 		return auraReading{}, false
 	}
-	if track == nil {
-		return auraReading{}, false
+	up, den, ok := int64(0), c.CountedMS, c.CountedMS > 0 // never applied: up for none of it
+	if track != nil {
+		up, den, ok = measureUptime(*track, c)
 	}
-	up, den, ok := measureUptime(*track, c)
 	if !ok {
 		return auraReading{}, false
 	}
@@ -108,29 +107,39 @@ func uptimeSim(rule AuraRule) func(SimRef) (float64, bool) {
 }
 
 // ownTrack is the aura's track on the player's side of the log, with the number of
-// appliers when the log merges more than the player. Self-buffs are read on the player;
-// a DoT or debuff on whichever target the player applied it to longest, and only a sole
-// applier is judged (appliers > 1 otherwise).
+// appliers when the log merges more than the player; nil when the player never had it.
+// A self-buff is read on the player. A DoT or debuff is read on whichever target the
+// player applied it to longest, and only a sole applier is judged (appliers > 1
+// otherwise). A tank's defensive is its own buff when it sits on the player, else a
+// debuff it applied to the boss (Demoralizing Shout, Thunder Clap) by the debuff rule.
 func ownTrack(in Input, rule AuraRule) (track *summary.AuraTrack, appliers int) {
 	guid := in.Row.GUID
-	debuff := rule.Kind == AuraDot || rule.Kind == AuraDebuff
-	for i := range in.Fight.Auras {
-		a := &in.Fight.Auras[i]
-		if a.SpellID != rule.SpellID {
-			continue
-		}
-		mine := a.TargetGUID == guid
-		if debuff {
-			mine = slices.Contains(a.Appliers, guid)
-		}
-		if mine && (track == nil || a.UptimeMS > track.UptimeMS) {
-			track = a
+	onPlayer := func(a *summary.AuraTrack) bool { return a.TargetGUID == guid }
+	byPlayer := func(a *summary.AuraTrack) bool { return slices.Contains(a.Appliers, guid) }
+	switch rule.Kind {
+	case AuraSelfBuff:
+		return longestTrack(in, rule.SpellID, onPlayer), 0
+	case AuraDefensive:
+		if t := longestTrack(in, rule.SpellID, onPlayer); t != nil {
+			return t, 0
 		}
 	}
-	if track != nil && debuff && len(track.Appliers) > 1 {
+	track = longestTrack(in, rule.SpellID, byPlayer)
+	if track != nil && len(track.Appliers) > 1 {
 		return track, len(track.Appliers)
 	}
 	return track, 0
+}
+
+// longestTrack is the spell's track matching keep with the most uptime, or nil.
+func longestTrack(in Input, spellID int64, keep func(*summary.AuraTrack) bool) (best *summary.AuraTrack) {
+	for i := range in.Fight.Auras {
+		a := &in.Fight.Auras[i]
+		if a.SpellID == spellID && keep(a) && (best == nil || a.UptimeMS > best.UptimeMS) {
+			best = a
+		}
+	}
+	return best
 }
 
 // measureUptime is the aura's time up and the time it could have been up: from the first
@@ -148,18 +157,6 @@ func measureUptime(t summary.AuraTrack, c Counted) (upMS, denMS int64, ok bool) 
 		upMS += countedBetween(c.Excluded, s.StartMS, min(s.EndMS, c.AliveMS))
 	}
 	return min(upMS, denMS), denMS, denMS > 0
-}
-
-// countedBetween is the length of [from, to) outside the excluded windows.
-func countedBetween(excluded []ratingengine.Window, from, to int64) int64 {
-	if to <= from {
-		return 0
-	}
-	total := to - from
-	for _, w := range excluded {
-		total -= max(min(w.ToMS, to)-max(w.FromMS, from), 0)
-	}
-	return total
 }
 
 func addUptimeStrength(in Input, r auraReading, o *outcome) {

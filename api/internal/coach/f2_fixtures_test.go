@@ -80,6 +80,22 @@ func furySunderShared(t *testing.T, appliers int) Input {
 	return withPool(in, poolUptime(f2SunderArmorID, 90, PoolTopN))
 }
 
+const (
+	f2ThunderClapID   = 11581
+	f2ThunderClapName = "Thunder Clap"
+)
+
+// protThunderClap is the Protection warrior with Thunder Clap, listed as a defensive in his
+// rule file, applied by him alone to the boss for upMS of the fight.
+func protThunderClap(t *testing.T, upMS int64, refs Refs) Input {
+	t.Helper()
+	in := f2Steady(protInput(t))
+	in.Tables.Rules.Auras = append(slices.Clone(in.Tables.Rules.Auras),
+		AuraRule{SpellID: f2ThunderClapID, Name: f2ThunderClapName, Kind: AuraDefensive, Verified: fixtureVerified})
+	in.Fight = withAura(in.Fight, f2BossGUID, f2ThunderClapID, f2ThunderClapName, []string{furyGUID}, f2Segments(upMS)...)
+	return withPool(in, refs)
+}
+
 // furyRendLow is the Fury warrior with a Rend rule and Rend up a fifth of the fight, on
 // refs.
 func furyRendLow(t *testing.T, refs Refs) Input {

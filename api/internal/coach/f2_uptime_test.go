@@ -132,10 +132,43 @@ func TestUptime_NoPoolNoSimIsCouldntCheck(t *testing.T) {
 	}
 }
 
-func TestUptime_PoolWithoutTheAuraGivesNoBasisAndNoThinLine(t *testing.T) {
-	in := furyRendLow(t, poolUptime(6673, 97, 25))
+func TestUptime_PoolWithoutTheAuraSaysSoAndNeverTheThinPoolLine(t *testing.T) {
+	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 97, 25))
+	in.Tables.Rules.Auras = append(slices.Clone(in.Tables.Rules.Auras),
+		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified})
+	in.Fight = withAura(in.Fight, f2BossGUID, f2RendID, f2RendName, []string{furyGUID}, span(0, f2FightMS))
 	o := uptime(in, CountedTime(in))
-	if o.Finding != nil || len(o.CouldNotCheck) != 0 {
+	want := "Top Fury logs on Onyxia (40) don't record this yet."
+	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, want) {
 		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
+	}
+	if strings.Contains(textOf(o), "not enough logs yet") {
+		t.Fatal("a pool of 25 is not a thin pool")
+	}
+}
+
+func TestUptime_TankThunderClapOnTheBoss(t *testing.T) {
+	in := protThunderClap(t, f2FightMS*4/10, poolDefensive(f2ThunderClapID, 90, 25))
+	f := uptime(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "Thunder Clap up 40% of the fight" || f.Severity != SeverityMajor {
+		t.Fatalf("finding %+v", f)
+	}
+}
+
+func TestUptime_NeverAppliedListedAuraIsZeroPercent(t *testing.T) {
+	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 80, 25))
+	in.Tables.Rules.Auras = append(slices.Clone(in.Tables.Rules.Auras),
+		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified})
+	f := uptime(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "Rend up 0% of the fight" || f.Severity != SeverityMajor {
+		t.Fatalf("finding %+v", f)
+	}
+}
+
+func TestUptime_NeverAppliedUnlistedAuraIsSkipped(t *testing.T) {
+	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 80, 25))
+	o := uptime(in, CountedTime(in))
+	if o.Finding != nil || strings.Contains(textOf(o), f2RendName) {
+		t.Fatalf("finding %+v, text %q", o.Finding, textOf(o))
 	}
 }
