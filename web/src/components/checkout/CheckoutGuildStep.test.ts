@@ -90,14 +90,14 @@ describe('CheckoutGuildStep: loading', () => {
     expect(body).toMatch(/min-h-\[42px\] md:min-h-\[21px\]/);
     expect(body).toMatch(/<ul[^>]*aria-busy="true"/);
     expect(body.match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(2);
-    expect(body).toMatch(new RegExp(`class="sr-only"[^>]*>${copy.loading}<`));
+    expect(body).toMatch(new RegExp(`class="sr-only" role="status"[^>]*>${copy.loading}<`));
   });
 
-  it('reads the skeleton count from fs.meGuildCount, clamped to 1..4', () => {
+  it('reads the skeleton count from fs.meGuildCount as readMeGuildCount clamps it (0..4)', () => {
     localStorage.setItem(ME_GUILD_COUNT_KEY, '3');
     expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(3);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '0');
-    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(1);
+    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toBeNull();
     localStorage.setItem(ME_GUILD_COUNT_KEY, '9');
     expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(4);
   });

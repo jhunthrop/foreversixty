@@ -1,7 +1,13 @@
 // web/src/lib/billing/checkout-params.test.ts
 import { describe, expect, it } from 'vitest';
 import type { MeGuild } from '../account/api';
-import { billableGuilds, fittingGuildPlan, guildFitsRaidTier, parseCheckoutParams } from './checkout-params';
+import {
+  billableGuilds,
+  fittingGuildPlan,
+  guildFitsRaidTier,
+  parseCheckoutParams,
+  showsGuildStep,
+} from './checkout-params';
 
 describe('parseCheckoutParams', () => {
   it('accepts a premium request, with or without a comeback id', () => {
@@ -57,5 +63,20 @@ describe('billableGuilds and the tier fit', () => {
     expect(guildFitsRaidTier(28)).toBe(true);
     expect(fittingGuildPlan(25)).toBe('guild');
     expect(fittingGuildPlan(26)).toBe('raid_guild');
+  });
+});
+
+describe('showsGuildStep', () => {
+  const step = (search: string): boolean => showsGuildStep(parseCheckoutParams(search)!);
+
+  it('a guild plan with no guild id shows the step, from the URL alone', () => {
+    expect(step('?plan=guild&interval=yearly')).toBe(true);
+    expect(step('?plan=raid_guild&interval=monthly')).toBe(true);
+  });
+
+  it('Premium, a guild id and a success return do not', () => {
+    expect(step('?plan=premium&interval=yearly')).toBe(false);
+    expect(step('?plan=guild&interval=yearly&guild_id=4')).toBe(false);
+    expect(step('?plan=guild&interval=yearly&guild_id=4&status=success')).toBe(false);
   });
 });

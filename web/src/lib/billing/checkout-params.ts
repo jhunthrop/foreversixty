@@ -21,6 +21,12 @@ export function isGuildPlan(plan: PlanKey): boolean {
   return plan !== 'premium';
 }
 
+/** Spec §5 / §5.7: the guild step applies, known from the URL alone, so its loading state
+ *  draws before /v1/me answers. A `guild_id` request still launches straight to Stripe. */
+export function showsGuildStep(params: CheckoutParams): boolean {
+  return isGuildPlan(params.plan) && params.guildId === undefined && params.status !== 'success';
+}
+
 /** undefined when absent, null when present but not a positive integer. */
 function positiveInteger(raw: string | null): number | undefined | null {
   if (raw === null) return undefined;

@@ -31,7 +31,12 @@
   import { founderOpen } from '../lib/billing/plans';
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { isGuildPlan, parseCheckoutParams, type CheckoutParams } from '../lib/billing/checkout-params';
+  import {
+    isGuildPlan,
+    parseCheckoutParams,
+    showsGuildStep,
+    type CheckoutParams,
+  } from '../lib/billing/checkout-params';
   import CheckoutBand from './checkout/CheckoutBand.svelte';
   import CheckoutGuildStep from './checkout/CheckoutGuildStep.svelte';
   import PremiumOwnedPanel from './checkout/PremiumOwnedPanel.svelte';
@@ -63,8 +68,10 @@
   let message = $state(checkoutCopy.redirecting);
   let showRetry = $state(false);
   let request = $state<CheckoutParams | null>(null);
-  /** The guild step shows (spec §5): a guild plan with no guild id. */
+  /** The guild step shows (spec §5): set from the URL before /v1/me answers (showsGuildStep). */
   let stepShown = $state(false);
+  /** This checkout's own path and query; follows a plan switch, so every `next` returns here. */
+  let selfUrl = $state('');
   /** Null while the step's /v1/me read is in flight. */
   let stepMe = $state<Me | null>(null);
   let stepFailed = $state(false);
@@ -119,16 +126,12 @@
     window.location.assign(`/login?next=${encodeURIComponent(safeNextPath(currentUrl(), '/premium'))}`);
   }
 
-  function showGuildStep(me: Me): void {
-    stepShown = true;
-    stepFailed = false;
-    stepMe = me;
-  }
-
-  async function reloadGuildStep(): Promise<void> {
+  /** The step's /v1/me read: the skeleton until it answers, LoadError when it fails. `fresh`
+   *  bypasses the per-page cache (Try again). */
+  async function loadGuildStep(fresh: boolean): Promise<void> {
     stepFailed = false;
     stepMe = null;
-    io.forgetSession();
+    if (fresh) io.forgetSession();
     try {
       const me = await io.fetchMe();
       if (me === null) {
@@ -158,6 +161,7 @@
     if (request === null) return;
     replacePlanInUrl(to);
     request = { ...request, plan: to };
+    selfUrl = currentUrl();
   }
 
   function showOwned(me: Me): void {
@@ -185,10 +189,6 @@
     }
     if (parsed.status === 'success') {
       void pollForEntitlement(parsed);
-      return;
-    }
-    if (isGuildPlan(parsed.plan) && parsed.guildId === undefined) {
-      showGuildStep(me);
       return;
     }
     const checkoutRequest = {
@@ -248,11 +248,22 @@
       return;
     }
     request = parsed;
+    selfUrl = currentUrl();
+    if (showsGuildStep(parsed)) {
+      stepShown = true;
+      void loadGuildStep(false);
+      return;
+    }
     void launch(parsed);
   });
 </script>
 
-<CheckoutBand plan={request?.plan ?? null} interval={request?.interval ?? DEFAULT_INTERVAL} {founder} />
+<CheckoutBand
+  plan={request?.plan ?? null}
+  interval={request?.interval ?? DEFAULT_INTERVAL}
+  {founder}
+  {invalid}
+/>
 
 {#if stepShown && request !== null && request.plan !== 'premium'}
   <CheckoutGuildStep
@@ -261,8 +272,8 @@
     plan={request.plan}
     interval={request.interval}
     {founder}
-    selfUrl={currentUrl()}
-    onRetry={() => void reloadGuildStep()}
+    {selfUrl}
+    onRetry={() => void loadGuildStep(true)}
     onCheckAgain={() => void refreshGuildStep()}
     onSwitch={switchPlan}
   />

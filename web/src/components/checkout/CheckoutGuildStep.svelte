@@ -54,7 +54,6 @@
     onSwitch: (to: GuildTier) => void;
   } = $props();
 
-  const MIN_SKELETON_CARDS = 1;
   /** The longest the rows wait behind the skeleton for the guild crests (spec §5.7). */
   const CREST_SETTLE_MS = 1000;
 
@@ -78,7 +77,7 @@
     crestUrls.length === 0 || settledCrests === crestKey || typeof Image === 'undefined',
   );
   const viewerIsOfficer = (guild: MeGuild): boolean => guild.rank === 'officer' || guild.rank === 'leader';
-  const skeletonCards = $derived(Math.max(MIN_SKELETON_CARDS, readMeGuildCount()));
+  const skeletonCards = $derived(readMeGuildCount());
   const setupHref = $derived(`/setup?next=${encodeURIComponent(selfUrl)}`);
   const empty = $derived(
     me === null || me.guilds.length > 0 ? null : me.characters.length === 0 ? copy.emptyA : copy.emptyB,
@@ -121,7 +120,7 @@
     {:else if me === null || (empty === null && !crestsReady)}
       <p class={`m-0 mb-4 ${GUILD_LEAD_RESERVE}`} aria-hidden="true"></p>
       <ul class="m-0 flex list-none flex-col gap-3 p-0" aria-busy="true" data-testid="checkout-guild-loading">
-        <li class="sr-only">{copy.loading}</li>
+        <li class="sr-only" role="status">{copy.loading}</li>
         {#each Array.from({ length: skeletonCards }, (_, index) => index) as index (index)}
           <li class={`skeleton-block rounded-panel ${GUILD_SKELETON_CARD}`} aria-hidden="true"></li>
         {/each}
