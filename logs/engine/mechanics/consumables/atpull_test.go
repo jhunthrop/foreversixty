@@ -230,6 +230,9 @@ func TestRaidBuffsAtPull_ProviderInRoster(t *testing.T) {
 	if !byName["Arcane Intellect"].ProviderInRoster || byName["Power Word: Fortitude"].ProviderInRoster {
 		t.Fatalf("provider flags: %+v", byName)
 	}
+	if byName["Battle Shout"].ProviderInRoster {
+		t.Fatal("the player is never their own raid-buff provider")
+	}
 }
 
 func TestRaidBuffsAtPull_AnyRankIsPresent(t *testing.T) {

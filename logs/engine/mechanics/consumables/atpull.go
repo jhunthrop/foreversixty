@@ -127,17 +127,18 @@ type RaidBuffState struct {
 	Buff             RaidBuff
 	Known            bool // the player has a character sheet; false means Present says nothing
 	Present          bool // any rank up at the pull (seeded, or applied within AtPullGraceMS); false when !Known
-	ProviderInRoster bool // a roster row of Buff.Class in this fight
+	ProviderInRoster bool // a roster row of Buff.Class in this fight other than the player's own
 }
 
-// RaidBuffsAtPull reads each buff on guid at the pull, and whether the
-// fight's roster held a class that could have provided it. With no
+// RaidBuffsAtPull reads each buff on guid at the pull, and whether someone
+// else in the fight's roster was of a class that could have provided it (a
+// buff only the player provides is their own uptime, not a raid buff). With no
 // character sheet every state is Known false and Present false: unknown,
 // never missing.
 func RaidBuffsAtPull(fight summary.Summary, guid string, buffs []RaidBuff) []RaidBuffState {
 	classes := map[string]bool{}
 	for _, r := range fight.Roster {
-		if r.Class != "" {
+		if r.Class != "" && r.GUID != guid {
 			classes[r.Class] = true
 		}
 	}

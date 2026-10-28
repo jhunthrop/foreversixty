@@ -448,10 +448,12 @@ func blessingIssue(in Input, relevant []consumables.RaidBuffState) []prepIssue {
 	return []prepIssue{issue}
 }
 
+// paladinCount is the paladins in the roster other than the player: a blessing only the
+// player could give is never owed by the raid.
 func paladinCount(in Input) int {
 	seen := map[string]bool{}
 	for _, r := range in.Fight.Roster {
-		if r.Class == blessingClass {
+		if r.Class == blessingClass && r.GUID != in.Row.GUID {
 			seen[r.GUID] = true
 		}
 	}

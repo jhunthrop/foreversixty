@@ -159,16 +159,6 @@ func TestPreparation_WeaponOilIsCouldntCheckNeverMissing(t *testing.T) {
 	}
 }
 
-func TestPreparation_AWarriorWithoutHisOwnBattleShoutIsMinor(t *testing.T) {
-	in := furyPrep(t, 40, fullKit())
-	id := raidBuffByName(t, in, "Battle Shout").SpellIDs[0]
-	in.Fight.Auras = slices.DeleteFunc(slices.Clone(in.Fight.Auras), func(a summary.AuraTrack) bool { return a.SpellID == id })
-	f := preparation(in, CountedTime(in)).Finding
-	if f == nil || f.Severity != SeverityMinor || f.Title != "No Battle Shout at the pull" {
-		t.Fatalf("%+v", f)
-	}
-}
-
 func TestPreparation_AFlaskAppliedWithinTheGraceCountsAndOneAfterItDoesNot(t *testing.T) {
 	fl := flask("Flask of the Titans")
 	for _, c := range []struct {
@@ -265,5 +255,31 @@ func TestPreparation_RaidBuffCopy(t *testing.T) {
 	f = preparation(blessing, CountedTime(blessing)).Finding
 	if f == nil || f.Detail != "A blessing was not on you at the pull. A paladin in the raid provides it." {
 		t.Fatalf("%+v", f)
+	}
+}
+
+// A buff whose only provider in the roster is the player is F2's uptime, never F6 (A11):
+// a lone warrior without Battle Shout, a lone mage without Arcane Intellect.
+func TestPreparation_ThePlayerIsNeverTheirOwnRaidBuffProvider(t *testing.T) {
+	in := furyPrep(t, 40, fullKit())
+	in.Fight = withRoster(in.Fight, in.Row, rosterClass("rogue", "Rogue"))
+	in.Fight.Auras = slices.DeleteFunc(slices.Clone(in.Fight.Auras), func(a summary.AuraTrack) bool {
+		return slices.Contains(raidBuffByName(t, in, "Battle Shout").SpellIDs, a.SpellID)
+	})
+	if o := preparation(in, CountedTime(in)); strings.Contains(textOf(o), "Battle Shout") {
+		t.Fatalf("the only warrior is the player: %+v", o.Finding)
+	}
+	in = rosterOf(in, rosterClass("war2", "Warrior"))
+	if o := preparation(in, CountedTime(in)); !strings.Contains(textOf(o), "Battle Shout") {
+		t.Fatalf("another warrior was there: %+v", o.Finding)
+	}
+}
+
+func TestPreparation_ALonePaladinOwesNoBlessing(t *testing.T) {
+	in := furyPrep(t, 40, fullKit())
+	in.Row = withRole(in.Fight, in.Row.GUID, "Paladin", "Retribution", RoleDPS).Roster[0]
+	in.Fight = withRoster(in.Fight, in.Row)
+	if o := preparation(in, CountedTime(in)); strings.Contains(strings.ToLower(textOf(o)), "blessing") {
+		t.Fatalf("the only paladin is the player: %+v", o.Finding)
 	}
 }
