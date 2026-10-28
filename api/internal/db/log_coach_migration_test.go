@@ -52,6 +52,15 @@ func TestLogCoachMigration_UpDownUp(t *testing.T) {
 	check("after second up", 1)
 }
 
+func TestLogCoachMigration_FixRoundIndexes(t *testing.T) {
+	pool, _ := logCoachPool(t)
+	for _, name := range []string{"coach_account_day_user_idx", "coach_review_leases_expiry_idx"} {
+		if n := indexCount(t, pool, name); n != 1 {
+			t.Errorf("index %s count = %d, want 1", name, n)
+		}
+	}
+}
+
 func insertCoachProfile(ctx context.Context, pool *pgxpool.Pool, at time.Time) error {
 	_, err := pool.Exec(ctx,
 		`insert into coach_profiles (report_id, fight_index, player_key, class, spec, role,
@@ -99,8 +108,8 @@ func TestLogCoachMigration_ReviewsCascadeWithTheReport(t *testing.T) {
 		   values ('coach-cascade', 0, 'p', 'pv', '{}')`,
 		`insert into coach_reviews (report_id, fight_index, player_key, pack_version, model_version, persona_version, review, source)
 		   values ('coach-cascade', 0, 'p', 'pv', 'mv', 'ps', '{}', 'rules')`,
-		`insert into coach_review_leases (report_id, fight_index, player_key, pack_version, model_version, persona_version, leased_until)
-		   values ('coach-cascade', 0, 'p', 'pv', 'mv', 'ps', now())`,
+		`insert into coach_review_leases (report_id, fight_index, player_key, pack_version, model_version, persona_version, holder, leased_until)
+		   values ('coach-cascade', 0, 'p', 'pv', 'mv', 'ps', 'h1', now())`,
 		`insert into coach_review_samples (day, report_id, fight_index, player_key, character_name, spec, source, validation, pack, review)
 		   values (current_date, 'coach-cascade', 0, 'p', 'Name', 'fire', 'rules', '[]', '{}', '{}')`,
 	}

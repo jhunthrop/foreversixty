@@ -83,9 +83,12 @@ create table coach_review_leases (
   pack_version text,
   model_version text,
   persona_version text,
+  holder text not null,
   leased_until timestamptz not null,
   primary key (report_id, fight_index, player_key, pack_version, model_version, persona_version)
 );
+
+create index coach_review_leases_expiry_idx on coach_review_leases (leased_until);
 
 create table llm_spend (
   day date primary key,
@@ -100,6 +103,8 @@ create table coach_account_day (
   generations int not null default 0,
   primary key (day, user_id)
 );
+
+create index coach_account_day_user_idx on coach_account_day (user_id);
 
 create table coach_review_samples (
   day date,
