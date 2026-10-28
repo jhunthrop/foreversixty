@@ -15,6 +15,7 @@
         "http://localhost/planner.html",
         "http://localhost/logs.html",
         "http://localhost/premium.html",
+        "http://localhost/premium/checkout.html?plan=guild&interval=yearly",
         "http://localhost/reports/fixture2abcd.html",
         "http://localhost/guild/us/pvp/olympus-xxvii.html",
         "http://localhost/sim.html",
