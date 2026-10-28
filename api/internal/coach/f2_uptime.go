@@ -105,7 +105,7 @@ func appliedByOthers(in Input, rule AuraRule) bool {
 	if rule.Kind == AuraSelfBuff {
 		return false
 	}
-	return longestTrack(in, rule.SpellID, func(*summary.AuraTrack) bool { return true }) != nil
+	return longestTrack(in, rule.IDs(), func(*summary.AuraTrack) bool { return true }) != nil
 }
 
 func addUptimeCannot(o *outcome, line string) {
@@ -139,28 +139,70 @@ func ownTrack(in Input, rule AuraRule) (track *summary.AuraTrack, appliers int) 
 	byPlayer := func(a *summary.AuraTrack) bool { return slices.Contains(a.Appliers, guid) }
 	switch rule.Kind {
 	case AuraSelfBuff:
-		return longestTrack(in, rule.SpellID, onPlayer), 0
+		return longestTrack(in, rule.IDs(), onPlayer), 0
 	case AuraDefensive:
-		if t := longestTrack(in, rule.SpellID, onPlayer); t != nil {
+		if t := longestTrack(in, rule.IDs(), onPlayer); t != nil {
 			return t, 0
 		}
 	}
-	track = longestTrack(in, rule.SpellID, byPlayer)
+	track = longestTrack(in, rule.IDs(), byPlayer)
 	if track != nil && len(track.Appliers) > 1 {
 		return track, len(track.Appliers)
 	}
 	return track, 0
 }
 
-// longestTrack is the spell's track matching keep with the most uptime, or nil.
-func longestTrack(in Input, spellID int64, keep func(*summary.AuraTrack) bool) (best *summary.AuraTrack) {
+// longestTrack is the aura's track with the most uptime among targets whose tracks of any
+// of ids match keep, or nil. Every rank's tracks on one target are one track (a lower
+// rank is still the aura): their segments are joined and their appliers pooled.
+func longestTrack(in Input, ids []int64, keep func(*summary.AuraTrack) bool) *summary.AuraTrack {
+	byTarget := map[string]*summary.AuraTrack{}
 	for i := range in.Fight.Auras {
 		a := &in.Fight.Auras[i]
-		if a.SpellID == spellID && keep(a) && (best == nil || a.UptimeMS > best.UptimeMS) {
-			best = a
+		if !slices.Contains(ids, a.SpellID) || !keep(a) {
+			continue
+		}
+		byTarget[a.TargetGUID] = unionTrack(byTarget[a.TargetGUID], a)
+	}
+	var best *summary.AuraTrack
+	for _, t := range byTarget {
+		if best == nil || t.UptimeMS > best.UptimeMS || (t.UptimeMS == best.UptimeMS && t.TargetGUID < best.TargetGUID) {
+			best = t
 		}
 	}
 	return best
+}
+
+// unionTrack is acc joined with a: segments merged where they overlap, appliers pooled.
+// With acc nil it is a copy of a.
+func unionTrack(acc, a *summary.AuraTrack) *summary.AuraTrack {
+	if acc == nil {
+		c := *a
+		c.Segments = slices.Clone(a.Segments)
+		c.Appliers = slices.Clone(a.Appliers)
+		return &c
+	}
+	segs := append(slices.Clone(acc.Segments), a.Segments...)
+	slices.SortFunc(segs, func(x, y summary.Segment) int { return int(x.StartMS - y.StartMS) })
+	var merged []summary.Segment
+	var up int64
+	for _, s := range segs {
+		if n := len(merged); n > 0 && s.StartMS <= merged[n-1].EndMS {
+			merged[n-1].EndMS = max(merged[n-1].EndMS, s.EndMS)
+			continue
+		}
+		merged = append(merged, s)
+	}
+	for _, s := range merged {
+		up += s.EndMS - s.StartMS
+	}
+	acc.Segments, acc.UptimeMS = merged, up
+	for _, g := range a.Appliers {
+		if !slices.Contains(acc.Appliers, g) {
+			acc.Appliers = append(acc.Appliers, g)
+		}
+	}
+	return acc
 }
 
 // measureUptime is the aura's time up and the time it could have been up: from the first

@@ -4,6 +4,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
 func TestUptime(t *testing.T) {
@@ -199,6 +201,57 @@ func TestUptime_SharedDebuffLineStandsAlone(t *testing.T) {
 			t.Errorf("second line for the shared aura: %q", l)
 		}
 	}
+}
+
+const (
+	f2ShoutRank6ID = 11551
+	f2ShoutRank7ID = 25289
+)
+
+// furyShoutRanks is the Fury warrior whose Battle Shout rule lists ranks 6 and 7, with the
+// log's ranks cast as given (rank id -> up segments).
+func furyShoutRanks(t *testing.T, refs Refs, up map[int64][]summary.Segment) Input {
+	t.Helper()
+	in := f2Steady(furyInput(t))
+	in.Tables.Rules.Auras = []AuraRule{{SpellID: f2ShoutRank7ID, SpellIDs: []int64{f2ShoutRank6ID, f2ShoutRank7ID},
+		Name: f2BattleShoutNme, Kind: AuraSelfBuff, Verified: fixtureVerified}}
+	for id, segs := range up {
+		in.Fight = withAura(in.Fight, furyGUID, id, f2BattleShoutNme, []string{furyGUID}, segs...)
+	}
+	return withPool(in, refs)
+}
+
+func TestUptime_AnyRankIsTheAura(t *testing.T) {
+	refs := poolUptime(f2ShoutRank7ID, 97, 25)
+	t.Run("a lower rank alone is not never applied", func(t *testing.T) {
+		in := furyShoutRanks(t, refs, map[int64][]summary.Segment{f2ShoutRank6ID: {span(0, f2FightMS)}})
+		o := uptime(in, CountedTime(in))
+		if o.Finding != nil || len(o.Strengths) != 1 || o.Strengths[0].Sentence != "Battle Shout up 100% of the fight. Top 25: 97%." {
+			t.Fatalf("finding %+v strengths %+v", o.Finding, o.Strengths)
+		}
+	})
+	t.Run("rank 7 applied", func(t *testing.T) {
+		in := furyShoutRanks(t, refs, map[int64][]summary.Segment{f2ShoutRank7ID: {span(0, f2FightMS)}})
+		if o := uptime(in, CountedTime(in)); o.Finding != nil || len(o.Strengths) != 1 {
+			t.Fatalf("finding %+v strengths %+v", o.Finding, o.Strengths)
+		}
+	})
+	t.Run("ranks take turns: the union is the uptime", func(t *testing.T) {
+		in := furyShoutRanks(t, refs, map[int64][]summary.Segment{
+			f2ShoutRank6ID: {span(0, 100_000)},
+			f2ShoutRank7ID: {span(90_000, f2FightMS)}, // overlaps the first by 10 s
+		})
+		o := uptime(in, CountedTime(in))
+		if o.Finding != nil || len(o.Strengths) != 1 || !strings.HasPrefix(o.Strengths[0].Sentence, "Battle Shout up 100%") {
+			t.Fatalf("finding %+v strengths %+v", o.Finding, o.Strengths)
+		}
+	})
+	t.Run("neither rank is a 0% finding", func(t *testing.T) {
+		in := furyShoutRanks(t, refs, nil)
+		if f := uptime(in, CountedTime(in)).Finding; f == nil || f.Title != "Battle Shout up 0% of the fight" {
+			t.Fatalf("finding %+v", f)
+		}
+	})
 }
 
 func TestUptime_NeverAppliedUnlistedAuraIsSkipped(t *testing.T) {
