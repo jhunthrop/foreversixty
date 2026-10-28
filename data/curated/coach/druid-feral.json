@@ -1,0 +1,42 @@
+{
+  "spec": "druid-feral",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Tiger's Fury",
+      "spell_ids": [
+        5217
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/druid.json#5217"
+    },
+    {
+      "family": "Shifting Power",
+      "spell_ids": [
+        1322605
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/druid.json#1322605"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 9896,
+      "name": "Rip",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/druid.json#9896"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Barkskin",
+      "spell_ids": [
+        22812
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/druid.json#22812"
+    }
+  ],
+  "efficiency": []
+}

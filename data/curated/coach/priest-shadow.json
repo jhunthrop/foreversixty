@@ -1,0 +1,70 @@
+{
+  "spec": "priest-shadow",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Shadow Word: Death",
+      "spell_ids": [
+        1309595,
+        1309633,
+        1309635,
+        1309636
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#1309636"
+    },
+    {
+      "family": "Devouring Plague",
+      "spell_ids": [
+        2944,
+        19276,
+        19277,
+        19278,
+        19279,
+        19280
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#19280"
+    },
+    {
+      "family": "Inner Focus",
+      "spell_ids": [
+        14751
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/priest.json#14751"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 10894,
+      "name": "Shadow Word: Pain",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/priest.json#10894"
+    },
+    {
+      "spell_id": 15473,
+      "name": "Shadowform",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/priest.json#15473"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Desperate Prayer",
+      "spell_ids": [
+        13908,
+        19236,
+        19238,
+        19240,
+        19241,
+        19242,
+        19243
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#19243"
+    }
+  ],
+  "efficiency": []
+}

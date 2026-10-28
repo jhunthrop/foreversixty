@@ -1,0 +1,51 @@
+{
+  "spec": "rogue-subtlety",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Ghostly Strike",
+      "spell_ids": [
+        14278
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/rogue.json#14278"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 11275,
+      "name": "Rupture",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/rogue.json#11275"
+    },
+    {
+      "spell_id": 6774,
+      "name": "Slice and Dice",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/rogue.json#6774"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Evasion",
+      "spell_ids": [
+        5277
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/rogue.json#5277"
+    },
+    {
+      "family": "Vanish",
+      "spell_ids": [
+        1856,
+        1857,
+        27617,
+        1285372
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/rogue.json#1285372"
+    }
+  ],
+  "efficiency": []
+}

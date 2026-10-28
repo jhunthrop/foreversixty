@@ -8,5 +8,5 @@ import "testing"
 // (when the pull has one) is the F7 finding. The values are pinned with a comment, and a
 // change fails until a person explains it (tenet 8).
 func TestKnownGood_RealForeverPull(t *testing.T) {
-	t.Skip("waits on Task 15's rule files")
+	t.Skip("waits on the owner-provided real Forever pull; its values are pinned from that pull")
 }

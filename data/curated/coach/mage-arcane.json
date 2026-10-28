@@ -1,0 +1,47 @@
+{
+  "spec": "mage-arcane",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Arcane Power",
+      "spell_ids": [
+        12042
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#12042"
+    },
+    {
+      "family": "Presence of Mind",
+      "spell_ids": [
+        12043
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#12043"
+    }
+  ],
+  "auras": [],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Ice Block",
+      "spell_ids": [
+        11958
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#11958"
+    },
+    {
+      "family": "Ice Barrier",
+      "spell_ids": [
+        11426,
+        13031,
+        13032,
+        13033,
+        1213278
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#13033"
+    }
+  ],
+  "efficiency": []
+}

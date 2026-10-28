@@ -1,0 +1,52 @@
+{
+  "spec": "warrior-arms",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Bloodrage",
+      "spell_ids": [
+        2687
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/warrior.json#2687"
+    },
+    {
+      "family": "Mortal Strike",
+      "spell_ids": [
+        12294,
+        21551,
+        21552,
+        21553,
+        27580
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/warrior.json#21553"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 25289,
+      "name": "Battle Shout",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/warrior.json#25289"
+    },
+    {
+      "spell_id": 11574,
+      "name": "Rend",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/warrior.json#11574"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Last Stand",
+      "spell_ids": [
+        12975
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/warrior.json#12975"
+    }
+  ],
+  "efficiency": []
+}

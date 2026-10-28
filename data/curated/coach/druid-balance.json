@@ -1,0 +1,25 @@
+{
+  "spec": "druid-balance",
+  "build": "1.60.1.70630",
+  "core": [],
+  "auras": [
+    {
+      "spell_id": 24977,
+      "name": "Insect Swarm",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/druid.json#24977"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Barkskin",
+      "spell_ids": [
+        22812
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/druid.json#22812"
+    }
+  ],
+  "efficiency": []
+}

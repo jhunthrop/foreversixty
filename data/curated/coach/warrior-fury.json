@@ -1,0 +1,61 @@
+{
+  "spec": "warrior-fury",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Bloodrage",
+      "spell_ids": [
+        2687
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/warrior.json#2687"
+    },
+    {
+      "family": "Death Wish",
+      "spell_ids": [
+        12328
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/warrior.json#12328"
+    },
+    {
+      "family": "Bloodthirst",
+      "spell_ids": [
+        23881,
+        23892,
+        23893,
+        23894
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/warrior.json#23894"
+    },
+    {
+      "family": "Whirlwind",
+      "spell_ids": [
+        1680
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/warrior.json#1680"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 25289,
+      "name": "Battle Shout",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/warrior.json#25289"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Last Stand",
+      "spell_ids": [
+        12975
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/warrior.json#12975"
+    }
+  ],
+  "efficiency": []
+}

@@ -1,0 +1,71 @@
+{
+  "spec": "priest-discipline",
+  "build": "1.60.1.70630",
+  "core": [],
+  "auras": [
+    {
+      "spell_id": 10952,
+      "name": "Inner Fire",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/priest.json#10952"
+    }
+  ],
+  "downranks": [
+    {
+      "family": "Power Word: Shield",
+      "spell_ids": [
+        17,
+        592,
+        600,
+        3747,
+        6065,
+        6066,
+        10898,
+        10899,
+        10900,
+        10901,
+        27607
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#10901"
+    },
+    {
+      "family": "Prayer of Healing",
+      "spell_ids": [
+        596,
+        996,
+        10960,
+        10961,
+        25316
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#25316"
+    }
+  ],
+  "defensives": [
+    {
+      "family": "Desperate Prayer",
+      "spell_ids": [
+        13908,
+        19236,
+        19238,
+        19240,
+        19241,
+        19242,
+        19243
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#19243"
+    }
+  ],
+  "efficiency": [
+    {
+      "family": "Inner Focus",
+      "spell_ids": [
+        14751
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/priest.json#14751"
+    }
+  ]
+}

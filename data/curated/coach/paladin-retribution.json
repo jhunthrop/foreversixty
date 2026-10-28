@@ -1,0 +1,71 @@
+{
+  "spec": "paladin-retribution",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Judgement",
+      "spell_ids": [
+        20271
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/paladin.json#20271"
+    },
+    {
+      "family": "Holy Strike",
+      "spell_ids": [
+        679,
+        678,
+        1866,
+        680,
+        2495,
+        5569,
+        10332,
+        10333
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/paladin.json#10333"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 20293,
+      "name": "Seal of Righteousness",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/paladin.json#20293"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Divine Shield",
+      "spell_ids": [
+        642,
+        1020
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/paladin.json#1020"
+    },
+    {
+      "family": "Divine Protection",
+      "spell_ids": [
+        458312,
+        498,
+        458371,
+        5573
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/paladin.json#5573"
+    },
+    {
+      "family": "Lay on Hands",
+      "spell_ids": [
+        633,
+        2800,
+        10310
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/paladin.json#10310"
+    }
+  ],
+  "efficiency": []
+}

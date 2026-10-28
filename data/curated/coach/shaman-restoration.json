@@ -1,0 +1,36 @@
+{
+  "spec": "shaman-restoration",
+  "build": "1.60.1.70630",
+  "core": [],
+  "auras": [
+    {
+      "spell_id": 408510,
+      "name": "Water Shield",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/shaman.json#408510"
+    }
+  ],
+  "downranks": [],
+  "defensives": [],
+  "efficiency": [
+    {
+      "family": "Mana Tide Totem",
+      "spell_ids": [
+        16190,
+        17354,
+        17359,
+        1325256
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/shaman.json#1325256"
+    },
+    {
+      "family": "Nature's Swiftness",
+      "spell_ids": [
+        16188
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/shaman.json#16188"
+    }
+  ]
+}

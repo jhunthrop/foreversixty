@@ -63,7 +63,7 @@ def test_starter_has_four_sections_in_order(tmp_path: Path) -> None:
 
 def test_starter_front_matter(tmp_path: Path) -> None:
     fm = front_matter(run_starter("mage-frost", tmp_path))
-    assert fm["status"] == "starter" and fm["reviewed"] == "pending" and fm["role"] == "dps"
+    assert fm["status"] == "starter" and fm["reviewed"] == ps.REVIEWED == "wow-player, 2026-10-28" and fm["role"] == "dps"
     assert "data/curated/apl/mage-frost.json" in fm["sources"]
 
 

@@ -26,6 +26,10 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
     },
     "hunter-survival": {
         # survival.md: "it can only be performed after you dodge, and Expose Prey opens the same window".
+        # survival.md: Counterattack is "a free, unavoidable strike after a parry (cannot be blocked,
+        # dodged, or parried)"; Lacerate "is recast whenever its own bleed has fallen off" (read 5).
+        "Counterattack": "Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.",
+        "Lacerate": "Lacerate whenever its bleed has fallen off.",
         "Mongoose Bite": "Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.",
         # survival.md: "only in a raid: with a Windfury Totem in the group ... a loss without the totem".
         "Wing Clip": (

@@ -102,6 +102,12 @@ var relationCases = map[string]string{
 	"since":                 "Since the bar was full, Heroic Strike was free.",
 	"caused":                "Standing still caused the gap.",
 	"costs you":             "Skipping it costs you damage.",
+	"means":                 "A full bar means Heroic Strike is free.",
+	"therefore":             "The bar was full, therefore Heroic Strike was free.",
+	"due to":                "The loss was due to the gap.",
+	"results in":            "Standing still results in a gap.",
+	"explains":              "The gap explains the capped bar.",
+	"thanks to":             "Thanks to the gap, the bar capped.",
 	"upper case connective": "BECAUSE the bar was full.",
 }
 

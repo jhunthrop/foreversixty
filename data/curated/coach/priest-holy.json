@@ -1,0 +1,59 @@
+{
+  "spec": "priest-holy",
+  "build": "1.60.1.70630",
+  "core": [],
+  "auras": [
+    {
+      "spell_id": 10952,
+      "name": "Inner Fire",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/priest.json#10952"
+    }
+  ],
+  "downranks": [
+    {
+      "family": "Renew",
+      "spell_ids": [
+        139,
+        6074,
+        6075,
+        6076,
+        6077,
+        6078,
+        10927,
+        10928,
+        10929,
+        27606,
+        25315
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#25315"
+    }
+  ],
+  "defensives": [
+    {
+      "family": "Desperate Prayer",
+      "spell_ids": [
+        13908,
+        19236,
+        19238,
+        19240,
+        19241,
+        19242,
+        19243
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/priest.json#19243"
+    }
+  ],
+  "efficiency": [
+    {
+      "family": "Inner Focus",
+      "spell_ids": [
+        14751
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/priest.json#14751"
+    }
+  ]
+}

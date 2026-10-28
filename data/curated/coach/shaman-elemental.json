@@ -1,0 +1,21 @@
+{
+  "spec": "shaman-elemental",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Lava Burst",
+      "spell_ids": [
+        408490,
+        1238299,
+        1238300,
+        1326047
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/shaman.json#1326047"
+    }
+  ],
+  "auras": [],
+  "downranks": [],
+  "defensives": [],
+  "efficiency": []
+}

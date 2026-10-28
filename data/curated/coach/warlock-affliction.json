@@ -1,0 +1,54 @@
+{
+  "spec": "warlock-affliction",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Bane of Doom",
+      "spell_ids": [
+        603
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/warlock.json#603"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 25311,
+      "name": "Corruption",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/warlock.json#25311"
+    },
+    {
+      "spell_id": 603,
+      "name": "Bane of Doom",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/warlock.json#603"
+    },
+    {
+      "spell_id": 25309,
+      "name": "Immolate",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/warlock.json#25309"
+    },
+    {
+      "spell_id": 1316697,
+      "name": "Wrack",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/warlock.json#1316697"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Death Coil",
+      "spell_ids": [
+        6789,
+        17925,
+        17926
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/warlock.json#17926"
+    }
+  ],
+  "efficiency": []
+}

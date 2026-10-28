@@ -1,0 +1,30 @@
+{
+  "spec": "mage-frost",
+  "build": "1.60.1.70630",
+  "core": [],
+  "auras": [],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Ice Block",
+      "spell_ids": [
+        11958
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#11958"
+    },
+    {
+      "family": "Ice Barrier",
+      "spell_ids": [
+        11426,
+        13031,
+        13032,
+        13033,
+        1213278
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#13033"
+    }
+  ],
+  "efficiency": []
+}

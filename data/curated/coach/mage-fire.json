@@ -1,0 +1,52 @@
+{
+  "spec": "mage-fire",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Combustion",
+      "spell_ids": [
+        11129
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#11129"
+    },
+    {
+      "family": "Fire Blast",
+      "spell_ids": [
+        2136,
+        2137,
+        2138,
+        8412,
+        8413,
+        10197,
+        10199
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/mage.json#10199"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Ice Block",
+      "spell_ids": [
+        11958
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#11958"
+    },
+    {
+      "family": "Ice Barrier",
+      "spell_ids": [
+        11426,
+        13031,
+        13032,
+        13033,
+        1213278
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/mage.json#13033"
+    }
+  ],
+  "efficiency": []
+}

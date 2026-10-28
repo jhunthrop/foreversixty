@@ -1,0 +1,53 @@
+{
+  "spec": "druid-feral-bear",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Primal Bite",
+      "spell_ids": [
+        407995,
+        1238069,
+        1238070,
+        1238073
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/druid.json#1238073"
+    },
+    {
+      "family": "Berserk",
+      "spell_ids": [
+        417141
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/druid.json#417141"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 9898,
+      "name": "Demoralizing Roar",
+      "kind": "defensive",
+      "verified": "1.60.1.70630/spellconst/druid.json#9898"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Barkskin",
+      "spell_ids": [
+        22812
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/druid.json#22812"
+    },
+    {
+      "family": "Frenzied Regeneration",
+      "spell_ids": [
+        22842
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/druid.json#22842"
+    }
+  ],
+  "efficiency": []
+}

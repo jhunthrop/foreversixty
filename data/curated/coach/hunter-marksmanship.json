@@ -1,0 +1,64 @@
+{
+  "spec": "hunter-marksmanship",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Rapid Fire",
+      "spell_ids": [
+        3045
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#3045"
+    },
+    {
+      "family": "Aimed Shot",
+      "spell_ids": [
+        19434,
+        20900,
+        20901,
+        20902,
+        20903,
+        20904,
+        27632
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#20904"
+    },
+    {
+      "family": "Multi-Shot",
+      "spell_ids": [
+        2643
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#2643"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 25296,
+      "name": "Aspect of the Hawk",
+      "kind": "self_buff",
+      "verified": "1.60.1.70630/spellconst/hunter.json#25296"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Feign Death",
+      "spell_ids": [
+        5384
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#5384"
+    },
+    {
+      "family": "Deterrence",
+      "spell_ids": [
+        19263
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/hunter.json#19263"
+    }
+  ],
+  "efficiency": []
+}

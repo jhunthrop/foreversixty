@@ -1,0 +1,73 @@
+{
+  "spec": "hunter-survival",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Raptor Strike",
+      "spell_ids": [
+        14260,
+        14261,
+        14262,
+        14263,
+        14264,
+        14265,
+        14266
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#14266"
+    },
+    {
+      "family": "Strider Kick",
+      "spell_ids": [
+        1317257
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/hunter.json#1317257"
+    },
+    {
+      "family": "Immolation Trap",
+      "spell_ids": [
+        13795,
+        13797,
+        14298,
+        14302,
+        14299,
+        14303,
+        14300,
+        14304,
+        14301,
+        14305
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#14305"
+    }
+  ],
+  "auras": [
+    {
+      "spell_id": 1299332,
+      "name": "Lacerate",
+      "kind": "dot",
+      "verified": "1.60.1.70630/spellconst/hunter.json#1299332"
+    }
+  ],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Feign Death",
+      "spell_ids": [
+        5384
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/hunter.json#5384"
+    },
+    {
+      "family": "Deterrence",
+      "spell_ids": [
+        19263
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/hunter.json#19263"
+    }
+  ],
+  "efficiency": []
+}

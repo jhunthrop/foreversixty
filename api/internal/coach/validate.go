@@ -267,7 +267,28 @@ func (v Validator) toneProblems(doc ReviewDoc) []Problem {
 // claim only the pack's computed links can back. Any text slot that states a relation
 // with one of the connectives below must cite a link id on its own item.
 
-var relationRE = regexp.MustCompile(`(?i)\b(because|so|which is why|that(?:'|’)s why|why|costs? you|instead|meant|led to|caused|as a result|since|hence)\b`)
+// RelationConnectives are the words and phrases that state a relation between facts
+// (cause, consequence, explanation). The validator refuses a sentence holding one unless
+// its item cites a pack link; the Task 25 prompt reads the same list. A space matches any
+// run of white space and an apostrophe matches a straight or curly one.
+var RelationConnectives = []string{
+	"because", "so", "since", "hence", "therefore", "thus", "consequently", "why",
+	"which is why", "that's why", "instead", "as a result", "due to", "owing to", "thanks to",
+	"results in", "resulted in", "result in", "leads to", "led to", "lead to", "means", "meant",
+	"explains", "explained", "caused", "causes", "causing", "costs you", "cost you",
+}
+
+var relationRE = regexp.MustCompile(`(?i)\b(` + strings.Join(connectivePatterns(RelationConnectives), "|") + `)\b`)
+
+func connectivePatterns(words []string) []string {
+	out := make([]string, len(words))
+	for i, w := range words {
+		q := regexp.QuoteMeta(w)
+		q = strings.ReplaceAll(q, " ", `\s+`)
+		out[i] = strings.ReplaceAll(q, "'", `['’]`)
+	}
+	return out
+}
 
 // relationWords returns each relation connective in s, lower-cased, in order.
 func relationWords(s string) []string {

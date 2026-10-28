@@ -1,0 +1,27 @@
+{
+  "spec": "druid-restoration",
+  "build": "1.60.1.70630",
+  "core": [],
+  "auras": [],
+  "downranks": [],
+  "defensives": [
+    {
+      "family": "Barkskin",
+      "spell_ids": [
+        22812
+      ],
+      "talent": false,
+      "verified": "1.60.1.70630/spellconst/druid.json#22812"
+    }
+  ],
+  "efficiency": [
+    {
+      "family": "Nature's Swiftness",
+      "spell_ids": [
+        17116
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/druid.json#17116"
+    }
+  ]
+}

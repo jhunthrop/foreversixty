@@ -1,0 +1,18 @@
+{
+  "spec": "shaman-enhancement",
+  "build": "1.60.1.70630",
+  "core": [
+    {
+      "family": "Stormstrike",
+      "spell_ids": [
+        17364
+      ],
+      "talent": true,
+      "verified": "1.60.1.70630/spellconst/shaman.json#17364"
+    }
+  ],
+  "auras": [],
+  "downranks": [],
+  "defensives": [],
+  "efficiency": []
+}
