@@ -2,7 +2,9 @@
 // web/src/lib/account/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockEntitlements } from '../../test-support/billing-fixtures';
+import { normalizeMeBilling } from '../billing/normalize';
 import { invalidate } from '../data/query';
+import type { Me } from './api';
 import {
   ACCOUNT_FAILED,
   AccountError,
@@ -358,8 +360,8 @@ describe('fetchMeOnce', () => {
     const fetchSpy = vi.fn().mockResolvedValue(envelope(ME));
     vi.stubGlobal('fetch', fetchSpy);
     const [a, b] = await Promise.all([fetchMeOnce(API), fetchMeOnce(API)]);
-    expect(a).toEqual(ME);
-    expect(b).toEqual(ME);
+    expect(a).toEqual(normalizeMeBilling(ME as Me));
+    expect(b).toEqual(normalizeMeBilling(ME as Me));
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 

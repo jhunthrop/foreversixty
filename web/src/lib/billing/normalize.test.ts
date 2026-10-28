@@ -11,7 +11,7 @@ import {
   TRANSFER_OFFERED,
 } from '../../test-support/billing-fixtures';
 import type { GuildBillingSettings, SeatView } from './contract';
-import { normalizeGuildBilling, normalizeMeBilling } from './normalize';
+import { normalizeGuildBilling, normalizeMeBilling, normalizeMeGuild } from './normalize';
 
 /** What the API sends for a row with no price: empty strings where the types say null. */
 const blank = { interval: '', amount_cents: '' } as unknown as { interval: null; amount_cents: null };
@@ -85,5 +85,83 @@ describe('normalizeGuildBilling seats', () => {
     const absent = { ...emptySeat(1), offeree: undefined } as unknown as SeatView;
     const read = guildBillingRead({ seats: [absent, emptySeat(2, { offeree })] });
     expect(normalizeGuildBilling(read).seats.map((seat) => seat.offeree)).toEqual([null, offeree]);
+  });
+});
+
+describe('normalizeMeGuild', () => {
+  const OLDER = {
+    id: 1,
+    region: 'us',
+    ruleset: 'forever',
+    name: 'X',
+    verified: false,
+    verified_count: 0,
+    can: [],
+  };
+  const SUBSCRIBE = {
+    step: 'ready',
+    trial_used: false,
+    available_at: null,
+    reason: null,
+    other_guild_name: null,
+  };
+
+  it('an older guild entry normalizes to unknown', () => {
+    const out = normalizeMeGuild(OLDER);
+    expect(out).toMatchObject({
+      id: 1,
+      name: 'X',
+      subscribe: null,
+      claim: null,
+      verify: null,
+      covered: null,
+    });
+    expect(out.ruleset_label).toBeUndefined();
+  });
+
+  it('an unknown step becomes null', () => {
+    expect(normalizeMeGuild({ ...OLDER, subscribe: { step: 'pay_now' } }).subscribe).toBeNull();
+  });
+
+  it('keeps a known step and its values', () => {
+    expect(normalizeMeGuild({ ...OLDER, subscribe: SUBSCRIBE }).subscribe).toEqual(SUBSCRIBE);
+    const blocked = {
+      ...SUBSCRIBE,
+      step: 'claim_blocked',
+      reason: 'rate_limited',
+      available_at: '2026-11-01T00:00:00Z',
+    };
+    expect(normalizeMeGuild({ ...OLDER, subscribe: blocked }).subscribe).toEqual(blocked);
+  });
+
+  it('reads the ruleset label from either key, the new one first', () => {
+    expect(normalizeMeGuild({ ...OLDER, realm: 'Forever' }).ruleset_label).toBe('Forever');
+    expect(normalizeMeGuild({ ...OLDER, realm: 'Old', ruleset_label: 'New' }).ruleset_label).toBe('New');
+  });
+
+  it('drops a claim with an unknown state and keeps a known one', () => {
+    expect(normalizeMeGuild({ ...OLDER, claim: { state: 'bogus' } }).claim).toBeNull();
+    const claim = { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Aria' };
+    expect(normalizeMeGuild({ ...OLDER, claim }).claim).toEqual(claim);
+  });
+
+  it('keeps a covered view and drops one with an unknown state', () => {
+    const covered = {
+      tier: 'guild',
+      state: 'trial',
+      ends_at: null,
+      billed_by: '',
+      you_pay: false,
+      you_hold_seat: false,
+      seats_given: 0,
+      seats_total: 3,
+    };
+    expect(normalizeMeGuild({ ...OLDER, covered }).covered).toEqual(covered);
+    expect(normalizeMeGuild({ ...OLDER, covered: { ...covered, state: 'x' } }).covered).toBeNull();
+  });
+
+  it('is applied to every guild by normalizeMeBilling', () => {
+    const me = { user: { id: 1 }, characters: [], guilds: [OLDER] } as unknown as Me;
+    expect(normalizeMeBilling(me)?.guilds[0]?.subscribe).toBeNull();
   });
 });

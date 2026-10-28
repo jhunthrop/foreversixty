@@ -2,16 +2,16 @@
 // Every call the browser makes to the account half of the API. Sessions are an opaque
 // HttpOnly cookie, so nothing here reads or writes one: `credentials: 'include'` is the
 // whole mechanism. CSRF is the double-submit pair the contract specifies -- the readable
-// fs_csrf cookie echoed in X-CSRF-Token -- on every state-changing request.
-//
-// DELETE /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments
-// section; the first draft required both behaviours on /account without naming a route.
+// fs_csrf cookie echoed in X-CSRF-Token -- on every state-changing request. DELETE
+// /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments section.
 import { API_BASE_URL } from '../planner/config';
 import { forgetPrivate, invalidate, query, refetch, setQueryData } from '../data/query';
 import { forgetGuildReserves } from '../guild/reserve-keys';
 import type { BillingFacts, GuildTier, MeEndedSeat, MeSeat, MeSeatOffer } from '../billing/contract';
 import { normalizeMeBilling } from '../billing/normalize';
 import { clearPointerOnSignOut } from './session-pointer';
+import type { BillingSourceHint, MeGuildStanding, PersonalPortalHint } from './me-guild-types';
+import { clearPremiumHint, rememberMeHints } from './premium-hint';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -126,7 +126,7 @@ export interface MeCharacter {
   spec?: string;
 }
 
-export interface MeGuild {
+export interface MeGuild extends MeGuildStanding {
   id: number;
   region: string;
   ruleset: string;
@@ -153,7 +153,7 @@ export interface MeGuild {
 }
 
 /** Spec 1.4: every Can() feature pre-resolved for the caller, plus their own billing state. */
-export interface EntitlementsView {
+export interface EntitlementsView extends PersonalPortalHint {
   server_sims: boolean;
   retention: boolean;
   multi_compare: boolean;
@@ -165,7 +165,7 @@ export interface EntitlementsView {
   billing: BillingView | null;
 }
 
-export interface BillingView extends BillingFacts {
+export interface BillingView extends BillingFacts, BillingSourceHint {
   plan: string;
   status: string;
   current_period_end: string | null;
@@ -468,7 +468,7 @@ async function call<T>(
 /** Null means "not signed in", which is a state the header renders, not a failure. */
 export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null> {
   try {
-    return normalizeMeBilling(await call<Me>('/v1/me', apiBase));
+    return rememberMeHints(normalizeMeBilling(await call<Me>('/v1/me', apiBase)));
   } catch (error) {
     if (error instanceof AccountError && (error.status === 401 || error.status === 403)) return null;
     throw error;
@@ -665,6 +665,7 @@ export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
   forgetPrivate();
   forgetGuildReserves();
   clearPointerOnSignOut();
+  clearPremiumHint();
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }
 

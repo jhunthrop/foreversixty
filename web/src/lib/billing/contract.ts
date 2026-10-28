@@ -136,3 +136,67 @@ export interface MeEndedSeat {
   amount_cents: number | null;
   interval: Interval | null;
 }
+
+/** The API's `subscribe.step` words (api guilds/subscribe_step.go), in resolution order. */
+export const SUBSCRIBE_STEPS = [
+  'on_plan',
+  'checkout_open',
+  'frozen',
+  'ready',
+  'claimed_ask',
+  'claim_pending_yours',
+  'confirm_claim',
+  'claim_pending_ask',
+  'claim',
+  'claim_link_bnet',
+  'start_claim',
+  'claim_blocked',
+  'ask_leader',
+] as const;
+export type SubscribeStep = (typeof SUBSCRIBE_STEPS)[number];
+
+/** A guild's claim state in `/v1/me` (api guilds ClaimState*). */
+export const CLAIM_STATES = ['unclaimed', 'pending', 'claimed', 'contested'] as const;
+export type ClaimState = (typeof CLAIM_STATES)[number];
+
+/** What covers a guild today (api auth.GuildCoveredView.State). */
+export const COVERED_STATES = ['trial', 'active', 'ending', 'past_due', 'lapsed'] as const;
+export type CoveredState = (typeof COVERED_STATES)[number];
+
+/** The reasons a `claim_blocked` step carries (api guilds Blocked*). */
+export type ClaimBlockedReason = 'holds_other' | 'rate_limited';
+
+/** Who pays for the viewer's Premium (spec 4.1); Task 10's `premiumSource` returns it. */
+export type PremiumSource = 'own' | 'own_then_seat' | 'grant' | 'seat' | 'fallback' | 'none';
+
+export interface GuildClaimView {
+  state: ClaimState;
+  yours: boolean;
+  pending_yours: boolean;
+  /** Sent only to a verified officer. */
+  holder_name: string | null;
+}
+
+export interface GuildVerifyView {
+  has_approver: boolean;
+}
+
+export interface GuildCoveredView {
+  tier: GuildTier;
+  state: CoveredState;
+  ends_at: string | null;
+  /** Empty for a grant and for a viewer with no verified character. */
+  billed_by: string;
+  you_pay: boolean;
+  you_hold_seat: boolean;
+  seats_given: number;
+  seats_total: number;
+}
+
+export interface GuildSubscribeView {
+  step: SubscribeStep;
+  trial_used: boolean | null;
+  available_at: string | null;
+  reason: ClaimBlockedReason | null;
+  other_guild_name: string | null;
+}
