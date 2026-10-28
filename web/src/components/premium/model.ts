@@ -2,7 +2,7 @@
 // What a priced plan card needs from the plan table and the page copy, in one place, so the
 // card, its price block and its buttons cannot disagree. No price literal: amounts come from
 // lib/billing/plans.
-import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { perMemberLine, perRaiderLine, plansPageCopy } from '../../lib/billing/plans-page-copy';
 import {
   GUILD_TRIAL_DAYS,
   formatAmount,
@@ -65,6 +65,13 @@ export function priceCell(plan: PlanKey, interval: Interval, founder: boolean): 
       interval === 'yearly' ? price.perMonth(yearly) : price.orYearly(formatPrice(yearly, 'yearly')),
     founderLine: founder ? price.founder : null,
   };
+}
+
+/** The per-member (Guild) or per-raider (Raid guild) cost line; Premium has none. */
+export function costLine(plan: PlanKey, interval: Interval, founder: boolean): string | null {
+  if (plan === 'guild') return perMemberLine(interval, founder);
+  if (plan === 'raid_guild') return perRaiderLine(interval, founder);
+  return null;
 }
 
 /** The trial line split so its lead can be set strong without a second copy of the words. */

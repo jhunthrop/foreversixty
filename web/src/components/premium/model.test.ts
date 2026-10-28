@@ -1,8 +1,8 @@
 // web/src/components/premium/model.test.ts
 import { describe, expect, it } from 'vitest';
 import { GUILD_TRIAL_DAYS, PLANS, formatPrice, perMonthLine } from '../../lib/billing/plans';
-import { plansPageCopy } from '../../lib/billing/plans-page-copy';
-import { buttonLabel, checkoutHref, founderKey, planBlock, priceCell, trialParts } from './model';
+import { perMemberLine, perRaiderLine, plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { buttonLabel, checkoutHref, costLine, founderKey, planBlock, priceCell, trialParts } from './model';
 
 describe('checkoutHref', () => {
   it('carries the plan and interval and no guild id', () => {
@@ -44,6 +44,14 @@ describe('priceCell', () => {
   });
 });
 
+describe('costLine', () => {
+  it('is the per-member line for Guild, the per-raider line for Raid guild, none for Premium', () => {
+    expect(costLine('premium', 'yearly', true)).toBeNull();
+    expect(costLine('guild', 'yearly', true)).toBe(perMemberLine('yearly', true));
+    expect(costLine('raid_guild', 'monthly', false)).toBe(perRaiderLine('monthly', false));
+  });
+});
+
 describe('trialParts', () => {
   it('slices the strong lead off the trial sentence without losing a word', () => {
     const { lead, rest } = trialParts();
@@ -54,6 +62,11 @@ describe('trialParts', () => {
 });
 
 describe('planBlock and founderKey', () => {
+  it('never puts the held coach line in the Premium features', () => {
+    expect(planBlock('premium').features).toBe(plansPageCopy.premium.features);
+    expect(planBlock('premium').features).not.toContain(plansPageCopy.premium.featuresHeld.coach);
+  });
+
   it('maps each plan to its copy block', () => {
     expect(planBlock('raid_guild')).toBe(plansPageCopy.raidGuild);
     expect(founderKey(true)).toBe('open');
