@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70658",
   "engine_version": "ee68ce3ea",
-  "generated_at": "2026-10-28T11:29:32Z",
+  "generated_at": "2026-10-28T13:49:19Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -745,8 +745,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.070963637,
-      "verify_run_seconds": 4.329111371,
+      "weights_run_seconds": 1.21908892,
+      "verify_run_seconds": 2.861244074,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1584,8 +1584,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.070963637,
-      "verify_run_seconds": 4.31946058,
+      "weights_run_seconds": 1.21908892,
+      "verify_run_seconds": 2.789135881,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2477,8 +2477,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.09929727,
-      "verify_run_seconds": 4.397553919,
+      "weights_run_seconds": 1.212602975,
+      "verify_run_seconds": 2.741753198,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3375,8 +3375,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.09929727,
-      "verify_run_seconds": 4.400685498,
+      "weights_run_seconds": 1.212602975,
+      "verify_run_seconds": 2.700481382,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4257,8 +4257,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.289999516,
-      "verify_run_seconds": 2.546065492,
+      "weights_run_seconds": 1.326782095,
+      "verify_run_seconds": 1.573200064,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5137,8 +5137,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.289999516,
-      "verify_run_seconds": 2.548285093,
+      "weights_run_seconds": 1.326782095,
+      "verify_run_seconds": 1.623847227,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6014,8 +6014,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.882918187,
-      "verify_run_seconds": 2.9948261130000002,
+      "weights_run_seconds": 1.769678098,
+      "verify_run_seconds": 1.8201855409999999,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6894,8 +6894,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.882918187,
-      "verify_run_seconds": 3.043085014,
+      "weights_run_seconds": 1.769678098,
+      "verify_run_seconds": 1.8744485850000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7816,8 +7816,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.131332282,
-      "verify_run_seconds": 8.175639201,
+      "weights_run_seconds": 2.030207542,
+      "verify_run_seconds": 5.150292338,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8733,8 +8733,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Glacial Blade"
       ],
-      "weights_run_seconds": 3.131332282,
-      "verify_run_seconds": 8.298807441,
+      "weights_run_seconds": 2.030207542,
+      "verify_run_seconds": 5.090813316,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9650,8 +9650,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.334424248,
-      "verify_run_seconds": 8.518377441,
+      "weights_run_seconds": 1.9685933100000002,
+      "verify_run_seconds": 5.5073970899999996,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10583,8 +10583,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.334424248,
-      "verify_run_seconds": 8.493291602,
+      "weights_run_seconds": 1.9685933100000002,
+      "verify_run_seconds": 5.420205716,
       "coverage": {
         "back": {
           "eligible": 390,
