@@ -23,6 +23,8 @@
 #      addon's patch version is bumped with a changelog line, and the tag the push
 #      makes releases it to CurseForge and Wago, so players get a Data.lua and an
 #      Interface that match the client they are about to run.
+#      The log coach's 28 spec rule files (data/curated/coach) are restamped for the new
+#      build (pipeline coach-rules); a spell the new tables lost stops the move.
 #   6. The --check gates data.yml runs are run here first; a drift stops the move
 #      before anything is committed.
 #
@@ -99,6 +101,9 @@ done
 go run ./sim/cmd/addon-builds -repo-root .
 ( cd data && uv run python -m pipeline weights --build "$NEW" && uv run python -m pipeline addon-data --build "$NEW" )
 
+# 4a. The log coach's rule files, restamped against the new build's tables.
+( cd data && uv run python -m pipeline coach-rules --build "$NEW" )
+
 # 4b. The API's Battle.net import fixture is stamped with the active build.
 sed -i.bak "s/^FS1:$ACTIVE:/FS1:$NEW:/" api/internal/bnetbuild/testdata/era-kiloz.fs1 && rm -f api/internal/bnetbuild/testdata/era-kiloz.fs1.bak
 grep -q "^FS1:$NEW:" api/internal/bnetbuild/testdata/era-kiloz.fs1 || { echo "the API fixture was not re-stamped"; exit 1; }
@@ -125,9 +130,9 @@ open(path, "w", encoding="utf-8").write(head + entry + sep + rest)
 PY
 
 # 6. The gates data.yml runs, before anything is committed.
-( cd data && uv run python -m pipeline weights --build "$NEW" --check && uv run python -m pipeline addon-data --build "$NEW" --check )
+( cd data && uv run python -m pipeline weights --build "$NEW" --check && uv run python -m pipeline addon-data --build "$NEW" --check && uv run python -m pipeline coach-rules --build "$NEW" --check )
 
-git add "$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox web/src/content/guides api/internal/bnetbuild/testdata/era-kiloz.fs1
+git add "$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides api/internal/bnetbuild/testdata/era-kiloz.fs1
 git status --short | head -40
 [ "$MODE" != inspect ] || { echo "--no-commit: stopping with the tree changed and staged"; exit 0; }
 

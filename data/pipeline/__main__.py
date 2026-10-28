@@ -270,6 +270,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if either emitted file has drifted",
     )
 
+    cr = sub.add_parser(
+        "coach-rules",
+        help="restamp the log coach's 28 spec rule files (curated/coach) for a build",
+    )
+    cr.add_argument("--build", required=True)
+    cr.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if any rule file has drifted",
+    )
+
     cc = sub.add_parser(
         "client-check",
         help="ask wago.tools for the newest World of Warcraft: Forever client build "
@@ -611,6 +622,21 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_addon_data(args.build, data=data))
         print(write_lua(args.build, data=data))
+    elif args.command == "coach-rules":
+        from pipeline.coachrules import drifted_rule_files, write_rule_files
+
+        if args.check:
+            drifted = drifted_rule_files(args.build)
+            for path in drifted:
+                logging.getLogger("pipeline").error("%s has drifted", path)
+            if drifted:
+                logging.getLogger("pipeline").error(
+                    "run `python -m pipeline coach-rules --build %s`", args.build
+                )
+                return 1
+            return 0
+        for path in write_rule_files(args.build):
+            print(path)
     elif args.command == "client-check":
         import json
         import os

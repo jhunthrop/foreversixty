@@ -71,6 +71,7 @@ jobs:
           echo "build=$build" >> "$GITHUB_OUTPUT"
       - run: uv run python -m pipeline weights --build "${{ steps.active.outputs.build }}" --check
       - run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
+      - run: uv run python -m pipeline coach-rules --build "${{ steps.active.outputs.build }}" --check
       # test_addondata.py gates the generated Data.lua on a real `load()`, so the
       # suite needs an interpreter; ubuntu-latest ships none and the test skips
       # itself without one. A plain apt install rather than a third-party action:
