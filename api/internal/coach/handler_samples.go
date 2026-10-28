@@ -92,7 +92,7 @@ func daySamples(r *http.Request, pool *pgxpool.Pool, day time.Time) ([]sampleIte
 	return withoutAnonymised(r.Context(), pool, items)
 }
 
-// withoutAnonymised blanks the name and review of each sample whose character's account
+// withoutAnonymised blanks the player key (it carries the name), name and review of each sample whose character's account
 // asked to be anonymous (rating.CharacterAnonymized, the one anonymize rule): moderators
 // never see that character's row anywhere else either (AccessFor).
 func withoutAnonymised(ctx context.Context, pool *pgxpool.Pool, items []sampleItem) ([]sampleItem, error) {
@@ -103,7 +103,7 @@ func withoutAnonymised(ctx context.Context, pool *pgxpool.Pool, items []sampleIt
 			return nil, err
 		}
 		if anon {
-			s.CharacterName, s.Review = "", json.RawMessage("null")
+			s.PlayerKey, s.CharacterName, s.Review = "", "", json.RawMessage("null")
 		}
 		out = append(out, s)
 	}
