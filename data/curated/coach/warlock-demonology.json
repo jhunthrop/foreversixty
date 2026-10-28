@@ -23,18 +23,41 @@
   "auras": [
     {
       "spell_id": 25311,
+      "spell_ids": [
+        172,
+        6222,
+        6223,
+        7648,
+        11671,
+        11672,
+        1223963,
+        25311
+      ],
       "name": "Corruption",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/warlock.json#25311"
     },
     {
       "spell_id": 603,
+      "spell_ids": [
+        603
+      ],
       "name": "Bane of Doom",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/warlock.json#603"
     },
     {
       "spell_id": 25309,
+      "spell_ids": [
+        348,
+        707,
+        1094,
+        2941,
+        11665,
+        11667,
+        11668,
+        25309
+      ],
       "name": "Immolate",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/warlock.json#25309"

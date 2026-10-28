@@ -14,12 +14,24 @@
   "auras": [
     {
       "spell_id": 11275,
+      "spell_ids": [
+        1943,
+        8639,
+        8640,
+        11273,
+        11274,
+        11275
+      ],
       "name": "Rupture",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/rogue.json#11275"
     },
     {
       "spell_id": 6774,
+      "spell_ids": [
+        5171,
+        6774
+      ],
       "name": "Slice and Dice",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/rogue.json#6774"
@@ -39,7 +51,9 @@
       "family": "Vanish",
       "spell_ids": [
         1856,
+        11327,
         1857,
+        11329,
         27617,
         1285372
       ],

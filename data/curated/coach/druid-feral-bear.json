@@ -25,6 +25,13 @@
   "auras": [
     {
       "spell_id": 9898,
+      "spell_ids": [
+        99,
+        1735,
+        9490,
+        9747,
+        9898
+      ],
       "name": "Demoralizing Roar",
       "kind": "defensive",
       "verified": "1.60.1.70630/spellconst/druid.json#9898"

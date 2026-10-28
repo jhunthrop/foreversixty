@@ -5,6 +5,13 @@
   "auras": [
     {
       "spell_id": 24977,
+      "spell_ids": [
+        5570,
+        24974,
+        24975,
+        24976,
+        24977
+      ],
       "name": "Insect Swarm",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/druid.json#24977"

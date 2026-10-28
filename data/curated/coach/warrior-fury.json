@@ -41,6 +41,16 @@
   "auras": [
     {
       "spell_id": 25289,
+      "spell_ids": [
+        6673,
+        5242,
+        6192,
+        11549,
+        11550,
+        11551,
+        27578,
+        25289
+      ],
       "name": "Battle Shout",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/warrior.json#25289"

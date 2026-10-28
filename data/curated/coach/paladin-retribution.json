@@ -29,6 +29,26 @@
   "auras": [
     {
       "spell_id": 20293,
+      "spell_ids": [
+        20154,
+        21084,
+        25741,
+        25742,
+        20287,
+        25740,
+        20288,
+        25739,
+        20289,
+        25738,
+        20290,
+        25737,
+        20291,
+        25736,
+        20292,
+        25735,
+        25713,
+        20293
+      ],
       "name": "Seal of Righteousness",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/paladin.json#20293"
@@ -48,8 +68,8 @@
     {
       "family": "Divine Protection",
       "spell_ids": [
-        458312,
         498,
+        458312,
         458371,
         5573
       ],

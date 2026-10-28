@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 )
 
 // RuleEntry is one ability in a spec's rule file: its family name, every rank's spell id,
@@ -20,12 +21,24 @@ type RuleEntry struct {
 	Verified string  `json:"verified"`
 }
 
-// AuraRule is one owned aura F2 judges.
+// AuraRule is one owned aura F2 judges. SpellID is the aura's canonical (stamped) rank,
+// the key its uptime is reported under; SpellIDs, when set, is every rank's id, and an
+// application of any of them is the aura (a lower rank is still the aura).
 type AuraRule struct {
-	SpellID  int64  `json:"spell_id"`
-	Name     string `json:"name"`
-	Kind     string `json:"kind"` // AuraDot, AuraDebuff, AuraSelfBuff or AuraDefensive
-	Verified string `json:"verified"`
+	SpellID  int64   `json:"spell_id"`
+	SpellIDs []int64 `json:"spell_ids,omitempty"`
+	Name     string  `json:"name"`
+	Kind     string  `json:"kind"` // AuraDot, AuraDebuff, AuraSelfBuff or AuraDefensive
+	Verified string  `json:"verified"`
+}
+
+// IDs is every spell id that counts as this aura: SpellIDs, or SpellID alone when the
+// rule lists no ranks.
+func (a AuraRule) IDs() []int64 {
+	if len(a.SpellIDs) > 0 {
+		return a.SpellIDs
+	}
+	return []int64{a.SpellID}
 }
 
 // The aura kinds a rule file may name.
@@ -106,6 +119,13 @@ func checkAuraRule(a AuraRule) error {
 		return fmt.Errorf("%s has no spell id", a.Name)
 	case !auraKinds[a.Kind]:
 		return fmt.Errorf("%s has unknown kind %q", a.Name, a.Kind)
+	case len(a.SpellIDs) > 0 && !slices.Contains(a.SpellIDs, a.SpellID):
+		return fmt.Errorf("%s lists ranks without its spell id %d", a.Name, a.SpellID)
+	}
+	for _, id := range a.SpellIDs {
+		if id <= 0 {
+			return fmt.Errorf("%s has spell id %d", a.Name, id)
+		}
 	}
 	return nil
 }

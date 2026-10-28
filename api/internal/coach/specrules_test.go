@@ -33,6 +33,7 @@ func TestParseSpecRules_RefusesUnstamped(t *testing.T) {
 		{"core entry with no spell id", `"spell_ids": [23881, 23894]`, `"spell_ids": []`, "Bloodthirst has no spell id"},
 		{"unstamped aura", `"kind": "self_buff", "verified": "1.60.1.70630"`, `"kind": "self_buff", "verified": ""`, "Battle Shout has no verified stamp"},
 		{"unknown aura kind", `"kind": "self_buff"`, `"kind": "buffish"`, `Battle Shout has unknown kind "buffish"`},
+		{"aura ranks without its spell id", `"spell_id": 6673,`, `"spell_id": 6673, "spell_ids": [5242],`, "Battle Shout lists ranks without its spell id 6673"},
 		{"unknown field", `"downranks": []`, `"downrank": []`, "unknown field"},
 		{"no spec", `"spec": "warrior-fury"`, `"spec": ""`, "no spec"},
 	}

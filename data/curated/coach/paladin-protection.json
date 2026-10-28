@@ -55,6 +55,11 @@
   "auras": [
     {
       "spell_id": 20928,
+      "spell_ids": [
+        20925,
+        20927,
+        20928
+      ],
       "name": "Holy Shield",
       "kind": "defensive",
       "verified": "1.60.1.70630/spellconst/paladin.json#20928"
@@ -82,8 +87,8 @@
     {
       "family": "Divine Protection",
       "spell_ids": [
-        458312,
         498,
+        458312,
         458371,
         5573
       ],

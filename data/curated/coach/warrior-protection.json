@@ -25,18 +25,43 @@
   "auras": [
     {
       "spell_id": 2565,
+      "spell_ids": [
+        2565
+      ],
       "name": "Shield Block",
       "kind": "defensive",
       "verified": "1.60.1.70630/spellconst/warrior.json#2565"
     },
     {
       "spell_id": 11556,
+      "spell_ids": [
+        1160,
+        6190,
+        11554,
+        11555,
+        27579,
+        11556
+      ],
       "name": "Demoralizing Shout",
       "kind": "defensive",
       "verified": "1.60.1.70630/spellconst/warrior.json#11556"
     },
     {
       "spell_id": 11581,
+      "spell_ids": [
+        6343,
+        461830,
+        8198,
+        461829,
+        8204,
+        461828,
+        8205,
+        461827,
+        11580,
+        461826,
+        461810,
+        11581
+      ],
       "name": "Thunder Clap",
       "kind": "defensive",
       "verified": "1.60.1.70630/spellconst/warrior.json#11581"

@@ -16,8 +16,8 @@
         12294,
         21551,
         21552,
-        21553,
-        27580
+        27580,
+        21553
       ],
       "talent": true,
       "verified": "1.60.1.70630/spellconst/warrior.json#21553"
@@ -26,12 +26,31 @@
   "auras": [
     {
       "spell_id": 25289,
+      "spell_ids": [
+        6673,
+        5242,
+        6192,
+        11549,
+        11550,
+        11551,
+        27578,
+        25289
+      ],
       "name": "Battle Shout",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/warrior.json#25289"
     },
     {
       "spell_id": 11574,
+      "spell_ids": [
+        772,
+        6546,
+        6547,
+        6548,
+        11572,
+        11573,
+        11574
+      ],
       "name": "Rend",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/warrior.json#11574"

@@ -5,6 +5,14 @@
   "auras": [
     {
       "spell_id": 10952,
+      "spell_ids": [
+        588,
+        7128,
+        602,
+        1006,
+        10951,
+        10952
+      ],
       "name": "Inner Fire",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/priest.json#10952"
@@ -23,8 +31,9 @@
         10898,
         10899,
         10900,
-        10901,
-        27607
+        27607,
+        1236154,
+        10901
       ],
       "talent": false,
       "verified": "1.60.1.70630/spellconst/priest.json#10901"

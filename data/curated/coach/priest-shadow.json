@@ -38,12 +38,27 @@
   "auras": [
     {
       "spell_id": 10894,
+      "spell_ids": [
+        589,
+        594,
+        970,
+        992,
+        2767,
+        10892,
+        10893,
+        27605,
+        1226589,
+        10894
+      ],
       "name": "Shadow Word: Pain",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/priest.json#10894"
     },
     {
       "spell_id": 15473,
+      "spell_ids": [
+        15473
+      ],
       "name": "Shadowform",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/priest.json#15473"

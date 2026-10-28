@@ -18,8 +18,9 @@
         20901,
         20902,
         20903,
-        20904,
-        27632
+        27632,
+        1236188,
+        20904
       ],
       "talent": false,
       "verified": "1.60.1.70630/spellconst/hunter.json#20904"
@@ -36,6 +37,15 @@
   "auras": [
     {
       "spell_id": 25296,
+      "spell_ids": [
+        13165,
+        14318,
+        14319,
+        14320,
+        14321,
+        14322,
+        25296
+      ],
       "name": "Aspect of the Hawk",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/hunter.json#25296"

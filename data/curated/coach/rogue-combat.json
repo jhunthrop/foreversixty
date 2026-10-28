@@ -22,6 +22,10 @@
   "auras": [
     {
       "spell_id": 6774,
+      "spell_ids": [
+        5171,
+        6774
+      ],
       "name": "Slice and Dice",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/rogue.json#6774"
@@ -41,7 +45,9 @@
       "family": "Vanish",
       "spell_ids": [
         1856,
+        11327,
         1857,
+        11329,
         27617,
         1285372
       ],

@@ -124,9 +124,36 @@ func allRuleSpellIDs(r SpecRules) []int64 {
 		}
 	}
 	for _, a := range r.Auras {
-		ids = append(ids, a.SpellID)
+		ids = append(ids, a.IDs()...)
 	}
 	return ids
+}
+
+// missingRanks is every ranked (rank ≥ 1) spellconst spell named name that ids leaves out.
+// A rank left out would read as the ability never cast or the aura never applied (§20.4).
+// Unranked spells of the same name (NPC copies, triggered effects) are not the player's.
+func missingRanks(spells map[int64]SpellConst, name string, ids []int64) []int64 {
+	var out []int64
+	for id, sc := range spells {
+		if sc.Name == name && sc.Rank >= 1 && !slices.Contains(ids, id) {
+			out = append(out, id)
+		}
+	}
+	slices.Sort(out)
+	return out
+}
+
+// checkRankList: every id is a spell named name, and no rank of name is missing.
+func checkRankList(t *testing.T, s shippedRules, what, name string, ids []int64) {
+	t.Helper()
+	for _, id := range ids {
+		if sc, ok := s.class.spells[id]; ok && sc.Name != name {
+			t.Errorf("%s %s: %s spell %d is %q in spellconst", s.info.Spec, what, name, id, sc.Name)
+		}
+	}
+	if miss := missingRanks(s.class.spells, name, ids); len(miss) > 0 {
+		t.Errorf("%s %s: %s leaves out ranks %v", s.info.Spec, what, name, miss)
+	}
 }
 
 // stampID checks a verified stamp is <build>/spellconst/<class>.json#<id> and returns the id.
@@ -172,11 +199,7 @@ func TestSpecRuleFiles_AllStampedAndReal(t *testing.T) {
 func checkShippedEntry(t *testing.T, s shippedRules, build, list string, e RuleEntry) {
 	t.Helper()
 	spec := s.info.Spec
-	for _, id := range e.SpellIDs {
-		if sc, ok := s.class.spells[id]; ok && sc.Name != e.Family {
-			t.Errorf("%s %s: %s spell %d is %q in spellconst", spec, list, e.Family, id, sc.Name)
-		}
-	}
+	checkRankList(t, s, list, e.Family, e.SpellIDs)
 	id, err := stampID(e.Verified, build, s.info.Class)
 	if err != nil || !slices.Contains(e.SpellIDs, id) {
 		t.Errorf("%s %s: %s stamp %q (%v) names none of its ids", spec, list, e.Family, e.Verified, err)
@@ -192,9 +215,10 @@ func checkShippedEntry(t *testing.T, s shippedRules, build, list string, e RuleE
 func checkShippedAura(t *testing.T, s shippedRules, build string, a AuraRule) {
 	t.Helper()
 	spec := s.info.Spec
-	if sc, ok := s.class.spells[a.SpellID]; ok && sc.Name != a.Name {
-		t.Errorf("%s auras: %s spell %d is %q in spellconst", spec, a.Name, a.SpellID, sc.Name)
+	if len(a.SpellIDs) == 0 {
+		t.Errorf("%s auras: %s lists no ranks; a lower rank would read as never applied", spec, a.Name)
 	}
+	checkRankList(t, s, "auras", a.Name, a.IDs())
 	if id, err := stampID(a.Verified, build, s.info.Class); err != nil || id != a.SpellID {
 		t.Errorf("%s auras: %s stamp %q (%v) is not its spell %d", spec, a.Name, a.Verified, err, a.SpellID)
 	}

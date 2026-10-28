@@ -5,6 +5,7 @@
     {
       "family": "Stormstrike",
       "spell_ids": [
+        410156,
         17364
       ],
       "talent": true,

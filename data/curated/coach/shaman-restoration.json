@@ -5,6 +5,9 @@
   "auras": [
     {
       "spell_id": 408510,
+      "spell_ids": [
+        408510
+      ],
       "name": "Water Shield",
       "kind": "self_buff",
       "verified": "1.60.1.70630/spellconst/shaman.json#408510"

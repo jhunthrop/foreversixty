@@ -22,6 +22,14 @@
   "auras": [
     {
       "spell_id": 9896,
+      "spell_ids": [
+        1079,
+        9492,
+        9493,
+        9752,
+        9894,
+        9896
+      ],
       "name": "Rip",
       "kind": "dot",
       "verified": "1.60.1.70630/spellconst/druid.json#9896"
