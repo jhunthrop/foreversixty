@@ -567,7 +567,7 @@ func serve(log *slog.Logger) error {
 
 	// Ranking rows are written into monthly partitions, which have to
 	// exist before the first fight of the month closes.
-	partitions := &db.PartitionJob{Pool: pool, Log: log, Tables: []string{"fight_metrics", db.RatingsTable}}
+	partitions := &db.PartitionJob{Pool: pool, Log: log, Tables: []string{"fight_metrics", db.RatingsTable, db.CoachProfilesTable}}
 	if err := partitions.Run(ctx); err != nil {
 		return fmt.Errorf("partitions: %w", err)
 	}

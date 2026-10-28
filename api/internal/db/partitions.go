@@ -20,6 +20,9 @@ const PartitionSweepEvery = 24 * time.Hour
 // outside this package never hand-spells it.
 const RatingsTable = "rating_scores"
 
+// CoachProfilesTable is the coach_profiles partitioned table (migration 0055).
+const CoachProfilesTable = "coach_profiles"
+
 // partitionName is the table name for the month containing at, for any range-partitioned
 // table keyed the same way fight_metrics and rating_scores both are.
 func partitionName(table string, at time.Time) string {
@@ -58,6 +61,11 @@ func EnsureMetricsPartition(ctx context.Context, pool *pgxpool.Pool, at time.Tim
 // EnsureRatingsPartition is EnsurePartition pinned to rating_scores.
 func EnsureRatingsPartition(ctx context.Context, pool *pgxpool.Pool, at time.Time) error {
 	return EnsurePartition(ctx, pool, RatingsTable, at)
+}
+
+// EnsureCoachProfilesPartition is EnsurePartition pinned to coach_profiles.
+func EnsureCoachProfilesPartition(ctx context.Context, pool *pgxpool.Pool, at time.Time) error {
+	return EnsurePartition(ctx, pool, CoachProfilesTable, at)
 }
 
 // EnsurePartitions creates the partition of table for the month containing from and the
