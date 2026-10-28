@@ -7,7 +7,7 @@ import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
-import { CARD_SURFACE } from '../../lib/ui/card';
+import { CARD, CARD_SURFACE } from '../../lib/ui/card';
 import PriceBlock from './PriceBlock.astro';
 import { FOUNDER_STATES, buttonLabel, checkoutHref, founderKey, planBlock, trialParts } from './model';
 
@@ -35,7 +35,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
 ---
 
 <article
-  class={`plan-card ${CARD_SURFACE}`}
+  class={`plan-card ${guild ? CARD_SURFACE : CARD}`}
   id={cardId}
   data-testid={`plan-${plan}`}
   data-plan={plan}

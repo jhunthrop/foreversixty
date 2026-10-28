@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
-import { CARD_SURFACE } from '../../lib/ui/card';
+import { CARD, CARD_SURFACE } from '../../lib/ui/card';
 import { createPageContainer } from '../../test-support/page-container';
 import PlanCard from './PlanCard.astro';
 import { trialParts } from './model';
@@ -52,9 +52,10 @@ describe('PlanCard, Premium', () => {
     },
   );
 
-  it('keeps the gold top highlight', async () => {
-    const card = (await renderCard('premium')).querySelector('[data-plan=premium]');
+  it.each(['free', 'premium'] as const)('%s card keeps the gold top highlight', async (plan) => {
+    const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);
     expect(card?.hasAttribute('data-highlight')).toBe(true);
+    for (const cls of CARD.split(' ')) expect(card?.classList.contains(cls)).toBe(true);
   });
 });
 
@@ -85,6 +86,7 @@ describe.each(['guild', 'raid_guild'] as const)('PlanCard, %s', (plan) => {
   it('guild cards have no gold top highlight', async () => {
     const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);
     expect(card?.hasAttribute('data-highlight')).toBe(false);
+    expect(card?.className).not.toContain('shadow-[inset');
   });
 
   it('trial slot min 40 px with the strong lead', async () => {
