@@ -17,10 +17,16 @@ export interface LastRaidView {
   segments: LastRaidSegment[];
   /** Where the link segment goes; null when the sentence carries no link. */
   href: string | null;
+  /** The fix-first stem inside the sentence, so the view can clamp it to one line; null when absent. */
+  stem: string | null;
 }
 
-export const PREMIUM_HREF = '/premium';
 const SEGMENT_SEPARATOR = ' · ';
+
+/** The line's accessible name: the copy's own lead, so it is never typed twice. */
+export const LAST_RAID_LABEL = coachCopy.lastRaidNone.split(SEGMENT_SEPARATOR)[0]!;
+
+export const PREMIUM_HREF = '/premium';
 const DATE_LOCALE = 'en-GB';
 
 /** `ddd d MMM` in the viewer's zone (the browser's own unless `timeZone` is given). */
@@ -61,7 +67,8 @@ function freeTemplate(raid: LastRaid): string {
 /** The line for a settled `/v1/me/coach/recent` answer; `premium` is `me.entitlements.log_coach`. */
 export function lastRaidLine(recent: CoachRecent, premium: boolean, timeZone?: string): LastRaidView {
   const raid = recent.last_raid;
-  if (raid === null) return { segments: [{ role: 'muted', text: coachCopy.lastRaidNone }], href: null };
+  if (raid === null)
+    return { segments: [{ role: 'muted', text: coachCopy.lastRaidNone }], href: null, stem: null };
   const fields = {
     zone: raid.zone,
     date: formatRaidDate(raid.fought_at, timeZone),
@@ -71,16 +78,25 @@ export function lastRaidLine(recent: CoachRecent, premium: boolean, timeZone?: s
     count: raid.finding_count,
   };
   if (recent.pending && raid.first === null) {
-    return { segments: toSegments(fill(coachCopy.lastRaidPending, fields), false), href: null };
+    return { segments: toSegments(fill(coachCopy.lastRaidPending, fields), false), href: null, stem: null };
   }
   const template = premium ? premiumTemplate(raid) : freeTemplate(raid);
-  const href = !premium ? (template.endsWith('Premium') ? PREMIUM_HREF : null) : raid.url;
-  const linked = href !== null && template !== coachCopy.lastRaidCleanFree;
-  return { segments: toSegments(fill(template, fields), linked), href: linked ? href : null };
+  const href = linkTarget(raid, premium, template);
+  const stem = template.includes('{stem}') ? fields.stem : null;
+  return { segments: toSegments(fill(template, fields), href !== null), href, stem };
+}
+
+/** Premium always opens the review; free sends everything but the clean night to the upgrade page. */
+function linkTarget(raid: LastRaid, premium: boolean, template: string): string | null {
+  if (premium) return raid.url;
+  return template === coachCopy.lastRaidCleanFree ? null : PREMIUM_HREF;
 }
 
 export type LastRaidState =
-  { kind: 'loading' } | { kind: 'error' } | { kind: 'ready'; view: LastRaidView; pending: boolean };
+  | { kind: 'loading' }
+  | { kind: 'retrying' }
+  | { kind: 'error' }
+  | { kind: 'ready'; view: LastRaidView; pending: boolean };
 
 /** Fetches the recent answer and settles it into a state; a failed call is `error`, never a throw. */
 export async function settleLastRaid(
@@ -98,4 +114,56 @@ export async function settleLastRaid(
   } catch {
     return { kind: 'error' };
   }
+}
+
+export interface LastRaidLoaderOptions {
+  fetchRecent: () => Promise<CoachRecent>;
+  premium: boolean;
+  /** One refresh this long after a first answer that is still pending. */
+  refreshDelayMs: number;
+  onState: (state: LastRaidState) => void;
+  schedule?: (run: () => void, delayMs: number) => unknown;
+  cancel?: (handle: unknown) => void;
+}
+
+export interface LastRaidLoader {
+  start: () => void;
+  /** Try again after an error: shows `retrying` while the call is in flight. */
+  retry: () => void;
+  /** Cancels the pending refresh and ignores any answer still in flight. */
+  stop: () => void;
+}
+
+/** Loads the line once, refreshes once if the first answer is pending, and offers a retry. */
+export function createLastRaidLoader(options: LastRaidLoaderOptions): LastRaidLoader {
+  const { fetchRecent, premium, refreshDelayMs, onState } = options;
+  const schedule = options.schedule ?? ((run, ms) => setTimeout(run, ms));
+  const cancel = options.cancel ?? ((handle) => clearTimeout(handle as ReturnType<typeof setTimeout>));
+  let stopped = false;
+  let timer: unknown;
+
+  const refresh = async (): Promise<void> => {
+    const next = await settleLastRaid(fetchRecent, premium);
+    // A failed refresh keeps the line already on screen.
+    if (!stopped && next.kind === 'ready') onState(next);
+  };
+
+  const load = async (before: LastRaidState, armRefresh: boolean): Promise<void> => {
+    onState(before);
+    const settled = await settleLastRaid(fetchRecent, premium);
+    if (stopped) return;
+    onState(settled);
+    if (armRefresh && settled.kind === 'ready' && settled.pending) {
+      timer = schedule(() => void refresh(), refreshDelayMs);
+    }
+  };
+
+  return {
+    start: () => void load({ kind: 'loading' }, true),
+    retry: () => void load({ kind: 'retrying' }, false),
+    stop: () => {
+      stopped = true;
+      if (timer !== undefined) cancel(timer);
+    },
+  };
 }

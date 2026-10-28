@@ -445,7 +445,7 @@ html[data-session='1'] .account-header-reserve {
   min-height: 83px;
 }
 .account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 483px);
+  min-height: max(var(--account-left-reserve, 0px), 496px);
 }
 .account-devices-skeleton {
   min-height: 249px;
@@ -515,7 +515,7 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 44px;
   }
   .account-left-skeleton {
-    min-height: max(var(--account-left-reserve, 0px), 358px);
+    min-height: max(var(--account-left-reserve, 0px), 371px);
   }
   .account-devices-skeleton {
     min-height: 233px;

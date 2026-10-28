@@ -12,8 +12,11 @@ describe('CoachLastRaidLine', () => {
     expect(body).toContain('data-testid="coach-last-raid"');
     expect(body).toContain('data-state="loading"');
     expect(body).toContain('aria-busy="true"');
-    expect(body).toContain('min-h-16');
-    expect(body).toContain('md:min-h-11');
+    expect(body).toContain('min-h-[77px]');
+    expect(body).toContain('md:min-h-[57px]');
+    expect(body).toContain('role="status"');
+    expect(body).toContain('aria-label="Last raid"');
+    expect(body).toContain('coach-last-raid-skeleton');
     expect(fetchRecent).not.toHaveBeenCalled();
   });
 });

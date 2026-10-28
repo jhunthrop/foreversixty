@@ -141,8 +141,8 @@ describe('the floors', () => {
   });
 
   it('count the Characters panel coach line once, in the left floor', () => {
-    expect(COACH_LAST_RAID_RESERVE).toEqual({ lg: 44, stack: 64 });
-    expect(LEFT_FLOOR).toEqual({ lg: 298 + 44 + 16, stack: 403 + 64 + 16 });
+    expect(COACH_LAST_RAID_RESERVE).toEqual({ lg: 57, stack: 77 });
+    expect(LEFT_FLOOR).toEqual({ lg: 298 + 57 + 16, stack: 403 + 77 + 16 });
   });
 
   it('take the taller column at lg and stack the two below it', () => {

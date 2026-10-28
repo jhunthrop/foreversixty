@@ -8,7 +8,13 @@
   import { onMount } from 'svelte';
   import { fetchCoachRecent } from '../../lib/coach/api';
   import { coachCopy } from '../../lib/coach/copy';
-  import { settleLastRaid, type LastRaidRole, type LastRaidState } from '../../lib/coach/last-raid';
+  import {
+    LAST_RAID_LABEL,
+    createLastRaidLoader,
+    type LastRaidRole,
+    type LastRaidState,
+  } from '../../lib/coach/last-raid';
+  import { uiCopy } from '../../lib/ui/copy';
   import type { CoachRecent } from '../../lib/coach/types';
 
   let {
@@ -32,48 +38,59 @@
     muted: 'text-muted',
   };
 
-  async function load(): Promise<LastRaidState> {
-    state = await settleLastRaid(fetchRecent, premium);
-    return state;
-  }
+  const loader = createLastRaidLoader({
+    fetchRecent: () => fetchRecent(),
+    premium,
+    refreshDelayMs,
+    onState: (next) => (state = next),
+  });
 
   onMount(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    let alive = true;
-    void load().then((settled) => {
-      if (!alive || settled.kind !== 'ready' || !settled.pending) return;
-      timer = setTimeout(() => void load(), refreshDelayMs);
-    });
-    return () => {
-      alive = false;
-      clearTimeout(timer);
-    };
+    loader.start();
+    return loader.stop;
   });
+
+  const busy = $derived(state.kind === 'loading' || state.kind === 'retrying');
 </script>
 
 <div
-  class="border-line-soft flex min-h-16 items-center border-b py-2 text-[13px] leading-5 md:min-h-11"
+  class="border-line-soft flex min-h-[77px] items-center border-b py-2 text-[13px] leading-5 md:min-h-[57px]"
+  role="status"
+  aria-label={LAST_RAID_LABEL}
+  aria-live="polite"
+  aria-busy={busy}
   data-testid="coach-last-raid"
   data-state={state.kind}
-  aria-busy={state.kind === 'loading'}
 >
-  {#if state.kind === 'error'}
-    <p class="text-muted" role="status">
+  {#if state.kind === 'loading'}
+    <span class="skeleton-block h-4 w-3/4" aria-hidden="true" data-testid="coach-last-raid-skeleton"></span>
+    <span class="sr-only">{uiCopy.loading}</span>
+  {:else if state.kind === 'error' || state.kind === 'retrying'}
+    <p class="text-muted">
       {coachCopy.lastRaidError}
       <button
         type="button"
-        class="text-gold hover:text-gold-hover focus-visible:outline-gold underline focus-visible:outline-2"
+        class="text-gold hover:text-gold-hover focus-visible:outline-gold underline focus-visible:outline-2 disabled:opacity-60"
         data-testid="coach-last-raid-retry"
-        onclick={() => void load()}>{coachCopy.rowRetry}</button
+        disabled={state.kind === 'retrying'}
+        aria-busy={state.kind === 'retrying'}
+        onclick={() => loader.retry()}>{coachCopy.rowRetry}</button
       >
     </p>
-  {:else if state.kind === 'ready'}
+  {:else}
     <p>
       {#each state.view.segments as segment, index (index)}
         {#if index > 0}<span class="text-muted"> · </span>{/if}
         {#if segment.role === 'link' && state.view.href !== null}
           <a class={ROLE_CLASS.link} href={state.view.href} data-testid="coach-last-raid-link"
             >{segment.text}</a
+          >
+        {:else if state.view.stem !== null && segment.text.includes(state.view.stem)}
+          {@const [before, after] = segment.text.split(state.view.stem)}
+          <span class={ROLE_CLASS[segment.role]}
+            >{before}<span class="inline-block max-w-[24ch] truncate align-bottom" title={state.view.stem}
+              >{state.view.stem}</span
+            >{after}</span
           >
         {:else}
           <span class={ROLE_CLASS[segment.role]}>{segment.text}</span>

@@ -1,5 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { formatRaidDate, lastRaidLine, settleLastRaid } from './last-raid';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  LAST_RAID_LABEL,
+  createLastRaidLoader,
+  formatRaidDate,
+  lastRaidLine,
+  settleLastRaid,
+  type LastRaidState,
+} from './last-raid';
 import type { CoachRecent, LastRaid } from './types';
 
 const RAID: LastRaid = {
@@ -101,5 +108,107 @@ describe('formatRaidDate', () => {
   it('is ddd d MMM in the given zone', () => {
     expect(formatRaidDate('2026-10-23T20:00:00Z', 'UTC')).toBe('Fri 23 Oct');
     expect(formatRaidDate('2026-10-23T23:30:00Z', 'Pacific/Auckland')).toBe('Sat 24 Oct');
+  });
+});
+
+describe('lastRaidLine details', () => {
+  it('exposes the stem so the view can clamp it, and names the line', () => {
+    expect(line(recent({}), true).stem).toBe('Bloodthirst casts lost');
+    expect(line(recent({ finding_count: 0, first: null }), true).stem).toBeNull();
+    expect(LAST_RAID_LABEL).toBe('Last raid');
+  });
+
+  it('keys the free link on the entitlement, not the sentence', () => {
+    expect(line(recent({}), false).segments.at(-1)?.role).toBe('link');
+    expect(line(recent({ finding_count: 0, first: null }), false).segments.at(-1)?.role).not.toBe('link');
+  });
+
+  it('shows a pending line with a first as the review line', () => {
+    expect(text(recent({}, true), true)).toContain('Fix first:');
+  });
+});
+
+describe('createLastRaidLoader', () => {
+  function setup(answers: Array<CoachRecent | Error>) {
+    const states: LastRaidState[] = [];
+    const timers: Array<{ run: () => void; ms: number; cancelled: boolean }> = [];
+    const queue = [...answers];
+    const fetchRecent = vi.fn(async () => {
+      const next = queue.shift()!;
+      if (next instanceof Error) throw next;
+      return next;
+    });
+    const loader = createLastRaidLoader({
+      fetchRecent,
+      premium: true,
+      refreshDelayMs: 5000,
+      onState: (state) => states.push(state),
+      schedule: (run, ms) => {
+        const timer = { run, ms, cancelled: false };
+        timers.push(timer);
+        return timer;
+      },
+      cancel: (handle) => {
+        (handle as { cancelled: boolean }).cancelled = true;
+      },
+    });
+    return { loader, states, timers, fetchRecent };
+  }
+  const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+  const kinds = (states: LastRaidState[]) => states.map((s) => s.kind);
+
+  it('arms one refresh after a pending first answer and swaps in the settled line', async () => {
+    const { loader, states, timers, fetchRecent } = setup([recent({ first: null }, true), recent({})]);
+    loader.start();
+    await flush();
+    expect(timers.map((t) => t.ms)).toEqual([5000]);
+    timers[0]!.run();
+    await flush();
+    expect(fetchRecent).toHaveBeenCalledTimes(2);
+    expect(timers).toHaveLength(1);
+    expect(kinds(states)).toEqual(['loading', 'ready', 'ready']);
+  });
+
+  it('arms nothing when the first answer is settled', async () => {
+    const { loader, timers } = setup([recent({})]);
+    loader.start();
+    await flush();
+    expect(timers).toHaveLength(0);
+  });
+
+  it('clears the timer on stop and drops a late answer', async () => {
+    const { loader, states, timers } = setup([recent({ first: null }, true)]);
+    loader.start();
+    await flush();
+    loader.stop();
+    expect(timers[0]!.cancelled).toBe(true);
+    expect(kinds(states)).toEqual(['loading', 'ready']);
+  });
+
+  it('does not arm a refresh after an error', async () => {
+    const { loader, states, timers } = setup([new Error('down')]);
+    loader.start();
+    await flush();
+    expect(kinds(states)).toEqual(['loading', 'error']);
+    expect(timers).toHaveLength(0);
+  });
+
+  it('retry shows retrying, then the answer, and arms no refresh', async () => {
+    const { loader, states, timers } = setup([new Error('down'), recent({ first: null }, true)]);
+    loader.start();
+    await flush();
+    loader.retry();
+    await flush();
+    expect(kinds(states)).toEqual(['loading', 'error', 'retrying', 'ready']);
+    expect(timers).toHaveLength(0);
+  });
+
+  it('a failed refresh keeps the line on screen', async () => {
+    const { loader, states, timers } = setup([recent({ first: null }, true), new Error('down')]);
+    loader.start();
+    await flush();
+    timers[0]!.run();
+    await flush();
+    expect(kinds(states)).toEqual(['loading', 'ready']);
   });
 });
