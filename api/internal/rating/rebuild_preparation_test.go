@@ -182,3 +182,24 @@ func TestRebuildPreparation_ResumesPastTheCursorWithoutClearing(t *testing.T) {
 		t.Errorf("digest n = %d, want 3: the planted 2 kept (no clear on resume) plus 1 folded", n)
 	}
 }
+
+func TestRebuildPreparation_DryRunInsertsNoEmptyDigestRows(t *testing.T) {
+	pool := testPool(t)
+	getter := seedStaleRebuild(t, pool, rebuildFight("rebuild-a", true))
+	if _, err := pool.Exec(context.Background(),
+		`delete from rating_percentile_digests where component = 'preparation'`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := RebuildPreparationWith(context.Background(),
+		BackfillDeps{Store: &Store{Pool: pool}, Summaries: getter}, RebuildOptions{DryRun: true}); err != nil {
+		t.Fatal(err)
+	}
+	var rows int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from rating_percentile_digests where component = 'preparation'`).Scan(&rows); err != nil {
+		t.Fatal(err)
+	}
+	if rows != 0 {
+		t.Errorf("a dry run left %d preparation digest rows, want 0 (read-only)", rows)
+	}
+}

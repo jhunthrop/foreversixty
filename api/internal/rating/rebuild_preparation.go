@@ -129,7 +129,8 @@ func (s *Store) ratedFightPage(ctx context.Context, after FightCursor, limit int
 	return out, rows.Err()
 }
 
-// foldPage folds one page of fights in a single transaction (nothing in a dry run).
+// foldPage folds one page of fights in a single transaction (committed, except in a dry
+// run, which only counts).
 func (s *Store) foldPage(ctx context.Context, d BackfillDeps, o RebuildOptions, page []FightCursor, out *RebuildCounts) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -149,8 +150,12 @@ func (s *Store) foldPage(ctx context.Context, d BackfillDeps, o RebuildOptions, 
 			folded++
 		}
 	}
-	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("rating: rebuild: commit: %w", err)
+	// Placement inserts an empty row for a bracket that does not exist yet, so a dry run
+	// rolls the transaction back (the deferred Rollback) rather than leave those behind.
+	if !o.DryRun {
+		if err := tx.Commit(ctx); err != nil {
+			return fmt.Errorf("rating: rebuild: commit: %w", err)
+		}
 	}
 	out.Folded += folded
 	return nil
@@ -182,7 +187,7 @@ func foldPreparation(sum summary.Summary, adapter *percentileAdapter) bool {
 
 func preparationBracket(sum summary.Summary, row summary.RosterRow, band string) ratingengine.Bracket {
 	return ratingengine.Bracket{
-		EncounterID: sum.EncounterID, Difficulty: sum.Difficulty, Spec: specSlug(row.Class, row.Spec),
+		EncounterID: sum.EncounterID, Difficulty: sum.Difficulty, Spec: SpecSlug(row.Class, row.Spec),
 		Role: row.Role, KillTimeBand: band, Kill: true, Component: ratingengine.ComponentNamePreparation,
 	}
 }
