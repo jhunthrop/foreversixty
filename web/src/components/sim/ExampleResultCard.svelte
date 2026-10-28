@@ -1,11 +1,21 @@
 <!-- web/src/components/sim/ExampleResultCard.svelte -->
-<!-- 2026-09-26 layout pass, review round 1 Finding 5: a static example of a finished sim, so
-     a signed-out visitor sees the shape of the result before committing to a load method.
-     Every string is static copy from landing-copy.ts -- there is no fetch here, and the
-     numbers never change; the "Example" caption says so. -->
+<!-- A real finished server run, so a signed-out visitor sees the shape of the result before
+     committing to a load method. The label and hint are landing-copy.ts (B5); the picture and its
+     caption come from the shared example-image reader /premium uses (spec B3.4). The 4:3 box is
+     reserved so a failed image still leaves label, caption and hint. No fetch, no link. -->
 <script lang="ts">
-  import { serverRunCaption } from '../../lib/billing/plans-page-copy';
+  import { exampleImage } from '../../lib/billing/example-image';
+  import { serverRunCaption } from '../../lib/billing/premium-example-copy';
+  import { serverRunExample, type ServerRunExample } from '../../lib/billing/premium-examples';
   import { landingCopy } from '../../lib/sim/landing-copy';
+
+  interface Props {
+    example?: ServerRunExample;
+  }
+  const { example = serverRunExample }: Props = $props();
+
+  const image = $derived(exampleImage(example));
+  const caption = $derived(serverRunCaption(example));
 </script>
 
 <!-- No gutter of its own: every caller (SourceSwitcher.svelte's hero branch) already
@@ -15,6 +25,22 @@
   data-testid="sim-example-result"
 >
   <span class="label text-muted">{landingCopy.exampleCaption}</span>
-  <p class="text-strong font-semibold">{serverRunCaption()}</p>
+  <div class="bg-card-top rounded-[4px]" style="aspect-ratio: 4 / 3">
+    <picture>
+      <source srcset={image.avif} type="image/avif" />
+      <source srcset={image.webp} type="image/webp" />
+      <img
+        class="border-line-soft block h-auto w-full rounded-[4px] border"
+        style="aspect-ratio: 4 / 3"
+        src={image.webp}
+        width={image.width}
+        height={image.height}
+        alt={image.alt}
+        loading={image.loading}
+        decoding={image.decoding}
+      />
+    </picture>
+  </div>
+  <p class="text-strong font-semibold">{caption}</p>
   <p class="text-muted text-[13px]">{landingCopy.exampleHint}</p>
 </div>
