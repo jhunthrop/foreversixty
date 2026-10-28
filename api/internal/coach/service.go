@@ -119,7 +119,7 @@ func (s *Service) cachedPack(ctx context.Context, reportID string, entry reports
 	}
 	row := summary.RosterRow{Class: p.Context.Class, Spec: p.Context.SpecLabel, Role: p.Context.Role, Level: int64(p.Context.Level)}
 	tables, version, err := s.versionedTables(ctx, row, entry.EncounterID, entry.Start)
-	if err != nil || version != p.Version {
+	if err != nil || (p.Version != version && p.Version != version+poolStateSep+poolOK) {
 		return loaded{}, false, err
 	}
 	return loaded{pack: p, tables: tables}, true, nil
@@ -144,13 +144,34 @@ func (s *Service) buildPack(ctx context.Context, rep reports.Report, entry repor
 		}
 	}
 	p := Review(in)
-	p.Version = version
+	p.Version = withPoolState(version, in)
 	if p.Status != StatusPreparing && !thinPool(in) {
 		if err := s.Store.SavePack(ctx, rep.ID, entry.Index, playerKey, p); err != nil {
 			return loaded{}, err
 		}
 	}
 	return loaded{pack: p, tables: tables}, nil
+}
+
+// Pool-state tokens on a reviewable pack's version: the version (and so the review key)
+// moves exactly once, when the comparison pool reaches PoolMinPlayers, so a review written
+// against "not enough logs yet" is regenerated once with the top-logs basis.
+const (
+	poolStateSep = "."
+	poolThin     = "pool:thin"
+	poolOK       = "pool:ok"
+)
+
+// withPoolState is version with the pool-state token of a reviewable pull; a pull that is
+// not reviewable has no pool and keeps version as it is.
+func withPoolState(version string, in Input) string {
+	switch {
+	case notReviewable(in) != "":
+		return version
+	case thinPool(in):
+		return version + poolStateSep + poolThin
+	}
+	return version + poolStateSep + poolOK
 }
 
 // thinPool reports a reviewable pull whose comparison pool is below PoolMinPlayers.

@@ -3,6 +3,7 @@ package coach
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -45,5 +46,38 @@ func TestPackFor_AThinPoolPackIsServedButNotCached(t *testing.T) {
 	}
 	if _, cached, _ := svc.Store.Pack(ctx, t30Report, t30Fight, f.furyKey, full.Version); !cached {
 		t.Fatal("a pack with a full pool is stored")
+	}
+}
+
+// The pack version carries the pool state, so the review key moves exactly once when the
+// pool fills: the "not enough logs yet" review is regenerated once, then the key holds.
+func TestPackVersion_MovesOnceWhenThePoolFills(t *testing.T) {
+	f := newT30(t)
+	ctx := context.Background()
+	persona := fixturePersona(t)
+	thin, err := f.svc.PackFor(ctx, f.rep(t), t30Fight, f.furyKey)
+	if err != nil || !strings.HasSuffix(thin.Version, ".pool:thin") {
+		t.Fatalf("thin version %q %v", thin.Version, err)
+	}
+	if again, _ := f.svc.PackFor(ctx, f.rep(t), t30Fight, f.furyKey); again.Version != thin.Version {
+		t.Fatalf("a thin pool keeps its version: %q -> %q", thin.Version, again.Version)
+	}
+	thinKey := NewReviewKey(t30Report, t30Fight, f.furyKey, thin, "m", persona)
+	if err := f.svc.Store.SaveReview(ctx, StoredReview{Key: thinKey, Doc: exampleReview(), Source: SourceModel, GeneratedAt: capsNow}); err != nil {
+		t.Fatal(err)
+	}
+	f.seedFullPool(t)
+	svc := f.service(t, coachDirWith(t), false)
+	full, err := svc.PackFor(ctx, f.rep(t), t30Fight, f.furyKey)
+	if err != nil || full.Version != strings.TrimSuffix(thin.Version, "thin")+"ok" {
+		t.Fatalf("full version %q (thin %q) %v", full.Version, thin.Version, err)
+	}
+	fullKey := NewReviewKey(t30Report, t30Fight, f.furyKey, full, "m", persona)
+	if _, ok, _ := svc.Store.Review(ctx, fullKey); ok {
+		t.Fatal("the full-pool key has no review yet: it is generated once")
+	}
+	cached, err := svc.PackFor(ctx, f.rep(t), t30Fight, f.furyKey)
+	if err != nil || cached.Version != full.Version {
+		t.Fatalf("the full-pool pack is served from the cache under the same version: %q %v", cached.Version, err)
 	}
 }
