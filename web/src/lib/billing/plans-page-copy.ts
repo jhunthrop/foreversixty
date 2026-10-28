@@ -9,6 +9,7 @@ import {
   perMonthLine,
   type Interval,
 } from './plans';
+import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
 
 export interface PlanRule {
   term: string;
@@ -19,6 +20,8 @@ export interface FaqEntry {
   question: string;
   answer: string;
 }
+
+const count = (n: number): string => n.toLocaleString('en-US');
 
 export const plansPageCopy = {
   title: 'Plans',
@@ -57,12 +60,22 @@ export const plansPageCopy = {
   premium: {
     name: 'Premium',
     audience: 'For one player',
+    support: 'Free stays complete. Premium pays for the servers and keeps the site going.',
     features: [
-      'Server sims: 5,000 combinations, any precision, no tab left open',
-      'History charts of your score and parses',
-      'Discord notifications when a server sim or a log finishes',
-      'A supporter mark on your characters',
-    ],
+      `Try up to ${count(CAPS.server)} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at ${count(CAPS.browser)}.`,
+      'Close the tab. Server sims keep running, and the site tells you when they finish.',
+      `Runs go up to ${count(LANE_ITERATION_CEILING.server)} iterations instead of ${count(LANE_ITERATION_CEILING.browser)}, so close upgrades come out clear.`,
+      'See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.',
+      'A message in your own Discord channel when a server sim finishes or a log is parsed.',
+      "A Supporter mark beside your name on your characters and in your guild's roster.",
+    ] as readonly string[],
+    scope:
+      'Sims cover damage specs; healing and tanking specs are not simulated yet. History, Discord messages and the Supporter mark work for every spec.',
+    // Held until the log coach ships (B5): never rendered, never in `features`.
+    featuresHeld: {
+      coach:
+        'Coach: after every logged raid, what to fix first — the casts you missed, the buffs you let drop, the consumables you skipped — learned from the engine and from the top logs on the site.',
+    },
   },
   guild: {
     name: 'Guild',

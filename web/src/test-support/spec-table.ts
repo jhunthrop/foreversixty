@@ -31,3 +31,30 @@ export function specString(
   if (segment === undefined) throw new Error(`spec "${heading}" row "${label}" has no segment ${index}`);
   return Object.entries(fill).reduce((text, [key, value]) => text.replace(`{${key}}`, value), segment);
 }
+
+/**
+ * The backticked segments of the String column (the third) of a three-column `Where | Key | String`
+ * table, for the row whose Key column contains `key` in backticks. Shared by every copy test that
+ * pins strings to a spec table of that shape; `specCell` reads the second column only.
+ */
+export function specKeyCell(specPath: URL, heading: string, key: string): string[] {
+  const spec = readFileSync(specPath, 'utf8');
+  const start = spec.indexOf(heading);
+  if (start === -1) throw new Error(`spec has no heading "${heading}"`);
+  const row = spec
+    .slice(start)
+    .split('\n')
+    .find((line) => (line.split('|')[2] ?? '').includes(`\`${key}\``));
+  if (row === undefined) throw new Error(`spec "${heading}" has no row keyed "${key}"`);
+  return [...(row.split('|')[3] ?? '').matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
+}
+
+/** The backticked line that follows a bold paragraph label, e.g. `**Held until built`. */
+export function specLineAfter(specPath: URL, label: string): string {
+  const lines = readFileSync(specPath, 'utf8').split('\n');
+  const at = lines.findIndex((line) => line.startsWith(label));
+  if (at === -1) throw new Error(`spec has no paragraph "${label}"`);
+  const line = lines.slice(at + 1).find((l) => l.startsWith('`'));
+  if (line === undefined) throw new Error(`spec paragraph "${label}" has no backticked line`);
+  return line.replace(/^`|`$/g, '');
+}
