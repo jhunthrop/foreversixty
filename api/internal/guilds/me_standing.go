@@ -71,6 +71,10 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 	if err != nil {
 		return nil, err
 	}
+	covered, err := s.coveredViews(ctx, viewerID, guildIDs)
+	if err != nil {
+		return nil, err
+	}
 	for _, id := range identities {
 		claim, verified := claims[id.id], verify[id.id]
 		st := auth.GuildStanding{
@@ -80,6 +84,7 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 			Slug:         character.Slug(id.name),
 			CrestURL:     CrestURL(s.APIBaseURL, id.id, id.crestKey),
 			Faction:      id.faction,
+			Covered:      covered[id.id],
 		}
 		if id.snapshot {
 			_, counts := mergeRoster(rows[id.id], invited[id.id], id.members)
