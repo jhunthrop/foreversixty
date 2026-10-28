@@ -37,7 +37,16 @@ func TestLoadNotifyEncryptionKey(t *testing.T) {
 }
 
 func env(m map[string]string) func(string) string {
-	return func(k string) string { return m[k] }
+	// Whole-Config tests (those that set DATABASE_URL) are not about the coach,
+	// so the kill switch is off unless a test says otherwise.
+	_, hasDB := m["DATABASE_URL"]
+	_, hasSwitch := m["COACH_LLM_ENABLED"]
+	return func(k string) string {
+		if k == "COACH_LLM_ENABLED" && hasDB && !hasSwitch {
+			return "false"
+		}
+		return m[k]
+	}
 }
 
 func TestLoadRequiresDatabaseURL(t *testing.T) {
@@ -140,6 +149,7 @@ func TestLoadDefaultsTreeDataDir(t *testing.T) {
 	env := map[string]string{
 		"DATABASE_URL": "postgres://x", "RESEND_API_KEY": "k",
 		"PUBLIC_BASE_URL": "https://foreversixty.gg", "API_BASE_URL": "https://api.foreversixty.gg",
+		"COACH_LLM_ENABLED": "false",
 	}
 	c, err := Load(func(k string) string { return env[k] })
 	if err != nil || c.TreeDataDir != "/data" {
@@ -275,7 +285,12 @@ func baseEnv() map[string]string {
 }
 
 func getenvFrom(env map[string]string) func(string) string {
-	return func(k string) string { return env[k] }
+	return func(k string) string {
+		if v, ok := env[k]; ok || k != "COACH_LLM_ENABLED" {
+			return v
+		}
+		return "false" // whole-Config tests are not about the coach
+	}
 }
 
 func TestStripeConfiguredRequiresBothKeys(t *testing.T) {

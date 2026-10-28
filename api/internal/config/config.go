@@ -170,6 +170,9 @@ type Config struct {
 	DiscordPublicKey       ed25519.PublicKey
 	DiscordBotToken        string
 	DiscordCommandsGuildID string
+
+	// Coach is the Log Coach's model client and cap settings.
+	Coach CoachConfig
 }
 
 // String and GoString redact the whole Config so a stray %v or %+v never prints the
@@ -305,6 +308,9 @@ func Load(getenv func(string) string) (Config, error) {
 		return c, err
 	}
 	if err := loadDiscordBot(&c, getenv); err != nil {
+		return c, err
+	}
+	if c.Coach, err = loadCoach(getenv); err != nil {
 		return c, err
 	}
 

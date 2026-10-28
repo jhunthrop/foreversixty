@@ -1,0 +1,63 @@
+package config
+
+import (
+	"strings"
+	"testing"
+)
+
+func coachEnv(extra map[string]string) func(string) string {
+	m := map[string]string{
+		"LLM_MODEL": "m", "LLM_API_KEY": "k", "LLM_PROVIDERS": "p, q",
+		"LLM_PRICE_IN_PER_MTOK": "0.1", "LLM_PRICE_OUT_PER_MTOK": "0.4",
+	}
+	for k, v := range extra {
+		m[k] = v
+	}
+	return env(m)
+}
+
+func TestCoachConfig_Defaults(t *testing.T) {
+	c, err := loadCoach(coachEnv(nil))
+	if err != nil || !c.Enabled || c.DailySpendCapUSD != 25 || c.DailyReviewsPerAccount != 30 ||
+		c.LLMBaseURL != "https://ai-gateway.vercel.sh/v1" || c.Temperature != 0.3 || c.DataDir != "/coach" ||
+		len(c.LLMProviders) != 2 || c.LLMPriceInPerMTok != 0.1 || c.LLMPriceOutPerMTok != 0.4 {
+		t.Fatalf("%+v %v", c, err)
+	}
+}
+
+func TestCoachConfig_EnabledNeedsEachRequiredVariable(t *testing.T) {
+	for _, name := range []string{"LLM_MODEL", "LLM_API_KEY", "LLM_PROVIDERS", "LLM_PRICE_IN_PER_MTOK", "LLM_PRICE_OUT_PER_MTOK"} {
+		_, err := loadCoach(coachEnv(map[string]string{name: ""}))
+		if err == nil || !strings.Contains(err.Error(), name) {
+			t.Fatalf("%s: %v", name, err)
+		}
+	}
+}
+
+func TestCoachConfig_ErrorNeverEchoesValues(t *testing.T) {
+	_, err := loadCoach(coachEnv(map[string]string{"LLM_MODEL": "", "LLM_API_KEY": "sekrit"}))
+	if err == nil || strings.Contains(err.Error(), "sekrit") {
+		t.Fatal(err)
+	}
+}
+
+func TestCoachConfig_OffNeedsNothing(t *testing.T) {
+	c, err := loadCoach(env(map[string]string{"COACH_LLM_ENABLED": "false"}))
+	if err != nil || c.Enabled {
+		t.Fatalf("%+v %v", c, err)
+	}
+}
+
+func TestCoachConfig_RejectsBadValues(t *testing.T) {
+	for k, v := range map[string]string{
+		"COACH_LLM_ENABLED": "maybe", "COACH_DAILY_SPEND_CAP_USD": "x",
+		"COACH_DAILY_REVIEWS_PER_ACCOUNT": "-1",
+	} {
+		if _, err := loadCoach(coachEnv(map[string]string{k: v})); err == nil {
+			t.Fatalf("%s=%s accepted", k, v)
+		}
+	}
+	if _, err := loadCoach(coachEnv(map[string]string{"COACH_DAILY_REVIEWS_PER_ACCOUNT": "0"})); err == nil {
+		t.Fatal("zero per-account cap accepted while enabled")
+	}
+}
