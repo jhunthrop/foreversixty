@@ -115,6 +115,12 @@ type Members interface {
 	MemberKeys(ctx context.Context, keys []string) (map[string]bool, error)
 }
 
+// Levels reads character levels off the site's own character records, by
+// character key. A character it does not know is absent from the answer.
+type Levels interface {
+	CharacterLevels(ctx context.Context, keys []string) (map[string]int64, error)
+}
+
 // Scorer schedules one fight's execution score. It runs out of band,
 // like the sampler, so the companion's fight-close call returns at
 // once; *sims.Scorer satisfies it through ScheduleFight and the shim
@@ -162,6 +168,9 @@ type Ingest struct {
 	// who are the only ones scored at fight close. Nil means nobody
 	// is, which is the honest answer for a deployment that cannot ask.
 	Members Members
+	// Levels gives each roster player's character level, which the log
+	// never carries. Nil means no level is known for anyone.
+	Levels Levels
 	// Rate schedules ratings for every roster player of a ranked
 	// fight, unlike Score which is signed-in-member-only (the
 	// execution scorer needs a rebuildable simulator character, a
@@ -372,7 +381,7 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 	// rebuild does, since lane L.8), so a log without COMBATANT_INFO posts neither.
 	// The fight it publishes carries the rebuild's reading where the post left a
 	// blank, and never overrides a value the companion did send.
-	overlayDerivedRoster(&posted, rebuilt)
+	overlayDerivedRoster(&posted, rebuilt, i.characterLevels(r.Context(), rep, posted))
 
 	pub := store.Publisher{Keys: Keys(rep.ID), Put: i.Put}
 	if err := pub.WriteFight(r.Context(), n, posted, events); err != nil {

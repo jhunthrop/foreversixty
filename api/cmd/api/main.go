@@ -722,6 +722,7 @@ func serve(log *slog.Logger) error {
 		go scorer.Run(ctx)
 		deps.Ingest.Score = scorerShim{scorer}
 		deps.Ingest.Members = authStore
+		deps.Ingest.Levels = authStore
 		rater = rating.NewRater(rating.RateDeps{Store: ratingStore, Log: log})
 		go rater.Run(ctx)
 		deps.Ingest.Rate = rater

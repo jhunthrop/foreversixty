@@ -186,7 +186,7 @@ type Accumulator struct {
 	// The last cast of each taunt, so its debuff landing is not a second taunt.
 	tauntCasts map[tauntKey]int64
 	combatants map[string]*event.Combatant
-	// levels is the highest level the advanced block gave each unit on a
+	// levels is the highest item level the advanced block gave each unit on a
 	// line whose block describes that unit (the player's own lines).
 	levels map[string]int64
 	// mechanicHits is spell id -> player guid -> the hit tally, folded from

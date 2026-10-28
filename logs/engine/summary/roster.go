@@ -33,8 +33,10 @@ type RosterRow struct {
 	Spec        string `json:"spec,omitempty"`
 	Role        string `json:"role"`
 	ItemLevel   int64  `json:"item_level,omitempty"`
-	// Level is the highest advanced-block level seen on the player's own
-	// lines; 0 when the log has no advanced logging.
+	// Level is the character level. The log never carries it (the advanced
+	// block's level is the item level), so this package never sets it: the
+	// API ingest overlays it from the site's own character record, and 0
+	// means no matched character.
 	Level       int64   `json:"level,omitempty"`
 	ActiveMS    int64   `json:"active_ms"`
 	ActivityPct float64 `json:"activity_pct"`
@@ -183,7 +185,9 @@ func (a *Accumulator) rosterRows(f fight.Fight, s Summary) []RosterRow {
 		if c, ok := specs[guid]; ok {
 			row.SpecID, row.ItemLevel = c.SpecID, c.ItemLevel
 		}
-		row.Level = a.levels[guid]
+		if row.ItemLevel == 0 {
+			row.ItemLevel = a.levels[guid] // advanced logging, when the log has no character sheet
+		}
 		row.Spec = a.opt.SpecNames[row.SpecID]
 		if row.Spec == "" && row.SpecID == 0 {
 			row.Spec = inferredSpec // read off the spells cast; the log named no spec
@@ -256,7 +260,7 @@ func (a *Accumulator) Metrics(reportID string, f fight.Fight, s Summary, engineV
 	return out
 }
 
-// noteLevel keeps the highest level the advanced block reports for the unit
+// noteLevel keeps the highest item level the advanced block reports for the unit
 // it describes. Only a line whose block belongs to that unit counts.
 func (a *Accumulator) noteLevel(e event.Event) {
 	if !e.Adv.OK || e.Adv.InfoGUID == "" || e.Adv.Level <= a.levels[e.Adv.InfoGUID] {

@@ -647,6 +647,31 @@ func (s *Store) MemberKeys(ctx context.Context, keys []string) (map[string]bool,
 	return out, rows.Err()
 }
 
+// CharacterLevels answers the level the site holds for each of these
+// character keys (the addon import and Battle.net capture fill it). A
+// character with no level on record is absent from the answer.
+func (s *Store) CharacterLevels(ctx context.Context, keys []string) (map[string]int64, error) {
+	out := make(map[string]int64, len(keys))
+	if len(keys) == 0 {
+		return out, nil
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select key, level from characters where key = any($1) and level is not null and level > 0`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("auth: character levels: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var key string
+		var level int64
+		if err := rows.Scan(&key, &level); err != nil {
+			return nil, fmt.Errorf("auth: character levels: %w", err)
+		}
+		out[key] = level
+	}
+	return out, rows.Err()
+}
+
 // Guilds lists the guilds an account is a member of, most recently
 // active membership first — the "My guild" link in the header reads
 // position [0].
