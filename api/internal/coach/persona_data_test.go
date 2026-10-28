@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -95,7 +96,75 @@ func personaFileRole(path string) (string, error) {
 	return "", fmt.Errorf("persona %s: front matter has no role", path)
 }
 
-// TestPersonas_NoRealPeople needs Task 27's dictionaries; Task 27 adds it to this file (F7).
+// personaClaimWords are claims about guilds, rankings or real players a persona never makes.
+var personaClaimWords = regexp.MustCompile(`(?i)\b(guild|ranked|world first)\b`)
+
+// capitalisedRun is two or more capitalised words in a row: what a person's name looks like.
+var capitalisedRun = regexp.MustCompile(`\b[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+)+\b`)
+
+// ruleLine is a persona's own prohibition ("Never name a real player, guild or ranking"),
+// which names the thing it forbids.
+const ruleLine = "- Never"
+
+func claimsOutsideRules(body string) string {
+	var kept []string
+	for _, line := range strings.Split(body, "\n") {
+		if !strings.HasPrefix(line, ruleLine) {
+			kept = append(kept, line)
+		}
+	}
+	return personaClaimWords.FindString(strings.Join(kept, "\n"))
+}
+
+// maskNames blanks every dictionary name in s.
+func maskNames(d *NameDict, s string) string {
+	spans := d.spans(s)
+	for i := len(spans) - 1; i >= 0; i-- {
+		s = s[:spans[i].Start] + " " + s[spans[i].End:]
+	}
+	return s
+}
+
+// personaLabels are the class and spec words (from the spec slugs) a persona may capitalise.
+func personaLabels(t *testing.T) map[string]bool {
+	labels := map[string]bool{}
+	for _, s := range loadSpecs(t) {
+		for _, w := range strings.Split(s.Spec, "-") {
+			labels[w] = true
+		}
+	}
+	return labels
+}
+
+func allLabels(run string, labels map[string]bool) bool {
+	for _, w := range strings.Fields(run) {
+		if !labels[strings.ToLower(w)] {
+			return false
+		}
+	}
+	return true
+}
+
+// TestPersonas_NoRealPeople: nothing in a persona outside the spell, item and boss
+// dictionaries looks like a person's name, and none claims a guild, a ranking or a first.
+func TestPersonas_NoRealPeople(t *testing.T) {
+	names := buildNames(t)
+	labels := personaLabels(t)
+	for _, s := range loadSpecs(t) {
+		p, err := LoadPersona(personaDir, s.Spec)
+		if err != nil {
+			t.Fatalf("%s: %v", s.Spec, err)
+		}
+		if claim := claimsOutsideRules(p.Body); claim != "" {
+			t.Errorf("%s: claims %q", s.Spec, claim)
+		}
+		for _, run := range capitalisedRun.FindAllString(maskNames(names, p.Body), -1) {
+			if !allLabels(run, labels) {
+				t.Errorf("%s: %q looks like a person's name", s.Spec, run)
+			}
+		}
+	}
+}
 
 const starterStatus = "starter"
 
