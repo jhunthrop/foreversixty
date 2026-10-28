@@ -17,7 +17,7 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds twelve lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Lay on Hands is the survival cooldown of last resort and fires itself below ten percent health.
 - Templar's Bulwark, an absorb of the paladin's whole health bar for eight seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.
@@ -25,9 +25,10 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 - Divine Protection: eight seconds of immunity with no attacks, the last resort.
 - Seal of Fury kept up.
 - Holy Shield on cooldown: its ten second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana.
+- Holy Strike on cooldown: the cheapest threat per mana the paladin has.
 - Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.
 - Swift Judgement while Judgement is on cooldown: it finishes the cooldown and makes the next Judgement free, one more Judgement a minute.
-- Consecration last and only above half mana: about one threat per mana against ten for Hammer of the Righteous, so it is the use of mana the tank has to spare.
+- Judgement on cooldown.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

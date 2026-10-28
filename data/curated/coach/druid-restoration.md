@@ -17,16 +17,11 @@ This is the Restoration Druid as the site's guide describes it. Restoration is t
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds fourteen lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
-- Innervate on self when the bar runs low; the major-cooldown pass above only catches it below five hundred mana.
 - Emergency: the tank under thirty-five percent gets Nature's Swiftness and, in the same instant, an instant Healing Touch.
-- Swiftmend eats the Rejuvenation or Regrowth on the tank with the least time left for its whole heal at once, as the last-ditch button under thirty percent, paced like Healing Touch.
 - Tranquility once two of the four party members are hurt; it heals the party every two seconds for ten and sits on a five minute cooldown.
 - The tank's two heals over time stay up for the whole fight: Regrowth is the most healing per mana in the kit and Rejuvenation stacks with it.
-- Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.
-- Wild Growth on a party member when two are hurt, at the same pace.
-- A hurt party member gets Rejuvenation, at the same pace.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a mana or efficiency cooldown sitting ready for most of the fight.

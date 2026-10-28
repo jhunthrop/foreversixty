@@ -17,13 +17,12 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds seven lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows.
 - Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.
 - Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.
 - Multi-Shot as the filler between Aimed Shots.
-- Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

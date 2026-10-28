@@ -17,9 +17,10 @@ This is the Feral Druid as the site's guide describes it. Feral Combat is one tr
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds nine lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Below level twenty, before Cat Form is learned, keep Moonfire ticking -- the same upkeep line Balance uses.
+- Shifting Power on cooldown whenever the energy bar has room for all forty, which is sixty or less.
 - At five combo points, Rip once it has under six seconds left -- this refreshes a little before the DoT actually falls off, so Ferocious Bite stays reachable whenever Rip still has real time on it.
 - At five combo points with Rip having more than six seconds left, Ferocious Bite dumps them instead of capping out.
 - Shred builds combo points the rest of the time.

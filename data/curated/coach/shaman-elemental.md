@@ -17,9 +17,8 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is Sham
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eight lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
-- The +twenty percent Flame Shock bonus is therefore never collected.
 - Mana Spring Totem restores the shaman's own mana for its five-minute life; Elemental runs dry well before a one hundred eighty s fight ends, so one one hundred-mana drop at the start returns about nine hundred mana.
 - Single target: Searing Totem is the higher damage fire totem.
 - two or more targets: Magma Totem hits everyone standing in it instead.

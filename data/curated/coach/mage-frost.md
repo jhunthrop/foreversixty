@@ -17,7 +17,7 @@ This is the Frost Mage as the site's guide describes it. Frost is the Mage contr
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds four lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.
 - Frostbolt is the filler between Fingers of Frost charges.

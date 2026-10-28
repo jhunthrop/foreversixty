@@ -17,14 +17,14 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds twenty-five lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
+- Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.
 - Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.
 - Penance on its twelve second cooldown: three pulses for the price of one cast and the best healing per mana the Discipline kit has.
 - Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and fifteen percent cheaper.
 - Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
 - Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.
-- Lower ranks of Heal were tried and did not clear the rule.
 - Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.
 
 **The mistakes the coach looks for, by finding.**

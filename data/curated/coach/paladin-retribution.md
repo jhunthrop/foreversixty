@@ -17,12 +17,12 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds seven lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
+- Judgement on cooldown: an off-the-global cast that unloads the seal's judgement effect and starts its ten second cooldown again.
 - Exorcism on cooldown against Undead and Demons: learnable at level twenty, a fifteen second cooldown Holy nuke that only lands on those two target types.
 - Hammer of Wrath below twenty percent: the execute-window button Retribution has besides seals, Judgement and Holy Strike.
-- Judgement and seal maintenance alone leave GCDs idle every ten-second window; Holy Strike is the filler that spends them.
-- Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above sixty-five percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.
+- Reapply Seal of Righteousness once it is about to expire -- this is now the only seal-maintenance line.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

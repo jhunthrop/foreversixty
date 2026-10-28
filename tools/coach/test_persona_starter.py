@@ -110,3 +110,34 @@ def test_generator_is_deterministic_and_committed_files_match(tmp_path: Path) ->
 def test_full_spec_is_refused(tmp_path: Path) -> None:
     with pytest.raises(SystemExit):
         ps.write_starter("warrior-fury", tmp_path / "x.md")
+
+
+def test_only_the_first_sentence_is_used() -> None:
+    note = (
+        "Sinister Strike builds when Backstab cannot be cast, in the engine. "
+        "Held until 60 energy so a dagger build never spends the energy here."
+    )
+    assert ps.usable_sentence(note) is None
+
+
+def test_parentheticals_are_stripped_not_fatal() -> None:
+    note = "Wrack (talent, learned at level 40) is an instant six second DoT, recast in its last second."
+    assert ps.usable_sentence(note) == "Wrack is an instant six second DoT, recast in its last second."
+
+
+def test_numbers_become_words() -> None:
+    assert ps.usable_sentence("Shoot with your wand once mana is under 35% of the bar.") == (
+        "Shoot with your wand once mana is under thirty-five percent of the bar."
+    )
+
+
+def test_dangling_references_are_dropped() -> None:
+    assert ps.usable_sentence("A hurt party member gets Rejuvenation, at the same pace.") is None
+
+
+def test_priority_intro_states_the_line_count(tmp_path: Path) -> None:
+    out = run_starter("druid-restoration", tmp_path)
+    total, kept = ps.priority_lines("druid-restoration")
+    assert f"holds {ps.number_words(total)} lines" in out
+    assert kept and all(line[0].isupper() for line in kept)
+    assert "Held until" not in run_starter("rogue-combat", tmp_path)

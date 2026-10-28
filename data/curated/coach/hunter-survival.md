@@ -17,11 +17,12 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eight lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Counterattack: a bare cast that only lands while its parry-triggered proc aura is active.
-- A target that never attacks gives no dodge, so without Expose Prey the line stays idle.
-- It costs eighty mana and does fifty damage; the client states both.
+- Mongoose Bite inside its window: the client allows it only after a dodge, and Expose Prey opens the same five second window on a melee or ranged attack against a Hunter's Mark target; the window is one charge, spent by the cast.
+- Lacerate whenever its own bleed is down: with Mongoose Bite waiting on its window, the free globals go to keeping the bleed ticking.
+- Wing Clip on every free global, only while a Windfury Totem reaches the hunter: a cheap main-hand special that rolls the totem's extra attack and any weapon proc, which the other lines leave idle.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

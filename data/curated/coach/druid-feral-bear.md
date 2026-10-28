@@ -17,13 +17,13 @@ This is the Feral Bear Druid as the site's guide describes it. Feral Bear is the
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds seven lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Frenzied Regeneration as the emergency heal: under half health with twenty rage to convert.
-- Worth about four percent more threat for no survival cost.
+- Berserk on cooldown: Primal Bite loses its cooldown for fifteen s.
+- Primal Bite on cooldown: the biggest threat hit per rage.
 - Lacerate to start the bleed and again when under three s remain; the bleed is what turns on Rend and Tear.
 - Queue Maul on the next swing whenever fifteen rage is on hand, which keeps the rest for Primal Bite and Lacerate.
-- Swipe is the rage dump above forty, a flat hit on up to three targets.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

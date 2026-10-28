@@ -17,7 +17,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eleven lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Corruption goes down first and is kept up throughout: it is cheap sustained damage that does not compete with your casts.
 - Potion at the top of the fight if mana is already below seventy-five percent.
@@ -27,6 +27,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 - Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up.
 - Shadowburn is cast on cooldown whenever its reagent cost is acceptable, with no execute-phase gate: it is strong burst at any target health.
 - Incinerate is Destruction's signature filler, dealing bonus damage while Immolate is active.
+- Shadow Bolt is the filler while you have not yet learned the Incinerate talent; once you have, Incinerate takes priority instead.
 - Shoot with your wand once mana is under forty percent: it costs nothing, so mana regenerates while it keeps damage going.
 
 **The mistakes the coach looks for, by finding.**

@@ -17,13 +17,12 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds six lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Keep Strength of Earth Totem down; refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff.
 - Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.
 - Stormstrike on cooldown: it is the highest damage per global Enhancement has, on an eight second cooldown.
 - Keep Searing Totem down for the extra fire damage, but not with less than twenty seconds left -- no point paying for a totem that will barely tick.
-- Earth Shock on the shock cooldown while mana is above fifty percent.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

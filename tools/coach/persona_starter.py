@@ -13,6 +13,7 @@ import argparse
 import json
 import re
 from pathlib import Path
+from typing import Any
 
 TOOLS_DIR = Path(__file__).resolve().parent
 REPO = TOOLS_DIR.parent.parent
@@ -83,12 +84,15 @@ SMALL = (
     "fifteen sixteen seventeen eighteen nineteen"
 ).split()
 TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
-# Words that mark a note as about the simulator rather than about playing the spec.
-JARGON = re.compile(
-    r"\b(engine|ladder|search|measured|sim|simulat\w*|condition\w*|gated|resolve\w*|"
-    r"inert|rung|harness|golden|dropped|see)\b|[()]",
+# Words that mark a sentence as about the simulator rather than about playing the spec.
+SIMULATOR_JARGON = re.compile(
+    r"\b(engine|ladder|rung|golden|harness|inert|unresolved|gated|sim|simulator|simulated|"
+    r"simulation|the search|conditions?)\b",
     re.IGNORECASE,
 )
+# References to other lines of the rotation data, which a lone sentence cannot carry.
+DANGLING_REFERENCE = re.compile(r"\b(above|below it|same pace|paced like|the pass)\b", re.IGNORECASE)
+PARENTHETICAL = re.compile(r"\s*\([^)]*\)")
 NUMBER = re.compile(r"(?<![\w.])(\d{1,3})(%?)(?![\w.]|\d)")
 PERCENT_WORD = " percent"
 DIGIT = re.compile(r"\d")
@@ -109,16 +113,17 @@ def spell_out_numbers(text: str) -> str:
 
 
 def usable_sentence(note: str) -> str | None:
-    """The first sentence of a note that reads cleanly in words, or None."""
-    for sentence in re.split(r"(?<=[.!?])\s+", note.strip()):
-        words = spell_out_numbers(sentence.strip().replace("!", "."))
-        if DIGIT.search(words) or JARGON.search(words) or len(words) < MIN_SENTENCE_CHARS:
-            continue
-        return words if words.endswith((".", ":")) else words + "."
-    return None
+    """A note's first sentence in words, or None. Later sentences depend on it, so are never used."""
+    lead = re.split(r"(?<=[.!?])\s+", note.strip())[0]
+    words = spell_out_numbers(PARENTHETICAL.sub("", lead).replace("!", "."))
+    if DIGIT.search(words) or SIMULATOR_JARGON.search(words) or DANGLING_REFERENCE.search(words):
+        return None
+    if len(words) < MIN_SENTENCE_CHARS:
+        return None
+    return words if words.endswith((".", ":")) else words + "."
 
 
-def load_json(relative: str) -> object:
+def load_json(relative: str) -> Any:
     return json.loads((REPO / relative).read_text(encoding="utf-8"))
 
 
@@ -152,10 +157,11 @@ def overview(row: dict) -> str:
     return paragraph
 
 
-def priority_lines(slug: str) -> list[str]:
-    apl = load_json(apl_path(slug))
-    lines = (usable_sentence(item.get("notes", "")) for item in apl["rotation"]["priorityList"])
-    return [line for line in lines if line]
+def priority_lines(slug: str) -> tuple[int, list[str]]:
+    """The count of lines in the rotation data and the reasons that read on their own, in order."""
+    items = load_json(apl_path(slug))["rotation"]["priorityList"]
+    lines = (usable_sentence(item.get("notes", "")) for item in items)
+    return len(items), [line for line in lines if line]
 
 
 def join_names(names: list[str]) -> str:
@@ -197,10 +203,12 @@ def who_section(row: dict) -> str:
 
 
 def know_section(row: dict) -> str:
-    priority = "\n".join(f"- {line}" for line in priority_lines(row["spec"]))
+    total, lines = priority_lines(row["spec"])
+    priority = "\n".join(f"- {line}" for line in lines)
     return "\n\n".join([
-        "**The priority, in words.** This is the order the site's rotation data runs for this spec, "
-        "from the top of the list down. Each line is its reason, as written there.",
+        f"**The priority, in words.** The site's rotation data for this spec holds {number_words(total)} lines. "
+        "These are the reasons written on them that read on their own, in the order the lines run. "
+        "The guide and the rotation data hold the rest.",
         priority,
         "**The mistakes the coach looks for, by finding.**\n" + "\n".join(mistakes(row["role"])),
         "**Consumables and world buffs.** " + consumable_paragraph(row["role"]),

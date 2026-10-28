@@ -17,7 +17,7 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rog
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds seven lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Ghostly Strike on cooldown: cheaper than Backstab, hits for one hundred eighty percent weapon damage with a dagger, and builds a combo point.
 - Rupture at four or more combo points whenever it is not running.

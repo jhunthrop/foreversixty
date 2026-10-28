@@ -17,10 +17,9 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds nine lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Potion at the top of the fight if mana is already below seventy-five percent.
-- The client states its cost, cast time, cooldown and damage.
 - Life Tap to keep casting once mana runs low.
 - Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.
 - Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.

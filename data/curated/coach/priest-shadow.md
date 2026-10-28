@@ -17,12 +17,12 @@ This is the Shadow Priest as the site's guide describes it. Shadow is the Priest
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eight lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.
 - Shadow Word: Death gets bonus crit chance below twenty percent target health from the Early Demise talent.
 - Era fallback for the execute window when Shadow Word: Death is on its own fifteen s cooldown: Mind Blast on cooldown, else Mind Flay.
-- Mind Flay fills every remaining global, including the rest of the execute fallback above.
+- Mind Blast only when Mind Flay cannot be cast: in our level-sixty search run Mind Flay on every free global beat Mind Blast on cooldown, so outside the execute window this line rarely fires.
 - Shoot with your wand whenever nothing else is ready: it costs no mana and always beats standing idle.
 
 **The mistakes the coach looks for, by finding.**

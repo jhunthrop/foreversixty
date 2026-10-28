@@ -17,9 +17,11 @@ This is the Restoration Shaman as the site's guide describes it. Restoration is 
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eighteen lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it.
+- Mana Tide Totem once mana is low; it replaces the water totem for thirteen s and the Healing Stream below is dropped again after.
+- Water Shield is kept up for its mana return on critical heals.
 - Healing Stream Totem heals the whole group every two s for its five-minute life.
 - Nature's Swiftness turns the next Healing Wave into an instant heal when the tank is in danger.
 - The instant Healing Wave.

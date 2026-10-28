@@ -17,7 +17,7 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds six lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Cold Blood right before the finisher, for a guaranteed crit on the next Eviscerate.
 - Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under three seconds remaining, at four or more combo points.

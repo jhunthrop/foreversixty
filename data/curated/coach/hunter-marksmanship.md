@@ -17,7 +17,7 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship i
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds five lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.
 - Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.

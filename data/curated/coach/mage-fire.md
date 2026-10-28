@@ -17,13 +17,12 @@ This is the Fire Mage as the site's guide describes it. Fire is the Mage sustain
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eight lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.
 - Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.
-- The aura-is-known guard keeps the line off for a build without the talent, where the stack check alone would read as always true and Pyroblast would be spammed.
 - Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.
-- Every filler Scorch also renews the Improved Scorch debuff, so the refresh line above rarely has anything to do.
+- Fireball only before Scorch is trained, where Scorch cannot be cast and the list would otherwise have no filler.
 - Shoot with your wand once mana falls under twenty percent: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.
 
 **The mistakes the coach looks for, by finding.**

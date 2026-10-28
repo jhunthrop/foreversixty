@@ -17,7 +17,7 @@ This is the Arms Warrior as the site's guide describes it. Arms is Forever's two
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds eight lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Bloodrage on cooldown: rage is the limiting resource, same as Fury.
 - Keep Battle Shout up.
@@ -25,7 +25,7 @@ This is the Arms Warrior as the site's guide describes it. Arms is Forever's two
 - Mortal Strike is the highest damage per rage button and comes off a six second cooldown.
 - Overpower is a bare cast: it only lands while the dodge-triggered proc aura is up, so it is a free line that falls through otherwise.
 - Execute below twenty percent.
-- The client states the cost and damage.
+- Hamstring on every free global once Rend, Mortal Strike, Overpower and Execute are spent, only while a Windfury Totem reaches the warrior: ten rage for forty-five damage, and a main-hand special that rolls the totem's extra attack and weapon procs.
 
 **The mistakes the coach looks for, by finding.**
 - core_casts: a button the priority list wants sitting ready while something lower went first.

@@ -17,10 +17,11 @@ This is the Holy Paladin as the site's guide describes it. Holy is the Paladin h
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds fourteen lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it.
 - Divine Favor when the tank is in danger: the Holy Light that follows crits for certain, and the heal that spends it is the one the tank needs.
+- Holy Light is the big heal and the only one that outheals the tank by itself.
 - Surplus mana buys throughput: Holy Light on a tank below seventy percent, but only while mana is no more than five points behind the fight clock.
 - Holy Shock, instant, on whoever is below seventy percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.
 - Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for twelve percent a swing is under ninety percent most of the time.

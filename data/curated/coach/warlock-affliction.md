@@ -17,12 +17,13 @@ This is the Affliction Warlock as the site's guide describes it. Affliction is W
 
 ## What they know
 
-**The priority, in words.** This is the order the site's rotation data runs for this spec, from the top of the list down. Each line is its reason, as written there.
+**The priority, in words.** The site's rotation data for this spec holds nine lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
 
 - Potion at the top of the fight if mana is already below seventy-five percent, or a mana gem below sixty percent, saved for the closing burn if the fight is nearly over.
 - Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available.
 - Corruption is the cheapest DoT per damage and goes down first, then is kept up throughout.
 - Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.
+- Wrack is an instant, no-cooldown six second DoT that also applies a ten percent Shadow-damage-taken vulnerability to the target, so recast it in its last second to keep the vulnerability up without a gap.
 - Immolate is kept up as a fourth DoT, recast when under three seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last three seconds beats waiting for it to lapse.
 - Shadow Bolt fills every remaining global while the DoTs run their course.
 - Shoot with your wand once mana is under fifty percent: it costs nothing, so mana regenerates while it keeps damage going.
