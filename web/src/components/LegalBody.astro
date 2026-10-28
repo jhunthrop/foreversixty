@@ -13,7 +13,7 @@ import {
 interface Props {
   slug: string;
   html: string;
-  section: Section | null;
+  section: Section;
 }
 const { slug, html, section } = Astro.props;
 const isPrivacy = slug === PRIVACY_SLUG;

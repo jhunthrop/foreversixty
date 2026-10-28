@@ -1,46 +1,40 @@
 // web/src/lib/coach/privacy-section.test.ts
 import { describe, expect, it } from 'vitest';
-import { plansPageCopy } from '../billing/plans-page-copy';
-import { coachIsShipped, coachPrivacySection } from './privacy-section';
+import {
+  coachPrivacySection,
+  PROVIDER_PRIVACY_URL,
+  PROVIDER_TERMS_URL,
+  VERCEL_GATEWAY_URL,
+} from './privacy-section';
 import { COACH_MODEL_PROVIDER } from './provider';
 
-const HELD = { featuresHeld: { coach: 'held' } };
-const SHIPPED = {};
-
-function sectionText(premium: object, provider?: string): string {
-  const section = coachPrivacySection(premium, provider);
-  return section ? [section.heading, ...section.paragraphs].join('\n') : '';
-}
+const text = (provider?: string): string => coachPrivacySection(provider).paragraphs.join('\n');
 
 describe('the privacy page Log coach section', () => {
-  it('names Vercel and the provider constant, and says what is never sent', () => {
-    const text = sectionText(SHIPPED);
-    expect(text).toContain('Log coach');
-    expect(text).toContain('Vercel');
-    expect(text).toContain(COACH_MODEL_PROVIDER);
-    expect(text).toMatch(/no character name, account, guild, realm or Battle\.net data/);
-    expect(text).toMatch(/the numbers of one fight \(your spec, the boss, the raid size/);
-    expect(text).toMatch(/does not train on it/);
+  it('discloses what is sent, to whom, and what is never sent', () => {
+    expect(text()).toContain('Vercel AI Gateway, which keeps nothing');
+    expect(text()).toContain(COACH_MODEL_PROVIDER);
+    expect(text()).toMatch(/spec, class, role, boss, raid size, kill or wipe, duration, level, spell names/);
+    expect(text()).toMatch(/no character name, account, guild, realm or Battle\.net data/);
+    expect(text()).toMatch(/we do not control that/);
+    expect(text()).toMatch(/fall back to the log-only text/);
   });
 
-  it('follows the constant: swapping the provider changes every mention', () => {
-    const text = sectionText(SHIPPED, 'Kimi');
-    expect(text).toContain('Kimi');
-    expect(text).not.toContain(COACH_MODEL_PROVIDER);
+  it('promises nothing about the provider training or retention', () => {
+    expect(text()).not.toMatch(/does not train|never train|deleted|not keep/i);
   });
 
-  it('renders nothing while the plans page holds the coach line', () => {
-    expect(coachPrivacySection(HELD)).toBeNull();
-    expect(coachIsShipped(HELD)).toBe(false);
+  it('links the gateway page, the provider terms and the provider privacy policy', () => {
+    expect(coachPrivacySection().links.map((l) => l.href)).toEqual([
+      VERCEL_GATEWAY_URL,
+      PROVIDER_TERMS_URL,
+      PROVIDER_PRIVACY_URL,
+    ]);
   });
 
-  it('renders once the held line is gone', () => {
-    expect(coachIsShipped(SHIPPED)).toBe(true);
-    expect(coachPrivacySection(SHIPPED)).not.toBeNull();
-  });
-
-  it('renders today, on the same flag the plans page uses', () => {
-    expect('featuresHeld' in plansPageCopy.premium).toBe(false);
-    expect(coachPrivacySection()).not.toBeNull();
+  it('follows the provider constant in the text and link labels', () => {
+    const section = coachPrivacySection('Kimi');
+    expect(section.paragraphs.join('')).not.toContain(COACH_MODEL_PROVIDER);
+    expect(section.links[1]?.label).toContain('Kimi');
   });
 });

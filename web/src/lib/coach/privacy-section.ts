@@ -1,40 +1,38 @@
 // web/src/lib/coach/privacy-section.ts
-// The privacy page's "Log coach" section (log coach spec §9: what leaves our systems). It is
-// renders once the coach line does: the plans page held that line in `premium.featuresHeld`
-// until the coach shipped, and the section shows while that key is absent.
-import { plansPageCopy } from '../billing/plans-page-copy';
+// The privacy page's "Log coach" section (log coach spec §9: what leaves our systems). It
+// discloses; it promises nothing the provider does not (spec §19, owner decision 4).
 import { COACH_MODEL_PROVIDER } from './provider';
 
 export const COACH_PRIVACY_HEADING = 'Log coach';
 export const PRIVACY_SLUG = 'privacy';
 // The section sits after "Stripe", so it goes in front of the next heading.
 export const COACH_SECTION_BEFORE = '<h2 id="cookies">';
-export const VERCEL_PRIVACY_URL = 'https://vercel.com/legal/privacy-policy';
+export const VERCEL_GATEWAY_URL = 'https://vercel.com/docs/ai-gateway/security-and-compliance/zdr';
+export const PROVIDER_TERMS_URL =
+  'https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html';
+export const PROVIDER_PRIVACY_URL = 'https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html';
+
+export interface CoachPrivacyLink {
+  readonly label: string;
+  readonly href: string;
+}
 
 export interface CoachPrivacySection {
   readonly heading: string;
   readonly paragraphs: readonly string[];
-  readonly link: { readonly label: string; readonly href: string };
+  readonly links: readonly CoachPrivacyLink[];
 }
 
-type PremiumCopyShape = object & { readonly featuresHeld?: unknown };
-
-export function coachIsShipped(premium: PremiumCopyShape = plansPageCopy.premium): boolean {
-  return premium.featuresHeld === undefined;
-}
-
-export function coachPrivacySection(
-  premium: PremiumCopyShape = plansPageCopy.premium,
-  provider: string = COACH_MODEL_PROVIDER,
-): CoachPrivacySection | null {
-  if (!coachIsShipped(premium)) return null;
+export function coachPrivacySection(provider: string = COACH_MODEL_PROVIDER): CoachPrivacySection {
   return {
     heading: COACH_PRIVACY_HEADING,
-    link: { label: "Vercel's privacy policy", href: VERCEL_PRIVACY_URL },
+    links: [
+      { label: 'Vercel AI Gateway data retention', href: VERCEL_GATEWAY_URL },
+      { label: `${provider} Open Platform terms`, href: PROVIDER_TERMS_URL },
+      { label: `${provider} privacy policy`, href: PROVIDER_PRIVACY_URL },
+    ],
     paragraphs: [
-      `When a Premium player or an officer opens a coach review, the numbers of one fight (your spec, the boss, the raid size and what happened in the fight) are sent through Vercel's AI Gateway to ${provider}, which writes the review.`,
-      'It carries no character name, account, guild, realm or Battle.net data.',
-      `Vercel and ${provider} process that data. ${provider} does not train on it and keeps it only for the period its terms state.`,
+      `When a Premium player or an officer opens a coach review, the numbers of one fight (spec, class, role, boss, raid size, kill or wipe, duration, level, spell names and the fight's own numbers) are sent through the Vercel AI Gateway, which keeps nothing, to ${provider}, which writes the review. It carries no character name, account, guild, realm or Battle.net data. What ${provider} keeps, and whether it trains on it, is set by its Open Platform terms and privacy policy, and we do not control that. If the model is switched off, reviews fall back to the log-only text.`,
     ],
   };
 }

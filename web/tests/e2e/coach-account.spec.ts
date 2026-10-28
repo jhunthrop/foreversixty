@@ -96,20 +96,11 @@ test('axe finds nothing, and no control is under 44 px at 360', async ({ page })
   expect(await shortControls(line(page))).toEqual([]);
 });
 
-test('the privacy page carries the Log coach section exactly when the coach line has shipped', async ({
-  page,
-}) => {
+test('the privacy page carries the Log coach section and its links', async ({ page }) => {
   const section = coachPrivacySection();
   await page.goto('/privacy');
-  const heading = page.getByRole('heading', { name: 'Log coach' });
-  if (section === null) {
-    await expect(heading).toHaveCount(0);
-    return;
-  }
-  await expect(heading).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Log coach' })).toBeVisible();
   for (const paragraph of section.paragraphs) await expect(page.getByText(paragraph)).toBeVisible();
-  await expect(page.getByRole('link', { name: section.link.label })).toHaveAttribute(
-    'href',
-    section.link.href,
-  );
+  for (const link of section.links)
+    await expect(page.getByRole('link', { name: link.label })).toHaveAttribute('href', link.href);
 });

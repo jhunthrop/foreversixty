@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: What Forever Sixty collects, how it is used, and how long it is kept.
-updated: 2026-10-24
+updated: 2026-10-28
 confidence: confirmed
 sources:
   - label: This site

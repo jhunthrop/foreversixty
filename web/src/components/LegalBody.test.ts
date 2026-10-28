@@ -7,8 +7,7 @@ import { coachPrivacySection } from '../lib/coach/privacy-section';
 import LegalBody from './LegalBody.astro';
 
 const HTML = '<h2 id="stripe">Stripe</h2><p>pay</p><h2 id="cookies">Cookies</h2><p>c</p>';
-const SHIPPED = coachPrivacySection({});
-const HELD = coachPrivacySection({ featuresHeld: {} });
+const SHIPPED = coachPrivacySection();
 
 async function render(slug: string, section: typeof SHIPPED): Promise<string> {
   const c = await AstroContainer.create();
@@ -16,17 +15,11 @@ async function render(slug: string, section: typeof SHIPPED): Promise<string> {
 }
 
 describe('the legal page body', () => {
-  it('/privacy shows Log coach between Stripe and Cookies once the coach ships', async () => {
+  it('/privacy shows Log coach between Stripe and Cookies', async () => {
     const out = await render('privacy', SHIPPED);
     expect(out).toContain('<h2>Log coach</h2>');
     expect(out.indexOf('Stripe')).toBeLessThan(out.indexOf('Log coach'));
     expect(out.indexOf('Log coach')).toBeLessThan(out.indexOf('Cookies'));
-  });
-
-  it('/privacy omits it while the coach is held', async () => {
-    const out = await render('privacy', HELD);
-    expect(out).not.toContain('Log coach');
-    expect(out).toContain('Cookies');
   });
 
   it.each(['terms', 'refunds', 'about'])('/%s never carries the section', async (slug) => {
