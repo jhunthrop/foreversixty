@@ -6,6 +6,8 @@
 // signed out and is a finished server Top Gear run, and unless the written file parses.
 // SIM_ID and SIM_RAN_AT (the owner's /mine row finished_at) are required; API_BASE defaults to
 // production; PRESET_BUILD names the site build when the run used the preset gear.
+// Depends on these test ids (src/components/sim): sim-saved-title (SavedSim.svelte, the clip's top
+// edge) and sim-character (CharacterStrip.svelte, which must lie inside the clip).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -28,7 +30,8 @@ const AVIF_START_QUALITY = 60;
 const AVIF_MIN_QUALITY = 20;
 const AVIF_QUALITY_STEP = 5;
 const WEBP_QUALITY = 82;
-const RESULT_TEST_ID = 'sim-results';
+const SAVED_TITLE_TEST_ID = 'sim-saved-title';
+const CHARACTER_TEST_ID = 'sim-character';
 const SETTLE_MS = 800;
 const TOP_GEAR_MODE = 'gear';
 const DEFAULT_API_BASE = 'https://api.foreversixty.gg';
@@ -101,12 +104,18 @@ test('capture the premium server-run example', async ({ browser }) => {
   const page = await context.newPage();
   const response = await page.goto(`/sim/${encodeURIComponent(simId)}`, { waitUntil: 'networkidle' });
   expect(response?.status()).toBe(200);
-  const root = page.getByTestId(RESULT_TEST_ID);
-  await root.waitFor();
+  const title = page.getByTestId(SAVED_TITLE_TEST_ID);
+  await title.waitFor();
+  await page.getByTestId(CHARACTER_TEST_ID).waitFor();
   await page.waitForTimeout(SETTLE_MS);
-  const box = await root.boundingBox();
-  if (box === null) throw new Error('the result root has no bounding box');
-  const png = await page.screenshot({ clip: { ...CLIP, x: box.x, y: box.y }, type: 'png' });
+  const top = await title.boundingBox();
+  const strip = await page.getByTestId(CHARACTER_TEST_ID).boundingBox();
+  if (top === null || strip === null) throw new Error('the saved result title or character strip has no box');
+  const clip = { ...CLIP, x: top.x, y: top.y };
+  if (strip.y < clip.y || strip.y + strip.height > clip.y + clip.height) {
+    throw new Error('the character strip does not fit inside the 440 x 330 clip');
+  }
+  const png = await page.screenshot({ clip, type: 'png' });
   await context.close();
 
   const size = { width: CLIP.width * PIXEL_RATIO, height: CLIP.height * PIXEL_RATIO };
