@@ -16,6 +16,10 @@
 {:else if part === 'line' && next !== null}
   <p class="text-muted basis-full text-[13px] leading-5" data-testid="account-guild-no-plan">
     {next.text}
-    <a class="text-muted hover:text-strong active:text-strong underline" href={next.href}>{next.action}</a>
+    <a
+      class="text-muted hover:text-strong active:text-strong underline"
+      href={next.href}
+      aria-label={next.label}>{next.action}</a
+    >
   </p>
 {/if}

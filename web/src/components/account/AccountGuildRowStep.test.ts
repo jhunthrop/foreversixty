@@ -22,6 +22,7 @@ describe('AccountGuildRowStep', () => {
   it('links a no-plan guild to the checkout step', () => {
     const out = html(GUILD, 'line');
     expect(out).toContain('Olympus has no plan.');
+    expect(out).toContain('aria-label="See the next step for Olympus"');
     expect(out).toContain('href="/premium/checkout?plan=guild&amp;interval=yearly#guild-7"');
     expect(html({ ...GUILD, verified_count: 28 }, 'line')).toContain('plan=raid_guild');
   });

@@ -7,7 +7,7 @@
      takes focus when the chooser shows. -->
 <script lang="ts">
   import type { MeGuild } from '../../lib/account/api';
-  import { billableGuilds, guildFitsRaidTier } from '../../lib/billing/checkout-params';
+  import { billableGuilds, fittingGuildPlan } from '../../lib/billing/checkout-params';
   import { checkoutCopy } from '../../lib/billing/copy';
   import type { PlanKey } from '../../lib/billing/plans';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -43,7 +43,7 @@
   /** Without a picked plan, the plan that fits; with one, only a mismatch (Guild for a guild over
    *  25), so a row never names a plan other than the one being bought (persona round 2, UX N6). */
   function fitLabel(verifiedCount: number): string {
-    const raidFits = guildFitsRaidTier(verifiedCount);
+    const raidFits = fittingGuildPlan(verifiedCount) === 'raid_guild';
     if (plan !== null) return plan === 'guild' && raidFits ? checkoutCopy.fitsRaidGuild(verifiedCount) : '';
     return raidFits ? checkoutCopy.fitsRaidGuild(verifiedCount) : checkoutCopy.guildPlanLabel;
   }

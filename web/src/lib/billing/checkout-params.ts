@@ -50,3 +50,8 @@ export function billableGuilds(guilds: readonly MeGuild[]): MeGuild[] {
 export function guildFitsRaidTier(verifiedCount: number): boolean {
   return verifiedCount > GUILD_TIER_MEMBER_LIMIT;
 }
+
+/** `raid_guild` above the Guild plan's member limit, else `guild` (spec 6.5). */
+export function fittingGuildPlan(verifiedCount: number): Extract<PlanKey, 'guild' | 'raid_guild'> {
+  return guildFitsRaidTier(verifiedCount) ? 'raid_guild' : 'guild';
+}

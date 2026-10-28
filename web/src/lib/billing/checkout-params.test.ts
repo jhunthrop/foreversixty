@@ -1,7 +1,7 @@
 // web/src/lib/billing/checkout-params.test.ts
 import { describe, expect, it } from 'vitest';
 import type { MeGuild } from '../account/api';
-import { billableGuilds, guildFitsRaidTier, parseCheckoutParams } from './checkout-params';
+import { billableGuilds, fittingGuildPlan, guildFitsRaidTier, parseCheckoutParams } from './checkout-params';
 
 describe('parseCheckoutParams', () => {
   it('accepts a premium request, with or without a comeback id', () => {
@@ -55,5 +55,7 @@ describe('billableGuilds and the tier fit', () => {
   it('switches to the raid tier above 25 members', () => {
     expect(guildFitsRaidTier(25)).toBe(false);
     expect(guildFitsRaidTier(28)).toBe(true);
+    expect(fittingGuildPlan(25)).toBe('guild');
+    expect(fittingGuildPlan(26)).toBe('raid_guild');
   });
 });

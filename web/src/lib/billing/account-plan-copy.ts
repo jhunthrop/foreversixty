@@ -48,5 +48,9 @@ export const accountPlanCopy = {
     plan: `${PLANS.guild.name} plan`,
     raidPlan: `${PLANS.raid_guild.name} plan`,
     youHoldSeat: ' · you hold a seat',
+    notVerified: 'Not verified',
+    noPlan: (guild: string): string => `${guild} has no plan.`,
+    nextStep: 'See the next step',
+    nextStepLabel: (action: string, guild: string): string => `${action} for ${guild}`,
   },
 } as const;
