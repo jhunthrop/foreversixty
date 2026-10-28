@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CHECKOUT_BAND_RESERVE,
   CHECKOUT_BODY_RESERVE,
+  GUILD_CARD_MIN,
   GUILD_LEAD_RESERVE,
   GUILD_SKELETON_CARD,
 } from './checkout-layout';
@@ -17,8 +18,12 @@ describe('checkout layout reserves', () => {
     expect(CHECKOUT_BODY_RESERVE).toBe('min-h-[204px] md:min-h-[184px]');
   });
 
-  it('the guild lead reserves 21 px, 42 px below 768', () => {
-    expect(GUILD_LEAD_RESERVE).toBe('min-h-[42px] md:min-h-[21px]');
+  it('the guild lead holds the longest lead: 2 lines at 1440, 3 at 390', () => {
+    expect(GUILD_LEAD_RESERVE).toBe('min-h-[63px] md:min-h-[42px]');
+  });
+
+  it('a card never falls below the skeleton it replaces', () => {
+    expect(GUILD_CARD_MIN).toBe('min-h-[260px] md:min-h-[156px]');
   });
 
   it('a skeleton card is the ready card: 156 px desktop, 260 px phone', () => {

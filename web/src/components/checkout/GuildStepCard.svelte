@@ -10,12 +10,12 @@
   import type { MeCharacter, MeGuild } from '../../lib/account/me-types';
   import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
   import { guildFacts, youRow } from '../../lib/billing/guild-card-model';
-  import { factionMarkSrc } from '../../lib/faction-mark';
+  import { guildMarkSrc } from '../../lib/guild/mark';
+  import { GUILD_CARD_MIN } from '../../lib/billing/checkout-layout';
   import { CARD } from '../../lib/ui/card';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
 
-  const FACTION_MARK_PX = 24;
   const FACT_SEPARATOR = ' · ';
 
   let {
@@ -38,13 +38,14 @@
   const realmLine = $derived(
     guild.ruleset_label ? `${guild.ruleset_label} · ${guild.region.toUpperCase()}` : null,
   );
+  const markSrc = $derived(guildMarkSrc(guild));
   const nameId = $derived(`guild-${guild.id}-name`);
 </script>
 
 <li
   id={`guild-${guild.id}`}
   aria-labelledby={nameId}
-  class={`${CARD} grid scroll-mt-24 grid-cols-1 items-start gap-[14px] p-4 md:grid-cols-[minmax(0,1fr)_320px] md:gap-6 md:p-5`}
+  class={`${CARD} ${GUILD_CARD_MIN} grid scroll-mt-24 grid-cols-1 items-start gap-[14px] p-4 md:grid-cols-[minmax(0,1fr)_320px] md:gap-6 md:p-5`}
   data-testid="checkout-guild-card"
 >
   <div class="flex min-w-0 flex-col">
@@ -54,20 +55,18 @@
         aria-hidden="true"
         data-testid="guild-crest"
       >
-        {#if guild.crest_url}
-          <img src={guild.crest_url} alt="" width="40" height="40" class="h-full w-full object-cover" />
-        {:else if guild.faction}
-          <img
-            src={factionMarkSrc(guild.faction)}
-            alt=""
-            width={FACTION_MARK_PX}
-            height={FACTION_MARK_PX}
-            data-testid="guild-faction-mark"
-          />
+        {#if markSrc !== null}
+          <img src={markSrc} alt="" width="40" height="40" class="h-full w-full object-cover" />
         {/if}
       </span>
       <span class="flex min-w-0 flex-col">
-        <h2 id={nameId} class="font-display text-strong m-0 truncate text-[16px] font-bold">{guild.name}</h2>
+        <h2
+          id={nameId}
+          tabindex="-1"
+          class="font-display text-strong m-0 truncate text-[16px] font-bold outline-none"
+        >
+          {guild.name}
+        </h2>
         {#if realmLine !== null}
           <span class="text-muted text-[13px]">{realmLine}</span>
         {/if}
@@ -86,9 +85,9 @@
               <span class="font-semibold" style={`color: ${classColorVar(entry.characterClass)}`}>
                 {entry.name}
               </span>
-              <span class="text-muted" aria-hidden="true">·</span>
+              <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span>
               <span class="text-text">{entry.rankWord}</span>
-              <span class="text-muted" aria-hidden="true">·</span>
+              <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span>
               {#if entry.verified}
                 <span class="text-kill inline-flex items-center gap-1">
                   <svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true">
@@ -114,11 +113,11 @@
         </ul>
       {/if}
       <p class="text-muted m-0 mt-[6px] text-[13px]" data-testid="guild-facts">
-        <span class="font-mono">{facts.verified}</span>
-        {#if facts.roster !== null}
-          <span aria-hidden="true">{FACT_SEPARATOR}</span><span class="font-mono">{facts.roster}</span>
-        {/if}
-        <span aria-hidden="true">{FACT_SEPARATOR}</span>{facts.plan}
+        {#each facts as fact, index (index)}
+          {#if index > 0}<span class="text-muted"
+              ><span aria-hidden="true">{FACT_SEPARATOR}</span><span class="sr-only">,</span></span
+            >{/if}{#if fact.figure !== null}<span class="font-mono">{fact.figure}</span>{/if}{fact.rest}
+        {/each}
       </p>
     {/if}
   </div>

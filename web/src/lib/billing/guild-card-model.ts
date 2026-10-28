@@ -71,6 +71,17 @@ function planWord(covered: GuildCoveredView | null | undefined): string {
   }
 }
 
+/** One fact: the figure (drawn in mono) and the words after it; a fact with no number has no figure. */
+export interface Fact {
+  figure: string | null;
+  rest: string;
+}
+
+function countFact(count: number, text: string): Fact {
+  const figure = String(count);
+  return { figure, rest: text.slice(figure.length) };
+}
+
 export interface FactsGuild {
   verified_count: number;
   roster_count?: number | null;
@@ -78,12 +89,34 @@ export interface FactsGuild {
 }
 
 /** The facts, in order: verified count, roster count (when known), the plan word. */
-export function guildFacts(guild: FactsGuild): { verified: string; roster: string | null; plan: string } {
-  return {
-    verified: guild.verified_count > 0 ? copy.facts.verified(guild.verified_count) : copy.facts.noneVerified,
-    roster: guild.roster_count == null ? null : copy.facts.onRoster(guild.roster_count),
-    plan: planWord(guild.covered),
-  };
+export function guildFacts(guild: FactsGuild): Fact[] {
+  const verified =
+    guild.verified_count > 0
+      ? countFact(guild.verified_count, copy.facts.verified(guild.verified_count))
+      : { figure: null, rest: copy.facts.noneVerified };
+  const roster =
+    guild.roster_count == null
+      ? []
+      : [countFact(guild.roster_count, copy.facts.onRoster(guild.roster_count))];
+  return [verified, ...roster, { figure: null, rest: planWord(guild.covered) }];
+}
+
+/** The id of the first guild whose step differs between two reads, or null; a new guild counts. */
+export function changedGuildId(
+  before: { guilds: readonly StepGuildRef[] } | null,
+  after: { guilds: readonly StepGuildRef[] },
+): number | null {
+  if (before === null) return null;
+  const changed = after.guilds.find((guild) => {
+    const previous = before.guilds.find((other) => other.id === guild.id);
+    return previous !== undefined && previous.subscribe?.step !== guild.subscribe?.step;
+  });
+  return changed?.id ?? null;
+}
+
+interface StepGuildRef {
+  id: number;
+  subscribe?: { step: string | null } | null;
 }
 
 export interface SentenceGuild extends StepGuild {

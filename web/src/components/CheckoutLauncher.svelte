@@ -21,10 +21,12 @@
      polling briefly if the webhook has not landed yet (the webhook is the source of truth,
      not the redirect). -->
 <script lang="ts">
+  import { tick } from 'svelte';
   import { fetchMeOnce, forgetSession, type Me } from '../lib/account/api';
   import { BillingApiError, openPortal, startCheckout } from '../lib/billing/api';
   import { runPremiumCheckout } from '../lib/billing/premium-owned-flow';
   import { checkoutCopy } from '../lib/billing/copy';
+  import { changedGuildId } from '../lib/billing/guild-card-model';
   import { checkoutGuildCopy, type GuildTier } from '../lib/billing/checkout-guild-copy';
   import { replacePlanInUrl } from '../lib/billing/checkout-plan-switch';
   import { CHECKOUT_BODY_RESERVE } from '../lib/billing/checkout-layout';
@@ -75,6 +77,8 @@
   /** Null while the step's /v1/me read is in flight. */
   let stepMe = $state<Me | null>(null);
   let stepFailed = $state(false);
+  /** The last `Check again` could not read /v1/me; the cards stay as they were. */
+  let refreshFailed = $state(false);
   /** The account that already has Premium: the panel replaces the redirect. */
   let ownedMe = $state<Me | null>(null);
   let portalBusy = $state(false);
@@ -144,15 +148,27 @@
     }
   }
 
-  /** `Check again`: re-reads /v1/me and redraws the cards in place, with no skeleton between. */
+  /**
+   * `Check again`: re-reads /v1/me and redraws the cards in place, with no skeleton between. A
+   * failed read says so; when a card's step changed, focus moves to that card's heading, since
+   * the button the player pressed is gone (spec §5.3).
+   */
   async function refreshGuildStep(): Promise<void> {
+    refreshFailed = false;
     io.forgetSession();
     try {
       const me = await io.fetchMe();
-      if (me === null) redirectToLogin();
-      else stepMe = me;
+      if (me === null) {
+        redirectToLogin();
+        return;
+      }
+      const changedId = changedGuildId(stepMe, me);
+      stepMe = me;
+      if (changedId === null) return;
+      await tick();
+      document.getElementById(`guild-${changedId}-name`)?.focus();
     } catch {
-      // The cards stay as they were; the next Check again tries again.
+      refreshFailed = true;
     }
   }
 
@@ -266,6 +282,15 @@
 />
 
 {#if stepShown && request !== null && request.plan !== 'premium'}
+  {#if refreshFailed}
+    <p
+      class="mx-auto w-full max-w-[880px] px-[18px] pt-5 text-[14px] md:px-12"
+      role="status"
+      data-testid="checkout-refresh-error"
+    >
+      {checkoutCopy.genericFailure}
+    </p>
+  {/if}
   <CheckoutGuildStep
     me={stepMe}
     failed={stepFailed}

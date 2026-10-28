@@ -79,10 +79,12 @@ describe('GuildStepCard identity', () => {
     );
   });
 
-  it('falls back to the 24 px faction mark, then to an empty ring', () => {
-    expect(html([guild({ faction: 'horde' })])).toMatch(/<img[^>]*width="24"[^>]*height="24"/);
+  it('falls back to the faction logo through guildMarkSrc, then to an empty ring', () => {
+    expect(html([guild({ faction: 'horde' })])).toMatch(
+      /<img[^>]*src="\/icons\/hd\/faction\/horde-logo-512\.webp"[^>]*width="40"/,
+    );
     const empty = html([guild({})]);
-    expect(empty).not.toContain('guild-faction-mark');
+    expect(empty).not.toMatch(/<img[^>]*width="40"/);
     expect(empty).toContain('data-testid="guild-crest"');
   });
 
@@ -123,10 +125,12 @@ describe('GuildStepCard you row and facts', () => {
 
   it('facts: none verified, the plan word, and the roster only when known', () => {
     const body = plain(html([guild({})])).replace(/\s+/g, ' ');
-    expect(body).toContain(`${copy.facts.noneVerified} · ${copy.facts.noPlan}`);
+    expect(body).toContain(`${copy.facts.noneVerified} · ,${copy.facts.noPlan}`);
     expect(body).not.toContain('on the roster');
     const known = plain(html([guild({ verified_count: 12, roster_count: 31 })])).replace(/\s+/g, ' ');
-    expect(known).toContain('12 verified · 31 on the roster · No plan');
+    expect(known).toContain('12 verified · ,31 on the roster · ,No plan');
+    expect(html([guild({ verified_count: 12 })])).toMatch(/<span class="font-mono">12<\/span> verified/);
+    expect(html([guild({})])).not.toMatch(/font-mono">No one/);
   });
 
   it('an older /v1/me draws identity and Open the guild only', () => {

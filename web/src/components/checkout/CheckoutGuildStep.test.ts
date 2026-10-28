@@ -87,7 +87,7 @@ afterEach(() => vi.unstubAllGlobals());
 describe('CheckoutGuildStep: loading', () => {
   it('reserves the lead line and skeleton cards at the ready height, aria-busy, sr-only label', () => {
     const body = html({ me: null });
-    expect(body).toMatch(/min-h-\[42px\] md:min-h-\[21px\]/);
+    expect(body).toMatch(/min-h-\[63px\] md:min-h-\[42px\]/);
     expect(body).toMatch(/<ul[^>]*aria-busy="true"/);
     expect(body.match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(2);
     expect(body).toMatch(new RegExp(`class="sr-only" role="status"[^>]*>${copy.loading}<`));

@@ -20,8 +20,19 @@ export const CHECKOUT_BAND_RESERVE = 'min-h-[156px] md:min-h-[190px] lg:min-h-[1
  */
 export const CHECKOUT_BODY_RESERVE = 'min-h-[204px] md:min-h-[184px]';
 
-/** The guild step's lead slot while loading: one line, two below 768. */
-export const GUILD_LEAD_RESERVE = 'min-h-[42px] md:min-h-[21px]';
+/**
+ * The guild step's lead slot while loading: the LONGEST lead in checkout-guild-copy.ts, the
+ * 136-character `allUnclaimed(2)` sentence, at 21 px a line. At 1440 the 720 px column at 15 px
+ * (about 100 characters a line) wraps it to 2 lines, 42 px. At 390 the 354 px column at 14 px
+ * (about 53 characters a line) wraps it to 3 lines, 63 px.
+ */
+export const GUILD_LEAD_RESERVE = 'min-h-[63px] md:min-h-[42px]';
 
 /** A skeleton guild card at the ready card's height. */
 export const GUILD_SKELETON_CARD = 'h-[260px] md:h-[156px]';
+
+/**
+ * A guild card's floor, the skeleton's height: a shorter card (an on_plan one) would shrink the
+ * list when the rows replace the skeleton. The shell's skeleton must use this same constant.
+ */
+export const GUILD_CARD_MIN = 'min-h-[260px] md:min-h-[156px]';
