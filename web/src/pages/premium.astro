@@ -34,6 +34,15 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
           <span class="pill pill-site">{copy.founder.label}</span>
           <span>{copy.founder.open}</span>
         </p>
+        <p
+          class="text-text m-0 hidden min-h-11 items-center gap-[6px] text-[13px] md:flex"
+          data-band-guild-row
+        >
+          <span>{copy.band.guildLead}</span>
+          <a href="#guild-leaders" class="hover:underline" data-testid="band-guild-link">
+            {copy.band.guildLink}
+          </a>
+        </p>
         <div class="interval-slot">
           <IntervalControl />
         </div>
