@@ -67,6 +67,11 @@ export const FOUNDER_LAST_DAY = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1).
 });
 export const GUILD_TIER_MEMBER_LIMIT = 25;
 export const GUILD_TRIAL_DAYS = 7;
+/** Days before a guild trial ends that the reminder goes out. */
+export const TRIAL_REMINDER_DAYS = 3;
+/** Raid sizes a Raid guild price is divided across, largest first. */
+export const RAID_SIZES = [40, 20, 10] as const;
+export type RaidSize = (typeof RAID_SIZES)[number];
 export const SEAT_MOVE_LOCK_DAYS = 30;
 
 const MONTHS_PER_YEAR = 12;

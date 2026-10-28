@@ -4,6 +4,8 @@ import {
   FOUNDER_LAST_DAY,
   FOUNDER_WINDOW_CLOSES,
   PLANS,
+  RAID_SIZES,
+  TRIAL_REMINDER_DAYS,
   founderOpen,
   formatAmount,
   formatCents,
@@ -94,4 +96,9 @@ describe('listPriceAfterFounder', () => {
     expect(listPriceAfterFounder('guild', 'yearly')).toBe('$150 after 6 Jan 2027');
     expect(listPriceAfterFounder('raid_guild', 'monthly')).toBe('$25 a month after 6 Jan 2027');
   });
+});
+
+describe('raid sizes and trial reminder (B3.3)', () => {
+  it('RAID_SIZES leads with 40', () => expect(RAID_SIZES).toEqual([40, 20, 10]));
+  it('TRIAL_REMINDER_DAYS is 3', () => expect(TRIAL_REMINDER_DAYS).toBe(3));
 });
