@@ -182,20 +182,22 @@ type pullItem struct {
 	add  func(*summary.Summary)
 }
 
-// pullItems is one of each thing rc can credit, from its own lists.
+// pullItems is everything rc can credit: every entry of every list seeded
+// on the pull, plus two casts of the first potion (the second use).
 func pullItems(rc consumables.RoleCatalogue) []pullItem {
-	seed := func(name string, id int64) pullItem {
-		return pullItem{name, func(f *summary.Summary) { f.Auras = append(f.Auras, seededAura(id)) }}
+	var items []pullItem
+	for _, category := range []string{consumables.CategoryFlask, consumables.CategoryFood,
+		consumables.CategoryWeaponEnchant, consumables.CategoryWorldBuffs, consumables.CategoryCombatPotion} {
+		for _, e := range rc.Entries(category) {
+			id := e.SpellID
+			items = append(items, pullItem{category + " " + e.Name,
+				func(f *summary.Summary) { f.Auras = append(f.Auras, seededAura(id)) }})
+		}
 	}
 	potion := rc.CombatPotion.Entries[0].SpellID
-	items := []pullItem{
-		seed("flask", rc.Flask[0].SpellID), seed("food", rc.Food[0].SpellID),
-		seed("world buff 1", rc.WorldBuffs[0].SpellID), seed("world buff 2", rc.WorldBuffs[1].SpellID),
-		seed("pre-pull potion", potion),
-		{"potion cast", func(f *summary.Summary) { f.Casts = append(f.Casts, potionCast(potion)) }},
-	}
-	if len(rc.WeaponEnchant) > 0 {
-		items = append(items, seed("weapon enchant", rc.WeaponEnchant[0].SpellID))
+	for use := 1; use <= 2; use++ {
+		items = append(items, pullItem{fmt.Sprintf("potion cast %d", use),
+			func(f *summary.Summary) { f.Casts = append(f.Casts, potionCast(potion)) }})
 	}
 	return items
 }
@@ -210,8 +212,9 @@ func fightWith(items []pullItem, mask int) summary.Summary {
 	return fight
 }
 
-// Bringing one more thing never lowers Preparation, for every role on the
-// shipped catalogue and on every completeness mix of the test catalogue.
+// Bringing one more thing never lowers Preparation: exhaustive over every
+// subset of the shipped catalogue's entries (plus two potion casts) for each
+// role, and on every completeness mix of the test catalogue.
 func TestPreparation_BringingMoreNeverLowersTheScore(t *testing.T) {
 	cats := map[string]*consumables.RoleCatalogue{}
 	for _, role := range []string{RoleDPS, RoleHealer, RoleTank} {
