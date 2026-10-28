@@ -4,7 +4,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { Me, MeCharacter, MeGuild } from '../../lib/account/api';
-import type { GuildClaimView } from '../../lib/billing/contract';
+import type { GuildClaimView, GuildCoveredView } from '../../lib/billing/contract';
 import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
 import links from '../../data/links.json';
 import CheckoutGuildStep from './CheckoutGuildStep.svelte';
@@ -181,7 +181,7 @@ describe('GuildStepBlock', () => {
   });
 
   it('on_plan read-only: billed-by line, seats, Open the guild', () => {
-    const covered = {
+    const covered: GuildCoveredView = {
       tier: 'guild',
       state: 'active',
       ends_at: null,
@@ -191,7 +191,7 @@ describe('GuildStepBlock', () => {
       seats_given: 1,
       seats_total: 3,
     };
-    const body = html([guild({ step: 'on_plan', covered } as Partial<MeGuild> & { step: string })]);
+    const body = html([guild({ step: 'on_plan', covered })]);
     expect(plain(body)).toContain(copy.onPlan.billedBy('OLYMPUS XXVII', 'guild', 'Thrall'));
     expect(plain(body)).toContain(copy.onPlan.seatsGiven(1, 3, 'Thrall'));
     expect(body).toContain(`>${copy.openGuild}<`);
