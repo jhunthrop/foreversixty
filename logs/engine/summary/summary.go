@@ -186,6 +186,9 @@ type Accumulator struct {
 	// The last cast of each taunt, so its debuff landing is not a second taunt.
 	tauntCasts map[tauntKey]int64
 	combatants map[string]*event.Combatant
+	// levels is the highest level the advanced block gave each unit on a
+	// line whose block describes that unit (the player's own lines).
+	levels map[string]int64
 	// mechanicHits is spell id -> player guid -> the hit tally, folded from
 	// the Damage case for every spell the fight's mechanics table lists.
 	mechanicHits map[int64]map[string]*MechanicHit
@@ -220,6 +223,7 @@ func New(o Options) *Accumulator {
 		threatBy:        map[string]map[string]*threatPair{},
 		engaged:         map[string]time.Time{},
 		combatants:      map[string]*event.Combatant{},
+		levels:          map[string]int64{},
 		mechanicHits:    map[int64]map[string]*MechanicHit{},
 		mechanicCasts:   map[int64][]mechanicCast{},
 		mechanicEffects: map[int64][]mechanicEffect{},
@@ -381,6 +385,7 @@ func (a *Accumulator) addNow(e event.Event) {
 	a.addAuras(e)
 	a.addResources(e)
 	a.addDeaths(e)
+	a.noteLevel(e)
 	if e.Kind == event.CombatantInfo && e.Combatant != nil {
 		a.combatants[e.Combatant.GUID] = e.Combatant
 		a.seedAuras(e)
