@@ -4,8 +4,14 @@
 // ready height from the first paint, so the page's CLS stays within 0.02. Tailwind classes,
 // written whole so the class scanner sees them.
 
-/** The band: the same box for a guild plan, Premium and the moment before the URL is read. */
-export const CHECKOUT_BAND_RESERVE = 'min-h-[156px] md:min-h-[184px] lg:min-h-[148px]';
+/**
+ * The band: the same box for a guild plan, Premium, an invalid link and the moment before the
+ * URL is read. From the classes (line-height 1.5, label 11 px): phone 24 + h1 26.4 + 8 + summary
+ * 97.5 (size line on two lines) = 155.9; md 52 + label/h1 50.9 + 8 + summary 78 = 188.9; lg 52 +
+ * summary 97.5 (Guild's size line wraps in the 440 px column) = 149.5. Estimates: Task 25's CLS
+ * e2e asserts the band height before and after the summary appears.
+ */
+export const CHECKOUT_BAND_RESERVE = 'min-h-[156px] md:min-h-[190px] lg:min-h-[150px]';
 
 /**
  * The narrow body under the band (redirect message, refusals, invalid link): it holds Task 12's

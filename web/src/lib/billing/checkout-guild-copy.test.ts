@@ -15,6 +15,7 @@ describe('frame', () => {
   it('band and h1', () => {
     expect(copy.band.label).toBe(row('Band label'));
     expect(copy.band.title).toBe(row('h1'));
+    expect(copy.band.invalidTitle).toBe(row('h1, invalid link'));
   });
 
   it('plan summary words', () => {

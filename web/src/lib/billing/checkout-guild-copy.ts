@@ -20,7 +20,7 @@ const CLAIM_RULE = "Only a guild's guild master can claim it here and subscribe 
 const LAST_CLAIM_WINDOW = `You may attempt one claim every ${CLAIM_COOLDOWN_DAYS} days`;
 
 export const checkoutGuildCopy = {
-  band: { label: 'CHECKOUT', title: 'Subscribe a guild' },
+  band: { label: 'CHECKOUT', title: 'Subscribe a guild', invalidTitle: 'Checkout' },
   planSummary: {
     founder: 'Founder',
     trial: `First ${GUILD_TRIAL_DAYS} days free`,

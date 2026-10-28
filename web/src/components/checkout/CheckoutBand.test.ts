@@ -6,8 +6,25 @@ import { CHECKOUT_BAND_RESERVE } from '../../lib/billing/checkout-layout';
 import type { Interval, PlanKey } from '../../lib/billing/plans';
 import CheckoutBand from './CheckoutBand.svelte';
 
-function html(plan: PlanKey | null, interval: Interval = 'yearly', founder = true): string {
-  return render(CheckoutBand, { props: { plan, interval, founder } }).body.replace(/<!--.*?-->/g, '');
+function html(plan: PlanKey | null, interval: Interval = 'yearly', founder = true, invalid = false): string {
+  return render(CheckoutBand, { props: { plan, interval, founder, invalid } }).body.replace(
+    /<!--.*?-->/g,
+    '',
+  );
+}
+
+/** The text of the element carrying `testid`, as the browser lays it out inline. */
+function textOf(body: string, testid: string): string {
+  const open = body.indexOf(`data-testid="${testid}"`);
+  const start = body.indexOf('>', open) + 1;
+  let depth = 1;
+  let index = start;
+  while (depth > 0) {
+    const next = body.indexOf('<', index);
+    depth += body.startsWith('</', next) ? -1 : 1;
+    index = body.indexOf('>', next) + 1;
+  }
+  return text(body.slice(start, body.lastIndexOf('<', index - 1)));
 }
 
 function text(body: string): string {
@@ -29,6 +46,12 @@ describe('CheckoutBand', () => {
     expect(body).toContain(`>${copy.planSummary.trial}<`);
     expect(copy.planSummary.trial).toBe('First 7 days free');
     expect(body).toMatch(/<a[^>]*href="\/premium"[^>]*>Change plan<\/a>/);
+  });
+
+  it('the price and its unit share one inline box and read "$120 a year"', () => {
+    const body = html('guild');
+    expect(textOf(body, 'checkout-plan-price')).toBe('$120 a year');
+    expect(textOf(html('raid_guild', 'monthly', false), 'checkout-plan-price')).toBe('$25 a month');
   });
 
   it('the price is tabular JetBrains Mono', () => {
@@ -62,6 +85,15 @@ describe('CheckoutBand', () => {
     expect(body).toContain('Premium');
     expect(body).not.toContain('Subscribe a guild');
     expect(body).not.toContain(copy.planSummary.changePlan);
+  });
+
+  it('an invalid link: exactly one h1 Checkout, no plan summary', () => {
+    const body = html(null, 'yearly', true, true);
+    expect(body.match(/<h1/g)).toHaveLength(1);
+    expect(body).toMatch(new RegExp(`<h1[^>]*>${copy.band.invalidTitle}</h1>`));
+    expect(copy.band.invalidTitle).toBe('Checkout');
+    expect(body).not.toContain('checkout-plan-summary');
+    expect(body).toContain(CHECKOUT_BAND_RESERVE);
   });
 
   it('before the URL is read: the band ground and its reserve, no h1', () => {

@@ -10,7 +10,7 @@ import {
 
 describe('checkout layout reserves', () => {
   it('the band holds one box at phone, tablet and desktop', () => {
-    expect(CHECKOUT_BAND_RESERVE).toBe('min-h-[156px] md:min-h-[184px] lg:min-h-[148px]');
+    expect(CHECKOUT_BAND_RESERVE).toBe('min-h-[156px] md:min-h-[190px] lg:min-h-[150px]');
   });
 
   it('the body holds the PremiumOwnedPanel, not just the 21 px message line', () => {

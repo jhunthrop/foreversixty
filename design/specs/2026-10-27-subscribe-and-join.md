@@ -466,6 +466,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 |---|---|
 | Band label | `CHECKOUT` |
 | h1 | `Subscribe a guild` |
+| h1, invalid link | `Checkout` (ruling 2026-10-27: invalid link h1) |
 | Plan summary | `{Plan}` · `{amount}` + ` a year` or ` a month`; `Founder` (pill); `First 7 days free`; `Change plan` |
 | Size line, Guild | `Up to 25 verified members. A 10-person raid team fits, and a 20-person one with a small bench.` |
 | Size line, Raid guild | `Any size. For guilds over 25 verified members.` |
