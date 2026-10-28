@@ -367,7 +367,9 @@ test('a plain member, refused settings, still sees the claim state and who can a
   );
   await page.goto('/guild/us/hardcore/the-last-watch/claim');
   await expect(page.getByTestId('guild-claim-state')).toHaveText('Nobody has claimed this guild yet.');
-  await expect(page.getByTestId('guild-claim-not-eligible')).toContainText('You are a member of this guild');
+  await expect(page.getByTestId('guild-claim-not-eligible')).toContainText(
+    'You are a member of The Last Watch',
+  );
   // Nothing is claimed, so there is nothing to contest.
   await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-rules')).toBeVisible();

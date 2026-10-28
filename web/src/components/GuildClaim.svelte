@@ -25,6 +25,18 @@
     type GuildSettingsData,
   } from '../lib/guild/api';
   import { claimView } from '../lib/guild/claim-view';
+  import {
+    claimLinkFor,
+    claimPlanLine,
+    parseClaimPlan,
+    setupHrefFor,
+    subscribeLabel,
+    type ClaimPlan,
+  } from '../lib/guild/claim-plan';
+  import { founderOpen } from '../lib/billing/plans';
+  import ClaimMemberHandoff from './claim/ClaimMemberHandoff.svelte';
+  import ClaimPlanLine from './claim/ClaimPlanLine.svelte';
+  import ClaimSubscribeButton from './claim/ClaimSubscribeButton.svelte';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
   import { formatMadeOn } from '../lib/guild/invite-link';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -47,6 +59,10 @@
   let showContestConfirm = $state(false);
   let showClaimConfirm = $state(false);
   let showReleaseConfirm = $state(false);
+  /** The plan this claim link was made for, and the page's own path and query (read on load, client side). */
+  let claimPlan = $state<ClaimPlan | null>(null);
+  let claimPath = $state('');
+  let claimOrigin = $state('');
 
   /**
    * `fetchMeOnce()` is awaited directly rather than `.catch()`-guarded to null:
@@ -63,6 +79,9 @@
   async function load(): Promise<void> {
     status = 'loading';
     error = '';
+    claimPlan = parseClaimPlan(window.location.search);
+    claimPath = `${window.location.pathname}${window.location.search}`;
+    claimOrigin = window.location.origin;
     try {
       const [session, guildPage] = await Promise.all([
         fetchMeFresh((fresh) => (me = fresh)),
@@ -138,6 +157,7 @@
       await claimGuild(guildId);
       showClaimConfirm = false;
       settings = await fetchGuildSettings(guildId);
+      me = await fetchMeFresh();
     });
 
   const onConfirm = (): void =>
@@ -145,7 +165,18 @@
       if (guildId === null) return;
       await confirmClaim(guildId);
       settings = await fetchGuildSettings(guildId);
+      me = await fetchMeFresh();
     });
+
+  /** The `ready` button's label once the viewer holds the claim of a guild the link named a plan for. */
+  const subscribe = $derived.by(() => {
+    const subscribeFacts = membership?.subscribe;
+    if (claimPlan === null || guildId === null || subscribeFacts?.step !== 'ready') return null;
+    return {
+      id: guildId,
+      label: subscribeLabel(claimPlan, subscribeFacts.trial_used, founderOpen(new Date())),
+    };
+  });
 
   const onRelease = (): void =>
     void run(async () => {
@@ -185,6 +216,9 @@
       testid="guild-claim"
     />
   {:else}
+    {#if claimPlan !== null}
+      <ClaimPlanLine line={claimPlanLine(guildName, claimPlan, founderOpen(new Date()))} />
+    {/if}
     {#snippet contestOffer()}
       {#if membership !== null && claimState === 'claimed'}
         {#if !showContestConfirm}
@@ -247,6 +281,9 @@
             <h2 class="section-title text-[16px]">{guildClaimCopy.nextHeading}</h2>
             <!-- Two button rows: the first step is the primary, the second a ghost; full width on a phone. -->
             <div class="flex flex-col gap-3 md:flex-row">
+              {#if claimPlan !== null && subscribe !== null}
+                <ClaimSubscribeButton guildId={subscribe.id} {claimPlan} label={subscribe.label} />
+              {/if}
               <a
                 class={`${PRIMARY_BUTTON_FIXED} w-full justify-center px-4 md:w-auto`}
                 href={`${guildBase}#roster`}
@@ -331,7 +368,7 @@
     {:else if view.viewer === 'stranger'}
       <p class="text-[14px]" data-testid="guild-claim-not-member">
         {guildClaimCopy.notAMember}
-        <a class="text-nav" href={SETUP_NAV_ITEM.href}>{SETUP_NAV_ITEM.label}</a>
+        <a class="text-nav" href={setupHrefFor(SETUP_NAV_ITEM.href, claimPath)}>{SETUP_NAV_ITEM.label}</a>
       </p>
     {:else}
       <!-- A member's read (the home's state, never who) or an officer of an unclaimed guild. -->
@@ -379,10 +416,11 @@
           </div>
         {/if}
       {:else if !eligible}
-        <p class="text-[14px]" data-testid="guild-claim-not-eligible">
-          {guildClaimCopy.memberCannotClaim}
-          <a class="text-nav" href={SETUP_NAV_ITEM.href}>{SETUP_NAV_ITEM.label}</a>
-        </p>
+        <ClaimMemberHandoff
+          {guildName}
+          url={claimLinkFor(path, claimPlan, claimOrigin)}
+          tier={claimPlan?.plan ?? 'guild'}
+        />
       {/if}
       {@render contestOffer()}
     {/if}

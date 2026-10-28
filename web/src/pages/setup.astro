@@ -8,6 +8,7 @@ import Panel from '../components/Panel.astro';
 import AddonPasteBox from '../components/AddonPasteBox.svelte';
 import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import SetupProgress from '../components/SetupProgress.svelte';
+import SetupBackToClaim from '../components/claim/SetupBackToClaim.svelte';
 import SetupStepLine from '../components/SetupStepLine.svelte';
 import { companionPlatformsLine } from '../lib/setup/progress';
 import { addonCopy } from '../lib/addon/copy';
@@ -69,6 +70,7 @@ const QUIET_LINK = 'inline-flex min-h-11 items-center text-[14px] font-semibold 
       <!-- The checklist at a glance: three numbered anchors, gold with a check once the account
            shows the step done. They read the <html> hints before any script runs (global.css). -->
       <SetupProgress client:idle />
+      <SetupBackToClaim client:only="svelte" />
     </header>
 
     <Panel title={addonCopy.setupStep1Title}>

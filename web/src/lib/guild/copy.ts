@@ -47,6 +47,10 @@ export const guildHomeCopy = {
   // A plain, unverified member has no claim standing at all -- this replaces the claim
   // link for them in that same slot, rather than leaving it silently absent.
   notVerifiedNote: 'You are not verified yet. An officer can approve you from the roster.',
+  // Spec 2026-10-27 section 9.3: when nobody in the guild can approve members yet.
+  notVerifiedNoApprover: (guildName: string): string =>
+    `You are not verified yet. Nobody in ${guildName} can approve members until its guild master claims it.`,
+  sendGuildMasterLink: 'Send your guild master a link',
   openSim: 'Open in simulator',
   openPlanner: 'Open in planner',
   untitledReport: 'Untitled report',
@@ -112,10 +116,14 @@ export const guildClaimCopy = {
   confirmButton: 'Confirm this claim',
   releaseButton: 'Release claim',
   notEligible: 'Only an officer or the guild master of this guild can claim it.',
-  // A plain member, the common visitor here (the guild page's own "Claim this guild" link
-  // brought them): what is true, then what to do, since they cannot act themselves.
-  memberCannotClaim:
-    'You are a member of this guild, so you cannot claim it. Ask the guild master or an officer to save their character on Get set up, then open this page: the guild master claims at once, an officer starts a claim a second officer confirms.',
+  // A claim link made for a plan (spec 2026-10-27 section 9.3): what the link is for, then the order.
+  planLine: (guildName: string, planName: string, price: string): string =>
+    `This link is for subscribing ${guildName} to the ${planName} plan (${price}). Claim the guild first; then the plan is one step.`,
+  // A plain member, the common visitor here: what is true, then what to do with the link below.
+  memberHandoff: (guildName: string): string =>
+    `You are a member of ${guildName}, so only its guild master can claim it. Send them this page's link.`,
+  // After a save on /setup that came from a claim link (spec section 9.3).
+  backToClaim: (guildName: string): string => `Back to ${guildName}'s claim`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
   notAMember:
     'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',
@@ -138,6 +146,8 @@ export const guildSettingsCopy = {
   // Spec section 4.4, exact wording.
   forbidden: 'You need to be a verified officer of this guild to see its settings.',
   heading: 'Guild settings',
+  // Spec 2026-10-27 section 9.3, under the read-only billing sentence.
+  sendThemThisLink: 'Send them this link.',
   defaultVisibility: 'Default report visibility',
   officerThreshold: 'Officer rank threshold',
   inviteHeading: 'Invite link',
@@ -193,6 +203,9 @@ export const guildJoinCopy = {
   joinButton: (guildName: string): string => `Join ${guildName}`,
   joining: 'Joining…',
   joined: 'You joined the guild.',
+  // Spec 2026-10-27 section 9.3, invite joined: the guild's plan, from `/v1/me` `covered`.
+  onPlan: (guildName: string, tier: string): string => `${guildName} is on the ${tier} plan.`,
+  noPlanYet: (guildName: string): string => `${guildName} has no plan yet.`,
   signInButton: 'Sign in with Battle.net to join',
   signInLine: 'Sign in to join this guild.',
   notNow: 'Not now',
