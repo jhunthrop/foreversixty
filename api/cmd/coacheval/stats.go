@@ -4,11 +4,15 @@ import (
 	"math"
 	"slices"
 	"sort"
+
+	"github.com/jhunthrop/foreversixty/api/internal/llm"
 )
 
 // ModelStats is the table row for one model over the fights that reached it.
 type ModelStats struct {
 	Model                       string
+	Reasoning                   string // the level the model ran at; "off" when results carry none
+	MeanReasoning               float64
 	Fights, Skipped             int
 	PassFirst, PassRetry        int
 	Fallback, ModelErrors       int
@@ -57,14 +61,18 @@ func statsByModel(results []Result) []ModelStats {
 }
 
 func statsOf(model string, rs []Result) ModelStats {
-	s := ModelStats{Model: model, ProblemKinds: map[string]int{}}
-	var in, out, lat, cost []float64
+	s := ModelStats{Model: model, Reasoning: llm.DefaultReasoning, ProblemKinds: map[string]int{}}
+	var in, out, lat, cost, reasoning []float64
 	for _, r := range rs {
 		if r.Outcome == OutcomeSkipped {
 			s.Skipped++
 			continue
 		}
 		s.Fights++
+		if r.Reasoning != "" {
+			s.Reasoning = r.Reasoning
+		}
+		reasoning = append(reasoning, float64(r.ReasoningTokens))
 		countOutcome(&s, r)
 		in, out = append(in, float64(r.TokensIn)), append(out, float64(r.TokensOut))
 		lat, cost = append(lat, float64(r.LatencyMS)), append(cost, r.CostUSD)
@@ -74,6 +82,7 @@ func statsOf(model string, rs []Result) ModelStats {
 		}
 	}
 	s.MeanIn, s.MeanOut, s.P90In, s.P90Out = mean(in), mean(out), p90(in), p90(out)
+	s.MeanReasoning = mean(reasoning)
 	s.MeanLatencyMS, s.P90LatencyMS = mean(lat), p90(lat)
 	s.TotalCostUSD, s.MeanCostUSD = sum(cost), mean(cost)
 	return s

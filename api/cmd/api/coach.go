@@ -189,6 +189,7 @@ func coachModel(c config.CoachConfig) (llm.Client, error) {
 	return llm.New(llm.Config{
 		BaseURL: c.LLMBaseURL, Model: c.LLMModel, APIKey: llm.NewSecret(c.LLMAPIKey), Providers: c.Providers(),
 		PriceInPerMTok: c.LLMPriceInPerMTok, PriceOutPerMTok: c.LLMPriceOutPerMTok,
+		Reasoning: c.LLMReasoning,
 	}, nil)
 }
 

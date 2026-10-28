@@ -12,6 +12,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"time"
 )
@@ -54,6 +55,12 @@ func New(cfg Config, hc *http.Client) (*HTTPClient, error) {
 	}
 	if err := requirePrice(cfg.PriceOutPerMTok, "LLM_PRICE_OUT_PER_MTOK"); err != nil {
 		return nil, err
+	}
+	if cfg.Reasoning == "" {
+		cfg.Reasoning = DefaultReasoning
+	}
+	if !slices.Contains(ReasoningLevels, cfg.Reasoning) {
+		return nil, fmt.Errorf("llm: LLM_REASONING must be one of %s", strings.Join(ReasoningLevels, ", "))
 	}
 	if cfg.Timeout <= 0 {
 		cfg.Timeout = defaultTimeout
@@ -189,6 +196,7 @@ func (c *HTTPClient) wire(req Request) wireRequest {
 	w := wireRequest{
 		Model: c.cfg.Model, Messages: req.Messages, Temperature: req.Temperature,
 		MaxTokens: req.MaxTokens, ResponseFormat: responseFormat(req.JSONSchema),
+		Reasoning: reasoningFor(c.cfg.Reasoning),
 	}
 	if len(c.cfg.Providers) > 0 {
 		w.ProviderOpts = &providerOption{Gateway: gatewayOption{Only: c.cfg.Providers}}
@@ -239,6 +247,9 @@ func (c *HTTPClient) interpret(resp *http.Response, raw []byte, fallback Usage) 
 	res.Usage = fallback // no usage block: charge the worst case
 	if w.Usage != nil {
 		res.Usage = Usage{PromptTokens: w.Usage.PromptTokens, CompletionTokens: w.Usage.CompletionTokens}
+		if w.Usage.Details != nil {
+			res.Usage.ReasoningTokens = w.Usage.Details.ReasoningTokens
+		}
 	}
 	res.CostUSD, res.CostEstimated = c.cost(resp, raw, res.Usage)
 	return res, retryHint{}, nil

@@ -5,8 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/llm"
 )
 
 const (
@@ -26,6 +29,7 @@ type Options struct {
 	Models              []string
 	Prices              map[string]price
 	Providers           map[string][]string
+	Reasoning           map[string]string // slug to level; models not named run at llm.DefaultReasoning
 	Fake, DrySpend      bool
 	CoachDir, BuildsDir string
 	Temperature         float64
@@ -40,7 +44,7 @@ func (l *listFlag) Set(v string) error { *l = append(*l, v); return nil }
 func ParseOptions(args []string, getenv func(string) string, errOut io.Writer) (Options, error) {
 	fs := flag.NewFlagSet("coacheval", flag.ContinueOnError)
 	fs.SetOutput(errOut)
-	var models, prices, providers listFlag
+	var models, prices, providers, reasoning listFlag
 	o := Options{}
 	fs.StringVar(&o.DB, "db", "", "database URL; read-only queries pick stored kills (summaries come from the R2_* bucket)")
 	fs.StringVar(&o.Corpus, "corpus", "", "directory of fight summary JSON files, for offline runs")
@@ -49,6 +53,7 @@ func ParseOptions(args []string, getenv func(string) string, errOut io.Writer) (
 	fs.Var(&models, "model", "gateway model slug; repeat to run each model over the same packs")
 	fs.Var(&prices, "price", "slug=inUSDperMTok,outUSDperMTok; repeatable; falls back to LLM_PRICE_IN_PER_MTOK/LLM_PRICE_OUT_PER_MTOK")
 	fs.Var(&providers, "provider", "slug=provider1,provider2 pins gateway routing; repeatable; falls back to LLM_PROVIDERS")
+	fs.Var(&reasoning, "reasoning", "slug=level ("+strings.Join(llm.ReasoningLevels, "|")+"); repeatable; default "+llm.DefaultReasoning)
 	fs.BoolVar(&o.Fake, "fake", false, "use llm.Fake instead of the gateway (smoke test)")
 	fs.BoolVar(&o.DrySpend, "dry-spend", true, "record no spend and no database row; always on")
 	fs.StringVar(&o.CoachDir, "coach-dir", getenv("COACH_DATA_DIR"), "spec rule files and personas (default $COACH_DATA_DIR)")
@@ -65,7 +70,33 @@ func ParseOptions(args []string, getenv func(string) string, errOut io.Writer) (
 	if o.Providers, err = parseProviders(providers); err != nil {
 		return Options{}, err
 	}
+	if o.Reasoning, err = parseReasoning(reasoning); err != nil {
+		return Options{}, err
+	}
 	return o, o.validate()
+}
+
+// ReasoningOf is the reasoning level the model runs at.
+func (o Options) ReasoningOf(slug string) string {
+	if level, ok := o.Reasoning[slug]; ok {
+		return level
+	}
+	return llm.DefaultReasoning
+}
+
+func parseReasoning(in []string) (map[string]string, error) {
+	out := map[string]string{}
+	for _, s := range in {
+		slug, level, err := splitPair(s)
+		if err != nil {
+			return nil, fmt.Errorf("-reasoning: %w", err)
+		}
+		if !slices.Contains(llm.ReasoningLevels, level) {
+			return nil, fmt.Errorf("-reasoning %q: level must be one of %s", s, strings.Join(llm.ReasoningLevels, ", "))
+		}
+		out[slug] = level
+	}
+	return out, nil
 }
 
 func (o Options) validate() error {

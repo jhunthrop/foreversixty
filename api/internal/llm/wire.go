@@ -21,6 +21,21 @@ type wireRequest struct {
 	MaxTokens      int             `json:"max_tokens"`
 	ResponseFormat map[string]any  `json:"response_format"`
 	ProviderOpts   *providerOption `json:"providerOptions,omitempty"`
+	Reasoning      reasoningOption `json:"reasoning"`
+}
+
+// reasoningOption is the gateway's top-level reasoning object: enabled or effort, never both.
+type reasoningOption struct {
+	Enabled *bool  `json:"enabled,omitempty"`
+	Effort  string `json:"effort,omitempty"`
+}
+
+func reasoningFor(level string) reasoningOption {
+	if level == DefaultReasoning {
+		off := false
+		return reasoningOption{Enabled: &off}
+	}
+	return reasoningOption{Effort: level}
 }
 
 type providerOption struct {
@@ -38,9 +53,12 @@ type wireResponse struct {
 		Message Message `json:"message"`
 	} `json:"choices"`
 	Usage *struct {
-		PromptTokens     int      `json:"prompt_tokens"`
-		CompletionTokens int      `json:"completion_tokens"`
-		Cost             *float64 `json:"cost"`
+		PromptTokens     int `json:"prompt_tokens"`
+		CompletionTokens int `json:"completion_tokens"`
+		Details          *struct {
+			ReasoningTokens int `json:"reasoning_tokens"`
+		} `json:"completion_tokens_details"`
+		Cost *float64 `json:"cost"`
 	} `json:"usage"`
 }
 

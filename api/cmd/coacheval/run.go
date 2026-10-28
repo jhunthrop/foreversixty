@@ -28,20 +28,23 @@ type Problem struct {
 
 // Result is one fight x model.
 type Result struct {
-	Label         string  `json:"label"`
-	Model         string  `json:"model"`
-	Spec          string  `json:"spec"`
-	Role          string  `json:"role"`
-	Size          int     `json:"size"`
-	Status        string  `json:"pack_status"`
-	Outcome       Outcome `json:"outcome"`
-	Note          string  `json:"note,omitempty"`
-	Calls         int     `json:"calls"`
-	TokensIn      int     `json:"tokens_in"`
-	TokensOut     int     `json:"tokens_out"`
-	CostUSD       float64 `json:"cost_usd"`
-	CostEstimated bool    `json:"cost_estimated"`
-	LatencyMS     int64   `json:"latency_ms"`
+	Label     string  `json:"label"`
+	Model     string  `json:"model"`
+	Spec      string  `json:"spec"`
+	Role      string  `json:"role"`
+	Size      int     `json:"size"`
+	Status    string  `json:"pack_status"`
+	Outcome   Outcome `json:"outcome"`
+	Note      string  `json:"note,omitempty"`
+	Calls     int     `json:"calls"`
+	TokensIn  int     `json:"tokens_in"`
+	TokensOut int     `json:"tokens_out"`
+	// Reasoning is the level the model ran at; ReasoningTokens is the part of TokensOut spent on it.
+	Reasoning       string  `json:"reasoning"`
+	ReasoningTokens int     `json:"reasoning_tokens"`
+	CostUSD         float64 `json:"cost_usd"`
+	CostEstimated   bool    `json:"cost_estimated"`
+	LatencyMS       int64   `json:"latency_ms"`
 	// Problems are the last answered call's validator findings; empty for a first-try pass.
 	Problems []Problem `json:"problems,omitempty"`
 	Pack     any       `json:"pack,omitempty"`
@@ -52,6 +55,7 @@ type Model struct {
 	Slug        string
 	Client      llm.Client
 	Temperature float64
+	Reasoning   string // the level the client was built with; reported only
 }
 
 // Runner runs a built pack through a model with the generator's flow: the answer is parsed
@@ -77,6 +81,7 @@ func (r Runner) Run(ctx context.Context, b Built, m Model) Result {
 	att, err := g.Attempt(ctx, b.Pack, b.Persona)
 	res.LatencyMS = r.Now().Sub(start).Milliseconds()
 	res.Calls, res.TokensIn, res.TokensOut = att.Calls, att.TokensIn, att.TokensOut
+	res.ReasoningTokens = att.TokensReasoning
 	res.CostUSD, res.CostEstimated = att.CostUSD, att.CostEstimated
 	res.Problems = problemsOf(att.Validation)
 	if err != nil {
@@ -100,7 +105,7 @@ func outcomeOf(a coach.Attempt) Outcome {
 func baseResult(b Built, m Model) Result {
 	row := b.Target.Row
 	return Result{Label: b.Target.Label, Model: m.Slug, Spec: row.Class + " " + row.Spec, Role: row.Role,
-		Size: b.Target.Fight.Size, Status: string(b.Pack.Status)}
+		Size: b.Target.Fight.Size, Status: string(b.Pack.Status), Reasoning: m.Reasoning}
 }
 
 func modelError(res Result, err error) Result {

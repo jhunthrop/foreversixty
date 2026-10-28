@@ -65,7 +65,7 @@ func wire(ctx context.Context, o Options, getenv func(string) string, log *slog.
 	ev := Evaluation{N: o.N, Now: time.Now, Log: log, CoachDir: o.CoachDir,
 		Tables: &coach.FileTables{BuildsDir: o.BuildsDir, CoachDir: o.CoachDir}}
 	for _, slug := range o.Models {
-		ev.Models = append(ev.Models, ModelSpec{Slug: slug, Temperature: o.Temperature})
+		ev.Models = append(ev.Models, ModelSpec{Slug: slug, Temperature: o.Temperature, Reasoning: o.ReasoningOf(slug)})
 	}
 	if err := wireClients(&ev, o, getenv); err != nil {
 		return Evaluation{}, nil, err

@@ -25,11 +25,11 @@ func RenderReport(results []Result, meta RunMeta) string {
 	fmt.Fprintf(&b, "Source: %s. Fights chosen: %d.\n\n", meta.Source, meta.Planned)
 	b.WriteString("## Build-notes rows\n\n| Item | Result |\n|---|---|\n")
 	for _, s := range stats {
-		fmt.Fprintf(&b, "| Evaluation: %s pass rate, mean tokens in/out | %s |\n", s.Model, buildNotesCell(s))
+		fmt.Fprintf(&b, "| Evaluation: %s (reasoning %s) pass rate, mean tokens in/out | %s |\n", s.Model, s.Reasoning, buildNotesCell(s))
 	}
 	b.WriteString("\n## Per model\n\n")
-	b.WriteString("| Model | Fights | Pass first | Pass after retry | Fallback | Validator pass | Tokens in mean/p90 | Tokens out mean/p90 | Cost total | Cost per fight | Latency mean/p90 |\n")
-	b.WriteString("|---|---|---|---|---|---|---|---|---|---|---|\n")
+	b.WriteString("| Model | Reasoning | Fights | Pass first | Pass after retry | Fallback | Validator pass | Tokens in mean/p90 | Tokens out (reasoning) mean/p90 | Cost total | Cost per fight | Latency mean/p90 |\n")
+	b.WriteString("|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 	for _, s := range stats {
 		b.WriteString(statsRow(s))
 	}
@@ -45,9 +45,9 @@ func buildNotesCell(s ModelStats) string {
 }
 
 func statsRow(s ModelStats) string {
-	return fmt.Sprintf("| %s | %d (%d skipped) | %s | %s | %s | %s | %s / %s | %s / %s | %s | %s | %.1fs / %.1fs |\n",
-		s.Model, s.Fights, s.Skipped, pct(s.FirstTryRate()), pct(ratio(s.PassRetry, s.Fights)), pct(s.FallbackRate()),
-		pct(s.PassRate()), thousands(s.MeanIn), thousands(s.P90In), thousands(s.MeanOut), thousands(s.P90Out),
+	return fmt.Sprintf("| %s | %s | %d (%d skipped) | %s | %s | %s | %s | %s / %s | %s (%s) / %s | %s | %s | %.1fs / %.1fs |\n",
+		s.Model, s.Reasoning, s.Fights, s.Skipped, pct(s.FirstTryRate()), pct(ratio(s.PassRetry, s.Fights)), pct(s.FallbackRate()),
+		pct(s.PassRate()), thousands(s.MeanIn), thousands(s.P90In), thousands(s.MeanOut), thousands(s.MeanReasoning), thousands(s.P90Out),
 		usd(s.TotalCostUSD, s.CostEstimated), usd(s.MeanCostUSD, s.CostEstimated),
 		s.MeanLatencyMS/msPerSecond, s.P90LatencyMS/msPerSecond)
 }

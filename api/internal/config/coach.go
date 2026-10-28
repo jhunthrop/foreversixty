@@ -6,6 +6,8 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/llm"
 )
 
 const (
@@ -32,6 +34,8 @@ type CoachConfig struct {
 	// LLMPriceInPerMTok and LLMPriceOutPerMTok are USD per million tokens.
 	LLMPriceInPerMTok, LLMPriceOutPerMTok float64
 	Temperature                           float64 // COACH_TEMPERATURE
+	// LLMReasoning (LLM_REASONING, default llm.DefaultReasoning) is one of llm.ReasoningLevels.
+	LLMReasoning string
 }
 
 // Providers returns a copy of LLMProviders, so callers cannot alter the config.
@@ -55,6 +59,10 @@ func loadCoach(getenv func(string) string) (CoachConfig, error) {
 		LLMModel:     strings.TrimSpace(getenv("LLM_MODEL")),
 		LLMAPIKey:    strings.TrimSpace(getenv("LLM_API_KEY")),
 		LLMProviders: splitCommaList(getenv("LLM_PROVIDERS"), ""),
+		LLMReasoning: envOr(getenv, "LLM_REASONING", llm.DefaultReasoning),
+	}
+	if !slices.Contains(llm.ReasoningLevels, c.LLMReasoning) {
+		return CoachConfig{}, fmt.Errorf("config: LLM_REASONING must be one of %s", strings.Join(llm.ReasoningLevels, ", "))
 	}
 	var err error
 	if c.Enabled, err = parseBoolDefault(getenv, "COACH_LLM_ENABLED", false); err != nil {

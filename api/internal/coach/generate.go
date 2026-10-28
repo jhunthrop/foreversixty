@@ -51,20 +51,22 @@ type Generator struct {
 // validation, else the rule-only rendering with the reason. Tokens and cost are summed over
 // every answered call; ModelSlug and RequestID are the last answered call's.
 type Attempt struct {
-	Doc           ReviewDoc
-	Source        string // SourceModel or SourceRules
-	Reason        string // "" for a model review; reasonValidation or reasonModelError
-	Retryable     bool
-	PassedOn      int // 1 or 2: the try that passed; 0 for the rule-only rendering
-	Calls         int // model calls that answered
-	TokensIn      int
-	TokensOut     int
-	CostUSD       float64
-	CostEstimated bool
-	ModelSlug     string
-	RequestID     string
-	Validation    []Problem // the last answered call's problems
-	Outputs       []string  // each answered call's raw content, in order; never stored
+	Doc       ReviewDoc
+	Source    string // SourceModel or SourceRules
+	Reason    string // "" for a model review; reasonValidation or reasonModelError
+	Retryable bool
+	PassedOn  int // 1 or 2: the try that passed; 0 for the rule-only rendering
+	Calls     int // model calls that answered
+	TokensIn  int
+	TokensOut int
+	// TokensReasoning is the part of TokensOut the model spent reasoning.
+	TokensReasoning int
+	CostUSD         float64
+	CostEstimated   bool
+	ModelSlug       string
+	RequestID       string
+	Validation      []Problem // the last answered call's problems
+	Outputs         []string  // each answered call's raw content, in order; never stored
 }
 
 // call is one model call and what validation made of it.
@@ -185,6 +187,7 @@ func (g *Generator) withCall(res Attempt, c call) Attempt {
 	res.Calls++
 	res.TokensIn += c.resp.Usage.PromptTokens
 	res.TokensOut += c.resp.Usage.CompletionTokens
+	res.TokensReasoning += c.resp.Usage.ReasoningTokens
 	res.CostUSD += c.resp.CostUSD
 	res.CostEstimated = res.CostEstimated || c.resp.CostEstimated
 	res.ModelSlug = cmpOr(c.resp.Model, g.Model)

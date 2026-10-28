@@ -36,6 +36,7 @@ How the log coach is deployed, switched on and switched off. The design is
 | `LLM_MODEL` | service and jobs | the confirmed gateway slug |
 | `LLM_PROVIDERS` | service and jobs | comma list pinning the gateway's provider routing |
 | `LLM_PRICE_IN_PER_MTOK`, `LLM_PRICE_OUT_PER_MTOK` | service and jobs | USD per million tokens; the caps count spend with them |
+| `LLM_REASONING` | service and jobs | `off` (the default), `low`, `medium` or `high`; `off` sends the gateway `reasoning: {enabled: false}`, the others `{effort: level}`. Raise it only on a coacheval result |
 | `LLM_API_KEY` | service and jobs | mounted from Secret Manager, never in a file or a log |
 | `COACH_DAILY_SPEND_CAP_USD` | service and jobs | `25` |
 | `COACH_DAILY_REVIEWS_PER_ACCOUNT` | service and jobs | `30` |

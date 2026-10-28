@@ -15,6 +15,7 @@ import (
 type ModelSpec struct {
 	Slug        string
 	Temperature float64
+	Reasoning   string // the level the client was built with; reported only
 }
 
 // ClientFactory returns the client for a model on one built pack: the shared gateway client
@@ -88,10 +89,10 @@ func (e Evaluation) runTarget(ctx context.Context, b Builder, r Runner, t Target
 	for _, m := range e.Models {
 		client, err := e.ClientFor(m, built)
 		if err != nil {
-			out = append(out, modelError(baseResult(built, Model{Slug: m.Slug}), err))
+			out = append(out, modelError(baseResult(built, Model{Slug: m.Slug, Reasoning: m.Reasoning}), err))
 			continue
 		}
-		out = append(out, r.Run(ctx, built, Model{Slug: m.Slug, Client: client, Temperature: m.Temperature}))
+		out = append(out, r.Run(ctx, built, Model{Slug: m.Slug, Client: client, Temperature: m.Temperature, Reasoning: m.Reasoning}))
 	}
 	return out
 }

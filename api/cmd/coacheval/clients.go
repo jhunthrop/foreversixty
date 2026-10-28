@@ -40,7 +40,8 @@ func gatewayClients(o Options, getenv func(string) string) (map[string]llm.Clien
 			return nil, err
 		}
 		c, err := llm.New(llm.Config{BaseURL: base, Model: slug, APIKey: llm.NewSecret(key),
-			Providers: providersFor(o, slug, getenv), PriceInPerMTok: p.In, PriceOutPerMTok: p.Out}, nil)
+			Providers: providersFor(o, slug, getenv), PriceInPerMTok: p.In, PriceOutPerMTok: p.Out,
+			Reasoning: o.ReasoningOf(slug)}, nil)
 		if err != nil {
 			return nil, fmt.Errorf("model %s: %w", slug, err)
 		}

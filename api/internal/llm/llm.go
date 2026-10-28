@@ -23,6 +23,14 @@ const (
 	charsPerTokenWorstCase = 3
 )
 
+// ReasoningLevels are the accepted Config.Reasoning values; the gateway is
+// sent {"enabled": false} for "off" and {"effort": level} otherwise.
+var ReasoningLevels = []string{"off", "low", "medium", "high"}
+
+// DefaultReasoning is the level used when Config.Reasoning is empty: the coach
+// writes from an evidence pack under a validator, so reasoning is opt-in.
+const DefaultReasoning = "off"
+
 // Secret is a credential that never prints: %s, %v, %+v, %#v and slog all
 // show a placeholder, and even a struct embedding it by an unexported field
 // prints only a pointer (fmt cannot call methods there). Read the value with
@@ -67,6 +75,9 @@ type Config struct {
 	// MaxRetries is the retries after the first attempt; zero means 2,
 	// a negative value means none.
 	MaxRetries int
+	// Reasoning is the model's reasoning level: one of ReasoningLevels, empty
+	// meaning DefaultReasoning. "off" sends reasoning disabled.
+	Reasoning string
 }
 
 // String describes the config without the key (the key is also a Secret).
@@ -96,6 +107,9 @@ type Request struct {
 // Usage is the token usage the gateway reported.
 type Usage struct {
 	PromptTokens, CompletionTokens int
+	// ReasoningTokens is the part of CompletionTokens spent reasoning (0 when
+	// the gateway reports none). Reasoning text itself is never kept.
+	ReasoningTokens int
 }
 
 // Response is one completion.

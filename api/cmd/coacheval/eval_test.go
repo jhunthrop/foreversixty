@@ -233,7 +233,7 @@ func TestReport_BuildNotesRowsAndFakeBanner(t *testing.T) {
 		{Label: "f03", Model: "a", Outcome: OutcomeSkipped},
 	}
 	md := RenderReport(results, RunMeta{Fake: true, Planned: 3})
-	for _, want := range []string{"| Evaluation: a pass rate, mean tokens in/out | 50% (1/2), 3000 in / 700 out |", "Fake run", "~$0.0100", "fact 1"} {
+	for _, want := range []string{"| Evaluation: a (reasoning off) pass rate, mean tokens in/out | 50% (1/2), 3000 in / 700 out |", "Fake run", "~$0.0100", "fact 1"} {
 		if !strings.Contains(md, want) {
 			t.Fatalf("missing %q in\n%s", want, md)
 		}
