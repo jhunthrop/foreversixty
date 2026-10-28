@@ -4,10 +4,13 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
 // The names a healing potion's or a Healthstone's use is cast under, across ranks and
@@ -35,12 +38,36 @@ type deathHit struct {
 	AtMS    int64
 }
 
-// deathReady is a defensive cooldown off cooldown at the death.
+// deathReady is a defensive cooldown the player could have pressed before the death:
+// off cooldown since ReadyAtMS, or (NotUsed) never cast this pull with a cooldown longer
+// than the time to the death, so a cast on an earlier pull may still have been cooling
+// down and only "not used this pull" is proven.
 type deathReady struct {
 	Name      string
 	SpellID   int64
-	SincePull bool  // never cast before the death: ready from the pull
-	ReadyAtMS int64 // cast before the death: when its cooldown came back
+	NotUsed   bool
+	ReadyAtMS int64 // when its cooldown had certainly come back; unset when NotUsed
+}
+
+// deathDefensives is what the rule file's defensives say at a death: the ones proven
+// ready, in list order; the first never-cast one not proven ready; and whether a
+// baseline defensive went unjudged for want of the level.
+type deathDefensives struct {
+	Ready        []deathReady
+	NotUsed      *deathReady
+	LevelSkipped bool
+}
+
+// pick is the defensive the finding names: the first proven ready, else the first not
+// used this pull.
+func (d deathDefensives) pick() (deathReady, bool) {
+	switch {
+	case len(d.Ready) > 0:
+		return d.Ready[0], true
+	case d.NotUsed != nil:
+		return *d.NotUsed, true
+	}
+	return deathReady{}, false
 }
 
 // death is F7 (§6.2): the player's first reviewable death, what killed them, whether it
@@ -60,14 +87,15 @@ func death(in Input, _ Counted) outcome {
 	if !ok {
 		return outcome{CouldNotCheck: []string{Fill(CannotDeathKiller, map[string]string{"t": Clock(d.AtMS)})}}
 	}
-	ready, hasReady, levelSkipped := readyDefensive(in, d.AtMS)
+	defs := defensivesAt(in, d.AtMS)
+	ready, hasReady := defs.pick()
 	anchors := []Anchor{deathAnchor(d.AtMS)}
-	if hasReady {
+	if hasReady && !ready.NotUsed { // a defensive never cast has no Casts row to open
 		anchors = append(anchors, Anchor{Kind: AnchorCast, SpellID: ready.SpellID})
 	}
 	return outcome{
-		Finding:       deathFinding(in, d.AtMS, hit, ready, hasReady, len(anchors)),
-		CouldNotCheck: defensivesNarrowed(in, hasReady, levelSkipped),
+		Finding:       deathFinding(in, d.AtMS, hit, defs, len(anchors)),
+		CouldNotCheck: defensivesNarrowed(in, hasReady, defs.LevelSkipped),
 		Anchors:       anchors,
 		Windows:       []ratingengine.Window{{FromMS: d.AtMS, ToMS: d.AtMS}},
 	}
@@ -115,7 +143,9 @@ func deathAtPct(fight summary.Summary, atMS int64) float64 {
 }
 
 // deathHitOf is the killing blow, else the latest hit in the death's recap. A melee swing
-// is named by its source (the boss when the log names none). false: nothing names it.
+// is named by its source (the boss when the log names none), never by a player's or a
+// pet's name: a mind-controlled player is "another player's melee", a pet "a pet" (§19:
+// no character name leaves for the model). false: nothing names it.
 func deathHitOf(in Input, d summary.Death) (deathHit, bool) {
 	ref := d.KillingBlow
 	if ref == nil {
@@ -126,16 +156,30 @@ func deathHitOf(in Input, d summary.Death) (deathHit, bool) {
 	}
 	name := ref.SpellName
 	if ref.SpellID == 0 {
-		source := ref.SourceName
-		if source == "" {
-			source = in.BossName
-		}
-		name = ""
-		if source != "" {
-			name = Fill(KillerMelee, map[string]string{"Mob": source})
-		}
+		name = meleeKiller(in, *ref)
 	}
 	return deathHit{SpellID: ref.SpellID, Name: name, Amount: ref.Amount, AtMS: ref.AtMS}, name != ""
+}
+
+// meleeKiller names a melee swing by its source: another player or a pet by what it is,
+// an NPC by its name, the boss when the log names no NPC; "" when nothing names it.
+func meleeKiller(in Input, ref summary.DamageRef) string {
+	source := ""
+	switch units.Parse(ref.SourceGUID).Kind {
+	case units.KindPlayer:
+		return KillerPlayerMelee
+	case units.KindPet:
+		return KillerPet
+	case units.KindCreature, units.KindVehicle, units.KindGameObject:
+		source = ref.SourceName
+	}
+	if source == "" || source == ref.SourceGUID {
+		source = in.BossName
+	}
+	if source == "" {
+		return ""
+	}
+	return Fill(KillerMelee, map[string]string{"Mob": source})
 }
 
 func latestHit(hits []summary.DamageRef) *summary.DamageRef {
@@ -187,33 +231,43 @@ func isHealingConsumable(name string) bool {
 	return strings.HasSuffix(name, deathStoneSuffix) && !strings.HasPrefix(name, deathStoneNotUsePrefix) && name != deathStoneTalent
 }
 
-// readyDefensive is the first of the rule file's defensives off cooldown at atMS. A talent
-// counts only if cast that fight; a baseline ability never cast counts from its trainable
-// level, and only when the level is known. A cast whose cooldown the data does not state
-// is never claimed ready. levelSkipped: a baseline defensive never cast went unjudged
-// because the log has no level.
-func readyDefensive(in Input, atMS int64) (ready deathReady, ok, levelSkipped bool) {
+// defensivesAt reads the rule file's defensives at atMS. A talent counts only if cast that
+// fight. A cast whose cooldown the data does not state is never claimed ready; one back
+// off cooldown is ready from then. A baseline ability never cast counts from its
+// trainable level, and only when the level is known: it is proven ready from its
+// cooldown's length into the pull (a cast at the end of an earlier pull is back by then),
+// and otherwise is only not used this pull (§20.4: fires only when the data proves it).
+func defensivesAt(in Input, atMS int64) deathDefensives {
+	var out deathDefensives
 	for _, e := range in.Tables.Rules.Defensives {
 		lastID, lastMS, cast := lastCastBefore(in.Fight, in.Row.GUID, e.SpellIDs, atMS)
-		if !cast {
-			if e.Talent {
-				continue
-			}
-			if in.Row.Level <= 0 {
-				levelSkipped = true
-				continue
-			}
-			if id, trainable := trainableAtLevel(in, e); trainable {
-				return deathReady{Name: e.Family, SpellID: id, SincePull: true}, true, levelSkipped
+		if cast {
+			sc, known := in.Tables.Spells[lastID]
+			if known && sc.CooldownMS > 0 && lastMS+sc.CooldownMS <= atMS {
+				out.Ready = append(out.Ready, deathReady{Name: e.Family, SpellID: lastID, ReadyAtMS: lastMS + sc.CooldownMS})
 			}
 			continue
 		}
-		sc, known := in.Tables.Spells[lastID]
-		if known && sc.CooldownMS > 0 && lastMS+sc.CooldownMS <= atMS {
-			return deathReady{Name: e.Family, SpellID: lastID, ReadyAtMS: lastMS + sc.CooldownMS}, true, levelSkipped
+		if e.Talent {
+			continue
+		}
+		if in.Row.Level <= 0 {
+			out.LevelSkipped = true
+			continue
+		}
+		id, trainable := trainableAtLevel(in, e)
+		if !trainable {
+			continue
+		}
+		sc, known := in.Tables.Spells[id]
+		switch {
+		case known && sc.CooldownMS > 0 && sc.CooldownMS <= atMS:
+			out.Ready = append(out.Ready, deathReady{Name: e.Family, SpellID: id, ReadyAtMS: sc.CooldownMS})
+		case out.NotUsed == nil:
+			out.NotUsed = &deathReady{Name: e.Family, SpellID: id, NotUsed: true}
 		}
 	}
-	return deathReady{}, false, levelSkipped
+	return out
 }
 
 // lastCastBefore is guid's latest successful cast of any of ids before atMS.
@@ -248,7 +302,7 @@ func trainableAtLevel(in Input, e RuleEntry) (int64, bool) {
 }
 
 // deathFinding is F7's finding; nAnchors local anchors, the death first.
-func deathFinding(in Input, atMS int64, hit deathHit, ready deathReady, hasReady bool, nAnchors int) *Finding {
+func deathFinding(in Input, atMS int64, hit deathHit, defs deathDefensives, nAnchors int) *Finding {
 	t := Clock(atMS)
 	severity := SeverityMinor
 	if deathAtPct(in.Fight, atMS) < DeathMajorBeforePct {
@@ -258,38 +312,68 @@ func deathFinding(in Input, atMS int64, hit deathHit, ready deathReady, hasReady
 	for i := range nAnchors {
 		f.Anchors = append(f.Anchors, "#"+strconv.Itoa(i))
 	}
-	if hasReady {
-		f.Facts.Spells = append(f.Facts.Spells, SpellFact{ID: ready.SpellID, Name: ready.Name, Rank: in.Tables.Spells[ready.SpellID].Rank})
-		f.Title = Fill(TitleDiedWithReady, map[string]string{"t": t, "Spell": ready.Name})
-		f.Basis = Basis{Label: Fill(BasisDeathCD, map[string]string{"Spell": ready.Name}), Kind: BasisSpellData}
-		f.Detail = readyDetail(in, hit, atMS, ready)
-		if !ready.SincePull {
-			f.Facts.Times = append(f.Facts.Times, Clock(ready.ReadyAtMS))
+	ready, hasReady := defs.pick()
+	if !hasReady {
+		f.Title = Fill(TitleDiedTo, map[string]string{"t": t, "Spell": hit.Name})
+		f.Basis = Basis{Label: BasisFromLog, Kind: BasisOwnLog}
+		if deathAvoidable(in, hit) {
+			f.Basis.Label = Fill(BasisAvoidable, map[string]string{"Spell": hit.Name})
 		}
+		f.Detail = deathDetail(in, hit, atMS)
 		return f
 	}
-	f.Title = Fill(TitleDiedTo, map[string]string{"t": t, "Spell": hit.Name})
-	f.Basis = Basis{Label: BasisFromLog, Kind: BasisOwnLog}
-	if deathAvoidable(in, hit) {
-		f.Basis.Label = Fill(BasisAvoidable, map[string]string{"Spell": hit.Name})
+	f.Facts.Spells = append(f.Facts.Spells, readyFact(in, ready))
+	f.Detail = readyDetail(in, hit, atMS, ready)
+	if ready.NotUsed {
+		f.Title = Fill(TitleDiedNotUsed, map[string]string{"t": t, "Spell": ready.Name})
+		f.Basis = Basis{Label: BasisFromLog, Kind: BasisOwnLog}
+		return f
 	}
-	f.Detail = deathDetail(in, hit, atMS)
+	f.Title = Fill(TitleDiedWithReady, map[string]string{"t": t, "Spell": ready.Name})
+	f.Basis = Basis{Label: Fill(BasisDeathCD, map[string]string{"Spell": ready.Name}), Kind: BasisSpellData}
+	f.Facts.Times = append(f.Facts.Times, Clock(ready.ReadyAtMS))
+	if also := defs.Ready[1:]; len(also) > 0 {
+		names := make([]string, len(also))
+		for i, r := range also {
+			names[i] = r.Name
+			f.Facts.Spells = append(f.Facts.Spells, readyFact(in, r))
+		}
+		f.Detail += " " + Fill(DetailAlsoReady, map[string]string{"spells": joinAnd(names)})
+	}
 	return f
 }
 
-// readyDetail: the killer and the defensive ready since the pull (§5.3's sentence) or
-// since its cooldown came back. An avoidable killer is said too, in §6.2's order:
-// killing blow, avoidable, defensive.
+func readyFact(in Input, r deathReady) SpellFact {
+	return SpellFact{ID: r.SpellID, Name: r.Name, Rank: in.Tables.Spells[r.SpellID].Rank}
+}
+
+// readyDetail: the killer and the defensive, ready since its cooldown had certainly come
+// back, or not used this pull. An avoidable killer is said too, in §6.2's order: killing
+// blow, avoidable, defensive. The killer leads the sentence, so it starts upper case.
 func readyDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
-	fields := map[string]string{"Killer": hit.Name, "t": Clock(atMS), "Spell": ready.Name, "since": readySincePull}
-	format := DetailDiedWithReady
-	if !ready.SincePull {
-		format, fields["since"] = DetailDiedWithReadySince, Clock(ready.ReadyAtMS)
+	fields := map[string]string{"Killer": sentenceStart(hit.Name), "t": Clock(atMS), "Spell": ready.Name}
+	avoidable := deathAvoidable(in, hit)
+	switch {
+	case ready.NotUsed && avoidable:
+		return Fill(DetailDiedNotUsedAvoidable, fields)
+	case ready.NotUsed:
+		return Fill(DetailDiedNotUsed, fields)
 	}
-	if deathAvoidable(in, hit) {
-		format = DetailDiedWithReadyAvoidable
+	fields["since"] = Clock(ready.ReadyAtMS)
+	if avoidable {
+		return Fill(DetailDiedWithReadyAvoidable, fields)
 	}
-	return Fill(format, fields)
+	return Fill(DetailDiedWithReadySince, fields)
+}
+
+// sentenceStart is s with its first letter upper case ("another player's melee" leading
+// a sentence).
+func sentenceStart(s string) string {
+	r, size := utf8.DecodeRuneInString(s)
+	if size == 0 {
+		return s
+	}
+	return string(unicode.ToUpper(r)) + s[size:]
 }
 
 // deathDetail, with no defensive ready: the hit (when the log kept its amount) and, when

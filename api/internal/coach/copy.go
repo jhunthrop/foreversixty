@@ -62,7 +62,6 @@ const (
 	DetailDeathHit      = "{Spell} hit for {amount} at {t}."
 	DeathNoPotion       = "No healing potion or Healthstone used in the 10 s before."
 	DetailHealRank      = "{pct}% of what {Spell} (Rank {r}) healed was overheal, over {n} casts."
-	DetailDiedWithReady = "{Killer} killed you at {t}. {Spell} had been ready since the pull."
 	DetailUptime        = "{Aura} was up for {n} s of {duration}."
 	DetailLowRank       = "Rank {next} is trainable at your level. Rank {r} was cast {n} times."
 
@@ -128,6 +127,12 @@ const (
 	DetailDiedWithReadySince = "{Killer} killed you at {t}. {Spell} had been ready since {since}."
 	DetailAlsoReady          = "Also ready: {spells}."
 	KillerMelee              = "{Mob}'s melee"
+	KillerPlayerMelee        = "another player's melee"
+	KillerPet                = "a pet"
+
+	TitleDiedNotUsed           = "Died at {t}, {Spell} not used"
+	DetailDiedNotUsed          = "{Killer} killed you at {t}. {Spell} was not used this pull."
+	DetailDiedNotUsedAvoidable = "{Killer} killed you at {t}, and this boss lets you avoid it. {Spell} was not used this pull."
 
 	StrengthCasts     = "{Spell}: {you} casts a minute. Top {n}: {ref}."
 	StrengthCastsSim  = "{Spell}: {you} casts a minute. Our guide's rotation, simulated: {ref}."
@@ -160,7 +165,6 @@ const (
 	prepMissingPotions           = "combat potions"
 	prepMissingBlessing          = "a blessing"
 	prepIncomplete               = "{Category}: the coach's {list} list isn't complete yet."
-	readySincePull               = "the pull"
 	coreUnknownResource          = "resource"
 	blessingWord                 = "blessing"
 
@@ -221,6 +225,8 @@ var experienceCopy = map[string]string{
 	"CannotLevelRanks": CannotLevelRanks, "CannotLevelSim": CannotLevelSim,
 	"BasisFromLog": BasisFromLog, "DetailDiedWithReadySince": DetailDiedWithReadySince,
 	"DetailAlsoReady": DetailAlsoReady, "KillerMelee": KillerMelee,
+	"KillerPlayerMelee": KillerPlayerMelee, "KillerPet": KillerPet, "TitleDiedNotUsed": TitleDiedNotUsed,
+	"DetailDiedNotUsed": DetailDiedNotUsed, "DetailDiedNotUsedAvoidable": DetailDiedNotUsedAvoidable,
 	"StrengthCasts": StrengthCasts, "StrengthCastsSim": StrengthCastsSim,
 	"StrengthAdherence": StrengthAdherence, "StrengthOverheal": StrengthOverheal,
 	"LinkDeathInGap": LinkDeathInGapSentence, "LinkNoFlaskMana": LinkNoFlaskMana, "LinkPotionDeath": LinkPotionDeath,
@@ -239,7 +245,7 @@ var experienceCopy = map[string]string{
 	"coreMoreEntry": coreMoreEntry, "adherenceEntry": adherenceEntry,
 	"prepMissingFlask": prepMissingFlask, "prepMissingFood": prepMissingFood, "prepMissingOil": prepMissingOil,
 	"prepMissingEnchant": prepMissingEnchant, "prepMissingPotions": prepMissingPotions,
-	"prepMissingBlessing": prepMissingBlessing, "prepIncomplete": prepIncomplete, "readySincePull": readySincePull,
+	"prepMissingBlessing": prepMissingBlessing, "prepIncomplete": prepIncomplete,
 	"coreUnknownResource": coreUnknownResource, "blessingWord": blessingWord,
 }
 
@@ -293,7 +299,6 @@ var verbatim = map[string]verbatimEntry{
 	"DetailDeathHit":       {DetailDeathHit, map[string]string{"Spell": "Flame Breath", "amount": "2,140", "t": "3:20"}},
 	"DeathNoPotion":        {DeathNoPotion, nil},
 	"DetailHealRank":       {DetailHealRank, map[string]string{"pct": "44", "Spell": "Greater Heal", "r": "4", "n": "23"}},
-	"DetailDiedWithReady":  {DetailDiedWithReady, map[string]string{"Killer": "Onyxia's melee", "t": "2:50", "Spell": "Shield Wall"}},
 	"DetailUptime":         {DetailUptime, map[string]string{"Aura": "Shield Block", "n": "42", "duration": "3:52"}},
 	"DetailLowRank":        {DetailLowRank, map[string]string{"next": "5", "r": "4", "n": "22"}},
 	"StrengthAlive":        {StrengthAlive, nil},
