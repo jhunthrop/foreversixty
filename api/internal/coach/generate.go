@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	// reviewMaxTokens bounds one model answer (§9.3, §15.3).
-	reviewMaxTokens = 1200
+	// ReviewMaxTokens bounds one model answer (§9.3, §15.3).
+	ReviewMaxTokens = 1200
 	roleAssistant   = "assistant"
 
 	reasonValidation = "validation"
@@ -30,9 +30,12 @@ const (
 	retryTail      = "Use only the pack."
 )
 
+var errNoClient = errors.New("coach: a generator needs a model client")
+
 // Generator writes one review per key: caps, the model, validation, one retry with the
 // problems listed back, then the rule-only rendering (§9, §10, §15). Validator carries the
-// process-wide name dictionary (built once) and the fight's roster.
+// process-wide name dictionary (built once) and the fight's roster. Attempt needs only LLM
+// and Validator; Generate also needs Caps, Store and Now.
 type Generator struct {
 	LLM         llm.Client
 	Caps        *Caps
@@ -44,8 +47,28 @@ type Generator struct {
 	Now         func() time.Time
 }
 
-// attempt is one model call and what validation made of it.
-type attempt struct {
+// Attempt is what the model flow made of one pack: the model's review when a try passed
+// validation, else the rule-only rendering with the reason. Tokens and cost are summed over
+// every answered call; ModelSlug and RequestID are the last answered call's.
+type Attempt struct {
+	Doc           ReviewDoc
+	Source        string // SourceModel or SourceRules
+	Reason        string // "" for a model review; reasonValidation or reasonModelError
+	Retryable     bool
+	PassedOn      int // 1 or 2: the try that passed; 0 for the rule-only rendering
+	Calls         int // model calls that answered
+	TokensIn      int
+	TokensOut     int
+	CostUSD       float64
+	CostEstimated bool
+	ModelSlug     string
+	RequestID     string
+	Validation    []Problem // the last answered call's problems
+	Outputs       []string  // each answered call's raw content, in order; never stored
+}
+
+// call is one model call and what validation made of it.
+type call struct {
 	content string
 	resp    llm.Response
 	probs   []Problem
@@ -58,29 +81,48 @@ func (g *Generator) Generate(ctx context.Context, key ReviewKey, p Pack, persona
 	if err := g.ready(); err != nil {
 		return StoredReview{}, err
 	}
-	row := StoredReview{Key: key, AccountID: accountID, GeneratedAt: g.Now()}
+	var res Attempt
 	if refusal := g.admit(ctx, accountID); refusal != RefusalNone {
-		return g.save(ctx, fallback(row, p, persona, string(refusal), true))
+		res = fallback(Attempt{}, p, persona, string(refusal), true)
+	} else {
+		// A model error is logged by g.call and is in res as model_error, retryable.
+		res, _ = g.run(ctx, p, persona, g.recordSpend)
+	}
+	return g.save(ctx, storedOf(key, accountID, g.Now(), res))
+}
+
+// Attempt runs the model flow for one pack with no database: the call, validation, one
+// retry with the problems listed, then the rule-only rendering. Nothing is stored and no
+// spend is recorded. A model error is returned beside the filled rule-only Attempt.
+func (g *Generator) Attempt(ctx context.Context, p Pack, persona Persona) (Attempt, error) {
+	return g.run(ctx, p, persona, nil)
+}
+
+// run is the one model flow; onCall, when set, sees every answered call's response.
+func (g *Generator) run(ctx context.Context, p Pack, persona Persona, onCall func(context.Context, llm.Response)) (Attempt, error) {
+	if g.LLM == nil {
+		return Attempt{}, errNoClient
 	}
 	msgs := BuildPrompt(p, persona)
-	first, err := g.attempt(ctx, msgs, p, persona)
+	var res Attempt
+	first, err := g.call(ctx, msgs, p, persona, onCall)
 	if err != nil {
-		return g.save(ctx, fallback(row, p, persona, reasonModelError, true))
+		return fallback(res, p, persona, reasonModelError, true), err
 	}
-	row = g.withAttempt(row, first)
+	res = g.withCall(res, first)
 	if len(first.probs) == 0 {
-		return g.save(ctx, passed(row, first))
+		return passed(res, first, 1), nil
 	}
-	second, err := g.attempt(ctx, retryMessages(msgs, first), p, persona)
+	second, err := g.call(ctx, retryMessages(msgs, first), p, persona, onCall)
 	if err != nil {
-		return g.save(ctx, fallback(row, p, persona, reasonModelError, true))
+		return fallback(res, p, persona, reasonModelError, true), err
 	}
-	row = g.withAttempt(row, second)
+	res = g.withCall(res, second)
 	if len(second.probs) == 0 {
-		return g.save(ctx, passed(row, second))
+		return passed(res, second, 2), nil
 	}
 	g.logFailure(p, first, second)
-	return g.save(ctx, fallback(row, p, persona, reasonValidation, false))
+	return fallback(res, p, persona, reasonValidation, false), nil
 }
 
 func (g *Generator) ready() error {
@@ -107,40 +149,49 @@ func (g *Generator) admit(ctx context.Context, accountID int64) Refusal {
 	return refusal
 }
 
-// attempt makes one call, records its spend, then parses and validates the answer. A
-// parse failure is a shape problem, so it is retried like any other.
-func (g *Generator) attempt(ctx context.Context, msgs []llm.Message, p Pack, persona Persona) (attempt, error) {
-	resp, err := g.LLM.Complete(ctx, llm.Request{
-		Messages: msgs, JSONSchema: OutputSchema(), Temperature: g.Temperature, MaxTokens: reviewMaxTokens,
-	})
-	if err != nil {
-		g.logger().Warn("coach: model call failed", slog.String("error", err.Error()))
-		return attempt{}, err
-	}
+// recordSpend adds one call's cost to the day's spend; a failure is logged, not fatal.
+func (g *Generator) recordSpend(ctx context.Context, resp llm.Response) {
 	if err := g.Caps.RecordSpend(ctx, resp); err != nil {
 		g.logger().Error("coach: spend not recorded", slog.String("error", err.Error()), slog.Float64("usd", resp.CostUSD))
 	}
-	a := attempt{content: resp.Content, resp: resp}
-	doc, err := ParseOutput(resp.Content)
-	if err != nil {
-		a.probs = []Problem{{Kind: ProblemShape, Value: err.Error()}}
-		return a, nil
-	}
-	a.probs = g.Validator.Validate(doc, p, persona)
-	return a, nil
 }
 
-// withAttempt adds an attempt's tokens and cost to the row and takes its slug, request id
-// and problems as the last attempt's.
-func (g *Generator) withAttempt(row StoredReview, a attempt) StoredReview {
-	row.TokensIn += a.resp.Usage.PromptTokens
-	row.TokensOut += a.resp.Usage.CompletionTokens
-	row.CostUSD += a.resp.CostUSD
-	row.CostEstimated = row.CostEstimated || a.resp.CostEstimated
-	row.ModelSlug = cmpOr(a.resp.Model, g.Model)
-	row.RequestID = a.resp.RequestID
-	row.Validation = slices.Clone(a.probs)
-	return row
+// call makes one model call, hands it to onCall, then parses and validates the answer. A
+// parse failure is a shape problem, so it is retried like any other.
+func (g *Generator) call(ctx context.Context, msgs []llm.Message, p Pack, persona Persona, onCall func(context.Context, llm.Response)) (call, error) {
+	resp, err := g.LLM.Complete(ctx, llm.Request{
+		Messages: msgs, JSONSchema: OutputSchema(), Temperature: g.Temperature, MaxTokens: ReviewMaxTokens,
+	})
+	if err != nil {
+		g.logger().Warn("coach: model call failed", slog.String("error", err.Error()))
+		return call{}, err
+	}
+	if onCall != nil {
+		onCall(ctx, resp)
+	}
+	c := call{content: resp.Content, resp: resp}
+	doc, err := ParseOutput(resp.Content)
+	if err != nil {
+		c.probs = []Problem{{Kind: ProblemShape, Value: err.Error()}}
+		return c, nil
+	}
+	c.probs = g.Validator.Validate(doc, p, persona)
+	return c, nil
+}
+
+// withCall adds a call's tokens and cost and takes its slug, request id and problems as
+// the last call's.
+func (g *Generator) withCall(res Attempt, c call) Attempt {
+	res.Calls++
+	res.TokensIn += c.resp.Usage.PromptTokens
+	res.TokensOut += c.resp.Usage.CompletionTokens
+	res.CostUSD += c.resp.CostUSD
+	res.CostEstimated = res.CostEstimated || c.resp.CostEstimated
+	res.ModelSlug = cmpOr(c.resp.Model, g.Model)
+	res.RequestID = c.resp.RequestID
+	res.Validation = slices.Clone(c.probs)
+	res.Outputs = append(slices.Clone(res.Outputs), c.content)
+	return res
 }
 
 func cmpOr(a, b string) string {
@@ -150,18 +201,27 @@ func cmpOr(a, b string) string {
 	return b
 }
 
-// passed is the row for an answer that validated; it parsed, so ParseOutput cannot fail.
-func passed(row StoredReview, a attempt) StoredReview {
-	doc, _ := ParseOutput(a.content)
-	row.Doc, row.Source, row.Reason, row.Retryable = doc, SourceModel, "", false
-	return row
+// passed is the Attempt for an answer that validated; it parsed, so ParseOutput cannot fail.
+func passed(res Attempt, c call, try int) Attempt {
+	doc, _ := ParseOutput(c.content)
+	res.Doc, res.Source, res.Reason, res.Retryable, res.PassedOn = doc, SourceModel, "", false, try
+	return res
 }
 
 // fallback is the rule-only rendering with why it was served.
-func fallback(row StoredReview, p Pack, persona Persona, reason string, retryable bool) StoredReview {
-	row.Doc = RenderRules(p, persona.Drills)
-	row.Source, row.Reason, row.Retryable = SourceRules, reason, retryable
-	return row
+func fallback(res Attempt, p Pack, persona Persona, reason string, retryable bool) Attempt {
+	res.Doc = RenderRules(p, persona.Drills)
+	res.Source, res.Reason, res.Retryable, res.PassedOn = SourceRules, reason, retryable, 0
+	return res
+}
+
+// storedOf is the coach_reviews row for an Attempt.
+func storedOf(key ReviewKey, accountID int64, at time.Time, a Attempt) StoredReview {
+	return StoredReview{
+		Key: key, Doc: a.Doc, Source: a.Source, Reason: a.Reason, Retryable: a.Retryable,
+		TokensIn: a.TokensIn, TokensOut: a.TokensOut, CostUSD: a.CostUSD, CostEstimated: a.CostEstimated,
+		ModelSlug: a.ModelSlug, RequestID: a.RequestID, AccountID: accountID, GeneratedAt: at, Validation: a.Validation,
+	}
 }
 
 func (g *Generator) save(ctx context.Context, row StoredReview) (StoredReview, error) {
@@ -172,7 +232,7 @@ func (g *Generator) save(ctx context.Context, row StoredReview) (StoredReview, e
 }
 
 // retryMessages is the first two messages, the model's answer and the problems listed back.
-func retryMessages(msgs []llm.Message, first attempt) []llm.Message {
+func retryMessages(msgs []llm.Message, first call) []llm.Message {
 	return append(slices.Clone(msgs),
 		llm.Message{Role: roleAssistant, Content: first.content},
 		llm.Message{Role: roleUser, Content: RetryMessage(first.probs)})
@@ -214,7 +274,7 @@ func appendUnique(list []string, s string) []string {
 // logFailure writes one entry for a review that failed validation twice: the pack (which
 // carries no names), both outputs and the problems, with every roster name redacted. It
 // never carries the review key or the gateway key.
-func (g *Generator) logFailure(p Pack, first, second attempt) {
+func (g *Generator) logFailure(p Pack, first, second call) {
 	// promptPack and Problem hold only strings, numbers and slices: Marshal cannot fail.
 	pack, _ := json.Marshal(promptPackOf(p))
 	probs, _ := json.Marshal(struct{ First, Second []Problem }{first.probs, second.probs})

@@ -64,7 +64,7 @@ func TestGenerate_PassStoresModelReview(t *testing.T) {
 		t.Fatalf("%+v %v", r, err)
 	}
 	req := fake.Calls[0]
-	if req.MaxTokens != reviewMaxTokens || len(req.JSONSchema) == 0 || !reflect.DeepEqual(req.Messages, BuildPrompt(examplePack(), fixturePersona(t))) {
+	if req.MaxTokens != ReviewMaxTokens || len(req.JSONSchema) == 0 || !reflect.DeepEqual(req.Messages, BuildPrompt(examplePack(), fixturePersona(t))) {
 		t.Fatalf("request %+v", req)
 	}
 	stored, ok, err := f.store.Review(ctx, t28Key())
@@ -230,5 +230,63 @@ func TestRetryMessage_ListsFactsThenTheRest(t *testing.T) {
 	want := `These were not in the evidence pack: "Whirlwind", "12 casts". Fix these: fixFirst.title must equal the pack's. Use only the pack.`
 	if got != want {
 		t.Fatalf("got  %q\nwant %q", got, want)
+	}
+}
+
+// dbFree is a Generator with no caps, store or clock: what the evaluation harness builds.
+func dbFree(t *testing.T, client llm.Client) *Generator {
+	t.Helper()
+	return &Generator{LLM: client, Model: "m", Validator: Validator{Names: buildNames(t)}, Log: slog.New(slog.DiscardHandler)}
+}
+
+func TestAttempt_PassesOnTheFirstTryWithNoDatabase(t *testing.T) {
+	fake := &llm.Fake{Responses: []llm.Response{{Content: mustJSON(t, exampleReview()),
+		Usage: llm.Usage{PromptTokens: 7000, CompletionTokens: 800}, CostUSD: 0.002, RequestID: "g1"}}}
+	a, err := dbFree(t, fake).Attempt(context.Background(), examplePack(), fixturePersona(t))
+	if err != nil || a.Source != SourceModel || a.PassedOn != 1 || a.Calls != 1 || a.TokensIn != 7000 || a.CostUSD != 0.002 ||
+		a.RequestID != "g1" || a.ModelSlug != "m" || len(a.Outputs) != 1 || !reflect.DeepEqual(a.Doc, exampleReview()) {
+		t.Fatalf("%+v %v", a, err)
+	}
+	if fake.Calls[0].MaxTokens != ReviewMaxTokens {
+		t.Fatalf("max tokens %d", fake.Calls[0].MaxTokens)
+	}
+}
+
+func TestAttempt_PassesOnTheRetry(t *testing.T) {
+	fake := &llm.Fake{Responses: []llm.Response{{Content: mustJSON(t, badReview()), CostUSD: 0.002}, {Content: mustJSON(t, exampleReview()), CostUSD: 0.003}}}
+	a, err := dbFree(t, fake).Attempt(context.Background(), examplePack(), fixturePersona(t))
+	if err != nil || a.Source != SourceModel || a.PassedOn != 2 || a.Calls != 2 || a.CostUSD != 0.005 || len(a.Validation) != 0 ||
+		!reflect.DeepEqual(a.Outputs, []string{mustJSON(t, badReview()), mustJSON(t, exampleReview())}) {
+		t.Fatalf("%+v %v", a, err)
+	}
+}
+
+func TestAttempt_SecondFailureFallsBackToRules(t *testing.T) {
+	fake := &llm.Fake{Responses: []llm.Response{{Content: mustJSON(t, badReview())}, {Content: mustJSON(t, badReview())}}}
+	a, err := dbFree(t, fake).Attempt(context.Background(), examplePack(), fixturePersona(t))
+	if err != nil || a.Source != SourceRules || a.Reason != reasonValidation || a.Retryable || a.PassedOn != 0 || a.Calls != 2 ||
+		len(a.Validation) == 0 || !reflect.DeepEqual(a.Doc, RenderRules(examplePack(), fixturePersona(t).Drills)) {
+		t.Fatalf("%+v %v", a, err)
+	}
+}
+
+func TestAttempt_ModelErrorIsReturnedWithTheRulesRendering(t *testing.T) {
+	boom := errors.New("gateway 503")
+	a, err := dbFree(t, &llm.Fake{Errs: []error{boom}}).Attempt(context.Background(), examplePack(), fixturePersona(t))
+	if !errors.Is(err, boom) || a.Source != SourceRules || a.Reason != reasonModelError || !a.Retryable || a.Calls != 0 {
+		t.Fatalf("%+v %v", a, err)
+	}
+	if _, err := (&Generator{}).Attempt(context.Background(), examplePack(), fixturePersona(t)); err == nil {
+		t.Fatal("an attempt needs a model client")
+	}
+}
+
+func TestGenerate_StoresWhatAttemptReturns(t *testing.T) {
+	f := newGenFixture(t)
+	answers := []llm.Response{{Content: mustJSON(t, badReview()), RequestID: "g1"}, {Content: mustJSON(t, exampleReview()), RequestID: "g2"}}
+	a, _ := dbFree(t, &llm.Fake{Responses: answers}).Attempt(context.Background(), examplePack(), fixturePersona(t))
+	r, err := f.gen(t, &llm.Fake{Responses: answers}).Generate(context.Background(), t28Key(), examplePack(), fixturePersona(t), f.user)
+	if err != nil || !reflect.DeepEqual(r, storedOf(t28Key(), f.user, capsNow, a)) {
+		t.Fatalf("one flow:\n%+v\n%+v %v", r, a, err)
 	}
 }
