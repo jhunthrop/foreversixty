@@ -21,22 +21,18 @@
      polling briefly if the webhook has not landed yet (the webhook is the source of truth,
      not the redirect). -->
 <script lang="ts">
-  import { fetchMeOnce, forgetSession, type Me, type MeGuild } from '../lib/account/api';
+  import { fetchMeOnce, forgetSession, type Me } from '../lib/account/api';
   import { BillingApiError, openPortal, startCheckout } from '../lib/billing/api';
   import { runPremiumCheckout } from '../lib/billing/premium-owned-flow';
   import { checkoutCopy } from '../lib/billing/copy';
-  import { founderOpen, type PlanKey } from '../lib/billing/plans';
+  import { checkoutGuildCopy, type GuildTier } from '../lib/billing/checkout-guild-copy';
+  import { replacePlanInUrl } from '../lib/billing/checkout-plan-switch';
+  import { founderOpen } from '../lib/billing/plans';
   import { safeNextPath } from '../lib/account/safe-next';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import {
-    billableGuilds,
-    isGuildPlan,
-    parseCheckoutParams,
-    type CheckoutParams,
-  } from '../lib/billing/checkout-params';
-  import { fetchGuildHome } from '../lib/guild/api';
-  import { guildMarkSrc } from '../lib/guild/mark';
-  import CheckoutGuildChooser from './checkout/CheckoutGuildChooser.svelte';
+  import { isGuildPlan, parseCheckoutParams, type CheckoutParams } from '../lib/billing/checkout-params';
+  import CheckoutBand from './checkout/CheckoutBand.svelte';
+  import CheckoutGuildStep from './checkout/CheckoutGuildStep.svelte';
   import PremiumOwnedPanel from './checkout/PremiumOwnedPanel.svelte';
 
   /** The island's outside world, injectable so tests need no network or globals. */
@@ -57,24 +53,25 @@
   let { search = undefined, deps = {} }: { search?: string; deps?: Partial<CheckoutDeps> } = $props();
   const io: CheckoutDeps = { ...PRODUCTION_DEPS, ...deps };
 
-  const INVALID_LINK_MESSAGE = 'Something is wrong with that link. Start again from the premium page.';
+  const PREMIUM_HREF = '/premium';
+  /** The band's interval before the query string is read; only the static render sees it. */
+  const DEFAULT_INTERVAL = 'yearly';
+  const founder = founderOpen(new Date());
 
   let invalid = $state(false);
   let message = $state(checkoutCopy.redirecting);
   let showRetry = $state(false);
   let request = $state<CheckoutParams | null>(null);
-  let chooserGuilds = $state<MeGuild[] | null>(null);
-  let chooserFailed = $state(false);
-  /** Null until every billable guild's crest read has settled, so rows and crests arrive together. */
-  let chooserCrests = $state<Record<number, string | null> | null>(null);
-  let chooserSummary = $state('');
-  let chooserPlan = $state<PlanKey | null>(null);
-  let choosing = $state(false);
-  let messageEl = $state<HTMLParagraphElement | undefined>(undefined);
-  let refocusMessage = $state(false);
+  /** The guild step shows (spec §5): a guild plan with no guild id. */
+  let stepShown = $state(false);
+  /** Null while the step's /v1/me read is in flight. */
+  let stepMe = $state<Me | null>(null);
+  let stepFailed = $state(false);
   /** The account that already has Premium: the panel replaces the redirect. */
   let ownedMe = $state<Me | null>(null);
   let portalBusy = $state(false);
+  let portalFailed = $state(false);
+  const ownedNow = new Date();
 
   const ALREADY_ON_PLAN_CODE = 'conflict';
   const NOT_FOUND = 404;
@@ -121,33 +118,15 @@
     window.location.assign(`/login?next=${encodeURIComponent(safeNextPath(currentUrl(), '/premium'))}`);
   }
 
-  /** Best effort: a guild whose read fails keeps the plain ring. */
-  async function loadCrests(guilds: readonly MeGuild[]): Promise<void> {
-    const entries = await Promise.all(
-      billableGuilds(guilds).map(async (guild): Promise<[number, string | null]> => {
-        try {
-          return [guild.id, guildMarkSrc((await fetchGuildHome(guild.id)).guild)];
-        } catch {
-          return [guild.id, null];
-        }
-      }),
-    );
-    chooserCrests = Object.fromEntries(entries);
+  function showGuildStep(me: Me): void {
+    stepShown = true;
+    stepFailed = false;
+    stepMe = me;
   }
 
-  function showChooser(me: Me, parsed: CheckoutParams): void {
-    choosing = true;
-    chooserSummary = checkoutCopy.chosenPlan(parsed.plan, parsed.interval, founderOpen(new Date()));
-    chooserPlan = parsed.plan;
-    chooserFailed = false;
-    chooserGuilds = me.guilds;
-    void loadCrests(me.guilds);
-  }
-
-  async function reloadChooser(): Promise<void> {
-    chooserFailed = false;
-    chooserGuilds = null;
-    chooserCrests = null;
+  async function reloadGuildStep(): Promise<void> {
+    stepFailed = false;
+    stepMe = null;
     io.forgetSession();
     try {
       const me = await io.fetchMe();
@@ -155,20 +134,17 @@
         redirectToLogin();
         return;
       }
-      chooserGuilds = me.guilds;
-      void loadCrests(me.guilds);
+      stepMe = me;
     } catch {
-      chooserFailed = true;
+      stepFailed = true;
     }
   }
 
-  function chooseGuild(guildId: number): void {
+  /** Spec §5.3: Switch to Guild / Raid guild rewrites the URL's plan in place; the band follows. */
+  function switchPlan(to: GuildTier): void {
     if (request === null) return;
-    choosing = false;
-    request = { ...request, guildId };
-    message = checkoutCopy.redirecting;
-    refocusMessage = true;
-    void launch(request);
+    replacePlanInUrl(to);
+    request = { ...request, plan: to };
   }
 
   function showOwned(me: Me): void {
@@ -178,10 +154,12 @@
 
   async function openBillingPortal(): Promise<void> {
     portalBusy = true;
+    portalFailed = false;
     try {
       const result = await io.openPortal(undefined);
       window.location.assign(result.portal_url);
     } catch {
+      portalFailed = true;
       portalBusy = false;
     }
   }
@@ -197,7 +175,7 @@
       return;
     }
     if (isGuildPlan(parsed.plan) && parsed.guildId === undefined) {
-      showChooser(me, parsed);
+      showGuildStep(me);
       return;
     }
     const checkoutRequest = {
@@ -251,12 +229,6 @@
   }
 
   $effect(() => {
-    if (!refocusMessage || messageEl === undefined) return;
-    messageEl.focus();
-    refocusMessage = false;
-  });
-
-  $effect(() => {
     const parsed = parseCheckoutParams(search ?? window.location.search);
     if (parsed === null) {
       invalid = true;
@@ -267,42 +239,49 @@
   });
 </script>
 
-{#if invalid}
-  <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
-    {INVALID_LINK_MESSAGE}
-    <a href="/premium" class="underline">Premium page</a>
-  </p>
+<CheckoutBand plan={request?.plan ?? null} interval={request?.interval ?? DEFAULT_INTERVAL} {founder} />
+
+{#if stepShown && request !== null && request.plan !== 'premium'}
+  <CheckoutGuildStep
+    me={stepMe}
+    failed={stepFailed}
+    plan={request.plan}
+    interval={request.interval}
+    {founder}
+    selfUrl={currentUrl()}
+    onRetry={() => void reloadGuildStep()}
+    onSwitch={switchPlan}
+  />
 {:else}
-  <div class="flex flex-col gap-3">
-    {#if ownedMe !== null}
+  <!-- The narrow body under the band: the redirect and refusal messages, the invalid-link
+       line, and the plan=premium slot (Task 12's PremiumOwnedPanel, spec §4.2). -->
+  <div
+    class="mx-auto flex w-full max-w-[640px] flex-col gap-3 px-[18px] pt-10 pb-16 md:px-0"
+    data-testid="checkout-body"
+  >
+    {#if invalid}
+      <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
+        {checkoutGuildCopy.invalidLink.text}
+        <a href={PREMIUM_HREF} class="underline">{checkoutGuildCopy.invalidLink.button}</a>
+      </p>
+    {:else if ownedMe !== null}
       <PremiumOwnedPanel
         me={ownedMe}
-        now={new Date()}
+        now={ownedNow}
         busy={portalBusy}
         onPortal={() => void openBillingPortal()}
       />
-    {:else if choosing}
-      <CheckoutGuildChooser
-        guilds={chooserGuilds}
-        failed={chooserFailed}
-        crests={chooserCrests}
-        summary={chooserSummary}
-        plan={chooserPlan}
-        onChoose={chooseGuild}
-        onRetry={() => void reloadChooser()}
-      />
+      {#if portalFailed}
+        <p class="text-[14px]" role="alert" data-testid="checkout-portal-error">
+          {checkoutCopy.genericFailure}
+        </p>
+      {/if}
     {:else}
-      <p
-        bind:this={messageEl}
-        tabindex="-1"
-        class="min-h-[21px] text-[14px] outline-none"
-        role="alert"
-        data-testid="checkout-message"
-      >
+      <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
         {message}
       </p>
     {/if}
-    {#if showRetry && request !== null}
+    {#if !invalid && showRetry && request !== null}
       <button
         type="button"
         class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`}

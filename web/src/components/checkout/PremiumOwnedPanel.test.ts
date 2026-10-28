@@ -1,7 +1,7 @@
 // web/src/components/checkout/PremiumOwnedPanel.test.ts
 // The "You already have Premium." panel per source (spec 4.2, 9.2, case 14). Static render:
 // this config's `render()` runs no effects, so the launcher's flow is tested in
-// lib/billing/premium-owned-flow.test.ts and the portal click by Playwright.
+// lib/billing/premium-owned-flow.test.ts and the portal click by the checkout-launcher e2e case Task 25 adds.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { BillingView, Me } from '../../lib/account/api';

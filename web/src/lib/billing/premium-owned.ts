@@ -3,9 +3,8 @@
 // 4.2 and 9.2): which words and which button the account's one Premium source gets. Pure: the
 // caller passes the clock and zone. The API's refusal sentence is never shown.
 import type { Me } from '../account/api';
-import { accountPlanLine } from '../account/plan-line';
+import { accountPlanLine, premiumSource } from '../account/plan-line';
 import { BillingApiError } from './api';
-import { billingBlockCopy } from './copy';
 import { premiumSourceCopy } from './premium-source-copy';
 
 export const ACCOUNT_PLAN_HREF = '/account#plan';
@@ -34,7 +33,7 @@ export function premiumOwnedView(me: Me, now: Date, zone?: string): PremiumOwned
   const plan = accountPlanLine(me, now, zone);
   const manage = plan.billingButton === 'manage';
   // A refusal for a source this read cannot see has no plan words: the generic panel.
-  const known = plan.line !== billingBlockCopy.notSubscribed;
+  const known = premiumSource(me, now) !== 'none';
   return {
     title: premiumSourceCopy.panelTitle,
     line: known ? plan.line : premiumSourceCopy.fallback,
