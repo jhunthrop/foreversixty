@@ -1,7 +1,7 @@
 // The one real server Top Gear run both /premium and /sim show as proof. The data file is written
 // by a capture step; this reader fails the build when it is malformed, so a preset run can never
 // print as a named character.
-import raw from '../../data/premium-examples.json';
+import raw from '../../data/premium-examples.json' with { type: 'json' };
 import { utcDayMonthYear } from '../dates';
 
 const RFC_3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
