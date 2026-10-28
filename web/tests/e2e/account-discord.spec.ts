@@ -13,6 +13,7 @@ import {
   notificationsCopy as copy,
   premiumRowCopy,
 } from '../../src/lib/account/notifications-copy';
+import { RECENT, routeRecent } from './support/coach-stubs';
 import { gotoHydrated } from './support/hydrated';
 import {
   CHANNEL_ID,
@@ -48,6 +49,9 @@ async function openAccount(
 ): Promise<DiscordRoutes> {
   const seen = await routeDiscordNotifications(page, routeOptions);
   await signInMember(page, stages, seen);
+  // The coach's last-raid line also reads on this page; without a stub its request hangs on
+  // the test server and the line's loading skeleton stays up through the Discord steps.
+  await routeRecent(page, RECENT.none.recent);
   await gotoHydrated(page, path, 'account');
   return seen;
 }
@@ -384,11 +388,16 @@ declare global {
 }
 
 /** From now on, notes whether the account page ever draws a loading skeleton again. */
+// Flags a skeleton that APPEARS after the watcher starts: a flash during save or remove. One
+// already on the page when the watcher starts (a line still loading) is not a flash.
 async function watchForSkeleton(page: Page): Promise<void> {
   await page.evaluate(() => {
     window.__skeletonSeen = false;
+    const present = new Set(document.querySelectorAll('[data-testid$="-skeleton"]'));
     new MutationObserver(() => {
-      if (document.querySelector('[data-testid$="-skeleton"]') !== null) window.__skeletonSeen = true;
+      for (const node of document.querySelectorAll('[data-testid$="-skeleton"]')) {
+        if (!present.has(node)) window.__skeletonSeen = true;
+      }
     }).observe(document.body, { childList: true, subtree: true });
   });
 }
