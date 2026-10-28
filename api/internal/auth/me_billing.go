@@ -18,8 +18,6 @@ const (
 	billingStatusCanceled = "canceled"
 	// billingSourceStripe is the Source word of a row Stripe drives.
 	billingSourceStripe = "stripe"
-	// resubscribePath is where an ended seat's comeback link goes.
-	resubscribePath = "/premium/checkout"
 	// plansPath is where an ended seat whose price is unknown links to.
 	plansPath = "/premium"
 )
@@ -154,7 +152,7 @@ func endedSeatView(f *EndedSeat) *MeEndedSeat {
 	price := catalog.FactsOf(f.PriceLookupKey, 0)
 	link := plansPath
 	if price.Interval != nil {
-		link = resubscribePath + "?plan=premium&interval=" + *price.Interval +
+		link = catalog.CheckoutPath + "?plan=premium&interval=" + *price.Interval +
 			"&comeback=" + strconv.FormatInt(f.ComebackID, 10)
 	}
 	return &MeEndedSeat{

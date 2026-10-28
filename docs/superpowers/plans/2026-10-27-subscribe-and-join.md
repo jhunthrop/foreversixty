@@ -64,7 +64,7 @@
 - Produces (`auth`):
   ```go
   type GuildStanding struct {
-      Realm       string
+      RulesetLabel string
       CrestURL    *string
       Faction     *string // "alliance" | "horde" | nil
       RosterCount *int    // counts.on_roster + counts.in_game_no_account; nil without a snapshot
@@ -77,12 +77,12 @@
       GuildStanding(ctx context.Context, userID int64, guildIDs []int64) (map[int64]GuildStanding, error)
   }
   ```
-  `Guild` gains `Realm string json:"realm"`, `CrestURL *string json:"crest_url"`, `Faction *string json:"faction"`, `RosterCount *int json:"roster_count"`, and (filled by Tasks 2 to 5) `Claim *GuildClaimView json:"claim"`, `Verify *GuildVerifyView json:"verify"`, `Covered *GuildCoveredView json:"covered"`, `Subscribe *GuildSubscribeView json:"subscribe"`.
+  `Guild` gains `RulesetLabel string json:"ruleset_label"`, `CrestURL *string json:"crest_url"`, `Faction *string json:"faction"`, `RosterCount *int json:"roster_count"`, and (filled by Tasks 2 to 5) `Claim *GuildClaimView json:"claim"`, `Verify *GuildVerifyView json:"verify"`, `Covered *GuildCoveredView json:"covered"`, `Subscribe *GuildSubscribeView json:"subscribe"`.
   `func (s *Service) attachStanding(ctx context.Context, userID int64, gs []Guild) []Guild` — nil `Standing` or a failed read logs and returns `gs` unchanged (the older shape; the web draws identity-only cards).
-- Produces (`guilds`): `func (s *Store) GuildStanding(ctx context.Context, userID int64, guildIDs []int64) (map[int64]auth.GuildStanding, error)` — one query for realm, faction, crest key (through `CrestURL(s.APIBaseURL, id, key)`) and the roster count from the addon snapshot, for all ids at once (no N+1).
+- Produces (`guilds`): `func (s *Store) GuildStanding(ctx context.Context, userID int64, guildIDs []int64) (map[int64]auth.GuildStanding, error)` — one query for the ruleset label, faction, crest key (through `CrestURL(s.APIBaseURL, id, key)`) and the roster count from the addon snapshot, for all ids at once (no N+1).
 
 - [ ] **Step 1: Write the failing tests:**
-  - `TestGuildStanding_IdentityFacts`: a guild with a crest, faction `horde`, a snapshot of 30 on the roster and 8 in game without an account answers `Realm` (display string), a `CrestURL` with `?v=`, `Faction` `horde`, `RosterCount` 38.
+  - `TestGuildStanding_IdentityFacts`: a guild with a crest, faction `horde`, a snapshot of 30 on the roster and 8 in game without an account answers `RulesetLabel` (display string), a `CrestURL` with `?v=`, `Faction` `horde`, `RosterCount` 38.
   - `TestGuildStanding_NoSnapshotNoCrest`: `RosterCount` nil, `CrestURL` nil, `Faction` nil when unknown.
   - `TestGuildStanding_OneQueryForManyGuilds`: three ids answer three entries.
   - `TestMe_GuildsCarryIdentity` (auth handler test with a fake `Standing`): the JSON has `ruleset_label`, `slug`, `crest_url`, `faction`, `roster_count`; with `Standing` nil, `/v1/me` answers 200 without them.
@@ -302,7 +302,7 @@ PR B codes against the PR A contract with stubbed APIs, so web waves do not wait
 
 **Interfaces:**
 - Produces:
-  - `contract.ts`: `GuildClaimView`, `GuildVerifyView`, `GuildCoveredView`, `GuildSubscribeView`, `SubscribeStep` (the 13-word union), `ClaimState`, `CoveredState`, mirroring Tasks 1 to 5 exactly; and `export type PremiumSource = 'own' | 'own_then_seat' | 'grant' | 'seat' | 'fallback' | 'none';` (§4.1), which Task 10's `premiumSource` returns. `MeGuild` gains `realm?`, `crest_url?`, `faction?`, `roster_count?`, `claim?`, `verify?`, `covered?`, `subscribe?`. `BillingView` gains `source: 'stripe' | 'grant'`. `EntitlementsView` gains `personal_portal: boolean`. `BillingApiError.fields` exposes `source`.
+  - `contract.ts`: `GuildClaimView`, `GuildVerifyView`, `GuildCoveredView`, `GuildSubscribeView`, `SubscribeStep` (the 13-word union), `ClaimState`, `CoveredState`, mirroring Tasks 1 to 5 exactly; and `export type PremiumSource = 'own' | 'own_then_seat' | 'grant' | 'seat' | 'fallback' | 'none';` (§4.1), which Task 10's `premiumSource` returns. `MeGuild` gains `ruleset_label?`, `crest_url?`, `faction?`, `roster_count?`, `claim?`, `verify?`, `covered?`, `subscribe?`. `BillingView` gains `source: 'stripe' | 'grant'`. `EntitlementsView` gains `personal_portal: boolean`. `BillingApiError.fields` exposes `source`.
   - `normalize.ts`: `export function normalizeMeGuild(g: unknown): MeGuild` — an entry missing `subscribe` gets `subscribe: null` ("unknown"); a `step` outside the union becomes null.
   - `premium-hint.ts` (storage through the guarded `storage()` from `web/src/lib/layout-reserve.ts`):
     - `export const PREMIUM_SOURCE_KEY = 'fs.premiumSource'; export const ME_GUILD_COUNT_KEY = 'fs.meGuildCount';`
@@ -502,7 +502,7 @@ PR B codes against the PR A contract with stubbed APIs, so web waves do not wait
 **Interfaces:**
 - Consumes: Task 14's functions and copy; `CopyLinkField` (Task 13); `ClassCrestRing`, `FactionMark`, `Skeleton`, `LoadError`, `EmptyState`, `INLINE_LINK`; `readMeGuildCount` (Task 9); `communityLinks.discordInvite`.
 - Produces:
-  - `GuildStepCard` (§5.2): `li` `card` recipe, padding 20 / 16, `id="guild-{id}"`, `scroll-margin-top: 96px`, `aria-labelledby` its name; from 768 grid `minmax(0,1fr) 320px`, gap 24. Identity row: 40 px crest circle with a 2 px `--gold` ring (`guildMarkSrc`, 40 x 40 `object-cover`), else `FactionMark` 24 px, else empty ring; name Cinzel 700 16 px truncating; realm and region 13 px muted. You row: up to two of the viewer's characters in the guild, main first, then `+{n} more`; each `ClassCrestRing` 20 px, name in class colour, rank word, verify mark (12 px `--kill` tick + `Verified`, or `Not verified` muted). Facts 13 px muted, numbers mono: `{n} verified` / `No one verified yet`, `{m} on the roster` (left out when null), the plan word.
+  - `GuildStepCard` (§5.2): `li` `card` recipe, padding 20 / 16, `id="guild-{id}"`, `scroll-margin-top: 96px`, `aria-labelledby` its name; from 768 grid `minmax(0,1fr) 320px`, gap 24. Identity row: 40 px crest circle with a 2 px `--gold` ring (`guildMarkSrc`, 40 x 40 `object-cover`), else `FactionMark` 24 px, else empty ring; name Cinzel 700 16 px truncating; ruleset and region 13 px muted. You row: up to two of the viewer's characters in the guild, main first, then `+{n} more`; each `ClassCrestRing` 20 px, name in class colour, rank word, verify mark (12 px `--kill` tick + `Verified`, or `Not verified` muted). Facts 13 px muted, numbers mono: `{n} verified` / `No one verified yet`, `{m} on the roster` (left out when null), the plan word.
   - `GuildStepBlock` for `ask_leader`, `claimed_ask`, `claim_pending_yours`, `claim_pending_ask` (sentence + `CopyLinkField` with `handoffUrl`), `on_plan` read-only lines + `Open the guild`, `checkout_open` (`Check again`), `frozen` and `claim_blocked` (`Open the guild`); the verify sub-line; the other-character line under `ask_leader` (`Get set up` to `/setup?next=<this URL>#guild-{id}`); the moderator fallback last on `ask_leader` and `claimed_ask`. Phone: one column, the block after a 1 px `--line-soft` rule with 14 px above and below; controls full width.
   - `CheckoutGuildStep`: the lead (15 px, 14 px below 768, max 720, 16 px below), the `ul` (gap 12) in `orderGuildCards` order, the foot (24 px below, 13 px muted: missing-guild line + `Get set up`; the personal Premium line + `Get Premium` only when `premiumSource` is `none`). Loading: lead slot reserves 21 px (42 px below 768); `Skeleton` cards 156 / 260 px, count `readMeGuildCount()`; sr-only `Loading your guilds`; `aria-busy="true"`; rows replace the skeleton once `/v1/me` answered and every crest decoded or failed, capped at 1000 ms. Error: `LoadError` `Your guilds did not load.` + `Try again`; focus to the lead after a successful retry. Empty A (no characters) and Empty B (none in a guild) per §5.7, `Get set up` the page's one fill, no foot missing-guild line in Empty A. An older `/v1/me` (subscribe null) draws identity rows and `Open the guild` only.
 

@@ -67,13 +67,13 @@ type ClaimStateView struct {
 func claimState(g Guild, now time.Time) ClaimStateView {
 	switch {
 	case g.ClaimContestedAt != nil:
-		return ClaimStateView{State: "contested", Since: g.ClaimContestedAt, Frozen: true}
+		return ClaimStateView{State: ClaimStateContested, Since: g.ClaimContestedAt, Frozen: true}
 	case g.ClaimedBy != nil:
-		return ClaimStateView{State: "claimed", Since: g.ClaimedAt}
+		return ClaimStateView{State: ClaimStateClaimed, Since: g.ClaimedAt}
 	case g.pendingActive(now):
-		return ClaimStateView{State: "pending", Since: g.ClaimRequestedAt}
+		return ClaimStateView{State: ClaimStatePending, Since: g.ClaimRequestedAt}
 	default:
-		return ClaimStateView{State: "unclaimed"}
+		return ClaimStateView{State: ClaimStateUnclaimed}
 	}
 }
 

@@ -85,7 +85,7 @@ func (s *Service) openComeback(ctx context.Context, tx pgx.Tx, guildID, userID i
 
 func (s *Service) comebackURL(interval catalog.Interval, id int64) string {
 	q := url.Values{"plan": {"premium"}, "interval": {string(interval)}, "comeback": {fmt.Sprint(id)}}
-	return s.PublicBaseURL + "/premium/checkout?" + q.Encode()
+	return s.PublicBaseURL + catalog.CheckoutPath + "?" + q.Encode()
 }
 
 // Sweep releases, in every guild with seats in use, the holders who are no
