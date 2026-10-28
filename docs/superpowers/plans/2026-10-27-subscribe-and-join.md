@@ -153,7 +153,7 @@
       ViewerHoldsClaim    bool
       ViewerPendingClaim  bool       // the viewer started the pending claim
       ViewerRank          string     // highest raw rank in the guild: "leader" | "officer" | "member"
-      ViewerVerified      bool       // a verified character in the guild
+      ViewerVerifiedOfficer bool     // the guild_members verified rank Capabilities reads (fix round 1 ruling)
       HasBattleNet        bool
       HoldsOtherClaim     bool
       OtherGuildName      string
