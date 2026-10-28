@@ -499,12 +499,18 @@ Sections, in this order:
 
 ### 9.1 The model (decided: the cheapest capable open model)
 
-The model is chosen **by a rule, not by name**: the cheapest model per output token, among the
-current S-tier of the owner's benchmark board, that has a hosted OpenAI-compatible
-chat-completions endpoint. Candidates seen on 2026-10-27: Kimi K3, GLM-5.3, DeepSeek-V4.1-Flash,
-MiMo-V2.6-Pro, GLM-5.2, DeepSeek-V4-Pro, Kimi K2.6. The builder picks, records the choice and
-its prices in the plan's build notes, and runs the evaluation in §21 before launch. The code
-names no model. `LLM_BASE_URL` and `LLM_MODEL` select it, so a switch is a config change.
+The model is reached through the **Vercel AI Gateway** (decided): one key, any model behind it,
+billed at the gateway's own per-model prices. `LLM_BASE_URL` is the gateway's OpenAI-compatible
+endpoint, `https://ai-gateway.vercel.sh/v1`. `LLM_MODEL` is a gateway model slug in
+`provider/model` form. The key is already in Secret Manager as `LLM_API_KEY`, readable by
+api-runtime.
+
+The model is chosen **by a rule, not by name**: the cheapest model per output token, at the
+gateway's listed prices, among the current S-tier of the owner's benchmark board. Candidates
+seen on 2026-10-27: Kimi K3, GLM-5.3, DeepSeek-V4.1-Flash, MiMo-V2.6-Pro, GLM-5.2,
+DeepSeek-V4-Pro, Kimi K2.6. The builder picks, records the slug and its prices in the plan's
+build notes, and runs the evaluation in §21 before launch. The code names no model, so a switch
+is a config change.
 
 ### 9.2 The prompt
 
@@ -639,7 +645,8 @@ are wrong today. This lane fixes it before any coach code:
   files and the catalogue.
 - **Review:** the row `coach_reviews (report_id, fight_index, player_key, pack_version,
   model_version, persona_version)`, holding the output JSON, `source` (`model` or `rules`),
-  token counts, cost and `generated_at`. `model_version` = `LLM_MODEL` + a hash of the coach
+  `tokens_in`, `tokens_out`, `cost_usd` (as the gateway reported it), `cost_estimated` (bool),
+  the model slug, the gateway request id and `generated_at`. `model_version` = `LLM_MODEL` + a hash of the coach
   rules prompt. **One generation per key (decided)**. It is regenerated only when a version
   moves, on the next view by a viewer entitled to the full review.
 - **A review stored as `rules` because a cap was hit or the switch was off** is generated
@@ -657,30 +664,39 @@ are wrong today. This lane fixes it before any coach code:
 ### 15.1 `api/internal/llm`
 
 A small client for OpenAI-compatible chat completions:
-- Config: `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` from Secret Manager (never logged, and
-  required at startup when the coach is enabled, failing fast with a clear error), plus
-  `LLM_PRICE_IN_PER_MTOK` and `LLM_PRICE_OUT_PER_MTOK` for spend accounting.
+- Config: `LLM_BASE_URL` (the Vercel AI Gateway, `https://ai-gateway.vercel.sh/v1`),
+  `LLM_MODEL` (a gateway slug, `provider/model`), and `LLM_API_KEY` from Secret Manager (already
+  there; never logged; required at startup when the coach is enabled, failing fast with a clear
+  error). `LLM_PRICE_IN_PER_MTOK` and `LLM_PRICE_OUT_PER_MTOK` are used only as a fallback when
+  the gateway reports no cost for a request.
 - `Complete(ctx, Request) (Response, error)`: messages, JSON response format, temperature and
-  max tokens (default 1,200). It returns the content and the usage (prompt and completion tokens).
+  max tokens (default 1,200). It returns the content, the usage (prompt and completion tokens),
+  and the **cost the gateway reports** for the request (from its usage block or cost headers;
+  the builder confirms which against the gateway docs), plus the gateway's request id.
 - Timeouts: 60 s per call, through the request context.
 - Retries: up to 2 on 429, 5xx and network errors, with exponential backoff and jitter,
   honouring `Retry-After`. Validation retries (§10) are separate and counted once.
-- Spend accounting: each call's usage × configured prices, added to `llm_spend (day, usd,
-  calls)` in one upsert.
+- Spend accounting from real numbers: each call's gateway-reported cost (or, only when the
+  gateway reports none, its tokens × the fallback prices, flagged `estimated`) is added to
+  `llm_spend (day, usd, calls, estimated_calls)` in one upsert. Every generation's tokens in,
+  tokens out, cost, model slug and gateway request id are also stored on its `coach_reviews` row
+  (§14), retries included.
 - No provider SDK; plain `net/http` and JSON. The interface is small enough to fake in tests.
 
 ### 15.2 Caps (decided, values configurable)
 
-- `COACH_DAILY_SPEND_CAP_USD` (default 25). Once `llm_spend` for the UTC day reaches it, no new
-  generations start that day.
+- `COACH_DAILY_SPEND_CAP_USD` (default 25). Enforced from the recorded gateway costs in
+  `llm_spend`, not from estimates. Once the UTC day's total reaches it, no new generations start
+  that day.
 - `COACH_DAILY_REVIEWS_PER_ACCOUNT` (default 30). This counts generations started for an
   account (as owner or officer) per UTC day. Cached reviews never count.
 - `COACH_LLM_ENABLED` (default true): the kill switch (§20).
 
 ### 15.3 Cost (parametric)
 
-Prices are left as `{in}` and `{out}` in US dollars per million tokens, for the chosen model
-(§9.1). The builder fills them in the build notes.
+Prices are left as `{in}` and `{out}` in US dollars per million tokens, at the Vercel AI
+Gateway's listed price for the chosen slug (§9.1). The builder fills them in the build notes.
+These figures are for planning only. The cap runs on the gateway's reported cost per request.
 
 Token estimate per generated review (assumption, to be measured in the evaluation):
 - Input: about **7,000 tokens**: coach rules about 1,500, persona about 3,000, evidence pack
@@ -772,7 +788,8 @@ Profiles add one ~1 KB insert per rated kill row.
   guild. Moderators as officers. Nobody else sees anything about the coach on someone else's row.
 - **Anonymised accounts:** shown only to the player and their guild's officers. Profiles store
   no names. Comparisons are medians of 20 or more players.
-- **What leaves our systems:** the evidence pack goes to the model provider. It holds spec,
+- **What leaves our systems:** the evidence pack goes through the Vercel AI Gateway to the
+  model provider behind the chosen slug. It holds spec,
   boss, size and the numbers of one fight, and **no character name, account, guild, realm or
   Battle.net data**. The provider must not train on API inputs. Its retention terms are
   recorded with the model choice (see Owner decisions).
@@ -806,9 +823,12 @@ Profiles add one ~1 KB insert per rated kill row.
 
 ## 21. Left to the builder
 
-- **Choose the model** by the rule in §9.1. Record the model id, endpoint, provider, its
-  training and retention terms, and `{in}`/`{out}` prices in the plan's build notes. Set
-  `LLM_BASE_URL`, `LLM_MODEL`, the prices, and the `LLM_API_KEY` secret.
+- **Choose the model** by the rule in §9.1, from the models the Vercel AI Gateway lists, by
+  output-token price. Record the slug, the provider behind it, its training and retention terms,
+  and the gateway's `{in}`/`{out}` prices in the plan's build notes. Set `LLM_BASE_URL` to
+  `https://ai-gateway.vercel.sh/v1` and `LLM_MODEL` to the slug. `LLM_API_KEY` is already in
+  Secret Manager and readable by api-runtime. Confirm from the gateway docs where it reports
+  per-request cost (usage block or headers), and record it.
 - **Evaluation before launch:** run the same 20 sample fights (mixed specs, including the three
   full personas, a 10-player and a 20-player night, a wipe) through the chosen model and one
   S-tier mate. Record both outputs, validation pass rates and measured tokens, and update §15.3's
@@ -866,10 +886,11 @@ Re-read as a builder new to the codebase, with the answers the codebase or the b
 6. *What is "evidence"?* `presence.EvidenceReport`: not private, not flagged.
 7. *Officers?* `entitlements.Store.CanForGuild(guild, user, FeatureOfficerViews)`.
 8. *Can the channel post carry a per-player line?* No (R-A3). See §5.5.
-9. *Is there an LLM client already?* No. Build `api/internal/llm` (§15.1) on plain `net/http`.
-   Secrets go in Secret Manager like `DISCORD_BOT_TOKEN`.
-10. *Which model, and what does it cost?* By the rule in §9.1. Prices go in the build notes, and
-    §15.3 is parametric.
+9. *Is there an LLM client already?* No. Build `api/internal/llm` (§15.1) on plain `net/http`
+   against the Vercel AI Gateway's OpenAI-compatible endpoint. The key `LLM_API_KEY` is already
+   in Secret Manager.
+10. *Which model, and what does it cost?* By the rule in §9.1, from the gateway's list. Prices go
+    in the build notes, and §15.3 is parametric. The cap runs on the gateway's reported cost.
 11. *Does every provider support JSON-schema output?* No. Ask for JSON mode, use the schema form
     where supported, and validate on the server always (§9.2).
 12. *What if the free teaser's "first thing" disagrees with the model's priority?* It can't.
@@ -897,12 +918,13 @@ Re-read as a builder new to the codebase, with the answers the codebase or the b
    damage specs get the most findings.`
 3. **"Top" for healers and tanks.** I chose the rating's overall score. Confirm, or name another
    measure, such as effective HPS.
-4. **The model provider's data terms.** The cheapest S-tier model may be hosted by a provider
-   outside the US and EU. I recommend two conditions on the choice: the provider must not train
-   on API inputs, and must state its retention. A model hosted on a US or EU inference provider
-   is an acceptable substitute at a higher price. Approve those conditions, or set your own.
-5. **The privacy page** (legal pages finalised 2026-10-24) should name the model provider as a
-   processor of fight data sent for coaching. The pack carries no names or account data. Approve
-   the addition.
+4. **The model provider's data terms.** The cheapest S-tier slug on the gateway may route to a
+   provider outside the US and EU. I recommend two conditions on the choice: the provider behind
+   the slug must not train on API inputs, and must state its retention. Where the gateway offers
+   the same model from several providers, pick one that meets both, even at a higher price.
+   Approve those conditions, or set your own.
+5. **The privacy page** (legal pages finalised 2026-10-24) should name Vercel (the AI Gateway)
+   and the model provider as processors of fight data sent for coaching. The pack carries no
+   names or account data. Approve the addition.
 6. **Cap defaults:** $25 a day total spend and 30 generated reviews per account per day. Confirm,
    or set the numbers once §15.3 is filled with real prices.
