@@ -240,7 +240,7 @@ Review:
 
 | Rank | Id | Title | Detail | Basis | Anchors |
 |---|---|---|---|---|---|
-| 1 (major) | `f7` | `Died at 2:50 with Shield Wall ready` | `Onyxia's melee killed you at 2:50. Shield Wall had been ready since the pull.` | `From your log and Shield Wall's cooldown.` | `a1` the death, `a2` Shield Wall row |
+| 1 (major) | `f7` | `Died at 2:50, Shield Wall not used` | `Onyxia's melee killed you at 2:50. Shield Wall was not used this pull.` | `From your log and Shield Wall's cooldown.` | `a1` the death, `a2` Shield Wall row |
 | 2 (minor) | `f2` | `Shield Block up 18% of the fight` | `Shield Block was up for 42 s of 3:52.` | `Top 20 Protection warriors on Onyxia (40): 34%.` | `a3` Buffs row |
 | 3 (minor) | `f5` | `Sunder Armor: 22 casts of Rank 4` | `Rank 5 is trainable at your level. Rank 4 was cast 22 times.` | `The spell ranks a level 60 warrior can train.` | `a4` Casts row |
 
