@@ -81,12 +81,12 @@ func (s *Service) runReview(ctx context.Context, job reviewJob) error {
 		return nil // nothing to write: the route serves the pack's own status
 	}
 	key := NewReviewKey(rep.ID, job.fight, job.player, l.pack, s.Generator.Model, persona)
-	return s.write(ctx, key, l.pack, persona, fightPlayerNames(sum), job.account)
+	return s.write(ctx, key, l.pack, persona, fightRosterOf(sum), job.account)
 }
 
 // write generates unless a model review, or a rules review that is not retryable, is
 // already stored for the key.
-func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Persona, roster []string, account int64) error {
+func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Persona, roster fightRoster, account int64) error {
 	stored, ok, err := s.Store.Review(ctx, key)
 	if err != nil {
 		return err
@@ -95,7 +95,8 @@ func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Pers
 		return nil
 	}
 	g := *s.Generator
-	g.Validator = Validator{Names: s.Names, Roster: roster}
+	g.Validator = Validator{Names: s.Names, Roster: roster.Names}
+	g.Realms = roster.Realms
 	if _, err := g.Generate(ctx, key, p, persona, account); err != nil {
 		return fmt.Errorf("coach-review: %w", err)
 	}

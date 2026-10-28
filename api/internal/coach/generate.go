@@ -21,6 +21,8 @@ const (
 
 	reasonValidation = "validation"
 	reasonModelError = "model_error"
+	// reasonPrivacy: the prompt pack carried a roster name or realm, so no call was made.
+	reasonPrivacy = "privacy"
 
 	// redactedPlayer replaces a roster name in a logged model output.
 	redactedPlayer = "[player]"
@@ -37,10 +39,13 @@ var errNoClient = errors.New("coach: a generator needs a model client")
 // process-wide name dictionary (built once) and the fight's roster. Attempt needs only LLM
 // and Validator; Generate also needs Caps, Store and Now.
 type Generator struct {
-	LLM         llm.Client
-	Caps        *Caps
-	Store       *Store
-	Validator   Validator
+	LLM       llm.Client
+	Caps      *Caps
+	Store     *Store
+	Validator Validator
+	// Realms is the fight's realm strings. With Validator.Roster they are what the prompt
+	// pack must never carry (§19): a pack holding one is served rule-only, with no call.
+	Realms      []string
 	Model       string // the gateway slug, for ModelSlug when a response names none
 	Temperature float64
 	Log         *slog.Logger
@@ -84,7 +89,9 @@ func (g *Generator) Generate(ctx context.Context, key ReviewKey, p Pack, persona
 		return StoredReview{}, err
 	}
 	var res Attempt
-	if refusal := g.admit(ctx, accountID); refusal != RefusalNone {
+	if g.withheld(p) {
+		res = fallback(Attempt{}, p, persona, reasonPrivacy, false)
+	} else if refusal := g.admit(ctx, accountID); refusal != RefusalNone {
 		res = fallback(Attempt{}, p, persona, string(refusal), true)
 	} else {
 		// A model error is logged by g.call and is in res as model_error, retryable.
@@ -104,6 +111,9 @@ func (g *Generator) Attempt(ctx context.Context, p Pack, persona Persona) (Attem
 func (g *Generator) run(ctx context.Context, p Pack, persona Persona, onCall func(context.Context, llm.Response)) (Attempt, error) {
 	if g.LLM == nil {
 		return Attempt{}, errNoClient
+	}
+	if g.withheld(p) {
+		return fallback(Attempt{}, p, persona, reasonPrivacy, false), nil
 	}
 	msgs := BuildPrompt(p, persona)
 	var res Attempt

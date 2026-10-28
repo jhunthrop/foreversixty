@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"slices"
 	"sync"
 	"time"
 
@@ -245,12 +246,21 @@ func rosterRow(rep reports.Report, sum summary.Summary, playerKey string) (summa
 	return summary.RosterRow{}, false
 }
 
-// fightPlayerNames is the fight's player names as a review would write them.
-func fightPlayerNames(sum summary.Summary) []string {
-	out := make([]string, 0, len(sum.Roster))
+// fightRoster is the fight's player names as a review would write them, and their realms:
+// what neither the prompt pack nor a model review may carry (§19).
+type fightRoster struct {
+	Names, Realms []string
+}
+
+// fightRosterOf is the fight's roster names and distinct realms.
+func fightRosterOf(sum summary.Summary) fightRoster {
+	out := fightRoster{Names: make([]string, 0, len(sum.Roster))}
 	for _, row := range sum.Roster {
-		name, _ := character.SplitUnit(row.Name)
-		out = append(out, name)
+		name, realm := character.SplitUnit(row.Name)
+		out.Names = append(out.Names, name)
+		if realm != "" && !slices.Contains(out.Realms, realm) {
+			out.Realms = append(out.Realms, realm)
+		}
 	}
 	return out
 }
