@@ -21,11 +21,39 @@ func quoteAll(words []string) []string {
 	return out
 }
 
-// toneProblems returns each banned word or phrase found in s, lower-cased, in order.
+// claimRE is a claim about a guild, a ranking or a first: the coach never makes one, so
+// no real player or group can be named by implication (§8.2, §9.3).
+var claimRE = regexp.MustCompile(`(?i)\b(guild|ranked|world\s+first)\b`)
+
+const exclamation = "!"
+
+// toneProblems returns each banned word or phrase, each exclamation mark and each claim
+// about a guild or ranking found in s, lower-cased, banned words first.
 func toneProblems(s string) []string {
 	var found []string
 	for _, m := range toneRE.FindAllString(s, -1) {
 		found = append(found, strings.ToLower(m))
+	}
+	for range strings.Count(s, exclamation) {
+		found = append(found, exclamation)
+	}
+	for _, m := range claimRE.FindAllString(s, -1) {
+		found = append(found, strings.ToLower(m))
+	}
+	return found
+}
+
+// rosterNames returns each roster name found in s as a whole word, case-insensitively.
+func rosterNames(s string, roster []string) []string {
+	var found []string
+	for _, name := range roster {
+		name = strings.TrimSpace(name)
+		if name == "" {
+			continue
+		}
+		if regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(name) + `\b`).MatchString(s) {
+			found = append(found, name)
+		}
 	}
 	return found
 }

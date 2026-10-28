@@ -514,3 +514,59 @@ var holyRules = SpecRules{
 	Auras:      []AuraRule{{SpellID: 10952, Name: "Inner Fire", Kind: AuraSelfBuff, Verified: fixtureVerified}},
 	Efficiency: []RuleEntry{{Family: "Inner Focus", SpellIDs: []int64{14751}, Talent: true, Verified: fixtureVerified}},
 }
+
+// examplePack is the §5.3 Fury pack, value for value (invented values: tests only).
+func examplePack() Pack {
+	at := func(id string) Anchor { return Anchor{ID: id, Kind: AnchorCast} }
+	return Pack{
+		Version: "pack-v1.example", Status: StatusReady,
+		Context: Context{SpecLabel: "Fury", Class: "Warrior", Role: "dps", Boss: "Onyxia", Size: 40, Kill: true, Duration: "3:52"},
+		Findings: []Finding{
+			{ID: "f1", Code: CodeCoreCasts, Severity: SeverityMajor, Rank: 1, Title: "Bloodthirst: 9 casts lost",
+				Detail: "31 of a possible 40 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.",
+				Facts:  Facts{Spells: []SpellFact{{Name: "Bloodthirst"}}}, Anchors: []string{"a1", "a2", "a3"}},
+			{ID: "f6", Code: CodePreparation, Severity: SeverityMajor, Rank: 2, Title: "No flask at the pull",
+				Detail: "You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.",
+				Facts:  Facts{Items: []string{"Grilled Squid", "Elemental Sharpening Stone"}}, Anchors: []string{"a4"}},
+			{ID: "f4", Code: CodeResource, Severity: SeverityMinor, Rank: 3, Title: "Rage full for 14 seconds",
+				Detail: "Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.", Anchors: []string{"a5"}},
+		},
+		Strengths: []Strength{
+			{ID: "s1", Sentence: "Alive the whole fight."},
+			{ID: "s2", Sentence: "Battle Shout up 100% of the fight. Top 25: 97%."},
+		},
+		Links: []Link{{ID: "l1", Findings: [2]string{"f1", "f4"}, Kind: LinkGapOverlapsCap,
+			Sentence: "The Bloodthirst gap at 2:40–2:51 overlaps the rage cap at 2:41–2:50."}},
+		CouldNotCheck: []string{"Talents and race: Forever logs don't record them.", "Range and movement: the log doesn't say where you stood."},
+		Anchors:       []Anchor{at("a1"), at("a2"), at("a3"), at("a4"), at("a5")},
+		Allowed: Allowed{
+			Numbers: []string{"31", "40", "9", "8", "9.1", "14", "3", "25", "100%", "97%", "3:52", "0:21", "1:12", "2:40", "2:41", "2:50", "2:51", "1:12–1:25", "2:40–2:51", "2:41–2:50"},
+			Names:   []string{"Bloodthirst", "Heroic Strike", "Battle Shout", "Onyxia", "Grilled Squid", "Elemental Sharpening Stone"},
+			IDs:     []string{"a1", "a2", "a3", "a4", "a5", "f1", "f4", "f6", "l1", "s1", "s2"},
+		},
+	}
+}
+
+// exampleReview is the §5.3 Fury review, word for word.
+func exampleReview() ReviewDoc {
+	return ReviewDoc{
+		Opening: "Solid kill: you were alive the whole fight and Battle Shout was up 100% of it. Almost everything you left behind sits in one button.",
+		FixFirst: &FixItem{
+			Finding: "f1", Title: "Bloodthirst: 9 casts lost",
+			Why: "Bloodthirst is the button the Fury rotation is built around, and 9 of a possible 40 went unused while you had the rage, " +
+				"longest at 1:12–1:25. At 2:40–2:51 you sat on a full bar instead, so that one gap cost you twice.",
+			Drill:     "drill.core_casts",
+			DrillText: "On a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
+			Anchors:   []string{"a1", "a2", "a3", "a5"}, Links: []string{"l1"},
+		},
+		ThenFix: []ThenItem{
+			{Finding: "f6", Title: "No flask at the pull", Why: "A flask is the cheapest damage you will ever buy; bring one to every 40-player boss.", Anchors: []string{"a4"}, Links: []string{}},
+			{Finding: "f4", Title: "Rage full for 14 seconds", Why: "When the bar is full, Heroic Strike turns rage into damage instead of losing it.", Anchors: []string{"a5"}, Links: []string{}},
+		},
+		DoingWell: []WellItem{
+			{Strength: "s1", Text: "You were alive the whole fight.", Anchors: []string{}},
+			{Strength: "s2", Text: "Battle Shout was up 100% of the fight, against 97% for the top 25.", Anchors: []string{}},
+		},
+		CouldntCheck: []string{"Talents and race: Forever logs don't record them.", "Range and movement: the log doesn't say where you stood."},
+	}
+}
