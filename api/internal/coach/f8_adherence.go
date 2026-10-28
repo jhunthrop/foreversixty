@@ -1,6 +1,8 @@
 package coach
 
 import (
+	"math"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -31,13 +33,13 @@ func adherence(in Input, _ Counted) outcome {
 	if share == nil {
 		return outcome{}
 	}
-	you := *share * percentOf
+	you := math.Round(*share * percentOf)
 	ref, basis := adherenceReference(in)
 	switch {
 	case adherenceFires(you, ref, basis):
 		return adherenceOutcome(in, you, ref, basis)
 	case basis.Kind == BasisTopLogs && you >= ref:
-		return adherenceStrength(you, ref, basis)
+		return adherenceStrength(in, you, ref, basis)
 	}
 	return outcome{}
 }
@@ -47,7 +49,7 @@ func adherence(in Input, _ Counted) outcome {
 func adherenceReference(in Input) (float64, Basis) {
 	pool := func(p Profile) (float64, bool) {
 		v, ok := p.AdherenceOf()
-		return v * percentOf, ok
+		return math.Round(v * percentOf), ok
 	}
 	if ref, b, _ := comparison(in, pool, nil, false); b != nil {
 		return ref, *b
@@ -91,17 +93,46 @@ func adherenceOutcome(in Input, you, ref float64, b Basis) outcome {
 	}
 }
 
-func adherenceStrength(you, ref float64, b Basis) outcome {
+func adherenceStrength(in Input, you, ref float64, b Basis) outcome {
 	pct := PctNumber(you)
-	return outcome{Strengths: []Strength{{
+	top := rotationTopCasts(in, OffRotationShown)
+	anchors := make([]Anchor, len(top))
+	refs := make([]string, len(top))
+	for i, id := range top {
+		anchors[i] = Anchor{Kind: AnchorCast, SpellID: id}
+		refs[i] = "#" + strconv.Itoa(i)
+	}
+	return outcome{Anchors: anchors, Strengths: []Strength{{
 		Sentence: Fill(Drafts["strength_adherence"], map[string]string{"pct": pct}),
 		Facts: Facts{Numbers: []NumberFact{
 			{V: you, Text: pct, Unit: "%", Of: adherenceFactYou},
 			{V: ref, Text: PctNumber(ref), Unit: "%", Of: adherenceFactMedian},
 			{V: float64(b.N), Text: strconv.Itoa(b.N), Unit: "players", Of: "top logs"},
 		}},
-		Anchors: []string{},
+		Anchors: refs,
 	}}}
+}
+
+// rotationTopCasts is the n rotation spells the player cast most (successful casts summed
+// per spell id), most first, ties by spell id.
+func rotationTopCasts(in Input, n int) []int64 {
+	bySpell := map[int64]int64{}
+	for _, c := range in.Fight.Casts {
+		if c.GUID == in.Row.GUID && c.Succeeded > 0 && in.Tables.Rotation.Lists(c.SpellID) {
+			bySpell[c.SpellID] += c.Succeeded
+		}
+	}
+	ids := make([]int64, 0, len(bySpell))
+	for id := range bySpell {
+		ids = append(ids, id)
+	}
+	slices.SortFunc(ids, func(a, b int64) int {
+		if bySpell[a] != bySpell[b] {
+			return int(bySpell[b] - bySpell[a])
+		}
+		return int(a - b)
+	})
+	return ids[:min(n, len(ids))]
 }
 
 // adherenceBasis appends the values to the pool's label; the rotation-alone basis is its
