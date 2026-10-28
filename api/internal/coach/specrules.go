@@ -23,12 +23,14 @@ type RuleEntry struct {
 
 // AuraRule is one owned aura F2 judges. SpellID is the aura's canonical (stamped) rank,
 // the key its uptime is reported under; SpellIDs, when set, is every rank's id, and an
-// application of any of them is the aura (a lower rank is still the aura).
+// application of any of them is the aura (a lower rank is still the aura). Talent marks an
+// aura that comes from a talent: never applied that fight, it is not judged (§6.1).
 type AuraRule struct {
 	SpellID  int64   `json:"spell_id"`
 	SpellIDs []int64 `json:"spell_ids,omitempty"`
 	Name     string  `json:"name"`
 	Kind     string  `json:"kind"` // AuraDot, AuraDebuff, AuraSelfBuff or AuraDefensive
+	Talent   bool    `json:"talent,omitempty"`
 	Verified string  `json:"verified"`
 }
 

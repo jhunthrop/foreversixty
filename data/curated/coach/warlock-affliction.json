@@ -60,6 +60,7 @@
       ],
       "name": "Wrack",
       "kind": "dot",
+      "talent": true,
       "verified": "1.60.1.70630/spellconst/warlock.json#1316697"
     }
   ],

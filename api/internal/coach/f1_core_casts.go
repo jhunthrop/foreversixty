@@ -65,8 +65,12 @@ type resourceCheck struct {
 // coreCasts is F1: core cooldown abilities cast fewer times than the cooldown allowed
 // (§6.2). A healer is assessed on efficiency cooldowns only (§6.3).
 func coreCasts(in Input, c Counted) outcome {
+	entries := coreEntries(in)
+	if len(entries) == 0 { // an omitted or empty list is unknown, never "nothing to check" (§6.1)
+		return outcome{CouldNotCheck: []string{CannotCoreList}}
+	}
 	var abilities []coreAbility
-	for _, e := range coreEntries(in) {
+	for _, e := range entries {
 		if a, ok := assessAbility(in, c, e); ok {
 			abilities = append(abilities, a)
 		}

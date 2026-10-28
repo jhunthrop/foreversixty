@@ -188,8 +188,46 @@ func TestUptime_DebuffAppliedOnlyByAnotherPlayerIsNotTheirs(t *testing.T) {
 		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified})
 	in.Fight = withAura(in.Fight, f2BossGUID, f2RendID, f2RendName, []string{f2SecondaryGUID}, span(0, f2FightMS))
 	o := uptime(in, CountedTime(in))
-	if o.Finding != nil || strings.Contains(textOf(o), "Rend up") {
+	if o.Finding != nil {
 		t.Fatalf("finding %+v", o.Finding)
+	}
+	// It says so (A8, §20.4): never silent.
+	if !slices.Contains(o.CouldNotCheck, "Rend uptime: another player applied it this pull, not you.") {
+		t.Fatalf("couldn't check %q", o.CouldNotCheck)
+	}
+}
+
+// A talent aura the player never had is "Couldn't check", never 0% (A3, §6.1); applied, it
+// is judged like any aura.
+func TestUptime_ATalentAuraNeverUpIsCouldntCheck(t *testing.T) {
+	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 80, 25))
+	in.Tables.Rules.Auras = append(slices.Clone(in.Tables.Rules.Auras),
+		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Talent: true, Verified: fixtureVerified})
+	o := uptime(in, CountedTime(in))
+	if o.Finding != nil {
+		t.Fatalf("finding %+v", o.Finding)
+	}
+	if !slices.Contains(o.CouldNotCheck, "Rend uptime: it comes from a talent the log can't show, and it was never up this pull.") {
+		t.Fatalf("couldn't check %q", o.CouldNotCheck)
+	}
+	in.Fight = withAura(in.Fight, f2BossGUID, f2RendID, f2RendName, []string{furyGUID}, f2Segments(f2FightMS/5)...)
+	if f := uptime(in, CountedTime(in)).Finding; f == nil || f.Title != "Rend up 20% of the fight" {
+		t.Fatalf("an applied talent aura is judged: %+v", f)
+	}
+}
+
+// An omitted or empty aura list, or one with nothing the role is judged on, says so (A7).
+func TestUptime_NoAuraListIsCouldntCheck(t *testing.T) {
+	for name, auras := range map[string][]AuraRule{
+		"omitted": nil, "empty": {},
+		"no kind the role is judged on": {{SpellID: f2ShieldBlockID, Name: "Shield Block", Kind: AuraDefensive, Verified: fixtureVerified}},
+	} {
+		in := furyBattleShout(t, 0.1, poolUptime(f2BattleShoutID, 99, 25))
+		in.Tables.Rules.Auras = auras
+		o := uptime(in, CountedTime(in))
+		if o.Finding != nil || !slices.Equal(o.CouldNotCheck, []string{CannotAuraList}) {
+			t.Errorf("%s: finding %+v couldn't check %q", name, o.Finding, o.CouldNotCheck)
+		}
 	}
 }
 

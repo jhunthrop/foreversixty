@@ -38,10 +38,13 @@ func (r auraReading) gap() float64 { return r.ref - r.pct }
 func uptime(in Input, c Counted) outcome {
 	var o outcome
 	var low []auraReading
-	for _, rule := range in.Tables.Rules.Auras {
-		if !slices.Contains(uptimeKindsByRole[in.Row.Role], rule.Kind) {
-			continue
-		}
+	rules := slices.DeleteFunc(slices.Clone(in.Tables.Rules.Auras), func(r AuraRule) bool {
+		return !slices.Contains(uptimeKindsByRole[in.Row.Role], r.Kind)
+	})
+	if len(rules) == 0 { // an omitted or empty list is unknown, never "nothing to check" (§6.1)
+		return outcome{CouldNotCheck: []string{CannotAuraList}}
+	}
+	for _, rule := range rules {
 		r, ok := judgeAura(in, c, rule, &o)
 		switch {
 		case !ok:
@@ -67,8 +70,13 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 		}))
 		return auraReading{}, false
 	}
-	if track == nil && appliedByOthers(in, rule) {
-		return auraReading{}, false // someone else's debuff: not the player's to judge
+	switch {
+	case track == nil && rule.Talent: // a talent never up: the log can't say they have it (§6.1)
+		addUptimeCannot(o, Fill(CannotTalentAura, map[string]string{"Aura": rule.Name}))
+		return auraReading{}, false
+	case track == nil && appliedByOthers(in, rule): // someone else's debuff: not the player's to judge
+		addUptimeCannot(o, Fill(CannotOthersDebuff, map[string]string{"Aura": rule.Name}))
+		return auraReading{}, false
 	}
 	anchor := Anchor{Kind: AnchorAura, SpellID: rule.SpellID}
 	up, den, ok := int64(0), c.CountedMS, c.CountedMS > 0 // never applied: up for none of it

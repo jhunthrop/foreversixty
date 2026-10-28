@@ -222,6 +222,9 @@ func checkShippedAura(t *testing.T, s shippedRules, build string, a AuraRule) {
 	if id, err := stampID(a.Verified, build, s.info.Class); err != nil || id != a.SpellID {
 		t.Errorf("%s auras: %s stamp %q (%v) is not its spell %d", spec, a.Name, a.Verified, err, a.SpellID)
 	}
+	if a.Talent != s.class.talents[a.Name] {
+		t.Errorf("%s auras: %s talent=%v, the talent trees say %v", spec, a.Name, a.Talent, s.class.talents[a.Name])
+	}
 	if !slices.Contains(uptimeKindsByRole[s.info.Role], a.Kind) {
 		t.Errorf("%s auras: %s is a %s aura, which F2 never judges for a %s", spec, a.Name, a.Kind, s.info.Role)
 	}

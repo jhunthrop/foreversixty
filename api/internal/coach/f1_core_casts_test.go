@@ -1,6 +1,7 @@
 package coach
 
 import (
+	"slices"
 	"strings"
 	"testing"
 )
@@ -163,4 +164,22 @@ func TestCoreCasts_PetCastsFoldIntoTheOwner(t *testing.T) {
 		t.Fatal("expected a finding")
 	}
 	assertNumbers(t, f.Facts, "5", "9")
+}
+
+// An omitted or empty core list (efficiency for a healer) is unknown, never "nothing to
+// check": it says so, as F7 does for defensives (A7). The healer fixture lists Bloodthirst
+// as core and no efficiency cooldown at all.
+func TestCoreCasts_NoListIsCouldntCheck(t *testing.T) {
+	holy := holyWithBloodthirstRule(t)
+	holy.Tables.Rules.Efficiency = nil
+	if o := coreCasts(holy, CountedTime(holy)); o.Finding != nil || !slices.Equal(o.CouldNotCheck, []string{CannotCoreList}) {
+		t.Errorf("healer with no efficiency list: %+v %q", o.Finding, o.CouldNotCheck)
+	}
+	for name, core := range map[string][]RuleEntry{"omitted": nil, "empty": {}} {
+		in := furyInput(t)
+		in.Tables.Rules.Core = core
+		if o := coreCasts(in, CountedTime(in)); o.Finding != nil || !slices.Equal(o.CouldNotCheck, []string{CannotCoreList}) {
+			t.Errorf("%s: %+v %q", name, o.Finding, o.CouldNotCheck)
+		}
+	}
 }

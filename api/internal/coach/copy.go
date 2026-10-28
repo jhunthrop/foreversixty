@@ -151,6 +151,10 @@ const (
 	StrengthConsumables          = "Every consumable the coach can check was up at the pull."
 	DetailDiedWithReadyAvoidable = "{Killer} killed you at {t}, and this boss lets you avoid it. {Spell} had been ready since {since}."
 	CannotDefensives             = "Defensive cooldowns: the coach doesn't know your spec's list yet."
+	CannotCoreList               = "Core casts: the coach doesn't know your spec's list yet."
+	CannotAuraList               = "Uptimes: the coach doesn't know your spec's list yet."
+	CannotTalentAura             = "{Aura} uptime: it comes from a talent the log can't show, and it was never up this pull."
+	CannotOthersDebuff           = "{Aura} uptime: another player applied it this pull, not you."
 	CannotDefensiveLevel         = "Defensive cooldowns you never cast: this log doesn't tell us your level."
 	CannotDeathKiller            = "Your death at {t}: the log doesn't say what killed you."
 	basisUptimeValue             = "{ref}% up. You: {you}%."
@@ -240,6 +244,8 @@ var experienceCopy = map[string]string{
 	"detail_no_weapon_oil": DetailNoWeaponOil, "cannot_weapon_enchant": CannotWeaponEnchant,
 	"strength_consumables": StrengthConsumables, "detail_died_with_ready_avoidable": DetailDiedWithReadyAvoidable,
 	"cannot_defensives": CannotDefensives, "cannot_defensive_level": CannotDefensiveLevel,
+	"CannotCoreList": CannotCoreList, "CannotAuraList": CannotAuraList,
+	"CannotTalentAura": CannotTalentAura, "CannotOthersDebuff": CannotOthersDebuff,
 	"cannot_death_killer": CannotDeathKiller,
 	"basisUptimeValue":    basisUptimeValue, "detailUptimeMore": detailUptimeMore, "uptimeMoreItem": uptimeMoreItem,
 	"coreMoreEntry": coreMoreEntry, "adherenceEntry": adherenceEntry,

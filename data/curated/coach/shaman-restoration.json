@@ -10,6 +10,7 @@
       ],
       "name": "Water Shield",
       "kind": "self_buff",
+      "talent": true,
       "verified": "1.60.1.70630/spellconst/shaman.json#408510"
     }
   ],

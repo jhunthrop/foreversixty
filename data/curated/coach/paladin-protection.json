@@ -62,6 +62,7 @@
       ],
       "name": "Holy Shield",
       "kind": "defensive",
+      "talent": true,
       "verified": "1.60.1.70630/spellconst/paladin.json#20928"
     }
   ],
