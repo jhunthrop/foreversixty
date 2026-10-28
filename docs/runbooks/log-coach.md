@@ -55,6 +55,8 @@ While it is off, none of them is needed, and the routes answer with the rule-onl
    - shape them like `sim-run`;
    - pass the command as the first container argument;
    - add a Cloud Scheduler trigger for `coach-samples` daily at 06:00 UTC.
+
+   Every later deploy moves these three and `rating-rebuild-preparation` to the new image (the "Point the jobs at the new image" step in `.github/workflows/api.yml`), so create them under exactly these names. A test in `api/cmd/api` fails when a job command has no line in that step.
 5. Run `rating-rebuild-preparation` once from the deployed sha, in a quiet window right after the deploy. A fight ingested live while the digests are wiped can be double-counted. `-dry-run` counts first; a crashed run resumes with the `-after` cursor its last progress line logged.
 6. Verify with the switch off:
    - on a real Forever report, the owner's row shows the rule-only review;
@@ -84,5 +86,9 @@ The caps act on their own without the switch:
 
 - Spend today: `select * from llm_spend order by day desc limit 7;`
 - Failed validations: `select reason, count(*) from coach_reviews where generated_at > now() - interval '1 day' group by reason;`
+  - `validation`: the model failed validation twice. `model_error`: the gateway failed; retried on the next view.
+  - `timeout`: the generation ran past its 4-minute deadline (inside the 5-minute lease); not retried.
+  - `privacy`: the pack carried a roster name or realm, so no call was made. The log line names the finding codes only. Any count above zero is a pack bug to fix.
+- Spend counts every attempt the gateway may have billed (timeouts, unreadable answers) at the worst case, so `llm_spend` can read above the gateway's invoice during an incident.
 - Leases stuck past their time: `select count(*) from coach_review_leases where leased_until < now();` (taken over on the next request).
-- Moderator samples: `GET /v1/admin/coach/samples?day=YYYY-MM-DD`.
+- Moderator samples: `GET /v1/admin/coach/samples?day=YYYY-MM-DD`. An anonymised character's sample has no name and no review.
