@@ -29,10 +29,18 @@
     GUILD_BILLING_PHONE_MAX_PX,
     guildBillingReserveKey,
   } from '../../lib/guild/layout';
+  import type { CharacterPath } from '../../lib/characters';
+  import {
+    parseBillingPreselect,
+    shouldOpenUpgrade,
+    showsBillingHandoff,
+    type BillingPreselect,
+  } from '../../lib/guild/billing-handoff';
   import { readReserve, writeReserve } from '../../lib/layout-reserve';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import BillingHandoff from './BillingHandoff.svelte';
   import GuildPlanChooser from './billing/GuildPlanChooser.svelte';
   import GuildPlanLine from './billing/GuildPlanLine.svelte';
   import GuildRecords from './billing/GuildRecords.svelte';
@@ -42,7 +50,19 @@
   import GuildUpgradeConfirm from './billing/GuildUpgradeConfirm.svelte';
   import GuildWhoPays from './billing/GuildWhoPays.svelte';
 
-  let { guildId, now: fixedNow }: { guildId: number; now?: Date } = $props();
+  let {
+    guildId,
+    path,
+    guildName,
+    now: fixedNow,
+  }: { guildId: number; path?: CharacterPath; guildName?: string; now?: Date } = $props();
+
+  /** `?plan&interval&upgrade` off the settings link; read once, on the client. */
+  const preselect: BillingPreselect =
+    typeof window === 'undefined'
+      ? { tier: null, interval: null, upgrade: false }
+      : parseBillingPreselect(window.location.search);
+  let upgradeOpened = false;
 
   /** The minute tick: a seat lock that expires while the page is open turns over without a reload. */
   const clock = minuteClock(() => fixedNow);
@@ -107,6 +127,13 @@
     openTransferTo: () => (view?.transfer?.state === 'offered' ? view.transfer.to_name : null),
   });
   $effect(() => () => upgradeFlow.dispose());
+
+  /** `upgrade=1`: open the Move to Raid guild confirm once, when the read draws a Move button. */
+  $effect(() => {
+    if (view === null || !shouldOpenUpgrade(preselect.upgrade, view, viewState, upgradeOpened)) return;
+    upgradeOpened = true;
+    void upgradeFlow.open();
+  });
 
   let lastFocusHandled = 0;
 
@@ -194,6 +221,8 @@
           trialUsed={view.trial_used}
           lapsed={viewState.kind === 'lapsed'}
           {now}
+          initialTier={preselect.tier}
+          initialInterval={preselect.interval ?? 'yearly'}
         />
       {/if}
       <div data-testid="guild-billing-seats-slot">
@@ -222,6 +251,9 @@
         <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
           {copy.readOnly}
         </p>
+        {#if path !== undefined && guildName !== undefined && showsBillingHandoff(view, viewState)}
+          <BillingHandoff {path} {guildName} verifiedCount={view.verified_count} />
+        {/if}
       {/if}
     </div>
   {/if}

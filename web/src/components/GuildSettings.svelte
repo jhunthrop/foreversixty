@@ -191,7 +191,7 @@
       </p>
     {/if}
     {#if guildId !== null}
-      <GuildBillingSection {guildId} />
+      <GuildBillingSection {guildId} {path} {guildName} />
     {/if}
     {#if settings.discord !== undefined && guildId !== null}
       {#if discordLazy.current}

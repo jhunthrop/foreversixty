@@ -75,6 +75,8 @@ test('a signed-in visitor sees the guild that invited them, joins, and is sent t
   );
   expect(overflow).toBeLessThanOrEqual(0);
   await page.getByTestId('guild-join-button').click();
+  await expect(page.getByTestId('guild-join-joined')).toBeVisible();
+  await page.getByTestId('guild-join-open').click();
   await expect(page).toHaveURL(/\/guild\/us\/hardcore\/the-last-watch$/);
 });
 

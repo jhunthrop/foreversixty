@@ -45,11 +45,9 @@ describe('claimEntryFor', () => {
     expect(claimEntryFor({ ...base, claimedBy: null })).toEqual({ kind: 'none' });
   });
 
-  it('tells a member of an unclaimed guild that an officer can claim it', () => {
-    expect(claimEntryFor({ ...base, claimState: 'unclaimed' })).toEqual({
-      kind: 'note',
-      text: claimEntryNotes.unclaimedForMember,
-    });
+  it('gives a member of an unclaimed guild the Get the guild claimed link', () => {
+    expect(claimEntryFor({ ...base, claimState: 'unclaimed' })).toEqual({ kind: 'getClaimed' });
+    expect(claimEntryNotes.getClaimed).toBe('Get the guild claimed');
   });
 
   it('offers "Claim it" only to an officer rank in an unclaimed guild', () => {

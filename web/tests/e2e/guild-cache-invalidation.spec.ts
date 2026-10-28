@@ -101,6 +101,7 @@ test('joining by invite lands on the member view, not the cached stranger view',
   // 2. Join through the invite; the redirect lands on the guild page.
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await page.getByTestId('guild-join-button').click();
+  await page.getByTestId('guild-join-open').click();
   await expect(page).toHaveURL(/\/guild\/us\/pvp\/olympus-xxvii/);
 
   // 3. The member view, from the refetched answer: the Roster tab opens with rows, no gate.

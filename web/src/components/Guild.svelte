@@ -66,7 +66,7 @@
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
   import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
-  import { claimEntryCopy, claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
+  import { claimEntryCopy, claimEntryFor, claimEntryNotes, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove } from '../lib/guild/roster-model';
   import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
@@ -83,6 +83,7 @@
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import FactLine from './guild/FactLine.svelte';
+  import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
   import GuildOfficerStrip from './guild/GuildOfficerStrip.svelte';
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
@@ -869,6 +870,13 @@
                 data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
               >
             </p>
+          {:else if meResolved && claimEntry.kind === 'getClaimed'}
+            <p class="text-[13px]" data-testid="guild-claim-entry">
+              <a
+                href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
+                data-testid="guild-claim-entry-link">{claimEntryNotes.getClaimed}</a
+              >
+            </p>
           {:else if meResolved && claimEntry.kind === 'note'}
             <p class="text-muted text-[13px]" data-testid="guild-claim-note">{claimEntry.text}</p>
           {/if}
@@ -986,9 +994,11 @@
                     {guildHomeCopy.settingsLink}
                   </a>
                 {:else if myGuildMembership !== null && !myGuildMembership.verified}
-                  <p class="text-muted text-[13px]" data-testid="guild-home-not-verified-note">
-                    {guildHomeCopy.notVerifiedNote}
-                  </p>
+                  <GuildUnverifiedNote
+                    guildName={home.guild.name}
+                    hasApprover={home.viewer?.verify?.has_approver}
+                    claimHref={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+                  />
                 {/if}
               </div>
 

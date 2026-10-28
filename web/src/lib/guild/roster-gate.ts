@@ -35,6 +35,8 @@ export type ClaimEntry =
   | { kind: 'none' }
   /** "Run this guild? Claim it." with the link to the claim page. */
   | { kind: 'claim' }
+  /** `Get the guild claimed`, linking to the claim page: a member of an unclaimed guild cannot claim it. */
+  | { kind: 'getClaimed' }
   /** A muted line and no link. */
   | { kind: 'note'; text: string };
 
@@ -51,13 +53,13 @@ export interface ClaimEntryInput {
 
 export const claimEntryNotes = {
   claimedBy: (battletag: string): string => `Claimed by ${battletag}`,
-  unclaimedForMember: 'Nobody runs this guild on the site yet. An officer can claim it.',
+  getClaimed: 'Get the guild claimed',
 } as const;
 
 /**
  * "Run this guild? Claim it." is for someone whose in-game rank is an officer rank, in a guild
  * nobody has claimed. A verified member of a claimed guild reads who holds it, muted; of an
- * unclaimed one, that an officer can claim it; a stranger reads nothing; a verified officer has
+ * unclaimed one, a link to get it claimed; a stranger reads nothing; a verified officer has
  * the settings link instead.
  */
 export function claimEntryFor(input: ClaimEntryInput): ClaimEntry {
@@ -66,7 +68,7 @@ export function claimEntryFor(input: ClaimEntryInput): ClaimEntry {
   const officerRank = membership.rank === 'officer' || membership.rank === 'leader';
   if (claimState === null) return officerRank ? { kind: 'claim' } : { kind: 'none' };
   if (claimState === 'unclaimed') {
-    return officerRank ? { kind: 'claim' } : { kind: 'note', text: claimEntryNotes.unclaimedForMember };
+    return { kind: officerRank ? 'claim' : 'getClaimed' };
   }
   if ((claimState === 'claimed' || claimState === 'contested') && claimedBy !== null) {
     return { kind: 'note', text: claimEntryNotes.claimedBy(claimedBy) };

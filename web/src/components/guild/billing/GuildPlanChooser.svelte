@@ -23,20 +23,28 @@
     trialUsed,
     lapsed,
     now,
+    initialTier = null,
+    initialInterval = 'yearly',
   }: {
     guildId: number;
     verifiedCount: number;
     trialUsed: boolean;
     lapsed: boolean;
     now: Date;
+    /** `?plan` off the settings link (spec 2026-10-27 §6.1): the card that starts picked. */
+    initialTier?: GuildTier | null;
+    /** `?interval` off the same link. */
+    initialInterval?: Interval;
   } = $props();
 
   const TIERS: readonly GuildTier[] = PLAN_ORDER.filter(
     (key): key is GuildTier => key === 'guild' || key === 'raid_guild',
   );
 
-  let interval = $state<Interval>('yearly');
-  let picked = $state<GuildTier | null>(null);
+  // svelte-ignore state_referenced_locally
+  let interval = $state<Interval>(initialInterval);
+  // svelte-ignore state_referenced_locally
+  let picked = $state<GuildTier | null>(initialTier);
   const tier = $derived(picked ?? fitsTier(verifiedCount));
   const founder = $derived(founderOpen(now));
   const href = $derived(`/premium/checkout?plan=${tier}&interval=${interval}&guild_id=${guildId}`);

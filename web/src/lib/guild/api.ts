@@ -99,6 +99,11 @@ export interface GuildViewerView {
   officer_tools?: boolean;
   /** True only for a verified officer or leader of a Raid guild: the loot council and readiness board. */
   raid_guild_tools: boolean;
+  /**
+   * True when the guild has a verified officer or leader who can approve members. Absent on an
+   * older API: unknown, read as "an approver exists" (today's note).
+   */
+  verify?: { has_approver: boolean };
 }
 
 /** `GET .../home`'s `summary` -- the Overview tab's roster/progression glance, computed
