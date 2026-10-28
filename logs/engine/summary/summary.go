@@ -404,12 +404,15 @@ func (a *Accumulator) seedAuras(e event.Event) {
 			continue
 		}
 		key := auraKey{target: e.Combatant.GUID, spellID: aura.SpellID}
-		if _, ok := a.auras[key]; ok {
+		if tr, ok := a.auras[key]; ok {
+			// Applied before the snapshot was written: the snapshot still
+			// says it was up at the pull.
+			tr.Seeded = true
 			continue
 		}
 		tr := &auraTrack{appliers: map[string]bool{}}
 		tr.TargetGUID, tr.TargetName = e.Combatant.GUID, a.name(e.Combatant.GUID)
-		tr.SpellID, tr.Name, tr.Type = aura.SpellID, "", "BUFF"
+		tr.SpellID, tr.Name, tr.Type, tr.Seeded = aura.SpellID, "", "BUFF", true
 		tr.open, tr.openAt, tr.openStacks = true, e.Time, 1
 		tr.openSource = aura.SourceGUID
 		if aura.SourceGUID != "" && aura.SourceGUID != units.NoGUID {

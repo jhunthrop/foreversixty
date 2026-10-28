@@ -96,6 +96,11 @@ type AuraTrack struct {
 	UptimeMS     int64     `json:"uptime_ms"`
 	Segments     []Segment `json:"segments"`
 	Appliers     []string  `json:"appliers"`
+	// Seeded is true when the player's own COMBATANT_INFO listed this aura:
+	// it was up at the pull, whatever millisecond the snapshot was written
+	// at. Readers of "what did the player bring" read this flag, never a
+	// segment's start (logs/engine/mechanics/consumables).
+	Seeded bool `json:"seeded,omitempty"`
 }
 
 type auraKey struct {

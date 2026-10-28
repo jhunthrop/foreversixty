@@ -17,17 +17,38 @@ type Pull struct {
 // Has reports whether any entry of the category was up on the player at the pull.
 func (p Pull) Has(category string) bool { return len(p.Present[category]) > 0 }
 
-// Seeded reports whether guid carried spellID at the pull: an aura track on
-// guid with a segment starting at 0 ms. summary seeds those tracks from
-// COMBATANT_INFO, which the log writes at the pull with no APPLIED line.
+// AtPullGraceMS is how long into the pull an aura APPLIED during the fight
+// still counts as brought into it: a flask drunk or a Battle Shout cast on
+// the pull (ruling 2026-10-27, log coach spec §13). Combat potions take no
+// grace: a potion drunk in the fight is a use (F6's rule), not preparation.
+const AtPullGraceMS = 10_000
+
+// Seeded reports whether guid's own COMBATANT_INFO listed spellID: the
+// summary's explicit flag, so a snapshot written a few ms after
+// ENCOUNTER_START still reads as the pull.
 func Seeded(fight summary.Summary, guid string, spellID int64) bool {
+	for i := range fight.Auras {
+		tr := &fight.Auras[i]
+		if tr.TargetGUID == guid && tr.SpellID == spellID && tr.Seeded {
+			return true
+		}
+	}
+	return false
+}
+
+// upAtPull is Seeded, or an aura on guid with a segment starting within
+// AtPullGraceMS of the pull.
+func upAtPull(fight summary.Summary, guid string, spellID int64) bool {
 	for i := range fight.Auras {
 		tr := &fight.Auras[i]
 		if tr.TargetGUID != guid || tr.SpellID != spellID {
 			continue
 		}
+		if tr.Seeded {
+			return true
+		}
 		for _, seg := range tr.Segments {
-			if seg.StartMS == 0 {
+			if seg.StartMS <= AtPullGraceMS {
 				return true
 			}
 		}
@@ -35,10 +56,11 @@ func Seeded(fight summary.Summary, guid string, spellID int64) bool {
 	return false
 }
 
-// AtPull reads what the player brought into the pull against rc. With no
-// character sheet the log cannot say what was up, so Present stays empty
-// and Known false: a reader must call that unknown, never missing.
-// PotionUses counts casts, which need no sheet.
+// AtPull reads what the player brought into the pull against rc: an entry
+// is present when seeded, or (outside combat_potion) applied within
+// AtPullGraceMS. With no character sheet the log cannot say what was up, so
+// Present stays empty and Known false: a reader must call that unknown,
+// never missing. PotionUses counts casts, which need no sheet.
 func AtPull(fight summary.Summary, guid string, rc RoleCatalogue) Pull {
 	p := Pull{PotionUses: potionUses(fight, guid, rc.CombatPotion.Entries)}
 	if !hasSheet(fight, guid) {
@@ -47,8 +69,12 @@ func AtPull(fight summary.Summary, guid string, rc RoleCatalogue) Pull {
 	p.Known = true
 	p.Present = map[string][]Entry{}
 	for _, cat := range categories {
+		up := upAtPull
+		if cat == CategoryCombatPotion {
+			up = Seeded
+		}
 		for _, e := range rc.Entries(cat) {
-			if Seeded(fight, guid, e.SpellID) {
+			if up(fight, guid, e.SpellID) {
 				p.Present[cat] = append(p.Present[cat], e)
 			}
 		}
@@ -87,12 +113,15 @@ func potionUses(fight summary.Summary, guid string, potions []Entry) int64 {
 // RaidBuffState is one raid buff on one player at the pull.
 type RaidBuffState struct {
 	Buff             RaidBuff
-	Present          bool // any rank seeded on the player at 0 ms
+	Known            bool // the player has a character sheet; false means Present says nothing
+	Present          bool // any rank up at the pull (seeded, or applied within AtPullGraceMS); false when !Known
 	ProviderInRoster bool // a roster row of Buff.Class in this fight
 }
 
 // RaidBuffsAtPull reads each buff on guid at the pull, and whether the
-// fight's roster held a class that could have provided it.
+// fight's roster held a class that could have provided it. With no
+// character sheet every state is Known false and Present false: unknown,
+// never missing.
 func RaidBuffsAtPull(fight summary.Summary, guid string, buffs []RaidBuff) []RaidBuffState {
 	classes := map[string]bool{}
 	for _, r := range fight.Roster {
@@ -100,16 +129,19 @@ func RaidBuffsAtPull(fight summary.Summary, guid string, buffs []RaidBuff) []Rai
 			classes[r.Class] = true
 		}
 	}
+	known := hasSheet(fight, guid)
 	out := make([]RaidBuffState, 0, len(buffs))
 	for _, b := range buffs {
-		out = append(out, RaidBuffState{Buff: b, Present: anySeeded(fight, guid, b.SpellIDs), ProviderInRoster: classes[b.Class]})
+		out = append(out, RaidBuffState{Buff: b, Known: known,
+			Present:          known && anyUpAtPull(fight, guid, b.SpellIDs),
+			ProviderInRoster: classes[b.Class]})
 	}
 	return out
 }
 
-func anySeeded(fight summary.Summary, guid string, ids []int64) bool {
+func anyUpAtPull(fight summary.Summary, guid string, ids []int64) bool {
 	for _, id := range ids {
-		if Seeded(fight, guid, id) {
+		if upAtPull(fight, guid, id) {
 			return true
 		}
 	}

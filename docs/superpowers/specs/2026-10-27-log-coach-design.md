@@ -658,6 +658,11 @@ are wrong today. This lane fixes it before any coach code:
    the preparation and discipline digests are rebuilt.
 5. Known-good fixtures pin a real Forever pull with and without a flask.
 
+Ruling 2026-10-27: "at the pull" means the player's own COMBATANT_INFO listed the aura (the
+summary marks the track `seeded`, whatever millisecond the snapshot lands on), or the aura was
+applied within the first 10 s of the pull (`consumables.AtPullGraceMS`) for flasks, food and raid
+buffs. 10 s grace; potions are F6's use rule.
+
 ## 14. Computing, caching and versions
 
 - **Pack:** the cache row `coach_packs (report_id, fight_index, player_key, pack_version)`.

@@ -46,8 +46,15 @@ func loadGolden(t *testing.T, name string) summary.Summary {
 }
 
 func seededTrack(guid string, spellID int64) summary.AuraTrack {
-	return summary.AuraTrack{TargetGUID: guid, SpellID: spellID,
+	return summary.AuraTrack{TargetGUID: guid, SpellID: spellID, Seeded: true,
 		Segments: []summary.Segment{{StartMS: 0, EndMS: 60_000}}}
+}
+
+// appliedTrack is an aura APPLIED during the fight at startMS, not in the
+// snapshot.
+func appliedTrack(guid string, spellID, startMS int64) summary.AuraTrack {
+	return summary.AuraTrack{TargetGUID: guid, SpellID: spellID,
+		Segments: []summary.Segment{{StartMS: startMS, EndMS: startMS + 60_000}}}
 }
 
 // sheetFight is two players with gear, one whose flask was seeded at the
@@ -109,7 +116,7 @@ func TestAtPull_RealForeverLogWithoutSheetsIsUnknown(t *testing.T) {
 		}
 	}
 	for _, s := range RaidBuffsAtPull(fight, foreverTank, Load().RaidBuffs) {
-		if s.Present || s.ProviderInRoster {
+		if s.Known || s.Present || s.ProviderInRoster {
 			t.Errorf("%s: %+v, want absent with no provider (the log names no class)", s.Buff.Name, s)
 		}
 	}
@@ -128,17 +135,89 @@ func TestAtPull_PotionUsesFoldPetsByOwner(t *testing.T) {
 	}
 }
 
-func TestSeeded_OnlyZeroStartSegments(t *testing.T) {
-	// a flask track on the player whose first segment starts at 1200 ms is not seeded
-	fight := summary.Summary{Auras: []summary.AuraTrack{{TargetGUID: "P", SpellID: flaskSpellID,
-		Segments: []summary.Segment{{StartMS: 1200, EndMS: 9000}}}}}
+func TestSeeded_ReadsTheSnapshotFlagNotTheStart(t *testing.T) {
+	// an APPLIED at 0 ms with no snapshot is not seeded; a snapshot track whose
+	// segment starts at 1 ms (COMBATANT_INFO written after ENCOUNTER_START) is
+	fight := summary.Summary{Auras: []summary.AuraTrack{appliedTrack("P", flaskSpellID, 0)}}
 	if Seeded(fight, "P", flaskSpellID) {
-		t.Fatal("a mid-fight application is not at the pull")
+		t.Fatal("an APPLIED line is not the snapshot")
 	}
-	fight.Auras = append(fight.Auras, seededTrack("Q", flaskSpellID))
-	if Seeded(fight, "P", flaskSpellID) || !Seeded(fight, "Q", flaskSpellID) {
+	late := seededTrack("Q", flaskSpellID)
+	late.Segments[0].StartMS = 1
+	fight.Auras = append(fight.Auras, late)
+	if !Seeded(fight, "Q", flaskSpellID) {
+		t.Fatal("a snapshot written 1 ms after the pull opened is still the pull")
+	}
+	if Seeded(fight, "R", flaskSpellID) {
 		t.Fatal("seeded must be per target")
 	}
+}
+
+func TestAtPull_LateSnapshotStillCountsTheFlask(t *testing.T) {
+	fight := sheetFight()
+	fight.Auras[0].Segments[0].StartMS = 1
+	if p := AtPull(fight, flaskHolderGUID, Load().AllRoles()); !p.Has(CategoryFlask) {
+		t.Fatalf("a snapshot 1 ms late must not read the flask as missing: %+v", p)
+	}
+}
+
+func TestAtPull_GraceWindowBothSides(t *testing.T) {
+	cases := []struct {
+		startMS int64
+		want    bool
+	}{{AtPullGraceMS, true}, {AtPullGraceMS + 1, false}, {300, true}}
+	for _, c := range cases {
+		fight := sheetFight()
+		fight.Auras = []summary.AuraTrack{appliedTrack(noFlaskGUID, flaskSpellID, c.startMS)}
+		if got := AtPull(fight, noFlaskGUID, Load().AllRoles()).Has(CategoryFlask); got != c.want {
+			t.Errorf("flask applied at %d ms: Has = %v, want %v", c.startMS, got, c.want)
+		}
+	}
+}
+
+func TestAtPull_PotionAppliedInGraceIsNotPresent(t *testing.T) {
+	// a potion drunk on the pull is a use (F6's rule), not something brought in
+	fight := sheetFight()
+	fight.Auras = append(fight.Auras, appliedTrack(noFlaskGUID, potionSpellID, 500))
+	if p := AtPull(fight, noFlaskGUID, Load().AllRoles()); p.Has(CategoryCombatPotion) {
+		t.Fatalf("potion inside the grace window: %+v", p)
+	}
+}
+
+func TestRaidBuffsAtPull_GraceWindowBothSides(t *testing.T) {
+	const battleShoutR7 = 25289
+	for _, c := range []struct {
+		startMS int64
+		want    bool
+	}{{AtPullGraceMS, true}, {AtPullGraceMS + 1, false}} {
+		fight := sheetFight()
+		fight.Auras = []summary.AuraTrack{appliedTrack(noFlaskGUID, battleShoutR7, c.startMS)}
+		for _, s := range RaidBuffsAtPull(fight, noFlaskGUID, Load().RaidBuffs) {
+			if s.Buff.Name == "Battle Shout" && s.Present != c.want {
+				t.Errorf("Battle Shout at %d ms: Present = %v, want %v", c.startMS, s.Present, c.want)
+			}
+		}
+	}
+}
+
+func TestRaidBuffsAtPull_NoSheetIsUnknown(t *testing.T) {
+	fight := summary.Summary{Roster: []summary.RosterRow{{GUID: "P", Class: "Priest"}},
+		Auras: []summary.AuraTrack{seededTrack("P", 10938)}}
+	for _, s := range RaidBuffsAtPull(fight, "P", Load().RaidBuffs) {
+		if s.Known || s.Present {
+			t.Errorf("%s with no sheet: %+v, want unknown and not present", s.Buff.Name, s)
+		}
+	}
+}
+
+// TestAtPull_KnownGoodForeverPull is the §13.5 / §20.6 known-good fixture: a
+// real Forever boss pull with COMBATANT_INFO, a flask holder and a player
+// without one, a Fury warrior and an avoidable death. When it is on disk, cut
+// it to logs/engine/event/testdata/forever-boss-pull.log, add its
+// goldenDialects row, and pin both flask answers here (this is also where
+// the snapshot's timing against ENCOUNTER_START is first seen on Forever).
+func TestAtPull_KnownGoodForeverPull(t *testing.T) {
+	t.Skip("owner-provided Forever boss pull not yet on disk")
 }
 
 func TestRaidBuffsAtPull_ProviderInRoster(t *testing.T) {
@@ -155,8 +234,12 @@ func TestRaidBuffsAtPull_ProviderInRoster(t *testing.T) {
 
 func TestRaidBuffsAtPull_AnyRankIsPresent(t *testing.T) {
 	const fortitudeR6 = 10938
-	fight := summary.Summary{Auras: []summary.AuraTrack{seededTrack("P", fortitudeR6)}}
-	for _, s := range RaidBuffsAtPull(fight, "P", Load().RaidBuffs) {
+	fight := sheetFight()
+	fight.Auras = []summary.AuraTrack{seededTrack(noFlaskGUID, fortitudeR6)}
+	for _, s := range RaidBuffsAtPull(fight, noFlaskGUID, Load().RaidBuffs) {
+		if !s.Known {
+			t.Errorf("%s: a player with a sheet is known", s.Buff.Name)
+		}
 		if want := s.Buff.Name == "Power Word: Fortitude"; s.Present != want {
 			t.Errorf("%s present = %v, want %v", s.Buff.Name, s.Present, want)
 		}

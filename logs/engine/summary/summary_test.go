@@ -393,6 +393,55 @@ func TestAurasUpAtThePullAreCountedFromItsStart(t *testing.T) {
 	if seeded.Applications != 0 {
 		t.Errorf("a seeded aura was not applied during the fight: applications = %d", seeded.Applications)
 	}
+	if !seeded.Seeded {
+		t.Error("a track opened from the combatant snapshot must say Seeded")
+	}
+}
+
+// seededAfterStart summarises a pull whose COMBATANT_INFO lands lateMS after
+// the fight opened, carrying aura 871, plus a mid-fight APPLIED of aura 122
+// on the same player and an APPLIED of 2048 just before the snapshot.
+func seededAfterStart(t *testing.T, lateMS int64) Summary {
+	t.Helper()
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	late := at(float64(lateMS) / 1000)
+	applied := func(when time.Time, id int64) event.Event {
+		return event.Event{Time: when, Kind: event.AuraApplied, Name: "SPELL_AURA_APPLIED",
+			Source: event.Unit{GUID: tank, Flags: 0x512}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+			Spell: event.Spell{ID: id, Name: "X"}, AuraType: "BUFF"}
+	}
+	for _, e := range []event.Event{
+		applied(at(0), 2048),
+		{Time: late, Kind: event.CombatantInfo, Name: "COMBATANT_INFO",
+			Combatant: &event.Combatant{GUID: tank, Auras: []event.Aura{{SourceGUID: tank, SpellID: 871}, {SourceGUID: tank, SpellID: 2048}}}},
+		applied(at(5), 122),
+		dmg(20, tank, boss, 0, "", 100, -1),
+	} {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	return a.Snapshot(fixtureFight(), "test")
+}
+
+func TestASnapshotAfterTheFightOpensStillMarksItsAurasSeeded(t *testing.T) {
+	s := seededAfterStart(t, 1)
+	got := map[int64]AuraTrack{}
+	for _, tr := range s.Auras {
+		if tr.TargetGUID == tank {
+			got[tr.SpellID] = tr
+		}
+	}
+	if tr := got[871]; !tr.Seeded || len(tr.Segments) == 0 || tr.Segments[0].StartMS != 1 {
+		t.Errorf("871 from a snapshot 1 ms late = %+v, want Seeded with its segment at 1 ms", tr)
+	}
+	if !got[2048].Seeded {
+		t.Error("an aura applied before the snapshot that the snapshot lists was up at the pull: want Seeded")
+	}
+	if got[122].Seeded {
+		t.Error("an aura applied mid-fight is not seeded")
+	}
 }
 
 func TestAuraUptimeAndSegments(t *testing.T) {
