@@ -48,6 +48,15 @@ func (s *Store) eligibleClaimRank(ctx context.Context, guildID, userID int64) (s
 	return rank, true, nil
 }
 
+// claimAttemptWindowSQL is the rolling window in which an account may make one claim
+// attempt; recentClaimAttemptsSQL is account $1's claim attempts inside it. Both
+// checkClaimRateLimit and the subscribe step's rate-limit fact read them.
+const (
+	claimAttemptWindowSQL  = `interval '30 days'`
+	recentClaimAttemptsSQL = `from guild_claim_attempts
+		where user_id = $1 and kind = 'claim' and attempted_at >= now() - ` + claimAttemptWindowSQL
+)
+
 // checkClaimRateLimit enforces the 2026-09-21 hardening: at most one
 // currently-claimed guild per account, and at most one claim attempt
 // (successful or pending) per account per rolling 30 days - scoped to
@@ -73,10 +82,7 @@ func (s *Store) checkClaimRateLimit(ctx context.Context, tx pgx.Tx, userID int64
 		return ErrAlreadyClaimsAnotherGuild
 	}
 	var recent int
-	if err := tx.QueryRow(ctx,
-		`select count(*) from guild_claim_attempts
-		 where user_id = $1 and kind = 'claim' and attempted_at >= now() - interval '30 days'`,
-		userID).Scan(&recent); err != nil {
+	if err := tx.QueryRow(ctx, `select count(*) `+recentClaimAttemptsSQL, userID).Scan(&recent); err != nil {
 		return fmt.Errorf("guilds: claim rate limit: %w", err)
 	}
 	if recent > 0 {

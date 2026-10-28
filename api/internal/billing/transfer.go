@@ -19,7 +19,7 @@ import (
 // transferablePlan reports whether gb is a live whole plan billed through
 // Stripe: the only kind a subscriber can hand to another officer.
 func transferablePlan(gb *entitlements.GuildBilling) bool {
-	return gb != nil && gb.Active && !gb.Scoped() && gb.StripeSubscriptionID != ""
+	return entitlements.LiveWholePlan(gb) && gb.StripeSubscriptionID != ""
 }
 
 // transferStartsAt is when a transfer's new subscriber first pays: the

@@ -101,6 +101,11 @@ type Store struct {
 	// /v1/guilds/{id}/crest.webp is served from. Empty in a harness that never reads
 	// crest_url (CrestURL then simply returns a relative path).
 	APIBaseURL string
+	// Billing and Plans are the checkout reads the subscribe step on GET /v1/me needs
+	// (subscribe_facts.go): billing.Store and entitlements.Store in production. Either nil
+	// leaves GuildStanding's Subscribe out, the older shape.
+	Billing StepBillingFacts
+	Plans   GuildPlans
 
 	bisBuild bisBuildCache
 }

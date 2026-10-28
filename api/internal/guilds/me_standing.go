@@ -74,6 +74,10 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 	if err != nil {
 		return nil, err
 	}
+	subscribe, err := s.subscribeViews(ctx, viewerID, guildIDs, claims)
+	if err != nil {
+		return nil, err
+	}
 	covered, err := s.coveredViews(ctx, viewerID, guildIDs)
 	if err != nil {
 		return nil, err
@@ -87,6 +91,7 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 			Slug:         character.Slug(id.name),
 			CrestURL:     CrestURL(s.APIBaseURL, id.id, id.crestKey),
 			Faction:      id.faction,
+			Subscribe:    subscribe[id.id],
 			Covered:      covered[id.id],
 		}
 		if id.snapshot {

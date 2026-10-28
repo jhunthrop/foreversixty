@@ -208,7 +208,7 @@ func (s *Service) checkGuildCheckout(ctx context.Context, guildID, userID int64,
 	if err != nil {
 		return nil, err
 	}
-	active := existing != nil && existing.Active && !existing.Scoped()
+	active := entitlements.LiveWholePlan(existing)
 	if active && !transfer {
 		return alreadyOnThePlanRefusal(), nil
 	}

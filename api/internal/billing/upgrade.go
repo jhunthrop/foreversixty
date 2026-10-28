@@ -60,7 +60,7 @@ func (e priceChangeError) Unwrap() error { return e.err }
 // the Raid guild key it moves to.
 func upgradable(gb *entitlements.GuildBilling) (string, bool) {
 	key, ok := catalog.UpgradeLookupKey(gb.PriceLookupKey)
-	return key, ok && gb.Active && !gb.Scoped() && gb.Tier == catalog.TierGuild && gb.StripeSubscriptionID != ""
+	return key, ok && entitlements.LiveWholePlan(gb) && gb.Tier == catalog.TierGuild && gb.StripeSubscriptionID != ""
 }
 
 func writeNotUpgradable(w http.ResponseWriter, r *http.Request) {

@@ -207,6 +207,11 @@ type GuildBilling struct {
 // Scoped reports whether the grant covers only some features.
 func (g GuildBilling) Scoped() bool { return len(g.Features) > 0 }
 
+// LiveWholePlan reports whether g is a whole plan that is live now (trial, active or
+// past_due): the "already on the plan" fact checkout refuses on and the subscribe step's
+// on_plan reads. A nil row is no plan.
+func LiveWholePlan(g *GuildBilling) bool { return g != nil && g.Active && !g.Scoped() }
+
 // GuildBilling reads guildID's guild-plan row, nil when it has none, with
 // no status filter: a canceled guild plan still needs to be visible (for
 // example, to a settings page) exactly like a personal one does.

@@ -43,8 +43,11 @@ func wireBilling(w billingWiring) *seats.Store {
 		Store:  seatStore,
 		Mailer: mailer, Guilds: guildStore, PublicBaseURL: cfg.PublicBaseURL, Log: log,
 	}
+	billingStore := &billing.Store{Pool: pool}
+	// The subscribe step on GET /v1/me reads the same checkout facts billing refuses on.
+	guildStore.Billing, guildStore.Plans = billingStore, entStore
 	deps.Billing = &billing.Service{
-		Store: &billing.Store{Pool: pool}, Entitlements: entStore,
+		Store: billingStore, Entitlements: entStore,
 		Accounts: authStore, Users: authStore, Guilds: guildStore, Gateway: gateway,
 		Seats:         seats.BillingReader{Store: seatStore, Sweeper: deps.Seats},
 		PublicBaseURL: cfg.PublicBaseURL, WebhookSecret: cfg.StripeWebhookSecret, Log: log,

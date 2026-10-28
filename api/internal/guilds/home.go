@@ -607,7 +607,7 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		}
 	}
 
-	_, verifyViews, err := s.ClaimAndVerifyViews(ctx, userID, []int64{guildID})
+	verifyViews, err := s.VerifyViews(ctx, []int64{guildID})
 	if err != nil {
 		return HomeView{}, err
 	}
