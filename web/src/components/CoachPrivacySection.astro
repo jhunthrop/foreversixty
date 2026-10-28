@@ -1,0 +1,21 @@
+---
+// web/src/components/CoachPrivacySection.astro
+// The privacy page's Log coach section; renders nothing until the coach line does.
+import { coachPrivacySection } from '../lib/coach/privacy-section';
+
+const section = coachPrivacySection();
+---
+
+{
+  section && (
+    <>
+      <h2>{section.heading}</h2>
+      {section.paragraphs.map((text) => (
+        <p>{text}</p>
+      ))}
+      <p>
+        See <a href={section.link.href}>{section.link.label}</a>.
+      </p>
+    </>
+  )
+}

@@ -2,6 +2,7 @@
 // web/src/pages/[...slug].astro
 import { getCollection, render } from 'astro:content';
 import Content from '../layouts/Content.astro';
+import CoachPrivacySection from '../components/CoachPrivacySection.astro';
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
   return pages.map((p) => ({ params: { slug: p.id }, props: { page: p } }));
@@ -19,4 +20,5 @@ const { Content: Body } = await render(page);
   sources={page.data.sources}
 >
   <Body />
+  {page.id === 'privacy' && <CoachPrivacySection />}
 </Content>
