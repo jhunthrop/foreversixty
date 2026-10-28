@@ -21,16 +21,32 @@ const (
 	// the pull and one more per cooldown, so a short fight is not faulted for the rest.
 	potionCooldownMS = 120_000
 	mainHandSlot     = 15
-	prepWeaponName   = "weapon enchant"
 
-	prepFactUses    = "combat potions used"
-	prepFactAllowed = "combat potions the fight could hold"
-	prepIncomplete  = "{Category}: the coach's {list} list isn't complete yet."
-	prepDetailLead  = "You pulled with {items}, and {phrase}."
-	prepDetailAlso  = " Also: {phrases}."
-	prepNothing     = "nothing"
-	prepPhraseNo    = "no {what}"
-	prepPhrasePots  = "used {n} of {max} combat potions"
+	prepFactUses     = "combat potions used"
+	prepFactAllowed  = "combat potions the fight could hold"
+	prepFactUnused   = "combat potions unused"
+	prepFactEnchants = "items without a permanent enchant"
+	prepIncomplete   = "{Category}: the coach's {list} list isn't complete yet."
+
+	// The words each missing thing goes by in DetailAlsoMissing's {items}.
+	prepMissingFlask    = "a flask"
+	prepMissingFood     = "food"
+	prepMissingOil      = "a weapon oil or stone"
+	prepMissingEnchant  = "a {Slot} enchant"
+	prepMissingPotions  = "combat potions"
+	prepMissingBlessing = "a blessing"
+)
+
+// prepKind is what an issue is about; issues of one kind group into one title.
+type prepKind int
+
+const (
+	kindFlask prepKind = iota
+	kindWeaponOil
+	kindFood
+	kindEnchant
+	kindRaidBuff
+	kindPotions
 )
 
 // Order within a severity tier: the most severe, then the earliest, names the finding.
@@ -46,14 +62,16 @@ const (
 
 // enchantSlotNames labels the gear indexes in rating.DisciplineEnchantSlots, the one
 // list of slots both the score and this check read.
-var enchantSlotNames = map[int]string{4: "chest", 7: "feet", 14: "back", mainHandSlot: "main hand"}
+var enchantSlotNames = map[int]string{4: "Chest", 7: "Feet", 14: "Back", mainHandSlot: "Main Hand"}
 
 // prepIssue is one thing missing at the pull.
 type prepIssue struct {
 	order    int
 	severity Severity
-	title    string
-	phrase   string       // the detail's "and …" clause
+	kind     prepKind
+	name     string       // the slot (enchants) or the buff as the copy names it
+	class    string       // the raid buff's provider class, lower case
+	missing  string       // the words for DetailAlsoMissing
 	item     string       // a name the finding quotes, for its facts; "" when none
 	potions  *potionCount // set for the potion issue
 }
@@ -65,16 +83,16 @@ type potionCount struct{ uses, allowed int64 }
 type prepCategory struct {
 	category   string
 	order      int
-	title      string
-	what       string
+	kind       prepKind
+	missing    string
 	incomplete string
 }
 
 func prepCategories() []prepCategory {
 	return []prepCategory{
-		{consumables.CategoryFlask, orderFlask, TitleNoFlask, "flask", Fill(prepIncomplete, map[string]string{"Category": "Flask", "list": "flask"})},
-		{consumables.CategoryWeaponEnchant, orderWeaponOil, Drafts["title_no_weapon_enchant"], "weapon oil or stone", Drafts["cannot_weapon_enchant"]},
-		{consumables.CategoryFood, orderFood, Drafts["title_no_food"], "food", FoodIncomplete},
+		{consumables.CategoryFlask, orderFlask, kindFlask, prepMissingFlask, Fill(prepIncomplete, map[string]string{"Category": "Flask", "list": "flask"})},
+		{consumables.CategoryWeaponEnchant, orderWeaponOil, kindWeaponOil, prepMissingOil, Drafts["cannot_weapon_enchant"]},
+		{consumables.CategoryFood, orderFood, kindFood, prepMissingFood, FoodIncomplete},
 	}
 }
 
@@ -135,8 +153,7 @@ func categoryIssues(in Input, pull consumables.Pull) (issues []prepIssue, have, 
 		case !in.Tables.Consumables.IsComplete(c.category):
 			couldNot = append(couldNot, c.incomplete)
 		case in.Tables.Consumables.MissedAtPull(pull, c.category):
-			issues = append(issues, prepIssue{order: c.order, severity: sizeSeverity(in.Size), title: c.title,
-				phrase: Fill(prepPhraseNo, map[string]string{"what": c.what})})
+			issues = append(issues, prepIssue{order: c.order, severity: sizeSeverity(in.Size), kind: c.kind, missing: c.missing})
 		}
 	}
 	return issues, have, couldNot
@@ -157,7 +174,7 @@ func gearIssues(in Input) []prepIssue {
 			}
 		}
 	}
-	slices.SortFunc(out, func(a, b prepIssue) int { return strings.Compare(a.title, b.title) })
+	slices.SortFunc(out, func(a, b prepIssue) int { return strings.Compare(a.name, b.name) })
 	return out
 }
 
@@ -171,14 +188,12 @@ func onlySlot(c summary.CombatantRow, slot int) summary.CombatantRow {
 }
 
 func gearIssue(size, slot int, label string) prepIssue {
+	issue := prepIssue{order: orderGearEnchant, severity: sizeSeverity(size), kind: kindEnchant, name: label,
+		missing: Fill(prepMissingEnchant, map[string]string{"Slot": label})}
 	if slot == mainHandSlot {
-		return prepIssue{order: orderPermanentWeapon, severity: SeverityMajor,
-			title:  Fill(Drafts["title_no_enchant"], map[string]string{"Item": prepWeaponName}),
-			phrase: Fill(prepPhraseNo, map[string]string{"what": prepWeaponName})}
+		issue.order, issue.severity = orderPermanentWeapon, SeverityMajor
 	}
-	return prepIssue{order: orderGearEnchant, severity: sizeSeverity(size),
-		title:  Fill(Drafts["title_no_enchant"], map[string]string{"Item": label}),
-		phrase: Fill(prepPhraseNo, map[string]string{"what": "enchant on " + label})}
+	return issue
 }
 
 // potionIssue is the combat potions used against what the fight could hold, a seeded
@@ -197,10 +212,8 @@ func potionIssue(in Input, pull consumables.Pull) ([]prepIssue, []string) {
 	if uses >= allowed {
 		return nil, nil
 	}
-	n := strconv.FormatInt(uses, 10)
-	return []prepIssue{{order: orderPotions, severity: SeverityMinor, potions: &potionCount{uses, allowed},
-		title:  Fill(Drafts["title_potions"], map[string]string{"n": n}),
-		phrase: Fill(prepPhrasePots, map[string]string{"n": n, "max": strconv.FormatInt(allowed, 10)})}}, nil
+	return []prepIssue{{order: orderPotions, severity: SeverityMinor, kind: kindPotions, missing: prepMissingPotions,
+		potions: &potionCount{uses, allowed}}}, nil
 }
 
 func prepFinding(in Input, issues []prepIssue, have, facts []string) *Finding {
@@ -215,54 +228,146 @@ func prepFinding(in Input, issues []prepIssue, have, facts []string) *Finding {
 			facts = append(facts, i.item)
 		}
 	}
+	lead, rest := leadGroup(issues)
+	detail := prepDetail(lead, have)
+	if len(rest) > 0 {
+		missing := make([]string, len(rest))
+		for i, r := range rest {
+			missing[i] = r.missing
+		}
+		detail += " " + Fill(DetailAlsoMissing, map[string]string{"items": joinAnd(missing)})
+	}
 	return &Finding{
 		Code:     CodePreparation,
 		Severity: issues[0].severity,
-		Title:    issues[0].title,
-		Detail:   prepDetail(issues, have),
-		Basis:    Basis{Label: Fill(BasisSheet, map[string]string{"roles": roleLabel(in.Row.Role)}), Kind: BasisOwnLog},
+		Title:    prepTitle(lead),
+		Detail:   detail,
+		Basis:    Basis{Label: prepBasis(in, lead[0].kind), Kind: BasisOwnLog},
 		Anchors:  []string{prepAnchorRef},
-		Facts:    Facts{Items: slices.Compact(slices.Sorted(slices.Values(facts))), Numbers: potionNumbers(issues)},
+		Facts:    Facts{Items: slices.Compact(slices.Sorted(slices.Values(facts))), Numbers: prepNumbers(issues, lead)},
 	}
 }
 
-func potionNumbers(issues []prepIssue) []NumberFact {
+// leadGroup splits the sorted issues into the first one's kind (every enchant or every
+// raid buff missing, which one title counts) and the rest, in order.
+func leadGroup(issues []prepIssue) (lead, rest []prepIssue) {
+	for _, i := range issues {
+		if i.kind == issues[0].kind {
+			lead = append(lead, i)
+		} else {
+			rest = append(rest, i)
+		}
+	}
+	return lead, rest
+}
+
+func prepTitle(lead []prepIssue) string {
+	n, first := strconv.Itoa(len(lead)), lead[0]
+	switch first.kind {
+	case kindFlask:
+		return TitleNoFlask
+	case kindFood:
+		return TitleNoFood
+	case kindWeaponOil:
+		return Drafts["title_no_weapon_oil"]
+	case kindEnchant:
+		if len(lead) > 1 {
+			return Fill(TitleNoEnchants, map[string]string{"n": n})
+		}
+		return Fill(TitleNoWeaponEnchant, map[string]string{"Slot": first.name})
+	case kindRaidBuff:
+		if len(lead) > 1 {
+			return Fill(TitleRaidBuffs, map[string]string{"n": n})
+		}
+		return Fill(TitleRaidBuff, map[string]string{"Buff": first.name})
+	}
+	return Fill(TitlePotions, map[string]string{"n": strconv.FormatInt(first.potions.unused(), 10)})
+}
+
+func prepDetail(lead []prepIssue, have []string) string {
+	first := lead[0]
+	switch first.kind {
+	case kindFlask:
+		return withItems(DetailNoFlask, DetailNoFlaskBare, have)
+	case kindFood:
+		return withItems(DetailNoFood, DetailNoFoodBare, have)
+	case kindWeaponOil:
+		return Drafts["detail_no_weapon_oil"]
+	case kindEnchant:
+		if len(lead) > 1 {
+			return Fill(DetailNoEnchants, map[string]string{"slots": joinAnd(names(lead))})
+		}
+		return Fill(DetailNoWeaponEnchant, map[string]string{"Slot": first.name})
+	case kindRaidBuff:
+		if len(lead) > 1 {
+			return Fill(DetailRaidBuffs, map[string]string{"buffs": joinAnd(missingWords(lead))})
+		}
+		return upperFirst(Fill(DetailRaidBuff, map[string]string{"Buff": first.missing, "class": first.class}))
+	}
+	return Fill(DetailPotions, map[string]string{
+		"used": strconv.FormatInt(first.potions.uses, 10), "max": strconv.FormatInt(first.potions.allowed, 10),
+	})
+}
+
+// withItems is format with what the player pulled with, or bare when nothing was.
+func withItems(format, bare string, have []string) string {
+	if len(have) == 0 {
+		return bare
+	}
+	return Fill(format, map[string]string{"items": joinAnd(have)})
+}
+
+func names(issues []prepIssue) []string {
+	out := make([]string, len(issues))
+	for i, is := range issues {
+		out[i] = is.name
+	}
+	return out
+}
+
+func missingWords(issues []prepIssue) []string {
+	out := make([]string, len(issues))
+	for i, is := range issues {
+		out[i] = is.missing
+	}
+	return out
+}
+
+func upperFirst(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
+func prepBasis(in Input, kind prepKind) string {
+	switch kind {
+	case kindEnchant:
+		return BasisGear
+	case kindRaidBuff:
+		return BasisRaidBuff
+	}
+	return Fill(BasisSheet, map[string]string{"roles": roleLabel(in.Row.Role)})
+}
+
+func (p potionCount) unused() int64 { return p.allowed - p.uses }
+
+// prepNumbers are the potion counts when potions are short, and the count of items
+// without an enchant when the title states it.
+func prepNumbers(issues, lead []prepIssue) []NumberFact {
+	var out []NumberFact
+	if lead[0].kind == kindEnchant && len(lead) > 1 {
+		out = append(out, NumberFact{V: float64(len(lead)), Text: strconv.Itoa(len(lead)), Unit: "items", Of: prepFactEnchants})
+	}
 	for _, i := range issues {
 		if p := i.potions; p != nil {
-			return []NumberFact{
-				{V: float64(p.uses), Text: strconv.FormatInt(p.uses, 10), Unit: "uses", Of: prepFactUses},
-				{V: float64(p.allowed), Text: strconv.FormatInt(p.allowed, 10), Unit: "uses", Of: prepFactAllowed},
-			}
+			out = append(out,
+				NumberFact{V: float64(p.uses), Text: strconv.FormatInt(p.uses, 10), Unit: "uses", Of: prepFactUses},
+				NumberFact{V: float64(p.allowed), Text: strconv.FormatInt(p.allowed, 10), Unit: "uses", Of: prepFactAllowed},
+				NumberFact{V: float64(p.unused()), Text: strconv.FormatInt(p.unused(), 10), Unit: "uses", Of: prepFactUnused})
 		}
 	}
-	return nil
-}
-
-func prepDetail(issues []prepIssue, have []string) string {
-	items := prepNothing
-	if len(have) > 0 {
-		items = joinAnd(have)
-	}
-	detail := Fill(prepDetailLead, map[string]string{"items": items, "phrase": issues[0].phrase})
-	if issues[0].order == orderFlask {
-		detail = Fill(DetailNoFlask, map[string]string{"items": items})
-	}
-	if len(issues) > 1 {
-		rest := make([]string, 0, len(issues)-1)
-		for _, i := range issues[1:] {
-			rest = append(rest, i.phrase)
-		}
-		detail += Fill(prepDetailAlso, map[string]string{"phrases": strings.Join(rest, "; ")})
-	}
-	return detail
-}
-
-// joinAnd is "a", "a and b", "a, b and c".
-func joinAnd(items []string) string {
-	if len(items) < 2 {
-		return strings.Join(items, "")
-	}
-	return strings.Join(items[:len(items)-1], ", ") + " and " + items[len(items)-1]
+	return out
 }
 
 func roleLabel(role string) string {
@@ -319,16 +424,15 @@ func raidBuffIssues(in Input) []prepIssue {
 		case slices.Contains(blessingNames, s.Buff.Name):
 			blessings = append(blessings, s)
 		case !s.Present:
-			out = append(out, buffIssue(s.Buff.Name))
+			out = append(out, buffIssue(s.Buff.Name, s.Buff.Class))
 		}
 	}
 	return append(out, blessingIssue(in, blessings)...)
 }
 
-func buffIssue(name string) prepIssue {
-	return prepIssue{order: orderRaidBuff, severity: SeverityMinor, item: name,
-		title:  Fill(Drafts["title_raid_buff"], map[string]string{"Buff": name}),
-		phrase: Fill(prepPhraseNo, map[string]string{"what": name})}
+func buffIssue(name, class string) prepIssue {
+	return prepIssue{order: orderRaidBuff, severity: SeverityMinor, kind: kindRaidBuff, item: name,
+		name: name, missing: name, class: strings.ToLower(class)}
 }
 
 // blessingIssue is a shortfall in the blessings the player holds against the paladins in
@@ -348,9 +452,11 @@ func blessingIssue(in Input, relevant []consumables.RaidBuffState) []prepIssue {
 		return nil
 	}
 	if len(absent) == 1 {
-		return []prepIssue{buffIssue(absent[0])}
+		return []prepIssue{buffIssue(absent[0], blessingClass)}
 	}
-	return []prepIssue{buffIssue(blessingWord)}
+	issue := buffIssue(blessingWord, blessingClass)
+	issue.missing = prepMissingBlessing
+	return []prepIssue{issue}
 }
 
 func paladinCount(in Input) int {

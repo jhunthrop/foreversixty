@@ -3,17 +3,13 @@ package coach
 import (
 	"slices"
 	"strconv"
-	"strings"
 
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
-// idlePoolBasis follows the top-logs label: the pool's median active share against the
-// player's own.
-const idlePoolBasis = "{ref}% of counted time active. You: {you}%."
-
 const (
 	idleFactSeconds = "seconds idle"
+	idleFactShare   = "idle share of counted time"
 	idleFactLongest = "longest idle window, seconds"
 	idleFactPool    = "active share, top logs"
 	idleFactYou     = "active share, you"
@@ -22,7 +18,8 @@ const (
 
 // idle is F3 (§6.2): the sum of the idle windows (ratingengine.IdleWindows, net of
 // downtime and officer assignments) less the time never counted against the player, with
-// the longest windows. The title names the longest window; the detail the total. A healer gets nothing.
+// the longest windows. The title and the detail state the total; the detail lists the
+// longest windows. A healer gets nothing.
 func idle(in Input, c Counted) outcome {
 	if in.Row.Role != RoleDPS && in.Row.Role != RoleTank {
 		return outcome{}
@@ -38,7 +35,7 @@ func idle(in Input, c Counted) outcome {
 	}
 	shown := longestInTimeOrder(windows, IdleWindowsShown)
 	return outcome{
-		Finding: idleFinding(in, c, idleMS, idlePct, shown, windows[0]),
+		Finding: idleFinding(in, idleMS, idlePct, shown, windows[0]),
 		Anchors: idleAnchors(shown),
 		Windows: windows,
 	}
@@ -92,17 +89,22 @@ func idleAnchors(shown []ratingengine.Window) []Anchor {
 	return out
 }
 
-func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []ratingengine.Window, longest ratingengine.Window) *Finding {
+func idleFinding(in Input, idleMS int64, idlePct float64, shown []ratingengine.Window, longest ratingengine.Window) *Finding {
 	seconds := PctNumber(float64(idleMS) / millisPerSecond)
 	longestSeconds := PctNumber(float64(longest.ToMS-longest.FromMS) / millisPerSecond)
 	spans := make([]string, len(shown))
+	share := PctNumber(idlePct)
 	refs := make([]string, len(shown))
 	for i, w := range shown {
 		spans[i] = Span(w.FromMS, w.ToMS)
 		refs[i] = "#" + strconv.Itoa(i)
 	}
 	basis, numbers := idleBasis(in, idlePct)
-	numbers = append([]NumberFact{{V: float64(longest.ToMS-longest.FromMS) / millisPerSecond, Text: longestSeconds, Unit: "s", Of: idleFactLongest}, {V: float64(idleMS) / millisPerSecond, Text: seconds, Unit: "s", Of: idleFactSeconds}}, numbers...)
+	numbers = append([]NumberFact{
+		{V: float64(longest.ToMS-longest.FromMS) / millisPerSecond, Text: longestSeconds, Unit: "s", Of: idleFactLongest},
+		{V: float64(idleMS) / millisPerSecond, Text: seconds, Unit: "s", Of: idleFactSeconds},
+		{V: idlePct, Text: share, Unit: "%", Of: idleFactShare},
+	}, numbers...)
 	severity := SeverityMinor
 	if idlePct >= IdleMajorPct {
 		severity = SeverityMajor
@@ -110,13 +112,11 @@ func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []rat
 	return &Finding{
 		Code:     CodeIdle,
 		Severity: severity,
-		Title:    Fill(Drafts["title_idle"], map[string]string{"n": longestSeconds}),
-		Detail: Fill(Drafts["detail_idle"], map[string]string{
-			"n": seconds, "counted": Clock(c.CountedMS), "spans": strings.Join(spans, ", "),
-		}),
-		Basis:   basis,
-		Anchors: refs,
-		Facts:   Facts{Numbers: numbers, Times: spans},
+		Title:    Fill(TitleIdle, map[string]string{"n": seconds}),
+		Detail:   Fill(DetailIdle, map[string]string{"n": seconds, "pct": share, "windows": joinAnd(spans)}),
+		Basis:    basis,
+		Anchors:  refs,
+		Facts:    Facts{Numbers: numbers, Times: spans},
 	}
 }
 
@@ -125,10 +125,12 @@ func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []rat
 func idleBasis(in Input, idlePct float64) (Basis, []NumberFact) {
 	ref, b, _ := comparison(in, func(p Profile) (float64, bool) { return p.ActivePct, p.ActivePct > 0 }, nil, false)
 	if b == nil {
-		return Basis{Label: Drafts["basis_idle_threshold"], Kind: BasisOwnLog}, nil
+		return Basis{Label: BasisIdle, Kind: BasisOwnLog}, nil
 	}
 	you := percentOf - idlePct
-	b.Label += Fill(idlePoolBasis, map[string]string{"ref": PctNumber(ref), "you": PctNumber(you)})
+	fields := topFields(in, b.N)
+	fields["ref"], fields["you"] = PctNumber(ref), PctNumber(you)
+	b.Label = Fill(BasisIdleTop, fields)
 	return *b, []NumberFact{
 		{V: ref, Text: PctNumber(ref), Unit: "%", Of: idleFactPool},
 		{V: you, Text: PctNumber(you), Unit: "%", Of: idleFactYou},

@@ -4,22 +4,20 @@ import (
 	"math"
 	"slices"
 	"strconv"
-	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// F8 pack strings the spec does not show (drafts until Task 33 pins them).
+// F8's fact labels, and adherenceEntry, one spell in DetailAdherence's list as §8.1's
+// example shows it ("Heroic Strike (31), Slam (12) and Rend (9)").
 const (
-	basisAdherenceValue    = "{ref}% of casts from the rotation. You: {you}%."
-	basisAdherenceRotation = "Measured against the written rotation alone."
+	adherenceEntry         = "{Spell} ({n})"
 	adherenceFactYou       = "casts from the rotation"
 	adherenceFactMedian    = "casts from the rotation, top logs"
 	adherenceCastsPerSpell = "{Spell} casts outside the rotation"
 	adherenceWholeRotation = 100.0
 	adherenceUnitCasts     = "casts"
-	adherenceSeparator     = ", "
 )
 
 // adherence is F8 (§6.2): the share of a DPS's or tank's casts that are the written
@@ -54,7 +52,8 @@ func adherenceReference(in Input) (float64, Basis) {
 	if ref, b, _ := comparison(in, pool, nil, false); b != nil {
 		return ref, *b
 	}
-	return adherenceWholeRotation, Basis{Label: basisAdherenceRotation, Kind: BasisOwnLog}
+	label := Fill(BasisAdherenceWritten, map[string]string{"Spec": in.Row.Spec, "floor": PctNumber(AdherenceFiresUnderPct)})
+	return adherenceWholeRotation, Basis{Label: label, Kind: BasisOwnLog}
 }
 
 // adherenceFires: with a pool, 10 points under its median; against the rotation alone,
@@ -84,9 +83,9 @@ func adherenceOutcome(in Input, you, ref float64, b Basis) outcome {
 		Finding: &Finding{
 			Code:     CodeAdherence,
 			Severity: severity,
-			Title:    Fill(Drafts["title_adherence"], map[string]string{"pct": pct}),
-			Detail:   Fill(Drafts["detail_adherence"], map[string]string{"pct": pct, "spells": offRotationNames(off)}),
-			Basis:    adherenceBasis(b, ref, you),
+			Title:    Fill(TitleAdherence, map[string]string{"pct": pct}),
+			Detail:   Fill(DetailAdherence, map[string]string{"spells": offRotationNames(off)}),
+			Basis:    adherenceBasis(in, b, ref, you),
 			Anchors:  refs,
 			Facts:    adherenceFacts(in, off, you, ref, b),
 		},
@@ -103,7 +102,7 @@ func adherenceStrength(in Input, you, ref float64, b Basis) outcome {
 		refs[i] = "#" + strconv.Itoa(i)
 	}
 	return outcome{Anchors: anchors, Strengths: []Strength{{
-		Sentence: Fill(Drafts["strength_adherence"], map[string]string{"pct": pct}),
+		Sentence: Fill(StrengthAdherence, map[string]string{"pct": pct, "n": strconv.Itoa(b.N), "ref": PctNumber(ref)}),
 		Facts: Facts{Numbers: []NumberFact{
 			{V: you, Text: pct, Unit: "%", Of: adherenceFactYou},
 			{V: ref, Text: PctNumber(ref), Unit: "%", Of: adherenceFactMedian},
@@ -135,22 +134,24 @@ func rotationTopCasts(in Input, n int) []int64 {
 	return ids[:min(n, len(ids))]
 }
 
-// adherenceBasis appends the values to the pool's label; the rotation-alone basis is its
-// own sentence.
-func adherenceBasis(b Basis, ref, you float64) Basis {
+// adherenceBasis words the pool's basis with both values; the rotation-alone basis is
+// its own sentence.
+func adherenceBasis(in Input, b Basis, ref, you float64) Basis {
 	if b.Kind != BasisTopLogs {
 		return b
 	}
-	b.Label += Fill(basisAdherenceValue, map[string]string{"ref": PctNumber(ref), "you": PctNumber(you)})
+	fields := topFields(in, b.N)
+	fields["ref"], fields["you"] = PctNumber(ref), PctNumber(you)
+	b.Label = Fill(BasisAdherenceTop, fields)
 	return b
 }
 
 func offRotationNames(off []summary.CastRow) string {
 	names := make([]string, len(off))
 	for i, row := range off {
-		names[i] = row.SpellName
+		names[i] = Fill(adherenceEntry, map[string]string{"Spell": row.SpellName, "n": strconv.FormatInt(row.Succeeded, 10)})
 	}
-	return strings.Join(names, adherenceSeparator)
+	return joinAnd(names)
 }
 
 func adherenceFacts(in Input, off []summary.CastRow, you, ref float64, b Basis) Facts {

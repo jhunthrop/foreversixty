@@ -220,7 +220,7 @@ func TestReview_NoRuleFileSkipsItsChecksAndSaysSo(t *testing.T) {
 	in.Tables.Rules = SpecRules{}
 	in.Tables.RotationOK = true
 	p := Review(in)
-	line := "Core casts, uptimes and the rotation: the coach has no Fury rule file yet."
+	line := "Core casts, uptimes and the rotation: the coach doesn't know the Fury rotation yet."
 	if n := countOf(p.CouldNotCheck, line); n != 1 || p.CouldNotCheck[2] != line {
 		t.Fatalf("one copy, first after talents and range: %q", p.CouldNotCheck)
 	}

@@ -102,7 +102,7 @@ func TestDeath_TalentCastAndBackOffCooldownIsReady(t *testing.T) {
 	if f == nil || f.Title != "Died at 3:20 with Last Stand ready" {
 		t.Fatalf("got %+v", f)
 	}
-	if strings.Contains(f.Detail, "since the pull") || !strings.Contains(f.Detail, "Onyxia's melee hit for 1,830 at 3:20.") {
+	if f.Detail != "Onyxia's melee killed you at 3:20. Last Stand had been ready since 3:10." {
 		t.Errorf("detail %q", f.Detail)
 	}
 	if len(o.Anchors) != 2 || o.Anchors[1].Kind != AnchorCast || o.Anchors[1].SpellID != lastStandID {
@@ -294,7 +294,7 @@ func TestDeath_ReadyKeepsTheAvoidableFact(t *testing.T) {
 	back := f7Died(protInput(t), 400_000, 200_000, tailSweepID, "Tail Sweep", 1_200)
 	back = f7Cast(f7Cast(back, shieldWallID, "Shield Wall", 150_000), lastStandID, "Last Stand", 10_000)
 	f = death(back, CountedTime(back)).Finding
-	want = "Tail Sweep hit for 1,200 at 3:20. Tail Sweep is on this boss's list of damage you can avoid. " + DeathNoPotion
+	want = "Tail Sweep killed you at 3:20. Tail Sweep is on this boss's list of damage you can avoid. Last Stand had been ready since 3:10."
 	if f == nil || f.Title != "Died at 3:20 with Last Stand ready" || f.Detail != want {
 		t.Fatalf("got %+v, want detail %q", f, want)
 	}

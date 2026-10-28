@@ -137,16 +137,16 @@ player still gets a correct review in plain words.
 The web renders a fixed structure. It never renders free prose.
 
 - **Header:** `Your {Spec} coach`, e.g. `Your Fury coach`. For a starter persona (§8.3),
-  `Your Enhancement coach · early version`, with the hint `This coach knows the rotation from
-  our guide. Deeper class knowledge is on the way.` On the rule-only rendering the header is
+  `Your Enhancement coach · early version`, with the hint `This coach reads your log against
+  our guide's Enhancement rotation.` On the rule-only rendering the header is
   `Your Fury review`, with no persona voice claimed.
 - **Opening:** at most two sentences.
 - **Fix first:** a title, why it matters, and the one drill to practise.
 - **Then:** up to three more items, each with a title and a why.
 - **Doing well:** one or two items.
 - **Couldn't check:** the pack's lines, word for word.
-- **Footer:** `Reviewed 28 Oct · Evidence: Top 25 Fury warriors on Onyxia (40), your log.`
-  The basis labels the pack used, deduplicated.
+- **Footer:** `Reviewed {date} · Based on: {labels}.`, e.g. `Reviewed 10 Dec · Based on: Top 25
+  Fury warriors on Onyxia (40), your log.` The basis labels the pack used, deduplicated.
 
 Every item carries the evidence anchor ids it used. The web turns each one into a link into
 the report: the Casts row, the aura row, the death, or the resource graph at a time. They are
@@ -154,10 +154,11 @@ built the way `web/src/lib/rating/moments.ts` builds the rating's moment links t
 Abilities show icon and rank, and items show icon, quality colour and tooltip (tenets 2 and 3).
 Fight times are `m:ss` from the pull.
 
-States: loading (`Reading the fight…`), the rule-only rendering shown while the coach writes
+States: loading (`Reading the pull…`), the rule-only rendering shown while the coach writes
 (`Your coach is writing…`, then swapped in place without layout shift), a reference still
 preparing, coach busy (§15.4), no findings, not reviewable, the free teaser, officer view, and
-error (`The coach couldn't read this fight just now.`).
+error (`The coach couldn't read this pull just now.`). The experience spec
+(`design/specs/2026-10-28-log-coach.md` §8) holds every surface's final words.
 
 ### 5.2 The evidence pack's finding pattern (also the rule-only rendering)
 
@@ -188,7 +189,7 @@ Pack findings, ranked:
 
 | Rank | Id | Title | Detail | Basis | Anchors |
 |---|---|---|---|---|---|
-| 1 (major) | `f1` | `Bloodthirst: 9 casts lost` | `31 of a possible 40 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.` | `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.` | `a1` Casts row, `a2` 1:12, `a3` 2:40 |
+| 1 (major) | `f1` | `Bloodthirst: 9 casts lost` | `9 of a possible 40 went unused while you had the rage. Longest gaps 1:12–1:25 and 2:40–2:51.` | `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.` | `a1` Casts row, `a2` 1:12, `a3` 2:40 |
 | 2 (major) | `f6` | `No flask at the pull` | `You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.` | `From the character sheet in your log, against the site's consumable list for damage dealers.` | `a4` Buffs tab |
 | 3 (minor) | `f4` | `Rage full for 14 seconds` | `Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.` | `Measured against your own rage bar, air phase left out. Top 25 Fury warriors here: 3 s.` | `a5` rage graph at 2:41 |
 
@@ -260,8 +261,8 @@ Review:
 ### 5.4 Surface 1 (primary): the report page player row
 
 - The player's row in the report's combatant list carries one coach line, only for viewers
-  who may coach that row (§3). Premium: `What to fix first: Bloodthirst: 9 casts lost`. Free:
-  `3 findings · First: Bloodthirst: 9 casts lost · See your coach's review with Premium`.
+  who may coach that row (§3). Premium: `Fix first · Bloodthirst: 9 casts lost`. Free:
+  `3 things to fix · First: Bloodthirst: 9 casts lost · Read the full review with Premium`.
 - The line opens the **Coach** panel for that player and fight (§5.1). Premium also gets a
   **History** link to the character's past reviews. The panel's placement (a tab beside
   Rating, or a drawer from the row) is the ux-designer's call. It belongs on the report page,
@@ -270,20 +271,22 @@ Review:
 ### 5.5 Surface 2: Discord (decided: Premium only, never shaming in a channel)
 
 - **`/report` answer (ephemeral).** When the viewer holds `log_coach` and owns a character in
-  the matched log, the answer gains one line per character (three at most): `What to fix
-  first: Bloodthirst casts lost — on 5 of 8 bosses. Open your coach's review`. It links to the
-  coach panel. `Share in channel` re-renders without it.
+  the matched log, the answer gains one line per character (three at most): `Fix first:
+  Bloodthirst casts lost — on 5 of 8 bosses. Open your coach's review`, the last words linking
+  to the coach panel. One boss in the night reads `Fix first: {stem}.`, every boss `on all {m}
+  bosses`. `Share in channel` re-renders without it.
 - **Raid-night post (`report_ready`, in the guild channel).** That post is counts only and
   never names a raider (rule R-A3, `api/internal/notify/report_embed.go`). The coach keeps the
   rule. When at least one raider in the log holds `log_coach` on a character they own, the
-  description gains one sentence that names and counts nobody: `Premium raiders: your coach
-  has reviewed tonight on Forever Sixty and in /report.`
+  description gains one sentence that names and counts nobody: `Coach reviews for tonight's
+  pulls are ready on Forever Sixty and in /report.` The coach writes only when a review is
+  opened, so the sentence says the reviews are ready, never that they were written.
 - **Night line rule.** Read from the evidence packs, with no model call. Take the rank-1
   findings across one character's fights that night. Choose by severity, then by the finding
   type that showed on the most bosses, then the earliest boss. It is worded from the title stem
   without the per-fight number, plus `on N of M bosses`.
 - **Timing.** Packs come from cache. If they aren't all cached within the interaction's budget,
-  the line becomes `Your coach's review is on the site.` with the link, and the packs warm in the
+  the line becomes `[Your coach's review is on the site.]({url})`, and the packs warm in the
   background. Discord never waits.
 
 ### 5.6 Surface 3: the account page's "last raid" line
@@ -291,10 +294,11 @@ Review:
 - One line, for the account's most recent raid. "Last raid" has the definition the addon
   already uses (`addon.lastRaidFights`: newest evidence report with a rated boss fight, within
   `addon.LastRaidWindow`, 14 days). It reuses that query.
-- Premium: `Last raid · Molten Core, Thu 23 Oct · What to fix first: Bloodthirst casts lost, on
-  5 of 8 bosses · Open`. Free: `Last raid · Molten Core, Thu 23 Oct · 11 findings · First:
-  Bloodthirst casts lost · See your coach's review with Premium`.
-- It is hidden when there is no raid in 14 days. It loads separately (`GET /v1/me/coach/recent`)
+- Premium: `Last raid · Molten Core, Thu 23 Oct · Fix first: Bloodthirst casts lost, on 5 of 8
+  bosses · Open review`. Free: `Last raid · Molten Core, Thu 23 Oct · 11 things to fix · First:
+  Bloodthirst casts lost · Read the full review with Premium`.
+- With no raid in 14 days it reads `Last raid · no log in the last 14 days`, muted: shown,
+  never hidden, so its reserved slot never collapses. It loads separately (`GET /v1/me/coach/recent`)
   so a cold cache never slows the page. It likely sits in
   `web/src/components/account/CharacterList.svelte`. The ux-designer places it.
 

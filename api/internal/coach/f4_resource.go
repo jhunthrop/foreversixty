@@ -7,10 +7,6 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// detailManaRecovered is F4's detail when mana came back after running out. The spec
-// shows no such string, so it lives here until Task 33 moves it into the draft table.
-const detailManaRecovered = "Your mana was under {pct}% for {n} s in all, from {t}."
-
 // downtimeNoun fills DetailCapped's {downtime}; the spec's example is "air phase".
 // Task 33 may name each encounter's downtime.
 const downtimeNoun = "downtime"
@@ -116,7 +112,7 @@ func capDetail(in Input, c Counted, bar, secs string, longest ratingengine.Windo
 		fields["downtime"] = downtimeNoun
 		return Fill(DetailCapped, fields)
 	}
-	return Fill(Drafts["detail_capped_no_downtime"], fields)
+	return Fill(DetailCappedPlain, fields)
 }
 
 func capBasis(in Input, c Counted, bar string) string {
@@ -161,18 +157,15 @@ func assessMana(in Input, c Counted, track summary.ResourceTrack) *waste {
 	return &waste{severity: severity, totalMS: total, out: outcomeOf(finding, runs, first)}
 }
 
-// manaDetail words how the low stretch ended: by death, by the end of the fight, or by
-// mana coming back. Only one unbroken stretch can be said to have lasted "until".
+// manaDetail says the stretch ran until the death when one unbroken stretch did; every
+// other stretch (to the end, or mana coming back) is the total from the first second.
 func manaDetail(in Input, c Counted, runs []ratingengine.Window, secs string) string {
-	fields := map[string]string{"t": Clock(runs[0].FromMS), "n": secs, "pct": PctNumber(ManaLowPct)}
-	if len(runs) == 1 && runs[0].ToMS >= c.AliveMS {
-		if c.AliveMS < in.Fight.DurationMS {
-			fields["death"] = Clock(c.AliveMS)
-			return Fill(DetailOutOfManaDeath, fields)
-		}
-		return Fill(Drafts["detail_out_of_mana_to_end"], fields)
+	fields := map[string]string{"t": Clock(runs[0].FromMS), "n": secs}
+	if len(runs) == 1 && runs[0].ToMS >= c.AliveMS && c.AliveMS < in.Fight.DurationMS {
+		fields["death"] = Clock(c.AliveMS)
+		return Fill(DetailOutOfManaDeath, fields)
 	}
-	return Fill(detailManaRecovered, fields)
+	return Fill(DetailOutOfMana, fields)
 }
 
 // outcomeOf wraps a finding with its one resource anchor, at the anchored window, and

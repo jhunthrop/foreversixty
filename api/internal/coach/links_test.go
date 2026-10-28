@@ -55,7 +55,7 @@ func TestLinks_DeathInsideACastGap(t *testing.T) {
 	fs := []Finding{{ID: "f1", Code: CodeDeath}, {ID: "f2", Code: CodeCoreCasts, Title: "Bloodthirst: 9 casts lost"}}
 	gaps := []ratingengine.Window{{FromMS: 30_000, ToMS: 45_000}}
 	got := computeLinks(fs, map[string][]ratingengine.Window{"f1": {{FromMS: 40_000, ToMS: 40_000}}, "f2": gaps})
-	if len(got) != 1 || got[0].Kind != LinkDeathInGap || got[0].Sentence != "You died in the Bloodthirst gap at 0:30–0:45." {
+	if len(got) != 1 || got[0].Kind != LinkDeathInGap || got[0].Sentence != "The Bloodthirst gap at 0:30–0:45 includes your death at 0:40." {
 		t.Fatalf("%+v", got)
 	}
 	if outside := computeLinks(fs, map[string][]ratingengine.Window{"f1": {{FromMS: 50_000, ToMS: 50_000}}, "f2": gaps}); len(outside) != 0 {
@@ -67,7 +67,7 @@ func TestLinks_MissingFlaskCoversOutOfMana(t *testing.T) {
 	oom := Finding{ID: "f1", Code: CodeResource, Title: "Out of mana from 1:00"}
 	got := computeLinks([]Finding{oom, {ID: "f2", Code: CodePreparation, Title: TitleNoFlask}}, nil)
 	if len(got) != 1 || got[0].Kind != LinkConsumableCovers || got[0].Findings != [2]string{"f2", "f1"} ||
-		got[0].Sentence != "A flask would have covered this." {
+		got[0].Sentence != "You pulled without a flask and your mana ran out from 1:00." {
 		t.Fatalf("%+v", got)
 	}
 	capped := Finding{ID: "f1", Code: CodeResource, Title: "Rage full for 14 seconds"}

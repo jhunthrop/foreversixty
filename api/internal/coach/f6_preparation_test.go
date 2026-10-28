@@ -135,10 +135,10 @@ func TestPreparation_PotionsShortOfWhatTheFightHoldsAreMinorAndQuoteBothNumbers(
 	in.Fight.DurationMS = 300_000
 	in.Fight = seedPotion(in.Fight, in.Row.GUID)
 	f := preparation(in, CountedTime(in)).Finding
-	if f == nil || f.Severity != SeverityMinor || f.Title != "Combat potions: 1 used" || !strings.Contains(f.Detail, "used 1 of 2 combat potions") {
+	if f == nil || f.Severity != SeverityMinor || f.Title != "Combat potions: 1 unused" || f.Detail != "You used 1 combat potions. The fight had room for 2." {
 		t.Fatalf("%+v", f)
 	}
-	if len(f.Facts.Numbers) != 2 || f.Facts.Numbers[1].Text != "2" {
+	if len(f.Facts.Numbers) != 3 || f.Facts.Numbers[1].Text != "2" || f.Facts.Numbers[2].Text != "1" {
 		t.Fatalf("the 'of 2' is a fact too: %+v", f.Facts.Numbers)
 	}
 }
@@ -221,4 +221,49 @@ func TestPreparation_EverythingPresentIsAStrength(t *testing.T) {
 
 func TestPreparation_KnownGoodFlaskOnTheRealPull(t *testing.T) {
 	t.Skip("known-good boss pull is owner-provided; none on disk yet")
+}
+
+// §8.1: one slot names the slot; two or more count them and list the slots.
+func TestPreparation_EnchantCopy(t *testing.T) {
+	in := withUnenchantedMainHand(furyPrep(t, 40, fullKit()))
+	f := preparation(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "Main Hand has no enchant" || f.Detail != "Main Hand had no permanent enchant at the pull." || f.Basis.Label != BasisGear {
+		t.Fatalf("%+v", f)
+	}
+	gear := preparedGear(false)
+	gear[slotChest].Enchants = nil
+	in = withGear(furyPrep(t, 40, fullKit()), gear)
+	f = preparation(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "2 items have no enchant" || f.Detail != "No permanent enchant on Main Hand and Chest." {
+		t.Fatalf("%+v", f)
+	}
+	assertNumbers(t, f.Facts, "2")
+}
+
+// §8.1: the lead names the title; everything else missing follows in one sentence.
+func TestPreparation_AlsoMissingFollowsTheLead(t *testing.T) {
+	in := withUnenchantedMainHand(furyPrep(t, 40, seededAt(food("Grilled Squid"))))
+	f := preparation(in, CountedTime(in)).Finding
+	want := "You pulled with Grilled Squid, and no flask. Also missing: a Main Hand enchant."
+	if f == nil || f.Title != "No flask at the pull" || f.Detail != want {
+		t.Fatalf("got %+v, want detail %q", f, want)
+	}
+	bare := furyPrep(t, 40, seededAt())
+	if f := preparation(bare, CountedTime(bare)).Finding; f == nil || !strings.HasPrefix(f.Detail, "You pulled with no flask.") {
+		t.Fatalf("%+v", f)
+	}
+}
+
+func TestPreparation_RaidBuffCopy(t *testing.T) {
+	in := tenManNoPriest(t)
+	f := preparation(in, CountedTime(in)).Finding
+	want := "Arcane Intellect was not on you at the pull. A mage in the raid provides it."
+	if f == nil || f.Title != "No Arcane Intellect at the pull" || f.Detail != want || f.Basis.Label != BasisRaidBuff {
+		t.Fatalf("got %+v, want detail %q", f, want)
+	}
+	blessing := rosterOf(furyPrep(t, 40, fullKit()), rosterClass("pal", "Paladin"))
+	f = preparation(blessing, CountedTime(blessing)).Finding
+	if f == nil || f.Detail != "A blessing was not on you at the pull. A paladin in the raid provides it." {
+		t.Fatalf("%+v", f)
+	}
 }

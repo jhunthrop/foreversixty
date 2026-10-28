@@ -9,16 +9,6 @@ import (
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
-// The not-reviewable lines the spec does not show. Drafts: Task 33 fixes the wording.
-const (
-	notReviewableTrash = "Only boss pulls are reviewed."
-	notReviewableShort = "Pulls under 30 seconds aren't reviewed."
-	// cannotSpecRules is the couldn't-check line when the spec has no rule file
-	// (Tables.Rules is the zero value). Draft: kept here, not in copy_drafts.go, because
-	// that file holds another lane's uncommitted work; Task 33 moves it.
-	cannotSpecRules = "Core casts, uptimes and the rotation: the coach has no {Spec} rule file yet."
-)
-
 // needsRuleFile are the checks a spec's rule file drives (core abilities, owned auras,
 // and the rotation check that ships with them).
 var needsRuleFile = []Code{CodeCoreCasts, CodeUptime, CodeAdherence}
@@ -81,9 +71,9 @@ func notReviewable(in Input) string {
 	case in.Row.Spec == "":
 		return NotReviewableSpec
 	case in.Fight.EncounterID == 0:
-		return notReviewableTrash
+		return NotReviewableTrash
 	case in.Fight.DurationMS < MinFightMS:
-		return notReviewableShort
+		return NotReviewableShort
 	}
 	return ""
 }
@@ -100,7 +90,7 @@ func runChecks(in Input) []checked {
 		case !slices.Contains(Precedence[in.Row.Role], rc.code):
 		case noRules && slices.Contains(needsRuleFile, rc.code):
 			out = append(out, checked{code: rc.code, out: outcome{CouldNotCheck: []string{
-				Fill(cannotSpecRules, map[string]string{"Spec": in.Row.Spec})}}})
+				Fill(CannotSpecRules, map[string]string{"Spec": in.Row.Spec})}}})
 		default:
 			out = append(out, checked{code: rc.code, out: rc.run(in, c)})
 		}
@@ -142,14 +132,12 @@ func rankKey(role string, f Finding) int {
 	return key
 }
 
-// raidBuffAlone reports a preparation finding about raid buffs alone. F6 names its worst
-// issue in the title and orders raid buffs after every other issue but the potions, which
-// add numbers: so a raid-buff title with no number is raid buffs and nothing else. The
-// title shape alone also fits "No flask at the pull"; a raid buff's name is in the
-// finding's items, which no missing flask, food or oil ever is.
+// raidBuffAlone reports a preparation finding about raid buffs alone. F6 words its finding
+// from its worst issue, raid buffs (BasisRaidBuff) only when nothing ranks above them,
+// and orders them after every other issue but the potions, which add numbers: so a
+// raid-buff basis with no number is raid buffs and nothing else.
 func raidBuffAlone(f Finding) bool {
-	buff, ok := titleField(Drafts["title_raid_buff"], "Buff", f.Title)
-	return f.Code == CodePreparation && ok && slices.Contains(f.Facts.Items, buff) && len(f.Facts.Numbers) == 0
+	return f.Code == CodePreparation && f.Basis.Label == BasisRaidBuff && len(f.Facts.Numbers) == 0
 }
 
 // numberFindings gives ids f1… and ranks in rank order, and global anchor ids. Raid

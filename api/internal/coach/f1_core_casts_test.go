@@ -125,10 +125,10 @@ func TestCoreCasts_StrengthWhenAtOrAboveTheComparison(t *testing.T) {
 		t.Fatalf("finding %+v strengths %+v", o.Finding, o.Strengths)
 	}
 	s := o.Strengths[0]
-	if s.Sentence != "Bloodthirst at 10.0 a minute, at or above the comparison." || len(s.Anchors) != 1 {
+	if s.Sentence != "Bloodthirst: 10.0 casts a minute. Top 25: 9.0." || len(s.Anchors) != 1 {
 		t.Errorf("strength %+v", s)
 	}
-	assertNumbers(t, s.Facts, "10.0")
+	assertNumbers(t, s.Facts, "10.0", "9.0")
 	assertSpells(t, s.Facts, "Bloodthirst")
 	below := withPool(furyFight(t, 60_000, 23881, seqEvery(0, 6000, 10), steady), poolCPM("Bloodthirst", 11.0, 25))
 	if o := coreCasts(below, CountedTime(below)); len(o.Strengths) != 0 {

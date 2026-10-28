@@ -9,10 +9,6 @@ import (
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
-// consumableCoversFlask is the {Item} of Drafts["link_consumable_covers"] when a missing
-// flask meets running out of mana: the finding names no particular flask.
-const consumableCoversFlask = "A flask"
-
 // computeLinks is the §7 connections between findings that meet in this fight: a cast gap
 // overlapping a resource cap, out of mana at a death, a death inside a cast gap, and a
 // missing flask on running out of mana. The overheal link needs the fight; overhealLink
@@ -32,9 +28,9 @@ func computeLinks(fs []Finding, windows map[string][]ratingengine.Window) []Link
 	if hasCore && hasDeath {
 		out = append(out, deathInGapLinks(dead, core, windows)...)
 	}
-	if hasPrep && hasRes && prep.Title == TitleNoFlask && outOfMana(res) {
+	if t, oom := outOfManaFrom(res); hasPrep && hasRes && prep.Title == TitleNoFlask && oom {
 		out = append(out, Link{Findings: [2]string{prep.ID, res.ID}, Kind: LinkConsumableCovers,
-			Sentence: Fill(Drafts["link_consumable_covers"], map[string]string{"Item": consumableCoversFlask})})
+			Sentence: Fill(LinkNoFlaskMana, map[string]string{"t": t})})
 	}
 	return out
 }
@@ -72,7 +68,9 @@ func deathInGapLinks(dead, core Finding, windows map[string][]ratingengine.Windo
 	for _, gap := range windows[core.ID] {
 		if deathMeets(windows[dead.ID], []ratingengine.Window{gap}) {
 			return []Link{{Findings: [2]string{dead.ID, core.ID}, Kind: LinkDeathInGap,
-				Sentence: Fill(Drafts["link_death_in_gap"], map[string]string{"Spell": coreSpell(core), "gap": Span(gap.FromMS, gap.ToMS)})}}
+				Sentence: Fill(LinkDeathInGapSentence, map[string]string{
+					"Spell": coreSpell(core), "gap": Span(gap.FromMS, gap.ToMS), "t": Clock(windows[dead.ID][0].FromMS),
+				})}}
 		}
 	}
 	return nil
@@ -94,8 +92,13 @@ func deathMeets(death, ws []ratingengine.Window) bool {
 }
 
 func outOfMana(f Finding) bool {
-	_, ok := titleField(TitleOutOfMana, "t", f.Title)
+	_, ok := outOfManaFrom(f)
 	return ok
+}
+
+// outOfManaFrom is the time an out-of-mana finding's title gives.
+func outOfManaFrom(f Finding) (string, bool) {
+	return titleField(TitleOutOfMana, "t", f.Title)
 }
 
 // coreSpell is the F1 finding's worst ability: its first spell fact, else its title's.

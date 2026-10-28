@@ -30,7 +30,7 @@ const (
 // deathHit is what killed the player: the killing blow, else the last hit the log kept.
 type deathHit struct {
 	SpellID int64
-	Name    string // a melee swing reads as Drafts["melee"]
+	Name    string // a melee swing reads as KillerMelee
 	Amount  int64
 	AtMS    int64
 }
@@ -39,8 +39,12 @@ type deathHit struct {
 type deathReady struct {
 	Name      string
 	SpellID   int64
-	SincePull bool // never cast before the death: ready from the pull
+	SincePull bool  // never cast before the death: ready from the pull
+	ReadyAtMS int64 // cast before the death: when its cooldown came back
 }
+
+// readySincePull fills {since} for a defensive never cast before the death.
+const readySincePull = "the pull"
 
 // death is F7 (§6.2): the player's first reviewable death, what killed them, whether it
 // is on the encounter's avoidable list, a defensive that was ready, and whether a healing
@@ -131,7 +135,7 @@ func deathHitOf(in Input, d summary.Death) (deathHit, bool) {
 		}
 		name = ""
 		if source != "" {
-			name = Fill(Drafts["melee"], map[string]string{"Boss": source})
+			name = Fill(KillerMelee, map[string]string{"Mob": source})
 		}
 	}
 	return deathHit{SpellID: ref.SpellID, Name: name, Amount: ref.Amount, AtMS: ref.AtMS}, name != ""
@@ -208,7 +212,7 @@ func readyDefensive(in Input, atMS int64) (ready deathReady, ok, levelSkipped bo
 		}
 		sc, known := in.Tables.Spells[lastID]
 		if known && sc.CooldownMS > 0 && lastMS+sc.CooldownMS <= atMS {
-			return deathReady{Name: e.Family, SpellID: lastID}, true, levelSkipped
+			return deathReady{Name: e.Family, SpellID: lastID, ReadyAtMS: lastMS + sc.CooldownMS}, true, levelSkipped
 		}
 	}
 	return deathReady{}, false, levelSkipped
@@ -260,39 +264,45 @@ func deathFinding(in Input, atMS int64, hit deathHit, ready deathReady, hasReady
 		f.Facts.Spells = append(f.Facts.Spells, SpellFact{ID: ready.SpellID, Name: ready.Name, Rank: in.Tables.Spells[ready.SpellID].Rank})
 		f.Title = Fill(TitleDiedWithReady, map[string]string{"t": t, "Spell": ready.Name})
 		f.Basis = Basis{Label: Fill(BasisDeathCD, map[string]string{"Spell": ready.Name}), Kind: BasisSpellData}
-		f.Detail = deathDetail(in, hit, atMS, ready)
+		f.Detail = readyDetail(in, hit, atMS, ready)
+		if !ready.SincePull {
+			f.Facts.Times = append(f.Facts.Times, Clock(ready.ReadyAtMS))
+		}
 		return f
 	}
 	f.Title = Fill(TitleDiedTo, map[string]string{"t": t, "Spell": hit.Name})
-	f.Basis = Basis{Label: FromYourLog + ".", Kind: BasisOwnLog}
+	f.Basis = Basis{Label: BasisFromLog, Kind: BasisOwnLog}
 	if deathAvoidable(in, hit) {
 		f.Basis.Label = Fill(BasisAvoidable, map[string]string{"Spell": hit.Name})
 	}
-	f.Detail = deathDetail(in, hit, atMS, deathReady{})
+	f.Detail = deathDetail(in, hit, atMS)
 	return f
 }
 
-// deathDetail: with a defensive ready since the pull, §5.3's sentence; otherwise the hit
-// (when the log kept its amount) and, when no healing potion or Healthstone was cast in
-// the window, that line. With a defensive ready, an avoidable killer is said too, in
-// §6.2's order: killing blow, avoidable, defensive. Without one, the basis says it.
-func deathDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
-	avoidable := ready.Name != "" && deathAvoidable(in, hit)
-	if ready.SincePull {
-		format := DetailDiedWithReady
-		if avoidable {
-			format = Drafts["detail_died_with_ready_avoidable"]
-		}
-		return Fill(format, map[string]string{"Killer": hit.Name, "t": Clock(atMS), "Spell": ready.Name})
+// readyDetail: the killer and the defensive ready since the pull (§5.3's sentence) or
+// since its cooldown came back. An avoidable killer is said too, in §6.2's order:
+// killing blow, avoidable, defensive.
+func readyDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
+	fields := map[string]string{"Killer": hit.Name, "t": Clock(atMS), "Spell": ready.Name, "since": readySincePull}
+	format := DetailDiedWithReady
+	if !ready.SincePull {
+		format, fields["since"] = DetailDiedWithReadySince, Clock(ready.ReadyAtMS)
 	}
+	if deathAvoidable(in, hit) {
+		format = Drafts["detail_died_with_ready_avoidable"]
+	}
+	return Fill(format, fields)
+}
+
+// deathDetail, with no defensive ready: the hit (when the log kept its amount) and, when
+// no healing potion or Healthstone was cast in the window, that line. The basis says an
+// avoidable killer.
+func deathDetail(in Input, hit deathHit, atMS int64) string {
 	var parts []string
 	if hit.Amount > 0 {
 		parts = append(parts, Fill(DetailDeathHit, map[string]string{
 			"Spell": hit.Name, "amount": Thousands(hit.Amount), "t": Clock(hit.AtMS),
 		}))
-	}
-	if avoidable {
-		parts = append(parts, Fill(Drafts["detail_death_avoidable"], map[string]string{"Spell": hit.Name}))
 	}
 	if !potionBefore(in.Fight, in.Row.GUID, atMS) {
 		parts = append(parts, DeathNoPotion)
@@ -301,7 +311,7 @@ func deathDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
 }
 
 func deathFacts(hit deathHit, t string) Facts {
-	// A melee killer is SpellFact{ID: 0, Name: "Onyxia's melee"} (Drafts["melee"]): id 0 is
+	// A melee killer is SpellFact{ID: 0, Name: "Onyxia's melee"} (KillerMelee): id 0 is
 	// the melee sentinel, not a spell. Task 26's validator must admit it by name into the
 	// allowed set, never refuse it as a non-positive spell id.
 	facts := Facts{Spells: []SpellFact{{ID: hit.SpellID, Name: hit.Name}}, Times: []string{t}}

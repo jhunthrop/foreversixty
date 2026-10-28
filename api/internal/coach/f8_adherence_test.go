@@ -1,7 +1,6 @@
 package coach
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -44,13 +43,13 @@ func TestAdherenceTextAndAnchors(t *testing.T) {
 	if f == nil {
 		t.Fatal("no finding")
 	}
-	if f.Title != "70% of casts from the rotation" {
+	if f.Title != "70% of casts on the rotation" {
 		t.Errorf("title %q", f.Title)
 	}
-	if !strings.Contains(f.Detail, "Hamstring, Rend, Overpower") {
+	if f.Detail != "Most-cast spells outside the written rotation: Hamstring (15), Rend (9) and Overpower (6)." {
 		t.Errorf("detail %q", f.Detail)
 	}
-	if f.Basis.Kind != BasisTopLogs || !strings.Contains(f.Basis.Label, "90% of casts from the rotation. You: 70%.") {
+	if f.Basis.Kind != BasisTopLogs || f.Basis.Label != "Top 25 Fury warriors on Onyxia (40): 90% on the rotation. You: 70%." {
 		t.Errorf("basis %+v", f.Basis)
 	}
 	assertNumbers(t, f.Facts, "70", "90", "25")
@@ -107,7 +106,7 @@ func TestAdherenceStrengthAtOrAboveMedian(t *testing.T) {
 		t.Fatalf("got %+v", o)
 	}
 	s := o.Strengths[0]
-	if s.Sentence != "95% of casts from the rotation, at or above the comparison." {
+	if s.Sentence != "95% of your casts were on the written rotation. Top 25: 90%." {
 		t.Errorf("sentence %q", s.Sentence)
 	}
 	assertNumbers(t, s.Facts, "95", "90")

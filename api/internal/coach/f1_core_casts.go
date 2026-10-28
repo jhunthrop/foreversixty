@@ -10,11 +10,12 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// F1's own copy: strings the spec does not show and copy_drafts.go does not hold.
+// coreMoreEntry is one ability in DetailCoreMore's list, as §8.1's example shows it
+// ("Whirlwind 4 and Heroic Strike 3"); coreCostMark is the word in CoreNoCost that a
+// different resource replaces.
 const (
-	coreMoreDetail = "Also under-used: {list}."
-	coreMoreEntry  = "{Spell} ({n} lost)"
-	coreCostMark   = "rage" // the word in CoreNoCost that a different resource replaces
+	coreMoreEntry = "{Spell} {n}"
+	coreCostMark  = "rage"
 )
 
 const coreUnknownResource = "resource"
@@ -345,16 +346,16 @@ func longestGaps(gaps []coreGap, n int) []coreGap {
 
 func coreDetail(worst coreAbility, shown []coreGap, more []coreAbility) string {
 	fields := map[string]string{
-		"actual": strconv.FormatInt(worst.actual, 10), "possible": strconv.FormatInt(worst.possible(), 10),
+		"lost": strconv.FormatInt(worst.lost, 10), "possible": strconv.FormatInt(worst.possible(), 10),
 		"resource": worst.resource(), "gap1": Span(shown[0].fromMS, shown[0].toMS),
 	}
-	format := Drafts["detail_core_one_gap"]
+	format := DetailCoreCastsOne
 	if len(shown) > 1 {
 		format, fields["gap2"] = DetailCoreCasts, Span(shown[1].fromMS, shown[1].toMS)
 	}
 	parts := []string{Fill(format, fields)}
 	if len(more) > 0 {
-		parts = append(parts, Fill(coreMoreDetail, map[string]string{"list": moreList(more)}))
+		parts = append(parts, Fill(DetailCoreMore, map[string]string{"more": moreList(more)}))
 	}
 	if worst.unverified {
 		parts = append(parts, noCostLine(worst.resource()))
@@ -367,7 +368,7 @@ func moreList(more []coreAbility) string {
 	for i, a := range more {
 		items[i] = Fill(coreMoreEntry, map[string]string{"Spell": a.spell.Name, "n": strconv.FormatInt(a.lost, 10)})
 	}
-	return strings.Join(items, ", ")
+	return joinAnd(items)
 }
 
 // noCostLine is CoreNoCost for the ability's resource (the spec words it for rage).
@@ -412,11 +413,20 @@ func coreStrength(a coreAbility, anchors *coreAnchors) (Strength, bool) {
 	if a.cmp == nil || a.youCPM < a.refCPM {
 		return Strength{}, false
 	}
+	format := StrengthCasts
+	if a.cmp.Kind == BasisSim {
+		format = StrengthCastsSim
+	}
 	return Strength{
-		Sentence: Fill(Drafts["strength_cpm"], map[string]string{"Spell": a.spell.Name, "you": PerMinute(a.youCPM)}),
+		Sentence: Fill(format, map[string]string{
+			"Spell": a.spell.Name, "you": PerMinute(a.youCPM), "n": strconv.Itoa(a.cmp.N), "ref": PerMinute(a.refCPM),
+		}),
 		Facts: Facts{
-			Numbers: []NumberFact{coreNumber(a.youCPM, PerMinute(a.youCPM), "casts per minute", a.spell.Name)},
-			Spells:  []SpellFact{spellFact(a)},
+			Numbers: []NumberFact{
+				coreNumber(a.youCPM, PerMinute(a.youCPM), "casts per minute", a.spell.Name),
+				coreNumber(a.refCPM, PerMinute(a.refCPM), "casts per minute in the comparison", a.spell.Name),
+			},
+			Spells: []SpellFact{spellFact(a)},
 		},
 		Anchors: []string{anchors.add(Anchor{Kind: AnchorCast, SpellID: a.spellID})},
 	}, true

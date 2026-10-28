@@ -272,8 +272,8 @@ func TestF4ManaDetailVariants(t *testing.T) {
 		want string
 	}{
 		{"died while out of mana", died, "Your mana stayed under 5% from 3:05 until you died at 3:20, 15 s in all."},
-		{"out to the end", holyManaLow(t, 232_000, 150_000, 232_000), "Your mana stayed under 5% from 2:30 to the end, 82 s in all."},
-		{"recovered", holyManaLow(t, 232_000, 185_000, 200_000), "Your mana was under 5% for 15 s in all, from 3:05."},
+		{"out to the end", holyManaLow(t, 232_000, 150_000, 232_000), "Your mana stayed under 5% from 2:30, 82 s in all."},
+		{"recovered", holyManaLow(t, 232_000, 185_000, 200_000), "Your mana stayed under 5% from 3:05, 15 s in all."},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"log/slog"
 	"regexp"
+	"strings"
 	"testing"
 )
 
 // Every player-facing pack string the spec shows, word for word
 // (docs/superpowers/specs/2026-10-27-log-coach-design.md §5, §6, §11), as format strings
-// with named fields filled by Fill. Strings the spec does not show are in copy_drafts.go.
-// verbatim below lists each one with the spec's own example values, and spec_test.go
-// proves every filled example is quoted in the spec.
+// with named fields filled by Fill. The experience spec's §8.1 strings follow
+// (design/specs/2026-10-28-log-coach.md); strings neither spec shows are in copy_drafts.go.
+// verbatim below lists each product-spec string with the spec's own example values, and
+// spec_test.go proves every filled example is quoted in the spec; experienceCopy lists the
+// §8.1 strings by their table key, and experience_spec_test.go pins each to its row.
 const (
 	NotReviewableSpec = "We couldn't tell this player's spec from the log."
 	CannotTalents     = "Talents and race: Forever logs don't record them."
@@ -52,7 +55,7 @@ const (
 	TitleUptime        = "{Aura} up {pct}% of the fight"
 	TitleLowRank       = "{Spell}: {n} casts of Rank {r}"
 
-	DetailCoreCasts      = "{actual} of a possible {possible} with {resource} in your bar. Longest gaps {gap1} and {gap2}."
+	DetailCoreCasts      = "{lost} of a possible {possible} went unused while you had the {resource}. Longest gaps {gap1} and {gap2}."
 	DetailNoFlask        = "You pulled with {items}, and no flask."
 	DetailCapped         = "Your {resource} sat at its cap for {n} s outside the {downtime}, longest at {span}."
 	DetailDeathHit       = "{Spell} hit for {amount} at {t}."
@@ -75,6 +78,104 @@ const (
 
 	NightCoreCasts = "{Spell} casts lost"
 )
+
+// The experience spec's §8.1 pack copy, word for word, by its table key.
+const (
+	TitleIdle    = "Idle for {n} seconds"
+	DetailIdle   = "Idle outside downtime for {n} s, {pct}% of the pull. Longest: {windows}."
+	BasisIdleTop = "Top {n} {Spec} {classPlural} on {Boss} ({size}): {ref}% active. You: {you}%."
+	BasisIdle    = "From your log. Downtime and time spent dead are left out."
+
+	TitleAdherence        = "{pct}% of casts on the rotation"
+	DetailAdherence       = "Most-cast spells outside the written rotation: {spells}."
+	BasisAdherenceTop     = "Top {n} {Spec} {classPlural} on {Boss} ({size}): {ref}% on the rotation. You: {you}%."
+	BasisAdherenceWritten = "Measured against the written {Spec} rotation. Under {floor}% is flagged."
+
+	TitleNoFood           = "No food at the pull"
+	DetailNoFood          = "You pulled with {items} but no food."
+	DetailNoFlaskBare     = "You pulled with no flask."
+	DetailNoFoodBare      = "You pulled with no food."
+	DetailAlsoMissing     = "Also missing: {items}."
+	TitleNoWeaponEnchant  = "{Slot} has no enchant"
+	DetailNoWeaponEnchant = "{Slot} had no permanent enchant at the pull."
+	TitleNoEnchants       = "{n} items have no enchant"
+	DetailNoEnchants      = "No permanent enchant on {slots}."
+	BasisGear             = "From the gear in your log."
+	TitlePotions          = "Combat potions: {n} unused"
+	DetailPotions         = "You used {used} combat potions. The fight had room for {max}."
+	TitleRaidBuff         = "No {Buff} at the pull"
+	TitleRaidBuffs        = "{n} raid buffs missing"
+	DetailRaidBuff        = "{Buff} was not on you at the pull. A {class} in the raid provides it."
+	DetailRaidBuffs       = "Not on you at the pull: {buffs}. The raid has a class that provides each."
+	BasisRaidBuff         = "From the character sheet in your log, against the classes in this raid."
+
+	DetailCoreCastsOne = "{lost} of a possible {possible} went unused while you had the {resource}. Longest gap {gap1}."
+	DetailCoreMore     = "Also lost: {more}."
+	DetailOutOfMana    = "Your mana stayed under 5% from {t}, {n} s in all."
+	DetailCappedPlain  = "Your {resource} sat at its cap for {n} s, longest at {span}."
+
+	NotReviewableTrash = "The coach reviews boss pulls only."
+	NotReviewableShort = "This pull is under 30 seconds, too short to show a rotation."
+	CannotSpecRules    = "Core casts, uptimes and the rotation: the coach doesn't know the {Spec} rotation yet."
+
+	CannotLevelRanks = "Spell ranks: this log doesn't tell us your level."
+	CannotLevelSim   = "Our guide's simulated rotation: this log doesn't tell us your level."
+
+	BasisFromLog             = "From your log."
+	DetailDiedWithReadySince = "{Killer} killed you at {t}. {Spell} had been ready since {since}."
+	DetailAlsoReady          = "Also ready: {spells}."
+	KillerMelee              = "{Mob}'s melee"
+
+	StrengthCasts     = "{Spell}: {you} casts a minute. Top {n}: {ref}."
+	StrengthCastsSim  = "{Spell}: {you} casts a minute. Our guide's rotation, simulated: {ref}."
+	StrengthAdherence = "{pct}% of your casts were on the written rotation. Top {n}: {ref}%."
+	StrengthOverheal  = "{Spell} (Rank {r}): {pct}% overheal. Top {n}: {ref}%."
+
+	LinkDeathInGapSentence = "The {Spell} gap at {gap} includes your death at {t}."
+	LinkNoFlaskMana        = "You pulled without a flask and your mana ran out from {t}."
+	LinkPotionDeath        = "You died at {t} with combat potions unused."
+
+	StemUptime    = "{Aura} uptime"
+	StemIdle      = "Idle time"
+	StemCapped    = "{Resource} at the cap"
+	StemOutOfMana = "Running out of mana"
+	StemLowRank   = "{Spell} below your best rank"
+	StemHealRank  = "{Spell} overheal"
+	StemNoFlask   = "No flask at the pull"
+	StemNoFood    = "No food at the pull"
+	StemEnchants  = "Missing enchants"
+	StemPotions   = "Unused combat potions"
+	StemRaidBuffs = "Missing raid buffs"
+	StemDeath     = "Early deaths"
+	StemAdherence = "Casts off the rotation"
+)
+
+// experienceCopy is every §8.1 string by the key in the table's first column.
+var experienceCopy = map[string]string{
+	"TitleIdle": TitleIdle, "DetailIdle": DetailIdle, "BasisIdleTop": BasisIdleTop, "BasisIdle": BasisIdle,
+	"TitleAdherence": TitleAdherence, "DetailAdherence": DetailAdherence,
+	"BasisAdherenceTop": BasisAdherenceTop, "BasisAdherenceWritten": BasisAdherenceWritten,
+	"TitleNoFood": TitleNoFood, "DetailNoFood": DetailNoFood, "DetailNoFlaskBare": DetailNoFlaskBare,
+	"DetailNoFoodBare": DetailNoFoodBare, "DetailAlsoMissing": DetailAlsoMissing,
+	"TitleNoWeaponEnchant": TitleNoWeaponEnchant, "DetailNoWeaponEnchant": DetailNoWeaponEnchant,
+	"TitleNoEnchants": TitleNoEnchants, "DetailNoEnchants": DetailNoEnchants, "BasisGear": BasisGear,
+	"TitlePotions": TitlePotions, "DetailPotions": DetailPotions,
+	"TitleRaidBuff": TitleRaidBuff, "TitleRaidBuffs": TitleRaidBuffs, "DetailRaidBuff": DetailRaidBuff,
+	"DetailRaidBuffs": DetailRaidBuffs, "BasisRaidBuff": BasisRaidBuff,
+	"DetailCoreCastsOne": DetailCoreCastsOne, "DetailCoreCasts": DetailCoreCasts, "DetailCoreMore": DetailCoreMore,
+	"DetailOutOfMana": DetailOutOfMana, "DetailCappedPlain": DetailCappedPlain,
+	"NotReviewableTrash": NotReviewableTrash, "NotReviewableShort": NotReviewableShort, "CannotSpecRules": CannotSpecRules,
+	"CannotLevelRanks": CannotLevelRanks, "CannotLevelSim": CannotLevelSim,
+	"BasisFromLog": BasisFromLog, "DetailDiedWithReadySince": DetailDiedWithReadySince,
+	"DetailAlsoReady": DetailAlsoReady, "KillerMelee": KillerMelee,
+	"StrengthCasts": StrengthCasts, "StrengthCastsSim": StrengthCastsSim,
+	"StrengthAdherence": StrengthAdherence, "StrengthOverheal": StrengthOverheal,
+	"LinkDeathInGap": LinkDeathInGapSentence, "LinkNoFlaskMana": LinkNoFlaskMana, "LinkPotionDeath": LinkPotionDeath,
+	"StemUptime": StemUptime, "StemIdle": StemIdle, "StemCapped": StemCapped, "StemOutOfMana": StemOutOfMana,
+	"StemLowRank": StemLowRank, "StemHealRank": StemHealRank, "StemNoFlask": StemNoFlask,
+	"StemNoFood": StemNoFood, "StemEnchants": StemEnchants, "StemPotions": StemPotions,
+	"StemRaidBuffs": StemRaidBuffs, "StemDeath": StemDeath, "StemAdherence": StemAdherence,
+}
 
 // verbatimEntry is one spec-shown string and the fields that fill it into the form the
 // spec quotes. No fields: the spec quotes the format itself (a constant, or a template
@@ -121,7 +222,7 @@ var verbatim = map[string]verbatimEntry{
 	"TitleHealRank":        {TitleHealRank, map[string]string{"Spell": "Greater Heal", "r": "4", "pct": "44"}},
 	"TitleUptime":          {TitleUptime, map[string]string{"Aura": "Shield Block", "pct": "18"}},
 	"TitleLowRank":         {TitleLowRank, map[string]string{"Spell": "Sunder Armor", "n": "22", "r": "4"}},
-	"DetailCoreCasts":      {DetailCoreCasts, map[string]string{"actual": "31", "possible": "40", "resource": "rage", "gap1": "1:12–1:25", "gap2": "2:40–2:51"}},
+	"DetailCoreCasts":      {DetailCoreCasts, map[string]string{"lost": "9", "possible": "40", "resource": "rage", "gap1": "1:12–1:25", "gap2": "2:40–2:51"}},
 	"DetailNoFlask":        {DetailNoFlask, map[string]string{"items": "Grilled Squid and an Elemental Sharpening Stone"}},
 	"DetailCapped":         {DetailCapped, map[string]string{"resource": "rage", "n": "14", "downtime": "air phase", "span": "2:41–2:50"}},
 	"DetailDeathHit":       {DetailDeathHit, map[string]string{"Spell": "Flame Breath", "amount": "2,140", "t": "3:20"}},
@@ -157,6 +258,14 @@ func SpecVerbatim() map[string]string {
 }
 
 var placeholder = regexp.MustCompile(`\{([A-Za-z0-9]+)\}`)
+
+// joinAnd is "a", "a and b", "a, b and c": the copy's list form.
+func joinAnd(items []string) string {
+	if len(items) < 2 {
+		return strings.Join(items, "")
+	}
+	return strings.Join(items[:len(items)-1], ", ") + " and " + items[len(items)-1]
+}
 
 // Fill replaces every {name} in format with fields[name]. A field the format names but
 // fields lacks is a defect: it panics under go test and is logged in production, where

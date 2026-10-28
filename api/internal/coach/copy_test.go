@@ -57,7 +57,7 @@ func TestDraftsAreNotInVerbatim(t *testing.T) {
 // sampleFields fills any title with plausible values: a two-word name and one number.
 var sampleFields = map[string]string{
 	"Spell": "Greater Heal", "Aura": "Shield Block", "Resource": "Rage", "Item": "Thunderfury",
-	"Buff": "Arcane Intellect", "n": "14", "r": "4", "pct": "44", "t": "3:20",
+	"Buff": "Arcane Intellect", "Slot": "Main Hand", "n": "14", "r": "4", "pct": "44", "t": "3:20",
 }
 
 var (
@@ -74,12 +74,17 @@ func TestTitlesShape(t *testing.T) {
 			titles[name] = e.format
 		}
 	}
+	for key, s := range experienceCopy {
+		if strings.HasPrefix(key, "Title") {
+			titles[key] = s
+		}
+	}
 	for key, d := range Drafts {
 		if strings.HasPrefix(key, "title_") {
 			titles[key] = d
 		}
 	}
-	if len(titles) < 15 {
+	if len(titles) < 18 {
 		t.Fatalf("found %d titles, want every Title constant and title_ draft", len(titles))
 	}
 	for name, format := range titles {
@@ -113,6 +118,8 @@ func TestCopyNumbersMatchTheRules(t *testing.T) {
 		{"ThinPool", ThinPool, "the coach needs " + strconv.Itoa(PoolMinPlayers) + "."},
 		{"DeathNoPotion", DeathNoPotion, "in the " + strconv.Itoa(DeathPotionWindowMS/1000) + " s before."},
 		{"DetailOutOfManaDeath", DetailOutOfManaDeath, "under " + PctNumber(ManaLowPct) + "%"},
+		{"DetailOutOfMana", DetailOutOfMana, "under " + PctNumber(ManaLowPct) + "%"},
+		{"NotReviewableShort", NotReviewableShort, "under " + strconv.Itoa(MinFightMS/1000) + " seconds"},
 	}
 	for _, c := range checks {
 		if !strings.Contains(c.text, c.want) {
@@ -129,6 +136,9 @@ func TestCopyNeverSaysHealMore(t *testing.T) {
 	}
 	for _, d := range Drafts {
 		all = append(all, d)
+	}
+	for _, s := range experienceCopy {
+		all = append(all, s)
 	}
 	for _, s := range all {
 		if strings.Contains(strings.ToLower(s), "heal more") {

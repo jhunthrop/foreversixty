@@ -15,7 +15,6 @@ const (
 	ranksPercent   = 100.0
 	// ranksPctMinCasts is the fewest lower-rank casts the percent branch of F5 accepts.
 	ranksPctMinCasts = 2
-	ranksCannotKey   = "cannot_level"
 )
 
 // lowRankUse is one ability family's casts below the highest rank trainable at the
@@ -40,7 +39,7 @@ func ranks(in Input, _ Counted) outcome {
 
 func lowRanks(in Input) outcome {
 	if in.Row.Level <= 0 {
-		return outcome{CouldNotCheck: []string{Drafts[ranksCannotKey]}}
+		return outcome{CouldNotCheck: []string{CannotLevelRanks}}
 	}
 	var worst *lowRankUse
 	for _, u := range lowRankUses(in) {
