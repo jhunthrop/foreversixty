@@ -496,6 +496,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | `claim_pending_ask` | `An officer has started a claim on {Guild}. Once a second officer or the guild master confirms it, they can subscribe it. Send them this link.` |
 | `claimed_ask`, viewer is an officer | `{Name} holds {Guild}'s claim and subscribes it. Send them this link.` |
 | `claimed_ask`, viewer is a member | `The guild master who holds {Guild}'s claim subscribes it. Send them this link.` |
+| `claimed_ask`, viewer holds the claim (`claim.yours` true; controller ruling 2026-10-27) | `You hold {Guild}'s claim. Subscribing it needs a verified officer or guild-master character.` |
 | `ask_leader` | `Only {Guild}'s guild master can claim it and subscribe it. Send them this link.` |
 | `ask_leader`, other-character line | `Lead {Guild} on another character? Save that character with the addon, then come back.` + `Get set up` |
 | `ask_leader` and `claimed_ask`, moderator fallback | `Guild master gone? Ask us on Discord and we will sort the claim by hand.` (link text `Ask us on Discord`, to the site Discord invite) |

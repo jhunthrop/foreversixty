@@ -23,9 +23,9 @@ func TestSubscribeStep(t *testing.T) {
 	}{
 		{"on_plan", StepFacts{OnLivePlan: true, ClaimState: ClaimStateClaimed, ViewerRank: "member"}, StepOnPlan},
 		{"checkout_open", StepFacts{CheckoutOpen: true, ClaimState: ClaimStateClaimed, ViewerRank: "member"}, StepCheckoutOpen},
-		{"frozen", StepFacts{ClaimState: ClaimStateContested, ViewerRank: "leader", ViewerVerified: true}, StepFrozen},
-		{"ready", StepFacts{ClaimState: ClaimStateClaimed, ViewerHoldsClaim: true, ViewerRank: "leader", ViewerVerified: true}, StepReady},
-		{"claimed_ask", StepFacts{ClaimState: ClaimStateClaimed, ViewerRank: "officer", ViewerVerified: true}, StepClaimedAsk},
+		{"frozen", StepFacts{ClaimState: ClaimStateContested, ViewerRank: "leader", ViewerVerifiedOfficer: true}, StepFrozen},
+		{"ready", StepFacts{ClaimState: ClaimStateClaimed, ViewerHoldsClaim: true, ViewerRank: "leader", ViewerVerifiedOfficer: true}, StepReady},
+		{"claimed_ask", StepFacts{ClaimState: ClaimStateClaimed, ViewerRank: "officer", ViewerVerifiedOfficer: true}, StepClaimedAsk},
 		{"claim_pending_yours", StepFacts{ClaimState: ClaimStatePending, ViewerPendingClaim: true, ViewerRank: "officer"}, StepClaimPendingYours},
 		{"confirm_claim", StepFacts{ClaimState: ClaimStatePending, ViewerRank: "officer"}, StepConfirmClaim},
 		{"claim_pending_ask", StepFacts{ClaimState: ClaimStatePending, ViewerRank: "member"}, StepClaimPendingAsk},
@@ -34,6 +34,10 @@ func TestSubscribeStep(t *testing.T) {
 		{"start_claim", unclaimedFacts("officer"), StepStartClaim},
 		{"claim_blocked", StepFacts{ClaimState: ClaimStateUnclaimed, ViewerRank: "officer", RateLimitedUntil: &until}, StepClaimBlocked},
 		{"ask_leader", unclaimedFacts("member"), StepAskLeader},
+		// The claim holder's verified main is a member and the leader is an unverified alt: the
+		// raw rank is leader, but Capabilities and checkout read the verified rank, so not ready.
+		{"holder, verified member main, unverified leader alt", StepFacts{ClaimState: ClaimStateClaimed,
+			ViewerHoldsClaim: true, ViewerRank: "leader"}, StepClaimedAsk},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -54,7 +58,7 @@ func TestSubscribeStep(t *testing.T) {
 func TestSubscribeStep_ReadyCarriesTrialUsed(t *testing.T) {
 	for _, used := range []bool{false, true} {
 		got := SubscribeStep(StepFacts{ClaimState: ClaimStateClaimed, ViewerHoldsClaim: true,
-			ViewerRank: "officer", ViewerVerified: true, TrialUsed: used})
+			ViewerRank: "officer", ViewerVerifiedOfficer: true, TrialUsed: used})
 		if got.Step != StepReady || got.TrialUsed == nil || *got.TrialUsed != used {
 			t.Fatalf("TrialUsed=%v: got %+v", used, got)
 		}
@@ -85,14 +89,12 @@ func TestSubscribeStep_BlockedReasons(t *testing.T) {
 	}
 }
 
-// The owner's real facts on 2026-10-27: a member, not verified, in two guilds nobody has
-// claimed or verified in, with no plan.
+// The owner's real facts on 2026-10-27: a member, not verified, with no plan. Both of the
+// owner's guilds have exactly these facts (unclaimed, nobody verified), so one call covers both.
 func TestSubscribeStep_OwnerFacts(t *testing.T) {
-	for _, guild := range []string{"OLYMPUS XXVII", "second guild"} {
-		got := SubscribeStep(StepFacts{ClaimState: ClaimStateUnclaimed, ViewerRank: "member"})
-		if got.Step != StepAskLeader {
-			t.Errorf("%s: step = %q, want ask_leader", guild, got.Step)
-		}
+	got := SubscribeStep(StepFacts{ClaimState: ClaimStateUnclaimed, ViewerRank: "member"})
+	if got.Step != StepAskLeader {
+		t.Errorf("step = %q, want ask_leader", got.Step)
 	}
 }
 
@@ -106,7 +108,7 @@ func TestSubscribeStep_OwnerAsGuildMaster(t *testing.T) {
 
 func TestSubscribeStep_FirstMatchOverlaps(t *testing.T) {
 	until := stepRateLimitedUntil
-	holder := StepFacts{ClaimState: ClaimStateClaimed, ViewerHoldsClaim: true, ViewerRank: "leader", ViewerVerified: true}
+	holder := StepFacts{ClaimState: ClaimStateClaimed, ViewerHoldsClaim: true, ViewerRank: "leader", ViewerVerifiedOfficer: true}
 	withCheckout := holder
 	withCheckout.CheckoutOpen = true
 	cases := []struct {
@@ -121,9 +123,15 @@ func TestSubscribeStep_FirstMatchOverlaps(t *testing.T) {
 			RateLimitedUntil: &until}, StepClaimLinkBnet, ""},
 		{"officer holding another claim", StepFacts{ClaimState: ClaimStateUnclaimed, ViewerRank: "officer",
 			HoldsOtherClaim: true, OtherGuildName: "Elsewhere"}, StepClaimBlocked, BlockedHoldsOther},
+		{"leader with Battle.net holding another claim", StepFacts{ClaimState: ClaimStateUnclaimed, ViewerRank: "leader",
+			HasBattleNet: true, HoldsOtherClaim: true, OtherGuildName: "Elsewhere"}, StepClaimBlocked, BlockedHoldsOther},
+		{"leader without Battle.net holding another claim", StepFacts{ClaimState: ClaimStateUnclaimed, ViewerRank: "leader",
+			HoldsOtherClaim: true, OtherGuildName: "Elsewhere"}, StepClaimLinkBnet, ""},
+		{"pending claim, viewer is the leader", StepFacts{ClaimState: ClaimStatePending, ViewerRank: "leader"},
+			StepConfirmClaim, ""},
 		{"lapsed plan, viewer holds the claim", holder, StepReady, ""},
 		{"lapsed plan, viewer not the holder", StepFacts{ClaimState: ClaimStateClaimed, ViewerRank: "officer",
-			ViewerVerified: true}, StepClaimedAsk, ""},
+			ViewerVerifiedOfficer: true}, StepClaimedAsk, ""},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -135,8 +143,10 @@ func TestSubscribeStep_FirstMatchOverlaps(t *testing.T) {
 	}
 }
 
-// The holder whose verified rank is member does not bill (Capabilities' CapBilling needs a
-// verified officer), so the step is not ready and falls through to claimed_ask.
+// The holder whose verified rank is member (say, demoted after claiming) does not bill
+// (mayBill needs a verified officer), so the step is claimed_ask and the card takes the spec
+// §9.1 row "`claimed_ask`, viewer holds the claim (`claim.yours` true; controller ruling
+// 2026-10-27)".
 func TestSubscribeStep_HolderWithoutVerifiedOfficerIsNotReady(t *testing.T) {
 	got := SubscribeStep(StepFacts{ClaimState: ClaimStateClaimed, ViewerHoldsClaim: true, ViewerRank: "leader"})
 	if got.Step != StepClaimedAsk {

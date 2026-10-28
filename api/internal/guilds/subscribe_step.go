@@ -1,10 +1,7 @@
 // api/internal/guilds/subscribe_step.go
 package guilds
 
-import (
-	"slices"
-	"time"
-)
+import "time"
 
 // Step is the one next step the checkout guild step offers a viewer for a guild (spec
 // 2026-10-27-subscribe-and-join §8). The web draws the card for the step it is given and
@@ -50,18 +47,18 @@ const (
 // StepFacts is everything SubscribeStep reads, gathered by the caller from billing and the
 // guild's claim. It holds facts, never decisions.
 type StepFacts struct {
-	OnLivePlan         bool       // a whole plan in trial, active, ending or past_due
-	CheckoutOpen       bool       // billing.Store.PendingGuildCheckout
-	ClaimState         string     // unclaimed | pending | claimed | contested
-	ViewerHoldsClaim   bool       // the viewer's account holds the claim
-	ViewerPendingClaim bool       // the viewer started the pending claim
-	ViewerRank         string     // highest raw rank in the guild: "leader" | "officer" | "member"
-	ViewerVerified     bool       // a verified character in the guild
-	HasBattleNet       bool       // a linked Battle.net identity
-	HoldsOtherClaim    bool       // the account already holds another guild's claim
-	OtherGuildName     string     // that other guild's name
-	RateLimitedUntil   *time.Time // set when the 30-day claim limit applies
-	TrialUsed          bool       // billing.Store.GuildTrialUsed
+	OnLivePlan            bool       // a whole plan in trial, active, ending or past_due
+	CheckoutOpen          bool       // billing.Store.PendingGuildCheckout
+	ClaimState            string     // unclaimed | pending | claimed | contested
+	ViewerHoldsClaim      bool       // the viewer's account holds the claim
+	ViewerPendingClaim    bool       // the viewer started the pending claim
+	ViewerRank            string     // highest raw rank in the guild: "leader" | "officer" | "member"
+	ViewerVerifiedOfficer bool       // guild_members' verified rank is officer or leader (Store.Capabilities' read)
+	HasBattleNet          bool       // a linked Battle.net identity
+	HoldsOtherClaim       bool       // the account already holds another guild's claim
+	OtherGuildName        string     // that other guild's name
+	RateLimitedUntil      *time.Time // set when the 30-day claim limit applies
+	TrialUsed             bool       // billing.Store.GuildTrialUsed
 }
 
 // StepResult is the step and the few values its card needs.
@@ -79,7 +76,8 @@ type stepRule struct {
 	matches func(StepFacts) bool
 }
 
-// stepRules is §8's first-match order. ask_leader is the fallback when none matches.
+// stepRules is §8's first-match order. ask_leader is the fallback when none matches. It is
+// read-only: nothing writes it after initialisation.
 var stepRules = []stepRule{
 	{StepOnPlan, func(f StepFacts) bool { return f.OnLivePlan }},
 	{StepCheckoutOpen, func(f StepFacts) bool { return f.CheckoutOpen }},
@@ -105,16 +103,11 @@ func SubscribeStep(f StepFacts) StepResult {
 	return StepResult{Step: StepAskLeader}
 }
 
-// isReady is Capabilities' billing word for the viewer: the claim holder with a verified
-// officer or leader character. Asking Capabilities keeps who may bill stated once.
+// isReady is a claimed guild the viewer may bill, by the rule Capabilities' billing word uses.
+// A claim holder who is not a verified officer falls through to claimed_ask (spec §9.1, the
+// claim.yours row).
 func isReady(f StepFacts) bool {
-	if f.ClaimState != ClaimStateClaimed || !f.ViewerHoldsClaim {
-		return false
-	}
-	const viewer int64 = 1
-	holder := viewer
-	verifiedOfficer := f.ViewerVerified && f.mayClaim()
-	return slices.Contains(Capabilities(Guild{ClaimedBy: &holder}, viewer, false, verifiedOfficer), CapBilling)
+	return f.ClaimState == ClaimStateClaimed && mayBill(f.ViewerHoldsClaim, f.ViewerVerifiedOfficer)
 }
 
 // mayClaim is eligibleClaimRank's rule: an officer or leader character, verified or not.

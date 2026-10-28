@@ -41,13 +41,19 @@ func Capabilities(g Guild, actorID int64, moderator, verifiedOfficer bool) []str
 	if verifiedOfficer {
 		out = append(out, CapAward)
 	}
-	if claimant && verifiedOfficer {
+	if mayBill(claimant, verifiedOfficer) {
 		out = append(out, CapBilling)
 	}
 	if claimant || moderator {
 		out = append(out, CapRelease)
 	}
 	return out
+}
+
+// mayBill is who may bill a guild: the account holding its claim, with a verified officer or
+// leader rank there. Capabilities' billing word and SubscribeStep's ready step both read it.
+func mayBill(claimant, verifiedOfficer bool) bool {
+	return claimant && verifiedOfficer
 }
 
 // Capabilities reads userID's standing in guildID and answers Capabilities for it. A
