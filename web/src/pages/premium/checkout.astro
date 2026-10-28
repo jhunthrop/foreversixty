@@ -15,7 +15,10 @@
 // showsGuildStep, never echoed), and if so marks <html data-checkout-step="guild"> with the
 // skeleton card count. The CSS below then holds the guild step's whole height from the first
 // paint and hides the static narrow body, so hydration and /v1/me move no footer (spec §7,
-// §11: CLS at most 0.02).
+// §11: CLS at most 0.02). The same signal reveals the band's static Guild summary frame, so the
+// LCP text (the size line) is in the first HTML instead of waiting for hydration, and
+// `client:after-paint` keeps the island's scripts behind that first paint (as on /guild), so
+// Lighthouse's throttled trace does not put hydration ahead of it.
 import Base from '../../layouts/Base.astro';
 import CheckoutLauncher from '../../components/CheckoutLauncher.svelte';
 import {
@@ -25,6 +28,7 @@ import {
   MIN_GUILD_COUNT,
 } from '../../lib/account/premium-hint';
 import { guildFrameReserve } from '../../lib/billing/checkout-layout';
+import { checkoutGuildCopy } from '../../lib/billing/checkout-guild-copy';
 import { INTERVALS, PLANS, PLAN_ORDER } from '../../lib/billing/plans';
 
 const guildPlans = PLAN_ORDER.filter((key) => PLANS[key].guild);
@@ -44,6 +48,7 @@ const lg = guildFrameReserve('lg');
       min: MIN_GUILD_COUNT,
       max: MAX_GUILD_COUNT,
       fallback: DEFAULT_GUILD_COUNT,
+      raidGuildSizeLine: checkoutGuildCopy.sizeLine.raidGuild,
     }}
   >
     // Layout only: the launcher still validates every param after hydration.
@@ -65,6 +70,13 @@ const lg = guildFrameReserve('lg');
         // Storage blocked: the default count.
       }
       document.documentElement.dataset.checkoutStep = 'guild';
+      // The band's static frame carries the Guild size line (the LCP text); Raid guild's differs.
+      if (params.get('plan') === 'raid_guild') {
+        document.addEventListener('DOMContentLoaded', () => {
+          const line = document.querySelector('[data-testid="checkout-size-line"]');
+          if (line) line.textContent = raidGuildSizeLine;
+        });
+      }
       document.documentElement.style.setProperty('--checkout-guild-cards', String(cards));
     }
   </script>
@@ -72,7 +84,7 @@ const lg = guildFrameReserve('lg');
        §5.1 / §7) on its static render, then the guild step's 880 column or the narrow message
        and plan=premium column under it. -->
   <main id="main" tabindex="-1" class="checkout-main flex w-full flex-col" data-testid="checkout-main">
-    <CheckoutLauncher client:load />
+    <CheckoutLauncher client:after-paint />
   </main>
 </Base>
 

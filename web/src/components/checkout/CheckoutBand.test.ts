@@ -96,11 +96,17 @@ describe('CheckoutBand', () => {
     expect(body).toContain(CHECKOUT_BAND_RESERVE);
   });
 
-  it('before the URL is read: the band ground and its reserve, no h1', () => {
+  it('before the URL is read: the static frame carries the LCP size line, marked pending', () => {
     const body = html(null);
     expect(body).toContain('full-bleed');
     expect(body).toContain(CHECKOUT_BAND_RESERVE);
-    expect(body).not.toContain('<h1');
+    expect(body).toContain('checkout-pending');
+    expect(textOf(body, 'checkout-size-line')).toBe(copy.sizeLine.guild);
+    expect(body).not.toContain('checkout-plan-price');
+  });
+
+  it('a resolved plan is not marked pending', () => {
+    for (const plan of ['guild', 'premium'] as const) expect(html(plan)).not.toContain('checkout-pending');
   });
 
   it('reserves the same height whatever the plan', () => {
