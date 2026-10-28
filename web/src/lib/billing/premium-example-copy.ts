@@ -20,14 +20,16 @@ export function serverRunCaption(ex: ServerRunExample = serverRunExample): strin
   return exampleCaption(ex, serverRunCaptionTemplates);
 }
 
-const NUMBER_RUN = /(\d{1,3}(?:,\d{3})+|\d+)/;
+/** A run set in the number font: a whole `d Mon yyyy` date (one face, never `27` mono and `Oct`
+ *  not), a grouped figure, or a plain number. */
+const NUMBER_RUN = /(\d{1,2} [A-Z][a-z]{2} \d{4}|\d{1,3}(?:,\d{3})+|\d+)/;
 
 export interface CaptionPart {
   text: string;
   mono: boolean;
 }
 
-/** Splits a caption into plain and number runs; both example cards set the numbers in mono. */
+/** Splits a caption into plain and number runs (a date is one run); both example cards set them in mono. */
 export function splitCaptionNumbers(caption: string): CaptionPart[] {
   return caption
     .split(NUMBER_RUN)

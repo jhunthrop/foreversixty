@@ -53,6 +53,19 @@ describe('ExampleResultCard', () => {
     expect(mono).toContain('4,812');
   });
 
+  it('the picture stops at 480 px from 768, left in the card (B3.4)', () => {
+    const box = renderCard(VALID).querySelector('picture')?.parentElement;
+    expect(box?.className).toContain('md:max-w-[480px]');
+    expect(box?.className).not.toMatch(/mx-auto/);
+  });
+
+  it('the whole caption date is one mono run', () => {
+    const mono = [...renderCard(VALID).querySelectorAll('[data-testid=sim-example-caption] .font-mono')].map(
+      (node) => node.textContent,
+    );
+    expect(mono).toContain('27 Oct 2026');
+  });
+
   it('no invented figure and no link', () => {
     const doc = renderCard();
     expect(doc.body.textContent).not.toContain('1,245 DPS');

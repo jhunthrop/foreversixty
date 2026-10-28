@@ -335,7 +335,7 @@ The cost lines are computed, never typed.
 - Guild values today. Yearly founder $4.80, list $6. Monthly founder $0.48, list $0.60.
 - The price figure sits directly above the cost line in the same block, so the sum each amount divides is always on screen.
 
-**B3.4 The `/sim` landing example (replaces an invented figure).** `ExampleResultCard.svelte` today shows the static `Fury Warrior` and `1,245 DPS` typed in `landing-copy.ts`. No sim produced that figure (tenet 8). It is replaced by the same real capture as B3.2. The card keeps its recipe (`border-line bg-card-top rounded-panel border p-4`, gap 8). Inside it: the `label` `EXAMPLE · A REAL SERVER RUN`; the same picture element, image files and 4:3 reserved box as B3.2; the caption from the same sidecar; then the existing hint line. `landingCopy.exampleSpec` and `landingCopy.exampleDps` are deleted. `exampleCaption` becomes the B5 label. The card has no `Open this result` link on `/sim`, because the visitor is already on the simulator and the link would pull them away from loading their own character. One capture and one sidecar feed both pages, so the two can never disagree.
+**B3.4 The `/sim` landing example (replaces an invented figure).** `ExampleResultCard.svelte` today shows the static `Fury Warrior` and `1,245 DPS` typed in `landing-copy.ts`. No sim produced that figure (tenet 8). It is replaced by the same real capture as B3.2. The card keeps its recipe (`border-line bg-card-top rounded-panel border p-4`, gap 8). Inside it: the `label` `EXAMPLE · A REAL SERVER RUN`; the same picture element, image files and 4:3 reserved box as B3.2; the caption from the same sidecar; then the existing hint line. `landingCopy.exampleSpec` and `landingCopy.exampleDps` are deleted. `exampleCaption` becomes the B5 label. The card has no `Open this result` link on `/sim`, because the visitor is already on the simulator and the link would pull them away from loading their own character. One capture and one sidecar feed both pages, so the two can never disagree. From 768 the picture's box is at most 480 px wide (the B3.2 cap at 768 to 1023), left-aligned in the card, so a 440 px capture is never blown up across the 1248 px column (gate fix, row 19, 2026-10-28).
 
 **B3.5 Wireframes.**
 
@@ -441,7 +441,7 @@ foot . FAQ
 |---|---|---|---|---|---|---|---|---|
 | Band link `Guild and Raid guild are further down` | `--gold`, no underline | `--gold-hover`, underline | 2 px gold ring, 2 px offset | `--gold-hover` | n/a | n/a | n/a | n/a |
 | Guild card button (now neutral) | `SECONDARY_BUTTON_FIXED` | today's `SECONDARY_BUTTON_HOVER` | 2 px gold ring, 2 px offset | `--card-top` ground | n/a | n/a (it navigates) | n/a | the checkout chooser's own states |
-| Example image (plans page and simulator landing) | the picture | none (not a control) | n/a | n/a | n/a | the 4:3 box reserves its space on the `--card-top` ground until the image decodes; no spinner, no shimmer | n/a: the capture is a ship blocker | a failed load leaves the reserved box on `--card-top`; the alt text, caption and link still render |
+| Example image (plans page and simulator landing) | the picture | none (not a control) | n/a | n/a | n/a | the 4:3 box reserves its space on the `--card-top` ground until the image decodes; no spinner, no shimmer | n/a: the capture is a ship blocker | a failed load leaves the reserved box on `--card-top`: the img is set `visibility: hidden` on its `error` event, so neither the browser's broken-image glyph nor the alt text draws in the box (gate fix, row 21, 2026-10-28; the alt is the caption sentence, which assistive tech still reads from the caption); the caption and link still render |
 | `Open this result` | inline gold link | `--gold-hover`, underline | 2 px gold ring, 2 px offset | `--gold-hover` | n/a | n/a | n/a | the saved result page's own not-found state |
 
 Touch and keyboard: both links have a 44 px minimum tap height. Tab order: band link, interval control, Premium button, `Open this result`, Guild button, Raid guild button, then the FAQ summaries. The image is not focusable.
@@ -529,7 +529,7 @@ Never collapses: every benefit line, the scope note, the support line, every cos
 | 18 | Region B, Monthly and after the founder window (the cost lines in all four forms, all three raid sizes) | x | x | x | x | |
 | 19 | `/sim` landing with the real example card (replaces the invented one) | x | x | | x | |
 | 20 | Band link: default, hover, focus-visible; and the viewport after activating it | | | | x | |
-| 21 | The example image failing to load (blocked request): reserved box, alt text, caption, link | | x | | x | |
+| 21 | The example image failing to load (blocked request): reserved box (plain `--card-top`, no glyph, no alt text), caption, link | | x | | x | |
 | 22 | Full page, same-scale side by side with the mock board for this amendment (`design/mocks/gen_launch_pricing.py` gains a `premium-value` board) | | | x | x | x |
 
 ### B10. Rulings (coordinator, 2026-10-27)

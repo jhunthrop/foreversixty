@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { serverRunCaption } from '../../lib/billing/plans-page-copy';
 import type { ServerRunExample } from '../../lib/billing/premium-examples';
+import { EXAMPLE_IMAGE_ON_ERROR } from '../../lib/billing/example-image';
 import { createPageContainer } from '../../test-support/page-container';
 import PremiumExampleCard from './PremiumExampleCard.astro';
 
@@ -59,6 +60,14 @@ describe('PremiumExampleCard', () => {
       (n) => n.textContent,
     );
     expect(mono).toContain('4,812');
+    // The whole date is one run in the number font, never `27` mono beside a plain `Oct`.
+    expect(mono).toContain('27 Oct 2026');
+  });
+
+  it('hides the img on a failed load, so no glyph or alt text draws in the box (B4)', async () => {
+    const { doc } = await render(VALID);
+    expect(doc.querySelector('img')?.getAttribute('onerror')).toBe(EXAMPLE_IMAGE_ON_ERROR);
+    expect(EXAMPLE_IMAGE_ON_ERROR).toBe("this.style.visibility='hidden'");
   });
 
   it('keeps the reserved box, caption and link when the image is absent', async () => {

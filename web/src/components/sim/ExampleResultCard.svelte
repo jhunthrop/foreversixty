@@ -4,7 +4,7 @@
      caption come from the shared example-image reader /premium uses (spec B3.4). The 4:3 box is
      reserved so a failed image still leaves label, caption and hint. No fetch, no link. -->
 <script lang="ts">
-  import { exampleImage } from '../../lib/billing/example-image';
+  import { EXAMPLE_IMAGE_FAILED_STYLE, exampleImage } from '../../lib/billing/example-image';
   import { serverRunCaption, splitCaptionNumbers } from '../../lib/billing/premium-example-copy';
   import { serverRunExample, type ServerRunExample } from '../../lib/billing/premium-examples';
   import { landingCopy } from '../../lib/sim/landing-copy';
@@ -16,6 +16,8 @@
 
   const image = $derived(exampleImage(example));
   const captionParts = $derived(splitCaptionNumbers(serverRunCaption(example)));
+  /** Spec B4: a failed load hides the img; the reserved box stays plain. */
+  let failed = $state(false);
 </script>
 
 <!-- No gutter of its own: every caller (SourceSwitcher.svelte's hero branch) already
@@ -25,19 +27,21 @@
   data-testid="sim-example-result"
 >
   <span class="label text-muted">{landingCopy.exampleCaption}</span>
-  <div class="bg-card-top rounded-[4px]" style="aspect-ratio: 4 / 3">
+  <!-- From 768 the picture stops at 480 px, left in the card (spec B3.4): a 440 px capture is never blown up. -->
+  <div class="bg-card-top rounded-[4px] md:max-w-[480px]" style="aspect-ratio: 4 / 3">
     <picture>
       <source srcset={image.avif} type="image/avif" />
       <source srcset={image.webp} type="image/webp" />
       <img
         class="border-line-soft box-border block h-auto w-full rounded-[4px] border"
-        style="aspect-ratio: 4 / 3"
+        style={failed ? `aspect-ratio: 4 / 3; ${EXAMPLE_IMAGE_FAILED_STYLE}` : 'aspect-ratio: 4 / 3'}
         src={image.webp}
         width={image.width}
         height={image.height}
         alt={image.alt}
         loading={image.loading}
         decoding={image.decoding}
+        onerror={() => (failed = true)}
       />
     </picture>
   </div>

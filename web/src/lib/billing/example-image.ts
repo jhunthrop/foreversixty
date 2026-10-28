@@ -9,6 +9,14 @@ export const EXAMPLE_IMAGE_HEIGHT = 330;
 
 const EXAMPLE_IMAGE_BASE = '/premium/example-server-run';
 
+/**
+ * Spec B4 (gate fix, row 21): a failed load hides the img, so the reserved box stays plain
+ * `--card-top` with no broken-image glyph and no alt text repeating the caption under it. The
+ * static plans page carries it as an inline handler; the /sim card sets the same style.
+ */
+export const EXAMPLE_IMAGE_FAILED_STYLE = 'visibility: hidden';
+export const EXAMPLE_IMAGE_ON_ERROR = "this.style.visibility='hidden'";
+
 export interface ExampleImage {
   avif: string;
   webp: string;

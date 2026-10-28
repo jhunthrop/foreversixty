@@ -4,7 +4,7 @@
 // in a reserved 4:3 box, the caption with its numbers in mono, and a link to the result. The box
 // holds its height with aspect-ratio, so a failed image still leaves box, caption and link.
 import { CARD_SURFACE } from '../../lib/ui/card';
-import { exampleImage } from '../../lib/billing/example-image';
+import { EXAMPLE_IMAGE_ON_ERROR, exampleImage } from '../../lib/billing/example-image';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
 import { serverRunCaption, splitCaptionNumbers } from '../../lib/billing/premium-example-copy';
 import { exampleHref, serverRunExample, type ServerRunExample } from '../../lib/billing/premium-examples';
@@ -34,6 +34,7 @@ const captionParts = splitCaptionNumbers(caption);
         alt={image.alt}
         loading={image.loading}
         decoding={image.decoding}
+        onerror={EXAMPLE_IMAGE_ON_ERROR}
       />
     </picture>
   </div>

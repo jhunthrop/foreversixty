@@ -275,15 +275,17 @@ const cardId = plan === 'free' ? 'free' : undefined;
     .audience-cell {
       margin-bottom: 8px;
     }
-    /* 52 px: two lines of the 11 px label plus the button's padding (about 40 px) fit, so the
-       answer (price and button) stays above y 520 at 1280 x 800 (spec B1). */
+    /* 44 px, the spec's button (gate fix L2): two lines of the 11 px label plus 6 px padding
+       (about 40 px) fit, and the answer (price and button) stays above y 520 at 1280 x 800
+       (spec B1). The slot and the button are one height, so Free's slot line centres in it. */
     .action-slot {
-      height: 52px;
+      height: 44px;
     }
-    /* The guild label is too wide for one line in a 1024px column, so every button fills the
-       same slot: tops and heights match whether a label wraps or not. */
+    /* The guild label is too wide for one line in a 1024px column, so every button is the same
+       44 px box at the slot's top: tops and heights match whether a label wraps or not. */
     .plan-button {
-      height: 100%;
+      height: 44px;
+      align-self: flex-start;
       padding: 6px 8px;
       font-size: 11px;
       letter-spacing: 0.03em;
