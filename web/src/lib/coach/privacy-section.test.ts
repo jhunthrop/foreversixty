@@ -14,10 +14,19 @@ describe('the privacy page Log coach section', () => {
   it('discloses what is sent, to whom, and what is never sent', () => {
     expect(text()).toContain('Vercel AI Gateway, which keeps nothing');
     expect(text()).toContain(COACH_MODEL_PROVIDER);
-    expect(text()).toMatch(/spec, class, role, boss, raid size, kill or wipe, duration, level, spell names/);
+    expect(text()).toContain(
+      "one fight's numbers — spec, class, role, boss, raid size, kill or wipe, duration, level and the spells cast —",
+    );
+    expect(text().match(/numbers/g)).toHaveLength(1);
     expect(text()).toMatch(/no character name, account, guild, realm or Battle\.net data/);
     expect(text()).toMatch(/we do not control that/);
     expect(text()).toMatch(/fall back to the log-only text/);
+  });
+
+  it('says plainly what anonymising does and does not stop (api/internal/coach/access.go)', () => {
+    expect(text()).toContain(
+      "Anonymising your account in its settings does not turn this off: a review is written when you, one of your guild's officers or a site moderator opens it, and anonymising stops only the moderator.",
+    );
   });
 
   it('promises nothing about the provider training or retention', () => {

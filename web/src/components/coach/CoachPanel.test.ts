@@ -24,33 +24,66 @@ const names: CoachNames = {
   iconUrl: () => '/data/b/icons/bt.webp',
 };
 
-function panel(
-  answer: CoachAnswer | null,
-  extra: Partial<{ view: CoachPanelView; reserve: Reserve | null; late: boolean }> = {},
-) {
-  const { body } = render(CoachPanel, {
-    props: {
-      view: extra.view ?? viewForAnswer(answer),
-      answer,
-      late: extra.late ?? false,
-      reserve: extra.reserve ?? null,
-      names,
-      build: '1.60.1.70630',
-      classSlug: 'warrior',
-      spec: 'Fury',
-      playerName: 'Thrall-ClassicBetaPvP-',
-      playerGuid: FIXTURE_GUID,
-      firstFight: 1,
-      historyHref: '/character/us/normal/thrall#coach',
-      className: 'Warrior',
-      cardLine: 'Fury Warrior · Onyxia (40) · Kill 3:52',
-      onRetry: () => {},
-    },
-  });
+type PanelExtra = Partial<{ view: CoachPanelView; reserve: Reserve | null; late: boolean }>;
+
+function panel(answer: CoachAnswer | null, extra: PanelExtra = {}) {
+  const { body } = render(CoachPanel, { props: panelProps(answer, extra) });
   return body;
 }
 
+function panelProps(answer: CoachAnswer | null, extra: PanelExtra = {}) {
+  return {
+    view: extra.view ?? viewForAnswer(answer),
+    answer,
+    late: extra.late ?? false,
+    reserve: extra.reserve ?? null,
+    names,
+    build: '1.60.1.70630',
+    classSlug: 'warrior',
+    spec: 'Fury',
+    playerName: 'Thrall-ClassicBetaPvP-',
+    playerGuid: FIXTURE_GUID,
+    firstFight: 1,
+    historyHref: '/character/us/normal/thrall#coach',
+    className: 'Warrior',
+    cardLine: 'Fury Warrior · Onyxia (40) · Kill 3:52',
+    onRetry: () => {},
+  };
+}
+
 describe('CoachPanel', () => {
+  it('every prose span tokenises spell names: the Practice line and the opening too', () => {
+    const base = coachModelReview();
+    const fix = base.review.fixFirst!;
+    const answer = {
+      ...base,
+      review: {
+        ...base.review,
+        opening: 'Whirlwind carried this pull.',
+        fixFirst: { ...fix, drillText: 'Press Bloodthirst first, then Whirlwind.' },
+      },
+    };
+    const tokens = new Map([
+      ['Bloodthirst', { kind: 'spell' as const, id: 23881 }],
+      ['Whirlwind', { kind: 'spell' as const, id: 1680 }],
+    ]);
+    const { body } = render(CoachPanel, {
+      props: { ...panelProps(answer), names: { ...names, dictionary: tokens } },
+    });
+    const drill = body.slice(body.indexOf('data-testid="coach-drill"'));
+    expect(drill.slice(0, drill.indexOf('</p>'))).toMatch(
+      /coach-name-spell.*Bloodthirst.*coach-name-spell.*Whirlwind/s,
+    );
+    const opening = body.slice(body.indexOf('data-testid="coach-opening"'));
+    expect(opening.slice(0, opening.indexOf('</p>'))).toContain('coach-name-spell');
+  });
+
+  it('a pack with no basis reads "Reviewed {date}." in the footer', () => {
+    const body = panel({ ...coachRulesReview(), basis_labels: [] });
+    expect(body).toMatch(/Reviewed \d+ \w+\./);
+    expect(body).not.toContain('Based on');
+  });
+
   it('ready model review: coach title, structure in order, footer, History', () => {
     const body = panel(coachModelReview());
     expect(body).toContain('Your Fury coach');

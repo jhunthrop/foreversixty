@@ -43,10 +43,13 @@ export const coachCopy = {
   labelWell: 'Doing well',
   labelCannot: "Couldn't check",
   footer: 'Reviewed {date} · Based on: {labels}.',
+  footerNoBasis: 'Reviewed {date}.',
   history: 'History',
   historyOlder: 'Show older',
+  historyOlderError: "Older reviews didn't load. Try again.",
   historyNone: 'Nothing to fix',
   historyRules: 'Log only',
+  historyRulesTitle: 'Written from the log only; the model was off',
   historyWipe: 'Wipe',
   rulesNothing: 'Nothing to fix on this pull that the log can show.',
   notReviewable:

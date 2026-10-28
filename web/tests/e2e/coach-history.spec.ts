@@ -60,6 +60,10 @@ test('twenty rows, each the review line, a link to its Coach tab, and 56 px tall
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(ROW_PX);
   await expect(list(page).getByTestId('coach-history-wipe').first()).toHaveText(coachCopy.historyWipe);
   await expect(list(page).getByTestId('coach-history-rules').first()).toHaveText(coachCopy.historyRules);
+  await expect(list(page).getByTestId('coach-history-rules').first()).toHaveAttribute(
+    'title',
+    coachCopy.historyRulesTitle,
+  );
   await expect(list(page).getByText(coachCopy.historyNone).first()).toBeVisible();
   expect((await list(page).textContent()) ?? '').not.toMatch(/!|heal more/i);
 });
@@ -83,7 +87,7 @@ test('Show older is aria-busy while it reads, then appends the last page and goe
 test('a failed older page keeps the rows and says so under the list', async ({ page }) => {
   await openOwner(page, true, { first: HISTORY_PAGES.first, older: 500 });
   await page.getByTestId('coach-history-older').click();
-  await expect(page.getByTestId('coach-history-older-error')).toHaveText(coachCopy.error);
+  await expect(page.getByTestId('coach-history-older-error')).toHaveText(coachCopy.historyOlderError);
   await expect(rows(page)).toHaveCount(20);
   await expect(page.getByTestId('coach-history-older')).toBeEnabled();
 });

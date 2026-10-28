@@ -62,7 +62,7 @@ export async function loadCoachNames(build: string, classSlug: string): Promise<
   ]);
   const spells = names?.spell ?? {};
   return {
-    dictionary: buildDictionary(spells, names?.item ?? {}),
+    dictionary: buildDictionary(spells, names?.item ?? {}, (id) => iconUrl(id) !== null),
     spellName: (id) => spells[String(id)] ?? '',
     iconUrl,
   };

@@ -86,8 +86,10 @@
               </span>
               {#if row.wipe}<span class={TAG} data-testid="coach-history-wipe">{coachCopy.historyWipe}</span
                 >{/if}
-              {#if row.logOnly}<span class={TAG} data-testid="coach-history-rules"
-                  >{coachCopy.historyRules}</span
+              {#if row.logOnly}<span
+                  class={TAG}
+                  title={coachCopy.historyRulesTitle}
+                  data-testid="coach-history-rules">{coachCopy.historyRules}</span
                 >{/if}
               <span class="text-muted pl-1" aria-hidden="true">›</span>
             </a>
@@ -105,8 +107,8 @@
         >
       {/if}
       {#if list.olderFailed}
-        <p class="text-muted text-[13px]" role="alert" data-testid="coach-history-older-error">
-          {coachCopy.error}
+        <p class="text-muted px-2 text-[13px]" role="alert" data-testid="coach-history-older-error">
+          {coachCopy.historyOlderError}
         </p>
       {/if}
     {/if}

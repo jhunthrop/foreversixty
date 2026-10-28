@@ -41,8 +41,10 @@ const (
 var (
 	webReviewedAt = time.Date(2026, 10, 25, 2, 10, 0, 0, time.UTC)
 	webFoughtAt   = time.Date(2026, 10, 25, 1, 30, 0, 0, time.UTC)
-	// The Molten Core night of the account line: eight bosses in kill order.
-	webMCBosses = []string{"Lucifron", "Magmadar", "Gehennas", "Garr", "Baron Geddon", "Shazzrah", "Golemagg the Incinerator", "Ragnaros"}
+	// The Molten Core night of the account line: a night that stopped after eight of the ten
+	// bosses, in the order a raid meets them (no Majordomo Executus, so no Ragnaros).
+	webMCBosses = []string{"Lucifron", "Magmadar", "Gehennas", "Garr", "Baron Geddon", "Shazzrah",
+		"Sulfuron Harbinger", "Golemagg the Incinerator"}
 	// The worked example's gaps: nine casts lost, the longest at 1:12–1:25 and 2:44–2:55.
 	webFuryGaps = [][2]int64{{24_000, 32_500}, {50_500, 59_000}, {72_000, 85_000}, {103_000, 111_500},
 		{129_500, 138_000}, {150_000, 158_000}, {164_000, 175_000}, {193_000, 201_500}, {213_500, 222_000}}

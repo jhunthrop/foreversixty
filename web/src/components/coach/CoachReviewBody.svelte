@@ -62,7 +62,7 @@
         <li class="text-muted flex gap-2 text-[13px] leading-5">
           <svg class="text-gold mt-1 h-3 w-3 shrink-0" viewBox="0 0 12 12" aria-hidden="true">
             <path d="M2 6h8M7 3l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.5" />
-          </svg>{line}
+          </svg><span><CoachText text={line} {names} {build} {classSlug} /></span>
         </li>
       {/each}
     </ul>
@@ -74,7 +74,7 @@
     class="text-text max-w-[720px] text-[15px] leading-[22px] {slotClass('opening', held)}"
     data-testid="coach-opening"
   >
-    {review.opening}
+    <CoachText text={review.opening} {names} {build} {classSlug} />
   </p>
 
   {#if review.fixFirst !== null}
@@ -97,7 +97,7 @@
           class="text-text mt-1 text-[14px] leading-[22px] {slotClass('drill', held)}"
           data-testid="coach-drill"
         >
-          {fix.drillText}
+          <CoachText text={fix.drillText} {names} {build} {classSlug} />
         </p>
       </div>
       <CoachChips chips={chipsOf(fix.anchors)} {names} reserved={held} />

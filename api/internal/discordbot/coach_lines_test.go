@@ -62,10 +62,10 @@ func TestCoachLineTextVariants(t *testing.T) {
 }
 
 func TestReport_PremiumOwnerGetsOneLinePerCharacter(t *testing.T) {
-	w, fc := coachWorld(t, line("Zulmara", "Bloodthirst casts lost", 5, 8), line("Vexlash", "Early pulls", 8, 8))
+	w, fc := coachWorld(t, line("Zulmara", zulmaraStem, 5, 8), line("Vexlash", "Early pulls", 8, 8))
 	rep := w.run(t, pressDiscord, "report")
 	got := headFields(rep)[coachCopy.FieldName]
-	want := "**Zulmara** · Fix first: Bloodthirst casts lost — on 5 of 8 bosses. [Open your coach's review](" + coachURL + ")\n" +
+	want := "**Zulmara** · Fix first: " + zulmaraStem + " — on 5 of 8 bosses. [Open your coach's review](" + coachURL + ")\n" +
 		"**Vexlash** · Fix first: Early pulls — on all 8 bosses. [Open your coach's review](" + coachURL + ")"
 	if got != want {
 		t.Fatalf("field = %q", got)
@@ -227,19 +227,27 @@ type dumpedFrame struct {
 var dumpClock = time.Date(2026, 12, 11, 4, 0, 0, 0, time.UTC)
 
 // moltenCoreNight is the §5.3 example night: eight bosses, so "5 of 8 bosses" is real.
+// moltenCoreKills is a night that stopped after eight of Molten Core's ten bosses, in the order
+// a raid meets them: no Majordomo Executus, so no Ragnaros.
+var moltenCoreKills = []string{"Lucifron", "Magmadar", "Gehennas", "Garr", "Baron Geddon", "Shazzrah",
+	"Sulfuron Harbinger", "Golemagg the Incinerator"}
+
 func moltenCoreNight(officer, public bool) *guilds.ReportAnswer {
 	ans := onyxiaReport(officer, public)
 	ans.Raid.Title = "Molten Core"
-	bosses := []string{"Lucifron", "Magmadar", "Gehennas", "Garr", "Shazzrah", "Baron Geddon", "Golemagg", "Ragnaros"}
-	order := make([]guilds.KillOrderView, 0, len(bosses))
-	for i, name := range bosses {
+	order := make([]guilds.KillOrderView, 0, len(moltenCoreKills))
+	for i, name := range moltenCoreKills {
 		ms := int64(150_000 + i*20_000)
 		order = append(order, guilds.KillOrderView{Name: name, Killed: true, KillMS: &ms})
 	}
 	ans.Report.KillOrder = order
-	ans.Raid.Night.Kills, ans.Raid.Night.Wipes = len(bosses), 0
+	ans.Raid.Night.Kills, ans.Raid.Night.Wipes = len(moltenCoreKills), 0
 	return ans
 }
+
+// zulmaraStem is a Marksmanship hunter's Fix first (the account and guild mocks' Zulmara): a
+// core cast of the hunter-marksmanship rule file.
+const zulmaraStem = "Multi-Shot casts lost"
 
 // TestDumpCoachPayloads writes the messages the A11 captures render, produced by the bot's own
 // handlers and the notify embed: COACH_DUMP_PAYLOADS=1 go test -run DumpCoachPayloads.
@@ -251,11 +259,11 @@ func TestDumpCoachPayloads(t *testing.T) {
 	w.svc.now = func() time.Time { return dumpClock }
 	w.og.report = moltenCoreNight(false, false)
 	frames := []dumpedFrame{
-		w.dumpReport(t, fc, "report-coach-one", "one character", line("Zulmara", "Bloodthirst casts lost", 5, 8)),
+		w.dumpReport(t, fc, "report-coach-one", "one character", line("Zulmara", zulmaraStem, 5, 8)),
 		w.dumpReport(t, fc, "report-coach-two", "two characters, every boss",
-			line("Zulmara", "Bloodthirst casts lost", 5, 8), line("Duskstrider", "Aimed Shot casts lost", 8, 8)),
+			line("Zulmara", zulmaraStem, 5, 8), line("Duskstrider", "Aimed Shot casts lost", 8, 8)),
 		w.dumpReport(t, fc, "report-coach-pending", "pending", CoachLine{Character: "Zulmara", Pending: true}),
-		w.dumpShared(t, fc, "report-shared", "after Share in channel", line("Zulmara", "Bloodthirst casts lost", 5, 8)),
+		w.dumpShared(t, fc, "report-shared", "after Share in channel", line("Zulmara", zulmaraStem, 5, 8)),
 		dumpRaidNight(true),
 		dumpRaidNight(false),
 	}
@@ -315,7 +323,10 @@ func dumpRaidNight(coachReady bool) dumpedFrame {
 			StartsAt: time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC), Timezone: "America/Chicago",
 			RaidURL: "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",
 		},
-		Kills: []notify.ReportKill{{Boss: "Ragnaros", Duration: 150 * time.Second}}, Came: 22, Signed: 23, LootItems: 6, CoachReady: coachReady,
+		Came: 22, Signed: 23, LootItems: 6, CoachReady: coachReady,
+	}
+	for i, boss := range moltenCoreKills {
+		post.Kills = append(post.Kills, notify.ReportKill{Boss: boss, Duration: time.Duration(150+20*i) * time.Second})
 	}
 	id, title := "report-ready-coach", "report_ready with the coach sentence"
 	if !coachReady {

@@ -8,7 +8,7 @@
      heights. The card is always its natural height: the tab's reserve lives on CoachTab. -->
 <script lang="ts">
   import { coachCopy, fill } from '../../lib/coach/copy';
-  import { reviewedDate } from '../../lib/coach/dates';
+  import { footerLine } from '../../lib/coach/footer';
   import type { CoachNames } from '../../lib/coach/names';
   import type { CoachAnswer } from '../../lib/coach/panel-state.svelte';
   import type { Reserve } from '../../lib/coach/reserves';
@@ -20,6 +20,7 @@
   import ClassIcon from '../report/ClassIcon.svelte';
   import CoachReviewBody from './CoachReviewBody.svelte';
   import CoachTeaser from './CoachTeaser.svelte';
+  import CoachText from './CoachText.svelte';
 
   let {
     view,
@@ -113,17 +114,7 @@
         view.state,
       ),
   );
-  const footer = $derived(
-    full === null
-      ? ''
-      : fill(coachCopy.footer, {
-          date: reviewedDate(full.reviewed_at),
-          labels: basisList(full.basis_labels),
-        }),
-  );
-  /** The basis labels are sentences: one list, each without its own full stop, `; ` between. */
-  const basisList = (labels: readonly string[]): string =>
-    labels.map((label) => label.replace(/\.$/, '')).join('; ');
+  const footer = $derived(full === null ? '' : footerLine(full.reviewed_at, full.basis_labels));
   const BUTTON =
     'rounded-control border-line-warm hover:border-gold focus-visible:outline-gold active:bg-card-top inline-flex h-11 items-center border px-4 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2';
 </script>
@@ -256,7 +247,9 @@
               <h3 class="label text-muted">{coachCopy.labelCannot}</h3>
               <ul class="mt-1 flex flex-col gap-1">
                 {#each full.review.couldntCheck as line, index (index)}
-                  <li class="text-muted text-[13px] leading-5">{line}</li>
+                  <li class="text-muted text-[13px] leading-5">
+                    <CoachText text={line} {names} {build} {classSlug} />
+                  </li>
                 {/each}
               </ul>
             </section>

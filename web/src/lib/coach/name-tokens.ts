@@ -67,18 +67,28 @@ export function tokenizeNames(text: string, dictionary: NameDictionary): TextPar
   return parts;
 }
 
-/** A dictionary from id-to-name tables; the first id of a name wins. */
+/**
+ * A dictionary from id-to-name tables. A spell name is shared by all its ranks: the first rank the
+ * icon table holds (`hasIcon`) wins, so the token shows an icon whenever any rank has one; else the
+ * first id. An item name keeps its first id.
+ */
 export function buildDictionary(
   spells: Readonly<Record<string, string>>,
   items: Readonly<Record<string, string>>,
+  hasIcon: (spellId: number) => boolean = () => false,
 ): NameDictionary {
   const dictionary = new Map<string, NameEntry>();
-  const add = (kind: NameKind, table: Readonly<Record<string, string>>): void => {
-    for (const [id, name] of Object.entries(table)) {
-      if (name !== '' && !dictionary.has(name)) dictionary.set(name, { kind, id: Number(id) });
-    }
-  };
-  add('spell', spells);
-  add('item', items);
+  const iconed = new Set<string>();
+  for (const [id, name] of Object.entries(spells)) {
+    if (name === '' || iconed.has(name)) continue;
+    const spellId = Number(id);
+    if (hasIcon(spellId)) {
+      iconed.add(name);
+      dictionary.set(name, { kind: 'spell', id: spellId });
+    } else if (!dictionary.has(name)) dictionary.set(name, { kind: 'spell', id: spellId });
+  }
+  for (const [id, name] of Object.entries(items)) {
+    if (name !== '' && !dictionary.has(name)) dictionary.set(name, { kind: 'item', id: Number(id) });
+  }
   return dictionary;
 }

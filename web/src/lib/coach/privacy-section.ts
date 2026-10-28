@@ -32,7 +32,7 @@ export function coachPrivacySection(provider: string = COACH_MODEL_PROVIDER): Co
       { label: `${provider} privacy policy`, href: PROVIDER_PRIVACY_URL },
     ],
     paragraphs: [
-      `When a Premium player or an officer opens a coach review, the numbers of one fight (spec, class, role, boss, raid size, kill or wipe, duration, level, spell names and the fight's own numbers) are sent through the Vercel AI Gateway, which keeps nothing, to ${provider}, which writes the review. It carries no character name, account, guild, realm or Battle.net data. What ${provider} keeps, and whether it trains on it, is set by its Open Platform terms and privacy policy, and we do not control that. If the model is switched off, reviews fall back to the log-only text.`,
+      `When a Premium player or an officer opens a coach review, one fight's numbers — spec, class, role, boss, raid size, kill or wipe, duration, level and the spells cast — are sent through the Vercel AI Gateway, which keeps nothing, to ${provider}, which writes the review. It carries no character name, account, guild, realm or Battle.net data. What ${provider} keeps, and whether it trains on it, is set by its Open Platform terms and privacy policy, and we do not control that. If the model is switched off, reviews fall back to the log-only text. Anonymising your account in its settings does not turn this off: a review is written when you, one of your guild's officers or a site moderator opens it, and anonymising stops only the moderator.`,
     ],
   };
 }

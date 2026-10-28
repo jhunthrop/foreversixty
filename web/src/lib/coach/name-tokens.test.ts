@@ -6,6 +6,24 @@ const dictionary = buildDictionary(
   { '19019': 'Thunderfury, Blessed Blade of the Windseeker' },
 );
 
+describe('buildDictionary', () => {
+  it('a spell name takes the first rank with an icon, else its first id', () => {
+    const ranks = {
+      '78': 'Heroic Strike',
+      '284': 'Heroic Strike',
+      '25286': 'Heroic Strike',
+      '1680': 'Whirlwind',
+    };
+    const iconed = new Set([284, 25286]);
+    const built = buildDictionary(ranks, {}, (id) => iconed.has(id));
+    expect(built.get('Heroic Strike')).toEqual({ kind: 'spell', id: 284 });
+    expect(built.get('Whirlwind')).toEqual({ kind: 'spell', id: 1680 });
+  });
+  it('a spell wins over an item of the same name', () => {
+    expect(buildDictionary({ '5': 'Rage' }, { '9': 'Rage' }).get('Rage')).toEqual({ kind: 'spell', id: 5 });
+  });
+});
+
 describe('tokenizeNames', () => {
   it('turns an exact spell name into a token and keeps punctuation outside', () => {
     expect(tokenizeNames('Bloodthirst: 9 casts lost', dictionary)).toEqual([
