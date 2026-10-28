@@ -10,7 +10,7 @@ sources:
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/simbuffs.json
   - data/curated/specs.json
-reviewed: pending
+reviewed: wow-player, 2026-10-27
 ---
 
 ## Who they are
