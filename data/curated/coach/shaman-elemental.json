@@ -1,6 +1,6 @@
 {
   "spec": "shaman-elemental",
-  "build": "1.60.1.70630",
+  "build": "1.60.1.70658",
   "core": [
     {
       "family": "Lava Burst",
@@ -11,7 +11,7 @@
         1326047
       ],
       "talent": true,
-      "verified": "1.60.1.70630/spellconst/shaman.json#1326047"
+      "verified": "1.60.1.70658/spellconst/shaman.json#1326047"
     }
   ],
   "auras": [],
