@@ -4,6 +4,7 @@
 // GUILD_TIER_MEMBER_LIMIT and every 7 is GUILD_TRIAL_DAYS; dates arrive as stored values.
 import { utcDayMonthYear } from '../dates';
 import {
+  CLAIM_COOLDOWN_DAYS,
   checkoutGuildBusy,
   checkoutGuildCheckoutErrors,
   checkoutGuildClaimErrors,
@@ -16,7 +17,7 @@ export type GuildTier = Extract<PlanKey, 'guild' | 'raid_guild'>;
 const tierWord = (tier: GuildTier): string => PLANS[tier].name;
 const date = utcDayMonthYear;
 const CLAIM_RULE = "Only a guild's guild master can claim it here and subscribe it.";
-const LAST_CLAIM_WINDOW = 'You may attempt one claim every 30 days';
+const LAST_CLAIM_WINDOW = `You may attempt one claim every ${CLAIM_COOLDOWN_DAYS} days`;
 
 export const checkoutGuildCopy = {
   band: { label: 'CHECKOUT', title: 'Subscribe a guild' },
@@ -114,6 +115,8 @@ export const checkoutGuildCopy = {
   claimPendingAsk: (guild: string): string =>
     `An officer has started a claim on ${guild}. Once a second officer or the guild master confirms it, they can subscribe it. Send them this link.`,
   claimedAsk: {
+    holdsClaim: (guild: string): string =>
+      `You hold ${guild}'s claim. Subscribing it needs a verified officer or guild-master character.`,
     officer: (name: string, guild: string): string =>
       `${name} holds ${guild}'s claim and subscribes it. Send them this link.`,
     member: (guild: string): string =>
@@ -130,7 +133,7 @@ export const checkoutGuildCopy = {
     holdsOther: (other: string, guild: string): string =>
       `You already hold ${other}'s claim. One account holds one guild's claim, so an officer of ${guild} claims it instead.`,
     rateLimited: (guild: string, availableAt: string): string =>
-      `You made a claim in the last 30 days. You can claim ${guild} from ${date(availableAt)}.`,
+      `You made a claim in the last ${CLAIM_COOLDOWN_DAYS} days. You can claim ${guild} from ${date(availableAt)}.`,
   },
   frozen: (guild: string): string =>
     `${guild}'s claim is contested. Nobody can subscribe it until a moderator resolves the contest.`,

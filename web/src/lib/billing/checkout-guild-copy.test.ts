@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { allStrings } from '../../test-support/all-strings';
 import { specCell, specString } from '../../test-support/spec-table';
 import { checkoutGuildCopy as copy } from './checkout-guild-copy';
 import { GUILD_TIER_MEMBER_LIMIT, GUILD_TRIAL_DAYS } from './plans';
@@ -9,13 +10,6 @@ const G = 'OLYMPUS XXVII';
 const cell = (label: string): string[] => specCell(SPEC, HEADING, label);
 const row = (label: string, index = 0, fill: Record<string, string> = {}): string =>
   specString(SPEC, HEADING, label, index, fill);
-
-function allStrings(value: unknown): string[] {
-  if (typeof value === 'string') return [value];
-  if (typeof value === 'function') return [];
-  if (typeof value === 'object' && value !== null) return Object.values(value).flatMap(allStrings);
-  return [];
-}
 
 describe('frame', () => {
   it('band and h1', () => {
@@ -295,6 +289,14 @@ describe('rules', () => {
       copy.emptyB.body,
     ];
     expect(text.join(' ')).not.toMatch(/Battle\.net/);
+  });
+
+  it('claimed_ask for the claim holder', () => {
+    expect(copy.claimedAsk.holdsClaim(G)).toBe(
+      row('`claimed_ask`, viewer holds the claim (`claim.yours` true; controller ruling 2026-10-27)', 0, {
+        Guild: G,
+      }),
+    );
   });
 
   it('no 40-person', () => {

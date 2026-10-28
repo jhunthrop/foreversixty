@@ -2,25 +2,10 @@
 // The pure rules of the checkout guild step: card order, the lead sentence, the plan-switch
 // note, the verify sub-line, the hand-off link and the copy field's label. No DOM, no fetch.
 import { checkoutGuildCopy as copy } from './checkout-guild-copy';
+import type { ClaimState, SubscribeStep } from './contract';
 import { guildFitsRaidTier } from './checkout-params';
 import { parseInterval, parsePlan } from './plan-params';
 import type { PlanKey } from './plans';
-
-/** The API's `subscribe.step` words (spec §8), in resolution order. */
-export type SubscribeStep =
-  | 'ready'
-  | 'claim'
-  | 'confirm_claim'
-  | 'start_claim'
-  | 'claim_link_bnet'
-  | 'claimed_ask'
-  | 'ask_leader'
-  | 'claim_pending_yours'
-  | 'claim_pending_ask'
-  | 'checkout_open'
-  | 'frozen'
-  | 'claim_blocked'
-  | 'on_plan';
 
 /** The fields of a `/v1/me` guild entry these rules read; `MeGuild` satisfies it. */
 export interface StepGuild {
@@ -28,8 +13,14 @@ export interface StepGuild {
   region: string;
   ruleset: string;
   name: string;
+  /** The guild page's slug, as the API sends it; never derived from `name`. */
+  slug: string;
   subscribe?: { step: SubscribeStep | null } | null;
-  claim?: { state: 'unclaimed' | 'pending' | 'claimed' | 'contested'; holder_name: string | null } | null;
+  claim?: {
+    state: ClaimState;
+    yours: boolean;
+    holder_name: string | null;
+  } | null;
   verify?: { has_approver: boolean } | null;
 }
 
@@ -50,8 +41,10 @@ export const STEP_ORDER: readonly SubscribeStep[] = [
   'on_plan',
 ];
 
+/** The steps whose card holds a copy link (spec §5.3). */
+export type HandoffStep = 'ask_leader' | 'claimed_ask' | 'claim_pending_yours' | 'claim_pending_ask';
+
 const SITE_ORIGIN = 'https://foreversixty.gg';
-const CLAIM_LINK_STEPS: readonly SubscribeStep[] = ['ask_leader', 'claim_pending_yours', 'claim_pending_ask'];
 const NO_VERIFY_LINE_STEPS: readonly SubscribeStep[] = ['claim', 'start_claim', 'confirm_claim'];
 const SHORT_VERIFY_STEPS: readonly SubscribeStep[] = ['ask_leader', 'claim_pending_ask'];
 
@@ -80,8 +73,9 @@ function isUnclaimed(guild: StepGuild): boolean {
   return state === undefined || state === 'unclaimed' || state === 'pending';
 }
 
-/** Spec §9.1's lead rows: any `ready` card, else by how many guilds still have no claim holder. */
+/** Spec §9.1's lead rows ('' for no guilds: the empty states draw instead): any `ready` card, else by how many guilds still have no claim holder. */
 export function leadSentence(guilds: readonly StepGuild[]): string {
+  if (guilds.length === 0) return '';
   if (guilds.some((guild) => stepOf(guild) === 'ready')) return copy.lead.ready;
   const unclaimed = guilds.filter(isUnclaimed).length;
   if (unclaimed === 0) return copy.lead.allClaimed;
@@ -122,14 +116,13 @@ export function verifySubLine(guild: StepGuild, viewerVerified: boolean): string
 
 /** Spec §6.1: the link a viewer sends to whoever can act. Carries no account id, token or name. */
 export function handoffUrl(
-  guild: Pick<StepGuild, 'region' | 'ruleset'> & { slug: string },
-  step: SubscribeStep,
+  guild: Pick<StepGuild, 'region' | 'ruleset' | 'slug'>,
+  step: HandoffStep,
   plan: string,
   interval: string,
   origin: string = SITE_ORIGIN,
 ): string {
-  const isClaimLink = CLAIM_LINK_STEPS.includes(step);
-  if (!isClaimLink && step !== 'claimed_ask') throw new Error(`step ${step} has no hand-off link`);
+  const isClaimLink = step !== 'claimed_ask';
   const query = new URLSearchParams();
   const knownPlan = parsePlan(plan);
   const knownInterval = parseInterval(interval);
@@ -148,4 +141,22 @@ export function copyFieldLabel(guild: StepGuild, step: SubscribeStep, viewerIsOf
   const holder = guild.claim?.holder_name;
   if (step === 'claimed_ask' && viewerIsOfficer && holder != null) return copy.copyField.labelPerson(holder);
   return copy.copyField.labelGuildMaster(guild.name);
+}
+
+/** Spec §5.4 / Decision 8: the moderator fallback shows on `ask_leader` and `claimed_ask` only. */
+export function showsModeratorFallback(step: SubscribeStep): boolean {
+  return step === 'ask_leader' || step === 'claimed_ask';
+}
+
+/** Spec §5.4: the other-character line shows on `ask_leader` only. */
+export function showsOtherCharacter(step: SubscribeStep): boolean {
+  return step === 'ask_leader';
+}
+
+/** The `claimed_ask` sentence: the claim holder's own card first, then officer, then member. */
+export function claimedAskLine(guild: StepGuild, viewerIsOfficer: boolean): string {
+  if (guild.claim?.yours === true) return copy.claimedAsk.holdsClaim(guild.name);
+  const holder = guild.claim?.holder_name;
+  if (viewerIsOfficer && holder != null) return copy.claimedAsk.officer(holder, guild.name);
+  return copy.claimedAsk.member(guild.name);
 }

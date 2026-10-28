@@ -1,16 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { checkoutGuildCopy as copy } from './checkout-guild-copy';
+import type { SubscribeStep } from './contract';
 import { GUILD_TIER_MEMBER_LIMIT } from './plans';
 import {
   STEP_ORDER,
+  claimedAskLine,
   copyFieldLabel,
   handoffUrl,
   leadSentence,
   orderGuildCards,
+  showsModeratorFallback,
+  showsOtherCharacter,
   switchNote,
   verifySubLine,
   type StepGuild,
-  type SubscribeStep,
 } from './subscribe-step';
 
 const G = { region: 'us', ruleset: 'forever', slug: 'olympus-xxvii' };
@@ -22,8 +25,9 @@ function guild(id: number, step: SubscribeStep | null, extra: Partial<StepGuild>
     region: 'us',
     ruleset: 'forever',
     name: `Guild ${id}`,
+    slug: `guild-${id}`,
     subscribe: step === null ? null : { step },
-    claim: { state: 'unclaimed', holder_name: null },
+    claim: { state: 'unclaimed', yours: false, holder_name: null },
     verify: { has_approver: false },
     ...extra,
   };
@@ -54,10 +58,6 @@ describe('handoffUrl', () => {
 
   it('carries no account id, token or name', () => {
     expect(handoffUrl(G, 'ask_leader', 'guild', 'yearly')).not.toMatch(/user|token|from|by=/);
-  });
-
-  it('refuses a step that has no hand-off', () => {
-    expect(() => handoffUrl(G, 'ready', 'guild', 'yearly')).toThrow(/no hand-off/);
   });
 });
 
@@ -97,13 +97,56 @@ describe('leadSentence', () => {
   });
 
   it('some claimed', () => {
-    const claimed = guild(2, 'claimed_ask', { claim: { state: 'claimed', holder_name: null } });
+    const claimed = guild(2, 'claimed_ask', { claim: { state: 'claimed', yours: false, holder_name: null } });
     expect(leadSentence([guild(1, 'ask_leader'), claimed])).toBe(copy.lead.someClaimed);
   });
 
   it('all claimed or on a plan', () => {
-    const claimed = guild(1, 'claimed_ask', { claim: { state: 'claimed', holder_name: null } });
+    const claimed = guild(1, 'claimed_ask', { claim: { state: 'claimed', yours: false, holder_name: null } });
     expect(leadSentence([claimed, guild(2, 'on_plan')])).toBe(copy.lead.allClaimed);
+  });
+});
+
+describe('leadSentence, no guilds', () => {
+  it('is empty: the empty states draw instead', () => {
+    expect(leadSentence([])).toBe('');
+  });
+});
+
+describe('step gates', () => {
+  it('the moderator fallback shows on ask_leader and claimed_ask only', () => {
+    expect(STEP_ORDER.filter(showsModeratorFallback)).toEqual(['claimed_ask', 'ask_leader']);
+  });
+
+  it('the other-character line shows on ask_leader only', () => {
+    expect(STEP_ORDER.filter(showsOtherCharacter)).toEqual(['ask_leader']);
+  });
+});
+
+describe('claimedAskLine', () => {
+  const claim = (yours: boolean, holder: string | null): Partial<StepGuild> => ({
+    claim: { state: 'claimed', yours, holder_name: holder },
+  });
+
+  it('the claim holder reads the verified-character line, officer or not', () => {
+    const mine = guild(1, 'claimed_ask', claim(true, 'Thrall'));
+    expect(claimedAskLine(mine, true)).toBe(copy.claimedAsk.holdsClaim('Guild 1'));
+    expect(claimedAskLine(mine, false)).toBe(copy.claimedAsk.holdsClaim('Guild 1'));
+  });
+
+  it('an officer is told the holder by name', () => {
+    expect(claimedAskLine(guild(1, 'claimed_ask', claim(false, 'Thrall')), true)).toBe(
+      copy.claimedAsk.officer('Thrall', 'Guild 1'),
+    );
+  });
+
+  it('a member, or an unnamed holder, reads the guild master line', () => {
+    expect(claimedAskLine(guild(1, 'claimed_ask', claim(false, 'Thrall')), false)).toBe(
+      copy.claimedAsk.member('Guild 1'),
+    );
+    expect(claimedAskLine(guild(1, 'claimed_ask', claim(false, null)), true)).toBe(
+      copy.claimedAsk.member('Guild 1'),
+    );
   });
 });
 
@@ -154,7 +197,7 @@ describe('verifySubLine', () => {
 });
 
 describe('copyFieldLabel', () => {
-  const held = guild(1, 'claimed_ask', { claim: { state: 'claimed', holder_name: 'Thrall' } });
+  const held = guild(1, 'claimed_ask', { claim: { state: 'claimed', yours: false, holder_name: 'Thrall' } });
 
   it('names the holder to an officer', () => {
     expect(copyFieldLabel(held, 'claimed_ask', true)).toBe(copy.copyField.labelPerson('Thrall'));
