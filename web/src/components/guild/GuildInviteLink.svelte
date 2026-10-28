@@ -9,6 +9,7 @@
   import { GuildApiError, rotateInvite } from '../../lib/guild/api';
   import { guildSettingsCopy } from '../../lib/guild/copy';
   import { formatMadeOn, inviteUrl } from '../../lib/guild/invite-link';
+  import CopyLinkField from '../ui/CopyLinkField.svelte';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { BUSY_CLASS } from '../../lib/ui/busy';
 
@@ -32,13 +33,9 @@
   let error = $state('');
   let url = $state<string | null>(null);
   let madeAt = $state<string | null>(null);
-  let copied = $state(false);
-  let copyError = $state(false);
-  let copiedTimer: ReturnType<typeof setTimeout> | undefined;
 
   const made = $derived(madeAt ?? rotatedAt);
   const madeOn = $derived(made === null ? '' : formatMadeOn(made));
-  const canShare = $derived(typeof navigator !== 'undefined' && typeof navigator.share === 'function');
 
   async function onRotate(): Promise<void> {
     busy = true;
@@ -47,37 +44,12 @@
       const result = await rotateInvite(guildId);
       url = inviteUrl(guildInviteHref(result.token));
       madeAt = result.rotated_at;
-      copied = false;
-      copyError = false;
       confirming = false;
       onRotated?.(result.rotated_at);
     } catch (thrown) {
       error = thrown instanceof GuildApiError ? thrown.message : guildSettingsCopy.actionFailed;
     } finally {
       busy = false;
-    }
-  }
-
-  async function onCopy(): Promise<void> {
-    if (url === null) return;
-    try {
-      await navigator.clipboard.writeText(url);
-      copyError = false;
-      copied = true;
-      clearTimeout(copiedTimer);
-      copiedTimer = setTimeout(() => (copied = false), 2000);
-    } catch {
-      copied = false;
-      copyError = true;
-    }
-  }
-
-  async function onShare(): Promise<void> {
-    if (url === null) return;
-    try {
-      await navigator.share({ url });
-    } catch {
-      // Dismissing the share sheet rejects; nothing to say.
     }
   }
 </script>
@@ -120,43 +92,19 @@
     </div>
   {/if}
   {#if url !== null}
-    <div class="flex flex-col gap-2" data-testid={`${testidPrefix}-token`}>
-      <label class="flex flex-col gap-1 text-[13px]">
-        <span class="label text-muted">{guildSettingsCopy.linkLabel}</span>
-        <input
-          class="border-line-warm bg-raised rounded-control text-text h-11 w-full min-w-0 px-3 font-mono text-[13px]"
-          type="text"
-          readonly
-          value={url}
-          onfocus={(event) => (event.currentTarget as HTMLInputElement).select()}
-          data-testid={`${testidPrefix}-url`}
-        />
-      </label>
-      <div class="flex flex-wrap items-center gap-3">
-        <button
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`}
-          onclick={() => void onCopy()}
-          data-testid={`${testidPrefix}-copy`}
-        >
-          {copied ? guildSettingsCopy.copied : guildSettingsCopy.copyButton}
-        </button>
-        {#if canShare}
-          <button
-            class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4`}
-            onclick={() => void onShare()}
-            data-testid={`${testidPrefix}-share`}
-          >
-            {guildSettingsCopy.shareButton}
-          </button>
-        {/if}
-        <span class="text-muted text-[13px]">{guildSettingsCopy.tokenShownOnce}</span>
-      </div>
-      {#if copyError}
-        <p class="text-[13px]" role="alert" data-testid={`${testidPrefix}-copy-error`}>
-          {guildSettingsCopy.copyFailed}
-        </p>
-      {/if}
-    </div>
+    {#key url}
+      <CopyLinkField
+        {url}
+        label={guildSettingsCopy.linkLabel}
+        shareTitle={guildSettingsCopy.inviteShareTitle}
+        shareText={guildSettingsCopy.inviteShareText}
+        testid={testidPrefix}
+      >
+        {#snippet note()}
+          <span class="text-muted text-[13px]">{guildSettingsCopy.tokenShownOnce}</span>
+        {/snippet}
+      </CopyLinkField>
+    {/key}
   {/if}
   {#if madeOn !== ''}
     <p class="text-muted text-[12px]" data-testid={`${testidPrefix}-made`}>

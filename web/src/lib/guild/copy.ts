@@ -2,6 +2,8 @@
 // Every visible string the guild home, claim, settings, join and account-consent views
 // use, in the site's own honest-copy voice: no exclamation marks, never a nag inside a
 // tool. Wording quoted directly from the spec is marked as such below.
+import { uiCopy } from '../ui/copy';
+
 export const guildHomeCopy = {
   // The line every not-yet-ready state paints (loading, failed, a bad address), so the first
   // thing on screen is server-rendered text that hydration does not change: the page's
@@ -150,10 +152,12 @@ export const guildSettingsCopy = {
   rotateCancel: 'Cancel',
   tokenShownOnce: 'Shown once. Copy it now.',
   linkLabel: 'Invite link',
-  copyButton: 'Copy link',
-  copied: 'Copied',
-  copyFailed: 'Could not copy. Select the link and copy it.',
-  shareButton: 'Share',
+  copyButton: uiCopy.copyLink,
+  copied: uiCopy.copiedLink,
+  copyFailed: uiCopy.copyLinkFailed,
+  shareButton: uiCopy.shareLink,
+  inviteShareTitle: 'Join our guild on Forever Sixty',
+  inviteShareText: 'Use this link to join our guild on Forever Sixty.',
   currentLinkMade: (date: string): string =>
     `Current link made ${date}. It cannot be shown again; rotate it for a new one.`,
   saved: 'Saved.',
