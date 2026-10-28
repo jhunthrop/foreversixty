@@ -28,6 +28,8 @@ export type CoachAnchorKind = 'cast' | 'aura' | 'death' | 'resource' | 'time' | 
 export interface CoachAnchor {
   readonly kind: CoachAnchorKind;
   readonly spell_id?: number;
+  /** The build's name for `spell_id` (the class spell data), which the web's name tables may lack. */
+  readonly spell_name?: string;
   readonly at_ms?: number;
   readonly to_ms?: number;
   readonly death?: string;

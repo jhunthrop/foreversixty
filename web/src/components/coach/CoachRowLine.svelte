@@ -90,6 +90,7 @@
     {href}
     {iconUrl}
     {label}
+    reserve={viewerState.viewer.premium ? 'premium' : 'free'}
     onOpen={(event) => followReportLink(event, href)}
     onRetry={() => (attempt += 1)}
   />

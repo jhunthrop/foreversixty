@@ -33,17 +33,24 @@ function span(anchor: CoachAnchor): string {
     : clock(start);
 }
 
+const SPELL_LEAD = '{Spell} · ';
+
+/** `{Spell} · Casts` with the name, or the kind word alone (`Casts`) when the name is unknown. */
+function spellChip(template: string, spell: string): string {
+  return spell === '' ? template.replace(SPELL_LEAD, '') : fill(template, { Spell: spell });
+}
+
 export function chipLabel(anchor: CoachAnchor, spellName: (id: number) => string): string | null {
-  const spell = anchor.spell_id === undefined ? '' : spellName(anchor.spell_id);
+  const spell = anchor.spell_name ?? (anchor.spell_id === undefined ? '' : spellName(anchor.spell_id));
   switch (anchor.kind) {
     case 'cast':
-      return fill(coachCopy.anchorCast, { Spell: spell });
+      return spellChip(coachCopy.anchorCast, spell);
     case 'aura':
-      return fill(anchor.debuff === true ? coachCopy.anchorDebuffs : coachCopy.anchorBuffs, { Spell: spell });
+      return spellChip(anchor.debuff === true ? coachCopy.anchorDebuffs : coachCopy.anchorBuffs, spell);
     case 'buffs':
       return coachCopy.anchorBuffsPull;
     case 'healing':
-      return fill(coachCopy.anchorHealing, { Spell: spell });
+      return spellChip(coachCopy.anchorHealing, spell);
     case 'time':
       return anchor.at_ms === undefined ? null : fill(coachCopy.anchorTime, { t: span(anchor) });
     case 'resource':

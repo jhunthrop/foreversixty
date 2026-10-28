@@ -124,6 +124,7 @@ function anchor(raw: Raw): CoachAnchor | null {
   return {
     kind,
     ...(spell === undefined ? {} : { spell_id: spell }),
+    ...(typeof raw.spell_name === 'string' && raw.spell_name !== '' ? { spell_name: raw.spell_name } : {}),
     ...(at === undefined ? {} : { at_ms: at }),
     ...(to === undefined ? {} : { to_ms: to }),
     ...(typeof raw.death === 'string' && raw.death !== '' ? { death: raw.death } : {}),

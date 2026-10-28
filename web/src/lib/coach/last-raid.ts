@@ -3,7 +3,7 @@
 // module's sentence split into styled segments plus the one link it carries. Pure, so the
 // component and its tests agree. The line is never hidden: no raid in 14 days is the muted
 // `lastRaidNone` line (controller ruling), not `null`.
-import { coachCopy, fill } from './copy';
+import { COACH_SEPARATOR, coachCopy, fill } from './copy';
 import type { CoachRecent, LastRaid } from './types';
 
 export type LastRaidRole = 'lead' | 'place' | 'plain' | 'link' | 'muted';
@@ -21,7 +21,7 @@ export interface LastRaidView {
   stem: string | null;
 }
 
-const SEGMENT_SEPARATOR = ' · ';
+const SEGMENT_SEPARATOR = COACH_SEPARATOR;
 
 /** The line's accessible name: the copy's own lead, so it is never typed twice. */
 export const LAST_RAID_LABEL = coachCopy.lastRaidNone.split(SEGMENT_SEPARATOR)[0]!;

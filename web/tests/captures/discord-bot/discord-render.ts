@@ -116,9 +116,13 @@ function timeTag(unix: string, style: string, now: Date): string {
   });
 }
 
-/** Discord's inline markdown, the part the bot uses: bold, strike-through, timestamps. */
+/** A masked link, `[text](https://…)`, as Discord draws it in embed descriptions and field values. */
+const MASKED_LINK = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
+
+/** Discord's inline markdown, the part the bot uses: masked links, bold, strike-through, timestamps. */
 function markdown(raw: string, now: Date): string {
   return escapeHtml(raw)
+    .replace(MASKED_LINK, (_m, text: string, url: string) => `<a class="mlink" href="${url}">${text}</a>`)
     .replace(
       /&lt;t:(\d+):([FfR])&gt;/g,
       (_m, unix: string, style: string) => `<span class="ts">${timeTag(unix, style, now)}</span>`,
@@ -205,6 +209,7 @@ export function renderMessage(entry: Dumped, options: RenderOptions): string {
   .footer{font-size:12px;color:#b5bac1;margin-top:8px}
   .thumb{flex:none;width:80px;height:80px;margin-top:8px;border-radius:4px;object-fit:contain}
   .ts{background:#4e5058;border-radius:3px;padding:0 2px}
+  .mlink{color:#00a8fc;text-decoration:none}
   .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
   .btn{font:500 14px/1 inherit;font-family:inherit;border:0;border-radius:3px;padding:10px 16px;color:#fff;min-height:32px}
   .btn.secondary,.btn.link{background:#4e5058}.btn.success{background:#248046}.btn[disabled]{opacity:.5}.ext{margin-left:6px}

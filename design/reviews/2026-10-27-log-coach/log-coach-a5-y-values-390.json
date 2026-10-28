@@ -1,13 +1,13 @@
 {
   "before": {
-    "thenLabelY": 1657.5,
-    "doingWellLabelY": 2516,
-    "cardBottomY": 2735.5
+    "thenLabelY": 1571.5,
+    "doingWellLabelY": 2245,
+    "cardBottomY": 2464.5
   },
   "after": {
-    "thenLabelY": 1657.5,
-    "doingWellLabelY": 2516,
-    "cardBottomY": 2735.5
+    "thenLabelY": 1571.5,
+    "doingWellLabelY": 2245,
+    "cardBottomY": 2464.5
   },
   "equal": true
 }

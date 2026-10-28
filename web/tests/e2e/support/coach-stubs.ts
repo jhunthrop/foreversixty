@@ -1,28 +1,22 @@
 // web/tests/e2e/support/coach-stubs.ts
-// What the coach specs and captures share: the viewers (`/v1/me` answers), the coach route stub, and
-// one fixture pack per panel state of the experience spec (design/specs/2026-10-28-log-coach.md
-// section 4.2), all built from the worked example (a Fury warrior, "Bloodthirst: 9 casts lost").
-// The report is the e2e fixture night (src/fixtures/report): Baelgrim (warrior) and Sunwick
-// (priest) are in fight 3, Morrowlyn (a third damage dealer) is the officer's pick.
+// What the coach specs and captures share: the viewers (`/v1/me` answers), the coach route stub,
+// the Onyxia pull the panel is read on, and one answer per panel state of the experience spec
+// (design/specs/2026-10-28-log-coach.md section 4.2). Every answer is the coach's own output:
+// src/fixtures/coach/*.json, written by api/internal/coach's TestWebFixtures_Write from the real
+// rules, rule files, renderer and route shaping (and held there by TestWebFixtures_NoDrift).
+// Nothing here types a review sentence.
+//
+// The report is the e2e fixture night (src/fixtures/report), re-read as the spec's worked pull:
+// fight 3 is Onyxia (40), a 3:52 kill in Onyxia's Lair, Baelgrim (the Fury warrior) and Sunwick
+// (the Holy priest) are in it, and Morrowlyn (a second Fury warrior) is the officer's pick.
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Page, Route } from '@playwright/test';
 import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import type { Me } from '../../../src/lib/account/me-types';
 import { premiumEntitlements } from '../../../src/test-support/billing-fixtures';
-import {
-  coachBusyReview,
-  coachModelReview,
-  coachNotReviewable,
-  coachPreparing,
-  coachRulesReview,
-  coachTeaser,
-} from '../../../src/test-support/coach-fixtures';
-import type {
-  CoachAnchor,
-  CoachFull,
-  CoachRecent,
-  CoachTeaser,
-  LastRaid,
-} from '../../../src/lib/coach/types';
+import type { CoachFull, CoachRecent, CoachTeaser, LastRaid } from '../../../src/lib/coach/types';
 import { envelope } from './guild-billing';
 import { plantSessionHint, routeMeCell, SIGNED_OUT } from './subscribe-stubs';
 
@@ -43,7 +37,151 @@ export const PANEL_URL = (guid: string = GUID.baelgrim): string =>
 export const ROWS_URL = `${REPORT}?fight=${FIGHT}&tab=damage-done`;
 const COACH_ROUTE = /\/v1\/reports\/fixture2abcd\/fights\/3\/coach/;
 const RATINGS_ROUTE = '**/v1/reports/fixture2abcd/fights/3/ratings';
-const RECENT_ROUTE = '**/v1/me/coach/recent';
+export const RECENT_ROUTE = '**/v1/me/coach/recent';
+
+// ---- the coach's own output ---------------------------------------------------------------------
+
+const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../src/fixtures/coach');
+
+/** One file of src/fixtures/coach, fresh on every call so a caller may spread it. */
+export function coachFixture<T = CoachFull>(name: string): T {
+  return JSON.parse(readFileSync(path.join(FIXTURES, `${name}.json`), 'utf8')) as T;
+}
+
+// ---- the pull: Onyxia (40), 3:52 ----------------------------------------------------------------
+
+/** The worked pull's facts (design spec §5.3), which the fixtures were built for. */
+export const ONYXIA = {
+  zone: "Onyxia's Lair",
+  boss: 'Onyxia',
+  size: 40,
+  difficulty: 9,
+  durationMs: 232_000,
+} as const;
+const FIXTURE_ZONE = 'Sanguine Depths';
+const RETRY_MS = 38_000; // fight 4 becomes a second, short Onyxia pull after the kill
+
+interface MetaFight {
+  index: number;
+  name: string;
+  zone?: string;
+  size?: number;
+  difficulty?: number;
+  duration_ms: number;
+  start: string;
+  end: string;
+  kill: boolean;
+}
+interface ReportMeta {
+  title?: string;
+  zone?: string;
+  fights: MetaFight[];
+}
+
+const at = (iso: string, ms: number): string => new Date(Date.parse(iso) + ms).toISOString();
+
+/** The report's meta with fights 3 and 4 as Onyxia pulls: the 3:52 kill, then a short wipe. */
+export function onyxiaMeta<T extends ReportMeta>(meta: T): T {
+  const kill = meta.fights.find((f) => f.index === FIGHT);
+  const killEnd = kill === undefined ? '' : at(kill.start, ONYXIA.durationMs);
+  const fights = meta.fights.map((fight) => {
+    const zoned = { ...fight, ...(fight.zone === undefined ? {} : { zone: ONYXIA.zone }) };
+    if (fight.index === FIGHT)
+      return {
+        ...zoned,
+        name: ONYXIA.boss,
+        size: ONYXIA.size,
+        difficulty: ONYXIA.difficulty,
+        duration_ms: ONYXIA.durationMs,
+        end: killEnd,
+      };
+    if (fight.index === FIGHT + 1 && killEnd !== '') {
+      const start = at(killEnd, RETRY_MS);
+      return {
+        ...zoned,
+        name: ONYXIA.boss,
+        size: ONYXIA.size,
+        difficulty: ONYXIA.difficulty,
+        kill: false,
+        start,
+        end: at(start, fight.duration_ms),
+      };
+    }
+    return zoned;
+  });
+  return {
+    ...meta,
+    ...(meta.zone === undefined ? {} : { zone: ONYXIA.zone }),
+    ...(meta.title === undefined ? {} : { title: meta.title.replace(FIXTURE_ZONE, ONYXIA.zone) }),
+    fights,
+  };
+}
+
+/** The two warriors of the pull are Fury, as the worked review is. */
+const FURY = new Set([GUID.baelgrim, GUID.morrowlyn]);
+const FIXTURE_BOSS = 'Warden Kelthas';
+
+/** Every unit record of the two Fury players, wherever the file carries one, as a Fury warrior. */
+function asFury(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(asFury);
+  if (value === null || typeof value !== 'object') return value;
+  const record = Object.fromEntries(Object.entries(value).map(([key, inner]) => [key, asFury(inner)]));
+  if (!FURY.has(String(record.guid))) return record;
+  return {
+    ...record,
+    ...('class' in record ? { class: 'Warrior' } : {}),
+    ...('spec' in record ? { spec: 'Fury' } : {}),
+  };
+}
+
+/** Fight 3's summary as the Onyxia kill: 3:52 long, the boss named, the warriors Fury. */
+export function onyxiaSummary(summary: object): object {
+  const named = JSON.parse(JSON.stringify(summary).replaceAll(FIXTURE_BOSS, ONYXIA.boss)) as object;
+  return { ...(asFury(named) as object), duration_ms: ONYXIA.durationMs };
+}
+
+const ENTITIES: Readonly<Record<string, string>> = {
+  '&quot;': '"',
+  '&#39;': "'",
+  '&lt;': '<',
+  '&gt;': '>',
+  '&amp;': '&',
+};
+const unescapeHtml = (s: string): string => s.replace(/&(quot|#39|lt|gt|amp);/g, (m) => ENTITIES[m] ?? m);
+const escapeHtml = (s: string): string =>
+  s
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+/** The report page with its inlined meta, and every place it names the zone, read as Onyxia's Lair. */
+function onyxiaPage(html: string): string {
+  return html
+    .replace(/data-report="([^"]*)"/, (_m, raw: string) => {
+      const meta = onyxiaMeta(JSON.parse(unescapeHtml(raw)) as ReportMeta);
+      return `data-report="${escapeHtml(JSON.stringify(meta))}"`;
+    })
+    .replaceAll(FIXTURE_ZONE, escapeHtml(ONYXIA.zone));
+}
+
+/** Serves the fixture night as the worked Onyxia pull: the page, its report file and fight 3's summary. */
+export async function routeOnyxiaPull(page: Page): Promise<void> {
+  await page.route(/\/reports\/fixture2abcd(\?|$)/, async (route) => {
+    if (route.request().resourceType() !== 'document') return route.fallback();
+    const response = await route.fetch();
+    await route.fulfill({ response, body: onyxiaPage(await response.text()) });
+  });
+  await page.route('**/logs-data/reports/fixture2abcd/report.json*', async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ response, json: asFury(onyxiaMeta((await response.json()) as ReportMeta)) });
+  });
+  await page.route('**/logs-data/reports/fixture2abcd/fights/3/summary.json*', async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ response, json: onyxiaSummary((await response.json()) as object) });
+  });
+}
 
 // ---- viewers ------------------------------------------------------------------------------------
 
@@ -63,12 +201,13 @@ function meFor(kind: Exclude<ViewerKind, 'signedOut'>, owned: readonly (keyof ty
   return { ...meAddonFixture, characters: characters as unknown as Me['characters'], entitlements };
 }
 
-/** Signs the visitor in as `kind` (the cookie hint plus `/v1/me`); returns the cell to swap the account later. */
+/** Signs the visitor in as `kind` (the cookie hint plus `/v1/me`) and serves the Onyxia pull. */
 export async function signInAs(
   page: Page,
   kind: ViewerKind,
   owned: readonly (keyof typeof OWN)[] = ['baelgrim'],
 ): Promise<void> {
+  await routeOnyxiaPull(page);
   if (kind === 'signedOut') {
     await page.route('**/v1/me', (route) => route.fulfill(SIGNED_OUT));
     return;
@@ -126,8 +265,8 @@ export async function routeRatingKeys(page: Page): Promise<void> {
     player_key: key,
     player_name: name,
     class: cls,
-    spec: 'Fury',
-    role: 'dps',
+    spec: cls === 'Priest' ? 'Holy' : 'Fury',
+    role: cls === 'Priest' ? 'healer' : 'dps',
     overall: 70,
     overall_uncapped: 70,
     overall_capped: false,
@@ -141,123 +280,20 @@ export async function routeRatingKeys(page: Page): Promise<void> {
   );
 }
 
-export async function routeRecent(page: Page, recent: CoachRecent | number): Promise<void> {
-  await page.route(RECENT_ROUTE, (route) =>
-    typeof recent === 'number'
+export async function routeRecent(
+  page: Page,
+  recent: CoachRecent | number,
+  gate?: Promise<void>,
+): Promise<void> {
+  await page.route(RECENT_ROUTE, async (route) => {
+    if (gate !== undefined) await gate;
+    await (typeof recent === 'number'
       ? route.fulfill(envelope({ code: 'internal', message: 'api sentence' }, recent))
-      : route.fulfill(envelope(recent)),
-  );
-}
-
-// ---- the worked example -------------------------------------------------------------------------
-
-const BLOODTHIRST = 23881;
-const WHIRLWIND = 1680;
-const BATTLE_SHOUT = 6673;
-const SUNDER_ARMOR = 11597;
-const HEAL = 2060;
-const DEATH_AT_MS = 200_000;
-
-/** One anchor of every kind the chips can link to, with the report tab each opens. */
-export const ANCHORS: Readonly<Record<string, CoachAnchor>> = {
-  cast: { kind: 'cast', spell_id: BLOODTHIRST },
-  cast2: { kind: 'cast', spell_id: WHIRLWIND },
-  buffs: { kind: 'buffs' },
-  aura: { kind: 'aura', spell_id: BATTLE_SHOUT },
-  debuff: { kind: 'aura', spell_id: SUNDER_ARMOR, debuff: true },
-  death: { kind: 'death', at_ms: DEATH_AT_MS },
-  time: { kind: 'time', at_ms: 83_000, to_ms: 91_000 },
-  resource: { kind: 'resource', at_ms: 120_000 },
-  healing: { kind: 'healing', spell_id: HEAL },
-};
-
-/** The URL fragment each anchor id must land on. */
-export const ANCHOR_LANDS: Readonly<Record<string, RegExp>> = {
-  cast: /tab=casts.*ability=23881|ability=23881.*tab=casts/,
-  cast2: /tab=casts.*ability=1680|ability=1680.*tab=casts/,
-  buffs: /tab=buffs/,
-  aura: /tab=buffs/,
-  debuff: /tab=debuffs/,
-  death: /tab=deaths/,
-  time: /view=timelines/,
-  resource: /view=timelines/,
-  healing: /tab=healing/,
-};
-
-const WHY_LINK = 'The Bloodthirst gap at 1:23 includes your death at 3:20.';
-
-/** The model's review of the worked example, with a Fix first, three Then items, Doing well and Couldn't check. */
-export function workedReview(overrides: Partial<CoachFull> = {}): CoachFull {
-  return coachModelReview({
-    player_key: KEY.baelgrim,
-    report_id: 'fixture2abcd',
-    fight_index: FIGHT,
-    review: {
-      opening: 'A kill with one habit to fix: Bloodthirst sat unused while you had the rage for it.',
-      fixFirst: {
-        finding: 'core_casts',
-        title: 'Bloodthirst: 9 casts lost',
-        why: 'Bloodthirst went unused 9 times while you had the rage. The longest gaps were 1:23 and 2:41.',
-        drill: 'core_casts',
-        drillText: 'For the next pull, press Bloodthirst the moment it comes off cooldown.',
-        anchors: ['cast', 'time'],
-        links: [],
-      },
-      thenFix: [
-        {
-          finding: 'consumables',
-          title: 'No flask at the pull',
-          why: 'You pulled with no flask.',
-          anchors: ['buffs', 'aura'],
-          links: [],
-        },
-        {
-          finding: 'deaths',
-          title: 'Death at 3:20',
-          why: 'Boss damage killed you at 3:20 with Last Stand ready.',
-          anchors: ['death', 'resource'],
-          links: [],
-        },
-        {
-          finding: 'whirlwind',
-          title: 'Whirlwind: 4 casts lost',
-          why: 'Whirlwind sat ready for four casts in the first phase.',
-          anchors: ['cast2', 'debuff'],
-          links: [],
-        },
-      ],
-      doingWell: [
-        { strength: 'adherence', text: '91% of your casts were on the written rotation.', anchors: ['cast'] },
-        { strength: 'uptime', text: 'Battle Shout was up for the whole pull.', anchors: ['aura'] },
-      ],
-      couldntCheck: [
-        "Spell ranks: this log doesn't tell us your level.",
-        "Defensive cooldowns: the coach doesn't know your spec's list yet.",
-      ],
-    },
-    anchors: ANCHORS,
-    basis_labels: ['your log', 'top Fury Warriors on Warden Kelthas (5)'],
-    ...overrides,
+      : route.fulfill(envelope(recent)));
   });
 }
 
-/** The same review as the rule-only rendering: the pack's own words, with the computed link lines. */
-export function workedRules(overrides: Partial<CoachFull> = {}): CoachFull {
-  const base = workedReview({ source: 'rules', persona: { label: 'Your Fury review', status: 'full' } });
-  const fix = base.review.fixFirst;
-  return {
-    ...base,
-    ...overrides,
-    review: {
-      ...base.review,
-      fixFirst: fix === null ? null : { ...fix, links: [{ id: 'death_in_gap', sentence: WHY_LINK }] },
-    },
-  };
-}
-
-export const LINK_SENTENCE = WHY_LINK;
-
-// ---- one pack per panel state -------------------------------------------------------------------
+// ---- one answer per panel state -----------------------------------------------------------------
 
 export type StateId =
   | 'ready-model'
@@ -267,9 +303,12 @@ export type StateId =
   | 'preparing'
   | 'no-findings'
   | 'not-reviewable'
-  | 'teaser-two'
+  | 'not-reviewable-short'
+  | 'not-reviewable-spec'
+  | 'teaser-several'
   | 'teaser-one'
   | 'teaser-empty'
+  | 'teaser-no-first'
   | 'officer'
   | 'starter'
   | 'healer'
@@ -277,113 +316,67 @@ export type StateId =
   | 'error'
   | 'not-available';
 
-const empty = (review: CoachFull): CoachFull => ({
-  ...review,
-  review: { ...review.review, fixFirst: null, thenFix: [] },
-});
-
-const healerReview = (): CoachFull => {
-  const base = workedReview({ spec: 'Holy', role: 'healer', player_key: KEY.sunwick });
-  return {
-    ...base,
-    review: {
-      ...base.review,
-      opening: 'A kill where Flash Heal carried the throughput.',
-      fixFirst: {
-        finding: 'overheal',
-        title: 'Heal: 38% overheal',
-        why: 'More than a third of your Heal never landed on a hurt target.',
-        drill: 'overheal',
-        drillText: 'Hold Heal until the tank is under 70% and use Flash Heal for the spikes.',
-        anchors: ['healing'],
-        links: [],
-      },
-      thenFix: [],
-    },
-  };
+/** Each state's coach output, by fixture file; `error` and `not-available` are HTTP statuses. */
+const STATE_FILES: Readonly<Record<StateId, string | number>> = {
+  'ready-model': 'fury-model',
+  'ready-rules': 'fury-rules',
+  writing: 'fury-writing',
+  busy: 'fury-busy',
+  preparing: 'fury-preparing',
+  'no-findings': 'fury-no-findings',
+  'not-reviewable': 'fury-not-reviewable-trash',
+  'not-reviewable-short': 'fury-not-reviewable-short',
+  'not-reviewable-spec': 'not-reviewable-spec',
+  'teaser-several': 'fury-teaser-several',
+  'teaser-one': 'fury-teaser-one',
+  'teaser-empty': 'fury-teaser-empty',
+  'teaser-no-first': 'fury-teaser-no-first',
+  officer: 'fury-officer',
+  starter: 'fury-starter',
+  healer: 'holy-model',
+  'raid-buffs-only': 'fury-raid-buffs-only',
+  error: 500,
+  'not-available': 404,
 };
 
-export const STATES: Readonly<Record<StateId, CoachStub>> = {
-  'ready-model': { panel: workedReview() },
-  'ready-rules': { panel: workedRules() },
-  writing: { panel: workedRules({ status: 'writing' }) },
-  busy: { panel: { ...coachBusyReview(), ...pickReview(workedRules()) } },
-  preparing: { panel: coachPreparing() },
-  'no-findings': { panel: empty(workedReview()) },
-  'not-reviewable': { panel: coachNotReviewable() },
-  'teaser-two': {
-    panel: coachTeaser({
-      finding_count: 2,
-      fix_first: { title: 'Bloodthirst: 9 casts lost', code: 'core_casts', spell_id: BLOODTHIRST },
-    }),
-  },
-  'teaser-one': {
-    panel: coachTeaser({
-      finding_count: 1,
-      fix_first: { title: 'Bloodthirst: 9 casts lost', code: 'core_casts', spell_id: BLOODTHIRST },
-    }),
-  },
-  'teaser-empty': { panel: coachTeaser({ finding_count: 0, fix_first: null }) },
-  officer: { panel: workedReview({ access: 'officer' }) },
-  starter: { panel: workedReview({ persona: { label: 'Your Fury coach', status: 'starter' } }) },
-  healer: { panel: healerReview() },
-  'raid-buffs-only': {
-    panel: workedReview({
-      review: { ...workedReview().review, fixFirst: null },
-    }),
-  },
-  error: { panel: 500 },
-  'not-available': { panel: 404 },
-};
+export const STATES: Readonly<Record<StateId, CoachStub>> = Object.fromEntries(
+  Object.entries(STATE_FILES).map(([id, file]) => [
+    id,
+    { panel: typeof file === 'number' ? file : coachFixture<CoachFull | CoachTeaser>(file) },
+  ]),
+) as Record<StateId, CoachStub>;
 
-function pickReview(full: CoachFull): Pick<CoachFull, 'review' | 'anchors' | 'basis_labels' | 'player_key'> {
-  return {
-    review: full.review,
-    anchors: full.anchors,
-    basis_labels: full.basis_labels,
-    player_key: KEY.baelgrim,
-  };
+/** The writing answer until `ready()` says so, then the model's review: the A5 swap. */
+export function writingThenModel(ready: () => boolean): CoachStub {
+  return { panel: () => (ready() ? coachFixture('fury-model') : coachFixture('fury-writing')) };
 }
 
-/** The not-reviewable answer for a spec the rules cannot read: the title, the notice, then the reason. */
-export const NOT_REVIEWABLE_WITH_REASON: CoachFull = workedRules({
-  status: 'not_reviewable',
-  review: {
-    opening: '',
-    fixFirst: null,
-    thenFix: [],
-    doingWell: [],
-    couldntCheck: ["We couldn't tell this player's spec from the log."],
-  },
-});
+/** The rule-only review's first link line, the pack's sentence word for word. */
+export const LINK_SENTENCE: string = coachFixture('fury-rules').review.fixFirst?.links[0]?.sentence ?? '';
+
+/** The worked review's Fix first title, as the pack words it. */
+export const FIX_FIRST_TITLE: string = coachFixture('fury-model').review.fixFirst?.title ?? '';
 
 // ---- the account line ---------------------------------------------------------------------------
 
-const LAST_RAID: LastRaid = {
-  zone: "Onyxia's Lair",
-  fought_at: '2026-10-25T01:30:00Z',
-  report_id: 'fixture2abcd',
-  finding_count: 3,
-  first: { stem: 'Bloodthirst casts lost', on: 5, of: 8 },
-  url: '/reports/fixture2abcd?fight=3&tab=coach',
-};
+const lastRaid = (file: string): LastRaid => coachFixture<LastRaid>(file);
+const recentOf = (last_raid: LastRaid | null, pending = false): CoachRecent => ({
+  last_raid,
+  pending,
+  reviews: [],
+});
 
-export type AccountLineId = 'premium' | 'free' | 'pending' | 'clean' | 'none' | 'error';
+export type AccountLineId = 'premium' | 'premium-one' | 'free' | 'pending' | 'clean' | 'none' | 'error';
 
 export const RECENT: Readonly<
   Record<AccountLineId, { viewer: 'premium' | 'free'; recent: CoachRecent | number }>
 > = {
-  premium: { viewer: 'premium', recent: { last_raid: LAST_RAID, pending: false, reviews: [] } },
-  free: { viewer: 'free', recent: { last_raid: LAST_RAID, pending: false, reviews: [] } },
-  pending: {
-    viewer: 'premium',
-    recent: { last_raid: { ...LAST_RAID, finding_count: 0, first: null }, pending: true, reviews: [] },
-  },
-  clean: {
-    viewer: 'premium',
-    recent: { last_raid: { ...LAST_RAID, finding_count: 0, first: null }, pending: false, reviews: [] },
-  },
-  none: { viewer: 'premium', recent: { last_raid: null, pending: false, reviews: [] } },
+  premium: { viewer: 'premium', recent: recentOf(lastRaid('last-raid-molten-core')) },
+  'premium-one': { viewer: 'premium', recent: recentOf(lastRaid('last-raid-onyxia')) },
+  free: { viewer: 'free', recent: recentOf(lastRaid('last-raid-molten-core')) },
+  pending: { viewer: 'premium', recent: recentOf(lastRaid('last-raid-clean'), true) },
+  clean: { viewer: 'premium', recent: recentOf(lastRaid('last-raid-clean')) },
+  none: { viewer: 'premium', recent: recentOf(null) },
   error: { viewer: 'premium', recent: 500 },
 };
 
@@ -391,5 +384,3 @@ export const RECENT: Readonly<
 export async function routeAccountDevices(page: Page): Promise<void> {
   await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
 }
-
-export { coachRulesReview };

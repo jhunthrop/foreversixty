@@ -3,15 +3,17 @@
 // rows A1-A11) for the ux-designer and wow-player reviewers. Not a test of behaviour: it drives
 // the report row strip, the Coach tab in every state, the writing-to-ready swap (with the logged
 // y values), the account line and the Discord messages (rendered from the real handlers'
-// payloads.json) with the API stubbed, writing PNGs and same-scale boards against the mock renders
-// to design/reviews/2026-10-27-log-coach/. Widths: 390, 1024, 1440, 1920, 2000.
-import { existsSync, readFileSync } from 'node:fs';
+// payloads.json) with the API stubbed by the coach's own output (src/fixtures/coach) on the worked
+// Onyxia pull, writing PNGs, logs and same-scale boards against the mock renders to
+// design/reviews/2026-10-27-log-coach/. Widths: 360, 390, 1024, 1440, 1920, 2000.
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, type Page } from '@playwright/test';
 import { atWidths, settle, sizeTo } from '../support/capture-kit';
 import { renderMessage, type Dumped } from '../discord-bot/discord-render';
 import {
+  GUID,
   PANEL_URL,
   RECENT,
   ROWS_URL,
@@ -20,18 +22,17 @@ import {
   routeCoach,
   routeRecent,
   signInAs,
-  workedReview,
-  workedRules,
+  writingThenModel,
   type AccountLineId,
   type CoachStub,
   type StateId,
 } from '../../e2e/support/coach-stubs';
-import { PHONE_AND_DESKTOP, WIDTHS, atRest, openAt, shoot, writeLog } from './coach-capture-kit';
+import { drainShifts, recordShifts, sumShifts } from '../../e2e/support/layout-shift';
+import { PHONE_AND_DESKTOP, WIDTHS, atRest, file, openAt, shoot, writeLog } from './coach-capture-kit';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const WEB = path.resolve(HERE, '../../..');
 const BUILDS = path.resolve(WEB, '../data/builds');
-const SITE = 'https://foreversixty.gg';
 const PAYLOADS = path.join(HERE, 'payloads.json');
 const POLL_WAIT_MS = 10_000;
 
@@ -57,12 +58,9 @@ atWidths('A1 row strip, Premium owner', WIDTHS, async (page, width) => {
 });
 
 const STRIP_STATES: [string, CoachStub, 'premium' | 'free'][] = [
-  ['free', STATES['teaser-two'], 'free'],
-  [
-    'free-no-first',
-    { panel: { ...(STATES['teaser-two'].panel as object), fix_first: null } as never },
-    'free',
-  ],
+  ['free', STATES['teaser-several'], 'free'],
+  ['free-one', STATES['teaser-one'], 'free'],
+  ['free-no-first', STATES['teaser-no-first'], 'free'],
   ['premium-no-first', STATES['raid-buffs-only'], 'premium'],
   ['clean', STATES['no-findings'], 'premium'],
   ['preparing', STATES.preparing, 'premium'],
@@ -150,16 +148,17 @@ async function yOf(page: Page, testId: string): Promise<number> {
 atWidths('A5 Coach tab, writing then swapped', [390, 1440], async (page, width) => {
   let ready = false;
   await signInAs(page, 'premium');
-  await routeCoach(page, { panel: () => (ready ? workedReview() : workedRules({ status: 'writing' })) });
+  await routeCoach(
+    page,
+    writingThenModel(() => ready),
+  );
   await openAt(page, PANEL_URL(), width);
   await atRest(page);
   const measure = async (): Promise<Record<string, number>> => ({
     thenLabelY: await yOf(page, 'coach-then'),
     doingWellLabelY: await yOf(page, 'coach-well'),
     cardBottomY: await page
-      .getByTestId('coach-panel')
-      .locator('> section')
-      .first()
+      .getByTestId('coach-card')
       .evaluate((node) => node.getBoundingClientRect().bottom + window.scrollY),
   });
   await shoot(page, 'a5-swap', 'writing', width, panelMock(width));
@@ -182,7 +181,9 @@ const PANEL_STATES: StateId[] = [
   'preparing',
   'no-findings',
   'not-reviewable',
-  'teaser-two',
+  'not-reviewable-short',
+  'not-reviewable-spec',
+  'teaser-several',
   'teaser-one',
   'teaser-empty',
   'officer',
@@ -199,7 +200,7 @@ atWidths('A6 Coach tab states', PHONE_AND_DESKTOP, async (page, width) => {
     const free = state.startsWith('teaser');
     await signInAs(fresh, free ? 'free' : 'premium', state === 'healer' ? ['sunwick'] : ['baelgrim']);
     await routeCoach(fresh, STATES[state]);
-    await openAt(fresh, PANEL_URL(state === 'healer' ? 'Player-4184-000000A2' : undefined), width);
+    await openAt(fresh, PANEL_URL(state === 'healer' ? GUID.sunwick : undefined), width);
     await atRest(fresh);
     await shoot(
       fresh,
@@ -253,11 +254,114 @@ atWidths('A8 account line, every state', PHONE_AND_DESKTOP, async (page, width) 
   }
 });
 
+atWidths('A8 account line, loading', PHONE_AND_DESKTOP, async (page, width) => {
+  let release: () => void = () => undefined;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await signInAs(page, 'premium');
+  await routeAccountDevices(page);
+  await routeRecent(page, RECENT.premium.recent, gate);
+  await openAt(page, '/account', width);
+  await shoot(page, 'a8-account', 'loading', width);
+  release();
+});
+
+// ---- 360 wide: the strip, the account line and the phone fold (spec 1 and 9) ---------------------
+
+atWidths('360: the strip, the account line, and the tab right after it opens', [360], async (page, width) => {
+  await signInAs(page, 'premium');
+  await routeCoach(page, STATES['ready-model']);
+  await routeAccountDevices(page);
+  await routeRecent(page, RECENT.premium.recent);
+  await openAt(page, ROWS_URL, width);
+  await atRest(page);
+  await shoot(page, 'a1-row', 'premium', width);
+  const account = await page.context().newPage();
+  await signInAs(account, 'free');
+  await routeAccountDevices(account);
+  await routeRecent(account, RECENT.free.recent);
+  await openAt(account, '/account', width);
+  await shoot(account, 'a8-account', 'free', width);
+  await account.close();
+  await page.setViewportSize({ width, height: 640 });
+  await page.getByTestId('coach-row-line').click();
+  await page.getByTestId('coach-fix-first').waitFor();
+  await settle(page);
+  mkdirSync(path.dirname(file('x', 'x', width)), { recursive: true });
+  await page.screenshot({ path: file('phone-fold', 'tab-opened', width), fullPage: false });
+});
+
+// ---- A3: the More menu, by viewer ----------------------------------------------------------------
+
+atWidths('A3 More menu open: owner, stranger, signed out', [1440], async (page, width) => {
+  for (const kind of ['premium', 'stranger', 'signedOut'] as const) {
+    const fresh = await page.context().newPage();
+    await signInAs(fresh, kind);
+    await routeCoach(fresh, STATES['ready-model']);
+    await openAt(fresh, ROWS_URL, width);
+    await fresh.getByTestId('tab-more').click();
+    await settle(fresh);
+    await shoot(fresh, 'a3-more', kind, width);
+    await fresh.close();
+  }
+});
+
+// ---- A7: the layout-shift log -------------------------------------------------------------------
+
+atWidths('A7 layout-shift log for the strip, the panel and the swap', [1280], async (page, width) => {
+  const log: Record<string, { shifts: number[]; sum: number }> = {};
+  const record = async (name: string, run: (p: Page) => Promise<void>): Promise<void> => {
+    const fresh = await page.context().newPage();
+    await recordShifts(fresh);
+    await run(fresh);
+    const shifts = await drainShifts(fresh);
+    log[name] = { shifts, sum: sumShifts(shifts) };
+    await fresh.close();
+  };
+  await record('A1 strip (Damage Done, Premium owner)', async (p) => {
+    await signInAs(p, 'premium');
+    await routeCoach(p, STATES['ready-model']);
+    await openAt(p, ROWS_URL, width);
+    await p.getByTestId('coach-row-line').waitFor();
+  });
+  await record('A4 panel (model review)', async (p) => {
+    await signInAs(p, 'premium');
+    await routeCoach(p, STATES['ready-model']);
+    await openAt(p, PANEL_URL(), width);
+    await p.getByTestId('coach-fix-first').waitFor();
+  });
+  await record('A5 writing then swapped', async (p) => {
+    let ready = false;
+    await signInAs(p, 'premium');
+    await routeCoach(
+      p,
+      writingThenModel(() => ready),
+    );
+    await openAt(p, PANEL_URL(), width);
+    await p.getByTestId('coach-fix-first').waitFor();
+    ready = true;
+    await p.getByTestId('coach-title').filter({ hasText: 'coach' }).waitFor({ timeout: POLL_WAIT_MS });
+  });
+  await record('A8 account line (Premium)', async (p) => {
+    await signInAs(p, 'premium');
+    await routeAccountDevices(p);
+    await routeRecent(p, RECENT.premium.recent);
+    await openAt(p, '/account', width);
+    await p.getByTestId('coach-last-raid').and(p.locator('[data-state="ready"]')).waitFor();
+  });
+  writeLog(`log-coach-a7-layout-shift-${width}.json`, {
+    budget: 0.05,
+    runs: log,
+    under_budget: Object.values(log).every((run) => run.sum < 0.05),
+  });
+});
+
 // ---- A9: keyboard run ---------------------------------------------------------------------------
 
 atWidths('A9 keyboard: row to strip to panel heading, focus rings', [1440], async (page, width) => {
   await signInAs(page, 'free');
-  await routeCoach(page, STATES['teaser-two']);
+  await routeCoach(page, STATES['teaser-several']);
   await openAt(page, ROWS_URL, width);
   await page.getByTestId('coach-row-open').focus();
   await shoot(page, 'a9-keyboard', 'strip-focus', width);
@@ -277,9 +381,18 @@ atWidths('A9 keyboard: row to strip to panel heading, focus rings', [1440], asyn
 
 // ---- A11: Discord, rendered from the real handlers' payloads ------------------------------------
 
+/** The active build's icons answer for a build the dump names that the repo does not hold. */
+const ACTIVE_BUILD = (
+  JSON.parse(readFileSync(path.join(WEB, 'src/data/active-build.json'), 'utf8')) as {
+    build: string;
+  }
+).build;
+
 function localFile(url: URL): string {
   const icon = /^\/data\/([^/]+)\/(icons\/.+)$/.exec(url.pathname);
-  return icon === null ? path.join(WEB, 'public', url.pathname) : path.join(BUILDS, icon[1]!, icon[2]!);
+  if (icon === null) return path.join(WEB, 'public', url.pathname);
+  const build = existsSync(path.join(BUILDS, icon[1]!)) ? icon[1]! : ACTIVE_BUILD;
+  return path.join(BUILDS, build, icon[2]!);
 }
 
 const CLIENTS = [
@@ -296,7 +409,8 @@ test('A11 payloads.json exists (go test -run Dump with COACH_DUMP_PAYLOADS=1 wri
 for (const entry of dumped) {
   for (const client of CLIENTS) {
     test(`A11 discord ${entry.id} @${client.name}`, async ({ page }) => {
-      await page.route(`${SITE}/**`, (route) => {
+      // Every embed image, whatever host the dump names (the site, or a loot fixture's test host).
+      await page.route(/^https:\/\/[^/]+\/data\//, (route) => {
         const local = localFile(new URL(route.request().url()));
         return existsSync(local)
           ? route.fulfill({ path: local, contentType: 'image/webp' })

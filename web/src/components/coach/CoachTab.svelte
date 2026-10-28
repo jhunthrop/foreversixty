@@ -15,6 +15,7 @@
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
+  import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { FightEntry } from '../../lib/report/types';
   import ClassIcon from '../report/ClassIcon.svelte';
@@ -93,7 +94,10 @@
     focused = true;
     const heading = document.getElementById('coach-panel-heading');
     heading?.focus({ preventScroll: true });
-    heading?.scrollIntoView({ block: 'start' });
+    // A phone scrolls the tab under its sticky bar (spec 1); a desktop already has it in view,
+    // and scrolling it to the top would carry the sticky fight list down with it.
+    const desktop = window.matchMedia('(min-width: 768px)').matches;
+    heading?.scrollIntoView({ block: desktop ? 'nearest' : 'start' });
   });
 
   const view = $derived.by(() => {
@@ -111,7 +115,9 @@
   );
 </script>
 
-<div class="flex flex-col gap-4" data-testid="coach-tab">
+<!-- The tab's reserve (640 px desktop, 420 px phone) lives here, not on the card: a one-line
+     state is a natural-height card over bare background. -->
+<div class="flex flex-col gap-4 {REPORT_LAZY_MIN_H.coach}" data-testid="coach-tab">
   {#if pick.owned.length > 1}
     <ul class="flex gap-1" aria-label="Characters in this pull" data-testid="coach-players">
       {#each pick.owned as owned (owned.guid)}
@@ -143,7 +149,7 @@
       {names}
       build={activeBuild.build}
       {classSlug}
-      spec={unit?.class ?? ''}
+      spec={unit?.spec ?? ''}
       playerName={unit?.name ?? ''}
       playerGuid={unit?.guid ?? ''}
       {firstFight}

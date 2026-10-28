@@ -59,7 +59,7 @@ describe('CoachPanel', () => {
     );
     expect(order.every((at) => at >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
-    expect(body).toContain('Reviewed 27 Oct · Based on: your log, top Fury logs.');
+    expect(body).toContain('Reviewed 27 Oct · Based on: your log; top Fury logs.');
     expect(body).toContain('href="/character/us/normal/thrall#coach"');
   });
 
@@ -175,10 +175,11 @@ describe('CoachPanel', () => {
     }
   });
 
-  it('reserves the tab height and names the heading for focus', () => {
+  it('keeps the card at its natural height (the tab holds the reserve) and names the heading for focus', () => {
     const body = panel(coachModelReview());
-    expect(body).toContain('min-h-[420px]');
-    expect(body).toContain('md:min-h-[640px]');
+    expect(body).not.toContain('min-h-[640px]');
+    expect(body).toContain('@container');
+    expect(body).toContain('@min-[1120px]:flex-row');
     expect(body).toContain('id="coach-panel-heading"');
     expect(body).toContain('tabindex="-1"');
     expect(body).toContain('aria-live="polite"');

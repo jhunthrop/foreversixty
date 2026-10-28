@@ -7,7 +7,7 @@
 <script lang="ts">
   import { chipsFor, firstSpellId } from '../../lib/coach/chips';
   import { coachCopy } from '../../lib/coach/copy';
-  import type { CoachNames } from '../../lib/coach/names';
+  import { withAnchorNames, type CoachNames } from '../../lib/coach/names';
   import { slotClass, type Reserve } from '../../lib/coach/reserves';
   import type { CoachFull, CoachLink } from '../../lib/coach/types';
   import CoachChips from './CoachChips.svelte';
@@ -16,7 +16,7 @@
 
   let {
     answer,
-    names,
+    names: tables,
     build,
     classSlug,
     firstFight,
@@ -32,6 +32,7 @@
     reserve?: Reserve | null;
   } = $props();
 
+  const names = $derived(withAnchorNames(tables, answer.anchors));
   const review = $derived(answer.review);
   const held = $derived(reserve !== null);
   const thenSlots = $derived(Math.max(review.thenFix.length, reserve?.thenCount ?? 0));
@@ -46,8 +47,10 @@
       playerGuid,
       spellName: names.spellName,
     });
+  // Link lines belong to the rule-only rendering (spec 3.1 item 5, 10.4): the model's prose
+  // carries the connection itself, so its review prints none.
   const sentences = (links: readonly CoachLink[]): string[] =>
-    links.flatMap((link) => (link.sentence === null ? [] : [link.sentence]));
+    answer.source !== 'rules' ? [] : links.flatMap((link) => (link.sentence === null ? [] : [link.sentence]));
   const linkSlot = (index: number): boolean => reserve?.links[index] === true;
 </script>
 
@@ -81,7 +84,7 @@
       <div class="mt-1 flex items-center gap-2">
         <SpellIcon url={names.iconUrl(firstSpellId(fix.anchors, answer.anchors))} size={32} />
         <p class="text-strong text-[20px] leading-7 font-bold" data-testid="coach-fix-title">
-          <CoachText text={fix.title} {names} {build} {classSlug} />
+          <CoachText text={fix.title} {names} {build} {classSlug} plainSpells />
         </p>
       </div>
       <p class="text-text mt-1 text-[15px] leading-[22px] {slotClass('why', held)}">
@@ -112,7 +115,7 @@
               <div class="flex items-center gap-2">
                 <SpellIcon url={names.iconUrl(firstSpellId(item.anchors, answer.anchors))} size={24} />
                 <p class="text-strong text-[16px] leading-6 font-semibold">
-                  <CoachText text={item.title} {names} {build} {classSlug} />
+                  <CoachText text={item.title} {names} {build} {classSlug} plainSpells />
                 </p>
               </div>
               <p class="text-text mt-1 text-[14px] leading-[22px] {slotClass('thenWhy', held)}">

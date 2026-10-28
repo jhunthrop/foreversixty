@@ -10,6 +10,8 @@ export interface RosterUnit {
   guid: string;
   name: string;
   class?: string;
+  /** The log's spec label (`Fury`), for the panel's title before an answer names it. */
+  spec?: string;
 }
 
 export interface PlayerPick {

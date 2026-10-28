@@ -3,6 +3,12 @@
 // (design/specs/2026-10-28-log-coach.md). copy.test.ts reads the spec table and fails on any drift.
 // A `{field}` is filled by `fill`.
 
+/**
+ * The muted ` · ` between a line's segments, rendered as an expression: Svelte trims the edges of
+ * a tag's literal text, which would drop the space before the dot.
+ */
+export const COACH_SEPARATOR = ' · ';
+
 export const coachCopy = {
   rowPremium: 'Fix first · {title}',
   rowFree: '{n} things to fix · First: {title} · Read the full review with Premium',
@@ -52,7 +58,7 @@ export const coachCopy = {
   night: 'Coach reviews cover one pull at a time. Pick a boss pull from the list.',
   teaserCount: '{n} things to fix',
   teaserCountOne: '1 thing to fix',
-  teaserFirst: 'First: {title}',
+  teaserFirst: '{title}',
   upgrade: 'Read the full review with Premium',
   anchorCast: '{Spell} · Casts',
   anchorBuffs: '{Spell} · Buffs',

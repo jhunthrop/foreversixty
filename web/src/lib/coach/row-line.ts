@@ -5,6 +5,17 @@
 import { coachCopy, fill } from './copy';
 import type { CoachFull, CoachTeaser } from './types';
 
+/**
+ * The strip's reserved height, known from `me` before any answer (spec 3.2 and 7): a Premium
+ * owner's one 52 px strip on phone, a free owner's two 44 px targets; 36 px on desktop for both.
+ */
+export const STRIP_RESERVE = {
+  premium: 'min-h-[52px] md:min-h-9',
+  free: 'min-h-[88px] md:min-h-9',
+} as const;
+
+export type StripReserve = keyof typeof STRIP_RESERVE;
+
 /** What the strip is doing: waiting on the answer, showing a line, or offering a retry. */
 export type StripPhase = 'loading' | 'line' | 'error';
 

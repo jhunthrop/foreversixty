@@ -43,7 +43,7 @@ function expectedSentence(id: AccountLineId): string {
   return view.segments.map((segment) => segment.text).join(SEPARATOR);
 }
 
-const readable: AccountLineId[] = ['premium', 'free', 'pending', 'clean', 'none'];
+const readable: AccountLineId[] = ['premium', 'premium-one', 'free', 'pending', 'clean', 'none'];
 
 for (const id of readable) {
   test(`the ${id} line reads its sentence`, async ({ page }) => {

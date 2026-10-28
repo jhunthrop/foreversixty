@@ -204,6 +204,7 @@
       guid: row.guid,
       name: row.name,
       class: row.class,
+      spec: row.spec,
     })),
   );
 
@@ -1802,7 +1803,8 @@
            Mechanics ignores the window, so it does not show a strip it would then disown.
            Collapsed to one line by default on a phone (chartOpen, above): a canvas nobody
            opens is a canvas nobody should pay the scroll distance for. -->
-        {#if summary !== null && !nightMode && state.mode !== 'mechanics'}
+        <!-- The Coach tab reads a review, not a window: no chart, so Fix first opens in view. -->
+        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach'}
           {#if chartOpen}
             <TimeChart
               series={chartSeries}

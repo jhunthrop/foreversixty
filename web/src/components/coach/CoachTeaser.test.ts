@@ -10,7 +10,8 @@ describe('CoachTeaser', () => {
   it('count, first title with its icon, and an upgrade link', () => {
     const { body } = render(CoachTeaser, { props: { answer: coachTeaser(), names } });
     expect(body).toContain('3 things to fix');
-    expect(body).toContain('First: Bloodthirst: 9 casts lost');
+    expect(body).toContain('Bloodthirst: 9 casts lost');
+    expect(body).not.toContain('First:');
     expect(body).toContain('/data/b/icons/bt.webp');
     expect(body).toContain('href="/premium"');
   });

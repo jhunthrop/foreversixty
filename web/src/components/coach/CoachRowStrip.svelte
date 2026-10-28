@@ -5,9 +5,9 @@
      teaser, the gold underlined Premium link goes to /premium. Presentational: CoachRowLine owns
      the fetch. A strip that is loading holds its height so the list never moves. -->
 <script lang="ts">
-  import { coachCopy } from '../../lib/coach/copy';
+  import { COACH_SEPARATOR, coachCopy } from '../../lib/coach/copy';
   import type { IconUrl } from '../../lib/coach/names';
-  import type { RowLine, StripPhase } from '../../lib/coach/row-line';
+  import { STRIP_RESERVE, type RowLine, type StripPhase, type StripReserve } from '../../lib/coach/row-line';
   import SpellIcon from './SpellIcon.svelte';
 
   let {
@@ -16,6 +16,7 @@
     href,
     iconUrl,
     label,
+    reserve,
     onOpen,
     onRetry,
   }: {
@@ -25,13 +26,18 @@
     iconUrl: IconUrl;
     /** The strip's accessible name: the whole sentence, in order. */
     label: string;
+    /** The viewer's entitlement, which sizes the phone slot before the answer lands. */
+    reserve: StripReserve;
     onOpen: (event: MouseEvent) => void;
     onRetry: () => void;
   } = $props();
 
-  const BASE =
-    'border-line-soft flex min-h-[88px] items-center border-t bg-[#0b0f17] pr-2 pl-12 text-[13px] leading-[18px] md:min-h-9 md:pl-[100px]';
+  const BASE = $derived(
+    `flex ${STRIP_RESERVE[reserve]} items-center bg-[#0b0f17] shadow-[inset_0_1px_0_var(--color-line-soft)] pr-2 pl-12 text-[13px] leading-[18px] md:pl-[100px]`,
+  );
   const FOCUS = 'focus-visible:outline-gold focus-visible:-outline-offset-2 focus-visible:outline-2';
+  /** The Premium link's ring stands 2 px off its 4 px padding, clear of the underline. */
+  const LINK_FOCUS = 'focus-visible:outline-gold focus-visible:outline-offset-2 focus-visible:outline-2';
 </script>
 
 {#if phase === 'loading'}
@@ -68,12 +74,14 @@
     </a>
   {:else}
     <div
-      class="{BASE} flex-col items-stretch gap-0 py-0 md:flex-row md:items-center md:gap-1"
+      class="{BASE} flex-col items-stretch gap-0 py-0 md:flex-row md:items-stretch"
       data-testid="coach-row-line"
     >
+      <!-- The first target fills the strip's 36 px with 8 px each side, so its ring sits on the
+           strip's edge as the Premium strip's does. -->
       <a
         {href}
-        class="{FOCUS} hover:bg-card-top group flex min-h-11 items-center md:min-h-0"
+        class="{FOCUS} hover:bg-card-top group flex min-h-11 items-center md:-ml-2 md:min-h-9 md:px-2"
         onclick={onOpen}
         data-testid="coach-row-open"
       >
@@ -83,10 +91,12 @@
           >{line.title}</span
         >
       </a>
-      <span class="text-muted hidden md:inline" aria-hidden="true">·</span>
+      <span class="text-muted hidden items-center whitespace-pre md:flex" aria-hidden="true"
+        >{COACH_SEPARATOR}</span
+      >
       <a
         href="/premium"
-        class="text-gold hover:text-gold-hover {FOCUS} flex min-h-11 items-center underline md:min-h-0"
+        class="text-gold hover:text-gold-hover {LINK_FOCUS} flex min-h-11 items-center self-start underline md:min-h-0 md:self-center md:px-1"
         data-testid="coach-row-premium">{line.upgrade}</a
       >
     </div>

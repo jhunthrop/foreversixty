@@ -2,12 +2,12 @@
 <!-- The account's "last raid" coach line (experience spec 2026-10-28-log-coach section 3.3): the
      first child of the Characters panel. It loads GET /v1/me/coach/recent on its own once the
      panel is on screen, so a cold cache never slows the page, and holds one line's height
-     (44 px desktop, 64 px phone) in every state so nothing below it moves. A "pending" answer
+     (57 px desktop, 77 px phone), its text top-aligned in every state so nothing below it moves. A "pending" answer
      (packs still being read) refreshes once after 5 s. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fetchCoachRecent } from '../../lib/coach/api';
-  import { coachCopy } from '../../lib/coach/copy';
+  import { COACH_SEPARATOR, coachCopy } from '../../lib/coach/copy';
   import {
     LAST_RAID_LABEL,
     LAST_RAID_RETRY_CLASS,
@@ -29,10 +29,6 @@
     fetchRecent?: () => Promise<CoachRecent>;
     refreshDelayMs?: number;
   } = $props();
-
-  // An expression, not literal text: Svelte trims the edges of a tag's text, which would drop
-  // the space before the dot ("Last raid· Onyxia's").
-  const SEPARATOR = ' · ';
 
   let state = $state<LastRaidState>({ kind: 'loading' });
 
@@ -67,7 +63,7 @@
 </script>
 
 <div
-  class="border-line-soft flex min-h-[77px] items-center border-b py-2 text-[13px] leading-5 md:min-h-[57px]"
+  class="border-line-soft flex min-h-[77px] items-start border-b py-2 text-[13px] leading-5 md:min-h-[57px]"
   role="status"
   aria-label={LAST_RAID_LABEL}
   aria-live="polite"
@@ -93,7 +89,7 @@
   {:else if view !== null}
     <p>
       {#each view.segments as segment, index (index)}
-        {#if index > 0}<span class="text-muted">{SEPARATOR}</span>{/if}
+        {#if index > 0}<span class="text-muted">{COACH_SEPARATOR}</span>{/if}
         {#if segment.role === 'link' && view.href !== null}
           <a class={ROLE_CLASS.link} href={view.href} data-testid="coach-last-raid-link">{segment.text}</a>
         {:else if view.stem !== null && segment.text.includes(view.stem)}

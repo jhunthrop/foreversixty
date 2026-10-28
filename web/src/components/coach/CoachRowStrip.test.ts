@@ -2,11 +2,16 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { coachModelReview, coachTeaser } from '../../test-support/coach-fixtures';
 import { rowLineFor } from '../../lib/coach/row-line';
-import type { StripPhase } from '../../lib/coach/row-line';
+import type { StripPhase, StripReserve } from '../../lib/coach/row-line';
 import CoachRowStrip from './CoachRowStrip.svelte';
 
-const props = (answer: Parameters<typeof rowLineFor>[0], phase: StripPhase = 'line') => ({
+const props = (
+  answer: Parameters<typeof rowLineFor>[0],
+  phase: StripPhase = 'line',
+  reserve: StripReserve = 'premium',
+) => ({
   phase,
+  reserve,
   line: rowLineFor(answer),
   href: '?fight=3&tab=coach&source=P-1',
   iconUrl: () => '/data/b/icons/x.webp',
@@ -30,10 +35,17 @@ describe('CoachRowStrip', () => {
     expect(body).toContain('href="/premium"');
     expect(body).toContain('Read the full review with Premium');
   });
-  it('loading holds the strip height and says so to screen readers', () => {
-    const { body } = render(CoachRowStrip, { props: props(null, 'loading') });
-    expect(body).toContain('min-h-[88px]');
-    expect(body).toContain('Reading the pull…');
+  it('loading holds the strip height by entitlement and says so to screen readers', () => {
+    const premium = render(CoachRowStrip, { props: props(null, 'loading', 'premium') }).body;
+    const free = render(CoachRowStrip, { props: props(null, 'loading', 'free') }).body;
+    expect(premium).toContain('min-h-[52px]');
+    expect(premium).not.toContain('min-h-[88px]');
+    expect(free).toContain('min-h-[88px]');
+    expect(premium).toContain('Reading the pull…');
+  });
+  it("the free line separates its targets with the account line's separator", () => {
+    const { body } = render(CoachRowStrip, { props: props(coachTeaser(), 'line', 'free') });
+    expect(body).toMatch(/> · <\/span/);
   });
   it('error offers Try again', () => {
     const { body } = render(CoachRowStrip, { props: props(null, 'error') });

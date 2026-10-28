@@ -31,6 +31,12 @@ describe('chips', () => {
     ]);
     expect(chips[0]?.href).toBe(coachAnchorHref(3, 1, FIXTURE_GUID, anchors['a1']!));
   });
+  it('a chip whose spell name does not resolve reads the kind word alone', () => {
+    const unnamed = { ...context, spellName: () => '' };
+    const healing = { h: { kind: 'healing', spell_id: 2060 } } as const;
+    expect(chipsFor(['a1', 'a4'], unnamed).map((chip) => chip.label)).toEqual(['Casts', 'Debuffs']);
+    expect(chipsFor(['h'], { ...unnamed, anchors: healing }).map((chip) => chip.label)).toEqual(['Healing']);
+  });
   it('a death chip renders from at_ms, the shape the API emits, and links the rebuilt anchor', () => {
     const [chip] = chipsFor(['a2'], context);
     expect(chip?.label).toBe('Death · 3:20');

@@ -1,22 +1,22 @@
 // web/tests/e2e/coach-report.spec.ts
 // The coach on the report page (design/specs/2026-10-28-log-coach.md sections 3.1, 3.2, 4.2, 9),
-// API stubbed with the worked-example packs in support/coach-stubs.ts. Every asserted sentence is
-// read from lib/coach/copy.ts, never typed.
+// API stubbed with the coach's own output (src/fixtures/coach, through support/coach-stubs.ts) on the
+// worked Onyxia pull. Every asserted sentence is read from lib/coach/copy.ts or the fixtures.
 import { expect, test, type Page } from '@playwright/test';
 import { coachCopy, fill } from '../../src/lib/coach/copy';
+import type { CoachAnchorKind, CoachFull } from '../../src/lib/coach/types';
 import {
-  ANCHOR_LANDS,
-  ANCHORS,
+  FIX_FIRST_TITLE,
   GUID,
   LINK_SENTENCE,
   PANEL_URL,
   ROWS_URL,
   STATES,
+  coachFixture,
   routeCoach,
   routeRatingKeys,
   signInAs,
-  workedReview,
-  workedRules,
+  writingThenModel,
 } from './support/coach-stubs';
 import { gotoHydrated } from './support/hydrated';
 import { drainShifts, recordShifts, sumShifts } from './support/layout-shift';
@@ -25,6 +25,21 @@ import { shortControls } from './support/short-controls';
 
 const MAX_PANEL_CLS = 0.02;
 const PHONE = { width: 360, height: 800 };
+const DESKTOP = { width: 1280, height: 800 };
+/** Spec 1: at 1280 x 800 the header, the opening and the whole Fix first block end above y 640. */
+const FOLD_Y = 640;
+/** Spec 3.2 and 7: the phone strip's reserve by entitlement. */
+const STRIP_PHONE_PX = { premium: 52, free: 88 } as const;
+/** Where each anchor kind's chip lands in the report. */
+const LANDS: Readonly<Record<CoachAnchorKind, RegExp>> = {
+  cast: /tab=casts/,
+  aura: /tab=(buffs|debuffs)/,
+  buffs: /tab=buffs/,
+  death: /tab=deaths/,
+  healing: /tab=healing/,
+  time: /view=timelines/,
+  resource: /view=timelines/,
+};
 const FORBIDDEN_TEXT = /!|heal more/i;
 const leadOf = (template: string): string => template.split('{title}')[0]!.trim();
 const panel = (page: Page) => page.getByTestId('coach-panel');
@@ -43,23 +58,21 @@ async function labelY(page: Page, testId: string): Promise<number> {
 
 async function cardBottom(page: Page): Promise<number> {
   return page
-    .getByTestId('coach-panel')
-    .locator('> section')
-    .first()
+    .getByTestId('coach-card')
     .evaluate((node) => node.getBoundingClientRect().bottom + window.scrollY);
 }
 
 test.describe('free owner', () => {
   test.beforeEach(async ({ page }) => {
     await signInAs(page, 'free');
-    await routeCoach(page, STATES['teaser-two']);
+    await routeCoach(page, STATES['teaser-several']);
   });
 
   test('the row line reads the free teaser and links to /premium', async ({ page }) => {
     await page.goto(ROWS_URL);
     const line = page.getByTestId('coach-row-line');
-    await expect(line).toContainText('2 things to fix');
-    await expect(line).toContainText('Bloodthirst: 9 casts lost');
+    await expect(line).toContainText(fill(coachCopy.teaserCount, { n: 3 }));
+    await expect(line).toContainText(FIX_FIRST_TITLE);
     await expect(page.getByTestId('coach-row-premium')).toHaveAttribute('href', '/premium');
     await expect(page.getByTestId('coach-row-premium')).toHaveText(coachCopy.upgrade);
   });
@@ -68,8 +81,11 @@ test.describe('free owner', () => {
     await page.goto(ROWS_URL);
     await page.getByTestId('coach-row-open').click();
     await expect(page).toHaveURL(/tab=coach/);
-    await expect(page.getByTestId('coach-teaser-count')).toHaveText(fill(coachCopy.teaserCount, { n: 2 }));
-    await expect(page.getByTestId('coach-teaser-first')).toContainText('Bloodthirst: 9 casts lost');
+    await expect(page.getByTestId('coach-teaser-count')).toHaveText(fill(coachCopy.teaserCount, { n: 3 }));
+    await expect(page.getByTestId('coach-teaser-first')).toHaveText(
+      fill(coachCopy.teaserFirst, { title: FIX_FIRST_TITLE }),
+    );
+    await expect(page.getByTestId('coach-title')).toHaveText(fill(coachCopy.titleModel, { Spec: 'Fury' }));
     await expect(page.getByTestId('coach-upgrade')).toHaveAttribute('href', '/premium');
     await expect(page.getByTestId('coach-review-body')).toHaveCount(0);
   });
@@ -85,11 +101,11 @@ test.describe('Premium owner', () => {
     await page.goto(ROWS_URL);
     const line = page.getByTestId('coach-row-line');
     await expect(line).toContainText(leadOf(coachCopy.rowPremium));
-    await expect(line).toContainText('Bloodthirst: 9 casts lost');
+    await expect(line).toContainText(FIX_FIRST_TITLE);
     expect(seen.panels).toHaveLength(0);
     await line.click();
     await expect(page).toHaveURL(/tab=coach/);
-    await expect(page.getByTestId('coach-fix-title')).toContainText('Bloodthirst: 9 casts lost');
+    await expect(page.getByTestId('coach-fix-title')).toContainText(FIX_FIRST_TITLE);
   });
 
   test('the model review renders every region with the pack titles', async ({ page }) => {
@@ -99,7 +115,9 @@ test.describe('Premium owner', () => {
     await expect(page.getByTestId('coach-fix-first')).toContainText(coachCopy.labelFixFirst);
     await expect(page.getByTestId('coach-fix-first')).toContainText(coachCopy.labelPractice);
     await expect(page.getByTestId('coach-then')).toContainText(coachCopy.labelThen);
-    await expect(page.getByTestId('coach-then-item')).toHaveCount(3);
+    await expect(page.getByTestId('coach-then-item')).toHaveCount(
+      (STATES['ready-model'].panel as CoachFull).review.thenFix.length,
+    );
     await expect(page.getByTestId('coach-well')).toContainText(coachCopy.labelWell);
     await expect(page.getByTestId('coach-cannot')).toContainText(coachCopy.labelCannot);
     await expect(page.getByTestId('coach-footer')).toContainText('Reviewed');
@@ -115,14 +133,13 @@ test.describe('Premium owner', () => {
       .getByTestId('coach-chips')
       .locator('a')
       .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href') ?? ''));
-    expect(hrefs.length).toBeGreaterThanOrEqual(Object.keys(ANCHORS).length - 1);
-    // The worked review is a warrior's, so it cites every anchor except the healing one (the
-    // healer test below covers that chip).
-    const cited = Object.entries(ANCHOR_LANDS).filter(([id]) => id !== 'healing');
-    for (const [id, lands] of cited) {
-      const matches = hrefs.filter((href) => lands.test(href));
-      expect(matches.length, `anchor ${id} has a chip`).toBeGreaterThan(0);
-    }
+    const review = STATES['ready-model'].panel as CoachFull;
+    const cited = [review.review.fixFirst, ...review.review.thenFix].flatMap((item) => item?.anchors ?? []);
+    expect(hrefs).toHaveLength(cited.length);
+    cited.forEach((id, index) => {
+      const kind = review.anchors[id]!.kind;
+      expect(hrefs[index], `anchor ${id} (${kind})`).toMatch(LANDS[kind]);
+    });
     await page.getByTestId('coach-chips').first().locator('a').first().click();
     await expect(page).toHaveURL(/tab=casts/);
     await expect(panel(page)).toHaveCount(0);
@@ -138,7 +155,10 @@ test.describe('Premium owner', () => {
   test('writing swaps to ready in place: the labels and the card bottom do not move', async ({ page }) => {
     test.slow();
     let ready = false;
-    await routeCoach(page, { panel: () => (ready ? workedReview() : workedRules({ status: 'writing' })) });
+    await routeCoach(
+      page,
+      writingThenModel(() => ready),
+    );
     await recordShifts(page);
     await page.goto(PANEL_URL());
     await expect(page.getByTestId('coach-status')).toContainText(coachCopy.writing);
@@ -191,26 +211,66 @@ test.describe('Premium owner', () => {
     release();
     await expect(page.getByTestId('coach-fix-first')).toBeVisible();
 
-    const cases: [keyof typeof STATES, string][] = [
-      ['preparing', coachCopy.preparing.split('{Spec}')[1]!.split('.')[0]!],
-      ['not-reviewable', coachCopy.notReviewable],
-      ['error', coachCopy.error],
-      ['not-available', coachCopy.notAvailable],
+    const reason = (state: keyof typeof STATES): string =>
+      (STATES[state].panel as CoachFull).review.couldntCheck[0]!;
+    const fury = (template: string): string => fill(template, { Spec: 'Fury' });
+    const cases: [keyof typeof STATES, string, string][] = [
+      ['preparing', fury(coachCopy.preparing), fury(coachCopy.titleModel)],
+      ['not-reviewable', reason('not-reviewable'), fury(coachCopy.titleRules)],
+      ['not-reviewable-short', reason('not-reviewable-short'), fury(coachCopy.titleRules)],
+      ['not-reviewable-spec', reason('not-reviewable-spec'), coachCopy.titleGeneric],
+      ['error', coachCopy.error, fury(coachCopy.titleModel)],
+      ['not-available', coachCopy.notAvailable, coachCopy.titleGeneric],
+      ['no-findings', coachCopy.rulesNothing, fury(coachCopy.titleRules)],
     ];
-    for (const [state, sentence] of cases) {
+    for (const [state, sentence, title] of cases) {
       await page.unroute(/\/v1\/reports\/fixture2abcd\/fights\/3\/coach/);
       await routeCoach(page, STATES[state]);
       await page.goto(PANEL_URL());
       await expect(page.getByTestId('coach-panel')).toContainText(sentence);
+      await expect(page.getByTestId('coach-title')).toHaveText(title);
     }
   });
 
-  test('a healer reads the healing anchor', async ({ page }) => {
+  test('raid buffs only: no Fix first, the raid buff under Then', async ({ page }) => {
+    const answer = STATES['raid-buffs-only'].panel as CoachFull;
+    await routeCoach(page, STATES['raid-buffs-only']);
+    await openPanel(page);
+    await expect(page.getByTestId('coach-fix-first')).toHaveCount(0);
+    await expect(page.getByTestId('coach-then-item').first()).toContainText(answer.review.thenFix[0]!.title);
+  });
+
+  test('at 1280 x 800 Fix first ends above the fold, with no chart on the tab', async ({ page }) => {
+    await page.setViewportSize(DESKTOP);
+    await routeCoach(page, STATES['ready-model']);
+    await openPanel(page);
+    await expect(page.getByTestId('chart-collapsed')).toHaveCount(0);
+    await expect(page.locator('canvas')).toHaveCount(0);
+    const why = page.getByTestId('coach-fix-first').locator('p').nth(1);
+    const bottom = await why.evaluate((node) => node.getBoundingClientRect().bottom + window.scrollY);
+    expect(bottom).toBeLessThan(FOLD_Y);
+  });
+
+  test('the rail never runs past the report column', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await routeCoach(page, STATES['ready-model']);
+    await openPanel(page);
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(1440);
+    const card = await page.getByTestId('coach-card').boundingBox();
+    const rail = await page.getByTestId('coach-rail').boundingBox();
+    expect(rail!.x + rail!.width).toBeLessThanOrEqual(card!.x + card!.width + 1);
+  });
+
+  test('a healer reads their own review and the healing anchor', async ({ page }) => {
+    const answer = coachFixture('holy-model');
     await signInAs(page, 'premium', ['sunwick']);
     await routeCoach(page, STATES.healer);
     await openPanel(page, PANEL_URL(GUID.sunwick));
-    await expect(page.getByTestId('coach-fix-title')).toContainText('Heal: 38% overheal');
-    await expect(page.getByTestId('coach-chips').first().locator('a')).toHaveAttribute('href', /tab=healing/);
+    await expect(page.getByTestId('coach-title')).toHaveText(fill(coachCopy.titleModel, { Spec: 'Holy' }));
+    await expect(page.getByTestId('coach-fix-title')).toContainText(answer.review.fixFirst!.title);
+    await expect(page.getByTestId('coach-footer')).toContainText(answer.basis_labels.at(-1)!);
+    await expect(page.locator('[data-testid="coach-chips"] a[href*="tab=healing"]')).toHaveCount(1);
   });
 
   test('whole night: one muted line, no request', async ({ page }) => {
@@ -218,6 +278,19 @@ test.describe('Premium owner', () => {
     await page.goto(PANEL_URL().replace('fight=3', 'fight=0'));
     await expect(page.getByTestId('coach-tab-night')).toHaveText(coachCopy.night);
     expect(seen.panels).toHaveLength(0);
+  });
+
+  test('the phone strip holds its reserve by entitlement: 52 px Premium, 88 px free', async ({ browser }) => {
+    for (const kind of ['premium', 'free'] as const) {
+      const page = await browser.newPage({ viewport: PHONE });
+      await signInAs(page, kind);
+      await routeCoach(page, STATES[kind === 'premium' ? 'ready-model' : 'teaser-several']);
+      await page.goto(ROWS_URL);
+      const line = page.getByTestId('coach-row-line');
+      await expect(line).toBeVisible();
+      expect(Math.round((await line.boundingBox())!.height)).toBe(STRIP_PHONE_PX[kind]);
+      await page.close();
+    }
   });
 
   test('axe finds nothing, and no control is under 44 px at 360', async ({ page }) => {
