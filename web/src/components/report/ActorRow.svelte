@@ -42,6 +42,7 @@
   import AbilityBar from './AbilityBar.svelte';
   import ClassIcon from './ClassIcon.svelte';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import CoachRowLine from '../coach/CoachRowLine.svelte';
 
   let {
     rank,
@@ -466,6 +467,7 @@
       {activeText}
     </span>
   </button>
+  <CoachRowLine {actor} rowOpen={open} />
 
   {#if open}
     <div

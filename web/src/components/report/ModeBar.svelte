@@ -11,6 +11,8 @@
   import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { reportCopy } from '../../lib/report/copy';
+  import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
+  import { coachTabListed } from '../../lib/coach/viewer';
   import {
     FIRST_TIER_TABS,
     MODES,
@@ -60,7 +62,11 @@
   // source for every id and label, this just splits it in two without copying either.
   const firstTierTabs = FIRST_TIER_TABS.map((id) => TABS.find((tab) => tab.id === id)!);
   const moreTabIds = new Set<Tab>(FIRST_TIER_TABS);
-  const moreTabs = TABS.filter((tab) => !moreTabIds.has(tab.id));
+  // The Coach tab is listed only for a signed-in owner of a character in the report, or an officer.
+  const coachViewer = createCoachViewerState();
+  const coachListed = $derived(coachTabListed(coachViewer.viewer, roster));
+  const listedTabs = $derived(TABS.filter((tab) => tab.id !== 'coach' || coachListed));
+  const moreTabs = $derived(listedTabs.filter((tab) => !moreTabIds.has(tab.id)));
   const moreActive = $derived(moreTabs.some((tab) => tab.id === reportState.tab));
   const activeMoreLabel = $derived(
     moreTabs.find((tab) => tab.id === reportState.tab)?.label ?? reportCopy.more,
@@ -198,7 +204,7 @@
             data-testid="tab-select"
             onchange={(event) => onPatch({ tab: event.currentTarget.value as Tab })}
           >
-            {#each TABS as tab (tab.id)}<option value={tab.id}>{tab.label}</option>{/each}
+            {#each listedTabs as tab (tab.id)}<option value={tab.id}>{tab.label}</option>{/each}
           </select>
         </label>
         <!-- The six tabs raiders reach for first (finding 3), stuck under the page header

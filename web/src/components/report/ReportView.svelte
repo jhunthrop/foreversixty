@@ -92,6 +92,8 @@
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
+  import { provideCoachRow } from '../../lib/coach/report-context';
+  import CoachTabHost from '../coach/CoachTabHost.svelte';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   // Compare, Mechanics, Rankings, Timelines, Events and Queries are not the landing mode or
   // view (Analyze / tables / summary is), so each ships as its own chunk fetched the first
@@ -190,6 +192,7 @@
   const base = $derived<Summary | null>(nightMode ? nightFold : summary);
   let state = $state<ReportState>(defaultState(1));
   const fight = $derived<FightEntry | null>(fights.find((f) => f.index === state.fight) ?? null);
+  provideCoachRow(() => ({ reportId, fight, firstFight }));
   /**
    * The encounter slug the rankings pages use, from the selected fight's own name. This
    * is `rankings/api.ts`'s one shared derivation -- Task 19's `/rankings/<encounter-slug>`
@@ -2065,6 +2068,16 @@
               onWindow={setWindow}
               {reportId}
               fightIndex={nightMode ? undefined : state.fight}
+            />
+          {:else if state.tab === 'coach'}
+            <CoachTabHost
+              {reportId}
+              {fight}
+              {firstFight}
+              {roster}
+              source={state.source}
+              {nightMode}
+              onSelectPlayer={(guid) => patch({ source: guid })}
             />
           {:else if state.tab === 'rating' && nightMode}
             <p class="text-muted text-[14px]" data-testid="rating-tab-night">

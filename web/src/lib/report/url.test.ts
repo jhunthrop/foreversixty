@@ -22,11 +22,12 @@ describe('the report URL state', () => {
     expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('?mode=mechanics');
   });
 
-  it('offers the four views and the thirteen tabs in the spec’s order', () => {
+  it('offers the four views and the fourteen tabs in the spec’s order', () => {
     expect(VIEWS.map((v) => v.id)).toEqual(['tables', 'timelines', 'events', 'queries']);
     expect(TABS.map((t) => t.id)).toEqual([
       'summary',
       'rating',
+      'coach',
       'damage-done',
       'damage-taken',
       'healing',
@@ -42,6 +43,7 @@ describe('the report URL state', () => {
     expect(TABS.map((t) => t.label)).toEqual([
       'Summary',
       'Rating',
+      'Coach',
       'Damage Done',
       'Damage Taken',
       'Healing',

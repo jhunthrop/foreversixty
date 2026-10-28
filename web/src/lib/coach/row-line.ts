@@ -1,0 +1,59 @@
+// web/src/lib/coach/row-line.ts
+// What the row strip says for a settled `line=1` answer (experience spec 3.2 and 8.2). Pure, so
+// the strip and its tests share one decision. `null` renders nothing.
+import { coachCopy, fill } from './copy';
+import type { CoachFull, CoachTeaser } from './types';
+
+/** What the strip is doing: waiting on the answer, showing a line, or offering a retry. */
+export type StripPhase = 'loading' | 'line' | 'error';
+
+export interface RowLine {
+  /** The muted lead, when the line has a title in `--strong` after it. */
+  lead: string;
+  /** The strong title; empty when the line is a plain sentence. */
+  title: string;
+  /** The first spell, for the 20 px icon before the title. */
+  spellId: number | null;
+  /** The free line's second target, the gold Premium link; empty on Premium lines. */
+  upgrade: string;
+}
+
+const count = (n: number, one: string, many: string): string => (n === 1 ? one : fill(many, { n }));
+
+function freeLine(answer: CoachTeaser): RowLine | null {
+  if (answer.status !== 'ready' || answer.finding_count === 0) return null;
+  const { finding_count: n, fix_first: first } = answer;
+  if (first === null) return plain(count(n, coachCopy.rowFreeNoFirstOne, coachCopy.rowFreeNoFirst));
+  const template = n === 1 ? coachCopy.rowFreeOne : coachCopy.rowFree;
+  const [lead = ''] = template.split('{title}');
+  return {
+    lead: fill(lead, { n }),
+    title: first.title,
+    spellId: first.spell_id,
+    upgrade: coachCopy.upgrade,
+  };
+}
+
+function plain(text: string): RowLine {
+  return { lead: text, title: '', spellId: null, upgrade: '' };
+}
+
+function fullLine(answer: CoachFull): RowLine | null {
+  if (answer.status !== 'ready' && answer.status !== 'writing') return null;
+  const first = answer.review.fixFirst;
+  if (first === null) {
+    const findings = answer.review.thenFix.length;
+    if (findings === 0) return plain(coachCopy.rowClean);
+    return plain(count(findings, coachCopy.rowPremiumNoFirstOne, coachCopy.rowPremiumNoFirst));
+  }
+  const [lead = ''] = coachCopy.rowPremium.split('{title}');
+  const firstSpell = first.anchors
+    .map((id) => answer.anchors[id]?.spell_id)
+    .find((spell): spell is number => spell !== undefined);
+  return { lead, title: first.title, spellId: firstSpell ?? null, upgrade: '' };
+}
+
+export function rowLineFor(answer: CoachFull | CoachTeaser | null): RowLine | null {
+  if (answer === null) return null;
+  return answer.access === 'teaser' ? freeLine(answer) : fullLine(answer);
+}

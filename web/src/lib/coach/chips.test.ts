@@ -1,0 +1,43 @@
+import { describe, expect, it } from 'vitest';
+import { FIXTURE_GUID } from '../../test-support/coach-fixtures';
+import { coachAnchorHref } from './anchors';
+import { chipsFor, clock, firstSpellId } from './chips';
+import type { CoachAnchor } from './types';
+
+const anchors: Record<string, CoachAnchor> = {
+  a1: { kind: 'cast', spell_id: 23881 },
+  a2: { kind: 'death', death: `death-${FIXTURE_GUID}-200000` },
+  a3: { kind: 'time', at_ms: 65_000 },
+  a4: { kind: 'aura', spell_id: 5, debuff: true },
+};
+const context = {
+  anchors,
+  fightIndex: 3,
+  firstFight: 1,
+  playerGuid: FIXTURE_GUID,
+  spellName: (id: number) => (id === 23881 ? 'Bloodthirst' : 'Sunder'),
+};
+
+describe('chips', () => {
+  it('labels by the copy grammar and links through coachAnchorHref', () => {
+    const chips = chipsFor(['a1', 'a2', 'a3', 'a4'], context);
+    expect(chips.map((chip) => chip.label)).toEqual([
+      'Bloodthirst · Casts',
+      'Death · 3:20',
+      'Timelines · 1:05',
+      'Sunder · Debuffs',
+    ]);
+    expect(chips[0]?.href).toBe(coachAnchorHref(3, 1, FIXTURE_GUID, anchors['a1']!));
+  });
+  it('an unknown anchor id renders no chip', () => {
+    expect(chipsFor(['zz'], context)).toEqual([]);
+  });
+  it('formats clocks', () => {
+    expect(clock(0)).toBe('0:00');
+    expect(clock(232_000)).toBe('3:52');
+  });
+  it('picks the first spell anchor', () => {
+    expect(firstSpellId(['a2', 'a1'], anchors)).toBe(23881);
+    expect(firstSpellId(['a2'], anchors)).toBeNull();
+  });
+});

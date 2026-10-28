@@ -66,6 +66,8 @@ export const SYNC_ENTRIES = [
   { name: 'combos.json', kind: 'file', required: true },
   { name: 'spellconst', kind: 'dir', required: false },
   { name: 'spells.json', kind: 'file', required: false },
+  // The spell id to icon stem table the coach panel's icons read.
+  { name: 'spellicons.json', kind: 'file', required: false },
   { name: 'simconsumes.json', kind: 'file', required: false },
   { name: 'simbuffs.json', kind: 'file', required: false },
   // The build's copy of the curated stat weights (pipeline/weights.py), which the addon

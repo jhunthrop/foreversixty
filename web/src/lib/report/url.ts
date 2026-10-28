@@ -14,6 +14,7 @@ export type View = 'tables' | 'timelines' | 'events' | 'queries';
 export type Tab =
   | 'summary'
   | 'rating'
+  | 'coach'
   | 'damage-done'
   | 'damage-taken'
   | 'healing'
@@ -52,6 +53,7 @@ export const VIEWS: readonly { id: View; label: string }[] = [
 export const TABS: readonly { id: Tab; label: string }[] = [
   { id: 'summary', label: 'Summary' },
   { id: 'rating', label: 'Rating' },
+  { id: 'coach', label: 'Coach' },
   { id: 'damage-done', label: 'Damage Done' },
   { id: 'damage-taken', label: 'Damage Taken' },
   { id: 'healing', label: 'Healing' },
