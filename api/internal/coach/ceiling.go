@@ -16,9 +16,9 @@ func CeilingCasts(durationMS, cooldownMS int64) int {
 	return int(durationMS/cooldownMS) + 1
 }
 
-// withCeiling adds the ceiling line and its number to a finding that has no comparison.
+// withCeiling adds (over counted time, §6.1: dead time and downtime never count against a player) the ceiling line and its number to a finding that has no comparison.
 func withCeiling(f *Finding, in Input, worst coreAbility) {
-	ceiling := CeilingCasts(in.Fight.DurationMS, worst.spell.CooldownMS)
+	ceiling := CeilingCasts(CountedTime(in).CountedMS, worst.spell.CooldownMS)
 	if worst.cmp != nil || ceiling == 0 {
 		return
 	}

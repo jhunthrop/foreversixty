@@ -3,6 +3,7 @@ package coach
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
@@ -27,24 +28,27 @@ type SpecValidator interface {
 	Validated(ctx context.Context, spec string) (bool, error)
 }
 
-// Resolver answers an Input's Refs: the top logs first, then the sim for a validated DPS
-// spec whose pool is too thin. An unvalidated spec is never simmed and never "preparing".
+// Resolver answers an Input's Refs: the top logs, and beside them the sim for a validated
+// DPS spec, so that comparison can take the first basis that exists for each measurement
+// (§11). An unvalidated spec is never simmed and never "preparing".
 type Resolver struct {
 	Pool          *Pool
 	Sims          *SimRefs
 	Validated     SpecValidator
 	EngineVersion string
-	Build         string // the newest client build whose manifest fetched_at <= the fight (Ruling F11, approximate)
+	// BuildAt is the build in force at a fight: the newest client build whose manifest
+	// fetched_at is at or before the fight (Ruling F11, an approximation).
+	BuildAt func(fought time.Time) string
 }
 
-// Refs resolves the references for playerKey, who played k.Spec at level for durationMS.
-func (r *Resolver) Refs(ctx context.Context, k PoolKey, playerKey, role string, level int, durationMS int64) (Refs, error) {
+// Refs resolves the references for playerKey, who played k.Spec at level for durationMS in the fight at fought.
+func (r *Resolver) Refs(ctx context.Context, k PoolKey, playerKey, role string, level int, durationMS int64, fought time.Time) (Refs, error) {
 	count, pool, err := r.Pool.Reference(ctx, k, playerKey)
 	if err != nil {
 		return Refs{}, fmt.Errorf("coach: pool reference: %w", err)
 	}
 	refs := Refs{Pool: pool, PoolCount: count}
-	if pool != nil || role != RoleDPS || LevelBand(level) == 0 {
+	if role != RoleDPS || LevelBand(level) == 0 {
 		return refs, nil
 	}
 	slug, ok := dpsSpecSlug(k.Spec)
@@ -58,7 +62,7 @@ func (r *Resolver) Refs(ctx context.Context, k PoolKey, playerKey, role string, 
 	if !validated {
 		return refs, nil
 	}
-	key := SimRefKey{EngineVersion: r.EngineVersion, Build: r.Build, Spec: slug,
+	key := SimRefKey{EngineVersion: r.EngineVersion, Build: r.BuildAt(fought), Spec: slug,
 		Band: LevelBand(level), DurationBucket: DurationBucket(durationMS)}
 	refs.Sim, refs.SimPreparing, err = r.Sims.Get(ctx, key)
 	return refs, err

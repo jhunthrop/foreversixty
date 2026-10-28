@@ -119,22 +119,35 @@ func decodeSimRef(raw []byte, band int) (*SimRef, error) {
 	return sum.ref(band)
 }
 
-// queue runs the job unless this key was queued within SimRefRequeueAfter.
+// queue runs the job unless this key was queued within SimRefRequeueAfter. The key is
+// marked under the lock and the launch happens outside it, so one slow launch never stalls
+// another key; a failed launch clears the mark.
 func (s *SimRefs) queue(ctx context.Context, k SimRefKey) error {
 	if s.Jobs == nil {
 		return errors.New("coach: sim refs have no job runner")
 	}
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if at, ok := s.queued[k]; ok && s.now().Sub(at) < SimRefRequeueAfter {
+	if !s.claim(k) {
 		return nil
 	}
 	if err := s.Jobs.Run(ctx, append([]string{SimRefJobCommand}, k.Args()...)...); err != nil {
+		s.mu.Lock()
+		delete(s.queued, k)
+		s.mu.Unlock()
 		return fmt.Errorf("coach: queue sim ref: %w", err)
+	}
+	return nil
+}
+
+// claim marks k queued now and reports whether the caller should launch it.
+func (s *SimRefs) claim(k SimRefKey) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if at, ok := s.queued[k]; ok && s.now().Sub(at) < SimRefRequeueAfter {
+		return false
 	}
 	if s.queued == nil {
 		s.queued = map[SimRefKey]time.Time{}
 	}
 	s.queued[k] = s.now()
-	return nil
+	return true
 }
