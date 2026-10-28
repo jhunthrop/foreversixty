@@ -17,7 +17,6 @@ const (
 	idleFactLongest = "longest idle window, seconds"
 	idleFactPool    = "active share, top logs"
 	idleFactYou     = "active share, you"
-	percentOf       = 100.0
 	millisPerSecond = 1000.0
 )
 
