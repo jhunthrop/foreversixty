@@ -511,12 +511,15 @@ for (const width of THREE) {
 
 // ---- row 17: GuildInviteLink before and after the CopyLinkField extraction ----------------------
 
+/** A channel that differs by one level is the rasteriser's rounding at a corner, not a layout difference. */
+const CHANNEL_TOLERANCE = 1;
+
 /** Counts the pixels two same-size PNGs disagree on, drawn in a canvas inside `page`. */
 async function differingPixels(page: Page, a: string, b: string): Promise<number> {
   const uri = (png: string): string => `data:image/png;base64,${readFileSync(png).toString('base64')}`;
   await page.setContent('<body></body>');
   return page.evaluate(
-    async ([first, second]) => {
+    async ([first, second, tolerance]) => {
       const load = (src: string): Promise<HTMLImageElement> =>
         new Promise((resolve, reject) => {
           const image = new Image();
@@ -543,16 +546,35 @@ async function differingPixels(page: Page, a: string, b: string): Promise<number
       if (left.width !== right.width || left.height !== right.height) return Number.MAX_SAFE_INTEGER;
       let count = 0;
       for (let at = 0; at < left.data.length; at += 4) {
-        const same = [0, 1, 2, 3].every((channel) => left.data[at + channel] === right.data[at + channel]);
+        const same = [0, 1, 2, 3].every(
+          (channel) => Math.abs(left.data[at + channel] - right.data[at + channel]) <= tolerance,
+        );
         if (!same) count += 1;
       }
       return count;
     },
-    [uri(a), uri(b)] as const,
+    [uri(a), uri(b), CHANNEL_TOLERANCE] as const,
   );
 }
 
 const INVITE_STATES = ['at-rest', 'rotated'] as const;
+
+/**
+ * Moves the section holding `block` by the fraction that leaves its top on a whole pixel. The two
+ * builds put the section at different heights (this branch's billing panel above it is 56.5 px
+ * shorter), and a half-pixel difference in where it starts moves every 1 px line and text row by a
+ * pixel in a screenshot. The block's own markup is what row 17 compares, so both runs snap the
+ * section the same way.
+ */
+async function snapToWholePixel(block: Locator): Promise<void> {
+  await block.evaluate((node) => {
+    const element = node.parentElement as HTMLElement;
+    element.style.position = 'relative';
+    element.style.top = '0px';
+    const top = element.getBoundingClientRect().top + window.scrollY;
+    element.style.top = `${Math.ceil(top) - top}px`;
+  });
+}
 
 atWidths('17 GuildInviteLink on guild settings', PAIR, async (page, width) => {
   await sizeTo(page, width);
@@ -572,11 +594,13 @@ atWidths('17 GuildInviteLink on guild settings', PAIR, async (page, width) => {
   const cropFile = (state: string, which = variant): string =>
     fileName(rowLabel(17), `${state}-${which}`, width, '-crop');
   await atRest(page);
+  await snapToWholePixel(block);
   await cropOf(page, block, cropFile('at-rest'));
   await page.getByTestId('guild-invite-rotate').click();
   await page.getByTestId('guild-invite-rotate-confirm-button').click();
   await settled(page, '[data-testid="guild-invite-url"]');
   await atRest(page);
+  await snapToWholePixel(block);
   await cropOf(page, block, cropFile('rotated'));
 
   if (BASELINE) return;
