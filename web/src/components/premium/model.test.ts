@@ -23,19 +23,22 @@ describe('buttonLabel', () => {
 });
 
 describe('priceCell', () => {
-  it('strikes the list price and shows the founder line while founder is open', () => {
+  it('shows the list price as plain text and the founder line while founder is open', () => {
     const cell = priceCell('premium', 'yearly', true);
     expect(cell.amount).toBe(`$${PLANS.premium.founderYearly}`);
-    expect(cell.listAmount).toBe(`$${PLANS.premium.yearly}`);
+    expect(cell.listLine).toBe('$50 after 6 Jan 2027');
+    expect(priceCell('premium', 'monthly', true).listLine).toBe('$6 a month after 6 Jan 2027');
+    expect(priceCell('guild', 'yearly', true).listLine).toBe('$150 after 6 Jan 2027');
+    expect(priceCell('raid_guild', 'monthly', true).listLine).toBe('$25 a month after 6 Jan 2027');
     expect(cell.suffix).toBe(plansPageCopy.price.suffix.yearly);
     expect(cell.secondLine).toBe(perMonthLine(PLANS.premium.founderYearly));
     expect(cell.founderLine).toBe(plansPageCopy.price.founder);
   });
 
-  it('shows list prices with no strike and no founder line once it is closed', () => {
+  it('shows list prices with no list line and no founder line once it is closed', () => {
     const cell = priceCell('guild', 'monthly', false);
     expect(cell.amount).toBe(`$${PLANS.guild.monthly}`);
-    expect(cell.listAmount).toBeNull();
+    expect(cell.listLine).toBeNull();
     expect(cell.founderLine).toBeNull();
     expect(cell.secondLine).toBe(plansPageCopy.price.orYearly(formatPrice(PLANS.guild.yearly, 'yearly')));
   });

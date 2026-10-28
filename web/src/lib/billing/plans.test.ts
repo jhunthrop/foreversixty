@@ -1,12 +1,14 @@
 // web/src/lib/billing/plans.test.ts
 import { describe, expect, it } from 'vitest';
 import {
+  FOUNDER_LAST_DAY,
   FOUNDER_WINDOW_CLOSES,
   PLANS,
   founderOpen,
   formatAmount,
   formatCents,
   formatPrice,
+  listPriceAfterFounder,
   perMonthLine,
   priceFor,
   type Interval,
@@ -81,5 +83,15 @@ describe('formatCents', () => {
   it('matches formatPrice', () => {
     expect(formatCents(4000, 'yearly')).toBe('$40 a year');
     expect(formatCents(500, 'monthly')).toBe('$5 a month');
+  });
+});
+
+describe('listPriceAfterFounder', () => {
+  it('names the list price and the last founder day in one date style', () => {
+    expect(FOUNDER_LAST_DAY).toBe('6 Jan 2027');
+    expect(listPriceAfterFounder('premium', 'yearly')).toBe('$50 after 6 Jan 2027');
+    expect(listPriceAfterFounder('premium', 'monthly')).toBe('$6 a month after 6 Jan 2027');
+    expect(listPriceAfterFounder('guild', 'yearly')).toBe('$150 after 6 Jan 2027');
+    expect(listPriceAfterFounder('raid_guild', 'monthly')).toBe('$25 a month after 6 Jan 2027');
   });
 });

@@ -12,7 +12,6 @@ const DECEMBER = '2026-12-08T18:00:00Z';
 const JUST_BEFORE_CLOSE = '2027-01-07T07:59:59Z';
 const AT_CLOSE = FOUNDER_WINDOW_CLOSES;
 const PHONE = { width: 360, height: 780 };
-const PREMIUM_BUTTON_MAX_BOTTOM = 600;
 const MIN_TAP_PX = 44;
 
 const premiumPrice = (interval: 'yearly' | 'monthly', founder: boolean): string =>
@@ -33,14 +32,19 @@ test('ships only the layout character selector island', async ({ page }) => {
   await expect(islands.first()).toHaveAttribute('component-url', /CharacterSelector/);
 });
 
-test('on launch day the founder row shows, prices are founder prices and the list price is struck', async ({
+test('on launch day the founder row shows, prices are founder prices and the list price is plain text', async ({
   page,
 }) => {
   await openAt(page, LAUNCH_DAY);
   await expect(page.getByTestId('founder-row')).toContainText(plansPageCopy.founder.open);
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', true)}`);
-  await expect(page.getByTestId('price-premium').locator('s:visible')).toHaveText(
-    `$${priceFor('premium', 'yearly', false)}`,
+  await expect(page.getByTestId('price-premium').locator('.list-line:visible')).toHaveText(
+    '$50 after 6 Jan 2027',
+  );
+  await expect(page.locator('s:visible')).toHaveCount(0);
+  await page.getByLabel('Monthly').check();
+  await expect(page.getByTestId('price-raid_guild').locator('.list-line:visible')).toHaveText(
+    '$25 a month after 6 Jan 2027',
   );
 });
 
@@ -88,29 +92,23 @@ test('the founder window ends at the instant, to the second', async ({ page }) =
   await openAt(page, AT_CLOSE);
   await expect(page.getByTestId('founder-row')).toBeHidden();
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', false)}`);
-  await expect(page.getByTestId('price-premium').locator('s:visible')).toHaveCount(0);
+  await expect(page.getByTestId('price-premium').locator('.list-line:visible')).toHaveCount(0);
 });
 
-test('at 360 the free summary comes first, Premium is above the fold and #free holds the promise', async ({
+test('at 360 the Free card comes first, once, with the free list and the promise, before Premium', async ({
   page,
 }) => {
   await page.setViewportSize(PHONE);
   await openAt(page, DECEMBER);
-  const summary = await page.getByTestId('free-summary').boundingBox();
-  const premium = await page.getByTestId('plan-premium').boundingBox();
-  expect(summary?.y ?? Infinity).toBeLessThan(premium?.y ?? 0);
-  const button = await premiumButton(page).boundingBox();
-  expect((button?.y ?? 0) + (button?.height ?? 0)).toBeLessThan(PREMIUM_BUTTON_MAX_BOTTOM);
+  await expect(page.getByTestId('free-summary')).toHaveCount(0);
   await expect(page.locator('#free')).toContainText(plansPageCopy.free.promise);
-  const order = await page
-    .locator('[data-testid="free-summary"], [data-plan], [data-testid="history-promise"]')
-    .evaluateAll((nodes) =>
-      nodes
-        .filter((node) => node.getBoundingClientRect().height > 0)
-        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
-        .map((node) => node.getAttribute('data-plan') ?? node.getAttribute('data-testid')),
-    );
-  expect(order).toEqual(['free-summary', 'premium', 'guild', 'raid_guild', 'history-promise', 'free']);
+  const order = await page.locator('[data-plan], [data-testid="history-promise"]').evaluateAll((nodes) =>
+    nodes
+      .filter((node) => node.getBoundingClientRect().height > 0)
+      .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
+      .map((node) => node.getAttribute('data-plan') ?? node.getAttribute('data-testid')),
+  );
+  expect(order).toEqual(['free', 'premium', 'guild', 'raid_guild', 'history-promise']);
 });
 
 test('at 1024 the three subscribe buttons share top and height', async ({ page }) => {

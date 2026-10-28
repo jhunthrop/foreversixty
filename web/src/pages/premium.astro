@@ -5,7 +5,6 @@
 // is a root attribute set by a six-line inline head script from the window's closing instant.
 // Both intervals and both founder states are always in the DOM inside fixed-height cells.
 import Base from '../layouts/Base.astro';
-import FreeSummaryRow from '../components/premium/FreeSummaryRow.astro';
 import GuildRules from '../components/premium/GuildRules.astro';
 import IntervalControl from '../components/premium/IntervalControl.astro';
 import PlanCard from '../components/premium/PlanCard.astro';
@@ -47,7 +46,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
       </p>
 
       <div class="cards">
-        <FreeSummaryRow />
         <PlanCard plan="free" />
         <PlanCard plan="premium" />
         <PlanCard plan="guild" />
@@ -166,7 +164,10 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
-  /* Phone order: summary row, Premium, Guild, Raid guild, the promise, then the Free card. */
+  /* Phone order: the Free card, Premium, Guild, Raid guild, then the promise. */
+  .cards > :global([data-plan='free']) {
+    order: 0;
+  }
   .cards > :global([data-plan='premium']) {
     order: 1;
   }
@@ -178,9 +179,6 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
   }
   .history-promise {
     order: 4;
-  }
-  .cards > :global([data-plan='free']) {
-    order: 5;
   }
   .history-promise {
     margin: 0;

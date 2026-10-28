@@ -21,8 +21,8 @@ const { plan } = Astro.props;
           <p class="price-line">
             <span class="amount tabular">{cell.amount}</span>
             <span class="suffix">{cell.suffix}</span>
-            {cell.listAmount && <s class="list-amount tabular">{cell.listAmount}</s>}
           </p>
+          <p class="list-line">{cell.listLine}</p>
           <p class="second-line">{cell.secondLine}</p>
           {cell.founderLine && <p class="founder-line">{cell.founderLine}</p>}
         </div>
@@ -33,7 +33,7 @@ const { plan } = Astro.props;
 
 <style>
   .price-block {
-    height: 70px;
+    height: 86px;
   }
   .price-line {
     display: flex;
@@ -54,9 +54,10 @@ const { plan } = Astro.props;
     color: var(--color-muted);
     margin-right: 2px;
   }
-  .list-amount {
-    font-family: var(--font-mono);
-    font-size: 15px;
+  .list-line {
+    margin: 0;
+    font-size: 13px;
+    line-height: 16px;
     color: var(--color-muted);
   }
   .second-line {
@@ -73,7 +74,7 @@ const { plan } = Astro.props;
   }
   @media (min-width: 768px) {
     .price-block {
-      height: 96px;
+      height: 112px;
     }
     .price-line {
       height: 34px;

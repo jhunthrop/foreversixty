@@ -7,6 +7,7 @@ import {
   GUILD_TRIAL_DAYS,
   formatAmount,
   formatPrice,
+  listPriceAfterFounder,
   priceFor,
   type Interval,
   type PlanKey,
@@ -47,7 +48,7 @@ export function buttonLabel(plan: PlanKey, interval: Interval, founder: boolean)
 
 export interface PriceCell {
   amount: string;
-  listAmount: string | null;
+  listLine: string | null;
   suffix: string;
   secondLine: string;
   founderLine: string | null;
@@ -58,7 +59,7 @@ export function priceCell(plan: PlanKey, interval: Interval, founder: boolean): 
   const yearly = priceFor(plan, 'yearly', founder);
   return {
     amount: formatAmount(priceFor(plan, interval, founder)),
-    listAmount: founder ? formatAmount(priceFor(plan, interval, false)) : null,
+    listLine: founder ? listPriceAfterFounder(plan, interval) : null,
     suffix: price.suffix[interval],
     secondLine:
       interval === 'yearly' ? price.perMonth(yearly) : price.orYearly(formatPrice(yearly, 'yearly')),
