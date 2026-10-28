@@ -64,7 +64,7 @@ describe('GuildStepCard identity', () => {
   it('names the guild in its h2 with the realm line, scroll margin and anchor id', () => {
     const body = html([guild({})]);
     expect(body).toMatch(/<li[^>]*id="guild-2"[^>]*aria-labelledby="guild-2-name"[^>]*scroll-mt-24/);
-    expect(plain(body)).toContain('Forever · US');
+    expect(plain(body)).toContain('PvP · US');
     expect(body).toMatch(/md:grid-cols-\[minmax\(0,1fr\)_320px\]/);
   });
 });
@@ -85,7 +85,7 @@ describe('GuildStepCard you row and facts', () => {
       character('Third', 2),
       character('Other', 9),
     ];
-    const body = html([guild({})], chars, 'us/forever/main');
+    const body = html([guild({})], chars, 'us/pvp/main');
     const text = plain(body).replace(/\s+/g, ' ');
     expect(text.indexOf('Main')).toBeLessThan(text.indexOf('Alt'));
     expect(text).not.toContain('Third');
@@ -110,7 +110,7 @@ describe('GuildStepCard you row and facts', () => {
     const body = html([guild({ subscribe: null })], [character('Obnoxious', 2)]);
     expect(body).not.toContain('guild-you');
     expect(body).not.toContain('guild-facts');
-    expect(body).toMatch(/<a[^>]*href="\/guild\/us\/forever\/olympus-xxvii"[^>]*>Open the guild<\/a>/);
+    expect(body).toMatch(/<a[^>]*href="\/guild\/us\/pvp\/olympus-xxvii"[^>]*>Open the guild<\/a>/);
   });
 });
 
@@ -119,7 +119,7 @@ describe('GuildStepBlock', () => {
     const body = html([guild({})]);
     expect(plain(body)).toContain(copy.askLeader('OLYMPUS XXVII'));
     expect((body.match(/value="([^"]+)"[^>]*data-testid="guild-2-handoff-url"/) ?? [])[1]).toBe(
-      'https://foreversixty.gg/guild/us/forever/olympus-xxvii/claim?plan=guild&amp;interval=yearly',
+      'https://foreversixty.gg/guild/us/pvp/olympus-xxvii/claim?plan=guild&amp;interval=yearly',
     );
     expect(plain(body)).toContain(copy.verify.short);
     expect(body).toContain(`href="/setup?next=${encodeURIComponent(`${SELF}#guild-2`)}"`);

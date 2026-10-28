@@ -146,13 +146,13 @@ describe('CheckoutGuildStep: ready shell', () => {
     const body = html({ me: me(GUILDS) });
     expect(body).toMatch(/<li[^>]*id="guild-2"[^>]*aria-labelledby="guild-2-name"/);
     expect(body).toContain('scroll-mt-24');
-    expect(text(body)).toContain('Forever · US');
+    expect(text(body)).toContain('PvP · US');
   });
 
   it('an older /v1/me (no subscribe) draws identity rows and Open the guild only', () => {
     const body = html({ me: me([guild(5, 'Old Guild', null)]) });
     expect(body).toContain('>Old Guild<');
-    expect(body).toMatch(/<a[^>]*href="\/guild\/us\/forever\/old-guild"[^>]*>Open the guild<\/a>/);
+    expect(body).toMatch(/<a[^>]*href="\/guild\/us\/pvp\/old-guild"[^>]*>Open the guild<\/a>/);
   });
 
   it('the foot: missing-guild line with Get set up, and Get Premium only without Premium', () => {
@@ -246,7 +246,7 @@ describe('CheckoutGuildStep: on_plan actions', () => {
   it('payer on Guild with Raid guild chosen: Move to Raid guild links to settings', () => {
     const body = html({ me: me([ON_PLAN(1, 'Olympus', { you_pay: true })]), plan: 'raid_guild' });
     expect(body).toMatch(
-      /<a[^>]*href="\/guild\/us\/forever\/olympus\/settings\?upgrade=1#billing"[^>]*border-gold[^>]*>Move to Raid guild/,
+      /<a[^>]*href="\/guild\/us\/pvp\/olympus\/settings\?upgrade=1#billing"[^>]*border-gold[^>]*>Move to Raid guild/,
     );
     expect(body).not.toContain('Manage billing');
   });

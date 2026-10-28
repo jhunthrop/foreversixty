@@ -48,6 +48,17 @@ describe('guild shapes', () => {
   });
 });
 
+describe('wire vocabulary', () => {
+  it('ranks are leader, officer or member and the ruleset is a real one', () => {
+    const everyMe = [...Object.values(fx.STEP_FIXTURES), fx.OWNER_MEMBER, fx.OWNER_GUILD_MASTER, fx.MIXED];
+    for (const guild of everyMe.flatMap((me) => me.guilds)) {
+      expect(['leader', 'officer', 'member']).toContain(guild.rank);
+      expect(guild.ruleset).toBe('pvp');
+      expect(guild.ruleset_label).toBe('PvP');
+    }
+  });
+});
+
 describe('immutability', () => {
   it('refuses mutation of a fixture and of what it shares', () => {
     expect(() => {

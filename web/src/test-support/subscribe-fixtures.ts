@@ -2,7 +2,7 @@
 // Typed `/v1/me` fixtures for subscribe-and-join (spec design/specs/2026-10-27-subscribe-and-join.md
 // section 8): the owner's account as production holds it, one fixture per subscribe step, one per
 // premium source, and the empty and older-API shapes. Each is a full `Me`, so `npm run check` proves
-// it against the contract; e2e stubs it with `routeMe`.
+// it against the contract; e2e stubs it through tests/e2e/support/checkout-guild.ts.
 import type { BillingView, Me, MeCharacter, MeGuild } from '../lib/account/me-types';
 import type {
   BillingFacts,
@@ -61,8 +61,8 @@ export function stepGuild(overrides: Partial<MeGuild> & { step?: SubscribeStep }
   return {
     ...OLYMPUS,
     region: 'us',
-    ruleset: 'forever',
-    ruleset_label: 'Forever',
+    ruleset: 'pvp',
+    ruleset_label: 'PvP',
     verified: false,
     verified_count: 0,
     crest_url: null,
@@ -81,9 +81,9 @@ export function meCharacter(
   guild: Partial<NonNullable<MeCharacter['guild']>> = {},
 ): MeCharacter {
   return {
-    key: `us/forever/${name.toLowerCase()}`,
+    key: `us/pvp/${name.toLowerCase()}`,
     region: 'us',
-    ruleset: 'forever',
+    ruleset: 'pvp',
     name,
     class: 'Hunter',
     ...(guildId === undefined
@@ -93,9 +93,9 @@ export function meCharacter(
 }
 
 const OWNER_BARE: MeCharacter = {
-  key: 'us/forever/obnoxious-yell',
+  key: 'us/pvp/obnoxious-yell',
   region: 'us',
-  ruleset: 'forever',
+  ruleset: 'pvp',
   name: 'Obnoxious Yell',
   class: 'Warrior',
   spec: 'Fury',
@@ -154,9 +154,9 @@ export const OWNER_MEMBER: Me = buildMe({
   billing: GRANT_OPEN_ENDED,
 });
 
-/** Capture 1b: after an addon save that makes the owner guild master of OLYMPUS XXVII. */
+/** Capture 1b: after an addon save that makes the owner leader of OLYMPUS XXVII. */
 export const OWNER_GUILD_MASTER: Me = buildMe({
-  guilds: [stepGuild({ step: 'claim', rank: 'guild master' }), stepGuild({ ...MILLENNIALS })],
+  guilds: [stepGuild({ step: 'claim', rank: 'leader' }), stepGuild({ ...MILLENNIALS })],
   billing: GRANT_OPEN_ENDED,
 });
 
@@ -164,7 +164,7 @@ export const OWNER_GUILD_MASTER: Me = buildMe({
 export const OWNER_GUILD_MASTER_CLAIMED: Me = buildMe({
   guilds: [
     stepGuild({
-      rank: 'guild master',
+      rank: 'leader',
       verified: true,
       verified_count: 1,
       claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Obnoxious Yell' },
@@ -242,12 +242,12 @@ export const STEP_FIXTURES: Record<SubscribeStep, Me> = {
   ),
   confirm_claim: stepFixture(stepGuild({ step: 'confirm_claim', claim: PENDING_CLAIM })),
   claim_pending_ask: stepFixture(stepGuild({ step: 'claim_pending_ask', claim: PENDING_CLAIM })),
-  claim: stepFixture(stepGuild({ step: 'claim', rank: 'guild master' })),
-  claim_link_bnet: stepFixture(stepGuild({ step: 'claim_link_bnet', rank: 'guild master' })),
+  claim: stepFixture(stepGuild({ step: 'claim', rank: 'leader' })),
+  claim_link_bnet: stepFixture(stepGuild({ step: 'claim_link_bnet', rank: 'leader' })),
   start_claim: stepFixture(stepGuild({ step: 'start_claim', rank: 'officer' })),
   claim_blocked: stepFixture(
     stepGuild({
-      rank: 'guild master',
+      rank: 'leader',
       subscribe: subscribeView('claim_blocked', {
         reason: 'rate_limited',
         available_at: '2026-11-26T00:00:00Z',
@@ -267,7 +267,7 @@ export const CLAIMED_ASK_MEMBER: Me = stepFixture(stepGuild({ step: 'claimed_ask
 export const CLAIM_BLOCKED_RATE_LIMITED: Me = STEP_FIXTURES.claim_blocked;
 export const CLAIM_BLOCKED_HOLDS_OTHER: Me = stepFixture(
   stepGuild({
-    rank: 'guild master',
+    rank: 'leader',
     subscribe: subscribeView('claim_blocked', { reason: 'holds_other', other_guild_name: MILLENNIALS.name }),
   }),
 );
@@ -350,7 +350,7 @@ export const OLDER_ME: Me = buildMe({
       id: OLYMPUS.id,
       name: OLYMPUS.name,
       region: 'us',
-      ruleset: 'forever',
+      ruleset: 'pvp',
       rank: 'member',
       verified: false,
       verified_count: 0,
