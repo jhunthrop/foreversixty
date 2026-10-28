@@ -139,10 +139,12 @@ func writeUnavailable(w http.ResponseWriter, r *http.Request) {
 
 // alreadyOnPremiumRefusal is the personal counterpart of
 // alreadyOnThePlanRefusal: the account already has Premium, and the
-// portal is where it is changed or resumed.
-func alreadyOnPremiumRefusal() *checkoutRefusal {
+// portal is where it is changed or resumed. source (stripe or grant) lets
+// the web answer a grant holder without a billing button.
+func alreadyOnPremiumRefusal(source string) *checkoutRefusal {
 	return &checkoutRefusal{status: http.StatusConflict, code: "conflict",
-		message: "this account already has Premium", fields: map[string]string{"portal_hint": "1"}}
+		message: "this account already has Premium",
+		fields:  map[string]string{"portal_hint": "1", "source": source}}
 }
 
 // checkoutRefusal carries a refusal's HTTP shape out of guildCheckout's

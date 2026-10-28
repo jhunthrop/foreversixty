@@ -180,7 +180,7 @@ func (s *Service) premiumCheckout(w http.ResponseWriter, r *http.Request, req pr
 			return err
 		}
 		if current != nil && current.Active {
-			return alreadyOnPremiumRefusal()
+			return alreadyOnPremiumRefusal(current.Source)
 		}
 		lookupKey, err := s.premiumLookupKey(ctx, req)
 		if err != nil {
