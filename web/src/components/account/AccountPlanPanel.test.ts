@@ -80,6 +80,13 @@ describe('Account plan headline', () => {
     expect(html).toContain('role="alert"');
     expect(html).toContain('Your last payment failed.');
     expect(html).toContain('Manage billing');
+    expect(html.indexOf('account-billing-row')).toBeLessThan(html.indexOf('account-past-due'));
+    expect(html.indexOf('account-past-due')).toBeLessThan(html.indexOf('account-premium-block'));
+  });
+
+  it('puts the billing button after the feature rows', () => {
+    const html = panel(meWith({}, STRIPE));
+    expect(html.indexOf('account-premium-block')).toBeLessThan(html.indexOf(BUTTON));
   });
 
   it('shows no alert for an active plan', () => {

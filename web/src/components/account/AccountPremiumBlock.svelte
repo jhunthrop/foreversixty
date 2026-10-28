@@ -136,18 +136,6 @@
     {:else if plan.line2 !== null}
       <p class="text-muted text-[13px]" data-testid="account-plan-line2">{plan.line2}</p>
     {/if}
-    {#if plan.billingButton !== null && onBilling !== undefined}
-      <button
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text mt-2 w-fit px-4"
-        onclick={onBilling}
-        disabled={busy}
-        data-testid="account-billing-button"
-      >
-        {plan.billingButton === 'manage'
-          ? premiumSourceCopy.buttons.manage
-          : premiumSourceCopy.buttons.history}
-      </button>
-    {/if}
   </div>
 {/if}
 <ul class="m-0 flex list-none flex-col p-0 text-[14px]" data-testid="account-premium-block">
@@ -168,3 +156,13 @@
     </li>
   {/each}
 </ul>
+{#if plan?.billingButton != null && onBilling !== undefined}
+  <button
+    class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+    onclick={onBilling}
+    disabled={busy}
+    data-testid="account-billing-button"
+  >
+    {plan.billingButton === 'manage' ? premiumSourceCopy.buttons.manage : premiumSourceCopy.buttons.history}
+  </button>
+{/if}

@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1144px] lg:min-h-[709px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1264px] lg:min-h-[809px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -51,11 +51,26 @@ export const HEADER_ROW_H: BucketPx = { lg: 44, stack: 83 };
 /** An empty Characters panel, an empty Your reports panel and the 32 px gap between them. */
 export const LEFT_FLOOR: BucketPx = { lg: 298, stack: 403 };
 
-/** The rail's panels with nothing extra in them (Devices, You, Plan). */
+/** The Plan panel with the free plan line only (measured on the empty fixture account). */
+const PLAN_EMPTY_FLOOR: BucketPx = { lg: 219, stack: 211 };
+
+/**
+ * What the tallest Plan headline adds to the free panel (a seat holder with a personal portal):
+ * the `Billing history` button row (12 px flex gap + the 44 px fixed button), line 2 under the plan
+ * line (4 px gap + 20 px per 13 px line; two lines at 1440, three at 390 where the seat note
+ * wraps). The past-due alert and a grant's line 2 are never taller. The panel never draws shorter
+ * than the stored reserve says, so only a first load with nothing stored sees this floor.
+ */
+export const PLAN_HEADLINE_RESERVE: BucketPx = { lg: 12 + 44 + 4 + 2 * 20, stack: 12 + 44 + 4 + 3 * 20 };
+
+/** The rail's panels with nothing extra in them (Devices, You, Plan at its tallest headline). */
 export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>> = {
   devices: { lg: 233, stack: 249 },
   you: { lg: 193, stack: 185 },
-  plan: { lg: 219, stack: 211 },
+  plan: {
+    lg: PLAN_EMPTY_FLOOR.lg + PLAN_HEADLINE_RESERVE.lg,
+    stack: PLAN_EMPTY_FLOOR.stack + PLAN_HEADLINE_RESERVE.stack,
+  },
 };
 
 /** The Discord block's height by the state `/v1/me` puts it in; `none` and `free` draw no panel. */

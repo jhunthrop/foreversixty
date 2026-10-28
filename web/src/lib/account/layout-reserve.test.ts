@@ -14,6 +14,7 @@ import {
   DISCORD_FLOORS,
   HEADER_ROW_H,
   LEFT_FLOOR,
+  PLAN_HEADLINE_RESERVE,
   RAIL_FLOORS,
   SIGNED_OUT_MIN_H,
   currentBucket,
@@ -113,9 +114,16 @@ describe('global.css agrees with layout.ts', () => {
 
 describe('the floors', () => {
   it('sum the rail as three panels, two gaps and the Discord block under Plan', () => {
-    expect(railFloor('none', 'lg')).toBe(233 + 193 + 219 + 64);
-    expect(railFloor('form', 'lg')).toBe(233 + 193 + 219 + 64 + 16 + DISCORD_FLOORS.form.lg);
-    expect(railFloor('connect', 'stack')).toBe(249 + 185 + 211 + 64 + 16 + 340);
+    expect(railFloor('none', 'lg')).toBe(233 + 193 + 219 + PLAN_HEADLINE_RESERVE.lg + 64);
+    expect(railFloor('form', 'lg')).toBe(
+      233 + 193 + 219 + PLAN_HEADLINE_RESERVE.lg + 64 + 16 + DISCORD_FLOORS.form.lg,
+    );
+    expect(railFloor('connect', 'stack')).toBe(249 + 185 + 211 + PLAN_HEADLINE_RESERVE.stack + 64 + 16 + 340);
+  });
+
+  it('reserve the Plan panel for the tallest headline: a Billing history row and a wrapped line 2', () => {
+    expect(PLAN_HEADLINE_RESERVE).toEqual({ lg: 100, stack: 120 });
+    expect(RAIL_FLOORS.plan).toEqual({ lg: 219 + 100, stack: 211 + 120 });
   });
 
   it('take the taller column at lg and stack the two below it', () => {
