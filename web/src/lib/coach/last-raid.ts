@@ -102,7 +102,6 @@ export type LastRaidState =
   | { kind: 'error' }
   | { kind: 'ready'; view: LastRaidView; recent: CoachRecent; pending: boolean };
 
-
 /** Fetches the recent answer and settles it into a state; a failed call is `error`, never a throw. */
 export async function settleLastRaid(
   fetchRecent: () => Promise<CoachRecent>,
