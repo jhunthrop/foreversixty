@@ -19,7 +19,7 @@ describe('the privacy page Log coach section', () => {
     expect(text).toContain('Vercel');
     expect(text).toContain(COACH_MODEL_PROVIDER);
     expect(text).toMatch(/no character name, account, guild, realm or Battle\.net data/);
-    expect(text).toMatch(/for your spec and boss/);
+    expect(text).toMatch(/the numbers of one fight \(your spec, the boss, the raid size/);
     expect(text).toMatch(/does not train on it/);
   });
 

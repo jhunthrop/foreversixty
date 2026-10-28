@@ -6,6 +6,9 @@ import { plansPageCopy } from '../billing/plans-page-copy';
 import { COACH_MODEL_PROVIDER } from './provider';
 
 export const COACH_PRIVACY_HEADING = 'Log coach';
+export const PRIVACY_SLUG = 'privacy';
+// The section sits after "Stripe", so it goes in front of the next heading.
+export const COACH_SECTION_BEFORE = '<h2 id="cookies">';
 export const VERCEL_PRIVACY_URL = 'https://vercel.com/legal/privacy-policy';
 
 export interface CoachPrivacySection {
@@ -31,9 +34,16 @@ export function coachPrivacySection(
     heading: COACH_PRIVACY_HEADING,
     link: { label: "Vercel's privacy policy", href: VERCEL_PRIVACY_URL },
     paragraphs: [
-      `When a Premium player or an officer opens a coach review, the numbers of one fight for your spec and boss (spec, boss, raid size and what happened in that fight) are sent through Vercel's AI Gateway to ${provider}, which writes the review.`,
+      `When a Premium player or an officer opens a coach review, the numbers of one fight (your spec, the boss, the raid size and what happened in the fight) are sent through Vercel's AI Gateway to ${provider}, which writes the review.`,
       'It carries no character name, account, guild, realm or Battle.net data.',
-      `Vercel and ${provider} process that data for this purpose only. ${provider} does not train on it and keeps it only for the period its terms state.`,
+      `Vercel and ${provider} process that data. ${provider} does not train on it and keeps it only for the period its terms state.`,
     ],
   };
+}
+
+export function splitBeforeHeading(html: string, heading: string): [string, string] {
+  const at = html.indexOf(heading);
+  if (at < 0)
+    throw new Error(`the privacy page has no ${heading} heading to place the Log coach section before`);
+  return [html.slice(0, at), html.slice(at)];
 }

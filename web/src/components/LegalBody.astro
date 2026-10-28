@@ -1,0 +1,25 @@
+---
+// web/src/components/LegalBody.astro
+// A content page's rendered body. The privacy page gains its Log coach section right after
+// "Stripe" (before "Cookies"); no other page gets one.
+import CoachPrivacySection from './CoachPrivacySection.astro';
+import {
+  COACH_SECTION_BEFORE,
+  PRIVACY_SLUG,
+  splitBeforeHeading,
+  type CoachPrivacySection as Section,
+} from '../lib/coach/privacy-section';
+
+interface Props {
+  slug: string;
+  html: string;
+  section: Section | null;
+}
+const { slug, html, section } = Astro.props;
+const isPrivacy = slug === PRIVACY_SLUG;
+const [head, tail] = isPrivacy ? splitBeforeHeading(html, COACH_SECTION_BEFORE) : [html, ''];
+---
+
+<Fragment set:html={head} />
+{isPrivacy && <CoachPrivacySection section={section} />}
+<Fragment set:html={tail} />

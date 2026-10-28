@@ -1,14 +1,16 @@
 ---
 // web/src/pages/[...slug].astro
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import Content from '../layouts/Content.astro';
-import CoachPrivacySection from '../components/CoachPrivacySection.astro';
+import LegalBody from '../components/LegalBody.astro';
+import { coachPrivacySection } from '../lib/coach/privacy-section';
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
   return pages.map((p) => ({ params: { slug: p.id }, props: { page: p } }));
 }
 const { page } = Astro.props;
-const { Content: Body } = await render(page);
+const html = page.rendered?.html;
+if (html === undefined) throw new Error(`page ${page.id} has no rendered body`);
 ---
 
 <Content
@@ -19,6 +21,5 @@ const { Content: Body } = await render(page);
   confidence={page.data.confidence}
   sources={page.data.sources}
 >
-  <Body />
-  {page.id === 'privacy' && <CoachPrivacySection />}
+  <LegalBody slug={page.id} html={html} section={coachPrivacySection()} />
 </Content>
