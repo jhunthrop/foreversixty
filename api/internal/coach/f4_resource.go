@@ -7,27 +7,19 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// The power types as the log's resource tracks spell them.
-const (
-	powerMana   int64 = 0
-	powerRage   int64 = 1
-	powerEnergy int64 = 3
-)
-
 // detailManaRecovered is F4's detail when mana came back after running out. The spec
 // shows no such string, so it lives here until Task 33 moves it into the draft table.
 const detailManaRecovered = "Your mana was under {pct}% for {n} s in all, from {t}."
 
+// downtimeNoun fills DetailCapped's {downtime}; the spec's example is "air phase".
+// Task 33 may name each encounter's downtime.
 const downtimeNoun = "downtime"
-
-// capBars are the bars F4 checks for sitting at the cap, by power type.
-var capBars = map[int64]string{powerRage: "rage", powerEnergy: "energy"}
 
 // rolePowers are the bars each role is checked on (§6.3), in the order they are tried.
 var rolePowers = map[string][]int64{
-	RoleDPS:    {powerRage, powerEnergy, powerMana},
-	RoleTank:   {powerRage, powerMana},
-	RoleHealer: {powerMana},
+	RoleDPS:    {PowerRage, PowerEnergy, PowerMana},
+	RoleTank:   {PowerRage, PowerMana},
+	RoleHealer: {PowerMana},
 }
 
 // waste is one bar's finding with what ranks it against the player's other bars.
@@ -80,7 +72,7 @@ func worse(w, than *waste) bool {
 }
 
 func assess(in Input, c Counted, track summary.ResourceTrack) *waste {
-	if track.PowerType == powerMana {
+	if track.PowerType == PowerMana {
 		return assessMana(in, c, track)
 	}
 	return assessCap(in, c, track)
@@ -98,7 +90,7 @@ func assessCap(in Input, c Counted, track summary.ResourceTrack) *waste {
 	if pct >= CapMajorPct {
 		severity = SeverityMajor
 	}
-	bar := capBars[track.PowerType]
+	bar := PowerNames[track.PowerType]
 	longest := longestRun(runs)
 	secs := strconv.FormatInt(total/ResourceWholeSecondMS, 10)
 	finding := Finding{
@@ -134,10 +126,11 @@ func capBasis(in Input, c Counted, bar string) string {
 	return Fill(BasisOwnBar, map[string]string{"resource": bar})
 }
 
-// assessMana counts the counted seconds under ManaLowPct of Max.
+// assessMana counts the seconds alive under ManaLowPct of Max. §6.2 sets downtime aside
+// for rage and energy only, so a mana second inside downtime or before the first cast counts.
 func assessMana(in Input, c Counted, track summary.ResourceTrack) *waste {
 	floor := ManaLowPct * float64(track.Max)
-	runs := countedRuns(track.Series, c, func(v int64) bool { return float64(v)*100 < floor })
+	runs := countedRuns(track.Series, Counted{AliveMS: c.AliveMS}, func(v int64) bool { return float64(v)*100 < floor })
 	total := totalMS(runs)
 	if len(runs) == 0 || total < ManaFiresMS || in.Fight.DurationMS <= 0 {
 		return nil

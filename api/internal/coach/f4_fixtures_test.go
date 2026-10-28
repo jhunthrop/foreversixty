@@ -59,7 +59,7 @@ func f4WithTrack(in Input, powerType, max int64, series []int64) Input {
 // furyRageCapped is the Fury warrior with rage at its cap in each window.
 func furyRageCapped(t *testing.T, durationMS int64, windows ...summary.Segment) Input {
 	t.Helper()
-	return f4Capped(t, powerRage, f4RageMax, durationMS, windows...)
+	return f4Capped(t, PowerRage, f4RageMax, durationMS, windows...)
 }
 
 // f4Capped is the Fury warrior with the given power type held at its cap in each window
@@ -74,5 +74,5 @@ func f4Capped(t *testing.T, powerType, max, durationMS int64, windows ...summary
 func holyManaLow(t *testing.T, durationMS, fromMS, toMS int64) Input {
 	t.Helper()
 	in := f4Prepared(holyInput(t), durationMS)
-	return f4WithTrack(in, powerMana, f4ManaMax, f4Series(durationMS, f4ManaMax*4/5, f4ManaMax/100, span(fromMS, toMS)))
+	return f4WithTrack(in, PowerMana, f4ManaMax, f4Series(durationMS, f4ManaMax*4/5, f4ManaMax/100, span(fromMS, toMS)))
 }

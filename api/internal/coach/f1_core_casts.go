@@ -17,9 +17,6 @@ const (
 	coreCostMark   = "rage" // the word in CoreNoCost that a different resource replaces
 )
 
-// corePowerNames spells a spell cost's power type the way the log numbers it.
-var corePowerNames = map[int64]string{0: "mana", 1: "rage", 3: "energy"}
-
 const coreUnknownResource = "resource"
 
 // coreGap is one stretch where an ability sat ready and uncast: [fromMS, toMS) is the whole
@@ -56,7 +53,7 @@ func (a coreAbility) fires() bool {
 }
 
 func (a coreAbility) resource() string {
-	if name, ok := corePowerNames[a.spell.CostType]; ok {
+	if name, ok := PowerNames[a.spell.CostType]; ok {
 		return name
 	}
 	return coreUnknownResource

@@ -87,13 +87,13 @@ func measureResources(in Input, c Counted, p *Profile) {
 	if c.CountedMS <= 0 {
 		return
 	}
-	for _, power := range []int64{powerRage, powerEnergy} {
+	for _, power := range []int64{PowerRage, PowerEnergy} {
 		if track, ok := trackOf(in.Fight, in.Row.GUID, power); ok && track.Max > 0 {
 			runs := countedRuns(track.Series, c, func(v int64) bool { return v >= track.Max })
 			p.CappedPct = max(p.CappedPct, float64(totalMS(runs))*percentScale/float64(c.CountedMS))
 		}
 	}
-	track, ok := trackOf(in.Fight, in.Row.GUID, powerMana)
+	track, ok := trackOf(in.Fight, in.Row.GUID, PowerMana)
 	if !ok || track.Max <= 0 {
 		return
 	}

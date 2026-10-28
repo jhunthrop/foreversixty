@@ -4,8 +4,55 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
+
+// f4WithDowntime is in with a curated 20 s downtime starting when an aura lands at 40 s.
+func f4WithDowntime(in Input) Input {
+	in.Fight = withAura(in.Fight, "Creature-0-1", 999, "Lift Off", nil, span(40_000, 41_000))
+	in.Tables.Mechanics = &mechanics.Table{Downtime: []mechanics.Downtime{
+		{Trigger: mechanics.PhaseStart{SpellID: 999, On: mechanics.OnAuraApplied}, DurationMS: 20_000},
+	}}
+	return in
+}
+
+func TestF4CapLeavesOutCuratedDowntime(t *testing.T) {
+	in := f4WithDowntime(f4Capped(t, PowerRage, f4RageMax, 100_000, span(30_000, 65_000)))
+	f := f4Resource(in).Finding
+	if f == nil || f.Title != "Rage full for 15 seconds" {
+		t.Fatalf("10 s before and 5 s after the downtime count: %+v", f)
+	}
+	if want := "Your rage sat at its cap for 15 s outside the downtime, longest at 0:30–0:40."; f.Detail != want {
+		t.Errorf("detail %q, want %q", f.Detail, want)
+	}
+	if want := Fill(BasisCapOwnBar, map[string]string{"resource": "rage", "downtime": "downtime"}); f.Basis.Label != want {
+		t.Errorf("basis %q, want %q", f.Basis.Label, want)
+	}
+}
+
+func TestF4ManaCountsDowntime(t *testing.T) {
+	in := f4WithDowntime(holyManaLow(t, 100_000, 45_000, 58_000))
+	f := f4Resource(in).Finding
+	if f == nil || f.Title != "Out of mana from 0:45" {
+		t.Fatalf("§6.2 sets downtime aside for rage and energy only: %+v", f)
+	}
+}
+
+func TestPowerNames(t *testing.T) {
+	want := map[int64]string{PowerMana: "mana", PowerRage: "rage", PowerEnergy: "energy"}
+	if len(PowerNames) != len(want) {
+		t.Fatalf("PowerNames %v", PowerNames)
+	}
+	for id, name := range want {
+		if PowerNames[id] != name {
+			t.Errorf("power %d = %q, want %q", id, PowerNames[id], name)
+		}
+	}
+	if PowerMana != 0 || PowerRage != 1 || PowerEnergy != 3 {
+		t.Errorf("the client enum is mana 0, rage 1, energy 3")
+	}
+}
 
 func TestResource(t *testing.T) {
 	cases := []struct {
@@ -64,7 +111,7 @@ func TestF4CapThresholds(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			f := f4Resource(f4Capped(t, powerRage, f4RageMax, tc.durationMS, tc.window)).Finding
+			f := f4Resource(f4Capped(t, PowerRage, f4RageMax, tc.durationMS, tc.window)).Finding
 			if tc.none {
 				if f != nil {
 					t.Fatalf("unexpected %+v", f)
@@ -79,7 +126,7 @@ func TestF4CapThresholds(t *testing.T) {
 }
 
 func TestF4EnergyCapTitle(t *testing.T) {
-	o := f4Resource(f4Capped(t, powerEnergy, f4EnergyMax, 100_000, span(40_000, 52_000)))
+	o := f4Resource(f4Capped(t, PowerEnergy, f4EnergyMax, 100_000, span(40_000, 52_000)))
 	if o.Finding == nil || o.Finding.Title != "Energy full for 12 seconds" {
 		t.Fatalf("got %+v", o.Finding)
 	}
@@ -144,12 +191,12 @@ func TestF4RolesDecideWhichBars(t *testing.T) {
 		in   Input
 		want bool
 	}{
-		{"dps rage", capped(furyInput(t), powerRage, f4RageMax), true},
-		{"dps energy", capped(furyInput(t), powerEnergy, f4EnergyMax), true},
-		{"tank rage", capped(protInput(t), powerRage, f4RageMax), true},
-		{"tank energy is not theirs", capped(protInput(t), powerEnergy, f4EnergyMax), false},
-		{"healer rage is not theirs", capped(holyInput(t), powerRage, f4RageMax), false},
-		{"healer energy is not theirs", capped(holyInput(t), powerEnergy, f4EnergyMax), false},
+		{"dps rage", capped(furyInput(t), PowerRage, f4RageMax), true},
+		{"dps energy", capped(furyInput(t), PowerEnergy, f4EnergyMax), true},
+		{"tank rage", capped(protInput(t), PowerRage, f4RageMax), true},
+		{"tank energy is not theirs", capped(protInput(t), PowerEnergy, f4EnergyMax), false},
+		{"healer rage is not theirs", capped(holyInput(t), PowerRage, f4RageMax), false},
+		{"healer energy is not theirs", capped(holyInput(t), PowerEnergy, f4EnergyMax), false},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -164,7 +211,7 @@ func TestF4ManaForTankAndDPS(t *testing.T) {
 	for name, base := range map[string]Input{"tank": protInput(t), "dps": furyInput(t)} {
 		t.Run(name, func(t *testing.T) {
 			in := f4Prepared(base, 232_000)
-			in = f4WithTrack(in, powerMana, f4ManaMax, f4Series(232_000, f4ManaMax/2, 0, span(100_000, 120_000)))
+			in = f4WithTrack(in, PowerMana, f4ManaMax, f4Series(232_000, f4ManaMax/2, 0, span(100_000, 120_000)))
 			f := f4Resource(in).Finding
 			if f == nil || f.Title != "Out of mana from 1:40" || f.Severity != SeverityMajor {
 				t.Fatalf("got %+v", f)
@@ -206,7 +253,7 @@ func TestF4ManaThresholds(t *testing.T) {
 func TestF4ManaFivePercentBoundary(t *testing.T) {
 	in := f4Prepared(holyInput(t), 100_000)
 	at := func(v int64) Input {
-		return f4WithTrack(in, powerMana, f4ManaMax, f4Series(100_000, f4ManaMax/2, v, span(20_000, 40_000)))
+		return f4WithTrack(in, PowerMana, f4ManaMax, f4Series(100_000, f4ManaMax/2, v, span(20_000, 40_000)))
 	}
 	if f := f4Resource(at(f4ManaMax / 20)).Finding; f != nil {
 		t.Errorf("exactly 5%% is not under 5%%: %+v", f)
@@ -255,8 +302,8 @@ func TestF4ManaAnchorAndBasis(t *testing.T) {
 
 func TestF4WorstBarWins(t *testing.T) {
 	in := f4Prepared(furyInput(t), 100_000)
-	in = f4WithTrack(in, powerRage, f4RageMax, f4Series(100_000, 0, f4RageMax, span(40_000, 52_000)))
-	in = f4WithTrack(in, powerMana, f4ManaMax, f4Series(100_000, f4ManaMax/2, 0, span(50_000, 80_000)))
+	in = f4WithTrack(in, PowerRage, f4RageMax, f4Series(100_000, 0, f4RageMax, span(40_000, 52_000)))
+	in = f4WithTrack(in, PowerMana, f4ManaMax, f4Series(100_000, f4ManaMax/2, 0, span(50_000, 80_000)))
 	f := f4Resource(in).Finding
 	if f == nil || f.Title != "Out of mana from 0:50" || f.Severity != SeverityMajor {
 		t.Fatalf("a major beats a minor: %+v", f)
@@ -270,7 +317,7 @@ func TestF4NothingToCheck(t *testing.T) {
 		}
 	})
 	t.Run("no maximum in the log", func(t *testing.T) {
-		in := f4WithTrack(f4Prepared(furyInput(t), 100_000), powerRage, 0, f4Series(100_000, 0, 0))
+		in := f4WithTrack(f4Prepared(furyInput(t), 100_000), PowerRage, 0, f4Series(100_000, 0, 0))
 		if f := f4Resource(in).Finding; f != nil {
 			t.Fatalf("a bar with no cap cannot be at it: %+v", f)
 		}
