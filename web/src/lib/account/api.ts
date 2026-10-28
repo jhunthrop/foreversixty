@@ -11,7 +11,8 @@ import type { BillingFacts, GuildTier, MeEndedSeat, MeSeat, MeSeatOffer } from '
 import { normalizeMeBilling } from '../billing/normalize';
 import { clearPointerOnSignOut } from './session-pointer';
 import type { BillingSourceHint, MeGuildStanding, PersonalPortalHint } from './me-guild-types';
-import { clearPremiumHint, rememberMeHints } from './premium-hint';
+import { premiumSource } from './plan-line';
+import { clearPremiumHint, rememberMeHints, writePremiumHint } from './premium-hint';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -468,7 +469,9 @@ async function call<T>(
 /** Null means "not signed in", which is a state the header renders, not a failure. */
 export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null> {
   try {
-    return rememberMeHints(normalizeMeBilling(await call<Me>('/v1/me', apiBase)));
+    const me = normalizeMeBilling(await call<Me>('/v1/me', apiBase));
+    if (me !== null) writePremiumHint(premiumSource(me, new Date()));
+    return rememberMeHints(me);
   } catch (error) {
     if (error instanceof AccountError && (error.status === 401 || error.status === 403)) return null;
     throw error;

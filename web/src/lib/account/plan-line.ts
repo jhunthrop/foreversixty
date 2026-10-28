@@ -1,12 +1,14 @@
 // web/src/lib/account/plan-line.ts
-// The account Plan panel's headline: which of five states the account is in (own Premium, own
-// Premium ending into a seat, a seat, free, a seat that ended) and the words for it, from
-// accountPlanCopy. Pure: the caller passes the clock and the viewer's zone.
+// The account Plan panel's headline (design/specs/2026-10-27-subscribe-and-join.md 4.1 and 4.3):
+// which one source pays for the account's Premium and the words for it. Pure: the caller passes
+// the clock and the viewer's zone.
 import { accountPlanCopy } from '../billing/account-plan-copy';
+import type { PremiumSource } from '../billing/contract';
 import { billingBlockCopy } from '../billing/copy';
 import { guildPlanLine } from '../billing/guild-billing-copy';
+import { premiumSourceCopy } from '../billing/premium-source-copy';
 import { settingsWords } from '../guild/settings-view';
-import type { GuildBillingView, Me } from './api';
+import type { BillingView, GuildBillingView, Me } from './api';
 
 export interface EndedSeatLine {
   /** The sentence before the link, with its trailing space. */
@@ -16,27 +18,94 @@ export interface EndedSeatLine {
   href: string;
 }
 
+export type BillingButton = 'manage' | 'history';
+
 export interface AccountPlanLine {
   line: string;
   line2: string | null;
   founder: boolean;
-  manageBilling: boolean;
+  billingButton: BillingButton | null;
   ended: EndedSeatLine | null;
 }
+
+type LineWords = Pick<AccountPlanLine, 'line' | 'line2'>;
+
+const LIVE_STATUSES: readonly string[] = ['active', 'trialing', 'past_due'];
 
 function startsInFuture(startsAt: string | null, now: Date): boolean {
   return startsAt !== null && new Date(startsAt).getTime() > now.getTime();
 }
 
-function ownPremiumLine(me: Me, zone?: string): string {
-  const billing = me.entitlements?.billing;
-  const end = billing?.current_period_end ?? null;
-  if (billing === null || billing === undefined || end === null) return billingBlockCopy.notSubscribed;
-  if (billing.cancel_at_period_end) return accountPlanCopy.planLine.ends(end, zone);
-  if (billing.amount_cents === null || billing.interval === null) {
-    return accountPlanCopy.planLine.renewsNoPrice(end, zone);
+function liveBilling(me: Me): BillingView | null {
+  const billing = me.entitlements?.billing ?? null;
+  return billing !== null && LIVE_STATUSES.includes(billing.status) ? billing : null;
+}
+
+/** An API that predates `billing.source` only ever sent Stripe subscriptions. */
+function isGrant(billing: BillingView): boolean {
+  return billing.source === 'grant';
+}
+
+/** Section 4.1: exactly one source pays for the account's Premium; the first match wins. */
+export function premiumSource(me: Me, now: Date): PremiumSource {
+  const billing = liveBilling(me);
+  const seat = me.seat ?? null;
+  if (billing !== null && !isGrant(billing)) {
+    return seat !== null && startsInFuture(seat.starts_at, now) ? 'own_then_seat' : 'own';
   }
-  return accountPlanCopy.planLine.renews(end, billing.amount_cents, billing.interval, zone);
+  if (billing !== null) return 'grant';
+  if (seat !== null) return 'seat';
+  return me.entitlements?.server_sims === true ? 'fallback' : 'none';
+}
+
+function ownWords(billing: BillingView, zone?: string): LineWords {
+  const end = billing.current_period_end;
+  if (end === null) return { line: premiumSourceCopy.fallback, line2: null };
+  if (billing.cancel_at_period_end) return { line: accountPlanCopy.planLine.ends(end, zone), line2: null };
+  const line =
+    billing.amount_cents === null || billing.interval === null
+      ? accountPlanCopy.planLine.renewsNoPrice(end, zone)
+      : accountPlanCopy.planLine.renews(end, billing.amount_cents, billing.interval, zone);
+  return { line, line2: null };
+}
+
+function ownThenSeatWords(me: Me, billing: BillingView, zone?: string): LineWords {
+  const end = billing.current_period_end;
+  const seat = me.seat;
+  if (end === null || seat === null || seat === undefined) return ownWords(billing, zone);
+  return { line: accountPlanCopy.planLine.endsThenSeat(end, seat.guild_name, zone), line2: null };
+}
+
+function grantWords(billing: BillingView, zone?: string): LineWords {
+  const end = billing.current_period_end;
+  return end === null
+    ? { line: premiumSourceCopy.grant.noEnd, line2: premiumSourceCopy.grant.givenNoEnd }
+    : { line: premiumSourceCopy.grant.until(end, zone), line2: premiumSourceCopy.grant.givenUntil };
+}
+
+function seatWords(me: Me): LineWords {
+  const seat = me.seat;
+  if (seat === null || seat === undefined) return { line: premiumSourceCopy.fallback, line2: null };
+  return {
+    line: accountPlanCopy.planLine.seat(seat.guild_name),
+    line2: accountPlanCopy.planLine.givenBy(seat.given_by),
+  };
+}
+
+function sourceWords(source: PremiumSource, me: Me, zone?: string): LineWords {
+  const billing = liveBilling(me);
+  if (billing !== null && source === 'own') return ownWords(billing, zone);
+  if (billing !== null && source === 'own_then_seat') return ownThenSeatWords(me, billing, zone);
+  if (billing !== null && source === 'grant') return grantWords(billing, zone);
+  if (source === 'seat') return seatWords(me);
+  if (source === 'fallback') return { line: premiumSourceCopy.fallback, line2: null };
+  return { line: billingBlockCopy.notSubscribed, line2: null };
+}
+
+/** `Manage billing` only for the account's own subscription; `Billing history` for the other sources that have had one. */
+function billingButton(source: PremiumSource, me: Me): BillingButton | null {
+  if (source === 'own' || source === 'own_then_seat') return 'manage';
+  return me.entitlements?.personal_portal === true && source !== 'fallback' ? 'history' : null;
 }
 
 function endedSeatLine(me: Me, zone?: string): EndedSeatLine | null {
@@ -54,38 +123,13 @@ function endedSeatLine(me: Me, zone?: string): EndedSeatLine | null {
 }
 
 export function accountPlanLine(me: Me, now: Date, zone?: string): AccountPlanLine {
-  const billing = me.entitlements?.billing ?? null;
-  const seat = me.seat ?? null;
-  const founder = billing?.founder === true;
-
-  if (seat !== null && billing !== null && startsInFuture(seat.starts_at, now)) {
-    const end = billing.current_period_end;
-    return {
-      line:
-        end === null
-          ? accountPlanCopy.planLine.seat(seat.guild_name)
-          : accountPlanCopy.planLine.endsThenSeat(end, seat.guild_name, zone),
-      line2: null,
-      founder,
-      manageBilling: true,
-      ended: null,
-    };
-  }
-  if (seat !== null) {
-    return {
-      line: accountPlanCopy.planLine.seat(seat.guild_name),
-      line2: accountPlanCopy.planLine.givenBy(seat.given_by),
-      founder: false,
-      manageBilling: false,
-      ended: null,
-    };
-  }
+  const source = premiumSource(me, now);
+  const owns = source === 'own' || source === 'own_then_seat';
   return {
-    line: ownPremiumLine(me, zone),
-    line2: null,
-    founder,
-    manageBilling: billing !== null,
-    ended: billing === null ? endedSeatLine(me, zone) : null,
+    ...sourceWords(source, me, zone),
+    founder: owns && me.entitlements?.billing?.founder === true,
+    billingButton: billingButton(source, me),
+    ended: source === 'none' ? endedSeatLine(me, zone) : null,
   };
 }
 

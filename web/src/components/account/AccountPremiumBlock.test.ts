@@ -152,7 +152,7 @@ describe('AccountPremiumBlock plan headline', () => {
     line: 'Premium · renews 20 Dec 2026 · $6 a month',
     line2: null,
     founder: false,
-    manageBilling: true,
+    billingButton: 'manage',
     ended: null,
   };
   const renderPlan = (plan: AccountPlanLine, seePlans = false): string =>
