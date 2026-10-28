@@ -74,9 +74,12 @@ describe('showsGuildStep', () => {
     expect(step('?plan=raid_guild&interval=monthly')).toBe(true);
   });
 
-  it('Premium, a guild id and a success return do not', () => {
+  it('a guild id shows the step too: the step decides launch or float (spec 5.6)', () => {
+    expect(step('?plan=raid_guild&interval=yearly&guild_id=4')).toBe(true);
+  });
+
+  it('Premium and a success return do not', () => {
     expect(step('?plan=premium&interval=yearly')).toBe(false);
-    expect(step('?plan=guild&interval=yearly&guild_id=4')).toBe(false);
     expect(step('?plan=guild&interval=yearly&guild_id=4&status=success')).toBe(false);
   });
 });

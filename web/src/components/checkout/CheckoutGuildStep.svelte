@@ -8,10 +8,10 @@
 
      Each card is a GuildStepCard around a GuildStepBlock; an older /v1/me (no `subscribe`) gets
      identity rows and `Open the guild` only (§8). Rows replace the skeleton once /v1/me answered
-     and every guild crest decoded or failed, capped at CREST_SETTLE_MS. Task 18's `ready` card
-     calls `onSwitch` for `Switch to Guild` / `Switch to Raid guild`. -->
+     and every guild crest decoded or failed, capped at CREST_SETTLE_MS. The `ready` card calls
+     `onSwitch` for `Switch to Guild` / `Switch to Raid guild`. -->
 <script lang="ts">
-  import { tick } from 'svelte';
+  import { tick, untrack } from 'svelte';
   import type { SubscribeStep } from '../../lib/billing/contract';
   import type { Me, MeGuild } from '../../lib/account/api';
   import { guildHref } from '../../lib/characters';
@@ -27,8 +27,9 @@
     type ClaimIo,
     type ClaimKind,
   } from '../../lib/billing/claim-flow';
+  import { readyCount, type Arrival, type CardOutcome, type PayBusy } from '../../lib/billing/card-checkout';
   import { checkoutGuildCopy as copy, type GuildTier } from '../../lib/billing/checkout-guild-copy';
-  import { GUILD_LEAD_RESERVE, GUILD_SKELETON_CARD } from '../../lib/billing/checkout-layout';
+  import { GUILD_CARD_MIN, GUILD_LEAD_RESERVE } from '../../lib/billing/checkout-layout';
   import { priceFor } from '../../lib/billing/plan-costs';
   import { formatPrice, type Interval } from '../../lib/billing/plans';
   import { leadSentence, orderGuildCards, type StepGuild } from '../../lib/billing/subscribe-step';
@@ -36,6 +37,7 @@
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { checkoutHref } from '../premium/model';
   import LoadError from '../ui/LoadError.svelte';
+  import GuildPayAction from './GuildPayAction.svelte';
   import GuildStepBlock from './GuildStepBlock.svelte';
   import GuildStepCard from './GuildStepCard.svelte';
 
@@ -48,6 +50,10 @@
     selfUrl,
     onRetry,
     onCheckAgain,
+    onSwitch,
+    onCheckout,
+    onPortal,
+    arrival = undefined,
   }: {
     /** Null while /v1/me is in flight. */
     me: Me | null;
@@ -60,8 +66,14 @@
     onRetry: () => void;
     /** Re-reads /v1/me without the skeleton; the `checkout_open` card's `Check again`. */
     onCheckAgain: () => void;
-    /** Rewrites the page's plan in place (spec §5.3); Task 18's `ready` card calls it. */
+    /** Rewrites the page's plan in place (spec §5.3); the `ready` card's switch note calls it. */
     onSwitch: (to: GuildTier) => void;
+    /** Starts the guild's Stripe checkout; the launcher follows a `redirect` outcome. */
+    onCheckout: (guild: MeGuild) => Promise<CardOutcome>;
+    /** Opens the guild's billing portal; the launcher follows a `redirect` outcome. */
+    onPortal: (guild: MeGuild) => Promise<CardOutcome>;
+    /** A `guild_id` arrival: the card that goes first, or the ready guild that launches (§5.6). */
+    arrival?: Arrival;
   } = $props();
 
   /** The longest the rows wait behind the skeleton for the guild crests (spec §5.7). */
@@ -78,7 +90,8 @@
   const guilds = $derived<(MeGuild & StepGuild)[]>(
     (me?.guilds ?? []).map((guild) => ({ ...guild, slug: guild.slug ?? '' })),
   );
-  const cards = $derived(orderGuildCards(guilds));
+  const cards = $derived(orderGuildCards(guilds, arrival?.firstId));
+  const readyCards = $derived(readyCount(guilds));
   const lead = $derived(leadSentence(guilds));
   const crestUrls = $derived(guilds.flatMap((guild) => (guild.crest_url ? [guild.crest_url] : [])));
   const crestKey = $derived(crestUrls.join('|'));
@@ -191,6 +204,50 @@
     };
   }
 
+  /** The card whose checkout or portal call is in flight, and the card whose failure offers Try again. */
+  let busy = $state<{ id: number; kind: Exclude<PayBusy, null> } | null>(null);
+  let retryId = $state<number | null>(null);
+
+  /** Spec §9.1: a refusal stands on its card; a 409 or 403 also re-reads and moves focus when the step changes. */
+  function onPayRefused(guild: MeGuild, outcome: Extract<CardOutcome, { kind: 'refused' }>): void {
+    busy = null;
+    retryId = outcome.retry ? guild.id : null;
+    if (outcome.line !== null) notice = { id: guild.id, value: { text: outcome.line, role: 'alert' } };
+    if (outcome.rereads) {
+      awaitedStep = { id: guild.id, from: stepOfGuild(guild.id) };
+      onCheckAgain();
+      return;
+    }
+    focusSoon(() => document.getElementById(`guild-${guild.id}-notice`));
+  }
+
+  async function pay(guild: MeGuild, kind: Exclude<PayBusy, null>): Promise<void> {
+    notice = null;
+    retryId = null;
+    busy = { id: guild.id, kind };
+    const outcome = await (kind === 'checkout' ? onCheckout(guild) : onPortal(guild));
+    // A redirect leaves the card busy until the page unloads.
+    if (outcome.kind === 'refused') onPayRefused(guild, outcome);
+  }
+
+  let launched = false;
+  $effect(() => {
+    const launchId = arrival?.launchId;
+    if (launched || launchId === undefined || me === null || failed) return;
+    const guild = guilds.find((entry) => entry.id === launchId);
+    if (guild === undefined) return;
+    launched = true;
+    untrack(() => void pay(guild, 'checkout'));
+  });
+
+  let scrolled = false;
+  $effect(() => {
+    const firstId = arrival?.firstId;
+    if (scrolled || firstId === undefined || me === null || failed || empty !== null || !crestsReady) return;
+    scrolled = true;
+    void tick().then(() => document.getElementById(`guild-${firstId}`)?.scrollIntoView({ block: 'start' }));
+  });
+
   function guildPageHref(guild: MeGuild): string {
     if (guild.slug) return `/guild/${guild.region}/${guild.ruleset}/${encodeURIComponent(guild.slug)}`;
     return guildHref(guild.region, guild.ruleset, guild.name);
@@ -206,7 +263,7 @@
       <ul class="m-0 flex list-none flex-col gap-3 p-0" aria-busy="true" data-testid="checkout-guild-loading">
         <li class="sr-only" role="status">{copy.loading}</li>
         {#each Array.from({ length: skeletonCards }, (_, index) => index) as index (index)}
-          <li class={`skeleton-block rounded-panel ${GUILD_SKELETON_CARD}`} aria-hidden="true"></li>
+          <li class={`skeleton-block rounded-panel ${GUILD_CARD_MIN}`} aria-hidden="true"></li>
         {/each}
       </ul>
     {:else if empty !== null}
@@ -246,7 +303,24 @@
                 {onCheckAgain}
                 claim={claimControls(guild, claimKindOf(guild.subscribe?.step ?? null))}
                 notice={notice?.id === guild.id ? notice.value : null}
-              />
+                onTryAgain={retryId === guild.id ? () => void pay(guild, 'checkout') : undefined}
+              >
+                {#snippet action()}
+                  <GuildPayAction
+                    {guild}
+                    {plan}
+                    {interval}
+                    {founder}
+                    {readyCards}
+                    busy={busy?.id === guild.id ? busy.kind : null}
+                    locked={busy !== null && busy.id !== guild.id}
+                    guildPageHref={guildPageHref(guild)}
+                    onSubscribe={() => void pay(guild, 'checkout')}
+                    onManage={() => void pay(guild, 'portal')}
+                    {onSwitch}
+                  />
+                {/snippet}
+              </GuildStepBlock>
             {/snippet}
           </GuildStepCard>
         {/each}

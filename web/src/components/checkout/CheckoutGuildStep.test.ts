@@ -46,7 +46,12 @@ function me(guilds: MeGuild[], characters = [CHARACTER], extra: Partial<Me> = {}
   } as Me;
 }
 
-function html(props: { me: Me | null; failed?: boolean; plan?: 'guild' | 'raid_guild' }): string {
+function html(props: {
+  me: Me | null;
+  failed?: boolean;
+  plan?: 'guild' | 'raid_guild';
+  arrival?: { firstId?: number; launchId?: number };
+}): string {
   return render(CheckoutGuildStep, {
     props: {
       plan: 'guild',
@@ -56,6 +61,8 @@ function html(props: { me: Me | null; failed?: boolean; plan?: 'guild' | 'raid_g
       onRetry: () => {},
       onCheckAgain: () => {},
       onSwitch: () => {},
+      onCheckout: () => Promise.reject(new Error('no call in a static render')),
+      onPortal: () => Promise.reject(new Error('no call in a static render')),
       failed: false,
       ...props,
     },
@@ -89,17 +96,17 @@ describe('CheckoutGuildStep: loading', () => {
     const body = html({ me: null });
     expect(body).toMatch(/min-h-\[63px\] md:min-h-\[42px\]/);
     expect(body).toMatch(/<ul[^>]*aria-busy="true"/);
-    expect(body.match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(2);
+    expect(body.match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(2);
     expect(body).toMatch(new RegExp(`class="sr-only" role="status"[^>]*>${copy.loading}<`));
   });
 
   it('reads the skeleton count from fs.meGuildCount clamped to 1..4 (spec §5.7)', () => {
     localStorage.setItem(ME_GUILD_COUNT_KEY, '3');
-    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(3);
+    expect(html({ me: null }).match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(3);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '0');
-    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(1);
+    expect(html({ me: null }).match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(1);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '9');
-    expect(html({ me: null }).match(/h-\[260px\] md:h-\[156px\]/g)).toHaveLength(4);
+    expect(html({ me: null }).match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(4);
   });
 
   it('sits in the centred 880 column with the 48 / 18 gutters', () => {
@@ -178,5 +185,128 @@ describe('CheckoutGuildStep: ready shell', () => {
       }),
     });
     expect(text(granted)).not.toContain(copy.foot.getPremium);
+  });
+});
+
+const READY = (id: number, name: string, extra: Partial<MeGuild> = {}): MeGuild => ({
+  ...guild(id, name, 'ready'),
+  verified_count: 12,
+  subscribe: {
+    step: 'ready',
+    trial_used: false,
+    available_at: null,
+    reason: null,
+    other_guild_name: null,
+  } as MeGuild['subscribe'],
+  ...extra,
+});
+
+const ON_PLAN = (id: number, name: string, covered: Record<string, unknown>): MeGuild => ({
+  ...guild(id, name, 'on_plan'),
+  covered: {
+    tier: 'guild',
+    state: 'active',
+    ends_at: null,
+    billed_by: 'Dara',
+    you_pay: false,
+    you_hold_seat: false,
+    seats_given: 0,
+    seats_total: 0,
+    ...covered,
+  } as MeGuild['covered'],
+});
+
+describe('CheckoutGuildStep: ready card', () => {
+  it('one ready guild: the only fill, labelled with the trial, named for the guild', () => {
+    const body = html({ me: me([READY(1, 'Olympus')]) });
+    expect(body.match(/ bg-gold /g)).toHaveLength(1);
+    expect(body).toMatch(
+      /<button[^>]*data-step-action[^>]*>Start the 7-day trial<span class="sr-only">, Olympus</,
+    );
+    expect(body).not.toContain('disabled');
+  });
+
+  it('trial used: Subscribe with the price; lapsed: Subscribe again', () => {
+    const used = READY(1, 'Olympus', {
+      subscribe: { step: 'ready', trial_used: true } as MeGuild['subscribe'],
+    });
+    expect(text(html({ me: me([used]) }))).toContain('Subscribe · $120 a year');
+    const lapsed = READY(1, 'Olympus', {
+      subscribe: { step: 'ready', trial_used: true } as MeGuild['subscribe'],
+      covered: { state: 'lapsed', ends_at: '2027-01-01' } as MeGuild['covered'],
+    });
+    expect(text(html({ me: me([lapsed]) }))).toContain('Subscribe again · $120 a year');
+  });
+
+  it('two ready guilds: both gold outline, no fill', () => {
+    const body = html({ me: me([READY(1, 'Olympus'), READY(2, 'Millennials')]) });
+    expect(body).not.toMatch(/ bg-gold /);
+    expect(body.match(/border-gold text-gold/g)).toHaveLength(2);
+  });
+
+  it('the switch note sits above the button and names the other plan', () => {
+    const big = READY(1, 'Olympus', { verified_count: 40 });
+    const body = html({ me: me([big]) });
+    expect(text(body)).toContain('40 verified members, more than Guild');
+    expect(body).toContain('Switch to Raid guild');
+    expect(body.indexOf('Switch to Raid guild')).toBeLessThan(body.indexOf('data-step-action'));
+    const small = html({ me: me([READY(1, 'Olympus')]), plan: 'raid_guild' });
+    expect(small).toContain('Switch to Guild');
+  });
+
+  it('a fitting plan draws no switch note', () => {
+    expect(html({ me: me([READY(1, 'Olympus')]) })).not.toContain('Switch to');
+  });
+});
+
+describe('CheckoutGuildStep: on_plan actions', () => {
+  it('payer at the chosen tier: Manage billing', () => {
+    const body = html({ me: me([ON_PLAN(1, 'Olympus', { you_pay: true })]) });
+    expect(body).toMatch(/<button[^>]*data-step-action[^>]*>Manage billing</);
+    expect(body).not.toContain('Move to Raid guild');
+  });
+
+  it('payer on Guild with Raid guild chosen: Move to Raid guild links to settings', () => {
+    const body = html({ me: me([ON_PLAN(1, 'Olympus', { you_pay: true })]), plan: 'raid_guild' });
+    expect(body).toMatch(
+      /<a[^>]*href="\/guild\/us\/forever\/olympus\/settings\?upgrade=1#billing"[^>]*border-gold[^>]*>Move to Raid guild/,
+    );
+    expect(body).not.toContain('Manage billing');
+  });
+
+  it('not paying: seat lines and Open the guild, no billing button', () => {
+    const held = html({ me: me([ON_PLAN(1, 'Olympus', { you_hold_seat: true, seats_total: 3 })]) });
+    expect(text(held)).toContain('You hold one of its Premium seats.');
+    expect(held).toContain('Open the guild');
+    expect(held).not.toContain('Manage billing');
+    const free = text(html({ me: me([ON_PLAN(1, 'Olympus', { seats_given: 1, seats_total: 3 })]) }));
+    expect(free).toContain('1 of 3 Premium seats are given. Ask Dara for one.');
+    const full = text(html({ me: me([ON_PLAN(1, 'Olympus', { seats_given: 3, seats_total: 3 })]) }));
+    expect(full).toContain('All 3 of its Premium seats are given.');
+  });
+
+  it('checkout_open and frozen show no buy button', () => {
+    for (const step of ['checkout_open', 'frozen']) {
+      const body = html({ me: me([guild(1, 'Olympus', step)]) });
+      expect(body).not.toContain('data-step-action');
+      expect(body).not.toMatch(/Subscribe|trial/);
+    }
+  });
+});
+
+describe('CheckoutGuildStep: guild_id arrival', () => {
+  const GUILDS = [READY(1, 'Olympus'), guild(2, 'Millennials', 'ask_leader')];
+
+  it('a non-ready guild goes first', () => {
+    const body = html({ me: me(GUILDS), arrival: { firstId: 2 } });
+    const names = [...body.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((match) => match[1]);
+    expect(names).toEqual(['Millennials', 'Olympus']);
+  });
+
+  it('an unknown id renders the full list in step order with no error', () => {
+    const body = html({ me: me(GUILDS), arrival: {} });
+    const names = [...body.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((match) => match[1]);
+    expect(names).toEqual(['Olympus', 'Millennials']);
+    expect(body).not.toContain('role="alert"');
   });
 });

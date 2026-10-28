@@ -28,11 +28,8 @@ export const CHECKOUT_BODY_RESERVE = 'min-h-[204px] md:min-h-[184px]';
  */
 export const GUILD_LEAD_RESERVE = 'min-h-[63px] md:min-h-[42px]';
 
-/** A skeleton guild card at the ready card's height. */
-export const GUILD_SKELETON_CARD = 'h-[260px] md:h-[156px]';
-
 /**
- * A guild card's floor, the skeleton's height: a shorter card (an on_plan one) would shrink the
+ * A guild card's floor, and the skeleton card's height (ready: 156 px desktop, 260 px phone): a shorter card (an on_plan one) would shrink the
  * list when the rows replace the skeleton. The shell's skeleton must use this same constant.
  */
 export const GUILD_CARD_MIN = 'min-h-[260px] md:min-h-[156px]';

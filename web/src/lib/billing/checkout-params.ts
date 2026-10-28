@@ -22,9 +22,10 @@ export function isGuildPlan(plan: PlanKey): boolean {
 }
 
 /** Spec §5 / §5.7: the guild step applies, known from the URL alone, so its loading state
- *  draws before /v1/me answers. A `guild_id` request still launches straight to Stripe. */
+ *  draws before /v1/me answers. A `guild_id` request (spec §5.6) shows it too: the step starts a
+ *  `ready` guild's checkout itself and floats any other guild's card first. */
 export function showsGuildStep(params: CheckoutParams): boolean {
-  return isGuildPlan(params.plan) && params.guildId === undefined && params.status !== 'success';
+  return isGuildPlan(params.plan) && params.status !== 'success';
 }
 
 /** undefined when absent, null when present but not a positive integer. */

@@ -22,8 +22,15 @@
      not the redirect). -->
 <script lang="ts">
   import { tick } from 'svelte';
-  import { fetchMeOnce, forgetSession, type Me } from '../lib/account/api';
+  import { fetchMeOnce, forgetSession, type Me, type MeGuild } from '../lib/account/api';
   import { BillingApiError, openPortal, startCheckout } from '../lib/billing/api';
+  import {
+    guildArrival,
+    runCardCheckout,
+    runCardPortal,
+    type Arrival,
+    type CardOutcome,
+  } from '../lib/billing/card-checkout';
   import { runPremiumCheckout } from '../lib/billing/premium-owned-flow';
   import { checkoutCopy } from '../lib/billing/copy';
   import { changedGuildId } from '../lib/billing/guild-card-model';
@@ -77,6 +84,8 @@
   /** Null while the step's /v1/me read is in flight. */
   let stepMe = $state<Me | null>(null);
   let stepFailed = $state(false);
+  /** A `guild_id` arrival's card choice, set once /v1/me answered (spec §5.6). */
+  let arrival = $state<Arrival | undefined>(undefined);
   /** The last `Check again` could not read /v1/me; the cards stay as they were. */
   let refreshFailed = $state(false);
   /** The account that already has Premium: the panel replaces the redirect. */
@@ -85,7 +94,6 @@
   let portalFailed = $state(false);
   const ownedNow = new Date();
 
-  const ALREADY_ON_PLAN_CODE = 'conflict';
   const NOT_FOUND = 404;
 
   const POLL_INTERVAL_MS = 1500;
@@ -142,6 +150,7 @@
         redirectToLogin();
         return;
       }
+      arrival = guildArrival(me.guilds, request?.guildId);
       stepMe = me;
     } catch {
       stepFailed = true;
@@ -180,6 +189,22 @@
     selfUrl = currentUrl();
   }
 
+  /** Follows a card call's redirect; the shell shows a refusal on its card. */
+  function followCardOutcome(outcome: CardOutcome): CardOutcome {
+    if (outcome.kind === 'redirect') window.location.assign(outcome.url);
+    return outcome;
+  }
+
+  async function checkoutGuild(guild: MeGuild): Promise<CardOutcome> {
+    if (request === null) throw new Error('checkoutGuild before the URL was read');
+    const { plan, interval } = request;
+    return followCardOutcome(await runCardCheckout(io, { plan, interval, guildId: guild.id }, guild.name));
+  }
+
+  async function openGuildPortal(guild: MeGuild): Promise<CardOutcome> {
+    return followCardOutcome(await runCardPortal(io, guild.id));
+  }
+
   function showOwned(me: Me): void {
     ownedMe = me;
     showRetry = false;
@@ -214,15 +239,10 @@
       comebackId: parsed.comebackId,
     };
     try {
-      if (parsed.plan === 'premium') {
-        const outcome = await runPremiumCheckout(io, me, checkoutRequest, new Date());
-        if (outcome.kind === 'owned') showOwned(outcome.me);
-        else if (outcome.kind === 'login') redirectToLogin();
-        else window.location.assign(outcome.url);
-        return;
-      }
-      const result = await io.startCheckout(checkoutRequest);
-      window.location.assign(result.checkout_url);
+      const outcome = await runPremiumCheckout(io, me, checkoutRequest, new Date());
+      if (outcome.kind === 'owned') showOwned(outcome.me);
+      else if (outcome.kind === 'login') redirectToLogin();
+      else window.location.assign(outcome.url);
     } catch (error) {
       showRetry = false;
       if (error instanceof BillingApiError) {
@@ -231,20 +251,9 @@
         } else if (error.status === NOT_FOUND) {
           message = checkoutCopy.comebackGone;
         } else if (error.status === 409) {
-          // Only the already-on-plan refusal has this sentence; any other 409 (for example
-          // no_transfer_offer) states its own reason.
-          message =
-            error.code === ALREADY_ON_PLAN_CODE && isGuildPlan(parsed.plan)
-              ? checkoutCopy.guildAlreadyOnPlan
-              : error.message;
+          message = error.message;
         } else if (error.status === 403) {
-          // The API's own sentence, verbatim (RunControl.svelte's own convention for an
-          // engine's words: "never paraphrased, never hidden"). A 403 here covers two
-          // distinct, honest refusals -- not a verified officer/leader of this guild, or a
-          // verified officer whose guild's claim is currently contested and frozen -- and
-          // the server already states which one applies; inventing a single generic
-          // sentence here would flatten that distinction. Retrying does not help either
-          // way, so showRetry stays false.
+          // The API's own sentence, verbatim; retrying does not help, so showRetry stays false.
           message = error.message;
         } else {
           message = checkoutCopy.genericFailure;
@@ -301,6 +310,9 @@
     onRetry={() => void loadGuildStep(true)}
     onCheckAgain={() => void refreshGuildStep()}
     onSwitch={switchPlan}
+    onCheckout={checkoutGuild}
+    onPortal={openGuildPortal}
+    {arrival}
   />
 {:else}
   <!-- The narrow body under the band: the redirect and refusal messages, the invalid-link

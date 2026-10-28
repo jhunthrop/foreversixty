@@ -4,10 +4,9 @@
      only read (a CopyLinkField, `Check again`, `Open the guild`), then the verify sub-line, the
      other-character line (ask_leader) and the moderator fallback (ask_leader, claimed_ask).
 
-     Two slots belong to other tasks and are marked below: Task 17 draws the claim button and its
-     confirm block for claim / start_claim / confirm_claim / claim_link_bnet; Task 18 draws the
-     ready button (with the switch note) and the on_plan payer's Manage billing / Move to Raid
-     guild. Both arrive as the `action` snippet, drawn where this block would put its own. -->
+     The claim controls (claim-flow.ts) arrive as `claim`; GuildPayAction, the ready button with its
+     switch note and the on_plan payer's Manage billing / Move to Raid guild, arrives as the
+     `action` snippet, drawn where this block would put its own. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { MeGuild } from '../../lib/account/me-types';
@@ -53,6 +52,7 @@
     action = undefined,
     claim = undefined,
     notice = null,
+    onTryAgain = undefined,
   }: {
     guild: MeGuild & StepGuild;
     plan: GuildTier;
@@ -68,6 +68,8 @@
     /** Task 17: the claim openers' state; absent, claim steps draw nothing. */
     claim?: ClaimControls;
     notice?: CardNotice | null;
+    /** Task 18: a checkout that failed generically offers `Try again` beside its notice. */
+    onTryAgain?: () => void;
   } = $props();
 
   const step = $derived(guild.subscribe?.step ?? null);
@@ -141,7 +143,6 @@
     {copy.claimLinkBattlenet.button}
   </a>
 {:else if slotStep}
-  <!-- SLOT (Task 18: ready button, switch note, Manage billing / Move to Raid guild). -->
   {@render action?.()}
 {/if}
 {#if opensGuild}
@@ -158,6 +159,11 @@
   >
     {notice.text}
   </p>
+{/if}
+{#if onTryAgain !== undefined}
+  <button type="button" class={TEXT_LINK} onclick={onTryAgain} data-testid={`guild-${guild.id}-try-again`}>
+    {copy.checkoutErrors.tryAgain}
+  </button>
 {/if}
 {#if verifyLine !== null}
   <p class="text-muted m-0 text-[13px]" data-testid="guild-verify-line">{verifyLine}</p>

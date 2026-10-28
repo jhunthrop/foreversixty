@@ -6,7 +6,6 @@ import {
   CHECKOUT_BODY_RESERVE,
   GUILD_CARD_MIN,
   GUILD_LEAD_RESERVE,
-  GUILD_SKELETON_CARD,
 } from './checkout-layout';
 
 describe('checkout layout reserves', () => {
@@ -24,9 +23,5 @@ describe('checkout layout reserves', () => {
 
   it('a card never falls below the skeleton it replaces', () => {
     expect(GUILD_CARD_MIN).toBe('min-h-[260px] md:min-h-[156px]');
-  });
-
-  it('a skeleton card is the ready card: 156 px desktop, 260 px phone', () => {
-    expect(GUILD_SKELETON_CARD).toBe('h-[260px] md:h-[156px]');
   });
 });
