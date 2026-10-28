@@ -470,6 +470,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           branch="engine-pin/$SHA"
+          # A pin whose hand work has made every site check green merges itself before tonight's
+          # regeneration can touch the branch (owner, 2026-10-28: "can we auto-merge those?"); a
+          # red one stays open and gets tonight's log below.
+          number=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ] && gh pr checks "$number" --json bucket --jq 'length > 0 and all(.bucket == "pass" or .bucket == "skipping")' | grep -qx true; then
+            gh pr merge "$number" --rebase --delete-branch
+            echo "merged the green pin pull request #$number"
+            exit 0
+          fi
           pushed=0
           tools/engine/push-review-branch.sh origin "$branch" || pushed=$?
           case $pushed in 0 | 10) ;; *) exit 1 ;; esac
@@ -480,7 +489,6 @@ jobs:
             tail -n 80 "$RUNNER_TEMP/pin-tests.log" | tail -c 50000
             printf '```\n\nNext step: regenerate what moved on this branch and merge it.\n'
           } > "$body"
-          number=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')
           if [ -n "$number" ]; then
             gh pr edit "$number" --title "engine: pin $SHA" --body-file "$body"
           elif ! gh pr create --base main --head "$branch" --title "engine: pin $SHA" --body-file "$body"; then
