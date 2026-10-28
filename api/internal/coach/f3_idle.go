@@ -14,20 +14,22 @@ const idlePoolBasis = "{ref}% of counted time active. You: {you}%."
 
 const (
 	idleFactSeconds = "seconds idle"
+	idleFactLongest = "longest idle window, seconds"
 	idleFactPool    = "active share, top logs"
 	idleFactYou     = "active share, you"
 	percentOf       = 100.0
 	millisPerSecond = 1000.0
 )
 
-// idle is F3 (§6.2): the time the Activity measure counts against a DPS or tank, net of
-// downtime and officer assignments, with its longest windows. A healer gets nothing.
+// idle is F3 (§6.2): the sum of the idle windows (ratingengine.IdleWindows, net of
+// downtime and officer assignments) less the time never counted against the player, with
+// the longest windows. The title names the longest window; the detail the total. A healer gets nothing.
 func idle(in Input, c Counted) outcome {
 	if in.Row.Role != RoleDPS && in.Row.Role != RoleTank {
 		return outcome{}
 	}
-	guid, table, marks := in.Row.GUID, in.Tables.Mechanics, in.Tables.Assignments
-	idleMS := ratingengine.ActivityIdleMS(in.Fight, guid, table, marks)
+	windows := countedIdleWindows(in, c)
+	idleMS := IdleTotalMS(windows)
 	if c.CountedMS <= 0 || idleMS < IdleFiresMS {
 		return outcome{}
 	}
@@ -35,13 +37,44 @@ func idle(in Input, c Counted) outcome {
 	if idlePct < IdleFiresPct {
 		return outcome{}
 	}
-	windows := ratingengine.IdleWindows(in.Fight, guid, table, marks)
 	shown := longestInTimeOrder(windows, IdleWindowsShown)
 	return outcome{
-		Finding: idleFinding(in, c, idleMS, idlePct, shown),
+		Finding: idleFinding(in, c, idleMS, idlePct, shown, windows[0]),
 		Anchors: idleAnchors(shown),
 		Windows: windows,
 	}
+}
+
+// countedIdleWindows is the idle windows with the time never counted against the player
+// (Counted.Excluded: downtime and the lead-in before the first cast) cut out, longest first.
+func countedIdleWindows(in Input, c Counted) []ratingengine.Window {
+	var out []ratingengine.Window
+	for _, w := range ratingengine.IdleWindows(in.Fight, in.Row.GUID, in.Tables.Mechanics, in.Tables.Assignments) {
+		out = append(out, cutOut(w, c.Excluded)...)
+	}
+	slices.SortStableFunc(out, func(a, b ratingengine.Window) int {
+		return int((b.ToMS - b.FromMS) - (a.ToMS - a.FromMS))
+	})
+	return out
+}
+
+// cutOut is w less every excluded window (time-ordered, non-overlapping).
+func cutOut(w ratingengine.Window, excluded []ratingengine.Window) []ratingengine.Window {
+	var out []ratingengine.Window
+	from := w.FromMS
+	for _, x := range excluded {
+		if x.ToMS <= from || x.FromMS >= w.ToMS {
+			continue
+		}
+		if x.FromMS > from {
+			out = append(out, ratingengine.Window{FromMS: from, ToMS: x.FromMS})
+		}
+		from = max(from, x.ToMS)
+	}
+	if from < w.ToMS {
+		out = append(out, ratingengine.Window{FromMS: from, ToMS: w.ToMS})
+	}
+	return out
 }
 
 // longestInTimeOrder is the n longest of windows (already longest first), earliest first.
@@ -60,8 +93,9 @@ func idleAnchors(shown []ratingengine.Window) []Anchor {
 	return out
 }
 
-func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []ratingengine.Window) *Finding {
+func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []ratingengine.Window, longest ratingengine.Window) *Finding {
 	seconds := PctNumber(float64(idleMS) / millisPerSecond)
+	longestSeconds := PctNumber(float64(longest.ToMS-longest.FromMS) / millisPerSecond)
 	spans := make([]string, len(shown))
 	refs := make([]string, len(shown))
 	for i, w := range shown {
@@ -69,7 +103,7 @@ func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []rat
 		refs[i] = "#" + strconv.Itoa(i)
 	}
 	basis, numbers := idleBasis(in, idlePct)
-	numbers = append([]NumberFact{{V: float64(idleMS) / millisPerSecond, Text: seconds, Unit: "s", Of: idleFactSeconds}}, numbers...)
+	numbers = append([]NumberFact{{V: float64(longest.ToMS-longest.FromMS) / millisPerSecond, Text: longestSeconds, Unit: "s", Of: idleFactLongest}, {V: float64(idleMS) / millisPerSecond, Text: seconds, Unit: "s", Of: idleFactSeconds}}, numbers...)
 	severity := SeverityMinor
 	if idlePct >= IdleMajorPct {
 		severity = SeverityMajor
@@ -77,7 +111,7 @@ func idleFinding(in Input, c Counted, idleMS int64, idlePct float64, shown []rat
 	return &Finding{
 		Code:     CodeIdle,
 		Severity: severity,
-		Title:    Fill(Drafts["title_idle"], map[string]string{"n": seconds}),
+		Title:    Fill(Drafts["title_idle"], map[string]string{"n": longestSeconds}),
 		Detail: Fill(Drafts["detail_idle"], map[string]string{
 			"n": seconds, "counted": Clock(c.CountedMS), "spans": strings.Join(spans, ", "),
 		}),

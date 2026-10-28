@@ -99,6 +99,12 @@ func withAssignment(in Input, fromMS, toMS int64) Input {
 	return in
 }
 
+// withFirstCast is in with the player's only cast at atMS.
+func withFirstCast(in Input, atMS int64) Input {
+	in.Fight = withCasts(withoutCasts(in.Fight, in.Row.GUID), in.Row.GUID, 23881, "Bloodthirst", atMS)
+	return in
+}
+
 // idlePool is a pool of n players whose median is active percent of counted time.
 func idlePool(active float64, n int) Refs {
 	return poolOf(n, Profile{ActivePct: active})

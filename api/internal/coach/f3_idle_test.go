@@ -3,8 +3,6 @@ package coach
 import (
 	"strings"
 	"testing"
-
-	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
 func TestIdle(t *testing.T) {
@@ -114,7 +112,7 @@ func TestIdleNumbersAndText(t *testing.T) {
 	in := furyIdle(t, 200_000, span(40_000, 52_000), span(90_000, 102_000))
 	o := idle(in, CountedTime(in))
 	assertNumbers(t, o.Finding.Facts, "24")
-	for _, want := range []string{"Nothing cast for 24 seconds", "3:20 counted"} {
+	for _, want := range []string{"No damage or healing for 12 seconds", "3:20 counted"} {
 		if !strings.Contains(textOf(o), want) {
 			t.Errorf("text lacks %q: %s", want, textOf(o))
 		}
@@ -124,14 +122,33 @@ func TestIdleNumbersAndText(t *testing.T) {
 	}
 }
 
-func TestIdleFixtureMeasuresAgree(t *testing.T) {
-	in := furyIdle(t, 200_000, span(40_000, 52_000), span(90_000, 102_000))
-	ms := ratingengine.ActivityIdleMS(in.Fight, in.Row.GUID, in.Tables.Mechanics, in.Tables.Assignments)
-	var sum int64
-	for _, w := range ratingengine.IdleWindows(in.Fight, in.Row.GUID, in.Tables.Mechanics, in.Tables.Assignments) {
-		sum += w.ToMS - w.FromMS
+func TestIdleLeadInBeforeTheFirstCastNeverCounts(t *testing.T) {
+	lead := withFirstCast(furyIdle(t, 200_000, span(0, 15_000)), 15_000)
+	if f := idle(lead, CountedTime(lead)).Finding; f != nil {
+		t.Fatalf("the lead-in counted: %+v", f)
 	}
-	if ms != 24_000 || sum != ms {
-		t.Fatalf("ActivityIdleMS %d, IdleWindows sum %d, want both 24000", ms, sum)
+	mixed := withFirstCast(furyIdle(t, 200_000, span(0, 15_000), span(60_000, 75_000)), 15_000)
+	o := idle(mixed, CountedTime(mixed))
+	if o.Finding == nil {
+		t.Fatal("no finding for the 15 s gap after the first cast")
+	}
+	assertNumbers(t, o.Finding.Facts, "15")
+	for _, w := range o.Windows {
+		if w.FromMS < 15_000 {
+			t.Fatalf("window %+v starts before the first cast", w)
+		}
+	}
+	assertTimes(t, o.Finding.Facts, "1:00–1:15")
+}
+
+func TestIdleStatedTotalIsTheSumOfTheWindows(t *testing.T) {
+	in := furyIdle(t, 400_000, span(10_000, 14_000), span(50_000, 62_000), span(100_000, 105_000), span(150_000, 160_000))
+	o := idle(in, CountedTime(in))
+	if o.Finding == nil || IdleTotalMS(o.Windows) != 31_000 {
+		t.Fatalf("total %d finding %+v", IdleTotalMS(o.Windows), o.Finding)
+	}
+	assertNumbers(t, o.Finding.Facts, "31", "12")
+	if !strings.Contains(o.Finding.Detail, "31 s idle") {
+		t.Fatalf("detail %q", o.Finding.Detail)
 	}
 }
