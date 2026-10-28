@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strconv"
+	"time"
 )
 
 // reviewJobArgs is coach-review's argument count after the command.
@@ -43,14 +44,25 @@ func parseReviewJob(args []string) (reviewJob, error) {
 // fight's roster, writes the review through a Generator of its own, and releases the lease
 // the route took under holder when it ends, on every path: by holder, not by key, so an
 // early error, a pack that is not ready, or a version that moved since the route leased
-// never leaves "writing" held.
+// never leaves "writing" held. The whole job (the pack build, the generation and the save)
+// runs under the review deadline, which starts with the job and ends inside the lease.
 func RunReviewJob(ctx context.Context, s *Service, args []string) error {
 	job, err := parseReviewJob(args)
 	if err != nil {
 		return err
 	}
 	defer s.release(job.holder)
+	ctx, cancel := context.WithTimeout(ctx, s.reviewDeadline())
+	defer cancel()
 	return s.runReview(ctx, job)
+}
+
+// reviewDeadline is the job's deadline: the Service's own when set, else ReviewDeadline.
+func (s *Service) reviewDeadline() time.Duration {
+	if s.ReviewDeadline > 0 {
+		return s.ReviewDeadline
+	}
+	return ReviewDeadline
 }
 
 func (s *Service) runReview(ctx context.Context, job reviewJob) error {
@@ -85,7 +97,7 @@ func (s *Service) runReview(ctx context.Context, job reviewJob) error {
 }
 
 // write generates unless a model review, or a rules review that is not retryable, is
-// already stored for the key. The generation runs under ReviewDeadline, inside the lease.
+// already stored for the key.
 func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Persona, roster fightRoster, account int64) error {
 	stored, ok, err := s.Store.Review(ctx, key)
 	if err != nil {
@@ -97,9 +109,7 @@ func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Pers
 	g := *s.Generator
 	g.Validator = Validator{Names: s.Names, Roster: roster.Names}
 	g.Realms = roster.Realms
-	gctx, cancel := context.WithTimeout(ctx, ReviewDeadline)
-	defer cancel()
-	if _, err := g.Generate(gctx, key, p, persona, account); err != nil {
+	if _, err := g.Generate(ctx, key, p, persona, account); err != nil {
 		return fmt.Errorf("coach-review: %w", err)
 	}
 	return nil

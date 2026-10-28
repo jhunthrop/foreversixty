@@ -21,9 +21,10 @@ import (
 // queue it again.
 const ReviewLeaseTTL = 5 * time.Minute
 
-// ReviewDeadline bounds the review job's whole generation (every call, retry and backoff).
-// It is shorter than ReviewLeaseTTL, so the lease always outlives the work and one key is
-// never generated twice; a generation that runs out stores the rule-only review.
+// ReviewDeadline bounds one coach-review job from its start: the pack build, every model
+// call, retry and backoff, and the save. It is shorter than ReviewLeaseTTL, so the lease
+// always outlives the work and one key is never generated twice; a generation that runs
+// out stores the rule-only review.
 const ReviewDeadline = 4 * time.Minute
 
 const (

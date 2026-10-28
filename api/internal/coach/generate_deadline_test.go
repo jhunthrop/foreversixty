@@ -47,18 +47,37 @@ func TestGenerate_PastItsDeadlineStoresTheRulesReviewFinal(t *testing.T) {
 	}
 }
 
-// The review job runs its generation under the deadline and stores the fallback.
-func TestRunReviewJob_AStalledGenerationStoresTheRulesReview(t *testing.T) {
+// The job's own deadline starts with the job (the caller's context has none): a stalled
+// generation stores the fallback, and the lease the route took is gone when the job ends.
+func TestRunReviewJob_AStalledJobStoresTheRulesReviewAndReleasesItsLease(t *testing.T) {
 	f := newT30(t)
+	ctx := context.Background()
 	f.svc.Generator.LLM = stallingClient{}
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
+	f.svc.ReviewDeadline = 3 * time.Second
+	key := f.key(t)
+	if ok, err := f.svc.Store.TakeLease(ctx, key, "holder-stall", time.Now().Add(ReviewLeaseTTL)); err != nil || !ok {
+		t.Fatalf("lease %v %v", ok, err)
+	}
+	began := time.Now()
 	args := []string{t30Report, "1", f.furyKey, strconv.FormatInt(f.premium, 10), "holder-stall"}
 	if err := RunReviewJob(ctx, f.svc, args); err != nil {
 		t.Fatal(err)
 	}
-	stored, ok, err := f.svc.Store.Review(context.Background(), f.key(t))
+	if took := time.Since(began); took > f.svc.ReviewDeadline+afterDeadlineWrite {
+		t.Fatalf("the job outlived its deadline: %s", took)
+	}
+	stored, ok, err := f.svc.Store.Review(ctx, key)
 	if err != nil || !ok || stored.Source != SourceRules || stored.Reason != reasonTimeout || stored.Retryable {
 		t.Fatalf("%+v %v %v", stored, ok, err)
+	}
+	var leases int
+	if err := f.pool.QueryRow(ctx, `select count(*) from coach_review_leases where holder = 'holder-stall'`).Scan(&leases); err != nil || leases != 0 {
+		t.Fatalf("the stalled job's lease is released: %d %v", leases, err)
+	}
+}
+
+func TestService_ReviewDeadlineDefaultsToTheConstant(t *testing.T) {
+	if got := (&Service{}).reviewDeadline(); got != ReviewDeadline {
+		t.Fatalf("%s", got)
 	}
 }

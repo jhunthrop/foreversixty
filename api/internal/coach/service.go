@@ -51,6 +51,9 @@ type Service struct {
 	PublicBaseURL string
 	Log           *slog.Logger
 	Now           func() time.Time
+	// ReviewDeadline bounds one coach-review job from its start; ReviewDeadline (the
+	// constant) when zero. Tests shorten it.
+	ReviewDeadline time.Duration
 }
 
 // Owners answers whether an account owns a character. auth.Store satisfies it.
