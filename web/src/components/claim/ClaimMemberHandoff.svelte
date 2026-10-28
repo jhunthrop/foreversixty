@@ -12,11 +12,16 @@
 
 <div class="flex flex-col gap-3" data-testid="guild-claim-not-eligible">
   <p class="text-[14px]">{guildClaimCopy.memberHandoff(guildName)}</p>
-  <CopyLinkField
-    {url}
-    label={checkoutGuildCopy.copyField.labelGuildMaster(guildName)}
-    shareTitle={checkoutGuildCopy.share.title(guildName)}
-    shareText={tier === undefined ? undefined : checkoutGuildCopy.share.claimText(guildName, tier)}
-    testid="guild-claim-handoff"
-  />
+  <!-- A URL is about 430 px of mono text: the field stops at 640 rather than spanning the page. -->
+  <div class="max-w-[640px]">
+    <CopyLinkField
+      {url}
+      label={checkoutGuildCopy.copyField.labelGuildMaster(guildName)}
+      shareTitle={checkoutGuildCopy.share.title(guildName)}
+      shareText={tier === undefined ? undefined : checkoutGuildCopy.share.claimText(guildName, tier)}
+      testid="guild-claim-handoff"
+      labelVisible={false}
+      phoneFullWidth
+    />
+  </div>
 </div>

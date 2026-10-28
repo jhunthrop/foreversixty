@@ -104,6 +104,9 @@
       ? copy.share.settingsText(guild.name, plan)
       : copy.share.claimText(guild.name, plan)}
     testid={`guild-${guild.id}-handoff`}
+    labelVisible={false}
+    onCard
+    phoneFullWidth
   />
 {:else if step === 'checkout_open'}
   <button type="button" class={TEXT_LINK} onclick={() => void onCheckAgain()} data-testid="guild-check-again">

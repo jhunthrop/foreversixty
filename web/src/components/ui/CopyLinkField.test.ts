@@ -9,7 +9,13 @@ import CopyLinkField from './CopyLinkField.svelte';
 
 const URL_VALUE = 'https://foreversixty.gg/join/abc123';
 
-function renderField(withNote = false): string {
+interface Variant {
+  labelVisible?: boolean;
+  onCard?: boolean;
+  phoneFullWidth?: boolean;
+}
+
+function renderField(withNote = false, variant: Variant = {}): string {
   const note = createRawSnippet(() => ({ render: () => '<span data-testid="note">Shown once.</span>' }));
   const { body } = render(CopyLinkField, {
     props: {
@@ -19,10 +25,37 @@ function renderField(withNote = false): string {
       shareText: 'Join us',
       testid: 'guild-invite',
       ...(withNote ? { note } : {}),
+      ...variant,
     },
   });
   return body;
 }
+
+describe('CopyLinkField on a card (spec §5.5, gate fixes G3 to G5)', () => {
+  it('the default is the invite render: visible label, raised ground, fitted buttons', () => {
+    const body = renderField();
+    expect(body).toContain('<span class="label text-muted">Invite link</span>');
+    expect(body).toMatch(/<input[^>]*bg-raised/);
+    expect(body).toMatch(/<div class="flex flex-wrap items-center gap-3">/);
+    expect(body).toMatch(/w-fit px-4"[^>]*data-testid="guild-invite-copy"/);
+  });
+
+  it('labelVisible false keeps the label for screen readers only', () => {
+    expect(renderField(false, { labelVisible: false })).toContain('<span class="sr-only">Invite link</span>');
+  });
+
+  it('onCard puts the field on the page ground', () => {
+    const body = renderField(false, { onCard: true });
+    expect(body).toMatch(/<input[^>]*bg-bg/);
+    expect(body).not.toMatch(/<input[^>]*bg-raised/);
+  });
+
+  it('phoneFullWidth fills the row below 768 and fits the buttons from 768', () => {
+    const body = renderField(false, { phoneFullWidth: true });
+    expect(body).toContain('grid gap-3 md:flex md:flex-wrap md:items-center grid-cols-1');
+    expect(body).toMatch(/w-full justify-center md:w-fit px-4"[^>]*data-testid="guild-invite-copy"/);
+  });
+});
 
 describe('CopyLinkField', () => {
   it('renders the label and a read-only 44 px mono field holding the whole url', () => {
