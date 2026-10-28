@@ -18,21 +18,18 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Lay on Hands is the survival cooldown of last resort and fires itself below ten percent health.
-- Templar's Bulwark, an absorb of the paladin's whole health bar for eight seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute.
-- Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar's Bulwark.
-- Divine Protection: eight seconds of immunity with no attacks, the last resort.
+- Righteous Fury is a setting, not a button: keep it on.
 - Seal of Fury kept up.
-- Holy Shield on cooldown: its ten second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana.
-- Hammer of the Righteous and Holy Strike on their cooldowns, the first of which is the largest single threat gain in this list.
+- Judgement on cooldown; with Swift Judgement the next one is free.
+- Holy Shield on cooldown.
 - Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.
-- Swift Judgement while Judgement is on cooldown: it finishes the cooldown and makes the next Judgement free, one more Judgement a minute.
-- Judgement on cooldown.
-- Exorcism.
-- Consecration only with spare mana, where it pays for itself in threat.
-- Righteous Fury: It multiplies the threat of your Holy damage, and with Improved Righteous Fury it also lowers the damage you take.
+- Holy Strike.
+- Swift Judgement.
+- Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are losing.
+- Divine Protection.
+- Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar's Bulwark.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

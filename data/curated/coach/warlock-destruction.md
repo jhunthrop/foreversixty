@@ -18,10 +18,9 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Corruption goes down first and is kept up throughout: it is cheap sustained damage that does not compete with your casts.
-- Life Tap to keep casting once mana runs low.
 - Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.
 - Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under three seconds remain.
 - Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up.
@@ -29,6 +28,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 - Incinerate is Destruction's signature filler, dealing bonus damage while Immolate is active.
 - Shadow Bolt is the filler while you have not yet learned the Incinerate talent; once you have, Incinerate takes priority instead.
 - Shoot with your wand once mana is under forty percent: it costs nothing, so mana regenerates while it keeps damage going.
+- Life Tap to keep casting once mana runs low.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

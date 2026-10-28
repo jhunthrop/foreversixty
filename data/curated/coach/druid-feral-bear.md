@@ -18,19 +18,17 @@ This is the Feral Bear Druid as the site's guide describes it. Feral Bear is the
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Barkskin on its cooldown, a small cut in damage taken for a smaller cut in threat; Frenzied Regeneration as the heal when you are under half health.
-- Frenzied Regeneration as the emergency heal: under half health with twenty rage to convert.
-- Berserk on its cooldown adds threat.
-- Primal Bite on cooldown: the biggest threat hit per rage.
-- Lacerate to start the bleed and again when under three seconds remain; the bleed is what turns on Rend and Tear.
-- Maul, queued on your next swing with spare Rage.
-- Swipe as the Rage dump.
 - Bear Form.
 - Dire Bear Form.
-- Growl, Challenging Roar, Bash and Feral Charge do nothing in a fight with one stationary enemy.
-- Feral Charge.
+- Primal Bite on its cooldown.
+- Lacerate kept ticking: it stacks, and Rend and Tear reads it.
+- Maul, queued on your next swing with spare Rage.
+- Swipe as the Rage dump.
+- Barkskin on its cooldown, a small cut in damage taken for a smaller cut in threat.
+- Frenzied Regeneration as the emergency heal: under half health with twenty rage to convert.
+- Berserk on its cooldown adds threat.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

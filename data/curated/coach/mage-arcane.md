@@ -18,14 +18,13 @@ This is the Arcane Mage as the site's guide describes it. Arcane is the Mage bur
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Arcane Power on cooldown: a flat thirty percent damage cooldown with no cast time of its own.
 - Presence of Mind on cooldown: free and makes the next cast instant.
-- Arcane Missiles: Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank to cash in the proc.
 - Arcane Blast twice, never a third time: the client charges it fifteen percent of base mana and each stack of its own buff raises the next cast's cost by one hundred seventy-five percent, so the second Blast is affordable and the third is not.
+- Arcane Missiles: Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank to cash in the proc.
 - Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a twenty percent chance to proc Missile Barrage.
-- Shoot with your wand once mana falls under twenty percent: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

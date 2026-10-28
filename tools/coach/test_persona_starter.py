@@ -148,7 +148,7 @@ def test_priority_lines_open_with_the_button(tmp_path: Path) -> None:
         ("mage-arcane", "Arcane Blast"),
         ("rogue-combat", "Sinister Strike"),
         ("hunter-survival", "Raptor Strike"),
-        ("druid-restoration", "Swiftmend"),
+        ("druid-restoration", "Nature's Swiftness"),
     ]:
         lines = ps.priority_lines(ps.spec_row(slug))
         assert any(line.startswith(ability) for line in lines), (slug, lines)
@@ -188,12 +188,100 @@ def test_healer_core_casts_drill_is_true_for_every_healer(tmp_path: Path) -> Non
 
 
 def test_claims_the_guide_does_not_make_are_dropped() -> None:
-    assert ps.corroborated_note("Regrowth is the most healing per mana in the kit.", set()) is None
-    assert ps.corroborated_note("Maul whenever fifteen rage is on hand, queued on the swing.", {"15"}) is None
-    assert ps.corroborated_note("Primal Bite on cooldown: the biggest threat hit per rage.", set()) is not None
+    assert ps.corroborated_note("Regrowth is the most healing per mana in the kit.", "") is None
+    assert ps.corroborated_note("Maul whenever 15 rage is on hand, queued on the swing.", "15 rage") is None
+    assert ps.corroborated_note("Primal Bite on cooldown: the biggest threat hit per rage.", "") is None
+    assert ps.corroborated_note("Primal Bite on cooldown, ahead of every other button.", "") is not None
 
 
 def test_seconds_are_spelled() -> None:
     assert ps.usable_sentence("Lacerate again when under 3s remain on the bleed.") == (
         "Lacerate again when under three seconds remain on the bleed."
     )
+
+
+# Round 4 rulings (P1-P7).
+
+def priority_names(slug: str) -> list[str]:
+    return [name for name, _ in ps.priority_entries_of(ps.spec_row(slug))]
+
+
+def priority_text(slug: str) -> str:
+    return "\n".join(ps.priority_lines(ps.spec_row(slug)))
+
+
+@pytest.mark.parametrize(
+    ("slug", "ruled_out"),
+    [
+        ("druid-balance", ["Moonfire"]),
+        ("druid-feral", ["Moonfire", "Wrath", "Claw", "Bear Form", "Rake"]),
+        ("druid-feral-bear", ["Feral Charge", "Growl", "Bash"]),
+        ("mage-fire", ["Frostfire Bolt"]),
+        ("mage-arcane", ["Frostfire Bolt"]),
+        ("shaman-elemental", ["Flame Shock", "Earth Shock", "Fire Nova"]),
+        ("shaman-enhancement", ["Flame Shock", "Fire Nova", "Rockbiter Weapon"]),
+        ("warrior-arms", ["Heroic Strike", "Hamstring", "Recklessness"]),
+        ("rogue-assassination", ["Sinister Strike", "Venom"]),
+        ("paladin-retribution", ["Seal of Command"]),
+        ("paladin-protection", ["Lay on Hands", "Exorcism"]),
+        ("priest-discipline", ["Shadowfiend", "Dark Sacrifice"]),
+        ("hunter-survival", ["Aimed Shot", "Serpent Sting", "Wing Clip"]),
+        ("hunter-marksmanship", ["Serpent Sting"]),
+    ],
+)
+def test_only_abilities_the_guide_names_positively(slug: str, ruled_out: list[str]) -> None:
+    text = priority_text(slug)
+    for name in ruled_out:
+        assert not re.search(rf"\b{re.escape(name)}\b(?!-)", text), (slug, name)
+
+
+def test_no_changelog_or_rotation_data_talk(tmp_path: Path) -> None:
+    ps.write_all(tmp_path)
+    banned = re.compile(
+        r"this week|now the only|back in the rotation|tracked by slot|fires itself|preset|second Holy Light line|"
+        r"share of the fight|raid-ready|new energy tool|new baseline|fraction of a percent",
+        re.IGNORECASE,
+    )
+    for path in tmp_path.glob("*.md"):
+        assert not banned.search(section(path.read_text(), "## What they know")), path.stem
+
+
+def test_each_ability_once_and_every_line_is_about_it() -> None:
+    for slug in ps.spec_slugs():
+        if slug in ps.FULL_SPECS:
+            continue
+        entries = ps.priority_entries_of(ps.spec_row(slug))
+        names = [name for name, _ in entries]
+        assert len(names) == len(set(names)), slug
+        for name, line in entries:
+            assert name in line, (slug, line)
+            assert not (line.split()[0] == "The" and line.rstrip(".").endswith(name)), (slug, line)
+
+
+def test_order_follows_the_guide() -> None:
+    bear = priority_names("druid-feral-bear")
+    assert bear.index("Primal Bite") < bear.index("Lacerate") < bear.index("Maul") < bear.index("Barkskin")
+    feral = priority_names("druid-feral")
+    assert feral.index("Tiger's Fury") < feral.index("Rip") < feral.index("Ferocious Bite") < feral.index("Shred")
+    beast = priority_names("hunter-beast-mastery")
+    assert beast.index("Bestial Wrath") < beast.index("Aimed Shot") < beast.index("Arcane Shot")
+
+
+def test_healer_resource_drill_is_true_for_every_healer(tmp_path: Path) -> None:
+    for slug in ("paladin-holy", "shaman-restoration", "druid-restoration", "priest-discipline"):
+        assert "over time" not in line_of(run_starter(slug, tmp_path), "drill.resource")
+
+
+def test_dropped_talents_are_never_cited() -> None:
+    assert "Early Demise" not in priority_text("priest-shadow")
+    assert "Moonfire" not in priority_text("druid-balance")
+
+
+def test_figures_must_be_in_the_guide() -> None:
+    assert ps.corroborated_note("Stormstrike on cooldown, on an 8 s cooldown.", "an 8-second cooldown") is not None
+    assert ps.corroborated_note("Stormstrike on cooldown, on an 8 s cooldown.", "8 targets") is None
+    assert ps.corroborated_note("Arcane Power on cooldown: a flat 30% damage cooldown.", "30 seconds") is None
+
+
+def test_pyroblast_carries_the_guides_condition() -> None:
+    assert any(line.startswith("Pyroblast only") for line in ps.priority_lines(ps.spec_row("mage-fire")))

@@ -99,7 +99,7 @@ RESOURCE_DRILL = {
 }
 HEALER_RESOURCE_DRILL = (
     "Before the pull, note the mana you should have at the halfway mark. If you are behind it, "
-    "let the cheap heals over time carry the tank and save the fast, dear heal for the real emergency."
+    "lean on your cheapest heal and save the fast, dear heal for the real emergency."
 )
 HEALER_CORE_CASTS_DRILL = (
     "When the mana bar drops below half, check your mana cooldowns before the next cast. "

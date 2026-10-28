@@ -18,16 +18,15 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Soul Fire is back in the rotation now that the build takes both Decimation points: Decimation drops its cooldown by ninety percent and shortens its cast time and cost for ten seconds after a Shadow Bolt or Searing Pain crit, and a Soul Fire cast whenever it is ready beat the Shadow Bolts it displaces by about seven percent on the bare character and about ten percent in the raid-ready run.
-- Life Tap to keep casting once mana runs low.
-- Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.
 - Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.
-- Immolate follows the two curses and is recast when under three seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.
-- Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.
+- Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.
+- Immolate is the addition that matters: recast it when under three seconds remain, since a running Immolate out-damages the globals it displaces.
+- Soul Fire.
+- Searing Pain fills every other global.
 - Shoot with your wand once mana is under fifty percent: it costs nothing, so mana regenerates while it keeps damage going.
-- Shadow Bolt.
+- Life Tap to keep casting once mana runs low.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -18,15 +18,13 @@ This is the Fire Mage as the site's guide describes it. Fire is the Mage sustain
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.
 - Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.
-- Pyroblast's own damage-over-time is minor next to the hit; the point of the buff is the fast cast.
+- Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.
+- Pyroblast only when Heating Up has stacked three times: three Fire crits cut the six second cast to one and a half seconds, and the cast spends the buff.
 - Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.
 - Fireball only before Scorch is trained, where Scorch cannot be cast and the list would otherwise have no filler.
-- Shoot with your wand once mana falls under twenty percent: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.
-- Frostfire Bolt.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

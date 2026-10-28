@@ -18,15 +18,14 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Cold Blood right before the finisher, for a guaranteed crit on the next Eviscerate.
-- Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under three seconds remaining, at four or more combo points.
-- Eviscerate at four or more combo points, whenever its thirty-five energy is there.
-- Mutilate is this tree's builder: both weapons strike for two combo points a cast.
-- Sinister Strike.
 - Deadly Poison.
 - Instant Poison.
+- Mutilate is this tree's builder: both weapons strike for two combo points a cast.
+- Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under three seconds remaining, at four or more combo points.
+- Eviscerate at four or more combo points, whenever its thirty-five energy is there.
+- Cold Blood right before the finisher, for a guaranteed crit on the next Eviscerate.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

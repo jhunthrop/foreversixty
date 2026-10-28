@@ -18,15 +18,14 @@ This is the Shadow Priest as the site's guide describes it. Shadow is the Priest
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.
-- Shadow Word: Death gets bonus crit chance below twenty percent target health from the Early Demise talent.
-- Mind Blast: Below twenty percent target health, Shadow Word: Death is the priority, falling back to Mind Blast on cooldown and Mind Flay otherwise on the rare global where Shadow Word: Death is still on its own fifteen-second cooldown inside that window.
-- Mind Flay.
-- Shoot with your wand whenever nothing else is ready: it costs no mana and always beats standing idle.
+- Below twenty percent target health, Shadow Word: Death is the priority, falling back to Mind Blast on cooldown and Mind Flay otherwise on the rare global where Shadow Word: Death is still on its own fifteen-second cooldown inside that window.
+- Mind Blast.
 - Outside the execute window, Inner Focus into Devouring Plague is used as a free, empowered cast of the spec's biggest nuke, at its full top rank.
 - Devouring Plague.
+- After that, Mind Flay on every free global comes before Mind Blast.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

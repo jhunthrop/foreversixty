@@ -17,7 +17,7 @@ from typing import Any
 
 from starter_kit import ALL_CODES, ROLE_CODES, consumable_paragraph, drills, mistakes
 from starter_priority import corroborated_note, is_bare, priority_entries
-from starter_text import DIGIT, digit_tokens, number_words, spell_out_numbers, usable_sentence
+from starter_text import DIGIT, number_words, spell_out_numbers, usable_sentence
 
 __all__ = ["ALL_CODES", "ROLE_CODES", "corroborated_note", "number_words", "usable_sentence"]
 
@@ -99,9 +99,7 @@ def castable_names(row: dict[str, Any]) -> set[str]:
 def priority_entries_of(row: dict[str, Any]) -> list[tuple[str, str]]:
     prose = section_after(read_text(guide_path(row)), ROTATION_HEADING)
     items = load_json(apl_path(row["spec"]))["rotation"]["priorityList"]
-    return priority_entries(
-        items, spell_names(row), castable_names(row), prose, digit_tokens(read_text(guide_path(row)))
-    )
+    return priority_entries(items, spell_names(row), castable_names(row), prose, read_text(guide_path(row)))
 
 
 def priority_lines(row: dict[str, Any]) -> list[str]:
@@ -126,8 +124,8 @@ def know_section(row: dict[str, Any], catalogue: dict[str, Any]) -> str:
     slug, role = row["spec"], row["role"]
     priority = "\n".join(f"- {line}" for line in priority_lines(row))
     return "\n\n".join([
-        "**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, "
-        "from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.",
+        "**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. "
+        "Where the guide or the rotation data gives a reason, it follows the name.",
         priority,
         "**The mistakes the coach looks for, by finding.**\n" + "\n".join(mistakes(slug, role, catalogue)),
         "**Consumables and world buffs.** " + consumable_paragraph(slug, role, catalogue),

@@ -18,16 +18,14 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is Sham
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- With the talent, Lava Burst trades a Lightning Bolt for slightly more damage per second of casting at about the same damage per mana, which is the whole of its gain; against one target that is a fraction of a percent.
-- Mana Spring Totem.
 - Single target: Searing Totem is the higher damage fire totem.
 - Magma Totem.
 - Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage.
 - Lightning Bolt is the rest of the single-target rotation.
-- Earth Shock as a mana dump sits behind Lightning Bolt and rarely gets a global.
-- Flame Shock.
+- Lava Burst is the first line when you have the talent.
+- Mana Spring Totem goes down first.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

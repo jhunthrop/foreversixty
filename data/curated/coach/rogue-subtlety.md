@@ -18,18 +18,15 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rog
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Ghostly Strike on cooldown: cheaper than Backstab, hits for one hundred eighty percent weapon damage with a dagger, and builds a combo point.
-- Rupture at four or more combo points whenever it is not running.
-- Eviscerate at three or more combo points while Rupture is running, so combo points built during a Rupture are spent instead of idling.
-- Slice and Dice while Rupture is running: opened when it is down, refreshed under three seconds remaining, at three or more combo points.
-- Hemorrhage is the builder, hitting for one hundred forty-five percent weapon damage with a dagger and awarding a combo point, and its debuff makes the target take fifteen percent more damage from your Rupture for fifteen seconds, so keep it going.
-- Sinister Strike is the fallback builder whenever you have not talented into Hemorrhage.
 - Open from stealth with Stealth, Premeditation and Ambush, then play from Hemorrhage.
 - Ambush.
-- Deadly Poison.
-- Instant Poison.
+- Hemorrhage is the builder, hitting for one hundred forty-five percent weapon damage with a dagger and awarding a combo point, and its debuff makes the target take fifteen percent more damage from your Rupture for fifteen seconds, so keep it going.
+- Rupture at four or more combo points whenever it is not running.
+- Ghostly Strike on cooldown: cheaper than Backstab, hits for one hundred eighty percent weapon damage with a dagger, and builds a combo point.
+- Eviscerate at three or more combo points while Rupture is running, so combo points built during a Rupture are spent instead of idling.
+- Slice and Dice while Rupture is running: opened when it is down, refreshed under three seconds remaining, at three or more combo points.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

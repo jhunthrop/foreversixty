@@ -18,16 +18,14 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
+- Apply Seal of Righteousness about a second and a half before the pull so it is active the moment combat starts.
 - Judgement on cooldown: an off-the-global cast that unloads the seal's judgement effect and starts its ten second cooldown again.
 - Exorcism on cooldown against Undead and Demons: learnable at level twenty, a fifteen second cooldown Holy nuke that only lands on those two target types.
 - Hammer of Wrath below twenty percent: the execute-window button Retribution has besides seals, Judgement and Holy Strike.
-- Reapply Seal of Righteousness once it is about to expire -- this is now the only seal-maintenance line.
-- Holy Strike, Forever's new baseline Paladin attack added to the client this week, comes last, on its own ten-second cooldown, cast whenever it is up: it is what spends the globals that Judgement and seal upkeep alone leave idle.
+- Holy Strike.
 - Consecration.
-- Apply Seal of Righteousness about a second and a half before the pull so it is active the moment combat starts.
-- Seal of Command.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

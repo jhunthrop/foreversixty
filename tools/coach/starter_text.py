@@ -21,7 +21,14 @@ TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
 NOT_ABOUT_PLAYING = re.compile(
     r"\b(engine|ladder|rung|golden|harness|inert|unresolved|gated|sim|simulator|simulated|simulation|"
     r"the search|conditions?|preset|cited|tried|measured|the client states?|fight clock|falls? through|"
-    r"bare cast|era fallback|idle by design|guard|the rule|therefore|same as|this site|this build)\b",
+    r"bare cast|era fallback|idle by design|guard|the rule|therefore|same as|this site|this build|"
+    r"measures|our|raid-ready|search run|share of the fight)\b",
+    re.IGNORECASE,
+)
+# Changelog and rotation-data wording (P2): a sentence about what changed or how a line is tracked.
+CHANGELOG = re.compile(
+    r"\b(this week|now the only|back in the rotation|tracked by slot|second [\w ]{0,20}line|fires itself|"
+    r"the new|new baseline|new to the tree|fraction of a percent|whole of its gain|no longer)\b",
     re.IGNORECASE,
 )
 # References to other lines of the rotation data, which a lone sentence cannot carry.
@@ -34,6 +41,10 @@ SECONDS_SUFFIX = re.compile(r"(?<![\w.])(\d{1,3})\s?s\b(?!\w)")
 NUMBER = re.compile(r"(?<![\w.])(\d{1,3})(%?)(?![\w.]|\d)")
 PERCENT_WORD = " percent"
 DIGIT = re.compile(r"\d")
+HALF = re.compile(r"(?<![\w.])(\d{1,2})\.5(?![\w.]|\d)")
+# A figure: a number with its unit (seconds, percent, a multiplier).
+FIGURE = re.compile(r"(\d+(?:\.\d+)?)\s?-?(%|percent\b|s\b|sec\b|seconds?\b|x\b)", re.IGNORECASE)
+UNIT_KIND = {"%": "percent", "percent": "percent", "x": "times"}
 SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
 
@@ -47,8 +58,9 @@ def number_words(n: int) -> str:
 
 
 def spell_out_numbers(text: str) -> str:
-    """Replace whole integers up to 999 (a trailing percent sign, a bare 's' for seconds) with words."""
+    """Replace whole integers up to 999 and halves (a percent sign, a bare 's' for seconds) with words."""
     text = SECONDS_SUFFIX.sub(lambda m: f"{m[1]} seconds", text)
+    text = HALF.sub(lambda m: f"{number_words(int(m[1]))} and a half", text)
     words = NUMBER.sub(lambda m: number_words(int(m[1])) + (PERCENT_WORD if m[2] else ""), text)
     return words.replace("seconds cooldown", "second cooldown")
 
@@ -60,7 +72,7 @@ def sentences(text: str) -> list[str]:
 def plain_sentence(sentence: str) -> str | None:
     """The sentence in words, or None when it cannot stand alone."""
     words = spell_out_numbers(PARENTHETICAL.sub("", sentence).replace("!", ".").strip())
-    if DIGIT.search(words) or NOT_ABOUT_PLAYING.search(words) or DANGLING_REFERENCE.search(words):
+    if DIGIT.search(words) or any(p.search(words) for p in (NOT_ABOUT_PLAYING, CHANGELOG, DANGLING_REFERENCE)):
         return None
     if len(words) < MIN_SENTENCE_CHARS:
         return None
@@ -74,3 +86,8 @@ def usable_sentence(note: str) -> str | None:
 
 def digit_tokens(text: str) -> set[str]:
     return set(re.findall(r"\d+", text))
+
+
+def figures(text: str) -> set[tuple[str, str]]:
+    """(number, unit kind) for every figure in the text, so "15 s" and "15-second" match."""
+    return {(m[1], UNIT_KIND.get(m[2].lower(), "seconds")) for m in FIGURE.finditer(text)}

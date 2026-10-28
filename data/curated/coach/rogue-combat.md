@@ -18,14 +18,14 @@ This is the Combat Rogue as the site's guide describes it. Combat is the Rogue w
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Eviscerate at five combo points, checked ahead of Slice and Dice so a full finisher is never traded for a refresh.
 - Slice and Dice opened in the first fifteen seconds as soon as three combo points are banked.
-- Backstab is the builder when a dagger is in the main hand: it hits for one hundred fifty percent weapon damage against Sinister Strike's one hundred percent, and Puncturing Wounds adds crit and an extra combo point chance to it.
+- Eviscerate at five combo points, checked ahead of Slice and Dice so a full finisher is never traded for a refresh.
 - Adrenaline Rush on cooldown: it doubles energy regeneration for fifteen seconds.
-- Sinister Strike builds when Backstab cannot be cast.
 - Blade Flurry.
+- Backstab is the builder when a dagger is in the main hand: it hits for one hundred fifty percent weapon damage against Sinister Strike's one hundred percent, and Puncturing Wounds adds crit and an extra combo point chance to it.
+- Sinister Strike builds when Backstab cannot be cast.
 - Deadly Poison.
 - Instant Poison.
 

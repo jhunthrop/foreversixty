@@ -18,16 +18,14 @@ This is the Arms Warrior as the site's guide describes it. Arms is Forever's two
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Bloodrage.
 - Keep Battle Shout up.
 - Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking.
 - Mortal Strike is the highest damage per rage button and comes off a six second cooldown.
-- Overpower.
+- Overpower is a free follow-up whenever the target dodges you, so it's cast on sight rather than held for later.
 - Execute below twenty percent.
-- Hamstring.
-- Heroic Strike.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

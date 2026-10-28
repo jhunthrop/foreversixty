@@ -18,17 +18,15 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Shadowfiend.
-- Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.
-- Penance on its twelve second cooldown: three pulses for the price of one cast and the best healing per mana the Discipline kit has.
+- The curated rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul.
 - Power Word: Shield.
-- Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
-- Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.
-- Heal: Renew and Prayer of Mending go on the tank; Flash Heal is the emergency button for a nearly dead tank or member; Prayer of Healing answers several party members being hurt together; Heal is the efficient filler.
-- Renew.
+- Renew and Prayer of Mending go on the tank.
 - Prayer of Mending.
+- Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
+- Prayer of Healing answers several party members being hurt together.
+- Heal is the efficient filler.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.
@@ -44,7 +42,7 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 
 - drill.core_casts: When the mana bar drops below half, check your mana cooldowns before the next cast. Press each one as soon as the bar has room for its full return.
 - drill.uptime: Recast your self buff as part of the ready check, and again the moment you are back up after a death.
-- drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, let the cheap heals over time carry the tank and save the fast, dear heal for the real emergency.
+- drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, lean on your cheapest heal and save the fast, dear heal for the real emergency.
 - drill.ranks: Bind a mid rank of your filler heal and use it for every small hole on the tank. Save the top rank for a hole as deep as it heals.
 - drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.

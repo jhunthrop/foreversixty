@@ -18,15 +18,14 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Raptor Strike.
 - Counterattack.
-- Mongoose Bite.
+- Mongoose Bite is a counterattack.
 - Lacerate.
 - Strider Kick as the lowest-priority filler on its own eight second cooldown.
 - Immolation Trap.
-- Wing Clip: Beyond that there is one more filler, and only in a raid: with a Windfury Totem in the group, spend any global with nothing else ready on Wing Clip, because the cheap main-hand hit rolls the totem's extra attack and your weapon procs.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

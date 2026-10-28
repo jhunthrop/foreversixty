@@ -18,15 +18,15 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
+- Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens.
 - Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows.
 - Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.
 - Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.
 - Multi-Shot as the filler between Aimed Shots.
 - Serpent Sting.
-- Arcane Shot.
-- Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens.
+- Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
