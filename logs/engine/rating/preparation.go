@@ -23,9 +23,20 @@ func scorePreparation(fight summary.Summary, player string, bracket Bracket, cat
 		c.Excluded, c.Reason = true, ReasonNoConsumableCatalogue
 		return c
 	}
+	value, _ := PreparationValue(fight, player, cat)
+	return placeBoundedOrSelf(c, src, bracket, value)
+}
+
+// PreparationValue is the raw 0-100 completeness scorePreparation places for player; false
+// with no catalogue, where the component is excluded instead. Exported so the rating
+// rebuild can refold a preparation digest from stored summaries without scoring a card.
+func PreparationValue(fight summary.Summary, player string, cat *consumables.RoleCatalogue) (float64, bool) {
+	if cat == nil {
+		return 0, false
+	}
 	pull := consumables.AtPull(fight, player, *cat)
 	total := carriedWeight(pull, cat) + worldBuffWeight(pull, cat) + potionWeight(pull, cat)
-	return placeBoundedOrSelf(c, src, bracket, clamp(total, 0, 100))
+	return clamp(total, 0, 100), true
 }
 
 // carriedCategories are the categories a player carries exactly one of, so

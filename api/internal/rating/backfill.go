@@ -250,19 +250,28 @@ func RerateFlagged(ctx context.Context, d BackfillDeps) (RerateCounts, error) {
 	return out, nil
 }
 
-// rerateFight is one picked fight through Backfill's path, then the roll-up.
-func rerateFight(ctx context.Context, d BackfillDeps, sf staleFight) error {
+// loadRatedFight reads a picked fight's stored summary into the RatedFight RateFight takes,
+// defaulting an unusable region or ruleset to the one ingest uses for an unattributed report.
+func loadRatedFight(ctx context.Context, d BackfillDeps, sf staleFight) (RatedFight, error) {
 	region, ruleset := sf.Region, sf.Ruleset
 	if !character.ValidRegion(region) || !character.ValidRuleset(ruleset) {
 		region, ruleset = "us", character.RulesetNormal
 	}
 	sum, err := readSummary(ctx, d.Summaries, sf.ReportID, sf.FightIndex)
 	if err != nil {
-		return err
+		return RatedFight{}, err
 	}
-	f := RatedFight{
+	return RatedFight{
 		ReportID: sf.ReportID, FightIndex: sf.FightIndex, Region: region, Ruleset: ruleset,
 		FoughtAt: sf.FoughtAt, EncounterID: sum.EncounterID, Summary: sum,
+	}, nil
+}
+
+// rerateFight is one picked fight through Backfill's path, then the roll-up.
+func rerateFight(ctx context.Context, d BackfillDeps, sf staleFight) error {
+	f, err := loadRatedFight(ctx, d, sf)
+	if err != nil {
+		return err
 	}
 	if err := d.Store.RateFight(ctx, f); err != nil {
 		return err
