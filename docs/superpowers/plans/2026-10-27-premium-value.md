@@ -22,7 +22,7 @@
 - **Figures are never typed** (B8 check 2, the standing rule that prose never quotes generated numbers). Prices come from `web/src/lib/billing/plans.ts`; `CAPS.server` (5,000), `CAPS.browser` (400), `LANE_ITERATION_CEILING.server` (100,000) and `.browser` (30,000) from `web/src/lib/sim/precision.ts`; `GUILD_TIER_MEMBER_LIMIT` (25), `GUILD_TRIAL_DAYS` (7), `RAID_SIZES` (`[40, 20, 10]`) and `TRIAL_REMINDER_DAYS` (3) from `plans.ts`; every example word and number from `web/src/data/premium-examples.json`.
 - **Copy is verbatim from B5.** Every string goes through `plans-page-copy.ts` or `landing-copy.ts`, and a spec-table test reads it from the spec (`web/src/test-support/spec-table.ts`). Nothing is retyped from memory.
 - **Only live benefits render** (B5 "Not on the page, on purpose"; R-P5). The words `coach`, `chip in`, `retention`, `compare more than`, and an exclamation mark never render on `/premium`. Until the trial email ships, no text contains `email you` near `trial`. The held coach line (`premium.featuresHeld.coach`) stays out of `premium.features`.
-- **Static page.** `/premium` ships zero `_astro` scripts. The example image is the only new request; the AVIF is at most 45 KB. No new design token, no new shared control: every control is a recipe the spec names (`card`, the tick list, `SECONDARY_BUTTON_FIXED`, the inline gold link, `section-title`).
+- **Static page.** `/premium` ships no island besides the layout's `CharacterSelector` (the existing e2e asserts exactly one; the subscribe-and-join lane's stored Premium hint depends on it). The example image is the only new request; the AVIF is at most 45 KB. No new design token, no new shared control: every control is a recipe the spec names (`card`, the tick list, `SECONDARY_BUTTON_FIXED`, the inline gold link, `section-title`).
 - **Layout** (B3, B7). The 1344 px column is centred at every width up to 2000 and beyond; the band is full bleed. Three columns from 1024, two from 768 to 1023 (the example or the history promise spans underneath, the example capped at 480 px), one below 768. One-up rows below 768 keep the column width.
 - **No layout shift** (B8 check 4). Both intervals and both founder states sit in fixed cells: the guild price block is 152 px from 768 and 144 px on phone, the cost line a 54 px box, the trial slot at least 40 px, and the example image carries width 440 and height 330 in a reserved 4:3 box on `--card-top`.
 - **Gold** (B6) is Premium's button, the founder pill, the founder lines, the band's guild link and `Open this result`. Nothing is filled. Guild cards have no gold top highlight and neutral buttons; the example card has no highlight.
@@ -67,6 +67,7 @@
 
 **Files:**
 - Modify: `web/src/lib/billing/plans.ts`, `web/src/lib/billing/plans.test.ts`
+- Create: `web/src/lib/billing/plan-costs.ts`, `web/src/lib/billing/plan-costs.test.ts`
 
 **Interfaces:**
 - Consumes: `priceFor(plan, interval, founder)`, `formatAmount(usd)`, `GUILD_TIER_MEMBER_LIMIT`, `type Interval`.
@@ -75,6 +76,7 @@
   - `export const TRIAL_REMINDER_DAYS = 3;`
   - `export function perRaiderAmounts(interval: Interval, founder: boolean): readonly string[]` — the Raid guild price divided by each size, through `formatAmount`, in `RAID_SIZES` order.
   - `export function perMemberAmount(interval: Interval, founder: boolean): string` — the Guild price divided by `GUILD_TIER_MEMBER_LIMIT`, through `formatAmount`.
+  - PRE-FLIGHT RULING: both functions live in a NEW file `web/src/lib/billing/plan-costs.ts` (tested in `plan-costs.test.ts`), importing `PLANS`, `RAID_SIZES`, `GUILD_TIER_MEMBER_LIMIT`, `priceFor` and `formatAmount` from `./plans` — never inside `plans.ts`. Task 7's fixture-swap test mocks `./plans`; a helper defined inside `plans.ts` would stay bound to the real values and the test could not pass. Task 4 imports from `./plan-costs`.
   - (The sentences are built in Task 4's `price.perRaider` / `price.perMember`; the function names the task list gives, `perRaiderLine` / `perMemberLine`, are Task 4's copy functions, re-exported from `plans-page-copy.ts`.)
 
 - [ ] **Step 1: Write the failing tests** in `plans.test.ts`:
@@ -328,6 +330,9 @@
   beforeEach(() => vi.resetModules());
   it('every string follows swapped figures', async () => {
     vi.doMock('../sim/precision', async (orig) => ({ ...(await orig()), CAPS: { browser: 333, server: 7777 }, LANE_ITERATION_CEILING: { browser: 11111, server: 222222 } }));
+    // The copy module must compute every amount from the imported PLANS / RAID_SIZES values (never
+    // through plans.ts's own helpers, which stay bound to the real module under a mock), so swapping
+    // the values here is enough to move every string. Tasks 1 and 4 build the lines that way.
     vi.doMock('./plans', async (orig) => {
       const real = await orig<typeof import('./plans')>();
       return { ...real, RAID_SIZES: [30, 15, 5] as const, TRIAL_REMINDER_DAYS: 4,
@@ -664,7 +669,7 @@ The controller does this by hand; it needs the owner's signed-in session (prod u
   - `first screen at 1280 x 800`: Free's and Premium's buttons end above y 520; the band link is above y 300; activating it puts `For guild leaders` at the top of the viewport, and both guild buttons and trial lines end above its bottom.
   - `guild leaders section`: `#guild-leaders` contains Guild, Raid guild, the history promise and How the guild plans work; `Verified members` is the first rule and equals the copy; no `Battle.net`; `Paying together` follows `Size`.
   - `forbidden words`: no text contains `coach`, `chip in`, `retention`, `compare more than`, or `!`; no `email you` within the trial slot or the Trial rule.
-  - `held coach line not rendered`, `no loot-council example`, `Free card once at every width`, axe clean, every link and button at least 44 px tall at 360, zero `_astro` scripts.
+  - `held coach line not rendered`, `no loot-council example`, `Free card once at every width`, axe clean, every link and button at least 44 px tall at 360, exactly one island (the layout's `CharacterSelector`) — run with and without `data-premium` set, and the "buttons above y 520" check passes in both.
   - `example caption reads the flag`: the caption equals `serverRunCaption(serverRunExample)`, which is the preset template when `serverRunExample.preset` is true and the own-gear template otherwise; `isPlaceholder(serverRunExample)` is false (ship blocker).
   - `Open this result answers 200 signed out`: `request.get(API + '/v1/sims/' + simId)` is 200 with no cookie (run against the stubbed API in CI; the controller checks production in Task 19).
 - [ ] **Step 2: `/sim` landing e2e:** the real card shows the label and the caption from the data file, `1,245 DPS` appears nowhere, and the img has `width="440"` and `height="330"`.

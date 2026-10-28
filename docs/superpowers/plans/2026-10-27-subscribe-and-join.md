@@ -594,7 +594,7 @@ PR B codes against the PR A contract with stubbed APIs, so web waves do not wait
 - Consumes: `PREMIUM_SOURCE_KEY` (Task 9), `accountPlanCopy.premiumCard` and `See your plan` (Task 10).
 - Produces (§4.4): a head `is:inline` script of at most six lines that copies a stored `own` / `seat` / `grant` onto `document.documentElement.dataset.premium` before first paint (and nothing for any other value). The Premium card holds both versions of the 13 px audience line and the 44 px button slot in fixed-height cells; CSS on `html[data-premium=…]` picks one: the default audience / `Subscribe · {price}`, or the source line and a neutral `SECONDARY_BUTTON_FIXED` link `See your plan` (`border-line-warm-strong text-strong`, never gold) to `/account#plan`. Price block unchanged; guild cards unchanged (R-P7). Zero `_astro` scripts stay.
 
-- [ ] **Step 1: Write the failing render tests:** the page has exactly three `is:inline` head scripts and the new one references `fs.premiumSource` and only the three words; the Premium card contains all three source lines and `See your plan` alongside the default line and button, each in a cell with a fixed height class; the CSS selectors `html[data-premium="grant"]` etc. exist; no `_astro` script.
+- [ ] **Step 1: Write the failing render tests:** the page has exactly one more `is:inline` head script than before this task (count them in the test's setup, don't hard-code three: today there is one head inline script and one in the body) and the new one references `fs.premiumSource` and only the three words; the Premium card contains all three source lines and `See your plan` alongside the default line and button, each in a cell with a fixed height class; the CSS selectors `html[data-premium="grant"]` etc. exist; no `_astro` script.
 - [ ] **Step 2: Run to fail.** **Step 3: Implement.** **Step 4: Run to pass**, check, lint, prettier. (Case 16, height equality on first paint, runs in Task 26.)
 - [ ] **Step 5: Commit.** `git commit -m "feat(web): /premium Premium card shows your plan when you have it" -- web/src/pages/premium.astro web/src/components/premium/PlanCard.astro web/src/pages/_premium.test.ts`
 
@@ -783,3 +783,14 @@ The controller does this by hand; no subagent.
 - **The bot's billing link.** `cmd_readiness.go`'s `billingAnchor` (`/settings#billing`) moves to the checkout guild step URL, and `cmd_readiness_test.go` changes with it (Task 8). The bot's sentences are unchanged (§6.6).
 - **Plan-asks route.** Deferred to v2 (Decision 2): `POST /v1/guilds/{id}/plan-asks` is not in this plan.
 - **`checkout-guild.spec.ts`** exists from the launch pricing lane; Task 25 rewrites it for the guild step rather than adding a second file.
+
+## Pre-flight corrections (controller, 2026-10-27)
+
+From `.superpowers/sdd/2026-10-27-subscribe-and-join/preflight.md`; implementers follow these over the task text where they differ.
+- Task 9: the `Me` types live in `web/src/lib/account/api.ts` (799 lines, at the 800 cap), not `contract.ts`. Put the new `guilds[]` and `entitlements` field types in a new `web/src/lib/account/me-guild-types.ts` and import them; one-line edits only in `api.ts`.
+- Task 10: the `manageBilling` reader is in `Account.svelte`, not `AccountPremiumBlock.svelte`; reuse Premium-value Task 3's spec-table helper (`specKeyCell`) and the shared `allStrings` helper instead of a local `tableRow`.
+- Task 14: `parsePlan` / `parseInterval` do not exist yet — extract them from the checkout page's inline parsing into `web/src/lib/billing/plan-params.ts` with tests; `fitsPlan` is the existing `guildFitsRaidTier` (reuse it); delete `billableGuilds` in Task 16 when the chooser goes. Build every `7` in `First 7 days free` / `Start the 7-day trial` from `GUILD_TRIAL_DAYS`.
+- Task 19: runs AFTER Premium-value Tasks 11–16 and reuses their `renderPremium()`; the Premium card's doubled slots stay single subgrid cells beside PV 12's per-plan button split.
+- Task 20: `safeNextPath` returns the fallback, never `null` — test that.
+- Task 23 and PV 21 edit `lighthouserc.json` one at a time; Task 26 follows PV 21 in `premium.spec.ts`; Task 27's `/premium` capture follows PV 16 and PV 19.
+- Both plans' branch-level verification (build, vitest, Playwright, lhci) runs ONCE, by the controller; deploy the API (PR A) first — the web handles the older `/v1/me` shape.
