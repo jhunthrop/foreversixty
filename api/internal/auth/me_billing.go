@@ -179,10 +179,7 @@ func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID i
 	if err != nil {
 		return nil, fmt.Errorf("auth: me: guild billings: %w", err)
 	}
-	payers, err := s.payerNames(ctx, plans, userID)
-	if err != nil {
-		return nil, err
-	}
+	payers := s.payerNames(ctx, plans, userID)
 	out := make([]Guild, len(guilds))
 	copy(out, guilds)
 	for i, g := range out {
@@ -212,7 +209,7 @@ func officerGuildIDs(guilds []Guild) []int64 {
 }
 
 // payerNames reads, in one query, the accounts that pay for the live plans, other than the caller.
-func (s *Service) payerNames(ctx context.Context, plans map[int64]*entitlements.GuildBilling, userID int64) (map[int64]User, error) {
+func (s *Service) payerNames(ctx context.Context, plans map[int64]*entitlements.GuildBilling, userID int64) map[int64]User {
 	var ids []int64
 	for _, gb := range plans {
 		if gb.Active && gb.BillingUserID != nil && *gb.BillingUserID != userID && !slices.Contains(ids, *gb.BillingUserID) {
@@ -220,13 +217,15 @@ func (s *Service) payerNames(ctx context.Context, plans map[int64]*entitlements.
 		}
 	}
 	if len(ids) == 0 {
-		return nil, nil
+		return nil
 	}
 	users, err := s.Store.Users(ctx, ids)
 	if err != nil {
-		return nil, fmt.Errorf("auth: me: guild plan payers: %w", err)
+		// One unreadable payer must not take the account page down: every payer reads as a former member.
+		s.logger().ErrorContext(ctx, "auth: me: guild plan payers", "user", userID, "err", err)
+		return nil
 	}
-	return users, nil
+	return users
 }
 
 // billedByOf names who pays for a guild plan: "" for a CLI grant, "you" for the caller.

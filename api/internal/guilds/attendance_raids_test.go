@@ -130,12 +130,12 @@ func TestRaidAttendanceWindowsAndACharacterWithNoNights(t *testing.T) {
 
 func TestCharacterAttendanceIsAbsentInReportMode(t *testing.T) {
 	h, gid, uid, key := attendanceWorld(t)
-	got, err := h.store.CharacterAttendance(context.Background(), gid, []string{key})
+	got, err := h.store.CharacterAttendance(context.Background(), map[int64][]string{gid: {key}})
 	if err != nil || len(got) != 0 {
 		t.Fatalf("report mode = %v, %v; want empty", got, err)
 	}
 	seedDoneRaid(t, h, gid, uid, time.Now().Add(-time.Hour), seedAtt{key: key, signed: "in", outcome: "present"})
-	got, err = h.store.CharacterAttendance(context.Background(), gid, []string{key})
+	got, err = h.store.CharacterAttendance(context.Background(), map[int64][]string{gid: {key}})
 	if err != nil || got[key].Present != 1 || got[key].Nights != 1 {
 		t.Fatalf("raid mode = %v, %v; want 1 of 1", got, err)
 	}

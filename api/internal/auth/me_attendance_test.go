@@ -10,11 +10,13 @@ import (
 // empty table is a guild still counting reports.
 type fakeGuildAttendance struct{ byKey map[string]Attendance }
 
-func (f *fakeGuildAttendance) CharacterAttendance(_ context.Context, _ int64, keys []string) (map[string]Attendance, error) {
+func (f *fakeGuildAttendance) CharacterAttendance(_ context.Context, keysByGuild map[int64][]string) (map[string]Attendance, error) {
 	out := map[string]Attendance{}
-	for _, k := range keys {
-		if a, ok := f.byKey[k]; ok {
-			out[k] = a
+	for _, keys := range keysByGuild {
+		for _, k := range keys {
+			if a, ok := f.byKey[k]; ok {
+				out[k] = a
+			}
 		}
 	}
 	return out, nil

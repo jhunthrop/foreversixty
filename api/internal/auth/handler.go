@@ -44,10 +44,11 @@ type GuildCapabilities interface {
 }
 
 // GuildAttendanceReader is the part of guilds.Store GET /v1/me needs for a character's raid
-// attendance: per character key, empty while the guild still counts reports. It is an interface
-// because guilds imports this package.
+// attendance: given the character keys of each guild, an entry per key of a guild that counts
+// raids and none for a guild still counting reports. It is an interface because guilds imports
+// this package.
 type GuildAttendanceReader interface {
-	CharacterAttendance(ctx context.Context, guildID int64, keys []string) (map[string]Attendance, error)
+	CharacterAttendance(ctx context.Context, keysByGuild map[int64][]string) (map[string]Attendance, error)
 }
 
 // FinishedSim is one server run that finished while its owner was away, as GET /v1/me
@@ -704,17 +705,18 @@ func (s *Service) attachCharacterAttendance(ctx context.Context, chars []Charact
 			keysByGuild[c.Guild.ID] = append(keysByGuild[c.Guild.ID], c.Key)
 		}
 	}
-	for guildID, keys := range keysByGuild {
-		found, err := s.GuildAttendance.CharacterAttendance(ctx, guildID, keys)
-		if err != nil {
-			return nil, fmt.Errorf("auth: character attendance: %w", err)
-		}
-		for i := range chars {
-			a, ok := found[chars[i].Key]
-			if ok && chars[i].Guild != nil && chars[i].Guild.ID == guildID {
-				att := a
-				chars[i].Guild.Attendance = &att
-			}
+	if len(keysByGuild) == 0 {
+		return chars, nil
+	}
+	found, err := s.GuildAttendance.CharacterAttendance(ctx, keysByGuild)
+	if err != nil {
+		return nil, fmt.Errorf("auth: character attendance: %w", err)
+	}
+	for i := range chars {
+		a, ok := found[chars[i].Key]
+		if ok && chars[i].Guild != nil && chars[i].Guild.Verified {
+			att := a
+			chars[i].Guild.Attendance = &att
 		}
 	}
 	return chars, nil
