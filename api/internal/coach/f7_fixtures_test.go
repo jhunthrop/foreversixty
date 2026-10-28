@@ -12,12 +12,14 @@ import (
 
 // The fixture spell ids F7's tests cast.
 const (
-	flameBreathID     = 18435
-	shieldWallID      = 871
-	lastStandID       = 12975
-	majorHealingPotID = 17534 // "Healing Potion", the Major Healing Potion's use
-	majorHealthstone  = 23477 // "Major Healthstone"
-	meleeSpellID      = 0
+	flameBreathID      = 18435
+	shieldWallID       = 871
+	lastStandID        = 12975
+	majorHealingPotID  = 17534 // "Healing Potion", the Major Healing Potion's use
+	majorHealthstone   = 23477 // "Major Healthstone"
+	majorRejuvPotionID = 22729 // a "Major Rejuvenation Potion" use, by name
+	tailSweepID        = 15847 // Onyxia's, avoidable for every role
+	meleeSpellID       = 0
 )
 
 // f7KillingBlowAmount is s with the amount of guid's death at atMS set: withDeath leaves

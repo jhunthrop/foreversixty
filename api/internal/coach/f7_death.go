@@ -10,15 +10,13 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// deathAnchorPrefix is the rating's death Moment anchor, "death-<guid>-<at_ms>", which
-// DeathsTab.svelte renders as the death row's id.
-const deathAnchorPrefix = "death-"
-
 // The names a healing potion's or a Healthstone's use is cast under, across ranks and
-// variants ("Healing Potion", "Superior Healing Potion", "Major Healthstone"). Conjuring
-// a stone ("Create Healthstone") and the warlock talent are not uses.
+// variants ("Healing Potion", "Superior Healing Potion", "Major Rejuvenation Potion",
+// "Major Healthstone"). Conjuring a stone ("Create Healthstone") and the warlock talent
+// are not uses.
 const (
 	deathPotionSuffix      = "Healing Potion"
+	deathRejuvSuffix       = "Rejuvenation Potion"
 	deathStoneSuffix       = "Healthstone"
 	deathStoneNotUsePrefix = "Create "
 	deathStoneTalent       = "Improved Healthstone"
@@ -47,7 +45,8 @@ type deathReady struct {
 // death is F7 (§6.2): the player's first reviewable death, what killed them, whether it
 // is on the encounter's avoidable list, a defensive that was ready, and whether a healing
 // potion or Healthstone was cast in the DeathPotionWindowMS before. No death at all is a
-// strength. A death the log cannot name is not reviewed.
+// strength. A death the log cannot name is not reviewed, and says so; so does a narrowed
+// defensive check (no defensives list, or a level the log doesn't record).
 func death(in Input, _ Counted) outcome {
 	d, died, reviewable := firstReviewableDeath(in)
 	if !died {
@@ -58,18 +57,32 @@ func death(in Input, _ Counted) outcome {
 	}
 	hit, ok := deathHitOf(in, d)
 	if !ok {
-		return outcome{}
+		return outcome{CouldNotCheck: []string{Fill(Drafts["cannot_death_killer"], map[string]string{"t": Clock(d.AtMS)})}}
 	}
-	ready, hasReady := readyDefensive(in, d.AtMS)
+	ready, hasReady, levelSkipped := readyDefensive(in, d.AtMS)
 	anchors := []Anchor{deathAnchor(in.Row.GUID, d.AtMS)}
 	if hasReady {
 		anchors = append(anchors, Anchor{Kind: AnchorCast, SpellID: ready.SpellID})
 	}
 	return outcome{
-		Finding: deathFinding(in, d.AtMS, hit, ready, hasReady, len(anchors)),
-		Anchors: anchors,
-		Windows: []ratingengine.Window{{FromMS: d.AtMS, ToMS: d.AtMS}},
+		Finding:       deathFinding(in, d.AtMS, hit, ready, hasReady, len(anchors)),
+		CouldNotCheck: defensivesNarrowed(in, hasReady, levelSkipped),
+		Anchors:       anchors,
+		Windows:       []ratingengine.Window{{FromMS: d.AtMS, ToMS: d.AtMS}},
 	}
+}
+
+// defensivesNarrowed is the couldn't-check line for a defensive check the data narrowed:
+// no defensives list at all, or a baseline defensive skipped for want of the level when
+// nothing else was ready.
+func defensivesNarrowed(in Input, hasReady, levelSkipped bool) []string {
+	switch {
+	case len(in.Tables.Rules.Defensives) == 0:
+		return []string{Drafts["cannot_defensives"]}
+	case levelSkipped && !hasReady:
+		return []string{Drafts["cannot_defensive_level"]}
+	}
+	return nil
 }
 
 // firstReviewableDeath is the player's earliest reviewable death. died is false when the
@@ -136,7 +149,7 @@ func latestHit(hits []summary.DamageRef) *summary.DamageRef {
 
 func deathAnchor(guid string, atMS int64) Anchor {
 	at := atMS
-	return Anchor{Kind: AnchorDeath, AtMS: &at, Death: deathAnchorPrefix + guid + "-" + strconv.FormatInt(atMS, 10)}
+	return Anchor{Kind: AnchorDeath, AtMS: &at, Death: ratingengine.DeathAnchor(guid, atMS)}
 }
 
 // deathAvoidable: the hit is on the encounter's avoidable list, and not an ability the
@@ -166,7 +179,7 @@ func potionBefore(fight summary.Summary, guid string, atMS int64) bool {
 }
 
 func isHealingConsumable(name string) bool {
-	if strings.HasSuffix(name, deathPotionSuffix) {
+	if strings.HasSuffix(name, deathPotionSuffix) || strings.HasSuffix(name, deathRejuvSuffix) {
 		return true
 	}
 	return strings.HasSuffix(name, deathStoneSuffix) && !strings.HasPrefix(name, deathStoneNotUsePrefix) && name != deathStoneTalent
@@ -175,22 +188,30 @@ func isHealingConsumable(name string) bool {
 // readyDefensive is the first of the rule file's defensives off cooldown at atMS. A talent
 // counts only if cast that fight; a baseline ability never cast counts from its trainable
 // level, and only when the level is known. A cast whose cooldown the data does not state
-// is never claimed ready.
-func readyDefensive(in Input, atMS int64) (deathReady, bool) {
+// is never claimed ready. levelSkipped: a baseline defensive never cast went unjudged
+// because the log has no level.
+func readyDefensive(in Input, atMS int64) (ready deathReady, ok, levelSkipped bool) {
 	for _, e := range in.Tables.Rules.Defensives {
 		lastID, lastMS, cast := lastCastBefore(in.Fight, in.Row.GUID, e.SpellIDs, atMS)
 		if !cast {
-			if id, ok := trainableAtLevel(in, e); ok && !e.Talent {
-				return deathReady{Name: e.Family, SpellID: id, SincePull: true}, true
+			if e.Talent {
+				continue
+			}
+			if in.Row.Level <= 0 {
+				levelSkipped = true
+				continue
+			}
+			if id, trainable := trainableAtLevel(in, e); trainable {
+				return deathReady{Name: e.Family, SpellID: id, SincePull: true}, true, levelSkipped
 			}
 			continue
 		}
-		sc, ok := in.Tables.Spells[lastID]
-		if ok && sc.CooldownMS > 0 && lastMS+sc.CooldownMS <= atMS {
-			return deathReady{Name: e.Family, SpellID: lastID}, true
+		sc, known := in.Tables.Spells[lastID]
+		if known && sc.CooldownMS > 0 && lastMS+sc.CooldownMS <= atMS {
+			return deathReady{Name: e.Family, SpellID: lastID}, true, levelSkipped
 		}
 	}
-	return deathReady{}, false
+	return deathReady{}, false, levelSkipped
 }
 
 // lastCastBefore is guid's latest successful cast of any of ids before atMS.
@@ -253,16 +274,25 @@ func deathFinding(in Input, atMS int64, hit deathHit, ready deathReady, hasReady
 
 // deathDetail: with a defensive ready since the pull, §5.3's sentence; otherwise the hit
 // (when the log kept its amount) and, when no healing potion or Healthstone was cast in
-// the window, that line.
+// the window, that line. With a defensive ready, an avoidable killer is said too, in
+// §6.2's order: killing blow, avoidable, defensive. Without one, the basis says it.
 func deathDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
+	avoidable := ready.Name != "" && deathAvoidable(in, hit)
 	if ready.SincePull {
-		return Fill(DetailDiedWithReady, map[string]string{"Killer": hit.Name, "t": Clock(atMS), "Spell": ready.Name})
+		format := DetailDiedWithReady
+		if avoidable {
+			format = Drafts["detail_died_with_ready_avoidable"]
+		}
+		return Fill(format, map[string]string{"Killer": hit.Name, "t": Clock(atMS), "Spell": ready.Name})
 	}
 	var parts []string
 	if hit.Amount > 0 {
 		parts = append(parts, Fill(DetailDeathHit, map[string]string{
 			"Spell": hit.Name, "amount": Thousands(hit.Amount), "t": Clock(hit.AtMS),
 		}))
+	}
+	if avoidable {
+		parts = append(parts, Fill(Drafts["detail_death_avoidable"], map[string]string{"Spell": hit.Name}))
 	}
 	if !potionBefore(in.Fight, in.Row.GUID, atMS) {
 		parts = append(parts, DeathNoPotion)
@@ -271,6 +301,9 @@ func deathDetail(in Input, hit deathHit, atMS int64, ready deathReady) string {
 }
 
 func deathFacts(hit deathHit, t string) Facts {
+	// A melee killer is SpellFact{ID: 0, Name: "Onyxia's melee"} (Drafts["melee"]): id 0 is
+	// the melee sentinel, not a spell. Task 26's validator must admit it by name into the
+	// allowed set, never refuse it as a non-positive spell id.
 	facts := Facts{Spells: []SpellFact{{ID: hit.SpellID, Name: hit.Name}}, Times: []string{t}}
 	if hit.Amount > 0 {
 		facts.Numbers = []NumberFact{{V: float64(hit.Amount), Text: Thousands(hit.Amount), Unit: deathFactUnit, Of: deathFactAmount}}

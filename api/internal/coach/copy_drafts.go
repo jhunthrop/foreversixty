@@ -36,6 +36,14 @@ var Drafts = map[string]string{
 
 	// F7: a melee swing's killing blow.
 	"melee": "{Boss}'s melee",
+	// F7: the avoidable fact kept when a defensive was ready (killing blow, then avoidable,
+	// then the defensive: §6.2's order).
+	"detail_death_avoidable":           "{Spell} is on this boss's list of damage you can avoid.",
+	"detail_died_with_ready_avoidable": "{Killer} killed you at {t}. {Killer} is on this boss's list of damage you can avoid. {Spell} had been ready since the pull.",
+	// F7 narrowed: what it could not check, said so (§20.4).
+	"cannot_defensives":      "Defensive cooldowns: the coach's list for your spec isn't written yet.",
+	"cannot_defensive_level": "Defensive cooldowns you never cast: your log doesn't record your level.",
+	"cannot_death_killer":    "Your death at {t}: the log doesn't say what killed you.",
 
 	// F8 adherence.
 	"title_adherence":  "{pct}% of casts from the rotation",

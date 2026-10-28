@@ -148,6 +148,8 @@ func TestDeath_PotionWindow(t *testing.T) {
 		{name: "healthstone at the 10 s edge", spellID: majorHealthstone, cast: "Major Healthstone", atMS: 190_000},
 		{name: "healthstone 12 s before is outside", spellID: majorHealthstone, cast: "Major Healthstone", atMS: 188_000, wantLine: true},
 		{name: "a healthstone conjured is not one used", spellID: 11730, cast: "Create Healthstone", atMS: 195_000, wantLine: true},
+		{name: "rejuvenation potion 3 s before", spellID: majorRejuvPotionID, cast: "Major Rejuvenation Potion", atMS: 197_000},
+		{name: "the warlock talent is not a use", spellID: 18693, cast: "Improved Healthstone", atMS: 195_000, wantLine: true},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -210,6 +212,9 @@ func TestDeath_FactsCarryEveryQuotedValue(t *testing.T) {
 	assertSpells(t, f.Facts, "Flame Breath")
 	assertNumbers(t, f.Facts, "2,140")
 	p := death(protDeathShieldWallReady(t, 232_000, 170_000), Counted{}).Finding
+	if p == nil {
+		t.Fatal("prot: no finding")
+	}
 	assertSpells(t, p.Facts, "Shield Wall", "Onyxia's melee")
 	assertTimes(t, p.Facts, "2:50")
 }
@@ -242,6 +247,56 @@ func TestDeath_KillingBlowFallsBackToTheLastHit(t *testing.T) {
 	o := death(in, CountedTime(in))
 	if o.Finding != nil || len(o.Strengths) != 0 {
 		t.Errorf("unproven death claimed: %+v", o)
+	}
+	want := "Your death at 3:20: the log doesn't say what killed you."
+	if len(o.CouldNotCheck) != 1 || o.CouldNotCheck[0] != want {
+		t.Errorf("couldn't check %q, want %q", o.CouldNotCheck, want)
+	}
+}
+
+// A narrowed defensive check says so (§20.4): no defensives list, or a level the log
+// doesn't record; a defensive found ready, or a full check, says nothing.
+func TestDeath_NarrowedDefensiveCheckSaysSo(t *testing.T) {
+	cases := []struct {
+		name string
+		in   Input
+		want []string
+	}{
+		{name: "no defensives list", in: holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140),
+			want: []string{"Defensive cooldowns: the coach's list for your spec isn't written yet."}},
+		{name: "unknown level", in: f7Level(protDeathShieldWallReady(t, 232_000, 170_000), 0),
+			want: []string{"Defensive cooldowns you never cast: your log doesn't record your level."}},
+		{name: "known level, Shield Wall ready", in: protDeathShieldWallReady(t, 232_000, 170_000)},
+		{name: "known level, nothing ready", in: f7Cast(protDeathShieldWallReady(t, 232_000, 170_000), shieldWallID, "Shield Wall", 100_000)},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			o := death(tc.in, CountedTime(tc.in))
+			if o.Finding == nil {
+				t.Fatal("no finding")
+			}
+			if strings.Join(o.CouldNotCheck, "|") != strings.Join(tc.want, "|") {
+				t.Errorf("couldn't check %q, want %q", o.CouldNotCheck, tc.want)
+			}
+		})
+	}
+}
+
+// With a defensive ready, an avoidable killer is still said, in §6.2's order: killing
+// blow, avoidable, defensive.
+func TestDeath_ReadyKeepsTheAvoidableFact(t *testing.T) {
+	sincePull := f7Died(protInput(t), 232_000, 170_000, tailSweepID, "Tail Sweep", 1_200)
+	f := death(sincePull, CountedTime(sincePull)).Finding
+	want := "Tail Sweep killed you at 2:50. Tail Sweep is on this boss's list of damage you can avoid. Shield Wall had been ready since the pull."
+	if f == nil || f.Title != "Died at 2:50 with Shield Wall ready" || f.Detail != want {
+		t.Fatalf("got %+v, want detail %q", f, want)
+	}
+	back := f7Died(protInput(t), 400_000, 200_000, tailSweepID, "Tail Sweep", 1_200)
+	back = f7Cast(f7Cast(back, shieldWallID, "Shield Wall", 150_000), lastStandID, "Last Stand", 10_000)
+	f = death(back, CountedTime(back)).Finding
+	want = "Tail Sweep hit for 1,200 at 3:20. Tail Sweep is on this boss's list of damage you can avoid. " + DeathNoPotion
+	if f == nil || f.Title != "Died at 3:20 with Last Stand ready" || f.Detail != want {
+		t.Fatalf("got %+v, want detail %q", f, want)
 	}
 }
 

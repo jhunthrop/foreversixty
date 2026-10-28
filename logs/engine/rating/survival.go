@@ -100,13 +100,20 @@ func deathScoreFor(fight summary.Summary, player string, table *mechanics.Table)
 		score -= deathPenaltyBase * cause * timeRemaining
 		moments = append(moments, Moment{
 			Kind: "death", AtMS: d.AtMS, SpellID: spellID, SpellName: spellName,
-			Avoidable: avoidable, Anchor: "death-" + player + "-" + strconv.FormatInt(d.AtMS, 10),
+			Avoidable: avoidable, Anchor: DeathAnchor(player, d.AtMS),
 		})
 	}
 	if score < 0 {
 		score = 0
 	}
 	return score, moments
+}
+
+// DeathAnchor is a death's DOM anchor id, "death-<guid>-<at_ms>": the id
+// DeathsTab.svelte gives each death row, which the rating's death Moments and
+// the coach's death finding both link to.
+func DeathAnchor(guid string, atMS int64) string {
+	return "death-" + guid + "-" + strconv.FormatInt(atMS, 10)
 }
 
 // avoidableDamagePerSecond sums avoidable-mechanic damage taken over the
