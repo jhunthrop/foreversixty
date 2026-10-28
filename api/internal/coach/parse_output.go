@@ -25,6 +25,7 @@ const (
 // rendering fills. FixFirst is null exactly when the pack has no rank-1 finding.
 type ReviewDoc struct {
 	Opening      string     `json:"opening"`
+	OpeningLinks []string   `json:"openingLinks"`
 	FixFirst     *FixItem   `json:"fixFirst"`
 	ThenFix      []ThenItem `json:"thenFix"`
 	DoingWell    []WellItem `json:"doingWell"`
@@ -56,6 +57,7 @@ type WellItem struct {
 	Strength string   `json:"strength"`
 	Text     string   `json:"text"`
 	Anchors  []string `json:"anchors"`
+	Links    []string `json:"links"`
 }
 
 const (

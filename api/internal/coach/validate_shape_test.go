@@ -1,6 +1,7 @@
 package coach
 
 import (
+	"slices"
 	"strings"
 	"testing"
 )
@@ -48,8 +49,13 @@ func TestValidate_NamesTheProblem(t *testing.T) {
 		t.Fatalf("%+v", probs)
 	}
 	probs = validateEdited(t, func(d *ReviewDoc) { d.FixFirst.Links = nil })
-	if len(probs) != 1 || probs[0].Kind != ProblemLink || !strings.Contains(probs[0].Value, "Rage full for 14 seconds") {
+	if !hasProblem(probs, ProblemLink, `fixFirst states a relation ("instead") without citing one of the pack's links`) {
 		t.Fatalf("%+v", probs)
+	}
+	for _, p := range probs {
+		if p.Kind == ProblemLink && p.Near == "" {
+			t.Errorf("no surrounding words: %+v", p)
+		}
 	}
 }
 
@@ -60,6 +66,8 @@ func TestValidate_NoRankOneMeansNullFixFirst(t *testing.T) {
 	pack.Links = nil
 	d := exampleReview()
 	d.FixFirst, d.ThenFix = nil, d.ThenFix[:2]
+	d.ThenFix[1].Links = nil
+	d.ThenFix[1].Why = "Heroic Strike turns a full bar into damage."
 	v := Validator{Names: buildNames(t)}
 	if probs := v.Validate(d, pack, fixturePersona(t)); len(probs) != 0 {
 		t.Fatalf("%+v", probs)
@@ -70,12 +78,97 @@ func TestValidate_NoRankOneMeansNullFixFirst(t *testing.T) {
 	}
 }
 
-func TestValidate_ALinkThatDoesNotJoinTheTwoFindingsDoesNotCount(t *testing.T) {
+func TestValidate_ALinkThatDoesNotInvolveTheItemDoesNotCount(t *testing.T) {
 	probs := validateEdited(t, func(d *ReviewDoc) {
-		d.ThenFix[0].Why = "Bring a flask; the rage cap is the other half of the story."
+		d.ThenFix[0].Why = "Bring a flask, because the rage cap is the other half of the story."
 		d.ThenFix[0].Links = []string{"l1"}
 	})
 	if len(probs) != 1 || probs[0].Kind != ProblemLink {
+		t.Fatalf("%+v", probs)
+	}
+}
+
+// relationCases are sentences that state a relation; each must be refused with no link.
+var relationCases = map[string]string{
+	"the worked sentence":   "At 2:40–2:51 you sat on a full bar instead, so that one gap cost you twice.",
+	"plural flasks":         "Bring flasks, because they are the cheapest damage you will buy.",
+	"died paraphrase":       "You died early, which is why the raid lost its healer.",
+	"idle paraphrase":       "You stood idle at the door, and that's why the boss reset.",
+	"curly apostrophe":      "That’s why the rage was capped.",
+	"capped paraphrase":     "Rage capped, which meant Heroic Strike went unused.",
+	"led to":                "The gap led to a wasted bar.",
+	"as a result":           "The bar filled. As a result, damage fell.",
+	"hence":                 "Hence the lost casts.",
+	"since":                 "Since the bar was full, Heroic Strike was free.",
+	"caused":                "Standing still caused the gap.",
+	"costs you":             "Skipping it costs you damage.",
+	"upper case connective": "BECAUSE the bar was full.",
+}
+
+func TestValidate_RelationWithoutALinkIsRefusedInEverySlot(t *testing.T) {
+	slots := map[string]func(*ReviewDoc, string){
+		"opening":   func(d *ReviewDoc, s string) { d.Opening = s },
+		"fixFirst":  func(d *ReviewDoc, s string) { d.FixFirst.Why, d.FixFirst.Links = s, nil },
+		"thenFix":   func(d *ReviewDoc, s string) { d.ThenFix[1].Why, d.ThenFix[1].Links = s, nil },
+		"doingWell": func(d *ReviewDoc, s string) { d.DoingWell[0].Text = s },
+	}
+	for slot, set := range slots {
+		for name, sentence := range relationCases {
+			probs := validateEdited(t, func(d *ReviewDoc) { set(d, sentence) })
+			if !slices.ContainsFunc(probs, func(p Problem) bool { return p.Kind == ProblemLink && p.Near != "" }) {
+				t.Errorf("%s / %s: accepted: %+v", slot, name, probs)
+			}
+		}
+	}
+}
+
+func TestValidate_RelationWithAPackLinkIsAccepted(t *testing.T) {
+	probs := validateEdited(t, func(d *ReviewDoc) {
+		d.Opening, d.OpeningLinks = "Solid kill, because the gap met the rage cap.", []string{"l1"}
+		d.DoingWell[0].Text, d.DoingWell[0].Links = "Alive, which is why the gap did not cost more.", []string{"l1"}
+	})
+	if len(probs) != 0 {
+		t.Fatalf("%+v", probs)
+	}
+}
+
+func TestValidate_PlainDescriptionNeedsNoLink(t *testing.T) {
+	probs := validateEdited(t, func(d *ReviewDoc) {
+		d.Opening = "You were alive the whole fight. The bar sat full at 2:41–2:50."
+		d.ThenFix[1].Why = "Heroic Strike turns a full bar into damage."
+	})
+	if len(probs) != 0 {
+		t.Fatalf("%+v", probs)
+	}
+}
+
+func TestValidate_LinkIdsNotInThePackAreProblemsInEverySlot(t *testing.T) {
+	probs := validateEdited(t, func(d *ReviewDoc) {
+		d.OpeningLinks = []string{"l7"}
+		d.ThenFix[0].Links = []string{"l8"}
+		d.DoingWell[0].Links = []string{"l9"}
+	})
+	for _, f := range []string{"opening", "thenFix[0]", "doingWell[0]"} {
+		if !slices.ContainsFunc(probs, func(p Problem) bool { return p.Kind == ProblemLink && strings.HasPrefix(p.Value, f+" cites link") }) {
+			t.Errorf("%s: %+v", f, probs)
+		}
+	}
+}
+
+func TestValidate_AdmitsTheMeleeKillerByName(t *testing.T) {
+	pack := examplePack()
+	pack.Findings[0].Facts.Spells = []SpellFact{{ID: 0, Name: "Onyxia's melee"}}
+	d := exampleReview()
+	d.FixFirst.Why = "Onyxia's melee ended it; Bloodthirst is the button the Fury rotation is built around."
+	if probs := (Validator{Names: buildNames(t)}).Validate(d, pack, fixturePersona(t)); len(probs) != 0 {
+		t.Fatalf("%+v", probs)
+	}
+}
+
+func TestValidate_BossNameIsAllowedWithoutBeingListed(t *testing.T) {
+	pack := examplePack()
+	pack.Allowed.Names = []string{"Bloodthirst", "Heroic Strike", "Battle Shout", "Grilled Squid", "Elemental Sharpening Stone"}
+	if probs := (Validator{Names: buildNames(t)}).Validate(exampleReview(), pack, fixturePersona(t)); len(probs) != 0 {
 		t.Fatalf("%+v", probs)
 	}
 }

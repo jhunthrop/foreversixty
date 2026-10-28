@@ -64,6 +64,7 @@ func requiredProblem(field, s string) []Problem {
 func shapeProblems(doc ReviewDoc, p Pack, persona Persona) []Problem {
 	var out []Problem
 	out = append(out, openingProblems(doc.Opening)...)
+	out = append(out, refProblems("opening", nil, doc.OpeningLinks, p)...)
 	out = append(out, fixFirstProblems(doc.FixFirst, p, persona)...)
 	out = append(out, thenFixProblems(doc, p)...)
 	out = append(out, doingWellProblems(doc.DoingWell, p)...)
@@ -194,7 +195,7 @@ func doingWellProblems(items []WellItem, p Pack) []Problem {
 		seen[it.Strength] = true
 		out = append(out, requiredProblem(field+".text", it.Text)...)
 		out = append(out, capProblem(field+".text", it.Text, CapWellChars)...)
-		out = append(out, refProblems(field, it.Anchors, nil, p)...)
+		out = append(out, refProblems(field, it.Anchors, it.Links, p)...)
 	}
 	return out
 }
@@ -236,7 +237,7 @@ func proseFields(doc ReviewDoc) []proseField {
 }
 
 func (v Validator) factProblems(doc ReviewDoc, p Pack, persona Persona) []Problem {
-	checker := FactChecker{Allowed: p.Allowed, Class: p.Context.Class, Spec: p.Context.SpecLabel, Names: v.Names}
+	checker := FactChecker{Allowed: withPackNames(p), Class: p.Context.Class, Spec: p.Context.SpecLabel, Names: v.Names}
 	if doc.FixFirst != nil {
 		checker.DrillText = persona.Drills[doc.FixFirst.Drill]
 	}
@@ -262,84 +263,76 @@ func (v Validator) toneProblems(doc ReviewDoc) []Problem {
 	return out
 }
 
-// Link check (§9.3): a sentence that names two findings cites a link joining them.
+// Link check (§9.3): a sentence that relates findings, or a finding to its cause, is a
+// claim only the pack's computed links can back. Any text slot that states a relation
+// with one of the connectives below must cite a link id on its own item.
 
-// genericTitleWords are title words too common to identify a finding.
-var genericTitleWords = stringSet(strings.Fields(
-	"casts cast lost with from that this what full ready seconds fight pull rank died time down left over while your"))
+var relationRE = regexp.MustCompile(`(?i)\b(because|so|which is why|that(?:'|’)s why|why|costs? you|instead|meant|led to|caused|as a result|since|hence)\b`)
 
-var titleWordRE = regexp.MustCompile(`[A-Za-z']+`)
-
-// subjectTerms is the lower-case words and phrases that identify a finding in prose: its
-// title's distinctive words, its spells and its items.
-func subjectTerms(f Finding) []string {
-	var terms []string
-	for _, w := range titleWordRE.FindAllString(strings.ToLower(f.Title), -1) {
-		if len(w) >= 4 && !genericTitleWords[w] {
-			terms = append(terms, w)
-		}
+// relationWords returns each relation connective in s, lower-cased, in order.
+func relationWords(s string) []string {
+	var out []string
+	for _, m := range relationRE.FindAllString(s, -1) {
+		out = append(out, strings.ToLower(m))
 	}
-	for _, s := range f.Facts.Spells {
-		terms = append(terms, strings.ToLower(s.Name))
-	}
-	for _, it := range f.Facts.Items {
-		terms = append(terms, strings.ToLower(it))
-	}
-	return terms
+	return out
 }
 
-func mentions(sentence string, terms []string) bool {
-	low := strings.ToLower(sentence)
-	return slices.ContainsFunc(terms, func(t string) bool {
-		return regexp.MustCompile(`\b` + regexp.QuoteMeta(t) + `\b`).MatchString(low)
-	})
-}
-
-// linkedPairs is the set of finding pairs the cited links join.
-func linkedPairs(p Pack, cited []string) map[[2]string]bool {
-	pairs := map[[2]string]bool{}
+// joinsFinding reports whether any cited link of the pack involves the finding; an empty
+// finding id (opening, doingWell) accepts any pack link.
+func joinsFinding(p Pack, cited []string, finding string) bool {
 	for _, l := range p.Links {
-		if slices.Contains(cited, l.ID) {
-			pairs[[2]string{l.Findings[0], l.Findings[1]}] = true
-			pairs[[2]string{l.Findings[1], l.Findings[0]}] = true
+		if !slices.Contains(cited, l.ID) {
+			continue
+		}
+		if finding == "" || l.Findings[0] == finding || l.Findings[1] == finding {
+			return true
 		}
 	}
-	return pairs
+	return false
 }
 
-// itemLinkProblems finds each other finding the item's sentences name without a link.
-func itemLinkProblems(field, own, why string, cited []string, p Pack) []Problem {
-	ownFinding, ok := packFinding(p, own)
-	if !ok {
+// relationProblems names each connective an item states without a link that backs it.
+func relationProblems(field, finding, text string, cited []string, p Pack) []Problem {
+	if joinsFinding(p, cited, finding) {
 		return nil
 	}
-	ownTerms := subjectTerms(ownFinding)
-	pairs := linkedPairs(p, cited)
 	var out []Problem
-	reported := map[string]bool{}
-	for _, s := range sentences(why) {
-		for _, g := range p.Findings {
-			if g.ID == own || reported[g.ID] || pairs[[2]string{own, g.ID}] {
-				continue
-			}
-			foreign := slices.DeleteFunc(subjectTerms(g), func(t string) bool { return slices.Contains(ownTerms, t) })
-			if mentions(s, foreign) {
-				reported[g.ID] = true
-				out = append(out, Problem{Kind: ProblemLink, Value: fmt.Sprintf(
-					"%s relates %q to %q (%s) without citing a link that joins them", field, ownFinding.Title, g.Title, g.ID)})
-			}
+	for _, s := range sentences(text) {
+		for _, w := range relationWords(s) {
+			out = append(out, Problem{Kind: ProblemLink, Near: nearText(s, w), Value: fmt.Sprintf(
+				"%s states a relation (%q) without citing one of the pack's links", field, w)})
 		}
 	}
 	return out
 }
 
 func linkProblems(doc ReviewDoc, p Pack) []Problem {
-	var out []Problem
+	out := relationProblems("opening", "", doc.Opening, doc.OpeningLinks, p)
 	if f := doc.FixFirst; f != nil {
-		out = append(out, itemLinkProblems("fixFirst", f.Finding, f.Why, f.Links, p)...)
+		out = append(out, relationProblems("fixFirst", f.Finding, f.Why, f.Links, p)...)
 	}
 	for i, it := range doc.ThenFix {
-		out = append(out, itemLinkProblems(fmt.Sprintf("thenFix[%d]", i), it.Finding, it.Why, it.Links, p)...)
+		out = append(out, relationProblems(fmt.Sprintf("thenFix[%d]", i), it.Finding, it.Why, it.Links, p)...)
+	}
+	for i, it := range doc.DoingWell {
+		out = append(out, relationProblems(fmt.Sprintf("doingWell[%d]", i), "", it.Text, it.Links, p)...)
 	}
 	return out
+}
+
+// withPackNames is the pack's allowed set plus the names its own facts and context carry:
+// the boss, every finding's spells (a melee killer is "<Boss>'s melee", spell id 0) and items.
+func withPackNames(p Pack) Allowed {
+	a := p.Allowed
+	names := append([]string{}, a.Names...)
+	names = append(names, p.Context.Boss)
+	for _, f := range p.Findings {
+		for _, s := range f.Facts.Spells {
+			names = append(names, s.Name)
+		}
+		names = append(names, f.Facts.Items...)
+	}
+	a.Names = names
+	return a
 }

@@ -4,7 +4,7 @@ import "testing"
 
 func TestTone_Problems(t *testing.T) {
 	for _, s := range []string{"Great job!", "That was bad.", "Just heal more.", "Just heal  more.", "Stop being lazy.",
-		"You need to pump harder.", "This guild would love it.", "A world first kill."} {
+		"You need to pump harder.", "This guild would love it.", "A world first kill.", "That parse was great.", "Your rank 1 placement.", "A top player would hold it.", "You are ranked highly."} {
 		if len(toneProblems(s)) == 0 {
 			t.Errorf("%q passed", s)
 		}

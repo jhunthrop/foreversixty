@@ -23,6 +23,27 @@ func withWhy(why string) func(*ReviewDoc) {
 	return func(d *ReviewDoc) { d.FixFirst.Why = why }
 }
 
+// factsPack is the worked example's allowed set, for tests of FactChecker on its own.
+func factsPack() Allowed {
+	a := examplePack().Allowed
+	a.Numbers = append(a.Numbers, "2,140", "44%", "3:05")
+	return a
+}
+
+func factChecker(t *testing.T, drill string) FactChecker {
+	t.Helper()
+	return FactChecker{Allowed: factsPack(), Class: "Warrior", Spec: "Fury", DrillText: drill, Names: buildNames(t)}
+}
+
+func hasFactProblem(probs []FactProblem, kind, value string) bool {
+	for _, p := range probs {
+		if p.Kind == kind && p.Value == value {
+			return true
+		}
+	}
+	return false
+}
+
 const factsWhy = "Bloodthirst is the button the Fury rotation is built around"
 
 func TestValidate_RejectsNumberNotInPack(t *testing.T) {

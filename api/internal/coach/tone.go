@@ -3,6 +3,7 @@ package coach
 import (
 	"regexp"
 	"strings"
+	"sync"
 )
 
 // bannedTone is the words and phrases the coach never uses (§9.3). It applies in full to
@@ -23,7 +24,7 @@ func quoteAll(words []string) []string {
 
 // claimRE is a claim about a guild, a ranking or a first: the coach never makes one, so
 // no real player or group can be named by implication (§8.2, §9.3).
-var claimRE = regexp.MustCompile(`(?i)\b(guild|ranked|world\s+first)\b`)
+var claimRE = regexp.MustCompile(`(?i)\b(guilds?|ranked|ranking|rank\s+\d+|world\s+first|server\s+first|parses?|top\s+(?:player|parser|guild)s?)\b`)
 
 const exclamation = "!"
 
@@ -51,9 +52,22 @@ func rosterNames(s string, roster []string) []string {
 		if name == "" {
 			continue
 		}
-		if regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(name) + `\b`).MatchString(s) {
+		if rosterRE(name).MatchString(s) {
 			found = append(found, name)
 		}
 	}
 	return found
+}
+
+var rosterREs sync.Map // lower-cased name -> *regexp.Regexp
+
+// rosterRE is the whole-word, case-insensitive matcher for one roster name, compiled once.
+func rosterRE(name string) *regexp.Regexp {
+	key := strings.ToLower(name)
+	if re, ok := rosterREs.Load(key); ok {
+		return re.(*regexp.Regexp)
+	}
+	re := regexp.MustCompile(`(?i)\b` + regexp.QuoteMeta(name) + `\b`)
+	rosterREs.Store(key, re)
+	return re
 }

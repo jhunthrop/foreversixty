@@ -561,7 +561,7 @@ func exampleReview() ReviewDoc {
 		},
 		ThenFix: []ThenItem{
 			{Finding: "f6", Title: "No flask at the pull", Why: "A flask is the cheapest damage you will ever buy; bring one to every 40-player boss.", Anchors: []string{"a4"}, Links: []string{}},
-			{Finding: "f4", Title: "Rage full for 14 seconds", Why: "When the bar is full, Heroic Strike turns rage into damage instead of losing it.", Anchors: []string{"a5"}, Links: []string{}},
+			{Finding: "f4", Title: "Rage full for 14 seconds", Why: "When the bar is full, Heroic Strike turns rage into damage instead of losing it.", Anchors: []string{"a5"}, Links: []string{"l1"}},
 		},
 		DoingWell: []WellItem{
 			{Strength: "s1", Text: "You were alive the whole fight.", Anchors: []string{}},
