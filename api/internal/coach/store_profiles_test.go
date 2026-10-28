@@ -14,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/rating"
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
@@ -85,6 +86,10 @@ func writerFight(id string, kill bool) rating.RatedFight {
 				{GUID: "g2", Name: "Profpriest", Class: "Priest", Spec: "Holy", Role: RoleHealer},
 				{GUID: "g3", Name: "Profnospec", Class: "Mage", Role: RoleDPS},
 			},
+			Combatants: []summary.CombatantRow{
+				{GUID: "g1", Gear: []event.Item{{ID: 19364, ItemLevel: 83}}},
+				{GUID: "g2", Gear: []event.Item{{ID: 19364, ItemLevel: 83}}},
+			},
 		},
 	}
 }
@@ -114,8 +119,16 @@ func TestProfileWriter_KillOnRankedEvidenceReport(t *testing.T) {
 	if n := countProfiles(t, pool, f.ReportID); n != 2 {
 		t.Fatalf("%d profiles, want 2 (the row with no spec writes none)", n)
 	}
-	var warMetric float64
+	var warMetric, priestMetric, overall float64
 	var ph, version string
+	if err := pool.QueryRow(context.Background(), `select p.metric, r.overall from coach_profiles p
+	  join rating_scores r on r.report_id = p.report_id and r.fight_index = p.fight_index and r.player_key = p.player_key
+	  where p.report_id = $1 and p.spec = 'Holy'`, f.ReportID).Scan(&priestMetric, &overall); err != nil {
+		t.Fatal(err)
+	}
+	if priestMetric != overall {
+		t.Errorf("priest metric %v, want the card's overall %v", priestMetric, overall)
+	}
 	if err := pool.QueryRow(context.Background(), `select metric, phase, model_version from coach_profiles
 	  where report_id = $1 and spec = 'Fury'`, f.ReportID).Scan(&warMetric, &ph, &version); err != nil {
 		t.Fatal(err)
@@ -125,6 +138,39 @@ func TestProfileWriter_KillOnRankedEvidenceReport(t *testing.T) {
 	}
 	if ph != phase.At(writerFoughtAt) || version != RulesVersion {
 		t.Errorf("phase %q version %q, want %q %q", ph, version, phase.At(writerFoughtAt), RulesVersion)
+	}
+}
+
+// A sheet-less healer's card is insufficient when Preparation leaves too little coverage;
+// the engine's coverage rule decides that, so the hook is handed the card it would get.
+func TestProfileWriter_InsufficientHealerCardIsSkippedOnPurpose(t *testing.T) {
+	pool := writerPool(t)
+	seedReport(t, pool, "prof-nosheet", "public", nil)
+	f := writerFight("prof-nosheet", true)
+	if err := db.EnsureCoachProfilesPartition(context.Background(), pool, f.FoughtAt); err != nil {
+		t.Fatal(err)
+	}
+	cards := []rating.CardRow{
+		{PlayerName: "Profwar", PlayerKey: "us/normal/profwar", Size: 40},
+		{PlayerName: "Profpriest", PlayerKey: "us/normal/profpriest", Size: 40, Insufficient: true,
+			InsufficientReason: "no_character_sheet"},
+	}
+	ctx := context.Background()
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if err := (&ProfileWriter{Tables: fakeTables{}}).InTx(ctx, tx, f, cards); err != nil {
+		t.Fatal(err)
+	}
+	var healers, total int
+	if err := tx.QueryRow(ctx, `select count(*) filter (where role = 'healer'), count(*)
+	  from coach_profiles where report_id = $1`, f.ReportID).Scan(&healers, &total); err != nil {
+		t.Fatal(err)
+	}
+	if healers != 0 || total != 1 {
+		t.Fatalf("healer profiles %d of %d, want the insufficient healer skipped and the warrior kept", healers, total)
 	}
 }
 
