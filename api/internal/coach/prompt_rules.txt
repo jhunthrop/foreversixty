@@ -21,7 +21,7 @@ Reply with one JSON object and nothing else: no prose before or after it, no cod
 - doingWell holds 1 or 2 items when the pack has strengths, none when it has none. Each cites a strength id from the pack.
 - A title equals the pack's title for that finding, character for character.
 - couldntCheck equals the pack's couldNotCheck list, word for word, in order.
-- Anchors are ids from the pack's anchors, and they must belong to the finding or strength the item is about.
+- Anchors are ids from the pack's anchors, and they must belong to the finding or strength the item is about; an anchor of another finding counts only when the item cites a link that joins the two.
 - drill is an id from the persona's drill list. drillText may reword that drill but adds no facts.
 - Length caps are hard: opening 280 characters and 2 sentences, title 60, fixFirst why 320, thenFix why 200, drillText 240, doingWell text 160.
 
