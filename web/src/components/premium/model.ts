@@ -14,6 +14,10 @@ import {
 
 export const FOUNDER_STATES = [true, false] as const;
 
+/** Direct children of a plan card, each one row of its desktop subgrid (`grid-row: span 6` in
+ *  PlanCard.astro). Neighbours sharing that row set carry `lg:row-span-6` in premium.astro. */
+export const PLAN_CARD_ROWS = 6;
+
 interface PlanBlock {
   name: string;
   audience: string;

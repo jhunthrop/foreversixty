@@ -31,7 +31,9 @@ const PREMIUM_SOURCES = Object.keys(premiumSourceCopy.premiumCard);
     try {
       const source = localStorage.getItem(key);
       if (sources.includes(source)) document.documentElement.dataset.premium = source;
-    } catch {}
+    } catch {
+      // Storage blocked: the card keeps its default state.
+    }
   </script>
   <main id="main" tabindex="-1" class="plans-page" data-testid="plans-page">
     <div class="band full-bleed">
@@ -48,7 +50,11 @@ const PREMIUM_SOURCES = Object.keys(premiumSourceCopy.premiumCard);
         </p>
         <p class="text-text hidden min-h-11 items-center gap-[6px] text-[13px] md:flex" data-band-guild-row>
           <span>{copy.band.guildLead}</span>
-          <a href="#guild-leaders" class="hover:underline" data-testid="band-guild-link">
+          <a
+            href="#guild-leaders"
+            class="inline-flex min-h-11 items-center hover:underline"
+            data-testid="band-guild-link"
+          >
             {copy.band.guildLink}
           </a>
         </p>
@@ -85,10 +91,10 @@ const PREMIUM_SOURCES = Object.keys(premiumSourceCopy.premiumCard);
           <p class="text-text mt-2 max-w-[720px] text-[14px] leading-[1.5]">{copy.guildRegion.lede}</p>
           <p class="text-muted mt-1 max-w-[720px] text-[13px] leading-[1.45]">{copy.guildRegion.members}</p>
           <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3" data-guild-row>
-            <PlanCard plan="guild" />
-            <PlanCard plan="raid_guild" />
+            <PlanCard plan="guild" headingLevel={3} />
+            <PlanCard plan="raid_guild" headingLevel={3} />
             <p
-              class="history-promise md:col-span-2 lg:col-span-1"
+              class="history-promise md:col-span-2 lg:col-span-1 lg:row-span-6"
               data-plan="history"
               data-testid="history-promise"
             >

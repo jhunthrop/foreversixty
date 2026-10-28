@@ -1,20 +1,12 @@
 // web/src/pages/_premium.test.ts
-// Container renders of the plans page (spec 2026-10-27-launch-pricing §B3). `renderPremium` is the
-// shared entry point: later lanes render the same page through it and add their own cases.
+// Container renders of the plans page (spec 2026-10-27-launch-pricing §B3), through the shared
+// `renderPremium` in test-support.
 import { readFileSync } from 'node:fs';
-import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../lib/billing/plans-page-copy';
-import { createPageContainer } from '../test-support/page-container';
+import { PLAN_CARD_ROWS } from '../components/premium/model';
+import { renderPremium } from '../test-support/render-premium';
 import { specCell, specString } from '../test-support/spec-table';
-import Premium from './premium.astro';
-
-/** Renders /premium through Base.astro and returns its parsed document. */
-export async function renderPremium(): Promise<Document> {
-  const container = await createPageContainer();
-  const html = await container.renderToString(Premium);
-  return new JSDOM(html).window.document;
-}
 
 describe('the plans page band', () => {
   it('band guild link from 768 only', async () => {
@@ -26,6 +18,17 @@ describe('the plans page band', () => {
     const classes = (row?.className ?? '').split(/\s+/);
     expect(classes).toEqual(expect.arrayContaining(['hidden', 'md:flex']));
     expect(row?.textContent).toContain(plansPageCopy.band.guildLead);
+    expect(classesOf(link)).toEqual(expect.arrayContaining(['inline-flex', 'min-h-11', 'items-center']));
+  });
+});
+
+describe('the plans page promises nothing unshipped (§B8.9, §B8.14)', () => {
+  it('renders no coach line, no chip-in and no trial email', async () => {
+    const text = (await renderPremium()).body.textContent ?? '';
+    expect(text).not.toContain(plansPageCopy.premium.featuresHeld.coach);
+    expect(text).not.toMatch(/coach/i);
+    expect(text).not.toMatch(/chip in/i);
+    expect(text).not.toMatch(/email you/i);
   });
 });
 
@@ -92,10 +95,32 @@ describe('the plans page region B', () => {
     );
   });
 
+  // Each plan card is a subgrid of PLAN_CARD_ROWS rows, so whatever shares its row set from 1024
+  // (region A's example, region B's history promise) must span the same rows, or auto-placement
+  // drops it into the card's first row and stretches the name row.
+  it("row-set neighbours span the plan cards' rows", async () => {
+    const doc = await renderPremium();
+    for (const plan of ['free', 'premium', 'guild', 'raid_guild']) {
+      expect(doc.querySelector(`article[data-plan=${plan}]`)?.children, plan).toHaveLength(PLAN_CARD_ROWS);
+    }
+    for (const cell of ['example', 'history']) {
+      expect(classesOf(doc.querySelector(`[data-plan=${cell}]`)), cell).toContain(
+        `lg:row-span-${PLAN_CARD_ROWS}`,
+      );
+    }
+  });
+
   it('holds How the guild plans work', async () => {
     const s = guildSection(await renderPremium());
-    expect(s.querySelector('h3')?.textContent?.trim()).toBe(plansPageCopy.howItWorks);
+    expect(s.querySelector('#guild-rules-heading')?.textContent?.trim()).toBe(plansPageCopy.howItWorks);
     expect(s.querySelectorAll('[data-rule-term]')).toHaveLength(plansPageCopy.rules.length);
+  });
+
+  it('names the guild cards as h3 under the section heading', async () => {
+    const s = guildSection(await renderPremium());
+    const names = [...s.querySelectorAll('[data-guild-row] h3')].map((n) => n.textContent?.trim());
+    expect(names).toEqual([plansPageCopy.guild.name, plansPageCopy.raidGuild.name]);
+    expect(s.querySelectorAll('h2')).toHaveLength(1);
   });
 
   it('no loot-council example', async () => {

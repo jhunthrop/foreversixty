@@ -1,7 +1,7 @@
 ---
 // web/src/components/premium/PlanCard.astro
 // One plan card: name, audience, price block, button, slot, features. Fixed-height
-// regions on desktop so the four prices and buttons sit on one line each. `plan="free"`
+// regions on desktop so the prices and buttons in a row sit on one line each. `plan="free"`
 // renders the Free card (no button; its slot holds the sign-in line).
 import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
@@ -12,8 +12,11 @@ import { FOUNDER_STATES, buttonLabel, checkoutHref, founderKey, planBlock, trial
 
 interface Props {
   plan: PlanKey | 'free';
+  /** The name's heading level: 2 in region A, 3 under region B's `For guild leaders` h2. */
+  headingLevel?: 2 | 3;
 }
-const { plan } = Astro.props;
+const { plan, headingLevel = 2 } = Astro.props;
+const Name = headingLevel === 3 ? 'h3' : 'h2';
 const { free } = plansPageCopy;
 const block = plan === 'free' ? free : planBlock(plan);
 const priced = plan === 'free' ? null : plan;
@@ -37,7 +40,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
   data-plan={plan}
   data-highlight={guild ? undefined : ''}
 >
-  <h2 class="plan-name">{block.name}</h2>
+  <Name class="plan-name">{block.name}</Name>
   {plan === 'premium' ? (
     <div class="audience-cell min-h-[18px]" data-part="audience">
       <p class="audience" data-default>
@@ -287,7 +290,8 @@ const cardId = plan === 'free' ? 'free' : undefined;
       font-size: 11px;
       letter-spacing: 0.03em;
     }
-    /* Each card is a six-row subgrid of the cards grid (premium.astro), so the slot is as
+    /* Each card is a six-row subgrid (PLAN_CARD_ROWS in model.ts) of its region's grid in
+       premium.astro, so the slot is as
        tall as the tallest slot line in its row: at 1024 the guild line wraps to three lines and
        the features still start on one line (UX 1). */
     .plan-card {
@@ -307,8 +311,9 @@ const cardId = plan === 'free' ? 'free' : undefined;
       line-height: 34px;
     }
   }
-  /* Four columns at 1024-1279 leave a guild label about 170 px: 16 px card padding, no extra
-     tracking and a 6 px inset keep `Subscribe a guild · $200 a year` on one line (UX N5). */
+  /* Written for the old four-column row (about 170 px per guild label at 1024); the rows are now
+     three columns, about 299 px each at 1024. Kept until capture rows 15 and 17 confirm the 20 px
+     padding fits: 16 px card padding, no extra tracking and a 6 px inset (UX N5). */
   @media (min-width: 1024px) and (max-width: 1279px) {
     .plan-card {
       padding: 16px;
