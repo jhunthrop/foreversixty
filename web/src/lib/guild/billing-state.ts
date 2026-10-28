@@ -2,6 +2,7 @@
 // What the guild settings #billing section shows, from the guild billing read: which plan line,
 // which line 2, whether the chooser, the size line and the payer buttons draw. Pure, so every
 // state is pinned without a page.
+import { guildFitsRaidTier } from '../billing/checkout-params';
 import { GUILD_TIER_MEMBER_LIMIT, PLANS, type Interval } from '../billing/plans';
 import type { GuildBillingSettings, GuildPlanView, GuildTier } from '../billing/contract';
 import type { GuildPlanLineState, Line2State } from '../billing/guild-billing-copy';
@@ -19,7 +20,7 @@ const ENDED_STATUSES: readonly string[] = ['canceled', 'incomplete_expired'];
 
 /** The tier that fits a verified count: Guild up to the limit, Raid guild above it. */
 export function fitsTier(count: number): GuildTier {
-  return count > GUILD_TIER_MEMBER_LIMIT ? 'raid_guild' : 'guild';
+  return guildFitsRaidTier(count) ? 'raid_guild' : 'guild';
 }
 
 function hasEnded(plan: GuildPlanView, now: Date): boolean {

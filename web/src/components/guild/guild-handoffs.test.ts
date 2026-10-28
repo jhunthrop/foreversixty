@@ -7,6 +7,7 @@ import type { GuildBillingSettings, GuildCoveredView } from '../../lib/billing/c
 import { billingState } from '../../lib/guild/billing-state';
 import {
   billingHandoffUrl,
+  chooserPreselect,
   parseBillingPreselect,
   shouldOpenUpgrade,
   showsBillingHandoff,
@@ -14,6 +15,7 @@ import {
 import { guildHomeCopy, guildJoinCopy, guildSettingsCopy } from '../../lib/guild/copy';
 import { joinedPlanLine } from '../../lib/guild/join-plan';
 import { claimEntryFor, claimEntryNotes } from '../../lib/guild/roster-gate';
+import GuildJoinedBlock from './GuildJoinedBlock.svelte';
 import BillingHandoff from './BillingHandoff.svelte';
 import GuildUnverifiedNote from './GuildUnverifiedNote.svelte';
 
@@ -162,5 +164,40 @@ describe('settings preselect', () => {
     expect(shouldOpenUpgrade(true, payer, state, true)).toBe(false);
     expect(shouldOpenUpgrade(false, payer, state, false)).toBe(false);
     expect(shouldOpenUpgrade(true, view(), billingState(view(), NOW), false)).toBe(false);
+  });
+});
+
+describe('chooser preselect', () => {
+  // The section's effects do not run under svelte/server, so the props it hands the chooser are
+  // pinned through this pure helper.
+  it('turns ?plan=raid_guild&interval=monthly into the chooser start state', () => {
+    expect(chooserPreselect(parseBillingPreselect('?plan=raid_guild&interval=monthly'))).toEqual({
+      initialTier: 'raid_guild',
+      initialInterval: 'monthly',
+    });
+    expect(chooserPreselect(parseBillingPreselect(''))).toEqual({
+      initialTier: null,
+      initialInterval: 'yearly',
+    });
+  });
+});
+
+describe('GuildJoinedBlock', () => {
+  it('shows the joined sentence, the plan line and Open the guild, with no join button', () => {
+    const body = render(GuildJoinedBlock, {
+      props: { planLine: `${G} has no plan yet.`, openHref: '/guild/us/pvp/olympus-xxvii' },
+    }).body;
+    expect(body).toContain('role="status"');
+    expect(body).toContain(guildJoinCopy.joined);
+    expect(body).toContain(`${G} has no plan yet.`);
+    expect(body).toContain('href="/guild/us/pvp/olympus-xxvii"');
+    expect(body).toContain(guildJoinCopy.openGuild);
+    expect(body).not.toContain('guild-join-button');
+  });
+
+  it('reserves the plan line while the re-read is in flight', () => {
+    const body = render(GuildJoinedBlock, { props: { planLine: null, openHref: '/g' } }).body;
+    expect(body).toContain('min-h-[21px]');
+    expect(body).toContain('data-testid="guild-join-plan"');
   });
 });

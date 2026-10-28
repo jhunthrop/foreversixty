@@ -15,7 +15,7 @@
   const tier = $derived(fitsTier(verifiedCount));
 </script>
 
-<div class="flex max-w-[720px] flex-col gap-2" data-testid="guild-billing-handoff">
+<div class="flex max-w-[720px] flex-col gap-2" data-testid="guild-billing-handoff-block">
   <p class="text-muted text-[13px]">{guildSettingsCopy.sendThemThisLink}</p>
   <CopyLinkField
     url={billingHandoffUrl(path, verifiedCount)}

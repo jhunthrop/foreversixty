@@ -31,6 +31,7 @@
   } from '../../lib/guild/layout';
   import type { CharacterPath } from '../../lib/characters';
   import {
+    chooserPreselect,
     parseBillingPreselect,
     shouldOpenUpgrade,
     showsBillingHandoff,
@@ -55,7 +56,7 @@
     path,
     guildName,
     now: fixedNow,
-  }: { guildId: number; path?: CharacterPath; guildName?: string; now?: Date } = $props();
+  }: { guildId: number; path: CharacterPath; guildName: string; now?: Date } = $props();
 
   /** `?plan&interval&upgrade` off the settings link; read once, on the client. */
   const preselect: BillingPreselect =
@@ -221,8 +222,7 @@
           trialUsed={view.trial_used}
           lapsed={viewState.kind === 'lapsed'}
           {now}
-          initialTier={preselect.tier}
-          initialInterval={preselect.interval ?? 'yearly'}
+          {...chooserPreselect(preselect)}
         />
       {/if}
       <div data-testid="guild-billing-seats-slot">
@@ -251,7 +251,7 @@
         <p class="text-muted text-[13px]" data-testid="guild-settings-master-only">
           {copy.readOnly}
         </p>
-        {#if path !== undefined && guildName !== undefined && showsBillingHandoff(view, viewState)}
+        {#if showsBillingHandoff(view, viewState)}
           <BillingHandoff {path} {guildName} verifiedCount={view.verified_count} />
         {/if}
       {/if}

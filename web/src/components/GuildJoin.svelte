@@ -4,7 +4,8 @@
      can say which guild invited the visitor and what joining does before the button. Signed
      out, the same card carries "Sign in with Battle.net to join"; an unknown or rotated token
      says so plainly with no button; a member of the guild already is told so. Joining calls
-     POST /v1/guilds/invite/{token}/accept and goes to the guild's own page. -->
+     POST /v1/guilds/invite/{token}/accept and shows the joined state: the guild's plan line, then
+     `Open the guild`. -->
 <script lang="ts">
   import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { battlenetStartUrl, fetchMeOnce, forgetSession, type Me } from '../lib/account/api';
@@ -22,6 +23,7 @@
   import { guildMarkSrc } from '../lib/guild/mark';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import FactionCrest from './character/FactionCrest.svelte';
+  import GuildJoinedBlock from './guild/GuildJoinedBlock.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
@@ -81,6 +83,7 @@
     error = '';
     try {
       joined = await acceptInvite(token);
+      busy = false;
       planLine = await readPlanLine(joined.guild.id, joined.guild.name);
     } catch (thrown) {
       error = thrown instanceof GuildApiError ? thrown.message : guildJoinCopy.failed;
@@ -115,17 +118,10 @@
       </p>
       <p class="text-muted text-[13px]" data-testid="guild-join-consequence">{guildJoinCopy.consequence}</p>
       {#if joined !== null}
-        <p class="text-[14px]" role="status" data-testid="guild-join-joined">{guildJoinCopy.joined}</p>
-        {#if planLine !== null}
-          <p class="text-muted text-[13px]" data-testid="guild-join-plan">{planLine}</p>
-        {/if}
-        <a
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
-          href={guildHref(joined.guild.region, joined.guild.ruleset, joined.guild.name)}
-          data-testid="guild-join-open"
-        >
-          {guildJoinCopy.openGuild}
-        </a>
+        <GuildJoinedBlock
+          {planLine}
+          openHref={guildHref(joined.guild.region, joined.guild.ruleset, joined.guild.name)}
+        />
       {:else if !signedIn}
         <a
           class="{PRIMARY_BUTTON_FIXED} w-fit px-4"

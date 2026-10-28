@@ -57,3 +57,11 @@ export function shouldOpenUpgrade(
   const moveDrawn = movesFromPlanLine(view, state) || (canBill(view) && showSizeLine(view));
   return wanted && !alreadyOpened && moveDrawn;
 }
+
+/** The chooser's starting props off the settings link: `?plan` picks the card, `?interval` the toggle. */
+export function chooserPreselect(preselect: BillingPreselect): {
+  initialTier: GuildTier | null;
+  initialInterval: Interval;
+} {
+  return { initialTier: preselect.tier, initialInterval: preselect.interval ?? HANDOFF_INTERVAL };
+}

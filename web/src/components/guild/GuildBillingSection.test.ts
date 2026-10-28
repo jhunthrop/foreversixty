@@ -8,7 +8,13 @@ import GuildBillingSection from './GuildBillingSection.svelte';
 
 describe('GuildBillingSection', () => {
   it('reserves its height with Skeleton lines until the billing read answers', () => {
-    const body = render(GuildBillingSection, { props: { guildId: 7 } }).body;
+    const body = render(GuildBillingSection, {
+      props: {
+        guildId: 7,
+        path: { region: 'us', ruleset: 'pvp', slug: 'olympus-xxvii' },
+        guildName: 'OLYMPUS XXVII',
+      },
+    }).body;
     expect(body).toContain('id="billing"');
     expect(body).toContain('guild-billing-skeleton');
     expect(body).toContain(GUILD_BILLING_LOADING.minHeight);

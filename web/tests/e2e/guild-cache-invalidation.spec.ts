@@ -98,7 +98,7 @@ test('joining by invite lands on the member view, not the cached stranger view',
     await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('fs.q.')).length),
   ).toBeGreaterThan(0);
 
-  // 2. Join through the invite; the redirect lands on the guild page.
+  // 2. Join through the invite, then open the guild from the joined state.
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await page.getByTestId('guild-join-button').click();
   await page.getByTestId('guild-join-open').click();
