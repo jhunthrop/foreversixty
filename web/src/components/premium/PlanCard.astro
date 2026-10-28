@@ -1,6 +1,6 @@
 ---
 // web/src/components/premium/PlanCard.astro
-// One plan card: name, audience, price block, button, trial slot, features. Fixed-height
+// One plan card: name, audience, price block, button, slot, features. Fixed-height
 // regions on desktop so the four prices and buttons sit on one line each. `plan="free"`
 // renders the Free card (no button; its slot holds the sign-in line).
 import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
@@ -16,12 +16,23 @@ const { plan } = Astro.props;
 const { free } = plansPageCopy;
 const block = plan === 'free' ? free : planBlock(plan);
 const priced = plan === 'free' ? null : plan;
-const buttonClass = `${SECONDARY_BUTTON_FIXED} plan-button border-gold text-gold w-full justify-center text-center`;
+const guild = priced !== null && PLANS[priced].guild;
+// Gold on this page belongs to Premium's button; the guild buttons are plain (spec §B3.3, §B6).
+const buttonTone = guild
+  ? 'border-line-warm-strong text-text active:bg-card-top'
+  : 'plan-button-gold border-gold text-gold';
+const buttonClass = `${SECONDARY_BUTTON_FIXED} plan-button ${buttonTone} w-full justify-center text-center`;
 const trial = trialParts();
 const cardId = plan === 'free' ? 'free' : undefined;
 ---
 
-<article class="plan-card" id={cardId} data-testid={`plan-${plan}`} data-plan={plan} data-highlight>
+<article
+  class="plan-card"
+  id={cardId}
+  data-testid={`plan-${plan}`}
+  data-plan={plan}
+  data-highlight={guild ? undefined : ''}
+>
   <h2 class="plan-name">{block.name}</h2>
   <p class="audience">{block.audience}</p>
 
@@ -53,13 +64,13 @@ const cardId = plan === 'free' ? 'free' : undefined;
     )}
   </div>
 
-  <div class="slot" data-part="slot">
+  <div class="slot min-h-10" data-part="slot">
     {plan === 'premium' && (
       <p class="slot-line" data-testid="premium-support">
         {plansPageCopy.premium.support}
       </p>
     )}
-    {priced && PLANS[priced].guild && (
+    {guild && (
       <p class="slot-line">
         <strong>{trial.lead}</strong>
         {trial.rest}
@@ -69,8 +80,8 @@ const cardId = plan === 'free' ? 'free' : undefined;
 
   <div class="feature-block">
     <ul class="features">
-      {block.features.map((line, index) => (
-        <li class:list={['feature', { lead: priced === 'raid_guild' && index === 0 }]}>
+      {block.features.map((line) => (
+        <li class="feature">
           <svg class="tick" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
             <path
               d="M2.5 7.5l3 3 6-7"
@@ -150,13 +161,12 @@ const cardId = plan === 'free' ? 'free' : undefined;
     line-height: 1.25;
   }
   /* Spec 4: the card button's hover ground. */
-  .plan-button:hover {
+  .plan-button-gold:hover {
     background: rgba(229, 185, 85, 0.08);
   }
   /* One subgrid cell: the guild cards' trial line, Premium's support line, blank on Free. */
   .slot {
     margin: 8px 0 0;
-    min-height: 40px;
     font-size: 13px;
     font-weight: 400;
     line-height: 18px;
@@ -187,9 +197,6 @@ const cardId = plan === 'free' ? 'free' : undefined;
     padding-block: 6px;
     border-top: 1px solid var(--color-line-soft);
     line-height: 20px;
-  }
-  .feature.lead {
-    color: var(--color-strong);
   }
   .tick {
     flex: none;

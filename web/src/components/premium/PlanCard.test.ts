@@ -3,8 +3,10 @@
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 import { createPageContainer } from '../../test-support/page-container';
 import PlanCard from './PlanCard.astro';
+import { trialParts } from './model';
 
 type CardPlan = 'free' | 'premium' | 'guild' | 'raid_guild';
 
@@ -53,5 +55,41 @@ describe('PlanCard, Free', () => {
     expect(slotOf(doc).textContent?.trim()).toBe('');
     expect(slotOf(doc).children).toHaveLength(0);
     expect(doc.querySelector('[data-testid=premium-scope]')).toBeNull();
+  });
+});
+
+describe.each(['guild', 'raid_guild'] as const)('PlanCard, %s', (plan) => {
+  it('guild button is neutral', async () => {
+    const buttons = [...(await renderCard(plan)).querySelectorAll('a')];
+    expect(buttons.length).toBeGreaterThan(0);
+    for (const button of buttons) {
+      const classes = button.className.split(/\s+/);
+      expect(classes).toEqual(expect.arrayContaining(SECONDARY_BUTTON_FIXED.split(/\s+/)));
+      expect(classes).toEqual(
+        expect.arrayContaining(['border-line-warm-strong', 'text-text', 'w-full', 'justify-center']),
+      );
+      expect(classes).not.toContain('border-gold');
+      expect(classes).not.toContain('text-gold');
+    }
+  });
+
+  it('guild cards have no gold top highlight', async () => {
+    const card = (await renderCard(plan)).querySelector(`[data-plan=${plan}]`);
+    expect(card?.hasAttribute('data-highlight')).toBe(false);
+  });
+
+  it('trial slot min 40 px with the strong lead', async () => {
+    const slot = slotOf(await renderCard(plan));
+    expect(slot.className.split(/\s+/)).toContain('min-h-10');
+    expect(slot.querySelector('strong')?.textContent?.trim()).toBe(trialParts().lead);
+    expect(slot.textContent?.replace(/\s+/g, ' ').trim()).toBe(plansPageCopy.trial);
+  });
+
+  it('five feature lines with no strong lead row', async () => {
+    const doc = await renderCard(plan);
+    const copy = plan === 'guild' ? plansPageCopy.guild : plansPageCopy.raidGuild;
+    const items = [...doc.querySelectorAll('ul li')].map((li) => li.textContent?.trim());
+    expect(items).toEqual([...copy.features]);
+    expect(doc.querySelector('li.lead')).toBeNull();
   });
 });

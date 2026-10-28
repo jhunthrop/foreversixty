@@ -1,30 +1,43 @@
 ---
 // web/src/components/premium/PriceBlock.astro
 // One fixed-height cell holding every price state (interval x founder). The page's CSS shows
-// exactly one; the others stay in the DOM, so no state changes the card's height.
-import type { PlanKey } from '../../lib/billing/plans';
-import { FOUNDER_STATES, founderKey, priceCell } from './model';
-import { INTERVALS } from '../../lib/billing/plans';
+// exactly one; the others stay in the DOM, so no state changes the card's height. The guild
+// plans are secondary (spec 2026-10-27-launch-pricing §B3.3): a smaller figure, and a cost line in
+// a box reserved for three lines, so the block is a fixed 144 px on phone and 152 px from 768.
+import { INTERVALS, PLANS, type PlanKey } from '../../lib/billing/plans';
+import { FOUNDER_STATES, costLine, founderKey, priceCell } from './model';
 
 interface Props {
   plan: PlanKey;
 }
 const { plan } = Astro.props;
+const guild = PLANS[plan].guild;
+const blockClass = guild ? 'h-[144px] md:h-[152px]' : 'h-[86px] md:h-[112px]';
+const amountClass = guild ? 'text-[22px] md:text-[24px]' : 'text-[28px] md:text-[32px]';
 ---
 
-<div class="price-block" data-testid={`price-${plan}`}>
+<div class:list={['price-block', blockClass]} data-testid={`price-${plan}`}>
   {INTERVALS.flatMap((interval) =>
     FOUNDER_STATES.map((founder) => {
       const cell = priceCell(plan, interval, founder);
+      const cost = costLine(plan, interval, founder);
       return (
         <div class="price-state" data-iv={interval} data-fd={founderKey(founder)}>
           <p class="price-line">
-            <span class="amount tabular">{cell.amount}</span>
+            <span class:list={['amount tabular', amountClass]}>{cell.amount}</span>
             <span class="suffix">{cell.suffix}</span>
           </p>
           <p class="list-line">{cell.listLine}</p>
           <p class="second-line">{cell.secondLine}</p>
           {cell.founderLine && <p class="founder-line">{cell.founderLine}</p>}
+          {cost && (
+            <p
+              class="cost-line text-text mt-[6px] h-[54px] text-[13px] leading-[18px]"
+              data-testid="cost-line"
+            >
+              {cost}
+            </p>
+          )}
         </div>
       );
     }),
@@ -32,9 +45,6 @@ const { plan } = Astro.props;
 </div>
 
 <style>
-  .price-block {
-    height: 86px;
-  }
   .price-line {
     display: flex;
     align-items: baseline;
@@ -46,7 +56,6 @@ const { plan } = Astro.props;
   .amount {
     font-family: var(--font-mono);
     font-weight: 500;
-    font-size: 28px;
     color: var(--color-strong);
   }
   .suffix {
@@ -73,9 +82,6 @@ const { plan } = Astro.props;
     color: var(--color-gold);
   }
   @media (min-width: 768px) {
-    .price-block {
-      height: 112px;
-    }
     .price-line {
       height: 34px;
       line-height: 34px;
@@ -83,9 +89,6 @@ const { plan } = Astro.props;
     .founder-line {
       margin-top: 2px;
       line-height: 14px;
-    }
-    .amount {
-      font-size: 32px;
     }
   }
 </style>
