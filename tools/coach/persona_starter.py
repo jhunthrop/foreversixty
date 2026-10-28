@@ -15,119 +15,48 @@ import re
 from pathlib import Path
 from typing import Any
 
+from starter_kit import ALL_CODES, ROLE_CODES, consumable_paragraph, drills, mistakes
+from starter_text import (
+    DIGIT,
+    digit_tokens,
+    number_words,
+    plain_sentence,
+    sentences,
+    spell_out_numbers,
+    usable_sentence,
+)
+
+__all__ = ["ALL_CODES", "ROLE_CODES", "number_words", "usable_sentence"]
+
 TOOLS_DIR = Path(__file__).resolve().parent
 REPO = TOOLS_DIR.parent.parent
 COACH_DIR = REPO / "data" / "curated" / "coach"
 SPECS_PATH = "data/curated/specs.json"
 CATALOGUE_PATH = "logs/engine/mechanics/consumables/catalogue.json"
+ACTIVE_BUILD_PATH = "web/src/data/active-build.json"
 FULL_SPECS = frozenset({"warrior-fury", "priest-holy", "warrior-protection"})
 STARTER_VERSION = "starter edition"
-MIN_SENTENCE_CHARS = 20
 
-ROLE_LABEL = {"dps": "damage dealer", "healer": "healer", "tank": "tank"}
-HEALER_CODES = ("core_casts", "uptime", "resource", "ranks", "preparation", "death")
-ALL_CODES = ("core_casts", "uptime", "idle", "resource", "ranks", "preparation", "death", "adherence")
-ROLE_CODES = {"dps": ALL_CODES, "tank": ALL_CODES, "healer": HEALER_CODES}
-
-# What each finding code means, in the words of the rule.
-MISTAKES = {
-    "core_casts": "a button the priority list wants sitting ready while something lower went first.",
-    "uptime": "a buff, debuff or damage over time left to fall off the target.",
-    "idle": "time with no button pressed while the boss was alive and in reach.",
-    "resource": "the main resource bar left to cap or to run dry.",
-    "ranks": "a spell left at an old rank because the trainer visit was skipped.",
-    "preparation": "a missing flask, food, weapon enchant or combat potion.",
-    "death": "dying, which ends your contribution for the rest of the pull.",
-    "adherence": "buttons outside the priority list taking globals the list would have used.",
-}
-HEALER_MISTAKES = {
-    "core_casts": "a mana or efficiency cooldown sitting ready for most of the fight.",
-    "resource": "the mana bar empty well before the end of the fight.",
-    "ranks": "a big rank landing mostly as overheal when a lower rank of the same heal would have covered the hole.",
-    "death": "dying, because a dead healer heals nothing for the rest of the pull.",
-}
-
-# The default drill per code, worded by role. Healer drills never say "heal more".
-DRILLS = {
-    "dps": {
-        "core_casts": "On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.",
-        "uptime": "Put the timers of your buffs and debuffs where you can see them. Recast each with 3 seconds left, and again the moment you are back up after a death or a phase change.",
-        "idle": "On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.",
-        "resource": "Watch the main resource bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.",
-        "ranks": "Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.",
-        "preparation": "Before every boss, check flask, food buff, weapon enchant and a combat potion on your bars. Do it on the walk to the pull, not after it.",
-        "death": "Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.",
-        "adherence": "On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.",
-    },
-    "tank": {
-        "core_casts": "On a dummy with a friend hitting you, press the first button of the priority list the moment it is ready. Fillers wait their turn.",
-        "uptime": "Watch the buff on you and the debuffs on the boss, not the cooldowns. The moment one drops, press it again.",
-        "idle": "When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.",
-        "resource": "Watch the main resource bar. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.",
-        "ranks": "Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.",
-        "preparation": "Before every boss, check flask, food buff, weapon enchant, a combat potion and a healing potion on your bars. Do it on the walk to the pull, not after it.",
-        "death": "Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.",
-        "adherence": "On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.",
-    },
-    "healer": {
-        "core_casts": "Put your efficiency cooldown next to your most expensive heal and press them as a pair. When the mana bar drops below half, check your mana cooldowns before the next cast.",
-        "uptime": "Recast your self buff as part of the ready check, and again the moment you are back up after a death.",
-        "resource": "Before the pull, note the mana you should have at the halfway mark. If you are behind it, let the cheap heals over time carry the tank and save the fast, dear heal for the real emergency.",
-        "ranks": "Bind a mid rank of your filler heal and use it for every small hole on the tank. Save the top rank for a hole as deep as it heals.",
-        "preparation": "Before every boss, check flask, mana food and a mana potion on your bars. Do it on the walk to the pull, not after it.",
-        "death": "Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.",
-    },
-}
-
-SMALL = (
-    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
-    "fifteen sixteen seventeen eighteen nineteen"
-).split()
-TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
-# Words that mark a sentence as about the simulator rather than about playing the spec.
-SIMULATOR_JARGON = re.compile(
-    r"\b(engine|ladder|rung|golden|harness|inert|unresolved|gated|sim|simulator|simulated|"
-    r"simulation|the search|conditions?)\b",
+# Claims the rotation data makes that the guides do not, so a starter does not repeat them.
+CLAIMS_THE_GUIDE_DOES_NOT_MAKE = re.compile(
+    r"most healing per mana|lifts Rupture damage|more damage from your Rupture|\bMaul\b.*\brage\b",
     re.IGNORECASE,
 )
-# References to other lines of the rotation data, which a lone sentence cannot carry.
-DANGLING_REFERENCE = re.compile(r"\b(above|below it|same pace|paced like|the pass)\b", re.IGNORECASE)
-PARENTHETICAL = re.compile(r"\s*\([^)]*\)")
-NUMBER = re.compile(r"(?<![\w.])(\d{1,3})(%?)(?![\w.]|\d)")
-PERCENT_WORD = " percent"
-DIGIT = re.compile(r"\d")
-
-
-def number_words(n: int) -> str:
-    if n < 20:
-        return SMALL[n]
-    if n < 100:
-        return TENS[n // 10] + (f"-{SMALL[n % 10]}" if n % 10 else "")
-    rest = f" {number_words(n % 100)}" if n % 100 else ""
-    return f"{SMALL[n // 100]} hundred{rest}"
-
-
-def spell_out_numbers(text: str) -> str:
-    """Replace whole integers up to 999 (and a trailing percent sign) with words."""
-    return NUMBER.sub(lambda m: number_words(int(m[1])) + (PERCENT_WORD if m[2] else ""), text)
-
-
-def usable_sentence(note: str) -> str | None:
-    """A note's first sentence in words, or None. Later sentences depend on it, so are never used."""
-    lead = re.split(r"(?<=[.!?])\s+", note.strip())[0]
-    words = spell_out_numbers(PARENTHETICAL.sub("", lead).replace("!", "."))
-    if DIGIT.search(words) or SIMULATOR_JARGON.search(words) or DANGLING_REFERENCE.search(words):
-        return None
-    if len(words) < MIN_SENTENCE_CHARS:
-        return None
-    return words if words.endswith((".", ":")) else words + "."
+ROTATION_HEADING = "## Rotation and priority"
+NAME_NEAR_FRONT_CHARS = 40
+# Spells the class spellconst files do not carry.
+EXTRA_SPELL_NAMES = {5019: "Shoot"}
 
 
 def load_json(relative: str) -> Any:
     return json.loads((REPO / relative).read_text(encoding="utf-8"))
 
 
-def spec_row(slug: str) -> dict:
+def read_text(relative: str) -> str:
+    return (REPO / relative).read_text(encoding="utf-8")
+
+
+def spec_row(slug: str) -> dict[str, Any]:
     for row in load_json(SPECS_PATH):
         if row["spec"] == slug:
             return row
@@ -138,7 +67,7 @@ def spec_slugs() -> list[str]:
     return [row["spec"] for row in load_json(SPECS_PATH)]
 
 
-def guide_path(row: dict) -> str:
+def guide_path(row: dict[str, Any]) -> str:
     return f"web/src/content/guides/{row['class_slug']}/{row['spec_slug']}.md"
 
 
@@ -146,9 +75,20 @@ def apl_path(slug: str) -> str:
     return f"data/curated/apl/{slug}.json"
 
 
-def overview(row: dict) -> str:
-    text = (REPO / guide_path(row)).read_text(encoding="utf-8")
-    match = re.search(r"^## Overview\n\n(.+?)\n\n", text, re.MULTILINE | re.DOTALL)
+def spellconst_path(row: dict[str, Any]) -> str:
+    build = load_json(ACTIVE_BUILD_PATH)["build"]
+    return f"data/builds/{build}/spellconst/{row['class_slug']}.json"
+
+
+def section_after(text: str, heading: str) -> str:
+    start = text.index(heading) + len(heading)
+    rest = text[start:]
+    following = re.search(r"^## ", rest, re.MULTILINE)
+    return rest[: following.start()] if following else rest
+
+
+def overview(row: dict[str, Any]) -> str:
+    match = re.search(r"^## Overview\n\n(.+?)\n\n", read_text(guide_path(row)), re.MULTILINE | re.DOTALL)
     if not match:
         raise SystemExit(f"{guide_path(row)}: no Overview paragraph")
     paragraph = spell_out_numbers(" ".join(match[1].split()))
@@ -157,43 +97,64 @@ def overview(row: dict) -> str:
     return paragraph
 
 
-def priority_lines(slug: str) -> tuple[int, list[str]]:
-    """The count of lines in the rotation data and the reasons that read on their own, in order."""
-    items = load_json(apl_path(slug))["rotation"]["priorityList"]
-    lines = (usable_sentence(item.get("notes", "")) for item in items)
-    return len(items), [line for line in lines if line]
+def spell_names(row: dict[str, Any]) -> dict[int, str]:
+    spells = load_json(spellconst_path(row))["spells"]
+    return {**{int(spell_id): spell["name"] for spell_id, spell in spells.items()}, **EXTRA_SPELL_NAMES}
 
 
-def join_names(names: list[str]) -> str:
-    if len(names) <= 1:
-        return "".join(names)
-    return ", ".join(names[:-1]) + " or " + names[-1]
+def guide_rotation_sentences(row: dict[str, Any]) -> list[str]:
+    prose = section_after(read_text(guide_path(row)), ROTATION_HEADING)
+    return [s for s in (plain_sentence(raw) for raw in sentences(prose)) if s]
 
 
-def names_of(entries: list[dict]) -> list[str]:
-    return [entry["name"] for entry in entries]
+def leads_with(name: str, sentence: str) -> bool:
+    """The sentence is about the ability: it starts as a sentence and names it near the front."""
+    return sentence[:1].isupper() and 0 <= sentence.lower().find(name.lower()) <= NAME_NEAR_FRONT_CHARS
 
 
-def consumable_paragraph(role: str) -> str:
-    entry = load_json(CATALOGUE_PATH)["roles"][role]
-    wanted = [f"a flask ({join_names(names_of(entry['flask']))})", f"food ({join_names(names_of(entry['food']))})"]
-    if entry["weapon_enchant"]:
-        wanted.append(f"a weapon enchant ({join_names(names_of(entry['weapon_enchant']))})")
-    potion = join_names(names_of(entry["combat_potion"]["entries"]))
-    wanted.append(f"a combat potion ({potion}), up to its use limit in a fight")
-    return (
-        f"For a {ROLE_LABEL[role]} the catalogue looks for {'; '.join(wanted)}. "
-        f"The world buffs it lists are {join_names(names_of(entry['world_buffs']))}. "
-        "They are listed as facts, never held against anyone."
-    )
+def sentence_naming(name: str, candidates: list[str]) -> str | None:
+    return next((s for s in candidates if leads_with(name, s)), None)
 
 
-def mistakes(role: str) -> list[str]:
-    table = {**MISTAKES, **(HEALER_MISTAKES if role == "healer" else {})}
-    return [f"- {code}: {table[code]}" for code in ROLE_CODES[role]]
+def corroborated_note(note: str, guide_digits: set[str]) -> str | None:
+    """The note's lead sentence in words, if it reads alone and the guide backs every number and claim."""
+    lead = sentences(note)[0] if note.strip() else ""
+    if not lead or CLAIMS_THE_GUIDE_DOES_NOT_MAKE.search(lead) or not digit_tokens(lead) <= guide_digits:
+        return None
+    return usable_sentence(note)
 
 
-def who_section(row: dict) -> str:
+def cast_spell_id(item: dict[str, Any]) -> int | None:
+    cast = item["action"].get("castSpell")
+    return cast.get("spellId", {}).get("spellId") if cast else None
+
+
+def priority_line(item: dict[str, Any], names: dict[int, str], guide: list[str], guide_digits: set[str]) -> tuple[str, str] | None:
+    """(ability name, line): the note's sentence if it names the ability, else the guide's, else the name alone."""
+    sentence = corroborated_note(item.get("notes", ""), guide_digits)
+    spell_id = cast_spell_id(item)
+    name = names.get(spell_id) if spell_id is not None else None
+    if name is None:
+        return (sentence, sentence) if sentence else None
+    if sentence and leads_with(name, sentence):
+        return name, sentence
+    return name, sentence_naming(name, guide) or f"{name}."
+
+
+def priority_lines(row: dict[str, Any]) -> list[str]:
+    names, guide = spell_names(row), guide_rotation_sentences(row)
+    guide_digits = digit_tokens(read_text(guide_path(row)))
+    seen: set[str] = set()
+    lines: list[str] = []
+    for item in load_json(apl_path(row["spec"]))["rotation"]["priorityList"]:
+        built = priority_line(item, names, guide, guide_digits)
+        if built and built[0].lower() not in seen and built[1] not in lines:
+            seen.add(built[0].lower())
+            lines.append(built[1])
+    return lines
+
+
+def who_section(row: dict[str, Any]) -> str:
     return (
         f"This is the {row['name']} {row['class_slug'].capitalize()} as the site's guide describes it. "
         f"{overview(row)} "
@@ -202,25 +163,24 @@ def who_section(row: dict) -> str:
     )
 
 
-def know_section(row: dict) -> str:
-    total, lines = priority_lines(row["spec"])
-    priority = "\n".join(f"- {line}" for line in lines)
+def know_section(row: dict[str, Any], catalogue: dict[str, Any]) -> str:
+    slug, role = row["spec"], row["role"]
+    priority = "\n".join(f"- {line}" for line in priority_lines(row))
     return "\n\n".join([
-        f"**The priority, in words.** The site's rotation data for this spec holds {number_words(total)} lines. "
-        "These are the reasons written on them that read on their own, in the order the lines run. "
-        "The guide and the rotation data hold the rest.",
+        "**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, "
+        "from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.",
         priority,
-        "**The mistakes the coach looks for, by finding.**\n" + "\n".join(mistakes(row["role"])),
-        "**Consumables and world buffs.** " + consumable_paragraph(row["role"]),
+        "**The mistakes the coach looks for, by finding.**\n" + "\n".join(mistakes(slug, role, catalogue)),
+        "**Consumables and world buffs.** " + consumable_paragraph(slug, role, catalogue),
     ])
 
 
-def drills_section(role: str) -> str:
-    return "\n".join(f"- drill.{code}: {DRILLS[role][code]}" for code in ROLE_CODES[role])
+def drills_section(row: dict[str, Any], catalogue: dict[str, Any]) -> str:
+    return "\n".join(f"- drill.{code}: {text}" for code, text in drills(row["spec"], row["role"], catalogue))
 
 
-def front_matter(row: dict) -> str:
-    sources = [guide_path(row), apl_path(row["spec"]), CATALOGUE_PATH, SPECS_PATH]
+def front_matter(row: dict[str, Any]) -> str:
+    sources = [guide_path(row), apl_path(row["spec"]), spellconst_path(row), CATALOGUE_PATH, SPECS_PATH]
     listed = "\n".join(f"  - {s}" for s in sources)
     return (
         f"---\nspec: {row['spec']}\nrole: {row['role']}\nstatus: starter\n"
@@ -230,11 +190,12 @@ def front_matter(row: dict) -> str:
 
 def render(slug: str) -> str:
     row = spec_row(slug)
+    catalogue = load_json(CATALOGUE_PATH)
     voice = (TOOLS_DIR / "voice.md").read_text(encoding="utf-8").strip()
     return (
         f"{front_matter(row)}\n## Who they are\n\n{who_section(row)}\n\n"
-        f"## What they know\n\n{know_section(row)}\n\n"
-        f"## Drills\n\n{drills_section(row['role'])}\n\n"
+        f"## What they know\n\n{know_section(row, catalogue)}\n\n"
+        f"## Drills\n\n{drills_section(row, catalogue)}\n\n"
         f"## Voice\n\n{voice}\n"
     )
 

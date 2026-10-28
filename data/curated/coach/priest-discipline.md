@@ -6,6 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/discipline.md
   - data/curated/apl/priest-discipline.json
+  - data/builds/1.60.1.70630/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: pending
@@ -17,33 +18,33 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec holds twenty-five lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
+**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Shadowfiend returns a share of the whole mana bar over its fifteen seconds, so it waits until the bar has room for all of it, and its long cooldown makes it a once-a-fight cast.
+- Shadowfiend.
 - Dark Sacrifice trades the healer's own health for mana over fifteen seconds and adds the caster's Spirit to the mana.
 - Penance on its twelve second cooldown: three pulses for the price of one cast and the best healing per mana the Discipline kit has.
-- Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and fifteen percent cheaper.
+- Power Word: Shield.
 - Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
 - Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.
-- Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter.
+- Heal.
 
 **The mistakes the coach looks for, by finding.**
-- core_casts: a mana or efficiency cooldown sitting ready for most of the fight.
-- uptime: a buff, debuff or damage over time left to fall off the target.
-- resource: the mana bar empty well before the end of the fight.
-- ranks: a big rank landing mostly as overheal when a lower rank of the same heal would have covered the hole.
-- preparation: a missing flask, food, weapon enchant or combat potion.
-- death: dying, because a dead healer heals nothing for the rest of the pull.
+- Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.
+- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off the target.
+- Mana: the mana bar empty well before the end of the fight.
+- Ranks: a big rank landing mostly as overheal when a lower rank of the same heal would have covered the hole.
+- Pull preparation: a missing flask, food and combat potion.
+- Death review: dying, because a dead healer heals nothing for the rest of the pull.
 
-**Consumables and world buffs.** For a healer the catalogue looks for a flask (Flask of Distilled Wisdom or Flask of Chromatic Resistance); food (Nightfin Soup); a combat potion (Major Mana Potion), up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade or Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Distilled Wisdom); food (Nightfin Soup); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 
-- drill.core_casts: Put your efficiency cooldown next to your most expensive heal and press them as a pair. When the mana bar drops below half, check your mana cooldowns before the next cast.
+- drill.core_casts: When the mana bar drops below half, check your mana cooldowns before the next cast. Press each one as soon as the bar has room for its full return.
 - drill.uptime: Recast your self buff as part of the ready check, and again the moment you are back up after a death.
 - drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, let the cheap heals over time carry the tank and save the fast, dear heal for the real emergency.
 - drill.ranks: Bind a mid rank of your filler heal and use it for every small hole on the tank. Save the top rank for a hole as deep as it heals.
-- drill.preparation: Before every boss, check flask, mana food and a mana potion on your bars. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.
 
 ## Voice

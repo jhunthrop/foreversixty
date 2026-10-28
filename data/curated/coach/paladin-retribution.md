@@ -6,6 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/retribution.md
   - data/curated/apl/paladin-retribution.json
+  - data/builds/1.60.1.70630/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: pending
@@ -17,33 +18,35 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 
 ## What they know
 
-**The priority, in words.** The site's rotation data for this spec holds seven lines. These are the reasons written on them that read on their own, in the order the lines run. The guide and the rotation data hold the rest.
+**The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Judgement on cooldown: an off-the-global cast that unloads the seal's judgement effect and starts its ten second cooldown again.
 - Exorcism on cooldown against Undead and Demons: learnable at level twenty, a fifteen second cooldown Holy nuke that only lands on those two target types.
 - Hammer of Wrath below twenty percent: the execute-window button Retribution has besides seals, Judgement and Holy Strike.
 - Reapply Seal of Righteousness once it is about to expire -- this is now the only seal-maintenance line.
+- Holy Strike, Forever's new baseline Paladin attack added to the client this week, comes last, on its own ten-second cooldown, cast whenever it is up: it is what spends the globals that Judgement and seal upkeep alone leave idle.
+- Consecration.
 
 **The mistakes the coach looks for, by finding.**
-- core_casts: a button the priority list wants sitting ready while something lower went first.
-- uptime: a buff, debuff or damage over time left to fall off the target.
-- idle: time with no button pressed while the boss was alive and in reach.
-- resource: the main resource bar left to cap or to run dry.
-- ranks: a spell left at an old rank because the trainer visit was skipped.
-- preparation: a missing flask, food, weapon enchant or combat potion.
-- death: dying, which ends your contribution for the rest of the pull.
-- adherence: buttons outside the priority list taking globals the list would have used.
+- Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
+- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off the target.
+- Dead time: time with no button pressed while the boss was alive and in reach.
+- Resource waste: the main resource bar left to cap or to run dry.
+- Ranks: a spell left at an old rank because the trainer visit was skipped.
+- Pull preparation: a missing flask, food and combat potion.
+- Death review: dying, which ends your contribution for the rest of the pull.
+- Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For a damage dealer the catalogue looks for a flask (Flask of the Titans or Flask of Supreme Power); food (Grilled Squid); a weapon enchant (Elemental Sharpening Stone or Brilliant Wizard Oil); a combat potion (Mighty Rage Potion), up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade or Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Grilled Squid); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 
 - drill.core_casts: On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.
 - drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each with 3 seconds left, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
-- drill.resource: Watch the main resource bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
+- drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.
-- drill.preparation: Before every boss, check flask, food buff, weapon enchant and a combat potion on your bars. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.
 
