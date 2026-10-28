@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { specKeyCell, specString } from '../../test-support/spec-table';
+import { fillSlots, specKeyCell, specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
 import { billedLine, guildBillingCopy as copy, guildPlanLine } from './guild-billing-copy';
 import { FOUNDER_WINDOW_CLOSES, GUILD_TRIAL_DAYS } from './plans';
@@ -72,9 +72,10 @@ describe('chooser and size line', () => {
     expect(copy.chooser.subscribeAgain).toBe(spec('Chooser', 7));
     // The trial line is B5's `trial` row, which supersedes the §6.1 sentence.
     expect(copy.chooser.trialLine).toBe(
-      (specKeyCell(SPEC, '### B5. Copy, verbatim', 'trial')[0] ?? '')
-        .replaceAll('{GUILD_TRIAL_DAYS + 1}', String(GUILD_TRIAL_DAYS + 1))
-        .replaceAll('{GUILD_TRIAL_DAYS}', String(GUILD_TRIAL_DAYS)),
+      fillSlots(specKeyCell(SPEC, '### B5. Copy, verbatim', 'trial')[0] ?? '', {
+        'GUILD_TRIAL_DAYS + 1': String(GUILD_TRIAL_DAYS + 1),
+        GUILD_TRIAL_DAYS: String(GUILD_TRIAL_DAYS),
+      }),
     );
     expect(copy.chooser.founderLine).toBe(spec('Chooser', 8));
     expect(copy.chooser.opening).toBe(spec('Chooser', 9));

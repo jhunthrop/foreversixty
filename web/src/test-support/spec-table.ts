@@ -34,19 +34,28 @@ export function specString(
 
 /**
  * The backticked segments of the String column (the third) of a three-column `Where | Key | String`
- * table, for the row whose Key column contains `key` in backticks. Shared by every copy test that
- * pins strings to a spec table of that shape; `specCell` reads the second column only.
+ * table, for the row whose Key column lists `key` as one of its backticked keys (an exact match,
+ * so `trial` never reads the `trialEmail` row). The search stops at the next `### ` heading.
  */
 export function specKeyCell(specPath: URL, heading: string, key: string): string[] {
   const spec = readFileSync(specPath, 'utf8');
   const start = spec.indexOf(heading);
   if (start === -1) throw new Error(`spec has no heading "${heading}"`);
-  const row = spec
-    .slice(start)
-    .split('\n')
-    .find((line) => (line.split('|')[2] ?? '').includes(`\`${key}\``));
+  const rest = spec.slice(start + heading.length);
+  const end = rest.search(/^### /m);
+  const section = (end === -1 ? rest : rest.slice(0, end)).split('\n');
+  const row = section.find((line) => backticked(line.split('|')[2] ?? '').includes(key));
   if (row === undefined) throw new Error(`spec "${heading}" has no row keyed "${key}"`);
-  return [...(row.split('|')[3] ?? '').matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
+  return backticked(row.split('|')[3] ?? '');
+}
+
+function backticked(cell: string): string[] {
+  return [...cell.matchAll(/`([^`]+)`/g)].map((match) => match[1] ?? '');
+}
+
+/** Replaces every `{slot}` in a spec string with its value. */
+export function fillSlots(text: string, slots: Readonly<Record<string, string>>): string {
+  return Object.entries(slots).reduce((t, [slot, value]) => t.replaceAll(`{${slot}}`, value), text);
 }
 
 /** The backticked line that follows a bold paragraph label, e.g. `**Held until built`. */

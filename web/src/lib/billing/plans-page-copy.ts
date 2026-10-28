@@ -1,17 +1,14 @@
 // web/src/lib/billing/plans-page-copy.ts
 // Every visible string on /premium except the checkout chooser (billing/copy.ts), verbatim from
-// design/specs/2026-10-27-launch-pricing.md section 6.1. No exclamation marks, no urgency. Price
+// design/specs/2026-10-27-launch-pricing.md section 6.1 as amended by B5 (the example strings come
+// from the premium-examples.json sidecar). No exclamation marks, no urgency. Price
 // text is built from ./plans, never written here.
 import { perMemberAmount, perRaiderAmounts } from './plan-costs';
-import {
-  exampleCaption,
-  serverRunExample,
-  type CaptionTemplates,
-  type ServerRunExample,
-} from './premium-examples';
+import { serverRunCaptionTemplates } from './premium-example-copy';
 import {
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
+  PLANS,
   RAID_SIZES,
   TRIAL_REMINDER_DAYS,
   SEAT_MOVE_LOCK_DAYS,
@@ -45,13 +42,6 @@ function perRaider(interval: Interval, founder: boolean): string {
 }
 
 const TRIAL_CANCEL = `Cancel before day ${GUILD_TRIAL_DAYS + 1} and nothing is charged`;
-
-const serverRunCaptionTemplates: CaptionTemplates = {
-  preset: (f) =>
-    `A level-${f.level} ${f.specLabel} in the site's preset gear: ${f.combinations} combinations on our servers, ${f.ranAt}.`,
-  ownGear: (f) =>
-    `${f.characterName}, ${f.specLabel}: ${f.combinations} combinations on our servers, ${f.ranAt}.`,
-};
 
 export const plansPageCopy = {
   title: 'Plans',
@@ -122,8 +112,8 @@ export const plansPageCopy = {
       'Post raids on the site and in Discord; members sign up with one tap.',
       'See who came: attendance and a report for every raid night from its log.',
       'The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.',
-      '1 Premium seat to give a member, such as your raid leader.',
-      `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members, so a guild that runs 10- or 20-person raids fits under Guild. Nothing switches off if you grow past it.`,
+      `${PLANS.guild.seats} Premium seat to give a member, such as your raid leader.`,
+      `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members, so a guild that runs ${RAID_SIZES[2]}- or ${RAID_SIZES[1]}-person raids fits under Guild. Nothing switches off if you grow past it.`,
     ],
   },
   raidGuild: {
@@ -132,7 +122,7 @@ export const plansPageCopy = {
     features: [
       'Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot this tier. Officers award it from the same screen.',
       'Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.',
-      '3 Premium seats to give members.',
+      `${PLANS.raid_guild.seats} Premium seats to give members.`,
       'Any number of members.',
       'Everything in Guild: raids, sign-ups, attendance and the Discord bot.',
     ],
@@ -243,7 +233,4 @@ export const plansPageCopy = {
 export const perMemberLine = plansPageCopy.price.perMember;
 export const perRaiderLine = plansPageCopy.price.perRaider;
 
-/** The server-run example's caption, also the image alt. */
-export function serverRunCaption(ex: ServerRunExample = serverRunExample): string {
-  return exampleCaption(ex, plansPageCopy.examples.serverRun.caption);
-}
+export { serverRunCaption } from './premium-example-copy';

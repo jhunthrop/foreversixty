@@ -1,7 +1,7 @@
 // web/src/lib/billing/example-image.ts
 // The one source for the premium example picture: /premium and the /sim landing card both read
 // it, so the files, the reserved box and the alt text can never disagree.
-import { serverRunCaption } from './plans-page-copy';
+import { serverRunCaption } from './premium-example-copy';
 import { serverRunExample, type ServerRunExample } from './premium-examples';
 
 export const EXAMPLE_IMAGE_WIDTH = 440;

@@ -1,12 +1,13 @@
 // web/src/lib/billing/plans-page-copy.test.ts
 import { describe, expect, it } from 'vitest';
-import { specCell, specKeyCell, specLineAfter } from '../../test-support/spec-table';
+import { fillSlots, specCell, specKeyCell, specLineAfter } from '../../test-support/spec-table';
 import { exampleCaption, serverRunExample } from './premium-examples';
 import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
 import {
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
   PLANS,
+  RAID_SIZES,
   TRIAL_REMINDER_DAYS,
   formatAmount,
   perMonthLine,
@@ -17,8 +18,7 @@ const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', im
 const row = (label: string): string[] => specCell(SPEC, '### 6.1', label);
 const B5 = '### B5. Copy, verbatim';
 const key = (k: string): string[] => specKeyCell(SPEC, B5, k);
-const fill = (text: string, slots: Record<string, string>): string =>
-  Object.entries(slots).reduce((t, [slot, value]) => t.replaceAll(`{${slot}}`, value), text);
+const fill = fillSlots;
 const count = (n: number): string => n.toLocaleString('en-US');
 
 function allStrings(value: unknown): string[] {
@@ -147,6 +147,13 @@ describe('plansPageCopy Premium against spec B5', () => {
 
 describe('plansPageCopy guild region against spec B5', () => {
   const limit = String(GUILD_TIER_MEMBER_LIMIT);
+  const featureSlots = {
+    GUILD_TIER_MEMBER_LIMIT: limit,
+    'PLANS.guild.seats': String(PLANS.guild.seats),
+    'PLANS.raid_guild.seats': String(PLANS.raid_guild.seats),
+    'RAID_SIZES[1]': String(RAID_SIZES[1]),
+    'RAID_SIZES[2]': String(RAID_SIZES[2]),
+  };
   const trialSlots = {
     GUILD_TRIAL_DAYS: String(GUILD_TRIAL_DAYS),
     'GUILD_TRIAL_DAYS + 1': String(GUILD_TRIAL_DAYS + 1),
@@ -163,13 +170,11 @@ describe('plansPageCopy guild region against spec B5', () => {
       fill(key('guild.audience')[0] ?? '', { GUILD_TIER_MEMBER_LIMIT: limit }),
     ));
   it('guild.features', () =>
-    expect(copy.guild.features).toEqual(
-      key('guild.features').map((s) => fill(s, { GUILD_TIER_MEMBER_LIMIT: limit })),
-    ));
+    expect(copy.guild.features).toEqual(key('guild.features').map((s) => fill(s, featureSlots))));
   it('raidGuild.audience is unchanged', () =>
     expect(copy.raidGuild.audience).toBe(key('raidGuild.audience')[0]));
   it('raidGuild.features, loot council first', () => {
-    expect(copy.raidGuild.features).toEqual(key('raidGuild.features'));
+    expect(copy.raidGuild.features).toEqual(key('raidGuild.features').map((s) => fill(s, featureSlots)));
     expect(copy.raidGuild.features[0]).toMatch(/^Loot council:/);
     expect(copy.raidGuild.features[0]).not.toBe('Everything in Guild');
   });
@@ -209,6 +214,19 @@ describe('plansPageCopy guild region against spec B5', () => {
   it('trial line and Trial rule make no email promise until the trial email ships', () => {
     expect(copy.trial).not.toContain('email you');
     expect(rule('Trial')).not.toContain('email you');
+  });
+  it('the unchanged rules and the plan names still match §6.1, in order', () => {
+    const [heading, ...cells] = row('How it works');
+    expect(heading).toBe(copy.howItWorks);
+    const spec61 = Array.from({ length: cells.length / 2 }, (_, i) => ({
+      term: cells[2 * i],
+      sentence: cells[2 * i + 1],
+    })).filter((r) => r.term !== 'Trial');
+    const b5Terms = ['Verified members', 'Paying together', 'Trial'];
+    expect(copy.rules).toHaveLength(10);
+    expect(copy.rules.filter((r) => !b5Terms.includes(r.term))).toEqual(spec61);
+    expect(copy.guild.name).toBe(row('Guild card')[0]);
+    expect(copy.raidGuild.name).toBe(row('Raid guild card')[0]);
   });
   it('howItWorks', () => expect(copy.howItWorks).toBe(key('howItWorks')[0]));
   it('example label and link', () => {

@@ -1,11 +1,12 @@
 // web/src/lib/billing/example-image.test.ts
 import { describe, expect, it } from 'vitest';
 import { exampleImage } from './example-image';
-import { serverRunCaption } from './plans-page-copy';
-import { serverRunExample, type ServerRunExample } from './premium-examples';
+import { serverRunCaption } from './premium-example-copy';
+import type { ServerRunExample } from './premium-examples';
 
 const VALID: ServerRunExample = {
-  ...serverRunExample,
+  simId: 'fixture-run',
+  preset: false,
   characterName: 'Thrall',
   level: 58,
   specLabel: 'Arms Warrior',
@@ -25,6 +26,9 @@ describe('exampleImage', () => {
       decoding: 'async',
     });
   });
+
+  it('reads the data file and its caption by default', () =>
+    expect(exampleImage().alt).toBe(serverRunCaption()));
 
   it.each([true, false])('alt equals the caption (preset=%s)', (preset) =>
     expect(exampleImage({ ...VALID, preset }).alt).toBe(serverRunCaption({ ...VALID, preset })),
