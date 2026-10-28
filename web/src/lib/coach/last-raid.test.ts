@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   LAST_RAID_LABEL,
+  LAST_RAID_RETRY_CLASS,
   createLastRaidLoader,
   formatRaidDate,
   lastRaidLine,
@@ -210,5 +211,13 @@ describe('createLastRaidLoader', () => {
     timers[0]!.run();
     await flush();
     expect(kinds(states)).toEqual(['loading', 'ready']);
+  });
+});
+
+describe('the Try again control', () => {
+  it('is a 44 px target that does not grow the 20 px line', () => {
+    const classes = LAST_RAID_RETRY_CLASS.split(' ');
+    expect(classes).toContain('min-h-11');
+    expect(classes).toContain('-my-3');
   });
 });

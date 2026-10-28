@@ -26,6 +26,10 @@ const SEGMENT_SEPARATOR = ' · ';
 /** The line's accessible name: the copy's own lead, so it is never typed twice. */
 export const LAST_RAID_LABEL = coachCopy.lastRaidNone.split(SEGMENT_SEPARATOR)[0]!;
 
+/** The inline Try again control: a 44 px target whose negative block margin (44 - 2 x 12 = 20) keeps it one 20 px line tall, so the reserve holds. */
+export const LAST_RAID_RETRY_CLASS =
+  '-my-3 inline-flex min-h-11 items-center px-1 text-gold underline hover:text-gold-hover focus-visible:outline-2 focus-visible:outline-gold disabled:opacity-60';
+
 export const PREMIUM_HREF = '/premium';
 const DATE_LOCALE = 'en-GB';
 

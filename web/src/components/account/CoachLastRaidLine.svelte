@@ -10,6 +10,7 @@
   import { coachCopy } from '../../lib/coach/copy';
   import {
     LAST_RAID_LABEL,
+    LAST_RAID_RETRY_CLASS,
     createLastRaidLoader,
     type LastRaidRole,
     type LastRaidState,
@@ -70,7 +71,7 @@
       {coachCopy.lastRaidError}
       <button
         type="button"
-        class="text-gold hover:text-gold-hover focus-visible:outline-gold underline focus-visible:outline-2 disabled:opacity-60"
+        class={LAST_RAID_RETRY_CLASS}
         data-testid="coach-last-raid-retry"
         disabled={state.kind === 'retrying'}
         aria-busy={state.kind === 'retrying'}
