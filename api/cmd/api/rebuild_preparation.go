@@ -14,9 +14,12 @@ import (
 )
 
 // runRebuildPreparation is the on-demand Cloud Run job that re-rates every stored fight under
-// the current model version and refolds the preparation digests. It never migrates (start
-// refuses to in a job), so it runs from the deployed sha only. Idempotent; -dry-run counts
-// without writing; a crashed run resumes with the -after cursor its last progress line logged.
+// the current model version and refolds the preparation digests. Like every job it goes
+// through start, which runs db.Migrate, so it is safe only from the deployed image, where Up
+// is a no-op; it adds no migration of its own. Run it in a quiet window right after the
+// deploy: a fight ingested live while the digests are wiped can be double-counted. Idempotent;
+// -dry-run counts without writing; a crashed run resumes with the -after cursor its last
+// progress line logged.
 func runRebuildPreparation(ctx context.Context, log *slog.Logger, args []string) error {
 	opts, err := parseRebuildFlags(args, io.Discard)
 	if err != nil {
