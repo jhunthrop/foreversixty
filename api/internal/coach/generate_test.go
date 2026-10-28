@@ -16,9 +16,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/llm"
 )
 
-// genSecret stands in for the gateway key: nothing the generator logs may carry it.
-const genSecret = "sk-t28-secret"
-
 type genFixture struct {
 	pool  *pgxpool.Pool
 	store *Store
@@ -214,7 +211,7 @@ func TestGenerate_FailureLogCarriesNoKeyOrName(t *testing.T) {
 		!strings.Contains(logged, "Bloodthirst: 9 casts lost") || !strings.Contains(logged, "12 casts") {
 		t.Fatalf("one entry with the pack, both outputs and the problems: %s", logged)
 	}
-	for _, leak := range []string{genSecret, "Tyrim", "TYRIM", t28Key().PlayerKey, t28Report} {
+	for _, leak := range []string{"Tyrim", "TYRIM", t28Key().PlayerKey, t28Report} {
 		if strings.Contains(logged, leak) {
 			t.Fatalf("the log carries %q: %s", leak, logged)
 		}

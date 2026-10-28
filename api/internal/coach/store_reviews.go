@@ -72,7 +72,8 @@ on conflict (report_id, fight_index, player_key, pack_version, model_version, pe
   validation = excluded.validation, tokens_in = excluded.tokens_in, tokens_out = excluded.tokens_out,
   cost_usd = excluded.cost_usd, cost_estimated = excluded.cost_estimated, model_slug = excluded.model_slug,
   gateway_request_id = excluded.gateway_request_id, account_id = excluded.account_id,
-  generated_at = excluded.generated_at`
+  generated_at = excluded.generated_at
+  where excluded.source = 'model' or coach_reviews.source <> 'model'`
 
 const reviewSQL = `
 select review, source, coalesce(reason, ''), retryable, validation, tokens_in, tokens_out, cost_usd::float8,
@@ -81,7 +82,8 @@ from coach_reviews
 where report_id = $1 and fight_index = $2 and player_key = $3 and pack_version = $4 and model_version = $5
   and persona_version = $6`
 
-// SaveReview upserts the row on its key.
+// SaveReview upserts the row on its key. A rules row never replaces a stored model review
+// for the same key: that save is a no-op (a refusal or model error must not erase one).
 func (s *Store) SaveReview(ctx context.Context, r StoredReview) error {
 	if r.Source != SourceModel && r.Source != SourceRules {
 		return fmt.Errorf("coach: review source %q is neither model nor rules", r.Source)
@@ -90,7 +92,7 @@ func (s *Store) SaveReview(ctx context.Context, r StoredReview) error {
 	if err != nil {
 		return fmt.Errorf("coach: encode review: %w", err)
 	}
-	validation, err := json.Marshal(nonNilProblems(r.Validation))
+	validation, err := json.Marshal(storedProblemsOf(r.Validation))
 	if err != nil {
 		return fmt.Errorf("coach: encode validation: %w", err)
 	}
@@ -120,17 +122,39 @@ func (s *Store) Review(ctx context.Context, k ReviewKey) (StoredReview, bool, er
 	if err := json.Unmarshal(doc, &r.Doc); err != nil {
 		return StoredReview{}, false, fmt.Errorf("coach: decode review %s/%d: %w", k.ReportID, k.FightIndex, err)
 	}
-	if err := json.Unmarshal(validation, &r.Validation); err != nil {
+	var stored []storedProblem
+	if err := json.Unmarshal(validation, &stored); err != nil {
 		return StoredReview{}, false, fmt.Errorf("coach: decode validation %s/%d: %w", k.ReportID, k.FightIndex, err)
 	}
+	r.Validation = problemsOf(stored)
 	return r, true, nil
 }
 
-func nonNilProblems(p []Problem) []Problem {
-	if p == nil {
-		return []Problem{}
+// storedProblem is a Problem as coach_reviews.validation holds it.
+type storedProblem struct {
+	Kind  string `json:"kind"`
+	Value string `json:"value"`
+	Near  string `json:"near,omitempty"`
+}
+
+// storedProblemsOf never returns nil, so an empty list is stored as [].
+func storedProblemsOf(ps []Problem) []storedProblem {
+	out := make([]storedProblem, 0, len(ps))
+	for _, p := range ps {
+		out = append(out, storedProblem(p))
 	}
-	return p
+	return out
+}
+
+func problemsOf(ss []storedProblem) []Problem {
+	if len(ss) == 0 {
+		return nil
+	}
+	out := make([]Problem, 0, len(ss))
+	for _, s := range ss {
+		out = append(out, Problem(s))
+	}
+	return out
 }
 
 // takeLeaseSQL inserts the lease, or takes over one whose leased_until has passed (by the

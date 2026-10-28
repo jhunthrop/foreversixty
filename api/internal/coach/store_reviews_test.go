@@ -60,6 +60,61 @@ func TestReviewStore_RoundTripAndUpsert(t *testing.T) {
 	}
 }
 
+func TestReviewStore_RulesNeverReplacesAModelReview(t *testing.T) {
+	_, store := reviewPool(t)
+	ctx := context.Background()
+	rules := StoredReview{Key: t28Key(), Doc: RenderRules(examplePack(), fixturePersona(t).Drills), Source: SourceRules,
+		Reason: "validation", GeneratedAt: capsNow}
+	model := StoredReview{Key: t28Key(), Doc: exampleReview(), Source: SourceModel, RequestID: "g1", GeneratedAt: capsNow}
+	read := func() StoredReview {
+		t.Helper()
+		got, ok, err := store.Review(ctx, t28Key())
+		if !ok || err != nil {
+			t.Fatalf("ok %v err %v", ok, err)
+		}
+		return got
+	}
+	if err := store.SaveReview(ctx, rules); err != nil {
+		t.Fatal(err)
+	}
+	retry := rules
+	retry.Reason, retry.Retryable = string(RefusalSpendCap), true
+	if err := store.SaveReview(ctx, retry); err != nil || read().Reason != string(RefusalSpendCap) {
+		t.Fatal("a rules row replaces a rules row")
+	}
+	if err := store.SaveReview(ctx, model); err != nil || read().Source != SourceModel {
+		t.Fatal("a model review replaces a rules row")
+	}
+	if err := store.SaveReview(ctx, rules); err != nil {
+		t.Fatal(err)
+	}
+	if got := read(); got.Source != SourceModel || got.RequestID != "g1" || !reflect.DeepEqual(got.Doc, exampleReview()) {
+		t.Fatalf("a rules save left the model review in place: %+v", got)
+	}
+	next := model
+	next.RequestID = "g2"
+	if err := store.SaveReview(ctx, next); err != nil || read().RequestID != "g2" {
+		t.Fatal("a model review replaces a model review")
+	}
+}
+
+func TestReviewStore_ValidationColumnUsesLowerCaseKeys(t *testing.T) {
+	pool, store := reviewPool(t)
+	ctx := context.Background()
+	row := StoredReview{Key: t28Key(), Source: SourceRules, GeneratedAt: capsNow,
+		Validation: []Problem{{Kind: "number", Value: "12", Near: "12 casts"}, {Kind: ProblemShape, Value: "x"}}}
+	if err := store.SaveReview(ctx, row); err != nil {
+		t.Fatal(err)
+	}
+	var raw string
+	if err := pool.QueryRow(ctx, `select validation::text from coach_reviews where report_id = $1`, t28Report).Scan(&raw); err != nil {
+		t.Fatal(err)
+	}
+	if raw != `[{"kind": "number", "near": "12 casts", "value": "12"}, {"kind": "shape", "value": "x"}]` {
+		t.Fatalf("validation %s", raw)
+	}
+}
+
 func TestReviewStore_MissingAndBadSource(t *testing.T) {
 	_, store := reviewPool(t)
 	ctx := context.Background()
