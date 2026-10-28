@@ -14,6 +14,7 @@
   import { relativeTime } from '../../lib/dates';
   import CharacterRow from '../character/CharacterRow.svelte';
   import CharacterRowLink from './CharacterRowLink.svelte';
+  import CoachLastRaidLine from './CoachLastRaidLine.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
   import StatePanel from '../ui/StatePanel.svelte';
 
@@ -23,7 +24,10 @@
     mainKey = undefined,
     currentKey = undefined,
     onSetMain = undefined,
+    logCoach = false,
   }: {
+    /** `me.entitlements.log_coach`: picks the Premium or the free form of the last-raid line. */
+    logCoach?: boolean;
     characters: MeCharacter[];
     bnetImportedAt?: string;
     /** The chosen main's key; the row carries a Main pill and every other row a Set as main control. */
@@ -67,6 +71,7 @@
   aside={bnetImportedAt === undefined ? undefined : importedAside}
   testid="account-characters"
 >
+  <CoachLastRaidLine premium={logCoach} />
   {#if characters.length === 0}
     <EmptyState
       message={characterListCopy.empty}

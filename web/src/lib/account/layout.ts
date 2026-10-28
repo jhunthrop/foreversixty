@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1284px] lg:min-h-[829px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1364px] lg:min-h-[829px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -48,8 +48,20 @@ export type HintState = 'none' | 'free' | 'connect' | 'form' | 'saved' | 'off' |
 /** The ready header row: 44 px beside the title at 1024 and up, the stacked row below it. */
 export const HEADER_ROW_H: BucketPx = { lg: 44, stack: 83 };
 
-/** An empty Characters panel, an empty Your reports panel and the 32 px gap between them. */
-export const LEFT_FLOOR: BucketPx = { lg: 298, stack: 403 };
+/** The Characters panel's last-raid coach line (experience spec 2026-10-28-log-coach 3.3): 44 px
+ *  on one line, 64 px on the phone's two, held in every state, plus the panel's 16 px (`gap-4`)
+ *  flex gap above the list. Counted once, in `LEFT_FLOOR`. */
+export const COACH_LAST_RAID_RESERVE: BucketPx = { lg: 44, stack: 64 };
+
+/** The gap between a StatePanel's label row, the coach line and its body (Tailwind `gap-4`). */
+const PANEL_GAP_PX = 16;
+
+/** An empty Characters panel with the coach line, an empty Your reports panel and the 32 px gap between them
+ *  (298 / 403 measured before the coach line existed). */
+export const LEFT_FLOOR: BucketPx = {
+  lg: 298 + COACH_LAST_RAID_RESERVE.lg + PANEL_GAP_PX,
+  stack: 403 + COACH_LAST_RAID_RESERVE.stack + PANEL_GAP_PX,
+};
 
 /** The Plan panel with the free plan line only (measured on the empty fixture account). */
 const PLAN_EMPTY_FLOOR: BucketPx = { lg: 219, stack: 211 };

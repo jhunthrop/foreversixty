@@ -696,6 +696,7 @@
                 mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
                 currentKey={hero?.key}
                 onSetMain={setMain}
+                logCoach={me?.entitlements?.log_coach === true}
               />
             </div>
 
