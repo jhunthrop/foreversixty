@@ -234,7 +234,6 @@ describe('busy, errors, loading, empty, foot', () => {
       errors.alreadyClaimed(G),
       errors.pending(G),
       errors.notEligible(G),
-      errors.noBattlenet,
       errors.rateLimited,
       errors.holdsAnother,
       errors.sameAccount,

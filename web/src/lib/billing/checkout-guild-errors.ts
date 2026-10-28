@@ -16,7 +16,6 @@ export const checkoutGuildClaimErrors = {
   alreadyClaimed: (guild: string): string => `Someone claimed ${guild} a moment ago.`,
   pending: (guild: string): string => `An officer started a claim on ${guild} a moment ago.`,
   notEligible: (guild: string): string => `Your character in ${guild} is not an officer or the guild master.`,
-  noBattlenet: 'Claiming as guild master needs your Battle.net account linked.',
   rateLimited: `You made a claim in the last ${CLAIM_COOLDOWN_DAYS} days.`,
   holdsAnother: "You already hold another guild's claim.",
   sameAccount: 'You started this claim, so a second officer confirms it.',
