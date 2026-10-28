@@ -338,7 +338,7 @@ func TestUptime_DebuffAnchorsCarryTheirNPCTarget(t *testing.T) {
 		}
 		a := o.Anchors[0]
 		a.ID = "a1"
-		dto := anchorsOf(Pack{Anchors: []Anchor{a}}, SpecRules{})["a1"]
+		dto := anchorsOf(Pack{Anchors: []Anchor{a}}, Tables{})["a1"]
 		wantTarget := map[string]string{"dot": f2BossGUID, "defensive on boss": f2BossGUID}[name]
 		if a.TargetGUID != wantTarget || dto.TargetGUID != wantTarget || dto.Debuff != (wantTarget != "") {
 			t.Errorf("%s: anchor %+v dto %+v, want target %q", name, a, dto, wantTarget)

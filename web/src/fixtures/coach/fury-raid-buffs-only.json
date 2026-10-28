@@ -56,31 +56,38 @@
     },
     "a2": {
       "kind": "cast",
-      "spell_id": 2687
+      "spell_id": 2687,
+      "spell_name": "Bloodrage"
     },
     "a3": {
       "kind": "cast",
-      "spell_id": 23894
+      "spell_id": 23894,
+      "spell_name": "Bloodthirst"
     },
     "a4": {
       "kind": "cast",
-      "spell_id": 1680
+      "spell_id": 1680,
+      "spell_name": "Whirlwind"
     },
     "a5": {
       "kind": "aura",
-      "spell_id": 6673
+      "spell_id": 6673,
+      "spell_name": "Battle Shout"
     },
     "a6": {
       "kind": "cast",
-      "spell_id": 23894
+      "spell_id": 23894,
+      "spell_name": "Bloodthirst"
     },
     "a7": {
       "kind": "cast",
-      "spell_id": 1680
+      "spell_id": 1680,
+      "spell_name": "Whirlwind"
     },
     "a8": {
       "kind": "cast",
-      "spell_id": 25286
+      "spell_id": 25286,
+      "spell_name": "Heroic Strike"
     }
   },
   "basis_labels": [

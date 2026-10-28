@@ -317,8 +317,9 @@ func webFixtures(t *testing.T) map[string]any {
 
 	writing, busy := rulesOf(workedPack, fury), rulesOf(workedPack, fury)
 	writing.status, busy.busy = statusWriting, true
-	trash, short, preparing := furyWorked(t), furyWorked(t), furyWorked(t)
+	trash, short, noSpec, preparing := furyWorked(t), furyWorked(t), furyWorked(t), furyWorked(t)
 	trash.Fight.EncounterID = 0
+	noSpec.Row.Spec = ""
 	short.Fight = withDuration(short.Fight, 25_000)
 	preparing.Refs = Refs{SimPreparing: true}
 	clean, oneFinding, raidBuff := furyClean(t), furyOneFinding(t), furyRaidBuff(t)
@@ -335,9 +336,11 @@ func webFixtures(t *testing.T) map[string]any {
 		"fury-preparing.json":            withStatus(preparing, fury, StatusPreparing),
 		"fury-not-reviewable-trash.json": withStatus(trash, fury, StatusNotReviewable),
 		"fury-not-reviewable-short.json": withStatus(short, fury, StatusNotReviewable),
+		"not-reviewable-spec.json":       withStatus(noSpec, fury, StatusNotReviewable),
 		"fury-teaser-several.json":       teaserOf(workedPack),
 		"fury-teaser-one.json":           teaserOf(Review(oneFinding)),
 		"fury-teaser-empty.json":         teaserOf(Review(clean)),
+		"fury-teaser-no-first.json":      teaserOf(Review(raidBuff)),
 		"holy-model.json":                webAnswer(holyIn, webHolyKey, AccessFull, modelOf(holyDoc, holy)),
 		"holy-rules.json":                webAnswer(holyIn, webHolyKey, AccessFull, rulesOf(holyPack, holy)),
 		"last-raid-molten-core.json":     webNight(webMCZone, moltenCoreNightPacks(t)),

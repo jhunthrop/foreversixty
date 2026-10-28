@@ -123,8 +123,16 @@ func TestPackFor_DebuffAurasAreFlagged(t *testing.T) {
 	p := Pack{Anchors: []Anchor{{ID: "a1", Kind: AnchorAura, SpellID: 7386, AtMS: &at}, {ID: "a2", Kind: AnchorAura, SpellID: 6673},
 		{ID: "a3", Kind: AnchorCast, SpellID: 7386}}}
 	rules := SpecRules{Auras: []AuraRule{{SpellID: 7386, Kind: AuraDebuff}, {SpellID: 6673, Kind: AuraSelfBuff}}}
-	got := anchorsOf(p, rules)
+	got := anchorsOf(p, Tables{Rules: rules})
 	if !got["a1"].Debuff || got["a2"].Debuff || got["a3"].Debuff || *got["a1"].AtMS != at {
+		t.Fatalf("%+v", got)
+	}
+}
+
+func TestAnchorsOf_SpellsCarryTheBuildName(t *testing.T) {
+	p := Pack{Anchors: []Anchor{{ID: "a1", Kind: AnchorCast, SpellID: 23894}, {ID: "a2", Kind: AnchorBuffs}}}
+	got := anchorsOf(p, Tables{Spells: warriorSpells})
+	if got["a1"].SpellName != "Bloodthirst" || got["a2"].SpellName != "" {
 		t.Fatalf("%+v", got)
 	}
 }

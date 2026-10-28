@@ -102,14 +102,16 @@
     },
     "a3": {
       "kind": "healing",
-      "spell_id": 10965
+      "spell_id": 10965,
+      "spell_name": "Greater Heal"
     },
     "a4": {
       "kind": "buffs"
     },
     "a5": {
       "kind": "aura",
-      "spell_id": 10952
+      "spell_id": 10952,
+      "spell_name": "Inner Fire"
     }
   },
   "basis_labels": [

@@ -90,6 +90,7 @@ type linkDTO struct {
 type anchorDTO struct {
 	Kind       AnchorKind `json:"kind"`
 	SpellID    int64      `json:"spell_id,omitempty"`
+	SpellName  string     `json:"spell_name,omitempty"` // the build's name for SpellID, for the chip and the name token
 	AtMS       *int64     `json:"at_ms,omitempty"`
 	ToMS       *int64     `json:"to_ms,omitempty"`
 	Debuff     bool       `json:"debuff,omitempty"`
@@ -146,7 +147,7 @@ func fullOf(req fightRequest, l loaded, access Access, sv served) fullDTO {
 		Spec: c.SpecLabel, Role: c.Role, Size: c.Size, Kill: c.Kill,
 		Status: sv.status, Source: sv.source, Busy: sv.busy, Access: access,
 		Persona: personaOf(c.SpecLabel, sv), ReviewedAt: sv.at.UTC().Format(time.RFC3339),
-		Review: reviewOf(sv.doc, l.pack), Anchors: anchorsOf(l.pack, l.tables.Rules),
+		Review: reviewOf(sv.doc, l.pack), Anchors: anchorsOf(l.pack, l.tables),
 		BasisLabels: nonNil(l.pack.BasisLabels),
 	}
 }
@@ -194,14 +195,17 @@ func linksDTO(p Pack, ids []string) []linkDTO {
 	return out
 }
 
-// anchorsOf keys the pack's anchors by id. An aura anchor on an NPC target (target_guid,
-// which the page's `aura-<target>-<spell>` row is keyed by), or whose spell is one of the
-// rule file's DoTs or debuffs, opens the Debuffs tab (debuff: true).
-func anchorsOf(p Pack, rules SpecRules) map[string]anchorDTO {
+// anchorsOf keys the pack's anchors by id, each spell with the build's name for it (the
+// class spell data, which the web's own name tables may not hold for a talent). An aura
+// anchor on an NPC target (target_guid, which the page's `aura-<target>-<spell>` row is keyed
+// by), or whose spell is one of the rule file's DoTs or debuffs, opens the Debuffs tab
+// (debuff: true).
+func anchorsOf(p Pack, tables Tables) map[string]anchorDTO {
 	out := make(map[string]anchorDTO, len(p.Anchors))
 	for _, a := range p.Anchors {
-		out[a.ID] = anchorDTO{Kind: a.Kind, SpellID: a.SpellID, AtMS: a.AtMS, ToMS: a.ToMS, TargetGUID: a.TargetGUID,
-			Debuff: a.Kind == AnchorAura && (a.TargetGUID != "" || debuffAura(rules, a.SpellID))}
+		out[a.ID] = anchorDTO{Kind: a.Kind, SpellID: a.SpellID, SpellName: tables.Spells[a.SpellID].Name,
+			AtMS: a.AtMS, ToMS: a.ToMS, TargetGUID: a.TargetGUID,
+			Debuff: a.Kind == AnchorAura && (a.TargetGUID != "" || debuffAura(tables.Rules, a.SpellID))}
 	}
 	return out
 }
