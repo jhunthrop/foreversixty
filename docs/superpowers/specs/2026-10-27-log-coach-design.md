@@ -51,7 +51,7 @@ Goals
   couldn't be checked. Every item links to its evidence in the report.
 - Every fact in the review (number, spell, time, comparison) is in the evidence pack, and
   the API checks that before anything is shown.
-- One coach per spec, 27 in all, each honest about what it is: "Your Fury coach".
+- One coach per spec, 28 in all, each honest about what it is: "Your Fury coach".
 - Damage dealers get the full set of findings. Healers and tanks get the findings the data
   supports, framed for their role (§6.3).
 - Free accounts see the count and the first thing to fix on their own character. Premium
@@ -397,12 +397,14 @@ written rotation alone. *Major* at ≥ 25 points under. *Roles:* DPS and tank. O
 
 ### 6.3 Which specs get which findings (v1)
 
-DPS (19): Balance and Feral (cat) druid; Beast Mastery, Marksmanship and Survival hunter
+DPS (20): Balance and Feral (cat) druid; Beast Mastery, Marksmanship and Survival hunter
 (Survival is melee in Forever); Arcane, Fire and Frost mage; Retribution paladin; Shadow
 priest; Assassination, Combat and Subtlety rogue; Elemental and Enhancement shaman;
 Affliction, Demonology and Destruction warlock; Arms and Fury warrior.
 Healers (5): Restoration druid, Holy paladin, Discipline priest, Holy priest, Restoration shaman.
 Tanks (3): Feral (bear) druid, Protection paladin, Protection warrior.
+
+28 specs in all (20 + 5 + 3), matching `data/curated/specs.json`. Corrected 2026-10-27 from specs.json: this section and §2, §8.1 and §22 read 19, 27 and 24 before.
 
 | Finding | DPS | Healer | Tank |
 |---|---|---|---|
@@ -451,7 +453,7 @@ night line and the rule-only rendering read only the pack.
 
 ### 8.1 What a persona is
 
-One file per spec, `data/curated/coach/<spec>.md`, 27 files. Each is versioned prose with front
+One file per spec, `data/curated/coach/<spec>.md`, 28 files. Each is versioned prose with front
 matter: `spec`, `status` (`full` or `starter`), `version`, `sources` (the guide, APL and data
 files it was written from) and `reviewed` (who checked it, when). The persona is **unnamed**:
 "the best Fury warrior on Forever". It is never a real person, and it never claims a biography,
@@ -486,7 +488,7 @@ Sections, in this order:
 
 - **Full at launch (3):** Fury warrior, Holy priest, Protection warrior. These are written by
   the implementer from the guides, APLs and engine data, then reviewed.
-- **Starter at launch (24):** every other spec. A generator (`tools/coach/persona_starter`)
+- **Starter at launch (25):** every other spec. A generator (`tools/coach/persona_starter`)
   writes a starter from that spec's guide and APL only. It covers the rotation priorities,
   the consumables list, the default drills per finding code and the shared voice section. A
   person reads each starter before it ships. A later lane deepens them to full.
@@ -885,7 +887,7 @@ Profiles add one ~1 KB insert per rated kill row.
 - **Learn from a player's own history across weeks:** the coach reads its own past packs for
   the character and says what improved.
 - **Voice and tone per guild:** a guild chooses how blunt its raiders' coaches are.
-- The 24 starter personas deepened to full.
+- The 25 starter personas deepened to full.
 - Watch a top log: a link to a public pool log, once naming and anonymity are settled.
 - Asking the coach a follow-up question.
 - Wipe review for raid leaders, on the guild plan.
