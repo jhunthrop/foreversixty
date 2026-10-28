@@ -26,6 +26,45 @@ How the log coach is deployed, switched on and switched off. The design is
   - with no `coach-simref` job, no spec waits on a sim, and the top logs are the only basis.
 - **The image.** It carries `data/curated/coach/` at `/coach`: the spec rule files and the personas. `data/builds` is at `/data`.
 
+### Creating the jobs (once, by hand)
+
+The deploy workflow only moves jobs that already exist to the new image (`.github/workflows/api.yml`,
+"Point the jobs at the new image"; `TestDeployMovesEveryJobInTheJobsTable` pins the list). The four
+jobs this lane adds are created once, the way `api/README.md` creates `parse-report`: the API image,
+the job's command as its first argument, and the service's job environment (`.env.job`: the
+database, the bucket, the `LLM_*` variables and caps from the table below, with `LLM_API_KEY` as a
+mounted secret, never a value). `coach-review` and `coach-simref` are executed by the API through
+the Cloud Run Admin API, so the API's runtime service account needs `run.developer` on them, as it
+has on `parse-report`.
+
+```bash
+IMAGE=us-east1-docker.pkg.dev/foreversixty/api/api:latest
+ENV="$(tr '\n' ',' < .env.job)"
+
+gcloud run jobs create coach-review --image "$IMAGE" --region us-east1 \
+  --args coach-review --cpu 1 --memory 1Gi --task-timeout 10m \
+  --set-env-vars "$ENV" --set-secrets LLM_API_KEY=LLM_API_KEY:latest
+
+gcloud run jobs create coach-simref --image "$IMAGE" --region us-east1 \
+  --args coach-simref --cpu 4 --memory 4Gi --task-timeout 15m \
+  --set-env-vars "$ENV"
+
+gcloud run jobs create coach-samples --image "$IMAGE" --region us-east1 \
+  --args coach-samples --cpu 1 --memory 1Gi --task-timeout 10m \
+  --set-env-vars "$ENV"
+gcloud scheduler jobs create http coach-samples-nightly --location us-east1 \
+  --schedule "20 3 * * *" --time-zone UTC \
+  --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/coach-samples:run" \
+  --http-method POST --oauth-service-account-email "$SCHEDULER_SA"
+
+gcloud run jobs create rating-rebuild-preparation --image "$IMAGE" --region us-east1 \
+  --args rating-rebuild-preparation --cpu 2 --memory 2Gi --task-timeout 60m \
+  --set-env-vars "$ENV"
+```
+
+`rating-rebuild-preparation` is executed by hand, once, right after the API deploy that carries a
+new rating model version, in a quiet window (see "Deploy order"). Pass `-dry-run` first.
+
 ## Environment
 
 | Variable | Where | Value |
