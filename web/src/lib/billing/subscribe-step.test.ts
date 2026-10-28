@@ -100,13 +100,21 @@ describe('leadSentence', () => {
     expect(leadSentence([1, 2, 3].map((id) => guild(id, 'ask_leader')))).toBe(copy.lead.allUnclaimed(3));
   });
 
-  it.each(['claim', 'start_claim', 'confirm_claim', 'claim_link_bnet', 'claim_blocked'] as const)(
-    'a %s card never says the next step is theirs (G6)',
+  it.each(['claim', 'start_claim', 'confirm_claim', 'claim_link_bnet', 'claim_pending_yours'] as const)(
+    'a %s card leads with "You can claim a guild here", never the guild-master rule',
     (step) => {
-      expect(leadSentence([guild(1, step), guild(2, 'ask_leader')])).toBe(copy.lead.someClaimed);
-      expect(leadSentence([guild(1, step)])).toBe(copy.lead.someClaimed);
+      for (const guilds of [[guild(1, step), guild(2, 'ask_leader')], [guild(1, step)]]) {
+        const lead = leadSentence(guilds);
+        expect(lead).toBe(copy.lead.canClaim);
+        expect(lead).not.toMatch(/Only a guild's guild master|the next step is theirs/);
+      }
     },
   );
+
+  it('a claim_blocked card never says the next step is theirs (G6)', () => {
+    expect(leadSentence([guild(1, 'claim_blocked'), guild(2, 'ask_leader')])).toBe(copy.lead.someClaimed);
+    expect(leadSentence([guild(1, 'claim_blocked')])).toBe(copy.lead.someClaimed);
+  });
 
   it('some claimed', () => {
     const claimed = guild(2, 'claimed_ask', { claim: { state: 'claimed', yours: false, holder_name: null } });

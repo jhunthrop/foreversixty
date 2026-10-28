@@ -52,14 +52,16 @@ const NO_VERIFY_LINE_STEPS: readonly SubscribeStep[] = [
   'confirm_claim',
   'claim_blocked',
 ];
-/** Steps where the viewer can act on the claim themselves: the lead never says the next step is someone else's. */
-const OWN_CLAIM_STEPS: readonly SubscribeStep[] = [
+/** Steps where the viewer claims, starts, confirms or holds the pending claim: the lead says they can claim here. */
+const CAN_CLAIM_STEPS: readonly SubscribeStep[] = [
   'claim',
   'start_claim',
   'confirm_claim',
   'claim_link_bnet',
-  'claim_blocked',
+  'claim_pending_yours',
 ];
+/** The guild master blocked from claiming for now: the lead never says the next step is someone else's. */
+const BLOCKED_STEPS: readonly SubscribeStep[] = ['claim_blocked'];
 const SHORT_VERIFY_STEPS: readonly SubscribeStep[] = ['ask_leader', 'claim_pending_ask'];
 
 function stepOf(guild: StepGuild): SubscribeStep | null {
@@ -81,9 +83,11 @@ export function orderGuildCards<T extends StepGuild>(guilds: readonly T[], first
   return first === undefined ? byStep : [first, ...byStep.filter((guild) => guild !== first)];
 }
 
-function actsOnClaim(guild: StepGuild): boolean {
-  const step = stepOf(guild);
-  return step !== null && OWN_CLAIM_STEPS.includes(step);
+function stepIn(steps: readonly SubscribeStep[]): (guild: StepGuild) => boolean {
+  return (guild) => {
+    const step = stepOf(guild);
+    return step !== null && steps.includes(step);
+  };
 }
 
 function isUnclaimed(guild: StepGuild): boolean {
@@ -100,7 +104,8 @@ function isUnclaimed(guild: StepGuild): boolean {
 export function leadSentence(guilds: readonly StepGuild[]): string {
   if (guilds.length === 0) return '';
   if (guilds.some((guild) => stepOf(guild) === 'ready')) return copy.lead.ready;
-  if (guilds.some(actsOnClaim)) return copy.lead.someClaimed;
+  if (guilds.some(stepIn(CAN_CLAIM_STEPS))) return copy.lead.canClaim;
+  if (guilds.some(stepIn(BLOCKED_STEPS))) return copy.lead.someClaimed;
   const unclaimed = guilds.filter(isUnclaimed).length;
   if (unclaimed === 0) return copy.lead.allClaimed;
   return unclaimed === guilds.length ? copy.lead.allUnclaimed(unclaimed) : copy.lead.someClaimed;

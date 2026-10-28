@@ -79,31 +79,41 @@
           data-testid="guild-you"
         >
           {#each you.entries as entry (entry.key)}
-            <li class="flex items-center gap-2">
-              <ClassCrestRing characterClass={entry.characterClass} size={20} />
-              <span class="font-semibold" style={`color: ${classColorVar(entry.characterClass)}`}>
-                {entry.name}
-              </span>
-              <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span>
-              <span class="text-text">{entry.rankWord}</span>
-              <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span>
-              {#if entry.verified}
-                <span class="text-kill inline-flex items-center gap-1">
-                  <svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true">
-                    <path
-                      d="M2.5 7.5l3 3 6-7"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  {copy.verifyMark.verified}
+            <!-- Row 1b at 360: the name and the rank word never break inside; on a narrow phone the
+                 verify mark drops to its own line rather than splitting words. -->
+            <li class="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span class="inline-flex items-center gap-2 whitespace-nowrap">
+                <ClassCrestRing characterClass={entry.characterClass} size={20} />
+                <span class="font-semibold" style={`color: ${classColorVar(entry.characterClass)}`}>
+                  {entry.name}
                 </span>
-              {:else}
-                <span class="text-muted">{copy.verifyMark.notVerified}</span>
-              {/if}
+              </span>
+              <span class="inline-flex items-center gap-2 whitespace-nowrap">
+                <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span
+                >
+                <span class="text-text">{entry.rankWord}</span>
+              </span>
+              <span class="inline-flex items-center gap-2 whitespace-nowrap">
+                <span class="text-muted"><span aria-hidden="true">·</span><span class="sr-only">,</span></span
+                >
+                {#if entry.verified}
+                  <span class="text-kill inline-flex items-center gap-1">
+                    <svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true">
+                      <path
+                        d="M2.5 7.5l3 3 6-7"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    {copy.verifyMark.verified}
+                  </span>
+                {:else}
+                  <span class="text-muted">{copy.verifyMark.notVerified}</span>
+                {/if}
+              </span>
             </li>
           {/each}
           {#if you.more !== null}

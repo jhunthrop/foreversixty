@@ -47,6 +47,10 @@ describe('lead', () => {
     expect(copy.lead.allUnclaimed(count)).toBe(cell('Lead, none `ready`, every guild unclaimed')[index]);
   });
 
+  it('a card the viewer can claim from', () => {
+    expect(copy.lead.canClaim).toBe(row('Lead, none `ready`, a card the viewer can claim from'));
+  });
+
   it('some claimed and some not', () => {
     expect(copy.lead.someClaimed).toBe(row('Lead, none `ready`, some claimed and some not'));
   });

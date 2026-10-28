@@ -43,6 +43,7 @@ export const checkoutGuildCopy = {
       return `${CLAIM_RULE} ${status}, so the next step is theirs.`;
     },
     someClaimed: `${CLAIM_RULE} Here is the next step for each of your guilds.`,
+    canClaim: 'You can claim a guild here. Each card below has its next step.',
     allClaimed:
       "The guild master who holds a guild's claim subscribes it. Here is where each of your guilds stands.",
   },

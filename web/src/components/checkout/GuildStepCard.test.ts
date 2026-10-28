@@ -78,6 +78,13 @@ describe('GuildStepCard you row and facts', () => {
     expect(text).toContain(copy.verifyMark.notVerified);
   });
 
+  it('keeps the name, the rank word and the verify mark each unbroken, wrapping between them', () => {
+    const body = html([guild({})], [character('Obnoxious Yell', 2)]);
+    expect(body).toMatch(/<li class="flex flex-wrap items-center gap-x-2 gap-y-1">/);
+    const groups = [...body.matchAll(/<span class="inline-flex items-center gap-2 whitespace-nowrap">/g)];
+    expect(groups).toHaveLength(3);
+  });
+
   it('shows Verified with the tick for a verified character, main first, two at most then +n more', () => {
     const chars = [
       character('Alt', 2),

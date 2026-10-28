@@ -191,10 +191,18 @@ export function buildMe({
 
 // --- the owner ----------------------------------------------------------------------------------
 
+/** What a Premium account's Plan panel reads beside its rows: no Discord channel saved yet, and
+ *  this month's server sims (spec §5.8 wireframe: the Discord notifications row and the count). */
+const PREMIUM_PANEL_EXTRAS: Partial<Me> = {
+  notifications: { discord: null },
+  server_sims: { runs_this_month: 4 },
+};
+
 /** Capture 1: the owner exactly as production holds the account. */
 export const OWNER_MEMBER: Me = buildMe({
   guilds: [stepGuild(), stepGuild({ ...MILLENNIALS })],
   billing: GRANT_OPEN_ENDED,
+  extra: PREMIUM_PANEL_EXTRAS,
 });
 
 /** Capture 1b: after an addon save that makes the owner leader of OLYMPUS XXVII. */
@@ -302,10 +310,11 @@ export const STEP_FIXTURES: Record<SubscribeStep, Me> = {
   claim_pending_yours: stepFixture(
     stepGuild({
       step: 'claim_pending_yours',
+      rank: 'officer',
       claim: { ...PENDING_CLAIM, pending_yours: true },
     }),
   ),
-  confirm_claim: stepFixture(stepGuild({ step: 'confirm_claim', claim: PENDING_CLAIM })),
+  confirm_claim: stepFixture(stepGuild({ step: 'confirm_claim', rank: 'officer', claim: PENDING_CLAIM })),
   claim_pending_ask: stepFixture(stepGuild({ step: 'claim_pending_ask', claim: PENDING_CLAIM })),
   claim: stepFixture(stepGuild({ step: 'claim', rank: 'leader' })),
   claim_link_bnet: stepFixture(stepGuild({ step: 'claim_link_bnet', rank: 'leader' })),
@@ -381,7 +390,7 @@ function stripeBilling(overrides: Partial<BillingView> = {}): BillingView {
 }
 
 const premiumMe = (billing: BillingView | null, personalPortal = false, extra?: Partial<Me>): Me =>
-  buildMe({ billing, personalPortal, extra });
+  buildMe({ billing, personalPortal, extra: { ...PREMIUM_PANEL_EXTRAS, ...extra } });
 
 /** The founder yearly price Stripe bills ($40), not the list price. */
 const CENTS_PER_DOLLAR = 100;
