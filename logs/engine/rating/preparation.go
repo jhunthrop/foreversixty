@@ -10,6 +10,12 @@ import (
 // completeness score built from the consumable catalogue, percentile-
 // within-bracket (or its own value as the absolute standard, RULING R5,
 // since it is already a bounded 0-100 score).
+//
+// What the player brought is read through consumables.AtPull: the seeded
+// aura tracks (or an aura applied within AtPullGraceMS of the pull), never
+// CombatantRow.Consumables, which production never fills (log coach spec
+// §13). With no character sheet nothing reads present; potion casts still
+// count, since they need no sheet.
 func scorePreparation(fight summary.Summary, player string, bracket Bracket, cat *consumables.RoleCatalogue, src PercentileSource) Component {
 	bracket.Component = ComponentNamePreparation
 	c := Component{Name: ComponentNamePreparation}
@@ -17,77 +23,43 @@ func scorePreparation(fight summary.Summary, player string, bracket Bracket, cat
 		c.Excluded, c.Reason = true, ReasonNoConsumableCatalogue
 		return c
 	}
-
-	combatant, _ := combatantFor(fight, player)
-	var total float64
-
-	// flask/food/weapon_enchant: a player carries exactly one of each, so
-	// any one listed entry present earns the category's full weight.
-	if hasAnyConsumable(combatant, cat.Flask) {
-		total += float64(cat.Weights["flask"])
-	}
-	if hasAnyConsumable(combatant, cat.Food) {
-		total += float64(cat.Weights["food"])
-	}
-	if len(cat.WeaponEnchant) > 0 && hasAnyConsumable(combatant, cat.WeaponEnchant) {
-		total += float64(cat.Weights["weapon_enchant"])
-	}
-	// world_buffs: several stack at once, so credit is proportional to how
-	// many of the catalogue's listed buffs are present.
-	if len(cat.WorldBuffs) > 0 {
-		present := countPresentConsumables(combatant, cat.WorldBuffs)
-		total += float64(cat.Weights["world_buffs"]) * float64(present) / float64(len(cat.WorldBuffs))
-	}
-	// combat_potion: credit proportional to uses against the shared-
-	// cooldown cap.
-	if cat.CombatPotion.MaxUses > 0 {
-		uses := potionUses(fight, player, cat.CombatPotion.Entries)
-		if uses > cat.CombatPotion.MaxUses {
-			uses = cat.CombatPotion.MaxUses
-		}
-		total += float64(cat.Weights["combat_potion"]) * float64(uses) / float64(cat.CombatPotion.MaxUses)
-	}
-
+	pull := consumables.AtPull(fight, player, *cat)
+	total := carriedWeight(pull, cat) + worldBuffWeight(pull, cat) + potionWeight(pull, cat)
 	return placeBoundedOrSelf(c, src, bracket, clamp(total, 0, 100))
 }
 
-func combatantFor(fight summary.Summary, player string) (summary.CombatantRow, bool) {
-	for _, cr := range fight.Combatants {
-		if cr.GUID == player {
-			return cr, true
+// carriedCategories are the categories a player carries exactly one of, so
+// any one listed entry present earns the category's full weight.
+var carriedCategories = []string{consumables.CategoryFlask, consumables.CategoryFood, consumables.CategoryWeaponEnchant}
+
+func carriedWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float64 {
+	var total float64
+	for _, category := range carriedCategories {
+		if pull.Has(category) {
+			total += float64(cat.Weights[category])
 		}
 	}
-	return summary.CombatantRow{}, false
+	return total
 }
 
-func hasAnyConsumable(combatant summary.CombatantRow, entries []consumables.Entry) bool {
-	return countPresentConsumables(combatant, entries) > 0
-}
-
-func countPresentConsumables(combatant summary.CombatantRow, entries []consumables.Entry) int {
-	count := 0
-	for _, e := range entries {
-		for _, c := range combatant.Consumables {
-			if c.SpellID == e.SpellID {
-				count++
-				break
-			}
-		}
+// worldBuffWeight credits world_buffs: several stack at once, so credit is
+// proportional to how many of the catalogue's listed buffs are present.
+func worldBuffWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float64 {
+	if len(cat.WorldBuffs) == 0 {
+		return 0
 	}
-	return count
+	present := len(pull.Present[consumables.CategoryWorldBuffs])
+	return float64(cat.Weights[consumables.CategoryWorldBuffs]) * float64(present) / float64(len(cat.WorldBuffs))
 }
 
-func potionUses(fight summary.Summary, player string, entries []consumables.Entry) int64 {
-	var uses int64
-	for _, cr := range fight.Casts {
-		if cr.OwnerGUID != player {
-			continue
-		}
-		for _, e := range entries {
-			if cr.SpellID == e.SpellID {
-				uses += cr.Succeeded
-			}
-		}
+// potionWeight credits combat_potion proportional to uses against the
+// shared-cooldown cap: the casts in the fight, plus one for a pre-pull
+// potion, which shows only as a seeded aura.
+func potionWeight(pull consumables.Pull, cat *consumables.RoleCatalogue) float64 {
+	limit := cat.CombatPotion.MaxUses
+	if limit <= 0 {
+		return 0
 	}
-	return uses
+	uses := min(pull.PotionUses+int64(len(pull.Present[consumables.CategoryCombatPotion])), limit)
+	return float64(cat.Weights[consumables.CategoryCombatPotion]) * float64(uses) / float64(limit)
 }

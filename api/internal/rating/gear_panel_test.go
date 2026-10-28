@@ -164,7 +164,8 @@ func (fx *gearPanelFixture) seedWith(t *testing.T, name string, gear map[string]
 	if err := (&Store{Pool: fx.pool}).RateFight(ctx, RatedFight{
 		ReportID: reportID, FightIndex: 1, Region: "us", Ruleset: "normal", FoughtAt: at, EncounterID: 990671,
 		Summary: summary.Summary{EncounterID: 990671, Difficulty: 3, DurationMS: 180000, Kill: true,
-			Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(row.GUID)}},
+			Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(row.GUID)},
+			Auras: preparedPull(row.GUID)},
 	}); err != nil {
 		t.Fatal(err)
 	}

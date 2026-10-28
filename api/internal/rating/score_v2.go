@@ -538,55 +538,41 @@ func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (n
 	return len(guildNights), attended, nil
 }
 
-// disciplineFlasks and disciplineFoods are every flask and every food in the consumables
-// catalogue (logs/engine/mechanics/consumables/catalogue.json), across all roles: a
-// category is met by any consumable of that category, not only one listed for the
-// player's own role (a warrior on a tank's food is fed).
+// disciplineCatalogue is every role's consumables merged (consumables.Catalogue.AllRoles):
+// a category is met by any consumable of that category, not only one listed for the
+// player's own role (a warrior on a tank's food is fed). The discipline readers read what
+// the player brought through consumables.AtPull, the seeded aura tracks (log coach spec
+// §13), never CombatantRow.Consumables, which production never fills.
 //
-// The catalogue's weapon_enchant category (sharpening stones, wizard oils) is left out of
-// the requirement - treated as unknown - until a real beta log shows how stones and oils
-// appear in COMBATANT_INFO (as an aura, or as a temporary enchant on the weapon).
-var disciplineFlasks, disciplineFoods = consumableCategories()
+// Only flask and food are judged. The catalogue's weapon_enchant category (sharpening
+// stones, wizard oils) is left out of the requirement - treated as unknown - until a real
+// beta log shows how stones and oils appear in COMBATANT_INFO (as an aura, or as a
+// temporary enchant on the weapon). Class raid buffs are not judged here at all: whether a
+// missing one is a finding depends on the player (Wisdom does nothing for a rage user) and
+// on the raid's paladins (one blessing each), which is the coach's reading, not this one.
+var disciplineCatalogue = consumables.Load().AllRoles()
 
-func consumableCategories() (flasks, foods map[int64]bool) {
-	flasks, foods = map[int64]bool{}, map[int64]bool{}
-	for _, rc := range consumables.Load().Roles {
-		for _, e := range rc.Flask {
-			flasks[e.SpellID] = true
-		}
-		for _, e := range rc.Food {
-			foods[e.SpellID] = true
-		}
-	}
-	return flasks, foods
-}
-
-// fightDiscipline is whether row's player pulled fully prepared: a flask and a food
-// (disciplineFlasks, disciplineFoods), and every equipped slot of disciplineEnchantSlots
+// fightDiscipline is whether row's player pulled fully prepared: a flask and a food up at
+// the pull (disciplineCatalogue), and every equipped slot of disciplineEnchantSlots
 // enchanted. nil is "not known": no combatant info with gear for the player.
 func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
-	var combatant *summary.CombatantRow
-	for i := range fight.Combatants {
-		if fight.Combatants[i].GUID == row.GUID {
-			combatant = &fight.Combatants[i]
-			break
-		}
-	}
-	if combatant == nil || len(combatant.Gear) == 0 {
+	pull := consumables.AtPull(fight, row.GUID, disciplineCatalogue)
+	combatant, ok := combatantOf(fight, row.GUID)
+	if !pull.Known || !ok {
 		return nil
 	}
-	full := carries(*combatant, disciplineFlasks) && carries(*combatant, disciplineFoods) && enchanted(*combatant)
+	full := pull.Has(consumables.CategoryFlask) && pull.Has(consumables.CategoryFood) && enchanted(combatant)
 	return &full
 }
 
-// carries is true when the combatant has any consumable of the category.
-func carries(c summary.CombatantRow, category map[int64]bool) bool {
-	for _, a := range c.Consumables {
-		if category[a.SpellID] {
-			return true
+// combatantOf is guid's combatant row, if the fight has one.
+func combatantOf(fight summary.Summary, guid string) (summary.CombatantRow, bool) {
+	for i := range fight.Combatants {
+		if fight.Combatants[i].GUID == guid {
+			return fight.Combatants[i], true
 		}
 	}
-	return false
+	return summary.CombatantRow{}, false
 }
 
 // enchanted is true when every equipped slot of disciplineEnchantSlots carries a

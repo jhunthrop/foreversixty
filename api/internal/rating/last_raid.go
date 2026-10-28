@@ -10,6 +10,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
@@ -173,26 +174,21 @@ func msToSeconds(ms int64) int {
 }
 
 // consumablesMissed is the plain names of the categories the player pulled without, read
-// from the same catalogue the discipline fact uses (disciplineFlasks, disciplineFoods; the
-// weapon enchant stays out until a beta log shows how stones and oils appear, see
-// score_v2.go). With no combatant info the log cannot say, and the list is empty.
+// through consumables.AtPull against the same catalogue the discipline fact uses
+// (disciplineCatalogue: flask and food; the weapon enchant stays out until a beta log
+// shows how stones and oils appear, see score_v2.go). With no character sheet the log
+// cannot say, and the list is empty: unknown is never missing.
 func consumablesMissed(fight summary.Summary, row summary.RosterRow) []string {
 	missed := []string{}
-	for i := range fight.Combatants {
-		c := fight.Combatants[i]
-		if c.GUID != row.GUID {
-			continue
-		}
-		if len(c.Gear) == 0 {
-			break // no gear, no combatant info worth reading: fightDiscipline's own "not known"
-		}
-		if !carries(c, disciplineFlasks) {
-			missed = append(missed, consumableFlask)
-		}
-		if !carries(c, disciplineFoods) {
-			missed = append(missed, consumableFood)
-		}
-		break
+	pull := consumables.AtPull(fight, row.GUID, disciplineCatalogue)
+	if !pull.Known {
+		return missed
+	}
+	if !pull.Has(consumables.CategoryFlask) {
+		missed = append(missed, consumableFlask)
+	}
+	if !pull.Has(consumables.CategoryFood) {
+		missed = append(missed, consumableFood)
 	}
 	return missed
 }

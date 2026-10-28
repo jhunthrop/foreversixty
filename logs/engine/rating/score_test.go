@@ -13,6 +13,7 @@ import (
 	"math"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/utility"
@@ -45,10 +46,9 @@ func TestWorkedExampleDPSWarriorFury(t *testing.T) {
 		Auras: []summary.AuraTrack{
 			{TargetGUID: "Boss", SpellID: 1160, Name: "Demoralizing Shout", Type: "DEBUFF", UptimeMS: 158400, Appliers: []string{player}},
 			{TargetGUID: "Boss", SpellID: 7386, Name: "Sunder Armor", Type: "DEBUFF", UptimeMS: 165600, Appliers: []string{player}},
+			seededOn(player, 17626), seededOn(player, 1249522), seededOn(player, 25122),
 		},
-		Combatants: []summary.CombatantRow{
-			{GUID: player, Consumables: []summary.AuraRef{{SpellID: 17626}, {SpellID: 1249522}, {SpellID: 25122}}},
-		},
+		Combatants: []summary.CombatantRow{{GUID: player, Gear: []event.Item{{ID: 1}}}},
 		Casts: []summary.CastRow{
 			{GUID: player, OwnerGUID: player, SpellID: 17528, Succeeded: 1},
 		},
@@ -89,6 +89,8 @@ func TestWorkedExampleDPSWarriorFury(t *testing.T) {
 	checkComponent(t, card, ComponentNameMechanics, 55)
 	checkComponent(t, card, ComponentNameUtility, 62)
 	checkComponent(t, card, ComponentNamePreparation, 95)
+	// flask 30 + food 15 + oil 15 seeded, no world buff, one of two potions: 70.
+	checkPlaced(t, src, ComponentNamePreparation, 70)
 	checkComponent(t, card, ComponentNameActivity, 80)
 
 	survival := componentByName(card, ComponentNameSurvival)
@@ -127,10 +129,9 @@ func TestWorkedExampleHealerPriestHoly(t *testing.T) {
 		}},
 		Auras: []summary.AuraTrack{
 			{TargetGUID: "Boss", SpellID: 1243, Name: "Power Word: Fortitude", Type: "BUFF", UptimeMS: 172800, Appliers: []string{player}},
+			seededOn(player, 17627), seededOn(player, 1249513),
 		},
-		Combatants: []summary.CombatantRow{
-			{GUID: player, Consumables: []summary.AuraRef{{SpellID: 17627}, {SpellID: 1249513}}},
-		},
+		Combatants: []summary.CombatantRow{{GUID: player, Gear: []event.Item{{ID: 1}}}},
 	}
 
 	table := &mechanics.Table{EncounterID: shazzrahEncounterID, Name: "Shazzrah", Mechanics: []mechanics.Mechanic{
@@ -165,6 +166,8 @@ func TestWorkedExampleHealerPriestHoly(t *testing.T) {
 	checkComponent(t, card, ComponentNameOutput, 41)
 	checkComponent(t, card, ComponentNameUtility, 85)
 	checkComponent(t, card, ComponentNamePreparation, 100)
+	// flask 30 + food 15 seeded, no world buff, no potion: 45.
+	checkPlaced(t, src, ComponentNamePreparation, 45)
 	checkComponent(t, card, ComponentNameActivity, 66)
 
 	mech := componentByName(card, ComponentNameMechanics)

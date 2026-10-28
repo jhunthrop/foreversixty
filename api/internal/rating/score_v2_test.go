@@ -64,10 +64,9 @@ const (
 	slotMainHand = 15
 )
 
-// preparedCombatant is a dps combatant with a flask, food, a weapon stone and every
-// enchantable slot enchanted.
+// preparedCombatant is a dps character sheet with every enchantable slot enchanted. What
+// the player brought into the pull lives on the fight's aura tracks: preparedPull.
 func preparedCombatant(guid string) summary.CombatantRow {
-	cat, _ := consumables.Load().For("dps")
 	gear := make([]event.Item, 19)
 	for i := range gear {
 		gear[i] = event.Item{ID: int64(10000 + i)}
@@ -75,58 +74,62 @@ func preparedCombatant(guid string) summary.CombatantRow {
 	for _, s := range []int{slotChest, slotFeet, slotBack, slotMainHand} {
 		gear[s].Enchants = []int64{1900}
 	}
-	return summary.CombatantRow{
-		GUID: guid, Gear: gear,
-		Consumables: []summary.AuraRef{
-			{SpellID: cat.Flask[0].SpellID}, {SpellID: cat.Food[0].SpellID}, {SpellID: cat.WeaponEnchant[0].SpellID},
-		},
-	}
+	return summary.CombatantRow{GUID: guid, Gear: gear}
 }
 
-func dropConsumable(c summary.CombatantRow, spellID int64) summary.CombatantRow {
-	kept := []summary.AuraRef{}
-	for _, a := range c.Consumables {
-		if a.SpellID != spellID {
-			kept = append(kept, a)
+// seededTrack is an aura guid's own COMBATANT_INFO listed: up at the pull.
+func seededTrack(guid string, spellID int64) summary.AuraTrack {
+	return summary.AuraTrack{TargetGUID: guid, SpellID: spellID, Seeded: true,
+		Segments: []summary.Segment{{StartMS: 0, EndMS: 180000}}}
+}
+
+// preparedPull is the dps flask, food and weapon stone seeded on guid, less any spell id
+// in drop.
+func preparedPull(guid string, drop ...int64) []summary.AuraTrack {
+	cat, _ := consumables.Load().For("dps")
+	dropped := map[int64]bool{}
+	for _, id := range drop {
+		dropped[id] = true
+	}
+	auras := []summary.AuraTrack{}
+	for _, id := range []int64{cat.Flask[0].SpellID, cat.Food[0].SpellID, cat.WeaponEnchant[0].SpellID} {
+		if !dropped[id] {
+			auras = append(auras, seededTrack(guid, id))
 		}
 	}
-	c.Consumables = kept
-	return c
+	return auras
 }
 
 func TestFightDisciplineNeedsFlaskFoodAndEnchants(t *testing.T) {
 	dps, _ := consumables.Load().For("dps")
 	tank, _ := consumables.Load().For("tank")
 	row := summary.RosterRow{GUID: "g", Name: "Prepared", Class: "Warrior", Spec: "Arms", Role: "dps"}
-	fightWith := func(c summary.CombatantRow) summary.Summary {
-		return summary.Summary{Combatants: []summary.CombatantRow{c}, Roster: []summary.RosterRow{row}}
-	}
-	check := func(name string, c summary.CombatantRow, want bool) {
+	check := func(name string, c summary.CombatantRow, auras []summary.AuraTrack, want bool) {
 		t.Helper()
-		if got := fightDiscipline(fightWith(c), row); got == nil || *got != want {
+		fight := summary.Summary{Combatants: []summary.CombatantRow{c}, Roster: []summary.RosterRow{row}, Auras: auras}
+		if got := fightDiscipline(fight, row); got == nil || *got != want {
 			t.Errorf("%s: %v, want %v", name, got, want)
 		}
 	}
 
-	check("a fully prepared player", preparedCombatant("g"), true)
-	check("no flask", dropConsumable(preparedCombatant("g"), dps.Flask[0].SpellID), false)
-	check("no food", dropConsumable(preparedCombatant("g"), dps.Food[0].SpellID), false)
+	check("a fully prepared player", preparedCombatant("g"), preparedPull("g"), true)
+	check("no flask", preparedCombatant("g"), preparedPull("g", dps.Flask[0].SpellID), false)
+	check("no food", preparedCombatant("g"), preparedPull("g", dps.Food[0].SpellID), false)
 	unenchanted := preparedCombatant("g")
 	unenchanted.Gear[slotBack].Enchants = nil
-	check("an unenchanted cloak", unenchanted, false)
+	check("an unenchanted cloak", unenchanted, preparedPull("g"), false)
 	empty := preparedCombatant("g")
 	empty.Gear[slotFeet] = event.Item{}
-	check("an empty slot is not a missing enchant", empty, true)
+	check("an empty slot is not a missing enchant", empty, preparedPull("g"), true)
 	// Weapon stones and oils are not required until a beta log shows how they appear.
-	check("no weapon stone", dropConsumable(preparedCombatant("g"), dps.WeaponEnchant[0].SpellID), true)
+	check("no weapon stone", preparedCombatant("g"), preparedPull("g", dps.WeaponEnchant[0].SpellID), true)
 	// A category is met by any role's consumable of it: a dps warrior on a tank's food.
-	tankFood := dropConsumable(preparedCombatant("g"), dps.Food[0].SpellID)
-	tankFood.Consumables = append(tankFood.Consumables, summary.AuraRef{SpellID: tank.Food[0].SpellID})
 	if tank.Food[0].SpellID == dps.Food[0].SpellID {
 		t.Fatal("the tank and dps foods must differ for this case to mean anything")
 	}
-	check("a dps warrior on a tank's food", tankFood, true)
-	if got := fightDiscipline(summary.Summary{Roster: []summary.RosterRow{row}}, row); got != nil {
+	tankFood := append(preparedPull("g", dps.Food[0].SpellID), seededTrack("g", tank.Food[0].SpellID))
+	check("a dps warrior on a tank's food", preparedCombatant("g"), tankFood, true)
+	if got := fightDiscipline(summary.Summary{Roster: []summary.RosterRow{row}, Auras: preparedPull("g")}, row); got != nil {
 		t.Errorf("no combatant info: %v, want unknown (nil)", *got)
 	}
 }
@@ -288,9 +291,9 @@ func seedLoggedRaider(t *testing.T) scoreFixture {
 		mustExec(t, pool, `insert into reports (id, owner_id, guild_id, title, visibility, zone, status, created_at)
 			values ($1, $2, $3, 'Score v2', 'public', 'Molten Core', 'complete', $4)`, reportID, fx.userID, fx.guildID, at)
 		for i := 1; i <= 4; i++ {
-			combatant := preparedCombatant(row.GUID)
+			pull := preparedPull(row.GUID)
 			if night == 0 && i == 1 {
-				combatant = dropConsumable(combatant, dps.Flask[0].SpellID)
+				pull = preparedPull(row.GUID, dps.Flask[0].SpellID)
 				fx.missedFlask++
 			}
 			foughtAt := at.Add(time.Duration(i) * 15 * time.Minute)
@@ -301,7 +304,8 @@ func seedLoggedRaider(t *testing.T) scoreFixture {
 				FoughtAt: foughtAt, EncounterID: int64(sv2Encounter + i - 1),
 				Summary: summary.Summary{
 					EncounterID: int64(sv2Encounter + i - 1), Difficulty: 3, DurationMS: 180000, Kill: true,
-					Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{combatant},
+					Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(row.GUID)},
+					Auras: pull,
 				},
 			}); err != nil {
 				t.Fatal(err)

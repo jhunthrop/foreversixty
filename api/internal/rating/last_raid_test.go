@@ -125,24 +125,23 @@ func TestBiggestLossNamesTheComponentThatCostTheMostPoints(t *testing.T) {
 func TestConsumablesMissedNamesThePlainCategories(t *testing.T) {
 	dps, _ := consumables.Load().For("dps")
 	row := summary.RosterRow{GUID: "g", Name: "Prepared"}
-	missed := func(c summary.CombatantRow) []string {
-		return consumablesMissed(summary.Summary{Combatants: []summary.CombatantRow{c}}, row)
+	missed := func(auras []summary.AuraTrack) []string {
+		return consumablesMissed(summary.Summary{Combatants: []summary.CombatantRow{preparedCombatant("g")}, Auras: auras}, row)
 	}
-	if got := missed(preparedCombatant("g")); got == nil || len(got) != 0 {
+	if got := missed(preparedPull("g")); got == nil || len(got) != 0 {
 		t.Errorf("fully prepared = %#v, want an empty list, not nil", got)
 	}
-	if got := missed(dropConsumable(preparedCombatant("g"), dps.Flask[0].SpellID)); !reflect.DeepEqual(got, []string{"flask"}) {
+	if got := missed(preparedPull("g", dps.Flask[0].SpellID)); !reflect.DeepEqual(got, []string{"flask"}) {
 		t.Errorf("no flask = %v", got)
 	}
-	both := dropConsumable(dropConsumable(preparedCombatant("g"), dps.Flask[0].SpellID), dps.Food[0].SpellID)
-	if got := missed(both); !reflect.DeepEqual(got, []string{"flask", "food"}) {
+	if got := missed(preparedPull("g", dps.Flask[0].SpellID, dps.Food[0].SpellID)); !reflect.DeepEqual(got, []string{"flask", "food"}) {
 		t.Errorf("neither = %v", got)
 	}
 	// Weapon stones and oils stay out until a beta log shows how they appear.
-	if got := missed(dropConsumable(preparedCombatant("g"), dps.WeaponEnchant[0].SpellID)); len(got) != 0 {
+	if got := missed(preparedPull("g", dps.WeaponEnchant[0].SpellID)); len(got) != 0 {
 		t.Errorf("no weapon stone = %v, want nothing missed", got)
 	}
-	if got := consumablesMissed(summary.Summary{}, row); got == nil || len(got) != 0 {
+	if got := consumablesMissed(summary.Summary{Auras: preparedPull("g")}, row); got == nil || len(got) != 0 {
 		t.Errorf("no combatant info = %#v, want an empty list", got)
 	}
 }
@@ -157,7 +156,8 @@ func TestRateFightStoresTheLastRaidFacts(t *testing.T) {
 		ActiveMS: 100000}
 	f := fightFixture("last-raid-facts", true, row)
 	f.Summary.Deaths = []summary.Death{{GUID: "lr-g", AtMS: 150000}}
-	f.Summary.Combatants = []summary.CombatantRow{dropConsumable(preparedCombatant("lr-g"), dps.Flask[0].SpellID)}
+	f.Summary.Combatants = []summary.CombatantRow{preparedCombatant("lr-g")}
+	f.Summary.Auras = preparedPull("lr-g", dps.Flask[0].SpellID)
 	t.Cleanup(func() { pool.Exec(context.Background(), `delete from rating_scores where report_id = $1`, f.ReportID) })
 	if err := store.RateFight(ctx, f); err != nil {
 		t.Fatal(err)

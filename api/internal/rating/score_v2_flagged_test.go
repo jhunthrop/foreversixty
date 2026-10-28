@@ -214,6 +214,7 @@ func TestRerateFlaggedRollsTheScoreBackDown(t *testing.T) {
 	sum := summary.Summary{
 		EncounterID: int64(sv2Encounter + 3), Difficulty: 3, DurationMS: 180000, Kill: true,
 		Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(row.GUID)},
+		Auras: preparedPull(row.GUID),
 	}
 	// The rater rolled the score up onto the newest clean fight while the forged report
 	// still counted.
@@ -321,7 +322,8 @@ func TestRerateFlaggedReachesTheNightsGuildmatesAndTheAccountsAlts(t *testing.T)
 		row := summary.RosterRow{GUID: guid, Name: name, Class: "Warrior", Spec: "Arms", Role: "dps",
 			ExecutionScore: execScorePtr(0.8)}
 		return summary.Summary{EncounterID: sv2Encounter, Difficulty: 3, DurationMS: 180000, Kill: true,
-			Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(guid)}}
+			Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(guid)},
+			Auras: preparedPull(guid)}
 	}
 	rate := func(reportID string, index int, foughtAt time.Time, sum summary.Summary) RatedFight {
 		t.Helper()
