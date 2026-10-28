@@ -330,6 +330,7 @@ func coreFinding(in Input, fired []coreAbility, anchors *coreAnchors) *Finding {
 		cmp.Label += Fill(BasisPerMin, map[string]string{"ref": PerMinute(worst.refCPM), "you": PerMinute(worst.youCPM)})
 		f.Comparison = &cmp
 	}
+	withCeiling(f, in, worst)
 	return f
 }
 
