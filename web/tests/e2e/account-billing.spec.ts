@@ -2,7 +2,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { mockEntitlements, NO_PRICE_FACTS } from '../../src/test-support/billing-fixtures';
 import { ownerMeAnswer } from './support/character-fixture';
-import { checkoutHref } from '../../src/components/premium/model';
 import type { Me } from '../../src/lib/account/me-types';
 import { accountPlanCopy } from '../../src/lib/billing/account-plan-copy';
 import { fittingGuildPlan } from '../../src/lib/billing/checkout-params';
@@ -85,6 +84,8 @@ test('active subscription: shows the renewal date and a working manage-billing b
             server_sims: true,
             billing: {
               ...NO_PRICE_FACTS,
+              // A source-less, priceless row reads as a grant (plan-line isGrant); this is Stripe.
+              source: 'stripe',
               plan: 'premium',
               status: 'active',
               current_period_end: '2026-12-01T00:00:00Z',
@@ -127,6 +128,8 @@ test('past due: shows the payment-failed banner without losing access', async ({
             server_sims: true,
             billing: {
               ...NO_PRICE_FACTS,
+              // A source-less, priceless row reads as a grant (plan-line isGrant); this is Stripe.
+              source: 'stripe',
               plan: 'premium',
               status: 'past_due',
               current_period_end: '2026-12-01T00:00:00Z',
@@ -292,7 +295,7 @@ test('the guild rows say Not verified, that the guild has no plan, and link the 
     await expect(next).toHaveText(accountPlanCopy.guildRow.nextStep);
     await expect(next).toHaveAttribute(
       'href',
-      `${checkoutHref(fittingGuildPlan(0), 'yearly')}#guild-${guild.id}`,
+      `/premium/checkout?plan=${fittingGuildPlan(0)}&interval=yearly#guild-${guild.id}`,
     );
   }
   await expectNoAxeViolations(page, '[data-testid="account-guilds-panel"]');

@@ -97,7 +97,7 @@ async function stubPremium(page: Page): Promise<void> {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({ data: { user: { premium: true }, characters: [] }, error: null }),
+      body: JSON.stringify({ data: { user: { premium: true }, characters: [], guilds: [] }, error: null }),
     }),
   );
 }

@@ -34,7 +34,7 @@ const ROWS = [
 /** Stubs a signed-in player with the two-row fixture above, honouring `kind=`. */
 async function stubHistory(page: Page): Promise<void> {
   await page.route('**/v1/me', (route) =>
-    route.fulfill(envelope({ user: { premium: false }, characters: [] })),
+    route.fulfill(envelope({ user: { premium: false }, characters: [], guilds: [] })),
   );
   await page.route('**/v1/sims?mine=1*', (route) => {
     const kind = new URL(route.request().url()).searchParams.get('kind');

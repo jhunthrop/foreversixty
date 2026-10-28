@@ -136,7 +136,7 @@ test.describe('current character', () => {
     };
 
     await page.route('**/v1/me', (route) =>
-      route.fulfill(envelope({ user: { premium: true }, characters: [] })),
+      route.fulfill(envelope({ user: { premium: true }, characters: [], guilds: [] })),
     );
     await page.route('**/v1/sims/run', (route) => route.fulfill(envelope({ sim_id: SIM_ID })));
     await page.route(`**/v1/sims/${SIM_ID}/progress`, (route) =>

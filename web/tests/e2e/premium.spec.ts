@@ -164,16 +164,22 @@ test('at 360 the Free card comes first, once, with the free list and the promise
   expect(order).toEqual(['free', 'premium', 'example', 'guild', 'raid_guild', 'history']);
 });
 
-test('at 1024 the three subscribe buttons share top and height', async ({ page }) => {
+// Spec B3.2 (premium-value amendment): from 1024 Premium sits in region A and the two guild
+// plans in region B below it, so the buttons share a height and the guild pair shares a top.
+test('at 1024 the subscribe buttons share a height and the guild pair shares a top', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await openAt(page, DECEMBER);
-  const boxes = await page
-    .locator('[data-plan] .action-slot a:visible')
-    .evaluateAll((links) =>
-      links.map((link) => link.getBoundingClientRect()).map(({ top, height }) => ({ top, height })),
-    );
-  expect(boxes).toHaveLength(PLAN_ORDER.length);
-  for (const box of boxes) expect(box).toEqual(boxes[0]);
+  const boxes = await page.locator('[data-plan] .action-slot a:visible').evaluateAll((links) =>
+    links.map((link) => {
+      const { top, height } = link.getBoundingClientRect();
+      return { plan: link.closest('[data-plan]')?.getAttribute('data-plan'), top, height };
+    }),
+  );
+  expect(boxes.map((box) => box.plan)).toEqual([...PLAN_ORDER]);
+  for (const box of boxes) expect(box.height).toBe(boxes[0]!.height);
+  const guild = boxes.find((box) => box.plan === 'guild');
+  const raid = boxes.find((box) => box.plan === 'raid_guild');
+  expect(raid?.top).toBe(guild?.top);
 });
 
 test('at 1024 the guild row puts the history promise in column 3', async ({ page }) => {
@@ -338,9 +344,11 @@ test('the example image box is reserved at 4:3 whether or not the picture loads'
 
 const SHIP = process.env.SHIP === '1';
 
-test('the example ships real data, not the placeholder', (_fixtures, testInfo) => {
+test('the example ships real data, not the placeholder', () => {
   if (!SHIP && isPlaceholder(serverRunExample)) {
-    testInfo.annotations.push({ type: 'placeholder', description: 'premium-examples.json is a placeholder' });
+    test
+      .info()
+      .annotations.push({ type: 'placeholder', description: 'premium-examples.json is a placeholder' });
     test.skip(true, 'placeholder data; set SHIP=1 to make this a failure');
   }
   expect(

@@ -9,7 +9,6 @@ import { checkoutGuildCopy as copy } from '../../src/lib/billing/checkout-guild-
 import { checkoutCopy } from '../../src/lib/billing/copy';
 import { priceFor } from '../../src/lib/billing/plan-costs';
 import { PLANS, formatPrice, founderOpen } from '../../src/lib/billing/plans';
-import { ACCOUNT_PLAN_HREF } from '../../src/lib/billing/premium-owned';
 import { premiumSourceCopy } from '../../src/lib/billing/premium-source-copy';
 import { uiCopy } from '../../src/lib/ui/copy';
 import {
@@ -61,6 +60,9 @@ import { drainShifts, recordShifts, sumShifts } from './support/layout-shift';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { shortControls } from './support/short-controls';
 
+// premium-owned.ts's ACCOUNT_PLAN_HREF: that module reaches lib/planner/config.ts, whose
+// import.meta.env does not exist under Playwright's Node loader, so the spec cannot import it.
+const ACCOUNT_PLAN_HREF = '/account#plan';
 const GUILD_NAME = OLYMPUS.name;
 const CLAIM_PATH = `**/v1/guilds/${GUILD_ID}/claim`;
 const CLAIM_CONFIRM_PATH = `**/v1/guilds/${GUILD_ID}/claim/confirm`;
@@ -102,7 +104,7 @@ test.describe('the owner, a member of two unclaimed guilds', () => {
     await expect(first.getByTestId('guild-facts')).toContainText(copy.facts.noPlan);
     await expect(first.getByTestId('guild-step-sentence')).toHaveText(copy.askLeader(GUILD_NAME));
     await expect(first.getByTestId(id('handoff-url'))).toHaveValue(
-      /\/guild\/us\/forever\/olympus-xxvii\/claim\?plan=guild&interval=yearly$/,
+      new RegExp(`/guild/us/pvp/${OLYMPUS.slug}/claim\\?plan=guild&interval=yearly$`),
     );
     await expect(first.getByTestId('guild-verify-line')).toHaveText(copy.verify.short);
     const other = first.getByTestId('guild-other-character');
@@ -389,7 +391,9 @@ test.describe('on_plan', () => {
     );
 
     await page.unrouteAll({ behavior: 'ignoreErrors' });
-    await openStep(page, meWithGuilds(onPlanGuild({ seats_given: 3, seats_total: 3 })));
+    // Seat lines show only on a card the viewer does not pay for (guild-card-model seatLine).
+    const otherPays = ON_PLAN_OTHER_PAYS.guilds[0]?.covered;
+    await openStep(page, meWithGuilds(onPlanGuild({ ...otherPays, seats_given: 3, seats_total: 3 })));
     await expect(page.getByTestId('checkout-guild-card')).toContainText(copy.onPlan.seatsAllGiven(3));
   });
 });

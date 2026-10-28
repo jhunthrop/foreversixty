@@ -170,7 +170,7 @@ const STUB_RESULT = {
  */
 async function stubPremiumRun(page: Page): Promise<void> {
   await page.route('**/v1/me', (route) =>
-    route.fulfill(envelope({ user: { premium: true }, characters: [] })),
+    route.fulfill(envelope({ user: { premium: true }, characters: [], guilds: [] })),
   );
   await page.route('**/v1/sims/run', (route) => route.fulfill(envelope({ sim_id: STUB_SIM_ID })));
   await page.route(`**/v1/sims/${STUB_SIM_ID}/progress`, (route) =>

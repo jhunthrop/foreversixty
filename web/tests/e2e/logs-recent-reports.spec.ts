@@ -164,7 +164,7 @@ test('"Your reports" is the first panel for a signed-in visitor, and the page ha
 }) => {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
-    route.fulfill(fulfil({ user: { battletag: 'Fixture#1234' }, characters: [] })),
+    route.fulfill(fulfil({ user: { battletag: 'Fixture#1234' }, characters: [], guilds: [] })),
   );
   await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
   await routeSampleReportMeta(page);
