@@ -134,9 +134,13 @@ func TestPreparation_PotionsShortOfWhatTheFightHoldsAreMinorAndQuoteBothNumbers(
 	in := withCompletePotions(furyPrep(t, 40, fullKit()))
 	in.Fight.DurationMS = 300_000
 	in.Fight = seedPotion(in.Fight, in.Row.GUID)
-	f := preparation(in, CountedTime(in)).Finding
+	o := preparation(in, CountedTime(in))
+	f := o.Finding
 	if f == nil || f.Severity != SeverityMinor || f.Title != "Combat potions: 1 unused" || f.Detail != "You used 1 combat potion. The fight had room for 2." {
 		t.Fatalf("%+v", f)
+	}
+	if !o.UnusedPotions || o.MissingFlask {
+		t.Errorf("typed facts for the links: unused potions %v, missing flask %v", o.UnusedPotions, o.MissingFlask)
 	}
 	if len(f.Facts.Numbers) != 3 || f.Facts.Numbers[1].Text != "2" || f.Facts.Numbers[2].Text != "1" {
 		t.Fatalf("the 'of 2' is a fact too: %+v", f.Facts.Numbers)

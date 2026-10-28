@@ -103,6 +103,19 @@ func TestLinks_MissingFlaskCoversOutOfMana(t *testing.T) {
 	}
 }
 
+// Unused combat potions (F6) and a death (F7) on the same pull link (A12, LinkPotionDeath).
+func TestLinks_UnusedPotionsAndADeath(t *testing.T) {
+	fs := []Finding{{ID: "f1", Code: CodeDeath}, {ID: "f2", Code: CodePreparation}}
+	got := computeLinks(fs, map[string]outcome{"f1": {Windows: win(150_000, 150_000)}, "f2": {UnusedPotions: true}})
+	if len(got) != 1 || got[0].Kind != LinkConsumableCovers || got[0].Findings != [2]string{"f2", "f1"} ||
+		got[0].Sentence != "You died at 2:30 with combat potions unused." {
+		t.Fatalf("%+v", got)
+	}
+	if none := computeLinks(fs, map[string]outcome{"f1": {Windows: win(150_000, 150_000)}, "f2": {MissingFlask: true}}); len(none) != 0 {
+		t.Fatalf("the potions were used: %+v", none)
+	}
+}
+
 func TestLinks_OverhealOnTheMostCastHeal(t *testing.T) {
 	in := holyOverheal(t, 10965, 23, 44, poolOverheal(10965, 22, 21))
 	heal := Finding{ID: "f2", Code: CodeRanks, Facts: Facts{Spells: []SpellFact{{ID: 10965, Name: "Greater Heal", Rank: 4}}}}

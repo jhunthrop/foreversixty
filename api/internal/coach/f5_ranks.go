@@ -176,12 +176,19 @@ func (r healRead) gap() float64 { return r.pct - r.ref }
 
 func healRanks(in Input) outcome {
 	var o outcome
-	var worst *healRead
+	var worst, best *healRead
 	for _, a := range playerHealing(in) {
 		r, ok := readHealRank(in, a, &o)
-		if ok && r.gap() >= HealRankFiresPoints && (worst == nil || r.gap() > worst.gap()) {
+		switch {
+		case !ok:
+		case r.gap() >= HealRankFiresPoints && (worst == nil || r.gap() > worst.gap()):
 			worst = &r
+		case r.gap() <= 0 && r.basis.Kind == BasisTopLogs && (best == nil || r.casts > best.casts):
+			best = &r
 		}
+	}
+	if best != nil {
+		o.Strengths = []Strength{healRankStrength(*best, &o)}
 	}
 	if worst == nil {
 		return o
@@ -235,6 +242,26 @@ func succeededCasts(in Input, spellID int64) int {
 		}
 	}
 	return int(n)
+}
+
+// healRankStrength is the most-cast heal rank at or under the top logs' overheal for the
+// same rank (§7), anchored on its healing row.
+func healRankStrength(r healRead, o *outcome) Strength {
+	n, ref, pct := strconv.Itoa(r.basis.N), PctNumber(r.ref), PctNumber(r.pct)
+	o.Anchors = append(o.Anchors, Anchor{Kind: AnchorHealing, SpellID: r.ability.SpellID})
+	return Strength{
+		Sentence: Fill(StrengthOverheal, map[string]string{"Spell": r.name, "r": strconv.Itoa(r.rank), "pct": pct, "n": n, "ref": ref}),
+		Facts: Facts{
+			Numbers: []NumberFact{
+				{V: r.pct, Text: pct, Unit: "%", Of: r.name + " overheal"},
+				{V: r.ref, Text: ref, Unit: "%", Of: r.name + " overheal in the comparison"},
+				{V: float64(r.basis.N), Text: n, Unit: "players", Of: "top logs"},
+				{V: float64(r.rank), Text: strconv.Itoa(r.rank), Unit: ranksUnitRank, Of: "heal rank"},
+			},
+			Spells: []SpellFact{{ID: r.ability.SpellID, Name: r.name, Rank: r.rank}},
+		},
+		Anchors: []string{"#" + strconv.Itoa(len(o.Anchors)-1)},
+	}
 }
 
 func healRankFinding(r healRead) *Finding {

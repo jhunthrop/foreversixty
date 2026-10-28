@@ -116,8 +116,13 @@ func TestReview_CouldNotCheckDedupesInCheckOrder(t *testing.T) {
 		{CodeRanks, outcome{CouldNotCheck: []string{CannotLevelRanks, lacks}}},
 	}
 	want := []string{CannotTalents, CannotRange, thin, lacks, CannotLevelRanks}
-	if got := couldNotCheck(results); !slices.Equal(got, want) {
+	if got := couldNotCheck(Input{}, results); !slices.Equal(got, want) {
 		t.Fatalf("%q", got)
+	}
+	noLevel := Input{Refs: Refs{SimNoLevel: true}}
+	want = []string{CannotTalents, CannotRange, CannotLevelSim, thin, lacks, CannotLevelRanks}
+	if got := couldNotCheck(noLevel, results); !slices.Equal(got, want) {
+		t.Fatalf("a validated spec's sim without a level says so (A12, CannotLevelSim): %q", got)
 	}
 	p := Review(furyInput(t))
 	seen := map[string]bool{}

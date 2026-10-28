@@ -50,7 +50,7 @@ func Review(in Input) Pack {
 	p.Anchors = book.anchors
 	evidence := findingOutcomes(p.Findings, from, results)
 	p.Links = numberLinks(append(computeLinks(p.Findings, evidence), overhealLink(in, p.Findings, evidence)...))
-	p.CouldNotCheck = couldNotCheck(results)
+	p.CouldNotCheck = couldNotCheck(in, results)
 	p.BasisLabels = basisLabels(p.Findings)
 	p.Allowed = allowedOf(p)
 	return p
@@ -188,10 +188,14 @@ func findingOutcomes(fs []Finding, from []int, results []checked) map[string]out
 	return out
 }
 
-// couldNotCheck is the talents and range lines, then each check's lines in check order,
-// one copy of each.
-func couldNotCheck(results []checked) []string {
+// couldNotCheck is the talents and range lines, the sim line when a validated spec's sim
+// needed the level the log lacks (§6.1), then each check's lines in check order, one copy
+// of each.
+func couldNotCheck(in Input, results []checked) []string {
 	out := []string{CannotTalents, CannotRange}
+	if in.Refs.SimNoLevel {
+		out = append(out, CannotLevelSim)
+	}
 	for _, r := range results {
 		for _, line := range r.out.CouldNotCheck {
 			if !slices.Contains(out, line) {

@@ -48,7 +48,7 @@ func (r *Resolver) Refs(ctx context.Context, k PoolKey, playerKey, role string, 
 		return Refs{}, fmt.Errorf("coach: pool reference: %w", err)
 	}
 	refs := Refs{Pool: pool, PoolCount: count}
-	if role != RoleDPS || LevelBand(level) == 0 {
+	if role != RoleDPS {
 		return refs, nil
 	}
 	slug, ok := dpsSpecSlug(k.Spec)
@@ -60,6 +60,10 @@ func (r *Resolver) Refs(ctx context.Context, k PoolKey, playerKey, role string, 
 		return Refs{}, fmt.Errorf("coach: spec validated: %w", err)
 	}
 	if !validated {
+		return refs, nil
+	}
+	if LevelBand(level) == 0 {
+		refs.SimNoLevel = true
 		return refs, nil
 	}
 	key := SimRefKey{EngineVersion: r.EngineVersion, Build: r.BuildAt(fought), Spec: slug,

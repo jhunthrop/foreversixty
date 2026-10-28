@@ -188,9 +188,10 @@ type outcome struct {
 	Windows       []ratingengine.Window // the finding's windows, for links (gaps, caps, out of mana, the death instant)
 
 	// Typed facts Review and the links read instead of parsing copy. Never serialised.
-	RaidBuffOnly bool          // F6: every missing thing is a raid buff (never rank 1)
-	MissingFlask bool          // F6: the flask is among the missing things
-	Resource     resourceWaste // F4: what the finding is about; zero when no F4 finding
+	RaidBuffOnly  bool          // F6: every missing thing is a raid buff (never rank 1)
+	MissingFlask  bool          // F6: the flask is among the missing things
+	UnusedPotions bool          // F6: combat potions the fight had room for went unused
+	Resource      resourceWaste // F4: what the finding is about; zero when no F4 finding
 }
 
 // resourceKind is the kind of an F4 finding.

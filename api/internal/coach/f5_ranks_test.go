@@ -72,3 +72,28 @@ func TestRanksFacts(t *testing.T) {
 		t.Errorf("anchors %+v basis %+v", h.Anchors, h.Finding.Basis)
 	}
 }
+
+// A heal rank at or under the top logs' overheal for the same rank is a healer strength
+// (A12, StrengthOverheal, §7); one over it, or with no pool, is not.
+func TestRanks_OverhealAtOrUnderTheMedianIsAStrength(t *testing.T) {
+	o := ranks(holyOverheal(t, 10965, 23, 18, poolOverheal(10965, 22, 21)), Counted{})
+	if o.Finding != nil || len(o.Strengths) != 1 {
+		t.Fatalf("finding %+v strengths %+v", o.Finding, o.Strengths)
+	}
+	s := o.Strengths[0]
+	if s.Sentence != "Greater Heal (Rank 4): 18% overheal. Top 21: 22%." {
+		t.Errorf("sentence %q", s.Sentence)
+	}
+	assertNumbers(t, s.Facts, "18", "22", "21", "4")
+	if len(s.Anchors) != 1 || s.Anchors[0] != "#0" || len(o.Anchors) != 1 || o.Anchors[0].Kind != AnchorHealing {
+		t.Errorf("anchors %v %+v", s.Anchors, o.Anchors)
+	}
+	for _, in := range []Input{
+		holyOverheal(t, 10965, 23, 30, poolOverheal(10965, 22, 21)),
+		holyOverheal(t, 10965, 23, 18, noPool(5)),
+	} {
+		if o := ranks(in, Counted{}); len(o.Strengths) != 0 {
+			t.Errorf("strength %+v", o.Strengths)
+		}
+	}
+}

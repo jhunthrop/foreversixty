@@ -103,6 +103,7 @@ func preparation(in Input, _ Counted) outcome {
 		return out
 	}
 	out.Finding, out.RaidBuffOnly, out.MissingFlask = prepFinding(in, issues, have, facts), allPrepKind(issues, kindRaidBuff), anyPrepKind(issues, kindFlask)
+	out.UnusedPotions = anyPrepKind(issues, kindPotions)
 	return out
 }
 

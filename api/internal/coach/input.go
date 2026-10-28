@@ -62,6 +62,7 @@ type Refs struct {
 	PoolCount    int      // distinct players found, for the "not enough logs yet" line
 	Sim          *SimRef  // nil unless the spec is validated DPS and the reference is in
 	SimPreparing bool
+	SimNoLevel   bool // a validated DPS spec whose sim band needs the level the log lacks
 }
 
 // PoolRef is the top logs' median profile over N players.

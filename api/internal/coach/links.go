@@ -8,8 +8,9 @@ import (
 
 // computeLinks is the §7 connections between findings that meet in this fight: a cast gap
 // overlapping a resource cap, out of mana at a death, a death inside a cast gap, and a
-// missing flask on running out of mana. ev is each finding's outcome by finding id: its
-// windows and typed facts (outcome.Resource, outcome.MissingFlask), never its copy. The
+// missing flask on running out of mana, and unused combat potions on a death. ev is each
+// finding's outcome by finding id: its windows and typed facts (outcome.Resource,
+// outcome.MissingFlask, outcome.UnusedPotions), never its copy. The
 // overheal link needs the fight; overhealLink makes it. Ids are left to numberLinks.
 func computeLinks(fs []Finding, ev map[string]outcome) []Link {
 	core, hasCore := findingOf(fs, CodeCoreCasts)
@@ -30,6 +31,10 @@ func computeLinks(fs []Finding, ev map[string]outcome) []Link {
 	if oom && hasPrep && ev[prep.ID].MissingFlask && len(ev[res.ID].Windows) > 0 {
 		out = append(out, Link{Findings: [2]string{prep.ID, res.ID}, Kind: LinkConsumableCovers,
 			Sentence: Fill(LinkNoFlaskMana, map[string]string{"t": Clock(ev[res.ID].Windows[0].FromMS)})})
+	}
+	if hasDeath && hasPrep && ev[prep.ID].UnusedPotions && len(ev[dead.ID].Windows) > 0 {
+		out = append(out, Link{Findings: [2]string{prep.ID, dead.ID}, Kind: LinkConsumableCovers,
+			Sentence: Fill(LinkPotionDeath, map[string]string{"t": Clock(ev[dead.ID].Windows[0].FromMS)})})
 	}
 	return out
 }

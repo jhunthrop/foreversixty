@@ -58,6 +58,13 @@ func TestResolveRefs_NoLevelNoSim(t *testing.T) {
 	if err != nil || refs.Sim != nil || refs.SimPreparing || len(fake.Ran()) != 0 {
 		t.Fatalf("%+v %v ran %v", refs, err, fake.Ran())
 	}
+	if !refs.SimNoLevel {
+		t.Fatal("a validated DPS spec with no level says the sim went unchecked (CannotLevelSim)")
+	}
+	r, _ = resolverFor(t, fakeValidated{"warrior-fury": false})
+	if refs, err := r.Refs(context.Background(), onyxia40Fury, "us/normal/x", RoleDPS, 0, 232_000, fightAt); err != nil || refs.SimNoLevel {
+		t.Fatalf("an unvalidated spec is never simmed, so nothing went unchecked: %+v %v", refs, err)
+	}
 }
 
 func TestResolveRefs_ValidatedDPSWithoutPoolPreparesTheSim(t *testing.T) {
