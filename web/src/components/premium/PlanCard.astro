@@ -269,14 +269,16 @@ const cardId = plan === 'free' ? 'free' : undefined;
   }
   @media (min-width: 768px) {
     .plan-card {
-      padding: 20px;
+      padding: 12px 20px 20px;
     }
     .audience,
     .audience-cell {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
+    /* 52 px: two lines of the 11 px label plus the button's padding (about 40 px) fit, so the
+       answer (price and button) stays above y 520 at 1280 x 800 (spec B1). */
     .action-slot {
-      height: 60px;
+      height: 52px;
     }
     /* The guild label is too wide for one line in a 1024px column, so every button fills the
        same slot: tops and heights match whether a label wraps or not. */
@@ -300,7 +302,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
       display: block;
     }
     .free-price {
-      height: 112px;
+      height: 84px;
     }
     .free-amount {
       height: 34px;

@@ -184,7 +184,7 @@ describe('the Premium card when the account has Premium', () => {
 
   it('the audience cell takes the same responsive gap as the plain audience line', () => {
     const source = readFileSync(new URL('../components/premium/PlanCard.astro', import.meta.url), 'utf8');
-    expect(source).toMatch(/\.audience,\s*\.audience-cell\s*\{\s*margin-bottom: 12px;/);
+    expect(source).toMatch(/\.audience,\s*\.audience-cell\s*\{\s*margin-bottom: 8px;/);
   });
 
   describe('the head script', () => {
