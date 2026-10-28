@@ -26,7 +26,9 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 - Power Word: Shield.
 - Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
 - Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down.
-- Heal.
+- Heal: Renew and Prayer of Mending go on the tank; Flash Heal is the emergency button for a nearly dead tank or member; Prayer of Healing answers several party members being hurt together; Heal is the efficient filler.
+- Renew.
+- Prayer of Mending.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

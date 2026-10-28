@@ -26,6 +26,8 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 - Reapply Seal of Righteousness once it is about to expire -- this is now the only seal-maintenance line.
 - Holy Strike, Forever's new baseline Paladin attack added to the client this week, comes last, on its own ten-second cooldown, cast whenever it is up: it is what spends the globals that Judgement and seal upkeep alone leave idle.
 - Consecration.
+- Apply Seal of Righteousness about a second and a half before the pull so it is active the moment combat starts.
+- Seal of Command.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

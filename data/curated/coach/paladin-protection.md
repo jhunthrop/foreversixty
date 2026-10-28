@@ -32,6 +32,7 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 - Judgement on cooldown.
 - Exorcism.
 - Consecration only with spare mana, where it pays for itself in threat.
+- Righteous Fury: It multiplies the threat of your Holy damage, and with Improved Righteous Fury it also lowers the damage you take.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -16,17 +16,10 @@ from pathlib import Path
 from typing import Any
 
 from starter_kit import ALL_CODES, ROLE_CODES, consumable_paragraph, drills, mistakes
-from starter_text import (
-    DIGIT,
-    digit_tokens,
-    number_words,
-    plain_sentence,
-    sentences,
-    spell_out_numbers,
-    usable_sentence,
-)
+from starter_priority import corroborated_note, is_bare, priority_entries
+from starter_text import DIGIT, digit_tokens, number_words, spell_out_numbers, usable_sentence
 
-__all__ = ["ALL_CODES", "ROLE_CODES", "number_words", "usable_sentence"]
+__all__ = ["ALL_CODES", "ROLE_CODES", "corroborated_note", "number_words", "usable_sentence"]
 
 TOOLS_DIR = Path(__file__).resolve().parent
 REPO = TOOLS_DIR.parent.parent
@@ -37,13 +30,7 @@ ACTIVE_BUILD_PATH = "web/src/data/active-build.json"
 FULL_SPECS = frozenset({"warrior-fury", "priest-holy", "warrior-protection"})
 STARTER_VERSION = "starter edition"
 
-# Claims the rotation data makes that the guides do not, so a starter does not repeat them.
-CLAIMS_THE_GUIDE_DOES_NOT_MAKE = re.compile(
-    r"most healing per mana|lifts Rupture damage|more damage from your Rupture|\bMaul\b.*\brage\b",
-    re.IGNORECASE,
-)
 ROTATION_HEADING = "## Rotation and priority"
-NAME_NEAR_FRONT_CHARS = 40
 # Spells the class spellconst files do not carry.
 EXTRA_SPELL_NAMES = {5019: "Shoot"}
 
@@ -102,56 +89,28 @@ def spell_names(row: dict[str, Any]) -> dict[int, str]:
     return {**{int(spell_id): spell["name"] for spell_id, spell in spells.items()}, **EXTRA_SPELL_NAMES}
 
 
-def guide_rotation_sentences(row: dict[str, Any]) -> list[str]:
+def castable_names(row: dict[str, Any]) -> set[str]:
+    """Names of spells a player presses: those with a cost, a global cooldown, a cooldown or a cast time."""
+    spells = load_json(spellconst_path(row))["spells"].values()
+    pressed = ("cost", "gcd_ms", "cooldown_ms", "cast_time_ms")
+    return {spell["name"] for spell in spells if any(spell[key] for key in pressed)}
+
+
+def priority_entries_of(row: dict[str, Any]) -> list[tuple[str, str]]:
     prose = section_after(read_text(guide_path(row)), ROTATION_HEADING)
-    return [s for s in (plain_sentence(raw) for raw in sentences(prose)) if s]
-
-
-def leads_with(name: str, sentence: str) -> bool:
-    """The sentence is about the ability: it starts as a sentence and names it near the front."""
-    return sentence[:1].isupper() and 0 <= sentence.lower().find(name.lower()) <= NAME_NEAR_FRONT_CHARS
-
-
-def sentence_naming(name: str, candidates: list[str]) -> str | None:
-    return next((s for s in candidates if leads_with(name, s)), None)
-
-
-def corroborated_note(note: str, guide_digits: set[str]) -> str | None:
-    """The note's lead sentence in words, if it reads alone and the guide backs every number and claim."""
-    lead = sentences(note)[0] if note.strip() else ""
-    if not lead or CLAIMS_THE_GUIDE_DOES_NOT_MAKE.search(lead) or not digit_tokens(lead) <= guide_digits:
-        return None
-    return usable_sentence(note)
-
-
-def cast_spell_id(item: dict[str, Any]) -> int | None:
-    cast = item["action"].get("castSpell")
-    return cast.get("spellId", {}).get("spellId") if cast else None
-
-
-def priority_line(item: dict[str, Any], names: dict[int, str], guide: list[str], guide_digits: set[str]) -> tuple[str, str] | None:
-    """(ability name, line): the note's sentence if it names the ability, else the guide's, else the name alone."""
-    sentence = corroborated_note(item.get("notes", ""), guide_digits)
-    spell_id = cast_spell_id(item)
-    name = names.get(spell_id) if spell_id is not None else None
-    if name is None:
-        return (sentence, sentence) if sentence else None
-    if sentence and leads_with(name, sentence):
-        return name, sentence
-    return name, sentence_naming(name, guide) or f"{name}."
+    items = load_json(apl_path(row["spec"]))["rotation"]["priorityList"]
+    return priority_entries(
+        items, spell_names(row), castable_names(row), prose, digit_tokens(read_text(guide_path(row)))
+    )
 
 
 def priority_lines(row: dict[str, Any]) -> list[str]:
-    names, guide = spell_names(row), guide_rotation_sentences(row)
-    guide_digits = digit_tokens(read_text(guide_path(row)))
-    seen: set[str] = set()
-    lines: list[str] = []
-    for item in load_json(apl_path(row["spec"]))["rotation"]["priorityList"]:
-        built = priority_line(item, names, guide, guide_digits)
-        if built and built[0].lower() not in seen and built[1] not in lines:
-            seen.add(built[0].lower())
-            lines.append(built[1])
-    return lines
+    return [line for _, line in priority_entries_of(row)]
+
+
+def bare_lines(row: dict[str, Any]) -> list[str]:
+    """Abilities that carry no reason in their line: nothing in the notes or the guide led with them."""
+    return [name for name, line in priority_entries_of(row) if is_bare((name, line))]
 
 
 def who_section(row: dict[str, Any]) -> str:

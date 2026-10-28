@@ -20,10 +20,11 @@ This is the Balance Druid as the site's guide describes it. Balance is the Druid
 
 **The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Moonfire is no longer a maintained DoT: keeping it up all fight costs more mana than it returns, and dropping that upkeep was worth about +seven percent in our level-sixty search run.
-- Wrath.
+- Moonfire.
+- Wrath: Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
 - Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.
 - Starfire is the whole rest of the rotation once Insect Swarm is ticking.
+- Be in Moonkin Form before the pull and stay in it: the form gives you three percent more critical strike chance, and every spell in this loop can be cast from it.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

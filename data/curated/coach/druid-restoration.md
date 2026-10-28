@@ -20,13 +20,14 @@ This is the Restoration Druid as the site's guide describes it. Restoration is t
 
 **The priority, in words.** The site's rotation data for this spec runs these buttons in this order, from the top of the list down. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Innervate.
-- Nature's Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
-- Healing Touch fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight.
+- Innervate: Nature's Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
+- Nature's Swiftness.
+- Healing Touch.
 - Swiftmend.
-- Tranquility.
+- Tranquility: Party members get Wild Growth when two are hurt, Rejuvenation when one is, and Tranquility when two are well down.
 - The tank keeps Regrowth and Rejuvenation up for the whole fight, and the heals over time carry most of the work.
-- Party members get Wild Growth when two are hurt, Rejuvenation when one is, and Tranquility when two are well down.
+- Rejuvenation.
+- Wild Growth.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

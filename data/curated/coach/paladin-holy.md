@@ -23,7 +23,8 @@ This is the Holy Paladin as the site's guide describes it. Holy is the Paladin h
 - Divine Favor when the tank is in danger: the Holy Light that follows crits for certain, and the heal that spends it is the one the tank needs.
 - Divine Favor into Holy Light answers a tank who is nearly dead.
 - Holy Shock and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer.
-- Flash of Light.
+- Flash of Light: The curated rotation opens with Greater Blessing of Light before the pull and then leans on Flash of Light as the staple: it is the most efficient heal per mana for both the tank and the party.
+- Greater Blessing of Light.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

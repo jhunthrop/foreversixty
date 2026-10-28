@@ -25,6 +25,9 @@ This is the Combat Rogue as the site's guide describes it. Combat is the Rogue w
 - Backstab is the builder when a dagger is in the main hand: it hits for one hundred fifty percent weapon damage against Sinister Strike's one hundred percent, and Puncturing Wounds adds crit and an extra combo point chance to it.
 - Adrenaline Rush on cooldown: it doubles energy regeneration for fifteen seconds.
 - Sinister Strike builds when Backstab cannot be cast.
+- Blade Flurry.
+- Deadly Poison.
+- Instant Poison.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

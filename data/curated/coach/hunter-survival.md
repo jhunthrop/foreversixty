@@ -26,7 +26,7 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 - Lacerate.
 - Strider Kick as the lowest-priority filler on its own eight second cooldown.
 - Immolation Trap.
-- Wing Clip.
+- Wing Clip: Beyond that there is one more filler, and only in a raid: with a Windfury Totem in the group, spend any global with nothing else ready on Wing Clip, because the cheap main-hand hit rolls the totem's extra attack and your weapon procs.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -27,6 +27,10 @@ This is the Feral Bear Druid as the site's guide describes it. Feral Bear is the
 - Lacerate to start the bleed and again when under three seconds remain; the bleed is what turns on Rend and Tear.
 - Maul, queued on your next swing with spare Rage.
 - Swipe as the Rage dump.
+- Bear Form.
+- Dire Bear Form.
+- Growl, Challenging Roar, Bash and Feral Charge do nothing in a fight with one stationary enemy.
+- Feral Charge.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -27,6 +27,7 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 - Immolate follows the two curses and is recast when under three seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.
 - Searing Pain is the filler between DoT refreshes: it measures ahead of Shadow Bolt here, and because it is cast whenever nothing else is due, no Shadow Bolt line sits behind it.
 - Shoot with your wand once mana is under fifty percent: it costs nothing, so mana regenerates while it keeps damage going.
+- Shadow Bolt.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

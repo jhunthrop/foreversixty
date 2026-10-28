@@ -25,6 +25,8 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 - Stormstrike on cooldown: it is the highest damage per global Enhancement has, on an eight second cooldown.
 - Keep Searing Totem down for the extra fire damage, but not with less than twenty seconds left -- no point paying for a totem that will barely tick.
 - Earth Shock.
+- Windfury Weapon.
+- Mana Spring Totem.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

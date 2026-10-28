@@ -26,7 +26,8 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is Sham
 - Magma Totem.
 - Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage.
 - Lightning Bolt is the rest of the single-target rotation.
-- Flame Shock and Earth Shock are not part of the loop.
+- Earth Shock as a mana dump sits behind Lightning Bolt and rarely gets a global.
+- Flame Shock.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

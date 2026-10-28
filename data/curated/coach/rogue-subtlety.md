@@ -26,6 +26,10 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rog
 - Slice and Dice while Rupture is running: opened when it is down, refreshed under three seconds remaining, at three or more combo points.
 - Hemorrhage is the builder, hitting for one hundred forty-five percent weapon damage with a dagger and awarding a combo point, and its debuff makes the target take fifteen percent more damage from your Rupture for fifteen seconds, so keep it going.
 - Sinister Strike is the fallback builder whenever you have not talented into Hemorrhage.
+- Open from stealth with Stealth, Premeditation and Ambush, then play from Hemorrhage.
+- Ambush.
+- Deadly Poison.
+- Instant Poison.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

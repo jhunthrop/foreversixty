@@ -26,6 +26,7 @@ This is the Fire Mage as the site's guide describes it. Fire is the Mage sustain
 - Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.
 - Fireball only before Scorch is trained, where Scorch cannot be cast and the list would otherwise have no filler.
 - Shoot with your wand once mana falls under twenty percent: it costs nothing and keeps damage going while you regenerate, and Wand Specialization adds to it.
+- Frostfire Bolt.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

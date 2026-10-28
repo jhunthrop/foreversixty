@@ -24,7 +24,9 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under three seconds remaining, at four or more combo points.
 - Eviscerate at four or more combo points, whenever its thirty-five energy is there.
 - Mutilate is this tree's builder: both weapons strike for two combo points a cast.
-- Without the Mutilate talent, Sinister Strike builds instead.
+- Sinister Strike.
+- Deadly Poison.
+- Instant Poison.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

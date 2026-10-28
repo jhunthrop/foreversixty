@@ -24,10 +24,11 @@ This is the Feral Druid as the site's guide describes it. Feral Combat is one tr
 - Wrath.
 - Shifting Power: this is the new energy tool in the tree, replacing King of the Jungle.
 - Cat DPS: open with Tiger's Fury, since it costs nothing and refunds energy on its own thirty-second cooldown, and keep it on cooldown throughout.
-- At five combo points, cast Rip if it isn't already running; once Rip is up, spend five combo points on Ferocious Bite instead of letting them cap out uselessly.
+- Rip.
 - Ferocious Bite.
 - Shred builds combo points the rest of the time.
 - Claw.
+- Bear Form.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

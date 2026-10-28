@@ -25,7 +25,8 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.
 - Multi-Shot as the filler between Aimed Shots.
 - Serpent Sting.
-- Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor.
+- Arcane Shot.
+- Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
