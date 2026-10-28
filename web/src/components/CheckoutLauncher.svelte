@@ -22,7 +22,8 @@
      not the redirect). -->
 <script lang="ts">
   import { fetchMeOnce, forgetSession, type Me, type MeGuild } from '../lib/account/api';
-  import { BillingApiError, startCheckout } from '../lib/billing/api';
+  import { BillingApiError, openPortal, startCheckout } from '../lib/billing/api';
+  import { runPremiumCheckout } from '../lib/billing/premium-owned-flow';
   import { checkoutCopy } from '../lib/billing/copy';
   import { founderOpen, type PlanKey } from '../lib/billing/plans';
   import { safeNextPath } from '../lib/account/safe-next';
@@ -36,6 +37,25 @@
   import { fetchGuildHome } from '../lib/guild/api';
   import { guildMarkSrc } from '../lib/guild/mark';
   import CheckoutGuildChooser from './checkout/CheckoutGuildChooser.svelte';
+  import PremiumOwnedPanel from './checkout/PremiumOwnedPanel.svelte';
+
+  /** The island's outside world, injectable so tests need no network or globals. */
+  interface CheckoutDeps {
+    fetchMe: () => Promise<Me | null>;
+    forgetSession: () => void;
+    startCheckout: typeof startCheckout;
+    openPortal: typeof openPortal;
+  }
+
+  const PRODUCTION_DEPS: CheckoutDeps = {
+    fetchMe: () => fetchMeOnce(),
+    forgetSession,
+    startCheckout,
+    openPortal,
+  };
+
+  let { search = undefined, deps = {} }: { search?: string; deps?: Partial<CheckoutDeps> } = $props();
+  const io: CheckoutDeps = { ...PRODUCTION_DEPS, ...deps };
 
   const INVALID_LINK_MESSAGE = 'Something is wrong with that link. Start again from the premium page.';
 
@@ -52,6 +72,9 @@
   let choosing = $state(false);
   let messageEl = $state<HTMLParagraphElement | undefined>(undefined);
   let refocusMessage = $state(false);
+  /** The account that already has Premium: the panel replaces the redirect. */
+  let ownedMe = $state<Me | null>(null);
+  let portalBusy = $state(false);
 
   const ALREADY_ON_PLAN_CODE = 'conflict';
   const NOT_FOUND = 404;
@@ -83,8 +106,8 @@
     for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
       // Bypass fetchMeOnce's per-page cache: each attempt must be a fresh request, or the
       // loop would just re-read the same stale snapshot fetched before the webhook ran.
-      forgetSession();
-      const me = await fetchMeOnce();
+      io.forgetSession();
+      const me = await io.fetchMe();
       if (isEntitled(me, parsed)) {
         message = checkoutCopy.confirmed;
         return;
@@ -125,9 +148,9 @@
     chooserFailed = false;
     chooserGuilds = null;
     chooserCrests = null;
-    forgetSession();
+    io.forgetSession();
     try {
-      const me = await fetchMeOnce();
+      const me = await io.fetchMe();
       if (me === null) {
         redirectToLogin();
         return;
@@ -148,8 +171,23 @@
     void launch(request);
   }
 
+  function showOwned(me: Me): void {
+    ownedMe = me;
+    showRetry = false;
+  }
+
+  async function openBillingPortal(): Promise<void> {
+    portalBusy = true;
+    try {
+      const result = await io.openPortal(undefined);
+      window.location.assign(result.portal_url);
+    } catch {
+      portalBusy = false;
+    }
+  }
+
   async function launch(parsed: CheckoutParams): Promise<void> {
-    const me = await fetchMeOnce();
+    const me = await io.fetchMe();
     if (me === null) {
       redirectToLogin();
       return;
@@ -162,13 +200,21 @@
       showChooser(me, parsed);
       return;
     }
+    const checkoutRequest = {
+      plan: parsed.plan,
+      interval: parsed.interval,
+      guildId: parsed.guildId,
+      comebackId: parsed.comebackId,
+    };
     try {
-      const result = await startCheckout({
-        plan: parsed.plan,
-        interval: parsed.interval,
-        guildId: parsed.guildId,
-        comebackId: parsed.comebackId,
-      });
+      if (parsed.plan === 'premium') {
+        const outcome = await runPremiumCheckout(io, me, checkoutRequest, new Date());
+        if (outcome.kind === 'owned') showOwned(outcome.me);
+        else if (outcome.kind === 'login') redirectToLogin();
+        else window.location.assign(outcome.url);
+        return;
+      }
+      const result = await io.startCheckout(checkoutRequest);
       window.location.assign(result.checkout_url);
     } catch (error) {
       showRetry = false;
@@ -211,7 +257,7 @@
   });
 
   $effect(() => {
-    const parsed = parseCheckoutParams(window.location.search);
+    const parsed = parseCheckoutParams(search ?? window.location.search);
     if (parsed === null) {
       invalid = true;
       return;
@@ -228,7 +274,14 @@
   </p>
 {:else}
   <div class="flex flex-col gap-3">
-    {#if choosing}
+    {#if ownedMe !== null}
+      <PremiumOwnedPanel
+        me={ownedMe}
+        now={new Date()}
+        busy={portalBusy}
+        onPortal={() => void openBillingPortal()}
+      />
+    {:else if choosing}
       <CheckoutGuildChooser
         guilds={chooserGuilds}
         failed={chooserFailed}
