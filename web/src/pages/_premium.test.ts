@@ -2,6 +2,7 @@
 // Container renders of the plans page (spec 2026-10-27-launch-pricing §B3), through the shared
 // `renderPremium` in test-support.
 import { readFileSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { plansPageCopy } from '../lib/billing/plans-page-copy';
 import { PLAN_CARD_ROWS } from '../components/premium/model';
@@ -155,7 +156,6 @@ describe('the Premium card when the account has Premium', () => {
   it('holds all three source lines beside the default audience, each in the reserved cell', async () => {
     const card = await premiumCard();
     const cell = card.querySelector('[data-part=audience]');
-    expect(classesOf(cell)).toContain('min-h-[18px]');
     expect(cell?.querySelector('[data-default]')?.textContent?.trim()).toBe(plansPageCopy.premium.audience);
     const lines = specCell(SPEC, HEADING, '`/premium` card line');
     SOURCES.forEach((source, index) => {
@@ -182,8 +182,35 @@ describe('the Premium card when the account has Premium', () => {
     ).toHaveLength(0);
   });
 
-  it('has a data-premium selector for each word', () => {
+  it('the audience cell takes the same responsive gap as the plain audience line', () => {
     const source = readFileSync(new URL('../components/premium/PlanCard.astro', import.meta.url), 'utf8');
-    for (const word of SOURCES) expect(source).toMatch(new RegExp(`html\\[data-premium=['"]${word}['"]\\]`));
+    expect(source).toMatch(/\.audience,\s*\.audience-cell\s*\{\s*margin-bottom: 12px;/);
+  });
+
+  describe('the head script', () => {
+    const run = async (storageOf: () => Storage): Promise<string | undefined> => {
+      const text = sourceScripts(await renderPremium())[0]?.textContent ?? '';
+      const doc = new JSDOM('<!doctype html><html></html>').window.document;
+      // The script reads the `localStorage` and `document` globals: hand it fakes of both.
+      const lazyStorage = { getItem: (key: string) => storageOf().getItem(key) };
+      new Function('localStorage', 'document', text)(lazyStorage, doc);
+      return doc.documentElement.dataset.premium;
+    };
+    const storing = (value: string | null) => (): Storage => ({ getItem: () => value }) as unknown as Storage;
+
+    it.each(SOURCES)('%s sets the attribute', async (word) => {
+      expect(await run(storing(word))).toBe(word);
+    });
+
+    it.each([null, '', 'none', 'fallback', 'GRANT', 'own_then_seat'])('%s is ignored', async (junk) => {
+      expect(await run(storing(junk))).toBeUndefined();
+    });
+
+    it('a throwing localStorage does not throw', async () => {
+      const throwing = (): Storage => {
+        throw new Error('blocked');
+      };
+      expect(await run(throwing)).toBeUndefined();
+    });
   });
 });

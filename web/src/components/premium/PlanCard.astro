@@ -42,7 +42,7 @@ const cardId = plan === 'free' ? 'free' : undefined;
 >
   <Name class="plan-name">{block.name}</Name>
   {plan === 'premium' ? (
-    <div class="audience-cell min-h-[18px]" data-part="audience">
+    <div class="audience-cell" data-part="audience">
       <p class="audience" data-default>
         {block.audience}
       </p>
@@ -276,7 +276,8 @@ const cardId = plan === 'free' ? 'free' : undefined;
     .plan-card {
       padding: 20px;
     }
-    .audience {
+    .audience,
+    .audience-cell {
       margin-bottom: 12px;
     }
     .action-slot {

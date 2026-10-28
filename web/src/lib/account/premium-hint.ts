@@ -8,7 +8,8 @@ export const PREMIUM_SOURCE_KEY = 'fs.premiumSource';
 export const ME_GUILD_COUNT_KEY = 'fs.meGuildCount';
 export type StoredPremiumSource = 'own' | 'seat' | 'grant';
 
-const STORED_SOURCES: readonly string[] = ['own', 'seat', 'grant'];
+/** The three words the session stores; `/premium`'s head script accepts only these. */
+export const STORED_SOURCES: readonly string[] = ['own', 'seat', 'grant'];
 /** Spec §5.7: the skeleton always draws at least one card. */
 const MIN_GUILD_COUNT = 1;
 const MAX_GUILD_COUNT = 4;
