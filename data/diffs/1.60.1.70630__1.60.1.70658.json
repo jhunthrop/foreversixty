@@ -1,0 +1,46 @@
+{
+  "from": "1.60.1.70630",
+  "to": "1.60.1.70658",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "spells": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}
