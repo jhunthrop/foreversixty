@@ -24,7 +24,7 @@ var (
 const (
 	connectivesPlaceholder = "{{connectives}}"
 	roleSystem             = "system"
-	roleUser   = "user"
+	roleUser               = "user"
 	// personaTemplate sits between the rules and the persona in the system message. It is
 	// part of the prompt template, so it is part of model_version.
 	personaTemplate = "\nThe persona you write as follows. Its drill ids are the only ones you may use.\n\n"

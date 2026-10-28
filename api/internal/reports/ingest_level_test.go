@@ -2,8 +2,8 @@ package reports
 
 import (
 	"context"
-	"errors"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"testing"
