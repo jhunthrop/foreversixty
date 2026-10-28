@@ -90,6 +90,12 @@ describe('the plans page region B', () => {
     );
   });
 
+  it('holds How the guild plans work', async () => {
+    const s = guildSection(await renderPremium());
+    expect(s.querySelector('h3')?.textContent?.trim()).toBe(plansPageCopy.howItWorks);
+    expect(s.querySelectorAll('[data-rule-term]')).toHaveLength(plansPageCopy.rules.length);
+  });
+
   it('no loot-council example', async () => {
     expect((await renderPremium()).body.textContent).not.toContain('EXAMPLE · A REAL LOOT COUNCIL');
   });
