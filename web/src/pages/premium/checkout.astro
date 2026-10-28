@@ -9,15 +9,101 @@
 // page never work for a real visitor. CheckoutLauncher itself is the one place that reads
 // and validates the query string, client-side after hydration, against a closed set --
 // see its own header comment for the full reasoning and the security rule it enforces.
+//
+// The one exception is layout, never content: a head script reads the query string before
+// first paint only to decide whether the guild step will draw (the same rule as
+// showsGuildStep, never echoed), and if so marks <html data-checkout-step="guild"> with the
+// skeleton card count. The CSS below then holds the guild step's whole height from the first
+// paint and hides the static narrow body, so hydration and /v1/me move no footer (spec §7,
+// §11: CLS at most 0.02).
 import Base from '../../layouts/Base.astro';
 import CheckoutLauncher from '../../components/CheckoutLauncher.svelte';
+import {
+  DEFAULT_GUILD_COUNT,
+  MAX_GUILD_COUNT,
+  ME_GUILD_COUNT_KEY,
+  MIN_GUILD_COUNT,
+} from '../../lib/account/premium-hint';
+import { guildFrameReserve } from '../../lib/billing/checkout-layout';
+import { INTERVALS, PLANS, PLAN_ORDER } from '../../lib/billing/plans';
+
+const guildPlans = PLAN_ORDER.filter((key) => PLANS[key].guild);
+const phone = guildFrameReserve('phone');
+const md = guildFrameReserve('md');
+const lg = guildFrameReserve('lg');
 ---
 
 <Base title="Checkout" description="Continue to checkout." path="/premium/checkout">
+  <script
+    slot="head"
+    is:inline
+    define:vars={{
+      key: ME_GUILD_COUNT_KEY,
+      guildPlans,
+      intervals: INTERVALS,
+      min: MIN_GUILD_COUNT,
+      max: MAX_GUILD_COUNT,
+      fallback: DEFAULT_GUILD_COUNT,
+    }}
+  >
+    // Layout only: the launcher still validates every param after hydration.
+    const params = new URLSearchParams(location.search);
+    if (
+      guildPlans.includes(params.get('plan')) &&
+      intervals.includes(params.get('interval')) &&
+      !params.has('guild_id') &&
+      !params.has('comeback') &&
+      params.get('status') !== 'success'
+    ) {
+      // readMeGuildCount's clamp, so the reserve holds exactly the skeleton's card count.
+      let cards = fallback;
+      try {
+        const stored = localStorage.getItem(key);
+        const count = stored === null || stored.trim() === '' ? NaN : Math.round(Number(stored));
+        if (Number.isFinite(count)) cards = Math.min(max, Math.max(min, count));
+      } catch {
+        // Storage blocked: the default count.
+      }
+      document.documentElement.dataset.checkoutStep = 'guild';
+      document.documentElement.style.setProperty('--checkout-guild-cards', String(cards));
+    }
+  </script>
   <!-- No measure: the island draws the full-bleed band (its h1 and its height reserve, spec
        §5.1 / §7) on its static render, then the guild step's 880 column or the narrow message
        and plan=premium column under it. -->
-  <main id="main" tabindex="-1" class="flex w-full flex-col">
+  <main id="main" tabindex="-1" class="checkout-main flex w-full flex-col" data-testid="checkout-main">
     <CheckoutLauncher client:load />
   </main>
 </Base>
+
+<style
+  define:vars={{
+    phoneFixed: phone.fixedPx,
+    phoneCard: phone.perCardPx,
+    mdFixed: md.fixedPx,
+    mdCard: md.perCardPx,
+    lgFixed: lg.fixedPx,
+    lgCard: lg.perCardPx,
+  }}
+>
+  /* The guild step's height from the first paint: band, step padding, lead, the skeleton's
+     cards and the foot (checkout-layout.ts guildFrameReserve). */
+  :global(html[data-checkout-step='guild']) .checkout-main {
+    min-height: calc((var(--phoneFixed) + var(--checkout-guild-cards) * var(--phoneCard)) * 1px);
+  }
+  /* The static render's narrow body ("Redirecting…") is never the guild step's: keep its box,
+     show nothing, until hydration swaps in the step. */
+  :global(html[data-checkout-step='guild']) .checkout-main :global([data-testid='checkout-body']) {
+    visibility: hidden;
+  }
+  @media (min-width: 768px) {
+    :global(html[data-checkout-step='guild']) .checkout-main {
+      min-height: calc((var(--mdFixed) + var(--checkout-guild-cards) * var(--mdCard)) * 1px);
+    }
+  }
+  @media (min-width: 1024px) {
+    :global(html[data-checkout-step='guild']) .checkout-main {
+      min-height: calc((var(--lgFixed) + var(--checkout-guild-cards) * var(--lgCard)) * 1px);
+    }
+  }
+</style>

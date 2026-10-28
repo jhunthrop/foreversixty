@@ -4,8 +4,10 @@ import { describe, expect, it } from 'vitest';
 import {
   CHECKOUT_BAND_RESERVE,
   CHECKOUT_BODY_RESERVE,
+  CHECKOUT_FRAME_PX,
   GUILD_CARD_MIN,
   GUILD_LEAD_RESERVE,
+  guildFrameReserve,
 } from './checkout-layout';
 
 describe('checkout layout reserves', () => {
@@ -21,7 +23,33 @@ describe('checkout layout reserves', () => {
     expect(GUILD_LEAD_RESERVE).toBe('min-h-[63px] md:min-h-[42px]');
   });
 
-  it('a card never falls below the skeleton it replaces', () => {
-    expect(GUILD_CARD_MIN).toBe('min-h-[260px] md:min-h-[156px]');
+  it('a card and its skeleton hold the ask_leader card: 532 px phone, 376 px from 768', () => {
+    expect(GUILD_CARD_MIN).toBe('min-h-[532px] md:min-h-[376px]');
+  });
+});
+
+describe('the pixel table matches the classes', () => {
+  const px = CHECKOUT_FRAME_PX;
+
+  it('band, lead and card figures are the ones the classes carry', () => {
+    expect(CHECKOUT_BAND_RESERVE).toBe(
+      `min-h-[${px.band.phone}px] md:min-h-[${px.band.md}px] lg:min-h-[${px.band.lg}px]`,
+    );
+    expect(GUILD_LEAD_RESERVE).toBe(`min-h-[${px.lead.phone}px] md:min-h-[${px.lead.md}px]`);
+    expect(GUILD_CARD_MIN).toBe(`min-h-[${px.card.phone}px] md:min-h-[${px.card.md}px]`);
+  });
+});
+
+describe('guildFrameReserve', () => {
+  it('phone: band 156 + 20 + lead 63 + 16 + foot 63 + 64 - 12, then 532 + 12 a card', () => {
+    expect(guildFrameReserve('phone')).toEqual({ fixedPx: 370, perCardPx: 544 });
+  });
+
+  it('md: band 190 + 32 + lead 42 + 16 + 63 + 64 - 12, then 376 + 12 a card', () => {
+    expect(guildFrameReserve('md')).toEqual({ fixedPx: 395, perCardPx: 388 });
+  });
+
+  it('lg: the band is 150, the rest as md', () => {
+    expect(guildFrameReserve('lg')).toEqual({ fixedPx: 355, perCardPx: 388 });
   });
 });

@@ -11,9 +11,10 @@ export type StoredPremiumSource = 'own' | 'seat' | 'grant';
 /** The three words the session stores; `/premium`'s head script accepts only these. */
 export const STORED_SOURCES: readonly string[] = ['own', 'seat', 'grant'];
 /** Spec §5.7: the skeleton always draws at least one card. */
-const MIN_GUILD_COUNT = 1;
-const MAX_GUILD_COUNT = 4;
-const DEFAULT_GUILD_COUNT = 2;
+export const MIN_GUILD_COUNT = 1;
+export const MAX_GUILD_COUNT = 4;
+/** Read when nothing usable is stored; checkout.astro's head script clamps the same way. */
+export const DEFAULT_GUILD_COUNT = 2;
 
 function remove(key: string): void {
   try {

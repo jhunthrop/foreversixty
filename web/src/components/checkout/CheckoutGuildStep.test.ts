@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Me, MeGuild } from '../../lib/account/api';
 import { ME_GUILD_COUNT_KEY } from '../../lib/account/premium-hint';
 import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
+import { GUILD_CARD_MIN } from '../../lib/billing/checkout-layout';
 import type { GuildCoveredView, SubscribeStep } from '../../lib/billing/contract';
 import {
   buildMe,
@@ -77,22 +78,25 @@ function memoryStorage(): Storage {
 beforeEach(() => vi.stubGlobal('localStorage', memoryStorage()));
 afterEach(() => vi.unstubAllGlobals());
 
+/** One skeleton card: the shared card floor (checkout-layout.ts). */
+const SKELETON_CARD = new RegExp(`skeleton-block[^"]*${GUILD_CARD_MIN.replace(/[[\]]/g, '\\$&')}`, 'g');
+
 describe('CheckoutGuildStep: loading', () => {
-  it('reserves the lead line and skeleton cards at the ready height, aria-busy, sr-only label', () => {
+  it('reserves the lead line and skeleton cards at the ask_leader card height, aria-busy, sr-only label', () => {
     const body = html({ me: null });
     expect(body).toMatch(/min-h-\[63px\] md:min-h-\[42px\]/);
     expect(body).toMatch(/<ul[^>]*aria-busy="true"/);
-    expect(body.match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(2);
+    expect(body.match(SKELETON_CARD)).toHaveLength(2);
     expect(body).toMatch(new RegExp(`class="sr-only" role="status"[^>]*>${copy.loading}<`));
   });
 
   it('reads the skeleton count from fs.meGuildCount clamped to 1..4 (spec §5.7)', () => {
     localStorage.setItem(ME_GUILD_COUNT_KEY, '3');
-    expect(html({ me: null }).match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(3);
+    expect(html({ me: null }).match(SKELETON_CARD)).toHaveLength(3);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '0');
-    expect(html({ me: null }).match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(1);
+    expect(html({ me: null }).match(SKELETON_CARD)).toHaveLength(1);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '9');
-    expect(html({ me: null }).match(/min-h-\[260px\] md:min-h-\[156px\]/g)).toHaveLength(4);
+    expect(html({ me: null }).match(SKELETON_CARD)).toHaveLength(4);
   });
 
   it('sits in the centred 880 column with the 48 / 18 gutters', () => {
