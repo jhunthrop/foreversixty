@@ -175,7 +175,9 @@ async function checkoutState(
 ): Promise<void> {
   await openAs(page, width, url, me);
   await settled(page, CARDS_READY);
-  await shoot(page, row, state, width, page.getByTestId('checkout-guild-step'));
+  // plan=premium never shows the guild step: its subject is the already-have-Premium panel.
+  const subject = url === PREMIUM_YEARLY ? 'premium-owned' : 'checkout-guild-step';
+  await shoot(page, row, state, width, page.getByTestId(subject));
 }
 
 type StateSpec = readonly [state: string, me: Me, url?: string];
@@ -411,7 +413,15 @@ function claimSettings(claimed: boolean): unknown {
   };
 }
 
+/** The fixture build prerenders one claim page (the-last-watch); GuildShell reads the guild from the
+ *  location, so serve that shell at this guild's claim path, as production's fallback does. */
+const PRERENDERED_CLAIM = '/guild/us/hardcore/the-last-watch/claim';
+
 async function stubClaimPage(page: Page, settings: { current: unknown }, memberView = false): Promise<void> {
+  await page.route(`**${CLAIM_PATH}*`, async (route) => {
+    const response = await route.fetch({ url: new URL(PRERENDERED_CLAIM, route.request().url()).href });
+    await route.fulfill({ response });
+  });
   await page.route(`**/v1/guilds/us/pvp/${GUILD_SLUG}`, (route) =>
     route.fulfill(
       envelope({

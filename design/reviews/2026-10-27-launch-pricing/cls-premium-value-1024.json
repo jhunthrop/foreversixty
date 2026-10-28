@@ -1,0 +1,25 @@
+{
+  "width": 1024,
+  "cls": 0.0003,
+  "cap": 0.05,
+  "founderLines": [
+    {
+      "text": "Founder price, kept while you stay subscribed.",
+      "lines": 1,
+      "textWidth": 238.46875,
+      "boxWidth": 264.671875
+    },
+    {
+      "text": "Founder price, kept while you stay subscribed.",
+      "lines": 1,
+      "textWidth": 238.46875,
+      "boxWidth": 264.65625
+    },
+    {
+      "text": "Founder price, kept while you stay subscribed.",
+      "lines": 1,
+      "textWidth": 238.46875,
+      "boxWidth": 264.671875
+    }
+  ]
+}
