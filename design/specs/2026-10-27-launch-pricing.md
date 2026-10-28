@@ -462,9 +462,10 @@ Strings live in `web/src/lib/billing/plans-page-copy.ts` (and `web/src/lib/sim/l
 | Premium benefit 6 | `premium.features[5]` | `A Supporter mark beside your name on your characters and in your guild's roster.` |
 | Premium scope note | `premium.scope` | `Sims cover damage specs; healing and tanking specs are not simulated yet. History, Discord messages and the Supporter mark work for every spec.` |
 | Premium example | `examples.serverRun.label` | `EXAMPLE · A REAL SERVER RUN` |
-| | `examples.serverRun.caption` (also the image alt) | `{characterName}, {specLabel}: {combinations} combinations on our servers, {ranAt as d MMM yyyy}.` |
+| | `examples.serverRun.caption.preset` (also the image alt; controller ruling 2026-10-27) | `A level-{level} {specLabel} in the site's preset gear: {combinations} combinations on our servers, {ranAt as d MMM yyyy}.` |
+| | `examples.serverRun.caption.ownGear` (also the image alt) | `{characterName}, {specLabel}: {combinations} combinations on our servers, {ranAt as d MMM yyyy}.` |
 | | `examples.serverRun.link` | `Open this result` |
-| Simulator landing example | `landingCopy.exampleCaption` | `EXAMPLE · A REAL SERVER RUN` (was `Example`); the caption uses the same sidecar and template as `examples.serverRun.caption`; `exampleHint` unchanged |
+| Simulator landing example | `landingCopy.exampleCaption` | `EXAMPLE · A REAL SERVER RUN` (was `Example`); the caption uses the same sidecar and templates as `examples.serverRun.caption.preset` / `.ownGear`; `exampleHint` unchanged |
 | Guild region | `guildRegion.heading` | `For guild leaders` |
 | | `guildRegion.lede` | `One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.` |
 | | `guildRegion.members` | `Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count.` |

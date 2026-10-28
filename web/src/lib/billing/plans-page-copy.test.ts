@@ -1,9 +1,10 @@
 // web/src/lib/billing/plans-page-copy.test.ts
 import { describe, expect, it } from 'vitest';
 import { specCell, specKeyCell, specLineAfter } from '../../test-support/spec-table';
+import { exampleCaption, serverRunExample } from './premium-examples';
 import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
-import { PLANS, formatAmount, perMonthLine } from './plans';
-import { plansPageCopy as copy } from './plans-page-copy';
+import { GUILD_TIER_MEMBER_LIMIT, GUILD_TRIAL_DAYS, PLANS, formatAmount, perMonthLine } from './plans';
+import { plansPageCopy as copy, perMemberLine, perRaiderLine, serverRunCaption } from './plans-page-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
 const row = (label: string): string[] => specCell(SPEC, '### 6.1', label);
@@ -58,16 +59,6 @@ describe('plansPageCopy against spec 6.1', () => {
     expect([name, audience]).toEqual([copy.premium.name, copy.premium.audience]);
   });
 
-  it('Guild card', () => {
-    const { name, audience, features } = copy.guild;
-    expect([name, audience, ...features]).toEqual(row('Guild card'));
-  });
-
-  it('Raid guild card', () => {
-    const { name, audience, features } = copy.raidGuild;
-    expect([name, audience, ...features]).toEqual(row('Raid guild card'));
-  });
-
   it('Price block', () => {
     expect(row('Price block')).toEqual([
       copy.price.suffix.yearly,
@@ -90,19 +81,8 @@ describe('plansPageCopy against spec 6.1', () => {
     expect(copy.buttons.subscribeGuild('{price}')).toBe('Subscribe a guild · {price}');
   });
 
-  it('Trial', () => {
-    expect([copy.trial]).toEqual(row('Trial'));
-  });
-
   it('History promise', () => {
     expect([copy.historyPromise]).toEqual(row('History promise'));
-  });
-
-  it('How it works', () => {
-    const [heading, ...sentences] = row('How it works');
-    expect(heading).toBe(copy.howItWorks);
-    expect(copy.rules).toHaveLength(8);
-    expect(copy.rules.flatMap((rule) => [rule.term, rule.sentence])).toEqual(sentences);
   });
 
   it('Foot', () => {
@@ -156,4 +136,87 @@ describe('plansPageCopy Premium against spec B5', () => {
   });
   it('old Premium features are gone', () =>
     expect(allStrings(copy)).not.toContain('History charts of your score and parses'));
+});
+
+describe('plansPageCopy guild region against spec B5', () => {
+  const limit = String(GUILD_TIER_MEMBER_LIMIT);
+  const trialSlots = {
+    GUILD_TRIAL_DAYS: String(GUILD_TRIAL_DAYS),
+    'GUILD_TRIAL_DAYS + 1': String(GUILD_TRIAL_DAYS + 1),
+  };
+  const rule = (term: string): string | undefined => copy.rules.find((r) => r.term === term)?.sentence;
+
+  it('band guild link', () =>
+    expect([copy.band.guildLead, copy.band.guildLink]).toEqual(key('band.guildLead')));
+  it.each(['heading', 'lede', 'members'] as const)('guildRegion.%s', (k) =>
+    expect(copy.guildRegion[k]).toBe(key(`guildRegion.${k}`)[0]),
+  );
+  it('guild.audience', () =>
+    expect(copy.guild.audience).toBe(
+      fill(key('guild.audience')[0] ?? '', { GUILD_TIER_MEMBER_LIMIT: limit }),
+    ));
+  it('guild.features', () =>
+    expect(copy.guild.features).toEqual(
+      key('guild.features').map((s) => fill(s, { GUILD_TIER_MEMBER_LIMIT: limit })),
+    ));
+  it('raidGuild.audience is unchanged', () =>
+    expect(copy.raidGuild.audience).toBe(key('raidGuild.audience')[0]));
+  it('raidGuild.features, loot council first', () => {
+    expect(copy.raidGuild.features).toEqual(key('raidGuild.features'));
+    expect(copy.raidGuild.features[0]).toMatch(/^Loot council:/);
+    expect(copy.raidGuild.features[0]).not.toBe('Everything in Guild');
+  });
+  it.each([
+    ['yearly', 1],
+    ['monthly', 3],
+  ] as const)('perMember %s founder matches the B5 example', (interval, idx) =>
+    expect(perMemberLine(interval, true)).toBe(key('price.perMember(interval, founder)')[idx]),
+  );
+  it.each([
+    ['yearly', 1],
+    ['monthly', 3],
+  ] as const)('perRaider %s founder matches the B5 example', (interval, idx) =>
+    expect(perRaiderLine(interval, true)).toBe(key('price.perRaider(interval, founder)')[idx]),
+  );
+  it('perRaider monthly list carries $0.63', () =>
+    expect(perRaiderLine('monthly', false)).toBe(
+      '$0.63 per raider a month in a 40-person raid, $1.25 in a 20, $2.50 in a 10.',
+    ));
+  it('trial', () => expect(copy.trial).toBe(fill(key('trial')[0] ?? '', trialSlots)));
+  it('rule order: Verified members first, Paying together after Size', () => {
+    const terms = copy.rules.map((r) => r.term);
+    expect(terms[0]).toBe('Verified members');
+    expect(terms[terms.indexOf('Size') + 1]).toBe('Paying together');
+  });
+  it('Verified members rule is B5 verbatim and has no Battle.net', () => {
+    expect([copy.rules[0]?.term, copy.rules[0]?.sentence]).toEqual(key('rules[Verified members]'));
+    expect(copy.rules[0]?.sentence).not.toMatch(/Battle\.net/);
+  });
+  it('Paying together rule', () =>
+    expect(['Paying together', rule('Paying together')]).toEqual(key('rules[Paying together]')));
+  it('Trial rule today', () => expect(rule('Trial')).toBe(fill(key('rules[Trial]')[0] ?? '', trialSlots)));
+  it('howItWorks', () => expect(copy.howItWorks).toBe(key('howItWorks')[0]));
+  it('example label and link', () => {
+    expect(copy.examples.serverRun.label).toBe(key('examples.serverRun.label')[0]);
+    expect(copy.examples.serverRun.link).toBe(key('examples.serverRun.link')[0]);
+  });
+  it('caption.preset and caption.ownGear follow the B5 templates', () => {
+    const f = {
+      characterName: 'Kraggor',
+      level: '60',
+      specLabel: 'Fury Warrior',
+      combinations: '4,812',
+      ranAt: '27 Oct 2026',
+    };
+    const slots = { ...f, 'ranAt as d MMM yyyy': f.ranAt };
+    expect(copy.examples.serverRun.caption.preset(f)).toBe(
+      fill(key('examples.serverRun.caption.preset')[0] ?? '', slots),
+    );
+    expect(copy.examples.serverRun.caption.ownGear(f)).toBe(
+      fill(key('examples.serverRun.caption.ownGear')[0] ?? '', slots),
+    );
+  });
+  it('serverRunCaption reads the data file through the templates', () => {
+    expect(serverRunCaption()).toBe(exampleCaption(serverRunExample, copy.examples.serverRun.caption));
+  });
 });

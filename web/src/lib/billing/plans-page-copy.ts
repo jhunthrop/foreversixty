@@ -2,9 +2,17 @@
 // Every visible string on /premium except the checkout chooser (billing/copy.ts), verbatim from
 // design/specs/2026-10-27-launch-pricing.md section 6.1. No exclamation marks, no urgency. Price
 // text is built from ./plans, never written here.
+import { perMemberAmount, perRaiderAmounts } from './plan-costs';
+import {
+  exampleCaption,
+  serverRunExample,
+  type CaptionTemplates,
+  type ServerRunExample,
+} from './premium-examples';
 import {
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
+  RAID_SIZES,
   SEAT_MOVE_LOCK_DAYS,
   perMonthLine,
   type Interval,
@@ -23,6 +31,27 @@ export interface FaqEntry {
 
 const count = (n: number): string => n.toLocaleString('en-US');
 
+const INTERVAL_WORD: Record<Interval, string> = { yearly: 'a year', monthly: 'a month' };
+
+function perMember(interval: Interval, founder: boolean): string {
+  return `${perMemberAmount(interval, founder)} per member ${INTERVAL_WORD[interval]} at ${GUILD_TIER_MEMBER_LIMIT} members.`;
+}
+
+function perRaider(interval: Interval, founder: boolean): string {
+  const [a40, a20, a10] = perRaiderAmounts(interval, founder);
+  const [s40, s20, s10] = RAID_SIZES;
+  return `${a40} per raider ${INTERVAL_WORD[interval]} in a ${s40}-person raid, ${a20} in a ${s20}, ${a10} in a ${s10}.`;
+}
+
+const TRIAL_CANCEL = `Cancel before day ${GUILD_TRIAL_DAYS + 1} and nothing is charged`;
+
+const serverRunCaptionTemplates: CaptionTemplates = {
+  preset: (f) =>
+    `A level-${f.level} ${f.specLabel} in the site's preset gear: ${f.combinations} combinations on our servers, ${f.ranAt}.`,
+  ownGear: (f) =>
+    `${f.characterName}, ${f.specLabel}: ${f.combinations} combinations on our servers, ${f.ranAt}.`,
+};
+
 export const plansPageCopy = {
   title: 'Plans',
   description:
@@ -31,6 +60,14 @@ export const plansPageCopy = {
     eyebrow: 'PLANS',
     heading: 'What is free, and what the plans add',
     lede: 'Everything a player needs is free, and the free list never shrinks. Premium and the guild plans pay for the site. There are no ads for anyone.',
+    guildLead: 'Running a guild?',
+    guildLink: 'Guild and Raid guild are further down',
+  },
+  guildRegion: {
+    heading: 'For guild leaders',
+    lede: 'One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.',
+    members:
+      'Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count.',
   },
   founder: {
     label: 'Founder',
@@ -79,24 +116,24 @@ export const plansPageCopy = {
   },
   guild: {
     name: 'Guild',
-    audience: `For a guild of up to ${GUILD_TIER_MEMBER_LIMIT}`,
+    audience: `For a guild of up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
     features: [
-      `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
-      'Raids and sign-ups, on the site and in Discord',
-      'Attendance and the raid-night report',
-      "The guild's Discord channel and bot",
-      '1 Premium seat to give to a member',
+      'Post raids on the site and in Discord; members sign up with one tap.',
+      'See who came: attendance and a report for every raid night from its log.',
+      'The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.',
+      '1 Premium seat to give a member, such as your raid leader.',
+      `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members, so a guild that runs 10- or 20-person raids fits under Guild. Nothing switches off if you grow past it.`,
     ],
   },
   raidGuild: {
     name: 'Raid guild',
     audience: 'For a raiding guild of any size',
     features: [
-      'Everything in Guild',
-      'Any number of members',
-      'Loot council',
-      'The readiness board, with consumables',
-      '3 Premium seats to give to members',
+      'Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot this tier. Officers award it from the same screen.',
+      'Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.',
+      '3 Premium seats to give members.',
+      'Any number of members.',
+      'Everything in Guild: raids, sign-ups, attendance and the Discord bot.',
     ],
   },
   price: {
@@ -104,19 +141,37 @@ export const plansPageCopy = {
     perMonth: (yearlyUsd: number): string => perMonthLine(yearlyUsd),
     orYearly: (yearlyPrice: string): string => `Or ${yearlyPrice}.`,
     founder: 'Founder price, kept while you stay subscribed.',
+    perMember,
+    perRaider,
   },
   buttons: {
     subscribe: (price: string): string => `Subscribe · ${price}`,
     subscribeGuild: (price: string): string => `Subscribe a guild · ${price}`,
   },
-  trial: `First ${GUILD_TRIAL_DAYS} days free, once per guild. Cancel before day ${GUILD_TRIAL_DAYS + 1} and nothing is charged.`,
+  trial: `First ${GUILD_TRIAL_DAYS} days free, once per guild. ${TRIAL_CANCEL}; guild settings shows the date of the first charge.`,
+  examples: {
+    serverRun: {
+      label: 'EXAMPLE · A REAL SERVER RUN',
+      caption: serverRunCaptionTemplates,
+      link: 'Open this result',
+    },
+  },
   historyPromise:
     'If a guild plan ends, its raids, attendance, loot and reports stay readable for good, and officers can export attendance and loot as CSV at any time.',
   howItWorks: 'How the guild plans work',
   rules: [
     {
+      term: 'Verified members',
+      sentence:
+        "A verified member is a player with a Forever Sixty account whose character the guild has confirmed: an officer approved it, they joined by the guild's invite link, or the character is in the guild's logs. Each player counts once, however many characters they have in the guild. Discord members without an account do not count.",
+    },
+    {
       term: 'Size',
       sentence: `Guild counts verified members each day, the leader included. Above ${GUILD_TIER_MEMBER_LIMIT} the officer is told before renewal and offered Raid guild. Nothing switches off mid-plan.`,
+    },
+    {
+      term: 'Paying together',
+      sentence: "One person's card pays for the plan. Members cannot split the bill on the site.",
     },
     {
       term: 'Seats',
@@ -134,7 +189,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Trial',
-      sentence: `A guild's first ${GUILD_TRIAL_DAYS} days are free, once per guild. The card is added at the start; cancel before day ${GUILD_TRIAL_DAYS + 1} and nothing is charged.`,
+      sentence: `A guild's first ${GUILD_TRIAL_DAYS} days are free, once per guild. The card is added at the start, and guild settings shows the date of the first charge from day one. ${TRIAL_CANCEL}.`,
     },
     {
       term: 'Renewals',
@@ -180,3 +235,11 @@ export const plansPageCopy = {
     },
   ] as FaqEntry[],
 };
+
+export const perMemberLine = plansPageCopy.price.perMember;
+export const perRaiderLine = plansPageCopy.price.perRaider;
+
+/** The server-run example's caption, also the image alt. */
+export function serverRunCaption(ex: ServerRunExample = serverRunExample): string {
+  return exampleCaption(ex, plansPageCopy.examples.serverRun.caption);
+}
