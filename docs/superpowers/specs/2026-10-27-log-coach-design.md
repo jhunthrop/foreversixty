@@ -497,7 +497,7 @@ Sections, in this order:
 
 ## 9. The review
 
-### 9.1 The model (decided: the cheapest capable open model)
+### 9.1 The model (decided: DeepSeek V4.1 Flash)
 
 The model is reached through the **Vercel AI Gateway** (decided): one key, any model behind it,
 billed at the gateway's own per-model prices. `LLM_BASE_URL` is the gateway's OpenAI-compatible
@@ -505,8 +505,15 @@ endpoint, `https://ai-gateway.vercel.sh/v1`. `LLM_MODEL` is a gateway model slug
 `provider/model` form. The key is already in Secret Manager as `LLM_API_KEY`, readable by
 api-runtime.
 
-The model is chosen **by a rule, not by name** (owner, 2026-10-27), from the columns of the
-owner's benchmark board:
+**The chosen model (owner, 2026-10-27): DeepSeek V4.1 Flash.** `LLM_MODEL` is its slug on the
+Vercel AI Gateway. The builder confirms the exact slug from the gateway's model list, for
+example `deepseek/deepseek-v4.1-flash`. On the owner's board that day it scored Reasoning 89.1
+and Data Analysis 79.5, the best Data Analysis score on the board, at $0.181 per successful
+task. Kimi K3, the Reasoning leader, scored 90.7 and 78.7 at $2.189. The $0.181 is the board's
+per-task cost. Our cost comes from the gateway's per-token prices for the slug (§15.3).
+
+**The rule for picking again later** (a new board, a price change, or an evaluation that goes
+against the model) uses the columns of the owner's benchmark board:
 
 1. Start from the board's current S-tier. Candidates seen on 2026-10-27: Kimi K3, GLM-5.3,
    DeepSeek-V4.1-Flash, MiMo-V2.6-Pro, GLM-5.2, DeepSeek-V4-Pro, Kimi K2.6. Keep only models the
@@ -514,14 +521,14 @@ owner's benchmark board:
 2. Rank them by the **Reasoning** column.
 3. Drop any that are weak on **Data Analysis**. The coach reads a structured evidence pack and
    must not mix up numbers. "Weak" means below the median Data Analysis score of the S-tier
-   candidates on the board that day (see Owner decisions).
+   candidates on the board that day.
 4. Ignore the Coding, Agentic, Browser Use and Design columns and the Overall score.
 5. Of the models left, take the **cheapest by the gateway's output-token price**. A tie goes to
    the higher Reasoning score.
 
-The builder records the chosen slug, its Reasoning and Data Analysis scores, the board's date,
-and the gateway's `{in}`/`{out}` prices in the plan's build notes. The builder then runs the
-evaluation in §21 before launch. The code names no model, so a switch is a config change.
+For DeepSeek V4.1 Flash, the builder records the confirmed slug, the scores above with the
+board's date, and the gateway's `{in}`/`{out}` prices in the plan's build notes, then runs the
+evaluation in §21 before launch. A later re-pick records the same facts. The code names no model, so a switch is a config change.
 
 ### 9.2 The prompt
 
@@ -705,8 +712,10 @@ A small client for OpenAI-compatible chat completions:
 
 ### 15.3 Cost (parametric)
 
-Prices are left as `{in}` and `{out}` in US dollars per million tokens, at the Vercel AI
-Gateway's listed price for the chosen slug (§9.1). The builder fills them in the build notes.
+Prices are left as `{in}` and `{out}` in US dollars per million tokens: the Vercel AI Gateway's
+listed per-token prices for the DeepSeek V4.1 Flash slug at build time (§9.1). The builder fills
+them in the build notes. The board's $0.181 per successful task is not our cost and is not used
+here.
 These figures are for planning only. The cap runs on the gateway's reported cost per request.
 
 Token estimate per generated review (assumption, to be measured in the evaluation):
@@ -834,18 +843,18 @@ Profiles add one ~1 KB insert per rated kill row.
 
 ## 21. Left to the builder
 
-- **Choose the model** by the rule in §9.1: S-tier, ranked by Reasoning, weak Data Analysis
-  dropped, cheapest remaining by the gateway's output-token price. Record the slug, its
+- **The model is DeepSeek V4.1 Flash** (§9.1). Confirm its slug from the gateway's model list
+  (e.g. `deepseek/deepseek-v4.1-flash`) and set `LLM_MODEL` to it. Record the slug, its
   Reasoning and Data Analysis scores with the board's date, the provider behind it, its training
   and retention terms, and the gateway's `{in}`/`{out}` prices in the plan's build notes. Set `LLM_BASE_URL` to
   `https://ai-gateway.vercel.sh/v1` and `LLM_MODEL` to the slug. `LLM_API_KEY` is already in
   Secret Manager and readable by api-runtime. Confirm from the gateway docs where it reports
   per-request cost (usage block or headers), and record it.
 - **Evaluation before launch:** run the same 20 sample fights (mixed specs, including the three
-  full personas, a 10-player and a 20-player night, a wipe) through the chosen model and one
-  S-tier mate (the next model left after step 3 of §9.1). Record both outputs, validation pass rates and measured tokens, and update §15.3's
-  estimate. The owner reads both sets. Switch to the mate only if the cheaper model's quality
-  is clearly worse.
+  full personas, a 10-player and a 20-player night, a wipe) through DeepSeek V4.1 Flash and
+  Kimi K3 (the Reasoning leader). Record both outputs, validation pass rates and measured tokens, and update §15.3's
+  estimate. The owner reads both sets. Switch to Kimi K3 only if DeepSeek V4.1 Flash's
+  quality is clearly worse.
 - **Order of work:** §13's consumables fix and the rating bump. Then the `<spec>.json` rule files
   (DPS first), the catalogue's `complete` flags and `raid_buffs`. Then `Profile` and
   `coach_profiles` in the rater. Then `Pack` with fixtures and the rule-only rendering. Then the
@@ -901,7 +910,8 @@ Re-read as a builder new to the codebase, with the answers the codebase or the b
 9. *Is there an LLM client already?* No. Build `api/internal/llm` (§15.1) on plain `net/http`
    against the Vercel AI Gateway's OpenAI-compatible endpoint. The key `LLM_API_KEY` is already
    in Secret Manager.
-10. *Which model, and what does it cost?* By the rule in §9.1, from the gateway's list. Prices go
+10. *Which model, and what does it cost?* DeepSeek V4.1 Flash through the gateway. The §9.1 rule
+    is for picking again later. Prices go
     in the build notes, and §15.3 is parametric. The cap runs on the gateway's reported cost.
 11. *Does every provider support JSON-schema output?* No. Ask for JSON mode, use the schema form
     where supported, and validate on the server always (§9.2).
@@ -930,16 +940,13 @@ Re-read as a builder new to the codebase, with the answers the codebase or the b
    damage specs get the most findings.`
 3. **"Top" for healers and tanks.** I chose the rating's overall score. Confirm, or name another
    measure, such as effective HPS.
-4. **What counts as "weak on Data Analysis"** in the model rule (§9.1, step 3). I wrote "below
-   the S-tier candidates' median Data Analysis score on the board that day". You may prefer a
-   fixed floor score, or "the bottom two". Confirm or set it.
-5. **The model provider's data terms.** The cheapest S-tier slug on the gateway may route to a
+4. **The model provider's data terms.** The DeepSeek V4.1 Flash slug on the gateway may route to a
    provider outside the US and EU. I recommend two conditions on the choice: the provider behind
    the slug must not train on API inputs, and must state its retention. Where the gateway offers
    the same model from several providers, pick one that meets both, even at a higher price.
    Approve those conditions, or set your own.
-6. **The privacy page** (legal pages finalised 2026-10-24) should name Vercel (the AI Gateway)
+5. **The privacy page** (legal pages finalised 2026-10-24) should name Vercel (the AI Gateway)
    and the model provider as processors of fight data sent for coaching. The pack carries no
    names or account data. Approve the addition.
-7. **Cap defaults:** $25 a day total spend and 30 generated reviews per account per day. Confirm,
+6. **Cap defaults:** $25 a day total spend and 30 generated reviews per account per day. Confirm,
    or set the numbers once §15.3 is filled with real prices.
