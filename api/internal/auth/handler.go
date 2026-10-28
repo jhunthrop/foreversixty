@@ -419,8 +419,9 @@ type EntitlementsView struct {
 	LogCoach      bool         `json:"log_coach"`
 	SupporterMark bool         `json:"supporter_mark"`
 	Billing       *BillingView `json:"billing"`
-	// PersonalPortal is true when the account has a Stripe-sourced personal row in any
-	// status, so the billing portal has something to show.
+	// PersonalPortal is true when the account's personal row carries a Stripe subscription
+	// id, whatever its source or status: a person who once paid and was then granted still
+	// has a Stripe history for the billing portal to show.
 	PersonalPortal bool `json:"personal_portal"`
 }
 
@@ -553,7 +554,7 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 	}
 	if b != nil {
 		ev.Billing = personalBillingView(b)
-		ev.PersonalPortal = b.Source == billingSourceStripe
+		ev.PersonalPortal = b.StripeSubscriptionID != ""
 	}
 	return ev, nil
 }

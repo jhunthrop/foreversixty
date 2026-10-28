@@ -158,6 +158,53 @@ func TestMe_CanceledStripeRowKeepsPortal(t *testing.T) {
 	}
 }
 
+// TestMe_GrantOverStripeHistoryKeepsPortal: an account that once paid and is then granted
+// reads source grant but still has a Stripe history to manage.
+func TestMe_GrantOverStripeHistoryKeepsPortal(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "paidthengranted@example.com")
+	h.seedStripePremium(t, uid, "premium_monthly_launch", 600, time.Now().Add(24*time.Hour))
+	h.grantPremium(t, uid, nil)
+	// Grant itself clears the subscription id; this pins the view's rule for a grant row
+	// that does carry one (restored by hand, as a support fix would).
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`update entitlements set stripe_subscription_id = 'sub_history' where user_id = $1`, uid); err != nil {
+		t.Fatal(err)
+	}
+	ent := h.entitlementsOf(t, uid)
+	b, _ := ent["billing"].(map[string]any)
+	if b["source"] != "grant" || ent["personal_portal"] != true {
+		t.Fatalf("entitlements = %+v, want a grant with the portal (Stripe subscription id kept)", ent)
+	}
+}
+
+// TestMe_SeatOnlyAccountHasNoBilling: a Premium seat is not a personal subscription.
+func TestMe_SeatOnlyAccountHasNoBilling(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "seatonly@example.com")
+	h.svc.Seats = &fakeSeats{facts: SeatFacts{Seat: &HeldSeat{GuildName: "Seat Guild", GivenBy: "Boss", Since: time.Now()}}}
+	ent := h.entitlementsOf(t, uid)
+	if ent["billing"] != nil || ent["personal_portal"] != false {
+		t.Fatalf("entitlements = %+v, want null billing and no portal", ent)
+	}
+}
+
+// TestMe_GuildPlanOnlyAccountHasNoBilling: a guild plan an officer can read is not theirs.
+func TestMe_GuildPlanOnlyAccountHasNoBilling(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "guildplanonly@example.com")
+	gid := h.seedGuild(t, "guild-plan-only")
+	h.seedGuildMember(t, gid, uid, "leader", true)
+	if err := h.svc.Entitlements.Grant(t.Context(), entitlements.Subject{GuildID: &gid},
+		entitlements.PlanGuild, nil, nil, "owner", "t", nil); err != nil {
+		t.Fatal(err)
+	}
+	ent := h.entitlementsOf(t, uid)
+	if ent["billing"] != nil {
+		t.Fatalf("billing = %+v, want null for a guild-plan-only account", ent["billing"])
+	}
+}
+
 func TestMe_SeatKeysOmittedWithoutFacts(t *testing.T) {
 	h := newHarness(t)
 	uid := h.seedUser(t, "noseat@example.com")
