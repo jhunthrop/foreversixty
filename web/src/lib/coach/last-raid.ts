@@ -100,7 +100,8 @@ export type LastRaidState =
   | { kind: 'loading' }
   | { kind: 'retrying' }
   | { kind: 'error' }
-  | { kind: 'ready'; view: LastRaidView; pending: boolean };
+  | { kind: 'ready'; view: LastRaidView; recent: CoachRecent; pending: boolean };
+
 
 /** Fetches the recent answer and settles it into a state; a failed call is `error`, never a throw. */
 export async function settleLastRaid(
@@ -113,6 +114,7 @@ export async function settleLastRaid(
     return {
       kind: 'ready',
       view: lastRaidLine(recent, premium, timeZone),
+      recent,
       pending: recent.pending && recent.last_raid !== null,
     };
   } catch {
@@ -122,6 +124,7 @@ export async function settleLastRaid(
 
 export interface LastRaidLoaderOptions {
   fetchRecent: () => Promise<CoachRecent>;
+  /** Read at each settle, so a caller may pass a getter that follows live state. */
   premium: boolean;
   /** One refresh this long after a first answer that is still pending. */
   refreshDelayMs: number;
@@ -140,25 +143,25 @@ export interface LastRaidLoader {
 
 /** Loads the line once, refreshes once if the first answer is pending, and offers a retry. */
 export function createLastRaidLoader(options: LastRaidLoaderOptions): LastRaidLoader {
-  const { fetchRecent, premium, refreshDelayMs, onState } = options;
+  const { fetchRecent, onState } = options;
   const schedule = options.schedule ?? ((run, ms) => setTimeout(run, ms));
   const cancel = options.cancel ?? ((handle) => clearTimeout(handle as ReturnType<typeof setTimeout>));
   let stopped = false;
   let timer: unknown;
 
   const refresh = async (): Promise<void> => {
-    const next = await settleLastRaid(fetchRecent, premium);
+    const next = await settleLastRaid(fetchRecent, options.premium);
     // A failed refresh keeps the line already on screen.
     if (!stopped && next.kind === 'ready') onState(next);
   };
 
   const load = async (before: LastRaidState, armRefresh: boolean): Promise<void> => {
     onState(before);
-    const settled = await settleLastRaid(fetchRecent, premium);
+    const settled = await settleLastRaid(fetchRecent, options.premium);
     if (stopped) return;
     onState(settled);
     if (armRefresh && settled.kind === 'ready' && settled.pending) {
-      timer = schedule(() => void refresh(), refreshDelayMs);
+      timer = schedule(() => void refresh(), options.refreshDelayMs);
     }
   };
 

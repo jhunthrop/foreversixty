@@ -6,7 +6,7 @@ import type { CoachAnchor } from './types';
 
 const anchors: Record<string, CoachAnchor> = {
   a1: { kind: 'cast', spell_id: 23881 },
-  a2: { kind: 'death', death: `death-${FIXTURE_GUID}-200000` },
+  a2: { kind: 'death', at_ms: 200000 },
   a3: { kind: 'time', at_ms: 65_000 },
   a4: { kind: 'aura', spell_id: 5, debuff: true },
   a5: { kind: 'resource', at_ms: 10_000, to_ms: 25_000 },
@@ -30,6 +30,15 @@ describe('chips', () => {
       'Resources · 0:10–0:25',
     ]);
     expect(chips[0]?.href).toBe(coachAnchorHref(3, 1, FIXTURE_GUID, anchors['a1']!));
+  });
+  it('a death chip renders from at_ms, the shape the API emits, and links the rebuilt anchor', () => {
+    const [chip] = chipsFor(['a2'], context);
+    expect(chip?.label).toBe('Death · 3:20');
+    expect(chip?.href).toBe(`?fight=3&tab=deaths#death-${FIXTURE_GUID}-200000`);
+  });
+  it('a legacy death string still labels', () => {
+    const legacy = { d: { kind: 'death', death: `death-${FIXTURE_GUID}-200000` } } as const;
+    expect(chipsFor(['d'], { ...context, anchors: legacy })[0]?.label).toBe('Death · 3:20');
   });
   it('an unknown anchor id renders no chip', () => {
     expect(chipsFor(['zz'], context)).toEqual([]);

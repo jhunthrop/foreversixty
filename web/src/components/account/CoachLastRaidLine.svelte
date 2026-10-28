@@ -12,6 +12,7 @@
     LAST_RAID_LABEL,
     LAST_RAID_RETRY_CLASS,
     createLastRaidLoader,
+    lastRaidLine,
     type LastRaidRole,
     type LastRaidState,
   } from '../../lib/coach/last-raid';
@@ -39,10 +40,16 @@
     muted: 'text-muted',
   };
 
+  // Getters, not captured values: `premium` follows /v1/me (stale-while-revalidate, so it can
+  // flip after first paint), and the copy below is re-derived from the raw answer when it does.
   const loader = createLastRaidLoader({
     fetchRecent: () => fetchRecent(),
-    premium,
-    refreshDelayMs,
+    get premium() {
+      return premium;
+    },
+    get refreshDelayMs() {
+      return refreshDelayMs;
+    },
     onState: (next) => (state = next),
   });
 
@@ -51,6 +58,7 @@
     return loader.stop;
   });
 
+  const view = $derived(state.kind === 'ready' ? lastRaidLine(state.recent, premium) : null);
   const busy = $derived(state.kind === 'loading' || state.kind === 'retrying');
 </script>
 
@@ -78,19 +86,19 @@
         onclick={() => loader.retry()}>{coachCopy.rowRetry}</button
       >
     </p>
-  {:else}
+  {:else if view !== null}
     <p>
-      {#each state.view.segments as segment, index (index)}
+      {#each view.segments as segment, index (index)}
         {#if index > 0}<span class="text-muted"> · </span>{/if}
-        {#if segment.role === 'link' && state.view.href !== null}
-          <a class={ROLE_CLASS.link} href={state.view.href} data-testid="coach-last-raid-link"
+        {#if segment.role === 'link' && view.href !== null}
+          <a class={ROLE_CLASS.link} href={view.href} data-testid="coach-last-raid-link"
             >{segment.text}</a
           >
-        {:else if state.view.stem !== null && segment.text.includes(state.view.stem)}
-          {@const [before, after] = segment.text.split(state.view.stem)}
+        {:else if view.stem !== null && segment.text.includes(view.stem)}
+          {@const [before, after] = segment.text.split(view.stem)}
           <span class={ROLE_CLASS[segment.role]}
-            >{before}<span class="inline-block max-w-[24ch] truncate align-bottom" title={state.view.stem}
-              >{state.view.stem}</span
+            >{before}<span class="inline-block max-w-[24ch] truncate align-bottom" title={view.stem}
+              >{view.stem}</span
             >{after}</span
           >
         {:else}

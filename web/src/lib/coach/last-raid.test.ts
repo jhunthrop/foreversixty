@@ -221,3 +221,40 @@ describe('the Try again control', () => {
     expect(classes).toContain('-my-3');
   });
 });
+
+describe('a viewer that flips from free to Premium', () => {
+  const build = (read: () => boolean, states: LastRaidState[]) =>
+    createLastRaidLoader({
+      fetchRecent: async () => recent({}),
+      get premium() {
+        return read();
+      },
+      refreshDelayMs: 5000,
+      onState: (state) => states.push(state),
+    });
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  it('re-derives the copy from the kept answer: the upsell becomes the review link', async () => {
+    let premium = false;
+    const states: LastRaidState[] = [];
+    build(() => premium, states).start();
+    await settle();
+    const settled = states.at(-1);
+    if (settled?.kind !== 'ready') throw new Error('expected a ready state');
+    expect(lastRaidLine(settled.recent, premium, 'UTC').href).toBe('/premium');
+    premium = true;
+    const flipped = lastRaidLine(settled.recent, premium, 'UTC');
+    expect(flipped.href).toBe(RAID.url);
+    expect(flipped.segments.map((s) => s.text).join(' · ')).toContain('Fix first: Bloodthirst casts lost');
+  });
+  it('the loader reads premium at settle time, not at construction', async () => {
+    let premium = false;
+    const states: LastRaidState[] = [];
+    const loader = build(() => premium, states);
+    premium = true;
+    loader.start();
+    await settle();
+    const settled = states.at(-1);
+    expect(settled?.kind === 'ready' && settled.view.href).toBe(RAID.url);
+  });
+});

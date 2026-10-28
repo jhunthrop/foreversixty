@@ -30,7 +30,9 @@ function patchFor(guid: string, anchor: CoachAnchor): StatePatch | null {
     case 'healing':
       return abilityPatch('healing', guid, anchor);
     case 'aura':
-      return anchor.spell_id === undefined ? null : { tab: anchor.debuff === true ? 'debuffs' : 'buffs' };
+      return anchor.spell_id === undefined
+        ? null
+        : { tab: anchor.debuff === true ? 'debuffs' : 'buffs', source: guid };
     case 'buffs':
       return { tab: 'buffs', source: guid };
     case 'resource':
@@ -66,6 +68,7 @@ export function coachAnchorHref(
     withState(defaultState(firstFight), { fight: fightIndex, ...patch }),
     firstFight,
   );
-  // The aura row's own element id (AuraTable): the page scrolls to it.
-  return anchor.kind === 'aura' ? `${search}#aura-${playerGuid}-${anchor.spell_id}` : search;
+  return anchor.kind === 'aura' && anchor.debuff !== true
+    ? `${search}#aura-${playerGuid}-${anchor.spell_id}`
+    : search;
 }

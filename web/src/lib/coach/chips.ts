@@ -19,7 +19,7 @@ export function clock(ms: number): string {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
 }
 
-/** The death anchor's own time: the engine's `death-<guid>-<ms>` form ends in the millisecond. */
+/** A legacy death anchor's own time: the engine's `death-<guid>-<ms>` form ends in the millisecond. */
 function deathMs(death: string | undefined): number | null {
   const tail = Number(death?.split('-').pop());
   return Number.isFinite(tail) ? tail : null;
@@ -49,7 +49,7 @@ export function chipLabel(anchor: CoachAnchor, spellName: (id: number) => string
     case 'resource':
       return anchor.at_ms === undefined ? null : fill(coachCopy.anchorResource, { t: span(anchor) });
     case 'death': {
-      const at = deathMs(anchor.death);
+      const at = anchor.at_ms ?? deathMs(anchor.death);
       return at === null ? null : fill(coachCopy.anchorDeath, { t: clock(at) });
     }
     default:

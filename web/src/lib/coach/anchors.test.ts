@@ -14,13 +14,14 @@ describe('coachAnchorHref', () => {
     expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'healing', spell_id: 5 })).toBe(
       search({ fight: 3, tab: 'healing', source: 'Player-1', ability: 5 }),
     ));
-  it('aura opens Buffs, or Debuffs when flagged, at the aura row', () => {
+  it('a buff aura opens Buffs on the player and scrolls to the row (target = the player)', () =>
     expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'aura', spell_id: 9 })).toBe(
-      '?fight=3&tab=buffs#aura-Player-1-9',
-    );
-    expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'aura', spell_id: 9, debuff: true })).toBe(
-      '?fight=3&tab=debuffs#aura-Player-1-9',
-    );
+      `${search({ fight: 3, tab: 'buffs', source: 'Player-1' })}#aura-Player-1-9`,
+    ));
+  it('a debuff aura opens Debuffs with the player as source and no player-guid fragment', () => {
+    const href = coachAnchorHref(3, 1, 'Player-1', { kind: 'aura', spell_id: 9, debuff: true });
+    expect(href).toBe(search({ fight: 3, tab: 'debuffs', source: 'Player-1' }));
+    expect(href).not.toContain('#');
   });
   it('buffs opens the player Buffs tab', () =>
     expect(coachAnchorHref(3, 1, 'Player-1', { kind: 'buffs' })).toBe(
