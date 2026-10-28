@@ -3,6 +3,7 @@
 // hydrated launcher ever sees the real string; every value is checked against a closed set
 // or shape, and anything else makes the whole request invalid (never echoed, never guessed).
 import type { MeGuild } from '../account/api';
+import { parseInterval, parsePlan } from './plan-params';
 import { GUILD_TIER_MEMBER_LIMIT, type Interval, type PlanKey } from './plans';
 
 export interface CheckoutParams {
@@ -15,8 +16,6 @@ export interface CheckoutParams {
 }
 
 const POSITIVE_INTEGER = /^[1-9][0-9]*$/;
-const PLAN_KEYS: readonly PlanKey[] = ['premium', 'guild', 'raid_guild'];
-const INTERVAL_KEYS: readonly Interval[] = ['monthly', 'yearly'];
 
 export function isGuildPlan(plan: PlanKey): boolean {
   return plan !== 'premium';
@@ -30,8 +29,8 @@ function positiveInteger(raw: string | null): number | undefined | null {
 
 export function parseCheckoutParams(search: string): CheckoutParams | null {
   const params = new URLSearchParams(search);
-  const plan = PLAN_KEYS.find((key) => key === params.get('plan'));
-  const interval = INTERVAL_KEYS.find((key) => key === params.get('interval'));
+  const plan = parsePlan(params.get('plan'));
+  const interval = parseInterval(params.get('interval'));
   const guildId = positiveInteger(params.get('guild_id'));
   const comebackId = positiveInteger(params.get('comeback'));
   if (plan === undefined || interval === undefined) return null;
