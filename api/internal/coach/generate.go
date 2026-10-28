@@ -23,6 +23,13 @@ const (
 	reasonModelError = "model_error"
 	// reasonPrivacy: the prompt pack carried a roster name or realm, so no call was made.
 	reasonPrivacy = "privacy"
+	// reasonTimeout: the generation ran past its deadline; served like a second validation
+	// failure (rule-only, not retried), so the key is never generated twice.
+	reasonTimeout = "timeout"
+
+	// afterDeadlineWrite bounds the writes (the spend, the row) a generation makes once its
+	// own context may have run out.
+	afterDeadlineWrite = 10 * time.Second
 
 	// redactedPlayer replaces a roster name in a logged model output.
 	redactedPlayer = "[player]"
@@ -94,10 +101,21 @@ func (g *Generator) Generate(ctx context.Context, key ReviewKey, p Pack, persona
 	} else if refusal := g.admit(ctx, accountID); refusal != RefusalNone {
 		res = fallback(Attempt{}, p, persona, string(refusal), true)
 	} else {
-		// A model error is logged by g.call and is in res as model_error, retryable.
+		// A model error is logged by g.call and is in res as model_error, retryable; a
+		// generation past its deadline is reasonTimeout, final.
 		res, _ = g.run(ctx, p, persona, g.recordSpend)
+		if res.Source == SourceRules && errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			g.logger().Warn("coach: generation ran past its deadline; serving the rule-only review")
+			res = fallback(res, p, persona, reasonTimeout, false)
+		}
 	}
 	return g.save(ctx, storedOf(key, accountID, g.Now(), res))
+}
+
+// detached is ctx without its cancellation or deadline, bounded by afterDeadlineWrite: a
+// write a generation owes (its spend, its row) still happens after the deadline.
+func detached(ctx context.Context) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.WithoutCancel(ctx), afterDeadlineWrite)
 }
 
 // Attempt runs the model flow for one pack with no database: the call, validation, one
@@ -163,6 +181,8 @@ func (g *Generator) admit(ctx context.Context, accountID int64) Refusal {
 
 // recordSpend adds one call's cost to the day's spend; a failure is logged, not fatal.
 func (g *Generator) recordSpend(ctx context.Context, resp llm.Response) {
+	ctx, cancel := detached(ctx)
+	defer cancel()
 	if err := g.Caps.RecordSpend(ctx, resp); err != nil {
 		g.logger().Error("coach: spend not recorded", slog.String("error", err.Error()), slog.Float64("usd", resp.CostUSD))
 	}
@@ -252,6 +272,8 @@ func storedOf(key ReviewKey, accountID int64, at time.Time, a Attempt) StoredRev
 }
 
 func (g *Generator) save(ctx context.Context, row StoredReview) (StoredReview, error) {
+	ctx, cancel := detached(ctx)
+	defer cancel()
 	if err := g.Store.SaveReview(ctx, row); err != nil {
 		return row, fmt.Errorf("coach: store the generated review: %w", err)
 	}

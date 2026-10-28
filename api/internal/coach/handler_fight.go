@@ -21,6 +21,11 @@ import (
 // queue it again.
 const ReviewLeaseTTL = 5 * time.Minute
 
+// ReviewDeadline bounds the review job's whole generation (every call, retry and backoff).
+// It is shorter than ReviewLeaseTTL, so the lease always outlives the work and one key is
+// never generated twice; a generation that runs out stores the rule-only review.
+const ReviewDeadline = 4 * time.Minute
+
 const (
 	msgNotFound = "no such report"
 	msgFlagged  = "that report is flagged, so its fights have no coach review"

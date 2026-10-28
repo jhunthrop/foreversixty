@@ -85,7 +85,7 @@ func (s *Service) runReview(ctx context.Context, job reviewJob) error {
 }
 
 // write generates unless a model review, or a rules review that is not retryable, is
-// already stored for the key.
+// already stored for the key. The generation runs under ReviewDeadline, inside the lease.
 func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Persona, roster fightRoster, account int64) error {
 	stored, ok, err := s.Store.Review(ctx, key)
 	if err != nil {
@@ -97,7 +97,9 @@ func (s *Service) write(ctx context.Context, key ReviewKey, p Pack, persona Pers
 	g := *s.Generator
 	g.Validator = Validator{Names: s.Names, Roster: roster.Names}
 	g.Realms = roster.Realms
-	if _, err := g.Generate(ctx, key, p, persona, account); err != nil {
+	gctx, cancel := context.WithTimeout(ctx, ReviewDeadline)
+	defer cancel()
+	if _, err := g.Generate(gctx, key, p, persona, account); err != nil {
 		return fmt.Errorf("coach-review: %w", err)
 	}
 	return nil
