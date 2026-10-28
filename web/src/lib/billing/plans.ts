@@ -82,10 +82,14 @@ export function founderOpen(now: Date): boolean {
   return now.getTime() < FOUNDER_WINDOW_CLOSES_MS;
 }
 
-export function priceFor(plan: PlanKey, interval: Interval, founder: boolean): number {
-  const entry = PLANS[plan];
+/** The price a plan entry charges for an interval; pure, so callers can pass any table's entry. */
+export function entryPrice(entry: Plan, interval: Interval, founder: boolean): number {
   if (interval === 'monthly') return founder ? entry.founderMonthly : entry.monthly;
   return founder ? entry.founderYearly : entry.yearly;
+}
+
+export function priceFor(plan: PlanKey, interval: Interval, founder: boolean): number {
+  return entryPrice(PLANS[plan], interval, founder);
 }
 
 /** `$3.33`, `$10`, `$12.50`: cents only when the amount is not whole. */
