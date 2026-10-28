@@ -310,6 +310,24 @@ func (s *Store) User(ctx context.Context, id int64) (User, error) {
 	return scanUser(s.Pool.QueryRow(ctx, `select `+userColumns+` from users where id = $1`, id))
 }
 
+// Users reads many accounts in one query; an unknown id is absent from the map.
+func (s *Store) Users(ctx context.Context, ids []int64) (map[int64]User, error) {
+	rows, err := s.Pool.Query(ctx, `select `+userColumns+` from users where id = any($1)`, ids)
+	if err != nil {
+		return nil, fmt.Errorf("auth: read users: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[int64]User, len(ids))
+	for rows.Next() {
+		u, err := scanUser(rows)
+		if err != nil {
+			return nil, err
+		}
+		out[u.ID] = u
+	}
+	return out, rows.Err()
+}
+
 // CreateSession stores a new browser session and returns it.
 func (s *Store) CreateSession(ctx context.Context, userID int64, method string, ttl time.Duration) (Session, error) {
 	sess := Session{ID: NewSessionID(), UserID: userID, Method: method, ExpiresAt: time.Now().UTC().Add(ttl)}

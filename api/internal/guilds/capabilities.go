@@ -3,10 +3,7 @@ package guilds
 
 import (
 	"context"
-	"errors"
 	"fmt"
-
-	"github.com/jackc/pgx/v5"
 )
 
 // The capability words GET /v1/me lists on a guild's entry (its "can" array). The web draws
@@ -60,19 +57,73 @@ func mayBill(claimant, verifiedOfficer bool) bool {
 // viewer with no verified membership still gets a (possibly empty) list; a guild that does
 // not exist is ErrNotFound.
 func (s *Store) Capabilities(ctx context.Context, guildID, userID int64, moderator bool) ([]string, error) {
-	g, err := s.getGuild(ctx, guildID)
+	lists, err := s.CapabilitiesFor(ctx, []int64{guildID}, userID, moderator)
 	if err != nil {
 		return nil, err
 	}
-	var rank string
-	err = s.Pool.QueryRow(ctx,
-		`select rank from guild_members where guild_id = $1 and user_id = $2 and verified_at is not null`,
-		guildID, userID).Scan(&rank)
-	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-		return nil, fmt.Errorf("guilds: capabilities: %w", err)
+	can, ok := lists[guildID]
+	if !ok {
+		return nil, ErrNotFound
 	}
-	verifiedOfficer := err == nil && (rank == "officer" || rank == "leader")
-	return Capabilities(g, userID, moderator, verifiedOfficer), nil
+	return can, nil
+}
+
+// CapabilitiesFor is Capabilities for many guilds in two queries (the claims, then the
+// viewer's verified ranks); a guild that does not exist is absent from the map.
+func (s *Store) CapabilitiesFor(ctx context.Context, guildIDs []int64, userID int64, moderator bool) (map[int64][]string, error) {
+	claims, err := s.claimHolders(ctx, guildIDs)
+	if err != nil {
+		return nil, err
+	}
+	officers, err := s.verifiedOfficerGuilds(ctx, guildIDs, userID)
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[int64][]string, len(claims))
+	for id, claimedBy := range claims {
+		out[id] = Capabilities(Guild{ID: id, ClaimedBy: claimedBy}, userID, moderator, officers[id])
+	}
+	return out, nil
+}
+
+// claimHolders maps each existing guild among ids to the account holding its claim.
+func (s *Store) claimHolders(ctx context.Context, ids []int64) (map[int64]*int64, error) {
+	rows, err := s.Pool.Query(ctx, `select id, claimed_by from guilds where id = any($1)`, ids)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: capabilities: claims: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[int64]*int64, len(ids))
+	for rows.Next() {
+		var id int64
+		var claimedBy *int64
+		if err := rows.Scan(&id, &claimedBy); err != nil {
+			return nil, fmt.Errorf("guilds: capabilities: claims: %w", err)
+		}
+		out[id] = claimedBy
+	}
+	return out, rows.Err()
+}
+
+// verifiedOfficerGuilds is the set of guilds among ids where userID is a verified officer or leader.
+func (s *Store) verifiedOfficerGuilds(ctx context.Context, ids []int64, userID int64) (map[int64]bool, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select guild_id, rank from guild_members
+		 where guild_id = any($1) and user_id = $2 and verified_at is not null`, ids, userID)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: capabilities: ranks: %w", err)
+	}
+	defer rows.Close()
+	out := map[int64]bool{}
+	for rows.Next() {
+		var id int64
+		var rank string
+		if err := rows.Scan(&id, &rank); err != nil {
+			return nil, fmt.Errorf("guilds: capabilities: ranks: %w", err)
+		}
+		out[id] = rank == "officer" || rank == "leader"
+	}
+	return out, rows.Err()
 }
 
 // mayRemoveOwnRow is the one extra rule a viewer's own roster row carries: the account that

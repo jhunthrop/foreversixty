@@ -1512,10 +1512,16 @@ type fakeGuildCapabilities struct {
 	mods  []bool
 }
 
-func (f *fakeGuildCapabilities) Capabilities(_ context.Context, guildID, userID int64, moderator bool) ([]string, error) {
+func (f *fakeGuildCapabilities) CapabilitiesFor(_ context.Context, guildIDs []int64, userID int64, moderator bool) (map[int64][]string, error) {
 	f.asked = append(f.asked, userID)
 	f.mods = append(f.mods, moderator)
-	return f.lists[guildID], nil
+	out := map[int64][]string{}
+	for _, id := range guildIDs {
+		if can, ok := f.lists[id]; ok {
+			out[id] = can
+		}
+	}
+	return out, nil
 }
 
 // TestMeListsWhatTheAccountMayDoInEachGuild: every guild entry on /v1/me carries "can", the

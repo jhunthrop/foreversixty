@@ -40,7 +40,7 @@ const (
 // GuildCapabilities is the part of guilds.Store the account read needs. It is an interface
 // because guilds imports this package.
 type GuildCapabilities interface {
-	Capabilities(ctx context.Context, guildID, userID int64, moderator bool) ([]string, error)
+	CapabilitiesFor(ctx context.Context, guildIDs []int64, userID int64, moderator bool) (map[int64][]string, error)
 }
 
 // GuildAttendanceReader is the part of guilds.Store GET /v1/me needs for a character's raid
@@ -564,17 +564,21 @@ func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (Enti
 func (s *Service) attachGuildCapabilities(ctx context.Context, guilds []Guild, u User) ([]Guild, error) {
 	out := make([]Guild, len(guilds))
 	copy(out, guilds)
-	moderator := u.Role == "moderator" || u.Role == "admin"
+	var lists map[int64][]string
+	if s.GuildCapabilities != nil && len(guilds) > 0 {
+		ids := make([]int64, len(guilds))
+		for i, g := range guilds {
+			ids[i] = g.ID
+		}
+		var err error
+		lists, err = s.GuildCapabilities.CapabilitiesFor(ctx, ids, u.ID, u.Role == "moderator" || u.Role == "admin")
+		if err != nil {
+			return nil, fmt.Errorf("auth: me: guild capabilities: %w", err)
+		}
+	}
 	for i, g := range out {
 		out[i].Can = []string{}
-		if s.GuildCapabilities == nil {
-			continue
-		}
-		can, err := s.GuildCapabilities.Capabilities(ctx, g.ID, u.ID, moderator)
-		if err != nil {
-			return nil, fmt.Errorf("auth: me: guild capabilities %d: %w", g.ID, err)
-		}
-		if can != nil {
+		if can := lists[g.ID]; can != nil {
 			out[i].Can = can
 		}
 	}

@@ -165,25 +165,32 @@ func endedSeatView(f *EndedSeat) *MeEndedSeat {
 // attachGuildPlans fills Guild.Plan for every guild in guilds where
 // userID is a verified officer/leader and that guild currently has an
 // active plan (spec §1.4; Ruling C). heldGuildIDs are the guilds the
-// account holds a Premium seat in.
+// account holds a Premium seat in. The plans and the payers' names are
+// each one query, whatever the guild count.
 func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID int64, heldGuildIDs []int64) ([]Guild, error) {
 	if s.Entitlements == nil {
 		return guilds, nil
 	}
+	officerIDs := officerGuildIDs(guilds)
+	if len(officerIDs) == 0 {
+		return guilds, nil
+	}
+	plans, err := s.Entitlements.GuildBillings(ctx, officerIDs)
+	if err != nil {
+		return nil, fmt.Errorf("auth: me: guild billings: %w", err)
+	}
+	payers, err := s.payerNames(ctx, plans, userID)
+	if err != nil {
+		return nil, err
+	}
 	out := make([]Guild, len(guilds))
 	copy(out, guilds)
 	for i, g := range out {
-		if !g.Verified || (g.Rank != "officer" && g.Rank != "leader") {
+		gb := plans[g.ID]
+		if gb == nil || !gb.Active || !slices.Contains(officerIDs, g.ID) {
 			continue
 		}
-		gb, err := s.Entitlements.GuildBilling(ctx, g.ID)
-		if err != nil {
-			return nil, fmt.Errorf("auth: me: guild billing %d: %w", g.ID, err)
-		}
-		if gb == nil || !gb.Active {
-			continue
-		}
-		billedBy, youAre := s.billedBy(ctx, gb, userID)
+		billedBy, youAre := billedByOf(gb, userID, payers)
 		out[i].Plan = &GuildBillingView{
 			Scope: guildPlanScope(gb), Tier: gb.Tier, YouHoldSeat: slices.Contains(heldGuildIDs, g.ID),
 			Status: gb.Status, CancelAtPeriodEnd: gb.CancelAtPeriodEnd,
@@ -193,16 +200,45 @@ func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID i
 	return out, nil
 }
 
-// billedBy names who pays for a guild plan: "" for a CLI grant, "you" for the caller.
-func (s *Service) billedBy(ctx context.Context, gb *entitlements.GuildBilling, userID int64) (string, bool) {
+// officerGuildIDs lists the guilds the account is a verified officer or leader of.
+func officerGuildIDs(guilds []Guild) []int64 {
+	var ids []int64
+	for _, g := range guilds {
+		if g.Verified && (g.Rank == "officer" || g.Rank == "leader") {
+			ids = append(ids, g.ID)
+		}
+	}
+	return ids
+}
+
+// payerNames reads, in one query, the accounts that pay for the live plans, other than the caller.
+func (s *Service) payerNames(ctx context.Context, plans map[int64]*entitlements.GuildBilling, userID int64) (map[int64]User, error) {
+	var ids []int64
+	for _, gb := range plans {
+		if gb.Active && gb.BillingUserID != nil && *gb.BillingUserID != userID && !slices.Contains(ids, *gb.BillingUserID) {
+			ids = append(ids, *gb.BillingUserID)
+		}
+	}
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	users, err := s.Store.Users(ctx, ids)
+	if err != nil {
+		return nil, fmt.Errorf("auth: me: guild plan payers: %w", err)
+	}
+	return users, nil
+}
+
+// billedByOf names who pays for a guild plan: "" for a CLI grant, "you" for the caller.
+func billedByOf(gb *entitlements.GuildBilling, userID int64, payers map[int64]User) (string, bool) {
 	switch {
 	case gb.BillingUserID == nil:
 		return "", false
 	case *gb.BillingUserID == userID:
 		return "you", true
 	}
-	bu, err := s.Store.User(ctx, *gb.BillingUserID)
-	if err != nil {
+	bu, ok := payers[*gb.BillingUserID]
+	if !ok {
 		return "a former member", false
 	}
 	return bu.PublicName(), false
