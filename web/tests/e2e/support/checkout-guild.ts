@@ -1,18 +1,15 @@
 // web/tests/e2e/support/checkout-guild.ts
 // The /premium/checkout guild step, API stubbed (spec 2026-10-27-subscribe-and-join section 5): a
 // mutable /v1/me cell the claim and refresh paths can change or hold, recorded POST routes, the
-// Stripe hosts, and the fixture builders the step specs share that subscribe-fixtures does not export.
+// Stripe hosts, and the fixture builders the step specs share.
 import { expect, type Page } from '@playwright/test';
 import type { Me, MeGuild } from '../../../src/lib/account/me-types';
-import type { GuildCoveredView, SubscribeStep } from '../../../src/lib/billing/contract';
-import {
-  OLYMPUS,
-  buildMe,
-  coveredView,
-  stepGuild,
-  subscribeView,
-} from '../../../src/test-support/subscribe-fixtures';
+import type { GuildCoveredView } from '../../../src/lib/billing/contract';
+import { OLYMPUS, STEP_FIXTURES, buildMe, coveredView } from '../../../src/test-support/subscribe-fixtures';
 import { envelope } from './guild-billing';
+import { routeMeCell, type MeCell } from './subscribe-stubs';
+
+export { routeMeCell };
 
 export const GUILD_URL = '/premium/checkout?plan=guild&interval=yearly';
 export const RAID_GUILD_URL = '/premium/checkout?plan=raid_guild&interval=yearly';
@@ -25,48 +22,6 @@ const STRIPE_CHECKOUT_HOST = 'https://checkout.stripe.com/**';
 const STRIPE_PORTAL_HOST = 'https://billing.stripe.com/**';
 export const STRIPE_CHECKOUT_URL = 'https://checkout.stripe.com/x';
 export const STRIPE_PORTAL_URL = 'https://billing.stripe.com/x';
-
-/** The `/v1/me` answers a spec can steer: swap the account, hold the read, or fail it. */
-export interface MeCell {
-  set: (me: Me) => void;
-  /** Holds every read until the returned release runs; the re-read after a claim is the one to hold. */
-  hold: () => () => void;
-  failReads: (failing: boolean) => void;
-  reads: () => number;
-}
-
-export async function routeMeCell(page: Page, initial: Me, delayMs = 0): Promise<MeCell> {
-  let me = initial;
-  let gate: Promise<void> | null = null;
-  let failing = false;
-  let reads = 0;
-  await page.route('**/v1/me', async (route) => {
-    reads += 1;
-    if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
-    if (gate !== null) await gate;
-    if (failing) return route.fulfill(envelope({ code: 'internal', message: 'api sentence' }, 500));
-    return route.fulfill(envelope(me));
-  });
-  return {
-    set: (next) => {
-      me = next;
-    },
-    hold: () => {
-      let release = (): void => undefined;
-      gate = new Promise<void>((resolve) => {
-        release = resolve;
-      });
-      return () => {
-        release();
-        gate = null;
-      };
-    },
-    failReads: (next) => {
-      failing = next;
-    },
-    reads: () => reads,
-  };
-}
 
 type Reply = ReturnType<typeof envelope>;
 
@@ -101,7 +56,6 @@ export async function routeStripe(page: Page): Promise<void> {
 export async function hintGuildCount(page: Page, count: number): Promise<void> {
   await page.addInitScript(
     ([key, value]) => {
-      sessionStorage.setItem(key, value);
       localStorage.setItem(key, value);
     },
     [GUILD_COUNT_HINT_KEY, String(count)] as const,
@@ -119,38 +73,18 @@ export async function openStep(page: Page, me: Me, url: string = GUILD_URL): Pro
   return cell;
 }
 
-// --- fixture builders the shared fixtures do not export -----------------------------------------
+// --- fixture builders ---------------------------------------------------------------------------
 
-/** A `ready` guild the viewer holds the claim of; `verified` members, trial unused unless overridden. */
-export function readyGuild(overrides: Partial<MeGuild> = {}, trialUsed = false): MeGuild {
-  return stepGuild({
-    rank: 'officer',
-    verified: true,
-    verified_count: 12,
-    claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Obnoxious Yell' },
-    covered: coveredView({ tier: 'guild', state: 'lapsed', ends_at: null, billed_by: '' }),
-    subscribe: subscribeView('ready', { trial_used: trialUsed }),
-    ...overrides,
-  });
+/** The fixtures' `ready` guild (trial unused, no plan), with overrides. */
+export const readyGuild = (overrides: Partial<MeGuild> = {}): MeGuild => ({
+  ...STEP_FIXTURES.ready.guilds[0]!,
+  ...overrides,
+});
+
+/** The fixtures' `on_plan` guild the viewer pays for, with the `covered` variant given. */
+export function onPlanGuild(covered: Partial<GuildCoveredView>): MeGuild {
+  const base = STEP_FIXTURES.on_plan.guilds[0]!;
+  return { ...base, covered: coveredView({ ...base.covered, ...covered }) };
 }
 
-/** An `on_plan` guild the viewer is an officer of; `covered` picks the variant. */
-export function onPlanGuild(covered: Partial<GuildCoveredView>, overrides: Partial<MeGuild> = {}): MeGuild {
-  return stepGuild({
-    rank: 'officer',
-    verified: true,
-    verified_count: 12,
-    claim: { state: 'claimed', yours: false, pending_yours: false, holder_name: 'Thornwick' },
-    covered: coveredView(covered),
-    subscribe: subscribeView('on_plan'),
-    ...overrides,
-  });
-}
-
-/** One guild on a step (the owner's OLYMPUS XXVII by default) as the whole account. */
-export function meWithGuilds(...guilds: MeGuild[]): Me {
-  return buildMe({ guilds });
-}
-
-export const stepOnly = (step: SubscribeStep, overrides: Partial<MeGuild> = {}): Me =>
-  meWithGuilds(stepGuild({ step, ...overrides }));
+export const meWithGuilds = (...guilds: MeGuild[]): Me => buildMe({ guilds });

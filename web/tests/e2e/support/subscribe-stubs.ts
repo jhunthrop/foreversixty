@@ -5,21 +5,60 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import type { Me } from '../../../src/lib/account/me-types';
 import { envelope } from './guild-billing';
+import { MIN_TARGET_PX } from './short-controls';
 
-export const MIN_TAP_PX = 44;
-
-const SIGNED_OUT = {
+/** The signed-out answer every `/v1/me` stub shares. */
+export const SIGNED_OUT = {
   status: 401,
   contentType: 'application/json',
   body: '{"ok":false,"data":null,"error":null,"request_id":"r"}',
 };
 
-/** Answers `/v1/me` with whatever `read` returns now; null is a signed-out visitor. */
-export async function routeMeCell(page: Page, read: () => Me | null): Promise<void> {
-  await page.route('**/v1/me', (route) => {
-    const me = read();
+/** The `/v1/me` answers a spec can steer: swap the account (null is signed out), hold, delay or fail the read. */
+export interface MeCell {
+  set: (me: Me | null) => void;
+  /** Holds every read until the returned release runs; the re-read after a claim is the one to hold. */
+  hold: () => () => void;
+  failReads: (failing: boolean) => void;
+  reads: () => number;
+}
+
+/** What a stub answers from: the account now, or a function read on every request. */
+type MeSource = Me | null | (() => Me | null);
+
+/** Stubs `/v1/me` from a cell; `delayMs` slows every read. A read function stays valid for older call sites. */
+export async function routeMeCell(page: Page, initial: MeSource, delayMs = 0): Promise<MeCell> {
+  let source = initial;
+  let gate: Promise<void> | null = null;
+  let failing = false;
+  let reads = 0;
+  await page.route('**/v1/me', async (route) => {
+    reads += 1;
+    if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    if (gate !== null) await gate;
+    if (failing) return route.fulfill(envelope({ code: 'internal', message: 'api sentence' }, 500));
+    const me = typeof source === 'function' ? source() : source;
     return route.fulfill(me === null ? SIGNED_OUT : envelope(me));
   });
+  return {
+    set: (next) => {
+      source = next;
+    },
+    hold: () => {
+      let release = (): void => undefined;
+      gate = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      return () => {
+        release();
+        gate = null;
+      };
+    },
+    failReads: (next) => {
+      failing = next;
+    },
+    reads: () => reads,
+  };
 }
 
 export async function routeDevices(page: Page): Promise<void> {
@@ -33,5 +72,5 @@ export async function plantSessionHint(page: Page): Promise<void> {
 
 export async function expectTapHeight(control: Locator): Promise<void> {
   const box = await control.boundingBox();
-  expect(box?.height ?? 0).toBeGreaterThanOrEqual(MIN_TAP_PX);
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(MIN_TARGET_PX);
 }

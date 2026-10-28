@@ -35,6 +35,7 @@ import {
   STEP_FIXTURES,
   OLYMPUS,
   stepGuild,
+  subscribeView,
 } from '../../src/test-support/subscribe-fixtures';
 import {
   CHECKOUT_PATH,
@@ -64,6 +65,7 @@ const GUILD_NAME = OLYMPUS.name;
 const CLAIM_PATH = `**/v1/guilds/${GUILD_ID}/claim`;
 const CLAIM_CONFIRM_PATH = `**/v1/guilds/${GUILD_ID}/claim/confirm`;
 const FILL = '[class~="bg-gold"]';
+const fills = (page: Page) => page.getByTestId('checkout-guild-step').locator(FILL);
 const MAX_CLS = 0.02;
 const BAND_TOLERANCE_PX = 1;
 const id = (suffix: string): string => `guild-${GUILD_ID}-${suffix}`;
@@ -72,8 +74,8 @@ const priceLabel = (plan: 'guild' | 'raid_guild'): string =>
   formatPrice(priceFor(plan, 'yearly', founder), 'yearly');
 
 const TWO_CLAIMS: Me = meWithGuilds(
-  stepGuild({ step: 'claim', rank: 'guild master' }),
-  stepGuild({ ...MILLENNIALS, step: 'claim', rank: 'guild master' }),
+  stepGuild({ step: 'claim', rank: 'leader' }),
+  stepGuild({ ...MILLENNIALS, step: 'claim', rank: 'leader' }),
 );
 const SECOND_ID = MILLENNIALS.id;
 
@@ -157,7 +159,7 @@ test.describe('ready cards', () => {
     await openStep(page, STEP_FIXTURES.ready);
     const button = page.getByTestId(id('subscribe'));
     await expect(button).toContainText(copy.ready.startTrial);
-    await expect(page.locator(FILL)).toHaveCount(1);
+    await expect(fills(page)).toHaveCount(1);
     await expect(button).toHaveClass(/\bbg-gold\b/);
     await button.click();
     await page.waitForURL(STRIPE_CHECKOUT_URL);
@@ -165,10 +167,10 @@ test.describe('ready cards', () => {
   });
 
   test('two ready: both gold outline, no fill on the page', async ({ page }) => {
-    await openStep(page, meWithGuilds(readyGuild(), readyGuild({ ...MILLENNIALS, verified_count: 9 })));
+    await openStep(page, meWithGuilds(readyGuild(), readyGuild({ ...MILLENNIALS })));
     await expect(page.getByTestId('checkout-guild-lead')).toHaveText(copy.lead.ready);
     await expect(page.locator('[data-testid$="-subscribe"]')).toHaveCount(2);
-    await expect(page.locator(FILL)).toHaveCount(0);
+    await expect(fills(page)).toHaveCount(0);
     for (const testid of [id('subscribe'), `guild-${SECOND_ID}-subscribe`]) {
       await expect(page.getByTestId(testid)).toHaveClass(/\bborder-gold\b/);
     }
@@ -220,7 +222,7 @@ test.describe('claim in place', () => {
     await expect(page.getByTestId(id('claim-open'))).toHaveAttribute('aria-busy', 'true');
     await expect(page.getByTestId(id('claim-commit'))).toBeDisabled();
     await expect(page.getByTestId(id('claim-commit'))).toHaveAttribute('aria-busy', 'true');
-    cell.set(meWithGuilds(readyGuild(), stepGuild({ ...MILLENNIALS, step: 'claim', rank: 'guild master' })));
+    cell.set(meWithGuilds(readyGuild(), stepGuild({ ...MILLENNIALS, step: 'claim', rank: 'leader' })));
     release();
     await expect(page.getByTestId(id('notice'))).toHaveText(copy.done.claim(GUILD_NAME));
   });
@@ -322,7 +324,9 @@ test('confirm_claim: Yes, confirm it posts the confirm route and says who holds 
   });
   await openClaim(page);
   await page.getByTestId(id('claim-commit')).click();
-  await expect(page.getByTestId(id('notice'))).toHaveText(copy.done.confirmClaim('Thornwick', GUILD_NAME));
+  await expect(page.getByTestId(id('notice'))).toHaveText(
+    copy.done.confirmClaim(copy.rank.officer, GUILD_NAME),
+  );
   expect(posts).toHaveLength(1);
 });
 
@@ -524,7 +528,7 @@ test.describe('size lines', () => {
   test('12 verified on Raid guild: Switch to Guild changes band, button and URL with no reload', async ({
     page,
   }) => {
-    const subscribed = meWithGuilds(readyGuild({ verified_count: 12 }, true));
+    const subscribed = meWithGuilds(readyGuild({ subscribe: subscribeView('ready', { trial_used: true }) }));
     await openStep(page, subscribed, RAID_GUILD_URL);
     await expect(page.getByTestId(id('subscribe'))).toContainText(
       copy.ready.subscribe(priceLabel('raid_guild')),
