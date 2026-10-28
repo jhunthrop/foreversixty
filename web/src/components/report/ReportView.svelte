@@ -1700,7 +1700,8 @@
         {#if facts.zone !== ''}{facts.zone} ·{/if}
         {#if fights.length > 0}<span class="tabular font-mono whitespace-nowrap">{facts.date}</span> ·{/if}
         <span class="tabular font-mono whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
-          · {meta.status}{/if}
+          <!-- An expression, not literal text: Svelte trims the block's leading space ("4 fights· complete"). -->
+          {' · '}{meta.status}{/if}
         <!-- The bundled sample was logged by no one the site knows: no credit line. -->
         {#if !isSampleReport(reportId)}
           ·
