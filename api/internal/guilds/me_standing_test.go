@@ -114,6 +114,22 @@ func TestGuildStanding_ManyGuildsEachItsOwnFacts(t *testing.T) {
 	}
 }
 
+// TestGuildStanding_SlugIsSentRaw: the slug is the page's name slug, not percent-escaped (the
+// web escapes it when it builds a URL).
+func TestGuildStanding_SlugIsSentRaw(t *testing.T) {
+	h := newHTTPHarness(t)
+	user := seedUser(t, h.pool, "slug@example.com")
+	gid := seedGuild(t, h.pool, "Wolf Pack/Élite")
+
+	got, err := h.store.GuildStanding(context.Background(), user, []int64{gid})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "wolf-pack/élite"; got[gid].Slug != want {
+		t.Errorf("Slug = %q, want %q", got[gid].Slug, want)
+	}
+}
+
 func TestGuildStanding_NoGuildsAnswersEmpty(t *testing.T) {
 	h := newHTTPHarness(t)
 	got, err := h.store.GuildStanding(context.Background(), 1, nil)
@@ -151,6 +167,10 @@ func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
 	bare := seedUser(t, h.pool, "std-bare@example.com")
 	seedCharacter(t, h.pool, gid, bare, syntheticKey(bare), "member", true)
 	recomputeMembership(t, h.pool, gid, bare)
+	// A battletag makes the public name one word (user-N would read as Name-Realm).
+	if _, err := h.pool.Exec(ctx, `update users set battletag = 'Bareone#1234' where id = $1`, bare); err != nil {
+		t.Fatal(err)
+	}
 	u, err := h.svc.Accounts.User(ctx, bare)
 	if err != nil {
 		t.Fatal(err)
@@ -174,6 +194,11 @@ func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
 	got, err := h.store.GuildStanding(ctx, master, []int64{gid})
 	if err != nil {
 		t.Fatal(err)
+	}
+	// The literal pins the count itself: six on the roster (the leader, the waiting account,
+	// two invitees and the two unclaimed names) plus the two in game without an account.
+	if want != 8 {
+		t.Fatalf("home counts %+v sum to %d, want 8", view.Counts, want)
 	}
 	if got[gid].RosterCount == nil || *got[gid].RosterCount != want {
 		t.Fatalf("RosterCount = %v, want the home's %d (counts %+v)", got[gid].RosterCount, want, view.Counts)

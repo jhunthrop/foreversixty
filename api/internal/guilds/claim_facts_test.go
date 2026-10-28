@@ -29,7 +29,11 @@ func setGuild(t *testing.T, h *httpHarness, sql string, args ...any) {
 
 func claimViewOf(t *testing.T, h *httpHarness, viewer, guildID int64) (claimView, bool) {
 	t.Helper()
-	claims, verify, err := h.store.ClaimAndVerifyViews(context.Background(), viewer, []int64{guildID})
+	identities, err := h.store.identityRows(context.Background(), []int64{guildID})
+	if err != nil {
+		t.Fatal(err)
+	}
+	claims, verify, err := h.store.ClaimAndVerifyViews(context.Background(), viewer, identities)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -101,6 +105,73 @@ func TestGuildStanding_HolderNameOnlyForVerifiedOfficer(t *testing.T) {
 		if got, _ := claimViewOf(t, h, viewer, gid); got.HolderName != nil {
 			t.Errorf("%s sees holder_name %q, want nil", name, *got.HolderName)
 		}
+	}
+}
+
+// TestGuildStanding_MixedAccountSeesNoHolderName: an account whose main is a verified member
+// and whose alt is an unverified officer is not a verified officer, so no holder name.
+func TestGuildStanding_MixedAccountSeesNoHolderName(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	holder := seedRanked(t, h, gid, "Holder", "leader", true)
+	setGuild(t, h, `update guilds set claimed_by = $2, claimed_at = now() where id = $1`, gid, holder)
+
+	mixed := seedRanked(t, h, gid, "Mainchar", "member", true)
+	seedCharacter(t, h.pool, gid, mixed, "us/hardcore/altofficer", "officer", false)
+	seedExport(t, h.pool, mixed, "us/hardcore/altofficer", "us", "hardcore", "Altofficer")
+	syncMembership(t, h.pool, gid, mixed)
+
+	if got, _ := claimViewOf(t, h, mixed, gid); got.HolderName != nil {
+		t.Fatalf("mixed account sees holder_name %q, want nil", *got.HolderName)
+	}
+}
+
+// TestGuildStanding_HolderNameIsTheVerifiedCharacter: a holder with an unverified leader alt
+// is named by the verified character, and every guild's name comes from the one query.
+func TestGuildStanding_HolderNamesBatchedVerifiedFirst(t *testing.T) {
+	h := newHTTPHarness(t)
+	first := seedGuild(t, h.pool, "First")
+	second := seedGuild(t, h.pool, "Second")
+	officer := seedRanked(t, h, first, "Watcher", "officer", true)
+	seedCharacter(t, h.pool, second, officer, "us/hardcore/watchertwo", "officer", true)
+	seedExport(t, h.pool, officer, "us/hardcore/watchertwo", "us", "hardcore", "Watchertwo")
+	syncMembership(t, h.pool, second, officer)
+
+	holder := seedRanked(t, h, first, "Realheld", "member", true)
+	seedCharacter(t, h.pool, first, holder, "us/hardcore/shadyleader", "leader", false)
+	seedExport(t, h.pool, holder, "us/hardcore/shadyleader", "us", "hardcore", "Shadyleader")
+	syncMembership(t, h.pool, first, holder)
+	setGuild(t, h, `update guilds set claimed_by = $2, claimed_at = now() where id = $1`, first, holder)
+	setGuild(t, h, `update guilds set claim_pending_by = $2, claim_requested_at = now() where id = $1`, second, holder)
+	seedCharacter(t, h.pool, second, holder, "us/hardcore/pendingone", "member", false)
+	seedExport(t, h.pool, holder, "us/hardcore/pendingone", "us", "hardcore", "Pendingone")
+	syncMembership(t, h.pool, second, holder)
+
+	got, err := h.store.GuildStanding(context.Background(), officer, []int64{first, second})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := got[first].Claim.HolderName; n == nil || *n != "Realheld" {
+		t.Errorf("first holder_name = %v, want Realheld", n)
+	}
+	if n := got[second].Claim.HolderName; n == nil || *n != "Pendingone" {
+		t.Errorf("second holder_name = %v, want Pendingone", n)
+	}
+}
+
+// TestGuildStanding_ContestedClaimHeldByViewer: a contested claim keeps Yours true for the
+// account that holds the disputed claim.
+func TestGuildStanding_ContestedClaimHeldByViewer(t *testing.T) {
+	h := newHTTPHarness(t)
+	viewer := seedUser(t, h.pool, "contest-holder@example.com")
+	challenger := seedUser(t, h.pool, "contest-challenger@example.com")
+	gid := seedGuild(t, h.pool, "Contested")
+	setGuild(t, h, `update guilds set claimed_by = $2, claimed_at = now(), claim_contested_at = now(),
+		claim_contested_by = $3 where id = $1`, gid, viewer, challenger)
+
+	got, _ := claimViewOf(t, h, viewer, gid)
+	if got.State != ClaimStateContested || !got.Yours {
+		t.Fatalf("got %+v, want contested and yours", got)
 	}
 }
 

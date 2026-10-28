@@ -24,6 +24,15 @@ type standingMeBody struct {
 		CrestURL     *string `json:"crest_url"`
 		Faction      *string `json:"faction"`
 		RosterCount  *int    `json:"roster_count"`
+		Claim        *struct {
+			State        string  `json:"state"`
+			Yours        bool    `json:"yours"`
+			PendingYours bool    `json:"pending_yours"`
+			HolderName   *string `json:"holder_name"`
+		} `json:"claim"`
+		Verify *struct {
+			HasApprover bool `json:"has_approver"`
+		} `json:"verify"`
 	} `json:"guilds"`
 }
 
@@ -60,9 +69,11 @@ func TestMe_GuildsCarryIdentity(t *testing.T) {
 	h.svc.Standing = fakeGuildStanding{err: errors.New("standing read failed")}
 	assertOlder("failing Standing")
 
-	crest, faction, roster := "https://api.example.test/crest.webp?v=abc", "horde", 38
+	crest, faction, roster, holder := "https://api.example.test/crest.webp?v=abc", "horde", 38, "Holder"
 	h.svc.Standing = fakeGuildStanding{byGuild: map[int64]GuildStanding{gid: {
 		RulesetLabel: "Hardcore", Slug: "me-guild-identity", CrestURL: &crest, Faction: &faction, RosterCount: &roster,
+		Claim:  &GuildClaimView{State: "claimed", Yours: true, PendingYours: true, HolderName: &holder},
+		Verify: &GuildVerifyView{HasApprover: true},
 	}}}
 	b := readStandingMe(t, h, user)
 	if len(b.Guilds) != 1 {
@@ -73,5 +84,12 @@ func TestMe_GuildsCarryIdentity(t *testing.T) {
 		g.CrestURL == nil || *g.CrestURL != crest || g.Faction == nil || *g.Faction != "horde" ||
 		g.RosterCount == nil || *g.RosterCount != 38 {
 		t.Fatalf("guild = %+v, want the standing's identity facts", g)
+	}
+	if g.Claim == nil || g.Claim.State != "claimed" || !g.Claim.Yours || !g.Claim.PendingYours ||
+		g.Claim.HolderName == nil || *g.Claim.HolderName != "Holder" {
+		t.Errorf("claim = %+v, want state claimed, yours, pending_yours, holder_name Holder", g.Claim)
+	}
+	if g.Verify == nil || !g.Verify.HasApprover {
+		t.Errorf("verify = %+v, want has_approver true", g.Verify)
 	}
 }

@@ -43,13 +43,16 @@ type identityRow struct {
 	crestKey *string
 	members  []snapshotMember
 	snapshot bool
+	// claim carries only the columns claimState and claimHolderStateOf read.
+	claim Guild
 }
 
 // GuildStanding returns each of guildIDs' identity facts: ruleset label, slug, faction, crest
-// url and the roster count. A guild id that does not exist is absent from the map. The roster
-// count costs three queries per call whatever the guild count (identity with the newest
-// snapshot, roster rows, invited accounts); cache it by snapshot received_at if /v1/me latency
-// ever shows it.
+// url, the roster count, claim and verify. A guild id that does not exist is absent from the
+// map. These cost four fixed queries per call whatever the guild count: identity (with the
+// newest snapshot and the claim columns), roster rows, invited accounts, and who approves; a
+// fifth, the claim holders' names, runs only when a verified officer may see one. Cache the
+// roster count by snapshot received_at if /v1/me latency ever shows it.
 func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]auth.GuildStanding, error) {
 	out := make(map[int64]auth.GuildStanding, len(guildIDs))
 	if len(guildIDs) == 0 {
@@ -67,7 +70,7 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 	if err != nil {
 		return nil, err
 	}
-	claims, verify, err := s.ClaimAndVerifyViews(ctx, viewerID, guildIDs)
+	claims, verify, err := s.ClaimAndVerifyViews(ctx, viewerID, identities)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +102,8 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 // identityRows reads every guild's identity and newest snapshot in one query.
 func (s *Store) identityRows(ctx context.Context, guildIDs []int64) ([]identityRow, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select g.id, g.name, g.ruleset, g.faction, g.crest_key, snap.members
+		select g.id, g.name, g.ruleset, g.faction, g.crest_key, snap.members,
+		       g.claimed_by, g.claimed_at, g.claim_pending_by, g.claim_requested_at, g.claim_contested_at
 		from guilds g
 		left join guild_roster_snapshots snap on snap.guild_id = g.id
 		where g.id = any($1)`, guildIDs)
@@ -111,9 +115,12 @@ func (s *Store) identityRows(ctx context.Context, guildIDs []int64) ([]identityR
 	for rows.Next() {
 		var r identityRow
 		var raw []byte
-		if err := rows.Scan(&r.id, &r.name, &r.ruleset, &r.faction, &r.crestKey, &raw); err != nil {
+		g := &r.claim
+		if err := rows.Scan(&r.id, &r.name, &r.ruleset, &r.faction, &r.crestKey, &raw,
+			&g.ClaimedBy, &g.ClaimedAt, &g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt); err != nil {
 			return nil, fmt.Errorf("guilds: standing identity: %w", err)
 		}
+		g.ID = r.id
 		if raw != nil {
 			r.snapshot = true
 			if err := json.Unmarshal(raw, &r.members); err != nil {
@@ -156,6 +163,7 @@ func (s *Store) invitedByGuild(ctx context.Context, guildIDs []int64) (map[int64
 	rows, err := s.Pool.Query(ctx, `
 		select gc.guild_id, gc.user_id, c.name
 		from guild_characters gc
+		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
 		join users u on u.id = gc.user_id
 		left join lateral (
 		  select c.key, c.name from characters c where c.user_id = gc.user_id

@@ -7,14 +7,15 @@ package guilds
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
-	"github.com/jackc/pgx/v5"
-
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
+
+// approverSQL is the predicate for a verified officer or leader on a guild_members row: the one
+// Capabilities, verifiedOfficerOrLeader and every fact here read.
+const approverSQL = `verified_at is not null and rank in ('officer', 'leader')`
 
 // claimHolderState is a guild's claim view and the account a holder name would come from.
 type claimHolderState struct {
@@ -22,72 +23,58 @@ type claimHolderState struct {
 	holder *int64 // the claim holder, else the active pending claimant
 }
 
-// ClaimAndVerifyViews answers, for each of guildIDs that exists, the claim view the viewer
-// sees and whether anyone in the guild can approve a character. It is the one call
-// GuildStanding makes for these facts.
-func (s *Store) ClaimAndVerifyViews(ctx context.Context, viewerID int64, guildIDs []int64) (
+// ClaimAndVerifyViews answers, for each of the guilds identities describe, the claim view the
+// viewer sees and whether anyone in the guild can approve a character. It is the one call
+// GuildStanding makes for these facts and costs at most two queries whatever the guild count:
+// who approves (the viewer, and anyone), and the holder names, skipped when none is to be
+// shown. The claim columns themselves arrive with the identity rows.
+func (s *Store) ClaimAndVerifyViews(ctx context.Context, viewerID int64, identities []identityRow) (
 	map[int64]auth.GuildClaimView, map[int64]auth.GuildVerifyView, error) {
-	claims, err := s.claimViews(ctx, viewerID, guildIDs)
+	ids := make([]int64, len(identities))
+	for i, id := range identities {
+		ids[i] = id.id
+	}
+	approvers, err := s.approverFacts(ctx, viewerID, ids)
 	if err != nil {
 		return nil, nil, err
 	}
-	approvers, err := s.hasApprover(ctx, guildIDs)
+	now := time.Now()
+	states := make(map[int64]claimHolderState, len(identities))
+	named := map[int64]int64{} // guild -> the account whose character name this viewer may see
+	for _, id := range identities {
+		st := claimHolderStateOf(id.claim, viewerID, now)
+		states[id.id] = st
+		if approvers[id.id].viewerApproves && st.holder != nil {
+			named[id.id] = *st.holder
+		}
+	}
+	names, err := s.guildCharacterNames(ctx, named)
 	if err != nil {
 		return nil, nil, err
 	}
-	verify := make(map[int64]auth.GuildVerifyView, len(guildIDs))
-	for _, id := range guildIDs {
-		verify[id] = auth.GuildVerifyView{HasApprover: approvers[id]}
+	claims := make(map[int64]auth.GuildClaimView, len(identities))
+	verify := make(map[int64]auth.GuildVerifyView, len(identities))
+	for id, st := range states {
+		if name, ok := names[id]; ok {
+			st.view.HolderName = &name
+		}
+		claims[id] = st.view
+		verify[id] = auth.GuildVerifyView{HasApprover: approvers[id].hasApprover}
 	}
 	return claims, verify, nil
 }
 
-// claimViews is each guild's claim as viewerID sees it. holder_name is the holder's (or the
-// pending claimant's) character in the guild, and only a verified officer or leader of that
-// guild is shown it.
-func (s *Store) claimViews(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]auth.GuildClaimView, error) {
-	states, err := s.claimStates(ctx, viewerID, guildIDs)
+// VerifyViews is the verify view of each of guildIDs, for a caller that needs no claim facts.
+func (s *Store) VerifyViews(ctx context.Context, guildIDs []int64) (map[int64]auth.GuildVerifyView, error) {
+	approvers, err := s.approverFacts(ctx, 0, guildIDs)
 	if err != nil {
 		return nil, err
 	}
-	approves, err := s.viewerApproves(ctx, viewerID, guildIDs)
-	if err != nil {
-		return nil, err
+	verify := make(map[int64]auth.GuildVerifyView, len(guildIDs))
+	for _, id := range guildIDs {
+		verify[id] = auth.GuildVerifyView{HasApprover: approvers[id].hasApprover}
 	}
-	out := make(map[int64]auth.GuildClaimView, len(states))
-	for id, st := range states {
-		if approves[id] && st.holder != nil {
-			name, err := s.guildCharacterName(ctx, id, *st.holder)
-			if err != nil {
-				return nil, err
-			}
-			st.view.HolderName = name
-		}
-		out[id] = st.view
-	}
-	return out, nil
-}
-
-// claimStates derives each guild's claim phase with the rule the claim endpoints use.
-func (s *Store) claimStates(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]claimHolderState, error) {
-	rows, err := s.Pool.Query(ctx, `
-		select id, claimed_by, claimed_at, claim_pending_by, claim_requested_at, claim_contested_at
-		from guilds where id = any($1)`, guildIDs)
-	if err != nil {
-		return nil, fmt.Errorf("guilds: claim facts: %w", err)
-	}
-	defer rows.Close()
-	now := time.Now()
-	out := make(map[int64]claimHolderState, len(guildIDs))
-	for rows.Next() {
-		var g Guild
-		if err := rows.Scan(&g.ID, &g.ClaimedBy, &g.ClaimedAt, &g.ClaimPendingBy, &g.ClaimRequestedAt,
-			&g.ClaimContestedAt); err != nil {
-			return nil, fmt.Errorf("guilds: claim facts: %w", err)
-		}
-		out[g.ID] = claimHolderStateOf(g, viewerID, now)
-	}
-	return out, rows.Err()
+	return verify, nil
 }
 
 // claimHolderStateOf is g's claim phase and who holds it, from viewerID's side.
@@ -105,63 +92,85 @@ func claimHolderStateOf(g Guild, viewerID int64, now time.Time) claimHolderState
 	return claimHolderState{view: view, holder: holder}
 }
 
-// viewerApproves is the guilds among guildIDs in which viewerID is a verified officer or
-// leader.
-func (s *Store) viewerApproves(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]bool, error) {
-	rows, err := s.Pool.Query(ctx, `
-		select guild_id from guild_members
-		where user_id = $1 and guild_id = any($2) and verified_at is not null and rank in ('officer', 'leader')`,
-		viewerID, guildIDs)
-	if err != nil {
-		return nil, fmt.Errorf("guilds: viewer approves: %w", err)
-	}
-	return collectGuildIDs(rows)
+// approverFact is whether a guild has a verified officer or leader, and whether the viewer is one.
+type approverFact struct {
+	hasApprover    bool
+	viewerApproves bool
 }
 
-// hasApprover is, per guild, whether at least one verified officer or leader exists: the
-// predicate Capabilities and verifiedOfficerOrLeader read.
-func (s *Store) hasApprover(ctx context.Context, guildIDs []int64) (map[int64]bool, error) {
+// approverFacts is approverFact for many guilds in one query; a guild with no approver is absent.
+func (s *Store) approverFacts(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]approverFact, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select distinct guild_id from guild_members
-		where guild_id = any($1) and verified_at is not null and rank in ('officer', 'leader')`, guildIDs)
+		select guild_id, bool_or(user_id = $1)
+		from guild_members
+		where guild_id = any($2) and `+approverSQL+`
+		group by guild_id`, viewerID, guildIDs)
 	if err != nil {
-		return nil, fmt.Errorf("guilds: has approver: %w", err)
+		return nil, fmt.Errorf("guilds: approver facts: %w", err)
 	}
-	return collectGuildIDs(rows)
-}
-
-// collectGuildIDs reads a one-column guild id result into a set.
-func collectGuildIDs(rows pgx.Rows) (map[int64]bool, error) {
 	defer rows.Close()
-	out := map[int64]bool{}
+	out := map[int64]approverFact{}
 	for rows.Next() {
 		var id int64
-		if err := rows.Scan(&id); err != nil {
-			return nil, fmt.Errorf("guilds: guild ids: %w", err)
+		var viewer bool
+		if err := rows.Scan(&id, &viewer); err != nil {
+			return nil, fmt.Errorf("guilds: approver facts: %w", err)
 		}
-		out[id] = true
+		out[id] = approverFact{hasApprover: true, viewerApproves: viewer}
 	}
 	return out, rows.Err()
 }
 
-// guildCharacterName is the name of userID's highest-ranked character in guildID (nil when
-// the account has none with a known name).
-func (s *Store) guildCharacterName(ctx context.Context, guildID, userID int64) (*string, error) {
-	var name string
-	err := s.Pool.QueryRow(ctx, `
-		select coalesce(ae.name, c.name)
+// viewerApproves is the guilds among guildIDs in which viewerID is a verified officer or
+// leader.
+func (s *Store) viewerApproves(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]bool, error) {
+	facts, err := s.approverFacts(ctx, viewerID, guildIDs)
+	if err != nil {
+		return nil, err
+	}
+	out := map[int64]bool{}
+	for id, f := range facts {
+		if f.viewerApproves {
+			out[id] = true
+		}
+	}
+	return out, nil
+}
+
+// guildCharacterNames is, for each guild in holders (guild -> account), the name of that
+// account's character in it, one query for all: the account's verified character first, then
+// its highest rank. A guild whose account has no named character is absent.
+func (s *Store) guildCharacterNames(ctx context.Context, holders map[int64]int64) (map[int64]string, error) {
+	out := map[int64]string{}
+	if len(holders) == 0 {
+		return out, nil
+	}
+	guildIDs, userIDs := make([]int64, 0, len(holders)), make([]int64, 0, len(holders))
+	for guildID, userID := range holders {
+		guildIDs, userIDs = append(guildIDs, guildID), append(userIDs, userID)
+	}
+	rows, err := s.Pool.Query(ctx, `
+		select distinct on (gc.guild_id) gc.guild_id, coalesce(ae.name, c.name)
 		from guild_characters gc
+		join unnest($1::bigint[], $2::bigint[]) as h(guild_id, user_id)
+		  on h.guild_id = gc.guild_id and h.user_id = gc.user_id
 		left join addon_exports ae on ae.character_key = gc.character_key
 		left join characters c on c.key = gc.character_key
-		where gc.guild_id = $1 and gc.user_id = $2 and gc.character_key not like 'account:%'
-		  and coalesce(ae.name, c.name) is not null
-		order by (gc.rank = 'leader') desc, (gc.rank = 'officer') desc, gc.verified_at is not null desc, 1
-		limit 1`, guildID, userID).Scan(&name)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
+		where gc.character_key not like 'account:%' and coalesce(ae.name, c.name) is not null
+		order by gc.guild_id, gc.verified_at is not null desc,
+		         (gc.rank = 'leader') desc, (gc.rank = 'officer') desc, coalesce(ae.name, c.name)`,
+		guildIDs, userIDs)
 	if err != nil {
-		return nil, fmt.Errorf("guilds: claim holder name: %w", err)
+		return nil, fmt.Errorf("guilds: claim holder names: %w", err)
 	}
-	return &name, nil
+	defer rows.Close()
+	for rows.Next() {
+		var guildID int64
+		var name string
+		if err := rows.Scan(&guildID, &name); err != nil {
+			return nil, fmt.Errorf("guilds: claim holder names: %w", err)
+		}
+		out[guildID] = name
+	}
+	return out, rows.Err()
 }
