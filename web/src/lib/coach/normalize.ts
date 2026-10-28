@@ -118,16 +118,17 @@ function review(value: unknown): CoachReview {
 function anchor(raw: Raw): CoachAnchor | null {
   const kind = ANCHOR_KINDS.find((k) => k === raw.kind);
   if (kind === undefined) return null;
-  const result: CoachAnchor = { kind };
   const spell = optNum(raw.spell_id);
   const at = optNum(raw.at_ms);
   const to = optNum(raw.to_ms);
-  if (spell !== undefined) result.spell_id = spell;
-  if (at !== undefined) result.at_ms = at;
-  if (to !== undefined) result.to_ms = to;
-  if (typeof raw.death === 'string' && raw.death !== '') result.death = raw.death;
-  if (raw.debuff === true) result.debuff = true;
-  return result;
+  return {
+    kind,
+    ...(spell === undefined ? {} : { spell_id: spell }),
+    ...(at === undefined ? {} : { at_ms: at }),
+    ...(to === undefined ? {} : { to_ms: to }),
+    ...(typeof raw.death === 'string' && raw.death !== '' ? { death: raw.death } : {}),
+    ...(raw.debuff === true ? { debuff: true } : {}),
+  };
 }
 
 function anchors(value: unknown): Record<string, CoachAnchor> {

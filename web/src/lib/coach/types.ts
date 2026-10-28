@@ -7,126 +7,126 @@ export type CoachStatus = 'ready' | 'writing' | 'preparing' | 'not_reviewable';
 export type CoachSource = 'model' | 'rules';
 
 export interface CoachTeaserFirst {
-  title: string;
+  readonly title: string;
   /** The finding type, e.g. `core_casts`. */
-  code: string;
+  readonly code: string;
   /** The pack's first anchor spell, for the icon; null when the finding names no spell. */
-  spell_id: number | null;
+  readonly spell_id: number | null;
 }
 
 export interface CoachTeaser {
-  status: CoachStatus;
-  access: 'teaser';
-  finding_count: number;
-  fix_first: CoachTeaserFirst | null;
+  readonly status: CoachStatus;
+  readonly access: 'teaser';
+  readonly finding_count: number;
+  readonly fix_first: CoachTeaserFirst | null;
 }
 
 export type CoachAnchorKind = 'cast' | 'aura' | 'death' | 'resource' | 'time' | 'buffs' | 'healing';
 
 export interface CoachAnchor {
-  kind: CoachAnchorKind;
-  spell_id?: number;
-  at_ms?: number;
-  to_ms?: number;
-  death?: string;
+  readonly kind: CoachAnchorKind;
+  readonly spell_id?: number;
+  readonly at_ms?: number;
+  readonly to_ms?: number;
+  readonly death?: string;
   /** Sent by the API when an aura anchor is a debuff; absent means the Buffs tab. */
-  debuff?: boolean;
+  readonly debuff?: boolean;
 }
 
 /** A computed link between two findings, as the rule-only rendering carries it. */
 export interface CoachLink {
-  id: string;
-  sentence: string | null;
+  readonly id: string;
+  readonly sentence: string | null;
 }
 
 export interface FixItem {
-  finding: string;
-  title: string;
-  why: string;
-  drill: string;
-  drillText: string;
-  anchors: string[];
-  links: CoachLink[];
+  readonly finding: string;
+  readonly title: string;
+  readonly why: string;
+  readonly drill: string;
+  readonly drillText: string;
+  readonly anchors: readonly string[];
+  readonly links: readonly CoachLink[];
 }
 
 export interface ThenItem {
-  finding: string;
-  title: string;
-  why: string;
-  anchors: string[];
-  links: CoachLink[];
+  readonly finding: string;
+  readonly title: string;
+  readonly why: string;
+  readonly anchors: readonly string[];
+  readonly links: readonly CoachLink[];
 }
 
 export interface WellItem {
-  strength: string;
-  text: string;
-  anchors: string[];
+  readonly strength: string;
+  readonly text: string;
+  readonly anchors: readonly string[];
 }
 
 export interface CoachReview {
-  opening: string;
-  fixFirst: FixItem | null;
-  thenFix: ThenItem[];
-  doingWell: WellItem[];
-  couldntCheck: string[];
+  readonly opening: string;
+  readonly fixFirst: FixItem | null;
+  readonly thenFix: readonly ThenItem[];
+  readonly doingWell: readonly WellItem[];
+  readonly couldntCheck: readonly string[];
 }
 
 export interface CoachFull {
-  report_id: string;
-  fight_index: number;
-  player_key: string;
-  spec: string;
-  role: string;
-  size: number;
-  kill: boolean;
-  status: CoachStatus;
-  source: CoachSource;
-  busy: boolean;
-  access: 'full' | 'officer';
-  persona: { label: string; status: 'full' | 'starter' };
-  reviewed_at: string;
-  review: CoachReview;
-  anchors: Record<string, CoachAnchor>;
-  basis_labels: string[];
+  readonly report_id: string;
+  readonly fight_index: number;
+  readonly player_key: string;
+  readonly spec: string;
+  readonly role: string;
+  readonly size: number;
+  readonly kill: boolean;
+  readonly status: CoachStatus;
+  readonly source: CoachSource;
+  readonly busy: boolean;
+  readonly access: 'full' | 'officer';
+  readonly persona: { readonly label: string; readonly status: 'full' | 'starter' };
+  readonly reviewed_at: string;
+  readonly review: CoachReview;
+  readonly anchors: Readonly<Record<string, CoachAnchor>>;
+  readonly basis_labels: readonly string[];
 }
 
 export interface LastRaid {
-  zone: string;
-  fought_at: string;
-  report_id: string;
-  finding_count: number;
-  first: { stem: string; on: number; of: number } | null;
-  url: string;
+  readonly zone: string;
+  readonly fought_at: string;
+  readonly report_id: string;
+  readonly finding_count: number;
+  readonly first: { readonly stem: string; readonly on: number; readonly of: number } | null;
+  readonly url: string;
 }
 
 export interface CoachHistoryItem {
-  report_id: string;
-  fight_index: number;
-  player_key: string;
-  spec: string;
-  boss: string;
-  kill: boolean;
-  source: CoachSource;
-  generated_at: string;
-  fix_first: { title: string } | null;
+  readonly report_id: string;
+  readonly fight_index: number;
+  readonly player_key: string;
+  readonly spec: string;
+  readonly boss: string;
+  readonly kill: boolean;
+  readonly source: CoachSource;
+  readonly generated_at: string;
+  readonly fix_first: { readonly title: string } | null;
 }
 
 export interface CoachRecent {
-  last_raid: LastRaid | null;
-  pending: boolean;
-  reviews: CoachHistoryItem[];
+  readonly last_raid: LastRaid | null;
+  readonly pending: boolean;
+  readonly reviews: readonly CoachHistoryItem[];
 }
 
 export interface CoachHistoryPage {
-  reviews: CoachHistoryItem[];
+  readonly reviews: readonly CoachHistoryItem[];
   /** The keyset cursor for the next page; null on the last. */
-  next_cursor: string | null;
+  readonly next_cursor: string | null;
 }
 
 export interface NightLine {
-  stem: string;
-  on: number;
-  of: number;
-  finding_count: number;
-  fight_index: number;
+  readonly stem: string;
+  readonly on: number;
+  readonly of: number;
+  readonly finding_count: number;
+  readonly fight_index: number;
 }

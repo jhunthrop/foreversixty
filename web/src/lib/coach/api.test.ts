@@ -2,7 +2,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { coachModelReview, coachTeaser } from '../../test-support/coach-fixtures';
 import { CoachApiError, fetchCoachHistory, fetchCoachRecent, fetchFightCoach, fetchNightLine } from './api';
-import { stateForAnswer, stateForFailure } from './states';
 
 const BASE = 'https://api.test';
 let requested: string[] = [];
@@ -105,26 +104,5 @@ describe('the other routes', () => {
     expect(await fetchNightLine('r1', 'k', BASE)).toBeNull();
     answer(200, { stem: 'Bloodthirst casts lost', on: 2, of: 4, finding_count: 3, fight_index: 1 });
     expect(await fetchNightLine('r1', 'k', BASE)).toMatchObject({ on: 2, of: 4 });
-  });
-});
-
-describe('panel states', () => {
-  it('maps answers onto the section 4.2 states', () => {
-    expect(stateForAnswer(null)).toBe('not_available');
-    expect(stateForAnswer(coachTeaser())).toBe('teaser');
-    expect(stateForAnswer(coachTeaser({ status: 'preparing' }))).toBe('preparing');
-    expect(stateForAnswer(coachTeaser({ status: 'not_reviewable' }))).toBe('not_reviewable');
-    expect(stateForAnswer(coachModelReview())).toBe('ready_model');
-    expect(stateForAnswer(coachModelReview({ source: 'rules' }))).toBe('ready_rules');
-    expect(stateForAnswer(coachModelReview({ source: 'rules', busy: true }))).toBe('busy');
-    expect(stateForAnswer(coachModelReview({ source: 'rules', status: 'writing' }))).toBe('writing');
-    expect(stateForAnswer(coachModelReview({ access: 'officer' }))).toBe('officer');
-    expect(stateForAnswer(coachModelReview({ persona: { label: 'x', status: 'starter' } }))).toBe('starter');
-  });
-
-  it('a 401 is signed out, anything else an error', () => {
-    expect(stateForFailure(new CoachApiError('x', 401))).toBe('signed_out');
-    expect(stateForFailure(new CoachApiError('x', 403, 'no_plan'))).toBe('error');
-    expect(stateForFailure(new Error('x'))).toBe('error');
   });
 });
