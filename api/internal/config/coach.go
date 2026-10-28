@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"math"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -31,6 +33,18 @@ type CoachConfig struct {
 	LLMPriceInPerMTok, LLMPriceOutPerMTok float64
 	Temperature                           float64 // COACH_TEMPERATURE
 }
+
+// Providers returns a copy of LLMProviders, so callers cannot alter the config.
+func (c CoachConfig) Providers() []string { return slices.Clone(c.LLMProviders) }
+
+// String describes the config without the API key.
+func (c CoachConfig) String() string {
+	return fmt.Sprintf("config.CoachConfig{Enabled:%t Model:%q BaseURL:%q Providers:%v SpendCapUSD:%v PerAccount:%d APIKey:[redacted]}",
+		c.Enabled, c.LLMModel, c.LLMBaseURL, c.LLMProviders, c.DailySpendCapUSD, c.DailyReviewsPerAccount)
+}
+
+// GoString matches String under %#v.
+func (c CoachConfig) GoString() string { return c.String() }
 
 // loadCoach reads the coach settings. While the coach is enabled the model,
 // key, providers and prices are required; errors name variables, never values.
@@ -116,8 +130,8 @@ func parseFloatDefault(getenv func(string) string, name string, def float64) (fl
 		return def, nil
 	}
 	f, err := strconv.ParseFloat(v, 64)
-	if err != nil || f < 0 {
-		return 0, fmt.Errorf("config: %s must be a non-negative number", name)
+	if err != nil || f < 0 || math.IsInf(f, 0) || math.IsNaN(f) {
+		return 0, fmt.Errorf("config: %s must be a finite, non-negative number", name)
 	}
 	return f, nil
 }

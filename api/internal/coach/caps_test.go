@@ -10,6 +10,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/llm"
 )
@@ -232,5 +233,30 @@ func TestRecordSpend_RejectsNegativeCost(t *testing.T) {
 	c := newCaps(nil)
 	if err := c.RecordSpend(context.Background(), llm.Response{CostUSD: -1}); err == nil {
 		t.Fatal("negative cost accepted")
+	}
+}
+
+func TestAdmit_DatabaseErrorFailsClosed(t *testing.T) {
+	pool := capsPool(t)
+	c := newCaps(pool)
+	pool.Close()
+	r, err := c.Admit(context.Background(), 1)
+	if err == nil || r != RefusalError || r == RefusalNone {
+		t.Fatalf("got %q, %v", r, err)
+	}
+}
+
+func TestNewCaps_CopiesConfigAndRejectsNil(t *testing.T) {
+	pool := capsPool(t)
+	cfg := config.CoachConfig{Enabled: true, DailySpendCapUSD: 7, DailyReviewsPerAccount: 3}
+	c, err := NewCaps(cfg, pool, time.Now)
+	if err != nil || !c.Enabled || c.SpendCapUSD != 7 || c.PerAccount != 3 {
+		t.Fatalf("%+v %v", c, err)
+	}
+	if _, err := NewCaps(cfg, pool, nil); err == nil {
+		t.Fatal("nil clock accepted")
+	}
+	if _, err := NewCaps(cfg, nil, time.Now); err == nil {
+		t.Fatal("nil pool accepted")
 	}
 }

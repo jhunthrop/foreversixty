@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -78,5 +79,33 @@ func TestCoachConfig_RejectsBadValues(t *testing.T) {
 	}
 	if _, err := loadCoach(coachEnv(map[string]string{"COACH_DAILY_REVIEWS_PER_ACCOUNT": "0"})); err == nil {
 		t.Fatal("zero per-account cap accepted while enabled")
+	}
+}
+
+func TestCoachConfig_RejectsNonFiniteNumbers(t *testing.T) {
+	for _, v := range []string{"Inf", "+Inf", "NaN"} {
+		if _, err := loadCoach(coachEnv(map[string]string{"COACH_DAILY_SPEND_CAP_USD": v})); err == nil {
+			t.Fatalf("%s accepted", v)
+		}
+	}
+}
+
+func TestCoachConfig_PrintingNeverShowsTheKey(t *testing.T) {
+	c, err := loadCoach(coachEnv(map[string]string{"LLM_API_KEY": "sekrit"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, out := range []string{fmt.Sprintf("%v", c), fmt.Sprintf("%+v", c), fmt.Sprintf("%#v", c), c.String()} {
+		if strings.Contains(out, "sekrit") {
+			t.Fatal(out)
+		}
+	}
+}
+
+func TestCoachConfig_ProvidersIsACopy(t *testing.T) {
+	c, _ := loadCoach(coachEnv(nil))
+	c.Providers()[0] = "changed"
+	if c.LLMProviders[0] == "changed" {
+		t.Fatal("Providers shares its backing array")
 	}
 }
