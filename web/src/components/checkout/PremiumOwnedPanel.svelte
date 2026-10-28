@@ -9,6 +9,7 @@
   import { billingBlockCopy } from '../../lib/billing/copy';
   import { premiumOwnedView } from '../../lib/billing/premium-owned';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { CARD } from '../../lib/ui/card';
 
   let {
     me,
@@ -33,7 +34,7 @@
   $effect(() => titleEl?.focus());
 </script>
 
-<section class="card mx-auto flex w-full max-w-[640px] flex-col gap-2 p-5" data-testid="premium-owned">
+<section class={`${CARD} mx-auto flex w-full max-w-[640px] flex-col gap-2 p-5`} data-testid="premium-owned">
   <h2 bind:this={titleEl} tabindex="-1" class="text-strong m-0 text-[15px] font-semibold outline-none">
     {view.title}
   </h2>

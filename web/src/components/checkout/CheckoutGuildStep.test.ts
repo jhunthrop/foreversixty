@@ -54,6 +54,7 @@ function html(props: { me: Me | null; failed?: boolean; plan?: 'guild' | 'raid_g
       founder: true,
       selfUrl: SELF,
       onRetry: () => {},
+      onCheckAgain: () => {},
       onSwitch: () => {},
       failed: false,
       ...props,

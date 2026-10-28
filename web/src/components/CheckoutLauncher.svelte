@@ -141,6 +141,18 @@
     }
   }
 
+  /** `Check again`: re-reads /v1/me and redraws the cards in place, with no skeleton between. */
+  async function refreshGuildStep(): Promise<void> {
+    io.forgetSession();
+    try {
+      const me = await io.fetchMe();
+      if (me === null) redirectToLogin();
+      else stepMe = me;
+    } catch {
+      // The cards stay as they were; the next Check again tries again.
+    }
+  }
+
   /** Spec §5.3: Switch to Guild / Raid guild rewrites the URL's plan in place; the band follows. */
   function switchPlan(to: GuildTier): void {
     if (request === null) return;
@@ -251,6 +263,7 @@
     {founder}
     selfUrl={currentUrl()}
     onRetry={() => void reloadGuildStep()}
+    onCheckAgain={() => void refreshGuildStep()}
     onSwitch={switchPlan}
   />
 {:else}
