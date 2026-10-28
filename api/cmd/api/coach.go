@@ -58,7 +58,7 @@ func mountCoach(ctx context.Context, w coachWiring) *coach.Service {
 		w.log.Warn("coach", "state", "not built", "err", err, "effect", "the coach routes are not served and no coach profiles are written")
 		return nil
 	}
-	w.rating.Hook = &coach.ProfileWriter{Tables: svc.Tables, Log: w.log}
+	w.rating.Hook = profileWriter(svc.Tables, w.log)
 	if w.deps != nil && w.deps.Guilds != nil {
 		w.deps.Guilds.CoachHolders = svc
 	}
@@ -78,11 +78,18 @@ func coachTables(cfg config.Config, simStore *sims.Store) *coach.FileTables {
 	return &coach.FileTables{BuildsDir: cfg.TreeDataDir, CoachDir: cfg.Coach.DataDir, Specs: simStore}
 }
 
+// profileWriter is the rating hook that writes coach profiles: one construction for the
+// service and the jobs.
+func profileWriter(tables coach.TableSource, log *slog.Logger) *coach.ProfileWriter {
+	return &coach.ProfileWriter{Tables: tables, Log: log}
+}
+
 // ratingStoreWithCoach is a rating store whose every rated fight writes coach profiles: the
 // jobs that re-rate (backfill, rerate-flagged, rebuild-preparation) build theirs with it.
+// They hook whether or not the service could mount the coach: profiles need only the build
+// data and the rule files (a spec without them is skipped), never the bucket.
 func ratingStoreWithCoach(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) *rating.Store {
-	return &rating.Store{Pool: pool, Log: log,
-		Hook: &coach.ProfileWriter{Tables: coachTables(cfg, &sims.Store{Pool: pool}), Log: log}}
+	return &rating.Store{Pool: pool, Log: log, Hook: profileWriter(coachTables(cfg, &sims.Store{Pool: pool}), log)}
 }
 
 // newCoachService builds the service from the wiring. It fails on an unreadable
@@ -126,7 +133,7 @@ func readableDir(dir string) error {
 // coachRefs resolves the top logs and, for a validated DPS spec, the sim. Without a
 // coach-simref runner no spec counts as validated, so nothing waits on a sim that cannot run.
 func coachRefs(ctx context.Context, w coachWiring, tables *coach.FileTables) *coach.Resolver {
-	refs := &coach.Resolver{Pool: &coach.Pool{DB: w.pool}, Sims: &coach.SimRefs{DB: w.pool},
+	refs := &coach.Resolver{Pool: &coach.Pool{DB: w.pool}, Sims: &coach.SimRefs{DB: w.pool, Log: w.log},
 		Validated: w.sims, EngineVersion: enginever.Version, BuildAt: buildAt(tables, w.log)}
 	if runner := w.runner(ctx, coach.SimRefJobCommand, "no sim references; the top logs are the only basis"); runner != nil {
 		refs.Sims.Jobs = runner
@@ -163,6 +170,9 @@ func (w coachWiring) runner(ctx context.Context, job, effect string) jobs.Runner
 		}
 	}
 	r, err := factory(ctx, job)
+	if err == nil && r == nil {
+		return nil // the factory binds nothing for this job, on purpose
+	}
 	if err != nil {
 		w.log.Warn("jobs", "state", "the "+job+" job cannot be reached", "err", err, "effect", effect)
 		return nil

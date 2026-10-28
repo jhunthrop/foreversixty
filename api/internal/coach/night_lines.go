@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 )
@@ -17,6 +18,8 @@ import (
 const (
 	// maxNightLines is how many characters' lines NightLinesFor answers.
 	maxNightLines = 3
+	// maxPackBuilds bounds how many of one night's packs build at once.
+	maxPackBuilds = 4
 	// warmBudget bounds the background build of packs a reader stopped waiting for.
 	warmBudget = 2 * time.Minute
 	// coachTab is the report page's Coach tab.
@@ -109,9 +112,12 @@ func (s *Service) packsWithin(ctx context.Context, rep reports.Report, fights []
 // buildNight loads every fight's pack in parallel, in fight order.
 func (s *Service) buildNight(ctx context.Context, rep reports.Report, fights []int, playerKey string) []NightFight {
 	got := make([]*NightFight, len(fights))
+	slots := make(chan struct{}, maxPackBuilds)
 	var wg sync.WaitGroup
 	for i, index := range fights {
 		wg.Go(func() {
+			slots <- struct{}{}
+			defer func() { <-slots }()
 			p, err := s.PackFor(ctx, rep, index, playerKey)
 			if err != nil {
 				s.logPackFailure(rep.ID, index, err)
@@ -153,36 +159,70 @@ func (s *Service) nightOf(ctx context.Context, rep reports.Report, playerKey str
 }
 
 // NightLinesFor serves Discord (Task 32): one line per character the viewer owns in the
-// report, three at most, and none for a viewer without log_coach. Packs missing past budget
-// make that line Pending and warm in the background.
+// report, three at most, and none for a viewer without log_coach or for a report the night
+// route would refuse (flagged, or one the viewer may not view). The characters share one
+// deadline and are read in parallel; a character not finished by it is Pending (its packs
+// warm in the background), so the lines that are ready always post.
 func (s *Service) NightLinesFor(ctx context.Context, userID int64, reportID string, budget time.Duration) ([]CoachLine, error) {
-	can, _, err := s.Entitlements.Can(ctx, userID, entitlements.FeatureLogCoach)
+	can, err := s.canCoach(ctx, userID)
 	if err != nil || !can {
 		return nil, err
 	}
 	rep, err := s.Reports.Get(ctx, reportID)
+	if errors.Is(err, reports.ErrNotFound) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, fmt.Errorf("coach: night lines %s: %w", reportID, err)
+	}
+	if rep.Flagged != nil || !reports.MayView(ctx, auth.Actor{UserID: userID, Role: "user"}, rep, s.Accounts) {
+		return nil, nil
 	}
 	owned, err := s.ownedInReport(ctx, userID, reportID)
 	if err != nil {
 		return nil, err
 	}
-	out := make([]CoachLine, 0, len(owned))
-	for _, c := range owned {
-		line, ok, pending, err := s.nightOf(ctx, rep, c.PlayerKey, budget)
-		if err != nil {
-			return nil, err
-		}
-		if ok || pending {
-			c.Line, c.Pending, c.URL = line, pending, s.ReportURL(reportID, line.FightIndex)
-			out = append(out, c)
-		}
-	}
-	return out, nil
+	return s.linesBy(ctx, rep, owned, time.Now().Add(budget)), nil
 }
 
-// ownedInReport is the viewer's characters in the report, maxNightLines at most.
+// linesBy reads every character's line in parallel against one deadline, in owned's order,
+// keeping the characters with a line or still pending, maxNightLines at most.
+func (s *Service) linesBy(ctx context.Context, rep reports.Report, owned []CoachLine, deadline time.Time) []CoachLine {
+	got := make([]*CoachLine, len(owned))
+	var wg sync.WaitGroup
+	for i, c := range owned {
+		wg.Go(func() { got[i] = s.lineBy(ctx, rep, c, deadline) })
+	}
+	wg.Wait()
+	out := make([]CoachLine, 0, maxNightLines)
+	for _, c := range got {
+		if c != nil && len(out) < maxNightLines {
+			out = append(out, *c)
+		}
+	}
+	return out
+}
+
+// lineBy is one character's line by deadline: nil when it has none. A read that fails once
+// the deadline or the request has passed is Pending; any other failure is logged and drops
+// only that character.
+func (s *Service) lineBy(ctx context.Context, rep reports.Report, c CoachLine, deadline time.Time) *CoachLine {
+	line, ok, pending, err := s.nightOf(ctx, rep, c.PlayerKey, max(time.Until(deadline), time.Nanosecond))
+	if err != nil {
+		if ctx.Err() == nil && time.Now().Before(deadline) {
+			s.logger().Warn("coach: night line", slog.String("report", rep.ID), slog.String("error", err.Error()))
+			return nil
+		}
+		pending = true
+	}
+	if !ok && !pending {
+		return nil
+	}
+	c.Line, c.Pending, c.URL = line, pending, s.ReportURL(rep.ID, line.FightIndex)
+	return &c
+}
+
+// ownedInReport is the viewer's characters in the report, by name.
 func (s *Service) ownedInReport(ctx context.Context, userID int64, reportID string) ([]CoachLine, error) {
 	rows, err := s.Store.DB.Query(ctx, ownedInReportSQL, reportID, userID)
 	if err != nil {
@@ -190,7 +230,7 @@ func (s *Service) ownedInReport(ctx context.Context, userID int64, reportID stri
 	}
 	defer rows.Close()
 	var out []CoachLine
-	for rows.Next() && len(out) < maxNightLines {
+	for rows.Next() {
 		var c CoachLine
 		if err := rows.Scan(&c.PlayerKey, &c.Character); err != nil {
 			return nil, fmt.Errorf("coach: owned characters in %s: %w", reportID, err)
@@ -201,8 +241,19 @@ func (s *Service) ownedInReport(ctx context.Context, userID int64, reportID stri
 }
 
 // AnyCoachHolder answers notify's raid-night sentence (Task 32): whether any account owning
-// a character with a rated fight in the report holds log_coach.
+// a character with a rated fight in the report holds log_coach. A flagged or private report
+// has no coach sentence: its coach routes refuse it.
 func (s *Service) AnyCoachHolder(ctx context.Context, reportID string) (bool, error) {
+	rep, err := s.Reports.Get(ctx, reportID)
+	if errors.Is(err, reports.ErrNotFound) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("coach: holders in %s: %w", reportID, err)
+	}
+	if rep.Flagged != nil || rep.Visibility == reports.Private {
+		return false, nil
+	}
 	rows, err := s.Store.DB.Query(ctx, holdersInReportSQL, reportID)
 	if err != nil {
 		return false, fmt.Errorf("coach: holders in %s: %w", reportID, err)

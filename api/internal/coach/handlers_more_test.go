@@ -3,6 +3,7 @@ package coach
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
@@ -303,20 +305,18 @@ func (f *t31) ownCharacters(t *testing.T, n int) {
 		f.rate(t, key, 1, capsNow.Add(-time.Hour))
 	}
 	t.Cleanup(func() {
-		f.pool.Exec(context.Background(), `delete from characters where key like 'us/normal/t31-alt-%'`)
+		if _, err := f.pool.Exec(context.Background(), `delete from characters where key like 'us/normal/t31-alt-%'`); err != nil {
+			t.Error(err)
+		}
 	})
 }
 
 func TestNightLinesFor_ThreeCharactersAtMostAndPendingPastBudget(t *testing.T) {
 	f := newT31(t)
 	f.ownCharacters(t, 4)
-	owned, err := f.svc.ownedInReport(context.Background(), f.premium, t30Report)
-	if err != nil || len(owned) != maxNightLines {
-		t.Fatalf("%d owned, err %v", len(owned), err)
-	}
 	lines, err := f.svc.NightLinesFor(context.Background(), f.premium, t30Report, 30*time.Second)
-	if err != nil || len(lines) == 0 || len(lines) > maxNightLines {
-		t.Fatalf("%+v %v", lines, err)
+	if err != nil || len(lines) != 1 {
+		t.Fatalf("the alts have no line; the cap comes after the filter: %+v %v", lines, err)
 	}
 	if l := lines[0]; l.PlayerKey != f.furyKey || l.Pending || l.Line.Stem == "" || l.URL == "" {
 		t.Fatalf("%+v", l)
@@ -325,12 +325,69 @@ func TestNightLinesFor_ThreeCharactersAtMostAndPendingPastBudget(t *testing.T) {
 	if _, err := f.pool.Exec(context.Background(), `delete from coach_packs where report_id = $1`, t30Report); err != nil {
 		t.Fatal(err)
 	}
-	lines, err = f.svc.NightLinesFor(context.Background(), f.premium, t30Report, 50*time.Millisecond)
+	const budget = 300 * time.Millisecond
+	began := time.Now()
+	lines, err = f.svc.NightLinesFor(context.Background(), f.premium, t30Report, budget)
+	if took := time.Since(began); took > budget+time.Second {
+		t.Fatalf("one deadline for every character, took %s", took)
+	}
 	if err != nil || len(lines) != maxNightLines || !lines[0].Pending {
 		t.Fatalf("past the budget every line is pending: %+v %v", lines, err)
 	}
 	if none, _ := f.svc.NightLinesFor(context.Background(), f.freeOwner, t30Report, time.Second); len(none) != 0 {
 		t.Fatalf("no log_coach, no lines: %+v", none)
+	}
+}
+
+func TestNightLinesFor_DeadRequestIsPendingNotAnError(t *testing.T) {
+	f := newT31(t)
+	f.ownCharacters(t, 1)
+	if _, err := f.pool.Exec(context.Background(), `delete from coach_packs where report_id = $1`, t30Report); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	release := make(chan struct{})
+	t.Cleanup(func() { close(release); time.Sleep(50 * time.Millisecond) })
+	f.svc.Summaries = cancellingBucket{cancel: cancel, release: release}
+	lines, err := f.svc.NightLinesFor(ctx, f.premium, t30Report, 30*time.Second)
+	if err != nil || len(lines) != 1 || !lines[0].Pending {
+		t.Fatalf("a request that ends mid-read keeps its line, pending: %+v %v", lines, err)
+	}
+}
+
+// cancellingBucket ends the request on the first read, then blocks until released.
+type cancellingBucket struct {
+	cancel  context.CancelFunc
+	release chan struct{}
+}
+
+func (b cancellingBucket) Get(context.Context, string) (io.ReadCloser, error) {
+	b.cancel()
+	<-b.release
+	return nil, errors.New("released")
+}
+
+func TestNightLinesFor_FlaggedOrHiddenReportHasNoLines(t *testing.T) {
+	f := newT31(t)
+	f.ownCharacters(t, 1)
+	ctx := context.Background()
+	if _, err := f.pool.Exec(ctx, `update reports set flagged = 'spam' where id = $1`, t30Report); err != nil {
+		t.Fatal(err)
+	}
+	if lines, err := f.svc.NightLinesFor(ctx, f.premium, t30Report, time.Second); err != nil || len(lines) != 0 {
+		t.Fatalf("flagged: %+v %v", lines, err)
+	}
+	if any, err := f.svc.AnyCoachHolder(ctx, t30Report); err != nil || any {
+		t.Fatalf("a flagged report has no coach sentence: %v %v", any, err)
+	}
+	if _, err := f.pool.Exec(ctx, `update reports set flagged = null, visibility = 'private' where id = $1`, t30Report); err != nil {
+		t.Fatal(err)
+	}
+	if lines, err := f.svc.NightLinesFor(ctx, f.premium, t30Report, time.Second); err != nil || len(lines) != 0 {
+		t.Fatalf("a private report the viewer may not view: %+v %v", lines, err)
+	}
+	if any, err := f.svc.AnyCoachHolder(ctx, t30Report); err != nil || any {
+		t.Fatalf("a private report has no coach sentence: %v %v", any, err)
 	}
 }
 
@@ -343,5 +400,17 @@ func TestAnyCoachHolder(t *testing.T) {
 	f.linkCharacter(t, f.premium, true)
 	if any, err := f.svc.AnyCoachHolder(context.Background(), t30Report); err != nil || !any {
 		t.Fatalf("the premium owner holds it: %v %v", any, err)
+	}
+}
+
+func TestPackFor_SimRefThatCannotQueueStillYieldsAPack(t *testing.T) {
+	for name, runner := range map[string]jobs.Runner{"launch error": &jobs.Fake{Err: errors.New("no cloud")}, "no runner": nil} {
+		f := newT30(t)
+		f.svc = f.service(t, coachDirWith(t), true)
+		f.svc.Refs.Sims.Jobs = runner
+		p, err := f.svc.PackFor(context.Background(), f.rep(t), t30Fight, f.furyKey)
+		if err != nil || p.Version == "" {
+			t.Fatalf("%s: %+v %v", name, p.Status, err)
+		}
 	}
 }

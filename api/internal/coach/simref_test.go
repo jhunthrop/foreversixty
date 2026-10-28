@@ -48,10 +48,14 @@ func TestSimRefs_MissQueuesOnceAndPrepares(t *testing.T) {
 	}
 }
 
-func TestSimRefs_QueueFailureIsAnError(t *testing.T) {
-	s := &SimRefs{DB: simRefTestDB(t), Jobs: &jobs.Fake{Err: errors.New("no cloud")}}
-	if _, _, err := s.Get(context.Background(), furyRefKey); err == nil {
-		t.Fatal("a job that cannot be queued must surface")
+func TestSimRefs_QueueFailureIsPreparingNotAnError(t *testing.T) {
+	for name, s := range map[string]*SimRefs{
+		"launch error": {DB: simRefTestDB(t), Jobs: &jobs.Fake{Err: errors.New("no cloud")}},
+		"no runner":    {DB: simRefTestDB(t)},
+	} {
+		if ref, preparing, err := s.Get(context.Background(), furyRefKey); err != nil || !preparing || ref != nil {
+			t.Fatalf("%s: a job that cannot be queued answers preparing: %v %v %v", name, ref, preparing, err)
+		}
 	}
 }
 

@@ -37,8 +37,8 @@ func TestSimRefs_RequeuesAfterAnHour(t *testing.T) {
 func TestSimRefs_FailedQueueIsRetriedNotRemembered(t *testing.T) {
 	fake := &jobs.Fake{Err: errors.New("no cloud")}
 	s := &SimRefs{DB: simRefTestDB(t), Jobs: fake}
-	if _, _, err := s.Get(context.Background(), furyRefKey); err == nil {
-		t.Fatal("expected the failure")
+	if _, preparing, err := s.Get(context.Background(), furyRefKey); err != nil || !preparing {
+		t.Fatalf("a failed launch answers preparing, not an error: %v %v", preparing, err)
 	}
 	fake.Err = nil
 	if _, preparing, err := s.Get(context.Background(), furyRefKey); err != nil || !preparing || len(fake.Ran()) != 1 {

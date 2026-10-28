@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
@@ -53,7 +54,18 @@ func jobWiring(cfg config.Config, pool *pgxpool.Pool, bucket coach.Getter, log *
 	return coachWiring{
 		cfg: cfg, pool: pool, reports: &reports.Store{Pool: pool},
 		auth: &auth.Store{Pool: pool, Log: log}, entitle: &entitlements.Store{Pool: pool},
-		sims: &sims.Store{Pool: pool}, summaries: bucket, log: log,
+		sims: &sims.Store{Pool: pool}, summaries: bucket, log: log, newRunner: jobRunners(cfg),
+	}
+}
+
+// jobRunners binds a job's runners: a job never queues a review (it is the review), so it
+// binds no coach-review runner; a sim-reference miss still queues coach-simref.
+func jobRunners(cfg config.Config) runnerFactory {
+	return func(ctx context.Context, job string) (jobs.Runner, error) {
+		if job == coach.ReviewJobCommand {
+			return nil, nil
+		}
+		return jobs.NewCloudRun(ctx, cfg.SimJobProject, cfg.SimJobRegion, job)
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strconv"
 	"sync"
 	"time"
@@ -83,6 +84,7 @@ type SimRefs struct {
 	DB   *pgxpool.Pool
 	Jobs jobs.Runner
 	Now  func() time.Time // time.Now when nil
+	Log  *slog.Logger     // slog.Default when nil
 
 	mu     sync.Mutex
 	queued map[SimRefKey]time.Time
@@ -95,7 +97,9 @@ func (s *SimRefs) now() time.Time {
 	return time.Now()
 }
 
-// Get is the stored reference, or (nil, true) once its job is queued.
+// Get is the stored reference, or (nil, true) on a miss. A miss queues the job; a job that
+// cannot be queued (no runner, a launch error) is logged and still answers preparing, which
+// is never cached, so the next view retries rather than failing the pack.
 func (s *SimRefs) Get(ctx context.Context, k SimRefKey) (*SimRef, bool, error) {
 	var raw []byte
 	err := s.DB.QueryRow(ctx, `select summary from coach_sim_refs
@@ -108,7 +112,18 @@ func (s *SimRefs) Get(ctx context.Context, k SimRefKey) (*SimRef, bool, error) {
 	if !errors.Is(err, pgx.ErrNoRows) {
 		return nil, false, fmt.Errorf("coach: read sim ref: %w", err)
 	}
-	return nil, true, s.queue(ctx, k)
+	if err := s.queue(ctx, k); err != nil {
+		s.logger().Warn("coach: sim ref not queued; the pack is preparing",
+			slog.String("spec", k.Spec), slog.Int("band", k.Band), slog.String("error", err.Error()))
+	}
+	return nil, true, nil
+}
+
+func (s *SimRefs) logger() *slog.Logger {
+	if s.Log != nil {
+		return s.Log
+	}
+	return slog.Default()
 }
 
 func decodeSimRef(raw []byte, band int) (*SimRef, error) {
