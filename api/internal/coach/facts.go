@@ -22,8 +22,8 @@ type FactProblem struct {
 // drill's own text: what it states, the review may repeat.
 type FactChecker struct {
 	Allowed   Allowed
-	Class     string
-	Spec      string
+	Class     string // the player's class: "Hunter" or the slug "hunter"
+	Spec      string // the player's spec: "Beast Mastery", "beast-mastery" or "hunter-beast-mastery"
 	DrillText string
 	Names     *NameDict
 }
@@ -89,8 +89,11 @@ func (c FactChecker) allowedNumbers() map[string]bool {
 // allowedNames is the pack's names, the player's class and spec and the drill's names.
 func (c FactChecker) allowedNames() map[string]bool {
 	set := map[string]bool{}
-	for _, n := range append(append([]string{}, c.Allowed.Names...), c.Class, c.Spec) {
+	for _, n := range c.Allowed.Names {
 		set[strings.ToLower(strings.TrimSpace(n))] = true
+	}
+	for _, n := range c.playerNames() {
+		set[n] = true
 	}
 	if c.Names != nil {
 		for _, n := range c.Names.Find(c.DrillText) {
@@ -98,6 +101,25 @@ func (c FactChecker) allowedNames() map[string]bool {
 		}
 	}
 	return set
+}
+
+// playerNames are the forms of the player's class and spec the prose may use: the display
+// name ("Beast Mastery"), the slug ("beast-mastery") and the spec id ("hunter-beast-mastery"),
+// all lowercased with hyphens as spaces, and the spec id without its class.
+func (c FactChecker) playerNames() []string {
+	class := spacedLower(c.Class)
+	spec := spacedLower(c.Spec)
+	forms := []string{class, spec}
+	if class != "" {
+		if rest, ok := strings.CutPrefix(spec, class+" "); ok {
+			forms = append(forms, rest)
+		}
+	}
+	return forms
+}
+
+func spacedLower(s string) string {
+	return strings.ToLower(strings.TrimSpace(strings.ReplaceAll(s, "-", " ")))
 }
 
 func stringSet(items []string) map[string]bool {

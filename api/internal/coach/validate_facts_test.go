@@ -123,3 +123,35 @@ func TestValidate_ThousandsSeparatorsNormalise(t *testing.T) {
 		}
 	}
 }
+
+func TestValidate_BetweenRangeNeedsThePackPair(t *testing.T) {
+	if probs := validateEdited(t, withWhy("A gap between 1:12 and 1:30.")); !hasProblem(probs, KindRange, "between 1:12 and 1:30") {
+		t.Errorf("wrong pair accepted: %+v", probs)
+	}
+	if probs := validateEdited(t, withWhy("A gap between 1:12 and 1:25.")); len(probs) != 0 {
+		t.Errorf("pack pair rejected: %+v", probs)
+	}
+}
+
+func TestValidate_FractionsAndSymbolsAreProblems(t *testing.T) {
+	for in, word := range map[string]string{"Half the casts went unused.": "half", "A third of them were late.": "third", "It was ½ of them.": "½", "Triple the casts.": "triple", "Twice as often.": "twice"} {
+		if probs := validateEdited(t, withWhy(in)); !hasProblem(probs, ProblemNumberWord, word) {
+			t.Errorf("%q: %+v", in, probs)
+		}
+	}
+}
+
+func TestValidate_NonASCIIDigitsAreChecked(t *testing.T) {
+	if probs := validateEdited(t, withWhy("٣٧ casts went unused.")); !hasProblem(probs, KindNumber, "٣٧") {
+		t.Fatalf("%+v", probs)
+	}
+	if probs := validateEdited(t, withWhy("３１ casts went unused.")); hasProblem(probs, KindNumber, "３１") {
+		t.Fatalf("pack number in full-width digits rejected: %+v", probs)
+	}
+}
+
+func TestValidate_LowercaseSpellIsAProblem(t *testing.T) {
+	if probs := validateEdited(t, withWhy("keep mortal strike for later.")); !hasProblem(probs, ProblemName, "Mortal Strike") {
+		t.Fatalf("%+v", probs)
+	}
+}

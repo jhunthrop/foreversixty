@@ -2,8 +2,11 @@ package coach
 
 import (
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 // Token kinds ExtractNumbers reports.
@@ -17,6 +20,7 @@ const (
 const (
 	enDash        = "–"
 	thousandsStep = 1000
+	digitsPerRun  = 10
 )
 
 // NumberToken is one number as the prose wrote it (Raw) and as the pack may state it (Norm).
@@ -26,28 +30,33 @@ type NumberToken struct {
 }
 
 const (
-	timePattern     = `\d{1,2}:\d{2}`
+	timePattern     = `\p{Nd}{1,2}:\p{Nd}{2}`
 	rangeJoin       = `(?:\s*[–—-]\s*|\s+to\s+)`
-	plainNumber     = `\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?`
+	plainNumber     = `\p{Nd}{1,3}(?:,\p{Nd}{3})+(?:\.\p{Nd}+)?|\p{Nd}+(?:\.\p{Nd}+)?`
 	numberSuffix    = `\s*%|\s+per\s?cent\b|[kK]\b`
-	numberPatternRE = `(` + timePattern + `)` + rangeJoin + `(` + timePattern + `)|(` + timePattern + `)|(` + plainNumber + `)(` + numberSuffix + `)?`
+	betweenRange    = `(?i:between)\s+(` + timePattern + `)\s+(?i:and)\s+(` + timePattern + `)`
+	numberPatternRE = betweenRange + `|(` + timePattern + `)` + rangeJoin + `(` + timePattern + `)|(` + timePattern + `)|(` + plainNumber + `)(` + numberSuffix + `)?`
 )
 
 var numberRE = regexp.MustCompile(numberPatternRE)
 
 // Submatch groups of numberRE.
 const (
-	groupRangeFrom = 1
-	groupRangeTo   = 2
-	groupTime      = 3
-	groupNumber    = 4
-	groupSuffix    = 5
+	groupBetweenFrom = 1
+	groupBetweenTo   = 2
+	groupRangeFrom   = 3
+	groupRangeTo     = 4
+	groupTime        = 5
+	groupNumber      = 6
+	groupSuffix      = 7
 )
 
 // ExtractNumbers finds every digit sequence in prose: integers, decimals, percentages
 // ("44%", "44 %", "44 percent"), thousands separators ("2,140"), "2.1k", m:ss times and
-// m:ss ranges joined by a hyphen, dash or "to". Norm is the form the pack states: commas
-// removed, a trailing zero dropped, a range joined by an en dash.
+// m:ss ranges joined by a hyphen, dash, "to" or "between ... and ...". Digits of any script
+// count. Norm is the form the pack states: ASCII digits, commas removed, a trailing zero
+// dropped, a range joined by an en dash. A range is one token: it passes only when the
+// pack holds that very pair, never because its two ends appear in different ranges.
 func ExtractNumbers(s string) []NumberToken {
 	var out []NumberToken
 	for _, m := range numberRE.FindAllStringSubmatchIndex(s, -1) {
@@ -59,9 +68,10 @@ func ExtractNumbers(s string) []NumberToken {
 		}
 		raw := strings.TrimSpace(s[m[0]:m[1]])
 		switch {
+		case group(groupBetweenFrom) != "":
+			out = append(out, rangeToken(raw, group(groupBetweenFrom), group(groupBetweenTo)))
 		case group(groupRangeFrom) != "":
-			norm := normTime(group(groupRangeFrom)) + enDash + normTime(group(groupRangeTo))
-			out = append(out, NumberToken{Raw: raw, Norm: norm, Kind: KindRange})
+			out = append(out, rangeToken(raw, group(groupRangeFrom), group(groupRangeTo)))
 		case group(groupTime) != "":
 			out = append(out, NumberToken{Raw: raw, Norm: normTime(group(groupTime)), Kind: KindTime})
 		default:
@@ -69,6 +79,10 @@ func ExtractNumbers(s string) []NumberToken {
 		}
 	}
 	return out
+}
+
+func rangeToken(raw, from, to string) NumberToken {
+	return NumberToken{Raw: raw, Norm: normTime(from) + enDash + normTime(to), Kind: KindRange}
 }
 
 func numberToken(raw, digits, suffix string) NumberToken {
@@ -85,11 +99,32 @@ func numberToken(raw, digits, suffix string) NumberToken {
 // parseNumber reads digits with thousands separators; ExtractNumbers' pattern guarantees
 // they parse.
 func parseNumber(digits string) float64 {
-	v, err := strconv.ParseFloat(strings.ReplaceAll(digits, ",", ""), 64)
+	v, err := strconv.ParseFloat(strings.ReplaceAll(asciiDigits(digits), ",", ""), 64)
 	if err != nil {
 		return 0
 	}
 	return v
+}
+
+// asciiDigits rewrites digits of any script (Arabic-Indic, full-width, ...) as ASCII. Unicode
+// lays each script's digits out in runs of ten starting at zero.
+func asciiDigits(s string) string {
+	return strings.Map(func(r rune) rune {
+		if r < utf8.RuneSelf || !unicode.Is(unicode.Nd, r) {
+			return r
+		}
+		for _, rg := range unicode.Nd.R16 {
+			if rune(rg.Lo) <= r && r <= rune(rg.Hi) {
+				return '0' + (r-rune(rg.Lo))%digitsPerRun
+			}
+		}
+		for _, rg := range unicode.Nd.R32 {
+			if rune(rg.Lo) <= r && r <= rune(rg.Hi) {
+				return '0' + (r-rune(rg.Lo))%digitsPerRun
+			}
+		}
+		return r
+	}, s)
 }
 
 func formatNumber(v float64) string { return strconv.FormatFloat(v, 'f', -1, 64) }
@@ -97,22 +132,52 @@ func formatNumber(v float64) string { return strconv.FormatFloat(v, 'f', -1, 64)
 // normTime drops a leading zero from the minutes: "03:05" is "3:05".
 func normTime(t string) string {
 	minutes, seconds, _ := strings.Cut(t, ":")
-	return strconv.Itoa(int(parseNumber(minutes))) + ":" + seconds
+	return strconv.Itoa(int(parseNumber(minutes))) + ":" + asciiDigits(seconds)
 }
 
 // numberWordPattern lists the number words above three a model might write in place of
-// a digit, including teens, tens, magnitudes and ordinals.
+// a digit: teens, tens, magnitudes, ordinals, plus the vulgar fraction signs.
 const numberWordPattern = `(?i)\b(?:four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|` +
 	`sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|` +
-	`hundred|thousand|million|dozen|fourth|fifth|sixth|seventh|eighth|ninth|tenth)s?\b`
+	`hundred|thousand|million|dozen|fourth|fifth|sixth|seventh|eighth|ninth|tenth)s?\b|[\x{00BC}-\x{00BE}\x{2150}-\x{215E}]`
 
-var numberWordRE = regexp.MustCompile(numberWordPattern)
+// quantifiedWordPattern lists fractions and multiples ("half", "a third", "two-thirds",
+// "a quarter", "twice", "double", "triple") only where they quantify something: followed by
+// "of", "as many/much/often", a determiner or a digit. "Cost you twice." and "past half on a
+// pull" are idiom and pass; "half the casts" and "twice as often" are numeric claims.
+const quantifiedWordPattern = `(?i)\b(half|halves|thirds?|quarters?|twice|double|doubled|triple|tripled)\b` +
+	`(?:\s+(?:of|as|the|an?|your|their|its|all|every|each|that|this|those|these|many|much|often)\b|\s+\p{Nd})`
 
-// NumberWords finds number words above "three", lowercased, in the order written.
+var (
+	numberWordRE     = regexp.MustCompile(numberWordPattern)
+	quantifiedWordRE = regexp.MustCompile(quantifiedWordPattern)
+)
+
+// figurativeHalf is the one quantified use of "half" that counts nothing: "the other half of the story".
+const figurativeHalf = "other half"
+
+// NumberWords finds number words above "three", and fractions and multiples that quantify
+// something, lowercased, in the order written.
 func NumberWords(s string) []string {
-	found := numberWordRE.FindAllString(s, -1)
-	for i, w := range found {
-		found[i] = strings.ToLower(w)
+	type hit struct {
+		at   int
+		word string
 	}
-	return found
+	var hits []hit
+	for _, loc := range numberWordRE.FindAllStringIndex(s, -1) {
+		hits = append(hits, hit{loc[0], strings.ToLower(s[loc[0]:loc[1]])})
+	}
+	for _, m := range quantifiedWordRE.FindAllStringSubmatchIndex(s, -1) {
+		word := strings.ToLower(s[m[2]:m[3]])
+		if word == "half" && strings.HasSuffix(strings.ToLower(s[:m[3]]), figurativeHalf) {
+			continue
+		}
+		hits = append(hits, hit{m[2], word})
+	}
+	sort.Slice(hits, func(i, j int) bool { return hits[i].at < hits[j].at })
+	out := make([]string, len(hits))
+	for i, h := range hits {
+		out[i] = h.word
+	}
+	return out
 }

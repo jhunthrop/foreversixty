@@ -54,8 +54,25 @@ func TestNameDict_FindsSpellsItemsBosses(t *testing.T) {
 			t.Errorf("%q not found in %v", want, got)
 		}
 	}
-	if n := len(d.Find("the whirlwind is lowercase prose and flask of the titans too")); n != 0 {
-		t.Errorf("lowercase prose found %d names", n)
+}
+
+func TestNameDict_LowercasePhrasesAreFoundSingleWordsAreNot(t *testing.T) {
+	d := buildNames(t)
+	got := d.Find("drink a flask of the titans and keep mortal strike up")
+	for _, want := range []string{"Flask of the Titans", "Mortal Strike"} {
+		if !slices.Contains(got, want) {
+			t.Errorf("%q not found in %v", want, got)
+		}
+	}
+	if got := d.Find("press whirlwind, then bloodthirst; the unused charge and rage"); len(got) != 0 {
+		t.Errorf("lowercase single words found: %v", got)
+	}
+}
+
+func TestNameDict_OrdinaryLowercaseWordsAreProse(t *testing.T) {
+	d := buildNames(t)
+	if got := d.Find("spend rage before it caps, the fire and frost mark the unused rage"); len(got) != 0 {
+		t.Errorf("ordinary prose found %v", got)
 	}
 }
 

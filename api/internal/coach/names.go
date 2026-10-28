@@ -52,9 +52,10 @@ type nameSpan struct {
 // consumable and raid buff names of the consumables catalogue.
 func LoadNames(buildDir string, mechanicsTables []mechanics.Table) (*NameDict, error) {
 	d := &NameDict{names: map[string]string{}}
-	for _, load := range []func(string) ([]string, error){
+	loaders := []func(string) ([]string, error){
 		spellNames, talentNames, itemNames, namedRows(spellsFile), namedRows(itemsFile),
-	} {
+	}
+	for _, load := range loaders {
 		names, err := load(buildDir)
 		if err != nil {
 			return nil, err
@@ -71,14 +72,20 @@ func LoadNames(buildDir string, mechanicsTables []mechanics.Table) (*NameDict, e
 	return d, nil
 }
 
+// add puts names in the dictionary. Placeholder names ("DEPRECATED", "UNUSED") are skipped.
 func (d *NameDict) add(names ...string) {
 	for _, n := range names {
 		words := splitWords(n)
-		if len(words) == 0 || len(words) > maxNameWords || strings.Contains(strings.ToLower(n), deprecatedMarker) {
+		if len(words) == 0 || len(words) > maxNameWords || isPlaceholder(n) {
 			continue
 		}
 		d.names[joinKey(words)] = strings.TrimSpace(n)
 	}
+}
+
+// isPlaceholder is true for the build's dummy names: marked deprecated, or all capitals.
+func isPlaceholder(name string) bool {
+	return strings.Contains(strings.ToLower(name), deprecatedMarker) || name == strings.ToUpper(name)
 }
 
 // Find returns every dictionary name in s, as the dictionary writes it, in the order they
@@ -110,35 +117,45 @@ func (d *NameDict) spans(s string) []nameSpan {
 
 // matchAt tries the longest name first at the first word of locs.
 func (d *NameDict) matchAt(s string, locs [][]int) (nameSpan, int, bool) {
-	if !startsUpper(s[locs[0][0]:locs[0][1]]) {
-		return nameSpan{}, 0, false
-	}
 	for n := min(maxNameWords, len(locs)); n >= 1; n-- {
 		words := make([]string, n)
 		for j := range words {
 			words[j] = s[locs[j][0]:locs[j][1]]
 		}
-		if canonical, ok := d.lookup(words); ok {
+		canonical, form, ok := d.lookup(words)
+		if ok && countsAsName(canonical, form) {
 			return nameSpan{Start: locs[0][0], End: locs[n-1][1], Name: canonical}, n, true
 		}
 	}
 	return nameSpan{}, 0, false
 }
 
+// countsAsName decides whether prose that matches a dictionary name is a use of that name.
+// A phrase of two or more words counts in any case ("flask of the titans"); a single word
+// counts only when capitalised as the dictionary writes it, so the common words that are
+// also spell names ("rage", "charge", "unused") are prose when lowercase.
+func countsAsName(canonical string, prose []string) bool {
+	if len(prose) > 1 {
+		return true
+	}
+	return startsUpper(prose[0]) && capitalsAgree(canonical, prose)
+}
+
 // lookup finds the name for words, allowing the last word to be possessive ("Sinister
-// Strike's") or plural ("Aimed Shots").
-func (d *NameDict) lookup(words []string) (string, bool) {
+// Strike's") or plural ("Aimed Shots"). It returns the name as written in the dictionary
+// and the prose words as they matched it, without the possessive or plural ending.
+func (d *NameDict) lookup(words []string) (string, []string, bool) {
 	last := words[len(words)-1]
 	for _, form := range []string{last, trimSuffixes(last, "'s", "’s"), trimSuffixes(last, "s")} {
 		if form == "" || (form != last && len(last) <= minPluralLen) {
 			continue
 		}
 		candidate := append(append([]string{}, words[:len(words)-1]...), form)
-		if canonical, ok := d.names[joinKey(candidate)]; ok && capitalsAgree(canonical, candidate) {
-			return canonical, true
+		if canonical, ok := d.names[joinKey(candidate)]; ok {
+			return canonical, candidate, true
 		}
 	}
-	return "", false
+	return "", nil, false
 }
 
 // trimSuffixes removes the first of suffixes that word ends with; word itself when none do.

@@ -63,3 +63,36 @@ func TestNumberWords(t *testing.T) {
 		t.Fatalf("%v", got)
 	}
 }
+
+func TestNumberWords_FractionsAndMultiples(t *testing.T) {
+	for _, in := range []string{"half the casts", "a third of them", "a quarter of the pull", "two-thirds of it", "twice as often", "double the gap", "triple 3 casts", "½ of it", "¼", "⅓", "¾"} {
+		if len(NumberWords(in)) == 0 {
+			t.Errorf("%q: no number word found", in)
+		}
+	}
+}
+
+func TestNumberWords_IdiomIsNotAClaim(t *testing.T) {
+	for _, in := range []string{"that one gap cost you twice.", "health drops past half on a pull", "the other half of the story", "the third pull"} {
+		if got := NumberWords(in); len(got) != 0 {
+			t.Errorf("%q: %v", in, got)
+		}
+	}
+}
+
+func TestNormalise_NonASCIIDigits(t *testing.T) {
+	cases := map[string]string{"٣١ casts": "31", "３１ casts": "31", "at ３:０５": "3:05", "٤٤%": "44%"}
+	for in, want := range cases {
+		got := norms(ExtractNumbers(in))
+		if !slices.Equal(got, []string{want}) {
+			t.Errorf("%q: got %v, want %s", in, got, want)
+		}
+	}
+}
+
+func TestNormalise_BetweenRange(t *testing.T) {
+	tokens := ExtractNumbers("a gap between 1:12 and 1:30 opened")
+	if len(tokens) != 1 || tokens[0].Kind != KindRange || tokens[0].Norm != "1:12–1:30" {
+		t.Fatalf("%+v", tokens)
+	}
+}

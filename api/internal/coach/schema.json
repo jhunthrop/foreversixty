@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["opening", "fixFirst", "thenFix", "doingWell", "couldntCheck"],
+  "properties": {
+    "opening": { "type": "string", "minLength": 1, "maxLength": 280 },
+    "openingLinks": { "type": "array", "items": { "type": "string" } },
+    "fixFirst": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["finding", "title", "why", "drill", "drillText", "anchors", "links"],
+      "properties": {
+        "finding": { "type": "string" },
+        "title": { "type": "string", "maxLength": 60 },
+        "why": { "type": "string", "maxLength": 320 },
+        "drill": { "type": "string" },
+        "drillText": { "type": "string", "maxLength": 240 },
+        "anchors": { "type": "array", "items": { "type": "string" } },
+        "links": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "thenFix": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding", "title", "why", "anchors", "links"],
+        "properties": {
+          "finding": { "type": "string" },
+          "title": { "type": "string", "maxLength": 60 },
+          "why": { "type": "string", "maxLength": 200 },
+          "anchors": { "type": "array", "items": { "type": "string" } },
+          "links": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "doingWell": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["strength", "text", "anchors", "links"],
+        "properties": {
+          "strength": { "type": "string" },
+          "text": { "type": "string", "maxLength": 160 },
+          "anchors": { "type": "array", "items": { "type": "string" } },
+          "links": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "couldntCheck": { "type": "array", "items": { "type": "string" } }
+  }
+}
