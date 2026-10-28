@@ -2,6 +2,7 @@
   "roles": {
     "dps": {
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
+      "complete": { "flask": true, "combat_potion": true, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
         { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
         { "spell_id": 17628, "name": "Flask of Supreme Power", "verified": "1.60.1.69893/spells.json#17628" }
@@ -28,6 +29,7 @@
     },
     "healer": {
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 0, "world_buffs": 20, "combat_potion": 35 },
+      "complete": { "flask": true, "combat_potion": true, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
         { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.69893/spells.json#17627" },
         { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
@@ -51,6 +53,7 @@
     },
     "tank": {
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
+      "complete": { "flask": true, "combat_potion": true, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
         { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
         { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
@@ -74,5 +77,28 @@
         ]
       }
     }
-  }
+  },
+  "raid_buffs": [
+    { "name": "Power Word: Fortitude", "class": "Priest",
+      "spell_ids": [1243, 1244, 1245, 2791, 10937, 23947, 10938, 23948, 21562, 21564, 450086],
+      "verified": "1.60.1.70630/spellranks.json#Power Word: Fortitude+Prayer of Fortitude" },
+    { "name": "Arcane Intellect", "class": "Mage",
+      "spell_ids": [1459, 1460, 364161, 1461, 10156, 10157, 16876, 23028],
+      "verified": "1.60.1.70630/spellranks.json#Arcane Intellect+Arcane Brilliance" },
+    { "name": "Mark of the Wild", "class": "Druid",
+      "spell_ids": [1126, 5232, 6756, 5234, 8907, 9884, 364163, 9885, 24752, 1291335, 1310503, 21849, 21850],
+      "verified": "1.60.1.70630/spellranks.json#Mark of the Wild+Gift of the Wild" },
+    { "name": "Blessing of Might", "class": "Paladin",
+      "spell_ids": [19740, 19834, 19835, 19836, 19837, 19838, 25291, 25782, 25916],
+      "verified": "1.60.1.70630/spellranks.json#Blessing of Might+Greater Blessing of Might" },
+    { "name": "Blessing of Wisdom", "class": "Paladin",
+      "spell_ids": [19742, 19850, 19852, 19853, 19854, 25290, 25894, 25918],
+      "verified": "1.60.1.70630/spellranks.json#Blessing of Wisdom+Greater Blessing of Wisdom" },
+    { "name": "Blessing of Kings", "class": "Paladin",
+      "spell_ids": [20217, 1213408, 25898],
+      "verified": "1.60.1.70630/spellranks.json#Blessing of Kings+Greater Blessing of Kings" },
+    { "name": "Battle Shout", "class": "Warrior",
+      "spell_ids": [6673, 5242, 6192, 11549, 11550, 11551, 27578, 25289],
+      "verified": "1.60.1.70630/spellranks.json#Battle Shout" }
+  ]
 }

@@ -26,6 +26,12 @@ const goldenFile = "testdata/v16.summary.json.golden"
 // landing in the wrong column.
 const goldenFileV22 = "testdata/v22.summary.json.golden"
 
+// goldenFileForever is the committed summary for the one real Forever
+// excerpt (beta 1.60.1, open-world trash on Zephras Isle). It carries no
+// COMBATANT_INFO, so the consumables package pins on it that a real Forever
+// log with no character sheet reads every player's preparation as unknown.
+const goldenFileForever = "testdata/forever-1.60.summary.json.golden"
+
 // regenEnv regenerates the golden instead of comparing against it.
 const regenEnv = "FOREVER_UPDATE_GOLDEN"
 
@@ -66,6 +72,13 @@ func goldenDialects() []goldenDialect {
 			layout:  layout.RetailV22(),
 			base:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
 			golden:  goldenFileV22,
+		},
+		{
+			name:    "forever-1.60",
+			excerpt: filepath.Join("..", "event", "testdata", "forever-1.60.log"),
+			layout:  layout.RetailV22(),
+			base:    time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			golden:  goldenFileForever,
 		},
 	}
 }
