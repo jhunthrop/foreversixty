@@ -25,6 +25,7 @@
     type PairingCode,
   } from '../lib/account/api';
   import AccountGuildPlanLine from './account/AccountGuildPlanLine.svelte';
+  import AccountGuildRowStep from './account/AccountGuildRowStep.svelte';
   import communityLinks from '../data/links.json';
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
@@ -839,6 +840,7 @@
                         data-testid="account-guild-row"
                       >
                         <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
+                        <AccountGuildRowStep {guild} part="mark" />
                         <label class="text-muted flex flex-wrap items-center gap-2 text-[13px]">
                           {guildConsentCopy.shareLabel}
                           <select
@@ -871,6 +873,7 @@
                             name={guild.name}
                           />
                         {/if}
+                        <AccountGuildRowStep {guild} part="line" />
                         {#if leaveAsking !== guild.id || consentSaved === guild.id}
                           <p class="text-muted min-h-[21px] basis-full text-[13px]">
                             {#if consentSaved === guild.id}
