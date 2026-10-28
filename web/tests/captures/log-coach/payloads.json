@@ -17,12 +17,12 @@
               "value": "1. Lucifron 2:30 first pull\n2. Magmadar 2:50 first pull\n3. Gehennas 3:10 first pull\n4. Garr 3:30 first pull\n5. Shazzrah 3:50 first pull\n6. Baron Geddon 4:10 first pull\n7. Golemagg 4:30 first pull\n8. Ragnaros 4:50 first pull"
             },
             {
-              "name": "Loot",
-              "value": "10 items. The first 8:"
-            },
-            {
               "name": "Your coach",
               "value": "Fix first: Bloodthirst casts lost — on 5 of 8 bosses. [Open your coach's review](https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach)"
+            },
+            {
+              "name": "Loot",
+              "value": "10 items. The first 8:"
             }
           ],
           "color": 8377482
@@ -141,12 +141,12 @@
               "value": "1. Lucifron 2:30 first pull\n2. Magmadar 2:50 first pull\n3. Gehennas 3:10 first pull\n4. Garr 3:30 first pull\n5. Shazzrah 3:50 first pull\n6. Baron Geddon 4:10 first pull\n7. Golemagg 4:30 first pull\n8. Ragnaros 4:50 first pull"
             },
             {
-              "name": "Loot",
-              "value": "10 items. The first 8:"
+              "name": "Your coach",
+              "value": "**Zulmara** · Fix first: Bloodthirst casts lost — on 5 of 8 bosses. [Open your coach's review](https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach)\n**Duskstrider** · Fix first: Aimed Shot casts lost — on all 8 bosses. [Open your coach's review](https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach)"
             },
             {
-              "name": "Your coach",
-              "value": "**Zulmara** · Fix first: Bloodthirst casts lost — on 5 of 8 bosses. [Open your coach's review](https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach)\n**Duskstrider** · Fix first: Aimed Shot clipped — on all 8 bosses. [Open your coach's review](https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach)"
+              "name": "Loot",
+              "value": "10 items. The first 8:"
             }
           ],
           "color": 8377482
@@ -265,12 +265,12 @@
               "value": "1. Lucifron 2:30 first pull\n2. Magmadar 2:50 first pull\n3. Gehennas 3:10 first pull\n4. Garr 3:30 first pull\n5. Shazzrah 3:50 first pull\n6. Baron Geddon 4:10 first pull\n7. Golemagg 4:30 first pull\n8. Ragnaros 4:50 first pull"
             },
             {
-              "name": "Loot",
-              "value": "10 items. The first 8:"
-            },
-            {
               "name": "Your coach",
               "value": "[Your coach's review is on the site.](https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#coach)"
+            },
+            {
+              "name": "Loot",
+              "value": "10 items. The first 8:"
             }
           ],
           "color": 8377482
@@ -372,6 +372,49 @@
     }
   },
   {
+    "id": "report-shared",
+    "row": "A11",
+    "title": "/report, after Share in channel",
+    "surface": "channel",
+    "clock": "2026-12-11T04:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Report: Molten Core · Thursday 10 December",
+          "description": "22 of 23 came · 8 kills · 14 deaths · 2 h 41 min",
+          "url": "https://site.test/reports/abc",
+          "fields": [
+            {
+              "name": "Kill order",
+              "value": "1. Lucifron 2:30 first pull\n2. Magmadar 2:50 first pull\n3. Gehennas 3:10 first pull\n4. Garr 3:30 first pull\n5. Shazzrah 3:50 first pull\n6. Baron Geddon 4:10 first pull\n7. Golemagg 4:30 first pull\n8. Ragnaros 4:50 first pull"
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-11T04:00:00Z",
+          "color": 8377482
+        }
+      ],
+      "components": [
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Open the report",
+              "url": "https://site.test/reports/abc"
+            }
+          ]
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
     "id": "report-ready-coach",
     "row": "A11",
     "title": "report_ready with the coach sentence",
@@ -381,7 +424,53 @@
       "embeds": [
         {
           "title": "Report: Molten Core · Thursday 10 December",
-          "description": "Kill times, loot and the biggest changes on Forever Sixty. Coach reviews for tonight's pulls are ready on Forever Sixty and in /report.",
+          "description": "Kill times, loot and the biggest changes on Forever Sixty. Coach reviews for tonight's pulls are ready; open the report or use /report.",
+          "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",
+          "fields": [
+            {
+              "name": "Kills",
+              "value": "Ragnaros 2:30",
+              "inline": true
+            },
+            {
+              "name": "Wipes",
+              "value": "0",
+              "inline": true
+            },
+            {
+              "name": "Came",
+              "value": "22 of 23",
+              "inline": true
+            },
+            {
+              "name": "Loot",
+              "value": "6 items",
+              "inline": true
+            }
+          ],
+          "footer": {
+            "text": "Olympus XXVII · Forever Sixty"
+          },
+          "timestamp": "2026-12-11T04:00:00Z",
+          "color": 8377482
+        }
+      ],
+      "allowed_mentions": {
+        "parse": []
+      }
+    }
+  },
+  {
+    "id": "report-ready-plain",
+    "row": "A11",
+    "title": "report_ready without the coach sentence",
+    "surface": "channel",
+    "clock": "2026-12-11T04:00:00Z",
+    "message": {
+      "embeds": [
+        {
+          "title": "Report: Molten Core · Thursday 10 December",
+          "description": "Kill times, loot and the biggest changes on Forever Sixty.",
           "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",
           "fields": [
             {

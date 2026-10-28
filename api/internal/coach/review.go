@@ -35,7 +35,8 @@ func Review(in Input) Pack {
 	p := Pack{Status: StatusReady, Context: contextOf(in), Findings: []Finding{}, Strengths: []Strength{},
 		Links: []Link{}, CouldNotCheck: []string{}, Anchors: []Anchor{}, BasisLabels: []string{}}
 	if reason := notReviewable(in); reason != "" {
-		p.Status, p.NotReviewable = StatusNotReviewable, reason
+		// The reason is also the answer's one couldn't-check line, so the panel can say why.
+		p.Status, p.NotReviewable, p.CouldNotCheck = StatusNotReviewable, reason, []string{reason}
 		return p
 	}
 	if in.Refs.SimPreparing && in.Refs.Pool == nil {

@@ -1,0 +1,29 @@
+{
+  "report_id": "fixture2abcd",
+  "fight_index": 3,
+  "player_key": "us/hardcore/baelgrim",
+  "spec": "Fury",
+  "role": "dps",
+  "size": 40,
+  "kill": true,
+  "status": "not_reviewable",
+  "source": "rules",
+  "busy": false,
+  "access": "full",
+  "persona": {
+    "label": "Your Fury review",
+    "status": "full"
+  },
+  "reviewed_at": "2026-10-25T02:10:00Z",
+  "review": {
+    "opening": "Nothing to fix on this pull that the log can show.",
+    "fixFirst": null,
+    "thenFix": [],
+    "doingWell": [],
+    "couldntCheck": [
+      "The coach reviews boss pulls only."
+    ]
+  },
+  "anchors": {},
+  "basis_labels": []
+}

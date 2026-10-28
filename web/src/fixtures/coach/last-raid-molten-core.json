@@ -1,0 +1,12 @@
+{
+  "zone": "Molten Core",
+  "fought_at": "2026-10-25T01:30:00Z",
+  "report_id": "fixture2abcd",
+  "finding_count": 15,
+  "first": {
+    "stem": "Bloodthirst casts lost",
+    "on": 5,
+    "of": 8
+  },
+  "url": "/reports/fixture2abcd?fight=3\u0026tab=coach"
+}

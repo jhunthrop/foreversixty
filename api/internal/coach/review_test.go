@@ -142,12 +142,18 @@ func TestReview_NotReviewable(t *testing.T) {
 	trash := furyInput(t)
 	trash.Fight.EncounterID = 0
 	for name, in := range map[string]Input{"no spec": noSpec, "25 s": short, "trash": trash} {
-		if p := Review(in); p.Status != StatusNotReviewable || len(p.Findings) != 0 || p.NotReviewable == "" {
+		p := Review(in)
+		if p.Status != StatusNotReviewable || len(p.Findings) != 0 || p.NotReviewable == "" {
 			t.Errorf("%s: %s with %d findings", name, p.Status, len(p.Findings))
 		}
+		if !slices.Equal(p.CouldNotCheck, []string{p.NotReviewable}) {
+			t.Errorf("%s: couldn't check = %q, want the reason alone", name, p.CouldNotCheck)
+		}
 	}
-	if got := Review(noSpec).NotReviewable; got != "We couldn't tell this player's spec from the log." {
-		t.Fatal(got)
+	for in, want := range map[*Input]string{&noSpec: NotReviewableSpec, &short: NotReviewableShort, &trash: NotReviewableTrash} {
+		if got := Review(*in).NotReviewable; got != want {
+			t.Errorf("reason = %q, want %q", got, want)
+		}
 	}
 }
 

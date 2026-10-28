@@ -1,0 +1,120 @@
+{
+  "report_id": "fixture2abcd",
+  "fight_index": 3,
+  "player_key": "us/hardcore/sunwick",
+  "spec": "Holy",
+  "role": "healer",
+  "size": 40,
+  "kill": true,
+  "status": "ready",
+  "source": "rules",
+  "busy": false,
+  "access": "full",
+  "persona": {
+    "label": "Your Holy review",
+    "status": "full"
+  },
+  "reviewed_at": "2026-10-25T02:10:00Z",
+  "review": {
+    "opening": "Here is what your log shows for Onyxia.",
+    "fixFirst": {
+      "finding": "f1",
+      "title": "Died at 3:20 to Flame Breath",
+      "why": "Flame Breath hit for 2,140 at 3:20. No healing potion or Healthstone used in the 10 s before.",
+      "drill": "drill.death",
+      "drillText": "Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.",
+      "anchors": [
+        "a1"
+      ],
+      "links": [
+        {
+          "id": "l1",
+          "sentence": "You died while out of mana."
+        }
+      ]
+    },
+    "thenFix": [
+      {
+        "finding": "f2",
+        "title": "Out of mana from 3:05",
+        "why": "Your mana was under 5% for 15 s in all, first from 3:05. You died at 3:20.",
+        "anchors": [
+          "a2"
+        ],
+        "links": [
+          {
+            "id": "l1",
+            "sentence": "You died while out of mana."
+          },
+          {
+            "id": "l2",
+            "sentence": "Greater Heal (Rank 4) is your most-cast heal with the most overheal."
+          }
+        ]
+      },
+      {
+        "finding": "f3",
+        "title": "Greater Heal (Rank 4): 44% overheal",
+        "why": "44% of what Greater Heal (Rank 4) healed was overheal, over 23 casts. Lower ranks cost less mana.",
+        "anchors": [
+          "a3"
+        ],
+        "links": [
+          {
+            "id": "l2",
+            "sentence": "Greater Heal (Rank 4) is your most-cast heal with the most overheal."
+          }
+        ]
+      }
+    ],
+    "doingWell": [
+      {
+        "strength": "s1",
+        "text": "Flask of Distilled Wisdom at the pull.",
+        "anchors": [
+          "a4"
+        ]
+      },
+      {
+        "strength": "s2",
+        "text": "Inner Fire up 100% of the fight. Top 21: 98%.",
+        "anchors": [
+          "a5"
+        ]
+      }
+    ],
+    "couldntCheck": [
+      "Talents and race: Forever logs don't record them.",
+      "Range and movement: the log doesn't say where you stood.",
+      "Weapon oils and stones: the coach can't read them from your log yet.",
+      "Combat potions: the coach's potion list isn't complete yet."
+    ]
+  },
+  "anchors": {
+    "a1": {
+      "kind": "death",
+      "at_ms": 200000
+    },
+    "a2": {
+      "kind": "resource",
+      "at_ms": 185000,
+      "to_ms": 200000
+    },
+    "a3": {
+      "kind": "healing",
+      "spell_id": 10965
+    },
+    "a4": {
+      "kind": "buffs"
+    },
+    "a5": {
+      "kind": "aura",
+      "spell_id": 10952
+    }
+  },
+  "basis_labels": [
+    "From your log. Flame Breath is on this boss's list of damage you can avoid.",
+    "Measured against your own mana bar.",
+    "Top 21 Holy priests on Onyxia (40): 22% on the same rank."
+  ]
+}

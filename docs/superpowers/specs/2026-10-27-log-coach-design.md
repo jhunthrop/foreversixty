@@ -279,7 +279,7 @@ Review:
   never names a raider (rule R-A3, `api/internal/notify/report_embed.go`). The coach keeps the
   rule. When at least one raider in the log holds `log_coach` on a character they own, the
   description gains one sentence that names and counts nobody: `Coach reviews for tonight's
-  pulls are ready on Forever Sixty and in /report.` The coach writes only when a review is
+  pulls are ready; open the report or use /report.` The coach writes only when a review is
   opened, so the sentence says the reviews are ready, never that they were written.
 - **Night line rule.** Read from the evidence packs, with no model call. Take the rank-1
   findings across one character's fights that night. Choose by severity, then by the finding

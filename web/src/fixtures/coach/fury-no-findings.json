@@ -1,0 +1,77 @@
+{
+  "report_id": "fixture2abcd",
+  "fight_index": 3,
+  "player_key": "us/hardcore/baelgrim",
+  "spec": "Fury",
+  "role": "dps",
+  "size": 40,
+  "kill": true,
+  "status": "ready",
+  "source": "rules",
+  "busy": false,
+  "access": "full",
+  "persona": {
+    "label": "Your Fury review",
+    "status": "full"
+  },
+  "reviewed_at": "2026-10-25T02:10:00Z",
+  "review": {
+    "opening": "Nothing to fix on this pull that the log can show.",
+    "fixFirst": null,
+    "thenFix": [],
+    "doingWell": [
+      {
+        "strength": "s1",
+        "text": "Alive the whole fight.",
+        "anchors": []
+      },
+      {
+        "strength": "s2",
+        "text": "Bloodrage: 1.0 casts a minute. Top 25: 1.0.",
+        "anchors": [
+          "a1"
+        ]
+      }
+    ],
+    "couldntCheck": [
+      "Talents and race: Forever logs don't record them.",
+      "Range and movement: the log doesn't say where you stood.",
+      "Weapon oils and stones: the coach can't read them from your log yet.",
+      "Combat potions: the coach's potion list isn't complete yet."
+    ]
+  },
+  "anchors": {
+    "a1": {
+      "kind": "cast",
+      "spell_id": 2687
+    },
+    "a2": {
+      "kind": "cast",
+      "spell_id": 23894
+    },
+    "a3": {
+      "kind": "cast",
+      "spell_id": 1680
+    },
+    "a4": {
+      "kind": "buffs"
+    },
+    "a5": {
+      "kind": "aura",
+      "spell_id": 6673
+    },
+    "a6": {
+      "kind": "cast",
+      "spell_id": 23894
+    },
+    "a7": {
+      "kind": "cast",
+      "spell_id": 1680
+    },
+    "a8": {
+      "kind": "cast",
+      "spell_id": 25286
+    }
+  },
+  "basis_labels": []
+}

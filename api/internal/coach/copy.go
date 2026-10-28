@@ -120,7 +120,7 @@ const (
 	NotReviewableShort = "This pull is under 30 seconds, too short to show a rotation."
 	CannotSpecRules    = "Core casts, uptimes and the rotation: the coach doesn't know the {Spec} rotation yet."
 
-	CannotLevelRanks = "Spell ranks: this log doesn't tell us your level."
+	CannotLevelRanks = "Spell ranks: this log doesn't record your level, so ranks weren't checked."
 	CannotLevelSim   = "Our guide's simulated rotation: this log doesn't tell us your level."
 
 	BasisFromLog             = "From your log."

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -71,6 +72,31 @@ func TestReport_PremiumOwnerGetsOneLinePerCharacter(t *testing.T) {
 	}
 	if len(fc.users) != 1 || fc.users[0] != w.uid || fc.budget <= 0 || fc.budget > coachLinesBudget {
 		t.Fatalf("coach asked %v with %v", fc.users, fc.budget)
+	}
+}
+
+func TestReport_CoachFieldSitsBeforeLoot(t *testing.T) {
+	w, _ := coachWorld(t, line("Zulmara", "Stem", 3, 8))
+	fields := w.run(t, pressDiscord, "report").Message.Embeds[0].Fields
+	names := make([]string, len(fields))
+	for i, f := range fields {
+		names[i] = f.Name
+	}
+	coach := slices.Index(names, coachCopy.FieldName)
+	loot := slices.Index(names, officerCopy.Loot)
+	kills := slices.Index(names, officerCopy.KillOrder)
+	if coach < 0 || loot < 0 || coach != loot-1 || kills < 0 || kills > coach {
+		t.Fatalf("fields = %q: the coach field must follow Kill order and sit directly before Loot", names)
+	}
+}
+
+func TestCoachFieldIndex_FallsBackToAfterKillOrder(t *testing.T) {
+	kills := []notify.EmbedField{{Name: "Other"}, {Name: officerCopy.KillOrder}, {Name: "Tail"}}
+	if got := coachFieldIndex(kills); got != 2 {
+		t.Fatalf("index without Loot = %d, want 2", got)
+	}
+	if got := coachFieldIndex([]notify.EmbedField{{Name: "Other"}}); got != 1 {
+		t.Fatalf("index without Loot or Kill order = %d, want 1", got)
 	}
 }
 
@@ -227,9 +253,11 @@ func TestDumpCoachPayloads(t *testing.T) {
 	frames := []dumpedFrame{
 		w.dumpReport(t, fc, "report-coach-one", "one character", line("Zulmara", "Bloodthirst casts lost", 5, 8)),
 		w.dumpReport(t, fc, "report-coach-two", "two characters, every boss",
-			line("Zulmara", "Bloodthirst casts lost", 5, 8), line("Duskstrider", "Aimed Shot clipped", 8, 8)),
+			line("Zulmara", "Bloodthirst casts lost", 5, 8), line("Duskstrider", "Aimed Shot casts lost", 8, 8)),
 		w.dumpReport(t, fc, "report-coach-pending", "pending", CoachLine{Character: "Zulmara", Pending: true}),
-		dumpRaidNight(),
+		w.dumpShared(t, fc, "report-shared", "after Share in channel", line("Zulmara", "Bloodthirst casts lost", 5, 8)),
+		dumpRaidNight(true),
+		dumpRaidNight(false),
 	}
 	raw, err := json.MarshalIndent(frames, "", "  ")
 	if err != nil {
@@ -250,15 +278,49 @@ func (w *officerWorld) dumpReport(t *testing.T, fc *fakeCoach, id, title string,
 	return dumpedFrame{ID: id, Row: "A11", Title: "/report, Premium: " + title, Surface: "ephemeral", Clock: dumpClock.Format(time.RFC3339), Message: rep.Message}
 }
 
-func dumpRaidNight() dumpedFrame {
+// dumpShared is the channel post Share in channel sends: the same report, re-rendered without
+// the coach field.
+func (w *officerWorld) dumpShared(t *testing.T, fc *fakeCoach, id, title string, lines ...CoachLine) dumpedFrame {
+	t.Helper()
+	for i := range lines {
+		lines[i].URL = dumpCoachURL
+	}
+	fc.lines = lines
+	prev := w.og.report
+	w.og.report = moltenCoreNight(false, true) // only a public report can be shared
+	defer func() { w.og.report = prev }()
+	answer := w.run(t, pressDiscord, "report").Message
+	in := interactionOf(typeComponent, pressDiscord, map[string]any{"custom_id": answer.Components[0][0].CustomID})
+	in.Token = "tok-dump"
+	rep, err := w.svc.share(context.Background(), in)
+	if err != nil || rep.After == nil {
+		t.Fatalf("share = %+v %v", rep, err)
+	}
+	rep.After(context.Background())
+	calls := w.rest.Calls()
+	for i := len(calls) - 1; i >= 0; i-- {
+		if calls[i].Method == "FollowUp" {
+			return dumpedFrame{ID: id, Row: "A11", Title: "/report, " + title, Surface: "channel",
+				Clock: dumpClock.Format(time.RFC3339), Message: calls[i].Message}
+		}
+	}
+	t.Fatal("share sent no follow-up")
+	return dumpedFrame{}
+}
+
+func dumpRaidNight(coachReady bool) dumpedFrame {
 	post := notify.ReportReady{
 		RaidPosted: notify.RaidPosted{
 			RaidID: 7, GuildName: "Olympus XXVII", Title: "Molten Core",
 			StartsAt: time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC), Timezone: "America/Chicago",
 			RaidURL: "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",
 		},
-		Kills: []notify.ReportKill{{Boss: "Ragnaros", Duration: 150 * time.Second}}, Came: 22, Signed: 23, LootItems: 6, CoachReady: true,
+		Kills: []notify.ReportKill{{Boss: "Ragnaros", Duration: 150 * time.Second}}, Came: 22, Signed: 23, LootItems: 6, CoachReady: coachReady,
 	}
-	return dumpedFrame{ID: "report-ready-coach", Row: "A11", Title: "report_ready with the coach sentence", Surface: "channel",
+	id, title := "report-ready-coach", "report_ready with the coach sentence"
+	if !coachReady {
+		id, title = "report-ready-plain", "report_ready without the coach sentence"
+	}
+	return dumpedFrame{ID: id, Row: "A11", Title: title, Surface: "channel",
 		Clock: dumpClock.Format(time.RFC3339), Message: Message{Embeds: []notify.Embed{notify.ReportReadyEmbed(post, dumpClock)}}}
 }

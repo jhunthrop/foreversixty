@@ -2,6 +2,7 @@ package discordbot
 
 import (
 	"context"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -50,10 +51,23 @@ func (s *Service) withCoachLines(ctx context.Context, msg Message, viewer int64,
 	}
 	embeds := append([]notify.Embed(nil), msg.Embeds...)
 	head := embeds[0]
-	head.Fields = append(append([]notify.EmbedField(nil), head.Fields...), notify.EmbedField{Name: coachCopy.FieldName, Value: value})
+	head.Fields = slices.Insert(slices.Clone(head.Fields), coachFieldIndex(head.Fields),
+		notify.EmbedField{Name: coachCopy.FieldName, Value: value})
 	embeds[0] = head
 	msg.Embeds = embeds
 	return msg
+}
+
+// coachFieldIndex is where the Your coach field goes (§3.4): directly before Loot, else right
+// after Kill order, else last.
+func coachFieldIndex(fields []notify.EmbedField) int {
+	if i := slices.IndexFunc(fields, func(f notify.EmbedField) bool { return f.Name == officerCopy.Loot }); i >= 0 {
+		return i
+	}
+	if i := slices.IndexFunc(fields, func(f notify.EmbedField) bool { return f.Name == officerCopy.KillOrder }); i >= 0 {
+		return i + 1
+	}
+	return len(fields)
 }
 
 // coachBudget is the time left for the coach read: coachLinesBudget, or less when ctx ends sooner.

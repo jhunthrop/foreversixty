@@ -1,0 +1,11 @@
+{
+  "status": "ready",
+  "access": "teaser",
+  "spec": "Fury",
+  "finding_count": 3,
+  "fix_first": {
+    "title": "Bloodthirst: 9 casts lost",
+    "code": "core_casts",
+    "spell_id": 23894
+  }
+}

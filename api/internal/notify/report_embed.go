@@ -37,7 +37,7 @@ var reportCopy = struct {
 }{
 	TitlePrefix:   "Report: ",
 	Description:   "Kill times, loot and the biggest changes on Forever Sixty.",
-	CoachSentence: "Coach reviews for tonight's pulls are ready on Forever Sixty and in /report.",
+	CoachSentence: "Coach reviews for tonight's pulls are ready; open the report or use /report.",
 	KillsName:     "Kills",
 	KillLine:      "%s %s",
 	MoreKills:     "+%d more",
