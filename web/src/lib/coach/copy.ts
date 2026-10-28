@@ -42,7 +42,8 @@ export const coachCopy = {
   historyNone: 'Nothing to fix',
   historyRules: 'Log only',
   rulesNothing: 'Nothing to fix on this pull that the log can show.',
-  notReviewable: 'This pull is too short to review. The coach reads boss pulls long enough to show a rotation.',
+  notReviewable:
+    'This pull is too short to review. The coach reads boss pulls long enough to show a rotation.',
   preparing: 'Top {Spec} logs for this boss are still loading. Check again in a few minutes.',
   checkAgain: 'Check again',
   notAvailable: "This review isn't available on this account.",
@@ -64,9 +65,12 @@ export const coachCopy = {
   lastRaidPremium: 'Last raid · {zone}, {date} · Fix first: {stem}, on {n} of {m} bosses · Open review',
   lastRaidPremiumOne: 'Last raid · {zone}, {date} · Fix first: {stem} · Open review',
   lastRaidPremiumAll: 'Last raid · {zone}, {date} · Fix first: {stem}, on all {m} bosses · Open review',
-  lastRaidFree: 'Last raid · {zone}, {date} · {count} things to fix · First: {stem} · Read the full review with Premium',
-  lastRaidFreeOne: 'Last raid · {zone}, {date} · 1 thing to fix · First: {stem} · Read the full review with Premium',
-  lastRaidFreeNoFirst: 'Last raid · {zone}, {date} · {count} things to fix · Read the full review with Premium',
+  lastRaidFree:
+    'Last raid · {zone}, {date} · {count} things to fix · First: {stem} · Read the full review with Premium',
+  lastRaidFreeOne:
+    'Last raid · {zone}, {date} · 1 thing to fix · First: {stem} · Read the full review with Premium',
+  lastRaidFreeNoFirst:
+    'Last raid · {zone}, {date} · {count} things to fix · Read the full review with Premium',
   lastRaidClean: 'Last raid · {zone}, {date} · Nothing to fix that the log can show · Open review',
   lastRaidCleanFree: 'Last raid · {zone}, {date} · Nothing to fix that the log can show',
   lastRaidPending: 'Last raid · {zone}, {date} · Reading your pulls…',
@@ -78,5 +82,7 @@ export type CoachCopyKey = keyof typeof coachCopy;
 
 /** Replaces every `{field}` in a template; a field the template lacks is ignored, one it needs and lacks is left visible. */
 export function fill(template: string, fields: Readonly<Record<string, string | number>>): string {
-  return template.replace(/\{(\w+)\}/g, (slot, name: string) => (name in fields ? String(fields[name]) : slot));
+  return template.replace(/\{(\w+)\}/g, (slot, name: string) =>
+    name in fields ? String(fields[name]) : slot,
+  );
 }

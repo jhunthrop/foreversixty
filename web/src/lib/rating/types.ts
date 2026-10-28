@@ -29,6 +29,8 @@ export const RATING_COMPONENT_ORDER: readonly RatingComponentName[] = [
 export interface RatingMoment {
   kind: string;
   at_ms?: number;
+  /** The end of a `time` or `resource` window; absent for a single moment. */
+  to_ms?: number;
   spell_id?: number;
   spell_name?: string;
   avoidable?: boolean;

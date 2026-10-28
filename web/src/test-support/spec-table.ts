@@ -58,6 +58,19 @@ export function fillSlots(text: string, slots: Readonly<Record<string, string>>)
   return Object.entries(slots).reduce((t, [slot, value]) => t.replaceAll(`{${slot}}`, value), text);
 }
 
+const collapseWhitespace = (text: string): string => text.replace(/\s+/g, ' ');
+
+/**
+ * True when `text` appears inside one backtick span of the spec, after every whitespace run in
+ * both is collapsed to one space (the Go twin's `specQuoted`): a string pinned here is a string
+ * the spec holds, however the spec wraps it.
+ */
+export function specQuoted(specPath: URL, text: string): boolean {
+  const wanted = collapseWhitespace(text);
+  const spans = readFileSync(specPath, 'utf8').matchAll(/`([^`]+)`/g);
+  return [...spans].some((span) => collapseWhitespace(span[1] ?? '').includes(wanted));
+}
+
 /** The backticked line that follows a bold paragraph label, e.g. `**Held until built`. */
 export function specLineAfter(specPath: URL, label: string): string {
   const lines = readFileSync(specPath, 'utf8').split('\n');

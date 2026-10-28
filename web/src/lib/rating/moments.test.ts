@@ -46,4 +46,23 @@ describe('momentHref', () => {
   it('an unresolved player guid (Ruling 3’s no-match case) has no href even for a death', () => {
     expect(momentHref(3, '', { kind: 'death', anchor: 'death-x-1' })).toBeNull();
   });
+
+  it('a cast moment opens the Casts tab on the ability, keeping fight=', () => {
+    expect(momentHref(1, GUID, { kind: 'cast', spell_id: 23881 })).toBe(
+      `?fight=1&tab=casts&source=${GUID}&ability=23881`,
+    );
+  });
+
+  it('time and resource moments open the timelines window', () => {
+    expect(momentHref(3, GUID, { kind: 'resource', at_ms: 161000, to_ms: 170000 })).toBe(
+      `?fight=3&view=timelines&source=${GUID}&start=161000&end=170000`,
+    );
+    expect(momentHref(3, GUID, { kind: 'time', at_ms: 1000 })).toBe(
+      `?fight=3&view=timelines&source=${GUID}&start=1000&end=6000`,
+    );
+  });
+
+  it('a cast without a spell id is null', () => {
+    expect(momentHref(3, GUID, { kind: 'cast' })).toBeNull();
+  });
 });
