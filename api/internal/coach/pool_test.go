@@ -85,7 +85,9 @@ func seedPlayers(t *testing.T, pool *pgxpool.Pool, k PoolKey, n int) {
 	}
 }
 
-func poolAt(pool *pgxpool.Pool) *Pool { return &Pool{DB: pool, Now: func() time.Time { return poolNow }} }
+func poolAt(pool *pgxpool.Pool) *Pool {
+	return &Pool{DB: pool, Now: func() time.Time { return poolNow }}
+}
 
 func TestPool_NineteenPlayersIsNoBasis(t *testing.T) {
 	pool := poolTestDB(t)
