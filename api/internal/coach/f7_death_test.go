@@ -1,0 +1,284 @@
+package coach
+
+import (
+	"encoding/json"
+	"os"
+	"strings"
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+)
+
+func TestDeath(t *testing.T) {
+	cases := []struct {
+		name       string
+		in         Input
+		wantTitle  string
+		wantSev    Severity
+		wantDetail []string
+		strength   string
+		none       bool
+	}{
+		{name: "holy died to Flame Breath at 3:20", in: holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140),
+			wantTitle: "Died at 3:20 to Flame Breath", wantSev: SeverityMinor,
+			wantDetail: []string{"2,140", "No healing potion or Healthstone used in the 10 s before."}},
+		{name: "prot died with Shield Wall ready", in: protDeathShieldWallReady(t, 232_000, 170_000),
+			wantTitle: "Died at 2:50 with Shield Wall ready", wantSev: SeverityMajor},
+		{name: "death in the last 10% of a kill", in: holyDeath(t, 232_000, 220_000, flameBreathID, "Flame Breath", 2140), none: true},
+		{name: "wipe tail death is part of the wipe", in: wipeDeath(t, 120_000, 110_000), none: true},
+		{name: "no death is a strength", in: furyInput(t), none: true, strength: "Alive the whole fight."},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			o := death(tc.in, CountedTime(tc.in))
+			if tc.none != (o.Finding == nil) {
+				t.Fatalf("finding %+v", o.Finding)
+			}
+			if tc.strength != "" && (len(o.Strengths) != 1 || o.Strengths[0].Sentence != tc.strength) {
+				t.Errorf("strengths %+v", o.Strengths)
+			}
+			if tc.none {
+				return
+			}
+			f := o.Finding
+			if f.Title != tc.wantTitle || f.Severity != tc.wantSev || o.Anchors[0].Kind != AnchorDeath {
+				t.Fatalf("got %+v", f)
+			}
+			for _, d := range tc.wantDetail {
+				if !strings.Contains(f.Detail, d) {
+					t.Errorf("detail %q lacks %q", f.Detail, d)
+				}
+			}
+		})
+	}
+}
+
+// The two §5.3 examples, word for word: title, detail and basis.
+func TestDeath_SpecExamplesVerbatim(t *testing.T) {
+	v := SpecVerbatim()
+	holy := death(holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140), Counted{}).Finding
+	if holy == nil {
+		t.Fatal("holy: no finding")
+	}
+	if holy.Title != v["TitleDiedTo"] || holy.Detail != v["DetailDeathHit"]+" "+v["DeathNoPotion"] ||
+		holy.Basis.Label != v["BasisAvoidable"] || holy.Basis.Kind != BasisOwnLog || holy.Code != CodeDeath {
+		t.Errorf("holy %+v", holy)
+	}
+	prot := death(protDeathShieldWallReady(t, 232_000, 170_000), Counted{}).Finding
+	if prot == nil {
+		t.Fatal("prot: no finding")
+	}
+	if prot.Title != v["TitleDiedWithReady"] || prot.Detail != v["DetailDiedWithReady"] ||
+		prot.Basis.Label != v["BasisDeathCD"] || prot.Basis.Kind != BasisSpellData {
+		t.Errorf("prot %+v", prot)
+	}
+}
+
+// Last Stand is a talent: never cast that fight, it is not claimed ready. Shield Wall cast
+// 70 s before on its 15-minute cooldown is not ready either.
+func TestDeath_TalentDefensiveNeverCastIsNotReady(t *testing.T) {
+	in := f7Cast(protDeathShieldWallReady(t, 232_000, 170_000), shieldWallID, "Shield Wall", 100_000)
+	f := death(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "Died at 2:50 to Onyxia's melee" {
+		t.Fatalf("got %+v", f)
+	}
+	if strings.Contains(textOf(outcome{Finding: f}), "Last Stand") {
+		t.Errorf("Last Stand claimed: %q", f.Detail)
+	}
+	if f.Basis.Label != FromYourLog+"." {
+		t.Errorf("basis %q", f.Basis.Label)
+	}
+}
+
+// A talent cast that fight and back off cooldown before the death is ready, but not
+// "since the pull": the detail says only what the log shows.
+func TestDeath_TalentCastAndBackOffCooldownIsReady(t *testing.T) {
+	in := protDeathShieldWallReady(t, 400_000, 200_000)
+	in = f7Cast(in, shieldWallID, "Shield Wall", 150_000)
+	in = f7Cast(in, lastStandID, "Last Stand", 10_000)
+	o := death(in, CountedTime(in))
+	f := o.Finding
+	if f == nil || f.Title != "Died at 3:20 with Last Stand ready" {
+		t.Fatalf("got %+v", f)
+	}
+	if strings.Contains(f.Detail, "since the pull") || !strings.Contains(f.Detail, "Onyxia's melee hit for 1,830 at 3:20.") {
+		t.Errorf("detail %q", f.Detail)
+	}
+	if len(o.Anchors) != 2 || o.Anchors[1].Kind != AnchorCast || o.Anchors[1].SpellID != lastStandID {
+		t.Errorf("anchors %+v", o.Anchors)
+	}
+}
+
+// A baseline defensive counts only from its trainable level, and only when the level is
+// known.
+func TestDeath_BaselineDefensiveNeedsItsTrainableLevel(t *testing.T) {
+	for _, level := range []int64{20, 0} {
+		in := f7Level(protDeathShieldWallReady(t, 232_000, 170_000), level)
+		f := death(in, CountedTime(in)).Finding
+		if f == nil || f.Title != "Died at 2:50 to Onyxia's melee" {
+			t.Errorf("level %d: got %+v", level, f)
+		}
+	}
+	in := f7Level(protDeathShieldWallReady(t, 232_000, 170_000), 28)
+	if f := death(in, CountedTime(in)).Finding; f == nil || f.Title != "Died at 2:50 with Shield Wall ready" {
+		t.Errorf("level 28: got %+v", f)
+	}
+}
+
+// A defensive whose cooldown the data does not state is never claimed ready once cast.
+func TestDeath_UnknownCooldownIsNotReady(t *testing.T) {
+	in := protDeathShieldWallReady(t, 400_000, 300_000)
+	in = f7Defensives(in, RuleEntry{Family: "Shield Wall", SpellIDs: []int64{99999}, Verified: fixtureVerified})
+	in = f7Cast(in, 99999, "Shield Wall", 10_000)
+	if f := death(in, CountedTime(in)).Finding; f == nil || strings.Contains(f.Title, "ready") {
+		t.Errorf("got %+v", f)
+	}
+}
+
+func TestDeath_PotionWindow(t *testing.T) {
+	cases := []struct {
+		name     string
+		spellID  int64
+		cast     string
+		atMS     int64
+		wantLine bool
+	}{
+		{name: "healing potion 5 s before", spellID: majorHealingPotID, cast: "Healing Potion", atMS: 195_000},
+		{name: "healthstone at the 10 s edge", spellID: majorHealthstone, cast: "Major Healthstone", atMS: 190_000},
+		{name: "healthstone 12 s before is outside", spellID: majorHealthstone, cast: "Major Healthstone", atMS: 188_000, wantLine: true},
+		{name: "a healthstone conjured is not one used", spellID: 11730, cast: "Create Healthstone", atMS: 195_000, wantLine: true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			in := f7Cast(holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140), tc.spellID, tc.cast, tc.atMS)
+			f := death(in, CountedTime(in)).Finding
+			if f == nil {
+				t.Fatal("no finding")
+			}
+			if got := strings.Contains(f.Detail, DeathNoPotion); got != tc.wantLine {
+				t.Errorf("detail %q: no-potion line %v, want %v", f.Detail, got, tc.wantLine)
+			}
+		})
+	}
+}
+
+// Flame Breath is the tank's to take (Onyxia's table, role tank): a tank who dies to it is
+// never told it was avoidable.
+func TestDeath_RoleTaggedAbilityIsNotAvoidableForThatRole(t *testing.T) {
+	in := f7Defensives(f7Died(protInput(t), 232_000, 200_000, flameBreathID, "Flame Breath", 2140))
+	f := death(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "Died at 3:20 to Flame Breath" {
+		t.Fatalf("got %+v", f)
+	}
+	if f.Basis.Label == Fill(BasisAvoidable, map[string]string{"Spell": "Flame Breath"}) {
+		t.Errorf("tank told Flame Breath was avoidable")
+	}
+}
+
+// The death anchor keeps the rating's and DeathsTab's id; the window is the death instant.
+func TestDeath_AnchorsAndWindow(t *testing.T) {
+	in := protDeathShieldWallReady(t, 232_000, 170_000)
+	o := death(in, CountedTime(in))
+	if o.Finding == nil || len(o.Anchors) != 2 {
+		t.Fatalf("got %+v", o)
+	}
+	a := o.Anchors[0]
+	if a.Kind != AnchorDeath || a.Death != "death-"+furyGUID+"-170000" || a.AtMS == nil || *a.AtMS != 170_000 {
+		t.Errorf("death anchor %+v", a)
+	}
+	if b := o.Anchors[1]; b.Kind != AnchorCast || b.SpellID != shieldWallID {
+		t.Errorf("defensive anchor %+v", b)
+	}
+	if got := o.Finding.Anchors; len(got) != 2 || got[0] != "#0" || got[1] != "#1" {
+		t.Errorf("finding anchors %v", got)
+	}
+	if len(o.Windows) != 1 || o.Windows[0].FromMS != 170_000 || o.Windows[0].ToMS != 170_000 {
+		t.Errorf("windows %+v", o.Windows)
+	}
+	if len(o.Strengths) != 0 {
+		t.Errorf("a dead player has strength %+v", o.Strengths)
+	}
+}
+
+func TestDeath_FactsCarryEveryQuotedValue(t *testing.T) {
+	f := death(holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140), Counted{}).Finding
+	if f == nil {
+		t.Fatal("no finding")
+	}
+	assertTimes(t, f.Facts, "3:20")
+	assertSpells(t, f.Facts, "Flame Breath")
+	assertNumbers(t, f.Facts, "2,140")
+	p := death(protDeathShieldWallReady(t, 232_000, 170_000), Counted{}).Finding
+	assertSpells(t, p.Facts, "Shield Wall", "Onyxia's melee")
+	assertTimes(t, p.Facts, "2:50")
+}
+
+// On a wipe any reviewable death fires, the earliest first, and before 75% it is major.
+func TestDeath_WipeEarlyDeathIsTheFirstAndMajor(t *testing.T) {
+	in := wipeDeath(t, 120_000, 60_000)
+	in.Fight = withDeath(in.Fight, furyGUID, 30_000, flameBreathID, "Flame Breath")
+	f := death(in, CountedTime(in)).Finding
+	if f == nil || f.Title != "Died at 0:30 to Flame Breath" || f.Severity != SeverityMajor {
+		t.Fatalf("got %+v", f)
+	}
+	if f.Basis.Label != Fill(BasisAvoidable, map[string]string{"Spell": "Flame Breath"}) {
+		t.Errorf("basis %q", f.Basis.Label)
+	}
+}
+
+// With no killing blow the last hit names the death; with no hit at all nothing is claimed.
+func TestDeath_KillingBlowFallsBackToTheLastHit(t *testing.T) {
+	in := holyDeath(t, 232_000, 200_000, flameBreathID, "Flame Breath", 2140)
+	in.Fight.Deaths[len(in.Fight.Deaths)-1].KillingBlow = nil
+	in.Fight.Deaths[len(in.Fight.Deaths)-1].Last = []summary.DamageRef{
+		{AtMS: 198_000, SourceName: onyxiaName, SpellID: 15847, SpellName: "Tail Sweep", Amount: 900},
+		{AtMS: 199_500, SourceName: onyxiaName, SpellID: flameBreathID, SpellName: "Flame Breath", Amount: 1_500},
+	}
+	if f := death(in, CountedTime(in)).Finding; f == nil || f.Title != "Died at 3:20 to Flame Breath" || !strings.Contains(f.Detail, "1,500 at 3:19") {
+		t.Errorf("got %+v", f)
+	}
+	in.Fight.Deaths[len(in.Fight.Deaths)-1].Last = nil
+	o := death(in, CountedTime(in))
+	if o.Finding != nil || len(o.Strengths) != 0 {
+		t.Errorf("unproven death claimed: %+v", o)
+	}
+}
+
+// Task 1's golden (logs/engine/summary/testdata/forever-1.60.summary.json.golden) is the
+// one real Forever log on disk. When its pull holds a death to an ability on its
+// encounter's avoidable list, F7's title names that ability; it holds none today (no
+// encounter, no death: Task 1's owner-provided boss pull is not on disk).
+func TestDeath_KnownGoodAvoidableOnTheRealPull(t *testing.T) {
+	raw, err := os.ReadFile("../../../logs/engine/summary/testdata/forever-1.60.summary.json.golden")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var s summary.Summary
+	if err := json.Unmarshal(raw, &s); err != nil {
+		t.Fatal(err)
+	}
+	table, ok := mechanics.Load(s.EncounterID)
+	if !ok {
+		t.Skip("Task 1's pull has no avoidable death (no curated encounter)")
+	}
+	seen := map[string]bool{}
+	for _, d := range s.Deaths {
+		first := !seen[d.GUID]
+		seen[d.GUID] = true
+		if !first || d.KillingBlow == nil {
+			continue
+		}
+		m, ok := table.Lookup(d.KillingBlow.SpellID)
+		if !ok || m.Kind != mechanics.Avoidable || m.Role != "" {
+			continue
+		}
+		in := Input{Fight: s, Row: rosterRowOf(t, s, d.GUID), BossName: table.Name, Tables: Tables{Mechanics: &table}}
+		f := death(in, CountedTime(in)).Finding
+		if f == nil || !strings.Contains(f.Title, m.Name) {
+			t.Fatalf("death %s at %d to %s: got %+v", d.GUID, d.AtMS, m.Name, f)
+		}
+		return
+	}
+	t.Skip("Task 1's pull has no avoidable death")
+}
