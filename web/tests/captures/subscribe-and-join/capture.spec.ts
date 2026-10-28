@@ -57,7 +57,7 @@ const GUILD_YEARLY = '/premium/checkout?plan=guild&interval=yearly';
 const RAID_YEARLY = '/premium/checkout?plan=raid_guild&interval=yearly';
 const PREMIUM_YEARLY = '/premium/checkout?plan=premium&interval=yearly';
 const GUILD_SLUG = 'olympus-xxvii';
-const CLAIM_PATH = `/guild/us/forever/${GUILD_SLUG}/claim`;
+const CLAIM_PATH = `/guild/us/pvp/${GUILD_SLUG}/claim`;
 const CLOCK = '2026-10-27T18:00:00Z';
 const ROTATED_TOKEN = 'fixedtokenfixedtokenfixedtoken0';
 const ROTATED_AT = '2026-10-27T12:00:00Z';
@@ -359,7 +359,7 @@ test(`13 focus-visible and hover @${BOARD_WIDTH}`, async ({ page }) => {
 
   await openAs(page, BOARD_WIDTH, GUILD_YEARLY, STEP_FIXTURES.ask_leader);
   await settled(page, CARDS_READY);
-  const copy = page.getByTestId(cardTestId('handoff-url-copy'));
+  const copy = page.getByTestId(cardTestId('handoff-copy'));
   await shootFocused(page, 'focus-copy-link', copy);
   await atRest(page);
   await copy.hover();
@@ -411,41 +411,38 @@ function claimSettings(claimed: boolean): unknown {
   };
 }
 
-async function stubClaimPage(page: Page, settings: { current: unknown }): Promise<void> {
-  await page.route(`**/v1/guilds/us/forever/${GUILD_SLUG}`, (route) =>
+async function stubClaimPage(page: Page, settings: { current: unknown }, memberView = false): Promise<void> {
+  await page.route(`**/v1/guilds/us/pvp/${GUILD_SLUG}`, (route) =>
     route.fulfill(
       envelope({
-        guild: { id: OWNER_GUILD_ID, name: 'OLYMPUS XXVII', region: 'us', ruleset: 'forever' },
+        guild: { id: OWNER_GUILD_ID, name: 'OLYMPUS XXVII', region: 'us', ruleset: 'pvp' },
         progression: [],
         roster_best: [],
         reports: [],
       }),
     ),
   );
+  // A member is refused the settings read, as the API does; an officer reads them.
   await page.route(`**/v1/guilds/${OWNER_GUILD_ID}/settings`, (route) =>
-    route.fulfill(envelope(settings.current)),
+    route.fulfill(
+      memberView ? envelope({ code: 'forbidden', message: 'no' }, 403) : envelope(settings.current),
+    ),
   );
 }
 
 atWidths('16 claim page as a member, copy field', THREE, async (page, width) => {
-  await stubClaimPage(page, { current: claimSettings(true) });
+  await stubClaimPage(page, { current: claimSettings(true) }, true);
   await openAs(page, width, CLAIM_PATH, STEP_FIXTURES.ask_leader, { time: CLOCK });
-  await settled(page, '[data-testid="guild-claim-handoff"]');
+  await settled(page, '[data-testid="guild-claim-handoff-url"]');
   await shoot(page, rowLabel(16), 'member-handoff', width, page.getByTestId('guild-claim'));
 });
 
 atWidths('16 claim page with plan, before and after claiming', THREE, async (page, width) => {
   const settings = { current: claimSettings(false) };
   await stubClaimPage(page, settings);
-  const cell = await openAs(
-    page,
-    width,
-    `${CLAIM_PATH}?plan=guild&interval=yearly`,
-    STEP_FIXTURES.start_claim,
-    {
-      time: CLOCK,
-    },
-  );
+  const cell = await openAs(page, width, `${CLAIM_PATH}?plan=guild&interval=yearly`, STEP_FIXTURES.claim, {
+    time: CLOCK,
+  });
   await settled(page, '[data-testid="guild-claim-button"]');
   await shoot(page, rowLabel(16), 'plan-before-claim', width, page.getByTestId('guild-claim'));
 
@@ -460,6 +457,14 @@ atWidths('16 claim page with plan, before and after claiming', THREE, async (pag
   await shoot(page, rowLabel(16), 'plan-after-claim', width, page.getByTestId('guild-claim'));
 });
 
+/** The home as an unverified member reads it: `viewer.verify.has_approver` is the flag the note picks by. */
+function withApprover(home: ReturnType<typeof buildMockHome>, hasApprover: boolean) {
+  return {
+    ...home,
+    viewer: { ...home.viewer, role: 'member', verified: false, verify: { has_approver: hasApprover } },
+  };
+}
+
 /** The unverified member's guild page (the mock guild), with or without an approver in the guild. */
 async function openGuildNote(page: Page, width: number, hasApprover: boolean): Promise<void> {
   const member = stepGuild({
@@ -467,12 +472,13 @@ async function openGuildNote(page: Page, width: number, hasApprover: boolean): P
     name: GUILD.name,
     ruleset: GUILD.ruleset,
     slug: GUILD_SLUG,
-    verify: { has_approver: hasApprover },
   });
   await page.route(`**/v1/guilds/us/${GUILD.ruleset}/${GUILD_SLUG}`, (route) =>
     route.fulfill(envelope(buildMockGuildPage())),
   );
-  await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => route.fulfill(envelope(buildMockHome(null))));
+  await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+    route.fulfill(envelope(withApprover(buildMockHome(null), hasApprover))),
+  );
   await page.route('**/v1/rankings/guilds*', (route) => route.fulfill(envelope({ rows: [] })));
   await sizeTo(page, width);
   await signIn(page);
