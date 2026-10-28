@@ -325,6 +325,33 @@ func TestRemoveReportWithdrawsItsRowsAndRecordsWhy(t *testing.T) {
 	}
 }
 
+func TestRemoveReportDeletesCoachProfiles(t *testing.T) {
+	h := newHarness(t)
+	h.seedReport("report-one")
+	at := engine.FixtureBase
+	if err := db.EnsureCoachProfilesPartition(t.Context(), h.pool, at); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into coach_profiles (report_id, fight_index, player_key, class, spec, role, encounter_id,
+		   difficulty, size, kill, duration_ms, phase, metric, fought_at, model_version, profile)
+		 values ('report-one', 1, 'us/normal/p', 'Warrior', 'Fury', 'dps', 9001, 9, 40, true, 60000,
+		   'beta', 1.5, $1, 'v', '{}')`, at); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.RemoveReport(t.Context(), "report-one", whyRemoved); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(t.Context(),
+		`select count(*) from coach_profiles where report_id = 'report-one'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatalf("%d coach profiles survive a removed report", n)
+	}
+}
+
 // Withdrawing a report that never ranked - every fight failed
 // verification, say - is not an error: there is simply nothing to take
 // back, and the withdrawal is still recorded.
