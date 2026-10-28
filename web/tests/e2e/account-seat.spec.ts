@@ -9,7 +9,11 @@ import {
   ME_SEAT_OFFER,
   mockEntitlements,
 } from '../../src/test-support/billing-fixtures';
+import { accountPlanCopy } from '../../src/lib/billing/account-plan-copy';
+import { premiumSourceCopy } from '../../src/lib/billing/premium-source-copy';
+import { PREMIUM_SEAT_NO_PORTAL, PREMIUM_SEAT_WITH_PORTAL } from '../../src/test-support/subscribe-fixtures';
 import { expectNoAxeViolations } from './support/officer-tools';
+import { expectTapHeight } from './support/subscribe-stubs';
 
 test.use({ timezoneId: 'UTC' });
 
@@ -143,6 +147,29 @@ test('the ended seat line links to its resubscribe URL', async ({ page }) => {
     ME_ENDED_SEAT.resubscribe_url,
   );
   await expectClean(page);
+});
+
+test('a seat holder with a personal portal sees Billing history, not Manage billing', async ({ page }) => {
+  await openAccount(page, {
+    seat: PREMIUM_SEAT_WITH_PORTAL.seat,
+    entitlements: { ...PREMIUM_SEAT_WITH_PORTAL.entitlements, server_sims: true },
+  });
+  await expect(page.getByTestId('account-billing-row')).toContainText(
+    accountPlanCopy.planLine.seat(PREMIUM_SEAT_WITH_PORTAL.seat?.guild_name ?? ''),
+  );
+  const button = page.getByTestId('account-billing-button');
+  await expect(button).toHaveText(premiumSourceCopy.buttons.history);
+  await expectTapHeight(button);
+  await expectClean(page);
+});
+
+test('a seat holder without a personal portal sees no billing button', async ({ page }) => {
+  await openAccount(page, {
+    seat: PREMIUM_SEAT_NO_PORTAL.seat,
+    entitlements: { ...PREMIUM_SEAT_NO_PORTAL.entitlements, server_sims: true },
+  });
+  await expect(page.getByTestId('account-billing-row')).toBeVisible();
+  await expect(page.getByTestId('account-billing-button')).toHaveCount(0);
 });
 
 test('the offer controls are at least 44px tall at 360 wide', async ({ page }) => {

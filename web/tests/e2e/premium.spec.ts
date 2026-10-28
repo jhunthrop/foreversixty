@@ -25,6 +25,13 @@ import {
   type GuildPriceBoxes,
 } from './support/premium-layout';
 import { API } from './support/local-stack';
+import { premiumSourceCopy } from '../../src/lib/billing/premium-source-copy';
+import {
+  PREMIUM_GRANT_OPEN_ENDED,
+  PREMIUM_OWN_FOUNDER,
+  PREMIUM_SEAT_WITH_PORTAL,
+} from '../../src/test-support/subscribe-fixtures';
+import { plantSessionHint, routeMeCell } from './support/subscribe-stubs';
 
 const LAUNCH_DAY = '2026-10-27T18:00:00Z';
 const DECEMBER = '2026-12-08T18:00:00Z';
@@ -392,6 +399,76 @@ test('the band link and Open this result are 44px tall from 768 up', async ({ pa
   for (const link of [page.getByTestId('band-guild-link'), page.getByTestId('premium-example-link')]) {
     expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(MIN_TAP_PX);
   }
+});
+
+// --- the Premium card for an account that has Premium (subscribe-and-join spec §4.4, case 16) ---
+
+const SOURCE_STATES = [
+  { source: 'own', me: PREMIUM_OWN_FOUNDER },
+  { source: 'seat', me: PREMIUM_SEAT_WITH_PORTAL },
+  { source: 'grant', me: PREMIUM_GRANT_OPEN_ENDED },
+] as const;
+
+const premiumCard = (page: Page) => page.getByTestId('plan-premium');
+
+async function signedOutPremiumHeight(page: Page): Promise<number> {
+  await routeMeCell(page, () => null);
+  await openAt(page, DECEMBER);
+  return (await cardHeights(page)).premium ?? 0;
+}
+
+for (const { source, me } of SOURCE_STATES) {
+  test(`stored source ${source}: the Premium card reads its line and See your plan on first paint, at the signed-out height`, async ({
+    page,
+  }) => {
+    const signedOutHeight = await signedOutPremiumHeight(page);
+    expect(signedOutHeight).toBeGreaterThan(0);
+
+    await page.evaluate(() => localStorage.clear());
+    await plantSessionHint(page);
+    await routeMeCell(page, () => me);
+    await page.addInitScript(
+      ([key, value]) => localStorage.setItem(key as string, value as string),
+      [PREMIUM_SOURCE_KEY, source],
+    );
+    await page.reload();
+
+    const card = premiumCard(page);
+    await expect(card.locator(`.owned-line[data-source="${source}"]`)).toBeVisible();
+    await expect(card.locator(`.owned-line[data-source="${source}"]`)).toHaveText(
+      premiumSourceCopy.premiumCard[source],
+    );
+    await expect(card.getByRole('link', { name: premiumSourceCopy.buttons.seePlan })).toHaveAttribute(
+      'href',
+      '/account#plan',
+    );
+    await expect(card.getByRole('link', { name: /^Subscribe · / })).toBeHidden();
+    await expect(card.locator('[data-default]')).toBeHidden();
+    expect((await cardHeights(page)).premium).toBe(signedOutHeight);
+    expect(await page.evaluate((key) => localStorage.getItem(key), PREMIUM_SOURCE_KEY)).toBe(source);
+  });
+}
+
+test('the swap holds at 360 with the See your plan link 44px tall', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await plantSessionHint(page);
+  await routeMeCell(page, () => PREMIUM_GRANT_OPEN_ENDED);
+  await openAt(page, DECEMBER, { stored: 'grant' });
+  const link = premiumCard(page).getByRole('link', { name: premiumSourceCopy.buttons.seePlan });
+  await expect(link).toBeVisible();
+  expect((await link.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(MIN_TAP_PX);
+});
+
+test('a malformed stored source renders the default card and the key is gone', async ({ page }) => {
+  await plantSessionHint(page);
+  await routeMeCell(page, () => null);
+  await openAt(page, DECEMBER, { stored: 'premium' });
+  const card = premiumCard(page);
+  await expect(card.locator('[data-default]')).toBeVisible();
+  await expect(card.locator('.owned-line:visible')).toHaveCount(0);
+  await expect(premiumButton(page)).toBeVisible();
+  await expect(page.locator('html')).not.toHaveAttribute('data-premium', /.*/);
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), PREMIUM_SOURCE_KEY)).toBeNull();
 });
 
 test('?canceled=1 acknowledges a canceled Stripe Checkout and loads no third-party script', async ({

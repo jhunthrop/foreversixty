@@ -4,6 +4,7 @@
 // so these specs plant that cookie and walk across real page loads: the stale answer is
 // persisted by the first page, and the page a mutation lands on must still show the new state.
 import { expect, test, type Page } from '@playwright/test';
+import { guildJoinCopy } from '../../src/lib/guild/copy';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -101,6 +102,9 @@ test('joining by invite lands on the member view, not the cached stranger view',
   // 2. Join through the invite, then open the guild from the joined state.
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await page.getByTestId('guild-join-button').click();
+  // The joined state reads the guild's plan from the fresh /v1/me (the entry carries no plan here).
+  await expect(page.getByTestId('guild-join-plan')).toHaveText(guildJoinCopy.noPlanYet('Olympus XXVII'));
+  await expect(page.getByTestId('guild-join-button')).toHaveCount(0);
   await page.getByTestId('guild-join-open').click();
   await expect(page).toHaveURL(/\/guild\/us\/pvp\/olympus-xxvii/);
 

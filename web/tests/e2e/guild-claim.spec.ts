@@ -1,5 +1,14 @@
 // web/tests/e2e/guild-claim.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+import { priceFor } from '../../src/lib/billing/plan-costs';
+import { checkoutGuildCopy } from '../../src/lib/billing/checkout-guild-copy';
+import { PLANS, formatPrice, founderOpen } from '../../src/lib/billing/plans';
+import { guildClaimCopy } from '../../src/lib/guild/copy';
+import { uiCopy } from '../../src/lib/ui/copy';
+import type { Me } from '../../src/lib/account/me-types';
+import { buildMe, stepGuild, subscribeView } from '../../src/test-support/subscribe-fixtures';
+import { expectNoAxeViolations } from './support/officer-tools';
+import { expectTapHeight, routeMeCell } from './support/subscribe-stubs';
 
 function envelope(data: unknown, status = 200) {
   return {
@@ -208,6 +217,195 @@ test('a signed-in visitor with no membership in this guild is told so, and sees 
   );
   await expect(page.getByTestId('guild-claim-not-eligible')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
+});
+
+// --- a claim link made for a plan (subscribe-and-join spec §6.2, case 17) ---------------------------
+
+const CLAIM_PATH = '/guild/us/hardcore/the-last-watch/claim';
+const PLAN_QUERY = '?plan=guild&interval=yearly';
+const LAST_WATCH = {
+  id: 501,
+  name: 'The Last Watch',
+  region: 'us',
+  ruleset: 'hardcore',
+  slug: 'the-last-watch',
+} as const;
+const OWNER_BATTLETAG = 'hunthrop#1894';
+
+const lastWatchMe = (guild: Parameters<typeof stepGuild>[0]): Me =>
+  buildMe({ guilds: [stepGuild({ ...LAST_WATCH, ...guild })] });
+
+const unclaimedSettings = {
+  default_visibility: 'guild',
+  officer_max_rank_index: 1,
+  claimed_by: null,
+  claim_pending: null,
+  claim: { state: 'unclaimed', frozen: false },
+  invite: { rotated_at: null },
+};
+const heldSettings = {
+  ...unclaimedSettings,
+  claimed_by: { battletag: OWNER_BATTLETAG },
+  claim: { state: 'claimed', since: '2026-10-20T00:00:00Z', frozen: false },
+};
+const FORBIDDEN = {
+  status: 403,
+  contentType: 'application/json',
+  body: '{"ok":false,"data":null,"error":{"code":"forbidden","message":"officers only"},"request_id":"r"}',
+};
+
+async function stubGuildPage(page: Page): Promise<void> {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+}
+
+const planPriceText = (): string =>
+  formatPrice(priceFor('guild', 'yearly', founderOpen(new Date())), 'yearly');
+
+test('signed out, the sign-in keeps next on the claim page and its plan', async ({ page }) => {
+  await stubGuildPage(page);
+  await routeMeCell(page, () => null);
+  await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(FORBIDDEN));
+  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  const signIn = page
+    .getByTestId('guild-claim-signin')
+    .getByRole('link', { name: 'Sign in with Battle.net' });
+  await expect(signIn).toHaveAttribute(
+    'href',
+    new RegExp(`next=${encodeURIComponent(`${CLAIM_PATH}${PLAN_QUERY}`)}$`),
+  );
+  await expect(page.getByTestId('guild-claim-plan-line')).toHaveText(
+    guildClaimCopy.planLine(LAST_WATCH.name, PLANS.guild.name, planPriceText()),
+  );
+});
+
+test('after a claim made for a plan, subscribe leads Next as the one gold fill', async ({ page }) => {
+  let claimed = false;
+  await stubGuildPage(page);
+  await routeMeCell(page, () =>
+    claimed
+      ? lastWatchMe({
+          rank: 'officer',
+          verified: true,
+          verified_count: 12,
+          claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: 'Obnoxious Yell' },
+          subscribe: subscribeView('ready', { trial_used: false }),
+        })
+      : lastWatchMe({ step: 'start_claim', rank: 'officer', verified: true }),
+  );
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(envelope(claimed ? heldSettings : unclaimedSettings)),
+  );
+  await page.route('**/v1/guilds/501/claim', (route) => {
+    claimed = true;
+    return route.fulfill(envelope({ status: 'confirmed' }));
+  });
+  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  await expect(page.getByTestId('guild-claim-plan-line')).toHaveText(
+    guildClaimCopy.planLine(LAST_WATCH.name, PLANS.guild.name, planPriceText()),
+  );
+  await page.getByTestId('guild-claim-button').click();
+  await page.getByTestId('guild-claim-confirm-claim').click();
+
+  const next = page.getByTestId('guild-claim-next');
+  await expect(next).toBeVisible();
+  const order = await next
+    .locator('[data-testid^="guild-claim-next-"]')
+    .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-testid')));
+  expect(order).toEqual(['guild-claim-next-subscribe', 'guild-claim-next-roster', 'guild-claim-next-invite']);
+  await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveText(checkoutGuildCopy.ready.startTrial);
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
+
+  // One fill: the subscribe button is gold, the roster link and the invite link are ghosts.
+  await page.mouse.move(0, 0);
+  await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveCSS(
+    'background-color',
+    'rgb(229, 185, 85)',
+  );
+  for (const ghost of ['guild-claim-next-roster', 'guild-claim-next-invite']) {
+    await expect(page.getByTestId(ghost)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  }
+  for (const control of ['subscribe', 'roster', 'invite']) {
+    await expectTapHeight(page.getByTestId(`guild-claim-next-${control}`));
+  }
+  await expectNoAxeViolations(page, '[data-testid="guild-claim"]');
+
+  const posted: unknown[] = [];
+  await page.route('**/v1/billing/checkout', (route) => {
+    posted.push(route.request().postDataJSON());
+    return route.fulfill(envelope({ checkout_url: 'https://checkout.stripe.com/x' }));
+  });
+  await page.route('https://checkout.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
+  await page.getByTestId('guild-claim-next-subscribe').click();
+  await page.waitForURL('https://checkout.stripe.com/**');
+  expect(posted).toEqual([{ plan: 'guild', interval: 'yearly', guild_id: LAST_WATCH.id }]);
+});
+
+test('a member sees the plan line and a copy field holding the claim link with the same plan', async ({
+  page,
+}) => {
+  await stubGuildPage(page);
+  await routeMeCell(page, () => lastWatchMe({ rank: 'member' }));
+  await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(FORBIDDEN));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(
+      envelope({
+        guild: LAST_WATCH,
+        claim: { state: 'unclaimed', frozen: false },
+        reports: [],
+        roster: [],
+      }),
+    ),
+  );
+  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  await expect(page.getByTestId('guild-claim-plan-line')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-not-eligible')).toContainText(
+    guildClaimCopy.memberHandoff(LAST_WATCH.name),
+  );
+  const origin = new URL(page.url()).origin;
+  await expect(page.getByTestId('guild-claim-handoff-url')).toHaveValue(
+    `${origin}${CLAIM_PATH}?plan=guild&interval=yearly`,
+  );
+  await expect(page.getByTestId('guild-claim-handoff-copy')).toHaveText(uiCopy.copyLink);
+  await expectTapHeight(page.getByTestId('guild-claim-handoff-copy'));
+  await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
+  await expectNoAxeViolations(page, '[data-testid="guild-claim"]');
+});
+
+test('a stranger is offered Get set up, which carries this claim page as next', async ({ page }) => {
+  await stubGuildPage(page);
+  await routeMeCell(page, () => buildMe({ guilds: [] }));
+  await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(FORBIDDEN));
+  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  const link = page.getByTestId('guild-claim-not-member').getByRole('link', { name: 'Get set up' });
+  await expect(link).toHaveAttribute(
+    'href',
+    `/setup?next=${encodeURIComponent(`${CLAIM_PATH}${PLAN_QUERY}`)}`,
+  );
+});
+
+test('/setup offers Back to the claim once a save makes the account know the guild, and on focus', async ({
+  page,
+}) => {
+  let saved = false;
+  await routeMeCell(page, () => (saved ? lastWatchMe({ rank: 'guild master' }) : buildMe({ guilds: [] })));
+  const claimLink = `${CLAIM_PATH}${PLAN_QUERY}`;
+  await page.goto(`/setup?next=${encodeURIComponent(claimLink)}`);
+  const slot = page.getByTestId('setup-back-to-claim');
+  await expect(slot).toBeAttached();
+  const back = slot.getByRole('link', { name: guildClaimCopy.backToClaim(LAST_WATCH.name) });
+  await expect(back).toHaveCount(0);
+
+  saved = true;
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await expect(back).toHaveAttribute('href', claimLink);
+  await expectTapHeight(back);
+  await expectNoAxeViolations(page, '[data-testid="setup-back-to-claim"]');
+});
+
+test('/setup ignores a next that is not a claim page', async ({ page }) => {
+  await routeMeCell(page, () => lastWatchMe({ rank: 'member' }));
+  await page.goto(`/setup?next=${encodeURIComponent('https://evil.example/guild/us/hardcore/x/claim')}`);
+  await expect(page.getByTestId('setup-back-to-claim')).toHaveCount(0);
 });
 
 // A pending claim now carries a real `ClaimPendingView` object (`{by, expires_at}`), never

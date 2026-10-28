@@ -9,6 +9,7 @@ import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
   GUILD_TIER_28_READ,
   LAPSED_READ,
+  SETTINGS_GUILD_PATH,
   emptySeat,
   heldSeat,
   TRIAL_READ,
@@ -16,6 +17,8 @@ import {
   guildBillingRead,
   planView,
 } from '../../src/test-support/billing-fixtures';
+import { guildSettingsCopy } from '../../src/lib/guild/copy';
+import { uiCopy } from '../../src/lib/ui/copy';
 import { GUILD_ID, envelope, openWith, stubCandidates } from './support/guild-billing';
 
 const PHONE = { width: 360, height: 780 };
@@ -163,6 +166,55 @@ test('case 14: lapsed reads the read-only line, Subscribe again, and both CSVs d
     expect((await download).suggestedFilename()).toBe(`the-last-watch-${kind}.csv`);
     expect(contentType).toBe('text/csv');
   }
+});
+
+// --- the hand-off links (subscribe-and-join spec §6.1, §6.4) ---------------------------------------
+
+test('a settings link made for a plan preselects that card and interval', async ({ page }) => {
+  await openWith(page, guildBillingRead(), `${SETTINGS_GUILD_PATH}?plan=raid_guild&interval=monthly#billing`);
+  await expect(page.getByTestId('guild-billing-option-raid_guild').locator('input')).toBeChecked();
+  await expect(page.getByTestId('guild-billing-interval-monthly')).toBeChecked();
+  await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
+    'href',
+    `/premium/checkout?plan=raid_guild&interval=monthly&guild_id=${GUILD_ID}`,
+  );
+});
+
+test('upgrade=1 opens the Move to Raid guild confirm on arrival, with focus on keeping Guild', async ({
+  page,
+}) => {
+  await page.route(`**/v1/guilds/${GUILD_ID}/billing/upgrade-preview`, (route) =>
+    route.fulfill(envelope({ ...UPGRADE_PREVIEW, renews_at: NOON })),
+  );
+  await openWith(
+    page,
+    GUILD_TIER_28_READ,
+    `${SETTINGS_GUILD_PATH}?plan=raid_guild&interval=monthly&upgrade=1#billing`,
+  );
+  await expect(page.getByTestId('guild-upgrade-confirm')).toBeVisible();
+  await expect(page.getByTestId('guild-upgrade-keep')).toBeFocused();
+});
+
+test('an officer who does not hold the claim gets the link to send the claim holder', async ({ page }) => {
+  await openWith(page, guildBillingRead({ can: [], verified_count: 12 }));
+  const block = page.getByTestId('guild-billing-handoff-block');
+  await expect(block).toContainText(guildSettingsCopy.sendThemThisLink);
+  const origin = new URL(page.url()).origin;
+  await expect(page.getByTestId('guild-billing-handoff-url')).toHaveValue(
+    `${origin}${SETTINGS_GUILD_PATH}?plan=guild&interval=yearly#billing`,
+  );
+  await expect(page.getByTestId('guild-billing-handoff-copy')).toHaveText(uiCopy.copyLink);
+  expect(
+    (await page.getByTestId('guild-billing-handoff-copy').boundingBox())?.height ?? 0,
+  ).toBeGreaterThanOrEqual(MIN_TAP_PX);
+});
+
+test('the hand-off link names Raid guild above 25 verified members', async ({ page }) => {
+  await openWith(page, guildBillingRead({ can: [], verified_count: 28 }));
+  const origin = new URL(page.url()).origin;
+  await expect(page.getByTestId('guild-billing-handoff-url')).toHaveValue(
+    `${origin}${SETTINGS_GUILD_PATH}?plan=raid_guild&interval=yearly#billing`,
+  );
 });
 
 interface AxeResults {

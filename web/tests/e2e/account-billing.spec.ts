@@ -1,7 +1,30 @@
 // web/tests/e2e/account-billing.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { mockEntitlements, NO_PRICE_FACTS } from '../../src/test-support/billing-fixtures';
 import { ownerMeAnswer } from './support/character-fixture';
+import { checkoutHref } from '../../src/components/premium/model';
+import type { Me } from '../../src/lib/account/me-types';
+import { accountPlanCopy } from '../../src/lib/billing/account-plan-copy';
+import { fittingGuildPlan } from '../../src/lib/billing/checkout-params';
+import { billingBlockCopy } from '../../src/lib/billing/copy';
+import { premiumSourceCopy } from '../../src/lib/billing/premium-source-copy';
+import {
+  MILLENNIALS,
+  OLYMPUS,
+  ON_PLAN_YOU_PAY,
+  OWNER_MEMBER,
+  PREMIUM_FALLBACK,
+  PREMIUM_GRANT_OPEN_ENDED,
+  PREMIUM_GRANT_UNTIL,
+  PREMIUM_OWN_ENDING,
+  PREMIUM_OWN_FOUNDER,
+  PREMIUM_OWN_THEN_SEAT,
+  PREMIUM_PAST_DUE,
+  PREMIUM_SEAT_NO_PORTAL,
+  PREMIUM_SEAT_WITH_PORTAL,
+} from '../../src/test-support/subscribe-fixtures';
+import { expectNoAxeViolations } from './support/officer-tools';
+import { expectTapHeight, routeDevices, routeMeCell } from './support/subscribe-stubs';
 
 // A Stripe date reads on the viewer's calendar (launch pricing spec §6, lib/dates.ts zonedDayMonthYear);
 // the fixtures' instants are midnight UTC, so the viewer is in UTC for them to read as written.
@@ -192,4 +215,93 @@ test('the home header keeps the whole name beside the Supporter chip', async ({ 
   // The name box is as wide as it is without the chip (about 114px in this column): never squeezed to a letter.
   expect((await name.boundingBox())!.width).toBeGreaterThanOrEqual(100);
   await expect(page.getByTestId('character-header').getByTestId('supporter-chip')).toBeVisible();
+});
+
+// --- the Plan panel by source, and the guild rows (subscribe-and-join spec §4.3, §6.5; cases 15) ---
+
+/** The same account with its Premium rows On, as the API resolves them for a paying or given account. */
+function withPremiumRowsOn(me: Me): Me {
+  return {
+    ...me,
+    entitlements: { ...mockEntitlements(), ...me.entitlements, server_sims: true, history: true },
+  };
+}
+
+async function openFixture(page: Page, me: Me): Promise<void> {
+  await routeMeCell(page, () => me);
+  await routeDevices(page);
+  await page.goto('/account');
+  await expect(page.getByTestId('account-plan-headline')).toBeVisible();
+}
+
+test("the owner's grant reads granted with no end date and offers no billing button", async ({ page }) => {
+  await openFixture(page, withPremiumRowsOn(PREMIUM_GRANT_OPEN_ENDED));
+  await expect(page.getByTestId('account-billing-row')).toContainText(premiumSourceCopy.grant.noEnd);
+  await expect(page.getByTestId('account-plan-line2')).toHaveText(premiumSourceCopy.grant.givenNoEnd);
+  await expect(page.getByTestId('account-billing-button')).toHaveCount(0);
+  await expectNoAxeViolations(page, '#plan');
+});
+
+test('every fixture whose Premium rows are On reads a plan line, never Not on Premium', async ({ page }) => {
+  const sources = [
+    PREMIUM_OWN_FOUNDER,
+    PREMIUM_OWN_ENDING,
+    PREMIUM_PAST_DUE,
+    PREMIUM_OWN_THEN_SEAT,
+    PREMIUM_SEAT_WITH_PORTAL,
+    PREMIUM_SEAT_NO_PORTAL,
+    PREMIUM_GRANT_OPEN_ENDED,
+    PREMIUM_GRANT_UNTIL,
+    PREMIUM_FALLBACK,
+  ];
+  let current: Me = withPremiumRowsOn(sources[0]!);
+  await routeMeCell(page, () => current);
+  await routeDevices(page);
+  for (const source of sources) {
+    current = withPremiumRowsOn(source);
+    await page.goto('/account');
+    await expect(page.getByTestId('account-premium-serverSims-link')).toBeVisible();
+    await expect(page.getByTestId('account-billing-row')).not.toContainText(billingBlockCopy.notSubscribed);
+  }
+});
+
+test('an own subscription gets Manage billing, tall enough to tap', async ({ page }) => {
+  await openFixture(page, withPremiumRowsOn(PREMIUM_OWN_ENDING));
+  const button = page.getByTestId('account-billing-button');
+  await expect(button).toHaveText(premiumSourceCopy.buttons.manage);
+  await expectTapHeight(button);
+});
+
+test('the guild rows say Not verified, that the guild has no plan, and link the fitting next step', async ({
+  page,
+}) => {
+  await openFixture(page, OWNER_MEMBER);
+  const rows = page.getByTestId('account-guild-row');
+  await expect(rows).toHaveCount(2);
+  for (const guild of [OLYMPUS, MILLENNIALS]) {
+    const row = rows.filter({ hasText: guild.name });
+    await expect(row.getByTestId('account-guild-not-verified')).toHaveText(
+      accountPlanCopy.guildRow.notVerified,
+    );
+    await expect(row.getByTestId('account-guild-no-plan')).toContainText(
+      accountPlanCopy.guildRow.noPlan(guild.name),
+    );
+    const next = row.getByRole('link', {
+      name: accountPlanCopy.guildRow.nextStepLabel(accountPlanCopy.guildRow.nextStep, guild.name),
+    });
+    await expect(next).toHaveText(accountPlanCopy.guildRow.nextStep);
+    await expect(next).toHaveAttribute(
+      'href',
+      `${checkoutHref(fittingGuildPlan(0), 'yearly')}#guild-${guild.id}`,
+    );
+  }
+  await expectNoAxeViolations(page, '[data-testid="account-guilds-panel"]');
+});
+
+test('a guild on a plan, verified, carries neither the mark nor the no-plan line', async ({ page }) => {
+  await openFixture(page, ON_PLAN_YOU_PAY);
+  const row = page.getByTestId('account-guild-row');
+  await expect(row).toHaveCount(1);
+  await expect(row.getByTestId('account-guild-not-verified')).toHaveCount(0);
+  await expect(row.getByTestId('account-guild-no-plan')).toHaveCount(0);
 });

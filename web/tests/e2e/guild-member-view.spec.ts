@@ -11,6 +11,8 @@ import {
   buildMockGuildPage,
   buildMockHome,
 } from '../../src/fixtures/guild/mock-guild';
+import { guildHomeCopy } from '../../src/lib/guild/copy';
+import { expectNoAxeViolations } from './support/officer-tools';
 
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 
@@ -130,6 +132,41 @@ test.describe('the guild page', () => {
     await expect(gate).toBeInViewport();
     await expect(page.getByTestId('guild-roster-rows')).toHaveCount(0);
     await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
+  });
+
+  test('tells an unverified member the guild has no approver yet, and links the claim page', async ({
+    page,
+  }) => {
+    await stub(page, 'unverified');
+    const home = buildMockHome(VIEWER_MEMBER);
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(
+        envelope({
+          ...home,
+          viewer: { ...home.viewer, verified: false, verify: { has_approver: false } },
+        }),
+      ),
+    );
+    await page.goto(GUILD_PATH);
+    const note = page.getByTestId('guild-home-not-verified-note');
+    await expect(note).toContainText(guildHomeCopy.notVerifiedNoApprover('Olympus XXVII'));
+    const link = page.getByTestId('guild-home-send-claim-link');
+    await expect(link).toHaveText(guildHomeCopy.sendGuildMasterLink);
+    await expect(link).toHaveAttribute('href', `${GUILD_PATH}/claim`);
+    await expectNoAxeViolations(page, '[data-testid="guild-home-not-verified-note"]');
+  });
+
+  test('keeps today’s sentence for an unverified member when an approver exists', async ({ page }) => {
+    await stub(page, 'unverified');
+    const home = buildMockHome(VIEWER_MEMBER);
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(
+        envelope({ ...home, viewer: { ...home.viewer, verified: false, verify: { has_approver: true } } }),
+      ),
+    );
+    await page.goto(GUILD_PATH);
+    await expect(page.getByTestId('guild-home-not-verified-note')).toHaveText(guildHomeCopy.notVerifiedNote);
+    await expect(page.getByTestId('guild-home-send-claim-link')).toHaveCount(0);
   });
 
   test('tells a visitor the roster is for members, with no rows and no claim entry', async ({ page }) => {

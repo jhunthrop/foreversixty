@@ -27,11 +27,16 @@ export function envelope(data: unknown, status = 200) {
   };
 }
 
-export async function openWith(page: Page, read: GuildBillingSettings): Promise<void> {
+/** `url` carries a query or hash the page reads (`?plan=…&upgrade=1#billing`); it defaults to the bare settings path. */
+export async function openWith(
+  page: Page,
+  read: GuildBillingSettings,
+  url: string = SETTINGS_GUILD_PATH,
+): Promise<void> {
   await routeGuildSettingsPage(page);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
   await page.route(`**/v1/guilds/${GUILD_ID}/billing`, (route) => route.fulfill(envelope(read)));
-  await gotoHydrated(page, SETTINGS_GUILD_PATH, 'guild-settings-billing');
+  await gotoHydrated(page, url, 'guild-settings-billing');
   await expect(page.getByTestId('guild-billing-skeleton')).toHaveCount(0);
 }
 
