@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
+	"math"
 	"math/rand/v2"
 	"net/http"
 	"net/url"
@@ -41,11 +43,17 @@ type retryHint struct {
 // a missing BaseURL, Model or APIKey, naming the environment variable.
 func New(cfg Config, hc *http.Client) (*HTTPClient, error) {
 	for _, req := range []struct{ value, name string }{
-		{cfg.BaseURL, "LLM_BASE_URL"}, {cfg.Model, "LLM_MODEL"}, {cfg.APIKey, "LLM_API_KEY"},
+		{cfg.BaseURL, "LLM_BASE_URL"}, {cfg.Model, "LLM_MODEL"}, {cfg.APIKey.Reveal(), "LLM_API_KEY"},
 	} {
 		if strings.TrimSpace(req.value) == "" {
 			return nil, fmt.Errorf("llm: %s is not set", req.name)
 		}
+	}
+	if err := requirePrice(cfg.PriceInPerMTok, "LLM_PRICE_IN_PER_MTOK"); err != nil {
+		return nil, err
+	}
+	if err := requirePrice(cfg.PriceOutPerMTok, "LLM_PRICE_OUT_PER_MTOK"); err != nil {
+		return nil, err
 	}
 	if cfg.Timeout <= 0 {
 		cfg.Timeout = defaultTimeout
@@ -64,6 +72,23 @@ func New(cfg Config, hc *http.Client) (*HTTPClient, error) {
 	return &HTTPClient{cfg: cfg, hc: hc, sleep: sleepCtx, jitter: halfJitter, now: time.Now}, nil
 }
 
+// requirePrice fails fast on a missing fallback price: a zero or invalid
+// price would let an estimated cost silently under-count against the caps.
+func requirePrice(price float64, name string) error {
+	if !(price > 0) || math.IsInf(price, 0) {
+		return fmt.Errorf("llm: %s must be set to a positive price (USD per million tokens)", name)
+	}
+	return nil
+}
+
+// String describes the client without its credentials.
+func (c *HTTPClient) String() string {
+	return fmt.Sprintf("llm.HTTPClient{%s}", c.cfg)
+}
+
+// GoString matches String under %#v.
+func (c *HTTPClient) GoString() string { return c.String() }
+
 func sleepCtx(ctx context.Context, d time.Duration) error {
 	t := time.NewTimer(d)
 	defer t.Stop()
@@ -81,16 +106,23 @@ func halfJitter(d time.Duration) time.Duration {
 }
 
 // Complete sends one chat completion, retrying 429, 5xx and network errors.
+// On failure the returned Response still carries Attempts (and RequestID when
+// the gateway sent one).
 func (c *HTTPClient) Complete(ctx context.Context, req Request) (Response, error) {
+	req = withDefaults(req)
 	body, err := json.Marshal(c.wire(req))
 	if err != nil {
 		return Response{}, fmt.Errorf("llm: encode request: %w", err)
 	}
+	fallback := worstCaseUsage(req)
 	var lastErr error
+	attempts := 0
 	for attempt := 1; attempt <= c.cfg.MaxRetries+1; attempt++ {
-		res, hint, err := c.attempt(ctx, body)
+		res, hint, err := c.attempt(ctx, body, fallback)
+		attempts = attempt
+		res.Attempts = attempt
 		if err == nil {
-			res.Attempts = attempt
+			c.logResult(ctx, res)
 			return res, nil
 		}
 		lastErr = err
@@ -98,10 +130,50 @@ func (c *HTTPClient) Complete(ctx context.Context, req Request) (Response, error
 			break
 		}
 		if serr := c.sleep(ctx, c.wait(hint, attempt)); serr != nil {
-			return Response{}, serr
+			lastErr = serr
+			break
 		}
 	}
-	return Response{}, lastErr
+	return c.failure(ctx, attempts, lastErr), lastErr
+}
+
+// failure builds the Response returned alongside a final error and logs it.
+func (c *HTTPClient) failure(ctx context.Context, attempts int, err error) Response {
+	res := Response{Model: c.cfg.Model, Attempts: attempts}
+	var apiErr *APIError
+	if errors.As(err, &apiErr) {
+		res.RequestID = apiErr.RequestID
+	}
+	slog.WarnContext(ctx, "llm request failed", "model", c.cfg.Model, "request_id", res.RequestID, "attempts", attempts, "error", err.Error())
+	return res
+}
+
+func (c *HTTPClient) logResult(ctx context.Context, r Response) {
+	slog.InfoContext(ctx, "llm request", "model", r.Model, "request_id", r.RequestID, "attempts", r.Attempts,
+		"prompt_tokens", r.Usage.PromptTokens, "completion_tokens", r.Usage.CompletionTokens,
+		"cost_usd", r.CostUSD, "cost_estimated", r.CostEstimated)
+}
+
+// withDefaults fills the zero-valued temperature and token ceiling.
+func withDefaults(req Request) Request {
+	if req.Temperature == 0 {
+		req.Temperature = defaultTemperature
+	}
+	if req.MaxTokens == 0 {
+		req.MaxTokens = defaultMaxTokens
+	}
+	return req
+}
+
+// worstCaseUsage is the charge assumed when the gateway reports no usage:
+// the full output ceiling plus a low-ratio estimate of the prompt tokens.
+func worstCaseUsage(req Request) Usage {
+	chars := len(req.JSONSchema)
+	for _, m := range req.Messages {
+		chars += len(m.Role) + len(m.Content)
+	}
+	prompt := (chars + charsPerTokenWorstCase - 1) / charsPerTokenWorstCase
+	return Usage{PromptTokens: prompt, CompletionTokens: req.MaxTokens}
 }
 
 // wait is the delay before the retry that follows the given attempt.
@@ -112,17 +184,11 @@ func (c *HTTPClient) wait(h retryHint, attempt int) time.Duration {
 	return c.jitter(min(baseBackoff<<(attempt-1), maxBackoff))
 }
 
+// wire builds the request body from a request that has its defaults applied.
 func (c *HTTPClient) wire(req Request) wireRequest {
-	temp, maxTokens := req.Temperature, req.MaxTokens
-	if temp == 0 {
-		temp = defaultTemperature
-	}
-	if maxTokens == 0 {
-		maxTokens = defaultMaxTokens
-	}
 	w := wireRequest{
-		Model: c.cfg.Model, Messages: req.Messages, Temperature: temp,
-		MaxTokens: maxTokens, ResponseFormat: responseFormat(req.JSONSchema),
+		Model: c.cfg.Model, Messages: req.Messages, Temperature: req.Temperature,
+		MaxTokens: req.MaxTokens, ResponseFormat: responseFormat(req.JSONSchema),
 	}
 	if len(c.cfg.Providers) > 0 {
 		w.ProviderOpts = &providerOption{Gateway: gatewayOption{Only: c.cfg.Providers}}
@@ -131,14 +197,14 @@ func (c *HTTPClient) wire(req Request) wireRequest {
 }
 
 // attempt makes one request under the per-attempt timeout.
-func (c *HTTPClient) attempt(ctx context.Context, body []byte) (Response, retryHint, error) {
+func (c *HTTPClient) attempt(ctx context.Context, body []byte, fallback Usage) (Response, retryHint, error) {
 	actx, cancel := context.WithTimeout(ctx, c.cfg.Timeout)
 	defer cancel()
 	httpReq, err := http.NewRequestWithContext(actx, http.MethodPost, c.cfg.BaseURL+"/chat/completions", bytes.NewReader(body))
 	if err != nil {
 		return Response{}, retryHint{}, errors.New("llm: build request failed")
 	}
-	httpReq.Header.Set("Authorization", "Bearer "+c.cfg.APIKey)
+	httpReq.Header.Set("Authorization", "Bearer "+c.cfg.APIKey.Reveal())
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.hc.Do(httpReq)
@@ -150,11 +216,11 @@ func (c *HTTPClient) attempt(ctx context.Context, body []byte) (Response, retryH
 	if err != nil {
 		return Response{}, retryHint{retry: true}, scrub(err)
 	}
-	return c.interpret(resp, raw)
+	return c.interpret(resp, raw, fallback)
 }
 
 // interpret turns an HTTP answer into a Response or a classified error.
-func (c *HTTPClient) interpret(resp *http.Response, raw []byte) (Response, retryHint, error) {
+func (c *HTTPClient) interpret(resp *http.Response, raw []byte, fallback Usage) (Response, retryHint, error) {
 	if resp.StatusCode/100 != 2 {
 		hint := retryHint{retry: retryableStatus(resp.StatusCode)}
 		hint.after, hint.hasAfter = retryAfter(resp.Header.Get("Retry-After"), c.now())
@@ -170,6 +236,7 @@ func (c *HTTPClient) interpret(resp *http.Response, raw []byte) (Response, retry
 	if res.RequestID == "" {
 		res.RequestID = resp.Header.Get(requestIDHeader)
 	}
+	res.Usage = fallback // no usage block: charge the worst case
 	if w.Usage != nil {
 		res.Usage = Usage{PromptTokens: w.Usage.PromptTokens, CompletionTokens: w.Usage.CompletionTokens}
 	}

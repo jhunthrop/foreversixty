@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -74,7 +75,11 @@ func reportedCost(_ *http.Response, body []byte) (float64, bool) {
 	if json.Unmarshal(body, &w) != nil || w.Usage == nil || w.Usage.Cost == nil {
 		return 0, false
 	}
-	return *w.Usage.Cost, true
+	// A reported 0 is trusted (BYOK or free models); negative or NaN is not.
+	if c := *w.Usage.Cost; c >= 0 && !math.IsNaN(c) && !math.IsInf(c, 0) {
+		return c, true
+	}
+	return 0, false
 }
 
 // retryAfter parses a Retry-After header: delta seconds or an HTTP date.

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -16,6 +17,8 @@ import (
 )
 
 const testKey = "test-key-SECRET"
+
+var testSecret = NewSecret(testKey)
 
 func gateway(t *testing.T, h http.HandlerFunc) *httptest.Server {
 	t.Helper()
@@ -49,6 +52,9 @@ func writeCompletion(w http.ResponseWriter, content string, in, out int, cost fl
 
 func mustNew(t *testing.T, cfg Config) (*HTTPClient, *[]time.Duration) {
 	t.Helper()
+	if cfg.PriceInPerMTok == 0 && cfg.PriceOutPerMTok == 0 {
+		cfg.PriceInPerMTok, cfg.PriceOutPerMTok = 1, 1
+	}
 	c, err := New(cfg, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -76,7 +82,7 @@ func TestComplete_SendsJSONModeAndReadsUsageAndCost(t *testing.T) {
 		}
 		writeCompletion(w, `{"opening":"x"}`, 7000, 800, 0.0021, "gen_123")
 	})
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "deepseek/test", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "deepseek/test", APIKey: testSecret})
 	res, err := c.Complete(context.Background(), userMsg)
 	if err != nil || res.Content != `{"opening":"x"}` || res.Usage.PromptTokens != 7000 || res.Usage.CompletionTokens != 800 ||
 		res.CostUSD != 0.0021 || res.CostEstimated || res.RequestID != "gen_123" || res.Attempts != 1 || res.Model != "deepseek/test" {
@@ -94,7 +100,7 @@ func TestComplete_JSONSchemaWhenGiven(t *testing.T) {
 		}
 		writeCompletion(w, "{}", 1, 1, -1, "g")
 	})
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	req := userMsg
 	req.JSONSchema = json.RawMessage(`{"type":"object"}`)
 	if _, err := c.Complete(context.Background(), req); err != nil {
@@ -112,7 +118,7 @@ func TestComplete_RetriesOn429HonouringRetryAfter(t *testing.T) {
 		}
 		writeCompletion(w, "{}", 1, 1, 0.1, "g")
 	})
-	c, sleeps := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, sleeps := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	res, err := c.Complete(context.Background(), userMsg)
 	if err != nil || res.Attempts != 2 || len(*sleeps) != 1 || (*sleeps)[0] != 2*time.Second {
 		t.Fatalf("%+v %v sleeps %v", res, err, *sleeps)
@@ -138,7 +144,7 @@ func TestComplete_RetriesTwiceOn5xxThenFails(t *testing.T) {
 		w.WriteHeader(statuses[n.Add(1)-1])
 		fmt.Fprint(w, "UPSTREAM-BODY-LEAK")
 	})
-	c, sleeps := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, sleeps := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	_, err := c.Complete(context.Background(), userMsg)
 	var apiErr *APIError
 	if !errors.As(err, &apiErr) || apiErr.Status != 503 || n.Load() != 3 {
@@ -159,7 +165,7 @@ func TestComplete_NoRetryOn400(t *testing.T) {
 		n.Add(1)
 		w.WriteHeader(http.StatusBadRequest)
 	})
-	c, sleeps := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, sleeps := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	if _, err := c.Complete(context.Background(), userMsg); err == nil || n.Load() != 1 || len(*sleeps) != 0 {
 		t.Fatalf("err %v attempts %d", err, n.Load())
 	}
@@ -174,7 +180,7 @@ func TestComplete_TimeoutPerAttempt(t *testing.T) {
 		case <-time.After(2 * time.Second):
 		}
 	})
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey, Timeout: 50 * time.Millisecond})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret, Timeout: 50 * time.Millisecond})
 	_, err := c.Complete(context.Background(), userMsg)
 	if !errors.Is(err, context.DeadlineExceeded) || n.Load() != 3 {
 		t.Fatalf("err %v attempts %d", err, n.Load())
@@ -187,7 +193,7 @@ func TestComplete_MalformedJSONFailsWithoutRetry(t *testing.T) {
 		n.Add(1)
 		fmt.Fprint(w, `{"choices": [`)
 	})
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	if _, err := c.Complete(context.Background(), userMsg); !errors.Is(err, errMalformed) || n.Load() != 1 {
 		t.Fatalf("err %v attempts %d", err, n.Load())
 	}
@@ -195,7 +201,7 @@ func TestComplete_MalformedJSONFailsWithoutRetry(t *testing.T) {
 
 func TestComplete_NoChoicesIsMalformed(t *testing.T) {
 	srv := gateway(t, func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, `{"id":"g","choices":[]}`) })
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	if _, err := c.Complete(context.Background(), userMsg); !errors.Is(err, errMalformed) {
 		t.Fatal(err)
 	}
@@ -203,18 +209,67 @@ func TestComplete_NoChoicesIsMalformed(t *testing.T) {
 
 func TestComplete_EstimatesCostWhenNoneReported(t *testing.T) {
 	srv := gateway(t, func(w http.ResponseWriter, _ *http.Request) { writeCompletion(w, "{}", 7000, 800, -1, "g") })
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey, PriceInPerMTok: 0.2, PriceOutPerMTok: 0.8})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret, PriceInPerMTok: 0.2, PriceOutPerMTok: 0.8})
 	res, err := c.Complete(context.Background(), userMsg)
 	if err != nil || !res.CostEstimated || res.CostUSD < 0.002039 || res.CostUSD > 0.002041 {
 		t.Fatalf("%+v %v", res, err)
 	}
 }
 
-func TestComplete_NoUsageBlockEstimatesZero(t *testing.T) {
+func TestComplete_NoUsageBlockChargesWorstCase(t *testing.T) {
 	srv := gateway(t, func(w http.ResponseWriter, _ *http.Request) { writeCompletion(w, "{}", -1, 0, -1, "g") })
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey, PriceInPerMTok: 1, PriceOutPerMTok: 1})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret, PriceInPerMTok: 1, PriceOutPerMTok: 2})
+	req := Request{Messages: []Message{{Role: "user", Content: strings.Repeat("x", 296)}}, MaxTokens: 500}
+	res, err := c.Complete(context.Background(), req)
+	// "user" (4) + 296 chars = 300 chars -> 100 prompt tokens at 3 chars per token.
+	wantCost := (100*1 + 500*2) / 1e6
+	if err != nil || res.Usage != (Usage{PromptTokens: 100, CompletionTokens: 500}) || !res.CostEstimated || math.Abs(res.CostUSD-wantCost) > 1e-12 {
+		t.Fatalf("%+v %v", res, err)
+	}
+}
+
+func TestComplete_IgnoresNegativeOrNaNCost(t *testing.T) {
+	for _, cost := range []string{"-0.5"} {
+		srv := gateway(t, func(w http.ResponseWriter, _ *http.Request) {
+			fmt.Fprintf(w, `{"id":"g","choices":[{"message":{"content":"{}"}}],"usage":{"prompt_tokens":1000000,"completion_tokens":0,"cost":%s}}`, cost)
+		})
+		c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret, PriceInPerMTok: 3, PriceOutPerMTok: 1})
+		res, err := c.Complete(context.Background(), userMsg)
+		if err != nil || !res.CostEstimated || res.CostUSD != 3 {
+			t.Fatalf("cost %s: %+v %v", cost, res, err)
+		}
+	}
+}
+
+func TestReportedCost_ZeroIsTrusted(t *testing.T) {
+	// A gateway-reported 0 (BYOK or a free model) is real, not a missing value.
+	if v, ok := reportedCost(nil, []byte(`{"usage":{"cost":0}}`)); !ok || v != 0 {
+		t.Fatalf("%v %v", v, ok)
+	}
+}
+
+func TestSecretNeverPrints(t *testing.T) {
+	cfg := Config{BaseURL: "http://x", Model: "m", APIKey: testSecret, PriceInPerMTok: 1, PriceOutPerMTok: 1}
+	c, err := New(cfg, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	type holder struct{ cfg Config }
+	for _, out := range []string{
+		fmt.Sprintf("%v %+v %#v %s", cfg, cfg, cfg, cfg), fmt.Sprintf("%v %+v %#v", c, c, c),
+		fmt.Sprintf("%+v", holder{cfg}), fmt.Sprintf("%+v %#v %s", cfg.APIKey, cfg.APIKey, cfg.APIKey),
+	} {
+		if strings.Contains(out, testKey) {
+			t.Fatalf("key printed: %s", out)
+		}
+	}
+}
+
+func TestComplete_AttemptsOnError(t *testing.T) {
+	srv := gateway(t, func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusBadGateway) })
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	res, err := c.Complete(context.Background(), userMsg)
-	if err != nil || res.Usage != (Usage{}) || res.CostUSD != 0 || !res.CostEstimated {
+	if err == nil || res.Attempts != 3 {
 		t.Fatalf("%+v %v", res, err)
 	}
 }
@@ -228,7 +283,7 @@ func TestComplete_PinsProviders(t *testing.T) {
 		}
 		writeCompletion(w, "{}", 1, 1, -1, "g")
 	})
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey, Providers: []string{"a", "b"}})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret, Providers: []string{"a", "b"}})
 	if _, err := c.Complete(context.Background(), userMsg); err != nil {
 		t.Fatal(err)
 	}
@@ -239,9 +294,12 @@ func TestNew_FailsFastNamingTheVariable(t *testing.T) {
 		cfg  Config
 		name string
 	}{
-		{Config{Model: "m", APIKey: testKey}, "LLM_BASE_URL"},
-		{Config{BaseURL: "http://x", APIKey: testKey}, "LLM_MODEL"},
-		{Config{BaseURL: "http://x", Model: "m"}, "LLM_API_KEY"},
+		{Config{Model: "m", APIKey: testSecret, PriceInPerMTok: 1, PriceOutPerMTok: 1}, "LLM_BASE_URL"},
+		{Config{BaseURL: "http://x", APIKey: testSecret, PriceInPerMTok: 1, PriceOutPerMTok: 1}, "LLM_MODEL"},
+		{Config{BaseURL: "http://x", Model: "m", PriceInPerMTok: 1, PriceOutPerMTok: 1}, "LLM_API_KEY"},
+		{Config{BaseURL: "http://x", Model: "m", APIKey: testSecret, PriceOutPerMTok: 1}, "LLM_PRICE_IN_PER_MTOK"},
+		{Config{BaseURL: "http://x", Model: "m", APIKey: testSecret, PriceInPerMTok: 1}, "LLM_PRICE_OUT_PER_MTOK"},
+		{Config{BaseURL: "http://x", Model: "m", APIKey: testSecret, PriceInPerMTok: math.NaN(), PriceOutPerMTok: 1}, "LLM_PRICE_IN_PER_MTOK"},
 	}
 	for _, tc := range cases {
 		_, err := New(tc.cfg, nil)
@@ -252,11 +310,11 @@ func TestNew_FailsFastNamingTheVariable(t *testing.T) {
 }
 
 func TestNew_Defaults(t *testing.T) {
-	c, err := New(Config{BaseURL: "http://x/", Model: "m", APIKey: testKey}, nil)
+	c, err := New(Config{BaseURL: "http://x/", Model: "m", APIKey: testSecret, PriceInPerMTok: 1, PriceOutPerMTok: 1}, nil)
 	if err != nil || c.cfg.Timeout != defaultTimeout || c.cfg.MaxRetries != defaultMaxRetries || c.cfg.BaseURL != "http://x" {
 		t.Fatalf("%+v %v", c.cfg, err)
 	}
-	c, _ = New(Config{BaseURL: "http://x", Model: "m", APIKey: testKey, MaxRetries: -1}, nil)
+	c, _ = New(Config{BaseURL: "http://x", Model: "m", APIKey: testSecret, MaxRetries: -1, PriceInPerMTok: 1, PriceOutPerMTok: 1}, nil)
 	if c.cfg.MaxRetries != 0 {
 		t.Fatalf("retries %d", c.cfg.MaxRetries)
 	}
@@ -264,7 +322,7 @@ func TestNew_Defaults(t *testing.T) {
 
 func TestComplete_StopsWhenContextCancelled(t *testing.T) {
 	srv := gateway(t, func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusServiceUnavailable) })
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	ctx, cancel := context.WithCancel(context.Background())
 	c.sleep = func(ctx context.Context, _ time.Duration) error { cancel(); return ctx.Err() }
 	if _, err := c.Complete(ctx, userMsg); !errors.Is(err, context.Canceled) {
@@ -282,7 +340,7 @@ func TestNoSecretInLogsOrErrors(t *testing.T) {
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprint(w, "bad key "+strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "))
 	})
-	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: srv.URL, Model: "m", APIKey: testSecret})
 	_, err := c.Complete(context.Background(), userMsg)
 	if err == nil {
 		t.Fatal("want error")
@@ -291,7 +349,25 @@ func TestNoSecretInLogsOrErrors(t *testing.T) {
 	if strings.Contains(err.Error(), secret) || strings.Contains(logs.String(), secret) {
 		t.Fatalf("secret leaked: %q / %q", err, logs.String())
 	}
-	_, nerr := New(Config{BaseURL: "x", APIKey: testKey}, nil)
+	if !strings.Contains(logs.String(), "attempts=1") || !strings.Contains(logs.String(), "model=m") {
+		t.Fatalf("expected a structured failure line, got %q", logs.String())
+	}
+	ok := gateway(t, func(w http.ResponseWriter, _ *http.Request) { writeCompletion(w, "{}", 10, 5, 0.01, "gen_1") })
+	c2, _ := mustNew(t, Config{BaseURL: ok.URL, Model: "m", APIKey: testSecret})
+	logs.Reset()
+	if _, err := c2.Complete(context.Background(), userMsg); err != nil {
+		t.Fatal(err)
+	}
+	line := logs.String()
+	for _, want := range []string{"model=deepseek/test", "attempts=1", "prompt_tokens=10", "completion_tokens=5"} {
+		if !strings.Contains(line, want) {
+			t.Errorf("log line lacks %s: %q", want, line)
+		}
+	}
+	if strings.Contains(line, secret) {
+		t.Fatalf("secret in log: %q", line)
+	}
+	_, nerr := New(Config{BaseURL: "x", APIKey: testSecret, PriceInPerMTok: 1, PriceOutPerMTok: 1}, nil)
 	if nerr == nil || strings.Contains(nerr.Error(), secret) {
 		t.Fatalf("New leaked: %v", nerr)
 	}
@@ -301,7 +377,7 @@ func TestNoSecretInTransportErrors(t *testing.T) {
 	srv := httptest.NewServer(http.NotFoundHandler())
 	url := srv.URL
 	srv.Close()
-	c, _ := mustNew(t, Config{BaseURL: url, Model: "m", APIKey: testKey})
+	c, _ := mustNew(t, Config{BaseURL: url, Model: "m", APIKey: testSecret})
 	_, err := c.Complete(context.Background(), userMsg)
 	if err == nil || strings.Contains(err.Error(), testKey) || strings.Contains(err.Error(), url) {
 		t.Fatalf("%v", err)
