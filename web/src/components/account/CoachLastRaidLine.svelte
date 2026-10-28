@@ -11,6 +11,7 @@
   import {
     LAST_RAID_LABEL,
     LAST_RAID_RETRY_CLASS,
+    cachedLastRaid,
     createLastRaidLoader,
     lastRaidLine,
     type LastRaidRole,
@@ -30,7 +31,9 @@
     refreshDelayMs?: number;
   } = $props();
 
-  let state = $state<LastRaidState>({ kind: 'loading' });
+  // A remount (the account page re-creates this line when /v1/me refreshes) starts from the
+  // page's last answer, so the skeleton shows once per page, never over a line already read.
+  let state = $state<LastRaidState>(cachedLastRaid() ?? { kind: 'loading' });
 
   const ROLE_CLASS: Record<LastRaidRole, string> = {
     lead: 'text-muted',

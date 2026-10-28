@@ -1,14 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   LAST_RAID_LABEL,
   LAST_RAID_RETRY_CLASS,
+  cachedLastRaid,
   createLastRaidLoader,
   formatRaidDate,
   lastRaidLine,
+  resetLastRaidCache,
   settleLastRaid,
   type LastRaidState,
 } from './last-raid';
 import type { CoachRecent, LastRaid } from './types';
+
+// The loader remembers the page's last answer across mounts; every test starts without one.
+beforeEach(() => resetLastRaidCache());
 
 const RAID: LastRaid = {
   zone: 'Molten Core',
@@ -157,6 +162,23 @@ describe('createLastRaidLoader', () => {
   }
   const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
   const kinds = (states: LastRaidState[]) => states.map((s) => s.kind);
+
+  it('a remount starts from the last answer and never shows the skeleton again', async () => {
+    const first = setup([recent({})]);
+    first.loader.start();
+    await flush();
+    expect(kinds(first.states)).toEqual(['loading', 'ready']);
+    expect(cachedLastRaid()).toEqual(first.states[1]);
+
+    // The account page re-creates the line when /v1/me refreshes: the new loader refreshes in
+    // place; the component itself starts from cachedLastRaid().
+    const second = setup([recent({ first: null })]);
+    second.loader.start();
+    await flush();
+    expect(kinds(second.states)).toEqual(['ready']);
+    expect(second.fetchRecent).toHaveBeenCalledTimes(1);
+    expect(cachedLastRaid()).toEqual(second.states[0]);
+  });
 
   it('arms one refresh after a pending first answer and swaps in the settled line', async () => {
     const { loader, states, timers, fetchRecent } = setup([recent({ first: null }, true), recent({})]);

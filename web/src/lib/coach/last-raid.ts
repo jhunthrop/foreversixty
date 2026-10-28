@@ -140,13 +140,33 @@ export interface LastRaidLoader {
   stop: () => void;
 }
 
+// The last ready answer on this page. The account page re-creates the line whenever /v1/me
+// refreshes (a Discord save, a plan change), and a remount must not flash the skeleton over a
+// line the player has already read: it starts from this answer and refreshes it silently.
+let lastReady: Extract<LastRaidState, { kind: 'ready' }> | null = null;
+
+/** The ready answer a remounted line starts from, if this page has one. */
+export function cachedLastRaid(): LastRaidState | null {
+  return lastReady;
+}
+
+/** Forgets the cached answer (tests, and a sign-out). */
+export function resetLastRaidCache(): void {
+  lastReady = null;
+}
+
 /** Loads the line once, refreshes once if the first answer is pending, and offers a retry. */
 export function createLastRaidLoader(options: LastRaidLoaderOptions): LastRaidLoader {
-  const { fetchRecent, onState } = options;
+  const { fetchRecent } = options;
   const schedule = options.schedule ?? ((run, ms) => setTimeout(run, ms));
   const cancel = options.cancel ?? ((handle) => clearTimeout(handle as ReturnType<typeof setTimeout>));
   let stopped = false;
   let timer: unknown;
+
+  const onState = (state: LastRaidState): void => {
+    if (state.kind === 'ready') lastReady = state;
+    options.onState(state);
+  };
 
   const refresh = async (): Promise<void> => {
     const next = await settleLastRaid(fetchRecent, options.premium);
@@ -165,7 +185,9 @@ export function createLastRaidLoader(options: LastRaidLoaderOptions): LastRaidLo
   };
 
   return {
-    start: () => void load({ kind: 'loading' }, true),
+    // A remount after an answer shows that answer and refreshes it in place; only the first
+    // mount on a page shows the skeleton.
+    start: () => void (lastReady === null ? load({ kind: 'loading' }, true) : refresh()),
     retry: () => void load({ kind: 'retrying' }, false),
     stop: () => {
       stopped = true;
