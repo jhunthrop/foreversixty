@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"math"
 	"math/rand/v2"
+	"net"
 	"net/http"
 	"net/url"
 	"slices"
@@ -33,11 +34,13 @@ type HTTPClient struct {
 	now    func() time.Time
 }
 
-// retryHint tells Complete whether and when to try again.
+// retryHint tells Complete whether and when to try again, and whether the failed
+// attempt may have been billed (it then charges the worst case).
 type retryHint struct {
 	retry    bool
 	after    time.Duration
 	hasAfter bool
+	billed   bool
 }
 
 // New validates cfg, applies defaults and returns a client. It fails fast on
@@ -114,7 +117,10 @@ func halfJitter(d time.Duration) time.Duration {
 
 // Complete sends one chat completion, retrying 429, 5xx and network errors.
 // On failure the returned Response still carries Attempts (and RequestID when
-// the gateway sent one).
+// the gateway sent one). Every failed attempt the provider may have billed (a
+// timeout after the request was sent, a 2xx that could not be read) charges
+// the worst case: its cost is in CostUSD, flagged estimated, on success and on
+// failure alike, so the spend cap counts it.
 func (c *HTTPClient) Complete(ctx context.Context, req Request) (Response, error) {
 	req = withDefaults(req)
 	body, err := json.Marshal(c.wire(req))
@@ -124,13 +130,22 @@ func (c *HTTPClient) Complete(ctx context.Context, req Request) (Response, error
 	fallback := worstCaseUsage(req)
 	var lastErr error
 	attempts := 0
+	billed := 0.0
 	for attempt := 1; attempt <= c.cfg.MaxRetries+1; attempt++ {
+		if err := ctx.Err(); err != nil {
+			lastErr = err
+			break
+		}
 		res, hint, err := c.attempt(ctx, body, fallback)
 		attempts = attempt
 		res.Attempts = attempt
 		if err == nil {
+			res = withBilled(res, billed)
 			c.logResult(ctx, res)
 			return res, nil
+		}
+		if hint.billed {
+			billed += c.estimate(fallback)
 		}
 		lastErr = err
 		if !hint.retry || attempt > c.cfg.MaxRetries || ctx.Err() != nil {
@@ -141,17 +156,27 @@ func (c *HTTPClient) Complete(ctx context.Context, req Request) (Response, error
 			break
 		}
 	}
-	return c.failure(ctx, attempts, lastErr), lastErr
+	return c.failure(ctx, attempts, billed, lastErr), lastErr
+}
+
+// withBilled adds the worst-case charge of earlier billed attempts to an answer.
+func withBilled(res Response, billed float64) Response {
+	if billed > 0 {
+		res.CostUSD += billed
+		res.CostEstimated = true
+	}
+	return res
 }
 
 // failure builds the Response returned alongside a final error and logs it.
-func (c *HTTPClient) failure(ctx context.Context, attempts int, err error) Response {
-	res := Response{Model: c.cfg.Model, Attempts: attempts}
+func (c *HTTPClient) failure(ctx context.Context, attempts int, billed float64, err error) Response {
+	res := withBilled(Response{Model: c.cfg.Model, Attempts: attempts}, billed)
 	var apiErr *APIError
 	if errors.As(err, &apiErr) {
 		res.RequestID = apiErr.RequestID
 	}
-	slog.WarnContext(ctx, "llm request failed", "model", c.cfg.Model, "request_id", res.RequestID, "attempts", attempts, "error", err.Error())
+	slog.WarnContext(ctx, "llm request failed", "model", c.cfg.Model, "request_id", res.RequestID, "attempts", attempts,
+		"cost_usd", res.CostUSD, "error", err.Error())
 	return res
 }
 
@@ -217,12 +242,12 @@ func (c *HTTPClient) attempt(ctx context.Context, body []byte, fallback Usage) (
 
 	resp, err := c.hc.Do(httpReq)
 	if err != nil {
-		return Response{}, retryHint{retry: true}, scrub(err)
+		return Response{}, retryHint{retry: true, billed: mayHaveBeenBilled(err)}, scrub(err)
 	}
 	defer resp.Body.Close()
 	raw, err := io.ReadAll(io.LimitReader(resp.Body, maxBodyRead))
 	if err != nil {
-		return Response{}, retryHint{retry: true}, scrub(err)
+		return Response{}, retryHint{retry: true, billed: resp.StatusCode/100 == 2}, scrub(err)
 	}
 	return c.interpret(resp, raw, fallback)
 }
@@ -236,7 +261,7 @@ func (c *HTTPClient) interpret(resp *http.Response, raw []byte, fallback Usage) 
 	}
 	var w wireResponse
 	if err := json.Unmarshal(raw, &w); err != nil || len(w.Choices) == 0 {
-		return Response{}, retryHint{}, errMalformed
+		return Response{}, retryHint{billed: true}, errMalformed
 	}
 	res := Response{
 		Content: w.Choices[0].Message.Content, RequestID: w.ID, Model: w.Model,
@@ -244,15 +269,32 @@ func (c *HTTPClient) interpret(resp *http.Response, raw []byte, fallback Usage) 
 	if res.RequestID == "" {
 		res.RequestID = resp.Header.Get(requestIDHeader)
 	}
-	res.Usage = fallback // no usage block: charge the worst case
-	if w.Usage != nil {
-		res.Usage = Usage{PromptTokens: w.Usage.PromptTokens, CompletionTokens: w.Usage.CompletionTokens}
-		if w.Usage.Details != nil {
-			res.Usage.ReasoningTokens = w.Usage.Details.ReasoningTokens
+	if w.Usage == nil || (w.Usage.PromptTokens == 0 && w.Usage.CompletionTokens == 0) {
+		// No usage, or an all-zero block, is no usage at all: charge the worst case, never $0.
+		res.Usage = fallback
+		res.CostUSD, res.CostEstimated = c.estimate(fallback), true
+		if v, ok := reportedCost(resp, raw); ok && v > 0 {
+			res.CostUSD, res.CostEstimated = v, false
 		}
+		return res, retryHint{}, nil
+	}
+	res.Usage = Usage{PromptTokens: w.Usage.PromptTokens, CompletionTokens: w.Usage.CompletionTokens}
+	if w.Usage.Details != nil {
+		res.Usage.ReasoningTokens = w.Usage.Details.ReasoningTokens
 	}
 	res.CostUSD, res.CostEstimated = c.cost(resp, raw, res.Usage)
 	return res, retryHint{}, nil
+}
+
+// mayHaveBeenBilled reports a transport error after which the provider may have generated,
+// and billed, an answer: a timeout or a cancellation of a request already sent. A refused
+// connection or a failed lookup never reached the provider.
+func mayHaveBeenBilled(err error) bool {
+	if errors.Is(err, context.DeadlineExceeded) || errors.Is(err, context.Canceled) {
+		return true
+	}
+	var ne net.Error
+	return errors.As(err, &ne) && ne.Timeout()
 }
 
 // cost prefers the gateway-reported cost, else estimates from the fallback prices.
@@ -260,9 +302,14 @@ func (c *HTTPClient) cost(resp *http.Response, raw []byte, u Usage) (float64, bo
 	if v, ok := reportedCost(resp, raw); ok {
 		return v, false
 	}
+	return c.estimate(u), true
+}
+
+// estimate is u's cost at the fallback prices.
+func (c *HTTPClient) estimate(u Usage) float64 {
 	in := float64(u.PromptTokens) * c.cfg.PriceInPerMTok
 	out := float64(u.CompletionTokens) * c.cfg.PriceOutPerMTok
-	return (in + out) / tokensPerMTok, true
+	return (in + out) / tokensPerMTok
 }
 
 // scrub strips the URL wrapper from a transport error, keeping its cause.

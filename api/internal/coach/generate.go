@@ -119,7 +119,7 @@ func (g *Generator) run(ctx context.Context, p Pack, persona Persona, onCall fun
 	var res Attempt
 	first, err := g.call(ctx, msgs, p, persona, onCall)
 	if err != nil {
-		return fallback(res, p, persona, reasonModelError, true), err
+		return fallback(withCost(res, first.resp), p, persona, reasonModelError, true), err
 	}
 	res = g.withCall(res, first)
 	if len(first.probs) == 0 {
@@ -127,7 +127,7 @@ func (g *Generator) run(ctx context.Context, p Pack, persona Persona, onCall fun
 	}
 	second, err := g.call(ctx, retryMessages(msgs, first), p, persona, onCall)
 	if err != nil {
-		return fallback(res, p, persona, reasonModelError, true), err
+		return fallback(withCost(res, second.resp), p, persona, reasonModelError, true), err
 	}
 	res = g.withCall(res, second)
 	if len(second.probs) == 0 {
@@ -169,14 +169,19 @@ func (g *Generator) recordSpend(ctx context.Context, resp llm.Response) {
 }
 
 // call makes one model call, hands it to onCall, then parses and validates the answer. A
-// parse failure is a shape problem, so it is retried like any other.
+// parse failure is a shape problem, so it is retried like any other. A failed call that
+// still carries a cost (attempts the provider may have billed) goes to onCall too, so the
+// spend cap counts it; the returned call then holds only that response.
 func (g *Generator) call(ctx context.Context, msgs []llm.Message, p Pack, persona Persona, onCall func(context.Context, llm.Response)) (call, error) {
 	resp, err := g.LLM.Complete(ctx, llm.Request{
 		Messages: msgs, JSONSchema: OutputSchema(), Temperature: g.Temperature, MaxTokens: ReviewMaxTokens,
 	})
 	if err != nil {
-		g.logger().Warn("coach: model call failed", slog.String("error", err.Error()))
-		return call{}, err
+		g.logger().Warn("coach: model call failed", slog.String("error", err.Error()), slog.Float64("usd", resp.CostUSD))
+		if onCall != nil && resp.CostUSD > 0 {
+			onCall(ctx, resp)
+		}
+		return call{resp: resp}, err
 	}
 	if onCall != nil {
 		onCall(ctx, resp)
@@ -204,6 +209,15 @@ func (g *Generator) withCall(res Attempt, c call) Attempt {
 	res.RequestID = c.resp.RequestID
 	res.Validation = slices.Clone(c.probs)
 	res.Outputs = append(slices.Clone(res.Outputs), c.content)
+	return res
+}
+
+// withCost adds a failed call's billed cost to the attempt.
+func withCost(res Attempt, resp llm.Response) Attempt {
+	if resp.CostUSD > 0 {
+		res.CostUSD += resp.CostUSD
+		res.CostEstimated = res.CostEstimated || resp.CostEstimated
+	}
 	return res
 }
 
