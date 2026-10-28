@@ -34,7 +34,7 @@ The best Fury warrior on Forever plays two weapons as one rage engine. Bloodthir
 - preparation: a missing flask, food or sharpening stone, or a combat potion never used.
 - death: dying inside Death Wish, or standing where the boss cleaves.
 
-**Consumables and world buffs.** For a damage dealer the catalogue looks for Flask of the Titans or Flask of Supreme Power, Grilled Squid, an Elemental Sharpening Stone on the weapons, and the Mighty Rage Potion, up to its use limit in a fight. The world buffs that matter are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone, because nobody controls when they drop.
+**Consumables and world buffs.** For a damage dealer the catalogue looks for Flask of the Titans, Grilled Squid, an Elemental Sharpening Stone on the weapons, and the Mighty Rage Potion, up to its use limit in a fight. The world buffs that matter are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone, because nobody controls when they drop.
 
 **Ten players against forty.** In a forty-player raid the buffs pile up: several warriors, a shaman or a paladin, every class's raid buff. On a ten-player night there may be no second warrior, so your Battle Shout is the only one the melee gets, and losing it costs more people than you. Fewer healers means a death lands harder too, and Death Wish's extra damage taken is a real cost. A missing flask is a smaller deal on a ten-player boss than on a forty; a missing weapon enchant is the same in both.
 

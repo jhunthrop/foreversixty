@@ -26,7 +26,7 @@ The best Protection warrior on Forever stands in Defensive Stance with a shield 
 
 **The mistakes seen most, by finding.**
 - death: dying with Shield Wall or Last Stand still ready. A tank who dies takes the raid with them.
-- uptime: Shield Block down between casts, or Thunder Clap and Demoralizing Shout falling off the boss.
+- uptime: Shield Block down between casts, or Thunder Clap falling off the boss.
 - core_casts: Shield Slam ready and unpressed because a Sunder or a Heroic Strike went first.
 - idle: walking the boss or picking up adds and not swinging while you do it.
 - preparation: no flask, no food, no stone on the weapon, no healing potion on the bars.

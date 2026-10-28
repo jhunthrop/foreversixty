@@ -31,9 +31,9 @@ The best Holy priest on Forever is still casting when the boss dies. Mana is the
 - death: standing in damage the boss telegraphs, or taking a hit with no mana left and no answer. Survival comes first for a healer.
 - resource: the bar empty well before the end, almost always from top-rank heals cast into small holes early in the fight.
 - ranks: a big rank landing mostly as overheal. A lower rank of the same heal costs less mana for the hole that was really there.
-- core_casts: Inner Focus or Shadowfiend sitting ready for most of the fight. They are free mana, and unused they are lost.
+- core_casts: Inner Focus sitting ready for most of the fight. It is free mana, and unused it is lost.
 - preparation: no flask, no mana food, the Major Mana Potion never used.
-- uptime: Inner Fire lapsing. It lasts ten minutes, so it drops only after a death or a long fight.
+- uptime: Inner Fire lapsing. Recast it when the buff is gone.
 
 **Consumables and world buffs.** For a healer the catalogue looks for Flask of Distilled Wisdom, or Flask of Chromatic Resistance where the fight calls for it, Nightfin Soup, and the Major Mana Potion, up to its use limit in a fight. Forever adds healer consumables of its own: Greater Mageblood Elixir, Cleric's and Greater Cleric's Elixir, Elixir of Sages and Sage's Tea. The world buffs that matter are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
