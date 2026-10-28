@@ -8,8 +8,14 @@ import { SETUP_NAV_ITEM } from '../../src/lib/nav';
 import { uiCopy } from '../../src/lib/ui/copy';
 import type { Me } from '../../src/lib/account/me-types';
 import { buildMe, stepGuild, subscribeView } from '../../src/test-support/subscribe-fixtures';
+import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { expectTapHeight, routeMeCell } from './support/subscribe-stubs';
+
+// The claim page is an island: wait for it to hydrate before asserting on it, or a slow CI shard
+// asserts against the server shell (the mobile shard did, once).
+const openClaim = (page: Page, path = '/guild/us/hardcore/the-last-watch/claim'): Promise<void> =>
+  gotoHydrated(page, path, 'guild-claim');
 
 function envelope(data: unknown, status = 200) {
   return {
@@ -58,7 +64,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim')).toBeVisible();
   await expect(page.getByTestId('guild-claim-state')).toHaveText(
     'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
@@ -155,7 +161,7 @@ test("someone else's claim names the holder and offers Contest, with its confirm
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-state')).toHaveText(
     'Claimed by OtherOfficer#5678 since 20 Sep.',
   );
@@ -186,7 +192,7 @@ test('a signed-out visitor sees a sign-in prompt, not a claim button', async ({ 
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-signin')).toBeVisible();
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
 });
@@ -212,7 +218,7 @@ test('a signed-in visitor with no membership in this guild is told so, and sees 
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-not-member')).toContainText(
     'does not know a character of yours',
   );
@@ -266,7 +272,7 @@ test('signed out, the sign-in keeps next on the claim page and its plan', async 
   await stubGuildPage(page);
   await routeMeCell(page, () => null);
   await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(FORBIDDEN));
-  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  await openClaim(page, `${CLAIM_PATH}${PLAN_QUERY}`);
   const signIn = page
     .getByTestId('guild-claim-signin')
     .getByRole('link', { name: 'Sign in with Battle.net' });
@@ -300,7 +306,7 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
     claimed = true;
     return route.fulfill(envelope({ status: 'confirmed' }));
   });
-  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  await openClaim(page, `${CLAIM_PATH}${PLAN_QUERY}`);
   await expect(page.getByTestId('guild-claim-plan-line')).toHaveText(
     guildClaimCopy.planLine(LAST_WATCH.name, PLANS.guild.name, planPriceText()),
   );
@@ -359,7 +365,7 @@ test('a member sees the plan line and a copy field holding the claim link with t
       }),
     ),
   );
-  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  await openClaim(page, `${CLAIM_PATH}${PLAN_QUERY}`);
   await expect(page.getByTestId('guild-claim-plan-line')).toBeVisible();
   await expect(page.getByTestId('guild-claim-not-eligible')).toContainText(
     guildClaimCopy.memberHandoff(LAST_WATCH.name),
@@ -378,7 +384,7 @@ test('a stranger is offered Get set up, which carries this claim page as next', 
   await stubGuildPage(page);
   await routeMeCell(page, () => buildMe({ guilds: [] }));
   await page.route('**/v1/guilds/501/settings', (route) => route.fulfill(FORBIDDEN));
-  await page.goto(`${CLAIM_PATH}${PLAN_QUERY}`);
+  await openClaim(page, `${CLAIM_PATH}${PLAN_QUERY}`);
   const link = page.getByTestId('guild-claim-not-member').getByRole('link', { name: SETUP_NAV_ITEM.label });
   await expect(link).toHaveAttribute(
     'href',
@@ -431,7 +437,7 @@ test('a pending claim shows who is confirming it and lets a second officer confi
   await page.route('**/v1/guilds/501/claim/confirm', (route) =>
     route.fulfill(envelope({ status: 'confirmed', claimed_by: { battletag: 'OtherOfficer#5678' } })),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-state')).toHaveText(
     'A claim is pending, confirmed by a second officer or the guild master. Expires 2026-09-28.',
   );
@@ -456,7 +462,7 @@ test('the claiming rules render alongside the claim state', async ({ page }) => 
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-rules')).toContainText('A claim can be contested.');
 });
 
@@ -480,7 +486,7 @@ test('a contested claim shows the dedicated contested notice alongside the claim
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-contested-notice')).toHaveText(
     'This guild’s claim is contested and under review by a moderator.',
   );
@@ -511,7 +517,7 @@ test('release stays visible and enabled for the claim holder even while their cl
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-contested-notice')).toBeVisible();
   await expect(page.getByTestId('guild-claim-state')).toHaveText('You hold The Last Watch.');
   await expect(page.getByTestId('guild-claim-release')).toBeVisible();
@@ -566,7 +572,7 @@ test('a plain member, refused settings, still sees the claim state and who can a
       }),
     ),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-state')).toHaveText('Nobody has claimed this guild yet.');
   await expect(page.getByTestId('guild-claim-not-eligible')).toContainText(
     'You are a member of The Last Watch',
@@ -594,7 +600,7 @@ test('a signed-in stranger, refused both reads, is told the site knows no charac
       }),
     }),
   );
-  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await openClaim(page);
   await expect(page.getByTestId('guild-claim-not-member')).toContainText(
     'does not know a character of yours',
   );
