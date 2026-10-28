@@ -1,38 +1,43 @@
 package coach
 
 import (
-	"regexp"
 	"strconv"
-	"strings"
-	"sync"
 
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
 // computeLinks is the §7 connections between findings that meet in this fight: a cast gap
 // overlapping a resource cap, out of mana at a death, a death inside a cast gap, and a
-// missing flask on running out of mana. The overheal link needs the fight; overhealLink
-// makes it. Ids are left to numberLinks.
-func computeLinks(fs []Finding, windows map[string][]ratingengine.Window) []Link {
+// missing flask on running out of mana. ev is each finding's outcome by finding id: its
+// windows and typed facts (outcome.Resource, outcome.MissingFlask), never its copy. The
+// overheal link needs the fight; overhealLink makes it. Ids are left to numberLinks.
+func computeLinks(fs []Finding, ev map[string]outcome) []Link {
 	core, hasCore := findingOf(fs, CodeCoreCasts)
 	res, hasRes := findingOf(fs, CodeResource)
 	dead, hasDeath := findingOf(fs, CodeDeath)
 	prep, hasPrep := findingOf(fs, CodePreparation)
+	oom := hasRes && ev[res.ID].Resource.Kind == resourceOutOfMana
 	var out []Link
-	if hasCore && hasRes {
-		out = append(out, gapCapLinks(core, res, windows)...)
+	if hasCore && hasRes && ev[res.ID].Resource.Kind == resourceCapped {
+		out = append(out, gapCapLinks(core, res, ev)...)
 	}
-	if hasRes && hasDeath && outOfMana(res) && deathMeets(windows[dead.ID], windows[res.ID]) {
+	if oom && hasDeath && deathMeets(ev[dead.ID].Windows, ev[res.ID].Windows) {
 		out = append(out, Link{Findings: [2]string{res.ID, dead.ID}, Kind: LinkOutOfManaAtDeath, Sentence: LinkOutOfManaDeath})
 	}
 	if hasCore && hasDeath {
-		out = append(out, deathInGapLinks(dead, core, windows)...)
+		out = append(out, deathInGapLinks(dead, core, ev)...)
 	}
-	if t, oom := outOfManaFrom(res); hasPrep && hasRes && prep.Title == TitleNoFlask && oom {
+	if oom && hasPrep && ev[prep.ID].MissingFlask && len(ev[res.ID].Windows) > 0 {
 		out = append(out, Link{Findings: [2]string{prep.ID, res.ID}, Kind: LinkConsumableCovers,
-			Sentence: Fill(LinkNoFlaskMana, map[string]string{"t": t})})
+			Sentence: Fill(LinkNoFlaskMana, map[string]string{"t": Clock(ev[res.ID].Windows[0].FromMS)})})
 	}
 	return out
+}
+
+// withWaste is o with its F4 finding's kind and bar name set.
+func withWaste(o outcome, kind resourceKind, name string) outcome {
+	o.Resource = resourceWaste{Kind: kind, Name: name}
+	return o
 }
 
 func findingOf(fs []Finding, code Code) (Finding, bool) {
@@ -44,19 +49,14 @@ func findingOf(fs []Finding, code Code) (Finding, bool) {
 	return Finding{}, false
 }
 
-// gapCapLinks links the first gap that overlaps a cap window, when the resource finding
-// is a cap.
-func gapCapLinks(core, res Finding, windows map[string][]ratingengine.Window) []Link {
-	bar, ok := titleField(TitleCapped, "Resource", res.Title)
-	if !ok {
-		return nil
-	}
-	for _, gap := range windows[core.ID] {
-		for _, capped := range windows[res.ID] {
+// gapCapLinks links the first gap that overlaps a cap window.
+func gapCapLinks(core, res Finding, ev map[string]outcome) []Link {
+	for _, gap := range ev[core.ID].Windows {
+		for _, capped := range ev[res.ID].Windows {
 			if gap.FromMS < capped.ToMS && capped.FromMS < gap.ToMS {
 				return []Link{{Findings: [2]string{core.ID, res.ID}, Kind: LinkGapOverlapsCap,
 					Sentence: Fill(LinkGapCap, map[string]string{"Spell": coreSpell(core), "gap": Span(gap.FromMS, gap.ToMS),
-						"resource": strings.ToLower(bar), "cap": Span(capped.FromMS, capped.ToMS)})}}
+						"resource": ev[res.ID].Resource.Name, "cap": Span(capped.FromMS, capped.ToMS)})}}
 			}
 		}
 	}
@@ -64,12 +64,13 @@ func gapCapLinks(core, res Finding, windows map[string][]ratingengine.Window) []
 }
 
 // deathInGapLinks links a death that falls inside a cast gap.
-func deathInGapLinks(dead, core Finding, windows map[string][]ratingengine.Window) []Link {
-	for _, gap := range windows[core.ID] {
-		if deathMeets(windows[dead.ID], []ratingengine.Window{gap}) {
+func deathInGapLinks(dead, core Finding, ev map[string]outcome) []Link {
+	death := ev[dead.ID].Windows
+	for _, gap := range ev[core.ID].Windows {
+		if deathMeets(death, []ratingengine.Window{gap}) {
 			return []Link{{Findings: [2]string{dead.ID, core.ID}, Kind: LinkDeathInGap,
 				Sentence: Fill(LinkDeathInGapSentence, map[string]string{
-					"Spell": coreSpell(core), "gap": Span(gap.FromMS, gap.ToMS), "t": Clock(windows[dead.ID][0].FromMS),
+					"Spell": coreSpell(core), "gap": Span(gap.FromMS, gap.ToMS), "t": Clock(death[0].FromMS),
 				})}}
 		}
 	}
@@ -91,34 +92,20 @@ func deathMeets(death, ws []ratingengine.Window) bool {
 	return false
 }
 
-func outOfMana(f Finding) bool {
-	_, ok := outOfManaFrom(f)
-	return ok
-}
-
-// outOfManaFrom is the time an out-of-mana finding's title gives.
-func outOfManaFrom(f Finding) (string, bool) {
-	return titleField(TitleOutOfMana, "t", f.Title)
-}
-
-// coreSpell is the F1 finding's worst ability: its first spell fact, else its title's.
+// coreSpell is the F1 finding's worst ability: coreFacts puts it first.
 func coreSpell(f Finding) string {
-	if len(f.Facts.Spells) > 0 {
-		return f.Facts.Spells[0].Name
+	if len(f.Facts.Spells) == 0 {
+		return ""
 	}
-	name, _ := titleField(TitleCoreCasts, "Spell", f.Title)
-	return name
+	return f.Facts.Spells[0].Name
 }
 
-// overhealLink links a heal rank's overheal (F5) to running out of mana (F4) when that
-// heal is the player's most-cast heal in this fight.
-func overhealLink(in Input, fs []Finding) []Link {
+// overhealLink links a healer's heal-rank overheal (F5) to running out of mana (F4) when
+// that heal is the player's most-cast heal in this fight.
+func overhealLink(in Input, fs []Finding, ev map[string]outcome) []Link {
 	rank, hasRank := findingOf(fs, CodeRanks)
 	res, hasRes := findingOf(fs, CodeResource)
-	if !hasRank || !hasRes || !outOfMana(res) || len(rank.Facts.Spells) == 0 {
-		return nil
-	}
-	if _, ok := titleField(TitleHealRank, "Spell", rank.Title); !ok {
+	if in.Row.Role != RoleHealer || !hasRank || !hasRes || ev[res.ID].Resource.Kind != resourceOutOfMana || len(rank.Facts.Spells) == 0 {
 		return nil
 	}
 	heal := rank.Facts.Spells[0]
@@ -149,46 +136,4 @@ func numberLinks(ls []Link) []Link {
 		out[i] = l
 	}
 	return out
-}
-
-var (
-	titlePatternsMu sync.Mutex
-	titlePatterns   = map[string]*regexp.Regexp{}
-)
-
-// titleField reads field out of title when title has format's shape (a copy template
-// with {name} placeholders).
-func titleField(format, field, title string) (string, bool) {
-	names := placeholder.FindAllStringSubmatch(format, -1)
-	m := titlePattern(format).FindStringSubmatch(title)
-	if m == nil {
-		return "", false
-	}
-	for i, n := range names {
-		if n[1] == field {
-			return m[i+1], true
-		}
-	}
-	return "", false
-}
-
-func titlePattern(format string) *regexp.Regexp {
-	titlePatternsMu.Lock()
-	defer titlePatternsMu.Unlock()
-	if re, ok := titlePatterns[format]; ok {
-		return re
-	}
-	parts := placeholder.Split(format, -1)
-	var b strings.Builder
-	b.WriteString("^")
-	for i, part := range parts {
-		b.WriteString(regexp.QuoteMeta(part))
-		if i < len(parts)-1 {
-			b.WriteString("(.+?)")
-		}
-	}
-	b.WriteString("$")
-	re := regexp.MustCompile(b.String())
-	titlePatterns[format] = re
-	return re
 }

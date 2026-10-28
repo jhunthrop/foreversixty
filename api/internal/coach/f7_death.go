@@ -64,7 +64,7 @@ func death(in Input, _ Counted) outcome {
 		return outcome{CouldNotCheck: []string{Fill(Drafts["cannot_death_killer"], map[string]string{"t": Clock(d.AtMS)})}}
 	}
 	ready, hasReady, levelSkipped := readyDefensive(in, d.AtMS)
-	anchors := []Anchor{deathAnchor(in.Row.GUID, d.AtMS)}
+	anchors := []Anchor{deathAnchor(d.AtMS)}
 	if hasReady {
 		anchors = append(anchors, Anchor{Kind: AnchorCast, SpellID: ready.SpellID})
 	}
@@ -151,9 +151,10 @@ func latestHit(hits []summary.DamageRef) *summary.DamageRef {
 	return latest
 }
 
-func deathAnchor(guid string, atMS int64) Anchor {
+// deathAnchor is the death at its time; the page adds the player's GUID (no GUID in the pack).
+func deathAnchor(atMS int64) Anchor {
 	at := atMS
-	return Anchor{Kind: AnchorDeath, AtMS: &at, Death: ratingengine.DeathAnchor(guid, atMS)}
+	return Anchor{Kind: AnchorDeath, AtMS: &at}
 }
 
 // deathAvoidable: the hit is on the encounter's avoidable list, and not an ability the

@@ -178,7 +178,8 @@ func TestDeath_RoleTaggedAbilityIsNotAvoidableForThatRole(t *testing.T) {
 	}
 }
 
-// The death anchor keeps the rating's and DeathsTab's id; the window is the death instant.
+// The death anchor is the death's time only (the page adds the GUID); the window is the
+// death instant.
 func TestDeath_AnchorsAndWindow(t *testing.T) {
 	in := protDeathShieldWallReady(t, 232_000, 170_000)
 	o := death(in, CountedTime(in))
@@ -186,7 +187,7 @@ func TestDeath_AnchorsAndWindow(t *testing.T) {
 		t.Fatalf("got %+v", o)
 	}
 	a := o.Anchors[0]
-	if a.Kind != AnchorDeath || a.Death != "death-"+furyGUID+"-170000" || a.AtMS == nil || *a.AtMS != 170_000 {
+	if a != (Anchor{Kind: AnchorDeath, AtMS: a.AtMS}) || a.AtMS == nil || *a.AtMS != 170_000 {
 		t.Errorf("death anchor %+v", a)
 	}
 	if b := o.Anchors[1]; b.Kind != AnchorCast || b.SpellID != shieldWallID {

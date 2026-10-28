@@ -122,14 +122,14 @@ const (
 )
 
 // Anchor maps an id to a report-page target: a Casts row, an aura row, a death, the
-// resource graph or a time.
+// resource graph or a time. A death is its time alone: the page rebuilds the Deaths
+// tab's `death-<guid>-<at_ms>` from the player it shows, so the pack carries no GUID.
 type Anchor struct {
 	ID      string     `json:"id"`
 	Kind    AnchorKind `json:"kind"`
 	SpellID int64      `json:"spell_id,omitempty"`
 	AtMS    *int64     `json:"at_ms,omitempty"`
 	ToMS    *int64     `json:"to_ms,omitempty"`
-	Death   string     `json:"death,omitempty"`
 }
 
 // Context is the fight as the model may see it: no character name, account, guild or
@@ -186,6 +186,25 @@ type outcome struct {
 	CouldNotCheck []string
 	Anchors       []Anchor              // local, ID empty
 	Windows       []ratingengine.Window // the finding's windows, for links (gaps, caps, out of mana, the death instant)
+
+	// Typed facts Review and the links read instead of parsing copy. Never serialised.
+	RaidBuffOnly bool          // F6: every missing thing is a raid buff (never rank 1)
+	MissingFlask bool          // F6: the flask is among the missing things
+	Resource     resourceWaste // F4: what the finding is about; zero when no F4 finding
+}
+
+// resourceKind is the kind of an F4 finding.
+type resourceKind string
+
+const (
+	resourceCapped    resourceKind = "capped"
+	resourceOutOfMana resourceKind = "out_of_mana"
+)
+
+// resourceWaste is an F4 finding's kind and its bar's name ("rage", "mana").
+type resourceWaste struct {
+	Kind resourceKind
+	Name string
 }
 
 // check is one finding's rule (F1–F8), one function per file.

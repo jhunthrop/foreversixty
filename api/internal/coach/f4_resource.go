@@ -99,7 +99,7 @@ func assessCap(in Input, c Counted, track summary.ResourceTrack) *waste {
 			Times:   []string{Clock(longest.FromMS), Clock(longest.ToMS)},
 		},
 	}
-	return &waste{severity: severity, totalMS: total, out: outcomeOf(finding, runs, longest)}
+	return &waste{severity: severity, totalMS: total, out: withWaste(outcomeOf(finding, runs, longest), resourceCapped, bar)}
 }
 
 func hasDowntime(in Input, c Counted) bool {
@@ -154,7 +154,7 @@ func assessMana(in Input, c Counted, track summary.ResourceTrack) *waste {
 			Times: []string{Clock(first.FromMS)},
 		},
 	}
-	return &waste{severity: severity, totalMS: total, out: outcomeOf(finding, runs, first)}
+	return &waste{severity: severity, totalMS: total, out: withWaste(outcomeOf(finding, runs, first), resourceOutOfMana, PowerNames[PowerMana])}
 }
 
 // manaDetail says the stretch ran until the death when one unbroken stretch did; every

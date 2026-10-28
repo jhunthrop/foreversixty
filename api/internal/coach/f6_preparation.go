@@ -56,8 +56,8 @@ const (
 	orderWeaponOil
 	orderFood
 	orderGearEnchant
-	orderRaidBuff
 	orderPotions
+	orderRaidBuff // last: a raid-buff title means raid buffs alone (§6.1, never rank 1)
 )
 
 // enchantSlotNames labels the gear indexes in rating.DisciplineEnchantSlots, the one
@@ -115,7 +115,7 @@ func preparation(in Input, _ Counted) outcome {
 		out.Strengths = preparedStrengths(have, facts)
 		return out
 	}
-	out.Finding = prepFinding(in, issues, have, facts)
+	out.Finding, out.RaidBuffOnly, out.MissingFlask = prepFinding(in, issues, have, facts), allPrepKind(issues, kindRaidBuff), anyPrepKind(issues, kindFlask)
 	return out
 }
 

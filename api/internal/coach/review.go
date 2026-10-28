@@ -5,8 +5,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-
-	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
 // needsRuleFile are the checks a spec's rule file drives (core abilities, owned auras,
@@ -47,10 +45,11 @@ func Review(in Input) Pack {
 	results := runChecks(in)
 	book := &anchorBook{results: results}
 	findings, from := rankFindings(in.Row.Role, results)
-	p.Findings = numberFindings(findings, from, book)
+	p.Findings = numberFindings(findings, from, results, book)
 	p.Strengths = collectStrengths(in.Row.Role, results, book)
 	p.Anchors = book.anchors
-	p.Links = numberLinks(append(computeLinks(p.Findings, findingWindows(p.Findings, from, results)), overhealLink(in, p.Findings)...))
+	evidence := findingOutcomes(p.Findings, from, results)
+	p.Links = numberLinks(append(computeLinks(p.Findings, evidence), overhealLink(in, p.Findings, evidence)...))
 	p.CouldNotCheck = couldNotCheck(results)
 	p.BasisLabels = basisLabels(p.Findings)
 	p.Allowed = allowedOf(p)
@@ -111,7 +110,8 @@ func rankFindings(role string, results []checked) (findings []Finding, from []in
 	for i := range order {
 		order[i] = i
 	}
-	sort.SliceStable(order, func(a, b int) bool { return rankKey(role, findings[order[a]]) < rankKey(role, findings[order[b]]) })
+	key := func(i int) int { return rankKey(role, findings[i], results[from[i]].out.RaidBuffOnly) }
+	sort.SliceStable(order, func(a, b int) bool { return key(order[a]) < key(order[b]) })
 	n := min(len(order), MaxFindings)
 	sortedF, sortedFrom := make([]Finding, n), make([]int, n)
 	for i, idx := range order[:n] {
@@ -121,30 +121,31 @@ func rankFindings(role string, results []checked) (findings []Finding, from []in
 }
 
 // rankKey orders findings: raid buffs alone last, then severity, then precedence.
-func rankKey(role string, f Finding) int {
+func rankKey(role string, f Finding, raidBuffOnly bool) int {
 	key := slices.Index(Precedence[role], f.Code)
 	if f.Severity != SeverityMajor {
 		key += len(reviewChecks)
 	}
-	if raidBuffAlone(f) {
+	if raidBuffOnly {
 		key += 2 * len(reviewChecks)
 	}
 	return key
 }
 
-// raidBuffAlone reports a preparation finding about raid buffs alone. F6 words its finding
-// from its worst issue, raid buffs (BasisRaidBuff) only when nothing ranks above them,
-// and orders them after every other issue but the potions, which add numbers: so a
-// raid-buff basis with no number is raid buffs and nothing else.
-func raidBuffAlone(f Finding) bool {
-	return f.Code == CodePreparation && f.Basis.Label == BasisRaidBuff && len(f.Facts.Numbers) == 0
+// allPrepKind reports every F6 issue of kind (outcome.RaidBuffOnly); anyPrepKind, one.
+func allPrepKind(issues []prepIssue, kind prepKind) bool {
+	return len(issues) > 0 && !slices.ContainsFunc(issues, func(i prepIssue) bool { return i.kind != kind })
+}
+
+func anyPrepKind(issues []prepIssue, kind prepKind) bool {
+	return slices.ContainsFunc(issues, func(i prepIssue) bool { return i.kind == kind })
 }
 
 // numberFindings gives ids f1… and ranks in rank order, and global anchor ids. Raid
 // buffs are never rank 1: when one leads (it is then alone), ranks start at 2.
-func numberFindings(fs []Finding, from []int, book *anchorBook) []Finding {
+func numberFindings(fs []Finding, from []int, results []checked, book *anchorBook) []Finding {
 	first := 1
-	if len(fs) > 0 && raidBuffAlone(fs[0]) {
+	if len(fs) > 0 && results[from[0]].out.RaidBuffOnly {
 		first = 2
 	}
 	out := make([]Finding, len(fs))
@@ -177,11 +178,12 @@ func collectStrengths(role string, results []checked, book *anchorBook) []Streng
 	return out
 }
 
-// findingWindows is each ranked finding's windows, by finding id, for the links.
-func findingWindows(fs []Finding, from []int, results []checked) map[string][]ratingengine.Window {
-	out := make(map[string][]ratingengine.Window, len(fs))
+// findingOutcomes is each ranked finding's outcome (windows and typed facts), by finding
+// id, for the links.
+func findingOutcomes(fs []Finding, from []int, results []checked) map[string]outcome {
+	out := make(map[string]outcome, len(fs))
 	for i, f := range fs {
-		out[f.ID] = results[from[i]].out.Windows
+		out[f.ID] = results[from[i]].out
 	}
 	return out
 }
@@ -249,9 +251,6 @@ func (b *anchorBook) ref(idx int, ref string) (string, bool) {
 	}
 	a := local[n]
 	a.ID = "a" + strconv.Itoa(len(b.anchors)+1)
-	// F7's death anchor string embeds the player's GUID (realm and character); the pack
-	// carries none (§7). The page rebuilds it from the player it shows and at_ms.
-	a.Death = ""
 	if b.ids == nil {
 		b.ids = map[[2]int]string{}
 	}

@@ -96,6 +96,14 @@ func allFixtureInputs(t *testing.T) map[string]Input {
 	}
 }
 
+// withoutAura is s with target's track of spellID removed.
+func withoutAura(s summary.Summary, target string, spellID int64) summary.Summary {
+	s.Auras = slices.DeleteFunc(slices.Clone(s.Auras), func(a summary.AuraTrack) bool {
+		return a.TargetGUID == target && a.SpellID == spellID
+	})
+	return s
+}
+
 // anchorExists reports an anchor id in the pack's anchors.
 func anchorExists(p Pack, id string) bool {
 	return slices.ContainsFunc(p.Anchors, func(a Anchor) bool { return a.ID == id })

@@ -37,11 +37,65 @@ func TestReview_RaidBuffNeverRankOne(t *testing.T) {
 	}
 }
 
-func TestReview_NoFlaskIsNotARaidBuff(t *testing.T) {
-	// "No flask at the pull" has the raid-buff title's shape; it still ranks as major F6.
-	p := Review(furyThreeFindings(t))
-	if f := p.Findings[1]; f.Title != TitleNoFlask || raidBuffAlone(f) {
-		t.Fatalf("%+v", f)
+func TestReview_FlaskAndFortitudeMissingFixesTheFlaskFirst(t *testing.T) {
+	// flask missing + Fortitude missing -> fix first is the flask
+	in := raidBuffOnly(t)
+	in.Fight = withoutAura(in.Fight, furyGUID, flask("Flask of the Titans").SpellID)
+	p := Review(in)
+	doc := RenderRules(p, nil)
+	if doc.FixFirst == nil || doc.FixFirst.Title != TitleNoFlask || p.Findings[0].Rank != 1 {
+		t.Fatalf("%+v", p.Findings)
+	}
+	o := preparation(in, CountedTime(in))
+	if o.RaidBuffOnly || !o.MissingFlask {
+		t.Fatalf("typed flags: %+v", o)
+	}
+	if alone := preparation(raidBuffOnly(t), CountedTime(raidBuffOnly(t))); !alone.RaidBuffOnly || alone.MissingFlask {
+		t.Fatalf("raid buff alone: %+v", alone)
+	}
+}
+
+func TestReview_RaidBuffWithAPotionShortfallIsNotRankOne(t *testing.T) {
+	// raid buffs order after the potions, so the potion shortfall names the finding and
+	// a raid-buff title never leads a finding with something else in it
+	// (the shipped catalogue's potion list is incomplete, so the issues are built directly)
+	in := raidBuffOnly(t)
+	buff := prepIssue{order: orderRaidBuff, severity: SeverityMinor, kind: kindRaidBuff, name: "Power Word: Fortitude",
+		class: "priest", missing: "Power Word: Fortitude", item: "Power Word: Fortitude"}
+	potion := prepIssue{order: orderPotions, severity: SeverityMinor, kind: kindPotions, missing: "combat potions",
+		potions: &potionCount{uses: 0, allowed: 1}}
+	issues := []prepIssue{buff, potion}
+	f := prepFinding(in, issues, nil, nil)
+	if strings.Contains(f.Title, "Fortitude") || allPrepKind(issues, kindRaidBuff) {
+		t.Fatalf("a raid buff titles a finding with a potion shortfall: %q", f.Title)
+	}
+	if !allPrepKind([]prepIssue{buff}, kindRaidBuff) || allPrepKind(nil, kindRaidBuff) {
+		t.Fatal("raid buffs alone is every issue a raid buff, and at least one")
+	}
+}
+
+func TestReview_DeathAnchorIsItsTimeWithNoGUID(t *testing.T) {
+	in := furyFightDeadAt(t, reviewShortMS, bloodthirstRank4ID, []int64{0, 30_000}, repeat(reviewRageHalf, 60), 40_000)
+	p := Review(in)
+	var death *Anchor
+	for i, a := range p.Anchors {
+		if a.Kind == AnchorDeath {
+			death = &p.Anchors[i]
+		}
+	}
+	if death == nil || death.AtMS == nil || *death.AtMS != 40_000 {
+		t.Fatalf("%+v", p.Anchors)
+	}
+	b, err := json.Marshal(*death)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(b) != `{"id":"`+death.ID+`","kind":"death","at_ms":40000}` {
+		t.Fatalf("%s", b)
+	}
+	whole, _ := json.Marshal(p)
+	if bytes.Contains(whole, []byte(furyGUID)) || bytes.Contains(whole, []byte("Player-")) {
+		t.Fatal("the pack carries the GUID")
 	}
 }
 
