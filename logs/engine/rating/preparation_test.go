@@ -182,13 +182,24 @@ type pullItem struct {
 	add  func(*summary.Summary)
 }
 
-// pullItems is everything rc can credit: every entry of every list seeded
-// on the pull, plus two casts of the first potion (the second use).
+// pullItemsPerCategory caps the entries each list contributes to the exhaustive
+// subset walk: a category credits any one entry, so two cover "first of its
+// kind" and "one more of a kind already there", and the walk stays 2^n over a
+// small n now that a flask list carries every flask the build ships (18).
+// TestPreparation_EveryEntryCountsLikeTheFirst covers the rest one at a time.
+const pullItemsPerCategory = 2
+
+// pullItemCategories are the lists a pull is credited from, in order.
+var pullItemCategories = []string{consumables.CategoryFlask, consumables.CategoryFood,
+	consumables.CategoryWeaponEnchant, consumables.CategoryWorldBuffs, consumables.CategoryCombatPotion}
+
+// pullItems is what rc can credit: up to pullItemsPerCategory entries of every
+// list seeded on the pull, plus two casts of the first potion (the second use).
 func pullItems(rc consumables.RoleCatalogue) []pullItem {
 	var items []pullItem
-	for _, category := range []string{consumables.CategoryFlask, consumables.CategoryFood,
-		consumables.CategoryWeaponEnchant, consumables.CategoryWorldBuffs, consumables.CategoryCombatPotion} {
-		for _, e := range rc.Entries(category) {
+	for _, category := range pullItemCategories {
+		entries := rc.Entries(category)
+		for _, e := range entries[:min(len(entries), pullItemsPerCategory)] {
 			id := e.SpellID
 			items = append(items, pullItem{category + " " + e.Name,
 				func(f *summary.Summary) { f.Auras = append(f.Auras, seededAura(id)) }})
@@ -236,6 +247,26 @@ func TestPreparation_BringingMoreNeverLowersTheScore(t *testing.T) {
 				after, _ := preparationTotal(fightWith(items, mask|1<<i), fixturePlayer, cat)
 				if after < before-1e-9 {
 					t.Fatalf("%s: adding %s to mask %b lowered Preparation %.2f -> %.2f", name, it.name, mask, before, after)
+				}
+			}
+		}
+	}
+}
+
+// Every shipped entry, seeded alone on the pull, scores exactly as its list's
+// first entry does: the exhaustive walk above samples two per list.
+func TestPreparation_EveryEntryCountsLikeTheFirst(t *testing.T) {
+	for _, role := range []string{RoleDPS, RoleHealer, RoleTank} {
+		rc, _ := consumables.Load().For(role)
+		for _, category := range pullItemCategories {
+			entries := rc.Entries(category)
+			if len(entries) == 0 {
+				continue
+			}
+			want, _ := preparationTotal(preparedFight(seededAura(entries[0].SpellID)), fixturePlayer, &rc)
+			for _, e := range entries[1:] {
+				if got, _ := preparationTotal(preparedFight(seededAura(e.SpellID)), fixturePlayer, &rc); got != want {
+					t.Errorf("%s %s: %s scores %.2f, the first entry %.2f", role, category, e.Name, got, want)
 				}
 			}
 		}

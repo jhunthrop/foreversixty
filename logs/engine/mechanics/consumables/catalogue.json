@@ -4,8 +4,24 @@
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
       "complete": { "flask": true, "combat_potion": false, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
-        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
-        { "spell_id": 17628, "name": "Flask of Supreme Power", "verified": "1.60.1.69893/spells.json#17628" }
+        { "spell_id": 17624, "name": "Flask of Petrification", "verified": "1.60.1.70630/simconsumes.json#13506" },
+        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.70630/simconsumes.json#13510" },
+        { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.70630/simconsumes.json#13511" },
+        { "spell_id": 17628, "name": "Flask of Supreme Power", "verified": "1.60.1.70630/simconsumes.json#13512" },
+        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.70630/simconsumes.json#13513" },
+        { "spell_id": 17634, "name": "Flask of Petrification", "verified": "1.60.1.70630/spells.json#17634" },
+        { "spell_id": 17635, "name": "Flask of the Titans", "verified": "1.60.1.70630/spells.json#17635" },
+        { "spell_id": 17636, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.70630/spells.json#17636" },
+        { "spell_id": 17637, "name": "Flask of Supreme Power", "verified": "1.60.1.70630/spells.json#17637" },
+        { "spell_id": 17638, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.70630/spells.json#17638" },
+        { "spell_id": 1293559, "name": "Flask of Natural Accuracy", "verified": "1.60.1.70630/spells.json#1293559" },
+        { "spell_id": 1293560, "name": "Flask of Natural Aggression", "verified": "1.60.1.70630/spells.json#1293560" },
+        { "spell_id": 1293561, "name": "Flask of Natural Precision", "verified": "1.60.1.70630/spells.json#1293561" },
+        { "spell_id": 1293562, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/spells.json#1293562" },
+        { "spell_id": 1293740, "name": "Flask of Natural Accuracy", "verified": "1.60.1.70630/simconsumes.json#274273" },
+        { "spell_id": 1293741, "name": "Flask of Natural Aggression", "verified": "1.60.1.70630/simconsumes.json#274274" },
+        { "spell_id": 1293742, "name": "Flask of Natural Precision", "verified": "1.60.1.70630/simconsumes.json#274275" },
+        { "spell_id": 1293743, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/simconsumes.json#274276" }
       ],
       "food": [
         { "spell_id": 1249522, "name": "Grilled Squid", "verified": "1.60.1.69893/spells.json#1249522" }
@@ -31,8 +47,24 @@
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 0, "world_buffs": 20, "combat_potion": 35 },
       "complete": { "flask": true, "combat_potion": false, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
-        { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.69893/spells.json#17627" },
-        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
+        { "spell_id": 17624, "name": "Flask of Petrification", "verified": "1.60.1.70630/simconsumes.json#13506" },
+        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.70630/simconsumes.json#13510" },
+        { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.70630/simconsumes.json#13511" },
+        { "spell_id": 17628, "name": "Flask of Supreme Power", "verified": "1.60.1.70630/simconsumes.json#13512" },
+        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.70630/simconsumes.json#13513" },
+        { "spell_id": 17634, "name": "Flask of Petrification", "verified": "1.60.1.70630/spells.json#17634" },
+        { "spell_id": 17635, "name": "Flask of the Titans", "verified": "1.60.1.70630/spells.json#17635" },
+        { "spell_id": 17636, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.70630/spells.json#17636" },
+        { "spell_id": 17637, "name": "Flask of Supreme Power", "verified": "1.60.1.70630/spells.json#17637" },
+        { "spell_id": 17638, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.70630/spells.json#17638" },
+        { "spell_id": 1293559, "name": "Flask of Natural Accuracy", "verified": "1.60.1.70630/spells.json#1293559" },
+        { "spell_id": 1293560, "name": "Flask of Natural Aggression", "verified": "1.60.1.70630/spells.json#1293560" },
+        { "spell_id": 1293561, "name": "Flask of Natural Precision", "verified": "1.60.1.70630/spells.json#1293561" },
+        { "spell_id": 1293562, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/spells.json#1293562" },
+        { "spell_id": 1293740, "name": "Flask of Natural Accuracy", "verified": "1.60.1.70630/simconsumes.json#274273" },
+        { "spell_id": 1293741, "name": "Flask of Natural Aggression", "verified": "1.60.1.70630/simconsumes.json#274274" },
+        { "spell_id": 1293742, "name": "Flask of Natural Precision", "verified": "1.60.1.70630/simconsumes.json#274275" },
+        { "spell_id": 1293743, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/simconsumes.json#274276" }
       ],
       "food": [
         { "spell_id": 1249513, "name": "Nightfin Soup", "verified": "1.60.1.69893/spells.json#1249513" }
@@ -55,8 +87,24 @@
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
       "complete": { "flask": true, "combat_potion": false, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
-        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
-        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
+        { "spell_id": 17624, "name": "Flask of Petrification", "verified": "1.60.1.70630/simconsumes.json#13506" },
+        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.70630/simconsumes.json#13510" },
+        { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.70630/simconsumes.json#13511" },
+        { "spell_id": 17628, "name": "Flask of Supreme Power", "verified": "1.60.1.70630/simconsumes.json#13512" },
+        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.70630/simconsumes.json#13513" },
+        { "spell_id": 17634, "name": "Flask of Petrification", "verified": "1.60.1.70630/spells.json#17634" },
+        { "spell_id": 17635, "name": "Flask of the Titans", "verified": "1.60.1.70630/spells.json#17635" },
+        { "spell_id": 17636, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.70630/spells.json#17636" },
+        { "spell_id": 17637, "name": "Flask of Supreme Power", "verified": "1.60.1.70630/spells.json#17637" },
+        { "spell_id": 17638, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.70630/spells.json#17638" },
+        { "spell_id": 1293559, "name": "Flask of Natural Accuracy", "verified": "1.60.1.70630/spells.json#1293559" },
+        { "spell_id": 1293560, "name": "Flask of Natural Aggression", "verified": "1.60.1.70630/spells.json#1293560" },
+        { "spell_id": 1293561, "name": "Flask of Natural Precision", "verified": "1.60.1.70630/spells.json#1293561" },
+        { "spell_id": 1293562, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/spells.json#1293562" },
+        { "spell_id": 1293740, "name": "Flask of Natural Accuracy", "verified": "1.60.1.70630/simconsumes.json#274273" },
+        { "spell_id": 1293741, "name": "Flask of Natural Aggression", "verified": "1.60.1.70630/simconsumes.json#274274" },
+        { "spell_id": 1293742, "name": "Flask of Natural Precision", "verified": "1.60.1.70630/simconsumes.json#274275" },
+        { "spell_id": 1293743, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/simconsumes.json#274276" }
       ],
       "food": [
         { "spell_id": 1248395, "name": "Tender Wolf Steak", "verified": "1.60.1.69893/spells.json#1248395" }
