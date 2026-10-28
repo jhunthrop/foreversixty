@@ -13,6 +13,7 @@ import {
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
   RAID_SIZES,
+  TRIAL_REMINDER_DAYS,
   SEAT_MOVE_LOCK_DAYS,
   perMonthLine,
   type Interval,
@@ -149,6 +150,9 @@ export const plansPageCopy = {
     subscribeGuild: (price: string): string => `Subscribe a guild · ${price}`,
   },
   trial: `First ${GUILD_TRIAL_DAYS} days free, once per guild. ${TRIAL_CANCEL}; guild settings shows the date of the first charge.`,
+  // Defined but appended to nothing until the trial email ships (B10 ruling 1); that lane appends it
+  // to `trial` and the Trial rule and flips the guard test.
+  trialEmail: `We email you ${TRIAL_REMINDER_DAYS} days before the trial ends.`,
   examples: {
     serverRun: {
       label: 'EXAMPLE · A REAL SERVER RUN',

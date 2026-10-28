@@ -3,7 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { specCell, specKeyCell, specLineAfter } from '../../test-support/spec-table';
 import { exampleCaption, serverRunExample } from './premium-examples';
 import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
-import { GUILD_TIER_MEMBER_LIMIT, GUILD_TRIAL_DAYS, PLANS, formatAmount, perMonthLine } from './plans';
+import {
+  GUILD_TIER_MEMBER_LIMIT,
+  GUILD_TRIAL_DAYS,
+  PLANS,
+  TRIAL_REMINDER_DAYS,
+  formatAmount,
+  perMonthLine,
+} from './plans';
 import { plansPageCopy as copy, perMemberLine, perRaiderLine, serverRunCaption } from './plans-page-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
@@ -195,6 +202,14 @@ describe('plansPageCopy guild region against spec B5', () => {
   it('Paying together rule', () =>
     expect(['Paying together', rule('Paying together')]).toEqual(key('rules[Paying together]')));
   it('Trial rule today', () => expect(rule('Trial')).toBe(fill(key('rules[Trial]')[0] ?? '', trialSlots)));
+  it('trialEmail is B5 verbatim', () =>
+    expect(copy.trialEmail).toBe(
+      fill(key('trialEmail')[0] ?? '', { TRIAL_REMINDER_DAYS: String(TRIAL_REMINDER_DAYS) }),
+    ));
+  it('trial line and Trial rule make no email promise until the trial email ships', () => {
+    expect(copy.trial).not.toContain('email you');
+    expect(rule('Trial')).not.toContain('email you');
+  });
   it('howItWorks', () => expect(copy.howItWorks).toBe(key('howItWorks')[0]));
   it('example label and link', () => {
     expect(copy.examples.serverRun.label).toBe(key('examples.serverRun.label')[0]);

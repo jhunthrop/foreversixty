@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { specString } from '../../test-support/spec-table';
+import { specKeyCell, specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
 import { billedLine, guildBillingCopy as copy, guildPlanLine } from './guild-billing-copy';
-import { FOUNDER_WINDOW_CLOSES } from './plans';
+import { FOUNDER_WINDOW_CLOSES, GUILD_TRIAL_DAYS } from './plans';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
 const spec = (label: string, index: number, fill: Record<string, string> = {}): string =>
@@ -70,7 +70,12 @@ describe('chooser and size line', () => {
       spec('Chooser', 6, { price: '$25 a month' }),
     );
     expect(copy.chooser.subscribeAgain).toBe(spec('Chooser', 7));
-    expect(copy.chooser.trialLine).toBe(specString(SPEC, '### 6.1', 'Trial', 0));
+    // The trial line is B5's `trial` row, which supersedes the §6.1 sentence.
+    expect(copy.chooser.trialLine).toBe(
+      (specKeyCell(SPEC, '### B5. Copy, verbatim', 'trial')[0] ?? '')
+        .replaceAll('{GUILD_TRIAL_DAYS + 1}', String(GUILD_TRIAL_DAYS + 1))
+        .replaceAll('{GUILD_TRIAL_DAYS}', String(GUILD_TRIAL_DAYS)),
+    );
     expect(copy.chooser.founderLine).toBe(spec('Chooser', 8));
     expect(copy.chooser.opening).toBe(spec('Chooser', 9));
     expect(copy.chooser.failed).toBe(spec('Chooser', 10));
