@@ -2,8 +2,8 @@
 // The read boundary for price facts. The API derives `interval` from the price lookup key, so
 // a row with no Stripe price (a grant) can send "" where the types say null; normalizing here
 // keeps every reader's `interval === null` check honest and stops a price line printing "a year".
-import type { Me } from '../account/api';
-import type { MeGuild } from '../account/api';
+import type { Me } from '../account/me-types';
+import { GUILD_FACTIONS, type MeGuild } from '../account/me-types';
 import {
   CLAIM_STATES,
   COVERED_STATES,
@@ -151,16 +151,22 @@ function normalizeCovered(value: unknown): GuildCoveredView | null {
 
 /**
  * One `/v1/me` guild entry with its standing read defensively. A field the API did not send
- * (an older response) or a word outside the contract becomes null, which the web draws as
- * "unknown". `ruleset_label` reads either that key or `realm`, the name the API shipped it
- * under before a review renamed it.
+ * (an older response) or a value outside the contract becomes null, which the web draws as
+ * "unknown"; an absent `slug` is "" (no hand-off link) and an empty `ruleset_label` is absent.
  */
 export function normalizeMeGuild(guild: unknown): MeGuild {
-  const wire = (isWire(guild) ? guild : {}) as Wire & MeGuild;
-  const label = stringOrNull(wire.ruleset_label) ?? stringOrNull(wire.realm);
+  const { ruleset_label: label, ...wire } = (isWire(guild) ? guild : {}) as Wire & MeGuild;
+  const rosterCount = wire.roster_count;
   return {
     ...wire,
-    ...(label === null ? {} : { ruleset_label: label }),
+    ...(typeof label === 'string' && label !== '' ? { ruleset_label: label } : {}),
+    slug: stringOrNull(wire.slug) ?? '',
+    crest_url: stringOrNull(wire.crest_url),
+    faction: oneOf(GUILD_FACTIONS, wire.faction),
+    roster_count:
+      typeof rosterCount === 'number' && Number.isInteger(rosterCount) && rosterCount >= 0
+        ? rosterCount
+        : null,
     claim: normalizeClaim(wire.claim),
     verify: isWire(wire.verify) ? { has_approver: wire.verify.has_approver === true } : null,
     covered: normalizeCovered(wire.covered),

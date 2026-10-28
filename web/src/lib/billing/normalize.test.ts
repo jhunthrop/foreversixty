@@ -134,9 +134,30 @@ describe('normalizeMeGuild', () => {
     expect(normalizeMeGuild({ ...OLDER, subscribe: blocked }).subscribe).toEqual(blocked);
   });
 
-  it('reads the ruleset label from either key, the new one first', () => {
-    expect(normalizeMeGuild({ ...OLDER, realm: 'Forever' }).ruleset_label).toBe('Forever');
-    expect(normalizeMeGuild({ ...OLDER, realm: 'Old', ruleset_label: 'New' }).ruleset_label).toBe('New');
+  it('treats an empty ruleset_label as absent and keeps a real one', () => {
+    expect('ruleset_label' in normalizeMeGuild({ ...OLDER, ruleset_label: '' })).toBe(false);
+    expect(normalizeMeGuild({ ...OLDER, ruleset_label: 'Forever' }).ruleset_label).toBe('Forever');
+  });
+
+  it('keeps the slug and normalizes an absent one to empty', () => {
+    expect(normalizeMeGuild({ ...OLDER, slug: 'olympus' }).slug).toBe('olympus');
+    expect(normalizeMeGuild(OLDER).slug).toBe('');
+  });
+
+  it('validates faction, crest_url and roster_count', () => {
+    expect(
+      normalizeMeGuild({ ...OLDER, faction: 'horde', crest_url: '/c.png', roster_count: 12 }),
+    ).toMatchObject({
+      faction: 'horde',
+      crest_url: '/c.png',
+      roster_count: 12,
+    });
+    expect(normalizeMeGuild({ ...OLDER, faction: 'orc', crest_url: 5, roster_count: -1 })).toMatchObject({
+      faction: null,
+      crest_url: null,
+      roster_count: null,
+    });
+    expect(normalizeMeGuild({ ...OLDER, roster_count: 1.5 }).roster_count).toBeNull();
   });
 
   it('drops a claim with an unknown state and keeps a known one', () => {

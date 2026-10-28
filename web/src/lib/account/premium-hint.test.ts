@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as layoutReserve from '../layout-reserve';
 import {
+  clearMeGuildCount,
   clearPremiumHint,
   ME_GUILD_COUNT_KEY,
   PREMIUM_SOURCE_KEY,
@@ -64,11 +65,18 @@ describe('the guild count', () => {
     expect(readMeGuildCount()).toBe(3);
   });
 
-  it('clamps to 1..4, else 2', () => {
+  it('keeps zero as zero and clearMeGuildCount forgets it', () => {
+    writeMeGuildCount(0);
+    expect(readMeGuildCount()).toBe(0);
+    clearMeGuildCount();
+    expect(readMeGuildCount()).toBe(2);
+  });
+
+  it('clamps to 0..4, else 2', () => {
     localStorage.setItem(ME_GUILD_COUNT_KEY, '9');
     expect(readMeGuildCount()).toBe(4);
     localStorage.setItem(ME_GUILD_COUNT_KEY, '-3');
-    expect(readMeGuildCount()).toBe(1);
+    expect(readMeGuildCount()).toBe(0);
     localStorage.setItem(ME_GUILD_COUNT_KEY, 'x');
     expect(readMeGuildCount()).toBe(2);
     localStorage.removeItem(ME_GUILD_COUNT_KEY);

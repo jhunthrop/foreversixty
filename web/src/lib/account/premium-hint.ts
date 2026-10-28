@@ -9,7 +9,7 @@ export const ME_GUILD_COUNT_KEY = 'fs.meGuildCount';
 export type StoredPremiumSource = 'own' | 'seat' | 'grant';
 
 const STORED_SOURCES: readonly string[] = ['own', 'seat', 'grant'];
-const MIN_GUILD_COUNT = 1;
+const MIN_GUILD_COUNT = 0;
 const MAX_GUILD_COUNT = 4;
 const DEFAULT_GUILD_COUNT = 2;
 
@@ -59,6 +59,10 @@ export function clearPremiumHint(doc: Document = document): void {
   remove(PREMIUM_SOURCE_KEY);
 }
 
+export function clearMeGuildCount(): void {
+  remove(ME_GUILD_COUNT_KEY);
+}
+
 export function writeMeGuildCount(count: number): void {
   try {
     storage()?.setItem(ME_GUILD_COUNT_KEY, String(count));
@@ -69,8 +73,9 @@ export function writeMeGuildCount(count: number): void {
 
 export function readMeGuildCount(): number {
   try {
-    const count = Math.round(Number(storage()?.getItem(ME_GUILD_COUNT_KEY)));
-    if (!Number.isFinite(count) || count === 0) return DEFAULT_GUILD_COUNT;
+    const stored = storage()?.getItem(ME_GUILD_COUNT_KEY) ?? null;
+    const count = stored === null || stored.trim() === '' ? NaN : Math.round(Number(stored));
+    if (!Number.isFinite(count)) return DEFAULT_GUILD_COUNT;
     return Math.min(MAX_GUILD_COUNT, Math.max(MIN_GUILD_COUNT, count));
   } catch {
     return DEFAULT_GUILD_COUNT;
