@@ -1,7 +1,8 @@
 """Screenshot every board under design/mocks/renders with Playwright (run from web/ so the
 browser is found): python3 ../design/mocks/render.py [name ...]. Phone boards (name
 contains 'phone') render at 390 wide; a board name containing '2000' (a board that
-exists to prove centring at a wide viewport, e.g. guild-header-2000) renders at 2000 wide; a name containing '1024' renders at 1024;
+exists to prove centring at a wide viewport, e.g. guild-header-2000) renders at 2000 wide;
+a name containing '1024' renders at 1024;
 every other board renders at 1440; full page, after fonts load."""
 import subprocess, sys
 from pathlib import Path

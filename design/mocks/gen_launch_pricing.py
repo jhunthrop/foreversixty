@@ -670,6 +670,7 @@ def emails_page() -> str:
 
 # The premium-value board (spec B3.5, copy B5): the comparison board for capture row 22.
 
+# Mirrors RAID_SIZES in web/src/lib/billing/plans.ts, the source of truth (display order: 40 leads).
 RAID_SIZES = (40, 20, 10)
 PV_PREMIUM_SUPPORT = 'Free stays complete. Premium pays for the servers and keeps the site going.'
 PV_PREMIUM_FEATURES = [
@@ -709,19 +710,25 @@ PV_RAID_FEATURES = [
 ]
 PV_TRIAL = ('First 7 days free, once per guild. Cancel before day 8 and nothing is charged; guild settings shows the '
             'date of the first charge.')
+HOW_BY_TERM = dict(HOW)
 PV_HOW = [
     ('Verified members', 'A verified member is a player with a Forever Sixty account whose character the guild has confirmed: '
                          "an officer approved it, they joined by the guild's invite link, or the character is in the guild's "
                          'logs. Each player counts once, however many characters they have in the guild. Discord members '
                          'without an account do not count.'),
-    HOW[0],
+    ('Size', HOW_BY_TERM['Size']),
     ('Paying together', "One person's card pays for the plan. Members cannot split the bill on the site."),
-    *HOW[1:4],
+    ('Seats', HOW_BY_TERM['Seats']),
+    ('Moving a seat', HOW_BY_TERM['Moving a seat']),
+    ('Already on Premium', HOW_BY_TERM['Already on Premium']),
     ('Trial', "A guild's first 7 days are free, once per guild. The card is added at the start, and guild settings shows the "
               'date of the first charge from day one. Cancel before day 8 and nothing is charged.'),
-    *HOW[5:],
+    ('Renewals', HOW_BY_TERM['Renewals']),
+    ('A new guild leader', HOW_BY_TERM['A new guild leader']),
+    ('Refunds', HOW_BY_TERM['Refunds']),
 ]
 PV_COST_BOX_PX = 54
+PV_GUILD_AUDIENCE = f'For a guild of up to {GUILD_CAP} verified members'
 
 
 def pv_cost_line(plan: str) -> str:
@@ -789,7 +796,7 @@ def pv_guild_card(plan: str, features: list) -> str:
              f'{PV_TRIAL[len("First 7 days free"):]}</p>')
     return (f'<div class="lp-card" style="box-shadow:none;border-top-color:#262e40">'
             f'<span class="lp-name">{PRICES[plan]["name"]}</span>'
-            f'<span class="lp-who">{WHO[plan]}</span>{pv_guild_price(plan)}<div style="margin-top:12px">{button}</div>'
+            f'<span class="lp-who">{PV_GUILD_AUDIENCE if plan == "guild" else WHO[plan]}</span>{pv_guild_price(plan)}<div style="margin-top:12px">{button}</div>'
             f'<div style="min-height:40px;margin-top:12px">{trial}</div>{pv_ticks(features)}</div>')
 
 
@@ -802,7 +809,8 @@ def pv_band(width: int) -> str:
     h1 = '<h1 class="display" style="font-size:22px;color:#f2eee4;margin:0">What is free, and what the plans add</h1>'
     frow = (f'<p style="margin:0;font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">{founder_pill()}'
             f'<span>{FOUNDER_OPEN}</span></p>')
-    guild_link = (f'<p style="margin:0;font-size:14px">{PV_BAND_LEAD} <a href="#guild-leaders" style="color:#e5b955">'
+    guild_link = (f'<p style="margin:0;font-size:13px;display:flex;align-items:center;gap:6px;min-height:44px">{PV_BAND_LEAD} '
+                  f'<a href="#guild-leaders" style="color:#e5b955">'
                   f'{PV_BAND_LINK}</a></p>')
     return (f'<div class="band">{nav("", False)}<div class="lp-col" style="padding:28px {pv_gutter(width)}px 24px;display:flex;'
             f'flex-direction:column;gap:10px"><span class="label" style="color:#e5b955">Plans</span>'
@@ -817,7 +825,7 @@ def pv_how() -> str:
 
 
 def pv_body(width: int) -> str:
-    grid = 'display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start'
+    grid = 'display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch'
     region_a = f'<div style="{grid}">{pv_free_card()}{pv_premium_card()}{pv_example_card()}</div>'
     history = f'<p class="lp-rule">{HISTORY}</p>'
     region_b = (
