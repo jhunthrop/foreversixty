@@ -331,9 +331,7 @@ test('confirm_claim: Yes, confirm it posts the confirm route and says who holds 
   });
   await openClaim(page);
   await page.getByTestId(id('claim-commit')).click();
-  await expect(page.getByTestId(id('notice'))).toHaveText(
-    copy.done.confirmClaim(null, GUILD_NAME),
-  );
+  await expect(page.getByTestId(id('notice'))).toHaveText(copy.done.confirmClaim(null, GUILD_NAME));
   expect(posts).toHaveLength(1);
 });
 

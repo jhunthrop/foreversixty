@@ -1,13 +1,16 @@
 // web/src/lib/billing/checkout-layout.test.ts
 // Pins the checkout frame's reserves to the spec heights (§5.7, §7) and the panel they hold.
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  CHECKOUT_BAND_ATTRIBUTE,
   CHECKOUT_BAND_RESERVE,
   CHECKOUT_BODY_RESERVE,
   CHECKOUT_FRAME_PX,
   GUILD_CARDS_PROPERTY,
   GUILD_LOADING_ATTRIBUTE,
   GUILD_SKELETON_CARD,
+  PREMIUM_BAND_PX,
   GUILD_LEAD_RESERVE,
   guildFrameReserve,
   releaseGuildFrameReserve,
@@ -57,9 +60,28 @@ describe('guildFrameReserve', () => {
   });
 });
 
+describe('the premium band', () => {
+  it('CheckoutBand carries PREMIUM_BAND_PX under the head script mark', () => {
+    const band = readFileSync(
+      new URL('../../components/checkout/CheckoutBand.svelte', import.meta.url),
+      'utf8',
+    );
+    expect(band).toMatch(
+      new RegExp(
+        `data-checkout-band='premium'\\]\\) \\.checkout-band-row \\{\\s*min-height: ${PREMIUM_BAND_PX.phone}px;`,
+      ),
+    );
+    expect(band).toContain(`min-height: ${PREMIUM_BAND_PX.md}px;`);
+    expect(CHECKOUT_BAND_ATTRIBUTE).toBe('data-checkout-band');
+  });
+});
+
 describe('releaseGuildFrameReserve', () => {
   it('removes the card count the min-height reads and the loading mark, and only those', () => {
-    const properties = new Map<string, string>([[GUILD_CARDS_PROPERTY, '2'], ['color', 'red']]);
+    const properties = new Map<string, string>([
+      [GUILD_CARDS_PROPERTY, '2'],
+      ['color', 'red'],
+    ]);
     const attributes = new Set<string>([GUILD_LOADING_ATTRIBUTE, 'lang']);
     const root = {
       style: { removeProperty: (name: string) => properties.delete(name) },

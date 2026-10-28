@@ -14,6 +14,16 @@
 export const CHECKOUT_BAND_RESERVE = 'min-h-[156px] md:min-h-[190px] lg:min-h-[150px]';
 
 /**
+ * plan=premium's band: its h1 alone (with the label from 768), so it hugs its content (gate fix,
+ * row 2) instead of the guild summary's reserve. CheckoutBand.svelte's CSS carries these figures
+ * under `html[data-checkout-band='premium']`, set by checkout.astro's head script before paint.
+ */
+export const PREMIUM_BAND_PX = { phone: 51, md: 103 } as const;
+
+/** The attribute the head script sets on <html> to `premium` for a plan=premium checkout URL. */
+export const CHECKOUT_BAND_ATTRIBUTE = 'data-checkout-band';
+
+/**
  * The narrow body under the band (redirect message, refusals, invalid link): it holds Task 12's
  * PremiumOwnedPanel (§4.2) — padding 20, title, plan line, line 2, the 44 px button 12 px below —
  * so the panel replacing the one-line message moves nothing. Line 2 wraps once on a phone.

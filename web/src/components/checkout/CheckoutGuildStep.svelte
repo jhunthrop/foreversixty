@@ -308,13 +308,16 @@
         {/each}
       </ul>
     {:else if empty !== null}
+      <!-- Left in the 880 column, where the foot sits too (row 11); full-width button on a phone. -->
       <div
-        class={`${CARD} measure-form flex flex-col gap-2 p-5`}
+        class={`${CARD} flex max-w-[640px] flex-col gap-2 p-5`}
         data-testid={empty === copy.emptyA ? 'checkout-guild-empty-a' : 'checkout-guild-empty-b'}
       >
         <p class="text-strong m-0 text-[15px]">{empty.title}</p>
         <p class="text-text m-0 text-[14px]">{empty.body}</p>
-        <a href={setupHref} class={`${PRIMARY_BUTTON_FIXED} mt-2 w-fit px-4`}>{empty.button}</a>
+        <a href={setupHref} class={`${PRIMARY_BUTTON_FIXED} mt-2 w-full justify-center px-4 md:w-fit`}
+          >{empty.button}</a
+        >
       </div>
     {:else}
       <p
@@ -368,12 +371,15 @@
       </ul>
     {/if}
 
-    {#if me !== null && !failed && empty !== copy.emptyA}
+    <!-- An empty state's panel already offers Get set up, so the foot's missing-guild line would repeat it. -->
+    {#if me !== null && !failed && (empty === null || showsPremiumLine)}
       <div class="text-muted mt-6 flex flex-col gap-1 text-[13px]" data-testid="checkout-guild-foot">
-        <p class="m-0">
-          {copy.foot.missingGuild}
-          <a href={setupHref} class={INLINE_LINK}>{copy.foot.getSetUp}</a>
-        </p>
+        {#if empty === null}
+          <p class="m-0">
+            {copy.foot.missingGuild}
+            <a href={setupHref} class={INLINE_LINK}>{copy.foot.getSetUp}</a>
+          </p>
+        {/if}
         {#if showsPremiumLine}
           <p class="m-0">
             {copy.foot.premium(premiumPrice)}

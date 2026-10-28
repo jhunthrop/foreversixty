@@ -46,7 +46,12 @@ export type HandoffStep = 'ask_leader' | 'claimed_ask' | 'claim_pending_yours' |
 
 const SITE_ORIGIN = 'https://foreversixty.gg';
 /** Claiming verifies the claimant, and a claim_blocked viewer is the guild master: no verify line. */
-const NO_VERIFY_LINE_STEPS: readonly SubscribeStep[] = ['claim', 'start_claim', 'confirm_claim', 'claim_blocked'];
+const NO_VERIFY_LINE_STEPS: readonly SubscribeStep[] = [
+  'claim',
+  'start_claim',
+  'confirm_claim',
+  'claim_blocked',
+];
 /** Steps where the viewer can act on the claim themselves: the lead never says the next step is someone else's. */
 const OWN_CLAIM_STEPS: readonly SubscribeStep[] = [
   'claim',

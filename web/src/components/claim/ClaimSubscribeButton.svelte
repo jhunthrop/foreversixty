@@ -36,7 +36,11 @@
   >
     {busy ? checkoutGuildCopy.busy.checkout : label}
   </button>
-  <p class="min-h-[21px] text-[14px]" role="alert" data-testid="guild-claim-subscribe-error">
-    {failed ? checkoutGuildCopy.checkoutErrors.generic : ''}
-  </p>
+  <!-- Drawn only on a failure, after the player's own click: an empty reserve would push the
+       next item 40 px down instead of the list's 12 (row 16). -->
+  {#if failed}
+    <p class="m-0 text-[14px]" role="alert" data-testid="guild-claim-subscribe-error">
+      {checkoutGuildCopy.checkoutErrors.generic}
+    </p>
+  {/if}
 </div>

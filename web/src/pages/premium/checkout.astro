@@ -27,7 +27,12 @@ import {
   ME_GUILD_COUNT_KEY,
   MIN_GUILD_COUNT,
 } from '../../lib/account/premium-hint';
-import { GUILD_CARDS_PROPERTY, GUILD_LOADING_ATTRIBUTE, guildFrameReserve } from '../../lib/billing/checkout-layout';
+import {
+  CHECKOUT_BAND_ATTRIBUTE,
+  GUILD_CARDS_PROPERTY,
+  GUILD_LOADING_ATTRIBUTE,
+  guildFrameReserve,
+} from '../../lib/billing/checkout-layout';
 import { checkoutGuildCopy } from '../../lib/billing/checkout-guild-copy';
 import { INTERVALS, PLANS, PLAN_ORDER } from '../../lib/billing/plans';
 
@@ -51,6 +56,7 @@ const lg = guildFrameReserve('lg');
       raidGuildSizeLine: checkoutGuildCopy.sizeLine.raidGuild,
       cardsProperty: GUILD_CARDS_PROPERTY,
       loadingAttribute: GUILD_LOADING_ATTRIBUTE,
+      bandAttribute: CHECKOUT_BAND_ATTRIBUTE,
     }}
   >
     // Layout only: the launcher still validates every param after hydration.
@@ -81,6 +87,13 @@ const lg = guildFrameReserve('lg');
       }
       document.documentElement.style.setProperty(cardsProperty, String(cards));
       document.documentElement.setAttribute(loadingAttribute, '');
+    } else if (
+      params.get('plan') === 'premium' &&
+      intervals.includes(params.get('interval')) &&
+      !params.has('guild_id')
+    ) {
+      // plan=premium's band carries its h1 alone and hugs it (CheckoutBand.svelte's CSS).
+      document.documentElement.setAttribute(bandAttribute, 'premium');
     }
   </script>
   <!-- No measure: the island draws the full-bleed band (its h1 and its height reserve, spec

@@ -110,6 +110,8 @@ Code read for this spec: `web/src/components/CheckoutLauncher.svelte`, `web/src/
 
 The launcher reads `/v1/me` before it calls `POST /v1/billing/checkout`. When `premiumSource` is not `none`, it never calls Stripe and renders the panel below. If the API refuses anyway (a race), the 409 carries `fields.source` (§8); the launcher re-reads `/v1/me` with `forgetSession()` and renders the same panel. No API sentence is ever shown on this page.
 
+The band carries the h1 `Premium` alone and hugs it: padding 28/24 desktop and 12/12 phone, no plan-summary reserve (51 px phone, 103 px from 768). The head script marks a `plan=premium` URL before first paint (`html[data-checkout-band='premium']`), so the static band and the hydrated one are the same box (gate fix, row 2, 2026-10-28).
+
 ```
 1280 ──────────────────────────────────────────────────────────────── full-bleed band
  CHECKOUT                                                   (label, --gold)
@@ -161,7 +163,7 @@ The static page cannot read the session at build time. It reuses the founder pat
 
 `web/src/pages/premium/checkout.astro` drops `measure-form` for this step. Order:
 1. **Band**, full bleed, the `/premium` band markup (launch pricing §3.1.1), padding 28/24 desktop and 12/12 phone, its content in the 1344 px column centred at every width up to 2000 and beyond.
-   - `label` `CHECKOUT` in `--gold` (hidden below 768, as on `/premium`).
+   - `label` `CHECKOUT` in `--gold` (hidden below 768, as on `/premium`). From 1024 the band row is top-aligned (`align-items: flex-start`), so the label's top lines up with the plan summary's first line, as `/premium` top-aligns its interval control with `PLANS` (gate fix, row 1).
    - h1, Cinzel 700 22 px `--strong`: `Subscribe a guild`.
    - **Plan summary.** From 1024 it is right-aligned on the h1's row; below 1024 it is its own row under the h1. Line 1: the plan name, Cinzel 700 15 px `--strong` (`Guild`); 8 px; the price, JetBrains Mono 500 20 px `--strong`, tabular (`$120`), then ` a year` 14 px muted; then `pill-site` `Founder` 8 px after it while the founder window is open. Line 2, 13 px `--text`: the size line (§9.1). Guild: `Up to 25 verified members. A 10-person raid team fits, and a 20-person one with a small bench.` Raid guild: `Any size. For guilds over 25 verified members.` Line 3, 13 px `--text`: `First 7 days free` (`--strong` 600) when the plan carries a trial, then ` · ` and the underlined `--text` link `Change plan` to `/premium`.
 2. **Body**, a centred column, max 880 px, padding 32 px top desktop and 20 px phone, side gutters 48 / 18.
@@ -233,8 +235,8 @@ On `ask_leader` and `claimed_ask` cards, last in the step block, 13 px muted: `G
 
 - **Loading.** The band renders from the first paint, since it needs only the URL. The lead slot reserves one line (21 px; 42 px below 768). The body holds `Skeleton` cards at the ready height, 156 px desktop and 260 px phone, their count read from `localStorage['fs.meGuildCount']` (written by the session module) and clamped to 1 to 4, else 2. sr-only `Loading your guilds`; the `ul` carries `aria-busy="true"`. Rows replace the skeleton once `/v1/me` has answered and every crest image has decoded or failed, capped at 1000 ms after the answer, so no crest flashes in. That is today's rule, now fed by `me.guilds[].crest_url`, with no `/home` reads.
 - **Error.** `LoadError` with `Your guilds did not load.` and `Try again`, in the body's place. After a successful retry, focus moves to the lead sentence.
-- **Empty A** (no characters; S1). `EmptyState` in a `card`, max 640, centred: title 15 px `--strong`, body 14 px `--text`, then `Get set up` (`PRIMARY_BUTTON_FIXED px-4`, the page's one fill, to `/setup` with `next` set to this URL). The foot's missing-guild line is not drawn, since it repeats the action.
-- **Empty B** (characters, none in a guild; S2). The same panel with its own copy and `Get set up`.
+- **Empty A** (no characters; S1). `EmptyState` in a `card`, max 640, left in the 880 column where the foot sits too (gate fix, row 11): title 15 px `--strong`, body 14 px `--text`, then `Get set up` (`PRIMARY_BUTTON_FIXED px-4`, the page's one fill, to `/setup` with `next` set to this URL; full width below 768, `w-fit` from 768). The foot's missing-guild line is not drawn, since it repeats the action.
+- **Empty B** (characters, none in a guild; S2). The same panel with its own copy and `Get set up`. Here too the foot's missing-guild line is not drawn.
 - **Signed out.** Today's redirect to `/login` with `next` stays.
 
 ### 5.8 Wireframes
@@ -390,10 +392,10 @@ Touch: every control is at least 44 px tall at 360. Keyboard: tab order follows 
 
 ### 6.2 Claim page (`GuildClaim.svelte`) changes
 
-- **With `plan`**: a 14 px `--text` line under the heading, on a 2 px `--gold` left rule, padding-left 14 (§9.3).
-- **After a confirmed claim with `plan`**: the `Next` list gains, first, the §5.3 `ready` button (`Start the 7-day trial` or `Subscribe · {price}`) as the page's one fill. `Approve your officers and members` and `Make an invite link` follow, as today.
+- **With `plan`**: a 14 px `--text` line under the heading, on a 2 px `--gold` left rule, padding-left 14 (§9.3), only while the viewer does not hold the claim (gate fix, row 16: "Claim the guild first" is never shown to the player who just claimed it).
+- **After a confirmed claim with `plan`**: the `Next` list gains, first, the §5.3 `ready` button (`Start the 7-day trial` or `Subscribe · {price}`) as the page's one fill. `Approve your officers and members` and `Make an invite link` follow, as today, 12 px apart (the button's failure line is drawn only after a failed click).
 - **Signed in, no character of theirs in the guild**: `notAMember` gains the inline link `Get set up`, with `next` set to this claim URL. `/setup` accepts `next` (validated by `safeNextPath`) and, after a save, shows `Back to {Guild}'s claim` as its one primary.
-- **A member viewer**: `memberCannotClaim` is replaced by the §9.3 sentence and a `CopyLinkField` holding the claim URL with the same `plan` it was opened with.
+- **A member viewer**: `memberCannotClaim` is replaced by the §9.3 sentence and a `CopyLinkField` holding the claim URL with the same `plan` it was opened with (sr-only label, max 640 px, full-width buttons below 768; §5.5).
 - **Signed out**: today's `signInLine`; the sign-in keeps `next`.
 
 ### 6.3 Guild page and invite

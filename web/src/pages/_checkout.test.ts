@@ -26,6 +26,7 @@ function frameScript(doc: Document): string {
 interface Run {
   step: string | undefined;
   cards: string;
+  band?: string | null;
 }
 
 async function run(search: string, stored: string | null | (() => never) = null): Promise<Run> {
@@ -38,6 +39,7 @@ async function run(search: string, stored: string | null | (() => never) = null)
   return {
     step: doc.documentElement.dataset.checkoutStep,
     cards: doc.documentElement.style.getPropertyValue('--checkout-guild-cards'),
+    band: doc.documentElement.getAttribute('data-checkout-band'),
   };
 }
 
@@ -77,7 +79,26 @@ describe('checkout page frame: the head script', () => {
     const blocked = (): never => {
       throw new Error('blocked');
     };
-    expect(await run('?plan=guild&interval=yearly', blocked)).toEqual({ step: 'guild', cards: '2' });
+    expect(await run('?plan=guild&interval=yearly', blocked)).toEqual({
+      step: 'guild',
+      cards: '2',
+      band: null,
+    });
+  });
+
+  it.each(['?plan=premium&interval=yearly', '?plan=premium&interval=monthly&comeback=3'])(
+    '%s marks the band premium, so it hugs its h1 from the first paint',
+    async (search) => {
+      expect((await run(search)).band).toBe('premium');
+    },
+  );
+
+  it.each([
+    '?plan=premium&interval=weekly',
+    '?plan=premium&interval=yearly&guild_id=4',
+    '?plan=guild&interval=yearly',
+  ])('%s leaves the band unmarked', async (search) => {
+    expect((await run(search)).band).toBeNull();
   });
 });
 

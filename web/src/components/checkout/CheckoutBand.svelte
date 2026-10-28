@@ -51,7 +51,7 @@
 
 <div class="full-bleed bg-raised border-line-soft border-b" data-testid="checkout-band">
   <header
-    class="page-column flex flex-col gap-2 px-[18px] py-3 md:pt-7 md:pb-6 lg:flex-row lg:items-end lg:justify-between lg:gap-6 {CHECKOUT_BAND_RESERVE}"
+    class="checkout-band-row page-column flex flex-col gap-2 px-[18px] py-3 md:pt-7 md:pb-6 lg:flex-row lg:items-start lg:justify-between lg:gap-6 {CHECKOUT_BAND_RESERVE}"
   >
     <div class="contents" class:checkout-pending={pending}>
       <div class="flex min-w-0 flex-col gap-2">
@@ -94,5 +94,17 @@
      guild URL, so a Premium or invalid link never flashes it. */
   :global(html:not([data-checkout-step='guild'])) .checkout-pending {
     display: none;
+  }
+  /* plan=premium carries only its h1, so the band hugs it (row 2) instead of keeping the guild
+     summary's reserve. The head script marks the URL before first paint, so the static band and
+     the hydrated one are the same box: checkout-layout.ts PREMIUM_BAND_PX (phone 12 + h1 26.4 +
+     12; from 768 28 + label 16.5 + 8 + h1 26.4 + 24). */
+  :global(html[data-checkout-band='premium']) .checkout-band-row {
+    min-height: 51px;
+  }
+  @media (min-width: 768px) {
+    :global(html[data-checkout-band='premium']) .checkout-band-row {
+      min-height: 103px;
+    }
   }
 </style>

@@ -313,6 +313,8 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
     .locator('[data-testid^="guild-claim-next-"]')
     .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-testid')));
   expect(order).toEqual(['guild-claim-next-subscribe', 'guild-claim-next-roster', 'guild-claim-next-invite']);
+  // The viewer now holds the claim: "Claim the guild first" is no longer theirs to read (row 16).
+  await expect(page.getByTestId('guild-claim-plan-line')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveText(checkoutGuildCopy.ready.startTrial);
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
 

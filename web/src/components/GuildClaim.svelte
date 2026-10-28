@@ -210,7 +210,7 @@
       testid="guild-claim"
     />
   {:else}
-    {#if claimPlan !== null}
+    {#if claimPlan !== null && !holdsClaim}
       <ClaimPlanLine line={claimPlanLine(guildName, claimPlan, founderOpen(new Date()))} />
     {/if}
     {#snippet contestOffer()}
