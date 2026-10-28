@@ -4,42 +4,13 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { Me, MeCharacter, MeGuild } from '../../lib/account/api';
+import { meCharacter as character, stepGuild as guild } from '../../test-support/subscribe-fixtures';
 import type { GuildClaimView, GuildCoveredView } from '../../lib/billing/contract';
 import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
 import links from '../../data/links.json';
 import CheckoutGuildStep from './CheckoutGuildStep.svelte';
 
 const SELF = '/premium/checkout?plan=guild&interval=yearly';
-
-function guild(overrides: Partial<MeGuild> & { step?: string; claim?: GuildClaimView }): MeGuild {
-  const { step = 'ask_leader', claim, ...rest } = overrides;
-  return {
-    id: 2,
-    name: 'OLYMPUS XXVII',
-    region: 'us',
-    ruleset: 'forever',
-    ruleset_label: 'Forever',
-    slug: 'olympus-xxvii',
-    verified: false,
-    verified_count: 0,
-    crest_url: null,
-    rank: 'member',
-    claim: claim ?? { state: 'unclaimed', yours: false, pending_yours: false, holder_name: null },
-    subscribe: { step, trial_used: null, available_at: null, reason: null, other_guild_name: null },
-    ...rest,
-  } as MeGuild;
-}
-
-function character(name: string, guildId: number, extra: Partial<MeCharacter['guild']> = {}): MeCharacter {
-  return {
-    key: `us/forever/${name.toLowerCase()}`,
-    region: 'us',
-    ruleset: 'forever',
-    name,
-    class: 'Hunter',
-    guild: { id: guildId, name: 'G', rank: 'member', verified: false, ...extra },
-  } as MeCharacter;
-}
 
 function html(
   guilds: MeGuild[],
@@ -62,7 +33,7 @@ function html(
       founder: true,
       selfUrl: SELF,
       onRetry: () => {},
-      onCheckAgain: () => {},
+      onCheckAgain: () => Promise.resolve(true),
       onSwitch: () => {},
       onCheckout: () => Promise.reject(new Error('no call in a static render')),
       onPortal: () => Promise.reject(new Error('no call in a static render')),

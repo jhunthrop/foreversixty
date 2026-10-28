@@ -101,24 +101,6 @@ export function guildFacts(guild: FactsGuild): Fact[] {
   return [verified, ...roster, { figure: null, rest: planWord(guild.covered) }];
 }
 
-/** The id of the first guild whose step differs between two reads, or null; a new guild counts. */
-export function changedGuildId(
-  before: { guilds: readonly StepGuildRef[] } | null,
-  after: { guilds: readonly StepGuildRef[] },
-): number | null {
-  if (before === null) return null;
-  const changed = after.guilds.find((guild) => {
-    const previous = before.guilds.find((other) => other.id === guild.id);
-    return previous !== undefined && previous.subscribe?.step !== guild.subscribe?.step;
-  });
-  return changed?.id ?? null;
-}
-
-interface StepGuildRef {
-  id: number;
-  subscribe?: { step: string | null } | null;
-}
-
 export interface SentenceGuild extends StepGuild {
   subscribe?: GuildSubscribeView | null;
   covered?: GuildCoveredView | null;

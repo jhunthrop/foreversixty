@@ -62,7 +62,7 @@
     viewerIsOfficer: boolean;
     guildPageHref: string;
     /** Re-reads /v1/me; the `checkout_open` card's `Check again`. */
-    onCheckAgain: () => void;
+    onCheckAgain: () => Promise<boolean>;
     /** Tasks 17 and 18: the claim and ready / on_plan-payer controls. */
     action?: Snippet;
     /** Task 17: the claim openers' state; absent, claim steps draw nothing. */
@@ -106,7 +106,7 @@
     testid={`guild-${guild.id}-handoff`}
   />
 {:else if step === 'checkout_open'}
-  <button type="button" class={TEXT_LINK} onclick={onCheckAgain} data-testid="guild-check-again">
+  <button type="button" class={TEXT_LINK} onclick={() => void onCheckAgain()} data-testid="guild-check-again">
     {copy.checkAgain}
   </button>
 {:else if claimKind !== null}
@@ -117,6 +117,7 @@
       class={CLAIM_OPENER}
       disabled={claim.locked}
       aria-expanded={claim.open}
+      aria-busy={claim.rereading}
       onclick={claim.onOpen}
       data-testid={`guild-${guild.id}-claim-open`}
     >
@@ -128,6 +129,7 @@
         {guild}
         io={claim.io}
         error={claim.error}
+        frozen={claim.rereading}
         onDone={claim.onDone}
         onRefused={claim.onRefused}
         onCancel={claim.onCancel}

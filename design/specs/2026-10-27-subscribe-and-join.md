@@ -556,7 +556,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 ## 10. Hierarchy
 
 - Band: the h1 is primary. The plan summary is secondary but always visible, because the price is what the player came to pay.
-- Body: the lead sentence frames the list. Each card's step block is the card's primary element. The page has at most one gold fill: the `ready` button when it is the only one, or `Get set up` in Empty A. Hand-off cards have no fill; the copy button is the action and stays neutral.
+- Body: the lead sentence frames the list. Each card's step block is the card's primary element. The page has at most one gold fill: the `ready` button when it is the only one, or `Get set up` in Empty A. Hand-off cards have no fill; the copy button is the action and stays neutral. An opened confirm block's commit button is the one fill while it is open; the resting page keeps at most one (ruling 2026-10-27).
 - Inside a card, the guild name is the strongest type, the viewer's character second, and the facts are muted.
 - Secondary lines (the other-character line, the verify sub-line, the foot) are 13 px muted and never above the action.
 

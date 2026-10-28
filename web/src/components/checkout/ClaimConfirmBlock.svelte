@@ -22,6 +22,7 @@
     guild,
     io,
     error,
+    frozen = false,
     onDone,
     onRefused,
     onCancel,
@@ -31,6 +32,8 @@
     io: ClaimIo;
     /** The §9.1 refusal line to show, or null. */
     error: string | null;
+    /** A re-read is in flight: the commit waits. */
+    frozen?: boolean;
     onDone: (line: string) => void;
     onRefused: (code: string, rereads: boolean) => void;
     onCancel: () => void;
@@ -77,8 +80,8 @@
   <button
     type="button"
     class={`${PRIMARY_BUTTON_FIXED} w-full justify-center px-4 ${busy ? BUSY_CLASS : ''}`}
-    disabled={busy}
-    aria-busy={busy}
+    disabled={busy || frozen}
+    aria-busy={busy || frozen}
     onclick={() => void commit()}
     data-testid={`guild-${guild.id}-claim-commit`}
   >

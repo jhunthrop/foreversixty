@@ -117,6 +117,8 @@ export interface ClaimControls {
   /** Another card's confirm is open: this opener is disabled. */
   locked: boolean;
   error: string | null;
+  /** /v1/me is being re-read after this card's claim call: opener disabled and aria-busy, commit frozen. */
+  rereading: boolean;
   io: ClaimIo;
   onOpen: () => void;
   onCancel: () => void;
@@ -128,4 +130,63 @@ export interface ClaimControls {
 export interface CardNotice {
   text: string;
   role: 'status' | 'alert';
+}
+
+/** Who may open: the one-confirm-at-a-time and re-read lock, per card. */
+export function claimLock(
+  openId: number | null,
+  rereadId: number | null,
+  id: number,
+): { open: boolean; locked: boolean; rereading: boolean } {
+  const rereading = rereadId === id;
+  const open = openId === id;
+  return { open, rereading, locked: rereading || rereadId !== null || (openId !== null && !open) };
+}
+
+/** What the /v1/me re-read after a claim call showed about the card. */
+export type RereadVerdict = 'failed' | 'moved' | 'same';
+
+export function rereadVerdict(
+  read: boolean,
+  before: SubscribeStep | null,
+  after: SubscribeStep | null,
+): RereadVerdict {
+  if (!read) return 'failed';
+  return before === after ? 'same' : 'moved';
+}
+
+export interface ClaimSettlement {
+  /** The status or alert line to leave on the card, or null. */
+  notice: CardNotice | null;
+  /** The refusal line to show inside a block that stays open, or null. */
+  blockError: string | null;
+  closeBlock: boolean;
+  /** Focus goes to the card's new action (or its notice); otherwise it stays on the opener. */
+  focusNewAction: boolean;
+}
+
+/** A success line is held until the card's step moved; a failed re-read leaves the launcher's refresh error alone. */
+export function settleSuccess(verdict: RereadVerdict, line: string): ClaimSettlement {
+  const moved = verdict === 'moved';
+  return {
+    notice: moved ? { text: line, role: 'status' } : null,
+    blockError: null,
+    closeBlock: true,
+    focusNewAction: moved,
+  };
+}
+
+/** A stale-state refusal (409/404) is worded from the step the re-read gave, once, never before it. */
+export function settleStaleRefusal(
+  verdict: RereadVerdict,
+  kind: ClaimKind,
+  code: string,
+  stepAfter: SubscribeStep | null,
+  guildName: string,
+): ClaimSettlement {
+  const text = refusalLine(kind, code, verdict === 'failed' ? null : stepAfter, guildName);
+  if (verdict === 'moved') {
+    return { notice: { text, role: 'alert' }, blockError: null, closeBlock: true, focusNewAction: true };
+  }
+  return { notice: null, blockError: text, closeBlock: false, focusNewAction: false };
 }

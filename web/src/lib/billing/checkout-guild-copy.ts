@@ -209,7 +209,6 @@ const CLAIM_ERROR_LINES: Readonly<Record<string, (guild: string) => string>> = {
   already_claimed: checkoutGuildCopy.claimErrors.alreadyClaimed,
   claim_pending: checkoutGuildCopy.claimErrors.pending,
   not_eligible: checkoutGuildCopy.claimErrors.notEligible,
-  no_battlenet: () => checkoutGuildCopy.claimErrors.noBattlenet,
   rate_limited: () => checkoutGuildCopy.claimErrors.rateLimited,
   holds_other: () => checkoutGuildCopy.claimErrors.holdsAnother,
   same_account: () => checkoutGuildCopy.claimErrors.sameAccount,

@@ -22,10 +22,16 @@
   import { claimGuild, confirmClaim } from '../../lib/guild/api';
   import {
     claimKindOf,
+    claimLock,
     refusalLine,
+    rereadVerdict,
+    settleStaleRefusal,
+    settleSuccess,
     type CardNotice,
     type ClaimIo,
     type ClaimKind,
+    type ClaimSettlement,
+    type RereadVerdict,
   } from '../../lib/billing/claim-flow';
   import { readyCount, type Arrival, type CardOutcome, type PayBusy } from '../../lib/billing/card-checkout';
   import { checkoutGuildCopy as copy, type GuildTier } from '../../lib/billing/checkout-guild-copy';
@@ -65,7 +71,7 @@
     selfUrl: string;
     onRetry: () => void;
     /** Re-reads /v1/me without the skeleton; the `checkout_open` card's `Check again`. */
-    onCheckAgain: () => void;
+    onCheckAgain: () => Promise<boolean>;
     /** Rewrites the page's plan in place (spec §5.3); the `ready` card's switch note calls it. */
     onSwitch: (to: GuildTier) => void;
     /** Starts the guild's Stripe checkout; the launcher follows a `redirect` outcome. */
@@ -136,8 +142,8 @@
   /** The one open confirm (all cards), its refusal line, and the notice a finished claim left. */
   let openClaim = $state<{ id: number; kind: ClaimKind; error: string | null } | null>(null);
   let notice = $state<{ id: number; value: CardNotice } | null>(null);
-  /** Set by a claim that re-reads /v1/me: focus moves once that card's step changes. */
-  let awaitedStep: { id: number; from: SubscribeStep | null } | null = null;
+  /** The card whose /v1/me re-read is in flight: its opener is disabled and aria-busy meanwhile. */
+  let rereadingId = $state<number | null>(null);
 
   const stepOfGuild = (id: number): SubscribeStep | null =>
     guilds.find((guild) => guild.id === id)?.subscribe?.step ?? null;
@@ -146,61 +152,71 @@
     void tick().then(() => find()?.focus());
   }
 
-  function closeClaim(returnFocusTo: number | null): void {
-    openClaim = null;
-    if (returnFocusTo !== null) focusSoon(() => document.getElementById(`guild-${returnFocusTo}-claim-open`));
-  }
-
-  function onClaimDone(id: number, line: string): void {
-    awaitedStep = { id, from: stepOfGuild(id) };
-    notice = { id, value: { text: line, role: 'status' } };
-    closeClaim(null);
-    onCheckAgain();
-  }
-
-  function onClaimRefused(guild: MeGuild, kind: ClaimKind, code: string, rereads: boolean): void {
-    openClaim = { id: guild.id, kind, error: refusalLine(kind, code, null, guild.name) };
-    if (!rereads) return;
-    awaitedStep = { id: guild.id, from: stepOfGuild(guild.id) };
-    onCheckAgain();
-  }
-
-  $effect(() => {
-    if (awaitedStep === null) return;
-    const { id, from } = awaitedStep;
-    const now = stepOfGuild(id);
-    if (now === from) return;
-    awaitedStep = null;
-    // The card moved on: the block closes and a refusal stands as an alert.
-    if (openClaim?.id === id) {
-      const name = guilds.find((guild) => guild.id === id)?.name ?? '';
-      if (openClaim.error !== null) {
-        notice = { id, value: { text: refusalLine(openClaim.kind, 'conflict', now, name), role: 'alert' } };
-      }
-      openClaim = null;
-    }
+  const focusNewAction = (id: number): void =>
     focusSoon(
       () =>
         document.querySelector<HTMLElement>(`#guild-${id} ${STEP_ACTION_SELECTOR}`) ??
         document.getElementById(`guild-${id}-notice`),
     );
-  });
+
+  /**
+   * Re-reads /v1/me (the launcher resolves once its read settled) and says what the card did.
+   * The shell owns the focus that follows, so the launcher moves none.
+   */
+  async function rereadCard(id: number): Promise<RereadVerdict> {
+    const before = stepOfGuild(id);
+    rereadingId = id;
+    const read = await onCheckAgain();
+    await tick();
+    rereadingId = null;
+    return rereadVerdict(read, before, stepOfGuild(id));
+  }
+
+  function applySettlement(id: number, settlement: ClaimSettlement): void {
+    if (settlement.closeBlock) openClaim = null;
+    else if (openClaim !== null) openClaim = { ...openClaim, error: settlement.blockError };
+    if (settlement.notice !== null) notice = { id, value: settlement.notice };
+    if (settlement.focusNewAction) focusNewAction(id);
+    else if (settlement.closeBlock) focusSoon(() => document.getElementById(`guild-${id}-claim-open`));
+  }
+
+  function closeClaim(id: number): void {
+    openClaim = null;
+    focusSoon(() => document.getElementById(`guild-${id}-claim-open`));
+  }
+
+  async function onClaimDone(id: number, line: string): Promise<void> {
+    applySettlement(id, settleSuccess(await rereadCard(id), line));
+  }
+
+  async function onClaimRefused(
+    guild: MeGuild,
+    kind: ClaimKind,
+    code: string,
+    stale: boolean,
+  ): Promise<void> {
+    if (!stale) {
+      openClaim = { id: guild.id, kind, error: refusalLine(kind, code, null, guild.name) };
+      return;
+    }
+    const verdict = await rereadCard(guild.id);
+    applySettlement(guild.id, settleStaleRefusal(verdict, kind, code, stepOfGuild(guild.id), guild.name));
+  }
 
   function claimControls(guild: MeGuild, kind: ClaimKind | null) {
     if (kind === null) return undefined;
-    const open = openClaim?.id === guild.id;
+    const lock = claimLock(openClaim?.id ?? null, rereadingId, guild.id);
     return {
-      open,
-      locked: openClaim !== null && !open,
-      error: open ? (openClaim?.error ?? null) : null,
+      ...lock,
+      error: lock.open ? (openClaim?.error ?? null) : null,
       io: CLAIM_IO,
       onOpen: () => {
         notice = null;
         openClaim = { id: guild.id, kind, error: null };
       },
       onCancel: () => closeClaim(guild.id),
-      onDone: (line: string) => onClaimDone(guild.id, line),
-      onRefused: (code: string, rereads: boolean) => onClaimRefused(guild, kind, code, rereads),
+      onDone: (line: string) => void onClaimDone(guild.id, line),
+      onRefused: (code: string, stale: boolean) => void onClaimRefused(guild, kind, code, stale),
     };
   }
 
@@ -213,12 +229,11 @@
     busy = null;
     retryId = outcome.retry ? guild.id : null;
     if (outcome.line !== null) notice = { id: guild.id, value: { text: outcome.line, role: 'alert' } };
-    if (outcome.rereads) {
-      awaitedStep = { id: guild.id, from: stepOfGuild(guild.id) };
-      onCheckAgain();
+    if (!outcome.rereads) {
+      focusSoon(() => document.getElementById(`guild-${guild.id}-notice`));
       return;
     }
-    focusSoon(() => document.getElementById(`guild-${guild.id}-notice`));
+    void rereadCard(guild.id).then(() => focusNewAction(guild.id));
   }
 
   async function pay(guild: MeGuild, kind: Exclude<PayBusy, null>): Promise<void> {

@@ -59,7 +59,7 @@ function html(props: {
       founder: true,
       selfUrl: SELF,
       onRetry: () => {},
-      onCheckAgain: () => {},
+      onCheckAgain: () => Promise.resolve(true),
       onSwitch: () => {},
       onCheckout: () => Promise.reject(new Error('no call in a static render')),
       onPortal: () => Promise.reject(new Error('no call in a static render')),

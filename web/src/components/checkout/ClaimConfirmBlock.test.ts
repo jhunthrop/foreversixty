@@ -4,10 +4,11 @@ import { render } from 'svelte/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { MeGuild } from '../../lib/account/api';
 import type { ClaimControls } from '../../lib/billing/claim-flow';
+import { OLYMPUS } from '../../test-support/subscribe-fixtures';
 import ClaimConfirmBlock from './ClaimConfirmBlock.svelte';
 import GuildStepBlock from './GuildStepBlock.svelte';
 
-const GUILD = { id: 2, name: 'OLYMPUS XXVII', claim: null };
+const GUILD = { id: OLYMPUS.id, name: OLYMPUS.name, claim: null };
 const IO = { claim: vi.fn(), confirm: vi.fn() };
 const plain = (html: string): string => html.replace(/<!--.*?-->/g, '');
 
@@ -57,6 +58,7 @@ function controls(open: boolean, locked = false): ClaimControls {
     open,
     locked,
     error: null,
+    rereading: false,
     io: IO,
     onOpen: () => {},
     onCancel: () => {},
@@ -85,7 +87,7 @@ function card(step: string, claim: ClaimControls | undefined): string {
         selfUrl: '/premium/checkout?plan=guild',
         viewerIsOfficer: true,
         guildPageHref: '/guild/us/forever/olympus-xxvii',
-        onCheckAgain: () => {},
+        onCheckAgain: () => Promise.resolve(true),
         claim,
       },
     }).body,

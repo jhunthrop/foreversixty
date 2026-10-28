@@ -21,7 +21,6 @@
      polling briefly if the webhook has not landed yet (the webhook is the source of truth,
      not the redirect). -->
 <script lang="ts">
-  import { tick } from 'svelte';
   import { fetchMeOnce, forgetSession, type Me, type MeGuild } from '../lib/account/api';
   import { BillingApiError, openPortal, startCheckout } from '../lib/billing/api';
   import {
@@ -33,7 +32,6 @@
   } from '../lib/billing/card-checkout';
   import { runPremiumCheckout } from '../lib/billing/premium-owned-flow';
   import { checkoutCopy } from '../lib/billing/copy';
-  import { changedGuildId } from '../lib/billing/guild-card-model';
   import { checkoutGuildCopy, type GuildTier } from '../lib/billing/checkout-guild-copy';
   import { replacePlanInUrl } from '../lib/billing/checkout-plan-switch';
   import { CHECKOUT_BODY_RESERVE } from '../lib/billing/checkout-layout';
@@ -159,25 +157,23 @@
 
   /**
    * `Check again`: re-reads /v1/me and redraws the cards in place, with no skeleton between. A
-   * failed read says so; when a card's step changed, focus moves to that card's heading, since
-   * the button the player pressed is gone (spec §5.3).
+   * failed read says so. Resolves true when /v1/me was read; the guild step owns the focus that
+   * follows (the button the player pressed may be gone, spec §5.3).
    */
-  async function refreshGuildStep(): Promise<void> {
+  async function refreshGuildStep(): Promise<boolean> {
     refreshFailed = false;
     io.forgetSession();
     try {
       const me = await io.fetchMe();
       if (me === null) {
         redirectToLogin();
-        return;
+        return false;
       }
-      const changedId = changedGuildId(stepMe, me);
       stepMe = me;
-      if (changedId === null) return;
-      await tick();
-      document.getElementById(`guild-${changedId}-name`)?.focus();
+      return true;
     } catch {
       refreshFailed = true;
+      return false;
     }
   }
 
@@ -308,7 +304,7 @@
     {founder}
     {selfUrl}
     onRetry={() => void loadGuildStep(true)}
-    onCheckAgain={() => void refreshGuildStep()}
+    onCheckAgain={refreshGuildStep}
     onSwitch={switchPlan}
     onCheckout={checkoutGuild}
     onPortal={openGuildPortal}
