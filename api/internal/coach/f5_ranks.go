@@ -13,7 +13,9 @@ const (
 	ranksUnitRank  = "rank"
 	ranksUnitCasts = "casts"
 	ranksPercent   = 100.0
-	ranksCannotKey = "cannot_level"
+	// ranksPctMinCasts is the fewest lower-rank casts the percent branch of F5 accepts.
+	ranksPctMinCasts = 2
+	ranksCannotKey   = "cannot_level"
 )
 
 // lowRankUse is one ability family's casts below the highest rank trainable at the
@@ -42,9 +44,7 @@ func lowRanks(in Input) outcome {
 	}
 	var worst *lowRankUse
 	for _, u := range lowRankUses(in) {
-		fires := u.lowCasts >= RanksFiresCasts ||
-			float64(u.lowCasts)/float64(u.casts)*ranksPercent >= RanksFiresPct
-		if fires && (worst == nil || u.lowCasts > worst.lowCasts) {
+		if lowRankFires(*u) && (worst == nil || u.lowCasts > worst.lowCasts) {
 			worst = u
 		}
 	}
@@ -54,6 +54,16 @@ func lowRanks(in Input) outcome {
 	f := lowRankFinding(in, *worst)
 	f.Anchors = []string{"#0"}
 	return outcome{Finding: f, Anchors: []Anchor{{Kind: AnchorCast, SpellID: worst.worst.ID}}}
+}
+
+// lowRankFires is the §6.2 rule with the coordinator's ruling: the percent branch needs
+// at least ranksPctMinCasts lower-rank casts, so one stray cast never fires.
+func lowRankFires(u lowRankUse) bool {
+	if u.lowCasts >= RanksFiresCasts {
+		return true
+	}
+	return u.lowCasts >= ranksPctMinCasts &&
+		float64(u.lowCasts)/float64(u.casts)*ranksPercent >= RanksFiresPct
 }
 
 // lowRankUses groups the player's casts by family, in family-name order.
