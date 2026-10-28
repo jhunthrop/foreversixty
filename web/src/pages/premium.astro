@@ -35,10 +35,7 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
           <span class="pill pill-site">{copy.founder.label}</span>
           <span>{copy.founder.open}</span>
         </p>
-        <p
-          class="text-text m-0 hidden min-h-11 items-center gap-[6px] text-[13px] md:flex"
-          data-band-guild-row
-        >
+        <p class="text-text hidden min-h-11 items-center gap-[6px] text-[13px] md:flex" data-band-guild-row>
           <span>{copy.band.guildLead}</span>
           <a href="#guild-leaders" class="hover:underline" data-testid="band-guild-link">
             {copy.band.guildLink}
@@ -69,13 +66,25 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
           </div>
         </div>
 
-        <div class="guild-row mt-7 grid grid-cols-1 gap-3 md:mt-10 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
-          <PlanCard plan="guild" />
-          <PlanCard plan="raid_guild" />
-          <p class="history-promise md:col-span-2 lg:col-span-1" data-testid="history-promise">
-            {copy.historyPromise}
-          </p>
-        </div>
+        <!-- Region B, for guild leaders (§B3.3): the band's guild link lands here. -->
+        <section id="guild-leaders" class="mt-7 scroll-mt-4 md:mt-10" aria-labelledby="guild-leaders-heading">
+          <h2 id="guild-leaders-heading" class="section-title">
+            {copy.guildRegion.heading}
+          </h2>
+          <p class="text-text mt-2 max-w-[720px] text-[14px] leading-[1.5]">{copy.guildRegion.lede}</p>
+          <p class="text-muted mt-1 max-w-[720px] text-[13px] leading-[1.45]">{copy.guildRegion.members}</p>
+          <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3" data-guild-row>
+            <PlanCard plan="guild" />
+            <PlanCard plan="raid_guild" />
+            <p
+              class="history-promise md:col-span-2 lg:col-span-1"
+              data-plan="history"
+              data-testid="history-promise"
+            >
+              {copy.historyPromise}
+            </p>
+          </div>
+        </section>
       </div>
 
       <GuildRules />

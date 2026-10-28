@@ -59,3 +59,38 @@ describe('the plans page region A', () => {
     expect((await renderPremium()).querySelectorAll('astro-island')).toHaveLength(1);
   });
 });
+
+function guildSection(doc: Document): HTMLElement {
+  const section = doc.getElementById('guild-leaders');
+  if (!section) throw new Error('no #guild-leaders');
+  return section;
+}
+
+describe('the plans page region B', () => {
+  it('#guild-leaders holds heading, lede, members, Guild, Raid guild, history promise', async () => {
+    const s = guildSection(await renderPremium());
+    expect(s.tagName).toBe('SECTION');
+    expect(s.querySelector('h2')?.textContent?.trim()).toBe(plansPageCopy.guildRegion.heading);
+    expect(classesOf(s.querySelector('h2'))).toContain('section-title');
+    expect(s.textContent).toContain(plansPageCopy.guildRegion.lede);
+    expect(s.textContent).toContain(plansPageCopy.guildRegion.members);
+    const row = [...s.querySelectorAll('[data-guild-row] > *')].map((n) => n.getAttribute('data-plan'));
+    expect(row).toEqual(['guild', 'raid_guild', 'history']);
+    expect(s.querySelector('[data-plan=history]')?.textContent?.trim()).toBe(plansPageCopy.historyPromise);
+  });
+
+  it('scroll margin and gaps', async () => {
+    const s = guildSection(await renderPremium());
+    expect(classesOf(s)).toEqual(expect.arrayContaining(['scroll-mt-4', 'mt-7', 'md:mt-10']));
+    expect(classesOf(s.querySelector('[data-guild-row]'))).toEqual(
+      expect.arrayContaining(['mt-4', 'md:grid-cols-2', 'lg:grid-cols-3', 'md:gap-4']),
+    );
+    expect(classesOf(s.querySelector('[data-plan=history]'))).toEqual(
+      expect.arrayContaining(['md:col-span-2', 'lg:col-span-1']),
+    );
+  });
+
+  it('no loot-council example', async () => {
+    expect((await renderPremium()).body.textContent).not.toContain('EXAMPLE · A REAL LOOT COUNCIL');
+  });
+});
