@@ -36,10 +36,20 @@ type RatedFight struct {
 	Summary         summary.Summary
 }
 
+// FightHook runs inside RateFight's transaction after every card row is written. An error
+// rolls the rating back and is returned, so the fight is retried the way any rating failure
+// is. rating never imports the hook's implementer (the log coach's ProfileWriter).
+type FightHook interface {
+	InTx(ctx context.Context, tx pgx.Tx, f RatedFight, cards []CardRow) error
+}
+
 // Store is every rating read and write.
 type Store struct {
 	Pool *pgxpool.Pool
 	Log  *slog.Logger
+
+	// Hook runs inside every RateFight transaction after the card rows; nil: nothing extra.
+	Hook FightHook
 
 	// levels is where RateFight reads the roster's levels for the adherence band; nil reads
 	// through Pool. Tests point it at a closed pool to see a failed read.
@@ -64,6 +74,11 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 	}
 	if err := db.EnsureRatingsPartition(ctx, s.Pool, f.FoughtAt); err != nil {
 		return err
+	}
+	if s.Hook != nil {
+		if err := db.EnsureCoachProfilesPartition(ctx, s.Pool, f.FoughtAt); err != nil {
+			return err
+		}
 	}
 	// The roster's levels, for the adherence band, read before the transaction so a failed
 	// read can never fail the rating (adherence.go).
@@ -109,6 +124,7 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 	}
 	modelInfo := ratingengine.DefaultModelInfo()
 
+	cards := make([]CardRow, 0, len(f.Summary.Roster))
 	for _, row := range f.Summary.Roster {
 		tables := curatedTablesFor(row, f.Summary.EncounterID)
 		card := ratingengine.Score(f.Summary, row.GUID, tables, adapter, nil, modelInfo)
@@ -120,6 +136,12 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		cr.LastRaid.Adherence = adherence(f.Summary, row, levels[cr.PlayerKey], levelsKnown)
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
+		}
+		cards = append(cards, cr)
+	}
+	if s.Hook != nil {
+		if err := s.Hook.InTx(ctx, tx, f, cards); err != nil {
+			return fmt.Errorf("rating: hook %s/%d: %w", f.ReportID, f.FightIndex, err)
 		}
 	}
 

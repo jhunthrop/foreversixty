@@ -323,6 +323,9 @@ func (s *Store) RemoveReport(ctx context.Context, reportID, reason string) error
 	if _, err := tx.Exec(ctx, `delete from fight_metrics where report_id = $1`, reportID); err != nil {
 		return fmt.Errorf("rankings: remove rows of %s: %w", reportID, err)
 	}
+	if _, err := tx.Exec(ctx, `delete from coach_profiles where report_id = $1`, reportID); err != nil {
+		return fmt.Errorf("rankings: remove coach profiles of %s: %w", reportID, err)
+	}
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("rankings: commit: %w", err)
 	}
