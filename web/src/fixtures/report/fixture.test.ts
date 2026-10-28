@@ -41,13 +41,7 @@ function everyArray(summary: Summary): unknown[][] {
     ...summary.auras.flatMap((track) => [track.segments, track.appliers]),
     ...summary.casts.map((cast) => cast.sequence),
     ...summary.resources.map((track) => track.series),
-    ...summary.combatants.flatMap((row) => [
-      row.gear,
-      row.talents,
-      row.consumables,
-      row.raid_buffs,
-      row.missing_buffs,
-    ]),
+    ...summary.combatants.flatMap((row) => [row.gear, row.talents, row.raid_buffs, row.missing_buffs]),
   ];
 }
 

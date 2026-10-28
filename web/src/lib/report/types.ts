@@ -326,7 +326,7 @@ export interface GearItem {
   Gems: number[] | null;
 }
 
-/** summary.CombatantRow — gear, talents and consumables at pull. */
+/** summary.CombatantRow — gear, talents and buffs at pull. */
 export interface CombatantRow {
   guid: string;
   name: string;
@@ -335,7 +335,6 @@ export interface CombatantRow {
   item_level?: number;
   gear: GearItem[];
   talents: number[];
-  consumables: AuraRef[];
   raid_buffs: AuraRef[];
   missing_buffs: number[];
 }

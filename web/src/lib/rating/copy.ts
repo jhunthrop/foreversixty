@@ -83,6 +83,8 @@ export const ratingCopy = {
         return `${componentLabel} — not scored. No curated utility table exists for this spec yet.`;
       case 'no_consumable_catalogue':
         return `${componentLabel} — not scored. No consumable catalogue exists for this role yet.`;
+      case 'no_character_sheet':
+        return `${componentLabel} — no character sheet in this log.`;
       case 'unclaimed_and_unranked':
         return `${componentLabel} — not scored. This character is not signed in, and the bracket has too few logs to compare against.`;
       default:

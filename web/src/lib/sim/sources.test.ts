@@ -57,7 +57,7 @@ function rosterRow(overrides: Partial<RosterRow> & Pick<RosterRow, 'guid' | 'nam
 }
 
 function combatantRow(overrides: Partial<CombatantRow> & Pick<CombatantRow, 'guid' | 'name'>): CombatantRow {
-  return { gear: [], talents: [], consumables: [], raid_buffs: [], missing_buffs: [], ...overrides };
+  return { gear: [], talents: [], raid_buffs: [], missing_buffs: [], ...overrides };
 }
 
 // Warrior only, on purpose: the test stub serves the planner fixture's talents

@@ -637,7 +637,6 @@
         { "ID": 0, "ItemLevel": 0, "Enchants": null, "BonusIDs": null, "Gems": null }
       ],
       "talents": [202751, 262111, 215568, 199045, 203177, 206315, 202572],
-      "consumables": [],
       "raid_buffs": [],
       "missing_buffs": []
     },
@@ -653,7 +652,6 @@
         { "ID": 0, "ItemLevel": 0, "Enchants": null, "BonusIDs": null, "Gems": null }
       ],
       "talents": [200183, 213610, 197632, 213791, 197817, 213684, 197813],
-      "consumables": [],
       "raid_buffs": [],
       "missing_buffs": []
     },
@@ -669,7 +667,6 @@
         { "ID": 0, "ItemLevel": 0, "Enchants": null, "BonusIDs": null, "Gems": null }
       ],
       "talents": [11071, 11119, 11129, 12358, 11175, 12043, 11237],
-      "consumables": [],
       "raid_buffs": [],
       "missing_buffs": []
     }

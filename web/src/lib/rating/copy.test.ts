@@ -9,3 +9,15 @@ describe('ratingCopy.characterEmpty', () => {
     );
   });
 });
+
+describe('ratingCopy.excludedReason', () => {
+  it('says a log with no character sheet leaves Preparation unscored, in player words', () => {
+    expect(ratingCopy.excludedReason('Preparation', 'no_character_sheet')).toBe(
+      'Preparation — no character sheet in this log.',
+    );
+  });
+
+  it('falls back to the bare not-scored line for a reason it has no words for', () => {
+    expect(ratingCopy.excludedReason('Utility', 'something_new')).toBe('Utility — not scored.');
+  });
+});
