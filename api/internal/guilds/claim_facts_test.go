@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 )
 
 // seedRanked seeds an account with one character of the given rank in guildID, with an
@@ -113,6 +114,45 @@ func TestGuildStanding_PendingClaimantNameForVerifiedOfficer(t *testing.T) {
 	got, _ := claimViewOf(t, h, officer, gid)
 	if got.State != ClaimStatePending || got.HolderName == nil || *got.HolderName != "Claimant" {
 		t.Fatalf("got %+v, want pending with holder_name Claimant", got)
+	}
+}
+
+func TestGuildStanding_CarriesClaimAndVerify(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	viewer := seedRanked(t, h, gid, "Plain", "member", false)
+
+	got, err := h.store.GuildStanding(context.Background(), viewer, []int64{gid})
+	if err != nil {
+		t.Fatal(err)
+	}
+	st := got[gid]
+	if st.Claim == nil || st.Verify == nil {
+		t.Fatalf("standing = %+v, want claim and verify set", st)
+	}
+	if st.Claim.State != ClaimStateUnclaimed || st.Claim.Yours || st.Claim.PendingYours || st.Claim.HolderName != nil {
+		t.Errorf("claim = %+v, want unclaimed, not yours, no holder name", *st.Claim)
+	}
+	if st.Verify.HasApprover {
+		t.Errorf("verify = %+v, want has_approver false", *st.Verify)
+	}
+}
+
+func TestGuildStanding_ExpiredPendingClaimReadsUnclaimed(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	officer := seedRanked(t, h, gid, "Officer", "officer", true)
+	claimant := seedRanked(t, h, gid, "Claimant", "officer", false)
+	setGuild(t, h, `update guilds set claim_pending_by = $2,
+		claim_requested_at = now() - $3::interval where id = $1`,
+		gid, claimant, (ClaimPendingTTL + time.Hour).String())
+
+	got, _ := claimViewOf(t, h, claimant, gid)
+	if got.State != ClaimStateUnclaimed || got.PendingYours {
+		t.Errorf("claimant sees %+v, want unclaimed and not pending_yours", got)
+	}
+	if got, _ := claimViewOf(t, h, officer, gid); got.State != ClaimStateUnclaimed || got.HolderName != nil {
+		t.Errorf("officer sees %+v, want unclaimed with no holder name", got)
 	}
 }
 

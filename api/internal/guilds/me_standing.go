@@ -47,7 +47,7 @@ type identityRow struct {
 
 // GuildStanding returns each of guildIDs' identity facts: realm, faction, crest url and the
 // roster count. A guild id that does not exist is absent from the map.
-func (s *Store) GuildStanding(ctx context.Context, _ int64, guildIDs []int64) (map[int64]auth.GuildStanding, error) {
+func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]auth.GuildStanding, error) {
 	out := make(map[int64]auth.GuildStanding, len(guildIDs))
 	if len(guildIDs) == 0 {
 		return out, nil
@@ -64,8 +64,15 @@ func (s *Store) GuildStanding(ctx context.Context, _ int64, guildIDs []int64) (m
 	if err != nil {
 		return nil, err
 	}
+	claims, verify, err := s.ClaimAndVerifyViews(ctx, viewerID, guildIDs)
+	if err != nil {
+		return nil, err
+	}
 	for _, id := range identities {
+		claim, verified := claims[id.id], verify[id.id]
 		st := auth.GuildStanding{
+			Claim:    &claim,
+			Verify:   &verified,
 			Realm:    realmDisplay(id.ruleset),
 			CrestURL: CrestURL(s.APIBaseURL, id.id, id.crestKey),
 			Faction:  id.faction,
