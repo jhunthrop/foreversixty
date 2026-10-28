@@ -26,6 +26,7 @@ import {
   EMPTY_A,
   EMPTY_B,
   MIXED,
+  ON_PLAN_ALL_SEATS_GIVEN,
   ON_PLAN_ENDING,
   ON_PLAN_OTHER_PAYS,
   ON_PLAN_SEAT,
@@ -63,6 +64,10 @@ const ROTATED_TOKEN = 'fixedtokenfixedtokenfixedtoken0';
 const ROTATED_AT = '2026-10-27T12:00:00Z';
 const OWNER_BATTLETAG = 'hunthrop#1894';
 const OWNER_GUILD_ID = 2;
+/** Guild names render as stored (spec §9). */
+const STORED_GUILD_NAME = 'OLYMPUS XXVII';
+/** The account Plan panel, from its PLAN label to its button (rows 3 and 15). */
+const PLAN_PANEL = 'account-guilds-plan';
 const CARDS_READY =
   '[data-testid="checkout-guild-cards"], [data-testid^="checkout-guild-empty"], [data-testid="checkout-guild-error"], [data-testid="premium-owned"]';
 const BASELINE = process.env.CAPTURE_VARIANT === 'before';
@@ -233,6 +238,24 @@ atWidths('01b owner after Yes, claim it', OWNER_WIDTHS, async (page, width) => {
   await shoot(page, rowLabel(1, 'b'), 'claimed', width, page.getByTestId('checkout-guild-step'));
 });
 
+/** The account page's other panels answer empty, so an acceptance page shows no load errors. */
+async function stubAccountPanels(page: Page): Promise<void> {
+  await page.route('**/v1/me/coach/recent', (route) =>
+    route.fulfill(envelope({ last_raid: null, pending: false, reviews: [] })),
+  );
+  await page.route('**/v1/reports?mine=1*', (route) =>
+    route.fulfill(envelope({ rows: [], total: 0, page: 1, per_page: 20 })),
+  );
+}
+
+/** The account Plan panel for `me`, cropped from the PLAN label through the button. */
+async function accountPlan(page: Page, width: number, row: Row, state: string, me: Me): Promise<void> {
+  await stubAccountPanels(page);
+  await openAs(page, width, '/account#plan', me);
+  await settled(page, '[data-testid="account-premium-block"]');
+  await shoot(page, row, state, width, page.getByTestId(PLAN_PANEL));
+}
+
 // ---- rows 2 to 4: the owner on the premium surfaces ---------------------------------------------
 
 atWidths('02 owner, plan=premium grant panel', THREE, async (page, width) => {
@@ -241,11 +264,9 @@ atWidths('02 owner, plan=premium grant panel', THREE, async (page, width) => {
   await shoot(page, rowLabel(2), 'grant-panel', width, page.getByTestId('premium-owned'));
 });
 
-atWidths('03 owner, /account#plan', THREE, async (page, width) => {
-  await openAs(page, width, '/account#plan', OWNER_MEMBER);
-  await settled(page, '[data-testid="account-premium-block"]');
-  await shoot(page, rowLabel(3), 'plan', width, page.getByTestId('account-premium-block'));
-});
+atWidths('03 owner, /account#plan', THREE, (page, width) =>
+  accountPlan(page, width, rowLabel(3), 'plan', OWNER_MEMBER),
+);
 
 atWidths('04 owner, /premium Premium card in its grant state', THREE, async (page, width) => {
   await openAs(page, width, '/premium', OWNER_MEMBER, {
@@ -288,22 +309,13 @@ checkoutRow(rowLabel(8), 'asks and blocks', PAIR, [
   ['blocked-holds-other', CLAIM_BLOCKED_HOLDS_OTHER],
 ]);
 
-/** `on_plan` where every seat is given away. */
-const ALL_SEATS_GIVEN: Me = {
-  ...ON_PLAN_OTHER_PAYS,
-  guilds: ON_PLAN_OTHER_PAYS.guilds.map((guild) => ({
-    ...guild,
-    covered: guild.covered ? { ...guild.covered, seats_given: guild.covered.seats_total } : guild.covered,
-  })),
-};
-
 checkoutRow(rowLabel(9), 'on plan', PAIR, [
   ['you-pay', ON_PLAN_YOU_PAY],
   ['you-pay-raid-chosen', ON_PLAN_YOU_PAY, RAID_YEARLY],
   ['ending', ON_PLAN_ENDING],
   ['seat-held', ON_PLAN_SEAT],
   ['seats-free', ON_PLAN_OTHER_PAYS],
-  ['all-seats-given', ALL_SEATS_GIVEN],
+  ['all-seats-given', ON_PLAN_ALL_SEATS_GIVEN],
 ]);
 
 checkoutRow(rowLabel(10), 'size line', PAIR, [
@@ -390,11 +402,8 @@ const ACCOUNT_STATES: readonly (readonly [string, Me])[] = [
 
 for (const width of THREE) {
   for (const [state, me] of ACCOUNT_STATES) {
-    test(`15 account plan ${state} @${width}`, async ({ page }) => {
-      await openAs(page, width, '/account#plan', me);
-      await settled(page, '[data-testid="account-premium-block"]');
-      await shoot(page, rowLabel(15), state, width, page.getByTestId('account-premium-block'));
-    });
+    test(`15 account plan ${state} @${width}`, ({ page }) =>
+      accountPlan(page, width, rowLabel(15), state, me));
   }
 }
 
@@ -425,7 +434,7 @@ async function stubClaimPage(page: Page, settings: { current: unknown }, memberV
   await page.route(`**/v1/guilds/us/pvp/${GUILD_SLUG}`, (route) =>
     route.fulfill(
       envelope({
-        guild: { id: OWNER_GUILD_ID, name: 'OLYMPUS XXVII', region: 'us', ruleset: 'pvp' },
+        guild: { id: OWNER_GUILD_ID, name: STORED_GUILD_NAME, region: 'us', ruleset: 'pvp' },
         progression: [],
         roster_best: [],
         reports: [],
@@ -467,24 +476,31 @@ atWidths('16 claim page with plan, before and after claiming', THREE, async (pag
   await shoot(page, rowLabel(16), 'plan-after-claim', width, page.getByTestId('guild-claim'));
 });
 
-/** The home as an unverified member reads it: `viewer.verify.has_approver` is the flag the note picks by. */
+/**
+ * The home as an unverified member reads it: `viewer.verify.has_approver` is the flag the note picks
+ * by. The guild carries its stored name, and with no approver it is unclaimed (a claimed guild's
+ * holder is a verified approver), so the header and the note tell one story.
+ */
 function withApprover(home: ReturnType<typeof buildMockHome>, hasApprover: boolean) {
   return {
     ...home,
+    guild: { ...home.guild, name: STORED_GUILD_NAME },
+    claim: hasApprover ? home.claim : { state: 'unclaimed' as const, frozen: false },
     viewer: { ...home.viewer, role: 'member', verified: false, verify: { has_approver: hasApprover } },
   };
 }
 
 /** The unverified member's guild page (the mock guild), with or without an approver in the guild. */
 async function openGuildNote(page: Page, width: number, hasApprover: boolean): Promise<void> {
+  const guildPage = buildMockGuildPage();
   const member = stepGuild({
     id: GUILD_ID,
-    name: GUILD.name,
+    name: STORED_GUILD_NAME,
     ruleset: GUILD.ruleset,
     slug: GUILD_SLUG,
   });
   await page.route(`**/v1/guilds/us/${GUILD.ruleset}/${GUILD_SLUG}`, (route) =>
-    route.fulfill(envelope(buildMockGuildPage())),
+    route.fulfill(envelope({ ...guildPage, guild: { ...guildPage.guild, name: STORED_GUILD_NAME } })),
   );
   await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
     route.fulfill(envelope(withApprover(buildMockHome(null), hasApprover))),
