@@ -138,11 +138,13 @@ describe('onPremium: an account on Premium never sees the free See plans link', 
     expect(onPremium(meWith({}, OWN))).toBe(true);
     expect(onPremium(meWith({ seat: ME_SEAT }))).toBe(true);
     expect(onPremium(meWith({ entitlements: mockEntitlements({ server_sims: true }) }))).toBe(true);
+    expect(onPremium(GRANT_OPEN)).toBe(true);
   });
 
   it('a free account and no account are not', () => {
     expect(onPremium(meWith({}))).toBe(false);
     expect(onPremium(null)).toBe(false);
+    expect(onPremium(meWith({}, { ...OWN, status: 'canceled' }))).toBe(false);
   });
 });
 
@@ -259,10 +261,45 @@ describe('accountPlanLine by source (spec 4.3, 9.2)', () => {
   it('past due keeps the renewing line', () => {
     const out = accountPlanLine(meWith({}, { ...STRIPE, status: 'past_due' }), NOW, ZONE);
     expect(out.line).toContain('renews');
+    expect(out.line2).toBeNull();
+  });
+
+  it('own then seat has no line 2 and keeps the founder flag', () => {
+    const founder = { ...STRIPE, ...FOUNDER_PREMIUM_FACTS };
+    const out = accountPlanLine(meWith({ seat: ME_SEAT }, founder), NOW, ZONE);
+    expect(out.line2).toBeNull();
+    expect(out.founder).toBe(true);
   });
 
   it('only the free plan carries an ended seat', () => {
-    expect(accountPlanLine(meWith({ ended_seat: ME_ENDED_SEAT }, STRIPE), NOW, ZONE).ended).toBeNull();
+    const ended = { ended_seat: ME_ENDED_SEAT };
+    const sources = [
+      meWith(ended, STRIPE),
+      { ...GRANT_OPEN, ...ended },
+      { ...SEAT, ...ended },
+      { ...FALLBACK, ...ended },
+    ];
+    for (const me of sources) expect(accountPlanLine(me, NOW, ZONE).ended).toBeNull();
+    expect(accountPlanLine(meWith(ended), NOW, ZONE).ended).not.toBeNull();
+  });
+
+  it('a source-less row without a price is a grant, never own', () => {
+    const bare = { ...OWN, amount_cents: null, interval: null };
+    const open = accountPlanLine(meWith({}, { ...bare, current_period_end: null }), NOW, ZONE);
+    expect(open.line).toBe(premiumSourceCopy.grant.noEnd);
+    expect(open.billingButton).toBeNull();
+    const dated = accountPlanLine(
+      meWith({}, { ...bare, current_period_end: '2027-03-31T00:00:00Z' }),
+      NOW,
+      ZONE,
+    );
+    expect(dated.line).toBe('Premium · granted until 31 Mar 2027');
+    expect(dated.billingButton).toBeNull();
+  });
+
+  it('a source-less priced row is own with Manage billing', () => {
+    expect(premiumSource(meWith({}, OWN), NOW)).toBe('own');
+    expect(accountPlanLine(meWith({}, OWN), NOW, ZONE).billingButton).toBe('manage');
   });
 });
 

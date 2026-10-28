@@ -41,9 +41,14 @@ function liveBilling(me: Me): BillingView | null {
   return billing !== null && LIVE_STATUSES.includes(billing.status) ? billing : null;
 }
 
-/** An API that predates `billing.source` only ever sent Stripe subscriptions. */
+/**
+ * Whether the row is an operator grant. An API that predates `billing.source` sends grants
+ * without it, but a grant never carries a price, so a source-less row is Stripe only when it
+ * does.
+ */
 function isGrant(billing: BillingView): boolean {
-  return billing.source === 'grant';
+  if (billing.source !== undefined) return billing.source === 'grant';
+  return billing.amount_cents === null || billing.interval === null;
 }
 
 /** Section 4.1: exactly one source pays for the account's Premium; the first match wins. */
@@ -60,6 +65,7 @@ export function premiumSource(me: Me, now: Date): PremiumSource {
 
 function ownWords(billing: BillingView, zone?: string): LineWords {
   const end = billing.current_period_end;
+  // A live Stripe subscription always has a period end; this guards bad data from reading as a plan.
   if (end === null) return { line: premiumSourceCopy.fallback, line2: null };
   if (billing.cancel_at_period_end) return { line: accountPlanCopy.planLine.ends(end, zone), line2: null };
   const line =
@@ -144,13 +150,9 @@ export function guildRowPlanLine(plan: GuildBillingView, zone?: string): string 
 }
 
 /**
- * Whether the account is on Premium by any road: its own plan, a held seat, or a grant the API
- * resolved into the Premium features. Such an account never sees the free plan line's See plans
- * link (premium experience spec 2).
+ * Whether the account is on Premium by any road: its own plan, a held seat, a grant, or the
+ * resolved Premium features. Such an account never sees the free plan line's See plans link.
  */
-export function onPremium(me: Me | null): boolean {
-  if (me === null) return false;
-  const seat = me.seat ?? null;
-  const billing = me.entitlements?.billing ?? null;
-  return seat !== null || billing !== null || me.entitlements?.server_sims === true;
+export function onPremium(me: Me | null, now: Date = new Date()): boolean {
+  return me !== null && premiumSource(me, now) !== 'none';
 }
