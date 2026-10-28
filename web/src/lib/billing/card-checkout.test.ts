@@ -7,6 +7,8 @@ import {
   payAction,
   readyCount,
   readyLabel,
+  refusalKind,
+  restoredFromCache,
   runCardCheckout,
   runCardPortal,
   upgradeHref,
@@ -129,5 +131,26 @@ describe('guildArrival', () => {
     expect(guildArrival(guilds, 2)).toEqual({ firstId: 2 });
     expect(guildArrival(guilds, 99)).toEqual({});
     expect(guildArrival(guilds, undefined)).toEqual({});
+  });
+});
+
+describe('refusalKind', () => {
+  it('maps the status ladder once', () => {
+    const kind = (status: number) => refusalKind(new BillingApiError('x', status));
+    expect([503, 404, 409, 403, 500].map(kind)).toEqual([
+      'not_open',
+      'not_found',
+      'conflict',
+      'forbidden',
+      'generic',
+    ]);
+    expect(refusalKind(new Error('network'))).toBe('generic');
+  });
+});
+
+describe('restoredFromCache', () => {
+  it('only a persisted pageshow resets the busy card', () => {
+    expect(restoredFromCache({ persisted: true })).toBe(true);
+    expect(restoredFromCache({ persisted: false })).toBe(false);
   });
 });

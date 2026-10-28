@@ -58,7 +58,7 @@
   const note = $derived(switchNote(plan, guild.verified_count));
   const action = $derived(payAction(guild, plan));
   const subscribeClass = $derived(
-    isReadyFill(readyCards) ? `${PRIMARY_BUTTON_FIXED} w-full justify-center px-4` : OUTLINE_GOLD_BUTTON,
+    isReadyFill(readyCards) ? `${PRIMARY_BUTTON_FIXED} w-full justify-center` : OUTLINE_GOLD_BUTTON,
   );
 </script>
 
@@ -78,11 +78,9 @@
     data-step-action
     data-testid={`guild-${guild.id}-subscribe`}
   >
-    {#if busy === 'checkout'}
-      {copy.busy.checkout}
-    {:else}
-      {readyLabel(guild, price)}<span class="sr-only">, {guild.name}</span>
-    {/if}
+    {busy === 'checkout' ? copy.busy.checkout : readyLabel(guild, price)}<span class="sr-only"
+      >, {guild.name}</span
+    >
   </button>
 {:else if action === 'manage'}
   <button

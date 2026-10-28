@@ -33,7 +33,13 @@
     type ClaimSettlement,
     type RereadVerdict,
   } from '../../lib/billing/claim-flow';
-  import { readyCount, type Arrival, type CardOutcome, type PayBusy } from '../../lib/billing/card-checkout';
+  import {
+    readyCount,
+    restoredFromCache,
+    type Arrival,
+    type CardOutcome,
+    type PayBusy,
+  } from '../../lib/billing/card-checkout';
   import { checkoutGuildCopy as copy, type GuildTier } from '../../lib/billing/checkout-guild-copy';
   import { GUILD_CARD_MIN, GUILD_LEAD_RESERVE } from '../../lib/billing/checkout-layout';
   import { priceFor } from '../../lib/billing/plan-costs';
@@ -241,8 +247,13 @@
     retryId = null;
     busy = { id: guild.id, kind };
     const outcome = await (kind === 'checkout' ? onCheckout(guild) : onPortal(guild));
-    // A redirect leaves the card busy until the page unloads.
+    // A redirect leaves the card busy until the page unloads (or is restored: onPageShow).
     if (outcome.kind === 'refused') onPayRefused(guild, outcome);
+  }
+
+  /** Back from Stripe via the bfcache: the button is usable again. `launched` stays set, so the arrival does not bounce the player straight back. */
+  function onPageShow(event: PageTransitionEvent): void {
+    if (restoredFromCache(event)) busy = null;
   }
 
   let launched = false;
@@ -268,6 +279,8 @@
     return guildHref(guild.region, guild.ruleset, guild.name);
   }
 </script>
+
+<svelte:window onpageshow={onPageShow} />
 
 <div class="px-[18px] pt-5 pb-16 md:px-12 md:pt-8" data-testid="checkout-guild-step">
   <div class="mx-auto flex w-full max-w-[880px] flex-col">

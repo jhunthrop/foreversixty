@@ -12,6 +12,7 @@ import type { StepGuild } from './subscribe-step';
 const HTTP_NOT_OPEN = 503;
 const HTTP_FORBIDDEN = 403;
 const HTTP_CONFLICT = 409;
+const HTTP_NOT_FOUND = 404;
 
 /** The settings sub-path and query that open the Guild-to-Raid-guild confirm (launch pricing §3.2.4). */
 const UPGRADE_SUFFIX = '/settings?upgrade=1#billing';
@@ -72,19 +73,39 @@ export interface CardIo {
   openPortal: (guildId: number | undefined) => Promise<PortalResult>;
 }
 
-function refusedCheckout(error: unknown, guildName: string): CardOutcome {
+export type RefusalKind = 'not_open' | 'not_found' | 'conflict' | 'forbidden' | 'generic';
+
+/** The one status ladder of a checkout refusal; the card and the launcher each word it their own way. */
+export function refusalKind(error: unknown): RefusalKind {
   const status = error instanceof BillingApiError ? error.status : 0;
-  if (status === HTTP_NOT_OPEN)
-    return { kind: 'refused', line: copy.checkoutErrors.notOpen, rereads: false, retry: false };
-  if (status === HTTP_CONFLICT)
-    return {
-      kind: 'refused',
-      line: copy.checkoutErrors.alreadyOnPlan(guildName),
-      rereads: true,
-      retry: false,
-    };
-  if (status === HTTP_FORBIDDEN) return { kind: 'refused', line: null, rereads: true, retry: false };
-  return { kind: 'refused', line: copy.checkoutErrors.generic, rereads: false, retry: true };
+  if (status === HTTP_NOT_OPEN) return 'not_open';
+  if (status === HTTP_NOT_FOUND) return 'not_found';
+  if (status === HTTP_CONFLICT) return 'conflict';
+  if (status === HTTP_FORBIDDEN) return 'forbidden';
+  return 'generic';
+}
+
+function refusedCheckout(error: unknown, guildName: string): CardOutcome {
+  switch (refusalKind(error)) {
+    case 'not_open':
+      return { kind: 'refused', line: copy.checkoutErrors.notOpen, rereads: false, retry: false };
+    case 'conflict':
+      return {
+        kind: 'refused',
+        line: copy.checkoutErrors.alreadyOnPlan(guildName),
+        rereads: true,
+        retry: false,
+      };
+    case 'forbidden':
+      return { kind: 'refused', line: null, rereads: true, retry: false };
+    default:
+      return { kind: 'refused', line: copy.checkoutErrors.generic, rereads: false, retry: true };
+  }
+}
+
+/** A page restored from the back/forward cache (Stripe's back button) keeps its old busy state. */
+export function restoredFromCache(event: { persisted: boolean }): boolean {
+  return event.persisted;
 }
 
 export async function runCardCheckout(

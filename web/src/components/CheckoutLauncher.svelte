@@ -25,6 +25,7 @@
   import { BillingApiError, openPortal, startCheckout } from '../lib/billing/api';
   import {
     guildArrival,
+    refusalKind,
     runCardCheckout,
     runCardPortal,
     type Arrival,
@@ -91,8 +92,6 @@
   let portalBusy = $state(false);
   let portalFailed = $state(false);
   const ownedNow = new Date();
-
-  const NOT_FOUND = 404;
 
   const POLL_INTERVAL_MS = 1500;
   const POLL_ATTEMPTS = 4;
@@ -241,20 +240,14 @@
       else window.location.assign(outcome.url);
     } catch (error) {
       showRetry = false;
-      if (error instanceof BillingApiError) {
-        if (error.status === 503) {
-          message = checkoutCopy.notOpenYet;
-        } else if (error.status === NOT_FOUND) {
-          message = checkoutCopy.comebackGone;
-        } else if (error.status === 409) {
-          message = error.message;
-        } else if (error.status === 403) {
-          // The API's own sentence, verbatim; retrying does not help, so showRetry stays false.
-          message = error.message;
-        } else {
-          message = checkoutCopy.genericFailure;
-          showRetry = true;
-        }
+      const kind = refusalKind(error);
+      if (kind === 'not_open') {
+        message = checkoutCopy.notOpenYet;
+      } else if (kind === 'not_found') {
+        message = checkoutCopy.comebackGone;
+      } else if (error instanceof BillingApiError && (kind === 'conflict' || kind === 'forbidden')) {
+        // The API's own sentence, verbatim; retrying does not help, so showRetry stays false.
+        message = error.message;
       } else {
         message = checkoutCopy.genericFailure;
         showRetry = true;
