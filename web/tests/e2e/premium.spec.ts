@@ -4,7 +4,8 @@
 // from lib/billing/plans, never typed here.
 import { createRequire } from 'node:module';
 import { expect, test, type Page } from '@playwright/test';
-import { FOUNDER_WINDOW_CLOSES, PLAN_ORDER, formatPrice, priceFor } from '../../src/lib/billing/plans';
+import { priceFor } from '../../src/lib/billing/plan-costs';
+import { FOUNDER_WINDOW_CLOSES, PLAN_ORDER, formatPrice } from '../../src/lib/billing/plans';
 import { plansPageCopy } from '../../src/lib/billing/plans-page-copy';
 
 const LAUNCH_DAY = '2026-10-27T18:00:00Z';

@@ -6,6 +6,7 @@ import type { GuildBillingView } from '../account/api';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { settingsWords } from '../guild/settings-view';
 import type { GuildTier } from './contract';
+import { priceFor } from './plan-costs';
 import {
   GUILD_TIER_MEMBER_LIMIT,
   GUILD_TRIAL_DAYS,
@@ -13,7 +14,6 @@ import {
   formatAmount,
   formatCents,
   formatPrice,
-  priceFor,
   type Interval,
 } from './plans';
 import { plansPageCopy } from './plans-page-copy';

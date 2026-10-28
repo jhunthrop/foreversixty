@@ -4,7 +4,8 @@
 // flag (the lock carries, product spec 8.2), so only the prorated amount waits on a Skeleton. Once
 // the preview lands its amounts win; the date stays the plan line's own so the two never disagree.
 import type { GuildPlanView, UpgradePreview } from '../billing/contract';
-import { priceFor, type Interval } from '../billing/plans';
+import { priceFor } from '../billing/plan-costs';
+import type { Interval } from '../billing/plans';
 
 const CENTS_PER_DOLLAR = 100;
 

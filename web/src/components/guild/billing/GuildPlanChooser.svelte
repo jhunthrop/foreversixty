@@ -10,10 +10,9 @@
     founderOpen,
     formatAmount,
     intervalUnit,
-    listPriceAfterFounder,
-    priceFor,
     type Interval,
   } from '../../../lib/billing/plans';
+  import { listPriceAfterFounder, priceFor } from '../../../lib/billing/plan-costs';
   import { fitsTier } from '../../../lib/guild/billing-state';
   import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import IntervalSegments from './IntervalSegments.svelte';

@@ -2,7 +2,8 @@
 // Every visible string /premium, /premium/checkout and the account page's billing block
 // use, in the site's own honest voice: no exclamation marks, no urgency, no invented
 // discounts. Prices are never written here as literals -- they come from ./plans.
-import { PLANS, formatPrice, priceFor, type Interval, type PlanKey } from './plans';
+import { priceFor } from './plan-costs';
+import { PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 
 export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',

@@ -88,10 +88,6 @@ export function entryPrice(entry: Plan, interval: Interval, founder: boolean): n
   return founder ? entry.founderYearly : entry.yearly;
 }
 
-export function priceFor(plan: PlanKey, interval: Interval, founder: boolean): number {
-  return entryPrice(PLANS[plan], interval, founder);
-}
-
 /** `$3.33`, `$10`, `$12.50`: cents only when the amount is not whole. */
 export function formatAmount(usd: number): string {
   const cents = Math.round(usd * CENTS_PER_DOLLAR);
@@ -107,12 +103,6 @@ export function intervalUnit(interval: Interval): string {
 /** Running-text price: `$40 a year`, `$5 a month`. */
 export function formatPrice(usd: number, interval: Interval): string {
   return `${formatAmount(usd)}${intervalUnit(interval)}`;
-}
-
-/** The list price shown beside a founder price: `$50 after 6 Jan 2027`, `$6 a month after 6 Jan 2027`. */
-export function listPriceAfterFounder(plan: PlanKey, interval: Interval): string {
-  const amount = formatAmount(priceFor(plan, interval, false));
-  return `${amount}${interval === 'monthly' ? ' a month' : ''} after ${FOUNDER_LAST_DAY}`;
 }
 
 export function perMonthLine(yearlyUsd: number): string {

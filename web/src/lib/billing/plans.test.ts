@@ -1,7 +1,6 @@
 // web/src/lib/billing/plans.test.ts
 import { describe, expect, it } from 'vitest';
 import {
-  FOUNDER_LAST_DAY,
   FOUNDER_WINDOW_CLOSES,
   PLANS,
   RAID_SIZES,
@@ -10,33 +9,8 @@ import {
   formatAmount,
   formatCents,
   formatPrice,
-  listPriceAfterFounder,
   perMonthLine,
-  priceFor,
-  type Interval,
-  type PlanKey,
 } from './plans';
-
-const TWELVE_AMOUNTS: ReadonlyArray<[PlanKey, Interval, boolean, number]> = [
-  ['premium', 'monthly', false, 6],
-  ['premium', 'yearly', false, 50],
-  ['premium', 'monthly', true, 5],
-  ['premium', 'yearly', true, 40],
-  ['guild', 'monthly', false, 15],
-  ['guild', 'yearly', false, 150],
-  ['guild', 'monthly', true, 12],
-  ['guild', 'yearly', true, 120],
-  ['raid_guild', 'monthly', false, 25],
-  ['raid_guild', 'yearly', false, 250],
-  ['raid_guild', 'monthly', true, 20],
-  ['raid_guild', 'yearly', true, 200],
-];
-
-describe('priceFor', () => {
-  it.each(TWELVE_AMOUNTS)('%s %s founder=%s is %d', (plan, interval, founder, usd) => {
-    expect(priceFor(plan, interval, founder)).toBe(usd);
-  });
-});
 
 describe('PLANS', () => {
   it('names the plans and their seats', () => {
@@ -85,16 +59,6 @@ describe('formatCents', () => {
   it('matches formatPrice', () => {
     expect(formatCents(4000, 'yearly')).toBe('$40 a year');
     expect(formatCents(500, 'monthly')).toBe('$5 a month');
-  });
-});
-
-describe('listPriceAfterFounder', () => {
-  it('names the list price and the last founder day in one date style', () => {
-    expect(FOUNDER_LAST_DAY).toBe('6 Jan 2027');
-    expect(listPriceAfterFounder('premium', 'yearly')).toBe('$50 after 6 Jan 2027');
-    expect(listPriceAfterFounder('premium', 'monthly')).toBe('$6 a month after 6 Jan 2027');
-    expect(listPriceAfterFounder('guild', 'yearly')).toBe('$150 after 6 Jan 2027');
-    expect(listPriceAfterFounder('raid_guild', 'monthly')).toBe('$25 a month after 6 Jan 2027');
   });
 });
 
