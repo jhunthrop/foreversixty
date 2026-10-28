@@ -16,7 +16,13 @@ import type { Page, Route } from '@playwright/test';
 import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import type { Me } from '../../../src/lib/account/me-types';
 import { premiumEntitlements } from '../../../src/test-support/billing-fixtures';
-import type { CoachFull, CoachRecent, CoachTeaser, LastRaid } from '../../../src/lib/coach/types';
+import type {
+  CoachFull,
+  CoachHistoryPage,
+  CoachRecent,
+  CoachTeaser,
+  LastRaid,
+} from '../../../src/lib/coach/types';
 import { envelope } from './guild-billing';
 import { plantSessionHint, routeMeCell, SIGNED_OUT } from './subscribe-stubs';
 
@@ -383,4 +389,33 @@ export const RECENT: Readonly<
 /** The two stubs a Premium or free viewer needs on `/account`. */
 export async function routeAccountDevices(page: Page): Promise<void> {
   await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
+}
+
+// ---- the character page's coach history ---------------------------------------------------------
+
+/** The history route's two pages, the coach's own output: twenty rows and a cursor, then the rest. */
+export const HISTORY_PAGES = {
+  first: coachFixture<CoachHistoryPage>('history-first'),
+  older: coachFixture<CoachHistoryPage>('history-older'),
+} as const;
+
+export interface HistoryStub {
+  /** The first page's answer, or an HTTP status. */
+  first: CoachHistoryPage | number;
+  /** The `cursor=` page's answer, or an HTTP status; defaults to the fixture's older page. */
+  older?: CoachHistoryPage | number;
+  /** Holds the older page until released: `Show older` while fetching. */
+  olderGate?: Promise<void>;
+}
+
+/** Answers `/v1/characters/{region}/{ruleset}/{name}/coach/history` for any character. */
+export async function routeCoachHistory(page: Page, stub: HistoryStub): Promise<void> {
+  await page.route('**/v1/characters/*/*/*/coach/history*', async (route) => {
+    const paged = new URL(route.request().url()).searchParams.has('cursor');
+    if (paged && stub.olderGate !== undefined) await stub.olderGate;
+    const answer = paged ? (stub.older ?? HISTORY_PAGES.older) : stub.first;
+    await (typeof answer === 'number'
+      ? route.fulfill(envelope({ code: 'internal', message: 'api sentence' }, answer))
+      : route.fulfill(envelope(answer)));
+  });
 }

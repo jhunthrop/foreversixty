@@ -24,6 +24,8 @@ export interface RowLine {
   lead: string;
   /** The strong title; empty when the line is a plain sentence. */
   title: string;
+  /** The muted words after the title (the free line's ` first`); empty otherwise. */
+  after: string;
   /** The first spell, for the 20 px icon before the title. */
   spellId: number | null;
   /** The free line's second target, the gold Premium link; empty on Premium lines. */
@@ -35,7 +37,7 @@ const count = (n: number, one: string, many: string): string => (n === 1 ? one :
 const UPGRADE_TAIL = ` · ${coachCopy.upgrade}`;
 
 function plain(text: string): RowLine {
-  return { lead: text, title: '', spellId: null, upgrade: '' };
+  return { lead: text, title: '', after: '', spellId: null, upgrade: '' };
 }
 
 function freeLine(answer: CoachTeaser): RowLine | null {
@@ -45,13 +47,14 @@ function freeLine(answer: CoachTeaser): RowLine | null {
   if (first === null) {
     // The Premium sentence is its own target: the gold link, not muted lead text.
     const lead = count(n, coachCopy.rowFreeNoFirstOne, coachCopy.rowFreeNoFirst).replace(UPGRADE_TAIL, '');
-    return { lead, title: '', spellId: null, upgrade: coachCopy.upgrade };
+    return { lead, title: '', after: '', spellId: null, upgrade: coachCopy.upgrade };
   }
-  const template = n === 1 ? coachCopy.rowFreeOne : coachCopy.rowFree;
-  const [lead = ''] = template.split('{title}');
+  const template = (n === 1 ? coachCopy.rowFreeOne : coachCopy.rowFree).replace(UPGRADE_TAIL, '');
+  const [lead = '', after = ''] = template.split('{title}');
   return {
     lead: fill(lead, { n }),
     title: first.title,
+    after,
     spellId: first.spell_id,
     upgrade: coachCopy.upgrade,
   };
@@ -69,7 +72,7 @@ function fullLine(answer: CoachFull): RowLine | null {
   const firstSpell = first.anchors
     .map((id) => answer.anchors[id]?.spell_id)
     .find((spell): spell is number => spell !== undefined);
-  return { lead, title: first.title, spellId: firstSpell ?? null, upgrade: '' };
+  return { lead, title: first.title, after: '', spellId: firstSpell ?? null, upgrade: '' };
 }
 
 /**

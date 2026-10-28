@@ -70,9 +70,9 @@ test.describe('free owner', () => {
 
   test('the row line reads the free teaser and links to /premium', async ({ page }) => {
     await page.goto(ROWS_URL);
-    const line = page.getByTestId('coach-row-line');
-    await expect(line).toContainText(fill(coachCopy.teaserCount, { n: 3 }));
-    await expect(line).toContainText(FIX_FIRST_TITLE);
+    await expect(page.getByTestId('coach-row-open')).toHaveText(
+      fill(coachCopy.rowFree, { n: 3, title: FIX_FIRST_TITLE }).replace(` · ${coachCopy.upgrade}`, ''),
+    );
     await expect(page.getByTestId('coach-row-premium')).toHaveAttribute('href', '/premium');
     await expect(page.getByTestId('coach-row-premium')).toHaveText(coachCopy.upgrade);
   });
@@ -278,6 +278,8 @@ test.describe('Premium owner', () => {
     await page.goto(PANEL_URL().replace('fight=3', 'fight=0'));
     await expect(page.getByTestId('coach-tab-night')).toHaveText(coachCopy.night);
     expect(seen.panels).toHaveLength(0);
+    // The test ends before the summary stub's fetch settles; its handler must not outlive the page.
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
 
   test('the phone strip holds its reserve by entitlement: 52 px Premium, 88 px free', async ({ browser }) => {

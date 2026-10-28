@@ -30,6 +30,7 @@ Two decisions are load-bearing:
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Callable
 from pathlib import Path
 
@@ -334,7 +335,52 @@ def compute_spell_icons(
     if extra_path.exists():
         for spell_id in json.loads(extra_path.read_text(encoding="utf-8"))["spell_ids"]:
             icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
+    # Spells the log coach names (its rule files' core casts, auras, downranks, defensives):
+    # the review's titles and chips show each one's icon, every rank.
+    coach_ids = coach_spell_ids(curated_dir) | coach_persona_spell_ids(curated_dir, spellranks)
+    for spell_id in sorted(coach_ids):
+        icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
     return dict(sorted(icons.items()))
+
+
+def _collect_spell_ids(value: object, into: set[int]) -> None:
+    """Every `spell_id` and `spell_ids` entry anywhere under `value`."""
+    if isinstance(value, dict):
+        for key, inner in value.items():
+            if key == "spell_id" and isinstance(inner, int) and not isinstance(inner, bool):
+                into.add(inner)
+            elif key == "spell_ids" and isinstance(inner, list):
+                into.update(i for i in inner if isinstance(i, int) and not isinstance(i, bool))
+            else:
+                _collect_spell_ids(inner, into)
+    elif isinstance(value, list):
+        for inner in value:
+            _collect_spell_ids(inner, into)
+
+
+def coach_spell_ids(curated_dir: Path = Path("curated")) -> set[int]:
+    """Every spell id a log coach rule file (`curated/coach/*.json`) carries, every rank of
+    every family, wherever the file holds one (`spell_id` or `spell_ids`). The coach's
+    review names these spells with their icons, and no rotation line need name them
+    (Greater Heal, Bloodrage, Inner Fire), so `compute_spell_icons` adds them."""
+    ids: set[int] = set()
+    for path in sorted((curated_dir / "coach").glob("*.json")):
+        _collect_spell_ids(json.loads(path.read_text(encoding="utf-8")), ids)
+    return ids
+
+
+def coach_persona_spell_ids(curated_dir: Path, spellranks: dict) -> set[int]:
+    """Every rank of every class spell a log coach persona (`curated/coach/<spec>.md`) names
+    by its family name: the heals the F5 rank finding reads (Greater Heal) appear in no rule
+    file, only in the persona and the player's log. A family name matches as whole words,
+    case and all; a stray match only adds an icon."""
+    ids: set[int] = set()
+    for path in sorted((curated_dir / "coach").glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        for name, ranks in _family_ranks(spellranks, _class_slug(path.stem)).items():
+            if re.search(rf"(?<![\w']){re.escape(name)}(?![\w'])", text):
+                ids.update(spell_id for _, spell_id in ranks)
+    return ids
 
 
 def write_spell_icons(

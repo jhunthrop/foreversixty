@@ -13,18 +13,30 @@ import { test, type Page } from '@playwright/test';
 import { atWidths, settle, sizeTo } from '../support/capture-kit';
 import { renderMessage, type Dumped } from '../discord-bot/discord-render';
 import {
+  CHARACTER_PATH,
+  CHARACTER_URL,
+  ownerMeAnswer,
+  stubCharacter,
+} from '../../e2e/support/character-fixture';
+import { envelope } from '../../e2e/support/guild-billing';
+import { plantSessionHint } from '../../e2e/support/subscribe-stubs';
+import { mockEntitlements } from '../../../src/test-support/billing-fixtures';
+import {
   GUID,
+  HISTORY_PAGES,
   PANEL_URL,
   RECENT,
   ROWS_URL,
   STATES,
   routeAccountDevices,
   routeCoach,
+  routeCoachHistory,
   routeRecent,
   signInAs,
   writingThenModel,
   type AccountLineId,
   type CoachStub,
+  type HistoryStub,
   type StateId,
 } from '../../e2e/support/coach-stubs';
 import { drainShifts, recordShifts, sumShifts } from '../../e2e/support/layout-shift';
@@ -265,6 +277,75 @@ atWidths('A8 account line, loading', PHONE_AND_DESKTOP, async (page, width) => {
   await openAt(page, '/account', width);
   await shoot(page, 'a8-account', 'loading', width);
   release();
+});
+
+// ---- A12: the character page's coach history -----------------------------------------------------
+
+const HISTORY_WIDTHS = [390, 1440, 2000] as const;
+
+/** The Premium owner of the fixture character, with the history route answering `history`. */
+async function openHistory(page: Page, history: HistoryStub, width: number): Promise<void> {
+  await plantSessionHint(page);
+  const me = ownerMeAnswer();
+  const data = {
+    ...(me.data as Record<string, unknown>),
+    entitlements: mockEntitlements({ log_coach: true }),
+  };
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(data)));
+  await stubCharacter(page);
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(envelope({ code: 'not_found' }, 404)));
+  await routeCoachHistory(page, history);
+  await openAt(page, CHARACTER_PATH, width);
+}
+
+/** The full page, and the list (or the page's foot, where it would be) at viewport size. */
+async function shootHistory(page: Page, state: string, width: number): Promise<void> {
+  await atRest(page);
+  await shoot(page, 'a12-history', state, width);
+  const list = page.getByTestId('coach-history-list');
+  const subject = (await list.count()) > 0 ? list : page.getByTestId('character-builds');
+  await subject.screenshot({ path: file('a12-history', `${state}-list`, width) });
+}
+
+atWidths('A12 history: twenty rows, Show older, error, empty', HISTORY_WIDTHS, async (page, width) => {
+  await openHistory(page, { first: HISTORY_PAGES.first }, width);
+  await page.getByTestId('coach-history-row').nth(19).waitFor();
+  await shootHistory(page, 'rows', width);
+  await page.getByTestId('coach-history-older').click();
+  await page.getByTestId('coach-history-row').nth(20).waitFor();
+  await shootHistory(page, 'older', width);
+
+  const olderError = await page.context().newPage();
+  await openHistory(olderError, { first: HISTORY_PAGES.first, older: 500 }, width);
+  await olderError.getByTestId('coach-history-older').click();
+  await olderError.getByTestId('coach-history-older-error').waitFor();
+  await shootHistory(olderError, 'older-error', width);
+  await olderError.close();
+
+  const error = await page.context().newPage();
+  await openHistory(error, { first: 500 }, width);
+  await error.getByTestId('coach-history-error').waitFor();
+  await shootHistory(error, 'error', width);
+  await error.close();
+
+  const empty = await page.context().newPage();
+  await openHistory(empty, { first: { reviews: [], next_cursor: null } }, width);
+  await empty.getByTestId('character-builds').waitFor();
+  await settle(empty);
+  await shootHistory(empty, 'empty', width);
+  await empty.close();
+});
+
+// ---- The privacy page's Log coach section (Task 39 lifted the hold) ------------------------------
+
+atWidths('privacy page, Log coach section', PHONE_AND_DESKTOP, async (page, width) => {
+  await openAt(page, '/privacy', width);
+  const heading = page.getByRole('heading', { name: 'Log coach' });
+  await heading.scrollIntoViewIfNeeded();
+  await heading.evaluate((node) => node.scrollIntoView({ block: 'start' }));
+  await atRest(page);
+  await page.screenshot({ path: file('privacy', 'coach-section', width) });
+  await shoot(page, 'privacy', 'coach', width);
 });
 
 // ---- 360 wide: the strip, the account line and the phone fold (spec 1 and 9) ---------------------

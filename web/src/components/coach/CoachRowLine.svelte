@@ -78,7 +78,7 @@
           report.firstFight,
         ),
   );
-  const label = $derived(line === null ? '' : `${line.lead}${line.title}`);
+  const label = $derived(line === null ? '' : `${line.lead}${line.title}${line.after}`);
   const OFFICER_BUTTON =
     'rounded-control border-line-warm hover:border-gold focus-visible:outline-gold active:bg-card-top inline-flex h-11 items-center border px-3 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 md:h-9';
 </script>

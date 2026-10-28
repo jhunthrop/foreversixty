@@ -8,7 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { coachCopy } from '../../lib/coach/copy';
-import { normalizeFightCoach, normalizeRecent } from '../../lib/coach/normalize';
+import { normalizeFightCoach, normalizeHistory, normalizeRecent } from '../../lib/coach/normalize';
 import { viewForAnswer } from '../../lib/coach/states';
 import type { CoachFull } from '../../lib/coach/types';
 
@@ -21,7 +21,7 @@ const full = (name: string): CoachFull => {
 };
 
 const ANSWERS = readdirSync(DIR)
-  .filter((file) => file.endsWith('.json') && !file.startsWith('last-raid'))
+  .filter((file) => file.endsWith('.json') && !file.startsWith('last-raid') && !file.startsWith('history'))
   .map((file) => file.replace(/\.json$/, ''));
 
 describe('coach fixtures (the coach output the e2e and captures stub)', () => {
@@ -69,6 +69,19 @@ describe('coach fixtures (the coach output the e2e and captures stub)', () => {
       for (const [, m, s] of text.matchAll(clocks))
         expect(Number(m) * 60 + Number(s), name).toBeLessThanOrEqual(232);
     }
+  });
+
+  it('the history pages read as the route answers: twenty rows and a cursor, then the rest', () => {
+    const first = normalizeHistory(read('history-first'));
+    const older = normalizeHistory(read('history-older'));
+    expect(first.reviews).toHaveLength(20);
+    expect(first.next_cursor).not.toBeNull();
+    expect(older.reviews.length).toBeGreaterThan(0);
+    expect(older.next_cursor).toBeNull();
+    const rows = [...first.reviews, ...older.reviews];
+    expect(rows.some((row) => !row.kill)).toBe(true);
+    expect(rows.some((row) => row.fix_first === null)).toBe(true);
+    expect(rows.some((row) => row.source === 'model')).toBe(true);
   });
 
   it('the last-raid nights read as the account line expects', () => {

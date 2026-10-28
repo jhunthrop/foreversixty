@@ -89,7 +89,7 @@
         <SpellIcon url={iconUrl(line.spellId)} size={20} />
         <span class="text-strong ml-1 font-semibold group-hover:underline group-hover:underline-offset-[3px]"
           >{line.title}</span
-        >
+        >{#if line.after !== ''}<span class="text-muted whitespace-pre">{line.after}</span>{/if}
       </a>
       <span class="text-muted hidden items-center whitespace-pre md:flex" aria-hidden="true"
         >{COACH_SEPARATOR}</span

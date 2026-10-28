@@ -30,7 +30,7 @@ describe('coachCopy against the experience spec', () => {
 
   it('fills a row line', () => {
     expect(fill(coachCopy.rowFree, { n: 3, title: 'Bloodthirst: 9 casts lost' })).toBe(
-      '3 things to fix · First: Bloodthirst: 9 casts lost · Read the full review with Premium',
+      '3 things to fix · Bloodthirst: 9 casts lost first · Read the full review with Premium',
     );
   });
 

@@ -1,0 +1,79 @@
+{
+  "reviews": [
+    {
+      "report_id": "fixture2mc04",
+      "fight_index": 6,
+      "player_key": "us/hardcore/baelgrim",
+      "spec": "Fury",
+      "boss": "Shazzrah",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-10-04T02:15:00Z",
+      "fix_first": {
+        "title": "Bloodthirst: 9 casts lost"
+      }
+    },
+    {
+      "report_id": "fixture2mc04",
+      "fight_index": 5,
+      "player_key": "us/hardcore/baelgrim",
+      "spec": "Fury",
+      "boss": "Baron Geddon",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-10-04T02:14:00Z",
+      "fix_first": {
+        "title": "Bloodthirst: 9 casts lost"
+      }
+    },
+    {
+      "report_id": "fixture2mc04",
+      "fight_index": 4,
+      "player_key": "us/hardcore/baelgrim",
+      "spec": "Fury",
+      "boss": "Garr",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-10-04T02:13:00Z",
+      "fix_first": {
+        "title": "Bloodthirst: 9 casts lost"
+      }
+    },
+    {
+      "report_id": "fixture2mc04",
+      "fight_index": 3,
+      "player_key": "us/hardcore/baelgrim",
+      "spec": "Fury",
+      "boss": "Gehennas",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-10-04T02:12:00Z",
+      "fix_first": {
+        "title": "Bloodthirst: 9 casts lost"
+      }
+    },
+    {
+      "report_id": "fixture2mc04",
+      "fight_index": 2,
+      "player_key": "us/hardcore/baelgrim",
+      "spec": "Fury",
+      "boss": "Magmadar",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-10-04T02:11:00Z",
+      "fix_first": null
+    },
+    {
+      "report_id": "fixture2mc04",
+      "fight_index": 1,
+      "player_key": "us/hardcore/baelgrim",
+      "spec": "Fury",
+      "boss": "Lucifron",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-10-04T02:10:00Z",
+      "fix_first": null
+    }
+  ],
+  "next_cursor": ""
+}

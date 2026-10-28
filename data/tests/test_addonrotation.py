@@ -11,6 +11,9 @@ from pipeline.addonrotation import (
     _one_line,
     build_rotation,
     build_rotations,
+    coach_persona_spell_ids,
+    coach_spell_ids,
+    compute_spell_icons,
 )
 
 BUILD = "1.60.1.70374"
@@ -277,3 +280,60 @@ def test_known_spells_pin_to_their_verified_client_icon():
                 f"{spec} band 60 {name!r}: expected verified icon {expected_icon!r}, "
                 f"got {icon_by_name.get(name)!r}"
             )
+
+
+def _write_coach_rules(curated_dir: Path, spec: str, rules: dict) -> None:
+    coach_dir = curated_dir / "coach"
+    coach_dir.mkdir(parents=True, exist_ok=True)
+    (coach_dir / f"{spec}.json").write_text(json.dumps(rules), encoding="utf-8")
+
+
+def test_coach_spell_ids_reads_every_rank_wherever_a_rule_file_holds_one(tmp_path):
+    _write_coach_rules(tmp_path, "priest-holy", {
+        "core": [{"family": "Greater Heal", "spell_ids": [2060, 10963, 10964, 10965]}],
+        "auras": [{"name": "Inner Fire", "spell_ids": [588, 7128]}],
+        "efficiency": {"downranks": [{"spell_id": 2054, "talent": False}]},
+        "note": "a spell id in prose is not one: 9999",
+    })
+    _write_coach_rules(
+        tmp_path, "warrior-fury", {"core": [{"family": "Bloodrage", "spell_ids": [2687]}]}
+    )
+    (tmp_path / "coach" / "priest-holy.md").write_text("spell_ids: [1]", encoding="utf-8")
+    assert coach_spell_ids(tmp_path) == {2060, 10963, 10964, 10965, 588, 7128, 2054, 2687}
+
+
+def test_coach_spell_ids_is_empty_without_rule_files(tmp_path):
+    assert coach_spell_ids(tmp_path) == set()
+
+
+def test_compute_spell_icons_adds_the_coach_spells_no_rotation_line_names(tmp_path):
+    _write_apl(tmp_path, "warrior-fury", [_cast(23894, rank=4, notes="Bloodthirst on cooldown.")])
+    _write_coach_rules(
+        tmp_path, "priest-holy", {"core": [{"family": "Greater Heal", "spell_ids": [2060, 10965]}]}
+    )
+    (tmp_path / BUILD).mkdir()
+    (tmp_path / BUILD / "spellranks.json").write_text(json.dumps(SPELLRANKS), encoding="utf-8")
+    icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
+    assert {2060, 10965} <= set(icons)
+    assert 23894 in icons
+
+
+def test_the_committed_coach_rule_files_name_the_reviews_spells():
+    ids = coach_spell_ids(Path("curated"))
+    for spell_id in (2687, 10952):  # Bloodrage; Inner Fire, top rank
+        assert spell_id in ids
+
+
+def test_coach_persona_spell_ids_reads_every_rank_of_a_named_family(tmp_path):
+    (tmp_path / "coach").mkdir()
+    (tmp_path / "coach" / "warrior-fury.md").write_text(
+        "Bloodthirst on cooldown, and Bloodrage for rage. Not Whirlwinds, not battle shout.",
+        encoding="utf-8",
+    )
+    assert coach_persona_spell_ids(tmp_path, SPELLRANKS) == {23881, 23894, 2687}
+
+
+def test_the_committed_personas_name_the_heals_the_rank_finding_reads():
+    spellranks = json.loads(Path("builds/1.60.1.70630/spellranks.json").read_text(encoding="utf-8"))
+    ids = coach_persona_spell_ids(Path("curated"), spellranks)
+    assert 10965 in ids  # Greater Heal, Rank 4

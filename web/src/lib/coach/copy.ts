@@ -11,8 +11,8 @@ export const COACH_SEPARATOR = ' · ';
 
 export const coachCopy = {
   rowPremium: 'Fix first · {title}',
-  rowFree: '{n} things to fix · First: {title} · Read the full review with Premium',
-  rowFreeOne: '1 thing to fix · First: {title} · Read the full review with Premium',
+  rowFree: '{n} things to fix · {title} first · Read the full review with Premium',
+  rowFreeOne: '1 thing to fix · {title} first · Read the full review with Premium',
   rowFreeNoFirst: '{n} things to fix · Read the full review with Premium',
   rowFreeNoFirstOne: '1 thing to fix · Read the full review with Premium',
   rowPremiumNoFirst: "{n} things to fix · Open your coach's review",
@@ -47,6 +47,7 @@ export const coachCopy = {
   historyOlder: 'Show older',
   historyNone: 'Nothing to fix',
   historyRules: 'Log only',
+  historyWipe: 'Wipe',
   rulesNothing: 'Nothing to fix on this pull that the log can show.',
   notReviewable:
     'This pull is too short to review. The coach reads boss pulls long enough to show a rotation.',

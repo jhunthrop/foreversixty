@@ -30,8 +30,10 @@ describe('CoachRowStrip', () => {
   });
   it('free owner: count, first, and a Premium link to /premium', () => {
     const { body } = render(CoachRowStrip, { props: props(coachTeaser()) });
-    expect(body).toContain('3 things to fix · First:');
-    expect(body).toContain('Bloodthirst: 9 casts lost');
+    expect(body).toContain('3 things to fix ·');
+    expect(body).toMatch(
+      /Bloodthirst: 9 casts lost<\/span>(<!--[^>]*-->)*<span class="text-muted whitespace-pre"> first<\/span>/,
+    );
     expect(body).toContain('href="/premium"');
     expect(body).toContain('Read the full review with Premium');
   });

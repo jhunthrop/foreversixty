@@ -323,6 +323,7 @@ func webFixtures(t *testing.T) map[string]any {
 	short.Fight = withDuration(short.Fight, 25_000)
 	preparing.Refs = Refs{SimPreparing: true}
 	clean, oneFinding, raidBuff := furyClean(t), furyOneFinding(t), furyRaidBuff(t)
+	historyFirst, historyOlder := webHistoryPages(webHistoryItems(t, workedPack, furyDoc, fury))
 
 	return map[string]any{
 		"fury-model.json":                webAnswer(worked, webFuryKey, AccessFull, modelOf(furyDoc, fury)),
@@ -346,6 +347,8 @@ func webFixtures(t *testing.T) map[string]any {
 		"last-raid-molten-core.json":     webNight(webMCZone, moltenCoreNightPacks(t)),
 		"last-raid-onyxia.json":          webNight(webOnyxZone, []NightFight{{FightIndex: webFight, Pack: workedPack}}),
 		"last-raid-clean.json":           webNight(webOnyxZone, []NightFight{{FightIndex: webFight, Pack: Review(clean)}}),
+		"history-first.json":             historyFirst,
+		"history-older.json":             historyOlder,
 	}
 }
 

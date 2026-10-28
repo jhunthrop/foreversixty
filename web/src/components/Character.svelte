@@ -10,9 +10,11 @@
   import HistoryReserve from './character/HistoryReserve.svelte';
   import ProfileDescriptor from './character/ProfileDescriptor.svelte';
   import CharacterNotFound from './CharacterNotFound.svelte';
+  import CoachHistoryList from './coach/CoachHistoryList.svelte';
   import CharacterUnlogged from './CharacterUnlogged.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { fetchMeOnce, type MeCharacter } from '../lib/account/api';
+  import { viewerFromMe } from '../lib/coach/viewer';
   import { syncView } from '../lib/character-header/sync';
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import {
@@ -130,6 +132,8 @@
   let ownerKnown = $state(false);
   /** The viewer's plan includes History (`me.entitlements.history`). */
   let historyEntitled = $state(false);
+  /** The viewer holds the log coach (`me.entitlements.log_coach`): the owner's coach history. */
+  let coachEntitled = $state(false);
   /** The latest rated fight and its rating, from the rating panel once it loads (L8.5 fix round
    *  2 item 3): "Every ranked fight" marks that row "rated 65". */
   let rated = $state<{ report_id: string; fight_index: number; overall: number } | null>(null);
@@ -140,6 +144,7 @@
     owned = false;
     ownerKnown = false;
     historyEntitled = false;
+    coachEntitled = false;
     if (requested === null) return;
     const current = readCurrent();
     const active =
@@ -151,6 +156,7 @@
         if (resolved !== requested) return;
         own = ownCharacter(me?.characters, requested);
         historyEntitled = me?.entitlements?.history === true;
+        coachEntitled = viewerFromMe(me).premium;
         owned = active || own !== null;
         ownerKnown = true;
       })
@@ -412,6 +418,12 @@
           <p class="text-muted text-[12px]" data-testid="character-builds-footnote">{buildsFootnote}</p>
         {/if}
       </section>
+    {/if}
+
+    <!-- The coach's stored reviews of this character (log coach spec 3.5): the owner on Premium
+         only, last on the page so its late arrival moves nothing above it. -->
+    {#if own !== null && coachEntitled}
+      <CoachHistoryList path={resolved} />
     {/if}
   </div>
 {/if}

@@ -13,21 +13,26 @@ describe('rowLineFor', () => {
     expect(rowLineFor(coachModelReview())).toEqual({
       lead: 'Fix first · ',
       title: 'Bloodthirst: 9 casts lost',
+      after: '',
       spellId: 23881,
       upgrade: '',
     });
   });
-  it('free: count, first title, and the Premium link as a separate target', () => {
+  it('free: count, the title then "first", and the Premium link as a separate target', () => {
     const line = rowLineFor(coachTeaser());
     expect(line).toEqual({
-      lead: '3 things to fix · First: ',
+      lead: '3 things to fix · ',
       title: 'Bloodthirst: 9 casts lost',
+      after: ' first',
       spellId: 23881,
       upgrade: 'Read the full review with Premium',
     });
   });
   it('free with one finding reads in the singular', () => {
-    expect(rowLineFor(coachTeaser({ finding_count: 1 }))?.lead).toBe('1 thing to fix · First: ');
+    expect(rowLineFor(coachTeaser({ finding_count: 1 }))).toMatchObject({
+      lead: '1 thing to fix · ',
+      after: ' first',
+    });
   });
   it('Premium with no Fix first but Then items', () => {
     const base = coachRulesReview();
@@ -44,6 +49,7 @@ describe('rowLineFor', () => {
     expect(line).toEqual({
       lead: '3 things to fix',
       title: '',
+      after: '',
       spellId: null,
       upgrade: 'Read the full review with Premium',
     });
