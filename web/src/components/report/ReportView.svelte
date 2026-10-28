@@ -66,7 +66,7 @@
     windowSummaryLabel,
     type TimeWindow,
   } from '../../lib/report/window';
-  import ActorTable from './ActorTable.svelte';
+  import ActorTable from '../coach/GatedActorTable.svelte';
   import AuraTable from './AuraTable.svelte';
   import CastTable from './CastTable.svelte';
   import DeathsTab from './DeathsTab.svelte';
