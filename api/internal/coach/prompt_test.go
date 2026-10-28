@@ -9,6 +9,8 @@ import (
 	"testing"
 )
 
+// The golden prompt moves with examplePack() and the fixture persona by design: a change
+// to either, or to the rules, is a deliberate diff to review and re-pin.
 var updatePrompt = flag.Bool("update-prompt", false, "rewrite the golden prompt")
 
 const (
@@ -91,6 +93,17 @@ func TestRulesText_HasTheCapsAndRules(t *testing.T) {
 	for _, w := range bannedTone {
 		if !strings.Contains(rulesText, w) {
 			t.Errorf("rules lack the banned word %q", w)
+		}
+	}
+}
+
+func TestRulesText_ListsEveryRelationConnective(t *testing.T) {
+	if strings.Contains(rulesText, connectivesPlaceholder) {
+		t.Fatal("placeholder left in the rules")
+	}
+	for _, w := range RelationConnectives {
+		if !strings.Contains(rulesText, w) {
+			t.Errorf("rules lack the connective %q", w)
 		}
 	}
 }

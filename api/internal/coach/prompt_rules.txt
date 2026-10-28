@@ -26,7 +26,7 @@ Reply with one JSON object and nothing else: no prose before or after it, no cod
 - Length caps are hard: opening 280 characters and 2 sentences, title 60, fixFirst why 320, thenFix why 200, drillText 240, doingWell text 160.
 
 CONNECTIONS
-- Any sentence that says one thing caused or explains another (because, so, which is why, instead, cost you, meant, led to, as a result, since, hence) must cite a link id from the pack on that item; if no link fits, describe each fact on its own and do not connect them.
+- Any sentence that says one thing caused or explains another (any of: {{connectives}}) must cite a link id from the pack on that item; if no link fits, describe each fact on its own and do not connect them.
 - Cite only link ids that exist in the pack, and only for the findings they join.
 
 TONE

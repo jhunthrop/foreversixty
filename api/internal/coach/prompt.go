@@ -13,13 +13,17 @@ import (
 // The shared coach rules (§9.2) and the output schema (§9.3). Neither names a model.
 var (
 	//go:embed prompt_rules.txt
-	rulesText string
+	rulesTemplate string
 	//go:embed schema.json
 	outputSchemaText string
+	// rulesText is the template with the validator's connectives filled in, so the
+	// prompt and the validator read one list.
+	rulesText = strings.ReplaceAll(rulesTemplate, connectivesPlaceholder, strings.Join(RelationConnectives, ", "))
 )
 
 const (
-	roleSystem = "system"
+	connectivesPlaceholder = "{{connectives}}"
+	roleSystem             = "system"
 	roleUser   = "user"
 	// personaTemplate sits between the rules and the persona in the system message. It is
 	// part of the prompt template, so it is part of model_version.
