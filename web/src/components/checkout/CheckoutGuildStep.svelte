@@ -11,12 +11,22 @@
      and every guild crest decoded or failed, capped at CREST_SETTLE_MS. Task 18's `ready` card
      calls `onSwitch` for `Switch to Guild` / `Switch to Raid guild`. -->
 <script lang="ts">
+  import { tick } from 'svelte';
+  import type { SubscribeStep } from '../../lib/billing/contract';
   import type { Me, MeGuild } from '../../lib/account/api';
   import { guildHref } from '../../lib/characters';
   import { preloadImages } from '../../lib/ui/preload-images';
   import { CARD } from '../../lib/ui/card';
   import { premiumSource } from '../../lib/account/plan-line';
   import { readMeGuildCount } from '../../lib/account/premium-hint';
+  import { claimGuild, confirmClaim } from '../../lib/guild/api';
+  import {
+    claimKindOf,
+    refusalLine,
+    type CardNotice,
+    type ClaimIo,
+    type ClaimKind,
+  } from '../../lib/billing/claim-flow';
   import { checkoutGuildCopy as copy, type GuildTier } from '../../lib/billing/checkout-guild-copy';
   import { GUILD_LEAD_RESERVE, GUILD_SKELETON_CARD } from '../../lib/billing/checkout-layout';
   import { priceFor } from '../../lib/billing/plan-costs';
@@ -107,6 +117,80 @@
     leadEl.focus();
   });
 
+  const CLAIM_IO: ClaimIo = { claim: claimGuild, confirm: confirmClaim };
+  const STEP_ACTION_SELECTOR = '[data-step-action]';
+
+  /** The one open confirm (all cards), its refusal line, and the notice a finished claim left. */
+  let openClaim = $state<{ id: number; kind: ClaimKind; error: string | null } | null>(null);
+  let notice = $state<{ id: number; value: CardNotice } | null>(null);
+  /** Set by a claim that re-reads /v1/me: focus moves once that card's step changes. */
+  let awaitedStep: { id: number; from: SubscribeStep | null } | null = null;
+
+  const stepOfGuild = (id: number): SubscribeStep | null =>
+    guilds.find((guild) => guild.id === id)?.subscribe?.step ?? null;
+
+  function focusSoon(find: () => HTMLElement | null): void {
+    void tick().then(() => find()?.focus());
+  }
+
+  function closeClaim(returnFocusTo: number | null): void {
+    openClaim = null;
+    if (returnFocusTo !== null) focusSoon(() => document.getElementById(`guild-${returnFocusTo}-claim-open`));
+  }
+
+  function onClaimDone(id: number, line: string): void {
+    awaitedStep = { id, from: stepOfGuild(id) };
+    notice = { id, value: { text: line, role: 'status' } };
+    closeClaim(null);
+    onCheckAgain();
+  }
+
+  function onClaimRefused(guild: MeGuild, kind: ClaimKind, code: string, rereads: boolean): void {
+    openClaim = { id: guild.id, kind, error: refusalLine(kind, code, null, guild.name) };
+    if (!rereads) return;
+    awaitedStep = { id: guild.id, from: stepOfGuild(guild.id) };
+    onCheckAgain();
+  }
+
+  $effect(() => {
+    if (awaitedStep === null) return;
+    const { id, from } = awaitedStep;
+    const now = stepOfGuild(id);
+    if (now === from) return;
+    awaitedStep = null;
+    // The card moved on: the block closes and a refusal stands as an alert.
+    if (openClaim?.id === id) {
+      const name = guilds.find((guild) => guild.id === id)?.name ?? '';
+      if (openClaim.error !== null) {
+        notice = { id, value: { text: refusalLine(openClaim.kind, 'conflict', now, name), role: 'alert' } };
+      }
+      openClaim = null;
+    }
+    focusSoon(
+      () =>
+        document.querySelector<HTMLElement>(`#guild-${id} ${STEP_ACTION_SELECTOR}`) ??
+        document.getElementById(`guild-${id}-notice`),
+    );
+  });
+
+  function claimControls(guild: MeGuild, kind: ClaimKind | null) {
+    if (kind === null) return undefined;
+    const open = openClaim?.id === guild.id;
+    return {
+      open,
+      locked: openClaim !== null && !open,
+      error: open ? (openClaim?.error ?? null) : null,
+      io: CLAIM_IO,
+      onOpen: () => {
+        notice = null;
+        openClaim = { id: guild.id, kind, error: null };
+      },
+      onCancel: () => closeClaim(guild.id),
+      onDone: (line: string) => onClaimDone(guild.id, line),
+      onRefused: (code: string, rereads: boolean) => onClaimRefused(guild, kind, code, rereads),
+    };
+  }
+
   function guildPageHref(guild: MeGuild): string {
     if (guild.slug) return `/guild/${guild.region}/${guild.ruleset}/${encodeURIComponent(guild.slug)}`;
     return guildHref(guild.region, guild.ruleset, guild.name);
@@ -160,6 +244,8 @@
                 viewerIsOfficer={viewerIsOfficer(guild)}
                 guildPageHref={guildPageHref(guild)}
                 {onCheckAgain}
+                claim={claimControls(guild, claimKindOf(guild.subscribe?.step ?? null))}
+                notice={notice?.id === guild.id ? notice.value : null}
               />
             {/snippet}
           </GuildStepCard>

@@ -204,3 +204,18 @@ export const checkoutGuildCopy = {
     button: 'Premium page',
   },
 } as const;
+
+const CLAIM_ERROR_LINES: Readonly<Record<string, (guild: string) => string>> = {
+  already_claimed: checkoutGuildCopy.claimErrors.alreadyClaimed,
+  claim_pending: checkoutGuildCopy.claimErrors.pending,
+  not_eligible: checkoutGuildCopy.claimErrors.notEligible,
+  no_battlenet: () => checkoutGuildCopy.claimErrors.noBattlenet,
+  rate_limited: () => checkoutGuildCopy.claimErrors.rateLimited,
+  holds_other: () => checkoutGuildCopy.claimErrors.holdsAnother,
+  same_account: () => checkoutGuildCopy.claimErrors.sameAccount,
+};
+
+/** The §9.1 line for a claim refusal key (claim-flow.ts maps the API status to one); never the API sentence. */
+export function claimErrorLine(code: string, guild: string): string {
+  return CLAIM_ERROR_LINES[code]?.(guild) ?? checkoutGuildCopy.claimErrors.generic;
+}
