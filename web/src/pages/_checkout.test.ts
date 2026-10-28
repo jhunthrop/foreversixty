@@ -102,6 +102,10 @@ describe('checkout page frame: the CSS', () => {
     expect(source).toMatch(/data-checkout-step='guild'.*checkout-body.*\{\s*visibility: hidden;/s);
   });
 
+  it('sets the site measures to the page columns: 640 message and panel, 880 guild step', () => {
+    expect(source).toMatch(/\.checkout-main \{\s*--measure-form: 640px;\s*--measure-wide: 880px;\s*\}/);
+  });
+
   it('main carries the class the CSS keys on and no measure', async () => {
     const main = (await renderCheckout()).querySelector('main#main');
     expect(main?.className.split(/\s+/)).toEqual(expect.arrayContaining(['checkout-main', 'w-full']));

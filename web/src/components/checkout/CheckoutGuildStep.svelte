@@ -283,7 +283,8 @@
 <svelte:window onpageshow={onPageShow} />
 
 <div class="px-[18px] pt-5 pb-16 md:px-12 md:pt-8" data-testid="checkout-guild-step">
-  <div class="mx-auto flex w-full max-w-[880px] flex-col">
+  <!-- .measure-wide: checkout.astro sets it to this page's 880 px column. -->
+  <div class="measure-wide flex flex-col">
     {#if failed}
       <LoadError message={copy.loadError.title} {onRetry} testid="checkout-guild-error" />
     {:else if me === null || (empty === null && !crestsReady)}
@@ -296,7 +297,7 @@
       </ul>
     {:else if empty !== null}
       <div
-        class={`${CARD} mx-auto flex w-full max-w-[640px] flex-col gap-2 p-5`}
+        class={`${CARD} measure-form flex flex-col gap-2 p-5`}
         data-testid={empty === copy.emptyA ? 'checkout-guild-empty-a' : 'checkout-guild-empty-b'}
       >
         <p class="text-strong m-0 text-[15px]">{empty.title}</p>

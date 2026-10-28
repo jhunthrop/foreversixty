@@ -86,6 +86,13 @@ const lg = guildFrameReserve('lg');
     lgCard: lg.perCardPx,
   }}
 >
+  /* This page's two columns, through the site's measure classes (one column system, no page
+     container of its own): .measure-form is the 640 px message and Premium panel column
+     (spec §4.2), .measure-wide the guild step's 880 px column (§5.1). */
+  .checkout-main {
+    --measure-form: 640px;
+    --measure-wide: 880px;
+  }
   /* The guild step's height from the first paint: band, step padding, lead, the skeleton's
      cards and the foot (checkout-layout.ts guildFrameReserve). */
   :global(html[data-checkout-step='guild']) .checkout-main {

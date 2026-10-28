@@ -101,7 +101,9 @@ describe('CheckoutGuildStep: loading', () => {
 
   it('sits in the centred 880 column with the 48 / 18 gutters', () => {
     const body = html({ me: null });
-    expect(body).toContain('max-w-[880px]');
+    // The site's measure class; checkout.astro sets --measure-wide to 880 px for this page.
+    expect(body).toMatch(/class="measure-wide[ "]/);
+    expect(body).not.toContain('mx-auto');
     expect(body).toMatch(/px-\[18px\][^"]*md:px-12/);
   });
 });

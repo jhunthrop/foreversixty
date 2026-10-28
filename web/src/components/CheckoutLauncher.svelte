@@ -281,13 +281,11 @@
 
 {#if stepShown && request !== null && request.plan !== 'premium'}
   {#if refreshFailed}
-    <p
-      class="mx-auto w-full max-w-[880px] px-[18px] pt-5 text-[14px] md:px-12"
-      role="status"
-      data-testid="checkout-refresh-error"
-    >
-      {checkoutCopy.genericFailure}
-    </p>
+    <div class="px-[18px] pt-5 md:px-12">
+      <p class="measure-wide m-0 text-[14px]" role="status" data-testid="checkout-refresh-error">
+        {checkoutCopy.genericFailure}
+      </p>
+    </div>
   {/if}
   <CheckoutGuildStep
     me={stepMe}
@@ -305,9 +303,10 @@
   />
 {:else}
   <!-- The narrow body under the band: the redirect and refusal messages, the invalid-link
-       line, and the plan=premium slot (Task 12's PremiumOwnedPanel, spec §4.2). -->
-  <div class="mx-auto w-full max-w-[640px] px-[18px] pt-10 pb-16 md:px-0">
-    <div class={`flex flex-col gap-3 ${CHECKOUT_BODY_RESERVE}`} data-testid="checkout-body">
+       line, and the plan=premium slot (Task 12's PremiumOwnedPanel, spec §4.2). Its width is
+       the site's .measure-form, which checkout.astro sets to this page's 640 px column. -->
+  <div class="px-[18px] pt-10 pb-16 md:px-0">
+    <div class={`measure-form flex flex-col gap-3 ${CHECKOUT_BODY_RESERVE}`} data-testid="checkout-body">
       {#if invalid}
         <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
           {checkoutGuildCopy.invalidLink.text}

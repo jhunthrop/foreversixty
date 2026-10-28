@@ -15,7 +15,9 @@ describe('CheckoutLauncher static render', () => {
     const body = html();
     expect(body).toContain('data-testid="checkout-band"');
     expect(body).toContain(CHECKOUT_BAND_RESERVE);
-    expect(body).not.toContain('measure-form');
+    // No container of its own: the narrow body takes the site's .measure-form (640 px on this page).
+    expect(body).not.toContain('mx-auto');
+    expect(body).toMatch(/class="measure-form [^"]*"[^>]*data-testid="checkout-body"/);
   });
 
   it('reserves the body slot at the panel height around the one-line message', () => {

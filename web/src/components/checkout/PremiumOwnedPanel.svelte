@@ -34,7 +34,7 @@
   $effect(() => titleEl?.focus());
 </script>
 
-<section class={`${CARD} mx-auto flex w-full max-w-[640px] flex-col gap-2 p-5`} data-testid="premium-owned">
+<section class={`${CARD} measure-form flex flex-col gap-2 p-5`} data-testid="premium-owned">
   <h2 bind:this={titleEl} tabindex="-1" class="text-strong m-0 text-[15px] font-semibold outline-none">
     {view.title}
   </h2>
