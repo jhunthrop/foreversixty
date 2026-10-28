@@ -77,6 +77,13 @@ export interface CoachReview {
   readonly couldntCheck: readonly string[];
 }
 
+/** An account's model budget is spent for the day or the month; `until` is the UTC day it lifts. */
+export interface CoachCap {
+  readonly period: 'day' | 'month';
+  /** `YYYY-MM-DD`. */
+  readonly until: string;
+}
+
 export interface CoachFull {
   readonly report_id: string;
   readonly fight_index: number;
@@ -88,6 +95,8 @@ export interface CoachFull {
   readonly status: CoachStatus;
   readonly source: CoachSource;
   readonly busy: boolean;
+  /** The account cap behind `busy`, when it is the account's own; null for the site's cap. */
+  readonly cap: CoachCap | null;
   readonly access: 'full' | 'officer';
   readonly persona: { readonly label: string; readonly status: 'full' | 'starter' };
   readonly reviewed_at: string;

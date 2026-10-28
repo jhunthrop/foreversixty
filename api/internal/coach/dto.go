@@ -36,12 +36,28 @@ type fullDTO struct {
 	Status      string               `json:"status"`
 	Source      string               `json:"source"`
 	Busy        bool                 `json:"busy"`
+	Cap         *capDTO              `json:"cap,omitempty"`
 	Access      Access               `json:"access"`
 	Persona     personaDTO           `json:"persona"`
 	ReviewedAt  string               `json:"reviewed_at"`
 	Review      reviewDTO            `json:"review"`
 	Anchors     map[string]anchorDTO `json:"anchors"`
 	BasisLabels []string             `json:"basis_labels"`
+}
+
+// capDTO says which of the account's caps holds (§15.4): "day" or "month", and the UTC day
+// it lifts, as YYYY-MM-DD.
+type capDTO struct {
+	Period CapPeriod `json:"period"`
+	Until  string    `json:"until"`
+}
+
+// capOf is the account cap a busy answer carries; nil when none holds.
+func capOf(v *Verdict) *capDTO {
+	if v == nil || v.Refusal != RefusalAccountCap {
+		return nil
+	}
+	return &capDTO{Period: v.Period, Until: v.Until.Format(time.DateOnly)}
 }
 
 type personaDTO struct {
@@ -104,6 +120,7 @@ type served struct {
 	source     string
 	status     string
 	busy       bool
+	cap        *Verdict // the account cap behind busy; nil for the day's spend cap
 	persona    Persona
 	hasPersona bool
 	at         time.Time
@@ -145,7 +162,7 @@ func fullOf(req fightRequest, l loaded, access Access, sv served) fullDTO {
 	return fullDTO{
 		ReportID: req.reportID, FightIndex: req.fight, PlayerKey: req.player,
 		Spec: c.SpecLabel, Role: c.Role, Size: c.Size, Kill: c.Kill,
-		Status: sv.status, Source: sv.source, Busy: sv.busy, Access: access,
+		Status: sv.status, Source: sv.source, Busy: sv.busy, Cap: capOf(sv.cap), Access: access,
 		Persona: personaOf(c.SpecLabel, sv), ReviewedAt: sv.at.UTC().Format(time.RFC3339),
 		Review: reviewOf(sv.doc, l.pack), Anchors: anchorsOf(l.pack, l.tables),
 		BasisLabels: nonNil(l.pack.BasisLabels),

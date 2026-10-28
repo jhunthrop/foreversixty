@@ -5,6 +5,7 @@
 // (not an object, or no usable `access`) normalises to null.
 import type {
   CoachAnchor,
+  CoachCap,
   CoachAnchorKind,
   CoachFull,
   CoachHistoryItem,
@@ -159,6 +160,13 @@ function teaser(raw: Raw): CoachTeaser {
   };
 }
 
+/** The account cap: a known period and a day it lifts, else null. */
+function cap(value: unknown): CoachCap | null {
+  const raw = asRaw(value);
+  if (raw === null || (raw.period !== 'day' && raw.period !== 'month')) return null;
+  return { period: raw.period, until: str(raw.until) };
+}
+
 function full(raw: Raw, access: 'full' | 'officer'): CoachFull {
   const persona = asRaw(raw.persona) ?? {};
   return {
@@ -172,6 +180,7 @@ function full(raw: Raw, access: 'full' | 'officer'): CoachFull {
     status: status(raw.status),
     source: source(raw.source),
     busy: raw.busy === true,
+    cap: cap(raw.cap),
     access,
     persona: { label: str(persona.label), status: persona.status === 'starter' ? 'starter' : 'full' },
     reviewed_at: str(raw.reviewed_at),

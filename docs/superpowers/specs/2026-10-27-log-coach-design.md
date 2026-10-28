@@ -756,6 +756,12 @@ The player gets the rule-only rendering with one quiet line above it: `Your coac
 now. This is the review from your log alone; the coach's version will be here when you next
 open it.` Nothing is queued while the cap holds. The next view after the cap resets generates.
 
+Each account also has its own spend caps (Task 45, owner 2026-10-28): a UTC day
+(`COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD`) and a UTC calendar month by plan tier (about a sixth
+of the plan's monthly price), charged to the account that opens the review. When one holds, the
+answer carries `cap { period ("day"|"month"), until (YYYY-MM-DD) }` beside `busy`, and the panel
+shows the experience spec's `capAccountDay` or `capAccountMonth` in the busy line's place.
+
 ## 16. Personas and voice per surface
 
 The persona speaks only in the Coach panel and the history. The report row teaser, the Discord
@@ -777,6 +783,7 @@ the panel speaks as the coach.
 
 Full: `{ report_id, fight_index, player_key, spec, role, size, kill, status
 ("ready"|"writing"|"preparing"|"not_reviewable"), source ("model"|"rules"), busy (bool),
+cap? ({ period, until }, only when the account's own cap holds, §15.4),
 persona { label, status ("full"|"starter") }, reviewed_at, review { opening, fixFirst,
 thenFix[], doingWell[], couldntCheck[] }, anchors { "a1": { kind, spell_id?, at_ms?, death? } },
 basis_labels[] }`. Teaser: `{ status, access: "teaser", finding_count, fix_first: { title } }`.

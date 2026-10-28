@@ -14,6 +14,18 @@ describe('normalizeFightCoach', () => {
     expect(normalizeFightCoach({ ...coachModelReview(), extra: 1 })).toEqual(coachModelReview());
   });
 
+  it('keeps a known account cap and drops an unknown one', () => {
+    const cap = { period: 'month', until: '2026-11-01' };
+    expect(normalizeFightCoach({ ...coachModelReview(), busy: true, cap })).toMatchObject({
+      busy: true,
+      cap,
+    });
+    expect(normalizeFightCoach({ ...coachModelReview(), cap: { period: 'year' } })).toMatchObject({
+      cap: null,
+    });
+    expect(normalizeFightCoach({ ...coachModelReview(), cap: undefined })).toMatchObject({ cap: null });
+  });
+
   it('a teaser without a spell id keeps null', () => {
     const got = normalizeFightCoach({ access: 'teaser', fix_first: { title: 't', code: 'c' } });
     expect(got).toMatchObject({ fix_first: { spell_id: null }, finding_count: 0, status: 'ready' });

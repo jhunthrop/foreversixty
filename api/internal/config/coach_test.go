@@ -109,3 +109,44 @@ func TestCoachConfig_ProvidersIsACopy(t *testing.T) {
 		t.Fatal("Providers shares its backing array")
 	}
 }
+
+var accountSpendCapVars = []string{
+	"COACH_MONTHLY_SPEND_CAP_PREMIUM_USD", "COACH_MONTHLY_SPEND_CAP_GUILD_USD",
+	"COACH_MONTHLY_SPEND_CAP_RAID_GUILD_USD", "COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD",
+}
+
+func TestCoachConfig_AccountSpendCapDefaults(t *testing.T) {
+	c, err := loadCoach(coachEnv(nil))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := AccountSpendCaps{MonthlyPremiumUSD: 1, MonthlyGuildUSD: 2.5, MonthlyRaidGuildUSD: 4, DailyUSD: 0.15}
+	if c.AccountSpendCaps != want {
+		t.Fatalf("got %+v, want %+v", c.AccountSpendCaps, want)
+	}
+}
+
+func TestCoachConfig_AccountSpendCapsRead(t *testing.T) {
+	c, err := loadCoach(coachEnv(map[string]string{
+		"COACH_MONTHLY_SPEND_CAP_PREMIUM_USD": "2", "COACH_MONTHLY_SPEND_CAP_GUILD_USD": "3",
+		"COACH_MONTHLY_SPEND_CAP_RAID_GUILD_USD": "5", "COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD": "0.5",
+	}))
+	want := AccountSpendCaps{MonthlyPremiumUSD: 2, MonthlyGuildUSD: 3, MonthlyRaidGuildUSD: 5, DailyUSD: 0.5}
+	if err != nil || c.AccountSpendCaps != want {
+		t.Fatalf("%+v %v", c.AccountSpendCaps, err)
+	}
+}
+
+func TestCoachConfig_AccountSpendCapsMustBePositiveWhileEnabled(t *testing.T) {
+	for _, name := range accountSpendCapVars {
+		for _, v := range []string{"0", "-1", "x", "Inf"} {
+			_, err := loadCoach(coachEnv(map[string]string{name: v}))
+			if err == nil || !strings.Contains(err.Error(), name) {
+				t.Fatalf("%s=%s: %v", name, v, err)
+			}
+		}
+		if _, err := loadCoach(env(map[string]string{name: "0"})); err != nil {
+			t.Fatalf("%s=0 refused while the switch is off: %v", name, err)
+		}
+	}
+}

@@ -28,6 +28,7 @@ export function coachModelReview(overrides: Partial<CoachFull> = {}): CoachFull 
     status: 'ready',
     source: 'model',
     busy: false,
+    cap: null,
     access: 'full',
     persona: { label: 'Your Fury coach', status: 'full' },
     reviewed_at: '2026-10-27T20:00:00Z',
@@ -66,6 +67,8 @@ export function coachRulesReview(overrides: Partial<CoachFull> = {}): CoachFull 
 }
 
 export const coachBusyReview = (): CoachFull => coachRulesReview({ busy: true });
+export const coachAccountCapReview = (period: 'day' | 'month', until: string): CoachFull =>
+  coachRulesReview({ busy: true, cap: { period, until } });
 export const coachWritingReview = (): CoachFull => coachRulesReview({ status: 'writing' });
 export const coachOfficerReview = (): CoachFull => coachModelReview({ access: 'officer' });
 export const coachNotReviewable = (): CoachTeaser =>

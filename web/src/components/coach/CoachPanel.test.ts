@@ -6,6 +6,7 @@ import type { CoachAnswer } from '../../lib/coach/panel-state.svelte';
 import { reserveFor, SLOT_RESERVE, type Reserve } from '../../lib/coach/reserves';
 import { viewForAnswer, viewForFailure, viewOf, type CoachPanelView } from '../../lib/coach/states';
 import {
+  coachAccountCapReview,
   coachBusyReview,
   coachModelReview,
   coachNotReviewable,
@@ -134,6 +135,22 @@ describe('CoachPanel', () => {
     const body = panel(coachBusyReview());
     expect(body.indexOf('Your coach is busy right now')).toBeGreaterThan(-1);
     expect(body.indexOf('Your coach is busy right now')).toBeLessThan(body.indexOf('A clean pull'));
+  });
+
+  it("an account's daily cap shows its own line in the busy line's place", () => {
+    const body = panel(coachAccountCapReview('day', '2026-10-29'));
+    const line = body.slice(body.indexOf('data-testid="coach-busy"'));
+    expect(line.slice(0, line.indexOf('</p>'))).toContain(
+      'model budget. Reviews are from the log until tomorrow.',
+    );
+    expect(body).not.toContain('Your coach is busy right now');
+    expect(body.indexOf('data-testid="coach-busy"')).toBeLessThan(body.indexOf('A clean pull'));
+  });
+
+  it("an account's monthly cap names the first of next month", () => {
+    const body = panel(coachAccountCapReview('month', '2026-11-01'));
+    expect(body).toContain('Reviews are from the log until 1 Nov.');
+    expect(body).not.toContain('Your coach is busy right now');
   });
 
   it('starter persona shows the early version and the hint', () => {

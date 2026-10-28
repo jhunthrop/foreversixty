@@ -16,7 +16,24 @@ const (
 	defaultCoachDataDir       = "/coach"
 	defaultLLMBaseURL         = "https://ai-gateway.vercel.sh/v1"
 	defaultCoachTemperature   = 0.3
+
+	// The per-account caps are about a sixth of each plan's monthly price ($6, $15, $25). A
+	// review costs about $0.0005 at the pinned prices, so they allow thousands of reviews
+	// and only stop abuse.
+	defaultMonthlyCapPremiumUSD   = 1.00
+	defaultMonthlyCapGuildUSD     = 2.50
+	defaultMonthlyCapRaidGuildUSD = 4.00
+	defaultDailyCapPerAccountUSD  = 0.15
 )
+
+// AccountSpendCaps bound the model spend one account may cause: a calendar month (UTC) by
+// its plan tier, and a UTC day.
+type AccountSpendCaps struct {
+	MonthlyPremiumUSD   float64 // COACH_MONTHLY_SPEND_CAP_PREMIUM_USD
+	MonthlyGuildUSD     float64 // COACH_MONTHLY_SPEND_CAP_GUILD_USD
+	MonthlyRaidGuildUSD float64 // COACH_MONTHLY_SPEND_CAP_RAID_GUILD_USD
+	DailyUSD            float64 // COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD
+}
 
 // CoachConfig is the Log Coach's model client and cap settings.
 type CoachConfig struct {
@@ -26,11 +43,13 @@ type CoachConfig struct {
 	DailySpendCapUSD float64
 	// DailyReviewsPerAccount (COACH_DAILY_REVIEWS_PER_ACCOUNT) bounds generations per account per UTC day.
 	DailyReviewsPerAccount int
-	DataDir                string // COACH_DATA_DIR
-	LLMBaseURL             string // LLM_BASE_URL
-	LLMModel               string // LLM_MODEL
-	LLMAPIKey              string // LLM_API_KEY, from Secret Manager
-	LLMProviders           []string
+	// AccountSpendCaps bound each account's spend by month (per plan tier) and day.
+	AccountSpendCaps AccountSpendCaps
+	DataDir          string // COACH_DATA_DIR
+	LLMBaseURL       string // LLM_BASE_URL
+	LLMModel         string // LLM_MODEL
+	LLMAPIKey        string // LLM_API_KEY, from Secret Manager
+	LLMProviders     []string
 	// LLMPriceInPerMTok and LLMPriceOutPerMTok are USD per million tokens.
 	LLMPriceInPerMTok, LLMPriceOutPerMTok float64
 	Temperature                           float64 // COACH_TEMPERATURE
@@ -77,6 +96,10 @@ func loadCoach(getenv func(string) string) (CoachConfig, error) {
 		{"COACH_TEMPERATURE", defaultCoachTemperature, &c.Temperature},
 		{"LLM_PRICE_IN_PER_MTOK", 0, &c.LLMPriceInPerMTok},
 		{"LLM_PRICE_OUT_PER_MTOK", 0, &c.LLMPriceOutPerMTok},
+		{"COACH_MONTHLY_SPEND_CAP_PREMIUM_USD", defaultMonthlyCapPremiumUSD, &c.AccountSpendCaps.MonthlyPremiumUSD},
+		{"COACH_MONTHLY_SPEND_CAP_GUILD_USD", defaultMonthlyCapGuildUSD, &c.AccountSpendCaps.MonthlyGuildUSD},
+		{"COACH_MONTHLY_SPEND_CAP_RAID_GUILD_USD", defaultMonthlyCapRaidGuildUSD, &c.AccountSpendCaps.MonthlyRaidGuildUSD},
+		{"COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD", defaultDailyCapPerAccountUSD, &c.AccountSpendCaps.DailyUSD},
 	}
 	for _, n := range numbers {
 		if *n.dst, err = parseFloatDefault(getenv, n.env, n.def); err != nil {
@@ -105,6 +128,10 @@ func (c CoachConfig) checkEnabled() error {
 		{"LLM_PRICE_OUT_PER_MTOK", c.LLMPriceOutPerMTok > 0},
 		{"COACH_DAILY_SPEND_CAP_USD", c.DailySpendCapUSD > 0},
 		{"COACH_DAILY_REVIEWS_PER_ACCOUNT", c.DailyReviewsPerAccount > 0},
+		{"COACH_MONTHLY_SPEND_CAP_PREMIUM_USD", c.AccountSpendCaps.MonthlyPremiumUSD > 0},
+		{"COACH_MONTHLY_SPEND_CAP_GUILD_USD", c.AccountSpendCaps.MonthlyGuildUSD > 0},
+		{"COACH_MONTHLY_SPEND_CAP_RAID_GUILD_USD", c.AccountSpendCaps.MonthlyRaidGuildUSD > 0},
+		{"COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD", c.AccountSpendCaps.DailyUSD > 0},
 	} {
 		if !r.ok {
 			return fmt.Errorf("config: %s is required (non-empty, positive) while COACH_LLM_ENABLED is on", r.env)

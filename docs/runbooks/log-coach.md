@@ -79,16 +79,20 @@ new rating model version, in a quiet window (see "Deploy order"). Pass `-dry-run
 | `LLM_API_KEY` | service and jobs | mounted from Secret Manager, never in a file or a log |
 | `COACH_DAILY_SPEND_CAP_USD` | service and jobs | `25` |
 | `COACH_DAILY_REVIEWS_PER_ACCOUNT` | service and jobs | `30` |
+| `COACH_MONTHLY_SPEND_CAP_PREMIUM_USD` | service and jobs | `1.00` (the default): a Premium account's model spend in a UTC calendar month |
+| `COACH_MONTHLY_SPEND_CAP_GUILD_USD` | service and jobs | `2.50` (the default): an officer of a Guild-plan guild |
+| `COACH_MONTHLY_SPEND_CAP_RAID_GUILD_USD` | service and jobs | `4.00` (the default): an officer of a Raid-guild-plan guild |
+| `COACH_DAILY_SPEND_CAP_PER_ACCOUNT_USD` | service and jobs | `0.15` (the default): any account's model spend in a UTC day |
 | `COACH_TEMPERATURE` | service and jobs | `0.3` (the default) |
 
 While `COACH_LLM_ENABLED` is on, the config refuses to start if any of these are missing or
-not positive: `LLM_MODEL`, `LLM_API_KEY`, `LLM_PROVIDERS`, either price, or either cap.
+not positive: `LLM_MODEL`, `LLM_API_KEY`, `LLM_PROVIDERS`, either price, or any of the six caps.
 While it is off, none of them is needed, and the routes answer with the rule-only review.
 
 ## Deploy order
 
 1. Make sure migration 0054 is live before 0055 ships. golang-migrate never applies a version below the live one.
-2. Migrate through the deployed API only. Deploy the API image: the service migrates at start, so `schema_migrations` reads 55. Never run a job from a newer image before the API that carries its migration is deployed: a job migrates too (incident 2026-10-04).
+2. Migrate through the deployed API only. Deploy the API image: the service migrates at start, so `schema_migrations` reads 56 (0056 adds the per-account spend). Never run a job from a newer image before the API that carries its migration is deployed: a job migrates too (incident 2026-10-04).
 3. Set the environment above on the service and on each coach job, with `COACH_LLM_ENABLED=false`.
 4. Create the Cloud Run jobs `coach-review`, `coach-simref` and `coach-samples` from the deployed image:
    - shape them like `sim-run`;
@@ -120,6 +124,33 @@ The switch is `COACH_LLM_ENABLED` on the API service and on the `coach-review` j
 The caps act on their own without the switch:
 - A day's spend at `COACH_DAILY_SPEND_CAP_USD`, or an account at `COACH_DAILY_REVIEWS_PER_ACCOUNT`, answers the rule-only review marked busy and queues nothing.
 - Spend is counted per UTC day in `llm_spend`.
+- An account past its own spend cap gets the same rule-only review, with a line naming the day or the month instead of the busy line (see "Spend caps").
+
+## Spend caps
+
+No subscriber may spend more of the model budget than the margin on their plan (owner,
+2026-10-28). Each model call's cost (the client's reported cost, or its estimate times 1.25) is
+written in one transaction to the day's `llm_spend` row and to the `coach_account_day` row
+(`usd`) of the account that opened the review: an officer opening a member's review spends
+their own budget. An account's month is the sum of its day rows in the UTC calendar month.
+
+The monthly cap follows the account's plan tier, from the same entitlements the access rules
+read: a verified officer or leader of a guild on the Raid guild or Guild plan uses that plan's
+cap (the higher wins); a Premium holder (personal plan or a held seat) uses Premium's; an
+account with no plan (a moderator) uses Premium's. Each monthly cap is about a sixth of the
+plan's monthly price ($6, $15, $25); a review costs about $0.0005 at the pinned prices, so the
+caps allow thousands of reviews and only stop abuse. The daily cap ($0.15) stops a burst.
+
+A capped account's review is the rule-only rendering, stored with the reason `account_cap`
+and retried once the cap lifts; the panel says `capAccountDay` or `capAccountMonth` (spec
+§8.2) where the busy line goes. The teaser and the row strip are unaffected. To see who is near
+a cap:
+
+```sql
+select user_id, sum(usd) as month_usd from coach_account_day
+where day >= date_trunc('month', now() at time zone 'utc')::date
+group by user_id order by month_usd desc limit 20;
+```
 
 ## Checks
 

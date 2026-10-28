@@ -27,6 +27,8 @@ export const coachCopy = {
   writingLate: 'Still writing. Check back in a few minutes.',
   ready: "Your coach's review is ready.",
   busy: "Your coach is busy right now. This is the review from your log alone; the coach's version will be here when you next open it.",
+  capAccountDay: "Your coach has used today's model budget. Reviews are from the log until tomorrow.",
+  capAccountMonth: "Your coach has used this month's model budget. Reviews are from the log until {date}.",
   error: "The coach couldn't read this pull just now.",
   titleModel: 'Your {Spec} coach',
   titleRules: 'Your {Spec} review',

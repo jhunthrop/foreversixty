@@ -47,17 +47,31 @@ func capsUser(t *testing.T, pool *pgxpool.Pool, email string) int64 {
 	return id
 }
 
+// fakeTiers is each account's plan tier; an account it does not name has no plan.
+type fakeTiers map[int64]string
+
+func (f fakeTiers) PlanTier(_ context.Context, userID int64) (string, error) { return f[userID], nil }
+
+// testAccountCaps are the config defaults.
+var testAccountCaps = config.AccountSpendCaps{MonthlyPremiumUSD: 1, MonthlyGuildUSD: 2.5, MonthlyRaidGuildUSD: 4, DailyUSD: 0.15}
+
 func newCaps(pool *pgxpool.Pool) *Caps {
-	return &Caps{DB: pool, Enabled: true, SpendCapUSD: 25, PerAccount: 30, Now: func() time.Time { return capsNow }}
+	return &Caps{DB: pool, Enabled: true, SpendCapUSD: 25, PerAccount: 30, Account: testAccountCaps,
+		Tiers: fakeTiers{}, Now: func() time.Time { return capsNow }}
 }
 
 func mustAdmit(t *testing.T, c *Caps, id int64) Refusal {
 	t.Helper()
-	r, err := c.Admit(context.Background(), id)
+	return mustAdmitVerdict(t, c, id).Refusal
+}
+
+func mustAdmitVerdict(t *testing.T, c *Caps, id int64) Verdict {
+	t.Helper()
+	v, err := c.Admit(context.Background(), id)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return r
+	return v
 }
 
 func TestAdmit_SwitchOff(t *testing.T) {
@@ -93,10 +107,10 @@ func TestAdmit_AccountCapAtThirty(t *testing.T) {
 
 func TestAdmit_SpendCapFromRecordedCost(t *testing.T) {
 	pool := capsPool(t)
-	uid := capsUser(t, pool, "spend@example.com")
+	uid, spender := capsUser(t, pool, "spend@example.com"), capsUser(t, pool, "spender@example.com")
 	c := newCaps(pool)
 	for i := 0; i < 2; i++ {
-		if err := c.RecordSpend(context.Background(), llm.Response{CostUSD: 12.5}); err != nil {
+		if err := c.RecordSpend(context.Background(), spender, llm.Response{CostUSD: 12.5}); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -104,16 +118,16 @@ func TestAdmit_SpendCapFromRecordedCost(t *testing.T) {
 		t.Fatalf("got %q", r)
 	}
 	var n int
-	if err := pool.QueryRow(context.Background(), `select count(*) from coach_account_day`).Scan(&n); err != nil || n != 0 {
+	if err := pool.QueryRow(context.Background(), `select coalesce(sum(generations), 0) from coach_account_day`).Scan(&n); err != nil || n != 0 {
 		t.Fatalf("a refused spend counted %d, %v", n, err)
 	}
 }
 
 func TestAdmit_JustUnderSpendCapIsAdmitted(t *testing.T) {
 	pool := capsPool(t)
-	uid := capsUser(t, pool, "under@example.com")
+	uid, spender := capsUser(t, pool, "under@example.com"), capsUser(t, pool, "spender@example.com")
 	c := newCaps(pool)
-	if err := c.RecordSpend(context.Background(), llm.Response{CostUSD: 24.99}); err != nil {
+	if err := c.RecordSpend(context.Background(), spender, llm.Response{CostUSD: 24.99}); err != nil {
 		t.Fatal(err)
 	}
 	if r := mustAdmit(t, c, uid); r != RefusalNone {
@@ -123,12 +137,12 @@ func TestAdmit_JustUnderSpendCapIsAdmitted(t *testing.T) {
 
 func TestAdmit_NewUTCDayResets(t *testing.T) {
 	pool := capsPool(t)
-	uid := capsUser(t, pool, "day@example.com")
+	uid, spender := capsUser(t, pool, "day@example.com"), capsUser(t, pool, "spender@example.com")
 	now := capsNow
 	c := newCaps(pool)
 	c.Now = func() time.Time { return now }
 	c.PerAccount = 1
-	if err := c.RecordSpend(context.Background(), llm.Response{CostUSD: 30}); err != nil {
+	if err := c.RecordSpend(context.Background(), spender, llm.Response{CostUSD: 30}); err != nil {
 		t.Fatal(err)
 	}
 	if r := mustAdmit(t, c, uid); r != RefusalSpendCap {
@@ -157,7 +171,8 @@ func TestAdmit_ConcurrentNeverExceedsTheCap(t *testing.T) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			r, err := c.Admit(context.Background(), uid)
+			v, err := c.Admit(context.Background(), uid)
+			r := v.Refusal
 			switch {
 			case err != nil:
 				t.Error(err)
@@ -188,12 +203,13 @@ func TestAdmit_ZeroPerAccountRefuses(t *testing.T) {
 
 func TestRecordSpend_CountsEstimatedCallsWithMargin(t *testing.T) {
 	pool := capsPool(t)
+	uid := capsUser(t, pool, "margin@example.com")
 	c := newCaps(pool)
 	ctx := context.Background()
-	if err := c.RecordSpend(ctx, llm.Response{CostUSD: 1, CostEstimated: true}); err != nil {
+	if err := c.RecordSpend(ctx, uid, llm.Response{CostUSD: 1, CostEstimated: true}); err != nil {
 		t.Fatal(err)
 	}
-	if err := c.RecordSpend(ctx, llm.Response{CostUSD: 1}); err != nil {
+	if err := c.RecordSpend(ctx, uid, llm.Response{CostUSD: 1}); err != nil {
 		t.Fatal(err)
 	}
 	var usd float64
@@ -210,13 +226,14 @@ func TestRecordSpend_CountsEstimatedCallsWithMargin(t *testing.T) {
 
 func TestRecordSpend_ConcurrentUpsertsSum(t *testing.T) {
 	pool := capsPool(t)
+	uid := capsUser(t, pool, "concurrent@example.com")
 	c := newCaps(pool)
 	var wg sync.WaitGroup
 	for i := 0; i < 20; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			if err := c.RecordSpend(context.Background(), llm.Response{CostUSD: 0.5}); err != nil {
+			if err := c.RecordSpend(context.Background(), uid, llm.Response{CostUSD: 0.5}); err != nil {
 				t.Error(err)
 			}
 		}()
@@ -231,8 +248,11 @@ func TestRecordSpend_ConcurrentUpsertsSum(t *testing.T) {
 
 func TestRecordSpend_RejectsNegativeCost(t *testing.T) {
 	c := newCaps(nil)
-	if err := c.RecordSpend(context.Background(), llm.Response{CostUSD: -1}); err == nil {
+	if err := c.RecordSpend(context.Background(), 1, llm.Response{CostUSD: -1}); err == nil {
 		t.Fatal("negative cost accepted")
+	}
+	if err := c.RecordSpend(context.Background(), 0, llm.Response{CostUSD: 1}); err == nil {
+		t.Fatal("spend without an account accepted")
 	}
 }
 
@@ -240,23 +260,26 @@ func TestAdmit_DatabaseErrorFailsClosed(t *testing.T) {
 	pool := capsPool(t)
 	c := newCaps(pool)
 	pool.Close()
-	r, err := c.Admit(context.Background(), 1)
-	if err == nil || r != RefusalError || r == RefusalNone {
+	v, err := c.Admit(context.Background(), 1)
+	if r := v.Refusal; err == nil || r != RefusalError || r == RefusalNone {
 		t.Fatalf("got %q, %v", r, err)
 	}
 }
 
 func TestNewCaps_CopiesConfigAndRejectsNil(t *testing.T) {
 	pool := capsPool(t)
-	cfg := config.CoachConfig{Enabled: true, DailySpendCapUSD: 7, DailyReviewsPerAccount: 3}
-	c, err := NewCaps(cfg, pool, time.Now)
-	if err != nil || !c.Enabled || c.SpendCapUSD != 7 || c.PerAccount != 3 {
+	cfg := config.CoachConfig{Enabled: true, DailySpendCapUSD: 7, DailyReviewsPerAccount: 3, AccountSpendCaps: testAccountCaps}
+	c, err := NewCaps(cfg, pool, fakeTiers{}, time.Now)
+	if err != nil || !c.Enabled || c.SpendCapUSD != 7 || c.PerAccount != 3 || c.Account != testAccountCaps {
 		t.Fatalf("%+v %v", c, err)
 	}
-	if _, err := NewCaps(cfg, pool, nil); err == nil {
+	if _, err := NewCaps(cfg, pool, fakeTiers{}, nil); err == nil {
 		t.Fatal("nil clock accepted")
 	}
-	if _, err := NewCaps(cfg, nil, time.Now); err == nil {
+	if _, err := NewCaps(cfg, nil, fakeTiers{}, time.Now); err == nil {
 		t.Fatal("nil pool accepted")
+	}
+	if _, err := NewCaps(cfg, pool, nil, time.Now); err == nil {
+		t.Fatal("nil tier source accepted")
 	}
 }

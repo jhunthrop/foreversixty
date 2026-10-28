@@ -7,6 +7,7 @@
      44 px row with a status slot that never moves a line; a writing review is held at its reserved
      heights. The card is always its natural height: the tab's reserve lives on CoachTab. -->
 <script lang="ts">
+  import { busyLine } from '../../lib/coach/busy-line';
   import { coachCopy, fill } from '../../lib/coach/copy';
   import { footerLine } from '../../lib/coach/footer';
   import type { CoachNames } from '../../lib/coach/names';
@@ -167,7 +168,7 @@
           class="border-line-warm text-muted mt-3 border-l-2 pl-3 text-[13px] leading-5"
           data-testid="coach-busy"
         >
-          {coachCopy.busy}
+          {full === null ? coachCopy.busy : busyLine(full)}
         </p>
       {/if}
 

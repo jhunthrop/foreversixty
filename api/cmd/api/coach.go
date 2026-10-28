@@ -98,7 +98,7 @@ func newCoachService(ctx context.Context, w coachWiring) (*coach.Service, error)
 	if err := readableDir(w.cfg.Coach.DataDir); err != nil {
 		return nil, fmt.Errorf("COACH_DATA_DIR: %w", err)
 	}
-	caps, err := coach.NewCaps(w.cfg.Coach, w.pool, time.Now)
+	caps, err := coach.NewCaps(w.cfg.Coach, w.pool, w.entitle, time.Now)
 	if err != nil {
 		return nil, err
 	}

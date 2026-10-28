@@ -103,7 +103,7 @@ func (g *Generator) Generate(ctx context.Context, key ReviewKey, p Pack, persona
 	} else {
 		// A model error is logged by g.call and is in res as model_error, retryable; a
 		// generation past its deadline is reasonTimeout, final.
-		res, _ = g.run(ctx, p, persona, g.recordSpend)
+		res, _ = g.run(ctx, p, persona, func(ctx context.Context, resp llm.Response) { g.recordSpend(ctx, accountID, resp) })
 		if res.Source == SourceRules && errors.Is(ctx.Err(), context.DeadlineExceeded) {
 			g.logger().Warn("coach: generation ran past its deadline; serving the rule-only review")
 			res = fallback(res, p, persona, reasonTimeout, false)
@@ -171,19 +171,20 @@ func (g *Generator) logger() *slog.Logger {
 
 // admit asks the caps before any call. A caps error fails closed (RefusalError).
 func (g *Generator) admit(ctx context.Context, accountID int64) Refusal {
-	refusal, err := g.Caps.Admit(ctx, accountID)
+	verdict, err := g.Caps.Admit(ctx, accountID)
 	if err != nil {
 		g.logger().Error("coach: caps check failed; serving the rule-only review", slog.String("error", err.Error()))
 		return RefusalError
 	}
-	return refusal
+	return verdict.Refusal
 }
 
-// recordSpend adds one call's cost to the day's spend; a failure is logged, not fatal.
-func (g *Generator) recordSpend(ctx context.Context, resp llm.Response) {
+// recordSpend adds one call's cost to the day's spend and to the account that opened the
+// review; a failure is logged, not fatal.
+func (g *Generator) recordSpend(ctx context.Context, accountID int64, resp llm.Response) {
 	ctx, cancel := detached(ctx)
 	defer cancel()
-	if err := g.Caps.RecordSpend(ctx, resp); err != nil {
+	if err := g.Caps.RecordSpend(ctx, accountID, resp); err != nil {
 		g.logger().Error("coach: spend not recorded", slog.String("error", err.Error()), slog.Float64("usd", resp.CostUSD))
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"reflect"
 	"slices"
 	"strconv"
 	"testing"
@@ -206,7 +207,7 @@ func TestFightCoach_CapHitIsBusyAndQueuesNothing(t *testing.T) {
 		t.Fatal(err)
 	}
 	_, _, body := f.get(t, user(f.premium), "")
-	if body["busy"] != true || body["source"] != "rules" || body["status"] != "ready" {
+	if _, ok := body["cap"]; body["busy"] != true || body["source"] != "rules" || body["status"] != "ready" || ok {
 		t.Fatalf("%v", body)
 	}
 	f.noJobNoCall(t)
@@ -215,13 +216,28 @@ func TestFightCoach_CapHitIsBusyAndQueuesNothing(t *testing.T) {
 func TestFightCoach_AccountCapIsBusy(t *testing.T) {
 	f := newT30(t)
 	f.svc.Caps.PerAccount = 1
-	if r, err := f.svc.Caps.Admit(context.Background(), f.premium); err != nil || r != RefusalNone {
-		t.Fatal(r, err)
+	if v, err := f.svc.Caps.Admit(context.Background(), f.premium); err != nil || v.Refusal != RefusalNone {
+		t.Fatal(v, err)
 	}
 	_, _, body := f.get(t, user(f.premium), "")
-	if body["busy"] != true || len(f.jobs.Ran()) != 0 {
+	want := map[string]any{"period": "day", "until": "2026-10-28"}
+	if body["busy"] != true || len(f.jobs.Ran()) != 0 || !reflect.DeepEqual(body["cap"], want) {
 		t.Fatalf("%v", body)
 	}
+}
+
+func TestFightCoach_AccountMonthlyCapSaysWhenItLifts(t *testing.T) {
+	f := newT30(t)
+	if _, err := f.pool.Exec(context.Background(), `insert into coach_account_day (day, user_id, usd) values ('2026-10-03', $1, 1)`,
+		f.premium); err != nil {
+		t.Fatal(err)
+	}
+	_, _, body := f.get(t, user(f.premium), "")
+	want := map[string]any{"period": "month", "until": "2026-11-01"}
+	if body["busy"] != true || body["source"] != "rules" || !reflect.DeepEqual(body["cap"], want) {
+		t.Fatalf("%v", body)
+	}
+	f.noJobNoCall(t)
 }
 
 func TestFightCoach_RetryableRulesRowRegeneratesWhenAllowed(t *testing.T) {
@@ -352,16 +368,18 @@ func TestServiceCapsPeek_DecidesWithoutCounting(t *testing.T) {
 	caps.PerAccount = 1
 	ctx := context.Background()
 	for i := 0; i < 2; i++ {
-		if r, err := caps.Peek(ctx, f.premium); err != nil || r != RefusalNone {
-			t.Fatalf("peek %d: %q %v", i, r, err)
+		if v, err := caps.Peek(ctx, f.premium); err != nil || v.Refusal != RefusalNone {
+			t.Fatalf("peek %d: %+v %v", i, v, err)
 		}
 	}
-	caps.Admit(ctx, f.premium)
-	if r, _ := caps.Peek(ctx, f.premium); r != RefusalAccountCap {
-		t.Fatalf("%q", r)
+	if _, err := caps.Admit(ctx, f.premium); err != nil {
+		t.Fatal(err)
+	}
+	if v, _ := caps.Peek(ctx, f.premium); v.Refusal != RefusalAccountCap || v.Period != CapPeriodDay {
+		t.Fatalf("%+v", v)
 	}
 	caps.Enabled = false
-	if r, _ := caps.Peek(ctx, f.premium); r != RefusalSwitchOff {
-		t.Fatalf("%q", r)
+	if v, _ := caps.Peek(ctx, f.premium); v.Refusal != RefusalSwitchOff {
+		t.Fatalf("%+v", v)
 	}
 }

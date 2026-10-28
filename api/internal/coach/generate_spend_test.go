@@ -43,3 +43,38 @@ func TestGenerate_AFailedCallWithNoCostRecordsNothing(t *testing.T) {
 		t.Fatalf("llm_spend rows %d %v", n, err)
 	}
 }
+
+// An account whose model budget is spent gets the rule-only review, stored with the reason,
+// retryable once its cap lifts, and no call is made.
+func TestGenerate_AccountSpendCapStoresTheRuleOnlyReview(t *testing.T) {
+	f := newGenFixture(t)
+	ctx := context.Background()
+	fake := &llm.Fake{}
+	g := f.gen(t, fake)
+	if err := g.Caps.RecordSpend(ctx, f.user, llm.Response{CostUSD: g.Caps.Account.DailyUSD}); err != nil {
+		t.Fatal(err)
+	}
+	r, err := g.Generate(ctx, t28Key(), examplePack(), fixturePersona(t), f.user)
+	if err != nil || r.Source != SourceRules || r.Reason != string(RefusalAccountCap) || !r.Retryable || len(fake.Calls) != 0 {
+		t.Fatalf("%+v %v", r, err)
+	}
+	stored, ok, err := f.store.Review(ctx, t28Key())
+	if err != nil || !ok || stored.Reason != string(RefusalAccountCap) {
+		t.Fatalf("stored %+v %v %v", stored, ok, err)
+	}
+}
+
+// A call's cost is charged to the account that opened the review.
+func TestGenerate_ChargesTheOpeningAccount(t *testing.T) {
+	f := newGenFixture(t)
+	ctx := context.Background()
+	fake := &llm.Fake{Responses: []llm.Response{{CostUSD: 0.0005}}, Errs: []error{errors.New("timed out")}}
+	if _, err := f.gen(t, fake).Generate(ctx, t28Key(), examplePack(), fixturePersona(t), f.user); err != nil {
+		t.Fatal(err)
+	}
+	var usd float64
+	if err := f.pool.QueryRow(ctx, `select usd::float8 from coach_account_day where user_id = $1`, f.user).Scan(&usd); err != nil ||
+		math.Abs(usd-0.0005) > 1e-9 {
+		t.Fatalf("account usd %v %v", usd, err)
+	}
+}

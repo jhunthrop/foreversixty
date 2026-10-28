@@ -163,16 +163,19 @@ func (s *Service) rulesServed(p Pack, persona Persona, hasPersona bool) served {
 }
 
 // generate asks the caps without counting; a spend or account cap answers busy and queues
-// nothing. Otherwise it queues one generation under a lease and answers writing.
+// nothing, and an account cap also says which period holds and when it lifts. Otherwise it queues one generation under a lease and answers writing.
 func (s *Service) generate(ctx context.Context, key ReviewKey, account int64, rules served) (served, error) {
-	refusal, err := s.Caps.Peek(ctx, account)
+	verdict, err := s.Caps.Peek(ctx, account)
 	if err != nil {
 		s.logger().Error("coach: caps peek failed; serving the rule-only review", slog.String("error", err.Error()))
 		return rules, nil
 	}
-	switch refusal {
-	case RefusalSpendCap, RefusalAccountCap:
+	switch verdict.Refusal {
+	case RefusalSpendCap:
 		rules.busy = true
+		return rules, nil
+	case RefusalAccountCap:
+		rules.busy, rules.cap = true, &verdict
 		return rules, nil
 	case RefusalNone:
 	default:
