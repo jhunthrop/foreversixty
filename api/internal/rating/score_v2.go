@@ -135,11 +135,11 @@ func dataSpecSlug(class, spec string) string {
 	return slug
 }
 
-// disciplineEnchantSlots are the gear slots a fully prepared player has enchanted, as
+// DisciplineEnchantSlots are the gear slots a fully prepared player has enchanted, as
 // indexes into COMBATANT_INFO's gear list (the client's inventory slot, less one): chest,
 // feet, back and main hand - the four the guild readiness board checks
 // (api/internal/guilds/readiness_core.go's enchantableSlots).
-var disciplineEnchantSlots = []int{4, 7, 14, 15}
+var DisciplineEnchantSlots = []int{4, 7, 14, 15}
 
 // ErrNoLogs is the answer for a character with no rated fight in a public, unflagged report. It is
 // never a zero score: the addon shows "no logs yet" and the site shows no score.
@@ -542,18 +542,20 @@ func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (n
 // a category is met by any consumable of that category, not only one listed for the
 // player's own role (a warrior on a tank's food is fed). The discipline readers read what
 // the player brought through consumables.AtPull, the seeded aura tracks (log coach spec
-// §13), never CombatantRow.Consumables, which production never fills.
+// §13).
 //
-// Only flask and food are judged. The catalogue's weapon_enchant category (sharpening
-// stones, wizard oils) is left out of the requirement - treated as unknown - until a real
-// beta log shows how stones and oils appear in COMBATANT_INFO (as an aura, or as a
-// temporary enchant on the weapon). Class raid buffs are not judged here at all: whether a
+// Only flask and food are judged, and each only while its list is complete
+// (missedAtPull): the food list names one food per role, so no listed food up is unknown,
+// never "food missed". The catalogue's weapon_enchant category (sharpening stones, wizard
+// oils) is left out of the requirement - treated as unknown - until a real beta log shows
+// how stones and oils appear in COMBATANT_INFO (as an aura, or as a temporary enchant on
+// the weapon). Class raid buffs are not judged here at all: whether a
 // missing one is a finding depends on the player (Wisdom does nothing for a rage user) and
 // on the raid's paladins (one blessing each), which is the coach's reading, not this one.
 var disciplineCatalogue = consumables.Load().AllRoles()
 
-// fightDiscipline is whether row's player pulled fully prepared: a flask and a food up at
-// the pull (disciplineCatalogue), and every equipped slot of disciplineEnchantSlots
+// fightDiscipline is whether row's player pulled fully prepared: no flask or food missed at
+// the pull (missedAtPull), and every equipped slot of DisciplineEnchantSlots
 // enchanted. nil is "not known": no combatant info with gear for the player.
 func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
 	pull := consumables.AtPull(fight, row.GUID, disciplineCatalogue)
@@ -561,8 +563,15 @@ func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
 	if !pull.Known || !ok {
 		return nil
 	}
-	full := pull.Has(consumables.CategoryFlask) && pull.Has(consumables.CategoryFood) && Enchanted(combatant)
+	full := !missedAtPull(pull, consumables.CategoryFlask) && !missedAtPull(pull, consumables.CategoryFood) && Enchanted(combatant)
 	return &full
+}
+
+// missedAtPull is whether a known pull proves the category absent: nothing of it was up
+// and disciplineCatalogue's list of it is complete. An incomplete list can prove presence,
+// never absence (an off-list food is still a food).
+func missedAtPull(pull consumables.Pull, category string) bool {
+	return pull.Known && disciplineCatalogue.IsComplete(category) && !pull.Has(category)
 }
 
 // combatantOf is guid's combatant row, if the fight has one.
@@ -575,10 +584,10 @@ func combatantOf(fight summary.Summary, guid string) (summary.CombatantRow, bool
 	return summary.CombatantRow{}, false
 }
 
-// Enchanted is true when every equipped slot of disciplineEnchantSlots carries a
+// Enchanted is true when every equipped slot of DisciplineEnchantSlots carries a
 // permanent enchant (the first of an item's enchant ids). An empty slot asks for none.
 func Enchanted(c summary.CombatantRow) bool {
-	for _, slot := range disciplineEnchantSlots {
+	for _, slot := range DisciplineEnchantSlots {
 		if slot >= len(c.Gear) || c.Gear[slot].ID == 0 {
 			continue
 		}

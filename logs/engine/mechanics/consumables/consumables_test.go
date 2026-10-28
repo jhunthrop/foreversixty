@@ -105,10 +105,16 @@ func TestCatalogue_FoodAndWeaponEnchantNotComplete(t *testing.T) {
 			t.Errorf("%s: food/weapon_enchant must stay incomplete until confirmed", role)
 		}
 		for _, cat := range []string{CategoryFlask, CategoryCombatPotion, CategoryWorldBuffs} {
+			if role == "dps" && cat == CategoryCombatPotion {
+				continue // only Mighty Rage is listed: casters, hunters and rogues drink others
+			}
 			if !rc.IsComplete(cat) {
 				t.Errorf("%s: %s should start complete", role, cat)
 			}
 		}
+	}
+	if c.Roles["dps"].IsComplete(CategoryCombatPotion) {
+		t.Fatal("dps combat_potion must stay incomplete until it lists the mana and other potions")
 	}
 	if c.AllRoles().IsComplete(CategoryFood) {
 		t.Fatal("AllRoles must not call food complete")

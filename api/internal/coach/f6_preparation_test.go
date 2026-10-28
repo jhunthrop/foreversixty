@@ -1,9 +1,13 @@
 package coach
 
 import (
+	"maps"
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
 func fullKit() seeds {
@@ -82,25 +86,112 @@ func TestPreparation_WisdomIsNothingToARageUser(t *testing.T) {
 	}
 }
 
-func TestPreparation_OnePaladinGivesOneBlessing(t *testing.T) {
-	in := rosterOf(furyPrep(t, 40, fullKit()), rosterClass("pal", "Paladin"))
-	in = withRaidBuff(t, in, "Blessing of Kings")
-	if o := preparation(in, CountedTime(in)); o.Finding != nil {
-		t.Fatalf("one paladin gave Kings and cannot also give Might: %+v", o.Finding)
-	}
-	two := rosterOf(in, rosterClass("pal", "Paladin"), rosterClass("pal2", "Paladin"))
-	f := preparation(two, CountedTime(two)).Finding
-	if f == nil || !strings.Contains(f.Title, "Blessing of Might") {
-		t.Fatalf("two paladins cover Kings and Might, so Might is owed: %+v", f)
+func TestPreparation_OnePaladinCoversOneBlessingWhicheverItWas(t *testing.T) {
+	for _, held := range []string{"Blessing of Kings", "Blessing of Might"} {
+		in := withRaidBuff(t, rosterOf(furyPrep(t, 40, fullKit()), rosterClass("pal", "Paladin")), held)
+		if o := preparation(in, CountedTime(in)); o.Finding != nil {
+			t.Fatalf("one paladin gave %s; the log cannot say Kings was owed: %+v", held, o.Finding)
+		}
 	}
 }
 
-func TestPreparation_PotionsShortOfMaxUsesAreMinor(t *testing.T) {
-	in := furyPrep(t, 40, fullKit())
-	in.Fight.DurationMS = 300_000
+func TestPreparation_NoBlessingAtAllWithAPaladinNamesNone(t *testing.T) {
+	in := rosterOf(furyPrep(t, 40, fullKit()), rosterClass("pal", "Paladin"))
 	f := preparation(in, CountedTime(in)).Finding
-	if f == nil || f.Severity != SeverityMinor || !strings.HasPrefix(f.Title, "Combat potions") {
+	if f == nil || f.Title != "No blessing at the pull" {
 		t.Fatalf("%+v", f)
+	}
+}
+
+func TestPreparation_MorePaladinsThanBlessingsHeldNamesTheOneMissing(t *testing.T) {
+	in := withRaidBuff(t, rosterOf(furyPrep(t, 40, fullKit()), rosterClass("pal", "Paladin"), rosterClass("pal2", "Paladin")), "Blessing of Might")
+	f := preparation(in, CountedTime(in)).Finding
+	if f == nil || !strings.Contains(f.Title, "Blessing of Kings") {
+		t.Fatalf("two paladins, one blessing held, one absent: %+v", f)
+	}
+}
+
+func TestPreparation_ADpsWithoutTheListedPotionIsNeverTold0Used(t *testing.T) {
+	in := furyPrep(t, 40, fullKit())
+	o := preparation(in, CountedTime(in))
+	if o.Finding != nil || strings.Contains(textOf(o), "0 used") {
+		t.Fatalf("%+v", o.Finding)
+	}
+	if !slices.Contains(o.CouldNotCheck, "Combat potions: the coach's potion list isn't complete yet.") {
+		t.Fatal(o.CouldNotCheck)
+	}
+}
+
+// withCompletePotions is in as if the catalogue's potion list were complete.
+func withCompletePotions(in Input) Input {
+	done := maps.Clone(in.Tables.Consumables.Complete)
+	done["combat_potion"] = true
+	in.Tables.Consumables.Complete = done
+	return in
+}
+
+func TestPreparation_PotionsShortOfWhatTheFightHoldsAreMinorAndQuoteBothNumbers(t *testing.T) {
+	in := withCompletePotions(furyPrep(t, 40, fullKit()))
+	in.Fight.DurationMS = 300_000
+	in.Fight = seedPotion(in.Fight, in.Row.GUID)
+	f := preparation(in, CountedTime(in)).Finding
+	if f == nil || f.Severity != SeverityMinor || f.Title != "Combat potions: 1 used" || !strings.Contains(f.Detail, "used 1 of 2 combat potions") {
+		t.Fatalf("%+v", f)
+	}
+	if len(f.Facts.Numbers) != 2 || f.Facts.Numbers[1].Text != "2" {
+		t.Fatalf("the 'of 2' is a fact too: %+v", f.Facts.Numbers)
+	}
+}
+
+func TestPreparation_AShortFightIsNotFaultedForTheSecondPotion(t *testing.T) {
+	in := withCompletePotions(furyPrep(t, 40, fullKit()))
+	in.Fight = seedPotion(in.Fight, in.Row.GUID) // 60 s: one potion is all it could hold
+	if o := preparation(in, CountedTime(in)); o.Finding != nil {
+		t.Fatalf("%+v", o.Finding)
+	}
+}
+
+func TestPreparation_WeaponOilIsCouldntCheckNeverMissing(t *testing.T) {
+	in := furyPrep(t, 40, fullKit())
+	o := preparation(in, CountedTime(in))
+	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, "Weapon oils and stones: the coach can't read them from the log yet.") {
+		t.Fatalf("%+v %v", o.Finding, o.CouldNotCheck)
+	}
+}
+
+func TestPreparation_AWarriorWithoutHisOwnBattleShoutIsMinor(t *testing.T) {
+	in := furyPrep(t, 40, fullKit())
+	id := raidBuffByName(t, in, "Battle Shout").SpellIDs[0]
+	in.Fight.Auras = slices.DeleteFunc(slices.Clone(in.Fight.Auras), func(a summary.AuraTrack) bool { return a.SpellID == id })
+	f := preparation(in, CountedTime(in)).Finding
+	if f == nil || f.Severity != SeverityMinor || f.Title != "No Battle Shout at the pull" {
+		t.Fatalf("%+v", f)
+	}
+}
+
+func TestPreparation_AFlaskAppliedWithinTheGraceCountsAndOneAfterItDoesNot(t *testing.T) {
+	fl := flask("Flask of the Titans")
+	for _, c := range []struct {
+		startMS int64
+		missing bool
+	}{{9_000, false}, {12_000, true}} {
+		in := furyPrep(t, 40, seededAt(food("Grilled Squid")))
+		in.Fight = withAura(in.Fight, in.Row.GUID, fl.SpellID, fl.Name, []string{in.Row.GUID}, span(c.startMS, in.Fight.DurationMS))
+		f := preparation(in, CountedTime(in)).Finding
+		if got := f != nil && f.Title == "No flask at the pull"; got != c.missing {
+			t.Fatalf("applied at %d ms: %+v", c.startMS, f)
+		}
+	}
+}
+
+func TestPreparation_EveryEnchantSlotHasALabel(t *testing.T) {
+	for _, slot := range rating.DisciplineEnchantSlots {
+		if enchantSlotNames[slot] == "" {
+			t.Fatalf("slot %d has no label", slot)
+		}
+	}
+	if !slices.Contains(rating.DisciplineEnchantSlots, mainHandSlot) {
+		t.Fatal("the main hand is no longer an enchant slot")
 	}
 }
 

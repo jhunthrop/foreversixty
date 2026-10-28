@@ -61,15 +61,15 @@ func seedPotion(s summary.Summary, guid string) summary.Summary {
 	return s
 }
 
-// furyPrep is a Fury warrior alone in a raid of the given size, fully enchanted, with a
-// pre-pull combat potion and the given seeds.
+// furyPrep is a Fury warrior alone in a raid of the given size, fully enchanted, with
+// Battle Shout and the given seeds.
 func furyPrep(t *testing.T, size int, ss seeds) Input {
 	t.Helper()
 	in := furyInput(t)
 	in.Size = size
 	s := withDuration(in.Fight, prepFightMS)
 	s = withRoster(s, in.Row)
-	s = seedPotion(withSeeds(s, in.Row.GUID, ss), in.Row.GUID)
+	s = withSeeds(s, in.Row.GUID, ss)
 	in.Fight = s
 	return withRaidBuff(t, withGear(in, preparedGear(true)), "Battle Shout")
 }
