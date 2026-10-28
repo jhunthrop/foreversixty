@@ -4,6 +4,7 @@
      Every string is static copy from landing-copy.ts -- there is no fetch here, and the
      numbers never change; the "Example" caption says so. -->
 <script lang="ts">
+  import { serverRunCaption } from '../../lib/billing/plans-page-copy';
   import { landingCopy } from '../../lib/sim/landing-copy';
 </script>
 
@@ -14,9 +15,6 @@
   data-testid="sim-example-result"
 >
   <span class="label text-muted">{landingCopy.exampleCaption}</span>
-  <div class="flex items-baseline justify-between gap-3">
-    <span class="text-strong font-semibold">{landingCopy.exampleSpec}</span>
-    <span class="tabular font-mono text-[15px] font-semibold">{landingCopy.exampleDps}</span>
-  </div>
+  <p class="text-strong font-semibold">{serverRunCaption()}</p>
   <p class="text-muted text-[13px]">{landingCopy.exampleHint}</p>
 </div>
