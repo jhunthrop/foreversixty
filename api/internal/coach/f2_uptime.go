@@ -31,6 +31,9 @@ type auraReading struct {
 	pct   float64
 	ref   float64
 	basis Basis
+	// anchor is where the reading opens in the report: its aura row, or the counted time
+	// when the player never had the aura.
+	anchor Anchor
 }
 
 func (r auraReading) gap() float64 { return r.ref - r.pct }
@@ -70,9 +73,17 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 		}))
 		return auraReading{}, false
 	}
+	if track == nil && appliedByOthers(in, rule) {
+		return auraReading{}, false // someone else's debuff: not the player's to judge
+	}
+	anchor := Anchor{Kind: AnchorAura, SpellID: rule.SpellID}
 	up, den, ok := int64(0), c.CountedMS, c.CountedMS > 0 // never applied: up for none of it
 	if track != nil {
 		up, den, ok = measureUptime(*track, c)
+	} else {
+		// No aura row exists to open, so the finding points at the time it counts.
+		at, to := c.FirstCastMS, c.AliveMS
+		anchor = Anchor{Kind: AnchorTime, AtMS: &at, ToMS: &to}
 	}
 	if !ok {
 		return auraReading{}, false
@@ -84,7 +95,17 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 	if basis == nil {
 		return auraReading{}, false
 	}
-	return auraReading{rule: rule, upMS: up, denMS: den, pct: float64(up) / float64(den) * 100, ref: ref, basis: *basis}, true
+	return auraReading{rule: rule, upMS: up, denMS: den, pct: float64(up) / float64(den) * 100, ref: ref, basis: *basis, anchor: anchor}, true
+}
+
+// appliedByOthers reports whether a debuff-route aura (a DoT, a debuff, or a defensive that
+// is not on the player) exists in the fight on any target though the player did not apply
+// it. A self-buff never is: it is the player's or it is absent.
+func appliedByOthers(in Input, rule AuraRule) bool {
+	if rule.Kind == AuraSelfBuff {
+		return false
+	}
+	return longestTrack(in, rule.SpellID, func(*summary.AuraTrack) bool { return true }) != nil
 }
 
 func addUptimeCannot(o *outcome, line string) {
@@ -165,7 +186,7 @@ func addUptimeStrength(in Input, r auraReading, o *outcome) {
 			"Aura": r.rule.Name, "pct": PctNumber(r.pct), "n": uptimeInt(int64(r.basis.N)), "ref": PctNumber(r.ref),
 		}),
 		Facts:   uptimeFacts(in, r),
-		Anchors: []string{addUptimeAnchor(o, r.rule.SpellID)},
+		Anchors: []string{addUptimeAnchor(o, r.anchor)},
 	})
 }
 
@@ -186,10 +207,10 @@ func uptimeFinding(in Input, low []auraReading, o *outcome) *Finding {
 		sev = SeverityMajor
 	}
 	facts := uptimeFacts(in, worst)
-	anchors := []string{addUptimeAnchor(o, worst.rule.SpellID)}
+	anchors := []string{addUptimeAnchor(o, worst.anchor)}
 	for _, m := range more {
 		facts = mergeUptimeFacts(facts, uptimeFacts(in, m))
-		anchors = append(anchors, addUptimeAnchor(o, m.rule.SpellID))
+		anchors = append(anchors, addUptimeAnchor(o, m.anchor))
 	}
 	return &Finding{
 		Code: CodeUptime, Severity: sev,
@@ -234,8 +255,8 @@ func mergeUptimeFacts(a, b Facts) Facts {
 	}
 }
 
-// addUptimeAnchor adds the aura row's local anchor and returns its "#n" reference.
-func addUptimeAnchor(o *outcome, spellID int64) string {
-	o.Anchors = append(o.Anchors, Anchor{Kind: AnchorAura, SpellID: spellID})
+// addUptimeAnchor adds a local anchor and returns its "#n" reference.
+func addUptimeAnchor(o *outcome, a Anchor) string {
+	o.Anchors = append(o.Anchors, a)
 	return "#" + uptimeInt(int64(len(o.Anchors)-1))
 }

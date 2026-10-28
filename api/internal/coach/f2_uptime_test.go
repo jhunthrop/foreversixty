@@ -165,6 +165,42 @@ func TestUptime_NeverAppliedListedAuraIsZeroPercent(t *testing.T) {
 	}
 }
 
+func TestUptime_NeverAppliedFindingAnchorsTheCountedTime(t *testing.T) {
+	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 80, 25))
+	in.Tables.Rules.Auras = append(slices.Clone(in.Tables.Rules.Auras),
+		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified})
+	c := CountedTime(in)
+	o := uptime(in, c)
+	if o.Finding == nil || len(o.Anchors) != 1 || o.Finding.Anchors[0] != "#0" {
+		t.Fatalf("finding %+v anchors %+v", o.Finding, o.Anchors)
+	}
+	a := o.Anchors[0]
+	if a.Kind != AnchorTime || a.AtMS == nil || *a.AtMS != c.FirstCastMS || a.ToMS == nil || *a.ToMS != c.AliveMS {
+		t.Fatalf("anchor %+v", a)
+	}
+}
+
+func TestUptime_DebuffAppliedOnlyByAnotherPlayerIsNotTheirs(t *testing.T) {
+	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 80, 25))
+	in.Tables.Rules.Auras = append(slices.Clone(in.Tables.Rules.Auras),
+		AuraRule{SpellID: f2RendID, Name: f2RendName, Kind: AuraDot, Verified: fixtureVerified})
+	in.Fight = withAura(in.Fight, f2BossGUID, f2RendID, f2RendName, []string{f2SecondaryGUID}, span(0, f2FightMS))
+	o := uptime(in, CountedTime(in))
+	if o.Finding != nil || strings.Contains(textOf(o), "Rend up") {
+		t.Fatalf("finding %+v", o.Finding)
+	}
+}
+
+func TestUptime_SharedDebuffLineStandsAlone(t *testing.T) {
+	in := furySunderShared(t, 2)
+	o := uptime(in, CountedTime(in))
+	for _, l := range o.CouldNotCheck {
+		if strings.Contains(l, "Sunder Armor") && !strings.HasPrefix(l, "Your share of Sunder Armor") {
+			t.Errorf("second line for the shared aura: %q", l)
+		}
+	}
+}
+
 func TestUptime_NeverAppliedUnlistedAuraIsSkipped(t *testing.T) {
 	in := furyBattleShout(t, 1.0, poolUptime(f2RendID, 80, 25))
 	o := uptime(in, CountedTime(in))
