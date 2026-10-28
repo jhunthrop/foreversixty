@@ -128,7 +128,7 @@ func DataSpecSlug(class, spec string) string {
 
 // dataSpecSlug is the build data's slug for a logged class and spec.
 func dataSpecSlug(class, spec string) string {
-	slug := specSlug(class, spec)
+	slug := SpecSlug(class, spec)
 	if alias, ok := specAliases[slug]; ok {
 		return alias
 	}

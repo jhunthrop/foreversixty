@@ -38,8 +38,8 @@ func TestSpecSlugMatchesEveryClassSpecPattern(t *testing.T) {
 		{"Priest", "Holy", "priest-holy"},
 	}
 	for _, c := range cases {
-		if got := specSlug(c.class, c.spec); got != c.want {
-			t.Errorf("specSlug(%q, %q) = %q, want %q", c.class, c.spec, got, c.want)
+		if got := SpecSlug(c.class, c.spec); got != c.want {
+			t.Errorf("SpecSlug(%q, %q) = %q, want %q", c.class, c.spec, got, c.want)
 		}
 	}
 }
