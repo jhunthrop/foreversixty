@@ -211,6 +211,16 @@ type Guild struct {
 	// ("approve", "remove", "settings", "award", "billing", "release"); empty for a plain member.
 	// The page draws a control exactly when its word is here, never from the rank.
 	Can []string `json:"can"`
+	// The fields below are GuildStanding's facts (guild_standing.go), filled by attachStanding.
+	// They stay zero when no Standing source is wired, the older shape.
+	Realm       string              `json:"realm"`
+	CrestURL    *string             `json:"crest_url"`
+	Faction     *string             `json:"faction"`
+	RosterCount *int                `json:"roster_count"`
+	Claim       *GuildClaimView     `json:"claim"`
+	Verify      *GuildVerifyView    `json:"verify"`
+	Covered     *GuildCoveredView   `json:"covered"`
+	Subscribe   *GuildSubscribeView `json:"subscribe"`
 }
 
 // Store is every account read and write. One type rather than one per

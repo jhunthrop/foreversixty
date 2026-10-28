@@ -120,6 +120,9 @@ type Service struct {
 	DiscordLinks DiscordLinkView
 	// Seats answers GET /v1/me's seat, seat_offer and ended_seat. Nil means they are left out.
 	Seats SeatFactsSource
+	// Standing answers each guilds[] entry's identity and step facts on GET /v1/me. Nil means
+	// they are left out (the older shape).
+	Standing GuildStandingSource
 	// Importer runs the Battle.net character/guild import right after a
 	// successful Battle.net sign-in. Nil means the feature is off (no
 	// Battle.net credentials configured, or a test harness that does
@@ -450,6 +453,7 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
+	guilds = s.attachStanding(r.Context(), u.ID, guilds)
 	ev, err := s.buildEntitlementsView(r.Context(), u.ID)
 	if err != nil {
 		s.fail(w, r, "me", err, "could not load your account just now")
