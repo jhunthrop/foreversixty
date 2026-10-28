@@ -16,7 +16,7 @@ const (
 
 // CoachConfig is the Log Coach's model client and cap settings.
 type CoachConfig struct {
-	// Enabled (COACH_LLM_ENABLED, default true) is the kill switch.
+	// Enabled (COACH_LLM_ENABLED, default false until the coach ships) is the kill switch.
 	Enabled bool
 	// DailySpendCapUSD (COACH_DAILY_SPEND_CAP_USD) bounds a UTC day's recorded spend.
 	DailySpendCapUSD float64
@@ -43,7 +43,7 @@ func loadCoach(getenv func(string) string) (CoachConfig, error) {
 		LLMProviders: splitCommaList(getenv("LLM_PROVIDERS"), ""),
 	}
 	var err error
-	if c.Enabled, err = parseBoolDefault(getenv, "COACH_LLM_ENABLED", true); err != nil {
+	if c.Enabled, err = parseBoolDefault(getenv, "COACH_LLM_ENABLED", false); err != nil {
 		return CoachConfig{}, err
 	}
 	numbers := []struct {

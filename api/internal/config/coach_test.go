@@ -7,7 +7,8 @@ import (
 
 func coachEnv(extra map[string]string) func(string) string {
 	m := map[string]string{
-		"LLM_MODEL": "m", "LLM_API_KEY": "k", "LLM_PROVIDERS": "p, q",
+		"COACH_LLM_ENABLED": "true",
+		"LLM_MODEL":         "m", "LLM_API_KEY": "k", "LLM_PROVIDERS": "p, q",
 		"LLM_PRICE_IN_PER_MTOK": "0.1", "LLM_PRICE_OUT_PER_MTOK": "0.4",
 	}
 	for k, v := range extra {
@@ -41,10 +42,28 @@ func TestCoachConfig_ErrorNeverEchoesValues(t *testing.T) {
 	}
 }
 
-func TestCoachConfig_OffNeedsNothing(t *testing.T) {
-	c, err := loadCoach(env(map[string]string{"COACH_LLM_ENABLED": "false"}))
+func TestCoachConfig_UnsetIsDisabledAndNeedsNothing(t *testing.T) {
+	c, err := loadCoach(env(nil))
 	if err != nil || c.Enabled {
 		t.Fatalf("%+v %v", c, err)
+	}
+	c, err = loadCoach(env(map[string]string{"COACH_LLM_ENABLED": "false"}))
+	if err != nil || c.Enabled {
+		t.Fatalf("%+v %v", c, err)
+	}
+}
+
+func TestLoad_CoachUnsetDoesNotBreakLoad(t *testing.T) {
+	c, err := Load(base(nil))
+	if err != nil || c.Coach.Enabled {
+		t.Fatalf("%+v %v", c.Coach, err)
+	}
+}
+
+func TestLoad_CoachEnabledWithoutVarsNamesTheVariable(t *testing.T) {
+	_, err := Load(base(map[string]string{"COACH_LLM_ENABLED": "true"}))
+	if err == nil || !strings.Contains(err.Error(), "LLM_MODEL") {
+		t.Fatal(err)
 	}
 }
 
