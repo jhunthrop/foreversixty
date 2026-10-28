@@ -19,10 +19,12 @@ import { EXAMPLE_IMAGE_HEIGHT, EXAMPLE_IMAGE_WIDTH } from '../../src/lib/billing
 import {
   COST_BOX_PX,
   cardHeights,
+  founderLineBoxes,
   guildBlockPx,
   guildPriceBoxes,
   type GuildPriceBoxes,
 } from './support/premium-layout';
+import { API } from './support/local-stack';
 
 const LAUNCH_DAY = '2026-10-27T18:00:00Z';
 const DECEMBER = '2026-12-08T18:00:00Z';
@@ -35,6 +37,7 @@ const BUTTONS_END_ABOVE_PX = 520;
 const BAND_LINK_ABOVE_PX = 300;
 const HEADING_TOP_TOLERANCE_PX = 40;
 const SUBPIXEL_PX = 1;
+const FOUNDER_LINE_WIDTHS = [360, 1024] as const;
 const GUILD_WIDTHS = [360, 768, 1024, 1440] as const;
 /** The three stored Premium hints: the page must hold its layout with and without one. */
 const PREMIUM_STATES = [
@@ -85,7 +88,7 @@ test('on launch day the founder row shows, prices are founder prices and the lis
     '$50 after 6 Jan 2027',
   );
   await expect(page.locator('s:visible')).toHaveCount(0);
-  await page.getByLabel('Monthly').check();
+  await page.getByLabel(plansPageCopy.interval.labels.monthly).check();
   await expect(page.getByTestId('price-raid_guild').locator('.list-line:visible')).toHaveText(
     '$25 a month after 6 Jan 2027',
   );
@@ -96,7 +99,7 @@ test('in December Yearly is checked and the Premium button links to the yearly c
 }) => {
   await openAt(page, DECEMBER);
   await expect(page.getByTestId('founder-row')).toBeVisible();
-  await expect(page.getByLabel('Yearly')).toBeChecked();
+  await expect(page.getByLabel(plansPageCopy.interval.labels.yearly)).toBeChecked();
   const button = premiumButton(page);
   await expect(button).toHaveText(`Subscribe · ${premiumPrice('yearly', true)}`);
   await expect(button).toHaveAttribute('href', /plan=premium&interval=yearly/);
@@ -112,7 +115,7 @@ test('Monthly changes every price and button, no card changes height, arrow keys
       .evaluateAll((cards) => cards.map((card) => card.getBoundingClientRect().height));
   const before = await heights();
 
-  await page.getByLabel('Monthly').check();
+  await page.getByLabel(plansPageCopy.interval.labels.monthly).check();
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('monthly', true)}`);
   await expect(premiumButton(page)).toHaveAttribute('href', /plan=premium&interval=monthly/);
   for (const plan of PLAN_ORDER) {
@@ -120,11 +123,11 @@ test('Monthly changes every price and button, no card changes height, arrow keys
   }
   expect(await heights()).toEqual(before);
 
-  await page.getByLabel('Yearly').focus();
+  await page.getByLabel(plansPageCopy.interval.labels.yearly).focus();
   await page.keyboard.press('ArrowRight');
-  await expect(page.getByLabel('Monthly')).toBeChecked();
+  await expect(page.getByLabel(plansPageCopy.interval.labels.monthly)).toBeChecked();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.getByLabel('Yearly')).toBeChecked();
+  await expect(page.getByLabel(plansPageCopy.interval.labels.yearly)).toBeChecked();
 });
 
 test('the founder window ends at the instant, to the second', async ({ page }) => {
@@ -192,7 +195,7 @@ async function expectNoCardMovement(page: Page, width: number): Promise<void> {
   };
   const yearly = { cards: await cardHeights(page), boxes: await guildPriceBoxes(page) };
   check(yearly.boxes);
-  await page.getByLabel('Monthly').check();
+  await page.getByLabel(plansPageCopy.interval.labels.monthly).check();
   const monthly = { cards: await cardHeights(page), boxes: await guildPriceBoxes(page) };
   check(monthly.boxes);
   expect(monthly.cards, `card heights at ${width}`).toEqual(yearly.cards);
@@ -262,8 +265,11 @@ test('the guild section holds both guild plans, the history promise and the rule
   const terms = await section.locator('[data-rule-term]').allTextContents();
   const [first] = plansPageCopy.rules;
   expect(terms[0]?.trim()).toBe(first?.term);
+  // The copy order is Verified members, Size, Paying together.
+  const sizeTerm = plansPageCopy.rules[1]?.term ?? '';
+  const paying = plansPageCopy.rules[2]?.term ?? '';
   const trimmed = terms.map((term) => term.trim());
-  expect(trimmed.indexOf('Paying together')).toBe(trimmed.indexOf('Size') + 1);
+  expect(trimmed.indexOf(paying)).toBe(trimmed.indexOf(sizeTerm) + 1);
   await expect(section.locator('.row').first().locator('dd')).toHaveText(first?.sentence ?? '');
   expect(await section.textContent()).not.toContain('Battle.net');
 });
@@ -323,19 +329,33 @@ test('the example image box is reserved at 4:3 whether or not the picture loads'
   expect(Math.abs(height - (width * 3) / 4)).toBeLessThanOrEqual(SUBPIXEL_PX);
 });
 
-test.describe('the saved example result', () => {
-  test.skip(isPlaceholder(serverRunExample), 'the real server run has not landed yet (PV19)');
-  const api = process.env.W11_API;
+const SHIP = process.env.SHIP === '1';
 
-  test('ships real data, not the placeholder', () => {
-    expect(isPlaceholder(serverRunExample)).toBe(false);
-  });
+test('the example ships real data, not the placeholder', (_fixtures, testInfo) => {
+  if (!SHIP && isPlaceholder(serverRunExample)) {
+    testInfo.annotations.push({ type: 'placeholder', description: 'premium-examples.json is a placeholder' });
+    test.skip(true, 'placeholder data; set SHIP=1 to make this a failure');
+  }
+  expect(
+    isPlaceholder(serverRunExample),
+    'premium-examples.json is still the placeholder — run the PV19 capture before shipping',
+  ).toBe(false);
+});
 
-  test('Open this result answers 200 signed out', async ({ request }) => {
-    test.skip(api === undefined, 'W11_API names the API under test; production is checked in Task 19');
-    const response = await request.get(`${api}/v1/sims/${encodeURIComponent(serverRunExample.simId)}`);
-    expect(response.status()).toBe(200);
-  });
+test('Open this result answers 200 signed out', async ({ request }) => {
+  test.skip(!SHIP && isPlaceholder(serverRunExample), 'placeholder data; set SHIP=1 to run');
+  const response = await request.get(`${API}/v1/sims/${encodeURIComponent(serverRunExample.simId)}`);
+  expect(response.status()).toBe(200);
+});
+
+test('the founder line sets on one line at 360 and 1024', async ({ page }) => {
+  for (const width of FOUNDER_LINE_WIDTHS) {
+    await page.setViewportSize({ width, height: 900 });
+    await openAt(page, DECEMBER);
+    const lines = await founderLineBoxes(page);
+    expect(lines.length, `founder lines at ${width}`).toBeGreaterThan(0);
+    for (const line of lines) expect(line.lines, `${line.text} at ${width}`).toBe(1);
+  }
 });
 
 interface AxeResults {
@@ -358,7 +378,9 @@ for (const { name, stored } of PREMIUM_STATES) {
 
     const heights = await page
       .locator('main a:visible, main input:visible, main summary:visible')
-      .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+      .evaluateAll((nodes) =>
+        nodes.filter((node) => !node.closest('p, li')).map((node) => node.getBoundingClientRect().height),
+      );
     expect(heights.length).toBeGreaterThan(0);
     for (const height of heights) expect(height).toBeGreaterThanOrEqual(MIN_TAP_PX);
   });

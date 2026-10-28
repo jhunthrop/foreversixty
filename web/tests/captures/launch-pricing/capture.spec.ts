@@ -31,21 +31,9 @@ import {
 import { readLayoutShift, trackLayoutShift } from '../../e2e/support/cls';
 import { GUILD_ID, envelope, openLive, openWith } from '../../e2e/support/guild-billing';
 import { gotoHydrated } from '../../e2e/support/hydrated';
-import {
-  MOCK_DIR,
-  atWidths,
-  cropOf,
-  fresh,
-  settle,
-  sideBySide,
-  sizeTo,
-  targetIn,
-  two,
-} from '../support/capture-kit';
+import { MOCK_DIR, atWidths, cropOf, fresh, settle, sideBySide, sizeTo } from '../support/capture-kit';
+import { DECEMBER, LAUNCH_DAY, file, openPlans, shoot, target } from './plans-capture-kit';
 
-const target = targetIn('2026-10-27-launch-pricing');
-const LAUNCH_DAY = '2026-10-27T18:00:00Z';
-const DECEMBER = '2026-12-08T18:00:00Z';
 const BILLING_DAY = '2026-11-20T12:00:00Z';
 const RENEWS = '2026-12-01T12:00:00Z';
 const BILLING_ID = 'guild-settings-billing';
@@ -78,23 +66,7 @@ const ALL = [360, 390, 1440, 2000];
 const THREE = [360, 390, 1440];
 const PAIR = [390, 1440];
 
-const file = (row: number, state: string, width: number, kind = ''): string =>
-  target(`launch-pricing-${two(row)}-${state}${kind}-${width}.png`);
-
-/** A full-page capture and, with a subject, a crop of it. */
-async function shoot(page: Page, row: number, state: string, width: number, subject?: Locator) {
-  await page.screenshot({ path: file(row, state, width), fullPage: true });
-  if (subject !== undefined) await cropOf(page, subject, file(row, state, width, '-crop'));
-}
-
 // ---- /premium -----------------------------------------------------------------------------------
-
-async function openPlans(page: Page, width: number, time: string): Promise<void> {
-  await sizeTo(page, width);
-  await page.clock.install({ time });
-  await page.goto('/premium');
-  await settle(page);
-}
 
 atWidths('1 plans, founder open, Yearly', ALL, async (page, width) => {
   await openPlans(page, width, DECEMBER);

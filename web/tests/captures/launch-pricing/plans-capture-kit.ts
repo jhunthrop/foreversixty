@@ -8,7 +8,6 @@ import { VIEWPORT_HEIGHT, cropOf, settle, sizeTo, targetIn, two } from '../suppo
 export const target = targetIn('2026-10-27-launch-pricing');
 export const LAUNCH_DAY = '2026-10-27T18:00:00Z';
 export const DECEMBER = '2026-12-08T18:00:00Z';
-export const CAPTURE_PORT = process.env.CAPTURE_PORT ?? '4481';
 
 export const file = (row: number, state: string, width: number, kind = ''): string =>
   target(`launch-pricing-${two(row)}-${state}${kind}-${width}.png`);
@@ -25,13 +24,8 @@ export async function shoot(
   if (subject !== undefined) await cropOf(page, subject, file(row, state, width, '-crop'));
 }
 
-/**
- * Opens /premium at `width` on the clock `time`. Storage is cleared before every load: the site
- * caches /v1/me and the Premium source hint there, so a stale state would leak into the next
- * (the Premium card swaps its source line from that hint).
- */
-export async function openPlans(page: Page, width: number, time: string): Promise<void> {
-  await sizeTo(page, width);
+/** Clears storage before each load: the site caches /v1/me and the Premium source hint there. */
+export async function clearStorageOnLoad(page: Page): Promise<void> {
   await page.addInitScript(() => {
     try {
       localStorage.clear();
@@ -40,6 +34,16 @@ export async function openPlans(page: Page, width: number, time: string): Promis
       // Storage blocked: nothing to clear.
     }
   });
+}
+
+/**
+ * Opens /premium at `width` on the clock `time`. Storage is cleared before every load: the site
+ * caches /v1/me and the Premium source hint there, so a stale state would leak into the next
+ * (the Premium card swaps its source line from that hint).
+ */
+export async function openPlans(page: Page, width: number, time: string): Promise<void> {
+  await sizeTo(page, width);
+  await clearStorageOnLoad(page);
   await page.clock.install({ time });
   await page.goto('/premium');
   await settle(page);

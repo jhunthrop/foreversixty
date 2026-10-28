@@ -13,7 +13,15 @@ import { plansPageCopy } from '../../../src/lib/billing/plans-page-copy';
 import { readLayoutShift, trackLayoutShift } from '../../e2e/support/cls';
 import { COST_BOX_PX, founderLineBoxes, guildPriceBoxes } from '../../e2e/support/premium-layout';
 import { MOCK_DIR, atWidths, cropOf, fresh, settle, sideBySide, sizeTo } from '../support/capture-kit';
-import { CAPTURE_PORT, DECEMBER, file, openPlans, overlayDiff, shoot, target } from './plans-capture-kit';
+import {
+  DECEMBER,
+  clearStorageOnLoad,
+  file,
+  openPlans,
+  overlayDiff,
+  shoot,
+  target,
+} from './plans-capture-kit';
 
 const ALL = [360, 390, 1024, 1440, 2000];
 const PAIR = [390, 1440];
@@ -82,6 +90,7 @@ atWidths('18 region B, Monthly and after the founder window', REGION_B_WIDTHS, a
 
 atWidths('19 /sim landing with the real example card', SIM_WIDTHS, async (page, width) => {
   await sizeTo(page, width);
+  await clearStorageOnLoad(page);
   await page.goto('/sim');
   await settle(page);
   await shoot(page, 19, 'sim-landing', width, page.getByTestId('sim-example-result').first());
@@ -125,8 +134,6 @@ for (const width of BOARD_WIDTHS) {
     await mockPage.screenshot({ path: mockPng, fullPage: true });
     const built = await context.newPage();
     await openPlans(built, width, DECEMBER);
-    await built.goto(`http://localhost:${CAPTURE_PORT}/premium`);
-    await settle(built);
     const builtPng = file(22, 'built', width);
     await built.screenshot({ path: builtPng, fullPage: true });
     await sideBySide(await context.newPage(), mockPng, builtPng, file(22, 'side-by-side', width), width);
