@@ -2,6 +2,7 @@ package reports
 
 import (
 	"context"
+	"errors"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -60,9 +61,18 @@ func (f fakeLevels) CharacterLevels(_ context.Context, keys []string) (map[strin
 	return out, nil
 }
 
-func TestAFullIngestStoresTheCharacterLevelAndItemLevel(t *testing.T) {
-	h := newHarness(t)
-	id := h.createReport(Public)
+// erroringLevels fails every lookup.
+type erroringLevels struct{}
+
+func (erroringLevels) CharacterLevels(context.Context, []string) (map[string]int64, error) {
+	return nil, errors.New("levels store down")
+}
+
+// levelsUnder keys testCharacterLevel for every bundle roster name, in the region of
+// report id: under the ruleset the name resolves to, or, when otherRuleset, under a
+// different one.
+func levelsUnder(t *testing.T, h *harness, id string, otherRuleset bool) fakeLevels {
+	t.Helper()
 	rep, err := h.store.Get(t.Context(), id)
 	if err != nil {
 		t.Fatal(err)
@@ -70,10 +80,30 @@ func TestAFullIngestStoresTheCharacterLevelAndItemLevel(t *testing.T) {
 	region, ruleset := ReportRealm(rep)
 	levels := fakeLevels{}
 	for _, row := range makeBundle(t, 1, nil).rows {
-		levels[character.KeyFromUnit(region, ruleset, row.Name)] = testCharacterLevel
+		levels[levelKey(region, ruleset, row.Name, otherRuleset)] = testCharacterLevel
 	}
-	h.ingest.Levels = levels
+	return levels
+}
 
+// levelKey is the key the ingest derives for unit, or one under a different ruleset.
+func levelKey(region, ruleset, unit string, otherRuleset bool) string {
+	derived := character.KeyFromUnit(region, ruleset, unit)
+	if !otherRuleset {
+		return derived
+	}
+	name, _ := character.SplitUnit(unit)
+	for _, r := range character.Rulesets {
+		if key := character.Key(region, r, name); key != derived {
+			return key
+		}
+	}
+	return derived
+}
+
+// ingestStoredRoster ingests fight 1 with the harness's Levels hook as set, the roster
+// posted with item level testItemLevel and no level, and returns the stored roster.
+func ingestStoredRoster(t *testing.T, h *harness, id string) []summary.RosterRow {
+	t.Helper()
 	b := makeBundleWith(t, func(parts map[string][]byte) {
 		var sum summary.Summary
 		if err := json.Unmarshal(parts["summary"], &sum); err != nil {
@@ -89,16 +119,48 @@ func TestAFullIngestStoresTheCharacterLevelAndItemLevel(t *testing.T) {
 	if res.StatusCode != http.StatusCreated {
 		t.Fatalf("status = %d, want 201", res.StatusCode)
 	}
-
 	var stored summary.Summary
 	decodeInto(t, h.readFile(store.Keys{ReportID: id}.FightSummary(1)), &stored)
 	if len(stored.Roster) == 0 {
 		t.Fatal("stored roster is empty")
 	}
-	for _, row := range stored.Roster {
-		if row.Level != testCharacterLevel || row.ItemLevel != testItemLevel {
+	return stored.Roster
+}
+
+func requireLevels(t *testing.T, roster []summary.RosterRow, wantLevel int64) {
+	t.Helper()
+	for _, row := range roster {
+		if row.Level != wantLevel || row.ItemLevel != testItemLevel {
 			t.Errorf("%s stored level %d item_level %d, want %d and %d",
-				row.Name, row.Level, row.ItemLevel, testCharacterLevel, testItemLevel)
+				row.Name, row.Level, row.ItemLevel, wantLevel, testItemLevel)
 		}
 	}
+}
+
+func TestAFullIngestStoresTheCharacterLevelAndItemLevel(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	h.ingest.Levels = levelsUnder(t, h, id, false)
+	requireLevels(t, ingestStoredRoster(t, h, id), testCharacterLevel)
+}
+
+func TestASameNameCharacterUnderAnotherRulesetGivesNoLevel(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	h.ingest.Levels = levelsUnder(t, h, id, true)
+	requireLevels(t, ingestStoredRoster(t, h, id), 0)
+}
+
+func TestALevelsLookupErrorGivesNoLevelAndTheIngestStillSucceeds(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	h.ingest.Levels = erroringLevels{}
+	requireLevels(t, ingestStoredRoster(t, h, id), 0)
+}
+
+func TestANilLevelsHookGivesNoLevel(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	h.ingest.Levels = nil
+	requireLevels(t, ingestStoredRoster(t, h, id), 0)
 }
