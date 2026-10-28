@@ -101,20 +101,17 @@ func TestParse_RefusesUnknownCompleteKey(t *testing.T) {
 func TestCatalogue_FoodAndWeaponEnchantNotComplete(t *testing.T) {
 	c := Load()
 	for role, rc := range c.Roles {
-		if rc.IsComplete(CategoryFood) || rc.IsComplete(CategoryWeaponEnchant) {
-			t.Errorf("%s: food/weapon_enchant must stay incomplete until confirmed", role)
+		if rc.IsComplete(CategoryFood) || rc.IsComplete(CategoryWeaponEnchant) || rc.IsComplete(CategoryCombatPotion) {
+			t.Errorf("%s: food, weapon_enchant and combat_potion must stay incomplete until confirmed", role)
 		}
-		for _, cat := range []string{CategoryFlask, CategoryCombatPotion, CategoryWorldBuffs} {
-			if role == "dps" && cat == CategoryCombatPotion {
-				continue // only Mighty Rage is listed: casters, hunters and rogues drink others
-			}
+		for _, cat := range []string{CategoryFlask, CategoryWorldBuffs} {
 			if !rc.IsComplete(cat) {
 				t.Errorf("%s: %s should start complete", role, cat)
 			}
 		}
 	}
-	if c.Roles["dps"].IsComplete(CategoryCombatPotion) {
-		t.Fatal("dps combat_potion must stay incomplete until it lists the mana and other potions")
+	if c.AllRoles().IsComplete(CategoryCombatPotion) {
+		t.Fatal("combat_potion must stay incomplete until each role lists runes, healing, mana, rage and other potions")
 	}
 	if c.AllRoles().IsComplete(CategoryFood) {
 		t.Fatal("AllRoles must not call food complete")

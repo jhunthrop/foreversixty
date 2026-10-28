@@ -29,7 +29,7 @@
     },
     "healer": {
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 0, "world_buffs": 20, "combat_potion": 35 },
-      "complete": { "flask": true, "combat_potion": true, "world_buffs": true, "food": false, "weapon_enchant": false },
+      "complete": { "flask": true, "combat_potion": false, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
         { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.69893/spells.json#17627" },
         { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
@@ -53,7 +53,7 @@
     },
     "tank": {
       "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
-      "complete": { "flask": true, "combat_potion": true, "world_buffs": true, "food": false, "weapon_enchant": false },
+      "complete": { "flask": true, "combat_potion": false, "world_buffs": true, "food": false, "weapon_enchant": false },
       "flask": [
         { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
         { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
