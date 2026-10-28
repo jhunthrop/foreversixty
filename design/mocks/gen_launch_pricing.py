@@ -11,6 +11,7 @@
     writes launch-pricing-account.html          (1440, the account Plan panel: offer, accepted, seat, founder, ended)
     writes launch-pricing-account-phone.html    (390, the seat offer)
     writes launch-pricing-emails.html           (1440, the five emails: subject, first sentence, link)
+    writes premium-value-1024/.html/-2000.html  (1024, 1440, 2000: the plans page as B3.5, Region A and Region B)
 
 Built on gen_guild_raids (G1): its CSS, pills, crests, guild band and state cells are imported, never
 copied. Boards go through mocklib.write into design/mocks/renders/; render.py screenshots them
@@ -667,6 +668,176 @@ def emails_page() -> str:
     return page(CSS + LP_CSS + body, 1440)
 
 
+# The premium-value board (spec B3.5, copy B5): the comparison board for capture row 22.
+
+RAID_SIZES = (40, 20, 10)
+PV_PREMIUM_SUPPORT = 'Free stays complete. Premium pays for the servers and keeps the site going.'
+PV_PREMIUM_FEATURES = [
+    'Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.',
+    'Close the tab. Server sims keep running, and the site tells you when they finish.',
+    'Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.',
+    'See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.',
+    'A message in your own Discord channel when a server sim finishes or a log is parsed.',
+    "A Supporter mark beside your name on your characters and in your guild's roster.",
+]
+PV_PREMIUM_SCOPE = ('Sims cover damage specs; healing and tanking specs are not simulated yet. History, Discord messages '
+                    'and the Supporter mark work for every spec.')
+PV_EXAMPLE_LABEL = 'EXAMPLE · A REAL SERVER RUN'
+PV_EXAMPLE_CAPTION = "A level-60 Fury Warrior in the site's preset gear: 4,812 combinations on our servers, 27 Oct 2026."
+PV_EXAMPLE_LINK = 'Open this result'
+PV_BAND_LEAD = 'Running a guild?'
+PV_BAND_LINK = 'Guild and Raid guild are further down'
+PV_GUILD_HEADING = 'For guild leaders'
+PV_GUILD_LEDE = 'One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.'
+PV_GUILD_MEMBERS = ('Plans count verified members: players with a Forever Sixty account whose character the guild has '
+                    'confirmed. People in your Discord without an account do not count.')
+PV_GUILD_FEATURES = [
+    'Post raids on the site and in Discord; members sign up with one tap.',
+    'See who came: attendance and a report for every raid night from its log.',
+    'The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.',
+    '1 Premium seat to give a member, such as your raid leader.',
+    f'Up to {GUILD_CAP} verified members, so a guild that runs 10- or 20-person raids fits under Guild. '
+    'Nothing switches off if you grow past it.',
+]
+PV_RAID_FEATURES = [
+    'Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot '
+    'this tier. Officers award it from the same screen.',
+    'Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.',
+    '3 Premium seats to give members.',
+    'Any number of members.',
+    'Everything in Guild: raids, sign-ups, attendance and the Discord bot.',
+]
+PV_TRIAL = ('First 7 days free, once per guild. Cancel before day 8 and nothing is charged; guild settings shows the '
+            'date of the first charge.')
+PV_HOW = [
+    ('Verified members', 'A verified member is a player with a Forever Sixty account whose character the guild has confirmed: '
+                         "an officer approved it, they joined by the guild's invite link, or the character is in the guild's "
+                         'logs. Each player counts once, however many characters they have in the guild. Discord members '
+                         'without an account do not count.'),
+    HOW[0],
+    ('Paying together', "One person's card pays for the plan. Members cannot split the bill on the site."),
+    *HOW[1:4],
+    ('Trial', "A guild's first 7 days are free, once per guild. The card is added at the start, and guild settings shows the "
+              'date of the first charge from day one. Cancel before day 8 and nothing is charged.'),
+    *HOW[5:],
+]
+PV_COST_BOX_PX = 54
+
+
+def pv_cost_line(plan: str) -> str:
+    amount = price_of(plan, 'yearly', True)
+    if plan == 'guild':
+        return f'{money(amount / GUILD_CAP)} per member a year at {GUILD_CAP} members.'
+    a40, a20, a10 = (money(amount / n) for n in RAID_SIZES)
+    return f'{a40} per raider a year in a {RAID_SIZES[0]}-person raid, {a20} in a {RAID_SIZES[1]}, {a10} in a {RAID_SIZES[2]}.'
+
+
+def pv_ticks(lines: list) -> str:
+    items = ''.join(f'<li>{TICK}<span>{f}</span></li>' for f in lines)
+    return f'<ul class="lp-feat" style="margin-top:8px">{items}</ul>'
+
+
+def pv_free_card() -> str:
+    return ('<div class="lp-card" style="box-shadow:none"><span class="lp-name">Free</span>'
+            f'<span class="lp-who">{WHO["free"]}</span>{price_block("free", "yearly", True)}'
+            '<div style="margin-top:12px"><div style="height:44px;display:flex;align-items:center;font-size:13px;color:#9a9484">'
+            'Sign in with Battle.net from the top of any page.</div></div><div style="height:40px;margin-top:12px"></div>'
+            f'{pv_ticks(FEATURES["free"])}'
+            '<p style="margin:12px 0 0;font-size:13px;font-weight:600;color:#f2eee4">This list never shrinks.</p></div>')
+
+
+def pv_premium_card() -> str:
+    button = f'<span class="lp-btn">Subscribe · {price_words("premium", "yearly", True)}</span>'
+    return (f'<div class="lp-card"><span class="lp-name">Premium</span><span class="lp-who">{WHO["premium"]}</span>'
+            f'{price_block("premium", "yearly", True)}<div style="margin-top:12px">{button}</div>'
+            f'<p class="lp-trial" style="height:40px;margin:12px 0 0">{PV_PREMIUM_SUPPORT}</p>'
+            f'{pv_ticks(PV_PREMIUM_FEATURES)}'
+            f'<p style="margin:12px 0 0;font-size:13px;color:#9a9484">{PV_PREMIUM_SCOPE}</p></div>')
+
+
+def pv_example_card() -> str:
+    shot = ('<div style="aspect-ratio:4/3;width:100%;border:1px solid #1c2230;border-radius:4px;background:#131824;'
+            'display:flex;flex-direction:column;gap:8px;padding:12px;box-sizing:border-box">'
+            f'<div style="display:flex;align-items:center;gap:8px">{crest_img("warrior", 32)}'
+            '<span style="display:flex;flex-direction:column"><span style="font-size:14px;color:#f2eee4">Fury Warrior</span>'
+            '<span class="sub">Level 60, preset gear</span></span></div>'
+            '<span class="sr" style="margin-top:auto">Mock capture of the real result page: combinations, precision, best set '
+            'DPS with its error, first swaps with item icons.</span></div>')
+    return ('<div class="lp-card" style="box-shadow:none;border-top-color:#262e40">'
+            f'<span class="label" style="color:#9a9484;font-size:11px">{PV_EXAMPLE_LABEL}</span>'
+            f'<div style="margin-top:8px">{shot}</div>'
+            f'<p style="margin:8px 0 0;font-size:13px;color:#9a9484">{PV_EXAMPLE_CAPTION}</p>'
+            f'<a href="#result" style="display:flex;align-items:center;min-height:44px;color:#e5b955;font-size:14px">'
+            f'{PV_EXAMPLE_LINK}</a></div>')
+
+
+def pv_guild_price(plan: str) -> str:
+    fig = money(price_of(plan, 'yearly', True))
+    was = money(price_of(plan, 'yearly', False))
+    sub = f'{money(price_of(plan, "yearly", True) / 12)} a month, billed yearly'
+    return ('<div class="lp-price" style="height:152px;overflow:hidden">'
+            f'<div><span class="lp-fig" style="font-size:24px;line-height:30px">{fig}</span><span class="lp-unit"> /year</span>'
+            f'<s class="lp-was">{was}</s></div><span class="lp-sub">{sub}</span><span class="lp-fnote">{FOUNDER_NOTE}</span>'
+            f'<p style="margin:0;font-size:13px;line-height:18px;height:{PV_COST_BOX_PX}px;color:#e9e4d8">'
+            f'{pv_cost_line(plan)}</p></div>')
+
+
+def pv_guild_card(plan: str, features: list) -> str:
+    button = ('<span class="lp-btn" style="border-color:#3a3326;color:#e9e4d8">'
+              f'Subscribe a guild · {price_words(plan, "yearly", True)}</span>')
+    trial = (f'<p class="lp-trial" style="margin:0"><b style="color:#f2eee4;font-weight:600">First 7 days free</b>'
+             f'{PV_TRIAL[len("First 7 days free"):]}</p>')
+    return (f'<div class="lp-card" style="box-shadow:none;border-top-color:#262e40">'
+            f'<span class="lp-name">{PRICES[plan]["name"]}</span>'
+            f'<span class="lp-who">{WHO[plan]}</span>{pv_guild_price(plan)}<div style="margin-top:12px">{button}</div>'
+            f'<div style="min-height:40px;margin-top:12px">{trial}</div>{pv_ticks(features)}</div>')
+
+
+def pv_gutter(width: int) -> int:
+    return 32 if width < 1280 else 48
+
+
+def pv_band(width: int) -> str:
+    seg = '<div class="lp-seg" role="radiogroup"><span class="on">Yearly</span><span>Monthly</span></div>'
+    h1 = '<h1 class="display" style="font-size:22px;color:#f2eee4;margin:0">What is free, and what the plans add</h1>'
+    frow = (f'<p style="margin:0;font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">{founder_pill()}'
+            f'<span>{FOUNDER_OPEN}</span></p>')
+    guild_link = (f'<p style="margin:0;font-size:14px">{PV_BAND_LEAD} <a href="#guild-leaders" style="color:#e5b955">'
+                  f'{PV_BAND_LINK}</a></p>')
+    return (f'<div class="band">{nav("", False)}<div class="lp-col" style="padding:28px {pv_gutter(width)}px 24px;display:flex;'
+            f'flex-direction:column;gap:10px"><span class="label" style="color:#e5b955">Plans</span>'
+            f'<div style="display:flex;align-items:center;justify-content:space-between;gap:24px">{h1}{seg}</div>'
+            f'<p style="margin:0;font-size:15px;max-width:720px">{PROMISE}</p>{frow}{guild_link}</div></div>')
+
+
+def pv_how() -> str:
+    cells = ''.join(f'<div class="label" style="display:flex;align-items:center">{t}</div><div>{s}</div>' for t, s in PV_HOW)
+    return (f'<div style="display:flex;flex-direction:column;gap:14px"><span class="section-title" style="font-size:18px">'
+            f'How the guild plans work</span><div class="lp-how">{cells}</div></div>')
+
+
+def pv_body(width: int) -> str:
+    grid = 'display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start'
+    region_a = f'<div style="{grid}">{pv_free_card()}{pv_premium_card()}{pv_example_card()}</div>'
+    history = f'<p class="lp-rule">{HISTORY}</p>'
+    region_b = (
+        '<section id="guild-leaders" style="display:flex;flex-direction:column;gap:4px">'
+        f'<h2 class="section-title" style="font-size:18px;margin:0">{PV_GUILD_HEADING}</h2>'
+        f'<p style="margin:4px 0 0;font-size:14px;max-width:720px">{PV_GUILD_LEDE}</p>'
+        f'<p style="margin:0;font-size:13px;color:#9a9484;max-width:720px">{PV_GUILD_MEMBERS}</p>'
+        f'<div style="{grid};margin-top:12px">{pv_guild_card("guild", PV_GUILD_FEATURES)}'
+        f'{pv_guild_card("raid_guild", PV_RAID_FEATURES)}{history}</div></section>')
+    note = (f'<p class="ann">{MOCK_NOTE} The example image is a labelled stand-in; the real capture replaces it. '
+            f'Board width {width}.</p>')
+    foot = f'<p style="margin:0;font-size:13px;color:#9a9484">{FOOT}</p>'
+    return (f'<div class="lp-col" style="padding:24px {pv_gutter(width)}px 48px;display:flex;flex-direction:column;gap:40px">'
+            f'{region_a}{region_b}{pv_how()}{foot}{note}</div>')
+
+
+def premium_value_page(width: int) -> str:
+    return page(CSS + LP_CSS + pv_band(width) + pv_body(width) + footer(), width)
+
+
 def build_all() -> None:
     boards = [
         ('', plans_page(1440, False)),
@@ -682,6 +853,8 @@ def build_all() -> None:
     ]
     for suffix, html in boards:
         print(write('launch-pricing' + suffix + '.html', html).as_posix())
+    for suffix, width in (('-1024', 1024), ('', 1440), ('-2000', 2000)):
+        print(write('premium-value' + suffix + '.html', premium_value_page(width)).as_posix())
 
 
 if __name__ == '__main__':
