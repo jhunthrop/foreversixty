@@ -10,8 +10,10 @@
   import type { AccountPlanLine } from '../../lib/account/plan-line';
   import { accountPlanCopy } from '../../lib/billing/account-plan-copy';
   import { billingBlockCopy, premiumBlockCopy } from '../../lib/billing/copy';
+  import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
   import { characterHref } from '../../lib/characters';
   import { INLINE_LINK } from '../../lib/guild/field-styles';
+  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
 
   const SIM_HREF = '/sim';
   const NOTIFICATIONS_HREF = '#discord';
@@ -23,6 +25,9 @@
     serverRunsThisMonth,
     plan,
     seePlans = false,
+    pastDue = false,
+    busy = false,
+    onBilling,
     notifications = { value: premiumRowCopy.off, linked: false },
   }: {
     entitlements?: EntitlementsView;
@@ -33,6 +38,12 @@
     plan?: AccountPlanLine;
     /** The free state links to the plans page. */
     seePlans?: boolean;
+    /** The own subscription's last payment failed: the alert takes line 2's place (spec 4.3). */
+    pastDue?: boolean;
+    /** Disables the billing button while a request is running. */
+    busy?: boolean;
+    /** Opens the billing portal; the button under the line (`plan.billingButton`) calls it. */
+    onBilling?: () => void;
     /**
      * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` hides the
      * row (`premiumRowVisible(me)` is false: the deployment has notifications off); `undefined`
@@ -118,8 +129,24 @@
         {/if}
       </p>
     {/if}
-    {#if plan.line2 !== null}
+    {#if pastDue}
+      <p class="text-strong text-[13px]" role="alert" data-testid="account-past-due">
+        {billingBlockCopy.pastDueBanner}
+      </p>
+    {:else if plan.line2 !== null}
       <p class="text-muted text-[13px]" data-testid="account-plan-line2">{plan.line2}</p>
+    {/if}
+    {#if plan.billingButton !== null && onBilling !== undefined}
+      <button
+        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text mt-2 w-fit px-4"
+        onclick={onBilling}
+        disabled={busy}
+        data-testid="account-billing-button"
+      >
+        {plan.billingButton === 'manage'
+          ? premiumSourceCopy.buttons.manage
+          : premiumSourceCopy.buttons.history}
+      </button>
     {/if}
   </div>
 {/if}

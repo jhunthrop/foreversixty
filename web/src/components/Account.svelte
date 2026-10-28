@@ -28,7 +28,6 @@
   import communityLinks from '../data/links.json';
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
-  import { billingBlockCopy } from '../lib/billing/copy';
   import { premiumRowLinked, premiumRowValue, premiumRowVisible } from '../lib/account/notifications';
   import AccountDiscordLink from './account/AccountDiscordLink.svelte';
   import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
@@ -937,11 +936,11 @@
                   {#if shownOffer !== null}
                     <AccountSeatOffer offer={shownOffer} zone={viewerZone()} onAnswered={onOfferAnswered} />
                   {/if}
-                  {#if billing?.status === 'past_due'}
-                    <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-                  {/if}
                   <AccountPremiumBlock
                     plan={planLine}
+                    pastDue={billing?.status === 'past_due' && planLine?.billingButton === 'manage'}
+                    {busy}
+                    onBilling={onManageBilling}
                     seePlans={!onPremium(me)}
                     entitlements={me?.entitlements}
                     characters={me?.characters ?? []}
@@ -951,15 +950,6 @@
                       ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
                       : null}
                   />
-                  {#if planLine?.manageBilling === true}
-                    <button
-                      class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
-                      onclick={onManageBilling}
-                      disabled={busy}
-                    >
-                      {billingBlockCopy.manageBilling}
-                    </button>
-                  {/if}
                 </div>
               </StatePanel>
               {#if me !== null}
