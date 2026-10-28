@@ -60,9 +60,12 @@ func coveredState(gb *entitlements.GuildBilling, now time.Time) (state string, e
 	return coveredActive, endsAt, true
 }
 
-// coveredViews answers each guild's covered view for viewerID; a guild with no shown whole
-// plan has none. Nil when the plan read is not wired (the older /v1/me shape).
-func (s *Store) coveredViews(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]*auth.GuildCoveredView, error) {
+// coveredViews answers each guild's covered view for viewerID from plans, GuildStanding's one
+// plan-row read; a guild with no shown whole plan has none. Nil when the plan read is not
+// wired (the older /v1/me shape). Its reads are fixed whatever the guild count: verified
+// guilds, given seats, and the payers' names (skipped when none is to be shown).
+func (s *Store) coveredViews(ctx context.Context, viewerID int64, guildIDs []int64,
+	plans map[int64]*entitlements.GuildBilling) (map[int64]*auth.GuildCoveredView, error) {
 	if s.Plans == nil {
 		return nil, nil
 	}
@@ -76,30 +79,44 @@ func (s *Store) coveredViews(ctx context.Context, viewerID int64, guildIDs []int
 	}
 	now := time.Now()
 	out := make(map[int64]*auth.GuildCoveredView, len(guildIDs))
+	payers := map[int64]int64{} // guild -> the paying account this viewer may see named
 	for _, id := range guildIDs {
-		view, err := s.coveredView(ctx, id, viewerID, verified[id], held[id], now)
-		if err != nil {
-			return nil, err
+		gb := plans[id]
+		view := coveredView(gb, viewerID, held[id], now)
+		if view == nil {
+			continue
 		}
-		if view != nil {
-			out[id] = view
+		out[id] = view
+		if verified[id] && gb.BillingUserID != nil {
+			payers[id] = *gb.BillingUserID
 		}
 	}
-	return out, nil
+	return out, s.namePayers(ctx, out, payers)
 }
 
-// coveredView is one guild's covered view, nil when it has no shown whole plan.
-func (s *Store) coveredView(ctx context.Context, guildID, viewerID int64, verified bool, held []seatHolder, now time.Time) (*auth.GuildCoveredView, error) {
-	gb, err := s.Plans.GuildBilling(ctx, guildID)
+// namePayers fills billed_by with each payer's character in the guild, named by the rule
+// claim.holder_name uses (guildCharacterNames), so a card names one person one way. A payer
+// with no named character there stays "".
+func (s *Store) namePayers(ctx context.Context, views map[int64]*auth.GuildCoveredView, payers map[int64]int64) error {
+	names, err := s.guildCharacterNames(ctx, payers)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	for id, name := range names {
+		views[id].BilledBy = name
+	}
+	return nil
+}
+
+// coveredView is one guild's covered view without billed_by, nil when it has no shown whole
+// plan.
+func coveredView(gb *entitlements.GuildBilling, viewerID int64, held []seatHolder, now time.Time) *auth.GuildCoveredView {
 	if gb == nil || gb.Scoped() {
-		return nil, nil
+		return nil
 	}
 	state, endsAt, ok := coveredState(gb, now)
 	if !ok {
-		return nil, nil
+		return nil
 	}
 	view := &auth.GuildCoveredView{
 		Tier: gb.Tier, State: state, EndsAt: formatTime(endsAt),
@@ -107,12 +124,7 @@ func (s *Store) coveredView(ctx context.Context, guildID, viewerID int64, verifi
 		SeatsTotal: catalog.SeatsForTier(gb.Tier),
 	}
 	view.SeatsGiven, view.YouHoldSeat = seatFacts(held, view.SeatsTotal, viewerID)
-	if verified && gb.BillingUserID != nil {
-		if view.BilledBy, err = s.billerName(ctx, guildID, *gb.BillingUserID); err != nil {
-			return nil, err
-		}
-	}
-	return view, nil
+	return view
 }
 
 func formatTime(t *time.Time) *string {
@@ -181,22 +193,4 @@ func (s *Store) verifiedGuilds(ctx context.Context, viewerID int64, guildIDs []i
 		out[id] = true
 	}
 	return out, rows.Err()
-}
-
-// billerName is the billing account's character in the guild (its main first), "" when it
-// has none there.
-func (s *Store) billerName(ctx context.Context, guildID, userID int64) (string, error) {
-	var name string
-	err := s.Pool.QueryRow(ctx, `
-		select coalesce(max(name), '') from (
-		  select ae.name from guild_characters gc
-		  join addon_exports ae on ae.character_key = gc.character_key
-		  join users u on u.id = gc.user_id
-		  where gc.guild_id = $1 and gc.user_id = $2 and gc.character_key not like 'account:%'
-		  order by (gc.character_key = u.main_character_key) desc, ae.name limit 1
-		) best`, guildID, userID).Scan(&name)
-	if err != nil {
-		return "", fmt.Errorf("guilds: covered biller of %d: %w", guildID, err)
-	}
-	return name, nil
 }

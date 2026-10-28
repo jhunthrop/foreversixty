@@ -13,8 +13,7 @@ import (
 // GuildTrialUsed reports whether guildID has already had its one trial.
 func (s *Store) GuildTrialUsed(ctx context.Context, guildID int64) (bool, error) {
 	var used bool
-	if err := s.Pool.QueryRow(ctx,
-		`select exists (select 1 from guild_trials where guild_id = $1)`, guildID).Scan(&used); err != nil {
+	if err := s.Pool.QueryRow(ctx, `select `+trialUsedExists("$1"), guildID).Scan(&used); err != nil {
 		return false, fmt.Errorf("billing: guild trial %d: %w", guildID, err)
 	}
 	return used, nil

@@ -23,21 +23,13 @@ type claimHolderState struct {
 	holder *int64 // the claim holder, else the active pending claimant
 }
 
-// ClaimAndVerifyViews answers, for each of the guilds identities describe, the claim view the
-// viewer sees and whether anyone in the guild can approve a character. It is the one call
-// GuildStanding makes for these facts and costs at most two queries whatever the guild count:
-// who approves (the viewer, and anyone), and the holder names, skipped when none is to be
-// shown. The claim columns themselves arrive with the identity rows.
-func (s *Store) ClaimAndVerifyViews(ctx context.Context, viewerID int64, identities []identityRow) (
-	map[int64]auth.GuildClaimView, map[int64]auth.GuildVerifyView, error) {
-	ids := make([]int64, len(identities))
-	for i, id := range identities {
-		ids[i] = id.id
-	}
-	approvers, err := s.approverFacts(ctx, viewerID, ids)
-	if err != nil {
-		return nil, nil, err
-	}
+// claimAndVerifyViews answers, for each of the guilds identities describe, the claim view the
+// viewer sees and whether anyone in the guild can approve a character, from approverFacts'
+// answer (which GuildStanding reads once and shares with the subscribe step). It costs at most
+// one query whatever the guild count, the holder names, skipped when none is to be shown. The
+// claim columns themselves arrive with the identity rows.
+func (s *Store) claimAndVerifyViews(ctx context.Context, viewerID int64, identities []identityRow,
+	approvers map[int64]approverFact) (map[int64]auth.GuildClaimView, map[int64]auth.GuildVerifyView, error) {
 	now := time.Now()
 	states := make(map[int64]claimHolderState, len(identities))
 	named := map[int64]int64{} // guild -> the account whose character name this viewer may see
@@ -121,20 +113,16 @@ func (s *Store) approverFacts(ctx context.Context, viewerID int64, guildIDs []in
 	return out, rows.Err()
 }
 
-// viewerApproves is the guilds among guildIDs in which viewerID is a verified officer or
-// leader.
-func (s *Store) viewerApproves(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]bool, error) {
-	facts, err := s.approverFacts(ctx, viewerID, guildIDs)
-	if err != nil {
-		return nil, err
-	}
+// viewerApproves is the guilds in approvers in which the viewer is a verified officer or
+// leader: Capabilities' verified-rank read.
+func viewerApproves(approvers map[int64]approverFact) map[int64]bool {
 	out := map[int64]bool{}
-	for id, f := range facts {
+	for id, f := range approvers {
 		if f.viewerApproves {
 			out[id] = true
 		}
 	}
-	return out, nil
+	return out
 }
 
 // guildCharacterNames is, for each guild in holders (guild -> account), the name of that

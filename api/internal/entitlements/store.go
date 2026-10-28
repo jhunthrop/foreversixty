@@ -212,26 +212,56 @@ func (g GuildBilling) Scoped() bool { return len(g.Features) > 0 }
 // on_plan reads. A nil row is no plan.
 func LiveWholePlan(g *GuildBilling) bool { return g != nil && g.Active && !g.Scoped() }
 
+// guildBillingSelect is the guild-plan row's columns, guild_id first, as scanGuildBilling
+// reads them. (guild_id, plan) is the row's upsert key, so a guild has at most one.
+const guildBillingSelect = `
+		select e.guild_id, e.id, coalesce(e.tier, ''), coalesce(e.price_lookup_key, ''), coalesce(e.unit_amount_cents, 0),
+		       e.trial_end, coalesce(e.stripe_subscription_id, ''),
+		       e.status, e.current_period_end, e.cancel_at_period_end, e.billing_user_id,
+		       e.features, (` + activeClause + `) as active
+		from entitlements e where e.plan = 'guild' and `
+
+// scanGuildBilling reads one guildBillingSelect row.
+func scanGuildBilling(row pgx.Row) (int64, *GuildBilling, error) {
+	var guildID int64
+	var g GuildBilling
+	err := row.Scan(&guildID, &g.ID, &g.Tier, &g.PriceLookupKey, &g.UnitAmountCents, &g.TrialEnd,
+		&g.StripeSubscriptionID, &g.Status, &g.CurrentPeriodEnd, &g.CancelAtPeriodEnd, &g.BillingUserID,
+		&g.Features, &g.Active)
+	return guildID, &g, err
+}
+
 // GuildBilling reads guildID's guild-plan row, nil when it has none, with
 // no status filter: a canceled guild plan still needs to be visible (for
 // example, to a settings page) exactly like a personal one does.
 func (s *Store) GuildBilling(ctx context.Context, guildID int64) (*GuildBilling, error) {
-	var g GuildBilling
-	err := s.Pool.QueryRow(ctx, `
-		select e.id, coalesce(e.tier, ''), coalesce(e.price_lookup_key, ''), coalesce(e.unit_amount_cents, 0),
-		       e.trial_end, coalesce(e.stripe_subscription_id, ''),
-		       e.status, e.current_period_end, e.cancel_at_period_end, e.billing_user_id,
-		       e.features, (`+activeClause+`) as active
-		from entitlements e where e.guild_id = $1 and e.plan = 'guild'`, guildID).
-		Scan(&g.ID, &g.Tier, &g.PriceLookupKey, &g.UnitAmountCents, &g.TrialEnd, &g.StripeSubscriptionID,
-			&g.Status, &g.CurrentPeriodEnd, &g.CancelAtPeriodEnd, &g.BillingUserID, &g.Features, &g.Active)
+	_, g, err := scanGuildBilling(s.Pool.QueryRow(ctx, guildBillingSelect+`e.guild_id = $1`, guildID))
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("entitlements: guild billing %d: %w", guildID, err)
 	}
-	return &g, nil
+	return g, nil
+}
+
+// GuildBillings is GuildBilling for many guilds in one query; a guild with no plan row is
+// absent from the map.
+func (s *Store) GuildBillings(ctx context.Context, guildIDs []int64) (map[int64]*GuildBilling, error) {
+	rows, err := s.Pool.Query(ctx, guildBillingSelect+`e.guild_id = any($1)`, guildIDs)
+	if err != nil {
+		return nil, fmt.Errorf("entitlements: guild billings: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[int64]*GuildBilling, len(guildIDs))
+	for rows.Next() {
+		guildID, g, err := scanGuildBilling(rows)
+		if err != nil {
+			return nil, fmt.Errorf("entitlements: guild billings: %w", err)
+		}
+		out[guildID] = g
+	}
+	return out, rows.Err()
 }
 
 // StripeSubscriptionIDs lists every stripe_subscription_id whose row is

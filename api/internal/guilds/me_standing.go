@@ -47,12 +47,15 @@ type identityRow struct {
 	claim Guild
 }
 
-// GuildStanding returns each of guildIDs' identity facts: ruleset label, slug, faction, crest
-// url, the roster count, claim and verify. A guild id that does not exist is absent from the
-// map. These cost four fixed queries per call whatever the guild count: identity (with the
-// newest snapshot and the claim columns), roster rows, invited accounts, and who approves; a
-// fifth, the claim holders' names, runs only when a verified officer may see one. Cache the
-// roster count by snapshot received_at if /v1/me latency ever shows it.
+// GuildStanding returns each of guildIDs' standing: ruleset label, slug, faction, crest url,
+// the roster count, claim, verify, subscribe and covered. A guild id that does not exist is
+// absent from the map. No read is per guild: with billing wired it costs twelve fixed queries
+// whatever the guild count (identity with the newest snapshot and the claim columns, roster
+// rows, invited accounts, who approves, the plan rows, the checkout facts, the viewer's claim
+// ranks, Battle.net link, held claims and claim rate limit, verified guilds and given seats),
+// plus at most two name reads (claim holders, payers) that run only when a name is shown.
+// Without billing it is the first four plus the holder names. Cache the roster count by
+// snapshot received_at if /v1/me latency ever shows it.
 func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []int64) (map[int64]auth.GuildStanding, error) {
 	out := make(map[int64]auth.GuildStanding, len(guildIDs))
 	if len(guildIDs) == 0 {
@@ -70,15 +73,15 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 	if err != nil {
 		return nil, err
 	}
-	claims, verify, err := s.ClaimAndVerifyViews(ctx, viewerID, identities)
+	approvers, err := s.approverFacts(ctx, viewerID, guildIDs)
 	if err != nil {
 		return nil, err
 	}
-	subscribe, err := s.subscribeViews(ctx, viewerID, guildIDs, claims)
+	claims, verify, err := s.claimAndVerifyViews(ctx, viewerID, identities, approvers)
 	if err != nil {
 		return nil, err
 	}
-	covered, err := s.coveredViews(ctx, viewerID, guildIDs)
+	plan, err := s.planViews(ctx, viewerID, guildIDs, claims, approvers)
 	if err != nil {
 		return nil, err
 	}
@@ -91,8 +94,8 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 			Slug:         character.Slug(id.name),
 			CrestURL:     CrestURL(s.APIBaseURL, id.id, id.crestKey),
 			Faction:      id.faction,
-			Subscribe:    subscribe[id.id],
-			Covered:      covered[id.id],
+			Subscribe:    plan.subscribe[id.id],
+			Covered:      plan.covered[id.id],
 		}
 		if id.snapshot {
 			_, counts := mergeRoster(rows[id.id], invited[id.id], id.members)
@@ -102,6 +105,34 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 		out[id.id] = st
 	}
 	return out, nil
+}
+
+// standingPlanViews is the two plan-backed views of each guild.
+type standingPlanViews struct {
+	subscribe map[int64]*auth.GuildSubscribeView
+	covered   map[int64]*auth.GuildCoveredView
+}
+
+// planViews reads every guild's plan row once and answers both plan-backed views from it. With
+// no plan reader wired both stay nil, the older /v1/me shape.
+func (s *Store) planViews(ctx context.Context, viewerID int64, guildIDs []int64,
+	claims map[int64]auth.GuildClaimView, approvers map[int64]approverFact) (standingPlanViews, error) {
+	if s.Plans == nil {
+		return standingPlanViews{}, nil
+	}
+	plans, err := s.Plans.GuildBillings(ctx, guildIDs)
+	if err != nil {
+		return standingPlanViews{}, err
+	}
+	subscribe, err := s.subscribeViews(ctx, viewerID, guildIDs, claims, approvers, plans)
+	if err != nil {
+		return standingPlanViews{}, err
+	}
+	covered, err := s.coveredViews(ctx, viewerID, guildIDs, plans)
+	if err != nil {
+		return standingPlanViews{}, err
+	}
+	return standingPlanViews{subscribe: subscribe, covered: covered}, nil
 }
 
 // identityRows reads every guild's identity and newest snapshot in one query.

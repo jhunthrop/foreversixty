@@ -182,9 +182,7 @@ func (s *Store) RecordPendingCheckout(ctx context.Context, guildID, userID int64
 // completed, which expires_at (and the reconcile sweep below) bounds.
 func (s *Store) PendingGuildCheckout(ctx context.Context, guildID int64) (bool, error) {
 	var exists bool
-	if err := s.Pool.QueryRow(ctx,
-		`select exists (select 1 from pending_checkouts where guild_id = $1 and expires_at > now())`,
-		guildID).Scan(&exists); err != nil {
+	if err := s.Pool.QueryRow(ctx, `select `+openCheckoutExists("$1"), guildID).Scan(&exists); err != nil {
 		return false, fmt.Errorf("billing: pending checkout guild %d: %w", guildID, err)
 	}
 	return exists, nil

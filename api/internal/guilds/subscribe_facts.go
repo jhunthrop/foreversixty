@@ -16,18 +16,20 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
-// StepBillingFacts is the per-guild checkout reads the subscribe step needs (billing.Store).
+// StepBillingFacts is the checkout reads the subscribe step needs, for many guilds in one
+// query (billing.Store).
 type StepBillingFacts interface {
-	PendingGuildCheckout(ctx context.Context, guildID int64) (bool, error)
-	GuildTrialUsed(ctx context.Context, guildID int64) (bool, error)
+	GuildCheckoutFacts(ctx context.Context, guildIDs []int64) (map[int64]billing.CheckoutFacts, error)
 }
 
-// GuildPlans reads a guild's plan row (entitlements.Store).
+// GuildPlans reads many guilds' plan rows in one query (entitlements.Store). GuildStanding
+// reads them once and hands them to the subscribe and covered views.
 type GuildPlans interface {
-	GuildBilling(ctx context.Context, guildID int64) (*entitlements.GuildBilling, error)
+	GuildBillings(ctx context.Context, guildIDs []int64) (map[int64]*entitlements.GuildBilling, error)
 }
 
 // rankMember is the rank StepFacts names for a viewer with no officer or leader character.
@@ -50,45 +52,37 @@ type viewerStepFacts struct {
 }
 
 // subscribeViews answers each guild's subscribe view for viewerID, or nil when the billing
-// reads are not wired (the older /v1/me shape). claims is ClaimAndVerifyViews' answer.
+// reads are not wired (the older /v1/me shape). claims and approvers are what GuildStanding
+// already read; plans is its one plan-row read. No read here is per guild.
 func (s *Store) subscribeViews(ctx context.Context, viewerID int64, guildIDs []int64,
-	claims map[int64]auth.GuildClaimView) (map[int64]*auth.GuildSubscribeView, error) {
+	claims map[int64]auth.GuildClaimView, approvers map[int64]approverFact,
+	plans map[int64]*entitlements.GuildBilling) (map[int64]*auth.GuildSubscribeView, error) {
 	if s.Billing == nil || s.Plans == nil {
 		return nil, nil
+	}
+	checkouts, err := s.Billing.GuildCheckoutFacts(ctx, guildIDs)
+	if err != nil {
+		return nil, err
 	}
 	viewer, err := s.readViewerStepFacts(ctx, viewerID, guildIDs)
 	if err != nil {
 		return nil, err
 	}
+	viewer.verifiedOfficer = viewerApproves(approvers)
 	out := make(map[int64]*auth.GuildSubscribeView, len(claims))
 	for id, claim := range claims {
-		facts, err := s.stepFacts(ctx, id, claim, viewer)
-		if err != nil {
-			return nil, err
-		}
-		out[id] = subscribeView(SubscribeStep(facts))
+		out[id] = subscribeView(SubscribeStep(stepFacts(id, claim, viewer, plans[id], checkouts[id])))
 	}
 	return out, nil
 }
 
-// stepFacts is guildID's StepFacts: the viewer's facts plus the guild's billing reads.
-func (s *Store) stepFacts(ctx context.Context, guildID int64, claim auth.GuildClaimView, v viewerStepFacts) (StepFacts, error) {
-	plan, err := s.Plans.GuildBilling(ctx, guildID)
-	if err != nil {
-		return StepFacts{}, err
-	}
-	checkout, err := s.Billing.PendingGuildCheckout(ctx, guildID)
-	if err != nil {
-		return StepFacts{}, err
-	}
-	trialUsed, err := s.Billing.GuildTrialUsed(ctx, guildID)
-	if err != nil {
-		return StepFacts{}, err
-	}
+// stepFacts is guildID's StepFacts: the viewer's facts plus the guild's plan and checkout facts.
+func stepFacts(guildID int64, claim auth.GuildClaimView, v viewerStepFacts, plan *entitlements.GuildBilling,
+	checkout billing.CheckoutFacts) StepFacts {
 	other := v.otherHeldClaim(guildID)
 	return StepFacts{
 		OnLivePlan:            entitlements.LiveWholePlan(plan),
-		CheckoutOpen:          checkout,
+		CheckoutOpen:          checkout.Open,
 		ClaimState:            claim.State,
 		ViewerHoldsClaim:      claim.Yours,
 		ViewerPendingClaim:    claim.PendingYours,
@@ -98,8 +92,8 @@ func (s *Store) stepFacts(ctx context.Context, guildID int64, claim auth.GuildCl
 		HoldsOtherClaim:       other != nil,
 		OtherGuildName:        nameOf(other),
 		RateLimitedUntil:      v.rateLimitedUntil,
-		TrialUsed:             trialUsed,
-	}, nil
+		TrialUsed:             checkout.TrialUsed,
+	}
 }
 
 func (v viewerStepFacts) rank(guildID int64) string {
@@ -126,15 +120,12 @@ func nameOf(c *heldClaim) string {
 	return c.name
 }
 
-// readViewerStepFacts reads the viewer's ranks, verified officer guilds, Battle.net link, held
-// claims and claim rate limit.
+// readViewerStepFacts reads the viewer's ranks, Battle.net link, held claims and claim rate
+// limit (four queries). The verified officer guilds come from GuildStanding's approver read.
 func (s *Store) readViewerStepFacts(ctx context.Context, viewerID int64, guildIDs []int64) (viewerStepFacts, error) {
 	var v viewerStepFacts
 	var err error
 	if v.ranks, err = s.claimRanks(ctx, viewerID, guildIDs); err != nil {
-		return v, err
-	}
-	if v.verifiedOfficer, err = s.viewerApproves(ctx, viewerID, guildIDs); err != nil {
 		return v, err
 	}
 	if v.hasBattleNet, err = s.hasBattleNet(ctx, viewerID); err != nil {

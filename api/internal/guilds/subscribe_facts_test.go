@@ -144,9 +144,17 @@ func TestGuildStanding_NilBillingFactsLeavesSubscribeOut(t *testing.T) {
 	}
 }
 
-// meGuilds serves GET /v1/me for viewer with the guild store as its Standing source and
-// returns the raw guilds[] subscribe objects by guild id.
-func meGuilds(t *testing.T, h *httpHarness, viewer int64) map[int64]json.RawMessage {
+// meGuild is one guilds[] entry of GET /v1/me, its plan-backed objects left raw.
+type meGuild struct {
+	ID        int64           `json:"id"`
+	Subscribe json.RawMessage `json:"subscribe"`
+	Covered   json.RawMessage `json:"covered"`
+	Plan      json.RawMessage `json:"plan"` // absent (nil) unless the viewer is a verified officer of a planned guild
+}
+
+// meGuilds serves GET /v1/me for viewer through the real handler, with the guild store as its
+// Standing and capability source, and returns its guilds[] entries by guild id.
+func meGuilds(t *testing.T, h *httpHarness, viewer int64) map[int64]meGuild {
 	t.Helper()
 	quiet := slog.New(slog.NewTextHandler(io.Discard, nil))
 	svc := &auth.Service{
@@ -167,18 +175,15 @@ func meGuilds(t *testing.T, h *httpHarness, viewer int64) map[int64]json.RawMess
 	defer res.Body.Close()
 	var env struct {
 		Data struct {
-			Guilds []struct {
-				ID        int64           `json:"id"`
-				Subscribe json.RawMessage `json:"subscribe"`
-			} `json:"guilds"`
+			Guilds []meGuild `json:"guilds"`
 		} `json:"data"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&env); err != nil {
 		t.Fatal(err)
 	}
-	out := map[int64]json.RawMessage{}
+	out := map[int64]meGuild{}
 	for _, g := range env.Data.Guilds {
-		out[g.ID] = g.Subscribe
+		out[g.ID] = g
 	}
 	return out
 }
@@ -194,8 +199,10 @@ func TestMe_SubscribeOwnerAndReadyGuild(t *testing.T) {
 	askLeader := `{"step":"ask_leader","trial_used":null,"available_at":null,"reason":null,"other_guild_name":null}`
 	got := meGuilds(t, h, owner)
 	for _, gid := range []int64{olympus, second} {
-		if string(got[gid]) != askLeader {
-			t.Errorf("owner's guild %d subscribe = %s, want %s", gid, got[gid], askLeader)
+		g := got[gid]
+		if string(g.Subscribe) != askLeader || string(g.Covered) != "null" || g.Plan != nil {
+			t.Errorf("owner's guild %d = subscribe %s covered %s plan %s, want %s, null and no plan",
+				gid, g.Subscribe, g.Covered, g.Plan, askLeader)
 		}
 	}
 
@@ -203,7 +210,61 @@ func TestMe_SubscribeOwnerAndReadyGuild(t *testing.T) {
 	holder := seedRanked(t, h, ready, "Readymaster", "leader", true)
 	setGuild(t, h, `update guilds set claimed_by = $2, claimed_at = now() where id = $1`, ready, holder)
 	want := `{"step":"ready","trial_used":false,"available_at":null,"reason":null,"other_guild_name":null}`
-	if sub := meGuilds(t, h, holder)[ready]; string(sub) != want {
-		t.Fatalf("holder's ready guild subscribe = %s, want %s", sub, want)
+	if g := meGuilds(t, h, holder)[ready]; string(g.Subscribe) != want || string(g.Covered) != "null" {
+		t.Fatalf("holder's ready guild = subscribe %s covered %s, want %s and null", g.Subscribe, g.Covered, want)
+	}
+}
+
+// planPeriodEnd is a fixed, whole-second period end, so the raw JSON below is a literal.
+const planPeriodEnd = "2027-01-06T00:00:00Z"
+
+// seedPaidGuild is a claimed guild on an active Stripe Guild plan paid by its verified
+// leader (battletag Payer#1234, character Payer), and a verified officer and member of it.
+func seedPaidGuild(t *testing.T, h *httpHarness) (gid, payer, officer, member int64) {
+	t.Helper()
+	gid = seedGuild(t, h.pool, "Paid Guild")
+	payer = seedRanked(t, h, gid, "Payer", "leader", true)
+	officer = seedRanked(t, h, gid, "Officerone", "officer", true)
+	member = seedRanked(t, h, gid, "Memberone", "member", true)
+	setGuild(t, h, `update users set battletag = 'Payer#1234' where id = $1`, payer)
+	setGuild(t, h, `update guilds set claimed_by = $2, claimed_at = now() where id = $1`, gid, payer)
+	end, err := time.Parse(time.RFC3339, planPeriodEnd)
+	if err != nil {
+		t.Fatal(err)
+	}
+	seedStripePlan(t, h, gid, "guild", "active", &end, false, &payer)
+	return gid, payer, officer, member
+}
+
+// TestMe_CoveredOnAPaidGuild: through the real handler, a verified member sees the plan that
+// covers the guild and who pays it, and gets no officer-only plan object.
+func TestMe_CoveredOnAPaidGuild(t *testing.T) {
+	h := withStepSources(newHTTPHarness(t))
+	gid, _, _, member := seedPaidGuild(t, h)
+	g := meGuilds(t, h, member)[gid]
+	wantCovered := `{"tier":"guild","state":"active","ends_at":"` + planPeriodEnd + `","billed_by":"Payer",` +
+		`"you_pay":false,"you_hold_seat":false,"seats_given":0,"seats_total":1}`
+	if string(g.Covered) != wantCovered {
+		t.Errorf("covered = %s, want %s", g.Covered, wantCovered)
+	}
+	wantSub := `{"step":"on_plan","trial_used":null,"available_at":null,"reason":null,"other_guild_name":null}`
+	if string(g.Subscribe) != wantSub {
+		t.Errorf("subscribe = %s, want %s", g.Subscribe, wantSub)
+	}
+	if g.Plan != nil {
+		t.Errorf("plan = %s for a member, want none", g.Plan)
+	}
+}
+
+// TestGuildStanding_PlanShapeUnchanged: the officer-only plan object keeps its shape beside
+// covered, for a verified officer who does not pay.
+func TestGuildStanding_PlanShapeUnchanged(t *testing.T) {
+	h := withStepSources(newHTTPHarness(t))
+	gid, _, officer, _ := seedPaidGuild(t, h)
+	want := `{"scope":"plan","tier":"guild","you_hold_seat":false,"status":"active",` +
+		`"current_period_end":"` + planPeriodEnd + `","cancel_at_period_end":false,` +
+		`"billed_by":"Payer#1234","you_are_billing_contact":false}`
+	if g := meGuilds(t, h, officer)[gid]; string(g.Plan) != want {
+		t.Fatalf("plan = %s, want %s", g.Plan, want)
 	}
 }

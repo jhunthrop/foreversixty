@@ -33,7 +33,11 @@ func claimViewOf(t *testing.T, h *httpHarness, viewer, guildID int64) (claimView
 	if err != nil {
 		t.Fatal(err)
 	}
-	claims, verify, err := h.store.ClaimAndVerifyViews(context.Background(), viewer, identities)
+	approvers, err := h.store.approverFacts(context.Background(), viewer, []int64{guildID})
+	if err != nil {
+		t.Fatal(err)
+	}
+	claims, verify, err := h.store.claimAndVerifyViews(context.Background(), viewer, identities, approvers)
 	if err != nil {
 		t.Fatal(err)
 	}
