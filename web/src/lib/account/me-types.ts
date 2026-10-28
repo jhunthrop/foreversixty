@@ -167,6 +167,7 @@ export interface EntitlementsView {
   notifications: boolean;
   officer_views: boolean;
   roster_check: boolean;
+  log_coach: boolean;
   supporter_mark: boolean;
   billing: BillingView | null;
 }

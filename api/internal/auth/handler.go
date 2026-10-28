@@ -416,6 +416,7 @@ type EntitlementsView struct {
 	Notifications bool         `json:"notifications"`
 	OfficerViews  bool         `json:"officer_views"`
 	RosterCheck   bool         `json:"roster_check"`
+	LogCoach      bool         `json:"log_coach"`
 	SupporterMark bool         `json:"supporter_mark"`
 	Billing       *BillingView `json:"billing"`
 	// PersonalPortal is true when the account has a Stripe-sourced personal row in any
@@ -523,6 +524,7 @@ var entitlementFeatures = []struct {
 	{entitlements.FeatureNotifications, func(v *EntitlementsView, ok bool) { v.Notifications = ok }},
 	{entitlements.FeatureOfficerViews, func(v *EntitlementsView, ok bool) { v.OfficerViews = ok }},
 	{entitlements.FeatureRosterCheck, func(v *EntitlementsView, ok bool) { v.RosterCheck = ok }},
+	{entitlements.FeatureLogCoach, func(v *EntitlementsView, ok bool) { v.LogCoach = ok }},
 }
 
 func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (EntitlementsView, error) {

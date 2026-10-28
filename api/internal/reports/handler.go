@@ -45,8 +45,8 @@ type Signer interface {
 
 // Accounts is the part of auth.Store the reports handlers need.
 type Accounts interface {
+	GuildRanker
 	User(ctx context.Context, id int64) (auth.User, error)
-	GuildRank(ctx context.Context, guildID, userID int64) (string, bool, error)
 }
 
 // GuildClaims is the guilds package's freeze hook (D, 2026-09-21 second
@@ -701,26 +701,9 @@ func objectKey(reportID, path string) (string, bool) {
 	return "", false
 }
 
-// mayView applies the visibility rules. Public and unlisted reports are
-// readable by anyone with the link; a private one by its owner and
-// moderators; a guild one by the guild as well.
+// mayView applies MayView, the one visibility rule, to the request's actor.
 func (s *Service) mayView(r *http.Request, rep Report) bool {
-	if rep.Visibility == Public || rep.Visibility == Unlisted {
-		return true
-	}
-	a := auth.ActorFrom(r.Context())
-	if !a.Signed() {
-		return false
-	}
-	if a.IsModerator() || (rep.OwnerID != nil && *rep.OwnerID == a.UserID) {
-		return true
-	}
-	if rep.Visibility == GuildTo && rep.GuildID != nil {
-		if _, ok, err := s.Accounts.GuildRank(r.Context(), *rep.GuildID, a.UserID); err == nil && ok {
-			return true
-		}
-	}
-	return false
+	return MayView(r.Context(), auth.ActorFrom(r.Context()), rep, s.Accounts)
 }
 
 // mayEdit is the owner, a moderator, or an officer of the report's

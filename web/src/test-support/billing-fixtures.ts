@@ -29,6 +29,7 @@ export function mockEntitlements(overrides: Partial<EntitlementsView> = {}): Ent
     notifications: false,
     officer_views: false,
     roster_check: false,
+    log_coach: false,
     supporter_mark: false,
     billing: null,
     ...overrides,

@@ -25,6 +25,9 @@ const (
 	// (FeatureScopeOfficerViews); Store.CanForGuild answers it per guild.
 	FeatureOfficerViews Feature = "officer_views"
 	FeatureRosterCheck  Feature = "roster_check"
+	// FeatureLogCoach is the Log Coach full review: a personal Premium feature (a guild seat
+	// holder has it); free accounts get the teaser line only (spec §14).
+	FeatureLogCoach Feature = "log_coach"
 	// FeatureRaidGuildTools is the Raid guild tier's per-guild tools: a
 	// verified officer/leader of a guild whose active row covers officer
 	// views and carries tier raid_guild (Store.CanForGuild; Can refuses it).

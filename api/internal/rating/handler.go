@@ -86,7 +86,7 @@ func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "report", err, "could not read that report just now")
 		return
 	}
-	if !visible(r, rep, s.Accounts) {
+	if !reports.MayView(r.Context(), auth.ActorFrom(r.Context()), rep, s.Accounts) {
 		// The same 404, whether the report does not exist or the caller may not see it -
 		// spec's own "no endpoint leaks the existence of a non-public report" rule.
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such report", nil)

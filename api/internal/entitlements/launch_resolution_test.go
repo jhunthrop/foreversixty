@@ -12,7 +12,7 @@ import (
 
 var standardFeatures = []Feature{
 	FeatureServerSims, FeatureRetention, FeatureMultiCompare,
-	FeatureHistory, FeatureNotifications, FeatureRosterCheck,
+	FeatureHistory, FeatureNotifications, FeatureRosterCheck, FeatureLogCoach,
 }
 
 // seedTieredGuildPlan inserts an active whole-plan Stripe row of tier.

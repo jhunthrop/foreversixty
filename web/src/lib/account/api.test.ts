@@ -374,6 +374,13 @@ describe('fetchMeOnce', () => {
   });
 });
 
+describe('entitlements fixtures', () => {
+  it('carry log_coach, true when overridden for a Premium account', () => {
+    expect(mockEntitlements().log_coach).toBe(false);
+    expect(mockEntitlements({ server_sims: true, log_coach: true }).log_coach).toBe(true);
+  });
+});
+
 describe('effectiveServerSims', () => {
   it('is false for a signed-out visitor', () => {
     expect(effectiveServerSims(null)).toBe(false);
@@ -392,6 +399,7 @@ describe('effectiveServerSims', () => {
         notifications: false,
         officer_views: false,
         roster_check: false,
+        log_coach: false,
         supporter_mark: false,
         billing: null,
       },

@@ -836,14 +836,15 @@ func TestMeReflectsAnActivePersonalPremiumEntitlement(t *testing.T) {
 	var body struct {
 		Entitlements struct {
 			ServerSims bool `json:"server_sims"`
+			LogCoach   bool `json:"log_coach"`
 			Billing    *struct {
 				Status string `json:"status"`
 			} `json:"billing"`
 		} `json:"entitlements"`
 	}
 	h.decode(t, res, &body)
-	if !body.Entitlements.ServerSims {
-		t.Fatal("server_sims should be true")
+	if !body.Entitlements.ServerSims || !body.Entitlements.LogCoach {
+		t.Fatalf("server_sims and log_coach should be true: %+v", body.Entitlements)
 	}
 	if body.Entitlements.Billing == nil || body.Entitlements.Billing.Status != "active" {
 		t.Fatalf("billing = %+v", body.Entitlements.Billing)
@@ -1143,6 +1144,7 @@ func TestMeWorksWithNoEntitlementsStoreConfigured(t *testing.T) {
 			Notifications bool `json:"notifications"`
 			OfficerViews  bool `json:"officer_views"`
 			RosterCheck   bool `json:"roster_check"`
+			LogCoach      bool `json:"log_coach"`
 			SupporterMark bool `json:"supporter_mark"`
 			Billing       *struct {
 				Status string `json:"status"`
@@ -1158,7 +1160,7 @@ func TestMeWorksWithNoEntitlementsStoreConfigured(t *testing.T) {
 	h.decode(t, res, &body)
 	ev := body.Entitlements
 	if ev.ServerSims || ev.Retention || ev.MultiCompare || ev.History || ev.Notifications ||
-		ev.OfficerViews || ev.RosterCheck || ev.SupporterMark {
+		ev.OfficerViews || ev.RosterCheck || ev.LogCoach || ev.SupporterMark {
 		t.Fatalf("a nil Entitlements store must answer every feature false: %+v", ev)
 	}
 	if ev.Billing != nil {
