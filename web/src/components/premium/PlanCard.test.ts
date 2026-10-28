@@ -32,10 +32,10 @@ describe('PlanCard, Premium', () => {
     expect(slotOf(doc).className).not.toMatch(/gold/);
   });
 
-  it('six benefits then the scope note, no tick on the note', async () => {
+  it('seven benefits then the scope note, no tick on the note', async () => {
     const doc = await renderCard('premium');
     const items = [...doc.querySelectorAll('ul li')];
-    expect(items).toHaveLength(6);
+    expect(items).toHaveLength(7);
     expect(items.map((li) => li.textContent?.trim())).toEqual([...plansPageCopy.premium.features]);
     const scope = doc.querySelector('[data-testid=premium-scope]');
     expect(scope?.textContent?.trim()).toBe(plansPageCopy.premium.scope);

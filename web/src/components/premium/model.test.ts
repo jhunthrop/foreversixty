@@ -62,9 +62,9 @@ describe('trialParts', () => {
 });
 
 describe('planBlock and founderKey', () => {
-  it('never puts the held coach line in the Premium features', () => {
+  it('puts the coach line first in the Premium features', () => {
     expect(planBlock('premium').features).toBe(plansPageCopy.premium.features);
-    expect(planBlock('premium').features).not.toContain(plansPageCopy.premium.featuresHeld.coach);
+    expect(planBlock('premium').features[0]).toMatch(/^Coach: /);
   });
 
   it('maps each plan to its copy block', () => {

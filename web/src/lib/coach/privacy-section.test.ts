@@ -39,8 +39,8 @@ describe('the privacy page Log coach section', () => {
     expect(coachPrivacySection(SHIPPED)).not.toBeNull();
   });
 
-  it('is held today, on the same flag the plans page uses', () => {
-    expect('featuresHeld' in plansPageCopy.premium).toBe(true);
-    expect(coachPrivacySection()).toBeNull();
+  it('renders today, on the same flag the plans page uses', () => {
+    expect('featuresHeld' in plansPageCopy.premium).toBe(false);
+    expect(coachPrivacySection()).not.toBeNull();
   });
 });

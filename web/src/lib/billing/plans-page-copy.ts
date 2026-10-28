@@ -93,6 +93,7 @@ export const plansPageCopy = {
     audience: 'For one player',
     support: 'Free stays complete. Premium pays for the servers and keeps the site going.',
     features: [
+      'Coach: after every logged raid, what to fix first — the casts you missed, the buffs you let drop, the consumables you skipped — learned from the engine and from the top logs on the site.',
       `Try up to ${count(CAPS.server)} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at ${count(CAPS.browser)}.`,
       'Close the tab. Server sims keep running, and the site tells you when they finish.',
       `Runs go up to ${count(LANE_ITERATION_CEILING.server)} iterations instead of ${count(LANE_ITERATION_CEILING.browser)}, so close upgrades come out clear.`,
@@ -101,12 +102,7 @@ export const plansPageCopy = {
       "A Supporter mark beside your name on your characters and in your guild's roster.",
     ] as readonly string[],
     scope:
-      'Sims cover damage specs; healing and tanking specs are not simulated yet. History, Discord messages and the Supporter mark work for every spec.',
-    // Held until the log coach ships (B5): never rendered, never in `features`.
-    featuresHeld: {
-      coach:
-        'Coach: after every logged raid, what to fix first — the casts you missed, the buffs you let drop, the consumables you skipped — learned from the engine and from the top logs on the site.',
-    },
+      'Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings.',
   },
   guild: {
     name: 'Guild',

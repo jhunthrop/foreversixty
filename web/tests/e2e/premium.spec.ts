@@ -297,12 +297,14 @@ test('the Free card renders once at every width', async ({ page }) => {
   }
 });
 
-test('forbidden words stay off the page, and the held coach line is never rendered', async ({ page }) => {
+test('forbidden words stay off the page, and the coach line is the first Premium benefit', async ({
+  page,
+}) => {
   await openAt(page, DECEMBER);
   const text = (await page.locator('main').textContent()) ?? '';
-  expect(text).not.toMatch(/coach|chip in|retention|compare more than/i);
+  expect(text).not.toMatch(/chip in|retention|compare more than/i);
   expect(text).not.toContain('!');
-  expect(text).not.toContain(plansPageCopy.premium.featuresHeld.coach);
+  expect(text).toContain(plansPageCopy.premium.features[0]);
   expect(text).not.toContain(plansPageCopy.trialEmail);
   const trialText = await page.locator('.slot, .row:has([data-rule-term]) dd').allTextContents();
   expect(trialText.join(' ')).not.toMatch(/email you/i);

@@ -87,10 +87,10 @@ describe('plans-page figures follow their sources', () => {
       perRaiderLine,
       perMemberLine,
     } = await import('./plans-page-copy');
-    expect(c.premium.features[0]).toContain('7,777');
-    expect(c.premium.features[0]).toContain('333');
-    expect(c.premium.features[2]).toContain('222,222');
-    expect(c.premium.features[2]).toContain('11,111');
+    expect(c.premium.features[1]).toContain('7,777');
+    expect(c.premium.features[1]).toContain('333');
+    expect(c.premium.features[3]).toContain('222,222');
+    expect(c.premium.features[3]).toContain('11,111');
     expect(c.trialEmail).toContain('4 days');
     expect(perRaiderLine('yearly', true)).toBe(
       '$10 per raider a year in a 30-person raid, $20 in a 15, $60 in a 5.',

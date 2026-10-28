@@ -1,7 +1,7 @@
 // web/src/lib/billing/plans-page-copy.test.ts
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { fillSlots, specCell, specKeyCell, specLineAfter } from '../../test-support/spec-table';
+import { fillSlots, specCell, specKeyCell } from '../../test-support/spec-table';
 import { exampleCaption, serverRunExample } from './premium-examples';
 import { CAPS, LANE_ITERATION_CEILING } from '../sim/precision';
 import {
@@ -120,31 +120,35 @@ describe('plansPageCopy guard', () => {
 
 describe('plansPageCopy Premium against spec B5', () => {
   it('premium.support', () => expect(copy.premium.support).toBe(key('premium.support')[0]));
-  it('premium.features[0] from CAPS', () =>
-    expect(copy.premium.features[0]).toBe(
-      fill(key('premium.features[0]')[0] ?? '', {
+  it('the coach line is the first Premium benefit', () => {
+    expect(copy.premium.features[0]).toBe(key('premium.features[0]')[0]);
+    expect(copy.premium.features[0]).toMatch(/^Coach: after every logged raid, /);
+  });
+  it('premium.features[1] from CAPS', () =>
+    expect(copy.premium.features[1]).toBe(
+      fill(key('premium.features[1]')[0] ?? '', {
         'CAPS.server': count(CAPS.server),
         'CAPS.browser': count(CAPS.browser),
       }),
     ));
-  it('premium.features[1]', () => expect(copy.premium.features[1]).toBe(key('premium.features[1]')[0]));
-  it('premium.features[2] from LANE_ITERATION_CEILING', () =>
-    expect(copy.premium.features[2]).toBe(
-      fill(key('premium.features[2]')[0] ?? '', {
+  it('premium.features[2]', () => expect(copy.premium.features[2]).toBe(key('premium.features[2]')[0]));
+  it('premium.features[3] from LANE_ITERATION_CEILING', () =>
+    expect(copy.premium.features[3]).toBe(
+      fill(key('premium.features[3]')[0] ?? '', {
         'LANE_ITERATION_CEILING.server': count(LANE_ITERATION_CEILING.server),
         'LANE_ITERATION_CEILING.browser': count(LANE_ITERATION_CEILING.browser),
       }),
     ));
-  it.each([3, 4, 5])('premium.features[%i]', (i) =>
+  it.each([4, 5, 6])('premium.features[%i]', (i) =>
     expect(copy.premium.features[i]).toBe(key(`premium.features[${i}]`)[0]),
   );
-  it('has exactly six features', () => expect(copy.premium.features).toHaveLength(6));
-  it('premium.scope', () => expect(copy.premium.scope).toBe(key('premium.scope')[0]));
-  it('held coach line is the spec line and is not in premium.features', () => {
-    expect(copy.premium.featuresHeld.coach).toBe(specLineAfter(SPEC, '**Held until built'));
-    expect(copy.premium.features).not.toContain(copy.premium.featuresHeld.coach);
-    expect(copy.premium.features.join(' ')).not.toMatch(/coach/i);
-  });
+  it('has exactly seven features', () => expect(copy.premium.features).toHaveLength(7));
+  it('premium.scope says the coach covers every spec', () =>
+    expect(copy.premium.scope).toBe(
+      'Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings.',
+    ));
+  it('premium.scope matches the spec', () => expect(copy.premium.scope).toBe(key('premium.scope')[0]));
+  it('nothing is held any more', () => expect('featuresHeld' in copy.premium).toBe(false));
   it('old Premium features are gone', () =>
     expect(allStrings(copy)).not.toContain('History charts of your score and parses'));
 });

@@ -1,7 +1,7 @@
 // web/src/lib/coach/privacy-section.ts
 // The privacy page's "Log coach" section (log coach spec §9: what leaves our systems). It is
-// written now and renders only once the coach line does: the plans page holds that line in
-// `premium.featuresHeld` until the coach ships, and Task 39 deletes the key.
+// renders once the coach line does: the plans page held that line in `premium.featuresHeld`
+// until the coach shipped, and the section shows while that key is absent.
 import { plansPageCopy } from '../billing/plans-page-copy';
 import { COACH_MODEL_PROVIDER } from './provider';
 
@@ -17,9 +17,7 @@ export interface CoachPrivacySection {
   readonly link: { readonly label: string; readonly href: string };
 }
 
-interface PremiumCopyShape {
-  readonly featuresHeld?: unknown;
-}
+type PremiumCopyShape = object & { readonly featuresHeld?: unknown };
 
 export function coachIsShipped(premium: PremiumCopyShape = plansPageCopy.premium): boolean {
   return premium.featuresHeld === undefined;

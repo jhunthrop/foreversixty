@@ -23,11 +23,10 @@ describe('the plans page band', () => {
   });
 });
 
-describe('the plans page promises nothing unshipped (§B8.9, §B8.14)', () => {
-  it('renders no coach line, no chip-in and no trial email', async () => {
+describe('the plans page promises nothing unshipped (§B8.9)', () => {
+  it('renders no chip-in and no trial email, and renders the coach line', async () => {
     const text = (await renderPremium()).body.textContent ?? '';
-    expect(text).not.toContain(plansPageCopy.premium.featuresHeld.coach);
-    expect(text).not.toMatch(/coach/i);
+    expect(text).toContain(plansPageCopy.premium.features[0]);
     expect(text).not.toMatch(/chip in/i);
     expect(text).not.toMatch(/email you/i);
   });
