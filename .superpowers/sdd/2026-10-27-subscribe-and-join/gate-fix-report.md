@@ -124,3 +124,32 @@ Premium value CLS (cls-premium-value-*.json): 1024 0.0003, unchanged band.
   row 3 crop shows the plan line with every row On; row 5 Guild master/Verified and `1 of 3` on a
   Raid guild; row 16 after-claim has no plan line and 12 px gaps; LP 15 buttons 44 px; LP 19 box
   capped at 480; LP 21 plain box, date in mono.
+
+## Round 2 (coordinator, after both reviewers' re-read; the two rulings above accepted)
+
+Commit 1afac43f7 (sources) and the captures commit after it.
+
+1. `confirm_claim` and `claim_pending_yours` fixtures carry rank `officer` (row 7 reads
+   `Officer · Not verified`).
+2. `premiumMe()` and `OWNER_MEMBER` carry `notifications: { discord: null }` and
+   `server_sims: { runs_this_month: 4 }` (one `PREMIUM_PANEL_EXTRAS`), so rows 3 and 15 show
+   `On · 4 runs this month` and the `Discord notifications` row.
+3. Lead: any `claim`, `start_claim`, `confirm_claim`, `claim_link_bnet` or `claim_pending_yours`
+   card gives `You can claim a guild here. Each card below has its next step.`; a `claim_blocked`
+   card keeps the some-claimed form. New §9.1 row, §5.1 order and the §12 row 1b note updated;
+   `subscribe-step.test.ts` asserts no "Only a guild's guild master" / "the next step is theirs"
+   above those cards; `checkout-guild-copy.test.ts` reads the new row from the spec.
+4. You row: name (with its crest), `· rank` and `· verify` are three `whitespace-nowrap` groups in a
+   wrapping row, so at 360 the verify mark drops to its own line and no word splits. Spec §5.2.
+
+Prettier ran on every code file. The spec markdown was not prettier-clean before this lane (the
+HEAD copy already fails `prettier --check`), so it was left as hand-edited rather than reflowed.
+
+Suites (isolated archive of cd8b05777, which includes 1afac43f7): vitest 7263 passed, 3 skipped,
+1 failed (the same archive-only report fixture). Playwright 3201 passed, 228 skipped, 3 failed:
+`home-character-search` desktop and mobile (pre-existing) and `coach-report` mobile "whole night",
+which passed 21/21 on a rerun of that file (load flake, coach lane). CLS unchanged: 0.0003 at 390,
+0.0002 at 1440 for both scenes. lhci not re-run (no change to the checkout frame or band).
+
+Recaptured: rows 1b (all six widths, both states; the lead changed with them), 3, 6, 7 and 15:
+44 captures.
