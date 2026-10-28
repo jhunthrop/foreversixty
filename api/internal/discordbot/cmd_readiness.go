@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
@@ -65,7 +66,7 @@ func (s *Service) cmdReadiness(ctx context.Context, in Interaction) (Reply, erro
 // checkoutGuildURL opens the checkout's guild step with the Raid guild plan chosen for guildID,
 // where an officer subscribes or moves the guild up.
 func checkoutGuildURL(base string, guildID int64) string {
-	return base + "/premium/checkout?plan=raid_guild&interval=yearly&guild_id=" + strconv.FormatInt(guildID, 10)
+	return base + catalog.CheckoutPath + "?plan=raid_guild&interval=yearly&guild_id=" + strconv.FormatInt(guildID, 10)
 }
 
 // readinessRefusal is the sentence for a gate's refusal; ok is false for any other error.

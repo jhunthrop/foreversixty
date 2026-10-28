@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+// CheckoutPath is the site's checkout page, the one place a plan is bought. The web builds its
+// own links to it; a test in this package keeps the two the same.
+const CheckoutPath = "/premium/checkout"
+
 // Stripe Product ids, fixed so stripe-setup is idempotent without Search.
 const (
 	ProductIDPremium   = "prod_fs_premium"

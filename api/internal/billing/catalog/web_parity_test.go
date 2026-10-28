@@ -5,6 +5,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
@@ -82,5 +83,20 @@ func TestWebPlansMatchTheCatalog(t *testing.T) {
 	}
 	if limit := webMemberCap.FindStringSubmatch(src); limit == nil || limit[1] != strconv.Itoa(GuildTierMemberLimit) {
 		t.Errorf("plans.ts member limit %v, catalog %d", limit, GuildTierMemberLimit)
+	}
+}
+
+// TestCheckoutPathMatchesTheWeb: the web page lives at CheckoutPath, and the pricing page builds
+// its links to it with the same literal.
+func TestCheckoutPathMatchesTheWeb(t *testing.T) {
+	if _, err := os.Stat("../../../../web/src/pages" + CheckoutPath + ".astro"); err != nil {
+		t.Errorf("no web page at %s: %v", CheckoutPath, err)
+	}
+	src, err := os.ReadFile("../../../../web/src/components/premium/model.ts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(src), "`"+CheckoutPath+"?plan=") {
+		t.Errorf("model.ts checkoutHref does not build %s", CheckoutPath)
 	}
 }
